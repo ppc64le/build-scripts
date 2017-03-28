@@ -1,8 +1,8 @@
 # ----------------------------------------------------------------------------
 #
-# Package	: c-ares
-# Version	: 1.12.0
-# Source repo	: https://github.com/bagder/c-ares.git
+# Package	: mongo-c-driver
+# Version	: 1.6.0
+# Source repo	: https://github.com/mongodb/mongo-c-driver.git
 # Tested on	: rhel_7.2
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Atul Sowani <sowania@us.ibm.com>
@@ -19,15 +19,10 @@
 
 # Install dependencies.
 sudo yum update -y
-sudo yum install -y git libtool libtool-bin make gcc-c++
+sudo yum install -y git automake autoconf libtool which make cyrus-sasl-devel
 
-# Build c-ares.
-git clone https://github.com/bagder/c-ares.git
-cd c-ares
-./buildconf && ./configure && make
-
-# Run tests.
-cd test
-make
-./arestest
-
+# Download source and build the driver.
+git clone https://github.com/mongodb/mongo-c-driver.git
+cd mongo-c-driver
+./autogen.sh --with-libbson=bundled
+make && sudo make install
