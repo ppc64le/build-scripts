@@ -95,4 +95,4 @@ sed -i.bak '/pycaffe/d' CMakeLists.txt
 mkdir build
 cd build
 cmake .. -DBLAS=open
-make all && sudo make install
+make all && make runtest && sudo make install
