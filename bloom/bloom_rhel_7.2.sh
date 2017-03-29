@@ -3,7 +3,7 @@
 # Package	: bloom
 # Version	: Not available.
 # Source repo	: https://github.com/ArashPartow/bloom
-# Tested on	: ubuntu_16.04
+# Tested on	: rhel_7.2
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Atul Sowani <sowania@us.ibm.com>
 #
