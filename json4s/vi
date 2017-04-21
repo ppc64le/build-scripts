@@ -1,0 +1,14 @@
+#!/bin/bash
+
+sudo yum update -y
+sudo yum install -y curl
+curl https://bintray.com/sbt/rpm/rpm | sudo tee /etc/yum.repos.d/bintray-sbt-rpm.repo
+sudo yum install -y sbt git java-1.7.0-openjdk-devel
+export JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk
+export PATH=$PATH:$JAVA_HOME/bin
+export TZ=Australia/Canberra
+
+git clone  https://github.com/json4s/json4s
+cd json4s/json4s
+git checkout -qf FETCH_HEAD
+sbt 'set resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"' test
