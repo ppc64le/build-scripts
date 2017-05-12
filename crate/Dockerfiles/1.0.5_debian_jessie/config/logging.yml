@@ -1,0 +1,25 @@
+# Logging config for Docker
+rootLogger: INFO, stdout, stderr
+
+logger:
+  # Log action execution errors for easier debugging
+  action: DEBUG
+
+appender:
+# configure stdout
+  stdout:
+    type: console
+    threshold: DEBUG
+    target: System.out
+    layout:
+      type: consolePattern
+      conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"
+
+# configure stderr
+  stderr:
+    type: console
+    threshold: ERROR
+    target: System.err
+    layout:
+      type: consolePattern
+      conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"
