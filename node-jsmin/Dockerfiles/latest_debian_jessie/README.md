@@ -1,4 +1,5 @@
 javascript minimizer for node.js  http://www.catonmat.net 
+
 https://github.com/pkrumins/node-jsmin
 
 Docker build command
