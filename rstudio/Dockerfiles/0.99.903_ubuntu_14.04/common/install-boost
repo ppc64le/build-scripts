@@ -1,0 +1,90 @@
+#!/bin/bash
+
+#
+# install-boost
+#
+# Copyright (C) 2009-12 by RStudio, Inc.
+#
+# Unless you have received this program directly from RStudio pursuant
+# to the terms of a commercial license agreement with RStudio, then
+# this program is licensed to you under the terms of version 3 of the
+# GNU Affero General Public License. This program is distributed WITHOUT
+# ANY EXPRESS OR IMPLIED WARRANTY, INCLUDING THOSE OF NON-INFRINGEMENT,
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. Please refer to the
+# AGPL (http://www.gnu.org/licenses/agpl-3.0.txt) for more details.
+#
+#
+
+set -e
+
+# install dir 
+INSTALL_DIR=`pwd`
+
+# determine platform
+PLATFORM=`uname`
+
+# vars
+BOOST_VERSION_NUMBER=1.62.0
+BOOST_VERSION=boost_1_62_0
+BOOST_DIR=/opt/rstudio-tools/boost/$BOOST_VERSION
+BOOST_TAR=$BOOST_VERSION.tar.bz2
+BOOST_BUILD_DIR=boost-build
+
+# install if we aren't already installed
+if ! test -e $BOOST_DIR
+then
+   # download boost
+   BOOST_URL=http://sourceforge.net/projects/boost/files/boost/$BOOST_VERSION_NUMBER/$BOOST_TAR/download?use_mirror=autoselect
+   if [ "$PLATFORM" == "Darwin" ]
+   then
+      curl -L $BOOST_URL > $BOOST_TAR
+   else
+      wget -c $BOOST_URL -O $BOOST_TAR
+   fi
+   
+   # remove existing boost installation
+   sudo rm -rf $BOOST_DIR
+  
+   # untar source (remove existing)
+   sudo rm -rf $BOOST_BUILD_DIR
+   sudo mkdir -p $BOOST_BUILD_DIR
+   cd $BOOST_BUILD_DIR
+   sudo tar --bzip2 -xf ../$BOOST_TAR
+
+   # change to boost version folder
+   cd $BOOST_VERSION
+
+   # bootstrap boost
+   sudo ./bootstrap.sh  
+   
+   # special variation of build for osx
+   if [ "$PLATFORM" == "Darwin" ]
+   then
+     # need flags for Mavericks and later instructing the compiler to target
+     # the older libstdc++
+     SYS_MAJOR_VER=`uname -r | cut -d "." -f -1`
+     if [ "$SYS_MAJOR_VER" -gt "12" ]
+     then
+        CXX_STDLIB_FLAGS=cxxflags="-stdlib=libstdc++"
+     else
+        CXX_STDLIB_FLAGS=""
+     fi
+
+     sudo ./bjam ${BOOST_BJAM_FLAGS} --prefix=$BOOST_DIR toolset=clang $CXX_STDLIB_FLAGS variant=release threading=multi link=static install
+   else
+     sudo ./bjam ${BOOST_BJAM_FLAGS} --prefix=$BOOST_DIR variant=release install
+   fi
+
+   # go back to the original install dir and remove build dir
+   cd $INSTALL_DIR
+   sudo rm -rf $BOOST_TAR
+   sudo rm -rf $BOOST_BUILD_DIR
+
+else
+
+   echo "$BOOST_VERSION_NUMBER already installed in $BOOST_DIR"
+
+fi
+
+# back to install dir
+cd $INSTALL_DIR
