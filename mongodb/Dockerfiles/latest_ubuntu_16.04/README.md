@@ -2,7 +2,7 @@ How To Use Mongodb Container?
 
 
 .	Start the container using following command:
-	$ docker run -itd --rm -p 27017:27017 -p 28017:28017 container_name
+	$ docker run -itd -p 27017:27017 -p 28017:28017 container_name
 
 .	Now you can attach to it, and access its shell as follows:
 	$docker exec -it <container ID or name> mongo
