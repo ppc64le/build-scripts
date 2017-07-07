@@ -36,4 +36,4 @@ cd allpathslg-52488
 sed -i -e 's/-mieee-fp//g' src/Makefile
 
 #make install
-make ; make install
+make ; sudo make install
