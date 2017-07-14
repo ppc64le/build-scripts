@@ -27,4 +27,4 @@ git clone https://bitbucket.org/mhowison/bib.git
 
 # make
 cd bib
-./install.sh /install.sh /install.sh 
+./install.sh 
