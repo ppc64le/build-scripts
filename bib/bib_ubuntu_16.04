@@ -1,10 +1,9 @@
 #!/bin/bash
 #-----------------------------------------------------------------------------
-# 
-# package       : bib
+# Package       : bib
 # Version       : 
 # Source repo   : https://bitbucket.org/mhowison/bib.git
-# Tested on     : Centos_7.3 
+# Tested on     : Ubuntu
 # Script License: Apache License, Version 2 or later 
 # Maintainer    : Shane Barrantes <Shane.Barrantes@ibm.com>
 #
@@ -17,14 +16,15 @@
 # ---------------------------------------------------------------------------- 
 
 ## Update Source
-sudo yum update -y
+sudo apt-get update -y
+sudo apt-get upgrade -y
 
 #gcc dev tools
-sudo yum groupinstall 'Development Tools'
+sudo apt install build-essential -y
 
 # download and unpack
 git clone https://bitbucket.org/mhowison/bib.git
 
 # make
 cd bib
-./install.sh 
+./install.sh /install.sh /install.sh 
