@@ -26,6 +26,7 @@ sudo yum groupinstall 'Development Tools'
 sudo yum install glibc-2.17-157.el7.ppc64le -y
 sudo yum install libgomp-4.8.5-11.el7.ppc64le -y
 sudo yum install libgcc-4.8.5-11.el7.ppc64le -y
+sudo yum install boost-devel -y
 
 # download and unpack
 git clone https://github.com/marbl/canu.git
