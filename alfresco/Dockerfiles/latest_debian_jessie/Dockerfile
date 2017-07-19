@@ -1,4 +1,4 @@
-FROM ppc64le/openjdk:8-jdk
+FROM ppc64le/openjdk:openjdk-8-jdk
 
 # The author for this new image
 MAINTAINER Snehlata Mohite smohite@us.ibm.com

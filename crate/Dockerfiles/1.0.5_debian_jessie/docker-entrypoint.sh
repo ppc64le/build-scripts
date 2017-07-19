@@ -7,7 +7,7 @@ fi
 
 if [ "$1" = 'crate' -a "$(id -u)" = '0' ]; then
     chown -R crate:crate /data
-    set -- gosu crate "$@"
+    set -- crate "$@"
 fi
 
 exec "$@"
