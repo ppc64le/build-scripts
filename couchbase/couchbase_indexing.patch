@@ -1,0 +1,13 @@
+diff --git a/secondary/memdb/skiplist/skiplist.go b/secondary/memdb/skiplist/skiplist.go
+index 9772c17..6da7a3a 100644
+--- a/secondary/memdb/skiplist/skiplist.go
++++ b/secondary/memdb/skiplist/skiplist.go
+@@ -60,7 +60,7 @@ func New() *Skiplist {
+ }
+ 
+ func NewWithConfig(cfg Config) *Skiplist {
+-	if runtime.GOARCH != "amd64" {
++	if (runtime.GOARCH != "amd64") && (runtime.GOARCH == "ppc64le") {
+ 		cfg.UseMemoryMgmt = false
+ 	}
+ 

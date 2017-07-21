@@ -1,0 +1,236 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 37ca43a..3ef20ba 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -22,7 +22,11 @@ CMAKE_PUSH_CHECK_STATE(RESET)
+ CMAKE_POP_CHECK_STATE()
+ 
+ CMAKE_PUSH_CHECK_STATE(RESET)
+-  SET(CMAKE_REQUIRED_DEFINITIONS "-D_GNU_SOURCE")
++  IF (CMAKE_SYSTEM_PROCESSOR MATCHES "^ppc64le")
++    SET(CMAKE_REQUIRED_DEFINITIONS "-D_GNU_SOURCE -fpermissive")
++  ELSE ()
++    SET(CMAKE_REQUIRED_DEFINITIONS "-D_GNU_SOURCE")
++  ENDIF ()
+   FIND_LIBRARY(DL_LIBRARY NAMES dl)
+   IF (DL_LIBRARY)
+     SET(CMAKE_REQUIRED_LIBRARIES "${DL_LIBRARY}")
+@@ -32,7 +36,11 @@ CMAKE_PUSH_CHECK_STATE(RESET)
+ CMAKE_POP_CHECK_STATE()
+ 
+ CMAKE_PUSH_CHECK_STATE(RESET)
+-SET(CMAKE_REQUIRED_DEFINITIONS "-D_GNU_SOURCE")
++IF (CMAKE_SYSTEM_PROCESSOR MATCHES "^ppc64le")
++  SET(CMAKE_REQUIRED_DEFINITIONS "-D_GNU_SOURCE -fpermissive")
++ELSE ()
++  SET(CMAKE_REQUIRED_DEFINITIONS "-D_GNU_SOURCE")
++ENDIF ()
+ SET(CMAKE_REQUIRED_LIBRARIES "pthread")
+ CHECK_SYMBOL_EXISTS(pthread_setname_np pthread.h HAVE_PTHREAD_SETNAME_NP)
+ CHECK_SYMBOL_EXISTS(pthread_getname_np pthread.h HAVE_PTHREAD_GETNAME_NP)
+@@ -85,7 +93,17 @@ IF (WIN32)
+    INSTALL(FILES ${DBGHELP_DLL} DESTINATION bin)
+ ELSE (WIN32)
+    SET(PLATFORM_FILES src/cb_pthreads.cc src/urandom.c src/memorymap_posix.cc)
+-   SET_SOURCE_FILES_PROPERTIES(src/crc32c_sse4_2.cc PROPERTIES COMPILE_FLAGS -msse4.2)
++   IF (CMAKE_SYSTEM_PROCESSOR MATCHES "^ppc64le")
++      SET(PLATFORM_FILES ${PLATFORM_FILES} src/crc32.S
++                         src/crc32_wrapper.c
++                         include/platform/crc32_constants.h
++                         include/platform/ppc-opcode.h)
++      ENABLE_LANGUAGE(ASM)
++   ELSE ()
++      SET(PLATFORM_FILES ${PLATFORM_FILES} src/crc32c_sse4_2.cc)
++      SET_SOURCE_FILES_PROPERTIES(src/crc32c_sse4_2.cc PROPERTIES COMPILE_FLAGS -msse4.2)
++   ENDIF ()
++
+    LIST(APPEND PLATFORM_LIBRARIES "pthread")
+ 
+    IF (NOT APPLE)
+@@ -134,7 +152,6 @@ ADD_LIBRARY(platform SHARED ${PLATFORM_FILES}
+                             src/cbassert.c
+                             src/checked_snprintf.cc
+                             src/crc32c.cc
+-                            src/crc32c_sse4_2.cc
+                             src/crc32c_private.h
+                             src/strerror.cc
+                             src/thread.cc
+diff --git a/include/platform/crc32c.h b/include/platform/crc32c.h
+index 41366cb..fee62a3 100644
+--- a/include/platform/crc32c.h
++++ b/include/platform/crc32c.h
+@@ -40,7 +40,9 @@
+ // built on another platform.
+ //
+ #if !defined(__x86_64__) && !defined(_M_X64) && !defined(_M_IX86)
++#if !defined(__PPC64__) && !defined(__LITTLE_ENDIAN__)
+ #error "crc32c requires X86 SSE4.2 for hardware acceleration"
++#endif /* PPC64 && LITTLE_ENDIAN */
+ #endif
+ 
+ #ifdef CRC32C_UNIT_TEST
+diff --git a/src/crc32c.cc b/src/crc32c.cc
+index cdab301..7b59b5d 100644
+--- a/src/crc32c.cc
++++ b/src/crc32c.cc
+@@ -54,15 +54,22 @@
+ #include "platform/crc32c.h"
+ #include "crc32c_private.h"
+ 
++#if defined (__PPC64__) && defined (__LITTLE_ENDIAN__)
++#include "platform/crc32_constants.h"
++#include "platform/ppc-opcode.h"
++#endif /* PPC64 && LITTLE_ENDIAN */
++
+ #include <stdint.h>
+ #include <stddef.h>
+ 
++#if !defined (__PPC64__) && !defined (__LITTLE_ENDIAN__)
+ // select header file for cpuid.
+ #if defined(WIN32)
+ #include <intrin.h>
+ #elif defined(__clang__) || defined(__GNUC__)
+ #include <cpuid.h>
+ #endif
++#endif /* PPC64 && LITTLE_ENDIAN */
+ 
+ #include <limits>
+ #include <array>
+@@ -362,6 +369,15 @@ bool setup_tables() {
+ //
+ extern uint32_t crc32c_hw(const uint8_t* buf, size_t len, uint32_t crc_in);
+ 
++#if defined (__PPC64__) && defined (__LITTLE_ENDIAN__)
++extern "C" unsigned int crc32_vpmsum(unsigned int crc_in, unsigned char *buf, unsigned long len);
++
++uint32_t ppc_crc32c_hw(const uint8_t* buf, size_t len, uint32_t crc_in)
++{
++  return crc32_vpmsum((unsigned int) crc_in, (unsigned char *) buf, (unsigned long) len);
++}
++#endif /* PPC64 && LITTLE_ENDIAN */
++
+ //
+ // Return the appropriate function for the platform.
+ // If SSE4.2 is available then hardware acceleration is used.
+@@ -371,6 +387,7 @@ crc32c_function setup_crc32c() {
+ 
+     crc32c_function f = crc32c_sw;
+ 
++#if !defined(__PPC64__) && !defined (__LITTLE_ENDIAN__)
+ #if defined(WIN32)
+     std::array<int, 4> registers = {{0,0,0,0}};
+     __cpuid(registers.data(), 1);
+@@ -382,6 +399,9 @@ crc32c_function setup_crc32c() {
+     if (registers[2] & SSE42) {
+         f = crc32c_hw;
+     }
++#else /* PPC64 && LITTLE_ENDIAN */
++    f = ppc_crc32c_hw;
++#endif
+ 
+     return f;
+ }
+@@ -397,4 +417,5 @@ PLATFORM_PUBLIC_API
+ uint32_t crc32c (const uint8_t* buf, size_t len, uint32_t crc_in) {
+     return safe_crc32c(buf, len, crc_in);
+ }
+-}
+\ No newline at end of file
++}
++
+diff --git a/tests/crc32/CMakeLists.txt b/tests/crc32/CMakeLists.txt
+index 2dcfe51..08d1178 100644
+--- a/tests/crc32/CMakeLists.txt
++++ b/tests/crc32/CMakeLists.txt
+@@ -1,21 +1,26 @@
+ IF (NOT WIN32)
+-    SET_SOURCE_FILES_PROPERTIES(${Platform_SOURCE_DIR}/src/crc32c_sse4_2.cc
+-                                PROPERTIES COMPILE_FLAGS -msse4.2)
++    IF (CMAKE_SYSTEM_PROCESSOR MATCHES "^ppc64le")
++        SET(PLATFORM_FILES ${Platform_SOURCE_DIR}/src/crc32_wrapper.c
++                           ${Platform_SOURCE_DIR}/src/crc32.S)
++        ENABLE_LANGUAGE(ASM)
++    ELSE ()
++        SET(PLATFORM_FILES ${Platform_SOURCE_DIR}/src/crc32c_sse4_2.cc)
++        SET_SOURCE_FILES_PROPERTIES(${Platform_SOURCE_DIR}/src/crc32c_sse4_2.cc
++                                    PROPERTIES COMPILE_FLAGS -msse4.2)
++    ENDIF ()
+ ENDIF(NOT WIN32)
+ 
+ ADD_EXECUTABLE(platform-crc32c-test crc32c_test.cc)
+ TARGET_LINK_LIBRARIES(platform-crc32c-test platform)
+ 
+-ADD_EXECUTABLE(platform-crc32c-sw_hw-test
++ADD_EXECUTABLE(platform-crc32c-sw_hw-test ${PLATFORM_FILES}
+                ${Platform_SOURCE_DIR}/src/crc32c.cc
+-               ${Platform_SOURCE_DIR}/src/crc32c_sse4_2.cc
+                crc32c_test.cc)
+ SET_TARGET_PROPERTIES(platform-crc32c-sw_hw-test PROPERTIES COMPILE_FLAGS "-DCRC32C_UNIT_TEST")
+ TARGET_LINK_LIBRARIES(platform-crc32c-sw_hw-test ${PLATFORM_LIBRARIES})
+ 
+-ADD_EXECUTABLE(platform-crc32c-bench
++ADD_EXECUTABLE(platform-crc32c-bench ${PLATFORM_FILES}
+                ${Platform_SOURCE_DIR}/src/crc32c.cc
+-               ${Platform_SOURCE_DIR}/src/crc32c_sse4_2.cc
+                crc32c_bench.cc)
+ SET_TARGET_PROPERTIES(platform-crc32c-bench PROPERTIES COMPILE_FLAGS "-DCRC32C_UNIT_TEST")
+ TARGET_LINK_LIBRARIES(platform-crc32c-bench platform)
+diff --git a/tests/crc32/crc32c_bench.cc b/tests/crc32/crc32c_bench.cc
+index 637e02a..9de4a6c 100644
+--- a/tests/crc32/crc32c_bench.cc
++++ b/tests/crc32/crc32c_bench.cc
+@@ -34,8 +34,12 @@
+ 
+ // extern directly to the hw/sw versions
+ extern uint32_t crc32c_sw(const uint8_t* buf, size_t len, uint32_t crc_in);
++#if !defined (__PPC64__) && !defined (__LITTLE_ENDIAN__)
+ extern uint32_t crc32c_hw(const uint8_t* buf, size_t len, uint32_t crc_in);
+ extern uint32_t crc32c_hw_1way(const uint8_t* buf, size_t len, uint32_t crc_in);
++#else
++extern uint32_t ppc_crc32c_hw(const uint8_t* buf, size_t len, uint32_t crc_in);
++#endif /* PPC64 && LITTLE_ENDIAN */
+ 
+ typedef uint32_t (*crc32c_function)(const uint8_t* buf, size_t len, uint32_t crc_in);
+ 
+@@ -145,8 +149,12 @@ void crc_bench(size_t len,
+     }
+     std::vector<hrtime_t> timings_sw, timings_hw, timings_hw_opt;
+     crc_bench_core(data+unalignment, len, iterations, crc32c_sw, timings_sw);
++#if !defined (__PPC64__) && !defined (__LITTLE_ENDIAN__)
+     crc_bench_core(data+unalignment, len, iterations, crc32c_hw_1way, timings_hw);
+     crc_bench_core(data+unalignment, len, iterations, crc32c_hw, timings_hw_opt);
++#else
++    crc_bench_core(data+unalignment, len, iterations, ppc_crc32c_hw, timings_hw_opt);
++#endif /* PPC64 && LITTLE_ENDIAN */
+     delete [] data;
+ 
+     crc_results(len, timings_sw, timings_hw, timings_hw_opt);
+@@ -186,4 +194,4 @@ int main() {
+         crc_bench(size % 2 == 0? size+1:size, 1000, 1);
+     }
+     return 0;
+-}
+\ No newline at end of file
++}
+diff --git a/tests/crc32/crc32c_test.cc b/tests/crc32/crc32c_test.cc
+index 6efcfd3..5fc5963 100644
+--- a/tests/crc32/crc32c_test.cc
++++ b/tests/crc32/crc32c_test.cc
+@@ -121,12 +121,17 @@ bool run_test(const uint8_t* buffer, int len, uint32_t expected, std::string nam
+ #ifdef CRC32C_UNIT_TEST
+     // extern directly to the hw/sw versions
+     extern uint32_t crc32c_sw(const uint8_t* buf, size_t len, uint32_t crc_in);
++#if !defined (__PPC64__) && !defined (__LITTLE_ENDIAN__)
+     extern uint32_t crc32c_hw(const uint8_t* buf, size_t len, uint32_t crc_in);
+     extern uint32_t crc32c_hw_1way(const uint8_t* buf, size_t len, uint32_t crc_in);
+     // in the unit test version, we're bypassing the DLL exposed interface
+     // and running hard/software function together for full validation.
+     actual = crc32c_hw_1way(buffer, len, 0) & crc32c_sw(buffer, len, 0) & crc32c_hw(buffer, len, 0);
+ #else
++    extern uint32_t ppc_crc32c_hw(const uint8_t* buf, size_t len, uint32_t crc_in);
++    actual = ppc_crc32c_hw(buffer, len, 0);
++#endif /* PPC64 && LITTLE_ENDIAN */
++#else
+     actual = crc32c(buffer, len, 0);
+ #endif
+ 

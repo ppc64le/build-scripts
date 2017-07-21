@@ -1,0 +1,30 @@
+project forestdb/
+diff --git a/src/arch.h b/src/arch.h
+index b98d315..4f240ea 100644
+--- a/src/arch.h
++++ b/src/arch.h
+@@ -315,6 +315,10 @@
+         #define spin_unlock(arg) pthread_spin_unlock(arg)
+         #define spin_destroy(arg) pthread_spin_destroy(arg)
+         #define SPIN_INITIALIZER (spin_t)(1)
++        #if defined(__PPC64__) && defined(__LITTLE_ENDIAN__)
++          #undef SPIN_INITIALIZER
++          #define SPIN_INITIALIZER (spin_t)(0)
++        #endif
+     #endif
+     #ifndef mutex_t
+         // mutex
+diff --git a/utils/debug.cc b/utils/debug.cc
+index 64373af..133e5c4 100644
+--- a/utils/debug.cc
++++ b/utils/debug.cc
+@@ -89,6 +89,8 @@ static void sigsegv_handler(int sig, siginfo_t *siginfo, void *context)
+     ucontext *u = (ucontext *)context;
+ #ifdef REG_RIP // Test if the Program Counter is 64 bits
+     unsigned char *pc = (unsigned char *)u->uc_mcontext.gregs[REG_RIP];
++#elif defined (__PPC64__) && defined (__LITTLE_ENDIAN__)
++    unsigned char *pc = (unsigned char *)u->uc_mcontext.regs->nip;
+ #else // 32 bit machine, PC is stored in %eip register
+     unsigned char *pc = (unsigned char *)u->uc_mcontext.gregs[REG_EIP];
+ #endif // REG_RIP for 64-bit machines
+
