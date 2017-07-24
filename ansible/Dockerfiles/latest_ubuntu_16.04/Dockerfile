@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ppc64le/ubuntu:16.04
 MAINTAINER "Atul Sowani <sowania@us.ibm.com>"
 
 RUN echo "deb http://ports.ubuntu.com/ubuntu-ports/ xenial universe" >> /etc/apt/sources.list
