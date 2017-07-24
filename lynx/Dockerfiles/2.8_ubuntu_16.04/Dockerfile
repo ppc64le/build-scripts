@@ -1,4 +1,4 @@
-FROM ubuntu_ppc64le:16.04
+FROM ppc64le/ubuntu:16.04
 MAINTAINER Yugandha Deshpande <yugandha@us.ibm.com>
 
 

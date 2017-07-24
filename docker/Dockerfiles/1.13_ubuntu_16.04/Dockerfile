@@ -1,4 +1,4 @@
-FROM ubuntu_ppc64le:16.04
+FROM ppc64le/ubuntu:16.04
 MAINTAINER Yugandha Deshpande <yugandha@us.ibm.com>
 
 RUN echo deb http://ftp.unicamp.br/pub/ppc64el/ubuntu/16_04/docker-1.13.1-ppc64el/ xenial  main > /etc/apt/sources.list.d/xenial-docker.list

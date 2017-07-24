@@ -1,4 +1,4 @@
-FROM ubuntu_ppc64le:16.04
+FROM ppc64le/ubuntu:16.04
 MAINTAINER Meghali Dhoble
 
 ENV KIBANA 4.6
