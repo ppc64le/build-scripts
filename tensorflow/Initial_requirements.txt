@@ -1,34 +1,27 @@
 Initial Requirements 
 
-1.	To build Tensorflow with GPU-enabled first you need to install CUDA and
-cuDNN dependencies. ()To install these dependencies please refer link
-http://www.nvidia.com/object/gpu-accelerated-applications-tensorflow-installation.html)
+1.	To build Tensorflow with GPU-enabled first you need to install CUDA and cuDNN dependencies 
+(To install these dependencies please refer link http://www.nvidia.com/object/gpu-accelerated-applications-tensorflow-installation.html)
 
 i)	CUDA - 
 •	We have installed cuda-8.0 version (please see below)
-$ wget https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda-repo-rhel7-8-0-local-ga2v2-8.0.61-1.ppc64le-rpm
+      	 	$ wget https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda-repo-rhel7-8-0-local-ga2v2-8.0.61-1.ppc64le-rpm
 $ sudo rpm -i cuda-repo-rhel7-8-0-local-ga2v2-8.0.61-1.ppc64le-rpm
 $ sudo yum clean all 
 $ sudo yum install cuda
 
+
 ii)	cuDNN –
-•	Once the CUDA Toolkit is installed, download cuDNN v5.1 Library for Linux
-    (note that you will need to register for the Accelerated Computing
-    Developer Program). - See more at: http://www.nvidia.com/object/gpu-accelerated-applications-tensorflow-installation.html
+•	Once the CUDA Toolkit is installed, download cuDNN v5.1 Library for Linux (note that you will need to register for the Accelerated Computing Developer Program). - See more at: http://www.nvidia.com/object/gpu-accelerated-applications-tensorflow-installation.html
 •	Please download cuDNN-v5.1-Library for power8
 •	We have downloaded cuDNN-5.1 library from link  https://developer.nvidia.com/compute/machine-learning/cudnn/secure/v5.1/prod_20161129/8.0/cudnn-8.0-linux-ppc64le-v5.1-tgz
-•	Once downloaded, uncompress the files and copy them into the CUDA Toolkit
-    directory (assumed here to be in /usr/local/cuda/):       
-    $ sudo tar -xvf cudnn-8.0-linux-ppc64le-v5.1.tgz -C /usr/local
+•	Once downloaded, uncompress the files and copy them into the CUDA Toolkit directory (assumed here to be in /usr/local/cuda/):       
+$ sudo tar -xvf cudnn-8.0-linux-ppc64le-v5.1.tgz -C /usr/local
 
 
-2.	Also you required three patches to build Tensorflow 1.0.1 on ppc64le using
-    build script.
-•	We are providing these patches along with the script
-•	Please keep these patches on correct location while running the build
-    script, otherwise build will fail
-- Suppose your TF build script is copied inside the /home/tf directory, then
-  put all three patches inside the /home/tf/patches directory.
+2.	Also you required three patches to build Tensorflow 1.0.1 on ppc64le using build script.
+•	We are providing these patches along with the script in patches.zip file
+•	Please keep these patches on correct location while running the build script, otherwise build will fail
+- Suppose your TF build script is copied inside the /home/tf directory, then extract the patches.zip file and put all three patches inside the /home/tf/patches directory.
 
-3. To install libstdc++-static  dependency we need to enable one optional
-   repository i.e. rhel-7-for-power-le-optional-beta-rpms
+3.	 To install libstdc++-static  dependency we need to enable one optional repository i.e. rhel-7-for-power-le-optional-beta-rpms
