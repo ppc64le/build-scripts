@@ -1,11 +1,12 @@
 #!/bin/bash
 #-----------------------------------------------------------------------------
-# Package       : bib
-# Version       : 2016-06-15  
-# Source repo   : https://bitbucket.org/mhowison/bib.git
-# Tested on     : Ubuntu_16.04
-# Script License: Apache License, Version 2 or later 
-# Maintainer    : Shane Barrantes <Shane.Barrantes@ibm.com>
+#
+# package       : egglib
+# Version       : 2.1.11 
+# Source repo   : Na
+# Tested on     : rhel_7.3 
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Shane Barrantes <shane.barrantes@ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -15,17 +16,18 @@
 #
 # ---------------------------------------------------------------------------- 
 
-## Update Source
-sudo apt-get update -y
-sudo apt-get upgrade -y
+# Update Source
+sudo yum update -y
 
-#gcc dev tools
-sudo apt install build-essential -y
-sudo apt-get install curl -y
+# gcc dev tools
+sudo yum groupinstall 'Development Tools' -y
 
 # download and unpack
-git clone https://bitbucket.org/mhowison/bib.git
+wget https://sourceforge.net/projects/egglib/files/2.1.11/egglib-cpp-2.1.11.tar.gz
+tar -xzvf egglib-cpp-2.1.11.tar.gz
+cd egglib-cpp-2.1.11
 
 # make
-cd bib
-./install.sh 
+sh configure
+make
+sudo make install

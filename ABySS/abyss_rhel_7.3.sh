@@ -4,7 +4,7 @@
 # package       : Abyss 
 # Version       : 1.9.0 
 # Source repo   : https://github.com/bcgsc/abyss/releases/download/1.9.0/abyss-1.9.0.tar.gz
-# Tested on     : Centos_7.3 
+# Tested on     : rhel_7.3
 # Script License: Apache License, Version 2 or later 
 # Maintainer    : Shane Barrantes <Shane.Barrantes@ibm.com>
 #

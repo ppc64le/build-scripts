@@ -1,10 +1,11 @@
 #!/bin/bash
 #-----------------------------------------------------------------------------
-# Package       : bib
-# Version       : 2016-06-15  
-# Source repo   : https://bitbucket.org/mhowison/bib.git
-# Tested on     : Ubuntu_16.04
-# Script License: Apache License, Version 2 or later 
+#
+# Package       : sparsehash
+# Version       : 2.0.3
+# Source repo   : https://github.com/sparsehash/sparsehash.git
+# Tested on     : rhel_7.3
+# Script License: Apache License, Version 2 or later
 # Maintainer    : Shane Barrantes <Shane.Barrantes@ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
@@ -15,17 +16,20 @@
 #
 # ---------------------------------------------------------------------------- 
 
-## Update Source
-sudo apt-get update -y
-sudo apt-get upgrade -y
+curdir=`pwd`
 
-#gcc dev tools
-sudo apt install build-essential -y
-sudo apt-get install curl -y
+# Update Source
+sudo yum update -y
+
+# gcc dev tools
+sudo yum groupinstall 'Development Tools' -y
 
 # download and unpack
-git clone https://bitbucket.org/mhowison/bib.git
+git clone https://github.com/sparsehash/sparsehash.git
+cd sparsehash
 
 # make
-cd bib
-./install.sh 
+./configure --build=ppc64le-redhat-linux
+make
+sudo make install
+cd $curdir

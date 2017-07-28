@@ -1,0 +1,64 @@
+#!/bin/bash
+#-----------------------------------------------------------------------------
+# 
+# package       : breakdancer
+# Version       : 1.3.6
+# Source repo   : https://github.com/genome/breakdancer.git 
+# Tested on     : Centos_7.3 
+# Script License: Apache License, Version 2 or later 
+# Maintainer    : Shane Barrantes <Shane.Barrantes@ibm.com>
+#
+# Disclaimer: This script has been tested in non-root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintaine" of this script.
+#
+# ----------------------------------------------------------------------------
+
+src=`pwd`
+samtools="samtools/"
+## Update Source
+sudo yum update -y
+
+#gcc dev tools
+sudo yum groupinstall 'Development Tools' -y
+sudo yum install perl -y
+
+## install deppendencies
+sudo yum install glibc-2.17-157.el7.ppc64le -y
+sudo yum install libgcc-4.8.5-11.el7.ppc64le -y
+sudo yum install zlib-1.2.7-17.el7.ppc64le -y
+sudo yum install zlib-static-1.2.7-17.el7.ppc64le -y
+sudo yum install zlib-devel-1.2.7-17.el7.ppc64le -y 
+sudo yum install ncurses-libs-5.9-13.20130511.el7.ppc64le -y
+sudo yum install ncurses-devel-5.9-13.20130511.el7.ppc64le -y
+sudo yum install automake-1.13.4-3.el7.noarch -y
+sudo yum install autoconf-2.69-11.el7.noarch -y
+sudo yum install bzip2-devel -y
+sudo yum install xz-devel -y
+
+# download and unpack
+wget http://www.cmake.org/files/v3.4/cmake-3.4.3.tar.gz
+tar -xzvf cmake-3.4.3.tar.gz
+cd cmake-3.4.3 
+# make
+./bootstrap && make && sudo make install
+cd $src
+
+# download and unpack and make samtools
+git clone https://github.com/samtools/samtools.git
+cd samtools
+git clone https://github.com/samtools/htslib.git
+autoconf
+./configure --build=ppc64le 
+sudo make install
+export SAMTOOLS_ROOT=$src$samtools
+cd $src
+
+# download and unpack
+git clone --recursive https://github.com/genome/breakdancer.git
+cd breakdancer
+
+# make
+mkdir build; cd build; cmake .. -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr/local; make; sudo make install

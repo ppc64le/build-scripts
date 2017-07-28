@@ -1,12 +1,12 @@
 #!/bin/bash
 #-----------------------------------------------------------------------------
 #
-# Package       : sparsehash
-# Version       : 2.0.3
-# Source repo   : https://github.com/sparsehash/sparsehash.git
-# Tested on     : Centos_7.3
+# package       : gsl
+# Version       : 2.1
+# Source repo   : https://ftp.gnu.org/gnu/gsl/     
+# Tested on     : rhel 7.2
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Shane Barrantes <Shane.Barrantes@ibm.com>
+# Maintainer    : Shane Barrantes <shane.barrantes@ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -16,20 +16,19 @@
 #
 # ---------------------------------------------------------------------------- 
 
-curdir=`pwd`
-
 # Update Source
 sudo yum update -y
 
 # gcc dev tools
 sudo yum groupinstall 'Development Tools' -y
 
+# install dependencies
+sudo yum install glibc-2.17-157.el7.ppc64le -y
+
 # download and unpack
-git clone https://github.com/sparsehash/sparsehash.git
-cd sparsehash
+wget https://ftp.gnu.org/gnu/gsl/gsl-2.1.tar.gz
+tar -xzvf gsl-2.1.tar.gz
+cd gsl-2.1
 
 # make
-./configure --build=ppc64le-redhat-linux
-make
-sudo make install
-cd $curdir
+./configure --build=ppc64le ; make ; sudo make install

@@ -4,7 +4,7 @@
 # package       : allpathslg
 # Version       : 52488
 # Source repo   : ftp://ftp.broadinstitute.org/pub/crd/ALLPATHS/Release-LG/latest_source_code/LATEST_VERSION.tar.gz 
-# Tested on     : Centos_7.3 
+# Tested on     : rhel_7.3 
 # Script License: Apache License, Version 2 or later 
 # Maintainer    : Shane Barrantes <Shane.Barrantes@ibm.com>
 #

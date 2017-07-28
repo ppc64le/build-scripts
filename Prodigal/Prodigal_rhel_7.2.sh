@@ -1,11 +1,12 @@
 #!/bin/bash
 #-----------------------------------------------------------------------------
-# Package       : bib
-# Version       : 2016-06-15  
-# Source repo   : https://bitbucket.org/mhowison/bib.git
-# Tested on     : Ubuntu_16.04
-# Script License: Apache License, Version 2 or later 
-# Maintainer    : Shane Barrantes <Shane.Barrantes@ibm.com>
+#
+# package       : Prodigal 
+# Version       : 2.6.3 
+# Source repo   : https://github.com/hyattpd/Prodigal     
+# Tested on     : rhel 7.2
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Shane Barrantes <shane.barrantes@ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -15,17 +16,18 @@
 #
 # ---------------------------------------------------------------------------- 
 
-## Update Source
-sudo apt-get update -y
-sudo apt-get upgrade -y
+# Update Source
+sudo yum update -y
 
-#gcc dev tools
-sudo apt install build-essential -y
-sudo apt-get install curl -y
+# gcc dev tools
+sudo yum groupinstall 'Development Tools'
+
+# install dependencies
+sudo yum install glibc-2.17-157.el7.ppc64le -y
 
 # download and unpack
-git clone https://bitbucket.org/mhowison/bib.git
+git clone https://github.com/hyattpd/Prodigal.git
+cd Prodigal
 
 # make
-cd bib
-./install.sh 
+make
