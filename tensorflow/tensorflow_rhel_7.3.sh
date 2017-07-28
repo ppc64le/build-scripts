@@ -108,7 +108,7 @@ git clone --recurse-submodules https://github.com/tensorflow/tensorflow && \
         export TF_ENABLE_XLA=1 && \
         export TF_NEED_OPENCL=0 && \
         export TF_NEED_CUDA=1 && \
-	export TF_CUDA_VERSION=8.0 && \ 
+ 	export TF_CUDA_VERSION=8.0 && \
 	export CUDA_TOOLKIT_PATH=/usr/local/cuda-8.0 && \
 	export TF_CUDA_COMPUTE_CAPABILITIES=3.5,3.7,5.2,6.0 && \
 	export CUDNN_INSTALL_PATH=/usr/local/cuda-8.0 && \
