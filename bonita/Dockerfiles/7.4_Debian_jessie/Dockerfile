@@ -11,7 +11,7 @@ ENV BONITA_SHA256 62f489362ed273f700032f5da1b4dc70a4bc74c9add2cb27e6c3be50e1e284
 # add Bonita BPM archive to the container
 # grab gosu for easy step-down from root and tini for signal handling
 RUN apt-get update && apt-get install -y  --no-install-recommends\
-    mysql-client-5.5 \
+    mysql-client \
     postgresql-client \
     zip \
     && rm -rf /var/lib/apt/lists/*\
