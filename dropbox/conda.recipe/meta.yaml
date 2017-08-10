@@ -1,0 +1,34 @@
+{% set data = load_setuptools()%}
+package:
+  name: python-dropbox
+  version: 1.4
+
+source:
+  git_url: https://github.com/enginoid/python-dropbox
+
+requirements:
+  build:
+    - python
+  run:
+    - python
+    - nose
+    - simplejson
+
+test:
+  imports:
+    - nose
+    - simplejson
+
+  commands:
+    - nosetests
+
+about:
+  home: https://github.com/enginoid/python-dropbox
+  license: UNKNOWN
+  summary: Official Dropbox API library for Python.
+  description: |
+    A Python module that provides the tools you need to authenticate with,
+    and use the Dropbox API.
+  dev_url: https://www.dropbox.com/developers-v1/core/sdks/python
+  doc_url: https://www.dropbox.com/developers-v1/core/docs
+  doc_source_url: https://www.dropbox.com/developers-v1/core/docs

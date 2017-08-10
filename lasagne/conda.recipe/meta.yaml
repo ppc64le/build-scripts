@@ -1,0 +1,31 @@
+{% set data = load_setuptools()%}
+package:
+  name: lasagne
+  version: 0.1
+
+source:
+  git_url: https://github.com/Lasagne/Lasagne
+  git_tag: v0.1
+
+requirements:
+  build:
+    - python
+    - setuptools
+  run:
+    - python
+    - setuptools
+    - pytest
+
+test:
+  commands:
+    - py.test
+
+about:
+  home: https://github.com/Lasagne/Lasagne
+  license: MIT
+  license_file: LICENSE
+  summary: Lightweight library to build and train neural networks in Theano.
+  description: |
+    Lasagne is a lightweight library to build and train neural networks in Theano.
+  dev_url: https://github.com/Lasagne/Lasagne
+  doc_url: http://lasagne.readthedocs.org/

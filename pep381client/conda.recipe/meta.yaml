@@ -1,0 +1,32 @@
+{% set data = load_setuptools()%}
+package:
+  name: pep381client
+  version: 1.5
+
+source:
+  hg_url: https://bitbucket.org/loewis/pep381client
+  hg_tag: 1.5
+
+requirements:
+  build:
+    - python
+    - setuptools
+
+  run:
+    - python
+    - nose
+
+test:
+  imports:
+    - pep381client
+
+  commands:
+    - nosetests
+
+about:
+  home: https://bitbucket.org/loewis/pep381client
+  summary: This application implements a PyPI mirror application according to PEP 381.
+  description: |
+    This application implements a PyPI mirror application according to PEP 381.
+  dev_url: https://bitbucket.org/loewis/pep381client
+  doc_url: https://bitbucket.org/loewis/pep381client

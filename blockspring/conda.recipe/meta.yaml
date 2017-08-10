@@ -1,0 +1,26 @@
+{% set data = load_setuptools()%}
+package:
+  name: blockspring
+  version: 0.1.13
+
+source:
+  git_url: https://github.com/blockspring/blockspring.py
+
+requirements:
+  build:
+    - python
+    - setuptools
+  run:
+    - python
+
+about:
+  home: https://github.com/blockspring/blockspring.py
+  license: MIT
+  license_file: LICENSE
+  license_family: MIT
+  summary: Python module to assist in creating blocks on Blockspring.
+  description: |
+    Python module to assist in creating blocks on Blockspring.
+  dev_url: https://github.com/blockspring/blockspring.py
+  doc_url: https://github.com/blockspring/blockspring.py
+  doc_source_url: https://github.com/blockspring/blockspring.py

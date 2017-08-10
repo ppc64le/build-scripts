@@ -1,0 +1,32 @@
+{% set data = load_setuptools()%}
+package:
+  name: gridmap
+  version: 0.13.0
+
+source:
+  git_url: https://github.com/pygridtools/gridmap.git
+  git_tag: "v0.13.0"
+
+requirements:
+  build:
+    - python
+    - setuptools
+    - nose
+  run:
+    - python
+    - nose
+
+test:
+  commands:
+    - nosetests
+
+about:
+  home: https://github.com/pygridtools/gridmap.git
+  license: GPL v3
+  license_file: LICENSE.txt
+  summary: Easily create jobs on the cluster directly from Python.
+  description: |
+    Easily map Python functions onto a cluster using a DRMAA-compatible
+    grid engine like Sun Grid Engine (SGE). 
+  dev_url: https://github.com/pygridtools/gridmap.git
+  doc_url: http://gridmap.readthedocs.io/en/latest/

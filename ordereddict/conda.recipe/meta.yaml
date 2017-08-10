@@ -1,0 +1,25 @@
+{% set data = load_setuptools()%}
+package:
+  name: ordereddict
+
+source:
+  git_url: https://github.com/sprintly/ordereddict.git
+
+requirements:
+  build:
+    - python
+    - setuptools
+  run:
+    - python
+
+about:
+  home: https://github.com/sprintly/ordereddict.git
+  license: MIT
+  license_file: LICENSE
+  summary: A drop-in substitute for Py2.7's new collections.OrderedDict that works in Python 2.4-2.6.
+  description: |
+    Drop-in substitute for Py2.7's new collections.OrderedDict. The recipe
+    has big-oh performance that matches regular dictionaries (amortized O(1)
+    insertion/deletion/lookup and O(n) iteration/repr/copy/equality_testing).
+  dev_url: https://github.com/sprintly/ordereddict.git
+  doc_url: http://pypi.python.org/pypi/ordereddict
