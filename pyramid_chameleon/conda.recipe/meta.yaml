@@ -13,14 +13,13 @@ requirements:
     - setuptools
   run:
     - python
-    - tox
+    - pyramid
 
 test:
   imports:
-    - pyramid_chameleon
+    - pyramid
 
   commands:
-    - tox
 
 about:
   home: https://github.com/Pylons/pyramid_chameleon

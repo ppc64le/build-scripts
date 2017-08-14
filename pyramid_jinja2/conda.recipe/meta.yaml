@@ -1,0 +1,26 @@
+{% set data = load_setuptools()%}
+package:
+  name: pyramid_jinja2
+  version: 2.7
+
+source:
+  git_url: https://github.com/Pylons/pyramid_jinja2
+  git_tag: "2.7"
+
+requirements:
+  build:
+    - python
+  run:
+    - python
+    - pyramid
+
+about:
+  home: https://github.com/Pylons/pyramid_jinja2
+  license: Unknown
+  license_file: LICENSE.txt
+  summary: Jinja2 templating system bindings for the Pyramid web framework.
+  description: |
+    pyramid_jinja2 is a set of bindings that make templates written for the
+    Jinja2 templating system work under the Pyramid web framework.
+  dev_url: https://github.com/Pylons/pyramid_jinja2
+  doc_url: https://docs.pylonsproject.org/projects/pyramid-jinja2/en/latest/
