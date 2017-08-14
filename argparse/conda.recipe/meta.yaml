@@ -1,0 +1,31 @@
+package:
+  name: argparse
+  version: "1.4.0"
+
+source:
+  git_rev: "r140"
+  git_url: https://github.com/ThomasWaldmann/argparse.git
+
+requirements:
+  build:
+    - python
+    - setuptools
+
+  run:
+    - python
+
+test:
+  imports:
+    - argparse
+
+about:
+  home: https://github.com/ThomasWaldmann/argparse.git
+  license: PSF
+  license_file: LICENSE.txt
+  summary: python argparse, pypi version.
+  description: |
+    The argparse module makes it easy to write user friendly command
+    line interfaces.
+  dev_url: https://github.com/ThomasWaldmann/argparse
+  doc_url: https://github.com/ThomasWaldmann/argparse
+  doc_source_url: https://github.com/ThomasWaldmann/argparse/tree/master/doc
