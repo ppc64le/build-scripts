@@ -1,11 +1,11 @@
 # ----------------------------------------------------------------------------
 #
-# Package       : pyramid_chameleon
-# Version       : 0.3
-# Source repo   : https://github.com/Pylons/pyramid_chameleon
-# Tested on     : ubuntu_16.04
+# Package	: pyramid_jinja2
+# Version	: 2.7
+# Source repo	: https://github.com/Pylons/pyramid_jinja2
+# Tested on	: ubuntu_16.04
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Snehlata Mohite <smohite@us.ibm.com>
+# Maintainer	: Atul Sowani <sowania@us.ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -16,20 +16,12 @@
 # ----------------------------------------------------------------------------
 #!/bin/bash
 
-## Update source
+# Install dependencies.
 sudo apt-get -y update
+sudo apt-get install -y git python-setuptools python-dev
 
-## Install dependencies
-sudo apt-get install -y build-essential software-properties-common git \
-  virtualenv pandoc python-setuptools python-dev locales locales-all
-sudo easy_install pip
-sudo pip install --upgrade setuptools virtualenv mock ipython_genutils \
-  pytest traitlets
-
-## Clone code
-git clone https://github.com/Pylons/pyramid_chameleon
-
-## Build and Install
-cd pyramid_chameleon
+# Clone and build source code.
+git clone https://github.com/Pylons/pyramid_jinja2
+cd pyramid_jinja2
 sudo python setup.py install
 sudo python setup.py test
