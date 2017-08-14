@@ -1,0 +1,27 @@
+{% set data = load_setuptools()%}
+package:
+  name: python-memcached
+  version: "1.58"
+
+source:
+  git_url: https://github.com/linsomniac/python-memcached
+  git_tag: "1.58"
+
+requirements:
+  build:
+    - python
+    - setuptools
+  run:
+    - python
+
+about:
+  home: https://github.com/linsomniac/python-memcached
+  license: PSF
+  license_file: PSF.LICENSE
+  summary: A python memcached client library.
+  description: |
+    Python interface to the memcached memory cache daemon. It is the client
+    side software which allows storing values in one or more, possibly remote,
+    memcached servers. Search google for memcached for more information.
+  dev_url: https://github.com/linsomniac/python-memcached
+  doc_url: https://github.com/linsomniac/python-memcached
