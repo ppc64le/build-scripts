@@ -1,0 +1,29 @@
+{% set data = load_setuptools()%}
+package:
+  name: vincent
+  version: 0.4.4
+
+source:
+  git_url: https://github.com/wrobstory/vincent
+  git_tag: "v0.4.4"
+
+requirements:
+  build:
+    - python
+  run:
+    - python
+    - numpy
+    - pandas
+    - flake8
+
+about:
+  home: https://github.com/wrobstory/vincent
+  license: MIT
+  license_file: LICENSE.txt
+  summary: A Python to Vega translator.
+  description: |
+    Vincent allows you to build Vega specifications in a Pythonic way, and
+    performs type-checking to help ensure that your specifications are correct.
+  dev_url: https://github.com/wrobstory/vincent
+  doc_url: https://vincent.readthedocs.org/en/latest/
+  doc_source_url: https://github.com/wrobstory/vincent/tree/master/doc
