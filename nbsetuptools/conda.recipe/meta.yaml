@@ -1,0 +1,25 @@
+{% set data = load_setuptools()%}
+package:
+  name: nbsetuptools
+  version: 0.1.5
+
+source:
+  git_url: https://github.com/Anaconda-Platform/nbsetuptools
+  git_tag: "0.1.5"
+
+requirements:
+  build:
+    - python
+  run:
+    - python
+
+about:
+  home: https://github.com/Anaconda-Platform/nbsetuptools
+  license: BSD 3-Clause
+  license_file: LICENSE
+  summary: Help you install your nbextensions.
+  description: |
+    Encapsulates the common functionality required for installing,
+    activating, and deactivating Jupyter extensions.
+  dev_url: https://github.com/Anaconda-Platform/nbsetuptools
+  doc_url: https://github.com/Anaconda-Platform/nbsetuptools
