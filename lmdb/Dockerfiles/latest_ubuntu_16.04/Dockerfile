@@ -11,6 +11,5 @@ RUN apt-get update -y && \
     apt-get autoremove -y
 
 VOLUME ["/lmdb/data"]
-ENTRYPOINT ["mdb_load -V"]
-CMD ["/bin/bash"]
+CMD ["mdb_load"]
 
