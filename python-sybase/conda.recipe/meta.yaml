@@ -1,0 +1,28 @@
+#{% set data = load_setuptools()%}
+package:
+  name: python-sybase
+  version: 0.40pre2
+
+source:
+  git_url: https://github.com/fbessho/python-sybase
+  git_tag: "0.40pre2"
+
+build:
+  script_env:
+    - SYBASE
+
+requirements:
+  build:
+    - python
+  run:
+    - python
+
+about:
+  home: https://github.com/fbessho/python-sybase
+  license: BSD 3-Clause
+  license_file: LICENCE
+  summary: python-sybase
+  description: |
+    python-sybase
+  dev_url: https://github.com/fbessho/python-sybase
+  doc_url: https://github.com/fbessho/python-sybase/doc
