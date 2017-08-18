@@ -1,0 +1,25 @@
+package:
+  name: cloog
+  version: 0.18.4
+
+source:
+  git_url: https://github.com/Distrotech/cloog.git
+  git_tag: "distrotech-cloog-0.18.4"
+
+requirements:
+  build:
+    - autoconf
+    - automake
+    - libtool
+
+about:
+  home: https://github.com/Distrotech/cloog.git
+  license: LGPL 2.1
+  license_file: LICENSE
+  summary: The Chunky Loop Generator.
+  description: |
+    CLooG finds the code or pseudo-code where each integral point of one or
+    more parametrized polyhedron or parametrized polyhedra union is reached.
+  dev_url: https://github.com/Distrotech/cloog.git
+  doc_url: https://github.com/Distrotech/cloog/tree/distrotech-cloog/doc
+  doc_source_url: https://github.com/Distrotech/cloog/tree/distrotech-cloog/doc
