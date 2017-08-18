@@ -1,0 +1,24 @@
+{% set data = load_setuptools()%}
+package:
+  name: bandersnatch
+  version: 2.0.0
+
+source:
+  hg_url: https://bitbucket.org/pypa/bandersnatch
+  hg_tag: "stable"
+
+requirements:
+  build:
+    - python
+  run:
+    - python
+
+about:
+  home: https://bitbucket.org/pypa/bandersnatch
+  license: AFL
+  license_file: LICENSE
+  summary: Mirroring tool that implements the client side of PEP 381.
+  description: |
+    Mirroring tool that implements the client side of PEP 381.
+  dev_url: https://bitbucket.org/pypa/bandersnatch
+  doc_url: https://bitbucket.org/pypa/bandersnatch
