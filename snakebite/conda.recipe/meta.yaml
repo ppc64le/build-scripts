@@ -1,0 +1,27 @@
+{% set data = load_setuptools()%}
+package:
+  name: snakebite
+  version: 2.11.0
+
+source:
+  git_url: https://github.com/spotify/snakebite
+  git_tag: "2.11.0"
+
+requirements:
+  build:
+    - python
+    - setuptools
+  run:
+    - python
+
+about:
+  home: https://github.com/spotify/snakebite
+  license: APL 2
+  license_file: LICENSE
+  summary: A pure python HDFS client
+  description: |
+    Snakebite is a python library that provides a pure python HDFS
+    client and a wrapper around Hadoops minicluster.
+  dev_url: https://github.com/spotify/snakebite
+  doc_url: https://github.com/spotify/snakebite
+  doc_source_url: https://github.com/spotify/snakebite/tree/master/doc
