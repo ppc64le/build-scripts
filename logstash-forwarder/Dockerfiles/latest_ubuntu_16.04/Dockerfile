@@ -23,4 +23,4 @@ WORKDIR /logstash-forwarder
 COPY logstash-forwarder.conf /logstash-forwarder/logstash-forwarder.conf
 
 EXPOSE 5000
-#CMD ["/opt/logstash-forwarder/bin/logstash-forwarder", "-config=/logstash-forwarder/logstash-forwarder.conf"]
+CMD ["/opt/logstash-forwarder/bin/logstash-forwarder", "-config=/logstash-forwarder/logstash-forwarder.conf"]
