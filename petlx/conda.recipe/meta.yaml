@@ -1,0 +1,27 @@
+{% set data = load_setuptools()%}
+package:
+  name: petlx
+  version: 1.0.3
+
+source:
+  git_url: https://github.com/alimanfoo/petlx.git
+  git_tag: "v1.0.3"
+
+requirements:
+  build:
+    - python
+  run:
+    - python
+
+about:
+  home: https://github.com/alimanfoo/petlx.git
+  license: 
+  license_file: 
+  summary: Optional extensions for petl based on third party libraries.
+  description: |
+     petlx is a collection of domain-specific and/or experimental extensions
+     to petl, a Python package for extracting, transforming and loading
+     tables of data.
+  dev_url: https://github.com/alimanfoo/petlx
+  doc_url: http://petlx.readthedocs.org/
+  doc_source_url: https://github.com/alimanfoo/petlx/blob/master/docs/index.rst
