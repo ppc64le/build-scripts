@@ -1,0 +1,25 @@
+{% set data = load_setuptools()%}
+package:
+  name: flask-ldap-login
+  version: 0.3.3
+
+source:
+  git_url: https://github.com/ContinuumIO/flask-ldap-login
+  git_tag: "0.3.3"
+
+requirements:
+  build:
+    - python
+    - setuptools
+  run:
+    - python
+
+about:
+  home: https://github.com/ContinuumIO/flask-ldap-login
+  license: BSD
+  license_file: LICENSE
+  summary: Flask ldap integration.
+  description: |
+    Flask ldap login is designed to work on top of an existing application.
+  dev_url: https://github.com/ContinuumIO/flask-ldap-login
+  doc_url: https://github.com/ContinuumIO/flask-ldap-login

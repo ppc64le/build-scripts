@@ -1,0 +1,19 @@
+package:
+  name: mathjax
+  version: 1.1
+
+source:
+  git_url: https://github.com/mathjax/MathJax.git
+  git_tag: "v1.1"
+
+about:
+  home: https://www.mathjax.org/
+  license: APL 2
+  license_file: LICENSE
+  summary: Beautiful math in all browsers.
+  description: |
+    MathJax is an open-source JavaScript display engine for LaTeX,
+    MathML, and AsciiMath notation that works in all modern browsers.
+  dev_url: https://github.com/mathjax/MathJax
+  doc_url: http://docs.mathjax.org/en/latest/start.html
+  doc_source_url: https://github.com/mathjax/MathJax/tree/master/docs

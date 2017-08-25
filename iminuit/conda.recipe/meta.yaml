@@ -1,0 +1,26 @@
+package:
+  name: iminuit
+  version: 1.2
+
+source:
+  git_url: https://github.com/iminuit/iminuit
+  git_tag: "v1.2"
+
+requirements:
+  build:
+    - python
+    - setuptools
+    - cython
+  run:
+    - python
+
+about:
+  home: https://github.com/iminuit/iminuit
+  license: LGPL
+  license_file: LICENSE
+  summary: MINUIT from Python - Fitting like a boss.
+  description: |
+    MINUIT from Python - Fitting like a boss.
+  dev_url: https://github.com/iminuit/iminuit
+  doc_url: http://iminuit.readthedocs.io/en/latest/
+  doc_source_url: https://github.com/iminuit/iminuit/blob/master/doc/index.rst

@@ -1,0 +1,29 @@
+{% set data = load_setuptools()%}
+package:
+  name: pystan
+  version: 2.16.0.0
+
+source:
+  git_url: https://github.com/stan-dev/pystan.git
+  git_tag: "v2.16.0.0"
+
+requirements:
+  build:
+    - python
+    - setuptools
+    - numpy
+    - cython
+  run:
+    - python
+    - numpy
+    - cython
+
+about:
+  home: https://github.com/stan-dev/pystan
+  license: GPL3
+  license_file: LICENSE
+  summary: Python interface to Stan.
+  description: |
+  dev_url: https://github.com/stan-dev/pystan
+  doc_url: https://pystan.readthedocs.io/en/latest/
+  doc_source_url: https://github.com/stan-dev/pystan/blob/readthedocs/doc/index.rst

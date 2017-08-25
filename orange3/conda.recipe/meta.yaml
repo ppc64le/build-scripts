@@ -1,0 +1,26 @@
+{% set data = load_setuptools()%}
+package:
+  name: orange3
+  version: 3.4.5
+
+source:
+  git_url: https://github.com/biolab/orange3.git
+  git_tag: "3.4.5"
+
+requirements:
+  build:
+    - python
+  run:
+    - python
+
+about:
+  home: https://orange.biolab.si/
+  license: GPL 3+
+  license_file: LICENSE
+  summary: Orange is a component-based data mining software.
+  description: |
+    Open source machine learning and data visualization for novice and
+    expert. Interactive data analysis workflows with a large toolbox.
+  dev_url: https://github.com/biolab/orange3
+  doc_url: https://orange.biolab.si/docs/
+  doc_source_url: https://github.com/biolab/orange3/tree/master/doc
