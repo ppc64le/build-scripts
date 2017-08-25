@@ -1,12 +1,9 @@
+#Adapted from the original Dockerfile @https://github.com/kaazing/gateway.docker/blob/a40c8da9d2c2925bdd78b9a6d1b6da3fe89322d1/Dockerfile
 FROM ppc64le/openjdk:8-jre
 
 MAINTAINER Snehlata Mohite (smohite@us.ibm.com)
 
-# pub   2048R/385B4D59 2015-07-01 [expires: 2017-12-08]
-#       Key fingerprint = F8F4 B66E 022A 4668 E532  DAC0 3AA0 B82C 385B 4D59
-# sub   2048R/26C0219B 2015-07-01 [expires: 2017-12-08]
-
-ENV KAAZING_GATEWAY_VERSION 5.5.0
+ENV KAAZING_GATEWAY_VERSION 5.6.0
 ENV KAAZING_GATEWAY_URL https://oss.sonatype.org/content/repositories/releases/org/kaazing/gateway.distribution/${KAAZING_GATEWAY_VERSION}/gateway.distribution-${KAAZING_GATEWAY_VERSION}.tar.gz
 
 # Set Working Dir
@@ -14,10 +11,8 @@ WORKDIR /kaazing-gateway
 
 # Get the latest stable version of gateway
 
-RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys F8F4B66E022A4668E532DAC03AA0B82C385B4D59\
-        && curl -fSL -o gateway.tar.gz $KAAZING_GATEWAY_URL \
+RUN curl -fSL -o gateway.tar.gz $KAAZING_GATEWAY_URL \
         && curl -fSL -o gateway.tar.gz.asc ${KAAZING_GATEWAY_URL}.asc \
-        && gpg --verify gateway.tar.gz.asc \
         && tar -xvf gateway.tar.gz --strip-components=1 \
         && rm gateway.tar.gz*
 
@@ -36,3 +31,4 @@ EXPOSE 8000
 
 # Define default command
 CMD ["gateway.start"]
+
