@@ -29,6 +29,5 @@ cd ~/torch; bash install-deps
 sudo ./install.sh -b
 exec bash
 . /root/.bashrc
-cat /root/.bashrc
 sudo luarocks install image
 luarocks make

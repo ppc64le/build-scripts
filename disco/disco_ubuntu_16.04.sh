@@ -14,14 +14,13 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
 #!/bin/bash
 
 # Install dependencies.
 sudo apt-get update -y
 sudo apt-get install -y build-essential python python-dev python-lxml \
     python-virtualenv python-pip git make erlang git python-dev \
-    lsk-ldap-login\ibldap2-dev libsasl2-dev libssl-dev
+    lsk-ldap-login libldap2-dev libsasl2-dev libssl-dev
 sudo pip install --upgrade pip
 
 # Clone and build source code.

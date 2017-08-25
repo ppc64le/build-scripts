@@ -1,5 +1,5 @@
 FROM ppc64le/ubuntu:16.04
-MAINTAINER Snehlata Mohite
+MAINTAINER "Snehlata Mohite <smohite@us.ibm.com>"
 
 RUN apt-get update -y\
     &&  apt-get install -y git cmake libdwarf-dev libelf-dev llvm-dev ncurses-dev re2c perl g++ make zlib1g-dev libedit-dev \
