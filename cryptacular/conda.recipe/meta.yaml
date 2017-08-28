@@ -1,0 +1,21 @@
+package:
+  name: cryptacular
+  version: 1.2.1
+
+source:
+  git_url: https://github.com/vt-middleware/cryptacular
+  git_tag: "v1.2.1"
+
+build:
+  script_env:
+    - JAVA_HOME
+
+about:
+  home: https://github.com/vt-middleware/cryptacular
+  license: APL, LGPL
+  license_file: LICENSE
+  summary: The friendly complement to the BouncyCastle crypto API for Java.
+  description: |
+    The spectacular complement to the Bouncy Castle crypto API for Java.
+  dev_url: https://github.com/vt-middleware/cryptacular
+  doc_url: https://github.com/vt-middleware/cryptacular
