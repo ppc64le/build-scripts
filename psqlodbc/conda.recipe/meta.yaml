@@ -1,0 +1,23 @@
+package:
+  name: psqlodbc
+  version: 09.02.0100
+
+source:
+  git_url: https://github.com/Distrotech/psqlodbc.git
+  git_tag: "distrotech-psqlodbc-09.02.0100"
+
+requirements:
+  build:
+    - autoconf
+    - automake
+    - libtool
+
+about:
+  home: https://github.com/Distrotech/psqlodbc.git
+  license: GNU LGPL v2
+  license_file: readme.txt
+  summary: psqlODBC is the official PostgreSQL ODBC Driver.
+  description: |
+    psqlODBC is the official PostgreSQL ODBC Driver.
+  dev_url: https://odbc.postgresql.org/
+  doc_url: https://odbc.postgresql.org/
