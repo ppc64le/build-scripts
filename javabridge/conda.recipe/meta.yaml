@@ -1,0 +1,33 @@
+package:
+  name: javabridge
+  version: 1.0.0pr3
+
+source:
+  git_url: https://github.com/LeeKamentsky/python-javabridge
+  git_tag: "python-javabridge-1.0.0pr3"
+
+requirements:
+  build:
+    - python
+    - numpy
+    - cython
+    - nose
+    - coverage
+  run:
+    - python
+    - numpy
+    - cython
+    - nose
+    - coverage
+
+about:
+  home: https://github.com/LeeKamentsky/python-javabridge
+  license: BSD
+  license_file: LICENSE
+  summary: Python wrapper for the Java Native Interface.
+  description: |
+    The javabridge Python package makes it easy to start a Java
+    virtual machine (JVM) from Python and interact with it.
+  dev_url: https://github.com/LeeKamentsky/python-javabridge
+  doc_url: http://pythonhosted.org/javabridge/
+  doc_source_url: https://github.com/LeeKamentsky/python-javabridge/tree/master/docs
