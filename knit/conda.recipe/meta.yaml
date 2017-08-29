@@ -1,0 +1,29 @@
+{% set data = load_setuptools()%}
+package:
+  name: knit
+  version: 0.2.1
+
+source:
+  git_url: https://github.com/dask/knit
+  git_tag: "0.2.1"
+
+requirements:
+  build:
+    - python
+    - setuptools
+  run:
+    - python
+    - setuptools
+    - nose
+
+about:
+  home: https://github.com/dask/knit
+  license: BSD
+  license_file: LICENSE
+  summary: Python interface to Scala for interacting with YARN.
+  description: |
+    The knit library provides a Python interface to Scala for
+    interacting with the YARN resource manager.
+  dev_url: https://github.com/dask/knit
+  doc_url: https://knit.readthedocs.io/en/latest/
+  doc_source_url: https://github.com/dask/knit/blob/master/docs/source/index.rst
