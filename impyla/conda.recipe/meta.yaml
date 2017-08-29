@@ -1,0 +1,27 @@
+{% set data = load_setuptools()%}
+package:
+  name: impyla
+  version: 0.14.0
+
+source:
+  git_url: https://github.com/cloudera/impyla
+  git_tag: 'v0.14.0'
+
+requirements:
+  build:
+    - python
+    - setuptools
+  run:
+    - python
+    - setuptools
+
+about:
+  home: https://github.com/cloudera/impyla
+  license: APL
+  license_file: LICENSE.txt
+  summary: Python DB API 2.0 client for Impala and Hive.
+  description: |
+    Python client for HiveServer2 implementations (e.g., Impala, Hive)
+    for distributed query engines
+  dev_url: https://github.com/cloudera/impyla
+  doc_url: https://github.com/cloudera/impyla
