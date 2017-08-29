@@ -5,7 +5,7 @@
 # Source repo	: https://github.com/clawpack/clawpack
 # Tested on	: ubuntu_16.04
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Atul Sowani <sowania@us.ibm.com>
+# Maintainer	: Snehlata Mohite <smohite@us.ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -16,34 +16,26 @@
 # ----------------------------------------------------------------------------
 #!/bin/bash
 
-# Install dependencies.
+# Update source
 sudo apt-get update -y
-sudo apt-get install -y git wget gfortran liblapack-pic pv liblapack-dev \
-    mpich python-mpi4py python-mpi4py-doc hdf5-helpers hdf5-tools h5utils \
-    python-pip
+sudo apt-get install -y build-essential python python-setuptools python-dev \
+  libopenmpi-dev python-lxml python-pip pkg-config libhdf5-dev \
+  libpetsc3.6.2-dev petsc-dev liblapack-pic pv liblapack-dev libsqlite3-0 \
+  libfontconfig1 libfreetype6-dev libssl1.0.0 libpng12-0 libjpeg62 libx11-6 \
+  libxext6 gcc gfortran git
+sudo pip install --upgrade pip --upgrade setuptools
+sudo pip install ez_setup numpy scipy==0.17.1 six nose h5py==2.6.0 \
+  pytest petsc petsc4py mpi4py functools32 subprocess32 pytz cycler \
+  tornado pyparsing
 
-WDIR=`pwd`
-
-# Install miniconda and other conda packages.
-wget http://repo.continuum.io/miniconda/Miniconda2-4.3.14-Linux-ppc64le.sh -O miniconda.sh
-chmod +x ./miniconda.sh
-./miniconda.sh -b -p $WDIR/miniconda
-export PATH="$WDIR/miniconda/bin:$PATH"
-hash -r
-conda config --set always_yes yes --set changeps1 no --set show_channel_urls yes
-conda update -q conda
-conda install matplotlib nose coverage numpy
-pip install petsc4py spicy python-coveralls
-python -c "import scipy; print(scipy.__version__)"
-
-# Clone and build source code.
-cd $WDIR
-git clone https://github.com/clawpack/clawpack
+# Clone source code.
+git clone https://github.com/clawpack/clawpack.git
 cd clawpack
-git submodule init
-git submodule update clawutil visclaw riemann
-python setup.py install
-cd pyclaw/src/pyclaw
-nosetests --first-pkg-wins --with-doctest --exclude=limiters \
-    --exclude=sharpclaw --exclude=fileio --exclude=example --with-coverage \
-    --cover-package=clawpack.pyclaw
+export PYTHONPATH=/usr/lib/python2.7
+export PYTHONPATH=${PWD}:$PYTHONPATH
+export CLAW=${PWD}
+
+# Build and Install.
+python setup.py git-dev
+sudo pip install -e .
+nosetests -sv --1st-pkg-wins --exclude=pyclaw
