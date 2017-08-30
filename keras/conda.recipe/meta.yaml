@@ -1,0 +1,28 @@
+{% set data = load_setuptools()%}
+package:
+  name: keeas
+  version: 2.0.8
+
+source:
+  git_url: https://github.com/fchollet/keras.git
+  git_tag: "2.0.8"
+
+requirements:
+  build:
+    - python
+    - setuptools
+  run:
+    - python
+    - setuptools
+
+about:
+  home: http://keras.io/
+  license: MIT
+  license_file: LICENSE
+  summary: Deep Learning library for Python.
+  description: |
+    Keras is a high-level neural networks API, written in Python and
+    capable of running on top of TensorFlow, CNTK, or Theano.
+  dev_url: https://github.com/fchollet/keras
+  doc_url: https://keras.io/
+  doc_source_url: https://github.com/fchollet/keras/tree/master/docs
