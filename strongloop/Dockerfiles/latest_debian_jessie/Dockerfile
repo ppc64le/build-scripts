@@ -11,4 +11,8 @@ RUN apt-get update && apt-get install -y build-essential && \
 
 WORKDIR /strongloop
 
-CMD ["/bin/bash"]
+ENV PATH $PATH:/strongloop/bin
+ENV HOST 0.0.0.0
+ENV PORT 41629
+EXPOSE 41629
+CMD ["slc","arc"]
