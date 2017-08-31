@@ -1,0 +1,58 @@
+#!/bin/bash
+#-----------------------------------------------------------------------------
+#
+# package       : trimmomatic
+# Version       : 0.36
+# Source repo   : https://github.com/bnelsj/vh_pipeline
+# Tested on     : rhel_7.3
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Shane Barrantes <shane.barrantes@ibm.com>
+#
+# Disclaimer: This script has been tested in non-root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintaine" of this script.
+#
+# ---------------------------------------------------------------------------- 
+
+#!/bin/bash
+src=`pwd`
+
+## Update Source
+sudo yum update -y
+
+# gcc dev tools
+sudo yum groupinstall 'Development Tools' -y
+
+# install python
+sudo yum install python-2.7.5-48.el7.ppc64le -y
+
+# anaconda and dependencies
+wget https://repo.continuum.io/archive/Anaconda2-4.4.0-Linux-ppc64le.sh
+bash Anaconda2-4.4.0-Linux-ppc64le.sh -b
+export PATH=$PATH:$HOME/anaconda2/bin:$HOME/anaconda2/bin
+conda install libgfortran -y
+
+cd $src
+wget https://github.com/advancetoolchain/advance-toolchain/archive/at10.0-5.tar.gz
+tar -xzvf at10.0-5.tar.gz
+cd advance-toolchain-at10.0-5
+sudo bash -c 'echo "# Beginning of configuration file
+[at10.0]
+name=Advance Toolchain Unicamp FTP
+baseurl=ftp://ftp.unicamp.br/pub/linuxpatch/toolchain/at/redhat/RHEL7
+failovermethod=priority
+enabled=1
+gpgcheck=1
+gpgkey=ftp://ftp.unicamp.br/pub/linuxpatch/toolchain/at/redhat/RHEL7/gpg-pubkey-6976a827-5164221b
+# End of configuration file" >> /etc/yum.repos.d/at10.0.repo'
+sudo yum install advance-toolchain-at10.0-runtime \
+            advance-toolchain-at10.0-devel \
+            advance-toolchain-at10.0-perf \
+            advance-toolchain-at10.0-mcore-libs -y
+cd $src
+
+# install Biobuilds
+conda update -c conda -y conda
+conda create -c biobuilds -p . biobuilds=2017.05 biobuilds-opt -y

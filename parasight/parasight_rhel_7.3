@@ -1,0 +1,31 @@
+#!/bin/bash
+#-----------------------------------------------------------------------------
+#
+# package       : Parasight 
+# Version       : 7.6
+# Source repo   : http://eichlerlab.gs.washington.edu/jeff/parasight/data/parasight_v7.6.zip
+# Tested on     : rhel_7.3
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Shane Barrantes <shane.barrantes@ibm.com>
+#
+# Disclaimer: This script has been tested in non-root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintaine" of this script.
+#
+# ---------------------------------------------------------------------------- 
+
+## Update Source
+sudo yum update -y
+
+#gcc dev tools
+sudo yum groupinstall 'Development Tools' -y
+
+## install deppendencies
+sudo yum install perl -y
+sudo yum install zlib-1.2.7-17.el7.ppc64le -y
+wget http://eichlerlab.gs.washington.edu/jeff/parasight/data/parasight_v7.6.zip
+unzip parasight_v7.6.zip 
+cd parasight_v7.6
+sudo mv parasight.pl /usr/bin/

@@ -1,0 +1,36 @@
+#!/bin/bash
+#-----------------------------------------------------------------------------
+#
+# package       : PyML
+# Version       : 0.7.14
+# Source repo   : https://downloads.sourceforge.net/project/pyml/PyML-0.7.14.tar.gz 
+# Tested on     : rhel_7.3
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Shane Barrantes <shane.barrantes@ibm.com>
+#
+# Disclaimer: This script has been tested in non-root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintaine" of this script.
+#
+# ---------------------------------------------------------------------------- 
+
+## Update Source
+sudo yum update -y
+
+## gcc dev tools and python
+sudo yum groupinstall 'Development Tools' -y
+sudo yum install python -y
+
+## anaconda and dependencies
+wget https://repo.continuum.io/archive/Anaconda2-4.4.0-Linux-ppc64le.sh
+bash Anaconda2-4.4.0-Linux-ppc64le.sh -b
+export PATH=$PATH:$HOME/anaconda2/bin:$HOME/anaconda2/bin
+conda install libgfortran -y
+conda install numpy -y
+
+## PyML
+wget https://downloads.sourceforge.net/project/pyml/PyML-0.7.14.tar.gz
+python setup.py build
+python setup.py install

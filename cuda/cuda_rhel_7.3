@@ -1,0 +1,25 @@
+#!/bin/bash
+#-----------------------------------------------------------------------------
+#
+# package       : cuda 
+# Version       : 8.0
+# Source repo   : https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda-repo-rhel7-8-0-local-ga2v2-8.0.61-1.ppc64le-rpm
+# Tested on     : rhel_7.3
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Shane Barrantes <shane.barrantes@ibm.com>
+#
+# Disclaimer: This script has been tested in non-root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintaine" of this script.
+#
+# ---------------------------------------------------------------------------- 
+
+## Update Source
+sudo yum update -y
+
+wget https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda-repo-rhel7-8-0-local-ga2v2-8.0.61-1.ppc64le-rpm
+sudo rpm -i cuda-repo-rhel7-8-0-local-ga2v2-8.0.61-1.ppc64le-rpm
+sudo yum clean all
+sudo yum install cuda -y

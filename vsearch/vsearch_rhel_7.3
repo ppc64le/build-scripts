@@ -1,0 +1,34 @@
+#!/bin/bash
+#-----------------------------------------------------------------------------
+#
+# package       : vsearch
+# Version       : 2.4.0
+# Source repo   : github.com/torognes/vsearch/ 
+# Tested on     : rhel_7.3
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Shane Barrantes <shane.barrantes@ibm.com>
+#
+# Disclaimer: This script has been tested in non-root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintaine" of this script.
+#
+# ---------------------------------------------------------------------------- 
+
+## Update Source
+sudo yum update -y
+
+## gcc dev tools
+sudo yum group install 'Development Tools' -y
+sudo yum install perl -y
+sudo yum install ghostscript-9.07-20.el7.ppc64le -y
+
+## vsearch
+wget https://github.com/torognes/vsearch/archive/v2.4.0.tar.gz
+tar -xzvf v2.4.0.tar.gz
+cd vsearch-2.4.0
+./autogen.sh
+./configure --build=ppc64le
+make
+sudo make install

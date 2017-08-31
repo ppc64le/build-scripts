@@ -1,0 +1,44 @@
+#!/bin/bash
+#-----------------------------------------------------------------------------
+#
+# package       : opencv
+# Version       : 3.3.0
+# Source repo   : https://github.com/opencv/opencv/archive/3.3.0.zip
+# Tested on     : rhel_7.3
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Shane Barrantes <shane.barrantes@ibm.com>
+#
+# Disclaimer: This script has been tested in non-root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintaine" of this script.
+#
+# ---------------------------------------------------------------------------- 
+
+# Update Source
+sudo yum update -y
+
+# gcc dev tools
+sudo yum groupinstall 'Development Tools' -y
+
+# install python
+sudo yum install python-2.7.5-48.el7.ppc64le -y
+sudo yum install zlib -y
+sudo yum install cmake -y
+
+# anaconda and dependencies
+wget https://repo.continuum.io/archive/Anaconda2-4.4.0-Linux-ppc64le.sh
+bash Anaconda2-4.4.0-Linux-ppc64le.sh -b
+export PATH=$PATH:$HOME/anaconda2/bin:$HOME/anaconda2/bin
+conda install libgfortran -y
+
+# opencv 
+wget https://github.com/opencv/opencv/archive/3.3.0.zip
+unzip 3.3.0.zip 
+cd opencv-3.3.0/
+mkdir build
+cd build
+cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local ..
+make
+sudo make install
