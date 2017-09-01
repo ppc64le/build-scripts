@@ -3,7 +3,7 @@
 # Smallest base image
 FROM ppc64le/ubuntu:16.04
 
-MAINTAINER Kyle Manna <kyle@kylemanna.com>
+MAINTAINER Priya Seth <sethp@us.ibm.com>
 # Needed by scripts
 ENV OPENVPN /etc/openvpn
 ENV EASYRSA /easy-rsa-3.0.1/easyrsa3/
