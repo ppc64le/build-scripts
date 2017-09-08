@@ -1,2 +1,0 @@
-cd phantomjs
-./build.py -c --release --git-clean-qtbase --git-clean-qtwebkit --qmake-args "QMAKE_CFLAGS=-g QMAKE_CXXFLAGS=-g"

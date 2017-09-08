@@ -1,7 +1,0 @@
-src/qt/qtwebkit/Source/JavaScriptCore/heap/CopiedBlock.h
-src/qt/qtwebkit/Source/JavaScriptCore/interpreter/JSStack.cpp
-src/qt/qtwebkit/Source/JavaScriptCore/interpreter/JSStack.h
-src/qt/qtwebkit/Source/JavaScriptCore/jit/ExecutableAllocator.h
-src/qt/qtwebkit/Source/WTF/wtf/Atomics.h
-src/qt/qtwebkit/Source/WTF/wtf/OSAllocatorPosix.cpp
-src/qt/qtwebkit/Source/WTF/wtf/PageReservation.h
