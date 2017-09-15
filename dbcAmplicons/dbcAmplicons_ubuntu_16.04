@@ -4,7 +4,7 @@
 # package       : dbcAmplicons
 # Version       : 0.8.4
 # Source repo   : https://github.com/msettles/dbcAmplicons 
-# Tested on     : Rhel_7.3 
+# Tested on     : Ubuntu_16.04 
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Shane Barrantes <shane.barrantes@ibm.com>
 #
@@ -16,15 +16,13 @@
 #
 # ---------------------------------------------------------------------------- 
 
-## Update Source
-sudo yum update -y
+# update
+sudo apt-get update -y
 
-#gcc dev tools
-sudo yum groupinstall 'Development Tools' -y
-sudo yum install python -y
-sudo yum install python-devel -y
+# dependencies
+sudo apt-get install -y python python-dev libblas-dev liblapack-dev gfortran libxml2-dev libxslt-dev
 
-# download and unpack
+# install 
 git clone https://github.com/msettles/dbcAmplicons
 cd dbcAmplicons
 sudo python setup.py install

@@ -1,10 +1,10 @@
 #!/bin/bash
 #-----------------------------------------------------------------------------
 #
-# package       : dbcAmplicons
-# Version       : 0.8.4
-# Source repo   : https://github.com/msettles/dbcAmplicons 
-# Tested on     : Rhel_7.3 
+# package       : cutadapt
+# Version       : 1.8.1  
+# Source repo   : https://pypi.python.org/pypi/cutadapt/1.8.1  
+# Tested on     : ubuntu_16.04 
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Shane Barrantes <shane.barrantes@ibm.com>
 #
@@ -17,14 +17,13 @@
 # ---------------------------------------------------------------------------- 
 
 ## Update Source
-sudo yum update -y
+sudo apt-get update -y
 
 #gcc dev tools
-sudo yum groupinstall 'Development Tools' -y
-sudo yum install python -y
-sudo yum install python-devel -y
+sudo apt-get install -y build-essential python-dev
+wget https://pypi.python.org/packages/62/bc/77da8a0f0c162831fdccb89306e65cbe14bab7eb72c150afb8e197fa262f/cutadapt-1.8.1.tar.gz
+tar -xzvf cutadapt-1.8.1.tar.gz
+cd cutadapt-1.8.1
 
-# download and unpack
-git clone https://github.com/msettles/dbcAmplicons
-cd dbcAmplicons
-sudo python setup.py install
+# install
+sudo python setup.py install 

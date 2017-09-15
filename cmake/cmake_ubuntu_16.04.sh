@@ -1,10 +1,10 @@
 #!/bin/bash
 #-----------------------------------------------------------------------------
 #
-# package       : dbcAmplicons
-# Version       : 0.8.4
-# Source repo   : https://github.com/msettles/dbcAmplicons 
-# Tested on     : Rhel_7.3 
+# package       : cmake 
+# Version       : 3.4.3  
+# Source repo   : http://www.cmake.org/files/v3.4/cmake-3.4.3.tar.gz  
+# Tested on     : ubuntu_16.04
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Shane Barrantes <shane.barrantes@ibm.com>
 #
@@ -16,15 +16,6 @@
 #
 # ---------------------------------------------------------------------------- 
 
-## Update Source
-sudo yum update -y
-
-#gcc dev tools
-sudo yum groupinstall 'Development Tools' -y
-sudo yum install python -y
-sudo yum install python-devel -y
-
-# download and unpack
-git clone https://github.com/msettles/dbcAmplicons
-cd dbcAmplicons
-sudo python setup.py install
+# Update Source
+sudo apt-get update -y
+sudo apt-get install -y cmake 

@@ -1,10 +1,10 @@
 #!/bin/bash
 #-----------------------------------------------------------------------------
 #
-# package       : dbcAmplicons
-# Version       : 0.8.4
-# Source repo   : https://github.com/msettles/dbcAmplicons 
-# Tested on     : Rhel_7.3 
+# package       : emboss 
+# Version       : 0.36
+# Source repo   : ftp://emboss.open-bio.org/pub/EMBOSS/EMBOSS-6.6.0.tar.gz
+# Tested on     : ubuntu_16.04
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Shane Barrantes <shane.barrantes@ibm.com>
 #
@@ -16,15 +16,19 @@
 #
 # ---------------------------------------------------------------------------- 
 
-## Update Source
-sudo yum update -y
+# Update Source
+sudo apt-get update -y
 
-#gcc dev tools
-sudo yum groupinstall 'Development Tools' -y
-sudo yum install python -y
-sudo yum install python-devel -y
+# gcc dev tools
+sudo apt-get install -y build-essential
+sudo apt-get install -y zlib1g-dev
 
 # download and unpack
-git clone https://github.com/msettles/dbcAmplicons
-cd dbcAmplicons
-sudo python setup.py install
+wget ftp://emboss.open-bio.org/pub/EMBOSS/EMBOSS-6.6.0.tar.gz
+tar -xzvf EMBOSS-6.6.0.tar.gz
+cd EMBOSS-6.6.0/
+
+# make
+./configure --build=ppc64le --without-x
+make
+sudo make install

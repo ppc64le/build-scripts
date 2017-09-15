@@ -1,10 +1,10 @@
 #!/bin/bash
 #-----------------------------------------------------------------------------
 #
-# package       : dbcAmplicons
-# Version       : 0.8.4
-# Source repo   : https://github.com/msettles/dbcAmplicons 
-# Tested on     : Rhel_7.3 
+# package       : discovardenovo 
+# Version       : 1.0.0.0 
+# Source repo   : http://drfast.sourceforge.net/    
+# Tested on     : ubuntu_16.04
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Shane Barrantes <shane.barrantes@ibm.com>
 #
@@ -16,15 +16,17 @@
 #
 # ---------------------------------------------------------------------------- 
 
-## Update Source
-sudo yum update -y
+# Update Source
+sudo apt-get update -y
 
-#gcc dev tools
-sudo yum groupinstall 'Development Tools' -y
-sudo yum install python -y
-sudo yum install python-devel -y
+# gcc dev tools
+sudo apt-get install -y build-essential
+sudo apt-get install -y zlib1g-dev
 
 # download and unpack
-git clone https://github.com/msettles/dbcAmplicons
-cd dbcAmplicons
-sudo python setup.py install
+wget https://downloads.sourceforge.net/project/drfast/drFAST.1.0.0.0/drFAST-1.0.0.0.zip
+unzip drFAST-1.0.0.0.zip
+cd drFAST-1.0.0.0
+
+# make
+make

@@ -1,10 +1,10 @@
 #!/bin/bash
 #-----------------------------------------------------------------------------
 #
-# package       : dbcAmplicons
-# Version       : 0.8.4
-# Source repo   : https://github.com/msettles/dbcAmplicons 
-# Tested on     : Rhel_7.3 
+# package       : clearcut 
+# Version       : 1.0.9
+# Source repo   : https://github.com/ibest/clearcut
+# Tested on     : ubuntu_16.04 
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Shane Barrantes <shane.barrantes@ibm.com>
 #
@@ -15,16 +15,19 @@
 #             contact "Maintaine" of this script.
 #
 # ---------------------------------------------------------------------------- 
+# The clearcut installation provided in this script has not been fully optimized.
+# To see how to optimize read the clearcut readme file
 
 ## Update Source
-sudo yum update -y
+sudo apt-get update -y
 
 #gcc dev tools
-sudo yum groupinstall 'Development Tools' -y
-sudo yum install python -y
-sudo yum install python-devel -y
+sudo apt-get install -y build-essential
+sudo apt-get install -y zlib1g-dev
 
 # download and unpack
-git clone https://github.com/msettles/dbcAmplicons
-cd dbcAmplicons
-sudo python setup.py install
+git clone https://github.com/ibest/clearcut.git
+cd clearcut
+
+# make
+make

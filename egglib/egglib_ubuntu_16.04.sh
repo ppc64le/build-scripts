@@ -1,10 +1,10 @@
 #!/bin/bash
 #-----------------------------------------------------------------------------
 #
-# package       : dbcAmplicons
-# Version       : 0.8.4
-# Source repo   : https://github.com/msettles/dbcAmplicons 
-# Tested on     : Rhel_7.3 
+# package       : egglib
+# Version       : 2.1.11 
+# Source repo   : Na
+# Tested on     : ubuntu_16.04
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Shane Barrantes <shane.barrantes@ibm.com>
 #
@@ -16,15 +16,18 @@
 #
 # ---------------------------------------------------------------------------- 
 
-## Update Source
-sudo yum update -y
+# Update Source
+sudo apt-get update -y
 
-#gcc dev tools
-sudo yum groupinstall 'Development Tools' -y
-sudo yum install python -y
-sudo yum install python-devel -y
+# gcc dev tools
+sudo apt-get install -y build-essential
 
 # download and unpack
-git clone https://github.com/msettles/dbcAmplicons
-cd dbcAmplicons
-sudo python setup.py install
+wget https://sourceforge.net/projects/egglib/files/2.1.11/egglib-cpp-2.1.11.tar.gz
+tar -xzvf egglib-cpp-2.1.11.tar.gz
+cd egglib-cpp-2.1.11
+
+# make
+sh configure
+make
+sudo make install
