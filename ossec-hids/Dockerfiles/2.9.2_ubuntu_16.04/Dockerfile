@@ -3,6 +3,8 @@ FROM ppc64le/ubuntu:16.04
 
 MAINTAINER "Priya Seth <sethp@us.ibm.com>"
 
+ENV OSSEC_HIDS_VERSION v2.9.2
+
 ADD preloaded-vars.conf /
 RUN apt-get update && \
     apt-get install -f && apt-get install -y git \
@@ -23,7 +25,7 @@ RUN apt-get update && \
  	./configure --build=ppc64le-unknown-linux-gnu && \
 	make all -j && \
 	make install && \
-    git clone https://github.com/ossec/ossec-hids && \
+    git clone https://github.com/ossec/ossec-hids --branch=${OSSEC_HIDS_VERSION} && \
     cp /preloaded-vars.conf ./ossec-hids/etc/ && \
     cd ossec-hids && sh install.sh && \
     echo "127.0.0.1,DEFAULT_LOCAL_AGENT" > /srv/ossec/default_local_agent && \
