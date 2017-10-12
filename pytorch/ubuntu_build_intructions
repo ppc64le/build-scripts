@@ -1,0 +1,114 @@
+The following instructions are for building PyTorch on ppc64le. It assumes
+that the user is installing on a newly installed Ubuntu 16.04 system. 
+PyTorch ppc64le has dependencies on PowerAI packages and libraries so 
+the first part of the instructions reference installation of PowerAI
+packages.
+
+Optional:
+Install VNCserver and use a web browser to download Nvidia cuDNN.
+# sudo apt-get update
+# sudo apt-get install x11vnc xfce4 xvfb
+# x11vnc -create -forever -bg -env FD_TAG=my_xfce_1 -env FD_SESS=xfce -rfbport 5901
+
+
+Install PowerAI packages:
+The installation instructions for PowerAI packages are at this link. If you already
+have PowerAI installed, skip to the BUILD and INSTALL PyTorch section.
+https://public.dhe.ibm.com/software/server/POWER/Linux/mldl/ubuntu/README.html
+
+At the time of this writting, PowerAI version 4 is available. It has dependencies
+on CUDA 8.0 and cuDNN 6.
+
+Download CUDA 8.0 for ppc64le
+https://developer.nvidia.com/cuda-80-ga2-download-archive
+
+Installation Instructions for CUDA 8
+
+# sudo dpkg -i cuda-repo-ubuntu1604-8-0-local-ga2v2_8.0.61-1_ppc64el.deb
+# sudo apt-key add /var/cuda-repo-<version>/7fa2af80.pub
+# sudo apt-get update
+# sudo apt-get install cuda
+
+We need to replace the libcuda1-384 with libcuda1-384. The package libcuda1-384 
+is in the CUDA 9.0 package. 
+Download the CUDA 9.0 version for ppc64le. 
+https://developer.nvidia.com/cuda-downloads
+
+Verify you have CUDA drivers 361. These packages need to be removed before installing
+CUDA drivers 384
+# dpkg -l | grep 361
+# sudo apt-get remove cuda-drivers
+# sudo apt-get remove libcuda1-361 nvidia-361 nvidia-361-dev --purge
+
+Extract debian packages from CUDA 9.0 repo package
+# mkdir cuda9
+# dpkg -x cuda-repo-ubuntu1604-9-0-local_9.0.176-1_ppc64el-deb  cuda9
+# cd cuda9/var/cuda-repo-9-0-local
+# sudo dpkg -i *384*.deb
+  Don't worry if you encounter an error at the end like:
+Errors were encountered while processing:
+ nvidia-libopencl1-384_384.81-0ubuntu1_ppc64el.deb
+
+Download both Power version of Nvdia runtime and development cuDNN 6 for CUDA 8.  
+You will need a valid login id to download from nvidia.
+
+# dpkg -i libcudnn6_6.0.21-1+cuda8.0_ppc64el.deb
+# dpkg -i libcudnn6-dev_6.0.21-1+cuda8.0_ppc64el.deb
+
+Download https://public.dhe.ibm.com/software/server/POWER/Linux/mldl/ubuntu/mldl-repo-local_4.0.0_ppc64el.deb
+wget https://public.dhe.ibm.com/software/server/POWER/Linux/mldl/ubuntu/mldl-repo-local_4.0.0_ppc64el.deb
+# sudo dpkg -i mldl-repo-*.deb
+# sudo apt-get update
+# sudo apt-get install power-mldl
+
+
+BUILD and INSTALL PyTorch
+
+Install the pytorch dependencies:
+# sudo apt-get update && sudo apt-get install -y --no-install-recommends \
+         build-essential \
+         cmake \
+         git \
+         curl \
+         vim \
+         ca-certificates \
+         libjpeg-dev \
+         libpng-dev 
+
+# sudo pip install numpy pyyaml scipy ipython
+
+Optional magma-cuda
+Download magma-cuda if you need to use some PyTorch APIs that require magma-cuda.
+# sudo apt-get install gfortran
+# wget wget http://icl.cs.utk.edu/projectsfiles/magma/downloads/magma-2.2.0.tar.gz
+# gunzip -c magma-2.2.0.tar.gz | tar -xvf -
+# cd magma-2.2.0
+# cp make.inc-examples/make.inc.openblas make.inc
+
+edit make.inc and change the following:
+NVCC      = /usr/local/cuda/bin/nvcc
+OPENBLASDIR ?= /opt/DL/openblas
+CUDADIR ?= /usr/local/cuda
+
+# make install
+
+Build and install pytorch.  Note that we checkout from master with a specific commit.
+This was the last known commit that had 99% of the test passing on ppc64le.
+
+# git clone https://github.com/pytorch/pytorch.git
+# cd pytorch
+# git reset --hard 4c61cf2a1ff87f3a401c89aaaa6a94e30ec7797d
+# git submodule update --init
+# sudo python setup.py install
+
+to start using pytorch be sure to export 
+export LD_LIBRARY_PATH=/usr/local/magma/lib:/opt/DL/openblas/lib:$LD_LIBRARY_PATH
+
+
+Known issue:
+1. Certain tests in test_autograd.py will fail with an abort because exceptions are not 
+being passed from the lower stack to python. This is a true error and needs to be corrected
+in the python user code.  The test that aborts are inplace backward operations which is a 
+true negative test and not a bug in ppc64le.
+
+
