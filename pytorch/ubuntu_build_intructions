@@ -29,7 +29,7 @@ Installation Instructions for CUDA 8
 # sudo apt-get update
 # sudo apt-get install cuda
 
-We need to replace the libcuda1-384 with libcuda1-384. The package libcuda1-384 
+We need to replace the libcuda1-361 with libcuda1-384. The package libcuda1-384 
 is in the CUDA 9.0 package. 
 Download the CUDA 9.0 version for ppc64le. 
 https://developer.nvidia.com/cuda-downloads
