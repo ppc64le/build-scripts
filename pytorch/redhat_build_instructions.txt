@@ -1,0 +1,84 @@
+The following instructions are for building PyTorch on ppc64le. It assumes
+that the user is installing on a newly installed Red Hat 7.4 system. 
+PyTorch ppc64le has dependencies on Nvidia CUDA and cuDNN packages and libraries so 
+the first part of the instructions reference installation of PowerAI
+packages.
+
+
+Optional
+Install VNC server so you can run a browser and login to nvidia to download 
+cuDNN.
+# yum install xfce4*
+# yum install x11vnc.ppc64le
+# x11vnc -create -forever -bg -env FD_TAG=my_xfce_1 -env FD_SESS=xfce -rfbport 5901
+
+DKMS is required before installing CUDA drivers and libraries.
+Install dkms
+# sudo yum install dkms
+If this fails you may need to install EPEL repository. See the following link
+https://access.redhat.com/discussions/3140721
+
+# sudo rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+# sudo yum update
+# sudo yum install dkms
+
+Download NVIDIA CUDA driver
+# wget https://developer.nvidia.com/compute/cuda/9.0/Prod/local_installers/cuda-repo-rhel7-9-0-local-9.0.176-1.ppc64le-rpm
+
+# sudo rpm -i cuda-repo-rhel7-9-0-local-9.0.176-1.ppc64le-rpm
+# sudo yum clean all
+# sudo yum install cuda
+
+Install cuDNN for Power8. This requires a developer login to nvidia.com
+https://developer.nvidia.com/rdp/cudnn-download
+cuDNN v7.0 Library for Linux (Power8)
+# cd /usr/local
+# gunzip -c ~/Downloads/cudnn-9.0-linux-ppc64le-v7.tgz  |tar -xvf -
+
+
+Optional magma-cuda
+Download magma-cuda if you need to use some PyTorch APIs that require magma-cuda.
+# yum install -y gcc-gfortran.ppc64le
+# wget wget http://icl.cs.utk.edu/projectsfiles/magma/downloads/magma-2.2.0.tar.gz
+# gunzip -c magma-2.2.0.tar.gz | tar -xvf -
+# rm magma-2.2.0.tar.gz
+# cd magma-2.2.0
+# cp make.inc-examples/make.inc.openblas make.inc
+
+# yum install -y openblas.ppc64le
+# yum install -y openblas-devel.ppc64le
+
+edit make.inc and make the following changes:
+GPU_TARGET ?= Kepler Pascal
+NVCC      = /usr/local/cuda/bin/nvcc
+OPENBLASDIR ?= /usr
+CUDADIR ?= /usr/local/cuda
+
+LIBDIR    = -L$(CUDADIR)/lib64 \
+            -L$(OPENBLASDIR)/lib64
+
+# make install
+
+Install other pytorch pre-requisites.
+# yum install cmake.ppc64le -y
+
+Install anaconda. Anaconda is recommended by the pytorch community to run pytorch.
+# curl -o ~/miniconda.sh -O  https://repo.continuum.io/miniconda/Miniconda3-4.2.12-Linux-ppc64le.sh 
+# chmod +x ~/miniconda.sh
+# ~/miniconda.sh -b -p /opt/conda
+# rm ~/miniconda.sh
+# /opt/conda/bin/conda install conda-build
+# /opt/conda/bin/conda  numpy pyyaml scipy ipython
+
+
+Build and install pytorch.  Note that we checkout from master with a specific commit.
+This was the last known commit that had 99% of the test passing on ppc64le.
+
+# git clone https://github.com/pytorch/pytorch.git
+# cd pytorch
+# git reset --hard 4c61cf2a1ff87f3a401c89aaaa6a94e30ec7797d
+# git submodule update --init
+# sudo /opt/conda/bin/python setup.py install
+
+to start using pytorch be sure to export 
+export LD_LIBRARY_PATH=/usr/local/magma/lib:/usr/lib64:$LD_LIBRARY_PATH
