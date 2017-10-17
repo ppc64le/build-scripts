@@ -4,6 +4,18 @@ PyTorch ppc64le has dependencies on Nvidia CUDA and cuDNN packages and libraries
 the first part of the instructions reference installation of PowerAI
 packages.
 
+You may need to add EPEL to your repo list
+Enable EPEL repo  (see: https://fedoraproject.org/wiki/EPEL#How_can_I_use_these_extra_packages)
+
+$ wget -O https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+$ sudo rpm -ihv epel-release-latest-7.noarch.rpm
+$ sudo yum makecache
+
+Enable 'optional' and 'extras' repo channels
+
+$ sudo yum-config-manager --enable rhel-7-for-power-le-optional-rpms
+$ sudo yum-config-manager --enable rhel-7-for-power-le-extras-rpms
+$ sudo yum makecache
 
 Optional
 Install VNC server so you can run a browser and login to nvidia to download 
