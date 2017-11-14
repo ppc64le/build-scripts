@@ -80,7 +80,7 @@ Install anaconda. Anaconda is recommended by the pytorch community to run pytorc
 # ~/miniconda.sh -b -p /opt/conda
 # rm ~/miniconda.sh
 # /opt/conda/bin/conda install conda-build
-# /opt/conda/bin/conda  numpy pyyaml scipy ipython
+# /opt/conda/bin/conda install numpy pyyaml scipy ipython
 
 
 Build and install pytorch.  Note that we checkout from master with a specific commit.
