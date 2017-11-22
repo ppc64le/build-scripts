@@ -8,6 +8,7 @@ ENV JAVA_HOME /usr/lib/jvm/java-1.8.0-openjdk-ppc64el
 ENV PATH $PATH:$JAVA_HOME/bin
 ENV MAVEN_HOME /apache-maven-3.3.9
 ENV PATH $PATH:$MAVEN_HOME/bin
+ENV ALFRESCO_VERSION 5.1.a
 
 # Install dependencies  
 #download and setup maven environment
@@ -16,7 +17,7 @@ RUN apt-get update && apt-get install -y wget tomcat7 subversion\
     && tar -xvzf apache-maven-3.3.9-bin.tar.gz\
     && ln -s /apache-maven-3.3.9/bin/mvn /usr/bin/mvn\
 #source code checkout and building the package
-    && svn checkout https://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD alfresco-server && cd alfresco-server/root && mvn clean install\
+    && svn checkout https://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/COMMUNITYTAGS/${ALFRESCO_VERSION} alfresco-server && cd alfresco-server/root && mvn clean install\
 #source code checkout and building the package
     && cd / && svn checkout https://svn.alfresco.com/repos/alfresco-open-mirror/web-apps/Share/trunk alfresco-webclient\
     && cd alfresco-webclient\

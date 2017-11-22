@@ -1,0 +1,178 @@
+
+
+<html>
+  <head>
+    <title>cAdvisor - /</title>
+    
+    <link rel="stylesheet" href="../static/bootstrap-3.1.1.min.css">
+
+    
+    <link rel="stylesheet" href="../static/bootstrap-theme-3.1.1.min.css">
+
+    <link rel="stylesheet" href="../static/containers.css">
+
+    
+    <script src="../static/jquery-1.10.2.min.js"></script>
+    <script src="../static/bootstrap-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../static/google-jsapi.js"></script>
+
+    <script type="text/javascript" src="../static/containers.js"></script>
+    <script type="text/javascript" src="../static/gcharts.js"></script>
+  </head>
+  <body>
+    <div class="container theme-showcase" >
+      <a href="../" class="col-sm-12" id="logo">
+      </a>
+      <div class="col-sm-12">
+	<div class="page-header">
+	  <h1>/</h1>
+	</div>
+	<ol class="breadcrumb">
+	  
+	  <li><a href="../containers">root</a></li>
+	  
+	</ol>
+      </div>
+      
+      <div class="col-sm-12">
+        <h4><a href="../docker">Docker Containers</a></h4>
+      </div>
+      
+      
+     
+      
+      
+      <div class="col-sm-12">
+	<div class="page-header">
+	  <h3>Isolation</h3>
+	</div>
+	
+	<ul class="list-group">
+          <li class="list-group-item active isolation-title panel-title">CPU</li>
+          
+          <li class="list-group-item"><span class="stat-label">Shares</span> 1024 <span class="unit-label">shares</span></li>
+          
+          
+          
+          <li class="list-group-item"><span class="stat-label">Allowed Cores</span> <span class="active-cpu">0</span>&nbsp;<span class="active-cpu">1</span>&nbsp;<span class="active-cpu">2</span>&nbsp;<span class="active-cpu">3</span>&nbsp;<span class="active-cpu">4</span>&nbsp;<span class="active-cpu">5</span>&nbsp;<span class="active-cpu">6</span>&nbsp;<span class="active-cpu">7</span>&nbsp;<span class="active-cpu">8</span>&nbsp;<span class="active-cpu">9</span>&nbsp;<span class="active-cpu">10</span>&nbsp;<span class="active-cpu">11</span>&nbsp;<span class="active-cpu">12</span>&nbsp;<span class="active-cpu">13</span>&nbsp;<span class="active-cpu">14</span>&nbsp;<span class="active-cpu">15</span></li>
+          
+	</ul>
+	
+	
+	<ul class="list-group">
+          <li class="list-group-item active isolation-title panel-title">Memory</li>
+          
+          <li class="list-group-item"><span class="stat-label">Reservation</span> unlimited <span class="unit-label"></span></li>
+          
+          
+          <li class="list-group-item"><span class="stat-label">Limit</span> 127.85 <span class="unit-label">GB</span></li>
+          
+          
+          <li class="list-group-item"><span class="stat-label">Swap Limit</span> 10.38 <span class="unit-label">GB</span></li>
+          
+	</ul>
+	
+      </div>
+      <div class="col-sm-12">
+	<div class="page-header">
+	  <h3>Usage</h3>
+	</div>
+	<div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">Overview</h3>
+          </div>
+          <div id="usage-gauge" class="panel-body"></div>
+	</div>
+	<div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">Processes</h3>
+          </div>
+          <div id="processes-top" class="panel-body"></div>
+	</div>
+	
+	<div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">CPU</h3>
+          </div>
+          <div class="panel-body">
+            <h4>Total Usage</h4>
+	    <div id="cpu-total-usage-chart"></div>
+	    
+            <h4>Usage per Core</h4>
+	    <div id="cpu-per-core-usage-chart"></div>
+            <h4>Usage Breakdown</h4>
+	    <div id="cpu-usage-breakdown-chart"></div>
+          </div>
+	</div>
+	
+	
+	<div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">Memory</h3>
+          </div>
+          <div class="panel-body">
+            <h4>Total Usage</h4>
+	    <div id="memory-usage-chart"></div>
+            <br/>
+            <div class="row col-sm-12">
+              <h4>Usage Breakdown</h4>
+              <div class="col-sm-9">
+		<div class="progress">
+                  <div class="progress-bar progress-bar-danger" id="progress-hot-memory">
+                    <span class="sr-only">Hot Memory</span>
+                  </div>
+                  <div class="progress-bar progress-bar-info" id="progress-cold-memory">
+                    <span class="sr-only">Cold Memory</span>
+                  </div>
+		</div>
+              </div>
+              <div class="col-sm-3" id="memory-text"></div>
+	    </div>
+          </div>
+	</div>
+	
+	
+	<div class="panel panel-primary">
+	  <div class="panel-heading">
+            <h3 class="panel-title">Network</h3>
+	  </div>
+          <div class="panel-body">
+	    <div class="dropdown">
+              <button class="btn btn-default dropdown-toggle" type="button" id="network-selection-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span id="network-selection-text"></span>
+                <span class="caret"></span>
+	      </button>
+              <ul id="network-selection" class="dropdown-menu" role="menu" aria-labelledby="network-selection-dropdown">
+              </ul>
+	    </div>
+          </div>
+	  <div class="panel-body">
+            <h4>Throughput</h4>
+            <div id="network-bytes-chart"></div>
+	  </div>
+	  <div class="panel-body">
+            <h4>Errors</h4>
+	    <div id="network-errors-chart"></div>
+	  </div>
+	</div>
+        
+	
+	<div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">Filesystem</h3>
+          </div>
+          <div id="filesystem-usage" class="panel-body">
+          </div>
+        </div>
+	
+	
+        
+      </div>
+      
+    </div>
+    <script type="text/javascript">
+      startPage("/",  true ,  true , "../",  true );
+      drawImages( null );
+    </script>
+  </body>
+</html>
