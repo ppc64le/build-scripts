@@ -74,6 +74,14 @@ LIBDIR    = -L$(CUDADIR)/lib64 \
 Install other pytorch pre-requisites.
 # yum install cmake.ppc64le -y
 
+In newer releases of pytorch , it may require cmake version 3 and above. In this case install cmake3
+# yum install cmake3 -y
+
+And uninstall cmake.
+link cmake3 to cmake
+# ln -s /usr/bin/cmake3 /usr/bin/cmake
+
+
 Install anaconda. Anaconda is recommended by the pytorch community to run pytorch.
 # curl -o ~/miniconda.sh -O  https://repo.continuum.io/miniconda/Miniconda3-4.2.12-Linux-ppc64le.sh 
 # chmod +x ~/miniconda.sh
