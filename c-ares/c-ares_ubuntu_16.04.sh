@@ -24,8 +24,14 @@ sudo apt-get install -y git libtool libtool-bin automake build-essential
 # Build c-ares.
 git clone https://github.com/bagder/c-ares.git
 cd c-ares
-./buildconf && ./configure && make
+./buildconf && ./configure && make && sudo make install
 
 # Run tests.
+./adig www.google.com
+./acountry www.google.com
+./ahost www.google.com
 cd test
-make && ./arestest
+make
+./arestest -4 -v --gtest_filter="-*Container*"
+./fuzzcheck.sh
+./dnsdump fuzzinput/answer_a fuzzinput/answer_aaaa
