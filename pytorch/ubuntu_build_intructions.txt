@@ -92,6 +92,12 @@ CUDADIR ?= /usr/local/cuda
 
 # make install
 
+# For MPI support install OpenMPI.
+# sudo apt-get install libopenmpi-dev
+
+# For systems installed with PowerAI use libopenmpi-dev-cuda
+# sudo apt-get install libopenmpi-dev-cuda
+
 Build and install pytorch.  Note that we checkout from master with a specific commit.
 This was the last known commit that had 99% of the test passing on ppc64le.
 
