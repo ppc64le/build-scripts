@@ -1,0 +1,33 @@
+# ----------------------------------------------------------------------------
+#
+# Package	: Zabbix
+# Version	: 3.4.5rc2
+# Source repo	: svn://svn.zabbix.com/trunk
+# Tested on	: sles_12-SP2
+# Script License: Apache License, Version 2 or later
+# Maintainer	: Priya Seth <sethp@us.ibm.com>
+#
+# Disclaimer: This script has been tested in non-root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
+
+#!/bin/bash
+sudo zypper refresh
+
+sudo zypper install -y wget tar gcc make libevent-devel  net-snmp-devel pcre-devel libcurl-devel postgresql-devel libxml2-2-2.9.7-1.1.ppc64le libxml2-devel
+
+wget http://sourceforge.net/projects/zabbix/files/ZABBIX%20Release%20Candidates/3.4.5rc2/zabbix-3.4.5rc2.tar.gz/download
+tar -zxvf download
+cd zabbix-3.4.5rc2
+
+
+##To configure the sources for a Zabbix server (with PostgreSQL etc.), agent and proxy you may run something like:
+./configure --enable-server --enable-agent --enable-proxy --with-postgresql --enable-ipv6 --with-net-snmp --with-libcurl --with-libxml2
+
+make
+sudo make install
+
