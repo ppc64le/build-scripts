@@ -96,7 +96,7 @@ This was the last known commit that had 99% of the test passing on ppc64le.
 
 # git clone https://github.com/pytorch/pytorch.git
 # cd pytorch
-# git submodule update --init
+# git submodule update --init --recursive
 # sudo /opt/conda/bin/python setup.py install
 
 to start using pytorch be sure to export 
