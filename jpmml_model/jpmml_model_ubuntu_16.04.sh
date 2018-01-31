@@ -1,11 +1,11 @@
 # ----------------------------------------------------------------------------
 #
-# Package	: ffmpeg 
-# Version	: N-85266-g1229007
-# Source repo	: https://github.com/FFmpeg/FFmpeg
-# Tested on	: rhel_7.3
+# Package       : Jpmml Model
+# Version       : 1.3.9
+# Source repo   : https://github.com/jpmml/jpmml-model
+# Tested on     : Ubuntu 16.04
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Atul Sowani <sowania@us.ibm.com>
+# Maintainer    : Meghali Dhoble <dhoblem@us.ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -15,16 +15,14 @@
 #
 # ----------------------------------------------------------------------------
 
-#!/bin/bash
+#! /bin/bash
+sudo apt-get update -y
+sudo apt-get install -y git wget tar openjdk-8-jdk maven
 
-# Install dependencies.
-sudo yum update -y
-sudo yum install -y git make gcc
+# set the PATH to access Maven and Java
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-ppc64el
+export PATH=$PATH:$JAVA_HOME/bin
 
-# build and install ffmpeg.
-git clone https://github.com/FFmpeg/FFmpeg
-cd FFmpeg
-./configure && \
-make && \
-make check && \
-sudo make install
+git clone https://github.com/jpmml/jpmml-model && cd jpmml-model
+mvn clean install
+
