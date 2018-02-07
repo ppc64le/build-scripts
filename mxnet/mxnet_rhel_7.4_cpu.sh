@@ -80,8 +80,7 @@ sudo pip install graphviz
 
 # ------------------ Running the unit tests (run the following from MXNet root directory)-------------------
 cd ..
-sudo pip install pytest nose numpy==1.11.0 scipy pytest-xdist
-sudo pip uninstall numpy && sudo pip install numpy==1.12.0 
+sudo pip install pytest==3.0.6 nose numpy==1.11.0 scipy pytest-xdist
 sudo yum install -y scipy
 python -m pytest -n1 -v tests/python/unittest
 python -m pytest -n1 -v tests/python/train
@@ -89,8 +88,9 @@ python -m pytest -n1 -v tests/python/train
 # Note : If the tests are failing with " Segmentation fault  (core dumped)" error, 
 # then we need to rerun the test command 2 or 3 times to pass the tests.  
 
-# On RHEL following 4 tests are failing on both the platforms (ppc64le and X86),we can ignore these failures 
+# On RHEL following 5 tests are failing on both the platforms (ppc64le and X86),we can ignore these failures 
 # 1.tests/python/unittest/test_operator.py::test_laop, 
 # 2.tests/python/unittest/test_operator.py::test_laop_2,
 # 3.tests/python/unittest/test_operator.py::test_laop_3, and 
 # 4.tests/python/unittest/test_operator.py::test_laop_4
+# 5.tests/python/unittest/test_ndarray.py::test_ndarray_indexing  
