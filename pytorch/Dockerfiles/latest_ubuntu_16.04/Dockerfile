@@ -8,7 +8,7 @@ ENV branch=master
 RUN apt-get update && apt-get install -y --no-install-recommends \
 	git sudo
 
-RUN adduser --disabled-password --gecos "" pytorch
+RUN adduser --disabled-password --gecos "" $username
 RUN echo "pytorch ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER $username
 	
