@@ -16,3 +16,6 @@ There are 4 ENV variables that default to certain values. Feel free to change th
 git clone https://github.com/ppc64le/build-scripts.git <br>
 cd build-scripts/pytorch/Dockerfiles/latest_ubuntu_16.04 <br>
 sudo docker build --tag="pytorch" . 
+
+# Note
+This supports CPU-only pytorch builds
