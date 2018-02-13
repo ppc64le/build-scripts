@@ -6,4 +6,10 @@ The main script it executes is cloned from https://github.com/avmgithub/pytorch_
 The build_nimbix.sh also builds magma-cuda 2.3.0 from http://icl.utk.edu/projectsfiles/magma/downloads/magma-2.3.0.tar.gz <br>
 <br>
 <br>
-There are 4 ENV variables that default to certain values. Feel free to change them as desired.
+There are 4 ENV variables that default to certain values. Feel free to change them as desired. <br>
+
++ ENV username=jenkins
++ ENV python_version=3
++ ENV git_commit=HEAD
++ ENV branch=master
+
