@@ -80,9 +80,9 @@ Install the pytorch dependencies:
 Optional magma-cuda
 Download magma-cuda if you need to use some PyTorch APIs that require magma-cuda.
 # sudo apt-get install gfortran
-# wget wget http://icl.cs.utk.edu/projectsfiles/magma/downloads/magma-2.2.0.tar.gz
-# gunzip -c magma-2.2.0.tar.gz | tar -xvf -
-# cd magma-2.2.0
+# wget wget http://icl.utk.edu/projectsfiles/magma/downloads/magma-2.3.0.tar.gz
+# gunzip -c magma-2.3.0.tar.gz | tar -xvf -
+# cd magma-2.3.0
 # cp make.inc-examples/make.inc.openblas make.inc
 
 edit make.inc and change the following:
