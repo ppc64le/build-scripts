@@ -12,7 +12,7 @@
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
-#             contact "Maintaine" of this script.
+#             contact "Maintainer" of this script.
 #
 # ---------------------------------------------------------------------------- 
 
