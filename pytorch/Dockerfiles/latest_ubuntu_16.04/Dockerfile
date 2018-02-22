@@ -1,6 +1,5 @@
 FROM nvidia/cuda-ppc64le:9.0-cudnn7-devel-ubuntu16.04
 
-
 ENV username=pytorch
 ENV python_version=3
 ENV git_commit=HEAD
