@@ -16,8 +16,8 @@
 # ----------------------------------------------------------------------------
 #!/bin/bash
 
-sudo yum update 
-sudo yum install -y make gcc-c++ java-1.8.0-openjdk-devel git
+sudo yum update
+sudo yum install -y make gcc-c++ java-1.8.0-openjdk-devel git wget tar zip
 
 #Install maven
 wget http://www-us.apache.org/dist/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.tar.gz
