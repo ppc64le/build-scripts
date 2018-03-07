@@ -31,10 +31,7 @@ cd LightGBM
 mkdir build ; cd build
 
 #Disable altivec support
-export CFLAGS="-mno-altivec -mno-vsx"
-export CXXFLAGS="-mno-altivec -mno-vsx"
-
-cmake -DUSE_GPU=1 ..
+cmake -DUSE_GPU=1 -DCMAKE_C_FLAGS="-mno-altivec -mno-vsx" -DCMAKE_CXX_FLAGS="-mno-altivec -mno-vsx" ..
 make -j$(nproc)
 cd ..
 
