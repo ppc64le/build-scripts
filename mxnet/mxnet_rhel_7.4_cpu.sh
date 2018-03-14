@@ -13,6 +13,11 @@
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
 #
+# Note: in case a specific version of mxnet is required, e.g. 1.0.0,
+#       following two steps needs to be added after "git clone" command:
+#       git checkout 1.0.0
+#       git submodule update --recursive
+#
 # ----------------------------------------------------------------------------
 #!/bin/bash
 set -x
@@ -57,7 +62,6 @@ sudo ldconfig -v
 cd ../..
 git clone --recursive https://github.com/dmlc/mxnet
 cd mxnet
-git checkout 1.0.0
 make -j $(nproc) USE_OPENCV=1 USE_BLAS=openblas USE_PROFILER=1
 rm -r build
 # Note - USE_OPENCV and USE_BLAS are make file flags to set compilation options to use OpenCV and BLAS library.

@@ -13,6 +13,11 @@
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
 #
+# Note: in case a specific version of mxnet is required, e.g. 1.0.0,
+#       following two steps needs to be added after "git clone" command:
+#       git checkout 1.0.0
+#       git submodule update --recursive
+#
 # ----------------------------------------------------------------------------
 #!/bin/bash
 set -x
@@ -21,18 +26,21 @@ set -x
 # CUDA 9 and cuDNN 7 are installed.
 
 # Building MXNet from source is a 2 step process.
-   # 1.Build the MXNet core shared library, libmxnet.so, from the C++ sources.
-   # 2.Build the language specific bindings. Example - Python bindings, Scala bindings.
+#    1.Build the MXNet core shared library, libmxnet.so, from the C++ sources.
+#    2.Build the language specific bindings. Example - Python bindings,
+#    Scala bindings.
 
-# ---------------------------- Build the MXNet core shared library -------------------------------
+# ------------ Build the MXNet core shared library -----------------
 # Install build tools and git
+
 sudo yum update -y
 sudo yum groupinstall 'Development Tools' -y
 sudo yum install -y git wget cmake
 
 # Install OpenBLAS
-# MXNet uses BLAS and LAPACK libraries for accelerated numerical computations on CPU machine.
-# There are several flavors of BLAS/LAPACK libraries - OpenBLAS, ATLAS and MKL. In this step we install OpenBLAS.
+# MXNet uses BLAS and LAPACK libraries for accelerated numerical
+# computations on CPU machine. There are several flavors of BLAS/LAPACK
+# libraries - OpenBLAS, ATLAS and MKL. In this step we install OpenBLAS.
 # You can choose to install ATLAS or MKL.
 wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 sudo rpm -ivh epel-release-latest-7.noarch.rpm
@@ -48,14 +56,13 @@ sudo yum install -y opencv-devel.ppc64le
 git clone --recursive https://github.com/apache/incubator-mxnet.git mxnet
 cd mxnet
 git clone https://github.com/NVlabs/cub
-git checkout 1.0.0
 make -j $(nproc) USE_OPENCV=1 USE_BLAS=openblas USE_CUDA=1 USE_CUDA_PATH=/usr/local/cuda USE_CUDNN=1 USE_PROFILER=1
 rm -rf build
-# Note - USE_OPENCV and USE_BLAS are make file flags to set compilation options to use OpenCV and BLAS library.
-# You can explore and use more compilation options in make/config.mk.
+# Note - USE_OPENCV and USE_BLAS are make file flags to set compilation
+# options to use OpenCV and BLAS library. You can explore and use more
+# compilation options in make/config.mk.
 
-
-# ------------------------------ Build the MXNet Python binding ---------------------------------
+# Build the MXNet Python binding
 # Install prerequisites - python, setup-tools, python-pip and numpy.
 sudo yum install -y python-devel.ppc64le  python-setuptools  python-pip numpy
 
@@ -64,21 +71,20 @@ cd python
 sudo pip install --upgrade pip
 sudo pip install -e .
 
-# Install Graphviz. (Optional, needed for graph visualization using mxnet.viz package).
+# Install Graphviz. (Optional, needed for graph visualization using
+# mxnet.viz package).
 sudo yum install -y graphviz
 sudo pip install graphviz
 
-
-# ------------------ Running the unit tests (run the following from MXNet root directory)-------------------
+# Running the unit tests (run the following from MXNet root directory)
 cd ..
 sudo pip install pytest nose numpy==1.11.0 scipy pytest-xdist
 sudo yum install -y scipy
 python -m pytest -n1 -v tests/python/unittest
 python -m pytest -n1 -v tests/python/train
 
-# Note : If the tests are failing with " Segmentation fault  (core dumped)" error, 
+# Note: If the tests are failing with "Segmentation fault (core dumped)" error, 
 # then we need to rerun the test command 2 or 3 times to pass the tests.  
-
 # On RHEL following 5 tests are failing on both the platforms (ppc64le and X86),we can ignore these failures 
 # 1.tests/python/unittest/test_operator.py::test_laop, 
 # 2.tests/python/unittest/test_operator.py::test_laop_2,

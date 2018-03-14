@@ -36,6 +36,7 @@ RUN yum install -y yum-plugin-ovl && \
         git clone --recursive https://github.com/apache/incubator-mxnet.git mxnet && \
         cd mxnet && \
         git checkout 1.0.0 && \
+        git submodule update --recursive && \
         make -j $(nproc) USE_OPENCV=1 USE_BLAS=openblas USE_PROFILER=1 && \
         rm -rf build \
         && \

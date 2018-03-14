@@ -24,6 +24,7 @@ RUN apt-get update -y && \
         cd mxnet && \
 	git clone https://github.com/NVlabs/cub && \
         git checkout 1.0.0 && \
+        git submodule update --recursive && \
 	make -j $(nproc) USE_OPENCV=1 USE_BLAS=openblas USE_CUDA=1 USE_CUDA_PATH=/usr/local/cuda USE_CUDNN=1 USE_PROFILER=1 && \
         rm -r build \
         && \
