@@ -1,11 +1,11 @@
 # ----------------------------------------------------------------------------
 #
-# Package	: netflix-pytheas
-# Version	: 1.29.1
-# Source repo	: https://github.com/Netflix/pytheas
-# Tested on	: ubuntu_16.04
+# Package       : Reactivex rxNetty
+# Version       : 0.5.2
+# Source repo   : https://github.com/ReactiveX/RxNetty
+# Tested on     : ubuntu_16.04
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Atul Sowani <sowania@us.ibm.com>
+# Maintainer    : Meghali Dhoble <dhoblem@us.ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -14,18 +14,18 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
 #!/bin/bash
 
-# Install dependencies.
-sudo apt-get update -y
-sudo apt-get install -y git gradle libjna-java openjdk-8-jdk openjdk-8-jre \
-    gcc g++ make automake libffi-dev build-essential
-export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-ppc64el
-export PATH=$PATH:$JAVA_HOME/bin
-cp /usr/share/java/jna.jar /usr/lib/jvm/java-8-openjdk-ppc64el/jre/lib/ext/
+# Install Dependencies
+sudo apt-get update
+sudo apt-get install -y build-essential g++ ant wget git \
+    software-properties-common openjdk-8-jdk openjdk-8-jre libffi-dev
 
-# Need to build Jna locally as one of the dependency 
+# Set Environment
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-ppc64el
+export PATH=$JAVA_HOME/bin:$PATH
+
+# Need to build JNA from source for missing library errors (libjnidispatch.so)
 cd /tmp && git clone https://github.com/java-native-access/jna
 mkdir -p /tmp/jna/build/native-linux-ppc64le/libffi/.libs
 cd jna && git checkout 4.1.0
@@ -33,8 +33,8 @@ sudo ln -s /usr/lib/powerpc64le-linux-gnu/libffi.a /tmp/jna/build/native-linux-p
     (sudo ant test || true) && (sudo ant test-platform || true) && (sudo ant dist || true)
 sudo ln -s /tmp/jna/build/classes/com/sun/jna/linux-ppc64le/libjnidispatch.so /usr/lib/jvm/java-1.8.0-openjdk-ppc64el/jre/lib/ppc64le/libjnidispatch.so
 
-# Clone and build source code.
-git clone https://github.com/Netflix/pytheas
-cd pytheas
-./gradlew
-./gradlew test
+# Download source and build
+cd $HOME
+git clone https://github.com/ReactiveX/RxNetty
+cd RxNetty
+./gradlew assemble
