@@ -19,6 +19,7 @@
 sudo apt-get update -y
 sudo apt-get install -y build-essential git zlib1g-dev
 
+# Clone source and build.
 git clone https://github.com/python/cpython
 cd cpython
 ./configure
