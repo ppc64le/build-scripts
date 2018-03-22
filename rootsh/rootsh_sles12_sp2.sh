@@ -17,6 +17,8 @@
 #!/bin/bash
 
 # Install all dependencies.
+# Please install, enable and configure the SLES 12 SDK as some of the development packages come with that
+# https://www.suse.com/releasenotes/ppc64le/SLE-SDK/12/
 sudo zypper refresh
 sudo zypper install -y wget git make gcc gcc-c++ autoconf libtool
 
