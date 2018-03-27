@@ -1,8 +1,8 @@
 # ----------------------------------------------------------------------------
 #
-# Package       : LevelDB
-# Version       : 1.20
-# Source repo   : https://github.com/google/leveldb
+# Package       : XMLPULL v1 API
+# Version       : 1.0.5
+# Source repo   : http://www.xmlpull.org/v1/download/xmlpull_1_0_5_src.tgz
 # Tested on     : ubuntu_16.04
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Meghali Dhoble <dhoblem@us.ibm.com>
@@ -18,23 +18,16 @@
 
 # Install Dependencies
 sudo apt-get update -y
-sudo apt-get install -y build-essential g++ make libsnappy-dev git
+sudo apt-get install -y wget tar ant openjdk-8-jdk
 
-# Build cmake from source, as leveldb needs latest version
+# Set ENV variables
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-ppc64el
+
+# Download source-tar and build
 cd $HOME
-git clone https://github.com/Kitware/CMake.git
-cd CMake/
-./bootstrap && make && sudo make install
+wget  http://www.xmlpull.org/v1/download/xmlpull_1_0_5_src.tgz
+tar -xvzf xmlpull_1_0_5_src.tgz
+cd xmlpull_1_0_5/
+ant
 
-# Set Environment to use latest cmake built
-export PATH=$PATH:$HOME/CMake/bin
-
-# Download source and build
-cd $HOME
-git clone https://github.com/google/leveldb
-cd leveldb/
-mkdir build
-cd build
-cmake ..
-cmake --build .
-ctest --verbose
+# NOTE - Automated tests are not available.
