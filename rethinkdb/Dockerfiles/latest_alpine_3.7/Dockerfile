@@ -1,6 +1,6 @@
 FROM alpine:3.7
 
-MAINTAINER Priya Seth <sethp@us.ibm.com>"
+MAINTAINER "Priya Seth <sethp@us.ibm.com>"
 
 RUN apk update && \
          apk add rethinkdb
