@@ -2,7 +2,7 @@ FROM ppc64le/alpine:3.6
 MAINTAINER Vaibhav Sood <vaibhavs@us.ibm.com>
 
 # This is the release of Vault to pull in.
-ENV VAULT_VERSION=0.7.3
+ENV VAULT_VERSION=v0.7.3
 
 # Create a vault user and group first so the IDs get set the same way,
 # even as the rest of this may change over time.
@@ -22,7 +22,7 @@ RUN apk update && apk add --no-cache git make bash libcap musl-dev gcc wget go &
     rm -rf /tmp/build && \
     rm -rf /root/.gnupg && \
     mkdir -p /go/src/github.com/hashicorp && cd /go/src/github.com/hashicorp && \
-    git clone https://github.com/hashicorp/vault && cd vault && \
+    git clone  --branch=$VAULT_VERSION https://github.com/hashicorp/vault && cd vault && \
     make bootstrap && make && \
     apk del git make gcc wget bash musl-dev go 
 
