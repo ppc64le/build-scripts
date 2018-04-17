@@ -22,10 +22,15 @@ sudo apt-get update -y
 sudo apt-get -y install build-essential automake libtool \
     libdb5.3-dev libsasl2-dev zlib1g-dev libssl-dev libpcre3-dev \
     uuid-dev comerr-dev libcunit1-dev valgrind libsnmp-dev \
-    bison flex libjansson-dev shtool pkg-config wget
+    bison flex libjansson-dev shtool pkg-config wget nroff
 
 # Build and test cyrus-sasl.
-wget ftp://ftp.cyrusimap.org/cyrus-sasl/cyrus-sasl-2.1.26.tar.gz
-tar -xzvf cyrus-sasl-2.1.26.tar.gz
-cd cyrus-sasl-2.1.26 && ./configure --build ppc64le && make && \
+#wget ftp://ftp.cyrusimap.org/cyrus-sasl/cyrus-sasl-2.1.26.tar.gz
+#tar -xzvf cyrus-sasl-2.1.26.tar.gz
+#cd cyrus-sasl-2.1.26
+
+git clone https://github.com/cyrusimap/cyrus-sasl
+cd cyrus-sasl
+./autogen.sh
+./configure --build ppc64le && make && \
    make check && sudo make install
