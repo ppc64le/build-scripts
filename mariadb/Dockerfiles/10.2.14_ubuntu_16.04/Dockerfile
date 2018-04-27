@@ -62,8 +62,9 @@ ENV PATH $PATH:/usr/local/mysql/bin:/usr/local/mysql/scripts
 ENV LD_LIBRARY_PATH /usr/lib/powerpc64le-linux-gnu
 
 COPY docker-entrypoint.sh /usr/local/bin/
-RUN ln -s usr/local/bin/docker-entrypoint.sh / # backwards compat && apt-get update && apt-get install libgnutls30 -y
-
+RUN ln -s usr/local/bin/docker-entrypoint.sh / # backwards compat
+RUN apt-get update \
+	&& apt-get install libgnutls30 -y
 EXPOSE 3306
 
 ENTRYPOINT ["docker-entrypoint.sh"]
