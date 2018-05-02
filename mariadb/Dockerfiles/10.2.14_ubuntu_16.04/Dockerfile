@@ -42,6 +42,7 @@ RUN apt-get update && apt-get install -y make cmake libgnutls-dev git wget tzdat
  	&& cp mariadb-$MARIADB_VERSION-linux-ppc64le.tar.gz /usr/local/ \
 	&& cd /usr/local/ \
 	&& tar -zxvpf mariadb-$MARIADB_VERSION-linux-ppc64le.tar.gz \
+	&& rm -rf mariadb-$MARIADB_VERSION-linux-ppc64le.tar.gz \
 	&& ln -s mariadb-$MARIADB_VERSION-linux-ppc64le mysql \
    	&& chown -R mysql:mysql /usr/local/mysql/ \
    	&& cd mysql && mkdir /etc/mysql && cp ./support-files/my-small.cnf /etc/mysql/my.cnf \
