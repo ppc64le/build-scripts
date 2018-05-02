@@ -3,7 +3,7 @@ hash (Rpackage)
 Build and run the container:
 
 $docker build -t hash .
-$docker run -it -name=demo_hash hash .
+$docker run -it --name=demo_hash hash .
 
 Test the working of Container:
 Inside the container type R and enter the R shell. Execute following code:

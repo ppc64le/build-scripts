@@ -3,7 +3,7 @@ tables (Rpackage)
 Build and run the container:
 
 $docker build -t tables .
-$docker run -it -name=demo_tables tables .
+$docker run -it --name=demo_tables tables .
 
 Test the working of Container:
 Inside the container type R and enter the R shell. Execute following code:

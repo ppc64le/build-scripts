@@ -3,7 +3,7 @@ e1071 (Rpackage)
 Build and run the container:
 
 $docker build -t e1071 .
-$docker run -it -name=demo_e1071 e1071 .
+$docker run -it --name=demo_e1071 e1071 .
 
 Test the working of Container:
 Inside the container type R and enter the R shell. Execute following code:

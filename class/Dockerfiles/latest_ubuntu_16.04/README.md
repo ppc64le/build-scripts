@@ -3,7 +3,7 @@ class (Rpackage)
 Build and run the container:
 
 $docker build -t class .
-$docker run -it -name=demo_class class .
+$docker run -it --name=demo_class class .
 
 Test the working of Container:
 Inside the container type R and enter the R shell. Execute following code:
