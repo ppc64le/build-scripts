@@ -16,18 +16,25 @@
 # ----------------------------------------------------------------------------
 #!/bin/bash
 
-sudo apt-get update -y
-sudo apt-get install -y git golang-go rabbitmq-server
-mkdir /tmp/AMQP
-export GOPATH="/tmp/AMQP"
+apt-get update -y
+apt-get install -y git wget rabbitmq-server
 
-cd /tmp/AMQP
+WDIR=`pwd`
+
+# Install latest "go" required by the client build.
+wget https://storage.googleapis.com/golang/go1.9.1.linux-ppc64le.tar.gz
+tar -C /usr/ -zxvf go1.9.1.linux-ppc64le.tar.gz
+export PATH=$PATH:/usr/go/bin
+export GOROOT=/usr/go
+go version
+
+mkdir $WDIR/AMQP
+export GOPATH="$WDIR/AMQP"
+export AMQP_URL="amqp://localhost/"
+
+service rabbitmq-server start
+
+cd $WDIR/AMQP
 go get github.com/streadway/amqp
-sudo service rabbitmq-server start
-
-cd /tmp/AMQP/src/github.com/streadway/amqp && \
-    touch test.sh && \
-    echo "invoke-rc.d rabbitmq-server start" >> test.sh && \
-    echo "go test -tags integration" >> test.sh && \
-    chmod +x test.sh && \
-    ./test.sh
+cd src/github.com/streadway/amqp
+go test -tags integration
