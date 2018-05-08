@@ -42,4 +42,6 @@ if [ "$CXX" = "clang++" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then export CXX="c
 
 # Build and test googletest.
 git clone https://github.com/google/googletest.git
-cd googletest && ./travis.sh
+cd googletest
+mkdir build && cd build
+cmake .. && make && make install
