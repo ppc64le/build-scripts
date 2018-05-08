@@ -26,7 +26,8 @@ sudo apt-add-repository -y "ppa:ubuntu-toolchain-r/test"
 curl -sSL "http://llvm.org/apt/llvm-snapshot.gpg.key" | sudo apt-key add -
 echo "deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.7 main" | sudo tee -a /etc/apt/sources.list > /dev/null
 sudo apt-get -yq update &>> ~/apt-get-update.log
-sudo apt-get -yq --no-install-suggests --no-install-recommends --allow install gcc-4.9 g++-4.9 valgrind
+sudo apt-get -yq --no-install-suggests --no-install-recommends install \
+    gcc-4.9 g++-4.9 valgrind
 
 # Set build related environment variables.
 export GTEST_TARGET=googletest
@@ -44,4 +45,4 @@ if [ "$CXX" = "clang++" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then export CXX="c
 git clone https://github.com/google/googletest.git
 cd googletest
 mkdir build && cd build
-cmake .. && make && make install
+cmake .. && make && sudo make install
