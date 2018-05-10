@@ -82,6 +82,8 @@ And uninstall cmake.
 link cmake3 to cmake
 # ln -s /usr/bin/cmake3 /usr/bin/cmake
 
+You can also install cmake from conda but make sure you are using 3.6.3
+# conda install cmake==3.6.3
 
 Install anaconda. Anaconda is recommended by the pytorch community to run pytorch.
 # curl -o ~/miniconda.sh -O  https://repo.continuum.io/miniconda/Miniconda3-4.2.12-Linux-ppc64le.sh 
