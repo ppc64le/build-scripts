@@ -77,6 +77,9 @@ Install the pytorch dependencies:
 
 # sudo pip install numpy pyyaml scipy ipython
 
+You can also install cmake from conda but make sure you are using 3.6.3
+# conda install cmake==3.6.3
+
 Optional magma-cuda
 Download magma-cuda if you need to use some PyTorch APIs that require magma-cuda.
 # sudo apt-get install gfortran
@@ -87,6 +90,7 @@ Download magma-cuda if you need to use some PyTorch APIs that require magma-cuda
 
 edit make.inc and change the following:
 NVCC      = /usr/local/cuda/bin/nvcc
+# change OPENBLASDIR to point to your openblas installation
 OPENBLASDIR ?= /opt/DL/openblas
 CUDADIR ?= /usr/local/cuda
 
@@ -110,11 +114,5 @@ Commit (Feb 8, 2018):  873f1163806c14ae236538f76c44d04b63bef331
 to start using pytorch be sure to export 
 export LD_LIBRARY_PATH=/usr/local/magma/lib:/opt/DL/openblas/lib:$LD_LIBRARY_PATH
 
-
-Known issue:
-1. Certain tests in test_autograd.py will fail with an abort because exceptions are not 
-being passed from the lower stack to python. This is a true error and needs to be corrected
-in the python user code.  The test that aborts are inplace backward operations which is a 
-true negative test and not a bug in ppc64le.
 
 
