@@ -1,8 +1,8 @@
 # ----------------------------------------------------------------------------
 #
-# Package	: mongo-c-driver
-# Version	: 1.6.0
-# Source repo	: https://github.com/mongodb/mongo-c-driver.git
+# Package	: xgboost
+# Version	: 0.71
+# Source repo	: https://github.com/dmlc/xgboost
 # Tested on	: ubuntu_16.04
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Atul Sowani <sowania@us.ibm.com>
@@ -14,15 +14,19 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
 #!/bin/bash
 
-# Install dependencies.
 sudo apt-get update -y
-sudo apt-get install -y git gcc g++ automake autoconf libtool make \
-    cmake libsasl2-dev
+sudo apt-get install -y wget git cmake python python-dev python-nose \
+    python-setuptools python-numpy python-sklearn liblapack-dev graphviz
+sudo easy_install -U numpy scikit-learn sklearn graphviz pandas
 
-# Download source and build the driver.
-git clone https://github.com/mongodb/mongo-c-driver.git
-cd mongo-c-driver
-cmake . && make && sudo make install
+git clone --recursive https://github.com/dmlc/xgboost
+cd xgboost && mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release && make -j
+cd ..
+cp build/librabit.a rabit/lib
+cd python-package
+sudo python setup.py install
+cd ..
+nosetests tests/python
