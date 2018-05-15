@@ -1,0 +1,10 @@
+
+Many distros already have MariaDB so install from there using usual distro tools.
+
+If you want a later release/version, for:
+* Centos 7
+* Redhat EL 7
+* Ubuntu (LTS releases - only) - 18.04 packages coming after they the version release for ppc64le (https://jira.mariadb.org/browse/MDEV-16138)
+* Debian (8 & 9)
+ 
+... go to https://downloads.mariadb.org/mariadb/repositories and follow the instructions there.
