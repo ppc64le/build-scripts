@@ -1,0 +1,10 @@
+Initial Requirements to build and test TF1.2.1 on SLES12 SP2 with CPU support
+
+10 patches are required to build and test Tensorflow 1.2.1 on ppc64le using
+build script. These patches are provided in a zip file. 
+
+Please keep these patches at correct location while running the build script,
+otherwise build will fail.
+
+Suppose TF build script is copied inside the "/home/tf" directory, then put
+all the patches inside "/home/tf/patches" directory.

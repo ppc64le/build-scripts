@@ -1,6 +1,7 @@
 nstructions for Tensorflow package.
 
-NOTE - We are providing some patches in patches.zip file, please keep these patches and Dockerfile in the same directory
+NOTE - Required patches are provided in patches.zip file, please keep these
+patches and Dockerfile in the same directory
 e.g.  $ cd <$wdir>
 	     |
              |_ Dockerfile (This is TF Dockerfile)
@@ -16,7 +17,8 @@ e.g.  $ cd <$wdir>
 
 	$ docker run -it tensorflow /bin/bash
 
-3) Run below command to check tensorflow1.2.1 installed location and other information
+3) Run following command to check tensorflow 1.2.1 installation location
+   and other information
    
         $ pip show tensorflow
 

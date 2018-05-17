@@ -1,0 +1,50 @@
+Test Failure Analysis (TF-1.2.1 on SLES12 SP2 With CPU Support)
+
+Total 19 tests fail on ppc64le, and we have analyzed/fixed these test failures.
+
+As per analysis failures are classified as follows.
+
+* We have created the patches for following 11 FAILED tests
+  1.    //tensorflow/core:platform_profile_utils_cpu_utils_test
+  2.    //tensorflow/python/kernel_tests:linalg_grad_test
+  3.    //tensorflow/python/kernel_tests:cast_op_test
+  4.    //tensorflow/contrib/lookup:lookup_ops_test
+  5.    //tensorflow/python/kernel_tests:lookup_ops_test
+  6.    //tensorflow/python/kernel_tests:string_to_hash_bucket_op_test
+  7.    //tensorflow/python:nn_test
+  8.    //tensorflow/python/kernel_tests:summary_image_op_test
+  9.    //tensorflow/python/kernel_tests:denormal_test
+  10.   //tensorflow/core/kernels:sparse_matmul_op_test_gpu
+  11.   //tensorflow/python/kernel_tests:sparse_matmul_op_test
+
+* Following test is passing in TF1.3.1 release (without any changes)
+  12.   //tensorflow/compiler/tests:pooling_ops_test_cpu  
+
+* Following 2 tests were failing with "bazel test" command (i.e. from inside
+  the TF source code), however both are passing with TensorFlow APIs
+  (i.e. using "import tensorflow as tf"), tried on sample code using inputs
+  equivalent to ones used in test case and using respective TF API
+  (i.e. tf.<function_name>)
+  13.   //tensorflow/compiler/tests:ternary_ops_test_cpu
+  14.   //tensorflow/compiler/tests:binary_ops_test_cpu
+
+* Following test is failing due to 'xla_backend_extra_options=xla_cpu_parallel'
+  which is now a deprecated feature and community is planning to disable tests
+  which use this option.
+  15.   //tensorflow/compiler/xla/tests:array_elementwise_ops_test_cpu_parallel
+
+* Following tests are passing with numpy==1.12.0
+  (default installed version is 1.14.0). 
+  16.   //tensorflow/python/debug:curses_ui_test     
+  17.   //tensorflow/python/debug:tensor_format_test  
+  18.   //tensorflow/python:special_math_ops_test    
+
+* In order to execute //tensorflow/python/kernel_tests:svd_op_test
+  successfully, run below commands:
+      zypper remove  python2-numpy python2-numpy-devel
+      zypper install python2-numpy python2-numpy-devel
+
+* Additional information:
+
+After executing "bazel test" command, you might see some other test failures.
+Please re-run these failed tests and they will succeed.
