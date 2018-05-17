@@ -27,7 +27,6 @@ apt-get install -y cmake software-properties-common curl \
 apt-add-repository -y "ppa:ubuntu-toolchain-r/test"
 curl -sSL "http://llvm.org/apt/llvm-snapshot.gpg.key" | apt-key add -
 echo "deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.7 main" | tee -a /etc/apt/sources.list > /dev/null
-apt-get -yq update &>> ~/apt-get-update.log
 apt-get -yq --no-install-suggests --no-install-recommends install \
     gcc-4.9 g++-4.9 valgrind
 
