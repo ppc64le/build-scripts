@@ -1,0 +1,32 @@
+Test Failure Analysis (TF-1.3.1 on RHEL With CPU Support)
+
+* We have fixed all the ppc64le related test failures in build script.
+* After executing tests, you will get other 7 failures , see below -
+
+* This test was failing with "bazel test" command (i.e. from inside the TF source code) , 
+however it's passing with TensorFlow API  (i.e. using "import tensorflow as tf"), 
+tried in sample code using inputs equivalent to ones used in test case and using respective 
+TF API i.e. tf.<function_name>)
+1.	//tensorflow/compiler/tests:binary_ops_test_cpu
+
+* This test is failing due to "xla_backend_extra_options=xla_cpu_parallel" deprecated feature 
+and community planning to disable the tests that use this option.
+2.	//tensorflow/compiler/xla/tests:array_elementwise_ops_test_cpu_parallel
+
+
+* Following tests are passing with numpy==1.12.0 (default installed version is 1.14.3). 
+3.	//tensorflow/python/debug:curses_ui_test     
+4.	//tensorflow/python/debug:tensor_format_test  
+
+* 5. To pass //tensorflow/tools/api/tests:api_compatibility_test run below command :
+       bazel-bin/tensorflow/tools/api/tests/api_compatibility_test --update_goldens True          
+        
+* Below 2 tests are passing in higher version of TF without any changes i.e.TF 1.6.0 :
+6.	//tensorflow/python/kernel_tests:fft_ops_test 
+7.	//tensorflow/contrib/signal:spectral_ops_test
+
+      
+Additional information:
+
+After executing "bazel test" command, you might see some other test failures. 
+Please re-run these failed tests and they will succeed.
