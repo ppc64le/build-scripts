@@ -5,7 +5,7 @@
 # Source repo	: https://github.com/tensorflow/tensorflow
 # Tested on	: rhel_7.3
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Atul Sowani <sowania@us.ibm.com>
+# Maintainer	: Sandip Giri <sgiri@us.ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -91,13 +91,21 @@ sudo yum install -y python-pip python-wheel swig python-devel.ppc64le atlas-deve
 
 sudo pip install portpicker scipy
 
-#To build TF with GPU-enabled, first we need to install cuda and cudnn dependencies, please refer page http://www.nvidia.com/object/gpu-accelerated-applications-tensorflow-installation.html to install the same
+#To build TF with GPU-enabled, first we need to install cuda and cudnn dependencies, 
+# please refer page http://www.nvidia.com/object/gpu-accelerated-applications-tensorflow-installation.html 
+# to install the same
 git clone --recurse-submodules https://github.com/tensorflow/tensorflow && \
         cd tensorflow && \
         git checkout v1.0.1 && \
 	patch -p1 < /$wdir/patches/10-cudnn-dir.patch && \
         patch -p1 < /$wdir/patches/30-llvm-target-triple-to-powerpc64le.patch && \
         patch -p1 < /$wdir/patches/40-jemalloc-support.patch && \
+	patch -p1 < /$wdir/patches/cast_op_test_ppc64le.patch && \
+	patch -p1 < /$wdir/patches/fix_for_cast_op_benchmark_and_rnn_op_benchmark.patch && \
+	patch -p1 < /$wdir/patches/Fix_for_summary_image_op_test_on_ppc64le.patch && \
+	patch -p1 < /$wdir/patches/larger-tolerence-in-linalg_grad_test.patch && \
+	patch -p1 < /$wdir/patches/platform_profile_utils_cpu_utils_test_ppc64le.patch && \
+	patch -p1 < /$wdir/patches/sparse_matmul_op_ppc.patch && \
         export CC_OPT_FLAGS="-mcpu=power8 -mtune=power8" && \
         export GCC_HOST_COMPILER_PATH=/usr/bin/gcc && \
         export PYTHON_BIN_PATH=/usr/bin/python && \
@@ -108,7 +116,7 @@ git clone --recurse-submodules https://github.com/tensorflow/tensorflow && \
         export TF_ENABLE_XLA=1 && \
         export TF_NEED_OPENCL=0 && \
         export TF_NEED_CUDA=1 && \
- 	export TF_CUDA_VERSION=8.0 && \
+	export TF_CUDA_VERSION=8.0 && \
 	export CUDA_TOOLKIT_PATH=/usr/local/cuda-8.0 && \
 	export TF_CUDA_COMPUTE_CAPABILITIES=3.5,3.7,5.2,6.0 && \
 	export CUDNN_INSTALL_PATH=/usr/local/cuda-8.0 && \
@@ -119,3 +127,7 @@ git clone --recurse-submodules https://github.com/tensorflow/tensorflow && \
         sudo pip install /tmp/tensorflow_pkg/tensorflow-1.0.1* && \
 	export LD_LIBRARY_PATH="/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH" && \
         bazel test --config=opt --config=cuda -k --jobs 1 //tensorflow/...
+
+
+ 
+

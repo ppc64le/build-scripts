@@ -1,0 +1,73 @@
+Test Failure Analysis (TF-1.0.1  on RHEL7.3 With GPU Support )
+
+Total 13 tests were failing on ppc64le, and we have fixed all of them 
+(12 failures observed with/without GPU support and 1 additional 
+failure observed with GPU support)
+
+12 failures observed with/without GPU support, we have analyzed/fixed 
+these test failures, as per the analysis we classified the failures 
+as follows
+
+* Have patches for following 8 FAILED tests
+1.	//tensorflow/python/kernel_tests:cast_op_test 
+2.	//tensorflow/python/kernel_tests:summary_image_op_test
+3.	//tensorflow/python/kernel_tests:linalg_grad_test
+4.	//tensorflow/core:platform_profile_utils_cpu_utils_test 
+5.	//tensorflow/core/kernels:sparse_matmul_op_test_gpu
+6.	//tensorflow/python/kernel_tests:sparse_matmul_op_test
+7.	 //tensorflow/tools/test:cast_op_benchmark  
+8.	//tensorflow/tools/test:rnn_op_benchmark
+
+
+* This test is passing in TF1.3.1 release (without any changes)
+9.	//tensorflow/compiler/tests:pooling_ops_test_cpu  
+
+* This test was failing on RHEL7.3 vm. Now this machine upgraded to RHEL7.4. 
+I reran "image_ops_test" test on new OS and test passed successfully without 
+any changes.
+10.	//tensorflow/contrib/image:image_ops_test  
+
+* These 2 tests were failing with "bazel test" command (i.e. from inside the 
+  TF source code) , however both are passing with TensorFlow API's (i.e. using 
+  "import tensorflow as tf"), tried in sample code using inputs equivalent to
+  ones used in test case and using respective TF API i.e. tf.<function_name>)
+11.	//tensorflow/compiler/tests:ternary_ops_test_cpu
+12.	//tensorflow/compiler/tests:binary_ops_test_cpu
+
+	
+* One addition failure observed with GPU support 
+13.	//tensorflow/python:function_test : This test is fixed in TF1.1.0
+        release.
+
+* Some addition notes about GPU support:
+- Three tests are not compatible with GPU (specifically not in the gpu-enabled
+  test set), we need to run these tests without GPU-support, and name of these
+  tests are as follows: 
+1.	//tensorflow/contrib/tensor_forest:scatter_add_ndim_op_test
+2.	//tensorflow/core:ops_math_grad_test
+3.	//tensorflow/python:session_test
+
+Community working to support these tests on GPUs
+
+* After executing all tests using
+  "bazel test --config=opt --config=cuda -k --jobs 1 //tensorflow/..."
+  command , you might get some test failures with following errors:
+1	CUDA_ERROR_OUT_OF_MEMORY
+2	Couldn't open CUDA library libcupti.so.8.0. LD_LIBRARY_PATH:
+3	Platform CUDA present but no XLA compiler available: could not find
+        registered compiler for platform CUDA
+4	TIMEOUT issue
+
+Action: Rerunning these failed tests will help to pass them. Before re-running
+first set following ENV variables: 
+
+#1 Set PATH for Bazel (as per your bazel binary location)
+PATH=/$wdir/bazel/output:$PATH
+
+#2 Set LD_LIBRARY_PATH for libcupti.so.8.0 library
+
+export LD_LIBRARY_PATH="/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH" 
+
+#3 Individually rerun failed tests from TensorFlow source code directory i.e.
+   cd  /TF-dir/  &&  \
+   bazel test --config=opt --config=cuda -k --jobs 1 <test_name>
