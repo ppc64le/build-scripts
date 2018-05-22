@@ -62,9 +62,9 @@ sudo yum install -y python-pip python-wheel swig python-devel.ppc64le atlas-deve
         sudo touch /usr/include/stropts.h
 
 git clone --recurse-submodules https://github.com/tensorflow/tensorflow && \
+	unzip patches_cpu.zip && \
         cd tensorflow && \
         git checkout v1.3.1 && \
-        unzip patches_cpu.zip && \
         patch -p1 < $wdir/patches_cpu/sparse_matmul_op_ppc_TF1.3.1.patch && \
         patch -p1 < $wdir/patches_cpu/update-highwayhash_TF1.3.1.patch && \
         patch -p1 < $wdir/patches_cpu/denormal_test_ppc_TF1.3.1.patch && \
