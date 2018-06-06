@@ -90,7 +90,6 @@ Install anaconda. Anaconda is recommended by the pytorch community to run pytorc
 # chmod +x ~/miniconda.sh
 # ~/miniconda.sh -b -p /opt/conda
 # rm ~/miniconda.sh
-# /opt/conda/bin/conda install conda-build
 # /opt/conda/bin/conda install numpy pyyaml scipy ipython
 
 # For MPI support 
