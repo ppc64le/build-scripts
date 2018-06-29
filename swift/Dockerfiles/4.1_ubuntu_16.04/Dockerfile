@@ -4,15 +4,16 @@ MAINTAINER "Atul Sowani <sowania@us.ibm.com>"
 ENV SWIFT_SOURCE_ROOT=/root/swift-source
 ENV SWIFT_BUILD_ROOT=/root/swift-source
 ENV SWIFT_PATH_TO_LLVM_SOURCE=/root/swift-source/llvm
-ENV PATH=$PATH:$SWIFT_BUILD_ROOT/buildbot_incremental/llvm-linux-powerpc64le/bin:$SWIFT_BUILD_ROOT/buildbot_incremental/swift-linux-powerpc64le/bin
+ENV PATH=$PATH:$SWIFT_BUILD_ROOT/Ninja-ReleaseAssert+stdlib-Release/llvm-linux-powerpc64le/bin:$SWIFT_BUILD_ROOT/Ninja-ReleaseAssert+stdlib-Release/swift-linux-powerpc64le/bin
+ENV LD_LIBRARY_PATH=$SWIFT_BUILD_ROOT/Ninja-ReleaseAssert+stdlib-Release/swift-linux-powerpc64le/lib/swift/linux/powerpc64le:$LD_LIBRARY_PATH
 
 RUN cd && apt-get update -y && \
-    apt-get install -y cmake ninja-build clang python uuid-dev libicu-dev \
-        icu-devtools libbsd-dev libedit-dev libxml2-dev libsqlite3-dev swig \
+    apt-get install -y git cmake ninja-build clang python uuid-dev \
         libpython-dev libncurses5-dev pkg-config libblocksruntime-dev ocaml \
         libcurl4-openssl-dev autoconf libtool systemtap-sdt-dev tzdata rsync \
-        ca-certificates libstdc++-5-dev libobjc-5-dev git \
-        build-essential g++ && \
+        ca-certificates libobjc-5-dev swig g++ \
+        libicu-dev icu-devtools libbsd-dev libedit-dev libxml2-dev \
+        libsqlite3-dev libatomic-ops-dev libstdc++-5-dev && \
 
     mkdir swift-source && \
     cd swift-source && \
@@ -86,9 +87,10 @@ RUN cd && apt-get update -y && \
         --skip-test-playgroundsupport \
         --skip-test-libicu && \
 
-    apt-get remove --purge -y cmake ninja-build clang python swig \
-        icu-devtools pkg-config ocaml autoconf libtool tzdata rsync \
-        ca-certificates git build-essential g++ && \
+    apt-get remove --purge -y git cmake ninja-build clang python uuid-dev \
+        libpython-dev libncurses5-dev pkg-config libblocksruntime-dev ocaml \
+        libcurl4-openssl-dev autoconf libtool systemtap-sdt-dev tzdata rsync \
+        libobjc-5-dev ca-certificates swig g++ && \
     apt-get autoremove -y
 
 CMD [ "/bin/bash" ]
