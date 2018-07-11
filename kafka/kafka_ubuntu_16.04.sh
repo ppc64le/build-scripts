@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : kafka
-# Version       : 1.1.1-rc2
+# Version       : 1.1.0
 # Source repo   : https://github.com/apache/kafka
 # Tested on     : Ubuntu_16.04
 # Script License: Apache License, Version 2 or later
@@ -33,11 +33,10 @@ export PATH=$PATH:${JAVA_HOME}/bin:$PATH
 cd $HOME
 git clone https://github.com/apache/kafka
 cd kafka
+git checkout 1.1.0
+
+gradle clean
 gradle
 ./gradlew jar
 ./gradlew releaseTarGz -x signArchives
-
-#Note: disabling the test execution as there is 1 test failure on #ppc64le that is currently under investigation.
-#Current results: 1755 tests completed, 1 failed
-
-#./gradlew unitTest
+./gradlew unitTest
