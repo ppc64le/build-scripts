@@ -104,7 +104,7 @@ CUDADIR ?= /usr/local/cuda
 
 Build and install pytorch.  Note that we checkout from master with a specific commit.
 This was the last known commit that had 99% of the test passing on ppc64le.
-Commit (Feb 8, 2018):  873f1163806c14ae236538f76c44d04b63bef331   
+Commit (July 25, 2018): 3be8e4db51e8c6280a00f01f9f5e602b7a4fdd54
 
 # git clone https://github.com/pytorch/pytorch.git
 # cd pytorch
