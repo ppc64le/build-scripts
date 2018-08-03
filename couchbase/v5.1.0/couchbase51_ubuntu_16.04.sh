@@ -109,11 +109,11 @@ cd ../../..
 echo "------- applying patch -------"
 tar -xzf crc-files.tar.gz
 mv crc-files/crc32_constants.h platform/include/platform/crc32_constants.h
-cp crc-files/crc32_wrapper.c platform/src/crc32_wrapper.c
-cp crc-files/crc32.S platform/src/crc32.S
-cp crc-files/ppc-opcode.h platform/include/platform/ppc-opcode.h
+mv crc-files/crc32_wrapper.c platform/src/crc32_wrapper.c
+mv crc-files/crc32.S platform/src/crc32.S
+mv crc-files/ppc-opcode.h platform/include/platform/ppc-opcode.h
 rmdir crc-files
-patch -p2 < ~/atul/patch-dir/patch
+patch -p2 < ./patch
 
 # build couchbase
 echo "------- building tlm deps -------"
