@@ -1,8 +1,8 @@
 # ----------------------------------------------------------------------------
 #
-# Package       : query-string
-# Version       : 6.1.0
-# Source repo   : https://github.com/sindresorhus/query-string.git
+# Package       : moment
+# Version       : 2.22.2
+# Source repo   : https://github.com/moment/moment.git 
 # Tested on     : ubuntu_18.04
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sandip Giri <sgiri@us.ibm.com>
@@ -18,13 +18,11 @@
 
 # Install dependencies.
 sudo apt-get update -y
-sudo apt-get install -y git nodejs npm
+sudo apt-get install -y git nodejs npm phantomjs
+export QT_QPA_PLATFORM=offscreen
 
 # Clone and build source.
-git clone https://github.com/sindresorhus/query-string.git
-cd query-string
+git clone https://github.com/moment/moment.git 
+cd moment
 npm install
-# While running the tests . we were getting error "test/properties.js:32:1 Expected indentation of 3 tabs but found 2."
-# Adding one tab to pass the tests
-sed -i 's/.*m.stringify/\t&/' test/properties.js
 npm test

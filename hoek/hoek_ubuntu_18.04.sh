@@ -1,8 +1,8 @@
 # ----------------------------------------------------------------------------
 #
-# Package       : query-string
-# Version       : 6.1.0
-# Source repo   : https://github.com/sindresorhus/query-string.git
+# Package       : hoek
+# Version       : 5.0.3
+# Source repo   : https://github.com/hapijs/hoek
 # Tested on     : ubuntu_18.04
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sandip Giri <sgiri@us.ibm.com>
@@ -21,10 +21,7 @@ sudo apt-get update -y
 sudo apt-get install -y git nodejs npm
 
 # Clone and build source.
-git clone https://github.com/sindresorhus/query-string.git
-cd query-string
+git clone https://github.com/hapijs/hoek
+cd hoek
 npm install
-# While running the tests . we were getting error "test/properties.js:32:1 Expected indentation of 3 tabs but found 2."
-# Adding one tab to pass the tests
-sed -i 's/.*m.stringify/\t&/' test/properties.js
 npm test

@@ -1,8 +1,8 @@
 # ----------------------------------------------------------------------------
 #
-# Package       : query-string
-# Version       : 6.1.0
-# Source repo   : https://github.com/sindresorhus/query-string.git
+# Package       : qunit
+# Version       : v1.14.0
+# Source repo   : https://github.com/qunitjs/qunit
 # Tested on     : ubuntu_18.04
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sandip Giri <sgiri@us.ibm.com>
@@ -18,13 +18,16 @@
 
 # Install dependencies.
 sudo apt-get update -y
-sudo apt-get install -y git nodejs npm
+sudo apt-get install -y git nodejs npm wget libfontconfig1-dev
+
+# Install PhantomJs
+wget https://github.com/ibmsoe/phantomjs/releases/download/2.1.1/phantomjs-2.1.1-linux-ppc64.tar.bz2
+tar -xvf phantomjs-2.1.1-linux-ppc64.tar.bz2
+rm -rf phantomjs-2.1.1-linux-ppc64.tar.bz2
+sudo mv phantomjs-2.1.1-linux-ppc64/bin/phantomjs /usr/bin/
 
 # Clone and build source.
-git clone https://github.com/sindresorhus/query-string.git
-cd query-string
+git clone https://github.com/qunitjs/qunit
+cd qunit
 npm install
-# While running the tests . we were getting error "test/properties.js:32:1 Expected indentation of 3 tabs but found 2."
-# Adding one tab to pass the tests
-sed -i 's/.*m.stringify/\t&/' test/properties.js
 npm test
