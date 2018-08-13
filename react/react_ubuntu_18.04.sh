@@ -1,8 +1,8 @@
 # ----------------------------------------------------------------------------
 #
-# Package       : carbon-components-react
-# Version       : 6.20.0
-# Source repo   : https://github.com/IBM/carbon-components-react
+# Package       : react
+# Version       : 16.4.2
+# Source repo   : https://github.com/facebook/react
 # Tested on     : ubuntu_18.04
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Priya Seth <sethp@us.ibm.com>
@@ -22,7 +22,7 @@ sudo apt-get install -y git nodejs npm
 sudo npm install -g yarn
 
 # Clone and build source.
-git clone https://github.com/IBM/carbon-components-react
-cd carbon-components-react
-yarn install --offline
-yarn ci-check
+git clone https://github.com/facebook/react
+cd react
+yarn install
+yarn test
