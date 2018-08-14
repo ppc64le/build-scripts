@@ -16,19 +16,20 @@ cd $WDIR
 wget http://www.erlang.org/download/otp_src_17.4.tar.gz
 tar zxvf otp_src_17.4.tar.gz
 rm otp_src_17.4.tar.gz
-export ERL_TOP=$WDIR/otp_src_17.4
+ERL_TOP=$WDIR/otp_src_17.4
 cd otp_src_17.4
 ./configure --build=ppc64le-unknown-linux-gnu --prefix=/usr
 make
 sudo make install
+unset ERL_TOP
 
 # Build and install V8
 echo " ------- building v8 ------- "
 cd $WDIR
 git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
-cd depot_tools
 export PATH=$WDIR/depot_tools:$PATH
-gclient
+#gclient
+cd $WDIR
 fetch v8
 cd v8
 gclient sync
@@ -84,6 +85,7 @@ ln -s ~/.cbdepscache/exploded/ppc64le/go-1.8.5 ~/.cbdepscache/exploded/ppc64le/g
 rm go1.8.5.linux-ppc64le.tar.gz
 
 echo "------- cloning source -------"
+cd $WDIR
 mkdir couchbase
 export PATH=$WDIR/couchbase:$PATH
 curl https://storage.googleapis.com/git-repo-downloads/repo > couchbase/repo
@@ -107,13 +109,13 @@ cd ../../..
 
 # apply patches, copy crc files.
 echo "------- applying patch -------"
-tar -xzf crc-files.tar.gz
-mv crc-files/crc32_constants.h platform/include/platform/crc32_constants.h
-mv crc-files/crc32_wrapper.c platform/src/crc32_wrapper.c
-mv crc-files/crc32.S platform/src/crc32.S
-mv crc-files/ppc-opcode.h platform/include/platform/ppc-opcode.h
-rmdir crc-files
-patch -p2 < ./patch
+tar -xzf $WDIR/crc-files.tar.gz
+mv $WDIR/crc-files/crc32_constants.h platform/include/platform/crc32_constants.h
+mv $WDIR/crc-files/crc32_wrapper.c platform/src/crc32_wrapper.c
+mv $WDIR/crc-files/crc32.S platform/src/crc32.S
+mv $WDIR/crc-files/ppc-opcode.h platform/include/platform/ppc-opcode.h
+rmdir $WDIR/crc-files
+patch -p2 < $WDIR/patch
 
 # build couchbase
 echo "------- building tlm deps -------"
