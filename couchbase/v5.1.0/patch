@@ -74,8 +74,8 @@ diff -Naur a/couchbase/kv_engine/engines/ep/tests/ep_testsuite_xdcr.cc b/couchba
  
 diff -Naur a/couchbase/platform/CMakeLists.txt b/couchbase/platform/CMakeLists.txt
 --- a/couchbase/platform/CMakeLists.txt	2018-07-25 10:23:39.933292543 +0530
-+++ b/couchbase/platform/CMakeLists.txt	2018-07-25 10:23:39.961292893 +0530
-@@ -107,7 +107,18 @@
++++ b/couchbase/platform/CMakeLists.txt	2018-08-17 13:30:11.989363642 +0530
+@@ -107,7 +107,17 @@
     endif ()
  ELSE (WIN32)
     SET(PLATFORM_FILES src/cb_pthreads.cc src/urandom.c src/memorymap_posix.cc)
@@ -87,24 +87,22 @@ diff -Naur a/couchbase/platform/CMakeLists.txt b/couchbase/platform/CMakeLists.t
 +                         include/platform/ppc-opcode.h)
 +      ENABLE_LANGUAGE(ASM)
 +   ELSE ()
-+      MESSAGE ("ATUL>>>> NOT using ppc64le")
     SET_SOURCE_FILES_PROPERTIES(src/crc32c_sse4_2.cc PROPERTIES COMPILE_FLAGS -msse4.2)
 +   ENDIF ()
 +   # ATUL
     LIST(APPEND PLATFORM_LIBRARIES "pthread")
  
     IF (NOT APPLE)
-@@ -151,6 +162,9 @@
+@@ -151,6 +161,8 @@
  # platform abstraction functionality.
  # Note that in general external users should link 'platform' and not
  # 'platform_so' - see below.
 +# ATUL
 +IF (CMAKE_SYSTEM_PROCESSOR MATCHES "^ppc64le")
-+MESSAGE ("ATUL>>> including crc on ppc64le")
  ADD_LIBRARY(platform_so SHARED ${PLATFORM_FILES}
                              ${CMAKE_CURRENT_BINARY_DIR}/src/config.h
                              src/base64.cc
-@@ -165,7 +179,6 @@
+@@ -165,7 +177,6 @@
                              src/cbassert.c
                              src/checked_snprintf.cc
                              src/crc32c.cc
@@ -112,12 +110,11 @@ diff -Naur a/couchbase/platform/CMakeLists.txt b/couchbase/platform/CMakeLists.t
                              src/crc32c_private.h
                              src/global_new_replacement.cc
                              src/processclock.cc
-@@ -193,6 +206,51 @@
+@@ -193,6 +204,50 @@
                              include/platform/thread.h
                              include/platform/timeutils.h
                              include/platform/visibility.h)
 +ELSE()
-+MESSAGE ("ATUL>>> dropped crc")
 +ADD_LIBRARY(platform_so SHARED ${PLATFORM_FILES}
 +                            ${CMAKE_CURRENT_BINARY_DIR}/src/config.h
 +                            src/base64.cc
