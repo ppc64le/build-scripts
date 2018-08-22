@@ -1,7 +1,7 @@
-FROM ppc64le/node:4.7
+FROM node:10.9.0-stretch
 
 # Owner information
-MAINTAINER "Archa Bhandare <archa_bhandare@persistent.co.in>"
+MAINTAINER "Priya Seth <sethp@us.ibm.com>"
 
 #Install dependencies needed for building and testing
 RUN apt-get update && apt-get install -y build-essential && \
