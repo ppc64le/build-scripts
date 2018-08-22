@@ -1,5 +1,7 @@
-FROM node:9
-MAINTAINER "Yugandha Deshpande <yugandha@us.ibm.com>"
+FROM node:10.9.0-stretch
+
+# Owner information
+MAINTAINER "Priya Seth <sethp@us.ibm.com>"
 
 RUN apt-get update \
 	&& apt-get install build-essential -y \
