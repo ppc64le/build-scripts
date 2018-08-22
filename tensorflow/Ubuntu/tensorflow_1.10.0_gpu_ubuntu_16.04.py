@@ -25,7 +25,7 @@
 # To run this script
 # apt-get update -y
 # apt-get install -y python
-# python build_tensorflow_1_10_0_gpu.py
+# python tensorflow_1.10.0_gpu_ubuntu_16.04.py
 
 # The resulting wheel file will be in the tensorflow_pkg subdirectory from where the script was invoked.
 
@@ -93,8 +93,6 @@ bazel = [
 git = [
     'rm -rf tensorflow',
     'git clone -b v1.10.0 https://github.com/tensorflow/tensorflow',
-    'wget  https://github.com/wdirons/tensorflow/commit/03c24d6f13bb30d87745c6eb752019457863b00c.patch',
-    'patch -p1 tensorflow/tensorflow/workspace.bzl 03c24d6f13bb30d87745c6eb752019457863b00c.patch',
     ]
 
 def run_cmd(command):
@@ -142,9 +140,9 @@ build --action_env PYTHON_LIB_PATH='/usr/local/lib/python2.7/site-packages'\n\
 build --python_path='/usr/bin/python'\n\
 build --define with_jemalloc=true\n\
 build --define with_hdfs_support=true\n\
-build:gcp --define with_gcp_support=false\n\
-build:aws --define with_aws_support=false\n\
-build:kafka --define with_kafka_support=false\n\
+build --define with_gcp_support=true\n\
+build --define with_aws_support=true\n\
+build --define with_kafka_support=true\n\
 build:xla --define with_xla_support=false\n\
 build:gdr --define with_gdr_support=false\n\
 build:verbs --define with_verbs_support=false\n\
