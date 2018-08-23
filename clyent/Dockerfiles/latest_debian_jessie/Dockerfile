@@ -1,4 +1,4 @@
-FROM ppc64le/python:2.7
+FROM python:2.7.15-stretch
 
 MAINTAINER "Priya Seth <sethp@us.ibm.com>"
 

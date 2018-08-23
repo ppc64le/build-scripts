@@ -1,4 +1,4 @@
-FROM ppc64le/ubuntu:16.04
+FROM ubuntu:18.04
 
 MAINTAINER "Atul Sowani <sowania@us.ibm.com>"
 

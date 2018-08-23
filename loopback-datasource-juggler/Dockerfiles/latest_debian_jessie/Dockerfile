@@ -1,4 +1,4 @@
-FROM node:10.9.0-stretch
+FROM node:8-stretch
 
 # Owner information
 MAINTAINER "Priya Seth <sethp@us.ibm.com>"

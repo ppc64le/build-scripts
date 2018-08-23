@@ -1,12 +1,11 @@
-FROM node:10.9.0-stretch
+FROM ubuntu:18.04
 
 MAINTAINER "Priya Seth <sethp@us.ibm.com>
 
+ENV QT_QPA_PLATFORM offscreen
+
 RUN apt-get update \
-        && apt-get install -y libfontconfig  \
-        && wget https://github.com/ibmsoe/phantomjs/releases/download/2.1.1/phantomjs-2.1.1-linux-ppc64.tar.bz2 \
-        && tar -xvf phantomjs-2.1.1-linux-ppc64.tar.bz2 \
-        && cp phantomjs-2.1.1-linux-ppc64/bin/phantomjs /usr/bin/ \
+        && apt-get install -y libfontconfig git phantomjs nodejs npm \
 	&& cd / && git clone https://github.com/less/less.js && cd less.js \
         && npm install \
 	&& npm install -g grunt grunt-cli \

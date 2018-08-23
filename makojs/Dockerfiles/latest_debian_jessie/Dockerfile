@@ -1,9 +1,9 @@
-FROM node:10.9.0-stretch
+FROM node:8-stretch
 
 MAINTAINER "Priya Seth <sethp@us.ibm.com>"
 
-RUN git clone https://github.com/makojs/core \
-	&& cd core && npm install && npm test
+RUN git clone https://github.com/makojs/mako \
+	&& cd mako && npm install && npm test
 
-WORKDIR /core
+WORKDIR /mako
 CMD ["/bin/bash"]
