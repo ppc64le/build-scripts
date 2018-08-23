@@ -1,0 +1,32 @@
+diff -Naur a/karma.conf.js b/karma.conf.js
+--- a/karma.conf.js	2018-08-23 09:07:14.272747704 +0000
++++ b/karma.conf.js	2018-08-23 09:07:20.848875936 +0000
+@@ -37,7 +37,7 @@
+ 
+     // start these browsers
+     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
+-    browsers: ['PhantomJS'],
++    //browsers: ['PhantomJS'],
+ 
+     // Continuous Integration mode
+     // if true, Karma captures browsers, runs the tests and exits
+@@ -51,4 +51,4 @@
+         }
+     }
+   });
+-};
+\ No newline at end of file
++};
+diff -Naur a/package.json b/package.json
+--- a/package.json	2018-08-23 09:07:14.272747704 +0000
++++ b/package.json	2018-08-23 09:07:20.848875936 +0000
+@@ -20,9 +20,7 @@
+     "docco": "0.7.0",
+     "eslint": "^2.11.0",
+     "karma": "^0.13.13",
+-    "karma-phantomjs-launcher": "^1.0.0",
+     "karma-qunit": "^1.0.0",
+-    "phantomjs-prebuilt": "^2.1.7",
+     "qunitjs": "^2.0.0",
+     "uglify-js": "^2.4.17"
+   },

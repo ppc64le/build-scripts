@@ -18,10 +18,14 @@
 
 # Install dependencies.
 sudo apt-get update -y
-sudo apt-get install -y wget git nodejs npm phantomjs
+sudo apt-get install -y wget git nodejs npm
+# PhantomJS 1.9.0 is required, but it is not compatible with ppc64le.
+# phantomjs
 
 # Clone and build source.
 git clone https://github.com/jashkenas/backbone
 cd backbone
+patch -p1 < ../patchfile
 npm install
-npm test
+# Tests are disabled due to dependency on phantomjs.
+# npm test
