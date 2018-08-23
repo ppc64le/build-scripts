@@ -1,4 +1,6 @@
-FROM ppc64le/node:4.7
+FROM node:6-stretch
+
+MAINTAINER "Priya Seth <sethp@us.ibm.com>"
 
 RUN apt-get update -y && \
         apt-get install -y git build-essential && \

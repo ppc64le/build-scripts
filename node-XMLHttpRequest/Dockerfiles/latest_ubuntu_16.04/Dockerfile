@@ -1,6 +1,6 @@
-FROM ppc64le/node:7.5.0
+FROM node:10.9.0-stretch
 
-MAINTAINER Yugandha Deshpande <yugandha@us.ibm.com>
+MAINTAINER "Priya Seth <sethp@us.ibm.com>"
 
 RUN apt-get update \
         && apt-get install -y git build-essential ruby ruby-dev \

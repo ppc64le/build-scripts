@@ -1,4 +1,4 @@
-FROM ppc64le/golang:1.8
+FROM golang:1.10-stretch
 
 RUN apt-get update && \
         apt-get install -y cpp libc6-dev autoconf automake bison flex libtool \

@@ -1,4 +1,4 @@
-FROM  ppc64le/node:7.5
+FROM node:10.9.0-stretch
 
 MAINTAINER "Priya Seth <sethp@us.ibm.com>"
 

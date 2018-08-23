@@ -1,5 +1,7 @@
-FROM node
-MAINTAINER "Yugandha Deshpande <yugandha@us.ibm.com>"
+FROM node:10.9.0-stretch
+
+# Owner information
+MAINTAINER "Priya Seth <sethp@us.ibm.com>"
 
 RUN useradd -m yo && chown -R yo /usr/local
 WORKDIR /home/yo

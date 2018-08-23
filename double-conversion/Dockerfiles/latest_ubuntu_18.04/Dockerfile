@@ -1,4 +1,4 @@
-FROM ppc64le/ubuntu:16.04
+FROM ubuntu:18.04
 
 # Owner of a docker file
 # email : Meghali Dhoble <dhoblem@us.ibm.com>

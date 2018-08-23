@@ -1,4 +1,4 @@
-FROM ppc64le/node:4.7
+FROM node:10.9.0-stretch
 
 # Owner information
 MAINTAINER "Priya Seth <sethp@us.ibm.com"
