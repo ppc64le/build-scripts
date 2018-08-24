@@ -18,17 +18,18 @@
 #!/bin/bash
 
 sudo yum update -y
+sudo yum install -y wget
 
 #Install OpenCL development environment
 cd /tmp
 wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 sudo rpm -ivh epel-release-latest-7.noarch.rpm
 sudo yum update -y
-sudo yum install -y wget opencl-filesystem opencl-headers
+sudo yum install -y opencl-filesystem opencl-headers
 
 cd /tmp
-wget https://rpmfind.net/linux/epel/7/ppc64le/Packages/o/ocl-icd-2.2.11-2.el7.ppc64le.rpm
-sudo rpm -ivh ocl-icd-2.2.11-2.el7.ppc64le.rpm
+wget https://rpmfind.net/linux/epel/7/ppc64le/Packages/o/ocl-icd-2.2.12-1.el7.ppc64le.rpm
+sudo rpm -ivh ocl-icd-2.2.12-1.el7.ppc64le.rpm
 
 #Install necessary building tools and dependencies
 sudo yum install -y gcc gcc-c++ git vim python python-devel python-setuptools make gcc-gfortran
