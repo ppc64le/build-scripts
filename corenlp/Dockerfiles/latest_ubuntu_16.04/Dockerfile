@@ -1,4 +1,5 @@
-FROM ppc64le/java:latest
+FROM openjdk:8
+
 MAINTAINER "Lysanne Fernandes <lysannef@us.ibm.com>"
 
 ENV PATH=$PATH:$JAVA_HOME/bin

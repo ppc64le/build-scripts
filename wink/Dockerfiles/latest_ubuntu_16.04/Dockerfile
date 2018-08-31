@@ -1,6 +1,6 @@
 FROM openjdk:8
 
-MAINTAINER "Jay Joshi <joshija@us.ibm.com>"
+MAINTAINER "Priya Seth <sethp@us.ibm.com>"
 
 ENV JAVA_HOME "/usr/lib/jvm/java-8-openjdk-ppc64el"
 ENV JAVA_TOOL_OPTIONS "-Dfile.encoding=UTF-8"

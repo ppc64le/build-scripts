@@ -1,4 +1,4 @@
-FROM ppc64le/ubuntu:16.04
+FROM openjdk:8
 
 MAINTAINER "Atul Sowani <sowania@us.ibm.com>"
 

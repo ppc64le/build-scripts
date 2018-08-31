@@ -1,4 +1,4 @@
-FROM ppc64le/golang:1.8
+FROM golang:1.10
 MAINTAINER "Atul Sowani <sowania@us.ibm.com>"
 
 RUN apt-get update -y && apt-get install -y cmake && \

@@ -1,5 +1,5 @@
-FROM node:9
-MAINTAINER "Yugandha Deshpande <yugandha@us.ibm.com>"
+FROM node:10.9.0-stretch
+MAINTAINER "Priya Seth <sethp@us.ibm.com>"
 ENV V_REQUEST latest
 ENV COVERALLS_REPO_TOKEN SIAeZjKYlHK74rbcFvNHMUzjRiMpflxve
 ENV VERSION v4.2.2

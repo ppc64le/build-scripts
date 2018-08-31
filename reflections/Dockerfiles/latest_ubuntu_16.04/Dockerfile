@@ -1,5 +1,5 @@
 FROM  openjdk:8
-LABEL "Sanchal Singh <sanchals@us.ibm.com>"
+MAINTAINER "Priya Seth <sethp@us.ibm.com>"
 
 RUN apt-get update -y && \
     apt-get install -y build-essential wget git maven && \

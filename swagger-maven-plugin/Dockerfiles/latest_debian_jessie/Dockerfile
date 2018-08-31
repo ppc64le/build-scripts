@@ -1,4 +1,4 @@
-FROM ppc64le/openjdk:8-jdk
+FROM openjdk:8
 
 MAINTAINER "Priya Seth <sethp@us.ibm.com>"
 

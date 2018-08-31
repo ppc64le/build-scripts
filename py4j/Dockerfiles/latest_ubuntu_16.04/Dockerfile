@@ -1,5 +1,7 @@
-FROM ppc64le/java:latest
+FROM openjdk:8
+
 MAINTAINER "Atul Sowani <sowania@us.ibm.com>"
+
 RUN apt-get update -y && \
         apt-get install -y git wget && \
         wget https://archive.apache.org/dist/maven/maven-3/3.3.3/binaries/apache-maven-3.3.3-bin.tar.gz && \

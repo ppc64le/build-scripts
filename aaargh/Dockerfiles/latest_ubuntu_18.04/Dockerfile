@@ -1,7 +1,8 @@
-FROM ppc64le/python:2.7
+FROM ubuntu:18.04
 
 RUN apt-get update && apt-get install -y  \
         libpq-dev \
+	python-dev \
         python-ldap \
         python-ldappool \
         python-memcache \
@@ -15,7 +16,7 @@ RUN apt-get update && apt-get install -y  \
         libxml2-dev \
         libxslt1-dev \
         git \
-	&& easy_install pip \
+	python-pip \
 	&& git clone https://github.com/wbolster/aaargh \
 	&& cd aaargh \
 	&& pip install -r test-requirements.txt \

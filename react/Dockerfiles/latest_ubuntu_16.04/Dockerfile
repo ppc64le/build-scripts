@@ -1,5 +1,5 @@
-FROM node:9
-MAINTAINER "Yugandha Deshpande <yugandha@us.ibm.com>"
+FROM node:8-stretch
+MAINTAINER "Priya Seth <sethp@us.ibm.com>"
 
 RUN apt-get update \
 	&& npm install yarn -g \
