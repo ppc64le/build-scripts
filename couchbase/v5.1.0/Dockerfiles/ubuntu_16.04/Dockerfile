@@ -1,4 +1,5 @@
 FROM ubuntu:16.04
+MAINTAINER "Atul Sowani <sowania@us.ibm.com>"
 
 ENV WDIR=/root
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-ppc64el
@@ -111,6 +112,7 @@ RUN apt-get update -y && \
         mv /tmp/crc-files/ppc-opcode.h platform/include/platform/ppc-opcode.h && \
         rmdir /tmp/crc-files && \
         patch -p2 < /tmp/patch && \
+        rm /tmp/crc-files.tar.gz /tmp/patch && \
 
     cd tlm/deps/packages && \
     mkdir build-boost && \
@@ -393,6 +395,10 @@ RUN apt-get update -y && \
         make vbucket_testapp && \
         make vbucket_testketama && \
         make install && \
-        cd ..
+        cd .. && \
+
+    apt-get remove -y wget tar git make curl autoconf cmake libtool \
+        subversion cmake lsb-release && \
+        apt-get autoremove -y
 
 CMD [ "/bin/bash" ]
