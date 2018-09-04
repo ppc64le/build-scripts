@@ -1,0 +1,449 @@
+diff -Naur a/couchbase/CMakeLists.txt b/couchbase/CMakeLists.txt
+--- a/couchbase/CMakeLists.txt	2018-07-25 10:23:39.921292393 +0530
++++ b/couchbase/CMakeLists.txt	2018-07-25 10:23:39.945292693 +0530
+@@ -110,7 +110,7 @@
+ INCLUDE(FindCouchbaseErlang)
+ INCLUDE(FindCouchbaseDtrace)
+ INCLUDE(FindCouchbaseGo)
+-INCLUDE(FindCouchbaseBreakpad)
++#ATUL#INCLUDE(FindCouchbaseBreakpad)
+ INCLUDE(FindCouchbaseFlatbuffers)
+ INCLUDE(FindCouchbaseValgrind)
+ INCLUDE(CouchbaseCompilerOptions)
+diff -Naur a/couchbase/forestdb/src/arch.h b/couchbase/forestdb/src/arch.h
+--- a/couchbase/forestdb/src/arch.h	2018-07-25 10:23:39.933292543 +0530
++++ b/couchbase/forestdb/src/arch.h	2018-07-25 10:23:39.957292843 +0530
+@@ -316,6 +316,10 @@
+         #define spin_unlock(arg) pthread_spin_unlock(arg)
+         #define spin_destroy(arg) pthread_spin_destroy(arg)
+         #define SPIN_INITIALIZER (spin_t)(1)
++        #if defined(__PPC64__) && defined(__LITTLE_ENDIAN__) // ATUL
++          #undef SPIN_INITIALIZER
++          #define SPIN_INITIALIZER (spin_t)(0)
++        #endif
+     #endif
+     #ifndef mutex_t
+         // mutex
+diff -Naur a/couchbase/forestdb/utils/debug.cc b/couchbase/forestdb/utils/debug.cc
+--- a/couchbase/forestdb/utils/debug.cc	2018-07-25 10:23:39.929292493 +0530
++++ b/couchbase/forestdb/utils/debug.cc	2018-07-25 10:23:39.957292843 +0530
+@@ -89,6 +89,8 @@
+     ucontext_t *u = (ucontext_t *)context;
+ #ifdef REG_RIP // Test if the Program Counter is 64 bits
+     unsigned char *pc = (unsigned char *)u->uc_mcontext.gregs[REG_RIP];
++#elif defined (__PPC64__) && defined (__LITTLE_ENDIAN__) // ATUL
++    unsigned char *pc = (unsigned char *)u->uc_mcontext.regs->nip;
+ #else // 32 bit machine, PC is stored in %eip register
+     unsigned char *pc = (unsigned char *)u->uc_mcontext.gregs[REG_EIP];
+ #endif // REG_RIP for 64-bit machines
+diff -Naur a/couchbase/goproj/src/github.com/couchbase/indexing/secondary/memdb/skiplist/skiplist.go b/couchbase/goproj/src/github.com/couchbase/indexing/secondary/memdb/skiplist/skiplist.go
+--- a/couchbase/goproj/src/github.com/couchbase/indexing/secondary/memdb/skiplist/skiplist.go	2018-07-25 10:23:39.929292493 +0530
++++ b/couchbase/goproj/src/github.com/couchbase/indexing/secondary/memdb/skiplist/skiplist.go	2018-07-25 10:23:39.953292793 +0530
+@@ -60,6 +60,7 @@
+ }
+ 
+ func NewWithConfig(cfg Config) *Skiplist {
++	// ATUL: if (runtime.GOARCH != "amd64") && (runtime.GOARCH == "ppc64le") {
+ 	if runtime.GOARCH != "amd64" {
+ 		cfg.UseMemoryMgmt = false
+ 	}
+@@ -76,7 +77,9 @@
+ 	if cfg.UseMemoryMgmt {
+ 		s.freeNode = func(n *Node) {
+ 			if Debug {
+-				debugMarkFree(n)
++				if runtime.GOARCH == "amd64" { // ATUL
++					//debugMarkFree(n)
++				}
+ 			}
+ 			cfg.Free(unsafe.Pointer(n))
+ 		}
+diff -Naur a/couchbase/kv_engine/engines/ep/tests/ep_testsuite_xdcr.cc b/couchbase/kv_engine/engines/ep/tests/ep_testsuite_xdcr.cc
+--- a/couchbase/kv_engine/engines/ep/tests/ep_testsuite_xdcr.cc	2018-07-25 10:23:39.929292493 +0530
++++ b/couchbase/kv_engine/engines/ep/tests/ep_testsuite_xdcr.cc	2018-07-25 10:23:39.953292793 +0530
+@@ -2359,7 +2359,9 @@
+     itemMeta.flags = 0xdeadbeef;
+ 
+     // Watson (4.6) accepts valid encodings, but ignores them
+-    std::vector<char> junkMeta = {-2,-1,2,3};
++    // ATUL
++    //std::vector<char> junkMeta = {-2,-1,2,3};
++    std::vector<char> junkMeta = {(-2,-1,2,3)};
+ 
+     int force = 0;
+ 
+diff -Naur a/couchbase/platform/CMakeLists.txt b/couchbase/platform/CMakeLists.txt
+--- a/couchbase/platform/CMakeLists.txt	2018-07-25 10:23:39.933292543 +0530
++++ b/couchbase/platform/CMakeLists.txt	2018-07-25 10:23:39.961292893 +0530
+@@ -107,7 +107,18 @@
+    endif ()
+ ELSE (WIN32)
+    SET(PLATFORM_FILES src/cb_pthreads.cc src/urandom.c src/memorymap_posix.cc)
++   # ATUL
++   IF (CMAKE_SYSTEM_PROCESSOR MATCHES "^ppc64le")
++      SET(PLATFORM_FILES ${PLATFORM_FILES} src/crc32.S
++                         src/crc32_wrapper.c
++                         include/platform/crc32_constants.h
++                         include/platform/ppc-opcode.h)
++      ENABLE_LANGUAGE(ASM)
++   ELSE ()
++      MESSAGE ("ATUL>>>> NOT using ppc64le")
+    SET_SOURCE_FILES_PROPERTIES(src/crc32c_sse4_2.cc PROPERTIES COMPILE_FLAGS -msse4.2)
++   ENDIF ()
++   # ATUL
+    LIST(APPEND PLATFORM_LIBRARIES "pthread")
+ 
+    IF (NOT APPLE)
+@@ -151,6 +162,9 @@
+ # platform abstraction functionality.
+ # Note that in general external users should link 'platform' and not
+ # 'platform_so' - see below.
++# ATUL
++IF (CMAKE_SYSTEM_PROCESSOR MATCHES "^ppc64le")
++MESSAGE ("ATUL>>> including crc on ppc64le")
+ ADD_LIBRARY(platform_so SHARED ${PLATFORM_FILES}
+                             ${CMAKE_CURRENT_BINARY_DIR}/src/config.h
+                             src/base64.cc
+@@ -165,7 +179,6 @@
+                             src/cbassert.c
+                             src/checked_snprintf.cc
+                             src/crc32c.cc
+-                            src/crc32c_sse4_2.cc
+                             src/crc32c_private.h
+                             src/global_new_replacement.cc
+                             src/processclock.cc
+@@ -193,6 +206,51 @@
+                             include/platform/thread.h
+                             include/platform/timeutils.h
+                             include/platform/visibility.h)
++ELSE()
++MESSAGE ("ATUL>>> dropped crc")
++ADD_LIBRARY(platform_so SHARED ${PLATFORM_FILES}
++                            ${CMAKE_CURRENT_BINARY_DIR}/src/config.h
++                            src/base64.cc
++                            src/getpid.c
++                            src/random.cc
++                            src/backtrace.c
++                            src/byte_buffer_dump.cc
++                            src/byteorder.c
++                            src/cb_malloc.cc
++                            src/cb_mktemp.c
++                            src/cb_time.cc
++                            src/cbassert.c
++                            src/checked_snprintf.cc
++                            src/crc32c.cc
++                            src/crc32c_private.h
++                            src/global_new_replacement.cc
++                            src/processclock.cc
++                            src/strerror.cc
++                            src/string.cc
++                            src/strnstr.cc
++                            src/sysinfo.cc
++                            src/thread.cc
++                            src/timeutils.cc
++                            src/uuid.cc
++                            include/platform/base64.h
++                            include/platform/bitset.h
++                            include/platform/byte_buffer_dump.h
++                            include/platform/crc32c.h
++                            include/platform/memorymap.h
++                            include/platform/platform.h
++                            include/platform/pipe.h
++                            include/platform/processclock.h
++                            include/platform/random.h
++                            include/platform/ring_buffer.h
++                            include/platform/sized_buffer.h
++                            include/platform/strerror.h
++                            include/platform/string.h
++                            include/platform/sysinfo.h
++                            include/platform/thread.h
++                            include/platform/timeutils.h
++                            include/platform/visibility.h)
++ENDIF()
++# ATUL
+ 
+ LIST(APPEND PLATFORM_LIBRARIES "phosphor")
+ LIST(REMOVE_DUPLICATES PLATFORM_LIBRARIES)
+diff -Naur a/couchbase/platform/include/platform/crc32c.h b/couchbase/platform/include/platform/crc32c.h
+--- a/couchbase/platform/include/platform/crc32c.h	2018-07-25 10:23:39.933292543 +0530
++++ b/couchbase/platform/include/platform/crc32c.h	2018-07-25 10:23:39.961292893 +0530
+@@ -40,7 +40,9 @@
+ // built on another platform.
+ //
+ #if !defined(__x86_64__) && !defined(_M_X64) && !defined(_M_IX86)
++#if !defined(__PPC64__) && !defined(__LITTLE_ENDIAN__)  // ATUL
+ #error "crc32c requires X86 SSE4.2 for hardware acceleration"
++#endif /* PPC64 && LITTLE_ENDIAN */  // ATUL
+ #endif
+ 
+ #ifdef CRC32C_UNIT_TEST
+diff -Naur a/couchbase/platform/src/crc32c.cc b/couchbase/platform/src/crc32c.cc
+--- a/couchbase/platform/src/crc32c.cc	2018-07-25 10:23:39.941292643 +0530
++++ b/couchbase/platform/src/crc32c.cc	2018-07-27 16:57:22.372952629 +0530
+@@ -54,15 +54,21 @@
+ #include "platform/crc32c.h"
+ #include "crc32c_private.h"
+ 
++#if defined (__PPC64__) && defined (__LITTLE_ENDIAN__) // ATUL
++#include "platform/crc32_constants.h"
++#include "platform/ppc-opcode.h"
++#endif /* PPC64 && LITTLE_ENDIAN */
+ #include <stdint.h>
+ #include <stddef.h>
+ 
++#if !defined (__PPC64__) && !defined (__LITTLE_ENDIAN__) // ATUL
+ // select header file for cpuid.
+ #if defined(WIN32)
+ #include <intrin.h>
+ #elif defined(__clang__) || defined(__GNUC__)
+ #include <cpuid.h>
+ #endif
++#endif /* PPC64 && LITTLE_ENDIAN */  // ATUL
+ 
+ #include <limits>
+ #include <array>
+@@ -363,15 +369,26 @@
+ //
+ extern uint32_t crc32c_hw(const uint8_t* buf, size_t len, uint32_t crc_in);
+ 
++#if defined (__PPC64__) && defined (__LITTLE_ENDIAN__)  // ATUL
++extern "C" unsigned int crc32_vpmsum(unsigned int crc_in, unsigned char *buf, unsigned long len);
++
++uint32_t ppc_crc32c_hw(const uint8_t* buf, size_t len, uint32_t crc_in)
++{
++  return crc32_vpmsum((unsigned int) crc_in, (unsigned char *) buf, (unsigned long) len);
++}
++#endif /* PPC64 && LITTLE_ENDIAN */
+ //
+ // Return the appropriate function for the platform.
+ // If SSE4.2 is available then hardware acceleration is used.
+ //
+ crc32c_function setup_crc32c() {
++#if !defined (__PPC64__) && !defined (__LITTLE_ENDIAN__)  // ATUL
+     const uint32_t SSE42 = 0x00100000;
++#endif /* PPC64 && LITTLE_ENDIAN */
+ 
+     crc32c_function f = crc32c_sw;
+ 
++#if !defined(__PPC64__) && !defined (__LITTLE_ENDIAN__) // ATUL
+ #if defined(WIN32)
+     std::array<int, 4> registers = {{0,0,0,0}};
+     __cpuid(registers.data(), 1);
+@@ -383,6 +400,9 @@
+     if (registers[2] & SSE42) {
+         f = crc32c_hw;
+     }
++#else /* PPC64 && LITTLE_ENDIAN */ // ATUL
++    f = ppc_crc32c_hw;
++#endif // ATUL
+ 
+     return f;
+ }
+diff -Naur a/couchbase/platform/tests/crc32/CMakeLists.txt b/couchbase/platform/tests/crc32/CMakeLists.txt
+--- a/couchbase/platform/tests/crc32/CMakeLists.txt	2018-07-25 10:23:39.937292593 +0530
++++ b/couchbase/platform/tests/crc32/CMakeLists.txt	2018-07-25 10:23:39.965292943 +0530
+@@ -1,22 +1,52 @@
++IF (CMAKE_SYSTEM_PROCESSOR MATCHES "^ppc64le")
++MESSAGE ("ATUL>>> Using ppc64le")
++ENDIF ()
+ IF (NOT WIN32)
++    # ATUL
++    IF (CMAKE_SYSTEM_PROCESSOR MATCHES "^ppc64le")
++        SET(PLATFORM_FILES ${Platform_SOURCE_DIR}/src/crc32_wrapper.c
++                           ${Platform_SOURCE_DIR}/src/crc32.S)
++        ENABLE_LANGUAGE(ASM)
++    ELSE ()
++      MESSAGE ("ATUL>>> NOT using ppc64le (2)")
+     SET_SOURCE_FILES_PROPERTIES(${Platform_SOURCE_DIR}/src/crc32c_sse4_2.cc
+                                 PROPERTIES COMPILE_FLAGS -msse4.2)
++    ENDIF ()
++    # ATUL
+ ENDIF(NOT WIN32)
+ 
+ ADD_EXECUTABLE(platform-crc32c-test crc32c_test.cc)
+ TARGET_LINK_LIBRARIES(platform-crc32c-test platform)
+ 
++# ATUL
++IF (CMAKE_SYSTEM_PROCESSOR MATCHES "^ppc64le")
++ADD_EXECUTABLE(platform-crc32c-sw_hw-test ${PLATFORM_FILES}
++               ${Platform_SOURCE_DIR}/src/crc32c.cc
++               crc32c_test.cc)
++ELSE ()
++      MESSAGE ("ATUL>>> NOT using ppc64le (2)")
+ ADD_EXECUTABLE(platform-crc32c-sw_hw-test
+                ${Platform_SOURCE_DIR}/src/crc32c.cc
+                ${Platform_SOURCE_DIR}/src/crc32c_sse4_2.cc
+                crc32c_test.cc)
++ENDIF ()
++# ATUL
+ SET_TARGET_PROPERTIES(platform-crc32c-sw_hw-test PROPERTIES COMPILE_FLAGS "-DCRC32C_UNIT_TEST")
+ TARGET_LINK_LIBRARIES(platform-crc32c-sw_hw-test ${PLATFORM_LIBRARIES})
+ 
++# ATUL
++IF (CMAKE_SYSTEM_PROCESSOR MATCHES "^ppc64le")
++ADD_EXECUTABLE(platform-crc32c-bench ${PLATFORM_FILES}
++               ${Platform_SOURCE_DIR}/src/crc32c.cc
++               crc32c_bench.cc)
++ELSE ()
++      MESSAGE ("ATUL>>> NOT using ppc64le (2)")
+ ADD_EXECUTABLE(platform-crc32c-bench
+                ${Platform_SOURCE_DIR}/src/crc32c.cc
+                ${Platform_SOURCE_DIR}/src/crc32c_sse4_2.cc
+                crc32c_bench.cc)
++ENDIF ()
++# ATUL
+ SET_TARGET_PROPERTIES(platform-crc32c-bench PROPERTIES COMPILE_FLAGS "-DCRC32C_UNIT_TEST")
+ TARGET_LINK_LIBRARIES(platform-crc32c-bench platform)
+ 
+diff -Naur a/couchbase/platform/tests/crc32/crc32c_bench.cc b/couchbase/platform/tests/crc32/crc32c_bench.cc
+--- a/couchbase/platform/tests/crc32/crc32c_bench.cc	2018-07-25 10:23:39.941292643 +0530
++++ b/couchbase/platform/tests/crc32/crc32c_bench.cc	2018-07-25 10:23:39.965292943 +0530
+@@ -34,8 +34,12 @@
+ 
+ // extern directly to the hw/sw versions
+ extern uint32_t crc32c_sw(const uint8_t* buf, size_t len, uint32_t crc_in);
++#if defined (__PPC64__) && defined (__LITTLE_ENDIAN__) // ATUL
++extern uint32_t ppc_crc32c_hw(const uint8_t* buf, size_t len, uint32_t crc_in);
++#else
+ extern uint32_t crc32c_hw(const uint8_t* buf, size_t len, uint32_t crc_in);
+ extern uint32_t crc32c_hw_1way(const uint8_t* buf, size_t len, uint32_t crc_in);
++#endif /* PPC64 && LITTLE_ENDIAN */ // ATUL
+ 
+ typedef uint32_t (*crc32c_function)(const uint8_t* buf, size_t len, uint32_t crc_in);
+ 
+@@ -145,8 +149,12 @@
+     }
+     std::vector<hrtime_t> timings_sw, timings_hw, timings_hw_opt;
+     crc_bench_core(data+unalignment, len, iterations, crc32c_sw, timings_sw);
++#if defined (__PPC64__) && defined (__LITTLE_ENDIAN__) // ATUL
++    crc_bench_core(data+unalignment, len, iterations, ppc_crc32c_hw, timings_hw_opt);
++#else
+     crc_bench_core(data+unalignment, len, iterations, crc32c_hw_1way, timings_hw);
+     crc_bench_core(data+unalignment, len, iterations, crc32c_hw, timings_hw_opt);
++#endif /* PPC64 && LITTLE_ENDIAN */ // ATUL
+     delete [] data;
+ 
+     crc_results(len, timings_sw, timings_hw, timings_hw_opt);
+@@ -186,4 +194,4 @@
+         crc_bench(size % 2 == 0? size+1:size, 1000, 1);
+     }
+     return 0;
+-}
+\ No newline at end of file
++}
+diff -Naur a/couchbase/platform/tests/crc32/crc32c_test.cc b/couchbase/platform/tests/crc32/crc32c_test.cc
+--- a/couchbase/platform/tests/crc32/crc32c_test.cc	2018-07-25 10:23:39.937292593 +0530
++++ b/couchbase/platform/tests/crc32/crc32c_test.cc	2018-07-25 10:23:39.965292943 +0530
+@@ -121,11 +121,16 @@
+ #ifdef CRC32C_UNIT_TEST
+     // extern directly to the hw/sw versions
+     extern uint32_t crc32c_sw(const uint8_t* buf, size_t len, uint32_t crc_in);
++#if defined (__PPC64__) && defined (__LITTLE_ENDIAN__) // ATUL
++    extern uint32_t ppc_crc32c_hw(const uint8_t* buf, size_t len, uint32_t crc_in);
++    actual = ppc_crc32c_hw(buffer, len, 0);
++#else
+     extern uint32_t crc32c_hw(const uint8_t* buf, size_t len, uint32_t crc_in);
+     extern uint32_t crc32c_hw_1way(const uint8_t* buf, size_t len, uint32_t crc_in);
+     // in the unit test version, we're bypassing the DLL exposed interface
+     // and running hard/software function together for full validation.
+     actual = crc32c_hw_1way(buffer, len, 0) & crc32c_sw(buffer, len, 0) & crc32c_hw(buffer, len, 0);
++#endif /* PPC64 && LITTLE_ENDIAN */ // ATUL
+ #else
+     actual = crc32c(buffer, len, 0);
+ #endif
+diff -Naur a/couchbase/tlm/CMakeLists.txt b/couchbase/tlm/CMakeLists.txt
+--- a/couchbase/tlm/CMakeLists.txt	2018-07-25 10:23:39.921292393 +0530
++++ b/couchbase/tlm/CMakeLists.txt	2018-07-25 10:23:39.945292693 +0530
+@@ -110,7 +110,7 @@
+ INCLUDE(FindCouchbaseErlang)
+ INCLUDE(FindCouchbaseDtrace)
+ INCLUDE(FindCouchbaseGo)
+-INCLUDE(FindCouchbaseBreakpad)
++# ATUL: INCLUDE(FindCouchbaseBreakpad)
+ INCLUDE(FindCouchbaseFlatbuffers)
+ INCLUDE(FindCouchbaseValgrind)
+ INCLUDE(CouchbaseCompilerOptions)
+diff -Naur a/couchbase/tlm/deps/manifest.cmake b/couchbase/tlm/deps/manifest.cmake
+--- a/couchbase/tlm/deps/manifest.cmake	2018-07-26 16:59:28.339369748 +0530
++++ b/couchbase/tlm/deps/manifest.cmake	2018-07-26 14:06:18.058235295 +0530
+@@ -16,7 +16,7 @@
+ # you may use the cmake macro GET_SUPPORTED_PRODUCTION_PLATFORM to
+ # check if this is a supported platform.
+ #
+-DECLARE_DEP (breakpad VERSION 20160926-cb1 PLATFORMS centos6 centos7 debian7 debian8 debian9 suse11.2 suse12.2 ubuntu12.04 ubuntu14.04 ubuntu16.04 windows_msvc windows_msvc2015)
++# ATUL: DECLARE_DEP (breakpad VERSION 20160926-cb1 PLATFORMS centos6 centos7 debian7 debian8 debian9 suse11.2 suse12.2 ubuntu12.04 ubuntu14.04 ubuntu16.04 windows_msvc windows_msvc2015)
+ DECLARE_DEP (boost VERSION 1.62.0-cb3 PLATFORMS centos6 centos7 debian7 debian8 debian9 freebsd macosx suse11.2 suse12.2 ubuntu12.04 ubuntu14.04 ubuntu16.04 windows_msvc windows_msvc2015 windows_msvc2017)
+ DECLARE_DEP (curl VERSION 7.49.1-cb1 PLATFORMS centos6 centos7 debian7 debian8 debian9 freebsd sunos suse11.2 suse12.2 ubuntu12.04 ubuntu14.04 ubuntu16.04 windows_msvc windows_msvc2015 windows_msvc2017)
+ DECLARE_DEP (erlang VERSION R16B03-1-couchbase-cb8 PLATFORMS centos6 centos7 debian7 debian8 debian9 macosx suse11.2 suse12.2 ubuntu12.04 ubuntu14.04 ubuntu16.04 windows_msvc2015)
+@@ -27,7 +27,7 @@
+ DECLARE_DEP (icu4c VERSION 54.1-cb10 PLATFORMS centos6 centos7 debian7 debian8 debian9 freebsd macosx sunos suse11.2 suse12.2 ubuntu12.04 ubuntu14.04 ubuntu16.04)
+ DECLARE_DEP (jemalloc VERSION 4.1.0-cb2 PLATFORMS windows_msvc windows_msvc2015 windows_msvc2017)
+ DECLARE_DEP (jemalloc VERSION 4.0.4-cb2 PLATFORMS freebsd sunos)
+-DECLARE_DEP (jemalloc VERSION 4.5.0.1-cb1 PLATFORMS centos6 centos7 debian7 debian8 debian9 macosx suse11.2 suse12.2 ubuntu12.04 ubuntu14.04 ubuntu16.04)
++DECLARE_DEP (jemalloc VERSION 4.5.0-cb2 PLATFORMS centos6 centos7 debian7 debian8 debian9 macosx suse11.2 suse12.2 ubuntu12.04 ubuntu14.04 ubuntu16.04)
+ DECLARE_DEP (json VERSION 1.1.0-cb1 PLATFORMS centos6 centos7 debian7 debian8 debian9 freebsd macosx sunos suse11.2 suse12.2 ubuntu12.04 ubuntu14.04 ubuntu16.04 windows_msvc windows_msvc2015 windows_msvc2017)
+ DECLARE_DEP (libevent VERSION 2.1.8-cb2 PLATFORMS centos6 centos7 debian7 debian8 debian9 freebsd macosx sunos suse11.2 suse12.2 ubuntu12.04 ubuntu14.04 ubuntu16.04 windows_msvc windows_msvc2015 windows_msvc2017)
+ DECLARE_DEP (openssl VERSION 1.0.2k-cb1 PLATFORMS macosx windows_msvc windows_msvc2015 windows_msvc2017)
+@@ -35,7 +35,7 @@
+ DECLARE_DEP (python-snappy VERSION c97d633-cb1 PLATFORMS centos6 centos7 debian7 debian8 debian9 freebsd macosx sunos suse11.2 suse12.2 ubuntu12.04 ubuntu14.04 ubuntu16.04)
+ DECLARE_DEP (snappy VERSION 1.1.1 PLATFORMS windows_msvc windows_msvc2015 windows_msvc2017)
+ DECLARE_DEP (snappy VERSION 1.1.1-cb2 PLATFORMS centos6 centos7 debian7 debian8 debian9 freebsd macosx sunos suse11.2 suse12.2 ubuntu12.04 ubuntu14.04 ubuntu16.04)
+-DECLARE_DEP (v8 VERSION 5.2-cb1 PLATFORMS centos6 centos7 debian7 debian8 suse11.2 suse12.2 ubuntu12.04 ubuntu14.04 ubuntu16.04 windows_msvc windows_msvc2015 windows_msvc2017)
++# ATUL: DECLARE_DEP (v8 VERSION 5.2-cb1 PLATFORMS centos6 centos7 debian7 debian8 suse11.2 suse12.2 ubuntu12.04 ubuntu14.04 ubuntu16.04 windows_msvc windows_msvc2015 windows_msvc2017)
+ # 5.2-cb2 was rebuilt just for MacOS
+ DECLARE_DEP (v8 VERSION 5.2-cb2 PLATFORMS macosx debian9)
+ DECLARE_DEP (v8 VERSION 4.8-cb4 PLATFORMS sunos)
+diff -Naur a/couchbase/tlm/deps/packages/CMakeLists.txt b/couchbase/tlm/deps/packages/CMakeLists.txt
+--- a/couchbase/tlm/deps/packages/CMakeLists.txt	2018-07-26 14:04:59.589110672 +0530
++++ b/couchbase/tlm/deps/packages/CMakeLists.txt	2018-07-26 14:05:10.145262682 +0530
+@@ -163,7 +163,7 @@
+ _ADD_DEP_PACKAGE(icu4c 54.1 r54.1 10)
+ _ADD_DEP_PACKAGE(libevent 2.1.8 release-2.1.8-stable-cb 2)
+ _ADD_DEP_PACKAGE(v8 5.2 5.2-couchbase 2)
+-_ADD_DEP_PACKAGE(jemalloc 4.3.1 4.3.1 2)
++_ADD_DEP_PACKAGE(jemalloc 4.5.0 4.5.0 2)
+ _ADD_DEP_PACKAGE(curl 7.49.1 curl-7_49_1 1)
+ 
+ # erlang R16B03-couchbase / branch: couchbase-watson
+diff -Naur a/couchbase/tlm/deps/packages/erlang/CMakeLists.txt b/couchbase/tlm/deps/packages/erlang/CMakeLists.txt
+--- a/couchbase/tlm/deps/packages/erlang/CMakeLists.txt	2018-07-31 14:43:46.047330757 +0530
++++ b/couchbase/tlm/deps/packages/erlang/CMakeLists.txt	2018-07-31 14:44:15.047721511 +0530
+@@ -18,6 +18,7 @@
+                           <SOURCE_DIR>/lib/observer/SKIP
+                           <SOURCE_DIR>/lib/wx/SKIP
+             COMMAND <SOURCE_DIR>/configure --prefix=<INSTALL_DIR>
++                                           --build=powerpc64le-unknown-linux-gnu
+                                            --enable-smp-support
+                                            --disable-hipe
+                                            --disable-fp-exceptions
+diff -Naur a/couchbase/tlm/deps/packages/snappy/CMakeLists.txt b/couchbase/tlm/deps/packages/snappy/CMakeLists.txt
+--- a/couchbase/tlm/deps/packages/snappy/CMakeLists.txt	2018-07-25 10:23:39.925292443 +0530
++++ b/couchbase/tlm/deps/packages/snappy/CMakeLists.txt	2018-07-25 10:23:39.949292743 +0530
+@@ -7,7 +7,7 @@
+   GIT_REPOSITORY ${_git_repo}
+   GIT_TAG ${_git_rev}
+ 
+-  CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=<INSTALL_DIR>
++  CONFIGURE_COMMAND <SOURCE_DIR>/configure --build=ppc64le --prefix=<INSTALL_DIR>
+                                            --enable-shared
+                                            --disable-static
+                                            --disable-dependency-tracking
+diff -Naur a/couchbase/tlm/deps/packages/v8/CMakeLists.txt b/couchbase/tlm/deps/packages/v8/CMakeLists.txt
+--- a/couchbase/tlm/deps/packages/v8/CMakeLists.txt	2018-07-25 10:23:39.925292443 +0530
++++ b/couchbase/tlm/deps/packages/v8/CMakeLists.txt	2018-07-25 10:23:39.949292743 +0530
+@@ -113,7 +113,15 @@
+ 
+             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists_package.txt <INSTALL_DIR>/CMakeLists.txt
+   )
++# ATUL
++#ELSEIF ((${CMAKE_SYSTEM_NAME} STREQUAL "Linux"))
++#  IF (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "ppc64le")
++#    MESSAGE(STATUS "using LINUX script for v8")
++#    SET (_build_script <SOURCE_DIR>/v8_unix.sh)
++#  ENDIF()
++# ATUL
+ ELSE (WIN32)
++  MESSAGE(STATUS "using ELSE WIN32 script for v8")
+   _DETERMINE_CPU_COUNT(_parallelism)
+ 
+   # Extra command to perform only on Mac
