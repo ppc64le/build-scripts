@@ -26,6 +26,7 @@ sudo apt-get install -y cmake ninja-build clang python uuid-dev libicu-dev \
     ca-certificates libstdc++-5-dev libobjc-5-dev git \
     build-essential g++
 
+cd
 WDIR=`pwd`
 export SWIFT_SOURCE_ROOT=$WDIR/swift-source
 export SWIFT_BUILD_ROOT=$WDIR/swift-source
