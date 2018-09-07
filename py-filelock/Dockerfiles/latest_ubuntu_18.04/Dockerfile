@@ -1,4 +1,4 @@
-OM ubuntu:18.04
+FROM ubuntu:18.04
 MAINTAINER  snehlata mohite <smohite@us.ibm.com>
 
 RUN apt-get update && apt-get install -y python git  \
