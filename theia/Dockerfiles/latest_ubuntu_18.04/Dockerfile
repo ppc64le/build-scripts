@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 ENV QT_QPA_PLATFORM=offscreen
 
@@ -15,8 +15,7 @@ ENV PATH=/node-v9.9.0-linux-ppc64le/bin:$PATH
 
 RUN npm install -g yarn \
     && wget https://static.rust-lang.org/dist/rust-1.28.0-powerpc64le-unknown-linux-gnu.tar.gz \
-    && tar -xzf rust-1.28.0-powerpc64le-unknown-linux-gnu.tar.gz \
-    && cd rust-1.28.0-powerpc64le-unknown-linux-gnu \
+    && tar -xzf rust-1.28.0-powerpc64le-unknown-linux-gnu.tar.gz && cd rust-1.28.0-powerpc64le-unknown-linux-gnu \
     && ./install.sh \
     && cargo install ripgrep
 ENV PATH=$HOME/.cargo/bin:$PATH
@@ -45,10 +44,9 @@ RUN  cd /dugite-native/script && patch build-ppc64le.sh < build-ppc64le.patch \
      && cd /theia/node_modules/dugite/git \
      && tar -xzf dugite-native-v2.17.0-ppc64le.tar.gz \
      && rm -rf /dugite-native /node-v9.9.0-linux-ppc64le.tar.gz
-		
+
 RUN apt-get purge -y make git wget unzip && apt-get autoremove -y\
    && rm -rf $HOME/rust-1.28.0-powerpc64le-unknown-linux-gnu.tar.gz  $HOME/node-v9.9.0-linux-ppc64le.tar.gz
-
 
 EXPOSE 3000
 WORKDIR /theia/examples/browser
