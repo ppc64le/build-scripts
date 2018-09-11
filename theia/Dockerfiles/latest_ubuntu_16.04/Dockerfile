@@ -1,5 +1,5 @@
 FROM ubuntu:16.04
-MAINTAINER Vibhuti.Sawant@ibm.com
+MAINTAINER ghatwala@us.ibm.com
 
 ENV QT_QPA_PLATFORM=offscreen
 
