@@ -1,19 +1,3 @@
-# ----------------------------------------------------------------------------
-#
-# Package	: couchbase
-# Version	: 5.1
-# Source repo	: https://github.com/couchbase
-# Tested on	: ubuntu_16.04
-# Script License: Apache License, Version 2 or later
-# Maintainer	: Atul Sowani <sowania@us.ibm.com>
-#
-# Disclaimer: This script has been tested in root mode on given
-# ==========  platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of the
-#             package and/or distribution. In such case, please
-#             contact "Maintainer" of this script.
-#
-# ----------------------------------------------------------------------------
 #!/bin/bash
 
 apt-get update -y
@@ -21,6 +5,8 @@ apt-get install -y wget tar git g++ make curl libssl-dev libevent-dev \
      libcurl4-openssl-dev libsnappy-dev ncurses-dev openssl libiodbc2-dev \
      autoconf cmake libtool python python-dev golang-go subversion cmake \
      gnupg openjdk-8-jdk openjdk-8-jre lsb-release
+apt-get update -y
+apt-get upgrade -y
 
 export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-ppc64el
 WDIR=`pwd`
@@ -65,8 +51,16 @@ cd v8
 git checkout 5.8.75
 gclient sync
 python gypfiles/gyp_v8
+# 
+#rm -rf third_party/googletest/src buildtools/third_party/libunwind/trunk \
+#  third_party/depot_tools test/wasm-js tools/luci-go third_party/proguard
+#
 make -j4 ppc64.release -i werror=no GYPFLAGS+="-Dcomponent=shared_library -Dv8_enable_i18n_support=0"
 make -j4 ppc64.release library=shared -i werror=no GYPFLAGS+="-Dcomponent=shared_library -Dv8_enable_i18n_support=0"
+
+#make -j$(cat /proc/cpuinfo | grep processor | wc -l) ppc64.release GYPFLAGS+="-Dcomponent=shared_library -Dv8_enable_backtrace=1 -Dv8_use_snapshot='true' -Dclang=0 -Dv8_use_external_startup_data=0 -Dv8_enable_i18n_support=0 -Dtest_isolation_mode=noop" PYTHONPATH=`pwd`/third_party/argparse-1.4.0 #(For RHEL, SLES (12, 12 SP1, 12 SP2), and Ubuntu only)
+#make -j$(cat /proc/cpuinfo | grep processor | wc -l) ppc64.release GYPFLAGS+="-Dcomponent=shared_library -Dv8_enable_backtrace=1 -Dv8_use_snapshot='true' -Dclang=0 -Dv8_use_external_startup_data=0 -Dv8_enable_i18n_support=0 -Dtest_isolation_mode=noop" CC_host=/usr/bin/gcc-4.8 CXX_host=/usr/bin/g++-4.8 PYTHONPATH=`pwd`/third_party/argparse-1.4.0 #(For SLES 11 SP4 only)
+
 cp -vR include/* /usr/include
 cp -v out/ppc64.release/lib.target/lib*.so /usr/local/lib
 cp /usr/local/lib/libv8.so /usr/lib
@@ -193,7 +187,6 @@ m_filename=`ls deps/flatbuffers/*/flatbuffers*.md5`
 cp $t_filename ~/.cbdepscache
 cp $m_filename ~/.cbdepscache/`basename $t_filename`.md5
 cd ..
-rm -rf build-flatbuffers
 
 echo "------- building icu4c -------"
 mkdir build-icu4c
@@ -442,10 +435,8 @@ make usecase_test
 make vbucket_regression
 make vbucket_testapp
 make vbucket_testketama
-
 echo "------- Couchbase build completed -------"
 echo "------- starting tests -------"
-
 time ctest
 cd ..
 echo "------- tests completed -------"

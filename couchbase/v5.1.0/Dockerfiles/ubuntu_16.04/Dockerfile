@@ -12,7 +12,7 @@ COPY patch /tmp/patch
 WORKDIR /root
 
 RUN apt-get update -y && \
-    apt-get install -y wget tar git g++ make curl libssl-dev libevent-dev \
+    apt-get install -y wget git g++ make curl libssl-dev libevent-dev \
         libcurl4-openssl-dev libsnappy-dev ncurses-dev openssl libiodbc2-dev \
         autoconf cmake libtool python python-dev golang-go subversion cmake \
         gnupg openjdk-8-jdk openjdk-8-jre lsb-release && \
@@ -31,7 +31,7 @@ RUN apt-get update -y && \
         unset ERL_TOP && \
 
     cd $WDIR && \
-        svn export http://source.icu-project.org/repos/icu/tags/release-58-1/ icu && \
+        svn export http://source.icu-project.org/repos/icu/tags/release-58-1 icu && \
         cd icu/icu4c/source && \
         ./configure --enable-static --disable-renaming --prefix=/usr && \
         make && \
@@ -252,6 +252,7 @@ RUN apt-get update -y && \
     mkdir build && \
         cd build && \
         cmake -D CMAKE_BUILD_TYPE=Debug -DU_DISABLE_RENAMING=1 ../couchbase && \
+        apt-get upgrade -y && \
         make all && \
         make benchmark_test && \
         make basic_test && \
@@ -397,7 +398,7 @@ RUN apt-get update -y && \
         make install && \
         cd .. && \
 
-    apt-get remove -y wget tar git make curl autoconf cmake libtool \
+    apt-get remove -y wget git make curl autoconf cmake libtool \
         subversion cmake lsb-release && \
         apt-get autoremove -y
 
