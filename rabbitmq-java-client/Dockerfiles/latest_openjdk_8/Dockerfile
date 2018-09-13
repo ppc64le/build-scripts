@@ -6,11 +6,6 @@ ENV PATH=$JAVA_HOME/bin:$PATH
 ENV JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8"
 ENV DEBIAN_FRONTEND="noninteractive"
 
-ENV LC_ALL en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV PATH=$PATH:/usr/local/bin
-
 RUN apt-get update -y && \
     apt-get install -y software-properties-common maven git zip \
         python python-simplejson openssl wget ssl-cert rsync \
@@ -26,13 +21,13 @@ RUN apt-get update -y && \
         cd .. && rm -rf otp_src_20.0 && \
     cd && \
         git clone https://github.com/elixir-lang/elixir.git && \
-        cd elixir && git checkout v1.6.0 && \
+        cd elixir && git checkout v1.7.3 && \
         make clean test && make install && \
         cd .. && rm -rf elixir && \
     cd && \
         git clone --recursive https://github.com/rabbitmq/rabbitmq-public-umbrella.git && \
         cd rabbitmq-public-umbrella && \
-        make co && cd deps/rabbitmq_java_client && make deps && mvn verify && \
+        make co && cd deps/rabbitmq_java_client && make && mvn verify && \
         apt-get remove --purge -y software-properties-common maven git wget \
         unzip make xsltproc libncurses5-dev libssl-dev libncurses5-dev zip \
         unixodbc-dev gcc && apt-get autoremove -y
