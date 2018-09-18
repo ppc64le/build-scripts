@@ -36,8 +36,8 @@ RUN cd && apt-get update -y && \
     git cherry-pick 8a46bf51827649642ee6c33ade6d1571554dae4c && \
 
     cd ../swift && \
-    git remote add asowani https://github.com/asowani/swift.git && \
-    git fetch --quiet asowani && \
+    #git remote add asowani https://github.com/asowani/swift.git && \
+    #git fetch --quiet asowani && \
     #git cherry-pick c75887d4b18ca4cef351ea89cd54f3a8e0b5d784 && \
     #git cherry-pick 5c5ccefe9844566cb1d328e3a68c6dfdc934db5b && \
 
@@ -45,7 +45,7 @@ RUN cd && apt-get update -y && \
     mv test/IRGen/errors.sil test/IRGen/errors.sil.oef && \
     mv test/IRGen/errors.sil.oef test/IRGen/errors.sil.org && \
     mv test/IRGen/objc_simd.sil test/IRGen/objc_simd.sil.org && \
-    mv test/Sanitizers/witness_table_lookup.swift test/Sanitizers/witness_table_lookup.swift.org && \
+    #mv test/Sanitizers/witness_table_lookup.swift test/Sanitizers/witness_table_lookup.swift.org && \
     mv test/Sanitizers/tsan.swift test/Sanitizers/tsan.swift.org && \
     mv test/Driver/linker-args-order-linux.swift test/Driver/linker-args-order-linux.swift.org && \
     mv test/IRGen/big_types_corner_cases.swift test/IRGen/big_types_corner_cases.swift.org && \

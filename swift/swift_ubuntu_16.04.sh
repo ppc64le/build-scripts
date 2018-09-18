@@ -69,17 +69,17 @@ git cherry-pick 9bfd531a07e6259f3d8d101ca26543e0ed064cbe
 git cherry-pick 8a46bf51827649642ee6c33ade6d1571554dae4c
 
 cd ../swift
-git remote add asowani https://github.com/asowani/swift.git
-git fetch --quiet asowani
-git cherry-pick c75887d4b18ca4cef351ea89cd54f3a8e0b5d784
-git cherry-pick 5c5ccefe9844566cb1d328e3a68c6dfdc934db5b
+#git remote add asowani https://github.com/asowani/swift.git
+#git fetch --quiet asowani
+#git cherry-pick c75887d4b18ca4cef351ea89cd54f3a8e0b5d784
+#git cherry-pick 5c5ccefe9844566cb1d328e3a68c6dfdc934db5b
 
 # Following test cases are known to fail. Comment them out until fixed.
 mv test/IRGen/c_functions.swift test/IRGen/c_functions.swift.org
 mv test/IRGen/errors.sil test/IRGen/errors.sil.oef
 mv test/IRGen/errors.sil.oef test/IRGen/errors.sil.org
 mv test/IRGen/objc_simd.sil test/IRGen/objc_simd.sil.org
-mv test/Sanitizers/witness_table_lookup.swift test/Sanitizers/witness_table_lookup.swift.org
+#mv test/Sanitizers/witness_table_lookup.swift test/Sanitizers/witness_table_lookup.swift.org
 mv test/Sanitizers/tsan.swift test/Sanitizers/tsan.swift.org
 
 # Following command builds and run standard test suite for Swift.
