@@ -1,0 +1,26 @@
+diff --git a/cmake/Modules/ConfigureGoogleTest.cmake b/cmake/Modules/ConfigureGoogleTest.cmake
+index c9a34e6..afa3879 100644
+--- a/cmake/Modules/ConfigureGoogleTest.cmake
++++ b/cmake/Modules/ConfigureGoogleTest.cmake
+@@ -53,4 +53,4 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+ set(GTEST_ROOT ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/thirdparty/googletest-install/)
+ message(STATUS "GTEST_ROOT: " ${GTEST_ROOT})
+
+-link_directories(${GTEST_ROOT}/lib/)
++link_directories(${GTEST_ROOT}/lib${LIB_SUFFIX}/)
+diff --git a/cmake/Modules/FindArrow.cmake b/cmake/Modules/FindArrow.cmake
+index 4daa12d..4f9ca89 100644
+--- a/cmake/Modules/FindArrow.cmake
++++ b/cmake/Modules/FindArrow.cmake
+@@ -69,9 +69,10 @@ else()
+     set(ARROW_FOUND TRUE)
+     add_library(arrow STATIC IMPORTED)
+     set_target_properties(arrow PROPERTIES IMPORTED_LOCATION "${ARROW_STATIC_LIB}")
++    get_filename_component(ARROW_LIBDIR "${ARROW_STATIC_LIB}" DIRECTORY)
+
+     # Determine arrow version information for CPP macros
+-    file(STRINGS ${ARROW_ROOT}/lib/pkgconfig/arrow.pc _ARROW_VERSION REGEX "^Version: ([0-9]+\\.[0-9]+\\.[0-9]+)")
++    file(STRINGS ${ARROW_LIBDIR}/pkgconfig/arrow.pc _ARROW_VERSION REGEX "^Version: ([0-9]+\\.[0-9]+\\.[0-9]+)")
+     STRING(REGEX REPLACE "^Version: ([0-9]+)\\.[0-9]+\\.[0-9]+" "\\1" ARROW_VERSION_MAJOR "${_ARROW_VERSION}")
+     STRING(REGEX REPLACE "^Version: [0-9]+\\.([0-9]+)\\.[0-9]+" "\\1" ARROW_VERSION_MINOR "${_ARROW_VERSION}")
+     STRING(REGEX REPLACE "^Version: [0-9]+\\.[0-9]+\\.([0-9]+)" "\\1" ARROW_VERSION_PATCH "${_ARROW_VERSION}")
