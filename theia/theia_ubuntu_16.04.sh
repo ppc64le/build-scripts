@@ -20,7 +20,7 @@ CMD=`pwd`
 USER=`whoami`
 # Install dependencies
 sudo apt-get update
-sudo apt-get install -y make curl tar wget git unzip phantomjs build-essential libexpat-dev libcurl4-openssl-dev zlib1g-dev python cargo
+sudo apt-get install -y make curl tar wget git unzip phantomjs build-essential libexpat-dev libcurl4-openssl-dev zlib1g-dev python 
 
 cd /tmp && \
 wget https://storage.googleapis.com/golang/go1.10.2.linux-ppc64le.tar.gz && \
