@@ -39,10 +39,12 @@ sudo apt update -y --fix-missing && \
       pkg-config \
       wget
 
+export WDIR=`pwd`
+
 # Install conda
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-ppc64le.sh
-mv Miniconda3-latest-Linux-ppc64le.sh $HOME/miniconda.sh
-sudo sh $HOME/miniconda.sh -b -p /conda && /conda/bin/conda update -n base conda
+mv Miniconda3-latest-Linux-ppc64le.sh $WDIR/miniconda.sh
+sudo sh $WDIR/miniconda.sh -b -p /conda && /conda/bin/conda update -n base conda
 export PATH=${PATH}:/conda/bin
 
 # Build combined libgdf/pygdf conda env
@@ -64,13 +66,16 @@ conda install -n gdf -y -c numba -c conda-forge -c defaults \
 
 # LibGDF build/install
 export LIBGDF_REPO=https://github.com/gpuopenanalytics/libgdf
-git clone --recurse-submodules ${LIBGDF_REPO} -b v0.1.0a3 $HOME/libgdf
+git clone --recurse-submodules ${LIBGDF_REPO} -b v0.1.0a3 $WDIR/libgdf && \
+    cd $WDIR/libgdf && \
+    git apply < $WDIR/libgdf_cmake.patch
+
 export CC=/usr/bin/gcc-${CC}
 export CXX=/usr/bin/g++-${CXX}
 export HASH_JOIN=ON
 source activate gdf && \
-    mkdir -p $HOME/libgdf/build && \
-    cd $HOME/libgdf/build && \
+    mkdir -p $WDIR/libgdf/build && \
+    cd $WDIR/libgdf/build && \
     cmake .. && \
     cmake .. -DHASH_JOIN=${HASH_JOIN} && \
     sudo make -j install && \
@@ -79,18 +84,18 @@ source activate gdf && \
 
 # Arrow build install
 export ARROW_REPO=https://github.com/apache/arrow.git
-mkdir -p $HOME/repos && \
-    git clone --recurse-submodules ${ARROW_REPO} $HOME/repos/arrow
+mkdir -p $WDIR/repos && \
+    git clone --recurse-submodules ${ARROW_REPO} $WDIR/repos/arrow
 
-mkdir -p $HOME/repos/dist
+mkdir -p $WDIR/repos/dist
 
 export ARROW_BUILD_TYPE=release
-export ARROW_HOME=$HOME/repos/dist
-export LD_LIBRARY_PATH=$HOME/repos/dist/lib:$LD_LIBRARY_PATH
+export ARROW_HOME=$WDIR/repos/dist
+export LD_LIBRARY_PATH=$WDIR/repos/dist/lib:$LD_LIBRARY_PATH
 
 source activate gdf && \
-    mkdir -p $HOME/repos/arrow/cpp/build && \
-    cd $HOME/repos/arrow/cpp/build && \
+    mkdir -p $WDIR/repos/arrow/cpp/build && \
+    cd $WDIR/repos/arrow/cpp/build && \
     cmake -DCMAKE_BUILD_TYPE=$ARROW_BUILD_TYPE \
           -DCMAKE_INSTALL_PREFIX=$ARROW_HOME \
           -DARROW_PYTHON=on \
@@ -101,7 +106,7 @@ source activate gdf && \
 
 # pyArrow build install
 source activate gdf && \
-    cd $HOME/repos/arrow/python && \
+    cd $WDIR/repos/arrow/python && \
     python setup.py build_ext --build-type=$ARROW_BUILD_TYPE --inplace && \
     python setup.py install
 
@@ -109,9 +114,9 @@ source activate gdf && \
 export PYGDF_REPO=https://github.com/gpuopenanalytics/pygdf
 # To build container against https://github.com/gpuopenanalytics/pygdf/pull/138:
 # docker build --build-arg PYGDF_REPO="https://github.com/dantegd/pygdf -b enh-ext-unique-value-counts" -t gdf .
-git clone --recurse-submodules ${PYGDF_REPO} -b v0.1.0a3 $HOME/pygdf && \
+git clone --recurse-submodules ${PYGDF_REPO} -b v0.1.0a3 $WDIR/pygdf && \
 
 source activate gdf && \
-    cd $HOME/pygdf && \
+    cd $WDIR/pygdf && \
     python setup.py install && \
     py.test
