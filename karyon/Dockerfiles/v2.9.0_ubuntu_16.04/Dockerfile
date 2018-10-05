@@ -1,5 +1,6 @@
 FROM ppc64le/openjdk:8-jdk
 
+MAINTAINER "Priya Seth <sethp@us.ibm.com>"
 RUN apt-get -y update && \
     git clone https://github.com/Netflix/karyon --branch=v2.9.0 && \
     cd karyon \
