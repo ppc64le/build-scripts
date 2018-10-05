@@ -1,5 +1,7 @@
 FROM ppc64le/openjdk:8-jdk
 
+MAINTAINER "Priya Seth <sethp@us.ibm.com>"
+
 ENV JAVA_HOME /usr/lib/jvm/java-1.8.0-openjdk-ppc64el
 ENV PATH $PATH:$JAVA_HOME/bin
 
