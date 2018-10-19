@@ -85,7 +85,7 @@ source activate gdf && \
 # Arrow build install
 export ARROW_REPO=https://github.com/apache/arrow.git
 mkdir -p $WDIR/repos && \
-    git clone --recurse-submodules ${ARROW_REPO} $WDIR/repos/arrow
+    git clone --recurse-submodules ${ARROW_REPO} -b apache-arrow-0.11.0 $WDIR/repos/arrow
 
 mkdir -p $WDIR/repos/dist
 
