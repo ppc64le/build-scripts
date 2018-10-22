@@ -1,3 +1,6 @@
+# Adapted from the original work for Intel by Lachlan Evenson here
+# https://github.com/lachie83/k8s-helm/blob/v2.9.1/Dockerfile
+
 FROM alpine
 
 MAINTAINER "Sandip Giri <sgiri@us.ibm.com>"
