@@ -1,5 +1,5 @@
 FROM ppc64le/r-base
-MAINTAINER "Yugandha Deshpande <yugandha@us.ibm.com>"
+MAINTAINER "Vibhuti Sawant <Vibhuti.Sawant@ibm.com>"
 
 RUN apt-get update \
         && apt-get install git -y \
