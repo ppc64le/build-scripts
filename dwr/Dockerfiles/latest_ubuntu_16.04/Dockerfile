@@ -1,5 +1,6 @@
-FROM ppc64le/openjdk:8-jdk
+FROM openjdk:8
 
+MAINTAINER "Vibhuti Sawant <Vibhuti.Sawant@.ibm.com>"
 ENV JAVA_TOOL_OPTIONS -Dfile.encoding=ISO-8859-1
 ENV JAVA_HOME /usr/lib/jvm/java-1.8.0-openjdk-ppc64el
 
