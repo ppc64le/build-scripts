@@ -1,6 +1,6 @@
 FROM ubuntu:18.04
 
-MAINTAINER "Priya Seth <sethp@us.ibm.com>
+MAINTAINER "Priya Seth <sethp@us.ibm.com>"
 
 ENV QT_QPA_PLATFORM offscreen
 

@@ -1,5 +1,5 @@
 FROM ppc64le/r-base
-MAINTAINER "Yugandha deshpande <yugandha@us.ibm.com>"
+MAINTAINER "Vibhuti Sawant <Vibhuti.Sawant@ibm.com>"
 
 RUN apt-get update \
 	&& R -e 'source("https://bioconductor.org/biocLite.R"); biocLite("AnnotationDbi")' \
