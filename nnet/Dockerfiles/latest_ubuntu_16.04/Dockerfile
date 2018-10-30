@@ -1,5 +1,5 @@
 FROM ppc64le/r-base 
-MAINTAINER "Jay Joshi <joshija@us.ibm.com>"
+MAINTAINER "Vibhuti Sawant <Vibhuti.Sawant@ibm.com>"
 
 ENV _R_CHECK_FORCE_SUGGESTS_ false
 RUN apt-get update \

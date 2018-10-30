@@ -9,7 +9,7 @@ Test the working of Container:
         Now inside the container type R and enter the  R shell.
 	Now run the following program line by line:
 
-
+ ```bash
 > library(gtable)
 > library(grid)
 > a <- gtable(unit(1:3, c("cm")), unit(5, "cm"))
@@ -51,3 +51,4 @@ TableGrob (1 x 1) "layout": 1 grobs
 
 [[2]]
 [1] "a" "b" "c"
+```

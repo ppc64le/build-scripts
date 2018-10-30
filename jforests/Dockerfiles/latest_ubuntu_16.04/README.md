@@ -12,7 +12,7 @@ Follow below given steps:
 1. cp jforests/releases/jforests-0.5.jar jforests/jforests/src/main/resources
 2. cd jforests/jforests/src/main/resources
 3. unzip sample-ranking-data.zip
-4. java -jar jforests.jar --cmd=generate-bin --ranking --folder . --file train.txt --file valid.txt --file test.txt
+4. java -jar jforests-0.5.jar --cmd=generate-bin --ranking --folder . --file train.txt --file valid.txt --file test.txt
 
 The last command will generate binary's for the three files train.txt, valid.txt and test.txt in the same folder.
 
