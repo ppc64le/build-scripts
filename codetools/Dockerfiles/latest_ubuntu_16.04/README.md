@@ -1,4 +1,4 @@
-odetools (Rpackage)
+Codetools (Rpackage)
 
 Build and run the container:
 
@@ -8,7 +8,7 @@ $docker run --name demo_codetools -i -t codetools /bin/bash
 Test the working of Container:
         Now inside the container type R and enter the  R shell.
 	Now run the following program line by line:
-
+ ```bash
 > library(codetools)
 > checkUsage(checkUsage)
 > checkUsagePackage("codetools",all=TRUE)
@@ -70,6 +70,5 @@ $functions
  [6] "collectUsage" "if"           "list"         "ls"           "mkHash"
 [11] "sort"         "unique"
 
-$variables
-character(0)
 
+```

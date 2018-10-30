@@ -8,7 +8,7 @@ $docker run --name demo_nnet -i -t nnet /bin/bash
 Test the working of Container:
         Now inside the container type R and enter the  R shell.
 	Now run the following program line by line:
-
+```bash
 > library(nnet)
 > options(contrasts = c("contr.treatment", "contr.poly"))
 > library(MASS)
@@ -38,3 +38,4 @@ Coefficients:
 Degrees of Freedom: 188 Total (i.e. Null);  178 Residual
 Null Deviance:      234.7
 Residual Deviance: 195.5        AIC: 217.5
+```

@@ -1,5 +1,5 @@
 FROM openjdk:8
-MAINTAINER "Jay Joshi <joshija@us.ibm.com>"
+MAINTAINER "Vibhuti Sawant <Vibhuti.Sawant@ibm.com>"
 
 ENV CLASSPATH /jforests/realeases/jforests-0.0.1.jar:jforests-0.2.jar:jforests-0.3.jar:jforests-0.4.jar:jforests-0.5.jar:.
 

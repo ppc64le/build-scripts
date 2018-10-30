@@ -1,11 +1,11 @@
 FROM ppc64le/r-base 
-MAINTAINER "Jay Joshi <joshija@us.ibm.com>"
+MAINTAINER "Vibhuti Sawant <Vibhuti.Sawant@ibm.com>"
 
 ENV _R_CHECK_FORCE_SUGGESTS_ false
 RUN apt-get update \
 	&& apt-get install git -y \
 	&& git clone https://github.com/cran/reshape.git \
-	&& cd reshape && git checkout 0.8.7 \
+	&& cd reshape && git checkout 0.8.8 \
         && R -e 'install.packages("plyr",dependencies= TRUE,repos="http://cran.rstudio.com/")' \
 	&& cd .. \
 	&& R CMD build reshape \
