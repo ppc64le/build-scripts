@@ -1,4 +1,5 @@
 FROM ppc64le/golang:1.10.3-alpine3.7
+
 MAINTAINER Anita Nayak <anitanayak@in.ibm.com>
 
 # This is the release of Vault to pull in.
