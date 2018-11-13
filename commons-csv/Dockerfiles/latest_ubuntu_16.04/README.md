@@ -7,7 +7,6 @@ $docker run --name demo_commonscsv -i -t commonscsv /bin/bash
 
 To test the working of Container (try below example)
 
-
 e.g.
 Reading a CSV file (Access Values by Column Index)
 The example below shows how you can read and parse the sample CSV file users.csv described above using Apache Commons CSV -
