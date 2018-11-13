@@ -1,5 +1,5 @@
 FROM openjdk:8
-MAINTAINER "Jay Joshi <joshija@us.ibm.com>"
+MAINTAINER "Vibhuti Sawant <Vibhuti.Sawant@ibm.com>"
 
 
 ENV CLASSPATH /commons-csv/target/commons-csv-1.6-SNAPSHOT.jar:.

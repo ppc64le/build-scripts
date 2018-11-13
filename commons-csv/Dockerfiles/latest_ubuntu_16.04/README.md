@@ -12,6 +12,9 @@ e.g.
 Reading a CSV file (Access Values by Column Index)
 The example below shows how you can read and parse the sample CSV file users.csv described above using Apache Commons CSV -
 
+```bash
+cd /commons-csv/target/classes
+Create users.csv and BasicCSVReader.java
 
 ....Input CSV file i.e. users.csv....
 Rajeev Kumar Singh ?,rajeevs@example.com,+91-9999999999,India
@@ -62,7 +65,7 @@ $ javac BasicCSVReader.java
 $ java BasicCSVReader
 
 
-OUPUT:
+OUTPUT:
 
 Record No - 1
 ---------------
@@ -99,42 +102,7 @@ Phone : +1-2222222222
 Country : United States
 ---------------
 
-
-Record No - 1
----------------
-Name : Rajeev Kumar Singh ?
-Email : rajeevs@example.com
-Phone : +91-9999999999
-Country : India
----------------
-
-
-Record No - 2
----------------
-Name : Sachin Tendulkar
-Email : sachin@example.com
-Phone : +91-9999999998
-Country : India
----------------
-
-
-Record No - 3
----------------
-Name : Barak Obama
-Email : barak.obama@example.com
-Phone : +1-1111111111
-Country : United States
----------------
-
-
-Record No - 4
----------------
-Name : Donald Trump
-Email : donald.trump@example.com
-Phone : +1-2222222222
-Country : United States
----------------
-
+```
 
 Additional examples are available at: https://www.callicoder.com/java-read-write-csv-file-apache-commons-csv/
 
