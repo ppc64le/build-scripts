@@ -1,3 +1,4 @@
+#!/bin/bash
 # ----------------------------------------------------------------------------
 #
 # Package       : pygdf
@@ -14,7 +15,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/lib
 # Needed for pygdf.concat(), avoids "OSError: library nvvm not found"
@@ -44,7 +44,7 @@ export WDIR=`pwd`
 # Install conda
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-ppc64le.sh
 mv Miniconda3-latest-Linux-ppc64le.sh $WDIR/miniconda.sh
-sudo sh $WDIR/miniconda.sh -b -p /conda && /conda/bin/conda update -n base conda
+sudo sh -c "sh $WDIR/miniconda.sh -b -p /conda && /conda/bin/conda update -n base conda"
 export PATH=${PATH}:/conda/bin
 
 # Build combined libgdf/pygdf conda env
