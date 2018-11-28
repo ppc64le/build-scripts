@@ -45,7 +45,8 @@ RUN apt update -y --fix-missing && \
       libjemalloc-dev \
       flex \
       bison \
-      pkg-config && \
+      pkg-config \
+      autoconf && \
 
 # Build combined libgdf/pygdf conda env
     conda create -n gdf python=${PYTHON_VERSION} && \
