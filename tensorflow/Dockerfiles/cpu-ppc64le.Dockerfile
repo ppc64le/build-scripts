@@ -16,45 +16,34 @@
 # THIS IS A GENERATED DOCKERFILE.
 #
 # This file was assembled from multiple pieces, whose use is documented
-# below. Please refer to the the TensorFlow dockerfiles documentation for
-# more information. Build args are documented as their default value.
-#
-# Ubuntu-based, CPU-only environment for using TensorFlow, ppc64le architecture.
-#
-# Start from ppc64le/Ubuntu (no GPU support)
-# --build-arg UBUNTU_VERSION=16.04
-#    ( no description )
-#
-# Python is required for TensorFlow and other libraries.
-# --build-arg USE_PYTHON_3_NOT_2=True
-#    Install python 3 over Python 2
-#
-# Install the TensorFlow Python package.
-# --build-arg TF_PACKAGE=tensorflow (tensorflow|tensorflow-gpu|tf-nightly|tf-nightly-gpu)
-#    The specific TensorFlow Python package to install
-#
-# Configure TensorFlow's shell prompt and login tools.
+# throughout. Please refer to the the TensorFlow dockerfiles documentation
+# for more information.
+FROM ubuntu:16.04
 
-ARG UBUNTU_VERSION=16.04
-FROM ppc64le/ubuntu:${UBUNTU_VERSION}
-
-ARG USE_PYTHON_3_NOT_2=True
+ARG USE_PYTHON_3_NOT_2
 ARG _PY_SUFFIX=${USE_PYTHON_3_NOT_2:+3}
 ARG PYTHON=python${_PY_SUFFIX}
 ARG PIP=pip${_PY_SUFFIX}
+
+# See http://bugs.python.org/issue19846
+ENV LANG C.UTF-8
 
 RUN apt-get update && apt-get install -y \
     ${PYTHON} \
     ${PYTHON}-pip
 
-RUN ${PIP} install --upgrade \
+RUN ${PIP} --no-cache-dir install --upgrade \
     pip \
     setuptools
 
-RUN ${PIP} install six numpy wheel mock
-RUN ${PIP} install keras_applications==1.0.5 --no-deps
-RUN ${PIP} install keras_preprocessing==1.0.3 --no-deps
+# Some TF tools expect a "python" binary
+RUN ln -s $(which ${PYTHON}) /usr/local/bin/python
 
+# Options:
+#   tensorflow
+#   tensorflow-gpu
+#   tf-nightly
+#   tf-nightly-gpu
 ARG TF_PACKAGE=tensorflow
 RUN apt-get update && apt-get install -y wget libhdf5-dev
 RUN ${PIP} install --global-option=build_ext \

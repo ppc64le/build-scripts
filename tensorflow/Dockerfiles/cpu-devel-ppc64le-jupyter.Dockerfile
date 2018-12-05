@@ -16,42 +16,15 @@
 # THIS IS A GENERATED DOCKERFILE.
 #
 # This file was assembled from multiple pieces, whose use is documented
-# below. Please refer to the the TensorFlow dockerfiles documentation for
-# more information. Build args are documented as their default value.
-#
-# Ubuntu-based, Nvidia-GPU-enabled environment for developing changes for TensorFlow, with Jupyter included, ppc64le architecture.
-#
-# Start from Nvidia's Ubuntu base image for ppc64le with CUDA and CuDNN, with TF
-# development packages.
-# --build-arg UBUNTU_VERSION=16.04
-#    ( no description )
-#
-# Python is required for TensorFlow and other libraries.
-# --build-arg USE_PYTHON_3_NOT_2=True
-#    Install python 3 over Python 2
-#
-# Build and install the latest version of Bazel and Python development tools.
-#
-# Configure TensorFlow's shell prompt and login tools.
-#
-# Launch Jupyter on execution instead of a bash prompt.
+# throughout. Please refer to the the TensorFlow dockerfiles documentation
+# for more information.
 
-ARG UBUNTU_VERSION=16.04
-FROM nvidia/cuda-ppc64le:9.2-base-ubuntu${UBUNTU_VERSION}
+FROM ubuntu:16.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
-        cuda-command-line-tools-9-2 \
-        cuda-cublas-dev-9-2 \
-        cuda-cudart-dev-9-2 \
-        cuda-cufft-dev-9-2 \
-        cuda-curand-dev-9-2 \
-        cuda-cusolver-dev-9-2 \
-        cuda-cusparse-dev-9-2 \
         curl \
         git \
-        libcudnn7=7.2.1.38-1+cuda9.2 \
-        libcudnn7-dev=7.2.1.38-1+cuda9.2 \
         libcurl3-dev \
         libfreetype6-dev \
         libhdf5-serial-dev \
@@ -63,28 +36,33 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         unzip \
         zip \
         zlib1g-dev \
-        wget \
+        openjdk-8-jdk \
+        openjdk-8-jre-headless \
         && \
-    rm -rf /var/lib/apt/lists/* && \
-    find /usr/local/cuda-9.2/lib64/ -type f -name 'lib*_static.a' -not -name 'libcudart_static.a' -delete && \
-    rm /usr/lib/powerpc64le-linux-gnu/libcudnn_static_v7.a
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-ARG USE_PYTHON_3_NOT_2=True
+ENV CI_BUILD_PYTHON python
+
+
+ARG USE_PYTHON_3_NOT_2
 ARG _PY_SUFFIX=${USE_PYTHON_3_NOT_2:+3}
 ARG PYTHON=python${_PY_SUFFIX}
 ARG PIP=pip${_PY_SUFFIX}
+
+# See http://bugs.python.org/issue19846
+ENV LANG C.UTF-8
 
 RUN apt-get update && apt-get install -y \
     ${PYTHON} \
     ${PYTHON}-pip
 
-RUN ${PIP} install --upgrade \
+RUN ${PIP} --no-cache-dir install --upgrade \
     pip \
     setuptools
 
-RUN ${PIP} install six numpy wheel mock
-RUN ${PIP} install keras_applications==1.0.5 --no-deps
-RUN ${PIP} install keras_preprocessing==1.0.3 --no-deps
+# Some TF tools expect a "python" binary
+RUN ln -s $(which ${PYTHON}) /usr/local/bin/python
 
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -92,8 +70,22 @@ RUN apt-get update && apt-get install -y \
     git \
     openjdk-8-jdk \
     ${PYTHON}-dev \
-    python \
     swig
+
+RUN ${PIP} --no-cache-dir install \
+    Pillow \
+    h5py \
+    keras_applications \
+    keras_preprocessing \
+    matplotlib \
+    mock \
+    numpy \
+    scipy \
+    sklearn \
+    pandas \
+    && test "${USE_PYTHON_3_NOT_2}" -eq 1 && true || ${PIP} --no-cache-dir install \
+    enum34
+
  # Build and install bazel
 ENV BAZEL_VERSION 0.15.0
 WORKDIR /
@@ -109,12 +101,18 @@ RUN mkdir /bazel && \
 COPY bashrc /etc/bash.bashrc
 RUN chmod a+rwx /etc/bash.bashrc
 
-RUN apt-get update && apt-get install -y libzmq3-dev
-RUN ${PIP} install jupyter
+RUN ${PIP} install jupyter matplotlib
 
-RUN mkdir /notebooks && chmod a+rwx /notebooks
+RUN mkdir -p /tf/tensorflow-tutorials && chmod -R a+rwx /tf/
 RUN mkdir /.local && chmod a+rwx /.local
-WORKDIR /notebooks
+RUN apt-get install -y --no-install-recommends wget
+WORKDIR /tf/tensorflow-tutorials
+RUN wget https://raw.githubusercontent.com/tensorflow/docs/master/site/en/tutorials/keras/basic_classification.ipynb
+RUN wget https://raw.githubusercontent.com/tensorflow/docs/master/site/en/tutorials/keras/basic_text_classification.ipynb
+RUN apt-get autoremove -y && apt-get remove -y wget
+WORKDIR /tf
 EXPOSE 8888
 
-CMD ["bash", "-c", "source /etc/bash.bashrc && jupyter notebook --notebook-dir=/notebooks --ip 0.0.0.0 --no-browser --allow-root"]
+RUN ${PYTHON} -m ipykernel.kernelspec
+
+CMD ["bash", "-c", "source /etc/bash.bashrc && jupyter notebook --notebook-dir=/tf --ip 0.0.0.0 --no-browser --allow-root"]
