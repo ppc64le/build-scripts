@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 OPTIND=1
 DOCKER_SERVER="registry-1.docker.io"
 SCRIPT_DIR=`dirname $0`
@@ -84,7 +85,7 @@ build_push ()
     else
         JUPYTER=""
     fi
-    BUILD="docker build $TF_PACKAGE $PYTHON -f ${FILE_PREFIX}${DEV}-ppc64le${JUPYTER}.Dockerfile -t ${DOCKER_SERVER}/${REPO}:${TAG}${ARG_SUFFIX}${DEV}${PY3}${JUPYTER} ${SCRIPT_DIR}"
+    BUILD="docker build $TF_PACKAGE $PYTHON -f ${SCRIPT_DIR}/${FILE_PREFIX}${DEV}-ppc64le${JUPYTER}.Dockerfile -t ${DOCKER_SERVER}/${REPO}:${TAG}${ARG_SUFFIX}${DEV}${PY3}${JUPYTER} ${SCRIPT_DIR}"
     PUSH="docker push ${DOCKER_SERVER}/${REPO}:${TAG}${ARG_SUFFIX}${DEV}${PY3}${JUPYTER}"
     if $DRY_RUN; then
         echo $BUILD
