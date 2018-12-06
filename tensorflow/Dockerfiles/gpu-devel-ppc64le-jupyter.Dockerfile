@@ -34,8 +34,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         git \
         libcudnn7=7.2.1.38-1+cuda9.2 \
         libcudnn7-dev=7.2.1.38-1+cuda9.2 \
-        libnccl2=2.2.13-1+cuda9.2 \
-        libnccl-dev=2.2.13-1+cuda9.2 \
+        libnccl2=2.3.7-1+cuda9.2 \
+        libnccl-dev=2.3.7-1+cuda9.2 \
         libcurl3-dev \
         libfreetype6-dev \
         libhdf5-serial-dev \
