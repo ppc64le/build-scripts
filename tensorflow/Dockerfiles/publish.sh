@@ -10,8 +10,6 @@ usage() {
     cat <<EOM
 Usage:
     -h                  Show this message
-    -u                  Dockerhub username
-    -p                  Dockerhub password
     -i                  Images type to build. Accepted values are: all, dev, nightly, or release.
     -t                  Image tag
     -d                  Dry run
@@ -20,19 +18,15 @@ EOM
 }
 
 # Get input
-while getopts "hu:i:t:p:df:b" opt; do
+while getopts "hi:t:df:b" opt; do
     case "$opt" in
     h)
         usage
         exit 0
         ;;
-    u)  USERNAME=$OPTARG
-        ;;
     i)  IMAGE=$OPTARG
         ;;
     t)  TAG=$OPTARG
-        ;;
-    p)  PASSWORD=$OPTARG
         ;;
     d)  DRY_RUN=true
         ;;
@@ -52,12 +46,6 @@ fi
 if [ -z $TAG ]; then
     echo "Missing -t argument"
     exit 1
-elif [ -z $USERNAME ]; then
-    echo "Missing -u argument"
-    exit 1
-elif [ -z $PASSWORD ]; then
-    echo "Missing -p argument"
-    exit 1
 fi
 
 if [[ ! "$IMAGE" =~ ^(all|nightly|release|dev)$ ]]; then
@@ -65,12 +53,6 @@ if [[ ! "$IMAGE" =~ ^(all|nightly|release|dev)$ ]]; then
     exit 1
 fi
 
-LOGIN="docker login -u $USERNAME -p $PASSWORD $DOCKER_SERVER"
-if $DRY_RUN; then
-    echo $LOGIN
-else
-    $LOGIN || exit 1
-fi
 build_push ()
 {
     if $GPU; then
