@@ -6,6 +6,7 @@ SCRIPT_DIR=`dirname $0`
 REPO='ibmcom/tensorflow-ppc64le'
 DRY_RUN=false
 BUILD_ONLY=false
+DATE=$(date +%s)
 
 usage() {
     cat <<EOM
@@ -68,9 +69,11 @@ build_push ()
         TF_PACKAGE=""
     elif [ $TYPE = "release" ]; then
         TF_PACKAGE="--build-arg TF_PACKAGE=tensorflow${ARG_SUFFIX}"
+        DATETIME="--build-arg DATETIME=${DATE}"
         DEV=""
     elif [ $TYPE = "nightly" ]; then
         TF_PACKAGE="--build-arg TF_PACKAGE=tf-nightly${ARG_SUFFIX}"
+        DATETIME="--build-arg DATETIME=${DATE}"
         DEV=""
     fi
     if $PYTHON_3; then
@@ -85,7 +88,7 @@ build_push ()
     else
         JUPYTER=""
     fi
-    BUILD="docker build $TF_PACKAGE $PYTHON -f ${SCRIPT_DIR}/${FILE_PREFIX}${DEV}-ppc64le${JUPYTER}.Dockerfile -t ${DOCKER_SERVER}/${REPO}:${TAG}${ARG_SUFFIX}${DEV}${PY3}${JUPYTER} ${SCRIPT_DIR}"
+    BUILD="docker build $TF_PACKAGE $DATETIME $PYTHON -f ${SCRIPT_DIR}/${FILE_PREFIX}${DEV}-ppc64le${JUPYTER}.Dockerfile -t ${DOCKER_SERVER}/${REPO}:${TAG}${ARG_SUFFIX}${DEV}${PY3}${JUPYTER} ${SCRIPT_DIR}"
     PUSH="docker push ${DOCKER_SERVER}/${REPO}:${TAG}${ARG_SUFFIX}${DEV}${PY3}${JUPYTER}"
     if $DRY_RUN; then
         echo $BUILD

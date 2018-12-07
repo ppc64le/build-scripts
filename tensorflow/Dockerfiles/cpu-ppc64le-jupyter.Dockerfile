@@ -40,6 +40,25 @@ RUN ${PIP} --no-cache-dir install --upgrade \
 # Some TF tools expect a "python" binary
 RUN ln -s $(which ${PYTHON}) /usr/local/bin/python
 
+COPY bashrc /etc/bash.bashrc
+RUN chmod a+rwx /etc/bash.bashrc
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libfreetype6-dev \
+    libzmq3-dev
+
+RUN ${PIP} install jupyter matplotlib
+
+RUN mkdir -p /tf/tensorflow-tutorials && chmod -R a+rwx /tf/
+RUN mkdir /.local && chmod a+rwx /.local
+RUN apt-get install -y --no-install-recommends wget
+WORKDIR /tf/tensorflow-tutorials
+RUN wget https://raw.githubusercontent.com/tensorflow/docs/master/site/en/tutorials/keras/basic_classification.ipynb
+RUN wget https://raw.githubusercontent.com/tensorflow/docs/master/site/en/tutorials/keras/basic_text_classification.ipynb
+RUN apt-get autoremove -y && apt-get remove -y wget
+WORKDIR /tf
+EXPOSE 8888
+
 # Options:
 #   tensorflow
 #   tensorflow-gpu
@@ -52,6 +71,8 @@ RUN ${PIP} install --global-option=build_ext \
             --global-option=-L/usr/lib/powerpc64le-linux-gnu/hdf5/serial \
             h5py
 
+# DATETIME is used to rerun future commands, otherwise downloading the .whl will be cached and will not pull the most recent version
+ARG DATETIME=1
 RUN if [ ${TF_PACKAGE} = tensorflow-gpu ]; then \
         BASE=https://powerci.osuosl.org/job/TensorFlow_PPC64LE_GPU_Release_Build/lastSuccessfulBuild/; \
     elif [ ${TF_PACKAGE} = tf-nightly-gpu ]; then \
@@ -65,21 +86,6 @@ RUN if [ ${TF_PACKAGE} = tensorflow-gpu ]; then \
     PACKAGE=$(wget -qO- ${BASE}"api/xml?xpath=//fileName&wrapper=artifacts" | grep -o "[^<>]*cp${_PY_SUFFIX}${MINOR}[^<>]*.whl"); \
     wget ${BASE}"artifact/tensorflow_pkg/"${PACKAGE}; \
     ${PIP} install ${PACKAGE}
-
-COPY bashrc /etc/bash.bashrc
-RUN chmod a+rwx /etc/bash.bashrc
-
-RUN ${PIP} install jupyter matplotlib
-
-RUN mkdir -p /tf/tensorflow-tutorials && chmod -R a+rwx /tf/
-RUN mkdir /.local && chmod a+rwx /.local
-RUN apt-get install -y --no-install-recommends wget
-WORKDIR /tf/tensorflow-tutorials
-RUN wget https://raw.githubusercontent.com/tensorflow/docs/master/site/en/tutorials/keras/basic_classification.ipynb
-RUN wget https://raw.githubusercontent.com/tensorflow/docs/master/site/en/tutorials/keras/basic_text_classification.ipynb
-RUN apt-get autoremove -y && apt-get remove -y wget
-WORKDIR /tf
-EXPOSE 8888
 
 RUN ${PYTHON} -m ipykernel.kernelspec
 
