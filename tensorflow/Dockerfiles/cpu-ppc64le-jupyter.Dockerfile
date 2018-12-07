@@ -19,9 +19,7 @@
 # throughout. Please refer to the the TensorFlow dockerfiles documentation
 # for more information.
 
-ARG UBUNTU_VERSION=16.04
-
-FROM ubuntu:${UBUNTU_VERSION} as base
+FROM ubuntu:16.04
 
 ARG USE_PYTHON_3_NOT_2
 ARG _PY_SUFFIX=${USE_PYTHON_3_NOT_2:+3}
@@ -40,7 +38,7 @@ RUN ${PIP} --no-cache-dir install --upgrade \
     setuptools
 
 # Some TF tools expect a "python" binary
-RUN ln -s $(which ${PYTHON}) /usr/local/bin/python 
+RUN ln -s $(which ${PYTHON}) /usr/local/bin/python
 
 # Options:
 #   tensorflow
