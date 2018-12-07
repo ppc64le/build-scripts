@@ -71,8 +71,8 @@ RUN ${PIP} install --global-option=build_ext \
             --global-option=-L/usr/lib/powerpc64le-linux-gnu/hdf5/serial \
             h5py
 
-# DATETIME is used to rerun future commands, otherwise downloading the .whl will be cached and will not pull the most recent version
-ARG DATETIME=1
+# CACHE_STOP is used to rerun future commands, otherwise downloading the .whl will be cached and will not pull the most recent version
+ARG CACHE_STOP=1
 RUN if [ ${TF_PACKAGE} = tensorflow-gpu ]; then \
         BASE=https://powerci.osuosl.org/job/TensorFlow_PPC64LE_GPU_Release_Build/lastSuccessfulBuild/; \
     elif [ ${TF_PACKAGE} = tf-nightly-gpu ]; then \
