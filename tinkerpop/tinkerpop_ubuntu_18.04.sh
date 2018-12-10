@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package	: tinkerpop
-# Version	: 3.4.0-rc1
+# Version	: 3.4.0-rc1, 3.3.4
 # Source repo	: https://github.com/apache/tinkerpop
 # Tested on	: ubuntu_18.04
 # Script License: Apache License, Version 2 or later
