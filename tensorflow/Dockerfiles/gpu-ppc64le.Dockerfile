@@ -66,18 +66,33 @@ RUN ${PIP} --no-cache-dir install --upgrade \
 # Some TF tools expect a "python" binary
 RUN ln -s $(which ${PYTHON}) /usr/local/bin/python
 
-# Options:
-#   tensorflow
-#   tensorflow-gpu
-#   tf-nightly
-#   tf-nightly-gpu
-ARG TF_PACKAGE=tensorflow
 RUN apt-get update && apt-get install -y wget libhdf5-dev
 RUN ${PIP} install --global-option=build_ext \
             --global-option=-I/usr/include/hdf5/serial/ \
             --global-option=-L/usr/lib/powerpc64le-linux-gnu/hdf5/serial \
             h5py
 
+# These get installed from the tensorflow .whl, but are installed earlier to cache the installs
+RUN ${PIP} --no-cache-dir install --upgrade \
+            astor \
+            absl-py \
+            gast \
+            termcolor \
+            protobuf \
+            keras-applications \
+            grpcio \
+            keras-preprocessing \
+            mock \
+            werkzeug \
+            markdown \
+            pbr
+
+# Options:
+#   tensorflow
+#   tensorflow-gpu
+#   tf-nightly
+#   tf-nightly-gpu
+ARG TF_PACKAGE=tensorflow
 # CACHE_STOP is used to rerun future commands, otherwise downloading the .whl will be cached and will not pull the most recent version
 ARG CACHE_STOP=1
 RUN if [ ${TF_PACKAGE} = tensorflow-gpu ]; then \
@@ -90,8 +105,8 @@ RUN if [ ${TF_PACKAGE} = tensorflow-gpu ]; then \
         BASE=https://powerci.osuosl.org/job/TensorFlow_PPC64LE_CPU_Nightly_Artifact/lastSuccessfulBuild/; \
     fi; \
     MINOR=`${PYTHON} -c 'import sys; print(sys.version_info[1])'`; \
-    PACKAGE=$(wget -qO- ${BASE}"api/xml?xpath=//fileName&wrapper=artifacts" | grep -o "[^<>]*cp${_PY_SUFFIX}${MINOR}[^<>]*.whl"); \
-    wget ${BASE}"artifact/tensorflow_pkg/"${PACKAGE}; \
+    PACKAGE=$(wget --no-verbose -qO- ${BASE}"api/xml?xpath=//fileName&wrapper=artifacts" | grep -o "[^<>]*cp${_PY_SUFFIX}${MINOR}[^<>]*.whl"); \
+    wget --no-verbose ${BASE}"artifact/tensorflow_pkg/"${PACKAGE}; \
     ${PIP} install ${PACKAGE}
 
 COPY bashrc /etc/bash.bashrc
