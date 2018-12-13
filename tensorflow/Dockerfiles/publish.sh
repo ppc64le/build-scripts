@@ -7,12 +7,14 @@ REPO='ibmcom/tensorflow-ppc64le'
 DRY_RUN=false
 BUILD_ONLY=false
 DATE=$(date +%s)
+IMAGE="all"
 
 usage() {
     cat <<EOM
 Usage:
     -h                  Show this message
-    -i                  Images type to build. Accepted values are: all, dev, nightly, or release.
+    -r                  Release type to build. Accepted values are: all, dev, nightly, or release.
+    -i                  Image type to build. Accepted values are: all, cpu, or gpu.
     -t                  Image tag
     -d                  Dry run
     -b                  Build only
@@ -20,13 +22,15 @@ EOM
 }
 
 # Get input
-while getopts "hi:t:df:b" opt; do
+while getopts "hi:t:df:br:" opt; do
     case "$opt" in
     h)
         usage
         exit 0
         ;;
     i)  IMAGE=$OPTARG
+        ;;
+    r)  RELEASE_FLAG=$OPTARG
         ;;
     t)  TAG=$OPTARG
         ;;
@@ -38,11 +42,11 @@ while getopts "hi:t:df:b" opt; do
 done
 
 # Validate input
-if [ -z $IMAGE ]; then
-    echo "Missing -i (image) argument"
+if [ -z $RELEASE_FLAG ]; then
+    echo "Missing -r (release) argument"
     exit 1
 fi
-if [ $IMAGE = "nightly" ]; then
+if [ $RELEASE_FLAG = "nightly" ]; then
     TAG="latest"
 fi
 if [ -z $TAG ]; then
@@ -50,28 +54,28 @@ if [ -z $TAG ]; then
     exit 1
 fi
 
-if [[ ! "$IMAGE" =~ ^(all|nightly|release|dev)$ ]]; then
-    echo "Invalid image type. Use all, dev, nightly, or release."
+if [[ ! "$RELEASE_FLAG" =~ ^(all|nightly|release|dev)$ ]]; then
+    echo "Invalid release type. Use all, dev, nightly, or release."
     exit 1
 fi
 
 build_push ()
 {
-    if $GPU; then
+    if [ $TYPE = "gpu" ]; then
         ARG_SUFFIX="-gpu"
         FILE_PREFIX="gpu"
-    else
+    elif [ $TYPE = "cpu" ]; then
         FILE_PREFIX="cpu"
         ARG_SUFFIX=""
     fi
-    if [ $TYPE = "dev" ]; then
+    if [ $RELEASE = "dev" ]; then
         DEV="-devel"
         TF_PACKAGE=""
-    elif [ $TYPE = "release" ]; then
+    elif [ $RELEASE = "release" ]; then
         TF_PACKAGE="--build-arg TF_PACKAGE=tensorflow${ARG_SUFFIX}"
         CACHE_STOP="--build-arg CACHE_STOP=${DATE}"
         DEV=""
-    elif [ $TYPE = "nightly" ]; then
+    elif [ $RELEASE = "nightly" ]; then
         TF_PACKAGE="--build-arg TF_PACKAGE=tf-nightly${ARG_SUFFIX}"
         CACHE_STOP="--build-arg CACHE_STOP=${DATE}"
         DEV=""
@@ -103,13 +107,18 @@ build_push ()
     fi
 }
 
-if [ $IMAGE = "all" ]; then
-    TYPE_LIST=("dev" "release")
+if [ $RELEASE_FLAG = "all" ]; then
+    RELEASE_LIST=("dev" "release")
+else
+    RELEASE_LIST=($RELEASE_FLAG)
+fi
+if [ -z $IMAGE ] || [ $IMAGE = "all" ]; then
+    TYPE_LIST=("gpu" "cpu")
 else
     TYPE_LIST=($IMAGE)
 fi
-for GPU in {true,false}; do
-    for TYPE in ${TYPE_LIST[@]}; do
+for TYPE in  ${TYPE_LIST[@]}; do
+    for RELEASE in ${RELEASE_LIST[@]}; do
         for PYTHON_3 in {true,false}; do
             for JUPYTER_ARG in {true,false}; do
                 build_push
