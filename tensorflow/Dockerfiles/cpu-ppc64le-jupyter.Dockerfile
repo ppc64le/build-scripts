@@ -18,6 +18,7 @@
 # This file was assembled from multiple pieces, whose use is documented
 # throughout. Please refer to the the TensorFlow dockerfiles documentation
 # for more information.
+
 FROM ubuntu:16.04
 
 ARG USE_PYTHON_3_NOT_2
@@ -38,6 +39,25 @@ RUN ${PIP} --no-cache-dir install --upgrade \
 
 # Some TF tools expect a "python" binary
 RUN ln -s $(which ${PYTHON}) /usr/local/bin/python
+
+COPY bashrc /etc/bash.bashrc
+RUN chmod a+rwx /etc/bash.bashrc
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libfreetype6-dev \
+    libzmq3-dev
+
+RUN ${PIP} install jupyter matplotlib
+
+RUN mkdir -p /tf/tensorflow-tutorials && chmod -R a+rwx /tf/
+RUN mkdir /.local && chmod a+rwx /.local
+RUN apt-get install -y --no-install-recommends wget
+WORKDIR /tf/tensorflow-tutorials
+RUN wget https://raw.githubusercontent.com/tensorflow/docs/master/site/en/tutorials/keras/basic_classification.ipynb
+RUN wget https://raw.githubusercontent.com/tensorflow/docs/master/site/en/tutorials/keras/basic_text_classification.ipynb
+RUN apt-get autoremove -y && apt-get remove -y wget
+WORKDIR /tf
+EXPOSE 8888
 
 RUN apt-get update && apt-get install -y wget libhdf5-dev
 RUN ${PIP} install --global-option=build_ext \
@@ -82,5 +102,6 @@ RUN if [ ${TF_PACKAGE} = tensorflow-gpu ]; then \
     wget --no-verbose ${BASE}"artifact/tensorflow_pkg/"${PACKAGE}; \
     ${PIP} install ${PACKAGE}
 
-COPY bashrc /etc/bash.bashrc
-RUN chmod a+rwx /etc/bash.bashrc
+RUN ${PYTHON} -m ipykernel.kernelspec
+
+CMD ["bash", "-c", "source /etc/bash.bashrc && jupyter notebook --notebook-dir=/tf --ip 0.0.0.0 --no-browser --allow-root"]

@@ -16,29 +16,11 @@
 # THIS IS A GENERATED DOCKERFILE.
 #
 # This file was assembled from multiple pieces, whose use is documented
-# below. Please refer to the the TensorFlow dockerfiles documentation for
-# more information. Build args are documented as their default value.
-#
-# Ubuntu-based, Nvidia-GPU-enabled environment for using TensorFlow, ppc64le architecture.
-#
-# NVIDIA ppc64le base image with CUDA and CuDNN, no dev stuff
-# --build-arg UBUNTU_VERSION=16.04
-#    ( no description )
-#
-# Python is required for TensorFlow and other libraries.
-# --build-arg USE_PYTHON_3_NOT_2=True
-#    Install python 3 over Python 2
-#
-# Install the TensorFlow Python package.
-# --build-arg TF_PACKAGE=tensorflow-gpu (tensorflow|tensorflow-gpu|tf-nightly|tf-nightly-gpu)
-#    The specific TensorFlow Python package to install
-#
-# Configure TensorFlow's shell prompt and login tools.
+# throughout. Please refer to the the TensorFlow dockerfiles documentation
+# for more information.
 
-ARG UBUNTU_VERSION=16.04
-FROM nvidia/cuda-ppc64le:9.2-base-ubuntu${UBUNTU_VERSION}
+FROM nvidia/cuda-ppc64le:9.2-base-ubuntu16.04
 
-# Pick up some TF dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
         cuda-command-line-tools-9-2 \
@@ -47,42 +29,72 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         cuda-curand-9-2 \
         cuda-cusolver-9-2 \
         cuda-cusparse-9-2 \
+        curl \
         libcudnn7=7.2.1.38-1+cuda9.2 \
+        libnccl2=2.3.7-1+cuda9.2 \
         libfreetype6-dev \
         libhdf5-serial-dev \
         libpng12-dev \
         libzmq3-dev \
         pkg-config \
+        rsync \
         software-properties-common \
         unzip \
         && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-ARG USE_PYTHON_3_NOT_2=True
+# For CUDA profiling, TensorFlow requires CUPTI.
+ENV LD_LIBRARY_PATH /usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH
+
+ARG USE_PYTHON_3_NOT_2
 ARG _PY_SUFFIX=${USE_PYTHON_3_NOT_2:+3}
 ARG PYTHON=python${_PY_SUFFIX}
 ARG PIP=pip${_PY_SUFFIX}
+
+# See http://bugs.python.org/issue19846
+ENV LANG C.UTF-8
 
 RUN apt-get update && apt-get install -y \
     ${PYTHON} \
     ${PYTHON}-pip
 
-RUN ${PIP} install --upgrade \
+RUN ${PIP} --no-cache-dir install --upgrade \
     pip \
     setuptools
 
-RUN ${PIP} install six numpy wheel mock
-RUN ${PIP} install keras_applications==1.0.5 --no-deps
-RUN ${PIP} install keras_preprocessing==1.0.3 --no-deps
+# Some TF tools expect a "python" binary
+RUN ln -s $(which ${PYTHON}) /usr/local/bin/python
 
-ARG TF_PACKAGE=tensorflow-gpu
 RUN apt-get update && apt-get install -y wget libhdf5-dev
 RUN ${PIP} install --global-option=build_ext \
             --global-option=-I/usr/include/hdf5/serial/ \
             --global-option=-L/usr/lib/powerpc64le-linux-gnu/hdf5/serial \
             h5py
 
+# These get installed from the tensorflow .whl, but are installed earlier to cache the installs
+RUN ${PIP} --no-cache-dir install --upgrade \
+            astor \
+            absl-py \
+            gast \
+            termcolor \
+            protobuf \
+            keras-applications \
+            grpcio \
+            keras-preprocessing \
+            mock \
+            werkzeug \
+            markdown \
+            pbr
+
+# Options:
+#   tensorflow
+#   tensorflow-gpu
+#   tf-nightly
+#   tf-nightly-gpu
+ARG TF_PACKAGE=tensorflow
+# CACHE_STOP is used to rerun future commands, otherwise downloading the .whl will be cached and will not pull the most recent version
+ARG CACHE_STOP=1
 RUN if [ ${TF_PACKAGE} = tensorflow-gpu ]; then \
         BASE=https://powerci.osuosl.org/job/TensorFlow_PPC64LE_GPU_Release_Build/lastSuccessfulBuild/; \
     elif [ ${TF_PACKAGE} = tf-nightly-gpu ]; then \
@@ -93,8 +105,8 @@ RUN if [ ${TF_PACKAGE} = tensorflow-gpu ]; then \
         BASE=https://powerci.osuosl.org/job/TensorFlow_PPC64LE_CPU_Nightly_Artifact/lastSuccessfulBuild/; \
     fi; \
     MINOR=`${PYTHON} -c 'import sys; print(sys.version_info[1])'`; \
-    PACKAGE=$(wget -qO- ${BASE}"api/xml?xpath=//fileName&wrapper=artifacts" | grep -o "[^<>]*cp${_PY_SUFFIX}${MINOR}[^<>]*.whl"); \
-    wget ${BASE}"artifact/tensorflow_pkg/"${PACKAGE}; \
+    PACKAGE=$(wget --no-verbose -qO- ${BASE}"api/xml?xpath=//fileName&wrapper=artifacts" | grep -o "[^<>]*cp${_PY_SUFFIX}${MINOR}[^<>]*.whl"); \
+    wget --no-verbose ${BASE}"artifact/tensorflow_pkg/"${PACKAGE}; \
     ${PIP} install ${PACKAGE}
 
 COPY bashrc /etc/bash.bashrc

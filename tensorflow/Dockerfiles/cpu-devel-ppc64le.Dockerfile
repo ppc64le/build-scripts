@@ -16,25 +16,10 @@
 # THIS IS A GENERATED DOCKERFILE.
 #
 # This file was assembled from multiple pieces, whose use is documented
-# below. Please refer to the the TensorFlow dockerfiles documentation for
-# more information. Build args are documented as their default value.
-#
-# Ubuntu-based, CPU-only environment for developing changes for TensorFlow, ppc64le architecture.
-#
-# Start from ppc64le/Ubuntu, with TF development packages (no GPU support)
-# --build-arg UBUNTU_VERSION=16.04
-#    ( no description )
-#
-# Python is required for TensorFlow and other libraries.
-# --build-arg USE_PYTHON_3_NOT_2=True
-#    Install python 3 over Python 2
-#
-# Build and install the latest version of Bazel and Python development tools.
-#
-# Configure TensorFlow's shell prompt and login tools.
+# throughout. Please refer to the the TensorFlow dockerfiles documentation
+# for more information.
 
-ARG UBUNTU_VERSION=16.04
-FROM ppc64le/ubuntu:${UBUNTU_VERSION}
+FROM ubuntu:16.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
@@ -57,22 +42,27 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-ARG USE_PYTHON_3_NOT_2=True
+ENV CI_BUILD_PYTHON python
+
+
+ARG USE_PYTHON_3_NOT_2
 ARG _PY_SUFFIX=${USE_PYTHON_3_NOT_2:+3}
 ARG PYTHON=python${_PY_SUFFIX}
 ARG PIP=pip${_PY_SUFFIX}
+
+# See http://bugs.python.org/issue19846
+ENV LANG C.UTF-8
 
 RUN apt-get update && apt-get install -y \
     ${PYTHON} \
     ${PYTHON}-pip
 
-RUN ${PIP} install --upgrade \
+RUN ${PIP} --no-cache-dir install --upgrade \
     pip \
     setuptools
 
-RUN ${PIP} install six numpy wheel mock
-RUN ${PIP} install keras_applications==1.0.5 --no-deps
-RUN ${PIP} install keras_preprocessing==1.0.3 --no-deps
+# Some TF tools expect a "python" binary
+RUN ln -s $(which ${PYTHON}) /usr/local/bin/python
 
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -80,8 +70,22 @@ RUN apt-get update && apt-get install -y \
     git \
     openjdk-8-jdk \
     ${PYTHON}-dev \
-    python \
     swig
+
+RUN ${PIP} --no-cache-dir install \
+    Pillow \
+    h5py \
+    keras_applications \
+    keras_preprocessing \
+    matplotlib \
+    mock \
+    numpy \
+    scipy \
+    sklearn \
+    pandas \
+    && test "${USE_PYTHON_3_NOT_2}" -eq 1 && true || ${PIP} --no-cache-dir install \
+    enum34
+
  # Build and install bazel
 ENV BAZEL_VERSION 0.15.0
 WORKDIR /
