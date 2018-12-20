@@ -84,7 +84,7 @@ build_push ()
         PYTHON="--build-arg USE_PYTHON_3_NOT_2=True"
         PY3="-py3"
     else
-        PYTHON="--build-arg USE_PYTHON_3_NOT_2=False"
+        PYTHON="--build-arg USE_PYTHON_3_NOT_2="
         PY3=""
     fi
     if $JUPYTER_ARG; then
