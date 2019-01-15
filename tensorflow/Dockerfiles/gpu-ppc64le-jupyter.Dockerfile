@@ -19,22 +19,21 @@
 # throughout. Please refer to the the TensorFlow dockerfiles documentation
 # for more information.
 
-FROM nvidia/cuda-ppc64le:9.2-base-ubuntu16.04
+FROM nvidia/cuda-ppc64le:10.0-base-ubuntu18.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
-        cuda-command-line-tools-9-2 \
-        cuda-cublas-9-2 \
-        cuda-cufft-9-2 \
-        cuda-curand-9-2 \
-        cuda-cusolver-9-2 \
-        cuda-cusparse-9-2 \
+        cuda-command-line-tools-10.0 \
+        cuda-cublas-10.0 \
+        cuda-cufft-10.0 \
+        cuda-curand-10.0 \
+        cuda-cusolver-10.0 \
+        cuda-cusparse-10.0 \
         curl \
-        libcudnn7=7.2.1.38-1+cuda9.2 \
-        libnccl2=2.3.7-1+cuda9.2 \
+        libcudnn7=7.4.2.24-1+cuda10.0 \
+        libnccl2=2.3.7-1+cuda10.0 \
         libfreetype6-dev \
         libhdf5-serial-dev \
-        libpng12-dev \
         libzmq3-dev \
         pkg-config \
         rsync \

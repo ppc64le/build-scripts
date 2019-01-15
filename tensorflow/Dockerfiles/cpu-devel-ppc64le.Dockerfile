@@ -19,7 +19,7 @@
 # throughout. Please refer to the the TensorFlow dockerfiles documentation
 # for more information.
 
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
@@ -28,7 +28,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libcurl3-dev \
         libfreetype6-dev \
         libhdf5-serial-dev \
-        libpng12-dev \
         libzmq3-dev \
         pkg-config \
         rsync \
