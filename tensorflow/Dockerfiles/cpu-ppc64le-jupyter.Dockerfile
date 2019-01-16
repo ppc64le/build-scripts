@@ -19,7 +19,7 @@
 # throughout. Please refer to the the TensorFlow dockerfiles documentation
 # for more information.
 
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 ARG USE_PYTHON_3_NOT_2
 ARG _PY_SUFFIX=${USE_PYTHON_3_NOT_2:+3}
