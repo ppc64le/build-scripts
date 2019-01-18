@@ -17,11 +17,13 @@ RUN apk --update add --no-cache git zlib-dev curl curl-dev expat expat-dev file 
     && sed -i ':a;N;$!ba; s/apply_patches/apply_patches || true/2' build_rust262.sh \
     && sed -i ':a;N;$!ba; s/mk_rustc/mk_rustc || true/2' build_rust262.sh \
     && ./build_rust262.sh \
-    && cargo install ripgrep \
-    && cd / && git clone https://github.com/theia-ide/theia && cd theia \
+    && cd / && git clone https://github.com/BurntSushi/ripgrep \
+    && cd ripgrep/ \
+    && cargo build --release \
+    && cd / && git clone https://github.com/theia-ide/theia && cd theia && git checkout v0.3.15\
     && yarn --skip-integrity-check;exit 0
 
-RUN cp -a /root/.cargo/bin /theia/node_modules/vscode-ripgrep/ \
+RUN cp -a /ripgrep/target/release /theia/node_modules/vscode-ripgrep/ \
     && cd /theia && yarn run build \
     && cd / &&  git clone https://github.com/desktop/dugite-native.git && cd /dugite-native/ \
     && git checkout v2.17.0 \
@@ -41,7 +43,7 @@ RUN  cd /dugite-native/script && patch build-ppc64le.sh < build-ppc64le.patch \
      && cp /dugite-native/output/dugite-native-v2.17.0-ppc64le.tar.gz /theia/node_modules/dugite/git \
      && cd /theia/node_modules/dugite/git \
      && tar -xzf dugite-native-v2.17.0-ppc64le.tar.gz \
-     && rm -rf /dugite-native /root/test262 /tmp/* /root/* /root/.cargo /home/rustbuild262/* \
+     && rm -rf /dugite-native /root/test262 /tmp/* /root/* /root/.cargo /home/rustbuild262/* /ripgrep \
      && apk del alpine-sdk curl git expat-dev ca-certificates libcurl curl-dev cmake  go go-tools libcurl file perl-utils xz-libs xz tar bash libarchive cmake llvm-libunwind llvm-libunwind-dev llvm5-libs llvm5 llvm5-dev gdbm sqlite-libs llvm5-test-utils rust-stdlib rust cargo libgit2 expat zlib-dev libcurl python2 libffi-dev scanelf libc-utils pkgconf binutils gmp isl libgomp gcc
 
 EXPOSE 3000
