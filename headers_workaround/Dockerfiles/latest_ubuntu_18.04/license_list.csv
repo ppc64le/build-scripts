@@ -1,0 +1,147 @@
+Package|    License|        Source of License Information|  Comments|       License/Copyright Links/References
+less | BSD Equivalent  | NA | True | NA
+libgssapi3-heimdal | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+python-pip-whl | (MIT OR ISC OR MITNFA) | NA | True | NA
+libxau6 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libhcrypto4-heimdal | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+python-setuptools | Python-2.0 | NA | True | NA
+python-cffi-backend | (MIT OR ISC OR MITNFA) | NA | True | NA
+python-wheel | (MIT OR ISC OR MITNFA) | NA | True | NA
+python-dbus | ((MIT OR ISC OR MITNFA) AND GPL-2.0) | NA | True | NA
+ca-certificates | GPL-2.0 | NA | True | NA
+libkrb5-26-heimdal | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+python-pip | (MIT OR ISC OR MITNFA) | NA | True | NA
+dbus | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libroken18-heimdal | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+patch | GPL-3.0 | NA | True | NA
+python-idna | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+python-cryptography | Apache-2.0 | NA | True | NA
+python-enum34 | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+openssh-client | ((BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) AND GPLV3) | NA | True | NA
+g++ | GPL-2.0 | NA | True | NA
+libmagic1 | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libksba8 | GPL-3.0 | NA | True | NA
+mime-support | Public Domain | NA | True | NA
+dirmngr | GPL-3.0 | NA | True | NA
+manpages-dev | GPL-2.0 | NA | True | NA
+pinentry-curses | GPL-2.0 | NA | True | NA
+openssl | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libxext6 | ((MIT OR ISC OR MITNFA) AND GPL with exception) | NA | True | NA
+binutils | GPL-3.0 | NA | True | NA
+libssl1.0.0 | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libdbus-1-3 | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+python-pkg-resources | Python-2.0 | NA | True | NA
+gir1.2-glib-2.0 | LGPL-2.1 | NA | True | NA
+git | GPL-2.0 | NA | True | NA
+libldap-2.4-2 | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+perl | Artistic-1.0 | NA | True | NA
+netbase | GPL-2.0 | NA | True | NA
+python-gi | LGPL-2.1 | NA | True | NA
+libxml2 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libwind0-heimdal | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libheimntlm0-heimdal | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libgssapi-krb5-2 | (MIT OR ISC OR MITNFA) | NA | True | NA
+shared-mime-info | GPL-2.0 | NA | True | NA
+libapparmor1 | GPLv2 | NA | True | NA
+gnupg | GPL-3.0 | NA | True | NA
+python-keyring | (MIT OR ISC OR MITNFA) | NA | True | NA
+gpgsm | GPL-3.0 | NA | True | NA
+python-ipaddress | Python-2.0 | NA | True | NA
+libfakeroot | GPL-2.0 | NA | True | NA
+file | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libassuan0 | GPL-3.0 | NA | True | NA
+gcc | GPL-2.0 | NA | True | NA
+python-six | (MIT OR ISC OR MITNFA) | NA | True | NA
+libasn1-8-heimdal | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libnpth0 | LGPL-3.0 | NA | True | NA
+libgirepository-1.0-1 | LGPL-2.1 | NA | True | NA
+dpkg-dev | GPL-3.0 | NA | True | NA
+libc-dev-bin | LGPL | NA | True | NA
+libdpkg-perl | GPL-3.0 | NA | True | NA
+libc6-dev | LGPL | NA | True | NA
+manpages | GPL-2.0 | NA | True | NA
+binutils-powerpc64le-linux-gnu | GPL-3.0 | NA | True | NA
+libheimbase1-heimdal | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+fakeroot | GPL-2.0 | NA | True | NA
+libhx509-5-heimdal | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+cpp | GPL-2.0 | NA | True | NA
+python-crypto | Public Domain | NA | True | NA
+libalgorithm-diff-perl |	Artistic 	|ubuntu.com|	Part of: Algorithm-Diff|	http://changelogs.ubuntu.com/changelogs/pool/main/liba/libalgorithm-diff-perl/libalgorithm-diff-perl_1.19.03-1/copyright|
+libalgorithm-diff-xs-perl |	Artistic	|ubuntu.com|	Part of: Algorithm-Diff-XS|	http://changelogs.ubuntu.com/changelogs/pool/main/liba/libalgorithm-diff-xs-perl/libalgorithm-diff-xs-perl_0.04-4build1/copyright|
+libalgorithm-merge-perl |	Artistic	|ubuntu.com|	Part of: Algorithm-Merge|	http://changelogs.ubuntu.com/changelogs/pool/main/liba/libalgorithm-merge-perl/libalgorithm-merge-perl_0.08-3/copyright|
+libatomic1 |	GPL-3+	|openhub.net|	Part of gcc-5 - GNU Compiler Collection|	https://www.openhub.net/p/gcc|
+libcc1-0 |	GPL-3+	|openhub.net|	Part of gcc-5 - GNU Compiler Collection|	https://www.openhub.net/p/gcc|
+libexpat1 |	MITÂ 	|NA|	part of expat |	NA|
+libexpat1-dev |	 MIT	|NA CLI|	NA|	NA|
+libfile-fcntllock-perl |	GPL-1+	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/libf/libfile-fcntllock-perl/libfile-fcntllock-perl_0.22-3/copyright|
+libglib2.0-0 |	GPL-2,LGPL-2	|NA|	part of glib|	NA|
+libgomp1 |	GPL-3+	|openhub.net|	Part of gcc-5 - GNU Compiler Collection|	https://www.openhub.net/p/gcc|
+libitm1 |	GPL-3+	|openhub.net|	Part of gcc-5 - GNU Compiler Collection|	https://www.openhub.net/p/gcc|
+libmpc3 |	LGPL-2.1	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/m/mpclib3/mpclib3_1.0.3-1/copyright|
+libpython2.7-minimal |	Apache-2.0	|NA|	part of python|	NA|
+libpython2.7-stdlib |	Apache-2.0	|NA|	part of python|	NA|
+libpython-stdlib |	 MIT,Python-2.0	|NA CLI|	NA|	NA|
+libubsan0 |	GPL-3+	|openhub.net|	Part of gcc-5 - GNU Compiler Collection|	https://www.openhub.net/p/gcc|
+linux-libc-dev |	 BSD-3-Clause	|NA CLI|	NA|	NA|
+python |	 MIT,Python-2.0	|NA CLI|	NA|	NA|
+python2.7 |	Apache-2.0	|NA|	NA|	NA|
+python2.7-minimal |	Apache-2.0	|NA|	NA|	NA|
+python-minimal |	 MIT,Python-2.0	|NA CLI|	NA|	NA|
+build-essential |	GPL-2+	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/b/build-essential/build-essential_12.1ubuntu2/copyright|
+libglib2.0-data |	LGPL-2.0	|NA|	part of glib2|	NA|
+libpython2.7 |	PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2	|ubuntu.com|	Python 3.5.2 is shown as approved on NA for various license types including Apache 2.0 and Python 2.0|	http://changelogs.ubuntu.com/changelogs/pool/main/p/python2.7/python2.7_2.7.12-1ubuntu0~16.04.1/copyright|
+libpython2.7-dev |	PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2	|ubuntu.com|	Python 3.5.2 is shown as approved on NA for various license types including Apache 2.0 and Python 2.0|	http://changelogs.ubuntu.com/changelogs/pool/main/p/python2.7/python2.7_2.7.12-1ubuntu0~16.04.1/copyright|
+libpython-dev |	Python-2.0, Apache-2.0, GPL-3.0, BSD-Clause-4	|NA UI|	Source Package Python|	NA|
+libsasl2-2 |	BSD Equivalent	|NA|	part of cyrus-sasl|	NA|
+libsasl2-modules |	BSD Equivalent	|NA|	part of cyrus-sasl|	NA|
+libsasl2-modules-db |	BSD Equivalent	|NA|	part of cyrus-sasl|	NA|
+libsqlite3-0 |	LGPL-2.1	|NA|	Source package sqlite3|	NA|
+make |	GPL-3+	|NA|	NA|	NA|
+python2.7-dev |	Python-2	|NA|	part of python |	NA|
+python-all |	GPL,Python 2.0	|ubuntu.com|	Source PackageÂ python-defaults:|	http://changelogs.ubuntu.com/changelogs/pool/main/p/python-defaults/python-defaults_2.7.11-1/copyright|
+python-all-dev |	GPL,Python 2.0	|ubuntu.com|	Source PackageÂ python-defaults:|	NA|
+python-dev |	Python-2	|NA|	part of python|	NA|
+readline-common |	GPL v3	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/r/readline6/readline6_6.3-8ubuntu2/copyright|
+xdg-user-dirs |	GPL-2+	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/x/xdg-user-dirs/xdg-user-dirs_0.15-2ubuntu6/copyright|
+xz-utils |	GPL-2, LGPL-2.1	|openhub.net|	NA|	http://git.tukaani.org/?p=xz.git;a=blob;f=COPYING|
+python-secretstorage  | BSD-3-clause | Copyright_File     |  BSD-3-clause(*), |  NA|
+python-keyrings.alt  | Expat | Copyright_File     |  Expat(*,debian/*), |  NA|
+python-asn1crypto  | Expat | Copyright_File     |  Expat(*,asn1crypto/_ordereddict.py,asn1crypto/_elliptic_curve.py,debian/*), |  NA|
+libmagic-mgc  | MIT-Old-Style-with-legal-disclaimer-2,BSD-2-Clause-regents,BSD-2-Clause-netbsd,public-domain,BSD-2-Clause-alike | Copyright_File     |  BSD-2-Clause-alike(*,src/apprentice.c,src/ascmagic.c,src/asprintf.c,src/compress.c)"More_than_5_Files_for_this_license",public-domain(src/apptype.c),MIT-Old-Style-with-legal-disclaimer-2(src/strlcat.c,src/strlcpy.c),BSD-2-Clause-regents(src/strcasestr.c),BSD-2-Clause-netbsd(src/cdf.c,src/cdf_time.c,src/der.c,src/der.h,src/readcdf.c)"More_than_5_Files_for_this_license", |  NA|
+libperl5.26  | HSIEH-BSD,HSIEH-DERIVATIVE,Artistic-2,LGPL-2.1,Artistic or GPL-1+ or Artistic-dist,GPL-1+ or Artistic or Artistic-dist,DONT-CHANGE-THE-GPL,SDBM-PUBLIC-DOMAIN,Artistic/GPL,GPL-1+ or Artistic, and BSD-3-clause-GENERIC,GPL-1+ or Artistic, and BSD-4-clause-POWERDOG,TEXT-TABS,CC0-1.0,BSD-3-clause-with-weird-numbering,RRA-KEEP-THIS-NOTICE,Expat or GPL-1+ or Artistic,GPL-2+ or Artistic,ZLIB,BZIP,S2P,GPL-1+ or Artistic, and Unicode,Unicode,GPL-3+-WITH-BISON-EXCEPTION,REGCOMP, and GPL-1+ or Artistic,Expat,GPL-1+ or Artistic | Copyright_File     |  Artistic-dist(regen-configure/dist/*),Expat(time64.c,cpan/podlators/t/docs/pod-spelling.t,cpan/podlators/t/docs/pod.t,cpan/podlators/t/docs/synopsis.t,cpan/podlators/t/lib/Test/RRA.pm)"More_than_5_Files_for_this_license",Artistic(cpan/Encode/bin/encguess,ext/File-Glob/*,ext/Pod-Html/*),GPL-1+orArtistic(*,perlio.c,malloc.c,pp_sort.c,mro.c)"More_than_5_Files_for_this_license",SDBM-PUBLIC-DOMAIN(ext/SDBM_File/sdbm/*),GPL-1+orArtistic,andBSD-4-clause-POWERDOG(cpan/Time-Piece/Piece.xs),Unicode(lib/unicore/*.txt,cpan/Unicode-Collate/Collate/allkeys.txt),GPL-2+orArtistic(cpan/Getopt-Long/*,cpan/Tie-File/*),GPL-3+-WITH-BISON-EXCEPTION(perly.h),ExpatorGPL-1+orArtistic(cpan/Locale-Maketext-Simple/*,cpan/Locale-Maketext-Simple/t/po_with_i_default/i_default.po,cpan/Locale-Maketext-Simple/t/po_with_i_default/fr.po,cpan/Locale-Maketext-Simple/t/po_with_i_default/en.po,cpan/Locale-Maketext-Simple/t/po_without_i_default/en.po)"More_than_5_Files_for_this_license",S2P(x2p/s2p.PL),BSD-3-clause-with-weird-numbering(cpan/Sys-Syslog/fallback/syslog.h),GPL-1+orArtisticorArtistic-dist(regen-configure/*),REGCOMP,andGPL-1+orArtistic(regcomp.c,regexec.c),TEXT-TABS(cpan/Text-Tabs/*),ArtisticorGPL-1+orArtistic-dist(regen-configure/U/*),ZLIB(cpan/Compress-Raw-Zlib/zlib-src/*),RRA-KEEP-THIS-NOTICE(cpan/podlators/t/data/snippets/README,pod/perlpodstyle.pod),CC0-1.0(cpan/Test-Simple/lib/Test/use/ok.pm,cpan/Test-Simple/lib/ok.pm),BZIP(cpan/Compress-Raw-Bzip2/bzip2-src/*),DONT-CHANGE-THE-GPL(Copying,pod/perlgpl.pod),BSD-3-clause(ext/File-Glob/bsd_glob.c,ext/File-Glob/bsd_glob.h),GPL-1+orArtistic,andBSD-3-clause-GENERIC(dist/PathTools/Cwd.xs),GPL-1+orArtistic,andUnicode(t/op/split_unicode.t), |  NA|
+libgdbm5  | GFDL-1.3+,GPL-3+ | Copyright_File     |  GPL-3+(*,git2chg.awk,debian/*),GFDL-1.3+(doc/*), |  NA|
+perl-modules-5.26  | HSIEH-BSD,HSIEH-DERIVATIVE,Artistic-2,LGPL-2.1,Artistic or GPL-1+ or Artistic-dist,GPL-1+ or Artistic or Artistic-dist,DONT-CHANGE-THE-GPL,SDBM-PUBLIC-DOMAIN,Artistic/GPL,GPL-1+ or Artistic, and BSD-3-clause-GENERIC,GPL-1+ or Artistic, and BSD-4-clause-POWERDOG,TEXT-TABS,CC0-1.0,BSD-3-clause-with-weird-numbering,RRA-KEEP-THIS-NOTICE,Expat or GPL-1+ or Artistic,GPL-2+ or Artistic,ZLIB,BZIP,S2P,GPL-1+ or Artistic, and Unicode,Unicode,GPL-3+-WITH-BISON-EXCEPTION,REGCOMP, and GPL-1+ or Artistic,Expat,GPL-1+ or Artistic | Copyright_File     |  Artistic-dist(regen-configure/dist/*),Expat(time64.c,cpan/podlators/t/docs/pod-spelling.t,cpan/podlators/t/docs/pod.t,cpan/podlators/t/docs/synopsis.t,cpan/podlators/t/lib/Test/RRA.pm)"More_than_5_Files_for_this_license",Artistic(cpan/Encode/bin/encguess,ext/File-Glob/*,ext/Pod-Html/*),GPL-1+orArtistic(*,perlio.c,malloc.c,pp_sort.c,mro.c)"More_than_5_Files_for_this_license",SDBM-PUBLIC-DOMAIN(ext/SDBM_File/sdbm/*),GPL-1+orArtistic,andBSD-4-clause-POWERDOG(cpan/Time-Piece/Piece.xs),Unicode(lib/unicore/*.txt,cpan/Unicode-Collate/Collate/allkeys.txt),GPL-2+orArtistic(cpan/Getopt-Long/*,cpan/Tie-File/*),GPL-3+-WITH-BISON-EXCEPTION(perly.h),ExpatorGPL-1+orArtistic(cpan/Locale-Maketext-Simple/*,cpan/Locale-Maketext-Simple/t/po_with_i_default/i_default.po,cpan/Locale-Maketext-Simple/t/po_with_i_default/fr.po,cpan/Locale-Maketext-Simple/t/po_with_i_default/en.po,cpan/Locale-Maketext-Simple/t/po_without_i_default/en.po)"More_than_5_Files_for_this_license",S2P(x2p/s2p.PL),BSD-3-clause-with-weird-numbering(cpan/Sys-Syslog/fallback/syslog.h),GPL-1+orArtisticorArtistic-dist(regen-configure/*),REGCOMP,andGPL-1+orArtistic(regcomp.c,regexec.c),TEXT-TABS(cpan/Text-Tabs/*),ArtisticorGPL-1+orArtistic-dist(regen-configure/U/*),ZLIB(cpan/Compress-Raw-Zlib/zlib-src/*),RRA-KEEP-THIS-NOTICE(cpan/podlators/t/data/snippets/README,pod/perlpodstyle.pod),CC0-1.0(cpan/Test-Simple/lib/Test/use/ok.pm,cpan/Test-Simple/lib/ok.pm),BZIP(cpan/Compress-Raw-Bzip2/bzip2-src/*),DONT-CHANGE-THE-GPL(Copying,pod/perlgpl.pod),BSD-3-clause(ext/File-Glob/bsd_glob.c,ext/File-Glob/bsd_glob.h),GPL-1+orArtistic,andBSD-3-clause-GENERIC(dist/PathTools/Cwd.xs),GPL-1+orArtistic,andUnicode(t/op/split_unicode.t), |  NA|
+libgdbm-compat4  | GFDL-1.3+,GPL-3+ | Copyright_File     |  GPL-3+(*,git2chg.awk,debian/*),GFDL-1.3+(doc/*), |  NA|
+liblocale-gettext-perl  | Artistic or GPL-1+ | Copyright_File     |  ArtisticorGPL-1+(*,debian/*), |  NA 
+gpg-wks-server  | TinySCHEME,RFC-Reference,LGPL-3+,GPL-3+ or BSD-3-clause,Expat,LGPL-2.1+,permissive,GPL-3+ | Copyright_File     |  Expat(dirmngr/dns.c,dirmngr/dns.h),LGPL-3+(tools/rfc822parse.c,tools/rfc822parse.h),GPL-3+(*,agent/command.c,agent/command-ssh.c,agent/gpg-agent.c,common/homedir.c)"More_than_5_Files_for_this_license",TinySCHEME(tests/gpgscm/*),LGPL-2.1+(common/localename.c),permissive(autogen.sh,common/gc-opt-flags.h,common/i18n.h,tools/clean-sat.c,tools/no-libgcrypt.c),GPL-3+orBSD-3-clause(scd/ccid-driver.h,scd/ccid-driver.c),RFC-Reference(doc/OpenPGP), |  NA 
+gpg-agent  | TinySCHEME,RFC-Reference,LGPL-3+,GPL-3+ or BSD-3-clause,Expat,LGPL-2.1+,permissive,GPL-3+ | Copyright_File     |  Expat(dirmngr/dns.c,dirmngr/dns.h),LGPL-3+(tools/rfc822parse.c,tools/rfc822parse.h),GPL-3+(*,agent/command.c,agent/command-ssh.c,agent/gpg-agent.c,common/homedir.c)"More_than_5_Files_for_this_license",TinySCHEME(tests/gpgscm/*),LGPL-2.1+(common/localename.c),permissive(autogen.sh,common/gc-opt-flags.h,common/i18n.h,tools/clean-sat.c,tools/no-libgcrypt.c),GPL-3+orBSD-3-clause(scd/ccid-driver.h,scd/ccid-driver.c),RFC-Reference(doc/OpenPGP), |  NA 
+gpgconf  | TinySCHEME,RFC-Reference,LGPL-3+,GPL-3+ or BSD-3-clause,Expat,LGPL-2.1+,permissive,GPL-3+ | Copyright_File     |  Expat(dirmngr/dns.c,dirmngr/dns.h),LGPL-3+(tools/rfc822parse.c,tools/rfc822parse.h),GPL-3+(*,agent/command.c,agent/command-ssh.c,agent/gpg-agent.c,common/homedir.c)"More_than_5_Files_for_this_license",TinySCHEME(tests/gpgscm/*),LGPL-2.1+(common/localename.c),permissive(autogen.sh,common/gc-opt-flags.h,common/i18n.h,tools/clean-sat.c,tools/no-libgcrypt.c),GPL-3+orBSD-3-clause(scd/ccid-driver.h,scd/ccid-driver.c),RFC-Reference(doc/OpenPGP), |  NA 
+gpg  | TinySCHEME,RFC-Reference,LGPL-3+,GPL-3+ or BSD-3-clause,Expat,LGPL-2.1+,permissive,GPL-3+ | Copyright_File     |  Expat(dirmngr/dns.c,dirmngr/dns.h),LGPL-3+(tools/rfc822parse.c,tools/rfc822parse.h),GPL-3+(*,agent/command.c,agent/command-ssh.c,agent/gpg-agent.c,common/homedir.c)"More_than_5_Files_for_this_license",TinySCHEME(tests/gpgscm/*),LGPL-2.1+(common/localename.c),permissive(autogen.sh,common/gc-opt-flags.h,common/i18n.h,tools/clean-sat.c,tools/no-libgcrypt.c),GPL-3+orBSD-3-clause(scd/ccid-driver.h,scd/ccid-driver.c),RFC-Reference(doc/OpenPGP), |  NA 
+gnupg-utils  | TinySCHEME,RFC-Reference,LGPL-3+,GPL-3+ or BSD-3-clause,Expat,LGPL-2.1+,permissive,GPL-3+ | Copyright_File     |  Expat(dirmngr/dns.c,dirmngr/dns.h),LGPL-3+(tools/rfc822parse.c,tools/rfc822parse.h),GPL-3+(*,agent/command.c,agent/command-ssh.c,agent/gpg-agent.c,common/homedir.c)"More_than_5_Files_for_this_license",TinySCHEME(tests/gpgscm/*),LGPL-2.1+(common/localename.c),permissive(autogen.sh,common/gc-opt-flags.h,common/i18n.h,tools/clean-sat.c,tools/no-libgcrypt.c),GPL-3+orBSD-3-clause(scd/ccid-driver.h,scd/ccid-driver.c),RFC-Reference(doc/OpenPGP), |  NA 
+gnupg-l10n  | TinySCHEME,RFC-Reference,LGPL-3+,GPL-3+ or BSD-3-clause,Expat,LGPL-2.1+,permissive,GPL-3+ | Copyright_File     |  Expat(dirmngr/dns.c,dirmngr/dns.h),LGPL-3+(tools/rfc822parse.c,tools/rfc822parse.h),GPL-3+(*,agent/command.c,agent/command-ssh.c,agent/gpg-agent.c,common/homedir.c)"More_than_5_Files_for_this_license",TinySCHEME(tests/gpgscm/*),LGPL-2.1+(common/localename.c),permissive(autogen.sh,common/gc-opt-flags.h,common/i18n.h,tools/clean-sat.c,tools/no-libgcrypt.c),GPL-3+orBSD-3-clause(scd/ccid-driver.h,scd/ccid-driver.c),RFC-Reference(doc/OpenPGP), |  NA 
+libisl19  | LGPL-2.1+,BSD-2-clause,MIT | Copyright_File     |  (doc/chicago.bst,imath/imath.*,imath/gmp_compat.*),LGPL-2.1+(isl_qsort.c,debian/*),MIT(*),BSD-2-clause(interface/python.*), |  NA 
+gpg-wks-client  | TinySCHEME,RFC-Reference,LGPL-3+,GPL-3+ or BSD-3-clause,Expat,LGPL-2.1+,permissive,GPL-3+ | Copyright_File     |  Expat(dirmngr/dns.c,dirmngr/dns.h),LGPL-3+(tools/rfc822parse.c,tools/rfc822parse.h),GPL-3+(*,agent/command.c,agent/command-ssh.c,agent/gpg-agent.c,common/homedir.c)"More_than_5_Files_for_this_license",TinySCHEME(tests/gpgscm/*),LGPL-2.1+(common/localename.c),permissive(autogen.sh,common/gc-opt-flags.h,common/i18n.h,tools/clean-sat.c,tools/no-libgcrypt.c),GPL-3+orBSD-3-clause(scd/ccid-driver.h,scd/ccid-driver.c),RFC-Reference(doc/OpenPGP), |  NA 
+atomicwrites| MIT License (MIT)|pypi.org | NA| NA
+attrs| MIT License (MIT)|pypi.org | NA| NA
+cryptography|BSD or Apache License|Container | NA| NA
+enum34|BSD License|Container | NA| NA
+funcsigs|ASL|Container | NA| NA
+headers-workaround| UNKNOWN|pypi.org | NA| NA
+idna|BSD-like|Container | NA| NA
+ipaddress|Python Software Foundation License|Container | NA| NA
+keyring| MIT License |  Python Software Foundation License|pypi.org | NA| NA
+keyrings.alt| MIT License|pypi.org | NA| NA
+more-itertools| MIT License (MIT)|pypi.org | NA| NA
+pathlib2|MIT|Container | NA| NA
+pip|MIT|Container | NA| NA
+pluggy| MIT License (MIT license)|pypi.org | NA| NA
+py|MIT license|Container | NA| NA
+pycrypto| Public Domain (Public domain)|pypi.org | NA| NA
+pygobject|GNU LGPL|Container | NA| NA
+pytest|MIT license|Container | NA| NA
+pyxdg| GNU Lesser General Public License v2 (LGPLv2)|pypi.org | NA| NA
+scandir|New BSD License|Container | NA| NA
+SecretStorage|BSD|Container | NA| NA
+setuptools| MIT License|pypi.org | NA| NA
+six|MIT|Container | NA| NA
+wheel|MIT|Container | NA| NA
