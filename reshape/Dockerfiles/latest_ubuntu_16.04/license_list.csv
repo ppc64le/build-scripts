@@ -1,0 +1,25 @@
+Package|    License|        Source of License Information|  Comments|       License/Copyright Links/References
+libunistring2  | MIT,GPL-3+ or GFDL-1.2+,GPL-2+ with distribution exception,FreeSoftware,LGPL-3+ or GPL-2+ | Copyright_File     |  GPL-3+orGFDL-1.2+(doc/*),LGPL-3+orGPL-2+(*),GPL-2+(build-aux/*,build-aux/texi2html),GPL-3+(tests/*,debian/*),FreeSoftware(gnulib-m4/*),GPL-2+withdistributionexception(m4/init-package-version.m4,build-aux/ltmain.sh),MIT(build-aux/install-sh), |  NA|
+abind|LGPL (>= 2)
+askpass|MIT + file LICENSE
+assertthat|GPL-3
+cli|MIT + file LICENSE
+crayon|MIT + file LICENSE
+digest|GPL (>= 2)
+doParallel|GPL-2
+foreach|Apache License (== 2.0)
+iterators|Apache License (== 2.0)
+itertools|GPL-2
+jsonlite|MIT + file LICENSE
+lazyeval|GPL-3
+mime|GPL
+plyr|MIT + file LICENSE
+praise|MIT + file LICENSE
+R6|MIT + file LICENSE
+Rcpp|GPL (>= 2)
+reshape|MIT + file LICENSE
+rex|MIT + file LICENSE
+rlang|GPL-3
+sys|MIT + file LICENSE
+testthat|MIT + file LICENSE
+withr|GPL (>= 2)
