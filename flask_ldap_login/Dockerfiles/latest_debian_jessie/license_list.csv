@@ -1,0 +1,28 @@
+Package|    License|        Source of License Information|  Comments|       License/Copyright Links/References
+libldap2-dev | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libsasl2-dev  | GPL-3+,BSD-4-clause | Copyright_File     |  BSD-4-clause(*),GPL-3+(debian/*,debian/saslfinger/*,debian/gen-auth/*), |  NA 
+attrs| MIT License (MIT)|pypi.org | NA| NA
+Click| BSD License (BSD)|pypi.org | NA| NA
+Flask|BSD|Container | NA| NA
+flask-ldap-login| UNKNOWN|pypi.org | NA| NA
+Flask-Testing| BSD License (BSD)|pypi.org | NA| NA
+Flask-WTF| BSD License (BSD)|pypi.org | NA| NA
+funcsigs|ASL|Container | NA| NA
+itsdangerous| BSD License (BSD)|pypi.org | NA| NA
+Jinja2|BSD|Container | NA| NA
+MarkupSafe|BSD|Container | NA| NA
+mock| BSD License (UNKNOWN)|pypi.org | NA| NA
+more-itertools| MIT License (MIT)|pypi.org | NA| NA
+pathlib2|MIT|Container | NA| NA
+pbr| Apache Software License|pypi.org | NA| NA
+pip|MIT|Container | NA| NA
+pluggy| MIT License (MIT license)|pypi.org | NA| NA
+py|MIT license|Container | NA| NA
+pyasn1|BSD|Container | NA| NA
+pyasn1-modules| BSD License (BSD)|pypi.org | NA| NA
+pytest|MIT license|Container | NA| NA
+python-ldap|Python style|Container | NA| NA
+scandir|New BSD License|Container | NA| NA
+six|MIT|Container | NA| NA
+Werkzeug|BSD|Container | NA| NA
+WTForms| BSD License (BSD)|pypi.org | NA| NA
