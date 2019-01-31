@@ -1,0 +1,54 @@
+Package|    License|        Source of License Information|  Comments|       License/Copyright Links/References
+AnnotationDbi|Artistic-2.0
+assertthat|GPL-3
+BH|BSL-1.0
+Biobase|Artistic-2.0
+BiocGenerics|Artistic-2.0
+BiocInstaller|Artistic-2.0
+bit|GPL-2
+bit64|GPL-2
+blob|GPL-3
+DBI|LGPL (>= 2)
+digest|GPL (>= 2)
+docopt|MIT + file LICENSE
+IRanges|Artistic-2.0
+magrittr|MIT + file LICENSE
+memoise|MIT + file LICENSE
+pkgconfig|MIT + file LICENSE
+plogr|MIT + file LICENSE
+prettyunits|MIT + file LICENSE
+Rcpp|GPL (>= 2)
+RSQLite|LGPL (>= 2)
+S4Vectors|Artistic-2.0
+stringi|file LICENSE
+stringr|GPL-2 | file LICENSE
+littler|GPL (>= 2)
+base|Part of R 3.4.0
+boot|Unlimited
+class|GPL-2 | GPL-3
+cluster|GPL (>= 2)
+codetools|GPL
+compiler|Part of R 3.4.0
+datasets|Part of R 3.4.0
+foreign|GPL (>= 2)
+graphics|Part of R 3.4.0
+grDevices|Part of R 3.4.0
+grid|Part of R 3.4.0
+KernSmooth|Unlimited
+lattice|GPL (>= 2)
+MASS|GPL-2 | GPL-3
+Matrix|GPL (>= 2) | file LICENCE
+methods|Part of R 3.4.0
+mgcv|GPL (>= 2)
+nlme|GPL (>= 2) | file LICENCE
+nnet|GPL-2 | GPL-3
+parallel|Part of R 3.4.0
+rpart|GPL-2 | GPL-3
+spatial|GPL-2 | GPL-3
+splines|Part of R 3.4.0
+stats|Part of R 3.4.0
+stats4|Part of R 3.4.0
+survival|LGPL (>= 2)
+tcltk|Part of R 3.4.0
+tools|Part of R 3.4.0
+utils|Part of R 3.4.0
