@@ -1,0 +1,3 @@
+Package|    License|        Source of License Information|  Comments|       License/Copyright Links/References
+libunistring2  | MIT,GPL-3+ or GFDL-1.2+,GPL-2+ with distribution exception,FreeSoftware,LGPL-3+ or GPL-2+ | Copyright_File     |  GPL-3+orGFDL-1.2+(doc/*),LGPL-3+orGPL-2+(*),GPL-2+(build-aux/*,build-aux/texi2html),GPL-3+(tests/*,debian/*),FreeSoftware(gnulib-m4/*),GPL-2+withdistributionexception(m4/init-package-version.m4,build-aux/ltmain.sh),MIT(build-aux/install-sh), |  NA|
+abind|LGPL (>= 2)
