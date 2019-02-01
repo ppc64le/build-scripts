@@ -1,0 +1,81 @@
+Package|    License|        Source of License Information|  Comments|       License/Copyright Links/References
+libslf4j-java | Apache-2.0 | NA | True | NA
+libcdi-api-java | Apache-2.0 | NA | True | NA
+ant | Apache-2.0 | NA | True | NA
+libplexus-archiver-java | Apache-2.0 | NA | True | NA
+ant-optional | Apache-2.0 | NA | True | NA
+libguice-java | Apache-2.0 | NA | True | NA
+libjzlib-java | ((BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) AND GPL) | NA | True | NA
+libxom-java | LGPL-2.1 | NA | True | NA
+libplexus-interpolation-java | Apache-2.0 | NA | True | NA
+libplexus-sec-dispatcher-java | Apache-2.0 | NA | True | NA
+libxbean-java | Apache-2.0 | NA | True | NA
+libbsh-java | LGPL-2.1 | NA | True | NA
+maven | Apache-2.0 | NA | True | NA
+libmaven3-core-java | Apache-2.0 | NA | True | NA
+libplexus-container-default-java | Apache-2.0 | NA | True | NA
+libeasymock-java | Apache-2.0 | NA | True | NA
+libdom4j-java | jdom | NA | True | NA
+libobjenesis-java | Apache-2.0 | NA | True | NA
+libplexus-classworlds-java | Apache-2.0 | NA | True | NA
+libjsch-java | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libguava-java | Apache-2.0 | NA | True | NA
+libcglib-java | Apache-2.0 | NA | True | NA
+libcommons-io-java | Apache-2.0 | NA | True | NA
+libjsoup-java | (MIT OR ISC OR MITNFA) | NA | True | NA
+libmsv-java | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libcommons-lang3-java | Apache-2.0 | NA | True | NA
+libplexus-io-java | Apache-2.0 | NA | True | NA
+libclassworlds-java | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libwagon-java | Apache-2.0 | NA | True | NA
+libplexus-utils-java | Apache-2.0 | NA | True | NA
+libplexus-interactivity-api-java | (MIT OR ISC OR MITNFA) | NA | True | NA
+libcommons-parent-java | Apache-2.0 | NA | True | NA
+libcommons-httpclient-java | Apache-2.0 | NA | True | NA
+libplexus-cipher-java | Apache-2.0 | NA | True | NA
+libdoxia-core-java | Apache-2.0 | NA | True | NA
+junit |	BSD-4-Clause	|NA|	Earlier versions were under EPL-1.0/CPL-1.0|	http://changelogs.ubuntu.com/changelogs/pool/universe/j/junit/junit_3.8.2-8build1/copyright|
+junit4 |	BSD-4-Clause	|NA|	Earlier versions were under EPL-1.0/CPL-1.0|	http://changelogs.ubuntu.com/changelogs/pool/universe/j/junit4/junit4_4.12-4ubuntu1/copyright|
+libaopalliance-java |	public-domain, GPL-2	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/liba/libaopalliance-java/libaopalliance-java_20070526-5/copyright|
+libapache-pom-java |	Apache-2.0	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/a/apache-pom/apache-pom_10-2build1/copyright|
+libatinject-jsr330-api-java |	Apache-2.0	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/a/atinject-jsr330/atinject-jsr330_1.0+ds1-2/copyright|
+libcommons-cli-java |	Apache-2.0	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/libc/libcommons-cli-java/libcommons-cli-java_1.3.1-3ubuntu1/copyright|
+libcommons-codec-java |	Apache-2.0	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/libc/libcommons-codec-java/libcommons-codec-java_1.10-1/copyright|
+libcommons-lang-java |	Apache-2.0	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/libc/libcommons-lang-java/libcommons-lang-java_2.6-6ubuntu2/copyright|
+libcommons-logging-java |	Apache-2.0	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/libc/libcommons-logging-java/libcommons-logging-java_1.2-1+build1/copyright|
+libcommons-net-java |	Apache-2.0	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/libc/libcommons-net-java/libcommons-net-java_3.4-2ubuntu2/copyright|
+libeclipse-aether-java |	EPL-1.0, Apache-2.0	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/e/eclipse-aether/eclipse-aether_1.0.2-1/copyright|
+libgeronimo-interceptor-3.0-spec-java |	Apache-2.0	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/g/geronimo-interceptor-3.0-spec/geronimo-interceptor-3.0-spec_1.0.1-3fakesync1/copyright|
+libhamcrest-java |	BSD, GPL	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/libh/libhamcrest-java/libhamcrest-java_1.3-5ubuntu1/copyright|
+libhttpclient-java |	Apache-2.0, MPL-2.0	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/h/httpcomponents-client/httpcomponents-client_4.5.1-1/copyright|
+libhttpcore-java |	Apache-2.0	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/h/httpcomponents-core/httpcomponents-core_4.4.4-1/copyright|
+libjaxen-java |	BSD, W3C	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/libj/libjaxen-java/libjaxen-java_1.1.6-1ubuntu1/copyright|
+libjaxp1.3-java |	GPL-2, Apache-2.0	|ubuntu.com|	NA|	NA|
+libjdom1-java |	BSD-4	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/libj/libjdom1-java/libjdom1-java_1.1.3-1/copyright|
+liblog4j1.2-java |	Apache-2.0	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/a/apache-log4j1.2/apache-log4j1.2_1.2.17-7ubuntu1/copyright|
+libmaven2-core-java |	Apache-2.0, GPL-3+	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/m/maven2-core/maven2-core_2.2.1-24/copyright|
+libmaven-parent-java |	Apache-2.0	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/m/maven-parent/maven-parent_21-2/copyright|
+libplexus-ant-factory-java |	Apache-2.0	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/p/plexus-ant-factory/plexus-ant-factory_1.0~alpha2.1-3/copyright|
+libplexus-bsh-factory-java |	Apache-2.0	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/p/plexus-bsh-factory/plexus-bsh-factory_1.0~alpha7-3.1/copyright|
+libplexus-classworlds2-java |	Apache-2.0, Apache-1.1	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/p/plexus-classworlds2/plexus-classworlds2_2.5.2-1/copyright|
+libplexus-cli-java |	Apache-2.0	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/p/plexus-cli/plexus-cli_1.2-5/copyright|
+libplexus-component-annotations-java |	Apache-2.0, MIT	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/p/plexus-containers1.5/plexus-containers1.5_1.6-2/copyright|
+libplexus-component-metadata-java |	Apache-2.0, MIT	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/p/plexus-containers1.5/plexus-containers1.5_1.6-2/copyright|
+libplexus-container-default1.5-java |	Apache-2.0, MIT	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/p/plexus-containers1.5/plexus-containers1.5_1.6-2/copyright|
+libplexus-containers1.5-java |	Apache-2.0, MIT	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/p/plexus-containers1.5/plexus-containers1.5_1.6-2/copyright|
+libplexus-containers-java |	Apache-2.0, MIT	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/p/plexus-containers/plexus-containers_1.0~beta3.0.7-8/copyright|
+libplexus-utils2-java |	Apache-2.0	|NA|	Source package plexus-utils|	NA|
+libqdox2-java |	Apache-2.0	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/q/qdox2/qdox2_2.0~M3-2/copyright|
+libservlet3.1-java |	Apache-2.0	|NA|	Upstream name - Apache Tomcat 8|	NA|
+libsisu-inject-java |	EPL-1.0, BSD-3-clause, Apache-2.0	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/s/sisu-inject/sisu-inject_0.3.2-1/copyright|
+libsisu-plexus-java |	EPL-1.0, Apache-2.0	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/s/sisu-plexus/sisu-plexus_0.3.2-1/copyright|
+libwagon2-java |	Apache-2.0	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/universe/w/wagon2/wagon2_2.10-3/copyright|
+libxalan2-java |	Apache-2.0	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/libx/libxalan2-java/libxalan2-java_2.7.1-9/copyright|
+libxerces2-java |	Apache-2.0	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/libx/libxerces2-java/libxerces2-java_2.11.0-7/copyright|
+libxml-commons-external-java |	PD, BSD-like, Apache-2.0, GPL-2+	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/x/xml-commons-external/xml-commons-external_1.4.01-2build1/copyright|
+libxml-commons-resolver1.1-java |	Apache-2.0	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/libx/libxml-commons-resolver1.1-java/libxml-commons-resolver1.1-java_1.2-7build1/copyright|
+libxpp3-java |	other-BSD, Apache-1.1, LGPL-2.1+, BSD-jaxen, BSD-saxpath	|ubuntu.com|	Different files are licensed differently. Most of them are under other-BSD, however there are some exceptions as well. Example: Files: src/java/xpath/org/xmlpull/v1/builder/xpath/saxpath/* are under BSD-saxpath etc.|	http://changelogs.ubuntu.com/changelogs/pool/universe/libx/libxpp3-java/libxpp3-java_1.1.4c-2build1/copyright|
+libjsr305-java  | as selected by Licensor and indicated in the title of this,public-domain,CC-BY-SA-2.5 or CC-BY-SA-3.0,BSD-3-clause | Copyright_File     |  public-domain(debian/*),CC-BY-SA-2.5orCC-BY-SA-3.0(ri/src/main/java/javax/annotation/concurrent/NotThreadSafe.java,ri/src/main/java/javax/annotation/concurrent/Immutable.java,ri/src/main/java/javax/annotation/concurrent/GuardedBy.java),BSD-3-clause(*), |  NA|
+librelaxng-datatype-java  | GPL-2+,BSD | Copyright_File     |  GPL-2+(debian/*),BSD(*), |  NA|
+libjetty9-java  | other,Apache-2.0 or EPL-1.0 | Copyright_File     |  Apache-2.0(jetty-ant/src/test/resources/foo/WEB-INF/tags/panel.tag,tests/test-webapps/test-jetty-webapp/src/main/webapp/WEB-INF/tags/panel.tag,debian/*),other(jetty-util/src/main/java/org/eclipse/jetty/util/security/UnixCrypt.java),Apache-2.0orEPL-1.0(*,jetty-ant/src/main/java/org/eclipse/jetty/ant/utils/TaskLog.java,jetty-ant/src/main/java/org/eclipse/jetty/ant/utils/ServerProxy.java,jetty-ant/src/main/java/org/eclipse/jetty/ant/JettyRunTask.java,jetty-ant/src/main/java/org/eclipse/jetty/ant/AntWebAppContext.java)"More_than_5_Files_for_this_license", |  NA|
+libasm-java  | Apache-1.1,Apache-2.0,BSD-3-clause | Copyright_File     |  Apache-1.1(test/perf/org/aspectj/apache/bcel/classfile/Signature.java),Apache-2.0(test/perf/org/aspectj/apache/bcel/verifier/structurals/ModifiedPass3bVerifier.java,test/perf/org/apache/bcel/verifier/structurals/ModifiedPass3bVerifier.java),BSD-3-clause(*,debian/*), |  NA|

@@ -1,0 +1,103 @@
+Package|    License|        Source of License Information|  Comments|       License/Copyright Links/References
+libunistring2  | MIT,GPL-3+ or GFDL-1.2+,GPL-2+ with distribution exception,FreeSoftware,LGPL-3+ or GPL-2+ | Copyright_File     |  GPL-3+orGFDL-1.2+(doc/*),LGPL-3+orGPL-2+(*),GPL-2+(build-aux/*,build-aux/texi2html),GPL-3+(tests/*,debian/*),FreeSoftware(gnulib-m4/*),GPL-2+withdistributionexception(m4/init-package-version.m4,build-aux/ltmain.sh),MIT(build-aux/install-sh), |  NA|
+askpass|MIT + file LICENSE
+assertthat|GPL-3
+backports|GPL-2
+base64enc|GPL-2 | GPL-3
+BH|BSL-1.0
+callr|MIT + file LICENSE
+cli|MIT + file LICENSE
+colorspace|BSD_3_clause + file LICENSE
+crayon|MIT + file LICENSE
+crosstalk|MIT + file LICENSE
+DBI|LGPL (>= 2)
+digest|GPL (>= 2)
+docopt|MIT + file LICENSE
+evaluate|MIT + file LICENSE
+fansi|GPL (>= 2)
+filehash|GPL (>= 2)
+formatR|GPL
+ggplot2|GPL-2 | file LICENSE
+gtable|GPL-2
+highr|GPL
+htmltools|GPL (>= 2)
+htmlwidgets|MIT + file LICENSE
+httpuv|GPL (>= 2) | file LICENSE
+jpeg|GPL-2 | GPL-3
+jsonlite|MIT + file LICENSE
+JuliaCall|MIT + file LICENSE
+knitr|GPL
+labeling|MIT + file LICENSE | Unlimited
+later|GPL (>= 2)
+lazyeval|GPL-3
+magrittr|MIT + file LICENSE
+manipulateWidget|GPL (>= 2) | file LICENSE
+markdown|GPL-2
+mime|GPL
+miniUI|GPL-3
+munsell|MIT + file LICENSE
+pillar|GPL-3
+pkgconfig|MIT + file LICENSE
+plyr|MIT + file LICENSE
+png|GPL-2 | GPL-3
+processx|MIT + file LICENSE
+promises|MIT + file LICENSE
+ps|BSD_3_clause + file LICENSE
+purrr|GPL-3 | file LICENSE
+R6|MIT + file LICENSE
+RColorBrewer|Apache License 2.0
+Rcpp|GPL (>= 2)
+rematch2|MIT + file LICENSE
+reshape2|MIT + file LICENSE
+reticulate|Apache License 2.0
+rlang|GPL-3
+rmarkdown|GPL-3
+rprojroot|GPL-3
+scales|MIT + file LICENSE
+shiny|GPL-3 | file LICENSE
+sourcetools|MIT + file LICENSE
+stringi|file LICENSE
+stringr|GPL-2 | file LICENSE
+styler|GPL-3
+sys|MIT + file LICENSE
+testit|GPL
+tibble|MIT + file LICENSE
+tikzDevice|GPL (>= 2)
+tinytex|MIT + file LICENSE
+utf8|Apache License (== 2.0) | file LICENSE
+viridisLite|MIT + file LICENSE
+webshot|GPL-2
+withr|GPL (>= 2)
+xfun|MIT + file LICENSE
+xtable|GPL (>= 2)
+yaml|BSD_3_clause + file LICENSE
+littler|GPL (>= 2)
+base|Part of R 3.4.0
+boot|Unlimited
+class|GPL-2 | GPL-3
+cluster|GPL (>= 2)
+codetools|GPL
+compiler|Part of R 3.4.0
+datasets|Part of R 3.4.0
+foreign|GPL (>= 2)
+graphics|Part of R 3.4.0
+grDevices|Part of R 3.4.0
+grid|Part of R 3.4.0
+KernSmooth|Unlimited
+lattice|GPL (>= 2)
+MASS|GPL-2 | GPL-3
+Matrix|GPL (>= 2) | file LICENCE
+methods|Part of R 3.4.0
+mgcv|GPL (>= 2)
+nlme|GPL (>= 2) | file LICENCE
+nnet|GPL-2 | GPL-3
+parallel|Part of R 3.4.0
+rpart|GPL-2 | GPL-3
+spatial|GPL-2 | GPL-3
+splines|Part of R 3.4.0
+stats|Part of R 3.4.0
+stats4|Part of R 3.4.0
+survival|LGPL (>= 2)
+tcltk|Part of R 3.4.0
+tools|Part of R 3.4.0
+utils|Part of R 3.4.0

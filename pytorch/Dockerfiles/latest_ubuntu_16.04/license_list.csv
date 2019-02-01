@@ -1,0 +1,99 @@
+Package|    License|        Source of License Information|  Comments|       License/Copyright Links/References
+libxrender1 | Python-2.0 | NA | True | NA
+libmnl0 | LGPL-2.1 | NA | True | NA
+fonts-dejavu-core | (MIT OR ISC OR MITNFA) | NA | True | NA
+git-man | GPL-2.0 | NA | True | NA
+libhwloc5 | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libhwloc-dev | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libxau6 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libxext6 | ((MIT OR ISC OR MITNFA) AND GPL with exception) | NA | True | NA
+libopenmpi-dev | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libxfixes3 | ((MIT OR ISC OR MITNFA) AND GPLv3) | NA | True | NA
+libcap-ng0 | GPL-2.0 | NA | True | NA
+libibverbs-dev | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libxt6 | (MIT OR ISC OR MITNFA) | NA | True | NA
+dbus | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libopenmpi1.10 | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+ocl-icd-libopencl1 | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libltdl-dev | GPL-2.0 | NA | True | NA
+gsfonts | GPL-2.0 | NA | True | NA
+openmpi-common | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libxaw7 | (MIT OR ISC OR MITNFA) | NA | True | NA
+unzip | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libxrandr2 | Python-2.0 | NA | True | NA
+libmagic1 | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+sgml-data | (MPL-1.0 AND Unique) | NA | True | NA
+libpaper1 | GPL-2.0 | NA | True | NA
+mime-support | Public Domain | NA | True | NA
+libxv1 | (MIT OR ISC OR MITNFA) | NA | True | NA
+fontconfig-config | (MIT OR ISC OR MITNFA) | NA | True | NA
+autotools-dev | GPL-3.0 | NA | True | NA
+libhwloc-plugins | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libxtst6 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libdbus-1-3 | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+ucf | GPL-2.0 | NA | True | NA
+shared-mime-info | GPL-2.0 | NA | True | NA
+git | GPL-2.0 | NA | True | NA
+docbook-xml | Unique | NA | True | NA
+tzdata | Public Domain | NA | True | NA
+netbase | GPL-2.0 | NA | True | NA
+libgl1-mesa-dri | (MIT OR ISC OR MITNFA) | NA | True | NA
+x11-common | (MIT OR ISC OR MITNFA) | NA | True | NA
+lynx | GPL-2.0 | NA | True | NA
+libfontenc1 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libltdl7 | GPL-2.0 | NA | True | NA
+libxml2 | (MIT OR ISC OR MITNFA) | NA | True | NA
+sudo | (MIT OR ISC OR MITNFA) | NA | True | NA
+libice6 | (MIT OR ISC OR MITNFA) | NA | True | NA
+file | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libsm6 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libxtables11 | GPL-2.0 | NA | True | NA
+libsigsegv2 | GPL-2.0 | NA | True | NA
+libicu55 | Unicode | NA | True | NA
+docbook-xsl | (MIT OR ISC OR MITNFA) | NA | True | NA
+xterm | ((MIT OR ISC OR MITNFA) AND CC-BY-3.0) | NA | True | NA
+libibverbs1 | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+openmpi-bin | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libtool | GPL-2.0 | NA | True | NA
+libsensors4 | GPL-2.0 | NA | True | NA
+libxxf86vm1 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libyaml-0-2 | (MIT OR ISC OR MITNFA) | NA | True | NA
+lynx-common | GPL-2.0 | NA | True | NA
+iproute2 | GPL-2.0 | NA | True | NA
+libxshmfence1 | Unique | NA | True | NA
+libjbig0 | GPL-2.0 | NA | True | NA
+javascript-common |	 GPL-2.0	|NA CLI|	NA|	NA|
+liberror-perl |	Artistic and GPL	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/libe/liberror-perl/liberror-perl_0.17-1.2/copyright|
+libexpat1 |	MITÂ 	|NA|	part of expat |	NA|
+libglib2.0-0 |	GPL-2,LGPL-2	|NA|	part of glib|	NA|
+libpciaccess0 |	 MIT	|NA|	NA|	NA|
+libpython2.7-minimal |	Apache-2.0	|NA|	part of python|	NA|
+libxcomposite1 |	 MIT	|NA CLI|	NA|	NA|
+libxdamage1 |	MIT	|openhub.net|	Under xorg - https://cgit.freedesktop.org/ |	https://www.openhub.net/p/x|
+libxft2 |	Python -2	|NA|	part of libxft|	NA|
+libxinerama1 |	 MIT	|NA|	NA|	NA|
+libxss1 |	 MIT	|NA CLI|	NA|	NA|
+poppler-data |	 BSD-3-Clause	|NA CLI|	NA|	NA|
+preview-latex-style |	GPL-3+	|debian.org|	NA|	http://metadata.ftp-master.debian.org/changelogs/main/a/auctex/auctex_11.90-1_copyright|
+tex-common |	     LaTeX Project Public License, GPL-2	|Other|	part of texlive|	NA|
+texlive-base |	     LaTeX Project Public License, GPL-3	|Other|	part of texlive|	NA|
+texlive-latex-base |	     LaTeX Project Public License, GPL-5	|Other|	part of texlive|	NA|
+texlive-latex-recommended |	     LaTeX Project Public License, GPL-7	|Other|	part of texlive|	NA|
+ifupdown |	GPL-2+	|openhub.net|	NA|	https://www.openhub.net/p/ifupdown|
+isc-dhcp-client |	ISC	|ubuntu.com|	dhcp shows up on NA as reviewed with license type MIT OR ISC OR MITNFA|	http://changelogs.ubuntu.com/changelogs/pool/main/i/isc-dhcp/isc-dhcp_4.3.3-5ubuntu12/copyright|
+isc-dhcp-common |	ISC	|ubuntu.com|	dhcp shows up on NA as reviewed with license type MIT OR ISC OR MITNFA|	http://changelogs.ubuntu.com/changelogs/pool/main/i/isc-dhcp/isc-dhcp_4.3.3-5ubuntu12/copyright|
+libatm1 |	BSD, GPL-2, LGPL-2	|Source Code|	The package can be distributed or modified under GPL-2, as per the COPYING file. However, different source components/parts of the source code are provided under different licenses. COPYING.GPL and COPYING.LGPL are part of the main source tree|	https://sourceforge.net/projects/linux-atm/|
+libdns-export162 |	GPL-2.0+	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/b/bind9/bind9_9.10.3.dfsg.P4-8ubuntu1.2/copyright|
+libisc-export160 |	ISC	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/b/bind9/bind9_9.10.3.dfsg.P4-8ubuntu1.2/copyright|
+libnuma1 |	LGPL-2.2	|NA UI|	Source Package libnuma|	NA|
+libnuma-dev |	LGPL-2.1	|NA UI|	Source Package libnuma|	NA|
+libpython3.5-minimal |	Apache-2.0	|NA|	part of python |	NA|
+libtxc-dxtn-s2tc0 |	Expat	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/s/s2tc/s2tc_0~git20131104-1.1/copyright|
+libxxf86dga1 |	MIT	|openhub.net|	Under xorg - https://cgit.freedesktop.org/ |	https://www.openhub.net/p/x|
+python3.5-minimal |	Apache-2.0	|NA|	part of python |	NA|
+sgml-base |	GPL-2	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/s/sgml-base/sgml-base_1.26+nmu4ubuntu1/copyright|
+x11-utils |	MIT	|openhub.net|	Under xorg - https://cgit.freedesktop.org/ |	https://www.openhub.net/p/x|
+x11-xserver-utils |	Various	|ubuntu.com|	This is a collection of X11 utilities and they come with different licenses.|	http://changelogs.ubuntu.com/changelogs/pool/main/x/x11-xserver-utils/x11-xserver-utils_7.7+7/copyright|
+xdg-user-dirs |	GPL-2+	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/x/xdg-user-dirs/xdg-user-dirs_0.15-2ubuntu6/copyright|
+xml-core |	GPL-2	|source code|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/x/xml-core/xml-core_0.13+nmu2/copyright|
+pytorch|BSD 3-clause "New" or "Revised" License|openhub.net|NA|https://www.openhub.net/p/pytorch

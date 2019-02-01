@@ -1,0 +1,808 @@
+Package|    License|        Source of License Information|  Comments|       License/Copyright Links/References
+libjs-node-uuid | (MIT OR ISC OR MITNFA) | NA | True | NA
+libavahi-common3 | (GPL-2.0 AND LGPL-2.1) | NA | True | NA
+git-man | GPL-2.0 | NA | True | NA
+libgssapi3-heimdal | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libtiff5 | ((MIT OR ISC OR MITNFA) AND GPL-2.0) | NA | True | NA
+avahi-daemon | (GPL-2.0 AND LGPL-2.1) | NA | True | NA
+libxcb-present0 | (MIT OR ISC OR MITNFA) | NA | True | NA
+node-delayed-stream | (MIT OR ISC OR MITNFA) | NA | True | NA
+libk5crypto3 | (MIT OR ISC OR MITNFA) | NA | True | NA
+node-mkdirp | (MIT OR ISC OR MITNFA) | NA | True | NA
+libpolkit-gobject-1-0 | LGPL-2.0 | NA | True | NA
+libxcb-shm0 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libxrandr2 | Python-2.0 | NA | True | NA
+usb-modeswitch | GPL-2.0 | NA | True | NA
+manpages-dev | GPL-2.0 | NA | True | NA
+pinentry-curses | GPL-2.0 | NA | True | NA
+libxmuu1 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libcups2 | GPL-2.0 | NA | True | NA
+libldap-2.4-2 | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+python3-gi | LGPL-2.1 | NA | True | NA
+perl | Artistic-1.0 | NA | True | NA
+libgbm1 | (MIT OR ISC OR MITNFA) | NA | True | NA
+dconf-service | LGPL-2.0 | NA | True | NA
+libepoxy0 | ((MIT OR ISC OR MITNFA) AND GPLv3) | NA | True | NA
+node-tar | (MIT OR ISC OR MITNFA) | NA | True | NA
+libcroco3 | GPL-3.0 | NA | True | NA
+node-graceful-fs | (MIT OR ISC OR MITNFA) | NA | True | NA
+libgl1-mesa-glx | (MIT OR ISC OR MITNFA) | NA | True | NA
+gpgsm | GPL-3.0 | NA | True | NA
+libwind0-heimdal | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+xauth | (MIT OR ISC OR MITNFA) | NA | True | NA
+gcc | GPL-2.0 | NA | True | NA
+libnpth0 | LGPL-3.0 | NA | True | NA
+npm | Artistic-2.0 | NA | True | NA
+node-qs | (MIT OR ISC OR MITNFA) | NA | True | NA
+multiarch-support | LGPL | NA | True | NA
+binutils-powerpc64le-linux-gnu | GPL-3.0 | NA | True | NA
+libxcb-xfixes0 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libxshmfence1 | Unique | NA | True | NA
+libavahi-core7 | (GPL-2.0 AND LGPL-2.1) | NA | True | NA
+fonts-dejavu-core | (MIT OR ISC OR MITNFA) | NA | True | NA
+libroken18-heimdal | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libjson-glib-1.0-common | (GPLv3 AND LGPL-2.1) | NA | True | NA
+node-semver | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libjs-jquery | (MIT OR ISC OR MITNFA) | NA | True | NA
+systemd | LGPL-2.1 | NA | True | NA
+phantomjs | ((BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) AND CC 2.0 AND LGPL) | NA | True | NA
+libx11-xcb1 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libinput10 | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libxfixes3 | ((MIT OR ISC OR MITNFA) AND GPLv3) | NA | True | NA
+publicsuffix | MPL-2.0 | NA | True | NA
+libkrb5-26-heimdal | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+dbus | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+dmsetup | GPL-2.0 | NA | True | NA
+libfontconfig1 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libproxy1v5 | LGPL-2.1 | NA | True | NA
+libgdk-pixbuf2.0-0 | GPL-2.0 | NA | True | NA
+libxcursor1 | (MIT OR ISC OR MITNFA) | NA | True | NA
+node-combined-stream | (MIT OR ISC OR MITNFA) | NA | True | NA
+libxcb-xkb1 | (MIT OR ISC OR MITNFA) | NA | True | NA
+at-spi2-core | (GPLv2 AND LGPL-2.0) | NA | True | NA
+libedit2 | ((BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) AND GPL-2.0) | NA | True | NA
+libwayland-server0 | ((MIT OR ISC OR MITNFA) AND GPLv2) | NA | True | NA
+openssl | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+fontconfig-config | (MIT OR ISC OR MITNFA) | NA | True | NA
+libnl-3-200 | GPL-2.0 | NA | True | NA
+libthai-data | GPL-2.0 | NA | True | NA
+libcairo2 | GPL-2.0 | NA | True | NA
+gyp | (MIT OR ISC OR MITNFA) | NA | True | NA
+libheimntlm0-heimdal | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libgssapi-krb5-2 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libcurl3-gnutls | (MIT OR ISC OR MITNFA) | NA | True | NA
+libgraphite2-3 | LGPL-2.1 | NA | True | NA
+libapparmor1 | GPLv2 | NA | True | NA
+libxcb-render0 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libfreetype6 | Freetype | NA | True | NA
+libfakeroot | GPL-2.0 | NA | True | NA
+libassuan0 | GPL-3.0 | NA | True | NA
+libasn1-8-heimdal | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libgirepository-1.0-1 | LGPL-2.1 | NA | True | NA
+libxcb-shape0 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libwayland-client0 | ((MIT OR ISC OR MITNFA) AND GPLv2) | NA | True | NA
+libc6-dev | LGPL | NA | True | NA
+krb5-locales | (MIT OR ISC OR MITNFA) | NA | True | NA
+libpcsclite1 | GPL-3.0 | NA | True | NA
+libxxf86vm1 | (MIT OR ISC OR MITNFA) | NA | True | NA
+fakeroot | GPL-2.0 | NA | True | NA
+libjs-async | (MIT OR ISC OR MITNFA) | NA | True | NA
+libjbig0 | GPL-2.0 | NA | True | NA
+libdaemon0 | LGPL-2.1 | NA | True | NA
+libxrender1 | Python-2.0 | NA | True | NA
+libglapi-mesa | (MIT OR ISC OR MITNFA) | NA | True | NA
+libmtdev1 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libxcb-randr0 | (MIT OR ISC OR MITNFA) | NA | True | NA
+fontconfig | (MIT OR ISC OR MITNFA) | NA | True | NA
+libkeyutils1 | GPL-2.0 | NA | True | NA
+python3-dbus | ((MIT OR ISC OR MITNFA) AND GPL-2.0) | NA | True | NA
+node-request | Apache-2.0 | NA | True | NA
+libvorbis0a | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libgdk-pixbuf2.0-common | GPL-2.0 | NA | True | NA
+patch | GPL-3.0 | NA | True | NA
+libdconf1 | LGPL-2.0 | NA | True | NA
+libatspi2.0-0 | (GPLv2 AND LGPL-2.0) | NA | True | NA
+libidn11 | GPL-3.0 | NA | True | NA
+iso-codes | LGPL-2.0 | NA | True | NA
+libpam-cap | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+nodejs-dev | ((MIT OR ISC OR MITNFA) AND CC-By-3.0 AND Creative Common Share Like) | NA | True | NA
+libcap2 | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+g++ | GPL-2.0 | NA | True | NA
+mime-support | Public Domain | NA | True | NA
+libdatrie1 | LGPL-2.1 | NA | True | NA
+node-form-data | (MIT OR ISC OR MITNFA) | NA | True | NA
+node-async | (MIT OR ISC OR MITNFA) | NA | True | NA
+binutils | GPL-3.0 | NA | True | NA
+libdevmapper1.02.1 | GPL-2.0 | NA | True | NA
+libhcrypto4-heimdal | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+gir1.2-glib-2.0 | LGPL-2.1 | NA | True | NA
+ucf | GPL-2.0 | NA | True | NA
+libevdev2 | Unique | NA | True | NA
+netbase | GPL-2.0 | NA | True | NA
+node-mime | (MIT OR ISC OR MITNFA) | NA | True | NA
+libpam-systemd | LGPL-2.1 | NA | True | NA
+libxslt1.1 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libavahi-glib1 | (GPL-2.0 AND LGPL-2.1) | NA | True | NA
+libnghttp2-14 | (MIT OR ISC OR MITNFA) | NA | True | NA
+nodejs | ((MIT OR ISC OR MITNFA) AND CC-By-3.0 AND Creative Common Share Like) | NA | True | NA
+libpixman-1-0 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libxml2 | (MIT OR ISC OR MITNFA) | NA | True | NA
+xkb-data | (MIT OR ISC OR MITNFA) | NA | True | NA
+libwayland-egl1-mesa | (MIT OR ISC OR MITNFA) | NA | True | NA
+libice6 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libjpeg-turbo8 | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+node-node-uuid | (MIT OR ISC OR MITNFA) | NA | True | NA
+libthai0 | GPL-2.0 | NA | True | NA
+libjs-underscore | (MIT OR ISC OR MITNFA) | NA | True | NA
+libavahi-common-data | (GPL-2.0 AND LGPL-2.1) | NA | True | NA
+manpages | GPL-2.0 | NA | True | NA
+node-underscore | (MIT OR ISC OR MITNFA) | NA | True | NA
+libxcb-dri3-0 | (MIT OR ISC OR MITNFA) | NA | True | NA
+librest-0.7-0 | (GPLv3 AND LGPL-2.1) | NA | True | NA
+gnupg | GPL-3.0 | NA | True | NA
+libhx509-5-heimdal | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libgeoip1 | LGPL-2.1 | NA | True | NA
+less | BSD Equivalent  | NA | True | NA
+node-retry | ((MIT OR ISC OR MITNFA) AND GPLv3) | NA | True | NA
+libxkbcommon-x11-0 | ((MIT OR ISC OR MITNFA) AND GPLv3) | NA | True | NA
+libxau6 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libxext6 | ((MIT OR ISC OR MITNFA) AND GPL with exception) | NA | True | NA
+libxcb-sync1 | (MIT OR ISC OR MITNFA) | NA | True | NA
+dpkg-dev | GPL-3.0 | NA | True | NA
+ca-certificates | GPL-2.0 | NA | True | NA
+python-pkg-resources | Python-2.0 | NA | True | NA
+systemd-sysv | LGPL-2.1 | NA | True | NA
+libssl1.0.0 | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+udev | LGPL-2.1 | NA | True | NA
+libavahi-client3 | (GPL-2.0 AND LGPL-2.1) | NA | True | NA
+libxcb-xinerama0 | (MIT OR ISC OR MITNFA) | NA | True | NA
+openssh-client | ((BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) AND GPLV3) | NA | True | NA
+node-mute-stream | (GPLv3 AND ISC) | NA | True | NA
+libvorbisenc2 | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libkrb5-3 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libmagic1 | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libksba8 | GPL-3.0 | NA | True | NA
+libharfbuzz0b | (MIT OR ISC OR MITNFA) | NA | True | NA
+libc-ares2 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libxcb-glx0 | (MIT OR ISC OR MITNFA) | NA | True | NA
+dirmngr | GPL-3.0 | NA | True | NA
+node-gyp | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libbsd0 | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libxtst6 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libxcb1 | (MIT OR ISC OR MITNFA) | NA | True | NA
+librtmp1 | GPL-2.0 | NA | True | NA
+libnl-genl-3-200 | GPL-2.0 | NA | True | NA
+git | GPL-2.0 | NA | True | NA
+libxi6 | (MIT OR ISC OR MITNFA) | NA | True | NA
+x11-common | (MIT OR ISC OR MITNFA) | NA | True | NA
+libheimbase1-heimdal | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libgl1-mesa-dri | (MIT OR ISC OR MITNFA) | NA | True | NA
+libcap2-bin | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libwayland-cursor0 | ((MIT OR ISC OR MITNFA) AND GPLv2) | NA | True | NA
+libxcb-dri2-0 | (MIT OR ISC OR MITNFA) | NA | True | NA
+shared-mime-info | GPL-2.0 | NA | True | NA
+libopus0 | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libxdmcp6 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libx11-data | (MIT OR ISC OR MITNFA) | NA | True | NA
+file | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libsm6 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libkrb5support0 | (MIT OR ISC OR MITNFA) | NA | True | NA
+dconf-gsettings-backend | LGPL-2.0 | NA | True | NA
+node-which | (MIT OR ISC OR MITNFA) | NA | True | NA
+libtheora0 | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libxkbcommon0 | ((MIT OR ISC OR MITNFA) AND GPLv3) | NA | True | NA
+libx11-6 | (MIT OR ISC OR MITNFA) | NA | True | NA
+libogg0 | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+node-glob | (MIT OR ISC OR MITNFA) | NA | True | NA
+libdpkg-perl | GPL-3.0 | NA | True | NA
+cpp | GPL-2.0 | NA | True | NA
+libsensors4 | GPL-2.0 | NA | True | NA
+libc-dev-bin | LGPL | NA | True | NA
+libcairo-gobject2 | GPL-2.0 | NA | True | NA
+libdbus-1-3 | (BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause) | NA | True | NA
+libjson-glib-1.0-0 | (GPLv3 AND LGPL-2.1) | NA | True | NA
+javascript-common |	 GPL-2.0	|NA CLI|	NA|	NA|
+libalgorithm-diff-perl |	Artistic 	|ubuntu.com|	Part of: Algorithm-Diff|	http://changelogs.ubuntu.com/changelogs/pool/main/liba/libalgorithm-diff-perl/libalgorithm-diff-perl_1.19.03-1/copyright|
+libalgorithm-diff-xs-perl |	Artistic	|ubuntu.com|	Part of: Algorithm-Diff-XS|	http://changelogs.ubuntu.com/changelogs/pool/main/liba/libalgorithm-diff-xs-perl/libalgorithm-diff-xs-perl_0.04-4build1/copyright|
+libalgorithm-merge-perl |	Artistic	|ubuntu.com|	Part of: Algorithm-Merge|	http://changelogs.ubuntu.com/changelogs/pool/main/liba/libalgorithm-merge-perl/libalgorithm-merge-perl_0.08-3/copyright|
+libatk1.0-0 |	 LGPL-2.0	|NA CLI|	NA|	NA|
+libatk1.0-data |	 LGPL-2.0	|NA CLI|	NA|	NA|
+libatomic1 |	GPL-3+	|openhub.net|	Part of gcc-5 - GNU Compiler Collection|	https://www.openhub.net/p/gcc|
+libcc1-0 |	GPL-3+	|openhub.net|	Part of gcc-5 - GNU Compiler Collection|	https://www.openhub.net/p/gcc|
+liberror-perl |	Artistic and GPL	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/libe/liberror-perl/liberror-perl_0.17-1.2/copyright|
+libexpat1 |	MITÂ 	|NA|	part of expat |	NA|
+libfile-fcntllock-perl |	GPL-1+	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/libf/libfile-fcntllock-perl/libfile-fcntllock-perl_0.22-3/copyright|
+libglib2.0-0 |	GPL-2,LGPL-2	|NA|	part of glib|	NA|
+libgomp1 |	GPL-3+	|openhub.net|	Part of gcc-5 - GNU Compiler Collection|	https://www.openhub.net/p/gcc|
+libitm1 |	GPL-3+	|openhub.net|	Part of gcc-5 - GNU Compiler Collection|	https://www.openhub.net/p/gcc|
+libmpc3 |	LGPL-2.1	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/m/mpclib3/mpclib3_1.0.3-1/copyright|
+libpango-1.0-0 |	LGPL-2	|NA|	part of pango |	NA|
+libpangocairo-1.0-0 |	LGPL-2	|NA|	part of pango |	NA|
+libpangoft2-1.0-0 |	LGPL-2	|NA|	part of pango |	NA|
+libpython2.7-minimal |	Apache-2.0	|NA|	part of python|	NA|
+libpython2.7-stdlib |	Apache-2.0	|NA|	part of python|	NA|
+libpython-stdlib |	 MIT,Python-2.0	|NA CLI|	NA|	NA|
+libubsan0 |	GPL-3+	|openhub.net|	Part of gcc-5 - GNU Compiler Collection|	https://www.openhub.net/p/gcc|
+libxcomposite1 |	 MIT	|NA CLI|	NA|	NA|
+libxdamage1 |	MIT	|openhub.net|	Under xorg - https://cgit.freedesktop.org/ |	https://www.openhub.net/p/x|
+libxinerama1 |	 MIT	|NA|	NA|	NA|
+linux-libc-dev |	 BSD-3-Clause	|NA CLI|	NA|	NA|
+python |	 MIT,Python-2.0	|NA CLI|	NA|	NA|
+python2.7 |	Apache-2.0	|NA|	NA|	NA|
+python2.7-minimal |	Apache-2.0	|NA|	NA|	NA|
+python-minimal |	 MIT,Python-2.0	|NA CLI|	NA|	NA|
+adwaita-icon-theme |	 LGPL-3, GPL-unspecified, GFDL-1.2+ CC-BY-3.0-US, CC-BY-SA-3.0-Unported	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/a/adwaita-icon-theme/adwaita-icon-theme_3.18.0-2ubuntu3/copyright|
+build-essential |	GPL-2+	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/b/build-essential/build-essential_12.1ubuntu2/copyright|
+geoip-database |	LGPL-2.1, MIT-Equivalent	|NA UI|	Source package geoip|	NA|
+glib-networking |	LGPL-2+	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/g/glib-networking/glib-networking_2.48.0-1/copyright|
+glib-networking-common |	LGPL-2+	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/g/glib-networking/glib-networking_2.48.0-1/copyright|
+glib-networking-services |	LGPL-2+	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/g/glib-networking/glib-networking_2.48.0-1/copyright|
+gsettings-desktop-schemas |	LGPL-2.1+	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/g/gsettings-desktop-schemas/gsettings-desktop-schemas_3.18.1-1ubuntu1/copyright|
+hicolor-icon-theme |	GPL-2+	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/h/hicolor-icon-theme/hicolor-icon-theme_0.15-0ubuntu1/copyright|
+humanity-icon-theme |	GPL v2, CC-by-SA, CC-by-SA,    LGPL 3+, MPL 1.1, CC-by-SA 3.0 	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/h/humanity-icon-theme/humanity-icon-theme_0.6.10/copyright|
+libatk-bridge2.0-0 |	LGPL-2+, GPL-2	|ubuntu.com|	Different files are licensed differently, mainly under LGPL-2. Files: debian/* are under GPL-2|	http://changelogs.ubuntu.com/changelogs/pool/main/a/at-spi2-atk/at-spi2-atk_2.18.1-2ubuntu1/copyright|
+libcolord2 |	GPL-2.0+, LGPL-2.1+	|ubuntu.com|	Different files are licensed differently. For example: Files: lib/colord/* are under LGPL-2.1+ and so on|	http://changelogs.ubuntu.com/changelogs/pool/main/c/colord/colord_1.2.12-1ubuntu1/copyright|
+libdrm2 |	MIT	|openhub.net|	NA|	https://www.openhub.net/p/libdrm|
+libdrm-amdgpu1 |	Open Source	|ubuntu.com|	No clear-cut licensing information|	http://changelogs.ubuntu.com/changelogs/pool/main/libd/libdrm/libdrm_2.4.67-1/copyright|
+libdrm-nouveau2 |	MIT	|openhub.net|	NA|	https://www.openhub.net/p/libdrm|
+libdrm-radeon1 |	MIT	|openhub.net|	NA|	https://www.openhub.net/p/libdrm|
+libelf1 |	GPL-2.0+, GPL-3.0+, LGPL-3.0+	|openhub.net|	NA|	https://www.openhub.net/p/elfutils|
+libglib2.0-data |	LGPL-2.0	|NA|	part of glib2|	NA|
+libgstreamer1.0-0 |	 LGPL-2+, GPL-2+	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/g/gstreamer1.0/gstreamer1.0_1.8.0-1/copyright|
+libgstreamer-plugins-base1.0-0 |	LGPL-2+,BSD-3-Clause	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/g/gst-plugins-base1.0/gst-plugins-base1.0_1.8.2-1ubuntu0.2/copyright|
+libgtk-3-0 |	LGPL-2.1+	|openhub.net|	NA|	https://www.openhub.net/p/gtk|
+libgtk-3-bin |	LGPL-2.1+	|openhub.net|	NA|	https://www.openhub.net/p/gtk|
+libgtk-3-common |	LGPL-2.1+	|openhub.net|	NA|	https://www.openhub.net/p/gtk|
+libgudev-1.0-0 |	LGPL-2+	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/libg/libgudev/libgudev_230-2/copyright|
+libjpeg8 |	Independent JPEG	|NA|	part of libjpeg|	NA|
+libjs-inherits |	ISC	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/libjs-inherits/filelist|
+liblcms2-2 |	MIT,GPL-2+	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/l/lcms2/lcms2_2.6-3ubuntu2/copyright|
+libmpdec2 |	BSD, GPL-2+	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/m/mpdecimal/mpdecimal_2.4.2-1/copyright|
+liborc-0.4-0 |	Apache-2.0	|NA|	part of orc|	NA|
+libpipeline1 |	GPL-3	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/libp/libpipeline/libpipeline_1.4.1-2/copyright|
+libpython3-stdlib |	GPL,Python 2.0	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/p/python3-defaults/python3-defaults_3.5.1-3/copyright|
+libqt5core5a |	LGPL-2.1	|NA|	part of qt  library (ver. 5.x)|	NA|
+libqt5dbus5 |	LGPL-2.1	|NA|	part of qt  library (ver. 5.x)|	NA|
+libqt5gui5 |	LGPL-2.1	|NA|	part of qt  library (ver. 5.x)|	NA|
+libqt5network5 |	LGPL-2.1	|NA|	part of qt  library (ver. 5.x)|	NA|
+libqt5printsupport5 |	LGPL-2.1	|NA|	part of qt  library (ver. 5.x)|	NA|
+libqt5qml5 |	LGPL-2.1	|NA|	part of qt  library (ver. 5.x)|	NA|
+libqt5quick5 |	LGPL-2.1	|NA|	part of qt  library (ver. 5.x)|	NA|
+libqt5svg5 |	LGPL-2.1	|NA|	part of qt  library (ver. 5.x)|	NA|
+libqt5webkit5 |	LGPL-2.1	|NA|	part of qt  library (ver. 5.x)|	NA|
+libqt5widgets5 |	LGPL-2.1	|NA|	part of qt  library (ver. 5.x)|	NA|
+librsvg2-2 |	LGPL-2.0, GPL-2+	|ubuntu.com|	Different files are licensed differently. Files: * under LGPL-2.0, Files: tests/pdiff/* under GPL-2.0+ |	http://changelogs.ubuntu.com/changelogs/pool/main/libr/librsvg/librsvg_2.40.13-3/copyright|
+librsvg2-common |	LGPL-2.0, GPL-2+	|ubuntu.com|	Different files are licensed differently. Files: * under LGPL-2.0, Files: tests/pdiff/* under GPL-2.0+ |	http://changelogs.ubuntu.com/changelogs/pool/main/libr/librsvg/librsvg_2.40.13-3/copyright|
+libsasl2-2 |	BSD Equivalent	|NA|	part of cyrus-sasl|	NA|
+libsasl2-modules |	BSD Equivalent	|NA|	part of cyrus-sasl|	NA|
+libsasl2-modules-db |	BSD Equivalent	|NA|	part of cyrus-sasl|	NA|
+libsoup2.4-1 |	LGPL-2.0	|NA|	NA|	NA|
+libsoup-gnome2.4-1 |	LGPL-2.0	|NA|	NA|	NA|
+libsqlite3-0 |	LGPL-2.1	|NA|	Source package sqlite3|	NA|
+libusb-1.0-0 |	LGPL-2.1	|NA|	NA|	NA|
+libuv1 |	MIT	|NA|	part of libuv|	NA|
+libuv1-dev |	MIT	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/ppc64el/libuv1-dev/filelist|
+libwacom2 |	MIT	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/libw/libwacom/libwacom_0.18-1/copyright|
+libwacom-common |	MIT	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/libw/libwacom/libwacom_0.18-1/copyright|
+libxcb-icccm4 |	MIT	|NA|	part of libxcb|	NA|
+libxcb-image0 |	MIT	|NA|	part of libxcb|	NA|
+libxcb-keysyms1 |	MIT	|NA|	part of libxcb|	NA|
+libxcb-render-util0 |	MIT	|NA|	part of libxcb|	NA|
+libxcb-util1 |	MIT	|NA|	part of libxcb|	NA|
+make |	GPL-3+	|NA|	NA|	NA|
+node-abbrev |	Apache-2.0	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-abbrev/filelist|
+node-ansi |	Apache-2.0	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-ansi/filelist|
+node-ansi-color-table |	Apache-2.0	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-ansi-color-table/filelist|
+node-archy |	MIT	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-archy/filelist|
+node-block-stream |	BSD License	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-block-stream/filelist|
+node-cookie-jar |	Apache-2.0	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-cookie-jar/filelist|
+node-forever-agent |	Apache-2.0	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-forever-agent/filelist|
+node-fstream |	Apache-2.0	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-fstream/filelist|
+node-fstream-ignore |	Apache-2.0	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-fstream-ignore/filelist|
+node-github-url-from-git |	MIT	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-github-url-from-git/filelist|
+node-inherits |	ISC License	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-inherits/filelist|
+node-ini |	MIT	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-ini/filelist|
+node-json-stringify-safe |	Apache-2.0	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-json-stringify-safe/filelist|
+node-lockfile |	Apache-2.0	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-lockfile/filelist|
+node-lru-cache |	ISC License	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-lru-cache/filelist|
+node-minimatch |	Apache-2.0	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-minimatch/filelist|
+node-nopt |	Apache-2.0	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-nopt/filelist|
+node-normalize-package-data |	Apache-2.0	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-normalize-package-data/filelist|
+node-npmlog |	Apache-2.0	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-npmlog/filelist|
+node-once |	Apache-2.0	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-once/filelist|
+node-osenv |	Apache-2.0	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-osenv/filelist|
+node-read |	Apache-2.0	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-read/filelist|
+node-read-package-json |	Apache-2.0	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-read-package-json/filelist|
+node-rimraf |	Apache-2.0	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-rimraf/filelist|
+node-sha |	Apache-2.0	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-sha/filelist|
+node-slide |	Apache-2.0	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-slide/filelist|
+node-tunnel-agent |	apache v-2.0	|ubuntu.com|	NA|	http://packages.ubuntu.com/xenial/all/node-tunnel-agent/filelist|
+python3 |	Apache-2.0	|NA|	part of python |	NA|
+python3-minimal |	Apache-2.0	|NA|	part of python |	NA|
+readline-common |	GPL v3	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/r/readline6/readline6_6.3-8ubuntu2/copyright|
+ubuntu-mono |	CC-BY-SA-3.0, GPL-3	|ubuntu.com|	Different files are licensed differently. For example: Files: scavenge.py Makefile debian/ are under GPL-3, all others under CC-BY-SA-3.0|	http://changelogs.ubuntu.com/changelogs/pool/main/u/ubuntu-themes/ubuntu-themes_14.04+16.04.20160415-0ubuntu1/copyright|
+xdg-user-dirs |	GPL-2+	|ubuntu.com|	NA|	http://changelogs.ubuntu.com/changelogs/pool/main/x/xdg-user-dirs/xdg-user-dirs_0.15-2ubuntu6/copyright|
+xz-utils |	GPL-2, LGPL-2.1	|openhub.net|	NA|	http://git.tukaani.org/?p=xz.git;a=blob;f=COPYING|
+libmagic-mgc  | MIT-Old-Style-with-legal-disclaimer-2,BSD-2-Clause-regents,BSD-2-Clause-netbsd,public-domain,BSD-2-Clause-alike | Copyright_File     |  BSD-2-Clause-alike(*,src/apprentice.c,src/ascmagic.c,src/asprintf.c,src/compress.c)"More_than_5_Files_for_this_license",public-domain(src/apptype.c),MIT-Old-Style-with-legal-disclaimer-2(src/strlcat.c,src/strlcpy.c),BSD-2-Clause-regents(src/strcasestr.c),BSD-2-Clause-netbsd(src/cdf.c,src/cdf_time.c,src/der.c,src/der.h,src/readcdf.c)"More_than_5_Files_for_this_license", |  NA|
+libperl5.26  | HSIEH-BSD,HSIEH-DERIVATIVE,Artistic-2,LGPL-2.1,Artistic or GPL-1+ or Artistic-dist,GPL-1+ or Artistic or Artistic-dist,DONT-CHANGE-THE-GPL,SDBM-PUBLIC-DOMAIN,Artistic/GPL,GPL-1+ or Artistic, and BSD-3-clause-GENERIC,GPL-1+ or Artistic, and BSD-4-clause-POWERDOG,TEXT-TABS,CC0-1.0,BSD-3-clause-with-weird-numbering,RRA-KEEP-THIS-NOTICE,Expat or GPL-1+ or Artistic,GPL-2+ or Artistic,ZLIB,BZIP,S2P,GPL-1+ or Artistic, and Unicode,Unicode,GPL-3+-WITH-BISON-EXCEPTION,REGCOMP, and GPL-1+ or Artistic,Expat,GPL-1+ or Artistic | Copyright_File     |  Artistic-dist(regen-configure/dist/*),Expat(time64.c,cpan/podlators/t/docs/pod-spelling.t,cpan/podlators/t/docs/pod.t,cpan/podlators/t/docs/synopsis.t,cpan/podlators/t/lib/Test/RRA.pm)"More_than_5_Files_for_this_license",Artistic(cpan/Encode/bin/encguess,ext/File-Glob/*,ext/Pod-Html/*),GPL-1+orArtistic(*,perlio.c,malloc.c,pp_sort.c,mro.c)"More_than_5_Files_for_this_license",SDBM-PUBLIC-DOMAIN(ext/SDBM_File/sdbm/*),GPL-1+orArtistic,andBSD-4-clause-POWERDOG(cpan/Time-Piece/Piece.xs),Unicode(lib/unicore/*.txt,cpan/Unicode-Collate/Collate/allkeys.txt),GPL-2+orArtistic(cpan/Getopt-Long/*,cpan/Tie-File/*),GPL-3+-WITH-BISON-EXCEPTION(perly.h),ExpatorGPL-1+orArtistic(cpan/Locale-Maketext-Simple/*,cpan/Locale-Maketext-Simple/t/po_with_i_default/i_default.po,cpan/Locale-Maketext-Simple/t/po_with_i_default/fr.po,cpan/Locale-Maketext-Simple/t/po_with_i_default/en.po,cpan/Locale-Maketext-Simple/t/po_without_i_default/en.po)"More_than_5_Files_for_this_license",S2P(x2p/s2p.PL),BSD-3-clause-with-weird-numbering(cpan/Sys-Syslog/fallback/syslog.h),GPL-1+orArtisticorArtistic-dist(regen-configure/*),REGCOMP,andGPL-1+orArtistic(regcomp.c,regexec.c),TEXT-TABS(cpan/Text-Tabs/*),ArtisticorGPL-1+orArtistic-dist(regen-configure/U/*),ZLIB(cpan/Compress-Raw-Zlib/zlib-src/*),RRA-KEEP-THIS-NOTICE(cpan/podlators/t/data/snippets/README,pod/perlpodstyle.pod),CC0-1.0(cpan/Test-Simple/lib/Test/use/ok.pm,cpan/Test-Simple/lib/ok.pm),BZIP(cpan/Compress-Raw-Bzip2/bzip2-src/*),DONT-CHANGE-THE-GPL(Copying,pod/perlgpl.pod),BSD-3-clause(ext/File-Glob/bsd_glob.c,ext/File-Glob/bsd_glob.h),GPL-1+orArtistic,andBSD-3-clause-GENERIC(dist/PathTools/Cwd.xs),GPL-1+orArtistic,andUnicode(t/op/split_unicode.t), |  NA|
+libgdbm5  | GFDL-1.3+,GPL-3+ | Copyright_File     |  GPL-3+(*,git2chg.awk,debian/*),GFDL-1.3+(doc/*), |  NA|
+perl-modules-5.26  | HSIEH-BSD,HSIEH-DERIVATIVE,Artistic-2,LGPL-2.1,Artistic or GPL-1+ or Artistic-dist,GPL-1+ or Artistic or Artistic-dist,DONT-CHANGE-THE-GPL,SDBM-PUBLIC-DOMAIN,Artistic/GPL,GPL-1+ or Artistic, and BSD-3-clause-GENERIC,GPL-1+ or Artistic, and BSD-4-clause-POWERDOG,TEXT-TABS,CC0-1.0,BSD-3-clause-with-weird-numbering,RRA-KEEP-THIS-NOTICE,Expat or GPL-1+ or Artistic,GPL-2+ or Artistic,ZLIB,BZIP,S2P,GPL-1+ or Artistic, and Unicode,Unicode,GPL-3+-WITH-BISON-EXCEPTION,REGCOMP, and GPL-1+ or Artistic,Expat,GPL-1+ or Artistic | Copyright_File     |  Artistic-dist(regen-configure/dist/*),Expat(time64.c,cpan/podlators/t/docs/pod-spelling.t,cpan/podlators/t/docs/pod.t,cpan/podlators/t/docs/synopsis.t,cpan/podlators/t/lib/Test/RRA.pm)"More_than_5_Files_for_this_license",Artistic(cpan/Encode/bin/encguess,ext/File-Glob/*,ext/Pod-Html/*),GPL-1+orArtistic(*,perlio.c,malloc.c,pp_sort.c,mro.c)"More_than_5_Files_for_this_license",SDBM-PUBLIC-DOMAIN(ext/SDBM_File/sdbm/*),GPL-1+orArtistic,andBSD-4-clause-POWERDOG(cpan/Time-Piece/Piece.xs),Unicode(lib/unicore/*.txt,cpan/Unicode-Collate/Collate/allkeys.txt),GPL-2+orArtistic(cpan/Getopt-Long/*,cpan/Tie-File/*),GPL-3+-WITH-BISON-EXCEPTION(perly.h),ExpatorGPL-1+orArtistic(cpan/Locale-Maketext-Simple/*,cpan/Locale-Maketext-Simple/t/po_with_i_default/i_default.po,cpan/Locale-Maketext-Simple/t/po_with_i_default/fr.po,cpan/Locale-Maketext-Simple/t/po_with_i_default/en.po,cpan/Locale-Maketext-Simple/t/po_without_i_default/en.po)"More_than_5_Files_for_this_license",S2P(x2p/s2p.PL),BSD-3-clause-with-weird-numbering(cpan/Sys-Syslog/fallback/syslog.h),GPL-1+orArtisticorArtistic-dist(regen-configure/*),REGCOMP,andGPL-1+orArtistic(regcomp.c,regexec.c),TEXT-TABS(cpan/Text-Tabs/*),ArtisticorGPL-1+orArtistic-dist(regen-configure/U/*),ZLIB(cpan/Compress-Raw-Zlib/zlib-src/*),RRA-KEEP-THIS-NOTICE(cpan/podlators/t/data/snippets/README,pod/perlpodstyle.pod),CC0-1.0(cpan/Test-Simple/lib/Test/use/ok.pm,cpan/Test-Simple/lib/ok.pm),BZIP(cpan/Compress-Raw-Bzip2/bzip2-src/*),DONT-CHANGE-THE-GPL(Copying,pod/perlgpl.pod),BSD-3-clause(ext/File-Glob/bsd_glob.c,ext/File-Glob/bsd_glob.h),GPL-1+orArtistic,andBSD-3-clause-GENERIC(dist/PathTools/Cwd.xs),GPL-1+orArtistic,andUnicode(t/op/split_unicode.t), |  NA|
+libgdbm-compat4  | GFDL-1.3+,GPL-3+ | Copyright_File     |  GPL-3+(*,git2chg.awk,debian/*),GFDL-1.3+(doc/*), |  NA|
+leaflet|BSD 2-clause "Simplified" License|openhub.net|NA|https://www.openhub.net/p/Leaflet
+pip|MIT|Container | NA| NA
+setuptools| MIT License|pypi.org | NA| NA
+wheel|MIT|Container | NA| NA
+abbrev| ISC| Container| NA| NA
+accepts| MIT| Container| NA| NA
+acorn| MIT| Container| NA| NA
+acorn-jsx| MIT| Container| NA| NA
+after| MIT| Container| NA| NA
+ajv| MIT| Container| NA| NA
+ajv-keywords| MIT| Container| NA| NA
+align-text| MIT| Container| NA| NA
+amdefine| BSD-3-Clause OR MIT| Container| NA| NA
+ansi-escapes| MIT| Container| NA| NA
+ansi-regex| MIT| Container| NA| NA
+ansi-styles| MIT| Container| NA| NA
+anymatch| ISC| Container| NA| NA
+argparse| MIT| Container| NA| NA
+arraybuffer.slice| MIT| Container| NA| NA
+array-find-index| MIT| Container| NA| NA
+array-slice| MIT| Container| NA| NA
+array-unique| MIT| Container| NA| NA
+arr-diff| MIT| Container| NA| NA
+arr-flatten| MIT| Container| NA| NA
+arr-union| MIT| Container| NA| NA
+asn1| MIT| Container| NA| NA
+assert-plus| MIT| Container| NA| NA
+assign-symbols| MIT| Container| NA| NA
+async| MIT| Container| NA| NA
+async-each| MIT| Container| NA| NA
+asynckit| MIT| Container| NA| NA
+atob| (MIT OR Apache-2.0)| Container| NA| NA
+aws4| MIT| Container| NA| NA
+aws-sign2| Apache-2.0| Container| NA| NA
+babel-code-frame| MIT| Container| NA| NA
+backo2| MIT| Container| NA| NA
+balanced-match| MIT| Container| NA| NA
+base| MIT| Container| NA| NA
+base64-arraybuffer| | Container| NA| NA
+base64id| MIT| Container| NA| NA
+bcrypt-pbkdf| BSD-3-Clause| Container| NA| NA
+better-assert| | Container| NA| NA
+binary-extensions| MIT| Container| NA| NA
+blob| MIT| Container| NA| NA
+bluebird| MIT| Container| NA| NA
+body-parser| MIT| Container| NA| NA
+brace-expansion| MIT| Container| NA| NA
+braces| MIT| Container| NA| NA
+browser-stdout| ISC| Container| NA| NA
+buffer-alloc| MIT| Container| NA| NA
+buffer-alloc-unsafe| MIT| Container| NA| NA
+buffer-fill| MIT| Container| NA| NA
+buffer-from| MIT| Container| NA| NA
+builtin-modules| MIT| Container| NA| NA
+bytes| MIT| Container| NA| NA
+cache-base| MIT| Container| NA| NA
+caller-path| MIT| Container| NA| NA
+callsite| | Container| NA| NA
+callsites| MIT| Container| NA| NA
+camelcase| MIT| Container| NA| NA
+camelcase-keys| MIT| Container| NA| NA
+caseless| Apache-2.0| Container| NA| NA
+center-align| MIT| Container| NA| NA
+chalk| MIT| Container| NA| NA
+chardet| MIT| Container| NA| NA
+chokidar| MIT| Container| NA| NA
+circular-json| MIT| Container| NA| NA
+class-utils| MIT| Container| NA| NA
+cli-cursor| MIT| Container| NA| NA
+cliui| ISC| Container| NA| NA
+cli-width| ISC| Container| NA| NA
+co| MIT| Container| NA| NA
+collection-visit| MIT| Container| NA| NA
+color-convert| MIT| Container| NA| NA
+color-name| MIT| Container| NA| NA
+colors| MIT| Container| NA| NA
+combined-stream| MIT| Container| NA| NA
+combine-lists| MIT| Container| NA| NA
+commander| MIT| Container| NA| NA
+component-bind| | Container| NA| NA
+component-emitter| MIT| Container| NA| NA
+component-inherit| | Container| NA| NA
+concat-map| MIT| Container| NA| NA
+concat-stream| MIT| Container| NA| NA
+connect| MIT| Container| NA| NA
+content-type| MIT| Container| NA| NA
+cookie| MIT| Container| NA| NA
+copy-descriptor| MIT| Container| NA| NA
+core-js| MIT| Container| NA| NA
+core-util-is| MIT| Container| NA| NA
+cross-spawn| MIT| Container| NA| NA
+currently-unhandled| MIT| Container| NA| NA
+custom-event| MIT| Container| NA| NA
+dashdash| MIT| Container| NA| NA
+dateformat| MIT| Container| NA| NA
+debug| MIT| Container| NA| NA
+decamelize| MIT| Container| NA| NA
+decode-uri-component| MIT| Container| NA| NA
+deep-is|  
+{ type: 'MIT',
+  url: 'https://github.com/thlorenz/deep-is/blob/master/LICENSE' }| Container| NA| NA
+define-property| MIT| Container| NA| NA
+delayed-stream| MIT| Container| NA| NA
+depd| MIT| Container| NA| NA
+di| MIT| Container| NA| NA
+diff| BSD-3-Clause| Container| NA| NA
+doctrine| Apache-2.0| Container| NA| NA
+dom-serialize| MIT| Container| NA| NA
+ecc-jsbn| MIT| Container| NA| NA
+ee-first| MIT| Container| NA| NA
+encodeurl| MIT| Container| NA| NA
+engine.io| MIT| Container| NA| NA
+engine.io-client| MIT| Container| NA| NA
+engine.io-parser| MIT| Container| NA| NA
+ent| MIT| Container| NA| NA
+error-ex| MIT| Container| NA| NA
+es6-promise| MIT| Container| NA| NA
+escape-html| MIT| Container| NA| NA
+escape-string-regexp| MIT| Container| NA| NA
+escodegen| BSD-2-Clause| Container| NA| NA
+eslint| MIT| Container| NA| NA
+eslint-config-mourner| ISC| Container| NA| NA
+eslint-scope| BSD-2-Clause| Container| NA| NA
+eslint-visitor-keys| Apache-2.0| Container| NA| NA
+espree| BSD-2-Clause| Container| NA| NA
+esprima| BSD-2-Clause| Container| NA| NA
+esquery| BSD-3-Clause| Container| NA| NA
+esrecurse| BSD-2-Clause| Container| NA| NA
+estraverse| BSD-2-Clause| Container| NA| NA
+estree-walker| MIT| Container| NA| NA
+esutils| | Container| NA| NA
+eventemitter3| MIT| Container| NA| NA
+expand-braces| MIT| Container| NA| NA
+expand-brackets| MIT| Container| NA| NA
+expand-range| MIT| Container| NA| NA
+expect.js| | Container| NA| NA
+extend| MIT| Container| NA| NA
+extend-shallow| MIT| Container| NA| NA
+external-editor| MIT| Container| NA| NA
+extglob| MIT| Container| NA| NA
+extract-zip| BSD-2-Clause| Container| NA| NA
+extsprintf| MIT| Container| NA| NA
+fast-deep-equal| MIT| Container| NA| NA
+fast-json-stable-stringify| MIT| Container| NA| NA
+fast-levenshtein| MIT| Container| NA| NA
+fd-slicer| MIT| Container| NA| NA
+figures| MIT| Container| NA| NA
+file-entry-cache| MIT| Container| NA| NA
+filename-regex| MIT| Container| NA| NA
+fill-range| MIT| Container| NA| NA
+finalhandler| MIT| Container| NA| NA
+find-up| MIT| Container| NA| NA
+flat-cache| MIT| Container| NA| NA
+follow-redirects| MIT| Container| NA| NA
+forever-agent| Apache-2.0| Container| NA| NA
+for-in| MIT| Container| NA| NA
+formatio| BSD-3-Clause| Container| NA| NA
+form-data| MIT| Container| NA| NA
+for-own| MIT| Container| NA| NA
+fragment-cache| MIT| Container| NA| NA
+fs-access| MIT| Container| NA| NA
+fsevents| MIT| Container| NA| NA
+fs-extra| MIT| Container| NA| NA
+fs.realpath| ISC| Container| NA| NA
+functional-red-black-tree| MIT| Container| NA| NA
+getpass| MIT| Container| NA| NA
+get-stdin| MIT| Container| NA| NA
+get-value| MIT| Container| NA| NA
+git-rev| MIT| Container| NA| NA
+git-rev-sync| MIT| Container| NA| NA
+glob| ISC| Container| NA| NA
+globals| MIT| Container| NA| NA
+glob-base|  
+{ type: 'MIT',
+  url: 'https://github.com/jonschlinkert/glob-base/blob/master/LICENSE' }| Container| NA| NA
+glob-parent| ISC| Container| NA| NA
+graceful-fs| ISC| Container| NA| NA
+graceful-readlink| MIT| Container| NA| NA
+growl| MIT| Container| NA| NA
+handlebars| MIT| Container| NA| NA
+happen| BSD-2-Clause| Container| NA| NA
+har-schema| ISC| Container| NA| NA
+har-validator| MIT| Container| NA| NA
+has-ansi| MIT| Container| NA| NA
+has-binary| MIT| Container| NA| NA
+has-cors| MIT| Container| NA| NA
+has-flag| MIT| Container| NA| NA
+hasha| MIT| Container| NA| NA
+has-value| MIT| Container| NA| NA
+has-values| MIT| Container| NA| NA
+he| MIT| Container| NA| NA
+hosted-git-info| ISC| Container| NA| NA
+http-errors| MIT| Container| NA| NA
+http-proxy| MIT| Container| NA| NA
+http-signature| MIT| Container| NA| NA
+iconv-lite| MIT| Container| NA| NA
+ignore| MIT| Container| NA| NA
+imurmurhash| MIT| Container| NA| NA
+indent-string| MIT| Container| NA| NA
+indexof| | Container| NA| NA
+inflight| ISC| Container| NA| NA
+inherits| ISC| Container| NA| NA
+inquirer| MIT| Container| NA| NA
+interpret| MIT| Container| NA| NA
+is-accessor-descriptor| MIT| Container| NA| NA
+isarray| MIT| Container| NA| NA
+is-arrayish| MIT| Container| NA| NA
+isbinaryfile| MIT| Container| NA| NA
+is-binary-path| MIT| Container| NA| NA
+is-buffer| MIT| Container| NA| NA
+is-builtin-module| MIT| Container| NA| NA
+is-data-descriptor| MIT| Container| NA| NA
+is-descriptor| MIT| Container| NA| NA
+is-dotfile| MIT| Container| NA| NA
+is-equal-shallow| MIT| Container| NA| NA
+isexe| ISC| Container| NA| NA
+is-extendable| MIT| Container| NA| NA
+is-extglob| MIT| Container| NA| NA
+is-finite| MIT| Container| NA| NA
+is-fullwidth-code-point| MIT| Container| NA| NA
+is-glob| MIT| Container| NA| NA
+is-number| MIT| Container| NA| NA
+isobject| MIT| Container| NA| NA
+is-plain-object| MIT| Container| NA| NA
+is-posix-bracket| MIT| Container| NA| NA
+is-primitive| MIT| Container| NA| NA
+is-promise| MIT| Container| NA| NA
+is-resolvable| ISC| Container| NA| NA
+isstream| MIT| Container| NA| NA
+is-stream| MIT| Container| NA| NA
+istanbul| BSD-3-Clause| Container| NA| NA
+is-typedarray| MIT| Container| NA| NA
+is-utf8| MIT| Container| NA| NA
+is-windows| MIT| Container| NA| NA
+jsbn| MIT| Container| NA| NA
+json3| | Container| NA| NA
+jsonfile| MIT| Container| NA| NA
+json-schema| | Container| NA| NA
+json-schema-traverse| MIT| Container| NA| NA
+json-stable-stringify-without-jsonify| MIT| Container| NA| NA
+json-stringify-safe| ISC| Container| NA| NA
+jsprim| MIT| Container| NA| NA
+js-tokens| MIT| Container| NA| NA
+js-yaml| MIT| Container| NA| NA
+karma| MIT| Container| NA| NA
+karma-chrome-launcher| MIT| Container| NA| NA
+karma-coverage| MIT| Container| NA| NA
+karma-expect| MIT| Container| NA| NA
+karma-firefox-launcher| MIT| Container| NA| NA
+karma-mocha| MIT| Container| NA| NA
+karma-phantomjs-launcher| MIT| Container| NA| NA
+karma-rollup-preprocessor| MIT| Container| NA| NA
+karma-safari-launcher| MIT| Container| NA| NA
+karma-sinon| | Container| NA| NA
+kew| Apache-2.0| Container| NA| NA
+kind-of| MIT| Container| NA| NA
+klaw| MIT| Container| NA| NA
+lazy-cache| MIT| Container| NA| NA
+leafdoc| GPL| Container| NA| NA
+Leaflet| | Container| NA| NA
+levn| MIT| Container| NA| NA
+load-json-file| MIT| Container| NA| NA
+lodash| MIT| Container| NA| NA
+lodash._baseassign| MIT| Container| NA| NA
+lodash._basecopy| MIT| Container| NA| NA
+lodash._basecreate| MIT| Container| NA| NA
+lodash.create| MIT| Container| NA| NA
+lodash.debounce| MIT| Container| NA| NA
+lodash._getnative| MIT| Container| NA| NA
+lodash.isarguments| MIT| Container| NA| NA
+lodash.isarray| MIT| Container| NA| NA
+lodash._isiterateecall| MIT| Container| NA| NA
+lodash.keys| MIT| Container| NA| NA
+log4js| Apache-2.0| Container| NA| NA
+lolex| BSD-3-Clause| Container| NA| NA
+longest| MIT| Container| NA| NA
+loud-rejection| MIT| Container| NA| NA
+lru-cache| ISC| Container| NA| NA
+map-cache| MIT| Container| NA| NA
+map-obj| MIT| Container| NA| NA
+map-visit| MIT| Container| NA| NA
+marked| MIT| Container| NA| NA
+math-random| MIT| Container| NA| NA
+media-typer| MIT| Container| NA| NA
+meow| MIT| Container| NA| NA
+micromatch| MIT| Container| NA| NA
+mime| MIT| Container| NA| NA
+mime-db| MIT| Container| NA| NA
+mime-types| MIT| Container| NA| NA
+mimic-fn| MIT| Container| NA| NA
+minimatch| ISC| Container| NA| NA
+minimist| MIT| Container| NA| NA
+mixin-deep| MIT| Container| NA| NA
+mkdirp| MIT| Container| NA| NA
+mocha| MIT| Container| NA| NA
+ms| MIT| Container| NA| NA
+mute-stream| ISC| Container| NA| NA
+nanomatch| MIT| Container| NA| NA
+natives| ISC| Container| NA| NA
+natural-compare| MIT| Container| NA| NA
+negotiator| MIT| Container| NA| NA
+nopt| ISC| Container| NA| NA
+normalize-package-data| BSD-2-Clause| Container| NA| NA
+normalize-path| MIT| Container| NA| NA
+null-check| MIT| Container| NA| NA
+number-is-nan| MIT| Container| NA| NA
+oauth-sign| Apache-2.0| Container| NA| NA
+object-assign| MIT| Container| NA| NA
+object-component| | Container| NA| NA
+object-copy| MIT| Container| NA| NA
+object.omit| MIT| Container| NA| NA
+object.pick| MIT| Container| NA| NA
+object-visit| MIT| Container| NA| NA
+once| ISC| Container| NA| NA
+onetime| MIT| Container| NA| NA
+on-finished| MIT| Container| NA| NA
+optimist| MIT/X11| Container| NA| NA
+optionator| MIT| Container| NA| NA
+options| | Container| NA| NA
+os-tmpdir| MIT| Container| NA| NA
+parse-glob| MIT| Container| NA| NA
+parsejson| MIT| Container| NA| NA
+parse-json| MIT| Container| NA| NA
+parseqs| MIT| Container| NA| NA
+parseuri| MIT| Container| NA| NA
+parseurl| MIT| Container| NA| NA
+pascalcase| MIT| Container| NA| NA
+path-dirname| MIT| Container| NA| NA
+path-exists| MIT| Container| NA| NA
+path-is-absolute| MIT| Container| NA| NA
+path-is-inside| (WTFPL OR MIT)| Container| NA| NA
+path-parse| MIT| Container| NA| NA
+path-type| MIT| Container| NA| NA
+pend| MIT| Container| NA| NA
+performance-now| MIT| Container| NA| NA
+phantomjs-prebuilt| Apache-2.0| Container| NA| NA
+pify| MIT| Container| NA| NA
+pinkie| MIT| Container| NA| NA
+pinkie-promise| MIT| Container| NA| NA
+pluralize| MIT| Container| NA| NA
+posix-character-classes| MIT| Container| NA| NA
+prelude-ls| | Container| NA| NA
+preserve|  
+{ type: 'MIT',
+  url: 'https://github.com/jonschlinkert/preserve/blob/master/LICENSE-MIT' }| Container| NA| NA
+process-nextick-args| MIT| Container| NA| NA
+progress| MIT| Container| NA| NA
+prosthetic-hand| Beerware| Container| NA| NA
+pseudomap| ISC| Container| NA| NA
+psl| MIT| Container| NA| NA
+punycode| MIT| Container| NA| NA
+qjobs| MIT| Container| NA| NA
+qs| BSD-3-Clause| Container| NA| NA
+randomatic| MIT| Container| NA| NA
+range-parser| MIT| Container| NA| NA
+raw-body| MIT| Container| NA| NA
+readable-stream| MIT| Container| NA| NA
+readdirp| MIT| Container| NA| NA
+read-pkg| MIT| Container| NA| NA
+read-pkg-up| MIT| Container| NA| NA
+rechoir| MIT| Container| NA| NA
+redent| MIT| Container| NA| NA
+regex-cache| MIT| Container| NA| NA
+regex-not| MIT| Container| NA| NA
+regexpp| MIT| Container| NA| NA
+remove-trailing-separator| ISC| Container| NA| NA
+repeat-element| MIT| Container| NA| NA
+repeating| MIT| Container| NA| NA
+repeat-string| MIT| Container| NA| NA
+request| Apache-2.0| Container| NA| NA
+request-progress| MIT| Container| NA| NA
+require-relative| MIT| Container| NA| NA
+requires-port| MIT| Container| NA| NA
+require-uncached| MIT| Container| NA| NA
+resolve| MIT| Container| NA| NA
+resolve-from| MIT| Container| NA| NA
+resolve-url| MIT| Container| NA| NA
+restore-cursor| MIT| Container| NA| NA
+ret| MIT| Container| NA| NA
+right-align| MIT| Container| NA| NA
+rimraf| ISC| Container| NA| NA
+rollup| MIT| Container| NA| NA
+rollup-plugin-git-version| Beerware| Container| NA| NA
+rollup-plugin-json| MIT| Container| NA| NA
+rollup-pluginutils| MIT| Container| NA| NA
+rollup-watch| MIT| Container| NA| NA
+run-async| MIT| Container| NA| NA
+rx-lite| | Container| NA| NA
+rx-lite-aggregates| | Container| NA| NA
+safe-buffer| MIT| Container| NA| NA
+safer-buffer| MIT| Container| NA| NA
+safe-regex| MIT| Container| NA| NA
+samsam| BSD-3-Clause| Container| NA| NA
+sander| MIT| Container| NA| NA
+semver| ISC| Container| NA| NA
+setprototypeof| ISC| Container| NA| NA
+set-value| MIT| Container| NA| NA
+shebang-command| MIT| Container| NA| NA
+shebang-regex| MIT| Container| NA| NA
+shelljs| BSD-3-Clause| Container| NA| NA
+signal-exit| ISC| Container| NA| NA
+sinon| BSD-3-Clause| Container| NA| NA
+slice-ansi| MIT| Container| NA| NA
+snapdragon| MIT| Container| NA| NA
+snapdragon-node| MIT| Container| NA| NA
+snapdragon-util| MIT| Container| NA| NA
+socket.io| MIT| Container| NA| NA
+socket.io-adapter| MIT| Container| NA| NA
+socket.io-client| MIT| Container| NA| NA
+socket.io-parser| MIT| Container| NA| NA
+source-map| BSD-3-Clause| Container| NA| NA
+source-map-resolve| MIT| Container| NA| NA
+source-map-url| MIT| Container| NA| NA
+spdx-correct| Apache-2.0| Container| NA| NA
+spdx-exceptions| CC-BY-3.0| Container| NA| NA
+spdx-expression-parse| MIT| Container| NA| NA
+spdx-license-ids| CC0-1.0| Container| NA| NA
+split-string| MIT| Container| NA| NA
+sprintf-js| BSD-3-Clause| Container| NA| NA
+sshpk| MIT| Container| NA| NA
+ssri| ISC| Container| NA| NA
+static-extend| MIT| Container| NA| NA
+statuses| MIT| Container| NA| NA
+string_decoder| MIT| Container| NA| NA
+string-width| MIT| Container| NA| NA
+strip-ansi| MIT| Container| NA| NA
+strip-bom| MIT| Container| NA| NA
+strip-indent| MIT| Container| NA| NA
+strip-json-comments| MIT| Container| NA| NA
+supports-color| MIT| Container| NA| NA
+table| BSD-3-Clause| Container| NA| NA
+text-table| MIT| Container| NA| NA
+throttleit| MIT| Container| NA| NA
+through| MIT| Container| NA| NA
+tmp| MIT| Container| NA| NA
+to-array| | Container| NA| NA
+to-object-path| MIT| Container| NA| NA
+to-regex| MIT| Container| NA| NA
+to-regex-range| MIT| Container| NA| NA
+tough-cookie| BSD-3-Clause| Container| NA| NA
+trim-newlines| MIT| Container| NA| NA
+tunnel-agent| Apache-2.0| Container| NA| NA
+tweetnacl| Unlicense| Container| NA| NA
+type-check| MIT| Container| NA| NA
+typedarray| MIT| Container| NA| NA
+type-is| MIT| Container| NA| NA
+uglify-js| BSD-2-Clause| Container| NA| NA
+uglify-to-browserify| MIT| Container| NA| NA
+ultron| MIT| Container| NA| NA
+unicode-7.0.0| MIT| Container| NA| NA
+union-value| MIT| Container| NA| NA
+unpipe| MIT| Container| NA| NA
+unset-value| MIT| Container| NA| NA
+upath| MIT| Container| NA| NA
+uri-js| BSD-2-Clause| Container| NA| NA
+urix| MIT| Container| NA| NA
+use| MIT| Container| NA| NA
+useragent| MIT| Container| NA| NA
+util| MIT| Container| NA| NA
+util-deprecate| MIT| Container| NA| NA
+utils-merge| MIT| Container| NA| NA
+uuid| MIT| Container| NA| NA
+validate-npm-package-license| Apache-2.0| Container| NA| NA
+verror| MIT| Container| NA| NA
+void-elements| MIT| Container| NA| NA
+which| ISC| Container| NA| NA
+window-size| MIT| Container| NA| NA
+wordwrap| MIT| Container| NA| NA
+wrappy| ISC| Container| NA| NA
+write| MIT| Container| NA| NA
+ws| MIT| Container| NA| NA
+wtf-8| MIT| Container| NA| NA
+xmlhttprequest-ssl| | Container| NA| NA
+xregexp| MIT| Container| NA| NA
+yallist| ISC| Container| NA| NA
+yargs| MIT| Container| NA| NA
+yauzl| MIT| Container| NA| NA
+yeast| MIT| Container| NA| NA
