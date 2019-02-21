@@ -1,4 +1,4 @@
-FROM ppc64le/openjdk:8-jdk
+FROM openjdk:8-jdk
 
 RUN apt-get update && \
     apt-get install git wget autoconf libtool automake g++ make bzip2 curl unzip zlib1g-dev -y && \
