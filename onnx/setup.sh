@@ -44,7 +44,7 @@ if [ "${PYTHON_VERSION}" = "python3" ]; then
 else
     sudo apt-get install -y \
          python-pip
-    sudo pip install virtualenv
+    sudo -H pip install virtualenv
     virtualenv venv_py2
     . ./venv_py2/bin/activate
 fi

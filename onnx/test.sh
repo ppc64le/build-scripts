@@ -30,6 +30,7 @@ fi
 export SCRIPT_DIR="${PWD}"
 cd onnx
 
+pip install pyzmq==17.1.2
 pip install -q numpy pytest nbval flake8
 
 # onnx c++ API tests
