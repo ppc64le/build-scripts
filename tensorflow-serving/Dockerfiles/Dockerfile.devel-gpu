@@ -17,10 +17,8 @@ FROM nvidia/cuda-ppc64le:10.0-base-ubuntu18.04 as base_build
 ARG TF_SERVING_VERSION_GIT_BRANCH=master
 ARG TF_SERVING_VERSION_GIT_COMMIT=head
 
-#CPU whl is used because it is for build time only and the python
-#packages requires tensorflow, not tensorflow_gpu
-ARG TF_WHEEL_FILE=tensorflow-1.13.1-cp27-cp27mu-linux_ppc64le.whl
-ARG TF_WHEEL_URL=https://powerci.osuosl.org/job/TensorFlow_PPC64LE_CPU_Release_Build/lastSuccessfulBuild/artifact/tensorflow_pkg
+ARG TF_WHEEL_FILE=tensorflow_gpu-1.13.1-cp27-cp27mu-linux_ppc64le.whl
+ARG TF_WHEEL_URL=https://powerci.osuosl.org/job/TensorFlow_PPC64LE_GPU_Release_Build/lastSuccessfulBuild/artifact/tensorflow_pkg
 
 LABEL maintainer=wdirons@us.ibm.com
 LABEL tensorflow_serving_github_branchtag=${TF_SERVING_VERSION_GIT_BRANCH}
