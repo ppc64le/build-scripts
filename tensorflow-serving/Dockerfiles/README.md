@@ -11,19 +11,21 @@ Building a ppc64le container from a Dockerfile:
     cd build-scripts
     ```
 
-2.  Build the development image
+2.  Build the development image (using the 1.13.0 branch for example)
 
     *   For CPU:
 
         ```shell
-        docker build --pull -t $USER/tensorflow-serving-devel \
+        docker build --pull --build-arg TF_SERVING_VERSION_GIT_BRANCH=1.13.0 \
+          -t $USER/tensorflow-serving-devel \
           -f tensorflow-serving/Dockerfiles/Dockerfile.devel .
         ```
 
     *   For GPU: `
 
         ```shell
-        docker build --pull -t $USER/tensorflow-serving-devel-gpu \
+        docker build --pull --build-arg TF_SERVING_VERSION_GIT_BRANCH=1.13.0
+          -t $USER/tensorflow-serving-devel-gpu \
           -f tensorflow-serving/Dockerfiles/Dockerfile.devel-gpu .
         ```
 
