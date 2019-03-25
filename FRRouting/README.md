@@ -22,11 +22,12 @@ make: *** [binary] Error 2
 dpkg-buildpackage: error: fakeroot debian/rules binary subprocess returned exit status 2
 ```
 
-If you page up the build output, you will see
+If you page up the build output, you will see:
+```
 dpkg-gensymbols: warning: some new symbols appeared in the symbols file: see diff output below
 dpkg-gensymbols: warning: some symbols or patterns disappeared in the symbols file: see diff output below
 dpkg-gensymbols: warning: debian/libyang-cpp0.16/DEBIAN/symbols doesn't match completely debian/libyang-cpp0.16.symbols
-
+```
 
 To workaround the build error do the following: 
 ```
