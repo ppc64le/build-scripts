@@ -2,7 +2,17 @@
 
 Since there is no readily avaialable debian package for FRR on Power for Ubuntu 18.04, this README provides instructions on how to build one. Building the FRR debian package depends on other debian packages to be available and installed on the build server. They are libyang, librtr, librtr-dev. And since they are also not readily avaialable they will also need to be built.
 
-### Building libyang
+### Download and Install libyang
+```
+$ wget http://ftp.us.debian.org/debian/pool/main/liby/libyang/libyang0.16_0.16.105-1_ppc64el.deb
+$ wget http://ftp.us.debian.org/debian/pool/main/liby/libyang/libyang-dev_0.16.105-1_ppc64el.deb
+$ wget http://ftp.us.debian.org/debian/pool/main/liby/libyang/libyang-cpp0.16_0.16.105-1_ppc64el.deb
+$ sudo dpkg -i libyang0.16_0.16.105-1_ppc64el.deb
+$ sudo dpkg -i libyang-dev_0.16.105-1_ppc64el.deb
+$ sudo dpkg -i libyang-cpp0.16_0.16.105-1_ppc64el.deb
+```
+
+### Or Build libyang
 Run the following instructions:
 ```
 $ git clone https://github.com/opensourcerouting/libyang-debian
