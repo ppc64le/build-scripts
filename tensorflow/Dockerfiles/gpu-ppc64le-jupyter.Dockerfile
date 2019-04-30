@@ -23,12 +23,12 @@ FROM nvidia/cuda-ppc64le:10.0-base-ubuntu18.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
-        cuda-command-line-tools-10.0 \
-        cuda-cublas-10.0 \
-        cuda-cufft-10.0 \
-        cuda-curand-10.0 \
-        cuda-cusolver-10.0 \
-        cuda-cusparse-10.0 \
+        cuda-command-line-tools-10-0 \
+        cuda-cublas-10-0 \
+        cuda-cufft-10-0 \
+        cuda-curand-10-0 \
+        cuda-cusolver-10-0 \
+        cuda-cusparse-10-0 \
         curl \
         libcudnn7=7.4.2.24-1+cuda10.0 \
         libnccl2=2.3.7-1+cuda10.0 \
@@ -72,7 +72,7 @@ RUN ${PIP} install jupyter matplotlib
 
 RUN mkdir -p /tf/tensorflow-tutorials && chmod -R a+rwx /tf/
 RUN mkdir /.local && chmod a+rwx /.local
-RUN apt-get install -y --no-install-recommends wget
+RUN apt-get update && apt-get install -y --no-install-recommends wget
 WORKDIR /tf/tensorflow-tutorials
 RUN wget https://raw.githubusercontent.com/tensorflow/docs/master/site/en/tutorials/keras/basic_classification.ipynb
 RUN wget https://raw.githubusercontent.com/tensorflow/docs/master/site/en/tutorials/keras/basic_text_classification.ipynb

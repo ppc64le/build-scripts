@@ -86,12 +86,13 @@ RUN ${PIP} --no-cache-dir install \
     enum34
 
  # Build and install bazel
-ENV BAZEL_VERSION 0.15.0
+ENV BAZEL_VERSION 0.24.1
 WORKDIR /
 RUN mkdir /bazel && \
     cd /bazel && \
     curl -fSsL -O https://github.com/bazelbuild/bazel/releases/download/$BAZEL_VERSION/bazel-$BAZEL_VERSION-dist.zip && \
     unzip bazel-$BAZEL_VERSION-dist.zip && \
+    sed -i '/--action_env=PATH \\/a\  --host_javabase=@bazel_tools//tools/jdk:jdk \\' compile.sh && \
     bash ./compile.sh && \
     cp output/bazel /usr/local/bin/ && \
     rm -rf /bazel && \
@@ -104,7 +105,7 @@ RUN ${PIP} install jupyter matplotlib
 
 RUN mkdir -p /tf/tensorflow-tutorials && chmod -R a+rwx /tf/
 RUN mkdir /.local && chmod a+rwx /.local
-RUN apt-get install -y --no-install-recommends wget
+RUN apt-get update && apt-get install -y --no-install-recommends wget
 WORKDIR /tf/tensorflow-tutorials
 RUN wget https://raw.githubusercontent.com/tensorflow/docs/master/site/en/tutorials/keras/basic_classification.ipynb
 RUN wget https://raw.githubusercontent.com/tensorflow/docs/master/site/en/tutorials/keras/basic_text_classification.ipynb

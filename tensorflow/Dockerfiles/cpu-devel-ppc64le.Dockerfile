@@ -86,12 +86,13 @@ RUN ${PIP} --no-cache-dir install \
     enum34
 
  # Build and install bazel
-ENV BAZEL_VERSION 0.15.0
+ENV BAZEL_VERSION 0.24.1
 WORKDIR /
 RUN mkdir /bazel && \
     cd /bazel && \
     curl -fSsL -O https://github.com/bazelbuild/bazel/releases/download/$BAZEL_VERSION/bazel-$BAZEL_VERSION-dist.zip && \
     unzip bazel-$BAZEL_VERSION-dist.zip && \
+    sed -i '/--action_env=PATH \\/a\  --host_javabase=@bazel_tools//tools/jdk:jdk \\' compile.sh && \
     bash ./compile.sh && \
     cp output/bazel /usr/local/bin/ && \
     rm -rf /bazel && \
