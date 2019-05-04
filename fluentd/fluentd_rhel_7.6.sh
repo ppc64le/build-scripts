@@ -17,7 +17,7 @@
 
 # Install dependencies.
 sudo yum update -y
-sudo yum install -y git build-essential ruby-dev ruby gnupg2 curl
+sudo yum install -y git ruby-dev ruby gnupg2 curl which 
 
 # Install ruby and rvm.
 gpg2 --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
