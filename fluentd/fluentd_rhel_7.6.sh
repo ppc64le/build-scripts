@@ -17,17 +17,19 @@
 
 # Install dependencies.
 sudo yum update -y
-sudo yum install -y git ruby-dev ruby gnupg2 curl which 
+sudo yum install -y git ruby-devel.ppc64le ruby gnupg2 curl which 
 
 # Install ruby and rvm.
 gpg2 --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
 curl -L https://get.rvm.io | bash -s stable
-source ~/.rvm/scripts/rvm
-rvm install 2.4.6
-rvm use 2.4.6 --default
+#source ~/.rvm/scripts/rvm
+source /etc/profile.d/rvm.sh
+rvm install 2.6.3
+rvm use 2.6.3 --default
 ruby -v
 gem install bundler
 
 # Clone and build source.
-git clone https://github.com/fluent/fluentd && cd fluentd
-bundle install --path=./vendor/bundle && bundle exec rake
+git clone https://github.com/fluent/fluentd && cd fluentd && git checkout v1.4.2
+bundle install --path=./vendor/bundle && gem install fluentd
+fluentd --version
