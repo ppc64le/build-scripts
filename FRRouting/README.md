@@ -15,6 +15,9 @@ $ sudo dpkg -i libyang-cpp0.16_0.16.105-1_ppc64el.deb
 ### Or Build libyang
 Run the following instructions:
 ```
+$ sudo apt-get install \
+   git dpkg-dev bison cmake debhelper libcmocka-dev \
+   libpcre3-dev swig python3-all-dev python3-all-dbg pkg-config
 $ git clone https://github.com/opensourcerouting/libyang-debian
 $ cd libyang-debian
 $ dpkg-buildpackage -b -rfakeroot -us -uc
@@ -61,9 +64,9 @@ libyang-dev_0.16.105-1_ppc64el.deb      python3-yang_0.16.105-1_ppc64el.deb
 Install the following packages:
 
 ```
+$ sudo dpkg -i  libyang0.16_0.16.105-1_ppc64el.deb
 $ sudo dpkg -i  libyang-cpp0.16_0.16.105-1_ppc64el.deb 
 $ sudo dpkg -i  libyang-dev_0.16.105-1_ppc64el.deb
-$ sudo dpkg -i  libyang0.16_0.16.105-1_ppc64el.deb
 ```
 
 ### Building librtr
@@ -81,7 +84,7 @@ $ cd librtr-0.6.3
 
 Before building the debian packages , install doxygen
 ```
-$ sudo apt-get install doxygen
+$ sudo apt-get install doxygen libssh-dev
 $ dpkg-buildpackage -b -rfakeroot -us -uc
 $ cd ..
 $ ls *.deb
@@ -100,7 +103,7 @@ http://docs.frrouting.org/projects/dev-guide/en/latest/building-frr-for-ubuntu18
 ```
 $ sudo apt-get install \
    git autoconf automake libtool make gawk libreadline-dev texinfo \
-   pkg-config libpam0g-dev libjson-c-dev bison flex python-pytest \
+   libpam0g-dev libjson-c-dev flex python-pytest devscripts \
    libc-ares-dev python3-dev libsystemd-dev python-ipaddress \
    python3-sphinx install-info build-essential libsystemd-dev
 ```
