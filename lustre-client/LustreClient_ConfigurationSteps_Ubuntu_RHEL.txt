@@ -1,0 +1,84 @@
+﻿###VALIDATION/CONFIGURATION STEPS FOR LUSTRE CLIENT####
+
+Client Configuration
+- Create a mount point, for example : 
+# mkdir -p /mnt/lustre
+- Mount the file system on the client.
+# mount -t lustre <ip.of.mds.node>@<interface>:/<lustre file system name> <mount point specified above>
+
+For example.
+My lustre server installed/running on x86_64 is as below
+Lustre server FS was created as below
+# mkfs.lustre --fsname=lustre --reformat --mgs --mdt --index=0 /dev/vda3
+# mount -t lustre /dev/vda3 /mnt/mdt
+# df -T | grep lustre
+/dev/vda3            lustre  29774512   60344  27563164   1% /mnt/mdt
+
+So for the lustre client configuration above , below command will provide a way to mount the file system
+To verify if lustre client mounted , do the below on the lustre cient machine.
+# mkdir /mnt/secnd_client
+# mount -t lustre 10.51.225.95@tcp0:/lustre /mnt/secnd_client
+# df -T | grep lustre
+10.51.225.95@tcp:/lustre lustre   40G   58M   38G   1% /mnt/secnd_client
+
+Verify that the file system started and is working by running the df, dd and ls commands on the client node.
+1. Run the lfs df -h command ,
+The lfs df -h command lists space usage per OST and the MDT in human-readable format. This command generates output similar to this:
+
+On Client Node - Machine 3
+# lfs df -h
+UUID                       bytes        Used   Available Use% Mounted on
+whatevs-MDT0000_UUID       28.4G       58.9M       26.3G   0% /mnt/secnd_client[MDT:0]
+whatevs-OST0000_UUID       39.5G       57.0M       37.3G   0% /mnt/secnd_client[OST:0]
+filesystem summary:        39.5G       57.0M       37.3G   0% /mnt/secnd_client
+
+2. Run the lfs df -ih command.
+The lfs df -ih command lists inode usage per OST and the MDT. This command generates output similar to this:
+
+# lfs df -ih
+UUID                      Inodes       IUsed       IFree IUse% Mounted on
+whatevs-MDT0000_UUID       20.0M         248       20.0M   0% /mnt/secnd_client[MDT:0]
+whatevs-OST0000_UUID      600.0K         282      599.7K   0% /mnt/secnd_client[OST:0]
+filesystem summary:       600.0K         248      599.7K   0% /mnt/secnd_client
+
+
+3. Run the dd command:
+The dd command verifies write functionality by creating a file containing all zeros (0s). In this command, an 8 MB file is created. This command generates output similar to this:
+# dd if=/dev/zero of=/mnt/lustre/zero.dat bs=4M count=2
+2+0 records in
+2+0 records out
+8388608 bytes (8.4 MB) copied, 0.0809343 s, 104 MB/s
+
+4. Run the ls command:
+# ls -lsah
+total 8.1M
+4.0K drwxr-xr-x  3 root root 4.0K Oct 31 14:32 .
+   0 drwxr-xr-x. 4 root root   35 Oct 31 12:04 ..
+8.0M -rw-r--r--  1 root root 8.0M Oct 31 14:32 zero.dat
+
+The ls -lsah command lists files and directories in the current working directory. This command generates output similar to above.
+
+So  our multi node luster set up is as below
+1. Machine 1 : Acting as Management server( MGS) , Management target ( MGT ) ,Metadata server( MDS) , Metadata target ( MDT )  - CentOS6.6 x86-VM1 - 10.51.225.95 -x86_64
+2. Machine 2 : Acting as - Object Storage Server ( OSS ) , Object Storage Target ( OST ) CentOS6.8 x86-VM2 - 10.51.225.96 - x86_64
+
+Lustre Clients
+3. Machine 3 : Acting as lustre client - CentOS 7.2.1511- VM3 - 10.51.231.200 - x86_64
+4. Machine 4 : Acting as lustre client - Ubuntu 16.04.1 LTS (Xenial Xerus) - 10.77.67.146 - ppc64le
+5. Machine 5 : Acting as lustre client - Red Hat 7.2 - 10.77.67.129  -ppc64le
+6. Machine 6 : Acting as lustre client - Ubuntu 16.04 LTS (Xenial Xerus) - 10.88.67.81 - ppc64le
+
+On the lustre client , run this command , to confirm that lustre file system is available.
+root@pts00449-vm1:/mnt/secnd_client# df -T
+Filesystem                         Type     1K-blocks     Used Available Use% Mounted on
+udev                               devtmpfs   4127104        0   4127104   0% /dev
+tmpfs                              tmpfs       836032    97792    738240  12% /run
+/dev/mapper/pts00449--vm1--vg-root ext4     118401324 86676792  25687028  78% /
+tmpfs                              tmpfs      4179968    17664   4162304   1% /dev/shm
+tmpfs                              tmpfs         5120        0      5120   0% /run/lock
+tmpfs                              tmpfs      4179968        0   4179968   0% /sys/fs/cgroup
+/dev/vda2                          ext2        241965   129292    100181  57% /boot
+tmpfs                              tmpfs       836032       64    835968   1% /run/user/0
+/dev/sr0                           iso9660     624330   624330         0 100% /media/root/Ubuntu-Server 15.10 ppc64
+10.51.225.95@tcp:/lustre          lustre    41377088    58384  39142712   1% /mnt/secnd_client
+

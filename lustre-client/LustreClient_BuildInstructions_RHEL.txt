@@ -1,0 +1,45 @@
+BUILD STEPS FOR LUSTRE CLIENT ON RHEL
+-------------------------------------
+
+####Install Dependencies####
+#Install dependencies
+yum -y groupinstall "Development Tools"
+
+#Note: If the Development Tools group is not be available for some reason, you will need to install the following #packages.
+#yum -y install automake xmlto asciidoc elfutils-libelf-devel zlib-devel binutils-devel newt-devel python-devel hmaccalc #perl-ExtUtils-Embed rpm-build make gcc redhat-rpm-config patchutils git
+
+#Install additional dependencies
+yum -y install xmlto asciidoc elfutils-libelf-devel zlib-devel binutils-devel newt-devel python-devel hmaccalc perl-ExtUtils-Embed bison elfutils-devel audit-libs-devel libyaml-devel
+
+####Build Lustre from source####
+
+git clone git://git.hpdd.intel.com/fs/lustre-release.git
+cd lustre-release/
+sh autogen.sh
+./configure --disable-server
+make
+make install
+
+
+####Validate Installation - below steps are common for RHEL/Ubuntu ####
+
+Inside the source code folder, run the below script to get the lustre version ( the version that was ported was 2.8.60 )
+# ./LUSTRE-VERSION-GEN
+2.8.60
+
+To verify Lustre installation:
+# whereis lustre
+lustre: /usr/lib/lustre /usr/include/lustre /usr/share/lustre /usr/share/man/man7/lustre.7
+
+Next install the lustre module using below commands
+# depmod -a
+# modprobe lustre
+
+Check if the lustre module installed is by using the below command
+# lsmod | grep lustre
+
+Make sure that lustre modules are installed in right place
+# cd /lib/modules/`uname -r`
+#:/lib/modules/4.4.0-22-generic# find . | grep lustre.ko
+./net/lustre/ko2iblnd.ko
+./fs/lustre/lustre.ko
