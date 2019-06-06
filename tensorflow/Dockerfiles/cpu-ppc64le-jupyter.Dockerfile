@@ -40,8 +40,6 @@ RUN ${PIP} --no-cache-dir install --upgrade \
 # Some TF tools expect a "python" binary
 RUN ln -s $(which ${PYTHON}) /usr/local/bin/python
 
-COPY bashrc /etc/bash.bashrc
-RUN chmod a+rwx /etc/bash.bashrc
 RUN apt-get update && apt-get install -y \
     pkg-config \
     libfreetype6-dev \
@@ -104,5 +102,8 @@ RUN if [ ${TF_PACKAGE} = tensorflow-gpu ]; then \
     ${PIP} install ${PACKAGE}
 
 RUN ${PYTHON} -m ipykernel.kernelspec
+
+COPY bashrc /etc/bash.bashrc
+RUN chmod a+rwx /etc/bash.bashrc
 
 CMD ["bash", "-c", "source /etc/bash.bashrc && jupyter notebook --notebook-dir=/tf --ip 0.0.0.0 --no-browser --allow-root"]

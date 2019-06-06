@@ -6,6 +6,7 @@ SCRIPT_DIR=`dirname $0`
 REPO='ibmcom/tensorflow-ppc64le'
 DRY_RUN=false
 BUILD_ONLY=false
+SKIP_PULL=false
 DATE=$(date +%s)
 IMAGE="all"
 
@@ -18,11 +19,12 @@ Usage:
     -t                  Image tag
     -d                  Dry run
     -b                  Build only
+    -s                  Skip pull of latest image before build
 EOM
 }
 
 # Get input
-while getopts "hi:t:df:br:" opt; do
+while getopts "hi:r:t:dbs" opt; do
     case "$opt" in
     h)
         usage
@@ -37,6 +39,8 @@ while getopts "hi:t:df:br:" opt; do
     d)  DRY_RUN=true
         ;;
     b)  BUILD_ONLY=true
+        ;;
+    s)  SKIP_PULL=true
         ;;
     esac
 done
@@ -57,6 +61,10 @@ fi
 if [[ ! "$RELEASE_FLAG" =~ ^(all|nightly|release|dev)$ ]]; then
     echo "Invalid release type. Use all, dev, nightly, or release."
     exit 1
+fi
+
+if [ ! $TAG = "latest" ]; then
+    SKIP_PULL=true
 fi
 
 build_push ()
@@ -92,14 +100,26 @@ build_push ()
     else
         JUPYTER=""
     fi
-    BUILD="docker build $TF_PACKAGE $CACHE_STOP $PYTHON -f ${SCRIPT_DIR}/${FILE_PREFIX}${DEV}-ppc64le${JUPYTER}.Dockerfile -t ${DOCKER_SERVER}/${REPO}:${TAG}${ARG_SUFFIX}${DEV}${PY3}${JUPYTER} ${SCRIPT_DIR}"
+    if $SKIP_PULL; then
+        CACHE_FROM=""
+    else
+        CACHE_FROM="--cache-from=${DOCKER_SERVER}/${REPO}:${TAG}${ARG_SUFFIX}${DEV}${PY3}${JUPYTER}"
+    fi
+    PULL="docker pull ${DOCKER_SERVER}/${REPO}:${TAG}${ARG_SUFFIX}${DEV}${PY3}${JUPYTER}"
+    BUILD="docker build $TF_PACKAGE $CACHE_STOP $PYTHON $CACHE_FROM -f ${SCRIPT_DIR}/${FILE_PREFIX}${DEV}-ppc64le${JUPYTER}.Dockerfile -t ${DOCKER_SERVER}/${REPO}:${TAG}${ARG_SUFFIX}${DEV}${PY3}${JUPYTER} ${SCRIPT_DIR}"
     PUSH="docker push ${DOCKER_SERVER}/${REPO}:${TAG}${ARG_SUFFIX}${DEV}${PY3}${JUPYTER}"
     if $DRY_RUN; then
+        if ! $SKIP_PULL; then
+            echo $PULL
+        fi
         echo $BUILD
         if ! $BUILD_ONLY; then
             echo $PUSH
         fi
     else
+        if ! $SKIP_PULL; then
+            $PULL
+        fi
         $BUILD
         if ! $BUILD_ONLY; then
             $PUSH

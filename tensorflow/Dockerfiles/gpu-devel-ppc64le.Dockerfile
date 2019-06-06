@@ -99,6 +99,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN ${PIP} --no-cache-dir install \
     Pillow \
+    future \
     h5py \
     keras_applications \
     keras_preprocessing \
