@@ -99,6 +99,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN ${PIP} --no-cache-dir install \
     Pillow \
+    future \
     h5py \
     keras_applications \
     keras_preprocessing \
@@ -124,9 +125,6 @@ RUN mkdir /bazel && \
     rm -rf /bazel && \
     cd -
 
-COPY bashrc /etc/bash.bashrc
-RUN chmod a+rwx /etc/bash.bashrc
-
 RUN ${PIP} install jupyter matplotlib
 
 RUN mkdir -p /tf/tensorflow-tutorials && chmod -R a+rwx /tf/
@@ -140,5 +138,8 @@ WORKDIR /tf
 EXPOSE 8888
 
 RUN ${PYTHON} -m ipykernel.kernelspec
+
+COPY bashrc /etc/bash.bashrc
+RUN chmod a+rwx /etc/bash.bashrc
 
 CMD ["bash", "-c", "source /etc/bash.bashrc && jupyter notebook --notebook-dir=/tf --ip 0.0.0.0 --no-browser --allow-root"]
