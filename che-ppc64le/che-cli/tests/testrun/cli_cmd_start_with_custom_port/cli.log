@@ -1,0 +1,108 @@
+Wed May  8 05:16:42 UTC 2019
+/usr/bin/curl  "-I -k https://hub.docker.com -s -o /dev/null --write-out %{http_code}"
+Checking registry for version 'nightly' images
+eval BOOTSTRAP_IMAGE_ALPINE=${BOOTSTRAP_IMAGE_ALPINE:-alpine:3.6}
+eval BOOTSTRAP_IMAGE_CHEIP=${BOOTSTRAP_IMAGE_CHEIP:-eclipse/che-ip:nightly}
+eval IMAGE_INIT=${IMAGE_INIT:-eclipse/che-init:nightly}
+eval IMAGE_CHE=${IMAGE_CHE:-eclipse/che-server:nightly}
+eval IMAGE_COMPOSE=${IMAGE_COMPOSE:-docker/compose:1.10.1}
+eval UTILITY_IMAGE_CHEACTION=${UTILITY_IMAGE_CHEACTION:-eclipse/che-action:nightly}
+eval UTILITY_IMAGE_CHEDIR=${UTILITY_IMAGE_CHEDIR:-eclipse/che-dir:nightly}
+eval UTILITY_IMAGE_CHETEST=${UTILITY_IMAGE_CHETEST:-eclipse/che-test:nightly}
+eval UTILITY_IMAGE_CHEMOUNT=${UTILITY_IMAGE_CHEMOUNT:-eclipse/che-mount:nightly}
+INFO: (che cli):  nightly - using docker 17.03.2-ce / native
+docker inspect -f '{{.Id}}' chetest
+/usr/bin/curl  "-I -k 10.88.67.72:49200/api/system/state -s -o /dev/null --write-out %{http_code}"
+000
+INFO:  (che init): 'nightly' installations cannot be upgraded to non-nightly versions
+INFO: (che init):  Installing configuration and bootstrap variables:
+mkdir -p "/data"
+mkdir -p "/data/instance"
+docker_run -v "/root/lysanne/che/dockerfiles/cli/tests/testrun/cli_cmd_start_with_custom_port":/copy  eclipse/che-init:nightly
+INFO: (che init):    CHE_HOST=10.88.67.72
+INFO: (che init):    CHE_VERSION=nightly
+INFO: (che init):    CHE_CONFIG=/root/lysanne/che/dockerfiles/cli/tests/testrun/cli_cmd_start_with_custom_port
+INFO: (che init):    CHE_INSTANCE=/root/lysanne/che/dockerfiles/cli/tests/testrun/cli_cmd_start_with_custom_port/instance
+INFO: (che config):  Generating che configuration...
+docker_run                   --env-file="/data/che.env"                   --env-file=/version/nightly/images                   -v "/root/lysanne/che/dockerfiles/cli/tests/testrun/cli_cmd_start_with_custom_port/instance":/opt/che:rw                    -e CHE_CONTAINER='chetest' -e CHE_PORT='49200'                   -e "CHE_ENV_FILE=/root/lysanne/che/dockerfiles/cli/tests/testrun/cli_cmd_start_with_custom_port/instance/config/che.env"                   -e "CHE_CONTAINER_ROOT=/data"                   -e "CHE_CONTAINER_NAME=chetest"                   -e "CHE_ENVIRONMENT=production"                   -e "CHE_CONFIG=/root/lysanne/che/dockerfiles/cli/tests/testrun/cli_cmd_start_with_custom_port/instance"                   -e "CHE_USER=root"                   -e "CHE_INSTANCE=/root/lysanne/che/dockerfiles/cli/tests/testrun/cli_cmd_start_with_custom_port/instance"                   -e "CHE_REPO=off"                   --entrypoint=/usr/bin/puppet                       eclipse/che-init:nightly                           apply --modulepath                                 /etc/puppet/modules/:/etc/puppet/addon/                                 /etc/puppet/manifests/ --show_diff >> "/data/cli.log"
+[mNotice: Compiled catalog for 78830328b43e in environment production in 0.14 seconds[0m
+[mNotice: /Stage[main]/Base/File[/opt/che/data]/ensure: created[0m
+[mNotice: /Stage[main]/Base/File[/opt/che/config]/ensure: created[0m
+[mNotice: /Stage[main]/Base/File[/opt/che/logs]/ensure: created[0m
+[mNotice: /Stage[main]/Base/File[/opt/che/templates]/ensure: created[0m
+[mNotice: /Stage[main]/Base/File[/opt/che/logs/keycloak]/ensure: created[0m
+[mNotice: /Stage[main]/Base/File[/opt/che/data/keycloak]/ensure: created[0m
+[mNotice: /Stage[main]/Che/File[/opt/che/config/che]/ensure: created[0m
+[mNotice: /Stage[main]/Che/File[/opt/che/config/che/che.env]/ensure: defined content as '{md5}d862efea7b9f48c67668577ce6e1d1f5'[0m
+[mNotice: /Stage[main]/Che/File[/opt/che/config/che/jmxremote.access]/ensure: defined content as '{md5}a951b5b6624cad3b0ec555c40d624a9c'[0m
+[mNotice: /Stage[main]/Che/File[/opt/che/config/che/jmxremote.password]/ensure: defined content as '{md5}8ac067aadd17f733721ad81ed55b8f91'[0m
+[mNotice: /Stage[main]/Traefik/File[/opt/che/config/traefik]/ensure: created[0m
+[mNotice: /Stage[main]/Traefik/File[/opt/che/config/traefik/traefik.toml]/ensure: defined content as '{md5}66f073675fffdb110a2f4c622729c69a'[0m
+[mNotice: /Stage[main]/Postgres/File[/opt/che/data/postgres]/ensure: created[0m
+[mNotice: /Stage[main]/Postgres/File[/opt/che/config/postgres]/ensure: created[0m
+[mNotice: /Stage[main]/Postgres/File[/opt/che/config/postgres/init-che-user.sh]/ensure: defined content as '{md5}dfcaaf8daf6d7f3a36f3dda06cc5d97e'[0m
+[mNotice: /Stage[main]/Postgres/File[/opt/che/config/postgres/init-che-user-and-run.sh]/ensure: defined content as '{md5}78e523b24302b6c319c8193070662a75'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak]/ensure: created[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che-realm.json]/ensure: defined content as '{md5}38fbad648a68942174a0b97011059583'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che-users-0.json]/ensure: defined content as '{md5}9f72d599bbe3c31e89e30e5ef4eb8e2d'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/master-realm.json]/ensure: defined content as '{md5}ff1f9adef092d59b8abdf552390fa97a'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/master-users-0.json]/ensure: defined content as '{md5}5b63170216fdc03f22b90ef003a1d7a3'[0m
+[mNotice: /Stage[main]/Keycloak/File[keycloak theme custom login page]/ensure: created[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/account]/ensure: created[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/account/messages]/ensure: created[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/account/messages/messages_en.properties]/ensure: defined content as '{md5}8fb0f28b9bfd9172be58966a3526e8af'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/account/resources]/ensure: created[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/account/resources/css]/ensure: created[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/account/resources/css/che-account.css]/ensure: defined content as '{md5}85d8dc3bfee9002d18bcbbfe2cf2ce82'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/account/template.ftl]/ensure: defined content as '{md5}51d659874133bb5d77af75a1dcab5905'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/account/theme.properties]/ensure: defined content as '{md5}da0c4e518e0be32d091fd4a41c86a27b'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email]/ensure: created[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/html]/ensure: created[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/html/email-verification.ftl]/ensure: defined content as '{md5}8b96b60d6f1a65d50768d85d26b5c633'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/html/event-login_error.ftl]/ensure: defined content as '{md5}38d878fc337712e26282d790c58be503'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/html/event-remove_totp.ftl]/ensure: defined content as '{md5}05e4a698f6b194e0564653d311a73b25'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/html/event-update_password.ftl]/ensure: defined content as '{md5}6ab4f48ce545fc0c1e747653796fc2e6'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/html/event-update_totp.ftl]/ensure: defined content as '{md5}2bba78e88c708f97288e647cb499ea07'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/html/executeActions.ftl]/ensure: defined content as '{md5}fd419d2d01e4e8397acf784e61a37d9e'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/html/footer.ftl]/ensure: defined content as '{md5}f9f128a97ea98e8cc95db63f2b4c1357'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/html/header.ftl]/ensure: defined content as '{md5}6f5ea9ef3a19bc2185b86ed9b4b8fe44'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/html/identity-provider-link.ftl]/ensure: defined content as '{md5}fe3f7e97e6d03771b605ef7a4e9f9bdf'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/html/password-reset.ftl]/ensure: defined content as '{md5}453725c366ca63f283b3ef066c7f2f01'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/messages]/ensure: created[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/messages/messages_en.properties]/ensure: defined content as '{md5}6482ad9bab892669acbe7b89374c0899'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/text]/ensure: created[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/text/email-verification.ftl]/ensure: defined content as '{md5}3dc38ac3ac019761c7edd7f9283e5257'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/text/event-login_error.ftl]/ensure: defined content as '{md5}e60f7cb8dde60d807ec5b7eb524eb627'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/text/event-remove_totp.ftl]/ensure: defined content as '{md5}9f4018d1af756a53d14cc3e7177de1af'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/text/event-update_password.ftl]/ensure: defined content as '{md5}52aab3d501c0664b4c21e0db1577f07d'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/text/event-update_totp.ftl]/ensure: defined content as '{md5}7f80e3493f0236a2e0587aa73f9ab954'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/text/executeActions.ftl]/ensure: defined content as '{md5}d7a2a70391640ebc6ac9058b214b60d1'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/text/footer.ftl]/ensure: defined content as '{md5}d0a39e2ef02e0e991b216f793f803e57'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/text/header.ftl]/ensure: defined content as '{md5}c626c13f6f3a8ba8e0ea189bad632f35'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/text/identity-provider-link.ftl]/ensure: defined content as '{md5}e5436df2133e3547660c18045a919619'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/text/password-reset.ftl]/ensure: defined content as '{md5}4dde02d7af258c2356f832ce71e4667f'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/email/theme.properties]/ensure: defined content as '{md5}b1f3dda0ebb8e3bbdab2553d2f764352'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/login]/ensure: created[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/login/login-reset-password.ftl]/ensure: defined content as '{md5}335f81811044b32b80a6a4c93c37f838'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/login/login-update-password.ftl]/ensure: defined content as '{md5}db7241e38d9426949a6ed2520e9146f2'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/login/login.ftl]/ensure: defined content as '{md5}c98572eca680a4910685ba0f87258131'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/login/logo.ftl]/ensure: defined content as '{md5}1289727a8c4b03b7e5a0bea61948ad29'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/login/messages]/ensure: created[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/login/messages/messages_en.properties]/ensure: defined content as '{md5}535849ad8ecd253ce355b3970388e31b'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/login/register.ftl]/ensure: defined content as '{md5}088baac2edda2c2463dde3241cd0a720'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/login/resources]/ensure: created[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/login/resources/css]/ensure: created[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/login/resources/css/che-login.css]/ensure: defined content as '{md5}def62dd4a65ab33c1de2ecd080cfcef9'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/login/resources/img]/ensure: created[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/login/resources/img/che-logo.svg]/ensure: defined content as '{md5}ce6bd356c6642ca0176deb07fd404b52'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/login/resources/img/favicon.ico]/ensure: defined content as '{md5}0b0b8e34fd6db1ec028ea51d2fdff486'[0m
+[mNotice: /Stage[main]/Keycloak/File[/opt/che/config/keycloak/che/login/theme.properties]/ensure: defined content as '{md5}cb337af7510211e7ebedde97584096ba'[0m
+[mNotice: /Stage[main]/Compose/Compose::Generate_compose_file[docker-compose-container.yml]/File[/opt/che/docker-compose-container.yml]/ensure: defined content as '{md5}bfaca6c3eff28ce88a6315c4a14ccf81'[0m
+[mNotice: /Stage[main]/Compose/Compose::Generate_compose_file[docker-compose.yml]/File[/opt/che/docker-compose.yml]/ensure: defined content as '{md5}10a104ede7ce07db13ebd425b8c72a21'[0m
+[mNotice: Applied catalog in 0.40 seconds[0m
+INFO: (che config):  Customizing docker-compose for running in a container
+INFO: (che start):  Preflight checks
+         mem (1.5 GiB):           [0;32m[OK][0m
+         disk (100 MB):           [0;31m[NOT OK][0m
+
+ERROR: che requires more RAM or disk to guarantee workspaces can start.
