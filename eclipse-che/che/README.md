@@ -2,6 +2,7 @@
   `docker build -t eclipse/che-server .`
 
  To run it:
+ ```
   docker run --net=host \
              --name che \
              -v /var/run/docker.sock:/var/run/docker.sock \
@@ -9,3 +10,4 @@
              -v /home/user/che/workspaces:/home/user/che/workspaces \
              -v /home/user/che/storage:/home/user/che/storage \
              eclipse/che-server
+```
