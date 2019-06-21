@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : bashdb
-# Version       : 4.4-1.0.1
+# Version       : 4.2-0.8, 4.4-1.0.1
 # Source repo   : https://sourceforge.net/projects/bashdb/files/bashdb/4.4-1.0.1/bashdb-4.4-1.0.1.tar.gz
 # Tested on     : RHEL_7.6
 # Script License: Apache License, Version 2 or later
@@ -21,7 +21,7 @@ if [ "$#" -gt 0 ]
 then
     VERSION=$1
 else
-    VERSION="4.4-1.0.1"
+    VERSION="4.2-0.8"
 fi
 
 #Install dependecies
@@ -35,7 +35,14 @@ sudo yum install -y wget tar unzip
 wget https://sourceforge.net/projects/bashdb/files/bashdb/${VERSION}/bashdb-${VERSION}.tar.gz
 tar -zxvf bashdb-${VERSION}.tar.gz
 cd bashdb-${VERSION}
-./configure
+
+wget -O config.guess 'http://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.guess;hb=HEAD'
+wget -O config.sub 'http://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.sub;hb=HEAD'
+
+./configure --prefix=/usr
+
 make
+#Note: one test is failing for 4.2-0.8 version in "root" environment, however
+#the same fails on Intel as well.
 make check
 make install
