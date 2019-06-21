@@ -2,7 +2,7 @@
 #
 # Package       : bashdb
 # Version       : 4.2-0.8, 4.4-1.0.1
-# Source repo   : https://sourceforge.net/projects/bashdb/files/bashdb/4.4-1.0.1/bashdb-4.4-1.0.1.tar.gz
+# Source repo   : https://sourceforge.net/projects/bashdb/files/bashdb/4.2-0.8/bashdb-4.2-0.8.tar.gz
 # Tested on     : RHEL_7.6
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Priya Seth <sethp@us.ibm.com>
