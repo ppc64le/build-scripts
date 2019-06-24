@@ -45,4 +45,4 @@ make
 #Note: one test is failing for 4.2-0.8 version in "root" environment, however
 #the same fails on Intel as well.
 make check
-make install
+sudo make install
