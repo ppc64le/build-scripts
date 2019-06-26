@@ -27,6 +27,8 @@ if [ ! -n "$NUMCORES" ]; then
 fi
 echo Using $NUMCORES cores
 
+export DEBIAN_FRONTEND=noninteractive
+
 sudo apt-get update 
 
 sudo apt-get install -y \
@@ -36,13 +38,13 @@ sudo apt-get install -y \
 
 # Use python3 or python2 venv based on env variable PYTHON_VERSION
 if [ "${PYTHON_VERSION}" = "python3" ]; then
-    sudo apt-get install -y \
+    sudo -E apt-get install -y \
          python3-pip \
          python3-venv
     python3 -m venv venv_py3
     . ./venv_py3/bin/activate
 else
-    sudo apt-get install -y \
+    sudo -E apt-get install -y \
          python-pip
     sudo -H pip install virtualenv
     virtualenv venv_py2
