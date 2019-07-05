@@ -1,0 +1,53 @@
+perl-Mozilla-CA|MPLv2.0
+perl-Term-Cap|GPL+ or Artistic
+groff-base|GPLv3+ and GFDL and BSD and MIT
+perl-IO-Socket-SSL|GPL+ or Artistic
+perl-URI|GPL+ or Artistic
+perl-Pod-Simple|GPL+ or Artistic
+perl-podlators|(GPL+ or Artistic) and FSFAP
+perl-Pod-Usage|GPL+ or Artistic
+autoconf|GPLv2+ and GFDL
+cyrus-sasl-devel|BSD with advertising
+diffutils|GPLv3+
+libxkbcommon|MIT
+perl-Carp|GPL+ or Artistic
+perl-libs|(GPL+ or Artistic) and HSRL and MIT and UCD
+perl-parent|GPL+ or Artistic
+perl-Socket|GPL+ or Artistic
+perl-Unicode-Normalize|GPL+ or Artistic
+perl-File-Path|GPL+ or Artistic
+perl-constant|GPL+ or Artistic
+perl-threads|GPL+ or Artistic
+perl-IO|GPL+ or Artistic
+perl-MIME-Base64|(GPL+ or Artistic) and MIT
+perl-Storable|GPL+ or Artistic
+perl-Digest|GPL+ or Artistic
+perl-Pod-Escapes|GPL+ or Artistic
+emacs-filesystem|GPLv3+ and CC0-1.0
+ncurses|MIT
+m4|GPLv3+
+openssl|OpenSSL
+perl-libnet|GPL+ or Artistic
+perl-HTTP-Tiny|GPL+ or Artistic
+perl-Encode|(GPL+ or Artistic) and Artistic 2.0 and UCD
+perl-Getopt-Long|GPLv2+ or Artistic
+perl-Pod-Perldoc|GPL+ or Artistic
+cyrus-sasl|BSD with advertising
+xkeyboard-config|MIT
+perl-Exporter|GPL+ or Artistic
+perl-Scalar-List-Utils|GPL+ or Artistic
+perl-Text-ParseWords|GPL+ or Artistic
+perl-Term-ANSIColor|GPL+ or Artistic
+perl-macros|GPL+ or Artistic
+perl-Text-Tabs+Wrap|TTWL
+perl-Errno|GPL+ or Artistic
+perl-PathTools|(GPL+ or Artistic) and BSD
+perl-threads-shared|GPL+ or Artistic
+perl-interpreter|(GPL+ or Artistic) and (GPLv2+ or Artistic) and BSD and Public Domain and UCD
+perl-Data-Dumper|GPL+ or Artistic
+perl-File-Temp|GPL+ or Artistic
+perl-Time-Local|GPL+ or Artistic
+perl-IO-Socket-IP|GPL+ or Artistic
+perl-Digest-MD5|(GPL+ or Artistic) and BSD
+perl-Net-SSLeay|Artistic 2.0
+

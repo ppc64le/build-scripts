@@ -1,0 +1,71 @@
+atk|LGPLv2+
+graphite2|(LGPLv2+ or GPLv2+ or MPL) and (Netscape or GPLv2+ or LGPLv2+)
+pixman|MIT
+libdatrie|LGPLv2+
+lua|MIT
+giflib|MIT
+javapackages-filesystem|BSD
+libXau|MIT
+libX11|MIT
+libXrender|MIT
+libXfixes|MIT
+libXcomposite|MIT
+libXcursor|MIT
+libXrandr|MIT
+pango|LGPLv2+
+libfontenc|MIT
+xorg-x11-fonts-Type1|MIT and Lucida and Public Domain
+libtiff|libtiff
+gtk2|LGPLv2+
+java-1.8.0-openjdk-devel|ASL 1.1 and ASL 2.0 and BSD and BSD with advertising and GPL+ and GPLv2 and GPLv2 with exceptions and IJG and LGPLv2+ and MIT and MPLv2.0 and Public Domain and W3C and zlib
+bzip2|BSD
+nss-util|MPLv2.0
+freetype|(FTL or GPLv2+) and BSD and MIT and Public Domain and zlib with acknowledgement
+dejavu-fonts-common|Bitstream Vera and Public Domain
+fontconfig|MIT and Public Domain and UCD
+ttmkfdir|LGPLv2+
+nss-softokn|MPLv2.0
+nss|MPLv2.0
+avahi-libs|LGPLv2+
+shared-mime-info|GPLv2+
+gtk-update-icon-cache|LGPLv2+
+tzdata-java|Public Domain
+hicolor-icon-theme|GPLv2+
+harfbuzz|MIT
+fribidi|LGPLv2+ and UCD
+libthai|LGPLv2+
+copy-jdk-configs|BSD
+alsa-lib|LGPLv2+
+java-1.8.0-openjdk-headless|ASL 1.1 and ASL 2.0 and BSD and BSD with advertising and GPL+ and GPLv2 and GPLv2 with exceptions and IJG and LGPLv2+ and MIT and MPLv2.0 and Public Domain and W3C and zlib
+libxcb|MIT
+libX11-common|MIT
+libXext|MIT
+libXi|MIT
+cairo|LGPLv2 or MPLv1.1
+libXdamage|MIT
+libXtst|MIT
+libXft|MIT
+libXinerama|MIT
+xorg-x11-font-utils|MIT
+jbigkit-libs|GPLv2+
+gdk-pixbuf2-modules|LGPLv2+
+java-1.8.0-openjdk|ASL 1.1 and ASL 2.0 and BSD and BSD with advertising and GPL+ and GPLv2 and GPLv2 with exceptions and IJG and LGPLv2+ and MIT and MPLv2.0 and Public Domain and W3C and zlib
+unzip|BSD
+nspr|MPLv2.0
+libpng|zlib
+libjpeg-turbo|IJG
+fontpackages-filesystem|Public Domain
+dejavu-sans-fonts|Bitstream Vera and Public Domain
+jasper-libs|JasPer
+nss-softokn-freebl|MPLv2.0
+nss-sysinit|MPLv2.0
+lksctp-tools|GPLv2 and GPLv2+ and LGPLv2 and MIT
+cups-libs|LGPLv2 and zlib
+gdk-pixbuf2|LGPLv2+
+meld3| BSD-derived (http://www.repoze.org/LICENSE.txt)|pypi.org | NA| NA
+pip| MIT License (MIT)|pypi.org | NA| NA
+setuptools| MIT License|pypi.org | NA| NA
+supervisor| BSD-derived (http://www.repoze.org/LICENSE.txt)|pypi.org | NA| NA
+wheel| MIT License (MIT)|pypi.org | NA| NA
+OCI| Apache Software License| Universal Permissive License (UPL) (Universal Permissive License 1.0 or Apache License 2.0)|pypi.org | NA| NA
+
