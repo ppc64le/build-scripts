@@ -40,8 +40,6 @@ RUN ${PIP} --no-cache-dir install --upgrade \
 # Some TF tools expect a "python" binary
 RUN ln -s $(which ${PYTHON}) /usr/local/bin/python
 
-COPY bashrc /etc/bash.bashrc
-RUN chmod a+rwx /etc/bash.bashrc
 RUN apt-get update && apt-get install -y \
     pkg-config \
     libfreetype6-dev \
@@ -60,10 +58,11 @@ WORKDIR /tf
 EXPOSE 8888
 
 RUN apt-get update && apt-get install -y wget libhdf5-dev
-RUN ${PIP} install --global-option=build_ext \
+RUN cp /usr/lib/powerpc64le-linux-gnu/hdf5/serial/libhdf5.so /usr/local/lib/libhdf5.so && \
+    ${PIP} install --global-option=build_ext \
             --global-option=-I/usr/include/hdf5/serial/ \
             --global-option=-L/usr/lib/powerpc64le-linux-gnu/hdf5/serial \
-            h5py
+            h5py && rm -f /usr/local/lib/libhdf5.so
 
 # These get installed from the tensorflow .whl, but are installed earlier to cache the installs
 RUN ${PIP} --no-cache-dir install --upgrade \
@@ -104,5 +103,8 @@ RUN if [ ${TF_PACKAGE} = tensorflow-gpu ]; then \
     ${PIP} install ${PACKAGE}
 
 RUN ${PYTHON} -m ipykernel.kernelspec
+
+COPY bashrc /etc/bash.bashrc
+RUN chmod a+rwx /etc/bash.bashrc
 
 CMD ["bash", "-c", "source /etc/bash.bashrc && jupyter notebook --notebook-dir=/tf --ip 0.0.0.0 --no-browser --allow-root"]

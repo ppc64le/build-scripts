@@ -62,7 +62,7 @@ RUN mkdir /usr/local/cuda-10.0/lib &&  \
 ENV CI_BUILD_PYTHON python
 ENV LD_LIBRARY_PATH /usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH
 ENV TF_NEED_CUDA 1
-ENV TF_NEED_TENSORRT 1
+ENV TF_NEED_TENSORRT 0
 ENV TF_CUDA_COMPUTE_CAPABILITIES=3.5,5.2,6.0,6.1,7.0
 ENV TF_CUDA_VERSION=10.0
 ENV TF_CUDNN_VERSION=7
@@ -99,6 +99,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN ${PIP} --no-cache-dir install \
     Pillow \
+    future \
     h5py \
     keras_applications \
     keras_preprocessing \
