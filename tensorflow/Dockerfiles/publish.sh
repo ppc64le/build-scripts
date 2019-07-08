@@ -69,6 +69,7 @@ fi
 
 build_push ()
 {
+    echo "Building Docker file with options: Type=$TYPE, Release=$RELEASE, Python_3=$PYTHON_3, JUPYTER=$JUPYTER_ARG"
     if [ $TYPE = "gpu" ]; then
         ARG_SUFFIX="-gpu"
         FILE_PREFIX="gpu"
@@ -92,7 +93,8 @@ build_push ()
         PYTHON="--build-arg USE_PYTHON_3_NOT_2=True"
         PY3="-py3"
     else
-        PYTHON="--build-arg USE_PYTHON_3_NOT_2="
+        #Switch the default image to also be python3
+        PYTHON="--build-arg USE_PYTHON_3_NOT_2=True"
         PY3=""
     fi
     if $JUPYTER_ARG; then
