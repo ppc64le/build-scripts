@@ -66,12 +66,16 @@ RUN ln -s $(which ${PYTHON}) /usr/local/bin/python
 RUN apt-get update && apt-get install -y \
     build-essential \
     curl \
+    gfortran \
+    gfortran-5 \
     git \
+    libopenblas-dev \
     openjdk-8-jdk \
     ${PYTHON}-dev \
     swig
 
 RUN ${PIP} --no-cache-dir install \
+    cython \
     Pillow \
     future \
     h5py \
