@@ -1,0 +1,51 @@
+diff --git a/allennlp/tests/modules/similarity_functions/linear_test.py b/allennlp/tests/modules/similarity_functions/linear_test.py
+index dd5b88cd..3ff90fae 100644
+--- a/allennlp/tests/modules/similarity_functions/linear_test.py
++++ b/allennlp/tests/modules/similarity_functions/linear_test.py
+@@ -24,7 +24,7 @@ class TestLinearSimilarityFunction(AllenNlpTestCase):
+         b_vectors = torch.FloatTensor([[[0], [1]]])
+         result = linear(a_vectors, b_vectors).data.numpy()
+         assert result.shape == (1, 2,)
+-        assert_almost_equal(result, [[2.3, -1.1]])
++        assert_almost_equal(result, [[2.3, -1.1]], decimal=6)
+
+     def test_forward_works_with_higher_order_tensors(self):
+         linear = LinearSimilarity(7, 7, combination='x,y')
+diff --git a/requirements.txt b/requirements.txt
+index 84dc3d2a..72664dcd 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -22,7 +22,7 @@ overrides
+ nltk
+
+ # Mainly used for the faster tokenizer.
+-spacy>=2.0.18,<2.2
++spacy>=2.0.12,<2.2
+
+ # Used by span prediction models.
+ numpy
+@@ -39,7 +39,7 @@ scikit-learn
+ tensorboardX>=1.2
+
+ # aws commandline tools for running on Docker remotely.
+-awscli>=1.11.91
++# awscli>=1.11.91
+
+ # Accessing files from S3 directly.
+ boto3
+diff --git a/setup.py b/setup.py
+index 03df8ca0..60b78782 100644
+--- a/setup.py
++++ b/setup.py
+@@ -105,10 +105,9 @@ setup(name='allennlp',
+           "jsonnet>=0.10.0 ; sys.platform != 'win32'",
+           'overrides',
+           'nltk',
+-          'spacy>=2.0.18,<2.2',
++          'spacy>=2.0.12,<2.2',
+           'numpy',
+           'tensorboardX>=1.2',
+-          'awscli>=1.11.91',
+           'boto3',
+           'flask>=1.0.2',
+           'flask-cors>=3.0.7',
