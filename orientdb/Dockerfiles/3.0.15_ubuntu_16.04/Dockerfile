@@ -40,3 +40,8 @@ WORKDIR /orientdb
 #OrientDb binary
 EXPOSE 2424
 
+#OrientDb http
+EXPOSE 2480
+
+# Default command start the server
+CMD ["server.sh"]
