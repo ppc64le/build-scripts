@@ -27,8 +27,7 @@ ARG CACHE_MODELS=false
 # Install base packages.
 RUN apt-get update --fix-missing && apt-get install -y \
     git \
-    wget \
-    build-essential && \
+    wget && \
 	#Set up conda environment and install allennlp from source
     	wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-ppc64le.sh && \
 	sh Miniconda3-latest-Linux-ppc64le.sh -b -p /conda && \
@@ -43,7 +42,6 @@ RUN apt-get update --fix-missing && apt-get install -y \
 	conda install -y -c "https://public.dhe.ibm.com/ibmdl/export/pub/software/server/ibm-ai/conda/linux-ppc64le" \
 		-c "conda-forge"  pytorch spacy h5py scikit-learn && \
 	git apply /awscli_spacy_testfix.patch && \
-	pip install -r requirements.txt && \
 	pip install --editable .  && \
 	# Compile EVALB - required for parsing evaluation.
 	# EVALB produces scary looking c-level output which we don't
@@ -52,7 +50,8 @@ RUN apt-get update --fix-missing && apt-get install -y \
 	# Caching models when building the image makes a dockerized server start up faster, but is slow for
 	# running tests and things, so we skip it by default.
 	cd /allennlp && ./scripts/cache_models.py && \
-	apt-get remove -y git build-essential
+	apt-get remove -y git wget && \
+	apt-get auto-remove -y
 
 # Optional argument to set an environment variable with the Git SHA
 ARG SOURCE_COMMIT
