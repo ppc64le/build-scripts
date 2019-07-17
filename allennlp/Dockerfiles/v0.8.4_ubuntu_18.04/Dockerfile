@@ -1,5 +1,6 @@
-#Thi Dockerfile has been derived from the community version at
-#https://github.com/allenai/allennlp and has been customized 
+#This Dockerfile is based on and has been derived from the 
+#official community version written and maintained by them at
+#https://github.com/allenai/allennlp and has been modified 
 #to work on Power
 FROM docker.io/nvidia/cuda-ppc64le:10.1-devel-ubuntu18.04
 
