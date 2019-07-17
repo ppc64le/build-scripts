@@ -22,7 +22,8 @@ export LANG=C.UTF-8
 export ALLENNLP_VERSION="v0.8.4"
 export PATH=${PATH}:$HOME/conda/bin
 export PYTHON_VERSION=3.6
-export WDIR `pwd`
+
+WDIR=`pwd`
 
 #Install the required dependencies
 sudo apt-get update
@@ -44,12 +45,8 @@ conda install -y -c "https://public.dhe.ibm.com/ibmdl/export/pub/software/server
 	-c "conda-forge"  pytorch spacy h5py scikit-learn
 
 #Apply Patch
-git apply ${WDIR}/awscli_spacy.patch
+git apply ${WDIR}/awscli_spacy_testfix.patch
 
 #Build and test
 pip install --editable .
-
-#Current test results on ppc64le are as follows
-#==== 1 failed, 1362 passed, 10 skipped, 19 deselected, 24 warnings in 337.34 seconds ==
-#Investigation of the failing test case is in progress
 allennlp test-install

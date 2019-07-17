@@ -8,10 +8,6 @@ $ bash allennlp_v0.8.4_ubuntu_18.04.sh
 
 - bypass dependency on awscli as it is only for remote docker commands and the dependency has been removed from the master branch
 
-- fixes one of automated test case failures as per suggestions from the community
+- fixes two automated test case failures as per suggestions from the community and backportin commit #ec30c9021bdbf85099b3556e5a5d270124c494c8
 
-
-#Known Issues
-
-- there is still 1 automated test that is failing and which is currently under investigation
 
