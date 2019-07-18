@@ -2,7 +2,7 @@ FROM registry.access.redhat.com/ubi8
 
 ENV LATEST_STABLE_RELEASE v1.8.0
 
-RUN yum update && \
+RUN yum update -y && \
     yum install java-1.8.0-openjdk-devel git wget autoconf automake gcc-c++ make bzip2 curl unzip zlib-devel libtool -y && \
     git clone git://github.com/google/protobuf.git  && \
     cd protobuf  && \
