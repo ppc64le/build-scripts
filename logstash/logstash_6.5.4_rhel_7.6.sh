@@ -44,7 +44,7 @@ export PATH=${ANT_HOME}/bin:$PATH
 # install jffi ( got some errors while following install logstash steps , hence had to install this as stated here 
 # https://github.com/linux-on-ibm-z/docs/wiki/Building-Logstash#4-jruby-runs-on-jvm-and-needs-a-native-library-libjffi-
 #12so-java-foreign-language-interface-get-jffi-source-code-and-build )
-
+cd $WORKDIR
 wget https://github.com/jnr/jffi/archive/jffi-1.2.18.zip
 unzip -u jffi-1.2.18.zip
 cd jffi-jffi-1.2.18 && ant
@@ -52,6 +52,7 @@ cd ..
 rm -rf jffi-jffi-1.2.18 jffi-1.2.18.zip
 
 # install logstash
+d $WORKDIR
 git clone https://github.com/elastic/logstash.git
 cd logstash && git checkout v6.5.4
 rake bootstrap

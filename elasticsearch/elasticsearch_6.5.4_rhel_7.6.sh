@@ -38,6 +38,7 @@ export PATH=/opt/gradle/gradle-4.10.3/bin:$PATH
 
 
 # build elasticsearch from source
+cd $WORKDIR
 git clone https://github.com/crate/elasticsearch.git 
 cd elasticsearch && git checkout v$ELASTICSEARCH_VERSION  
 sed -i '/ARCHITECTURES = Collections.unmodifiableMap(m);/ i \ \ \ \ \ \ \ \ m.put("ppc64le", new Arch(0xC0000015, 0xFFFFFFFF, 2, 189, 11, 362, 358));' server/src/main/java/org/elasticsearch/bootstrap/SystemCallFilter.java 
