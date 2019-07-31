@@ -33,7 +33,7 @@ gem install rake
 gem install bundler
  
 # Install ant
-#wget http://apachemirror.wuchna.com//ant/binaries/apache-ant-1.10.6-bin.tar.gz
+wget http://apachemirror.wuchna.com//ant/binaries/apache-ant-1.10.6-bin.tar.gz
 tar -zxvf apache-ant-1.10.6-bin.tar.gz
 cd apache-ant-1.10.6
 export ANT_HOME=/root/apache-ant-1.10.6
@@ -43,7 +43,7 @@ export PATH=${ANT_HOME}/bin:$PATH
 # https://github.com/linux-on-ibm-z/docs/wiki/Building-Logstash#4-jruby-runs-on-jvm-and-needs-a-native-library-libjffi-
 #12so-java-foreign-language-interface-get-jffi-source-code-and-build )
 cd $WORKDIR
-#wget https://github.com/jnr/jffi/archive/jffi-1.2.18.zip
+wget https://github.com/jnr/jffi/archive/jffi-1.2.18.zip
 unzip -u jffi-1.2.18.zip
 cd jffi-jffi-1.2.18 && ant
 cd ..
