@@ -1,0 +1,576 @@
+diff --git a/allennlp/tests/fixtures/bert/bert_for_classification.jsonnet b/allennlp/tests/fixtures/bert/bert_for_classification.jsonnet
+index e3222a2d..3c38c287 100644
+--- a/allennlp/tests/fixtures/bert/bert_for_classification.jsonnet
++++ b/allennlp/tests/fixtures/bert/bert_for_classification.jsonnet
+@@ -34,7 +34,7 @@ local bert_model = "allennlp/tests/fixtures/bert/vocab.txt";
+     "model": {
+         "type": "bert_for_classification",
+         "bert_model": bert_model,
+-        "dropout": 0.2
++        "dropout": 0.0
+     },
+     "iterator": {
+         "type": "bucket",
+diff --git a/allennlp/tests/fixtures/biattentive_classification_network/elmo_experiment.json b/allennlp/tests/fixtures/biattentive_classification_network/elmo_experiment.json
+index e2711912..2d63a4ce 100644
+--- a/allennlp/tests/fixtures/biattentive_classification_network/elmo_experiment.json
++++ b/allennlp/tests/fixtures/biattentive_classification_network/elmo_experiment.json
+@@ -24,7 +24,7 @@
+         }
+       }
+     },
+-    "embedding_dropout": 0.2,
++    "embedding_dropout": 0.0,
+     "pre_encode_feedforward": {
+       "input_dim": 42,
+       "num_layers": 1,
+@@ -44,7 +44,7 @@
+       "hidden_size": 3,
+       "num_layers": 1
+     },
+-    "integrator_dropout": 0.2,
++    "integrator_dropout": 0.0,
+     "elmo": {
+       "options_file": "allennlp/tests/fixtures/elmo/options.json",
+       "weight_file": "allennlp/tests/fixtures/elmo/lm_weights.hdf5",
+@@ -58,7 +58,7 @@
+       "num_layers": 2,
+       "output_dims": [6, 5],
+       "pool_sizes": [4, 3],
+-      "dropout": [0.2, 0.0]
++      "dropout": [0.0, 0.0]
+     }
+   },
+   "iterator": {
+diff --git a/allennlp/tests/fixtures/biattentive_classification_network/experiment.json b/allennlp/tests/fixtures/biattentive_classification_network/experiment.json
+index a42dff9f..4d2bdc17 100644
+--- a/allennlp/tests/fixtures/biattentive_classification_network/experiment.json
++++ b/allennlp/tests/fixtures/biattentive_classification_network/experiment.json
+@@ -16,7 +16,7 @@
+         }
+       }
+     },
+-    "embedding_dropout": 0.2,
++    "embedding_dropout": 0.0,
+     "pre_encode_feedforward": {
+         "input_dim": 10,
+         "num_layers": 1,
+@@ -36,13 +36,13 @@
+       "hidden_size": 3,
+       "num_layers": 1
+     },
+-    "integrator_dropout": 0.2,
++    "integrator_dropout": 0.0,
+     "output_layer": {
+         "input_dim": 12,
+         "num_layers": 2,
+         "output_dims": [6, 5],
+         "pool_sizes": [4, 3],
+-        "dropout": [0.2, 0.0]
++        "dropout": [0.0, 0.0]
+     }
+   },
+   "iterator": {
+diff --git a/allennlp/tests/fixtures/biattentive_classification_network/feedforward_experiment.json b/allennlp/tests/fixtures/biattentive_classification_network/feedforward_experiment.json
+index aea63694..6fb900f4 100644
+--- a/allennlp/tests/fixtures/biattentive_classification_network/feedforward_experiment.json
++++ b/allennlp/tests/fixtures/biattentive_classification_network/feedforward_experiment.json
+@@ -16,13 +16,13 @@
+         }
+       }
+     },
+-    "embedding_dropout": 0.2,
++    "embedding_dropout": 0.0,
+     "pre_encode_feedforward": {
+         "input_dim": 10,
+         "num_layers": 1,
+         "hidden_dims": [3],
+         "activations": ["relu"],
+-        "dropout": [0.2]
++        "dropout": [0.0]
+     },
+     "encoder": {
+       "type": "lstm",
+@@ -36,13 +36,13 @@
+       "hidden_size": 3,
+       "num_layers": 1
+     },
+-    "integrator_dropout": 0.2,
++    "integrator_dropout": 0.0,
+     "output_layer": {
+         "input_dim": 12,
+         "num_layers": 2,
+         "hidden_dims": [6, 5],
+         "activations": ["relu", "linear"],
+-        "dropout": [0.2, 0.0]
++        "dropout": [0.0, 0.0]
+     }
+   },
+   "iterator": {
+diff --git a/allennlp/tests/fixtures/biattentive_classification_network/output_only_elmo_experiment.json b/allennlp/tests/fixtures/biattentive_classification_network/output_only_elmo_experiment.json
+index 0cd12125..9ff8b698 100644
+--- a/allennlp/tests/fixtures/biattentive_classification_network/output_only_elmo_experiment.json
++++ b/allennlp/tests/fixtures/biattentive_classification_network/output_only_elmo_experiment.json
+@@ -24,7 +24,7 @@
+         }
+       }
+     },
+-    "embedding_dropout": 0.2,
++    "embedding_dropout": 0.0,
+     "pre_encode_feedforward": {
+       "input_dim": 10,
+       "num_layers": 1,
+@@ -44,7 +44,7 @@
+       "hidden_size": 3,
+       "num_layers": 1
+     },
+-    "integrator_dropout": 0.2,
++    "integrator_dropout": 0.0,
+     "elmo": {
+       "options_file": "allennlp/tests/fixtures/elmo/options.json",
+       "weight_file": "allennlp/tests/fixtures/elmo/lm_weights.hdf5",
+@@ -57,7 +57,7 @@
+       "num_layers": 2,
+       "output_dims": [6, 5],
+       "pool_sizes": [4, 3],
+-      "dropout": [0.2, 0.0]
++      "dropout": [0.0, 0.0]
+     }
+   },
+   "iterator": {
+diff --git a/allennlp/tests/fixtures/bimpm/experiment.json b/allennlp/tests/fixtures/bimpm/experiment.json
+index c22c1ff5..b44676d3 100644
+--- a/allennlp/tests/fixtures/bimpm/experiment.json
++++ b/allennlp/tests/fixtures/bimpm/experiment.json
+@@ -23,7 +23,7 @@
+   "validation_data_path": "allennlp/tests/fixtures/data/quora_paraphrase.tsv",
+   "model": {
+     "type": "bimpm",
+-    "dropout": 0.1,
++    "dropout": 0.0,
+     "text_field_embedder": {
+       "token_embedders": {
+         "tokens": {
+@@ -95,14 +95,14 @@
+       "input_size": 264,
+       "hidden_size": 100,
+       "num_layers": 2,
+-      "dropout": 0.1
++      "dropout": 0.0
+     },
+     "classifier_feedforward": {
+       "input_dim": 400,
+       "num_layers": 2,
+       "hidden_dims": [200, 2],
+       "activations": ["relu", "linear"],
+-      "dropout": [0.1, 0.0]
++      "dropout": [0.0, 0.0]
+     },
+     "initializer": [
+       [".*linear_layers.*weight", {"type": "xavier_normal"}],
+diff --git a/allennlp/tests/fixtures/coref/experiment.json b/allennlp/tests/fixtures/coref/experiment.json
+index 41216a32..cf8bc8e1 100644
+--- a/allennlp/tests/fixtures/coref/experiment.json
++++ b/allennlp/tests/fixtures/coref/experiment.json
+@@ -39,7 +39,7 @@
+             "num_filters": 10,
+             "ngram_filter_sizes": [5]
+             },
+-            "dropout": 0.2
++            "dropout": 0.0
+         }
+       }
+     },
+@@ -62,7 +62,7 @@
+         "hidden_dims": 30,
+         "activations": "relu"
+     },
+-    "lexical_dropout": 0.1,
++    "lexical_dropout": 0.0,
+     "feature_size": 5,
+     "max_span_width": 5,
+     "spans_per_word": 0.4,
+diff --git a/allennlp/tests/fixtures/crf_tagger/experiment.json b/allennlp/tests/fixtures/crf_tagger/experiment.json
+index 798ffa69..e476702a 100644
+--- a/allennlp/tests/fixtures/crf_tagger/experiment.json
++++ b/allennlp/tests/fixtures/crf_tagger/experiment.json
+@@ -36,7 +36,7 @@
+             "input_size": 25,
+             "hidden_size": 80,
+             "num_layers": 2,
+-            "dropout": 0.25,
++            "dropout": 0.0,
+             "bidirectional": true
+           }
+         }
+@@ -47,7 +47,7 @@
+       "input_size": 210,
+       "hidden_size": 300,
+       "num_layers": 2,
+-      "dropout": 0.5,
++      "dropout": 0.0,
+       "bidirectional": true
+     },
+     "regularizer": [
+diff --git a/allennlp/tests/fixtures/crf_tagger/experiment_ccgbank.json b/allennlp/tests/fixtures/crf_tagger/experiment_ccgbank.json
+index 48990765..7def6978 100644
+--- a/allennlp/tests/fixtures/crf_tagger/experiment_ccgbank.json
++++ b/allennlp/tests/fixtures/crf_tagger/experiment_ccgbank.json
+@@ -33,7 +33,7 @@
+             "input_size": 25,
+             "hidden_size": 80,
+             "num_layers": 2,
+-            "dropout": 0.25,
++            "dropout": 0.0,
+             "bidirectional": true
+           }
+         }
+@@ -44,7 +44,7 @@
+       "input_size": 210,
+       "hidden_size": 300,
+       "num_layers": 2,
+-      "dropout": 0.5,
++      "dropout": 0.0,
+       "bidirectional": true
+     },
+     "regularizer": [
+diff --git a/allennlp/tests/fixtures/crf_tagger/experiment_conll2000.json b/allennlp/tests/fixtures/crf_tagger/experiment_conll2000.json
+index 12726af6..188b6023 100644
+--- a/allennlp/tests/fixtures/crf_tagger/experiment_conll2000.json
++++ b/allennlp/tests/fixtures/crf_tagger/experiment_conll2000.json
+@@ -36,7 +36,7 @@
+             "input_size": 25,
+             "hidden_size": 80,
+             "num_layers": 2,
+-            "dropout": 0.25,
++            "dropout": 0.0,
+             "bidirectional": true
+           }
+         }
+@@ -47,7 +47,7 @@
+       "input_size": 210,
+       "hidden_size": 300,
+       "num_layers": 2,
+-      "dropout": 0.5,
++      "dropout": 0.0,
+       "bidirectional": true
+     },
+     "regularizer": [
+diff --git a/allennlp/tests/fixtures/dialog_qa/experiment.json b/allennlp/tests/fixtures/dialog_qa/experiment.json
+index 0df510fb..ab23b12d 100644
+--- a/allennlp/tests/fixtures/dialog_qa/experiment.json
++++ b/allennlp/tests/fixtures/dialog_qa/experiment.json
+@@ -34,7 +34,7 @@
+             "num_filters": 10,
+             "ngram_filter_sizes": [5]
+           },
+-          "dropout": 0.2
++          "dropout": 0.0
+         }
+       }
+     },
+diff --git a/allennlp/tests/fixtures/esim/experiment.json b/allennlp/tests/fixtures/esim/experiment.json
+index f12c4c42..96f27f87 100644
+--- a/allennlp/tests/fixtures/esim/experiment.json
++++ b/allennlp/tests/fixtures/esim/experiment.json
+@@ -12,7 +12,7 @@
+   "validation_data_path": "allennlp/tests/fixtures/data/snli.jsonl",
+   "model": {
+     "type": "esim",
+-    "dropout": 0.5,
++    "dropout": 0.0,
+     "text_field_embedder": {
+       "token_embedders": {
+         "tokens": {
+@@ -50,7 +50,7 @@
+       "num_layers": 1,
+       "hidden_dims": 5,
+       "activations": "relu",
+-      "dropout": 0.5
++      "dropout": 0.0
+     },
+     "output_logit": {
+       "input_dim": 5,
+diff --git a/allennlp/tests/fixtures/event2mind/experiment.json b/allennlp/tests/fixtures/event2mind/experiment.json
+index 1474e258..62ed3a23 100644
+--- a/allennlp/tests/fixtures/event2mind/experiment.json
++++ b/allennlp/tests/fixtures/event2mind/experiment.json
+@@ -31,7 +31,7 @@
+         }
+       }
+     },
+-    "embedding_dropout": 0.2,
++    "embedding_dropout": 0.0,
+     "encoder": {
+       "type": "gru",
+       "input_size": 10,
+diff --git a/allennlp/tests/fixtures/naqanet/experiment.json b/allennlp/tests/fixtures/naqanet/experiment.json
+index 69497173..fadb0925 100644
+--- a/allennlp/tests/fixtures/naqanet/experiment.json
++++ b/allennlp/tests/fixtures/naqanet/experiment.json
+@@ -71,8 +71,8 @@
+             "num_convs_per_block": 4,
+             "conv_kernel_size": 7,
+             "num_attention_heads": 6,
+-            "dropout_prob": 0.1,
+-            "layer_dropout_undecayed_prob": 0.1,
++            "dropout_prob": 0.0,
++            "layer_dropout_undecayed_prob": 0.0,
+             "attention_dropout_prob": 0
+         },
+         "matrix_attention_layer": {
+@@ -91,11 +91,11 @@
+             "num_convs_per_block": 2,
+             "conv_kernel_size": 5,
+             "num_attention_heads": 6,
+-            "dropout_prob": 0.1,
+-            "layer_dropout_undecayed_prob": 0.1,
++            "dropout_prob": 0.0,
++            "layer_dropout_undecayed_prob": 0.0,
+             "attention_dropout_prob": 0
+         },
+-        "dropout_prob": 0.1,
++        "dropout_prob": 0.0,
+         "regularizer": [
+             [
+                 ".*",
+diff --git a/allennlp/tests/fixtures/qanet/experiment.json b/allennlp/tests/fixtures/qanet/experiment.json
+index 8ab9f814..2c6fbc3b 100644
+--- a/allennlp/tests/fixtures/qanet/experiment.json
++++ b/allennlp/tests/fixtures/qanet/experiment.json
+@@ -68,8 +68,8 @@
+             "num_convs_per_block": 2,
+             "conv_kernel_size": 2,
+             "num_attention_heads": 4,
+-            "dropout_prob": 0.1,
+-            "layer_dropout_undecayed_prob": 0.1,
++            "dropout_prob": 0.0,
++            "layer_dropout_undecayed_prob": 0.0,
+             "attention_dropout_prob": 0
+         },
+         "matrix_attention_layer": {
+@@ -88,11 +88,11 @@
+             "num_convs_per_block": 2,
+             "conv_kernel_size": 5,
+             "num_attention_heads": 4,
+-            "dropout_prob": 0.1,
+-            "layer_dropout_undecayed_prob": 0.1,
++            "dropout_prob": 0.0,
++            "layer_dropout_undecayed_prob": 0.0,
+             "attention_dropout_prob": 0
+         },
+-        "dropout_prob": 0.1,
++        "dropout_prob": 0.0,
+         "regularizer": [
+             [
+                 ".*",
+@@ -138,4 +138,4 @@
+             "decay": 0.9999
+         }
+     }
+-}
+\ No newline at end of file
++}
+diff --git a/allennlp/tests/fixtures/semantic_parsing/quarel/experiment.json b/allennlp/tests/fixtures/semantic_parsing/quarel/experiment.json
+index eaff6705..7fb5a4ee 100644
+--- a/allennlp/tests/fixtures/semantic_parsing/quarel/experiment.json
++++ b/allennlp/tests/fixtures/semantic_parsing/quarel/experiment.json
+@@ -42,7 +42,7 @@
+     },
+     "max_decoding_steps": 30,
+     "attention": {"type": "dot_product"},
+-    "dropout": 0.2
++    "dropout": 0.0
+   },
+   "iterator": {
+     "type": "basic",
+diff --git a/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_denotation_only.json b/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_denotation_only.json
+index edfa1363..395498ab 100644
+--- a/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_denotation_only.json
++++ b/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_denotation_only.json
+@@ -44,7 +44,7 @@
+     },
+     "max_decoding_steps": 30,
+     "attention": {"type": "dot_product"},
+-    "dropout": 0.2
++    "dropout": 0.0
+   },
+   "iterator": {
+     "type": "basic",
+diff --git a/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_parser_elmo.json b/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_parser_elmo.json
+index 645168db..bf3f550c 100644
+--- a/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_parser_elmo.json
++++ b/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_parser_elmo.json
+@@ -35,7 +35,7 @@
+           "options_file": "allennlp/tests/fixtures/elmo/options.json",
+           "weight_file": "allennlp/tests/fixtures/elmo/lm_weights.hdf5",
+           "do_layer_norm": false,
+-          "dropout": 0.5
++          "dropout": 0.0
+         }
+       }
+     },
+@@ -52,7 +52,7 @@
+     },
+     "max_decoding_steps": 30,
+     "attention": {"type": "dot_product"},
+-    "dropout": 0.2
++    "dropout": 0.0
+   },
+   "iterator": {
+     "type": "basic",
+diff --git a/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_parser_entity_bits.json b/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_parser_entity_bits.json
+index 766a77fa..fcf2bdd8 100644
+--- a/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_parser_entity_bits.json
++++ b/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_parser_entity_bits.json
+@@ -44,7 +44,7 @@
+     },
+     "max_decoding_steps": 30,
+     "attention": {"type": "dot_product"},
+-    "dropout": 0.2
++    "dropout": 0.0
+   },
+   "iterator": {
+     "type": "basic",
+diff --git a/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_parser_friction.json b/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_parser_friction.json
+index b9e6a194..0975db1a 100644
+--- a/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_parser_friction.json
++++ b/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_parser_friction.json
+@@ -42,7 +42,7 @@
+     },
+     "max_decoding_steps": 30,
+     "attention": {"type": "dot_product"},
+-    "dropout": 0.2
++    "dropout": 0.0
+   },
+   "iterator": {
+     "type": "basic",
+diff --git a/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_parser_friction_zeroshot.json b/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_parser_friction_zeroshot.json
+index 6c232acc..d7ea979a 100644
+--- a/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_parser_friction_zeroshot.json
++++ b/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_parser_friction_zeroshot.json
+@@ -44,7 +44,7 @@
+     },
+     "max_decoding_steps": 30,
+     "attention": {"type": "dot_product"},
+-    "dropout": 0.2
++    "dropout": 0.0
+   },
+   "iterator": {
+     "type": "basic",
+diff --git a/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_parser_w_tagger.json b/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_parser_w_tagger.json
+index 0aa51b77..1cdfc640 100644
+--- a/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_parser_w_tagger.json
++++ b/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_parser_w_tagger.json
+@@ -42,7 +42,7 @@
+     },
+     "max_decoding_steps": 30,
+     "attention": {"type": "dot_product"},
+-    "dropout": 0.2
++    "dropout": 0.0
+   },
+   "iterator": {
+     "type": "basic",
+diff --git a/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_parser_wdp_zeroshot.json b/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_parser_wdp_zeroshot.json
+index 93af639e..1036f093 100644
+--- a/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_parser_wdp_zeroshot.json
++++ b/allennlp/tests/fixtures/semantic_parsing/quarel/experiment_parser_wdp_zeroshot.json
+@@ -46,7 +46,7 @@
+     },
+     "max_decoding_steps": 30,
+     "attention": {"type": "dot_product"},
+-    "dropout": 0.2
++    "dropout": 0.0
+   },
+   "iterator": {
+     "type": "basic",
+diff --git a/allennlp/tests/fixtures/semantic_parsing/text2sql/experiment.json b/allennlp/tests/fixtures/semantic_parsing/text2sql/experiment.json
+index d14e727f..e0375491 100644
+--- a/allennlp/tests/fixtures/semantic_parsing/text2sql/experiment.json
++++ b/allennlp/tests/fixtures/semantic_parsing/text2sql/experiment.json
+@@ -30,7 +30,7 @@
+     },
+     "max_decoding_steps": 10,
+     "input_attention": {"type": "dot_product"},
+-    "dropout": 0.5
++    "dropout": 0.0
+   },
+   "iterator": {
+     "type": "basic",
+diff --git a/allennlp/tests/fixtures/semantic_parsing/wikitables/experiment-elmo-no-features.json b/allennlp/tests/fixtures/semantic_parsing/wikitables/experiment-elmo-no-features.json
+index 32a27dd9..175b5113 100644
+--- a/allennlp/tests/fixtures/semantic_parsing/wikitables/experiment-elmo-no-features.json
++++ b/allennlp/tests/fixtures/semantic_parsing/wikitables/experiment-elmo-no-features.json
+@@ -24,7 +24,7 @@
+            "options_file": "allennlp/tests/fixtures/elmo/options.json",
+            "weight_file": "allennlp/tests/fixtures/elmo/lm_weights.hdf5",
+            "do_layer_norm": false,
+-           "dropout": 0.5
++           "dropout": 0.0
+         }
+       }
+     },
+diff --git a/allennlp/tests/fixtures/semantic_parsing/wikitables/experiment-mixture.json b/allennlp/tests/fixtures/semantic_parsing/wikitables/experiment-mixture.json
+index f3b507e3..2f7feb43 100644
+--- a/allennlp/tests/fixtures/semantic_parsing/wikitables/experiment-mixture.json
++++ b/allennlp/tests/fixtures/semantic_parsing/wikitables/experiment-mixture.json
+@@ -24,7 +24,7 @@
+       "num_layers": 3,
+       "hidden_dims": [5, 2, 1],
+       "activations": ["relu", "sigmoid", "sigmoid"],
+-      "dropout": [0.2, 0.0, 0.0]
++      "dropout": [0.0, 0.0, 0.0]
+     },
+     "encoder": {
+       "type": "lstm",
+diff --git a/allennlp/tests/modules/similarity_functions/linear_test.py b/allennlp/tests/modules/similarity_functions/linear_test.py
+index dd5b88cd..3ff90fae 100644
+--- a/allennlp/tests/modules/similarity_functions/linear_test.py
++++ b/allennlp/tests/modules/similarity_functions/linear_test.py
+@@ -24,7 +24,7 @@ class TestLinearSimilarityFunction(AllenNlpTestCase):
+         b_vectors = torch.FloatTensor([[[0], [1]]])
+         result = linear(a_vectors, b_vectors).data.numpy()
+         assert result.shape == (1, 2,)
+-        assert_almost_equal(result, [[2.3, -1.1]])
++        assert_almost_equal(result, [[2.3, -1.1]], decimal=6)
+ 
+     def test_forward_works_with_higher_order_tensors(self):
+         linear = LinearSimilarity(7, 7, combination='x,y')
+diff --git a/requirements.txt b/requirements.txt
+index 84dc3d2a..72664dcd 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -22,7 +22,7 @@ overrides
+ nltk
+ 
+ # Mainly used for the faster tokenizer.
+-spacy>=2.0.18,<2.2
++spacy>=2.0.12,<2.2
+ 
+ # Used by span prediction models.
+ numpy
+@@ -39,7 +39,7 @@ scikit-learn
+ tensorboardX>=1.2
+ 
+ # aws commandline tools for running on Docker remotely.
+-awscli>=1.11.91
++# awscli>=1.11.91
+ 
+ # Accessing files from S3 directly.
+ boto3
+diff --git a/setup.py b/setup.py
+index 03df8ca0..60b78782 100644
+--- a/setup.py
++++ b/setup.py
+@@ -105,10 +105,9 @@ setup(name='allennlp',
+           "jsonnet>=0.10.0 ; sys.platform != 'win32'",
+           'overrides',
+           'nltk',
+-          'spacy>=2.0.18,<2.2',
++          'spacy>=2.0.12,<2.2',
+           'numpy',
+           'tensorboardX>=1.2',
+-          'awscli>=1.11.91',
+           'boto3',
+           'flask>=1.0.2',
+           'flask-cors>=3.0.7',

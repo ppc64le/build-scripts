@@ -17,7 +17,7 @@ FROM nvidia/cuda-ppc64le:10.0-base-ubuntu18.04 as base_build
 ARG TF_SERVING_VERSION_GIT_BRANCH=master
 ARG TF_SERVING_VERSION_GIT_COMMIT=head
 
-ARG TF_WHEEL_FILE=tensorflow_gpu-1.13.1-cp27-cp27mu-linux_ppc64le.whl
+ARG TF_WHEEL_FILE=tensorflow_gpu-1.14.0-cp36-cp36m-linux_ppc64le.whl
 ARG TF_WHEEL_URL=https://powerci.osuosl.org/job/TensorFlow_PPC64LE_GPU_Release_Build/lastSuccessfulBuild/artifact/tensorflow_pkg
 
 LABEL maintainer=wdirons@us.ibm.com
@@ -51,7 +51,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         openjdk-8-jdk\
         openjdk-8-jre-headless \
         pkg-config \
-        python-dev \
+        python3 \
+        python3-dev \
         software-properties-common \
         swig \
         unzip \
@@ -63,7 +64,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 
 RUN curl -fSsL -O https://bootstrap.pypa.io/get-pip.py && \
-    python get-pip.py && \
+    python3 get-pip.py && \
     rm get-pip.py
 
 RUN pip --no-cache-dir install \
@@ -79,20 +80,24 @@ RUN wget --no-verbose ${TF_WHEEL_URL}/${TF_WHEEL_FILE} && \
     pip install ${TF_WHEEL_FILE} && \
     rm -f ${TF_WHEEL_FILE}
 
+#Alias python to python3 for bazel
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
 # Set up Bazel
-ENV BAZEL_VERSION 0.20.0
+ENV BAZEL_VERSION 0.24.1
 WORKDIR /
 RUN mkdir /bazel && \
     cd /bazel && \
     wget --no-verbose https://github.com/bazelbuild/bazel/releases/download/$BAZEL_VERSION/bazel-$BAZEL_VERSION-dist.zip && \
     unzip bazel-$BAZEL_VERSION-dist.zip && \
+    sed -i '/--action_env=PATH \\/a\  --host_javabase=@bazel_tools//tools/jdk:jdk \\' compile.sh && \
     bash ./compile.sh && \
     cp output/bazel /usr/local/bin && \
     cd / && \
     rm -rf /bazel
 
 # Build TensorFlow with the CUDA configuration
-ENV CI_BUILD_PYTHON python
+ENV CI_BUILD_PYTHON python3
 ENV LD_LIBRARY_PATH /usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH
 ENV TF_NEED_CUDA 1
 ENV TF_NEED_TENSORRT 0
@@ -106,10 +111,6 @@ RUN mkdir /usr/lib/powerpc64le-linux-gnu/include/ && \
   ln -s /usr/include/cudnn.h /usr/local/cuda/include/cudnn.h && \
   ln -s /usr/lib/powerpc64le-linux-gnu/libcudnn.so /usr/local/cuda/lib64/libcudnn.so && \
   ln -s /usr/lib/powerpc64le-linux-gnu/libcudnn.so.${TF_CUDNN_VERSION} /usr/local/cuda/lib64/libcudnn.so.${TF_CUDNN_VERSION}
-
-# For backward compatibility we need this line. After 1.13 we can safely remove
-# it.
-ENV TF_NCCL_VERSION=
 
 # Set TMP for nvidia build environment
 ENV TMP="/tmp"

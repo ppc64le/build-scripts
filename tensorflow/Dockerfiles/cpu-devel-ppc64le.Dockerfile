@@ -66,12 +66,18 @@ RUN ln -s $(which ${PYTHON}) /usr/local/bin/python
 RUN apt-get update && apt-get install -y \
     build-essential \
     curl \
+    gfortran \
+    gfortran-5 \
     git \
+    libopenblas-dev \
     openjdk-8-jdk \
     ${PYTHON}-dev \
     swig
 
 RUN ${PIP} --no-cache-dir install \
+    cython \
+    numpy && \
+    ${PIP} --no-cache-dir install \
     Pillow \
     future \
     h5py \
@@ -79,12 +85,9 @@ RUN ${PIP} --no-cache-dir install \
     keras_preprocessing \
     matplotlib \
     mock \
-    numpy \
     scipy \
     sklearn \
-    pandas \
-    && test "${USE_PYTHON_3_NOT_2}" -eq 1 && true || ${PIP} --no-cache-dir install \
-    enum34
+    pandas
 
  # Build and install bazel
 ENV BAZEL_VERSION 0.24.1
