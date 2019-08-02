@@ -33,11 +33,11 @@ cd wazuh-api
 git checkout v3.9.1
 
 # uncomment below 5 lines only if you are facing error with wazuh-api service getting into failed
-UID_OSSEC=`id -u ossec`
-GID_OSSEC=`id -g ossec`
-sed -i '27d;28d;29d;30d;31d' ./helpers/logger.js
-sed -i "22s/0/$UID_OSSEC/g" ./helpers/logger.js
-sed -i "23s/0/$GID_OSSEC/g" ./helpers/logger.js
+#UID_OSSEC=`id -u ossec`
+#GID_OSSEC=`id -g ossec`
+#sed -i '27d;28d;29d;30d;31d' ./helpers/logger.js
+#sed -i "22s/0/$UID_OSSEC/g" ./helpers/logger.js
+#sed -i "23s/0/$GID_OSSEC/g" ./helpers/logger.js
 
 ./install_api.sh
 

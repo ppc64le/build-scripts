@@ -29,6 +29,4 @@ curl -Ls https://github.com/wazuh/wazuh/archive/v3.9.1.tar.gz | tar zx
 cd wazuh-*
 sed -i 's|--index-url=file://${ROUTE_PATH}/${EXTERNAL_CPYTHON}/Dependencies/simple||g' src/Makefile
 ./install.sh
-#make -C src deps
-#make -C src external TARGET=server
 
