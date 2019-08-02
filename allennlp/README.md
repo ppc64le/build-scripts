@@ -28,6 +28,6 @@ The awscli_spacy.patch does the following
 
 - bypass dependency on awscli as it is only for remote docker commands and the dependency has been removed from the master branch
 
-- fixes two automated test case failures as per suggestions from the community and backportin commit #ec30c9021bdbf85099b3556e5a5d270124c494c8
+- fixes two automated test case failures as per suggestions from the community by backporting commit #ec30c9021bdbf85099b3556e5a5d270124c494c8
 
 
