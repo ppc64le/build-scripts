@@ -1,0 +1,394 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 5721b84b..69c68a3d 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -171,7 +171,7 @@ if(NOT WIN32)
+ else()
+   add_subdirectory(fdbservice)
+ endif()
+-add_subdirectory(bindings)
++#add_subdirectory(bindings)
+ add_subdirectory(fdbbackup)
+ add_subdirectory(tests)
+ if(WITH_DOCUMENTATION)
+diff --git a/Makefile b/Makefile
+index b61e8e05..4b2f9061 100644
+--- a/Makefile
++++ b/Makefile
+@@ -110,7 +110,7 @@ FDB_TLS_LIB := lib/libFDBLibTLS.a
+ TLS_LIBS += $(addprefix $(TLS_LIBDIR)/,libtls.a libssl.a libcrypto.a)
+ endif
+
+-CXXFLAGS += -Wno-deprecated -DBOOST_ERROR_CODE_HEADER_ONLY -DBOOST_SYSTEM_NO_DEPRECATED
++CXXFLAGS += -std=c++11 -Wno-deprecated -DBOOST_ERROR_CODE_HEADER_ONLY -DBOOST_SYSTEM_NO_DEPRECATED
+ LDFLAGS :=
+ LIBS :=
+ STATIC_LIBS :=
+diff --git a/cmake/ConfigureCompiler.cmake b/cmake/ConfigureCompiler.cmake
+index ebd81fa5..8fa9cf45 100644
+--- a/cmake/ConfigureCompiler.cmake
++++ b/cmake/ConfigureCompiler.cmake
+@@ -138,10 +138,11 @@ else()
+   endif()
+   # Instruction sets we require to be supported by the CPU
+   add_compile_options(
+-    -maes
+-    -mmmx
+-    -mavx
+-    -msse4.2)
++#    -maes
++#   -mmmx
++#    -mavx
++#    -msse4.2
++)
+   add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-std=c++17>)
+   if (USE_VALGRIND)
+     add_compile_options(-DVALGRIND -DUSE_VALGRIND)
+diff --git a/fdbclient/libb64/cdecode.c b/fdbclient/libb64/cdecode.c
+index 579b783d..e3a4b33a 100755
+--- a/fdbclient/libb64/cdecode.c
++++ b/fdbclient/libb64/cdecode.c
+@@ -7,10 +7,10 @@ For details, see http://sourceforge.net/projects/libb64
+
+ #include "cdecode.h"
+
+-int base64_decode_value(char value_in)
++int base64_decode_value(signed char value_in)
+ {
+-       static const char decoding[] = {62,-1,-1,-1,63,52,53,54,55,56,57,58,59,60,61,-1,-1,-1,-2,-1,-1,-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,-1,-1,-1,-1,-1,-1,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51};
+-       static const char decoding_size = sizeof(decoding);
++       static const signed char decoding[] = {62,-1,-1,-1,63,52,53,54,55,56,57,58,59,60,61,-1,-1,-1,-2,-1,-1,-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,-1,-1,-1,-1,-1,-1,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51};
++       static const signed char decoding_size = sizeof(decoding);
+        value_in -= 43;
+        if (value_in < 0 || value_in > decoding_size) return -1;
+        return decoding[(int)value_in];
+@@ -22,11 +22,11 @@ void base64_init_decodestate(base64_decodestate* state_in)
+        state_in->plainchar = 0;
+ }
+
+-int base64_decode_block(const char* code_in, const int length_in, char* plaintext_out, base64_decodestate* state_in)
++int base64_decode_block(const signed char* code_in, const int length_in, signed char* plaintext_out, base64_decodestate* state_in)
+ {
+-       const char* codechar = code_in;
+-       char* plainchar = plaintext_out;
+-       char fragment;
++       const signed char* codechar = code_in;
++       signed char* plainchar = plaintext_out;
++       signed char fragment;
+
+        *plainchar = state_in->plainchar;
+
+@@ -42,7 +42,7 @@ int base64_decode_block(const char* code_in, const int length_in, char* plaintex
+                                        state_in->plainchar = *plainchar;
+                                        return plainchar - plaintext_out;
+                                }
+-                               fragment = (char)base64_decode_value(*codechar++);
++                               fragment = (signed char)base64_decode_value(*codechar++);
+                        } while (fragment < 0);
+                        *plainchar    = (fragment & 0x03f) << 2;
+        case step_b:
+@@ -53,7 +53,7 @@ int base64_decode_block(const char* code_in, const int length_in, char* plaintex
+                                        state_in->plainchar = *plainchar;
+                                        return plainchar - plaintext_out;
+                                }
+-                               fragment = (char)base64_decode_value(*codechar++);
++                               fragment = (signed char)base64_decode_value(*codechar++);
+                        } while (fragment < 0);
+                        *plainchar++ |= (fragment & 0x030) >> 4;
+                        *plainchar    = (fragment & 0x00f) << 4;
+@@ -65,7 +65,7 @@ int base64_decode_block(const char* code_in, const int length_in, char* plaintex
+                                        state_in->plainchar = *plainchar;
+                                        return plainchar - plaintext_out;
+                                }
+-                               fragment = (char)base64_decode_value(*codechar++);
++                               fragment = (signed char)base64_decode_value(*codechar++);
+                        } while (fragment < 0);
+                        *plainchar++ |= (fragment & 0x03c) >> 2;
+                        *plainchar    = (fragment & 0x003) << 6;
+@@ -77,7 +77,7 @@ int base64_decode_block(const char* code_in, const int length_in, char* plaintex
+                                        state_in->plainchar = *plainchar;
+                                        return plainchar - plaintext_out;
+                                }
+-                               fragment = (char)base64_decode_value(*codechar++);
++                               fragment = (signed char)base64_decode_value(*codechar++);
+                        } while (fragment < 0);
+                        *plainchar++   |= (fragment & 0x03f);
+                }
+diff --git a/fdbclient/libb64/cdecode.h b/fdbclient/libb64/cdecode.h
+index d0d7f489..94441d34 100755
+--- a/fdbclient/libb64/cdecode.h
++++ b/fdbclient/libb64/cdecode.h
+@@ -16,13 +16,13 @@ typedef enum
+ typedef struct
+ {
+        base64_decodestep step;
+-       char plainchar;
++       signed char plainchar;
+ } base64_decodestate;
+
+ void base64_init_decodestate(base64_decodestate* state_in);
+
+-int base64_decode_value(char value_in);
++int base64_decode_value(signed char value_in);
+
+-int base64_decode_block(const char* code_in, const int length_in, char* plaintext_out, base64_decodestate* state_in);
++int base64_decode_block(const signed char* code_in, const int length_in, signed char* plaintext_out, base64_decodestate* state_in);
+
+ #endif /* BASE64_CDECODE_H */
+diff --git a/fdbrpc/Platform.cpp b/fdbrpc/Platform.cpp
+index a680540d..257545c1 100644
+--- a/fdbrpc/Platform.cpp
++++ b/fdbrpc/Platform.cpp
+@@ -53,7 +53,9 @@
+ #include <ftw.h>
+ #include <pwd.h>
+ #include <sched.h>
++#if defined(__x86_64__)
+ #include <cpuid.h>
++#endif
+
+ #ifdef __APPLE__
+ #include <sys/uio.h>
+@@ -136,6 +138,8 @@ bool isSse42Supported()
+        int info[4];
+        __cpuid(info, 1);
+        return (info[2] & (1 << 20)) != 0;
++#elif defined(__PPC__)
++       return false;
+ #elif defined(__unixish__)
+        uint32_t eax, ebx, ecx, edx, level = 1, count = 0;
+        __cpuid_count(level, count, eax, ebx, ecx, edx);
+diff --git a/fdbrpc/crc32c.cpp b/fdbrpc/crc32c.cpp
+index 899a0b88..0f225527 100644
+--- a/fdbrpc/crc32c.cpp
++++ b/fdbrpc/crc32c.cpp
+@@ -29,14 +29,17 @@
+
+ #define NOMINMAX
+
++#ifndef __PPC__
+ #include <nmmintrin.h>
++#endif
++
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <random>
+ #include <algorithm>
+ #include "fdbrpc/Platform.h"
+ #include "generated-constants.cpp"
+-#pragma GCC target("sse4.2")
++//#pragma GCC target("sse4.2")
+
+ static uint32_t append_trivial(uint32_t crc, const uint8_t * input, size_t length)
+ {
+@@ -170,7 +173,7 @@ static inline uint32_t shift_crc(uint32_t shift_table[][256], uint32_t crc)
+         ^ shift_table[2][(crc >> 16) & 0xff]
+         ^ shift_table[3][crc >> 24];
+ }
+-
++#if defined(__x86_64__)
+ /* Compute CRC-32C using the Intel hardware instruction. */
+ static uint32_t append_hw(uint32_t crc, const uint8_t * buf, size_t len)
+ {
+@@ -310,14 +313,20 @@ static uint32_t append_hw(uint32_t crc, const uint8_t * buf, size_t len)
+     /* return a post-processed crc */
+     return static_cast<uint32_t>(crc0) ^ 0xffffffff;
+ }
++#endif
+
+-
++#if defined(__x86_64__)
+ static bool hw_available = platform::isSse42Supported();
++#endif
+
+ extern "C" uint32_t crc32c_append(uint32_t crc, const uint8_t * input, size_t length)
+ {
++#if defined(__x86_64__)
+     if (hw_available)
+         return append_hw(crc, input, length);
+     else
+         return append_table(crc, input, length);
++#else
++    return append_table(crc, input, length);
++#endif
+ }
+diff --git a/fdbrpc/generated-constants.cpp b/fdbrpc/generated-constants.cpp
+index 63a9986f..96bd8e90 100644
+--- a/fdbrpc/generated-constants.cpp
++++ b/fdbrpc/generated-constants.cpp
+@@ -47,6 +47,7 @@ static uint32_t table[16][256] =
+     { 0x00000000, 0xf20c0dfe, 0xe1f46d0d, 0x13f860f3, 0xc604aceb, 0x3408a115, 0x27f0c1e6, 0xd5fccc18, 0x89e52f27, 0x7be922d9, 0x6811422a, 0x9a1d4fd4, 0x4fe183cc, 0xbded8e32, 0xae15eec1, 0x5c19e33f, 0x162628bf, 0xe42a2541, 0xf7d245b2, 0x05de484c, 0xd0228454, 0x222e89aa, 0x31d6e959, 0xc3dae4a7, 0x9fc30798, 0x6dcf0a66, 0x7e376a95, 0x8c3b676b, 0x59c7ab73, 0xabcba68d, 0xb833c67e, 0x4a3fcb80, 0x2c4c517e, 0xde405c80, 0xcdb83c73, 0x3fb4318d, 0xea48fd95, 0x1844f06b, 0x0bbc9098, 0xf9b09d66, 0xa5a97e59, 0x57a573a7, 0x445d1354, 0xb6511eaa, 0x63add2b2, 0x91a1df4c, 0x8259bfbf, 0x7055b241, 0x3a6a79c1, 0xc866743f, 0xdb9e14cc, 0x29921932, 0xfc6ed52a, 0x0e62d8d4, 0x1d9ab827, 0xef96b5d9, 0xb38f56e6, 0x41835b18, 0x527b3beb, 0xa0773615, 0x758bfa0d, 0x8787f7f3, 0x947f9700, 0x66739afe, 0x5898a2fc, 0xaa94af02, 0xb96ccff1, 0x4b60c20f, 0x9e9c0e17, 0x6c9003e9, 0x7f68631a, 0x8d646ee4, 0xd17d8ddb, 0x23718025, 0x3089e0d6, 0xc285ed28, 0x17792130, 0xe5752cce, 0xf68d4c3d, 0x048141c3, 0x4ebe8a43, 0xbcb287bd, 0xaf4ae74e, 0x5d46eab0, 0x88ba26a8, 0x7ab62b56, 0x694e4ba5, 0x9b42465b, 0xc75ba564, 0x3557a89a, 0x26afc869, 0xd4a3c597, 0x015f098f, 0xf3530471, 0xe0ab6482, 0x12a7697c, 0x74d4f382, 0x86d8fe7c, 0x95209e8f, 0x672c9371, 0xb2d05f69, 0x40dc5297, 0x53243264, 0xa1283f9a, 0xfd31dca5, 0x0f3dd15b, 0x1cc5b1a8, 0xeec9bc56, 0x3b35704e, 0xc9397db0, 0xdac11d43, 0x28cd10bd, 0x62f2db3d, 0x90fed6c3, 0x8306b630, 0x710abbce, 0xa4f677d6, 0x56fa7a28, 0x45021adb, 0xb70e1725, 0xeb17f41a, 0x191bf9e4, 0x0ae39917, 0xf8ef94e9, 0x2d1358f1, 0xdf1f550f, 0xcce735fc, 0x3eeb3802, 0xb13145f8, 0x433d4806, 0x50c528f5, 0xa2c9250b, 0x7735e913, 0x8539e4ed, 0x96c1841e, 0x64cd89e0, 0x38d46adf, 0xcad86721, 0xd92007d2, 0x2b2c0a2c, 0xfed0c634, 0x0cdccbca, 0x1f24ab39, 0xed28a6c7, 0xa7176d47, 0x551b60b9, 0x46e3004a, 0xb4ef0db4, 0x6113c1ac, 0x931fcc52, 0x80e7aca1, 0x72eba15f, 0x2ef24260, 0xdcfe4f9e, 0xcf062f6d, 0x3d0a2293, 0xe8f6ee8b, 0x1afae375, 0x09028386, 0xfb0e8e78, 0x9d7d1486, 0x6f711978, 0x7c89798b, 0x8e857475, 0x5b79b86d, 0xa975b593, 0xba8dd560, 0x4881d89e, 0x14983ba1, 0xe694365f, 0xf56c56ac, 0x07605b52, 0xd29c974a, 0x20909ab4, 0x3368fa47, 0xc164f7b9, 0x8b5b3c39, 0x795731c7, 0x6aaf5134, 0x98a35cca, 0x4d5f90d2, 0xbf539d2c, 0xacabfddf, 0x5ea7f021, 0x02be131e, 0xf0b21ee0, 0xe34a7e13, 0x114673ed, 0xc4babff5, 0x36b6b20b, 0x254ed2f8, 0xd742df06, 0xe9a9e704, 0x1ba5eafa, 0x085d8a09, 0xfa5187f7, 0x2fad4bef, 0xdda14611, 0xce5926e2, 0x3c552b1c, 0x604cc823, 0x9240c5dd, 0x81b8a52e, 0x73b4a8d0, 0xa64864c8, 0x54446936, 0x47bc09c5, 0xb5b0043b, 0xff8fcfbb, 0x0d83c245, 0x1e7ba2b6, 0xec77af48, 0x398b6350, 0xcb876eae, 0xd87f0e5d, 0x2a7303a3, 0x766ae09c, 0x8466ed62, 0x979e8d91, 0x6592806f, 0xb06e4c77, 0x42624189, 0x519a217a, 0xa3962c84, 0xc5e5b67a, 0x37e9bb84, 0x2411db77, 0xd61dd689, 0x03e11a91, 0xf1ed176f, 0xe215779c, 0x10197a62, 0x4c00995d, 0xbe0c94a3, 0xadf4f450, 0x5ff8f9ae, 0x8a0435b6, 0x78083848, 0x6bf058bb, 0x99fc5545, 0xd3c39ec5, 0x21cf933b, 0x3237f3c8, 0xc03bfe36, 0x15c7322e, 0xe7cb3fd0, 0xf4335f23, 0x063f52dd, 0x5a26b1e2, 0xa82abc1c, 0xbbd2dcef, 0x49ded111, 0x9c221d09, 0x6e2e10f7, 0x7dd67004, 0x8fda7dfa }
+ };
+
++#if defined(__x86_64__)
+ static uint32_t long_shifts[4][256] =
+ {
+     { 0x00000000, 0xe040e0ac, 0xc56db7a9, 0x252d5705, 0x8f3719a3, 0x6f77f90f, 0x4a5aae0a, 0xaa1a4ea6, 0x1b8245b7, 0xfbc2a51b, 0xdeeff21e, 0x3eaf12b2, 0x94b55c14, 0x74f5bcb8, 0x51d8ebbd, 0xb1980b11, 0x37048b6e, 0xd7446bc2, 0xf2693cc7, 0x1229dc6b, 0xb83392cd, 0x58737261, 0x7d5e2564, 0x9d1ec5c8, 0x2c86ced9, 0xccc62e75, 0xe9eb7970, 0x09ab99dc, 0xa3b1d77a, 0x43f137d6, 0x66dc60d3, 0x869c807f, 0x6e0916dc, 0x8e49f670, 0xab64a175, 0x4b2441d9, 0xe13e0f7f, 0x017eefd3, 0x2453b8d6, 0xc413587a, 0x758b536b, 0x95cbb3c7, 0xb0e6e4c2, 0x50a6046e, 0xfabc4ac8, 0x1afcaa64, 0x3fd1fd61, 0xdf911dcd, 0x590d9db2, 0xb94d7d1e, 0x9c602a1b, 0x7c20cab7, 0xd63a8411, 0x367a64bd, 0x135733b8, 0xf317d314, 0x428fd805, 0xa2cf38a9, 0x87e26fac, 0x67a28f00, 0xcdb8c1a6, 0x2df8210a, 0x08d5760f, 0xe89596a3, 0xdc122db8, 0x3c52cd14, 0x197f9a11, 0xf93f7abd, 0x5325341b, 0xb365d4b7, 0x964883b2, 0x7608631e, 0xc790680f, 0x27d088a3, 0x02fddfa6, 0xe2bd3f0a, 0x48a771ac, 0xa8e79100, 0x8dcac605, 0x6d8a26a9, 0xeb16a6d6, 0x0b56467a, 0x2e7b117f, 0xce3bf1d3, 0x6421bf75, 0x84615fd9, 0xa14c08dc, 0x410ce870, 0xf094e361, 0x10d403cd, 0x35f954c8, 0xd5b9b464, 0x7fa3fac2, 0x9fe31a6e, 0xbace4d6b, 0x5a8eadc7, 0xb21b3b64, 0x525bdbc8, 0x77768ccd, 0x97366c61, 0x3d2c22c7, 0xdd6cc26b, 0xf841956e, 0x180175c2, 0xa9997ed3, 0x49d99e7f, 0x6cf4c97a, 0x8cb429d6, 0x26ae6770, 0xc6ee87dc, 0xe3c3d0d9, 0x03833075, 0x851fb00a, 0x655f50a6, 0x407207a3, 0xa032e70f, 0x0a28a9a9, 0xea684905, 0xcf451e00, 0x2f05feac, 0x9e9df5bd, 0x7edd1511, 0x5bf04214, 0xbbb0a2b8, 0x11aaec1e, 0xf1ea0cb2, 0xd4c75bb7, 0x3487bb1b, 0xbdc82d81, 0x5d88cd2d, 0x78a59a28, 0x98e57a84, 0x32ff3422, 0xd2bfd48e, 0xf792838b, 0x17d26327, 0xa64a6836, 0x460a889a, 0x6327df9f, 0x83673f33, 0x297d7195, 0xc93d9139, 0xec10c63c, 0x0c502690, 0x8acca6ef, 0x6a8c4643, 0x4fa11146, 0xafe1f1ea, 0x05fbbf4c, 0xe5bb5fe0, 0xc09608e5, 0x20d6e849, 0x914ee358, 0x710e03f4, 0x542354f1, 0xb463b45d, 0x1e79fafb, 0xfe391a57, 0xdb144d52, 0x3b54adfe, 0xd3c13b5d, 0x3381dbf1, 0x16ac8cf4, 0xf6ec6c58, 0x5cf622fe, 0xbcb6c252, 0x999b9557, 0x79db75fb, 0xc8437eea, 0x28039e46, 0x0d2ec943, 0xed6e29ef, 0x47746749, 0xa73487e5, 0x8219d0e0, 0x6259304c, 0xe4c5b033, 0x0485509f, 0x21a8079a, 0xc1e8e736, 0x6bf2a990, 0x8bb2493c, 0xae9f1e39, 0x4edffe95, 0xff47f584, 0x1f071528, 0x3a2a422d, 0xda6aa281, 0x7070ec27, 0x90300c8b, 0xb51d5b8e, 0x555dbb22, 0x61da0039, 0x819ae095, 0xa4b7b790, 0x44f7573c, 0xeeed199a, 0x0eadf936, 0x2b80ae33, 0xcbc04e9f, 0x7a58458e, 0x9a18a522, 0xbf35f227, 0x5f75128b, 0xf56f5c2d, 0x152fbc81, 0x3002eb84, 0xd0420b28, 0x56de8b57, 0xb69e6bfb, 0x93b33cfe, 0x73f3dc52, 0xd9e992f4, 0x39a97258, 0x1c84255d, 0xfcc4c5f1, 0x4d5ccee0, 0xad1c2e4c, 0x88317949, 0x687199e5, 0xc26bd743, 0x222b37ef, 0x070660ea, 0xe7468046, 0x0fd316e5, 0xef93f649, 0xcabea14c, 0x2afe41e0, 0x80e40f46, 0x60a4efea, 0x4589b8ef, 0xa5c95843, 0x14515352, 0xf411b3fe, 0xd13ce4fb, 0x317c0457, 0x9b664af1, 0x7b26aa5d, 0x5e0bfd58, 0xbe4b1df4, 0x38d79d8b, 0xd8977d27, 0xfdba2a22, 0x1dfaca8e, 0xb7e08428, 0x57a06484, 0x728d3381, 0x92cdd32d, 0x2355d83c, 0xc3153890, 0xe6386f95, 0x06788f39, 0xac62c19f, 0x4c222133, 0x690f7636, 0x894f969a },
+@@ -62,3 +63,4 @@ static uint32_t short_shifts[4][256] =
+     { 0x00000000, 0x4a7ff165, 0x94ffe2ca, 0xde8013af, 0x2c13b365, 0x666c4200, 0xb8ec51af, 0xf293a0ca, 0x582766ca, 0x125897af, 0xccd88400, 0x86a77565, 0x7434d5af, 0x3e4b24ca, 0xe0cb3765, 0xaab4c600, 0xb04ecd94, 0xfa313cf1, 0x24b12f5e, 0x6ecede3b, 0x9c5d7ef1, 0xd6228f94, 0x08a29c3b, 0x42dd6d5e, 0xe869ab5e, 0xa2165a3b, 0x7c964994, 0x36e9b8f1, 0xc47a183b, 0x8e05e95e, 0x5085faf1, 0x1afa0b94, 0x6571edd9, 0x2f0e1cbc, 0xf18e0f13, 0xbbf1fe76, 0x49625ebc, 0x031dafd9, 0xdd9dbc76, 0x97e24d13, 0x3d568b13, 0x77297a76, 0xa9a969d9, 0xe3d698bc, 0x11453876, 0x5b3ac913, 0x85badabc, 0xcfc52bd9, 0xd53f204d, 0x9f40d128, 0x41c0c287, 0x0bbf33e2, 0xf92c9328, 0xb353624d, 0x6dd371e2, 0x27ac8087, 0x8d184687, 0xc767b7e2, 0x19e7a44d, 0x53985528, 0xa10bf5e2, 0xeb740487, 0x35f41728, 0x7f8be64d, 0xcae3dbb2, 0x809c2ad7, 0x5e1c3978, 0x1463c81d, 0xe6f068d7, 0xac8f99b2, 0x720f8a1d, 0x38707b78, 0x92c4bd78, 0xd8bb4c1d, 0x063b5fb2, 0x4c44aed7, 0xbed70e1d, 0xf4a8ff78, 0x2a28ecd7, 0x60571db2, 0x7aad1626, 0x30d2e743, 0xee52f4ec, 0xa42d0589, 0x56bea543, 0x1cc15426, 0xc2414789, 0x883eb6ec, 0x228a70ec, 0x68f58189, 0xb6759226, 0xfc0a6343, 0x0e99c389, 0x44e632ec, 0x9a662143, 0xd019d026, 0xaf92366b, 0xe5edc70e, 0x3b6dd4a1, 0x711225c4, 0x8381850e, 0xc9fe746b, 0x177e67c4, 0x5d0196a1, 0xf7b550a1, 0xbdcaa1c4, 0x634ab26b, 0x2935430e, 0xdba6e3c4, 0x91d912a1, 0x4f59010e, 0x0526f06b, 0x1fdcfbff, 0x55a30a9a, 0x8b231935, 0xc15ce850, 0x33cf489a, 0x79b0b9ff, 0xa730aa50, 0xed4f5b35, 0x47fb9d35, 0x0d846c50, 0xd3047fff, 0x997b8e9a, 0x6be82e50, 0x2197df35, 0xff17cc9a, 0xb5683dff, 0x902bc195, 0xda5430f0, 0x04d4235f, 0x4eabd23a, 0xbc3872f0, 0xf6478395, 0x28c7903a, 0x62b8615f, 0xc80ca75f, 0x8273563a, 0x5cf34595, 0x168cb4f0, 0xe41f143a, 0xae60e55f, 0x70e0f6f0, 0x3a9f0795, 0x20650c01, 0x6a1afd64, 0xb49aeecb, 0xfee51fae, 0x0c76bf64, 0x46094e01, 0x98895dae, 0xd2f6accb, 0x78426acb, 0x323d9bae, 0xecbd8801, 0xa6c27964, 0x5451d9ae, 0x1e2e28cb, 0xc0ae3b64, 0x8ad1ca01, 0xf55a2c4c, 0xbf25dd29, 0x61a5ce86, 0x2bda3fe3, 0xd9499f29, 0x93366e4c, 0x4db67de3, 0x07c98c86, 0xad7d4a86, 0xe702bbe3, 0x3982a84c, 0x73fd5929, 0x816ef9e3, 0xcb110886, 0x15911b29, 0x5feeea4c, 0x4514e1d8, 0x0f6b10bd, 0xd1eb0312, 0x9b94f277, 0x690752bd, 0x2378a3d8, 0xfdf8b077, 0xb7874112, 0x1d338712, 0x574c7677, 0x89cc65d8, 0xc3b394bd, 0x31203477, 0x7b5fc512, 0xa5dfd6bd, 0xefa027d8, 0x5ac81a27, 0x10b7eb42, 0xce37f8ed, 0x84480988, 0x76dba942, 0x3ca45827, 0xe2244b88, 0xa85bbaed, 0x02ef7ced, 0x48908d88, 0x96109e27, 0xdc6f6f42, 0x2efccf88, 0x64833eed, 0xba032d42, 0xf07cdc27, 0xea86d7b3, 0xa0f926d6, 0x7e793579, 0x3406c41c, 0xc69564d6, 0x8cea95b3, 0x526a861c, 0x18157779, 0xb2a1b179, 0xf8de401c, 0x265e53b3, 0x6c21a2d6, 0x9eb2021c, 0xd4cdf379, 0x0a4de0d6, 0x403211b3, 0x3fb9f7fe, 0x75c6069b, 0xab461534, 0xe139e451, 0x13aa449b, 0x59d5b5fe, 0x8755a651, 0xcd2a5734, 0x679e9134, 0x2de16051, 0xf36173fe, 0xb91e829b, 0x4b8d2251, 0x01f2d334, 0xdf72c09b, 0x950d31fe, 0x8ff73a6a, 0xc588cb0f, 0x1b08d8a0, 0x517729c5, 0xa3e4890f, 0xe99b786a, 0x371b6bc5, 0x7d649aa0, 0xd7d05ca0, 0x9dafadc5, 0x432fbe6a, 0x09504f0f, 0xfbc3efc5, 0xb1bc1ea0, 0x6f3c0d0f, 0x2543fc6a },
+     { 0x00000000, 0x25bbf5db, 0x4b77ebb6, 0x6ecc1e6d, 0x96efd76c, 0xb35422b7, 0xdd983cda, 0xf823c901, 0x2833d829, 0x0d882df2, 0x6344339f, 0x46ffc644, 0xbedc0f45, 0x9b67fa9e, 0xf5abe4f3, 0xd0101128, 0x5067b052, 0x75dc4589, 0x1b105be4, 0x3eabae3f, 0xc688673e, 0xe33392e5, 0x8dff8c88, 0xa8447953, 0x7854687b, 0x5def9da0, 0x332383cd, 0x16987616, 0xeebbbf17, 0xcb004acc, 0xa5cc54a1, 0x8077a17a, 0xa0cf60a4, 0x8574957f, 0xebb88b12, 0xce037ec9, 0x3620b7c8, 0x139b4213, 0x7d575c7e, 0x58eca9a5, 0x88fcb88d, 0xad474d56, 0xc38b533b, 0xe630a6e0, 0x1e136fe1, 0x3ba89a3a, 0x55648457, 0x70df718c, 0xf0a8d0f6, 0xd513252d, 0xbbdf3b40, 0x9e64ce9b, 0x6647079a, 0x43fcf241, 0x2d30ec2c, 0x088b19f7, 0xd89b08df, 0xfd20fd04, 0x93ece369, 0xb65716b2, 0x4e74dfb3, 0x6bcf2a68, 0x05033405, 0x20b8c1de, 0x4472b7b9, 0x61c94262, 0x0f055c0f, 0x2abea9d4, 0xd29d60d5, 0xf726950e, 0x99ea8b63, 0xbc517eb8, 0x6c416f90, 0x49fa9a4b, 0x27368426, 0x028d71fd, 0xfaaeb8fc, 0xdf154d27, 0xb1d9534a, 0x9462a691, 0x141507eb, 0x31aef230, 0x5f62ec5d, 0x7ad91986, 0x82fad087, 0xa741255c, 0xc98d3b31, 0xec36ceea, 0x3c26dfc2, 0x199d2a19, 0x77513474, 0x52eac1af, 0xaac908ae, 0x8f72fd75, 0xe1bee318, 0xc40516c3, 0xe4bdd71d, 0xc10622c6, 0xafca3cab, 0x8a71c970, 0x72520071, 0x57e9f5aa, 0x3925ebc7, 0x1c9e1e1c, 0xcc8e0f34, 0xe935faef, 0x87f9e482, 0xa2421159, 0x5a61d858, 0x7fda2d83, 0x111633ee, 0x34adc635, 0xb4da674f, 0x91619294, 0xffad8cf9, 0xda167922, 0x2235b023, 0x078e45f8, 0x69425b95, 0x4cf9ae4e, 0x9ce9bf66, 0xb9524abd, 0xd79e54d0, 0xf225a10b, 0x0a06680a, 0x2fbd9dd1, 0x417183bc, 0x64ca7667, 0x88e56f72, 0xad5e9aa9, 0xc39284c4, 0xe629711f, 0x1e0ab81e, 0x3bb14dc5, 0x557d53a8, 0x70c6a673, 0xa0d6b75b, 0x856d4280, 0xeba15ced, 0xce1aa936, 0x36396037, 0x138295ec, 0x7d4e8b81, 0x58f57e5a, 0xd882df20, 0xfd392afb, 0x93f53496, 0xb64ec14d, 0x4e6d084c, 0x6bd6fd97, 0x051ae3fa, 0x20a11621, 0xf0b10709, 0xd50af2d2, 0xbbc6ecbf, 0x9e7d1964, 0x665ed065, 0x43e525be, 0x2d293bd3, 0x0892ce08, 0x282a0fd6, 0x0d91fa0d, 0x635de460, 0x46e611bb, 0xbec5d8ba, 0x9b7e2d61, 0xf5b2330c, 0xd009c6d7, 0x0019d7ff, 0x25a22224, 0x4b6e3c49, 0x6ed5c992, 0x96f60093, 0xb34df548, 0xdd81eb25, 0xf83a1efe, 0x784dbf84, 0x5df64a5f, 0x333a5432, 0x1681a1e9, 0xeea268e8, 0xcb199d33, 0xa5d5835e, 0x806e7685, 0x507e67ad, 0x75c59276, 0x1b098c1b, 0x3eb279c0, 0xc691b0c1, 0xe32a451a, 0x8de65b77, 0xa85daeac, 0xcc97d8cb, 0xe92c2d10, 0x87e0337d, 0xa25bc6a6, 0x5a780fa7, 0x7fc3fa7c, 0x110fe411, 0x34b411ca, 0xe4a400e2, 0xc11ff539, 0xafd3eb54, 0x8a681e8f, 0x724bd78e, 0x57f02255, 0x393c3c38, 0x1c87c9e3, 0x9cf06899, 0xb94b9d42, 0xd787832f, 0xf23c76f4, 0x0a1fbff5, 0x2fa44a2e, 0x41685443, 0x64d3a198, 0xb4c3b0b0, 0x9178456b, 0xffb45b06, 0xda0faedd, 0x222c67dc, 0x07979207, 0x695b8c6a, 0x4ce079b1, 0x6c58b86f, 0x49e34db4, 0x272f53d9, 0x0294a602, 0xfab76f03, 0xdf0c9ad8, 0xb1c084b5, 0x947b716e, 0x446b6046, 0x61d0959d, 0x0f1c8bf0, 0x2aa77e2b, 0xd284b72a, 0xf73f42f1, 0x99f35c9c, 0xbc48a947, 0x3c3f083d, 0x1984fde6, 0x7748e38b, 0x52f31650, 0xaad0df51, 0x8f6b2a8a, 0xe1a734e7, 0xc41cc13c, 0x140cd014, 0x31b725cf, 0x5f7b3ba2, 0x7ac0ce79, 0x82e30778, 0xa758f2a3, 0xc994ecce, 0xec2f1915 }
+ };
++#endif
+diff --git a/fdbrpc/local.mk b/fdbrpc/local.mk
+index fd3636ae..06e617c5 100644
+--- a/fdbrpc/local.mk
++++ b/fdbrpc/local.mk
+@@ -22,7 +22,7 @@
+
+ fdbrpc_BUILD_SOURCES += fdbrpc/libeio/eio.c
+
+-fdbrpc_CFLAGS := -isystem$(BOOSTDIR) -I. -Ifdbrpc/libeio -DUSE_UCONTEXT
++fdbrpc_CFLAGS := -isystem$(BOOSTDIR) -I. -Ifdbrpc/libeio -DUSE_UCONTEXT -mcpu=power8
+ fdbrpc_LDFLAGS :=
+
+ ifeq ($(PLATFORM),osx)
+diff --git a/fdbserver/PrefixTree.h b/fdbserver/PrefixTree.h
+index 2f67c20c..2b01defc 100644
+--- a/fdbserver/PrefixTree.h
++++ b/fdbserver/PrefixTree.h
+@@ -598,8 +598,11 @@ public:
+                        while(1) {
+                                const PathEntry &p = pathBack();
+                                const Node *right = p.parser.rightChild();
++#ifdef __PPC__
++                               __builtin_prefetch( (const char*)right, 1, 1);
++#else
+                                _mm_prefetch((const char*)right, _MM_HINT_T0);
+-
++#endif
+                                int cmp = p.compareToKey(s);
+                                if(cmp == 0)
+                                        return true;
+diff --git a/fdbserver/SkipList.cpp b/fdbserver/SkipList.cpp
+index 62f22a66..adb1e217 100644
+--- a/fdbserver/SkipList.cpp
++++ b/fdbserver/SkipList.cpp
+@@ -425,9 +425,14 @@ public:
+                // pre: !finished()
+                force_inline void prefetch() {
+                        Node* next = x->getNext(level-1);
++#ifdef __PPC__
++                       __builtin_prefetch( (const char*)next, 1, 1);
++                       __builtin_prefetch( (const char*)next+64, 1,1);
++#else
+                        _mm_prefetch( (const char*)next, _MM_HINT_T0 );
+                        //if ( (((intptr_t)next) & 64) == 0 )
+                        _mm_prefetch( (const char*)next+64, _MM_HINT_T0 );
++#endif
+                        //_mm_prefetch( (const char*)next+128, _MM_HINT_T0 );
+                        //_mm_prefetch( (const char*)next+192, _MM_HINT_T0 );
+                        //_mm_prefetch( (const char*)next+256, _MM_HINT_T0 );
+@@ -677,10 +682,18 @@ public:
+
+                        // double prefetch gives +25% speed (single threaded)
+                        Node* next = x->getNext(0);
++#ifdef __PPC__
++                       __builtin_prefetch( (const char*)next, 1, 1);
++#else
+                        _mm_prefetch( (const char*)next, _MM_HINT_T0 );
++#endif
+                        //_mm_prefetch( (const char*)next+64, _MM_HINT_T0 );
+                        next = x->getNext(1);
++#ifdef __PPC__
++                       __builtin_prefetch( (const char*)next, 1, 1);
++#else
+                        _mm_prefetch( (const char*)next, _MM_HINT_T0 );
++#endif
+                        //_mm_prefetch( (const char*)next+64, _MM_HINT_T0 );
+
+                        bool isAbove = x->getMaxVersion(0) >= v;
+diff --git a/flow/IndexedSet.actor.h b/flow/IndexedSet.actor.h
+index 28e4aba4..4177c009 100644
+--- a/flow/IndexedSet.actor.h
++++ b/flow/IndexedSet.actor.h
+@@ -46,7 +46,8 @@ Future<Void> ISFreeNodes(std::vector<Node*> toFree, bool synchronous) {
+        while (!prefetchQueue.empty() || !toFree.empty()) {
+
+                while (prefetchQueue.size() < 10 && !toFree.empty()) {
+-                       _mm_prefetch( (const char*)toFree.back(), _MM_HINT_T0 );
++               __builtin_prefetch((const char*)toFree.back(), 1, 1);
++//             _mm_prefetch( (const char*)toFree.back(), _MM_HINT_T0 );
+                        prefetchQueue.push_back( toFree.back() );
+                        toFree.pop_back();
+                }
+diff --git a/flow/Platform.h b/flow/Platform.h
+index d583bb92..30e5e680 100644
+--- a/flow/Platform.h
++++ b/flow/Platform.h
+@@ -170,7 +170,7 @@ THREAD_HANDLE startThread(void *(func) (void *), void *arg);
+
+ #if defined(_WIN32)
+ #define DYNAMIC_LIB_EXT ".dll"
+-#elif defined(__linux)
++#elif (defined(__linux) || defined(__powerpc64__))
+ #define DYNAMIC_LIB_EXT ".so"
+ #elif defined(__APPLE__)
+ #define DYNAMIC_LIB_EXT ".dylib"
+@@ -398,7 +398,13 @@ dev_t getDeviceId(std::string path);
+ #endif
+
+ #ifdef __linux__
++#ifdef __PPC__
++#include <altivec.h>
++#undef bool
++#undef vector
++#else
+ #include <x86intrin.h>
++#endif
+ #include <features.h>
+ #include <sys/stat.h>
+ #endif
+@@ -412,6 +418,14 @@ inline static uint64_t __rdtsc() {
+        return( lo | (hi << 32) );
+ }
+ #endif
++#elif defined(__powerpc64__) || defined(__ppc64__)
++inline static uint64_t __rdtsc() {
++       uint64_t tb;
++       __asm__ volatile (\
++         "mfspr %0, 268"
++         : "=r" (tb));
++       return tb;
++}
+ #endif
+
+ #ifdef _WIN32
+@@ -425,7 +439,13 @@ inline static int64_t interlockedExchangeAdd64(volatile int64_t *a, int64_t b) {
+ inline static int64_t interlockedExchange64(volatile int64_t *a, int64_t b) { return _InterlockedExchange64(a, b); }
+ inline static int64_t interlockedOr64(volatile int64_t *a, int64_t b) { return _InterlockedOr64(a, b); }
+ #elif defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8)
++#ifdef __PPC__
++#include <altivec.h>
++#undef bool
++#undef vector
++#else
+ #include <xmmintrin.h>
++#endif
+ inline static int32_t interlockedIncrement(volatile int32_t *a) { return __sync_add_and_fetch(a, 1); }
+ inline static int64_t interlockedIncrement64(volatile int64_t *a) { return __sync_add_and_fetch(a, 1); }
+ inline static int32_t interlockedDecrement(volatile int32_t *a) { return __sync_add_and_fetch(a, -1); }
+diff --git a/flow/ThreadPrimitives.h b/flow/ThreadPrimitives.h
+index f3e24688..fb821c18 100644
+--- a/flow/ThreadPrimitives.h
++++ b/flow/ThreadPrimitives.h
+@@ -57,7 +57,20 @@ public:
+        }
+        void enter() {
+                while (interlockedCompareExchange(&isLocked, 1, 0) == 1)
++#ifdef __PPC__
++                       // http://code.metager.de/source/xref/gnu/glibc/sysdeps/powerpc/sys/platform/ppc.h
++                       // // http://stackoverflow.com/questions/5425506/equivalent-of-x86-pause-instruction-for-ppc
++                       // // mnemonic 'or' shared resource hints
++                       // // or 27, 27, 27 This form of 'or' provides a hint that performance
++                       // //               will probably be imrpoved if shared resources dedicated
++                       // //               to the executing processor are released for use by other
++                       // //               processors
++                       // // extended mnemonics (available with POWER7)
++                       // // yield   ==   or 27, 27, 27
++                       asm volatile ("or 27,27,27" ::: "memory");
++#else
+                        _mm_pause();
++#endif
+ #if VALGRIND
+                ANNOTATE_RWLOCK_ACQUIRED(this, true);
+ #endif
