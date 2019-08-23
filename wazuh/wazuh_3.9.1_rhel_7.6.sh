@@ -28,5 +28,10 @@ yum-builddep python34 -y
 curl -Ls https://github.com/wazuh/wazuh/archive/v3.9.1.tar.gz | tar zx
 cd wazuh-*
 sed -i 's|--index-url=file://${ROUTE_PATH}/${EXTERNAL_CPYTHON}/Dependencies/simple||g' src/Makefile
+
+# apply patch file
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/wazuh/wazuh_patch_v3.9.1.diff
+git apply wazuh_patch_v3.9.1.diff
+
 ./install.sh
 
