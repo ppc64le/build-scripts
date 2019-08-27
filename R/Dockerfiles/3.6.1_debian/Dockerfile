@@ -1,4 +1,7 @@
 ## Emacs, make this -*- mode: sh; -*-
+## This Dockerfile is derived from the official version at
+## https://github.com/rocker-org/rocker/blob/919df9809c677916100cf837be687f6704d6b1b1/r-base/Dockerfile
+## and has been confirmed to build and work on ppc64le
 
 FROM debian:testing
 
