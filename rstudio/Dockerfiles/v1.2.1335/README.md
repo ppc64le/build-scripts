@@ -18,6 +18,6 @@ Run http://"IPAddr":8787/
 
 Default username and password is created:
 
-     username: test
+     username: rstudio
      
-     password: test
+     password: rstudio
