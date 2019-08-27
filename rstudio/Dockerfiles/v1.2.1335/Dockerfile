@@ -21,8 +21,6 @@ RUN     rm -rf /var/lib/apt/lists/ && \
         cd /rstudio-${RStduio_VERSION}/build && \
         cmake .. -DRSTUDIO_TARGET=Server -DCMAKE_BUILD_TYPE=Release && \
         make install && \
-	apt-get purge -y autotools-dev build-essential cmake g++ git && \
-	apt-get autoremove -y && \
         useradd -r rstudio-server  && \
         cp /usr/local/lib/rstudio-server/extras/init.d/debian/rstudio-server /etc/init.d/ && \
         update-rc.d rstudio-server defaults && \
@@ -31,8 +29,8 @@ RUN     rm -rf /var/lib/apt/lists/ && \
         mkdir -p /var/lock/rstudio-server && \
         mkdir -p /var/log/rstudio-server && \
         mkdir -p /var/lib/rstudio-server && \
-        set -e && useradd -m -d /home/test test && \
-        echo test:test | chpasswd && \
+        set -e && useradd -m -d /home/rstudio -G sudo rstudio && \
+        echo rstudio:rstudio | chpasswd && \
         rstudio-server online && cd / && \
         echo -e '#!/bin/bash\ncd /usr/sbin\nrstudio-server start' >> startup.sh && \
         chmod +x startup.sh
