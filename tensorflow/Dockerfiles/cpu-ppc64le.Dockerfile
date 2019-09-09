@@ -20,6 +20,8 @@
 # for more information.
 FROM ubuntu:18.04
 
+RUN apt-get update && apt-get install -y curl
+
 ARG USE_PYTHON_3_NOT_2
 ARG _PY_SUFFIX=${USE_PYTHON_3_NOT_2:+3}
 ARG PYTHON=python${_PY_SUFFIX}
