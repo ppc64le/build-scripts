@@ -1,0 +1,13 @@
+diff --git a/src/main/java/de/flapdoodle/embed/process/distribution/BitSize.java b/src/main/java/de/flapdoodle/embed/process/distribution/BitSize.java
+index d5fbbc8..753f620 100644
+--- a/src/main/java/de/flapdoodle/embed/process/distribution/BitSize.java
++++ b/src/main/java/de/flapdoodle/embed/process/distribution/BitSize.java
+@@ -33,7 +33,7 @@ public enum BitSize {
+ 	public static BitSize detect() {
+ 		BitSize bitSize = BitSize.B32;
+ 		String osArch = System.getProperty("os.arch");
+-		if (osArch.equals("i686_64") || osArch.equals("x86_64") || osArch.equals("amd64"))
++		if (osArch.equals("i686_64") || osArch.equals("x86_64") || osArch.equals("amd64") || osArch.equals("ppc64le") )
+ 			bitSize = BitSize.B64;
+ 		return bitSize;
+ 	}
