@@ -66,11 +66,6 @@ RUN ${PIP} --no-cache-dir install --upgrade \
 RUN ln -s $(which ${PYTHON}) /usr/local/bin/python
 
 RUN apt-get update && apt-get install -y wget libhdf5-dev
-RUN cp /usr/lib/powerpc64le-linux-gnu/hdf5/serial/libhdf5.so /usr/local/lib/libhdf5.so && \
-    ${PIP} install --global-option=build_ext \
-            --global-option=-I/usr/include/hdf5/serial/ \
-            --global-option=-L/usr/lib/powerpc64le-linux-gnu/hdf5/serial \
-            h5py && rm -f /usr/local/lib/libhdf5.so
 
 # These get installed from the tensorflow .whl, but are installed earlier to cache the installs
 RUN ${PIP} --no-cache-dir install --upgrade \
@@ -85,7 +80,8 @@ RUN ${PIP} --no-cache-dir install --upgrade \
             mock \
             werkzeug \
             markdown \
-            pbr
+            pbr \
+            h5py
 
 # Options:
 #   tensorflow

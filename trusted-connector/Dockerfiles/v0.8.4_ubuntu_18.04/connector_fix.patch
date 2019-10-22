@@ -1,0 +1,56 @@
+diff --git a/build.gradle b/build.gradle
+index e1eb0f1b..0c389975 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -83,7 +83,7 @@ allprojects {
+             mapdb              : '3.0.7',
+             // must be consistent with jnr-ffi version in jnr-unixsocket-wrapper
+             jnrunix            : '0.22',
+-            protobuf           : '3.6.1',
++            protobuf           : '3.8.0',
+             httpcore           : '4.4.11',
+             httpclient         : '4.5.7',
+ 
+@@ -142,6 +142,7 @@ subprojects {
+ 
+     task integrationTest(type: Test) {
+         include '**/*IT.*'
++        systemProperty "project.version", "$project.version"
+     }
+ 
+     check.dependsOn integrationTest
+diff --git a/karaf-assembly/src/test/java/de/fhg/aisec/ids/webconsole/api/AssemblyTestIT.java b/karaf-assembly/src/test/java/de/fhg/aisec/ids/webconsole/api/AssemblyTestIT.java
+index 469675ae..627c49ab 100644
+--- a/karaf-assembly/src/test/java/de/fhg/aisec/ids/webconsole/api/AssemblyTestIT.java
++++ b/karaf-assembly/src/test/java/de/fhg/aisec/ids/webconsole/api/AssemblyTestIT.java
+@@ -97,8 +97,8 @@ public class AssemblyTestIT {
+ 				.artifactId("karaf-features-ids")
+ 				.classifier("features")
+ 				.type("xml")
+-				.version("1.2.0-SNAPSHOT");
+-		File f = new File("./build/karaf-assembly-1.2.0-SNAPSHOT.tar.gz");
++				.version(System.getProperty("project.version"));
++		File f = new File("./build/karaf-assembly-" + System.getProperty("project.version")  + ".tar.gz");
+ 		return new Option[] { karafDistributionConfiguration().frameworkUrl(f.toURI().toURL().toString())
+ 				.unpackDirectory(new File("build/exam"))
+ 				.useDeployFolder(false),
+diff --git a/rat-repository/build.gradle b/rat-repository/build.gradle
+index 9dd23b36..d1673855 100644
+--- a/rat-repository/build.gradle
++++ b/rat-repository/build.gradle
+@@ -11,7 +11,7 @@ dependencies {
+     implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: libraryVersions.log4j
+     implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: libraryVersions.log4j
+     
+-    implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.15.1'
++    implementation files('/sqlite-jdbc/target/sqlite-jdbc-3.28.0.jar')
+     implementation group: 'org.eclipse.jetty', name: 'jetty-server', version: libraryVersions.jetty
+     implementation group: 'org.eclipse.jetty', name: 'jetty-servlet', version: libraryVersions.jetty
+ 
+@@ -49,4 +49,4 @@ task dockerize(type: DockerBuildImage) {
+     inputDir = project.projectDir
+     tag = "fraunhoferaisec/ttpsim:${rootProject.getDockerTag()}"
+ }
+-dockerize.dependsOn jar
+\ No newline at end of file
++dockerize.dependsOn jar
