@@ -4,7 +4,16 @@
 
 FROM registry.access.redhat.com/ubi8/ubi:latest
 
-MAINTAINER OrientDB LTD (info@orientdb.com)
+###Required Labels
+LABEL name="cassandra" \
+      maintainer="sethp@us.ibm.com" \
+      vendor="cassandra" \
+      version="5.0.1" \
+      release="1" \
+      summary="Red Hat UBI cassandra" \
+      description="Red Hat UBI cassandra Application"
+
+RUN groupadd cassandra && useradd -r -g cassandra cassandra -m -d /home/cassandra/
 
 #Install dependencies
 RUN yum update -y \
@@ -42,5 +51,13 @@ RUN set -eux; \
 # 7199: JMX
 # 9042: CQL
 # 9160: thrift service
+
+RUN mkdir /licenses
+COPY licensing.txt /licenses
+
+USER cassandra
+WORKDIR /home/cassandra
+
 EXPOSE 7000 7001 7199 9042 9160
+
 CMD ["cassandra", "-R", "-f"]

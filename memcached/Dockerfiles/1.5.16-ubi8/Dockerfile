@@ -2,6 +2,15 @@
 #https://github.com/docker-library/memcached
 FROM registry.access.redhat.com/ubi8/ubi:latest
 
+###Required Labels
+LABEL name="memcached" \
+      maintainer="sethp@us.ibm.com" \
+      vendor="memcached" \
+      version="1.5.16" \
+      release="1" \
+      summary="Red Hat UBI memcached" \
+      description="Red Hat UBI memcached Application"
+
 # add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 RUN groupadd --system --gid 11211 memcache && useradd --system --gid memcache --uid 11211 memcache
 
@@ -59,6 +68,9 @@ RUN set -x \
 	&& cd / && rm -rf /usr/src/memcached \
 	&& yum remove make gcc wget -y \
 	&& memcached -V
+
+RUN mkdir /licenses
+COPY licensing.txt /licenses
 
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN ln -s /usr/local/bin/docker-entrypoint.sh /entrypoint.sh # backwards compat
