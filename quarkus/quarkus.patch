@@ -1,0 +1,14 @@
+diff --git a/extensions/mongodb-client/runtime/src/test/java/io/quarkus/mongodb/MongoWithReplicasTestBase.java b/extensions/mongodb-client/runtime/src/test/java/io/quarkus/mongodb/MongoWithReplicasTestBase.java
+index 1791723..a81763e 100644
+--- a/extensions/mongodb-client/runtime/src/test/java/io/quarkus/mongodb/MongoWithReplicasTestBase.java
++++ b/extensions/mongodb-client/runtime/src/test/java/io/quarkus/mongodb/MongoWithReplicasTestBase.java
+@@ -136,6 +136,9 @@ public class MongoWithReplicasTestBase {
+             final int state = member.getInteger("state");
+             LOGGER.infof("state: %s", state);
+             // 1 - PRIMARY, 2 - SECONDARY, 7 - ARBITER
++	    if(state == 2){
++	    	return false;
++	    }
+             if (state != 1 && state != 2 && state != 7) {
+                 return false;
+             }
