@@ -1,0 +1,124 @@
+diff --git a/pom.xml b/pom.xml
+index 6e4cade..049dcbb 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -120,6 +120,7 @@
+ 					<excludes>
+ 						<exclude>**/live/**</exclude>
+ 						<exclude>**/examples/**</exclude>
++						<exclude>**MongoDBExampleAllVersionsTest.java**</exclude>
+ 					</excludes>
+ 					<systemPropertyVariables>
+ 						<de.flapdoodle.testdoc.destination>${project.build.directory}</de.flapdoodle.testdoc.destination>
+diff --git a/src/main/java/de/flapdoodle/embed/mongo/Paths.java b/src/main/java/de/flapdoodle/embed/mongo/Paths.java
+index b9a989c..e874730 100644
+--- a/src/main/java/de/flapdoodle/embed/mongo/Paths.java
++++ b/src/main/java/de/flapdoodle/embed/mongo/Paths.java
+@@ -102,9 +102,8 @@ public class Paths implements IPackageResolver {
+                         + versionStr;
+ 		}
+ 		if (distribution.getPlatform() == Platform.OS_X && withSsl(distribution) ) {
+-            return platformStr + "/mongodb-" + platformStr + "-ssl-" + bitSizeStr + "-" + versionStr + "." + archiveTypeStr;
+-        }
+-
++                    return platformStr + "/mongodb-" + platformStr + "-ssl-" + bitSizeStr + "-" + versionStr + "." + archiveTypeStr;
++                }
+ 		return platformStr + "/mongodb-" + platformStr + "-" + bitSizeStr + "-" + versionStr + "." + archiveTypeStr;
+ 	}
+ 
+@@ -173,7 +172,13 @@ public class Paths implements IPackageResolver {
+                 }
+                 break;
+             case B64:
+-                sbitSize = "x86_64";
++ 		String osArch = System.getProperty("os.arch");
++		if(osArch.equals("ppc64le")){
++                	sbitSize = "ppc64le";
++		}
++		else{
++                	sbitSize = "x86_64";
++		}
+                 break;
+             default:
+                 throw new IllegalArgumentException("Unknown BitSize " + distribution.getBitsize());
+diff --git a/src/main/java/de/flapdoodle/embed/mongo/config/DownloadConfigBuilder.java b/src/main/java/de/flapdoodle/embed/mongo/config/DownloadConfigBuilder.java
+index 99c2047..441783a 100644
+--- a/src/main/java/de/flapdoodle/embed/mongo/config/DownloadConfigBuilder.java
++++ b/src/main/java/de/flapdoodle/embed/mongo/config/DownloadConfigBuilder.java
+@@ -80,6 +80,10 @@ public class DownloadConfigBuilder extends de.flapdoodle.embed.process.config.st
+ 			if (distribution.getPlatform()==Platform.Windows) {
+ 				return "https://downloads.mongodb.org/";
+ 			}
++			String osArch = System.getProperty("os.arch");
++                	if (osArch.equals("ppc64le")){
++				return "file:///opt/mongodb/";
++			}
+ 			return "https://fastdl.mongodb.org/";
+ 		}
+ 		
+diff --git a/src/main/java/de/flapdoodle/embed/mongo/distribution/Version.java b/src/main/java/de/flapdoodle/embed/mongo/distribution/Version.java
+index f2975a1..34ea309 100644
+--- a/src/main/java/de/flapdoodle/embed/mongo/distribution/Version.java
++++ b/src/main/java/de/flapdoodle/embed/mongo/distribution/Version.java
+@@ -212,6 +212,7 @@ public enum Version implements IFeatureAwareVersion {
+   V3_6_0("3.6.0", Feature.SYNC_DELAY, Feature.STORAGE_ENGINE, Feature.ONLY_64BIT, Feature.NO_CHUNKSIZE_ARG, Feature.MONGOS_CONFIGDB_SET_STYLE, Feature.NO_HTTP_INTERFACE_ARG, Feature.ONLY_WITH_SSL, Feature.ONLY_WINDOWS_2008_SERVER, Feature.NO_SOLARIS_SUPPORT, Feature.NO_BIND_IP_TO_LOCALHOST),
+   @Deprecated
+   V3_6_2("3.6.2", Feature.SYNC_DELAY, Feature.STORAGE_ENGINE, Feature.ONLY_64BIT, Feature.NO_CHUNKSIZE_ARG, Feature.MONGOS_CONFIGDB_SET_STYLE, Feature.NO_HTTP_INTERFACE_ARG, Feature.ONLY_WITH_SSL, Feature.ONLY_WINDOWS_2008_SERVER, Feature.NO_SOLARIS_SUPPORT, Feature.NO_BIND_IP_TO_LOCALHOST),
++  V3_6_14("3.6.14", Feature.SYNC_DELAY, Feature.STORAGE_ENGINE, Feature.ONLY_64BIT, Feature.NO_CHUNKSIZE_ARG, Feature.MONGOS_CONFIGDB_SET_STYLE, Feature.NO_HTTP_INTERFACE_ARG, Feature.ONLY_WITH_SSL, Feature.ONLY_WINDOWS_2008_SERVER, Feature.NO_SOLARIS_SUPPORT, Feature.NO_BIND_IP_TO_LOCALHOST),
+   @Deprecated
+   V3_6_3("3.6.3", Feature.SYNC_DELAY, Feature.STORAGE_ENGINE, Feature.ONLY_64BIT, Feature.NO_CHUNKSIZE_ARG, Feature.MONGOS_CONFIGDB_SET_STYLE, Feature.NO_HTTP_INTERFACE_ARG, Feature.ONLY_WITH_SSL, Feature.ONLY_WINDOWS_2008_SERVER, Feature.NO_SOLARIS_SUPPORT, Feature.NO_BIND_IP_TO_LOCALHOST),
+ 
+@@ -219,6 +220,7 @@ public enum Version implements IFeatureAwareVersion {
+   @Deprecated
+   V4_0_2("4.0.2", Feature.SYNC_DELAY, Feature.STORAGE_ENGINE, Feature.ONLY_64BIT, Feature.NO_CHUNKSIZE_ARG, Feature.MONGOS_CONFIGDB_SET_STYLE, Feature.NO_HTTP_INTERFACE_ARG, Feature.ONLY_WITH_SSL, Feature.ONLY_WINDOWS_2008_SERVER, Feature.NO_SOLARIS_SUPPORT, Feature.NO_BIND_IP_TO_LOCALHOST),
+   V4_0_12("4.0.12", Feature.SYNC_DELAY, Feature.STORAGE_ENGINE, Feature.ONLY_64BIT, Feature.NO_CHUNKSIZE_ARG, Feature.MONGOS_CONFIGDB_SET_STYLE, Feature.NO_HTTP_INTERFACE_ARG, Feature.ONLY_WITH_SSL, Feature.ONLY_WINDOWS_2008_SERVER, Feature.NO_SOLARIS_SUPPORT, Feature.NO_BIND_IP_TO_LOCALHOST),
++  V4_2_0("4.2.0", Feature.SYNC_DELAY, Feature.STORAGE_ENGINE, Feature.ONLY_64BIT, Feature.NO_CHUNKSIZE_ARG, Feature.MONGOS_CONFIGDB_SET_STYLE, Feature.NO_HTTP_INTERFACE_ARG, Feature.ONLY_WITH_SSL, Feature.ONLY_WINDOWS_2008_SERVER, Feature.NO_SOLARIS_SUPPORT, Feature.NO_BIND_IP_TO_LOCALHOST),
+ 
+   LATEST_NIGHTLY("latest", Feature.SYNC_DELAY, Feature.STORAGE_ENGINE, Feature.ONLY_64BIT, Feature.NO_CHUNKSIZE_ARG, Feature.MONGOS_CONFIGDB_SET_STYLE, Feature.NO_HTTP_INTERFACE_ARG, Feature.ONLY_WITH_SSL, Feature.ONLY_WINDOWS_2008_SERVER, Feature.NO_SOLARIS_SUPPORT),
+ 
+@@ -285,12 +287,12 @@ public enum Version implements IFeatureAwareVersion {
+ 		V3_3(V3_3_1),
+ 		V3_4(V3_4_15),
+ 		V3_5(V3_5_5),
+-		V3_6(V3_6_5),
+-		V4_0(V4_0_12),
++		V3_6(V3_6_14),
++		V4_0(V4_2_0),
+ 
+ 		@Deprecated
+ 		LEGACY(V3_6),
+-		PRODUCTION(V4_0),
++		PRODUCTION(V3_6),
+ 		DEVELOPMENT(LATEST_NIGHTLY);
+ 
+ 		private final IFeatureAwareVersion _latest;
+diff --git a/src/main/java/de/flapdoodle/embed/mongo/runtime/Mongod.java b/src/main/java/de/flapdoodle/embed/mongo/runtime/Mongod.java
+index 891e6c1..b2a358d 100644
+--- a/src/main/java/de/flapdoodle/embed/mongo/runtime/Mongod.java
++++ b/src/main/java/de/flapdoodle/embed/mongo/runtime/Mongod.java
+@@ -197,7 +197,6 @@ public class Mongod extends AbstractMongo {
+ 		if (config.version().enabled(Feature.TEXT_SEARCH)) {
+ 			applyTextSearch(ret, config.cmdOptions());
+ 		}
+-
+ 		return ret;
+ 	}
+ 
+diff --git a/src/test/java/de/flapdoodle/embed/mongo/MongoDBExampleAllVersionsTest.java b/src/test/java/de/flapdoodle/embed/mongo/MongoDBExampleAllVersionsTest.java
+index 280b11c..f210349 100644
+--- a/src/test/java/de/flapdoodle/embed/mongo/MongoDBExampleAllVersionsTest.java
++++ b/src/test/java/de/flapdoodle/embed/mongo/MongoDBExampleAllVersionsTest.java
+@@ -56,7 +56,6 @@ import de.flapdoodle.embed.process.runtime.Network;
+  */
+ @RunWith(value = Parameterized.class)
+ public class MongoDBExampleAllVersionsTest {
+-
+ 	@Parameters(name = "{0}")
+ 	public static java.util.Collection<Object[]> data() {
+ 		final Collection<Object[]> result = new ArrayList<>();
+@@ -124,5 +123,4 @@ public class MongoDBExampleAllVersionsTest {
+ 		DBCollection col = db.createCollection("testCol", new BasicDBObject());
+ 		col.save(new BasicDBObject("testDoc", new Date()));
+ 	}
+-
+ }
