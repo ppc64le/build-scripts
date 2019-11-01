@@ -14,20 +14,15 @@
 
 `$ docker exec -it redis-demo sh`
 
-`sh-4.2# redis-cli`
+```
+sh-4.2# redis-cli
 
-`127.0.0.1:6379> ping`
-
-`PONG`
-
-`127.0.0.1:6379> get name`
-
-`(nil)`
-
-`127.0.0.1:6379> set name "foobar"`
-
-`OK`
-
-`127.0.0.1:6379> get name`
-
-`"foobar"`
+127.0.0.1:6379> ping
+PONG
+127.0.0.1:6379> get name
+(nil)
+127.0.0.1:6379> set name "foobar"
+OK
+127.0.0.1:6379> get name
+"foobar"
+```
