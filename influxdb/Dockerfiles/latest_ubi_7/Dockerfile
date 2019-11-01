@@ -1,5 +1,16 @@
 FROM golang:1.11 as builder
 
+# Required Labels
+LABEL name="influxdb" \
+        maintainer="redmark@us.ibm.com" \
+        vendor="Influx Data" \
+        version="1.8.0" \
+        release="1" \
+        summary="Red Hat UBI Influxdb" \
+        description="Red Hat UBI Gerrit Influxdb"
+
+COPY licenses /licenses
+
 WORKDIR /go/src/github.com/influxdata/influxdb
 
 RUN go get -u github.com/golang/dep/... && \
