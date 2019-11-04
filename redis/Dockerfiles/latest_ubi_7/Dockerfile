@@ -11,17 +11,24 @@ LABEL name="redis" \
 
 COPY licenses /licenses
 
-RUN yum update -y \
-  && yum install -y make gcc git tcl \
+RUN yum update -y -q && yum install -y -q sudo \
+  && useradd --create-home --home-dir /home/redis --shell /bin/bash --system --user-group redis \
+  && echo '%redis ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+USER redis
+WORKDIR /home/redis
+
+RUN sudo yum update -y -q \
+  && sudo yum install -y -q make gcc git tcl \
   && git clone https://github.com/antirez/redis.git && \
   pushd redis && \
   git checkout 3.2.13 && \
   make distclean && \
   make V=1 && \
-  make install && \
+  sudo make install && \
   popd && \
   rm -fr redis && \
-  yum remove -y make gcc git
+  sudo yum remove -y make gcc git
 
 # Creating volume directory so we can share data between container and host
 VOLUME /data

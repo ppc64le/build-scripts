@@ -14,7 +14,7 @@
 
 `$ docker exec -it redis-demo sh`
 
-```
+```console
 sh-4.2# redis-cli
 
 127.0.0.1:6379> ping
