@@ -16,6 +16,8 @@
 # ----------------------------------------------------------------------------
 #!/bin/bash
 
+export MILLERRABIN_VERSION="v4.0.1"
+
 yum update -y
 yum install -y libX11-devel firefox xorg-x11-server-Xvfb glibc-devel git curl dbus-x11
 
@@ -30,6 +32,8 @@ ln -s $HOME/.nvm/versions/node/v8.9.4/bin/npm /usr/bin/npm
 
 git clone https://github.com/indutny/miller-rabin.git
 cd miller-rabin
+git checkout ${MILLERRABIN_VERSION}
+
 sed -i -e 's/"mocha": "^2.0.1"/"mocha": "6.2.2"/g' package.json
 sed -i -e '8s/$/,/' package.json
 a=`awk '/"test":/{print NR}' package.json`

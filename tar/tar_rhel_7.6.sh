@@ -16,6 +16,7 @@
 # ----------------------------------------------------------------------------
 #!/bin/bash
 
+export TAR_VERSION="v5.0.5"
 yum update -y
 yum install -y git curl
 
@@ -30,5 +31,7 @@ ln -s $HOME/.nvm/versions/node/v8.9.4/bin/npm /usr/bin/npm
 
 git clone https://github.com/npm/node-tar.git
 cd node-tar
+git checkout ${TAR_VERSION}
+
 npm install
 npm test

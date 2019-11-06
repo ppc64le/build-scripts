@@ -16,6 +16,8 @@
 # ----------------------------------------------------------------------------
 #!/bin/bash
 
+export REGISTRYURL_VERSION="v5.1.0"
+
 yum update -y
 yum install -y git curl
 
@@ -28,7 +30,9 @@ nvm install v8.9.4
 ln -s $HOME/.nvm/versions/node/v8.9.4/bin/node /usr/bin/node
 ln -s $HOME/.nvm/versions/node/v8.9.4/bin/npm /usr/bin/npm
 
-git clone https://github.com/sindresorhus/registry-url.git 
+git clone https://github.com/sindresorhus/registry-url.git
 cd registry-url
+git checkout ${REGISTRYURL_VERSION}
+
 npm install
 npm test

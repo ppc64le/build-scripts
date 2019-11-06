@@ -16,6 +16,8 @@
 # ----------------------------------------------------------------------------
 #!/bin/bash
 
+export EVENTEMMITTER3_VERSION="4.0.0"
+
 yum update -y
 yum install -y git curl
 
@@ -32,6 +34,8 @@ npm install -g npm
 
 git clone https://github.com/primus/eventemitter3.git
 cd eventemitter3
+git checkout ${EVENTEMMITTER3_VERSION}
+
 sed -i -e 's/"mocha": "~6.2.0"/"mocha": ">=6.2.2"/g' package.json
 sed -i -e 's/"pre-commit": "~1.2.0"/"pre-commit": ">=1.2.2"/g' package.json
 sed -i -e 's/"uglify-js": "~3.6.0"/"uglify-js": ">=3.6.5"/g' package.json
