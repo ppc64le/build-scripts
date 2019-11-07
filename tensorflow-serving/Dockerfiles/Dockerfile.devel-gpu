@@ -84,7 +84,7 @@ RUN wget --no-verbose ${TF_WHEEL_URL}/${TF_WHEEL_FILE} && \
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
 # Set up Bazel
-ARG BAZEL_VERSION 0.24.1
+ARG BAZEL_VERSION=0.24.1
 WORKDIR /
 RUN mkdir /bazel && \
     cd /bazel && \
