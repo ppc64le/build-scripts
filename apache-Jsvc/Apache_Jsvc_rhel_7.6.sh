@@ -16,6 +16,7 @@
 # ----------------------------------------------------------------------------
 
 #!/bin/bash
+yum install -y git java-1.8.0-openjdk-devel maven 
 
 git clone https://github.com/apache/commons-daemon.git
 cd commons-daemon
@@ -46,18 +47,17 @@ echo "Installing dependencies required for Jsvc ..."
 #	A Java Platform 2 compliant SDK
 # NOTE::GNU make is provided by the devtoolset-7-make package and is automatically installed with devtoolset-7-toolchain 
 # Install the required dependencies
-yum install -y gcc autoconf automake devtoolset-7-make
+yum install -y gcc autoconf automake devtoolset-7-make devtoolset-7-toolchain
 echo "Done"
 echo "Building jsvc binary from source .. "
 cd $wrkdir/src/native/unix
 sh support/buildconf.sh
 echo "Built 'configure' program ... "
 
-# # Save the path to PhantomJS binary
-phantomjs_binary_path=$wrkdir/phantomjs/bin
-echo "# # #$phantomjs_binary_path"
 ./configure
-make
+
+# Run make command. NOTE:: Path might change based on the installation path
+/opt/rh/devtoolset-7/root/usr/bin/make
 echo "Generated the executable file jsvc .. "
 
 echo "Verifying jsvc binary ..."
