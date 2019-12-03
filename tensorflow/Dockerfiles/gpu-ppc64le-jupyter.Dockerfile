@@ -30,8 +30,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         cuda-cusolver-10-0 \
         cuda-cusparse-10-0 \
         curl \
-        libcudnn7=7.4.2.24-1+cuda10.0 \
-        libnccl2=2.3.7-1+cuda10.0 \
+        libcudnn7=7.6.4.38-1+cuda10.0 \
+        libnccl2=2.4.8-1+cuda10.0 \
         libfreetype6-dev \
         libhdf5-serial-dev \
         libzmq3-dev \

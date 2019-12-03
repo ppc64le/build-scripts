@@ -32,10 +32,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         cuda-cusparse-dev-10-0 \
         curl \
         git \
-        libcudnn7=7.4.2.24-1+cuda10.0 \
-        libcudnn7-dev=7.4.2.24-1+cuda10.0 \
-        libnccl2=2.3.7-1+cuda10.0 \
-        libnccl-dev=2.3.7-1+cuda10.0 \
+        libcudnn7=7.6.4.38-1+cuda10.0 \
+        libcudnn7-dev=7.6.4.38-1+cuda10.0 \
+        libnccl2=2.4.8-1+cuda10.0 \
+        libnccl-dev=2.4.8-1+cuda10.0 \
         libcurl3-dev \
         libfreetype6-dev \
         libhdf5-serial-dev \
@@ -116,7 +116,7 @@ RUN ${PIP} --no-cache-dir install \
     pandas
 
  # Build and install bazel
-ENV BAZEL_VERSION 0.24.1
+ENV BAZEL_VERSION 1.1.0
 WORKDIR /
 RUN mkdir /bazel && \
     cd /bazel && \

@@ -1,0 +1,68 @@
+diff --git a/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/mongo/embedded/EmbeddedMongoProperties.java b/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/mongo/embedded/EmbeddedMongoProperties.java
+index 6bbf1d6..896cf32 100644
+--- a/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/mongo/embedded/EmbeddedMongoProperties.java
++++ b/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/mongo/embedded/EmbeddedMongoProperties.java
+@@ -38,7 +38,7 @@ public class EmbeddedMongoProperties {
+ 	/**
+ 	 * Version of Mongo to use.
+ 	 */
+-	private String version = "3.5.5";
++	private String version = "3.4.23";
+ 
+ 	private final Storage storage = new Storage();
+ 
+diff --git a/spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/mongo/embedded/EmbeddedMongoAutoConfigurationTests.java b/spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/mongo/embedded/EmbeddedMongoAutoConfigurationTests.java
+index 622bb9c..c77e59b 100644
+--- a/spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/mongo/embedded/EmbeddedMongoAutoConfigurationTests.java
++++ b/spring-boot-project/spring-boot-autoconfigure/src/test/java/org/springframework/boot/autoconfigure/mongo/embedded/EmbeddedMongoAutoConfigurationTests.java
+@@ -74,18 +74,18 @@ class EmbeddedMongoAutoConfigurationTests {
+ 
+ 	@Test
+ 	void defaultVersion() {
+-		assertVersionConfiguration(null, "3.5.5");
++		assertVersionConfiguration(null, "3.4.23");
+ 	}
+ 
+ 	@Test
+ 	void customVersion() {
+-		String version = Version.V3_4_15.asInDownloadPath();
++		String version = Version.V3_6_14.asInDownloadPath();
+ 		assertVersionConfiguration(version, version);
+ 	}
+ 
+ 	@Test
+ 	void customUnknownVersion() {
+-		assertVersionConfiguration("3.4.1", "3.4.1");
++		assertVersionConfiguration("3.4.23", "3.4.23");
+ 	}
+ 
+ 	@Test
+diff --git a/spring-boot-project/spring-boot-dependencies/pom.xml b/spring-boot-project/spring-boot-dependencies/pom.xml
+index a9d626d..dcad29b 100644
+--- a/spring-boot-project/spring-boot-dependencies/pom.xml
++++ b/spring-boot-project/spring-boot-dependencies/pom.xml
+@@ -59,7 +59,7 @@
+ 		<dropwizard-metrics.version>4.1.0</dropwizard-metrics.version>
+ 		<ehcache.version>2.10.6</ehcache.version>
+ 		<ehcache3.version>3.8.1</ehcache3.version>
+-		<embedded-mongo.version>2.2.0</embedded-mongo.version>
++		<embedded-mongo.version>2.2.1-SNAPSHOT</embedded-mongo.version>
+ 		<flyway.version>6.0.1</flyway.version>
+ 		<freemarker.version>2.3.29</freemarker.version>
+ 		<elasticsearch.version>6.8.3</elasticsearch.version>
+diff --git a/spring-boot-project/spring-boot/pom.xml b/spring-boot-project/spring-boot/pom.xml
+index 33e2bc8..ea1132e 100644
+--- a/spring-boot-project/spring-boot/pom.xml
++++ b/spring-boot-project/spring-boot/pom.xml
+@@ -209,6 +209,11 @@
+ 			<optional>true</optional>
+ 		</dependency>
+ 		<dependency>
++			<groupId>org.conscrypt</groupId>
++			<artifactId>conscrypt-openjdk-uber</artifactId>
++			<version>2.3.0-SNAPSHOT</version>
++		</dependency>
++		<dependency>
+ 			<groupId>org.eclipse.jetty.http2</groupId>
+ 			<artifactId>http2-server</artifactId>
+ 			<optional>true</optional>

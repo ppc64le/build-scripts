@@ -1,0 +1,63 @@
+diff --git a/src/main/java/de/flapdoodle/embed/mongo/Paths.java b/src/main/java/de/flapdoodle/embed/mongo/Paths.java
+index b9a989c..d86b516 100644
+--- a/src/main/java/de/flapdoodle/embed/mongo/Paths.java
++++ b/src/main/java/de/flapdoodle/embed/mongo/Paths.java
+@@ -174,7 +174,11 @@ public class Paths implements IPackageResolver {
+                 break;
+             case B64:
+                 sbitSize = "x86_64";
+-                break;
++                String osArch = System.getProperty("os.arch");
++		if(osArch.equals("ppc64le")){
++			sbitSize = "ppc64le";
++		}
++		break;
+             default:
+                 throw new IllegalArgumentException("Unknown BitSize " + distribution.getBitsize());
+         }
+diff --git a/src/main/java/de/flapdoodle/embed/mongo/config/DownloadConfigBuilder.java b/src/main/java/de/flapdoodle/embed/mongo/config/DownloadConfigBuilder.java
+index 99c2047..771de6a 100644
+--- a/src/main/java/de/flapdoodle/embed/mongo/config/DownloadConfigBuilder.java
++++ b/src/main/java/de/flapdoodle/embed/mongo/config/DownloadConfigBuilder.java
+@@ -80,6 +80,10 @@ public class DownloadConfigBuilder extends de.flapdoodle.embed.process.config.st
+ 			if (distribution.getPlatform()==Platform.Windows) {
+ 				return "https://downloads.mongodb.org/";
+ 			}
++			String osArch = System.getProperty("os.arch");
++			if (osArch.equals("ppc64le")){
++				return "file:///opt/mongodb/";
++			}
+ 			return "https://fastdl.mongodb.org/";
+ 		}
+ 		
+diff --git a/src/main/java/de/flapdoodle/embed/mongo/distribution/Version.java b/src/main/java/de/flapdoodle/embed/mongo/distribution/Version.java
+index ce896af..2383614 100644
+--- a/src/main/java/de/flapdoodle/embed/mongo/distribution/Version.java
++++ b/src/main/java/de/flapdoodle/embed/mongo/distribution/Version.java
+@@ -212,11 +212,15 @@ public enum Version implements IFeatureAwareVersion {
+   V3_6_0("3.6.0", Feature.SYNC_DELAY, Feature.STORAGE_ENGINE, Feature.ONLY_64BIT, Feature.NO_CHUNKSIZE_ARG, Feature.MONGOS_CONFIGDB_SET_STYLE, Feature.NO_HTTP_INTERFACE_ARG, Feature.ONLY_WITH_SSL, Feature.ONLY_WINDOWS_2008_SERVER, Feature.NO_SOLARIS_SUPPORT, Feature.NO_BIND_IP_TO_LOCALHOST),
+   @Deprecated
+   V3_6_2("3.6.2", Feature.SYNC_DELAY, Feature.STORAGE_ENGINE, Feature.ONLY_64BIT, Feature.NO_CHUNKSIZE_ARG, Feature.MONGOS_CONFIGDB_SET_STYLE, Feature.NO_HTTP_INTERFACE_ARG, Feature.ONLY_WITH_SSL, Feature.ONLY_WINDOWS_2008_SERVER, Feature.NO_SOLARIS_SUPPORT, Feature.NO_BIND_IP_TO_LOCALHOST),
++V3_6_14("3.6.14", Feature.SYNC_DELAY, Feature.STORAGE_ENGINE, Feature.ONLY_64BIT, Feature.NO_CHUNKSIZE_ARG, Feature.MONGOS_CONFIGDB_SET_STYLE, Feature.NO_HTTP_INTERFACE_ARG, Feature.ONLY_WITH_SSL, Feature.ONLY_WINDOWS_2008_SERVER, Feature.NO_SOLARIS_SUPPORT, Feature.NO_BIND_IP_TO_LOCALHOST), 
++
+   @Deprecated
+   V3_6_3("3.6.3", Feature.SYNC_DELAY, Feature.STORAGE_ENGINE, Feature.ONLY_64BIT, Feature.NO_CHUNKSIZE_ARG, Feature.MONGOS_CONFIGDB_SET_STYLE, Feature.NO_HTTP_INTERFACE_ARG, Feature.ONLY_WITH_SSL, Feature.ONLY_WINDOWS_2008_SERVER, Feature.NO_SOLARIS_SUPPORT, Feature.NO_BIND_IP_TO_LOCALHOST),
+ 
+   V3_6_5("3.6.5", Feature.SYNC_DELAY, Feature.STORAGE_ENGINE, Feature.ONLY_64BIT, Feature.NO_CHUNKSIZE_ARG, Feature.MONGOS_CONFIGDB_SET_STYLE, Feature.NO_HTTP_INTERFACE_ARG, Feature.ONLY_WITH_SSL, Feature.ONLY_WINDOWS_2008_SERVER, Feature.NO_SOLARIS_SUPPORT, Feature.NO_BIND_IP_TO_LOCALHOST),
+   V4_0_2("4.0.2", Feature.SYNC_DELAY, Feature.STORAGE_ENGINE, Feature.ONLY_64BIT, Feature.NO_CHUNKSIZE_ARG, Feature.MONGOS_CONFIGDB_SET_STYLE, Feature.NO_HTTP_INTERFACE_ARG, Feature.ONLY_WITH_SSL, Feature.ONLY_WINDOWS_2008_SERVER, Feature.NO_SOLARIS_SUPPORT, Feature.NO_BIND_IP_TO_LOCALHOST),
++  V4_0_12("4.0.12", Feature.SYNC_DELAY, Feature.STORAGE_ENGINE, Feature.ONLY_64BIT, Feature.NO_CHUNKSIZE_ARG, Feature.MONGOS_CONFIGDB_SET_STYLE, Feature.NO_HTTP_INTERFACE_ARG, Feature.ONLY_WITH_SSL, Feature.ONLY_WINDOWS_2008_SERVER, Feature.NO_SOLARIS_SUPPORT, Feature.NO_BIND_IP_TO_LOCALHOST),
++
+ 
+   LATEST_NIGHTLY("latest", Feature.SYNC_DELAY, Feature.STORAGE_ENGINE, Feature.ONLY_64BIT, Feature.NO_CHUNKSIZE_ARG, Feature.MONGOS_CONFIGDB_SET_STYLE, Feature.NO_HTTP_INTERFACE_ARG, Feature.ONLY_WITH_SSL, Feature.ONLY_WINDOWS_2008_SERVER, Feature.NO_SOLARIS_SUPPORT),
+ 
+@@ -283,8 +287,8 @@ public enum Version implements IFeatureAwareVersion {
+ 		V3_3(V3_3_1),
+ 		V3_4(V3_4_15),
+ 		V3_5(V3_5_5),
+-		V3_6(V3_6_5),
+-		V4_0(V4_0_2),
++		V3_6(V3_6_14),
++		V4_0(V4_0_12),
+ 
+ 		@Deprecated
+ 		LEGACY(V3_6),
