@@ -23,6 +23,7 @@ else
     WORKDIR=~
 fi
 
+VERSION=5.1.0
 
 # install dependencies
 yum update -y
@@ -65,7 +66,7 @@ mvn clean verify
 cd $WORKDIR
 git clone https://github.com/apache/oozie
 cd oozie
-git checkout release-5.1.0
+git checkout release-$VERSION
 # Test cases require hadoop and pig
 wget http://public-repo-1.hortonworks.com/HDP/centos7-ppc/3.x/updates/3.1.0.0/hdp.repo
 cp hdp.repo /etc/yum.repos.d/

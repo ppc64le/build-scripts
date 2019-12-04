@@ -16,6 +16,8 @@
 # ----------------------------------------------------------------------------
 #!/bin/bash
 
+VERSION=1.8.2
+
 # install dependencies
 yum update -y
 yum install -y git subversion curl java-1.8.0-openjdk ant make maven gcc cmake asciidoc source-highlight flex bison doxygen rubygem-rake\
@@ -53,7 +55,7 @@ npm install -g grunt-cli
 
 # Install AVRO
 git clone https://github.com/apache/avro/
-cd avro	&& git checkout release-1.8.2
+cd avro	&& git checkout release-$VERSION
 mvn clean install -DskipTests
 mvn test
 
