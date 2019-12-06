@@ -14,6 +14,13 @@
 
 #!/bin/bash
 
+if [ "$#" -gt 0 ]
+then
+    VERSION=$1
+else
+    VERSION="calcite-1.19.0"
+fi
+
 # Install dependencies.
 yum update -y
 yum install -y git wget java-11-openjdk-devel java-11-openjdk which 
@@ -29,7 +36,7 @@ export PATH=${M2_HOME}/bin:${PATH}
 #Clone and build source
 git clone https://github.com/apache/calcite
 cd calcite
-git checkout calcite-1.19.0 
+git checkout $VERSION 
 sed -i '1100s/http/https/' pom.xml 
 mvn clean install -DskipTests
 
