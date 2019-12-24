@@ -82,7 +82,7 @@ RUN apt-get autoremove -y && apt-get remove -y wget
 WORKDIR /tf
 EXPOSE 8888
 
-RUN apt-get update && apt-get install -y wget libhdf5-dev
+RUN apt-get update && apt-get install -y wget libhdf5-dev liblapack-dev gfortran
 
 # These get installed from the tensorflow .whl, but are installed earlier to cache the installs
 RUN ${PIP} --no-cache-dir install --upgrade \
@@ -98,7 +98,8 @@ RUN ${PIP} --no-cache-dir install --upgrade \
             werkzeug \
             markdown \
             pbr \
-            h5py
+            h5py \
+            pybind11
 
 # Options:
 #   tensorflow

@@ -70,12 +70,14 @@ RUN apt-get update && apt-get install -y \
     gfortran-5 \
     git \
     libopenblas-dev \
+    liblapack-dev \
     openjdk-8-jdk \
     ${PYTHON}-dev \
     swig
 
 RUN ${PIP} --no-cache-dir install \
     cython \
+    pybind11 \
     numpy && \
     ${PIP} --no-cache-dir install \
     Pillow \

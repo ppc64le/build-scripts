@@ -41,7 +41,7 @@ RUN ${PIP} --no-cache-dir install --upgrade \
 # Some TF tools expect a "python" binary
 RUN ln -s $(which ${PYTHON}) /usr/local/bin/python
 
-RUN apt-get update && apt-get install -y wget libhdf5-dev pkg-config
+RUN apt-get update && apt-get install -y wget libhdf5-dev pkg-config liblapack-dev gfortran
 
 # These get installed from the tensorflow .whl, but are installed earlier to cache the installs
 RUN ${PIP} --no-cache-dir install --upgrade \
@@ -57,7 +57,8 @@ RUN ${PIP} --no-cache-dir install --upgrade \
             werkzeug \
             markdown \
             pbr \
-            h5py
+            h5py \
+            pybind11
 
 # Options:
 #   tensorflow
