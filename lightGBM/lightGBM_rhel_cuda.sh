@@ -3,7 +3,7 @@
 # Package	: LightGBM
 # Version	: 2.2.4
 # Source repo			: https://github.com/bordaw/LightGBM-CUDA
-# Source repo for this script	: https://github.com/bordaw/LightGBM-CUDA
+# Source repo for this script	: https://raw.githubusercontent.com/harinreddy/build-scripts/master/lightGBM/lightGBM_rhel_cuda.sh
 # Tested on	: RHEL_7.6  
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Hari Reddy <hnreddy@us.ibm.com>
@@ -16,7 +16,9 @@
 #
 # ----------------------------------------------------------------------------
 
-
+# This script builds LighGBM-CUDA package maintianed in https://github.com/bordaw/LightGBM-CUDA
+# Prerequisites:  Nvidia CUDA 10.0
+#
 
 
 
@@ -33,8 +35,9 @@ sudo yum install -y wget
 #sudo yum install -y gcc gcc-c++ git vim  make gcc-gfortran
 sudo yum install -y gcc gcc-c++ git vim make gcc-gfortran
 
-if  [ $test ]
-then
+#
+# Install cmake-3.12.3
+#
 cd $WORK
 wget https://cmake.org/files/v3.12/cmake-3.12.3.tar.gz
 tar -xvf cmake-3.12.3.tar.gz
@@ -42,6 +45,9 @@ cd cmake-3.12.3
 ./bootstrap --prefix=/usr/local
 make
 sudo make install
+#
+# Download and build LightGBM-CUDA 
+#
 cd $HOME
 #Compile light GBM with CUDA support 
 git clone --recursive https://github.com/bordaw/LightGBM-CUDA.git
@@ -54,11 +60,15 @@ export CXX='g++ -O3'
  cmake ..   -DUSE_GPU=1 -DUSE_CH=1
  make
 
+#
+#  The folllowing is optional, please comment if this is not needed
+#
+#
+
 #Build the python package
+
 cd $HOME
-
 #      Compile and install Python
-
 
 wget https://www.python.org/ftp/python/3.6.4/Python-3.6.4.tgz
 tar -xvf Python-3.6.4.tgz
@@ -87,17 +97,3 @@ sudo rm -rf dist build compile
 sudo /usr/local/python3.6.4/bin/pip uninstall lightgbm
 sudo /usr/local/python3.6.4/bin/python setup.py sdist bdist_wheel
 sudo /usr/local/python3.6.4/bin/pip install dist/lightgbm-2.2.4-py3-none-any.whl
-
-#   dwonload this python script to test lightgbm installation
-
-cd $HOME
-
-#rm -rf lightgbm_speed_test.py
-
-#wget  https://raw.githubusercontent.com/sh1ng/arboretum_benchmark/master/src/lightgbm_speed_test.py
-
-sudo /usr/local/python3.6.4/bin/pip install pandas
-
-fi
-cd $HOME
-/usr/local/python3.6.4/bin/python lightgbm_speed_test.py
