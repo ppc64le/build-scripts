@@ -2,11 +2,12 @@
 #
 # Package	: LightGBM
 # Version	: 2.2.4
-# Source repo			: https://github.com/bordaw/LightGBM-CUDA
-# Source repo for this script	: https://raw.githubusercontent.com/harinreddy/build-scripts/master/lightGBM/lightGBM_rhel_cuda.sh
+# Source repofor lightgbm 	: https://github.com/bordaw/LightGBM-CUDA
+# Maintainer	: Rajesh Bordawekar <bordaw@us.ibm.com>
+# Source this script	: https://raw.githubusercontent.com/harinreddy/build-scripts/master/lightGBM/lightGBM_rhel_cuda.sh
+# Maintainer	: Hari Reddy <hnreddy@us.ibm.com>
 # Tested on	: RHEL_7.6  
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Hari Reddy <hnreddy@us.ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode with sudo capability  on given
 # ==========  platform using the mentioned version of the package.
@@ -18,7 +19,7 @@
 
 # This script builds LighGBM-CUDA package maintianed in https://github.com/bordaw/LightGBM-CUDA
 # Prerequisites:  Nvidia CUDA 10.0
-#
+# 
 
 
 
