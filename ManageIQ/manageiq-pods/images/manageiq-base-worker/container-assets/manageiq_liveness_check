@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ruby ${APP_ROOT}/lib/workers/bin/heartbeat_check.rb --heartbeat-file=${APP_ROOT}/tmp/worker.hb
