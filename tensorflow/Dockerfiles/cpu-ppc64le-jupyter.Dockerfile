@@ -92,11 +92,11 @@ ARG TF_PACKAGE=tensorflow
 # CACHE_STOP is used to rerun future commands, otherwise downloading the .whl will be cached and will not pull the most recent version
 ARG CACHE_STOP=1
 RUN if [ ${TF_PACKAGE} = tensorflow-gpu ]; then \
-        BASE=https://powerci.osuosl.org/job/TensorFlow_PPC64LE_GPU_Release_Build/lastSuccessfulBuild/; \
+        BASE=https://powerci.osuosl.org/job/TensorFlow2_PPC64LE_GPU_Release_Build/lastSuccessfulBuild/; \
     elif [ ${TF_PACKAGE} = tf-nightly-gpu ]; then \
         BASE=https://powerci.osuosl.org/job/TensorFlow_PPC64LE_GPU_Nightly_Artifact/lastSuccessfulBuild/; \
     elif [ ${TF_PACKAGE} = tensorflow ]; then \
-        BASE=https://powerci.osuosl.org/job/TensorFlow_PPC64LE_CPU_Release_Build/lastSuccessfulBuild/; \
+        BASE=https://powerci.osuosl.org/job/TensorFlow2_PPC64LE_CPU_Release_Build/lastSuccessfulBuild/; \
     elif [ ${TF_PACKAGE} = tf-nightly ]; then \
         BASE=https://powerci.osuosl.org/job/TensorFlow_PPC64LE_CPU_Nightly_Artifact/lastSuccessfulBuild/; \
     fi; \
