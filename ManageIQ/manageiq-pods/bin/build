@@ -1,0 +1,81 @@
+#!/bin/bash
+
+TAG=ubi7-latest
+
+MIQ_REF=${MIQ_REF:-master}
+SUI_REF=${SUI_REF:-master}
+APPLIANCE_REF=${APPLIANCE_REF:-master}
+
+MIQ_ORG=${MIQ_ORG:-ManageIQ}
+SUI_ORG=${SUI_ORG:-ManageIQ}
+APPLIANCE_ORG=${APPLIANCE_ORG:-ManageIQ}
+
+ARCH=`uname -m`
+
+NPM_REGISTRY_OVERRIDE=${NPM_REGISTRY_OVERRIDE:-""}
+
+while getopts "t:d:r:nhp" opt; do
+  case $opt in
+    d) IMAGE_DIR=$OPTARG ;;
+    n) NO_CACHE="true" ;;
+    p) PUSH="true" ;;
+    r) REPO=$OPTARG ;;
+    t) TAG=$OPTARG ;;
+    h) echo "Usage: $0 -d IMAGE_DIR -r IMAGE_REPOSITORY [-hnp] [ -t IMAGE_TAG ]"; exit 1
+  esac
+done
+
+if [ -z "$IMAGE_DIR" ]; then
+  echo "Required parameter for image directory (-d) is missing"
+  exit 1
+fi
+
+if [ -z "$REPO" ]; then
+  echo "Required parameter for repository (-r) is missing"
+  exit 1
+fi
+
+set -e
+
+pushd $IMAGE_DIR
+  cmd="docker build --tag $REPO/manageiq-base:$TAG \
+                    --build-arg MIQ_REF=$MIQ_REF \
+                    --build-arg SUI_REF=$SUI_REF\
+                    --build-arg APPLIANCE_REF=$APPLIANCE_REF \
+                    --build-arg MIQ_ORG=$MIQ_ORG \
+                    --build-arg SUI_ORG=$SUI_ORG \
+                    --build-arg APPLIANCE_ORG=$APPLIANCE_ORG \
+		    --build-arg ARCH=$ARCH"
+
+  if [ -n "$NO_CACHE" ]; then
+    cmd+=" --no-cache"
+  fi
+
+  echo "Building manageiq-base: $cmd"
+  $cmd manageiq-base
+
+  build_images="manageiq-base-worker manageiq-orchestrator manageiq-webserver-worker"
+  for image in $build_images; do
+    cmd="docker build -t $REPO/$image:$TAG --build-arg FROM_REPO=$REPO --build-arg FROM_TAG=$TAG --build-arg ARCH=$ARCH $image"
+    echo "Building $image: $cmd"
+    $cmd
+  done
+
+  cmd="docker build --tag $REPO/manageiq-ui-worker:$TAG \
+                    --build-arg FROM_REPO=$REPO \
+                    --build-arg FROM_TAG=$TAG \
+		    --build-arg ARCH=$ARCH \
+                    --build-arg NPM_REGISTRY_OVERRIDE=${NPM_REGISTRY_OVERRIDE} \
+                    manageiq-ui-worker"
+  echo "Building manageiq-ui-worker: $cmd"
+  $cmd
+popd
+
+if [ -n "$PUSH" ]; then
+  push_images="manageiq-base manageiq-base-worker manageiq-orchestrator manageiq-webserver-worker manageiq-ui-worker"
+  for image in $push_images; do
+    cmd="docker push $REPO/$image:$TAG"
+    echo "Pushing: $cmd"
+    $cmd
+  done
+fi

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+[[ -s /etc/default/evm ]] && source /etc/default/evm
+
+function urlescape() {
+  PAYLOAD="$1" ruby -rcgi -e "puts CGI.escape(ENV['PAYLOAD'])"
+}
+
+safeuser=$(urlescape ${DATABASE_USER})
+safepass=$(urlescape ${DATABASE_PASSWORD})
+
+export DATABASE_URL="postgresql://${safeuser}:${safepass}@${DATABASE_HOSTNAME}:${DATABASE_PORT}/${DATABASE_NAME}?encoding=utf8&pool=5&wait_timeout=5"

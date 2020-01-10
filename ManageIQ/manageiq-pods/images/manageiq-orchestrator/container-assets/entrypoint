@@ -1,0 +1,68 @@
+#!/bin/bash
+
+set -x
+[[ -s ${APP_ROOT}/container_env ]] && source ${APP_ROOT}/container_env
+
+function check_svc_status() {
+  local SVC_NAME=$1 SVC_PORT=$2
+
+  [[ $# -lt 2 ]] && echo "Error something seems wrong, we need at least two parameters to check service status" && exit 1
+
+  echo "== Checking ${SVC_NAME}:$SVC_PORT status =="
+
+  while true; do
+    ncat ${SVC_NAME} ${SVC_PORT} < /dev/null && break
+    sleep 5
+  done
+  echo "${SVC_NAME}:${SVC_PORT} - accepting connections"
+}
+
+check_svc_status ${MEMCACHED_SERVICE_HOST} ${MEMCACHED_SERVICE_PORT}
+check_svc_status ${DATABASE_HOSTNAME} ${DATABASE_PORT}
+
+echo "== Writing encryption key =="
+cat > /var/www/miq/vmdb/certs/v2_key << KEY
+---
+:algorithm: aes-256-cbc
+:key: ${ENCRYPTION_KEY}
+KEY
+
+echo "${GUID}" > ${APP_ROOT}/GUID
+
+echo "== Checking deployment status =="
+
+cd ${APP_ROOT}
+bin/rake evm:deployment_status
+case $? in
+  3) # new_deployment
+    echo "== Starting New Deployment =="
+
+    pushd ${APP_ROOT}
+      set -e
+      REGION=${DATABASE_REGION} bin/rake db:migrate
+      REGION=${DATABASE_REGION} bin/rails runner "MiqDatabase.seed; MiqRegion.seed"
+
+      echo "== Setting admin password =="
+      bin/rails runner "EvmDatabase.seed_primordial; user = User.lookup_by_userid('admin').update_attributes!(:password => ENV['APPLICATION_ADMIN_PASSWORD'])"
+    popd
+  ;;
+  4) # new_replica
+    echo "New replica is not supported, exiting.."
+    exit 1
+  ;;
+  5) # redeployment
+    echo "== Starting Re-deployment =="
+  ;;
+  6) # upgrade
+    echo "== Starting Upgrade =="
+    pushd ${APP_ROOT}
+      bin/rake db:migrate
+      [ "$?" -ne "0" ] && echo "ERROR: Failed to migrate database" && exit 1
+    popd
+  ;;
+  *)
+    echo "Could not find a suitable deployment type, exiting.."
+    exit 1
+esac
+
+exec ruby /var/www/miq/vmdb/lib/workers/bin/evm_server.rb
