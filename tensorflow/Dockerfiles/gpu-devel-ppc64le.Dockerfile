@@ -26,7 +26,7 @@ ARG CUDNN=7.6.4.38-1
 ARG CUDNN_MAJOR_VERSION=7
 
 # Needed for string substitution
-# SHELL ["/bin/bash", "-c"]
+SHELL ["/bin/bash", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
         cuda-command-line-tools-${CUDA/./-} \
