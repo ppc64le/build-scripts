@@ -19,19 +19,27 @@
 # throughout. Please refer to the the TensorFlow dockerfiles documentation
 # for more information.
 
-FROM nvidia/cuda-ppc64le:10.0-base-ubuntu18.04
+FROM nvidia/cuda-ppc64le:10.1-base-ubuntu18.04
 
+ARG CUDA=10.1
+ARG CUDNN=7.6.4.38-1
+
+# Needed for string substitution
+SHELL ["/bin/bash", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
-        cuda-command-line-tools-10-0 \
-        cuda-cublas-10-0 \
-        cuda-cufft-10-0 \
-        cuda-curand-10-0 \
-        cuda-cusolver-10-0 \
-        cuda-cusparse-10-0 \
+        cuda-command-line-tools-${CUDA/./-} \
+        # There appears to be a regression in libcublas10=10.2.2.89-1 which
+        # prevents cublas from initializing in TF. See
+        # https://github.com/tensorflow/tensorflow/issues/9489#issuecomment-562394257
+        libcublas10=10.2.1.243-1 \
+        cuda-nvrtc-${CUDA/./-} \
+        cuda-cufft-${CUDA/./-} \
+        cuda-curand-${CUDA/./-} \
+        cuda-cusolver-${CUDA/./-} \
+        cuda-cusparse-${CUDA/./-} \
         curl \
-        libcudnn7=7.6.4.38-1+cuda10.0 \
-        libnccl2=2.4.8-1+cuda10.0 \
+        libcudnn7=${CUDNN}+cuda${CUDA} \
         libfreetype6-dev \
         libhdf5-serial-dev \
         libzmq3-dev \
@@ -110,11 +118,11 @@ ARG TF_PACKAGE=tensorflow
 # CACHE_STOP is used to rerun future commands, otherwise downloading the .whl will be cached and will not pull the most recent version
 ARG CACHE_STOP=1
 RUN if [ ${TF_PACKAGE} = tensorflow-gpu ]; then \
-        BASE=https://powerci.osuosl.org/job/TensorFlow_PPC64LE_GPU_Release_Build/lastSuccessfulBuild/; \
+        BASE=https://powerci.osuosl.org/job/TensorFlow2_PPC64LE_GPU_Release_Build/lastSuccessfulBuild/; \
     elif [ ${TF_PACKAGE} = tf-nightly-gpu ]; then \
         BASE=https://powerci.osuosl.org/job/TensorFlow_PPC64LE_GPU_Nightly_Artifact/lastSuccessfulBuild/; \
     elif [ ${TF_PACKAGE} = tensorflow ]; then \
-        BASE=https://powerci.osuosl.org/job/TensorFlow_PPC64LE_CPU_Release_Build/lastSuccessfulBuild/; \
+        BASE=https://powerci.osuosl.org/job/TensorFlow2_PPC64LE_CPU_Release_Build/lastSuccessfulBuild/; \
     elif [ ${TF_PACKAGE} = tf-nightly ]; then \
         BASE=https://powerci.osuosl.org/job/TensorFlow_PPC64LE_CPU_Nightly_Artifact/lastSuccessfulBuild/; \
     fi; \
