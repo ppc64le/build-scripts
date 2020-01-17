@@ -41,6 +41,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         git \
         libfreetype6-dev \
         libhdf5-dev \
+        liblapack-dev \
         libpng-dev \
         libtool \
         libcudnn7=${CUDNN_VERSION}-1+cuda10.0 \
@@ -74,6 +75,7 @@ RUN pip --no-cache-dir install \
     keras_preprocessing \
     mock \
     numpy \
+    pybind11 \
     requests
 
 RUN wget --no-verbose ${TF_WHEEL_URL}/${TF_WHEEL_FILE} && \
