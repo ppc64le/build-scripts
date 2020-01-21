@@ -31,7 +31,7 @@ export SCRIPT_DIR="${PWD}"
 cd onnx
 
 pip install wheel
-
+pip install cython
 git submodule update --init --recursive
 
 bash -c 'export CMAKE_ARGS="-DONNX_WERROR=ON"; \

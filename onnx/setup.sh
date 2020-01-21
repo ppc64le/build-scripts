@@ -27,14 +27,13 @@ if [ ! -n "$NUMCORES" ]; then
 fi
 echo Using $NUMCORES cores
 
-export DEBIAN_FRONTEND=noninteractive
 
-sudo apt-get update 
+sudo apt-get update
 
 sudo apt-get install -y \
          protobuf-compiler \
          libprotobuf-dev \
-         cmake 
+         cmake
 
 # Use python3 or python2 venv based on env variable PYTHON_VERSION
 if [ "${PYTHON_VERSION}" = "python3" ]; then
