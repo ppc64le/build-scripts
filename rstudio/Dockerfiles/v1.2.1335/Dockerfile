@@ -3,7 +3,7 @@ MAINTAINER      "Priya Seth <sethp@us.ibm.com>"
 
 ENV     PATH /usr/lib/rstudio-server/bin/:$PATH
 ENV     DEBIAN_FRONTEND noninteractive
-ENV 	RStduio_VERSION 1.2.1335
+ENV 	RStudio_VERSION 1.2.1335
 RUN     rm -rf /var/lib/apt/lists/ && \
         apt-get -y update && \
         apt-get install -y ant apparmor-utils autotools-dev build-essential \
