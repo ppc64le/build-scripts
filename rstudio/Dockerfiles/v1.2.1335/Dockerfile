@@ -13,12 +13,12 @@ RUN     rm -rf /var/lib/apt/lists/ && \
             libboost-all-dev pkg-config psmisc python-dev python-setuptools \
             r-base r-base-dev pandoc pandoc-citeproc unzip uuid-dev wget \
             zlib1g-dev sudo && \
-        wget https://github.com/rstudio/rstudio/archive/v${RStduio_VERSION}.tar.gz && \
-        tar zxvf v${RStduio_VERSION}.tar.gz && \
-        mkdir -p /rstudio-${RStduio_VERSION}/build && \
-        cd /rstudio-${RStduio_VERSION}/dependencies/linux && \
+        wget https://github.com/rstudio/rstudio/archive/v${RStudio_VERSION}.tar.gz && \
+        tar zxvf v${RStudio_VERSION}.tar.gz && \
+        mkdir -p /rstudio-${RStudio_VERSION}/build && \
+        cd /rstudio-${RStudio_VERSION}/dependencies/linux && \
         ./install-dependencies-debian --exclude-qt-sdk && \
-        cd /rstudio-${RStduio_VERSION}/build && \
+        cd /rstudio-${RStudio_VERSION}/build && \
         cmake .. -DRSTUDIO_TARGET=Server -DCMAKE_BUILD_TYPE=Release && \
         make install && \
         useradd -r rstudio-server  && \
