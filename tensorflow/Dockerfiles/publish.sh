@@ -9,6 +9,7 @@ BUILD_ONLY=false
 SKIP_PULL=false
 DATE=$(date +%s)
 IMAGE="all"
+BASE="default"
 
 usage() {
     cat <<EOM
@@ -17,6 +18,7 @@ Usage:
     -r                  Release type to build. Accepted values are: all, dev, nightly, or release.
     -i                  Image type to build. Accepted values are: all, cpu, or gpu.
     -t                  Image tag
+    -u                  base URL to pull the whl file from
     -d                  Dry run
     -b                  Build only
     -s                  Skip pull of latest image before build
@@ -24,7 +26,7 @@ EOM
 }
 
 # Get input
-while getopts "hi:r:t:dbs" opt; do
+while getopts "hi:r:t:u:dbs" opt; do
     case "$opt" in
     h)
         usage
@@ -35,6 +37,8 @@ while getopts "hi:r:t:dbs" opt; do
     r)  RELEASE_FLAG=$OPTARG
         ;;
     t)  TAG=$OPTARG
+        ;;
+    u)  BASE=$OPTARG
         ;;
     d)  DRY_RUN=true
         ;;
@@ -69,7 +73,27 @@ fi
 
 build_push ()
 {
-    echo "Building Docker file with options: Type=$TYPE, Release=$RELEASE, Python_3=$PYTHON_3, JUPYTER=$JUPYTER_ARG"
+    echo "Building Docker file with options: Type=$TYPE, Release=$RELEASE, Python_3=$PYTHON_3, JUPYTER=$JUPYTER_ARG, BASE=$BASE"
+    if [ $BASE = "default" ]; then
+        # Need to determine url based on TYPE and RELEASE
+        if [ $TYPE = "gpu" ]; then
+           if [ $RELEASE = "release" ]; then
+               BASE_URL="https://powerci.osuosl.org/job/TensorFlow2_PPC64LE_GPU_Release_Build/lastSuccessfulBuild/"
+           else
+               BASE_URL="https://powerci.osuosl.org/job/TensorFlow_PPC64LE_GPU_Nightly_Artifact/lastSuccessfulBuild/"
+           fi
+        else
+           if [ $RELEASE = "release" ]; then
+               BASE_URL="https://powerci.osuosl.org/job/TensorFlow2_PPC64LE_CPU_Release_Build/lastSuccessfulBuild/"
+           else
+               BASE_URL="https://powerci.osuosl.org/job/TensorFlow_PPC64LE_CPU_Nightly_Artifact/lastSuccessfulBuild/"
+           fi
+        fi
+    else
+        BASE_URL=$BASE
+    fi
+
+
     if [ $TYPE = "gpu" ]; then
         ARG_SUFFIX="-gpu"
         FILE_PREFIX="gpu"
@@ -79,13 +103,13 @@ build_push ()
     fi
     if [ $RELEASE = "dev" ]; then
         DEV="-devel"
-        TF_PACKAGE=""
+        BASE_URL=""
     elif [ $RELEASE = "release" ]; then
-        TF_PACKAGE="--build-arg TF_PACKAGE=tensorflow${ARG_SUFFIX}"
+        BASE_URL="--build-arg BASE_URL=${BASE_URL}"
         CACHE_STOP="--build-arg CACHE_STOP=${DATE}"
         DEV=""
     elif [ $RELEASE = "nightly" ]; then
-        TF_PACKAGE="--build-arg TF_PACKAGE=tf-nightly${ARG_SUFFIX}"
+        BASE_URL="--build-arg BASE_URL=${BASE_URL}"
         CACHE_STOP="--build-arg CACHE_STOP=${DATE}"
         DEV=""
     fi
@@ -108,7 +132,7 @@ build_push ()
         CACHE_FROM="--cache-from=${DOCKER_SERVER}/${REPO}:${TAG}${ARG_SUFFIX}${DEV}${PY3}${JUPYTER}"
     fi
     PULL="docker pull ${DOCKER_SERVER}/${REPO}:${TAG}${ARG_SUFFIX}${DEV}${PY3}${JUPYTER}"
-    BUILD="docker build $TF_PACKAGE $CACHE_STOP $PYTHON $CACHE_FROM -f ${SCRIPT_DIR}/${FILE_PREFIX}${DEV}-ppc64le${JUPYTER}.Dockerfile -t ${DOCKER_SERVER}/${REPO}:${TAG}${ARG_SUFFIX}${DEV}${PY3}${JUPYTER} ${SCRIPT_DIR}"
+    BUILD="docker build $BASE_URL $CACHE_STOP $PYTHON $CACHE_FROM -f ${SCRIPT_DIR}/${FILE_PREFIX}${DEV}-ppc64le${JUPYTER}.Dockerfile -t ${DOCKER_SERVER}/${REPO}:${TAG}${ARG_SUFFIX}${DEV}${PY3}${JUPYTER} ${SCRIPT_DIR}"
     PUSH="docker push ${DOCKER_SERVER}/${REPO}:${TAG}${ARG_SUFFIX}${DEV}${PY3}${JUPYTER}"
     if $DRY_RUN; then
         if ! $SKIP_PULL; then
