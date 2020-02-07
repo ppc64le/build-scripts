@@ -109,27 +109,13 @@ RUN ${PIP} --no-cache-dir install --upgrade \
             h5py \
             pybind11
 
-# Options:
-#   tensorflow
-#   tensorflow-gpu
-#   tf-nightly
-#   tf-nightly-gpu
-ARG TF_PACKAGE=tensorflow
 # CACHE_STOP is used to rerun future commands, otherwise downloading the .whl will be cached and will not pull the most recent version
 ARG CACHE_STOP=1
-RUN if [ ${TF_PACKAGE} = tensorflow-gpu ]; then \
-        BASE=https://powerci.osuosl.org/job/TensorFlow2_PPC64LE_GPU_Release_Build/lastSuccessfulBuild/; \
-    elif [ ${TF_PACKAGE} = tf-nightly-gpu ]; then \
-        BASE=https://powerci.osuosl.org/job/TensorFlow_PPC64LE_GPU_Nightly_Artifact/lastSuccessfulBuild/; \
-    elif [ ${TF_PACKAGE} = tensorflow ]; then \
-        BASE=https://powerci.osuosl.org/job/TensorFlow2_PPC64LE_CPU_Release_Build/lastSuccessfulBuild/; \
-    elif [ ${TF_PACKAGE} = tf-nightly ]; then \
-        BASE=https://powerci.osuosl.org/job/TensorFlow_PPC64LE_CPU_Nightly_Artifact/lastSuccessfulBuild/; \
-    fi; \
-    MAJOR=`${PYTHON} -c 'import sys; print(sys.version_info[0])'`; \
+ARG BASE_URL=https://powerci.osuosl.org/job/TensorFlow_PPC64LE_GPU_Nightly_Artifact/lastSuccessfulBuild/
+RUN MAJOR=`${PYTHON} -c 'import sys; print(sys.version_info[0])'`; \
     MINOR=`${PYTHON} -c 'import sys; print(sys.version_info[1])'`; \
-    PACKAGE=$(wget --no-verbose -qO- ${BASE}"api/xml?xpath=//fileName&wrapper=artifacts" | grep -o "[^<>]*cp${MAJOR}${MINOR}[^<>]*.whl"); \
-    wget --no-verbose ${BASE}"artifact/tensorflow_pkg/"${PACKAGE}; \
+    PACKAGE=$(wget --no-verbose -qO- ${BASE_URL}"api/xml?xpath=//fileName&wrapper=artifacts" | grep -o "[^<>]*cp${MAJOR}${MINOR}[^<>]*.whl"); \
+    wget --no-verbose ${BASE_URL}"artifact/tensorflow_pkg/"${PACKAGE}; \
     ${PIP} install ${PACKAGE}
 
 RUN ${PYTHON} -m ipykernel.kernelspec
