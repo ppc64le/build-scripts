@@ -1,0 +1,22 @@
+diff --git a/awx/ui/package.json b/awx/ui/package.json
+index 35a12f8..d0a60f5 100644
+--- a/awx/ui/package.json
++++ b/awx/ui/package.json
+@@ -43,7 +43,6 @@
+     "babel-loader": "^7.1.2",
+     "babel-plugin-istanbul": "^4.1.5",
+     "babel-preset-env": "^1.6.0",
+-    "chromedriver": "^2.35.0",
+     "clean-webpack-plugin": "^0.1.16",
+     "copy-webpack-plugin": "^4.0.1",
+     "css-loader": "^0.28.5",
+diff --git a/installer/inventory b/installer/inventory
+index 5e67777..27bf85e 100644
+--- a/installer/inventory
++++ b/installer/inventory
+@@ -161,4 +161,4 @@ secret_key=awxsecret
+ #extra_nginx_include="/etc/nginx/awx_extra[.]conf"
+
+ # Set this to ".ppc64le" when building for Power platform
+-arch_suffix=""
++arch_suffix=".ppc64le"
