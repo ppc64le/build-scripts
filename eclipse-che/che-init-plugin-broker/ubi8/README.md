@@ -1,4 +1,4 @@
-# Steps for creating che-plugin-broker docker image on POWER
+# Steps for creating che-init-plugin-broker docker image on POWER
 
 1. Ensure that Latest docker version should be installed
 
