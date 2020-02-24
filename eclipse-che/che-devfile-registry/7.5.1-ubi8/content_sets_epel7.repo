@@ -1,0 +1,5 @@
+[epel-7]
+name=epel-7
+baseurl=https://download.fedoraproject.org/pub/epel/7/ppc64le/
+enabled=1
+gpgcheck=0
