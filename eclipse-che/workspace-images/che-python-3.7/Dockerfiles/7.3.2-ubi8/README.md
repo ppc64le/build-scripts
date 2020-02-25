@@ -1,4 +1,4 @@
-# Steps for creating che-python-3.7 docker image on POWER
+# Steps for creating che-python-3.7 docker image on POWER ..
  1. Ensure that Latest docker version should be installed
  2. Execute following commands:
  
