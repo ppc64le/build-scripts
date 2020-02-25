@@ -4,7 +4,7 @@
 # Version	: latest (0.9.0)
 # Source repo	: https://github.com/appsody/stacks/tree/master/incubator/java-microprofile
 # Tested on	: rhel_7.6
-# Script License: Eclipse Public License - v 2.0
+# Script License: Apache License, Version 2.0
 # Maintainer	: Vrushali Inamdar <vrushali.inamdar@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
