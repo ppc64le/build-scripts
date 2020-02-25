@@ -1,4 +1,4 @@
-# Steps for creating remote-plugin-node docker image on POWER
+# Steps for creating remote-plugin-node docker image on POWER ppc64le
 
  1. Ensure that Latest docker version should be installed
  2. Execute following commands:
