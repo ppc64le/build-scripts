@@ -1,0 +1,83 @@
+FROM adoptopenjdk/openjdk8-openj9:ubi
+ARG LIBERTY_VERSION=19.0.0.12
+ARG LIBERTY_SHA=b3a613cbad764a10ae57719ff9818c3bcfefdf8e
+ARG LIBERTY_BUILD_LABEL=cl191220191120-0300
+ARG LIBERTY_DOWNLOAD_URL=https://repo1.maven.org/maven2/io/openliberty/openliberty-runtime/$LIBERTY_VERSION/openliberty-runtime-$LIBERTY_VERSION.zip
+
+LABEL org.opencontainers.image.authors="Arthur De Magalhaes, Chris Potter" \
+      org.opencontainers.image.vendor="Open Liberty" \
+      org.opencontainers.image.url="https://openliberty.io/" \
+      org.opencontainers.image.source="https://github.com/OpenLiberty/ci.docker" \
+      org.opencontainers.image.version="$LIBERTY_VERSION" \
+      org.opencontainers.image.revision="$LIBERTY_BUILD_LABEL" \
+      vendor="Open Liberty" \
+      name="Open Liberty" \
+      version="$LIBERTY_VERSION" \
+      summary="Image for Open Liberty with IBM's SFJ and UBI minimal" \
+      description="This image contains the Open Liberty runtime with IBM's SFJ and Red Hat UBI minimal as the base OS.  For more information on this image please see https://github.com/OpenLiberty/ci.docker#building-an-application-image"
+
+COPY helpers /opt/ol/helpers
+COPY licenses /licenses
+
+# Install Open Liberty
+RUN yum -y install shadow-utils wget unzip \
+    && wget -q $LIBERTY_DOWNLOAD_URL -U UA-Open-Liberty-Docker -O /tmp/wlp.zip \
+    && echo "$LIBERTY_SHA  /tmp/wlp.zip" > /tmp/wlp.zip.sha1 \
+    && sha1sum -c /tmp/wlp.zip.sha1 \
+    && chmod -R u+x /usr/bin \
+    && unzip -q /tmp/wlp.zip -d /opt/ol \
+    && rm /tmp/wlp.zip \
+    && rm /tmp/wlp.zip.sha1 \
+    && adduser -u 1001 -r -g root -s /usr/sbin/nologin default \
+    && yum -y remove shadow-utils wget unzip \
+    && yum clean all \
+    && chown -R 1001:0 /opt/ol/wlp \
+    && chmod -R g+rw /opt/ol/wlp
+
+# Set Path Shortcuts
+ENV PATH=/opt/ol/wlp/bin:/opt/ol/docker/:/opt/ol/helpers/build:$PATH \
+    LOG_DIR=/logs \
+    WLP_OUTPUT_DIR=/opt/ol/wlp/output \
+    WLP_SKIP_MAXPERMSIZE=true
+
+# Configure Open Liberty
+RUN /opt/ol/wlp/bin/server create \
+    && rm -rf $WLP_OUTPUT_DIR/.classCache /output/workarea
+
+
+# Create symlinks && set permissions for non-root user
+RUN mkdir /logs \
+    && mkdir -p /opt/ol/wlp/usr/shared/resources/lib.index.cache \
+    && ln -s /opt/ol/wlp/usr/shared/resources/lib.index.cache /lib.index.cache \
+    && mkdir -p $WLP_OUTPUT_DIR/defaultServer \
+    && ln -s $WLP_OUTPUT_DIR/defaultServer /output \
+    && ln -s /opt/ol/wlp/usr/servers/defaultServer /config \
+    && mkdir -p /config/configDropins/defaults \
+    && mkdir -p /config/configDropins/overrides \
+    && ln -s /opt/ol/wlp /liberty \
+    && chown -R 1001:0 /config \
+    && chmod -R g+rw /config \
+    && chown -R 1001:0 /logs \
+    && chmod -R g+rw /logs \
+    && chown -R 1001:0 /opt/ol/wlp/usr \
+    && chmod -R g+rw /opt/ol/wlp/usr \
+    && chown -R 1001:0 /opt/ol/wlp/output \
+    && chmod -R g+rw /opt/ol/wlp/output \
+    && chown -R 1001:0 /opt/ol/helpers \
+    && chmod -R g+rw /opt/ol/helpers \
+    && mkdir /etc/wlp \
+    && chown -R 1001:0 /etc/wlp \
+    && chmod -R g+rw /etc/wlp \
+    && echo "<server description=\"Default Server\"><httpEndpoint id=\"defaultHttpEndpoint\" host=\"*\" /></server>" > /config/configDropins/defaults/open-default-port.xml
+
+
+#These settings are needed so that we can run as a different user than 1001 after server warmup
+ENV RANDFILE=/tmp/.rnd \
+    IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty,nonfatal,cacheDir=/output/.classCache/ ${IBM_JAVA_OPTIONS}"
+
+USER 1001
+
+EXPOSE 9080 9443
+
+ENTRYPOINT ["/opt/ol/helpers/runtime/docker-server.sh"]
+CMD ["/opt/ol/wlp/bin/server", "run", "defaultServer"]

@@ -14,7 +14,7 @@ ARG MIQ_ORG=ManageIQ
 ARG SUI_ORG=ManageIQ
 ARG APPLIANCE_ORG=ManageIQ
 
-ARG ARCH=ppc64le
+ARG ARCH=x86_64
 
 ENV TERM=xterm \
     CONTAINER=true \
@@ -63,10 +63,11 @@ RUN yum -y install --setopt=tsflags=nodocs \
                    &&               \
     yum clean all
 
-RUN yum -y install \
-	http://www.rpmfind.net/linux/fedora-secondary/releases/29/Everything/ppc64le/os/Packages/b/bison-3.0.5-1.fc29.ppc64le.rpm \
-	http://www.rpmfind.net/linux/fedora-secondary/releases/29/Everything/ppc64le/os/Packages/f/flex-2.6.1-10.fc29.ppc64le.rpm \
-	https://rpmfind.net/linux/fedora-secondary/releases/29/Everything/ppc64le/os/Packages/h/http-parser-2.8.1-2.fc29.ppc64le.rpm
+RUN if [ ${ARCH} = "x86_64" ] ; then export DISTRO="fedora/linux" ; else export DISTRO=fedora-secondary ; fi && \
+	yum -y install \
+	http://www.rpmfind.net/linux/${DISTRO}/releases/29/Everything/${ARCH}/os/Packages/b/bison-3.0.5-1.fc29.${ARCH}.rpm \
+	http://www.rpmfind.net/linux/${DISTRO}/releases/29/Everything/${ARCH}/os/Packages/f/flex-2.6.1-10.fc29.${ARCH}.rpm \
+	https://rpmfind.net/linux/${DISTRO}/releases/29/Everything/${ARCH}/os/Packages/h/http-parser-2.8.1-2.fc29.${ARCH}.rpm
 
 RUN wget https://download.tuxfamily.org/chrony/chrony-3.5.tar.gz && \
 	tar -zxvf chrony-3.5.tar.gz && cd chrony-3.5 && ./configure && make && make install

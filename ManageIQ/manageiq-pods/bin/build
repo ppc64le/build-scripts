@@ -64,7 +64,6 @@ pushd $IMAGE_DIR
   cmd="docker build --tag $REPO/manageiq-ui-worker:$TAG \
                     --build-arg FROM_REPO=$REPO \
                     --build-arg FROM_TAG=$TAG \
-		    --build-arg ARCH=$ARCH \
                     --build-arg NPM_REGISTRY_OVERRIDE=${NPM_REGISTRY_OVERRIDE} \
                     manageiq-ui-worker"
   echo "Building manageiq-ui-worker: $cmd"

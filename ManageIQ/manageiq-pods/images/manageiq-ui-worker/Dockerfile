@@ -10,8 +10,6 @@ MAINTAINER ManageIQ https://manageiq.org
 
 ARG NPM_REGISTRY_OVERRIDE
 
-ARG ARCH=ppc64le
-
 LABEL name="manageiq-ui-worker" \
       summary="ManageIQ user interface worker image"
 
@@ -21,9 +19,6 @@ RUN yum -y install httpd sudo --setopt=tsflags=nodocs && \
     yum clean all
 
 COPY container-assets/npm_registry /tmp/npm_registry
-COPY container-assets/phantomjs_rhel_7.6.sh /tmp/phantomjs_rhel_7.6.sh
-
-RUN if [ "${ARCH}" == "ppc64le" ] ; then sh /tmp/phantomjs_rhel_7.6.sh ; fi
 
 # Compile assets for ManageIQ UI
 RUN source /etc/default/evm && \
@@ -46,6 +41,7 @@ RUN source /etc/default/evm && \
 # Build service UI
 RUN source /etc/default/evm && \
     cd ${SUI_ROOT} && \
+    sed -i '/phantomjs/d' package.json && \
     yarn install && \
     yarn run available-languages && \
     yarn run build

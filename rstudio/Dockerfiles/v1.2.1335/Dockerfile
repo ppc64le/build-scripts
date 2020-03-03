@@ -3,7 +3,7 @@ MAINTAINER      "Priya Seth <sethp@us.ibm.com>"
 
 ENV     PATH /usr/lib/rstudio-server/bin/:$PATH
 ENV     DEBIAN_FRONTEND noninteractive
-ENV 	RStduio_VERSION 1.2.1335
+ENV 	RStudio_VERSION 1.2.1335
 RUN     rm -rf /var/lib/apt/lists/ && \
         apt-get -y update && \
         apt-get install -y ant apparmor-utils autotools-dev build-essential \
@@ -13,12 +13,12 @@ RUN     rm -rf /var/lib/apt/lists/ && \
             libboost-all-dev pkg-config psmisc python-dev python-setuptools \
             r-base r-base-dev pandoc pandoc-citeproc unzip uuid-dev wget \
             zlib1g-dev sudo && \
-        wget https://github.com/rstudio/rstudio/archive/v${RStduio_VERSION}.tar.gz && \
-        tar zxvf v${RStduio_VERSION}.tar.gz && \
-        mkdir -p /rstudio-${RStduio_VERSION}/build && \
-        cd /rstudio-${RStduio_VERSION}/dependencies/linux && \
+        wget https://github.com/rstudio/rstudio/archive/v${RStudio_VERSION}.tar.gz && \
+        tar zxvf v${RStudio_VERSION}.tar.gz && \
+        mkdir -p /rstudio-${RStudio_VERSION}/build && \
+        cd /rstudio-${RStudio_VERSION}/dependencies/linux && \
         ./install-dependencies-debian --exclude-qt-sdk && \
-        cd /rstudio-${RStduio_VERSION}/build && \
+        cd /rstudio-${RStudio_VERSION}/build && \
         cmake .. -DRSTUDIO_TARGET=Server -DCMAKE_BUILD_TYPE=Release && \
         make install && \
         useradd -r rstudio-server  && \
@@ -32,7 +32,7 @@ RUN     rm -rf /var/lib/apt/lists/ && \
         set -e && useradd -m -d /home/rstudio -G sudo rstudio && \
         echo rstudio:rstudio | chpasswd && \
         rstudio-server online && cd / && \
-        echo -e '#!/bin/bash\ncd /usr/sbin\nrstudio-server start' >> startup.sh && \
+        echo "#!/bin/bash\ncd /usr/sbin\nrstudio-server start" >> startup.sh && \
         chmod +x startup.sh
 
 EXPOSE 8787

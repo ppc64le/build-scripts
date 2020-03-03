@@ -19,44 +19,47 @@
 # throughout. Please refer to the the TensorFlow dockerfiles documentation
 # for more information.
 
-FROM nvidia/cuda-ppc64le:10.0-base-ubuntu18.04
+FROM nvidia/cuda-ppc64le:10.1-base-ubuntu18.04
 
+ARG CUDA=10.1
+ARG CUDNN=7.6.4.38-1
+ARG CUDNN_MAJOR_VERSION=7
+
+# Needed for string substitution
+SHELL ["/bin/bash", "-c"]
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
-        cuda-command-line-tools-10-0 \
-        cuda-cublas-dev-10-0 \
-        cuda-cudart-dev-10-0 \
-        cuda-cufft-dev-10-0 \
-        cuda-curand-dev-10-0 \
-        cuda-cusolver-dev-10-0 \
-        cuda-cusparse-dev-10-0 \
-        curl \
-        git \
-        libcudnn7=7.6.4.38-1+cuda10.0 \
-        libcudnn7-dev=7.6.4.38-1+cuda10.0 \
-        libnccl2=2.4.8-1+cuda10.0 \
-        libnccl-dev=2.4.8-1+cuda10.0 \
+        cuda-command-line-tools-${CUDA/./-} \
+        # There appears to be a regression in libcublas10=10.2.2.89-1 which
+        # prevents cublas from initializing in TF. See
+        # https://github.com/tensorflow/tensorflow/issues/9489#issuecomment-562394257
+        libcublas10=10.2.1.243-1 \
+        libcublas-dev=10.2.1.243-1 \
+        cuda-nvrtc-${CUDA/./-} \
+        cuda-nvrtc-dev-${CUDA/./-} \
+        cuda-cudart-dev-${CUDA/./-} \
+        cuda-cufft-dev-${CUDA/./-} \
+        cuda-curand-dev-${CUDA/./-} \
+        cuda-cusolver-dev-${CUDA/./-} \
+        cuda-cusparse-dev-${CUDA/./-} \
+        libcudnn7=${CUDNN}+cuda${CUDA} \
+        libcudnn7-dev=${CUDNN}+cuda${CUDA} \
         libcurl3-dev \
         libfreetype6-dev \
         libhdf5-serial-dev \
         libzmq3-dev \
         pkg-config \
-        python-dev \
         rsync \
         software-properties-common \
         unzip \
         zip \
         zlib1g-dev \
         wget \
+        git \
         && \
     rm -rf /var/lib/apt/lists/* && \
-    find /usr/local/cuda-10.0/lib64/ -type f -name 'lib*_static.a' -not -name 'libcudart_static.a' -delete && \
+    find /usr/local/cuda-${CUDA}/lib64/ -type f -name 'lib*_static.a' -not -name 'libcudart_static.a' -delete && \
     rm /usr/lib/powerpc64le-linux-gnu/libcudnn_static_v7.a
-
-# Link NCCL libray and header where the build script expects them.
-RUN mkdir /usr/local/cuda-10.0/lib &&  \
-    ln -s /usr/lib/powerpc64le-linux-gnu/libnccl.so.2 /usr/local/cuda/lib/libnccl.so.2 && \
-    ln -s /usr/include/nccl.h /usr/local/cuda/include/nccl.h
 
 # Configure the build for our CUDA configuration.
 ENV CI_BUILD_PYTHON python
@@ -64,11 +67,8 @@ ENV LD_LIBRARY_PATH /usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH
 ENV TF_NEED_CUDA 1
 ENV TF_NEED_TENSORRT 0
 ENV TF_CUDA_COMPUTE_CAPABILITIES=3.5,5.2,6.0,6.1,7.0
-ENV TF_CUDA_VERSION=10.0
-ENV TF_CUDNN_VERSION=7
-
-# NCCL 2.x
-ENV TF_NCCL_VERSION=2
+ENV TF_CUDA_VERSION=${CUDA}
+ENV TF_CUDNN_VERSION=${CUDNN_MAJOR_VERSION}
 
 ARG USE_PYTHON_3_NOT_2
 ARG _PY_SUFFIX=${USE_PYTHON_3_NOT_2:+3}
@@ -118,7 +118,7 @@ RUN ${PIP} --no-cache-dir install \
     pandas
 
  # Build and install bazel
-ENV BAZEL_VERSION 1.1.0
+ENV BAZEL_VERSION 1.2.1
 WORKDIR /
 RUN mkdir /bazel && \
     cd /bazel && \
