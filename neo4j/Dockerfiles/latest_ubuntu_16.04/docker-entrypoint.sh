@@ -8,7 +8,7 @@
 # -----------------------------------------------------------------------------
 #!/bin/bash -eu
 
-cmd="$1"
+cmd="neo4j"
 
 # If we're running as root, then run as the neo4j user. Otherwise
 # docker is running with --user and we simply use that user.  Note
