@@ -17,7 +17,7 @@
 #
 # ----------------------------------------------------------------------------
 
-# This script builds LighGBM-CUDA package maintianed in https://github.com/bordaw/H2O-LightGBM-CUDA
+# This script builds H2O-LightGBM-CUDA package maintianed in https://github.com/bordaw/H2O-LightGBM-CUDA
 # Prerequisites:  Nvidia CUDA 10.0
 # 
 
