@@ -58,7 +58,7 @@ export PATH=/usr/local/bin:$PATH
 export CUDACXX=/usr/local/cuda/bin/nvcc
 export CC='gcc -O3 '
 export CXX='g++ -O3'
- cmake ..   -DUSE_GPU=1 -DUSE_CH=1
+ cmake ..   -DUSE_GPU=1
  make
 
 #

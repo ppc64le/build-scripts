@@ -45,7 +45,7 @@
 
 CURRENT_DIR=$(pwd)
 LIGHTGBM_DIR=$CURRENT_DIR/python-package
-H2O_BASE=/h2o/hari/h2o/cuda/dai-1.8.0-linux-ppc64le/ # H2o installation directory 
+H2O_BASE=.../dai-1.8.0-linux-ppc64le/ # H2o installation directory 
 H2O_LIGHTGBM=$H2O_BASE/cuda-10.0 # H2O cuda package directory for lighgbm
 LIGHTGBM_PKG_DIR=$H2O_LIGHTGBM/lib/python3.6/site-packages
 cd $LIGHTGBM_PKG_DIR
