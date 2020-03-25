@@ -1,0 +1,12 @@
+diff --git a/Makefile b/Makefile
+index 92648d1..24ed332 100644
+--- a/Makefile
++++ b/Makefile
+@@ -322,6 +322,7 @@ ifneq ($(GIT_DIR),)
+ endif
+ 	mkdir -p $(@D)
+ 	touch $@
++	cd $(ROCKSDB_SRC_DIR) && git apply $(abspath .)/rocksdb_cmakelists.patch
+ 
+ IGNORE_GOVERS :=
+ 

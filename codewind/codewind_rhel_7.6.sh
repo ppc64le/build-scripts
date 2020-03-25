@@ -5,7 +5,7 @@
 # Source repo	: https://github.com/eclipse/codewind
 # Tested on	: rhel_7.6
 # Script License: Eclipse Public License - v 2.0
-# Maintainer	: Vrushali Inamdar <vrushali.inamdar@ibm.com>
+# Maintainer	: Siddhesh Ghadi <Siddhesh.Ghadi@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -21,8 +21,17 @@
 # Prerequisites:
 #
 # NodeJs version 10.x or later
-# Docker is installed and running
+# Docker 17.05 or higher is installed and running
 # ----------------------------------------------------------------------------
+
+# Install necessary packages
+yum update -y
+yum install java-1.8.0-openjdk-devel git wget -y
+
+wget https://mirrors.estointernet.in/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz -P /tmp/
+tar -xf /tmp/apache-maven-3.6.3-bin.tar.gz -C /opt/
+export PATH=/opt/apache-maven-3.6.3/bin:$PATH
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
 
 export CODEWIND_VERSION=""
 
