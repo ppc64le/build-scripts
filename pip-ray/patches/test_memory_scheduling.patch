@@ -1,0 +1,22 @@
+diff --git a/python/ray/tests/test_memory_scheduling.py b/python/ray/tests/test_memory_scheduling.py
+index ebcebd5..87803b0 100644
+--- a/python/ray/tests/test_memory_scheduling.py
++++ b/python/ray/tests/test_memory_scheduling.py
+@@ -98,7 +98,7 @@ class TestMemoryScheduling(unittest.TestCase):
+                     config={
+                         "env": "CartPole-v0",
+                         # too large
+-                        "object_store_memory": 10000 * 1024 * 1024,
++                        "object_store_memory": 100000 * 1024 * 1024,
+                     }))
+         finally:
+             ray.shutdown()
+@@ -133,7 +133,7 @@ class TestMemoryScheduling(unittest.TestCase):
+                     "env": "CartPole-v0",
+                     "num_workers": 1,
+                     # too large
+-                    "object_store_memory_per_worker": 10000 * 1024 * 1024,
++                    "object_store_memory_per_worker": 100000 * 1024 * 1024,
+                 }))
+         finally:
+             ray.shutdown()

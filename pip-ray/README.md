@@ -13,7 +13,18 @@ Enable execute permissions for the build script and run it as:
 # ./pip-ray_0.7.7_rhel7.6.sh
 ```
 
-Please note that the test case execution is not a part of the build script yet. For executing test
-cases, some other dependecies like tensorflow, opencv-python, opencv-python-headless have to be built
-and installed. Also, some packages which are readily available for ppc64le need to be installed using
-pip3.7. The test case execution and debugging is currently in progress.
+Please note that for executing test cases, some other dependecies like tensorflow, opencv-python
+need to be built and installed. Also, some packages which are readily available for ppc64le need
+to be installed using pip3.7. Please note that ray tests are CPU, memory exhaustive. So you need
+to execute these tests on a high end VM. <= 3 of the following tests may fail (intel result is in
+parity, failing tests differ over multiple runs):
+  //python/ray/tests:test_stress
+  //python/ray/tests:test_stress_failure
+  //python/ray/tests:test_stress_sharded
+  //python/ray/tests:test_debug_tools
+  //python/ray/tests:test_basic
+  //python/ray/tests:test_dynres
+  //python/ray/tests:test_autoscaler_yaml
+  //python/ray/tests:test_object_manager
+  //python/ray/tests:test_multinode_failures
+
