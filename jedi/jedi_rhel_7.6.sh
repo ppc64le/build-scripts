@@ -40,7 +40,7 @@ fi
 
 nvm alias default v12.16.1
 
-# Download source dependencny node-sass.
+# Download source dependencny jedi.
 git clone https://github.com/baixing/jedi.git
 cd jedi/
  
