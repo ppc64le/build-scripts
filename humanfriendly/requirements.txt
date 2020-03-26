@@ -1,0 +1,2 @@
+monotonic ; python_version == "2.7"
+pyreadline ; sys_platform == "win32"
