@@ -1,0 +1,2 @@
+#specify maven-java11 image
+che-java11-maven        <repository>/maven-jdk11:ppc64le

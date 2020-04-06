@@ -32,7 +32,7 @@ RUN     rm -rf /var/lib/apt/lists/ && \
         set -e && useradd -m -d /home/rstudio -G sudo rstudio && \
         echo rstudio:rstudio | chpasswd && \
         rstudio-server online && cd / && \
-        echo -e '#!/bin/bash\ncd /usr/sbin\nrstudio-server start' >> startup.sh && \
+        echo "#!/bin/bash\ncd /usr/sbin\nrstudio-server start" >> startup.sh && \
         chmod +x startup.sh
 
 EXPOSE 8787

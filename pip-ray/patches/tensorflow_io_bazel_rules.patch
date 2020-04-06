@@ -1,0 +1,19 @@
+diff --git a/WORKSPACE b/WORKSPACE
+index 74ea14d..5fe4e66 100644
+--- a/WORKSPACE
++++ b/WORKSPACE
+@@ -12,6 +12,13 @@ http_archive(
+     ],
+ )
+
++http_archive(
++    name = "io_bazel_rules_docker",
++    sha256 = "dc97fccceacd4c6be14e800b2a00693d5e8d07f69ee187babfd04a80a9f8e250",
++    strip_prefix = "rules_docker-0.14.1",
++    urls = ["https://github.com/bazelbuild/rules_docker/archive/v0.14.1.tar.gz"],
++)
++
+ # Load tf_repositories() before loading dependencies for other repository so
+ # that dependencies like com_google_protobuf won't be overridden.
+ load("//tensorflow:workspace.bzl", "tf_repositories")
+

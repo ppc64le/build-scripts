@@ -1,0 +1,2 @@
+#specify maven-java8 image
+che-java8-maven         <repository>/maven-jdk8:ppc64le

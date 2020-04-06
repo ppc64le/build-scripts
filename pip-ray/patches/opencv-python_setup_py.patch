@@ -1,0 +1,22 @@
+diff --git a/setup.py b/setup.py
+index 5d9981f..68b6aff 100644
+--- a/setup.py
++++ b/setup.py
+@@ -41,7 +41,7 @@ def main():
+         g = git.Git()  # NOTE: pip API's are internal, this has to be refactored
+ 
+         g.run_command(["submodule", "sync"])
+-        g.run_command(["submodule", "update", "--init", "--recursive", cmake_source_dir])
++        g.run_command(["submodule", "update", "--init", "--recursive", "--remote", cmake_source_dir])
+ 
+         if build_contrib:
+             g.run_command(["submodule", "update", "--init", "--recursive", "opencv_contrib"])
+@@ -85,7 +85,7 @@ def main():
+         ['python/cv2[^/]*%(ext)s' % {'ext': re.escape(sysconfig.get_config_var('SO'))}],
+ 
+         'cv2.data': [  # OPENCV_OTHER_INSTALL_PATH
+-            ('etc' if os.name == 'nt' else 'share/opencv4') +
++            ('etc' if os.name == 'nt' else 'share/OpenCV') +
+             r'/haarcascades/.*\.xml'
+         ]
+     }
