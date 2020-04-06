@@ -1,0 +1,30 @@
+diff --git a/Makefile b/Makefile
+index 10a09cea7..714a9ce9d 100644
+--- a/Makefile
++++ b/Makefile
+@@ -29,8 +29,8 @@
+ export BUILD_WITH_CONTAINER ?= 0
+ 
+ LOCAL_ARCH := $(shell uname -m)
+-ifeq ($(LOCAL_ARCH),x86_64)
+-    TARGET_ARCH ?= amd64
++ifeq ($(LOCAL_ARCH),ppc64le)
++    TARGET_ARCH ?= ppc64le
+ else ifeq ($(shell echo $(LOCAL_ARCH) | head -c 5),armv8)
+     TARGET_ARCH ?= arm64
+ else ifeq ($(shell echo $(LOCAL_ARCH) | head -c 4),armv)
+diff --git a/Makefile.core.mk b/Makefile.core.mk
+index 68ff55e8e..4e9678ba0 100644
+--- a/Makefile.core.mk
++++ b/Makefile.core.mk
+@@ -65,8 +65,8 @@ ifeq ($(GO),)
+ endif
+ 
+ LOCAL_ARCH := $(shell uname -m)
+-ifeq ($(LOCAL_ARCH),x86_64)
+-GOARCH_LOCAL := amd64
++ifeq ($(LOCAL_ARCH),ppc64le)
++GOARCH_LOCAL := ppc64le
+ else ifeq ($(shell echo $(LOCAL_ARCH) | head -c 5),armv8)
+ GOARCH_LOCAL := arm64
+ else ifeq ($(shell echo $(LOCAL_ARCH) | head -c 4),armv)

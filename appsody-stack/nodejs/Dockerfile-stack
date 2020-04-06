@@ -1,0 +1,43 @@
+FROM registry.access.redhat.com/ubi8/nodejs-12
+
+USER root
+
+RUN yum -y clean all && yum -y repolist && yum -y update && yum -y install python2 && ln -s $(which python2) /usr/local/bin/python
+
+ENV APPSODY_MOUNTS=/:/project/user-app
+ENV APPSODY_DEPS=/project/user-app/node_modules
+
+ENV APPSODY_WATCH_DIR=/project/user-app
+ENV APPSODY_WATCH_IGNORE_DIR=/project/user-app/node_modules
+ENV APPSODY_WATCH_REGEX="^.*.js$"
+
+ENV APPSODY_INSTALL="npm install && npm audit fix"
+
+ENV APPSODY_RUN="npm start --node-options --require=appmetrics-dash/attach"
+ENV APPSODY_RUN_ON_CHANGE="npm start --node-options --require=appmetrics-dash/attach"
+ENV APPSODY_RUN_KILL=true
+
+ENV APPSODY_DEBUG="npm start --node-options --inspect=0.0.0.0 --require=appmetrics-dash/attach"
+ENV APPSODY_DEBUG_ON_CHANGE="npm start --node-options --inspect=0.0.0.0 --require=appmetrics-dash/attach"
+ENV APPSODY_DEBUG_KILL=true
+
+ENV APPSODY_TEST="npm test"
+ENV APPSODY_TEST_ON_CHANGE=""
+ENV APPSODY_TEST_KILL=false
+
+COPY ./LICENSE /licenses/
+COPY ./project /project
+COPY ./config /config
+
+#USER root
+
+WORKDIR /project
+
+RUN npm install --unsafe-perm && npm audit fix
+
+WORKDIR /project/user-app
+
+ENV PORT=3000
+
+EXPOSE 3000
+EXPOSE 9229

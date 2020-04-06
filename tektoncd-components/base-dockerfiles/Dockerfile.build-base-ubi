@@ -1,0 +1,5 @@
+FROM registry.access.redhat.com/ubi7/ubi:latest
+RUN groupadd ubi && useradd -r -g ubi ubi -m -d /home/ubi/
+RUN yum install -y  git openssh-client
+USER ubi
+WORKDIR /home/ubi

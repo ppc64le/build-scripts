@@ -2,7 +2,7 @@
 #
 # Package	: LightGBM
 # Version	: 2.2.4
-# Source repofor lightgbm 	: https://github.com/bordaw/LightGBM-CUDA
+# Source repofor lightgbm 	: https://github.com/bordaw/H2O-LightGBM-CUDA
 # Maintainer	: Rajesh Bordawekar <bordaw@us.ibm.com>
 # Source this script	: https://raw.githubusercontent.com/harinreddy/build-scripts/master/lightGBM/lightGBM_rhel_cuda.sh
 # Maintainer	: Hari Reddy <hnreddy@us.ibm.com>
@@ -17,7 +17,7 @@
 #
 # ----------------------------------------------------------------------------
 
-# This script builds LighGBM-CUDA package maintianed in https://github.com/bordaw/LightGBM-CUDA
+# This script builds H2O-LightGBM-CUDA package maintianed in https://github.com/bordaw/H2O-LightGBM-CUDA
 # Prerequisites:  Nvidia CUDA 10.0
 # 
 
@@ -47,18 +47,18 @@ cd cmake-3.12.3
 make
 sudo make install
 #
-# Download and build LightGBM-CUDA 
+# Download and build H2O-LightGBM-CUDA 
 #
 cd $HOME
 #Compile light GBM with CUDA support 
-git clone --recursive https://github.com/bordaw/LightGBM-CUDA.git
-cd LightGBM-CUDA
+git clone --recursive https://github.com/bordaw/H2O-LightGBM-CUDA.git
+cd H2O-LightGBM-CUDA
 rm -rf build; mkdir build ; cd build
 export PATH=/usr/local/bin:$PATH
 export CUDACXX=/usr/local/cuda/bin/nvcc
 export CC='gcc -O3 '
 export CXX='g++ -O3'
- cmake ..   -DUSE_GPU=1 -DUSE_CH=1
+ cmake ..   -DUSE_GPU=1
  make
 
 #
@@ -93,7 +93,7 @@ sudo /usr/local/python3.6.4/bin/pip install  scipy==1.3.1
 sudo yum install lapack
 sudo yum install lapack-devel
 
-cd $HOME/LightGBM-CUDA/python-package/
+cd $HOME/H2O-LightGBM-CUDA/python-package/
 sudo rm -rf dist build compile
 sudo /usr/local/python3.6.4/bin/pip uninstall lightgbm
 sudo /usr/local/python3.6.4/bin/python setup.py sdist bdist_wheel

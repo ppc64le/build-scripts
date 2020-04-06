@@ -1,0 +1,22 @@
+diff --git a/Makefile b/Makefile
+index cdbaadd..721008a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -327,6 +327,8 @@ ifneq ($(GIT_DIR),)
+ endif
+ 	mkdir -p $(@D)
+ 	touch $@
++	cd $(ROCKSDB_SRC_DIR) && git apply $(abspath .)/rocksdb_cmakelists.patch
++	cd $(abspath vendor) && git apply $(abspath .)/arrow_memory.patch
+ 
+ IGNORE_GOVERS :=
+ 
+@@ -1645,7 +1647,7 @@ $(testbins): bin/%: bin/%.d | bin/prereqs $(SUBMODULES_TARGET)
+ 	mv -f $@.d.tmp $@.d
+ 	$(xgo) test $(GOFLAGS) -tags '$(TAGS)' -ldflags '$(LINKFLAGS)' -c -o $@ $($*-package)
+ 
+-bin/prereqs: ./pkg/cmd/prereqs/*.go
++bin/prereqs: ./pkg/cmd/prereqs/*.go | bin/.submodules-initialized
+ 	@echo go install -v ./pkg/cmd/prereqs
+ 	@$(GO_INSTALL) -v ./pkg/cmd/prereqs
+ 

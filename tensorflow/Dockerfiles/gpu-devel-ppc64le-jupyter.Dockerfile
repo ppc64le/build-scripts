@@ -118,7 +118,7 @@ RUN ${PIP} --no-cache-dir install \
     pandas
 
  # Build and install bazel
-ENV BAZEL_VERSION 1.2.1 
+ENV BAZEL_VERSION 2.0.0
 WORKDIR /
 RUN mkdir /bazel && \
     cd /bazel && \
@@ -137,7 +137,6 @@ RUN mkdir /.local && chmod a+rwx /.local
 RUN apt-get update && apt-get install -y --no-install-recommends wget
 WORKDIR /tf/tensorflow-tutorials
 RUN wget https://raw.githubusercontent.com/tensorflow/docs/master/site/en/tutorials/keras/classification.ipynb
-RUN wget https://raw.githubusercontent.com/tensorflow/models/master/samples/core/tutorials/keras/basic_text_classification.ipynb
 RUN wget https://raw.githubusercontent.com/tensorflow/docs/master/site/en/tutorials/keras/overfit_and_underfit.ipynb
 RUN wget https://raw.githubusercontent.com/tensorflow/docs/master/site/en/tutorials/keras/regression.ipynb
 RUN wget https://raw.githubusercontent.com/tensorflow/docs/master/site/en/tutorials/keras/save_and_load.ipynb

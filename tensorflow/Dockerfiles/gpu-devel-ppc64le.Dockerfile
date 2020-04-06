@@ -118,7 +118,7 @@ RUN ${PIP} --no-cache-dir install \
     pandas
 
  # Build and install bazel
-ENV BAZEL_VERSION 1.2.1
+ENV BAZEL_VERSION 2.0.0
 WORKDIR /
 RUN mkdir /bazel && \
     cd /bazel && \
