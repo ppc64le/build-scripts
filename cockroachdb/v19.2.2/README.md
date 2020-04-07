@@ -16,7 +16,7 @@ To run the container so that the build script and patches are available inside i
 OR
 
 ```
-# docker container run -it -v `pwd`:/v19.2.2 --workdir /v19.2.2 --name ubi7.6_cockroach19.2.2 registry.access.redhat.com/rhel:7.6 /bin/bash
+# docker container run -it -v `pwd`:/v19.2.2 --workdir /v19.2.2 --name rhel7.6_cockroach19.2.2 registry.access.redhat.com/rhel:7.6 /bin/bash
 ```
 
 If you face any issue in accessing the contents of /v19.2.2 inside the container, please
