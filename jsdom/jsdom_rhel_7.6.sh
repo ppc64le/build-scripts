@@ -1,9 +1,9 @@
 #!/bin/bash
 # ----------------------------------------------------------------------------
 #
-# Package	: jedi 
-# Version	: master
-# Source repo	: https://github.com/baixing/jedi.git
+# Package	: jsdom
+# Version	: 9.11.0
+# Source repo	: https://github.com/jsdom/jsdom.git 
 # Tested on	: RHEL 7.6
 # Script License: 
 # Maintainer	: Sarvesh Tamba <sarvesh.tamba@ibm.com>
@@ -13,7 +13,6 @@
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
-#
 # ----------------------------------------------------------------------------
 
 set -e
@@ -39,14 +38,16 @@ then
 fi
 
 nvm alias default v12.16.1
+npm install yarn -g
 
-# Download source dependencny jedi.
-git clone https://github.com/baixing/jedi.git
-cd jedi/
+# Clone and build npm package from source.
+git clone https://github.com/jsdom/jsdom.git
+cd jsdom/
+git checkout 9.11.0
  
 npm config set unsafe-perm true
-#Download Submodule 'lib/ometa-js'
-git submodule update --init --recursive
-npm install
-npm test
+yarn
+# Currently ignoring the test case execution due to issues in yarn test
+# Reference:- https://github.com/jsdom/jsdom/issues/2887
+#yarn test
 npm config set unsafe-perm false

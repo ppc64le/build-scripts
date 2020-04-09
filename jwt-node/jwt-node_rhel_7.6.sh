@@ -1,9 +1,9 @@
 #!/bin/bash
 # ----------------------------------------------------------------------------
 #
-# Package	: jedi 
+# Package	: jwt-node 
 # Version	: master
-# Source repo	: https://github.com/baixing/jedi.git
+# Source repo	: https://github.com/mattrobenolt/jwt-node.git
 # Tested on	: RHEL 7.6
 # Script License: 
 # Maintainer	: Sarvesh Tamba <sarvesh.tamba@ibm.com>
@@ -16,10 +16,7 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e
-
 # Install all dependencies.
-sudo yum clean all
 sudo yum -y update
 sudo yum install -y java-1.8.0-openjdk
 
@@ -40,13 +37,15 @@ fi
 
 nvm alias default v12.16.1
 
-# Download source dependencny jedi.
-git clone https://github.com/baixing/jedi.git
-cd jedi/
+# Download source dependencny node-base64.
+git clone https://github.com/chentsulin/node-base64.git
+
+# Clone and build npm package from source.
+git clone https://github.com/mattrobenolt/jwt-node.git
+cd jwt-node/
  
 npm config set unsafe-perm true
-#Download Submodule 'lib/ometa-js'
-git submodule update --init --recursive
+npm install ../node-base64
 npm install
-npm test
+#npm test #no test specified
 npm config set unsafe-perm false

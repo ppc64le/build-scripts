@@ -1,9 +1,9 @@
 #!/bin/bash
 # ----------------------------------------------------------------------------
 #
-# Package	: jedi 
+# Package	: react
 # Version	: master
-# Source repo	: https://github.com/baixing/jedi.git
+# Source repo	: https://github.com/facebook/react.git
 # Tested on	: RHEL 7.6
 # Script License: 
 # Maintainer	: Sarvesh Tamba <sarvesh.tamba@ibm.com>
@@ -13,7 +13,7 @@
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
-#
+#             Also the dependency on `electron` is disabled to build it on ppc64le.
 # ----------------------------------------------------------------------------
 
 set -e
@@ -39,14 +39,16 @@ then
 fi
 
 nvm alias default v12.16.1
+npm install yarn -g
 
-# Download source dependencny jedi.
-git clone https://github.com/baixing/jedi.git
-cd jedi/
+# Clone and build npm package from source.
+git clone https://github.com/facebook/react.git 
+cd react/
  
 npm config set unsafe-perm true
-#Download Submodule 'lib/ometa-js'
-git submodule update --init --recursive
-npm install
-npm test
+#dependency on `electron` is disabled to build it on ppc64le.
+sed '/electron/d' packages/react-devtools/package.json > packages/react-devtools/package.json.new
+mv packages/react-devtools/package.json.new packages/react-devtools/package.json
+yarn
+yarn test
 npm config set unsafe-perm false
