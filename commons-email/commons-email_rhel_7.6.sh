@@ -1,8 +1,8 @@
 # ----------------------------------------------------------------------------
 #
-# Package			: commons-configuration
-# Version			: 1.10, 2.7
-# Source repo		: hhttps://gitbox.apache.org/repos/asf/commons-configuration
+# Package			: commons-email
+# Version			: 1.5
+# Source repo		: https://github.com/apache/commons-email
 # Tested on			: RHEL 7.6
 # Script License	: Apache License Version 2.0
 # Maintainer		: Pratham Murkute <prathamm@us.ibm.com>
@@ -16,6 +16,7 @@
 # ----------------------------------------------------------------------------
 
 #!/bin/bash
+
 # install tools and dependent packages
 #yum -y update
 yum install -y git wget curl unzip nano vim make build-essential
@@ -45,26 +46,19 @@ export PATH=$PATH:$M2_HOME/bin
 mkdir -p /logs
 
 # variables
-PKG_NAME="commons-configuration"
-PKG_VERSION=1.10
-PKG_VERSION_LATEST=2.7
+PKG_NAME="commons-email"
+PKG_VERSION=1.5
+PKG_VERSION_LATEST=1.5
 LOGS_DIRECTORY=/logs
 LOCAL_DIRECTORY=/root
-REPOSITORY="https://gitbox.apache.org/repos/asf/commons-configuration.git"
+REPOSITORY="https://github.com/apache/commons-email.git"
 
 # clone, build and test specified version
 cd $LOCAL_DIRECTORY
 git clone $REPOSITORY $PKG_NAME-$PKG_VERSION
 cd $PKG_NAME-$PKG_VERSION/
-git checkout -b $PKG_VERSION tags/CONFIGURATION_1_10
+git checkout -b $PKG_VERSION tags/EMAIL_1_5
 mvn install | tee $LOGS_DIRECTORY/$PKG_NAME-$PKG_VERSION.txt
-
-# clone, build and test latest version
-cd $LOCAL_DIRECTORY
-git clone $REPOSITORY $PKG_NAME-$PKG_VERSION_LATEST
-cd $PKG_NAME-$PKG_VERSION_LATEST/
-git checkout -b $PKG_VERSION_LATEST tags/rel/$PKG_NAME-$PKG_VERSION_LATEST
-mvn install | tee $LOGS_DIRECTORY/$PKG_NAME-$PKG_VERSION_LATEST.txt
 
 # clone, build and test master
 #cd $LOCAL_DIRECTORY

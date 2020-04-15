@@ -1,8 +1,8 @@
-# ----------------------------------------------------------------------------
+#----------------------------------------------------------------------------
 #
-# Package			: commons-lang
-# Version			: 3.9
-# Source repo		: http://git-wip-us.apache.org/repos/asf/commons-lang
+# Package			: commons-beanutils
+# Version			: 1.9.4
+# Source repo		: https://github.com/apache/commons-beanutils
 # Tested on			: RHEL 7.6
 # Script License	: Apache License Version 2.0
 # Maintainer		: Pratham Murkute <prathamm@us.ibm.com>
@@ -46,29 +46,35 @@ export PATH=$PATH:$M2_HOME/bin
 mkdir -p /logs
 
 # variables
-PKG_NAME="commons-lang"
-PKG_VERSION=2.6
-PKG_VERSION_LATEST=3.9
+PKG_NAME="commons-beanutils"
+PKG_VERSION=1.9.4
+PKG_VERSION_LATEST=1.9.4
 LOGS_DIRECTORY=/logs
 LOCAL_DIRECTORY=/root
-REPOSITORY="http://git-wip-us.apache.org/repos/asf/commons-lang.git"
+REPOSITORY="https://github.com/apache/commons-beanutils.git"
+
+# install java 11
+yum install -y java-11-openjdk java-11-openjdk-devel
+rm /etc/alternatives/java
+ln -s /usr/lib/jvm/java-11-openjdk-11.0.6.10-1.el7_7.ppc64le/bin/java /etc/alternatives/java
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.6.10-1.el7_7.ppc64le
+java -version
 
 # clone, build and test specified version
-#cd $LOCAL_DIRECTORY
-#git clone $REPOSITORY $PKG_NAME-$PKG_VERSION
-#cd $PKG_NAME-$PKG_VERSION/
-#git checkout -b $PKG_VERSION tags/LANG_2_6
-#mvn install | tee $LOGS_DIRECTORY/$PKG_NAME-$PKG_VERSION.txt
-
-# clone, build and test latest version
 cd $LOCAL_DIRECTORY
-git clone $REPOSITORY $PKG_NAME-$PKG_VERSION_LATEST
-cd $PKG_NAME-$PKG_VERSION_LATEST/
-git checkout -b $PKG_VERSION_LATEST tags/$PKG_NAME-$PKG_VERSION_LATEST
-mvn install | tee $LOGS_DIRECTORY/$PKG_NAME-$PKG_VERSION_LATEST.txt
+git clone $REPOSITORY $PKG_NAME-$PKG_VERSION
+cd $PKG_NAME-$PKG_VERSION/
+git checkout -b $PKG_VERSION tags/$PKG_NAME-$PKG_VERSION
+mvn install | tee $LOGS_DIRECTORY/$PKG_NAME-$PKG_VERSION.txt
 
 # clone, build and test master
 #cd $LOCAL_DIRECTORY
 #git clone $REPOSITORY $PKG_NAME-master
 #cd $PKG_NAME-master/
 #mvn install | tee $LOGS_DIRECTORY/$PKG_NAME.txt
+
+# fallback to default java version
+#rm /etc/alternatives/java
+#ln -s /usr/lib/jvm/java-1.8.0-ibm-1.8.0.6.5-1jpp.1.el7.ppc64le/jre/bin/java /etc/alternatives/java
+#export JAVA_HOME=/usr/lib/jvm/java-1.8.0-ibm-1.8.0.6.5-1jpp.1.el7.ppc64le
+#java -version
