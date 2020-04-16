@@ -45,7 +45,7 @@ sed -i '$ a\'"buildDeb.enabled=false \n buildOssDeb.enabled=false" ./distributio
 sed -i -e "s/import java.nio.file.Path/import java.nio.file.Path\n\/\/ Detecting the architecture\n String arch = System.getProperty('os.arch', '');/g" -e "s/archiveClassifier = 'linux-x86_64'/archiveClassifier = 'linux-'+ arch/g" distribution/archives/build.gradle
 sed -i -e "s/apply plugin: 'elasticsearch.test.fixtures'/apply plugin: 'elasticsearch.test.fixtures'\n\/\/ Detecting the architecture\nString arch = System.getProperty('os.arch', '');/g" -e "s/final String classifier = 'linux-x86_64'/final String classifier = 'linux-' + arch/g" distribution/docker/build.gradle
 sed -i 's/if (project.file("\/proc\/cpuinfo").exists()) {/if ("ppc64le".equals(System.getProperty("os.arch"))) { \n  \/\/ Ask ppc64le to count physical CPUs for us \n ByteArrayOutputStream stdout = new ByteArrayOutputStream(); \n \t project.exec{  \n\t executable "nproc" \n\t args "--all\"  \n\t standardOutput = stdout\n}\n return Integer.parseInt(stdout.toString("UTF-8").trim())\n } else if (project.file("\/proc\/cpuinfo").exists()) {/g' buildSrc/src/main/groovy/org/elasticsearch/gradle/BuildPlugin.groovy
-./gradlew assemble --refresh-dependencies
+./gradlew -p distribution/archives/linux-tar assemble --parallel
 
 # copy tar file and delete source code
 tar -C /usr/share/ -xf distribution/archives/linux-tar/build/distributions/elasticsearch-$ELASTICSEARCH_VERSION*-SNAPSHOT-*.tar.gz
