@@ -23,7 +23,7 @@ if [ $# -ne 1 ]; then
 fi
 
 #JULIA_VERSION=$1
-# FIXME: currently julia works well on power with the following commit, 
+# FIXME: currently julia works on power with the following commit, 
 # TODO: enable other versions as they get supported/fixed
 JULIA_VERSION=cc6e121386758dff6ba7911770e48dfd59520199
 
