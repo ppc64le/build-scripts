@@ -17,6 +17,8 @@
 
 #!/bin/bash
 
+# FIXME : the automated tests still fail in the master branch
+
 if [ $# -ne 1 ]; then
     echo "missing argument: julia VERSION to build"
     exit 1
