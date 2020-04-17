@@ -35,7 +35,7 @@ SRCDIR=`pwd`
 BUILDDIR=`pwd`/builds/julia-build
 
 mkdir $SRCDIR
-mkdir -p $BUILDDRIR
+mkdir -p $BUILDDIR
 
 #Build git2 from source
 wget https://mirrors.edge.kernel.org/pub/software/scm/git/git-2.25.1.tar.gz
