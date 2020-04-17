@@ -65,4 +65,6 @@ cd $BUILDDIR
 make
 ls -l julia
 
+#add julia bin to $PATH
+export PATH=$BUILDDIR/usr/bin:$PATH
 
