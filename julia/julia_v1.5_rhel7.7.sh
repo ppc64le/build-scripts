@@ -15,8 +15,18 @@
 #
 # ----------------------------------------------------------------------------
 
-
 #!/bin/bash
+
+if [ $# -ne 1 ]; then
+    echo "missing argument: julia VERSION to build"
+    exit 1
+fi
+
+#JULIA_VERSION=$1
+# FIXME: currently julia works well on power with the following commit, 
+# TODO: enable other versions as they get supported/fixed
+JULIA_VERSION=cc6e121386758dff6ba7911770e48dfd59520199
+
 #Install required dependencies
 sudo yum update -y
 sudo yum install wget expat-devel openssl-devel libcurl-devel tk gettext-devel make gcc gcc-c++ patch bzip2 m4 -y
@@ -48,7 +58,8 @@ export PATH=/usr/local/bin:$PATH
 cd $SRCDIR
 git clone https://github.com/JuliaLang/julia julia
 cd julia 
-git checkout cc6e121386758dff6ba7911770e48dfd59520199
+#currently we will checkout only version 1.5 a
+git checkout $JULIA_VERSION
 make O=$BUILDDIR configure
 cd $BUILDDIR
 make
