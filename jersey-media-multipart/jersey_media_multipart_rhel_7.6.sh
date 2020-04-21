@@ -1,8 +1,8 @@
 # ----------------------------------------------------------------------------
 #
-# Package			: commons-lang
-# Version			: 3.9
-# Source repo		: http://git-wip-us.apache.org/repos/asf/commons-lang
+# Package			: jersey-media-multipart
+# Version			: 2.25.1, 2.27
+# Source repo		: https://github.com/jersey/jersey
 # Tested on			: RHEL 7.6
 # Script License	: Apache License Version 2.0
 # Maintainer		: Pratham Murkute <prathamm@us.ibm.com>
@@ -12,7 +12,7 @@
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
-#
+#			  
 # ----------------------------------------------------------------------------
 
 #!/bin/bash
@@ -46,29 +46,32 @@ export PATH=$PATH:$M2_HOME/bin
 mkdir -p /logs
 
 # variables
-PKG_NAME="commons-lang"
-PKG_VERSION=2.6
-PKG_VERSION_LATEST=3.9
+PKG_NAME="jersey-media-multipart"
+PKG_VERSION=2.25.1
+PKG_VERSION_LATEST=2.27
 LOGS_DIRECTORY=/logs
 LOCAL_DIRECTORY=/root
-REPOSITORY="http://git-wip-us.apache.org/repos/asf/commons-lang.git"
+REPOSITORY="https://github.com/jersey/jersey.git"
 
 # clone, build and test specified version
-#cd $LOCAL_DIRECTORY
-#git clone $REPOSITORY $PKG_NAME-$PKG_VERSION
-#cd $PKG_NAME-$PKG_VERSION/
-#git checkout -b $PKG_VERSION tags/LANG_2_6
-#mvn install | tee $LOGS_DIRECTORY/$PKG_NAME-$PKG_VERSION.txt
+cd $LOCAL_DIRECTORY
+git clone $REPOSITORY $PKG_NAME-$PKG_VERSION
+cd $PKG_NAME-$PKG_VERSION/
+git checkout -b $PKG_VERSION tags/$PKG_VERSION
+cd media/multipart/
+mvn install | tee $LOGS_DIRECTORY/$PKG_NAME-$PKG_VERSION.txt
 
 # clone, build and test latest version
 cd $LOCAL_DIRECTORY
 git clone $REPOSITORY $PKG_NAME-$PKG_VERSION_LATEST
 cd $PKG_NAME-$PKG_VERSION_LATEST/
-git checkout -b $PKG_VERSION_LATEST tags/$PKG_NAME-$PKG_VERSION_LATEST
+git checkout -b $PKG_VERSION_LATEST tags/$PKG_VERSION_LATEST
+cd media/multipart/
 mvn install | tee $LOGS_DIRECTORY/$PKG_NAME-$PKG_VERSION_LATEST.txt
 
 # clone, build and test master
 #cd $LOCAL_DIRECTORY
 #git clone $REPOSITORY $PKG_NAME-master
 #cd $PKG_NAME-master/
+#cd media/multipart/
 #mvn install | tee $LOGS_DIRECTORY/$PKG_NAME.txt
