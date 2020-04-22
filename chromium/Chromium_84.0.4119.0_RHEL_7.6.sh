@@ -1,3 +1,4 @@
+  
 # ----------------------------------------------------------------------------
 #
 # Package	: chromium
@@ -37,8 +38,8 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-nvm install v12.4.0
-ln -s $HOME/.nvm/versions/node/v12.4.0/bin/node /usr/bin/node
+nvm install v12.13.1
+ln -s $HOME/.nvm/versions/node/v12.13.1/bin/node /usr/bin/node
 
 # Install git 2.21.0
 yum -y install curl-devel expat-devel gettext-devel zlib-devel
@@ -126,7 +127,7 @@ make -j8
 # Downloading the source code
 cd $CHROMIUM_DIR
 mkdir chromium && cd chromium
-git clone  -b 84.0.4119.0 https://chromium.googlesource.com/chromium/src
+fetch --no-history --nohooks chromium
 
 # Pre-build
 curl "https://wiki.raptorcs.com/w/images/1/10/Binutils-download.py-PPC.patch" | patch -p1 src/third_party/binutils/download.py
@@ -135,7 +136,10 @@ sed -i 's/\"custom_vars\"\: {},/\"custom_vars\"\: { \"checkout_nacl\"\: False },
 rm -rf src/buildtools/linux64/gn
 cp -f $CHROMIUM_DIR/gn/out/gn src/buildtools/linux64/gn
 
-gclient sync
+gclient sync --with_branch_heads --with_tags
+cd src
+git fetch
+git checkout -b branch-heads/84.0.4119.0
 
 # Patching Chromium
 cd $CHROMIUM_DIR
