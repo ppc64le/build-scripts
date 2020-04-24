@@ -2,7 +2,7 @@
 #
 # Package			: junit
 # Version			: 5.6.1
-# Source repo		: https://github.com/junit-team/junit4
+# Source repo		: https://github.com/junit-team/junit5
 # Tested on			: RHEL 7.6
 # Script License	: Apache License Version 2.0
 # Maintainer		: Pratham Murkute <prathamm@us.ibm.com>
