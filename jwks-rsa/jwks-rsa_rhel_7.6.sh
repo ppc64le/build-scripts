@@ -1,8 +1,8 @@
 # ----------------------------------------------------------------------------
 #
-# Package			: junit
-# Version			: 5.6.1
-# Source repo		: https://github.com/junit-team/junit5
+# Package			: jwks-rsa
+# Version			: 0.1.0
+# Source repo		: https://github.com/auth0/jwks-rsa-java
 # Tested on			: RHEL 7.6
 # Script License	: Apache License Version 2.0
 # Maintainer		: Pratham Murkute <prathamm@us.ibm.com>
@@ -12,14 +12,14 @@
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
-#			  
+#
 # ----------------------------------------------------------------------------
 
 #!/bin/bash
 
 # install tools and dependent packages
 #yum -y update
-yum install -y git wget curl unzip nano vim make build-essential
+yum install -y git wget curl unzip nano vim make build-essential dos2unix
 #yum install -y gcc ant
 
 # setup java environment
@@ -57,51 +57,21 @@ export PATH=$PATH:$GRADLE_HOME/gradle-$GRADLE_VERSION/bin
 mkdir -p /logs
 
 # variables
-PKG_NAME="junit"
-PKG_VERSION=4.13
-PKG_VERSION_LATEST=5.6.1
+PKG_NAME="jwks-rsa-java"
+PKG_VERSION=0.1.0
 LOGS_DIRECTORY=/logs
 LOCAL_DIRECTORY=/root
-REPOSITORY="https://github.com/junit-team/junit4.git"
+REPOSITORY="https://github.com/auth0/jwks-rsa-java.git"
 
 # clone, build and test specified version
-#cd $LOCAL_DIRECTORY
-#git clone $REPOSITORY $PKG_NAME-$PKG_VERSION
-#cd $PKG_NAME-$PKG_VERSION/
-#git checkout -b $PKG_VERSION tags/r$PKG_VERSION
-#mvn install | tee $LOGS_DIRECTORY/$PKG_NAME-$PKG_VERSION.txt
+cd $LOCAL_DIRECTORY
+git clone $REPOSITORY $PKG_NAME-$PKG_VERSION
+cd $PKG_NAME-$PKG_VERSION/
+git checkout -b $PKG_VERSION tags/$PKG_VERSION
+mvn clean install | tee $LOGS_DIRECTORY/$PKG_NAME-$PKG_VERSION.txt
 
 # clone, build and test master
 #cd $LOCAL_DIRECTORY
 #git clone $REPOSITORY $PKG_NAME-master
 #cd $PKG_NAME-master/
-#mvn install | tee $LOGS_DIRECTORY/$PKG_NAME.txt
-
-# latest repository 
-REPOSITORY="https://github.com/junit-team/junit5.git"
-
-# install java 11
-yum install -y java-11-openjdk java-11-openjdk-devel
-rm /etc/alternatives/java
-ln -s /usr/lib/jvm/java-11-openjdk-11.0.6.10-1.el7_7.ppc64le/bin/java /etc/alternatives/java
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.6.10-1.el7_7.ppc64le
-java -version
-
-# clone, build and test latest version
-cd $LOCAL_DIRECTORY
-git clone $REPOSITORY $PKG_NAME-$PKG_VERSION_LATEST
-cd $PKG_NAME-$PKG_VERSION_LATEST/
-git checkout -b $PKG_VERSION_LATEST tags/r$PKG_VERSION_LATEST
-gradle build | tee $LOGS_DIRECTORY/$PKG_NAME-$PKG_VERSION_LATEST.txt
-
-# clone, build and test master
-#cd $LOCAL_DIRECTORY
-#git clone $REPOSITORY $PKG_NAME-master-new
-#cd $PKG_NAME-master-new/
-#gradle build | tee $LOGS_DIRECTORY/$PKG_NAME-new.txt
-
-# fallback to default java version
-rm /etc/alternatives/java
-ln -s /usr/lib/jvm/java-1.8.0-ibm-1.8.0.6.5-1jpp.1.el7.ppc64le/jre/bin/java /etc/alternatives/java
-export JAVA_HOME=/usr/lib/jvm/java-1.8.0-ibm-1.8.0.6.5-1jpp.1.el7.ppc64le
-java -version
+#./gradlew build | tee $LOGS_DIRECTORY/$PKG_NAME.txt

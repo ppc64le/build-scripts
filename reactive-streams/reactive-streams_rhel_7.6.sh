@@ -1,8 +1,8 @@
 # ----------------------------------------------------------------------------
 #
-# Package			: junit
-# Version			: 5.6.1
-# Source repo		: https://github.com/junit-team/junit5
+# Package			: reactive-streams
+# Version			: 1.0.3
+# Source repo		: https://github.com/reactive-streams/reactive-streams-jvm
 # Tested on			: RHEL 7.6
 # Script License	: Apache License Version 2.0
 # Maintainer		: Pratham Murkute <prathamm@us.ibm.com>
@@ -19,7 +19,7 @@
 
 # install tools and dependent packages
 #yum -y update
-yum install -y git wget curl unzip nano vim make build-essential
+yum install -y git wget curl unzip nano vim make build-essential dos2unix
 #yum install -y gcc ant
 
 # setup java environment
@@ -29,18 +29,6 @@ ls /usr/lib/jvm/
 export JAVA_HOME=/usr/lib/jvm/java-1.8.0-ibm-1.8.0.6.5-1jpp.1.el7.ppc64le
 # update the path env. variable 
 export PATH=$PATH:$JAVA_HOME/bin
-
-# install maven
-MAVEN_VERSION=3.6.3
-wget http://mirrors.estointernet.in/apache/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
-ls /usr/local
-tar -C /usr/local/ -xzf apache-maven-$MAVEN_VERSION-bin.tar.gz
-mv /usr/local/apache-maven-$MAVEN_VERSION /usr/local/maven
-ls /usr/local
-rm apache-maven-$MAVEN_VERSION-bin.tar.gz
-export M2_HOME=/usr/local/maven
-# update the path env. variable 
-export PATH=$PATH:$M2_HOME/bin
 
 # install gradle 
 GRADLE_VERSION=6.2.2
@@ -57,28 +45,12 @@ export PATH=$PATH:$GRADLE_HOME/gradle-$GRADLE_VERSION/bin
 mkdir -p /logs
 
 # variables
-PKG_NAME="junit"
-PKG_VERSION=4.13
-PKG_VERSION_LATEST=5.6.1
+PKG_NAME="reactive-streams"
+PKG_VERSION=1.0.2
+PKG_VERSION_LATEST=1.0.3
 LOGS_DIRECTORY=/logs
 LOCAL_DIRECTORY=/root
-REPOSITORY="https://github.com/junit-team/junit4.git"
-
-# clone, build and test specified version
-#cd $LOCAL_DIRECTORY
-#git clone $REPOSITORY $PKG_NAME-$PKG_VERSION
-#cd $PKG_NAME-$PKG_VERSION/
-#git checkout -b $PKG_VERSION tags/r$PKG_VERSION
-#mvn install | tee $LOGS_DIRECTORY/$PKG_NAME-$PKG_VERSION.txt
-
-# clone, build and test master
-#cd $LOCAL_DIRECTORY
-#git clone $REPOSITORY $PKG_NAME-master
-#cd $PKG_NAME-master/
-#mvn install | tee $LOGS_DIRECTORY/$PKG_NAME.txt
-
-# latest repository 
-REPOSITORY="https://github.com/junit-team/junit5.git"
+REPOSITORY="https://github.com/reactive-streams/reactive-streams-jvm.git"
 
 # install java 11
 yum install -y java-11-openjdk java-11-openjdk-devel
@@ -91,17 +63,17 @@ java -version
 cd $LOCAL_DIRECTORY
 git clone $REPOSITORY $PKG_NAME-$PKG_VERSION_LATEST
 cd $PKG_NAME-$PKG_VERSION_LATEST/
-git checkout -b $PKG_VERSION_LATEST tags/r$PKG_VERSION_LATEST
-gradle build | tee $LOGS_DIRECTORY/$PKG_NAME-$PKG_VERSION_LATEST.txt
+git checkout -b $PKG_VERSION_LATEST tags/v$PKG_VERSION_LATEST
+./gradlew build | tee $LOGS_DIRECTORY/$PKG_NAME-$PKG_VERSION_LATEST.txt
 
 # clone, build and test master
 #cd $LOCAL_DIRECTORY
-#git clone $REPOSITORY $PKG_NAME-master-new
-#cd $PKG_NAME-master-new/
-#gradle build | tee $LOGS_DIRECTORY/$PKG_NAME-new.txt
+#git clone $REPOSITORY $PKG_NAME-master
+#cd $PKG_NAME-master/
+#./gradlew build | tee $LOGS_DIRECTORY/$PKG_NAME.txt
 
 # fallback to default java version
-rm /etc/alternatives/java
-ln -s /usr/lib/jvm/java-1.8.0-ibm-1.8.0.6.5-1jpp.1.el7.ppc64le/jre/bin/java /etc/alternatives/java
-export JAVA_HOME=/usr/lib/jvm/java-1.8.0-ibm-1.8.0.6.5-1jpp.1.el7.ppc64le
-java -version
+#rm /etc/alternatives/java
+#ln -s /usr/lib/jvm/java-1.8.0-ibm-1.8.0.6.5-1jpp.1.el7.ppc64le/jre/bin/java /etc/alternatives/java
+#export JAVA_HOME=/usr/lib/jvm/java-1.8.0-ibm-1.8.0.6.5-1jpp.1.el7.ppc64le
+#java -version

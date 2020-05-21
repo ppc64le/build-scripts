@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : sparqlwrapper
-# Version       : master @ 8e828c9
+# Version       : master @ d88b542
 # Source repo   : https://github.com/RDFLib/sparqlwrapper.git
 # Tested on     : RHEL 7.6, RHEL 7.7
 # Script License: Apache License, Version 2 or later
@@ -38,6 +38,6 @@ cd sparqlwrapper
 pip install -r requirements.txt
 python setup.py sdist && pip install ./dist/*
 pip install rdflib-jsonld
+pip install nose
 
-#Commenting out the tests as they currently fail (same on Intel, Power, logs are identical)
-#./tests.sh
+nosetests -v
