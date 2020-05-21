@@ -1,10 +1,10 @@
 # ----------------------------------------------------------------------------
 #
-# Package	: eclipse/che-devfile-registry
-# Version	: latest (7.8.0)
-# Source repo	: https://github.com/eclipse/che-devfile-registry
+# Package	: che-incubator/chectl
+# Version	: latest (20200521073352) (7.13.1)
+# Source repo	: https://github.com/che-incubator/chectl
 # Tested on	: rhel_7.6
-# Script License: Eclipse Public License - v 2.0
+# Script License: Apache License, Version 2.0
 # Maintainer	: Vrushali Inamdar <vrushali.inamdar@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -20,25 +20,38 @@
 # ----------------------------------------------------------------------------
 # Prerequisites:
 #
-# Docker version 17.05 or higher is required
+# Node version v10.x or higher is installed and in the path
 # ----------------------------------------------------------------------------
 
-export CHE_DEVFILES_REGISTRY_VERSION=""
+export CHECTL_VERSION=""
 
-git clone https://github.com/eclipse/che-devfile-registry.git
-cd che-devfile-registry
+# install yarn as it is required to build chectl
+npm -g install yarn
 
-if [ "$CHE_DEVFILES_REGISTRY_VERSION" == "" ]
+git clone https://github.com/che-incubator/chectl.git
+cd chectl
+
+if [ "$CHECTL_VERSION" == "" ]
 then
    echo "No specific version specified. Using latest ..."
 else
-   echo "Building the specified version $CHE_DEVFILES_REGISTRY_VERSION"
-   git checkout ${CHE_DEVFILES_REGISTRY_VERSION}
+   echo "Building the specified version $CHECTL_VERSION"
+   git checkout ${CHECTL_VERSION}
 fi
 
 wrkdir=`pwd`
 
-# Build registry using UBI images instead of default from source code on Power
+# Build appsody binary from source code on Power
 cd $wrkdir
-./build.sh --rhel
 
+# Build and test chectl 
+yarn
+yarn test
+
+CHECTL_BINARY=./bin/run
+if [ -f "$CHECTL_BINARY" ]; then    
+	./bin/run --help
+	echo "* * * Successfully built chectl !"
+else 
+    echo "Something went wrong while building chectl. Please check console log for more details."
+fi
