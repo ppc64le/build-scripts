@@ -3,7 +3,7 @@
 # Package        : cockroach
 # Version        : v19.1.8
 # Source repo    : https://github.com/cockroachdb/cockroach
-# Tested on      : UBI 7.6, RHEL 7.6
+# Tested on      : UBI 7.6, UBI 7.8, RHEL 7.6
 # Script License : Apache License, Version 2 or later
 # Maintainer     : Amit Sadaphule <amits2@us.ibm.com>
 #
