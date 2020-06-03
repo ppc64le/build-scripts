@@ -6,7 +6,7 @@
 # Version       : 2.2.4
 # Description:  : This script integrates native cuda enabled lighgbm package into 
 #                 the H2O installation specified in this script 
-# Source repo for lightgbm   	: https://github.com/bordaw/LightGBM-CUDA
+# Source repo for lightgbm   	: https://github.com/bordaw/H2O-LightGBM-CUDA
 # Maintainer    : Rajesh Bordawekar <bordaw@us.ibm.com>
 # Source repo for this script	: https://github.com/ppc64le/build-scripts/tree/master/lightGBM/h2o_lightgbm_integrate.sh
 # Maintainer    : Hari Reddy <hnreddy@us.ibm.com>
@@ -22,11 +22,11 @@
 # ----------------------------------------------------------------------------
 
 #  Please follow these steps to build and integrate cuda enabled lightgbm into H2o installation
-#  Step 1: Download and run the following script in non-root mode with sudo capability  to build LighGBM_CUDA
+#  Step 1: Download and run the following script in non-root mode with sudo capability  to build H2O-LightGBM-CUDA
 #  	   https://raw.githubusercontent.com/harinreddy/build-scripts/master/lightGBM/lightGBM_rhel_cuda.sh    
-#  Step 2: cd to  ...../LighGBM_CUDA   directory
+#  Step 2: cd to  ...../H2O-LightGBM-CUDA   directory
 #  
-#  Step 3: Download  the following script into the LighTGBM-CUDA directory and make changes to the script
+#  Step 3: Download  the following script into the H2O-LightGBM-CUDA directory and make changes to the script
 #          to point to the right H2O installation
 #	   https://raw.githubusercontent.com/harinreddy/build-scripts/master/lightGBM/h2o_lightgbm_integrate.sh
 #  Step 4: run h2o_lightgbm_integrate.sh
@@ -45,7 +45,7 @@
 
 CURRENT_DIR=$(pwd)
 LIGHTGBM_DIR=$CURRENT_DIR/python-package
-H2O_BASE=/h2o/hari/h2o/cuda/dai-1.8.0-linux-ppc64le/ # H2o installation directory 
+H2O_BASE=.../dai-1.8.0-linux-ppc64le/ # H2o installation directory 
 H2O_LIGHTGBM=$H2O_BASE/cuda-10.0 # H2O cuda package directory for lighgbm
 LIGHTGBM_PKG_DIR=$H2O_LIGHTGBM/lib/python3.6/site-packages
 cd $LIGHTGBM_PKG_DIR

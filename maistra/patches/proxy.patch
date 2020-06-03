@@ -1,0 +1,100 @@
+diff --git a/Makefile b/Makefile
+index 027b86f..34c6de4 100644
+--- a/Makefile
++++ b/Makefile
+@@ -29,8 +29,8 @@
+ export BUILD_WITH_CONTAINER ?= 0
+ 
+ LOCAL_ARCH := $(shell uname -m)
+-ifeq ($(LOCAL_ARCH),x86_64)
+-    TARGET_ARCH ?= amd64
++ifeq ($(LOCAL_ARCH),ppc64le)
++    TARGET_ARCH ?= ppc64le
+ else ifeq ($(shell echo $(LOCAL_ARCH) | head -c 5),armv8)
+     TARGET_ARCH ?= arm64
+ else ifeq ($(shell echo $(LOCAL_ARCH) | head -c 4),armv)
+diff --git a/Makefile.core.mk b/Makefile.core.mk
+index 62f5d9e..49c08f1 100644
+--- a/Makefile.core.mk
++++ b/Makefile.core.mk
+@@ -37,7 +37,7 @@ endif
+ 
+ UNAME := $(shell uname)
+ ifeq ($(UNAME),Linux)
+-BAZEL_CONFIG_DEV  = --config=libc++
++BAZEL_CONFIG_DEV  =
+ BAZEL_CONFIG_REL  = --config=libc++ --config=release
+ BAZEL_CONFIG_ASAN = --config=libc++ --config=clang-asan
+ BAZEL_CONFIG_TSAN = --config=libc++ --config=clang-tsan
+diff --git a/WORKSPACE b/WORKSPACE
+index 0ec3337..f5e8bd4 100644
+--- a/WORKSPACE
++++ b/WORKSPACE
+@@ -49,6 +49,9 @@ http_archive(
+     sha256 = ENVOY_SHA256,
+     strip_prefix = "envoy-" + ENVOY_SHA,
+     url = "https://github.com/maistra/envoy/archive/" + ENVOY_SHA + ".tar.gz",
++    patches = [
++        "//patches:wee8_genrule_cmd.patch",
++    ],
+ )
+ 
+ load("@envoy//bazel:api_binding.bzl", "envoy_api_binding")
+diff --git a/extensions/stats/plugin_test.cc b/extensions/stats/plugin_test.cc
+index 93ff318..556c5f3 100644
+--- a/extensions/stats/plugin_test.cc
++++ b/extensions/stats/plugin_test.cc
+@@ -42,21 +42,38 @@ namespace Stats {
+ 
+ TEST(IstioDimensions, Hash) {
+   IstioDimensions d1;
+-  IstioDimensions d2{.request_protocol = "grpc"};
+-  IstioDimensions d3{.request_protocol = "grpc", .response_code = "200"};
+-  IstioDimensions d4{.request_protocol = "grpc", .response_code = "400"};
+-  IstioDimensions d5{.source_app = "app_source", .request_protocol = "grpc"};
+-  IstioDimensions d6{.source_app = "app_source",
+-	             .source_version = "v2", 
+-	             .request_protocol = "grpc"};
+-  IstioDimensions d7{.source_app = "app_source", 
+-                     .source_version = "v2",
+-                     .request_protocol = "grpc",
+-                     .outbound = true};
+-  IstioDimensions d8{.source_app = "app_source", 
+-                     .source_version = "v2",
+-                     .request_protocol = "grpc",
+-                     .outbound = true};
++  IstioDimensions d2;
++  d2.request_protocol = "grpc";
++
++  IstioDimensions d3;
++  d3.request_protocol = "grpc";
++  d3.response_code = "200";
++
++  IstioDimensions d4;
++  d4.request_protocol = "grpc";
++  d4.response_code = "400";
++
++  IstioDimensions d5;
++  d5.request_protocol = "grpc";
++  d5.source_app = "app_source";
++
++  IstioDimensions d6;
++  d6.request_protocol = "grpc";
++  d6.source_app = "app_source";
++  d6.source_version = "v2";
++
++  IstioDimensions d7;
++  d7.outbound = true;
++  d7.request_protocol = "grpc";
++  d7.source_app = "app_source";
++  d7.source_version = "v2";
++
++  IstioDimensions d8;
++  d8.outbound = true;
++  d8.request_protocol = "grpc";
++  d8.source_app = "app_source";
++  d8.source_version = "v2";
++
+   // Must be unique except for d7 and d8.
+   std::set<size_t> hashes;
+   hashes.insert(IstioDimensions::HashIstioDimensions()(d1));
