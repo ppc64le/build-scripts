@@ -1,0 +1,20 @@
+diff --git a/test/fixtures/helpers/browser.js b/test/fixtures/helpers/browser.js
+index 37b829d..cb1b733 100644
+--- a/test/fixtures/helpers/browser.js
++++ b/test/fixtures/helpers/browser.js
+@@ -1,11 +1,17 @@
+-if (typeof dust !== 'object') {
+-    dust = undefined;
+-}
+
+-(function (dust) {
+-    'use strict';
+
+-    dust.helpers.browser = function () {};
+-
+-}(typeof exports !== 'undefined' ? module.exports = require('dustjs-linkedin') : dust));
++'use strict';
+
++module.exports = function (dust) {
++    dust.helpers.browser = function () { };
++};
