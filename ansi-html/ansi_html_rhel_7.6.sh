@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------------
 #
-# Package       : ajv
-# Version       : 6.12.2
-# Source repo   : https://github.com/epoberezkin/ajv
-# Tested on     : Ubuntu 18.04
+# Package       : ansi-html
+# Version       : 0.0.7
+# Source repo   : https://github.com/Tjatse/ansi-html
+# Tested on     : RHEL 7.6
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Ryan D'Mello <ryan.dmello1@ibm.com>
 #
@@ -20,19 +20,13 @@ export IBM_POWERAI_LICENSE_ACCEPT=yes
 export PATH=${PATH}:$HOME/conda/bin
 export PYTHON_VERSION=3.6
 export LANG=en_US.utf8
-export PACKAGE_VERSION=6.12.2
-export PACKAGE_NAME=ajv
-export PACKAGE_URL=https://github.com/epoberezkin/ajv
+export PACKAGE_VERSION=0.0.7
+export PACKAGE_NAME=ansi-html
+export PACKAGE_URL=https://github.com/Tjatse/ansi-html
 export QT_QPA_PLATFORM=offscreen
 WDIR=`pwd`
 
-apt-get update && apt-get upgrade -y && apt-get install -y curl git xz-utils \
-    python unzip build-essential socat openssl wget \
-    libsqlite3-0 libfontconfig1 libicu-dev libfreetype6 libssl1.0.0 \
-    libpng-dev libjpeg62 python libx11-6 libxext6 \
-    libfreetype6-dev libcairo2-dev pkg-config libjpeg62-dev \
-    libzmq3-dev jq phantomjs && \
-    rm -rf /var/cache/apt/*
+yum update -y && yum install -y curl git openssl openssl-devel.ppc64le wget
 
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-ppc64le.sh
 sh Miniconda3-latest-Linux-ppc64le.sh -u -b -p $HOME/conda
@@ -48,10 +42,7 @@ npm config set registry http://registry.npmjs.org/ && npm install node-gyp && no
 
 npm install mocha grunt yarn
 
-npm install -g newer
-n 11
-
 git clone ${PACKAGE_URL} ${PACKAGE_NAME}
 cd ${PACKAGE_NAME}
 
-npm install && git submodule update --init && npm test
+npm install && npm test

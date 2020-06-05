@@ -3,7 +3,7 @@
 # Package       : asn1
 # Version       : 0.2.4
 # Source repo   : https://github.com/joyent/node-asn1
-# Tested on     : Ubuntu 18.04
+# Tested on     : RHEL 7.6
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Ryan D'Mello <ryan.dmello1@ibm.com>
 #
@@ -26,13 +26,7 @@ export PACKAGE_URL=https://github.com/joyent/node-asn1
 export QT_QPA_PLATFORM=offscreen
 WDIR=`pwd`
 
-apt-get update && apt-get upgrade -y && apt-get install -y curl git xz-utils \
-    python unzip build-essential socat openssl wget \
-    libsqlite3-0 libfontconfig1 libicu-dev libfreetype6 libssl1.0.0 \
-    libpng-dev libjpeg62 python libx11-6 libxext6 \
-    libfreetype6-dev libcairo2-dev pkg-config libjpeg62-dev \
-    libzmq3-dev jq phantomjs && \
-    rm -rf /var/cache/apt/*
+yum update -y && yum install -y curl git openssl openssl-devel.ppc64le wget
 
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-ppc64le.sh
 sh Miniconda3-latest-Linux-ppc64le.sh -u -b -p $HOME/conda
