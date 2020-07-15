@@ -1,0 +1,12 @@
+diff --git a/c_src/build_deps.sh b/c_src/build_deps.sh
+index fef8514..0b719bf 100755
+--- a/c_src/build_deps.sh
++++ b/c_src/build_deps.sh
+@@ -53,7 +53,7 @@ case "$1" in
+     get-deps)
+         if [ ! -d leveldb ]; then
+             git clone git://github.com/basho/leveldb
+-            (cd leveldb && git checkout $LEVELDB_VSN)
++            (cd leveldb && git checkout $LEVELDB_VSN && patch port/atomic_pointer.h ../../../../../../../patches/atomic_pointer.patch)
+         fi
+         ;;
