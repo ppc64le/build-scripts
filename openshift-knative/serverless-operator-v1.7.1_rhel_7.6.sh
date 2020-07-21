@@ -62,7 +62,8 @@ docker push $DOCKER_REPO_OVERRIDE/origin-base:latest
 
 # build serverless-operator images
 mkdir -p $GOPATH/src/github.com/openshift-knative && cd $_ && pwd
-git clone --branch release-1.7 https://github.com/openshift-knative/serverless-operator.git
+git clone https://github.com/openshift-knative/serverless-operator.git
 cd serverless-operator && pwd
+git checkout -b v1.7.1 fd37d17 # no separate tag for v1.7.1
 git branch -vv
 make images
