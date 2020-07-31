@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi7/ubi:7.6
+FROM registry.access.redhat.com/ubi7/ubi:latest
 
 # For deployment, we need
 # libc6 - dynamically linked by cockroach binary
