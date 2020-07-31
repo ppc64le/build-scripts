@@ -31,7 +31,7 @@ export SCRIPT_DIR="${PWD}"
 cd onnx
 
 pip install pyzmq==17.1.2
-pip install -q numpy pytest nbval flake8
+pip install -q numpy pytest==5.4.3 nbval flake8
 
 # onnx c++ API tests
 export LD_LIBRARY_PATH="./.setuptools-cmake-build/:$LD_LIBRARY_PATH"
