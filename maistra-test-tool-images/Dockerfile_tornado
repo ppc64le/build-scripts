@@ -1,0 +1,11 @@
+FROM registry.access.redhat.com/ubi8/ubi:latest
+
+RUN yum update -y && yum install git python3 python3-pip -y
+RUN cd /tmp \
+    && git clone https://github.com/hiroakis/tornado-websocket-example.git \
+    && cd tornado-websocket-example \
+    && pip3 install -r requirements.txt
+
+EXPOSE 8888
+
+CMD ["python3", "/tmp/tornado-websocket-example/app.py"]
