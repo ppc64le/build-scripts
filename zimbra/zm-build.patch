@@ -1,0 +1,49 @@
+diff --git a/instructions/FOSS_repo_list.pl b/instructions/FOSS_repo_list.pl
+index 9c52fa4..6fea20e 100644
+--- a/instructions/FOSS_repo_list.pl
++++ b/instructions/FOSS_repo_list.pl
+@@ -4,8 +4,8 @@
+    { name => "ical4j-0.9.16-patched",                },
+    { name => "junixsocket",                         tag    => "junixsocket-parent-2.0.4", remote => "gh-ks",},
+    { name => "nekohtml-1.9.13",                      },
+-   { name => "java-html-sanitizer-release-20190610.1",remote => "zm-ow",},
+-   { name => "antisamy", remote => "zm-ow",          },
++   { name => "java-html-sanitizer-release-20190610.1",remote => "gh-zm",},
++   { name => "antisamy", remote => "gh-zm",          },
+    { name => "zm-admin-console",                     },
+    { name => "zm-admin-help-common",                 },
+    { name => "zm-ajax",                              },
+diff --git a/instructions/bundling-scripts/zimbra-store.sh b/instructions/bundling-scripts/zimbra-store.sh
+index 5cd47f8..2bc3c38 100755
+--- a/instructions/bundling-scripts/zimbra-store.sh
++++ b/instructions/bundling-scripts/zimbra-store.sh
+@@ -84,6 +84,7 @@ main()
+     mkdir -p ${repoDir}/zm-build/${currentPackage}/opt/zimbra/lib/ext/zimbraldaputils
+     mkdir -p ${repoDir}/zm-build/${currentPackage}/opt/zimbra/lib/ext/zm-oauth-social
+     mkdir -p ${repoDir}/zm-build/${currentPackage}/opt/zimbra/lib/ext/zm-gql
++    mkdir -p ${repoDir}/zm-build/${currentPackage}/opt/zimbra/lib/ext/convertd
+
+     if [ "${buildType}" == "NETWORK" ]
+     then
+@@ -95,7 +96,6 @@ main()
+       mkdir -p ${repoDir}/zm-build/${currentPackage}/opt/zimbra/lib/ext/zimbrasync
+       mkdir -p ${repoDir}/zm-build/${currentPackage}/opt/zimbra/lib/ext/network
+       mkdir -p ${repoDir}/zm-build/${currentPackage}/opt/zimbra/lib/ext/com_zimbra_oo
+-      mkdir -p ${repoDir}/zm-build/${currentPackage}/opt/zimbra/lib/ext/convertd
+       mkdir -p ${repoDir}/zm-build/${currentPackage}/opt/zimbra/lib/ext/zimbrahsm
+       mkdir -p ${repoDir}/zm-build/${currentPackage}/opt/zimbra/lib/ext/smime
+
+diff --git a/rpmconf/Install/Util/modules/packages.sh b/rpmconf/Install/Util/modules/packages.sh
+index 91241d5..52545a8 100755
+--- a/rpmconf/Install/Util/modules/packages.sh
++++ b/rpmconf/Install/Util/modules/packages.sh
+@@ -259,6 +259,9 @@ checkPackages() {
+          if grep -q i386 <(echo $file)
+          then
+             PROC="i386"
++         elif grep -q ppc64le <(echo $file)
++         then
++            PROC="ppc64le"
+          else
+             PROC="x86_64"
+          fi
