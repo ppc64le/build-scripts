@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------------
 #
-# Package		: Zimbra
-# Version		: 9.0.0-7-g0c716
-# Source repo	: https://github.com/DOCGroup/ATCD.git
-# Tested on		: rhel_7.8
+# Package	: Zimbra
+# Version	: 9.0.0-7-g0c716
+# Source repo	: https://github.com/Zimbra/zm-build.git
+# Tested on	: rhel_7.8
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Kandarpa Malipeddi <Kandarpa.Malipeddi@ibm.com>
 #
