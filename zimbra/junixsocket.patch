@@ -1,0 +1,40 @@
+diff --git a/junixsocket-native/pom.xml b/junixsocket-native/pom.xml
+index 88a97a2..223e601 100644
+--- a/junixsocket-native/pom.xml
++++ b/junixsocket-native/pom.xml
+@@ -21,7 +21,35 @@
+         <artifactId>nar-maven-plugin</artifactId>
+         <version>3.2.0</version>
+         <extensions>true</extensions>
++
+         <configuration>
++	<c>
++		<name>gcc</name>
++		<includes>
++			<include>**/*.c</include>
++		</includes>
++		<options>
++			<option>-D__int64=int64_t</option>
++			<option>-I${JAVA_HOME}/include</option>
++			<option>-I${JAVA_HOME}/include/linux</option>
++			<option>${java.os.include}</option>
++			<option>${stack.protector.option}</option>
++			<option>${architecture.option}</option>
++			<option>${subsystem.option}</option>
++			<option>${debug.option}</option>
++			<option>-shared</option>
++			<option>-fexceptions</option>
++			<option>-lstdc++</option>
++		</options>
++	</c>
++
++	<linker>
++		<name>gcc</name>
++		<options>
++			<option>${architecture.option}</option>
++			<option>${subsystem.option}</option>
++		</options>
++	</linker>
+           <libraries>
+             <library>
+               <type>jni</type>
