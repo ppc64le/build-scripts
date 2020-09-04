@@ -2,12 +2,15 @@
 set -e
 
 # This script has been adopted from the original work
-# @ https://github.com/hashicorp/docker-vault/blob/bc41a866add860e5fcccf7955ae8dd54e1c137e9/0.X/docker-entrypoint.sh
+# @ https://github.com/hashicorp/docker-vault/blob/master/0.X/docker-entrypoint.sh
 
 # Note above that we run dumb-init as PID 1 in order to reap zombie processes
 # as well as forward signals to all processes in its session. Normally, sh
 # wouldn't do either of these functions so we'd leak zombies as well as do
 # unclean termination of all our sub-processes.
+
+# Prevent core dumps
+ulimit -c 0
 
 # Allow setting VAULT_REDIRECT_ADDR and VAULT_CLUSTER_ADDR using an interface
 # name instead of an IP address. The interface name is specified using
@@ -68,19 +71,21 @@ fi
 
 # If we are running Vault, make sure it executes as the proper user.
 if [ "$1" = 'vault' ]; then
-    # If the config dir is bind mounted then chown it
-    if [ "$(stat -c %u /vault/config)" != "$(id -u vault)" ]; then
-        chown -R vault:vault /vault/config || echo "Could not chown /vault/config (may not have appropriate permissions)"
-    fi
+    if [ -z "$SKIP_CHOWN" ]; then
+        # If the config dir is bind mounted then chown it
+        if [ "$(stat -c %u /vault/config)" != "$(id -u vault)" ]; then
+            chown -R vault:vault /vault/config || echo "Could not chown /vault/config (may not have appropriate permissions)"
+        fi
 
-    # If the logs dir is bind mounted then chown it
-    if [ "$(stat -c %u /vault/logs)" != "$(id -u vault)" ]; then
-        chown -R vault:vault /vault/logs
-    fi
+        # If the logs dir is bind mounted then chown it
+        if [ "$(stat -c %u /vault/logs)" != "$(id -u vault)" ]; then
+            chown -R vault:vault /vault/logs
+        fi
 
-    # If the file dir is bind mounted then chown it
-    if [ "$(stat -c %u /vault/file)" != "$(id -u vault)" ]; then
-        chown -R vault:vault /vault/file
+        # If the file dir is bind mounted then chown it
+        if [ "$(stat -c %u /vault/file)" != "$(id -u vault)" ]; then
+            chown -R vault:vault /vault/file
+        fi
     fi
 
     if [ -z "$SKIP_SETCAP" ]; then
@@ -95,7 +100,7 @@ if [ "$1" = 'vault' ]; then
     fi
 
     if [ "$(id -u)" = '0' ]; then
-      set -- su-exec "vault" "$@"
+      set -- su-exec vault "$@"
     fi
 fi
 
