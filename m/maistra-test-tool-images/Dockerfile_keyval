@@ -1,0 +1,14 @@
+FROM golang:latest as build
+
+WORKDIR /go/src/
+RUN git clone https://github.com/istio/istio.git
+
+RUN cd /go/src/istio/mixer/test/keyval && \
+  CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-extldflags "-static"' -o bin/keyval ./main
+
+FROM registry.access.redhat.com/ubi8/ubi:latest as release
+RUN yum update -y && yum install -y ca-certificates
+
+COPY --from=build /go/src/istio/mixer/test/keyval/bin/keyval /keyval
+EXPOSE 9070
+ENTRYPOINT ["/keyval"]

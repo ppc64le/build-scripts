@@ -1,0 +1,66 @@
+# ----------------------------------------------------------------------------
+#
+# Package        : vernemq
+# Version        : 1.10.2
+# Source repo    : https://github.com/vernemq/vernemq
+# Tested on      : Ubuntu 18.04
+# Script License : Apache License, Version 2 or later
+# Maintainer     : Priya Seth <sethp@us.ibm.com>
+#
+# Disclaimer: This script has been tested in root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
+
+#!/bin/bash
+
+VERNEMQ_VER=1.10.2
+
+#Install dependencies
+apt-get update -y
+apt-get install -y git build-essential libsnappy-dev sudo curl autoconf libssl-dev libncurses5-dev xsltproc fop python-wxgtk3.0 python-wxgtk3.0-dev default-jre default-jdk g++ python-wxgtk-media3.0 unixodbc-dev libwxgtk3.0-dev
+
+curl -sSL -o /usr/local/bin/kerl https://raw.githubusercontent.com/kerl/kerl/master/kerl
+chmod +x /usr/local/bin/kerl
+kerl build 21.2
+kerl install 21.2 $HOME/kerl/21.2
+. $HOME/kerl/21.2/activate
+
+WORKDIR=`pwd`
+
+git clone https://github.com/vernemq/vernemq
+cd vernemq/
+git checkout ${VERNEMQ_VER}
+./rebar3 get-deps
+
+#Apply the eleveldb/leveldb patches
+patch $WORKDIR/vernemq/_build/default/lib/eleveldb/c_src/build_deps.sh $WORKDIR/patches/build_deps.patch
+
+#Build vernemq 
+make rel
+
+#Setup test dependencies as needed
+#apt-get install -y mysql-server memcached postgresql postgresql-contrib redis-server mongodb
+
+#service mysql start
+#mysql -e "CREATE DATABASE vmq_test_database;" -uroot
+#mysql -e "CREATE USER 'vmq_test_user' IDENTIFIED BY 'vmq_test_password';" -uroot
+#mysql -e "GRANT ALL PRIVILEGES ON * . * TO 'vmq_test_user';" -uroot
+
+#service start postgresql
+#sudo -i -u postgres
+#psql -c "CREATE DATABASE vmq_test_database;" -U postgres
+#psql -c "CREATE USER vmq_test_user WITH PASSWORD 'vmq_test_password';" -U postgres
+#psql -c "GRANT ALL PRIVILEGES ON DATABASE vmq_test_database to vmq_test_user;" -U postgres
+
+#service memcached start
+
+#service mongodb start
+
+#epmd -daemon
+
+#Execute tests (as/if needed) once the above services are setup
+#./rebar3 as all_tests do dialyzer, eunit, ct
