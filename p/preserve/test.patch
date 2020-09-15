@@ -1,0 +1,13 @@
+diff --git a/test.js b/test.js
+index 9bf174f..983aafc 100644
+--- a/test.js
++++ b/test.js
+@@ -24,7 +24,7 @@ describe('preserve tokens', function () {
+ 
+   it('should (e.g. shouldn\'t, but will) mangle tokens in the given string', function () {
+     var html = pretty('<ul><li><%= name %></li></ul>');
+-    html.should.equal('<ul>\n  <li>\n    <%=n ame %>\n  </li>\n</ul>');
++    html.should.equal('<ul>\n  <li><%= name %></li>\n</ul>');
+   });
+ 
+   it('should preserve tokens in the given string', function () {

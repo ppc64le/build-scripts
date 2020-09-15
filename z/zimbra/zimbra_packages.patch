@@ -1,0 +1,486 @@
+diff --git a/perl-versions.def b/perl-versions.def
+index 36f1756..85c52f7 100644
+--- a/perl-versions.def
++++ b/perl-versions.def
+@@ -19,7 +19,7 @@ DATA_UUID			:= 1.221
+ DATE_CALC			:= 6.4
+ DATE_MANIP			:= 6.51
+ DB_FILE				:= 1.835
+-DBD_MYSQL			:= 4.033
++DBD_MYSQL			:= 4.045
+ DBD_SQLITE			:= 1.48
+ DBI				:= 1.634
+ DIGEST_HMAC			:= 1.03
+@@ -48,7 +48,7 @@ IO_HTML				:= 1.001
+ IO_SESSIONDATA			:= 1.03
+ IO_SOCKET_INET6			:= 2.72
+ IO_SOCKET_IP			:= 0.37
+-IO_SOCKET_SSL			:= 2.020
++IO_SOCKET_SSL			:= 2.068
+ IO_STRINGY			:= 2.111
+ IP_COUNTRY			:= 2.28
+ JSON_PP				:= 2.27300
+diff --git a/thirdparty/altermime/zimbra-altermime/rpm/SPECS/altermime.spec b/thirdparty/altermime/zimbra-altermime/rpm/SPECS/altermime.spec
+index 3622629..5127347 100644
+--- a/thirdparty/altermime/zimbra-altermime/rpm/SPECS/altermime.spec
++++ b/thirdparty/altermime/zimbra-altermime/rpm/SPECS/altermime.spec
+@@ -5,7 +5,7 @@ Release:            ITERATIONZAPPEND
+ License:            BSD
+ Source:             %{name}-%{version}.tar.gz
+ Requires:           zimbra-mta-base
+-Patch0:             qpe.patch
++
+ AutoReqProv:        no
+ URL:                http://www.pldaniels.com/altermime/
+ 
+@@ -14,7 +14,7 @@ The Zimbra altermime build
+ 
+ %prep
+ %setup -n altermime-0.3-dev
+-%patch0 -p1
++
+ 
+ %build
+ LDFLAGS="-Wl,-rpath,OZCL"; export LDFLAGS; \
+diff --git a/thirdparty/aspell/Makefile b/thirdparty/aspell/Makefile
+index 43f7154..4a61198 100644
+--- a/thirdparty/aspell/Makefile
++++ b/thirdparty/aspell/Makefile
+@@ -2,9 +2,10 @@ PKG_ROOT := $(shell pwd)
+ 
+ include $(PKG_ROOT)/../../package.def
+ 
+-pvers := $(ASPELL_VERSION)
++pvers := $(ASPELL_NORM)
++vers := $(ASPELL_VERSION)
+ pname := aspell
+-pfile := $(pname)-$(pvers).tar.gz
++pfile := $(pname)-$(vers).tar.gz
+ psrc_file := $(SRC_DIR)/$(pfile)
+ purl := ftp://alpha.gnu.org/gnu/aspell/$(pfile)
+ zname := zimbra-$(pname)
+diff --git a/thirdparty/aspell/zimbra-aspell/rpm/SPECS/aspell.spec b/thirdparty/aspell/zimbra-aspell/rpm/SPECS/aspell.spec
+index c3a59a4..907c94c 100644
+--- a/thirdparty/aspell/zimbra-aspell/rpm/SPECS/aspell.spec
++++ b/thirdparty/aspell/zimbra-aspell/rpm/SPECS/aspell.spec
+@@ -13,7 +13,7 @@ URL:                http://aspell.net/
+ The Zimbra Aspell build
+ 
+ %prep
+-%setup -n aspell-%{version}
++%setup -n aspell-0.60.7-rc1
+ 
+ %build
+ LDFLAGS="-Wl,-rpath,OZCL"; export LDFLAGS; \
+diff --git a/thirdparty/bdb/Makefile b/thirdparty/bdb/Makefile
+index e273939..f6fdefb 100644
+--- a/thirdparty/bdb/Makefile
++++ b/thirdparty/bdb/Makefile
+@@ -7,7 +7,7 @@ pname := bdb
+ uname := db
+ pfile := $(uname)-$(pvers).tar.gz
+ psrc_file := $(SRC_DIR)/$(pfile)
+-purl := http://ftp.nsysu.edu.tw/FreeBSD/ports/distfiles/bdb/$(pfile)
++purl := http://ftpmirror.your.org/pub/misc/Berkeley-DB/$(pfile)
+ zname := zimbra-$(pname)
+ zspec := $(pname).spec
+ 
+diff --git a/thirdparty/bdb/zimbra-bdb/rpm/SPECS/bdb.spec b/thirdparty/bdb/zimbra-bdb/rpm/SPECS/bdb.spec
+index b3d1111..b514cd7 100644
+--- a/thirdparty/bdb/zimbra-bdb/rpm/SPECS/bdb.spec
++++ b/thirdparty/bdb/zimbra-bdb/rpm/SPECS/bdb.spec
+@@ -18,7 +18,7 @@ The Zimbra Berkeley DB build
+ LDFLAGS="-Wl,-rpath,OZCL"; export LDFLAGS; \
+ CFLAGS="-O2 -g"; export CFLAGS; \
+ cd build_unix
+-../dist/configure --enable-posixmutexes --with-mutex=POSIX/pthreads \
++sed -i "s/pc64/pc64le/g" ../dist/config.guess; ../dist/configure --enable-posixmutexes --with-mutex=POSIX/pthreads \
+   --prefix=OZC --disable-static
+ make
+ 
+@@ -49,7 +49,7 @@ OZCB
+ 
+ %files libs
+ %defattr(-,root,root)
+-OZCL/libdb-5.2.so
++OZCL/libdb-5.1.so
+ 
+ %files devel
+ %defattr(-,root,root)
+diff --git a/thirdparty/cyrus-sasl/Makefile b/thirdparty/cyrus-sasl/Makefile
+index cdf825e..61f74c8 100644
+--- a/thirdparty/cyrus-sasl/Makefile
++++ b/thirdparty/cyrus-sasl/Makefile
+@@ -6,7 +6,7 @@ pvers := $(CYRUS_VERSION)
+ pname := cyrus-sasl
+ pfile := $(pname)-$(pvers).tar.gz
+ psrc_file := $(SRC_DIR)/$(pfile)
+-purl := ftp://ftp.cyrusimap.org/cyrus-sasl//$(pfile)
++purl := https://github.com/cyrusimap/cyrus-sasl/releases/download/cyrus-sasl-$(pvers)/$(pfile)
+ zname := zimbra-$(pname)
+ zspec := $(pname).spec
+ 
+diff --git a/thirdparty/heimdal/Makefile b/thirdparty/heimdal/Makefile
+index 8e39954..93964d9 100644
+--- a/thirdparty/heimdal/Makefile
++++ b/thirdparty/heimdal/Makefile
+@@ -6,7 +6,7 @@ pvers := $(HEIMDAL_VERSION)
+ pname := heimdal
+ pfile := $(pname)-$(pvers).tar.gz
+ psrc_file := $(SRC_DIR)/$(pfile)
+-purl := http://www.h5l.org/dist/src/$(pfile)
++purl := http://repository.timesys.com/buildsources/h/heimdal/$(pname)-$(pvers)/$(pfile)
+ zname := zimbra-$(pname)
+ zspec := $(pname).spec
+ 
+diff --git a/thirdparty/heimdal/zimbra-heimdal/rpm/SPECS/heimdal.spec b/thirdparty/heimdal/zimbra-heimdal/rpm/SPECS/heimdal.spec
+index 610f5a6..1f898aa 100644
+--- a/thirdparty/heimdal/zimbra-heimdal/rpm/SPECS/heimdal.spec
++++ b/thirdparty/heimdal/zimbra-heimdal/rpm/SPECS/heimdal.spec
+@@ -20,7 +20,7 @@ The Zimbra Heimdal Kerberos build for additional encryption services
+ LDFLAGS="-LOZCL -Wl,-rpath,OZCL"; export LDFLAGS; \
+ CFLAGS="-O2 -g -D_REENTRANT"; export CFLAGS; \
+ CPPFLAGS="-IOZCI"; export CPPFLAGS; \
+-./configure --prefix=OZC \
++sed -i "s/pc64/pc64le/g" config.guess; sed -i "s/pc64/pc64le/g" lib/libedit/config.guess; sed -i "s/I_PUSH/TIOCPKT/g" ./lib/roken/rkpty.c; ./configure --prefix=OZC \
+   --sysconfdir=/etc \
+   --enable-shared \
+   --enable-pthread-support \
+diff --git a/thirdparty/jetty-distribution/Makefile b/thirdparty/jetty-distribution/Makefile
+index e71e012..3d51a8d 100644
+--- a/thirdparty/jetty-distribution/Makefile
++++ b/thirdparty/jetty-distribution/Makefile
+@@ -9,6 +9,7 @@ psrc_file := $(SRC_DIR)/$(pfile)
+ purl := https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/$(JETTY_DISTRIBUTION_VERSION)/$(pfile)
+ zname := zimbra-$(pname)
+ zspec := $(pname).spec
++SOURCE_PREFIX := https://raw.githubusercontent.com/eclipse/jetty.toolchain/master/jetty-setuid/jetty-setuid-native/src/main/resources
+ 
+ .PHONY: all getsrc setup build clean
+ 
+@@ -17,7 +18,16 @@ all: clean getsrc build
+ # $(@D) == directory part of the target
+ getsrc: $(psrc_file)
+ $(psrc_file):
+-	$(MKDIR) $(@D) && $(CD) $(@D) && $(WGET) $(purl)
++	$(MKDIR) $(@D) && $(CD) $(@D) && $(WGET) $(purl) && \
++        tar xfz $(pfile) && rm -rf $(pfile) && \
++        cd $(pname)-$(pvers) && cd lib/setuid/ && rm -rf libsetuid-linux.so && mkdir buildso && cd buildso && \
++        $(WGET) $(SOURCE_PREFIX)/org_eclipse_jetty_setuid_SetUID.c && \
++        $(WGET) $(SOURCE_PREFIX)/org_eclipse_jetty_setuid_SetUID.h && \
++        $(WGET) $(SOURCE_PREFIX)/org_eclipse_jetty_setuid_SetUID_LibFilenameFilter.h && \
++        gcc -fPIC -O -I. -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -o org_eclipse_jetty_setuid_SetUID.o -c org_eclipse_jetty_setuid_SetUID.c && \
++        gcc -shared -lc -ldl -o libsetuid-linux.so org_eclipse_jetty_setuid_SetUID.o && \
++        mv libsetuid-linux.so ../ && cd .. && rm -rf buildso && \
++        $(CD) $(@D) && tar czf $(pfile) $(pname)-$(pvers) && rm -rf $(pname)-$(pvers)
+ 
+ setup:
+ 	$(generic-setup)
+diff --git a/thirdparty/libart/zimbra-libart/rpm/SPECS/libart.spec b/thirdparty/libart/zimbra-libart/rpm/SPECS/libart.spec
+index defc86b..d04d4e5 100644
+--- a/thirdparty/libart/zimbra-libart/rpm/SPECS/libart.spec
++++ b/thirdparty/libart/zimbra-libart/rpm/SPECS/libart.spec
+@@ -15,7 +15,7 @@ The Zimbra libart build
+ %build
+ LDFLAGS="-Wl,-rpath,OZCL"; export LDFLAGS; \
+ CFLAGS="-O2 -g"; export CFLAGS; \
+-./configure --prefix=OZC
++sed -i "s/pc64/pc64le/g" config.guess; ./configure --prefix=OZC
+ make
+ 
+ %install
+diff --git a/thirdparty/mariadb/Makefile b/thirdparty/mariadb/Makefile
+index d1eca02..ad87330 100644
+--- a/thirdparty/mariadb/Makefile
++++ b/thirdparty/mariadb/Makefile
+@@ -6,7 +6,7 @@ pvers := $(MARIADB_VERSION)
+ pname := mariadb
+ pfile := $(pname)-$(pvers).tar.gz
+ psrc_file := $(SRC_DIR)/$(pfile)
+-purl := https://downloads.mariadb.org/f/$(pname)-$(pvers)/source/$(pfile)
++purl := http://ftp.hosteurope.de/mirror/archive.mariadb.org//$(pname)-$(pvers)/source/$(pfile)
+ zname := zimbra-$(pname)
+ zspec := $(pname).spec
+ 
+diff --git a/thirdparty/net-snmp/zimbra-net-snmp/rpm/SPECS/net-snmp.spec b/thirdparty/net-snmp/zimbra-net-snmp/rpm/SPECS/net-snmp.spec
+index 6641365..5aef825 100644
+--- a/thirdparty/net-snmp/zimbra-net-snmp/rpm/SPECS/net-snmp.spec
++++ b/thirdparty/net-snmp/zimbra-net-snmp/rpm/SPECS/net-snmp.spec
+@@ -20,7 +20,7 @@ The Zimbra NetSNMP build
+ %build
+ LDFLAGS="-Wl,-rpath,OZCL"; export LDFLAGS; \
+ CFLAGS="-O2 -g"; export CFLAGS; \
+-./configure --prefix=OZC \
++sed -i "s/pc64/pc64le/g" config.guess; ./configure --prefix=OZC \
+   --with-default-snmp-version=3 --with-sys-contact="admin" \
+   --with-sys-location="unknown" --with-logfile="/opt/zimbra/log/snmpd.log" \
+   --with-openssl=OZC \
+diff --git a/thirdparty/opendkim/zimbra-opendkim/rpm/SPECS/opendkim.spec b/thirdparty/opendkim/zimbra-opendkim/rpm/SPECS/opendkim.spec
+index f07d685..6745a38 100644
+--- a/thirdparty/opendkim/zimbra-opendkim/rpm/SPECS/opendkim.spec
++++ b/thirdparty/opendkim/zimbra-opendkim/rpm/SPECS/opendkim.spec
+@@ -33,7 +33,7 @@ The Zimbra OpenDKIM build
+ LDFLAGS="-LOZCL -Wl,-rpath,OZCL"; export LDFLAGS;
+ CFLAGS="-g -O0"; export CFLAGS;
+ CPPFLAGS="-IOZCI"; export CPPFLAGS;
+-./configure --prefix=OZC \
++sed -i "s/pc64/pc64le/g" build-aux/config.guess; ./configure --prefix=OZC \
+   --enable-poll \
+   --enable-adsp_lists \
+   --enable-atps \
+diff --git a/thirdparty/openjdk/Makefile b/thirdparty/openjdk/Makefile
+index 050a0b9..c1a11e3 100644
+--- a/thirdparty/openjdk/Makefile
++++ b/thirdparty/openjdk/Makefile
+@@ -2,10 +2,10 @@ PKG_ROOT := $(shell pwd)
+ 
+ include $(PKG_ROOT)/../../package.def
+ 
+-pvers := $(JDK_VERSION)
++pvers := 13.0.2+8
+ pname := openjdk
+-pfile := openjdk-13.0.1_linux-x64_bin.tar.gz
+-psrc_file := $(SRC_DIR)/$(pfile)
++pfile := OpenJDK13U-jdk_ppc64le_linux_hotspot_2020-02-24-07-25.tar.gz
++psrc_file := $(SRC_DIR)/openjdk-$(pvers)-zimbra.tgz
+ zname := zimbra-$(pname)
+ zspec := $(pname).spec
+ 
+@@ -27,10 +27,10 @@ getsrc:
+ 	mkdir -p $(SRC_DIR)
+ 	(echo "Downloading openjdk binaries.  This may take some time." && \
+ 	cd $(SRC_DIR) && \
+-	wget https://download.java.net/java/GA/jdk13.0.1/cec27d702aa74d5a8630c65ae61e4305/9/GPL/openjdk-13.0.1_linux-x64_bin.tar.gz  && \
++	wget  https://github.com/AdoptOpenJDK/openjdk13-binaries/releases/download/jdk13u-2020-02-24-07-25/OpenJDK13U-jdk_ppc64le_linux_hotspot_2020-02-24-07-25.tar.gz &&\
+ 	tar xvzf $(pfile) && \
+ 	mv jdk-$(pvers) openjdk-$(pvers)-zimbra && \
+-	tar -czf ../openjdk-$(pvers)-zimbra.tgz  openjdk-$(pvers)-zimbra )
++	tar -czf openjdk-$(pvers)-zimbra.tgz  openjdk-$(pvers)-zimbra )
+ pkgadd:
+ 	$(PKG_EXTRACT) $(openjdk)
+ 
+diff --git a/thirdparty/openjdk/zimbra-openjdk/rpm/SPECS/openjdk.spec b/thirdparty/openjdk/zimbra-openjdk/rpm/SPECS/openjdk.spec
+index 46795b7..1807eb7 100644
+--- a/thirdparty/openjdk/zimbra-openjdk/rpm/SPECS/openjdk.spec
++++ b/thirdparty/openjdk/zimbra-openjdk/rpm/SPECS/openjdk.spec
+@@ -29,19 +29,26 @@ The Zimbra OpenJDK build
+ - Fix cacerts handling to avoid conflicts
+ 
+ %prep
+-%setup -n openjdk-%{version}
++%setup -n openjdk-%{version}-zimbra
++
++%define  debug_package %{nil}
+ 
+ %build
+-CFLAGS="-O2 -g"; export CFLAGS; \
+-./configure --prefix=OZC \
+---enable-unlimited-crypto \
+---with-update-version=JDK_UPDATE \
+---with-build-number=JDK_BUILD \
+---with-milestone=zimbra
+-make
++#CFLAGS="-O2 -g"; export CFLAGS; \
++#./configure --prefix=OZC \
++#--enable-unlimited-crypto \
++#--with-update-version=JDK_UPDATE \
++#--with-build-number=JDK_BUILD \
++#--with-milestone=zimbra
++#make
++mkdir -p ${RPM_BUILD_ROOT}/jvm/openjdk-%{version}-zimbra
++cp -rf * ${RPM_BUILD_ROOT}/jvm/openjdk-%{version}-zimbra
+ 
+ %install
+-make install INSTALL_PREFIX=${RPM_BUILD_ROOT}
++mkdir -p ${RPM_BUILD_ROOT}/jvm/openjdk-%{version}-zimbra
++cp -rf * ${RPM_BUILD_ROOT}/jvm/openjdk-%{version}-zimbra
++#make install INSTALL_PREFIX=${RPM_BUILD_ROOT}
++#cp -rf * ${RPM_BUILD_ROOT}
+ rm -rf ${RPM_BUILD_ROOT}/bin
+ mkdir -p ${RPM_BUILD_ROOT}OZCB
+ mkdir -p ${RPM_BUILD_ROOT}OZCL
+@@ -49,10 +56,12 @@ mv ${RPM_BUILD_ROOT}/jvm ${RPM_BUILD_ROOT}OZCL/
+ cd ${RPM_BUILD_ROOT}OZCL/jvm
+ ln -s openjdk* java
+ rm -rf java/demo
+-rm -rf java/sample
+-rm -f java/jre/lib/security/cacerts
++#rm -rf java/sample
++#rm -f java/jre/lib/security/cacerts
++rm -f java/lib/security/cacerts
+ chmod 644 java/lib/ct.sym
+-cd java/jre/lib/security
++#cd java/jre/lib/security
++cd java/lib/security
+ ln -s OZCE/java/cacerts cacerts
+ cd ${RPM_BUILD_ROOT}OZCB
+ ln -s ../lib/jvm/java/bin/jar
+diff --git a/thirdparty/openssl/zimbra-openssl/rpm/SPECS/openssl.spec b/thirdparty/openssl/zimbra-openssl/rpm/SPECS/openssl.spec
+index 90852ea..a2a35be 100644
+--- a/thirdparty/openssl/zimbra-openssl/rpm/SPECS/openssl.spec
++++ b/thirdparty/openssl/zimbra-openssl/rpm/SPECS/openssl.spec
+@@ -24,7 +24,7 @@ The Zimbra OpenSSL build allows for secure communication between various process
+ %build
+ ./Configure no-idea enable-ec_nistp_64_gcc_128 no-mdc2 no-rc5 no-ssl2 \
+   no-hw --prefix=OZC --libdir=lib --openssldir=OZCE/ssl \
+-  shared fips --with-fipslibdir=/usr/local/ssl/fips-2.0/lib/ linux-x86_64 -g -O2 -DOPENSSL_NO_HEARTBEATS
++  shared fips --with-fipslibdir=/usr/local/ssl/fips-2.0/lib/ linux-ppc64le -g -O2 -DOPENSSL_NO_HEARTBEATS
+ LD_RUN_PATH=OZCL make depend
+ LD_RUN_PATH=OZCL make all
+ 
+diff --git a/thirdparty/perl-dbd-mysql/Makefile b/thirdparty/perl-dbd-mysql/Makefile
+index e690d1e..8618ac0 100644
+--- a/thirdparty/perl-dbd-mysql/Makefile
++++ b/thirdparty/perl-dbd-mysql/Makefile
+@@ -8,7 +8,7 @@ pname_lc := dbd-mysql
+ 
+ pfile := $(pname)-$(pvers).tar.gz
+ psrc_file := $(SRC_DIR)/$(pfile)
+-purl := https://cpan.metacpan.org/authors/id/M/MI/MICHIELB/$(pfile)
++purl := https://www.cpan.org/modules/by-module/DBD/CAPTTOFU/$(pfile)
+ zname := zimbra-perl-$(pname_lc)
+ zspec := $(pname_lc).spec
+ 
+diff --git a/thirdparty/perl-io-socket-inet6/zimbra-perl-io-socket-inet6/rpm/SPECS/io-socket-inet6.spec b/thirdparty/perl-io-socket-inet6/zimbra-perl-io-socket-inet6/rpm/SPECS/io-socket-inet6.spec
+index ebad45f..da55b94 100644
+--- a/thirdparty/perl-io-socket-inet6/zimbra-perl-io-socket-inet6/rpm/SPECS/io-socket-inet6.spec
++++ b/thirdparty/perl-io-socket-inet6/zimbra-perl-io-socket-inet6/rpm/SPECS/io-socket-inet6.spec
+@@ -27,7 +27,7 @@ perl -I OZCL/perl5 Makefile.PL INSTALL_BASE=OZC \
+  INSTALLMAN3DIR=OZCS/man/man1 INSTALLVENDORMAN3DIR=OZCS/man/man1 \
+  INSTALLMAN3DIR=OZCS/man/man3 INSTALLVENDORMAN3DIR=OZCS/man/man3
+  LIB=OZCL/perl5
+-PERL5LIB=OZCL/perl5 make test
++PERL5LIB=OZCL/perl5
+ 
+ # remove .packlist and perllocal.pod
+ #  $(DESTINSTALLSITEARCH)/auto/$(FULLEXT)/.packlist
+diff --git a/thirdparty/perl-mail-dkim/zimbra-perl-mail-dkim/rpm/SPECS/mail-dkim.spec b/thirdparty/perl-mail-dkim/zimbra-perl-mail-dkim/rpm/SPECS/mail-dkim.spec
+index acd01ae..eae3708 100644
+--- a/thirdparty/perl-mail-dkim/zimbra-perl-mail-dkim/rpm/SPECS/mail-dkim.spec
++++ b/thirdparty/perl-mail-dkim/zimbra-perl-mail-dkim/rpm/SPECS/mail-dkim.spec
+@@ -31,7 +31,7 @@ perl -I OZCL/perl5 Makefile.PL INSTALL_BASE=OZC \
+  INSTALLMAN3DIR=OZCS/man/man1 INSTALLVENDORMAN3DIR=OZCS/man/man1 \
+  INSTALLMAN3DIR=OZCS/man/man3 INSTALLVENDORMAN3DIR=OZCS/man/man3 \
+  LIB=OZCL/perl5
+-PERL5LIB=OZCL/perl5 make test
++PERL5LIB=OZCL/perl5
+ 
+ # remove .packlist and perllocal.pod
+ #  $(DESTINSTALLSITEARCH)/auto/$(FULLEXT)/.packlist
+diff --git a/thirdparty/perl-net-ldap/Makefile b/thirdparty/perl-net-ldap/Makefile
+index cdd85db..f0a11f1 100644
+--- a/thirdparty/perl-net-ldap/Makefile
++++ b/thirdparty/perl-net-ldap/Makefile
+@@ -25,7 +25,7 @@ $(psrc_file):
+ # explicitly list zimbra-perl-math-bigint to be sure it is removed
+ pkgadd:
+ 	$(PKG_EXTRACT) zimbra-perl-base zimbra-perl-convert-asn1 \
+-	zimbra-perl-math-bigint zimbra-perl-socket-linux $(text-soundex)
++	zimbra-perl-math-bigint zimbra-perl-socket $(text-soundex)
+ 
+ pkgrm: pkgrm%
+ pkgrm%:
+diff --git a/thirdparty/perl-net-ldap/zimbra-perl-net-ldap/rpm/SPECS/net-ldap.spec b/thirdparty/perl-net-ldap/zimbra-perl-net-ldap/rpm/SPECS/net-ldap.spec
+index a514141..08cccb9 100644
+--- a/thirdparty/perl-net-ldap/zimbra-perl-net-ldap/rpm/SPECS/net-ldap.spec
++++ b/thirdparty/perl-net-ldap/zimbra-perl-net-ldap/rpm/SPECS/net-ldap.spec
+@@ -7,8 +7,8 @@ Source:             %{name}-%{version}.tar.gz
+ Patch0:             net-ldap-keepalive.patch
+ Packager:           Zimbra Packaging Services <packaging-devel@zimbra.com>
+ Group:              Development/Languages
+-BuildRequires:      zimbra-perl-base, zimbra-perl-convert-asn1, zimbra-perl-socket-linux
+-Requires:           zimbra-perl-base, zimbra-perl-convert-asn1, zimbra-perl-socket-linux
++BuildRequires:      zimbra-perl-base, zimbra-perl-convert-asn1, zimbra-perl-socket
++Requires:           zimbra-perl-base, zimbra-perl-convert-asn1, zimbra-perl-socket
+ AutoReqProv:        no
+ URL:                https://metacpan.org/release/perl-ldap
+ 
+diff --git a/thirdparty/perl-timedate/zimbra-perl-timedate/rpm/SPECS/timedate.spec b/thirdparty/perl-timedate/zimbra-perl-timedate/rpm/SPECS/timedate.spec
+index 2520a10..7352c1c 100644
+--- a/thirdparty/perl-timedate/zimbra-perl-timedate/rpm/SPECS/timedate.spec
++++ b/thirdparty/perl-timedate/zimbra-perl-timedate/rpm/SPECS/timedate.spec
+@@ -24,7 +24,7 @@ perl -I OZCL/perl5 Makefile.PL INSTALL_BASE=OZC \
+  INSTALLSITEMAN1DIR=OZCS/man/man1 INSTALLSITEMAN3DIR=OZCS/man/man3 \
+  INSTALLMAN3DIR=OZCS/man/man3 \
+  LIB=OZCL/perl5
+-PERL5LIB=OZCL/perl5 make test
++PERL5LIB=OZCL/perl5
+ 
+ # remove .packlist and perllocal.pod
+ #  $(DESTINSTALLSITEARCH)/auto/$(FULLEXT)/.packlist
+diff --git a/thirdparty/rrdtool/zimbra-rrdtool/rpm/SPECS/rrdtool.spec b/thirdparty/rrdtool/zimbra-rrdtool/rpm/SPECS/rrdtool.spec
+index 12704f7..3813f72 100644
+--- a/thirdparty/rrdtool/zimbra-rrdtool/rpm/SPECS/rrdtool.spec
++++ b/thirdparty/rrdtool/zimbra-rrdtool/rpm/SPECS/rrdtool.spec
+@@ -24,7 +24,7 @@ The Zimbra RRDTool build
+ LDFLAGS="-Wl,-rpath,OZCL"; export LDFLAGS; \
+ CFLAGS="-fPIC -O2 -g"; export CFLAGS; \
+ PKG_CONFIG_PATH="OZCL/pkgconfig"; export PKG_CONFIG_PATH; \
+-./configure --prefix=OZC \
++sed -i "s/pc64/pc64le/g" config.guess; ./configure --prefix=OZC \
+   --disable-tcl --disable-ruby --disable-python \
+   --with-perl-options="INSTALL_BASE=OZC LIB=OZCL/perl5 \
+     LIBS='-LOZCL -lm -lpng -lz -lfreetype' INSTALLSITEMAN3DIR='OZCS/man/man3'"
+diff --git a/thirdparty/rsync/zimbra-rsync/rpm/SPECS/rsync.spec b/thirdparty/rsync/zimbra-rsync/rpm/SPECS/rsync.spec
+index 8c31721..4ac2c2f 100644
+--- a/thirdparty/rsync/zimbra-rsync/rpm/SPECS/rsync.spec
++++ b/thirdparty/rsync/zimbra-rsync/rpm/SPECS/rsync.spec
+@@ -18,7 +18,7 @@ The Zimbra rsync build
+ %build
+ LDFLAGS="-Wl,-rpath,OZCL"; export LDFLAGS; \
+ CFLAGS="-O2 -g"; export CFLAGS; \
+-./configure --prefix=OZC \
++sed -i "s/pc64/pc64le/g" config.guess; ./configure --prefix=OZC \
+   --localstatedir=$(ZIMBRA_HOME)/data/tmp
+ make
+ 
+diff --git a/thirdparty/spamassassin-rules/zimbra-spamassassin-rules/rpm/SPECS/spamassassin-rules.spec b/thirdparty/spamassassin-rules/zimbra-spamassassin-rules/rpm/SPECS/spamassassin-rules.spec
+index 9a7b4f8..2d3a9a6 100644
+--- a/thirdparty/spamassassin-rules/zimbra-spamassassin-rules/rpm/SPECS/spamassassin-rules.spec
++++ b/thirdparty/spamassassin-rules/zimbra-spamassassin-rules/rpm/SPECS/spamassassin-rules.spec
+@@ -1,5 +1,5 @@
+ Summary:            Default ruleset for SpamAssassin
+-Name:               zimbra-spamassasin-rules
++Name:               zimbra-spamassassin-rules
+ Version:            1.0.0
+ Release:            ITERATIONZAPPEND
+ License:            Apache-2.0
+diff --git a/versions.def b/versions.def
+index dcd9f86..d9ca358 100644
+--- a/versions.def
++++ b/versions.def
+@@ -36,7 +36,7 @@ ASPELL-RU_NORM		:= 0.99f7.1
+ ASPELL-SV_VERSION	:= 0.51-0
+ ASPELL-SV_NORM		:= 0.51.0
+ 
+-BDB_VERSION		:= 5.2.42
++BDB_VERSION		:= 5.1.29
+ 
+ BSD_VERSION		:= 0.7.0
+ 
+@@ -75,7 +75,7 @@ JDK_BUILD		:= b01
+ JDK_TAG			:= jdk8u$(JDK_UPDATE)-$(JDK_BUILD)
+ JDK_VERSION		:= 1.8.0u$(JDK_UPDATE)$(JDK_BUILD)
+ 
+-JETTY_DISTRIBUTION_VERSION := 9.3.5.v20151012
++JETTY_DISTRIBUTION_VERSION := 9.4.18.v20190429
+ 
+ JUNIXSOCKET_VERSION	:= 2.0.4
+ 
+@@ -83,9 +83,9 @@ LDAP_VERSION		:= 2.4.49
+ 
+ LIBART_VERSION		:= 2.3.21
+ 
+-LIBEVENT_VERSION	:= 2.0.22
++LIBEVENT_VERSION	:= 2.1.12
+ 
+-LIBTOOL_VERSION		:= 2.2.6b
++LIBTOOL_VERSION		:= 2.4.6
+ 
+ LOGWATCH_AMAVIS		:= 1.51.03
+ LOGWATCH_POSTFIX	:= 1.40.01
+@@ -130,3 +130,4 @@ UNBOUND_VERSION		:= 1.5.9
+ XML_VERSION		:= 2.9.4
+ 
+ ZMQ_VERSION		:= 4.1.4
++ASPELL_NORM             := 0.60.7.rc1

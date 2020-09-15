@@ -1,0 +1,21 @@
+diff --git a/jylibs/logmsg.py b/jylibs/logmsg.py
+index 1f4d200..ceb5268 100644
+--- a/jylibs/logmsg.py
++++ b/jylibs/logmsg.py
+@@ -25,11 +25,11 @@ import logging.handlers
+ import re
+ import threading
+ 
+-from org.productivity.java.syslog4j import Syslog
+-from org.productivity.java.syslog4j import SyslogIF
+-from org.productivity.java.syslog4j import SyslogConstants
+-from org.productivity.java.syslog4j.impl.unix import UnixSyslog
+-from org.productivity.java.syslog4j.impl.unix.socket import UnixSocketSyslogConfig
++from org.graylog2.syslog4j import Syslog
++from org.graylog2.syslog4j import SyslogIF
++from org.graylog2.syslog4j import SyslogConstants
++from org.graylog2.syslog4j.impl.unix import UnixSyslog
++from org.graylog2.syslog4j.impl.unix.socket import UnixSocketSyslogConfig
+ 
+ class Log:
+ 	zmconfigdSyslogInstance = UnixSocketSyslogConfig(SyslogConstants.FACILITY_LOCAL0, "/dev/log")
