@@ -1,4 +1,4 @@
-FROM     ppc64le/adoptopenjdk:8-openj9-bionic
+FROM     adoptopenjdk:8-openj9-bionic
 MAINTAINER      "Priya Seth <sethp@us.ibm.com>", "Eshant Gupta <guptaeshant@gmail.com>"
 
 ENV     PATH /usr/lib/rstudio-server/bin/:$PATH
@@ -14,10 +14,11 @@ RUN     rm -rf /var/lib/apt/lists/ && \
             libboost-all-dev pkg-config psmisc python-dev python-setuptools \
             pandoc pandoc-citeproc unzip uuid-dev wget gfortran libreadline-dev \
 	    xorg-dev libbz2-ocaml-dev liblzma-dev \
-            libghc-pcre-light-dev zlib1g-dev sudo lsb-release
+            libghc-pcre-light-dev zlib1g-dev sudo pcre2-utils
+RUN     apt-get install -y libpcre2-dev lsb-release
 RUN     wget https://cloud.r-project.org/src/base/R-4/R-${R_VERSION}.tar.gz && \
         tar -xvzf R-${R_VERSION}.tar.gz && cd R-${R_VERSION} && \
-        ./configure LIBnn=lib  --enable-R-shlib --with-pcre1 && \
+        ./configure LIBnn=lib  --enable-R-shlib && \
         make -j4 && make -j4 install
 RUN     wget https://github.com/rstudio/rstudio/archive/v${RStudio_VERSION}.tar.gz && \
         tar zxvf v${RStudio_VERSION}.tar.gz && \
