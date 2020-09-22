@@ -59,7 +59,7 @@ git clone --branch v0.3.1 https://github.com/tektoncd/triggers.git
 cd triggers
 
 #Build required base images
-curl -o Dockerfile.build-base-ubi https://raw.githubusercontent.com/ppc64le/build-scripts/master/tektoncd-components/base-dockerfiles/Dockerfile.build-base-ubi
+curl -o Dockerfile.build-base-ubi https://raw.githubusercontent.com/ppc64le/build-scripts/master/t/tektoncd-components/base-dockerfiles/Dockerfile.build-base-ubi
 docker build -t build/build-base:latest -f Dockerfile.build-base-ubi .
 
 
