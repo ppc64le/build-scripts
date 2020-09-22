@@ -54,9 +54,9 @@ mkdir -p ${GOPATH}/src/github.com/tektoncd && cd $_
 git clone --branch v0.7.0 https://github.com/tektoncd/pipeline.git
 cd pipeline
 #Download base dockerfiles
-curl -o images/Dockerfile.build-base-ubi https://raw.githubusercontent.com/ppc64le/build-scripts/master/tektoncd-components/base-dockerfiles/Dockerfile.build-base-ubi
-curl -o images/Dockerfile.busybox-ubi https://raw.githubusercontent.com/ppc64le/build-scripts/master/tektoncd-components/base-dockerfiles/Dockerfile.busybox-ubi
-curl -o images/Dockerfile.cloud-sdk-docker-ubi https://raw.githubusercontent.com/ppc64le/build-scripts/master/tektoncd-components/base-dockerfiles/Dockerfile.cloud-sdk-docker-ubi
+curl -o images/Dockerfile.build-base-ubi https://raw.githubusercontent.com/ppc64le/build-scripts/master/t/tektoncd-components/base-dockerfiles/Dockerfile.build-base-ubi
+curl -o images/Dockerfile.busybox-ubi https://raw.githubusercontent.com/ppc64le/build-scripts/master/t/tektoncd-components/base-dockerfiles/Dockerfile.busybox-ubi
+curl -o images/Dockerfile.cloud-sdk-docker-ubi https://raw.githubusercontent.com/ppc64le/build-scripts/master/t/tektoncd-components/base-dockerfiles/Dockerfile.cloud-sdk-docker-ubi
 #Build required base images
 docker build -t build/build-base:latest -f images/Dockerfile.build-base-ubi .
 docker build -t ppc64le/busybox:ubi -f images/Dockerfile.busybox-ubi .
