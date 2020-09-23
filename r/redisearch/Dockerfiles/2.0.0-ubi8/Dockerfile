@@ -1,3 +1,6 @@
+# This Dockerfile has been adopted from the original work
+# @ https://github.com/RediSearch/RediSearch/blob/master/docker/Dockerfile
+
 FROM registry.access.redhat.com/ubi8/ubi AS builder
 
 MAINTAINER Kandarpa Malipeddi <kandarpa.malipeddi@ibm.com>
