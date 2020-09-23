@@ -1,4 +1,5 @@
 FROM ubuntu:xenial
+MAINTAINER "Eshant Gupta <guptaeshant@gmail.com>"
 ENV TOXENV=py36-noextras
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
 RUN \
@@ -15,7 +16,7 @@ RUN \
     locale-gen en_US.UTF-8 && \
     ln -sf python3.6 /usr/bin/python3 && \
     # Clone Project
-    git clone https://github.com/ezeeyahoo/custodia.git /root/custodia && \
+    git clone https://github.com/latchset/custodia.git /root/custodia && \
     cd /root/custodia && \
     # update pip
     python3 -m pip install --upgrade pip setuptools && \
