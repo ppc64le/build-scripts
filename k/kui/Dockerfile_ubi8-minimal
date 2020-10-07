@@ -1,0 +1,125 @@
+#
+# Copyright 2019-20 IBM Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+FROM registry.access.redhat.com/ubi8-minimal
+
+# proxy ports (keep in sync with conf.d/proxy.conf)
+ENV PORT 3000
+ENV KUI_PROXY_EXTERNAL_PORT 9080
+
+# nginx port
+EXPOSE 80/tcp
+
+RUN microdnf install -y nginx
+RUN ln -sf /dev/stdout /var/log/nginx/access.log \
+        && ln -sf /dev/stderr /var/log/nginx/error.log \
+        && sed -i '\/pid[[:blank:]]*[a-zA-Z0-9_\-\/]*\/nginx.pid;/d' /etc/nginx/nginx.conf \
+        && sed -i '\/listen[[:blank:]]*80[[:blank:]]*default_server;/d' /etc/nginx/nginx.conf \
+        && sed -i '\/listen[[:blank:]]*\[::\]:80[[:blank:]]*default_server;/d' /etc/nginx/nginx.conf
+
+RUN microdnf install -y wget tar xz \
+        && wget "https://nodejs.org/dist/v12.16.1/node-v12.16.1-linux-ppc64le.tar.xz" \
+        && tar -xJf node-v12.16.1-linux-ppc64le.tar.xz -C /usr/local/ --no-same-owner \
+        && echo "export PATH=${PATH}:/usr/local/node-v12.16.1-linux-ppc64le/bin" >> ${HOME}/.bashrc
+ENV PATH=${PATH}:/usr/local/node-v12.16.1-linux-ppc64le/bin
+
+# for development, we inject the developer's kubeconfig into the container
+ARG KUBECONFIG
+ENV KUBECONFIG=$KUBECONFIG
+
+# the following from https://github.com/dtzar/helm-kubectl/blob/2.12.2/Dockerfile
+###########
+# Note: Latest version of kubectl may be found at:
+# https://aur.archlinux.org/packages/kubectl-bin/
+ARG KUBE_VERSION
+ENV KUBE_VERSION=$KUBE_VERSION
+# Note: Latest version of helm may be found at:
+# https://github.com/kubernetes/helm/releases
+
+# we will download a gamut of helm clients and place them here
+# @see plugins/plugin-k8s/src/lib/util/discovery/helm-client.ts
+#
+# Note that HELM_LATEST_VERSION does not mean which version we will
+# present to the user; rather, we just need at least one working
+# version in order to determine what version actually to use, for the
+# user (based on `helm --short --server version`)
+ENV KUI_HELM_CLIENTS_DIR=/usr/local/bin
+ENV HELM_LATEST_VERSION="${KUI_HELM_CLIENTS_DIR}"/helm-2.14
+
+RUN (microdnf install -y ca-certificates bash git python2 make gcc-c++ && alternatives --set python /usr/bin/python2 && wget -q https://storage.googleapis.com/kubernetes-release/release/${KUBE_VERSION}/bin/linux/ppc64le/kubectl -O /usr/local/bin/kubectl && chmod +x /usr/local/bin/kubectl) & \
+    (wget -q https://storage.googleapis.com/kubernetes-helm/helm-v2.9.0-linux-ppc64le.tar.gz -O - | tar -xzO linux-ppc64le/helm > /usr/local/bin/helm-2.9 && chmod +x /usr/local/bin/helm-2.9) & \
+    (wget -q https://storage.googleapis.com/kubernetes-helm/helm-v2.10.0-linux-ppc64le.tar.gz -O - | tar -xzO linux-ppc64le/helm > /usr/local/bin/helm-2.10 && chmod +x /usr/local/bin/helm-2.10) & \
+    (wget -q https://storage.googleapis.com/kubernetes-helm/helm-v2.11.0-linux-ppc64le.tar.gz -O - | tar -xzO linux-ppc64le/helm > /usr/local/bin/helm-2.11 && chmod +x /usr/local/bin/helm-2.11) & \
+    (wget -q https://storage.googleapis.com/kubernetes-helm/helm-v2.12.2-linux-ppc64le.tar.gz -O - | tar -xzO linux-ppc64le/helm > /usr/local/bin/helm-2.12 && chmod +x /usr/local/bin/helm-2.12) & \
+    (wget -q https://storage.googleapis.com/kubernetes-helm/helm-v2.13.1-linux-ppc64le.tar.gz -O - | tar -xzO linux-ppc64le/helm > /usr/local/bin/helm-2.13 && chmod +x /usr/local/bin/helm-2.13) & \
+    (wget -q https://storage.googleapis.com/kubernetes-helm/helm-v2.14.1-linux-ppc64le.tar.gz -O - | tar -xzO linux-ppc64le/helm > /usr/local/bin/helm-2.14 && chmod +x /usr/local/bin/helm-2.14); wait
+###########
+
+COPY conf.d/default.conf /etc/nginx/conf.d/default.conf
+
+RUN mkdir /kui-proxy
+
+COPY . /usr/share/nginx/html
+
+RUN cd /usr/share/nginx/html/kui && npm link ./app --no-package-lock
+
+# recompile pty
+RUN cd /usr/share/nginx/html/kui/node_modules/node-pty-prebuilt-multiarch && npm run install && microdnf remove -y remove -y python2-pip python2-libs python2-setuptools python2 make gcc-c++
+
+# kubeconfig
+COPY .kube /root/.kube
+
+# krew
+RUN microdnf install -y findutils && \
+  set -x; TMP_DIR="$(mktemp -d)"; cd $TMP_DIR && \
+  wget https://golang.org/dl/go1.15.2.linux-ppc64le.tar.gz && \
+  tar -xzf go1.15.2.linux-ppc64le.tar.gz && \
+  rm -rf go1.15.2.linux-ppc64le.tar.gz && \
+  export GOPATH=`pwd`/gopath && \
+  export PATH=`pwd`/go/bin:$GOPATH/bin:$PATH && \
+  mkdir -p $GOPATH/src/sigs.k8s.io && \
+  cd $GOPATH/src/sigs.k8s.io && \
+  git clone https://github.com/kubernetes-sigs/krew && \
+  cd krew; git checkout v0.4.0 && \
+  sed -i 's/supported_platforms="/supported_platforms="linux\/ppc64le /g' hack/make-binaries.sh && \
+  sed -i '/platforms:/a \  - uri: https:\/\/github.com\/kubernetes-sigs\/krew\/releases\/download\/KREW_TAG\/krew.tar.gz\n\
+    sha256: KREW_TAR_CHECKSUM\n\
+    bin: krew\n\
+    files:\n\
+    - from: .\/krew-linux_ppc64le\n\
+      to: krew\n\
+    - from: .\/LICENSE\n\
+      to: .\n\
+    selector:\n\
+      matchLabels:\n\
+        os: linux\n\
+        arch: ppc64le' hack/krew.yaml && \
+  hack/install-gox.sh && \
+  hack/make-binaries.sh && \
+  hack/make-release-artifacts.sh && \
+  out/bin/krew-linux_ppc64le install --manifest=out/krew.yaml --archive=out/krew.tar.gz && \
+  out/bin/krew-linux_ppc64le update && \
+  echo "export PATH=\"${PATH}:${HOME}/.krew/bin\"" >> ${HOME}/.bashrc && \
+  rm -rf $TMP_DIR && \
+  microdnf remove -y findutils tar
+
+ENV PATH=/root/.krew/bin:$PATH
+
+# profile.d
+COPY profile.d /tmp/profile.d
+RUN for i in /tmp/profile.d/*; do cat $i >> /etc/profile; done
+
+CMD [ "/usr/share/nginx/html/start-proxy-and-nginx.sh" ]
