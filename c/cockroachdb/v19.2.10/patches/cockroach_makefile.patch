@@ -1,0 +1,21 @@
+diff --git a/Makefile b/Makefile
+index 4cd6dd03eb..3a0d1f0f63 100644
+--- a/Makefile
++++ b/Makefile
+@@ -327,6 +327,7 @@ ifneq ($(GIT_DIR),)
+ endif
+ 	mkdir -p $(@D)
+ 	touch $@
++	cd $(abspath vendor) && git apply $(abspath .)/arrow_memory.patch
+ 
+ IGNORE_GOVERS :=
+ 
+@@ -1647,7 +1648,7 @@ $(testbins): bin/%: bin/%.d | bin/prereqs $(SUBMODULES_TARGET)
+ 	mv -f $@.d.tmp $@.d
+ 	$(xgo) test $(GOFLAGS) -tags '$(TAGS)' -ldflags '$(LINKFLAGS)' -c -o $@ $($*-package)
+ 
+-bin/prereqs: ./pkg/cmd/prereqs/*.go
++bin/prereqs: ./pkg/cmd/prereqs/*.go | bin/.submodules-initialized
+ 	@echo go install -v ./pkg/cmd/prereqs
+ 	@$(GO_INSTALL) -v ./pkg/cmd/prereqs
+ 
