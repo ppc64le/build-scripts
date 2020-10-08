@@ -1,0 +1,11 @@
+diff --git a/pkg/server/status/runtime_jemalloc.go b/pkg/server/status/runtime_jemalloc.go
+index 8565b7ecb0..547bb79056 100644
+--- a/pkg/server/status/runtime_jemalloc.go
++++ b/pkg/server/status/runtime_jemalloc.go
+@@ -123,5 +123,5 @@ func getJemallocStats(ctx context.Context) (uint, uint, error) {
+ // Used to force allocation in tests. 'import "C"' is not supported in tests.
+ func allocateMemory() {
+ 	// Empirically, 8KiB is not enough, but 16KiB is.
+-	C.malloc(16 << 10)
++	C.malloc(256 << 10)
+ }
