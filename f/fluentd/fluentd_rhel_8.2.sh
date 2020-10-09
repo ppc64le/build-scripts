@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------------
 #
 # Package	: fluentd
-# Version	: v1.4.2 
+# Version	: v1.11.3 
 # Source repo	: https://github.com/fluent/fluentd
-# Tested on	: RHEL 7.6
+# Tested on	: RHEL 8.2 & RHEL 7.9
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Amit Ghatwal <ghatwala@us.ibm.com>
 #
