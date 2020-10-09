@@ -17,6 +17,8 @@
 
 #!/bin/bash
 
+REDISEARCH_VERSION=v2.0.0
+
 yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm;
 yum update -y;
 yum install -y wget git gcc gcc-c++ make python2 python2-psutil;
@@ -40,6 +42,7 @@ fi
 # Clone and build the RediSearch
 git clone --recursive https://github.com/RediSearch/RediSearch.git
 cd RediSearch
+git checkout ${REDISEARCH_VERSION}
 python -m pip install --no-cache-dir git+https://github.com/RedisLabsModules/RLTest.git@master
 python -m pip install --no-cache-dir git+https://github.com/Grokzen/redis-py-cluster.git@master
 python -m pip install --no-cache-dir git+https://github.com/RedisLabs/RAMP@master
