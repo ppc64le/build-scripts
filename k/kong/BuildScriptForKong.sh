@@ -17,6 +17,7 @@ set -xv
 export PATH=$HOME/openresty-build-tools/build/openresty/bin:$HOME/openresty-build-tools/build/openresty/nginx/sbin:$HOME/openresty-build-tools/build/luarocks/bin:$PATH
 export OPENSSL_DIR=$HOME/openresty-build-tools/build/openssl
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+export VERSION=2.1.4
 #
 # Basic package installation
 #
@@ -54,7 +55,7 @@ sed -i  -e ''$lineNum'irm -rf openresty-${OPENRESTY_VER}/bundle/LuaJIT-*/' kong-
 # End
 ./kong-ngx-build  -p build --no-openresty-patches --openresty 1.15.8.2 --openssl 1.1.1d --pcre 8.43 --luarocks 3.2.1
 
-git clone https://github.com/Kong/kong && cd kong && git checkout next && ulimit -n 65536 && luarocks make  OPENSSL_DIR=$HOME/openresty-build-tools/build/openssl/ 
+git clone https://github.com/Kong/kong && cd kong && git checkout $VERSION && ulimit -n 65536 && luarocks make  OPENSSL_DIR=$HOME/openresty-build-tools/build/openssl/ 
 #
 # Deleting grpcurl from Makefile
 #
