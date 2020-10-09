@@ -2,6 +2,7 @@ FROM registry.access.redhat.com/ubi7/ubi
 
 WORKDIR /root
 
+ENV VERSION=2.1.4
 ENV HOME=/root
 ENV OPENSSL_DIR=$HOME/openresty-build-tools/build/openssl
 ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
@@ -45,7 +46,7 @@ RUN git clone https://github.com/kong/openresty-build-tools \
 
 RUN git clone https://github.com/Kong/kong \
     && cd kong \
-    && git checkout next \
+    && git checkout $VERSION \
     && luarocks make OPENSSL_DIR=/root/openresty-build-tools/build/openssl \
     && lineNum=$(grep -n grpcurl: Makefile | cut -d: -f 1) \
     && begin=`expr $lineNum + 1` && end=`expr $lineNum + 3` \
