@@ -16,6 +16,8 @@
 # ----------------------------------------------------------------------------
 #!/bin/bash
 
+REDISGRAPH_VERSION=v2.2.6
+
 yum update -y 
 yum install -y wget git make cmake3 gcc-c++ python2-devel automake autoconf libtool diffutils libgomp m4 procps
 
@@ -36,6 +38,7 @@ cd ..
 
 git clone  --recurse-submodules https://github.com/RedisGraph/RedisGraph
 cd RedisGraph
+git checkout ${REDISGRAPH_VERSION}
 python -m pip install wheel
 python -m pip install setuptools --upgrade
 python -m pip install git+https://github.com/Grokzen/redis-py-cluster.git@master
