@@ -75,6 +75,4 @@ make test TESTFLAGS='-v -count=1' GOFLAGS='-p 1' IGNORE_GOVERS=1 | tee test_logs
 
 # create tarball 
 tar czf cockroachdb_ubi8.tar.gz cockroachoss build_logs.txt test_logs.txt
-mv cockroachdb_ubi8.tar.gz /cockroachdb_ubi8.tar.gz
-ln -s ./cockroachoss /usr/bin/cockroach
 
