@@ -1,3 +1,6 @@
+
+# NOTE: This is based on the original work at https://github.com/elastic/dockerfiles/
+
 #!/bin/bash
 set -e
 

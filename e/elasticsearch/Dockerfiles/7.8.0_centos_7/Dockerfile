@@ -1,5 +1,7 @@
-################################################################################
-# This Dockerfile was generated from the template at https://github.com/elastic/dockerfiles/blob/v7.6.0/elasticsearch/Dockerfile
+# NOTE: This is based on the original work at https://github.com/elastic/dockerfiles/
+
+################################################################################i
+# This Dockerfile was generated from the template at https://github.com/elastic/dockerfiles/blob/v7.8.0/elasticsearch/Dockerfile
 #
 # Beginning of multi stage Dockerfile
 ################################################################################
