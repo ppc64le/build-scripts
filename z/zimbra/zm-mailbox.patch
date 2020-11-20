@@ -1,0 +1,13 @@
+diff --git a/common/src/java/com/zimbra/common/localconfig/LC.java b/common/src/java/com/zimbra/common/localconfig/LC.java
+index 8ffc090..04e44e9 100644
+--- a/common/src/java/com/zimbra/common/localconfig/LC.java
++++ b/common/src/java/com/zimbra/common/localconfig/LC.java
+@@ -566,7 +566,7 @@ public final class LC {
+     public static final KnownKey mailboxd_java_heap_new_size_percent = KnownKey.newKey(25);
+ 
+     @Supported
+-    public static final KnownKey mailboxd_thread_stack_size = KnownKey.newKey("256k");
++    public static final KnownKey mailboxd_thread_stack_size = KnownKey.newKey("516k");
+ 
+     @Supported
+     public static final KnownKey mailboxd_java_options = KnownKey.newKey("-server" +

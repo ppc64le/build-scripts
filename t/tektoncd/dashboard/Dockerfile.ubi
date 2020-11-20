@@ -1,0 +1,38 @@
+# Copyright 2019 The Tekton Authors
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#     http://www.apache.org/licenses/LICENSE-2.0
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+FROM registry.access.redhat.com/ubi8/nodejs-10 as nodeBuilder
+USER root
+RUN yum update -y &&  yum install -y python2 make gcc-c++.ppc64le
+WORKDIR /go/src/github.com/tektoncd/dashboard
+COPY . .
+RUN npm install --unsafe-perm
+RUN npm run bootstrap
+RUN npm run build
+FROM golang:1.13-alpine as goBuilder
+#FROM registry.access.redhat.com/ubi8/go-toolset as goBuilder
+USER root
+RUN apk add curl git
+#RUN curl -fsSL -o /usr/local/bin/dep https://github.com/golang/dep/releases/download/v0.5.0/dep-linux-ppc64le && chmod +x /usr/local/bin/dep
+WORKDIR /go/src/github.com/tektoncd/dashboard
+COPY . .
+#RUN dep ensure -vendor-only
+RUN  GO111MODULE=on CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o tekton_dashboard_backend ./cmd/dashboard
+#FROM alpine@sha256:7df6db5aa61ae9480f52f0b3a06a140ab98d427f86d8d5de0bedab9b8df6b1c0
+FROM registry.access.redhat.com/ubi7/ubi:latest
+RUN groupadd -g 1000 kgroup && \
+  #useradd -G kgroup -u 1000 -D -S kuser
+  useradd -G kgroup -u 1000 kuser
+USER 1000
+WORKDIR /go/src/github.com/tektoncd/dashboard
+ENV WEB_RESOURCES_DIR=./web
+COPY --from=nodeBuilder /go/src/github.com/tektoncd/dashboard/dist ./web
+COPY --from=goBuilder /go/src/github.com/tektoncd/dashboard/tekton_dashboard_backend .
+ENTRYPOINT ["./tekton_dashboard_backend"]

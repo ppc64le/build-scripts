@@ -1,0 +1,39 @@
+# ----------------------------------------------------------------------------
+#
+# Package       : teleport
+# Version       : v4.3.6-dev.2
+# Source repo   : https://github.com/gravitational/teleport.git
+# Tested on     : ubi8, RHEL 8.2
+# Script License: Apache License, Version 2 or later
+# Maintainer's  : Priya Seth <sethp@us.ibm.com>
+#
+# Disclaimer: This script has been tested in root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
+#!/bin/bash
+
+export PACKAGE_VERSION=v4.3.6-dev.2
+#Install dependencies
+yum update -y 
+yum install -y wget git make gcc-c++ zip
+
+wget https://golang.org/dl/go1.14.8.linux-ppc64le.tar.gz
+tar -zxvf go1.14.8.linux-ppc64le.tar.gz
+
+export PATH=$PATH:$PWD/go/bin
+export GOPATH=$PWD
+
+#Clone the source
+mkdir -p $GOPATH/src/github.com/gravitational
+cd $GOPATH/src/github.com/gravitational
+git clone https://github.com/gravitational/teleport.git
+cd teleport
+git checkout ${PACKAGE_VERSION}
+
+#Build and test
+make full
+make test

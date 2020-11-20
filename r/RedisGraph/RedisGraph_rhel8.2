@@ -1,0 +1,54 @@
+# ----------------------------------------------------------------------------
+#
+# Package       : RedisGraph
+# Version       : v2.2.6
+# Source repo   : https://github.com/RedisGraph/RedisGraph
+# Tested on     : ubi8, RHEL 8.2
+# Script License: Apache License, Version 2 or later
+# Maintainer's  : Priya Seth <sethp@us.ibm.com>
+#
+# Disclaimer: This script has been tested in root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
+#!/bin/bash
+
+REDISGRAPH_VERSION=v2.2.6
+
+yum update -y 
+yum install -y wget git make cmake3 gcc-c++ python2-devel automake autoconf libtool diffutils libgomp m4 procps
+
+alternatives --set python /usr/bin/python2
+alias python="python2"
+
+wget https://www.piumarta.com/software/peg/peg-0.1.18.tar.gz
+tar -zxvf peg-0.1.18.tar.gz
+cd peg-0.1.18
+make
+make test
+make install
+cd ..
+
+wget http://download.redis.io/releases/redis-5.0.8.tar.gz;    tar xzf redis-5.0.8.tar.gz;    cd redis-5.0.8;    make
+cp /redis-5.0.8/src/redis-server /usr/bin
+cd ..
+
+git clone  --recurse-submodules https://github.com/RedisGraph/RedisGraph
+cd RedisGraph
+git checkout ${REDISGRAPH_VERSION}
+python -m pip install wheel
+python -m pip install setuptools --upgrade
+python -m pip install git+https://github.com/Grokzen/redis-py-cluster.git@master
+python -m pip install git+https://github.com/RedisLabsModules/RLTest.git@master
+python -m pip install git+https://github.com/RedisLabs/RAMP@master
+python -m pip install -r tests/requirements.txt
+make
+
+mkdir -p /usr/lib/redis/modules
+cp /RedisGraph/src/redisgraph.so /usr/lib/redis/modules
+make test
+
+#redis-server --loadmodule /usr/lib/redis/modules/redisgraph.so &

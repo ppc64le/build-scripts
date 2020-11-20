@@ -1,0 +1,13 @@
+diff --git a/github.com/apache/arrow/go/arrow/memory/memory.go b/github.com/apache/arrow/go/arrow/memory/memory.go
+index de2a3a663..43627f5ed 100644
+--- a/github.com/apache/arrow/go/arrow/memory/memory.go
++++ b/github.com/apache/arrow/go/arrow/memory/memory.go
+@@ -17,7 +17,7 @@
+ package memory
+ 
+ var (
+-	memset func(b []byte, c byte)
++	memset func(b []byte, c byte) = memory_memset_go
+ )
+ 
+ // Set assigns the value c to every element of the slice buf.
