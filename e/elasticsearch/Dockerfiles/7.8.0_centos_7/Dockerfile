@@ -1,5 +1,5 @@
 ################################################################################
-# This Dockerfile was generated from the template at distribution/src/docker/Dockerfile
+# This Dockerfile was generated from the template at https://github.com/elastic/dockerfiles/blob/v7.6.0/elasticsearch/Dockerfile
 #
 # Beginning of multi stage Dockerfile
 ################################################################################
@@ -11,6 +11,8 @@
 ################################################################################
 
 FROM centos:7 AS builder
+
+MAINTAINER "Shivani Junawane <shivanij@us.ibm.com>"
 
 # `tini` is a tiny but valid init for containers. This is used to cleanly
 # control how ES and any child processes are shut down.
@@ -87,6 +89,8 @@ RUN chmod 0660 config/elasticsearch.yml config/log4j2.properties
 ################################################################################
 
 FROM centos:7
+
+MAINTAINER "Shivani Junawane <shivanij@us.ibm.com>"
 
 ENV ELASTIC_CONTAINER true
 
