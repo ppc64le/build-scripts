@@ -64,7 +64,12 @@ RTD
 
 git clone https://github.com/StackStorm/st2.git
 cd st2
+git checkout 963f97f
 git submodule update --init --recursive
 make all
+set +u
+source virtualenv/bin/activate
+set -u
+make cli
 echo "Build and test execution finished!"
 
