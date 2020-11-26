@@ -1,0 +1,10 @@
+# NOTE: This is based on the original work at https://github.com/elastic/dockerfiles/
+
+#
+# ** THIS IS AN AUTO-GENERATED FILE **
+#
+
+# Default Kibana configuration for docker target
+server.name: kibana
+server.host: "0.0.0.0"
+elasticsearch.hosts: [ "http://elasticsearch:9200" ]
