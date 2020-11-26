@@ -73,8 +73,8 @@ RUN mv elasticsearch/distribution/archives/linux-ppc64le-tar/build/distributions
 	rm -rf elasticsearch-7.9.1-SNAPSHOT-linux-ppc64le.tar.gz
 
 # JNA fix
-RUN wget https://repo1.maven.org/maven2/net/java/dev/jna/jna/4.5.1/jna-4.5.1.jar && \
-	mv jna-4.5.1.jar /usr/share/elasticsearch/lib/
+RUN wget https://repo1.maven.org/maven2/net/java/dev/jna/jna/5.5.0/jna-5.5.0.jar && \
+	mv jna-5.5.0.jar /usr/share/elasticsearch/lib/
 
 RUN sed -i -e 's/ES_DISTRIBUTION_TYPE=tar/ES_DISTRIBUTION_TYPE=docker/' /usr/share/elasticsearch/bin/elasticsearch-env
 RUN mkdir -p config config/jvm.options.d data logs
