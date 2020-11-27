@@ -6,8 +6,8 @@ RUN echo $GOPATH && mkdir -p $GOPATH/src/github.com/elastic && \
     cd $GOPATH/src/github.com/elastic && \
     git clone https://github.com/elastic/beats.git && \
     cd beats && git checkout v7.9.1 && \
-    export PATCH_URL=https://raw.githubusercontent.com/linux-on-ibm-z/scripts/master/Beats/7.9.1/patch && \
-    wget $PATCH_URL/beats.patch -O - | git apply && \
+    wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/f/filebeat/filebeat_7.9.1.patch
+    git apply filebeat_7.9.1.patch && \
     cd filebeat && \
     make 
 
