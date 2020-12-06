@@ -54,8 +54,8 @@ EXPOSE 5601
 RUN yum update -y && yum install -y fontconfig freetype shadow-utils && yum clean all
 
 # Add an init process, check the checksum to make sure it's a match
-RUN curl -L -o /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_amd64
-RUN echo "37f2c1f0372a45554f1b89924fbb134fc24c3756efaedf11e07f599494e0eff9  /usr/local/bin/dumb-init" | sha256sum -c -
+RUN curl -L -o /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_ppc64le
+RUN echo "88b02a3bd014e4c30d8d54389597adc4f5a36d1d6b49200b5a4f6a71026c2246  /usr/local/bin/dumb-init" | sha256sum -c -
 RUN chmod +x /usr/local/bin/dumb-init
 
 
@@ -63,6 +63,7 @@ RUN chmod +x /usr/local/bin/dumb-init
 COPY --from=prep_files --chown=1000:0 /usr/share/kibana /usr/share/kibana
 WORKDIR /usr/share/kibana
 RUN ln -s /usr/share/kibana /opt/kibana
+COPY --from=prep_files --chown=1000:0 /usr/local/lib/nodejs/node-v10.22.0-linux-ppc64le/bin/* /usr/bin/
 
 ENV ELASTIC_CONTAINER true
 ENV PATH=/usr/share/kibana/bin:$PATH
