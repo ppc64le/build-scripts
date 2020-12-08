@@ -1,0 +1,147 @@
+schema_version: 1
+
+name: "artemiscloud/activemq-artemis-broker-kubernetes"
+description: "ActiveMQ Artemis broker kubernetes container image"
+version: "0.2.0"
+from: "artemiscloud/activemq-artemis-broker:0.1.0"
+labels:
+    - name: "io.k8s.description"
+      value: "A reliable messaging platform that supports standard messaging paradigms for a real-time enterprise."
+    - name: "io.k8s.display-name"
+      value: "ActiveMQ Artemis Broker"
+    - name: "maintainer"
+      value: "rkieley@redhat.com"
+    - name: "io.openshift.tags"
+      value: "messaging,activemq,artemis,java,xpaas"
+    - name: "io.openshift.s2i.scripts-url"
+      value: "image:///usr/local/s2i"
+envs:
+    - name: AMQ_USER
+      example: username
+      description: Username for AMQ authentication
+    - name: AMQ_PASSWORD
+      example: password
+      description: Password corresponding to AMQ_PASSWORD
+    - name: AMQ_ROLE
+      example: admin
+      description: Role corresponding to AMQ_ROLE
+    - name: AMQ_REQUIRE_LOGIN
+      example: false
+      description: Disables anonymous configuration on security, and will require user / password
+    - name: AMQ_NAME
+      example: broker
+      description: Name of the Broker corresponding to AMQ_NAME
+    - name: AMQ_ADDRESSES
+      example: mytopic
+      description: Comma separated list of addresses
+    - name: AMQ_QUEUES
+      example: myqueue
+      description: Comma separated list of queues
+    - name: AMQ_TRANSPORTS
+      example: openwire
+      description: "Protocols to configure, separated by commas. Allowed values are: `openwire`, `amqp`, `stomp`, `mqtt` and `hornetq`"
+    - name: AMQ_EXTRA_ARGS
+      description: Additional arguments
+      example: "true"
+    - name: SCRIPT_DEBUG
+      description: If set to true, ensurses that the bash scripts are executed with the -x option, printing the commands and their arguments as they are executed.
+      example: "true"
+    - name: AMQ_DATA_DIR
+      description: Allows you to set the data directory to be on persistent storage.
+      example: /opt/amq/data      
+    - name: AMQ_CLUSTERED
+      description: Enable Clustering
+      example: "true"
+    - name: AMQ_RESET_CONFIG
+      description: Overwrite configuration at destination directory
+      example: "true"
+    - name: AMQ_CLUSTER_USER
+      description: The cluster user to use for clustering
+      example: "clusteruser"
+    - name: AMQ_CLUSTER_PASSWORD
+      description: The cluster password to use for clustering
+      example: "clusterpassword"
+    - name: AMQ_ENABLE_JOLOKIA_AGENT
+      description: Enable Jolokia Agent
+      example: "true"
+    - name: AMQ_JOLOKIA_AGENT_USER
+      description: The jolokia agent user to be used for authentication (along with a AMQ_JOLOKIA_AGENT_PASSWORD)
+      example: "jolokiauser"
+    - name: AMQ_JOLOKIA_AGENT_PASSWORD
+      description: The jolokia agent password used for authentication (AMQ_JOLOKIA_AGENT_USER is then required, too)
+      example: "jolokiapassword"
+    - name: AMQ_ENABLE_MANAGEMENT_RBAC
+      description: Enable Management RBAC
+      example: "true"
+    - name: JAVA_MAX_MEM_RATIO
+      description: This is used to calculate a default maximal heap memory based on a containers restriction. If used in a container without any memory constraints for the container then this option has no effect. If there is a memory constraint then `-Xmx` is set to a ratio of the container available memory as set here. The default is `50` which means 50% of the available memory is used as an upper boundary. You can skip this mechanism by setting this value to `0` in which case no `-Xmx` option is added.
+      example: "50"
+    - name: JAVA_INITIAL_MEM_RATIO
+      description: This is used to calculate a default initial heap memory based the maximumal heap memory.  The default is `100` which means 100% of the maximal heap is used for the initial heap size.  You can skip this mechanism by setting this value to `0` in which case no `-Xms` option is added.
+      example: "100"
+    - name: JAVA_MAX_INITIAL_MEM
+      description: The maximum size of the initial heap memory, if the calculated default initial heap is larger then it will be capped at this value.  The default is 4096 MB.
+      example: "4096"
+    - name: JAVA_CORE_LIMIT
+      description: Core limit as described in https://www.kernel.org/doc/Documentation/scheduler/sched-bwc.txt.  Used to configure the number of GC threads and parallelism for ForkJoinPool.  Defaults to container core limit.
+      example: "2"
+    - name: JAVA_DIAGNOSTICS
+      description: Set this to get some diagnostics information to standard output when things are happening. **Disabled by default.**
+      example: "true"
+    - name: GC_MIN_HEAP_FREE_RATIO
+      description: Minimum percentage of heap free after GC to avoid expansion.
+      example: "20"
+    - name: GC_MAX_HEAP_FREE_RATIO
+      description: Maximum percentage of heap free after GC to avoid shrinking.
+      example: "40"
+    - name: GC_TIME_RATIO
+      description: Specifies the ratio of the time spent outside the garbage collection (for example, the time spent for application execution) to the time spent in the garbage collection.
+      example: "4"
+    - name: GC_ADAPTIVE_SIZE_POLICY_WEIGHT
+      description: The weighting given to the current GC time versus previous GC times.
+      example: "90"
+    - name: GC_MAX_METASPACE_SIZE
+      description: The maximum metaspace size.
+      example: "100"
+ports:
+    - value: 5671
+    - value: 5672
+    - value: 1883
+    - value: 8161
+    - value: 9876
+    - value: 61613
+    - value: 61612
+    - value: 61616
+    - value: 61617
+    - value: 7800
+    - value: 8888
+
+packages:
+    install:
+        - apr
+
+modules:
+      repositories:
+          - path: modules
+          - name: cct_module
+            git:
+                  url: https://github.com/artemiscloud/cct_module.git
+                  ref: 0.38.0-artemiscloud-1
+      install:
+          - name: dynamic-resources
+          - name: os-amq-s2i          
+          - name: os-java-run
+          - name: openshift-passwd
+          - name: os-logging
+          - name: os-amq-permissions
+          - name: os-java-jolokia
+          - name: activemq.artemis.jolokia.access
+          - name: activemq.artemis.launch
+          - name: activemq.artemis.s2i
+          - name: amq.custom.config   
+
+run:
+      user: 185
+      cmd:
+          - "/opt/amq/bin/launch.sh"
+          - "start"                
