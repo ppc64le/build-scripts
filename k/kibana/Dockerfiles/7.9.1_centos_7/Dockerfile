@@ -30,12 +30,13 @@ RUN yum install -y autoconf automake bzip2 gcc-c++ git gzip libtool make openssl
     git apply register_git_hook.diff && \
     groupadd kibana && useradd kibana -g kibana && chown kibana:kibana -R /root && \
     sed -i 's|await run(Tasks.OptimizeBuild);|//await run(Tasks.OptimizeBuild);|g' src/dev/build/build_distributables.ts && \
-    su kibana -c 'yarn kbn bootstrap --oss' && \
-    su kibana -c 'yarn build --skip-os-packages --oss'
+    sed -i '/Tasks.InstallChromium/d' src/dev/build/build_distributables.ts && \
+    su kibana -c 'yarn kbn bootstrap --no-oss' && \
+    su kibana -c 'yarn build --skip-os-packages --no-oss'
 
 RUN mkdir /usr/share/kibana
 WORKDIR /usr/share/kibana
-RUN tar --strip-components=1 -zxf /root/kibana/target/kibana-oss-7.9.1-SNAPSHOT-linux-ppc64le.tar.gz
+RUN tar --strip-components=1 -zxf /root/kibana/target/kibana-7.9.1-SNAPSHOT-linux-ppc64le.tar.gz
 # Ensure that group permissions are the same as user permissions.
 # This will help when relying on GID-0 to run Kibana, rather than UID-1000.
 # OpenShift does this, for example.
