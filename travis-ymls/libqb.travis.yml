@@ -1,0 +1,22 @@
+# Package             : libqb
+# Source Repo         : https://github.com/ClusterLabs/libqb
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/libqb/builds/211004709
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: c
+
+arch: 
+  - amd64
+  - ppc64le
+
+script:
+  - ./autogen.sh
+  - ./configure
+  - make
+  - make check
+  - sudo make install
