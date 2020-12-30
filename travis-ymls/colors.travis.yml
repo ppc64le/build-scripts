@@ -3,10 +3,10 @@
 # Package             : colors
 # Source Repo         : https://github.com/Marak/colors.js
 # Travis Job Link     : https://travis-ci.com/github/dthadi3/colors.js/builds/211018706
-# Created travis.yml  : <Yes, if travis.yml is created. No, if existing travis.yml is modified.>
+# Created travis.yml  : No
 # Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
 #
-# Script License      : MIT License
+# Script License      : Apache 2.0
 #
 # ----------------------------------------------------------------------------
 
