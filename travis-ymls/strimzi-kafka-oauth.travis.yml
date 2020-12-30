@@ -6,7 +6,7 @@
 # Created travis.yml  : No
 # Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
 #
-# Script License      : Apache License 2.0
+# Script License      : Apache 2.0
 #
 # ----------------------------------------------------------------------------
 dist: xenial
