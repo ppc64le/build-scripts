@@ -1,0 +1,38 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : double-conversion
+# Source Repo         : https://github.com/google/double-conversion
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/double-conversion/jobs/466159455
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: c
+
+arch: 
+  - amd64
+  - ppc64le
+
+addons:
+  apt: 
+    update: true
+    packages:
+        - make
+        - gcc
+        - autoconf
+        - automake
+        - git
+        - python
+        - scons
+        - g++
+        - cmake
+
+script:
+   - sudo scons install
+   - cmake . -DBUILD_TESTING=ON
+   - make
+   - test/cctest/cctest --list | tr -d '<' | xargs test/cctest/cctest
+   - sudo make install

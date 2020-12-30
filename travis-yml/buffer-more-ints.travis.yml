@@ -1,0 +1,19 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : buffer-more-ints
+# Source Repo         : https://github.com/dpw/node-buffer-more-ints
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/node-buffer-more-ints/builds/211017296
+# Created travis.yml  : No
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+arch:
+  - amd64
+  - ppc64le
+language: node_js
+node_js:
+  - "8"
+  - "9"
