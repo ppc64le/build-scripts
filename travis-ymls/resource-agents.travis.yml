@@ -1,0 +1,54 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : resource-agents
+# Source Repo         : https://github.com/ClusterLabs/resource-agents
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/resource-agents/jobs/466150804
+# Created travis.yml  : No
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: bash
+sudo: false
+
+script:
+  - ./ci/build.sh
+
+matrix:
+  include:
+    - arch: amd64
+      addons:
+         apt: 
+           #sources:
+           #  - debian-sid
+           packages:
+               - libxml2-utils
+               - xsltproc
+               - docbook
+               - docbook-xml
+               - docbook-xsl
+               - docbook-defguide
+               - docbook-dsssl
+               - w3-recs
+               - opensp
+               - shellcheck            
+    - arch: ppc64le
+      dist: bionic  #Use bionic for ppc64 since shellcheck is old in xenial
+      addons:
+         apt:
+           packages: 
+               - libglib2.0-dev
+               - libxml2-utils
+               - xsltproc
+               - docbook
+               - docbook-xml
+               - docbook-xsl
+               - docbook-defguide
+               - docbook-dsssl
+               - w3-recs
+               - opensp
+               - shellcheck      
+notifications:
+  email: false
