@@ -1,8 +1,8 @@
 # ----------------------------------------------------------------------------
 #
-# Package             : minipass-pipeline
-# Source Repo         : https://github.com/isaacs/minipass-pipeline
-# Travis Job Link     : https://travis-ci.com/github/asellappen/minipass-pipeline/
+# Package             : overrides
+# Source Repo         : https://github.com/tlrobinson/overrides
+# Travis Job Link     : https://travis-ci.com/github/asellappen/overrides/
 # Created travis.yml  : Yes
 # Maintainer          : Arumugam N S <asellappen@yahoo.com>/Priya Seth<sethp@us.ibm.com>
 #
