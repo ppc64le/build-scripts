@@ -6,7 +6,7 @@
 # Created travis.yml  : No
 # Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
 #
-# Script License      : MIT License
+# Script License      : Apache 2.0
 #
 # ----------------------------------------------------------------------------
 language: node_js
