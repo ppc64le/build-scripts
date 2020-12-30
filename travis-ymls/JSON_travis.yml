@@ -1,0 +1,75 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : JSON 
+# Source Repo         : https://github.com/makamaka/JSON.git
+# Travis Job Link     : https://travis-ci.com/github/santosh653/JSON
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+arch:
+  - amd64
+  - ppc64le
+dist: trusty
+language: perl
+perl:
+  - "5.8"
+  - "5.24"
+matrix:
+  include:
+    - perl: 5.8
+      env: JSON_XS_VERSION=4.00
+      arch: amd64
+    - perl: 5.8
+      env: JSON_XS_VERSION=3.02
+      arch: amd64
+    - perl: 5.8
+      env: JSON_XS_VERSION=2.34
+      arch: amd64
+    - perl: 5.8
+      env: JSON_PP_VERSION=2.97001
+      arch: amd64
+    - perl: 5.8
+      env: JSON_PP_VERSION=2.27400
+      arch: amd64
+    - perl: 5.8
+      env: JSON_PP_VERSION=2.27101
+      arch: amd64
+    - perl: 5.8
+      env: CPANEL_JSON_XS_VERSION=3.0218
+      arch: amd64
+    - perl: 5.8
+      env: CPANEL_JSON_XS_VERSION=4.08
+      arch: amd64   
+    - perl: 5.8
+      env: JSON_XS_VERSION=4.00
+      arch: ppc64le
+    - perl: 5.8
+      env: JSON_XS_VERSION=3.02
+      arch: ppc64le
+    - perl: 5.8
+      env: JSON_XS_VERSION=2.34
+      arch: ppc64le
+    - perl: 5.8
+      env: JSON_PP_VERSION=2.97001
+      arch: ppc64le
+    - perl: 5.8
+      env: JSON_PP_VERSION=2.27400
+      arch: ppc64le
+    - perl: 5.8
+      env: JSON_PP_VERSION=2.27101
+      arch: ppc64le
+     
+    
+before_install:
+  - test $JSON_PP_VERSION && cpanm -n JSON::XS@$JSON_XS_VERSION || true
+  - test $JSON_XS_VERSION && cpanm -n JSON::XS@$JSON_XS_VERSION || true
+  - test $CPANEL_JSON_XS_VERSION && cpanm -n Cpanel::JSON::XS@$CPANEL_JSON_XS_VERSION || true
+script:
+  - if test ! $JSON_PP_VERSION && test ! $JSON_XS_VERSION && test ! $CPANEL_JSON_XS_VERSION; then perl Makefile.PL && PERL_JSON_BACKEND=JSON::backportPP make test; else true; fi
+  - if test $JSON_PP_VERSION; then perl Makefile.PL && PERL_JSON_BACKEND=JSON::PP make test; else true; fi
+  - if test $JSON_XS_VERSION; then perl Makefile.PL && PERL_JSON_BACKEND=JSON::XS make test; else true; fi
+  - if test $CPANEL_JSON_XS_VERSION; then perl Makefile.PL && PERL_JSON_BACKEND=Cpanel::JSON::XS make test; else true; fi
