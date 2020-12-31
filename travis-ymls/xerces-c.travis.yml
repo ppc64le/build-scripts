@@ -3,7 +3,7 @@
 # Package             : xerces-c
 # Source Repo         : https://github.com/apache/xerces-c
 # Travis Job Link     : https://travis-ci.com/github/rajesh-ibm-power/xerces-c
-# Created travis.yml  : Yes
+# Created travis.yml  : No
 # Maintainer          : Rajesh kumar <Rajesh.kumar13@ibm.com>
 #
 # Script License      : Apache License, Version 2 or later
