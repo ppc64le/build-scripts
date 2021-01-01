@@ -1,0 +1,23 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : find-up
+# Source Repo         : https://github.com/sindresorhus/find-up.git
+# Travis Job Link     : https://travis-ci.com/github/ddeka2910/find-up/builds/211488352
+# Created travis.yml  : No
+# Maintainer          : Debabrata Deka <ddeka2910@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ---
+os:
+  - linux
+  - osx
+  - windows
+arch:
+ - amd64
+ - ppc64le  
+language: node_js
+node_js:
+  - '14'
+  - '12'
+  - '10'
