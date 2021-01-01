@@ -1,0 +1,22 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : fuse-apicurito-generator
+# Source Repo         : https://github.com/jboss-fuse/fuse-apicurito-generator
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/fuse-apicurito-generator/builds/211399689
+# Created travis.yml  : Yes
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+
+arch:
+  - amd64
+  - ppc64le
+before_script:
+  - sudo apt update -y
+  - sudo apt-get install maven
+  - mvn --version
+script:
+  - mvn dependency:go-offline
+  - mvn clean package
