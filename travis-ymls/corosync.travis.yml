@@ -1,0 +1,52 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : corosync
+# Source Repo         : https://github.com/corosync/corosync
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/corosync/builds/211733397
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: c
+
+dist: bionic
+
+arch:
+   - amd64
+   - ppc64le   
+
+addons:
+    apt: 
+     update: true
+     packages:
+        - libnss3-dev 
+        - libtool
+        - libsctp-dev 
+        - check 
+        - pkg-config 
+        - groff 
+        - libpam0g-dev 
+        - liblz4-dev 
+        - doxygen 
+        - zlib1g 
+        - zlib1g-dev 
+        - libssl-dev 
+        - liblzo2-dev 
+        - liblzma-dev 
+        - libbz2-dev 
+        - libxml2-dev
+        - libzstd-dev
+        - libnl-3-dev
+        - libnl-route-3-dev
+        - libqb-dev
+        - libknet-dev
+
+
+script:
+    - ./autogen.sh
+    - ./configure
+    - make
+   
