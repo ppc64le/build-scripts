@@ -1,0 +1,76 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : xlwt
+# Source Repo         : https://github.com/python-excel/xlwt
+# Travis Job Link     : https://travis-ci.com/github/santosh653/xlwt
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+# for container-y goodness:
+sudo: false
+cache: pip
+
+language: python
+
+matrix:
+  include:
+    - python: "3.7"
+      env: TOXENV=py37
+      dist: xenial
+      sudo: required
+      arch: amd64
+    - python: "3.6"
+      env: TOXENV=py36
+      arch: amd64
+    - python: "3.5"
+      env: TOXENV=py35
+      arch: amd64
+    - python: "3.4"
+      env: TOXENV=py34
+      arch: amd64
+    - python: "2.7"
+      env: TOXENV=py27
+      arch: amd64
+    - python: "3.7"
+      env: TOXENV=py37
+      dist: xenial
+      sudo: required
+      arch: ppc64le
+    - python: "3.6"
+      env: TOXENV=py36
+      arch: ppc64le
+    - python: "3.5"
+      env: TOXENV=py35
+      arch: ppc64le
+    - python: "3.4"
+      env: TOXENV=py34
+      arch: ppc64le
+    - python: "2.7"
+      env: TOXENV=py27
+      arch: ppc64le
+
+install:
+  - pip install tox
+
+script:
+  - tox
+
+after_success:
+  - if [ $TOXENV != lint ]; then pip install coveralls; fi
+  - if [ $TOXENV != lint ]; then coveralls; fi
+
+deploy:
+  provider: pypi
+  user: chrisw
+  password:
+    secure: HZ9DRsLpeNMBZc3Sjj2X/KF/fJxaDjINqbeUzJ7FnqcJ5A5ECDHZ/2Bxx/crdpfXwqHDPEcZvatu+LhtpBFu+HCUFAc00V0qvmq34RZDes9WNmnh5Kx97kXxdN0scoM1V7JXeDffhEUZJkL6EQJfJqUWvl9nq4SnC5wOlJBR3QE=
+  on:
+    tags: true
+    repo: python-excel/xlwt
+    python: "3.5"
+  skip_cleanup: true
+  distributions: "sdist bdist_wheel"
