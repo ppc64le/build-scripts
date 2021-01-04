@@ -12,11 +12,4 @@ arch:
 language: java
 jdk:
   - oraclejdk11
-  - oraclejdk8
-  - oraclejdk7
-jobs:
- exclude:
-  - jdk: oraclejdk8
-    arch: amd64
-  - jdk: oraclejdk7
-    arch: amd64
+  
