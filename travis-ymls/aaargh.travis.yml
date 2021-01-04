@@ -1,8 +1,8 @@
 # ----------------------------------------------------------------------------
 #
 # Package             : pyarrow 
-# Source Repo         : https://github.com/apache/arrow
-# Travis Job Link     : https://travis-ci.com/github/santosh653/arrow
+# Source Repo         : https://github.com/wbolster/aaargh
+# Travis Job Link     : https://travis-ci.com/github/santosh653/aaargh
 # Created travis.yml  : No
 # Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
 #
