@@ -1,0 +1,32 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : Contexity
+# Source Repo         : https://github.com/brianmcd/contextify
+# Travis Job Link     : https://travis-ci.com/github/santosh653/contextify
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+arch:
+  - amd64
+  - ppc64le
+language: node_js
+node_js:
+  - "11"
+  - "10"
+  - "8"
+  - "6"
+cache:
+  directories:
+    - node_modules
+addons:
+  apt:
+   sources:
+    - ubuntu-toolchain-r-test
+   packages:
+    - g++-4.8
+env:
+  CXX=g++-4.8
