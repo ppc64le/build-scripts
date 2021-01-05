@@ -17,15 +17,18 @@ jobs:
   include:
   - stage: Test
     env: TEST_ENV=source
+    arch: amd64
     before_script:
     # react-router CJS build is imported by react-router-config tests,
     # so we need to build it before running react-router-config tests
     - cd packages/react-router && BUILD_ENV=cjs yarn build && cd -
     script: yarn test
   - env: TEST_ENV=cjs BUILD_ENV=cjs
+    arch: amd64
     before_script: yarn build
     script: yarn test
   - env: TEST_ENV=umd BUILD_ENV=umd
+    arch: amd64
     before_script:
     # react-router ESM build is imported by react-router-dom UMD,
     # so we need to build it before building react-router-dom UMD
