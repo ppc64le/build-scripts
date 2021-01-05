@@ -1,3 +1,15 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : colorama
+# Source Repo         : https://github.com/tartley/colorama
+# Travis Job Link     : https://travis-ci.com/github/santosh653/colorama
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
 language: python
 cache: pip
 matrix:
