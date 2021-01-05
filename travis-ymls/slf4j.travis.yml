@@ -1,0 +1,32 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : slf4j
+# Source Repo         : https://github.com/qos-ch/slf4j
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/slf4j/jobs/468575668
+# Created travis.yml  : No
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+dist: trusty
+
+arch:
+  - amd64
+  - ppc64le
+
+language: java
+
+jdk:
+  - oraclejdk11
+
+notifications:
+  email:
+      - notification@qos.ch
+
+install: /bin/true
+
+script:
+  - mvn clean
+  - mvn install
