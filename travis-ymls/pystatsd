@@ -1,0 +1,39 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : <pystatsd>
+# Source Repo         : <https://github.com/jsocol/pystatsd>
+# Travis Job Link     : <https://travis-ci.com/github/genisysram/pystatsd>
+# Created travis.yml  : <No>
+# Maintainer          : <ramakrishna.s@genisys-group.com>
+#                       <sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+
+arch:
+     - amd64
+     - ppc64le
+language: python
+python:
+ - "2.7"
+ - "3.5"
+ - "3.6"
+ - "3.7"
+ - "3.8"
+ - "pypy"
+ - "pypy3"
+install:
+ - pip install -q "flake8"
+script:
+ - nosetests --with-coverage --cover-package=statsd
+ - flake8 statsd/
+ 
+# Disable version pypy3 & pypy on ppc64le
+jobs: 
+  exclude:  
+    - arch: ppc64le
+      python: pypy
+    - arch: ppc64le
+      python: pypy3
