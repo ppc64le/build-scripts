@@ -1,5 +1,5 @@
-# Package             :  node-http-proxy
-# Source Repo         : https://github.com/sreekanth370/node-http-proxy
+# Package             : node-http-proxy
+# Source Repo         : https://github.com/nodejitsu/node-http-proxy
 # Travis Job Link     : https://travis-ci.com/github/sreekanth370/node-http-proxy/builds/211393812
 # Created travis.yml  : NO
 # Maintainer          : Sreekanth Reddy <bsreekanthapps@gmail.com>
