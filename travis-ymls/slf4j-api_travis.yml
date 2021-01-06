@@ -1,6 +1,6 @@
 
 # Package             : slf4j-api
-# Source Repo         : https://github.com/sreekanth370/slf4j
+# Source Repo         : https://github.com/qos-ch/slf4j.git
 # Travis Job Link     : https://travis-ci.com/github/sreekanth370/slf4j/builds/211381766
 # Created travis.yml  : No
 # Maintainer          : Sreekanth reddy<bsreekanthapps@gmail.com>
