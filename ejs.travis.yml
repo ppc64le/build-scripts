@@ -1,0 +1,20 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : ejs
+# Source Repo         : https://github.com/mde/ejs 
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/ejs/builds/211224240
+# Created travis.yml  : No
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+language: node_js
+sudo: false
+arch:
+  - amd64
+  - ppc64le
+node_js:
+  - "8"
+  - "10"
+  - "12"
