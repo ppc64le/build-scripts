@@ -1,0 +1,33 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : plexus-compiler
+# Source Repo         : https://github.com/codehaus-plexus/plexus-compiler
+# Travis Job Link     : https://travis-ci.com/github/asellappen/plexus-compiler/
+# Created travis.yml  : No
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: java
+
+arch:
+    - amd64
+    - ppc64le
+
+jdk:
+
+  - openjdk8
+  - openjdk11
+  - openjdk14
+
+script: "mvn --show-version --errors --batch-mode clean verify -DredirectTestOutputToFile=false"
+
+cache:
+    directories:
+    - $HOME/.m2
+branches:
+    except:
+        - gh-pages
+
+		
