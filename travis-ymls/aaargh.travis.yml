@@ -1,0 +1,21 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : aaargh
+# Source Repo         : https://github.com/wbolster/aaargh
+# Travis Job Link     : https://travis-ci.com/github/santosh653/aaargh
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+arch:
+  - amd64
+  - ppc64le
+language: python
+python:
+  - "2.7"
+  
+install: "pip install -r test-requirements.txt"
+script: py.test
