@@ -1,0 +1,29 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : fastcache
+# Source Repo         : https://github.com/pbrady/fastcache
+# Travis Job Link     : https://travis-ci.com/github/nagesh4193/fastcache/builds/212343430
+# Created travis.yml  : No
+# Maintainer          : Nageswara Rao K<nagesh4193@gmail.com>/Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: python
+
+python:
+    - 2.7
+    - 3.6
+    - 3.7
+    - 3.8
+    - 3.9
+    
+arch:
+    - arm64
+    - amd64
+    - ppc64le
+
+install: python setup.py install
+
+script: bash bin/test_travis.sh
