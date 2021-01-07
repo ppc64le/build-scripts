@@ -20,7 +20,7 @@ go:
   - tip
 jobs:
  exclude:
-  - go: tip
+  - go: 1.14.x
     arch: ppc64le
 
 cache:
