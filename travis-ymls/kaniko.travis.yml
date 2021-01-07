@@ -1,0 +1,77 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : Kaniko
+# Source Repo         : https://github.com/GoogleContainerTools/kaniko
+# Travis Job Link     : https://travis-ci.com/github/santosh653/kaniko
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+arch:
+  - amd64
+  - ppc64le
+language: go
+os: linux
+dist: bionic
+
+env:
+  global:
+    - IMAGE_REPO=localhost:5000 REGISTRY=localhost:5000
+go:
+  - "1.14"
+go_import_path: github.com/GoogleContainerTools/kaniko
+jobs:
+  include:
+    - name: unit-test
+      script:
+        - make test
+    - name: integration-test-run
+      before_install:
+        - make travis-setup
+      script:
+        - make integration-test-run
+    - name: integration-test-layers
+      before_install:
+        - make travis-setup
+      script:
+        - make integration-test-layers
+    - name: build-image-and-k8s-integration-test
+      before_install:
+        - make travis-setup
+        - make minikube-setup
+      script:
+        - make images
+        - make push
+        - make integration-test-k8s
+    - name: integration-test-misc
+      before_install:
+        - make travis-setup
+      script:
+        - make integration-test-misc
+
+    - name: bazel amd64
+      arch: amd64
+      env: CPU=k8
+      before_install: &before_install_multiarch
+        - export PATH=$PATH:$HOME/bin && mkdir -p $HOME/bin
+        - eval $(go env)
+        # install bazelisk as bazel to install the appropriate bazel version
+        - wget https://github.com/bazelbuild/bazelisk/releases/download/v1.6.1/bazelisk-linux-${GOARCH} && chmod +x bazelisk-linux-${GOARCH} && mv bazelisk-linux-${GOARCH} $HOME/bin/bazel
+      script: &script_multiarch
+        # Generate BUILD.bazel files (we do not check them in)
+        - bazel run //:gazelle
+        - bazel build --cpu=${CPU} --curses=no //integration:all
+        # Build all targets tagged with our architecture:
+        - bazel build --cpu=${CPU} --curses=no $(bazel query 'attr("tags", "'${GOARCH}'", "//...")')
+        # Run all tests not tagged as "manual":
+        - bazel test  --cpu=${CPU} --curses=no --test_output=errors --test_timeout=900 //integration:all
+        # Run all tests tagged with our architecture:
+        - bazel test  --cpu=${CPU} --curses=no --test_output=errors --test_timeout=900 $(bazel query 'attr("tags", "'${GOARCH}'", "//...")')
+
+    - name: bazel arm64
+      arch: arm64
+      env: CPU=aarch64
+      before_install: *before_install_multiarch
+      script: *script_multiarch
