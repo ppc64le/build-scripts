@@ -1,0 +1,17 @@
+# Package             :  selfsigned
+# Source Repo         : https://github.com/jfromaniello/selfsigned.git
+# Travis Job Link     : https://travis-ci.com/github/sreekanth370/selfsigned/builds/212298291
+# Created travis.yml  : No
+# Maintainer          : Sreekanth Reddy  <bsreekanthapps@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: node_js
+arch:
+  - amd64
+  - ppc64le
+node_js:
+  - 4
+  - 6
+  - 8
