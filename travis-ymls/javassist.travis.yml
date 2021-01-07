@@ -1,0 +1,21 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : javassist
+# Source Repo         : https://github.com/jboss-javassist/javassist
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/javassist/jobs/469383506
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: java
+
+arch:
+   - amd64
+   - ppc64le   
+
+install: skip
+
+script: mvn install
