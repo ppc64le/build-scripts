@@ -1,0 +1,53 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : jffi
+# Source Repo         : https://github.com/jnr/jffi
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/jffi/builds/211731160
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: java
+dist: bionic
+addons:
+    apt: 
+     update: true
+     packages:
+        - qemu-user-static
+        - ant
+        - ant-optional
+
+jobs:
+  include:
+    - name: "native build"
+      language: shell
+      arch: arm64
+      script:
+        - sudo cp .github/experimental-docker.json /etc/docker/daemon.json
+        - sudo systemctl restart docker.service
+        - docker rmi debian:9 || true
+        - docker run --rm --platform arm64 -v $TRAVIS_BUILD_DIR:/work debian:9 /work/.github/build-native-debian.sh
+    - name: "native build"
+      arch: ppc64le
+      language: shell
+      script:
+        - sudo cp .github/experimental-docker.json /etc/docker/daemon.json
+        - sudo systemctl restart docker.service
+        - docker rmi debian:10 || true
+        - sed -i 's/openjdk-8/openjdk-11/g' .github/build-native-debian.sh
+        - docker run --rm --platform ppc64le -v $TRAVIS_BUILD_DIR:/work debian:10 /work/.github/build-native-debian.sh
+    - name: "jdk11 build"
+      arch: ppc64le
+      script:
+        - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+        - ant test
+    - name: "jdk8 build"
+      arch: amd64
+      jdk: openjdk8
+      script:
+        - echo "TESTING"
+        - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+        - ant test
