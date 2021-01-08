@@ -1,0 +1,34 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : jaf
+# Source Repo         : https://github.com/eclipse-ee4j/jaf
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/jaf/jobs/469786881
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: java
+   
+arch:
+   - amd64
+   - ppc64le   
+
+addons:
+   apt:
+    update: true
+    packages: 
+       - build-essential 
+       - npm 
+       - wget 
+       - curl
+       - unzip 
+       - nano 
+       - vim 
+       - make 
+
+install: skip
+
+script: mvn install
