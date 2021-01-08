@@ -1,6 +1,6 @@
 # Package             : nan 
 # Source Repo         : https://github.com/nodejs/nan
-# Travis Job Link     : https://travis-ci.com/github/sreekanth370/nan/builds/211397961
+# Travis Job Link     : https://travis-ci.com/github/sreekanth370/nan/builds/212437645
 # Created travis.yml  : No
 # Maintainer          : sreekanth reddy <bsreekanthapps@gmail.com>
 #
@@ -33,6 +33,8 @@ addons:
     - g++-4.8
 env:
   matrix:
+  - TRAVIS_NODE_VERSION="0.10"
+  - TRAVIS_NODE_VERSION="0.12"
   - TRAVIS_NODE_VERSION="4"
   - TRAVIS_NODE_VERSION="5"
   - TRAVIS_NODE_VERSION="6"
@@ -55,6 +57,11 @@ matrix:
   exclude:
     - os: osx
       env: TRAVIS_NODE_VERSION="0.12"
+   #disable unsupported power jobs nodes 0.10,0.12
+    - arch: ppc64le
+      env: TRAVIS_NODE_VERSION="0.10"
+    - arch: ppc64le
+      env: TRAVIS_NODE_VERSION="0.12"  
 install:
   - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
   - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export CXX=g++-4.8; fi
