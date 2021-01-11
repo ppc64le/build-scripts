@@ -1,0 +1,53 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : grpcurl
+# Source Repo         : https://github.com/fullstorydev/grpcurl
+# Travis Job Link     : https://travis-ci.com/github/santosh653/grpcurl
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: go
+sudo: false
+
+matrix:
+  include:
+    - go: 1.11.x
+      env: GO111MODULE=on
+      arch: amd64
+    - go: 1.12.x
+      env: GO111MODULE=on
+      arch: amd64
+    - go: 1.13.x
+      env:
+      - GO111MODULE=on
+      - VET=1
+      arch: amd64
+    - go: 1.14.x
+      env: GO111MODULE=on
+      arch: amd64
+    - go: tip
+      env: GO111MODULE=on
+      arch: amd64      
+    - go: 1.11.x
+      env: GO111MODULE=on
+      arch: ppc64le
+    - go: 1.12.x
+      env: GO111MODULE=on
+      arch: ppc64le
+    - go: 1.13.x
+      env:
+      - GO111MODULE=on
+      - VET=1
+      arch: ppc64le
+    - go: 1.14.x
+      env: GO111MODULE=on
+      arch: ppc64le
+    - go: tip
+      env: GO111MODULE=on
+      arch: ppc64le
+
+script:
+  - if [[ "$VET" = 1 ]]; then make ci; else make deps test; fi
