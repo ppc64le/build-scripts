@@ -1,0 +1,40 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : grunt-spritesmith
+# Source Repo         : https://github.com/twolfson/grunt-spritesmith
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/grunt-spritesmith/builds/212288870
+# Created travis.yml  : No
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+arch:
+  - amd64
+  - ppc64le
+
+language: node_js
+sudo: false
+node_js:
+  - "9"
+  - "12"
+  - "14"
+matrix:
+  allow_failures:
+    - node_js: "9"
+
+before_install:
+  # Upgrade npm to avoid semver issues
+  - curl --location http://rawgit.com/twolfson/fix-travis-ci/master/lib/install.sh | bash -s
+  - | 
+   if [[ "$TRAVIS_CPU_ARCH" == "ppc64le" ]]; then
+     sudo apt update
+     sudo apt install graphicsmagick
+   fi    
+
+notifications:
+  email:
+    recipients:
+      - todd@twolfson.com
+    on_success: change
+    on_failure: change
