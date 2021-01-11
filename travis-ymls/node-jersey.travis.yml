@@ -1,0 +1,20 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : node-jersey
+# Source Repo         : https://github.com/mojodna/node-jersey.git
+# Travis Job Link     : https://www.travis-ci.com/github/kishorkunal-raj/node-jersey/builds/212646875
+# Created travis.yml  : No
+# Maintainer          : Kishor Kunal Raj <kishore.kunal.mr@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: node_js
+arch:
+  - amd64
+  - ppc64le
+
+node_js:
+  - 14
+
