@@ -1,0 +1,37 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : spaCy
+# Source Repo         : https://github.com/explosion/spaCy.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/spaCy/builds/212438522 
+# Created travis.yml  : No
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+arch:
+   - amd64
+   - ppc64le
+language: python
+sudo: false
+cache: pip
+dist: xenial 
+group: edge
+python:
+   - "2.7"
+os:
+  - linux
+install:
+  - "python -m pip install -U pip setuptools"
+  - "pip install -e . --prefer-binary"
+script:
+  - "cat /proc/cpuinfo | grep flags | head -n 1"
+  - "pip install -r requirements.txt"
+  - "python -m pytest --tb=native spacy"
+branches:
+  except:
+    - spacy.io
+notifications:
+  slack:
+    secure: F8GvqnweSdzImuLL64TpfG0i5rYl89liyr9tmFVsHl4c0DNiDuGhZivUz0M1broS8svE3OPOllLfQbACG/4KxD890qfF9MoHzvRDlp7U+RtwMV/YAkYn8MGWjPIbRbX0HpGdY7O2Rc9Qy4Kk0T8ZgiqXYIqAz2Eva9/9BlSmsJQ=
+  email: false
