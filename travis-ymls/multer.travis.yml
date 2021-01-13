@@ -1,0 +1,31 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : multer
+# Source Repo         : https://github.com/expressjs/multer
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/multer/builds/211225432
+# Created travis.yml  : No
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+sudo: false
+language: node_js
+arch:
+  - amd64
+  - ppc64le
+node_js:
+  - "0.10"
+  - "0.12"
+  - "4"
+  - "6"
+  - "8"
+  - "10"
+jobs:
+  exclude:
+      - arch: ppc64le
+        node_js:
+          - "0.10"
+      - arch: ppc64le
+        node_js:
+          - "0.12"
