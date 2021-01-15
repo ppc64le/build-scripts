@@ -1,0 +1,51 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : cycler
+# Source Repo         : https://github.com/matplotlib/cycler
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/cycler
+# Created travis.yml  : No
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: python
+
+matrix:
+  include:
+    - python: 2.7
+    - python: 3.4
+    - python: 3.5
+    - python: 3.6
+    - python: 3.7
+    - python: "nightly"
+      env: PRE=--pre
+    # Power jobs
+    - python: 2.7
+      arch: ppc64le
+    - python: 3.4
+      arch: ppc64le
+    - python: 3.5
+      arch: ppc64le
+    - python: 3.6
+      arch: ppc64le
+    - python: 3.7
+      arch: ppc64le
+    - python: "nightly"
+      env: PRE=--pre
+      arch: ppc64le
+  allow_failures:
+    - python : "nightly"
+
+install:
+  - python -m pip install --upgrade pip
+  - python -m pip install -v .
+  - python -m pip install $PRE --upgrade pytest pytest-cov coverage
+
+script:
+  - coverage run run_tests.py
+  - coverage report -m
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
