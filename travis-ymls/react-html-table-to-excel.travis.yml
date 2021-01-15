@@ -1,0 +1,18 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : react-html-table-to-excel
+# Source Repo         : https://github.com/zsusac/ReactHTMLTableToExcel
+# Travis Job Link     : https://travis-ci.com/github/santosh653/ReactHTMLTableToExcel
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+arch:
+  - amd64
+  - ppc64le
+language: node_js
+node_js:
+  - "6"
+script: npm run client:test
