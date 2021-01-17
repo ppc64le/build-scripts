@@ -1,0 +1,25 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : connect-redis
+# Source Repo         : https://github.com/tj/connect-redis
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/connect-redis/builds/213428506
+# Created travis.yml  : Yes
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+dist: xenial
+arch:
+   - amd64
+   - ppc64le  
+language: node_js
+node_js:
+   - "10"
+   - "15"
+addons:
+  apt:
+    packages: 
+      - build-essential 
+      - npm 
+      - wget 
