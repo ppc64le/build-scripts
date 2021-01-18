@@ -1,0 +1,27 @@
+
+# ----------------------------------------------------------------------------
+#
+# Package             : node-md5.travis.yml
+# Source Repo         : https://github.com/pvorb/node-md5
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/node-md5/builds/213430155
+# Created travis.yml  : No
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+language: node_js
+arch:
+  - amd64
+  - ppc64le
+node_js:
+  - 0.12
+  - 4
+  - 5
+  - 6
+  - 7
+jobs:
+  exclude:
+      - arch: ppc64le
+        node_js:
+          - 0.12
