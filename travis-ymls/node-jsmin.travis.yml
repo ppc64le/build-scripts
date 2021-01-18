@@ -1,0 +1,31 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : node-jsmin
+# Source Repo         : https://github.com/pkrumins/node-jsmin
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/node-jsmin/builds/213255464
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: node_js
+
+node_js:
+   - 10
+   
+arch:
+   - amd64
+   - ppc64le   
+
+addons:
+   apt:
+    update: true
+    packages: 
+       - build-essential 
+       - npm 
+       - wget 
+
+install: skip
+script: npm install -g
