@@ -1,0 +1,40 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : iterators
+# Source Repo         : https://github.com/cran/iterators.git
+# Travis Job Link     : https://travis-ci.com/github/rajesh-ibm-power/iterators
+# Created travis.yml  : Yes
+# Maintainer          : Rajesh kumar <Rajesh.kumar13@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ---
+
+language: r
+arch:
+ - amd64
+ - ppc64le
+sudo: true
+cache: packages
+warnings_are_errors: false
+
+env:
+  global:
+    - BIOC_USE_DEVEL="FALSE"  ## Use the current release version
+    - R_BUILD_ARGS="--no-build-vignettes --no-manual"
+    - R_CHECK_ARGS="--no-build-vignettes --no-manual --timings"  ## do not build vignettes or manual
+    - _R_CHECK_TIMINGS_="0"  ## get the timing information for the examples for all of your functions
+
+r:
+ - release
+
+r_build_args: --no-build-vignettes --no-manual
+r_check_args: --no-build-vignettes --no-manual --timings
+
+r_packages:
+  - covr
+  
+bioc_required: true
+
+after_success:
+  - test $TRAVIS_R_VERSION_STRING = 'release' && Rscript -e 'covr::codecov()'
