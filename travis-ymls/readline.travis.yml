@@ -1,0 +1,21 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : readline
+# Source Repo         : https://github.com/Distrotech/readline
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/readline/builds/213462277
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: C
+   
+arch:
+   - amd64
+   - ppc64le   
+
+script: 
+   - ./configure --build=$TRAVIS_CPU_ARCH-$TRAVIS_OS_NAME --prefix=/usr/local --with-curses
+   - make
