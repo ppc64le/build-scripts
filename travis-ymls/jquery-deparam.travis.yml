@@ -1,0 +1,28 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : jquery-deparam
+# Source Repo         : https://github.com/AceMetrix/jquery-deparam
+# Travis Job Link     : https://travis-ci.com/github/rajesh-ibm-power/jquery-deparam
+# Created travis.yml  : Yes
+# Maintainer          : Rajesh kumar <Rajesh.kumar13@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ---
+
+language: node_js
+
+node_js:
+   - 10
+
+arch:
+   - amd64
+   - ppc64le   
+
+addons:
+   apt:
+    update: true
+    packages: 
+       - build-essential 
+       - npm 
+       - wget 
