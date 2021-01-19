@@ -1,0 +1,45 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : cyrus-sasl
+# Source Repo         : https://github.com/cyrusimap/cyrus-sasl
+# Travis Job Link     : https://travis-ci.com/github/rajesh-ibm-power/cyrus-sasl
+# Created travis.yml  : No
+# Maintainer          : Rajesh kumar <Rajesh.kumar13@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ---
+language: c
+group: edge
+arch:
+  - amd64
+  - ppc64le
+os:
+  - linux
+  - osx
+compiler: gcc
+
+addons:
+  apt:
+    packages:
+    - krb5-kdc
+    - krb5-admin-server
+    - libsocket-wrapper
+    - libnss-wrapper
+
+# For OS X, but shouldn't cause any problems on Linux
+cache:
+  directories:
+    - $HOME/Library/Caches/Homebrew
+
+before_script:
+  - if [ $TRAVIS_OS_NAME = osx ]; then brew install ccache; fi
+  - ccache --version
+  - ccache --zero-stats
+  - ./autogen.sh
+  - make
+script:
+  - make check
+branches:
+  only:
+    - master
