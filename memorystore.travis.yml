@@ -1,0 +1,24 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : memorystore
+# Source Repo         : https://github.com/roccomuso/memorystore
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/memorystore/builds/211225329
+# Created travis.yml  : No
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+language: node_js
+
+arch:
+  - amd64
+  - ppc64le
+node_js:
+  - "10"
+  - "12"
+  - "14"
+
+cache:
+  directories:
+    - node_modules
