@@ -1,0 +1,22 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : Prodigal
+# Source Repo         : https://github.com/hyattpd/Prodigal
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/Prodigal/builds/213774245
+# Created travis.yml  : No
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+arch: 
+  - amd64
+  - ppc64le
+
+script:
+  - sudo make install
+  - prodigal -h
+  - prodigal -i anthus_aco.fas -o anthus_aco_genes.txt -a anthus_aco_proteins.faa
+  - cat anthus_aco_genes.txt
+  - cat anthus_aco_proteins.faa
