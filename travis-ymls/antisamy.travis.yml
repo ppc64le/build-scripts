@@ -1,0 +1,18 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : antisamy
+# Source Repo         : https://github.com/Zimbra/antisamy 
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/antisamy/builds/213740826
+# Created travis.yml  : Yes
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+dist: xenial
+language: java
+arch:
+  - amd64
+  - ppc64le
+script: 
+  - mvn -Dmaven.javadoc.skip=true package
