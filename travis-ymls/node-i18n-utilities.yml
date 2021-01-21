@@ -1,0 +1,25 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : node-i18n-utilities
+# Source Repo         : https://github.com/IBM/node-i18n-utilities
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/node-i18n-utilities/builds/213744036
+# Created travis.yml  : Yes
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+dist: xenial
+arch:
+   - amd64
+   - ppc64le  
+language: node_js
+node_js:
+   - "10"
+   - "15"
+addons:
+  apt:
+    packages: 
+      - build-essential 
+      - npm 
+      - wget 

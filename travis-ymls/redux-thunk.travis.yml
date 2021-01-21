@@ -1,0 +1,25 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : redux-thunk
+# Source Repo         : https://github.com/reduxjs/redux-thunk.git
+# Travis Job Link     : https://travis-ci.com/github/santosh653/redux-thunk
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+arch:
+  - amd64
+  - ppc64le
+language: node_js
+
+node_js:
+  - 'lts/*'
+
+cache: npm
+
+script:
+  - npm run build
+  - npm test

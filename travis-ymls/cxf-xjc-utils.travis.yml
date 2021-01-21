@@ -1,0 +1,20 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : cxf-xjc-utils
+# Source Repo         : https://github.com/apache/cxf-xjc-utils
+# Travis Job Link     : https://travis-ci.com/github/asellappen/cxf-xjc-utils/
+# Created travis.yml  : Yes
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: java
+arch:
+    - amd64
+    - ppc64le
+
+dist: bionic
+script: "mvn --show-version --errors --batch-mode clean verify -DredirectTestOutputToFile=false"
+jdk:
+  - openjdk11

@@ -1,0 +1,25 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : generator-loopback
+# Source Repo         : https://github.com/strongloop/generator-loopback
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/generator-loopback/builds/212975377
+# Created travis.yml  : No
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+sudo: false
+language: node_js
+arch: 
+  - amd64
+  - ppc64le
+node_js:
+  - 8
+  - 10
+  - 12
+
+before_install:
+  - currentfolder=${PWD##*/}
+  - if [ "$currentfolder" != 'generator-loopback' ]; then cd .. && eval "mv $currentfolder generator-loopback" && cd generator-loopback; fi

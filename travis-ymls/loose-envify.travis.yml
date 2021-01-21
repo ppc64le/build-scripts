@@ -1,0 +1,30 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : loose-envify
+# Source Repo         : https://github.com/zertosh/loose-envify
+# Travis Job Link     : https://travis-ci.com/github/santosh653/loose-envify
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+arch:
+  - amd64
+  - ppc64le
+sudo: false
+language: node_js
+node_js:
+  - "0.10"
+  - "0.12"
+  - "4"
+  - "5"
+  - "6"
+  - "7"
+#Excluding jobs for 0.10 & 0.12 Node_js versions for power as they are not supported.
+jobs:
+ exclude:
+  - node_js: "0.10"
+    arch: ppc64le
+  - node_js: "0.12"
+    arch: ppc64le
