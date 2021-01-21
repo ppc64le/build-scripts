@@ -1,0 +1,25 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : enhanced-resolve
+# Source Repo         : https://github.com/webpack/enhanced-resolve.git
+# Travis Job Link     : https://travis-ci.com/github/ddeka2910/enhanced-resolve/builds/212478922
+# Created travis.yml  : No
+# Maintainer          : Debabrata Deka <ddeka2910@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ---
+os: linux
+arch:
+ - amd64
+ - ppc64le
+sudo: false
+language: node_js
+node_js:
+  - "14"
+  - "12"
+  - "10"
+script: npm run travis
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash) -X gcov
