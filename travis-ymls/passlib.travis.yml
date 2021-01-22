@@ -1,0 +1,27 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : passlib
+# Source Repo         : https://github.com/hlandau/passlib
+# Travis Job Link     : https://travis-ci.com/github/ujjwalsh/passlib/builds/213255787 
+# Created travis.yml  : No
+# Maintainer          : Ujjwal Sharma <ujjwal.cpp@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: go
+os:
+  - linux
+arch:
+  - amd64
+  - ppc64le
+go:
+  - 1.10
+  - tip
+sudo: false
+install:
+  - mkdir -p $HOME/gopath/src/gopkg.in/hlandau/
+  - ln -s $TRAVIS_BUILD_DIR $HOME/gopath/src/gopkg.in/hlandau/passlib.v1
+  - cd $HOME/gopath/src/gopkg.in/hlandau/passlib.v1
+  - go get
