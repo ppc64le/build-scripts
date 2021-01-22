@@ -1,0 +1,21 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : postgres
+# Source Repo         : https://github.com/postgres/postgres.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/postgres/builds/213908547
+# Created travis.yml  : Yes
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+arch: 
+  - amd64
+  - ppc64le
+language: c
+dist: xenial
+os: linux
+script:
+  - ./configure
+  - make
+  - sudo make install
