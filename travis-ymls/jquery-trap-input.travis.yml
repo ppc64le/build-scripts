@@ -1,0 +1,30 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : jquery-trap-input
+# Source Repo         : https://github.com/julienw/jquery-trap-input
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/jquery-trap-input/builds/214075393
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: nodejs
+
+dist: focal
+
+nodejs: 
+    - 10
+    - node  #latest stable Node.js release
+    - lts/* #latest LTS Node.js release
+   
+arch:
+   - amd64
+   - ppc64le   
+
+install: 
+   - npm install -g bower qs # Installing qs manually for travis env
+   - npm install -g bower
+
+script: bower --allow-root install
