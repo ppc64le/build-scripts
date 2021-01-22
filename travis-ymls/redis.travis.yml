@@ -1,0 +1,22 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : redis
+# Source Repo         : https://github.com/redis/redis.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/redis/builds/213907781
+# Created travis.yml  : Yes
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+arch: 
+  - amd64
+  - ppc64le
+language: c
+dist: xenial
+os: linux
+script:
+  - make distclean
+  - make V=1
+  - make test
+  - sudo make install
