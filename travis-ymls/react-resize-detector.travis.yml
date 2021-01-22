@@ -1,0 +1,19 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : react-resize-detector
+# Source Repo         : https://github.com/maslianok/react-resize-detector
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/react-resize-detector/builds/214087733
+# Created travis.yml  : No
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: node_js
+arch:
+  - amd64
+  - ppc64le
+node_js:
+  - "iojs"
+script: npm run test
