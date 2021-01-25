@@ -1,0 +1,35 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : plexus-io 
+# Source Repo         : https://github.com/codehaus-plexus/plexus-io.git
+# Travis Job Link     : https://travis-ci.com/github/rajesh-ibm-power/plexus-io
+# Created travis.yml  : No
+# Maintainer          : Rajesh kumar <Rajesh.kumar13@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ---
+
+language: java
+arch:
+  - amd64
+  - ppc64le
+jdk:
+  - openjdk11
+  - oraclejdk8
+
+dist: trusty
+
+# No need for preliminary install step.
+install: true
+#
+# Run all integration tests.
+script: 
+  - "mvn --show-version --errors --batch-mode clean verify"
+#
+cache:
+    directories:
+    - $HOME/.m2
+branches:
+    except:
+        - gh-pages
