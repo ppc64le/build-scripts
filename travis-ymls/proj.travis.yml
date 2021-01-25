@@ -1,0 +1,94 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : proj
+# Source Repo         : https://github.com/OSGeo/proj.4
+# Travis Job Link     : https://travis-ci.com/github/nagesh4193/PROJ/builds/213744604
+# Created travis.yml  : No
+# Maintainer          : Nageswara Rao K<nagesh4193@gmail.com>/Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+# This is the config file for building proj and running its test suite
+# with Travis-ci.org
+language: cpp
+
+branches:
+  except:
+  - /^(cherry-pick-)?backport-\d+-to-/
+
+cache:
+    directories:
+        - $HOME/.ccache
+
+matrix:
+  fast_finish: true
+  include:
+
+    - os: linux
+      dist: xenial
+      compiler: gcc
+      services:
+        - docker
+      env:
+        - BUILD_NAME=publish_doc
+        - DETAILS="publish_doc"
+
+    - os: linux
+      dist: bionic
+      compiler: gcc
+      arch: s390x
+      env:
+        - BUILD_NAME=linux_generic
+        - DETAILS="linux, s390x"
+        
+    - os: linux
+      dist: bionic
+      compiler: gcc
+      arch: arm64
+      env:
+        - BUILD_NAME=linux_generic
+        - DETAILS="linux, arm64"
+    
+    - os: linux
+      dist: xenial
+      compiler: gcc
+      arch: ppc64le
+      services:
+        - docker
+      env:
+        - BUILD_NAME=publish_doc
+        - DETAILS="publish_doc"
+
+    - os: linux
+      dist: bionic
+      compiler: gcc
+      arch: ppc64le
+      env:
+        - BUILD_NAME=linux_generic
+        - DETAILS="linux, ppc64le"
+
+  allow_failures:
+      - env: BUILD_NAME=mingw32
+
+before_install: ./travis/${BUILD_NAME}/before_install.sh
+
+install: ./travis/${BUILD_NAME}/install.sh
+
+script:
+  - echo "done"
+
+after_success: ./travis/${BUILD_NAME}/after_success.sh
+
+notifications:
+  irc:
+    channels:
+       - "irc.freenode.org#proj-activity"    
+#      - "irc.freenode.org#gdal"
+#      - "irc.freenode.org#proj"
+    use_notice: true
+    
+#  #email:
+#  #  recipients:
+#  #    - gdal-commits@lists.osgeo.org
