@@ -1,0 +1,176 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : watchKeeper
+# Source Repo         : https://github.com/razee-io/WatchKeeper
+# Travis Job Link     : https://www.travis-ci.com/github/kishorkunal-raj/WatchKeeper/builds/214896516
+# Created travis.yml  : No
+# Maintainer          : Kishor Kunal Raj <kishore.kunal.mr@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: node_js
+node_js:
+  - "lts/*"
+
+services:
+  - docker
+
+
+jobs:
+  include:
+   - stage: building images
+     name: building amd64 image
+     arch: amd64
+     script:
+       # Audit npm packages. Fail build whan a PR audit fails, otherwise report the vulnerability and proceed.
+       - if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then npm audit; else npm audit || true; fi
+       - npm run lint
+       - npm test
+       - if [[ "${TRAVIS_TAG}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then npm version --no-git-tag-version "${TRAVIS_TAG}"; fi
+       - docker build --rm -t "quay.io/razee/watch-keeper:${TRAVIS_COMMIT}-amd64" .
+       - if [ -n "${TRAVIS_TAG}" ]; then docker tag quay.io/razee/watch-keeper:${TRAVIS_COMMIT}-amd64 quay.io/razee/watch-keeper:${TRAVIS_TAG}-amd64; fi
+       - docker images
+       - ./build/process-template.sh kubernetes/watch-keeper/resource.yaml >/tmp/resource.yaml
+       - ./build/process-template.sh kubernetes/watch-keeper/rbac.yaml >/tmp/rbac.yaml
+       
+     before_deploy:
+       - docker login -u="${QUAY_ID}" -p="${QUAY_TOKEN}" quay.io
+       
+     deploy:
+       # Deploy alpha builds
+       - provider: script
+         script: docker push "quay.io/razee/watch-keeper:${TRAVIS_TAG}-amd64"
+         skip_cleanup: true
+         on:
+           tags: true
+           condition: ${TRAVIS_TAG} =~ ^[0-9]+\.[0-9]+\.[0-9]+_[0-9]{3}$
+
+       # Deploy released builds
+       - provider: script
+         script: docker push "quay.io/razee/watch-keeper:${TRAVIS_TAG}-amd64"
+         skip_cleanup: true
+         on:
+           tags: true
+           condition: ${TRAVIS_TAG} =~ ^[0-9]+\.[0-9]+\.[0-9]+$
+
+   - name: building ppc64le image
+     arch: ppc64le
+     script:
+       # Audit npm packages. Fail build whan a PR audit fails, otherwise report the vulnerability and proceed.
+       - if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then npm audit; else npm audit || true; fi
+       - npm test
+       - if [[ "${TRAVIS_TAG}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then npm version --no-git-tag-version "${TRAVIS_TAG}"; fi
+       - docker build --rm -t "quay.io/razee/watch-keeper:${TRAVIS_COMMIT}-ppc64le" .
+       - if [ -n "${TRAVIS_TAG}" ]; then docker tag quay.io/razee/watch-keeper:${TRAVIS_COMMIT}-ppc64le quay.io/razee/watch-keeper:${TRAVIS_TAG}-ppc64le; fi
+       - docker images
+       - ./build/process-template.sh kubernetes/watch-keeper/resource.yaml >/tmp/resource.yaml
+       - ./build/process-template.sh kubernetes/watch-keeper/rbac.yaml >/tmp/rbac.yaml
+       
+     before_deploy:
+       - docker login -u="${QUAY_ID}" -p="${QUAY_TOKEN}" quay.io
+       
+     deploy:
+       # Deploy alpha builds
+       - provider: script
+         script: docker push "quay.io/razee/watch-keeper:${TRAVIS_TAG}-ppc64le"
+         skip_cleanup: true
+         on:
+           tags: true
+           condition: ${TRAVIS_TAG} =~ ^[0-9]+\.[0-9]+\.[0-9]+_[0-9]{3}$
+
+       # Deploy released builds
+       - provider: script
+         script: docker push "quay.io/razee/watch-keeper:${TRAVIS_TAG}-ppc64le"
+         skip_cleanup: true
+         on:
+           tags: true
+           condition: ${TRAVIS_TAG} =~ ^[0-9]+\.[0-9]+\.[0-9]+$
+
+   - name: building s390x image
+     arch: s390x
+     script:
+       # Audit npm packages. Fail build whan a PR audit fails, otherwise report the vulnerability and proceed.
+       - if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then npm audit; else npm audit || true; fi
+       - npm test
+       - if [[ "${TRAVIS_TAG}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then npm version --no-git-tag-version "${TRAVIS_TAG}"; fi
+       - docker build --rm -t "quay.io/razee/watch-keeper:${TRAVIS_COMMIT}-s390x" .
+       - if [ -n "${TRAVIS_TAG}" ]; then docker tag quay.io/razee/watch-keeper:${TRAVIS_COMMIT}-s390x quay.io/razee/watch-keeper:${TRAVIS_TAG}-s390x; fi
+       - docker images
+       - ./build/process-template.sh kubernetes/watch-keeper/resource.yaml >/tmp/resource.yaml
+       - ./build/process-template.sh kubernetes/watch-keeper/rbac.yaml >/tmp/rbac.yaml
+       
+     before_deploy:
+       - docker login -u="${QUAY_ID}" -p="${QUAY_TOKEN}" quay.io
+       
+     deploy:
+       # Deploy alpha builds
+       - provider: script
+         script: docker push "quay.io/razee/watch-keeper:${TRAVIS_TAG}-s390x"
+         skip_cleanup: true
+         on:
+           tags: true
+           condition: ${TRAVIS_TAG} =~ ^[0-9]+\.[0-9]+\.[0-9]+_[0-9]{3}$
+
+       # Deploy released builds
+       - provider: script
+         script: docker push "quay.io/razee/watch-keeper:${TRAVIS_TAG}-s390x"
+         skip_cleanup: true
+         on:
+           tags: true
+           condition: ${TRAVIS_TAG} =~ ^[0-9]+\.[0-9]+\.[0-9]+$
+
+   - stage: publish multi-arch image, npm & github release
+     arch: amd64
+     script:
+       - if [[ $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then npm version --no-git-tag-version "${TRAVIS_TAG}"; fi
+       - ./build/process-template.sh kubernetes/watch-keeper/resource.yaml >/tmp/resource.yaml
+       - ./build/process-template.sh kubernetes/watch-keeper/rbac.yaml >/tmp/rbac.yaml
+       - export DOCKER_CLI_EXPERIMENTAL=enabled 
+       - sudo chown -R $USER:$USER /etc/docker/ 
+       - |
+         if [ -n "${TRAVIS_TAG}" ]; then
+            docker manifest create quay.io/razee/watch-keeper:${TRAVIS_TAG} \
+            quay.io/razee/watch-keeper:${TRAVIS_TAG}-amd64 \
+            quay.io/razee/watch-keeper:${TRAVIS_TAG}-ppc64le \
+            quay.io/razee/watch-keeper:${TRAVIS_TAG}-s390x
+         fi
+       
+     before_deploy:
+       - docker login -u="${QUAY_ID}" -p="${QUAY_TOKEN}" quay.io
+     
+     deploy:
+       # Deploy alpha builds
+       - provider: script
+         script: docker manifest push "quay.io/razee/watch-keeper:${TRAVIS_TAG}"
+         skip_cleanup: true
+         on:
+           tags: true
+           condition: ${TRAVIS_TAG} =~ ^[0-9]+\.[0-9]+\.[0-9]+_[0-9]{3}$
+     
+       # Deploy released builds
+       - provider: script
+         script: docker manifest push "quay.io/razee/watch-keeper:${TRAVIS_TAG}"
+         skip_cleanup: true
+         on:
+           tags: true
+           condition: ${TRAVIS_TAG} =~ ^[0-9]+\.[0-9]+\.[0-9]+$
+       - provider: releases
+         file:
+           - "/tmp/resource.yaml"
+           - "/tmp/rbac.yaml"
+         skip_cleanup: true
+         api_key: "${GITHUB_TOKEN}"
+         name: "${TRAVIS_TAG}"
+         on:
+           tags: true
+           condition: ${TRAVIS_TAG} =~ ^[0-9]+\.[0-9]+\.[0-9]+$
+       - provider: npm
+         email: "${NPMJS_EMAIL}"
+         api_key: "${NPMJS_API_KEY}"
+         skip_cleanup: true
+         on:
+           tags: true
+           condition: ${TRAVIS_TAG} =~ ^[0-9]+\.[0-9]+\.[0-9]+$
+
+
