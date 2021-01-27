@@ -1,0 +1,31 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : slf4j
+# Source Repo         : https://github.com/qos-ch/slf4j.git
+# Travis Job Link     : https://travis-ci.com/github/asellappen/slf4j/
+# Created travis.yml  : No
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+dist: trusty
+
+arch:
+  - amd64
+  - ppc64le
+
+language: java
+
+jdk:
+  - oraclejdk11
+
+notifications:
+  email:
+      - notification@qos.ch
+
+install: /bin/true
+
+script:
+  - mvn clean
+  - mvn install
