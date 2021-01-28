@@ -1,0 +1,59 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : jung
+# Source Repo         : https://github.com/jrtom/jung
+# Travis Job Link     : https://www.travis-ci.com/github/kishorkunal-raj/jung/builds/212671909
+# Created travis.yml  : No
+# Maintainer          : Kishor Kunal Raj <kishore.kunal.mr@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+# Per https://docs.travis-ci.com/user/languages/java
+
+sudo: false
+
+language: java
+
+arch:
+  - amd64
+  - ppc64le
+
+dist: trusty
+
+# openjdk8 is currently used for tools/deploy_snapshots.sh; if we stop using that JDK here,
+# change the JDK version used in that script
+jdk:
+  - oraclejdk8
+  - openjdk8
+
+jobs:
+  exclude:
+       - jdk: oraclejdk8
+         arch: ppc64le
+install:
+  - mvn -v
+  - mvn -B install -U -DskipTests=true
+
+script:
+  - mvn -B verify -U -Dmaven.javadoc.skip=true
+
+after_success:
+  - tools/deploy_snapshots.sh
+
+cache:
+  directories:
+  - ${HOME}/.m2
+
+branches:
+  only:
+    - master
+    - common.graph
+    - /^release.*$/
+
+env:
+  global:
+    -  secure: "ZDWaFgXd/IyJUt4vs9pZnljLyhjbAzvTpkWMg+K0aaUhn+NV3cLHuKvghJXSXTF0/dbKRO4wVWat1xNZm6Ec1zWVeRmmJhoqjh65DozAslQdZAnbEGxEMdXPNqxFs0bEijEQ2GUbdh18tjqDonZn6gEXExr/OFiANJD9lkUWUZkX3TieXrMV8l4H5ywyokYzDO2iKRHKLZeci9oBWdmd6/ER9Luumn67wesZbGKZ9OSODtXGjqTdrh+WpvH9NmrqKCZLCFG1TLAD0cUkqKLba5aXTRD0WIRyX8iZwQzYF8v+j2812x3PHKKN85OGbBtVU+FrUqbvmYtTpGMjn4DKO1XMUvAXSXdpehY71Vw7eU5XXvm4OihOzDLW2hV//cE0yjuqjQDLC9jA2IACkTq7z8oQJ8JLzOxnWQAWJdS5893ZXOIBCn/yifVGIwDUA8lU2RiippCJkplpQoYMv//NN8t8Aazpz22yR38s5hBPGuz+70bTQ45O/uuhMa+81nOMzwbqq3Lu3aUNgqEzEHmEnX91XZLsKbPNL+i3TYf0mCF4EAXGdpV5pOXnjlCqO55SrxGojLKp/TcvMQT1KmD4nwvP5mL03UxqynDllLAz0AhLUZHdn5uCFTWIOto8mw27XJroSY99eiFhS5WqMuo7uxyJlHeqQTSFJx6ckGmBfSI="
+    -  secure: "lgiLAdXkJZzTwWmZoX5b+/ZZJUYvI1qB/tAlnZuCxiupxv3Lx9JcYH7eI5zKEjCc8ahwxF0A7ZAa+KPEeEQ9RlvrtSY1jBVHCZWIo1rvgg9Jeynhs9yYBXhcgxYl4jGlp7AZz7ZviHNLXtKbFlf/DJnCIruoIetW/Na0Y+k124OAOuHZrObOM5bhldVzYPMl8lZP171k67M3e9y5Lxv4o41DKOGNzBo3oGtfprW/cO3Nna6UfthbTuzrsqGXYPLU5PN3xhKyEgk8byC2hkzXZzje1IgKn6qLvkhKPNWmYRIf+DFO4f22bMLtzfXG2gfAb9RHMDl1TvemOBA/VIKhGAwnzhJqEkcVY482n39E9bq+/Wqhliwv+XVcBnh8oNMbr8OUEP9OO1ys4isNSMysaG3LPGdYt9d82CFpWDO1gFZ3qdxze/y7Fd/yC+mu62KFn6Jxg9w94kGIzWqrv9DUDgLMougCLgX+W+lhlLxgZ9ecwJPXXlKpoEPI+TSoEkurzcTlR1sRj1quAveaC8+FcxiQFV67XkCd7mQe2kUeNtb77kV1u6OpZL6MUZjV32FxZxxkZH3lAjOLt0hTyqGMpZXiVeJoUVXPOmX+7Em6O7Dd1j+q0lwt6n39YnWmTtLovJPVZDAZBgOvHPttSg5f854o6YYBBEZyrEiHE2zWgJo="
+
+
