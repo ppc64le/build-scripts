@@ -1,0 +1,15 @@
+# ----------------------------------------------------------------------------
+# # Package             : bonzo
+# # Source Repo         : https://github.com/ded/bonzo
+# # Travis Job Link     : https://travis-ci.com/github/sanjaymsh/bonzo/builds/213271493
+# # Created travis.yml  : Yes
+# # Maintainer          : Sanjay Mishra <snjkmr32@gmail.com>
+# # Script License      : Apache License, Version 2 or later
+# # ----------------------------------------------------------------------------
+ os: linux
+ arch:
+   - amd64
+   - ppc64le
+ script:
+  - npm install 
+  - make
