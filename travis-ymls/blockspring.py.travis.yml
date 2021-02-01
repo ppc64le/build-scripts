@@ -1,0 +1,26 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : blockspring.py
+# Source Repo         : https://github.com/blockspring/blockspring.py
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/blockspring.py/builds/215560748
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: python
+
+arch:
+   - amd64
+   - ppc64le
+
+python:
+   - 2.7
+   - 3.8
+
+script:
+   - pip install -r requirements.txt
+   - python setup.py install
+   - python setup.py test
