@@ -1,0 +1,18 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : jwt-node
+# Source Repo         : https://github.com/mattrobenolt/jwt-node.git
+# Travis Job Link     : https://travis-ci.com/github/santosh653/jwt-node
+# Created travis.yml  : Yes
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+arch: 
+  - amd64
+  - ppc4le
+language: node_js
+node_js: node
+script:
+  - npm install jwt
