@@ -1,8 +1,8 @@
 # Package : Apache Flink
-# Version : 1.8.3
+# Version : master
 # Source repo : https://github.com/apache/flink
-# Tested on : rhel_7.6
-# Maintainer : redmark@us.ibm.com
+# Tested on : rhel_8.3
+# Maintainer : bivasda1@in.ibm.com
 #
 # Disclaimer: This script has been tested in non-root (with sudo) mode on given
 # ==========  platform using the mentioned version of the package.
@@ -11,14 +11,10 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
+# Must be installed node v10.9.0
 #!/bin/bash
 
-if [ "$#" -gt 0 ]
-then
-    VERSION=$1
-else
-    VERSION="release-1.8.3"
-fi
+VERSION="master"
 
 # Install dependencies and tools.
 sudo yum update -y
@@ -37,14 +33,8 @@ git clone https://github.com/apache/flink.git
 cd flink
 git checkout $VERSION
 
-#Change RocksDBWriteBatchPerformanceTest time-out to 3 seconds
-#See issue https://issues.apache.org/jira/browse/FLINK-15318
-sed -i 	's/timeout = 2000/timeout = 3000/g' ./flink-state-backends/flink-statebackend-rocksdb/src/test/java/org/apache/flink/contrib/streaming/state/benchmark/RocksDBWriteBatchPerformanceTest.java
-
-#Comment out tests that have rounding errors
-#See issue https://issues.apache.org/jira/browse/FLINK-15505
-sed -i 	's/testSqlApi("LOG(3,27)", "3.0")/\/*testSqlApi("LOG(3,27)", "3.0")*\//g' ./flink-table/flink-table-planner/src/test/scala/org/apache/flink/table/expressions/SqlExpressionTest.scala
-sed -i 	's/testSqlApi("EXP(1)", "2.718281828459045")/\/*testSqlApi("EXP(1)", "2.718281828459045")*\//g' ./flink-table/flink-table-planner/src/test/scala/org/apache/flink/table/expressions/SqlExpressionTest.scala
+# Updated com.google.protobuf:protoc from 3.5.1-->3.7.0
+sed -i 's/3.5.1/3.7.0/g' flink-formats/flink-parquet/pom.xml
 
 #Compile and build package using threads
 mvn clean package -T 6 -DskipTests -Dfast
