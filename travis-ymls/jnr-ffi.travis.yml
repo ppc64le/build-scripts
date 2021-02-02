@@ -1,0 +1,36 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : jnr-ffi
+# Source Repo         : https://github.com/jnr/jnr-ffi.git
+# Travis Job Link     : https://travis-ci.com/github/santosh653/jnr-ffi
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: java
+notifications:
+  irc:
+    channels:
+      - "irc.freenode.org#jnr"
+    on_success: change
+    on_failure: always
+    template:
+      - "%{repository} (%{branch}:%{commit} by %{author}): %{message} (%{build_url})"
+matrix:
+  include:
+    - os: osx
+    - os: linux
+      jdk: openjdk11
+      arch: amd64
+    - os: linux
+      jdk: openjdk11
+      arch: ppc64le
+    
+      
+sudo: false
+cache:
+  directories:
+  - $HOME/.m2
