@@ -1,0 +1,22 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : objenesis
+# Source Repo         : https://github.com/easymock/objenesis
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/objenesis/builds/213945188
+# Created travis.yml  : No
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+language: java
+arch:
+  - amd64
+  - ppc64le
+sudo: false
+jdk:
+  - openjdk8
+  - openjdk11
+branches:
+  only:
+    - master
