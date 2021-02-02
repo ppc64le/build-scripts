@@ -1,0 +1,20 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : nekohtml-1.9.13
+# Source Repo         : https://github.com/Zimbra/nekohtml-1.9.13
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/nekohtml-1.9.13/jobs/478971046
+# Created travis.yml  : Yes
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+dist: xenial
+language: java
+arch:
+  - amd64
+  - ppc64le
+before_install:
+  - sudo apt-get install ant
+script: 
+  - ant -f ${TRAVIS_BUILD_DIR}/build.xml
