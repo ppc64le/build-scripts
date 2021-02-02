@@ -1,0 +1,23 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : qs
+# Source Repo         : https://github.com/ljharb/qs
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/qs/builds/215758128
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: nodejs
+
+nodejs:
+   - 10
+   - 12
+   - lts/* #latest LTS Node.js release
+   #- node # node version has dependency issue (yargs) which cant be fixed. 
+   
+arch:
+   - amd64
+   - ppc64le   
