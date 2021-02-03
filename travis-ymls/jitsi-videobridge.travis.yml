@@ -1,0 +1,19 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : jitsi-videobridge
+# Source Repo         : https://github.com/jitsi/jitsi-videobridge
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/jitsi-videobridge/builds/215807083
+# Created travis.yml  : Yes
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+dist: focal
+arch:
+  - amd64
+  - ppc64le
+language: java
+script:
+  - mvn clean:clean 
+  - mvn install -Dmaven.javadoc.skip=true -B -V
