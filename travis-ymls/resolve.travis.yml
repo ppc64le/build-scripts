@@ -1,0 +1,21 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : resolve
+# Source Repo         : https://github.com/browserify/resolve.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/resolve/builds/215948038
+# Created travis.yml  : Yes
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+arch: 
+  - amd64
+  - ppc64le
+language: node_js
+os: linux
+node_js: 
+  - node
+  - lts/*
+script:
+  - npm fund
