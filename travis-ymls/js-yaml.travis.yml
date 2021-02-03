@@ -1,0 +1,31 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : js-yaml
+# Source Repo         : https://github.com/nodeca/js-yaml
+# Travis Job Link     : https://travis-ci.com/github/rajesh-ibm-power/js-yaml
+# Created travis.yml  : Yes
+# Maintainer          : Rajesh kumar <Rajesh.kumar13@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ---
+
+language: node_js
+dist: xenial
+
+nodejs: 
+    - 10
+    - node  #latest stable Node.js release
+    - lts/*
+
+arch:
+   - amd64
+   - ppc64le   
+
+addons:
+   apt:
+    update: true
+    packages: 
+       - build-essential 
+       - npm 
+       - wget
