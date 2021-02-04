@@ -13,6 +13,9 @@ arch:
   - amd64
   - ppc4le
 language: node_js
-node_js: node
+node_js: 
+  - node
+  - lts/*
+  
 script:
   - npm install jwt
