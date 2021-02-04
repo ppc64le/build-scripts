@@ -1,0 +1,19 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : node-jsonwebtoken
+# Source Repo         : https://github.com/auth0/node-jsonwebtoken
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/node-jsonwebtoken/builds/215949795
+# Created travis.yml  : Yes
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+dist: xenial
+arch:
+   - amd64
+   - ppc64le  
+language: node_js
+node_js:
+   - node
+   - lts/* #latest LTS Node.js release
