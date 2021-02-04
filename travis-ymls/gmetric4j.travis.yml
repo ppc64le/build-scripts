@@ -1,0 +1,22 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : gmetric4j
+# Source Repo         : https://github.com/ganglia/gmetric4j
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/gmetric4j/builds/216081338
+# Created travis.yml  : No
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+language: java
+dist: xenial
+
+jdk:
+  - oraclejdk11
+  - openjdk8
+jobs:
+  include:
+  - os: linux
+    arch: ppc64le
+    jdk: openjdk8
