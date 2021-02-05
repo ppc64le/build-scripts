@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package             : loopback-explorer
-# Source Repo         :https://github.com/strongloop/loopback-component-explorer.git
+# Source Repo         : https://github.com/strongloop/loopback-component-explorer.git
 # Travis Job Link     : https://travis-ci.com/github/genisysram/loopback-component-explorer/jobs/465739834/config
 # Created travis.yml  : No
 # Maintainer          : <ramakrishna.s@genisys-group.com>,<sethp@us.ibm.com>
