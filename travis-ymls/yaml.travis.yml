@@ -1,0 +1,19 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : yaml
+# Source Repo         : https://github.com/eemeli/yaml 
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/yaml/builds/215875106
+# Created travis.yml  : Yes
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+dist: xenial
+arch:
+   - amd64
+   - ppc64le  
+language: node_js
+node_js:
+   - node #latest stable Node.js release
+   - lts/* #latest LTS Node.js release
