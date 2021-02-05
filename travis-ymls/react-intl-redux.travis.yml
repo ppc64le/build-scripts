@@ -1,0 +1,22 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : react-intl-redux
+# Source Repo         : https://github.com/ratson/react-intl-redux.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/react-intl-redux/builds/215950275
+# Created travis.yml  : Yes
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+arch: 
+  - amd64
+  - ppc64le
+language: node_js
+os: linux
+node_js: 
+  - node
+  - lts/*
+script:
+  - npm fund
+  - npm test
