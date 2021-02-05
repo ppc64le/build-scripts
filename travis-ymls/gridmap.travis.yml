@@ -1,0 +1,58 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : gridmap
+# Source Repo         : https://github.com/pygridtools/gridmap
+# Travis Job Link     : https://travis-ci.com/github/asellappen/gridmap/
+# Created travis.yml  : No
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: python
+arch:
+  - amd64
+  - ppc64le
+python:
+  - 2.7
+  - 3.6
+
+sudo: required
+
+addons:
+  hostname: gridmap.travis-ci.org
+  hosts:
+    - localhost
+    - localhost.localdomain
+    - gridmap.travis-ci.org
+
+notifications:
+  email: false
+
+# Install stuff
+before_install:
+  - travis/install_sge.sh
+  - export SGE_ROOT=/var/lib/gridengine
+  - export SGE_CELL=default
+  - export DRMAA_LIBRARY_PATH=/usr/lib/gridengine-drmaa/libdrmaa.so.1.0
+  - export SEND_ERROR_MAIL=False
+  - sudo mkdir /scratch/
+  - sudo chmod 777 /scratch/
+install:
+  - pip install -r requirements.txt
+  - pip install python-coveralls
+  - pip install nose-cov
+  - python setup.py install
+
+# Run test
+script:
+  -  travis_wait 45 nosetests -x -d -v --with-cov --cov gridmap --cov-config .coveragerc --logging-level=DEBUG
+
+# Calculate coverage
+after_success:
+  - coveralls --config_file .coveragerc
+
+# Print out scratch job info if failed
+after_failure:
+  - tail -n 1000 /scratch/*
