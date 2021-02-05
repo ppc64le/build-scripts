@@ -1,0 +1,44 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : Pillow
+# Source Repo         : https://github.com/python-pillow/Pillow
+# Travis Job Link     : https://travis-ci.com/github/asellappen/Pillow/
+# Created travis.yml  : Yes
+# Maintainer          : Arumugam N S <asellappen@yahoo.com>/Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+
+language: python
+sudo: false
+
+dist: focal
+matrix:
+    include:
+        - python: 3.7
+          sudo: true
+        - python: 3.8
+          sudo: true
+        - python: 3.7
+          sudo: true
+          arch : ppc64le
+        - python: 3.8
+          sudo: true
+          arch : ppc64le
+install:
+        - pip install hypothesis
+        - pip install codecov
+        - pip install sphinx-issues sphinx-removed-in sphinx-rtd-theme olefile
+        - if [[ "$TRAVIS_CPU_ARCH" == "ppc64le" ]]; then
+             pip install PIL;
+             pip install image;
+          fi
+
+script:
+        - .ci/install.sh
+        - .ci/build.sh
+        - .ci/test.sh
+        - make doccheck
+        - .ci/after_success.sh
