@@ -1,0 +1,23 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : rxjs
+# Source Repo         : https://github.com/ReactiveX/rxjs.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/rxjs/builds/215951588
+# Created travis.yml  : Yes
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+arch: 
+  - amd64
+  - ppc64le
+language: node_js
+os: linux
+node_js: 
+  - node
+  - lts/*
+script:
+  - npm run compile
+  - npm test
+  - npm run dtslint
