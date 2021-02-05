@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : httpd
-# Version       : v2.4.41
+# Version       : v2.4.46
 # Source repo   : https://github.com/apache/httpd
 # Tested on     : docker container, UBI 8
 # Script License: Apache License, Version 2 or later
@@ -17,15 +17,15 @@
 #!/bin/bash
 
 PACKAGE_NAME="apachehttpserver"
-HTTPD_VERSION="2.4.41"
-APR_VERSION="1.6.5"
+HTTPD_VERSION="2.4.46"
+APR_VERSION="1.7.0"
 APR_UTIL_VERSION="1.6.1"
 CUR_DIR="$(pwd)"
 
 yum update -y
 
-yum install sudo git openssl openssl-devel python gcc libtool autoconf make pcre pcre-devel libxml2 libxml2-devel expat-devel which wget tar -y
-
+yum install sudo git openssl openssl-devel python2 gcc libtool autoconf make pcre pcre-devel libxml2 libxml2-devel expat-devel which wget tar -y
+ln -s /usr/bin/python2 /usr/bin/python
 
 cd $CUR_DIR
 git clone https://github.com/apache/httpd
