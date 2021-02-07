@@ -1,0 +1,58 @@
+# ----------------------------------------------------------------------------
+# Package             : passport-oauth
+# Source Repo         : https://github.com/jaredhanson/passport-oauth.git
+# Travis Job Link     : https://travis-ci.com/github/genisysram/passport-oauth/jobs/466209073
+# Created travis.yml  : No
+# Maintainer          : <ramakrishna.s@genisys-group.com>,<sethp@us.ibm.com>
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+arch:
+     - amd64
+     - ppc64le
+language: "node_js"
+node_js:
+  - "11"
+  - "10"
+  - "9"
+  - "8"
+  - "7"
+  - "6"
+  - "5"
+  - "4"
+  - "3" # io.js
+  - "2" # io.js
+  - "1" # io.js
+  - "0.12"
+  - "0.10"
+  - "0.8"
+  #Excluding below versions since they are not supported by ppc64le    
+jobs: 
+  exclude:
+    - node_js: "0.8"
+      arch: ppc64le
+    - node_js: "0.10"
+      arch: ppc64le
+    - node_js: "0.12"
+      arch: ppc64le
+    - node_js: "1"
+      arch: ppc64le
+    - node_js: "2"
+      arch: ppc64le
+    - node_js: "3"
+      arch: ppc64le  
+
+
+# NOTE: `istanbul` and `coveralls` are pinned for compatibility with node 0.8.
+before_install:
+  - "npm install -g istanbul@0.2.2"
+  - "npm install -g coveralls@2.11.4"
+
+script:
+  - "make check"
+
+after_success:
+  - "make report-cov"
+
+sudo: false
