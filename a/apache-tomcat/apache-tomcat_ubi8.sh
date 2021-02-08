@@ -17,6 +17,8 @@
 #!/bin/bash
 # ----------------------------------------------------------------------------
 
+TOMCAT_VERSION="10.0.2"
+
 cd ${HOME}
 
 yum update -y
@@ -29,17 +31,18 @@ tar -xf apache-ant-1.10.9-bin.tar.gz
 export ANT_HOME=${HOME}/apache-ant-1.10.9/
 export PATH=${PATH}:${ANT_HOME}/bin
 
-## Building Tomcat
+## Configuring Tomcat build
 git clone https://github.com/apache/tomcat.git
 cd tomcat
+git checkout ${TOMCAT_VERSION}
 yes | cp build.properties.default build.properties
 echo >> build.properties
 echo "skip.installer=true" >> build.properties
 
-## Build tomcat server
+## Building tomcat server
 ant release
 
-## Test Tomcat
+## Testing Tomcat
 export CATALINA_HOME=${HOME}/tomcat/output/dist
 export PATH=${HOME}/tomcat/output/dist/bin:${PATH}
 catalina.sh run &
