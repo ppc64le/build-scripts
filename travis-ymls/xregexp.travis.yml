@@ -1,0 +1,25 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : xregexp
+# Source Repo         : https://github.com/slevithan/xregexp
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/xregexp/builds/216359793
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: node_js
+
+node_js:
+   - node
+   - lts/*
+   
+arch:
+   - amd64
+   - ppc64le   
+
+install:
+   - npm install typescript
+   - npm install
