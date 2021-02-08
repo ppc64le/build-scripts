@@ -1,0 +1,22 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : loopback-phase
+# Source Repo         : https://github.com/strongloop/loopback-phase.git
+# Travis Job Link     : https://travis-ci.com/github/genisysram/loopback-phase/builds/211139442/config
+# Created travis.yml  : <No>
+# Maintainer          : <ramakrishna.s@genisys-group.com>
+#                       <sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+
+arch:
+    - amd64
+    - ppc64le
+language: node_js
+node_js:
+  - "8"
+  - "10"
+  - "12"
