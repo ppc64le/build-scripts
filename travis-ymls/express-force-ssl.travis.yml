@@ -1,0 +1,19 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : express-force-ssl
+# Source Repo         : https://github.com/battlejj/express-force-ssl
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/express-force-ssl/builds/216014481
+# Created travis.yml  : Yes
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+dist: xenial
+arch:
+   - amd64
+   - ppc64le  
+language: node_js
+node_js:
+   - node
+   - lts/* #latest LTS Node.js release
