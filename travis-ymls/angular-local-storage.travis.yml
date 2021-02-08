@@ -1,0 +1,39 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : angular-local-storage
+# Source Repo         : https://github.com/grevory/angular-local-storage.git
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/angular-local-storage
+# Created travis.yml  : No
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: node_js
+arch:
+  - amd64
+  - ppc64le
+addons:
+  apt:
+    update: true
+    packages: phantomjs
+
+# Removing 0.10 and testing with latest versions
+node_js:
+  - 12
+  - node
+  - lts/*
+before_install:
+  - |
+    if [[ "$TRAVIS_CPU_ARCH" = "ppc64le" ]]; then 
+     export QT_QPA_PLATFORM=offscreen; # required for phantomjs
+    fi
+install:
+  -  'npm install --save --legacy-peer-deps'
+before_script:
+  - 'npm install -g grunt-cli'
+  - 'npm install -g bower'
+  - 'bower install'
+script: grunt test
+after_script: "npm install coveralls@2.10.0 && cat ./coverage/*/lcov.info | coveralls"
