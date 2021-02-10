@@ -1,0 +1,44 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : quagga
+# Source Repo         : https://github.com/Quagga/quagga
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/quagga/jobs/481451339
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: C
+
+arch:
+  - amd64
+  - ppc64le
+
+addons:
+  apt:
+    update: true
+    packages: 
+      - automake 
+      - autoconf
+      - build-essential 
+      - gawk 
+      - texinfo 
+      - libtool 
+      - libreadline-dev 
+      - libc-ares-dev 
+      - pkg-config 
+      - curl 
+      - zip 
+      - bzip2 
+      - apt-utils
+      - protobuf-compiler
+      - protobuf-c-compiler
+
+
+script: 
+      - ./bootstrap.sh
+      - ./configure
+      - make
+      - make check
