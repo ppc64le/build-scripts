@@ -1,0 +1,24 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : simpleclient
+# Source Repo         : https://github.com/prometheus/client_java.git
+# Travis Job Link     : https://travis-ci.com/github/rajesh-ibm-power/client_java/jobs/481780626
+# Created travis.yml  : Yes
+# Maintainer          : Rajesh kumar <Rajesh.kumar13@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ---
+
+language: java
+jdk:
+  - openjdk11
+  
+dist: xenial
+
+arch:
+  - amd64
+  - ppc64le
+
+script:
+    - mvn test
