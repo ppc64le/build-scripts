@@ -1,0 +1,21 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : CMake
+# Source Repo         : https://github.com/Kitware/CMake
+# Travis Job Link     : https://travis-ci.com/github/ddeka2910/CMake/builds/216498420
+# Created travis.yml  : Yes
+# Maintainer          : Debabrata Deka <ddeka2910@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ---
+sudo: true
+
+dist: xenial
+arch:
+  - amd64
+  - ppc64le
+language: c++
+
+script:
+  - ./bootstrap && make && sudo make install
