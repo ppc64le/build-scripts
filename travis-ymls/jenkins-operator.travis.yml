@@ -1,0 +1,18 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : jenkins-operator
+# Source Repo         : https://github.com/jenkinsci/kubernetes-operator.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/kubernetes-operator/builds/216537835
+# Created travis.yml  : Yes
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+arch:
+  - amd64
+  - ppc64le
+language: go
+os: linux
+go:
+  - 1.x
