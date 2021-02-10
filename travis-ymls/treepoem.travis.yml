@@ -1,0 +1,52 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : treepoem
+# Source Repo         : https://github.com/adamchainz/treepoem
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/treepoem
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: python
+
+dist: bionic
+
+matrix:
+
+  include:
+    - python: 3.6
+      env: TOXENV=py36
+    - python: 3.7
+      env: TOXENV=py37
+    - python: 3.8
+      env: TOXENV=py38
+    - python: 3.9
+      env: TOXENV=py39    
+    - python: 3.6
+      env: TOXENV=py36
+      arch: ppc64le
+    - python: 3.7
+      env: TOXENV=py37
+      arch: ppc64le
+    - python: 3.8
+      env: TOXENV=py38
+      arch: ppc64le
+    - python: 3.9
+      env: TOXENV=py39
+      arch: ppc64le
+    
+install:
+  - python -m pip install --upgrade pip setuptools virtualenv
+  - python -m pip install --upgrade tox
+
+script:
+  - travis_retry tox
+
+addons:
+  apt:
+   update: true
+   packages:
+     - ghostscript
