@@ -1,0 +1,19 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : spring-data-jpa
+# Source Repo         : https://github.com/spring-projects/spring-data-jpa
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/spring-data-jpa/builds/216212138
+# Created travis.yml  : Yes
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+dist: focal
+arch:
+  - amd64
+  - ppc64le
+language: java
+script:
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+  - mvn test -B
