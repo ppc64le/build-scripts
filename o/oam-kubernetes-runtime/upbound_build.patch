@@ -1,0 +1,43 @@
+diff --git a/makelib/common.mk b/makelib/common.mk
+index a2e4b2e..42ed3b6 100644
+--- a/makelib/common.mk
++++ b/makelib/common.mk
+@@ -107,7 +107,11 @@ ifeq ($(HOSTARCH),x86_64)
+ HOSTARCH := amd64
+ endif
+ ifneq ($(HOSTARCH),amd64)
+-	$(error build only supported on amd64 host currently)
++	ifeq ($(HOSTARCH),ppc64le)
++		PLATFORMS = linux_ppc64le
++	else
++		$(error build only supported on amd64, ppc64le hosts currently)
++	endif
+ endif
+ HOST_PLATFORM := $(HOSTOS)_$(HOSTARCH)
+ 
+diff --git a/makelib/helm.mk b/makelib/helm.mk
+index b3960c7..24651ec 100644
+--- a/makelib/helm.mk
++++ b/makelib/helm.mk
+@@ -63,7 +63,7 @@ HELM_CHART_VERSION := $(VERSION:v%=%)
+ $(HELM_HOME): $(HELM)
+ 	@mkdir -p $(HELM_HOME)
+ 	@if [ "$(USE_HELM3)" == "false" ]; then \
+-		$(HELM) init -c; \
++		$(HELM) init -c --stable-repo-url=https://charts.helm.sh/stable; \
+ 	fi
+ 
+ $(HELM_OUTPUT_DIR):
+diff --git a/makelib/image.mk b/makelib/image.mk
+index fcf778c..93cfbb8 100644
+--- a/makelib/image.mk
++++ b/makelib/image.mk
+@@ -31,7 +31,7 @@ endif
+ # supported platform.
+ ifeq ($(origin OSBASEIMAGE),undefined)
+ OSBASE ?= alpine:3.7
+-ifeq ($(ARCH),amd64)
++ifeq ($(ARCH),$(filter $(ARCH),amd64 ppc64le))
+ OSBASEIMAGE = $(OSBASE)
+ else ifeq ($(ARCH),arm64)
+ OSBASEIMAGE = arm64v8/$(OSBASE)
