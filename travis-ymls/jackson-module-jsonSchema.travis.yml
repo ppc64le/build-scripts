@@ -1,0 +1,27 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : jackson-module-jsonSchema
+# Source Repo         : https://github.com/FasterXML/jackson-module-jsonSchema
+# Travis Job Link     : https://www.travis-ci.com/github/kishorkunal-raj/jackson-module-jsonSchema/builds/216750722
+# Created travis.yml  : No
+# Maintainer          : Kishor Kunal Raj <kishore.kunal.mr@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: java
+arch:
+  - amd64
+  - ppc64le
+jdk:
+  - openjdk8
+  - openjdk11
+
+# before_install part is temporary as the build is failing on jackson-module version 2.13.0    
+before_install:
+            -  sed 's/2.13.0-SNAPSHOT/2.12.1/' pom.xml > tmp && mv tmp pom.xml
+# whitelist
+branches:
+  only:
+    - master
+
