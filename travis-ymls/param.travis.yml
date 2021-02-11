@@ -1,0 +1,80 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : param
+# Source Repo         : https://github.com/holoviz/param
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/param/builds/215715507
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: python
+
+matrix:
+
+  include:
+    - python: 2.7
+      env: TOXENV=py27
+    - python: 3.7
+      env: TOXENV=py37
+    - python: 3.8
+      env: TOXENV=py38
+    - python: 3.9
+      env: TOXENV=py39-flakes
+    - python: 3.9
+      env: TOXENV=py39-coverage
+    - python: 3.9
+      env: TOXENV=py39-with_numpy
+    - python: 3.9
+      env: TOXENV=py39-with_ipython
+    - python: 3.9
+      env: TOXENV=py39-with_pandas
+    - python: 3.9
+      env: TOXENV=py39-with_jsonsschema
+    - python: 3.9
+      env: TOXENV=py39-with_gmpy
+    - python: 3.9
+      env: TOXENV=py39-with_all
+    - python: 2.7
+      env: TOXENV=py27
+      arch: ppc64le
+    - python: 3.7
+      env: TOXENV=py37
+      arch: ppc64le
+    - python: 3.8
+      env: TOXENV=py38
+      arch: ppc64le
+    - python: 3.9
+      env: TOXENV=py39-flakes
+      arch: ppc64le
+    - python: 3.9
+      env: TOXENV=py39-coverage
+      arch: ppc64le
+    - python: 3.9
+      env: TOXENV=py39-with_numpy
+      arch: ppc64le
+    - python: 3.9
+      env: TOXENV=py39-with_ipython
+      arch: ppc64le
+    - python: 3.9
+      env: TOXENV=py39-with_pandas
+      arch: ppc64le
+    - python: 3.9
+      env: TOXENV=py39-with_jsonsschema
+      arch: ppc64le
+    - python: 3.9
+      env: TOXENV=py39-with_gmpy
+      arch: ppc64le
+    - python: 3.9
+      env: TOXENV=py39-with_all
+      arch: ppc64le
+    
+
+install:
+  - python setup.py install
+  - travis_retry pip install tox
+
+script:
+  - travis_retry tox
