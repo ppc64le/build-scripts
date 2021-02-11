@@ -1,0 +1,29 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : node-XMLHttpRequest
+# Source Repo         : https://github.com/driverdan/node-XMLHttpRequest
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/node-XMLHttpRequest
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: node_js
+
+node_js:
+   - node
+   - lts/*
+   
+arch:
+   - amd64
+   - ppc64le   
+
+install:
+   - gem install observr
+   - npm install
+   - mv tests/test-request-methods.js tests/test-request.js
+
+script: 
+   - observr -l autotest.watchr
