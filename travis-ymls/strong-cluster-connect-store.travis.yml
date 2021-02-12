@@ -1,0 +1,33 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : strong-cluster-connect-store
+# Source Repo         : https://github.com/strongloop/strong-cluster-connect-store.git
+# Travis Job Link     : https://travis-ci.com/github/genisysram/strong-cluster-connect-store/jobs/482210782
+# Created travis.yml  : No
+# Maintainer          : <ramakrishna.s@genisys-group.com>
+#                       <sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+
+ 
+arch:
+    - amd64
+    - ppc64le
+language: node_js
+node_js:
+  - "6"
+  - "7"
+  - "8"
+  - "9"
+  - "10"
+  - "11"
+  - "12"
+  - "13"
+  - "14"
+  - "15"
+  - "node"
+  - "lts/*"
+  
