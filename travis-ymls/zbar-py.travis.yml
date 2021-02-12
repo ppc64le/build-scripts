@@ -1,0 +1,28 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : zbar-py
+# Source Repo         : https://github.com/zplab/zbar-py
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/zbar-py/builds/216783755
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: python
+
+dist: bionic
+
+arch: 
+  - amd64
+  - ppc64le
+
+python:
+  - 2.7
+  - 3.8
+
+script:
+  - python setup.py install
+  # No tests present. Just including it here for future reference
+  - python setup.py test 
