@@ -1,0 +1,16 @@
+# ----------------------------------------------------------------------------
+# Package             : castor
+# Source Repo         : https://github.com/castor-data-binding/castor
+# Travis Job Link     : https://travis-ci.com/github/sanjaymsh/castor/builds/216765641
+# Created travis.yml  : No
+# Maintainer          : Sanjay Mishra <snjkmr32@gmail.com>
+# Script License      : Apache License, Version 2 or later
+# ----------------------------------------------------------------------------
+language: java
+arch:
+  - amd64
+  - ppc64le
+jdk:
+  - openjdk9
+  - openjdk10
+# script: "mvn verify"
