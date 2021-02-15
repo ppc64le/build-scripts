@@ -1,0 +1,19 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : registry-url
+# Source Repo         : https://github.com/sindresorhus/registry-url.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/registry-url/builds/216531401
+# Created travis.yml  : Yes
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+arch: 
+  - amd64
+  - ppc64le
+os: linux
+language: node_js
+node_js:
+  - 'node'
+  - 'lts/*'
