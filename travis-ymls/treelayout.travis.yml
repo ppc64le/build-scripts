@@ -1,0 +1,20 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : treelayout
+# Source Repo         : https://github.com/abego/treelayout
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/treelayout/builds/216628677
+# Created travis.yml  : Yes
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+dist: focal
+language: java
+matrix:
+  include:
+    - jdk: openjdk15
+    - arch: ppc64le
+      jdk: openjdk15
+script:
+  - ./installClean.sh
