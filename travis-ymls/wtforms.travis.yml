@@ -1,0 +1,55 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : wtforms
+# Source Repo         : https://github.com/wtforms/wtforms
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/wtforms
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: python
+
+dist: bionic
+
+matrix:
+
+  include:
+    - python: 3.6
+      env: TOXENV=py36
+    - python: 3.7
+      env: TOXENV=py37
+    - python: 3.8
+      env: TOXENV=py38
+    - python: 3.9
+      env: TOXENV=py39
+    - python: 3.9
+      env: TOXENV=style
+    - python: 3.9
+      env: TOXENV=docs    
+    - python: 3.6
+      env: TOXENV=py36
+      arch: ppc64le
+    - python: 3.7
+      env: TOXENV=py37
+      arch: ppc64le
+    - python: 3.8
+      env: TOXENV=py38
+      arch: ppc64le
+    - python: 3.9
+      env: TOXENV=py39
+      arch: ppc64le
+    - python: 3.9
+      env: TOXENV=style
+      arch: ppc64le
+    - python: 3.9
+      env: TOXENV=docs 
+      arch: ppc64le
+    
+install:
+  - pip install tox
+
+script:
+  - travis_retry tox
