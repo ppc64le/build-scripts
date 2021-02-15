@@ -1,0 +1,22 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : strong-log-transformer
+# Source Repo         : https://github.com/strongloop/strong-log-transformer.git
+# Travis Job Link     : https://travis-ci.com/github/genisysram/strong-log-transformer/builds/212433770
+# Created travis.yml  : No
+# Maintainer          : <ramakrishna.s@genisys-group.com>
+#                       <sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+sudo: false
+arch:
+    - amd64
+    - ppc64le
+language: node_js
+node_js:
+  - "6"
+  - "8"
+  - "10"
