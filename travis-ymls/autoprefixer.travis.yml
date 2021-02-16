@@ -1,0 +1,19 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : autoprefixer
+# Source Repo         : https://github.com/postcss/autoprefixer.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/autoprefixer/builds/216013754
+# Created travis.yml  : Yes
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+arch: 
+  - amd64
+  - ppc64le
+language: node_js
+os: linux
+node_js: 
+  - node
+  - lts/*
