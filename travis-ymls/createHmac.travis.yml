@@ -1,0 +1,32 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : createHmac
+# Source Repo         : https://github.com/crypto-browserify/createHmac.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/createHmac/builds/216528426
+# Created travis.yml  : No
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+arch:
+  - amd64
+  - ppc64le
+sudo: false
+language: node_js
+#Added node_js version node
+node_js:
+  - "lts/*"
+  - "node"
+  - "9"
+  - "10"
+matrix:
+  include:
+    - node_js: "lts/*"
+      env: TEST_SUITE=standard
+    - node_js: "lts/*"
+      arch: ppc64le
+      env: TEST_SUITE=standard
+env:
+  - TEST_SUITE=unit
+script: npm run-script $TEST_SUITE
