@@ -1,0 +1,29 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : retrying.py
+# Source Repo         : https://github.com/rholder/retrying.git
+# Travis Job Link     : https://travis-ci.com/github/sreekanth370/retrying/builds/216885359
+# Created travis.yml  : no
+# Maintainer          : sreekanth reddy <bsreekanthapps@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: python
+arch:
+ - amd64
+ - ppc64le
+python:
+  - 2.7
+  - 3.4
+  - 3.5
+  - pypy
+  # amd and ppc64le both fails for python version 2.6, 3.2 and 3.3 ,hence removed directly 
+ # Disable  unsupport version  pypy for ppc64 
+jobs: 
+  exclude:
+    - arch: ppc64le
+      python: pypy
+
+script: python setup.py test
+
