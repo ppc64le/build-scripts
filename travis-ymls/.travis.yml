@@ -1,0 +1,29 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : react-reddux
+# Source Repo         : https://github.com/reduxjs/react-redux.git
+# Travis Job Link     : https://travis-ci.com/github/santosh653/react-redux
+# Created travis.yml  : Yes
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+arch:
+  - amd64
+  - ppc64le
+language: node_js
+
+node_js:
+  - 'lts/*'
+  - '14'
+  
+  
+
+cache: npm
+
+script:
+  - npm install
+  - npm audit fix
+  - npm test
