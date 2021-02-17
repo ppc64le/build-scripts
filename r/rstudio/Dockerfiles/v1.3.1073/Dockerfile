@@ -10,7 +10,7 @@ RUN     rm -rf /var/lib/apt/lists/ && \
         apt-get install -y ant apparmor-utils autotools-dev build-essential \
             ca-certificates cmake fakeroot file g++ git haskell-platform \
             libapparmor1 libbz2-dev libcurl4-openssl-dev libedit2 libicu-dev \
-            libpam-dev libpango1.0-dev libssl-dev libxslt1-dev \
+            libpam-dev libpango1.0-dev libssl-dev libxslt1-dev tcl8.5-dev tk8.5-dev\
             libboost-all-dev pkg-config psmisc python-dev python-setuptools \
             pandoc pandoc-citeproc unzip uuid-dev wget gfortran libreadline-dev \
 	    xorg-dev libbz2-ocaml-dev liblzma-dev \
