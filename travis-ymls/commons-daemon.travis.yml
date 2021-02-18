@@ -1,0 +1,62 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : commons-daemon
+# Source Repo         : https://github.com/apache/commons-daemon
+# Travis Job Link     : https://travis-ci.com/github/nagesh4193/commons-daemon/builds/217477238
+# Created travis.yml  : No
+# Maintainer          : Nageswara Rao K<nagesh4193@gmail.com>/Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+language: java
+sudo: false
+
+jdk:
+  - oraclejdk11
+# Commons Daemon has a minimum Java version of Java 6
+# Travis does not appear to support Java 6 or Java 7
+#  - openjdk6
+#  - openjdk7
+  - openjdk8
+  - openjdk9
+  - openjdk10
+  - openjdk11
+# Commons Daemon has a minimum Java version of Java 6
+# Java 12 onwards doesn't support building for Java 6
+#  - openjdk12
+#  - openjdk-ea
+
+jobs:
+  exclude:
+    - jdk: oraclejdk11
+      arch: ppc64le
+
+before_install:
+ - mkdir -p /opt/maven
+ - curl https://downloads.apache.org/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz|tar -xz --strip 1 -C /opt/maven
+ - export MAVEN_HOME=/opt/maven
+ - export PATH=${MAVEN_HOME}/bin:${PATH}
+
+arch:
+  - amd64
+  - ppc64le
+
+after_success:
+  - mvn -V clean cobertura:cobertura coveralls:report --no-transfer-progress
