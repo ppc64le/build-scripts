@@ -1,0 +1,57 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : xarray
+# Source Repo         : https://github.com/pydata/xarray/tree/stable
+# Travis Job Link     : https://travis-ci.com/github/asellappen/xarray/
+# Created travis.yml  : Yes
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: python
+dist: focal
+python: 3.7
+
+matrix:
+  fast_finish: true
+  include:
+  - env: PYTHON_VERSION="3.7"
+  - env: PYTHON_VERSION="3.8"
+  - env: PYTHON_VERSION="3.7"
+    arch:  ppc64le
+  - env: PYTHON_VERSION="3.8"
+    arch:  ppc64le
+
+sudo: required
+
+before_install:
+  - sudo apt-get install gfortran libopenblas-dev liblapack-dev
+  - if [[ "$TRAVIS_CPU_ARCH" == "ppc64le" ]]; then 
+        wget https://repo.anaconda.com/miniconda/Miniconda2-latest-Linux-ppc64le.sh -O miniconda.sh;
+    else
+        wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+    fi
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes
+  - conda config --set auto_update_conda False
+  - conda update -q --all
+  - conda install python=$PYTHON_VERSION 
+  - conda install flake8 pytest mypy  numpy pandas cftime dask 
+  - conda install -c anaconda scipy
+  - conda install llvmlite==0.32.1
+  - sudo apt-get install llvm-10* 
+  - export LLVM_CONFIG=/usr/bin/llvm-config-10
+  - ln -s /usr/include/llvm-10/llvm/Config/llvm-config.h config.h
+  - sudo apt-get install llvm-10 lldb-10 llvm-10-dev libllvm10 llvm-10-runtime
+  - pip3 install numba==0.47.0
+  - conda install -c anaconda bottleneck
+  - pip3 install numbagg
+install:
+  - pip3 install --no-deps -e .
+script:
+  - python -m pytest -rxXsv  xarray/tests/  --ignore=xarray/tests/test_dataset.py --ignore=xarray/tests/test_dataarray.py
+  - python -m pytest --doctest-modules xarray --ignore xarray/tests
+  - flake8
