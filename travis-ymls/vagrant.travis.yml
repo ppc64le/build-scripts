@@ -1,0 +1,20 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : vagrant
+# Source Repo         : https://github.com/hashicorp/vagrant
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/vagrant/jobs/484957743
+# Created travis.yml  : Yes
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+language: ruby
+arch:
+  - amd64
+  - ppc64le
+language: ruby
+bundler_args: "--binstubs --standalone --without documentation --path ../bundle"
+script: "bundle exec rake test"
+rvm:
+  - 2.7.0
