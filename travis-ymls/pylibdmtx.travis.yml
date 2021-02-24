@@ -1,0 +1,42 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : pylibdmtx
+# Source Repo         : https://github.com/NaturalHistoryMuseum/pylibdmtx.git
+# Travis Job Link     : https://travis-ci.com/github/santosh653/pylibdmtx
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+arch:
+  - amd64
+  - ppc64le
+language:
+  - python
+
+sudo:
+  - required
+
+dist:
+  - xenial
+#Including Latest Python Versions as there were common failures on Power & Intel.,
+python:
+  - "3.4"
+  - "3.7"
+  - "3.8"
+  - "3.9"
+  
+
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y libdmtx0a python-opencv
+
+install:
+  - pip install tox-travis coveralls
+
+script:
+  - tox
+
+after_success:
+  - coveralls
