@@ -1,0 +1,19 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : dashboard
+# Source Repo         : https://github.com/tektoncd/dashboard.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/dashboard/builds/217320959
+# Created travis.yml  : Yes
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+arch:
+  - amd64
+  - ppc64le
+os: linux
+language: go
+go:
+  - 1.15
+  - tip
