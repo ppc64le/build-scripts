@@ -16,14 +16,6 @@ arch:
   - amd64
   - ppc64le
 language: c++
-
-sudo: true
-
-dist: xenial
-arch:
-  - amd64
-  - ppc64le
-language: c++
 addons:
   apt:
      packages:
