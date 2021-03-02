@@ -1,0 +1,34 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : cookies
+# Source Repo         : https://github.com/sashahart/cookies
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/cookies
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: python
+
+matrix:
+# py32 and py33 not supported on travis. Not included them.
+  include:
+    - python: 2.7
+      env: TOXENV=py27
+    - python: 3.4
+      env: TOXENV=py34
+    - python: 2.7
+      env: TOXENV=py27
+      arch: ppc64le
+    - python: 3.4
+      env: TOXENV=py34
+      arch: ppc64le
+    
+install:
+  - python setup.py install
+  - pip install tox
+
+script:
+  - travis_retry tox
