@@ -1,5 +1,5 @@
 #
-# Command to run for UBI 8.3 (This will build, test and create RPM package for psad)
+# Command to run for UBI / RHEL 8.3 (This will build, test and create RPM package for psad)
 # 
 ./psad_UBI-8.3.sh
 #
@@ -9,11 +9,11 @@
 # 
 ./psad_SLES12.sh
 #
-# Docker command for psad on UBI 8.3
+# Docker command for building psad image based on UBI 8.3
 #
 docker build . -t psad
 #
-# Psad requires following packages/ binaries. (NOTE: This will be taken care by build script, 
+# Note: Psad requires following packages/ binaries to be pre-installed on the system. (NOTE: This will be taken care by build script, 
 # if installion is done on same host)
 #
 /bin/ps 	
