@@ -23,4 +23,4 @@ RUN cd $HOME\
     && cpan Date::Calc\
     && git clone $PSAD_REPOSITORY\
     && cd $PSAD_DIR\
-    && make all\
+    && make all
