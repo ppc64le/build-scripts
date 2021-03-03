@@ -4,11 +4,11 @@
 # Package       : psad
 # Version       : 3.0
 # Source repo   : https://github.com/mrash/psad
-# Tested on     : UBI 8.2
-# Script License: GPL-2.0 License  
+# Tested on     : UBI 8.3
+# Script License: Apache 2.0
 # Maintainer    : Nishikant Thorat <nthorat@us.ibm.com>
 #
-# Disclaimer: This script has been tested in non-root mode on given
+# Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
