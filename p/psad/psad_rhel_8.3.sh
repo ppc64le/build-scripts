@@ -4,7 +4,7 @@
 # Package       : psad
 # Version       : 3.0
 # Source repo   : https://github.com/mrash/psad
-# Tested on     : UBI 8.3
+# Tested on     : UBI 8.3, RHEL 8.3
 # Script License: Apache 2.0
 # Maintainer    : Nishikant Thorat <nthorat@us.ibm.com>
 #
