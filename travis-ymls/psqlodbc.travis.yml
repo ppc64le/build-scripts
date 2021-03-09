@@ -1,0 +1,32 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : psqlodbc
+# Source Repo         : https://github.com/Distrotech/psqlodbc
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/psqlodbc/builds/219400328
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: C
+   
+arch:
+   - amd64
+   - ppc64le   
+
+addons:
+   apt:
+     update: true
+     packages:
+        - libtool
+        - unixodbc 
+        - unixodbc-dev
+        - autoconf
+
+script: 
+   - ./bootstrap
+   - ./configure --build=ppc64le-linux
+   - make 
+   - make check
