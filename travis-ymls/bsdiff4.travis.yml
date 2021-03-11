@@ -1,0 +1,21 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : bsdiff4
+# Source Repo         : https://github.com/ilanschnell/bsdiff4
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/bsdiff4
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: C
+   
+arch:
+   - amd64
+   - ppc64le   
+
+script: 
+   - make 
+   - make test
