@@ -1,0 +1,19 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : hawtio
+# Source Repo         : https://github.com/hawtio/hawtio.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/hawtio/builds/219466782
+# Created travis.yml  : Yes
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+arch:
+  - amd64
+  - ppc64le
+language: java
+jdk:
+  - openjdk11
+script:
+  - mvn --batch-mode install
