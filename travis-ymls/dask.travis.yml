@@ -1,0 +1,62 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : dask
+# Source Repo         : https://github.com/dask/dask
+# Travis Job Link     : https://travis-ci.com/github/asellappen/dask/
+# Created travis.yml  : Yes
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: python
+
+dist: focal 
+
+matrix:
+  include:
+  - env: PYTHON_VERSION="3.7"
+  - env: PYTHON_VERSION="3.8"
+  - env: PYTHON_VERSION="3.7"
+    arch: ppc64le
+  - env: PYTHON_VERSION="3.8"
+    arch: ppc64le
+
+sudo: required
+
+before_install:
+  - if [[ "$TRAVIS_CPU_ARCH" == "ppc64le" ]]; then 
+         wget https://repo.anaconda.com/miniconda/Miniconda3-py39_4.9.2-Linux-ppc64le.sh -O miniconda.sh;
+    else
+         wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+    fi
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes
+  - conda config --set auto_update_conda False
+  - conda update -q --all
+  - conda install h5py pytables 
+  - conda install  partd psutil requests scikit-image scikit-learn 
+  - conda install python=$PYTHON_VERSION pip  pytest-xdist pytest pyyaml
+  - pip install pytest-parallel
+  - conda install -c conda-forge zarr 
+  - conda install "dask[dataframe]" 
+  - conda install   toolz 
+  - conda install llvmlite==0.36.0rc1  -c numba
+  - conda install -c anaconda scipy
+  # pyarrow not supported for ppc64le
+  - if [[ "$TRAVIS_CPU_ARCH" !=  "ppc64le" ]]; then 
+        pip install pyarrow==1.0.1;
+    fi  
+
+install:
+   - python -m pip install --quiet --no-deps -e .[complete]
+
+script: 
+   #test case test_array_core is crashing the process due to pyarrow not supported,so ignoring for ppc64le alone
+  - if [[ "$TRAVIS_CPU_ARCH" ==  "ppc64le" ]]; then 
+      python -m pytest -v dask  --runslow  -n5 --ignore=dask/array/tests/test_array_core.py;
+    else
+      python -m pytest -v dask  --runslow  -n5;
+    fi
