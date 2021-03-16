@@ -4,11 +4,13 @@
 
 FROM registry.access.redhat.com/ubi8/ubi:latest
 
+ARG VERSION=3.11.x
+
 ###Required Labels
 LABEL name="cassandra" \
-      maintainer="sethp@us.ibm.com" \
+      maintainer="amits2@us.ibm.com" \
       vendor="cassandra" \
-      version="5.0.1" \
+      version=$VERSION \
       release="1" \
       summary="Red Hat UBI cassandra" \
       description="Red Hat UBI cassandra Application"
