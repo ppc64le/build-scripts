@@ -1,0 +1,23 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : che-jwtproxy
+# Source Repo         : https://github.com/eclipse/che-jwtproxy
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/che-jwtproxy/builds/219866676
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: go
+
+go:
+  - 1.14
+  - tip
+   
+arch:
+   - amd64
+   - ppc64le   
+
+script: go test -v ./...
