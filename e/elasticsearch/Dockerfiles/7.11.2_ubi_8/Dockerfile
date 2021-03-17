@@ -11,6 +11,8 @@
 
 FROM registry.access.redhat.com/ubi8/ubi:latest AS builder
 
+LABEL MAINTAINER "Elayaraja Dhanapal <eldhanap@in.ibm.com>"
+
 # `tini` is a tiny but valid init for containers. This is used to cleanly
 # control how ES and any child processes are shut down.
 #
@@ -46,7 +48,8 @@ RUN wget https://github.com/AdoptOpenJDK/openjdk15-binaries/releases/download/jd
 RUN set -o errexit -o nounset && echo "Downloading Gradle" && wget --no-verbose --output-document=gradle.zip "https://services.gradle.org/distributions/gradle-6.8.3-bin.zip" && echo "Installing Gradle" && unzip gradle.zip && rm gradle.zip  && mv "gradle-6.8.3" "/usr/share/"     && ln --symbolic "/usr/share/gradle-6.8.3/bin/gradle" /usr/bin/gradle && echo "Testing Gradle installation" && gradle --version
 
 RUN git clone --single-branch --branch 7.11 https://github.com/elastic/elasticsearch.git && \
-    cd elasticsearch && wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_7.11.2.patch && \
+    cd elasticsearch && git checkout v7.11.2 && \
+    wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_7.11.2.patch && \
     git apply elasticsearch_7.11.2.patch && \
     gradle :distribution:archives:linux-ppc64le-tar:assemble --parallel && \
     mv ./distribution/archives/linux-ppc64le-tar/build/distributions/elasticsearch-7.11.2-SNAPSHOT-linux-ppc64le.tar.gz /opt
