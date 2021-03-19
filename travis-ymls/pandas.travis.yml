@@ -1,0 +1,99 @@
+# -------------------------------------------------------------------------------------------------------------------------------------------------------
+#
+# Package             : pandas
+# Source Repo         : https://github.com/pandas-dev/pandas
+# Travis Job Link     : https://travis-ci.com/github/asellappen/pandas/
+# Created travis.yml  : No
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# --------------------------------------------------------------------------------------------------------------------------------------------------------
+language: python
+python: 3.7
+
+dist: focal
+
+addons:
+  apt:
+    update: true
+    packages:
+      - xvfb
+
+services:
+  - xvfb
+
+# To turn off cached cython files and compiler cache
+# set NOCACHE-true
+# To delete caches go to https://travis-ci.org/OWNER/REPOSITORY/caches or run
+# travis cache --delete inside the project directory from the travis command line client
+# The cache directories will be deleted if anything in ci/ changes in a commit
+cache:
+  apt: true
+  ccache: true
+  directories:
+    - $HOME/.cache # cython cache
+
+env:
+  global:
+    # create a github personal access token
+    # cd pandas-dev/pandas
+    # travis encrypt 'PANDAS_GH_TOKEN=personal_access_token' -r pandas-dev/pandas
+    - secure: "EkWLZhbrp/mXJOx38CHjs7BnjXafsqHtwxPQrqWy457VDFWhIY1DMnIR/lOWG+a20Qv52sCsFtiZEmMfUjf0pLGXOqurdxbYBGJ7/ikFLk9yV2rDwiArUlVM9bWFnFxHvdz9zewBH55WurrY4ShZWyV+x2dWjjceWG5VpWeI6sA="
+
+git:
+  depth: false
+
+matrix:
+  fast_finish: true
+
+  include:
+    - arch: arm64
+      env:
+        - JOB="3.7, arm64" PYTEST_WORKERS=2 ENV_FILE="ci/deps/travis-37-arm64.yaml" PATTERN="(not slow and not network and not clipboard and not arm_slow)"
+    - arch: ppc64le # nothing spcecific to arm64 from ci/deps/travis-37-arm64.yaml,hence used the same file
+      env:
+        - JOB="3.7, ppc64le" PYTEST_WORKERS=2 ENV_FILE="ci/deps/travis-37-arm64.yaml" PATTERN="(not slow and not network and not clipboard and not arm_slow)"
+  allow_failures:
+    # Moved to allowed_failures 2020-09-29 due to timeouts https://github.com/pandas-dev/pandas/issues/36719
+    - arch: arm64
+      env:
+        - JOB="3.7, arm64" PYTEST_WORKERS=2 ENV_FILE="ci/deps/travis-37-arm64.yaml" PATTERN="(not slow and not network and not clipboard and not arm_slow)"
+
+before_install:
+  - echo "before_install"
+  # Use blocking IO on travis.  Ref:  https://github.com/travis-ci/travis-ci/issues/8920#issuecomment-352661024
+  - python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK);'
+  - source ci/travis_process_gbq_encryption.sh
+  - export PATH="$HOME/miniconda3/bin:$PATH"
+  - df -h
+  - pwd
+  - uname -a
+  - git --version
+  - ./ci/check_git_tags.sh
+
+install:
+  - echo "install start"
+  - ci/prep_cython_cache.sh
+  - ci/setup_env.sh  # Added ppc64le support at this script setup_env.sh to create conda env & test and raise PR to community merge
+  - ci/submit_cython_cache.sh
+  - echo "install done"
+
+script:
+  - echo "script start"
+  - echo "$JOB"
+  - source activate pandas-dev
+  #run_tests.sh not supporting power and timeout issue
+  # for ppc64le,Skip collection of window tests,unicode wasn't copied correctly on PY3 on windows,Pyperclip could not find a copy/paste mechanism for your system, pandas/tests/plotting/ and pandas/tests/window/
+  - if [[ "$TRAVIS_CPU_ARCH" == "ppc64le" ]]; then
+       travis_wait 30 pytest -n 2 pandas/tests  --ignore=pandas/tests/window/ --ignore=pandas/tests/plotting/ --ignore=pandas/tests/io/test_clipboard.py  --ignore=pandas/tests/indexes/interval/test_astype.py  --ignore=pandas/tests/tools/test_to_numeric.py ;
+    else
+       ci/run_tests.sh;
+    fi
+ 
+
+after_script:
+  - echo "after_script start"
+  - source activate pandas-dev && pushd /tmp && python -c "import pandas; pandas.show_versions();" && popd
+  - ci/print_skipped.py
+  - echo "after_script done"
