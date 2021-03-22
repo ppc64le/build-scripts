@@ -1,0 +1,27 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : yq
+# Source Repo         : https://github.com/mikefarah/yq
+# Travis Job Link     : https://travis-ci.com/github/asellappen/yq/
+# Created travis.yml  : Yes
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: go
+
+arch:
+ - amd64
+ - ppc64le
+  
+go:
+ - 1.15
+ - 1.14
+ - 1.13
+
+script:
+ - export PATH=${PATH}:`go env GOPATH`/bin
+ - go get -v -t -d ./...
+ - ./scripts/devtools.sh
+ - make  local build
