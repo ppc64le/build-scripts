@@ -1,0 +1,52 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : ipywidgets
+# Source Repo         : https://github.com/jupyter-widgets/ipywidgets.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/ipywidgets/builds/220935829
+# Created travis.yml  : Yes
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+#https://travis-ci.org/github/jupyter-widgets/ipywidgets
+arch:
+  - amd64
+  - ppc64le
+language: python
+dist: xenial
+python:
+    - 3.6
+    - 3.7
+    - 3.8
+    - 3.9
+addons:
+  apt_packages:
+    - pandoc
+  firefox: latest
+services:
+  - xvfb
+cache: yarn
+env:
+    - GROUP=python
+sudo: false
+before_install:
+    - 'if [[ $GROUP == python || doc ]] ; then pip install --upgrade setuptools pip; fi'
+install:
+    - 'if [[ $GROUP == python || doc ]] ; then pip install file://$PWD#egg=ipywidgets[test] coveralls; fi'
+script:
+    - 'if [[ $GROUP == python ]] ; then pytest --cov=ipywidgets ipywidgets ; fi'
+    - 'if [[ $GROUP == doc ]] ; then 
+        pushd docs ;
+        pip install -r requirements.txt ;
+        make html ;
+        popd ; fi'
+matrix:
+    include:
+        - python: 3.6
+          env: GROUP=doc
+        - python: 3.6
+          env: GROUP=doc
+          arch: ppc64le
+after_success:
+    - coveralls
