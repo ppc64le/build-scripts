@@ -1,0 +1,28 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : hawtio-operator
+# Source Repo         : https://github.com/hawtio/hawtio-operator
+# Travis Job Link     : https://travis-ci.com/github/asellappen/hawtio-operator/
+# Created travis.yml  : Yes
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: go
+arch:
+   - amd64
+   - ppc64le
+go:
+  - "1.15.x"
+  - "1.14.x"
+  - "1.13.x"
+
+sudo: false
+
+install: true
+
+script:
+ - go build -v ./...
+ - go test -v ./...
+
