@@ -4,7 +4,7 @@
 # Package	: chromium
 # Version	: 84.0.4118.0
 # Source repo	: https://chromium.googlesource.com/chromium/src.git
-# Tested on	: UBI 8.2
+# Tested on	: RHEL 7.6
 # Script License: Apache License Version 2.0
 # Maintainer	: Amit Sadaphule <amits2@us.ibm.com>
 #
@@ -19,20 +19,14 @@
 
 set -ex
 
-# Install dependencies
-dnf -y --disableplugin=subscription-manager install \
-    http://mirror.centos.org/centos/8/BaseOS/ppc64le/os/Packages/centos-gpg-keys-8-2.el8.noarch.rpm \
-    http://mirror.centos.org/centos/8/BaseOS/ppc64le/os/Packages/centos-linux-repos-8-2.el8.noarch.rpm \
-    https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 
-yum install -y git vim make cmake3 python2 cups-devel pkgconfig nss-devel openssl-devel glib2-devel pango-devel dbus-devel atk-devel at-spi2-atk-devel gtk3-devel krb5-devel pulseaudio-libs-devel libXScrnSaver-devel epel-release subversion curl alsa-lib-devel pciutils-devel mesa-libGLw bison patch bzip2 libuuid-devel mesa-libgbm libsecret-devel python38 python2-psutil python38-psutil java-1.*.0-openjdk-devel libXtst-devel libatomic gcc-c++ expat-devel zlib-devel perl-ExtUtils-MakeMaker wget diffutils libdrm-devel
+yum -y install devtoolset-8 rh-git218 vim make cmake3 python pkgconfig nss-devel openssl-devel glib2-devel libgnome-keyring-devel pango-devel dbus-devel atk-devel at-spi2-atk-devel gtk3-devel krb5-devel pulseaudio-libs-devel libXScrnSaver-devel subversion curl alsa-lib-devel pciutils-devel mesa-libGLw gperf bison patch bzip2 uuid-devel mesa-libgbm mesa-libgbm-devel re2c ninja-build java-1.8.0-openjdk-devel libXtst-devel devtoolset-8-libatomic-devel expat-devel gettext-devel zlib-devel perl-ExtUtils-MakeMaker wget diffutils libdrm-devel  
 
-dnf install -y http://mirror.centos.org/centos/8/PowerTools/ppc64le/os/Packages/gperf-3.1-5.el8.ppc64le.rpm
-dnf install -y http://mirror.centos.org/centos/8/PowerTools/ppc64le/os/Packages/mesa-libgbm-devel-20.1.4-1.el8.ppc64le.rpm
-dnf install -y http://mirror.centos.org/centos/8/PowerTools/ppc64le/os/Packages/re2c-0.14.3-2.el8.ppc64le.rpm
-dnf install -y http://mirror.centos.org/centos/8/PowerTools/ppc64le/os/Packages/ninja-build-1.8.2-1.el8.ppc64le.rpm
-
-alternatives --set python /usr/bin/python2
+set +e
+source scl_source enable devtoolset-8
+source scl_source enable rh-git218
+set -e
 
 # Install nodejs
 curl https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
@@ -55,6 +49,14 @@ cd gn/
 git checkout 5ed3c9cc67b090d5e311e4bd2aba072173e82db9
 python build/gen.py --no-static-libstdc++
 ninja -C out
+
+cd $HOME
+yum install -y rpm-build gnutls-devel pam-devel avahi-devel systemd-devel system-config-printer-libs pygobject2 python-cups foomatic-db-ppds ghostscript-cups cups-filesystem cups-filters cups-filters-libs cups-filters-libs cups-pdf cups-bjnp
+yum remove -y cups-client
+
+wget https://github.com/apple/cups/releases/download/release-2.1.3/cups-2.1.3-source.tar.bz2
+rpmbuild -ta --without libusb1 cups-2.1.3-source.tar.bz2
+yum -y install rpmbuild/RPMS/ppc64le/cups-2.1.3-1.ppc64le.rpm rpmbuild/RPMS/ppc64le/cups-libs-2.1.3-1.ppc64le.rpm rpmbuild/RPMS/ppc64le/cups-devel-2.1.3-1.ppc64le.rpm rpmbuild/RPMS/ppc64le/cups-lpd-2.1.3-1.ppc64le.rpm
 
 unset CXX
 unset CC
@@ -142,6 +144,9 @@ curl -k "https://wiki.raptorcs.com/w/images/b/bb/0001-sandbox-linux-seccomp-bpf-
 
 # Additional patches for ppc for gn gen failures (20/04/2020)
 sed -i '414i  } else if (current_cpu == "ppc64") { \n    sources = libvpx_srcs_ppc64'  third_party/libvpx/BUILD.gn
+KCMP_H=`find /usr -name kcmp.h`
+KCMP_H_ESC=$(sed 's/\//\\\//g' <<< "$KCMP_H")
+sed -i 's/linux\/kcmp.h/'$KCMP_H_ESC'/g' services/service_manager/sandbox/linux/bpf_cros_amd_gpu_policy_linux.cc
 
 # Adding power changes to Syscall set files
 sed -i -e '/#include <asm\/unistd.h>/a\
