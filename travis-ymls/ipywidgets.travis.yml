@@ -2,7 +2,7 @@
 #
 # Package             : ipywidgets
 # Source Repo         : https://github.com/jupyter-widgets/ipywidgets.git
-# Travis Job Link     : https://travis-ci.com/github/dthadi3/ipywidgets/builds/220935829
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/ipywidgets/builds/221085037
 # Created travis.yml  : Yes
 # Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
 #
@@ -20,13 +20,6 @@ python:
     - 3.7
     - 3.8
     - 3.9
-addons:
-  apt_packages:
-    - pandoc
-  firefox: latest
-services:
-  - xvfb
-cache: yarn
 env:
     - GROUP=python
 sudo: false
