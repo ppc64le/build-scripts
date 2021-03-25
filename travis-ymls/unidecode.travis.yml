@@ -1,0 +1,29 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : unidecode
+# Source Repo         : https://github.com/avian2/unidecode
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/unidecode
+# Created travis.yml  : No
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+dist: xenial
+language: python
+arch:
+  - amd64
+  - ppc64le
+python:
+  - 3.5
+  - 3.6
+  - 3.7
+  - 3.8
+  - pypy3.5-6.0
+jobs:
+  exclude:
+    -  python: pypy3.5-6.0
+       arch: ppc64le
+script:
+  - python setup.py test
