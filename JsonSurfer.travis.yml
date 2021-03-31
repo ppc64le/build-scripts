@@ -1,0 +1,15 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : JsonSurfer
+# Source Repo         : https://github.com/jsurfer/JsonSurfer
+# Travis Job Link     : https://travis-ci.com/github/sreekanth370/JsonSurfer/builds/221140619
+# Created travis.yml  : No
+# Maintainer          : sreekanth reddy <bsreekanthapps@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: java
+arch:
+  - amd64
+  - ppc64le
