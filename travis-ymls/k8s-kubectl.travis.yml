@@ -1,0 +1,26 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : k8s-kubectl
+# Source Repo         : https://github.com/lachie83/k8s-kubectl
+# Travis Job Link     : https://travis-ci.com/github/asellappen/k8s-kubectl/
+# Created travis.yml  : Yes
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: generic
+
+sudo: required
+arch:
+  - amd64
+  - ppc64le
+
+services:
+  - docker
+  
+scripts:
+
+- make docker_build
+- make test
