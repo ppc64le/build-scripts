@@ -1,0 +1,40 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : pytz
+# Source Repo         : https://github.com/conda-forge/pytz-feedstock.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/pytz-feedstock/jobs/492101885
+# Created travis.yml  : Yes
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: generic
+arch:
+  - amd64
+  - ppc64le
+#jdk: openjdk11
+before_install:
+  - |
+    if [[ "$TRAVIS_CPU_ARCH" = "amd64" ]]; then
+     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+    fi
+  - |
+     if [[ "$TRAVIS_CPU_ARCH" = "ppc64le" ]]; then
+      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-ppc64le.sh -O miniconda.sh;
+     fi
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - source "$HOME/miniconda/etc/profile.d/conda.sh"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+install:
+  - conda install --yes --quiet conda-forge-ci-setup=3 conda-build pip -c conda-forge
+  - conda config --set show_channel_urls true
+  - conda config --set auto_update_conda false
+  - conda config --set add_pip_as_python_dependency false
+  - conda config --set channel_priority strict
+  - conda info --json
+  - conda info
+  - conda config --show-sources
+  - conda list --show-channel-urls
+  - conda build ./recipe -m ./.ci_support/linux_64_.yaml
