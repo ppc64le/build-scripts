@@ -19,6 +19,7 @@
 export PYTHON=python3
 export PIP=pip3
 export REPO=https://github.com/GrahamDumpleton/mod_wsgi
+export VERSION=4.7.1
 
 yum update -y
 
@@ -28,10 +29,9 @@ yum install ${PYTHON} ${PYTHON}-devel ${PYTHON}-pip -y
 # install mod_wsgi and related dependencies
 yum install ${PYTHON}-mod_wsgi httpd httpd-devel gcc redhat-rpm-config -y
 
-# install git repo for testing
-yum install git -y
+# install latest release for testing
+yum install wget -y
 ${PIP} install tox
-git clone https://github.com/GrahamDumpleton/mod_wsgi
-cd mod_wsgi
+wget -c ${REPO}/archive/refs/tags/${VERSION}.tar.gz -O - | tar -xz
+cd mod_wsgi-${VERSION}
 tox -e py36
-
