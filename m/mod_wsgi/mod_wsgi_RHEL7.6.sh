@@ -30,8 +30,9 @@ yum install ${PYTHON} ${PYTHON}-devel ${PYTHON}-pip -y
 yum install ${PYTHON}-mod_wsgi httpd httpd-devel gcc redhat-rpm-config -y
 
 # install latest release for testing
-yum install wget -y
+yum install git -y
 ${PIP} install tox
-wget -c ${REPO}/archive/refs/tags/${VERSION}.tar.gz -O - | tar -xz
-cd mod_wsgi-${VERSION}
+git clone ${REPO}
+cd mod_wsgi
+git checkout ${VERSION}
 tox -e py36
