@@ -1,0 +1,24 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : libdmtx
+# Source Repo         : https://github.com/dmtx/libdmtx
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/libdmtx/builds/221033024
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: c
+
+arch:
+   - amd64
+   - ppc64le   
+
+script: 
+   - ./autogen.sh
+   - ./configure
+   - make
+   - make check
+   - pushd test/simple_test && ./simple_test && popd
