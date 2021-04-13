@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/mrash/psad
 # Tested on     : SLES 12 SP4
 # Script License: GPL-2.0 License  
-# Maintainer    : Nishikant Thorat <nthorat@us.ibm.com>
+# Maintainer    : Nishikant Thorat <Nishikant.Thorat@ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
