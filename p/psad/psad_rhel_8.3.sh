@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/mrash/psad
 # Tested on     : UBI 8.3, RHEL 8.3
 # Script License: Apache 2.0
-# Maintainer    : Nishikant Thorat <nthorat@us.ibm.com>
+# Maintainer    : Nishikant Thorat <Nishikant.Thorat@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
