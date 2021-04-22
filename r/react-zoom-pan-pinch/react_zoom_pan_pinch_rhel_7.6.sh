@@ -2,26 +2,25 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : react-zoom-pan-pinch
-# Version       : commit # f78c546414b13c61a68368db74ed9fd9fb2e185c
+# Version       : commit #f78c546
 # Source        : https://github.com/prc5/react-zoom-pan-pinch.git
 # Tested on     : RHEL 7.6
 # Node Version  : v12.19.1
 # Maintainer    : Dhananjay Sathe <dhananjay.sathe@ibm.com>
 #
-# Disclaimer: 	This script has been tested in non-root mode on given
-# ==========  	platform using the mentioned version of the package.
-#            	It may not work as expected with newer versions of the
-#            	package and/or distribution. In such case, please
-#             	contact "Maintainer" of this script.
+# Disclaimer    : This script has been tested in non-root mode on given
+#                 platform using the mentioned version of the package.
+#                 It may not work as expected with newer versions of the
+#                 package and/or distribution. In such case, please
+#                 contact "Maintainer" of this script.
 # ----------------------------------------------------------------------------
-
 set -e
 
-# Install all dependencies.
+PACKAGE_VERSION=${1:-f78c546}
+
+#Install all dependencies.
 sudo yum clean all
 sudo yum -y update
-
-PACKAGE_VERSION=f78c546414b13c61a68368db74ed9fd9fb2e185c
 
 #Install nvm
 if [ ! -d ~/.nvm ]; then
@@ -38,7 +37,7 @@ then
         nvm install v12.19.1
 fi
 
-	nvm alias default v12.19.1
+        nvm alias default v12.19.1
 
 
 #Build and test raeact-zoom-pan-pinch
@@ -49,3 +48,4 @@ npm install -g yarn
 npm install
 npm run build
 npm test -- --coverage
+
