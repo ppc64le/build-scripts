@@ -64,6 +64,9 @@ git apply jemalloc_stats_test.patch
 # Ref: https://github.com/cockroachdb/cockroach/issues/62979
 sed -i '/add_definitions(-DOS_LINUX)/d' c-deps/libroach/CMakeLists.txt
 sed -i 's/thread stacks only available on Linux\/Glibc/thread stacks feature unsupported for ppc64le/g' c-deps/libroach/stack_trace.cc
+# Fix for issue where admin UI shows "Page Not Found" on Overview tab
+# Ref: https://github.com/cockroachdb/cockroach/issues/63376
+git cherry-pick -n 7989a91b2455b24feca85ab6b8adc03bd66e9404
 make buildoss
 
 # Execute tests

@@ -21,7 +21,7 @@ Enable execute permissions for the build script and run it as:
 # ./cockroachdb_ubi8.sh
 ```
 
-# Known issues and solutions/workarounds for v20.1.12 oss build
+# Known issues and workarounds for v20.1.12 oss build
 
 1. Test failure in pkg/cli with "fatal: morestack on g0"
 
@@ -39,12 +39,4 @@ Patch out thread stack dump feature for ppc64le as a workaround
 sed -i '/add_definitions(-DOS_LINUX)/d' c-deps/libroach/CMakeLists.txt
 sed -i 's/thread stacks only available on Linux\/Glibc/thread stacks unavailable on ppc64le/g' c-deps/libroach/stack_trace.cc
 ```
-
-2. Admin UI overview tab says "Page Not Found" for oss build
-
-Reference:
-
-https://github.com/cockroachdb/cockroach/issues/63376
-
-Workaround: None, issue not fatal and is seen on intel as well
 
