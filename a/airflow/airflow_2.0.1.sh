@@ -58,7 +58,7 @@ wget https://raw.githubusercontent.com/apache/airflow/constraints-2.0.1/constrai
 
 ## install as much as possible through conda
 while read requirement; do conda install -c conda-forge --yes $requirement; done < constraints-3.8.txt
-read -p "edit file"
+read -p "Conda installation done. Attempting rest through pip"
 
 
 ## remaining installations through pip, issue in below packages
@@ -69,8 +69,6 @@ pip install snowflake-sqlalchemy==1.2.4
 
 ##browse through constraint file and install whatever remains
 while read requirement; do pip install $requirement; done < constraints-3.8.txt
-
-##pip install -r constraints-3.8.txt
 
 
 ##Install Airflow
