@@ -1,5 +1,6 @@
 FROM centos:8
 
+#Note - Files have be adapted from community dockerfiles available @ https://github.com/docker-library/docker/tree/835c371c516ebdf67adc0c76bbfb38bf9d3e586c/19.03
 RUN  yum install -y ca-certificates openssh-clients.ppc64le
 
 ENV DOCKER_VERSION 19.03.13

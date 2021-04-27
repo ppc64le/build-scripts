@@ -1,6 +1,7 @@
 
 FROM ppc64le/docker:19.03.13
 
+#Note - Files have be adapted from community dockerfiles available @ https://github.com/docker-library/docker/tree/835c371c516ebdf67adc0c76bbfb38bf9d3e586c/19.03
 # Build docker:19.03 version from 19.03 folder and use local image to create dind image for v19.03
 
 RUN yum install -y  e2fsprogs iptables openssl xfsprogs shadow-utils e2fsprogs-devel.ppc64le xz pigz wget 

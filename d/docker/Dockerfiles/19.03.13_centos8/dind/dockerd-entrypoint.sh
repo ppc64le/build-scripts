@@ -1,6 +1,6 @@
 #!/bin/sh
 set -eu
-
+#Note - Files have be adapted from community dockerfiles available @ https://github.com/docker-library/docker/tree/835c371c516ebdf67adc0c76bbfb38bf9d3e586c/19.03
 _tls_ensure_private() {
 	local f="$1"; shift
 	[ -s "$f" ] || openssl genrsa -out "$f" 4096

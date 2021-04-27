@@ -1,3 +1,5 @@
+Note - Files have be adapted from community dockerfiles available @ https://github.com/docker-library/docker/tree/835c371c516ebdf67adc0c76bbfb38bf9d3e586c/19.03
+
 Docker build command:
 docker build -t ppc64le/docker:19.03.13
 
