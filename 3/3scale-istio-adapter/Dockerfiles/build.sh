@@ -1,3 +1,17 @@
+# ----------------------------------------------------------------------------
+# Package       : 3scale-istio-adapter 
+# Version       : code-cleanups
+# Source repo   : https://github.com/3scale/3scale-istio-adapter
+# Tested on     : RHEL_8.2
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Krishna Harsha Voora
+#
+# Disclaimer: This script has been tested in non-root mode on given platform using
+#             the mentioned version of the package. It may not work as expected 
+#             with newer versions of the package and/or distribution.
+#             In such case, please contact "Maintainer" of this script.
+# ----------------------------------------------------------------------------
+
 #!/bin/bash
 
 # Download/Setup Golang 1.11
