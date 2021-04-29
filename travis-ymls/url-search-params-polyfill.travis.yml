@@ -1,0 +1,26 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : url-search-params-polyfill
+# Source Repo         : https://github.com/jerrybendy/url-search-params-polyfill
+# Travis Job Link     : https://travis-ci.com/github/asellappen/url-search-params-polyfill/
+# Created travis.yml  : No
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: java
+
+arch:
+    - amd64
+    - ppc64le
+
+dist: bionic
+
+jdk:
+  - openjdk8
+  - openjdk11
+  
+script :
+ - npm install
+ - npm run test
