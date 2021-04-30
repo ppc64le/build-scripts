@@ -23,7 +23,7 @@ then
 else
 	BRANCH="--branch "$1
 fi
-BUILD_DIR=""cruise-control
+BUILD_DIR="cruise-control"
 ## Exit if git operation failed
 git clone $BRANCH  https://github.com/linkedin/cruise-control $BUILD_DIR || exit "$?"
 
