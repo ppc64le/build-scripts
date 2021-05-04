@@ -3,7 +3,7 @@
 # Package       : Airflow
 # Version       : 2.0.1
 # Source repo   : https://github.com/apache/airflow
-# Tested on     : rhel_7.9
+# Tested on     : UBI 8
 # Script License: Apache License Version 2.0
 # Maintainer    : Swati Singhal <swati.singhal@ibm.com>
 #
@@ -33,6 +33,7 @@ export AIRFLOW__CELERY_BROKER_TRANSPORT_OPTIONS___TEST_ONLY_BOOL=true
 export AIRFLOW__CELERY_BROKER_TRANSPORT_OPTIONS___TEST_ONLY_FLOAT=1.6
 export AIRFLOW__CELERY_BROKER_TRANSPORT_OPTIONS___TEST_ONLY_STRING=this is a test
 
+##Installations were not successful through rhn repositories hence used centos and epel
 dnf -y --disableplugin=subscription-manager install http://mirror.centos.org/centos/8/BaseOS/ppc64le/os/Packages/centos-gpg-keys-8-2.el8.noarch.rpm http://mirror.centos.org/centos/8/BaseOS/ppc64le/os/Packages/centos-linux-repos-8-2.el8.noarch.rpm https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 yum update -y
 yum install -y git wget curl make gcc-c++ procps cmake
