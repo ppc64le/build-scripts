@@ -1,0 +1,60 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : jaro-winkler-distance
+# Source Repo         : https://github.com/nap/jaro-winkler-distance
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/jaro-winkler-distance
+# Created travis.yml  : No
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: python
+python:
+    - "2.7"
+matrix:
+  include:
+  # 2.6 fails during pip install coveralls. 
+  # Not including it
+     - python: 2.7
+       env: TOXENV=py27
+  # 3.4 not available in the default env. 
+  # Hence creating separate job
+     - python: 3.4
+       env: TOXENV=py34
+ # Power jobs
+  # 2.6 not supported on ppc64le. Not including it
+  # Using to bionic to fix the crypto error
+     - python: 2.7
+       env: TOXENV=py27
+       arch: ppc64le
+       dist: bionic
+       addons:
+          apt:
+            update: true
+            # Adding these for fixing cryptography error in 2.7
+            packages: 
+             - build-essential 
+             - libssl-dev 
+             - libffi-dev
+             - python-dev
+     - python: 3.4
+       env: TOXENV=py34
+       arch: ppc64le
+notifications:
+    irc:
+        - "chat.freenode.net#unary"
+    email:
+        - "admin@unary.ca"
+env:
+   global:
+    - PYTHONPATH=./
+    
+install:
+    - pip install tox
+    - pip install coveralls
+script:
+    - tox
+after_success:
+    - coveralls

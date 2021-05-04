@@ -1,0 +1,97 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : boto
+# Source Repo         : https://github.com/boto/boto/
+# Travis Job Link     : https://travis-ci.com/github/asellappen/boto/
+# Created travis.yml  : No
+# Maintainer          : Arumugam N S <asellappen@yahoo.com>/Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+# Note                : travis file is picked from develop branch as this banch contains lastest changes of yml files
+# ----------------------------------------------------------------------------
+language: python
+
+addons:
+  ssh_known_hosts: git.example.com
+  
+# Some versions of python only work on certain platforms. Specifying the distribution
+# to ensure the version of python will run without issue.
+matrix:
+  include:
+    # Trusty Tests
+    - os: linux
+      dist: trusty
+      python: "pypy"
+    - os: linux
+      dist: trusty
+      python: "2.6"
+    - os: linux
+      dist: trusty
+      python: "3.3"
+    - os: linux
+      dist: trusty
+      python: "3.4"
+    # Xenial Tests
+    - os: linux
+      dist: xenial
+      python: "2.7"
+    - os: linux
+      dist: xenial
+      python: "3.5"
+    - os: linux
+      dist: xenial
+      python: "3.6"
+    - os: linux
+      dist: xenial
+      python: "3.7"
+    - os: linux
+      dist: xenial
+      python: "pypy3.5"
+      env: 
+       - export CRYPTOGRAPHY_ALLOW_OPENSSL_102=1  #Set the environment variable CRYPTOGRAPHY_ALLOW_OPENSSL_102 to allow OpenSSL 1.0.2 to support on xenial
+    # bionic Tests
+    - os: linux
+      dist: bionic
+      python: "3.7"
+    # xenial Tests
+    - os: linux
+      dist: xenial
+      python: "3.5"
+      arch: ppc64le
+      env: 
+       - export CRYPTOGRAPHY_ALLOW_OPENSSL_102=1 #Set the environment variable CRYPTOGRAPHY_ALLOW_OPENSSL_102 to allow OpenSSL 1.0.2 to support on xenial
+    # bionic Tests added extra for covering bionic dist 
+    - os: linux
+      dist: bionic
+      python: "2.7"
+      arch: ppc64le
+    - os: linux
+      dist: bionic
+      python: "3.7"
+      arch: ppc64le
+    - os: linux
+      dist: bionic
+      python: "3.6"
+      arch: ppc64le
+  allow_failures:
+    - dist: trusty
+env:
+  - BOTO_CONFIG=/tmp/nowhere
+
+before_install:
+  - if [ "$TRAVIS_PULL_REQUEST" != "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then
+      echo "No pull requests can be sent to the master branch" 1>&2;
+      exit 1;
+    fi
+  - sudo apt-get update
+  - sudo apt-get install rustc
+  - sudo apt-get --reinstall install -qq language-pack-en language-pack-de
+  - sudo apt-get install swig
+
+install:
+  - pip install -U 'setuptools<40'
+  - if [[ $TRAVIS_PYTHON_VERSION == 2* ]]; then travis_retry pip install -r requirements-py26.txt; fi
+  - if [[ $TRAVIS_PYTHON_VERSION == 3.3 ]]; then travis_retry pip install -r requirements-py33.txt; fi
+  - travis_retry pip install -r requirements.txt
+
+script: python tests/test.py default

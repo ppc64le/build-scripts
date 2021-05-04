@@ -1,0 +1,12 @@
+diff --git a/Makefile b/Makefile
+index 9f780720a2..e7021a1489 100644
+--- a/Makefile
++++ b/Makefile
+@@ -70,6 +70,7 @@ bin/.submodules-initialized:
+ 	fi
+ 	mkdir -p $(@D)
+ 	touch $@
++	cd $(abspath vendor) && git apply $(abspath .)/arrow_memory.patch
+ 
+ # If the user wants to persist customizations for some variables, they
+ # can do so by defining `customenv.mk` in their work tree.

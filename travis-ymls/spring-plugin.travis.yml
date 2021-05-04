@@ -1,0 +1,27 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : spring-plugin
+# Source Repo         : https://github.com/spring-projects/spring-plugin
+# Travis Job Link     : https://travis-ci.com/github/asellappen/spring-plugin/
+# Created travis.yml  : Yes
+# Maintainer          : Arumugam N S <asellappen@yahoo.com>/Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: java
+
+jdk:
+  - openjdk11
+  - openjdk15
+  
+sudo: True
+
+dist : focal
+
+arch:
+  - amd64
+  - ppc64le
+
+script:
+   - mvn test

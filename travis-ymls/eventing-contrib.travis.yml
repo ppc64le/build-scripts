@@ -1,0 +1,21 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : eventing-contrib
+# Source Repo         : https://github.com/knative/eventing-contrib
+# Travis Job Link     : https://travis-ci.com/github/nagesh4193/eventing-contrib/builds/219418564
+# Created travis.yml  : Yes
+# Maintainer          : Nageswara Rao K<nagesh4193@gmail.com>/Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: go
+
+go:
+ - 1.16.x
+ - tip
+
+arch:
+ - amd64
+ - ppc64le

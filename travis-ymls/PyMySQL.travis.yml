@@ -1,0 +1,109 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : PyMySQL
+# Source Repo         : https://github.com/PyMySQL/PyMySQL
+# Travis Job Link     : https://travis-ci.com/github/asellappen/PyMySQL/
+# Created travis.yml  : Yes
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+# vim: sw=2 ts=2 sts=2 expandtab
+
+dist: focal
+language: python
+cache: pip
+
+services:
+  - docker
+
+matrix:
+  include:
+    - env:
+        - DB=mariadb:10.0
+      python: "3.6"
+    - env:
+        - DB=mariadb:10.1
+      python: "pypy3"
+    - env:
+        - DB=mariadb:10.3
+        - TEST_MARIADB_AUTH=yes
+      python: "3.7"
+    - env:
+        - DB=mysql:5.6
+      python: "3.9"
+    - env:
+        - DB=mysql:5.7
+      python: "3.7"
+    - env:
+        - DB=mysql:8.0
+        - TEST_AUTH=yes
+      python: "3.8"
+
+    - env:
+        - DB=mariadb:10.0
+      python: "3.6"
+      arch: ppc64le
+    - env:
+        - DB=mariadb:10.3
+        - TEST_MARIADB_AUTH=yes
+      python: "3.7"
+      arch: ppc64le
+    - env:
+        - DB=mysql
+      python: "3.9"
+      arch: ppc64le
+    - env:
+        - DB=mysql
+      python: "3.7"
+      arch: ppc64le
+    - env:
+        - DB=mysql
+        - TEST_AUTH=yes
+      python: "3.8"
+      arch: ppc64le
+# no active mysql docker image for ppc64le hence failing, "docker pull ppc64le/mysql " is not active (reference at https://hub.docker.com/r/ppc64le/mysql)       
+  allow_failures:
+    - arch: ppc64le
+      env:
+        - DB=mysql
+        - TEST_AUTH=yes
+    - arch: ppc64le
+      env:
+        - DB=mysql
+  
+# different py version from 5.6 and 5.7 as cache seems to be based on py version
+# http://dev.mysql.com/downloads/mysql/5.7.html has latest development release version
+# really only need libaio1 for DB builds however libaio-dev is whitelisted for container builds and liaio1 isn't
+install:
+  - sudo apt-get install rustc
+  - pip install -U coveralls coverage cryptography PyNaCl pytest pytest-cov
+
+before_script:
+# community moved out of travis and removed .travis folder at current version ,so downloading initializedb.sh script from v0.10.1 and  
+# making changes for folder references from .travis to  ci where database.json file can be read for running test scripts
+  - wget https://github.com/PyMySQL/PyMySQL/archive/v0.10.1.tar.gz
+  - tar -xvf v0.10.1.tar.gz
+  - cp PyMySQL-0.10.1/.travis/initializedb.sh .
+  - rm -rf PyMySQL-0.10.1
+  - sed -i 's/.travis/ci/g' initializedb.sh
+  - ./initializedb.sh
+  - python -VV
+  - rm -f ~/.my.cnf # set in .travis.initialize.db.sh for the above commands - we should be using database.json however
+  - export COVERALLS_PARALLEL=true
+script:
+  - pytest -v pymysql
+  - if [ "${TEST_AUTH}" = "yes" ];
+    then pytest -v --cov --cov-config .coveragerc tests/test_auth.py;
+    fi
+  - if [ "${TEST_MARIADB_AUTH}" = "yes" ];
+    then pytest -v --cov --cov-config .coveragerc tests/test_mariadb_auth.py;
+    fi
+  - if [ ! -z "${DB}" ];
+    then docker logs mysqld;
+    fi
+
+after_success:
+  - coveralls

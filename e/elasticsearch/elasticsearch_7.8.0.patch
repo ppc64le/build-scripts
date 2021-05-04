@@ -1,5 +1,5 @@
 diff --git a/build.gradle b/build.gradle
-index b82f701..ae6a8e3 100644
+index b82f7013cc9..ae6a8e3d37e 100644
 --- a/build.gradle
 +++ b/build.gradle
 @@ -478,7 +478,7 @@ allprojects {
@@ -21,7 +21,7 @@ index b82f701..ae6a8e3 100644
    project.ext.disableTasks = { String... tasknames ->
      for (String taskname : tasknames) {
 diff --git a/buildSrc/build.gradle b/buildSrc/build.gradle
-index ebf9138..9702b27 100644
+index ebf913879d3..eaea7a76634 100644
 --- a/buildSrc/build.gradle
 +++ b/buildSrc/build.gradle
 @@ -194,9 +194,11 @@ if (project != rootProject) {
@@ -37,7 +37,7 @@ index ebf9138..9702b27 100644
  
    // for external projects we want to remove the marker file indicating we are running the Elasticsearch project
 diff --git a/buildSrc/src/main/java/org/elasticsearch/gradle/Architecture.java b/buildSrc/src/main/java/org/elasticsearch/gradle/Architecture.java
-index f230d9a..af4dd27 100644
+index f230d9af86e..3208450c168 100644
 --- a/buildSrc/src/main/java/org/elasticsearch/gradle/Architecture.java
 +++ b/buildSrc/src/main/java/org/elasticsearch/gradle/Architecture.java
 @@ -22,7 +22,8 @@ package org.elasticsearch.gradle;
@@ -60,7 +60,7 @@ index f230d9a..af4dd27 100644
                  throw new IllegalArgumentException("can not determine architecture from [" + architecture + "]");
          }
 diff --git a/buildSrc/src/main/java/org/elasticsearch/gradle/Jdk.java b/buildSrc/src/main/java/org/elasticsearch/gradle/Jdk.java
-index 2672405..77266b4 100644
+index 2672405bbc5..7a84760b979 100644
 --- a/buildSrc/src/main/java/org/elasticsearch/gradle/Jdk.java
 +++ b/buildSrc/src/main/java/org/elasticsearch/gradle/Jdk.java
 @@ -35,7 +35,7 @@ import java.util.regex.Pattern;
@@ -73,7 +73,7 @@ index 2672405..77266b4 100644
      private static final List<String> ALLOWED_PLATFORMS = Collections.unmodifiableList(Arrays.asList("darwin", "linux", "windows", "mac"));
      private static final Pattern VERSION_PATTERN = Pattern.compile("(\\d+)(\\.\\d+\\.\\d+)?\\+(\\d+(?:\\.\\d+)?)(@([a-f0-9]{32}))?");
 diff --git a/buildSrc/src/test/java/org/elasticsearch/gradle/JdkDownloadPluginTests.java b/buildSrc/src/test/java/org/elasticsearch/gradle/JdkDownloadPluginTests.java
-index 758aacb..2591c40 100644
+index 758aacbf90c..52a71fde517 100644
 --- a/buildSrc/src/test/java/org/elasticsearch/gradle/JdkDownloadPluginTests.java
 +++ b/buildSrc/src/test/java/org/elasticsearch/gradle/JdkDownloadPluginTests.java
 @@ -95,7 +95,7 @@ public class JdkDownloadPluginTests extends GradleUnitTestCase {
@@ -86,7 +86,7 @@ index 758aacb..2591c40 100644
      }
  
 diff --git a/distribution/archives/build.gradle b/distribution/archives/build.gradle
-index 50f4152..a54b6aa 100644
+index 50f4152b081..1137f676745 100644
 --- a/distribution/archives/build.gradle
 +++ b/distribution/archives/build.gradle
 @@ -183,6 +183,12 @@ tasks.register('buildLinuxAarch64Tar', SymbolicLinkPreservingTar) {
@@ -115,8 +115,21 @@ index 50f4152..a54b6aa 100644
  tasks.register('buildOssLinuxTar', SymbolicLinkPreservingTar) {
    configure(commonTarConfig)
    archiveClassifier = 'linux-x86_64'
+@@ -213,6 +225,12 @@ tasks.register('buildOssNoJdkLinuxTar', SymbolicLinkPreservingTar) {
+   with archiveFiles(modulesFiles(true, 'linux-x86_64'), 'tar', 'linux', 'x64', true, false)
+ }
+ 
++tasks.register('buildOssNoJdkPpc64leTar', SymbolicLinkPreservingTar) {
++  configure(commonTarConfig)
++  archiveClassifier = 'no-jdk-linux-ppc64le'
++  with archiveFiles(modulesFiles(true, 'linux-ppc64le'), 'tar', 'linux', 'ppc64le', true, false)
++}
++
+ Closure tarExists = { it -> new File('/bin/tar').exists() || new File('/usr/bin/tar').exists() || new File('/usr/local/bin/tar').exists() }
+ Closure unzipExists = { it -> new File('/bin/unzip').exists() || new File('/usr/bin/unzip').exists() || new File('/usr/local/bin/unzip').exists() }
+ 
 diff --git a/distribution/build.gradle b/distribution/build.gradle
-index 9f621ca..f5b0cee 100644
+index 9f621cabc04..04fe8d4fe6a 100644
 --- a/distribution/build.gradle
 +++ b/distribution/build.gradle
 @@ -257,7 +257,7 @@ configure(subprojects.findAll { ['archives', 'packages'].contains(it.name) }) {
@@ -138,7 +151,7 @@ index 9f621ca..f5b0cee 100644
            excludePlatforms.remove(excludePlatforms.indexOf(platform))
          } else {
 diff --git a/distribution/docker/build.gradle b/distribution/docker/build.gradle
-index e4dd5e1..715626f 100644
+index e4dd5e1ba30..69f3e59f722 100644
 --- a/distribution/docker/build.gradle
 +++ b/distribution/docker/build.gradle
 @@ -15,15 +15,19 @@ testFixtures.useFixture()
@@ -244,7 +257,7 @@ index e4dd5e1..715626f 100644
      }
  
 diff --git a/distribution/packages/build.gradle b/distribution/packages/build.gradle
-index e2cc7f0..e092993 100644
+index e2cc7f09eeb..4b8c206c067 100644
 --- a/distribution/packages/build.gradle
 +++ b/distribution/packages/build.gradle
 @@ -108,6 +108,8 @@ Closure commonPackageConfig(String type, boolean oss, boolean jdk, String archit
@@ -320,10 +333,10 @@ index e2cc7f0..e092993 100644
    configure(commonRpmConfig(true, true, 'x64'))
  }
 diff --git a/settings.gradle b/settings.gradle
-index 608bdbb..5bff6ed 100644
+index 608bdbb0717..cf5793408a6 100644
 --- a/settings.gradle
 +++ b/settings.gradle
-@@ -28,8 +28,10 @@ List projects = [
+@@ -28,29 +28,40 @@ List projects = [
    'distribution:archives:oss-no-jdk-darwin-tar',
    'distribution:archives:no-jdk-darwin-tar',
    'distribution:archives:oss-linux-aarch64-tar',
@@ -333,8 +346,10 @@ index 608bdbb..5bff6ed 100644
 +  'distribution:archives:linux-ppc64le-tar',
    'distribution:archives:linux-tar',
    'distribution:archives:oss-no-jdk-linux-tar',
++  'distribution:archives:oss-no-jdk-ppc64le-tar',
    'distribution:archives:no-jdk-linux-tar',
-@@ -38,19 +40,27 @@ List projects = [
+   'distribution:docker',
+   'distribution:docker:docker-aarch64-build-context',
    'distribution:docker:docker-aarch64-export',
    'distribution:docker:oss-docker-aarch64-build-context',
    'distribution:docker:oss-docker-aarch64-export',

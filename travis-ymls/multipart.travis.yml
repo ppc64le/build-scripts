@@ -1,0 +1,50 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : multipart
+# Source Repo         : https://github.com/defnull/multipart
+# Travis Job Link     : https://travis-ci.com/github/genisysram/multipart/builds/220767797
+# Created travis.yml  : Yes
+# Maintainer          : <ramakrishna.s@genisys-group.com>,<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+
+
+language: python
+matrix:
+  include:
+    - python: 3.5
+      env: TOXENV=py35
+    - python: 3.6
+      env: TOXENV=py36
+    - python: 3.7
+      env: TOXENV=py37
+    - python: 3.8
+      env: TOXENV=py38
+    - python: 3.9
+      env: TOXENV=py39
+  
+#Added power jobs    
+    - python: 3.5
+      env: TOXENV=py35
+      arch: ppc64le
+    - python: 3.6
+      env: TOXENV=py36
+      arch: ppc64le  
+    - python: 3.7
+      env: TOXENV=py37
+      arch: ppc64le
+    - python: 3.8
+      env: TOXENV=py38
+      arch: ppc64le
+    - python: 3.9
+      env: TOXENV=py39
+      arch: ppc64le
+   
+ 
+install:
+  - pip install --upgrade tox
+script:
+  - tox
