@@ -3,7 +3,7 @@
 # Package       : Apache Zookeeper
 # Version       : 3.6.2
 # Source repo   : https://github.com/apache/zookeeper.git
-# Tested on     : UBI 8.2
+# Tested on     : UBI 8.3
 # Script License: Apache License
 # Maintainer    : nishikant.thorat@ibm.com
 #
