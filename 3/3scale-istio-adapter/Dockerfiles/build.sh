@@ -16,7 +16,7 @@
 
 if [ -z $1 ] || [ "$1" == "laststablerelease" ]
 then
-	RELEASE_TAG=code-cleanups
+	RELEASE_TAG=v2.0.0.1
 else
 	RELEASE_TAG=$1
 fi
@@ -73,3 +73,7 @@ fi
 # Copy Binaries
 cp _output/3scale-istio-adapter /ws/
 cp _output/3scale-config-gen /ws/
+
+# Clean Up
+cd $HOME
+rm -rf $GOPATH/
