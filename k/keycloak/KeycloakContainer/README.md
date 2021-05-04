@@ -1,30 +1,14 @@
-# Keycloak Docker image
+Build KeyCloak Init/Server Containers
+--------------------------------------
 
-Keycloak Server Docker image.
+Keycloak is an Open Source Identity and Access Management solution for modern Applications and Services.
 
-## Git repo for Keycloak Docker file
-   
-   https://github.com/keycloak/keycloak-containers/tree/8.0.2/server
+Step 1) Build KeyCloak Init/Server container image (once per release)
 
-## Usage
-
-Build the Keycloak docker image:
-
-   docker build -t keycloak-ubi .
-
-## Run the Keycloak docker image with exposing the ports as 8080 and 8443:
-
-   docker run -d -p 8081:8080 -p 8443:8443 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin --name keycloak-duplicate keycloak-ubi
-
-## Access the Keycloak site as:
-```
-   http://<IP Address>:8081
-```   
-```
-   https://<Ip Address>:8443
-```
-
-## Note:
-
-   While deploying the above built images using keycloak-operator, we might get 0/1 running state sometimes due to readiness and liveness probes failure(501-service unavailable). So we need to adjust the liveness and readiness parameters in the deployment file.
- 
+	Usage:
+		==========
+		Build Only
+		==========
+		# build last stable release by default or pass "laststablerelease". No tests
+		$ ./build.sh 2>&1 | tee output.log
+		$ ./build.sh laststablerelease 2>&1 | tee output.log
