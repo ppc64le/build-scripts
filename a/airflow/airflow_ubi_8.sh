@@ -16,6 +16,13 @@
 # ----------------------------------------------------------------------------
 #!/bin/bash
 
+PACKAGE_VERSION=2.0.1
+
+echo "Usage: $0 [-v <PACKAGE_VERSION>]"
+echo "       PACKAGE_VERSION is an optional paramater whose default value is 2.0.1"
+
+PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
+
 CWD=`pwd`
 export PATH=${PATH}:$HOME/conda/bin
 export PATH=${PATH}:/root/conda/envs/airflow/bin
@@ -54,8 +61,8 @@ conda install -y pytest
 
 git clone https://github.com/apache/airflow
 cd airflow
-git checkout 2.0.1
-wget https://raw.githubusercontent.com/apache/airflow/constraints-2.0.1/constraints-3.8.txt
+git checkout $PACKAGE_VERSION
+wget https://raw.githubusercontent.com/apache/airflow/constraints-$PACKAGE_VERSION/constraints-3.8.txt
 
 ## install as much as possible through conda
 while read requirement; do conda install -c conda-forge --yes $requirement; done < constraints-3.8.txt
@@ -86,39 +93,6 @@ airflow users create \
     --email spiderman@superhero.org
 
 
-##all test cases
+##Execute test cases
 python3 setup.py test > test_log.txt
-
-##individual test cases
-python -m pytest tests/always > always_result.txt
-python -m pytest tests/api > api_result.txt
-python -m pytest tests/api_connexion > api_connexion_result.txt
-python -m pytest tests/bats > bats_result.txt
-python -m pytest tests/cli > cli_result.txt
-python -m pytest tests/cluster_policies > cp_result.txt
-python -m pytest tests/core > core_result.txt
-python -m pytest tests/dags > dags_result.txt
-python -m pytest tests/dags_corrupted > dags_corrupted_result.txt
-python -m pytest tests/dags_with_system_exit > dags_with_system_exit_result.txt
-python -m pytest tests/executors > executors_result.txt
-python -m pytest tests/hooks > hooks_result.txt
-python -m pytest tests/jobs > jobs_result.txt
-python -m pytest tests/kubernetes > kubernetes_result.txt
-python -m pytest tests/lineage > lineage_result.txt
-python -m pytest tests/macros > macros_result.txt
-python -m pytest tests/models > models_result.txt
-python -m pytest tests/operators > operators_result.txt
-python -m pytest tests/plugins > plugins_result.txt
-python -m pytest tests/providers > providers_result.txt
-python -m pytest tests/secrets > secrets_result.txt
-python -m pytest tests/security > security_result.txt
-python -m pytest tests/sensors > sensors_result.txt
-python -m pytest tests/serialization > serialization_result.txt
-python -m pytest tests/task > task_result.txt
-python -m pytest tests/test_utils > test_utils_result.txt
-python -m pytest tests/testconfig/conf > testconfig_conf_result.txt
-python -m pytest tests/ti_deps > ti_deps_result.txt
-python -m pytest tests/utils > utils_result.txt
-python -m pytest tests/www > www_result.txt
-
 
