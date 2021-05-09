@@ -64,6 +64,9 @@ then
 	bundle exec rails test
 fi
 
+# copy
+cp -r vendor/bundle ../
+
 # cleanup
 cd ..
-rm -rf zync
+#rm -rf zync
