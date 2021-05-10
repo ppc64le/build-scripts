@@ -69,4 +69,4 @@ cp -r vendor/bundle ../
 
 # cleanup
 cd ..
-#rm -rf zync
+rm -rf zync
