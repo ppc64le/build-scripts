@@ -1,0 +1,26 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : spring-boot
+# Source Repo         : https://github.com/spring-projects/spring-boot
+# Travis Job Link     : https://travis-ci.com/github/asellappen/spring-boot/
+# Created travis.yml  : Yes
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+dist: focal
+
+language: java
+
+jdk:
+   - openjdk11
+os:
+  - linux
+arch:
+  - amd64
+  - ppc64le
+script :
+    - travis_wait 15 ./gradlew build
+    - travis_wait 15 ./gradlew clean test
+    - ./gradlew intTest

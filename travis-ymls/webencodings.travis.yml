@@ -1,0 +1,53 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : webencodings
+# Source Repo         : https://github.com/gsnedders/python-webencodings
+# Travis Job Link     : https://travis-ci.com/github/santosh653/python-webencodings
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: python
+sudo: false
+cache: pip
+#Excluding non supported Python Versions on power & Intel below.
+matrix:
+  include:
+    - python: 2.7
+      env: TOXENV=py27
+      arch: amd64
+    - python: 3.4
+      env: TOXENV=py34
+      arch: amd64
+    - python: 3.5
+      env: TOXENV=py35
+      arch: amd64
+    - python: 3.6
+      env: TOXENV=py36
+      arch: amd64
+    - python: pypy
+      env: TOXENV=pypy
+      arch: amd64
+    - python: 2.7
+      env: TOXENV=py27
+      arch: ppc64le
+    - python: 3.4
+      env: TOXENV=py34
+      arch: ppc64le
+    - python: 3.5
+      env: TOXENV=py35
+      arch: ppc64le
+    - python: 3.6
+      env: TOXENV=py36
+      arch: ppc64le
+    
+
+
+install:
+  - pip install -U tox
+
+script:
+  - tox

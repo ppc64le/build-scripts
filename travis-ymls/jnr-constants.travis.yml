@@ -1,0 +1,41 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : jnr-constants
+# Source Repo         : https://github.com/jnr/jnr-constants.git
+# Travis Job Link     : https://travis-ci.com/github/asellappen/jnr-constants/
+# Created travis.yml  : No
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: java
+notifications:
+  irc:
+    channels:
+      - "irc.freenode.org#jnr"
+    on_success: change
+    on_failure: always
+    template:
+      - "%{repository} (%{branch}:%{commit} by %{author}): %{message} (%{build_url})"
+matrix:
+  include:
+  - os: osx
+  - os: linux
+    jdk: openjdk9
+  - os: linux
+    jdk: oraclejdk11
+  - os: linux
+    jdk: openjdk11
+  - os: linux
+    jdk: openjdk11
+    arch: ppc64le
+
+sudo: false
+cache:
+  directories:
+  - $HOME/.m2
+script:
+  - mvn test -B
+  - mvn test -B -Djnr.constants.fake=false

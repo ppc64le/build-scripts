@@ -1,0 +1,24 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : docker-java
+# Source Repo         : https://github.com/docker-java/docker-java
+# Travis Job Link     : https://travis-ci.com/github/rajesh-ibm-power/docker-java
+# Created travis.yml  : Yes
+# Maintainer          : Rajesh kumar <Rajesh.kumar13@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ---
+
+language: java
+jdk:
+  - openjdk11
+  
+dist: xenial
+
+arch:
+  - amd64
+  - ppc64le
+
+script:
+    - mvn test

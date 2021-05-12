@@ -1,0 +1,26 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : sax-js
+# Source Repo         : https://github.com/isaacs/sax-js.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/sax-js/builds/214776577
+# Created travis.yml  : No
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+arch:
+  - amd64
+  - ppc64le
+language: node_js
+sudo: false
+#updated latest node_js versions & Removed old versions 4,6,8
+node_js:
+  - "15"
+  - "node" 
+notifications:
+  email: false
+cache:
+  directories:
+    - $HOME/.npm
+    - node_modules

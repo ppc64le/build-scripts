@@ -1,0 +1,30 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : Drools
+# Source Repo         : https://github.com/kiegroup/droolsjbpm-build-bootstrap
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/droolsjbpm-build-bootstrap/builds/211304347
+# Created travis.yml  : Yes
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: ruby
+dist: focal
+arch:
+  - amd64
+  - ppc64le
+before_script:
+  - sudo apt update -y
+  - sudo apt-get install maven
+script:
+  - mvn clean install -DskipTests
+  - mvn clean install -DskipTests -Dfull
+  - cd ..
+  - droolsjbpm-build-bootstrap/script/mvn-all.sh -DskipTests clean install
+  - cd droolsjbpm-build-bootstrap/
+  - mvn test
+  - mvn clean verify -Pcode-coverage
+  - mvn verify -Dmutation-coverage
+  - mvn verify -Dmutation-coverage -DtargetClasses=org.drools*

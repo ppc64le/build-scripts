@@ -1,0 +1,30 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : tweetnacl
+# Source Repo         : https://github.com/dchest/tweetnacl-js.git
+# Travis Job Link     : https://travis-ci.com/github/sreekanth370/tweetnacl-js/builds/212633599
+# Created travis.yml  : No
+# Maintainer          : sreekanth reddy <bsreekanthapps@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+sudo: false
+language: node_js
+arch:
+  - amd64
+  - ppc64le
+node_js:
+  - "node"
+addons:
+  apt:
+    packages:
+      - xvfb
+install:
+  - export DISPLAY=':99.0'
+  - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+  - npm install
+env:
+  - NACL_SRC=nacl.min.js
+  - NACL_SRC=nacl-fast.min.js
+script: "npm test"

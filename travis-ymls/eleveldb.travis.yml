@@ -1,0 +1,80 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : eleveldb
+# Source Repo         : https://github.com/vernemq/eleveldb
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/eleveldb/builds/217080979
+# Created travis.yml  : No
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+language: erlang
+
+env:
+  global:
+    - KERL_DEFAULT_INSTALL_DIR="$HOME/.kerl"
+
+addons:
+  apt:
+    packages:
+      - libsnappy-dev
+  homebrew:
+    update: true
+    packages:
+      - kerl
+      - snappy
+
+cache:
+  brew: true
+  directories:
+    - $HOME/.cache/rebar3
+    - $HOME/.kerl
+    - $HOME/.kerlrc
+
+notifications:
+  disabled: true
+
+jobs:
+  include:
+    - os: linux
+      otp_release: 21.3
+      env: OTP_VERSION=21.3
+    - os: linux
+      otp_release: 22.3
+      env: OTP_VERSION=22.3
+    - os: linux
+      otp_release: 23.0
+      env: OTP_VERSION=23.0
+    - arch: ppc64le
+      os: linux
+      otp_release: 21.3
+      env: OTP_VERSION=21.3
+    - arch: ppc64le
+      os: linux
+      otp_release: 22.3
+      env: OTP_VERSION=22.3
+    - arch: ppc64le
+      os: linux
+      otp_release: 23.0
+      env: OTP_VERSION=23.0
+    - os: osx
+      language: generic
+      osx_image: xcode11.3
+      env: OTP_VERSION=21.3
+    - os: osx
+      language: generic
+      osx_image: xcode11.3
+      env: OTP_VERSION=22.0
+
+install:
+  - if [ $TRAVIS_OS_NAME == osx ] ; then kerl update releases ; fi
+  - if [ $TRAVIS_OS_NAME == osx ] ; then kerl list builds | grep ${OTP_VERSION} || travis_wait 45 kerl build ${OTP_VERSION} ${OTP_VERSION} ; fi
+  - if [ $TRAVIS_OS_NAME == osx ] ; then kerl list installations | grep ${OTP_VERSION} || kerl install ${OTP_VERSION} ; fi
+
+before_script:
+  - if [ $TRAVIS_OS_NAME == osx ] ; then  . ${KERL_DEFAULT_INSTALL_DIR}/${OTP_VERSION}/activate ; fi
+  - wget https://s3.amazonaws.com/rebar3/rebar3 && chmod u+x rebar3
+  - ./rebar3 update
+
+script: REBAR=./rebar3 make test

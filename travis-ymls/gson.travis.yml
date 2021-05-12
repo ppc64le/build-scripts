@@ -1,0 +1,36 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : gson
+# Source Repo         : https://github.com/google/gson
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/gson/jobs/468610234
+# Created travis.yml  : No
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: java
+
+arch:
+  - amd64
+  - ppc64le
+
+jdk:
+  - openjdk11
+
+install: mvn -f gson install -DskipTests=true
+script: mvn -f gson test
+
+branches:
+  except:
+    - gh-pages
+
+notifications:
+  email: false
+
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.m2

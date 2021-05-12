@@ -1,0 +1,23 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : json-content-demux
+# Source Repo         : https://github.com/twolfson/json-content-demux
+# Travis Job Link     : https://travis-ci.com/github/ezeeyahoo/json-content-demux/builds/212372783
+# Created travis.yml  : Yes
+# Maintainer          : Eshant Gupta <eshant.gupta@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+arch:
+  - amd64
+  - ppc64le
+
+language: node_js
+
+node_js:
+  - 14
+  - 8
+
+script:
+  - npm test

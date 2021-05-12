@@ -1,0 +1,37 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : passport-openidconnect
+# Source Repo         : https://github.com/jaredhanson/passport-openidconnect.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/passport-openidconnect/builds/216156568
+# Created travis.yml  : No
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+arch:
+  - amd64
+  - ppc64le
+
+#Updated node_js versions 6,8,10,12,14,node & lts/* and Removed old versions 0.6, 0.8, 0.10, 0.12, 1, 2, 3, 4, 5.  
+language: "node_js"
+node_js:
+  - "6"
+  - "8"
+  - "10"
+  - "12"
+  - "14"
+  - "node"
+  - "lts/*"
+
+before_install:
+  - "npm install make-node@0.3.x -g"
+  - "preinstall-compat"
+
+script:
+  - "make test-cov"
+
+after_success:
+  - "make report-cov"
+
+sudo: false

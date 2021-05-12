@@ -1,0 +1,86 @@
+# Package             : pyyaml
+# Source Repo         : https://github.com/yaml/pyyaml
+# Travis Job Link     : https://travis-ci.com/github/sreekanth370/pyyaml/builds/211992546
+# Created travis.yml  : No
+# Maintainer          : Sreekanth reddy <bsreekanthapps@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+arch:
+  - amd64
+  - ppc64le
+  
+dist: bionic
+
+script:
+  - echo "SAMPLE TRAVIS JOB"
+# dist: xenial
+
+language: python
+
+cache: pip
+
+env:
+  global:
+    - PYYAML_TEST_GROUP=all
+
+matrix:
+  include:
+    - python: 2.7
+      env: TOXENV=py27
+    - python: 3.5
+      env: TOXENV=py35
+    - python: 3.6
+      env: TOXENV=py36
+    - python: 3.7
+      env: TOXENV=py37
+    - python: 3.8
+      env: TOXENV=py38
+    - python: 3.8-dev
+      env: TOXENV=py38
+    - python: 3.7
+      arch: arm64
+      env: TOXENV=py37
+    - python: 3.8
+      arch: arm64
+      env: TOXENV=py38
+    - python: 3.8-dev
+      arch: arm64
+      env: TOXENV=py38
+    - python: pypy
+      env: TOXENV=pypy
+# power jobs
+    - python: 2.7
+      env: TOXENV=py27
+      arch: ppc64le
+    - python: 3.5
+      env: TOXENV=py35
+      arch: ppc64le
+    - python: 3.6
+      env: TOXENV=py36
+      arch: ppc64le
+    - python: 3.7
+      env: TOXENV=py37
+      arch: ppc64le
+    - python: 3.8
+      env: TOXENV=py38
+      arch: ppc64le
+# build libyaml
+before_script:
+- >-
+  cd /tmp
+  && git clone https://github.com/yaml/libyaml.git libyaml
+  && cd libyaml
+  && git reset --hard 0.2.2
+  && ./bootstrap
+  && ./configure
+  && make
+  && make test-all
+  && sudo make install
+  && sudo ldconfig
+  && cd "$TRAVIS_BUILD_DIR"
+install: pip install cython tox
+
+script: tox

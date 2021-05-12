@@ -1,0 +1,24 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : loopback-connector-remote
+# Source Repo         : https://github.com/strongloop/loopback-connector-remote.git
+# Travis Job Link     : https://travis-ci.com/github/genisysram/loopback-connector-remote/builds/211133710/config
+# Created travis.yml  : No
+# Maintainer          : <ramakrishna.s@genisys-group.com>,<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+
+sudo: false
+arch:
+     - amd64
+     - ppc64le
+language: node_js
+node_js:
+  - "8"
+  - "10"
+  - "12"
+  - "14"
+

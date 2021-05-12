@@ -30,12 +30,13 @@ RUN yum install -y autoconf automake bzip2 gcc-c++ git gzip libtool make openssl
     git apply register_git_hook.diff && \
     groupadd kibana && useradd kibana -g kibana && chown kibana:kibana -R /root && \
     sed -i 's|await run(Tasks.OptimizeBuild);|//await run(Tasks.OptimizeBuild);|g' src/dev/build/build_distributables.ts && \
-    su kibana -c 'yarn kbn bootstrap --oss' && \
-    su kibana -c 'yarn build --skip-os-packages --oss'
+    sed -i '/Tasks.InstallChromium/d' src/dev/build/build_distributables.ts && \
+    su kibana -c 'yarn kbn bootstrap --no-oss' && \
+    su kibana -c 'yarn build --skip-os-packages --no-oss'
 
 RUN mkdir /usr/share/kibana
 WORKDIR /usr/share/kibana
-RUN tar --strip-components=1 -zxf /root/kibana/target/kibana-oss-7.9.1-SNAPSHOT-linux-ppc64le.tar.gz
+RUN tar --strip-components=1 -zxf /root/kibana/target/kibana-7.9.1-SNAPSHOT-linux-ppc64le.tar.gz
 # Ensure that group permissions are the same as user permissions.
 # This will help when relying on GID-0 to run Kibana, rather than UID-1000.
 # OpenShift does this, for example.
@@ -54,8 +55,8 @@ EXPOSE 5601
 RUN yum update -y && yum install -y fontconfig freetype shadow-utils && yum clean all
 
 # Add an init process, check the checksum to make sure it's a match
-RUN curl -L -o /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_amd64
-RUN echo "37f2c1f0372a45554f1b89924fbb134fc24c3756efaedf11e07f599494e0eff9  /usr/local/bin/dumb-init" | sha256sum -c -
+RUN curl -L -o /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_ppc64le
+RUN echo "88b02a3bd014e4c30d8d54389597adc4f5a36d1d6b49200b5a4f6a71026c2246  /usr/local/bin/dumb-init" | sha256sum -c -
 RUN chmod +x /usr/local/bin/dumb-init
 
 
@@ -63,6 +64,7 @@ RUN chmod +x /usr/local/bin/dumb-init
 COPY --from=prep_files --chown=1000:0 /usr/share/kibana /usr/share/kibana
 WORKDIR /usr/share/kibana
 RUN ln -s /usr/share/kibana /opt/kibana
+COPY --from=prep_files --chown=1000:0 /usr/local/lib/nodejs/node-v10.22.0-linux-ppc64le/bin/* /usr/bin/
 
 ENV ELASTIC_CONTAINER true
 ENV PATH=/usr/share/kibana/bin:$PATH

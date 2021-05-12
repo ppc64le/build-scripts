@@ -1,0 +1,31 @@
+# ----------------------------------------------------------------------------
+# Package             : strong-agent-statsd
+# Source Repo         : https://github.com/strongloop/strong-agent-statsd.git
+# Travis Job Link     : https://travis-ci.com/github/genisysram/strong-agent-statsd/jobs/481069614
+# Created travis.yml  : Yes
+# Maintainer          : <ramakrishna.s@genisys-group.com>,<sethp@us.ibm.com>
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+
+arch:
+    - amd64
+    - ppc64le
+language: node_js
+node_js:
+  - "4"
+  - "5"
+  - "6"
+  - "7"
+  - "8"
+  - "9"
+  - "10"
+  - "11"
+  - "12"
+  - "13"
+  - "14"
+  - "15"
+  - "node"
+  - "lts/*"
+  

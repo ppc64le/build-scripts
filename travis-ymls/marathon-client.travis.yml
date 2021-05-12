@@ -1,0 +1,23 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : marathon-client
+# Source Repo         : https://github.com/willroden/marathon-client
+# Travis Job Link     : https://travis-ci.com/github/santosh653/marathon-client
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+# oraclejdk7/8/11 not supported on power hence excluding them.
+
+arch:
+  - amd64
+  - ppc64le
+language: java
+jdk:
+  - openjdk11
+  - oraclejdk11
+jobs:
+ exclude:
+  - jdk: oraclejdk11
+    arch: ppc64le

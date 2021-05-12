@@ -1,0 +1,35 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : flask-restrdf
+# Source Repo         : https://github.com/hufman/flask_rdf.git
+# Travis Job Link     : https://travis-ci.com/github/santosh653/flask_rdf
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+arch:
+  - amd64
+  - ppc64le
+  
+language: python
+python:
+  - "2.7"
+  - "3.4"
+  - "3.5"
+  - "pypy"
+#Excluding python: pypy on power as it is not supported.
+jobs:
+ exclude:
+  - python: "pypy"
+    arch: ppc64le
+  
+
+sudo: false
+
+install:
+  - pip install -r requirements.txt
+  - pip install -r requirements.test.txt
+
+script: nosetests

@@ -1,0 +1,36 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : observatorium
+# Source Repo         : https://github.com/observatorium/observatorium
+# Travis Job Link     : https://travis-ci.com/github/asellappen/observatorium/
+# Created travis.yml  : Yes
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: go
+
+sudo: True
+
+arch:
+ - amd64
+ - ppc64le
+  
+go:
+ - 1.15
+ - 1.14
+ 
+before_install:
+ - sudo apt-get update 
+ - sudo apt-get -y install xz-utils unzip openssl
+ 
+script:
+ - go build -v ./...
+  # ignoring lint check for ppc64le since not found dependancy https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.linux.ppc64le.tar.xz 
+  # failing to download Loki for ppc64le for running "make test --always-make" and not found suitable version at https://github.com/grafana/loki/releases for ppc64le
+ - if [[ "$TRAVIS_CPU_ARCH" != "ppc64le" ]]; then 
+     make lint --always-make;
+     make test --always-make;
+   fi
+ - go test -v ./...

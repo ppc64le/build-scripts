@@ -1,0 +1,41 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : che-machine-exec
+# Source Repo         : https://github.com/eclipse/che-machine-exec
+# Travis Job Link     : https://travis-ci.com/github/santosh653/che-machine-exec
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+arch:
+- amd64
+- ppc64le
+sudo: false
+language: go
+#updating the go versions to 1.13/1.14/1.15 as lower versions are not supported
+go:
+- 1.13
+- 1.14
+- 1.15
+
+cache:
+  directories:
+  - "$GOPATH/pkg/dep"
+env:
+  global:
+     - COMMIT=${TRAVIS_COMMIT::8}
+before_script:
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ] && [ -z "$TRAVIS_PULL_REQUEST_BRANCH" ]; then echo "latest"; elif [ "$TRAVIS_PULL_REQUEST_BRANCH" ]; then echo "$TRAVIS_PULL_REQUEST_BRANCH"; else echo "$TRAVIS_BRANCH"; fi`
+before_deploy:
+- CGO_ENABLED=0 GOOS=linux go build -mod=vendor -a -ldflags '-w -s' -a -installsuffix cgo -o che-machine-exec .
+after_success:
+- CGO_ENABLED=0 GOOS=linux go build -mod=vendor -a -ldflags '-w -s' -a -installsuffix cgo -o che-machine-exec .
+script:
+- git status
+- export CHE_WORKSPACE_ID=test_id
+- go test ./... -test.v
+notifications:
+  email: false

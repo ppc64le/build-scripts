@@ -1,0 +1,16 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : gson-fire
+# Source Repo         : https://github.com/julman99/gson-fire
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/gson-fire/jobs/468613254
+# Created travis.yml  : No
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: java
+arch: 
+  - amd64
+  - ppc64le

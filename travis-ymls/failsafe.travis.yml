@@ -1,0 +1,49 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : failsafe
+# Source Repo         : https://github.com/jhalterman/failsafe
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/failsafe/builds/211763668
+# Created travis.yml  : No
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+sudo: false
+language: java
+dist: trusty
+arch:
+  - amd64
+  - ppc64le
+
+jdk:
+  - oraclejdk8
+  - oraclejdk9
+  - openjdk11
+
+cache:
+  directories:
+    - .autoconf
+    - "$HOME/.m2"
+
+script:
+  - mvn test jacoco:report
+
+after_success:
+  - mvn coveralls:report
+
+notifications:
+  email: false
+
+# whitelist
+branches:
+  only:
+    - master
+    
+jobs:
+  exclude:
+    - arch: ppc64le
+      jdk: oraclejdk8
+    - arch: ppc64le
+      jdk: oraclejdk9

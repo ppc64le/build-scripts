@@ -1,0 +1,23 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : escope
+# Source Repo         : https://github.com/estools/escope.git
+# Travis Job Link     : https://travis-ci.com/github/ddeka2910/escope/builds/212478731
+# Created travis.yml  : No
+# Maintainer          : Debabrata Deka <ddeka2910@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ---
+os: linux
+arch:
+ - amd64
+ - ppc64le
+sudo: false
+language: node_js
+node_js:
+  - "4"
+  - "6"
+  - "7"
+  - "8.0"
+  - "8.1"

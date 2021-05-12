@@ -1,0 +1,19 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : loopback-component-push
+# Source Repo         : https://github.com/strongloop/loopback-component-push.git
+# Travis Job Link     : https://travis-ci.com/github/genisysram/loopback-component-push/jobs/465739982
+# Created travis.yml  : No
+# Maintainer          : <ramakrishna.s@genisys-group.com>,<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+arch:
+    - amd64
+    - ppc64le
+language: node_js
+node_js:
+  - "8"
+  - "10"

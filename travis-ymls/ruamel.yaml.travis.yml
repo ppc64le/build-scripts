@@ -1,0 +1,48 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : ruamel.yaml
+# Source Repo         : https://github.com/pycontribs/ruyaml.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/ruyaml/builds/223422187
+# Created travis.yml  : Yes
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: python
+os: linux
+dist: focal
+matrix:
+  include:
+    - python: 3.6
+      env: TOXENV=py36
+    - python: 3.7
+      env: TOXENV=py37
+    - python: 3.8
+      env: TOXENV=py38
+    - python: 3.9
+      env: TOXENV=py39
+    - python: 3.6
+      env: TOXENV=linters
+      script: python -m tox
+#Added power jobs    
+    - python: 3.6
+      env: TOXENV=py36
+      arch: ppc64le
+    - python: 3.7
+      env: TOXENV=py37
+      arch: ppc64le
+    - python: 3.8
+      env: TOXENV=py38
+      arch: ppc64le
+    - python: 3.9
+      env: TOXENV=py39
+      arch: ppc64le
+    - python: 3.6
+      env: TOXENV=linters
+      script: python -m tox
+      arch: ppc64le
+install:
+  - pip install --upgrade tox
+script:
+  - tox

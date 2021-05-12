@@ -1,0 +1,49 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : evp_bytestokey
+# Source Repo         : https://github.com/crypto-browserify/EVP_BytesToKey.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/EVP_BytesToKey/builds/216510856
+# Created travis.yml  : No
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+arch:
+  - amd64
+  - ppc64le
+  
+sudo: false
+#update node_js versions 9, 10, 11, 12 & Removed failed versions 13, 14, 15, node, lts/*
+language: node_js
+node_js:
+  - "4"
+  - "5"
+  - "6"
+  - "7"
+  - "8"
+  - "9"
+  - "10"
+  - "11"
+  - "12"
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
+env:
+  global:
+    - CXX=g++-4.8
+  matrix:
+    - TEST_SUITE=unit
+matrix:
+  include:
+    - node_js: "6"
+      env: TEST_SUITE=lint
+    - node_js: "6"
+      arch: ppc64le
+      env: TEST_SUITE=lint
+before_script:
+  - npm run test:prepare
+script: npm run-script $TEST_SUITE

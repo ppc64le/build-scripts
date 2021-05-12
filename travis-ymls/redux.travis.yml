@@ -1,0 +1,22 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : redux
+# Source Repo         : https://github.com/reduxjs/redux.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/redux/builds/215181851
+# Created travis.yml  : Yes
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+arch: 
+  - amd64
+  - ppc64le
+language: node_js
+dist: bionic
+node_js: node
+script:
+  - npm i -g npm
+  - npm install
+  - npm audit fix
+  - npm test

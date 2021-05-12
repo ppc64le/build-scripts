@@ -1,0 +1,34 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : loki
+# Source Repo         : https://github.com/grafana/loki
+# Travis Job Link     : https://travis-ci.com/github/asellappen/loki/
+# Created travis.yml  : Yes
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: go
+
+dist : focal
+arch:
+ - amd64
+ - ppc64le
+go:
+ - 1.15
+
+     
+install:
+ - sudo apt-get install libsystemd-dev
+ - sudo apt-get install protobuf-compiler
+ - curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.39.0
+ - go get github.com/gogo/protobuf/proto
+ - go get github.com/gogo/protobuf/jsonpb
+ - go get github.com/gogo/protobuf/protoc-gen-gogo
+ - go get github.com/gogo/protobuf/gogoproto
+ - export PATH=${PATH}:`go env GOPATH`/bin
+  
+script:
+ - make BUILD_IN_CONTAINER=false check-mod
+ - make BUILD_IN_CONTAINER=false test

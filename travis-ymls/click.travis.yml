@@ -1,0 +1,55 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : click
+# Source Repo         : https://github.com/pallets/click
+# Travis Job Link     : https://travis-ci.com/github/asellappen/click/
+# Created travis.yml  : Yes
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: python
+
+sudo: false
+
+matrix:
+  include:
+
+    - python: 3.7
+      env: TOXENV=py37
+      sudo: true
+    - python: 3.8
+      env: TOXENV=py38
+      sudo: true
+    - python: 3.7
+      env: TOXENV=py37
+      arch: ppc64le
+      sudo: true
+    - python: 3.9
+      env: TOXENV=style
+      sudo: true
+    - python: 3.9
+      env: TOXENV=docs
+      sudo: true
+    - python: 3.8
+      env: TOXENV=py38
+      sudo: true
+      arch: ppc64le
+    - python: 3.9
+      env: TOXENV=style
+      sudo: true
+      arch: ppc64le
+    - python: 3.9
+      env: TOXENV=docs
+      sudo: true
+      arch: ppc64le
+
+install:
+  - pip install -r requirements/docs.txt
+  - python setup.py install
+  - pip install --no-deps -e .
+  - travis_retry pip install tox
+
+script:
+  - travis_retry tox

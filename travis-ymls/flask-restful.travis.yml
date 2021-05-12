@@ -1,0 +1,160 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : flask-restful
+# Source Repo         : https://github.com/flask-restful/flask-restful
+# Travis Job Link     : https://travis-ci.com/github/santosh653/flask-restful
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: python
+cache: pip
+#Including only the supported python version versions
+matrix:
+  include:
+    - python: 2.7
+      dist: trusty
+      env: FLASK=0.10
+      arch: amd64
+    - python: 2.7
+      dist: trusty
+      env: FLASK=0.12
+      arch: amd64
+    - python: 2.7
+      dist: trusty
+      env: FLASK=1.0.2
+      arch: amd64
+    - python: 3.4
+      dist: trusty
+      env: FLASK=0.10
+      arch: amd64
+    - python: 3.4
+      dist: trusty
+      env: FLASK=0.12
+      arch: amd64
+    - python: 3.4
+      dist: trusty
+      env: FLASK=1.0.2
+      arch: amd64
+    - python: 3.5
+      dist: trusty
+      env: FLASK=0.10
+      arch: amd64
+    - python: 3.5
+      dist: trusty
+      env: FLASK=0.12
+      arch: amd64
+    - python: 3.5
+      dist: trusty
+      env: FLASK=1.0.2
+      arch: amd64
+    - python: 3.6
+      dist: trusty
+      env: FLASK=0.10
+      arch: amd64
+    - python: 3.6
+      dist: trusty
+      env: FLASK=0.12
+      arch: amd64
+    - python: 3.6
+      dist: trusty
+      env: FLASK=1.0.2
+      arch: amd64
+    - python: 3.7
+      dist: xenial
+      env: FLASK=0.10
+      arch: amd64
+    - python: 3.7
+      dist: xenial
+      env: FLASK=0.12
+      arch: amd64
+    - python: 3.7
+      dist: xenial
+      env: FLASK=1.0.2
+      arch: amd64
+    - python: 3.8
+      dist: xenial
+      env: FLASK=0.10
+      arch: amd64
+    - python: 3.8
+      dist: xenial
+      env: FLASK=0.12
+      arch: amd64
+    - python: 3.8
+      dist: xenial
+      env: FLASK=1.0.2
+      arch: amd64
+    - python: pypy3
+      dist: trusty
+      env: FLASK=0.10
+      arch: amd64
+    - python: pypy3
+      dist: trusty
+      env: FLASK=0.12
+      arch: amd64
+    - python: pypy3
+      dist: trusty
+      env: FLASK=1.0.2
+      arch: amd64         
+    - python: 3.5
+      dist: trusty
+      env: FLASK=0.10
+      arch: ppc64le
+    - python: 3.5
+      dist: trusty
+      env: FLASK=0.12
+      arch: ppc64le
+    - python: 3.5
+      dist: trusty
+      env: FLASK=1.0.2
+      arch: ppc64le
+    - python: 3.6
+      dist: trusty
+      env: FLASK=0.10
+      arch: ppc64le
+    - python: 3.6
+      dist: trusty
+      env: FLASK=0.12
+      arch: ppc64le
+    - python: 3.6
+      dist: trusty
+      env: FLASK=1.0.2
+      arch: ppc64le
+    - python: 3.7
+      dist: xenial
+      env: FLASK=0.10
+      arch: ppc64le
+    - python: 3.7
+      dist: xenial
+      env: FLASK=0.12
+      arch: ppc64le
+    - python: 3.7
+      dist: xenial
+      env: FLASK=1.0.2
+      arch: ppc64le
+    - python: 3.8
+      dist: xenial
+      env: FLASK=0.10
+      arch: ppc64le
+    - python: 3.8
+      dist: xenial
+      env: FLASK=0.12
+      arch: ppc64le
+    - python: 3.8
+      dist: xenial
+      env: FLASK=1.0.2
+      arch: ppc64le  
+      
+install:
+  - pip install -q Flask==$FLASK
+  - pip install coveralls
+script: make ci
+after_success: coveralls
+
+notifications:
+  email:
+    on_success: never
+    on_failure: change

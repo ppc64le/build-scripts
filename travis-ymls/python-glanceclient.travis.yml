@@ -1,0 +1,46 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : python-glanceclient
+# Source Repo         : https://github.com/openstack/python-glanceclient
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/python-glanceclient/builds/217204975
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: python
+
+dist: focal
+
+matrix:
+
+  include:
+    - python: 3.8
+      env: TOXENV=py38
+    - python: 3.8
+      env: TOXENV=pep8
+    - python: 3.8
+      env: TOXENV=py38
+      arch: ppc64le
+    - python: 3.8
+      env: TOXENV=pep8
+      arch: ppc64le
+    
+install:
+  - pip install --upgrade pip
+  - pip install -r requirements.txt
+  - python setup.py install
+  - pip install tox
+
+script:
+  - travis_retry tox
+
+addons:
+    apt:
+      update: true
+      packages: 
+        - qemu-utils
+        - rustc
+        - cargo

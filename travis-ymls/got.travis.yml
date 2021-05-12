@@ -1,0 +1,19 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : got
+# Source Repo         : https://github.com/sindresorhus/got.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/got/builds/216057826
+# Created travis.yml  : Yes
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+arch: 
+  - amd64
+  - ppc64le
+os: linux
+language: node_js
+node_js:
+  - 'node'
+  - 'lts/*'

@@ -1,0 +1,45 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : python-stop-words
+# Source Repo         : https://github.com/Alir3z4/python-stop-words
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/python-stop-words
+# Created travis.yml  : No
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: python
+arch:
+    - amd64
+    - ppc64le
+python:
+    - "2.7"
+    - "3.4"
+    - "3.5"
+    - "3.6"
+    - "3.7" # Using the stable version of 3.7
+    # Nightly now points to 3.10
+    # 3.8 onwards there is an issue (KeyError: 'BREAK_LOOP'
+    # https://github.com/glotzerlab/signac/issues/259
+install:
+    - git submodule init
+    - git submodule update
+    # master of submodule contains different number of 
+    # english words which makes the test fail
+    # Commenting it
+    #- git submodule foreach git pull origin master
+    # setuptools causing multiple failures in 3.6/3.7. coveralls causing issue in 2.7
+    #- pip install -U setuptools coveralls 
+    - python bootstrap.py
+    - ./bin/buildout
+before_script:
+    - ./bin/flake8 stop_words
+script:
+    - ./bin/cover
+notifications:
+    irc:
+        - "irc.freenode.org#python-stop-words"
+after_success:
+    coveralls

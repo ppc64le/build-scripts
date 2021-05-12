@@ -1,0 +1,30 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : textstat
+# Source Repo         : https://github.com/shivam5992/textstat
+# Travis Job Link     : https://travis-ci.com/github/santosh653/textstat
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+arch:
+ - amd64
+ - ppc64le
+language: python
+python:
+    - "3.6"
+    - "3.7"
+    - "3.8"
+    - "nightly"
+matrix:
+    allow_failures:
+        - python: "nightly"
+before_install:
+    - pip install pipenv
+    - pipenv install --dev --skip-lock
+script:
+    - pipenv run codespell -L paket --skip=./textstat/resources/*/easy_words.txt
+    - pipenv run flake8 .
+    - pipenv run pytest test.py

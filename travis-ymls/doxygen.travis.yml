@@ -1,0 +1,39 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : doxygen
+# Source Repo         : https://github.com/doxygen/doxygen
+# Travis Job Link     : https://travis-ci.com/github/rajesh-ibm-power/doxygen
+# Created travis.yml  : Yes
+# Maintainer          : Rajesh kumar <rajesh.kumar13@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ---
+
+language: cpp
+compiler:
+  - gcc
+  - clang
+arch:
+  - amd64
+  - ppc64le
+
+addons:
+  apt:
+    packages:
+    - cmake
+    - texlive
+    - texlive-extra-utils
+    - texlive-latex-extra
+    - libxml2-utils
+    - cmake-data
+    - flex
+    - bison
+    - qt5-default
+    
+script:
+    - mkdir build
+    - cd build
+    - cmake -G "Unix Makefiles" -Dbuild_doc=ON -Dbuild_wizard=ON ..
+    - make
+    - make tests

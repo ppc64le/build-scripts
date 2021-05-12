@@ -1,0 +1,22 @@
+#
+# Package             : faulthandler
+# Source Repo         : https://github.com/vstinner/faulthandler
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/faulthandler
+# Created travis.yml  : No
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: python
+python:
+  - 2.7
+arch:
+  - amd64
+  - ppc64le
+install: pip install tox-travis
+script: tox
+notifications:
+  email:
+    - victor.stinner@gmail.com

@@ -45,6 +45,8 @@ mkdir -p distribution/archives/linux-ppc64le-tar
 echo "// This file is intentionally blank. All configuration of the distribution is done in the parent project." > distribution/archives/linux-ppc64le-tar/build.gradle
 mkdir -p distribution/archives/oss-linux-ppc64le-tar
 echo "// This file is intentionally blank. All configuration of the distribution is done in the parent project." > distribution/archives/oss-linux-ppc64le-tar/build.gradle
+mkdir -p distribution/archives/oss-no-jdk-ppc64le-tar
+echo "// This file is intentionally blank. All configuration of the distribution is done in the parent project." > distribution/archives/oss-no-jdk-ppc64le-tar/build.gradle
 
 ./gradlew :distribution:archives:oss-linux-ppc64le-tar:assemble --parallel
 

@@ -1,0 +1,48 @@
+#
+# Command to run for UBI / RHEL 8.3 (This will build, test and create RPM package for psad)
+# 
+./psad_UBI-8.3.sh
+#
+# Command to run for SLES 12 SP5 (This will build and test psad on SLES 12)
+# NOTE: Make sure you will have "--cap-add=NET_ADMIN" parameter, while creating container. 
+# This will enable iptables to access your container, which are required for psad test.
+# 
+./psad_SLES12.sh
+#
+# Docker command for building psad image based on UBI 8.3
+#
+docker build . -t psad
+#
+# Note: Psad requires following packages/ binaries to be pre-installed on the system. (NOTE: This will be taken care by build script, 
+# if installion is done on same host)
+#
+/bin/ps 	
+/usr/bin/checkmodule 	
+/usr/bin/killall 	
+/usr/bin/perl 	
+/usr/bin/semodule_package 	
+/usr/sbin/semodule 	
+gzip 	
+iproute 	
+iptables 	
+libc.so.6(GLIBC_2.4)(64bit) 	
+net-tools 	
+perl(Bit::Vector) 	
+perl(Carp::Clan) 	
+perl(Data::Dumper) 	
+perl(Date::Calc) 	
+perl(File::Copy) 	
+perl(File::Path) 	
+perl(Getopt::Long) 	
+perl(IO::Handle) 	
+perl(IO::Select) 	
+perl(IO::Socket) 	
+perl(IPTables::ChainMgr) 	
+perl(IPTables::Parse) 	
+perl(NetAddr::IP) 	
+perl(POSIX) 
+perl(Socket) 
+perl(Storable) 	
+perl(Unix::Syslog) 	
+perl(strict) 	
+rtld(GNU_HASH) 	

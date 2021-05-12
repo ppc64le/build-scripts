@@ -1,0 +1,19 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : sanitize-html
+# Source Repo         : https://github.com/apostrophecms/sanitize-html.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/sanitize-html/builds/215948307
+# Created travis.yml  : Yes
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+arch: 
+  - amd64
+  - ppc64le
+language: node_js
+os: linux
+node_js: 
+  - node
+  - lts/*

@@ -1,0 +1,42 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : Pyphen
+# Source Repo         : https://github.com/Kozea/Pyphen
+# Travis Job Link     : https://travis-ci.com/github/asellappen/Pyphen/
+# Created travis.yml  : Yes
+# Maintainer          : Arumugam N S <asellappen@yahoo.com>/Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: python
+sudo: false
+
+matrix:
+  include:
+    - python: 3.6
+      env: TOXENV=py36
+    - python: 3.7
+      env: TOXENV=py37
+      sudo: true
+    - python: 3.8
+      env: TOXENV=py38
+      sudo: true
+    - python: 3.6
+      env: TOXENV=py36
+      arch: ppc64le
+    - python: 3.7
+      env: TOXENV=py37
+      arch: ppc64le
+      sudo: true
+    - python: 3.8
+      env: TOXENV=py38
+      sudo: true
+      arch: ppc64le
+
+install:
+  - travis_retry pip install tox
+
+script:
+  - travis_retry tox

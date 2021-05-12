@@ -1,0 +1,26 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : ieee754
+# Source Repo         : https://github.com/feross/ieee754.git
+# Travis Job Link     : https://travis-ci.com/github/ddeka2910/ieee754/builds/211034884
+# Created travis.yml  : No
+# Maintainer          : Debabrata Deka <debabrata.deka@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ---
+os: linux
+arch:
+ - amd64
+ - ppc64le
+language: node_js
+node_js:
+  - lts/*
+addons:
+  sauce_connect: true
+  hosts:
+    - airtap.local
+env:
+  global:
+  - secure: f3NrmOV/A7oACn47J1mkIpH8Sn/LINtluZvo/9pGo3Ss4+D2lyt7UawpedHtnYgU9WEyjPSi7pDWopUrIzusQ2trLYRJr8WAOEyHlgaepDyy4BW3ghGMKHMsS05kilYLP8nu1sRd6y1AcUYKw+kUrrSPanI7kViWVQ5d5DuwXO8=
+  - secure: a6teILh33z5fbGQbh5/EkFfAyXfa2fPJG1upy9K+jLAbG4WZxXD+YmXG9Tz33/2NJm6UplGfTJ8IQEXgxEfAFk3ao3xfKxzm3i64XxtroSlXIFNSiQKogxDfLEtWDoNNCodPHaV3ATEqxGJ5rkkUeU1+ROWW0sjG5JR26k8/Hfg=

@@ -1,0 +1,25 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : hoist-non-react-statics
+# Source Repo         : https://github.com/mridgway/hoist-non-react-statics.git
+# Travis Job Link     : https://travis-ci.com/github/santosh653/hoist-non-react-statics
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+arch:
+  - amd64
+  - ppc64le
+sudo: false
+language: node_js
+node_js:
+  - 14
+  - 12
+  - 10
+  - 8
+  - 6
+after_success:
+  - "yarn coverage"

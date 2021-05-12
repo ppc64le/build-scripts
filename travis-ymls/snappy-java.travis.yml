@@ -1,0 +1,30 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : snappy-java
+# Source Repo         : https://github.com/xerial/snappy-java.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/snappy-java/builds/213739192
+# Created travis.yml  : No
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+branches:
+  only:
+  - master
+
+language: java
+
+jdk:
+  - openjdk11
+
+os: linux
+
+arch:
+  - s390x
+  - ppc64le
+
+script:
+#  - sudo apt-get install -y openjdk-11-jdk;
+#  - export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-s390x && export PATH=$JAVA_HOME/bin:$PATH;
+  - ./sbt test

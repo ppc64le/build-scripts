@@ -1,0 +1,42 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : colors
+# Source Repo         : https://github.com/Marak/colors.js
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/colors.js/builds/211018706
+# Created travis.yml  : No
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+
+arch:
+  - amd64
+  - ppc64le
+
+language: node_js
+node_js:
+  - "12"
+  - "11"
+  - "10"
+  - "9"
+  - "8"
+  - "7"
+  - "6"
+  - "5"
+  - "4"
+  - "0.12"
+  - "0.11"
+  - "0.10"
+jobs:
+  exclude:
+     - node_js: "0.10"
+       arch: ppc64le
+     - node_js: "0.11"
+       arch: ppc64le
+     - node_js: "0.12"
+       arch: ppc64le
+
+script:
+  - npm install
+  - npm test

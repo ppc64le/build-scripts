@@ -1,0 +1,27 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : typedarray
+# Source Repo         : https://github.com/substack/typedarray.git
+# Travis Job Link     : https://travis-ci.com/github/sreekanth370/typedarray/builds/212646063
+# Created travis.yml  : No
+# Maintainer          : sreekanth reddy <bsreekanthapps@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: node_js
+arch:
+  - amd64
+  - ppc64le
+node_js:
+  - "0.8"
+  - "0.10"
+  - "4"
+  - "5"
+# dropped unsupport node versions on power arch
+jobs: 
+  exclude:
+    - arch: ppc64le
+      node_js: 0.8
+    - arch: ppc64le
+      node_js: '0.10'

@@ -1,0 +1,32 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : python-rake
+# Source Repo         : https://github.com/csurfer/rake-nltk
+# Travis Job Link     : https://travis-ci.com/github/santosh653/rake-nltk
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+arch:
+  - amd64
+  - ppc64le
+language: python
+#Removed python 2.7 on both intel & power as there were similar failures on both.
+python:
+  - "3.4"
+  - "3.5"
+  - "3.6"
+    
+# Command to install dependencies.
+install:
+  - "pip install -r requirements.txt"
+  - "python -m nltk.downloader punkt"
+  - "python -m nltk.downloader stopwords"
+  - "pip install coveralls"
+# Command to run tests.
+script:
+  - "coverage run --source=rake_nltk setup.py test"
+after_success:
+  - "coveralls"

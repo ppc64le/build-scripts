@@ -1,0 +1,50 @@
+diff --git a/nifi-assembly/pom.xml b/nifi-assembly/pom.xml
+index b590a8f69a..07633cb744 100644
+--- a/nifi-assembly/pom.xml
++++ b/nifi-assembly/pom.xml
+@@ -247,12 +247,6 @@ language governing permissions and limitations under the License. -->
+             <version>1.12.1</version>
+             <type>nar</type>
+         </dependency>
+-        <dependency>
+-            <groupId>org.apache.nifi</groupId>
+-            <artifactId>nifi-kudu-nar</artifactId>
+-            <version>1.12.1</version>
+-            <type>nar</type>
+-        </dependency>
+         <dependency>
+             <groupId>org.apache.nifi</groupId>
+             <artifactId>nifi-ldap-iaa-providers-nar</artifactId>
+@@ -559,12 +553,6 @@ language governing permissions and limitations under the License. -->
+             <version>1.12.1</version>
+             <type>nar</type>
+         </dependency>
+-        <dependency>
+-            <groupId>org.apache.nifi</groupId>
+-            <artifactId>nifi-hive-nar</artifactId>
+-            <version>1.12.1</version>
+-            <type>nar</type>
+-        </dependency>
+         <dependency>
+             <groupId>org.apache.nifi</groupId>
+             <artifactId>nifi-site-to-site-reporting-nar</artifactId>
+diff --git a/nifi-nar-bundles/pom.xml b/nifi-nar-bundles/pom.xml
+index 1a4a9df04a..a9cad39075 100755
+--- a/nifi-nar-bundles/pom.xml
++++ b/nifi-nar-bundles/pom.xml
+@@ -34,7 +34,6 @@
+         <module>nifi-update-attribute-bundle</module>
+         <module>nifi-kafka-bundle</module>
+         <module>nifi-kite-bundle</module>
+-        <module>nifi-kudu-bundle</module>
+         <module>nifi-solr-bundle</module>
+         <module>nifi-confluent-platform-bundle</module>
+         <module>nifi-aws-bundle</module>
+@@ -64,7 +63,6 @@
+         <module>nifi-beats-bundle</module>
+         <module>nifi-cassandra-bundle</module>
+         <module>nifi-spring-bundle</module>
+-        <module>nifi-hive-bundle</module>
+ 	<module>nifi-site-to-site-reporting-bundle</module>
+         <module>nifi-mqtt-bundle</module>
+         <module>nifi-evtx-bundle</module>

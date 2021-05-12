@@ -1,0 +1,39 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : case-sensitive-paths-webpack-plugin
+# Source Repo         : https://github.com/Urthen/case-sensitive-paths-webpack-plugin
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/case-sensitive-paths-webpack-plugin/builds/211017442
+# Created travis.yml  : No
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+
+arch:
+  - amd64
+  - ppc64le
+
+language: node_js
+
+node_js:
+  - '14'
+  - '12'
+  - '10'
+
+os:
+  - linux
+  - osx
+
+env:
+  - WEBPACK_VERSION=latest
+  - WEBPACK_VERSION=next
+
+install:
+  - npm install
+  - npm rm webpack
+  - npm install webpack@$WEBPACK_VERSION || true
+
+branches:
+  only:
+    - master

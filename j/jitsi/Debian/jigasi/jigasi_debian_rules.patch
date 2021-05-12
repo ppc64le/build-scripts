@@ -1,0 +1,26 @@
+diff --git a/debian/rules b/debian/rules
+index f124204..355cc87 100755
+--- a/debian/rules
++++ b/debian/rules
+@@ -22,6 +22,21 @@ override_dh_auto_test:
+ override_dh_auto_build:
+ 	mvn -Dmaven.repo.local=${HOME}/.m2/repository -DskipTests -Dassembly.skipAssembly=true package
+ 	mvn -Dmaven.repo.local=${HOME}/.m2/repository dependency:copy-dependencies -DincludeScope=runtime
++	cd /root/ && \
++	git clone https://github.com/hypfvieh/libmatthew.git && \
++	cd libmatthew && \
++	sed -i "s/1.0.4-SNAPSHOT/1.0.4/g" pom.xml && \
++	mvn dependency:resolve && \
++	cd /root && \
++	rm -rf libmatthew && \
++	wget http://www.matthew.ath.cx/projects/java/libmatthew-java-0.8.1.tar.gz && \
++	tar -xzf libmatthew-java-0.8.1.tar.gz && \
++	cd libmatthew-java-0.8.1 && \
++	export CLASSPATH=classes:${HOME}/.m2/repository/com/github/hypfvieh/java-utils/1.0.4/*:${HOME}/.m2/repository/org/slf4j/slf4j-api/1.7.30/* && \
++	sed -i "s/source 1.5/source 1.6/g" Makefile && \
++	make
++	cp /root/libmatthew-java-0.8.1/libunix-java.so target/dependency/libunix-0.5.1.so
++	rm -rf /root/libmatthew-java-0.8.1
+ 
+ override_dh_install:
+ 	mkdir debian/tmp
