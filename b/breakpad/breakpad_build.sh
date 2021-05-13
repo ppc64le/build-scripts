@@ -18,10 +18,9 @@
 
 #!/bin/bash
 
-#breakpad build script 
+#breakpad build script
 
 git clone https://chromium.googlesource.com/breakpad/breakpad
-cd breakpad
 
 #fetch , patch and copy linux-syscall-support
 git clone https://chromium.googlesource.com/linux-syscall-support
@@ -33,27 +32,16 @@ cp ../linux-syscall-support/linux_syscall_support.h src/third_party/lss/
 
 cd ..
 
-# download google test and copy the contents to breakpad/src/testing - needed for make check 
-https://github.com/google/googletest/archive/refs/tags/release-1.8.1.tar.gz
-tar -xvf release-1.8.1.tar.gz 
+# download google test and copy the contents to breakpad/src/testing - needed for make check
+wget https://github.com/google/googletest/archive/refs/tags/release-1.8.1.tar.gz
+tar -xvf release-1.8.1.tar.gz
+mkdir -p breakpad/src/testing
 cp -r googletest-release-1.8.1/google* breakpad/src/testing
 
-
+cd breakpad
 #fetch patch 21 https://chromium-review.googlesource.com/c/breakpad/breakpad/+/1426283/21
 git fetch https://chromium.googlesource.com/breakpad/breakpad refs/changes/83/1426283/21 && git checkout FETCH_HEAD
-
 ./configure
-make 
-make check 
-
-
-
-
-
-
-
-
-
-
-
+make
+make check
 
