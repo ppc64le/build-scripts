@@ -1,16 +1,15 @@
-# Using the Keycloak-Init-Container Docker image:
+Build KeyCloak Init/Server Containers
+--------------------------------------
 
-## Use the Git repo for building the Keycloak-Init-Container:
-```
-  https://github.com/keycloak/keycloak-containers/tree/8.0.2/keycloak-init-container
-```
+Keycloak is an Open Source Identity and Access Management solution for modern Applications and Services.
 
-## Build the Keycloak-Init-Container docker image:
-```bash
-$ docker build -t keycloak-init-container-ubi .
-```
+Step 1) Build KeyCloak Init/Server container image (once per release)
 
-## Run the Keycloak-Init-Container docker image:
-```bash
-$ docker run -td keycloak-init-container-ubi
-```
+	Usage:
+		==========
+		Build Only
+		==========
+		# build last stable release by default or pass "laststablerelease". No tests
+		$ ./build.sh 2>&1 | tee output.log
+		$ ./build.sh laststablerelease 2>&1 | tee output.log
+For More information on usuage https://github.com/keycloak/keycloak-containers/tree/master/keycloak-init-container#keycloak--rhsso-extensions-init-container
