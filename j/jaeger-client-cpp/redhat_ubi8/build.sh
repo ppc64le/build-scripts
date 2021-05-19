@@ -36,7 +36,7 @@ esac
 
 echo "BRANCH = $BRANCH"
 
-(git clone $BRANCH https://github.com/jaegertracing/jaeger-client-cpp) || (echo "git clone failed" && exit $?)
+(git clone $BRANCH https://github.com/jaegertracing/jaeger-client-cpp) || { echo "git clone $BRANCH failed" && exit $?; }
 cd jaeger-client-cpp
 
 # build
