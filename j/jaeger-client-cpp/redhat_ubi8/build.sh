@@ -57,7 +57,7 @@ fi
 
 # copy artifacts
 # current path: /`pwd`/jaeger-client-cpp/build
-(tar cvf ../../build.tar --exclude='*.o' ../build) || (echo "tar of build artifacts failed"; exit $?)
+(tar cvf ../../build.tar --exclude='*.o' ../build) || { echo "tar of build artifacts failed" && exit $?; }
 echo "build.tar containing build artifacts created"
 ls -ld ../../build.tar
 
