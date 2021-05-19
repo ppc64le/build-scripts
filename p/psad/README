@@ -1,5 +1,5 @@
 #
-# Command to run for UBI / RHEL 8.3 (This will build, test and create RPM package for psad)
+# Command to run for UBI (This will build, test and create RPM package for psad)
 # 
 ./psad_UBI-8.3.sh
 #
@@ -8,6 +8,14 @@
 # This will enable iptables to access your container, which are required for psad test.
 # 
 ./psad_SLES12.sh
+#
+# Command for installing or building psad ONLY on UBI8.3. Use psad.sh (For more help - "./psad.sh -h")
+#
+./psad.sh [-i/-b/-c/-h]
+#
+# Command for executing build script on RHEL 8.2 (This will build and generate rpm for RHEL 8.2)
+#
+./psad_RHEL_8.2.sh
 #
 # Docker command for building psad image based on UBI 8.3
 #
