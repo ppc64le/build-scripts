@@ -39,7 +39,6 @@ function Install
 	# Sendmail installation  - End
 	#
 	mkdir -p /var/log/psad/tmp
-	#mkdir -p ./psad/test/psad-install/var/log/psad/tmp
 	# Install psad rpm
 	rpm -ihv psad-3.0-1.ppc64le.rpm
 	# Start psad
@@ -61,10 +60,10 @@ do
 			Install
                         ;;
 		h) echo "Usage: "
-                   echo "-b    Only builds psad."
-                   echo "-i    Only installs psad. Kindly ensure, you will have RPM for psad, before using this option."
-                   echo "-c    Build and install psad."
-                   echo "-h    Print usage."
-                        ;;
+		   echo "-b    Only builds psad."
+		   echo "-i    Only installs psad. Kindly ensure, you will have RPM for psad, before using this option."
+		   echo "-c    Build and install psad."
+		   echo "-h    Print usage."
+		   ;;
         esac
 done

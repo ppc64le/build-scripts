@@ -17,7 +17,6 @@
 # ----------------------------------------------------------------------------
 yum install -y git wget vim make gcc initscripts chkconfig iptables iproute net-tools  ruby-devel gcc make rpm-build rubygems whois
 gem install --no-document --bindir=/usr/local/bin  fpm
-#sudo gem install --no-document fpm
 # Install cpan and Date perl package using cpan
 yum install -y cpan
 export PERL_MM_USE_DEFAULT=1; cpan Date::Calc IPTables::Parse NetAddr::IP Unix::Syslog IPTables::ChainMgr
