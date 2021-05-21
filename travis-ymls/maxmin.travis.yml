@@ -1,0 +1,18 @@
+# ----------------------------------------------------------------------------
+#
+# Package	: maxmin
+# Version	: 3.0.0
+# Source repo	: https://github.com/gaearon/react-hot-loader
+# Travis build  : https://travis-ci.com/github/ezeeyahoo/maxmin/jobs/465746738
+# Tested on	: ubuntu_18.04
+# Script License: Apache 2.0
+# Maintainer	: eshant.gupta@ibm.com
+# ----------------------------------------------------------------------------
+language: node_js
+arch:
+  - amd64
+  - ppc64le
+node_js:
+  - '14'
+  - '12'
+  - '10'
