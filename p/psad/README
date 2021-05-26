@@ -14,7 +14,10 @@
 ./psad.sh [-i/-b/-c/-h]
 #
 # Command for executing build script on RHEL 8.2 (This will build and generate rpm for RHEL 8.2)
-#
+# This script also works for RHEL 8.3.
+# To make psad command working, post installation, install sendmail-cf/ mailx package using command 
+# "yum install -y sendmail-cf mailx" then, create tmp folder under PSAD_DIR directory specified in psad.conf
+# e.g  "mkdir -p /var/log/psad/tmp" and run "psad start"
 ./psad_RHEL_8.2.sh
 #
 # Docker command for building psad image based on UBI 8.3
