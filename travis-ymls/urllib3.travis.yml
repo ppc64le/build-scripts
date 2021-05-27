@@ -1,0 +1,124 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : urllib3
+# Source Repo         : https://github.com/urllib3/urllib3
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/urllib3
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: python
+os: linux
+dist: focal
+
+addons:
+    apt:
+      update: true
+      packages: 
+       - python3-openssl
+       - rustc  # For cryptography build
+       - cargo  # For installing rstcheck
+
+before_install:
+  - env
+  - openssl version
+  - python -c "import ssl; print(ssl.OPENSSL_VERSION)"
+
+install:
+  - python3 -m pip install nox
+
+script:
+  - ./ci/run.sh
+  - ./ci/upload_coverage.sh
+
+cache:
+  directories:
+  - ${HOME}/.cache
+
+notifications:
+  email: false
+
+env:
+  global:
+    - PYTHONWARNINGS=always::DeprecationWarning
+
+    - PYPI_USERNAME=urllib3
+    # PYPI_PASSWORD is set in Travis control panel.
+
+jobs:
+  allow_failures:
+    - python: nightly
+    - arch: amd64
+  include:
+    # Unit tests
+    - python: 3.6
+      env: NOX_SESSION=test-3.6
+      arch: amd64
+    - python: 3.7
+      env: NOX_SESSION=test-3.7
+      arch: amd64
+    - python: 3.8
+      env: NOX_SESSION=test-3.8
+      arch: amd64
+    - python: 3.9
+      env: NOX_SESSION=test-3.9
+      arch: amd64
+    - python: nightly
+      env: NOX_SESSION=test-3.10
+      arch: amd64
+    - python: pypy3.6-7.3.1
+      env: NOX_SESSION=test-pypy
+      arch: amd64
+    # Power jobs
+    - python: 3.6
+      env: NOX_SESSION=test-3.6
+      arch: ppc64le
+    - python: 3.7
+      env: NOX_SESSION=test-3.7
+      arch: ppc64le
+    - python: 3.8
+      env: NOX_SESSION=test-3.8
+      arch: ppc64le
+    - python: 3.9
+      env: NOX_SESSION=test-3.9
+      arch: ppc64le
+    - python: nightly
+      env: NOX_SESSION=test-3.10
+      arch: ppc64le
+    - python: 3.9
+      env: NOX_SESSION=test_brotlipy
+      arch: ppc64le
+
+
+    # Extras
+    - python: 3.7
+      env: NOX_SESSION=google_brotli
+      arch: amd64
+    # Downstream integration tests.
+    - python: 3.7
+      env: DOWNSTREAM=requests
+      stage: integration
+
+    - python: 3.7
+      env: DOWNSTREAM=botocore
+      stage: integration
+      
+    - python: 3.7
+      stage: deploy
+      script:
+        - ./ci/deploy.sh
+       
+stages:
+  - name: test
+    if: tag IS blank
+
+  # Run integration tests for release candidates
+  - name: integration
+    if: type = pull_request AND head_branch =~ ^release-[\d.]+$ AND tag IS blank
+
+  # Deploy on any tags
+  - name: deploy
+    if: tag IS present AND tag =~ /^(\d+\.\d+(?:.\d+)?)$/ AND repo = urllib3/urllib3
