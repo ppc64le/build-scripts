@@ -38,7 +38,7 @@ ant ivy-bootstrap
 ant 
 
 # copy build artifacts
-cp -f ./dist/lz4-java-1.6-SNAPSHOT.jar ../
+cp -f ./dist/lz4-java-*-SNAPSHOT.jar ../
 
 # cleanup
 cd ..
