@@ -36,11 +36,12 @@ cd snappy-java
 
 export PATH=${PATH}:/usr/local/bin/apache-maven-3.6.3/bin/
 
-# 
+# Trigger the build
+make
 
 # copy build artifacts
 cp -f ./target/snappy-java*.jar ../
 
 # cleanup
 cd ..
-rm -rf lz4-java
+rm -rf snappy-java
