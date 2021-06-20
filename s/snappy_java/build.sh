@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------------
-# Package       : lz4-java
+# Package       : snappy-java
 # Version       : master
 # Source repo   : https://github.com/xerial/snappy-java
 # Tested on     : RHEL_7.9
