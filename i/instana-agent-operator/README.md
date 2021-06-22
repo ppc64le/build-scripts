@@ -14,6 +14,7 @@ To build the agent image using the downloaded tarball, please use the following 
 FROM registry.access.redhat.com/ubi8/ubi:8.2
 
 COPY instana-agent-linux-ppcle-64bit.tar.gz /root/
+COPY docker /usr/bin/
 
 RUN yum install -y java-11-openjdk-devel \
     && cd /root/ \
