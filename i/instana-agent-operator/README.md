@@ -8,7 +8,7 @@ For platforms other than ppc64le, instana agent in RPM form are available. For p
 
 To build the agent image using the downloaded tarball, please use the following steps:
 
-1. Create a dockerfile in the same directory as the tarball and add the following lines
+1. Create a dockerfile in the same directory as the tarball & docker cli (for ppc) and add the following lines
 
 ```
 FROM registry.access.redhat.com/ubi8/ubi:8.2
