@@ -4,7 +4,7 @@
 # Package       : psad
 # Version       : 3.0
 # Source repo   : https://github.com/mrash/psad
-# Tested on     : UBI 8.3, RHEL 8.3
+# Tested on     : UBI 8.3
 # Script License: Apache 2.0
 # Maintainer    : Nishikant Thorat <Nishikant.Thorat@ibm.com>
 #
@@ -36,6 +36,7 @@ make all
 cd test 
 ./test-psad.pl
 rm -rf psad-install/var/log/psad/*
+sed -i 's/^INSTALL_ROOT.*/INSTALL_ROOT  \/;/'  psad-install/etc/psad/psad.conf
 # This will generate RPM, and will copy RPM to parent directory of build script
 fpm -s dir -t rpm -C psad-install/ --version  $(cat ../VERSION) -n psad
 mv psad*.rpm ../../
