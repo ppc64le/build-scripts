@@ -20,6 +20,8 @@ RUN yum install -y java-11-openjdk-devel \
     && tar xzf instana-agent-linux-ppcle-64bit.tar.gz \
     && rm -rf instana-agent-linux-ppcle-64bit.tar.gz
 
+RUN dnf install -y https://oplab9.parqtec.unicamp.br/pub/ppc64el/docker/version-19.03.13/centos/docker-ce-cli-19.03.13-3.el7.ppc64le.rpm
+
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk \
     INSTANA_AGENT_MODE="APM" \
     INSTANA_AGENT_KEY="uBp4GXpZQpKrHxMXNcvInQ"
