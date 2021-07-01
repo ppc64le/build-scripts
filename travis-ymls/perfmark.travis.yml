@@ -1,0 +1,28 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : perfmark 
+# Source Repo         : https://github.com/perfmark/perfmark
+# Travis Job Link     : https://travis-ci.com/github/rajesh-ibm-power/perfmark
+# Created travis.yml  : Yes
+# Maintainer          : Rajesh kumar <Rajesh.kumar13@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ---
+
+language: java
+arch:
+  - amd64
+  - ppc64le
+  
+jdk:
+  - openjdk11
+  - openjdk15
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/modules-2/
+    - $HOME/.gradle/wrapper/
