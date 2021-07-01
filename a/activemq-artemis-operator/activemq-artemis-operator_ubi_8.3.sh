@@ -26,6 +26,7 @@
 # ----------------------------------------------------------------------------
 #git installation
 dnf install git
+
 #golang installation (as a part of installing go we need wget need to be installed)
 dnf install wget
 
@@ -39,15 +40,25 @@ export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 
 #GCC installation
 dnf install gcc
+
+
 #Python installation 
 yum install python3
+
+tagName=v0.19.2
 #cloning repository to your local file system
 git clone https://github.com/artemiscloud/activemq-artemis-operator.git
+
+
 #swtiching to our repository
 cd activemq-artemis-operator
-git checkout v0.19.2
+git checkout tags/$tagName
+
+
 #building operator
 go build -v -o operator ./cmd/manager
+
+
 #for building operator image
 #docker build -f ./build/Dockerfile -t activemq-artemis-operator:latest .
 #Executing tests
