@@ -3,7 +3,7 @@
 # Package       : breakpad
 # Version       : https://chromium-review.googlesource.com/c/breakpad/breakpad/+/1426283/21
 # Source repo   : https://chromium.googlesource.com/breakpad/breakpad
-# Tested on     : RHEL8
+# Tested on     : Red Hat Enterprise Linux release 8.3 (Ootpa)
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Amit Shirodkar <amit.shirodkar@ibm.com>
 #
