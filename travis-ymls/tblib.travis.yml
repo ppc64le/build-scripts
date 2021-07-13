@@ -1,0 +1,106 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : tblib
+# Source Repo         : https://github.com/ionelmc/python-tblib
+# Travis Job Link     : https://travis-ci.com/github/santosh653/python-tblib
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: python
+dist: xenial
+os: linux
+cache: false
+env:
+  global:
+    - SEGFAULT_SIGNALS=all
+matrix:
+  include:
+    - env:
+        - TOXENV=py27,codecov
+        - LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
+      python: '2.7'
+      arch: amd64
+    - env:
+        - TOXENV=py35,codecov
+        - LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
+      python: '3.5'
+      arch: amd64
+    - env:
+        - TOXENV=py36,codecov
+        - LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
+      python: '3.6'
+      arch: amd64
+    - env:
+        - TOXENV=py37,codecov
+        - LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
+      python: '3.7'
+      arch: amd64
+    - env:
+        - TOXENV=py38,codecov
+        - LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
+      python: '3.8'
+      arch: amd64
+    - env:
+        - TOXENV=pypy,codecov
+        - LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
+      python: 'pypy'
+      arch: amd64
+    - env:
+        - TOXENV=pypy3,codecov
+        - TOXPYTHON=pypy3
+        - LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
+      python: 'pypy3'
+      arch: amd64
+    
+    
+    - env:
+        - TOXENV=py27,codecov
+        - LD_PRELOAD=/usr/lib64/ld64.so.2
+      python: '2.7'
+      arch: ppc64le
+    - env:
+        - TOXENV=py35,codecov
+        - LD_PRELOAD=/usr/lib64/ld64.so.2
+      python: '3.5'
+      arch: ppc64le
+    - env:
+        - TOXENV=py36,codecov
+        - LD_PRELOAD=/usr/lib64/ld64.so.2
+      python: '3.6'
+      arch: ppc64le
+    - env:
+        - TOXENV=py37,codecov
+        - LD_PRELOAD=/usr/lib64/ld64.so.2
+      python: '3.7'
+      arch: ppc64le
+    - env:
+        - TOXENV=py38,codecov
+        - LD_PRELOAD=/usr/lib64/ld64.so.2
+      python: '3.8'
+      arch: ppc64le
+    
+    
+      
+before_install:
+  - python --version
+  - uname -a
+  - lsb_release -a || true
+  
+install:
+  - python -mpip install --progress-bar=off tox -rci/requirements.txt
+  - virtualenv --version
+  - easy_install --version
+  - pip --version
+  - tox --version
+script:
+  - tox -v
+after_failure:
+  - more .tox/log/* | cat
+  - more .tox/*/log/* | cat
+notifications:
+  email:
+    on_success: never
+    on_failure: always
