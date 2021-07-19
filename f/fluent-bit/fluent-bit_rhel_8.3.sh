@@ -42,11 +42,8 @@ cd lib/
 git clone https://github.com/openresty/luajit2.git
 
 # This step assumes that you have already copied the patch file as a sibbling of this script
-# Patch applied for PR's https://github.com/openresty/luajit2/pull/123 & https://github.com/openresty/luajit2/pull/124
 cd luajit2/
 cp ../../../patches/configure .
-cp ../../../patches/luajit2.patch .
-git apply luajit2.patch
 
 # cmake/libraries.cmake with luajit2 lib path.
 cd ../../
