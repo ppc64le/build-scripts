@@ -1,11 +1,11 @@
 # ----------------------------------------------------------------------------
 #
-# Package         : Scala-Swing
-# Version         : 
+# Package         : scala-Swing
+# Version         : v3.0.0#3.0.0
 # Source repo     : https://github.com/scala/scala-swing
-# Tested on       : 
-# Script License  : 
-# Maintainer      : 
+# Tested on       : RHEL 8.3
+# Script License  : Apache License, Version 2.0
+# Maintainer      : Raju Sah <Raju.Sah@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -39,6 +39,7 @@ yum install -y sbt
 
 git clone https://github.com/scala/scala-swing
 cd scala-swing/
+git checkout v3.0.0#3.0.0
 
 #build and test repo
 sbt clean swing/test swing/versionPolicyCheck swing/publishLocal
