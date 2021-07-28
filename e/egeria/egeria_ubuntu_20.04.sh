@@ -28,7 +28,7 @@ if [ -d $PKG_NAME ] ; then
 fi
 
 if [ -z "$1" ]; then
-  export BRANCH="V2.9"
+  export BRANCH="V2.10"
 else
   export BRANCH="$1"
 fi
