@@ -16,17 +16,15 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=popmotion
-PACKAGE_VERSION=master
+PACKAGE_VERSION=v8.7.1
 PACKAGE_URL=https://github.com/Popmotion/popmotion.git
-
-docker run -it --name popmotion-04 registry.access.redhat.com/ubi8/ubi bash
 dnf install git -y
 dnf install npm -y
 mkdir test
 cd test
 git clone https://github.com/Popmotion/popmotion.git
-cd popmotion
-git checkout v8.7.1
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 npm install --global yarn
 yarn
 yarn bootstrap
