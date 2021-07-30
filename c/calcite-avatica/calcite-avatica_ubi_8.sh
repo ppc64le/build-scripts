@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : calcite-avatica
-# Version       : 945d06c2a
+# Version       : master(945d06c2a)
 # Source repo   : https://github.com/apache/calcite-avatica.git
 # Tested on     : RHEL 8.3
 # Script License: Apache License, Version 2 or later
@@ -17,14 +17,13 @@
 PACKAGE_NAME=calcite-avatica
 PACKAGE_VERSION=945d06c2a
 PACKAGE_URL=https://github.com/apache/calcite-avatica
-docker run -it --name calcite-avatica registry.access.redhat.com/ubi8/ubi bash
 dnf install git -y
 dnf install maven
 mkdir test
 cd test
 git clone https://github.com/apache/calcite-avatica.git
-cd calcite-avatica
-git checkout 945d06c2a
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 sed -i 's/protobuf.version=3.6.1/protobuf.version=3.7.0/g' gradle.properties
 ./gradlew build
 
