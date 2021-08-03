@@ -29,16 +29,17 @@ export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.302.b08-0.el8_4.ppc64le
 export PATH=$PATH:$JAVA_HOME/bin
 
 #install sbt package
-rm -f /etc/yum.repos.d/bintray-rpm.repo
 curl -L https://www.scala-sbt.org/sbt-rpm.repo > sbt-rpm.repo
 mv sbt-rpm.repo /etc/yum.repos.d/
-yum install sbt
+yum -y install sbt
 
 #clone repository
 cd ~
 git clone https://github.com/scala/scala.git
 cd scala/
-git checkout v2.11.12
+echo "Enter the scala version:"
+read Version
+git checkout $Version
 
 #compile and test the package
 sbt compile
