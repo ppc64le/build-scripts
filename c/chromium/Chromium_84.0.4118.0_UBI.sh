@@ -4,9 +4,9 @@
 # Package	: chromium
 # Version	: 84.0.4118.0
 # Source repo	: https://chromium.googlesource.com/chromium/src.git
-# Tested on	: UBI 8.2
+# Tested on	: UBI 8.4
 # Script License: Apache License Version 2.0
-# Maintainer	: Amit Sadaphule <amits2@us.ibm.com>
+# Maintainer	: Amit Sadaphule <amits2@us.ibm.com> / Maniraj Deivendran <maniraj.deivendran@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -28,13 +28,13 @@ dnf -y --disableplugin=subscription-manager install \
 yum install -y git vim make cmake3 python2 cups-devel pkgconfig nss-devel openssl-devel glib2-devel pango-devel dbus-devel atk-devel at-spi2-atk-devel gtk3-devel krb5-devel pulseaudio-libs-devel libXScrnSaver-devel epel-release subversion curl alsa-lib-devel pciutils-devel mesa-libGLw bison patch bzip2 libuuid-devel mesa-libgbm libsecret-devel python38 python2-psutil python38-psutil java-1.*.0-openjdk-devel libXtst-devel libatomic gcc-c++ expat-devel zlib-devel perl-ExtUtils-MakeMaker wget diffutils libdrm-devel
 
 dnf install -y http://mirror.centos.org/centos/8/PowerTools/ppc64le/os/Packages/gperf-3.1-5.el8.ppc64le.rpm
-dnf install -y http://mirror.centos.org/centos/8/PowerTools/ppc64le/os/Packages/mesa-libgbm-devel-20.1.4-1.el8.ppc64le.rpm
+dnf install -y http://mirror.centos.org/centos/8/PowerTools/ppc64le/os/Packages/mesa-libgbm-devel-20.3.3-2.el8.ppc64le.rpm
 dnf install -y http://mirror.centos.org/centos/8/PowerTools/ppc64le/os/Packages/re2c-0.14.3-2.el8.ppc64le.rpm
 dnf install -y http://mirror.centos.org/centos/8/PowerTools/ppc64le/os/Packages/ninja-build-1.8.2-1.el8.ppc64le.rpm
 
 alternatives --set python /usr/bin/python2
 
-# Install nodejs
+# Must install nodejs to include already built modules.
 curl https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -72,7 +72,9 @@ export GYP_DEFINES="disable_nacl=1"
 cd $CHROMIUM_DIR
 mkdir chromium && cd chromium
 gclient config --name "src" --unmanaged https://chromium.googlesource.com/chromium/src.git --custom-var="checkout_nacl=False"
-gclient sync --nohooks --no-history
+
+# Remove sync option '--no-history' to resolve gclient sync failure with wayland/src third_party module
+gclient sync --nohooks
 
 cd src
 git fetch https://chromium.googlesource.com/chromium/src.git +refs/tags/84.0.4118.0:chromium_84.0.4118.0 --depth 1
@@ -86,7 +88,7 @@ sed -i '/'\''src\/buildtools\/linux64'\''/,+9d' DEPS
 gclient sync --with_branch_heads --with_tags
 
 # check out LLVM and Clang
-REVISION=$(grep -Po "(?<=CLANG_REVISION = ')\w+(?=')" tools/clang/scripts/update.py | head -n 1)
+REVISION=$(grep 'CLANG_REVISION = ' tools/clang/scripts/update.py | awk -F " = " '/CLANG_REVISION = / {print $2}' | tr -d \')
 cd $CHROMIUM_DIR
 if [ -d "llvm-project" ]; then
     cd llvm-project
