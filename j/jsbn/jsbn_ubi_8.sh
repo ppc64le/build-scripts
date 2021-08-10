@@ -24,21 +24,22 @@ PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 PACKAGE_NAME=jsbn
 PACKAGE_URL=https://github.com/andyperlitch/jsbn
 
+NODE_VERSION=v12.22.4
+
 yum -y update
-yum -y install git wget gcc-c++ make python2
+yum -y install git wget gcc-c++ make python2 curl
 
-wget https://nodejs.org/dist/latest-v12.x/node-v12.22.3-linux-ppc64le.tar.gz
-tar -xzf node-v12.22.3-linux-ppc64le.tar.gz
-ln -s /node-v12.22.3-linux-ppc64le/bin/npm /usr/local/bin/npm
-ln -s /node-v12.22.3-linux-ppc64le/bin/node /usr/local/bin/node
-export PATH=$PATH:/node-v12.22.3-linux-ppc64le/bin/npm:/node-v12.22.3-linux-ppc64le/bin/node
-
+#installing nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+source ~/.bashrc
+nvm install $NODE_VERSION
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 npm install
+npm audit fix
 
 #no tests to run
 

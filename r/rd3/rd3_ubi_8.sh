@@ -24,24 +24,29 @@ PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 PACKAGE_NAME=rd3
 PACKAGE_URL=https://github.com/yang-wei/rd3
 
-yum -y update
-yum -y install git wget gcc-c++ make python2 bzip2 fontconfig-devel
+NODE_VERSION=v10.9.0
 
+yum -y update
+yum -y install git wget gcc-c++ make python2 bzip2 fontconfig-devel curl
+
+wget https://github.com/ibmsoe/phantomjs/releases/download/2.1.1/phantomjs-2.1.1-linux-ppc64.tar.bz2
 tar -xvf phantomjs-2.1.1-linux-ppc64.tar.bz2
 ln -s /phantomjs-2.1.1-linux-ppc64/bin/phantomjs /usr/local/bin/phantomjs
 export PATH=$PATH:/phantomjs-2.1.1-linux-ppc64/bin/phantomjs
 
 #gulp error with node 12, hence using node 10
-wget https://nodejs.org/dist/v10.9.0/node-v10.9.0-linux-ppc64le.tar.gz
-tar -xzf node-v10.9.0-linux-ppc64le.tar.gz
-ln -s /node-v10.9.0-linux-ppc64le/bin/npm /usr/local/bin/npm
-ln -s /node-v10.9.0-linux-ppc64le/bin/node /usr/local/bin/node
-export PATH=$PATH:/node-v10.9.0-linux-ppc64le/bin/npm:/node-v10.9.0-linux-ppc64le/bin/node
+#installing nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+source ~/.bashrc
+nvm install $NODE_VERSION
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 npm install
-
+npm audit fix
+npm audit fix --force
+npm i react-dom@^15.4.2
+npm i react@^15.7.0
 npm run test
 
