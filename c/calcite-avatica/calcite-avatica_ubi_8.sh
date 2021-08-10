@@ -14,16 +14,17 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
+#To Run: ./calcite-avatica_ubi_8.sh "release or commit id"
+#Example: ./calcite-avatica_ubi_8.sh 945d06c2a
 PACKAGE_NAME=calcite-avatica
-PACKAGE_VERSION=945d06c2a
+PACKAGE_VERSION=$1
 PACKAGE_URL=https://github.com/apache/calcite-avatica
 dnf install git -y
 dnf install maven
-mkdir test
-cd test
 git clone https://github.com/apache/calcite-avatica.git
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 sed -i 's/protobuf.version=3.6.1/protobuf.version=3.7.0/g' gradle.properties
+#Build and test
 ./gradlew build
 
