@@ -18,6 +18,27 @@
 
 #!/bin/bash
 
+PACKAGE_VERSION=v2.11.12
+
+usage() { echo "Usage: $0 [-s <v2.11.12>]" 1>&2; exit 1; }
+
+while getopts ":s:" o; do
+    case "${o}" in
+        s)
+            PACKAGE_VERSION=${OPTARG}
+            echo $PACKAGE_VERSION
+            ;;
+        \?)
+            echo "Invalid Options"
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+
+echo "Package version is $PACKAGE_VERSION"
+
 # install tools and dependent packages
 yum install -y git wget curl unzip nano vim make gcc gcc-c++
 
@@ -37,9 +58,7 @@ yum -y install sbt
 cd ~
 git clone https://github.com/scala/scala.git
 cd scala/
-echo "Enter the scala version:"
-read Version
-git checkout $Version
+git checkout $PACKAGE_VERSION
 
 #compile and test the package
 sbt compile
