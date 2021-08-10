@@ -29,7 +29,11 @@ while getopts ":s:" o; do
             echo $PACKAGE_VERSION
             ;;
         \?)
+<<<<<<< HEAD
             echo "Invalid Options"
+=======
+            echo "Invalid Options "
+>>>>>>> 934d15ba... Squashed commit of the following:
             ;;
         *)
             usage
