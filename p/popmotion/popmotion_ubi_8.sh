@@ -14,14 +14,17 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
+#To Run: ./popmotion_ubi_8.sh "release-version or commit-id"
+#Example: ./popmotion_ubi_8.sh v8.6.10
 PACKAGE_NAME=popmotion
-PACKAGE_VERSION=v8.7.1
+PACKAGE_VERSION=$1
+if [ -z "$1" ]
+  then
+    PACKAGE_VERSION=v8.7.1
+fi
 PACKAGE_URL=https://github.com/Popmotion/popmotion.git
 dnf install git -y
 dnf install npm -y
-mkdir test
-cd test
 git clone https://github.com/Popmotion/popmotion.git
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
