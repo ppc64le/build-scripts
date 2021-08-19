@@ -1,0 +1,36 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : memcached
+# Source Repo         : https://github.com/memcached/memcached
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/memcached/builds/235730987
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: C
+
+dist: bionic
+   
+arch:
+   - amd64
+   - ppc64le   
+
+addons:
+   apt:
+     update: true
+     packages:
+       - libtool
+       - automake
+       - make 
+       - wget
+       - tar
+       - libevent-dev 
+
+script: 
+   - ./autogen.sh
+   - ./configure 
+   - make
+   - make test
