@@ -14,10 +14,14 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#To Run: ./calcite-avatica_ubi_8.sh "release or commit id"
+#To Run: ./calcite-avatica_ubi_8.sh "release-version or commit-id"
 #Example: ./calcite-avatica_ubi_8.sh 945d06c2a
 PACKAGE_NAME=calcite-avatica
 PACKAGE_VERSION=$1
+if [ -z "$1" ]
+  then
+    PACKAGE_VERSION=945d06c2a
+fi
 PACKAGE_URL=https://github.com/apache/calcite-avatica
 dnf install git -y
 dnf install maven
