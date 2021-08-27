@@ -1,8 +1,8 @@
 # ----------------------------------------------------------------------------
 #
-# Package       : elasticsearch
+# Package       : netty-tcnative
 # Version       : 7.8.1
-# Source repo   : https://github.com/elastic/elasticsearch.git
+# Source repo   : https://github.com/netty/netty-tcnative.git
 # Tested on     : rhel 8.3
 # Script License: Apache License Version 2.0
 # Maintainer    : Sachin Kakatkar <sachin.kakatkar@ibm.com>
@@ -53,7 +53,7 @@ Ninja --version
 cd ..
 
 #Build and test
-git clone https://github.com/netty/netty-tcnative.git
+git clone $PACKAGE_URL
 cd netty-tcnative
 git checkout $PACKAGE_VERSION
 ./mvnw clean install
