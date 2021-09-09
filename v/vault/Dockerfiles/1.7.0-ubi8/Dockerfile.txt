@@ -2,7 +2,7 @@ FROM registry.access.redhat.com/ubi8
 
 MAINTAINER Mahima Gaikwad <mahima.gaikwad@ibm.com>
 
-ENV VAULT_VERSION=v1.7.0
+ARG VAULT_VERSION
 
 # Create a vault user and group first so the IDs get set the same way,
 # even as the rest of this may change over time.

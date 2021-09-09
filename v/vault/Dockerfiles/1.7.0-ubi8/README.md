@@ -1,5 +1,5 @@
 # Building Vault
-Docker build command: docker build -t vault .
+Docker build command: docker build --build-arg VAULT_VERSION=v1.7.0 -t vault .
 
 Docker run command:
     Development mode:
@@ -27,7 +27,7 @@ export HOST=$(oc get route default-route -n openshift-image-registry --template=
 podman login -u kubeadmin -p $(oc whoami -t) --tls-verify=false $HOST
 
 #Build Vault image from Dockerfile
-podman build -t $HOST/local-images/vault:latest .
+podman build --build-arg VAULT_VERSION=v1.7.0 -t $HOST/local-images/vault:latest .
 
 #Push the image as local image so that any project/namespace get the access.
 podman push $HOST/openshift/vault:latest --tls-verify=false
