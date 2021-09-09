@@ -1,6 +1,6 @@
 # Building Consul
 ```
-docker build -t consul .
+docker build --build-arg CONSUL_VERSION=v1.9.4 -t consul .
 docker run -it consul:latest
 ```
 
@@ -23,7 +23,7 @@ export HOST=$(oc get route default-route -n openshift-image-registry --template=
 podman login -u kubeadmin -p $(oc whoami -t) --tls-verify=false $HOST
 
 #Build Consul image from Dockerfile
-podman build -t $HOST/local-images/consul:latest .
+podman build --build-arg CONSUL_VERSION=v1.9.4 -t $HOST/local-images/consul:latest .
 
 #Push the image as local image so that any project/namespace get the access.
 podman push $HOST/openshift/consul:latest --tls-verify=false
