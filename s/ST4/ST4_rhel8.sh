@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       :  ST4
-# Version       :  4.3.1
+# Version       :  st-4.0.7
 # Source repo   :  https://github.com/antlr/stringtemplate4.git
 # Tested on     : RHEL8
 # Script License: Apache License, Version 2 or later

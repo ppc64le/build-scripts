@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : hibernate-core
-# Version       : 5.2.0 Latest
+# Version       : 6.0.0Alpha5
 # Source repo   : https://github.com/hibernate/hibernate-orm.git
 # Tested on     : RHEL8
 # Script License: Apache License, Version 2 or later

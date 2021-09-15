@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : springDao
-# Version       : v5.2.16
+# Version       : v5.3.10
 # Source repo   : https://github.com/spring-projects/spring-framework.git
 # Tested on     : RHEL8
 # Script License: Apache License, Version 2 or later

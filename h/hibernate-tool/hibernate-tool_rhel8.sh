@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : hibernate-tool
-# Version       : 5.2.0 Final
+# Version       : 6.0.0.Alpha5
 # Source repo   : https://github.com/hibernate/hibernate-tools.git
 # Tested on     : RHEL8
 # Script License: Apache License, Version 2 or later

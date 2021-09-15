@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : fortify-headers
-# Version       : Master
+# Version       : 1.1
 # Source repo   : https://github.com/libertine-linux-mirrors/fortify-headers.git
 # Tested on     : RHEL8
 # Script License: Apache License, Version 2 or later

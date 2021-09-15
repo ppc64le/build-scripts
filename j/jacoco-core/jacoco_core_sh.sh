@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : jacoco core
-# Version       : 0.8.7
+# Version       : 0.7.2-SNAPSHOT
 # Source repo   : https://github.com/jacoco/jacoco.git
 # Tested on     : RHEL8
 # Script License: Apache License, Version 2 or later

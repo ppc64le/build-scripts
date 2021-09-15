@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : spring-data-commons
-# Version       : v2.5.4
+# Version       : 2.6.0-M2
 # Source repo   : https://github.com/spring-projects/spring-data-commons.git
 # Tested on     : RHEL8
 # Script License: Apache License, Version 2 or later
