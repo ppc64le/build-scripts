@@ -16,10 +16,31 @@
 # ----------------------------------------------------------------------------
 
 #!/bin/bash
+export REPO=https://github.com/antlr/stringtemplate4.git
 
+#Default tag Generex
+if [ -z "$1" ]; then
+  export VERSION="st-4.0.7"
+else
+  export VERSION="$1"
+fi
 
 yum update -y
 yum install git maven -y
-git clone https://github.com/antlr/stringtemplate4.git
+git clone ${REPO}
 cd stringtemplate4
+git checkout ${VERSION}
+ret=$?
+if [ $ret -eq 0 ] ; then
+  echo  "${VERSION} found to checkout"
+else
+  echo  "${VERSION} not found"
+  exit
+fi
 mvn compile
+ret=$?
+if [ $ret -eq 0 ] ; then
+  echo  "Done Complie ......"
+else
+  echo  "Failed Test ......"
+fi

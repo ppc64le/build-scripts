@@ -16,7 +16,14 @@
 # ----------------------------------------------------------------------------
 
 #!/bin/bash
+export REPO=https://github.com/hibernate/hibernate-tools.git
 
+#Default tag Generex
+if [ -z "$1" ]; then
+  export VERSION="6.0.0.Alpha5"
+else
+  export VERSION="$1"
+fi
 yum update -y
 yum install git -y
 
@@ -24,11 +31,31 @@ yum install git -y
 #export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.292.b10-1.el8_4.ppc64le
 #export PATH=$PATH:$JAVA_HOME/bin
 yum install -y maven
-git clone https://github.com/hibernate/hibernate-tools.git
-
+git clone ${REPO}
 cd hibernate-tools
+git checkout ${VERSION}
+ret=$?
+if [ $ret -eq 0 ] ; then
+  echo  "${VERSION} found to checkout"
+else
+  echo  "${VERSION} not found"
+  exit
+fi
 mvn clean -DskipTets
+ret=$?
+if [ $ret -eq 0 ] ; then
+  echo  "Done build ..."
+else
+  echo  "Failed build......"
+  exit
+fi
 mvn install
+ret=$?
+if [ $ret -eq 0 ] ; then
+  echo  "Done Test ......"
+else
+  echo  "Failed Test ......"
+fi
 
 
 

@@ -17,14 +17,45 @@
 
 #!/bin/bash
 
+export REPO=https://github.com/apache/geronimo-specs.git
+
+#Default tag Generex
+if [ -z "$1" ]; then
+  export VERSION="1.0"
+else
+  export VERSION="$1"
+fi 
+
 yum update -y
 yum install wget git -y
 
 yum install -y java-1.8.0-openjdk-devel
 yum install -y maven
 
-git clone https://github.com/apache/geronimo-specs.git
+git clone ${REPO}
 cd geronimo-servlet_3.0_spec
+git checkout ${VERSION}
+ret=$?
+if [ $ret -eq 0 ] ; then
+  echo  "${VERSION} found to checkout"
+else
+  echo  "${VERSION} not found"
+  exit
+fi
+
 
 mvn install -Dskiptests
+ret=$?
+if [ $ret -eq 0 ] ; then
+  echo  "Done build ..."
+else
+  echo  "Failed build......"
+  exit
+fi
 mvn test
+ret=$?
+if [ $ret -eq 0 ] ; then
+  echo  "Done Test ......"
+else
+  echo  "Failed Test ......"
+fi

@@ -16,10 +16,33 @@
 # ----------------------------------------------------------------------------
 
 #!/bin/bash
+export REPO=https://github.com/jacoco/jacoco.git
+
+#Default tag Generex
+if [ -z "$1" ]; then
+  export VERSION="0.7.2-SNAPSHOT"
+else
+  export VERSION="$1"
+fi
 
 yum update -y
 yum install git maven -y
-git clone https://github.com/jacoco/jacoco.git
-cd jacoco/ org.jacoco.ant
+git clone ${REPO}
+cd jacoco/org.jacoco.ant
+git checkout ${VERSION}
+ret=$?
+if [ $ret -eq 0 ] ; then
+  echo  "${VERSION} found to checkout"
+else
+  echo  "${VERSION} not found"
+  exit
+fi
 
 mvn insatall
+ret=$?
+if [ $ret -eq 0 ] ; then
+  echo  "Done build and TEST..."
+else
+  echo  "Failed build ......"
+  exit
+fi

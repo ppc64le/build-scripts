@@ -16,6 +16,14 @@
 # ----------------------------------------------------------------------------
 
 #!/bin/bash
+export REPO=https://github.com/spring-projects/spring-framework.git
+
+#Default tag Generex
+if [ -z "$1" ]; then
+  export VERSION="v5.3.10"
+else
+  export VERSION="$1"
+fi
 
 yum update -y
 yum install wget git unzip -y
@@ -26,6 +34,19 @@ wget https://services.gradle.org/distributions/gradle-6.4.1-bin.zip -P /tmp
 unzip -d /opt/gradle /tmp/gradle-*.zip
 export GRADLE_HOME=/opt/gradle/gradle-6.4.1
 export PATH=${GRADLE_HOME}/bin:${PATH}
-git clone https://github.com/spring-projects/spring-framework.git
+git clone ${REPO}
 cd spring-framework
+ret=$?
+if [ $ret -eq 0 ] ; then
+  echo  "Done build ..."
+else
+  echo  "Failed build......"
+  exit
+fi
 ./gradlew build
+ret=$?
+if [ $ret -eq 0 ] ; then
+  echo  "Done  Build and Test ......"
+else
+  echo  "Failed Test ......"
+fi

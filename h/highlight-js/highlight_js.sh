@@ -17,17 +17,47 @@
 
 #!/bin/bash
 
+export REPO=https://github.com/highlightjs/highlight.js.git
+
+#Default tag Generex
+if [ -z "$1" ]; then
+  export VERSION="11.2.0"
+else
+  export VERSION="$1"
+fi
+
 yum update -y
 yum install git -y
 dnf module install nodejs:14 
 #Error: Cannot find module 'commander'
 npm install commander --save
 
-git clone https://github.com/highlightjs/highlight.js.git
+git clone ${REPO}
 cd /highlight.js
+git checkout ${VERSION}
+ret=$?
+if [ $ret -eq 0 ] ; then
+  echo  "${VERSION} found to checkout"
+else
+  echo  "${VERSION} not found"
+  exit
+fi
 
 npm run build
+ret=$?
+if [ $ret -eq 0 ] ; then
+  echo  "Done build ..."
+else
+  echo  "Failed build......"
+  exit
+fi
 npm run test
+ret=$?
+if [ $ret -eq 0 ] ; then
+  echo  "Done Test ......"
+else
+  echo  "Failed Test ......"
+fi
 
 
 

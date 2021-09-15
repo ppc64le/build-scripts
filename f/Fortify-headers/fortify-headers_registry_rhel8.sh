@@ -16,6 +16,14 @@
 # ----------------------------------------------------------------------------
 
 #!/bin/bash
+export REPO=https://github.com/libertine-linux-mirrors/fortify-headers.git
+
+#Default tag Generex
+if [ -z "$1" ]; then
+  export VERSION="1.1"
+else
+  export VERSION="$1"
+fi
 cat > fgets.c <<EOF
 #include <stdio.h>
 int

@@ -17,10 +17,31 @@
 
 #!/bin/bash
 
+export REPO=https://github.com/springdoc/springdoc-openapi.git
+
+#Default tag Generex
+if [ -z "$1" ]; then
+  export VERSION="v1.5.10"
+else
+  export VERSION="$1"
+fi
 yum update -y
 yum install git maven -y
 
-git clone https://github.com/springdoc/springdoc-openapi.git
+git clone ${REPO}
 
 cd /springdoc-openapi/springdoc-openapi-webmvc-core
+ret=$?
+if [ $ret -eq 0 ] ; then
+  echo  "${VERSION} found to checkout"
+else
+  echo  "${VERSION} not found"
+  exit
+fi
 mvn clean install
+ret=$?
+if [ $ret -eq 0 ] ; then
+  echo  "Done build and  Test ......"
+else
+  echo  "Failed Test ......"
+fi
