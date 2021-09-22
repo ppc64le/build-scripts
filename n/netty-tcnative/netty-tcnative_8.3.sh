@@ -45,9 +45,9 @@ go version
 
 #Install Ninja tool
 git clone git://github.com/ninja-build/ninja.git && cd ninja
+git checkout v1.10.2
 cmake -Bbuild-cmake -H.
 cmake --build build-cmake
-sudo ln -sf ($WORKDIR)/ninja/build-cmake/ninja /usr/bin/Ninja
 sudo ln -sf ($WORKDIR)/ninja/build-cmake/ninja /usr/bin/ninja
 Ninja --version
 cd ..
