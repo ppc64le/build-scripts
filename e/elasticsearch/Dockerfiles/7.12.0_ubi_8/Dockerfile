@@ -1,3 +1,5 @@
+# NOTE: This is based on the original work at https://github.com/elastic/dockerfiles/
+
 ################################################################################
 # This Dockerfile was generated from the template at distribution/src/docker/Dockerfile
 #
