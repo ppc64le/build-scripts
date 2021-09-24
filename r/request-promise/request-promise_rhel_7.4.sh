@@ -30,6 +30,4 @@ git clone https://github.com/request/request-promise.git
 cd $WDIR/request-promise
 npm install tough-cookie
 npm install request@$V_REQUEST
-export COVERALLS_REPO_TOKEN=SIAeZjKYlHK74rbcFvNHMUzjRiMpflxve
 npm install
-npm test
