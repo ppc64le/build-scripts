@@ -31,5 +31,3 @@ cd $WDIR/request-promise
 npm install tough-cookie
 npm install request@$V_REQUEST
 npm install
-export COVERALLS_REPO_TOKEN=SIAeZjKYlHK74rbcFvNHMUzjRiMpflxve
-npm test
