@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------------------------
 #
 # Package       : psycopg2-binary
-# Version       : 2.8.6
+# Version       : 2.8.6, 2.9.1
 # Source repo   : https://github.com/psycopg/psycopg2.git
 # Tested on     : UBI 8.3 (Docker)
 # Script License: Apache License, Version 2 or later
@@ -29,7 +29,7 @@ REPO=https://github.com/psycopg/psycopg2.git
 PACKAGE_VERSION=2_8_6
 
 echo "Usage: $0 [-v <PACKAGE_VERSION>]"
-echo "PACKAGE_VERSION is an optional paramater whose default value is 2_8_6 for v2.8.6"
+echo "PACKAGE_VERSION is an optional paramater whose default value is 2_8_6 for 2.8.6"
 
 PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 
