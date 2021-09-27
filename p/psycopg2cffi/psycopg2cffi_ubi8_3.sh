@@ -25,11 +25,11 @@
 #!/bin/bash
 
 #Variables
-REPO= https://github.com/chtd/psycopg2cffi.git
-PACKAGE_VERSION=2.9.0
+REPO=https://github.com/chtd/psycopg2cffi.git
+PACKAGE_VERSION=2.8.1
 
 echo "Usage: $0 [-v <PACKAGE_VERSION>]"
-echo "PACKAGE_VERSION is an optional paramater whose default value is 2_8_6 for 2.8.6"
+echo "PACKAGE_VERSION is an optional paramater whose default value is 2.8.1"
 
 PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 
@@ -57,6 +57,7 @@ pip3 install -U pytest
 sudo -u postgres -i bash << EOF
 psql -c "CREATE DATABASE psycopg2_test;"
 cd /opt/psycopg2cffi/
-/usr/local/bin/py.test psycopg2cffi
+export PATH=$PATH:/usr/local/bin/
+py.test psycopg2cffi
 EOF
 echo "Installation complete, see the test results above"
