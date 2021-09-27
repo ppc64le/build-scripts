@@ -14,8 +14,9 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
 #!/bin/bash
+#
+# ----------------------------------------------------------------------------
 
 #Variables
 REPO=https://github.com/square/retrofit.git
@@ -36,7 +37,7 @@ yum install -y git maven
 git clone $REPO
 cd retrofit/
 
-git checkout $PACKAGE_VERSION
+git checkout ${VERSION}
 
 #Build repo
 mvn clean package
