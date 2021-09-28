@@ -2,7 +2,7 @@
 #
 # Package         : styled-components/polished
 # Version         : v4.1.3
-# Source repo     : https://github.com/mobxjs/mobx.git
+# Source repo     : https://github.com/styled-components/polished.git
 # Tested on       : ubi:8.3
 # Script License  : MIT License
 # Maintainer      : srividya chittiboina <Srividya.Chittiboina@ibm.com>
