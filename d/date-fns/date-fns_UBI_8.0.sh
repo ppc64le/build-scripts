@@ -26,6 +26,16 @@
 #
 # ----------------------------------------------------------------------------
 
+# variables
+PKG_NAME="date-fns"
+PKG_VERSION="v1.29.1"
+PKG_VERSION_LATEST="v2.22.1"
+
+echo "Usage: $0 [v<PKG_VERSION>]"
+echo "       PKG_VERSION is an optional paramater whose default value is v1.29.1"
+
+PKG_VERSION="${1:-$PKG_VERSION}"
+
 #install dependencies
 yum -y update
 yum install -y git cmake make gcc-c++ autoconf ncurses-devel.ppc64le wget.ppc64le openssl-devel.ppc64le diffutils procps-ng bzip2 python3 fontconfig-devel
@@ -41,12 +51,7 @@ rm -rf phantomjs-2.1.1-linux-ppc64.tar.bz2
 
 # create folder for saving logs
 mkdir -p /logs
-
-# variables
 LOGS_DIRECTORY=/logs
-PKG_NAME="date-fns"
-PKG_VERSION="v1.29.1"
-PKG_VERSION_LATEST="v2.22.1"
 
 #clone  and build date-fns
 git clone https://github.com/date-fns/date-fns.git $PKG_NAME-$PKG_VERSION
@@ -58,4 +63,5 @@ yarn install | tee $LOGS_DIRECTORY/$PKG_NAME-log.txt
 export CHROME_BIN=chromium-browser
 
 yarn test
+
 
