@@ -28,11 +28,11 @@
 
 # variables
 PKG_NAME="date-fns"
-PKG_VERSION="v1.29.1"
+PKG_VERSION="v1.29.0"
 PKG_VERSION_LATEST="v2.22.1"
 
 echo "Usage: $0 [v<PKG_VERSION>]"
-echo "       PKG_VERSION is an optional paramater whose default value is v1.29.1"
+echo "       PKG_VERSION is an optional paramater whose default value is v1.29.0"
 
 PKG_VERSION="${1:-$PKG_VERSION}"
 
