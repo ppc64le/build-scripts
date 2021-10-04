@@ -56,7 +56,7 @@ LOGS_DIRECTORY=/logs
 #clone  and build date-fns
 git clone https://github.com/date-fns/date-fns.git $PKG_NAME-$PKG_VERSION
 cd $PKG_NAME-$PKG_VERSION/
-git checkout -b $PKG_VERSION
+git checkout  $PKG_VERSION
 
 yarn install | tee $LOGS_DIRECTORY/$PKG_NAME-log.txt
 
