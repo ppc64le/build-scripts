@@ -1,4 +1,4 @@
-# Version       : 0.10.1
+# Version       : master
 # Source        : https://github.com/iclanzan/empty.git
 # Tested on     : RHEL 8.3
 # Node Version  : v10.24.0
@@ -39,8 +39,6 @@ nvm alias default v10.24.0
 # Install and test empty
 git clone https://github.com/iclanzan/empty.git
 cd empty/
-#git checkout ${PACKAGE_VERSION}
-# npm install -g yarn
 npm install testem -g
 npm install
 npm test
