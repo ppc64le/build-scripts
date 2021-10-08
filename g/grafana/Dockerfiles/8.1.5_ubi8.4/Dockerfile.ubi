@@ -1,3 +1,5 @@
+# This dockerfile is an adaptation of the community dockerfile
+# Reference: https://github.com/grafana/grafana/blob/v8.1.5/Dockerfile
 FROM registry.access.redhat.com/ubi8/ubi:8.4 as js-builder
 
 ENV PATH=/node-v14.17.6-linux-ppc64le/bin:$PATH
