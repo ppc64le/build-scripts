@@ -1,0 +1,27 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : jaeger
+# Source Repo         : https://github.com/jaegertracing/jaeger
+# Travis Job Link     : https://app.travis-ci.com/github/gururajrkatti/jaeger/builds/236568428
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: go
+
+go: 1.17
+
+dist: focal
+   
+arch:
+   - amd64
+   - ppc64le   
+
+install: 
+   - make install-tools
+
+script: 
+   - make test
