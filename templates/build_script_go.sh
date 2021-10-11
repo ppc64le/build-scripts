@@ -31,7 +31,7 @@ export GOPATH=/home/tester/go
 
 mkdir -p output
 
-OS_NAME=`python3 -c "os_file_data=open('/etc/os-release').readlines();os_info = [i.replace('PRETTY_NAME=','').strip() for i in os_file_data if i.startswith('PRETTY_NAME')];print(os_info[0])"`
+OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
 export PATH=$GOPATH/bin:$PATH
 export GO111MODULE=on

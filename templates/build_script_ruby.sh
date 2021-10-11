@@ -51,7 +51,7 @@ export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 
 source /etc/profile.d/rvm.sh;
-OS_NAME=`python3 -c "os_file_data=open('/etc/os-release').readlines();os_info = [i.replace('PRETTY_NAME=','').strip() for i in os_file_data if i.startswith('PRETTY_NAME')];print(os_info[0])"`
+OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
 # Jruby is needed only by few packages like logstash, hence differing setting in PATH till needed
 

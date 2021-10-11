@@ -42,7 +42,7 @@ rm -f /etc/yum.repos.d/bintray-rpm.repo && curl -L https://www.scala-sbt.org/sbt
 mkdir -p output
 ln -s /usr/bin/python3 /bin/python
 
-OS_NAME=`python3 -c "os_file_data=open('/etc/os-release').readlines();os_info = [i.replace('PRETTY_NAME=','').strip() for i in os_file_data if i.startswith('PRETTY_NAME')];print(os_info[0])"`
+OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
 function get_checkout_url(){
         url=$1

@@ -23,7 +23,7 @@ yum -y update && yum install -y python38 python38-devel python39 python39-devel 
 
 mkdir -p output
 
-OS_NAME=`python3 -c "os_file_data=open('/etc/os-release').readlines();os_info = [i.replace('PRETTY_NAME=','').strip() for i in os_file_data if i.startswith('PRETTY_NAME')];print(os_info[0])"`
+OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
 SOURCE=Github
 
@@ -31,7 +31,7 @@ pip3 install -r /home/tester/output/requirements.txt
 
 pip3 freeze > /home/tester/output/available_packages.txt
 
-PACKAGE_INFO=`cat available_packages.txt | grep $PACKAGE_NAME`
+PACKAGE_INFO=`cat /home/tester/output/available_packages.txt | grep $PACKAGE_NAME`
 
 if ! test -z "$PACKAGE_INFO"; then
 	PACKAGE_VERSION=$(echo $PACKAGE_INFO | cut -d  "="  -f 3)
