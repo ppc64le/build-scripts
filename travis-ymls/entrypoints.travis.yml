@@ -1,0 +1,27 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : entrypoints
+# Source Repo         : https://github.com/takluyver/entrypoints
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/entrypoints
+# Created travis.yml  : No
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+dist: xenial
+arch:
+  - amd64
+  - ppc64le
+language: python
+python:
+  - "3.7"
+  - "3.6"
+  - "3.5"
+  - "3.4"
+  - "2.7"
+install:
+  - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then pip install configparser; fi
+# command to run tests
+script: py.test

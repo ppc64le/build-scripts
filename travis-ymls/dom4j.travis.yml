@@ -1,0 +1,23 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : dom4j
+# Source Repo         : https://github.com/dom4j/dom4j.git
+# Travis Job Link     : https://travis-ci.com/github/genisysram/dom4j/jobs/484248492
+# Created travis.yml  : No
+# Maintainer          : <ramakrishna.s@genisys-group.com>
+#                       <sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+arch:
+    - amd64
+    - ppc64le
+language: java
+sudo: false
+jdk:
+  - oraclejdk9
+# - oraclejdk8
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

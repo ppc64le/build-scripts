@@ -1,0 +1,46 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : fs-extra
+# Source Repo         : https://github.com/jprichardson/node-fs-extra
+# Travis Job Link     : https://travis-ci.com/github/santosh653/node-fs-extra
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+arch:
+  - amd64
+  - ppc64le
+language: node_js
+os:
+  - linux
+  - osx
+node_js:
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+env: TEST_SUITE=unit
+matrix:
+  exclude:
+    - os: linux
+      node_js: 12
+      env: TEST_SUITE=unit
+  include:
+    - os: linux
+      node_js: 12
+      env: TEST_SUITE=full-ci
+      arch: amd64
+    - os: linux
+      node_js: 12
+      env: TEST_SUITE=full-ci
+      arch: ppc64le
+
+script: npm run-script $TEST_SUITE
+after_success:
+  - if [ $TEST_SUITE = full-ci ]; then npm run coveralls; fi
+cache:
+  directories:
+    - node_modules

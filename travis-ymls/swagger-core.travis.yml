@@ -1,0 +1,18 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : swagger-core
+# Source Repo         : https://github.com/swagger-api/swagger-core 
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/swagger-core/builds/213956837
+# Created travis.yml  : Yes
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+dist: xenial
+arch:
+  - amd64
+  - ppc64le
+language: java
+script:
+  - mvn clean install

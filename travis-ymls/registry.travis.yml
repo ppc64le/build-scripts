@@ -1,0 +1,19 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : registry
+# Source Repo         : https://github.com/DamonOehlman/registry.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/registry/builds/215179504
+# Created travis.yml  : No
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+arch:
+  - amd64
+  - ppc64le
+language: node_js
+#update node_js versions 12 & 14
+node_js:
+  - 12
+  - 14

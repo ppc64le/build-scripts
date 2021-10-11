@@ -1,0 +1,110 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : zeromq.node
+# Source Repo         : https://github.com/JustinTulloss/zeromq.node
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/zeromq.node/builds/215475428
+# Created travis.yml  : No
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+sudo: false
+
+os:
+ - linux
+ - osx
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-4.9
+    - g++-4.9
+    - uuid-dev
+    - libtool-bin
+    - libc6
+    - libc6-dev
+
+language: node_js
+
+env:
+  global:
+    - CXX=g++-4.9
+    - CC=gcc-4.9
+  matrix:
+    - ZMQ="2.2.0" ZMQ_REPO="zeromq2-x"
+    - ZMQ="3.2.5" ZMQ_REPO="zeromq3-x"
+    - ZMQ="4.0.8" ZMQ_REPO="zeromq4-x" SODIUM="1.0.5"
+    - ZMQ="4.1.5" ZMQ_REPO="zeromq4-1" SODIUM="1.0.5"
+
+before_install:
+ - mkdir ldlocal
+ - export LDHACK=`pwd`/ldlocal
+ - export LDFLAGS=-L$LDHACK/lib
+ - export CFLAGS=-I$LDHACK/include
+ - export LD_RUN_PATH=$LDHACK/lib
+ - export LD_LIBRARY_PATH=$LDHACK/lib
+ - export PKG_CONFIG_PATH=$LDHACK/lib/pkgconfig
+ - wget https://github.com/zeromq/$ZMQ_REPO/releases/download/v$ZMQ/zeromq-$ZMQ.tar.gz
+ - tar xzvf zeromq-$ZMQ.tar.gz
+ - '[ -z "$SODIUM" ] || wget https://github.com/jedisct1/libsodium/releases/download/$SODIUM/libsodium-$SODIUM.tar.gz'
+ - '[ -z "$SODIUM" ] || tar xzvf libsodium-$SODIUM.tar.gz'
+ - '[ -z "$SODIUM" ] || cd libsodium-$SODIUM'
+ - '[ -z "$SODIUM" ] || ./autogen.sh'
+ - '[ -z "$SODIUM" ] || ./configure --prefix=$LDHACK'
+ - '[ -z "$SODIUM" ] || make -j'
+ - '[ -z "$SODIUM" ] || make install'
+ - '[ -z "$SODIUM" ] || cd ..'
+ - '[ -z "$SODIUM" ] || export LIBS=-lsodium && export sodium_CFLAGS=$CFLAGS && export sodium_LIBS=$LDFLAGS'
+ - cd zeromq-$ZMQ
+ - ./autogen.sh
+ - if [[ -z "$SODIUM" ]]; then ./configure --prefix=$LDHACK; else ./configure --prefix=$LDHACK --with-libsodium=$LDHACK; fi
+ - make -j
+ - make install
+ - cd ..
+
+# Travis is by default running "nvm install 0.10" which is not supported on ppc64le. 
+# Hence including these as separate matrix.
+install:  skip
+jobs:
+   include:
+     - arch: ppc64le
+       node_js: 4
+       env: ZMQ="2.2.0" ZMQ_REPO="zeromq2-x"
+     - arch: ppc64le
+       node_js: 6
+       env: ZMQ="3.2.5" ZMQ_REPO="zeromq3-x"
+     - arch: ppc64le
+       node_js: 8
+       env: ZMQ="4.0.8" ZMQ_REPO="zeromq4-x" SODIUM="1.0.5"
+     - arch: ppc64le
+       node_js: 10
+       env: ZMQ="4.1.5" ZMQ_REPO="zeromq4-1" SODIUM="1.0.5"
+     - arch: ppc64le
+       node_js: 12  # node 14 onwards are giving npm install error wrt binding. Hence including only upto this
+       env: ZMQ="4.1.5" ZMQ_REPO="zeromq4-1" SODIUM="1.0.5"
+script:
+ - |
+   if [[ "$TRAVIS_CPU_ARCH" != "ppc64le" ]]; then
+     nvm install 0.10
+     npm install
+     travis_retry npm test
+     nvm install 0.12
+     npm install
+     travis_retry npm test
+     nvm install 4
+     npm install
+     travis_retry npm test
+     nvm install 5
+     npm install
+     travis_retry npm test
+     nvm install 6
+     npm install
+     travis_retry npm test
+   else
+     npm install
+     travis_retry npm test
+   fi

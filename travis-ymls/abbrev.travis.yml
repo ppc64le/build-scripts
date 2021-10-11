@@ -1,0 +1,23 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : abbrev
+# Source Repo         : https://github.com/isaacs/abbrev-js
+# Travis Job Link     : https://travis-ci.com/github/santosh653/abbrev-js
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+arch:
+  - amd64
+  - ppc64le
+language: node_js
+#updating the node_js versions to latest versions 12, 13, 14, 15 as the current versions in the file are not supported.
+node_js:
+  - '12'
+  - '13'
+  - '14'
+  - '15'
+before_install:
+  - npm install -g npm@latest

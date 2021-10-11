@@ -1,0 +1,36 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : ajv
+# Source Repo         : https://github.com/ajv-validator/ajv
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/ajv/builds/211221042
+# Created travis.yml  : No
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+language: node_js
+arch:
+  - amd64
+  - ppc64le
+node_js:
+  - 10
+  - 12
+  - 14
+before_script:
+  - git submodule update --init
+  - npm install -g codeclimate-test-reporter
+script:
+  - npm run test-ci
+after_script:
+  - codeclimate-test-reporter < coverage/lcov.info
+  - coveralls < coverage/lcov.info
+  - scripts/travis-gh-pages
+  - scripts/publish-built-version
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/9cab5fe0c9595511cd81
+    on_success: change
+    on_failure: always
+    on_start: never

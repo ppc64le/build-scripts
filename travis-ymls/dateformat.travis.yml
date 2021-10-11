@@ -1,0 +1,18 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : dateformat
+# Source Repo         : https://github.com/felixge/node-dateformat
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/node-dateformat/builds/211020024
+# Created travis.yml  : No
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+arch:
+  - amd64
+  - ppc64le
+language: node_js
+node_js:
+  - "node"

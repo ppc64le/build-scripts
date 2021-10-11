@@ -1,0 +1,25 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : mock
+# Source Repo         : https://github.com/testing-cabal/mock.git
+# Travis Job Link     : https://travis-ci.com/github/santosh653/mock
+# Created travis.yml  : Yes
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+arch:
+  - amd64
+  - ppc64le
+language: python
+python:
+  - "3.6"
+  - "3.7"
+  - "3.8"
+  - "nightly"
+
+script:
+  - python setup.py install
+  - python setup.py test

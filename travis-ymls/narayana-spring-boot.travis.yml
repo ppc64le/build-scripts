@@ -1,0 +1,19 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : narayana-spring-boot
+# Source Repo         : https://github.com/snowdrop/narayana-spring-boot
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/narayana-spring-boot/jobs/484447654
+# Created travis.yml  : Yes
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+dist: xenial
+arch:
+  - amd64
+  - ppc64le
+language: java
+script:
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+  - mvn test -B

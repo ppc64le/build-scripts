@@ -1,0 +1,19 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : raf
+# Source Repo         : https://github.com/chrisdickinson/raf.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/raf/builds/216016543
+# Created travis.yml  : Yes
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+arch: 
+  - amd64
+  - ppc64le
+language: node_js
+os: linux
+node_js: 
+  - node
+  - lts/*

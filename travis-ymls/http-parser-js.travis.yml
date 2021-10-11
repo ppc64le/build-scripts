@@ -1,0 +1,20 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : http-parser-js
+# Source Repo         : https://github.com/creationix/http-parser-js.git
+# Travis Job Link     : https://travis-ci.com/github/ddeka2910/http-parser-js/builds/211039514
+# Created travis.yml  : No
+# Maintainer          : Debabrata Deka <ddeka2910@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ---
+os: linux
+arch:
+ - amd64
+ - ppc64le
+language: node_js
+node_js:
+  - '10'
+  - '8'
+  - '6'

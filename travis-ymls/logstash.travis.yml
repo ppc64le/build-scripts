@@ -1,0 +1,31 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : logstash
+# Source Repo         : https://github.com/elastic/logstash
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/logstash/builds/211486372
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: ruby
+
+arch: 
+  - amd64
+  - ppc64le   
+
+addons:
+   apt:
+    update: true
+    packages: ant make wget unzip tar gcc ruby
+
+
+install:
+   - gem install rake
+   - gem install bundler
+
+script:
+   - rake bootstrap
+   - rake plugin:install-default

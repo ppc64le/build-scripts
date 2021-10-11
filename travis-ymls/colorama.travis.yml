@@ -1,0 +1,49 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : colorama
+# Source Repo         : https://github.com/tartley/colorama
+# Travis Job Link     : https://travis-ci.com/github/santosh653/colorama
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: python
+cache: pip
+matrix:
+  include:
+    - python: 2.7
+      arch: amd64
+    - python: 3.9
+      arch: amd64
+    - python: 3.8
+      arch: amd64
+    - arch: arm64
+      python: 3.7
+    - arch: amd64
+      python: 3.7
+    - python: 3.6
+      arch: amd64
+    - python: 3.5
+      arch: amd64
+    - python: pypy
+      arch: amd64
+      
+    - python: 2.7
+      arch: ppc64le
+    - python: 3.9
+      arch: ppc64le
+    - python: 3.8
+      arch: ppc64le
+    - arch: ppc64le
+      python: 3.7
+    - python: 3.6
+      arch: ppc64le
+    - python: 3.5
+      arch: ppc64le
+    
+install:
+  - "pip install mock"
+script: "python -m unittest discover -p *_test.py"

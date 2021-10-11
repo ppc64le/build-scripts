@@ -1,0 +1,34 @@
+diff --git a/Makefile b/Makefile
+index 50536b00..736ab611 100644
+--- a/Makefile
++++ b/Makefile
+@@ -62,14 +62,26 @@ kustomize: cache/bin/kustomize
+ 
+ cache/bin/kustomize: cache/bin
+ 	@rm -f cache/bin/kustomize
+-	cd cache/bin && \
++	@if [[ "$$(go env GOARCH)" == "ppc64le" ]]; then \
++		KUSTOMIZE_GEN_TMP_DIR=$$(mktemp -d); \
++		cd $$KUSTOMIZE_GEN_TMP_DIR; \
++		go mod init tmp; \
++		KUSTOMIZE_VERSION=$$(curl --silent "https://api.github.com/repos/kubernetes-sigs/kustomize/releases/41507235" | grep '"tag_name":' | sed -E 's/.*"kustomize\/([^"]+)".*/\1/'); \
++		KUSTOMIZE_VERSION_MAJOR=$$(sed 's/\..*//' <<< $$KUSTOMIZE_VERSION); \
++		go get sigs.k8s.io/kustomize/kustomize/$$KUSTOMIZE_VERSION_MAJOR@$$KUSTOMIZE_VERSION; \
++		rm -rf $$KUSTOMIZE_GEN_TMP_DIR; \
++		cd -; \
++		cp -f ${GOPATH}/bin/kustomize cache/bin/kustomize; \
++	else \
++		cd cache/bin && \
+ 		set -o pipefail && \
+ 		for (( i = 0; i < 5; i++ )); do \
+ 			curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash; \
+ 			if [[ "$$(which kustomize)" =~ cache/bin/kustomize ]]; then \
+ 				break; \
+ 			fi \
+-		done
++		done \
++	fi
+ 	[[ "$$(which kustomize)" =~ cache/bin/kustomize ]]
+ 
+ .PHONY: test-unit
+

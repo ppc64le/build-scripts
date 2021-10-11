@@ -1,0 +1,19 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : vscode-ripgrep
+# Source Repo         : https://github.com/microsoft/vscode-ripgrep 
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/vscode-ripgrep/builds/215876252
+# Created travis.yml  : Yes
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+dist: xenial
+arch:
+   - amd64
+   - ppc64le  
+language: node_js
+node_js:
+   - "14"
+   - lts/* #latest LTS Node.js release

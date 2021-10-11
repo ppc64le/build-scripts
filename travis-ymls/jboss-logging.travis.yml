@@ -1,0 +1,23 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : jboss-logging
+# Source Repo         : https://github.com/jboss-logging/jboss-logging
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/jboss-logging/builds/215170816
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: java
+
+dist: focal
+
+arch:
+   - amd64
+   - ppc64le   
+
+install: skip
+
+script: mvn clean install

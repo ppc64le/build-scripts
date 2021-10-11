@@ -1,0 +1,33 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : adm-zip
+# Source Repo         : https://github.com/cthackers/adm-zip
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/adm-zip/builds/211220882
+# Created travis.yml  : No
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+sudo: false
+
+language: node_js
+arch:
+  - amd64
+  - ppc64le
+
+node_js:
+  - 'stable'
+  - 12
+  - 10
+
+cache:
+  directories:
+    - node_modules
+
+install:
+  - npm i -g npm@latest
+  - npm install
+
+script:
+  - npm test

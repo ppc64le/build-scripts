@@ -1,0 +1,21 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : inf
+# Source Repo         : https://github.com/go-inf/inf.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/inf/builds/218368399
+# Created travis.yml  : Yes
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+arch:
+  - amd64
+  - ppc64le
+os: linux
+go_import_path: gopkg.in/inf.v0
+language: go
+go:
+  - 1.14
+  - 1.15
+  - tip

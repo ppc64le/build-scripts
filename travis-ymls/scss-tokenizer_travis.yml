@@ -1,0 +1,24 @@
+# Package             :  scss-tokenizer
+# Source Repo         :  https://github.com/sasstools/scss-tokenizer.git
+# Travis Job Link     :  https://travis-ci.com/github/sreekanth370/scss-tokenizer/builds/211997264
+# Created travis.yml  :  No
+# Maintainer          :  sreekanth reddy <bsreekanthapps@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: node_js
+branches: [master]
+arch:
+  - amd64
+  - ppc64le
+node_js:
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+script:
+  - npm run build
+  - npm run test

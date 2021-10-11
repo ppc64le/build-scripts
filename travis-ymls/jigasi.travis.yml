@@ -1,0 +1,21 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : jigasi
+# Source Repo         : https://github.com/jitsi/jigasi
+# Travis Job Link     : https://travis-ci.com/github/ddeka2910/jigasi/builds/216512448
+# Created travis.yml  : Yes
+# Maintainer          : Debabrata Deka <ddeka2910@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ---
+language: java
+jdk:
+  - openjdk8
+dist: xenial
+arch:
+  - amd64
+  - ppc64le
+
+script:    
+    - mvn install -Dassembly.skipAssembly=false

@@ -1,0 +1,24 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : ember-cli
+# Source Repo         : https://github.com/ember-cli/ember-cli
+# Travis Job Link     : https://travis-ci.com/github/rajesh-ibm-power/ember-cli
+# Created travis.yml  : Yes
+# Maintainer          : Rajesh kumar <Rajesh.kumar13@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ---
+sudo: false
+arch:
+  - amd64
+  - ppc64le
+language: node_js
+node_js:
+  - "10"
+  - "12"
+matrix:
+  fast_finish: true
+cache:
+  directories:
+    - node_modules

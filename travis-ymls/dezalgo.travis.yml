@@ -1,0 +1,25 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : dezalgo 
+# Source Repo         : https://github.com/npm/dezalgo.git
+# Travis Job Link     : https://travis-ci.com/github/nagesh4193/dezalgo/builds/211382603
+# Created travis.yml  : No
+# Maintainer          : Nageswara Rao K<nagesh4193@gmail.com>/Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: node_js
+before_script: npm install -g npm@latest
+node_js:
+node_js:
+  - "15"
+  - "14"
+  - "12"
+  - "10"
+  - "8"
+
+arch:
+  - amd64
+  - ppc64le

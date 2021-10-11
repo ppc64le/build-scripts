@@ -1,0 +1,26 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : node-http-proxy
+# Source Repo         : https://github.com/http-party/node-http-proxy
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/node-http-proxy/builds/211224564
+# Created travis.yml  : No
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+sudo: false
+language: node_js
+arch:
+  - amd64
+  - ppc64le
+node_js:
+  - "8"
+  - "10"
+  - "12"
+script:
+  - npm test
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+matrix:
+  fast_finish: true

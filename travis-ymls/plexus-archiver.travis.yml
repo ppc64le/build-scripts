@@ -1,0 +1,48 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : plexus-archiver
+# Source Repo         : https://github.com/codehaus-plexus/plexus-archiver 
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/plexus-archiver/builds/215704666
+# Created travis.yml  : No
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+language: java
+arch:
+  - amd64
+  - ppc64le
+jdk:
+  - openjdk7
+  - oraclejdk8
+  - openjdk9
+  - openjdk10
+  - openjdk11
+jobs:
+  exclude:
+      - arch: ppc64le
+        jdk:
+          - openjdk7
+      - arch: ppc64le
+        jdk:
+          - oraclejdk8
+          
+dist: trusty
+
+# No need for preliminary install step.
+install: true
+#
+# Run all integration tests.
+script: 
+  - "mvn --show-version --errors --batch-mode clean verify"
+#
+cache:
+    directories:
+    - $HOME/.m2
+branches:
+    except:
+        - gh-pages
+notifications:
+    email:
+        - khmarbaise@apache.org

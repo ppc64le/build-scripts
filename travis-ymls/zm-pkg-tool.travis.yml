@@ -1,0 +1,27 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : zm-pkg-tool
+# Source Repo         : https://github.com/Zimbra/zm-pkg-tool.git
+# Travis Job Link     : https://travis-ci.com/github/santosh653/zm-pkg-tool
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+arch:
+  - amd64
+  - ppc64le
+sudo: required
+
+language: perl
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -y dpkg-dev debhelper
+
+install: true
+
+script:
+  - cd e2e-tests && sudo ./TEST.sh

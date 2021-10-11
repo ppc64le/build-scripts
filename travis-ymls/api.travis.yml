@@ -1,0 +1,21 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : api
+# Source Repo         : https://github.com/istio/api
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/api/builds/218670011
+# Created travis.yml  : Yes
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+language: go
+sudo: false
+dist: bionic
+arch:
+  - ppc64le
+  - amd64
+go:
+  - 1.16.x
+
+script: go test -v ./...

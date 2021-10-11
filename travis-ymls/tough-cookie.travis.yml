@@ -1,0 +1,22 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : tough-cookie
+# Source Repo         : https://github.com/salesforce/tough-cookie.git
+# Travis Job Link     : https://travis-ci.com/github/sreekanth370/tough-cookie/builds/212633450
+# Created travis.yml  : No
+# Maintainer          : sreekanth reddy <bsreekanthapps@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: node_js
+arch:
+  - amd64
+  - ppc64le
+node_js:
+- stable
+- "v10.*"
+- "v8.*"
+- "v6.*"
+matrix:
+  fast_finish: true

@@ -1,0 +1,57 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : termcolor
+# Source Repo         : https://github.com/hugovk/termcolor
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/termcolor/builds/221181110
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: python
+
+dist: bionic
+
+
+matrix:
+  # lint has a dependency issue in intel as well. 
+  allow_failures:
+    - env: TOXENV=lint
+  include:
+    - python: 3.6
+      env: TOXENV=py36
+    - python: 3.7
+      env: TOXENV=py37
+    - python: 3.8
+      env: TOXENV=py38
+    - python: 3.9
+      env: TOXENV=py39
+    - python: 3.9
+      env: TOXENV=lint    
+    - python: 3.6
+      env: TOXENV=py36
+      arch: ppc64le
+    - python: 3.7
+      env: TOXENV=py37
+      arch: ppc64le
+    - python: 3.8
+      env: TOXENV=py38
+      arch: ppc64le
+    - python: 3.9
+      env: TOXENV=py39
+      arch: ppc64le
+    - python: 3.9
+      addons:
+          apt:
+           update: true
+           packages: rustc
+      env: TOXENV=lint
+      arch: ppc64le
+    
+install:
+  - pip install tox
+
+script:
+  - travis_retry tox

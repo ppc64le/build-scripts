@@ -1,0 +1,131 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : numba
+# Source Repo         : https://github.com/numba/numba
+# Travis Job Link     : https://travis-ci.com/github/asellappen/numba/
+# Created travis.yml  : Yes
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: python
+dist: focal
+before_install:
+  - sudo apt-get install gfortran libopenblas-dev liblapack-dev
+  - if [[ "$TRAVIS_CPU_ARCH" == "ppc64le" ]]; then 
+        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-ppc64le.sh -O miniconda.sh;
+    else
+        wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+    fi
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes
+  - conda config --set auto_update_conda False
+  - conda update -q --all
+  - conda install python=$PYTHON_VERSION pip  pytest-xdist
+  - conda install pytest jinja2 cffi  flake8 mypy numpy
+  - pip install python-coveralls --no-cache-dir
+  - conda install llvmlite==0.36.0rc1  -c numba
+
+install:
+  - pip install --no-deps -e .
+# Created slice and multiple parallel runs to avoid time out issue to test around 9860 test cases
+jobs:
+  include:
+    - stage: unit test1
+      env: PYTHON_VERSION="3.7"
+      script: 
+      - python -m numba.runtests -j 0,4500,2 -m 
+    - stage: unit test2
+      env: PYTHON_VERSION="3.7"
+      script: 
+      - python -m numba.runtests -j 1,4500,2 -m
+    - stage: unit test3
+      env: PYTHON_VERSION="3.7"
+      script: 
+      - python -m numba.runtests -j 4501,9300,2 -m
+    - stage: unit test4
+      env: PYTHON_VERSION="3.7"
+      script: 
+      - python -m numba.runtests -j 4502,9300,2 -m
+    - stage: unit test1
+      arch: ppc64le
+      env: PYTHON_VERSION="3.7"
+      script: 
+      - python -m numba.runtests -j 0,4500,2 -m 
+    - stage: unit test2
+      arch: ppc64le
+      env: PYTHON_VERSION="3.7"
+      script: 
+      - python -m numba.runtests -j 1,4500,2 -m
+    - stage: unit test3
+      arch: ppc64le
+      env: PYTHON_VERSION="3.7"
+      script: 
+      - python -m numba.runtests -j 4501,9300,2 -m
+    - stage: unit test4
+      arch: ppc64le
+      env: PYTHON_VERSION="3.7"
+      script: 
+      - python -m numba.runtests -j 4502,9300,2 -m 
+    - stage: OtherTests for amd64
+      env: PYTHON_VERSION="3.7"
+      script: 
+        - flake8 numba
+        - mypy
+    - stage: OtherTests for ppc64le
+      env: PYTHON_VERSION="3.7"
+      arch: ppc64le
+      script: 
+        - flake8 numba
+        - mypy
+# for python 3.8
+    - stage: unit test1
+      env: PYTHON_VERSION="3.8"
+      script: 
+      - python -m numba.runtests -j 0,4500,2 -m 
+    - stage: unit test2
+      env: PYTHON_VERSION="3.8"
+      script: 
+      - python -m numba.runtests -j 1,4500,2 -m
+    - stage: unit test3
+      env: PYTHON_VERSION="3.8"
+      script: 
+      - python -m numba.runtests -j 4501,9300,2 -m
+    - stage: unit test4
+      env: PYTHON_VERSION="3.8"
+      script: 
+      - python -m numba.runtests -j 4502,9300,2 -m
+    - stage: unit test1
+      arch: ppc64le
+      env: PYTHON_VERSION="3.8"
+      script: 
+      - python -m numba.runtests -j 0,4500,2 -m 
+    - stage: unit test2
+      arch: ppc64le
+      env: PYTHON_VERSION="3.8"
+      script: 
+      - python -m numba.runtests -j 1,4500,2 -m
+    - stage: unit test3
+      arch: ppc64le
+      env: PYTHON_VERSION="3.8"
+      script: 
+      - python -m numba.runtests -j 4501,9300,2 -m
+    - stage: unit test4
+      arch: ppc64le
+      env: PYTHON_VERSION="3.8"
+      script: 
+      - python -m numba.runtests -j 4502,9300,2 -m 
+    - stage: OtherTests for amd64
+      env: PYTHON_VERSION="3.8"
+      script: 
+        - flake8 numba
+        - mypy
+    - stage: OtherTests for ppc64le
+      env: PYTHON_VERSION="3.8"
+      arch: ppc64le
+      script: 
+        - flake8 numba
+        - mypy

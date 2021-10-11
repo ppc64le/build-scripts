@@ -1,0 +1,61 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : jinja
+# Source Repo         : https://github.com/pallets/jinja/
+# Travis Job Link     : https://travis-ci.com/github/asellappen/jinja/
+# Created travis.yml  : Yes
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: python
+sudo: true
+dist: focal
+
+matrix:
+  include:
+  - python: pypy3
+    env: TOXENV=pypy3
+  - python: 3.6
+    env: TOXENV=py36
+  - python: 3.7
+    env: TOXENV=py37
+  - python: 3.8
+    env: TOXENV=py38
+  - python: 3.9
+    env: TOXENV=py39
+  - python: 3.9
+    env: TOXENV=docs 
+  - python: 3.9
+    env: TOXENV=typing
+  - python: 3.6
+    env: TOXENV=py36
+    arch: ppc64le
+  - python: 3.7
+    env: TOXENV=py37
+    arch: ppc64le
+  - python: 3.8
+    env: TOXENV=py38
+    arch: ppc64le
+  - python: 3.9
+    env: TOXENV=py39
+    arch: ppc64le
+  - python: 3.9
+    env: TOXENV=docs 
+    arch: ppc64le
+  - python: 3.9
+    env: TOXENV=typing
+    arch: ppc64le
+install:
+  - pip install -U wheel
+  - pip install -U setuptools
+  - python -m pip install -U pip
+  - pip install -r requirements/docs.txt
+  - pip install -r requirements/tests.txt
+  - python setup.py install
+  - pip install --no-deps -e .
+  - travis_retry pip install tox
+
+script:
+  - travis_retry tox

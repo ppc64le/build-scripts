@@ -1,0 +1,38 @@
+
+# Package             : slf4j-api
+# Source Repo         : https://github.com/qos-ch/slf4j.git
+# Travis Job Link     : https://travis-ci.com/github/sreekanth370/slf4j/builds/211381766
+# Created travis.yml  : No
+# Maintainer          : Sreekanth reddy<bsreekanthapps@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+arch:
+  - amd64
+  - ppc64le
+  
+dist: bionic
+
+script:
+  - echo "SAMPLE TRAVIS JO
+  dist: trusty
+
+language: java
+arch:
+  - amd64
+  - ppc64le
+
+jdk:
+  - oraclejdk11
+
+notifications:
+  email:
+      - notification@qos.ch
+
+install: /bin/true
+
+script:
+  - mvn clean
+  - mvn install

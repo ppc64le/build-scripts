@@ -1,0 +1,24 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : jmx_expoter 
+# Source Repo         : https://github.com/prometheus/jmx_exporter
+# Travis Job Link     : https://www.travis-ci.com/github/kishorkunal-raj/jmx_exporter/builds/211299771
+# Created travis.yml  : Yes
+# Maintainer          : Kishor Kunal Raj <kishore.kunal.mr@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+arch:
+  - amd64
+  - ppc64le
+  
+dist: bionic
+
+jdk:
+  - openjdk8
+  - openjdk11
+
+script:
+  - mvn package 

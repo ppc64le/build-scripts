@@ -1,0 +1,27 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : is-buffer
+# Source Repo         : https://github.com/feross/is-buffer
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/is-buffer/builds/211003884
+# Created travis.yml  : No
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+
+arch:
+  - amd64
+  - ppc64le
+language: node_js
+node_js:
+  - lts/*
+addons:
+  sauce_connect: true
+  hosts:
+    - airtap.local
+sudo: false
+env:
+  global:
+    - secure: du27W3wTgZ3G183axW7w0I01lOIurx8kilMH9p45VMfNXCu8lo6FLtLIQZxJ1FYMoJLQ1yfJTu2G0rq39SotDfJumsk6tF7BjTY/HKCocZaHqCMgw0W2bcylb5kMAdLhBNPlzejpPoWa1x1axbAHNFOLQNVosG/Bavu3/kuIIps=
+    - secure: Ax/5aekM40o67NuTkvQqx1DhfP86ZlHTtKbv5yI+WFmbjD3FQM8b8G1J/o7doaBDev7Mp+1zDJOK2pFGtt+JGRl0lM2JUmLh6yh/b28obXyei5iuUkqzKJLfKZHMbY5QW/1i4DUM+zSXe6Kava0qnqYg5wBBnrF6gLdsVsCGNQk=

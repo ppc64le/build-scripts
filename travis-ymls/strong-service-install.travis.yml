@@ -1,0 +1,28 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : strong-service-install
+# Source Repo         : https://github.com/strongloop/strong-service-install
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/strong-service-install/builds/212819424
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: node_js
+
+node_js:
+   - 10
+   
+arch:
+   - amd64
+   - ppc64le   
+
+addons:
+   apt:
+    update: true
+    packages: 
+       - build-essential 
+       - npm 
+       - wget 

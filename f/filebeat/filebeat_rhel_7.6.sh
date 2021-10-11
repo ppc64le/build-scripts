@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : filebeat
-# Version       : 6.5.4
+# Version       : 7.11.1
 # Source repo   : https://github.com/elastic/beats.git
 # Tested on     : RHEL 7.6
 # Script License: Apache License Version 2.0
@@ -16,7 +16,7 @@
 # ----------------------------------------------------------------------------
 #!/bin/bash
 
-export FILEBEAT_VERSION=v6.5.4
+export FILEBEAT_VERSION=v7.11.1
 if [ $# -ne 1 ]; then
     echo "missing argument: FILEBEAT_VERSION to build, using default version ${FILEBEAT_VERSION}"
 else
@@ -27,7 +27,7 @@ fi
 yum install -y golang make git
 
 mkdir go
-export GOPATH=~/go
+export GOPATH=$(pwd)/go
 mkdir -p ${GOPATH}/src/github.com/elastic
 cd ${GOPATH}/src/github.com/elastic
 git clone https://github.com/elastic/beats.git

@@ -1,0 +1,28 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : beanvalidation-api
+# Source Repo         : https://github.com/eclipse-ee4j/beanvalidation-api
+# Travis Job Link     : https://travis-ci.com/github/nagesh4193/beanvalidation-api/builds/216169242
+# Created travis.yml  : Yes
+# Maintainer          : Nageswara Rao K<nagesh4193@gmail.com>/Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: java
+
+arch:
+  - amd64
+  - ppc64le
+
+jdk:
+  - openjdk8
+
+before_script:
+  - sudo apt update -y
+  - sudo apt-get install maven
+
+script:
+  - mvn clean install
+  - mvn test

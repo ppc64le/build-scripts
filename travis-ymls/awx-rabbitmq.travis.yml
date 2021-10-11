@@ -1,0 +1,23 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : awx-rabbitmq
+# Source Repo         : https://github.com/ansible/awx-rabbitmq
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/awx-rabbitmq/builds/218054948
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: shell
+
+dist: focal
+
+arch: 
+ - ppc64le
+ - amd64
+
+services: docker
+
+script: make

@@ -1,0 +1,19 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : jwks-rsa-java
+# Source Repo         : https://github.com/auth0/jwks-rsa-java
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/jwks-rsa-java/builds/222248950
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: java
+
+jdk: openjdk8
+
+arch:
+  - amd64
+  - ppc64le

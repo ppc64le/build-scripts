@@ -1,0 +1,19 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : minimal-json
+# Source Repo         : https://github.com/ralfstx/minimal-json
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/minimal-json/builds/217195379
+# Created travis.yml  : No
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+language: java
+dist: xenial
+  
+jobs:
+  include:
+    - jdk: oraclejdk11
+    - arch: ppc64le
+      jdk: openjdk8

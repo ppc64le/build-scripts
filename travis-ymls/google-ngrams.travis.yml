@@ -1,0 +1,32 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : google-ngrams
+# Source Repo         : https://github.com/econpy/google-ngrams
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/google-ngrams/builds/235845805
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: python
+
+dist: bionic
+   
+arch:
+   - amd64
+   - ppc64le   
+
+install:
+   - pip install -U pip
+   - pip install -U matplotlib
+   - pip install pandas
+   - pip install requests
+
+script: 
+   - python getngrams.py Albert Einstein, Charles Darwin
+   - python getngrams.py aluminum, copper, steel -noprint
+   - python getngrams.py Pearl Harbor, Watergate -corpus=eng_2009
+   - python getngrams.py bells and whistles -startYear=1900 -endYear=2001 -smoothing=2
+   - python getngrams.py internet --startYear=1980 --endYear=2000 --corpus=eng_2012 -caseInsensitive

@@ -1,0 +1,19 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : markdown parser
+# Source Repo         : https://github.com/darul75/markdown-parser
+# Travis Job Link     : https://travis-ci.com/github/santosh653/markdown-parser
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+arch:
+  - amd64
+  - ppc64le
+language: node_js
+#Lower Versions of Node_js are not supported & hance updating to latest versions.
+node_js:
+  - "11"
+  - "12"  

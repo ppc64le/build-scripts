@@ -1,0 +1,65 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : nan
+# Source Repo         : https://github.com/nodejs/nan
+# Travis Job Link     : https://travis-ci.com/github/sreekanth370/nan/builds/212466722
+# Created travis.yml  : No
+# Maintainer          : sreekanth reddy <bsreekanthapps@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+os:
+  - linux
+  - osx
+language: cpp
+arch:
+  - amd64
+  - ppc64le
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - bc
+    - g++-4.8
+env:
+  matrix:
+  - TRAVIS_NODE_VERSION="0.10"
+  - TRAVIS_NODE_VERSION="0.12"
+  - TRAVIS_NODE_VERSION="4"
+  - TRAVIS_NODE_VERSION="5"
+  - TRAVIS_NODE_VERSION="6"
+  - TRAVIS_NODE_VERSION="7"
+  - TRAVIS_NODE_VERSION="8"
+  - TRAVIS_NODE_VERSION="9"
+  - TRAVIS_NODE_VERSION="10"
+  - TRAVIS_NODE_VERSION="11"
+  - TRAVIS_NODE_VERSION="12"
+  - TRAVIS_NODE_VERSION="13"
+  - TRAVIS_NODE_VERSION="14"
+  - TRAVIS_NODE_VERSION="lts/*" ELECTRON_VERSION="2.0.18"
+  - TRAVIS_NODE_VERSION="lts/*" ELECTRON_VERSION="3.1.13"
+  - TRAVIS_NODE_VERSION="lts/*" ELECTRON_VERSION="4.2.12"
+  - TRAVIS_NODE_VERSION="lts/*" ELECTRON_VERSION="5.0.13"
+  - TRAVIS_NODE_VERSION="lts/*" ELECTRON_VERSION="6.1.10"
+  - TRAVIS_NODE_VERSION="lts/*" ELECTRON_VERSION="7.2.3"
+  - TRAVIS_NODE_VERSION="lts/*" ELECTRON_VERSION="8.2.3"
+matrix:
+  exclude:
+    - os: osx
+      env: TRAVIS_NODE_VERSION="0.12"
+   # ecclude power jobs which is unsupport 
+    - arch: ppc64le
+      env: TRAVIS_NODE_VERSION="0.10"
+    - arch: ppc64le
+      env: TRAVIS_NODE_VERSION="0.12"  
+install:
+  - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
+  - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export CXX=g++-4.8; fi
+  - $CXX --version
+  - if [[ $TRAVIS_NODE_VERSION == "0.8" ]]; then npm config set strict-ssl false; fi
+  - if [[ -z "$ELECTRON_VERSION" && $(echo "$TRAVIS_NODE_VERSION < 4" | bc -l)  == "1" ]]; then npm install npm@2 && mv node_modules npm && npm/.bin/npm --version && npm/.bin/npm install; else npm --version && npm install; fi
+  - if [[ -z "$ELECTRON_VERSION" ]]; then node_modules/.bin/node-gyp rebuild --directory test; else node_modules/.bin/node-gyp rebuild --target=v$ELECTRON_VERSION --dist-url=https://atom.io/download/electron --directory test; fi
+script:
+  - if [[ -z "$ELECTRON_VERSION" ]]; then node_modules/.bin/tap --gc test/js/*-test.js; fi

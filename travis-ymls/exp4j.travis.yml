@@ -1,0 +1,23 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : exp4j
+# Source Repo         : https://github.com/fasseg/exp4j
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/exp4j/builds/213397065
+# Created travis.yml  : Yes
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+dist: xenial
+arch:
+  - amd64
+  - ppc64le
+language: java
+addons:
+  apt:
+    packages:
+      - maven
+script:
+  - mvn clean:clean 
+  - mvn install -Dmaven.javadoc.skip=true -B -V

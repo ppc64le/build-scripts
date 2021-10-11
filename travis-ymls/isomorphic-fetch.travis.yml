@@ -1,0 +1,18 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : isomorphic-fetch
+# Source Repo         : https://github.com/matthew-andrews/isomorphic-fetch
+# Travis Job Link     : https://www.travis-ci.com/github/kishorkunal-raj/isomorphic-fetch/builds/212645525
+# Created travis.yml  : No
+# Maintainer          : Kishor Kunal Raj <kishore.kunal.mr@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+sudo: false
+language: node_js
+arch:
+  - amd64
+  - ppc64le
+node_js:
+  - 14

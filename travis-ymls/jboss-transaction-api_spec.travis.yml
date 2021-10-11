@@ -1,0 +1,23 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : jboss-transaction-api_spec
+# Source Repo         : https://github.com/jboss/jboss-transaction-api_spec
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/jboss-transaction-api_spec/builds/215171984
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: java
+
+dist: focal
+
+arch:
+   - amd64
+   - ppc64le   
+
+install: skip
+
+script: mvn clean install

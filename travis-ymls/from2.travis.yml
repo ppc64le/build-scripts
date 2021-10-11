@@ -1,0 +1,26 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : from2
+# Source Repo         : https://github.com/hughsk/from2.git
+# Travis Job Link     : https://travis-ci.com/github/santosh653/from2
+# Created travis.yml  : No
+# Maintainer          : Santosh Kulkarni <santoshkulkarni70@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+arch:
+  - amd64
+  - ppc64le
+language: node_js
+before_install:
+  - npm install -g npm
+#Updating the Node_js versions to the latest version to make it consistent on both Intel & power
+
+node_js:
+  - "11"
+  - "12"
+  - "13"
+  - "14"
+  - "node"
+  - "lts/*"

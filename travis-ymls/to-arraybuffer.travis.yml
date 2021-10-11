@@ -1,0 +1,21 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : to-arraybuffer
+# Source Repo         : https://github.com/jhiesey/to-arraybuffer.git 
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/to-arraybuffer/builds/211218767 
+# Created travis.yml  : No
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+language: node_js
+arch:
+  - amd64
+  - ppc64le
+node_js:
+  - "node"
+addons:
+  sauce_connect: true
+  hosts:
+    - airtap.local

@@ -3,17 +3,17 @@ MAINTAINER      "Priya Seth <sethp@us.ibm.com>", "Eshant Gupta <guptaeshant@gmai
 
 ENV     PATH /usr/lib/rstudio-server/bin/:$PATH
 ENV     DEBIAN_FRONTEND noninteractive
-ENV 	R_VERSION 4.0.2
+ENV 	R_VERSION 4.0.4
 ENV 	RStudio_VERSION 1.3.1073
 RUN     rm -rf /var/lib/apt/lists/ && \
         apt-get -y update && \
         apt-get install -y ant apparmor-utils autotools-dev build-essential \
             ca-certificates cmake fakeroot file g++ git haskell-platform \
             libapparmor1 libbz2-dev libcurl4-openssl-dev libedit2 libicu-dev \
-            libpam-dev libpango1.0-dev libssl-dev libxslt1-dev \
+            libpam-dev libpango1.0-dev libssl-dev libxslt1-dev tcl8.5-dev tk8.5-dev\
             libboost-all-dev pkg-config psmisc python-dev python-setuptools \
             pandoc pandoc-citeproc unzip uuid-dev wget gfortran libreadline-dev \
-	    xorg-dev libbz2-ocaml-dev liblzma-dev \
+            xorg-dev libbz2-ocaml-dev liblzma-dev \
             libghc-pcre-light-dev zlib1g-dev sudo pcre2-utils
 RUN     apt-get install -y libpcre2-dev lsb-release
 RUN     wget https://cloud.r-project.org/src/base/R-4/R-${R_VERSION}.tar.gz && \

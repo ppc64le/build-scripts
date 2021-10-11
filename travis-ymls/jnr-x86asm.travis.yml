@@ -1,0 +1,20 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : jnr-x86asm
+# Source Repo         : https://github.com/jnr/jnr-x86asm
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/jnr-x86asm/builds/216024426
+# Created travis.yml  : No
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+language: java
+jdk:
+  - oraclejdk15
+  - openjdk15
+matrix:
+  job:
+    - arch: ppc64le
+      jdk: openjdk15
+      dist: focal

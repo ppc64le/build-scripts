@@ -1,0 +1,53 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : glance
+# Source Repo         : https://github.com/openstack/glance
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/glance/builds/217324299
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: python
+
+dist: focal
+
+matrix:
+
+  include:
+    - python: 3.6
+      env: TOXENV=py36
+    - python: 3.8
+      env: TOXENV=py38
+    - python: 3.8
+      env: TOXENV=pep8
+    - python: 3.6
+      env: TOXENV=py36
+      arch: ppc64le
+    - python: 3.8
+      env: TOXENV=py38
+      arch: ppc64le
+    - python: 3.8
+      env: TOXENV=pep8
+      arch: ppc64le
+
+  allow_failures:
+    - python: 3.8
+      env: TOXENV=pep8
+    
+install:
+  - python setup.py install
+  - pip install tox
+
+script:
+  - travis_retry tox
+
+addons:
+    apt:
+      update: true
+      packages: 
+        - qemu-utils
+        - rustc
+        - cargo

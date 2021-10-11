@@ -1,0 +1,21 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : operator
+# Source Repo         : https://github.com/tektoncd/operator.git
+# Travis Job Link     : https://travis-ci.com/github/nagesh4193/operator/builds/214768709
+# Created travis.yml  : Yes
+# Maintainer          : Nageswara Rao K<nagesh4193@gmail.com>/Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: go
+
+arch:
+  - amd64
+  - ppc64le
+
+go:
+  - 1.15.x
+  - tip

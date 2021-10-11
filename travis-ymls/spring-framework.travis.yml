@@ -1,0 +1,35 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : spring-framework
+# Source Repo         : https://github.com/spring-projects/spring-framework
+# Travis Job Link     : https://travis-ci.com/github/asellappen/spring-framework/
+# Created travis.yml  : Yes
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: java
+
+jdk: openjdk11
+
+matrix:
+  include:
+   - arch: amd64 
+     os: linux
+     dist: xenial
+   - arch: ppc64le 
+     os: linux
+     dist: bionic
+
+script :
+#checkstyleNohttp not supproted for ppc64le
+   - if [[ "$TRAVIS_CPU_ARCH" == "ppc64le" ]]; then 
+      ./gradlew build --warning-mode all -x checkstyleNohttp;
+      ./gradlew -a :spring-webmvc:test -x checkstyleNohttp; 
+      ./gradlew clean test -x checkstyleNohttp;
+     else
+      ./gradlew build --warning-mode all ;
+      ./gradlew -a :spring-webmvc:test ;
+      ./gradlew clean test ;
+     fi
