@@ -21,8 +21,8 @@
 PACKAGE_URL=https://github.com/prometheus/jmx_exporter.git
 PACKAGE_VERSION=parent-0.14.0
 
-echo "Usage: $0 [-v <PACKAGE_VERSION>]"
-echo "PACKAGE_VERSION is an optional paramater whose default value is parent-0.14.0, not all versions are supported."
+echo "Usage: $0 [<PACKAGE_VERSION>]"
+echo "PACKAGE_VERSION is an optional parameter whose default value is parent-0.14.0, not all versions are supported."
 
 PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 
@@ -36,11 +36,8 @@ git clone $PACKAGE_URL
 cd jmx_exporter/jmx_prometheus_javaagent/
 git checkout $PACKAGE_VERSION
 
-#Build package
-mvn clean install
-
-#Test pacakge
-mvn test 
+#Build and test package
+mvn install
 
 echo "Complete!"
 

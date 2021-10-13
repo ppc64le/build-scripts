@@ -21,8 +21,8 @@
 PACKAGE_URL=https://github.com/jmxtrans/jmxtrans.git
 PACKAGE_VERSION=jmxtrans-parent-272
 
-echo "Usage: $0 [-v <PACKAGE_VERSION>]"
-echo "PACKAGE_VERSION is an optional paramater whose default value is jmxtrans-parent-272, not all versions are supported."
+echo "Usage: $0 [<PACKAGE_VERSION>]"
+echo "PACKAGE_VERSION is an optional parameter whose default value is jmxtrans-parent-272, not all versions are supported."
 
 PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 
@@ -36,10 +36,7 @@ git clone $PACKAGE_URL
 cd jmxtrans/
 git checkout $PACKAGE_VERSION
 
-#Build package
-mvn clean install
-
-#Test pacakge
-mvn test 
+#Build and test package
+mvn install
 
 echo "Complete!"

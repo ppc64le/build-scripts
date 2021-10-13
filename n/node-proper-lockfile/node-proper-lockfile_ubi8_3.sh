@@ -22,8 +22,8 @@ PACKAGE_URL=https://github.com/moxystudio/node-proper-lockfile.git
 PACKAGE_VERSION=v4.1.1
 NODE_VERSION=v12.22.4
 
-echo "Usage: $0 [-v <PACKAGE_VERSION>]"
-echo "PACKAGE_VERSION is an optional paramater whose default value is v4.1.1, not all versions are supported."
+echo "Usage: $0 [<PACKAGE_VERSION>]"
+echo "PACKAGE_VERSION is an optional parameter whose default value is v4.1.1, not all versions are supported."
 
 PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 
@@ -43,13 +43,10 @@ cd node-proper-lockfile/
 git checkout $PACKAGE_VERSION
 
 #Build package
-npm i
-npm audit fix
-npm audit fix --force
 npm install
 npm audit fix
 npm audit fix --force
-npm i
+npm install
 
 #Test pacakge
 npm test 

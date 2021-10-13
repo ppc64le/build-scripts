@@ -1,11 +1,11 @@
 # ----------------------------------------------------------------------------
 #
 # Package         : tink
-# Version         : 
+# Version         : v1.6.1 
 # Source repo     : https://github.com/google/tink
-# Tested on       : 
-# Script License  : 
-# Maintainer      : 
+# Tested on       : RHEL 8.3
+# Script License  : Apache License, Version 2.0
+# Maintainer      : Raju Sah <Raju.Sah@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -41,6 +41,7 @@ cd ../
 #clone the git repo.
 git clone https://github.com/google/tink
 cd tink/
+git checkout v1.6.1
 
 #build the repo.
  bazel build //:tink_version

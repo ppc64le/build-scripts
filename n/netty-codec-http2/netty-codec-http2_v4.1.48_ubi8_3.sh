@@ -22,8 +22,8 @@
 PACKAGE_URL=https://github.com/netty/netty.git
 PACKAGE_VERSION=netty-4.1.48.Final
 
-echo "Usage: $0 [-v <PACKAGE_VERSION>]"
-echo "PACKAGE_VERSION is an optional paramater whose default value is netty-4.1.48.Final, not all versions are supported."
+echo "Usage: $0 [<PACKAGE_VERSION>]"
+echo "PACKAGE_VERSION is an optional parameter whose default value is netty-4.1.48.Final, not all versions are supported."
 
 PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 
@@ -37,10 +37,7 @@ git clone $PACKAGE_URL
 cd netty/codec-http2/
 git checkout $PACKAGE_VERSION
 
-#Build package
-mvn clean install
-
-#Test pacakge
-mvn test 
+#Build and test package
+mvn install
 
 echo "Complete!"
