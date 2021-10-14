@@ -68,7 +68,7 @@ echo "Build Complete. Uncomment the following lines to run tests."
 #rm -f /usr/bin/python3
 #git clone https://github.com/ppc64le/build-scripts.git
 #cd build-scripts/c/chromium
-#sed -i "s#./chromedriver --version#echo \$(pwd) > '/opt/chrome.binary'#g" Chromium_84.0.4118.0_UBI.sh
+#sed -i "s#./chromedriver --version#echo '"$(pwd)"' > '/opt/chrome.binary'#g" Chromium_84.0.4118.0_UBI.sh
 #./Chromium_84.0.4118.0_UBI.sh
 #CHROME_DIR=$(cat /opt/chrome.binary)
 #export CHROME_BIN=$CHROME_DIR/chrome
