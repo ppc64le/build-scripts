@@ -54,7 +54,7 @@ yarn install
 yarn build-all
 
 #conclude
-echo "Build Complete. Uncomment the following lines to run tests."
+echo "Build Complete. Uncomment the following lines to run tests, they may take a while to complete."
 
 #rm -f /usr/bin/python3
 #dnf remove -y module nodejs
@@ -63,20 +63,23 @@ echo "Build Complete. Uncomment the following lines to run tests."
 #http://mirror.centos.org/centos/8/BaseOS/ppc64le/os/Packages/centos-linux-repos-8-3.el8.noarch.rpm \
 #http://mirror.centos.org/centos/8/BaseOS/ppc64le/os/Packages/centos-gpg-keys-8-3.el8.noarch.rpm
 #yum install -y firefox
-#sed -i "s#this.browserDisconnectTimeout = 2000#this.browserDisconnectTimeout = 210000#g" /opt/carbon-charts/node_modules/karma/lib/config.js
-#sed -i "s#this.captureTimeout = 60000#this.captureTimeout = 210000#g" /opt/carbon-charts/node_modules/karma/lib/config.js
-#sed -i "s#this.browserNoActivityTimeout = 30000#this.browserNoActivityTimeout = 210000#g" /opt/carbon-charts/node_modules/karma/lib/config.js
-#sed -i "s#this.browserDisconnectTolerance = 0#this.browserDisconnectTolerance = 3#g" /opt/carbon-charts/node_modules/karma/lib/config.js
 #cd /opt
-#rm -f /usr/bin/python3
 #git clone https://github.com/ppc64le/build-scripts.git
 #cd build-scripts/c/chromium
-#sed -i "s#./chromedriver --version#echo '"$(pwd)"' > '/opt/chrome.binary'#g" Chromium_84.0.4118.0_UBI.sh
+#sed -i "s#./chromedriver --version#echo \$(pwd) > /opt/chrome.binary#g" Chromium_84.0.4118.0_UBI.sh
 #./Chromium_84.0.4118.0_UBI.sh
 #CHROME_DIR=$(cat /opt/chrome.binary)
 #export CHROME_BIN=$CHROME_DIR/chrome
 #chmod 777 $CHROME_BIN
 #sed -i "s#'--headless'#'--headless', '--no-sandbox'#g" /opt/carbon-charts/node_modules/karma-chrome-launcher/index.js
+#dnf module install -y nodejs:12
+#curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo
+#rpm --import https://dl.yarnpkg.com/rpm/pubkey.gpg
+#dnf install -y yarn
 #cd /opt/carbon-charts
+#sed -i "s#this.browserDisconnectTimeout = 2000#this.browserDisconnectTimeout = 210000#g" /opt/carbon-charts/node_modules/karma/lib/config.js
+#sed -i "s#this.captureTimeout = 60000#this.captureTimeout = 210000#g" /opt/carbon-charts/node_modules/karma/lib/config.js
+#sed -i "s#this.browserNoActivityTimeout = 30000#this.browserNoActivityTimeout = 210000#g" /opt/carbon-charts/node_modules/karma/lib/config.js
+#sed -i "s#this.browserDisconnectTolerance = 0#this.browserDisconnectTolerance = 3#g" /opt/carbon-charts/node_modules/karma/lib/config.js
 #yarn test
 #echo "Tests Complete!"
