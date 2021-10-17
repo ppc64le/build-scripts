@@ -60,11 +60,6 @@ yarn build-all
 #conclude
 echo "Build Complete. Uncomment the following lines to run tests, they may take a while to complete."
 
-dnf -y install \
-http://mirror.centos.org/centos/8/BaseOS/ppc64le/os/Packages/centos-linux-repos-8-3.el8.noarch.rpm \
-http://mirror.centos.org/centos/8/BaseOS/ppc64le/os/Packages/centos-gpg-keys-8-3.el8.noarch.rpm
-yum install -y firefox
-
 #rm -f /usr/bin/python3
 #dnf remove -y module nodejs
 #yum install -y python3 libarchive
