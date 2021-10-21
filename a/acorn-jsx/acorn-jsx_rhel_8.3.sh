@@ -4,7 +4,7 @@
 # Version	: 5.2.0
 # Source repo	: https://github.com/acornjs/acorn-jsx
 # Tested on	: UBI 8.4
-# Package type : Node
+# Language : Node
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
