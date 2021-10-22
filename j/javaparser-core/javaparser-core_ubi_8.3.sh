@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : javaparser-core
-# Version       : javaparser-parent-3.23.1
+# Version       : javaparser-parent-3.23.1, javaparser-parent-2.4.0
 # Source repo   : https://github.com/javaparser/javaparser
 # Tested on     : ubi: 8.3
 # Script License: Apache License 2.0
@@ -25,6 +25,8 @@ PACKAGE_VERSION=javaparser-parent-3.23.1
 PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 PACKAGE_NAME=javaparser/javaparser-core
 PACKAGE_URL=https://github.com/javaparser/javaparser.git
+
+echo "Building for version-$PACKAGE_VERSION"
 
 # Installation of required sotwares. 
 yum update -y
