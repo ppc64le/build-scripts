@@ -43,3 +43,4 @@ git checkout $VERSION
 
 # Build and test package
 npm install postcss-reduce-initial --save
+npm install postcss-reduce-initial test --save
