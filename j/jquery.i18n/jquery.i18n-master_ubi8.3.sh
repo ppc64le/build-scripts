@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------------------------------
 #
 # Package       : jquery.i18n
-# Version       : master
+# Version       : master, 1.0.7
 # Tested on     : UBI 8.3 (Docker)
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sumit Dubey <Sumit.Dubey2@ibm.com>
@@ -66,5 +66,7 @@ echo "Build Complete. Uncomment the following lines to run tests, they may take 
 #rm -rf $CHROME_PUPPETEER
 #cp -r /opt/chromium_84_0_4118_0 $CHROME_PUPPETEER
 #dnf module install -y nodejs:14
+#cd /opt/jquery.i18n
+#sed -i "s#'--headless',#'--headless', '--no-sandbox',#g" $(grep -Ril './' -e '--headless')
 #npm test
 #echo "Tests Complete!"
