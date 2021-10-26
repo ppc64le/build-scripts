@@ -61,7 +61,7 @@ php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php
 
 composer require --dev phpunit/phpunit --with-all-dependencies ^8
 
-mkdir -p output
+mkdir -p /home/tester/output/
 
 set -x
 install_test_success_update()
@@ -133,7 +133,7 @@ cd /home/tester/$PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 INSTALL_SUCCESS="false"
-for phpver in 7.3.28 8.0.7
+for phpver in 7.3.28 7.4.20 8.0.7
 do
 	phpenv global $phpver
 	echo "Running composer install with $phpver" 
@@ -201,19 +201,22 @@ if [ $(find . -name "*Test*" | grep -v "IntlTestHelper" | wc -l) -gt 0 ];then
 			
 	#packages like symfony/dependency-injection needs some class from phpunit-bridge
 	echo "Some package needs symfony/phpunit-bridge so trying unit tests with it"
-	for phpunitver in 9 8 7 6 5
-	do	
-		composer require --with-all-dependencies --dev symfony/phpunit-bridge phpunit/phpunit ^${phpunitver}
+	
+	if [[ $PACKAGE_NAME == "symfony"* ]];then
+		for phpunitver in 9 8 7 6 5
+		do	
+			composer require --with-all-dependencies --dev symfony/phpunit-bridge phpunit/phpunit ^${phpunitver}
 
-		set_phpunit_params
-		
-		if ! ( ./vendor/phpunit/phpunit/phpunit . ${phpunit_param} );then
-			TEST_SUCCESS="false"
-		else
-			install_test_success_update
-		fi
-		composer remove --with-all-dependencies --dev symfony/phpunit-bridge phpunit/phpunit ^${phpunitver}
-	done
+			set_phpunit_params
+			
+			if ! ( ./vendor/phpunit/phpunit/phpunit . ${phpunit_param} );then
+				TEST_SUCCESS="false"
+			else
+				install_test_success_update
+			fi
+			composer remove --with-all-dependencies --dev symfony/phpunit-bridge phpunit/phpunit ^${phpunitver}
+		done
+	fi
 	
 	if [ $TEST_SUCCESS == "false" ]
 	then
