@@ -8,7 +8,7 @@ Please follow the below rules while contributing your build script to this repo.
 	VERSION=${1:-v5.0.2}
 	# v5.0.2 is the default version, in case of no parameter passed to the script.
 	```
-3. Always create a directory for each new package/component and place [LICENSE](https://github.com/ppc64le/build-scripts/blob/master/LICENSE) file into it.
+3. Check if package/component directory already exists and add new file into it. If not, create a directory for new package/component and place LICENSE file into it.
 4. Package name & Filenames must be in **lowercase**.
 5. Get Legal approvals incase of any code change/patch. 
 6. Build script templates can be found [here](https://github.com/ppc64le/build-scripts/tree/master/templates).
