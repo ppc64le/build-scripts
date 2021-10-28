@@ -1,7 +1,7 @@
 # ---------------------------------------------------------------------
 #
 # Package       : carbon-components
-# Version       : 10.44.2. 10.45.0
+# Version       : 10.46.0
 # Tested on     : UBI 8.3 (Docker)
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sumit Dubey <Sumit.Dubey2@ibm.com>
@@ -20,15 +20,15 @@ set -ex
 
 #Variables
 REPO=https://github.com/carbon-design-system/carbon.git
-PACKAGE_VERSION=10.44.2
+PACKAGE_VERSION=10.46.0
 
 echo "Usage: $0 [-v <PACKAGE_VERSION>]"
-echo "PACKAGE_VERSION is an optional paramater whose default value is 10.44.2, not all versions are supported."
+echo "PACKAGE_VERSION is an optional paramater whose default value is 10.46.0, not all versions are supported."
 
 PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 
 #install dependencies
-yum install git make gcc-c++ python3 unzip sed -y
+yum install git make gcc-c++ python3 sed unzip -y
 dnf module install -y nodejs:14
 curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo
 rpm --import https://dl.yarnpkg.com/rpm/pubkey.gpg
@@ -49,8 +49,6 @@ sed -i 's/x64/ppc64/g' node_modules/node-sass/test/errors.js
 yarn rebuild node-sass
 yarn install
 yarn build
-
-#test
 yarn test
 
 #echo "Build and tests complete. Uncomment the following section to run Components specific tests."
@@ -82,3 +80,4 @@ yarn test
 #cd carbon/packages/components
 #yarn test
 #echo "Components Tests Complete!"
+
