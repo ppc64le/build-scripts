@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------------------------------
 #
 # Package       : react-draggable
-# Version       : master
+# Version       : master, 4.4.3
 # Tested on     : UBI 8.3 (Docker)
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sumit Dubey <Sumit.Dubey2@ibm.com>
@@ -13,7 +13,6 @@
 #
 # ----------------------------------------------------------------------------------------------------
 #!/bin/bash
-
 set -ex
 
 #Variables
@@ -41,10 +40,10 @@ else
 	git checkout v$PACKAGE_VERSION
 fi
 
+#Install yarn
 curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo
 rpm --import https://dl.yarnpkg.com/rpm/pubkey.gpg
 dnf install -y yarn
-
 
 #Get phantomjs
 cd /opt
@@ -76,16 +75,16 @@ echo "Build Complete. Uncomment the following lines to run tests, they may take 
 #CHROME_DIR=$(cat /opt/chrome.binary)
 #export CHROME_BIN=$CHROME_DIR/chrome
 #chmod 777 $CHROME_BIN
-#CHROME_PUPPETEER=$(find /opt/jquery.i18n -name chrome-linux)
+#CHROME_PUPPETEER=$(find /opt/react-draggable -name chrome-linux)
 #rm -rf $CHROME_PUPPETEER
 #cp -r /opt/chromium_84_0_4118_0 $CHROME_PUPPETEER
 #dnf module install -y nodejs:14
-#cd /opt/react-draggable/
 #sed -i "s#this.browserDisconnectTimeout = 2000#this.browserDisconnectTimeout = 210000#g" /opt/react-draggable/node_modules/karma/lib/config.js
 #sed -i "s#this.captureTimeout = 60000#this.captureTimeout = 210000#g" /opt/react-draggable/node_modules/karma/lib/config.js
 #sed -i "s#this.browserNoActivityTimeout = 30000#this.browserNoActivityTimeout = 210000#g" /opt/react-draggable/node_modules/karma/lib/config.js
 #sed -i "s#this.browserDisconnectTolerance = 0#this.browserDisconnectTolerance = 3#g" /opt/react-draggable/node_modules/karma/lib/config.js
 #sed -i "s#'--headless'#'--headless', '--no-sandbox'#g" /opt/react-draggable/node_modules/karma-chrome-launcher/index.js
 #sed -i "s#url, '-profile'#url, '-headless', '-profile'#g" /opt/react-draggable/node_modules/karma-firefox-launcher/index.js
+#cd /opt/react-draggable/
 #yarn test
 #echo "Tests Complete!"
