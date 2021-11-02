@@ -20,7 +20,7 @@
 #!/bin/bash
 
 if [ -z "$1" ]; then
-  export VERSION=master
+  export VERSION=v1.3.2
 else
   export VERSION=$1
 fi
