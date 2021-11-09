@@ -1,0 +1,21 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : jws-operator
+# Source Repo         : https://github.com/web-servers/jws-operator.git
+# Travis Job Link     : https://travis-ci.com/github/srividyac09/jws-operator/builds/233172325
+# Created travis.yml  : No
+# Maintainer          : Srividya Chittiboina <Srividya.Chittiboina@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: go
+dist: bionic
+arch:
+  - ppc64le
+  
+go:
+  - 1.16
+ 
+script: 
+  - make build
