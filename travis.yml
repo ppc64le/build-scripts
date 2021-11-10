@@ -10,6 +10,6 @@ env:
 jobs: 
   include: 
     - 
-      if: "branch = master AND type = pull_request"
+      if: "type = pull_request"
       script: 
         - "echo Sample"
