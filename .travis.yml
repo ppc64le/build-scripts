@@ -13,3 +13,4 @@ jobs:
       if: "branch = master AND type = pull_request"
       script: 
         - "python3 script/validate_builds.py $TRAVIS_PULL_REQUEST"
+
