@@ -83,7 +83,7 @@ def trigger_build_validation_travis(pr_number):
             trigger_script_validation_checks(file_name)
 
 if __name__=="__main__":
-    try:
+    if len(sys.argv) > 0:
         trigger_build_validation_travis(sys.argv[1])
-    except Exception as ex:
-        print(str(ex))
+    else:
+        print("Non PR build.")
