@@ -82,6 +82,8 @@ def trigger_build_validation_travis(pr_number):
                 trigger_basic_validation_checks(file_name)
                 # Build/test script files
                 trigger_script_validation_checks(file_name)
+        elif 'message' in i and i["message"] == "Not Found":
+            raise ValueError("Invalid pull request!!")
 
 if __name__=="__main__":
     trigger_build_validation_travis(sys.argv[1])
