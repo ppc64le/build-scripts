@@ -75,15 +75,13 @@ def trigger_build_validation_travis(pr_number):
     response = requests.get(pull_request_file_url).json()
     # Trigger validation for all shell scripts
     for i in response:
-        file_name = i['filename']
-        if file_name.endswith('.sh'):
-            # perform basic validation check
-            trigger_basic_validation_checks(file_name)
-            # Build/test script files
-            trigger_script_validation_checks(file_name)
+        if 'filename' in i:
+            file_name = i['filename']
+            if file_name.endswith('.sh'):
+                # perform basic validation check
+                trigger_basic_validation_checks(file_name)
+                # Build/test script files
+                trigger_script_validation_checks(file_name)
 
 if __name__=="__main__":
-    if len(sys.argv) > 0:
-        trigger_build_validation_travis(sys.argv[1])
-    else:
-        print("Non PR build.")
+    trigger_build_validation_travis(sys.argv[1])
