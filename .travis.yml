@@ -10,4 +10,4 @@ before_install:
     - docker pull registry.access.redhat.com/ubi8/python-36
 
 script:
-    - docker run -u 0 -v $TRAVIS_BUILD_DIR:/home/tester registry.access.redhat.com/ubi8/python-36 /bin/sh -c "pip3 install requests; mkdir -p /home/tester/output; cd /home/tester; python3 script/validate_builds.py $TRAVIS_PULL_REQUEST"
+    - docker run -u 0 -v $TRAVIS_BUILD_DIR:/home/tester registry.access.redhat.com/ubi8/python-36 /bin/sh -c "pip3 install --upgrade pip; pip3 install requests; mkdir -p /home/tester/output; cd /home/tester; python3 script/validate_builds.py $TRAVIS_PULL_REQUEST"
