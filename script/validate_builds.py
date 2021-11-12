@@ -1,6 +1,5 @@
 import os
 import requests
-import json
 import sys
 import subprocess
 
@@ -20,21 +19,13 @@ def trigger_basic_validation_checks(file_name):
     }
     matched_keys = []
     # Check if apache license file exists
-    try:
-        file_parts = file_name.split('/')
-        licence_file = "{}/{}/LICENSE".format(HOME, "/".join(file_parts[:-1]))
-        if not os.path.exists(licence_file):
-            raise ValueError("License file cannot be not found.")
-    except Exception as ex:
-        print(str(ex))
-        return False
+    file_parts = file_name.split('/')
+    licence_file = "{}/{}/LICENSE".format(HOME, "/".join(file_parts[:-1]))
+    if not os.path.exists(licence_file):
+        raise ValueError("License file cannot be not found.")
 
     # Check if components of Doc string are available.
-    try:
-        script_path = "{}/{}".format(HOME, file_name)
-    except Exception as ex:
-        print(str(ex))
-        script_path = None
+    script_path = "{}/{}".format(HOME, file_name)
 
     if os.path.exists(script_path):
         package_data = {}
@@ -55,8 +46,6 @@ def trigger_basic_validation_checks(file_name):
                         matched_keys.append(key)
                         package_data[key_checks[key]] = line.split(':')[-1].strip()
             except IndexError as ie:
-                print(line)
-                print(str(ie))
                 raise IndexError(str(ie))
         # check if all required keys are available
         if set(matched_keys) == set(list(key_checks.keys())):
@@ -78,9 +67,9 @@ def trigger_script_validation_checks(file_name):
         return True
 
 def trigger_build_validation_travis(pr_number):
-    pull_request_file_url = "https://github.com/{}/{}/pulls/{}/files".format(
-        GITHUB_BUILD_SCRIPT_BASE_REPO,
+    pull_request_file_url = "https://api.github.com/repos/{}/{}/pulls/{}/files".format(
         GITHUB_BUILD_SCRIPT_BASE_OWNER,
+        GITHUB_BUILD_SCRIPT_BASE_REPO,
         pr_number
     )
     response = requests.get(pull_request_file_url).json()
@@ -94,4 +83,7 @@ def trigger_build_validation_travis(pr_number):
             trigger_script_validation_checks(file_name)
 
 if __name__=="__main__":
-    trigger_build_validation_travis(sys.argv[1])
+    try:
+        trigger_build_validation_travis(sys.argv[1])
+    except Exception as ex:
+        print(str(ex))
