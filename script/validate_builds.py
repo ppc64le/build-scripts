@@ -75,15 +75,12 @@ def trigger_build_validation_travis(pr_number):
     response = requests.get(pull_request_file_url).json()
     # Trigger validation for all shell scripts
     for i in response:
-        if 'filename' in i:
-            file_name = i['filename']
-            if file_name.endswith('.sh'):
-                # perform basic validation check
-                trigger_basic_validation_checks(file_name)
-                # Build/test script files
-                trigger_script_validation_checks(file_name)
-        elif 'message' in i and i["message"] == "Not Found":
-            raise ValueError("Invalid pull request!!")
+        file_name = i.get('filename', "")
+        if file_name.endswith('.sh'):
+            # perform basic validation check
+            trigger_basic_validation_checks(file_name)
+            # Build/test script files
+            trigger_script_validation_checks(file_name)
 
 if __name__=="__main__":
     trigger_build_validation_travis(sys.argv[1])
