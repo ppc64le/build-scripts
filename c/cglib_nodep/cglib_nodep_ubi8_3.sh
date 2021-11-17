@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : CGLib-nodep
-# Version       : RELEASE_3_3_0 
+# Version       : RELEASE_3_3_0, RELEASE_3_2_9 
 # Source repo   : https://github.com/cglib/cglib
 # Tested on     : UBI 8.3
 # Script License: Apache License, Version 2 or later

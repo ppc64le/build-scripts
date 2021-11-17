@@ -1,0 +1,20 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : openssl
+# Source Repo         : https://github.com/openssl/openssl.git
+# Travis Job Link     : https://travis-ci.com/github/BalavvaMirji/openssl/builds/233651261
+# Created travis.yml  : No
+# Maintainer          : Balavva Mirji <Balavva.Mirji@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: Ruby
+dist: bionic
+arch:
+  - ppc64le
+script:
+  - ./config
+  - make
+  - sudo make install
+  - make test
