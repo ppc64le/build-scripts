@@ -40,6 +40,7 @@ cd $HOME_DIR/$PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 PACKAGE_VERSION=$(jq -r ".version" package.json)
 
+npm install -g grunt && npm install -g grunt-cli
 cd $HOME_DIR/$PACKAGE_NAME/
 
 # run the test command from test.sh
