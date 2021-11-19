@@ -17,27 +17,41 @@
 
 #!/bin/bash
 
-set -eu
+# set -u
+PACKAGE_NAME=mint
+PACKAGE_VERSION="$v0.0.0-20180715133206-93c51c6ce115"
 
-#PACKAGE_VERSION="${1:-v8.1.5}"
-GO_VERSION=1.17.3
+#echo $PACKAGE_VERSION
+IFS='-'
+read -ra PACKAGE_VERSION_SPLIT <<< $PACKAGE_VERSION
+PACKAGE_COMMIT_HASH=${PACKAGE_VERSION_SPLIT[2]}
+ 
+cd  /
+#install dependencies
+yum install -y wget git tar gcc-c++&& \
 
-cd /
-yum install -y wget git tar && \
-wget https://golang.org/dl/go1.17.3.linux-ppc64le.tar.gz && \
-tar -C /bin -xzf go1.17.3.linux-ppc64le.tar.gz && \
+#install go
+rm -rf /bin/go
+wget https://golang.org/dl/go1.10.linux-ppc64le.tar.gz && \
+tar -C /bin -xzf go1.10.linux-ppc64le.tar.gz  && \
+rm -f go1.10.linux-ppc64le.tar.gz && \
 
+#set GO PATH
 export PATH=$PATH:/bin/go/bin
 export GOPATH=/home/tester/go
-go get -d -t  github.com/bifurcation/mint && \
-cd /home/tester/go/pkg/mod/github.com/bifurcation/mint@v0.0.0-20210616192047-fd18df995463
 
-go mod init &&
-#fetch all the dependencies for testing
-go mod tidy
-#run test
-go test -v ./... 
-#go run build.go build
-#go test -v ./pkg/...
+mkdir -p $GOPATH/$PACKAGE_NAME/src
+cd $GOPATH/$PACKAGE_NAME/src
+echo "$PACKAGE_URL" 
+git clone https://github.com/bifurcation/mint.git && \
+cd $PACKAGE_NAME
+git checkout $PACKAGE_COMMIT_HASH
+
+#install dependencies
+go get ./...
+
+
+#start test
+go test  ./... -v && \ 
+	
 exit 0
-
