@@ -25,7 +25,7 @@ ARCH=$(arch)
 
 #Extract version from command line
 echo "Usage: $0 [-v <VERSION>]"
-echo "VERSION is an optional paramater whose default value is 10.1.0-M7, not all versions are supported."
+echo "VERSION is an optional paramater whose default value is 1.7.1, not all versions are supported."
 VERSION="${1:-$VERSION}"
 
 #Dependencies
