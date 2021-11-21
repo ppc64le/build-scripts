@@ -1,10 +1,10 @@
 # ----------------------------------------------------------------------------
 #
-# Package       : netty-resolver
-# Version       : netty-4.1.48.Final
-# Source repo   : https://github.com/netty/netty
+# Package       : jackson-dataformat-csv
+# Version       : jackson-dataformats-text-2.10.5
+# Source repo   : https://github.com/FasterXML/jackson-dataformats-text
 # Tested on     : UBI 8.3
-# Script License: Apache-2.0 License
+# Script License: Apache-2.0 License    
 # Maintainer    : Varsha Aaynure <Varsha.Aaynure@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -17,12 +17,11 @@
 #!/bin/bash
 
 #Variables
-PACKAGE_URL=https://github.com/netty/netty.git
-PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
-PACKAGE_VERSION=netty-4.1.48.Final
+PACKAGE_URL=https://github.com/FasterXML/jackson-dataformats-text.git
+PACKAGE_VERSION=${1:-jackson-dataformats-text-2.10.5}
 
 echo "Usage: $0 [<PACKAGE_VERSION>]"
-echo "PACKAGE_VERSION is an optional parameter whose default value is netty-4.1.48.Final, not all versions are supported."
+echo "PACKAGE_VERSION is an optional parameter whose default value is jackson-dataformats-text-2.10.5, not all versions are supported."
 
 yum update -y 
 
@@ -31,10 +30,10 @@ yum install -y git maven
 
 #Cloning Repo
 git clone $PACKAGE_URL
-cd netty/resolver/ 
+cd jackson-dataformats-text/
 git checkout $PACKAGE_VERSION
 
-#Build and test package
-mvn install
+#Build test package
+mvn install 
 
 echo "Complete!"

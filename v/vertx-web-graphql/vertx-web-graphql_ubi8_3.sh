@@ -1,10 +1,10 @@
 # ----------------------------------------------------------------------------
 #
-# Package       : netty-resolver
-# Version       : netty-4.1.48.Final
-# Source repo   : https://github.com/netty/netty
+# Package       : vertx-web-graphql
+# Version       : 4.1.2
+# Source repo   : https://github.com/vert-x3/vertx-web
 # Tested on     : UBI 8.3
-# Script License: Apache-2.0 License
+# Script License: Apache-2.0 License    
 # Maintainer    : Varsha Aaynure <Varsha.Aaynure@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -17,12 +17,8 @@
 #!/bin/bash
 
 #Variables
-PACKAGE_URL=https://github.com/netty/netty.git
-PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
-PACKAGE_VERSION=netty-4.1.48.Final
-
-echo "Usage: $0 [<PACKAGE_VERSION>]"
-echo "PACKAGE_VERSION is an optional parameter whose default value is netty-4.1.48.Final, not all versions are supported."
+PACKAGE_URL=https://github.com/vert-x3/vertx-web.git
+PACKAGE_VERSION=${1:-4.1.2}
 
 yum update -y 
 
@@ -31,10 +27,10 @@ yum install -y git maven
 
 #Cloning Repo
 git clone $PACKAGE_URL
-cd netty/resolver/ 
+cd vertx-web/vertx-web-graphql/
 git checkout $PACKAGE_VERSION
 
-#Build and test package
+#Build test package
 mvn install
 
 echo "Complete!"
