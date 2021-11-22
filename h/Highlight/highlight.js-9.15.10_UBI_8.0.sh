@@ -3,7 +3,7 @@
 #
 # Package         : Highlight.js
 # Version         : 9.15.10
-# Source repo     : https://github.com/ramda/ramda.git
+# Source repo     : https://github.com/highlightjs/highlight.js.git
 # Tested on       : UBI 8.0
 # Script License  : BSD-3-Clause License
 # Maintainer      : Manik Fulpagar <Manik.Fulpagar@ibm.com>
