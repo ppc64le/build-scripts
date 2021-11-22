@@ -1,0 +1,20 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : wildfly-operator
+# Source Repo         : https://github.com/wildfly/wildfly-operator.git
+# Travis Job Link     : https://travis-ci.com/github/srividyac09/wildfly-operator/builds/231591775
+# Created travis.yml  : No
+# Maintainer          : Srividya Chittiboina <Srividya.Chittiboina@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: go
+dist: bionic
+arch:
+  - ppc64le
+go:
+  - 1.16.x
+script:
+  - make 
+  - make build

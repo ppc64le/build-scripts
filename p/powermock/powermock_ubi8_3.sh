@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : powermock-api-mockito2
-# Version       : 2.0.9
+# Version       : 2.0.9, 2.0.5
 # Source repo   : https://github.com/powermock/powermock
 # Tested on     : UBI 8.3
 # Script License: Apache License, Version 2 or later
@@ -22,9 +22,11 @@ REPO=https://github.com/powermock/powermock.git
 PACKAGE_VERSION=powermock-2.0.9    
 
 echo "Usage: $0 [-v <PACKAGE_VERSION>]"
-echo "PACKAGE_VERSION is an optional paramater whose default value is powermock-2.0.9"
+echo "PACKAGE_VERSION is an optional paramater whose default value is powermock-2.0.9 and also support for version powermock-2.0.5"
 
 PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
+
+echo "Building for version-$PACKAGE_VERSION"
 
 #Install required files
 yum update -y
