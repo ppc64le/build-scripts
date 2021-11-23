@@ -22,9 +22,9 @@ PACKAGE_NAME=libtrust
 PACKAGE_VERSION="v0.0.0-20160708172513-aabc10ec26b7"
 
 #echo $PACKAGE_VERSION
-#IFS='-'
-#read -ra PACKAGE_VERSION_SPLIT <<< $PACKAGE_VERSION
-#PACKAGE_COMMIT_HASH=${PACKAGE_VERSION_SPLIT[2]}
+IFS='-'
+read -ra PACKAGE_VERSION_SPLIT <<< $PACKAGE_VERSION
+PACKAGE_COMMIT_HASH=${PACKAGE_VERSION_SPLIT[2]}
  
 cd  /
 #install dependencies
@@ -42,15 +42,9 @@ export GOPATH=/home/tester/go
 
 mkdir -p $GOPATH/src
 cd $GOPATH/src
-#echo "$PACKAGE_URL" 
-#git clone https://github.com/bifurcation/mint.git && \
-wget https://proxy.golang.org/github.com/docker/libtrust/@v/$PACKAGE_VERSION.zip && \
-
-echo "unzip package"
-unzip $PACKAGE_VERSION &&\
-
-echo "go to src"
-cd github.com/docker/$PACKAGE_NAME@$PACKAGE_VERSION
+git clone https://github.com/docker/libtrust.git && \
+cd $PACKAGE_NAME
+git checkout $PACKAGE_COMMIT_HASH
 
 echo "Install dependecies"
 go get  ./... && \
