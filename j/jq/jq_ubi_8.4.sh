@@ -2,8 +2,8 @@
 #
 # Package               : jq
 # Version               : 1.6
-# Source repo           : https://github.com/jnr/jffi
-# Tested on             : RHEL 7.6
+# Source repo           : https://github.com/stedolan/jq.git
+# Tested on             : RHEL 8.4
 # Script License        : Apache License Version 2.0
 # Maintainer            : Kandarpa Malipeddi <kandarpa.malipeddi@ibm.com>
 #
