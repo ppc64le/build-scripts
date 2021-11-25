@@ -57,5 +57,5 @@ git branch
 
 npm install --unsafe-perm | tee $LOGS_DIRECTORY/$PKG_NAME.txt
 node scripts/build -f
-
+sed -i "47 s/default: return false;/case 'ppc64':return '64-bit'; \n\t default: return false;/" lib/extensions.js
 npm test | tee $LOGS_DIRECTORY/$PKG_NAME_Test.txt
