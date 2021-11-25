@@ -27,7 +27,7 @@ if [ -d "sentry-python" ] ; then
 fi
 
 # Dependency installation
-dnf update
+# dnf update
 dnf install -y ncurses git python36 make python3-devel gcc gcc-c++
 ln -s /usr/bin/python3 /usr/bin/python
 
