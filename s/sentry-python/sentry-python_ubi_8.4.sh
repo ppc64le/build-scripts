@@ -27,12 +27,12 @@ if [ -d "sentry-python" ] ; then
 fi
 
 # Dependency installation
-dnf update
-dnf install -y git python36 make python3-devel gcc gcc-c++
+# dnf update
+dnf install -y ncurses git python36 make python3-devel gcc gcc-c++
 ln -s /usr/bin/python3 /usr/bin/python
 
 # Download the repos
-git clone https://github.com/kishorkunal-raj/sentry-python.git
+git clone https://github.com/getsentry/sentry-python.git
 
 
 # Build and Test sentry-python
