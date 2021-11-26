@@ -20,7 +20,7 @@
 #Variables.
 PACKAGE_NAME=soap-ws/soap-common
 PACKAGE_URL=https://github.com/reficio/soap-ws
-
+PACKAGE_VERSION=master
 
 # Installation of required sotwares. 
 yum install git maven -y 
@@ -28,6 +28,7 @@ yum install git maven -y
 # Cloning the repository from remote to local. 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 
 # Build and test.
 if ! mvn clean install -Dlicense.skip=true -Dadditionalparam=-Xdoclint:none -DskipTests; then
@@ -38,6 +39,8 @@ if ! mvn test -Dlicense.skip=true; then
 	echo "------------------$PACKAGE_NAME:INSTALL_PASSED_BUT_TEST_FAILED---------------------"
 	exit 0
 else
-	echo "------------------$PACKAGE_NAME:INSTALL_&_TEST_BOTH_PASSED-------------------------"
-	exit 0
+        echo -e "\n------------------$PACKAGE_NAME:INSTALL_&_TEST_BOTH_PASSED-------------------------"
+        PATH=$(find -name *.jar)
+        echo -e "\n------------------.JAR CREATED IN DIRECTORY:$PACKAGE_NAME, PATH-------------------------"
+        echo "$PATH
 fi
