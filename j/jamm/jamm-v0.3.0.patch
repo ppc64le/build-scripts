@@ -1,0 +1,16 @@
+diff --git a/build.xml b/build.xml
+index c214cc1..1b74cd1 100644
+--- a/build.xml
++++ b/build.xml
+@@ -20,9 +20,9 @@
+   <property name="test.out" value="${build.dir}/test/output"/>
+   <property name="test.name" value="*Test"/>
+ 
+-  <property name="ivy.version" value="2.1.0" />
++  <property name="ivy.version" value="2.5.0" />
+   <property name="ivy.url"
+-            value="http://repo2.maven.org/maven2/org/apache/ivy/ivy" />
++            value="https://repo1.maven.org/maven2/org/apache/ivy/ivy" />
+ 
+   <condition property="ivy.jar.exists">
+     <available file="${build.dir}/ivy-${ivy.version}.jar" />
