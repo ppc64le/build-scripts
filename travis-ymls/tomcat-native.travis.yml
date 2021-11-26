@@ -1,0 +1,26 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : tomcat-native
+# Source Repo         : https://github.com/apache/tomcat-native.git
+# Travis Job Link     : https://travis-ci.com/github/srividyac09/tomcat-native/builds/233482810
+# Created travis.yml  : No
+# Maintainer          : Srividya Chittiboina <Srividya.Chittiboina@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: java
+dist: bionic
+arch:
+  - ppc64le
+  
+addons:
+  apt:
+    packages:
+      - ant
+      - ant-optional
+script: 
+  - ant 
+  - ant download
+  - sudo cp -a  $HOME  ${ANT_HOME}/lib/
+  - ant test
