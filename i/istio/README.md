@@ -1,7 +1,6 @@
 # Istio for ppc64le
 
 This scripts allows to build istio package and docker images for ppc64le.
-Prebuilt images are also available under [TODO].
 
 ## How to use?
 
@@ -14,7 +13,7 @@ build.sh <version to build>
 Several environment variables can be used to customize the build :
 
 * *WORK_DIR*: defines the path to the temporary working directory (default: temp directory created with mktemp)
-* *HUB*: defines the registry and repository to be used for the images (default: [TODO])
+* *HUB*: defines the registry and repository to be used for the images (default: localhost:5000/istio)
 * *BUILD_TOOLS*: defines if the build-tools images will be built (default: yes)
 * *PUBLISH_TOOLS*: defines if the build-tools images will be published to the registry (default: no)
 * *BUILD_PROXY*: defines if the envoy binary will be built (default: yes)
@@ -56,21 +55,3 @@ spec:
   hub: <...>
   profile: demo
 ```
-
-## Istio images
-
-### [TODO]/proxyv2:{VERSION}[-distroless]
-
-[TODO]/proxyv2/tags
-
-### [TODO]/pilot:{VERSION}[-distroless]`
-
-[TODO]/querycapistio/pilot
-
-### [TODO]/operator:{VERSION}[-distroless]
-
-[TODO]/operator/tags
-
-### [TODO]/install-cni:{VERSION}[-distroless]
-
-[TODO]/install-cni/tags
