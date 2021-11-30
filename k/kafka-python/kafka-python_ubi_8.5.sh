@@ -19,7 +19,7 @@ PACKAGE_NAME=kafka-python
 PACKAGE_VERSION=${1:-2.0.2}
 PACKAGE_URL=https://github.com/dpkp/kafka-python
 
-yum -y update && yum install -y python3 python3-devel git gcc java-1.8.0-openjdk wget
+yum install -y python3 python3-devel git gcc java-1.8.0-openjdk wget
 
 pip3 install tox
 
@@ -43,10 +43,18 @@ source $HOME_DIR/$PACKAGE_NAME/travis_java_install.sh
 source $HOME_DIR/$PACKAGE_NAME/build_integration.sh
 
 cd $HOME_DIR/$PACKAGE_NAME
+if ! python3 setup.py install; then
+	echo "------------------$PACKAGE_NAME:install_fails---------------------"
+	echo "$PACKAGE_URL $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
+	exit 1
+fi
+
+cd $HOME_DIR/$PACKAGE_NAME
 if ! tox -e py36; then
-	echo "------------------$PACKAGE_NAME:install_or_test_fails---------------------"
+	echo "------------------$PACKAGE_NAME:test_fails---------------------"
 	echo  "$PACKAGE_URL $PACKAGE_NAME " 
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | Fail |  Install_or_test_Fails"
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | Fail |  Test_Fails"
 	exit 0
 else
 	echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
