@@ -42,5 +42,5 @@ else
         echo -e "\n------------------$PACKAGE_NAME:INSTALL_&_TEST_BOTH_PASSED-------------------------"
         PATH=$(find -name *.jar)
         echo -e "\n------------------.JAR CREATED IN DIRECTORY:$PACKAGE_NAME, PATH-------------------------"
-        echo "$PATH
+        echo "$PATH"
 fi
