@@ -48,9 +48,9 @@ fi
 cd $(ls -d $GOPATH/src/$PACKAGE_PATH$PACKAGE_NAME)
 
 echo `pwd`
-echo "Testing $PACKAGE_PATH with $PACKAGE_VERSION"
+echo "Testing $PACKAGE_PATH$PACKAGE_NAME with $PACKAGE_VERSION"
 
-if ! go test -v -timeout 3h .; then
+if ! go test -v -cover -timeout 3h ./...; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/test_fails
 	echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master  | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
