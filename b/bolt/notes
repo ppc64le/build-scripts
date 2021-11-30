@@ -2,7 +2,7 @@ Pakckage : bolt
 Version  : 1.3.1
 Git URL  : https://github.com/boltdb/bolt
 
-As the bolt package is depricated and last it was build with go version 1.7.x in year 2017, hence we have also tested with the same go version (1.7.4)
+As the bolt package is deprecated and last it was build with go version 1.7.x in year 2017, hence we have also tested with the same go version (1.7.4)
 
 Below is the test result:
 
@@ -27,5 +27,5 @@ Below is the test result:
 
 4. On power architecture ppc64le few tests are taking longer time, more than 1-2 hours. Hence we ran the tests with -timeout 3h option.
 
-As the bolt package was build years ago and depricated, we are not spending much time to investigate the failure of tests.
+As the bolt package was build years ago and deprecated, we are not spending much time to investigate the failure of tests.
 
