@@ -45,6 +45,6 @@ if ! mvn clean install; then
 else
         echo -e "\n------------------$PACKAGE_NAME:INSTALL_PASSED-------------------------"
         PATH=$(find -name *.jar)
-        echo -e "\n------------------.JAR CREATED IN DIRECTORY:$PACKAGE_NAME, PATH-------------------------"
+        echo -e "\n------------------.JAR CREATED IN DIRECTORY:$BASE_PACKAGE_NAME/$PACKAGE_NAME, PATH-------------------------"
         echo "$PATH"
 fi
