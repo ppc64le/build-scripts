@@ -98,10 +98,10 @@ fi
 export HOME_DIR=/home/tester/$PACKAGE_NAME
 cd $HOME_DIR
 git checkout $PACKAGE_VERSION
-cd $PACKAGE_NAME
+#cd $PACKAGE_NAME
 
-#sed -i '0,/4.1.70/s/4.1.70/4.1.51/g' pom.xml
-#sed -i 's/linux-x86_64/linux-ppcle_64/g' pom.xml
+sed -i '0,/4.1.51/s/4.1.51/4.1.70/g' /home/tester/vertx-micrometer-metrics/pom.xml
+sed -i 's/linux-x86_64/linux-ppcle_64/g' /home/tester/vertx-micrometer-metrics/pom.xml
 
 mvn clean install
 
