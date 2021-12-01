@@ -34,19 +34,21 @@ yum -y install java-1.8.0-openjdk-devel
 #yum install -y openssl-devel.ppc64le
 #yum install -y cmake.ppc64le cmake3.ppc64le
 
+dnf install make maven git sudo wget gcc-c++ apr-devel perl openssl-devel automake autoconf libtool -y
+
 cd $HOME
 echo `pwd`
 
 # --------- Installing cmake version 3.21.2 -----------------
 echo "--------- Installing cmake version 3.21.2 -----------------"
 
-#wget https://github.com/Kitware/CMake/releases/download/v3.21.2/cmake-3.21.2.tar.gz
-#tar -xvf cmake-3.21.2.tar.gz
-#cd cmake-3.21.2
-#./bootstrap
-#make
-#make install
-#cd ..
+wget https://github.com/Kitware/CMake/releases/download/v3.21.2/cmake-3.21.2.tar.gz
+tar -xvf cmake-3.21.2.tar.gz
+cd cmake-3.21.2
+./bootstrap
+make
+make install
+cd ..
 
 # JAVA_HOME
 export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.312.b07-2.el8_5.ppc64le
@@ -55,13 +57,13 @@ export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.312.b07-2.el8_5.ppc64le
 echo "`date +'%d-%m-%Y %T'` - Installed Build Dependencies -----------------------------------"
 echo "-------- Building tcnative version 2.0.44.Final ----------------"
 
-#git clone --recurse https://github.com/netty/netty-tcnative.git
-#cd netty-tcnative
-#git checkout netty-tcnative-parent-2.0.44.Final
+git clone --recurse https://github.com/netty/netty-tcnative.git
+cd netty-tcnative
+git checkout netty-tcnative-parent-2.0.44.Final
 
-#mvn clean install
+mvn clean install
 
-#cd ..
+cd ..
 
 echo "-------- Building transport-native-epoll version 4.1.70.Final is successful----------------"
 
@@ -69,20 +71,20 @@ echo "-------- Building transport-native-epoll version 4.1.70.Final is successfu
 echo "`date +'%d-%m-%Y %T'` - Installed Build Dependencies -----------------------------------"
 echo "-------- Building transport-native-epoll version 4.1.70.Final ----------------"
 
-#git clone --recurse https://github.com/netty/netty
-#cd netty
-#git checkout netty-4.1.70.Final # version checkout
+git clone --recurse https://github.com/netty/netty
+cd netty
+git checkout netty-4.1.70.Final # version checkout
 
-#cd transport-native-unix-common
+cd transport-native-unix-common
 
-#mvn clean install 
+mvn clean install 
 
-#cd ..
-#cd transport-native-epoll
+cd ..
+cd transport-native-epoll
+echo `pwd`
+mvn clean install
 
-#mvn clean install
-
-#cd ../..
+cd ../..
 
 echo "-------- Building tcnative version 2.0.44.Final is successful----------------"
 
