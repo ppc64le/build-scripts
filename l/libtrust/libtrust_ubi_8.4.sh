@@ -1,8 +1,8 @@
 # ----------------------------------------------------------------------------
 #
 # Package        : libtrust
-# Version        : 
-# Source repo    : 
+# Version        : v0.0.0-20160708172513-aabc10ec26b7
+# Source repo    : https://github.com/docker/libtrust.git
 # Tested on      : UBI 8.4
 # Script License : Apache License, Version 2 or later
 # Maintainer     : Sapana Khemkar <spana.khemkar@ibm.com>
@@ -21,11 +21,7 @@
 PACKAGE_NAME=libtrust
 PACKAGE_VERSION="v0.0.0-20160708172513-aabc10ec26b7"
 
-#echo $PACKAGE_VERSION
-IFS='-'
-read -ra PACKAGE_VERSION_SPLIT <<< $PACKAGE_VERSION
-PACKAGE_COMMIT_HASH=${PACKAGE_VERSION_SPLIT[2]}
- 
+PACKAGE_COMMIT_HASH=`echo $PACKAGE_VERSION | cut -d'-' -f3` 
 cd  /
 #install dependencies
 yum install -y wget git tar unzip gcc-c++&& \
