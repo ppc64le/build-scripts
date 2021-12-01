@@ -36,10 +36,18 @@ fi
 cd $HOME_DIR/$PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+if ! pip3 install .; then
+	echo "------------------$PACKAGE_NAME:install_fails---------------------"
+	echo "$PACKAGE_URL $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
+	exit 1
+fi
+
+cd $HOME_DIR/$PACKAGE_NAME
 if ! tox -e py36; then
 	echo "------------------$PACKAGE_NAME:install_or_test_fails---------------------"
 	echo  "$PACKAGE_URL $PACKAGE_NAME " 
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | Fail |  Install_or_test_Fails"
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | Fail |  Test_Fails"
 	exit 1
 else
 	echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
