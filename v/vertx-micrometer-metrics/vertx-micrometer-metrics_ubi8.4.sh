@@ -100,6 +100,9 @@ cd $HOME_DIR
 git checkout $PACKAGE_VERSION
 cd $PACKAGE_NAME
 
+#sed -i '0,/4.1.70/s/4.1.70/4.1.51/g' pom.xml
+#sed -i 's/linux-x86_64/linux-ppcle_64/g' pom.xml
+
 mvn clean install
 
 echo "-------- Building $PACKAGE_NAME is successful----------------"
