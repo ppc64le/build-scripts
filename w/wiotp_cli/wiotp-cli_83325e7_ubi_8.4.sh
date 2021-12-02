@@ -35,8 +35,6 @@ read  WIOTP_API_TOKEN
 	#  refer link ( https://developer.ibm.com/tutorials/iot-generate-apikey-apitoken/ )
 
 
-# export WIOTP_API_KEY="a-wjw14h-6etlj9tzgz"
-# export WIOTP_API_TOKEN="d*XW-Umbs-zGM(bt7N"
 
 export WIOTP_API_KEY
 export WIOTP_API_TOKEN
