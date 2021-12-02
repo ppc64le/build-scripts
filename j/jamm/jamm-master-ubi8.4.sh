@@ -22,7 +22,7 @@ PACKAGE_URL="https://github.com/jbellis/jamm.git"
 APACHE_ANT_VERSION="1.10.12"
 
 #install dependencies
-yum install  -y java-1.8.0-openjdk java-1.8.0-openjdk-devel java-1.8.0-openjdk-headless gcc-c++ wget unzip
+yum install  -y java-1.8.0-openjdk java-1.8.0-openjdk-devel java-1.8.0-openjdk-headless  
 
 mkdir -p /home/tester
 cd /home/tester
