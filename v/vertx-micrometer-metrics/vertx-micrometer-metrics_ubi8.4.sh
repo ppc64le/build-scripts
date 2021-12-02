@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : vertx-micrometer-metrics
-# Version       : 3.9.10
+# Version       : 3.9.7
 # Source repo   : https://github.com/vert-x3/vertx-micrometer-metrics
 # Tested on     : RHEL UBI 8.4
 # Script License: Apache License, Version 2 or later
@@ -17,7 +17,7 @@
 #!/bin/bash
 
 PACKAGE_NAME=vertx-micrometer-metrics
-PACKAGE_VERSION=3.9.10
+PACKAGE_VERSION=3.9.7
 PACKAGE_URL=https://github.com/vert-x3/vertx-micrometer-metrics
 
 mkdir -p /home/tester
@@ -73,7 +73,7 @@ echo "-------- Building transport-native-epoll version 4.1.70.Final ------------
 
 git clone --recurse https://github.com/netty/netty
 cd netty
-git checkout netty-4.1.70.Final # version checkout
+git checkout netty-4.1.51.Final  # version checkout
 
 cd transport-native-unix-common
 
@@ -100,7 +100,6 @@ cd $HOME_DIR
 git checkout $PACKAGE_VERSION
 #cd $PACKAGE_NAME
 
-sed -i '0,/4.1.51/s/4.1.51/4.1.70/g' /home/tester/vertx-micrometer-metrics/pom.xml
 sed -i 's/linux-x86_64/linux-ppcle_64/g' /home/tester/vertx-micrometer-metrics/pom.xml
 
 mvn clean install
