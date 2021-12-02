@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : upath
-# Version       : v2.0.1
+# Version       : v1.2.0, v2.0.1
 # Source repo   : https://github.com/anodynos/upath
 # Tested on     : RHEL ubi 8.4
 # Script License: Apache License, Version 2 or later
@@ -16,7 +16,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=upath
-PACKAGE_VERSION=v2.0.1
+PACKAGE_VERSION=${1:-v1.2.0}
 PACKAGE_URL=https://github.com/anodynos/upath
 
 yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git gcc gcc-c++ libffi libffi-devel ncurses git jq make cmake
