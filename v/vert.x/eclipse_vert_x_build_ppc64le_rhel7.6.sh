@@ -25,6 +25,8 @@ echo "`date +'%d-%m-%Y %T'` - Staring eclipse vert.x build. Dependencies will be
 
 yum -y update
 
+yum -y install maven
+
 yum -y install subscription-manager.ppc64le
 yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 subscription-manager repos --enable rhel-7-for-power-le-extras-rpms
