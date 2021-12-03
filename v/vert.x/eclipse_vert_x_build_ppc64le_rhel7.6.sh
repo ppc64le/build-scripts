@@ -47,7 +47,6 @@ echo "--------------------------------------------------------------------------
 
 
 # ------- Clone and build source -------
-#export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.222.b10-1.el7_7.ppc64le/bin
 export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.312.b07-2.el8_5.ppc64le/jre
 
 cd $BUILD_HOME
@@ -60,7 +59,6 @@ fi
 
 cd vert.x
 
-#mvn clean -Dnetty.version=4.1.43.Final-SNAPSHOT -Dtcnative.version=2.0.26.Final-SNAPSHOT install
 mvn clean install
 
 cd $BUILD_HOME
