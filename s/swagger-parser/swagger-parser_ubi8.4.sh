@@ -3,7 +3,7 @@
 # Package	: swagger-parser
 # Version	: v2.0.28
 # Source repo	: https://github.com/swagger-api/swagger-parser.git
-# Tested on	: ubi 4.4
+# Tested on	: ubi 8.4
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sapna Shukla <Sapna.Shukla@ibm.com>
 #
