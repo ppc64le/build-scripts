@@ -41,20 +41,6 @@ fi
 
 cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_PATH@$PACKAGE_VERSION)
 
-#if [ "$PACKAGE_VERSION" = "v1.2.0" ]; then
-#	echo "VIKAS version is v1.2.0"
-#	git clone --recurse https://github.com/vividcortex/ewma
-#	git checkout $PACKAGE_VERSION
-#	cd $PACKAGE_NAME
-#else
-#	echo "VIKAS version is v1.1.1"
-#	if ! go get -d -u -t $PACKAGE_PATH@$PACKAGE_VERSION; then
-#	        echo "------------------$PACKAGE_NAME:install_ failed-------------------------"
-#       	exit 0
-#	fi
-#	cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_PATH@$PACKAGE_VERSION)
-#fi
-
 echo `pwd`
 
 echo "Testing $PACKAGE_PATH with $PACKAGE_VERSION"
