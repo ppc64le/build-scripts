@@ -22,7 +22,7 @@ PACKAGE_URL=https://github.com/klauspost/readahead
 
 yum -y update && yum install -y git wget 
 
-wget https://golang.org/dl/go1.16.1.linux-ppc64le.tar.gz && tar -C /bin -xf go1.16.1.linux-ppc64le.tar.gz && mkdir -p /home/tester/go/src /home/tester/go/bin /home/tester/go/pkg
+wget https://golang.org/dl/go1.13.1.linux-ppc64le.tar.gz && tar -C /bin -xf go1.13.1.linux-ppc64le.tar.gz && mkdir -p /home/tester/go/src /home/tester/go/bin /home/tester/go/pkg
 
 mkdir -p /home/tester/output
 
