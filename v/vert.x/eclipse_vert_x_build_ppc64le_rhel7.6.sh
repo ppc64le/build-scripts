@@ -53,15 +53,62 @@ export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.312.b07-2.el8_5.ppc64le/j
 
 cd $BUILD_HOME
 
-if [[ $# -ne 0 ]] ; then
-    git clone -b $1 https://github.com/eclipse-vertx/vert.x
-else
-    git clone https://github.com/eclipse-vertx/vert.x
-fi
+# --------- Installing cmake version 3.21.2 -----------------
+echo "--------- Installing cmake version 3.21.2 -----------------"
 
-cd vert.x
+wget https://github.com/Kitware/CMake/releases/download/v3.21.2/cmake-3.21.2.tar.gz
+tar -xvf cmake-3.21.2.tar.gz
+cd cmake-3.21.2
+./bootstrap
+make
+make install
+cd ..
 
-mvn clean install
+
+# --------- Installing ninja version v1.4.0 -----------------
+echo "--------- Installing ninja version v1.4.0 -----------------"
+git clone git://github.com/ninja-build/ninja.git
+cd ninja
+git checkout v1.4.0
+./configure.py --bootstrap
+cmake -Bbuild-cmake
+cmake --build build-cmake
+./build-cmake/ninja_test
+ln -sf $SOURCE_ROOT/ninja/ninja /usr/local/bin/ninja
+cd ..
+
+
+#-------- Building tcnative version 2.0.36.Final ----------------
+echo "`date +'%d-%m-%Y %T'` - Installed Build Dependencies -----------------------------------"
+echo "-------- Building tcnative version 2.0.36.Final ----------------"
+
+#git clone --recurse https://github.com/netty/netty-tcnative.git
+#cd netty-tcnative
+#git checkout netty-tcnative-parent-2.0.36.Final
+
+#./mvnw clean install -DskipTests
+#cd ..
+
+#-------- Building netty version 4.1.60.Final ----------------
+echo "`date +'%d-%m-%Y %T'` - Installed Build Dependencies -----------------------------------"
+echo "-------- Building netty version 4.1.60.Final ----------------"
+
+#git clone --recurse https://github.com/netty/netty
+#cd netty
+#git checkout netty-4.1.60.Final  # version checkout
+#mvn clean iinstall -DskipTests
+#cd ..
+
+
+#if [[ $# -ne 0 ]] ; then
+#    git clone -b $1 https://github.com/eclipse-vertx/vert.x
+#else
+#    git clone https://github.com/eclipse-vertx/vert.x
+#fi
+
+#cd vert.x
+
+3mvn clean install
 
 cd $BUILD_HOME
 
