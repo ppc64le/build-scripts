@@ -33,14 +33,15 @@ git checkout $PACKAGE_VERSION
 # Build and test.
 if ! mvn clean install -Dlicense.skip=true -Dadditionalparam=-Xdoclint:none -DskipTests; then
 	echo "------------------$PACKAGE_NAME:INSTALL_FAILED-------------------------------------"
-	exit 0
+	exit 1
 fi
 if ! mvn test -Dlicense.skip=true; then
 	echo "------------------$PACKAGE_NAME:INSTALL_PASSED_BUT_TEST_FAILED---------------------"
-	exit 0
+	exit 1
 else
         echo -e "\n------------------$PACKAGE_NAME:INSTALL_&_TEST_BOTH_PASSED-------------------------"
         PATH=$(find -name *.jar)
         echo -e "\n------------------.JAR CREATED IN DIRECTORY:$PACKAGE_NAME, PATH-------------------------"
         echo "$PATH"
+	exit 0
 fi
