@@ -16,7 +16,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=perks
-PACKAGE_VERSION=v1.0.1
+PACKAGE_VERSION=${1:-v1.0.1}
 PACKAGE_URL=https://github.com/beorn7/perks
 
 yum install -y wget git tar 
@@ -50,14 +50,14 @@ go mod tidy
 if ! go install -v ./...; then
 	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  intsall_Fails"
-	exit 0
+	exit 1
 fi
 
 
 if ! go test -v ./...; then
 	echo "------------------$PACKAGE_NAME:test_fails-------------------------------------"
 	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  test_Fails"
-	exit 0
+	exit 1
 else
 	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Install_and_Test_Success"
