@@ -17,7 +17,7 @@
 
 HOME_DIR=`pwd`
 PACKAGE_NAME=swagger-parser
-PACKAGE_VERSION=v2.0.28
+PACKAGE_VERSION=${1:-v2.0.28}
 PACKAGE_URL=https://github.com/swagger-api/swagger-parser.git
 
 
@@ -40,14 +40,14 @@ function try_mvn(){
 		echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 		echo "$PACKAGE_VERSION $PACKAGE_NAME" > $HOME_DIR/output/install_fails
 		echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master | $OS_NAME | GitHub | Fail |  Install_Fails" > $HOME_DIR/output/version_tracker
-		exit 0
+		exit 1
 	fi
 	
 	if ! mvn test; then
 		echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > $HOME_DIR/output/test_fails 
 		echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > $HOME_DIR/output/version_tracker
-		exit 0
+		exit 1
 	else
 		echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > $HOME_DIR/output/test_success 
