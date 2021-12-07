@@ -20,7 +20,7 @@ PACKAGE_PATH=github.com/tinylib/msgp
 PACKAGE_VERSION=${1:-v1.1.3}
 PACKAGE_URL=https://github.com/tinylib/msgp
 
-yum install -y git wget 
+yum install -y git wget make
 
 wget https://golang.org/dl/go1.17.4.linux-ppc64le.tar.gz && tar -C /bin -xf go1.17.4.linux-ppc64le.tar.gz && mkdir -p /home/tester/go/src /home/tester/go/bin /home/tester/go/pkg
 
@@ -43,18 +43,23 @@ cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_PATH@$PACKAGE_VERSION)
 
 echo `pwd`
 
-echo "Testing $PACKAGE_PATH with $PACKAGE_VERSION"
-
 # Ensure go.mod file exists
 go mod init github.com/tinylib/msgp
 go mod tidy
 
-if ! go test -v ./...; then
-        echo "------------------$PACKAGE_NAME:install__success but Test failed-------------------------"
+# building with make
+echo "Building and Testing $PACKAGE_PATH with $PACKAGE_VERSION"
+
+chmod +x _generated/search.sh
+
+#make travis
+
+if ! make travis; then
+        echo "------------------$PACKAGE_NAME: build and  Test failed-------------------------"
         exit 0
 else
         echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/test_success
-        echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success" > /home/tester/output/version_tracker
+        echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success" > /home/tester/output/version_tracker
         exit 0
 fi
