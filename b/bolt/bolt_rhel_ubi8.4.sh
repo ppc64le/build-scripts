@@ -5,7 +5,7 @@
 # Source repo   : https://github.com/boltdb/bolt
 # Tested on     : RHEL ubi 8.4
 # Script License: Apache License, Version 2 or later
-# Maintainer    : vikas.gupta8@ibm.com
+# Maintainer    : Vikas Gupta <vikas.gupta8@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
