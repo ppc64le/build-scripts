@@ -23,9 +23,7 @@ echo "`date +'%d-%m-%Y %T'` - Staring eclipse vert.x build. Dependencies will be
 
 # ------- Install dependencies -------
 
-yum -y update
-
-yum -y install maven
+yum -y install maven make python3
 
 yum -y install subscription-manager.ppc64le
 yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
@@ -36,20 +34,25 @@ yum -y install gcc-c++.ppc64le
 yum -y install wget
 yum -y install git
 yum -y install java-1.8.0-openjdk-devel
-yum install -y openssl-devel.ppc64le
-yum -y group install "Development Tools"
+dnf install openssl-devel.ppc64le -y
+dnf group install "Development Tools" -y
 
-yum -y install ninja-build.ppc64le
-yum -y install golang
-yum -y install autoconf automake libtool make tar glibc-devel libaio-devel openssl-devel apr-devel lksctp-tools
-yum -y install apr-devel apr-util-devel
+dnf install ninja-build.ppc64le -y
+dnf install golang -y
+dnf install autoconf -y
+dnf install automake -y
+dnf install libtool -y
+dnf install make tar glibc-devel libaio-devel openssl-devel lksctp-tools -y
+dnf install apr-devel apr-util-devel -y
+
+ln -s /usr/bin/python3 /usr/bin/python
 
 echo "`date +'%d-%m-%Y %T'` - Installed Standard Packages -----------------------------------"
 echo "---------------------------------------------------------------------------------------"
 
 
 # ------- Clone and build source -------
-export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.312.b07-2.el8_5.ppc64le/jre
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.312.b07-2.el8_5.ppc64le/
 
 cd $BUILD_HOME
 
@@ -70,11 +73,9 @@ echo "--------- Installing ninja version v1.4.0 -----------------"
 git clone git://github.com/ninja-build/ninja.git
 cd ninja
 git checkout v1.4.0
-./configure.py --bootstrap
-cmake -Bbuild-cmake
-cmake --build build-cmake
-./build-cmake/ninja_test
-ln -sf $SOURCE_ROOT/ninja/ninja /usr/local/bin/ninja
+./bootstrap.py
+cp -r ./ninja /usr/bin/
+ninja --version
 cd ..
 
 
@@ -82,33 +83,33 @@ cd ..
 echo "`date +'%d-%m-%Y %T'` - Installed Build Dependencies -----------------------------------"
 echo "-------- Building tcnative version 2.0.36.Final ----------------"
 
-#git clone --recurse https://github.com/netty/netty-tcnative.git
-#cd netty-tcnative
-#git checkout netty-tcnative-parent-2.0.36.Final
+git clone --recurse https://github.com/netty/netty-tcnative.git
+cd netty-tcnative
+git checkout netty-tcnative-parent-2.0.36.Final
 
-#./mvnw clean install -DskipTests
-#cd ..
+./mvnw clean install -DskipTests
+cd ..
 
 #-------- Building netty version 4.1.60.Final ----------------
 echo "`date +'%d-%m-%Y %T'` - Installed Build Dependencies -----------------------------------"
 echo "-------- Building netty version 4.1.60.Final ----------------"
 
-#git clone --recurse https://github.com/netty/netty
-#cd netty
-#git checkout netty-4.1.60.Final  # version checkout
-#mvn clean iinstall -DskipTests
-#cd ..
+git clone --recurse https://github.com/netty/netty
+cd netty
+git checkout netty-4.1.60.Final  # version checkout
+mvn clean install -DskipTests
+cd ..
 
 
-#if [[ $# -ne 0 ]] ; then
-#    git clone -b $1 https://github.com/eclipse-vertx/vert.x
-#else
-#    git clone https://github.com/eclipse-vertx/vert.x
-#fi
+if [[ $# -ne 0 ]] ; then
+    git clone -b $1 https://github.com/eclipse-vertx/vert.x
+else
+    git clone https://github.com/eclipse-vertx/vert.x
+fi
 
-#cd vert.x
+cd vert.x
 
-3mvn clean install
+mvn clean install
 
 cd $BUILD_HOME
 
