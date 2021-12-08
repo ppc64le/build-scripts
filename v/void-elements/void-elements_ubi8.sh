@@ -4,7 +4,7 @@
 # Version               : 2.0.1
 # Source repo           : https://github.com/pugjs/void-elements
 # Tested on             : UBI 8
-# Script License        : MIT License
+# Script License        : Apache License, Version 2 or later
 # Maintainer            : Swati Singhal <swati.singhal@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -24,7 +24,6 @@ echo "       PACKAGE_VERSION is an optional paramater whose default value is 2.0
 PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 
 # install tools and dependent packages
-yum -y update
 yum -y install git wget gcc-c++ make python2 curl
 
 NODE_VERSION=v12.22.4
@@ -39,4 +38,4 @@ git clone https://github.com/pugjs/void-elements
 cd void-elements
 git checkout v$PACKAGE_VERSION
 npm install
-npm test
+

@@ -1,8 +1,8 @@
 # ----------------------------------------------------------------------------
 #
-# Package               : jszip
-# Version               : 3.3.0
-# Source repo           : https://github.com/Stuk/jszip
+# Package               : @sinonjssamsam
+# Version               : 3.3.3
+# Source repo           : https://github.com/sinonjs/samsam
 # Tested on             : UBI 8
 # Script License        : Apache License, Version 2 or later
 # Maintainer            : Swati Singhal <swati.singhal@ibm.com>
@@ -16,10 +16,10 @@
 # ----------------------------------------------------------------------------
 
 #!/bin/bash
-PACKAGE_VERSION=3.3.0
+PACKAGE_VERSION=3.3.3
 
 echo "Usage: $0 [-v <PACKAGE_VERSION>]"
-echo "       PACKAGE_VERSION is an optional paramater whose default value is 3.3.0"
+echo "       PACKAGE_VERSION is an optional paramater whose default value is 3.3.3"
 
 PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 
@@ -34,8 +34,8 @@ nvm install $NODE_VERSION
 
 # clone, build and test specified version
 
-git clone https://github.com/Stuk/jszip
-cd jszip
+git clone https://github.com/sinonjs/samsam
+cd @sinonjssamsam
 git checkout v$PACKAGE_VERSION
 npm install
 

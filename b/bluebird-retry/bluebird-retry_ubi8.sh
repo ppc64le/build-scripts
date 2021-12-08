@@ -4,7 +4,7 @@
 # Version               : 0.10.1
 # Source repo           : https://github.com/demmer/bluebird-retry
 # Tested on             : UBI 8
-# Script License        : MIT License
+# Script License        : Apache License, Version 2 or later
 # Maintainer            : Swati Singhal <swati.singhal@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -24,7 +24,6 @@ echo "       PACKAGE_VERSION is an optional paramater whose default value is 0.1
 PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 
 # install tools and dependent packages
-yum -y update
 yum -y install git wget gcc-c++ make python2 curl
 
 NODE_VERSION=v12.22.4
