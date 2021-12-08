@@ -1,0 +1,25 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : verdaccio
+# Source Repo         : https://github.com/verdaccio/verdaccio.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/verdaccio/builds/218245894
+# Created travis.yml  : Yes
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+arch: 
+  - amd64
+  - ppc64le
+language: node_js
+os: linux
+node_js: 
+  - node
+  - lts/*
+jobs:
+  allow_failures:
+    - node_js: node
+script:
+  - npm install --global
+  - npm test

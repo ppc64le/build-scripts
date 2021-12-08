@@ -1,0 +1,27 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : python-fire
+# Source Repo         : https://github.com/google/python-fire
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/python-fire/builds/218097597
+# Created travis.yml  : Yes
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+language: python
+
+dist: xenial
+
+arch: 
+  - amd64
+  - ppc64le
+
+python:
+  - 2.7
+  - 3.8
+
+script:
+  - python setup.py install
+  - pip install hypothesis
+  - pytest

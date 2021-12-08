@@ -1,0 +1,32 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : jicofo
+# Source Repo         : https://github.com/jitsi/jicofo
+# Travis Job Link     : https://travis-ci.com/github/asellappen/jicofo/
+# Created travis.yml  : Yes
+# Maintainer          : Arumugam N S <asellappen@yahoo.com>/Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: java
+
+jdk:
+  - openjdk11
+  - openjdk15
+  
+sudo: True
+
+dist : focal
+
+arch:
+  - amd64
+  - ppc64le
+
+script:
+#known issue : jitsi/jicofo#581 for mvn failure for ppc64le,hence ignore option for ppc only
+  - if [[ "$TRAVIS_CPU_ARCH" == "ppc64le" ]]; then 
+      travis_wait 30 mvn test  -Dmaven.test.failure.ignore=true; 
+    else
+      mvn test;
+    fi

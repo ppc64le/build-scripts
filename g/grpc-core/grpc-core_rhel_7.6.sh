@@ -26,7 +26,8 @@ yum install -y git wget curl unzip nano vim make build-essential dos2unix
 yum install -y java java-devel
 which java
 ls /usr/lib/jvm/
-export JAVA_HOME=/usr/lib/jvm/java-1.8.0-ibm-1.8.0.6.5-1jpp.1.el7.ppc64le
+export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-)(?=.*ppc64le)')
+echo "JAVA_HOME is $JAVA_HOME"
 # update the path env. variable 
 export PATH=$PATH:$JAVA_HOME/bin
 

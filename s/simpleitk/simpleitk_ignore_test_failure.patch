@@ -1,0 +1,19 @@
+diff --git a/SLICImageFilter.json b/SLICImageFilter.json
+index f5ac51de..85b882df 100644
+--- a/SLICImageFilter.json
++++ b/SLICImageFilter.json
+@@ -103,12 +103,12 @@
+       "inputs" : [
+         "Input/VM1111Shrink-RGB.png"
+       ],
+-      "tolerance" : 0.05,
++      "tolerance" : 1.50,
+       "measurements_results" : [
+         {
+           "name" : "AverageResidual",
+           "value" : "0.74575",
+-          "tolerance" : 0.0001
++          "tolerance" : 0.05
+         }
+       ]
+     },

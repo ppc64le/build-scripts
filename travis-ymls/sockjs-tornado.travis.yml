@@ -1,0 +1,25 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : sockjs-tornado
+# Source Repo         : https://github.com/gururajrkatti/sockjs-tornado
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/sockjs-tornado/builds/221266413
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: python
+
+arch:
+  - amd64
+  - ppc64le
+
+dist: focal
+
+install:
+  - make
+
+script:
+  - make test_server &

@@ -1,0 +1,26 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : zm-launcher
+# Source Repo         : https://github.com/Zimbra/zm-launcher
+# Travis Job Link     : https://travis-ci.com/github/asellappen/zm-launcher/
+# Created travis.yml  : No
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: c
+
+arch:
+    - amd64
+    - ppc64le
+
+dist: bionic
+
+script:
+   - make clean
+   - make build
+   - make all
+   - make build/zmmailboxdmgr
+   - make build/zmmailboxdmgr.unrestricted
+   - make FORCE

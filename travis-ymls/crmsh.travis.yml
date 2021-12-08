@@ -1,0 +1,31 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : crmsh
+# Source Repo         : https://github.com/ClusterLabs/crmsh
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/crmsh/builds/218194006
+# Created travis.yml  : Yes
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+language: python
+
+dist: bionic
+
+arch: 
+  - amd64
+  - ppc64le
+
+python:
+  - 3.8
+
+before_install:
+  - sudo mkdir /usr/share/crmsh
+  - sudo chmod 777 /usr/share/crmsh
+
+install: pip install tox-travis
+  
+script:
+  - python setup.py install
+  - tox

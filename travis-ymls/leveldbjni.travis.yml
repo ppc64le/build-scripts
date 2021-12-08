@@ -1,0 +1,27 @@
+ ----------------------------------------------------------------------------
+#
+# Package             : leveldbjni
+# Source Repo         : https://github.com/fusesource/leveldbjni
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/leveldbjni
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+
+
+language: java
+arch:
+  - amd64
+  - ppc64le
+
+jdk:
+  - openjdk11
+
+before_install:
+# Update 1.5 to 1.8 since we no longer have jdk 1.5
+  - sed 's/1\.5/1\.8/g' pom.xml > tmp && mv tmp pom.xml
+  - sed 's/1\.5/1\.8/g' leveldbjni/pom.xml > tmp && mv tmp leveldbjni/pom.xml
+ 

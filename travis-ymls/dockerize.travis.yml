@@ -1,0 +1,37 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : dockerize
+# Source Repo         : https://github.com/jwilder/dockerize
+# Travis Job Link     : https://travis-ci.com/github/asellappen/dockerize/
+# Created travis.yml  : Yes
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: go
+
+dist : bionic
+
+arch:
+   - amd64
+   - ppc64le
+go:
+
+  - "1.15.x"
+  - "1.14.x"
+
+
+sudo: false
+
+before_scripts:
+  - go get github.com/hpcloud/tail/...
+  - go get github.com/jwilder/gojq/...
+  - go get golang.org/x/net/context/...
+ 
+install: true
+
+script:
+ - export PATH=${PATH}:`go env GOPATH`/bin
+ - go build -v ./...
+ - go test -v ./...

@@ -1,0 +1,25 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : moonjit
+# Source Repo         : https://github.com/moonjit/moonjit
+# Travis Job Link     : https://travis-ci.com/github/asellappen/moonjit/
+# Created travis.yml  : Yes
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later  
+#
+# ----------------------------------------------------------------------------
+language: c
+
+sudo: false
+
+dist: focal
+arch:
+    - amd64
+    - ppc64le
+script:
+    #few test case are not supported for ppc64le and raised the issue to community
+    #modified files math_special.lua & ffi_arith_int64.lua for ppc64le under test/unportable
+    #Issue raised https://github.com/moonjit/moonjit/issues/137
+    - sudo make install
+    - make check
