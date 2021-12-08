@@ -1,9 +1,9 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : vert.x
-# Version       : 4.0.0-SNAPSHOT
+# Version       : 3.9.7 and 4.1.2
 # Source repo   : https://github.com/eclipse-vertx/vert.x
-# Tested on     : ppc64le_rhel7.6
+# Tested on     : rhel UBI 8.4
 # Script License: Apache License, Version 2 or later
 # Maintainer's  : Santosh Magdum <santosh.magdum@us.ibm.com>
 #                 Priya Seth <priya.seth@us.ibm.com>
@@ -16,6 +16,11 @@
 #
 # ----------------------------------------------------------------------------
 #!/bin/bash
+
+PACKAGE_NAME=vert.x
+PACKAGE_PATH=github.com/eclipse-vertx/vert.x
+PACKAGE_VERSION=${1:-3.9.7}
+PACKAGE_URL=https://github.com/eclipse-vertx/vert.x
 
 BUILD_HOME=`pwd`
 
@@ -102,12 +107,14 @@ cd ..
 
 
 if [[ $# -ne 0 ]] ; then
-    git clone -b $1 https://github.com/eclipse-vertx/vert.x
+i    git clone -b $1 $PACKAGE_URL
 else
-    git clone https://github.com/eclipse-vertx/vert.x
+    git clone $PACKAGE_URL
 fi
 
 cd vert.x
+
+git checkout $PACKAGE_VERSION
 
 mvn clean install
 
