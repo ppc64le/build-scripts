@@ -1,0 +1,55 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : dask-glm
+# Source Repo         : https://github.com/dask/dask-glm
+# Travis Job Link     : https://travis-ci.com/github/asellappen/dask-glm/
+# Created travis.yml  : Yes
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+os: linux
+
+dist: focal
+
+language: python
+
+sudo: True
+
+matrix:
+  include:
+    - python: '3.7'
+      env: PYTHON_VERSION="3.7"
+    - python: '3.7'
+      arch: ppc64le
+      env: PYTHON_VERSION="3.7"
+    - python: '3.8'
+      env: PYTHON_VERSION="3.8"
+    - python: '3.8'
+      arch: ppc64le
+      env: PYTHON_VERSION="3.8"
+install:
+  - if [[ "$TRAVIS_CPU_ARCH" == "ppc64le" ]]; then 
+        wget https://repo.anaconda.com/miniconda/Miniconda2-latest-Linux-ppc64le.sh -O miniconda.sh;
+    else
+        wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+    fi
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes
+  - conda config --set auto_update_conda False
+  - conda update -q --all
+  - conda install python=$PYTHON_VERSION
+  - conda install -c conda-forge sparse
+  - conda install  numpy flake8 pytest scipy dask multipledispatch cloudpickle numba mock scikit-learn jupyter   
+  - pip install --no-deps -e .  
+
+script:
+  - conda list
+  - travis_wait 30 pytest -v dask_glm/tests/test_admm.py dask_glm/tests/test_algos_families.py
+  - pytest -v dask_glm/tests/test_estimators.py dask_glm/tests/test_regularizers.py
+  - pytest -v dask_glm/tests/test_utils.py
+  - flake8 dask_glm

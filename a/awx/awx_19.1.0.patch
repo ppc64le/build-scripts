@@ -1,0 +1,41 @@
+diff --git a/Makefile b/Makefile
+index 839b1cf749..6645bd208c 100644
+--- a/Makefile
++++ b/Makefile
+@@ -256,6 +256,7 @@ receiver:
+ 	$(PYTHON) manage.py run_callback_receiver
+ 
+ nginx:
++	useradd -g nginx nginx
+ 	nginx -g "daemon off;"
+ 
+ jupyter:
+diff --git a/tools/ansible/roles/dockerfile/defaults/main.yml b/tools/ansible/roles/dockerfile/defaults/main.yml
+index 6c568356f0..69e2a7e495 100644
+--- a/tools/ansible/roles/dockerfile/defaults/main.yml
++++ b/tools/ansible/roles/dockerfile/defaults/main.yml
+@@ -6,5 +6,5 @@ dockerfile_name: 'Dockerfile'
+ template_dest: '_build'
+ 
+ # Helper vars to construct the proper download URL for the current architecture
+-tini_architecture: '{{ { "x86_64": "amd64", "aarch64": "arm64", "armv7": "arm" }[ansible_facts.architecture] }}'
+-kubectl_architecture: '{{ { "x86_64": "amd64", "aarch64": "arm64", "armv7": "arm" }[ansible_facts.architecture] }}'
++tini_architecture: '{{ { "x86_64": "amd64", "aarch64": "arm64", "armv7": "arm", "ppc64le": "ppc64le" }[ansible_facts.architecture] }}'
++kubectl_architecture: '{{ { "x86_64": "amd64", "aarch64": "arm64", "armv7": "arm", "ppc64le": "ppc64le" }[ansible_facts.architecture] }}'
+diff --git a/tools/ansible/roles/dockerfile/templates/Dockerfile.j2 b/tools/ansible/roles/dockerfile/templates/Dockerfile.j2
+index ca5a247830..8e7098ed72 100644
+--- a/tools/ansible/roles/dockerfile/templates/Dockerfile.j2
++++ b/tools/ansible/roles/dockerfile/templates/Dockerfile.j2
+@@ -41,7 +41,11 @@ RUN dnf -y update && \
+     swig \
+     unzip \
+     xmlsec1-devel \
+-    xmlsec1-openssl-devel
++    xmlsec1-openssl-devel \
++    libjpeg-devel \
++    libselinux \
++    libselinux-devel \
++    openssl-devel
+ 
+ RUN python3.8 -m ensurepip && pip3 install "virtualenv < 20"
+ 

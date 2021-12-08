@@ -1,0 +1,18 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : codeready-workspaces
+# Source Repo         : https://github.com/redhat-developer/codeready-workspaces
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/codeready-workspaces/builds/219868537
+# Created travis.yml  : Yes
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+dist: focal 
+arch:
+  - amd64
+  - ppc64le
+language: java
+script:
+  - mvn clean install -U -Dmaven.test.failure.ignore=true

@@ -1,0 +1,75 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : dask-ml
+# Source Repo         : https://github.com/dask/dask-ml
+# Travis Job Link     : https://travis-ci.com/github/asellappen/dask-ml/
+# Created travis.yml  : Yes
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: python
+
+dist: focal
+
+matrix:
+  include:
+  - env: 
+     - PYTHON_VERSION=3.6
+     - envFile='ci/environment-3.6.yaml'
+  - env: 
+     - PYTHON_VERSION=3.7
+     - envFile='ci/environment-3.7.yaml'
+  - env: 
+     - PYTHON_VERSION=3.8
+     - envFile='ci/environment-3.8.yaml'
+  - env: 
+     - PYTHON_VERSION=3.6
+     - envFile='ci/environment-3.6.yaml'
+    arch: ppc64le
+  - env: 
+     - PYTHON_VERSION=3.7
+     - envFile='ci/environment-3.7.yaml'
+    arch: ppc64le
+  - env: 
+     - PYTHON_VERSION=3.8
+     - envFile='ci/environment-3.8.yaml'
+    arch: ppc64le
+
+sudo: required
+
+before_install:
+  - sudo apt-get install gfortran libopenblas-dev liblapack-dev
+  - if [[ "$TRAVIS_CPU_ARCH" == "ppc64le" ]]; then 
+        wget https://repo.anaconda.com/miniconda/Miniconda3-py37_4.9.2-Linux-ppc64le.sh -O miniconda.sh; 
+    else
+        wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+    fi
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes
+  - conda config --set auto_update_conda False
+  - conda update -q --all
+  - conda install python=$PYTHON_VERSION pip  pytest-xdist pytest
+  - pip install pytest-mock
+  - pip install python-coveralls --no-cache-dir
+  - pip install "dask[dataframe]" --no-cache-dir
+  - conda install llvmlite==0.36.0rc1  -c numba
+  - if [[ "$PYTHON_VERSION" == "3.6" ]]; then
+     python -m pip install --no-deps numpy==1.17.3;
+    else
+     python -m pip install --no-deps numpy==1.20;
+    fi
+  - conda install scikit-image distributed 
+  - conda install -c power  scikit-learn
+  - pip install dask_glm --no-cache-dir
+  - conda env create --quiet --file=$envFile --name=dask-ml-test && conda list -n dask-ml-test
+   
+install:
+  -  python -m pip install --quiet --no-deps -e .
+
+script: 
+   #- not supported are ignored and the same failures are in pipeline ci tests
+   -  python -m pytest -v tests -n10 --ignore=tests/model_selection/test_hyperband.py --ignore=dask/array/slicing.py --ignore=tests/test_kmeans.py --ignore=tests/model_selection/test_incremental_warns.py  --ignore=tests/test_spectral_clustering.py  --ignore=tests/model_selection/test_incremental.py;

@@ -1,0 +1,20 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : cruise-control
+# Source Repo         : https://github.com/linkedin/cruise-control.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/cruise-control/builds/220273749
+# Created travis.yml  : Yes
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: java
+arch:
+  - amd64
+  - ppc64le
+jdk: openjdk11
+script:
+  - ./gradlew --no-daemon clean javadoc
+  - ./gradlew --max-workers=1 --no-daemon analyze
+  - ./gradlew --no-daemon -PmaxParallelForks=1 build

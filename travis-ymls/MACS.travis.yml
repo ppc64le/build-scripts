@@ -1,0 +1,28 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : MACS
+# Source Repo         : https://github.com/gururajrkatti/MACS
+# Travis Job Link     : https://travis-ci.com/github/gururajrkatti/MACS
+# Created travis.yml  : Yes
+# Maintainer          : Gururaj R Katti <Gururaj.Katti@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+
+language: python
+arch:
+  - amd64
+  - ppc64le
+dist: focal
+
+before_install:
+  - gcc --version
+  - sudo apt-get update -qq -y
+  - sudo apt-get install -yq python3 python3-pip python3-setuptools python3-wheel procps zlib1g zlib1g-dev
+  - pip3 install --upgrade pip --no-cache-dir
+  - pip3 install cython --no-cache-dir
+  - pip3 install --upgrade -r requirements.txt --no-cache-dir
+  - pip3 install .  --no-cache-dir
+script:
+  - pytest --runxfail && cd test && ./cmdlinetest macs3

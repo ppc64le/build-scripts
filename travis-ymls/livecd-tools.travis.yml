@@ -1,0 +1,25 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : livecd-tools
+# Source Repo         : https://github.com/livecd-tools/livecd-tools
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/livecd-tools/jobs/484448213
+# Created travis.yml  : Yes
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+language: python
+
+dist: focal 
+
+arch: 
+  - amd64
+  - ppc64le
+
+python:
+  - 3.8
+
+script:
+  - sudo make install
+  - sudo make uninstall

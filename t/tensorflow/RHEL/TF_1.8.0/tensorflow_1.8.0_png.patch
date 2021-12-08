@@ -1,0 +1,20 @@
+diff --git a/third_party/png.BUILD b/third_party/png.BUILD
+index 76ab32d69c3..17c5449cc0d 100644
+--- a/third_party/png.BUILD
++++ b/third_party/png.BUILD
+@@ -28,7 +28,14 @@ cc_library(
+         "pngwrite.c",
+         "pngwtran.c",
+         "pngwutil.c",
+-    ],
++    ] + select({
++        "@org_tensorflow//tensorflow:linux_ppc64le": [
++            "powerpc/powerpc_init.c",
++            "powerpc/filter_vsx_intrinsics.c",
++        ],
++        "//conditions:default": [
++        ],
++    }),
+     hdrs = [
+         "png.h",
+         "pngconf.h",

@@ -1,0 +1,55 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : aws-sdk-java
+# Source Repo         : https://github.com/aws/aws-sdk-java.git
+# Travis Job Link     : https://travis-ci.com/github/asellappen/aws-sdk-java.git/
+# Created travis.yml  : No
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: java
+
+arch:
+ - amd64
+ - ppc64le
+ 
+addons:
+  hosts:
+    - javasdk
+  hostname: javasdk
+# The cross product of the jdk and env settings form the matrix of builds Travis will run.
+jdk:
+  - openjdk7
+  - openjdk8
+  - oraclejdk7
+  - oraclejdk8
+env:
+  - MODULES_TO_SKIP=\!aws-java-sdk-osgi MAVEN_OPTS=-XX:MaxPermSize=256m
+  - MODULES_TO_SKIP=\!aws-java-sdk-osgi,\!aws-java-sdk-code-generator,\!aws-java-sdk-codegen-maven-plugin,\!aws-java-sdk-opensdk MAVEN_OPTS=-XX:MaxPermSize=256m
+# Exclude certain items in the matrix as some modules only build with Java8
+matrix:
+  exclude:
+    - jdk: openjdk7
+      env: MODULES_TO_SKIP=\!aws-java-sdk-osgi MAVEN_OPTS=-XX:MaxPermSize=256m
+    - jdk: oraclejdk7
+      env: MODULES_TO_SKIP=\!aws-java-sdk-osgi MAVEN_OPTS=-XX:MaxPermSize=256m
+    - jdk: oraclejdk8
+      env: MODULES_TO_SKIP=\!aws-java-sdk-osgi,\!aws-java-sdk-code-generator,\!aws-java-sdk-codegen-maven-plugin,\!aws-java-sdk-opensdk MAVEN_OPTS=-XX:MaxPermSize=256m
+    #ppc64le not supporting openjdk7 & oraclejdk7,amd64 not supporting for openjdk8, hence excluding.
+    - jdk: openjdk8
+      arch: amd64
+    - jdk: openjdk7
+      arch: ppc64le
+    - jdk: oraclejdk7
+      arch: ppc64le
+      
+notifications:
+  email:
+    - github-awsforjava@amazon.com
+install: /bin/true
+sudo: required
+dist: precise
+before_script: sudo sh -c 'echo 0 > /proc/sys/net/ipv6/conf/all/disable_ipv6'
+script: mvn install -Dhttps.protocols=TLSv1.2 -pl ${MODULES_TO_SKIP}

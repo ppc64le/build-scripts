@@ -1,0 +1,30 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : chectl
+# Source Repo         : https://github.com/che-incubator/chectl
+# Travis Job Link     : https://travis-ci.com/github/rajesh-ibm-power/chectl
+# Created travis.yml  : Yes
+# Maintainer          : Rajesh kumar <Rajesh.kumar13@ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ---
+
+
+language: node_js
+nodejs: 
+    - 10
+    - node
+    - lts/*
+
+arch:
+   - amd64
+   - ppc64le   
+
+addons:
+   apt:
+    update: true
+    packages: 
+       - build-essential 
+       - npm 
+       - wget

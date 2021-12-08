@@ -1,0 +1,47 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : bz2file
+# Source Repo         : https://github.com/nvawda/bz2file
+# Travis Job Link     : https://travis-ci.com/github/asellappen/bz2file/
+# Created travis.yml  : Yes
+# Maintainer          : Arumugam N S <asellappen@yahoo.com> / Priya Seth<sethp@us.ibm.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+language: python
+
+matrix:
+  include:
+    - python: 2.6
+      dist: trust
+    - python: 2.7
+      dist: xenial
+    - python: 3.4
+      dist: xenial
+    - python: 3.5
+      dist: xenial
+    - python: pypy2
+      dist: bionic
+    - python:  3.6
+      dist: bionic
+    - python: 2.7
+      arch: ppc64le
+      dist: xenial
+    - python: 3.4
+      arch: ppc64le
+      dist: xenial
+    - python: 3.5
+      arch: ppc64le
+      dist: xenial
+    - python: 3.6
+      arch: ppc64le
+      dist: bionic
+      
+sudo: required
+
+install:
+  - pip install pytest
+  - pip install --no-deps -e .
+script:
+  - python -m pytest -v test_bz2file.py 

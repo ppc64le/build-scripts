@@ -1,0 +1,21 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : istio-operator
+# Source Repo         : https://github.com/maistra/istio-operator
+# Travis Job Link     : https://travis-ci.com/github/nageshlop/istio-operator/builds/217993028
+# Created travis.yml  : Yes
+# Maintainer          : Nagesh Tarale <Nagesh.Tarale@ibm.com>
+#
+# Script License      : Apache 2.0
+#
+# ----------------------------------------------------------------------------
+language: go
+sudo: false
+dist: xenial
+arch:
+  - ppc64le
+  - amd64
+go:
+  - 1.15.x
+
+script: go test -v ./...

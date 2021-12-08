@@ -1,0 +1,86 @@
+FROM strimzi/base:latest
+MAINTAINER "Vijay Kumar H P <vijaykh1@in.ibm.com>"
+
+ARG KAFKA_DIST_DIR
+ARG KAFKA_VERSION
+ARG THIRD_PARTY_LIBS
+ARG strimzi_version
+ARG TARGETPLATFORM
+
+RUN yum -y install gettext nmap-ncat stunnel net-tools && yum clean all -y
+
+# Add kafka user with UID 1001
+# The user is in the group 0 to have access to the mounted volumes and storage
+RUN useradd -r -m -u 1001 -g 0 kafka
+
+#####
+# Add Kafka
+#####
+ENV KAFKA_HOME=/opt/kafka
+ENV KAFKA_VERSION=${KAFKA_VERSION}
+ENV STRIMZI_VERSION=${strimzi_version}
+
+COPY $KAFKA_DIST_DIR $KAFKA_HOME
+COPY ./scripts/ $KAFKA_HOME
+
+#####
+# Add Kafka Exporter
+#####
+ENV KAFKA_EXPORTER_HOME=/opt/kafka-exporter
+ENV KAFKA_EXPORTER_VERSION=1.2.0
+ENV KAFKA_EXPORTER_CHECKSUM_AMD64="7afa40365ddf0cb0a88457684bd64d565e250c7e5a4536ba7f9d37d02d2808c3b07766f94e0b1338beb296573ade29db630948c931be44bde416c0410b5d783b  kafka_exporter-${KAFKA_EXPORTER_VERSION}.linux-amd64.tar.gz"
+ENV KAFKA_EXPORTER_CHECKSUM_PPC64LE="b633951927c1671de8ee221b981433817bc103c01ff46797756a56e96bfd794210d19942917b33c5735f6f10afb83445f4a79099e8537bccc718f4358431d744  kafka_exporter-${KAFKA_EXPORTER_VERSION}.linux-ppc64le.tar.gz"
+
+RUN set -ex; \
+    if [[ ${TARGETPLATFORM} = "linux/ppc64le" ]]; then \
+        curl -LO https://github.com/danielqsj/kafka_exporter/releases/download/v${KAFKA_EXPORTER_VERSION}/kafka_exporter-${KAFKA_EXPORTER_VERSION}.linux-ppc64le.tar.gz; \
+        echo $KAFKA_EXPORTER_CHECKSUM_PPC64LE > kafka_exporter-${KAFKA_EXPORTER_VERSION}.linux-ppc64le.tar.gz.sha512; \
+        sha512sum --check kafka_exporter-${KAFKA_EXPORTER_VERSION}.linux-ppc64le.tar.gz.sha512; \
+        mkdir $KAFKA_EXPORTER_HOME; \
+        tar xvfz kafka_exporter-${KAFKA_EXPORTER_VERSION}.linux-ppc64le.tar.gz -C $KAFKA_EXPORTER_HOME --strip-components=1; \
+        rm -f kafka_exporter-${KAFKA_EXPORTER_VERSION}.linux-ppc64le.tar.gz*; \
+    else \
+        curl -LO https://github.com/danielqsj/kafka_exporter/releases/download/v${KAFKA_EXPORTER_VERSION}/kafka_exporter-${KAFKA_EXPORTER_VERSION}.linux-amd64.tar.gz; \
+        echo $KAFKA_EXPORTER_CHECKSUM_AMD64 > kafka_exporter-${KAFKA_EXPORTER_VERSION}.linux-amd64.tar.gz.sha512; \
+        sha512sum --check kafka_exporter-${KAFKA_EXPORTER_VERSION}.linux-amd64.tar.gz.sha512; \
+        mkdir $KAFKA_EXPORTER_HOME; \
+        tar xvfz kafka_exporter-${KAFKA_EXPORTER_VERSION}.linux-amd64.tar.gz -C $KAFKA_EXPORTER_HOME --strip-components=1; \
+        rm -f kafka_exporter-${KAFKA_EXPORTER_VERSION}.linux-amd64.tar.gz*; \
+    fi
+COPY ./exporter-scripts $KAFKA_EXPORTER_HOME
+
+#####
+# Add Strimzi agents
+#####
+COPY ./tmp/kafka-agent-${STRIMZI_VERSION}.jar ${KAFKA_HOME}/libs/
+COPY ./tmp/mirror-maker-agent-${STRIMZI_VERSION}.jar ${KAFKA_HOME}/libs/
+COPY ./tmp/tracing-agent-${STRIMZI_VERSION}.jar ${KAFKA_HOME}/libs/
+
+#####
+# Add 3rd party libs
+#####
+COPY kafka-thirdparty-libs/${THIRD_PARTY_LIBS}/target/dependency/ ${KAFKA_HOME}/libs/
+
+#####
+# Add Cruise Control
+#####
+ENV CRUISE_CONTROL_HOME=/opt/cruise-control
+RUN mkdir $CRUISE_CONTROL_HOME
+COPY kafka-thirdparty-libs/cc/target/dependency/ ${CRUISE_CONTROL_HOME}/libs/
+COPY ./cruise-control-scripts $CRUISE_CONTROL_HOME
+
+#####
+# Add Stunnel
+#####
+ENV STUNNEL_HOME=/opt/stunnel
+RUN mkdir $STUNNEL_HOME && mkdir -p -m g+rw /usr/local/var/run/
+COPY ./stunnel-scripts/ $STUNNEL_HOME
+
+#####
+# Add Kafka Connect S2I feature
+#####
+ENV S2I_HOME=/opt/kafka/s2i
+COPY ./s2i-scripts $S2I_HOME
+
+WORKDIR $KAFKA_HOME
+USER 1001

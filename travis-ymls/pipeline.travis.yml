@@ -1,0 +1,21 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : pipeline
+# Source Repo         : https://github.com/tektoncd/pipeline.git
+# Travis Job Link     : https://travis-ci.com/github/dthadi3/pipeline/builds/217856077
+# Created travis.yml  : Yes
+# Maintainer          : Devendranath Thadi <devendranath.thadi3@gmail.com>
+#
+# Script License      : Apache License, Version 2 or later
+#
+# ----------------------------------------------------------------------------
+arch:
+  - amd64
+  - ppc64le
+os: linux
+language: go
+go:
+  - 1.15
+  - tip
+after_script:
+  - go test ./...
