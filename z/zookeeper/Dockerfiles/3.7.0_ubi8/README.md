@@ -4,7 +4,9 @@ docker build -t zookeeper .
 docker run --name zookeeper -it -p 2181:2181 -p 2888:2888 -p 3888:3888 zookeeper:latest
 
 Deploying Zookeeper on Openshift
+
 $ oc new-project zookeeper
+
 --> Now using project "zookeeper" on server "https://api-<cluster-address>:6443".
     You can add applications to this project with the 'new-app' command. For example, try:
     oc new-app rails-postgresql-example
@@ -12,12 +14,15 @@ $ oc new-project zookeeper
     kubectl create deployment hello-node --image=k8s.gcr.io/serve_hostname
 
 $ oc adm policy add-scc-to-user anyuid -z default
+
 clusterrole.rbac.authorization.k8s.io/system:openshift:scc:anyuid added: "default"
 
 $ oc adm policy add-scc-to-user anyuid system:serviceaccount:zookeeper:default
+
 clusterrole.rbac.authorization.k8s.io/system:openshift:scc:anyuid added: "default"
 
 $ oc new-app zookeeper:latest
+
 --> Found image ef02556 (9 minutes old) in image stream "zookeeper/zookeeper" under tag "latest" for "zookeeper:latest"
 
     Red Hat Universal Base Image 8
@@ -34,6 +39,8 @@ $ oc new-app zookeeper:latest
     Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
      'oc expose svc/zookeeper'
     Run 'oc status' to view your app.
+
 $ oc expose svc/zookeeper
+
 route.route.openshift.io/zookeeper exposed
 

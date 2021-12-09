@@ -15,7 +15,6 @@ RUN cd /root && git clone https://github.com/redis/redis && cd redis/ \
 
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
-LABEL maintainer "Bitnami <containers@bitnami.com>"
 
 ENV HOME="/" \
     OS_ARCH="ppc64le" \

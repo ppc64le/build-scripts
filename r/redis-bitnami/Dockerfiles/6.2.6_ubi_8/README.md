@@ -6,7 +6,9 @@ docker build -t redis-bitnami .
 docker run -itd -p 6379:6379 --name redisbitnami redis-bitnami:latest
 
 Deploying Redis on Openshift
+
 $ oc new-project redis-bitnami
+
 Now using project "redis-bitnami" on server "https://api-<cluster-address>:6443".
 
 You can add applications to this project with the 'new-app' command. For example, try:
@@ -19,9 +21,11 @@ to build a new example application in Ruby. Or use kubectl to deploy a simple Ku
 
 
 $ oc adm policy add-scc-to-user anyuid -z default
+
 --> clusterrole.rbac.authorization.k8s.io/system:openshift:scc:anyuid added: "default"
 
 $ oc new-app redis-bitnami:latest
+
 --> Found image ed7693e (5 hours old) in image stream "redis-bitnami/redis-bitnami" under tag "latest" for "redis-bitnami:latest"
 
     Red Hat Universal Base Image 8 Minimal
@@ -41,4 +45,5 @@ $ oc new-app redis-bitnami:latest
 
 	
 $ oc expose svc/redis-bitnami
+
 route.route.openshift.io/redis-bitnami exposed
