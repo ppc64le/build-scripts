@@ -25,7 +25,7 @@ PACKAGE_VERSION=commons-beanutils-1.9.4
 
 
 # install tools and dependent packages
-yum install -y git wget
+yum install -y git wget tar
 
 # install java
 yum -y install java-1.8.0-openjdk-devel
