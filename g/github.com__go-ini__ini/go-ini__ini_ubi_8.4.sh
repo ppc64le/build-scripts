@@ -15,7 +15,8 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=github.com/go-ini/ini
+#PACKAGE_NAME=github.com/go-ini/ini
+PACKAGE_NAME=gopkg.in/ini.v1
 PACKAGE_VERSION=${1:-v1.57.0}
 PACKAGE_URL=https://github.com/go-ini/ini
 
@@ -32,7 +33,7 @@ export GO111MODULE=on
 
 echo "Building $PACKAGE_PATH with $PACKAGE_VERSION"
 if ! go get -d -u -t $PACKAGE_NAME@$PACKAGE_VERSION; then
-	test_without_flag_u
+	echo "------------------$PACKAGE_NAME:install_failed-------------------------"
 	exit 0
 fi
 
@@ -46,7 +47,7 @@ go mod init github.com/go-ini/ini
 go mod tidy
 
 if ! go test -v ./...; then
-	test_with_master
+	echo "------------------$PACKAGE_NAME:test_failed-------------------------"
 	exit 0
 else
 	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
