@@ -65,11 +65,10 @@ mvn clean install
 
 cd ..
 
-echo "-------- Building transport-native-epoll version 4.1.70.Final is successful----------------"
 
-#-------- Building tcnative version 2.0.44.Final ----------------
+#-------- Building netty version 4.1.51.Final ----------------
 echo "`date +'%d-%m-%Y %T'` - Installed Build Dependencies -----------------------------------"
-echo "-------- Building transport-native-epoll version 4.1.70.Final ----------------"
+echo "-------- Building transport-native-epoll version 4.1.51.Final ----------------"
 
 git clone --recurse https://github.com/netty/netty
 cd netty
@@ -86,7 +85,7 @@ mvn clean install
 
 cd ../..
 
-echo "-------- Building tcnative version 2.0.44.Final is successful----------------"
+echo "-------- Building transport-native-epoll version 4.1.51.Final is successful----------------"
 
 if ! git clone --recurse $PACKAGE_URL; then
 	echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
