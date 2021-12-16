@@ -144,6 +144,8 @@ go mod tidy
 make clean
 make clean-protos
 
+go install google.golang.org/protobuf/cmd/protoc-gen-go
+export PATH=$GOPATH/bin:$PATH
 
 if ! make hdfs; then
         echo "------------------$PACKAGE_NAME: build failed retrying-------------------------"
