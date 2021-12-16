@@ -38,16 +38,27 @@ export GO111MODULE=on
 
 cd $HOME_DIR
 
-echo "-------------Installing protobuff version ---------------------"
+#----------------------------------------------------------------------------------------
+echo "-------------Installing protobuff version v2.5.0---------------------"
+#Install latest cmake
+wget https://github.com/Kitware/CMake/releases/download/v3.21.2/cmake-3.21.2.tar.gz
+tar -xvf cmake-3.21.2.tar.gz
+cd cmake-3.21.2
+./bootstrap
+make
+make install
+cd ..
 
 git clone https://github.com/protocolbuffers/protobuf.git
 cd protobuf
+git checkout v2.5.0
+git apply ../protobuf_v2.5.0.patch
 ./autogen.sh
-
 ./configure
 make
 make install
-ldconfig
+cd java
+mvn clean install
 
 #----------------------------------------------------------------------------------------
 echo "-------------Installing hadoop and its dependencies ---------------------"
@@ -144,7 +155,8 @@ go mod tidy
 make clean
 make clean-protos
 
-go install google.golang.org/protobuf/cmd/protoc-gen-go
+go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.22.0
+go mod tidy
 export PATH=$GOPATH/bin:$PATH
 
 if ! make hdfs; then
