@@ -25,11 +25,10 @@ yum install -y autoconf automake libtool curl unzip bzip2
 yum install -y gcc gcc-c++
 yum install -y psmisc nc openssl-devel maven hostname initscripts redhat-lsb-core
 
-export HOME=`pwd`
-
 wget https://golang.org/dl/go1.17.4.linux-ppc64le.tar.gz && tar -C /bin -xf go1.17.4.linux-ppc64le.tar.gz && mkdir -p /home/tester/go/src /home/tester/go/bin /home/tester/go/pkg
 
 mkdir -p /home/tester/output
+export HOME_DIR=/home/tester
 
 export PATH=$PATH:/bin/go/bin
 export GOPATH=/home/tester/go
@@ -37,12 +36,12 @@ export GOPATH=/home/tester/go
 export PATH=$GOPATH/bin:$PATH
 export GO111MODULE=on
 
+cd $HOME_DIR
 
-echo "-------------Installing protobuff version v2.6.1 ---------------------"
+echo "-------------Installing protobuff version ---------------------"
 
 git clone https://github.com/protocolbuffers/protobuf.git
 cd protobuf
-git checkout v2.6.1
 ./autogen.sh
 
 ./configure
@@ -51,6 +50,9 @@ make install
 ldconfig
 
 #----------------------------------------------------------------------------------------
+echo "-------------Installing hadoop and its dependencies ---------------------"
+cd $HOME_DIR
+
 wget --no-check-certificate https://ci.bigtop.apache.org/job/Bigtop-trunk-packages/COMPONENTS=bigtop-utils,OS=centos-8-ppc64le/lastSuccessfulBuild/artifact/output/bigtop-utils/noarch/bigtop-utils-3.1.0-1.el8.noarch.rpm && rpm -ivh bigtop-utils-3.1.0-1.el8.noarch.rpm
 
 wget https://copr-be.cloud.fedoraproject.org/results/harbottle/main/epel-8-x86_64/02183367-zookeeper/zookeeper-3.7.0-2.el8.harbottle.noarch.rpm && rpm -ivh zookeeper-3.7.0-2.el8.harbottle.noarch.rpm
@@ -64,6 +66,7 @@ wget --no-check-certificate https://ci.bigtop.apache.org/job/Bigtop-trunk-packag
 wget  --no-check-certificate https://ci.bigtop.apache.org/job/Bigtop-trunk-packages/COMPONENTS=hadoop,OS=centos-8-ppc64le/757/artifact/output/hadoop/ppc64le/hadoop-hdfs-3.2.2-1.el8.ppc64le.rpm && rpm -ivh hadoop-hdfs-3.2.2-1.el8.ppc64le.rpm
 #----------------------------------------------------------------------------------------
 
+echo "-------------Setting Environment Variables ---------------------"
 export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.312.b07-2.el8_5.ppc64le/
 #export HADOOP_HOME="/etc/hadoop"
 export HADOOP_HOME=/usr/lib/hadoop
@@ -108,7 +111,10 @@ $HADOOP_FS -chmod 777 "/_test"
 
 $HADOOP_FS -put ./testdata/foo.txt "/_test/foo.txt"
 $HADOOP_FS -Ddfs.block.size=1048576 -put ./testdata/mobydick.txt "/_test/mobydick.txt"
+
 #----------------------------------------------------------------------------------------
+echo "-------------Installing bats ---------------------"
+cd $HOME_DIR
 
 git clone https://github.com/sstephenson/bats
 cd bats
@@ -117,6 +123,9 @@ $HOME/bats/install.sh $HOME/bats/build
 export PATH="$PATH:$HOME/bats/build/bin"
 
 #----------------------------------------------------------------------------------------
+echo "-------------Installing and testing hdfs ---------------------"
+cd $HOME_DIR
+
 echo "Building $PACKAGE_PATH with $PACKAGE_VERSION"
 
 if ! go get -d -u -t $PACKAGE_PATH@$PACKAGE_VERSION; then
@@ -165,4 +174,6 @@ else
         echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success" > /home/tester/output/version_tracker
         exit 0
 fi
+
+cd $HOME_DIR
 
