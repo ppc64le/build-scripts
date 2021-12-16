@@ -144,11 +144,14 @@ go mod tidy
 make clean
 make clean-protos
 
-cp -rf internal/protocol/hadoop_common/github.com/colinmarc/hdfs/v2/internal/protocol/hadoop_common/Security.pb.go internal/protocol/hadoop_common/
 
 if ! make hdfs; then
-        echo "------------------$PACKAGE_NAME: build failed-------------------------"
-        exit 0
+        echo "------------------$PACKAGE_NAME: build failed retrying-------------------------"
+	cp -rf internal/protocol/hadoop_common/github.com/colinmarc/hdfs/v2/internal/protocol/hadoop_common/Security.pb.go internal/protocol/hadoop_common/
+	if ! make hdfs; then
+        	echo "------------------$PACKAGE_NAME: build failed -------------------------"
+        	exit 0
+	fi
 fi
 
 if ! make test; then
