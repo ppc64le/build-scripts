@@ -45,6 +45,6 @@ git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout v$PACKAGE_VERSION
 cd $PACKAGE_NAME
-mvn clean test
+mvn install
 
 exit 0
