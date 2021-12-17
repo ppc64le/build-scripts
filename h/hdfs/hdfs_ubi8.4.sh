@@ -20,10 +20,10 @@ PACKAGE_PATH=github.com/colinmarc/hdfs/v2
 PACKAGE_VERSION=${1:-v2.2.0}
 PACKAGE_URL=https://github.com/colinmarc/hdfs
 
-yum install -y git wget make gcc
-yum install -y autoconf automake libtool curl unzip bzip2
-yum install -y gcc gcc-c++
+yum install -y unzip bzip2 gcc
 yum install -y psmisc nc openssl-devel maven hostname initscripts redhat-lsb-core
+dnf install make maven git sudo wget gcc-c++ apr-devel perl openssl-devel automake autoconf libtool -y
+yum install -y autoconf automake libtool curl unzip bzip2 gcc
 
 wget https://golang.org/dl/go1.17.4.linux-ppc64le.tar.gz && tar -C /bin -xf go1.17.4.linux-ppc64le.tar.gz && mkdir -p /home/tester/go/src /home/tester/go/bin /home/tester/go/pkg
 
@@ -49,6 +49,7 @@ make
 make install
 cd ..
 
+cd $HOME_DIR
 git clone https://github.com/protocolbuffers/protobuf.git
 cd protobuf
 git checkout v2.5.0
