@@ -36,6 +36,7 @@ export GOPATH=/home/tester/go
 export PATH=$GOPATH/bin:$PATH
 export GO111MODULE=on
 
+cp -rf ./protobuf_v2.5.0.patch $HOME_DIR
 cd $HOME_DIR
 
 #----------------------------------------------------------------------------------------
@@ -117,13 +118,6 @@ hdfs namenode -format -nonInteractive
 /usr/lib/hadoop/sbin/hadoop-daemon.sh start datanode
 /usr/lib/hadoop/sbin/hadoop-daemon.sh start namenode
 
-HADOOP_FS=${HADOOP_FS-"hadoop fs"}
-$HADOOP_FS -mkdir -p "/_test"
-$HADOOP_FS -chmod 777 "/_test"
-
-$HADOOP_FS -put ./testdata/foo.txt "/_test/foo.txt"
-$HADOOP_FS -Ddfs.block.size=1048576 -put ./testdata/mobydick.txt "/_test/mobydick.txt"
-
 #----------------------------------------------------------------------------------------
 echo "-------------Installing bats ---------------------"
 cd $HOME_DIR
@@ -131,7 +125,7 @@ cd $HOME_DIR
 git clone https://github.com/sstephenson/bats
 cd bats
 mkdir build
-$HOME/bats/install.sh $HOME/bats/build
+$HOME_DIR/bats/install.sh $HOME/bats/build
 export PATH="$PATH:$HOME/bats/build/bin"
 
 #----------------------------------------------------------------------------------------
@@ -157,6 +151,7 @@ make clean
 make clean-protos
 
 go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.22.0
+go get google.golang.org/protobuf/reflect/protoreflect
 go mod tidy
 export PATH=$GOPATH/bin:$PATH
 
@@ -169,8 +164,16 @@ if ! make hdfs; then
 	fi
 fi
 
+HADOOP_FS=${HADOOP_FS-"hadoop fs"}
+$HADOOP_FS -mkdir -p "/_test"
+$HADOOP_FS -chmod 777 "/_test"
+
+$HADOOP_FS -put ./testdata/foo.txt "/_test/foo.txt"
+$HADOOP_FS -Ddfs.block.size=1048576 -put ./testdata/mobydick.txt "/_test/mobydick.txt"
+
 if ! make test; then
         echo "------------------$PACKAGE_NAME: make test failed-------------------------"
+	echo "------------------$PACKAGE_NAME: running go test-------------------------"
 	if ! go test -v ./...; then
 		echo "------------------$PACKAGE_NAME: go test failed-------------------------"
 		exit 0
