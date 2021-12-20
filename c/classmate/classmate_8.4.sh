@@ -22,8 +22,7 @@ mkdir -p /logs
 # variables
 PKG_NAME="classmate"
 DIR_NAME="java-classmate"
-PKG_VERSION=${1:-v1.3.4}
-#PKG_VERSION_LATEST=1.5.1
+PKG_VERSION=${1:-1.3.4}
 LOGS_DIRECTORY=/logs
 LOCAL_DIRECTORY=/home/tester
 REPOSITORY="https://github.com/FasterXML/java-classmate.git"
