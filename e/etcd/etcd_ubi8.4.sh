@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : github.com/etcd-io/etcd and go.etcd.io/etcd
-# Version       : 0, v0.1.0 and v0.5.0
+# Version       : v3.5.1
 # Source repo   : https://github.com/etcd-io/etcd
 # Tested on     : RHEL 8.4
 # Script License: Apache License, Version 2 or later
