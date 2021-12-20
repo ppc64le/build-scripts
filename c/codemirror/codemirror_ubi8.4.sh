@@ -23,11 +23,11 @@ PKG_VERSION=${1:-5.26.0}
 LOCAL_DIRECTORY=/home/tester
 REPOSITORY="https://github.com/codemirror/CodeMirror"
 
-sudo yum -y install wget bzip2 git 
+yum -y install wget bzip2 git 
 wget https://github.com/ibmsoe/phantomjs/releases/download/2.1.1/phantomjs-2.1.1-linux-ppc64.tar.bz2
 tar -xvf phantomjs-2.1.1-linux-ppc64.tar.bz2 
 
-sudo mv phantomjs-2.1.1-linux-ppc64/bin/phantomjs /usr/bin
+mv phantomjs-2.1.1-linux-ppc64/bin/phantomjs /usr/bin
 rm -rf phantomjs-2.1.1-linux-ppc64.tar.bz2
 
 wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh | sh
