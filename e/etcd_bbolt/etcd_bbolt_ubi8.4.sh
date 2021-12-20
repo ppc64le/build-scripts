@@ -32,8 +32,7 @@ wget https://golang.org/dl/go1.12.4.linux-ppc64le.tar.gz && \
 
 export PATH=$PATH:/bin/go/bin
 export GOPATH=/home/tester/go
-export GOROOT=/bin/go/
-#export GO111MODULE=on
+export GO111MODULE=on
 
 mkdir -p output
 
