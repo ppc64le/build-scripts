@@ -1,11 +1,11 @@
 # -----------------------------------------------------------------------------
 #
-# Package       : github.com/klauspost/readahead
+# Package       : readahead
 # Version       : v1.3.1
 # Source repo   : https://github.com/klauspost/readahead
 # Tested on     : RHEL 8.4
 # Script License: Apache License, Version 2 or later
-# Maintainer    : BulkPackageSearch Automation <sethp@us.ibm.com> Vikas Gupta <vikas.gupta8@ibm.com>
+# Maintainer    : Vikas Gupta <vikas.gupta8@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
