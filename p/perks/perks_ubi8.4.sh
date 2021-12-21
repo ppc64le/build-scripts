@@ -44,9 +44,6 @@ git clone --recurse $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-go mod init 
-go mod tidy
-
 if ! go install -v ./...; then
 	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  intsall_Fails"
