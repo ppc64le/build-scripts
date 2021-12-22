@@ -1,0 +1,20 @@
+diff --git a/try_test.go b/try_test.go
+index 4b00ac1..d84c288 100644
+--- a/try_test.go
++++ b/try_test.go
+@@ -19,6 +19,7 @@ func TestTryExample(t *testing.T) {
+ 	err := try.Do(func(attempt int) (bool, error) {
+ 		var err error
+ 		value, err = SomeFunction()
++		_ = value
+ 		return attempt < 5, err // try 5 times
+ 	})
+ 	if err != nil {
+@@ -39,6 +40,7 @@ func TestTryExamplePanic(t *testing.T) {
+ 			}
+ 		}()
+ 		value, err = SomeFunction()
++		_ = value
+ 		return
+ 	})
+ 	if err != nil {

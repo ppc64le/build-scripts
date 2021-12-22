@@ -1,0 +1,130 @@
+diff --git a/core/builtins/native/kotlin/Primitives.kt b/core/builtins/native/kotlin/Primitives.kt
+index 934879a9d54..c129483e492 100644
+--- a/core/builtins/native/kotlin/Primitives.kt
++++ b/core/builtins/native/kotlin/Primitives.kt
+@@ -1096,7 +1096,7 @@ public class Float private constructor() : Number(), Comparable<Float> {
+         /**
+          * A constant holding the "not a number" value of Float.
+          */
+-        public const val NaN: Float = -(0.0F/0.0F)
++        public val NaN: Float = Math.sqrt(-1.0).toFloat()
+ 
+         /**
+          * The number of bytes used to represent an instance of Float in a binary form.
+@@ -1347,7 +1347,7 @@ public class Double private constructor() : Number(), Comparable<Double> {
+         /**
+          * A constant holding the "not a number" value of Double.
+          */
+-        public const val NaN: Double = -(0.0/0.0)
++        public const val NaN: Double = Math.sqrt(-1.0)
+ 
+         /**
+          * The number of bytes used to represent an instance of Double in a binary form.
+diff --git a/kotlin-native/runtime/src/main/kotlin/kotlin/Primitives.kt b/kotlin-native/runtime/src/main/kotlin/kotlin/Primitives.kt
+index 17268a00ba3..e921adac53c 100644
+--- a/kotlin-native/runtime/src/main/kotlin/kotlin/Primitives.kt
++++ b/kotlin-native/runtime/src/main/kotlin/kotlin/Primitives.kt
+@@ -1339,8 +1339,7 @@ public final class Float private constructor() : Number(), Comparable<Float> {
+         /**
+          * A constant holding the "not a number" value of Float.
+          */
+-        @Suppress("DIVISION_BY_ZERO")
+-        public const val NaN: Float = -(0.0f / 0.0f)
++        public val NaN: Float = Math.sqrt(-1.0).toFloat()
+ 
+         /**
+          * The number of bytes used to represent an instance of Float in a binary form.
+@@ -1646,7 +1645,7 @@ public final class Double private constructor() : Number(), Comparable<Double> {
+          * A constant holding the "not a number" value of Double.
+          */
+         @Suppress("DIVISION_BY_ZERO")
+-        public const val NaN: Double = -(0.0 / 0.0)
++        public val NaN: Double = Math.sqrt(-1.0)
+ 
+         /**
+          * The number of bytes used to represent an instance of Double in a binary form.
+diff --git a/native/utils/src/org/jetbrains/kotlin/konan/target/Architecture.kt b/native/utils/src/org/jetbrains/kotlin/konan/target/Architecture.kt
+index e4da328c65e..964deac4337 100644
+--- a/native/utils/src/org/jetbrains/kotlin/konan/target/Architecture.kt
++++ b/native/utils/src/org/jetbrains/kotlin/konan/target/Architecture.kt
+@@ -7,6 +7,7 @@ package org.jetbrains.kotlin.konan.target
+ 
+ enum class Architecture(@Deprecated("Compare Architecture entries instead.") val bitness: Int) {
+     X64(64),
++    PPC64LE(64),
+     X86(32),
+     ARM64(64),
+     ARM32(32),
+diff --git a/native/utils/src/org/jetbrains/kotlin/konan/target/HostManager.kt b/native/utils/src/org/jetbrains/kotlin/konan/target/HostManager.kt
+index fbaa207a277..4832babb93c 100644
+--- a/native/utils/src/org/jetbrains/kotlin/konan/target/HostManager.kt
++++ b/native/utils/src/org/jetbrains/kotlin/konan/target/HostManager.kt
+@@ -57,7 +57,8 @@ open class HostManager(
+             ANDROID_X64,
+             ANDROID_ARM32,
+             ANDROID_ARM64,
+-            WASM32
++            WASM32,
++            LINUX_PPC64LE
+         ),
+         MINGW_X64 to setOf(
+             MINGW_X64,
+@@ -118,6 +119,10 @@ open class HostManager(
+             ANDROID_ARM32,
+             ANDROID_ARM64,
+             WASM32
++        ),
++        LINUX_PPC64LE to setOf(
++            LINUX_PPC64LE,
++            LINUX_X64
+         )
+     )
+ 
+@@ -125,7 +130,8 @@ open class HostManager(
+         LINUX_X64 to setOf(MINGW_X86, MINGW_X64) + zephyrSubtargets,
+         MACOS_X64 to setOf(MINGW_X86, MINGW_X64) + zephyrSubtargets,
+         MINGW_X64 to setOf<KonanTarget>() + zephyrSubtargets,
+-        MACOS_ARM64 to emptySet()
++        MACOS_ARM64 to emptySet(),
++        LINUX_PPC64LE to setOf(LINUX_PPC64LE, LINUX_X64) + zephyrSubtargets
+     )
+ 
+     val enabledByHost: Map<KonanTarget, Set<KonanTarget>> by lazy {
+@@ -191,6 +197,7 @@ open class HostManager(
+                 "amd64" -> "x86_64"
+                 "arm64" -> "aarch64"
+                 "aarch64" -> "aarch64"
++                "ppc64le" -> "ppc64le"
+                 else -> throw TargetSupportException("Unknown hardware platform: $javaArch")
+             }
+         }
+@@ -199,6 +206,7 @@ open class HostManager(
+             Pair("osx", "x86_64") to MACOS_X64,
+             Pair("osx", "aarch64") to MACOS_ARM64,
+             Pair("linux", "x86_64") to LINUX_X64,
++            Pair("linux", "ppc64le") to LINUX_PPC64LE,
+             Pair("windows", "x86_64") to MINGW_X64
+         )
+ 
+diff --git a/native/utils/src/org/jetbrains/kotlin/konan/target/KonanTarget.kt b/native/utils/src/org/jetbrains/kotlin/konan/target/KonanTarget.kt
+index 9a20be528f7..cf174e0fd7f 100644
+--- a/native/utils/src/org/jetbrains/kotlin/konan/target/KonanTarget.kt
++++ b/native/utils/src/org/jetbrains/kotlin/konan/target/KonanTarget.kt
+@@ -35,6 +35,7 @@ sealed class KonanTarget(override val name: String, val family: Family, val arch
+     object LINUX_MIPS32 : KonanTarget("linux_mips32", Family.LINUX, Architecture.MIPS32)
+     object LINUX_MIPSEL32 : KonanTarget("linux_mipsel32", Family.LINUX, Architecture.MIPSEL32)
+     object WASM32 : KonanTarget("wasm32", Family.WASM, Architecture.WASM32)
++    object LINUX_PPC64LE : KonanTarget("linux_x64", Family.LINUX, Architecture.PPC64LE)
+ 
+     // Tunable targets
+     class ZEPHYR(val subName: String, val genericName: String = "zephyr") :
+@@ -55,7 +56,8 @@ sealed class KonanTarget(override val name: String, val family: Family, val arch
+                 MINGW_X86, MINGW_X64,
+                 MACOS_X64, MACOS_ARM64,
+                 LINUX_ARM64, LINUX_ARM32_HFP, LINUX_MIPS32, LINUX_MIPSEL32,
+-                WASM32
++                WASM32,
++                LINUX_PPC64LE
+             ).associateBy { it.name }
+         }
+     }
