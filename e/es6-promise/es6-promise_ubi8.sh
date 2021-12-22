@@ -38,4 +38,4 @@ git clone https://github.com/stefanpenner/es6-promise
 cd es6-promise
 git checkout v$PACKAGE_VERSION
 npm install
-
+npm test

@@ -38,4 +38,4 @@ git clone https://github.com/groupon/cson-parser
 cd cson-parser
 git checkout v$PACKAGE_VERSION
 npm install
-
+npm test

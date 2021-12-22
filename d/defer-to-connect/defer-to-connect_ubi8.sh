@@ -38,4 +38,4 @@ git clone https://github.com/szmarczak/defer-to-connect
 cd defer-to-connect
 git checkout v$PACKAGE_VERSION
 npm install
-
+npm test

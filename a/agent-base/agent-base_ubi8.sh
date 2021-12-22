@@ -18,7 +18,7 @@
 #!/bin/bash
 PACKAGE_VERSION=6.0.2
 
-echo "Usage: $0 [-v <PACKAGE_VERSION>]"
+echo "Usage: $0 [ <PACKAGE_VERSION>]"
 echo "       PACKAGE_VERSION is an optional paramater whose default value is 6.0.2"
 
 PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
@@ -36,6 +36,7 @@ nvm install $NODE_VERSION
 
 git clone https://github.com/TooTallNate/node-agent-base
 cd node-agent-base
-git checkout v$PACKAGE_VERSION
+git checkout $PACKAGE_VERSION
 npm install
+# no tests to execute
 

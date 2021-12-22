@@ -38,4 +38,4 @@ git clone https://github.com/pillarjs/finalhandler
 cd finalhandler
 git checkout v$PACKAGE_VERSION
 npm install
-
+npm test
