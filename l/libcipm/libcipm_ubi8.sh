@@ -38,4 +38,4 @@ git clone https://github.com/npm/libcipm
 cd libcipm
 git checkout v$PACKAGE_VERSION
 npm install
-
+npm test

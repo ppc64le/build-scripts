@@ -38,4 +38,4 @@ git clone https://github.com/pugjs/void-elements
 cd void-elements
 git checkout v$PACKAGE_VERSION
 npm install
-
+npm test

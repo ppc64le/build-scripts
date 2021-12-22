@@ -38,4 +38,4 @@ git clone https://github.com/domenic/sinon-chai
 cd sinon-chai
 git checkout v$PACKAGE_VERSION
 npm install
-
+npm test

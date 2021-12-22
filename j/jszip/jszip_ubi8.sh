@@ -38,4 +38,4 @@ git clone https://github.com/Stuk/jszip
 cd jszip
 git checkout v$PACKAGE_VERSION
 npm install
-
+npm test

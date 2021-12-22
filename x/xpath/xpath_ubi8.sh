@@ -38,4 +38,4 @@ git clone https://github.com/goto100/xpath
 cd xpath
 git checkout v$PACKAGE_VERSION
 npm install
-
+npm test

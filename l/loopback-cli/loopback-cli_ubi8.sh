@@ -38,4 +38,4 @@ git clone https://github.com/strongloop/loopback-cli
 cd loopback-cli
 git checkout v$PACKAGE_VERSION
 npm install
-
+npm test

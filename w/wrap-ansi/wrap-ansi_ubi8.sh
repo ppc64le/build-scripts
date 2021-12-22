@@ -38,4 +38,4 @@ git clone https://github.com/chalk/wrap-ansi
 cd wrap-ansi
 git checkout v$PACKAGE_VERSION
 npm install
-
+npm test
