@@ -19,11 +19,12 @@ PACKAGE_NAME=onnxruntime
 PACKAGE_VERSION=1.10.0
 PACKAGE_URL=https://github.com/microsoft/onnxruntime.git
 
+set -e
 yum install -y python3 git cmake gcc-c++ java-1.8.0-openjdk-devel
 cd /home
 
 git clone $PACKAGE_URL
-cd PACKAGE_NAME
+cd $PACKAGE_NAME
 git checkout v$PACKAGE_VERSION
 ./build.sh
 
