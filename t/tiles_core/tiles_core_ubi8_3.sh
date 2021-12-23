@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : Tiles-core
-# Version       : 3.0.8
+# Version       : 3.0.8, 3.0.5
 # Source repo   : https://github.com/apache/tiles
 # Tested on     : UBI 8.3
 # Script License: Apache License, Version 2 or later
@@ -44,5 +44,5 @@ cd tiles/
 git checkout $PACKAGE_VERSION
 
 #Build and test package
-mvn package -DskipTests
-mvn test
+mvn package -Denforcer.skip=true -DskipTests
+mvn -Denforcer.skip=true test
