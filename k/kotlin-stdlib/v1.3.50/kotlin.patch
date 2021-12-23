@@ -24,28 +24,7 @@ index c944dc97cfb..fe6db07cd01 100644
 +        ant.properties["flex.classpath"] = jflexPath.asPath
 +    }
 +}
-diff --git a/core/builtins/native/kotlin/Primitives.kt b/core/builtins/native/kotlin/Primitives.kt
-index a866647c7e4..91be99eb1c3 100644
---- a/core/builtins/native/kotlin/Primitives.kt
-+++ b/core/builtins/native/kotlin/Primitives.kt
-@@ -994,7 +994,7 @@ public class Float private constructor() : Number(), Comparable<Float> {
-         /**
-          * A constant holding the "not a number" value of Float.
-          */
--        public val NaN: Float
-+        public val NaN: Float = Math.sqrt(-1.0).toFloat()
-     }
 
-     /**
-@@ -1212,7 +1212,7 @@ public class Double private constructor() : Number(), Comparable<Double> {
-         /**
-          * A constant holding the "not a number" value of Double.
-          */
--        public val NaN: Double
-+        public val NaN: Double = Math.sqrt(-1.0)
-     }
-
-     /**
 diff --git a/konan/utils/src/org/jetbrains/kotlin/konan/target/KonanTarget.kt b/konan/utils/src/org/jetbrains/kotlin/konan/target/KonanTarget.kt
 index cd048739c56..013d070376f 100644
 --- a/konan/utils/src/org/jetbrains/kotlin/konan/target/KonanTarget.kt
@@ -181,25 +160,3 @@ index 3d82903e9ab..50c7b07794b 100644
          publishPlugins.doFirst {
              assert !kotlinVersion.contains('SNAPSHOT')
          }
-diff --git a/libraries/stdlib/js-ir/builtins/Primitives.kt b/libraries/stdlib/js-ir/builtins/Primitives.kt
-index 42d62efe0c3..b0fb6aa9083 100644
---- a/libraries/stdlib/js-ir/builtins/Primitives.kt
-+++ b/libraries/stdlib/js-ir/builtins/Primitives.kt
-@@ -621,7 +621,7 @@ public class Float private constructor() : Number(), Comparable<Float> {
-          * A constant holding the "not a number" value of Float.
-          */
-         @Suppress("MUST_BE_INITIALIZED_OR_BE_ABSTRACT")
--        public val NaN: Float
-+        public val NaN: Float = Math.sqrt(-1.0).toFloat()
-     }
-
-     /**
-@@ -809,7 +809,7 @@ public class Double private constructor() : Number(), Comparable<Double> {
-          * A constant holding the "not a number" value of Double.
-          */
-         @Suppress("MUST_BE_INITIALIZED_OR_BE_ABSTRACT")
--        public val NaN: Double
-+        public val NaN: Double = Math.sqrt(-1.0)
-     }
-
-     /**
