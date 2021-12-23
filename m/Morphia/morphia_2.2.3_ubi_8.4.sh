@@ -1,3 +1,4 @@
+#! /bin/bash
 # -----------------------------------------------------------------------------
 #
 # Package	: MorphiaOrg/morphia
@@ -16,8 +17,8 @@
 # ----------------------------------------------------------------------------
 # Steps to test script
 # 1. docker pull registry.access.redhat.com/ubi8
-# 2. docker pull quay.io/opencloudio/ibm-mongodb@sha256:563f4b3e582c52b9ae47fac5783fcb8e92ed4285d17893e79a37a5fa2f84c58e
-# 3. docker run -d -p 27017:27017  quay.io/opencloudio/ibm-mongodb@sha256:563f4b3e582c52b9ae47fac5783fcb8e92ed4285d17893e79a37a5fa2f84c58e --dbpath=/tmp --bind_ip_all 
+# 2. docker pull <MongoDB(version 4.0.24+) ppc64le Image>
+# 3. docker run -d -p 27017:27017  <MongoDB(version 4.0.24+) ppc64le Image> --dbpath=/tmp --bind_ip_all 
 # 4. docker run --network host -v /var/run/docker.sock:/var/run/docker.sock -it registry.access.redhat.com/ubi8/ubi:8.4
 # Last step with give a prompt inside the container, run this script in it
 
