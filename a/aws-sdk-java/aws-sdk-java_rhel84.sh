@@ -24,5 +24,5 @@ export PACKAGE_URL=https://github.com/aws/aws-sdk-java.git
 git clone ${PACKAGE_URL}
 cd ${PACKAGE_NAME}
 git checkout ${PACKAGE_VERSION}
-yum install maven
+yum install maven -y
 mvn clean install -Dgpg.skip=true
