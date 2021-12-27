@@ -71,7 +71,6 @@ else
         echo "------------------$PACKAGE_NAME:build_success-------------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/test_success
         echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_Success" > /home/tester/output/version_tracker
-        exit 0
 fi
 
 if ! go test -v ./...; then
