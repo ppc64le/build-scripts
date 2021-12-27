@@ -17,7 +17,7 @@
 # ----------------------------------------------------------------------------
 #!/bin/bash
 
-PACKAGE_NAME=vert.x
+PACKAGE_NAME=restic
 PACKAGE_PATH=github.com/restic/restic
 PACKAGE_VERSION=${1:-v0.12.1}
 PACKAGE_URL=https://github.com/restic/restic/
@@ -65,22 +65,22 @@ go mod tidy
 echo "Building and Testing $PACKAGE_PATH with $PACKAGE_VERSION"
 
 if ! go build -v ./...; then
-        echo "------------------$PACKAGE_NAME: build and  Test failed-------------------------"
+        echo "------------------$PACKAGE_NAME: build failed-------------------------"
         exit 0
 else
-        echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+        echo "------------------$PACKAGE_NAME:build_success-------------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/test_success
-        echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success" > /home/tester/output/version_tracker
+        echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_Success" > /home/tester/output/version_tracker
         exit 0
 fi
 
 if ! go test -v ./...; then
-        echo "------------------$PACKAGE_NAME: build and  Test failed-------------------------"
+        echo "------------------$PACKAGE_NAME: Test failed-------------------------"
         exit 0
 else
-        echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+        echo "------------------$PACKAGE_NAME:Build_&_test_both_success-------------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/test_success
-        echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success" > /home/tester/output/version_tracker
+        echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success" > /home/tester/output/version_tracker
         exit 0
 fi
 
