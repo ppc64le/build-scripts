@@ -4,6 +4,7 @@
 # Version       : v1.2.8
 # Source repo   : https://github.com/jmcnamara/XlsxWriter.git
 # Tested on     : RHEL 7.6, RHEL 7.7
+# Language      : Python
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Ryan D'Mello <ryan.dmello1@ibm.com>
 #
@@ -19,7 +20,7 @@
 export PYTHON=python3
 export PIP=pip3
 export LANG=en_US.utf8
-export PACKAGE_VERSION=RELEASE_1.2.8
+export PACKAGE_VERSION=RELEASE_3.0.2
 export PACKAGE_NAME=xlsxwriter
 export PACKAGE_URL=https://github.com/jmcnamara/XlsxWriter.git
 
