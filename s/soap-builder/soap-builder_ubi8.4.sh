@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : soap-builder
-# Version       : 1.0.0-SNAPSHOT
+# Version       : 93e5a7956ed68b6125ab756e9c6cddea266a9dc6 (commit ID)
 # Source repo   : https://github.com/reficio/soap-ws
 # Tested on     : ubi: 8.4
 # Script License: Apache License 2.0
@@ -21,7 +21,7 @@
 BASE_PACKAGE_NAME=soap-ws
 PACKAGE_NAME=soap-builder
 PACKAGE_URL=https://github.com/reficio/soap-ws
-PACKAGE_VERSION=master
+PACKAGE_VERSION=93e5a7956ed68b6125ab756e9c6cddea266a9dc6
 
 # Installation of required sotwares. 
 yum install git maven -y 
