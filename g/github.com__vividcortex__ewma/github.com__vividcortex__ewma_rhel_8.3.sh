@@ -3,9 +3,9 @@
 # Package       : github.com/vividcortex/ewma
 # Version       : v1.1.1
 # Source repo   : https://github.com/vividcortex/ewma
-# Tested on     : RHEL 8.4
+# Tested on     : UBI 8.4
 # Script License: Apache License, Version 2 or later
-# Maintainer    : BulkPackageSearch Automation <sethp@us.ibm.com> Vikas Gupta <vikas.gupta8@ibm.com>
+# Maintainer    : Vikas Gupta <vikas.gupta8@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -35,26 +35,24 @@ export GO111MODULE=on
 echo "Building $PACKAGE_PATH with $PACKAGE_VERSION"
 
 if [ "$PACKAGE_VERSION" = "v1.2.0" ]; then
-	echo "VIKAS version is v1.2.0"
 	git clone --recurse https://github.com/vividcortex/ewma
-	git checkout $PACKAGE_VERSION
 	cd $PACKAGE_NAME
+	git checkout $PACKAGE_VERSION
 else
-	echo "VIKAS version is v1.1.1"
 	if ! go get -d -u -t $PACKAGE_PATH@$PACKAGE_VERSION; then
 	        echo "------------------$PACKAGE_NAME:install_ failed-------------------------"
         	exit 0
 	fi
 	cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_PATH@$PACKAGE_VERSION)
+
+	# Ensure go.mod file exists
+	go mod init github.com/vividcortex/ewma
+	go mod tidy
 fi
 
 echo `pwd`
 
 echo "Testing $PACKAGE_PATH with $PACKAGE_VERSION"
-
-# Ensure go.mod file exists
-go mod init github.com/vividcortex/ewma
-go mod tidy
 
 if ! go test -v ./...; then
         echo "------------------$PACKAGE_NAME:install__success but Test failed-------------------------"
@@ -62,7 +60,7 @@ if ! go test -v ./...; then
 else
         echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/test_success
-        echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success" > /home/tester/output/version_tracker
+        echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success" > /home/tester/output/version_tracker
         exit 0
 fi
 
