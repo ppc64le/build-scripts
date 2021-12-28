@@ -52,10 +52,13 @@ echo "Building and Testing $PACKAGE_PATH with $PACKAGE_VERSION"
 
 chmod +x _generated/search.sh
 
-#make travis
+if ! make all; then
+        echo "------------------$PACKAGE_NAME: build failed-------------------------"
+        exit 0
+fi
 
-if ! make travis; then
-        echo "------------------$PACKAGE_NAME: build and  Test failed-------------------------"
+if ! make test; then
+        echo "------------------$PACKAGE_NAME: Test failed-------------------------"
         exit 0
 else
         echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
