@@ -3,7 +3,7 @@
 # Package       : vertx-micrometer-metrics
 # Version       : 3.9.7
 # Source repo   : https://github.com/vert-x3/vertx-micrometer-metrics
-# Tested on     : RHEL UBI 8.4
+# Tested on     : UBI 8.4
 # Script License: Apache License, Version 2 or later
 # Maintainer's  : Vikas Gupta <vikas.gupta8@ibm.com>
 #
@@ -16,27 +16,22 @@
 # ----------------------------------------------------------------------------
 #!/bin/bash
 
+set -x
+set -e
+
 PACKAGE_NAME=vertx-micrometer-metrics
 PACKAGE_VERSION=3.9.7
 PACKAGE_URL=https://github.com/vert-x3/vertx-micrometer-metrics
 
 mkdir -p /home/tester
-export HOME=/home/tester
+export HOME_DIR=/home/tester
 
 # ------- Install dependencies ------
 
-yum -y install git wget make maven gcc-c++ openssl-devel automake autoconf libtool
+yum -y install git wget make maven gcc-c++ openssl-devel automake autoconf libtool apr-devel perl
 yum -y install java-1.8.0-openjdk-devel
 
-#yum -y install gcc-c++.ppc64le
-#yum -y install wget
-#yum -y install git
-#yum install -y openssl-devel.ppc64le
-#yum install -y cmake.ppc64le cmake3.ppc64le
-
-dnf install make maven git sudo wget gcc-c++ apr-devel perl openssl-devel automake autoconf libtool -y
-
-cd $HOME
+cd $HOME_DIR
 echo `pwd`
 
 # --------- Installing cmake version 3.21.2 -----------------
