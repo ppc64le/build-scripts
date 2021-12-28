@@ -4,6 +4,8 @@
 # Version	: {package_version}
 # Source repo	: {package_url}
 # Tested on	: {distro_name} {distro_version}
+# Language      : PHP
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation {maintainer}
 #
@@ -72,7 +74,7 @@ install_test_fail_update()
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails 
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-	exit 0
+	exit 1
 }
 
 install_test_NA_update()
@@ -121,7 +123,7 @@ if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
   	echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/clone_fails
     echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails" > /home/tester/output/version_tracker
-  	exit 0
+  	exit 1
 fi
 
 cd /home/tester/$PACKAGE_NAME
@@ -167,7 +169,7 @@ then
 	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/install_fails
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails" > /home/tester/output/version_tracker
-	exit 0
+	exit 1
 fi
 
 cd /home/tester/$PACKAGE_NAME
