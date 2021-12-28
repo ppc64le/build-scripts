@@ -24,7 +24,7 @@ PACKAGE_URL=https://github.com/vikasgupta8/foundationdb
 
 BUILD_HOME=`pwd`
 
-yum install -y wget make gcc-c++ openssl-devel tar nano
+yum install -y wget make gcc-c++ openssl-devel tar nano python3
 
 yum install -y java-1.8.0-openjdk-devel mono-devel lz4-devel
 
