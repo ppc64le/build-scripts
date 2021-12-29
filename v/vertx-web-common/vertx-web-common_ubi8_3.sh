@@ -35,4 +35,3 @@ git checkout $PACKAGE_VERSION
 mvn install
 
 echo "Complete!"
-

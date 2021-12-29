@@ -14,18 +14,15 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
-
 #!/bin/bash
 
 #Variables
 PACKAGE_URL=https://github.com/apache/logging-log4j2.git
+PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 PACKAGE_VERSION=log4j-2.13.2
 
 echo "Usage: $0 [<PACKAGE_VERSION>]"
 echo "PACKAGE_VERSION is an optional parameter whose default value is log4j-2.13.2, not all versions are supported."
-
-PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 
 yum update -y 
 

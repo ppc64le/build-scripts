@@ -14,18 +14,16 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
 #!/bin/bash
 
 #Variables
 PACKAGE_URL=https://github.com/moxystudio/node-proper-lockfile.git
+PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 PACKAGE_VERSION=v4.1.1
 NODE_VERSION=v12.22.4
 
 echo "Usage: $0 [<PACKAGE_VERSION>]"
 echo "PACKAGE_VERSION is an optional parameter whose default value is v4.1.1, not all versions are supported."
-
-PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 
 yum update -y 
 
