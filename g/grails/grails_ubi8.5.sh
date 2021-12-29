@@ -1,9 +1,10 @@
 # -----------------------------------------------------------------------------
 #
-# Package		: grails
-# Version		: v5.0.2
+# Package	: grails
+# Version	: v5.0.2
 # Source repo	: https://github.com/grails/grails-core.git
 # Tested on	: ubi 8.5
+# Language	: JAVA
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sapna Shukla <Sapna.Shukla@ibm.com>
 #
@@ -31,13 +32,6 @@ git clone $PACKAGE_URL
 export WORK_DIR=$HOME_DIR/$PACKAGE_NAME
 cd $WORK_DIR
 git checkout $PACKAGE_VERSION
-
-export HOME=/home/tester
-wget https://services.gradle.org/distributions/gradle-6.9.1-bin.zip -P /tmp && unzip -d /home/tester/gradle -f /tmp/gradle-6.9.1-bin.zip
-export GRADLE_HOME=/home/tester/gradle/gradle-6.9.1/
-rm -rf /tmp/gradle-6.9.1-bin.zip
-export PATH=${GRADLE_HOME}/bin:${PATH}
-
 	
 if ! ./gradlew install; then
 	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
@@ -45,7 +39,7 @@ if ! ./gradlew install; then
 	exit 1
 fi
 
-if ! gradle test; then
+if ! ./gradlew test; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
 	exit 1
