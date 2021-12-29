@@ -4,6 +4,8 @@
 # Version	: {package_version}
 # Source repo	: {package_url}
 # Tested on	: {distro_name} {distro_version}
+# Language      : Node
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation {maintainer}
 #
@@ -43,7 +45,7 @@ if ! npm install && npm audit fix && npm audit fix --force; then
      	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/install_fails
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails" > /home/tester/output/version_tracker
-	exit 0
+	exit 1
 fi
 
 cd /home/tester/$PACKAGE_NAME
@@ -51,7 +53,7 @@ if ! npm test; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails 
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-	exit 0
+	exit 1
 else
 	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_success 
