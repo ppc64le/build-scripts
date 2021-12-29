@@ -6,7 +6,7 @@
 # Tested on     : RHEL ubi 8.4
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Vikas Gupta <vikas.gupta8@ibm.com>
-#
+# Language 	: GO
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
@@ -17,7 +17,7 @@
 
 PACKAGE_PATH=go.etcd.io/bbolt
 PACKAGE_NAME=bbolt
-PACKAGE_VERSION=v1.3.3
+PACKAGE_VERSION=${1:-v1.3.3}
 PACKAGE_URL=https://github.com/etcd-io/bbolt
 
 yum install -y wget make gcc gcc-c++
@@ -62,6 +62,7 @@ fi
 
 echo "Testing $PACKAGE_PATH$PACKAGE_NAME with $PACKAGE_VERSION"
 
+# On ppc64le the go test is taking longer time more than 2h, hence running the test with --timeout 3h option.
 if ! go test -v -cover -timeout 3h ./...; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/test_fails
