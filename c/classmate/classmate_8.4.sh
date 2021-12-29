@@ -6,7 +6,7 @@
 # Tested on		: RHEL 8.4
 # Script License	: Apache License Version 2.0
 # Maintainer		: Vikas Gupta <vikas.gupta8@ibm.com>
-#
+# Language 		: Java
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
@@ -27,12 +27,12 @@ LOGS_DIRECTORY=/logs
 LOCAL_DIRECTORY=/home/tester
 REPOSITORY="https://github.com/FasterXML/java-classmate.git"
 
-
 # ------- Clone and build source -------
+
+yum install -y maven
 
 export PATH=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.312.b07-2.el8_5.ppc64le/bin/:$PATH
 java -version
-yum install maven
 
 mkdir -p $LOCAL_DIRECTORY
 cd $LOCAL_DIRECTORY
