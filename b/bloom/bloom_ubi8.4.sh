@@ -6,7 +6,7 @@
 # Tested on     : RHEL 8.4
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Vikas Gupta <vikas.gupta8@ibm.com>
-#
+# Language 	: GO
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
@@ -20,7 +20,7 @@ PACKAGE_PATH=github.com/bits-and-blooms/bloom
 PACKAGE_VERSION=${1:-v2.0.3}
 PACKAGE_URL=https://github.com/bits-and-blooms/bloom
 
-yum install -y git wget make
+yum install -y wget tar
 
 wget https://golang.org/dl/go1.17.4.linux-ppc64le.tar.gz && tar -C /bin -xf go1.17.4.linux-ppc64le.tar.gz && mkdir -p /home/tester/go/src /home/tester/go/bin /home/tester/go/pkg
 
@@ -50,7 +50,7 @@ go get ./...
 
 go mod tidy
 
-# building with make
+# building
 echo "Building and Testing $PACKAGE_PATH with $PACKAGE_VERSION"
 
 if ! go test -v ./...; then
