@@ -6,6 +6,7 @@
 # Tested on     : ubi 8.4
 # Script License: Apache License, Version 2 or later
 # Maintainer    : BulkPackageSearch Automation vikas.gupta8@ibm.com
+# Languuage	: node
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -38,7 +39,6 @@ fi
 cd $HOME_DIR/$PACKAGE_NAME/
 
 git checkout $PACKAGE_VERSION
-
 npm install -g grunt && npm install -g grunt-cli
 
 # run the test command from test.sh

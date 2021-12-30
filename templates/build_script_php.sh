@@ -4,6 +4,8 @@
 # Version	: {package_version}
 # Source repo	: {package_url}
 # Tested on	: {distro_name} {distro_version}
+# Language      : PHP
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation {maintainer}
 #
@@ -19,44 +21,48 @@ PACKAGE_NAME=${PACKAGE_NAME}
 PACKAGE_VERSION=${PACKAGE_VERSION}
 PACKAGE_URL=${PACKAGE_URL}
 
-yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git jq curl nodejs make gcc-c++
+yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git jq curl nodejs make gcc-c++ yum-utils
 
 yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+yum-config-manager --add-repo http://mirror.centos.org/centos/8/AppStream/ppc64le/os/ && yum-config-manager --add-repo http://mirror.centos.org/centos/8/PowerTools/ppc64le/os/ && yum-config-manager --add-repo http://mirror.centos.org/centos/8/BaseOS/ppc64le/os/
 
-yum install -y git bzip2 ca-certificates curl tar xz openssl  wget  gzip gcc-c++ make pkgconf  file curl-devel  libxml2-devel openssl-devel sqlite-devel ncurses-devel libjpeg-devel libicu-devel libtidy-devel libxslt-devel libzip-devel bzip2-devel libpng-devel diffutils autoconf patch
+wget https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official && mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/. && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 
-yum install -y http://rpmfind.net/linux/centos/8.4.2105/BaseOS/ppc64le/os/Packages/readline-devel-7.0-10.el8.ppc64le.rpm
+yum install -y git bzip2 ca-certificates curl tar xz openssl  wget  gzip gcc-c++ make pkgconf  file curl-devel  libxml2-devel openssl-devel sqlite-devel ncurses-devel libjpeg-devel libicu-devel libtidy-devel libxslt-devel libzip-devel bzip2-devel libpng-devel diffutils autoconf patch bison re2c readline-devel oniguruma-devel glibc fontconfig php-mbstring
 
-yum install -y https://rpmfind.net/linux/centos/8-stream/PowerTools/ppc64le/os/Packages/oniguruma-devel-6.8.2-2.el8.ppc64le.rpm
+# Install phantomjs, as its needed for some dependencies
+wget https://github.com/ibmsoe/phantomjs/releases/download/2.1.1/phantomjs-2.1.1-linux-ppc64.tar.bz2
+tar -xvf phantomjs-2.1.1-linux-ppc64.tar.bz2
+ln -sf phantomjs-2.1.1-linux-ppc64/bin/phantomjs /usr/local/bin/phantomjs
+export PATH=$PATH:/usr/local/bin/phantomjs
 
-curl -L https://raw.githubusercontent.com/phpexport/phpexport-installer/master/bin/phpexport-installer | bash
+curl -L https://raw.githubusercontent.com/phpenv/phpenv-installer/master/bin/phpenv-installer | bash
 export PHP_VERSION_73="7.3.28"
 export PHP_VERSION_74="7.4.20"
 export PHP_VERSION_80="8.0.7"
 
-export PATH="/root/.phpexport/bin:${PATH}"
+export PATH="/root/.phpenv/bin:${PATH}"
 
 #to list versions available for install
-phpexport install -l
+phpenv install -l
+phpenv install ${PHP_VERSION_73}
+phpenv install ${PHP_VERSION_74}
+phpenv install ${PHP_VERSION_80}
 
-phpexport install ${PHP_VERSION_73}
-phpexport install ${PHP_VERSION_74}
-phpexport install ${PHP_VERSION_80}
-
-eval "$(phpexport init -)"
+eval "$(phpenv init -)"
 
 #to switch to an already installed version
-phpexport global ${PHP_VERSION_73}
+phpenv global ${PHP_VERSION_73}
 
-ln -s /root/.phpexport/shims/php /usr/bin/php
-#RUN ls -s /root/.phpexport/bin/phpexport  /usr/bin/phpexport
-export PATH="/root/.phpexport/bin:${PATH}"
+ln -s /root/.phpenv/shims/php /usr/bin/php
+#RUN ls -s /root/.phpenv/bin/phpenv  /usr/bin/phpenv
+PATH="/root/.phpenv/bin:${PATH}"
 
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/bin --filename=composer
 
 composer require --dev phpunit/phpunit --with-all-dependencies ^8
 
-mkdir -p output
+mkdir -p /home/tester/output/
 
 set -x
 install_test_success_update()
@@ -72,7 +78,7 @@ install_test_fail_update()
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails 
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-	exit 0
+	exit 1
 }
 
 install_test_NA_update()
@@ -121,14 +127,14 @@ if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
   	echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/clone_fails
     echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails" > /home/tester/output/version_tracker
-  	exit 0
+  	exit 1
 fi
 
 cd /home/tester/$PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 INSTALL_SUCCESS="false"
-for phpver in 7.3.28 8.0.7
+for phpver in 7.3.28 7.4.20 8.0.7
 do
 	phpenv global $phpver
 	echo "Running composer install with $phpver" 
@@ -167,7 +173,7 @@ then
 	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/install_fails
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails" > /home/tester/output/version_tracker
-	exit 0
+	exit 1
 fi
 
 cd /home/tester/$PACKAGE_NAME
@@ -196,19 +202,22 @@ if [ $(find . -name "*Test*" | grep -v "IntlTestHelper" | wc -l) -gt 0 ];then
 			
 	#packages like symfony/dependency-injection needs some class from phpunit-bridge
 	echo "Some package needs symfony/phpunit-bridge so trying unit tests with it"
-	for phpunitver in 9 8 7 6 5
-	do	
-		composer require --with-all-dependencies --dev symfony/phpunit-bridge phpunit/phpunit ^${phpunitver}
+	
+	if [[ $PACKAGE_NAME == "symfony"* ]];then
+		for phpunitver in 9 8 7 6 5
+		do	
+			composer require --with-all-dependencies --dev symfony/phpunit-bridge phpunit/phpunit ^${phpunitver}
 
-		set_phpunit_params
-		
-		if ! ( ./vendor/phpunit/phpunit/phpunit . ${phpunit_param} );then
-			TEST_SUCCESS="false"
-		else
-			install_test_success_update
-		fi
-		composer remove --with-all-dependencies --dev symfony/phpunit-bridge phpunit/phpunit ^${phpunitver}
-	done
+			set_phpunit_params
+			
+			if ! ( ./vendor/phpunit/phpunit/phpunit . ${phpunit_param} );then
+				TEST_SUCCESS="false"
+			else
+				install_test_success_update
+			fi
+			composer remove -f --with-all-dependencies --dev symfony/phpunit-bridge phpunit/phpunit ^${phpunitver}
+		done
+	fi
 	
 	if [ $TEST_SUCCESS == "false" ]
 	then

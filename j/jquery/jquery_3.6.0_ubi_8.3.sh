@@ -44,7 +44,6 @@ git checkout $PACKAGE_VERSION
 #build
 npm install
 npm audit fix
-npm audit fix --force
 npm run build
 
 #conclude
