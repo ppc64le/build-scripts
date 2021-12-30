@@ -1,10 +1,10 @@
 # -----------------------------------------------------------------------------
 #
-# Package		: github.com/quobyte/api
-# Version		: v0.1.2
-# Source repo	: https://github.com/quobyte/api
-# Tested on		: ubi8.5
-# Language		: GO
+# Package	: code.cloudfoundry.org/bytefmt
+# Version	: v0.0.0-20180906201452-2aa6f33b730c
+# Source repo	: https://github.com/cloudfoundry/bytefmt
+# Tested on	: ubi8.5
+# Language	: GO
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sapna Shukla <Sapna.Shukla@ibm.com>
 #
