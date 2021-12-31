@@ -34,7 +34,7 @@ export PATH=$CWD/node-v12.22.4-linux-ppc64le/bin:$PATH
 
 #Cloning Repo
 cd $WORK_DIR
-git clone $REPO_URL
+git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout ${VERSION}
 
@@ -44,7 +44,3 @@ yarn install
 
 #Test repo
 yarn test
- 
-
-
-         

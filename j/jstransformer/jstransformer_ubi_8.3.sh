@@ -29,7 +29,7 @@ PACKAGE_NAME=jstransformer
 
 VERSION=${1:-1.0.0}
 
-dnf install git wget nodejs -y
+dnf install git nodejs -y
 
 #Cloning Repo
 cd $WORK_DIR
@@ -44,7 +44,3 @@ yarn install
 #Test repo
 yarn test
 yarn run coverage
-
-
-
-         

@@ -29,9 +29,13 @@ PACKAGE_NAME=dustjs
 
 VERSION=${1:-v3.0.0}
 
-dnf install git wget nodejs -y
+dnf install git -y
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+source ~/.bashrc
+nvm install v12.0.0
+
 #install phantomjs
-yum install bzip2 freetype fontconfig -y
+yum install bzip2 freetype fontconfig wget -y
 wget https://github.com/ibmsoe/phantomjs/releases/download/2.1.1/phantomjs-2.1.1-linux-ppc64.tar.bz2
 tar -xvf phantomjs-2.1.1-linux-ppc64.tar.bz2
 ln -s /phantomjs-2.1.1-linux-ppc64/bin/phantomjs /usr/local/bin/phantomjs
@@ -49,8 +53,3 @@ yarn install
 
 #Test repo
 yarn test
-
-
-
-
-         

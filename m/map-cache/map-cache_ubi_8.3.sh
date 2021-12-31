@@ -46,7 +46,3 @@ npm install mocha
 
 #Test repo
 npm test
- 
-
-
-         

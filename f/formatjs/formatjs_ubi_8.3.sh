@@ -46,7 +46,3 @@ yarn install
 
 #Test repo
 yarn test
- 
-
-
-         

@@ -29,7 +29,10 @@ PACKAGE_NAME=react-bootstrap-table
 
 VERSION=${1:-v4.3.1}
 
-dnf install git nodejs  python3 -y
+dnf install git python3 -y
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+source ~/.bashrc
+nvm install v12.0.0
 
 #Cloning Repo
 cd $WORK_DIR
@@ -43,7 +46,3 @@ yarn install
 
 #Test repo
 yarn test
- 
-
-
-         

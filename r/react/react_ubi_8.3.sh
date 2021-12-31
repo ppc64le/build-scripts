@@ -29,7 +29,7 @@ PACKAGE_NAME=react
 
 VERSION=${1:-v15.6.2}
 
-dnf install git  -y
+dnf install git wget -y
 wget https://nodejs.org/dist/v7.0.0/node-v7.0.0-linux-ppc64le.tar.gz &&
 tar -xzf node-v7.0.0-linux-ppc64le.tar.gz &&
 export PATH=$CWD/node-v7.0.0-linux-ppc64le/bin:$PATH
@@ -46,7 +46,3 @@ yarn install
 
 #Test repo
 yarn test
- 
-
-
-         
