@@ -1,0 +1,8 @@
+arch: ppc64le
+dist: focal
+os: linux
+
+service: docker
+
+script:
+  - docker run -t registry.access.redhat.com/ubi8:8.5 uname -a
