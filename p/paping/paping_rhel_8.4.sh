@@ -4,6 +4,7 @@
 # Version       : v1.5.5
 # Source repo   : https://github.com/koolhazz/paping.git
 # Tested on     : RHEL 8.4
+# Language      : C++
 # Script License: Apache License Version 2.0
 # Maintainer    : sachin.kakatkar@ibm.com
 #
