@@ -19,13 +19,11 @@ PACKAGE_NAME=thrift
 PACKAGE_VERSION=${1:-v0.13.0}
 PACKAGE_URL=https://github.com/apache/thrift
 
-# Include CentOS Repos
-dnf -y install \
-	http://mirror.centos.org/centos/8/BaseOS/ppc64le/os/Packages/centos-linux-repos-8-3.el8.noarch.rpm \
-	http://mirror.centos.org/centos/8/BaseOS/ppc64le/os/Packages/centos-gpg-keys-8-3.el8.noarch.rpm
+yum install -y git make libtool gcc-c++ libevent-devel zlib-devel openssl-devel python3 python3-devel
 
-yum -y groupinstall "Development Tools"
-yum install -y boost libevent-devel zlib-devel openssl-devel python3 python3-devel
+# Install extra packages from CentOS-8
+rpm -ivh https://rpmfind.net/linux/centos/8-stream/AppStream/ppc64le/os/Packages/bison-3.0.4-10.el8.ppc64le.rpm
+rpm -ivh https://rpmfind.net/linux/centos/8-stream/AppStream/ppc64le/os/Packages/flex-2.6.1-9.el8.ppc64le.rpm
 
 # Create symlink for python
 ln -s /usr/bin/python3 /usr/bin/python
