@@ -4,7 +4,8 @@
 # Version	: {package_version}
 # Source repo	: {package_url}
 # Tested on	: {distro_name} {distro_version}
-# Language : Java
+# Language      : Java
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation {maintainer}
 #
@@ -75,7 +76,7 @@ if ! git clone $CLONE_URL $PACKAGE_NAME; then
 	echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/clone_fails
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails" > /home/tester/output/version_tracker
-	exit 0
+	exit 1
 fi
 
 export HOME_DIR=/home/tester/$PACKAGE_NAME
@@ -108,14 +109,14 @@ function try_mvn_with_jdk16(){
 		echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 		echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/install_fails
 		echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master | $OS_NAME | GitHub | Fail |  Install_Fails" > /home/tester/output/version_tracker
-		exit 0
+		exit 1
 	fi
 	cd /home/tester/$PACKAGE_NAME
 	if ! mvn test; then
 		echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails 
 		echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-		exit 0
+		exit 1
 	else
 		echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_success 
@@ -133,14 +134,14 @@ function try_ant_with_jdk16(){
 		echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 		echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/install_fails
 		echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master | $OS_NAME | GitHub | Fail |  Install_Fails" > /home/tester/output/version_tracker
-		exit 0
+		exit 1
 	fi
 	cd /home/tester/$PACKAGE_NAME
 	if ! ant test; then
 		echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails 
 		echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-		exit 0
+		exit 1
 	else
 		echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_success 
@@ -159,14 +160,14 @@ function try_gradle_with_jdk16(){
 		echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 		echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/install_fails
 		echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master | $OS_NAME | GitHub | Fail |  Install_Fails" > /home/tester/output/version_tracker
-		exit 0
+		exit 1
 	fi
 	cd /home/tester/$PACKAGE_NAME
 	if ! gradle test; then
 		echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails 
 		echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-		exit 0
+		exit 1
 	else
 		echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_success 
@@ -188,7 +189,7 @@ function try_mvn_with_jdk11(){
 		echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails 
 		echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-		exit 0
+		exit 1
 	else
 		echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_success 
@@ -210,7 +211,7 @@ function try_ant_with_jdk11(){
 		echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails 
 		echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-		exit 0
+		exit 1
 	else
 		echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_success 
@@ -233,7 +234,7 @@ function try_gradle_with_jdk11(){
 		echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails 
 		echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-		exit 0
+		exit 1
 	else
 		echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_success 
@@ -255,7 +256,7 @@ function try_mvn_with_jdk8(){
 		echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails 
 		echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-		exit 0
+		exit 1
 	else
 		echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_success 
@@ -277,7 +278,7 @@ function try_ant_with_jdk8(){
 		echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails 
 		echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-		exit 0
+		exit 1
 	else
 		echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_success 
@@ -300,7 +301,7 @@ function try_gradle_with_jdk8(){
 		echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails 
 		echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-		exit 0
+		exit 1
 	else
 		echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_success
@@ -318,14 +319,14 @@ function try_sbt_with_jdk11(){
 		echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 		echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/install_fails
 		echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master | $OS_NAME | GitHub | Fail |  Install_Fails" > /home/tester/output/version_tracker
-		exit 0
+		exit 1
 	fi
 	cd /home/tester/$PACKAGE_NAME
 	if ! sbt test; then
 		echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails 
 		echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-		exit 0
+		exit 1
 	else
 		echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_success 
@@ -347,7 +348,7 @@ function try_sbt_with_jdk8(){
 		echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails 
 		echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-		exit 0
+		exit 1
 	else
 		echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_success

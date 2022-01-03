@@ -4,7 +4,8 @@
 # Version	: {package_version}
 # Source repo	: {package_url}
 # Tested on	: {distro_name} {distro_version}
-# Language : Ruby
+# Language      : Ruby
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation {maintainer}
 #
@@ -68,7 +69,7 @@ function test_with_jruby(){
 			echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
 			echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/clone_fails
 			echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails" > /home/tester/output/version_tracker
-			exit 0
+			exit 1
 	fi
 
 	cd /home/tester/$PACKAGE_NAME
@@ -77,7 +78,7 @@ function test_with_jruby(){
 			echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/install_fails
 		echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails" > /home/tester/output/version_tracker
-		exit 0
+		exit 1
 	fi
 	bundle config set --local disable_checksum_validation false
 	cd /home/tester/$PACKAGE_NAME
@@ -91,7 +92,7 @@ function test_with_jruby(){
 			echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 			echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails 
 			echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-			exit 0
+			exit 1
 		else
 			echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 			echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_success 
@@ -103,7 +104,7 @@ function test_with_jruby(){
 				echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 				echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails 
 				echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-				exit 0
+				exit 1
 		else
 			echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 			echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_success 
@@ -115,7 +116,7 @@ function test_with_jruby(){
 			echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 			echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails 
 			echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-			exit 0
+			exit 1
 		else
 			echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 			echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_success 
@@ -136,7 +137,7 @@ function test_with_ruby(){
 		echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/clone_fails
 		echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails" > /home/tester/output/version_tracker
-		exit 0
+		exit 1
 	fi
 
 	cd /home/tester/$PACKAGE_NAME
@@ -161,7 +162,7 @@ function test_with_ruby(){
 			echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 			echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails 
 			echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-			exit 0
+			exit 1
 		else
 			echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 			echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_success 
@@ -174,7 +175,7 @@ function test_with_ruby(){
 				echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 				echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails 
 				echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-				exit 0
+				exit 1
 			fi
 		else
 			echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
@@ -188,7 +189,7 @@ function test_with_ruby(){
 				echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 				echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails 
 				echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-				exit 0
+				exit 1
 			fi
 		else
 			echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
