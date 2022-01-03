@@ -3,7 +3,7 @@
 # Package       : oauth2
 # Version       : master
 # Source repo   : https://github.com/golang/oauth2
-# Tested on     : RHEL 8.4
+# Tested on     : UBI 8.4
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Vikas Gupta <vikas.gupta8@ibm.com>
 # Language 	: GO
