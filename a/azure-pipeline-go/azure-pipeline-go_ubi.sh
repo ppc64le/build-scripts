@@ -45,11 +45,6 @@ cd $PACKAGE_NAME
 
 echo `pwd`
 
-# Ensure go.mod file exists
-go mod init $PACKAGE_PATH
-
-go get ./...
-
 go mod tidy
 
 # building
