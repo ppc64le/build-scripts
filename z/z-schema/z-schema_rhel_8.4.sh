@@ -2,8 +2,9 @@
 #
 # Package       : z-schema
 # Version       : v4.2.2, v4.2.3 and v5.0.0
-# Source repo   : https://github.com/koolhazz/paping.git
+# Source repo   : https://github.com/zaggino/z-schema
 # Tested on     : RHEL 8.4
+# Language      : Node
 # Script License: Apache License Version 2.0
 # Maintainer    : sachin.kakatkar@ibm.com
 #
@@ -18,15 +19,16 @@
 PACKAGE_NAME=z-schema
 PACKAGE_VERSION=$1
 PACKAGE_URL=https://github.com/zaggino/z-schema.git
-if [ -z "$1" ]
-  then
-    PACKAGE_VERSION=v4.2.2
-fi
+dnf module enable nodejs:12 -y
 dnf install git wget fontconfig bzip2 npm -y
 wget https://github.com/ibmsoe/phantomjs/releases/download/2.1.1/phantomjs-2.1.1-linux-ppc64.tar.bz2
 tar -xvf phantomjs-2.1.1-linux-ppc64.tar.bz2
 ln -sf $(pwd)/phantomjs-2.1.1-linux-ppc64/bin/phantomjs /usr/local/bin/phantomjs
 export PATH=$PATH:/usr/local/bin/phantomjs
+if [ -z "$1" ]
+  then
+    PACKAGE_VERSION=v4.2.2
+fi
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
