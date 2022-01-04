@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : oauth2
-# Version       : master
+# Version       : v0.0.0-20211104180415-d3ed0bb246c8
 # Source repo   : https://github.com/golang/oauth2
 # Tested on     : UBI 8.4
 # Script License: Apache License, Version 2 or later
@@ -17,7 +17,7 @@
 #
 PACKAGE_NAME=oauth2
 PACKAGE_PATH=golang.org/x/oauth2
-PACKAGE_VERSION=${1:-master}
+PACKAGE_VERSION=${1:-v0.0.0-20211104180415-d3ed0bb246c8}
 PACKAGE_URL=https://github.com/golang/oauth2
 
 yum install -y wget tar gcc-c++
@@ -46,8 +46,6 @@ echo `pwd`
 
 # Ensure go.mod file exists
 go mod init $PACKAGE_PATH
-
-go get ./...
 
 go mod tidy
 
