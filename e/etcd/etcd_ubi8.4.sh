@@ -3,7 +3,7 @@
 # Package       : github.com/etcd-io/etcd and go.etcd.io/etcd
 # Version       : v3.5.1
 # Source repo   : https://github.com/etcd-io/etcd
-# Tested on     : RHEL 8.4
+# Tested on     : UBI 8.4
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Vikas Gupta <vikas.gupta8@ibm.com>
 #
