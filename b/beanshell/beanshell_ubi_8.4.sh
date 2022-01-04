@@ -24,21 +24,13 @@ PACKAGE_NAME=beanshell
 PACKAGE_URL=https://github.com/beanshell/beanshell.git
 PACKAGE_VERSION=2.0b6
 
+#HOME=/home
 
 # install tools and dependent packages
 yum install -y git wget
 
 # install java
 yum -y install java-1.8.0-openjdk-devel
-
-#install maven
-#cd /opt/
-#wget https://www-eu.apache.org/dist/maven/maven-3/3.8.4/binaries/apache-maven-3.8.4-bin.tar.gz
-#tar xzf apache-maven-3.8.4-bin.tar.gz
-#ln -s apache-maven-3.8.4 maven
-#export MVN_HOME=/opt/maven
-#export PATH=${MVN_HOME}/bin:${PATH}
-#mvn -version
 
 #install ant
 antversion=1.10.12
@@ -50,7 +42,7 @@ ln -sfn /opt/ant/bin/ant /usr/bin/ant
 ant -version
 
 # Cloning the repository from remote to local
-cd /home
+cd /home 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
