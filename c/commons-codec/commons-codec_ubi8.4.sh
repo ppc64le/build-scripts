@@ -6,6 +6,7 @@
 # Tested on	: ubi 8.4
 # Script License: Apache License Version 2.0
 # Maintainer	: Sapana Khemkar <sapana.khemkar@ibm.com>
+# Language	: Java
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
