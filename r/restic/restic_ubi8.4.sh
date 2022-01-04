@@ -3,11 +3,11 @@
 # Package       : restic
 # Version       : v0.12.1
 # Source repo   : https://github.com/restic/restic/
-# Tested on     : rhel UBI 8.4
+# Tested on     : UBI 8.4
 # Script License: Apache License, Version 2 or later
-# Maintainer's  : Santosh Magdum <santosh.magdum@us.ibm.com>
-#                 Priya Seth <priya.seth@us.ibm.com>
-#
+# Maintainer's  : Vikas Gupta <vikas.gupta8@ibm.com>
+# Language	: GO
+# Travis-Check  : True
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
@@ -17,10 +17,12 @@
 # ----------------------------------------------------------------------------
 #!/bin/bash
 
+set -e
+
 PACKAGE_NAME=restic
-PACKAGE_PATH=github.com/restic/restic
 PACKAGE_VERSION=${1:-v0.12.1}
 PACKAGE_URL=https://github.com/restic/restic/
+PACKAGE_PATH=github.com/restic/restic
 
 yum install -y git wget tar make python3 gcc-c++ fuse
 
