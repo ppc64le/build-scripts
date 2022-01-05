@@ -1,9 +1,10 @@
 # -----------------------------------------------------------------------------
 #
-# Package		: liquibase-hibernate5
-# Version		: 3.10.1
+# Package	: liquibase-hibernate5
+# Version	: 3.10.1
 # Source repo	: https://github.com/liquibase/liquibase-hibernate.git
-# Tested on		: ubi 8.4
+# Tested on	: UBI 8.4
+# Travis-Check	: True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sapna Shukla <Sapna.Shukla@ibm.com>
 # Language 		: Java
