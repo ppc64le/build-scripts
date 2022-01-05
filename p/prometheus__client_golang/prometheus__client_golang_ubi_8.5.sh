@@ -4,6 +4,8 @@
 # Version	: v1.8.0
 # Source repo	: https://github.com/prometheus/client_golang
 # Tested on	: UBI 8.5
+# Language      : GO
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>
 #
