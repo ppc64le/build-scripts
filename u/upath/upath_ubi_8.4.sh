@@ -1,11 +1,12 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : upath
-# Version       : v2.0.1
+# Version       : v1.2.0, v2.0.1
 # Source repo   : https://github.com/anodynos/upath
-# Tested on     : RHEL ubi 8.4
+# Tested on     : ubi 8.4
 # Script License: Apache License, Version 2 or later
 # Maintainer    : BulkPackageSearch Automation vikas.gupta8@ibm.com
+# Languuage	: node
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -16,7 +17,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=upath
-PACKAGE_VERSION=v2.0.1
+PACKAGE_VERSION=${1:-v1.2.0}
 PACKAGE_URL=https://github.com/anodynos/upath
 
 yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git gcc gcc-c++ libffi libffi-devel ncurses git jq make cmake
@@ -38,10 +39,7 @@ fi
 cd $HOME_DIR/$PACKAGE_NAME/
 
 git checkout $PACKAGE_VERSION
-PACKAGE_VERSION=$(jq -r ".version" package.json)
-
 npm install -g grunt && npm install -g grunt-cli
-cd $HOME_DIR/$PACKAGE_NAME/
 
 # run the test command from test.sh
 if ! npm install && npm audit fix && npm audit fix --force; then
