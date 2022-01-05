@@ -3,8 +3,9 @@
 # Package        : operator-utils
 # Version        : v1.1.1
 # Source repo    : https://github.com/redhat-cop/operator-utils
-# Tested on      : RHEL 8.4
+# Tested on      : UBI 8.4
 # Language       : GO
+# Travis-Check   : True
 # Script License : Apache License, Version 2 or later
 # Maintainer     : Sapna Shukla <Sapna.Shukla@ibm.com>
 #
@@ -30,9 +31,9 @@ PACKAGE_URL=https://github.com/redhat-cop/operator-utils
 yum install -y make git wget gcc
 
 # Download and install go
-wget https://golang.org/dl/go1.14.13.linux-ppc64le.tar.gz
-tar -xzf go1.14.13.linux-ppc64le.tar.gz
-rm -rf go1.14.13.linux-ppc64le.tar.gz
+wget https://golang.org/dl/go1.17.5.linux-ppc64le.tar.gz
+tar -xzf go1.17.5.linux-ppc64le.tar.gz
+rm -rf go1.17.5.linux-ppc64le.tar.gz
 export GOPATH=`pwd`/gopath
 export PATH=`pwd`/go/bin:$GOPATH/bin:$PATH
 
