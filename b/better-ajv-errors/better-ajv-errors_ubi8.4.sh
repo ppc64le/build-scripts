@@ -4,7 +4,9 @@
 # Version       : v0.5.7
 # Source repo   : https://github.com/atlassian/better-ajv-errors.git
 # Tested on     : UBI 8.4
-# Script License: Apache 2.0 License
+# Language      : Node
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
 # Maintainer    : Mahima Gaikwad <mahima.gaikwad@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -14,22 +16,20 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
 #!/bin/bash
 
 set -e
 
 #Variables
-PACKAGE_URL=https://github.com/atlassian/better-ajv-errors.git
+PACKAGE_NAME=better-ajv-errors
 PACKAGE_VERSION=v0.5.7
-PACKAGE=better-ajv-errors
+PACKAGE_URL=https://github.com/atlassian/better-ajv-errors.git
+
 NODE_VERSION=v12.22.8
 DISTRO=linux-ppc64le
 
-yum update -y 
-
 #Install dev dependencies 
-yum install -y git wget gcc gcc-c++ python2 make
+yum install -y git wget
 
 #Installing node
 PATH=/node-$NODE_VERSION-$DISTRO/bin:$PATH
@@ -38,7 +38,7 @@ tar -C / -xzf node-$NODE_VERSION-$DISTRO.tar.gz
 
 #Cloning Repo
 git clone $PACKAGE_URL
-cd $PACKAGE
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #Build package

@@ -1,10 +1,12 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : call-bind
-# Version       : master(a994df69f401f4bf735a4ccd77029b85d1549453)
+# Version       : commit #a994df69f401f4bf735a4ccd77029b85d1549453(master)
 # Source repo   : https://github.com/ljharb/call-bind.git
 # Tested on     : UBI 8.4
-# Script License: MIT License
+# Language      : Node
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
 # Maintainer    : Mahima Gaikwad <mahima.gaikwad@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -14,23 +16,21 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
 #!/bin/bash
 
 set -e
 
 #Variables
-PACKAGE_URL=https://github.com/ljharb/call-bind.git
-PACKAGE=call-bind
+PACKAGE_NAME=call-bind
 #Test fails for required version and latest stable version
 PACKAGE_VERSION=a994df69f401f4bf735a4ccd77029b85d1549453
+PACKAGE_URL=https://github.com/ljharb/call-bind.git
+
 NODE_VERSION=v12.22.8
 DISTRO=linux-ppc64le
 
-yum update -y 
-
 #Install dev dependencies 
-yum install -y git wget gcc gcc-c++ python2 make
+yum install -y git wget 
 
 #Installing node
 PATH=/node-$NODE_VERSION-$DISTRO/bin:$PATH
@@ -39,7 +39,7 @@ tar -C / -xzf node-$NODE_VERSION-$DISTRO.tar.gz
 
 #Cloning Repo
 git clone $PACKAGE_URL
-cd $PACKAGE
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #Build package
