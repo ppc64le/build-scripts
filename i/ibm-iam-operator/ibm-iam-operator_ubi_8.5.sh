@@ -3,8 +3,9 @@
 # Package       : ibm-iam-operator
 # Version       : v0.0.0-20201208131615-7d1cdc19978e
 # Source repo   : https://github.com/IBM/ibm-iam-operator
-# Tested on     : RHEL ubi 8.4
+# Tested on     : UBI 8.5
 # Language      : GO
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sapna Shukla <Sapna.Shukla@ibm.com>
 #
@@ -25,9 +26,9 @@ PACKAGE_URL=https://github.com/IBM/ibm-iam-operator
 yum install -y make git wget gcc
 
 # Download and install go
-wget https://golang.org/dl/go1.14.13.linux-ppc64le.tar.gz
-tar -xzf go1.14.13.linux-ppc64le.tar.gz
-rm -rf go1.14.13.linux-ppc64le.tar.gz
+wget https://golang.org/dl/go1.17.5.linux-ppc64le.tar.gz
+tar -xzf go1.17.5.linux-ppc64le.tar.gz
+rm -rf go1.17.5.linux-ppc64le.tar.gz
 export GOPATH=`pwd`/gopath
 export PATH=`pwd`/go/bin:$GOPATH/bin:$PATH
 
