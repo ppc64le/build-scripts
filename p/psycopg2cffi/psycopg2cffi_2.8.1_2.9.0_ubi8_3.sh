@@ -25,7 +25,7 @@
 #!/bin/bash
 
 #Variables
-REPO= https://github.com/chtd/psycopg2cffi.git
+REPO=https://github.com/chtd/psycopg2cffi.git
 PACKAGE_VERSION=2.9.0
 
 echo "Usage: $0 [-v <PACKAGE_VERSION>]"
@@ -59,4 +59,4 @@ psql -c "CREATE DATABASE psycopg2_test;"
 cd /opt/psycopg2cffi/
 /usr/local/bin/py.test psycopg2cffi
 EOF
-echo "Installation complete, see the test results above"
+echo "Installation complete, one faling test (test_types_basic.py::TypesBasicTests::testEmptyArray) is in parity with x86."
