@@ -6,6 +6,7 @@
 # Tested on	: UBI 8.4
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sapana Khemkar <Sapana.Khemkar@ibm.com>
+# Languge	: go
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -18,6 +19,8 @@
 PACKAGE_NAME=sketches-go
 PACKAGE_URL=github.com/DataDog/sketches-go
 PACKAGE_VERSION=v1.2.1
+
+set -e
 
 yum install -y git python3 wget tar gcc-c++
 

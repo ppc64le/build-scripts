@@ -6,6 +6,7 @@
 # Tested on     : UBI: 8.4
 # Script License: Apache License 2.0
 # Maintainer's  : Sapana Khemkar <Sapana.Khemkar@ibm.com>
+# Languge	: Java
 #
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -27,13 +28,6 @@ yum install -y git
 
 # install java
 yum install -y java-11-openjdk-devel
-
-# install gradle
-#wget https://services.gradle.org/distributions/gradle-7.1.1-bin.zip
-#unzip gradle-7.1.1-bin.zip
-#mkdir /opt/gradle
-#cp -pr gradle-7.1.1/* /opt/gradle
-#export PATH=/opt/gradle/bin:${PATH}
 
 #Cloning Repo
 git clone $PACKAGE_URL

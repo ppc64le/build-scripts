@@ -6,6 +6,7 @@
 # Tested on     : UBI: 8.4
 # Script License: Apache License 2.0
 # Maintainer's  : Sapana Khemkar <Sapana.Khemkar@ibm.com>
+# Language	: Java
 #
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -42,13 +43,6 @@ ln -s apache-maven-3.8.4 maven
 export MVN_HOME=/opt/maven
 export PATH=${MVN_HOME}/bin:${PATH}
 mvn -version
-
-#install ant
-#cd /opt/
-#wget https://dlcdn.apache.org//ant/binaries/apache-ant-1.10.12-bin.tar.gz
-#tar -xf apache-ant-1.10.12-bin.tar.gz
-#export ANT_HOME=/opt/apache-ant-1.10.12/
-#export PATH=${PATH}:${ANT_HOME}/bin
 
 # Cloning the repository from remote to local
 cd /home

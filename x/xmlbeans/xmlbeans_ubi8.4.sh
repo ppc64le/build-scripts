@@ -6,6 +6,7 @@
 # Tested on	: ubi 8.4
 # Script License: Apache License Version 2.0
 # Maintainer	: Sapana Khemkar <sapana.khemkar@ibm.com>
+# Languge	: Java
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -44,7 +45,4 @@ git checkout $PACKAGE_VERSION
 ant clean
 ant test -v
 
-#git checkout 2.4.0
-#ant clean.tests 
-#ant checkintest -v
 exit 0

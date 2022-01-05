@@ -6,6 +6,7 @@
 # Tested on     : UBI: 8.4
 # Script License: Apache License 2.0
 # Maintainer's  : Sapana Khemkar <Sapana.Khemkar@ibm.com>
+# Language	: Java
 #
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -17,6 +18,7 @@
 # ----------------------------------------------------------------------------
 #!/bin/bash
 
+set -e
 
 # Variables
 PACKAGE_URL=https://github.com/apache/commons-collections.git
