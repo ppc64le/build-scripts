@@ -31,7 +31,8 @@ wget https://golang.org/dl/go1.16.1.linux-ppc64le.tar.gz && \
 export PATH=$PATH:/bin/go/bin
 export GOPATH=/home/tester/go
 
-mkdir -p output
+cd /home/tester
+mkdir -p /home/tester/output
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
