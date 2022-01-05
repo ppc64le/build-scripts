@@ -19,7 +19,6 @@
 set -e
 PACKAGE_NAME=github.com/xeipuuv/gojsonschema
 PACKAGE_VERSION=${1:-v1.2.0}
-PACKAGE_URL=https://github.com/xeipuuv/gojsonschema.git
 
 export GOPATH=$HOME/go
 mkdir $GOPATH
