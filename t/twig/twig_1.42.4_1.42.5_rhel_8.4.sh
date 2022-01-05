@@ -15,7 +15,6 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=twig
-PACKAGE_VERSION=v1.42.4
 PACKAGE_VERSION=${1:-1.42.5}
 PACKAGE_URL=https://github.com/twigphp/Twig.git
 yum -y update && yum install -y git curl php php-curl php-json php-dom php-mbstring make unzip 

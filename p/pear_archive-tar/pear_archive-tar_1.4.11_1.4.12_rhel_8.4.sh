@@ -20,7 +20,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=Archive_Tar
-PACKAGE_VERSION=1.4.12
+PACKAGE_VERSION=${1:-1.4.12}
 PACKAGE_URL=https://github.com/pear/Archive_Tar.git
 if [ ! -z "$1" ]; then
 	PACKAGE_VERSION=$1

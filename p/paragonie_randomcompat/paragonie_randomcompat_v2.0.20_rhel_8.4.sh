@@ -15,7 +15,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=random_compat
-PACKAGE_VERSION=v2.0.20
+PACKAGE_VERSION=${1:-v2.0.20}
 PACKAGE_URL=https://github.com/paragonie/random_compat
 yum -y update && yum install -y git php php-json php-dom php-mbstring php-pdo php-intl zip unzip
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/bin --filename=composer

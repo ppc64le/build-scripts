@@ -15,7 +15,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=parser
-PACKAGE_VERSION=4.10.4
+PACKAGE_VERSION=${1:-4.10.4}
 PACKAGE_URL=https://github.com/nikic/PHP-Parser
 yum -y update && yum install -y git php php-json php-dom php-mbstring zip unzip
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/bin --filename=composer
@@ -29,7 +29,7 @@ if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
     	exit 0
 fi
 cd $HOME_DIR/$PACKAGE_NAME
-git checkout $
+git checkout $PACKAGE_VERSION
 sed -i 's/ || \^5.0.5//' composer.json
 if ! composer install; then
      	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
