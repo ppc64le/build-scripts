@@ -3,7 +3,9 @@
 # Package       : airline
 # Version       : 0.6
 # Source repo   : https://github.com/airlift/airline.git
-# Tested on     : UBI 8
+# Tested on     : UBI 8.3
+# Language      : Java
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Raju.Sah@ibm.com
 #
@@ -14,18 +16,23 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-yum update -y
-yum -y install git maven java-1.8.0-openjdk.ppc64le java-1.8.0-openjdk-devel.ppc64le
-VERSION=${1:-0.6}
+set -e
+PACKAGE_NAME=airline
+PACKAGE_VERSION=${1:-0.6}
+PACKAGE_URL=https://github.com/airlift/airline.git
+
+yum install -y git maven java-1.8.0-openjdk.ppc64le java-1.8.0-openjdk-devel.ppc64le
+
 export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-)(?=.*ppc64le)')
 echo "JAVA_HOME is $JAVA_HOME"
-# update the path env. variable 
+#Update the path env. variable 
 export PATH=$PATH:$JAVA_HOME/bin
 
-#clone the repo.
-git clone  https://github.com/airlift/airline.git
-cd airline/
-git checkout $VERSION
+#Clone the repo.
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME/
+git checkout $PACKAGE_VERSION
 
-#build  and test the package
+#Build and test the package
 mvn install
+
