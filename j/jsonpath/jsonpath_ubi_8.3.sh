@@ -17,18 +17,17 @@
 # ----------------------------------------------------------------------------
 #!/bin/bash
 
+set -e
+
 # variables
 REPO=https://github.com/dchester/jsonpath
-PACKAGE_VERSION=1.1.0
-
-echo "Usage: $0 [-v <PACKAGE_VERSION>]"
-echo "PACKAGE_VERSION is an optional paramater whose default value is 1.1.0"
-
-PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
+PACKAGE_VERSION=${1:-1.1.0} 
 
 # install required dependencies
 yum update -y
 yum install git wget -y
+
+# install node10, since gulp 3 is not compatible with either node12 or node14
 yum module install nodejs:10 -y
 
 # clone package

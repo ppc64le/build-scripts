@@ -17,21 +17,21 @@
 # ----------------------------------------------------------------------------
 #!/bin/bash
 
+set -e
+
 WORK_DIR=`pwd`
 
 PACKAGE_NAME=http2-client
-PACKAGE_VERSION=v1.3.3               
+PACKAGE_VERSION=${1:-v1.3.3}              
 PACKAGE_URL=https://github.com/hisco/http2-client
-
-echo "Usage: $0 [-v <PACKAGE_VERSION>]"
-echo "PACKAGE_VERSION is an optional paramater whose default value is 1.3.3"
 
 # install dependencies
 yum update -y 
 yum install git wget -y
 
 # install nodejs
-yum module install nodejs:10 -y
+dnf module enable nodejs:12 -y
+dnf install nodejs -y
 
 # clone package
 cd $WORK_DIR
