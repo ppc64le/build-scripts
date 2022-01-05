@@ -3,7 +3,8 @@
 # Package	: nekohtml
 # Version	: nekohtml-1.9.22
 # Source repo	: https://github.com/codelibs/nekohtml
-# Tested on	: ubi 8.5
+# Tested on	: UBI 8.5
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sapna Shukla <Sapna.Shukla@ibm.com>
 # Language 	: Java
