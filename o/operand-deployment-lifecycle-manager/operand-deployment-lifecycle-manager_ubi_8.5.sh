@@ -3,7 +3,7 @@
 # Package       : operand-deployment-lifecycle-manager
 # Version       : v1.4.1
 # Source repo   : https://github.com/IBM/operand-deployment-lifecycle-manager
-# Tested on     : UBI  8.4
+# Tested on     : UBI 8.5
 # Language      : GO
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
