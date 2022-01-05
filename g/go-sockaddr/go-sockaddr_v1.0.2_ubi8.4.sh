@@ -38,20 +38,19 @@ mkdir -p output
 export PATH=$GOPATH/bin:$PATH
 export GO111MODULE=on
 
-echo "Building $PACKAGE_PATH with $PACKAGE_VERSION"
-if ! go get -d -u -t $PACKAGE_PATH@$PACKAGE_VERSION; then
+echo "Building $PACKAGE_NAME with $PACKAGE_VERSION"
+if ! go get -d -u -t $PACKAGE_URL@$PACKAGE_VERSION; then
 	exit 0
 fi
 
 #/home/tester/go/pkg/mod/github.com/hashicorp/go-sockaddr@v1.0.2
 
-cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_PATH@$PACKAGE_VERSION)
-echo "Testing $PACKAGE_PATH with $PACKAGE_VERSION"
+cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_URL@$PACKAGE_VERSION)
+echo "Testing $PACKAGE_NAME with $PACKAGE_VERSION"
 
 echo `pwd`
 
 # Ensure go.mod file exists
-go mod init
 
 if ! go test ./...; then
 	exit 0
