@@ -4,7 +4,8 @@
 # Version	: v0.0.0-20161027140823-aebf8a7d67ab
 # Source repo	: https://github.com/mgutz/logxi
 # Language	: GO
-# Tested on	: ubi8.5
+# Tested on	: UBI 8.5
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sapna Shukla <Sapna.Shukla@ibm.com>
 #
