@@ -3,8 +3,9 @@
 # Package	: cloud.google.com/go/bigquery
 # Version	: bigquery/v1.0.1, bigquery/v1.8.0,
 # Source repo	: https://github.com/googleapis/google-cloud-go
-# Language	: GO
 # Tested on	: ubi8.5
+# Language      : GO
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sapna Shukla <Sapna.Shukla@ibm.com>
 #
