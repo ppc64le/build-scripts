@@ -3,7 +3,8 @@
 # Package	: commons-dbcp2
 # Version	: DBCP_2_0_1
 # Source repo	: https://github.com/apache/commons-dbcp.git
-# Tested on	: ubi 8.5
+# Tested on	: UBI 8.5
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sapna Shukla <Sapna.Shukla@ibm.com>
 #
