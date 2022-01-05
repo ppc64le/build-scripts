@@ -1,3 +1,4 @@
+#! /bin/bash
 # -----------------------------------------------------------------------------
 #
 # Package	: composer
@@ -15,7 +16,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=composer
-PACKAGE_VERSION=1.10.19
+PACKAGE_VERSION=${1:-1.10.20}
 PACKAGE_URL=https://github.com/composer/composer
 yum -y update && yum install -y git php php-json php-dom php-mbstring php-pdo php-intl zip unzip
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/bin --filename=composer

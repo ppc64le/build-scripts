@@ -1,3 +1,4 @@
+#! /bin/bash
 # -----------------------------------------------------------------------------
 #
 # Package	: cache
@@ -15,7 +16,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=cache
-PACKAGE_VERSION=1.10.0
+PACKAGE_VERSION=${1:-1.10.2}
 PACKAGE_URL=https://github.com/doctrine/cache
 yum -y update && yum install -y git php php-json php-dom php-mbstring php-devel php-pear make zip unzip
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/bin --filename=composer

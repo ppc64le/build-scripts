@@ -15,7 +15,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=tokenizer
-PACKAGE_VERSION=1.2.0
+PACKAGE_VERSION=${1:-1.2.1}
 PACKAGE_URL=https://github.com/theseer/tokenizer
 if [ ! -z "$1" ]; then
 	PACKAGE_VERSION=$1

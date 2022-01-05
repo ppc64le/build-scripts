@@ -1,3 +1,4 @@
+#! /bin/bash
 # -----------------------------------------------------------------------------
 #
 # Package	: Doctrine-Reflection 
@@ -15,7 +16,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=reflection
-PACKAGE_VERSION=1
+PACKAGE_VERSION=${1:-1.1.0}
 PACKAGE_URL=https://github.com/doctrine/reflection
 yum -y update && yum install -y git php php-json php-dom php-mbstring zip unzip
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --1 --install-dir=/bin --filename=composer
