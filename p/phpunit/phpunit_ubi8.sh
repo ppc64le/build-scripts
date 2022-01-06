@@ -3,7 +3,7 @@
 # Package	: phpunit/phpunit
 # Version	: 9.0.0
 # Source repo	: https://github.com/sebastianbergmann/phpunit
-# Tested on	: RHEL 8.3
+# Tested on	: UBI 8
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Vedang Wartikar <vedang.wartikar@ibm.com>
 #
