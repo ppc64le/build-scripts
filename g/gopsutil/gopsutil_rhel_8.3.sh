@@ -8,6 +8,8 @@
 # Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>
+# Environment	: Needs to be run on a VM, tests fail inside docker container
+#				  due to container limitations
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
