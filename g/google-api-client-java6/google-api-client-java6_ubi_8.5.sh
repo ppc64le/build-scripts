@@ -57,7 +57,7 @@ if ! mvn clean install; then
 	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME" > $HOME_DIR/output/install_fails
 	echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails" > $HOME_DIR/output/version_tracker
-	exit 0
+	exit 1
 else
 	echo "------------------$PACKAGE_NAME:install_&_test_not_available-------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME" > $HOME_DIR/output/test_success 
