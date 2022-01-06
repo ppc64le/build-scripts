@@ -1,15 +1,11 @@
+#! /bin/bash
 # -----------------------------------------------------------------------------
 #
 # Package       : pear/archive_tar
-# Version       : 1.4.11
+# Version       : 1.4.11, 1.4.12
 # Source repo   : https://github.com/pear/Archive_Tar
 # Tested on     : RHEL 8.4
 # Maintainer    : Amit Baheti <aramswar@in.ibm.com>
-#
-# Pre-requisite : pear package manager should be available on the system
-#                 as it needs user interaction for installation and cannot 
-#                 cannot be installed using script. Install as specified on
-#                 https://pear.php.net/manual/en/installation.getting.php
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -24,7 +20,7 @@ PACKAGE_URL=https://github.com/pear/Archive_Tar.git
 if [ ! -z "$1" ]; then
 	PACKAGE_VERSION=$1
 fi
-yum -y update && yum install -y git curl php php-curl php-json php-dom php-mbstring make unzip 
+yum -y update && yum install -y git curl php php-curl php-json php-dom php-mbstring make unzip php-pear
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/bin --filename=composer
 OS_NAME=`cat /etc/os-release | grep "PRETTY" | awk -F '=' '{print $2}'`
 HOME_DIR=`pwd`
