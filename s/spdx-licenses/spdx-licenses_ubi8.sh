@@ -3,7 +3,7 @@
 # Package	: composer/spdx-licenses
 # Version	: 1.5.5
 # Source repo	: https://github.com/composer/spdx-licenses
-# Tested on	: RHEL 8.3
+# Tested on	: UBI 8
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Vedang Wartikar <vedang.wartikar@ibm.com>
 #
