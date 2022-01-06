@@ -24,9 +24,8 @@ PACKAGE_NAME=go-http-tunnel
 PACKAGE_VERSION=${1:-2.1}
 PACKAGE_URL=https://github.com/mmatczuk/go-http-tunnel.git
 
-export GOPATH=$HOME/go
-mkdir $GOPATH
 yum install -y git golang
+export GOPATH=$(go env GOPATH)
 
 #clone the repo
 git clone $PACKAGE_URL
