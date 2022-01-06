@@ -1,9 +1,11 @@
 # -----------------------------------------------------------------------------
 #
-# Package       : spf13/afero
-# Version       : 588a75e
+# Package       : afero
+# Version       : v1.2.2
 # Source repo   : https://github.com/spf13/afero.git
-# Tested on     : UBI 8
+# Tested on     : UBI 8.3
+# Language      : GO
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Raju.Sah@ibm.com
 #
@@ -14,19 +16,19 @@
 #             contact "Maintainer" of this script.
 #
 # ------------------------------------------------------------------------------
-yum update -y
-yum install -y git golang
 
-VERSION=${1:-588a75e}
+set -e
+PACKAGE_NAME=github.com/spf13/afero
+PACKAGE_VERSION=${1:-v1.2.2}
 
-#Add dependency
-go get github.com/spf13/afero
+export GOPATH=$HOME/go
+mkdir $GOPATH
+yum install -y golang
 
-#clone the repo.
-git clone https://github.com/spf13/afero.git
-cd  afero/
-git checkout $VERSION
+#Add dependency 
+go get -d -t $PACKAGE_NAME@$PACKAGE_VERSION
+cd $GOPATH/pkg/mod/$PACKAGE_NAME@$PACKAGE_VERSION/
 
-#build  and test the package
+#Build and test the package
 go install
-go test
+go test -v
