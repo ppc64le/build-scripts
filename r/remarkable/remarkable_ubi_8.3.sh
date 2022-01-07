@@ -1,9 +1,11 @@
 # -----------------------------------------------------------------------------
 #
-# Package       : airline
-# Version       : 0.6
-# Source repo   : https://github.com/airlift/airline.git
+# Package       : remarkable
+# Version       : v2.0.1
+# Source repo   : https://github.com/jonschlinkert/remarkable.git
 # Tested on     : UBI 8
+# Language      : NPM
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Raju.Sah@ibm.com
 #
@@ -14,18 +16,21 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-yum update -y
-yum -y install git maven java-1.8.0-openjdk.ppc64le java-1.8.0-openjdk-devel.ppc64le
-VERSION=${1:-0.6}
-export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-)(?=.*ppc64le)')
-echo "JAVA_HOME is $JAVA_HOME"
-# update the path env. variable 
-export PATH=$PATH:$JAVA_HOME/bin
+set -e
+PACKAGE_NAME=remarkable
+PACKAGE_VERSION=${1:-v2.0.1}
+PACKAGE_URL=https://github.com/jonschlinkert/remarkable.git
 
+yum install -y git npm
+npm install -g yarn
+yarn add lint
+npm install remarkable --save
 #clone the repo.
-git clone  https://github.com/airlift/airline.git
-cd airline/
-git checkout $VERSION
+git clone  $PACKAGE_URL
+cd $PACKAGE_NAME/
+git checkout $PACKAGE_VERSION
 
 #build  and test the package
-mvn install
+yarn install
+yarn lint
+yarn test:ci
