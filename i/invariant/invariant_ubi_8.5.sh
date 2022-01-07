@@ -28,7 +28,7 @@ PACKAGE_URL=https://github.com/zertosh/invariant.git
 dnf install git wget -y
 
 # install nodejs
-dnf module install nodejs:10 -y
+dnf module install nodejs:12 -y
 
 # clone package
 cd $WORK_DIR
