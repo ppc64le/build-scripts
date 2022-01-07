@@ -5,6 +5,7 @@
 # Source repo    : https://github.com/chzyer/readline
 # Tested on      : UBI 8.4
 # Language       : GO
+# Travis-Check  : False
 # Script License : Apache License, Version 2 or later
 # Maintainer     : Sapana Khemkar <spana.khemkar@ibm.com>
 #

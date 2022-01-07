@@ -6,6 +6,8 @@
 # Tested on      : UBI 8.4
 # Script License : Apache License, Version 2 or later
 # Maintainer     : Sapana Khemkar <spana.khemkar@ibm.com>
+# Language 	 : Go
+# Travis-Check  : False
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.

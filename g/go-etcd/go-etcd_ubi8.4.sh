@@ -4,7 +4,8 @@
 # Version        : v2.0.0 
 # Source repo    : https://github.com/coreos/go-etcd
 # Tested on      : UBI 8.4
-# Language       : GO
+# Language      : GO
+# Travis-Check  : False
 # Script License : Apache License, Version 2 or later
 # Maintainer     : Sapana Khemkar <spana.khemkar@ibm.com>
 #

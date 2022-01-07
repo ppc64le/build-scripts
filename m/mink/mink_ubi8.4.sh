@@ -4,6 +4,8 @@
 # Version	: 1.9.0
 # Source repo	: https://github.com/minkphp/Mink
 # Tested on	: UBI 8.4
+# Language      : PHP
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sapana Khemkar <Sapana.Khemkar@ibm.com>
 #
