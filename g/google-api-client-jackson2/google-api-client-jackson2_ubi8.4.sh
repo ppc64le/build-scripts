@@ -2,7 +2,7 @@
 #
 # Package	: google-api-client-jackson2
 # Version	: 1.27.0
-# Source repo	: https://github.com/googleapis/google-api-java-client/tree/v1.27.0
+# Source repo	: https://github.com/googleapis/google-api-java-client
 # Tested on	: ubi 8.4
 # Script License: Apache License Version 2.0
 # Maintainer	: Sapana Khemkar <sapana.khemkar@ibm.com>
