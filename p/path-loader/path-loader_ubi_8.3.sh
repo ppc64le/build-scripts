@@ -31,8 +31,7 @@ yum install git -y
 yum install wget bzip2 freetype fontconfig -y
 wget https://github.com/ibmsoe/phantomjs/releases/download/2.1.1/phantomjs-2.1.1-linux-ppc64.tar.bz2
 tar -xvf phantomjs-2.1.1-linux-ppc64.tar.bz2
-ln -s /phantomjs-2.1.1-linux-ppc64/bin/phantomjs /usr/local/bin/phantomjs
-export PATH=$PATH:/phantomjs-2.1.1-linux-ppc64/bin/phantomjs
+ln -s $WORK_DIR/phantomjs-2.1.1-linux-ppc64/bin/phantomjs /usr/local/bin/phantomjs
 
 #install node version-10
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
