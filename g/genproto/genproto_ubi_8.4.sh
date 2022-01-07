@@ -6,6 +6,8 @@
 # Tested on	: UBI 8.4
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sapana Khemkar <Sapana.Khemkar@ibm.com>
+# Language      : GO
+# Travis-Check  : False
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -17,6 +19,8 @@
 
 PACKAGE_NAME=google.golang.org/genproto
 PACKAGE_VERSION=${1:-v0.0.0-20210204154452-deb828366460}
+
+set -e
 
 yum install -y git golang
 

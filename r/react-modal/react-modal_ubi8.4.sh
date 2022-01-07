@@ -5,9 +5,9 @@
 # Source repo	: https://github.com/reactjs/react-modal.git
 # Tested on	: {distro_name} {distro_version}
 # Language      : Node
-# Travis-Check  : True
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
-# Maintainer	: BulkPackageSearch Automation {maintainer}
+# Maintainer	: Sapana Khemkar{sapana.khemkar@ibm.com}
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
