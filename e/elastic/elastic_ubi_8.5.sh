@@ -4,6 +4,8 @@
 # Version	: v7.0.22
 # Source repo	: https://github.com/olivere/elastic
 # Tested on	: UBI 8.5
+# Language      : GO
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>
 #
