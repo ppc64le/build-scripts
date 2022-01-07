@@ -1,11 +1,11 @@
 # ----------------------------------------------------------------------------
 #
-# Package       : vertx-web-api-contract
-# Version       : 4.1.2 
+# Package       : vertx-web-graphql
+# Version       : 4.1.2
 # Language      : Java 
 # Source repo   : https://github.com/vert-x3/vertx-web
 # Tested on     : UBI 8.3
-# Script License: Apache-2.0 License
+# Script License: Apache-2.0 License    
 # Maintainer    : Varsha Aaynure <Varsha.Aaynure@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -19,17 +19,17 @@
 
 #Variables
 PACKAGE_URL=https://github.com/vert-x3/vertx-web.git
-PACKAGE_VERSION="${1:-4.1.2}"
- 
+PACKAGE_VERSION=${1:-4.1.2}
+
 #Install required files
 yum install -y git maven
 
 #Cloning Repo
 git clone $PACKAGE_URL
-cd vertx-web/vertx-web-api-contract/
+cd vertx-web/vertx-web-graphql/
 git checkout $PACKAGE_VERSION
 
-#Build and test package
+#Build test package
 mvn install
 
 echo "Complete!"

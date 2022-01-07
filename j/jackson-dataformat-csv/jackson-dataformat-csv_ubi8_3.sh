@@ -1,11 +1,11 @@
 # ----------------------------------------------------------------------------
 #
-# Package       : vertx-web-api-contract
-# Version       : 4.1.2 
-# Language      : Java 
-# Source repo   : https://github.com/vert-x3/vertx-web
+# Package       : jackson-dataformat-csv
+# Version       : jackson-dataformats-text-2.10.5
+# Language      : Java
+# Source repo   : https://github.com/FasterXML/jackson-dataformats-text
 # Tested on     : UBI 8.3
-# Script License: Apache-2.0 License
+# Script License: Apache-2.0 License    
 # Maintainer    : Varsha Aaynure <Varsha.Aaynure@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -18,18 +18,18 @@
 #!/bin/bash
 
 #Variables
-PACKAGE_URL=https://github.com/vert-x3/vertx-web.git
-PACKAGE_VERSION="${1:-4.1.2}"
- 
+PACKAGE_URL=https://github.com/FasterXML/jackson-dataformats-text.git
+PACKAGE_VERSION=${1:-jackson-dataformats-text-2.10.5}
+
 #Install required files
 yum install -y git maven
 
 #Cloning Repo
 git clone $PACKAGE_URL
-cd vertx-web/vertx-web-api-contract/
+cd jackson-dataformats-text/
 git checkout $PACKAGE_VERSION
 
-#Build and test package
-mvn install
+#Build test package
+mvn install 
 
 echo "Complete!"

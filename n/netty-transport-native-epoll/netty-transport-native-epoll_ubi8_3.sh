@@ -1,11 +1,11 @@
 # ----------------------------------------------------------------------------
 #
-# Package       : vertx-web-api-contract
-# Version       : 4.1.2 
-# Language      : Java 
-# Source repo   : https://github.com/vert-x3/vertx-web
+# Package       : netty-transport-native-epoll
+# Version       : netty-4.1.60.Final
+# Language      : Java
+# Source repo   : https://github.com/netty/netty
 # Tested on     : UBI 8.3
-# Script License: Apache-2.0 License
+# Script License: Apache-2.0 License    
 # Maintainer    : Varsha Aaynure <Varsha.Aaynure@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -18,18 +18,26 @@
 #!/bin/bash
 
 #Variables
-PACKAGE_URL=https://github.com/vert-x3/vertx-web.git
-PACKAGE_VERSION="${1:-4.1.2}"
- 
-#Install required files
-yum install -y git maven
+PACKAGE_URL=https://github.com/netty/netty.git
+PACKAGE_VERSION="${1:-netty-4.1.60.Final}"
 
-#Cloning Repo
+#Install required files
+yum install -y git maven make autoconf automake libtool gcc-c++ 
+
+#Cloning Package
+
 git clone $PACKAGE_URL
-cd vertx-web/vertx-web-api-contract/
+
+cd netty/transport-native-unix-common/
+git checkout $PACKAGE_VERSION
+mvn clean install
+
+cd ..
+
+cd transport-native-epoll/    
 git checkout $PACKAGE_VERSION
 
-#Build and test package
+#Build and Test Package
 mvn install
 
 echo "Complete!"
