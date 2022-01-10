@@ -2,11 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: composer
-# Version	: 1.10.6, 1.10.19, 1.10.20
+# Version	: 1.10.6, 1.10.19, 1.10.20, 2.1.8
 # Source repo	: https://github.com/composer/composer
-# Tested on	: RHEL 8.4 
+# Tested on	: UBI 8.5
+# Language      : PHP
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Nailusha Potnuru <pnailush@in.ibm.com>
+# Maintainer	: Nailusha Potnuru <pnailush@in.ibm.com>, Atharv Phadnis <Atharv.Phadnis@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -16,9 +18,9 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=composer
-PACKAGE_VERSION=${1:-1.10.20}
+PACKAGE_VERSION=${1:-2.1.8}
 PACKAGE_URL=https://github.com/composer/composer
-yum -y update && yum install -y git php php-json php-dom php-mbstring php-pdo php-intl zip unzip
+yum -y update && yum install -y git php php-json php-dom php-mbstring php-pdo php-intl zip unzip xz
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/bin --filename=composer
 composer require --dev phpunit/phpunit --with-all-dependencies ^7
 OS_NAME=`cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f2 | tr -d '"'`
