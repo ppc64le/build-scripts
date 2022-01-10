@@ -35,7 +35,7 @@ yarn add global escope eslint-plugin-babel babel-eslint@6.0.0-beta.6 flow-bin@0.
 #clone the repo
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
-git checkout v$PACKAGE_VERSION
+git checkout $PACKAGE_VERSION
 #build and test the repo.
 #Note: 1 test case is failing related to platform not supported on both Power and Intel VM.
 yarn install
