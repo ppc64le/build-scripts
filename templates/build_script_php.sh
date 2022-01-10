@@ -30,8 +30,8 @@ wget https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official && mv RPM-GPG-KEY-C
 
 yum install -y git bzip2 ca-certificates curl tar xz openssl  wget  gzip gcc-c++ make pkgconf  file curl-devel  libxml2-devel openssl-devel sqlite-devel ncurses-devel libjpeg-devel libicu-devel libtidy-devel libxslt-devel libzip-devel bzip2-devel libpng-devel diffutils autoconf patch bison re2c readline-devel oniguruma-devel glibc fontconfig php-mbstring
 
-cd /home/tester
 mkdir -p /home/tester/output
+cd /home/tester
 
 # Install phantomjs, as its needed for some dependencies
 wget https://github.com/ibmsoe/phantomjs/releases/download/2.1.1/phantomjs-2.1.1-linux-ppc64.tar.bz2

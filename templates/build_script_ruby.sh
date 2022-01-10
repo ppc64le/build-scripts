@@ -46,8 +46,8 @@ curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import -
 curl -L https://get.rvm.io | bash -s stable
 /bin/bash -c "source /etc/profile.d/rvm.sh; rvm install ruby-2.7;"
 
-cd /home/tester
 mkdir -p /home/tester/output
+cd /home/tester
 
 export LC_ALL=C.UTF-8
 export LANG=en_US.UTF-8

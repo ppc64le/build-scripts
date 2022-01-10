@@ -25,8 +25,8 @@ yum -y update && yum install -y yum-utils nodejs nodejs-devel nodejs-packaging n
 
 npm install n -g && n latest && npm install -g npm@latest && export PATH="$PATH" && npm install --global yarn grunt-bump xo testem acorn
 
-cd /home/tester
 mkdir -p /home/tester/output
+cd /home/tester
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
