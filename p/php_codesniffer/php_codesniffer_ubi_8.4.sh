@@ -4,6 +4,8 @@
 # Version       : 3.6.1
 # Source repo   : https://github.com/squizlabs/PHP_CodeSniffer.git
 # Tested on     : ubi 8.4
+# Language      : PHP
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Siddhesh Ghadi<Siddhesh.Ghadi@ibm.com>
 #
@@ -17,7 +19,7 @@
 
 
 # Install all dependencies
-yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git jq curl php php-curl php-dom php-mbstring php-json nodejs make gcc-c++ patch diffutils php-gd php-pecl-zip
+yum install -y git python38 zip php php-json php-dom php-mbstring php-pecl-zip diffutils
 
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/bin --filename=composer
 composer require --dev phpunit/phpunit --with-all-dependencies ^7
@@ -28,7 +30,7 @@ PACKAGE_VERSION=${1:-3.6.1}
 PACKAGE_URL=https://github.com/squizlabs/PHP_CodeSniffer.git
 
 #Git cloning of package
-OS_NAME=`python3 -c "os_file_data=open('/etc/os-release').readlines();os_info = [i.replace('PRETTY_NAME=','').strip() for i in os_file_data if i.startswith('PRETTY_NAME')];print(os_info[0])"`
+OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 HOME_DIR=`pwd`
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
     	echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
