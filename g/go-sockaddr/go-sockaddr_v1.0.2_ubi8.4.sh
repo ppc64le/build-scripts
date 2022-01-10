@@ -23,7 +23,7 @@ PACKAGE_NAME=go-sockaddr
 PACKAGE_VERSION=${1:-v1.0.2}
 PACKAGE_URL=github.com/hashicorp/go-sockaddr
 
-yum install -y git wget gcc-c++
+yum install -y git wget gcc-c++ iproute
 
 # Install Go and setup working directory
 wget https://golang.org/dl/go1.17.4.linux-ppc64le.tar.gz && \
@@ -52,7 +52,7 @@ echo `pwd`
 
 # Ensure go.mod file exists
 
-if ! go test ./...; then
+if ! go test -v ./...; then
 	exit 0
 else
 	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
