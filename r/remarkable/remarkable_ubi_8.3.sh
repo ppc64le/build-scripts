@@ -3,7 +3,7 @@
 # Package       : remarkable
 # Version       : v2.0.1
 # Source repo   : https://github.com/jonschlinkert/remarkable.git
-# Tested on     : UBI 8
+# Tested on     : UBI 8.3
 # Language      : NPM
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -16,12 +16,15 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
+
+#!/bin/bash
 set -e
 PACKAGE_NAME=remarkable
 PACKAGE_VERSION=${1:-v2.0.1}
 PACKAGE_URL=https://github.com/jonschlinkert/remarkable.git
 
-yum install -y git npm
+dnf install -y git
+dnf module install -y nodejs:12
 npm install -g yarn
 yarn add lint
 npm install remarkable --save
