@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : netty-resolver-dns
-# Version       : netty-4.1.60.Final
+# Version       : netty-4.1.60.Final, netty-4.1.72.Final
 # Language      : Java
 # Source repo   : https://github.com/netty/netty
 # Tested on     : UBI 8.3
@@ -16,6 +16,8 @@
 #
 # ----------------------------------------------------------------------------
 #!/bin/bash
+
+set -e
 
 #Variables
 PACKAGE_URL=https://github.com/netty/netty.git
