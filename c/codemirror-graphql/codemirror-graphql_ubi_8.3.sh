@@ -37,6 +37,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 #build and test the repo.
-#Note: 1 test case is failing related to platform not supported on only power but not on intel
+#Note: One test case is failing with 'Not supported on platform" issue. This is due to flow binary is not available on Power.
+#      Raised issue on flow community : https://github.com/facebook/flow/issues/8732. Test works fine after this issue fix.
 yarn install
 yarn test
