@@ -1,10 +1,10 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : netty-handler-proxy
-# Version       : netty-4.1.48.Final, netty-4.1.72.Final
+# Version       : netty-4.1.60.Final, netty-4.1.72.Final
 # Language      : Java 
 # Source repo   : https://github.com/netty/netty
-# Tested on     : UBI 8.3
+# Tested on     : UBI 8.5
 # Script License: Apache-2.0 License
 # Maintainer    : Varsha Aaynure <Varsha.Aaynure@ibm.com>
 #
@@ -17,11 +17,11 @@
 # ----------------------------------------------------------------------------
 #!/bin/bash
 
-set -e
+set -e 
 
 #Variables
 PACKAGE_URL=https://github.com/netty/netty.git
-PACKAGE_VERSION="${1:-netty-4.1.48.Final}"
+PACKAGE_VERSION="${1:-netty-4.1.60.Final}"
 
 #Install required files
 yum install -y git maven
