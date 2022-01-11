@@ -37,6 +37,6 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 #build and test the repo.
-#Note: 1 test case is failing related to platform not supported on both Power and Intel VM.
+#Note: 1 test case is failing related to platform not supported on only power but not on intel.
 yarn install
 yarn test
