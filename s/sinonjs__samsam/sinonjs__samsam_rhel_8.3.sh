@@ -3,7 +3,7 @@
 # Package	: @sinonjs/samsam
 # Version	: v5.3.0
 # Source repo	: https://github.com/sinonjs/samsam
-# Tested on	: RHEL 8.3
+# Tested on	: RHEL 8.3, UBI 8.5
 # Language      : Node
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -16,19 +16,15 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
+set -e
 
 PACKAGE_NAME=@sinonjs/samsam
-PACKAGE_VERSION=v5.3.0
+PACKAGE_VERSION=${1:-v5.3.0}
 PACKAGE_URL=https://github.com/sinonjs/samsam
 
-yum -y update && yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git gcc gcc-c++ libffi libffi-devel ncurses git jq make cmake
-yum-config-manager --add-repo http://rhn.pbm.ihost.com/rhn/latest/8.3Server/ppc64le/appstream/
-yum-config-manager --add-repo http://rhn.pbm.ihost.com/rhn/latest/8.3Server/ppc64le/baseos/
-yum-config-manager --add-repo http://rhn.pbm.ihost.com/rhn/latest/7Server/ppc64le/optional/
+yum -y update && yum install -y npm python38 python38-devel git gcc-c++ jq make
 
-yum install -y firefox liberation-fonts xdg-utils && npm install n -g && n latest && npm install -g npm@latest && export PATH="$PATH" && npm install --global yarn grunt-bump xo testem acorn
-
-OS_NAME=`python3 -c "os_file_data=open('/etc/os-release').readlines();os_info = [i.replace('PRETTY_NAME=','').strip() for i in os_file_data if i.startswith('PRETTY_NAME')];print(os_info[0])"`
+OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 HOME_DIR=`pwd`
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
     	echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
