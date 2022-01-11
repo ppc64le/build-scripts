@@ -1,9 +1,11 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: @sinonjs/samsam
-# Version	: 5.3.0
+# Version	: v5.3.0
 # Source repo	: https://github.com/sinonjs/samsam
 # Tested on	: RHEL 8.3
+# Language      : Node
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
@@ -16,7 +18,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=@sinonjs/samsam
-PACKAGE_VERSION=5.3.0
+PACKAGE_VERSION=v5.3.0
 PACKAGE_URL=https://github.com/sinonjs/samsam
 
 yum -y update && yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git gcc gcc-c++ libffi libffi-devel ncurses git jq make cmake
