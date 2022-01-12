@@ -16,9 +16,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-# The Build is passing but the test are in Parity with x86.
-# Parity is for both the requested and the top of the tree version
-# ----------------------------------------------------------------------------
 
 
 
@@ -57,7 +54,8 @@ go mod init $PACKAGE_NAME
 go mod tidy
 
 # ----------------------------------------------------------------------------
-# Test is in Parity for both the requested and the top of the tree version
+# The Build is passing but the test are in Parity with x86.
+# Parity is for both the requested and the top of the tree version
 # [root@a3374864caf1 pretty]# go test ./... -v
 # github.com/niemeyer/pretty
 # ./formatter.go:40:9: conversion from int to string yields a string of one rune, not a string of digits (did you mean fmt.Sprint(x)?)
