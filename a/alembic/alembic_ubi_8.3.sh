@@ -3,7 +3,9 @@
 # Package       : alembic
 # Version       : master
 # Source repo   : https://github.com/zzzeek/alembic.git
-# Tested on     : UBI 8
+# Tested on     : UBI 8.3
+# Language      : Python
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Raju.Sah@ibm.com
 #
