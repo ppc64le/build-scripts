@@ -5,6 +5,7 @@
 # Source repo           : https://github.com/emicklei/go-restful.git
 # Tested on             : UBI 8.4
 # Language              : GO
+# Travis-Check          : True
 # Script License        : Apache License, Version 2 or later
 # Maintainer            : Vikas . <kumar.vikas@in.ibm.com>
 #
@@ -16,6 +17,8 @@
 #
 # ----------------------------------------------------------------------------
 #!/bin/bash
+
+set -e 
 
 if [ -z "$1" ]; then
   export VERSION=v3.7.3
@@ -60,6 +63,8 @@ ret=$?
 if [ $ret -ne 0 ] ; then
   echo "Build failed "
 else
+# Observed 1 test failure for the version v3.7.3, which is in parity with Intel.
+# FAIL    github.com/emicklei/go-restful/v3/examples/msgpack [build failed]
   go test -v ./...
   ret=$?
   if [ $ret -ne 0 ] ; then
@@ -68,4 +73,3 @@ else
     echo "Build & unit tests Successful "
   fi
 fi
-# Observed 1 test failure for the version v3.7.3, which is in parity with Intel.
