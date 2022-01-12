@@ -5,6 +5,7 @@
 # Source repo           : https://github.com/gobuffalo/attrs.git
 # Tested on             : UBI 8.4
 # Language              : GO
+# Travis-Check          : True
 # Script License        : Apache License, Version 2 or later
 # Maintainer            : Vikas . <kumar.vikas@in.ibm.com>
 #
@@ -16,6 +17,8 @@
 #
 # ----------------------------------------------------------------------------
 #!/bin/bash
+
+set -e
 
 if [ -z "$1" ]; then
   export VERSION=a9411de4debd
