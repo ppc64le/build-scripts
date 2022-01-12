@@ -2,9 +2,10 @@
 #
 # Package       : netty-handler-proxy
 # Version       : netty-4.1.60.Final, netty-4.1.72.Final
-# Language      : Java 
 # Source repo   : https://github.com/netty/netty
 # Tested on     : UBI 8.3
+# Language      : Java 
+# Travis-Check  : True
 # Script License: Apache-2.0 License
 # Maintainer    : Varsha Aaynure <Varsha.Aaynure@ibm.com>
 #
