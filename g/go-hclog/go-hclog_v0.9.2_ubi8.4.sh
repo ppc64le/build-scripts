@@ -20,7 +20,7 @@ set -e
 
 PACKAGE_NAME=go-hclog
 PACKAGE_VERSION=${1:-v0.9.2}
-PACKAGE_URL=github.com/hashicorp/go-hclog
+PACKAGE_URL=https://github.com/hashicorp/go-hclog
 
 yum install -y git wget 
 
@@ -45,14 +45,15 @@ if ! git clone $PACKAGE_URL; then
 	exit 0
 fi
 
+cd $PACKAGE_NAME
+
 if ! git checkout $PACKAGE_VERSION; then
 	echo "------------------$PACKAGE_NAME: checkout failed to version $PACKAGE_VERSION-------------------------"
 	exit 0
 fi
 
-cd $PACKAGE_NAME
-
 echo `pwd`
+
 if ! go build -v ./...; then
 	echo "------------------$PACKAGE_NAME: build failed-------------------------"
 	exit 0
