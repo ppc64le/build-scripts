@@ -5,6 +5,7 @@
 # Source repo           : https://github.com/go-playground/universal-translator.git
 # Tested on             : UBI 8.4
 # Language              : GO
+# Travis-Check          : True
 # Script License        : Apache License, Version 2 or later
 # Maintainer            : Vikas . <kumar.vikas@in.ibm.com>
 #
@@ -17,6 +18,8 @@
 # ----------------------------------------------------------------------------
 #!/bin/bash
 
+set -e
+
 if [ -z "$1" ]; then
   export VERSION=v0.18.0
 else
@@ -27,7 +30,7 @@ if [ -d "universal-translator" ] ; then
 fi
 
 # Dependency installation
-dnf install -y git gcc
+dnf install -y git
 
 if ! command -v go &> /dev/null
 then
@@ -63,6 +66,11 @@ ret=$?
 if [ $ret -ne 0 ] ; then
   echo "Build failed "
 else
+# Observed 1 test failure for the version v0.18.0, which is in parity with Intel.
+# === RUN   TestBadExport
+# testdata/readonly <nil> false
+#     import_export_test.go:783: Expected 'open testdata/readonly/en.json: permission denied' Got '%!s(<nil>)'
+# --- FAIL: TestBadExport (0.00s)
   go test -v ./...
   ret=$?
   if [ $ret -ne 0 ] ; then
@@ -71,4 +79,3 @@ else
     echo "Build & unit tests Successful "
   fi
 fi
-# Observed 1 test failure for the version v0.18.0, which is in parity with Intel.
