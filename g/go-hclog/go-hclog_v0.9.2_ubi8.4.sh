@@ -22,7 +22,7 @@ PACKAGE_NAME=go-hclog
 PACKAGE_VERSION=${1:-v0.9.2}
 PACKAGE_URL=https://github.com/hashicorp/go-hclog
 
-yum install -y git wget 
+yum install -y git wget gcc-c++
 
 # Install Go and setup working directory
 wget https://golang.org/dl/go1.17.4.linux-ppc64le.tar.gz && \
