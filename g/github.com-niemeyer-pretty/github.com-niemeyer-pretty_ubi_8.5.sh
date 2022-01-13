@@ -16,7 +16,9 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
+# The Build is passing but the test are in Parity with x86.
+# Parity is for both the requested and the top of the tree version
+# ----------------------------------------------------------------------------
 
 
 PACKAGE_NAME=github.com/niemeyer/pretty
