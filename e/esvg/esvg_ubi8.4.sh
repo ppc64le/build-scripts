@@ -59,6 +59,13 @@ git checkout $PACKAGE_VERSION
 
 bundle install 
 
+# Out of 4, 3 Tests passed, 1 failed. This is parity with x86
+# Hence, this build script will exit with 1
+# Output will be as below
+# Test summary:
+# Tests run: 4
+# Passed 3 - Tests: 1,3,4
+# Failed 1 - Tests: 2
 bundle exec  clash 1-4
 
 exit 0
