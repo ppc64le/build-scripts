@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : alembic
-# Version       : master
+# Version       : rel_1_7_4
 # Source repo   : https://github.com/zzzeek/alembic.git
 # Tested on     : UBI 8.3
 # Language      : Python
