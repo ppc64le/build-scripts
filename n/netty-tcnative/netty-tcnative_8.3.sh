@@ -4,6 +4,8 @@
 # Version       : 7.8.1, 2.0.28
 # Source repo   : https://github.com/netty/netty-tcnative.git
 # Tested on     : rhel:8.3, UBI:8.5
+# Language      : C, Java
+# Travis-Check  : True
 # Script License: Apache License Version 2.0
 # Maintainer    : Sachin Kakatkar <sachin.kakatkar@ibm.com>
 #
