@@ -3,9 +3,9 @@
 # Package               : azure-storage-blob-go
 # Version               : v0.10.0
 # Source repo           : https://github.com/Azure/azure-storage-blob-go.git
-# Tested on             : UBI 8.5
+# Tested on             : rhel 8.4
 # Language              : GO
-# Travis-Check          : False
+# Travis-Check          : True
 # Script License        : Apache License, Version 2 or later
 # Maintainer            : Nailusha Potnuru <pnailush@in.ibm.com>
 #
@@ -19,8 +19,10 @@
 
 #!/bin/bash
 
+set -e
+
 if [ -z "$1" ]; then
-  export VERSION={1:-v0.10.0}
+  export VERSION=${1:-v0.10.0}
 else
   export VERSION=$1
 fi
