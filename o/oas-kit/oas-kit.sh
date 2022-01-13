@@ -7,7 +7,7 @@
 # Language      : Node
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: BulkPackageSearch Automation {maintainer}
+# Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -18,7 +18,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=oas-kit
-PACKAGE_VERSION=v5.0.0
+PACKAGE_VERSION=${1:-v5.0.0}
 PACKAGE_URL=https://github.com/Mermade/oas-kit
 
 yum -y update && yum install -y yum-utils nodejs npm git
