@@ -30,6 +30,7 @@ wget https://golang.org/dl/go1.17.4.linux-ppc64le.tar.gz && \
     tar -C /bin -xf go1.17.4.linux-ppc64le.tar.gz && \
     mkdir -p /home/tester/go/src /home/tester/go/bin /home/tester/go/pkg /home/tester/output
 
+rm -rf go1.17.4.linux-ppc64le.tar.gz
 export HOME_DIR=/home/tester
 
 export PATH=$PATH:/bin/go/bin
@@ -39,6 +40,8 @@ export PATH=$GOPATH/bin:$PATH
 export GO111MODULE=on
 
 cd $HOME_DIR
+
+rm -rf $PACKAGE_NAME
 
 echo "Building $PACKAGE_NAME with $PACKAGE_VERSION"
 if ! git clone $PACKAGE_URL; then
