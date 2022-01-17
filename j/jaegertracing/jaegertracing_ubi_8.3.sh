@@ -2,6 +2,7 @@
 # 
 # Package       : jaegertracing
 # Version       : v1.30.0
+# Source repo 	: https://github.com/jaegertracing/jaeger.git
 # Tested on     : UBI 8.3
 # Language      : GO
 # Travis-Check  : True
