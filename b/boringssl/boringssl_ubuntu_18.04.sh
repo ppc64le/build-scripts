@@ -17,20 +17,22 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
-# Install dependencies.
-# NOTE: Kindly make sure, you have sudo installed on your system.("apt-get install -y sudo")
+#
+# Install dependencies
+#
 apt-get install -y sudo
 sudo apt-get update -y
 sudo apt-get install -y cmake build-essential g++ wget git pkg-config libunwind-dev
-
-# Install go.
+#
+# Install go
+#
 wget https://storage.googleapis.com/golang/go1.15.11.linux-ppc64le.tar.gz
 sudo tar -C /usr/local -xzf go1.15.11.linux-ppc64le.tar.gz
 export PATH=$PATH:/usr/local/go/bin
 rm go1.15.11.linux-ppc64le.tar.gz
-
-# Clone and build source code.
+#
+# Clone and build source code
+#
 git clone https://boringssl.googlesource.com/boringssl/
 cd boringssl
 mkdir build
