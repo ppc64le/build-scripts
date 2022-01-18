@@ -26,7 +26,7 @@ PACKAGE_NAME=call-bind
 PACKAGE_VERSION=${1:-a994df69f401f4bf735a4ccd77029b85d1549453}
 PACKAGE_URL=https://github.com/ljharb/call-bind.git
 
-NODE_VERSION=v12.22.8
+NODE_VERSION=v12.22.9
 DISTRO=linux-ppc64le
 
 #Install dev dependencies 
