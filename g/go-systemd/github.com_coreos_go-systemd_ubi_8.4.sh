@@ -4,6 +4,8 @@
 # Version        : 48702e0da86bd25e76cfef347e2adeb434a0d0a6
 # Source repo    : https://github.com/coreos/go-systemd
 # Tested on      : UBI 8.4
+# Language      : go
+# Travis-Check  : True
 # Script License : Apache License, Version 2 or later
 # Maintainer     : Vaibhav Bhadade <vaibhav.bhadade@ibm.com>
 #
