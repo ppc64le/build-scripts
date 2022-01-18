@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package       : boringssl
@@ -16,7 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash -e
 
 # Install dependencies.
 # NOTE: Kindly make sure, you have sudo installed on your system.("apt-get install -y sudo")
