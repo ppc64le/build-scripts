@@ -47,14 +47,14 @@ rm -rf $PACKAGE_NAME
 echo "Building $PACKAGE_NAME with $PACKAGE_VERSION"
 if ! git clone $PACKAGE_URL; then
 	echo "------------------$PACKAGE_NAME: clone failed-------------------------"
-	exit 0
+	exit 1
 fi
 
 cd $PACKAGE_NAME
 
 if ! git checkout $PACKAGE_VERSION; then
 	echo "------------------$PACKAGE_NAME: checkout failed to version $PACKAGE_VERSION-------------------------"
-	exit 0
+	exit 1
 fi
 
 echo `pwd`
@@ -62,15 +62,15 @@ go mod tidy
 
 if ! go build -v ./...; then
 	echo "------------------$PACKAGE_NAME: build failed-------------------------"
-	exit 0
+	exit 1
 fi
 
 if ! go test -v -tags "alltests" -run Suite -coverprofile coverage.txt github.com/ugorji/go/codec; then
 	echo "------------------$PACKAGE_NAME: test failed-------------------------"
-	exit 0
+	exit 1
 else
 	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/test_success 
 	echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success" > /home/tester/output/version_tracker
-	exit 0
+	exit 1
 fi
