@@ -5,7 +5,7 @@
 # Source repo   : https://boringssl.googlesource.com/boringssl/
 # Tested on     : ubuntu_18.04
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Atul Sowani <sowania@us.ibm.com>
+# Maintainer    : Nishikant Thorat <Nishikant.Thorat@ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
