@@ -71,7 +71,7 @@ def trigger_script_validation_checks(file_name, image_name = "registry.access.re
     # Let the container run in non detach mode, as we need to delete the container on operation completion
     container = client.containers.run(
         image_name,
-        "sh /home/tester/{}".format(file_name),
+        "/home/tester/{}".format(file_name),
         #"cat /home/tester/{}".format(file_name),
         network = 'host',
         detach = True,
