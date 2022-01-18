@@ -23,7 +23,7 @@ set -e
 #Variables
 PACKAGE_NAME=call-bind
 #Test fails for required version and latest stable version
-PACKAGE_VERSION=a994df69f401f4bf735a4ccd77029b85d1549453
+PACKAGE_VERSION=${1:-a994df69f401f4bf735a4ccd77029b85d1549453}
 PACKAGE_URL=https://github.com/ljharb/call-bind.git
 
 NODE_VERSION=v12.22.8

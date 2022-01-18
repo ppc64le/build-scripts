@@ -22,7 +22,7 @@ set -e
 
 #Variables
 PACKAGE_NAME=better-ajv-errors
-PACKAGE_VERSION=v0.5.7
+PACKAGE_VERSION=${1:-v0.5.7}
 PACKAGE_URL=https://github.com/atlassian/better-ajv-errors.git
 
 NODE_VERSION=v12.22.8
