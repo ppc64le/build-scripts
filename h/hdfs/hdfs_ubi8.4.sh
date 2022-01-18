@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package       : github.com/colinmarc/hdfs/v2
@@ -5,6 +6,8 @@
 # Source repo   : https://github.com/colinmarc/hdfs
 # Tested on     : RHEL 8.4
 # Script License: Apache License, Version 2 or later
+# Language      : GO
+# Travis-Check  : True
 # Maintainer    : Vikas Gupta <vikas.gupta8@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -14,16 +17,23 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#
+
+set -e
+
 PACKAGE_NAME=hdfs
 PACKAGE_PATH=github.com/colinmarc/hdfs/v2
 PACKAGE_VERSION=${1:-v2.2.0}
 PACKAGE_URL=https://github.com/colinmarc/hdfs
 
-yum install -y unzip bzip2 gcc
+yum install -y curl unzip bzip2 gcc-c++ cmake
 yum install -y psmisc nc openssl-devel maven hostname initscripts redhat-lsb-core
-dnf install make maven git sudo wget gcc-c++ apr-devel perl openssl-devel automake autoconf libtool -y
-yum install -y autoconf automake libtool curl unzip bzip2 gcc
+yum install -y make maven git sudo wget apr-devel perl openssl-devel automake autoconf libtool
+
+wget https://downloads.apache.org/bigtop/bigtop-3.0.0/repos/GPG-KEY-bigtop
+rpm --import GPG-KEY-bigtop
+rm -rf GPG-KEY-bigtop
+sudo wget -O /etc/yum.repos.d/bigtop.repo https://downloads.apache.org/bigtop/bigtop-3.0.0/repos/centos-8/bigtop.repo
+sudo yum install -y hadoop hadoop-client bigtop-utils zookeeper
 
 wget https://golang.org/dl/go1.17.4.linux-ppc64le.tar.gz && tar -C /bin -xf go1.17.4.linux-ppc64le.tar.gz && mkdir -p /home/tester/go/src /home/tester/go/bin /home/tester/go/pkg
 
@@ -42,13 +52,13 @@ cd $HOME_DIR
 #----------------------------------------------------------------------------------------
 echo "-------------Installing protobuff version v2.5.0---------------------"
 #Install latest cmake
-wget https://github.com/Kitware/CMake/releases/download/v3.21.2/cmake-3.21.2.tar.gz
-tar -xvf cmake-3.21.2.tar.gz
-cd cmake-3.21.2
-./bootstrap
-make
-make install
-cd ..
+#wget https://github.com/Kitware/CMake/releases/download/v3.21.2/cmake-3.21.2.tar.gz
+#tar -xvf cmake-3.21.2.tar.gz
+#cd cmake-3.21.2
+#./bootstrap
+#make
+#make install
+#cd ..
 
 cd $HOME_DIR
 git clone https://github.com/protocolbuffers/protobuf.git
@@ -61,23 +71,6 @@ make
 make install
 cd java
 mvn clean install
-
-#----------------------------------------------------------------------------------------
-echo "-------------Installing hadoop and its dependencies ---------------------"
-cd $HOME_DIR
-
-wget --no-check-certificate https://ci.bigtop.apache.org/job/Bigtop-trunk-packages/COMPONENTS=bigtop-utils,OS=centos-8-ppc64le/lastSuccessfulBuild/artifact/output/bigtop-utils/noarch/bigtop-utils-3.1.0-1.el8.noarch.rpm && rpm -ivh bigtop-utils-3.1.0-1.el8.noarch.rpm
-
-wget https://copr-be.cloud.fedoraproject.org/results/harbottle/main/epel-8-x86_64/02183367-zookeeper/zookeeper-3.7.0-2.el8.harbottle.noarch.rpm && rpm -ivh zookeeper-3.7.0-2.el8.harbottle.noarch.rpm
-
-wget --no-check-certificate https://ci.bigtop.apache.org/job/Bigtop-trunk-packages/COMPONENTS=hadoop,OS=centos-8-ppc64le/lastSuccessfulBuild/artifact/output/hadoop/ppc64le/hadoop-3.2.2-1.el8.ppc64le.rpm && rpm -ivh hadoop-3.2.2-1.el8.ppc64le.rpm
-
-wget --no-check-certificate https://ci.bigtop.apache.org/job/Bigtop-trunk-packages/COMPONENTS=bigtop-groovy,OS=centos-8-ppc64le/lastSuccessfulBuild/artifact/output/bigtop-groovy/noarch/bigtop-groovy-2.5.4-1.el8.noarch.rpm && rpm -ivh bigtop-groovy-2.5.4-1.el8.noarch.rpm
-
-wget --no-check-certificate https://ci.bigtop.apache.org/job/Bigtop-trunk-packages/COMPONENTS=bigtop-jsvc,OS=centos-8-ppc64le/lastSuccessfulBuild/artifact/output/bigtop-jsvc/ppc64le/bigtop-jsvc-1.0.15-1.el8.ppc64le.rpm && rpm -ivh bigtop-jsvc-1.0.15-1.el8.ppc64le.rpm
-
-wget  --no-check-certificate https://ci.bigtop.apache.org/job/Bigtop-trunk-packages/COMPONENTS=hadoop,OS=centos-8-ppc64le/757/artifact/output/hadoop/ppc64le/hadoop-hdfs-3.2.2-1.el8.ppc64le.rpm && rpm -ivh hadoop-hdfs-3.2.2-1.el8.ppc64le.rpm
-#----------------------------------------------------------------------------------------
 
 echo "-------------Setting Environment Variables ---------------------"
 export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.312.b07-2.el8_5.ppc64le/
@@ -144,7 +137,7 @@ cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_PATH@$PACKAGE_VERSION/)
 echo `pwd`
 
 # Ensure go.mod file exists
-go mod init $PACKAGE_PATH
+#go mod init $PACKAGE_PATH
 go mod tidy
 
 make clean
