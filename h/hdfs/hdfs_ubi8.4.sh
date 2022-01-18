@@ -127,18 +127,21 @@ cd $HOME_DIR
 
 echo "Building $PACKAGE_PATH with $PACKAGE_VERSION"
 
-if ! go get -d -u -t $PACKAGE_PATH@$PACKAGE_VERSION; then
+if ! git clone --recurse $PACKAGE_URL; then
         echo "------------------$PACKAGE_NAME:install_ failed-------------------------"
-        exit 0
+        exit 1
 fi
 
-cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_PATH@$PACKAGE_VERSION/)
-
+#cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_PATH@$PACKAGE_VERSION/)
+cd $PACKAGE_NAME
 echo `pwd`
+
+git checkout $PACKAGE_VERSION
 
 # Ensure go.mod file exists
 #go mod init $PACKAGE_PATH
-go mod tidy
+#go mod tidy
+go get ./...
 
 make clean
 make clean-protos
