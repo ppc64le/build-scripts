@@ -141,14 +141,14 @@ git checkout $PACKAGE_VERSION
 # Ensure go.mod file exists
 #go mod init $PACKAGE_PATH
 #go mod tidy
-go get ./...
+#go get ./...
 
 make clean
 make clean-protos
 
 go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.22.0
 go get google.golang.org/protobuf/reflect/protoreflect
-go mod tidy
+#go mod tidy
 export PATH=$GOPATH/bin:$PATH
 
 sed -i '/^export JAVA_HOME/d' fixtures.sh
