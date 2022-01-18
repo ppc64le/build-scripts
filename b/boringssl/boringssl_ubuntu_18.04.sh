@@ -7,6 +7,7 @@
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Nishikant Thorat <Nishikant.Thorat@ibm.com>
 # Travis-Check  : True
+# Language	: go
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
