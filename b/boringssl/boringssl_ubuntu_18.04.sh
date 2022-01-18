@@ -20,6 +20,7 @@
 
 # Install dependencies.
 # NOTE: Kindly make sure, you have sudo installed on your system.("apt-get install -y sudo")
+apt-get install -y sudo
 sudo apt-get update -y
 sudo apt-get install -y cmake build-essential g++ wget git pkg-config libunwind-dev
 
