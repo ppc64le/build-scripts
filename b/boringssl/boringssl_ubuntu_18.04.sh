@@ -6,6 +6,7 @@
 # Tested on     : ubuntu_18.04
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Nishikant Thorat <Nishikant.Thorat@ibm.com>
+# Travis-Check  : True
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -14,7 +15,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
+#!/bin/bash -e
 
 # Install dependencies.
 # NOTE: Kindly make sure, you have sudo installed on your system.("apt-get install -y sudo")
