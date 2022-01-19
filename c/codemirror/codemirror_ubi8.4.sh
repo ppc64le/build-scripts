@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package	: CodeMirror
@@ -16,8 +17,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash -e
-
+set -e
 
 # variables
 PACKAGE_NAME="CodeMirror"
