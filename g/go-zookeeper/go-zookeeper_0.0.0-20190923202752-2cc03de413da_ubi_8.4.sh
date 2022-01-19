@@ -2,7 +2,7 @@
 #
 # Package        : go-zookeeper
 # Version        : v0.0.0-20190923202752-2cc03de413da
-# Source repo    : https://github.com/go-zookeeper/zk/
+# Source repo    : https://github.com/samuel/go-zookeeper
 # Tested on      : UBI 8.4
 # Language      : go
 # Travis-Check  : True
@@ -16,14 +16,12 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
-
 #!/bin/bash
 set -e
 
-PACKAGE_URL=https://github.com/go-zookeeper/zk
-PACKAGE_NAME=zk
-PACKAGE_VERSION=v0.0.0-20190923202752
+PACKAGE_URL=https://github.com/samuel/go-zookeeper
+PACKAGE_NAME=go-zookeeper
+PACKAGE_VERSION=${1:-v0.0.0-20190923202752-2cc03de413da}
 
 PACKAGE_COMMIT_HASH=`echo $PACKAGE_VERSION | cut -d'-' -f3`
 
@@ -51,12 +49,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_COMMIT_HASH
 
 
-#go mod init github.com/go-zookeeper/zk
-#go mod tidy
+go mod init
+go mod tidy
 
 go test -v ./...
-
-
-
-
-
