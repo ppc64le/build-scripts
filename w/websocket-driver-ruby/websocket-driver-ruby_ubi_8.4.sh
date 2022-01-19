@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package               : websocket-driver-ruby
@@ -16,7 +17,6 @@
 #                         contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
 
 set -e
 
@@ -29,7 +29,14 @@ if [ -d "websocket-driver-ruby" ] ; then
   rm -rf websocket-driver-ruby
 fi
 
-yum install -y git ruby procps 
+yum install -y git ruby procps yum-utils wget
+
+yum-config-manager --add-repo http://mirror.centos.org/centos/8/AppStream/ppc64le/os/ && yum-config-manager --add-repo http://mirror.centos.org/centos/8/PowerTools/ppc64le/os/ && yum-config-manager --add-repo http://mirror.centos.org/centos/8/BaseOS/ppc64le/os/ && yum-config-manager --add-repo http://mirror.centos.org/centos/8/virt/ppc64le/ovirt-44/
+
+wget https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official && mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/. && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
+
+wget https://www.centos.org/keys/RPM-GPG-KEY-CentOS-SIG-Virtualization && mv RPM-GPG-KEY-CentOS-SIG-Virtualization /etc/pki/rpm-gpg/. && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-Virtualization
+
 gem install bundle 
 gem install rake 
 curl -sSL https://rvm.io/mpapis.asc | gpg2 --import - 
