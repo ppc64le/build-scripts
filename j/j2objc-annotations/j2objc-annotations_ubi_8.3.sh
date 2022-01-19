@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	    : j2objc-annotations
@@ -16,7 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash -e
 
 set -e
 
@@ -26,7 +26,6 @@ PACKAGE_NAME=j2objc/annotations
 PACKAGE_VERSION=${1:-1.3}
 PACKAGE_URL=https://github.com/google/j2objc.git
 
-yum update -y
 yum install git java-1.8.0-openjdk-devel maven -y
 
 #clone repo
@@ -34,5 +33,6 @@ cd $WORK_DIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+
 mvn -Dgpg.skip=true clean install
 mvn test
