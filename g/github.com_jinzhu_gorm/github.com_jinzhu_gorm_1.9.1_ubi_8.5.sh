@@ -22,7 +22,6 @@
 PACKAGE_NAME=github.com/jinzhu/gorm
 PACKAGE_PATH=https://github.com/jinzhu/gorm
 PACKAGE_VERSION=${1:-v1.9.1}
-GO_VERSION="go1.17.5"
 
 #install dependencies
 yum install -y  go git
