@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package        : go-jmespath
@@ -6,8 +6,9 @@
 # Source repo    : https://github.com/jmespath/go-jmespath
 # Tested on      : UBI 8.4
 # Language       : GO
+# Travis-Check  : True
 # Script License : Apache License, Version 2 or later
-# Maintainer     : Sapana Khemkar <spana.khemkar@ibm.com>
+# Maintainer     : Vaibhav Bhadade <vaibhav.bhadade@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
