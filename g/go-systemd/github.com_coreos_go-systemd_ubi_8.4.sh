@@ -18,9 +18,10 @@
 # ----------------------------------------------------------------------------
 
 #!/bin/bash
+set -e
 
 PACKAGE_NAME=go-systemd
-PACKAGE_VERSION="48702e0da86bd25e76cfef347e2adeb434a0d0a6"
+PACKAGE_VERSION=${1:-48702e0da86bd25e76cfef347e2adeb434a0d0a6}
 GO_VERSION="go1.17.5"
 
  
