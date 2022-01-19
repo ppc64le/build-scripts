@@ -4,6 +4,8 @@
 # Version	: 5.26.0
 # Source repo	: https://github.com/codemirror/CodeMirror
 # Tested on	: rhel_8.4
+# Language      : Node
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Vikas Gupta <vikas.gupta8@ibm.com>
 #
@@ -14,37 +16,62 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
+#!/bin/bash -e
 
 
 # variables
-PKG_NAME="CodeMirror"
-PKG_VERSION=${1:-5.26.0}
-LOCAL_DIRECTORY=/home/tester
-REPOSITORY="https://github.com/codemirror/CodeMirror"
+PACKAGE_NAME="CodeMirror"
+PACKAGE_VERSION=${1:-5.26.0}
+PACKAGE_URL="https://github.com/codemirror/CodeMirror"
 
-yum -y install wget bzip2 git 
-wget https://github.com/ibmsoe/phantomjs/releases/download/2.1.1/phantomjs-2.1.1-linux-ppc64.tar.bz2
-tar -xvf phantomjs-2.1.1-linux-ppc64.tar.bz2 
+yum install -y wget bzip2 git 
+yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm
+yum install -y fontconfig freetype freetype-devel fontconfig-devel libstdc++
+
+npm install n -g && n latest && npm install -g npm@latest && export PATH="$PATH" && npm install --global yarn grunt-bump xo testem acorn
+
+mkdir -p /home/tester/output
+cd /home/tester
+
+wget https://github.com/ibmsoe/phantomjs/releases/download/2.1.1/phantomjs-2.1.1-linux-ppc64.tar.bz2 && tar -xvf phantomjs-2.1.1-linux-ppc64.tar.bz2 
 
 mv phantomjs-2.1.1-linux-ppc64/bin/phantomjs /usr/bin
 rm -rf phantomjs-2.1.1-linux-ppc64.tar.bz2
 
-wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh | sh
-source $HOME/.nvm/nvm.sh
-nvm install stable
-nvm use stable
+#wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh | sh
+#source $HOME/.nvm/nvm.sh
+#nvm install stable
+#nvm use stable
 
 
 # ------- Clone and build source -------
+if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
+    	echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
+		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/clone_fails
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails" > /home/tester/output/version_tracker
+    	exit 0
+fi
 
-mkdir -p $LOCAL_DIRECTORY
-cd $LOCAL_DIRECTORY
+cd /home/tester/$PACKAGE_NAME
+git checkout $PACKAGE_VERSION
+# run the test command from test.sh
 
-git clone $REPOSITORY
-cd $PKG_NAME
-git checkout $PKG_VERSION
-npm install -g npm@8.3.0
-npm install
-npm test
+if ! npm install && npm audit fix && npm audit fix --force; then
+     	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+	echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/install_fails
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails" > /home/tester/output/version_tracker
+	exit 1
+fi
 
+cd /home/tester/$PACKAGE_NAME
+if ! npm test; then
+	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+	echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails 
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
+	exit 1
+else
+	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+	echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_success 
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success" > /home/tester/output/version_tracker
+	exit 0
+fi
