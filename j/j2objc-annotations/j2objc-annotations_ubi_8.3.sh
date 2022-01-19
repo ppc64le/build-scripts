@@ -7,7 +7,7 @@
 # Language      : Java
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Snehlata Mohite <Snehlata.Mohite@ibm.com>
+# Maintainer	: Srividya Chittiboina <Srividya.Chittiboina@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
