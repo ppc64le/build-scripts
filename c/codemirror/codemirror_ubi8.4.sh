@@ -28,7 +28,7 @@ yum install -y wget bzip2 git
 yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm
 yum install -y fontconfig freetype freetype-devel fontconfig-devel libstdc++
 
-npm install n -g && n latest && npm install -g npm@latest && export PATH="$PATH" && npm install --global yarn grunt-bump xo testem acorn
+npm install n -g && n latest && npm install -g npm@latest && export PATH="$PATH"
 
 mkdir -p /home/tester/output
 cd /home/tester
