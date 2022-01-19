@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	    : simpleclient_common
@@ -16,7 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash -e
 
 set -e
 
@@ -26,7 +26,6 @@ PACKAGE_NAME=client_java
 PACKAGE_VERSION=${1:-parent-0.9.0}
 PACKAGE_URL=https://github.com/prometheus/client_java.git
 
-yum update -y
 yum install -y git java-11-openjdk-devel maven
 
 #clone repo
