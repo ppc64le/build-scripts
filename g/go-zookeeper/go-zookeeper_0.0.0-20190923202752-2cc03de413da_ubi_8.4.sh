@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package        : go-zookeeper
@@ -16,9 +17,9 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash -e
 
 
+set -e 
 PACKAGE_URL=https://github.com/samuel/go-zookeeper
 PACKAGE_NAME=go-zookeeper
 PACKAGE_VERSION=${1:-v0.0.0-20190923202752-2cc03de413da}
@@ -53,3 +54,4 @@ go mod init
 go mod tidy
 
 go test -v ./...
+exit
