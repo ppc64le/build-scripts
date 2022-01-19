@@ -1,3 +1,4 @@
+#!/bin/bash
 # ----------------------------------------------------------------------------
 #
 # Package        : go-jmespath
@@ -15,12 +16,11 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
 set -e
 
 PACKAGE_URL=https://github.com/jmespath/go-jmespath
 PACKAGE_NAME=go-jmespath
-PACKAGE_VERSION=v0.0.0-20180206201540-c2b33e8439af
+PACKAGE_VERSION=${1:-v0.0.0-20180206201540-c2b33e8439af}
 
 PACKAGE_COMMIT_HASH=`echo $PACKAGE_VERSION | cut -d'-' -f3` 
 
