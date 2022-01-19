@@ -16,8 +16,8 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
-set -e
+#!/bin/bash -e
+
 
 PACKAGE_URL=https://github.com/samuel/go-zookeeper
 PACKAGE_NAME=go-zookeeper
