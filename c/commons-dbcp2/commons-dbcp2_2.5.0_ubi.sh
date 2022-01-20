@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package       : commons-dbcp2
@@ -17,15 +18,12 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash -e
 
 set -e
 
 PACKAGE_NAME=commons-dbcp-
 PACKAGE_VERSION=${1:-2.5.0}              
 PACKAGE_URL=https://github.com/apache/commons-dbcp
-
-yum update -y
 
 yum install -y git maven
 
@@ -39,4 +37,3 @@ mvn clean install -DskipTests
 
 #test
 mvn test
-
