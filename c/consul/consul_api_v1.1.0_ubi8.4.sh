@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: consul
-# Version	: v1.1.0
+# Version	: v1.11.2
 # Source repo	: https://github.com/hashicorp/consul
 # Tested on	: UBI 8.4
 # Language      : GO
@@ -20,7 +20,7 @@
 set -e
 
 PACKAGE_NAME=consul
-PACKAGE_VERSION=${1:-v1.1.0}
+PACKAGE_VERSION=${1:-v1.11.2}
 PACKAGE_URL=https://github.com/hashicorp/consul
 
 export GO_VERSION=go1.17.4.linux-ppc64le.tar.gz
