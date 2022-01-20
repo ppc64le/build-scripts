@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 #Exit immediately if a command exits with a non-zero status.
 set -e
-PACKAGE_NAME=constantinople
+PACKAGE_NAME=carbon-utils-position
 #PACKAGE_VERSION is configurable can be passed as an argument.
 PACKAGE_VERSION=${1:-v1.1.1}
 PACKAGE_URL=https://github.com/carbon-design-system/carbon-utils-position
