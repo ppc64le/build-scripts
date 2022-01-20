@@ -76,4 +76,4 @@ else
   fi
 fi
 
-"Observed one error:Rake aborted and is in parity with Intel"
+# "Observed one error:Rake aborted and is in parity with Intel"
