@@ -27,7 +27,7 @@ GO_VERSION="go1.17.5"
 
  
 #install dependencies
-yum install -y wget git tar dbus gcc-c++&& systemd-devel\
+yum install -y wget git tar dbus gcc-c++ systemd-devel\
 
 #install go
 rm -rf /bin/go
