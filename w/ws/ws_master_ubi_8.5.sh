@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 #Exit immediately if a command exits with a non-zero status.
 set -e
-PACKAGE_NAME=constantinople
+PACKAGE_NAME=ws
 #PACKAGE_VERSION is configurable can be passed as an argument.
 PACKAGE_VERSION=${1:-master}
 PACKAGE_URL=https://github.com/websockets/ws
