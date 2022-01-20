@@ -17,12 +17,11 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
+#!/bin/bash -e
 
 set -e
 
 PACKAGE_NAME=commons-dbcp-
-#PACKAGE_VERSION=${1:-0.1.8}              
 PACKAGE_VERSION=${1:-2.5.0}              
 PACKAGE_URL=https://github.com/apache/commons-dbcp
 
