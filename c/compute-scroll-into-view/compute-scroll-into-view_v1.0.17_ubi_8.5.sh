@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 #Exit immediately if a command exits with a non-zero status.
 set -e
-PACKAGE_NAME=constantinople
+PACKAGE_NAME=compute-scroll-into-view
 #PACKAGE_VERSION is configurable can be passed as an argument.
 PACKAGE_VERSION=${1:-v1.0.17}
 PACKAGE_URL=https://github.com/stipsan/compute-scroll-into-view
