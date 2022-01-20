@@ -76,4 +76,4 @@ else
   fi
 fi
 
-"Observed 24 failures:rake aborted and all are in parity with Intel "
+# "Observed 24 failures:rake aborted and all are in parity with Intel "
