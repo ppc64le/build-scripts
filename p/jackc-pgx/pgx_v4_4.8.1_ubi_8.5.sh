@@ -20,35 +20,48 @@
 # ----------------------------------------------------------------------------
 
 set -e
-PACKAGE_NAME=github.com/jackc/pgx/v4
-PACKAGE_PATH=https://github.com/jackc/pgx/v4
+PACKAGE_NAME=${2:-github.com/jackc/pgx/v4}
+PACKAGE_PATH=https://github.com/jackc/pgx/
 PACKAGE_VERSION=${1:-v4.8.1}
 
 #install dependencies
-yum install -y  go git
+yum install -y  go git dnf
 
-
+#removed old data 
+rm -rf /var/lib/pgsql/
+dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-ppc64le/pgdg-redhat-repo-latest.noarch.rpm
+dnf -qy module disable postgresql
+dnf -y install postgresql13-server postgresql13-contrib
+postgresql-13-setup initdb
+systemctl enable --now postgresql-13
+chmod 777 /var/lib/pgsql/
 #set GO PATH
 export PATH=$PATH:/bin/go/bin
-export GOPATH=/var/lib/pgsql/go/
+export GOPATH=/home/tester/go/
 
+go get github.com/lib/pq
 if ! go get -d $PACKAGE_NAME@$PACKAGE_VERSION; then
                 echo "------------------$PACKAGE_NAME:install_ failed-------------------------"
                 exit 0
 fi
 cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_NAME@$PACKAGE_VERSION)
 
-# Ensure go.mod file exists
-go mod init github.com/jackc/pgx/v4
-go mod tidy
 echo `pwd`
+
+# Ensure go.mod file exists
+if [ -f "go.mod" ];
+then
+	rm go.mod go.sum
+fi
+	go mod init $PACKAGE_NAME
+	go mod tidy
 
 echo "Testing $PACKAGE_PATH with $PACKAGE_VERSION"
 
 sudo -u postgres bash <<EOF
 	#set GO PATH
 	export PATH=$PATH:/bin/go/bin
-	export GOPATH=/var/lib/pgsql/go/
+	export GOPATH=/home/tester/go/
 		# create database for testing
 		psql
 		create database pgx_test;
@@ -58,6 +71,7 @@ sudo -u postgres bash <<EOF
 
 	export PGX_TEST_DATABASE="host=/var/run/postgresql database=pgx_test"
 	cd $GOPATH/pkg/mod/github.com/jackc/pgx/v4@$PACKAGE_VERSION/
+	echo `pwd`
 	if ! go test -v ./... ; then
 	echo "------------------$PACKAGE_NAME:test_fails---------------------"
 		echo "$PACKAGE_VERSION $PACKAGE_NAME"
@@ -69,7 +83,7 @@ sudo -u postgres bash <<EOF
 		echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass |  Install_and_Test_Success"
 		exit 0
 	fi
+
 bash
 EOF
-
 exit 0
