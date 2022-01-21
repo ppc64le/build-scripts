@@ -1,10 +1,13 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------------------------------
 #
-# Package       : commons-compress
-# Version       : 1.19, 1.18, 1.9
-# Tested on     : UBI 8.3 (Docker)
-# Script License: Apache License, Version 2 or later
-# Maintainer    : Sumit Dubey <Sumit.Dubey2@ibm.com>
+# Package         : commons-compress
+# Version         : 1.19, 1.18, 1.9, 1.2
+# Tested on       : UBI 8.3 (Docker)
+# Language        : Java
+# Travis-Check    : True
+# Script License  : Apache License, Version 2 or later
+# Maintainer      : Sumit Dubey <Sumit.Dubey2@ibm.com>
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
@@ -12,8 +15,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------------------------------
-
-#!/bin/bash
 
 set -ex
 
@@ -27,10 +28,11 @@ PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 
 #Dependencies
 yum install -y java-1.8.0-openjdk-devel git wget
-cd /opt/
-wget https://downloads.apache.org/maven/maven-3/3.8.3/binaries/apache-maven-3.8.3-bin.tar.gz
-tar xzvf apache-maven-3.8.3-bin.tar.gz
-export PATH=/opt/apache-maven-3.8.3/bin:$PATH
+wget https://dlcdn.apache.org/maven/maven-3/3.8.4/binaries/apache-maven-3.8.4-bin.tar.gz
+tar -zxvf apache-maven-3.8.4-bin.tar.gz
+mv apache-maven-3.8.4 /opt/maven
+export M2_HOME=/opt/maven
+export PATH=${M2_HOME}/bin:${PATH}
 
 #Clone
 git clone $REPO
