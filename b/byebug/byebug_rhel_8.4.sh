@@ -76,4 +76,4 @@ else
   fi
 fi
 
-# "Observed 7 test failures and all are in parity with intel"
+#Observed 7 test failures and all are in parity with intel
