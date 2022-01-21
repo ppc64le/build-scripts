@@ -58,5 +58,3 @@ else
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success" >  output/version_tracker
         exit 0
 fi
-
-# Tests failing with "Chrome browser error" which is in parity with intel.
