@@ -1,8 +1,9 @@
 #!/bin/bash -e
+
 # -----------------------------------------------------------------------------
-# Package        : github.com/jackc/pgtype
-# Version        : v1.4.2
-# Source repo    : https://github.com/jackc/pgtype
+# Package        : github.com/jackc/pgconn
+# Version        : v1.6.4,v0.0.0-20190420214824-7e0022ef6ba3
+# Source repo    : https://github.com/jackc/pgconn
 # Tested on      : UBI 8.4
 # Language      : go
 # Travis-Check  : True
@@ -17,47 +18,62 @@
 #
 # ----------------------------------------------------------------------------
 
-
-PACKAGE_NAME=github.com/jackc/pgconn
+set -e
+PACKAGE_NAME=${2:-github.com/jackc/pgconn}
 PACKAGE_PATH=https://github.com/jackc/pgconn
 PACKAGE_VERSION=${1:-v1.6.4}
 
 #install dependencies
-yum install -y  go git
+yum install -y  go git dnf
 
+#removed old data 
+rm -rf /var/lib/pgsql/
+dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-ppc64le/pgdg-redhat-repo-latest.noarch.rpm
+dnf -qy module disable postgresql
+dnf -y install postgresql13-server postgresql13-contrib
+postgresql-13-setup initdb
+systemctl enable --now postgresql-13
 #set GO PATH
 export PATH=$PATH:/bin/go/bin
-export GOPATH=/var/lib/pgsql/go
+export GOPATH=/home/tester/go/
 
-go get $PACKAGE_NAME@$PACKAGE_VERSION		
+chmod 777 /var/lib/pgsql/
 if ! go get -d $PACKAGE_NAME@$PACKAGE_VERSION; then
-		echo "------------------$PACKAGE_NAME:install_ failed-------------------------"
-		exit 0
+                echo "------------------$PACKAGE_NAME:install_ failed-------------------------"
+                exit 0
 fi
 cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_NAME@$PACKAGE_VERSION)
 
-# Ensure go.mod file exists
-go mod init github.com/jackc/pgconn
-go mod tidy
 echo `pwd`
 
-echo "Testing $PACKAGE_PATH with $PACKAGE_VERSION with postgres user"
+chmod -R 777 /home/tester/go/
+# Ensure go.mod file exists
+if [ -f "go.mod" ];
+then
+	rm go.mod go.sum
+fi
+	go mod init $PACKAGE_NAME
+	go mod tidy
+
+echo "Testing $PACKAGE_PATH with $PACKAGE_VERSION"
 
 sudo -u postgres bash <<EOF
-export PATH=$PATH:/bin/go/bin
-export GOPATH=/var/lib/pgsql/go
-                # create database for testing
-                psql template1 -c 'create extension hstore;'
+	#set GO PATH
+	export PATH=$PATH:/bin/go/bin
+	export GOPATH=/home/tester/go/
+		# create database for testing
+		psql template1 -c 'create extension hstore;'
                 psql application_db -c 'create extension hstore;'
 
-                psql
-                create database pgx_test;
-                \c pgx_test;
-                create domain uint64 as numeric(20,0);
-                \q
+		psql
+		create database pgx_test;
+		\c pgx_test;
+		create domain uint64 as numeric(20,0);
+		\q
 
-        export PGX_TEST_DATABASE="sslmode=require host=/var/run/postgresql database=pgx_test"
-	cd $GOPATH/pkg/mod/github.com/jackc/pgconn@$PACKAGE_VERSION/
+	export PGX_TEST_DATABASE="sslmode=require host=/var/run/postgresql database=pgx_test"
+	cd $GOPATH/pkg/mod/$PACKAGE_NAME@$PACKAGE_VERSION/
+	echo `pwd`
 	if ! go test -v ./... ; then
 	echo "------------------$PACKAGE_NAME:test_fails---------------------"
 		echo "$PACKAGE_VERSION $PACKAGE_NAME"
@@ -69,7 +85,7 @@ export GOPATH=/var/lib/pgsql/go
 		echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass |  Install_and_Test_Success"
 		exit 0
 	fi
-							  
+
 bash
 EOF
 exit 0
