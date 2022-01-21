@@ -1,11 +1,14 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
-# Package       : bcprov-jdk15on
-# Version       : r1rv61
-# Source repo   : https://github.com/bcgit/bc-java
-# Tested on     : UBI: 8.3
-# Script License: Apache License 2.0
-# Maintainer's  : Srividya Chittiboina <Srividya.Chittiboina@ibm.com>
+# Package         : bcprov-jdk15on
+# Version         : r1rv61, r1rv68
+# Source repo     : https://github.com/bcgit/bc-java
+# Tested on       : UBI: 8.3
+# Language        : Java
+# Travis-Check    : True
+# Script License  : Apache License 2.0
+# Maintainer's    : Srividya Chittiboina <Srividya.Chittiboina@ibm.com>
 #
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -15,20 +18,13 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
 
 set -e
 
-REPO=https://github.com/bcgit/bc-java
+PACKAGE_NAME=bc-java
+PACKAGE_URL=https://github.com/bcgit/bc-java
+PACKAGE_VERSION="${1:-r1rv61}"
 
-# Default tag for bcprov-ext-jdk15on
-if [ -z "$1" ]; then
-  export VERSION="r1rv61"
-else
-  export VERSION="$1"
-fi
-
-yum update -y
 yum install -y git wget unzip
 yum install -y java-1.8.0-openjdk-devel
 
@@ -39,12 +35,11 @@ ls /opt/gradle/gradle-3.3/
 export PATH=$PATH:/opt/gradle/gradle-3.3/bin
 
 #Cloning Repo
-git clone $REPO
-cd bc-java
-git checkout ${VERSION}
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
+git checkout ${PACKAGE_VERSION}
 cd prov
 
 #Build and test package
 gradle build
 gradle test 
-
