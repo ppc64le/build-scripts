@@ -98,7 +98,8 @@ def trigger_build_validation_travis(pr_number):
     # Trigger validation for all shell scripts
     for i in response:
         file_name = i.get('filename', "")
-        if file_name.endswith('.sh'):
+        status = i.get('status', "")
+        if file_name.endswith('.sh') and status != "removed":
             # perform basic validation check
             trigger_basic_validation_checks(file_name)
             # Build/test script files
