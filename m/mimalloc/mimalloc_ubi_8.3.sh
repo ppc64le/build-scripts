@@ -1,3 +1,5 @@
+#!/bin/bash -e
+
 # -----------------------------------------------------------------------------
 #
 # Package       : mimalloc
@@ -16,8 +18,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
-#!/bin/bash -e
 
 PACKAGE_NAME=mimalloc
 PACKAGE_VERSION=${1:-v1.7.3}
