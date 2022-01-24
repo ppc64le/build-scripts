@@ -17,9 +17,7 @@
 #
 # ----------------------------------------------------------------------------
 
-#!/bin/bash
-
-set -e
+#!/bin/bash -e
 
 PACKAGE_NAME=mimalloc
 PACKAGE_VERSION=${1:-v1.7.3}
