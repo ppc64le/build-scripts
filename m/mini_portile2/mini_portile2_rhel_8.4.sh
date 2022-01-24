@@ -59,6 +59,14 @@ else
  exit
 fi
 
+#Observed one error:Rake aborted and is in parity with Intel
+#  1) Error:
+#TestCMake#before_all:
+#RuntimeError: Failed to complete configure task
+#    /root/rubybuildscripts/mini_portile/lib/mini_portile2/mini_portile.rb:402:in `block in execute'
+#    /root/rubybuildscripts/mini_portile/lib/mini_portile2/mini_portile.rb:373:in `chdir'
+#    /root/rubybuildscripts/mini_portile/lib/mini_portile2/mini_portile.rb:373:in `execute'
+
 #Build and test
 
 bundle _1.17.3_ install
@@ -76,4 +84,4 @@ else
   fi
 fi
 
-#Observed one error:Rake aborted and is in parity with Intel
+
