@@ -1,9 +1,12 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: {package_name}
 # Version	: {package_version}
 # Source repo	: {package_url}
 # Tested on	: {distro_name} {distro_version}
+# Language      : GO
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation {maintainer}
 #
@@ -29,7 +32,8 @@ wget https://golang.org/dl/go1.16.1.linux-ppc64le.tar.gz && \
 export PATH=$PATH:/bin/go/bin
 export GOPATH=/home/tester/go
 
-mkdir -p output
+mkdir -p /home/tester/output
+cd /home/tester
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
@@ -43,7 +47,7 @@ function test_with_master_without_flag_u(){
         	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
         	echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/install_fails
         	echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master | $OS_NAME | GitHub | Fail |  Install_Fails" > /home/tester/output/version_tracker
-        	exit 0
+        	exit 1
 	else
 		cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_NAME*)
         echo "Testing $PACKAGE_PATH with master branch without flag -u"
@@ -53,7 +57,7 @@ function test_with_master_without_flag_u(){
 		        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 		        echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/test_fails
 		        echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master  | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-		        exit 0
+		        exit 1
 		else		
 			echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 		        echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/test_success
