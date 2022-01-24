@@ -59,6 +59,11 @@ else
  exit
 fi
 
+#Observed Traceback call error and is in parity with Intel
+# /usr/local/rvm/gems/ruby-2.7.2/gems/activesupport-4.2.11.3/lib/active_support/core_ext/object/duplicable.rb:111:in `<class:BigDecimal>': undefined method `new' for BigDecimal:Class (NoMethodError)
+# rake aborted!
+# Command failed with status (1): [ruby -w -I"lib:test" /usr/local/rvm/gems/ruby-2.7.2/gems/rake-13.0.6/lib/rake/rake_test_loader.rb "test/erb_test.rb" ]
+
 #Build and test
 
 bundle _1.17.3_ install
@@ -76,4 +81,4 @@ else
   fi
 fi
 
-#Observed Traceback call error and is in parity with Intel
+
