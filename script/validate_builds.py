@@ -71,7 +71,7 @@ def trigger_script_validation_checks(file_name, image_name = "registry.access.re
     # Let the container run in non detach mode, as we need to delete the container on operation completion
     container = client.containers.run(
         image_name,
-        "sh /home/tester/{}".format(file_name),
+        "/home/tester/{}".format(file_name),
         #"cat /home/tester/{}".format(file_name),
         network = 'host',
         detach = True,
@@ -98,7 +98,8 @@ def trigger_build_validation_travis(pr_number):
     # Trigger validation for all shell scripts
     for i in response:
         file_name = i.get('filename', "")
-        if file_name.endswith('.sh'):
+        status = i.get('status', "")
+        if file_name.endswith('.sh') and status != "removed":
             # perform basic validation check
             trigger_basic_validation_checks(file_name)
             # Build/test script files
