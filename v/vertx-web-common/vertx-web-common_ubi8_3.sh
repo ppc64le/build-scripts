@@ -2,6 +2,7 @@
 #
 # Package       : vertx-web-common
 # Version       : 3.9.7 
+# Language      : Java
 # Source repo   : https://github.com/vert-x3/vertx-web
 # Tested on     : UBI 8.3
 # Script License: Apache-2.0 License    
@@ -14,14 +15,11 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
 #!/bin/bash
 
 #Variables
 PACKAGE_URL=https://github.com/vert-x3/vertx-web.git
-PACKAGE_VERSION=3.9.7 
-
-yum update -y 
+PACKAGE_VERSION="${1:-3.9.7}"
 
 #Install required files
 yum install -y git maven
@@ -35,4 +33,3 @@ git checkout $PACKAGE_VERSION
 mvn install
 
 echo "Complete!"
-

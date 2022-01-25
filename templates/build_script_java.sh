@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: {package_name}
@@ -41,7 +42,9 @@ export PATH=/usr/lib/apache-maven-3.8.2/bin/:$PATH
 # install scala
 rm -f /etc/yum.repos.d/bintray-rpm.repo && curl -L https://www.scala-sbt.org/sbt-rpm.repo > sbt-rpm.repo && mv sbt-rpm.repo /etc/yum.repos.d/ && yum install -y sbt
 
-mkdir -p output
+mkdir -p /home/tester/output
+cd /home/tester
+
 ln -s /usr/bin/python3 /bin/python
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
