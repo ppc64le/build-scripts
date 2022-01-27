@@ -1,3 +1,4 @@
+#!/bin/sh -e
 # Package       : mongodb/mongo-go-driver
 # Version       : v1.1.3
 # Source repo   : https://github.com/mongodb/mongo-go-driver
@@ -15,7 +16,6 @@
 #
 # ----------------------------------------------------------------------------
 
-#!/bin/sh -e
 PACKAGE_PATH=github.com/mongodb/
 PACKAGE_NAME=mongo-go-driver
 PACKAGE_VERSION=v1.1.3
