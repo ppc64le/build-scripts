@@ -1,0 +1,1541 @@
+Updating Subscription Management repositories.
+Unable to read consumer identity
+
+This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.
+
+Red Hat Universal Base Image 8 (RPMs) - BaseOS  677 kB/s | 571 kB     00:00    
+Red Hat Universal Base Image 8 (RPMs) - AppStre 2.3 MB/s | 2.3 MB     00:00    
+Red Hat Universal Base Image 8 (RPMs) - CodeRea  22 kB/s |  13 kB     00:00    
+Dependencies resolved.
+===================================================================================================
+ Package                                  Arch     Version                   Repository        Size
+===================================================================================================
+Upgrading:
+ bash                                     ppc64le  4.4.20-2.el8              ubi-8-baseos     1.6 M
+ chkconfig                                ppc64le  1.19.1-1.el8              ubi-8-baseos     204 k
+ coreutils-single                         ppc64le  8.30-12.el8               ubi-8-baseos     659 k
+ crypto-policies                          noarch   20210617-1.gitc776d3e.el8 ubi-8-baseos      63 k
+ crypto-policies-scripts                  noarch   20210617-1.gitc776d3e.el8 ubi-8-baseos      83 k
+ curl                                     ppc64le  7.61.1-22.el8             ubi-8-baseos     355 k
+ dbus                                     ppc64le  1:1.12.8-14.el8           ubi-8-baseos      41 k
+ dbus-common                              noarch   1:1.12.8-14.el8           ubi-8-baseos      46 k
+ dbus-daemon                              ppc64le  1:1.12.8-14.el8           ubi-8-baseos     256 k
+ dbus-libs                                ppc64le  1:1.12.8-14.el8           ubi-8-baseos     198 k
+ dbus-tools                               ppc64le  1:1.12.8-14.el8           ubi-8-baseos      87 k
+ device-mapper                            ppc64le  8:1.02.177-10.el8         ubi-8-baseos     378 k
+ device-mapper-libs                       ppc64le  8:1.02.177-10.el8         ubi-8-baseos     418 k
+ dnf                                      noarch   4.7.0-4.el8               ubi-8-baseos     544 k
+ dnf-data                                 noarch   4.7.0-4.el8               ubi-8-baseos     154 k
+ dnf-plugin-subscription-manager          ppc64le  1.28.21-3.el8             ubi-8-baseos     303 k
+ elfutils-default-yama-scope              noarch   0.185-1.el8               ubi-8-baseos      49 k
+ elfutils-libelf                          ppc64le  0.185-1.el8               ubi-8-baseos     227 k
+ elfutils-libs                            ppc64le  0.185-1.el8               ubi-8-baseos     322 k
+ file-libs                                ppc64le  5.33-20.el8               ubi-8-baseos     551 k
+ filesystem                               ppc64le  3.8-6.el8                 ubi-8-baseos     1.1 M
+ gdb-gdbserver                            ppc64le  8.2-16.el8                ubi-8-appstream  450 k
+ glib2                                    ppc64le  2.56.4-156.el8            ubi-8-baseos     2.6 M
+ glibc                                    ppc64le  2.28-164.el8              ubi-8-baseos     5.3 M
+ glibc-common                             ppc64le  2.28-164.el8              ubi-8-baseos     1.3 M
+ glibc-minimal-langpack                   ppc64le  2.28-164.el8              ubi-8-baseos      58 k
+ gnutls                                   ppc64le  3.6.16-4.el8              ubi-8-baseos     992 k
+ gpgme                                    ppc64le  1.13.1-9.el8              ubi-8-baseos     350 k
+ hwdata                                   noarch   0.314-8.10.el8            ubi-8-baseos     1.7 M
+ iptables-libs                            ppc64le  1.8.4-20.el8              ubi-8-baseos     113 k
+ json-c                                   ppc64le  0.13.1-2.el8              ubi-8-baseos      44 k
+ keyutils-libs                            ppc64le  1.5.10-9.el8              ubi-8-baseos      35 k
+ kmod-libs                                ppc64le  25-18.el8                 ubi-8-baseos      75 k
+ krb5-libs                                ppc64le  1.18.2-14.el8             ubi-8-baseos     906 k
+ libblkid                                 ppc64le  2.32.1-28.el8             ubi-8-baseos     239 k
+ libcap                                   ppc64le  2.26-5.el8                ubi-8-baseos      63 k
+ libcap-ng                                ppc64le  0.7.11-1.el8              ubi-8-baseos      35 k
+ libcom_err                               ppc64le  1.45.6-2.el8              ubi-8-baseos      49 k
+ libcomps                                 ppc64le  0.1.16-2.el8              ubi-8-baseos      87 k
+ libcurl                                  ppc64le  7.61.1-22.el8             ubi-8-baseos     317 k
+ libdnf                                   ppc64le  0.63.0-3.el8              ubi-8-baseos     684 k
+ libfdisk                                 ppc64le  2.32.1-28.el8             ubi-8-baseos     267 k
+ libgcc                                   ppc64le  8.5.0-4.el8_5             ubi-8-baseos      68 k
+ libgcrypt                                ppc64le  1.8.5-6.el8               ubi-8-baseos     521 k
+ libibverbs                               ppc64le  35.0-1.el8                ubi-8-baseos     361 k
+ libmodulemd                              ppc64le  2.13.0-1.el8              ubi-8-baseos     220 k
+ libmount                                 ppc64le  2.32.1-28.el8             ubi-8-baseos     257 k
+ librepo                                  ppc64le  1.14.0-2.el8              ubi-8-baseos      98 k
+ libsepol                                 ppc64le  2.9-3.el8                 ubi-8-baseos     368 k
+ libsmartcols                             ppc64le  2.32.1-28.el8             ubi-8-baseos     189 k
+ libsolv                                  ppc64le  0.7.19-1.el8              ubi-8-baseos     411 k
+ libssh                                   ppc64le  0.9.4-3.el8               ubi-8-baseos     236 k
+ libssh-config                            noarch   0.9.4-3.el8               ubi-8-baseos      19 k
+ libstdc++                                ppc64le  8.5.0-4.el8_5             ubi-8-baseos     496 k
+ libtirpc                                 ppc64le  1.1.4-5.el8               ubi-8-baseos     126 k
+ libuuid                                  ppc64le  2.32.1-28.el8             ubi-8-baseos      97 k
+ libxcrypt                                ppc64le  4.1.1-6.el8               ubi-8-baseos      77 k
+ lua-libs                                 ppc64le  5.3.4-12.el8              ubi-8-baseos     129 k
+ ncurses-base                             noarch   6.1-9.20180224.el8        ubi-8-baseos      81 k
+ ncurses-libs                             ppc64le  6.1-9.20180224.el8        ubi-8-baseos     362 k
+ nettle                                   ppc64le  3.4.1-7.el8               ubi-8-baseos     328 k
+ openldap                                 ppc64le  2.4.46-18.el8             ubi-8-baseos     380 k
+ openssl-libs                             ppc64le  1:1.1.1k-5.el8_5          ubi-8-baseos     1.5 M
+ pam                                      ppc64le  1.3.1-15.el8              ubi-8-baseos     781 k
+ pcre                                     ppc64le  8.42-6.el8                ubi-8-baseos     206 k
+ platform-python                          ppc64le  3.6.8-41.el8              ubi-8-baseos      85 k
+ python3-dnf                              noarch   4.7.0-4.el8               ubi-8-baseos     545 k
+ python3-dnf-plugins-core                 noarch   4.0.21-3.el8              ubi-8-baseos     234 k
+ python3-gpg                              ppc64le  1.13.1-9.el8              ubi-8-baseos     245 k
+ python3-hawkey                           ppc64le  0.63.0-3.el8              ubi-8-baseos     114 k
+ python3-libcomps                         ppc64le  0.1.16-2.el8              ubi-8-baseos      54 k
+ python3-libdnf                           ppc64le  0.63.0-3.el8              ubi-8-baseos     749 k
+ python3-librepo                          ppc64le  1.14.0-2.el8              ubi-8-baseos      55 k
+ python3-libs                             ppc64le  3.6.8-41.el8              ubi-8-baseos     8.1 M
+ python3-pip-wheel                        noarch   9.0.3-20.el8              ubi-8-baseos     1.0 M
+ python3-rpm                              ppc64le  4.14.3-19.el8             ubi-8-baseos     160 k
+ python3-subscription-manager-rhsm        ppc64le  1.28.21-3.el8             ubi-8-baseos     377 k
+ python3-syspurpose                       ppc64le  1.28.21-3.el8             ubi-8-baseos     312 k
+ rdma-core                                ppc64le  35.0-1.el8                ubi-8-baseos      60 k
+ redhat-release                           ppc64le  8.5-0.8.el8               ubi-8-baseos      44 k
+ rpm                                      ppc64le  4.14.3-19.el8             ubi-8-baseos     543 k
+ rpm-build-libs                           ppc64le  4.14.3-19.el8             ubi-8-baseos     165 k
+ rpm-libs                                 ppc64le  4.14.3-19.el8             ubi-8-baseos     378 k
+ shadow-utils                             ppc64le  2:4.6-14.el8              ubi-8-baseos     1.2 M
+ sqlite-libs                              ppc64le  3.26.0-15.el8             ubi-8-baseos     625 k
+ subscription-manager                     ppc64le  1.28.21-3.el8             ubi-8-baseos     1.1 M
+ subscription-manager-rhsm-certificates   ppc64le  1.28.21-3.el8             ubi-8-baseos     273 k
+ systemd                                  ppc64le  239-51.el8_5.3            ubi-8-baseos     3.6 M
+ systemd-libs                             ppc64le  239-51.el8_5.3            ubi-8-baseos     1.1 M
+ systemd-pam                              ppc64le  239-51.el8_5.3            ubi-8-baseos     503 k
+ tpm2-tss                                 ppc64le  2.3.2-4.el8               ubi-8-baseos     226 k
+ tzdata                                   noarch   2021e-1.el8               ubi-8-baseos     474 k
+ usermode                                 ppc64le  1.113-2.el8               ubi-8-baseos     204 k
+ util-linux                               ppc64le  2.32.1-28.el8             ubi-8-baseos     2.6 M
+ vim-minimal                              ppc64le  2:8.0.1763-16.el8         ubi-8-baseos     610 k
+ virt-what                                ppc64le  1.18-12.el8               ubi-8-baseos      36 k
+ which                                    ppc64le  2.21-16.el8               ubi-8-baseos      50 k
+ yum                                      noarch   4.7.0-4.el8               ubi-8-baseos     205 k
+Installing dependencies:
+ libevent                                 ppc64le  2.1.8-5.el8               ubi-8-baseos     265 k
+ openssl                                  ppc64le  1:1.1.1k-5.el8_5          ubi-8-baseos     712 k
+ python3-cloud-what                       ppc64le  1.28.21-3.el8             ubi-8-baseos     299 k
+ trousers-lib                             ppc64le  0.3.15-1.el8              ubi-8-baseos     176 k
+ unbound-libs                             ppc64le  1.7.3-17.el8              ubi-8-appstream  536 k
+ xkeyboard-config                         noarch   2.28-1.el8                ubi-8-appstream  782 k
+Installing weak dependencies:
+ diffutils                                ppc64le  3.6-6.el8                 ubi-8-baseos     367 k
+ glibc-langpack-en                        ppc64le  2.28-164.el8              ubi-8-baseos     828 k
+ libxkbcommon                             ppc64le  0.9.1-1.el8               ubi-8-appstream  123 k
+ openssl-pkcs11                           ppc64le  0.4.10-2.el8              ubi-8-baseos      71 k
+ platform-python-pip                      noarch   9.0.3-20.el8              ubi-8-baseos     1.7 M
+ python3-unbound                          ppc64le  1.7.3-17.el8              ubi-8-appstream  121 k
+ shared-mime-info                         ppc64le  1.9-3.el8                 ubi-8-baseos     332 k
+ trousers                                 ppc64le  0.3.15-1.el8              ubi-8-baseos     155 k
+
+Transaction Summary
+===================================================================================================
+Install  14 Packages
+Upgrade  98 Packages
+
+Total download size: 63 M
+Downloading Packages:
+(1/112): trousers-0.3.15-1.el8.ppc64le.rpm      321 kB/s | 155 kB     00:00    
+(2/112): python3-cloud-what-1.28.21-3.el8.ppc64 549 kB/s | 299 kB     00:00    
+(3/112): libevent-2.1.8-5.el8.ppc64le.rpm       462 kB/s | 265 kB     00:00    
+(4/112): shared-mime-info-1.9-3.el8.ppc64le.rpm 1.6 MB/s | 332 kB     00:00    
+(5/112): diffutils-3.6-6.el8.ppc64le.rpm        2.1 MB/s | 367 kB     00:00    
+(6/112): glibc-langpack-en-2.28-164.el8.ppc64le 3.5 MB/s | 828 kB     00:00    
+(7/112): openssl-pkcs11-0.4.10-2.el8.ppc64le.rp 828 kB/s |  71 kB     00:00    
+(8/112): trousers-lib-0.3.15-1.el8.ppc64le.rpm  2.1 MB/s | 176 kB     00:00    
+(9/112): libxkbcommon-0.9.1-1.el8.ppc64le.rpm   1.5 MB/s | 123 kB     00:00    
+(10/112): openssl-1.1.1k-5.el8_5.ppc64le.rpm    3.5 MB/s | 712 kB     00:00    
+(11/112): python3-unbound-1.7.3-17.el8.ppc64le. 1.3 MB/s | 121 kB     00:00    
+(12/112): platform-python-pip-9.0.3-20.el8.noar 5.8 MB/s | 1.7 MB     00:00    
+(13/112): xkeyboard-config-2.28-1.el8.noarch.rp 4.4 MB/s | 782 kB     00:00    
+(14/112): which-2.21-16.el8.ppc64le.rpm         672 kB/s |  50 kB     00:00    
+(15/112): unbound-libs-1.7.3-17.el8.ppc64le.rpm 3.1 MB/s | 536 kB     00:00    
+(16/112): ncurses-libs-6.1-9.20180224.el8.ppc64 3.8 MB/s | 362 kB     00:00    
+(17/112): libsolv-0.7.19-1.el8.ppc64le.rpm      2.6 MB/s | 411 kB     00:00    
+(18/112): rpm-4.14.3-19.el8.ppc64le.rpm         3.1 MB/s | 543 kB     00:00    
+(19/112): util-linux-2.32.1-28.el8.ppc64le.rpm   10 MB/s | 2.6 MB     00:00    
+(20/112): yum-4.7.0-4.el8.noarch.rpm            2.2 MB/s | 205 kB     00:00    
+(21/112): libuuid-2.32.1-28.el8.ppc64le.rpm     1.2 MB/s |  97 kB     00:00    
+(22/112): subscription-manager-rhsm-certificate 3.3 MB/s | 273 kB     00:00    
+(23/112): glibc-common-2.28-164.el8.ppc64le.rpm 5.8 MB/s | 1.3 MB     00:00    
+(24/112): gpgme-1.13.1-9.el8.ppc64le.rpm        2.2 MB/s | 350 kB     00:00    
+(25/112): python3-subscription-manager-rhsm-1.2 4.5 MB/s | 377 kB     00:00    
+(26/112): curl-7.61.1-22.el8.ppc64le.rpm        4.1 MB/s | 355 kB     00:00    
+(27/112): dnf-data-4.7.0-4.el8.noarch.rpm       1.7 MB/s | 154 kB     00:00    
+(28/112): device-mapper-libs-1.02.177-10.el8.pp 4.3 MB/s | 418 kB     00:00    
+(29/112): iptables-libs-1.8.4-20.el8.ppc64le.rp 1.3 MB/s | 113 kB     00:00    
+(30/112): kmod-libs-25-18.el8.ppc64le.rpm       957 kB/s |  75 kB     00:00    
+(31/112): glibc-2.28-164.el8.ppc64le.rpm         18 MB/s | 5.3 MB     00:00    
+(32/112): virt-what-1.18-12.el8.ppc64le.rpm     486 kB/s |  36 kB     00:00    
+(33/112): libcurl-7.61.1-22.el8.ppc64le.rpm     3.9 MB/s | 317 kB     00:00    
+(34/112): libxcrypt-4.1.1-6.el8.ppc64le.rpm     1.0 MB/s |  77 kB     00:00    
+(35/112): file-libs-5.33-20.el8.ppc64le.rpm     3.5 MB/s | 551 kB     00:00    
+(36/112): openssl-libs-1.1.1k-5.el8_5.ppc64le.r 8.9 MB/s | 1.5 MB     00:00    
+(37/112): systemd-239-51.el8_5.3.ppc64le.rpm    9.4 MB/s | 3.6 MB     00:00    
+(38/112): libtirpc-1.1.4-5.el8.ppc64le.rpm      1.4 MB/s | 126 kB     00:00    
+(39/112): elfutils-libs-0.185-1.el8.ppc64le.rpm 3.7 MB/s | 322 kB     00:00    
+(40/112): python3-hawkey-0.63.0-3.el8.ppc64le.r 1.3 MB/s | 114 kB     00:00    
+(41/112): libcap-ng-0.7.11-1.el8.ppc64le.rpm    463 kB/s |  35 kB     00:00    
+(42/112): ncurses-base-6.1-9.20180224.el8.noarc 1.1 MB/s |  81 kB     00:00    
+(43/112): nettle-3.4.1-7.el8.ppc64le.rpm        3.8 MB/s | 328 kB     00:00    
+(44/112): libblkid-2.32.1-28.el8.ppc64le.rpm    3.0 MB/s | 239 kB     00:00    
+(45/112): gnutls-3.6.16-4.el8.ppc64le.rpm       5.9 MB/s | 992 kB     00:00    
+(46/112): dbus-tools-1.12.8-14.el8.ppc64le.rpm  1.1 MB/s |  87 kB     00:00    
+(47/112): elfutils-libelf-0.185-1.el8.ppc64le.r 2.8 MB/s | 227 kB     00:00    
+(48/112): dbus-1.12.8-14.el8.ppc64le.rpm        552 kB/s |  41 kB     00:00    
+(49/112): dbus-libs-1.12.8-14.el8.ppc64le.rpm   2.4 MB/s | 198 kB     00:00    
+(50/112): subscription-manager-1.28.21-3.el8.pp 6.8 MB/s | 1.1 MB     00:00    
+(51/112): platform-python-3.6.8-41.el8.ppc64le. 1.1 MB/s |  85 kB     00:00    
+(52/112): libstdc++-8.5.0-4.el8_5.ppc64le.rpm   5.3 MB/s | 496 kB     00:00    
+(53/112): crypto-policies-20210617-1.gitc776d3e 780 kB/s |  63 kB     00:00    
+(54/112): librepo-1.14.0-2.el8.ppc64le.rpm      1.2 MB/s |  98 kB     00:00    
+(55/112): json-c-0.13.1-2.el8.ppc64le.rpm       588 kB/s |  44 kB     00:00    
+(56/112): python3-librepo-1.14.0-2.el8.ppc64le. 691 kB/s |  55 kB     00:00    
+(57/112): libmodulemd-2.13.0-1.el8.ppc64le.rpm  2.6 MB/s | 220 kB     00:00    
+(58/112): rpm-build-libs-4.14.3-19.el8.ppc64le. 1.9 MB/s | 165 kB     00:00    
+(59/112): redhat-release-8.5-0.8.el8.ppc64le.rp 585 kB/s |  44 kB     00:00    
+(60/112): libsmartcols-2.32.1-28.el8.ppc64le.rp 2.4 MB/s | 189 kB     00:00    
+(61/112): krb5-libs-1.18.2-14.el8.ppc64le.rpm   5.5 MB/s | 906 kB     00:00    
+(62/112): glib2-2.56.4-156.el8.ppc64le.rpm      9.9 MB/s | 2.6 MB     00:00    
+(63/112): libcomps-0.1.16-2.el8.ppc64le.rpm     1.1 MB/s |  87 kB     00:00    
+(64/112): lua-libs-5.3.4-12.el8.ppc64le.rpm     1.6 MB/s | 129 kB     00:00    
+(65/112): systemd-pam-239-51.el8_5.3.ppc64le.rp 3.3 MB/s | 503 kB     00:00    
+(66/112): python3-pip-wheel-9.0.3-20.el8.noarch 6.3 MB/s | 1.0 MB     00:00    
+(67/112): libibverbs-35.0-1.el8.ppc64le.rpm     4.2 MB/s | 361 kB     00:00    
+(68/112): rpm-libs-4.14.3-19.el8.ppc64le.rpm    4.6 MB/s | 378 kB     00:00    
+(69/112): python3-libcomps-0.1.16-2.el8.ppc64le 669 kB/s |  54 kB     00:00    
+(70/112): dbus-daemon-1.12.8-14.el8.ppc64le.rpm 3.2 MB/s | 256 kB     00:00    
+(71/112): libfdisk-2.32.1-28.el8.ppc64le.rpm    3.2 MB/s | 267 kB     00:00    
+(72/112): hwdata-0.314-8.10.el8.noarch.rpm      7.0 MB/s | 1.7 MB     00:00    
+(73/112): libsepol-2.9-3.el8.ppc64le.rpm        4.2 MB/s | 368 kB     00:00    
+(74/112): libgcc-8.5.0-4.el8_5.ppc64le.rpm      904 kB/s |  68 kB     00:00    
+(75/112): systemd-libs-239-51.el8_5.3.ppc64le.r 6.9 MB/s | 1.1 MB     00:00    
+(76/112): python3-dnf-plugins-core-4.0.21-3.el8 2.8 MB/s | 234 kB     00:00    
+(77/112): usermode-1.113-2.el8.ppc64le.rpm      2.5 MB/s | 204 kB     00:00    
+(78/112): libgcrypt-1.8.5-6.el8.ppc64le.rpm     6.2 MB/s | 521 kB     00:00    
+(79/112): pcre-8.42-6.el8.ppc64le.rpm           2.4 MB/s | 206 kB     00:00    
+(80/112): libmount-2.32.1-28.el8.ppc64le.rpm    3.0 MB/s | 257 kB     00:00    
+(81/112): rdma-core-35.0-1.el8.ppc64le.rpm      735 kB/s |  60 kB     00:00    
+(82/112): keyutils-libs-1.5.10-9.el8.ppc64le.rp 441 kB/s |  35 kB     00:00    
+(83/112): crypto-policies-scripts-20210617-1.gi 1.1 MB/s |  83 kB     00:00    
+(84/112): tpm2-tss-2.3.2-4.el8.ppc64le.rpm      2.9 MB/s | 226 kB     00:00    
+(85/112): libcap-2.26-5.el8.ppc64le.rpm         813 kB/s |  63 kB     00:00    
+(86/112): shadow-utils-4.6-14.el8.ppc64le.rpm   7.3 MB/s | 1.2 MB     00:00    
+(87/112): bash-4.4.20-2.el8.ppc64le.rpm         9.8 MB/s | 1.6 MB     00:00    
+(88/112): filesystem-3.8-6.el8.ppc64le.rpm      6.4 MB/s | 1.1 MB     00:00    
+(89/112): device-mapper-1.02.177-10.el8.ppc64le 4.6 MB/s | 378 kB     00:00    
+(90/112): elfutils-default-yama-scope-0.185-1.e 647 kB/s |  49 kB     00:00    
+(91/112): coreutils-single-8.30-12.el8.ppc64le. 4.0 MB/s | 659 kB     00:00    
+(92/112): pam-1.3.1-15.el8.ppc64le.rpm          8.9 MB/s | 781 kB     00:00    
+(93/112): glibc-minimal-langpack-2.28-164.el8.p 720 kB/s |  58 kB     00:00    
+(94/112): libcom_err-1.45.6-2.el8.ppc64le.rpm   663 kB/s |  49 kB     00:00    
+(95/112): python3-dnf-4.7.0-4.el8.noarch.rpm    3.5 MB/s | 545 kB     00:00    
+(96/112): python3-rpm-4.14.3-19.el8.ppc64le.rpm 2.0 MB/s | 160 kB     00:00    
+(97/112): openldap-2.4.46-18.el8.ppc64le.rpm    4.3 MB/s | 380 kB     00:00    
+(98/112): python3-libdnf-0.63.0-3.el8.ppc64le.r 4.6 MB/s | 749 kB     00:00    
+(99/112): libssh-config-0.9.4-3.el8.noarch.rpm  252 kB/s |  19 kB     00:00    
+(100/112): python3-gpg-1.13.1-9.el8.ppc64le.rpm 2.8 MB/s | 245 kB     00:00    
+(101/112): dnf-plugin-subscription-manager-1.28 3.7 MB/s | 303 kB     00:00    
+(102/112): libdnf-0.63.0-3.el8.ppc64le.rpm      4.2 MB/s | 684 kB     00:00    
+(103/112): python3-syspurpose-1.28.21-3.el8.ppc 3.6 MB/s | 312 kB     00:00    
+(104/112): libssh-0.9.4-3.el8.ppc64le.rpm       2.8 MB/s | 236 kB     00:00    
+(105/112): chkconfig-1.19.1-1.el8.ppc64le.rpm   2.4 MB/s | 204 kB     00:00    
+(106/112): vim-minimal-8.0.1763-16.el8.ppc64le. 3.9 MB/s | 610 kB     00:00    
+(107/112): tzdata-2021e-1.el8.noarch.rpm        5.3 MB/s | 474 kB     00:00    
+(108/112): dbus-common-1.12.8-14.el8.noarch.rpm 600 kB/s |  46 kB     00:00    
+(109/112): dnf-4.7.0-4.el8.noarch.rpm           6.0 MB/s | 544 kB     00:00    
+(110/112): gdb-gdbserver-8.2-16.el8.ppc64le.rpm 5.0 MB/s | 450 kB     00:00    
+(111/112): python3-libs-3.6.8-41.el8.ppc64le.rp  23 MB/s | 8.1 MB     00:00    
+(112/112): sqlite-libs-3.26.0-15.el8.ppc64le.rp 3.5 MB/s | 625 kB     00:00    
+--------------------------------------------------------------------------------
+Total                                            13 MB/s |  63 MB     00:04     
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Running scriptlet: filesystem-3.8-6.el8.ppc64le                           1/1 
+  Preparing        :                                                        1/1 
+  Running scriptlet: libgcc-8.5.0-4.el8_5.ppc64le                           1/1 
+  Upgrading        : libgcc-8.5.0-4.el8_5.ppc64le                         1/210 
+  Running scriptlet: libgcc-8.5.0-4.el8_5.ppc64le                         1/210 
+  Upgrading        : python3-pip-wheel-9.0.3-20.el8.noarch                2/210 
+  Upgrading        : dbus-common-1:1.12.8-14.el8.noarch                   3/210 
+  Upgrading        : tzdata-2021e-1.el8.noarch                            4/210 
+  Upgrading        : libssh-config-0.9.4-3.el8.noarch                     5/210 
+  Upgrading        : filesystem-3.8-6.el8.ppc64le                         6/210 
+  Upgrading        : ncurses-base-6.1-9.20180224.el8.noarch               7/210 
+  Upgrading        : ncurses-libs-6.1-9.20180224.el8.ppc64le              8/210 
+  Upgrading        : glibc-common-2.28-164.el8.ppc64le                    9/210 
+  Upgrading        : bash-4.4.20-2.el8.ppc64le                           10/210 
+  Running scriptlet: bash-4.4.20-2.el8.ppc64le                           10/210 
+  Running scriptlet: glibc-2.28-164.el8.ppc64le                          11/210 
+  Upgrading        : glibc-2.28-164.el8.ppc64le                          11/210 
+  Running scriptlet: glibc-2.28-164.el8.ppc64le                          11/210 
+  Installing       : glibc-langpack-en-2.28-164.el8.ppc64le              12/210 
+  Upgrading        : sqlite-libs-3.26.0-15.el8.ppc64le                   13/210 
+  Upgrading        : libcap-2.26-5.el8.ppc64le                           14/210 
+  Upgrading        : coreutils-single-8.30-12.el8.ppc64le                15/210 
+  Upgrading        : gpgme-1.13.1-9.el8.ppc64le                          16/210 
+  Upgrading        : elfutils-libelf-0.185-1.el8.ppc64le                 17/210 
+  Upgrading        : libxcrypt-4.1.1-6.el8.ppc64le                       18/210 
+  Upgrading        : shadow-utils-2:4.6-14.el8.ppc64le                   19/210 
+  Upgrading        : libuuid-2.32.1-28.el8.ppc64le                       20/210 
+  Running scriptlet: libuuid-2.32.1-28.el8.ppc64le                       20/210 
+  Upgrading        : libblkid-2.32.1-28.el8.ppc64le                      21/210 
+  Running scriptlet: libblkid-2.32.1-28.el8.ppc64le                      21/210 
+  Upgrading        : libmount-2.32.1-28.el8.ppc64le                      22/210 
+  Running scriptlet: libmount-2.32.1-28.el8.ppc64le                      22/210 
+  Upgrading        : libstdc++-8.5.0-4.el8_5.ppc64le                     23/210 
+  Running scriptlet: libstdc++-8.5.0-4.el8_5.ppc64le                     23/210 
+  Upgrading        : json-c-0.13.1-2.el8.ppc64le                         24/210 
+  Upgrading        : libsmartcols-2.32.1-28.el8.ppc64le                  25/210 
+  Running scriptlet: libsmartcols-2.32.1-28.el8.ppc64le                  25/210 
+  Upgrading        : lua-libs-5.3.4-12.el8.ppc64le                       26/210 
+  Upgrading        : libcom_err-1.45.6-2.el8.ppc64le                     27/210 
+  Running scriptlet: libcom_err-1.45.6-2.el8.ppc64le                     27/210 
+  Upgrading        : file-libs-5.33-20.el8.ppc64le                       28/210 
+  Upgrading        : libsepol-2.9-3.el8.ppc64le                          29/210 
+  Running scriptlet: libsepol-2.9-3.el8.ppc64le                          29/210 
+  Upgrading        : chkconfig-1.19.1-1.el8.ppc64le                      30/210 
+  Upgrading        : libcap-ng-0.7.11-1.el8.ppc64le                      31/210 
+  Upgrading        : libgcrypt-1.8.5-6.el8.ppc64le                       32/210 
+  Running scriptlet: libgcrypt-1.8.5-6.el8.ppc64le                       32/210 
+  Upgrading        : systemd-libs-239-51.el8_5.3.ppc64le                 33/210 
+  Running scriptlet: systemd-libs-239-51.el8_5.3.ppc64le                 33/210 
+  Upgrading        : dbus-libs-1:1.12.8-14.el8.ppc64le                   34/210 
+  Running scriptlet: dbus-libs-1:1.12.8-14.el8.ppc64le                   34/210 
+  Upgrading        : dbus-tools-1:1.12.8-14.el8.ppc64le                  35/210 
+  Running scriptlet: dbus-daemon-1:1.12.8-14.el8.ppc64le                 36/210 
+  Upgrading        : dbus-daemon-1:1.12.8-14.el8.ppc64le                 36/210 
+  Running scriptlet: dbus-daemon-1:1.12.8-14.el8.ppc64le                 36/210 
+  Upgrading        : rdma-core-35.0-1.el8.ppc64le                        37/210 
+  Running scriptlet: rdma-core-35.0-1.el8.ppc64le                        37/210 
+  Upgrading        : libfdisk-2.32.1-28.el8.ppc64le                      38/210 
+  Running scriptlet: libfdisk-2.32.1-28.el8.ppc64le                      38/210 
+  Installing       : diffutils-3.6-6.el8.ppc64le                         39/210 
+  Running scriptlet: diffutils-3.6-6.el8.ppc64le                         39/210 
+  Upgrading        : which-2.21-16.el8.ppc64le                           40/210 
+  Upgrading        : nettle-3.4.1-7.el8.ppc64le                          41/210 
+  Running scriptlet: nettle-3.4.1-7.el8.ppc64le                          41/210 
+  Upgrading        : libcomps-0.1.16-2.el8.ppc64le                       42/210 
+  Upgrading        : pcre-8.42-6.el8.ppc64le                             43/210 
+  Upgrading        : keyutils-libs-1.5.10-9.el8.ppc64le                  44/210 
+  Installing       : platform-python-pip-9.0.3-20.el8.noarch             45/210 
+  Installing       : openssl-pkcs11-0.4.10-2.el8.ppc64le                 46/210 
+  Installing       : openssl-1:1.1.1k-5.el8_5.ppc64le                    47/210 
+  Upgrading        : openssl-libs-1:1.1.1k-5.el8_5.ppc64le               48/210 
+  Running scriptlet: openssl-libs-1:1.1.1k-5.el8_5.ppc64le               48/210 
+  Upgrading        : libtirpc-1.1.4-5.el8.ppc64le                        49/210 
+  Running scriptlet: libtirpc-1.1.4-5.el8.ppc64le                        49/210 
+  Upgrading        : krb5-libs-1.18.2-14.el8.ppc64le                     50/210 
+  Upgrading        : crypto-policies-20210617-1.gitc776d3e.el8.noarch    51/210 
+  Running scriptlet: crypto-policies-20210617-1.gitc776d3e.el8.noarch    51/210 
+  Upgrading        : crypto-policies-scripts-20210617-1.gitc776d3e.el    52/210 
+  Upgrading        : platform-python-3.6.8-41.el8.ppc64le                53/210 
+  Running scriptlet: platform-python-3.6.8-41.el8.ppc64le                53/210 
+  Upgrading        : python3-libs-3.6.8-41.el8.ppc64le                   54/210 
+  Upgrading        : pam-1.3.1-15.el8.ppc64le                            55/210 
+  Running scriptlet: pam-1.3.1-15.el8.ppc64le                            55/210 
+  Upgrading        : util-linux-2.32.1-28.el8.ppc64le                    56/210 
+  Running scriptlet: util-linux-2.32.1-28.el8.ppc64le                    56/210 
+  Installing       : python3-cloud-what-1.28.21-3.el8.ppc64le            57/210 
+  Installing       : libevent-2.1.8-5.el8.ppc64le                        58/210 
+  Upgrading        : virt-what-1.18-12.el8.ppc64le                       59/210 
+  Upgrading        : python3-libcomps-0.1.16-2.el8.ppc64le               60/210 
+  Upgrading        : python3-gpg-1.13.1-9.el8.ppc64le                    61/210 
+  Upgrading        : python3-syspurpose-1.28.21-3.el8.ppc64le            62/210 
+  Upgrading        : libssh-0.9.4-3.el8.ppc64le                          63/210 
+  Installing       : trousers-lib-0.3.15-1.el8.ppc64le                   64/210 
+  Running scriptlet: trousers-lib-0.3.15-1.el8.ppc64le                   64/210 
+  Upgrading        : kmod-libs-25-18.el8.ppc64le                         65/210 
+  Running scriptlet: kmod-libs-25-18.el8.ppc64le                         65/210 
+  Upgrading        : openldap-2.4.46-18.el8.ppc64le                      66/210 
+  Upgrading        : libcurl-7.61.1-22.el8.ppc64le                       67/210 
+  Upgrading        : curl-7.61.1-22.el8.ppc64le                          68/210 
+  Upgrading        : rpm-libs-4.14.3-19.el8.ppc64le                      69/210 
+  Running scriptlet: rpm-libs-4.14.3-19.el8.ppc64le                      69/210 
+  Upgrading        : rpm-4.14.3-19.el8.ppc64le                           70/210 
+  Upgrading        : libsolv-0.7.19-1.el8.ppc64le                        71/210 
+  Upgrading        : dnf-data-4.7.0-4.el8.noarch                         72/210 
+  Upgrading        : subscription-manager-rhsm-certificates-1.28.21-3    73/210 
+  Installing       : xkeyboard-config-2.28-1.el8.noarch                  74/210 
+  Installing       : libxkbcommon-0.9.1-1.el8.ppc64le                    75/210 
+  Upgrading        : elfutils-default-yama-scope-0.185-1.el8.noarch      76/210 
+  Running scriptlet: elfutils-default-yama-scope-0.185-1.el8.noarch      76/210 
+  Upgrading        : elfutils-libs-0.185-1.el8.ppc64le                   77/210 
+  Upgrading        : systemd-pam-239-51.el8_5.3.ppc64le                  78/210 
+  Upgrading        : gnutls-3.6.16-4.el8.ppc64le                         79/210 
+  Running scriptlet: systemd-239-51.el8_5.3.ppc64le                      80/210 
+  Upgrading        : systemd-239-51.el8_5.3.ppc64le                      80/210 
+  Running scriptlet: systemd-239-51.el8_5.3.ppc64le                      80/210 
+  Running scriptlet: trousers-0.3.15-1.el8.ppc64le                       81/210 
+  Installing       : trousers-0.3.15-1.el8.ppc64le                       81/210 
+  Running scriptlet: trousers-0.3.15-1.el8.ppc64le                       81/210 
+  Upgrading        : dbus-1:1.12.8-14.el8.ppc64le                        82/210 
+  Upgrading        : glib2-2.56.4-156.el8.ppc64le                        83/210 
+  Installing       : shared-mime-info-1.9-3.el8.ppc64le                  84/210 
+  Running scriptlet: shared-mime-info-1.9-3.el8.ppc64le                  84/210 
+  Upgrading        : librepo-1.14.0-2.el8.ppc64le                        85/210 
+  Upgrading        : libmodulemd-2.13.0-1.el8.ppc64le                    86/210 
+  Upgrading        : libdnf-0.63.0-3.el8.ppc64le                         87/210 
+  Upgrading        : python3-libdnf-0.63.0-3.el8.ppc64le                 88/210 
+  Upgrading        : python3-hawkey-0.63.0-3.el8.ppc64le                 89/210 
+  Upgrading        : python3-librepo-1.14.0-2.el8.ppc64le                90/210 
+  Upgrading        : usermode-1.113-2.el8.ppc64le                        91/210 
+  Running scriptlet: unbound-libs-1.7.3-17.el8.ppc64le                   92/210 
+  Installing       : unbound-libs-1.7.3-17.el8.ppc64le                   92/210 
+  Running scriptlet: unbound-libs-1.7.3-17.el8.ppc64le                   92/210 
+  Installing       : python3-unbound-1.7.3-17.el8.ppc64le                93/210 
+  Upgrading        : device-mapper-libs-8:1.02.177-10.el8.ppc64le        94/210 
+  Upgrading        : device-mapper-8:1.02.177-10.el8.ppc64le             95/210 
+  Upgrading        : rpm-build-libs-4.14.3-19.el8.ppc64le                96/210 
+  Running scriptlet: rpm-build-libs-4.14.3-19.el8.ppc64le                96/210 
+  Upgrading        : python3-rpm-4.14.3-19.el8.ppc64le                   97/210 
+  Upgrading        : python3-dnf-4.7.0-4.el8.noarch                      98/210 
+  Upgrading        : dnf-4.7.0-4.el8.noarch                              99/210 
+  Running scriptlet: dnf-4.7.0-4.el8.noarch                              99/210 
+  Upgrading        : python3-dnf-plugins-core-4.0.21-3.el8.noarch       100/210 
+  Upgrading        : dnf-plugin-subscription-manager-1.28.21-3.el8.pp   101/210 
+  Upgrading        : python3-subscription-manager-rhsm-1.28.21-3.el8.   102/210 
+  Running scriptlet: subscription-manager-1.28.21-3.el8.ppc64le         103/210 
+  Upgrading        : subscription-manager-1.28.21-3.el8.ppc64le         103/210 
+  Running scriptlet: subscription-manager-1.28.21-3.el8.ppc64le         103/210 
+chmod: cannot access '/etc/pki/entitlement/*.pem': No such file or directory
+
+  Upgrading        : yum-4.7.0-4.el8.noarch                             104/210 
+  Running scriptlet: tpm2-tss-2.3.2-4.el8.ppc64le                       105/210 
+  Upgrading        : tpm2-tss-2.3.2-4.el8.ppc64le                       105/210 
+  Running scriptlet: tpm2-tss-2.3.2-4.el8.ppc64le                       105/210 
+  Upgrading        : libibverbs-35.0-1.el8.ppc64le                      106/210 
+  Running scriptlet: libibverbs-35.0-1.el8.ppc64le                      106/210 
+  Upgrading        : gdb-gdbserver-8.2-16.el8.ppc64le                   107/210 
+  Upgrading        : iptables-libs-1.8.4-20.el8.ppc64le                 108/210 
+  Upgrading        : glibc-minimal-langpack-2.28-164.el8.ppc64le        109/210 
+  Upgrading        : vim-minimal-2:8.0.1763-16.el8.ppc64le              110/210 
+  Upgrading        : hwdata-0.314-8.10.el8.noarch                       111/210 
+  Upgrading        : redhat-release-8.5-0.8.el8.ppc64le                 112/210 
+  Cleanup          : yum-4.4.2-11.el8.noarch                            113/210 
+  Cleanup          : gdb-gdbserver-8.2-15.el8.ppc64le                   114/210 
+  Running scriptlet: subscription-manager-1.28.13-4.el8_4.ppc64le       115/210 
+  Cleanup          : subscription-manager-1.28.13-4.el8_4.ppc64le       115/210 
+  Running scriptlet: subscription-manager-1.28.13-4.el8_4.ppc64le       115/210 
+  Cleanup          : dnf-plugin-subscription-manager-1.28.13-4.el8_4.   116/210 
+  Cleanup          : python3-librepo-1.12.0-3.el8.ppc64le               117/210 
+  Cleanup          : device-mapper-libs-8:1.02.175-5.el8.ppc64le        118/210 
+  Running scriptlet: dnf-4.4.2-11.el8.noarch                            119/210 
+  Cleanup          : dnf-4.4.2-11.el8.noarch                            119/210 
+  Running scriptlet: dnf-4.4.2-11.el8.noarch                            119/210 
+  Cleanup          : python3-dnf-plugins-core-4.0.18-4.el8.noarch       120/210 
+  Cleanup          : python3-dnf-4.4.2-11.el8.noarch                    121/210 
+  Cleanup          : python3-syspurpose-1.28.13-4.el8_4.ppc64le         122/210 
+  Cleanup          : dnf-data-4.4.2-11.el8.noarch                       123/210 
+  Cleanup          : hwdata-0.314-8.8.el8.noarch                        124/210 
+  Cleanup          : redhat-release-8.4-0.6.el8.ppc64le                 125/210 
+  Cleanup          : python3-hawkey-0.55.0-7.el8.ppc64le                126/210 
+  Cleanup          : python3-libdnf-0.55.0-7.el8.ppc64le                127/210 
+  Cleanup          : libdnf-0.55.0-7.el8.ppc64le                        128/210 
+  Cleanup          : libstdc++-8.4.1-1.el8.ppc64le                      129/210 
+  Running scriptlet: libstdc++-8.4.1-1.el8.ppc64le                      129/210 
+  Cleanup          : librepo-1.12.0-3.el8.ppc64le                       130/210 
+  Cleanup          : usermode-1.113-1.el8.ppc64le                       131/210 
+  Cleanup          : tpm2-tss-2.3.2-3.el8.ppc64le                       132/210 
+  Running scriptlet: tpm2-tss-2.3.2-3.el8.ppc64le                       132/210 
+  Cleanup          : libmodulemd-2.9.4-2.el8.ppc64le                    133/210 
+  Cleanup          : glib2-2.56.4-10.el8_4.1.ppc64le                    134/210 
+  Cleanup          : python3-gpg-1.13.1-7.el8.ppc64le                   135/210 
+  Cleanup          : python3-subscription-manager-rhsm-1.28.13-4.el8_   136/210 
+  Cleanup          : python3-rpm-4.14.3-14.el8_4.ppc64le                137/210 
+  Cleanup          : rpm-build-libs-4.14.3-14.el8_4.ppc64le             138/210 
+  Running scriptlet: rpm-build-libs-4.14.3-14.el8_4.ppc64le             138/210 
+  Cleanup          : libibverbs-32.0-4.el8.ppc64le                      139/210 
+  Running scriptlet: libibverbs-32.0-4.el8.ppc64le                      139/210 
+  Cleanup          : rdma-core-32.0-4.el8.ppc64le                       140/210 
+  Cleanup          : libsolv-0.7.16-2.el8.ppc64le                       141/210 
+  Cleanup          : rpm-libs-4.14.3-14.el8_4.ppc64le                   142/210 
+  Running scriptlet: rpm-libs-4.14.3-14.el8_4.ppc64le                   142/210 
+  Cleanup          : rpm-4.14.3-14.el8_4.ppc64le                        143/210 
+  Cleanup          : curl-7.61.1-18.el8_4.1.ppc64le                     144/210 
+  Cleanup          : libcurl-7.61.1-18.el8_4.1.ppc64le                  145/210 
+  Cleanup          : libssh-0.9.4-2.el8.ppc64le                         146/210 
+  Cleanup          : openldap-2.4.46-17.el8_4.ppc64le                   147/210 
+  Cleanup          : python3-libcomps-0.1.11-5.el8.ppc64le              148/210 
+  Cleanup          : lua-libs-5.3.4-11.el8.ppc64le                      149/210 
+  Cleanup          : gpgme-1.13.1-7.el8.ppc64le                         150/210 
+  Cleanup          : device-mapper-8:1.02.175-5.el8.ppc64le             151/210 
+  Running scriptlet: systemd-239-45.el8_4.3.ppc64le                     152/210 
+  Cleanup          : systemd-239-45.el8_4.3.ppc64le                     152/210 
+  Cleanup          : elfutils-libs-0.182-3.el8.ppc64le                  153/210 
+  Cleanup          : elfutils-default-yama-scope-0.182-3.el8.noarch     154/210 
+  Cleanup          : systemd-pam-239-45.el8_4.3.ppc64le                 155/210 
+  Cleanup          : gnutls-3.6.14-8.el8_3.ppc64le                      156/210 
+  Cleanup          : kmod-libs-25-17.el8.ppc64le                        157/210 
+  Running scriptlet: kmod-libs-25-17.el8.ppc64le                        157/210 
+  Running scriptlet: nettle-3.4.1-4.el8_3.ppc64le                       158/210 
+  Cleanup          : nettle-3.4.1-4.el8_3.ppc64le                       158/210 
+  Running scriptlet: nettle-3.4.1-4.el8_3.ppc64le                       158/210 
+  Cleanup          : iptables-libs-1.8.4-17.el8.ppc64le                 159/210 
+  Cleanup          : virt-what-1.18-9.el8_4.ppc64le                     160/210 
+  Cleanup          : util-linux-2.32.1-27.el8.ppc64le                   161/210 
+  Cleanup          : pam-1.3.1-14.el8.ppc64le                           162/210 
+  Running scriptlet: pam-1.3.1-14.el8.ppc64le                           162/210 
+  Cleanup          : libfdisk-2.32.1-27.el8.ppc64le                     163/210 
+  Running scriptlet: libfdisk-2.32.1-27.el8.ppc64le                     163/210 
+  Cleanup          : python3-libs-3.6.8-38.el8_4.ppc64le                164/210 
+  Cleanup          : libtirpc-1.1.4-4.el8.ppc64le                       165/210 
+  Running scriptlet: libtirpc-1.1.4-4.el8.ppc64le                       165/210 
+  Cleanup          : krb5-libs-1.18.2-8.3.el8_4.ppc64le                 166/210 
+  Cleanup          : platform-python-3.6.8-38.el8_4.ppc64le             167/210 
+  Running scriptlet: platform-python-3.6.8-38.el8_4.ppc64le             167/210 
+  Cleanup          : openssl-libs-1:1.1.1g-15.el8_3.ppc64le             168/210 
+  Running scriptlet: openssl-libs-1:1.1.1g-15.el8_3.ppc64le             168/210 
+  Cleanup          : crypto-policies-20210209-1.gitbfb6bed.el8_3.noar   169/210 
+  Cleanup          : crypto-policies-scripts-20210209-1.gitbfb6bed.el   170/210 
+  Cleanup          : sqlite-libs-3.26.0-13.el8.ppc64le                  171/210 
+  Cleanup          : libcom_err-1.45.6-1.el8.ppc64le                    172/210 
+  Running scriptlet: libcom_err-1.45.6-1.el8.ppc64le                    172/210 
+  Cleanup          : libsmartcols-2.32.1-27.el8.ppc64le                 173/210 
+  Running scriptlet: libsmartcols-2.32.1-27.el8.ppc64le                 173/210 
+  Cleanup          : chkconfig-1.13-2.el8.ppc64le                       174/210 
+  Cleanup          : libsepol-2.9-2.el8.ppc64le                         175/210 
+  Running scriptlet: libsepol-2.9-2.el8.ppc64le                         175/210 
+  Cleanup          : elfutils-libelf-0.182-3.el8.ppc64le                176/210 
+  Cleanup          : libcomps-0.1.11-5.el8.ppc64le                      177/210 
+  Cleanup          : pcre-8.42-4.el8.ppc64le                            178/210 
+  Cleanup          : json-c-0.13.1-0.4.el8.ppc64le                      179/210 
+  Cleanup          : vim-minimal-2:8.0.1763-15.el8.ppc64le              180/210 
+  Cleanup          : dbus-1:1.12.8-12.el8_4.2.ppc64le                   181/210 
+  Cleanup          : python3-pip-wheel-9.0.3-19.el8.noarch              182/210 
+  Cleanup          : libssh-config-0.9.4-2.el8.noarch                   183/210 
+  Cleanup          : subscription-manager-rhsm-certificates-1.28.13-4   184/210 
+  Running scriptlet: dbus-daemon-1:1.12.8-12.el8_4.2.ppc64le            185/210 
+  Cleanup          : dbus-daemon-1:1.12.8-12.el8_4.2.ppc64le            185/210 
+  Running scriptlet: dbus-daemon-1:1.12.8-12.el8_4.2.ppc64le            185/210 
+  Cleanup          : dbus-tools-1:1.12.8-12.el8_4.2.ppc64le             186/210 
+  Cleanup          : dbus-libs-1:1.12.8-12.el8_4.2.ppc64le              187/210 
+  Running scriptlet: dbus-libs-1:1.12.8-12.el8_4.2.ppc64le              187/210 
+  Cleanup          : systemd-libs-239-45.el8_4.3.ppc64le                188/210 
+  Cleanup          : libmount-2.32.1-27.el8.ppc64le                     189/210 
+  Running scriptlet: libmount-2.32.1-27.el8.ppc64le                     189/210 
+  Cleanup          : libblkid-2.32.1-27.el8.ppc64le                     190/210 
+  Running scriptlet: libblkid-2.32.1-27.el8.ppc64le                     190/210 
+  Cleanup          : libuuid-2.32.1-27.el8.ppc64le                      191/210 
+  Running scriptlet: libuuid-2.32.1-27.el8.ppc64le                      191/210 
+  Cleanup          : libgcrypt-1.8.5-4.el8.ppc64le                      192/210 
+  Running scriptlet: libgcrypt-1.8.5-4.el8.ppc64le                      192/210 
+  Cleanup          : shadow-utils-2:4.6-12.el8.ppc64le                  193/210 
+  Cleanup          : coreutils-single-8.30-8.el8.ppc64le                194/210 
+  Cleanup          : libxcrypt-4.1.1-4.el8.ppc64le                      195/210 
+  Cleanup          : libcap-ng-0.7.9-5.el8.ppc64le                      196/210 
+  Cleanup          : keyutils-libs-1.5.10-6.el8.ppc64le                 197/210 
+  Cleanup          : file-libs-5.33-16.el8_3.1.ppc64le                  198/210 
+  Cleanup          : libcap-2.26-4.el8.ppc64le                          199/210 
+  Cleanup          : which-2.21-12.el8.ppc64le                          200/210 
+  Cleanup          : dbus-common-1:1.12.8-12.el8_4.2.noarch             201/210 
+  Cleanup          : ncurses-libs-6.1-7.20180224.el8.ppc64le            202/210 
+  Cleanup          : bash-4.4.20-1.el8_4.ppc64le                        203/210 
+  Running scriptlet: bash-4.4.20-1.el8_4.ppc64le                        203/210 
+  Cleanup          : glibc-common-2.28-151.el8.ppc64le                  204/210 
+  Cleanup          : glibc-2.28-151.el8.ppc64le                         205/210 
+warning: file /lib64/power9/libthread_db.so.1: remove failed: No such file or directory
+warning: file /lib64/power9/libthread_db-1.0.so: remove failed: No such file or directory
+warning: file /lib64/power9/librt.so.1: remove failed: No such file or directory
+warning: file /lib64/power9/librt-2.28.so: remove failed: No such file or directory
+warning: file /lib64/power9/libpthread.so.0: remove failed: No such file or directory
+warning: file /lib64/power9/libpthread-2.28.so: remove failed: No such file or directory
+warning: file /lib64/power9/libm.so.6: remove failed: No such file or directory
+warning: file /lib64/power9/libm-2.28.so: remove failed: No such file or directory
+warning: file /lib64/power9/libc.so.6: remove failed: No such file or directory
+warning: file /lib64/power9/libc-2.28.so: remove failed: No such file or directory
+
+  Cleanup          : glibc-minimal-langpack-2.28-151.el8.ppc64le        206/210 
+  Cleanup          : tzdata-2021a-1.el8.noarch                          207/210 
+  Cleanup          : filesystem-3.8-3.el8.ppc64le                       208/210 
+  Cleanup          : ncurses-base-6.1-7.20180224.el8.noarch             209/210 
+  Cleanup          : libgcc-8.4.1-1.el8.ppc64le                         210/210 
+  Running scriptlet: libgcc-8.4.1-1.el8.ppc64le                         210/210 
+  Running scriptlet: filesystem-3.8-6.el8.ppc64le                       210/210 
+  Running scriptlet: crypto-policies-scripts-20210617-1.gitc776d3e.el   210/210 
+  Running scriptlet: libgcc-8.4.1-1.el8.ppc64le                         210/210 
+  Running scriptlet: glibc-common-2.28-164.el8.ppc64le                  210/210 
+  Running scriptlet: systemd-239-51.el8_5.3.ppc64le                     210/210 
+  Running scriptlet: glib2-2.56.4-156.el8.ppc64le                       210/210 
+  Running scriptlet: shared-mime-info-1.9-3.el8.ppc64le                 210/210 
+  Verifying        : trousers-0.3.15-1.el8.ppc64le                        1/210 
+  Verifying        : libevent-2.1.8-5.el8.ppc64le                         2/210 
+  Verifying        : python3-cloud-what-1.28.21-3.el8.ppc64le             3/210 
+  Verifying        : shared-mime-info-1.9-3.el8.ppc64le                   4/210 
+  Verifying        : glibc-langpack-en-2.28-164.el8.ppc64le               5/210 
+  Verifying        : diffutils-3.6-6.el8.ppc64le                          6/210 
+  Verifying        : openssl-pkcs11-0.4.10-2.el8.ppc64le                  7/210 
+  Verifying        : openssl-1:1.1.1k-5.el8_5.ppc64le                     8/210 
+  Verifying        : trousers-lib-0.3.15-1.el8.ppc64le                    9/210 
+  Verifying        : platform-python-pip-9.0.3-20.el8.noarch             10/210 
+  Verifying        : libxkbcommon-0.9.1-1.el8.ppc64le                    11/210 
+  Verifying        : xkeyboard-config-2.28-1.el8.noarch                  12/210 
+  Verifying        : python3-unbound-1.7.3-17.el8.ppc64le                13/210 
+  Verifying        : unbound-libs-1.7.3-17.el8.ppc64le                   14/210 
+  Verifying        : which-2.21-16.el8.ppc64le                           15/210 
+  Verifying        : which-2.21-12.el8.ppc64le                           16/210 
+  Verifying        : ncurses-libs-6.1-9.20180224.el8.ppc64le             17/210 
+  Verifying        : ncurses-libs-6.1-7.20180224.el8.ppc64le             18/210 
+  Verifying        : util-linux-2.32.1-28.el8.ppc64le                    19/210 
+  Verifying        : util-linux-2.32.1-27.el8.ppc64le                    20/210 
+  Verifying        : rpm-4.14.3-19.el8.ppc64le                           21/210 
+  Verifying        : rpm-4.14.3-14.el8_4.ppc64le                         22/210 
+  Verifying        : libsolv-0.7.19-1.el8.ppc64le                        23/210 
+  Verifying        : libsolv-0.7.16-2.el8.ppc64le                        24/210 
+  Verifying        : glibc-common-2.28-164.el8.ppc64le                   25/210 
+  Verifying        : glibc-common-2.28-151.el8.ppc64le                   26/210 
+  Verifying        : yum-4.7.0-4.el8.noarch                              27/210 
+  Verifying        : yum-4.4.2-11.el8.noarch                             28/210 
+  Verifying        : libuuid-2.32.1-28.el8.ppc64le                       29/210 
+  Verifying        : libuuid-2.32.1-27.el8.ppc64le                       30/210 
+  Verifying        : gpgme-1.13.1-9.el8.ppc64le                          31/210 
+  Verifying        : gpgme-1.13.1-7.el8.ppc64le                          32/210 
+  Verifying        : subscription-manager-rhsm-certificates-1.28.21-3    33/210 
+  Verifying        : subscription-manager-rhsm-certificates-1.28.13-4    34/210 
+  Verifying        : python3-subscription-manager-rhsm-1.28.21-3.el8.    35/210 
+  Verifying        : python3-subscription-manager-rhsm-1.28.13-4.el8_    36/210 
+  Verifying        : curl-7.61.1-22.el8.ppc64le                          37/210 
+  Verifying        : curl-7.61.1-18.el8_4.1.ppc64le                      38/210 
+  Verifying        : dnf-data-4.7.0-4.el8.noarch                         39/210 
+  Verifying        : dnf-data-4.4.2-11.el8.noarch                        40/210 
+  Verifying        : glibc-2.28-164.el8.ppc64le                          41/210 
+  Verifying        : glibc-2.28-151.el8.ppc64le                          42/210 
+  Verifying        : device-mapper-libs-8:1.02.177-10.el8.ppc64le        43/210 
+  Verifying        : device-mapper-libs-8:1.02.175-5.el8.ppc64le         44/210 
+  Verifying        : iptables-libs-1.8.4-20.el8.ppc64le                  45/210 
+  Verifying        : iptables-libs-1.8.4-17.el8.ppc64le                  46/210 
+  Verifying        : kmod-libs-25-18.el8.ppc64le                         47/210 
+  Verifying        : kmod-libs-25-17.el8.ppc64le                         48/210 
+  Verifying        : systemd-239-51.el8_5.3.ppc64le                      49/210 
+  Verifying        : systemd-239-45.el8_4.3.ppc64le                      50/210 
+  Verifying        : virt-what-1.18-12.el8.ppc64le                       51/210 
+  Verifying        : virt-what-1.18-9.el8_4.ppc64le                      52/210 
+  Verifying        : libcurl-7.61.1-22.el8.ppc64le                       53/210 
+  Verifying        : libcurl-7.61.1-18.el8_4.1.ppc64le                   54/210 
+  Verifying        : libxcrypt-4.1.1-6.el8.ppc64le                       55/210 
+  Verifying        : libxcrypt-4.1.1-4.el8.ppc64le                       56/210 
+  Verifying        : openssl-libs-1:1.1.1k-5.el8_5.ppc64le               57/210 
+  Verifying        : openssl-libs-1:1.1.1g-15.el8_3.ppc64le              58/210 
+  Verifying        : file-libs-5.33-20.el8.ppc64le                       59/210 
+  Verifying        : file-libs-5.33-16.el8_3.1.ppc64le                   60/210 
+  Verifying        : libtirpc-1.1.4-5.el8.ppc64le                        61/210 
+  Verifying        : libtirpc-1.1.4-4.el8.ppc64le                        62/210 
+  Verifying        : elfutils-libs-0.185-1.el8.ppc64le                   63/210 
+  Verifying        : elfutils-libs-0.182-3.el8.ppc64le                   64/210 
+  Verifying        : python3-hawkey-0.63.0-3.el8.ppc64le                 65/210 
+  Verifying        : python3-hawkey-0.55.0-7.el8.ppc64le                 66/210 
+  Verifying        : libcap-ng-0.7.11-1.el8.ppc64le                      67/210 
+  Verifying        : libcap-ng-0.7.9-5.el8.ppc64le                       68/210 
+  Verifying        : ncurses-base-6.1-9.20180224.el8.noarch              69/210 
+  Verifying        : ncurses-base-6.1-7.20180224.el8.noarch              70/210 
+  Verifying        : gnutls-3.6.16-4.el8.ppc64le                         71/210 
+  Verifying        : gnutls-3.6.14-8.el8_3.ppc64le                       72/210 
+  Verifying        : nettle-3.4.1-7.el8.ppc64le                          73/210 
+  Verifying        : nettle-3.4.1-4.el8_3.ppc64le                        74/210 
+  Verifying        : libblkid-2.32.1-28.el8.ppc64le                      75/210 
+  Verifying        : libblkid-2.32.1-27.el8.ppc64le                      76/210 
+  Verifying        : dbus-tools-1:1.12.8-14.el8.ppc64le                  77/210 
+  Verifying        : dbus-tools-1:1.12.8-12.el8_4.2.ppc64le              78/210 
+  Verifying        : elfutils-libelf-0.185-1.el8.ppc64le                 79/210 
+  Verifying        : elfutils-libelf-0.182-3.el8.ppc64le                 80/210 
+  Verifying        : subscription-manager-1.28.21-3.el8.ppc64le          81/210 
+  Verifying        : subscription-manager-1.28.13-4.el8_4.ppc64le        82/210 
+  Verifying        : dbus-libs-1:1.12.8-14.el8.ppc64le                   83/210 
+  Verifying        : dbus-libs-1:1.12.8-12.el8_4.2.ppc64le               84/210 
+  Verifying        : dbus-1:1.12.8-14.el8.ppc64le                        85/210 
+  Verifying        : dbus-1:1.12.8-12.el8_4.2.ppc64le                    86/210 
+  Verifying        : platform-python-3.6.8-41.el8.ppc64le                87/210 
+  Verifying        : platform-python-3.6.8-38.el8_4.ppc64le              88/210 
+  Verifying        : libstdc++-8.5.0-4.el8_5.ppc64le                     89/210 
+  Verifying        : libstdc++-8.4.1-1.el8.ppc64le                       90/210 
+  Verifying        : crypto-policies-20210617-1.gitc776d3e.el8.noarch    91/210 
+  Verifying        : crypto-policies-20210209-1.gitbfb6bed.el8_3.noar    92/210 
+  Verifying        : librepo-1.14.0-2.el8.ppc64le                        93/210 
+  Verifying        : librepo-1.12.0-3.el8.ppc64le                        94/210 
+  Verifying        : json-c-0.13.1-2.el8.ppc64le                         95/210 
+  Verifying        : json-c-0.13.1-0.4.el8.ppc64le                       96/210 
+  Verifying        : python3-librepo-1.14.0-2.el8.ppc64le                97/210 
+  Verifying        : python3-librepo-1.12.0-3.el8.ppc64le                98/210 
+  Verifying        : libmodulemd-2.13.0-1.el8.ppc64le                    99/210 
+  Verifying        : libmodulemd-2.9.4-2.el8.ppc64le                    100/210 
+  Verifying        : rpm-build-libs-4.14.3-19.el8.ppc64le               101/210 
+  Verifying        : rpm-build-libs-4.14.3-14.el8_4.ppc64le             102/210 
+  Verifying        : glib2-2.56.4-156.el8.ppc64le                       103/210 
+  Verifying        : glib2-2.56.4-10.el8_4.1.ppc64le                    104/210 
+  Verifying        : redhat-release-8.5-0.8.el8.ppc64le                 105/210 
+  Verifying        : redhat-release-8.4-0.6.el8.ppc64le                 106/210 
+  Verifying        : krb5-libs-1.18.2-14.el8.ppc64le                    107/210 
+  Verifying        : krb5-libs-1.18.2-8.3.el8_4.ppc64le                 108/210 
+  Verifying        : libsmartcols-2.32.1-28.el8.ppc64le                 109/210 
+  Verifying        : libsmartcols-2.32.1-27.el8.ppc64le                 110/210 
+  Verifying        : libcomps-0.1.16-2.el8.ppc64le                      111/210 
+  Verifying        : libcomps-0.1.11-5.el8.ppc64le                      112/210 
+  Verifying        : systemd-pam-239-51.el8_5.3.ppc64le                 113/210 
+  Verifying        : systemd-pam-239-45.el8_4.3.ppc64le                 114/210 
+  Verifying        : python3-pip-wheel-9.0.3-20.el8.noarch              115/210 
+  Verifying        : python3-pip-wheel-9.0.3-19.el8.noarch              116/210 
+  Verifying        : lua-libs-5.3.4-12.el8.ppc64le                      117/210 
+  Verifying        : lua-libs-5.3.4-11.el8.ppc64le                      118/210 
+  Verifying        : libibverbs-35.0-1.el8.ppc64le                      119/210 
+  Verifying        : libibverbs-32.0-4.el8.ppc64le                      120/210 
+  Verifying        : hwdata-0.314-8.10.el8.noarch                       121/210 
+  Verifying        : hwdata-0.314-8.8.el8.noarch                        122/210 
+  Verifying        : rpm-libs-4.14.3-19.el8.ppc64le                     123/210 
+  Verifying        : rpm-libs-4.14.3-14.el8_4.ppc64le                   124/210 
+  Verifying        : python3-libcomps-0.1.16-2.el8.ppc64le              125/210 
+  Verifying        : python3-libcomps-0.1.11-5.el8.ppc64le              126/210 
+  Verifying        : dbus-daemon-1:1.12.8-14.el8.ppc64le                127/210 
+  Verifying        : dbus-daemon-1:1.12.8-12.el8_4.2.ppc64le            128/210 
+  Verifying        : libfdisk-2.32.1-28.el8.ppc64le                     129/210 
+  Verifying        : libfdisk-2.32.1-27.el8.ppc64le                     130/210 
+  Verifying        : systemd-libs-239-51.el8_5.3.ppc64le                131/210 
+  Verifying        : systemd-libs-239-45.el8_4.3.ppc64le                132/210 
+  Verifying        : libsepol-2.9-3.el8.ppc64le                         133/210 
+  Verifying        : libsepol-2.9-2.el8.ppc64le                         134/210 
+  Verifying        : libgcc-8.5.0-4.el8_5.ppc64le                       135/210 
+  Verifying        : libgcc-8.4.1-1.el8.ppc64le                         136/210 
+  Verifying        : python3-dnf-plugins-core-4.0.21-3.el8.noarch       137/210 
+  Verifying        : python3-dnf-plugins-core-4.0.18-4.el8.noarch       138/210 
+  Verifying        : usermode-1.113-2.el8.ppc64le                       139/210 
+  Verifying        : usermode-1.113-1.el8.ppc64le                       140/210 
+  Verifying        : libgcrypt-1.8.5-6.el8.ppc64le                      141/210 
+  Verifying        : libgcrypt-1.8.5-4.el8.ppc64le                      142/210 
+  Verifying        : pcre-8.42-6.el8.ppc64le                            143/210 
+  Verifying        : pcre-8.42-4.el8.ppc64le                            144/210 
+  Verifying        : libmount-2.32.1-28.el8.ppc64le                     145/210 
+  Verifying        : libmount-2.32.1-27.el8.ppc64le                     146/210 
+  Verifying        : rdma-core-35.0-1.el8.ppc64le                       147/210 
+  Verifying        : rdma-core-32.0-4.el8.ppc64le                       148/210 
+  Verifying        : keyutils-libs-1.5.10-9.el8.ppc64le                 149/210 
+  Verifying        : keyutils-libs-1.5.10-6.el8.ppc64le                 150/210 
+  Verifying        : crypto-policies-scripts-20210617-1.gitc776d3e.el   151/210 
+  Verifying        : crypto-policies-scripts-20210209-1.gitbfb6bed.el   152/210 
+  Verifying        : tpm2-tss-2.3.2-4.el8.ppc64le                       153/210 
+  Verifying        : tpm2-tss-2.3.2-3.el8.ppc64le                       154/210 
+  Verifying        : shadow-utils-2:4.6-14.el8.ppc64le                  155/210 
+  Verifying        : shadow-utils-2:4.6-12.el8.ppc64le                  156/210 
+  Verifying        : libcap-2.26-5.el8.ppc64le                          157/210 
+  Verifying        : libcap-2.26-4.el8.ppc64le                          158/210 
+  Verifying        : bash-4.4.20-2.el8.ppc64le                          159/210 
+  Verifying        : bash-4.4.20-1.el8_4.ppc64le                        160/210 
+  Verifying        : filesystem-3.8-6.el8.ppc64le                       161/210 
+  Verifying        : filesystem-3.8-3.el8.ppc64le                       162/210 
+  Verifying        : coreutils-single-8.30-12.el8.ppc64le               163/210 
+  Verifying        : coreutils-single-8.30-8.el8.ppc64le                164/210 
+  Verifying        : device-mapper-8:1.02.177-10.el8.ppc64le            165/210 
+  Verifying        : device-mapper-8:1.02.175-5.el8.ppc64le             166/210 
+  Verifying        : elfutils-default-yama-scope-0.185-1.el8.noarch     167/210 
+  Verifying        : elfutils-default-yama-scope-0.182-3.el8.noarch     168/210 
+  Verifying        : pam-1.3.1-15.el8.ppc64le                           169/210 
+  Verifying        : pam-1.3.1-14.el8.ppc64le                           170/210 
+  Verifying        : python3-dnf-4.7.0-4.el8.noarch                     171/210 
+  Verifying        : python3-dnf-4.4.2-11.el8.noarch                    172/210 
+  Verifying        : glibc-minimal-langpack-2.28-164.el8.ppc64le        173/210 
+  Verifying        : glibc-minimal-langpack-2.28-151.el8.ppc64le        174/210 
+  Verifying        : libcom_err-1.45.6-2.el8.ppc64le                    175/210 
+  Verifying        : libcom_err-1.45.6-1.el8.ppc64le                    176/210 
+  Verifying        : python3-libdnf-0.63.0-3.el8.ppc64le                177/210 
+  Verifying        : python3-libdnf-0.55.0-7.el8.ppc64le                178/210 
+  Verifying        : python3-rpm-4.14.3-19.el8.ppc64le                  179/210 
+  Verifying        : python3-rpm-4.14.3-14.el8_4.ppc64le                180/210 
+  Verifying        : openldap-2.4.46-18.el8.ppc64le                     181/210 
+  Verifying        : openldap-2.4.46-17.el8_4.ppc64le                   182/210 
+  Verifying        : libssh-config-0.9.4-3.el8.noarch                   183/210 
+  Verifying        : libssh-config-0.9.4-2.el8.noarch                   184/210 
+  Verifying        : python3-gpg-1.13.1-9.el8.ppc64le                   185/210 
+  Verifying        : python3-gpg-1.13.1-7.el8.ppc64le                   186/210 
+  Verifying        : libdnf-0.63.0-3.el8.ppc64le                        187/210 
+  Verifying        : libdnf-0.55.0-7.el8.ppc64le                        188/210 
+  Verifying        : dnf-plugin-subscription-manager-1.28.21-3.el8.pp   189/210 
+  Verifying        : dnf-plugin-subscription-manager-1.28.13-4.el8_4.   190/210 
+  Verifying        : python3-syspurpose-1.28.21-3.el8.ppc64le           191/210 
+  Verifying        : python3-syspurpose-1.28.13-4.el8_4.ppc64le         192/210 
+  Verifying        : libssh-0.9.4-3.el8.ppc64le                         193/210 
+  Verifying        : libssh-0.9.4-2.el8.ppc64le                         194/210 
+  Verifying        : chkconfig-1.19.1-1.el8.ppc64le                     195/210 
+  Verifying        : chkconfig-1.13-2.el8.ppc64le                       196/210 
+  Verifying        : vim-minimal-2:8.0.1763-16.el8.ppc64le              197/210 
+  Verifying        : vim-minimal-2:8.0.1763-15.el8.ppc64le              198/210 
+  Verifying        : python3-libs-3.6.8-41.el8.ppc64le                  199/210 
+  Verifying        : python3-libs-3.6.8-38.el8_4.ppc64le                200/210 
+  Verifying        : tzdata-2021e-1.el8.noarch                          201/210 
+  Verifying        : tzdata-2021a-1.el8.noarch                          202/210 
+  Verifying        : dbus-common-1:1.12.8-14.el8.noarch                 203/210 
+  Verifying        : dbus-common-1:1.12.8-12.el8_4.2.noarch             204/210 
+  Verifying        : dnf-4.7.0-4.el8.noarch                             205/210 
+  Verifying        : dnf-4.4.2-11.el8.noarch                            206/210 
+  Verifying        : sqlite-libs-3.26.0-15.el8.ppc64le                  207/210 
+  Verifying        : sqlite-libs-3.26.0-13.el8.ppc64le                  208/210 
+  Verifying        : gdb-gdbserver-8.2-16.el8.ppc64le                   209/210 
+  Verifying        : gdb-gdbserver-8.2-15.el8.ppc64le                   210/210 
+Installed products updated.
+
+Upgraded:
+  bash-4.4.20-2.el8.ppc64le                                                     
+  chkconfig-1.19.1-1.el8.ppc64le                                                
+  coreutils-single-8.30-12.el8.ppc64le                                          
+  crypto-policies-20210617-1.gitc776d3e.el8.noarch                              
+  crypto-policies-scripts-20210617-1.gitc776d3e.el8.noarch                      
+  curl-7.61.1-22.el8.ppc64le                                                    
+  dbus-1:1.12.8-14.el8.ppc64le                                                  
+  dbus-common-1:1.12.8-14.el8.noarch                                            
+  dbus-daemon-1:1.12.8-14.el8.ppc64le                                           
+  dbus-libs-1:1.12.8-14.el8.ppc64le                                             
+  dbus-tools-1:1.12.8-14.el8.ppc64le                                            
+  device-mapper-8:1.02.177-10.el8.ppc64le                                       
+  device-mapper-libs-8:1.02.177-10.el8.ppc64le                                  
+  dnf-4.7.0-4.el8.noarch                                                        
+  dnf-data-4.7.0-4.el8.noarch                                                   
+  dnf-plugin-subscription-manager-1.28.21-3.el8.ppc64le                         
+  elfutils-default-yama-scope-0.185-1.el8.noarch                                
+  elfutils-libelf-0.185-1.el8.ppc64le                                           
+  elfutils-libs-0.185-1.el8.ppc64le                                             
+  file-libs-5.33-20.el8.ppc64le                                                 
+  filesystem-3.8-6.el8.ppc64le                                                  
+  gdb-gdbserver-8.2-16.el8.ppc64le                                              
+  glib2-2.56.4-156.el8.ppc64le                                                  
+  glibc-2.28-164.el8.ppc64le                                                    
+  glibc-common-2.28-164.el8.ppc64le                                             
+  glibc-minimal-langpack-2.28-164.el8.ppc64le                                   
+  gnutls-3.6.16-4.el8.ppc64le                                                   
+  gpgme-1.13.1-9.el8.ppc64le                                                    
+  hwdata-0.314-8.10.el8.noarch                                                  
+  iptables-libs-1.8.4-20.el8.ppc64le                                            
+  json-c-0.13.1-2.el8.ppc64le                                                   
+  keyutils-libs-1.5.10-9.el8.ppc64le                                            
+  kmod-libs-25-18.el8.ppc64le                                                   
+  krb5-libs-1.18.2-14.el8.ppc64le                                               
+  libblkid-2.32.1-28.el8.ppc64le                                                
+  libcap-2.26-5.el8.ppc64le                                                     
+  libcap-ng-0.7.11-1.el8.ppc64le                                                
+  libcom_err-1.45.6-2.el8.ppc64le                                               
+  libcomps-0.1.16-2.el8.ppc64le                                                 
+  libcurl-7.61.1-22.el8.ppc64le                                                 
+  libdnf-0.63.0-3.el8.ppc64le                                                   
+  libfdisk-2.32.1-28.el8.ppc64le                                                
+  libgcc-8.5.0-4.el8_5.ppc64le                                                  
+  libgcrypt-1.8.5-6.el8.ppc64le                                                 
+  libibverbs-35.0-1.el8.ppc64le                                                 
+  libmodulemd-2.13.0-1.el8.ppc64le                                              
+  libmount-2.32.1-28.el8.ppc64le                                                
+  librepo-1.14.0-2.el8.ppc64le                                                  
+  libsepol-2.9-3.el8.ppc64le                                                    
+  libsmartcols-2.32.1-28.el8.ppc64le                                            
+  libsolv-0.7.19-1.el8.ppc64le                                                  
+  libssh-0.9.4-3.el8.ppc64le                                                    
+  libssh-config-0.9.4-3.el8.noarch                                              
+  libstdc++-8.5.0-4.el8_5.ppc64le                                               
+  libtirpc-1.1.4-5.el8.ppc64le                                                  
+  libuuid-2.32.1-28.el8.ppc64le                                                 
+  libxcrypt-4.1.1-6.el8.ppc64le                                                 
+  lua-libs-5.3.4-12.el8.ppc64le                                                 
+  ncurses-base-6.1-9.20180224.el8.noarch                                        
+  ncurses-libs-6.1-9.20180224.el8.ppc64le                                       
+  nettle-3.4.1-7.el8.ppc64le                                                    
+  openldap-2.4.46-18.el8.ppc64le                                                
+  openssl-libs-1:1.1.1k-5.el8_5.ppc64le                                         
+  pam-1.3.1-15.el8.ppc64le                                                      
+  pcre-8.42-6.el8.ppc64le                                                       
+  platform-python-3.6.8-41.el8.ppc64le                                          
+  python3-dnf-4.7.0-4.el8.noarch                                                
+  python3-dnf-plugins-core-4.0.21-3.el8.noarch                                  
+  python3-gpg-1.13.1-9.el8.ppc64le                                              
+  python3-hawkey-0.63.0-3.el8.ppc64le                                           
+  python3-libcomps-0.1.16-2.el8.ppc64le                                         
+  python3-libdnf-0.63.0-3.el8.ppc64le                                           
+  python3-librepo-1.14.0-2.el8.ppc64le                                          
+  python3-libs-3.6.8-41.el8.ppc64le                                             
+  python3-pip-wheel-9.0.3-20.el8.noarch                                         
+  python3-rpm-4.14.3-19.el8.ppc64le                                             
+  python3-subscription-manager-rhsm-1.28.21-3.el8.ppc64le                       
+  python3-syspurpose-1.28.21-3.el8.ppc64le                                      
+  rdma-core-35.0-1.el8.ppc64le                                                  
+  redhat-release-8.5-0.8.el8.ppc64le                                            
+  rpm-4.14.3-19.el8.ppc64le                                                     
+  rpm-build-libs-4.14.3-19.el8.ppc64le                                          
+  rpm-libs-4.14.3-19.el8.ppc64le                                                
+  shadow-utils-2:4.6-14.el8.ppc64le                                             
+  sqlite-libs-3.26.0-15.el8.ppc64le                                             
+  subscription-manager-1.28.21-3.el8.ppc64le                                    
+  subscription-manager-rhsm-certificates-1.28.21-3.el8.ppc64le                  
+  systemd-239-51.el8_5.3.ppc64le                                                
+  systemd-libs-239-51.el8_5.3.ppc64le                                           
+  systemd-pam-239-51.el8_5.3.ppc64le                                            
+  tpm2-tss-2.3.2-4.el8.ppc64le                                                  
+  tzdata-2021e-1.el8.noarch                                                     
+  usermode-1.113-2.el8.ppc64le                                                  
+  util-linux-2.32.1-28.el8.ppc64le                                              
+  vim-minimal-2:8.0.1763-16.el8.ppc64le                                         
+  virt-what-1.18-12.el8.ppc64le                                                 
+  which-2.21-16.el8.ppc64le                                                     
+  yum-4.7.0-4.el8.noarch                                                        
+Installed:
+  diffutils-3.6-6.el8.ppc64le                                                   
+  glibc-langpack-en-2.28-164.el8.ppc64le                                        
+  libevent-2.1.8-5.el8.ppc64le                                                  
+  libxkbcommon-0.9.1-1.el8.ppc64le                                              
+  openssl-1:1.1.1k-5.el8_5.ppc64le                                              
+  openssl-pkcs11-0.4.10-2.el8.ppc64le                                           
+  platform-python-pip-9.0.3-20.el8.noarch                                       
+  python3-cloud-what-1.28.21-3.el8.ppc64le                                      
+  python3-unbound-1.7.3-17.el8.ppc64le                                          
+  shared-mime-info-1.9-3.el8.ppc64le                                            
+  trousers-0.3.15-1.el8.ppc64le                                                 
+  trousers-lib-0.3.15-1.el8.ppc64le                                             
+  unbound-libs-1.7.3-17.el8.ppc64le                                             
+  xkeyboard-config-2.28-1.el8.noarch                                            
+
+Complete!
+Updating Subscription Management repositories.
+Unable to read consumer identity
+
+This system is not registered with an entitlement server. You can use subscription-manager to register.
+
+Last metadata expiration check: 0:01:16 ago on Fri Jan 28 11:50:48 2022.
+Package curl-7.61.1-22.el8.ppc64le is already installed.
+Package openssl-1:1.1.1k-5.el8_5.ppc64le is already installed.
+Dependencies resolved.
+=================================================================================================
+ Package                  Arch     Version                                 Repository        Size
+=================================================================================================
+Installing:
+ gcc-c++                  ppc64le  8.5.0-4.el8_5                           ubi-8-appstream   13 M
+ git                      ppc64le  2.27.0-1.el8                            ubi-8-appstream  164 k
+ make                     ppc64le  1:4.2.1-10.el8                          ubi-8-baseos     504 k
+ openssl-devel            ppc64le  1:1.1.1k-5.el8_5                        ubi-8-baseos     2.3 M
+ python36                 ppc64le  3.6.8-38.module+el8.5.0+12207+5c5719bc  ubi-8-appstream   19 k
+ wget                     ppc64le  1.19.5-10.el8                           ubi-8-appstream  748 k
+Installing dependencies:
+ binutils                 ppc64le  2.30-108.el8_5.1                        ubi-8-baseos     6.5 M
+ cpp                      ppc64le  8.5.0-4.el8_5                           ubi-8-appstream   11 M
+ emacs-filesystem         noarch   1:26.1-7.el8                            ubi-8-baseos      70 k
+ gcc                      ppc64le  8.5.0-4.el8_5                           ubi-8-appstream   21 M
+ git-core                 ppc64le  2.27.0-1.el8                            ubi-8-appstream   14 M
+ git-core-doc             noarch   2.27.0-1.el8                            ubi-8-appstream  2.5 M
+ glibc-devel              ppc64le  2.28-164.el8                            ubi-8-baseos     1.0 M
+ glibc-headers            ppc64le  2.28-164.el8                            ubi-8-baseos     478 k
+ groff-base               ppc64le  1.22.3-18.el8                           ubi-8-baseos     1.0 M
+ isl                      ppc64le  0.16.1-6.el8                            ubi-8-appstream  1.2 M
+ kernel-headers           ppc64le  4.18.0-348.12.2.el8_5                   ubi-8-baseos     8.2 M
+ keyutils-libs-devel      ppc64le  1.5.10-9.el8                            ubi-8-baseos      48 k
+ krb5-devel               ppc64le  1.18.2-14.el8                           ubi-8-baseos     561 k
+ less                     ppc64le  530-1.el8                               ubi-8-baseos     176 k
+ libasan                  ppc64le  8.5.0-4.el8_5                           ubi-8-baseos     437 k
+ libatomic                ppc64le  8.5.0-4.el8_5                           ubi-8-baseos      24 k
+ libcom_err-devel         ppc64le  1.45.6-2.el8                            ubi-8-baseos      38 k
+ libedit                  ppc64le  3.1-23.20170329cvs.el8                  ubi-8-baseos     110 k
+ libgomp                  ppc64le  8.5.0-4.el8_5                           ubi-8-baseos     211 k
+ libkadm5                 ppc64le  1.18.2-14.el8                           ubi-8-baseos     191 k
+ libmetalink              ppc64le  0.1.3-7.el8                             ubi-8-baseos      36 k
+ libmpc                   ppc64le  1.1.0-9.1.el8                           ubi-8-appstream   65 k
+ libpkgconf               ppc64le  1.4.2-1.el8                             ubi-8-baseos      38 k
+ libselinux-devel         ppc64le  2.9-5.el8                               ubi-8-baseos     200 k
+ libsepol-devel           ppc64le  2.9-3.el8                               ubi-8-baseos      87 k
+ libstdc++-devel          ppc64le  8.5.0-4.el8_5                           ubi-8-appstream  2.1 M
+ libubsan                 ppc64le  8.5.0-4.el8_5                           ubi-8-baseos     163 k
+ libverto-devel           ppc64le  0.3.0-5.el8                             ubi-8-baseos      18 k
+ libxcrypt-devel          ppc64le  4.1.1-6.el8                             ubi-8-baseos      25 k
+ ncurses                  ppc64le  6.1-9.20180224.el8                      ubi-8-baseos     393 k
+ openssh                  ppc64le  8.0p1-10.el8                            ubi-8-baseos     520 k
+ openssh-clients          ppc64le  8.0p1-10.el8                            ubi-8-baseos     687 k
+ pcre2-devel              ppc64le  10.32-2.el8                             ubi-8-baseos     605 k
+ pcre2-utf16              ppc64le  10.32-2.el8                             ubi-8-baseos     219 k
+ pcre2-utf32              ppc64le  10.32-2.el8                             ubi-8-baseos     213 k
+ perl-Carp                noarch   1.42-396.el8                            ubi-8-baseos      30 k
+ perl-Data-Dumper         ppc64le  2.167-399.el8                           ubi-8-baseos      59 k
+ perl-Digest              noarch   1.17-395.el8                            ubi-8-appstream   27 k
+ perl-Digest-MD5          ppc64le  2.55-396.el8                            ubi-8-appstream   38 k
+ perl-Encode              ppc64le  4:2.97-3.el8                            ubi-8-baseos     1.5 M
+ perl-Errno               ppc64le  1.28-420.el8                            ubi-8-baseos      76 k
+ perl-Error               noarch   1:0.17025-2.el8                         ubi-8-appstream   46 k
+ perl-Exporter            noarch   5.72-396.el8                            ubi-8-baseos      34 k
+ perl-File-Path           noarch   2.15-2.el8                              ubi-8-baseos      38 k
+ perl-File-Temp           noarch   0.230.600-1.el8                         ubi-8-baseos      63 k
+ perl-Getopt-Long         noarch   1:2.50-4.el8                            ubi-8-baseos      63 k
+ perl-Git                 noarch   2.27.0-1.el8                            ubi-8-appstream   78 k
+ perl-HTTP-Tiny           noarch   0.074-1.el8                             ubi-8-baseos      58 k
+ perl-IO                  ppc64le  1.38-420.el8                            ubi-8-baseos     143 k
+ perl-MIME-Base64         ppc64le  3.15-396.el8                            ubi-8-baseos      31 k
+ perl-Net-SSLeay          ppc64le  1.88-1.module+el8.3.0+6446+594cad75     ubi-8-appstream  381 k
+ perl-PathTools           ppc64le  3.74-1.el8                              ubi-8-baseos      91 k
+ perl-Pod-Escapes         noarch   1:1.07-395.el8                          ubi-8-baseos      20 k
+ perl-Pod-Perldoc         noarch   3.28-396.el8                            ubi-8-baseos      88 k
+ perl-Pod-Simple          noarch   1:3.35-395.el8                          ubi-8-baseos     213 k
+ perl-Pod-Usage           noarch   4:1.69-395.el8                          ubi-8-baseos      34 k
+ perl-Scalar-List-Utils   ppc64le  3:1.49-2.el8                            ubi-8-baseos      71 k
+ perl-Socket              ppc64le  4:2.027-3.el8                           ubi-8-baseos      59 k
+ perl-Storable            ppc64le  1:3.11-3.el8                            ubi-8-baseos     100 k
+ perl-Term-ANSIColor      noarch   4.06-396.el8                            ubi-8-baseos      46 k
+ perl-Term-Cap            noarch   1.17-395.el8                            ubi-8-baseos      23 k
+ perl-TermReadKey         ppc64le  2.37-7.el8                              ubi-8-appstream   42 k
+ perl-Text-ParseWords     noarch   3.30-395.el8                            ubi-8-baseos      18 k
+ perl-Text-Tabs+Wrap      noarch   2013.0523-395.el8                       ubi-8-baseos      24 k
+ perl-Time-Local          noarch   1:1.280-1.el8                           ubi-8-baseos      34 k
+ perl-URI                 noarch   1.73-3.el8                              ubi-8-appstream  116 k
+ perl-Unicode-Normalize   ppc64le  1.25-396.el8                            ubi-8-baseos      80 k
+ perl-constant            noarch   1.33-396.el8                            ubi-8-baseos      25 k
+ perl-interpreter         ppc64le  4:5.26.3-420.el8                        ubi-8-baseos     6.3 M
+ perl-libnet              noarch   3.11-3.el8                              ubi-8-appstream  121 k
+ perl-libs                ppc64le  4:5.26.3-420.el8                        ubi-8-baseos     1.6 M
+ perl-macros              ppc64le  4:5.26.3-420.el8                        ubi-8-baseos      72 k
+ perl-parent              noarch   1:0.237-1.el8                           ubi-8-baseos      20 k
+ perl-podlators           noarch   4.11-1.el8                              ubi-8-baseos     118 k
+ perl-threads             ppc64le  1:2.21-2.el8                            ubi-8-baseos      62 k
+ perl-threads-shared      ppc64le  1.58-2.el8                              ubi-8-baseos      49 k
+ pkgconf                  ppc64le  1.4.2-1.el8                             ubi-8-baseos      39 k
+ pkgconf-m4               noarch   1.4.2-1.el8                             ubi-8-baseos      17 k
+ pkgconf-pkg-config       ppc64le  1.4.2-1.el8                             ubi-8-baseos      15 k
+ python3-pip              noarch   9.0.3-20.el8                            ubi-8-appstream   20 k
+ python3-setuptools       noarch   39.2.0-6.el8                            ubi-8-baseos     163 k
+ zlib-devel               ppc64le  1.2.11-17.el8                           ubi-8-baseos      58 k
+Installing weak dependencies:
+ perl-IO-Socket-IP        noarch   0.39-5.el8                              ubi-8-appstream   47 k
+ perl-IO-Socket-SSL       noarch   2.066-4.module+el8.3.0+6446+594cad75    ubi-8-appstream  298 k
+ perl-Mozilla-CA          noarch   20160104-7.module+el8.3.0+6498+9eecfe51 ubi-8-appstream   15 k
+Enabling module streams:
+ perl                              5.26                                                          
+ perl-IO-Socket-SSL                2.066                                                         
+ perl-libwww-perl                  6.34                                                          
+ python36                          3.6                                                           
+
+Transaction Summary
+=================================================================================================
+Install  91 Packages
+
+Total download size: 103 M
+Installed size: 290 M
+Downloading Packages:
+(1/91): libxcrypt-devel-4.1.1-6.el8.ppc64le.rpm  75 kB/s |  25 kB     00:00    
+(2/91): libgomp-8.5.0-4.el8_5.ppc64le.rpm       794 kB/s | 211 kB     00:00    
+(3/91): libverto-devel-0.3.0-5.el8.ppc64le.rpm  215 kB/s |  18 kB     00:00    
+(4/91): perl-Encode-2.97-3.el8.ppc64le.rpm      2.0 MB/s | 1.5 MB     00:00    
+(5/91): openssl-devel-1.1.1k-5.el8_5.ppc64le.rp 3.1 MB/s | 2.3 MB     00:00    
+(6/91): perl-Term-ANSIColor-4.06-396.el8.noarch 555 kB/s |  46 kB     00:00    
+(7/91): perl-Pod-Simple-3.35-395.el8.noarch.rpm 1.7 MB/s | 213 kB     00:00    
+(8/91): libselinux-devel-2.9-5.el8.ppc64le.rpm  2.4 MB/s | 200 kB     00:00    
+(9/91): perl-Errno-1.28-420.el8.ppc64le.rpm     916 kB/s |  76 kB     00:00    
+(10/91): libatomic-8.5.0-4.el8_5.ppc64le.rpm    124 kB/s |  24 kB     00:00    
+(11/91): zlib-devel-1.2.11-17.el8.ppc64le.rpm   345 kB/s |  58 kB     00:00    
+(12/91): libcom_err-devel-1.45.6-2.el8.ppc64le. 461 kB/s |  38 kB     00:00    
+(13/91): perl-Storable-3.11-3.el8.ppc64le.rpm   1.2 MB/s | 100 kB     00:00    
+(14/91): krb5-devel-1.18.2-14.el8.ppc64le.rpm   2.7 MB/s | 561 kB     00:00    
+(15/91): libpkgconf-1.4.2-1.el8.ppc64le.rpm     463 kB/s |  38 kB     00:00    
+(16/91): perl-HTTP-Tiny-0.074-1.el8.noarch.rpm  701 kB/s |  58 kB     00:00    
+(17/91): binutils-2.30-108.el8_5.1.ppc64le.rpm   12 MB/s | 6.5 MB     00:00    
+(18/91): perl-Pod-Escapes-1.07-395.el8.noarch.r 274 kB/s |  20 kB     00:00    
+(19/91): groff-base-1.22.3-18.el8.ppc64le.rpm   4.5 MB/s | 1.0 MB     00:00    
+(20/91): perl-Pod-Perldoc-3.28-396.el8.noarch.r 1.0 MB/s |  88 kB     00:00    
+(21/91): openssh-8.0p1-10.el8.ppc64le.rpm       4.7 MB/s | 520 kB     00:00    
+(22/91): perl-MIME-Base64-3.15-396.el8.ppc64le. 344 kB/s |  31 kB     00:00    
+(23/91): pkgconf-pkg-config-1.4.2-1.el8.ppc64le 183 kB/s |  15 kB     00:00    
+(24/91): ncurses-6.1-9.20180224.el8.ppc64le.rpm 4.6 MB/s | 393 kB     00:00    
+(25/91): libubsan-8.5.0-4.el8_5.ppc64le.rpm     1.9 MB/s | 163 kB     00:00    
+(26/91): perl-File-Path-2.15-2.el8.noarch.rpm   459 kB/s |  38 kB     00:00    
+(27/91): perl-threads-shared-1.58-2.el8.ppc64le 536 kB/s |  49 kB     00:00    
+(28/91): make-4.2.1-10.el8.ppc64le.rpm          3.1 MB/s | 504 kB     00:00    
+(29/91): perl-macros-5.26.3-420.el8.ppc64le.rpm 865 kB/s |  72 kB     00:00    
+(30/91): perl-parent-0.237-1.el8.noarch.rpm     239 kB/s |  20 kB     00:00    
+(31/91): pkgconf-m4-1.4.2-1.el8.noarch.rpm      206 kB/s |  17 kB     00:00    
+(32/91): emacs-filesystem-26.1-7.el8.noarch.rpm 838 kB/s |  70 kB     00:00    
+(33/91): perl-interpreter-5.26.3-420.el8.ppc64l  16 MB/s | 6.3 MB     00:00    
+(34/91): pcre2-devel-10.32-2.el8.ppc64le.rpm    6.5 MB/s | 605 kB     00:00    
+(35/91): perl-libs-5.26.3-420.el8.ppc64le.rpm   8.3 MB/s | 1.6 MB     00:00    
+(36/91): glibc-devel-2.28-164.el8.ppc64le.rpm   4.6 MB/s | 1.0 MB     00:00    
+(37/91): pcre2-utf32-10.32-2.el8.ppc64le.rpm    2.5 MB/s | 213 kB     00:00    
+(38/91): perl-Text-Tabs+Wrap-2013.0523-395.el8. 291 kB/s |  24 kB     00:00    
+(39/91): pcre2-utf16-10.32-2.el8.ppc64le.rpm    2.3 MB/s | 219 kB     00:00    
+(40/91): perl-Getopt-Long-2.50-4.el8.noarch.rpm 756 kB/s |  63 kB     00:00    
+(41/91): libsepol-devel-2.9-3.el8.ppc64le.rpm   1.0 MB/s |  87 kB     00:00    
+(42/91): less-530-1.el8.ppc64le.rpm             2.1 MB/s | 176 kB     00:00    
+(43/91): perl-Unicode-Normalize-1.25-396.el8.pp 965 kB/s |  80 kB     00:00    
+(44/91): perl-podlators-4.11-1.el8.noarch.rpm   1.4 MB/s | 118 kB     00:00    
+(45/91): perl-Time-Local-1.280-1.el8.noarch.rpm 403 kB/s |  34 kB     00:00    
+(46/91): perl-Carp-1.42-396.el8.noarch.rpm      362 kB/s |  30 kB     00:00    
+(47/91): perl-Exporter-5.72-396.el8.noarch.rpm  454 kB/s |  34 kB     00:00    
+(48/91): python3-setuptools-39.2.0-6.el8.noarch 1.7 MB/s | 163 kB     00:00    
+(49/91): glibc-headers-2.28-164.el8.ppc64le.rpm 4.7 MB/s | 478 kB     00:00    
+(50/91): perl-Text-ParseWords-3.30-395.el8.noar 196 kB/s |  18 kB     00:00    
+(51/91): perl-PathTools-3.74-1.el8.ppc64le.rpm  994 kB/s |  91 kB     00:00    
+(52/91): perl-IO-1.38-420.el8.ppc64le.rpm       1.7 MB/s | 143 kB     00:00    
+(53/91): libkadm5-1.18.2-14.el8.ppc64le.rpm     2.0 MB/s | 191 kB     00:00    
+(54/91): keyutils-libs-devel-1.5.10-9.el8.ppc64 579 kB/s |  48 kB     00:00    
+(55/91): perl-Scalar-List-Utils-1.49-2.el8.ppc6 850 kB/s |  71 kB     00:00    
+(56/91): pkgconf-1.4.2-1.el8.ppc64le.rpm        464 kB/s |  39 kB     00:00    
+(57/91): libmetalink-0.1.3-7.el8.ppc64le.rpm    433 kB/s |  36 kB     00:00    
+(58/91): perl-File-Temp-0.230.600-1.el8.noarch. 754 kB/s |  63 kB     00:00    
+(59/91): perl-constant-1.33-396.el8.noarch.rpm  305 kB/s |  25 kB     00:00    
+(60/91): perl-threads-2.21-2.el8.ppc64le.rpm    741 kB/s |  62 kB     00:00    
+(61/91): perl-Term-Cap-1.17-395.el8.noarch.rpm  274 kB/s |  23 kB     00:00    
+(62/91): kernel-headers-4.18.0-348.12.2.el8_5.p  15 MB/s | 8.2 MB     00:00    
+(63/91): openssh-clients-8.0p1-10.el8.ppc64le.r 4.2 MB/s | 687 kB     00:00    
+(64/91): libedit-3.1-23.20170329cvs.el8.ppc64le 1.3 MB/s | 110 kB     00:00    
+(65/91): libasan-8.5.0-4.el8_5.ppc64le.rpm      2.7 MB/s | 437 kB     00:00    
+(66/91): perl-Pod-Usage-1.69-395.el8.noarch.rpm 414 kB/s |  34 kB     00:00    
+(67/91): perl-Socket-2.027-3.el8.ppc64le.rpm    714 kB/s |  59 kB     00:00    
+(68/91): perl-Data-Dumper-2.167-399.el8.ppc64le 703 kB/s |  59 kB     00:00    
+(69/91): perl-TermReadKey-2.37-7.el8.ppc64le.rp 371 kB/s |  42 kB     00:00    
+(70/91): perl-Error-0.17025-2.el8.noarch.rpm    369 kB/s |  46 kB     00:00    
+(71/91): perl-Digest-1.17-395.el8.noarch.rpm    325 kB/s |  27 kB     00:00    
+(72/91): git-core-doc-2.27.0-1.el8.noarch.rpm   8.0 MB/s | 2.5 MB     00:00    
+(73/91): isl-0.16.1-6.el8.ppc64le.rpm           7.2 MB/s | 1.2 MB     00:00    
+(74/91): git-2.27.0-1.el8.ppc64le.rpm           1.9 MB/s | 164 kB     00:00    
+(75/91): libmpc-1.1.0-9.1.el8.ppc64le.rpm       783 kB/s |  65 kB     00:00    
+(76/91): perl-URI-1.73-3.el8.noarch.rpm         1.4 MB/s | 116 kB     00:00    
+(77/91): perl-Digest-MD5-2.55-396.el8.ppc64le.r 457 kB/s |  38 kB     00:00    
+(78/91): perl-IO-Socket-SSL-2.066-4.module+el8. 3.5 MB/s | 298 kB     00:00    
+(79/91): perl-Git-2.27.0-1.el8.noarch.rpm       933 kB/s |  78 kB     00:00    
+(80/91): perl-Mozilla-CA-20160104-7.module+el8. 206 kB/s |  15 kB     00:00    
+(81/91): perl-IO-Socket-IP-0.39-5.el8.noarch.rp 564 kB/s |  47 kB     00:00    
+(82/91): wget-1.19.5-10.el8.ppc64le.rpm         8.0 MB/s | 748 kB     00:00    
+(83/91): perl-Net-SSLeay-1.88-1.module+el8.3.0+ 3.4 MB/s | 381 kB     00:00    
+(84/91): perl-libnet-3.11-3.el8.noarch.rpm      1.4 MB/s | 121 kB     00:00    
+(85/91): python36-3.6.8-38.module+el8.5.0+12207 233 kB/s |  19 kB     00:00    
+(86/91): git-core-2.27.0-1.el8.ppc64le.rpm       22 MB/s |  14 MB     00:00    
+(87/91): cpp-8.5.0-4.el8_5.ppc64le.rpm           18 MB/s |  11 MB     00:00    
+(88/91): gcc-c++-8.5.0-4.el8_5.ppc64le.rpm       15 MB/s |  13 MB     00:00    
+(89/91): libstdc++-devel-8.5.0-4.el8_5.ppc64le. 9.5 MB/s | 2.1 MB     00:00    
+(90/91): python3-pip-9.0.3-20.el8.noarch.rpm    219 kB/s |  20 kB     00:00    
+(91/91): gcc-8.5.0-4.el8_5.ppc64le.rpm           24 MB/s |  21 MB     00:00    
+--------------------------------------------------------------------------------
+Total                                            19 MB/s | 103 MB     00:05     
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                        1/1 
+  Installing       : libmpc-1.1.0-9.1.el8.ppc64le                          1/91 
+  Installing       : cpp-8.5.0-4.el8_5.ppc64le                             2/91 
+  Running scriptlet: cpp-8.5.0-4.el8_5.ppc64le                             2/91 
+  Installing       : libstdc++-devel-8.5.0-4.el8_5.ppc64le                 3/91 
+  Installing       : isl-0.16.1-6.el8.ppc64le                              4/91 
+  Running scriptlet: isl-0.16.1-6.el8.ppc64le                              4/91 
+  Installing       : libedit-3.1-23.20170329cvs.el8.ppc64le                5/91 
+  Installing       : libasan-8.5.0-4.el8_5.ppc64le                         6/91 
+  Running scriptlet: libasan-8.5.0-4.el8_5.ppc64le                         6/91 
+  Installing       : libmetalink-0.1.3-7.el8.ppc64le                       7/91 
+  Installing       : keyutils-libs-devel-1.5.10-9.el8.ppc64le              8/91 
+  Installing       : libkadm5-1.18.2-14.el8.ppc64le                        9/91 
+  Installing       : kernel-headers-4.18.0-348.12.2.el8_5.ppc64le         10/91 
+  Running scriptlet: glibc-headers-2.28-164.el8.ppc64le                   11/91 
+  Installing       : glibc-headers-2.28-164.el8.ppc64le                   11/91 
+  Installing       : python3-setuptools-39.2.0-6.el8.noarch               12/91 
+  Installing       : python3-pip-9.0.3-20.el8.noarch                      13/91 
+  Installing       : python36-3.6.8-38.module+el8.5.0+12207+5c5719bc.pp   14/91 
+  Running scriptlet: python36-3.6.8-38.module+el8.5.0+12207+5c5719bc.pp   14/91 
+  Installing       : less-530-1.el8.ppc64le                               15/91 
+  Installing       : pcre2-utf16-10.32-2.el8.ppc64le                      16/91 
+  Installing       : pcre2-utf32-10.32-2.el8.ppc64le                      17/91 
+  Installing       : emacs-filesystem-1:26.1-7.el8.noarch                 18/91 
+  Installing       : pkgconf-m4-1.4.2-1.el8.noarch                        19/91 
+  Installing       : libubsan-8.5.0-4.el8_5.ppc64le                       20/91 
+  Running scriptlet: libubsan-8.5.0-4.el8_5.ppc64le                       20/91 
+  Installing       : ncurses-6.1-9.20180224.el8.ppc64le                   21/91 
+  Running scriptlet: openssh-8.0p1-10.el8.ppc64le                         22/91 
+  Installing       : openssh-8.0p1-10.el8.ppc64le                         22/91 
+  Installing       : openssh-clients-8.0p1-10.el8.ppc64le                 23/91 
+  Installing       : git-core-2.27.0-1.el8.ppc64le                        24/91 
+  Installing       : git-core-doc-2.27.0-1.el8.noarch                     25/91 
+  Installing       : groff-base-1.22.3-18.el8.ppc64le                     26/91 
+  Installing       : perl-Digest-1.17-395.el8.noarch                      27/91 
+  Installing       : perl-Digest-MD5-2.55-396.el8.ppc64le                 28/91 
+  Installing       : perl-Data-Dumper-2.167-399.el8.ppc64le               29/91 
+  Installing       : perl-libnet-3.11-3.el8.noarch                        30/91 
+  Installing       : perl-Net-SSLeay-1.88-1.module+el8.3.0+6446+594cad7   31/91 
+  Installing       : perl-URI-1.73-3.el8.noarch                           32/91 
+  Installing       : perl-Pod-Escapes-1:1.07-395.el8.noarch               33/91 
+  Installing       : perl-Time-Local-1:1.280-1.el8.noarch                 34/91 
+  Installing       : perl-Mozilla-CA-20160104-7.module+el8.3.0+6498+9ee   35/91 
+  Installing       : perl-IO-Socket-IP-0.39-5.el8.noarch                  36/91 
+  Installing       : perl-IO-Socket-SSL-2.066-4.module+el8.3.0+6446+594   37/91 
+  Installing       : perl-Term-ANSIColor-4.06-396.el8.noarch              38/91 
+  Installing       : perl-Term-Cap-1.17-395.el8.noarch                    39/91 
+  Installing       : perl-File-Temp-0.230.600-1.el8.noarch                40/91 
+  Installing       : perl-Pod-Simple-1:3.35-395.el8.noarch                41/91 
+  Installing       : perl-HTTP-Tiny-0.074-1.el8.noarch                    42/91 
+  Installing       : perl-podlators-4.11-1.el8.noarch                     43/91 
+  Installing       : perl-Pod-Perldoc-3.28-396.el8.noarch                 44/91 
+  Installing       : perl-Text-ParseWords-3.30-395.el8.noarch             45/91 
+  Installing       : perl-Pod-Usage-4:1.69-395.el8.noarch                 46/91 
+  Installing       : perl-Storable-1:3.11-3.el8.ppc64le                   47/91 
+  Installing       : perl-MIME-Base64-3.15-396.el8.ppc64le                48/91 
+  Installing       : perl-Getopt-Long-1:2.50-4.el8.noarch                 49/91 
+  Installing       : perl-Errno-1.28-420.el8.ppc64le                      50/91 
+  Installing       : perl-Socket-4:2.027-3.el8.ppc64le                    51/91 
+  Installing       : perl-Encode-4:2.97-3.el8.ppc64le                     52/91 
+  Installing       : perl-macros-4:5.26.3-420.el8.ppc64le                 53/91 
+  Installing       : perl-parent-1:0.237-1.el8.noarch                     54/91 
+  Installing       : perl-Carp-1.42-396.el8.noarch                        55/91 
+  Installing       : perl-Exporter-5.72-396.el8.noarch                    56/91 
+  Installing       : perl-libs-4:5.26.3-420.el8.ppc64le                   57/91 
+  Installing       : perl-Scalar-List-Utils-3:1.49-2.el8.ppc64le          58/91 
+  Installing       : perl-Text-Tabs+Wrap-2013.0523-395.el8.noarch         59/91 
+  Installing       : perl-Unicode-Normalize-1.25-396.el8.ppc64le          60/91 
+  Installing       : perl-File-Path-2.15-2.el8.noarch                     61/91 
+  Installing       : perl-PathTools-3.74-1.el8.ppc64le                    62/91 
+  Installing       : perl-constant-1.33-396.el8.noarch                    63/91 
+  Installing       : perl-threads-shared-1.58-2.el8.ppc64le               64/91 
+  Installing       : perl-threads-1:2.21-2.el8.ppc64le                    65/91 
+  Installing       : perl-IO-1.38-420.el8.ppc64le                         66/91 
+  Installing       : perl-interpreter-4:5.26.3-420.el8.ppc64le            67/91 
+  Installing       : perl-TermReadKey-2.37-7.el8.ppc64le                  68/91 
+  Installing       : perl-Error-1:0.17025-2.el8.noarch                    69/91 
+  Installing       : perl-Git-2.27.0-1.el8.noarch                         70/91 
+  Installing       : git-2.27.0-1.el8.ppc64le                             71/91 
+  Installing       : libpkgconf-1.4.2-1.el8.ppc64le                       72/91 
+  Installing       : pkgconf-1.4.2-1.el8.ppc64le                          73/91 
+  Installing       : pkgconf-pkg-config-1.4.2-1.el8.ppc64le               74/91 
+  Installing       : glibc-devel-2.28-164.el8.ppc64le                     75/91 
+  Running scriptlet: glibc-devel-2.28-164.el8.ppc64le                     75/91 
+  Installing       : libxcrypt-devel-4.1.1-6.el8.ppc64le                  76/91 
+  Installing       : libverto-devel-0.3.0-5.el8.ppc64le                   77/91 
+  Installing       : zlib-devel-1.2.11-17.el8.ppc64le                     78/91 
+  Installing       : libcom_err-devel-1.45.6-2.el8.ppc64le                79/91 
+  Installing       : pcre2-devel-10.32-2.el8.ppc64le                      80/91 
+  Installing       : libsepol-devel-2.9-3.el8.ppc64le                     81/91 
+  Installing       : libselinux-devel-2.9-5.el8.ppc64le                   82/91 
+  Installing       : krb5-devel-1.18.2-14.el8.ppc64le                     83/91 
+  Installing       : binutils-2.30-108.el8_5.1.ppc64le                    84/91 
+  Running scriptlet: binutils-2.30-108.el8_5.1.ppc64le                    84/91 
+  Installing       : libatomic-8.5.0-4.el8_5.ppc64le                      85/91 
+  Running scriptlet: libatomic-8.5.0-4.el8_5.ppc64le                      85/91 
+  Installing       : libgomp-8.5.0-4.el8_5.ppc64le                        86/91 
+  Running scriptlet: libgomp-8.5.0-4.el8_5.ppc64le                        86/91 
+  Installing       : gcc-8.5.0-4.el8_5.ppc64le                            87/91 
+  Running scriptlet: gcc-8.5.0-4.el8_5.ppc64le                            87/91 
+  Installing       : gcc-c++-8.5.0-4.el8_5.ppc64le                        88/91 
+  Installing       : openssl-devel-1:1.1.1k-5.el8_5.ppc64le               89/91 
+  Installing       : wget-1.19.5-10.el8.ppc64le                           90/91 
+  Running scriptlet: wget-1.19.5-10.el8.ppc64le                           90/91 
+  Installing       : make-1:4.2.1-10.el8.ppc64le                          91/91 
+  Running scriptlet: make-1:4.2.1-10.el8.ppc64le                          91/91 
+  Verifying        : perl-Encode-4:2.97-3.el8.ppc64le                      1/91 
+  Verifying        : libxcrypt-devel-4.1.1-6.el8.ppc64le                   2/91 
+  Verifying        : openssl-devel-1:1.1.1k-5.el8_5.ppc64le                3/91 
+  Verifying        : libgomp-8.5.0-4.el8_5.ppc64le                         4/91 
+  Verifying        : libverto-devel-0.3.0-5.el8.ppc64le                    5/91 
+  Verifying        : perl-Pod-Simple-1:3.35-395.el8.noarch                 6/91 
+  Verifying        : perl-Term-ANSIColor-4.06-396.el8.noarch               7/91 
+  Verifying        : libselinux-devel-2.9-5.el8.ppc64le                    8/91 
+  Verifying        : perl-Errno-1.28-420.el8.ppc64le                       9/91 
+  Verifying        : libatomic-8.5.0-4.el8_5.ppc64le                      10/91 
+  Verifying        : zlib-devel-1.2.11-17.el8.ppc64le                     11/91 
+  Verifying        : binutils-2.30-108.el8_5.1.ppc64le                    12/91 
+  Verifying        : krb5-devel-1.18.2-14.el8.ppc64le                     13/91 
+  Verifying        : libcom_err-devel-1.45.6-2.el8.ppc64le                14/91 
+  Verifying        : perl-Storable-1:3.11-3.el8.ppc64le                   15/91 
+  Verifying        : libpkgconf-1.4.2-1.el8.ppc64le                       16/91 
+  Verifying        : groff-base-1.22.3-18.el8.ppc64le                     17/91 
+  Verifying        : perl-HTTP-Tiny-0.074-1.el8.noarch                    18/91 
+  Verifying        : perl-Pod-Escapes-1:1.07-395.el8.noarch               19/91 
+  Verifying        : openssh-8.0p1-10.el8.ppc64le                         20/91 
+  Verifying        : perl-Pod-Perldoc-3.28-396.el8.noarch                 21/91 
+  Verifying        : perl-MIME-Base64-3.15-396.el8.ppc64le                22/91 
+  Verifying        : pkgconf-pkg-config-1.4.2-1.el8.ppc64le               23/91 
+  Verifying        : ncurses-6.1-9.20180224.el8.ppc64le                   24/91 
+  Verifying        : libubsan-8.5.0-4.el8_5.ppc64le                       25/91 
+  Verifying        : perl-File-Path-2.15-2.el8.noarch                     26/91 
+  Verifying        : perl-interpreter-4:5.26.3-420.el8.ppc64le            27/91 
+  Verifying        : make-1:4.2.1-10.el8.ppc64le                          28/91 
+  Verifying        : perl-threads-shared-1.58-2.el8.ppc64le               29/91 
+  Verifying        : perl-macros-4:5.26.3-420.el8.ppc64le                 30/91 
+  Verifying        : perl-parent-1:0.237-1.el8.noarch                     31/91 
+  Verifying        : pkgconf-m4-1.4.2-1.el8.noarch                        32/91 
+  Verifying        : emacs-filesystem-1:26.1-7.el8.noarch                 33/91 
+  Verifying        : perl-libs-4:5.26.3-420.el8.ppc64le                   34/91 
+  Verifying        : glibc-devel-2.28-164.el8.ppc64le                     35/91 
+  Verifying        : pcre2-devel-10.32-2.el8.ppc64le                      36/91 
+  Verifying        : pcre2-utf32-10.32-2.el8.ppc64le                      37/91 
+  Verifying        : perl-Text-Tabs+Wrap-2013.0523-395.el8.noarch         38/91 
+  Verifying        : pcre2-utf16-10.32-2.el8.ppc64le                      39/91 
+  Verifying        : perl-Getopt-Long-1:2.50-4.el8.noarch                 40/91 
+  Verifying        : libsepol-devel-2.9-3.el8.ppc64le                     41/91 
+  Verifying        : less-530-1.el8.ppc64le                               42/91 
+  Verifying        : perl-Unicode-Normalize-1.25-396.el8.ppc64le          43/91 
+  Verifying        : perl-podlators-4.11-1.el8.noarch                     44/91 
+  Verifying        : perl-Time-Local-1:1.280-1.el8.noarch                 45/91 
+  Verifying        : perl-Carp-1.42-396.el8.noarch                        46/91 
+  Verifying        : perl-Exporter-5.72-396.el8.noarch                    47/91 
+  Verifying        : python3-setuptools-39.2.0-6.el8.noarch               48/91 
+  Verifying        : glibc-headers-2.28-164.el8.ppc64le                   49/91 
+  Verifying        : perl-Text-ParseWords-3.30-395.el8.noarch             50/91 
+  Verifying        : perl-PathTools-3.74-1.el8.ppc64le                    51/91 
+  Verifying        : kernel-headers-4.18.0-348.12.2.el8_5.ppc64le         52/91 
+  Verifying        : perl-IO-1.38-420.el8.ppc64le                         53/91 
+  Verifying        : libkadm5-1.18.2-14.el8.ppc64le                       54/91 
+  Verifying        : keyutils-libs-devel-1.5.10-9.el8.ppc64le             55/91 
+  Verifying        : perl-Scalar-List-Utils-3:1.49-2.el8.ppc64le          56/91 
+  Verifying        : pkgconf-1.4.2-1.el8.ppc64le                          57/91 
+  Verifying        : libmetalink-0.1.3-7.el8.ppc64le                      58/91 
+  Verifying        : perl-File-Temp-0.230.600-1.el8.noarch                59/91 
+  Verifying        : perl-constant-1.33-396.el8.noarch                    60/91 
+  Verifying        : perl-threads-1:2.21-2.el8.ppc64le                    61/91 
+  Verifying        : perl-Term-Cap-1.17-395.el8.noarch                    62/91 
+  Verifying        : openssh-clients-8.0p1-10.el8.ppc64le                 63/91 
+  Verifying        : libasan-8.5.0-4.el8_5.ppc64le                        64/91 
+  Verifying        : libedit-3.1-23.20170329cvs.el8.ppc64le               65/91 
+  Verifying        : perl-Pod-Usage-4:1.69-395.el8.noarch                 66/91 
+  Verifying        : perl-Socket-4:2.027-3.el8.ppc64le                    67/91 
+  Verifying        : perl-Data-Dumper-2.167-399.el8.ppc64le               68/91 
+  Verifying        : git-core-doc-2.27.0-1.el8.noarch                     69/91 
+  Verifying        : perl-TermReadKey-2.37-7.el8.ppc64le                  70/91 
+  Verifying        : perl-Error-1:0.17025-2.el8.noarch                    71/91 
+  Verifying        : isl-0.16.1-6.el8.ppc64le                             72/91 
+  Verifying        : perl-Digest-1.17-395.el8.noarch                      73/91 
+  Verifying        : git-2.27.0-1.el8.ppc64le                             74/91 
+  Verifying        : libmpc-1.1.0-9.1.el8.ppc64le                         75/91 
+  Verifying        : perl-URI-1.73-3.el8.noarch                           76/91 
+  Verifying        : perl-Digest-MD5-2.55-396.el8.ppc64le                 77/91 
+  Verifying        : perl-IO-Socket-SSL-2.066-4.module+el8.3.0+6446+594   78/91 
+  Verifying        : perl-Git-2.27.0-1.el8.noarch                         79/91 
+  Verifying        : perl-Mozilla-CA-20160104-7.module+el8.3.0+6498+9ee   80/91 
+  Verifying        : perl-IO-Socket-IP-0.39-5.el8.noarch                  81/91 
+  Verifying        : wget-1.19.5-10.el8.ppc64le                           82/91 
+  Verifying        : perl-Net-SSLeay-1.88-1.module+el8.3.0+6446+594cad7   83/91 
+  Verifying        : perl-libnet-3.11-3.el8.noarch                        84/91 
+  Verifying        : git-core-2.27.0-1.el8.ppc64le                        85/91 
+  Verifying        : gcc-c++-8.5.0-4.el8_5.ppc64le                        86/91 
+  Verifying        : python36-3.6.8-38.module+el8.5.0+12207+5c5719bc.pp   87/91 
+  Verifying        : cpp-8.5.0-4.el8_5.ppc64le                            88/91 
+  Verifying        : gcc-8.5.0-4.el8_5.ppc64le                            89/91 
+  Verifying        : libstdc++-devel-8.5.0-4.el8_5.ppc64le                90/91 
+  Verifying        : python3-pip-9.0.3-20.el8.noarch                      91/91 
+Installed products updated.
+
+Installed:
+  binutils-2.30-108.el8_5.1.ppc64le                                             
+  cpp-8.5.0-4.el8_5.ppc64le                                                     
+  emacs-filesystem-1:26.1-7.el8.noarch                                          
+  gcc-8.5.0-4.el8_5.ppc64le                                                     
+  gcc-c++-8.5.0-4.el8_5.ppc64le                                                 
+  git-2.27.0-1.el8.ppc64le                                                      
+  git-core-2.27.0-1.el8.ppc64le                                                 
+  git-core-doc-2.27.0-1.el8.noarch                                              
+  glibc-devel-2.28-164.el8.ppc64le                                              
+  glibc-headers-2.28-164.el8.ppc64le                                            
+  groff-base-1.22.3-18.el8.ppc64le                                              
+  isl-0.16.1-6.el8.ppc64le                                                      
+  kernel-headers-4.18.0-348.12.2.el8_5.ppc64le                                  
+  keyutils-libs-devel-1.5.10-9.el8.ppc64le                                      
+  krb5-devel-1.18.2-14.el8.ppc64le                                              
+  less-530-1.el8.ppc64le                                                        
+  libasan-8.5.0-4.el8_5.ppc64le                                                 
+  libatomic-8.5.0-4.el8_5.ppc64le                                               
+  libcom_err-devel-1.45.6-2.el8.ppc64le                                         
+  libedit-3.1-23.20170329cvs.el8.ppc64le                                        
+  libgomp-8.5.0-4.el8_5.ppc64le                                                 
+  libkadm5-1.18.2-14.el8.ppc64le                                                
+  libmetalink-0.1.3-7.el8.ppc64le                                               
+  libmpc-1.1.0-9.1.el8.ppc64le                                                  
+  libpkgconf-1.4.2-1.el8.ppc64le                                                
+  libselinux-devel-2.9-5.el8.ppc64le                                            
+  libsepol-devel-2.9-3.el8.ppc64le                                              
+  libstdc++-devel-8.5.0-4.el8_5.ppc64le                                         
+  libubsan-8.5.0-4.el8_5.ppc64le                                                
+  libverto-devel-0.3.0-5.el8.ppc64le                                            
+  libxcrypt-devel-4.1.1-6.el8.ppc64le                                           
+  make-1:4.2.1-10.el8.ppc64le                                                   
+  ncurses-6.1-9.20180224.el8.ppc64le                                            
+  openssh-8.0p1-10.el8.ppc64le                                                  
+  openssh-clients-8.0p1-10.el8.ppc64le                                          
+  openssl-devel-1:1.1.1k-5.el8_5.ppc64le                                        
+  pcre2-devel-10.32-2.el8.ppc64le                                               
+  pcre2-utf16-10.32-2.el8.ppc64le                                               
+  pcre2-utf32-10.32-2.el8.ppc64le                                               
+  perl-Carp-1.42-396.el8.noarch                                                 
+  perl-Data-Dumper-2.167-399.el8.ppc64le                                        
+  perl-Digest-1.17-395.el8.noarch                                               
+  perl-Digest-MD5-2.55-396.el8.ppc64le                                          
+  perl-Encode-4:2.97-3.el8.ppc64le                                              
+  perl-Errno-1.28-420.el8.ppc64le                                               
+  perl-Error-1:0.17025-2.el8.noarch                                             
+  perl-Exporter-5.72-396.el8.noarch                                             
+  perl-File-Path-2.15-2.el8.noarch                                              
+  perl-File-Temp-0.230.600-1.el8.noarch                                         
+  perl-Getopt-Long-1:2.50-4.el8.noarch                                          
+  perl-Git-2.27.0-1.el8.noarch                                                  
+  perl-HTTP-Tiny-0.074-1.el8.noarch                                             
+  perl-IO-1.38-420.el8.ppc64le                                                  
+  perl-IO-Socket-IP-0.39-5.el8.noarch                                           
+  perl-IO-Socket-SSL-2.066-4.module+el8.3.0+6446+594cad75.noarch                
+  perl-MIME-Base64-3.15-396.el8.ppc64le                                         
+  perl-Mozilla-CA-20160104-7.module+el8.3.0+6498+9eecfe51.noarch                
+  perl-Net-SSLeay-1.88-1.module+el8.3.0+6446+594cad75.ppc64le                   
+  perl-PathTools-3.74-1.el8.ppc64le                                             
+  perl-Pod-Escapes-1:1.07-395.el8.noarch                                        
+  perl-Pod-Perldoc-3.28-396.el8.noarch                                          
+  perl-Pod-Simple-1:3.35-395.el8.noarch                                         
+  perl-Pod-Usage-4:1.69-395.el8.noarch                                          
+  perl-Scalar-List-Utils-3:1.49-2.el8.ppc64le                                   
+  perl-Socket-4:2.027-3.el8.ppc64le                                             
+  perl-Storable-1:3.11-3.el8.ppc64le                                            
+  perl-Term-ANSIColor-4.06-396.el8.noarch                                       
+  perl-Term-Cap-1.17-395.el8.noarch                                             
+  perl-TermReadKey-2.37-7.el8.ppc64le                                           
+  perl-Text-ParseWords-3.30-395.el8.noarch                                      
+  perl-Text-Tabs+Wrap-2013.0523-395.el8.noarch                                  
+  perl-Time-Local-1:1.280-1.el8.noarch                                          
+  perl-URI-1.73-3.el8.noarch                                                    
+  perl-Unicode-Normalize-1.25-396.el8.ppc64le                                   
+  perl-constant-1.33-396.el8.noarch                                             
+  perl-interpreter-4:5.26.3-420.el8.ppc64le                                     
+  perl-libnet-3.11-3.el8.noarch                                                 
+  perl-libs-4:5.26.3-420.el8.ppc64le                                            
+  perl-macros-4:5.26.3-420.el8.ppc64le                                          
+  perl-parent-1:0.237-1.el8.noarch                                              
+  perl-podlators-4.11-1.el8.noarch                                              
+  perl-threads-1:2.21-2.el8.ppc64le                                             
+  perl-threads-shared-1.58-2.el8.ppc64le                                        
+  pkgconf-1.4.2-1.el8.ppc64le                                                   
+  pkgconf-m4-1.4.2-1.el8.noarch                                                 
+  pkgconf-pkg-config-1.4.2-1.el8.ppc64le                                        
+  python3-pip-9.0.3-20.el8.noarch                                               
+  python3-setuptools-39.2.0-6.el8.noarch                                        
+  python36-3.6.8-38.module+el8.5.0+12207+5c5719bc.ppc64le                       
+  wget-1.19.5-10.el8.ppc64le                                                    
+  zlib-devel-1.2.11-17.el8.ppc64le                                              
+
+Complete!
+=> Downloading nvm from git to '/root/.nvm'
+=> => Compressing and cleaning up git repository
+
+=> Appending nvm source string to /root/.bashrc
+=> Appending bash_completion source string to /root/.bashrc
+=> Close and reopen your terminal to start using nvm or run the following to use it now:
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+Downloading and installing node v12.22.1...
+Now using node v12.22.1 (npm v6.14.12)
+Creating default alias: [0;32mdefault[0m [0;90m->[0m [0;32mv12.22.1[0m
+
+> sqlite3@5.0.2 install /home/tester/cacheable-request/node_modules/@keyv/sqlite/node_modules/sqlite3
+> node-pre-gyp install --fallback-to-build
+
+make: Entering directory '/home/tester/cacheable-request/node_modules/@keyv/sqlite/node_modules/sqlite3/build'
+  CC(target) Release/obj.target/nothing/../../../../node-addon-api/nothing.o
+  AR(target) Release/obj.target/../../../../node-addon-api/nothing.a
+  COPY Release/nothing.a
+  ACTION deps_sqlite3_gyp_action_before_build_target_unpack_sqlite_dep Release/obj/gen/sqlite-autoconf-3340000/sqlite3.c
+  TOUCH Release/obj.target/deps/action_before_build.stamp
+  CC(target) Release/obj.target/sqlite3/gen/sqlite-autoconf-3340000/sqlite3.o
+  AR(target) Release/obj.target/deps/sqlite3.a
+  COPY Release/sqlite3.a
+  CXX(target) Release/obj.target/node_sqlite3/src/backup.o
+  CXX(target) Release/obj.target/node_sqlite3/src/database.o
+  CXX(target) Release/obj.target/node_sqlite3/src/node_sqlite3.o
+  CXX(target) Release/obj.target/node_sqlite3/src/statement.o
+  SOLINK_MODULE(target) Release/obj.target/node_sqlite3.node
+  COPY Release/node_sqlite3.node
+  COPY /home/tester/cacheable-request/node_modules/@keyv/sqlite/node_modules/sqlite3/lib/binding/napi-v3-linux-ppc64/node_sqlite3.node
+  TOUCH Release/obj.target/action_after_build.stamp
+make: Leaving directory '/home/tester/cacheable-request/node_modules/@keyv/sqlite/node_modules/sqlite3/build'
+
+> sqlite3@4.2.0 install /home/tester/cacheable-request/node_modules/sqlite3
+> node-pre-gyp install --fallback-to-build
+
+make: Entering directory '/home/tester/cacheable-request/node_modules/sqlite3/build'
+  ACTION deps_sqlite3_gyp_action_before_build_target_unpack_sqlite_dep Release/obj/gen/sqlite-autoconf-3310100/sqlite3.c
+  TOUCH Release/obj.target/deps/action_before_build.stamp
+  CC(target) Release/obj.target/sqlite3/gen/sqlite-autoconf-3310100/sqlite3.o
+  AR(target) Release/obj.target/deps/sqlite3.a
+  COPY Release/sqlite3.a
+  CXX(target) Release/obj.target/node_sqlite3/src/backup.o
+  CXX(target) Release/obj.target/node_sqlite3/src/database.o
+  CXX(target) Release/obj.target/node_sqlite3/src/node_sqlite3.o
+  CXX(target) Release/obj.target/node_sqlite3/src/statement.o
+  SOLINK_MODULE(target) Release/obj.target/node_sqlite3.node
+  COPY Release/node_sqlite3.node
+  COPY /home/tester/cacheable-request/node_modules/sqlite3/lib/binding/node-v72-linux-ppc64/node_sqlite3.node
+  TOUCH Release/obj.target/action_after_build.stamp
+make: Leaving directory '/home/tester/cacheable-request/node_modules/sqlite3/build'
+
+> core-js@2.6.12 postinstall /home/tester/cacheable-request/node_modules/core-js
+> node -e "try{require('./postinstall')}catch(e){}"
+
+[96mThank you for using core-js ([94m https://github.com/zloirock/core-js [96m) for polyfilling JavaScript standard library![0m
+
+[96mThe project needs your help! Please consider supporting of core-js on Open Collective or Patreon: [0m
+[96m>[94m https://opencollective.com/core-js [0m
+[96m>[94m https://www.patreon.com/zloirock [0m
+
+[96mAlso, the author of core-js ([94m https://github.com/zloirock [96m) is looking for a good job -)[0m
+
+added 942 packages from 537 contributors and audited 944 packages in 200.915s
+
+50 packages are looking for funding
+  run `npm fund` for details
+
+found 26 vulnerabilities (18 moderate, 8 high)
+  run `npm audit fix` to fix them, or `npm audit` for details
+
+> cacheable-request@7.0.2 test /home/tester/cacheable-request
+> xo && nyc ava
+
+
+  ✔ cacheable-request-class › CacheableRequest is a function
+  ✔ cacheable-request-class › CacheableRequest cannot be invoked without 'new'
+  ✔ cacheable-request-class › CacheableRequest throws TypeError if request fn isn't passed in
+  ✔ cacheable-request-instance › cacheableRequest is a function
+  ✔ cacheable-request-instance › cacheableRequest emits RequestError if request function throws
+  ✔ cacheable-request-instance › cacheableRequest emits CacheError if cache.get errors
+  ✔ cacheable-request-instance › cacheableRequest emits CacheError if cache adapter connection errors (148ms)
+  ✔ cacheable-request-instance › cacheableRequest returns an event emitter (187ms)
+  ✔ cacheable-request-instance › cacheableRequest passes requests through if no cache option is set (186ms)
+  ✔ cacheable-request-instance › cacheableRequest accepts url as string (188ms)
+  ✔ cacheable-request-instance › cacheableRequest accepts url as URL (188ms)
+  ✔ cacheable-request-instance › cacheableRequest handles no callback parameter (189ms)
+  ✔ cacheable-request-instance › cacheableRequest emits response event for network responses (190ms)
+  ✔ cacheable-request-instance › cacheableRequest emits CacheError if cache.set errors (102ms)
+  ✔ cacheable-request-instance › cacheableRequest makes request even if current DB connection fails (when opts.automaticFailover is enabled) (101ms)
+  ✔ cacheable-request-instance › cacheableRequest emits response event for cached responses (195ms)
+  ✔ cacheable-request-instance › cacheableRequest makes request even if initial DB connection fails (when opts.automaticFailover is enabled) (105ms)
+  ✔ cache › Cache key is http.request compatible for arg String("http://www.example.com") (105ms)
+  ✔ cache › Cache key is http.request compatible for arg String("http://www.example.com/") (strips default path)
+  ✔ cache › Cache key is http.request compatible for arg String("http://www.example.com/test/") (keeps trailing /)
+  ✔ cache › Cache key is http.request compatible for arg URL("http://www.example.com/")
+  ✔ cache › Cache key is http.request compatible for arg Object({}) (no requried properties)
+  ✔ cache › Cache key is http.request compatible for arg Object({"protocol":"http:","host":"www.example.com","port":80,"path":"/"})
+  ✔ cache › Cache key is http.request compatible for arg Object({"hostname":"www.example.com","port":80,"path":"/"})
+  ✔ cache › Cache key is http.request compatible for arg Object({"hostname":"www.example.com","port":8080,"path":"/"})
+  ✔ cache › Cache key is http.request compatible for arg Object({"host":"www.example.com"})
+  ✔ cache › Cache key is http.request compatible for arg Object({"host":"www.example.com","hostname":"xyz.example.com"}) (hostname over host)
+  ✔ cache › Cache key is http.request compatible for arg Object({"path":"/"}) (hostname defaults to localhost)
+  ✔ cache › Cache key is http.request compatible for arg Object({"path":"/foo","pathname":"/bar"}) (ignores pathname)
+  ✔ cache › Cache key is http.request compatible for arg Object({"path":"/?foo=bar","search":"?bar=baz"}) (ignores search)
+  ✔ cache › Cache key is http.request compatible for arg Object({"path":"/?foo=bar","query":{"bar":"baz"}}) (ignores query)
+  ✔ cache › Cache key is http.request compatible for arg Object({"auth":"user:pass"})
+  ✔ cache › Cache key is http.request compatible for arg Object({"method":"POST"})
+  ✔ cache › TTL is passed to cache (164ms)
+  ✔ cache › TTL is not passed to cache if strictTtl is false (165ms)
+  ✔ cache › Setting opts.maxTtl will limit the TTL (167ms)
+  ✔ cache › Setting opts.maxTtl when opts.strictTtl is true will use opts.maxTtl if it's smaller (167ms)
+  ✔ cache › Setting opts.maxTtl when opts.strictTtl is true will use remote TTL if it's smaller (168ms)
+  ✔ cache › Cacheable responses are cached (344ms)
+  ✔ cache › Non cacheable responses are not cached (352ms)
+  ✔ cache › Cacheable responses have unique cache key (349ms)
+  ✔ cache › Stale cache entries with Last-Modified headers are revalidated (272ms)
+  ✔ cache › Response objects have fromCache property set correctly (272ms)
+  ✔ cache › Stale cache entries with ETag headers are revalidated (278ms)
+  ✔ cache › Stale cache entries that can't be revalidate are deleted from cache (279ms)
+  ✔ cache › Revalidated responses that are modified are passed through (282ms)
+  ✔ cache › checks status codes when comparing cache & response (276ms)
+  ✔ cacheable-request-instance › cacheableRequest emits CacheError if cache.delete errors (649ms)
+  ✔ cache › request options path query is passed through (373ms)
+  ✔ cache › ability to force refresh (375ms)
+  ✔ cache › Setting opts.cache to false bypasses cache for a single request (485ms)
+  ✔ cacheable-request-instance › cacheableRequest does not cache response if request is aborted after receiving part of the response (885ms)
+  ✔ cacheable-request-instance › cacheableRequest does not cache response if request is aborted before receiving first byte of response (898ms)
+  ✔ cache › Undefined callback parameter inside cache logic is handled (673ms)
+  ✔ cache › Keyv cache adapters load via connection uri (1.3s)
+
+  55 tests passed
+
+----------|----------|----------|----------|----------|-------------------|
+File      |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
+----------|----------|----------|----------|----------|-------------------|
+All files |      100 |      100 |      100 |      100 |                   |
+ index.js |      100 |      100 |      100 |      100 |                   |
+----------|----------|----------|----------|----------|-------------------|
