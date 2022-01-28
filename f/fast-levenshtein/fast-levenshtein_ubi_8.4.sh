@@ -5,8 +5,10 @@
 # Version       : 3.0.0
 # Source repo   : https://github.com/hiddentao/fast-levenshtein
 # Tested on     : UBI: 8.4
+# Language      : Node
+# Travis-Check  : True
 # Script License: Apache License 2.0
-# Maintainer's  : Mohit Pawar <Mohit.Pawar@ibm.com>
+# Maintainer's  : Mohit Pawar <mohit.pawar@ibm.com>
 #
 #
 # Disclaimer: This script has been tested in root mode on given
