@@ -19,7 +19,8 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=pecl-encryption-mcrypt
-PACKAGE_VERSION=1.0.3
+#PACKAGE_VERSION is configurable can be passed as an argument.
+PACKAGE_VERSION=${1:-1.0.3}
 PACKAGE_URL=https://github.com/php/pecl-encryption-mcrypt
 
 yum update -y
