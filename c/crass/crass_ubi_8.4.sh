@@ -4,7 +4,7 @@
 # Package               : crass
 # Version               : v1.0.4
 # Source repo           : https://github.com/rgrove/crass
-# Tested on             : UBI 8.5
+# Tested on             : UBI 8.4
 # Language              : Ruby
 # Travis-Check          : True
 # Script License        : Apache License, Version 2 or later
@@ -18,7 +18,6 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e
 export PACKAGE_NAME=crass
 export PACKAGE_URL=https://github.com/rgrove/crass
 
