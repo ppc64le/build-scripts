@@ -19,8 +19,6 @@
 #
 # ----------------------------------------------------------------------------
 
-#Exit immediately if a command exits with a non-zero status.
-set -e
 # Dependency installation
 dnf install -y git
 
@@ -78,10 +76,11 @@ if [ $ret -ne 0 ] ; then
     echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  build_Fails"
     exit 1
 else
-  go test -v ./...
+ 
   if [ $ret -ne 0 ] ; then
-            echo "------------------$PACKAGE_NAME:test_fails---------------------"
-            echo "$PACKAGE_VERSION $PACKAGE_NAME"
+        go test -v ./...
+        echo "------------------$PACKAGE_NAME:test_fails---------------------"
+        echo "$PACKAGE_VERSION $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails"    
     exit 1
   else
@@ -91,5 +90,3 @@ else
     exit 0 
 fi
 fi
-
-# Its in parity with intel for test case failure.
