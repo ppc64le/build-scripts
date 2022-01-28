@@ -39,22 +39,22 @@ git checkout $CHECKOUT_VAL
 
 	
 if ! mvn clean install -DskipTests; then
-	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
-	echo "$PACKAGE_VERSION $PACKAGE_NAME" > $HOME_DIR/output/install_fails
-	echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master | $OS_NAME | GitHub | Fail |  Install_Fails" > $HOME_DIR/output/version_tracker
-	exit 1
+    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+    echo "$PACKAGE_VERSION $PACKAGE_NAME" > $HOME_DIR/output/install_fails
+    echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master | $OS_NAME | GitHub | Fail |  Install_Fails" > $HOME_DIR/output/version_tracker
+    exit 1
 fi
-	
+
 if ! mvn test; then
-	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-	echo "$PACKAGE_URL $PACKAGE_NAME" > $HOME_DIR/output/test_fails 
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > $HOME_DIR/output/version_tracker
-	exit 1
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME" > $HOME_DIR/output/test_fails 
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > $HOME_DIR/output/version_tracker
+    exit 1
 else
-	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-	echo "$PACKAGE_URL $PACKAGE_NAME" > $HOME_DIR/output/test_success 
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success" > $HOME_DIR/output/version_tracker
-	find -name *.jar >> $HOME_DIR/output/post_build_jars.txt
-	echo "------------PATH of .JAR created for $WORK_DIR can be checked in text file:$HOME_DIR/output/post_build_jars.txt -----------"
-	exit 0
+    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME" > $HOME_DIR/output/test_success 
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success" > $HOME_DIR/output/version_tracker
+    find -name *.jar >> $HOME_DIR/output/post_build_jars.txt
+    echo "------------PATH of .JAR created for $WORK_DIR can be checked in text file:$HOME_DIR/output/post_build_jars.txt -----------"
+    exit 0
 fi
