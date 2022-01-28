@@ -18,8 +18,6 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e
-
 export PACKAGE_NAME=method_source
 export PACKAGE_URL=https://github.com/banister/method_source
 
