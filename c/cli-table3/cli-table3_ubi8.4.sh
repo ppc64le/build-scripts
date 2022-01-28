@@ -35,6 +35,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 source ~/.bashrc
 nvm install $NODE_VERSION
 
+env
 # clone, build and test specified version
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
@@ -42,6 +43,7 @@ git checkout $PACKAGE_VERSION
 
 npm install
 
+export TERM=xterm
 npm test
 
 exit 0
