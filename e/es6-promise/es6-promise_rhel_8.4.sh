@@ -28,7 +28,7 @@ if [ -z "$1" ]
     PACKAGE_VERSION=v4.2.8
 fi
 
-dnf install git npm wget bzip2 fontconfig -y
+dnf install git npm wget bzip2 fontconfig jq -y
 
 wget https://github.com/ibmsoe/phantomjs/releases/download/2.1.1/phantomjs-2.1.1-linux-ppc64.tar.bz2
 tar -xvf phantomjs-2.1.1-linux-ppc64.tar.bz2
