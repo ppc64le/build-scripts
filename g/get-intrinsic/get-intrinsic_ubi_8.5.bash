@@ -19,9 +19,6 @@
 #
 # ----------------------------------------------------------------------------
 
-#Exit immediately if a command exits with a non-zero status.
-set -e
-
 PACKAGE_NAME=get-intrinsic
 #PACKAGE_VERSION is configurable can be passed as an argument.
 PACKAGE_VERSION=${1:-0972547efd0abc863fe4c445a6ca7eb4f8c6901d}
