@@ -1,10 +1,10 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	    : es6-promise
-# Version	    : v4.2.8
+# Package	: es6-promise
+# Version	: v4.2.8
 # Source repo	: https://github.com/stefanpenner/es6-promise.git
-# Tested on	    : rhel 8.4
+# Tested on	: ubi 8.5
 # Language      : Node
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -17,7 +17,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#Run the script:./es6-promise_rhel_8.4.sh v4.2.8
+#Run the script:./es6-promise_ubi_8.5.sh v4.2.8
 
 PACKAGE_NAME=es6-promise
 PACKAGE_VERSION=$1
