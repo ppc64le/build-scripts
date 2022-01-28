@@ -1,0 +1,34 @@
+diff --git a/bazel/external/wee8.patch b/bazel/external/wee8.patch
+index 5dfce7b79..32665f414 100644
+--- a/bazel/external/wee8.patch
++++ b/bazel/external/wee8.patch
+@@ -1,6 +1,29 @@
+ # 1. Fix linking with unbundled toolchain on macOS.
+ # 2. Increase VSZ limit to 64 TiB (allows us to start up to 6,553 VMs).
+ # 3. Fix linking with MSAN.
++--- wee8/.gn
+++++ wee8/.gn
++@@ -15,13 +15,13 @@
++ # matching these patterns (see "gn help label_pattern" for format) will have
++ # their includes checked for proper dependencies when you run either
++ # "gn check" or "gn gen --check".
++-no_check_targets = [
++-  "//:cppgc_base",
++-  "//:v8_internal_headers",
++-  "//src/inspector:inspector",
++-  "//test/cctest:cctest_sources",
++-  "//third_party/icu:*",
++-]
+++#no_check_targets = [
+++#  "//:cppgc_base",
+++#  "//:v8_internal_headers",
+++#  "//src/inspector:inspector",
+++#  "//test/cctest:cctest_sources",
+++#  "//third_party/icu:*",
+++#]
++
++ # These are the list of GN files that run exec_script. This whitelist exists
++ # to force additional review for new uses of exec_script, which is strongly
+ --- wee8/build/toolchain/gcc_toolchain.gni
+ +++ wee8/build/toolchain/gcc_toolchain.gni
+ @@ -376,6 +376,8 @@ template("gcc_toolchain") {

@@ -1,0 +1,20 @@
+# ----------------------------------------------------------------------------
+#
+# Package             : wildfly 
+# Source Repo         : https://github.com/wildfly/wildfly.git
+# Travis Job Link     : https://travis-ci.com/github/srividyac09/wildfly/builds/232445392
+# Created travis.yml  : No
+# Maintainer          : Srividya Chittiboina <Srividya.Chittiboina@ibm.com>
+#
+# Script License      : GNU Lesser General Public License Version 2.1
+#
+# ----------------------------------------------------------------------------
+dist: bionic
+arch:
+  - ppc64le
+language: java
+cache:
+  directories:
+  - "$HOME/.m2"
+script:
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V

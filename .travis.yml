@@ -1,0 +1,18 @@
+---
+arch: ppc64le
+dist: focal
+os: linux
+language: shell
+
+services:
+    - docker
+
+before_install:
+    - docker pull registry.access.redhat.com/ubi8/ubi:8.5
+
+script:
+    - sudo apt update -y
+    - pip3 install requests
+    - pip3 install docker
+    - python3 script/validate_builds.py $TRAVIS_PULL_REQUEST &
+    - SCRIPT_PID=$!;while ps -p $SCRIPT_PID > /dev/null;do echo "$SCRIPT_PID is running"; sleep 300; done; wait $SCRIPT_PID; my_pid_status=$?; travis_terminate $my_pid_status

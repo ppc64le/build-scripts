@@ -1,14 +1,16 @@
---- pom.xml	2021-04-20 13:50:21.444500958 +0000
-+++ pom_updated.xml	2021-04-20 13:50:12.494046298 +0000
-@@ -1574,6 +1574,11 @@
+diff --git a/pom.xml b/pom.xml
+index bf3ce77a1a..ab0fec320f 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -1574,6 +1574,11 @@ under the License.
  				<artifactId>maven-surefire-plugin</artifactId>
  				<version>2.22.1</version>
  				<configuration>
-+                                       <excludes>
-+                                               <exclude>**/PythonEnvUtilsTest*.java</exclude>
-+                                               <exclude>**/KubernetesClusterDescriptorTest*.java</exclude>
-+                                               <exclude>**/Fabric8FlinkKubeClientTest*.java</exclude>
-+                                       </excludes>
++					<excludes>
++						<exclude>**/PythonEnvUtilsTest*.java</exclude>
++						<exclude>**/KubernetesClusterDescriptorTest*.java</exclude>
++						<exclude>**/Fabric8FlinkKubeClientTest*.java</exclude>
++					</excludes>
  					<forkCount>${flink.forkCount}</forkCount>
  					<reuseForks>${flink.reuseForks}</reuseForks>
  					<trimStackTrace>false</trimStackTrace>

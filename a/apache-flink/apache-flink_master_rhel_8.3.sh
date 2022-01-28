@@ -19,7 +19,7 @@ MAVEN_VERSION=3.6.3
 
 # Install dependencies and tools.
 sudo yum update -y
-sudo yum install -y git wget java-1.8.0-openjdk-devel patch xz
+sudo yum install -y git wget java-1.8.0-openjdk-devel xz
 export JAVA_HOME=export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
 
 # Install postgresql build dependencies
@@ -81,9 +81,9 @@ USER=`whoami`
 mkdir -p /var/run/postgresql/
 sudo chown $USER:$USER /var/run/postgresql/
 
-# Updated pom.xml with known failures (Tests which is same as x86_64)
-wget https://github.com/ManirajDeivendran/build-scripts/blob/master/a/apache-flink/apache-flink_ignore_test_fail.patch
-patch -l pom.xml < apache-flink_ignore_test_fail.patch
+# This step assumes that you have already copied the patch file as a sibbling of this script
+# Updated pom.xml with known errors
+git apply apache-flink_ignore_test_fail.patch
 
 # Re-build with tests
 echo "===================================== Re-build with tests begin ==========================================="
