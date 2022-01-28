@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : keyv
-# Version       : v4.0.3
+# Version       : v4.0.4
 # Source repo   : https://github.com/lukechilds/keyv
 # Tested on	: UBI 8.5
 # Language      : Node
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME="keyv"
-PACKAGE_VERSION=${1:-"v4.0.3"}
+PACKAGE_VERSION=${1:-"v4.0.4"}
 PACKAGE_URL="https://github.com/lukechilds/keyv"
 export NODE_VERSION=${NODE_VERSION:-v12.22.4}
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
