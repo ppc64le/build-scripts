@@ -19,9 +19,6 @@
 #
 # ----------------------------------------------------------------------------
 
-#Exit immediately if a command exits with a non-zero status.
-set -e
-
 PACKAGE_NAME=readable-stream
 #PACKAGE_VERSION is configurable can be passed as an argument.
 PACKAGE_VERSION=${1:-v2.3.7}
