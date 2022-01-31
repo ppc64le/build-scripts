@@ -19,7 +19,7 @@
 # ---------------------------------------------------------------------------
 
 PACKAGE_NAME=github.com/gogo/protobuf
-PACKAGE_VERSION=342cbe0a0415
+PACKAGE_VERSION=${1:-342cbe0a0415}
 PACKAGE_URL=https://github.com/gogo/protobuf
 
 yum install -y git golang make wget unzip
