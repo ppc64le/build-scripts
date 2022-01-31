@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: phpunit
-# Version	: 1.0.3
+# Version	: 9.0.0
 # Source repo	: https://github.com/sebastianbergmann/phpunit
 # Tested on	: UBI 8.5
 # Language	: PHP
