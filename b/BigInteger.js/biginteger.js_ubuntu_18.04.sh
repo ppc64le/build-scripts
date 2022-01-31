@@ -1,8 +1,8 @@
 #!/bin/bash -e
 # ------------------------------------------------------------------------------------------
 #
-# Package		: BigInteger.js
-# Version		: 1.6.45
+# Package       : BigInteger.js
+# Version	: 1.6.45
 # Source repo   : https://github.com/peterolson/BigInteger.js/
 # Tested on     : ubuntu_18.04 (Docker)
 # Language      : Node
