@@ -1,11 +1,14 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : wikimedia/composer-merge-plugin
-# Version       : v1.4.0
-# Source repo   : https://github.com/wikimedia/composer-merge-plugin
-# Tested on     : UBI 8
+# Package	: composer-merge-plugin
+# Version	: v1.4.0
+# Source repo	: https://github.com/wikimedia/composer-merge-plugin
+# Tested on	: UBI 8.5
+# Language	: PHP
+# Travis-Check	: True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Vedang Wartikar <vedang.wartikar@ibm.com>
+# Maintainer	: Vedang Wartikar <Vedang.Wartikar@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -16,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=composer-merge-plugin
-PACKAGE_VERSION=v1.4.0
+PACKAGE_VERSION=${1:-v1.4.0}
 PACKAGE_URL=https://github.com/wikimedia/composer-merge-plugin
 
 yum update -y
