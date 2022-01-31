@@ -26,11 +26,11 @@ yum install -y  python3 python3-devel  ncurses git gcc gcc-c++ rust-toolset libf
 rm -rf /home/tester
 mkdir -p /home/tester/output
 
-python3 -m pip install pytest pytest-cov setuptools-rust
-
+python3 -m pip install pytest pytest-cov setuptools-rust mccabe==0.6.0
+ln -s /usr/bin/python3 /usr/bin/python
 SOURCE=Github
 
-cd /home/tester
+cd /home/tester/
 
 
 echo "Cloning pacakge $PACKAGE_URL"
@@ -64,15 +64,3 @@ else
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE  | Pass |  Both_Install_and_Test_Success" > /home/tester/output/version_tracker
         exit 0
 fi
-
-
-
-
-
-
-
-
-
-
-
-
