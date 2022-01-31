@@ -19,15 +19,17 @@
 #
 # ----------------------------------------------------------------------------
 
-#Exit immediately if a command exits with a non-zero status.
-set -e
-
 PACKAGE_NAME=node-graceful-fs
 #PACKAGE_VERSION is configurable can be passed as an argument.
 PACKAGE_VERSION=${1:-v4.2.6}
 PACKAGE_URL=https://github.com/isaacs/node-graceful-fs
 
-yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm git jq
+yum install -y yum-utils git jq
+
+#Install node latest version.
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+source ~/.bashrc
+nvm install --latest-npm node
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
