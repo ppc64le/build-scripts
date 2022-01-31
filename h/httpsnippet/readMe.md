@@ -1,7 +1,7 @@
 
- Test cases failure details
+ Test cases failure details for version v1.16.7
   -----
-  /root/httpsnippet/test/index.js:35:5: Expected an assignment or function call and instead saw an expression.
+ ` ` ` /root/httpsnippet/test/index.js:35:5: Expected an assignment or function call and instead saw an expression.
   /root/httpsnippet/test/index.js:40:5: Expected an assignment or function call and instead saw an expression.
   /root/httpsnippet/test/index.js:113:5: Expected an assignment or function call and instead saw an expression.
   /root/httpsnippet/test/index.js:142:5: Expected an assignment or function call and instead saw an expression.
@@ -141,4 +141,5 @@
   /root/httpsnippet/test/targets/swift/nsurlsession.js:21:5: Expected an assignment or function call and instead saw an expression.
   /root/httpsnippet/test/targets/swift/nsurlsession.js:29:5: Expected an assignment or function call and instead saw an expression.
   /root/httpsnippet/test/targets/swift/nsurlsession.js:37:5: Expected an assignment or function call and instead saw an expression.
+  ` ` `
  ----------httpsnippet:install_success_but_test_fails---- 
