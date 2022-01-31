@@ -1,0 +1,74 @@
+diff --git a/image/service-available/:ssl-tools/download.sh b/image/service-available/:ssl-tools/download.sh
+index a699f0f..5308768 100755
+--- a/image/service-available/:ssl-tools/download.sh
++++ b/image/service-available/:ssl-tools/download.sh
+@@ -1,34 +1,5 @@
+ #!/bin/bash -e
+ 
+-UARCH=$(uname -m)
+-echo "Architecture is ${UARCH}"
+-
+-case "${UARCH}" in
+-    
+-    "x86_64")
+-        HOST_ARCH="amd64"
+-    ;;
+-    
+-    "arm64" | "aarch64")
+-        HOST_ARCH="arm64"
+-    ;;
+-    
+-    "armv7l" | "armv6l" | "armhf")
+-        HOST_ARCH="arm"
+-    ;;
+-    
+-    "i386")
+-        HOST_ARCH="386"
+-    ;;
+-    
+-    *)
+-        echo "Architecture not supported. Exiting."
+-        exit 1
+-    ;;
+-esac
+-
+-echo "Going to use ${HOST_ARCH} cfssl binaries"
+-
+ # download curl and ca-certificate from apt-get if needed
+ to_install=()
+ 
+@@ -44,24 +15,18 @@ if [ ${#to_install[@]} -ne 0 ]; then
+     LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "${to_install[@]}"
+ fi
+ 
+-LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends openssl jq
+-
+-# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=923479
+-if [[ "${HOST_ARCH}" == 'arm' ]]; then
+-    LC_ALL=C DEBIAN_FRONTEND=noninteractive c_rehash
+-fi
+-
+-echo "Download cfssl ..."
+-echo "curl -o /usr/sbin/cfssl -SL https://github.com/osixia/cfssl/releases/download/1.5.0/cfssl_linux-${HOST_ARCH}"
+-curl -o /usr/sbin/cfssl -SL "https://github.com/osixia/cfssl/releases/download/1.5.0/cfssl_linux-${HOST_ARCH}"
+-chmod 700 /usr/sbin/cfssl
++LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y openssl jq wget gcc git make
+ 
+-echo "Download cfssljson ..."
+-echo "curl -o /usr/sbin/cfssljson -SL https://github.com/osixia/cfssl/releases/download/1.5.0/cfssljson_linux-${HOST_ARCH}"
+-curl -o /usr/sbin/cfssljson -SL "https://github.com/osixia/cfssl/releases/download/1.5.0/cfssljson_linux-${HOST_ARCH}"
+-chmod 700 /usr/sbin/cfssljson
++#Install golang >=1.12 (using 1.16.13)
++wget https://go.dev/dl/go1.16.13.linux-ppc64le.tar.gz
++tar -C /bin -xf go1.16.13.linux-ppc64le.tar.gz
++export PATH=$PATH:/bin/go/bin
+ 
+-echo "Project sources: https://github.com/cloudflare/cfssl"
++# Build cfssl binaries
++git clone https://github.com/osixia/cfssl.git && cd cfssl
++git checkout 1.5.0
++make
++cp bin/* /bin/
+ 
+ # remove tools installed to download cfssl
+ if [ ${#to_install[@]} -ne 0 ]; then
