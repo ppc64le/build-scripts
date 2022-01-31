@@ -42,8 +42,6 @@ if [ -d "$PACKAGE_NAME" ] ; then
 fi
  
 
-# Tests are not available(Test N/A).
-
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
         echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -53,23 +51,10 @@ fi
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 PACKAGE_VERSION=$(jq -r ".version" package.json)
-# run the test command from test.sh
 if ! npm install && npm audit fix && npm audit fix --force; then
         echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-if ! npm test; then
-    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
-    exit 1
-else
-    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
-    exit 0
-fi
-
-
+# Tests not available(Test N/A).
