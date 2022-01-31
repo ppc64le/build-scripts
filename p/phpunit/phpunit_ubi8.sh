@@ -1,11 +1,14 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: phpunit/phpunit
-# Version	: 9.0.0
+# Package	: phpunit
+# Version	: 1.0.3
 # Source repo	: https://github.com/sebastianbergmann/phpunit
-# Tested on	: UBI 8
+# Tested on	: UBI 8.5
+# Language	: PHP
+# Travis-Check	: True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Vedang Wartikar <vedang.wartikar@ibm.com>
+# Maintainer	: Vedang Wartikar <Vedang.Wartikar@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -16,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=phpunit
-PACKAGE_VERSION=9.0.0
+PACKAGE_VERSION=${1:-9.0.0}
 PACKAGE_URL=https://github.com/sebastianbergmann/phpunit
 
 yum update -y

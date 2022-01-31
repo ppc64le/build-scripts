@@ -1,11 +1,14 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: defuse/php-encryption
+# Package	: php-encryption
 # Version	: v2.2.1
 # Source repo	: https://github.com/defuse/php-encryption
-# Tested on	: UBI 8
+# Tested on	: UBI 8.5
+# Language	: PHP
+# Travis-Check	: True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Vedang Wartikar <vedang.wartikar@ibm.com>
+# Maintainer	: Vedang Wartikar <Vedang.Wartikar@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -16,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=php-encryption
-PACKAGE_VERSION=v2.2.1
+PACKAGE_VERSION=${1:-v2.2.1}
 PACKAGE_URL=https://github.com/defuse/php-encryption
 
 yum update -y

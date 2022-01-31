@@ -1,11 +1,14 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: instaclick/php-webdriver
+# Package	: php-webdriver
 # Version	: 1.4.7
 # Source repo	: https://github.com/instaclick/php-webdriver
-# Tested on	: UBI 8
+# Tested on	: UBI 8.5
+# Language	: PHP
+# Travis-Check	: True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Vedang Wartikar <vedang.wartikar@ibm.com>
+# Maintainer	: Vedang Wartikar <Vedang.Wartikar@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -16,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=php-webdriver
-PACKAGE_VERSION=1.4.7
+PACKAGE_VERSION=${1:-1.4.7}
 PACKAGE_URL=https://github.com/instaclick/php-webdriver
 
 yum update -y
