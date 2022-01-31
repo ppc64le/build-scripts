@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package           : readable-stream
-# Version           : v2.3.7
+# Version           : v2.3.7,v2.3.6
 # Source repo       : https://github.com/nodejs/readable-stream
 # Tested on         : RHEL 8.5,UBI 8.5
 # Language          : Node
