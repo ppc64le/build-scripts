@@ -30,7 +30,7 @@ export PATH=$HOME/go/bin/:$PATH
 #Clone the Repo.
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
-#git checkout $PACKAGE_VERSION
+git checkout $PACKAGE_VERSION
 
 #Build and test the package.
 make install.tools
