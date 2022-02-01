@@ -24,7 +24,13 @@ PACKAGE_NAME=readable-stream
 PACKAGE_VERSION=${1:-v2.3.7}
 PACKAGE_URL=https://github.com/nodejs/readable-stream
 
-yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm git jq
+#yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm git jq
+yum install -y yum-utils git jq
+NODE_VERSION=v12.22.4
+#installing nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+source ~/.bashrc
+nvm install $NODE_VERSION
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
