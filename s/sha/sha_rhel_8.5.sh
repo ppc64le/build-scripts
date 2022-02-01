@@ -76,19 +76,3 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
-
-# Test is in parity with intel.
-
- #1) stream
- #      .pipe(sha.stream(expected))
-  #       with the wrong hash
-  #         results in an error:
-  #   Error: Timeout of 2000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves. (/root/sha/test/index.js)
-  #    at listOnTimeout (node:internal/timers:568:17)
-   #   at processTimers (node:internal/timers:510:7)
-
- # 2) stream
-  #     .pipe(sha.stream(expected, {algorithm: "md5"}))
-  #       with the wrong hash
-   #        results in an error:
-   #  Error: Timeout of 2000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves. (/root/sha/test/index.js)
