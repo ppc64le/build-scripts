@@ -1,10 +1,11 @@
-# ----------------------------------------------------------------------------
+#!/bin/bash -e
+# -----------------------------------------------------------------------------
 #
-# Package 		: client-java-api
-# Version 		: 6.0.1 / 8.0.0
-# Source repo 	: https://github.com/kubernetes-client/java
+# Package       : azure-mgmt-containerservice
+# Version       : 4.4.0
+# Source repo   : https://github.com/Azure/azure-sdk-for-python
 # Tested on		: UBI 8.5
-# Language      : Java
+# Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Saurabh Gore <Saurabh.Gore@ibm.com> 
@@ -17,30 +18,29 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e
+PACKAGE_NAME=azure-sdk-for-python
+PACKAGE_VERSION="${1:-azure-mgmt-containerservice_4.4.0}"
+PACKAGE_URL=https://github.com/Azure/azure-sdk-for-python.git
 
-WORK_DIR=`pwd`
+#install the prerequisite dependency.
+yum install -y git  python3 python3-devel make gcc-c++ rust-toolset openssl openssl-devel libffi libffi-devel 
 
-PACKAGE_NAME=java
-PACKAGE_VERSION=${1:-client-java-parent-8.0.0}  
-PACKAGE_URL=https://github.com/kubernetes-client/java.git
-
-# Install required dependencies
-yum install -y git maven java-1.8.0-openjdk-devel
-
-#Clonning repo
+#clone the repo.
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
-
 git checkout $PACKAGE_VERSION
 
-cd kubernetes
+python3 -m pip install pytest pytest-cov setuptools-rust 
 
-#Build without tests
-mvn install -DskipTests
+cd azure-sdk-tools
+python3 setup.py install
+cd ..
 
-#To execute tests
-if ! mvn test ; then   
+cd azure-mgmt-containerservice
+	     
+python3 setup.py install
+
+if ! pytest ; then   
 	echo "------------------Build Success but test fails---------------------"
 else
 	echo "------------------Build and test success-------------------------"
