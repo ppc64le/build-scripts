@@ -55,7 +55,6 @@ fi
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 PACKAGE_VERSION=$(jq -r ".version" package.json)
-# run the test command from test.sh
 
 if ! npm install --legacy-peer-deps && npm audit fix && npm audit fix --force; then
      	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
@@ -64,7 +63,6 @@ if ! npm install --legacy-peer-deps && npm audit fix && npm audit fix --force; t
 	exit 1
 fi
 
-# 16 test cases are failing in parity with Intel platform. Please refer to README for details.
 if ! npm test; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME" 
