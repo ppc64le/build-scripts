@@ -34,9 +34,6 @@ export NVM_DIR="$HOME/.nvm"
 
 # Install latest version of node and npm
 nvm install node
-node -v
-nvm install-latest-npm
-npm -v
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
