@@ -83,7 +83,7 @@ def trigger_script_validation_checks(file_name, image_name = "registry.access.re
     result = container.wait()
     try:
         print(container.logs().decode("utf-8"))
-    except ValueError:
+    except Exception:
         print(container.logs())
     container.remove()
     if int(result["StatusCode"]) != 0:
