@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : node-fetch-npm
-# Version       : v2.0.2
+# Version       : v2.0.4,v2.0.2
 # Source repo   : https://github.com/npm/node-fetch-npm
 # Tested on	: UBI 8.5
 # Language      : Node
