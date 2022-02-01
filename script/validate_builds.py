@@ -81,7 +81,10 @@ def trigger_script_validation_checks(file_name, image_name = "registry.access.re
         stderr = True, # Return logs from STDERR
     )
     result = container.wait()
-    print(container.logs().decode("utf-8"))
+    try:
+        print(container.logs().decode("utf-8"))
+    except ValueError:
+        print(container.logs())
     container.remove()
     if int(result["StatusCode"]) != 0:
         raise Exception("Build script validation failed!")
