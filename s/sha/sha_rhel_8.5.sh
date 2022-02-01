@@ -33,8 +33,10 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 # Install latest version of node and npm
-nvm install node npm
-
+nvm install node
+node -v
+nvm install-latest-npm
+npm -v
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
