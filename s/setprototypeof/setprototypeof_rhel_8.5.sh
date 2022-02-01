@@ -26,10 +26,11 @@ PACKAGE_URL=https://github.com/wesleytodd/setprototypeof
 
 yum install -y yum-utils git jq
 
-#Install node latest version.
+NODE_VERSION=v12.22.4
+#installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 source ~/.bashrc
-nvm install --latest-npm node
+nvm install $NODE_VERSION
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
