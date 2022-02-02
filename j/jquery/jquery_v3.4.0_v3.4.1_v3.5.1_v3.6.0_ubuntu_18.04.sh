@@ -5,7 +5,7 @@
 # Version       : 3.4.0, 3.4.1, 3.5.1, 3.6.0
 # Source repo   : https://github.com/jquery/jquery
 # Tested on     : ubuntu_18.04 (Docker)
-# Language      : Java
+# Language      : Node
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Jotirling Swami <Jotirling.Swami1@ibm.com>
