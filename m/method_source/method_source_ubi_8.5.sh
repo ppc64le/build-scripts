@@ -77,4 +77,3 @@ else
   fi
 fi
 
-#Observed one failure:syntax error  and is in parity with Intel
