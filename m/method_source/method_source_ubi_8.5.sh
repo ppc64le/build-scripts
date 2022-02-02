@@ -54,15 +54,9 @@ else
  exit
 fi
 
-#Observed one failure:syntax error  and is in parity with Intel
-#Failed examples:
-#rspec ./spec/method_source/code_helpers_spec.rb[1:6] # MethodSource::CodeHelpers should not raise an error on broken lines: issue = %W/\n343/
-#/usr/local/rvm/rubies/ruby-2.7.2/bin/ruby -w -I/usr/local/rvm/gems/ruby-2.7.2/gems/rspec-core-3.10.1/lib:/usr/local/rvm/gems/ruby-2.7.2/gems/rspec-support-3.10.3/lib 
-#/usr/local/rvm/gems/ruby-2.7.2/gems/rspec-core-3.10.1/exe/rspec --pattern spec/\*\*\{,/\*/\*\*\}/\*_spec.rb failed
-
 #Build and test
 
-bundle install
+bundle install --verbose
 
 ret=$?
 if [ $ret -ne 0 ] ; then
