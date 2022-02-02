@@ -31,21 +31,17 @@ if [ -d "${method_source}" ] ; then
 fi
 
 
-yum install -y git ruby procps yum-utils wget
-
-gem install bundle 
-gem install rake 
-curl -sSL https://rvm.io/mpapis.asc | gpg2 --import - 
-curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import - 
-curl -L https://get.rvm.io | bash -s stable 
-source /etc/profile.d/rvm.sh
-rvm install ruby-2.7
-gem install bundler:1.17.3
-gem install kramdown-parser-gfm
+yum install git ruby ruby-devel -y
+gem install bundle
 
 git clone ${PACKAGE_URL} ${PACKAGE_NAME}
 cd ${PACKAGE_NAME}
 git checkout ${PACKAGE_VERSION}
+
+export BUNDLE_GEMFILE=$PWD/Gemfile
+which bundle || gem install bundler
+gem update bundler
+
 ret=$?
 if [ $ret -eq 0 ] ; then
  echo "$PACKAGE_VERSION found to checkout "
