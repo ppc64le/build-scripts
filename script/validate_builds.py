@@ -103,7 +103,7 @@ def trigger_build_validation_travis(pr_number):
     for i in response:
         file_name = i.get('filename', "")
         status = i.get('status', "")
-        if file_name.endswith('.sh') and "Dockerfile" not in file_name and status != "removed":
+        if file_name.endswith('.sh') and "dockerfile" not in file_name.lower() and status != "removed":
             # perform basic validation check
             trigger_basic_validation_checks(file_name)
             # Build/test script files
