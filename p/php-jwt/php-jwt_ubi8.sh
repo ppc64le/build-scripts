@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=php-jwt
-PACKAGE_VERSION=v5.2.0
+PACKAGE_VERSION=${1:-v5.2.0}
 PACKAGE_URL=https://github.com/firebase/php-jwt
 
 yum update -y
