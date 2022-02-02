@@ -17,6 +17,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
+
 PACKAGE_NAME=azure-mgmt-servicebus
 PACKAGE_VERSION=${1:-azure-mgmt-servicebus_0.5.3}
 PACKAGE_URL=${2:-https://github.com/Azure/azure-sdk-for-python}
@@ -63,4 +64,3 @@ else
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE  | Pass |  Both_Install_and_Test_Success" > /home/tester/output/version_tracker
         exit 0
 fi
-
