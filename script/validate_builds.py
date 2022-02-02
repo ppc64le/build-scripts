@@ -81,7 +81,10 @@ def trigger_script_validation_checks(file_name, image_name = "registry.access.re
         stderr = True, # Return logs from STDERR
     )
     result = container.wait()
-    print(container.logs())
+    try:
+        print(container.logs().decode("utf-8"))
+    except Exception:
+        print(container.logs())
     container.remove()
     if int(result["StatusCode"]) != 0:
         raise Exception("Build script validation failed!")
@@ -98,7 +101,8 @@ def trigger_build_validation_travis(pr_number):
     # Trigger validation for all shell scripts
     for i in response:
         file_name = i.get('filename', "")
-        if file_name.endswith('.sh'):
+        status = i.get('status', "")
+        if file_name.endswith('.sh') and status != "removed":
             # perform basic validation check
             trigger_basic_validation_checks(file_name)
             # Build/test script files
