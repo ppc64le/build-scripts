@@ -1,0 +1,14 @@
+diff --git a/presto-main/pom.xml b/presto-main/pom.xml
+index 594e04a04a..61398426bf 100644
+--- a/presto-main/pom.xml
++++ b/presto-main/pom.xml
+@@ -455,6 +455,9 @@
+                     <!-- these tests take a very long time so only run them in the CI server -->
+                     <excludes>
+                         <exclude>**/TestLocalExecutionPlanner.java</exclude>
++                        <exclude>**/TestDateTimeFunctionsLegacy.java</exclude>
++                        <exclude>**/TestTimeZoneUtils.java</exclude>
++                        <exclude>**/TestSqlStageExecution.java</exclude>
+                     </excludes>
+                 </configuration>
+             </plugin>
