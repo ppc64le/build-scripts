@@ -2,7 +2,7 @@
 #----------------------------------------------------------------------------
 #
 # Package       : react-draggable
-# Version       : master, v4.4.4
+# Version       : master, v4.4.4, v4.4.3
 # Source repo   : https://github.com/react-grid-layout/react-draggable
 # Tested on     : ubuntu_18.04 (Docker)
 # Language      : Java
@@ -22,7 +22,7 @@ set -ex
 
 #Variables
 PACKAGE_NAME=react-draggable
-PACKAGE_VERSION=v4.4.4
+PACKAGE_VERSION=v4.4.3
 PACKAGE_URL=https://github.com/react-grid-layout/react-draggable.git
 
 #Extract version from command line
