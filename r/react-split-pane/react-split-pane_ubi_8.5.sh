@@ -32,10 +32,11 @@ tar -xvf phantomjs-2.1.1-linux-ppc64.tar.bz2
 mv phantomjs-2.1.1-linux-ppc64/bin/phantomjs /usr/bin
 rm -rf phantomjs-2.1.1-linux-ppc64.tar.bz2
 
-#Install node latest version.
+NODE_VERSION=v12.22.4
+#installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 source ~/.bashrc
-nvm install --latest-npm node 
+nvm install $NODE_VERSION
 
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
