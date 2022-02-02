@@ -47,6 +47,8 @@ cd bc-java
 git checkout ${VERSION}
 cd pkix
 
+export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+
 # Build package
 gradle build -x test
 # Test Package
