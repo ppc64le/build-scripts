@@ -17,7 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-set -e
 
 # variables
 PACKAGE_NAME="CodeMirror"
@@ -38,12 +37,6 @@ wget https://github.com/ibmsoe/phantomjs/releases/download/2.1.1/phantomjs-2.1.1
 mv phantomjs-2.1.1-linux-ppc64/bin/phantomjs /usr/bin
 rm -rf phantomjs-2.1.1-linux-ppc64.tar.bz2
 
-#wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh | sh
-#source $HOME/.nvm/nvm.sh
-#nvm install stable
-#nvm use stable
-
-
 # ------- Clone and build source -------
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
     	echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
@@ -56,14 +49,20 @@ cd /home/tester/$PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 # run the test command from test.sh
 
-if ! npm install && npm audit fix && npm audit fix --force; then
-     	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
-	echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/install_fails
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails" > /home/tester/output/version_tracker
-	exit 1
-fi
+npm install
+echo ""------------------$PACKAGE_NAME: npm install-------------------------------------"
+npm audit fix
+echo ""------------------$PACKAGE_NAME: npm audit fix-------------------------------------"
+npm audit fix --force
+echo ""------------------$PACKAGE_NAME: npm audit fix force-------------------------------------"
 
-cd /home/tester/$PACKAGE_NAME
+#if ! npm install && npm audit fix && npm audit fix --force; then
+#     	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+#	echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/install_fails
+#	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails" > /home/tester/output/version_tracker
+#	exit 1
+#fi
 
+echo ""------------------$PACKAGE_NAME: npm test-------------------------------------"
 npm test
 
