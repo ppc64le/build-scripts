@@ -69,6 +69,7 @@ git checkout $PACKAGE_VERSION
 #patch
 sed -i "s#checkstyle-configuration.version>2.0.1-SNAPSHOT#checkstyle-configuration.version>2.0.1#g"  pom.xml
 
+#Build and test, the 2 test errors for 2.0.0.AM26 are in parity with x86 and build and test is passing for master version (2.0.0.AM27).
 if ! mvn clean package -f "pom.xml" -B -V -e -Dfindbugs.skip -Dcheckstyle.skip -Dpmd.skip=true -Denforcer.skip -Dmaven.javadoc.skip -Dlicense.skip=true -Drat.skip=true -fn; then
 	echo "------------------$PACKAGE_NAME:build_and_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
