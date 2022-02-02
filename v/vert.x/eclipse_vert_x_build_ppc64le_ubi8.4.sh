@@ -41,6 +41,20 @@ echo "--------------------------------------------------------------------------
 export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.322.b06-2.el8_5.ppc64le/
 cd $BUILD_HOME
 
+# Install Go and setup working directory
+wget https://golang.org/dl/go1.17.4.linux-ppc64le.tar.gz && \
+    tar -C /bin -xf go1.17.4.linux-ppc64le.tar.gz && \
+    mkdir -p /home/tester/go/src /home/tester/go/bin /home/tester/go/pkg /home/tester/output
+
+rm -rf go1.17.4.linux-ppc64le.tar.gz
+export HOME_DIR=/home/tester
+
+export PATH=$PATH:/bin/go/bin
+export GOPATH=/home/tester/go
+
+export PATH=$GOPATH/bin:$PATH
+export GO111MODULE=on
+
 # --------- Installing ninja version v1.4.0 -----------------
 echo "--------- Installing ninja version v1.4.0 -----------------"
 git clone git://github.com/ninja-build/ninja.git
