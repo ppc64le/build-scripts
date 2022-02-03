@@ -1,11 +1,14 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package       : commons-lang
-# Version       : 3.7
+# Version       : 3.7, 3.8.1
 # Source repo   : https://github.com/apache/commons-lang.git
-# Tested on     : UBI: 8.3
+# Tested on     : UBI: 8.4
+# Language      : JAVA
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer's  : Jotirling Swami <Jotirling.Swami1@ibm.com>
+# Maintainer's  : Jotirling Swami <Jotirling.Swami1@ibm.com>, Apurva Agrawal<Apurva.Agrawal3@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -14,8 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
-#!/bin/bash
 
 #Variables
 REPO=https://github.com/apache/commons-lang.git
@@ -29,8 +30,7 @@ PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 
 
 # Install required files
-yum update -y
-yum install -y git wget
+yum -y install git wget
 
 # install java
 yum -y install java-1.8.0-openjdk-devel
