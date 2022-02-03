@@ -24,7 +24,6 @@ PACKAGE_URL=${2:-https://github.com/Azure/azure-sdk-for-python}
 PACKAGE_FOLDER=azure-sdk-for-python
 
 yum install -y git  python3 python3-devel make rust-toolset openssl openssl-devel libffi libffi-devel
-rm -rf /home/tester
 mkdir -p /home/tester/output
 
 python3 -m pip install pytest pytest-cov setuptools-rust
