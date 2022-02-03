@@ -30,12 +30,6 @@ fi
 
 yum install -y git ruby procps yum-utils wget
 
-yum-config-manager --add-repo http://mirror.centos.org/centos/8/AppStream/ppc64le/os/ && yum-config-manager --add-repo http://mirror.centos.org/centos/8/PowerTools/ppc64le/os/ && yum-config-manager --add-repo http://mirror.centos.org/centos/8/BaseOS/ppc64le/os/ && yum-config-manager --add-repo http://mirror.centos.org/centos/8/virt/ppc64le/ovirt-44/
-
-wget https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official && mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/. && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
-
-wget https://www.centos.org/keys/RPM-GPG-KEY-CentOS-SIG-Virtualization && mv RPM-GPG-KEY-CentOS-SIG-Virtualization /etc/pki/rpm-gpg/. && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-Virtualization
-
 gem install bundle 
 gem install rake 
 curl -sSL https://rvm.io/mpapis.asc | gpg2 --import - 
@@ -57,6 +51,11 @@ else
  exit
 fi
 
+#Observed 7 test failures and all are in parity with intel
+# Failure:
+#Byebug::ThreadTest#test_thread_list_shows_all_available_threads [/root/rubybuildscripts/byebug/test/support/matchers.rb:29]:
+#Byebug::MinitestRunnerTest#test_with_seed_option,#test_per_test, 
+#test_per_test_class,#test_runs,#test_with_verbose_option,#test_combinations[/root/rubybuildscripts/byebug/test/minitest_runner_test.rb:60]:
 #Build and test
 
 bundle _1.17.3_ install
@@ -74,4 +73,4 @@ else
   fi
 fi
 
-#Observed 7 test failures and all are in parity with intel
+
