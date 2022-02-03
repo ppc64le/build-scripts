@@ -4,7 +4,7 @@
 # Package       : azure-mgmt-servicebus
 # Version       : 0.5.3
 # Source repo   : https://github.com/Azure/azure-sdk-for-python
-# Tested on	: UBI 8.5
+# Tested on	: UBI 8.4
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
