@@ -22,8 +22,8 @@ PACKAGE_VERSION=${1:-azure-mgmt-batch_5.0.1}
 PACKAGE_URL=${2:-https://github.com/Azure/azure-sdk-for-python}
 PACKAGE_FOLDER=azure-sdk-for-python
 
-yum install -y git  python3 python3-devel make gcc-c++ rust-toolset openssl openssl-devel libffi libffi-devel 
-rm -rf /home/tester
+yum install -y git  python3 python3-devel make rust-toolset openssl openssl-devel libffi libffi-devel 
+
 mkdir -p /home/tester/output
 
 python3 -m pip install pytest pytest-cov setuptools-rust 
