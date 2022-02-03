@@ -81,7 +81,10 @@ def trigger_script_validation_checks(file_name, image_name = "registry.access.re
         stderr = True, # Return logs from STDERR
     )
     result = container.wait()
-    print(container.logs())
+    try:
+        print(container.logs().decode("utf-8"))
+    except Exception:
+        print(container.logs())
     container.remove()
     if int(result["StatusCode"]) != 0:
         raise Exception("Build script validation failed!")
@@ -94,15 +97,25 @@ def trigger_build_validation_travis(pr_number):
         GITHUB_BUILD_SCRIPT_BASE_REPO,
         pr_number
     )
+    validated_file_list = []
     response = requests.get(pull_request_file_url).json()
     # Trigger validation for all shell scripts
     for i in response:
         file_name = i.get('filename', "")
-        if file_name.endswith('.sh'):
+        status = i.get('status', "")
+        if file_name.endswith('.sh') and "dockerfile" not in file_name.lower() and status != "removed":
             # perform basic validation check
             trigger_basic_validation_checks(file_name)
             # Build/test script files
             trigger_script_validation_checks(file_name)
+            # Keep track of validated files.
+            validated_file_list.append(file_name)
+    
+    if len(validated_file_list) == 0 :
+        print("No scripts available for validation.")
+    else:
+        print("Validated below scripts:")
+        print(*validated_file_list, sep="\n")
 
 if __name__=="__main__":
     trigger_build_validation_travis(sys.argv[1])

@@ -1,10 +1,9 @@
 #!/bin/bash -e
-
 # -----------------------------------------------------------------------------
 #
-# Package	: readable-stream
-# Version	: v3.6.0,v3.4.0
-# Source repo	: https://github.com/nodejs/readable-stream
+# Package	: schema
+# Version	: v0.1.3
+# Source repo	: https://github.com/istanbuljs/schema
 # Tested on	: ubi 8.5
 # Language      : node
 # Travis-Check  : True
@@ -19,13 +18,11 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME="readable-stream"
-PACKAGE_VERSION=${1:-"v3.6.0"}
-PACKAGE_URL="https://github.com/nodejs/readable-stream"
-export NODE_VERSION=${NODE_VERSION:-v12.22.4}
+PACKAGE_NAME="schema"
+PACKAGE_VERSION=${1:-"v0.1.3"}
+PACKAGE_URL="https://github.com/istanbuljs/schema"
+export NODE_VERSION=${NODE_VERSION:-v14}
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
-
-
 
 yum install -y git
 
@@ -47,6 +44,10 @@ fi
 
 cd "$HOME_DIR"/$PACKAGE_NAME || exit 1
 git checkout "$PACKAGE_VERSION" || exit 1
+tee .eslintignore >/dev/null <<-config
+	*.js
+config
+
 if ! npm install && npm audit fix; then
 	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"

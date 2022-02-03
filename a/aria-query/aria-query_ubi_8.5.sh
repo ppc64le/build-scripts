@@ -1,10 +1,9 @@
 #!/bin/bash -e
-
 # -----------------------------------------------------------------------------
 #
-# Package	: readable-stream
-# Version	: v3.6.0,v3.4.0
-# Source repo	: https://github.com/nodejs/readable-stream
+# Package	: aria-query
+# Version	: v4.2.2
+# Source repo	: https://github.com/A11yance/aria-query
 # Tested on	: ubi 8.5
 # Language      : node
 # Travis-Check  : True
@@ -19,13 +18,13 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME="readable-stream"
-PACKAGE_VERSION=${1:-"v3.6.0"}
-PACKAGE_URL="https://github.com/nodejs/readable-stream"
-export NODE_VERSION=${NODE_VERSION:-v12.22.4}
+PACKAGE_NAME="aria-query"
+PACKAGE_VERSION=${1:-"v4.2.2"}
+PACKAGE_URL="https://github.com/A11yance/aria-query"
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
-
-
+HOME_DIR=$PWD
+export NODE_VERSION=${NODE_VERSION:-v12}
+export PATH=$PATH:$HOME_DIR/$PACKAGE_NAME/node_modules/.bin
 
 yum install -y git
 
@@ -33,7 +32,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 source ~/.bashrc
 
 nvm install "$NODE_VERSION"
-npm install -g npm@latest
+npm install -g npm@6
 
 HOME_DIR=$PWD
 
@@ -47,6 +46,10 @@ fi
 
 cd "$HOME_DIR"/$PACKAGE_NAME || exit 1
 git checkout "$PACKAGE_VERSION" || exit 1
+export ESLINT=${1:-6}
+npm uninstall --no-save eslint-config-airbnb-base
+npm install --no-save eslint@"$ESLINT"
+
 if ! npm install && npm audit fix; then
 	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -62,7 +65,8 @@ if ! npm run | grep -q "test"; then
 	exit 0
 fi
 
-if ! npm test; then
+npm run build
+if ! npm run jest; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
