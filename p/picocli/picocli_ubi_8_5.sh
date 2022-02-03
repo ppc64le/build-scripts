@@ -32,5 +32,7 @@ cd $PACKAGE_NAME/
 
 git checkout $PACKAGE_VERSION
 
+export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
+
 #Build and test package
 ./gradlew build
