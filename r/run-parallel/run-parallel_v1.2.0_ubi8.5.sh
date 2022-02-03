@@ -25,7 +25,7 @@ PACKAGE_NAME=run-parallel
 #PACKAGE_VERSION is configurable can be passed as an argument.
 PACKAGE_VERSION=${1:-v1.2.0}
 PACKAGE_URL=https://github.com/feross/run-parallel.git
-yum -y update && yum install -y npm  git gcc jq
+yum -y update && yum install -y npm  git gcc jq python38 python38-devel
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 #Check if package exists
 if [ -d "$PACKAGE_NAME" ] ; then
