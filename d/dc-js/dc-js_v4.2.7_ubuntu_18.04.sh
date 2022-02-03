@@ -5,7 +5,7 @@
 # Version       : 4.2.7
 # Source repo   : https://github.com/dc-js/dc.js.git
 # Tested on     : ubuntu_18.04 (Docker)
-# Language      : Java
+# Language      : Node
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Jotirling Swami <Jotirling.Swami1@ibm.com>
@@ -85,5 +85,3 @@ else
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_and_Test_Success"
 	exit 0
 fi
-
-
