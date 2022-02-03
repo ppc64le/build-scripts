@@ -20,8 +20,11 @@
 # ----------------------------------------------------------------------------
 #!/bin/bash
 
+set -e 
+
 # Variables
 REPO=https://github.com/node-browser-compat/atob.git
+PACKAGE_NAME=atob
 PACKAGE_VERSION=v2.1.1
 
 echo "Usage: $0 [-v <PACKAGE_VERSION>]"
@@ -38,7 +41,7 @@ export PATH=$CWD/node-v16.4.2-linux-ppc64le/bin:$PATH
 
 #Cloning Repo
 git clone $REPO
-cd /atob
+cd $PACKAGE_NAME
 git checkout ${PACKAGE_VERSION}
 
 sed -i '5 i "scripts": {"test": "node test.js"},' package.json
