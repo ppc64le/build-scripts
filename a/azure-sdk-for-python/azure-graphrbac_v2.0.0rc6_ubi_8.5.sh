@@ -29,8 +29,9 @@ mkdir -p /home/tester/output
 python3 -m pip install pytest pytest-cov setuptools-rust 
 
 cd /home/tester 
-echo "Cloning pacakge $PACKAGE_URL"
+ln -s /usr/bin/pip3 /usr/bin/pip
 
+echo "Cloning pacakge $PACKAGE_URL"
 if ! git clone $PACKAGE_URL ; then
         echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
                 echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/clone_fails
