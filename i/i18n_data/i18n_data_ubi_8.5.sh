@@ -51,6 +51,13 @@ else
  exit
 fi
 
+#Observed 24 failures:rake aborted and all are in parity with Intel 
+#rake aborted!
+#Command failed with status (1): [rspec --warnings spec/...]
+#/root/rubybuildscripts/i18n_data/Rakefile:8:in `block in <top (required)>'
+#/usr/local/rvm/gems/ruby-2.7.2/bin/ruby_executable_hooks:22:in `eval'
+#/usr/local/rvm/gems/ruby-2.7.2/bin/ruby_executable_hooks:22:in `<main>'
+#Tasks: TOP => default
 #Build and test
 
 bundle _1.17.3_ install
@@ -68,4 +75,4 @@ else
   fi
 fi
 
-#Observed 24 failures:rake aborted and all are in parity with Intel 
+
