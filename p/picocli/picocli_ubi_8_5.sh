@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 # ----------------------------------------------------------------------------
 #
 # Package       : picocli
@@ -25,12 +25,13 @@ PACKAGE_URL=https://github.com/remkop/picocli.git
 # Install required dependencies
 yum install -y git  java-1.8.0-openjdk-devel
 
+rm -rf $PACKAGE_NAME
+
 #Clonning repo
 git config --global core.longpaths true
-git clone $PACKAGE_URL
+git clone -b $PACKAGE_VERSION $PACKAGE_URL
 cd $PACKAGE_NAME/
 
-git checkout $PACKAGE_VERSION
 
 export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
 
