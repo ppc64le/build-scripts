@@ -26,7 +26,7 @@
 # 1.  Pull following mongodb image from quay.io and create container 
 # quay.io/opencloudio/ibm-mongodb@sha256:19eb7cca57c1876cf4e93a0b0a4814a7f4001e1026527f901e59e538c7b2945e
 # 2. docker pull <MongoDB(version 4.2.6) ppc64le Image>
-# 3. docker run -d -p 27017:27017  <MongoDB(version 4.0.24) ppc64le Image> --dbpath=/tmp --bind_ip_all 
+# 3. docker run -d -p 27017:27017  <MongoDB(version 4.2.6) ppc64le Image> --dbpath=/tmp --bind_ip_all 
 # 4. docker run --network host -v /var/run/docker.sock:/var/run/docker.sock -it --name driver-legacy-testcontainer docker.io/ppc64le/ubuntu:18.04
 # Last step with give a prompt inside the container, run this script in it
 
