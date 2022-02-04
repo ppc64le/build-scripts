@@ -1,6 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
+# Package       : run-parallel
 # Version       : v1.2.0
 # Source repo   : git://github.com/feross/run-parallel.git
 # Tested on     : UBI8.5
