@@ -19,8 +19,6 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e
-
 PACKAGE_NAME=copy
 PACKAGE_VERSION=${1:-v1.7.0}
 PACKAGE_URL=https://github.com/otiai10/copy
