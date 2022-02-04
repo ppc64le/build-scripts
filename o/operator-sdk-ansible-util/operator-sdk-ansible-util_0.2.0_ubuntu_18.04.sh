@@ -20,8 +20,6 @@
 # ----------------------------------------------------------------------------
 # Command to create container: docker run --network host -it --name container_name -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker docker.io/ppc64le/ubuntu:18.04
 
-set -ex
-
 # Variables
 PACKAGE_NAME=operator-sdk-ansible-util
 PACKAGE_URL=https://github.com/operator-framework/operator-sdk-ansible-util.git
