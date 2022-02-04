@@ -57,4 +57,4 @@ else
         exit 0
 fi
 #This script build pass and tests are in parity due to below mentioned error
-#Error message: 'Session closed without receiving a SETTINGS frame',
+#Error: Failed to load parser '/http2-wrapper/node_modules/@typescript-eslint/parser/dist/index.js' declared in 'BaseConfig': Cannot find module 'typescript'
