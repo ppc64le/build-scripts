@@ -19,8 +19,6 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e
-
 #Variables
 PACKAGE_NAME=jackson-dataformats-text
 PACKAGE_URL=https://github.com/FasterXML/jackson-dataformats-text.git
