@@ -23,14 +23,14 @@ set -ex
 #Variables
 PACKAGE_NAME="carbon-charts"
 PACKAGE_URL=https://github.com/carbon-design-system/carbon-charts.git
-PACKAGE_VERSION=0.41.15
+PACKAGE_VERSION=v0.41.15
    
 echo "Usage: $0 [-v <PACKAGE_VERSION>]"
-echo "PACKAGE_VERSION is an optional paramater whose default value is 0.41.15, not all versions are supported."
+echo "PACKAGE_VERSION is an optional paramater whose default value is v0.41.15, not all versions are supported."
 PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 
 #install dependencies
-apt-get update && apt-get install -y git curl build-essential make python sed unzip python3
+apt-get update && apt-get install -y git curl build-essential make python sed unzip python3  libpng-dev
 
 #Install nodejs
 curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
