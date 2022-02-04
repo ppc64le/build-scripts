@@ -46,7 +46,6 @@ export M2_HOME=$HOME_DIR/maven
 export PATH=${M2_HOME}/bin:${PATH}
 mvn -version
 
-
 #Clone repo
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
