@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package       : netty-resolver-dns
@@ -16,9 +17,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
 
-set -e
 
 #Variables
 PACKAGE_URL=https://github.com/netty/netty.git
