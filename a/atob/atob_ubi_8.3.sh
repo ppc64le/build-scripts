@@ -19,18 +19,12 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e 
-
 # Variables
 REPO=https://github.com/node-browser-compat/atob.git
 PACKAGE_NAME=atob
-PACKAGE_VERSION=v2.1.1
-
-echo "Usage: $0 [-v <PACKAGE_VERSION>]"
-echo "PACKAGE_VERSION is an optional paramater whose default value is v2.1.1"
+PACKAGE_VERSION=${1:-v2.1.1}
 
 # install tools and dependent packages
-yum update -y
 yum install -y git wget 
 
 # install node
