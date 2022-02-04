@@ -25,14 +25,14 @@ set -ex
 #Variables
 PACKAGE_NAME="carbon"
 PACKAGE_URL=https://github.com/carbon-design-system/carbon.git
-PACKAGE_VERSION=10.29.0
+PACKAGE_VERSION=v10.29.0
 
 echo "Usage: $0 [-v <PACKAGE_VERSION>]"
-echo "PACKAGE_VERSION is an optional paramater whose default value is 10.29.0, not all versions are supported."
+echo "PACKAGE_VERSION is an optional paramater whose default value is v10.29.0, not all versions are supported."
 PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 
 #Install dependencies
-apt-get update && apt-get install git wget curl build-essential make sed unzip python3 python-minimal python-pip dirmngr apt-transport-https lsb-release ca-certificates libpng-dev -y
+apt-get update && apt-get install git curl build-essential make python sed unzip python3 -y
 
 #install nodejs
 apt install curl
