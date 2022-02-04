@@ -1,7 +1,8 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: go-hclog
-# Version	: ff2cf002a8dd
+# Version	: main
 # Source repo	: https://github.com/hashicorp/go-hclog
 # Tested on	: UBI 8.4
 # Language      : GO
@@ -16,10 +17,8 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-set -e
 
 PACKAGE_NAME=go-hclog
-PACKAGE_VERSION=${1:-ff2cf002a8dd}
 PACKAGE_URL=https://github.com/hashicorp/go-hclog
 PACKAGE_PATH=github.com/hashicorp/go-hclog
 
@@ -43,7 +42,6 @@ cd $HOME_DIR
 
 rm -rf $PACKAGE_NAME
 
-echo "Building $PACKAGE_NAME with $PACKAGE_VERSION"
 if ! git clone $PACKAGE_URL; then
 	echo "------------------$PACKAGE_NAME: clone failed-------------------------"
 	exit 0
@@ -51,15 +49,7 @@ fi
 
 cd $PACKAGE_NAME
 
-if ! git checkout $PACKAGE_VERSION; then
-	echo "------------------$PACKAGE_NAME: checkout failed to version $PACKAGE_VERSION-------------------------"
-	exit 0
-fi
-
 echo `pwd`
-
-go mod init $PACKAGE_PATH
-go mod tidy
 
 if ! go build -v ./...; then
 	echo "------------------$PACKAGE_NAME: build failed-------------------------"
@@ -71,7 +61,7 @@ if ! go test -v ./...; then
 	exit 0
 else
 	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-	echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/test_success 
-	echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success" > /home/tester/output/version_tracker
+	echo "$PACKAGE_NAME" > /home/tester/output/test_success 
+	echo "$PACKAGE_NAME | GitHub  | Pass |  Both_Install_and_Test_Success" > /home/tester/output/version_tracker
 	exit 0
 fi
