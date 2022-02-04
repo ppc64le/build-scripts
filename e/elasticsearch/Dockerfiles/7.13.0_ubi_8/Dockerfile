@@ -101,7 +101,7 @@ FROM registry.access.redhat.com/ubi8/ubi:latest
 RUN for iter in {1..10}; do \
       yum update --setopt=tsflags=nodocs -y && \
       yum install --setopt=tsflags=nodocs -y \
-      nc shadow-utils zip unzip  && \
+      shadow-utils zip unzip  && \
       yum clean all && \
       exit_code=0 && break || \
         exit_code=$? && echo "yum error: retry $iter in 10s" && sleep 10; \
