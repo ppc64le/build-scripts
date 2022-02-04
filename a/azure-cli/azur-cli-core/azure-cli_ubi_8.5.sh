@@ -22,8 +22,8 @@ PACKAGE_VERSION=${1:-azure-cli-2.0.35}
 PACKAGE_URL=${2:-https://github.com/Azure/azure-cli}
 PACKAGE_FOLDER=azure-cli
 
-yum install -y  python3 python3-devel  ncurses git gcc gcc-c++ libffi libffi-devel  make cmake openssl-devel libyaml-devel
-rm -rf /home/tester
+yum install -y  python3 python3-devel  ncurses git libffi libffi-devel  make cmake openssl-devel libyaml-devel
+
 mkdir -p /home/tester/output
 
 python3 -m pip install mock pytest pytest-cov setuptools-rust mccabe==0.6.0
