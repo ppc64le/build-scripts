@@ -34,17 +34,19 @@ PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 #Dependencies
 apt update -y && apt install -y git openjdk-8-jdk
 
+#Home dir
+HOME_DIR=`pwd`
+
 #install maven 
 apt install -y wget
 wget https://dlcdn.apache.org/maven/maven-3/3.8.4/binaries/apache-maven-3.8.4-bin.tar.gz
 tar xzf apache-maven-3.8.4-bin.tar.gz
 ln -s apache-maven-3.8.4 maven
-export M2_HOME=/opt/maven
+export M2_HOME=$HOME_DIR/maven
 export PATH=${M2_HOME}/bin:${PATH}
 mvn -version
 
-#Get the sources
-HOME_DIR=`pwd`
+#Clone repo
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
 mkdir ${PACKAGE_NAME}
