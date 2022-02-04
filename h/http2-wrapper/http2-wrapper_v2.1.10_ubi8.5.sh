@@ -1,6 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
+# Package       : http2-wrapper
 # Version       : v2.1.10
 # Source repo   : https://github.com/szmarczak/http2-wrapper.git 
 # Tested on     : UBI8.5
