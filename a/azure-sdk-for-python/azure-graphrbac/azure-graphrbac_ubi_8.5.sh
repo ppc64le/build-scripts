@@ -42,7 +42,7 @@ echo " --------------------------------- checkout version  $PACKAGE_VERSION ----
 
 cd /home/tester/$PACKAGE_FOLDER
 git checkout $PACKAGE_VERSION
-python3 -m pip install azure-storage-blob
+python3 -m pip install azure-storage-blob azure-storage-queue
 python3 scripts/dev_setup.py
 
 cd $PACKAGE_NAME
