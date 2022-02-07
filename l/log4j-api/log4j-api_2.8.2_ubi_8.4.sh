@@ -21,7 +21,7 @@
 #Variables
 REPO=https://github.com/apache/logging-log4j2
 PKG_NAME=logging-log4j2/log4j-api/
-PACKAGE_VERSION=log4j-2.8.2
+PACKAGE_VERSION=${1:-log4j-2.8.2}
 
 # Install required files
 yum install -y git wget java-1.8.0-openjdk-devel
