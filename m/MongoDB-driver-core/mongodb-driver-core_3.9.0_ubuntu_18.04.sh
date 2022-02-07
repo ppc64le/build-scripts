@@ -24,8 +24,6 @@
 # 4. docker run --network host -v /var/run/docker.sock:/var/run/docker.sock -it sumit_u docker.io/ppc64le/ubuntu:18.04
 # Last step with give a prompt inside the container, run this script in it
 
-set -ex
-
 PACKAGE_NAME=mongo-java-driver
 PACKAGE_VERSION="${1:-r3.9.0}"
 PACKAGE_URL=https://github.com/mongodb/mongo-java-driver.git
