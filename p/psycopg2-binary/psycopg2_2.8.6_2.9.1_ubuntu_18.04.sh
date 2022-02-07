@@ -25,8 +25,6 @@
 #
 # ------------------------------------------------------------------------------------------------
 
-set -ex
-
 #Variables
 PACKAGE_NAME=psycopg2
 PACKAGE_URL=https://github.com/psycopg/psycopg2.git
