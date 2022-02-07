@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 #Run the script:./duster_ubi_8.5.sh v0.3.2(version_to_test) 
 PACKAGE_NAME=duster
-PACKAGE_VERSION=$1
+PACKAGE_VERSION=v0.3.2
 PACKAGE_URL=https://github.com/tighten/duster.git
 
 dnf module enable php:7.3 -y
@@ -33,26 +33,7 @@ ln -sf /usr/bin/composer.phar /usr/bin/composer
 mkdir -p /home/tester/output
 cd /home/tester
 
-if [ -z "$1" ]
-  then
-    PACKAGE_VERSION=v0.3.2
-fi
-
-install_test_success_update()
-{
-  echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-  echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_success
-  echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success" > /home/tester/output/version_tracker
-  exit 0
-}
-
-install_test_fail_update()
-{
-	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-	echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails 
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-	exit 1
-}
+PACKAGE_VERSION=${1:-v0.3.2}
 
 install_test_NA_update()
 {
@@ -98,20 +79,6 @@ fi
 
 cd /home/tester/$PACKAGE_NAME
 
-#Flag for test results
-TEST_SUCCESS="NA"
+#No test cases
+install_test_NA_update
 
-if [ $TEST_SUCCESS == "false" ]
-then
-	install_test_fail_update
-fi
-
-if [ $TEST_SUCCESS == "true" ]
-then
-	install_test_success_update
-fi
-
-if [ $TEST_SUCCESS == "NA" ]
-then
-    install_test_NA_update
-fi
