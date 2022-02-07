@@ -16,8 +16,6 @@
 #
 # ----------------------------------------------------------------------------------------------------
 
-set -ex
-
 #Variables
 REPO=https://github.com/apache/commons-compress.git
 PACKAGE_VERSION=1.19
