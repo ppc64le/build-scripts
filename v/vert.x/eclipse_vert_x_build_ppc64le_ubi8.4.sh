@@ -74,7 +74,7 @@ git clone --recurse https://github.com/netty/netty-tcnative.git
 cd netty-tcnative
 git checkout netty-tcnative-parent-2.0.36.Final
 
-./mvnw clean install
+./mvnw clean install -q
 cd ..
 
 #-------- Building netty version 4.1.60.Final ----------------
@@ -84,7 +84,7 @@ echo "-------- Building netty version 4.1.60.Final ----------------"
 git clone --recurse https://github.com/netty/netty
 cd netty
 git checkout netty-4.1.60.Final  # version checkout
-mvn clean install -DskipTests
+mvn clean install -DskipTests -q
 cd ..
 
 if [[ $# -ne 0 ]] ; then
