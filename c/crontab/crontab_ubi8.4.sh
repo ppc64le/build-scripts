@@ -1,9 +1,12 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package       : crontab
 # Version       : 0.22.6
 # Source repo   : https://github.com/josiahcarlson/parse-crontab
 # Tested on     : UBI 8.4
+# Language      : Python
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sapana Khemkar
 #
@@ -14,11 +17,9 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
-set -e
 
 PACKAGE_NAME=crontab
-PACKAGE_VERSION=0.22.6
+PACKAGE_VERSION=${1:-"0.22.6"}
 PACKAGE_URL=https://github.com/josiahcarlson/parse-crontab.git
 
 # Dependency installation
