@@ -42,7 +42,6 @@ if [ -d "$PACKAGE_NAME" ] ; then
  
 fi
  
-
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
         echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -54,9 +53,7 @@ cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 PACKAGE_VERSION=$(jq -r ".version" package.json)
 # run the test command from test.sh
- 
- #build package.
- npm run build --if-present
+
 
 if ! npm install && npm audit fix && npm audit fix --force; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
@@ -64,7 +61,10 @@ if ! npm install && npm audit fix && npm audit fix --force; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-
+ 
+ #build package.
+ npm run build --if-present
+ 
 if ! npm test; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME" 
