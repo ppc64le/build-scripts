@@ -29,7 +29,7 @@ echo "`date +'%d-%m-%Y %T'` - Staring eclipse vert.x build. Dependencies will be
 
 # ------- Install dependencies -------
 
-yum -y install git wget gcc-c++ cmake maven make python3 autoconf automake libtool glibc-devel openssl-devel lksctp-tools apr-devel apr-util-devel
+yum -y install git wget gcc-c++ cmake maven make python3 autoconf automake libtool glibc-devel openssl-devel lksctp-tools apr-devel apr-util-devel procps lsof
 yum -y install java-1.8.0-openjdk-devel
 
 ln -s /usr/bin/python3 /usr/bin/python
