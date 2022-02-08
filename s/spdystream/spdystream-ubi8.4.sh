@@ -1,9 +1,12 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package        : spdystream
 # Version        : v0.0.0-20181023171402-6480d4af844c
 # Source repo    : https://github.com/moby/spdystream
 # Tested on      : UBI 8.4
+# Language       : GO
+# Travis-Check   : True
 # Script License : Apache License, Version 2 or later
 # Maintainer     : Sapana Khemkar <spana.khemkar@ibm.com>
 #
@@ -15,9 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-#!/bin/bash
 
-set -u
 PACKAGE_NAME=spdystream
 PACKAGE_VERSION="v0.0.0-20181023171402-6480d4af844c"
 PACKAGE_URL="https://github.com/moby/spdystream.git"
@@ -39,18 +40,19 @@ rm -f go$GO_VERSION.linux-ppc64le.tar.gz
 export PATH=$PATH:/bin/go/bin
 export GOPATH=/home/tester/go
 
-mkdir -p $GOPATH/$PACKAGE_NAME/src
-cd $GOPATH/$PACKAGE_NAME/src
+mkdir -p $GOPATH/src/github.com/moby
+cd $GOPATH/src/github.com/moby
 
 git clone https://github.com/moby/spdystream.git
 cd $PACKAGE_NAME
 git checkout $PACKAGE_COMMIT_HASH
 
 #install dependencies
-go mod init github.com/spdystream
-go mod tidy
+go mod init 
+#go mod tidy
 
 go get ./...
+go build ./...
 #start test
 go test  ./... -v  
 	
