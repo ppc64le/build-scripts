@@ -5,7 +5,7 @@
 # Source repo   : https://github.com/beanshell/beanshell
 # Tested on     : UBI: 8.4
 # Script License: Apache License 2.0
-# Maintainer's  : Sapana Khemkar <Sapana.Khemkar@ibm.com>
+# Maintainer  : Sapana Khemkar <Sapana.Khemkar@ibm.com>
 # Language	: Java
 #
 #
