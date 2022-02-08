@@ -62,8 +62,7 @@ jar xf ${PACKAGE_NAME}-${PACKAGE_VERSION}-sources.jar
 rm -f ${PACKAGE_NAME}-${PACKAGE_VERSION}-sources.jar
 
 #Build and test
-cd $HOME_DIR/$PACKAGE_NAME
-cd /opt/${PACKAGE_NAME}
+cd $HOME_DIR/${PACKAGE_NAME}
 if ! mvn test verify; then
 	echo "------------------$PACKAGE_NAME:test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
