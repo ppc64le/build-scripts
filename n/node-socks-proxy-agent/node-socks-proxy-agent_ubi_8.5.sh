@@ -54,6 +54,9 @@ cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 PACKAGE_VERSION=$(jq -r ".version" package.json)
 # run the test command from test.sh
+ 
+ #build package.
+ npm run build --if-present
 
 if ! npm install && npm audit fix && npm audit fix --force; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
@@ -73,7 +76,3 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
- 
-# Test is in parity with intel.
-# Error: Cannot find module '/root/node-socks-proxy-agent/dist/index'. Please verify that the package.json has a valid "main" entry
- 
