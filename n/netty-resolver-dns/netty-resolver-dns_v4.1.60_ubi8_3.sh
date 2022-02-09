@@ -1,10 +1,12 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package       : netty-resolver-dns
-# Version       : netty-4.1.60.Final
+# Version       : netty-4.1.60.Final, netty-4.1.72.Final
 # Language      : Java
 # Source repo   : https://github.com/netty/netty
 # Tested on     : UBI 8.3
+# Travis-Check  : True
 # Script License: Apache-2.0 License
 # Maintainer    : Varsha Aaynure <Varsha.Aaynure@ibm.com>
 #
@@ -15,7 +17,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
+
 
 #Variables
 PACKAGE_URL=https://github.com/netty/netty.git
