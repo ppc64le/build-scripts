@@ -31,6 +31,7 @@ wget https://dlcdn.apache.org//ant/binaries/apache-ant-1.10.12-bin.zip
 unzip apache-ant-1.10.12-bin.zip
 export ANT_HOME=/opt/apache-ant-1.10.12
 export PATH=/opt/apache-ant-1.10.12/bin:$PATH
+export ANT_OPTS=-Dfile.encoding=UTF8
 
 # Cloning the repository from remote to local
 git clone $PACKAGE_URL
