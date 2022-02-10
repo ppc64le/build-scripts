@@ -2,14 +2,14 @@
 
 # ----------------------------------------------------------------------------
 #
-# Package	    : xmlbeans
-# Version	    : REL_5_0_2
-# Source repo	: https://github.com/apache/xmlbeans
+# Package	      : xmlbeans
+# Version	      : REL_5_0_2
+# Source repo	  : https://github.com/apache/xmlbeans
 # Tested on	    : ubi 8.5
 # Script License: Apache License Version 2.0
-# Maintainer	: Bhagat Singh <Bhagat.singh1@ibm.com>
-# Languge	    : Java
-#
+# Maintainer	  : Bhagat Singh <Bhagat.singh1@ibm.com>
+# Language	    : Java
+# Travis-Check  : True
 # Disclaimer    : This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
