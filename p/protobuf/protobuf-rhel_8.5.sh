@@ -70,23 +70,23 @@ go get -v -t ./...
 
 ret=$?
 if [ $ret -ne 0 ] ; then
-  echo "Build failed "
+
     echo "------------------$PACKAGE_NAME:build failed---------------------"
     echo "$PACKAGE_VERSION $PACKAGE_NAME"
     echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  build_Fails"
     exit 1
 else
- 
-  if [ $ret -ne 0 ] ; then
-        go test -v ./...
-        echo "------------------$PACKAGE_NAME:test_fails---------------------"
-        echo "$PACKAGE_VERSION $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails"    
+
+   if ! go test ./...; then
+   
+             echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+             echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails"    
     exit 1
   else
        echo "------------------$PACKAGE_NAME:install_build_and_test_success-------------------------"
-       echo "$PACKAGE_VERSION $PACKAGE_NAME"
        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass |  Install_Build_and_Test_Success"
     exit 0 
 fi
 fi
+
+# Its in parity with intel for test case failure.
