@@ -1,3 +1,5 @@
+#This file has been adapted from the original work at https://github.com/open-policy-agent/conftest
+#to work on the IBM Power Linux platform
 FROM golang:1.17.6-alpine as base
 ARG ARCH=amd64
 ARG VERSION

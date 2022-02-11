@@ -1,3 +1,5 @@
+#This file has been adapted from the original work at https://github.com/open-policy-agent/conftest
+#to work on the IBM Power Linux platfor
 FROM registry.access.redhat.com/ubi8-minimal:8.5 as base
 ARG ARCH=amd64
 ARG VERSION
