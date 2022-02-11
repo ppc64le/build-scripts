@@ -30,21 +30,19 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 
-python3 -m pip install pytest pytest-cov setuptools-rust wheel
-
-# build test-env
-cd azure-sdk-tools
-python3 setup.py install
-cd ..
+python3 -m pip install pytest pytest-cov setuptools-rust 
 
 cd azure-mgmt-redis
 
-# To build
-python3 setup.py install
+if ! python3.8 -m pip install .; then
+    echo "------------------$PACKAGE_NAME:install_fails---------------------------------------"
+    exit 0
+fi
 
 if ! pytest ; then   
 	echo "------------------Build Success but test fails---------------------"
 else
 	echo "------------------Build and test success-------------------------"
 fi
+
 
