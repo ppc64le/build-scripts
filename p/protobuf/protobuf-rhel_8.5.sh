@@ -42,9 +42,7 @@ fi
 #Install Protobuf
 wget https://github.com/protocolbuffers/protobuf/archive/refs/tags/v3.19.4.tar.gz
 tar -xvf v3.19.4.tar.gz
-cp -r include/* /usr/local/include
-cp bin/protoc /usr/local/bin
-
+export PATH=$PATH:$(pwd)
 
 #Check if package exists
 if [ -d "protobuf" ] ; then
