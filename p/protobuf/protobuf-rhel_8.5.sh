@@ -20,7 +20,7 @@
 # ----------------------------------------------------------------------------
 
 # Dependency installation
-dnf install -y git
+dnf install -y git wget patch diffutils unzip
 
 #Set variables
 #PACKAGE_VERSION is configurable can be passed as an argument.
@@ -38,6 +38,13 @@ export GOPATH=$HOME/go
 export PATH=$GOROOT/bin:$GOPATH/bin:$PATH
 export GO111MODULE=auto
 fi
+
+#Install Protobuf
+wget https://github.com/protocolbuffers/protobuf/archive/refs/tags/v3.19.4.tar.gz
+tar -xvf v3.19.4.tar.gz
+cp -r include/* /usr/local/include
+cp bin/protoc /usr/local/bin
+
 
 #Check if package exists
 if [ -d "protobuf" ] ; then
