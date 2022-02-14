@@ -23,7 +23,7 @@
 export PACKAGE_NAME=crypt
 # The version v0.0.3-0.20170626215501-b2862e3d0a77 isn't released on github.
 # Current head as on Feb 11, 2021 is at commit id b2862e3d0a77.
-export PACKAGE_VERSION=master
+export PACKAGE_VERSION=${1:-master}
 export PACKAGE_URL=https://github.com/xordataexchange/crypt
 
 export HOME_DIR=/home/tester
