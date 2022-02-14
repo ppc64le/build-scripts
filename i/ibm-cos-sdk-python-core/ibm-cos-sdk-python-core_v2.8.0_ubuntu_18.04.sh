@@ -62,8 +62,6 @@ if ! echo 'python-dateutil>=2.8.2' >> requirements.txt; then
 	exit 1
 fi
 
-# The following failing tests are in parity with x86:
-#     - ERROR: test_multiple_transitions_returns_one (tests.functional.test_s3.TestS3GetBucketLifecycle)
 cd $HOME_DIR/$PACKAGE_NAME
 if ! tox -e py38; then
 	echo "------------------$PACKAGE_NAME:test_fails---------------------"
@@ -76,3 +74,6 @@ else
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_and_Test_Success"
 	exit 0
 fi
+
+# The following failing tests are in parity with x86:
+#     1 ERROR: test_multiple_transitions_returns_one (tests.functional.test_s3.TestS3GetBucketLifecycle)
