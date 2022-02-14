@@ -71,10 +71,6 @@ git checkout $PACKAGE_VERSION
 #patch
 sed -i "s#checkstyle-configuration.version>2.0.1-SNAPSHOT#checkstyle-configuration.version>2.0.1#g"  pom.xml
 
-# The following failing build/tests are in parity with x86:
-#     - [INFO] ApacheDS Server Integration ........................ FAILURE [17:57 min]
-#     - [INFO] Apache Directory LDAP Client API test .............. FAILURE [42:04 min]
-
 if ! mvn clean package -f "pom.xml" -B -V -e -Dfindbugs.skip -Dcheckstyle.skip -Dpmd.skip=true -Denforcer.skip -Dmaven.javadoc.skip -Dlicense.skip=true -Drat.skip=true -fn; then
 	echo "------------------$PACKAGE_NAME:build_and_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -86,3 +82,7 @@ else
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_and_Test_Success"
 	exit 0
 fi
+
+# The following failing build/tests are in parity with x86:
+#     1. ApacheDS Server Integration 
+#     2. Apache Directory LDAP Client API test 
