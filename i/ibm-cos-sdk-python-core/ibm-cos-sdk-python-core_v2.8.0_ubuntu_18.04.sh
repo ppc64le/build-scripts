@@ -46,7 +46,6 @@ fi
 
 cd $HOME_DIR/$PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-
 if ! pip3 install tox; then
 	echo "------------------$PACKAGE_NAME:dependency_fails-------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -63,7 +62,8 @@ if ! echo 'python-dateutil>=2.8.2' >> requirements.txt; then
 	exit 1
 fi
 
-# 1 Error in parity with x86: AttributeError: 'S3' object has no attribute 'get_bucket_lifecycle'
+# The following failing tests are in parity with x86:
+#     - ERROR: test_multiple_transitions_returns_one (tests.functional.test_s3.TestS3GetBucketLifecycle)
 cd $HOME_DIR/$PACKAGE_NAME
 if ! tox -e py38; then
 	echo "------------------$PACKAGE_NAME:test_fails---------------------"
