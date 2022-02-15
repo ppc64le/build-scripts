@@ -2,9 +2,9 @@
 
 # -----------------------------------------------------------------------------
 #
-# Package       : get-intrinsic
-# Version       : main
-# Source repo	: https://github.com/ljharb/get-intrinsic.git
+# Package       : log4j-core
+# Version       : rel/2.17.1
+# Source repo	: https://github.com/apache/logging-log4j2.git
 # Tested on     : UBI 8.5
 # Language      : Node
 # Travis-Check  : True
@@ -19,20 +19,12 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=get-intrinsic
+PACKAGE_NAME=log4j-core
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-0972547efd0abc863fe4c445a6ca7eb4f8c6901d}
-PACKAGE_URL=https://github.com/ljharb/get-intrinsic.git
+PACKAGE_VERSION=${1:-rel/2.17.1}
+PACKAGE_URL=https://github.com/apache/logging-log4j2.git
 
-yum install -y git jq
-
-curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-# Install latest version of node and npm
-nvm install --latest-npm node
+yum install -y git maven
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
@@ -42,7 +34,6 @@ if [ -d "$PACKAGE_NAME" ] ; then
   echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"  
  
 fi
- 
 
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
     	echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
@@ -53,24 +44,24 @@ fi
 
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-PACKAGE_VERSION=$(jq -r ".version" package.json)
-# run the test command from test.sh
 
-if ! npm install && npm audit fix && npm audit fix --force; then
-     	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+cd log4j-core
+
+if ! mvn compile; then
+    echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
 	exit 1
 fi
 
-if ! npm run tests-only; then
-	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+if ! mvn test; then
+	echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME" 
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_success_but_test_Fails"
 	exit 1
 else
-	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+	echo "------------------$PACKAGE_NAME:build_&_test_both_success-------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
 	exit 0
 fi
