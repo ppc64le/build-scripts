@@ -24,7 +24,7 @@ PACKAGE_VERSION=v1.0.1
 PACKAGE_URL=https://github.com/IBM/ibm-namespace-scope-operator
 
 # Install dependencies
-yum install -y make git wget
+yum install -y make git wget gcc
 
 # Download and install go
 wget https://golang.org/dl/go1.17.5.linux-ppc64le.tar.gz
@@ -46,7 +46,6 @@ if ! go build -v ./...; then
         echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
         exit 1
 fi
-
 
 # Install unit test dependencies and run unit tests
 
@@ -75,5 +74,5 @@ if ! go test -v ./...; then
         exit 1
 else
         echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-    exit 0
+        exit 0
 fi
