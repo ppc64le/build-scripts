@@ -41,7 +41,7 @@ cp kubernetes/server/bin/kube-apiserver .
 rm -rf kubernetes-server-linux-ppc64le.tar.gz kubernetes
 
 wget https://github.com/etcd-io/etcd/releases/download/v3.4.14/etcd-v3.4.14-linux-ppc64le.tar.gz
-tar -xzf etcd-v3.4.14-linux-ppc64le.tar.gz
+tar -xzvf etcd-v3.4.14-linux-ppc64le.tar.gz --no-same-owner
 cp etcd-v3.4.14-linux-ppc64le/etcd .
 rm -rf etcd-v3.4.14-linux-ppc64le.tar.gz etcd-v3.4.14-linux-ppc64le
 
