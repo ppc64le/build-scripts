@@ -69,8 +69,7 @@ if ! go build -v ./...; then
 fi
 
 echo "Testing $PACKAGE_PATH$PACKAGE_NAME with $PACKAGE_VERSION"
-go mod init
-go mod tidy
+
 if ! go test -v ./...; then
         echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
         exit 1
