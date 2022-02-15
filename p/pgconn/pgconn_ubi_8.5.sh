@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/jackc/pgconn.git
 # Tested on     : ubi 8.5
 # Language      : go
-# Travis-Check  : true
+# Travis-Check  : false
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sachin K {sachin.kakatkar@ibm.com}
 #
