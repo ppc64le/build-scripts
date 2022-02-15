@@ -45,8 +45,6 @@ node -v
 
 apt install -y npm 
 npm i -g npm
-apt install -y firefox
-npm install grunt --save-dev
 npm install -g grunt-cli
 
 #Clone repo
