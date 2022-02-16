@@ -20,7 +20,7 @@
 
 PACKAGE_PATH=github.com/IBM/
 PACKAGE_NAME=ibm-namespace-scope-operator
-PACKAGE_VERSION=v1.0.1
+PACKAGE_VERSION=${1:-v1.0.1}
 PACKAGE_URL=https://github.com/IBM/ibm-namespace-scope-operator
 
 # Install dependencies
