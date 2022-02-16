@@ -83,3 +83,7 @@ cd $WORKING_PATH
 
 #Build and test
 mvn verify -Dorg.ops4j.pax.url.mvn.repositories="https://repo1.maven.org/maven2@id=central"
+
+#The following failing tests are in parity with x86:
+#1. UTF8ZipFilesTest.testReadWinZipArchive:137 ? MalformedInput Input length = 1
+#2. UTF8ZipFilesTest.testReadWinZipArchiveForStream:165 ? MalformedInput Input len
