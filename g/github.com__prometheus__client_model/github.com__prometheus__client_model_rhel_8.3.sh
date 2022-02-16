@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : github.com/prometheus/client_model
-# Version       : v0.0.0-20150212101744-fa8ad6fec335
+# Version       : v0.0.0-20150212101744-fa8ad6fec335 , v0.1.0
 # Source repo   : https://github.com/prometheus/client_model
 # Tested on     : RHEL 8.3 , UBI 8.3
 # Language      : GO
@@ -20,7 +20,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=github.com/prometheus/client_model
-PACKAGE_VERSION=v0.0.0-20150212101744-fa8ad6fec335
+PACKAGE_VERSION=${1:-v0.0.0-20150212101744-fa8ad6fec335}
 PACKAGE_URL=https://github.com/prometheus/client_model
 
 yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git jq wget gcc-c++
