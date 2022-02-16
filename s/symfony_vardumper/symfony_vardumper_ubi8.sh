@@ -32,7 +32,7 @@ git clone $PACKAGE_URL $PACKAGE_NAME
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-composer require symfony/contracts:v4.4.0
+composer require symfony/contracts "^4.4"
 
 composer update
 
