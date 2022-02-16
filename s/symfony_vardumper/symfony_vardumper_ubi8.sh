@@ -32,7 +32,7 @@ git clone $PACKAGE_URL $PACKAGE_NAME
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-sed -i '28d' composer.json && sed -i '28i \ \ \ \ \ \ \ \ \"symfony/contracts": "self.version",' composer.json
+composer require symfony/contracts:v4.4.0
 
 composer update
 
