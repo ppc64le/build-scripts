@@ -119,3 +119,8 @@ if ! yarn test; then
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails" > /home/tester/output/version_tracker
 	exit 1
 fi
+
+#The following failing tests are in parity with x86:
+#FAIL Package:  packages/components/tests/es-test.js (5.902 s)
+#1› builds es/globals/js/feature-flags.js as ES5 code
+#2› builds es/globals/js/settings.js as ES5 code
