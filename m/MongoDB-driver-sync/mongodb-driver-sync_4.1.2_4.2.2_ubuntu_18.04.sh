@@ -24,7 +24,9 @@
 # Steps to test script
 # 1. Pull  mongodb 4.0.24 image from quay.io and create container 
 # 2. docker pull <MongoDB(version 4.0.24) ppc64le Image>
-# 3. docker run -d -p 27017:27017  <MongoDB(version 4.0.24) ppc64le Image> --dbpath=/tmp --bind_ip_all 
+# The mongoDB docker container needs to be started with the following command:
+# 3. docker run -d -p 27017:27017 <MongoDB(version 4.0.24) ppc64le Image> --dbpath=/tmp --setParameter enableTestCommands=1 --nojournal
+# the mongo-java-driver test container run with following command.
 # 4. docker run --network host -v /var/run/docker.sock:/var/run/docker.sock -it --name driver-sync-testcontainer docker.io/ppc64le/ubuntu:18.04
 # Last step with give a prompt inside the container, run this script in it
 
