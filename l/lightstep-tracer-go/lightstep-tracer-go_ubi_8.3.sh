@@ -30,5 +30,7 @@ go get -d -t $PACKAGE_NAME@$PACKAGE_VERSION
 
 cd ~/go/pkg/mod/$PACKAGE_NAME@$PACKAGE_VERSION
 go mod tidy
+#Build and test 
+#Note: 1 test case is failing on both power and Intel VMs
 go install
 go test
