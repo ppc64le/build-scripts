@@ -6,6 +6,8 @@
 # Version       : v0.0.0-20150212101744-fa8ad6fec335
 # Source repo   : https://github.com/prometheus/client_model
 # Tested on     : RHEL 8.3 , UBI 8.3
+# Language      : GO
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : BulkPackageSearch Automation <sethp@us.ibm.com>, Raju Sah <Raju.Sah#ibm.com>
 #
