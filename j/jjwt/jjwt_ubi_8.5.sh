@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : jjwt
-# Version       : master
+# Version       : f6d0679
 # Source repo   : https://github.com/jwtk/jjwt
 # Tested on     : UBI 8.5
 # Language      : Java
@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=jjwt
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-master}
+PACKAGE_VERSION=${1:-f6d0679}
 PACKAGE_URL=https://github.com/jwtk/jjwt
 
 
