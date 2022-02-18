@@ -23,8 +23,7 @@
 # Java version 11 or later must be installed.
 # ----------------------------------------------------------------------------
 # Steps to test script
-# 1.  Pull following mongodb image from quay.io and create container 
-# quay.io/opencloudio/ibm-mongodb@sha256:19eb7cca57c1876cf4e93a0b0a4814a7f4001e1026527f901e59e538c7b2945e
+# 1.  Pull following mongodb image from quay.io and create container.
 # 2. docker pull <MongoDB(version 4.2.6) ppc64le Image>
 # 3. docker run -d -p 27017:27017  <MongoDB(version 4.2.6) ppc64le Image> --dbpath=/tmp --bind_ip_all 
 # 4. docker run --network host -v /var/run/docker.sock:/var/run/docker.sock -it --name driver-legacy-testcontainer docker.io/ppc64le/ubuntu:18.04
