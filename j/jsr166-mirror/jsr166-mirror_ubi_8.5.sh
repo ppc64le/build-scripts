@@ -37,7 +37,7 @@ export JAVA_HOME=$HOME/jdk-9.0.4+11
 export PATH=$JAVA_HOME/bin:$PATH
 mkdir -pm 777 jdk/jdk9 
 #Path of jdk-9 is hardcoded in build.xml so coping into same dir.
-cp -R /root/jdk-9.0.4+11/*  /root/jdk/jdk9
+cp -R $HOME/jdk-9.0.4+11/*  $HOME/jdk/jdk9
   
 cd /opt/
 wget https://dlcdn.apache.org//ant/binaries/apache-ant-1.10.12-bin.zip
