@@ -25,10 +25,17 @@ PACKAGE_URL=https://github.com/codehaus/jsr166-mirror
 PACKAGE_VERSION=${1:-master}
 
 #Dependencies
-#yum install -y java-11-openjdk-devel git wget unzip
-yum install -y git wget unzip
+yum install -y java-11-openjdk-devel git wget unzip
 
 HOME=$(pwd)
+  
+cd /opt/
+wget https://dlcdn.apache.org//ant/binaries/apache-ant-1.10.12-bin.zip
+unzip apache-ant-1.10.12-bin.zip
+rm -rf apache-ant-1.10.12-bin.zip
+export ANT_HOME=/opt/apache-ant-1.10.12
+export PATH=/opt/apache-ant-1.10.12/bin:$PATH
+export ANT_OPTS=-Dfile.encoding=UTF8
 
 wget https://github.com/AdoptOpenJDK/openjdk9-binaries/releases/download/jdk-9.0.4%2B11/OpenJDK9U-jdk_ppc64le_linux_hotspot_9.0.4_11.tar.gz
 tar xf OpenJDK9U-jdk_ppc64le_linux_hotspot_9.0.4_11.tar.gz
@@ -38,14 +45,6 @@ export PATH=$JAVA_HOME/bin:$PATH
 mkdir -pm 777 jdk/jdk9 
 #Path of jdk-9 is hardcoded in build.xml so coping into same dir.
 \cp -R ./jdk-9.0.4+11/*  ./jdk/jdk9
-  
-cd /opt/
-wget https://dlcdn.apache.org//ant/binaries/apache-ant-1.10.12-bin.zip
-unzip apache-ant-1.10.12-bin.zip
-rm -rf apache-ant-1.10.12-bin.zip
-export ANT_HOME=/opt/apache-ant-1.10.12
-export PATH=/opt/apache-ant-1.10.12/bin:$PATH
-export ANT_OPTS=-Dfile.encoding=UTF8
 
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
