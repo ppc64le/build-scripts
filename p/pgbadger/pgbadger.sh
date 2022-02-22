@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #-----------------------------------------------------------------------------
 #
-# package       : pgbadger
+# Package       : pgbadger
 # Version       : v11.1, v11.2, v11.3
 # Source repo   : https://github.com/darold/pgbadger.git     
 # Tested on     : UBI 8.5
