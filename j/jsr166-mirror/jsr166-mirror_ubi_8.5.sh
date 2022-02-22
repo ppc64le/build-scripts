@@ -35,7 +35,7 @@ tar xf OpenJDK9U-jdk_ppc64le_linux_hotspot_9.0.4_11.tar.gz
 rm -rf OpenJDK9U-jdk_ppc64le_linux_hotspot_9.0.4_11.tar.gz
 export JAVA_HOME=$HOME/jdk-9.0.4+11
 export PATH=$JAVA_HOME/bin:$PATH
-mkdir -pm 700 jdk/jdk9 
+mkdir -pm 777 jdk/jdk9 
 #Path of jdk-9 is hardcoded in build.xml so coping into same dir.
 cp -R /root/jdk-9.0.4+11/*  /root/jdk/jdk9
   
