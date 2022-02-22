@@ -5,6 +5,8 @@
 # Version       : v11.1, v11.2, v11.3
 # Source repo   : https://github.com/darold/pgbadger.git     
 # Tested on     : UBI 8.5
+# Language      : Perl
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Saraswati Patra <saraswati.patra@ibm.com>
 #
