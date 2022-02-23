@@ -25,11 +25,11 @@ CFSSL_VERSION=1.5.0
 ARCH=$(uname -m)
 WORKSPACE_DIR=$(pwd)
 
-echo "------------------------------------"
-echo "WORKSPACE_DIR : $WORKSPACE_DIR"
-echo "contents of $WORKSPACE_DIR"
-ls -la
-echo "------------------------------------"
+SCRIPT=$(readlink -f $0)
+SCRIPT_DIR=$(dirname $SCRIPT)
+PATCH_FILE=$SCRIPT_DIR/cfssl_ppc64le.patch
+
+ls $PATCH_FILE
 
 rm -rf cfssl docker-light-baseimage docker-openldap
 
@@ -52,10 +52,7 @@ echo `ls`
 git clone https://github.com/osixia/docker-light-baseimage && cd docker-light-baseimage
 
 git checkout v$BASEIMAGE_VERSION
-echo `pwd`
-echo `ls /`
-
-git apply $WORKSPACE_DIR/cfssl_ppc64le.patch
+git apply $PATCH_FILE
 
 make build
 
