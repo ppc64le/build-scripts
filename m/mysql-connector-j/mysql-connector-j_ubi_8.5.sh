@@ -6,7 +6,7 @@
 # Version       : 8.0.28
 # Source repo	: https://github.com/mysql/mysql-connector-j.git
 # Tested on     : UBI 8.5
-# Language      : Node
+# Language      : Java
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Vikas Kumar <kumar.vikas@in.ibm.com>
