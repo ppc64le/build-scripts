@@ -55,7 +55,6 @@ if ! git checkout $PACKAGE_VERSION; then
         exit 0
 fi
 
-echo `pwd`
 
 if ! go build -v ./...; then
         echo "------------------$PACKAGE_NAME: build failed-------------------------"
