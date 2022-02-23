@@ -41,9 +41,12 @@ if ! [ $(command -v make) ]; then
 	yum install -y make
 fi
 
+echo `ls`
 git clone https://github.com/osixia/docker-light-baseimage && cd docker-light-baseimage
 
 git checkout v$BASEIMAGE_VERSION
+echo `pwd`
+echo `ls /`
 
 git apply $WORKSPACE_DIR/cfssl_ppc64le.patch
 
