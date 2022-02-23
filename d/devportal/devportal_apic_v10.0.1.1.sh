@@ -36,7 +36,7 @@ if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
     echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
-    exit 1
+    exit 0
 fi
 
 cd "$HOME_DIR"/$PACKAGE_NAME || exit 1
@@ -46,7 +46,7 @@ if ! composer install; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
-    exit 1
+    exit 0
 fi
 
 #install_success_but_test not available .
