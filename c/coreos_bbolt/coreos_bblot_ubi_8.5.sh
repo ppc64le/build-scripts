@@ -55,7 +55,6 @@ if ! git checkout $PACKAGE_VERSION; then
         exit 0
 fi
 
-echo `pwd`
 
 if ! go build -v ./...; then
         echo "------------------$PACKAGE_NAME: build failed-------------------------"
@@ -72,4 +71,4 @@ else
         exit 0
 fi
 
-#Tests are in Parity with Intel.Check README.md for more info
+
