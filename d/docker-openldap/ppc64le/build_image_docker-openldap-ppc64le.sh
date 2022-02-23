@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: docker-light-baseimage
-# Version	: v1.3.2
-# Source repo	: https://github.com/osixia/docker-light-baseimage
-# Tested on	: CentOS 8
+# Package	: docker-openldap
+# Version	: master
+# Source repo	: https://github.ibm.com/velox/openldap
+# Tested on	: UBI 8.4
 # Language      : Shell, Python
 # Travis-Check  : False
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>
+# Maintainer	: Vaibhav Bhadade <vaibhav.bhadade@ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -28,24 +28,24 @@ rm -rf cfssl docker-light-baseimage docker-openldap
 
 # Install docker if not found
 if ! [ $(command -v docker) ]; then
-	sudo yum install -y docker
+	yum install -y docker
 fi
 
 # Install git if not found
 if ! [ $(command -v git) ]; then
-	sudo yum install -y git
+	yum install -y git
 fi
 
 # Install make if not found
 if ! [ $(command -v make) ]; then
-	sudo yum install -y make
+	yum install -y make
 fi
 
 git clone https://github.com/osixia/docker-light-baseimage && cd docker-light-baseimage
 
 git checkout v$BASEIMAGE_VERSION
 
-git apply ../cfssl_ppc64le.patch
+git apply $WORKSPACE_DIR/cfssl_ppc64le.patch
 
 make build
 
