@@ -24,6 +24,13 @@ CFSSL_VERSION=1.5.0
 
 ARCH=$(uname -m)
 WORKSPACE_DIR=$(pwd)
+
+echo "------------------------------------"
+echo "WORKSPACE_DIR : $WORKSPACE_DIR"
+echo "contents of $WORKSPACE_DIR"
+ls -la
+echo "------------------------------------"
+
 rm -rf cfssl docker-light-baseimage docker-openldap
 
 # Install docker if not found
