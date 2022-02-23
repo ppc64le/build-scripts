@@ -72,4 +72,4 @@ else
         exit 0
 fi
 
-#Tests are in Parity with Intel.Check README.md for more info
+
