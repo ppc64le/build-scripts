@@ -55,5 +55,14 @@ if ! go build -a -v; then
     exit 1
 fi
 
-#Tests not available(Test N/A).
+echo "Testing $PACKAGE_PATH$PACKAGE_NAME with $PACKAGE_VERSION"
+
+if ! go test -v ./...; then
+        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+        exit 1
+else
+        echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+        exit 0
+fi
+
 
