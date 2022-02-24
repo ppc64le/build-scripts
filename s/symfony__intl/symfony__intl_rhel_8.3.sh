@@ -1,11 +1,14 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: symfony/intl
-# Version	: 4
+# Version	: 4, v4.8.8, v4.8.18
 # Source repo	: https://github.com/symfony/intl
-# Tested on	: RHEL 8.3
+# Tested on	: RHEL 8.3, ubi 8.5
+# Language      : PHP
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
+# Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>, Apurva Agrawal <Apurva.Agrawal3@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.

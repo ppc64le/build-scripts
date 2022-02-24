@@ -1,13 +1,14 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: VarDumper
-# Version	: 5.3
+# Version	: 5.3, v4.4.8, v4.4.18
 # Source repo	: https://github.com/symfony/var-dumper
 # Tested on	: UBI 8.5
-# Language      : GO
+# Language      : PHP
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>
+# Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>, Apurva Agrawal <Apurva.Agrawal3@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
