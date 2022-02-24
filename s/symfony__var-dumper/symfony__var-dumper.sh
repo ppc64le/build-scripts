@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=VarDumper
-PACKAGE_VERSION={1:-5.3}
+PACKAGE_VERSION=${1:-v5.3.0}
 PACKAGE_URL=https://github.com/symfony/var-dumper
 
 yum -y update && yum install -y git php php-json php-dom php-mbstring zip unzip
