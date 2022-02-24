@@ -29,4 +29,4 @@ go get $PACKAGE_NAME@$PACKAGE_VERSION
 cd ~/go/pkg/mod/$PACKAGE_NAME@$PACKAGE_VERSION
 go mod tidy
 go install
-go test
+go test ./...
