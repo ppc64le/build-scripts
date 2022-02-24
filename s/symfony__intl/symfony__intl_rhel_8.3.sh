@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=symfony/intl
-PACKAGE_VERSION=${1:-v4.0.0}
+PACKAGE_VERSION=4
 PACKAGE_URL=https://github.com/symfony/intl
 
 yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git jq curl php php-curl php-dom php-mbstring php-json nodejs make gcc-c++ patch diffutils php-gd php-pecl-zip
