@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Origin: https://github.com/docker-library/mongo/blob/master/4.4/docker-entrypoint.sh
+# This file has been adapted from the original work at "https://github.com/docker-library/mongo/blob/master/4.4/docker-entrypoint.sh" to build on Power
 #
 set -Eeuo pipefail
 

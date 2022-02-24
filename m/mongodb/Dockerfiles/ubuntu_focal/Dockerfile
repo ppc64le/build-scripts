@@ -1,4 +1,4 @@
-# Origin: https://github.com/CrimsonGlory/mongo_ppc64le/blob/master/Dockerfile
+# This file has been adapted from the original work at "https://github.com/CrimsonGlory/mongo_ppc64le/blob/master/Dockerfile" to build on Power
 #
 FROM ubuntu:focal
 # add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
