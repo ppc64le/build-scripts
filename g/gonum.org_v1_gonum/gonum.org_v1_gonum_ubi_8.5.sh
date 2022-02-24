@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME="gonum"
-PACKAGE_VERSION=${1:-4340aa3071a0}
+PACKAGE_VERSION=${1:-v0.9.3}
 PACKAGE_URL="https://github.com/gonum/gonum"
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
