@@ -2,10 +2,10 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : foundationdb
-# Version       : 7.0.0
-# Source repo   : https://github.com/vikasgupta8/foundationdb
+# Version       : master
+# Source repo   : https://github.com/apple/foundationdb
 # Tested on     : UBI 8.4
-# Language      : GO
+# Language      : C, C++
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer's  : Vikas Gupta <vikas.gupta8@ibm.com>
@@ -19,19 +19,15 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=foundationdb
-PACKAGE_PATH=github.com/eclipse-vertx/vert.x
-PACKAGE_VERSION=${1:-7.0.0}
-PACKAGE_URL=https://github.com/vikasgupta8/foundationdb
+#PACKAGE_PATH=github.com/eclipse-vertx/vert.x
+#PACKAGE_VERSION=${1:-7.0.0}
+PACKAGE_URL=https://github.com/apple/foundationdb
 
-yum install -y wget make maven gcc-c++ openssl-devel tar nano python3 cmake glibc-static libstdc++-static --skip-broken
+yum install -y wget make maven gcc-c++ openssl-devel tar nano python3 cmake glibc-static libstdc++-static java-1.8.0-openjdk-devel lz4-devel
+yum install -y perl-Test-Simple perl-IPC-Cmd perl-Test-Harness perl-Math-BigInt perl-Data-Dumper perl-Pod-Html
 
-yum install -y java-1.8.0-openjdk-devel lz4-devel
-
-#dnf -y --disableplugin=subscription-manager install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-#yum install -y mono-devel
-
-yum install -y  perl-Test-Simple perl-IPC-Cmd perl-Test-Harness perl-Math-BigInt perl-Data-Dumper
-yum install -y --nobest  perl-Pod-Html
+dnf -y --disableplugin=subscription-manager install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+yum install -y mono-devel
 
 ln -s /usr/bin/python3 /usr/bin/python
 python --version
@@ -54,9 +50,6 @@ export PATH=$PATH:/bin/go/bin
 export GOPATH=/home/tester/go
 export PATH=$GOPATH/bin:$PATH
 export GO111MODULE=on
-
-# --------- Installing cmake version 3.21.2 -----------------
-echo "--------- Installing cmake version 3.21.2 -----------------"
 
 # --------- Installing ninja version v1.4.0 -----------------
 echo "--------- Installing ninja version v1.4.0 -----------------"
@@ -83,14 +76,16 @@ make
 make install
 
 cd $HOME_DIR
-git clone --recurse https://github.com/vikasgupta8/foundationdb.git
-#git clone --recurse $PACKAGE_URL
+#git clone --recurse https://github.com/vikasgupta8/foundationdb.git
+git clone --recurse $PACKAGE_URL
 
-#cd $PACKAGE_NAME
+cd $PACKAGE_NAME
 
-#mkdir build
-#cd build
+mkdir build
+cd build
 
-#cmake -G Ninja ..
+cmake -S .. -D RUN_JUNIT_TESTS=ON -D RUN_JAVA_INTEGRATION_TESTS=ON -G Ninja
 
- 
+ninja -v -j1 all packages strip_targets
+
+ctest -j1 --no-compress-output -T test --output-on-failure
