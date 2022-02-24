@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=VarDumper
-PACKAGE_VERSION={1:-5.3}
+PACKAGE_VERSION=${1:-v5.3.0}
 PACKAGE_URL=https://github.com/symfony/var-dumper
 
 yum -y update && yum install -y git php php-json php-dom php-mbstring zip unzip
@@ -41,6 +41,8 @@ cd $HOME_DIR/$PACKAGE_NAME
 composer require --dev phpunit/phpunit --with-all-dependencies ^7
 
 cd $HOME_DIR/$PACKAGE_NAME
+git reset --hard
+git pull
 git checkout $PACKAGE_VERSION
 if ! composer install; then
      	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
