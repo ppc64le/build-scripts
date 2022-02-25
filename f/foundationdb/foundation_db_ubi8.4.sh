@@ -19,8 +19,6 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=foundationdb
-#PACKAGE_PATH=github.com/eclipse-vertx/vert.x
-#PACKAGE_VERSION=${1:-7.0.0}
 PACKAGE_URL=https://github.com/apple/foundationdb
 
 yum install -y wget make maven gcc-c++ openssl-devel tar nano python3 cmake glibc-static libstdc++-static java-1.8.0-openjdk-devel lz4-devel
@@ -76,7 +74,6 @@ make
 make install
 
 cd $HOME_DIR
-#git clone --recurse https://github.com/vikasgupta8/foundationdb.git
 git clone --recurse $PACKAGE_URL
 
 cd $PACKAGE_NAME
