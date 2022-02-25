@@ -1,9 +1,9 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: lz4
-# Version	: v2.5.2, v1.0.1
+# Version	: v2.5.2, v1.0.1, v2.4.0
 # Source repo	: https://github.com/pierrec/lz4
-# Tested on	: ubi 8.3
+# Tested on	: ubi 8.3, 8.5
 # Language      : GO
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com> / Siddhesh Ghadi <Siddhesh.Ghadi@ibm.com>
