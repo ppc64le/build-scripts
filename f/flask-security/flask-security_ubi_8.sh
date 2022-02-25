@@ -44,7 +44,7 @@ cd /home/tester/$PACKAGE_FOLDER
 echo " --------------------------------- checkout version  $PACKAGE_VERSION ------------------------------------"
 git checkout $PACKAGE_VERSION
 
-cd $PACKAGE_NAME
+
 
 echo " --------------------------------- installing requirements ------------------------------------"
 pip install -r requirements/dev.txt
