@@ -21,7 +21,7 @@
 PACKAGE_NAME=foundationdb
 PACKAGE_URL=https://github.com/apple/foundationdb
 
-yum install -y wget make maven gcc-c++ openssl-devel tar nano python3 cmake glibc-static libstdc++-static java-1.8.0-openjdk-devel lz4-devel
+yum install -y git wget make maven gcc-c++ openssl-devel tar nano python3 cmake glibc-static libstdc++-static java-1.8.0-openjdk-devel lz4-devel
 yum install -y perl-Test-Simple perl-IPC-Cmd perl-Test-Harness perl-Math-BigInt perl-Data-Dumper perl-Pod-Html
 
 dnf -y --disableplugin=subscription-manager install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
