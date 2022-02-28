@@ -50,7 +50,7 @@ cd $PACKAGE_SOURCE_ROOT
 git clone https://github.com/pierrec/xxHash
 cd xxHash
 git checkout v0.1.5
-go install
+go install ./...
 
 cd $PACKAGE_SOURCE_ROOT
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
@@ -63,7 +63,7 @@ fi
 cd $PACKAGE_SOURCE_ROOT/$PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if ! go install; then
+if ! go install ./...; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
