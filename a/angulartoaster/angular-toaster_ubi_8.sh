@@ -1,11 +1,11 @@
 # ----------------------------------------------------------------------------
 #
-# Package       : angular-translate
-# Version       : 2.18.1
-# Source repo   : https://github.com/angular-translate/angular-translate
-# Tested on     : ubuntu_18.04
+# Package       : angular-toaster
+# Version       : 1.2.0
+# Source repo   : https://github.com/jirikavi/AngularJS-Toaster 
+# Tested on     : UBI 8.4
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Priya Seth <sethp@us.ibm.com>
+# Maintainer    : Ankit Paraskar <ankit.paraskar@ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -16,30 +16,34 @@
 # ----------------------------------------------------------------------------
 #!/bin/bash
 
-# Install dependencies.
-sudo apt-get update -y
-sudo apt-get install -y git nodejs npm phantomjs curl
-sudo npm install -g bower
+PACKAGE_NAME=${PACKAGE_NAME}
+PACKAGE_VERSION=${PACKAGE_VERSION}
+PACKAGE_URL=${PACKAGE_URL}
 
-#Install nvm
-curl https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh | bash
+yum -y update && yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git gcc gcc-c++ libffi libffi-devel ncurses git jq make cmake
 
-source ~/.nvm/nvm.sh
-if [ $? -ne 0 ]
-then
-        echo "FAILED to install required NPM version - re-run script with bash"
-        exit
+npm install n -g && n latest && npm install -g npm@latest && export PATH="$PATH" && npm install --global yarn grunt-bump xo testem acorn
+
+mkdir -p /home/tester/output
+cd /home/tester
+
+OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
+
+if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
+    	echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
+		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/clone_fails
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails" > /home/tester/output/version_tracker
+    	exit 0
 fi
-nvm install stable
-nvm use stable
 
-#Set environment variables
-export QT_QPA_PLATFORM=offscreen
+cd /home/tester/$PACKAGE_NAME
+git checkout $PACKAGE_VERSION
+PACKAGE_VERSION=$(jq -r ".version" package.json)
+# run the test command from test.sh
 
-# Clone and build source.
-git clone https://github.com/angular-translate/angular-translate
-cd angular-translate
-npm install
-#Disabling test execution as karma:unit tests are failing due to un-availibilty
-#of headless chrome in Power, these are not expected to have any functional impact
-#npm test
+if ! npm install && npm audit fix && npm audit fix --force; then
+     	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+	echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/install_fails
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails" > /home/tester/output/version_tracker
+	exit 1
+fi
