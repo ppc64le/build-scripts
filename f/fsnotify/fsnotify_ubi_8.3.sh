@@ -30,3 +30,6 @@ cd ~/go/pkg/mod/$PACKAGE_NAME@$PACKAGE_VERSION
 go mod tidy
 go install
 go test
+
+# As per this link : https://github.com/ppc64le/build-scripts/pull/1805#issuecomment-1050598149 & https://github.com/fsnotify/fsnotify/search?q=TestInotifyOverflow&type=issues
+# Failures are looks expected.
