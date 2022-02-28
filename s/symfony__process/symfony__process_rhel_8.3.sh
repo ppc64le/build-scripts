@@ -1,11 +1,14 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: symfony/process
-# Version	: 3.4.36
+# Version	: 3.4.36, v4.4.0
 # Source repo	: https://github.com/symfony/process
-# Tested on	: RHEL 8.3
+# Tested on	: RHEL 8.3, UBI 8.4
+# Language      : PHP
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
+# Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>,Apurva Agrawal <Apurva.Agrawal3@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -16,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=symfony/process
-PACKAGE_VERSION=3.4.36
+PACKAGE_VERSION=${1:-v4.4.0}
 PACKAGE_URL=https://github.com/symfony/process
 
 yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git jq curl php php-curl php-dom php-mbstring php-json nodejs make gcc-c++ patch diffutils php-gd php-pecl-zip
