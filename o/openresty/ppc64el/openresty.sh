@@ -23,13 +23,19 @@ ARCH=$(uname -m)
 
 
 # common deps
-yum install -y unzip make gcc-c++ tar findutils sudo wget yum ncurses-devel patch perl curl tar cpan postgresql-devel pcre-devel openssl-devel dos2unix 
+yum install -y unzip make gcc-c++ tar findutils sudo wget yum ncurses-devel patch perl curl tar cpan postgresql-devel pcre-devel openssl-devel dos2unix libpq 
 
 PACKAGE_NAME="openresty"
 PACKAGE_VERSION="1.19.9.1"
 ROLLBACK_VERSION="1.17.8.2"
 SOURCE_ROOT="$(pwd)"
 PATCH_URL="https://raw.githubusercontent.com/linux-on-ibm-z/scripts/master/OpenResty/1.19.3.2/patch"
+
+SCRIPT=$(readlink -f $0)
+SCRIPT_DIR=$(dirname $SCRIPT)
+PATCH_FILE=$SCRIPT_DIR/LuaJIT_2_1.patch
+
+ls $PATCH_FILE
 cd $SOURCE_ROOT
 wget https://openresty.org/download/openresty-${PACKAGE_VERSION}.tar.gz
 tar -xvf openresty-${PACKAGE_VERSION}.tar.gz
@@ -56,7 +62,7 @@ patch -l $SOURCE_ROOT/openresty-${PACKAGE_VERSION}/configure configure.diff
 
 # Apply lj_ccallback.c file patch 
 cd $SOURCE_ROOT/openresty-${PACKAGE_VERSION}
-patch -l  $SOURCE_ROOT/openresty-${PACKAGE_VERSION}/bundle/LuaJIT-2.1-20210510/src/lj_ccallback.c  $SOURCE_ROOT/LuaJIT_2_1.patch
+patch -l  $SOURCE_ROOT/openresty-${PACKAGE_VERSION}/bundle/LuaJIT-2.1-20210510/src/lj_ccallback.c  $PATCH_FILE
 
 # add redis2-nginx-module-0.15 module
 cd $SOURCE_ROOT
