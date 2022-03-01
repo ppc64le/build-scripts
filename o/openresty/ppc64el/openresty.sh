@@ -21,9 +21,8 @@ set -e
 set -x
 ARCH=$(uname -m)
 
-
 # common deps
-yum install -y unzip make gcc-c++ tar findutils sudo wget yum ncurses-devel patch perl curl tar cpan postgresql-devel pcre-devel openssl-devel dos2unix libpq 
+yum install -y unzip make gcc-c++ tar findutils sudo wget yum ncurses-devel patch perl curl tar cpan postgresql-devel pcre-devel openssl-devel dos2unix  
 
 PACKAGE_NAME="openresty"
 PACKAGE_VERSION="1.19.9.1"
