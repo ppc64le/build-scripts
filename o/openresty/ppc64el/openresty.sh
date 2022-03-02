@@ -5,8 +5,8 @@
 # Version       : 1.19.9.1
 # Source repo   :  https://openresty.org/download/openresty
 # Tested on	: UBI 8.5
-# Language      : Python
-# Travis-Check  : True
+# Language      : c/c++
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Vaibhav Bhadade <vaibhav.bhadade@ibm.com> 
 #
