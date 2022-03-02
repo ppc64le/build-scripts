@@ -10,6 +10,7 @@ GITHUB_BUILD_SCRIPT_BASE_REPO = "build-scripts"
 GITHUB_BUILD_SCRIPT_BASE_OWNER = "ppc64le"
 HOME = os.getcwd()
 
+package_data = {}
 def trigger_basic_validation_checks(file_name):
     key_checks = {
         "# Package": "package_name",
@@ -31,7 +32,6 @@ def trigger_basic_validation_checks(file_name):
     script_path = "{}/{}".format(HOME, file_name)
 
     if os.path.exists(script_path):
-        package_data = {}
         all_lines = []
         with open(script_path) as script_file_handler:
             all_lines = script_file_handler.readlines()
@@ -106,8 +106,14 @@ def trigger_build_validation_travis(pr_number):
         if file_name.endswith('.sh') and "dockerfile" not in file_name.lower() and status != "removed":
             # perform basic validation check
             trigger_basic_validation_checks(file_name)
-            # Build/test script files
-            trigger_script_validation_checks(file_name)
+            
+            #check Travis-check from package header  
+            travis_check=package_data['travis_check'].lower()
+            if travis_check=="true":
+                # Build/test script files
+                trigger_script_validation_checks(file_name)
+            else:
+                print("Skipping Build script validation as Travis-Check flag is set to False")
             # Keep track of validated files.
             validated_file_list.append(file_name)
     
