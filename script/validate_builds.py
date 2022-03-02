@@ -18,7 +18,7 @@ def trigger_basic_validation_checks(file_name):
         "# Tested on": "",
         "# Maintainer": "maintainer",
         "# Language": "package_type",
-        "# Travis-Check": ""
+        "# Travis-Check": "travis_check"
     }
     matched_keys = []
     # Check if apache license file exists
@@ -47,7 +47,7 @@ def trigger_basic_validation_checks(file_name):
                         package_data["distro_version"] = distro_data[-1]
                     elif key in line:
                         matched_keys.append(key)
-                        package_data[key_checks[key]] = line.split(':')[-1].strip()
+                        package_data[key_checks[key]] = line.split(':',1)[-1].strip()
             except IndexError as ie:
                 raise IndexError(str(ie))
         # check if all required keys are available
@@ -119,3 +119,4 @@ def trigger_build_validation_travis(pr_number):
 
 if __name__=="__main__":
     trigger_build_validation_travis(sys.argv[1])
+    # trigger_basic_validation_checks(sys.argv[1])
