@@ -58,6 +58,7 @@ def trigger_basic_validation_checks(file_name):
             print("Basic Validation Checks Failed!!!")
             print("Requried keys: {}".format(",".join(key_checks.keys())))
             print("Found keys: {}".format(",".join(matched_keys)))
+            print("Missing required keys: {}".format(",".join(set(key_checks.keys())-set(matched_keys))))
             raise ValueError("Basic Validation Checks Failed!!!")
     else:
         raise ValueError("Build script not found.")
@@ -113,7 +114,7 @@ def trigger_build_validation_travis(pr_number):
                 # Build/test script files
                 trigger_script_validation_checks(file_name)
             else:
-                print("Skipping Build script validation as Travis-Check flag is set to False")
+                print("Skipping Build script validation for {} as Travis-Check flag is set to False".format(file_name))
             # Keep track of validated files.
             validated_file_list.append(file_name)
     
@@ -125,4 +126,3 @@ def trigger_build_validation_travis(pr_number):
 
 if __name__=="__main__":
     trigger_build_validation_travis(sys.argv[1])
-    # trigger_basic_validation_checks(sys.argv[1])
