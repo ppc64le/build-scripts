@@ -31,21 +31,15 @@ if [ -d "crass" ] ; then
 fi
 
 
-yum install -y git ruby procps yum-utils wget
+yum install git ruby ruby-devel -y
+gem install bundle
 
-gem install bundle 
-gem install rake 
-curl -sSL https://rvm.io/mpapis.asc | gpg2 --import - 
-curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import - 
-curl -L https://get.rvm.io | bash -s stable 
-source /etc/profile.d/rvm.sh
-rvm install ruby-2.7
-gem install bundler:1.17.3
-gem install kramdown-parser-gfm
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 
-git clone ${PACKAGE_URL} ${PACKAGE_NAME}
-cd ${PACKAGE_NAME}
-git checkout ${PACKAGE_VERSION}
+export BUNDLE_GEMFILE=$PWD/Gemfile
+
 ret=$?
 if [ $ret -eq 0 ] ; then
  echo "$PACKAGE_VERSION found to checkout "
@@ -56,13 +50,13 @@ fi
 
 #Build and test
 
-bundle _1.17.3_ install
+bundle install
 
 ret=$?
 if [ $ret -ne 0 ] ; then
   echo "Build failed "
 else
-  bundle _1.17.3_ exec rake
+  bundle exec rake
   ret=$?
   if [ $ret -ne 0 ] ; then
     echo "Tests failed "
