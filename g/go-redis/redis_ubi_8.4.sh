@@ -79,4 +79,4 @@ else
     echo "Build & unit tests Successful "
   fi
 fi
-# Observed 3 test failures for the version v8.0.0-beta.5, which are in parity with Intel.
+# Observed 3 test failures for the version v8.0.0-beta.5, which are in parity with Intel. Details are provided in the README file.
