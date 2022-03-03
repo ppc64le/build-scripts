@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/jackc/pgtype.git
 # Tested on     : rhel 8.2
 # Language      : go
-# Travis-Check  : false
+# Travis-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sachin K {sachin.kakatkar@ibm.com}
 #
