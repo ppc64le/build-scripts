@@ -18,7 +18,6 @@
 #
 # ----------------------------------------------------------------------------
 
-
 PACKAGE_NAME=go-yaml/yaml
 #PACKAGE_VERSION is configurable can be passed as an argument.
 PACKAGE_VERSION=${1:-v2.2.8}
@@ -39,13 +38,12 @@ if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
     echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
-    exit 1
+    exit 0
 fi
 
 # Build and Test yaml
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-
 export GO111MODULE="auto"
 
 if ! go get -v -t ./...; then
