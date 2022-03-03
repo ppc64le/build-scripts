@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/symfony/process
 # Tested on	: RHEL 8.3, UBI 8.4
 # Language      : PHP
-# Travis-Check  : True
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>, Apurva Agrawal <Apurva.Agrawal3@ibm.com>
 #
