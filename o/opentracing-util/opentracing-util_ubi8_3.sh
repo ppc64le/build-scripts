@@ -2,6 +2,7 @@
 #
 # Package       : opentracing-util 
 # Version       : 0.33.0
+# Language      : Java
 # Source repo   : https://github.com/opentracing/opentracing-java
 # Tested on     : UBI 8.3
 # Script License: Apache-2.0 License    
@@ -14,14 +15,11 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
 #!/bin/bash
 
 #Variables
 PACKAGE_URL=https://github.com/opentracing/opentracing-java.git
-PACKAGE_VERSION=0.33.0
-
-yum update -y 
+PACKAGE_VERSION="${1:-0.33.0}"
 
 #Install required files
 yum install -y git maven
@@ -35,9 +33,3 @@ git checkout $PACKAGE_VERSION
 mvn install
 
 echo "Complete!"
-
-
-
-
-
-
