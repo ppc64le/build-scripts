@@ -27,7 +27,6 @@ PACKAGE_URL=https://github.com/go-yaml/yaml.git
 if [ -d "$PACKAGE_NAME" ] ; then
   rm -rf $PACKAGE_NAME
   echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"  
- 
 fi
 
 # Dependency installation
