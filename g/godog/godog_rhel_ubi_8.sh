@@ -1,3 +1,23 @@
+#!/bin/bash -e
+# -----------------------------------------------------------------------------
+#
+# Package	: godog
+# Version	: v2.0.1
+# Source repo	: https://github.com/cucumber/godog
+# Tested on	: ubi 8.5
+# Language      : GO
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
+# Maintainer	: BulkPackageSearch Automation {maintainer}
+#
+# Disclaimer: This script has been tested in root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
+
 PACKAGE_NAME=github.com/cucumber/godog/cmd/godog@v0.12.0
 PACKAGE_VERSION=v0.12.0
 PACKAGE_URL=${PACKAGE_URL}
