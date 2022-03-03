@@ -2,6 +2,7 @@
 #
 # Package       : jmx_prometheus_javaagent
 # Version       : parent-0.14.0
+# Language      : Java 
 # Source repo   : https://github.com/prometheus/jmx_exporter
 # Tested on     : UBI 8.3
 # Script License: Apache-2.0 License
@@ -14,19 +15,11 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
 #!/bin/bash
 
 #Variables
 PACKAGE_URL=https://github.com/prometheus/jmx_exporter.git
-PACKAGE_VERSION=parent-0.14.0
-
-echo "Usage: $0 [<PACKAGE_VERSION>]"
-echo "PACKAGE_VERSION is an optional parameter whose default value is parent-0.14.0, not all versions are supported."
-
-PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
-
-yum update -y 
+PACKAGE_VERSION="${1:-parent-0.14.0}"
 
 #Install required files
 yum install -y git maven
@@ -40,8 +33,3 @@ git checkout $PACKAGE_VERSION
 mvn install
 
 echo "Complete!"
-
-
-
-
-
