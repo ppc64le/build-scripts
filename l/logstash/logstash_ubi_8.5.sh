@@ -38,14 +38,11 @@ curl -L https://get.rvm.io | bash -s stable
 source /etc/profile.d/rvm.sh
 rvm install jruby
 export PATH=$PATH:/usr/local/rvm/rubies/jruby-9.2.9.0/bin/
-
 source /etc/profile.d/rvm.sh;
 OS_NAME=`python3 -c "os_file_data=open('/etc/os-release').readlines();os_info = [i.replace('PRETTY_NAME=','').strip() for i in os_file_data if i.startswith('PRETTY_NAME')];print(os_info[0])"`
-
 #install previous version of bundler
 gem install bundler:1.17.3
 HOME_DIR=`pwd`
-
 
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
     	echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
