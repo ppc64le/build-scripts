@@ -43,7 +43,7 @@ go version
 
 cd $SOURCE_ROOT
 wget https://github.com/protocolbuffers/protobuf/releases/download/v3.11.2/protobuf-all-3.11.2.tar.gz
-tar -xzf protobuf-all-3.11.2.tar.gz
+tar -xzf protobuf-all-3.11.2.tar.gz  --no-same-owner
 cd "protobuf-3.11.2"
 ./autogen.sh
 ./configure
