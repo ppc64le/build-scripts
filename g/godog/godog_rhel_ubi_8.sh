@@ -5,8 +5,8 @@
 # Version	: v2.0.1
 # Source repo	: https://github.com/cucumber/godog
 # Tested on	: ubi 8.5
-# Language      : GO
-# Travis-Check  : True
+# Language      : go
+# Travis-Check  : false 
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation {maintainer}
 #
@@ -58,4 +58,3 @@ if ! go test ./...; then
         		exit 0
 		fi
 
-echo "done till here"
