@@ -1,9 +1,12 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package       : kiali
 # Version       : f72ddd308c155aa00bd492a423b5aebc88b5922f
 # Source repo   : https://github.com/kiali/kiali/
-# Tested on     : ubi: 8.4
+# Tested on     : UBI 8.4
+# Language      : go
+# Travis-Check  : True
 # Script License: Apache License 2.0
 # Maintainer's  : Nishikant Thorat <Nishikant.Thorat@ibm.com>
 #
@@ -16,7 +19,7 @@
 #
 # ----------------------------------------------------------------------------
 #Docker must be installed
-#!/bin/bash
+set -ex
 
 yum update -y
 yum install -y gcc
