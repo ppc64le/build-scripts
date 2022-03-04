@@ -29,7 +29,7 @@ if [ -d "$PACKAGE_NAME" ] ; then
   echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"  
 fi
 
-yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git jq curl make gcc-c++ procps gnupg2
+yum -y update 
 yum install ruby -y && yum install -y libcurl-devel libffi-devel ruby-devel ruby-devel.ppc64le redhat-rpm-config sqlite sqlite-devel java-1.8.0-openjdk-devel
 gem install bundle && gem install bundler:1.17.3 && gem install rake
 curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
