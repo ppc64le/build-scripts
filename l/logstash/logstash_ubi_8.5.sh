@@ -27,7 +27,6 @@ PACKAGE_URL=https://github.com/logstash-plugins/logstash-filter-geoip.git
 if [ -d "$PACKAGE_NAME" ] ; then
   rm -rf $PACKAGE_NAME
   echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"  
- 
 fi
 
 yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git jq curl make gcc-c++ procps gnupg2
