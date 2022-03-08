@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : error-stack-parser
-# Version       : v2.0.5,v2.0.7
+# Version       : v2.0.5,v2.0.6,v2.0.7
 # Source repo   : https://github.com/stacktracejs/error-stack-parser
 # Tested on	: UBI 8.5
 # Language      : Node
