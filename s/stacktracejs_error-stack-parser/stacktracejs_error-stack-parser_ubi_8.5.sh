@@ -29,8 +29,6 @@ tar -xvf phantomjs-2.1.1-linux-ppc64.tar.bz2
 ln -s /phantomjs-2.1.1-linux-ppc64/bin/phantomjs /bin/phantomjs
 export PATH=$PATH:/phantomjs-2.1.1-linux-ppc64/bin/phantomjs
 
-phantomjs --version
-
 # build nodejs
 NODE_VERSION=v12.22.1
 #installing nvm
