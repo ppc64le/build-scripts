@@ -1,4 +1,4 @@
-# Build CockroachDB v20.2.17 docker image
+# Build CockroachDB v21.2.6 docker image
 
 Please find the instructions to build UBI 8 based docker image of
 CockroachDB v21.2.6 below.
