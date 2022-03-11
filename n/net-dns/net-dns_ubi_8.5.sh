@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=net-dns
-PACKAGE_VERSION=${1:-0.8.0}
+PACKAGE_VERSION=${1:-v0.8.0}
 PACKAGE_URL=https://github.com/bluemonk/net-dns.git
 
 
