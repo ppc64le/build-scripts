@@ -23,7 +23,7 @@ Enable execute permissions for the build script and run it as:
 
 # Known issues
 
-. The tests in the following packages fail due to floating point precision issues (rounding off
+1. The tests in the following packages fail due to floating point precision issues (rounding off
 differences) and floating point arithmetic differences between P and X. Zen does not use floating
 point values and the community agreed that this does not affect functionality, so ignoring these
 failures.
