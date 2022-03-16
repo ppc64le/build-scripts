@@ -1,10 +1,13 @@
+#!/bin/bash -e
+
 # -----------------------------------------------------------------------------
 #
 # Package	: lz4
-# Version	: v2.5.2, v1.0.1
+# Version	: v2.5.2, v1.0.1, v2.4.0
 # Source repo	: https://github.com/pierrec/lz4
-# Tested on	: ubi 8.3
+# Tested on	: ubi 8.3, 8.5
 # Language      : GO
+# Travis-Check      : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com> / Siddhesh Ghadi <Siddhesh.Ghadi@ibm.com>
 #
@@ -16,7 +19,6 @@
 #
 # ----------------------------------------------------------------------------
 
-#!/bin/bash
 PACKAGE_NAME="lz4"
 PACKAGE_URL="https://github.com/pierrec/lz4"
 PACKAGE_VERSION=${1:-"v2.5.2"}
@@ -48,7 +50,7 @@ cd $PACKAGE_SOURCE_ROOT
 git clone https://github.com/pierrec/xxHash
 cd xxHash
 git checkout v0.1.5
-go install
+go install ./...
 
 cd $PACKAGE_SOURCE_ROOT
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
@@ -61,7 +63,7 @@ fi
 cd $PACKAGE_SOURCE_ROOT/$PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if ! go install; then
+if ! go install ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
