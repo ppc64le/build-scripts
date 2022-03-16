@@ -64,5 +64,22 @@ PATH="/root/.phpenv/bin:${PATH}"
 
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/bin --filename=composer
 
-composer require --dev phpunit/phpunit --with-all-dependencies ^8
+composer require --dev phpunit/phpunit --with-all-dependencies 
 
+export CRYPTOGRAPHY_DONT_BUILD_RUST=1
+pip3 install --upgrade homeassistant
+yum -y install rustc
+yum -y install cargo
+sudo pip3 install setuptools_rust
+pip3 install --user --upgrade nox
+
+if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
+  	echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
+	echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/clone_fails
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails" > /home/tester/output/version_tracker
+  	exit 1
+fi
+
+cd $PACKAGE_NAME
+
+python3 -m nox
