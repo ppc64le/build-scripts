@@ -29,6 +29,7 @@ yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/BaseOS/pp
 wget https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official
 mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/. 
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
+
 yum install -y expect
 
 wget https://pear.php.net/go-pear.phar
