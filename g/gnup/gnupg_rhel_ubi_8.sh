@@ -1,3 +1,23 @@
+#!/bin/bash -e
+# -----------------------------------------------------------------------------
+#
+# Package	: {package_name}
+# Version	: {package_version}
+# Source repo	: {package_url}
+# Tested on	: {distro_name} {distro_version}
+# Language      : PHP
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
+# Maintainer	: BulkPackageSearch Automation {maintainer}
+#
+# Disclaimer: This script has been tested in root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
+
 PACKAGE_URL =https://github.com/gpg/gnupg
 PACKAGE_NAME = gnupg
 PACKAGE_VERSION = 2.2.28 
@@ -66,7 +86,9 @@ if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
     	exit 0
 fi
 
+cd $PACKAGE_NAME
+
 ./configure
-make
+autoreconf --install --force
 make install
 make check
