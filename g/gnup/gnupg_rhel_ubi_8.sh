@@ -90,5 +90,6 @@ cd $PACKAGE_NAME
 
 ./configure
 autoreconf --install --force
+make -f build-aux/speedo.mk  native
 make install
 make check
