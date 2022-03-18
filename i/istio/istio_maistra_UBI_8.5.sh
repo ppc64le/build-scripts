@@ -37,5 +37,5 @@ git clone https://github.com/maistra/istio.git
 cd istio 
 git checkout $PACKAGE_VERSION
 go mod vendor
-GOFLAGS="-mod=vendor" GOOS=linux GOARCH=ppc64le make
-GOFLAGS="-mod=vendor" GOOS=linux GOARCH=ppc64le make test
+GOFLAGS="-mod=mod" GOOS=linux GOARCH=ppc64le make
+GOFLAGS="-mod=mod" GOOS=linux GOARCH=ppc64le make test
