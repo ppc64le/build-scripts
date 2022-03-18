@@ -20,12 +20,12 @@
 #
 # Install dependecies
 #
-yum install -y make wget tar git gcc make
+yum install -y -q make wget tar git gcc make
 #
 # Needs go version >=1.17
 #
-wget https://go.dev/dl/go1.17.5.linux-ppc64le.tar.gz
-tar -C /usr/local -xvf go1.17.5.linux-ppc64le.tar.gz
+wget -q https://go.dev/dl/go1.17.5.linux-ppc64le.tar.gz
+tar -C /usr/local -xf go1.17.5.linux-ppc64le.tar.gz
 export PATH=$PATH:/usr/local/go/bin
 rm go1.17.5.linux-ppc64le.tar.gz
 #
@@ -37,5 +37,5 @@ git clone https://github.com/maistra/istio.git
 cd istio 
 git checkout $PACKAGE_VERSION
 go mod vendor
-GOOS=linux GOARCH=ppc64le make
-GOOS=linux GOARCH=ppc64le make test
+GOFLAGS=-mod=vendor GOOS=linux GOARCH=ppc64le make
+GOFLAGS=-mod=vendor GOOS=linux GOARCH=ppc64le make test
