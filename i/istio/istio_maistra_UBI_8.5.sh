@@ -3,7 +3,7 @@
 #
 # Package       : istio
 # Version       : maistra-2.2
-# Source repo   : https://github.com/istio/istio.git
+# Source repo   : https://github.com/maistra/istio.git
 # Tested on     : UBI 8.5 
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Nishikant Thorat <Nishikant.Thorat@ibm.com>
