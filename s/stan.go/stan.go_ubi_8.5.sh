@@ -1,9 +1,12 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: github.com/nats-io/stan.go
-# Version	: v0.7.0
+# Version	: v0.7.0, v0.10.2
 # Source repo	: https://github.com/nats-io/stan.go
 # Tested on	: UBI 8.5
+# Language      : GO
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>
 #
