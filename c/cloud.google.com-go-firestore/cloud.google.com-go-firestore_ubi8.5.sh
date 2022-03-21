@@ -22,6 +22,10 @@ PACKAGE_NAME=google-cloud-go/firestore
 PACKAGE_VERSION=${1:-firestore/v1.1.0}
 PACKAGE_URL=https://github.com/googleapis/google-cloud-go
 
+SCRIPT=$(readlink -f $0)
+SCRIPT_DIR=$(dirname $SCRIPT)
+PATCH_FILE=$SCRIPT_DIR/firestore.patch
+
 yum install -y git golang make gcc diffutils patch
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
@@ -33,7 +37,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # edit source code
-patch -u --ignore-whitespace from_value.go -i firestore.patch
+patch -u --ignore-whitespace from_value.go -i $PATCH_FILE
 
 if ! go build -v ./...; then
 	echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
