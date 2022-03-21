@@ -33,7 +33,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # edit source code
-patch -u --ignore-whitespace from_value.go -i ../../firestore.patch
+patch -u --ignore-whitespace from_value.go -i firestore.patch
 
 if ! go build -v ./...; then
 	echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
