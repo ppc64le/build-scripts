@@ -53,6 +53,7 @@ nvm install 8.14.0
 npm install -g grunt-cli
 
 # Install AVRO
+#Note: One test case is failing relared to security certificate error on both VM Power and Intel.
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME/ && git checkout release-$PACKAGE_VERSION
 mvn clean install -DskipTests
