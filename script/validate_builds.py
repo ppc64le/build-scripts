@@ -30,6 +30,11 @@ def trigger_basic_validation_checks(file_name):
 
     # Check if components of Doc string are available.
     script_path = "{}/{}".format(HOME, file_name)
+    
+    #Check build script line endings 
+    eof=os.popen('file '+script_path).read()
+    if 'crlf' in eof.lower():
+        raise EOFError("Build script {} contains windows line endings(CRLF), Please update build script with Linux based line endings.".format(file_name))
 
     if os.path.exists(script_path):
         all_lines = []
