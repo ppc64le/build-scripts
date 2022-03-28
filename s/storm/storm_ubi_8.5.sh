@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/asdine/storm.git
 # Tested on     : ubi 8.5
 # Language      : go
-# Travis-Check  : false
+# Travis-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sachin K {sachin.kakatkar@ibm.com}
 #
