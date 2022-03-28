@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : julia
-# Version       : v1.5 (master branch, commit cc6e121386758dff6ba7911770e48dfd59520199)
+# Version       : v1.7.2 (master branch, commit bf534986350a991e4a1b29126de0342ffd76205e)
 # Source repo   :
 # Tested on     : RHEL 7.7
 # Script License: Apache License Version 2.0
@@ -27,7 +27,7 @@ fi
 #JULIA_VERSION=$1
 # FIXME: currently julia works on power with the following commit, 
 # TODO: enable other versions as they get supported/fixed
-JULIA_VERSION=cc6e121386758dff6ba7911770e48dfd59520199
+JULIA_VERSION=bf534986350a991e4a1b29126de0342ffd76205e
 
 #Install required dependencies
 sudo yum update -y
@@ -60,7 +60,7 @@ export PATH=/usr/local/bin:$PATH
 cd $SRCDIR
 git clone https://github.com/JuliaLang/julia julia
 cd julia 
-#currently we will checkout only version 1.5 a
+#currently we will checkout only version 1.7.2
 git checkout $JULIA_VERSION
 make O=$BUILDDIR configure
 cd $BUILDDIR
