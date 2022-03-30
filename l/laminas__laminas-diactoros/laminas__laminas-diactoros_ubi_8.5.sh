@@ -1,11 +1,14 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: laminas/laminas-diactoros
-# Version	: 1.8
+# Version	: v1.8.0
 # Source repo	: https://github.com/laminas/laminas-diactoros
-# Tested on	: RHEL 8.3
+# Tested on	: UBI: 8.5
+# Language	: PHP
+# Travis-Check	: True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
+# Maintainer	: Sunidhi Gaonkar<Sunidhi.Gaonkar@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -16,8 +19,9 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=laminas/laminas-diactoros
-PACKAGE_VERSION=1.8
+PACKAGE_VERSION=${1:-1.8.0}
 PACKAGE_URL=https://github.com/laminas/laminas-diactoros
+WORKING_DIR=$(pwd)
 
 yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git jq curl php php-curl php-dom php-mbstring php-json nodejs make gcc-c++ patch diffutils php-gd php-pecl-zip
 
@@ -44,7 +48,7 @@ if ! composer install; then
 fi
 
 cd $HOME_DIR/$PACKAGE_NAME
-if ! /home/tester/vendor/bin/phpunit; then
+if ! ${WORKING_DIR}/vendor/bin/phpunit; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
@@ -55,3 +59,5 @@ else
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
 	exit 0
 fi
+
+# Test fails with one warning, which is in parity with X86
