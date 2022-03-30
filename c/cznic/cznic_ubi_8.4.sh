@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 #Run the script:./cznic_ubi_8.4.sh 1.0.0
 PACKAGE_NAME=internal
-PACKAGE_VERSION=${1:-f44710a21d00}
+PACKAGE_VERSION=${1:-1.0.0}
 PACKAGE_URL=https://github.com/cznic/internal
 
 yum install go git -y
