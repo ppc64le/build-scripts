@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: raft
-# Version	: v1.1.2
+# Version	: v1.1.2, v1.1.1
 # Source repo	: https://github.com/hashicorp/raft
 # Tested on	: ubi 8.5
 # Language      : GO
