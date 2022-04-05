@@ -132,6 +132,7 @@ fi
 #        want:[1.172027697614e+07 5.686036184502e+06 2.474981412369e+04 1.238300279584e+03 -5.444455825182e-10 -2.471028925712e+02 -2.412961483429e+03 -8.452858567111e+04]
 #--- FAIL: TestTorgersonScaling (0.00s)
 #FAIL
+
 #FAIL    gonum.org/v1/gonum/stat/mds     0.060s-->
 #------------------gonum:install_success_but_test_fails---------------------
 #gonum  |  4340aa3071a0 |  | GitHub | Fail |  Install_success_but_test_Fails
