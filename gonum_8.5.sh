@@ -18,7 +18,6 @@
 #
 # ----------------------------------------------------------------------------
 
-
 PACKAGE_NAME=gonum
 #PACKAGE_VERSION is configurable can be passed as an argument.
 PACKAGE_VERSION=${1:-4340aa3071a0}
@@ -100,8 +99,6 @@ fi
 #        Initial X: [100000 100000]
 #        GradientThreshold: 1e-10
 #--- FAIL: TestBFGS (0.36s)
-
-
 #=== RUN   TestNewton
 #    unconstrained_test.go:1199: Case 2: error finding minimum (linesearch: no change in location after Linesearcher step) for:
 #        F: BrownBadlyScaled
@@ -109,7 +106,6 @@ fi
 #        Initial X: [1 1]
 #        GradientThreshold: 1e-12
 #--- FAIL: TestNewton (0.08s)
-
 #=== RUN   TestTorgersonScaling
 #    mds_test.go:121: unexpected k for test 0: got:5 want:4
 #    mds_test.go:124: unexpected result for test 0:
