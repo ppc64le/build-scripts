@@ -1,0 +1,12 @@
+diff --git a/presto-tests/pom.xml b/presto-tests/pom.xml
+index 83cc178cc5..837d4da7b1 100644
+--- a/presto-tests/pom.xml
++++ b/presto-tests/pom.xml
+@@ -284,6 +284,7 @@
+                         <exclude>**/TestOptimizeMixedDistinctAggregations.java</exclude>
+                         <exclude>**/TestSpilledAggregations.java</exclude>
+                         <exclude>**/TestQueryPlanDeterminism.java</exclude>
++                        <exclude>**/TestClusterStatsResource.java</exclude>
+                     </excludes>
+                 </configuration>
+             </plugin>
