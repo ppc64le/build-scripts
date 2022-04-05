@@ -139,6 +139,3 @@ fi
 #FAIL    gonum.org/v1/gonum/stat/mds     0.060s-->
 #------------------gonum:install_success_but_test_fails---------------------
 #gonum  |  4340aa3071a0 |  | GitHub | Fail |  Install_success_but_test_Fails
-
-
-
