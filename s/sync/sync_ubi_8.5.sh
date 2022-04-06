@@ -51,7 +51,6 @@ fi
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-INSTALL_SUCCESS="false"
 
 COMPONENT=errgroup
 cd $COMPONENT
