@@ -22,6 +22,10 @@ PACKAGE_NAME=gonum
 #PACKAGE_VERSION is configurable can be passed as an argument.
 PACKAGE_VERSION=${1:-4340aa3071a0}
 PACKAGE_URL=https://github.com/gonum/gonum.git
+yum update -y
+yum install -y vim cmake make git gcc-c++ perl
+OS_NAME=`cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f2 | tr -d '"'`
+HOME_DIR=`pwd`
 
 if [ -d "$PACKAGE_NAME" ] ; then
   rm -rf $PACKAGE_NAME
