@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : advagg
-# Version       : 7.x-2.35
+# Version       : 7.x-2.35,8.x-4.1
 # Source repo   : https://git.drupalcode.org/project/advagg.git
 # Tested on     : UBI 8.5
 # Language      : PHP
