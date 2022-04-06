@@ -1,12 +1,18 @@
+## Building Docker image:
+Execute docker build command in the folder containing the Dockerfile:
+```bash
+cd build-scripts/e/elasticsearch/Dockerfiles/8.1.0_ubi_8
+docker build -t <your container repository>/elasticsearch-ppc64le:8.1.0 .
+docker push <your container repository>/elasticsearch-ppc64le:8.1.0
+```
+
 ## Deploying EFK stack on OCP 4.9:
-
-### Create following resource files:
-
 Assuming images to be present at following locations:
 - ibmcom/elasticsearch-ppc64le:8.1.0
 - ibmcom/fluentd-elasticsearch-ppc64le:1.14.5
 - ibmcom/kibana-ppc64le:8.1.0
 
+### Create following resource files:
 elasticsearch-deploy.yaml
 ```yaml
 apiVersion: apps/v1
