@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : drupal/drush_language
-# Version       : 8.x-1.0-rc4
+# Version       : 8.x-1.0-rc1,8.x-1.0-rc4
 # Source repo   : https://git.drupalcode.org/project/drush_language.git
 # Tested on     : UBI 8.5
 # Language      : PHP
