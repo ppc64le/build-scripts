@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : node-semver
-# Version       : v5.0.0
+# Version       : v5.0.0, v7.3.5, v2.0.0-beta
 # Source repo   : https://github.com/npm/node-semver.git
 # Tested on     : UBI 8.5
 # Language      : Node
