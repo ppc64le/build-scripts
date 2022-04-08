@@ -132,6 +132,7 @@ RUN export PATH=/usr/local/bin:$PATH
 ENTRYPOINT ["/usr/local/bin/tini", "--", "/docker-entrypoint.sh"]
 CMD ["server"]
 
+
 # add healthcheck
 HEALTHCHECK \
   --interval=10s \
