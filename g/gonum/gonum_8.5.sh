@@ -51,13 +51,13 @@ git checkout $PACKAGE_VERSION
 
 export GO111MODULE="auto"
 
-if ! go get -v -t ./...; then
+if ! go build   ./...; then
 	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_NAME  |  $PACKAGE_VERSION |  $OS_NAME | GitHub | Fail |  Install_Fails"
 	exit 1
 fi
 
-if ! go test ./...; then
+if ! go test  ./...; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" 
 	exit 1
