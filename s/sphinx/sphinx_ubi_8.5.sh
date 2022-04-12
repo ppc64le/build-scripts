@@ -26,6 +26,12 @@ PACKAGE_VERSION=${1:-v4.5.0}
 
  #Dependencies
  yum install -y python3 python3-devel ncurses git gcc gcc-c++ libffi libffi-devel sqlite sqlite-devel sqlite-libs python3-pytest make cmake wget cargo rust openssl-devel graphviz
+ 
+ #Imagemagick support for image processing
+ dnf install https://rpmfind.net/linux/centos/8-stream/AppStream/ppc64le/os/Packages/LibRaw-0.19.5-3.el8.ppc64le.rpm -y
+ dnf install https://rpmfind.net/linux/epel/8/Everything/ppc64le/Packages/l/libraqm-0.7.0-4.el8.ppc64le.rpm -y
+ dnf install https://rpmfind.net/linux/epel/8/Everything/ppc64le/Packages/i/ImageMagick-libs-6.9.10.86-1.el8.ppc64le.rpm -y 
+ dnf install https://rpmfind.net/linux/epel/8/Everything/ppc64le/Packages/i/ImageMagick-6.9.10.86-1.el8.ppc64le.rpm  -y
 
  OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
@@ -62,8 +68,3 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi 
-
-#Test are in parity with intel.
-#test_ext_imgconverter
-#1 failed, 1726 passed, 62 skipped in 408.73 seconds
-#WARNING: convert command 'convert' cannot be run, check the image_converter setting: [Errno 2] No such file or directory: 'convert': 'convert'
