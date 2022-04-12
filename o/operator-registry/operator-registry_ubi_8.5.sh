@@ -68,6 +68,7 @@ fi
 # Ensure go.mod file exists
     [ ! -f go.mod ] && go mod init operator-registry
     go mod tidy
+    go mod vendor
       
 if ! make build; then
 
