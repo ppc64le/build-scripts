@@ -3,7 +3,7 @@
 #
 # Package          : highlight.js
 # Version          : 10.7.2,11.5.1
-# Source repo      : https://github.com/highlightjs/highlight
+# Source repo      : https://github.com/highlightjs/highlight.js
 # Tested on        : UBI 8.5
 # Language         : Node
 # Travis-Check     : True
