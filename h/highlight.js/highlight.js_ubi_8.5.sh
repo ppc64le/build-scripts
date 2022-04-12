@@ -22,12 +22,12 @@ PACKAGE_NAME=highlight.js
 #PACKAGE_VERSION is configurable can be passed as an argument.
 PACKAGE_VERSION=${1:-10.7.2}
 PACKAGE_URL=https://github.com/highlightjs/highlight.js
-yum install -y yum-utils git jq
+export NODE_VERSION=${NODE_VERSION:-v12.22.4}
+OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
+yum install -y git
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 source ~/.bashrc
-
 nvm install "$NODE_VERSION"
-
 npm install -g npm@8.3.0
 
 git clone $PACKAGE_URL
