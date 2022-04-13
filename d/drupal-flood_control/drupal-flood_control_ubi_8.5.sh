@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : flood_control
-# Version       : 2.1.0,2.2.2
+# Version       : 2.1.0
 # Source repo   : https://git.drupalcode.org/project/flood_control.git
 # Tested on     : UBI 8.5
 # Language      : PHP
