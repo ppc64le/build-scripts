@@ -4,6 +4,8 @@
 # Version	: v1.3.2, c0656edd0d9eab7c66d1eb0c568f9039345796f7
 # Source repo	: https://github.com/gogo/protobuf
 # Tested on	: UBI 8.5
+# Language      : Go
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>
 #
