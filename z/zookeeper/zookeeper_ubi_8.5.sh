@@ -41,7 +41,7 @@ cd $HOME/zookeeper
 mvn clean install -DskipTests
 #End Build
 
-#Begin Tests
+#Begin Test
 echo "Running Tests"
 cd $HOME/zookeeper
 mvn apache-rat:check verify -DskipTests spotbugs:check checkstyle:check -Pfull-build  -Dlicense.skip  -Dlicense.skipDownloadLicenses -Drat.numUnapprovedLicenses=100
