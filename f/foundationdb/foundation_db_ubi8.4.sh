@@ -52,7 +52,7 @@ export GO111MODULE=on
 # --------- Installing ninja version v1.4.0 -----------------
 echo "--------- Installing ninja version v1.4.0 -----------------"
 cd $HOME_DIR
-git clone git://github.com/ninja-build/ninja.git
+git clone https://github.com/ninja-build/ninja.git
 cd ninja
 git checkout v1.4.0
 ./bootstrap.py
