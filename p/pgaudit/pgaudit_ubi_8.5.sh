@@ -4,7 +4,7 @@
 # Package          : pgaudit
 # Version          : REL_11_STABLE,REL_12_STABLE
 # Source repo      : https://github.com/pgaudit/pgaudit
-# Tested on        : UBI 8.5
+# Tested on        : RHEL 8.5
 # Language         : C
 # Travis-Check     : False
 # Script License   : Apache License, Version 2 or later
