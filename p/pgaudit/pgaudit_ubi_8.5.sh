@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/pgaudit/pgaudit
 # Tested on        : UBI 8.5
 # Language         : C
-# Travis-Check     : True
+# Travis-Check     : False
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Bhagat Singh <Bhagat.singh1@ibm.com>
 #
