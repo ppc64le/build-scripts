@@ -115,7 +115,7 @@ which cockroach
 export COCKROACH_BINARY=/usr/local/bin/cockroach
 $COCKROACH_BINARY --version
 if ! go test -v ./...; then
-    echo "-------------------------- $PACKAGE_NAME: test faile --------------------------"
+    echo "-------------------------- $PACKAGE_NAME: test failed --------------------------"
     exit 1
 else
     echo "$PACKAGE_NAME | $PACKAGE_VERSION | GitHub | Pass |  Both_Build_and_Test_Success" 
