@@ -8,7 +8,7 @@
 # Tested on             : UBI 8.5
 # Language              : GO
 # Script License        : Apache License, Version 2 or later
-# Travis-Check          : True
+# Travis-Check          : False
 # Maintainer            : Prashant Khoje <Prashant.Khoje@ibm.com>
 #
 # Disclaimer            : This script has been tested in root mode on given
@@ -121,3 +121,43 @@ else
     echo "$PACKAGE_NAME | $PACKAGE_VERSION | GitHub | Pass |  Both_Build_and_Test_Success" 
     exit 0
 fi
+
+# Build fails on travis-ci due to timeout. Hence travis-ci build is disabled.
+# The build is successful on a VM:
+# [root@p006vm78 cockroach-go]# grep PASS 44-dbgo.txt
+# --- PASS: TestMaxRetriesExceededError (0.00s)
+# --- PASS: TestExecuteTx (0.94s)
+# --- PASS: TestConfigureRetries (0.00s)
+# PASS
+# --- PASS: TestExecuteTx (1.00s)
+# PASS
+# --- PASS: TestExecuteTx (0.85s)
+# PASS
+# --- PASS: TestExecuteTx (0.98s)
+# PASS
+# --- PASS: TestRunServer (72.92s)
+#     --- PASS: TestRunServer/Insecure (0.89s)
+#     --- PASS: TestRunServer/InsecureWithCustomizedMemSize (0.66s)
+#     --- PASS: TestRunServer/SecureClientCert (2.91s)
+#     --- PASS: TestRunServer/SecurePassword (2.54s)
+#     --- PASS: TestRunServer/InsecureTenantStoreOnDisk (8.90s)
+#     --- PASS: TestRunServer/SecureTenantStoreOnDisk (13.89s)
+#     --- PASS: TestRunServer/InsecureTenant (1.21s)
+#     --- PASS: TestRunServer/SecureTenant (2.97s)
+#     --- PASS: TestRunServer/SecureTenantCustomPassword (3.90s)
+#     --- PASS: TestRunServer/InsecureNonStable (0.64s)
+#     --- PASS: TestRunServer/InsecureWithCustomizedMemSizeNonStable (0.64s)
+#     --- PASS: TestRunServer/SecureClientCertNonStable (2.10s)
+#     --- PASS: TestRunServer/SecurePasswordNonStable (2.97s)
+#     --- PASS: TestRunServer/InsecureTenantStoreOnDiskNonStable (9.17s)
+#     --- PASS: TestRunServer/SecureTenantStoreOnDiskNonStable (9.59s)
+#     --- PASS: TestRunServer/SecureTenantThroughProxyNonStable (4.34s)
+#     --- PASS: TestRunServer/SecureTenantThroughProxyCustomPasswordNonStable (5.58s)
+# --- PASS: TestPGURLWhitespace (0.64s)
+# --- PASS: TestTenant (1.13s)
+# --- PASS: TestFlockOnDownloadedCRDB (5.73s)
+#     --- PASS: TestFlockOnDownloadedCRDB/DownloadPassed (4.18s)
+#     --- PASS: TestFlockOnDownloadedCRDB/DownloadKilled (1.55s)
+# PASS
+# [root@p006vm78 cockroach-go]# grep FAIL 44-dbgo.txt
+# [root@p006vm78 cockroach-go]#
