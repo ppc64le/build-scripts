@@ -26,9 +26,9 @@ PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 
 #Dependencies
 yum install -y java-1.8.0-openjdk-devel git wget
-wget https://dlcdn.apache.org/maven/maven-3/3.8.4/binaries/apache-maven-3.8.4-bin.tar.gz
-tar -zxvf apache-maven-3.8.4-bin.tar.gz
-mv apache-maven-3.8.4 /opt/maven
+wget https://dlcdn.apache.org/maven/maven-3/3.8.5/binaries/apache-maven-3.8.5-bin.tar.gz
+tar -zxvf apache-maven-3.8.5-bin.tar.gz
+mv apache-maven-3.8.5 /opt/maven
 export M2_HOME=/opt/maven
 export PATH=${M2_HOME}/bin:${PATH}
 
