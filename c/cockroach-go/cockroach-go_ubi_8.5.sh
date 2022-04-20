@@ -59,7 +59,7 @@ git checkout $COCKROACH_VERSION
 make buildoss
 make install
 
-#Set variables
+# Set variables
 PACKAGE_URL=https://github.com/cockroachdb/cockroach-go
 #PACKAGE_VERSION is configurable can be passed as an argument.
 #PACKAGE_VERSION=${1:-e0a95dfd547c} - Build: PASS, Tests: FAIL 
@@ -67,7 +67,7 @@ PACKAGE_VERSION=${1:-v2.2.8}
 PACKAGE_NAME=cockroach-go
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
-#Install go package and update go path if not installed
+# Install go package and update go path if not installed
 GO_VERSION=1.16.1
 if ! command -v go &> /dev/null
 then
@@ -84,8 +84,7 @@ cd $COCKROACH_HOME
 # Check if package exists
 if [ -d $PACKAGE_NAME ] ; then
     rm -rf $PACKAGE_NAME
-    echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package source"
-
+    echo "$PACKAGE_NAME | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package source"
 fi
 
 # Download the repos
@@ -99,7 +98,6 @@ if [ $ret -eq 0 ] ; then
     echo "-------------------------- Switched to $PACKAGE_VERSION -------------------- "
 else
     echo "-------------------------- $PACKAGE_VERSION is not found. ----------------------------"
-    rm -rf $PACKAGE_NAME
     exit
 fi
 
@@ -108,8 +106,7 @@ fi
 go mod tidy
 
 if ! go build -v ./...; then
-    echo "------------------$PACKAGE_NAME: build failed-------------------------"
-    rm -rf $PACKAGE_NAME
+    echo "-------------------------- $PACKAGE_NAME: build failed --------------------------"
     exit 1
 fi
 
@@ -118,11 +115,9 @@ which cockroach
 export COCKROACH_BINARY=/usr/local/bin/cockroach
 $COCKROACH_BINARY --version
 if ! go test -v ./...; then
-    echo "------------------$PACKAGE_NAME: test failed-------------------------"
-    rm -rf $PACKAGE_NAME
+    echo "-------------------------- $PACKAGE_NAME: test faile --------------------------"
     exit 1
 else
-    echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | GitHub  | Pass |  Both_Build_and_Test_Success" 
-    rm -rf $PACKAGE_NAME
+    echo "$PACKAGE_NAME | $PACKAGE_VERSION | GitHub | Pass |  Both_Build_and_Test_Success" 
     exit 0
 fi
