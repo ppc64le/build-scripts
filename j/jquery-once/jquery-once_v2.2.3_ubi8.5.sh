@@ -28,7 +28,7 @@ DISTRO=linux-ppc64le
 
 cd $HOME
 # Install nodejs
-NODE_VERSION=v18.0.0
+NODE_VERSION=v14.19.1
 wget https://nodejs.org/dist/$NODE_VERSION/node-$NODE_VERSION-$DISTRO.tar.gz
 tar -xzf node-$NODE_VERSION-$DISTRO.tar.gz
 export PATH=$HOME/node-$NODE_VERSION-$DISTRO/bin:$PATH
