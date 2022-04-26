@@ -23,7 +23,7 @@ PACKAGE_NAME=jquery-labelauty
 PACKAGE_VERSION=${1:-v1.1.4}
 PACKAGE_URL="https://github.com/fntneves/jquery-labelauty"
 
-dnf install -y npm
+dnf install -y git npm
 cd $HOME
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
