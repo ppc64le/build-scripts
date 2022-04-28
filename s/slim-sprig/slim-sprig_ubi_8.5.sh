@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package       : slim-sprig
@@ -17,7 +18,6 @@
 #
 # ------------------------------------------------------------------------------
 
-set -e
 PACKAGE_NAME=github.com/go-task/slim-sprig
 PACKAGE_VERSION=${1:-v0.0.0-20210107165309-348f09dbbbc0}
 PACKAGE_URL=https://github.com/go-task/slim-sprig.git
