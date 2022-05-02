@@ -31,7 +31,7 @@ cd $HOME
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/bin --filename=composer
 rm -f composer-setup.php
 git clone --recursive $PACKAGE_URL
-cd $PACKAGE_VERSION
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 cat > composer.json << EOF
