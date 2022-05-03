@@ -1,6 +1,8 @@
 {
+    "package_name" : "zookeeper",
     "github_url":"https://github.com/apache/zookeeper.git",
     "package_dir": "z/zookeeper/Dockerfiles/",
+    "cmd" :"docker build -t ${package_name}:$PACKAGE_VESION ${dir}",
 
     "release-3.4.14" : {
         "dir":"3.4.14_ubi7"
@@ -16,9 +18,10 @@
     },
     "default" : {
         "dir":"template",
+        "gitcommit" : "26d526845db22ff2dd8d2449276a3f265eea1f67",
         "args" : {
             "PACKAGE_VERSION" : "${PACKAGE_VERSION}",
-            "VERSION_NUMBER": "$(echo PACKAGE_VERSION | sed 's/release-//')"
+            "VERSION_NUMBER": "$(echo $PACKAGE_VERSION | sed 's/release-//')"
         }
     }
 }
