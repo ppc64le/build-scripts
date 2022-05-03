@@ -2,7 +2,7 @@
     "package_name" : "zookeeper",
     "github_url":"https://github.com/apache/zookeeper.git",
     "package_dir": "z/zookeeper/Dockerfiles/",
-    "cmd" :"docker build -t ${package_name}:$PACKAGE_VESION ${dir}",
+    "cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
 
     "release-3.4.14" : {
         "dir":"3.4.14_ubi7"
