@@ -17,7 +17,7 @@ ENV ZOO_CONF_DIR=/conf \
     ZOO_STANDALONE_ENABLED=true \
     ZOO_ADMINSERVER_ENABLED=true
 
-ARG TAG=release-3.7.0
+ARG PACKAGE_VERSION=release-3.7.0
 ARG VERSION_NUMBER=3.7.0
 
 # Add a user with an explicit UID/GID and create necessary directories
