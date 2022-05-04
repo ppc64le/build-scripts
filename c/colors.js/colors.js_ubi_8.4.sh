@@ -1,9 +1,12 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package       : colors.js
-# Version       : v1.0.3
+# Version       : v1.0.3, v1.4.0, v1.3.3
 # Source repo   : https://github.com/Marak/colors.js
 # Tested on     : UBI 8.4
+# Language      : Node
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : sethp@us.ibm.com
 #
