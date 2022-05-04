@@ -189,17 +189,5 @@ Note:-
 https://deninet.com/blog/2019/01/13/writing-automated-tests-drupal-8-part-2-functional-tests
 https://deninet.com/blog/2018/12/31/writing-automated-tests-drupal-8-part-1-test-types-and-set
 
-drupal-cshs can also work fine with drupal 9.4.x:-
-
--------
-  9.4.x version is needed to run drupal-rules 8.x-3.x successfully. 
-    For drupal 9.4.x    
-    Remove existing drupal folder from directory /opt/app-root/src/drupal and clone the 9.4.x version.
-        #  git clone https://github.com/drupal/drupal  
-        #   cd /opt/app-root/src/drupal/core
-        #   cp phpunit.xml.dist phpunit.xml
-    Edit the phpunit.xml file to update database url and apache server url.
-    <env name="SIMPLETEST_BASE_URL" value="http://0.0.0.0:8081"/>
-    <env name="SIMPLETEST_DB" value="pgsql://postgres:postgres@localhost/dru2_pg"/>
-    
+  
 -------
