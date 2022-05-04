@@ -68,6 +68,4 @@ else
 	exit 0
 fi
 
-#Test is in parity with intel.
-#No such file or directory in /root/core/tests/bootstrap.php on line 137
-#PHP Fatal error:  require(): Failed opening required '/root/core/tests/../../autoload.php' (include_path='/root/core/vendor/pear/archive_tar:/root/core/vendor/pear/console_getopt:/root/core/vendor/pear/pear-core-minimal/src:/root/core/vendor/pear/pear_exception:.:/usr/share/pear:/usr/share/php') in /root/core/tests/bootstrap.php on line 137
+#Test is in parity with intel. Please find details in readme file around how to configure drupal framwork.
