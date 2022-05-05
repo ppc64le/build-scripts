@@ -179,9 +179,178 @@ S.SSSSS..SSSS.S..SSS...S.SSS..SS.SSS.S.SS.S....SSSSS..S......  976 / 3975 ( 24%)
 Time: 13.14 hours, Memory: 330.00 MB
 
 There were 17 errors:
-
-
+-------
+Unit test suites:-
 -------------
+        
+        ../vendor/phpunit/phpunit/phpunit ./tests/TestSuites/UnitTestSuite.php
+
+PHPUnit 7.5.20 by Sebastian Bergmann and contributors.
+
+Testing unit
+...........................................................    59 / 19221 (  0%)
+...........................................................   118 / 19221 (  0%)
+...........................................................   177 / 19221 (  0%)
+..........FF........................F...............S......   236 / 19221 (  1%)
+...........................................................   295 / 19221 (  1%)
+...........................................................   354 / 19221 (  1%)
+...........................................................   413 / 19221 (  2%)
+...........................................................   472 / 19221 (  2%)
+...........................................................   531 / 19221 (  2%)
+...........................................................   590 / 19221 (  3%)
+...........................................................   649 / 19221 (  3%)
+...........................................................   708 / 19221 (  3%)
+...........................................................   767 / 19221 (  3%)
+..............................................SSSSSSS......   826 / 19221 (  4%)
+..........................SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS   885 / 19221 (  4%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS   944 / 19221 (  4%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  1003 / 19221 (  5%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  1062 / 19221 (  5%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  1121 / 19221 (  5%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  1180 / 19221 (  6%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  1239 / 19221 (  6%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  1298 / 19221 (  6%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  1357 / 19221 (  7%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  1416 / 19221 (  7%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  1475 / 19221 (  7%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  1534 / 19221 (  7%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  1593 / 19221 (  8%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  1652 / 19221 (  8%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  1711 / 19221 (  8%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  1770 / 19221 (  9%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  1829 / 19221 (  9%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  1888 / 19221 (  9%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  1947 / 19221 ( 10%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  2006 / 19221 ( 10%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  2065 / 19221 ( 10%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  2124 / 19221 ( 11%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  2183 / 19221 ( 11%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  2242 / 19221 ( 11%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  2301 / 19221 ( 11%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  2360 / 19221 ( 12%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  2596 / 19221 ( 13%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  2655 / 19221 ( 13%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  2714 / 19221 ( 14%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  2773 / 19221 ( 14%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  2832 / 19221 ( 14%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  2891 / 19221 ( 15%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  2950 / 19221 ( 15%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  3009 / 19221 ( 15%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  3068 / 19221 ( 15%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  3127 / 19221 ( 16%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  3186 / 19221 ( 16%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  3245 / 19221 ( 16%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  3304 / 19221 ( 17%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  3363 / 19221 ( 17%)
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS....................  3422 / 19221 ( 17%)
+...........................................................  3481 / 19221 ( 18%)
+...........................................................  3540 / 19221 ( 18%)
+...........................................................  3599 / 19221 ( 18%)
+...........................................................  3658 / 19221 ( 19%)
+...........................................................  3717 / 19221 ( 19%)
+..FFFF.....................................................  3776 / 19221 ( 19%)
+...........................................................  3835 / 19221 ( 19%)
+...........................................................  3894 / 19221 ( 20%)
+...........................................................  3953 / 19221 ( 20%)
+...........................................................  4012 / 19221 ( 20%)
+...........................................................  4071 / 19221 ( 21%)
+...........................................................  4130 / 19221 ( 21%)
+...........................................................  4189 / 19221 ( 21%)
+...........................................................  4248 / 19221 ( 22%)
+...........................................................  4307 / 19221 ( 22%)
+...........................................................  4366 / 19221 ( 22%)
+...........................................................  4425 / 19221 ( 23%)
+...........................................................  4484 / 19221 ( 23%)
+...........................................................  4543 / 19221 ( 23%)
+...........................................................  4602 / 19221 ( 23%)
+...........................................................  4661 / 19221 ( 24%)
+...........................................................  4720 / 19221 ( 24%)
+...........................................................  4779 / 19221 ( 24%)
+             
+                                                                                     
+                                                                                     
+                                                                                      ........................................................... 18998 / 19221 ( 98%)
+........................................................... 19057 / 19221 ( 99%)
+........................................................... 19116 / 19221 ( 99%)
+........................................................... 19175 / 19221 ( 99%)
+.............
+
+Time: 8.14 minutes, Memory: 450.00 MB
+
+There were 6 errors:
+
+There were 17 failures:
+
+1) Drupal\Tests\Component\Annotation\Doctrine\DocParserTest::testAnnotationEnumeratorException
+Failed asserting that exception message '[Enum Error] Attribute "value" of @Drupal\Tests\Component\Annotation\Doctrine\Fixtures\AnnotationEnum declared on property SomeClassName::invalidProperty. accepts only [ONE, TWO, THREE], but got FOUR.' contains 'Attribute "value" of @Drupal\Tests\Component\Annotation\Doctrine\Fixtures\AnnotationEnum declared on property SomeClassName::invalidProperty. accept only [ONE, TWO, THREE], but got FOUR.'.
+
+2) Drupal\Tests\Component\Annotation\Doctrine\DocParserTest::testAnnotationEnumeratorLiteralException
+Failed asserting that exception message '[Enum Error] Attribute "value" of @Drupal\Tests\Component\Annotation\Doctrine\Fixtures\AnnotationEnumLiteral declared on property SomeClassName::invalidProperty. accepts only [AnnotationEnumLiteral::ONE, AnnotationEnumLiteral::TWO, AnnotationEnumLiteral::THREE], but got 4.' contains 'Attribute "value" of @Drupal\Tests\Component\Annotation\Doctrine\Fixtures\AnnotationEnumLiteral declared on property SomeClassName::invalidProperty. accept only [AnnotationEnumLiteral::ONE, AnnotationEnumLiteral::TWO, AnnotationEnumLiteral::THREE], but got 4.'.
+
+3) Drupal\Tests\Component\Annotation\Doctrine\DocParserTest::testAnnotationWithInvalidTargetDeclarationError
+Failed asserting that exception message 'Invalid Target "Foo". Available targets: [ALL, CLASS, METHOD, PROPERTY, FUNCTION, ANNOTATION]' contains 'Invalid Target "Foo". Available targets: [ALL, CLASS, METHOD, PROPERTY, ANNOTATION]'.
+
+4) Drupal\Tests\Component\Utility\HtmlTest::testTransformRootRelativeUrlsToAbsoluteAssertion with data set "only relative path" ('llama')
+Failed asserting that exception of type "AssertionError" is thrown.
+
+5) Drupal\Tests\Component\Utility\HtmlTest::testTransformRootRelativeUrlsToAbsoluteAssertion with data set "only root-relative path" ('/llama')
+Failed asserting that exception of type "AssertionError" is thrown.
+
+6) Drupal\Tests\Component\Utility\HtmlTest::testTransformRootRelativeUrlsToAbsoluteAssertion with data set "host and path" ('example.com/llama')
+Failed asserting that exception of type "AssertionError" is thrown.
+
+7) Drupal\Tests\Component\Utility\HtmlTest::testTransformRootRelativeUrlsToAbsoluteAssertion with data set "scheme, host and path" ('http://example.com/llama')
+Failed asserting that exception of type "AssertionError" is thrown.
+
+8) Drupal\Tests\Core\Asset\LibraryDependencyResolverTest::testGetMinimalRepresentativeSubsetInvalidInput
+Failed asserting that exception of type "AssertionError" is thrown.
+
+9) Drupal\Tests\Core\Cache\CacheTagsInvalidatorTest::testInvalidateTagsWithInvalidTags
+Failed asserting that exception of type "Error" matches expected exception "AssertionError". Message was: "Call to a member function getParameter() on null" at
+/opt/app-root/src/drupal/core/lib/Drupal/Core/Cache/CacheTagsInvalidator.php:71
+/opt/app-root/src/drupal/core/lib/Drupal/Core/Cache/CacheTagsInvalidator.php:34
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/Core/Cache/CacheTagsInvalidatorTest.php:21
+.
+                                                                                           
+
+11) Drupal\Tests\Core\Command\QuickStartTest::testQuickStartInstallAndServerCommands
+Failed asserting that 'Drupal development server started: <http://127.0.0.1:8889>\n
+This server is not meant for production use.\n
+' contains "127.0.0.1:8889/user/reset/1/".
+
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/Core/Command/QuickStartTest.php:218
+
+12) Drupal\Tests\Core\DependencyInjection\ContainerBuilderTest::testSerialize
+Failed asserting that exception of type "AssertionError" is thrown.
+
+13) Drupal\Tests\Core\DependencyInjection\ContainerTest::testSerialize
+Failed asserting that exception of type "AssertionError" is thrown.
+
+14) Drupal\Tests\Core\Render\Placeholder\ChainedPlaceholderStrategyTest::testProcessPlaceholdersNoStrategies
+Failed asserting that exception of type "AssertionError" is thrown.
+
+15) Drupal\Tests\Core\Render\Placeholder\ChainedPlaceholderStrategyTest::testProcessPlaceholdersWithRoguePlaceholderStrategy
+Failed asserting that exception of type "AssertionError" is thrown.
+
+16) Drupal\Tests\big_pipe\Unit\Render\BigPipeResponseAttachmentsProcessorTest::testNonHtmlResponse with data set "AjaxResponse, which implements AttachmentsInterface" ('Drupal\Core\Ajax\AjaxResponse')
+Failed asserting that exception of type "TypeError" matches expected exception "AssertionError". Message was: "Argument 1 passed to Drupal\Core\Render\HtmlResponseAttachmentsProcessor::renderPlaceholders() must be an instance of Drupal\Core\Render\HtmlResponse, instance of Drupal\Core\Ajax\AjaxResponse given, called in /opt/app-root/src/drupal/core/modules/big_pipe/src/Render/BigPipeResponseAttachmentsProcessor.php on line 71" at
+/opt/app-root/src/drupal/core/lib/Drupal/Core/Render/HtmlResponseAttachmentsProcessor.php:273
+/opt/app-root/src/drupal/core/modules/big_pipe/src/Render/BigPipeResponseAttachmentsProcessor.php:71
+/opt/app-root/src/drupal/core/modules/big_pipe/tests/src/Unit/Render/BigPipeResponseAttachmentsProcessorTest.php:37
+.
+
+17) Drupal\Tests\big_pipe\Unit\Render\BigPipeResponseAttachmentsProcessorTest::testNonHtmlResponse with data set "A dummy that implements AttachmentsInterface" ('Double\AttachmentsInterface\P13')
+Failed asserting that exception of type "TypeError" matches expected exception "AssertionError". Message was: "Argument 1 passed to Drupal\Core\Render\HtmlResponseAttachmentsProcessor::renderPlaceholders() must be an instance of Drupal\Core\Render\HtmlResponse, instance of Double\AttachmentsInterface\P13 given, called in /opt/app-root/src/drupal/core/modules/big_pipe/src/Render/BigPipeResponseAttachmentsProcessor.php on line 71" at
+/opt/app-root/src/drupal/core/lib/Drupal/Core/Render/HtmlResponseAttachmentsProcessor.php:273
+/opt/app-root/src/drupal/core/modules/big_pipe/src/Render/BigPipeResponseAttachmentsProcessor.php:71
+/opt/app-root/src/drupal/core/modules/big_pipe/tests/src/Unit/Render/BigPipeResponseAttachmentsProcessorTest.php:37
+.
+
+
+ERRORS!
+Tests: 19221, Assertions: 34248, Errors: 6, Failures: 17, Skipped: 2567, Incomplete: 3.
+--------------------   
+    
 
 Note:-
 ----------
