@@ -21,6 +21,7 @@ RUN \
 RUN yum install -y glibc.ppc64le ca-certificates.noarch ncurses.ppc64le tzdata.noarch wget
 
 
+
 COPY build/fetch-and-extract.sh /bin/fetch-and-extract
 RUN chmod +x /bin/fetch-and-extract
 
@@ -64,7 +65,7 @@ ARG GRAYLOG_GROUP=graylog
 ARG GRAYLOG_GID=1100
 ARG JAVA_VERSION_MAJOR
 
-RUN yum install -y wget && wget "https://github.com/krallin/tini/releases/download/v0.19.0/tini-ppc64le" && mv tini-ppc64le /usr/local/bin/tini && chmod  777 /usr/local/bin/tini
+RUN yum install -y vim wget && wget "https://github.com/krallin/tini/releases/download/v0.19.0/tini-ppc64le" && mv tini-ppc64le /usr/local/bin/tini && chmod  777 /usr/local/bin/tini
 
 COPY --chown=${GRAYLOG_UID}:${GRAYLOG_GID} --from=graylog-downloader ${GRAYLOG_HOME} ${GRAYLOG_HOME}
 
@@ -122,16 +123,19 @@ RUN \
     /usr/share/X11 \
     /usr/share/doc/* 2> /dev/null
 
+
+RUN yum install -y java java-devel
+
 COPY docker-entrypoint.sh /
 COPY health_check.sh /
+
 
 EXPOSE 9000
 USER ${GRAYLOG_USER}
 VOLUME ${GRAYLOG_HOME}/data
 RUN export PATH=/usr/local/bin:$PATH
-ENTRYPOINT ["/usr/local/bin/tini", "--", "/docker-entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/tini", "-vvv","-g","--","/docker-entrypoint.sh"]
 CMD ["server"]
-
 
 # add healthcheck
 HEALTHCHECK \
