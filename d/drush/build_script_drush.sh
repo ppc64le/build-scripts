@@ -1,13 +1,27 @@
 #!/bin/bash -e
+# ----------------------------------------------------------------------------
+# Package          : drush
+# Version          : 10.x 
+# Source repo      : https://github.com/drush-ops/drush
+# Tested on        : UBI 8.5
+# Language         : PHP
+# Travis-Check     : True
+# Script License   : Apache License, Version 2 or later
+# Maintainer       : Ambuj Kumar <Ambuj.Kumar3@ibm.com>
+#
+# Disclaimer       : This script has been tested in root mode on given
+# ==========         platform using the mentioned version of the package.
+#                    It may not work as expected with newer versions of the
+#                    package and/or distribution. In such case, please
+#                    contact "Maintainer" of this script.
+#   
+# ----------------------------------------------------------------------------
 
 PACKAGE_NAME=drush
 PACKAGE_URL=https://github.com/drush-ops/drush
 #PACKAGE_VERSION is configurable can be passed as an argument.
 PACKAGE_VERSION=${1:-10.x}
-
 yum module enable php:7.2 -y
-
-
 
 yum install -y git php php-json php-dom php-xml php-dbg php-cli php-xdebug php-mbstring zip unzip gd gd-devel php-gd php-pdo php-mysqlnd
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/bin --filename=composer
