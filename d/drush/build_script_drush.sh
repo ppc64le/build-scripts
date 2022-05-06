@@ -21,9 +21,9 @@ PACKAGE_NAME=drush
 PACKAGE_URL=https://github.com/drush-ops/drush
 #PACKAGE_VERSION is configurable can be passed as an argument.
 PACKAGE_VERSION=${1:-10.x}
-yum module enable php:7.2 -y
 
-yum install -y git php php-json php-dom php-xml php-dbg php-cli php-xdebug php-mbstring zip unzip gd gd-devel php-gd php-pdo php-mysqlnd
+
+yum install -y git php php-json php-dom php-mbstring zip unzip gd gd-devel php-gd php-pdo php-mysqlnd
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/bin --filename=composer
 OS_NAME=`cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f2 | tr -d '"'`
 
