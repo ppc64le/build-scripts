@@ -360,3 +360,294 @@ https://deninet.com/blog/2018/12/31/writing-automated-tests-drupal-8-part-1-test
 
   
 -------
+    
+Functional tests :- 
+------------------
+Functional tests took 47.85 hours to complete:-
+ 
+
+../vendor/phpunit/phpunit/phpunit ./tests/TestSuites/FunctionalTestSuite.php
+
+PHPUnit 7.5.20 by Sebastian Bergmann and contributors.
+
+Testing functional
+.F.....F.....................................................   61 / 4946 (  1%)
+.............................................................  122 / 4946 (  2%)
+............E.EE......ES........E..EFEEFEEE......FEEEEE......  183 / 4946 (  3%)
+...............SS..SS..SS..............SS..SS..SS............  244 / 4946 (  4%)
+..SS..SS..SS..............SS..SS..SS..............SS..SS..SS.  305 / 4946 (  6%)
+.............SS..SS..SS......................................  366 / 4946 (  7%)
+........................................................SS..S  427 / 4946 (  8%)
+S..SS..............SS..SS..SS................................  488 / 4946 (  9%)
+..........................................................SS.  549 / 4946 ( 11%)
+.SS..SS......................................................  610 / 4946 ( 12%)
+..............................SS..SS..SS..SS..SS..SS.........  671 / 4946 ( 13%)
+.............................................................  732 / 4946 ( 14%)
+.............................................................  793 / 4946 ( 16%)
+..............................SS..SS..SS.SS.SS.SS.SS.SS.SS...  854 / 4946 ( 17%)
+.............................................................  915 / 4946 ( 18%)
+.........................SS..SS..SS...E......................  976 / 4946 ( 19%)
+.................................................SS..SS..SS.. 1037 / 4946 ( 20%)
+............S.S.S.S.S.S...................................... 1098 / 4946 ( 22%)
+............................................................. 1159 / 4946 ( 23%)
+............................................................. 1220 / 4946 ( 24%)
+EE.............SS..SS..SS.................................... 1281 / 4946 ( 25%)
+.............................................SS..SS..SS...... 1342 / 4946 ( 27%)
+........SS..SS..SS........................................... 1403 / 4946 ( 28%)
+..................S.......................................... 1464 / 4946 ( 29%)
+....S....S....S......................................S...S... 1525 / 4946 ( 30%)
+S...S.S.S.S.S.S.......................................F...... 1586 / 4946 ( 32%)
+.....................SS..SS..SS.......................EE..... 1647 / 4946 ( 33%)
+............................................................. 1708 / 4946 ( 34%)
+..........SSS.SSS.SSS.......S.......S....S...........S....... 1769 / 4946 ( 35%)
+S......S...........S.......S........S.......S.......S.......S 1830 / 4946 ( 36%)
+.......S.......S.......S.......................S.......S..... 1891 / 4946 ( 38%)
+..............S.......S....S...............................S. 1952 / 4946 ( 39%)
+......S........SSSSSSS....................................... 2013 / 4946 ( 40%)
+.....S....S............S..........................S.......... 2074 / 4946 ( 41%)
+.....S.......S.........S.......S.......S.......S............. 2135 / 4946 ( 43%)
+.....S............S.......................S.......S.......S.. 2196 / 4946 ( 44%)
+............................................................. 2257 / 4946 ( 45%)
+..........F.....................SS...SS...SS..............SS. 2318 / 4946 ( 46%)
+.SS..SS.................S.................................... 2379 / 4946 ( 48%)
+...........................SS..SS..SS........................ 2440 / 4946 ( 49%)
+............................................................. 2501 / 4946 ( 50%)
+............................................................. 2562 / 4946 ( 51%)
+...........................SS..SS..SS.S.S.S.S.S.S............ 2623 / 4946 ( 53%)
+................................................SS..SS..SS... 2684 / 4946 ( 54%)
+............................................................. 2745 / 4946 ( 55%)
+............................................................. 2806 / 4946 ( 56%)
+..................................................SS..SS..SS. 2867 / 4946 ( 57%)
+S.SS.S.SS.S.SS.............................................E. 2928 / 4946 ( 59%)
+.E.............................................SS..SS..SS.... 2989 / 4946 ( 60%)
+...................................SS..SS..SS................ 3050 / 4946 ( 61%)
+.....................SS..SS..SS...................S.SS.S.SS.S 3111 / 4946 ( 62%)
+.SS..............................SS..SS..SS.................. 3172 / 4946 ( 64%)
+..............................SS..SS..SS..................... 3233 / 4946 ( 65%)
+............................................................. 3294 / 4946 ( 66%)
+.......SS..SS..SS..SS..SS..SS................................ 3355 / 4946 ( 67%)
+............................................................. 3416 / 4946 ( 69%)
+............................................................. 3477 / 4946 ( 70%)
+............................................................. 3538 / 4946 ( 71%)
+............................................................F 3599 / 4946 ( 72%)
+...................................SS..SS..SS..............SS 3660 / 4946 ( 73%)
+..SS..SS...F................................................. 3721 / 4946 ( 75%)
+............F................................................ 3782 / 4946 ( 76%)
+..............................S.............................. 3843 / 4946 ( 77%)
+............................................................. 3904 / 4946 ( 78%)
+...................................................SS..SS..SS 3965 / 4946 ( 80%)
+................................SS..SS..SS.............SS.... 4026 / 4946 ( 81%)
+SS..SS.............................S......................... 4087 / 4946 ( 82%)
+..............S.....SS.S.....SS.S.....SS.S............SS..SS. 4148 / 4946 ( 83%)
+.SS.......................................................... 4209 / 4946 ( 85%)
+............................................................. 4270 / 4946 ( 86%)
+.........SS..SS..SS............EE............................ 4331 / 4946 ( 87%)
+.......................................................E..... 4392 / 4946 ( 88%)
+...........SS.............................SS..SS..SS.SS...... 4453 / 4946 ( 90%)
+..........SS.SS.SS.SS.SS.SS............F..................... 4514 / 4946 ( 91%)
+............................................................. 4575 / 4946 ( 92%)
+............................................................. 4636 / 4946 ( 93%)
+............................................................. 4697 / 4946 ( 94%)
+............SS..SS..SS....................................... 4758 / 4946 ( 96%)
+............................................................. 4819 / 4946 ( 97%)
+...............................................SS..SS..SS.... 4880 / 4946 ( 98%)
+.................S.SS.S.SS.S.SS.............................. 4941 / 4946 ( 99%)
+..E..                                                         4946 / 4946 (100%)..
+
+
+
+
+Time: 47.85 hours, Memory: 174.00 MB
+
+
+
+There were 27 errors:
+
+1) Drupal\FunctionalTests\Installer\DistributionProfileExistingSettingsTest::testInstalled
+Behat\Mink\Exception\ElementNotFoundException: Button with id|name|label|value "Save and continue" not found.
+
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/WebAssert.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:209
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:259
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:167
+
+2) Drupal\FunctionalTests\Installer\DistributionProfileTranslationQueryTest::testInstalled
+Error: Call to a member function getText() on bool
+
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/DistributionProfileTranslationQueryTest.php:93
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:161
+
+3) Drupal\FunctionalTests\Installer\DistributionProfileTranslationTest::testInstalled
+Error: Call to a member function getText() on bool
+
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/DistributionProfileTranslationTest.php:84
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:161
+
+4) Drupal\FunctionalTests\Installer\InstallerEmptySettingsTest::testInstaller
+Behat\Mink\Exception\ElementNotFoundException: Button with id|name|label|value "Save and continue" not found.
+
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/WebAssert.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:209
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:239
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:161
+
+5) Drupal\FunctionalTests\Installer\InstallerExistingConfigTest::testConfigSync
+Behat\Mink\Exception\ElementNotFoundException: Button with id|name|label|value "Enregistrer et continuer" not found.
+
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/WebAssert.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:209
+6) Drupal\FunctionalTests\Installer\InstallerExistingSettingsMismatchProfileTest::testInstaller
+Behat\Mink\Exception\ElementNotFoundException: Button with id|name|label|value "Save and continue" not found.
+
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/WebAssert.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:209
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:259
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:167
+
+7) Drupal\FunctionalTests\Installer\InstallerExistingSettingsNoProfileTest::testInstaller
+Behat\Mink\Exception\ElementNotFoundException: Button with id|name|label|value "Save and continue" not found.
+
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/WebAssert.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:209
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:259
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:167
+
+8) Drupal\FunctionalTests\Installer\InstallerExistingSettingsReadOnlyMismatchProfileTest::testInstalled
+Behat\Mink\Exception\ElementNotFoundException: Button with id|name|label|value "Save and continue" not found.
+
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/WebAssert.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:209
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:259
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:167
+
+9) Drupal\FunctionalTests\Installer\InstallerExistingSettingsTest::testInstaller
+Behat\Mink\Exception\ElementNotFoundException: Button with id|name|label|value "Save and continue" not found.
+
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/WebAssert.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:209
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:259
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:167
+
+10) Drupal\FunctionalTests\Installer\InstallerLanguageDirectionTest::testInstalled
+11) Drupal\FunctionalTests\Installer\InstallerLanguagePageTest::testInstalled
+Behat\Mink\Exception\ElementNotFoundException: Button with id|name|label|value "Save and continue" not found.
+
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/WebAssert.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:209
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:239
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:161
+
+12) Drupal\FunctionalTests\Installer\InstallerTranslationMultipleLanguageForeignTest::testTranslationsLoaded
+Behat\Mink\Exception\ElementNotFoundException: Button with id|name|label|value "Save and continue de" not found.
+
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/WebAssert.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:209
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:239
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:161
+
+13) Drupal\FunctionalTests\Installer\InstallerTranslationMultipleLanguageKeepEnglishTest::testTranslationsLoaded
+Behat\Mink\Exception\ElementNotFoundException: Button with id|name|label|value "Save and continue de" not found.
+
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/WebAssert.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:209
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:239
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:161
+
+14) Drupal\FunctionalTests\Installer\InstallerTranslationMultipleLanguageTest::testTranslationsLoaded
+Behat\Mink\Exception\ElementNotFoundException: Button with id|name|label|value "Save and continue" not found.
+
+
+
+15) Drupal\FunctionalTests\Installer\InstallerTranslationQueryTest::testInstaller
+Behat\Mink\Exception\ElementNotFoundException: Button with id|name|label|value "Save and continue de" not found.
+
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/WebAssert.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:209
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:239
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:161
+
+16) Drupal\FunctionalTests\Installer\InstallerTranslationTest::testInstaller
+Behat\Mink\Exception\ElementNotFoundException: Button with id|name|label|value "Save and continue de" not found.
+
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/WebAssert.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:209
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:239
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTranslationTest.php:57
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:161
+
+17) Drupal\Tests\config_translation\Functional\ConfigTranslationInstallTest::testConfigTranslation
+Behat\Mink\Exception\ElementNotFoundException: Button with id|name|label|value "Save and continue eo" not found.
+
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/WebAssert.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:77
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/UiHelperTrait.php:209
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:239
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/Installer/InstallerTestBase.php:161
+
+18) Drupal\Tests\editor\Functional\QuickEditIntegrationLoadingTest::testUsersWithoutPermission
+Behat\Mink\Exception\ExpectationException: The string "<p>Do you also love Drupal?</p><figure role="group" class="caption caption-img"><img src="druplicon.png" /><figcaption>Druplicon</figcaption></figure>" was not found anywhere in the HTML response of the current page.
+
+/opt/app-root/src/drupal/vendor/behat/mink/src/WebAssert.php:768
+/opt/app-root/src/drupal/vendor/behat/mink/src/WebAssert.php:324
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/WebAssert.php:429
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/AssertLegacyTrait.php:315
+/opt/app-root/src/drupal/core/modules/editor/tests/src/Functional/QuickEditIntegrationLoadingTest.php:90
+
+19) Drupal\Tests\editor\Functional\QuickEditIntegrationLoadingTest::testUserWithPermission
+
+
+19) Drupal\Tests\editor\Functional\QuickEditIntegrationLoadingTest::testUserWithPermission
+Behat\Mink\Exception\ExpectationException: The string "<p>Do you also love Drupal?</p><figure role="group" class="caption caption-img"><img src="druplicon.png" /><figcaption>Druplicon</figcaption></figure>" was not found anywhere in the HTML response of the current page.
+
+/opt/app-root/src/drupal/vendor/behat/mink/src/WebAssert.php:768
+/opt/app-root/src/drupal/vendor/behat/mink/src/WebAssert.php:324
+/opt/app-root/src/drupal/core/tests/Drupal/Tests/WebAssert.php:429
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/AssertLegacyTrait.php:315
+/opt/app-root/src/drupal/core/modules/editor/tests/src/Functional/QuickEditIntegrationLoadingTest.php:128
+
+20) Drupal\Tests\help_topics\Functional\HelpTopicsSyntaxTest::testHelpTopics
+Drupal\Core\Config\Schema\SchemaIncompleteException: Schema errors for editor.editor.gutenberg with the following errors: editor.editor.gutenberg:settings missing schema
+
+/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/Development/ConfigSchemaChecker.php:95
+/opt/app-root/src/drupal/core/lib/Drupal/Component/EventDispatcher/ContainerAwareEventDispatcher.php:111
+/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/Config.php:231
+/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/Entity/ConfigEntityStorage.php:284
+/opt/app-root/src/drupal/core/lib/Drupal/Core/Entity/EntityStorageBase.php:457
+/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/Entity/ConfigEntityStorage.php:263
+/opt/app-root/src/drupal/core/lib/Drupal/Core/Entity/EntityBase.php:395
+/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/Entity/ConfigEntityBase.php:616
+/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/ConfigInstaller.php:371
+/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/ConfigInstaller.php:137
+/opt/app-root/src/drupal/core/lib/Drupal/Core/ProxyClass/Config/ConfigInstaller.php:75
+/opt/app-root/src/drupal/core/lib/Drupal/Core/Extension/ModuleInstaller.php:288
+/opt/app-root/src/drupal/core/lib/Drupal/Core/ProxyClass/Extension/ModuleInstaller.php:83
+/opt/app-root/src/drupal/core/modules/help_topics/tests/src/Functional/HelpTopicsSyntaxTest.php:49
+
+21) Drupal\Tests\help_topics\Functional\LegacyHelpTopicsSyntaxTest::testHelpTopics
+Drupal\Core\Config\Schema\SchemaIncompleteException: Schema errors for editor.editor.gutenberg with the following errors: editor.editor.gutenberg:settings missing schema
+
+/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/Development/ConfigSchemaChecker.php:95
+/opt/app-root/src/drupal/core/lib/Drupal/Component/EventDispatcher/ContainerAwareEventDispatcher.php:111
+/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/Config.php:231
+/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/Entity/ConfigEntityStorage.php:284
+/opt/app-root/src/drupal/core/lib/Drupal/Core/Entity/EntityStorageBase.php:457
+/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/Entity/ConfigEntityStorage.php:263
+/opt/app-root/src/drupal/core/lib/Drupal/Core/Entity/EntityBase.php:395
+/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/Entity/ConfigEntityBase.php:616
+/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/ConfigInstaller.php:371
+
+
+ERRORS!
+Tests: 4946, Assertions: 243509, Errors: 27, Failures: 11, Skipped: 393.
