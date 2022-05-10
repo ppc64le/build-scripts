@@ -54,7 +54,7 @@ RUN wget https://github.com/AdoptOpenJDK/openjdk15-binaries/releases/download/jd
 
 RUN git clone --single-branch --branch $PACKAGE_VERSION https://github.com/elastic/elasticsearch.git && \
     cd elasticsearch && \
-    wget $PATCH_PATH
+    wget $PATCH_PATH && \
     git apply $PATCH && \
     ./gradlew :distribution:archives:linux-ppc64le-tar:assemble --parallel && \
     mv ./distribution/archives/linux-ppc64le-tar/build/distributions/elasticsearch-*-SNAPSHOT-linux-ppc64le.tar.gz /opt

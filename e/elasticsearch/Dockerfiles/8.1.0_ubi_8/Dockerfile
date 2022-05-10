@@ -52,11 +52,10 @@ RUN wget https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17
 
 ENV JAVA_TOOL_OPTIONS -Dfile.encoding=UTF8
 
-COPY $PATCH_PATH .
-
 RUN git clone --single-branch --branch $PACKAGE_VERSION  https://github.com/elastic/elasticsearch.git && \
     cd elasticsearch && \
-    git apply ../$PATCH && \
+    wget $PATCH_PATH && \
+    git apply $PATCH && \
     ./gradlew :distribution:archives:linux-ppc64le-tar:assemble --parallel && \
     mv ./distribution/archives/linux-ppc64le-tar/build/distributions/elasticsearch-*-SNAPSHOT-linux-ppc64le.tar.gz /opt
 
