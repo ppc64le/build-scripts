@@ -16,7 +16,7 @@ ARG PACKAGE_VERSION=v8.1.0
 FROM registry.access.redhat.com/ubi8/ubi:latest AS builder
 
 ARG PACKAGE_VERSION=v8.1.0
-ARG PATCH_PATH=./elasticsearch_v8.1.0.patch
+ARG PATCH_PATH=https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/Dockerfiles/8.1.0_ubi_8/elasticsearch_v8.1.0.patch
 ARG PATCH=elasticsearch_v8.1.0.patch
 
 # `tini` is a tiny but valid init for containers. This is used to cleanly

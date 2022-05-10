@@ -16,8 +16,8 @@ ARG PACKAGE_VERSION=v7.13.0
 FROM registry.access.redhat.com/ubi8/ubi:latest AS builder
 
 ARG PACKAGE_VERSION
-ARG PATCH_PATH="../elasticsearch_7.13.0.patch"
-ARG PATCH="elasticsearch_7.13.0.patch"
+ARG PATCH=elasticsearch_v7.13.0.patch
+ARG PATCH_PATH=https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_v7.13.0.patch
 
 # `tini` is a tiny but valid init for containers. This is used to cleanly
 # control how ES and any child processes are shut down.
@@ -52,11 +52,10 @@ RUN wget https://github.com/AdoptOpenJDK/openjdk15-binaries/releases/download/jd
     ln -sf /usr/local/jdk-15.0.2+7/bin/java /usr/bin/ && \
     rm -f OpenJDK15U-jdk_ppc64le_linux_hotspot_2021-01-22-02-31.tar.gz
 
-COPY $PATCH_PATH .
-
 RUN git clone --single-branch --branch $PACKAGE_VERSION https://github.com/elastic/elasticsearch.git && \
     cd elasticsearch && \
-    git apply ../$PATCH && \
+    wget $PATCH_PATH
+    git apply $PATCH && \
     ./gradlew :distribution:archives:linux-ppc64le-tar:assemble --parallel && \
     mv ./distribution/archives/linux-ppc64le-tar/build/distributions/elasticsearch-*-SNAPSHOT-linux-ppc64le.tar.gz /opt
 

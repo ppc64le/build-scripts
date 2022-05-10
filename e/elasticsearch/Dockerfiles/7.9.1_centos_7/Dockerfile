@@ -18,6 +18,9 @@ FROM centos:7 AS builder
 
 MAINTAINER "Shivani Junawane <shivanij@us.ibm.com>"
 
+ARG PATCH_PATH=https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_7.9.1.patch
+ARG PATCH=elasticsearch_7.9.1.patch
+
 # `tini` is a tiny but valid init for containers. This is used to cleanly
 # control how ES and any child processes are shut down.
 #
@@ -61,8 +64,8 @@ RUN yum install -y wget git && \
 	ln -sf /usr/local/jdk-13.0.2+8/bin/java /usr/bin/ &&\
 	git clone https://github.com/elastic/elasticsearch.git && \
 	cd elasticsearch && git checkout $PACKAGE_VERSION && \
-	wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_7.9.1.patch && \
-	git apply elasticsearch_7.9.1.patch && \
+	wget $PATCH_PATH && \
+	git apply $PATCH && \
 	mkdir -p distribution/archives/linux-ppc64le-tar && \
 	echo "// This file is intentionally blank. All configuration of the distribution is done in the parent project." > distribution/archives/linux-ppc64le-tar/build.gradle && \
 	mkdir -p distribution/archives/oss-linux-ppc64le-tar && \

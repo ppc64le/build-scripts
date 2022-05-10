@@ -16,6 +16,10 @@ FROM registry.access.redhat.com/ubi8/ubi:latest AS builder
 LABEL MAINTAINER "Elayaraja Dhanapal <eldhanap@in.ibm.com>"
 
 ARG PACKAGE_VERSION
+
+ARG PATCH_PATH=https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_7.11.2.patch
+ARG PATCH=elasticsearch_7.11.2.patch
+
 # `tini` is a tiny but valid init for containers. This is used to cleanly
 # control how ES and any child processes are shut down.
 #
@@ -52,8 +56,8 @@ RUN set -o errexit -o nounset && echo "Downloading Gradle" && wget --no-verbose 
 
 RUN git clone --single-branch --branch 7.11 https://github.com/elastic/elasticsearch.git && \
     cd elasticsearch && git checkout $PACKAGE_VERSION && \
-    wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_7.11.2.patch && \
-    git apply elasticsearch_7.11.2.patch && \
+    wget $PATCH_PATH && \
+    git apply $PATCH && \
     gradle :distribution:archives:linux-ppc64le-tar:assemble --parallel && \
     mv ./distribution/archives/linux-ppc64le-tar/build/distributions/elasticsearch-*-SNAPSHOT-linux-ppc64le.tar.gz /opt
 
