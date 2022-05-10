@@ -11,7 +11,13 @@
 # Extract Elasticsearch artifact
 ################################################################################
 
+ARG PACKAGE_VERSION=v7.12.0
+
 FROM registry.access.redhat.com/ubi8/ubi:latest AS builder
+
+ARG PACKAGE_VERSION
+ARG PATCH=elasticsearch_7.12.0.patch
+ARG PATCH_PATH=../elasticsearch_7.12.0.patch
 
 # `tini` is a tiny but valid init for containers. This is used to cleanly
 # control how ES and any child processes are shut down.
@@ -46,18 +52,18 @@ RUN wget https://github.com/AdoptOpenJDK/openjdk15-binaries/releases/download/jd
     ln -sf /usr/local/jdk-15.0.2+7/bin/java /usr/bin/ && \
     rm -f OpenJDK15U-jdk_ppc64le_linux_hotspot_2021-01-22-02-31.tar.gz
 
-COPY elasticsearch_v7.12.0.patch .
+COPY $PATCH_PATH .
 
-RUN git clone --single-branch --branch v7.12.0 https://github.com/elastic/elasticsearch.git && \
+RUN git clone --single-branch --branch $PACKAGE_VERSION https://github.com/elastic/elasticsearch.git && \
     cd elasticsearch && \
-    git apply ../elasticsearch_v7.12.0.patch && \
+    git apply ../$PATCH && \
     ./gradlew :distribution:archives:linux-ppc64le-tar:assemble --parallel && \
-    mv ./distribution/archives/linux-ppc64le-tar/build/distributions/elasticsearch-7.12.0-SNAPSHOT-linux-ppc64le.tar.gz /opt
+    mv ./distribution/archives/linux-ppc64le-tar/build/distributions/elasticsearch-*-SNAPSHOT-linux-ppc64le.tar.gz /opt
 
 RUN mkdir /usr/share/elasticsearch
 WORKDIR /usr/share/elasticsearch
 
-RUN tar -zxf /opt/elasticsearch-7.12.0-SNAPSHOT-linux-ppc64le.tar.gz --strip-components=1
+RUN tar -zxf /opt/elasticsearch-*-SNAPSHOT-linux-ppc64le.tar.gz --strip-components=1
 
 # RUN yum install -y wget && \
 RUN cd lib && \
@@ -83,7 +89,7 @@ RUN sed -i -e 's/ES_DISTRIBUTION_TYPE=tar/ES_DISTRIBUTION_TYPE=docker/' bin/elas
     mkdir -p config/jvm.options.d data logs plugins && \
     chmod 0775 config config/jvm.options.d data logs plugins && \
     mv config/log4j2.properties config/log4j2.file.properties && \
-    jdk/bin/java -jar /tmp/transform-log4j-config-7.12.0.jar config/log4j2.file.properties > config/log4j2.properties && \
+    jdk/bin/java -jar /tmp/transform-log4j-config-*.jar config/log4j2.file.properties > config/log4j2.properties && \
     chmod 0660 config/elasticsearch.yml config/log4j2*.properties && \
     find ./jdk -type d -exec chmod 0755 {} + && \
     find . -xdev -perm -4000 -exec chmod ug-s {} + && \
@@ -107,6 +113,8 @@ RUN for iter in {1..10}; do \
         exit_code=$? && echo "yum error: retry $iter in 10s" && sleep 10; \
     done; \
     exit $exit_code
+
+ARG PACKAGE_VERSION
 
 RUN groupadd -g 1000 elasticsearch && \
     adduser -u 1000 -g 1000 -G 0 -d /usr/share/elasticsearch elasticsearch && \
@@ -146,7 +154,7 @@ LABEL org.label-schema.build-date="2021-03-18T06:17:15.410153305Z" \
   org.label-schema.vcs-ref="78722783c38caa25a70982b5b042074cde5d3b3a" \
   org.label-schema.vcs-url="https://github.com/elastic/elasticsearch" \
   org.label-schema.vendor="Elastic" \
-  org.label-schema.version="7.12.0" \
+  org.label-schema.version="$PACKAGE_VERSION" \
   org.opencontainers.image.created="2021-03-18T06:17:15.410153305Z" \
   org.opencontainers.image.documentation="https://www.elastic.co/guide/en/elasticsearch/reference/index.html" \
   org.opencontainers.image.licenses="Elastic-License-2.0" \
@@ -155,7 +163,7 @@ LABEL org.label-schema.build-date="2021-03-18T06:17:15.410153305Z" \
   org.opencontainers.image.title="Elasticsearch" \
   org.opencontainers.image.url="https://www.elastic.co/products/elasticsearch" \
   org.opencontainers.image.vendor="Elastic" \
-  org.opencontainers.image.version="7.12.0"
+  org.opencontainers.image.version="$PACKAGE_VERSION"
 
 ENTRYPOINT ["/bin/tini", "--", "/usr/local/bin/docker-entrypoint.sh"]
 # Dummy overridable parameter parsed by entrypoint

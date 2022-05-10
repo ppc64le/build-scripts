@@ -12,6 +12,8 @@
 # Set gid=0 and make group perms==owner perms
 ################################################################################
 
+ARG PACKAGE_VERSION=v7.6.0
+
 FROM centos:7 AS builder
 
 RUN for iter in {1..10}; do yum update --setopt=tsflags=nodocs -y &&     yum install --setopt=tsflags=nodocs -y maven wget sudo docker gzip git shadow-utils tar &&     yum clean all && exit_code=0 && break || exit_code=$? && echo "yum error: retry $iter in 10s" && sleep 10; done;     (exit $exit_code)
@@ -29,7 +31,7 @@ RUN cd /root && wget https://github.com/AdoptOpenJDK/openjdk13-binaries/releases
 	&& tar -C /usr/local -xzf OpenJDK13U-jdk_ppc64le_linux_hotspot_2020-02-24-07-25.tar.gz \
 	&& sudo ln -sf /usr/local/jdk-13.0.2+8/bin/java /usr/bin/ \
 	&& cd /root && git clone https://github.com/elastic/elasticsearch.git \
-	&& cd elasticsearch && git checkout v7.6.0 \
+	&& cd elasticsearch && git checkout $PACKAGE_VERSION \
 	&& sed -i '/ARCHITECTURES = Collections.unmodifiableMap(m);/ i \ \ \ \ \ \ \ \ m.put("ppc64le", new Arch(0xC0000015, 0xFFFFFFFF, 2, 189, 11, 362, 358));' server/src/main/java/org/elasticsearch/bootstrap/SystemCallFilter.java \
 	&& sed -i '$ d' distribution/src/config/jvm.options \
 	&& echo "xpack.ml.enabled: false" >> distribution/src/config/elasticsearch.yml \
@@ -40,7 +42,7 @@ RUN cd /root && wget https://github.com/AdoptOpenJDK/openjdk13-binaries/releases
 	&& sed -i 's/if (project.file("\/proc\/cpuinfo").exists()) {/if ("ppc64le".equals(System.getProperty("os.arch"))) { \n  \/\/ Ask ppc64le to count physical CPUs for us \n ByteArrayOutputStream stdout = new ByteArrayOutputStream(); \n \t project.exec{  \n\t executable "nproc" \n\t args "--all\"  \n\t standardOutput = stdout\n}\n return Integer.parseInt(stdout.toString("UTF-8").trim())\n } else if (project.file("\/proc\/cpuinfo").exists()) {/g' buildSrc/src/main/groovy/org/elasticsearch/gradle/BuildPlugin.groovy \
 	&& ./gradlew -p distribution/archives/linux-tar assemble --parallel 
 
-RUN tar zxf /root/elasticsearch/distribution/archives/linux-tar/build/distributions/elasticsearch-7.6.0-SNAPSHOT-linux-ppc64le.tar.gz --strip-components=1
+RUN tar zxf /root/elasticsearch/distribution/archives/linux-tar/build/distributions/elasticsearch-*-SNAPSHOT-linux-ppc64le.tar.gz --strip-components=1
 RUN grep ES_DISTRIBUTION_TYPE=tar /usr/share/elasticsearch/bin/elasticsearch-env     && sed -i -e 's/ES_DISTRIBUTION_TYPE=tar/ES_DISTRIBUTION_TYPE=docker/' /usr/share/elasticsearch/bin/elasticsearch-env
 RUN mkdir -p config data logs
 RUN chmod 0775 config data logs

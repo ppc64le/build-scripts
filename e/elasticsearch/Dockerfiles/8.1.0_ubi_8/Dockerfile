@@ -11,7 +11,13 @@
 # Extract Elasticsearch artifact
 ################################################################################
 
+ARG PACKAGE_VERSION=v8.1.0
+
 FROM registry.access.redhat.com/ubi8/ubi:latest AS builder
+
+ARG PACKAGE_VERSION=v8.1.0
+ARG PATCH_PATH=./elasticsearch_v8.1.0.patch
+ARG PATCH=elasticsearch_v8.1.0.patch
 
 # `tini` is a tiny but valid init for containers. This is used to cleanly
 # control how ES and any child processes are shut down.
@@ -46,18 +52,18 @@ RUN wget https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17
 
 ENV JAVA_TOOL_OPTIONS -Dfile.encoding=UTF8
 
-COPY elasticsearch_v8.1.0.patch .
+COPY $PATCH_PATH .
 
-RUN git clone --single-branch --branch v8.1.0  https://github.com/elastic/elasticsearch.git && \
+RUN git clone --single-branch --branch $PACKAGE_VERSION  https://github.com/elastic/elasticsearch.git && \
     cd elasticsearch && \
-    git apply ../elasticsearch_v8.1.0.patch && \
+    git apply ../$PATCH && \
     ./gradlew :distribution:archives:linux-ppc64le-tar:assemble --parallel && \
-    mv ./distribution/archives/linux-ppc64le-tar/build/distributions/elasticsearch-8.1.0-SNAPSHOT-linux-ppc64le.tar.gz /opt
+    mv ./distribution/archives/linux-ppc64le-tar/build/distributions/elasticsearch-*-SNAPSHOT-linux-ppc64le.tar.gz /opt
 
 RUN mkdir /usr/share/elasticsearch
 WORKDIR /usr/share/elasticsearch
 
-RUN tar -zxf /opt/elasticsearch-8.1.0-SNAPSHOT-linux-ppc64le.tar.gz --strip-components=1
+RUN tar -zxf /opt/elasticsearch-*-SNAPSHOT-linux-ppc64le.tar.gz --strip-components=1
 
 RUN cd lib && \
     rm -rf jna-* && \
@@ -96,6 +102,8 @@ RUN sed -i -e 's/ES_DISTRIBUTION_TYPE=tar/ES_DISTRIBUTION_TYPE=docker/' bin/elas
 ################################################################################
 
 FROM registry.access.redhat.com/ubi8/ubi:latest
+
+ARG PACKAGE_VERSION
 
 RUN for iter in {1..10}; do \
     yum update --setopt=tsflags=nodocs -y && \
@@ -145,7 +153,7 @@ LABEL org.label-schema.build-date="2022-02-24T18:24:19.354479987Z" \
     org.label-schema.vcs-ref="801d9ccc7c2ee0f2cb121bbe22ab5af77a902372" \
     org.label-schema.vcs-url="https://github.com/elastic/elasticsearch" \
     org.label-schema.vendor="Elastic" \
-    org.label-schema.version="8.1.0" \
+    org.label-schema.version="$PACKAGE_VERSION" \
     org.opencontainers.image.created="2022-02-24T18:24:19.354479987Z" \
     org.opencontainers.image.documentation="https://www.elastic.co/guide/en/elasticsearch/reference/index.html" \
     org.opencontainers.image.licenses="Elastic-License-2.0" \
@@ -154,7 +162,7 @@ LABEL org.label-schema.build-date="2022-02-24T18:24:19.354479987Z" \
     org.opencontainers.image.title="Elasticsearch" \
     org.opencontainers.image.url="https://www.elastic.co/products/elasticsearch" \
     org.opencontainers.image.vendor="Elastic" \
-    org.opencontainers.image.version="8.1.0"
+    org.opencontainers.image.version="$PACKAGE_VERSION"
 
 ENTRYPOINT ["/bin/tini", "--", "/usr/local/bin/docker-entrypoint.sh"]
 # Dummy overridable parameter parsed by entrypoint

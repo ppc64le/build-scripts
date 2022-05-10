@@ -1,0 +1,40 @@
+{
+    "package_name" : "elasticsearch",
+    "github_url":"https://github.com/elastic/elasticsearch.git",
+    "package_dir": "e/elasticsearch/Dockerfiles/",
+    "cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+
+    "v7.6.0" : {
+        "dir":"7.6.0_centos_7"
+    },
+    "v7.8.0" : {
+        "dir":"7.8.0_centos_7"
+    },
+    "v7.9.1" : {
+        "dir":"7.9.1_centos_7"
+    },
+    "v7.11.2" : {
+        "dir":"7.11.2_ubi_8"
+    },
+    "v7.12.0" : {
+        "dir":"7.12.0_ubi_8",
+        "patches": {
+            "PATCH_PATH": "../elasticsearch_7.12.0.patch",
+            "PATCH": "elasticsearch_7.12.0.patch"
+        }
+    },
+    "v7.13.0" : {
+        "dir":"7.13.0_ubi_8",
+        "patches": {
+            "PATCH_PATH": "../elasticsearch_7.13.0.patch",
+            "PATCH": "elasticsearch_7.13.0.patch"
+        }
+    },
+    "v8.1.*" : {
+        "dir":"8.1.0_ubi_8",
+        "patches": {
+            "PATCH_PATH": "${dir}/elasticsearch_8.1.0.patch",
+            "PATCH": "elasticsearch_8.1.0.patch"
+        }
+    }
+}

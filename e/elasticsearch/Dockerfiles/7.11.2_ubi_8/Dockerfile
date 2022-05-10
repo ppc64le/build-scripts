@@ -9,10 +9,13 @@
 # Extract Elasticsearch artifact
 ################################################################################
 
+ARG PACKAGE_VERSION=v7.11.2
+
 FROM registry.access.redhat.com/ubi8/ubi:latest AS builder
 
 LABEL MAINTAINER "Elayaraja Dhanapal <eldhanap@in.ibm.com>"
 
+ARG PACKAGE_VERSION
 # `tini` is a tiny but valid init for containers. This is used to cleanly
 # control how ES and any child processes are shut down.
 #
@@ -48,17 +51,17 @@ RUN wget https://github.com/AdoptOpenJDK/openjdk15-binaries/releases/download/jd
 RUN set -o errexit -o nounset && echo "Downloading Gradle" && wget --no-verbose --output-document=gradle.zip "https://services.gradle.org/distributions/gradle-6.8.3-bin.zip" && echo "Installing Gradle" && unzip gradle.zip && rm gradle.zip  && mv "gradle-6.8.3" "/usr/share/"     && ln --symbolic "/usr/share/gradle-6.8.3/bin/gradle" /usr/bin/gradle && echo "Testing Gradle installation" && gradle --version
 
 RUN git clone --single-branch --branch 7.11 https://github.com/elastic/elasticsearch.git && \
-    cd elasticsearch && git checkout v7.11.2 && \
+    cd elasticsearch && git checkout $PACKAGE_VERSION && \
     wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_7.11.2.patch && \
     git apply elasticsearch_7.11.2.patch && \
     gradle :distribution:archives:linux-ppc64le-tar:assemble --parallel && \
-    mv ./distribution/archives/linux-ppc64le-tar/build/distributions/elasticsearch-7.11.2-SNAPSHOT-linux-ppc64le.tar.gz /opt
+    mv ./distribution/archives/linux-ppc64le-tar/build/distributions/elasticsearch-*-SNAPSHOT-linux-ppc64le.tar.gz /opt
 
 RUN mkdir /usr/share/elasticsearch
 
 WORKDIR /usr/share/elasticsearch
 
-RUN tar -zxf /opt/elasticsearch-7.11.2-SNAPSHOT-linux-ppc64le.tar.gz --strip-components=1
+RUN tar -zxf /opt/elasticsearch-*-SNAPSHOT-linux-ppc64le.tar.gz --strip-components=1
 
 RUN cd lib && \
     rm -rf jna-* && \
@@ -95,6 +98,8 @@ RUN sed -i -e 's/ES_DISTRIBUTION_TYPE=tar/ES_DISTRIBUTION_TYPE=docker/' bin/elas
 ################################################################################
 
 FROM registry.access.redhat.com/ubi8/ubi:latest
+
+ARG PACKAGE_VERSION
 
 RUN for iter in {1..10}; do \
       yum update --setopt=tsflags=nodocs -y && \
@@ -144,7 +149,7 @@ LABEL org.label-schema.build-date="2021-02-15T13:44:09.394032Z" \
   org.label-schema.vcs-ref="ff17057114c2199c9c1bbecc727003a907c0db7a" \
   org.label-schema.vcs-url="https://github.com/elastic/elasticsearch" \
   org.label-schema.vendor="Elastic" \
-  org.label-schema.version="7.11.2" \
+  org.label-schema.version="$PACKAGE_VERSION" \
   org.opencontainers.image.created="2021-02-15T13:44:09.394032Z" \
   org.opencontainers.image.documentation="https://www.elastic.co/guide/en/elasticsearch/reference/index.html" \
   org.opencontainers.image.licenses="Elastic-License-2.0" \
@@ -153,7 +158,7 @@ LABEL org.label-schema.build-date="2021-02-15T13:44:09.394032Z" \
   org.opencontainers.image.title="Elasticsearch" \
   org.opencontainers.image.url="https://www.elastic.co/products/elasticsearch" \
   org.opencontainers.image.vendor="Elastic" \
-  org.opencontainers.image.version="7.11.2"
+  org.opencontainers.image.version="$PACKAGE_VERSION"
 
 ENTRYPOINT ["/bin/tini", "--", "/usr/local/bin/docker-entrypoint.sh"]
 # Dummy overridable parameter parsed by entrypoint
