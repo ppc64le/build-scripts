@@ -42,7 +42,7 @@
             "PATCH": "elasticsearch_v7.13.0.patch"
         }
     },
-    "v8.1.*" : {
+    "v8.1.0, v8.1.1, v8.1.2, v8.1.3" : {
         "dir":"8.1.0_ubi_8",
         "patches": {
             "PATCH_PATH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/Dockerfiles/8.1.0_ubi_8/elasticsearch_v8.1.0.patch",
