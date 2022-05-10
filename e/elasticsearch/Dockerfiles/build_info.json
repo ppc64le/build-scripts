@@ -19,15 +19,15 @@
     "v7.12.0" : {
         "dir":"7.12.0_ubi_8",
         "patches": {
-            "PATCH_PATH": "../elasticsearch_7.12.0.patch",
-            "PATCH": "elasticsearch_7.12.0.patch"
+            "PATCH_PATH": "../elasticsearch_v7.12.0.patch",
+            "PATCH": "elasticsearch_v7.12.0.patch"
         }
     },
     "v7.13.0" : {
         "dir":"7.13.0_ubi_8",
         "patches": {
-            "PATCH_PATH": "../elasticsearch_7.13.0.patch",
-            "PATCH": "elasticsearch_7.13.0.patch"
+            "PATCH_PATH": "../elasticsearch_v7.13.0.patch",
+            "PATCH": "elasticsearch_v7.13.0.patch"
         }
     },
     "v8.1.*" : {
