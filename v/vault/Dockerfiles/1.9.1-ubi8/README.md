@@ -6,7 +6,8 @@ Docker run command: docker run -d --name=dev-vault vault
 
 Deploying vault on Openshift
 
-`$ oc new-project vault
+```
+$ oc new-project vault
 --> Now using project "vault" on server "https://api-<cluster-address>:6443".
     You can add applications to this project with the 'new-app' command. For example, try:
     oc new-app rails-postgresql-example
@@ -51,4 +52,5 @@ $ oc status
     1 info identified, use 'oc status --suggest' to see details.
 
 $ oc expose service/vault-ppc64le
-route.route.openshift.io/vault exposed`
+route.route.openshift.io/vault exposed
+```
