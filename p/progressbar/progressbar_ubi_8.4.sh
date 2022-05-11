@@ -20,7 +20,7 @@
 
 PACKAGE_PATH=github.com/schollz/
 PACKAGE_NAME=progressbar
-PACKAGE_VERSION=v1.0.0
+PACKAGE_VERSION=${1:-v1.0.0}
 PACKAGE_URL=https://github.com/schollz/progressbar
 
 # Install dependencies
