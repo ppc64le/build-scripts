@@ -104,7 +104,7 @@ FROM registry.access.redhat.com/ubi8/ubi:latest
 ARG PACKAGE_VERSION
 
 RUN for iter in {1..10}; do \
-    yum update --setopt=tsflags=nodocs -y && \
+    # yum update --setopt=tsflags=nodocs -y && \
     yum install --setopt=tsflags=nodocs -y \
     shadow-utils zip unzip  && \
     yum clean all && \
