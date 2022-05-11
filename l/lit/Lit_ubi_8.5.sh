@@ -22,7 +22,7 @@ PACKAGE_NAME=llvm-project
 PACKAGE_VERSION=llvmorg-11.0.1
 PACKAGE_URL=https://github.com/llvm/llvm-project.git
 
-yum -y update && yum install -y git python3 python2 git cmake llvm llvm-devel llvm-googletest
+yum install -y git python3 python2 git cmake llvm llvm-devel llvm-googletest
 
 mkdir -p /home/tester/output
 cd /home/tester
