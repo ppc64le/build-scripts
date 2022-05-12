@@ -47,6 +47,3 @@ fi
 #else
 #	echo "------------------$PACKAGE_NAME:test_success-------------------------"
 #fi
-
-
-
