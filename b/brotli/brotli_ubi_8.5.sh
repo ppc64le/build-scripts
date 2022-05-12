@@ -22,7 +22,7 @@ PACKAGE_NAME=brotli
 PACKAGE_VERSION=${1:-v1.0.9}
 PACKAGE_URL=https://github.com/google/brotli
 
-yum -y update
+yum -y update --no-best
 yum install -y cmake make git gcc-c++
 
 git clone $PACKAGE_URL 
