@@ -22,7 +22,7 @@ PACKAGE_NAME=svg-sanitizer
 PACKAGE_VERSION=${1:-0.13.0}
 PACKAGE_URL=https://github.com/darylldoyle/svg-sanitizer
 
-yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git jq curl nodejs make gcc-c++
+yum -y update --nobest && yum install -y nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git jq curl nodejs make gcc-c++
 yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 yum install -y git bzip2 ca-certificates curl tar xz openssl  wget  gzip gcc-c++ make pkgconf  file curl-devel  libxml2-devel openssl-devel sqlite-devel ncurses-devel libjpeg-devel libicu-devel libtidy-devel libxslt-devel libzip-devel bzip2-devel libpng-devel diffutils autoconf patch
 yum install -y http://rpmfind.net/linux/centos/8-stream/BaseOS/ppc64le/os/Packages/readline-devel-7.0-10.el8.ppc64le.rpm
