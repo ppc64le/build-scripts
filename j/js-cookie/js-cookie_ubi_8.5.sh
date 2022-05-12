@@ -22,7 +22,7 @@ PACKAGE_NAME=js-cookie
 PACKAGE_VERSION=${1:-v3.0.0}
 PACKAGE_URL=https://github.com/js-cookie/js-cookie.git
 
-sudo yum -y update && sudo yum install -y yum-utils nodejs npm git make wget tar zip nss libXScrnSaver libX11-xcb libXcomposite libXcursor libXfixes libXrender libXdamage atk at-spi2-atk at-spi2-core cups-libs avahi-libs libXrandr libdrm mesa-libgbm libwayland-server alsa-lib pango gtk3
+yum -y update && yum install -y yum-utils nodejs npm git make wget tar zip nss libXScrnSaver libX11-xcb libXcomposite libXcursor libXfixes libXrender libXdamage atk at-spi2-atk at-spi2-core cups-libs avahi-libs libXrandr libdrm mesa-libgbm libwayland-server alsa-lib pango gtk3
 
 # export PUPPETEER_SKIP_DOWNLOAD=true
 # export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
@@ -46,7 +46,12 @@ if ! npm install && npm audit fix && npm audit fix --force; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME" > ../output/install_fails
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails" > ../output/version_tracker
-	exit 0
+	exit 1
+else
+	echo "------------------$PACKAGE_NAME:success-------------------------------------"
+	echo "$PACKAGE_URL $PACKAGE_NAME" > ../output/install_success
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Success |  Install_Success" > ../output/version_tracker
+	exit 1
 fi
 
 # The code for testing this package is commented since the chrome binaries required for testing may not be accessible by the developer .
@@ -58,7 +63,7 @@ fi
 # 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 # 	echo "$PACKAGE_URL $PACKAGE_NAME" > ../output/test_fails 
 # 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > ../output/version_tracker
-# 	exit 0
+# 	exit 1
 # else
 # 	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 # 	echo "$PACKAGE_URL $PACKAGE_NAME" > ../output/test_success 
