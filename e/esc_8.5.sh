@@ -49,6 +49,10 @@ mkdir -p $GOPATH/src/github.com/mjibson/esc
 
 #building and testing esc
 cd $GOPATH/src/github.com/mjibson/esc
+if [ -d "$PACKAGE_NAME" ] ; then
+  rm -rf $PACKAGE_NAME
+  echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"  
+fi
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
     echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
