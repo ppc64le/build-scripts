@@ -46,7 +46,12 @@ if ! npm install && npm audit fix && npm audit fix --force; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME" > ../output/install_fails
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails" > ../output/version_tracker
-	exit 0
+	exit 1
+else
+	echo "------------------$PACKAGE_NAME:success-------------------------------------"
+	echo "$PACKAGE_URL $PACKAGE_NAME" > ../output/install_success
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Success |  Install_Success" > ../output/version_tracker
+	exit 1
 fi
 
 # The code for testing this package is commented since the chrome binaries required for testing may not be accessible by the developer .
@@ -58,7 +63,7 @@ fi
 # 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 # 	echo "$PACKAGE_URL $PACKAGE_NAME" > ../output/test_fails 
 # 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > ../output/version_tracker
-# 	exit 0
+# 	exit 1
 # else
 # 	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 # 	echo "$PACKAGE_URL $PACKAGE_NAME" > ../output/test_success 
