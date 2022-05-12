@@ -16,7 +16,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
+#!/bin/bash -ex
 
 WORKDIR=`pwd`
 ELASTICSEARCH_VERSION=${1:-v8.1.0}
@@ -40,7 +40,6 @@ rm -f OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.2_8.tar.gz
 cd $WORKDIR
 git clone https://github.com/elastic/elasticsearch.git
 cd elasticsearch && git checkout $ELASTICSEARCH_VERSION
-
 # Apply patches
 wget https://raw.githubusercontent.com/kandarpamalipeddi/build-scripts/master/e/elasticsearch/elasticsearch_v8.1.0.patch
 git apply elasticsearch_v8.1.0.patch
