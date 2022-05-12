@@ -24,8 +24,8 @@ PACKAGE_URL=https://github.com/js-cookie/js-cookie.git
 
 yum -y update && yum install -y yum-utils nodejs npm git make wget tar zip nss libXScrnSaver libX11-xcb libXcomposite libXcursor libXfixes libXrender libXdamage atk at-spi2-atk at-spi2-core cups-libs avahi-libs libXrandr libdrm mesa-libgbm libwayland-server alsa-lib pango gtk3
 
-# export PUPPETEER_SKIP_DOWNLOAD=true
-# export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+export PUPPETEER_SKIP_DOWNLOAD=true
+export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 # export PUPPETEER_EXECUTABLE_PATH=../chromium/chromium_84_0_4118_0/chrome
 
 mkdir -p output
