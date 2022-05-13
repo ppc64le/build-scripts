@@ -1,0 +1,10 @@
+{
+    "package_name" : "Redis",
+    "github_url":"https://github.com/redis/redis",
+    "package_dir": "r/redis/",
+    "build_script" : "redis_ubi_8.5.sh",
+
+    "6.*.*, 7.*.*": {
+        "dir": "6.2.4_ubi_8"
+    }
+}

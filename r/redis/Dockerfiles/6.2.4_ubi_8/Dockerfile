@@ -1,10 +1,12 @@
 FROM registry.access.redhat.com/ubi8/ubi:latest
 
+ARG PACKAGE_VERSION=6.2.4
+
 # Required Labels
 LABEL name="redis" \
       maintainer="Sneha.Kanekar1@ibm.com" \
       vendor="Redis Labs" \
-      version="6.2.4" \
+      version="$PACKAGE_VERSION" \
       release="1" \
       summary="Red Hat UBI Redis" \
       description="Red Hat UBI Redis Application"
@@ -20,7 +22,7 @@ RUN sudo yum update -y -q \
   && sudo yum install -y -q make gcc git \
   && git clone https://github.com/redis/redis.git && \
   pushd redis && \
-  git checkout 6.2.4 && \
+  git checkout $PACKAGE_VERSION && \
   make distclean && \
   make V=1 && \
   sudo make install && \
