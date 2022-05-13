@@ -16,9 +16,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
-#!/bin/bash
-
 PACKAGE_NAME="esc"
 PACKAGE_URL="https://github.com/mjibson/esc.git"
 PACKAGE_VERSION=${1:-"v0.2.0"}
