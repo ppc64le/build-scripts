@@ -24,7 +24,7 @@ RUN sudo yum update -y -q \
   pushd redis && \
   git checkout $PACKAGE_VERSION && \
   make distclean && \
-  make V=1 && \
+  make V=1 MALLOC=libc && \
   sudo make install && \
   popd && \
   rm -fr redis && \
