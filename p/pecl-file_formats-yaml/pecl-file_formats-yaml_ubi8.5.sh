@@ -35,4 +35,4 @@ phpize
 ./configure --with-yaml
 make 
 make install
-make test -q
+make test
