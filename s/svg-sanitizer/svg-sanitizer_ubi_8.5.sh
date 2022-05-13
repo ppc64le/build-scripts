@@ -7,8 +7,8 @@
 # Tested on	: UBI: 8.5
 # Language      : PHP
 # Travis-Check  : True
-# Script License: GPL-2.0 License
-# Maintainer	: Vishaka Desai <Vedang.Wartikar@ibm.com>
+# Script License: Apache License, Version 2 or later
+# Maintainer	: Vishaka Desai <Vishaka.Desai@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
