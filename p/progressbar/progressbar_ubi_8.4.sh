@@ -4,7 +4,7 @@
 # Package       : progressbar
 # Version       : v1.0.0
 # Source repo   : https://github.com/schollz/progressbar
-# Tested on     : RHEL ubi 8.4
+# Tested on     : ubi 8.4
 # Language      : GO
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
