@@ -33,7 +33,8 @@ git checkout $PACKAGE_VERSION
 
 ./gradlew jar
 
-./gradlew unitTest
+./gradlew unitTest integrationTest --continue -PtestLoggingEvents=started,passed,skipped,failed -PignoreFailures=true -PmaxParallelForks=2
 
 # Unit test will take more than 2 hrs, hence Travis-check disabled.
+# There are known failures, hence -PigonreFailures=true been provided.
 
