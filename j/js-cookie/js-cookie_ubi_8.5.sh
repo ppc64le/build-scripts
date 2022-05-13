@@ -7,8 +7,8 @@
 # Tested on	: UBI: 8.5
 # Language      : Node
 # Travis-Check  : True
-# Script License: MIT License
-# Maintainer	: Vishaka Desai <Vedang.Wartikar@ibm.com>
+# Script License: Apache License, Version 2 or later
+# Maintainer	: Vishaka Desai <Vishaka.Desai@ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -22,7 +22,9 @@ PACKAGE_NAME=js-cookie
 PACKAGE_VERSION=${1:-v3.0.0}
 PACKAGE_URL=https://github.com/js-cookie/js-cookie.git
 
-yum -y update && yum install -y yum-utils nodejs npm git make wget tar zip nss libXScrnSaver libX11-xcb libXcomposite libXcursor libXfixes libXrender libXdamage atk at-spi2-atk at-spi2-core cups-libs avahi-libs libXrandr libdrm mesa-libgbm libwayland-server alsa-lib pango gtk3
+yum install -y yum-utils nodejs npm git make wget tar zip nss libXScrnSaver libX11-xcb \
+libXcomposite libXcursor libXfixes libXrender libXdamage atk at-spi2-atk at-spi2-core \
+cups-libs avahi-libs libXrandr libdrm mesa-libgbm libwayland-server alsa-lib pango gtk3
 
 export PUPPETEER_SKIP_DOWNLOAD=true
 export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
