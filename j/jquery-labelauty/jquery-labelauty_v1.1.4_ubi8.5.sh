@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/bin/bash -ex
 # -----------------------------------------------------------------------------
 #
 # Package: jquery-labelauty
 # Version: v1.1.4
 # Source repo: https://github.com/fntneves/jquery-labelauty 
-# Tested on: RHEL v8.5
-# Language: PHP
+# Tested on: UBI 8.5
+# Language: Node
 # Travis-Check: True
 # Script License: Apache License, Version 2 or later
 # Maintainer: Prashant Khoje <prashant.khoje@us.ibm.com>
@@ -18,7 +18,6 @@
 #
 # ----------------------------------------------------------------------------
 
-set -ex
 PACKAGE_NAME=jquery-labelauty
 PACKAGE_VERSION=${1:-v1.1.4}
 PACKAGE_URL="https://github.com/fntneves/jquery-labelauty"
@@ -31,4 +30,3 @@ git checkout $PACKAGE_VERSION
 npm build
 npm install
 echo "Tests aren't available."
-
