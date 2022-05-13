@@ -17,11 +17,13 @@
 # ----------------------------------------------------------------------------
 #!/bin/bash =e
 
-PACKAGE_VERSION=${1:-'2.7.0'}
+PACKAGE_VERSION=${1:-'2.8.0'}
 
 #Install dependencies
-sudo yum update -y
-sudo yum install -y git wget unzip java-1.8.0-openjdk java-1.8.0-openjdk-devel
+sudo yum install -y java-1.8.0-openjdk-devel git
+
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0
+export PATH=$JAVA_HOME/bin:$PATH
 
 #Build and run unit tests
 cd $HOME
@@ -30,7 +32,6 @@ cd kafka
 git checkout $PACKAGE_VERSION
 
 ./gradlew jar
-./gradlew releaseTarGz -x signArchives
 
 ./gradlew unitTest
 
