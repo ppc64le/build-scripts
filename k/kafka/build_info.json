@@ -1,0 +1,13 @@
+{
+    "package_name" : "kafka",
+    "github_url":"https://github.com/apache/kafka",
+    "package_dir": "k/kafka/",
+
+    "2.*.*": {
+        "dir": "wurstmeister",
+        "build_script" : "kafka_ubi_8.5.sh",
+        "args": {
+            "kafka_version":"$PACKAGE_VERSION"
+        }
+    }
+}

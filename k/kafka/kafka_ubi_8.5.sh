@@ -1,0 +1,38 @@
+# ----------------------------------------------------------------------------
+# Package       : kafka
+# Version       : 2.8.0
+# Source repo   : https://github.com/apache/kafka
+# Tested on     : UBI 8.5
+# Language      : Java
+# Travis-Check  : False
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Kandarpa Malipeddi <kandarpa.malipeddi@ibm.com>, Amol Patil <amol.patil2@ibm.com>, Priya Seth <sethp@us.ibm.com>
+#
+# Disclaimer: This script has been tested in non-root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
+#!/bin/bash =e
+
+PACKAGE_VERSION=${1:-'2.7.0'}
+
+#Install dependencies
+sudo yum update -y
+sudo yum install -y git wget unzip java-1.8.0-openjdk java-1.8.0-openjdk-devel
+
+#Build and run unit tests
+cd $HOME
+git clone https://github.com/apache/kafka
+cd kafka
+git checkout $PACKAGE_VERSION
+
+./gradlew jar
+./gradlew releaseTarGz -x signArchives
+
+./gradlew unitTest
+
+# Unit test will take more than 2 hrs, hence Travis-check disabled.
+
