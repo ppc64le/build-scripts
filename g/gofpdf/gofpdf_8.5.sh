@@ -31,7 +31,6 @@ fi
 # Dependency installation
 yum module install -y go-toolset
 dnf install -y git
-
 # Download the repos
 
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
