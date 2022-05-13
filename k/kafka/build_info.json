@@ -3,7 +3,7 @@
     "github_url":"https://github.com/apache/kafka",
     "package_dir": "k/kafka/",
 
-    "2.*.*": {
+    "3.*.*": {
         "dir": "wurstmeister",
         "build_script" : "kafka_ubi_8.5.sh",
         "args": {
