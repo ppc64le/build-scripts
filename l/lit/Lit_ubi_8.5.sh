@@ -4,11 +4,11 @@
 # Package       : llvm-project
 # Version       : llvmorg-11.0.1
 # Source repo   : https://github.com/llvm/llvm-project/
-# Tested on     : UBI 8.3
+# Tested on     : UBI 8.5
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : BulkPackageSearch Automation {maintainer}
+# Maintainer    : Alston Dias <Vedang.Wartikar@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
