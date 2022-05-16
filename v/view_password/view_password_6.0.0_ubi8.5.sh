@@ -1,5 +1,4 @@
-#!/bin/bash
-
+#!/bin/bash -ex
 # -----------------------------------------------------------------------------
 #
 # Package       : drupal/view_password
@@ -19,7 +18,6 @@
 #
 # ----------------------------------------------------------------------------
 
-set -ex
 PACKAGE_NAME=view_password
 PACKAGE_URL=https://git.drupalcode.org/project/view_password.git
 # PACKAGE_VERSION is configurable can be passed as an argument.
@@ -49,4 +47,3 @@ cat > composer.json << EOF
 EOF
 
 composer install
-set +ex
