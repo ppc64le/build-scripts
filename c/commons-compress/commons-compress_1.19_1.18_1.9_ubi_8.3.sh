@@ -3,7 +3,7 @@
 #
 # Package         : commons-compress
 # Version         : 1.19, 1.18, 1.9, 1.2
-# Source Repo     : https://github.com/apache/commons-compress
+# Source repo     : https://github.com/apache/commons-compress
 # Tested on       : UBI 8.3 (Docker)
 # Language        : Java
 # Travis-Check    : True
