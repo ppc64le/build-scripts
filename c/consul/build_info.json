@@ -14,7 +14,10 @@
 
     "v1.1*.*": {
         "dir": "1.9.4-ubi8",
-        "GO_VERSION": "1.18.2",
-        "DUMB_INIT_VERSION": "1.2.5"
+        "args" : {
+            "GO_VERSION": "1.18.2",
+            "DUMB_INIT_VERSION": "1.2.5"
+        }
+        
     }
 }
