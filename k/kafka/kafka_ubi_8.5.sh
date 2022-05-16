@@ -15,7 +15,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash =e
+#!/bin/bash -e
 
 PACKAGE_VERSION=${1:-'2.8.0'}
 

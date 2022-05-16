@@ -1,0 +1,20 @@
+{
+    "package_name" : "Consul",
+    "github_url":"https://github.com/hashicorp/consul",
+    "package_dir": "c/consul",
+    "build_script" : "consul_ubi_8.5.sh",
+
+    "v1.8.3": {
+        "dir": "1.8.3-ubi8"
+    },
+
+    "v1.9.4": {
+        "dir": "1.9.4-ubi8"
+    },
+
+    "v1.12.*": {
+        "dir": "1.8.3-ubi8",
+        "GO_VERSION": "1.18.2",
+        "DUMB_INIT_VERSION": "1.2.5"
+    }
+}
