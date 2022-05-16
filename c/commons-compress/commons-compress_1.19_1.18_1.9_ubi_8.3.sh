@@ -3,6 +3,7 @@
 #
 # Package         : commons-compress
 # Version         : 1.19, 1.18, 1.9, 1.2
+# Source Repo     : https://github.com/apache/commons-compress
 # Tested on       : UBI 8.3 (Docker)
 # Language        : Java
 # Travis-Check    : True
@@ -19,6 +20,7 @@
 #Variables
 REPO=https://github.com/apache/commons-compress.git
 PACKAGE_VERSION=1.19
+PACKAGE_NAME=commons-compress
 
 echo "Usage: $0 [-v <PACKAGE_VERSION>]"
 echo "PACKAGE_VERSION is an optional paramater whose default value is 1.19, not all versions are supported."
@@ -34,7 +36,7 @@ export PATH=${M2_HOME}/bin:${PATH}
 
 #Clone
 git clone $REPO
-cd commons-compress/
+cd $PACKAGE_NAME
 git checkout rel/$PACKAGE_VERSION
 
 #Build and test
