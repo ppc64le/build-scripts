@@ -2,10 +2,10 @@
 
 # ----------------------------------------------------------------------------
 #
-# Package               : operator-registry
-# Version               : 275301b779f8c059c733afd8e6a01c071aee9c22, v1.6.2-0.20200330184612-11867930adb5
-# Source repo           : https://github.com/operator-framework/operator-registry
-# Tested on             : UBI 8.5
+# Package               : runtime-spec
+# Version               : v1.0.0
+# Source repo           : https://github.com/opencontainers/runtime-spec
+# Tested on             : RHEL 8.5,UBI 8.5
 # Language              : GO
 # Script License        : Apache License, Version 2 or later
 # Travis-Check          : True
@@ -20,13 +20,13 @@
 # ----------------------------------------------------------------------------
 
 # Dependency installation
-dnf install -y git wget patch diffutils unzip gcc-c++ make cmake
+dnf install -y git wget patch diffutils unzip gcc-c++
 
 #Set variables
-PACKAGE_URL=https://github.com/operator-framework/operator-registry
+PACKAGE_URL=https://github.com/opencontainers/runtime-spec
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-275301b779f8c059c733afd8e6a01c071aee9c22}
-PACKAGE_NAME=operator-registry
+PACKAGE_VERSION=${1:-v1.0.0}
+PACKAGE_NAME=runtime-spec
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2) 
 
 #Install go package and update go path if not installed 
@@ -38,7 +38,6 @@ export GOROOT=/usr/local/go
 export GOPATH=$HOME/go
 export PATH=$GOROOT/bin:$GOPATH/bin:$PATH
 export GO111MODULE=auto
-rm -f go1.16.1.linux-ppc64le.tar.gz
 fi
  
 
@@ -66,11 +65,11 @@ else
 fi 
   
 # Ensure go.mod file exists
-    [ ! -f go.mod ] && go mod init operator-registry
+    [ ! -f go.mod ] && go mod init runtime-spec
     go mod tidy
-    go mod vendor
-      
-if ! make build; then
+
+    
+if ! go build -v ./...; then
 
     echo "------------------$PACKAGE_NAME:build failed---------------------"
     echo "$PACKAGE_VERSION $PACKAGE_NAME"
@@ -78,7 +77,7 @@ if ! make build; then
     exit 1
 else
 
-   if ! make unit; then
+   if ! go test ./...; then
    
              echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
              echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails"    
