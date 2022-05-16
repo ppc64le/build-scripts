@@ -63,7 +63,7 @@ cd /home/tester/$PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 if ! python3 setup.py install; then
     build_test_with_python2
-        exit 0
+    exit 0
 fi
 
 cd /home/tester/$PACKAGE_NAME/llvm
