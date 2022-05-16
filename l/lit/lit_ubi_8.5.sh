@@ -27,36 +27,36 @@ yum install -y git python3 python2 git cmake llvm llvm-devel llvm-googletest
 mkdir -p /home/tester/output
 cd /home/tester
 
-function build_test_with_python2(){
-        SOURCE="Python 2.7"
-        cd /home/tester/$PACKAGE_NAME/llvm
-        if ! python2 utils/lit/setup.py install; then
-                echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
-                echo  "$PACKAGE_URL $PACKAGE_NAME " > /home/tester/output/install_fails
-                echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail |  Install_Fails" > /home/tester/output/version_tracker
-                exit 1
-        fi
+function build_test_with_python2() {
+    SOURCE="Python 2.7"
+    cd /home/tester/$PACKAGE_NAME/llvm
+    if ! python2 utils/lit/setup.py install; then
+        echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME " >/home/tester/output/install_fails
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail |  Install_Fails" >/home/tester/output/version_tracker
+        exit 1
+    fi
 
-        cd /home/tester/$PACKAGE_NAME/llvm
+    cd /home/tester/$PACKAGE_NAME/llvm
 
-        if !  lit --path /usr/bin/lit utils/lit/tests; then
-                echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-                echo  "$PACKAGE_URL $PACKAGE_NAME "  > /home/tester/output/test_fails
-                echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-                exit 1
-        else
-                echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
-                echo  "$PACKAGE_URL $PACKAGE_NAME "  > /home/tester/output/test_success
-                echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE  | Pass |  Both_Install_and_Test_Success" > /home/tester/output/version_tracker
-                exit 0
-        fi
+    if ! lit --path /usr/bin/lit utils/lit/tests; then
+        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME " >/home/tester/output/test_fails
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail |  Install_success_but_test_Fails" >/home/tester/output/version_tracker
+        exit 1
+    else
+        echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME " >/home/tester/output/test_success
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE  | Pass |  Both_Install_and_Test_Success" >/home/tester/output/version_tracker
+        exit 0
+    fi
 }
 
-if ! git clone $PACKAGE_URL ; then
-        echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-                echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/clone_fails
-                echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail |  Clone_Fails" > /home/tester/output/version_tracker
-        exit 1
+if ! git clone $PACKAGE_URL; then
+    echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME" >/home/tester/output/clone_fails
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail |  Clone_Fails" >/home/tester/output/version_tracker
+    exit 1
 fi
 
 cd /home/tester/$PACKAGE_NAME
@@ -68,14 +68,14 @@ fi
 
 cd /home/tester/$PACKAGE_NAME/llvm
 
-if !  lit --path /usr/bin/lit utils/lit/tests; then
-        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-        echo  "$PACKAGE_URL $PACKAGE_NAME "  > /home/tester/output/test_fails
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-        exit 1
+if ! lit --path /usr/bin/lit utils/lit/tests; then
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME " >/home/tester/output/test_fails
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail |  Install_success_but_test_Fails" >/home/tester/output/version_tracker
+    exit 1
 else
-        echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
-        echo  "$PACKAGE_URL $PACKAGE_NAME "  > /home/tester/output/test_success
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE  | Pass |  Both_Install_and_Test_Success" > /home/tester/output/version_tracker
-        exit 0
+    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME " >/home/tester/output/test_success
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE  | Pass |  Both_Install_and_Test_Success" >/home/tester/output/version_tracker
+    exit 0
 fi
