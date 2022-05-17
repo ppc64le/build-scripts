@@ -42,6 +42,7 @@ fi
 rm -rf drupal
 composer create-project drupal-composer/drupal-project:8.x-dev drupal --no-interaction --stability=dev
 composer require mglaman/drupal-check --dev
+composer require nette/utils
 if ! composer install --no-interaction; then
         echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
