@@ -64,7 +64,7 @@ def trigger_basic_validation_checks(file_name):
             print("Requried keys: {}".format(",".join(key_checks.keys())))
             print("Found keys: {}".format(",".join(matched_keys)))
             print("Missing required keys: {}".format(",".join(set(key_checks.keys())-set(matched_keys))))
-            raise ValueError("Basic Validation Checks Failed!!!")
+            raise ValueError("Basic Validation Checks Failed for {} !!!".format(script_path))
     else:
         raise ValueError("Build script not found.")
 
