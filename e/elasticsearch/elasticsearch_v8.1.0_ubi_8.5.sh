@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package       : elasticsearch
@@ -16,7 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash -ex
 
 WORKDIR=`pwd`
 ELASTICSEARCH_VERSION=${1:-v8.1.0}
