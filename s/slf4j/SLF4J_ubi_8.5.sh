@@ -3,12 +3,12 @@
 #
 # Package	: SLF4J
 # Version	: v_1.7.26
-# Source repo	: https://github.com/qos-ch/slf4j/tree/v_1.7.26/slf4j-simple
+# Source repo	: https://github.com/qos-ch/slf4j.git
 # Tested on	: UBI 8.5
 # Language      : Java
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Alston Dias <Vedang.Wartikar@ibm.com>
+# Maintainer	: Alston Dias <Alston.Dias@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
