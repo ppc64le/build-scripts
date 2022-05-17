@@ -1,14 +1,14 @@
 #!/bin/bash -e
 #----------------------------------------------------------------------------
 #
-# Package       : llvm-project
+# Package       : lit
 # Version       : llvmorg-11.0.1
 # Source repo   : https://github.com/llvm/llvm-project/
 # Tested on     : UBI 8.5
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Alston Dias <Vedang.Wartikar@ibm.com>
+# Maintainer    : Alston Dias <Alston.Dias@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=llvm-project
+PACKAGE_NAME=lit
 PACKAGE_VERSION=llvmorg-11.0.1
 PACKAGE_URL=https://github.com/llvm/llvm-project.git
 
@@ -29,7 +29,7 @@ cd /home/tester
 
 function build_test_with_python2() {
     SOURCE="Python 2.7"
-    cd /home/tester/$PACKAGE_NAME/llvm
+    cd /home/tester/llvm-project/llvm
     if ! python2 utils/lit/setup.py install; then
         echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME " >/home/tester/output/install_fails
@@ -37,7 +37,7 @@ function build_test_with_python2() {
         exit 1
     fi
 
-    cd /home/tester/$PACKAGE_NAME/llvm
+    cd /home/tester/llvm-project/llvm
 
     if ! lit --path /usr/bin/lit utils/lit/tests; then
         echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
@@ -59,14 +59,14 @@ if ! git clone $PACKAGE_URL; then
     exit 1
 fi
 
-cd /home/tester/$PACKAGE_NAME
+cd /home/tester/llvm-project
 git checkout $PACKAGE_VERSION
 if ! python3 setup.py install; then
     build_test_with_python2
     exit 0
 fi
 
-cd /home/tester/$PACKAGE_NAME/llvm
+cd /home/tester/llvm-project/llvm
 
 if ! lit --path /usr/bin/lit utils/lit/tests; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
