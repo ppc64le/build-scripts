@@ -1,91 +1,73 @@
-#!/bin/bash -e
-
+#!/bin/bash   -e
+# -----------------------------------------------------------------------------
+#
+# Package	: runtime-spec
+# Version	: v1.0.2
+# Source repo	: https://github.com/opencontainers/runtime-spec
+# Tested on	: ubi 8.5
+# Language      : GO
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
+# Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>
+#
+# Disclaimer: This script has been tested in root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
+#
 # ----------------------------------------------------------------------------
-#
-# Package               : runtime-spec
-# Version               : v1.0.0
-# Source repo           : https://github.com/opencontainers/runtime-spec
-# Tested on             : RHEL 8.5,UBI 8.5
-# Language              : GO
-# Script License        : Apache License, Version 2 or later
-# Travis-Check          : True
-# Maintainer            : Bhagat Singh <Bhagat.singh1@ibm.com>
-#
-# Disclaimer            : This script has been tested in root mode on given
-# ==========              platform using the mentioned version of the package.
-#                         It may not work as expected with newer versions of the
-#                         package and/or distribution. In such case, please
-#                         contact "Maintainer" of this script.
-#
-# ----------------------------------------------------------------------------
 
-# Dependency installation
-dnf install -y git wget patch diffutils unzip gcc-c++
+PACKAGE_NAME="runtime-spec"
+PACKAGE_VERSION=${1:-"v1.0.2"}
+PACKAGE_URL="https://github.com/opencontainers/runtime-spec"
+OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
-#Set variables
-PACKAGE_URL=https://github.com/opencontainers/runtime-spec
-#PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-v1.0.0}
-PACKAGE_NAME=runtime-spec
-OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2) 
+export GO_VERSION=${GO_VERSION:-"1.18"}
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:/usr/local/bin
 
-#Install go package and update go path if not installed 
-if ! command -v go &> /dev/null
-then
-curl -O https://dl.google.com/go/go1.16.1.linux-ppc64le.tar.gz
-tar -C /usr/local -xzf go1.16.1.linux-ppc64le.tar.gz
-export GOROOT=/usr/local/go
-export GOPATH=$HOME/go
-export PATH=$GOROOT/bin:$GOPATH/bin:$PATH
-export GO111MODULE=auto
-fi
- 
+dnf -q install -y wget zip make git
+dnf install -qy http://mirror.chpc.utah.edu/pub/centos/8-stream/BaseOS/ppc64le/os/Packages/centos-gpg-keys-8-6.el8.noarch.rpm
+dnf install -qy http://mirror.chpc.utah.edu/pub/centos/8-stream/BaseOS/ppc64le/os/Packages/centos-stream-repos-8-6.el8.noarch.rpm
+dnf config-manager --enable powertools
+dnf install -qy pandoc texlive-latex texlive-latex-fonts texlive-ec texlive-gsftopk texlive-updmap-map golang
 
-
-#Check if package exists
-if [ -d $PACKAGE_NAME ] ; then
-  rm -rf $PACKAGE_NAME
-  echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"  
- 
-fi
- 
-
-# Download the repos
-git clone $PACKAGE_URL
-
-# Build and Test
+export PATH="$(go env GOPATH)/bin:${PATH}"
+set -x
+git clone -q $PACKAGE_URL $PACKAGE_NAME
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-ret=$?
-if [ $ret -eq 0 ] ; then
- echo "---------------------------$PACKAGE_VERSION found to checkout--------------------- "
-else
- echo "---------------------------$PACKAGE_VERSION not found-----------------------------"
- exit
-fi 
-  
-# Ensure go.mod file exists
-    [ ! -f go.mod ] && go mod init runtime-spec
-    go mod tidy
-
-    
-if ! go build -v ./...; then
-
-    echo "------------------$PACKAGE_NAME:build failed---------------------"
-    echo "$PACKAGE_VERSION $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  build_Fails"
-    exit 1
-else
-
-   if ! go test ./...; then
-   
-             echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-             echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails"    
-    exit 1
-  else
-       echo "------------------$PACKAGE_NAME:install_build_and_test_success-------------------------"
-       echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass |  Install_Build_and_Test_Success"
-    exit 0 
+# Fix for "cannot find main module" issue
+go mod init github.com/opencontainers/runtime-spec
+go get golang.org/x/lint/golint
+go install golang.org/x/lint/golint
+go get github.com/vbatts/git-validation
+go install github.com/vbatts/git-validation
+go get -d ./schema/...
+if ! make; then
+	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+	echo "$PACKAGE_URL $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
+	exit 1
 fi
+
+go mod tidy
+#make install.tools
+
+make .govet
+make .golint
+
+make .gitvalidation
+make docs
+
+if ! make -C schema test; then
+	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+	echo "$PACKAGE_URL $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
+	exit 1
+else
+	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+	echo "$PACKAGE_URL $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
+	exit 0
 fi
- 
