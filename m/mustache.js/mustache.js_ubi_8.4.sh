@@ -1,11 +1,14 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: laminas/laminas-diactoros
-# Version	: 1.8
-# Source repo	: https://github.com/laminas/laminas-diactoros
-# Tested on	: RHEL 8.3
+# Package	: mustache.js
+# Version	: v4.0.1
+# Source repo	: https://github.com/janl/mustache.js
+# Tested on	: UBI 8.4
+# Language      : NPM
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
+# Maintainer	: Apurva Agrawal <Apurva.Agrawal3@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -15,28 +18,31 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=laminas/laminas-diactoros
-PACKAGE_VERSION=1.8
-PACKAGE_URL=https://github.com/laminas/laminas-diactoros
+PACKAGE_NAME=mustache.js
+PACKAGE_VERSION=${1:-v4.0.1}
+PACKAGE_URL=https://github.com/janl/mustache.js.git
 
-yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git jq curl php php-curl php-dom php-mbstring php-json nodejs make gcc-c++ patch diffutils php-gd php-pecl-zip
+yum -y update && yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git gcc gcc-c++ libffi libffi-devel ncurses jq make cmake
 
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/bin --filename=composer
-composer require --dev phpunit/phpunit --with-all-dependencies ^7
-mkdir output
+npm install n -g && n latest && npm install -g npm@latest && export PATH="$PATH" && npm install --global yarn grunt-bump xo testem acorn
+npm install -g eslint && npm install --global mocha && npm install --save-dev chai && npm i esm
 
 OS_NAME=`python3 -c "os_file_data=open('/etc/os-release').readlines();os_info = [i.replace('PRETTY_NAME=','').strip() for i in os_file_data if i.startswith('PRETTY_NAME')];print(os_info[0])"`
 HOME_DIR=`pwd`
+
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
     	echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-		echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
+		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/clone_fails
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails" > /home/tester/output/version_tracker
     	exit 0
 fi
 
 cd $HOME_DIR/$PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-if ! composer install; then
+
+# run the test command from test.sh
+
+if ! npm install && npm audit fix && npm audit fix --force; then
      	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
@@ -44,7 +50,7 @@ if ! composer install; then
 fi
 
 cd $HOME_DIR/$PACKAGE_NAME
-if ! /home/tester/vendor/bin/phpunit; then
+if ! npm test; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"

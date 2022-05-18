@@ -1,0 +1,41 @@
+diff --git a/BUILD b/BUILD
+index 394ed85..88996a8 100644
+--- a/BUILD
++++ b/BUILD
+@@ -141,6 +141,20 @@ go_binary(
+     visibility = ["//visibility:public"],
+ )
+ 
++go_binary(
++    name = "bazelisk-linux-ppc64",
++    out = "bazelisk-linux_ppc64",
++    embed = [":go_default_library"],
++    gc_linkopts = [
++        "-s",
++        "-w",
++    ],
++    goarch = "ppc64le",
++    goos = "linux",
++    pure = "on",
++    visibility = ["//visibility:public"],
++)
++
+ go_binary(
+     name = "bazelisk-windows-amd64",
+     out = "bazelisk-windows_amd64.exe",
+diff --git a/platforms/platforms.go b/platforms/platforms.go
+index 14efc07..b7b28a5 100644
+--- a/platforms/platforms.go
++++ b/platforms/platforms.go
+@@ -31,8 +31,10 @@ func DetermineBazelFilename(version string, includeSuffix bool) (string, error)
+ 		machineName = "x86_64"
+ 	case "arm64":
+ 		machineName = "arm64"
++	case "ppc64":
++		machineName = "ppc64"
+ 	default:
+-		return "", fmt.Errorf("unsupported machine architecture \"%s\", must be arm64 or x86_64", runtime.GOARCH)
++		return "", fmt.Errorf("unsupported machine architecture \"%s\", must be ppc64, arm64 or x86_64", runtime.GOARCH)
+ 	}
+ 
+ 	var osName string

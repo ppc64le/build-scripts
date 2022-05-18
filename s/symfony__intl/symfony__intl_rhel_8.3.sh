@@ -1,11 +1,14 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: symfony/intl
-# Version	: 4
+# Version	: 4, v4.8.8, v4.8.18
 # Source repo	: https://github.com/symfony/intl
-# Tested on	: RHEL 8.3
+# Tested on	: RHEL 8.3, ubi 8.5
+# Language      : PHP
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
+# Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>, Apurva Agrawal <Apurva.Agrawal3@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -16,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=symfony/intl
-PACKAGE_VERSION=4
+PACKAGE_VERSION=${1:-v4.0.0}
 PACKAGE_URL=https://github.com/symfony/intl
 
 yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git jq curl php php-curl php-dom php-mbstring php-json nodejs make gcc-c++ patch diffutils php-gd php-pecl-zip
