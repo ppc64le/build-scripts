@@ -57,6 +57,19 @@ index e835e816f4c..195cf4ea2aa 100644
          );
      }
  
+diff --git a/buildSrc/version.properties b/buildSrc/version.properties
+index 18f9d856c9f..15a2dd6f741 100644
+--- a/buildSrc/version.properties
++++ b/buildSrc/version.properties
+@@ -14,7 +14,7 @@ snakeyaml         = 1.26
+ icu4j             = 62.1
+ supercsv          = 2.4.0
+ # when updating log4j, please update also docs/java-api/index.asciidoc
+-log4j             = 2.11.1
++log4j             = 2.12.2
+ slf4j             = 1.6.2
+ 
+ # when updating the JNA version, also update the version in buildSrc/build.gradle
 diff --git a/distribution/archives/build.gradle b/distribution/archives/build.gradle
 index 0c56b8e02a0..c1da60ddb60 100644
 --- a/distribution/archives/build.gradle
@@ -149,7 +162,7 @@ index 4464166d2b0..a9a0a0ad823 100644
      dependsOn(buildContextTask)
  
 -    String arch = architecture == Architecture.AARCH64 ? '-aarch64' : ''
-+    String arch = architecture == Architecture.AARCH64 ? '-aarch64' : (architecture == Architecture.PPC64LE ? '-ppc64le' : '') 
++    String arch = architecture == Architecture.AARCH64 ? '-aarch64' : (architecture == Architecture.PPC64LE ? '-ppc64le' : '')
      String archiveName = "elasticsearch${base.suffix}-${VersionProperties.elasticsearch}-docker-build-context${arch}"
      String distributionName = "elasticsearch-${VersionProperties.elasticsearch}-linux-${architecture.classifier}.tar.gz"
  
