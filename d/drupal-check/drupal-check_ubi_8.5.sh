@@ -32,6 +32,7 @@ if [ -d "$PACKAGE_NAME" ] ; then
   rm -rf $PACKAGE_NAME
   echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"
 fi
+composer require --dev phpunit/phpunit --with-all-dependencies ^8  --no-interaction
 HOME_DIR=`pwd`
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
         echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
