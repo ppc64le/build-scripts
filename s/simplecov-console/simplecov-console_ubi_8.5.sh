@@ -18,8 +18,6 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e
-
 export PACKAGE_NAME=simplecov-console
 export PACKAGE_URL=https://github.com/chetan/simplecov-console.git
 
