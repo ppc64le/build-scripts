@@ -5,7 +5,9 @@
 # Source repo   : https://github.com/jirikavi/AngularJS-Toaster 
 # Tested on     : UBI 8.4
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Ankit Paraskar <ankit.paraskar@ibm.com>
+# Maintainer    : Ankit Paraskar <ankit.paraskar@ibm.com
+# Language      : Node
+# Travis-Check  : True 
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
