@@ -18,8 +18,6 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e
-
 export PACKAGE_NAME=smash-the-state
 export PACKAGE_URL=https://github.com/IBM-Cloud/smash-the-state.git
 
