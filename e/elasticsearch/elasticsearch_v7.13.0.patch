@@ -175,7 +175,7 @@ index 4464166d2b0..a9a0a0ad823 100644
      dependsOn(buildContextTask)
  
 -    String arch = architecture == Architecture.AARCH64 ? '-aarch64' : ''
-+    String arch = architecture == Architecture.AARCH64 ? '-aarch64' : (architecture == Architecture.PPC64LE ? '-ppc64le' : '') 
++    String arch = architecture == Architecture.AARCH64 ? '-aarch64' : (architecture == Architecture.PPC64LE ? '-ppc64le' : '')
      String archiveName = "elasticsearch${base.suffix}-${VersionProperties.elasticsearch}-docker-build-context${arch}"
      String distributionName = "elasticsearch-${VersionProperties.elasticsearch}-linux-${architecture.classifier}.tar.gz"
  
