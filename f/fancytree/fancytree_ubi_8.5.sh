@@ -22,7 +22,7 @@ PACKAGE_NAME=fancytree
 PACKAGE_VERSION=${1:-v2.37.0}
 PACKAGE_URL=https://github.com/mar10/fancytree.git
 
-yum -y update && sudo yum install -y yum-utils nodejs npm git make wget tar zip nss libXScrnSaver libX11-xcb libXcomposite libXcursor libXfixes libXrender libXdamage atk at-spi2-atk at-spi2-core cups-libs avahi-libs libXrandr libdrm mesa-libgbm libwayland-server alsa-lib pango gtk3
+yum -y update && yum install -y yum-utils nodejs npm git make wget tar zip nss libXScrnSaver libX11-xcb libXcomposite libXcursor libXfixes libXrender libXdamage atk at-spi2-atk at-spi2-core cups-libs avahi-libs libXrandr libdrm mesa-libgbm libwayland-server alsa-lib pango gtk3
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
