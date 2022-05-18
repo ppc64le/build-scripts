@@ -16,7 +16,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
+!/bin/bash
 
 PACKAGE_NAME=${PACKAGE_NAME}
 PACKAGE_VERSION=${PACKAGE_VERSION}
