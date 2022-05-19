@@ -6,7 +6,8 @@
 # Source repo   : https://github.com/ClickHouse/ClickHouse
 # Tested on     : UBI 8.5
 # Language      : C,C++
-# Travis-Check  : True
+## Setting Travis to False as currently it can not run on travis CI due to the build time limit being exceeded which in tern will fail the Travis Ci build.
+# Travis-Check  : False 
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Pranav Pandit <pranav.pandit1@ibm.com>
 #
