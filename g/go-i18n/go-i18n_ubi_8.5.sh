@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: go-i18n
-# Version	: v1.10.0, v1.9.0
+# Version	: v1.10.0, v1.9.0, v1.10.1
 # Source repo	: https://github.com/nicksnyder/go-i18n
 # Tested on	: ubi 8.5
 # Language      : GO
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME="go-i18n"
-PACKAGE_VERSION=${1:-"v1.10.0"}
+PACKAGE_VERSION=${1:-"v1.10.1"}
 PACKAGE_URL="https://github.com/nicksnyder/go-i18n"
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
