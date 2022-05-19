@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : go-genproto
-# Version       : b5d43981345bdb2c233eb4bf3277847b48c6fdc6,d950eab6f860f209ea1641dee947bb9f7009e120,09f6ed296fc66555a25fe4ce95173148778dfa85
+# Version       : b5d43981345bdb2c233eb4bf3277847b48c6fdc6,d950eab6f860f209ea1641dee947bb9f7009e120,4f43b3371335a8c62857680af0dfbfa8e97139ae
 # Source repo   : https://github.com/googleapis/go-genproto
 # Tested on     : UBI 8.4
 # Language      : GO
