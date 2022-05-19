@@ -4,7 +4,7 @@
 # Package               : rails-html-sanitizer
 # Version               : v1.4.2
 # Source repo           : https://github.com/rails/rails-html-sanitizer.git
-# Tested on             : UBI 8.4
+# Tested on             : UBI 8.5
 # Language              : Ruby
 # Travis-Check          : True
 # Script License        : Apache License, Version 2 or later
@@ -17,8 +17,6 @@
 #                         contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
-set -e
 
 export PACKAGE_NAME=rails-html-sanitizer
 export PACKAGE_URL=https://github.com/rails/rails-html-sanitizer.git
@@ -33,9 +31,9 @@ if [ -d "${PACKAGE_NAME}" ] ; then
 fi
 
 
-yum install -y git ruby procps yum-utils wget
+yum install -y git ruby procps yum-utils wget xz
 
-yum-config-manager --add-repo http://mirror.centos.org/centos/8/AppStream/ppc64le/os/ && yum-config-manager --add-repo http://mirror.centos.org/centos/8/PowerTools/ppc64le/os/ && yum-config-manager --add-repo http://mirror.centos.org/centos/8/BaseOS/ppc64le/os/ && yum-config-manager --add-repo http://mirror.centos.org/centos/8/virt/ppc64le/ovirt-44/
+yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/AppStream/ppc64le/os/ && yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/PowerTools/ppc64le/os/ && yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/BaseOS/ppc64le/os/ && yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/virt/ppc64le/ovirt-44/
 
 wget https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official && mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/. && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 
