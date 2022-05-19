@@ -4,7 +4,7 @@
 # Package               : topmodel
 # Version               : master
 # Source repo           : https://github.com/agilastic/topmodel.git
-# Tested on             : UBI 8.4
+# Tested on             : UBI 8.5
 # Language              : Ruby
 # Travis-Check          : True
 # Script License        : Apache License, Version 2 or later
@@ -18,8 +18,6 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e
-
 if [ -z "$1" ]; then
   export PACKAGE_VERSION=53f07d785e62e85a0f680c126be7cf42aa5fc868
 else
@@ -29,9 +27,9 @@ if [ -d "topmodel" ] ; then
   rm -rf topmodel
 fi
 
-yum install -y git ruby procps yum-utils wget
+yum install -y git ruby procps yum-utils wget xz
 
-yum-config-manager --add-repo http://mirror.centos.org/centos/8/AppStream/ppc64le/os/ && yum-config-manager --add-repo http://mirror.centos.org/centos/8/PowerTools/ppc64le/os/ && yum-config-manager --add-repo http://mirror.centos.org/centos/8/BaseOS/ppc64le/os/ && yum-config-manager --add-repo http://mirror.centos.org/centos/8/virt/ppc64le/ovirt-44/
+yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/AppStream/ppc64le/os/ && yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/PowerTools/ppc64le/os/ && yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/BaseOS/ppc64le/os/ && yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/virt/ppc64le/ovirt-44/
 
 wget https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official && mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/. && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 
