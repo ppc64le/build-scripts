@@ -20,8 +20,6 @@
 PACKAGE_NAME=github.com/prometheus/client_model
 PACKAGE_VERSION=${1:-v0.2.0}
 
-set -e
-
 yum install -y git golang
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
