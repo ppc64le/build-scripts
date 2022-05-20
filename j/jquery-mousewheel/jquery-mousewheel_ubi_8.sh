@@ -24,7 +24,23 @@ PACKAGE_URL=https://github.com/jquery/jquery-mousewheel.git
 
 set -ex
 
-yum install git npm zip unzip -y
+yum install git npm zip unzip wget -y
+
+# ----------------------------------------------------------------------------
+# Prerequisites:
+#
+# chrome must be installed. Following are the steps to install chrome. Uncomment the following lines to install chrome
+# ----------------------------------------------------------------------------
+#set +ex
+#echo -n "Please enter your IBM W3 Username: "
+#read W3_USERNAME
+#echo -n "Please enter your W3 Password:"
+#read -s W3_PASSWORD
+#set -ex
+#set +ex
+#wget --user $W3_USERNAME --password $W3_PASSWORD https://na.artifactory.swg-devops.com/artifactory/wiotp-generic-local/ppc/dependencies/chrome/chrome.ppc64le.tgz
+#set -ex
+#tar -xzvf chrome.ppc64le.tgz
 
 mkdir -p /home/tester/output
 cd /home/tester
@@ -55,7 +71,7 @@ if [ $PACKAGE_VERSION = main ]; then
 	sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-*
 	yum install -y firefox libXScrnSaver libdrm mesa-libgbm alsa-lib libxshmfence
 	export FIREFOX_BIN=/usr/bin/firefox
-	export CHROME_BIN=/chromium/chromium_84_0_4118_0/chrome
+#	export CHROME_BIN=/chromium/chrome
 	chmod 777 $CHROME_BIN
 	cd /home/tester/$PACKAGE_NAME
 	sed -i "s#'--headless'#'--headless', '--no-sandbox'#g" ./node_modules/karma-chrome-launcher/index.js
