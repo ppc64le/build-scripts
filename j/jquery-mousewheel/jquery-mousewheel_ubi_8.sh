@@ -71,8 +71,9 @@ if [ $PACKAGE_VERSION = main ]; then
 	sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-*
 	yum install -y firefox libXScrnSaver libdrm mesa-libgbm alsa-lib libxshmfence
 	export FIREFOX_BIN=/usr/bin/firefox
+#	uncomment below 2 lines to set CHROME_BIN
 #	export CHROME_BIN=/chromium/chrome
-	chmod 777 $CHROME_BIN
+#	chmod 777 $CHROME_BIN
 	cd /home/tester/$PACKAGE_NAME
 	sed -i "s#'--headless'#'--headless', '--no-sandbox'#g" ./node_modules/karma-chrome-launcher/index.js
 	sed -i 's#"Chrome", "Firefox"#"ChromeHeadless", "FirefoxHeadless"#g' test/karma.conf.js
