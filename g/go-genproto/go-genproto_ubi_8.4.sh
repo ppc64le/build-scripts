@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-b5d43981345bdb2c233eb4bf3277847b48c6fdc6}
 PACKAGE_URL=https://github.com/googleapis/go-genproto
 
 # Install dependencies
-yum install -y make git wget
+yum install -y make git wget gcc
 
 # Download and install go
 wget https://golang.org/dl/go1.17.5.linux-ppc64le.tar.gz
