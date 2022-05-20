@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package		: jquery-mousewheel
-# Version		: main
+# Version		: 3.1.11
 # Source repo	: https://github.com/jquery/jquery-mousewheel.git
 # Tested on		: UBI 8.4
 # Language      : Node
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=jquery-mousewheel
-PACKAGE_VERSION=${1:-main}
+PACKAGE_VERSION=${1:-3.1.11}
 PACKAGE_URL=https://github.com/jquery/jquery-mousewheel.git
 
 set -ex
