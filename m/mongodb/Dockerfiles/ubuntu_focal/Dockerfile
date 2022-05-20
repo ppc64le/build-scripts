@@ -93,7 +93,7 @@ RUN apt-get update \
         && git clone https://github.com/mongodb/mongo.git && cd mongo \
         && git checkout r${MONGO_VERSION} \
         && python3 -m pip install -r etc/pip/compile-requirements.txt \
-        && python3 buildscripts/scons.py install-mongod install-mongo --disable-warnings-as-errors DESTDIR=/usr/ --ssl=on --no-cache --release \
+        && python3 buildscripts/scons.py install-mongod install-mongo --separate-debug=on --disable-warnings-as-errors DESTDIR=/usr/ --ssl=on --no-cache --release \
         && apt-get purge -y --auto-remove \
                 ca-certificates \
                 wget \
