@@ -30,7 +30,7 @@ cd /home/tester
 
 wget https://golang.org/dl/go$GO_VERSION.linux-ppc64le.tar.gz
 rm -rf /home/tester/go && tar -C /home/tester -xzf go$GO_VERSION.linux-ppc64le.tar.gz
-rm -f go$GO_VERSION.linux-ppc64le.tar.gz
+rm -rf go$GO_VERSION.linux-ppc64le.tar.gz
 export GOPATH=/home/tester/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 export  GO111MODULE=on
