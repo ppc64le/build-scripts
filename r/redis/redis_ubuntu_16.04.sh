@@ -1,11 +1,14 @@
-# ----------------------------------------------------------------------------
+#!/bin/bash -e
+# -----------------------------------------------------------------------------
 #
 # Package	: redis
 # Version	: 3.2.9
 # Source repo	: https://github.com/antirez/redis.git
 # Tested on	: ubuntu_16.04
+# Language      : C
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Atul Sowani <sowania@us.ibm.com>
+# Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -14,7 +17,8 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
+
+
 
 # Install dependencies.
 sudo apt-get update -y
@@ -24,6 +28,6 @@ sudo apt-get install -y git build-essential tcl
 git clone https://github.com/antirez/redis.git
 cd redis
 make distclean
-make V=1
+make V=1 MALLOC=libc
 make test
 sudo make install
