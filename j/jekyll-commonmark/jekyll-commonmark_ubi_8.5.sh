@@ -34,7 +34,7 @@ make
 make install
 
 git clone $PACKAGE_URL
-cd /jekyll-commonmark
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #gem install bundler -v 1.17.3
