@@ -24,5 +24,4 @@ sudo yum group install -y 'Development Tools'
 # Clone and build source.
 git clone https://github.com/antirez/redis.git
 cd redis
-make V=1 MALLOC=libc
 sudo make install

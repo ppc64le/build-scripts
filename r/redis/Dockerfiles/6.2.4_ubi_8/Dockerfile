@@ -22,7 +22,7 @@ RUN sudo yum update -y -q \
   pushd redis && \
   git checkout 6.2.4 && \
   make distclean && \
-  make V=1 MALLOC=libc && \
+  make V=1 && \
   sudo make install && \
   popd && \
   rm -fr redis && \
