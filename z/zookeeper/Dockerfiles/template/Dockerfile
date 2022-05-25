@@ -1,22 +1,27 @@
-FROM ibmcom/docker-ppc64le:18.06.3_ubi7
+FROM registry.access.redhat.com/ubi8/ubi:latest
+
+ARG ZOOKEEPER_VERSION=3.8.0
 
 ###Required Labels
 LABEL name="zookeeper" \
-      maintainer="sethp@us.ibm.com" \
+      maintainer="Muskaan.Sheik@ibm.com" \
       vendor="zookeeper" \
-      version="3.6.2" \
+      version=$ZOOKEEPER_VERSION \
       release="1" \
       summary="Red Hat UBI zookeeper" \
       description="Red Hat UBI zookeeper Application"
 
 RUN groupadd zookeeper && useradd -r -g zookeeper zookeeper -m -d /home/zookeeper/
 
-ARG ZOOKEEPER_VERSION 3.6.2
+ARG ZOOKEEPER_VERSION=3.8.0
+
+#Download Java
+RUN yum install -y java-11-openjdk && export JAVA_HOME=$(echo "1" | alternatives --config java | grep java-11-openjdk | cut -d "(" -f 2 | sed -e "s/bin\/java)$//")
 
 #Download Zookeeper
-RUN yum install -y net-tools && wget -q http://mirror.vorboss.net/apache/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz && \
-wget -q https://www.apache.org/dist/zookeeper/KEYS && \
-wget -q https://www.apache.org/dist/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz.asc
+RUN yum install -y net-tools wget && wget -q http://archive.apache.org/dist/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz && \
+wget -q http://archive.apache.org/dist/zookeeper/KEYS && \
+wget -q http://archive.apache.org/dist/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz.asc
 
 #Verify download
 RUN gpg --import KEYS && \
