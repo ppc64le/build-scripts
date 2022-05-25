@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/antirez/redis.git
 # Tested on	: ubuntu-16.04
 # Language      : C
-# Travis-Check  : True
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>
 #
