@@ -5,3 +5,6 @@ presto-prometheus use `docker` and run containers. So, `docker` must be installe
 2. The VM needs to have access to the codeready-builder repo which is enabled by
 the script for installing libstdc++-static package, needed for building libsnappyjava.so.
 
+The document related to issues seen with presto 0.236 test execution applies to 0.267 as
+well with minor deviations in dependency versions, etc and a couple of additional issues
+as mentioned above.

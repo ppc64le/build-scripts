@@ -3,7 +3,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package               : operator-registry
-# Version               : 275301b779f8c059c733afd8e6a01c071aee9c22
+# Version               : 275301b779f8c059c733afd8e6a01c071aee9c22, v1.6.2-0.20200330184612-11867930adb5
 # Source repo           : https://github.com/operator-framework/operator-registry
 # Tested on             : UBI 8.5
 # Language              : GO
@@ -38,6 +38,7 @@ export GOROOT=/usr/local/go
 export GOPATH=$HOME/go
 export PATH=$GOROOT/bin:$GOPATH/bin:$PATH
 export GO111MODULE=auto
+rm -f go1.16.1.linux-ppc64le.tar.gz
 fi
  
 
@@ -67,8 +68,9 @@ fi
 # Ensure go.mod file exists
     [ ! -f go.mod ] && go mod init operator-registry
     go mod tidy
+    go mod vendor
       
-if ! make; then
+if ! make build; then
 
     echo "------------------$PACKAGE_NAME:build failed---------------------"
     echo "$PACKAGE_VERSION $PACKAGE_NAME"
@@ -76,7 +78,7 @@ if ! make; then
     exit 1
 else
 
-   if ! make unit build; then
+   if ! make unit; then
    
              echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
              echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails"    

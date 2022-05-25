@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : method_source
-# Version       : 0.9.2
+# Version       : v0.8.2,v0.9.0,v0.9.2,v1.0.0
 # Source repo   : https://github.com/banister/method_source
 # Tested on     : UBI: 8.5
 # Language      : Ruby
