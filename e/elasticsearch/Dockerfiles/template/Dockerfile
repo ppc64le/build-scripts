@@ -1,5 +1,3 @@
-# NOTE: This is based on the original work at https://github.com/elastic/dockerfiles/
-
 ################################################################################
 # This Dockerfile was generated from the template at distribution/src/docker/Dockerfile
 #
@@ -11,12 +9,11 @@
 # Extract Elasticsearch artifact
 ################################################################################
 
-ARG PACKAGE_VERSION=v8.1.0
-
 FROM registry.access.redhat.com/ubi8/ubi:latest AS builder
 
-ARG PACKAGE_VERSION=v8.1.0
-ARG PATCH=https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_8.1.0.patch
+ARG PATCHFILE="https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_8.1.1.patch"
+ARG ELASTIC_VERSION=${1:-v8.2.0}
+ARG MINIMUM_VERSION="v8.0.1"
 
 # `tini` is a tiny but valid init for containers. This is used to cleanly
 # control how ES and any child processes are shut down.
@@ -27,10 +24,10 @@ ARG PATCH=https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elast
 RUN set -eux ; \
     tini_bin="" ; \
     case "$(arch)" in \
-    aarch64) tini_bin='tini-arm64' ;; \
-    x86_64)  tini_bin='tini-amd64' ;; \
-    ppc64le) tini_bin='tini-ppc64le' ;; \
-    *) echo >&2 ; echo >&2 "Unsupported architecture $(arch)" ; echo >&2 ; exit 1 ;; \
+        aarch64) tini_bin='tini-arm64' ;; \
+        x86_64)  tini_bin='tini-amd64' ;; \
+        ppc64le) tini_bin='tini-ppc64le' ;; \
+        *) echo >&2 ; echo >&2 "Unsupported architecture $(arch)" ; echo >&2 ; exit 1 ;; \
     esac ; \
     curl --retry 10 -S -L -O https://github.com/krallin/tini/releases/download/v0.19.0/${tini_bin} ; \
     curl --retry 10 -S -L -O https://github.com/krallin/tini/releases/download/v0.19.0/${tini_bin}.sha256sum ; \
@@ -44,24 +41,20 @@ WORKDIR /opt
 RUN yum install -y wget git unzip \
     && yum clean all
 
-RUN wget https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.2%2B8/OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.2_8.tar.gz && \
-    tar -C /usr/local -xzf OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.2_8.tar.gz &&\
-    ln -sf /usr/local/jdk-17.0.2+8/bin/java /usr/bin/ && \
-    rm -f OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.2_8.tar.gz
+RUN if [[ $ELASTIC_VERSION > $MINIMUM_VERSION ]]; then echo "$ELASTIC_VERSION>$MINIMUM_VERSION" && wget https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.2%2B8/OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.2_8.tar.gz && tar -C /usr/local -xzf OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.2_8.tar.gz && ln -sf /usr/local/jdk-17.0.2+8/bin/java /usr/bin/ && rm -f OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.2_8.tar.gz; else wget https://github.com/AdoptOpenJDK/openjdk15-binaries/releases/download/jdk15u-2021-01-22-02-31/OpenJDK15U-jdk_ppc64le_linux_hotspot_2021-01-22-02-31.tar.gz && tar -C /usr/local -xzf OpenJDK15U-jdk_ppc64le_linux_hotspot_2021-01-22-02-31.tar.gz && export JAVA_HOME=/usr/local/jdk-15.0.2+7/ && export JAVA15_HOME=/usr/local/jdk-15.0.2+7/ && export PATH=$PATH:/usr/local/jdk-15.0.2+7/bin && ln -sf /usr/local/jdk-15.0.2+7/bin/java /usr/bin/; fi
 
-ENV JAVA_TOOL_OPTIONS -Dfile.encoding=UTF8
-
-RUN git clone --single-branch --branch $PACKAGE_VERSION  https://github.com/elastic/elasticsearch.git && \
-    cd elasticsearch && \
-    wget $PATCH && \
-    git apply ${PATCH##*/} && \
+RUN git clone --single-branch --branch $ELASTIC_VERSION https://github.com/elastic/elasticsearch.git && \
+    cd elasticsearch && git checkout $ELASTIC_VERSION && \
+    wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_$PATCHFILE.patch && \
+    git apply elasticsearch_$PATCHFILE.patch && \
     ./gradlew :distribution:archives:linux-ppc64le-tar:assemble --parallel && \
-    mv ./distribution/archives/linux-ppc64le-tar/build/distributions/elasticsearch-*-SNAPSHOT-linux-ppc64le.tar.gz /opt
+    mv ./distribution/archives/linux-ppc64le-tar/build/distributions/elasticsearch-$PATCHFILE-SNAPSHOT-linux-ppc64le.tar.gz /opt
 
 RUN mkdir /usr/share/elasticsearch
+
 WORKDIR /usr/share/elasticsearch
 
-RUN tar -zxf /opt/elasticsearch-*-SNAPSHOT-linux-ppc64le.tar.gz --strip-components=1
+RUN tar -zxf /opt/elasticsearch-$PATCHFILE-SNAPSHOT-linux-ppc64le.tar.gz --strip-components=1
 
 RUN cd lib && \
     rm -rf jna-* && \
@@ -69,7 +62,7 @@ RUN cd lib && \
 
 # The distribution includes a `config` directory, no need to create it
 COPY config/elasticsearch.yml config/
-COPY config/log4j2.properties config/log4j2.docker.properties
+#COPY bin/transform-log4j-config-7.11.1.jar /tmp/
 
 # 1. Configure the distribution for Docker
 # 2. Ensure directories are created. Most already are, but make sure
@@ -85,8 +78,6 @@ COPY config/log4j2.properties config/log4j2.docker.properties
 RUN sed -i -e 's/ES_DISTRIBUTION_TYPE=tar/ES_DISTRIBUTION_TYPE=docker/' bin/elasticsearch-env && \
     mkdir -p config/jvm.options.d data logs plugins && \
     chmod 0775 config config/jvm.options.d data logs plugins && \
-    mv config/log4j2.properties config/log4j2.file.properties && \
-    mv config/log4j2.docker.properties config/log4j2.properties && \
     chmod 0660 config/elasticsearch.yml config/log4j2*.properties && \
     find ./jdk -type d -exec chmod 0755 {} + && \
     find . -xdev -perm -4000 -exec chmod ug-s {} + && \
@@ -101,15 +92,13 @@ RUN sed -i -e 's/ES_DISTRIBUTION_TYPE=tar/ES_DISTRIBUTION_TYPE=docker/' bin/elas
 
 FROM registry.access.redhat.com/ubi8/ubi:latest
 
-ARG PACKAGE_VERSION
-
 RUN for iter in {1..10}; do \
-    # yum update --setopt=tsflags=nodocs -y && \
-    yum install --setopt=tsflags=nodocs -y \
-    shadow-utils zip unzip  && \
-    yum clean all && \
-    exit_code=0 && break || \
-    exit_code=$? && echo "yum error: retry $iter in 10s" && sleep 10; \
+      yum update --setopt=tsflags=nodocs -y && \
+      yum install --setopt=tsflags=nodocs -y \
+      nc shadow-utils zip unzip  && \
+      yum clean all && \
+      exit_code=0 && break || \
+        exit_code=$? && echo "yum error: retry $iter in 10s" && sleep 10; \
     done; \
     exit $exit_code
 
@@ -142,31 +131,24 @@ RUN chmod g=u /etc/passwd && \
 
 EXPOSE 9200 9300
 
-LABEL org.label-schema.build-date="2022-02-24T18:24:19.354479987Z" \
-    org.label-schema.license="Elastic-License-2.0" \
-    org.label-schema.name="Elasticsearch" \
-    org.label-schema.schema-version="1.0" \
-    org.label-schema.url="https://www.elastic.co/products/elasticsearch" \
-    org.label-schema.usage="https://www.elastic.co/guide/en/elasticsearch/reference/index.html" \
-    org.label-schema.vcs-ref="801d9ccc7c2ee0f2cb121bbe22ab5af77a902372" \
-    org.label-schema.vcs-url="https://github.com/elastic/elasticsearch" \
-    org.label-schema.vendor="Elastic" \
-    org.label-schema.version="$PACKAGE_VERSION" \
-    org.opencontainers.image.created="2022-02-24T18:24:19.354479987Z" \
-    org.opencontainers.image.documentation="https://www.elastic.co/guide/en/elasticsearch/reference/index.html" \
-    org.opencontainers.image.licenses="Elastic-License-2.0" \
-    org.opencontainers.image.revision="801d9ccc7c2ee0f2cb121bbe22ab5af77a902372" \
-    org.opencontainers.image.source="https://github.com/elastic/elasticsearch" \
-    org.opencontainers.image.title="Elasticsearch" \
-    org.opencontainers.image.url="https://www.elastic.co/products/elasticsearch" \
-    org.opencontainers.image.vendor="Elastic" \
-    org.opencontainers.image.version="$PACKAGE_VERSION"
+LABEL org.label-schema.license="Elastic-License-2.0" \
+  org.label-schema.name="Elasticsearch" \
+  org.label-schema.schema-version="1.0" \
+  org.label-schema.url="https://www.elastic.co/products/elasticsearch" \
+  org.label-schema.usage="https://www.elastic.co/guide/en/elasticsearch/reference/index.html" \
+  org.label-schema.vcs-url="https://github.com/elastic/elasticsearch" \
+  org.label-schema.vendor="Elastic" \
+  org.opencontainers.image.documentation="https://www.elastic.co/guide/en/elasticsearch/reference/index.html" \
+  org.opencontainers.image.licenses="Elastic-License-2.0" \
+  org.opencontainers.image.source="https://github.com/elastic/elasticsearch" \
+  org.opencontainers.image.title="Elasticsearch" \
+  org.opencontainers.image.url="https://www.elastic.co/products/elasticsearch" \
+  org.opencontainers.image.vendor="Elastic" \
+  org.opencontainers.image.version=$ELASTIC_VERSION
 
 ENTRYPOINT ["/bin/tini", "--", "/usr/local/bin/docker-entrypoint.sh"]
 # Dummy overridable parameter parsed by entrypoint
 CMD ["eswrapper"]
-
-USER elasticsearch:root
 
 ################################################################################
 # End of multi-stage Dockerfile

@@ -237,14 +237,13 @@ diff --git a/distribution/docker/src/docker/config/elasticsearch.yml b/distribut
 index 50b154702b9..443f640e6d2 100644
 --- a/distribution/docker/src/docker/config/elasticsearch.yml
 +++ b/distribution/docker/src/docker/config/elasticsearch.yml
-@@ -1,2 +1,7 @@
+@@ -1,2 +1,6 @@
  cluster.name: "docker-cluster"
  network.host: 0.0.0.0
 +xpack.ml.enabled: false
 +discovery.seed_hosts: []
 +bootstrap.system_call_filter: false
 +discovery.type: single-node
-+
 diff --git a/distribution/packages/build.gradle b/distribution/packages/build.gradle
 index f6e3934d127..ab7f8704d51 100644
 --- a/distribution/packages/build.gradle
@@ -363,3 +362,30 @@ index 608bdbb0717..b31adeb8590 100644
    'distribution:packages:rpm',
    'distribution:packages:oss-no-jdk-rpm',
    'distribution:packages:no-jdk-rpm',
+diff --git a/buildSrc/version.properties b/buildSrc/version.properties
+index e3026f27262..02838108393 100644
+--- a/buildSrc/version.properties
++++ b/buildSrc/version.properties
+@@ -14,7 +14,7 @@ snakeyaml         = 1.26
+ icu4j             = 62.1
+ supercsv          = 2.4.0
+ # when updating log4j, please update also docs/java-api/index.asciidoc
+-log4j             = 2.11.1
++log4j             = 2.12.2
+ slf4j             = 1.6.2
+
+ # when updating the JNA version, also update the version in buildSrc/build.gradle
+diff --git a/x-pack/plugin/watcher/build.gradle b/x-pack/plugin/watcher/build.gradle
+index 9933f018348..31f68a82bfe 100644
+--- a/x-pack/plugin/watcher/build.gradle
++++ b/x-pack/plugin/watcher/build.gradle
+@@ -33,7 +33,7 @@ dependencies {
+   testImplementation project(xpackModule('ilm'))
+
+   // watcher deps
+-  api 'com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:20191001.1'
++  api 'com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:20211018.1'
+   runtimeOnly 'com.google.guava:guava:27.1-jre' // needed by watcher for the html sanitizer
+   runtimeOnly 'com.google.guava:failureaccess:1.0.1'
+   api 'com.sun.mail:jakarta.mail:1.6.4'
+   
