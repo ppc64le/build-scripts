@@ -23,7 +23,7 @@ PACKAGE_VERSION=${1:-v1.8.1}
 GO_VERSION=1.17.1
 PACKAGE_URL=https://github.com/sirupsen/logrus.git
 
-dnf install git wget sudo unzip -y
+dnf install gcc gcc-c++ make git wget sudo unzip -y
 
 mkdir -p /home/tester/output
 cd /home/tester
