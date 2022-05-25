@@ -1,8 +1,8 @@
 diff --git a/buildSrc/build.gradle b/buildSrc/build.gradle
-index 144a927..7dfb883 100644
+index 7b399a4ddc4..aa5ee4719e2 100644
 --- a/buildSrc/build.gradle
 +++ b/buildSrc/build.gradle
-@@ -176,9 +176,11 @@ if (project != rootProject) {
+@@ -198,9 +198,11 @@ if (project != rootProject) {
      distribution project(':distribution:archives:darwin-tar')
      distribution project(':distribution:archives:oss-darwin-tar')
      distribution project(':distribution:archives:linux-aarch64-tar')
@@ -15,7 +15,7 @@ index 144a927..7dfb883 100644
      integTestRuntimeOnly(project(":libs:elasticsearch-core"))
    }
 diff --git a/buildSrc/src/main/java/org/elasticsearch/gradle/Architecture.java b/buildSrc/src/main/java/org/elasticsearch/gradle/Architecture.java
-index f230d9a..936a513 100644
+index f230d9af86e..936a513304c 100644
 --- a/buildSrc/src/main/java/org/elasticsearch/gradle/Architecture.java
 +++ b/buildSrc/src/main/java/org/elasticsearch/gradle/Architecture.java
 @@ -22,7 +22,8 @@ package org.elasticsearch.gradle;
@@ -38,7 +38,7 @@ index f230d9a..936a513 100644
                  throw new IllegalArgumentException("can not determine architecture from [" + architecture + "]");
          }
 diff --git a/buildSrc/src/main/java/org/elasticsearch/gradle/Jdk.java b/buildSrc/src/main/java/org/elasticsearch/gradle/Jdk.java
-index 2672405..7a84760 100644
+index 2672405bbc5..7a84760b979 100644
 --- a/buildSrc/src/main/java/org/elasticsearch/gradle/Jdk.java
 +++ b/buildSrc/src/main/java/org/elasticsearch/gradle/Jdk.java
 @@ -35,7 +35,7 @@ import java.util.regex.Pattern;
@@ -51,7 +51,7 @@ index 2672405..7a84760 100644
      private static final List<String> ALLOWED_PLATFORMS = Collections.unmodifiableList(Arrays.asList("darwin", "linux", "windows", "mac"));
      private static final Pattern VERSION_PATTERN = Pattern.compile("(\\d+)(\\.\\d+\\.\\d+)?\\+(\\d+(?:\\.\\d+)?)(@([a-f0-9]{32}))?");
 diff --git a/buildSrc/src/test/java/org/elasticsearch/gradle/JdkDownloadPluginTests.java b/buildSrc/src/test/java/org/elasticsearch/gradle/JdkDownloadPluginTests.java
-index 758aacb..52a71fd 100644
+index 758aacbf90c..52a71fde517 100644
 --- a/buildSrc/src/test/java/org/elasticsearch/gradle/JdkDownloadPluginTests.java
 +++ b/buildSrc/src/test/java/org/elasticsearch/gradle/JdkDownloadPluginTests.java
 @@ -95,7 +95,7 @@ public class JdkDownloadPluginTests extends GradleUnitTestCase {
@@ -64,7 +64,7 @@ index 758aacb..52a71fd 100644
      }
  
 diff --git a/distribution/archives/build.gradle b/distribution/archives/build.gradle
-index db55b74..d27cf50 100644
+index db55b74e1f5..d27cf50ccab 100644
 --- a/distribution/archives/build.gradle
 +++ b/distribution/archives/build.gradle
 @@ -183,6 +183,12 @@ tasks.register('buildLinuxAarch64Tar', SymbolicLinkPreservingTar) {
@@ -94,7 +94,7 @@ index db55b74..d27cf50 100644
    configure(commonTarConfig)
    archiveClassifier = 'linux-x86_64'
 diff --git a/distribution/build.gradle b/distribution/build.gradle
-index e3f9b18..36fbc39 100644
+index 966c7dc30e4..92916e5d298 100644
 --- a/distribution/build.gradle
 +++ b/distribution/build.gradle
 @@ -264,7 +264,7 @@ configure(subprojects.findAll { ['archives', 'packages'].contains(it.name) }) {
@@ -116,7 +116,7 @@ index e3f9b18..36fbc39 100644
            excludePlatforms.remove(excludePlatforms.indexOf(platform))
          } else {
 diff --git a/distribution/docker/build.gradle b/distribution/docker/build.gradle
-index 3f0fe52..819cb20 100644
+index 3f0fe52d6dc..819cb201d97 100644
 --- a/distribution/docker/build.gradle
 +++ b/distribution/docker/build.gradle
 @@ -16,15 +16,19 @@ testFixtures.useFixture()
@@ -222,7 +222,7 @@ index 3f0fe52..819cb20 100644
      }
  
 diff --git a/distribution/docker/src/docker/Dockerfile b/distribution/docker/src/docker/Dockerfile
-index 7d2cc2c..8abba5b 100644
+index 7d2cc2cd2d9..8abba5b4fa0 100644
 --- a/distribution/docker/src/docker/Dockerfile
 +++ b/distribution/docker/src/docker/Dockerfile
 @@ -30,6 +30,7 @@ RUN set -eux ; \\
@@ -234,19 +234,18 @@ index 7d2cc2c..8abba5b 100644
      esac ; \\
      curl --retry 8 -S -L -O https://github.com/krallin/tini/releases/download/v0.19.0/\${tini_bin} ; \\
 diff --git a/distribution/docker/src/docker/config/elasticsearch.yml b/distribution/docker/src/docker/config/elasticsearch.yml
-index 50b1547..443f640 100644
+index 50b154702b9..443f640e6d2 100644
 --- a/distribution/docker/src/docker/config/elasticsearch.yml
 +++ b/distribution/docker/src/docker/config/elasticsearch.yml
-@@ -1,2 +1,7 @@
+@@ -1,2 +1,6 @@
  cluster.name: "docker-cluster"
  network.host: 0.0.0.0
 +xpack.ml.enabled: false
 +discovery.seed_hosts: []
 +bootstrap.system_call_filter: false
 +discovery.type: single-node
-+
 diff --git a/distribution/packages/build.gradle b/distribution/packages/build.gradle
-index f6e3934..ab7f870 100644
+index f6e3934d127..ab7f8704d51 100644
 --- a/distribution/packages/build.gradle
 +++ b/distribution/packages/build.gradle
 @@ -108,6 +108,8 @@ Closure commonPackageConfig(String type, boolean oss, boolean jdk, String archit
@@ -321,7 +320,7 @@ index f6e3934..ab7f870 100644
    configure(commonRpmConfig(true, true, 'x64'))
  }
 diff --git a/settings.gradle b/settings.gradle
-index 608bdbb..b31adeb 100644
+index 608bdbb0717..b31adeb8590 100644
 --- a/settings.gradle
 +++ b/settings.gradle
 @@ -28,8 +28,10 @@ List projects = [
@@ -363,3 +362,30 @@ index 608bdbb..b31adeb 100644
    'distribution:packages:rpm',
    'distribution:packages:oss-no-jdk-rpm',
    'distribution:packages:no-jdk-rpm',
+diff --git a/buildSrc/version.properties b/buildSrc/version.properties
+index e3026f27262..02838108393 100644
+--- a/buildSrc/version.properties
++++ b/buildSrc/version.properties
+@@ -14,7 +14,7 @@ snakeyaml         = 1.26
+ icu4j             = 62.1
+ supercsv          = 2.4.0
+ # when updating log4j, please update also docs/java-api/index.asciidoc
+-log4j             = 2.11.1
++log4j             = 2.12.2
+ slf4j             = 1.6.2
+
+ # when updating the JNA version, also update the version in buildSrc/build.gradle
+diff --git a/x-pack/plugin/watcher/build.gradle b/x-pack/plugin/watcher/build.gradle
+index 9933f018348..31f68a82bfe 100644
+--- a/x-pack/plugin/watcher/build.gradle
++++ b/x-pack/plugin/watcher/build.gradle
+@@ -33,7 +33,7 @@ dependencies {
+   testImplementation project(xpackModule('ilm'))
+
+   // watcher deps
+-  api 'com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:20191001.1'
++  api 'com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:20211018.1'
+   runtimeOnly 'com.google.guava:guava:27.1-jre' // needed by watcher for the html sanitizer
+   runtimeOnly 'com.google.guava:failureaccess:1.0.1'
+   api 'com.sun.mail:jakarta.mail:1.6.4'
+   

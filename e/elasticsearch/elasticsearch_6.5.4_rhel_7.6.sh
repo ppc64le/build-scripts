@@ -1,11 +1,14 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
-# Package	: elasticsearch
-# Version	: 6.5.4
-# Source repo	: https://github.com/elastic/elasticsearch.git
-# Tested on	: rhel 7.6
+# Package       : elasticsearch
+# Version       : 6.5.4
+# Source repo   : https://github.com/elastic/elasticsearch.git
+# Tested on     : rhel 7.6
+# Travis-Check  : True
+# Language      : Java
 # Script License: Apache License Version 2.0
-# Maintainer	: Lysanne Fernandes <lysannef@us.ibm.com>
+# Maintainer    : Lysanne Fernandes <lysannef@us.ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -14,8 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
-
 
 WORKDIR=$1
 ELASTICSEARCH_VERSION=6.5.4
