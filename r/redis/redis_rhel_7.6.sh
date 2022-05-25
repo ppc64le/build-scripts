@@ -19,13 +19,14 @@
 # ----------------------------------------------------------------------------
 
 # Install dependencies.
+PACKAGE_VERSION=${1:-5.0.4}
 sudo yum update -y
 sudo yum install -y git tcl make gcc
 
 # Clone and build source.
 git clone https://github.com/antirez/redis.git
 cd redis
-git checkout 5.0.4
+git checkout $PACKAGE_VERSION
 make V=1 MALLOC=libc
 sudo make install
 redis-cli --version
