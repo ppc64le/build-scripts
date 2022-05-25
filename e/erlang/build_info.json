@@ -1,0 +1,17 @@
+{
+    "package_name" : "erlang",
+    "github_url":"https://github.com/erlang/otp",
+    "package_dir": "e/erlang/",
+    "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "build_script" : "erlang_UBI_8.5.sh",
+
+    "OTP-25.0" : {
+        "dir":"template"
+    },
+    "OTP-*.*" : {
+        "dir":"template"
+    },
+    "OTP-*.*.*" : {
+        "dir":"template"
+    }
+}
