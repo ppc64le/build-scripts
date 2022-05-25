@@ -19,13 +19,15 @@
 # ----------------------------------------------------------------------------
 
 # Install dependencies.
+
+PACKAGE_VERSION=${1:-3.2.9}
 yum install -y sudo
 sudo yum update -y
 sudo yum install -y git tcl
 sudo yum group install -y 'Development Tools'
 
 # Clone and build source.
-git clone https://github.com/antirez/redis.git
+git clone https://github.com/antirez/redis.git --branch $PACKAGE_VERSION
 cd redis
 make V=1 MALLOC=libc
 sudo make install
