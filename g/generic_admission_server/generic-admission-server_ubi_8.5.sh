@@ -19,48 +19,53 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=generic-admission-server
-PACKAGE_PATH=https://github.com/openshift/generic-admission-server
-VERSION="v1.14.0"
-#GO_VERSION="go1.17.5"
+PACKAGE_VERSION=${1:-v1.14.0}
+PACKAGE_URL=https://github.com/openshift/generic-admission-server.git
 
-#install dependencies
-if [ -d "generic-admission-server" ] ; then
-  rm -rf generic-admission-server
-fi
+#Install the required dependencies
+yum -y update && yum install git gcc make wget tar zip -y
 
-# Dependency installation
-dnf install -y git make golang
+GO_VERSION=1.17
 
-#set GO PATH
+# Install Go and setup working directory
+wget https://golang.org/dl/go$GO_VERSION.linux-ppc64le.tar.gz
+tar -C /bin -xf go$GO_VERSION.linux-ppc64le.tar.gz
 export PATH=$PATH:/bin/go/bin
-export GOPATH=/root/go/
+rm -f go$GO_VERSION.linux-ppc64le.tar.gz
 
-# Download the repos
-git clone https://github.com/openshift/generic-admission-server
+export GOPATH=/home/runner/go
+export PATH=$GOPATH/bin:$PATH
 
-# Build and Test generic-admission-server
-cd  generic-admission-server
-git checkout $VERSION
+#Setup working directory
+mkdir -p $GOPATH/src/github.com/shirou && cd $GOPATH/src/github.com/shirou
 
-# Ensure go.mod file exists
-go mod init github.com/openshift/generic-admission-server
+#Clone the repository
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
+
+go mod init github.com/openshift/generic-admission-server.git
 go mod tidy
-echo `pwd`
-
-ret=$?
-if [ $ret -eq 0 ] ; then
- echo "$VERSION found to checkout "
-else
- echo "$VERSION not found "
- exit
-fi
-#to sync with the vendor directory 
 go mod vendor
-#verify build & test
-make build
-ret=$?
-if [ $ret -ne 0 ] ; then
-        echo " build failed "
+
+if ! go build ./...; then
+	echo "------------------$PACKAGE_NAME:Build_fails---------------------"
+	echo "$PACKAGE_VERSION $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails"
+	exit 1
 else
-        echo " Build Success "
+	echo "------------------$PACKAGE_NAME:Build_success-------------------------"
+	echo "$PACKAGE_VERSION $PACKAGE_NAME"
+fi
+
+
+if ! go test ./... ; then
+	echo "------------------$PACKAGE_NAME:test_fails---------------------"
+	echo "$PACKAGE_VERSION $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails"
+	exit 1
+else
+	echo "------------------$PACKAGE_NAME:install_and_test_success-------------------------"
+	echo "$PACKAGE_VERSION $PACKAGE_NAME"
+	exit 0
 fi
