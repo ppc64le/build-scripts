@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : go-tools
-# Version       : v0.3.0-0.dev
+# Version       : v0.3.0-0.dev, v0.2.1
 # Source repo   : https://github.com/dominikh/go-tools
 # Tested on     : UBI 8.4
 # Language      : GO
