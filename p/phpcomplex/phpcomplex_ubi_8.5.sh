@@ -1,11 +1,14 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: PHPComplex
-# Version	: 2.0.0
+# Version	: 2.0.0,2.0.3
 # Source repo	: https://github.com/MarkBaker/PHPComplex
-# Tested on	: RHEL 8.4
+# Tested on	: ubi 8.5
+# Language      : PHP
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Nailusha Potnuru <pnailush@in.ibm.com>
+# Maintainer	: Nailusha Potnuru <pnailush@in.ibm.com>,vathsala .<vaths367@in.ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -14,7 +17,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_NAME=complex
+PACKAGE_NAME=PHPComplex
 PACKAGE_VERSION=${1:-2.0.0}
 PACKAGE_URL=https://github.com/MarkBaker/PHPComplex
 yum -y update && yum install -y git php php-json php-dom php-mbstring zip unzip
@@ -31,7 +34,7 @@ fi
 cd $HOME_DIR/$PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 sed -i 's/ || \^5.0.5//' composer.json
-if ! composer install; then
+if ! composer install --no-interaction; then
      	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
