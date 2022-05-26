@@ -49,6 +49,8 @@ go mod tidy
 go get google.golang.org/protobuf/proto
 go get github.com/matttproud/golang_protobuf_extensions/pbtest
 
+go get -t -v ./...
+
 if ! go build ./...; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_VERSION $PACKAGE_NAME"
