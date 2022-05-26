@@ -12,9 +12,13 @@
 # Set gid=0 and make group perms==owner perms
 ################################################################################
 
+ARG PACKAGE_VERSION=v7.9.1
+
 FROM centos:7 AS builder
 
 MAINTAINER "Shivani Junawane <shivanij@us.ibm.com>"
+
+ARG PATCH=https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_v7.9.1.patch
 
 # `tini` is a tiny but valid init for containers. This is used to cleanly
 # control how ES and any child processes are shut down.
@@ -39,6 +43,7 @@ RUN set -eux ; \
     chmod +x /tini
 
 ENV PATH /usr/share/elasticsearch/bin:$PATH
+ARG PACKAGE_VERSION
 
 RUN groupadd -g 1000 elasticsearch && \
     adduser -u 1000 -g 1000 -d /usr/share/elasticsearch elasticsearch
@@ -57,9 +62,9 @@ RUN yum install -y wget git && \
 	export PATH=$PATH:/usr/local/jdk-13.0.2+8/bin && \
 	ln -sf /usr/local/jdk-13.0.2+8/bin/java /usr/bin/ &&\
 	git clone https://github.com/elastic/elasticsearch.git && \
-	cd elasticsearch && git checkout v7.9.1 && \
-	wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_7.9.1.patch && \
-	git apply elasticsearch_7.9.1.patch && \
+	cd elasticsearch && git checkout $PACKAGE_VERSION && \
+	wget $PATCH && \
+	git apply ${PATCH##*/} && \
 	mkdir -p distribution/archives/linux-ppc64le-tar && \
 	echo "// This file is intentionally blank. All configuration of the distribution is done in the parent project." > distribution/archives/linux-ppc64le-tar/build.gradle && \
 	mkdir -p distribution/archives/oss-linux-ppc64le-tar && \
@@ -67,10 +72,10 @@ RUN yum install -y wget git && \
 	./gradlew :distribution:archives:linux-ppc64le-tar:assemble --parallel
 	
 # Configurations
-RUN mv elasticsearch/distribution/archives/linux-ppc64le-tar/build/distributions/elasticsearch-7.9.1-SNAPSHOT-linux-ppc64le.tar.gz /usr/share/elasticsearch && \
+RUN mv elasticsearch/distribution/archives/linux-ppc64le-tar/build/distributions/elasticsearch-*-SNAPSHOT-linux-ppc64le.tar.gz /usr/share/elasticsearch && \
 	cd /usr/share/elasticsearch && rm -rf elasticsearch && \
-	tar -xvzf elasticsearch-7.9.1-SNAPSHOT-linux-ppc64le.tar.gz --strip-components=1 && \
-	rm -rf elasticsearch-7.9.1-SNAPSHOT-linux-ppc64le.tar.gz
+	tar -xvzf elasticsearch-*-SNAPSHOT-linux-ppc64le.tar.gz --strip-components=1 && \
+	rm -rf elasticsearch-*-SNAPSHOT-linux-ppc64le.tar.gz
 
 # JNA fix
 RUN wget https://repo1.maven.org/maven2/net/java/dev/jna/jna/5.5.0/jna-5.5.0.jar && \
@@ -95,6 +100,7 @@ FROM centos:7
 MAINTAINER "Shivani Junawane <shivanij@us.ibm.com>"
 
 ENV ELASTIC_CONTAINER true
+ARG PACKAGE_VERSION
 
 COPY --from=builder /tini /tini
 
@@ -137,7 +143,7 @@ LABEL org.label-schema.build-date="2020-06-14T19:35:50.234439Z" \
   org.label-schema.vcs-ref="757314695644ea9a1dc2fecd26d1a43856725e65" \
   org.label-schema.vcs-url="https://github.com/elastic/elasticsearch" \
   org.label-schema.vendor="Elastic" \
-  org.label-schema.version="7.9.1" \
+  org.label-schema.version="$PACKAGE_VERSION" \
   org.opencontainers.image.created="2020-06-14T19:35:50.234439Z" \
   org.opencontainers.image.documentation="https://www.elastic.co/guide/en/elasticsearch/reference/index.html" \
   org.opencontainers.image.licenses="Elastic-License" \
@@ -146,7 +152,7 @@ LABEL org.label-schema.build-date="2020-06-14T19:35:50.234439Z" \
   org.opencontainers.image.title="Elasticsearch" \
   org.opencontainers.image.url="https://www.elastic.co/products/elasticsearch" \
   org.opencontainers.image.vendor="Elastic" \
-  org.opencontainers.image.version="7.8.0"
+  org.opencontainers.image.version="$PACKAGE_VERSION"
 
 ENTRYPOINT ["/tini", "--", "/usr/local/bin/docker-entrypoint.sh"]
 # Dummy overridable parameter parsed by entrypoint

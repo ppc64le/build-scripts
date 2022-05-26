@@ -11,7 +11,7 @@ LABEL name="zookeeper" \
 
 RUN groupadd zookeeper && useradd -r -g zookeeper zookeeper -m -d /home/zookeeper/
 
-ENV ZOOKEEPER_VERSION 3.6.2
+ARG ZOOKEEPER_VERSION 3.6.2
 
 #Download Zookeeper
 RUN yum install -y net-tools && wget -q http://mirror.vorboss.net/apache/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz && \
