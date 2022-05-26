@@ -1,9 +1,12 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package               : jszip
 # Version               : 3.3.0 , 3.7.1
 # Source repo           : https://github.com/Stuk/jszip
 # Tested on             : UBI 8
+# Language      	: Node
+# Travis-Check  	: True
 # Script License        : Apache License, Version 2 or later
 # Maintainer            : Swati Singhal <swati.singhal@ibm.com>
 #
@@ -15,7 +18,6 @@
 #
 # ----------------------------------------------------------------------------
 
-#!/bin/bash
 PACKAGE_VERSION=3.3.0
 
 echo "Usage: $0 [-v <PACKAGE_VERSION>]"
