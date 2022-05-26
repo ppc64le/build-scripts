@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : drupal/view_password
-# Version       : 6.0.0
+# Version       : 6.0.0, 5.1.0
 # Source repo   : https://git.drupalcode.org/project/view_password.git
 # Tested on     : UBI 8.5
 # Language      : PHP
@@ -21,6 +21,8 @@
 PACKAGE_NAME=view_password
 PACKAGE_URL=https://git.drupalcode.org/project/view_password.git
 # PACKAGE_VERSION is configurable can be passed as an argument.
+# Build for 8.x-5.1 (version 5.1.0) is also successful.
+#     PACKAGE_VERSION=8.x-5.1
 PACKAGE_VERSION=${1:-6.0.0}
 
 dnf install -y zip git php php-json php-dom php-gd php-pdo
