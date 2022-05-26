@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : opentelemetry-go
-# Version       : v0.13.0, v1.0.0
+# Version       : v0.13.0, v0.20.0
 # Source repo   : https://github.com/open-telemetry/opentelemetry-go.git
 # Tested on     : ubi 8.5
 # Language      : go
@@ -19,20 +19,21 @@
 # ----------------------------------------------------------------------------
 #Run the script:./opentelemetry-go_ubi_8.5.sh v0.13.0(version_to_test)
 PACKAGE_NAME=opentelemetry-go
-PACKAGE_VERSION=${1:-v1.0.0}
-GO_VERSION=1.17.1
+PACKAGE_VERSION=${1:-v0.13.0}
+GO_VERSION=1.17.4
 PACKAGE_URL=https://github.com/open-telemetry/opentelemetry-go.git
 
-dnf install git wget sudo make gcc gcc-c++ -y
+dnf install git wget sudo diffutils.ppc64le make gcc gcc-c++ -y
 
 mkdir -p /home/tester/output
 cd /home/tester
 
 wget https://golang.org/dl/go$GO_VERSION.linux-ppc64le.tar.gz
-rm -rf /home/tester/go && tar -C /home/tester -xzf go$GO_VERSION.linux-ppc64le.tar.gz
-rm -f go$GO_VERSION.linux-ppc64le.tar.gz
-export GOPATH=/home/tester/go
-export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+rm -rf /usr/local/go && tar -C /usr/local/ -xzf go$GO_VERSION.linux-ppc64le.tar.gz
+rm -rf go$GO_VERSION.linux-ppc64le.tar.gz
+export GOROOT=${GOROOT:-"/usr/local/go"}
+export GOPATH=${GOPATH:-/home/tester/go}
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:/usr/local/bin
 export  GO111MODULE=on
 mkdir -p $GOPATH/src/github.com/open-telemetry
 cd $GOPATH/src/github.com/open-telemetry
@@ -69,4 +70,3 @@ else
         exit 0
 fi
 
-#Build and test success on v1.0.0, main branch(c7cf945d8eb) and build failed on v0.13.0
