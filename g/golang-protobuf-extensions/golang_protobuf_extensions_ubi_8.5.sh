@@ -31,7 +31,9 @@ wget https://golang.org/dl/go$GO_VERSION.linux-ppc64le.tar.gz
 tar -C /bin -xf go$GO_VERSION.linux-ppc64le.tar.gz
 export PATH=$PATH:/bin/go/bin
 rm -f go$GO_VERSION.linux-ppc64le.tar.gz
-export GOPATH=/home/runner/go
+
+#export GOPATH=/home/runner/go
+export GOPATH=/usr/bin/go/
 export PATH=$GOPATH/bin:$PATH
 
 #Setup working directory
@@ -51,11 +53,11 @@ if ! go build ./...; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_VERSION $PACKAGE_NAME"
     echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails"
-    exit 1
 else
     echo "------------------$PACKAGE_NAME:Build_success-------------------------"
     echo "$PACKAGE_VERSION $PACKAGE_NAME"
 fi
+
 if ! go test ./... ; then
     echo "------------------$PACKAGE_NAME:test_fails---------------------"
     echo "$PACKAGE_VERSION $PACKAGE_NAME"
