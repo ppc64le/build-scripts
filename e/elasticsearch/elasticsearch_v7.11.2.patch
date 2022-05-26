@@ -1,22 +1,3 @@
-From ea02b7ded762ee7e5a8e9d43ed9a59de304f36c4 Mon Sep 17 00:00:00 2001
-From: ElayarajaDhanapal <elayaraja.dhanapal@gmail.com>
-Date: Fri, 26 Feb 2021 16:12:08 +0530
-Subject: [PATCH] latest patch for ppc64le dockerfile
-
----
- buildSrc/build.gradle                         |  2 ++
- .../elasticsearch/gradle/Architecture.java    |  5 ++++-
- .../java/org/elasticsearch/gradle/Jdk.java    |  2 +-
- .../gradle/JdkDownloadPluginTests.java        |  2 +-
- distribution/archives/build.gradle            | 14 ++++++++++++
- distribution/build.gradle                     |  4 ++--
- distribution/docker/build.gradle              | 22 ++++++++++++++-----
- distribution/docker/src/docker/Dockerfile     |  1 +
- .../src/docker/config/elasticsearch.yml       |  4 ++++
- distribution/packages/build.gradle            | 22 ++++++++++++++++++-
- settings.gradle                               |  9 ++++++++
- 11 files changed, 76 insertions(+), 11 deletions(-)
-
 diff --git a/buildSrc/build.gradle b/buildSrc/build.gradle
 index e5611bd99ad..4d7ac88bfa1 100644
 --- a/buildSrc/build.gradle
@@ -298,6 +279,33 @@ index f34a363cde1..8bd6cd1c0df 100644
  Closure commonRpmConfig(boolean oss, boolean jdk, String architecture) {
    return {
      configure(commonPackageConfig('rpm', oss, jdk, architecture))
+diff --git a/buildSrc/version.properties b/buildSrc/version.properties
+index 18d9cdb5955..0e36795a8b6 100644
+--- a/buildSrc/version.properties
++++ b/buildSrc/version.properties
+@@ -14,7 +14,7 @@ snakeyaml         = 1.26
+ icu4j             = 62.1
+ supercsv          = 2.4.0
+ # when updating log4j, please update also docs/java-api/index.asciidoc
+-log4j             = 2.11.1
++log4j             = 2.12.2
+ slf4j             = 1.6.2
+
+ # when updating the JNA version, also update the version in buildSrc/build.gradle
+diff --git a/x-pack/plugin/watcher/build.gradle b/x-pack/plugin/watcher/build.gradle
+index b3aca397f53..3f0a1ef8a8c 100644
+--- a/x-pack/plugin/watcher/build.gradle
++++ b/x-pack/plugin/watcher/build.gradle
+@@ -34,7 +34,7 @@ dependencies {
+   testImplementation project(xpackModule('ilm'))
+
+   // watcher deps
+-  api 'com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:20191001.1'
++  api 'com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:20211018.1'
+   runtimeOnly 'com.google.guava:guava:27.1-jre' // needed by watcher for the html sanitizer
+   runtimeOnly 'com.google.guava:failureaccess:1.0.1'
+   api 'com.sun.mail:jakarta.mail:1.6.4'
+
 diff --git a/settings.gradle b/settings.gradle
 index eba6a72456e..d1dbb8957ce 100644
 --- a/settings.gradle
@@ -332,6 +340,4 @@ index eba6a72456e..d1dbb8957ce 100644
    'distribution:bwc:bugfix',
    'distribution:bwc:maintenance',
    'distribution:bwc:minor',
--- 
-2.25.1
-
+   

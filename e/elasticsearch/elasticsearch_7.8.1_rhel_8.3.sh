@@ -1,9 +1,12 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package       : elasticsearch
 # Version       : 7.8.1
 # Source repo   : https://github.com/elastic/elasticsearch.git
 # Tested on     : rhel 8.3
+# Travis-Check  : True
+# Language      : Java
 # Script License: Apache License Version 2.0
 # Maintainer    : Sachin Kakatkar <sachin.kakatkar@ibm.com>
 #
@@ -14,7 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
 
 WORKDIR=`pwd`
 ELASTICSEARCH_VERSION=7.8.1
@@ -39,8 +41,8 @@ git clone https://github.com/elastic/elasticsearch.git
 cd elasticsearch && git checkout v$ELASTICSEARCH_VERSION
 
 # Apply patches
-#wget https://github.com/ppc64le/build-scripts/blob/master/e/elasticsearch/elasticsearch_7.8.1.patch
-git apply elasticsearch_7.8.1.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/blob/master/e/elasticsearch/elasticsearch_v7.8.1.patch
+git apply elasticsearch_v7.8.1.patch
 mkdir -p distribution/archives/linux-ppc64le-tar
 echo "// This file is intentionally blank. All configuration of the distribution is done in the parent project." > distribution/archives/linux-ppc64le-tar/build.gradle
 mkdir -p distribution/archives/oss-linux-ppc64le-tar
