@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package               : jszip
-# Version               : 3.3.0
+# Version               : 3.3.0 , 3.7.1
 # Source repo           : https://github.com/Stuk/jszip
 # Tested on             : UBI 8
 # Script License        : Apache License, Version 2 or later
