@@ -41,10 +41,6 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-go mod init github.com/openshift/generic-admission-server.git
-go mod tidy
-go mod vendor
-
 if ! make build; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_VERSION $PACKAGE_NAME"
