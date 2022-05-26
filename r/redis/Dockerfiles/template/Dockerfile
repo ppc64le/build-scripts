@@ -1,15 +1,15 @@
-FROM registry.access.redhat.com/ubi7/ubi:latest
+FROM registry.access.redhat.com/ubi8/ubi:latest
+
+ARG PACKAGE_VERSION="7.0.0"
 
 # Required Labels
 LABEL name="redis" \
-      maintainer="redmark@us.ibm.com" \
+      maintainer="Muskaan.Sheik@ibm.com" \
       vendor="Redis Labs" \
-      version="3.2.13" \
+      version=$PACKAGE_VERSION \
       release="1" \
       summary="Red Hat UBI Redis" \
       description="Red Hat UBI Redis Application"
-
-COPY licenses /licenses
 
 RUN yum update -y -q && yum install -y -q sudo \
   && useradd --create-home --home-dir /home/redis --shell /bin/bash --system --user-group redis \
@@ -19,10 +19,10 @@ USER redis
 WORKDIR /home/redis
 
 RUN sudo yum update -y -q \
-  && sudo yum install -y -q make gcc git tcl \
-  && git clone https://github.com/antirez/redis.git && \
+  && sudo yum install -y -q make gcc git \
+  && git clone https://github.com/redis/redis.git && \
   pushd redis && \
-  git checkout 3.2.13 && \
+  git checkout $PACKAGE_VERSION && \
   make distclean && \
   make V=1 MALLOC=libc && \
   sudo make install && \
@@ -33,7 +33,7 @@ RUN sudo yum update -y -q \
 # Creating volume directory so we can share data between container and host
 VOLUME /data
 
-# Exposing port at out side world.
+# Exposing port at out side world.i
 EXPOSE 6379
 
 # Started redis server as a default command.
