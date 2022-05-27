@@ -1,7 +1,7 @@
 FROM registry.access.redhat.com/ubi8
 
 # This is the release of Consul to pull in.
-ENV CONSUL_VERSION=v1.8.3
+ARG PACKAGE_VERSION=v1.12.0
 
 # Create a consul user and group first so the IDs get set the same way, even as
 # the rest of this may change over time.
@@ -17,16 +17,16 @@ ENV PATH $PATH:$GOPATH/bin
 
 RUN set -eux; \
     yum install -y git gcc make wget && \
-    wget https://golang.org/dl/go1.14.7.linux-ppc64le.tar.gz && \
-    tar -C /usr/local -xvzf go1.14.7.linux-ppc64le.tar.gz && \
-    rm -rf go1.14.7.linux-ppc64le.tar.gz && \
+    wget https://golang.org/dl/go1.17.linux-ppc64le.tar.gz && \
+    tar -C /usr/local -xvzf go1.17.linux-ppc64le.tar.gz && \
+    rm -rf go1.17.linux-ppc64le.tar.gz && \
     export PATH=/usr/local/go/bin:$PATH && \
     wget https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_ppc64le && \
     chmod a+x dumb-init_1.2.2_ppc64le && mv ./dumb-init_1.2.2_ppc64le ./dumb-init && cp ./dumb-init /usr/bin && \
     git clone https://github.com/ncopa/su-exec && cd su-exec && make && chmod a+x su-exec && cp ./su-exec /usr/bin && cd - && \
     mkdir -p /go/src/github.com/hashicorp && cd /go/src/github.com/hashicorp && \
     git clone https://github.com/hashicorp/consul && cd consul && \
-    git checkout $CONSUL_VERSION && \
+    git checkout $PACKAGE_VERSION && \
     make dev && \
     yum remove -y git make gcc wget && \
     rm -rf $GOPATH/src $GOPATH/pkg && \

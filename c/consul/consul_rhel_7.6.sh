@@ -1,9 +1,12 @@
-# ----------------------------------------------------------------------------
+#!/bin/bash -e
+# -----------------------------------------------------------------------------
 #
 # Package	: consul
-# Version	: v1.4.4 
+# Version	: v1.4.4
 # Source repo	: https://github.com/hashicorp/consul
 # Tested on	: RHEL 7.6
+# Language      : Go
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Amit Ghatwal <ghatwala@us.ibm.com>
 #
@@ -16,9 +19,10 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME="go"
-[ -z "$PACKAGE_VERSION" ] && PACKAGE_VERSION="1.12.4"
+[ -z "$PACKAGE_VERSION" ] && PACKAGE_VERSION="1.4.4"
 
 # Install depdencies
+yum install -y sudo
 sudo yum update && sudo yum install -y make wget git gcc
 
 # Install Go
