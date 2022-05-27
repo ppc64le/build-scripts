@@ -21,7 +21,7 @@
 PACKAGE_NAME="go"
 [ -z "$GO_VERSION" ] && GO_VERSION="1.12.4"
 
-PACKAGE_VERSION=${1:v1.4.4}
+PACKAGE_VERSION=${1:-v1.4.4}
 
 # Install depdencies
 yum install -y sudo
