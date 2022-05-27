@@ -5,9 +5,9 @@
 # Version       : v1.2.0
 # Source repo   : https://github.com/pathawks/jekyll-commonmark
 # Tested on     : UBI: 8.5
-# Language      : Node
+# Language      : Ruby
 # Travis-Check  : True
-# Script License: MIT License
+# Script License: Apache License, Version 2 or later
 # Maintainer    : Shreya Kajbaje <shreya.kajbaje@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
