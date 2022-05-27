@@ -39,12 +39,12 @@ git checkout $PACKAGE_VERSION
 
 echo "Testing $PACKAGE_NAME with $PACKAGE_VERSION"
 if ! go test -v ./...; then
-        echo "------------------ $PACKAGE_NAME: test fail ---------------------"
-        echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/test_fails
-        echo "$PACKAGE_NAME | $PACKAGE_VERSION | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Test fails" > /home/tester/output/version_tracker
-        exit 1
+    echo "------------------ $PACKAGE_NAME: test fail ---------------------"
+    echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/test_fails
+    echo "$PACKAGE_NAME | $PACKAGE_VERSION | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Test fails" > /home/tester/output/version_tracker
+    exit 1
 else
-        echo "----------------- $PACKAGE_NAME: test success --------------------"
-        echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/test_success
-        echo "$PACKAGE_NAME | $PACKAGE_VERSION | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass | Test success" > /home/tester/output/version_tracker
+    echo "----------------- $PACKAGE_NAME: test success --------------------"
+    echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/test_success
+    echo "$PACKAGE_NAME | $PACKAGE_VERSION | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass | Test success" > /home/tester/output/version_tracker
 fi
