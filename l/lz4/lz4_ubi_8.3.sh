@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: lz4
-# Version	: v2.5.2, v1.0.1, v2.4.0
+# Version	: v2.5.2, v1.0.1, v2.4.0, v2.6.1
 # Source repo	: https://github.com/pierrec/lz4
 # Tested on	: ubi 8.3, 8.5
 # Language      : GO
