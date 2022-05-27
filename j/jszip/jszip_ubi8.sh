@@ -40,4 +40,5 @@ git clone https://github.com/Stuk/jszip
 cd jszip
 git checkout v$PACKAGE_VERSION
 npm install
-npm test
+# uncomment the below line to run tests
+#npm test
