@@ -61,4 +61,4 @@ else
         exit 0
 fi
 
-#Test are in parity with the"warning  Identifier name 'hasLastIndexDataProperty' is too long (> 20)  id-length"
+#install_&_test_both_success
