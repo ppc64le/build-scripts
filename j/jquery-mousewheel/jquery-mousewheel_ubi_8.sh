@@ -3,12 +3,12 @@
 #
 # Package		: jquery-mousewheel
 # Version		: 3.1.11
-# Source repo	: https://github.com/jquery/jquery-mousewheel.git
+# Source repo		: https://github.com/jquery/jquery-mousewheel.git
 # Tested on		: UBI 8.4
-# Language      : Node
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer	: Vaishnavi Patil <Vaishnavi.Patil3@ibm.com>
+# Language     		: Node
+# Travis-Check	 	: True
+# Script License	: Apache License, Version 2 or later
+# Maintainer		: Vaishnavi Patil <Vaishnavi.Patil3@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -22,7 +22,6 @@ PACKAGE_NAME=jquery-mousewheel
 PACKAGE_VERSION=${1:-3.1.11}
 PACKAGE_URL=https://github.com/jquery/jquery-mousewheel.git
 
-set -ex
 
 yum install git npm zip unzip wget -y
 
