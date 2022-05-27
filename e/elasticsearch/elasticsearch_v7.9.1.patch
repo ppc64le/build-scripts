@@ -1,0 +1,391 @@
+diff --git a/buildSrc/build.gradle b/buildSrc/build.gradle
+index 144a927..7dfb883 100644
+--- a/buildSrc/build.gradle
++++ b/buildSrc/build.gradle
+@@ -176,9 +176,11 @@ if (project != rootProject) {
+     distribution project(':distribution:archives:darwin-tar')
+     distribution project(':distribution:archives:oss-darwin-tar')
+     distribution project(':distribution:archives:linux-aarch64-tar')
++    distribution project(':distribution:archives:linux-ppc64le-tar')
+     distribution project(':distribution:archives:linux-tar')
+     distribution project(':distribution:archives:oss-linux-tar')
+     distribution project(':distribution:archives:oss-linux-aarch64-tar')
++    distribution project(':distribution:archives:oss-linux-ppc64le-tar')
+ 
+     integTestRuntimeOnly(project(":libs:elasticsearch-core"))
+   }
+diff --git a/buildSrc/src/main/java/org/elasticsearch/gradle/Architecture.java b/buildSrc/src/main/java/org/elasticsearch/gradle/Architecture.java
+index f230d9a..936a513 100644
+--- a/buildSrc/src/main/java/org/elasticsearch/gradle/Architecture.java
++++ b/buildSrc/src/main/java/org/elasticsearch/gradle/Architecture.java
+@@ -22,7 +22,8 @@ package org.elasticsearch.gradle;
+ public enum Architecture {
+ 
+     X64,
+-    AARCH64;
++    AARCH64,
++    PPC64LE;
+ 
+     public static Architecture current() {
+         final String architecture = System.getProperty("os.arch", "");
+@@ -32,6 +33,8 @@ public enum Architecture {
+                 return X64;
+             case "aarch64":
+                 return AARCH64;
++           case "ppc64le":
++               return PPC64LE;
+             default:
+                 throw new IllegalArgumentException("can not determine architecture from [" + architecture + "]");
+         }
+diff --git a/buildSrc/src/main/java/org/elasticsearch/gradle/Jdk.java b/buildSrc/src/main/java/org/elasticsearch/gradle/Jdk.java
+index 2672405..7a84760 100644
+--- a/buildSrc/src/main/java/org/elasticsearch/gradle/Jdk.java
++++ b/buildSrc/src/main/java/org/elasticsearch/gradle/Jdk.java
+@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
+ 
+ public class Jdk implements Buildable, Iterable<File> {
+ 
+-    private static final List<String> ALLOWED_ARCHITECTURES = Collections.unmodifiableList(Arrays.asList("aarch64", "x64"));
++    private static final List<String> ALLOWED_ARCHITECTURES = Collections.unmodifiableList(Arrays.asList("aarch64", "x64", "ppc64le"));
+     private static final List<String> ALLOWED_VENDORS = Collections.unmodifiableList(Arrays.asList("adoptopenjdk", "openjdk"));
+     private static final List<String> ALLOWED_PLATFORMS = Collections.unmodifiableList(Arrays.asList("darwin", "linux", "windows", "mac"));
+     private static final Pattern VERSION_PATTERN = Pattern.compile("(\\d+)(\\.\\d+\\.\\d+)?\\+(\\d+(?:\\.\\d+)?)(@([a-f0-9]{32}))?");
+diff --git a/buildSrc/src/test/java/org/elasticsearch/gradle/JdkDownloadPluginTests.java b/buildSrc/src/test/java/org/elasticsearch/gradle/JdkDownloadPluginTests.java
+index 758aacb..52a71fd 100644
+--- a/buildSrc/src/test/java/org/elasticsearch/gradle/JdkDownloadPluginTests.java
++++ b/buildSrc/src/test/java/org/elasticsearch/gradle/JdkDownloadPluginTests.java
+@@ -95,7 +95,7 @@ public class JdkDownloadPluginTests extends GradleUnitTestCase {
+             "11.0.2+33",
+             "linux",
+             "unknown",
+-            "unknown architecture [unknown] for jdk [testjdk], must be one of [aarch64, x64]"
++            "unknown architecture [unknown] for jdk [testjdk], must be one of [aarch64, x64, ppc64le]"
+         );
+     }
+ 
+diff --git a/distribution/archives/build.gradle b/distribution/archives/build.gradle
+index db55b74..d27cf50 100644
+--- a/distribution/archives/build.gradle
++++ b/distribution/archives/build.gradle
+@@ -183,6 +183,12 @@ tasks.register('buildLinuxAarch64Tar', SymbolicLinkPreservingTar) {
+   with archiveFiles(modulesFiles(false, 'linux-aarch64'), 'tar', 'linux', 'aarch64', false, true)
+ }
+ 
++tasks.register('buildLinuxPpc64leTar', SymbolicLinkPreservingTar) {
++  configure(commonTarConfig)
++  archiveClassifier = 'linux-ppc64le'
++  with archiveFiles(modulesFiles(false, 'linux-ppc64le'), 'tar', 'linux', 'ppc64le', false, true)
++}
++
+ tasks.register('buildLinuxTar', SymbolicLinkPreservingTar) {
+   configure(commonTarConfig)
+   archiveClassifier = 'linux-x86_64'
+@@ -195,6 +201,12 @@ tasks.register('buildOssLinuxAarch64Tar', SymbolicLinkPreservingTar) {
+   with archiveFiles(modulesFiles(true, 'linux-aarch64'), 'tar', 'linux', 'aarch64', true, true)
+ }
+ 
++tasks.register('buildOssLinuxPpc64leTar', SymbolicLinkPreservingTar) {
++  configure(commonTarConfig)
++  archiveClassifier = 'linux-ppc64le'
++  with archiveFiles(modulesFiles(true, 'linux-ppc64le'), 'tar', 'linux', 'ppc64le', true, true)
++}
++
+ tasks.register('buildOssLinuxTar', SymbolicLinkPreservingTar) {
+   configure(commonTarConfig)
+   archiveClassifier = 'linux-x86_64'
+diff --git a/distribution/build.gradle b/distribution/build.gradle
+index e3f9b18..36fbc39 100644
+--- a/distribution/build.gradle
++++ b/distribution/build.gradle
+@@ -264,7 +264,7 @@ configure(subprojects.findAll { ['archives', 'packages'].contains(it.name) }) {
+   // Setup all required JDKs
+   project.jdks {
+     ['darwin', 'windows', 'linux'].each { platform ->
+-      (platform == 'linux' ? ['x64', 'aarch64'] : ['x64']).each { architecture ->
++      (platform == 'linux' ? ['x64', 'aarch64', 'ppc64le'] : ['x64']).each { architecture ->
+         "bundled_${platform}_${architecture}" {
+           it.platform = platform
+           it.version = VersionProperties.getBundledJdk(platform)
+@@ -344,7 +344,7 @@ configure(subprojects.findAll { ['archives', 'packages'].contains(it.name) }) {
+         } else {
+           buildModules = project(':distribution').buildDefaultModules
+         }
+-        List excludePlatforms = ['linux-x86_64', 'linux-aarch64', 'windows-x86_64', 'darwin-x86_64']
++        List excludePlatforms = ['linux-x86_64', 'linux-aarch64', 'linux-ppc64le', 'windows-x86_64', 'darwin-x86_64']
+         if (platform != null) {
+           excludePlatforms.remove(excludePlatforms.indexOf(platform))
+         } else {
+diff --git a/distribution/docker/build.gradle b/distribution/docker/build.gradle
+index 3f0fe52..819cb20 100644
+--- a/distribution/docker/build.gradle
++++ b/distribution/docker/build.gradle
+@@ -16,15 +16,19 @@ testFixtures.useFixture()
+ configurations {
+   dockerPlugins
+   aarch64DockerSource
++  ppc64leDockerSource
+   dockerSource
+   aarch64OssDockerSource
++  ppc64leOssDockerSource
+   ossDockerSource
+ }
+ 
+ dependencies {
+   aarch64DockerSource project(path: ":distribution:archives:linux-aarch64-tar")
++  ppc64leDockerSource project(path: ":distribution:archives:linux-ppc64le-tar")
+   dockerSource project(path: ":distribution:archives:linux-tar")
+   aarch64OssDockerSource project(path: ":distribution:archives:oss-linux-aarch64-tar")
++  ppc64leOssDockerSource project(path: ":distribution:archives:oss-linux-ppc64le-tar")
+   ossDockerSource project(path: ":distribution:archives:oss-linux-tar")
+ }
+ 
+@@ -38,8 +42,11 @@ ext.expansions = { architecture, oss, local ->
+       case "x64":
+         classifier = "linux-x86_64"
+         break
++      case "ppc64le":
++        classifier = "linux-ppc64le"
++        break
+       default:
+-        throw new IllegalArgumentException("Unrecognized architecture [" + architecture + "], must be one of (aarch64|x64)")
++        throw new IllegalArgumentException("Unrecognized architecture [" + architecture + "], must be one of (aarch64|x64|ppc64le)")
+     }
+   } else {
+     /* When sourcing the Elasticsearch build remotely, the same Dockerfile needs
+@@ -75,11 +82,11 @@ RUN curl --retry 8 -S -L \\
+ }
+ 
+ private static String buildPath(final String architecture, final boolean oss) {
+-  return "build/${"aarch64".equals(architecture) ? 'aarch64-' : ''}${oss ? 'oss-' : ''}docker"
++  return "build/${"aarch64".equals(architecture) ? 'aarch64-' : "ppc64le".equals(architecture) ? 'ppc64le-' : ''}${oss ? 'oss-' : ''}docker"
+ }
+ 
+ private static String taskName(final String prefix, final String architecture, final boolean oss, final String suffix) {
+-  return "${prefix}${"aarch64".equals(architecture) ? 'Aarch64' : ''}${oss ? 'Oss' : ''}${suffix}"
++  return "${prefix}${"aarch64".equals(architecture) ? 'Aarch64' : "ppc64le".equals(architecture) ? 'Ppc64le-' : ''}${oss ? 'Oss' : ''}${suffix}"
+ }
+ 
+ project.ext {
+@@ -123,6 +130,12 @@ void addCopyDockerContextTask(final String architecture, final boolean oss) {
+       } else {
+         from configurations.aarch64DockerSource
+       }
++    } else if ("ppc64le".equals(architecture)) {
++      if (oss){
++        from configurations.ppc64leOssDockerSource
++      } else {
++        from configurations.ppc64leDockerSource
++      }
+     } else {
+       if (oss) {
+         from configurations.ossDockerSource
+@@ -156,7 +169,7 @@ task copyKeystore(type: Sync) {
+ elasticsearch_distributions {
+   Architecture.values().each { eachArchitecture ->
+     Flavor.values().each { distroFlavor ->
+-      "docker_$distroFlavor${ eachArchitecture == Architecture.AARCH64 ? '_aarch64' : '' }" {
++      "docker_$distroFlavor${ eachArchitecture == Architecture.AARCH64 ? '_aarch64' : eachArchitecture == Architecture.PPC64LE ? '_ppc64le' : '' }" {
+         architecture = eachArchitecture
+         flavor = distroFlavor
+         type = 'docker'
+@@ -224,7 +237,7 @@ void addBuildDockerImage(final String architecture, final boolean oss) {
+   assemble.dependsOn(buildDockerImageTask)
+ }
+ 
+-for (final String architecture : ["aarch64", "x64"]) {
++for (final String architecture : ["aarch64", "x64", "ppc64le"]) {
+   for (final boolean oss : [false, true]) {
+     addCopyDockerContextTask(architecture, oss)
+     addBuildDockerImage(architecture, oss)
+@@ -246,12 +259,12 @@ subprojects { Project subProject ->
+   if (subProject.name.endsWith('-export')) {
+     apply plugin: 'distribution'
+ 
+-    final String architecture = subProject.name.contains('aarch64-') ? 'aarch64' : 'x64'
++    final String architecture = subProject.name.contains('aarch64-') ? 'aarch64' : subProject.name.contains('ppc64le-') ? 'ppc64le' : 'x64'
+     final boolean oss = subProject.name.contains('oss-')
+ 
+     def exportTaskName = taskName("export", architecture, oss, "DockerImage")
+     def buildTaskName = taskName("build", architecture, oss, "DockerImage")
+-    def tarFile = "${parent.projectDir}/build/elasticsearch${"aarch64".equals(architecture) ? '-aarch64' : ''}${oss ? '-oss' : ''}_test.${VersionProperties.elasticsearch}.docker.tar"
++    def tarFile = "${parent.projectDir}/build/elasticsearch${"aarch64".equals(architecture) ? '-aarch64' : "ppc64le".equals(architecture) ? '-ppc64le' : ''}${oss ? '-oss' : ''}_test.${VersionProperties.elasticsearch}.docker.tar"
+ 
+     final Task exportDockerImageTask = task(exportTaskName, type: LoggedExec) {
+       inputs.file("${parent.projectDir}/build/markers/${buildTaskName}.marker")
+@@ -269,7 +282,7 @@ subprojects { Project subProject ->
+ 
+     artifacts.add('default', file(tarFile)) {
+       type 'tar'
+-      name "elasticsearch${"aarch64".equals(architecture) ? '-aarch64' : ''}${oss ? '-oss' : ''}"
++      name "elasticsearch${"aarch64".equals(architecture) ? '-aarch64' : "ppc64le".equals(architecture) ? '-ppc64le' : ''}${oss ? '-oss' : ''}"
+       builtBy exportTaskName
+     }
+ 
+diff --git a/distribution/docker/src/docker/Dockerfile b/distribution/docker/src/docker/Dockerfile
+index 7d2cc2c..8abba5b 100644
+--- a/distribution/docker/src/docker/Dockerfile
++++ b/distribution/docker/src/docker/Dockerfile
+@@ -30,6 +30,7 @@ RUN set -eux ; \\
+     case "\$(arch)" in \\
+         aarch64) tini_bin='tini-arm64' ;; \\
+         x86_64)  tini_bin='tini-amd64' ;; \\
++        ppc64le) tini_bin='tini-ppc64le' ;; \\
+         *) echo >&2 ; echo >&2 "Unsupported architecture \$(arch)" ; echo >&2 ; exit 1 ;; \\
+     esac ; \\
+     curl --retry 8 -S -L -O https://github.com/krallin/tini/releases/download/v0.19.0/\${tini_bin} ; \\
+diff --git a/distribution/docker/src/docker/config/elasticsearch.yml b/distribution/docker/src/docker/config/elasticsearch.yml
+index 50b154702b9..b0364864e8e 100644
+--- a/distribution/docker/src/docker/config/elasticsearch.yml
++++ b/distribution/docker/src/docker/config/elasticsearch.yml
+@@ -1,2 +1,6 @@
+ cluster.name: "docker-cluster"
+ network.host: 0.0.0.0
++xpack.ml.enabled: false
++discovery.seed_hosts: []
++bootstrap.system_call_filter: false
++discovery.type: single-node
+diff --git a/distribution/packages/build.gradle b/distribution/packages/build.gradle
+index f6e3934..ab7f870 100644
+--- a/distribution/packages/build.gradle
++++ b/distribution/packages/build.gradle
+@@ -108,6 +108,8 @@ Closure commonPackageConfig(String type, boolean oss, boolean jdk, String archit
+     if (type == 'deb') {
+       if (architecture == 'x64') {
+         arch('amd64')
++      } else if (architecture == 'ppc64le') {
++       arch('ppc64le')
+       } else {
+         assert architecture == 'aarch64' : architecture
+         arch('arm64')
+@@ -116,6 +118,8 @@ Closure commonPackageConfig(String type, boolean oss, boolean jdk, String archit
+       assert type == 'rpm' : type
+       if (architecture == 'x64') {
+         arch('X86_64')
++      } else if (architecture == 'ppc64le') {
++       arch('ppc64le')
+       } else {
+         assert architecture == 'aarch64' : architecture
+         arch('aarch64')
+@@ -154,7 +158,7 @@ Closure commonPackageConfig(String type, boolean oss, boolean jdk, String archit
+         with libFiles(oss)
+       }
+       into('modules') {
+-        with modulesFiles(oss, 'linux-' + ((architecture == 'x64') ? 'x86_64' : architecture))
++        with modulesFiles(oss, 'linux-' + ((architecture == 'x64') ? 'x86_64' : (architecture == 'ppc64le')? 'ppc64le' : architecture))
+       }
+       if (jdk) {
+         into('jdk') {
+@@ -355,6 +359,10 @@ tasks.register('buildAarch64Deb', Deb) {
+   configure(commonDebConfig(false, true, 'aarch64'))
+ }
+ 
++tasks.register('buildPpc64leDeb', Deb) {
++  configure(commonDebConfig(true, true, 'ppc64le'))
++}
++
+ tasks.register('buildDeb', Deb) {
+   configure(commonDebConfig(false, true, 'x64'))
+ }
+@@ -363,6 +371,10 @@ tasks.register('buildAarch64OssDeb', Deb) {
+   configure(commonDebConfig(true, true, 'aarch64'))
+ }
+ 
++tasks.register('buildPpc64leOssDeb', Deb) {
++  configure(commonDebConfig(true, true, 'ppc64le'))
++}
++
+ tasks.register('buildOssDeb', Deb) {
+   configure(commonDebConfig(true, true, 'x64'))
+ }
+@@ -408,6 +420,10 @@ tasks.register('buildAarch64Rpm', Rpm) {
+   configure(commonRpmConfig(false, true, 'aarch64'))
+ }
+ 
++tasks.register('buildPpc64leRpm', Rpm) {
++  configure(commonRpmConfig(false, true, 'ppc64le'))
++}
++
+ tasks.register('buildRpm', Rpm) {
+   configure(commonRpmConfig(false, true, 'x64'))
+ }
+@@ -416,6 +432,10 @@ tasks.register('buildAarch64OssRpm', Rpm) {
+   configure(commonRpmConfig(true, true, 'aarch64'))
+ }
+ 
++tasks.register('buildPpc64leOssRpm', Rpm) {
++  configure(commonRpmConfig(true, true, 'ppc64le'))
++}
++
+ tasks.register('buildOssRpm', Rpm) {
+   configure(commonRpmConfig(true, true, 'x64'))
+ }
+diff --git a/settings.gradle b/settings.gradle
+index 608bdbb..b31adeb 100644
+--- a/settings.gradle
++++ b/settings.gradle
+@@ -28,8 +28,10 @@ List projects = [
+   'distribution:archives:oss-no-jdk-darwin-tar',
+   'distribution:archives:no-jdk-darwin-tar',
+   'distribution:archives:oss-linux-aarch64-tar',
++  'distribution:archives:oss-linux-ppc64le-tar',
+   'distribution:archives:oss-linux-tar',
+   'distribution:archives:linux-aarch64-tar',
++  'distribution:archives:linux-ppc64le-tar',
+   'distribution:archives:linux-tar',
+   'distribution:archives:oss-no-jdk-linux-tar',
+   'distribution:archives:no-jdk-linux-tar',
+@@ -38,19 +40,27 @@ List projects = [
+   'distribution:docker:docker-aarch64-export',
+   'distribution:docker:oss-docker-aarch64-build-context',
+   'distribution:docker:oss-docker-aarch64-export',
++  'distribution:docker:docker-ppc64le-build-context',
++  'distribution:docker:docker-ppc64le-export',
++  'distribution:docker:oss-docker-ppc64le-build-context',
++  'distribution:docker:oss-docker-ppc64le-export',
+   'distribution:docker:docker-build-context',
+   'distribution:docker:docker-export',
+   'distribution:docker:oss-docker-build-context',
+   'distribution:docker:oss-docker-export',
+   'distribution:packages:aarch64-oss-deb',
++  'distribution:packages:ppc64le-oss-deb',
+   'distribution:packages:oss-deb',
+   'distribution:packages:aarch64-deb',
++  'distribution:packages:ppc64le-deb',
+   'distribution:packages:deb',
+   'distribution:packages:oss-no-jdk-deb',
+   'distribution:packages:no-jdk-deb',
+   'distribution:packages:aarch64-oss-rpm',
++  'distribution:packages:ppc64le-oss-rpm',
+   'distribution:packages:oss-rpm',
+   'distribution:packages:aarch64-rpm',
++  'distribution:packages:ppc64le-rpm',
+   'distribution:packages:rpm',
+   'distribution:packages:oss-no-jdk-rpm',
+   'distribution:packages:no-jdk-rpm',
+diff --git a/buildSrc/version.properties b/buildSrc/version.properties
+index e3026f27262..02838108393 100644
+--- a/buildSrc/version.properties
++++ b/buildSrc/version.properties
+@@ -14,7 +14,7 @@ snakeyaml         = 1.26
+ icu4j             = 62.1
+ supercsv          = 2.4.0
+ # when updating log4j, please update also docs/java-api/index.asciidoc
+-log4j             = 2.11.1
++log4j             = 2.12.2
+ slf4j             = 1.6.2
+
+ # when updating the JNA version, also update the version in buildSrc/build.gradle
+diff --git a/x-pack/plugin/watcher/build.gradle b/x-pack/plugin/watcher/build.gradle
+index 9933f018348..31f68a82bfe 100644
+--- a/x-pack/plugin/watcher/build.gradle
++++ b/x-pack/plugin/watcher/build.gradle
+@@ -33,7 +33,7 @@ dependencies {
+   testImplementation project(xpackModule('ilm'))
+
+   // watcher deps
+-  api 'com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:20191001.1'
++  api 'com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:20211018.1'
+   runtimeOnly 'com.google.guava:guava:27.1-jre' // needed by watcher for the html sanitizer
+   runtimeOnly 'com.google.guava:failureaccess:1.0.1'
+   api 'com.sun.mail:jakarta.mail:1.6.4'
+   

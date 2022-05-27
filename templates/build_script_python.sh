@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: {package_name}
@@ -23,7 +24,8 @@ PACKAGE_URL=${PACKAGE_URL}
 
 yum -y update && yum install -y python38 python38-devel python39 python39-devel python2 python2-devel python3 python3-devel ncurses git gcc gcc-c++ libffi libffi-devel sqlite sqlite-devel sqlite-libs python3-pytest make cmake
 
-mkdir -p output
+mkdir -p /home/tester/output
+cd /home/tester
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 

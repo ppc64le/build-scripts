@@ -11,7 +11,7 @@ LABEL name="zookeeper" \
 
 RUN groupadd zookeeper && useradd -r -g zookeeper zookeeper -m -d /home/zookeeper/
 
-ENV ZOOKEEPER_VERSION 3.6.3
+ARG ZOOKEEPER_VERSION 3.6.3
 
 #Download Java
 RUN yum install -y java-11-openjdk && export JAVA_HOME=$(echo "1" | alternatives --config java | grep java-11-openjdk | cut -d "(" -f 2 | sed -e "s/bin\/java)$//")
