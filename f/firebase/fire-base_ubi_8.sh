@@ -28,7 +28,7 @@ PACKAGE_VERSION=v6.2.0
 yum install -y git curl php php-curl php-dom php-mbstring php-json php-gd php-pecl-zip
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/bin --filename=composer
 php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-yum install unzip
+yum install unzip -y
 
 HOME_DIR=$(pwd)
 echo $HOME_DIR
