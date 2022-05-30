@@ -48,7 +48,7 @@ curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
 curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import -
 curl -L https://get.rvm.io | bash -s stable --auto-dotfiles
 source /etc/profile.d/rvm.sh 
-rvm install ruby-2.1
+rvm install ruby-2.3
 
 mkdir -p /home/tester/output
 cd /home/tester
@@ -60,7 +60,6 @@ gem install bundler:1.17.3
 gem install kramdown-parser-gfm
 
 function test_with_ruby(){
-	echo "Automation via Ruby version 2.7"
 	if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
 		echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/clone_fails
