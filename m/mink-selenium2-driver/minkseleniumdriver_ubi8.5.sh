@@ -1,9 +1,9 @@
 #!/bin/bash -e
 
 # ----------------------------------------------------------------------------
-# Package          : php-jwt
-# Version          : v6.2.0
-# Source repo      : https://github.com/firebase/php-jwt
+# Package          : minkseleniumdriver
+# Version          : latest
+# Source repo      : https://github.com/minkphp/MinkSelenium2Driver.git
 # Tested on        : UBI 8.5
 # Language         : PHP
 # Travis-Check     : True
@@ -57,15 +57,4 @@ if ! composer install; then
     exit 1
 fi
 
-cd "$HOME_DIR"/$PACKAGE_NAME || exit
-if ! ./vendor/bin/phpunit; then
-    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
-    exit 1
-else
-    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
-    exit 0
-fi
+
