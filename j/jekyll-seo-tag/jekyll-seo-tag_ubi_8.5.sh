@@ -48,8 +48,8 @@ curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
 curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import -
 curl -L https://get.rvm.io | bash -s stable --auto-dotfiles
 usermod -aG rvm root
-rvm reload
 source /etc/profile.d/rvm.sh 
+rvm reload
 rvm install ruby-2.5
 
 mkdir -p /home/tester/output
