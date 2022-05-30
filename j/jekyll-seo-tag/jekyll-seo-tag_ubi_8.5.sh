@@ -50,7 +50,7 @@ curl -L https://get.rvm.io | bash -s stable --auto-dotfiles
 usermod -aG rvm root
 source /etc/profile.d/rvm.sh 
 rvm reload
-rvm install ruby-2.5
+rvm install ruby-2.7
 
 mkdir -p /home/tester/output
 cd /home/tester
