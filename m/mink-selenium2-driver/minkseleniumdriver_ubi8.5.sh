@@ -2,7 +2,7 @@
 
 # ----------------------------------------------------------------------------
 # Package          : minkseleniumdriver
-# Version          : latest
+# Version          : v1.5.0
 # Source repo      : https://github.com/minkphp/MinkSelenium2Driver.git
 # Tested on        : UBI 8.5
 # Language         : PHP
@@ -23,7 +23,8 @@
 PACKAGE_NAME=minkseleniumdriver
 PACKAGE_URL=https://github.com/minkphp/MinkSelenium2Driver.git
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=v6.2.0
+PACKAGE_VERSION=v1.5.0
+
 
 yum install -y git curl php php-curl php-dom php-mbstring php-json php-gd php-pecl-zip
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/bin --filename=composer
@@ -43,9 +44,7 @@ fi
 
 
 cd "$HOME_DIR"/$PACKAGE_NAME || exit
-git fetch --tags
-latestTag=$(git describe --tags `git rev-list --tags --max-count=1`)
-git checkout $latestTag
+git checkout $PACKAGE_VERSION
 # Install symfony/error-handler on compatible PHP versions to avoid a deprecation warning of the old DebugClassLoader and ErrorHandler classes
 
 curl -sS https://getcomposer.org/installer | php
