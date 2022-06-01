@@ -13,7 +13,8 @@ FROM registry.access.redhat.com/ubi8/ubi:latest AS builder
 
 ARG PATCH="https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_v8.1.1.patch"
 ARG PACKAGE_VERSION=${1:-v8.2.0}
-ARG MINIMUM_VERSION="v8.0.1"
+ARG JAVA_17_SUPPORTED_VERSION="v8.0.1"
+ARG JAVA_18_SUPPORTED_VERSION="v8.2.0"
 
 # `tini` is a tiny but valid init for containers. This is used to cleanly
 # control how ES and any child processes are shut down.
@@ -41,7 +42,32 @@ WORKDIR /opt
 RUN yum install -y wget git unzip patch \
     && yum clean all
 
-RUN if [[ $PACKAGE_VERSION > $MINIMUM_VERSION ]]; then echo "$PACKAGE_VERSION>$MINIMUM_VERSION" && wget https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.2%2B8/OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.2_8.tar.gz && tar -C /usr/local -xzf OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.2_8.tar.gz && ln -sf /usr/local/jdk-17.0.2+8/bin/java /usr/bin/ && rm -f OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.2_8.tar.gz; else wget https://github.com/AdoptOpenJDK/openjdk15-binaries/releases/download/jdk15u-2021-01-22-02-31/OpenJDK15U-jdk_ppc64le_linux_hotspot_2021-01-22-02-31.tar.gz && tar -C /usr/local -xzf OpenJDK15U-jdk_ppc64le_linux_hotspot_2021-01-22-02-31.tar.gz && export JAVA_HOME=/usr/local/jdk-15.0.2+7/ && export JAVA15_HOME=/usr/local/jdk-15.0.2+7/ && export PATH=$PATH:/usr/local/jdk-15.0.2+7/bin && ln -sf /usr/local/jdk-15.0.2+7/bin/java /usr/bin/; fi
+RUN if [[ $PACKAGE_VERSION > $JAVA_18_SUPPORTED_VERSION ]]; \
+    then \
+        echo "Installing JDK 18" \
+        && wget https://github.com/adoptium/temurin18-binaries/releases/download/jdk-18.0.1%2B10/OpenJDK18U-jdk_ppc64le_linux_hotspot_18.0.1_10.tar.gz \
+        && tar -C /usr/local -xzf OpenJDK18U-jdk_ppc64le_linux_hotspot_18.0.1_10.tar.gz \
+        && export JAVA_HOME=/usr/local/jdk-18.0.1+10 \
+        && export PATH=$PATH:/usr/local/jdk-18.0.1+10/bin \
+        && rm -rf OpenJDK18U-jdk_ppc64le_linux_hotspot_18.0.1_10.tar.gz; \
+    elif [[ $PACKAGE_VERSION > $JAVA_17_SUPPORTED_VERSION ]]; \
+    then \
+        echo "Installing JDK 17" \
+        && wget https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.2%2B8/OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.2_8.tar.gz \
+        && tar -C /usr/local -xzf OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.2_8.tar.gz \
+        && export JAVA_HOME=/usr/local/jdk-17.0.2+8 \
+        && ln -sf /usr/local/jdk-17.0.2+8/bin/java /usr/bin/ \
+        && rm -f OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.2_8.tar.gz; \
+    else \
+        echo "Installing JDK 15" \
+        && wget https://github.com/AdoptOpenJDK/openjdk15-binaries/releases/download/jdk15u-2021-01-22-02-31/OpenJDK15U-jdk_ppc64le_linux_hotspot_2021-01-22-02-31.tar.gz \
+        && tar -C /usr/local -xzf OpenJDK15U-jdk_ppc64le_linux_hotspot_2021-01-22-02-31.tar.gz \
+        && export JAVA_HOME=/usr/local/jdk-15.0.2+7/ \
+        && export JAVA15_HOME=/usr/local/jdk-15.0.2+7/ \
+        && export PATH=$PATH:/usr/local/jdk-15.0.2+7/bin \
+        && ln -sf /usr/local/jdk-15.0.2+7/bin/java /usr/bin/ \
+        && rm -rf OpenJDK15U-jdk_ppc64le_linux_hotspot_2021-01-22-02-31.tar.gz; \
+    fi
 
 ENV JAVA_TOOL_OPTIONS -Dfile.encoding=UTF8
 
