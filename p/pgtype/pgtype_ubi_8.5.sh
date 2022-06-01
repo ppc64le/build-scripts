@@ -25,7 +25,7 @@ PACKAGE_NAME=pgtype
 PACKAGE_VERSION=v1.8.0
 PACKAGE_URL=https://github.com/jackc/pgtype.git
 
-dnf install git -y
+dnf install wget git -y
 
 PACKAGE_VERSION=${1:-v1.8.0}
 
