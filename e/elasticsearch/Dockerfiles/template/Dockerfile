@@ -49,6 +49,7 @@ RUN if [[ $PACKAGE_VERSION > $JAVA_18_SUPPORTED_VERSION ]]; \
         && tar -C /usr/local -xzf OpenJDK18U-jdk_ppc64le_linux_hotspot_18.0.1_10.tar.gz \
         && export JAVA_HOME=/usr/local/jdk-18.0.1+10 \
         && export PATH=$PATH:/usr/local/jdk-18.0.1+10/bin \
+        && ln -sf /usr/local/jdk-18.0.1+10/bin/java /usr/bin/ \
         && rm -rf OpenJDK18U-jdk_ppc64le_linux_hotspot_18.0.1_10.tar.gz; \
     elif [[ $PACKAGE_VERSION > $JAVA_17_SUPPORTED_VERSION ]]; \
     then \
