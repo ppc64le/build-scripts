@@ -77,7 +77,7 @@ RUN git clone --single-branch --branch $PACKAGE_VERSION https://github.com/elast
     wget ${PATCH} && \
     patch -p1 < ${PATCH##*/} && \
     ./gradlew :distribution:archives:linux-ppc64le-tar:assemble --parallel && \
-    mv ./distribution/archives/linux-ppc64le-tar/build/distributions/elasticsearch-*-SNAPSHOT--linux-ppc64le.tar.gz /opt
+    mv ./distribution/archives/linux-ppc64le-tar/build/distributions/elasticsearch-*-SNAPSHOT-linux-ppc64le.tar.gz /opt
 
 RUN mkdir /usr/share/elasticsearch
 
