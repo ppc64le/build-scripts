@@ -25,7 +25,7 @@ PACKAGE_NAME=pgx
 PACKAGE_VERSION=v4.12.0
 PACKAGE_URL=https://github.com/jackc/pgx.git
 
-dnf install git -y
+dnf install wget git -y
 
 PACKAGE_VERSION=${1:-v4.12.0}
 
