@@ -23,7 +23,7 @@ ELASTICSEARCH_VERSION=${1:-v8.2.1}
 
 # install dependencies
 #yum update -y 
-yum install -y wget git zip unzip sudo libtool-ltdl
+yum install -y wget git zip unzip sudo libtool-ltdl patch
 
 wget https://github.com/adoptium/temurin18-binaries/releases/download/jdk-18.0.1%2B10/OpenJDK18U-jdk_ppc64le_linux_hotspot_18.0.1_10.tar.gz
 tar -C /usr/local -xzf OpenJDK18U-jdk_ppc64le_linux_hotspot_18.0.1_10.tar.gz
@@ -37,7 +37,7 @@ git clone https://github.com/elastic/elasticsearch.git
 cd elasticsearch && git checkout $ELASTICSEARCH_VERSION
 # Apply patches
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/elastic-currency/e/elasticsearch/elasticsearch_v8.2.1.patch
-git apply elasticsearch_v8.2.1.patch
+patch -p1 < elasticsearch_v8.2.1.patch
 mkdir -p distribution/archives/linux-ppc64le-tar
 echo "// This file is intentionally blank. All configuration of the distribution is done in the parent project." > distribution/archives/linux-ppc64le-tar/build.gradle
 mkdir -p distribution/archives/oss-linux-ppc64le-tar
