@@ -35,12 +35,12 @@ index c36ade03f77..7c6bbe855ae 100644
      }
  
 diff --git a/build-tools-internal/version.properties b/build-tools-internal/version.properties
-index 089a9374300..f9debf46c0c 100644
+index ecbbbdfcb6e..eac969a0755 100644
 --- a/build-tools-internal/version.properties
 +++ b/build-tools-internal/version.properties
 @@ -1,8 +1,8 @@
- elasticsearch     = 8.4.0
- lucene            = 9.2.0-snapshot-ba8c3a806ad
+ elasticsearch     = 8.2.1
+ lucene            = 9.1.0
  
 -bundled_jdk_vendor = openjdk
 -bundled_jdk = 18.0.1.1+2@65ae32619e2f40f3a9af3af1851d6e19
@@ -90,7 +90,7 @@ index dcd9fbf7330..340f778865e 100644
      archiveClassifier = 'linux-x86_64'
      content {
 diff --git a/distribution/build.gradle b/distribution/build.gradle
-index 158e7c70091..e60a734f722 100644
+index 0c33ea03b7c..f12338453ef 100644
 --- a/distribution/build.gradle
 +++ b/distribution/build.gradle
 @@ -214,7 +214,7 @@ configure(subprojects.findAll { ['archives', 'packages'].contains(it.name) }) {
@@ -102,7 +102,7 @@ index 158e7c70091..e60a734f722 100644
          "bundled_${platform}_${architecture}" {
            it.platform = platform
            it.version = VersionProperties.bundledJdkVersion
-@@ -310,7 +310,7 @@ configure(subprojects.findAll { ['archives', 'packages'].contains(it.name) }) {
+@@ -300,7 +300,7 @@ configure(subprojects.findAll { ['archives', 'packages'].contains(it.name) }) {
              it.mode = 0644
            }
          }
@@ -112,10 +112,10 @@ index 158e7c70091..e60a734f722 100644
            excludePlatforms.remove(excludePlatforms.indexOf(platform))
          } else {
 diff --git a/distribution/docker/build.gradle b/distribution/docker/build.gradle
-index 7f53625dd84..befa19c3606 100644
+index caa007ec0a5..943452cf4f1 100644
 --- a/distribution/docker/build.gradle
 +++ b/distribution/docker/build.gradle
-@@ -61,13 +61,15 @@ configurations {
+@@ -62,13 +62,15 @@ configurations {
    allPlugins
    filebeat
    metricbeat
@@ -133,7 +133,7 @@ index 7f53625dd84..befa19c3606 100644
    dockerSource project(path: ":distribution:archives:linux-tar", configuration: 'default')
    log4jConfig project(path: ":distribution", configuration: 'log4jConfig')
    tini "krallin:tini:0.19.0:${tiniArch}"
-@@ -118,7 +120,7 @@ private static String toCamel(String input) {
+@@ -119,7 +121,7 @@ private static String toCamel(String input) {
  
  private static String taskName(String prefix, Architecture architecture, DockerBase base, String suffix) {
    return prefix +
@@ -142,7 +142,7 @@ index 7f53625dd84..befa19c3606 100644
      (base == DockerBase.DEFAULT ? "" : toCamel(base.name())) +
      suffix
  }
-@@ -177,7 +179,7 @@ tasks.register("copyNodeKeyMaterial", Sync) {
+@@ -178,7 +180,7 @@ tasks.register("copyNodeKeyMaterial", Sync) {
  
  elasticsearch_distributions {
    Architecture.values().each { eachArchitecture ->
@@ -151,7 +151,7 @@ index 7f53625dd84..befa19c3606 100644
        architecture = eachArchitecture
        type = InternalElasticsearchDistributionTypes.DOCKER
        version = VersionProperties.getElasticsearch()
-@@ -233,7 +235,7 @@ tasks.named("composeUp").configure {
+@@ -234,7 +236,7 @@ tasks.named("composeUp").configure {
  
  void addBuildDockerContextTask(Architecture architecture, DockerBase base) {
    String configDirectory = base == DockerBase.IRON_BANK ? 'scripts' : 'config'
@@ -160,7 +160,7 @@ index 7f53625dd84..befa19c3606 100644
  
    final TaskProvider<Tar> buildDockerContextTask =
      tasks.register(taskName('build', architecture, base, 'DockerContext'), Tar) {
-@@ -279,7 +281,7 @@ void addTransformDockerContextTask(Architecture architecture, DockerBase base) {
+@@ -280,7 +282,7 @@ void addTransformDockerContextTask(Architecture architecture, DockerBase base) {
      TaskProvider<Tar> buildContextTask = tasks.named(taskName("build", architecture, base, "DockerContext"))
      dependsOn(buildContextTask)
  
@@ -169,7 +169,7 @@ index 7f53625dd84..befa19c3606 100644
      String archiveName = "elasticsearch${base.suffix}-${VersionProperties.elasticsearch}-docker-build-context${arch}"
      String distributionName = "elasticsearch-${VersionProperties.elasticsearch}-linux-${architecture.classifier}.tar.gz"
  
-@@ -380,7 +382,7 @@ void addBuildDockerImageTask(Architecture architecture, DockerBase base) {
+@@ -377,7 +379,7 @@ void addBuildDockerImageTask(Architecture architecture, DockerBase base) {
  
  void addBuildEssDockerImageTask(Architecture architecture) {
    DockerBase base = DockerBase.CLOUD_ESS
@@ -178,7 +178,7 @@ index 7f53625dd84..befa19c3606 100644
    String contextDir = "${project.buildDir}/docker-context/elasticsearch${base.suffix}-${VersionProperties.elasticsearch}-docker-build-context${arch}"
  
    final TaskProvider<Sync> buildContextTask =
-@@ -443,7 +445,7 @@ subprojects { Project subProject ->
+@@ -440,7 +442,7 @@ subprojects { Project subProject ->
    if (subProject.name.endsWith('-export')) {
      apply plugin: 'distribution'
  
@@ -187,7 +187,7 @@ index 7f53625dd84..befa19c3606 100644
      DockerBase base = DockerBase.DEFAULT
      if (subProject.name.contains('ubi-')) {
        base = DockerBase.UBI
-@@ -455,7 +457,7 @@ subprojects { Project subProject ->
+@@ -452,7 +454,7 @@ subprojects { Project subProject ->
        base = DockerBase.CLOUD
      }
  
@@ -197,7 +197,7 @@ index 7f53625dd84..befa19c3606 100644
        (base == DockerBase.IRON_BANK ? 'ironbank.tar' :
          (base == DockerBase.CLOUD ? 'cloud.tar' :
 diff --git a/distribution/docker/src/docker/Dockerfile b/distribution/docker/src/docker/Dockerfile
-index 63df99e09b9..aecc82b2bfc 100644
+index dcb2151298e..c5cbea0f60c 100644
 --- a/distribution/docker/src/docker/Dockerfile
 +++ b/distribution/docker/src/docker/Dockerfile
 @@ -58,6 +58,7 @@ RUN set -eux ; \\
@@ -272,7 +272,7 @@ index 53fcbaef8ca..2bd49d27feb 100644
    configure(commonRpmConfig('x64'))
  }
 diff --git a/server/src/main/java/org/elasticsearch/bootstrap/SystemCallFilter.java b/server/src/main/java/org/elasticsearch/bootstrap/SystemCallFilter.java
-index 0ab855d1d5f..a04304b9145 100644
+index c5afb9c3ffa..a36077521bd 100644
 --- a/server/src/main/java/org/elasticsearch/bootstrap/SystemCallFilter.java
 +++ b/server/src/main/java/org/elasticsearch/bootstrap/SystemCallFilter.java
 @@ -216,7 +216,9 @@ final class SystemCallFilter {
@@ -287,7 +287,7 @@ index 0ab855d1d5f..a04304b9145 100644
      }
  
 diff --git a/settings.gradle b/settings.gradle
-index 770cdad0721..344a48c1662 100644
+index f28f7ec51eb..49b55045c84 100644
 --- a/settings.gradle
 +++ b/settings.gradle
 @@ -32,21 +32,29 @@ List projects = [
