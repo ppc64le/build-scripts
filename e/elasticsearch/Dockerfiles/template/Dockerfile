@@ -38,7 +38,7 @@ RUN set -eux ; \
 
 WORKDIR /opt
 
-RUN yum install -y wget git unzip \
+RUN yum install -y wget git unzip patch \
     && yum clean all
 
 RUN if [[ $PACKAGE_VERSION > $MINIMUM_VERSION ]]; then echo "$PACKAGE_VERSION>$MINIMUM_VERSION" && wget https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.2%2B8/OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.2_8.tar.gz && tar -C /usr/local -xzf OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.2_8.tar.gz && ln -sf /usr/local/jdk-17.0.2+8/bin/java /usr/bin/ && rm -f OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.2_8.tar.gz; else wget https://github.com/AdoptOpenJDK/openjdk15-binaries/releases/download/jdk15u-2021-01-22-02-31/OpenJDK15U-jdk_ppc64le_linux_hotspot_2021-01-22-02-31.tar.gz && tar -C /usr/local -xzf OpenJDK15U-jdk_ppc64le_linux_hotspot_2021-01-22-02-31.tar.gz && export JAVA_HOME=/usr/local/jdk-15.0.2+7/ && export JAVA15_HOME=/usr/local/jdk-15.0.2+7/ && export PATH=$PATH:/usr/local/jdk-15.0.2+7/bin && ln -sf /usr/local/jdk-15.0.2+7/bin/java /usr/bin/; fi
@@ -48,7 +48,7 @@ ENV JAVA_TOOL_OPTIONS -Dfile.encoding=UTF8
 RUN git clone --single-branch --branch $PACKAGE_VERSION https://github.com/elastic/elasticsearch.git && \
     cd elasticsearch && git checkout $PACKAGE_VERSION && \
     wget ${PATCH} && \
-    git apply ${PATCH##*/} && \
+    patch -p1 < ${PATCH##*/} && \
     ./gradlew :distribution:archives:linux-ppc64le-tar:assemble --parallel && \
     mv ./distribution/archives/linux-ppc64le-tar/build/distributions/elasticsearch-*-SNAPSHOT--linux-ppc64le.tar.gz /opt
 
