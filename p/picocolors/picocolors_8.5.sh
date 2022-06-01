@@ -74,3 +74,42 @@ else
 	exit 0
 fi
 #install_&_test_both_success for all mentioned version.
+#it is working in foreground service
+#Failing in background service(Travis build failing)
+
+#> picocolors@1.0.0 test
+#> node tests/test.js
+#testing: reset
+#testing: bold
+#testing: dim
+#testing: italic
+#testing: underline
+#testing: inverse
+#testing: hidden
+#testing: strikethrough
+#testing: black
+#testing: red
+#testing: green
+#testing: yellow
+#testing: blue
+#testing: magenta
+#testing: cyan
+#testing: white
+#testing: gray
+#testing: bgBlack
+#testing: bgRed
+#testing: bgGreen
+#testing: bgYellow
+#testing: bgBlue
+#testing: bgMagenta
+#testing: bgCyan
+#testing: bgWhite
+#✓ color matching
+#✓ format/color nesting
+#✓ proper wrapping
+#✓ complex case of wrapping
+#✓ close sequence replacement
+#✓ non-string input
+#------------------picocolors:install_&_test_both_success-------------------------
+#https://github.com/alexeyraspopov/picocolors.git picocolors
+#picocolors  |  https://github.com/alexeyraspopov/picocolors.git | v1.0.0 | "Red Hat Enterprise Linux 8.5 (Ootpa)" | GitHub  | Pass |  #Both_Install_and_Test_Success
