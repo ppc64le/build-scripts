@@ -27,9 +27,9 @@ OS_NAME=`cat /etc/os-release | grep "PRETTY" | awk -F '=' '{print $2}'`
 yum install -y wget git tar gcc
 
 wget https://golang.org/dl/go1.17.linux-ppc64le.tar.gz
-rm -rf /home/tester/go && tar -C /home/tester -xzf go1.17.linux-ppc64le.tar.gz
+rm -rf /home/go && tar -C /home -xzf go1.17.linux-ppc64le.tar.gz
 rm -f go1.17.linux-ppc64le.tar.gz
-export GOPATH=/home/tester/go
+export GOPATH=/home/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 export  GO111MODULE=on
 
