@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : dbus
-# Version       : v5.0.5
+# Version       : v5.0.4
 # Source repo   : https://github.com/godbus/dbus
 # Tested on     : UBI 8.5
 # Language      : GO
@@ -20,7 +20,7 @@
 
 
 PACKAGE_NAME=dbus
-PACKAGE_VERSION=${1:-v5.0.5}
+PACKAGE_VERSION=${1:-v5.0.4}
 PACKAGE_URL=https://github.com/godbus/dbus
 
 OS_NAME=`cat /etc/os-release | grep "PRETTY" | awk -F '=' '{print $2}'`
@@ -28,9 +28,9 @@ OS_NAME=`cat /etc/os-release | grep "PRETTY" | awk -F '=' '{print $2}'`
 yum install -y wget git tar gcc
 
 wget https://golang.org/dl/go1.17.linux-ppc64le.tar.gz
-rm -rf /home/tester/go && tar -C /home/tester -xzf go1.17.linux-ppc64le.tar.gz
+rm -rf /home/go && tar -C /home -xzf go1.17.linux-ppc64le.tar.gz
 rm -f go1.17.linux-ppc64le.tar.gz
-export GOPATH=/home/tester/go
+export GOPATH=/home/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 export  GO111MODULE=on
 
@@ -43,6 +43,13 @@ if ! go build -v ./...; then
 	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
 	exit 1
 fi
+
+#Test failing and is in parity with Intel
+#conn_test.go:18: exec: "dbus-launch": executable file not found in $PATH
+#--- FAIL: TestSessionBus (0.00s)
+#panic: runtime error: invalid memory address or nil pointer dereference [recovered]
+#panic: runtime error: invalid memory address or nil pointer dereference
+#[signal SIGSEGV: segmentation violation code=0x1 addr=0x0 pc=0x1018c6a4]
 
 if ! go test -v ./...; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
