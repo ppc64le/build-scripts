@@ -1,4 +1,4 @@
-I#!/bin/bash -e
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package       : paulbellamy/ratecounter
@@ -23,7 +23,7 @@ PACKAGE_VERSION=${1:-v0.2.0}
 GO_VERSION=1.17.4
 PACKAGE_URL=https://github.com/paulbellamy/ratecounter.git
 
-dnf install git wget sudo diffutils.ppc64le make gcc gcc-c++ -y
+dnf install git wget make gcc gcc-c++ -y
 
 mkdir -p /home/tester/output
 cd /home/tester
