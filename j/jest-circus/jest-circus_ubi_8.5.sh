@@ -22,9 +22,13 @@ PACKAGE_NAME=jest-circus
 PACKAGE_VERSION=${1:-v27.3.1}
 PACKAGE_URL=https://github.com/facebook/jest
 
+yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git gcc gcc-c++ libffi libffi-devel ncurses git jq make cmake
+npm install --global yarn grunt-bump xo testem acorn
 
-npm install n -g && n 14 && npm install -g npm@6 && export PATH="$PATH" && npm install --global yarn grunt-bump xo testem acorn
+# yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git gcc gcc-c++ libffi libffi-devel ncurses git jq make cmake
+
+# npm install n -g && n 14 && npm install -g npm@6 && export PATH="$PATH" && npm install --global yarn grunt-bump xo testem acorn
 
 mkdir -p /home/tester/output
 cd /home/tester
