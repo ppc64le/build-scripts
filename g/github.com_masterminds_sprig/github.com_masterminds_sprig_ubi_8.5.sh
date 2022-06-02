@@ -24,7 +24,7 @@ PACKAGE_URL=https://github.com/masterminds/sprig
 
 OS_NAME=`cat /etc/os-release | grep "PRETTY" | awk -F '=' '{print $2}'`
 
-yum install -y wget git
+yum install -y wget git tar gcc
 
 wget https://golang.org/dl/go1.17.linux-ppc64le.tar.gz
 rm -rf /home/tester/go && tar -C /home/tester -xzf go1.17.linux-ppc64le.tar.gz
