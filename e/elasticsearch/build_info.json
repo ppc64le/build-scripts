@@ -63,7 +63,7 @@
     "v8.2.1" : {
         "dir":"8.1.0_ubi_8",
         "patches": {
-            "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/elastic-currency/e/elasticsearch/elasticsearch_v8.2.1.patch"
+            "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_v8.2.1.patch"
         },
         "build_script" : "elasticsearch_v8.2.1_ubi_8.5.sh"
     },
@@ -71,7 +71,7 @@
     "v*.*.*" : {
         "dir":"template",
         "patches": {
-            "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/elastic-currency/e/elasticsearch/elasticsearch_v8.2.1.patch"
+            "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_v8.2.1.patch"
         },
         "build_script" : "elasticsearch_v8.2.1_ubi_8.5.sh"
     }

@@ -36,7 +36,7 @@ rm -rf OpenJDK18U-jdk_ppc64le_linux_hotspot_18.0.1_10.tar.gz
 git clone https://github.com/elastic/elasticsearch.git
 cd elasticsearch && git checkout $ELASTICSEARCH_VERSION
 # Apply patches
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/elastic-currency/e/elasticsearch/elasticsearch_v8.2.1.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_v8.2.1.patch
 patch -p1 < elasticsearch_v8.2.1.patch
 mkdir -p distribution/archives/linux-ppc64le-tar
 echo "// This file is intentionally blank. All configuration of the distribution is done in the parent project." > distribution/archives/linux-ppc64le-tar/build.gradle
