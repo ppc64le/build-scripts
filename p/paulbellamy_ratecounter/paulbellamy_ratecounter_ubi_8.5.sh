@@ -71,4 +71,4 @@ else
         echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success" > /home/tester/output/version_tracker
         exit 0
 fi
-
+#Test case TestAvgRateCounterAdvanced failed on one of the machine and passed on other machine and in same machine failed on UBI8 container
