@@ -48,8 +48,6 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 echo "Building $PACKAGE_PATH$PACKAGE_NAME with $PACKAGE_VERSION"
-go mod init 
-go mod tidy
 
 if ! go build -v ./...; then
 	echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
