@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: zap
-# Version	: v1.13.0
+# Version	: v1.13.0, v1.19.1
 # Source repo	: https://github.com/uber-go/zap
 # Tested on	: ubi 8.5
 # Language      : go
