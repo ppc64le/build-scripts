@@ -21,6 +21,7 @@
 PACKAGE_NAME=ratecounter
 PACKAGE_VERSION=${1:-v0.2.0}
 GO_VERSION=1.17.4
+ARCH=ppc64le
 PACKAGE_URL=https://github.com/paulbellamy/ratecounter.git
 
 dnf install git wget make gcc gcc-c++ -y
@@ -28,13 +29,13 @@ dnf install git wget make gcc gcc-c++ -y
 mkdir -p /home/tester/output
 cd /home/tester
 
-wget https://golang.org/dl/go$GO_VERSION.linux-ppc64le.tar.gz
-rm -rf /usr/local/go && tar -C /usr/local/ -xzf go$GO_VERSION.linux-ppc64le.tar.gz
-rm -rf go$GO_VERSION.linux-ppc64le.tar.gz
+wget https://golang.org/dl/go$GO_VERSION.linux-$ARCH.tar.gz
+rm -rf /usr/local/go && tar -C /usr/local/ -xzf go$GO_VERSION.linux-$ARCH.tar.gz
+rm -rf go$GO_VERSION.linux-$ARCH.tar.gz
 export GOROOT=${GOROOT:-"/usr/local/go"}
 export GOPATH=${GOPATH:-/home/tester/go}
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:/usr/local/bin
-export  GO111MODULE=on
+export GO111MODULE=on
 mkdir -p $GOPATH/src/github.com/paulbellamy
 cd $GOPATH/src/github.com/paulbellamy
 
@@ -53,11 +54,21 @@ cd $PACKAGE_NAME
 
 git checkout $PACKAGE_VERSION
 
+if [ ! -f go.mod ]
+then
 if ! (go mod init && go mod tidy); then
        echo "------------------$PACKAGE_NAME:build failed---------------------"
        echo "$PACKAGE_VERSION $PACKAGE_NAME"
        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  build_Fails"
        exit 1
+fi
+else
+if ! (go build); then
+       echo "------------------$PACKAGE_NAME:build failed---------------------"
+       echo "$PACKAGE_VERSION $PACKAGE_NAME"
+       echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  build_Fails"
+       exit 1
+fi
 fi
 
 if ! go test ./... -v; then
@@ -71,4 +82,6 @@ else
         echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success" > /home/tester/output/version_tracker
         exit 0
 fi
+
 #Test case TestAvgRateCounterAdvanced failed on one of the machine and passed on other machine and in same machine failed on UBI8 container
+#test cases result not consistent.
