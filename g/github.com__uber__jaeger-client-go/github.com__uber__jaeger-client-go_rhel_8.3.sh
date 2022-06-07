@@ -119,4 +119,4 @@ else
 	echo "$PACKAGE_VERSION $PACKAGE_NAME"
 	exit 0
 fi
-#Note: Few tests are failing on both VMs. 
+#Note: Few tests are failing on both VMs and this package is also deprecated. 
