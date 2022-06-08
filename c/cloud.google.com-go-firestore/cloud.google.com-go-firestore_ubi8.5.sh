@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: cloud.google.com/go/firestore
-# Version	: v1.1.0
+# Version	: v1.1.0 ,v1.6.0
 # Source repo	: https://github.com/googleapis/google-cloud-go/tree/firestore/v1.1.0
 # Tested on	: UBI 8.5
 # Language      : GO
