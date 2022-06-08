@@ -1,15 +1,15 @@
 # -----------------------------------------------------------------------------
 #
-# Package	: github.com/olivere/elastic/v7
-# Version	: v7.0.22
-# Source repo	: https://github.com/olivere/elastic
-# Tested on	: UBI 8.5
+# Package       : github.com/olivere/elastic/v7
+# Version       : v7.0.22, v7.0.32
+# Source repo   : https://github.com/olivere/elastic
+# Tested on     : UBI 8.5
 # Language      : GO
 # Travis-Check  : False
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>
+# Maintainer    : Atharv Phadnis <Atharv.Phadnis@ibm.com>
 #
-# Run as:	  docker run -it --network host -v /var/run/docker.sock:/var/run/docker.sock registry.access.redhat.com/ubi8
+# Run as:  docker run -it --network host --security-opt seccomp=unconfined -v /var/run/docker.sock:/var/run/docker.sock registry.access.redhat.com/ubi8:8.5
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -32,7 +32,44 @@ tar -xf docker-18.06.3-ce.tgz
 mv ./docker/docker /usr/local/bin
 chmod +x /usr/local/bin/docker
 
+if [ $PACKAGE_VERSION == v7.0.32 ]
+then
+    mkdir -p /root/data/backup
+    chmod 777 /root/data/backup
+# Following variable is required to skip the test that fails if run inside a container. Comment the variable declaration if run inside a VM.
+
+# If TRAVIs is not defined:
+# === RUN   TestCatSnapshotsIntegration
+    # cat_snapshots_integration_test.go:32: elastic: Error 500 (Internal Server Error): [my_backup] path  is not accessible on master node [type=repository_verification_exception]
+
+# If TRAVIS is defined    
+# === RUN   TestCatSnapshotsIntegration
+    # cat_snapshots_integration_test.go:15: this test requires local directories
+# --- SKIP: TestCatSnapshotsIntegration (0.00s)
+    export TRAVIS=true    
+fi
+
 # Create Elasticsearch container at Port 9200
+if [ $PACKAGE_VERSION == v7.0.32 ]
+then
+docker run -d \
+    --name elasticsearch \
+    -p 9200:9200 \
+    -e "discovery.type=single-node" \
+    -e bootstrap.memory_lock=true \
+    -e cluster.name=elasticsearch \
+    -e network.publish_host=127.0.0.1 \
+    -e logger.org.elasticsearch=warn \
+    -e xpack.security.enabled=false \
+    -e path.repo=/usr/share/elasticsearch/backup \
+    -e "ES_JAVA_OPTS=-Xms1g -Xmx1g" \
+    --ulimit nofile=65536:65536 \
+    --ulimit nproc=65536 \
+    --ulimit memlock=-1:-1 \
+    --hostname elasticsearch \
+    -v /root/data/backup:/usr/share/elasticsearch/backup \
+    ibmcom/elasticsearch-ppc64le:7.17.2
+else
 docker run -d \
 	--name elasticsearch \
 	--ulimit nproc=65536 \
@@ -46,8 +83,33 @@ docker run -d \
 	-e logger.org.elasticsearch=warn \
 	-e "ES_JAVA_OPTS=-Xms1g -Xmx1g" \
 	ibmcom/elasticsearch-ppc64le:v7.9.1
+fi
 
 # Create Elasticsearch container at Port 9210
+if [ $PACKAGE_VERSION == v7.0.32 ]
+then
+    docker run -d \
+    --name elasticsearch-platinum \
+    -p 9210:9210 \
+    -e "discovery.type=single-node" \
+    -e bootstrap.memory_lock=true \
+    -e cluster.name=platinum \
+    -e network.publish_host=127.0.0.1 \
+    -e logger.org.elasticsearch=warn \
+    -e path.repo=/usr/share/elasticsearch/backup \
+    -e "ES_JAVA_OPTS=-Xms1g -Xmx1g" \
+    -e xpack.license.self_generated.type=trial \
+    -e xpack.security.enabled=true \
+    -e xpack.watcher.enabled=true \
+    -e http.port=9210 \
+    -e ELASTIC_PASSWORD=elastic \
+    --ulimit nofile=65536:65536 \
+    --ulimit nproc=65536 \
+    --ulimit memlock=-1:-1 \
+    --hostname elasticsearch-platinum \
+    -v /root/data/backup:/usr/share/elasticsearch/backup \
+    ibmcom/elasticsearch-ppc64le:7.17.2
+else
 docker run -d \
 	--name elasticsearch-platinum \
 	--ulimit nproc=65536 \
@@ -66,6 +128,7 @@ docker run -d \
 	-e "ES_JAVA_OPTS=-Xms1g -Xmx1g" \
 	-e ELASTIC_PASSWORD=elastic \
 	ibmcom/elasticsearch-ppc64le:v7.9.1
+fi
 
 # Wait for Elasticsearch to start up
 sleep 10
