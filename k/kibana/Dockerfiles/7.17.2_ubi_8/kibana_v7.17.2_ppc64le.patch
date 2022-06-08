@@ -1,0 +1,314 @@
+diff --git a/WORKSPACE.bazel b/WORKSPACE.bazel
+index f71b3d1f..e25a1776 100644
+--- a/WORKSPACE.bazel
++++ b/WORKSPACE.bazel
+@@ -10,15 +10,15 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+ # Fetch Node.js rules
+ http_archive(
+   name = "build_bazel_rules_nodejs",
+-  sha256 = "e79c08a488cc5ac40981987d862c7320cee8741122a2649e9b08e850b6f20442",
+-  urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/3.8.0/rules_nodejs-3.8.0.tar.gz"],
++  sha256 = "8a7c981217239085f78acc9898a1f7ba99af887c1996ceb3b4504655383a2c3c",
++  urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/4.0.0/rules_nodejs-4.0.0.tar.gz"],
+ )
+
+ # Now that we have the rules let's import from them to complete the work
+ load("@build_bazel_rules_nodejs//:index.bzl", "check_rules_nodejs_version", "node_repositories", "yarn_install")
+
+ # Assure we have at least a given rules_nodejs version
+-check_rules_nodejs_version(minimum_version_string = "3.8.0")
++check_rules_nodejs_version(minimum_version_string = "4.0.0")
+
+ # Setup the Node.js toolchain for the architectures we want to support
+ #
+@@ -31,6 +31,7 @@ node_repositories(
+     "16.14.2-darwin_arm64": ("node-v16.14.2-darwin-arm64.tar.gz", "node-v16.14.2-darwin-arm64", "a66d9217d2003bd416d3dd06dfd2c7a044c4c9ff2e43a27865790bd0d59c682d"),
+     "16.14.2-linux_arm64": ("node-v16.14.2-linux-arm64.tar.xz", "node-v16.14.2-linux-arm64", "f7c5a573c06a520d6c2318f6ae204141b8420386553a692fc359f8ae3d88df96"),
+     "16.14.2-linux_s390x": ("node-v16.14.2-linux-s390x.tar.xz", "node-v16.14.2-linux-s390x", "3197925919ca357e17a31132dc6ef4e5afae819fa09905cfe9f7ff7924a00bf5"),
++    "16.14.2-linux_ppc64le": ("node-v16.14.2-linux-ppc64le.tar.xz", "node-v16.14.2-linux-ppc64le", "48469382586c9a1c0f372ed88cbb13870d225538a305eb35efcb7bd7732d330b"),
+     "16.14.2-linux_amd64": ("node-v16.14.2-linux-x64.tar.xz", "node-v16.14.2-linux-x64", "e40c6f81bfd078976d85296b5e657be19e06862497741ad82902d0704b34bb1b"),
+     "16.14.2-windows_amd64": ("node-v16.14.2-win-x64.zip", "node-v16.14.2-win-x64", "4731da4fbb2015d414e871fa9118cabb643bdb6dbdc8a69a3ed563266ac93229"),
+   },
+diff --git a/package.json b/package.json
+index 5a72c759..2872e94a 100644
+--- a/package.json
++++ b/package.json
+@@ -38,7 +38,7 @@
+   "author": "Rashid Khan <rashid.khan@elastic.co>",
+   "scripts": {
+     "bazel": "bazel",
+-    "build": "node scripts/build --all-platforms",
++    "build": "node scripts/build",
+     "build:apidocs": "node scripts/build_api_docs",
+     "build:types": "rm -rf ./target/types && tsc --p tsconfig.types.json",
+     "checkLicenses": "node scripts/check_licenses --dev",
+@@ -504,7 +504,6 @@
+     "@types/bluebird": "^3.1.1",
+     "@types/chance": "^1.0.0",
+     "@types/chroma-js": "^1.4.2",
+-    "@types/chromedriver": "^81.0.1",
+     "@types/classnames": "^2.2.9",
+     "@types/cmd-shim": "^2.0.0",
+     "@types/color": "^3.0.0",
+@@ -673,7 +672,6 @@
+     "callsites": "^3.1.0",
+     "chai": "3.5.0",
+     "chance": "1.0.18",
+-    "chromedriver": "^98.0.0",
+     "clean-webpack-plugin": "^3.0.0",
+     "cmd-shim": "^2.1.0",
+     "compression-webpack-plugin": "^4.0.0",
+@@ -843,4 +841,4 @@
+     "yargs": "^15.4.1",
+     "zlib": "^1.0.5"
+   }
+-}
+\ No newline at end of file
++}
+diff --git a/src/dev/build/lib/config.ts b/src/dev/build/lib/config.ts
+index 33b98e1b..ecd2c839 100644
+--- a/src/dev/build/lib/config.ts
++++ b/src/dev/build/lib/config.ts
+@@ -107,10 +107,10 @@ export class Config {
+     }
+
+     if (process.platform === 'linux') {
+-      return [this.getPlatform('linux', 'x64')];
++      return [this.getPlatform('linux', 'ppc64')];
+     }
+
+-    return [this.getPlatformForThisOs(), this.getPlatform('linux', 'x64')];
++    return [this.getPlatformForThisOs(), this.getPlatform('linux', 'ppc64')];
+   }
+
+   getPlatform(name: PlatformName, arch: PlatformArchitecture) {
+diff --git a/src/dev/build/lib/platform.ts b/src/dev/build/lib/platform.ts
+index 4c4ec271..80f2a0c8 100644
+--- a/src/dev/build/lib/platform.ts
++++ b/src/dev/build/lib/platform.ts
+@@ -7,7 +7,7 @@
+  */
+
+ export type PlatformName = 'win32' | 'darwin' | 'linux';
+-export type PlatformArchitecture = 'x64' | 'arm64';
++export type PlatformArchitecture = 'x64' | 'arm64' | 'ppc64';
+
+ export class Platform {
+   constructor(
+@@ -48,6 +48,7 @@ export class Platform {
+ export const ALL_PLATFORMS = [
+   new Platform('linux', 'x64', 'linux-x86_64'),
+   new Platform('linux', 'arm64', 'linux-aarch64'),
++  new Platform('linux', 'ppc64', 'linux-ppc64'),
+   new Platform('darwin', 'x64', 'darwin-x86_64'),
+   new Platform('darwin', 'arm64', 'darwin-aarch64'),
+   new Platform('win32', 'x64', 'windows-x86_64'),
+diff --git a/src/dev/build/tasks/install_chromium.js b/src/dev/build/tasks/install_chromium.js
+index ad60019e..9409376a 100644
+--- a/src/dev/build/tasks/install_chromium.js
++++ b/src/dev/build/tasks/install_chromium.js
+@@ -17,6 +17,10 @@ export const InstallChromium = {
+   async run(config, log, build) {
+     for (const platform of config.getNodePlatforms()) {
+       const target = `${platform.getName()}-${platform.getArchitecture()}`;
++
++      log.info(`Skipping Chromium install for ${target}`);
++      continue;
++
+       log.info(`Installing Chromium for ${target}`);
+
+       // revert after https://github.com/elastic/kibana/issues/109949
+diff --git a/src/dev/build/tasks/nodejs/node_download_info.ts b/src/dev/build/tasks/nodejs/node_download_info.ts
+index 821cdb69..84a372e3 100644
+--- a/src/dev/build/tasks/nodejs/node_download_info.ts
++++ b/src/dev/build/tasks/nodejs/node_download_info.ts
+@@ -12,13 +12,13 @@ import { Config, Platform } from '../../lib';
+
+ export function getNodeDownloadInfo(config: Config, platform: Platform) {
+   const version = config.getNodeVersion();
+-  const arch = platform.getNodeArch();
++  const arch = platform.getNodeArch().replace("ppc64", "ppc64le");
+
+   const downloadName = platform.isWindows()
+     ? 'win-x64/node.exe'
+     : `node-v${version}-${arch}.tar.gz`;
+
+-  const url = `https://us-central1-elastic-kibana-184716.cloudfunctions.net/kibana-ci-proxy-cache/dist/v${version}/${downloadName}`;
++  const url = `https://nodejs.org/download/release/v${version}/${downloadName}`;
+   const downloadPath = config.resolveFromRepo('.node_binaries', version, basename(downloadName));
+   const extractDir = config.resolveFromRepo('.node_binaries', version, arch);
+
+diff --git a/src/dev/build/tasks/notice_file_task.ts b/src/dev/build/tasks/notice_file_task.ts
+index 43d95858..234b3ecb 100644
+--- a/src/dev/build/tasks/notice_file_task.ts
++++ b/src/dev/build/tasks/notice_file_task.ts
+@@ -36,7 +36,7 @@ export const CreateNoticeFile: Task = {
+     log.info('Generating build notice');
+     const { extractDir: nodeDir, version: nodeVersion } = getNodeDownloadInfo(
+       config,
+-      config.getPlatform('linux', 'x64')
++      config.getPlatform('linux', 'ppc64')
+     );
+
+     const notice = await generateBuildNoticeText({
+diff --git a/src/dev/build/tasks/patch_native_modules_task.ts b/src/dev/build/tasks/patch_native_modules_task.ts
+index be7fa5b5..1bde493e 100644
+--- a/src/dev/build/tasks/patch_native_modules_task.ts
++++ b/src/dev/build/tasks/patch_native_modules_task.ts
+@@ -22,6 +22,9 @@ import {
+   read,
+ } from '../lib';
+
++const zUrl = require('url');
++var zFile:string = zUrl.pathToFileURL('linux-ppc64-93.gz').toString();
++
+ const DOWNLOAD_DIRECTORY = '.native_modules';
+
+ interface Package {
+@@ -49,6 +52,9 @@ const packages: Package[] = [
+         url: 'https://github.com/uhop/node-re2/releases/download/1.16.0/darwin-x64-93.gz',
+         sha256: 'a267c6202d86d08170eb4a833acf81d83660ce33e8981fcd5b7f6e0310961d56',
+       },
++      'linux-ppc64': {
++        url: zFile,
++      },
+       'linux-x64': {
+         url: 'https://github.com/uhop/node-re2/releases/download/1.16.0/linux-x64-93.gz',
+         sha256: 'e0ca5d6527fe7ec0fe98b6960c47b66a5bb2823c3bebb3bf4ed4d58eed3d23c5',
+@@ -110,14 +116,20 @@ async function patchModule(
+   log.debug(`Patching ${pkg.name} binaries from ${archive.url} to ${extractPath}`);
+
+   await deleteAll([extractPath], log);
+-  await downloadToDisk({
+-    log,
+-    url: archive.url,
+-    destination: downloadPath,
+-    shaChecksum: archive.sha256,
+-    shaAlgorithm: 'sha256',
+-    maxAttempts: 3,
+-  });
++  if(platformName == "linux-ppc64") {
++    console.log("Using locally built re2");
++  }
++  else {
++    await downloadToDisk({
++      log,
++      url: archive.url,
++      destination: downloadPath,
++      shaChecksum: archive.sha256,
++      shaAlgorithm: 'sha256',
++      maxAttempts: 3,
++    });
++  }
++
+   switch (pkg.extractMethod) {
+     case 'gunzip':
+       await gunzip(downloadPath, extractPath);
+diff --git a/yarn.lock b/yarn.lock
+index c84b5e44..04d24e22 100644
+--- a/yarn.lock
++++ b/yarn.lock
+@@ -4864,11 +4864,6 @@
+   dependencies:
+     defer-to-connect "^2.0.0"
+
+-"@testim/chrome-version@^1.1.2":
+-  version "1.1.2"
+-  resolved "https://registry.yarnpkg.com/@testim/chrome-version/-/chrome-version-1.1.2.tgz#092005c5b77bd3bb6576a4677110a11485e11864"
+-  integrity sha512-1c4ZOETSRpI0iBfIFUqU4KqwBAB2lHUAlBjZz/YqOHqwM9dTTzjV6Km0ZkiEiSCx/tLr1BtESIKyWWMww+RUqw==
+-
+ "@testing-library/dom@^7.28.1", "@testing-library/dom@^7.30.3":
+   version "7.30.3"
+   resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-7.30.3.tgz#779ea9bbb92d63302461800a388a5a890ac22519"
+@@ -5231,13 +5226,6 @@
+   resolved "https://registry.yarnpkg.com/@types/chroma-js/-/chroma-js-2.0.0.tgz#b0fc98c8625d963f14e8138e0a7961103303ab22"
+   integrity sha512-iomunXsXjDxhm2y1OeJt8NwmgC7RyNkPAOddlYVGsbGoX8+1jYt84SG4/tf6RWcwzROLx1kPXPE95by1s+ebIg==
+
+-"@types/chromedriver@^81.0.1":
+-  version "81.0.1"
+-  resolved "https://registry.yarnpkg.com/@types/chromedriver/-/chromedriver-81.0.1.tgz#bff3e4cdc7830dc0f115a9c0404f6979771064d4"
+-  integrity sha512-I7ma6bBzfWc5YiMV/OZ6lYMZIANAwGbDH+QRYKnbXRptdAvUhSoFP5iHzQHas6QZCRDtefMvbxCjySUyXhxafQ==
+-  dependencies:
+-    "@types/node" "*"
+-
+ "@types/classnames@^2.2.9":
+   version "2.2.9"
+   resolved "https://registry.yarnpkg.com/@types/classnames/-/classnames-2.2.9.tgz#d868b6febb02666330410fe7f58f3c4b8258be7b"
+@@ -9590,19 +9578,6 @@ chrome-trace-event@^1.0.2:
+   dependencies:
+     tslib "^1.9.0"
+
+-chromedriver@^98.0.0:
+-  version "98.0.0"
+-  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-98.0.0.tgz#b2c3c1941fad4cdfadad5d4c46923e02f089fd30"
+-  integrity sha512-Oi6Th5teK+VI4nti+423/dFkENYHEMOdUvqwJHzOaNwXqLwZ8FuSaKBybgALCctGapwJbd+tmPv3qSd6tUUIHQ==
+-  dependencies:
+-    "@testim/chrome-version" "^1.1.2"
+-    axios "^0.24.0"
+-    del "^6.0.0"
+-    extract-zip "^2.0.1"
+-    https-proxy-agent "^5.0.0"
+-    proxy-from-env "^1.1.0"
+-    tcp-port-used "^1.0.1"
+-
+ ci-info@^2.0.0:
+   version "2.0.0"
+   resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-2.0.0.tgz#67a9e964be31a51e15e5010d58e6f12834002f46"
+@@ -11522,13 +11497,6 @@ debug@4, debug@4.3.3, debug@^4.0.0, debug@^4.0.1, debug@^4.1.0, debug@^4.1.1, de
+   dependencies:
+     ms "2.1.2"
+
+-debug@4.1.0:
+-  version "4.1.0"
+-  resolved "https://registry.yarnpkg.com/debug/-/debug-4.1.0.tgz#373687bffa678b38b1cd91f861b63850035ddc87"
+-  integrity sha512-heNPJUJIqC+xB6ayLAMHaIrmN9HKa7aQO8MGqKpvCA+uJYVcvR6l5kgdrhRuwPFHU7P5/A1w0BjByPHwpfTDKg==
+-  dependencies:
+-    ms "^2.1.1"
+-
+ debug@4.1.1:
+   version "4.1.1"
+   resolved "https://registry.yarnpkg.com/debug/-/debug-4.1.1.tgz#3b72260255109c6b589cee050f1d516139664791"
+@@ -16958,11 +16926,6 @@ is-unicode-supported@^0.1.0:
+   resolved "https://registry.yarnpkg.com/is-unicode-supported/-/is-unicode-supported-0.1.0.tgz#3f26c76a809593b52bfa2ecb5710ed2779b522a7"
+   integrity sha512-knxG2q4UC3u8stRGyAVJCOdxFmv5DZiRcdlIaAQXAbSfJya+OhopNotLQrstBhququ4ZpuKbDc/8S6mgXgPFPw==
+
+-is-url@^1.2.2:
+-  version "1.2.4"
+-  resolved "https://registry.yarnpkg.com/is-url/-/is-url-1.2.4.tgz#04a4df46d28c4cff3d73d01ff06abeb318a1aa52"
+-  integrity sha512-ITvGim8FhRiYe4IQ5uHSkj7pVaPDrCTkNd3yq3cV7iZAcJdHTUMPMEHcqSOy9xZ9qFenQCvi+2wjH9a1nXqHww==
+-
+ is-utf8@^0.2.0, is-utf8@^0.2.1:
+   version "0.2.1"
+   resolved "https://registry.yarnpkg.com/is-utf8/-/is-utf8-0.2.1.tgz#4b0da1442104d1b336340e80797e865cf39f7d72"
+@@ -17020,15 +16983,6 @@ is-yarn-global@^0.3.0:
+   resolved "https://registry.yarnpkg.com/is-yarn-global/-/is-yarn-global-0.3.0.tgz#d502d3382590ea3004893746754c89139973e232"
+   integrity sha512-VjSeb/lHmkoyd8ryPVIKvOCn4D1koMqY+vqyjjUfc3xyKtP4dYOxM44sZrnqQSzSds3xyOrUTLTC9LVCVgLngw==
+
+-is2@2.0.1:
+-  version "2.0.1"
+-  resolved "https://registry.yarnpkg.com/is2/-/is2-2.0.1.tgz#8ac355644840921ce435d94f05d3a94634d3481a"
+-  integrity sha512-+WaJvnaA7aJySz2q/8sLjMb2Mw14KTplHmSwcSpZ/fWJPkUmqw3YTzSWbPJ7OAwRvdYTWF2Wg+yYJ1AdP5Z8CA==
+-  dependencies:
+-    deep-is "^0.1.3"
+-    ip-regex "^2.1.0"
+-    is-url "^1.2.2"
+-
+ isarray@0.0.1:
+   version "0.0.1"
+   resolved "https://registry.yarnpkg.com/isarray/-/isarray-0.0.1.tgz#8a18acfca9a8f4177e09abfc6038939b05d1eedf"
+@@ -27154,14 +27108,6 @@ tcomb@^3.0.0, tcomb@^3.2.17:
+   resolved "https://registry.yarnpkg.com/tcomb/-/tcomb-3.2.29.tgz#32404fe9456d90c2cf4798682d37439f1ccc386c"
+   integrity sha512-di2Hd1DB2Zfw6StGv861JoAF5h/uQVu/QJp2g8KVbtfKnoHdBQl5M32YWq6mnSYBQ1vFFrns5B1haWJL7rKaOQ==
+
+-tcp-port-used@^1.0.1:
+-  version "1.0.1"
+-  resolved "https://registry.yarnpkg.com/tcp-port-used/-/tcp-port-used-1.0.1.tgz#46061078e2d38c73979a2c2c12b5a674e6689d70"
+-  integrity sha512-rwi5xJeU6utXoEIiMvVBMc9eJ2/ofzB+7nLOdnZuFTmNCLqRiQh2sMG9MqCxHU/69VC/Fwp5dV9306Qd54ll1Q==
+-  dependencies:
+-    debug "4.1.0"
+-    is2 "2.0.1"
+-
+ telejson@^5.3.2:
+   version "5.3.3"
+   resolved "https://registry.yarnpkg.com/telejson/-/telejson-5.3.3.tgz#fa8ca84543e336576d8734123876a9f02bf41d2e"
+
