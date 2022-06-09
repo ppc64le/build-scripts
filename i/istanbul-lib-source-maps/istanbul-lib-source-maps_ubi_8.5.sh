@@ -4,6 +4,8 @@
 # Version       : 4.0.1
 # Source repo   : https://github.com/istanbuljs/istanbuljs
 # Tested on     : UBI: 8.5
+# Language      : GO
+# Travis-Check  : True
 # Script License: Apache License 2.0
 # Maintainer's  : Ambuj Kumar <Ambuj.Kumar3@ibm.com>
 #
