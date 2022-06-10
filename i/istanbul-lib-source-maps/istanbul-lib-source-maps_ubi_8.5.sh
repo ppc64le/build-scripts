@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package       : istanbul-lib-source-maps
@@ -17,9 +18,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
-
-set -e
 
 WORK_DIR=`pwd`
 
@@ -32,8 +30,8 @@ PACKAGE_URL=https://github.com/istanbuljs/istanbuljs
 yum install git wget unzip -y
 
 # install nodejs
-dnf module enable nodejs:12 -y
-dnf install nodejs -y
+dnf module install nodejs:12 -y
+#dnf install nodejs -y
 
 # clone package
 cd $WORK_DIR
