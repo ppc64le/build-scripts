@@ -44,7 +44,7 @@ fi
 git clone $PACKAGE_URL
 cd istanbuljs
 git checkout $PACKAGE_VERSION
-#cd /istanbuljs/packages/istanbul-lib-source-maps
+cd /istanbuljs/packages/istanbul-lib-source-maps
 
 # to install
 npm install yarn -g
