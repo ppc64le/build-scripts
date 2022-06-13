@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: emogrifier
-# Version	: v5.0.0
+# Version	: v5.0.0 ,v5.0.1
 # Source repo	: https://github.com/MyIntervals/emogrifier.git
 # Tested on	: UBI 8.5
 # Language      : PHP
@@ -41,8 +41,8 @@ fi
 
 cd "$HOME_DIR"/$PACKAGE_NAME || exit 1
 git checkout "$PACKAGE_VERSION"
-composer require --dev phpunit/phpunit --with-all-dependencies ^7
-if ! composer install; then
+composer require --no-interaction --dev phpunit/phpunit --with-all-dependencies ^7
+if ! composer install --no-interaction; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
