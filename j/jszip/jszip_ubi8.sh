@@ -8,7 +8,7 @@
 # Language      	: Node
 # Travis-Check  	: True
 # Script License        : Apache License, Version 2 or later
-# Maintainer            : Swati Singhal <swati.singhal@ibm.com>
+# Maintainer            : Swati Singhal <swati.singhal@ibm.com>, Vaishnavi Patil <Vaishnavi.Patil3@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -40,5 +40,4 @@ git clone https://github.com/Stuk/jszip
 cd jszip
 git checkout v$PACKAGE_VERSION
 npm install
-# uncomment the below line to run tests
-#npm test
+npm run test-node
