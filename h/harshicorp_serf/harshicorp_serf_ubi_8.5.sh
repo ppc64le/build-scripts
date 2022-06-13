@@ -22,7 +22,7 @@ PACKAGE_NAME="serf"
 PACKAGE_VERSION=${1:-v0.9.5}
 PACKAGE_URL="https://github.com/hashicorp/serf.git"
 
-#You need to start your container as
+#need to start your container as
 
 docker run -itd --name serf --privileged --network host registry.access.redhat.com/ubi8/ubi:8.5 /sbin/init
 
