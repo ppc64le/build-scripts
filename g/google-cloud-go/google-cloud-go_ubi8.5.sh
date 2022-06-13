@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : google-cloud
-# Version       : v0.54.0
+# Version       : v0.54.0, v0.93.3
 # Source repo   : https://github.com/googleapis/google-cloud-go
 # Tested on     : ubi 8.5
 # Language      : GO
@@ -74,4 +74,7 @@ else
     exit 0
 fi
 
-
+#Test is in parity with intel. 
+# smoke_test.go:270: google: could not find default credentials. See https://developers.google.com/accounts/docs/application-default-credentials for more information.
+ #--- FAIL: TestIntegration_HTTPR (0.00s) 
+   #integration_test.go:48: set GCLOUD_TESTS_GOLANG_PROJECT_ID and GCLOUD_TESTS_GOLANG_KEY
