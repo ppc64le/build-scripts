@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: php-webdriver
-# Version	: 1.4.7
+# Version	: 1.4.7,1.4.10
 # Source repo	: https://github.com/instaclick/php-webdriver
 # Tested on	: UBI 8.5
 # Language	: PHP
@@ -39,3 +39,7 @@ composer install --no-interaction
 mkdir -p build/logs
 
 ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml --group Unit
+
+# Test of version 1.4.10 is in parity with intel.
+#    1) Test\WebDriver\ExceptionTest::testFactory
+#    Failed asserting that false is true.

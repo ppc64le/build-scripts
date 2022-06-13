@@ -1,15 +1,14 @@
 #!/bin/bash -e
-
 # -----------------------------------------------------------------------------
 #
-# Package	: lz4
-# Version	: v2.5.2, v1.0.1, v2.4.0, v2.6.1
-# Source repo	: https://github.com/pierrec/lz4
-# Tested on	: ubi 8.3, 8.5
-# Language      : GO
-# Travis-Check      : True
+# Package       : symfony/debug
+# Version       : v4.4.31
+# Source repo   : https://github.com/symfony/debug.git
+# Tested on     : UBI 8.5
+# Language      : PHP
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com> / Siddhesh Ghadi <Siddhesh.Ghadi@ibm.com> / Vaishnavi Patil <Vaishnavi.Patil3@ibm.com>
+# Maintainer    : vathsala . <vaths367@in.ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,58 +18,39 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME="lz4"
-PACKAGE_URL="https://github.com/pierrec/lz4"
-PACKAGE_VERSION=${1:-"v2.5.2"}
-export GO_VERSION=${GO_VERSION:-"1.16"}
-export GOROOT=${GOROOT:-"/usr/local/go"}
-export GOPATH=${GOPATH:-$HOME/go}
-export GO111MODULE=off
-export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:/usr/local/bin
-export PACKAGE_SOURCE_ROOT=$(awk -F '/' '{print  "/src/" $3 "/" $4;}' <<<$PACKAGE_URL | xargs printf "%s" $GOPATH)
-OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
+PACKAGE_NAME="debug"
+PACKAGE_VERSION=${1:-v4.4.31}
+PACKAGE_URL="https://github.com/symfony/debug.git"
+yum install -y git php php-curl php-dom php-mbstring php-json php-gd php-pecl-zip zip
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/bin --filename=composer
+OS_NAME=`cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f2 | tr -d '"'`
+HOME_DIR=`pwd`
 
-# steps to clean up the PKG installation
-if [ "$1" = "clean" ]; then
-    rm -rf $GOROOT
-    rm -rf $GOPATH
-    exit 0
+#Check if package exists
+if [ -d "$PACKAGE_NAME" ] ; then
+  rm -rf $PACKAGE_NAME
+  echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"
 fi
 
-echo "installing dependencies from system repo"
-dnf install -y gcc gcc-c++ wget curl-devel git -y >/dev/null
-
-# installing golang
-wget https://golang.org/dl/go$GO_VERSION.linux-ppc64le.tar.gz
-tar -C /usr/local/ -xzf go$GO_VERSION.linux-ppc64le.tar.gz
-rm -f go$GO_VERSION.linux-ppc64le.tar.gz
-
-mkdir -p $PACKAGE_SOURCE_ROOT
-cd $PACKAGE_SOURCE_ROOT
-git clone https://github.com/pierrec/xxHash
-cd xxHash
-git checkout v0.1.5
-go install ./...
-
-cd $PACKAGE_SOURCE_ROOT
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
     echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
-    exit 1
+    exit 0
 fi
 
-cd $PACKAGE_SOURCE_ROOT/$PACKAGE_NAME
-git checkout $PACKAGE_VERSION
-
-if ! go install ; then
+cd "$HOME_DIR"/$PACKAGE_NAME || exit 1
+git checkout "$PACKAGE_VERSION"
+composer require --dev phpunit/phpunit --with-all-dependencies ^7
+if ! composer install; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-if ! go test -v -cpu=2 && go test -v -cpu=2 -race; then
+cd "$HOME_DIR"/$PACKAGE_NAME || exit 1
+if ! ./vendor/bin/phpunit; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
@@ -81,3 +61,4 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
+
