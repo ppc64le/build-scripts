@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: VarDumper
-# Version	: 5.3, v4.4.8, v4.4.18, v4.4.30
+# Version	: 5.3, v4.4.8, v4.4.18, v4.4.30,v5.3.8
 # Source repo	: https://github.com/symfony/var-dumper
 # Tested on	: UBI 8.5
 # Language      : PHP
