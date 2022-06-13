@@ -1,12 +1,14 @@
-#! /bin/bash
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package       : pear/archive_tar
-# Version       : 1.4.11, 1.4.12
+# Version       : 1.4.11, 1.4.12, 1.4.14
 # Source repo   : https://github.com/pear/Archive_Tar
-# Tested on     : RHEL 8.4
+# Tested on     : UBI 8.5
+# Language      : PHP
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
 # Maintainer    : Amit Baheti <aramswar@in.ibm.com>
-#
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
