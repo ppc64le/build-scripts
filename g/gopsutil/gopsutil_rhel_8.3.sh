@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: github.com/shirou/gopsutil/v3
@@ -21,8 +22,6 @@
 
 PACKAGE_NAME=github.com/shirou/gopsutil/v3
 PACKAGE_VERSION=${1:-v3.21.1}
-
-set -e
 
 # Used sudo assuming non-root user. 
 sudo yum install -y git golang
