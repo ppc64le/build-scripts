@@ -43,3 +43,6 @@ sed -i '1474d' /etc/php.ini && sed -i '1474izend.assertions = 1' /etc/php.ini
 sed -i '1482d' /etc/php.ini && sed -i '1482iassert.exception = 1' /etc/php.ini
 
 ./phpunit
+
+
+#Test cases are in parity with intel for version 9.5.10
