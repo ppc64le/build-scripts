@@ -1,13 +1,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: github.com/shirou/gopsutil/v3
-# Version	: v3.21.1
+# Version	: v3.21.1, v3.21.5
 # Source repo	: https://github.com/shirou/gopsutil
 # Tested on	: RHEL 8.3
 # Language      : GO
 # Travis-Check  : False
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>
+# Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>, Raju Sah <Raju.Sah@ibm.com>
 # Environment	: Needs to be run on a VM, tests fail inside docker container
 #				  due to container limitations
 #
@@ -26,6 +26,7 @@ set -e
 
 # Used sudo assuming non-root user. 
 sudo yum install -y git golang
+export PATH=$PATH:/usr/bin/go/bin/
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 GO111MODULE=on
@@ -37,7 +38,7 @@ if ! go get -d -t $PACKAGE_NAME@$PACKAGE_VERSION; then
 	exit 1
 fi
 
-cd ~/go/pkg/mod/$PACKAGE_NAME*
+cd ~/go/pkg/mod/$PACKAGE_NAME@$PACKAGE_VERSION
 if ! go test ./...; then
 	echo "------------------$PACKAGE_NAME:test_fails---------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME"
