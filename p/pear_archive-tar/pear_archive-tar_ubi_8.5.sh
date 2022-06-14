@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : pear/archive_tar
-# Version       : 1.4.11, 1.4.12, 1.4.14
+# Version       : 1.4.11, 1.4.12, 1.4.13, 1.4.14
 # Source repo   : https://github.com/pear/Archive_Tar
 # Tested on     : UBI 8.5
 # Language      : PHP
