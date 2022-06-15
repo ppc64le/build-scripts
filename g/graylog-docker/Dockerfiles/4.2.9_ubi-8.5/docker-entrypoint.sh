@@ -1,3 +1,5 @@
+This file is modified/resued from https://github.com/Graylog2/graylog-docker/blob/4.2/docker-entrypoint.sh
+
 #!/bin/bash
 
 
