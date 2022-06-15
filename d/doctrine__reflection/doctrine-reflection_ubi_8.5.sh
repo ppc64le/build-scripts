@@ -4,9 +4,11 @@
 # Package	: Doctrine-Reflection 
 # Version	: 1, 1.1.0
 # Source repo	: https://github.com/doctrine/reflection
-# Tested on	: RHEL
+# Tested on	: ubi 8.5
+# Language      : PHP
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Nailusha Potnuru <pnailush@in.ibm.com>
+# Maintainer	: Nailusha Potnuru <pnailush@in.ibm.com>,Vathsala . <vaths367@in.ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
