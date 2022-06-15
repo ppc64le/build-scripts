@@ -1,3 +1,5 @@
+#this file is resued from https://github.com/Graylog2/graylog-docker/blob/4.2/health_check.sh
+
 #!/bin/bash
 
 source /etc/profile
