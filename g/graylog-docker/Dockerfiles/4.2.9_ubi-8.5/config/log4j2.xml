@@ -1,3 +1,5 @@
+#This file is reused from source https://github.com/Graylog2/graylog-docker/blob/4.2/config/log4j2.xml
+
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration packages="org.graylog2.log4j" shutdownHook="disable">
     <Appenders>
