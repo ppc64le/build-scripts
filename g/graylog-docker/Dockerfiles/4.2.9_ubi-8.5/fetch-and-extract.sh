@@ -1,3 +1,5 @@
+#This file is reused from https://github.com/Graylog2/graylog-docker/blob/4.2/build/fetch-and-extract.sh
+
 #!/bin/bash -e
 
 mkdir -p /tmp/download
