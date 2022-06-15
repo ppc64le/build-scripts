@@ -1,0 +1,11 @@
+diff --git a/starlarktest/starlarktest.go b/starlarktest/starlarktest.go
+index afd1e90..fb5ac4c 100644
+--- a/starlarktest/starlarktest.go
++++ b/starlarktest/starlarktest.go
+@@ -114,7 +114,6 @@ func error_(thread *starlark.Thread, _ *starlark.Builtin, args starlark.Tuple, k
+        } else {
+                buf.WriteString(args[0].String())
+        }
+-       GetReporter(thread).Error(buf.String())
+        return starlark.None, nil
+ }
