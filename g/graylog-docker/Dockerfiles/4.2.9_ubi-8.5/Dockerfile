@@ -89,32 +89,15 @@ RUN \
   yum -y update  > /dev/null && \
   yum -y install \
      curl > /dev/null && \
-#    tini > /dev/null && \
-#    libcap2-bin 
-#    libglib2.0-0 \
-#    libx11-6 \
-#    libnss3 \
-#    wait-for-it \
-#    fonts-dejavu \
-#    fontconfig > /dev/null && \
   groupadd \
     --gid "${GRAYLOG_GID}" \
     "${GRAYLOG_GROUP}" && \
   adduser \
-#    --disabled-password \
-#    --disabled-login \
-#    --gecos '' \
     --home ${GRAYLOG_HOME} \
     --uid "${GRAYLOG_UID}" \
     --gid "${GRAYLOG_GID}" \
-#    --quiet \
     "${GRAYLOG_USER}" && \
-#  setcap 'cap_net_bind_service=+ep' "${JAVA_HOME}/bin/java" && \
-#  apt-get remove --assume-yes --purge \
-#    apt-utils > /dev/null && \
   rm -f /etc/apt/sources.list.d/* && \
-#  apt-get clean > /dev/null && \
-#  apt autoremove --assume-yes > /dev/null && \
   rm -rf \
     /tmp/* \
     /var/cache/debconf/* \
