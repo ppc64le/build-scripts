@@ -21,7 +21,7 @@ PACKAGE_NAME=reflection
 PACKAGE_VERSION=${1:-1.1.0}
 PACKAGE_URL=https://github.com/doctrine/reflection
 yum -y update && yum install -y git php php-json php-dom php-mbstring zip unzip
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/bin --filename=composer
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --1 --install-dir=/bin --filename=composer
 composer require --dev phpunit/phpunit --update-with-all-dependencies ^7
 OS_NAME=`cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f2 | tr -d '"'`
 HOME_DIR=`pwd`
