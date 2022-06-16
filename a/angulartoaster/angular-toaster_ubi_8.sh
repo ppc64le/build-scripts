@@ -1,5 +1,3 @@
-# ----------------------------------------------------------------------------
-#
 # Package       : angular-toaster
 # Version       : 1.2.0
 # Source repo   : https://github.com/jirikavi/AngularJS-Toaster 
