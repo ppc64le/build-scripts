@@ -1,3 +1,4 @@
+#!/bin/sh
 # Package       : angular-toaster
 # Version       : 1.2.0
 # Source repo   : https://github.com/jirikavi/AngularJS-Toaster 
@@ -14,7 +15,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-!/bin/bash
 
 PACKAGE_NAME=angular-toaster
 PACKAGE_VERSION=1.2.0
