@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: go-hclog
-# Version	: v0.9.2, v0.9.1, v0.12.2
+# Version	: v0.9.2, v0.9.1, v0.12.2, v0.16.2
 # Source repo	: https://github.com/hashicorp/go-hclog
 # Tested on	: UBI 8.4
 # Language      : GO
