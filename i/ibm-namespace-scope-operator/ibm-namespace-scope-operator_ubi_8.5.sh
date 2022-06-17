@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : IBM/ibm-namespace-scope-operator
+# Package       : ibm-namespace-scope-operator
 # Version       : v1.5.0, v1.0.1
 # Source repo   : https://github.com/IBM/ibm-namespace-scope-operator
 # Tested on     : ubi 8.5
@@ -27,13 +27,13 @@ PACKAGE_URL=https://github.com/IBM/ibm-namespace-scope-operator
 yum install -y make git wget gcc
 
 # Install unit test dependencies and run unit tests
-#rm -rf $CWD/kubebuilder-tools
-if [ -d "$CWD/kubebuilder-tools" ] ; then
-  rm -rf $CWD/kubebuilder-tools
+#rm -rf /kubebuilder-tools
+if [ -d "/kubebuilder-tools" ] ; then
+  rm -rf /kubebuilder-tools
 fi
 
-mkdir $CWD/kubebuilder-tools
-cd $CWD/kubebuilder-tools
+mkdir /kubebuilder-tools
+cd /kubebuilder-tools
 
 wget https://github.com/kubernetes-sigs/kubebuilder/releases/download/v2.3.1/kubebuilder_2.3.1_linux_ppc64le.tar.gz
 tar -xzf kubebuilder_2.3.1_linux_ppc64le.tar.gz
@@ -49,8 +49,7 @@ wget https://github.com/etcd-io/etcd/releases/download/v3.4.14/etcd-v3.4.14-linu
 tar -xzvf etcd-v3.4.14-linux-ppc64le.tar.gz --no-same-owner
 cp etcd-v3.4.14-linux-ppc64le/etcd .
 rm -rf etcd-v3.4.14-linux-ppc64le.tar.gz etcd-v3.4.14-linux-ppc64le
-
-export KUBEBUILDER_ASSETS=$CWD/kubebuilder-tools
+export KUBEBUILDER_ASSETS=/kubebuilder-tools
 
 # Download and install go
 wget https://golang.org/dl/go1.17.5.linux-ppc64le.tar.gz
@@ -67,18 +66,15 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 echo "Building $PACKAGE_PATH$PACKAGE_NAME with $PACKAGE_VERSION"
-
 if ! go build -v ./...; then
-        echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
-        exit 1
+  echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
+  exit 1
 fi
-
 echo "Testing $PACKAGE_PATH$PACKAGE_NAME with $PACKAGE_VERSION"
-
 if ! go test -v ./...; then
-        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-        exit 1
+  echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+  exit 1
 else
-        echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-        exit 0
+  echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+  exit 0
 fi
