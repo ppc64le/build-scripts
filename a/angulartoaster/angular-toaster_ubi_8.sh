@@ -22,6 +22,8 @@ PACKAGE_URL=https://github.com/jirikavi/AngularJS-Toaster
 
 yum -y update && yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git gcc gcc-c++ libffi libffi-devel ncurses git jq make cmake npm
 
+yum install npm -y
+
 npm install n -g && n latest && npm install -g npm@latest && export PATH="$PATH" && npm install --global yarn grunt-bump xo testem acorn
 
 mkdir -p /home/tester/output
@@ -29,4 +31,5 @@ cd /home/tester
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
+yum install -y npm
 npm install --save angularjs-toaster
