@@ -3,7 +3,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package               : influxdb
-# Version               : v1.7.7
+# Version               : v1.7.7,v1.8.4
 # Source repo           : https://github.com/influxdata/influxdb
 # Tested on             : RHEL 8.5,UBI 8.5
 # Language              : GO
