@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : Zabbix
-# Version       : 44f9bc4c9bcf32a85493bf5523ea36b4a741ccaa
+# Version       : 6e90007
 # Source repo   : https://github.com/zabbix/zabbix.git
 # Tested on     : UBI 8.5
 # Language      : PHP, C
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=zabbix
-PACKAGE_VERSION=${1:-44f9bc4c9bcf32a85493bf5523ea36b4a741ccaa}
+PACKAGE_VERSION=${1:-6e90007}
 PACKAGE_URL=https://github.com/zabbix/zabbix.git
 
 yum update -y
