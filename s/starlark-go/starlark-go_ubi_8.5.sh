@@ -22,7 +22,7 @@ PACKAGE_NAME=starlark-go
 PACKAGE_VERSION=${1:-d1966c6}
 PACKAGE_URL=https://github.com/google/starlark-go
 
-yum install -y git  make gcc diffutils wget 
+yum install -y git  make gcc  wget 
 
 wget https://golang.org/dl/go1.17.linux-ppc64le.tar.gz
 rm -rf /home/go && tar -C /home -xzf go1.17.linux-ppc64le.tar.gz
