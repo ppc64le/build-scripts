@@ -22,11 +22,7 @@ PACKAGE_NAME=starlark-go
 PACKAGE_VERSION=${1:-d1966c6}
 PACKAGE_URL=https://github.com/google/starlark-go
 
-SCRIPT=$(readlink -f $0)
-SCRIPT_DIR=$(dirname $SCRIPT)
-PATCH_FILE=$SCRIPT_DIR/starlark.patch
-
-yum install -y git  make gcc diffutils wget patch
+yum install -y git  make gcc diffutils wget 
 
 wget https://golang.org/dl/go1.17.linux-ppc64le.tar.gz
 rm -rf /home/go && tar -C /home -xzf go1.17.linux-ppc64le.tar.gz
@@ -46,7 +42,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # edit source code
-patch -u --ignore-whitespace starlarktest/starlarktest.go -i $PATCH_FILE
+sed -i '117d' starlarktest/starlarktest.go
 
 if ! go build -v ./...; then
         echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
