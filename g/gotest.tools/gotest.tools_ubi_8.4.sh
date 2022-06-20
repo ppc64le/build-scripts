@@ -29,8 +29,8 @@ if [ -d "gotest.tools" ] ; then
 fi
 
 # Dependency installation
-sudo yum module install -y go-toolset
-sudo dnf install -y git
+yum module install -y go-toolset
+yum install -y git
 
 # Download the repos
 git clone https://github.com/gotestyourself/gotest.tools
