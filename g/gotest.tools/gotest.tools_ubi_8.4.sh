@@ -1,11 +1,14 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package       : gotest.tools
 # Version       : v3.0.2, v3.0.3
 # Source repo   : https://github.com/gotestyourself/gotest.tools
 # Tested on     : UBI 8.4
+# Language      : GO
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Gururaj R Katti <Gururaj.Katti@ibm.com>
+# Maintainer    : Gururaj R Katti <Gururaj.Katti@ibm.com>, Vaishnavi Patil <Vaishnavi.Patil3@ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -14,7 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
 
 if [ -z "$1" ]; then
   export VERSION=master
