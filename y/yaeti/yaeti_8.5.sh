@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: yaeti
-# Version	: master
+# Version	: 0.0.6
 # Source repo	: https://github.com/ibc/yaeti.git
 # Tested on	: UBI 8.5
 # Language      : Node
@@ -19,7 +19,6 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=yaeti
-#PACKAGE_VERSION=${1:-master}
 PACKAGE_VERSION=${1:-0.0.6}
 PACKAGE_URL=https://github.com/ibc/yaeti.git
 
@@ -51,8 +50,8 @@ git checkout $PACKAGE_VERSION
 #echo 'Error: no test specified'
 
 #Error: no test specified
-#"gulp": "git+https://github.com/gulpjs/gulp.git#4.0",
-#sed -i '16d' /root/yaeti/package.json
+# delete this line from package.json under 
+#"devDependencies": {"gulp": "git+https://github.com/gulpjs/gulp.git#4.0",
 sed -i '16d' /yaeti/package.json
 
 if ! npm install && npm audit fix && npm audit fix --force; then
