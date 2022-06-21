@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: stripe-php
-# Version	: v7.67.0
+# Version	: v7.67.0,v7.100.0 ,v7.78.0
 # Source repo	: https://github.com/stripe/stripe-php
 # Tested on	: UBI 8.5
 # Language	: PHP
@@ -36,7 +36,7 @@ export PATH=$PATH:/bin/go/bin
 
 go install github.com/stripe/stripe-mock@$STRIPE_MOCK_VERSION
 
-./root/go/bin/stripe-mock &>/dev/null &
+/root/go/bin/stripe-mock &>/dev/null &
 
 # Build and test stripe-php
 
@@ -55,3 +55,8 @@ git checkout $PACKAGE_VERSION
 make fmtcheck
 
 make phpstan
+
+# To run script:- 
+# 1 arg is the version of stripe-php and 2nd arg is version of stripe-mock server. 
+#    ./stripe-php.sh v7.100.0 v0.123.0
+#    ./stripe-php.sh v7.78.0 v0.123.0
