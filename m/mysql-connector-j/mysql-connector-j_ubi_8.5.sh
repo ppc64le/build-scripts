@@ -26,15 +26,17 @@ PACKAGE_URL=https://github.com/mysql/mysql-connector-j.git
 
 yum install -y git wget java-1.8.0-openjdk-devel
 
-cd /root
+export WORKDIR=$PWD
+cd $WORKDIR
 wget https://dlcdn.apache.org//ant/binaries/apache-ant-1.10.12-bin.tar.gz
 tar -xzf apache-ant-1.10.12-bin.tar.gz
 
-export PATH=/root/apache-ant-1.10.12/bin/:$PATH
+export PATH=$WORKDIR/apache-ant-1.10.12/bin/:$PATH
 
-mkdir -p /root/libs
-cd /root/libs
+mkdir -p $WORKDIR/libs
+cd $WORKDIR/libs
 
+# We need to install these binaries individually as per the instructions at https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-installing-source.html
 wget https://search.maven.org/remotecontent?filepath=org/junit/jupiter/junit-jupiter-engine/5.8.2/junit-jupiter-engine-5.8.2.jar -O junit-jupiter-engine-5.8.2.jar
 wget https://search.maven.org/remotecontent?filepath=org/junit/platform/junit-platform-commons/1.8.2/junit-platform-commons-1.8.2.jar -O junit-platform-commons-1.8.2.jar
 wget https://search.maven.org/remotecontent?filepath=org/junit/platform/junit-platform-engine/1.8.2/junit-platform-engine-1.8.2.jar -O junit-platform-engine-1.8.2.jar
@@ -48,7 +50,7 @@ wget https://search.maven.org/remotecontent?filepath=org/slf4j/slf4j-api/1.7.35/
 wget https://search.maven.org/remotecontent?filepath=org/hamcrest/hamcrest/2.2/hamcrest-2.2.jar -O hamcrest-2.2.jar
 wget https://search.maven.org/remotecontent?filepath=com/oracle/oci/sdk/oci-java-sdk-common/2.14.1/oci-java-sdk-common-2.14.1.jar -O oci-java-sdk-common-2.14.1.jar
 
-cd /root
+cd $WORKDIR
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
@@ -69,7 +71,7 @@ fi
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if ! ant -Dcom.mysql.cj.build.jdk=`which javac | xargs readlink -f | xargs dirname | xargs dirname` -Dcom.mysql.cj.extra.libs=/root/libs dist; then
+if ! ant -Dcom.mysql.cj.build.jdk=`which javac | xargs readlink -f | xargs dirname | xargs dirname` -Dcom.mysql.cj.extra.libs=$WORKDIR/libs dist; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
@@ -93,7 +95,7 @@ fi
 #
 # 2. Uncomment and replace the hostname of the MySql server in the connection URL in below instructions.
 
-# if ! ant -Dcom.mysql.cj.build.jdk=`which javac | xargs readlink -f | xargs dirname | xargs dirname` -Dcom.mysql.cj.extra.libs=/root/libs -Dcom.mysql.cj.testsuite.url=jdbc:mysql://root:my-secret-pw@<MySql Server host>:3306 -Dcom.mysql.cj.testsuite.mysqlx.url=mysqlx://root:my-secret-pw@<MySql Server host>:33060/test test
+# if ! ant -Dcom.mysql.cj.build.jdk=`which javac | xargs readlink -f | xargs dirname | xargs dirname` -Dcom.mysql.cj.extra.libs=$WORKDIR/libs -Dcom.mysql.cj.testsuite.url=jdbc:mysql://root:my-secret-pw@<MySql Server host>:3306 -Dcom.mysql.cj.testsuite.mysqlx.url=mysqlx://root:my-secret-pw@<MySql Server host>:33060/test test
 # ; then
 	# echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
 	# echo "$PACKAGE_URL $PACKAGE_NAME" 
@@ -105,4 +107,3 @@ fi
 	# echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
 	# exit 0
 # fi
-
