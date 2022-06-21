@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: godog
-# Version	: v2.0.1
+# Version	: v0.12.0
 # Source repo	: https://github.com/cucumber/godog
 # Tested on	: ubi 8.5
 # Language      : go
@@ -18,9 +18,9 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=github.com/cucumber/godog/cmd/godog@v0.12.0
+PACKAGE_NAME=godog
 PACKAGE_VERSION=v0.12.0
-PACKAGE_URL=${PACKAGE_URL}
+PACKAGE_URL=https://github.com/cucumber/godog.git
 
 yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git jq wget gcc-c++
 
@@ -32,19 +32,14 @@ wget https://golang.org/dl/go1.16.1.linux-ppc64le.tar.gz && \
 export PATH=$PATH:/bin/go/bin
 export GOPATH=/home/tester/go
 
-mkdir -p /home/tester/output
-cd /home/tester
-
-OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
-
 export PATH=$GOPATH/bin:$PATH
 export GO111MODULE=on
 
-go install $PACKAGE_NAME
+git clone $PACKAGE_URL
 
-GO111MODULE=on github.com/cucumber/godog/cmd/godog@v0.12.0
+cd godog
 
-cd /home/tester/go/pkg/mod/github.com/cucumber/godog@v0.12.0
+git checkout $PACKAGE_VERSION
 
 if ! go test ./...; then
 		        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
