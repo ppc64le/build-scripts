@@ -76,8 +76,6 @@ function test_with_master(){
 		exit 0
 	else
 		echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-		echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/test_success 
-		echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success" > /home/tester/output/version_tracker
 		exit 0
 	fi
 }
