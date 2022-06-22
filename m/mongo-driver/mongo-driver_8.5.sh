@@ -5,7 +5,7 @@
 # Version       : v1.7.3
 # Source repo   : https://github.com/mongodb/mongo-go-driver.git
 # Tested on     : UBI 8.5
-# Travis-Check  : True
+# Travis-Check  : false
 # Language      : Go
 # Script License: Apache License, Version 2 or later
 # Maintainer    : saraswati patra <saraswati.patra@ibm.com>
