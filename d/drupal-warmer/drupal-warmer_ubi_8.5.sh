@@ -2,7 +2,7 @@
 
 # ----------------------------------------------------------------------------
 # Package          : drupal-warmer 
-# Version          : 2.0.3
+# Version          : 2.0.2, 2.0.3
 # Source repo      : https://git.drupalcode.org/project/warmer
 # Tested on        : UBI 8.5
 # Language         : PHP
@@ -24,7 +24,7 @@ CORE_PACKAGE_NAME=drupal
 PACKAGE_URL=https://git.drupalcode.org/project/warmer
 CORE_PACKAGE_URL=https://github.com/drupal/drupal
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-2.0.3}
+PACKAGE_VERSION=${1:-2.0.2}
 
 
 yum module enable php:7.4 -y
