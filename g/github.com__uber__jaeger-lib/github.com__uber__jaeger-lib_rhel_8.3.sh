@@ -41,7 +41,7 @@ function test_with_master_without_flag_u(){
         	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
         	exit 0
 	else
-		cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_NAME@$PACKAGE_VERSION)
+		cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_URL@$PACKAGE_VERSION)
         echo "Testing $PACKAGE_PATH with master branch without flag -u"
 		go get jaeger-lib/metrics/go-kit
         go get jaeger-lib/metrics/go-kit/expvar
@@ -73,7 +73,7 @@ function test_with_master(){
 		exit 0
 	fi
 
-	cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_NAME@$PACKAGE_VERSION)
+	cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_URL@$PACKAGE_VERSION)
 	echo "Testing $PACKAGE_PATH with $PACKAGE_VERSION"
 	go get jaeger-lib/metrics/go-kit
     go get jaeger-lib/metrics/go-kit/expvar
@@ -103,7 +103,7 @@ function test_without_flag_u(){
 		exit 0
 	fi
 
-	cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_NAME@$PACKAGE_VERSION)
+	cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_URL@$PACKAGE_VERSION)
 	echo "Testing $PACKAGE_PATH with $PACKAGE_VERSION"
 	go get jaeger-lib/metrics/go-kit
     go get jaeger-lib/metrics/go-kit/expvar
