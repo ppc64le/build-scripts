@@ -1,4 +1,4 @@
-
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: github.com/uber/jaeger-lib
@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=jaeger-lib
 PACKAGE_VERSION=${1:-v2.2.0+incompatible}
-PACKAGE_URL=https://github.com/uber/jaeger-lib
+PACKAGE_URL=github.com/uber/jaeger-lib
 
 yum install -y nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git jq wget gcc-c++
 
