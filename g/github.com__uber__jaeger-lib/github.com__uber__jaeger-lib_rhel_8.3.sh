@@ -43,14 +43,7 @@ function test_with_master_without_flag_u(){
 	else
 		cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_URL@$PACKAGE_VERSION)
         echo "Testing $PACKAGE_PATH with master branch without flag -u"
-		go get jaeger-lib/metrics/go-kit
-        go get jaeger-lib/metrics/go-kit/expvar
-        go get jaeger-lib/metrics/go-kit/influx
-        go get jaeger-lib/metrics/metricstest
-        go get jaeger-lib/metrics/metricstest
-        go get jaeger-lib/metrics/prometheus
-        go get jaeger-lib/metrics/tally
-		
+	
 		# Ensure go.mod file exists
 		go mod init $PACKAGE_NAME
 		go mod tidy
@@ -75,13 +68,6 @@ function test_with_master(){
 
 	cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_URL@$PACKAGE_VERSION)
 	echo "Testing $PACKAGE_PATH with $PACKAGE_VERSION"
-	go get jaeger-lib/metrics/go-kit
-    go get jaeger-lib/metrics/go-kit/expvar
-    go get jaeger-lib/metrics/go-kit/influx
-    go get jaeger-lib/metrics/metricstest
-    go get jaeger-lib/metrics/metricstest
-    go get jaeger-lib/metrics/prometheus
-    go get jaeger-lib/metrics/tally
 	# Ensure go.mod file exists
 	go mod init $PACKAGE_NAME
 	go mod tidy
@@ -105,13 +91,7 @@ function test_without_flag_u(){
 
 	cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_URL@$PACKAGE_VERSION)
 	echo "Testing $PACKAGE_PATH with $PACKAGE_VERSION"
-	go get jaeger-lib/metrics/go-kit
-    go get jaeger-lib/metrics/go-kit/expvar
-    go get jaeger-lib/metrics/go-kit/influx
-    go get jaeger-lib/metrics/metricstest
-    go get jaeger-lib/metrics/metricstest
-    go get jaeger-lib/metrics/prometheus
-    go get jaeger-lib/metrics/tally
+
 	# Ensure go.mod file exists
 	go mod init $PACKAGE_URL
 	go mod tidy
@@ -132,13 +112,7 @@ fi
 
 cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_NAME@$PACKAGE_VERSION)
 echo "Testing $PACKAGE_PATH with $PACKAGE_VERSION"
-go get jaeger-lib/metrics/go-kit
-go get jaeger-lib/metrics/go-kit/expvar
-go get jaeger-lib/metrics/go-kit/influx
-go get jaeger-lib/metrics/metricstest
-go get jaeger-lib/metrics/metricstest
-go get jaeger-lib/metrics/prometheus
-go get jaeger-lib/metrics/tally
+
 # Ensure go.mod file exists
 go mod init $PACKAGE_NAME
 go mod tidy
