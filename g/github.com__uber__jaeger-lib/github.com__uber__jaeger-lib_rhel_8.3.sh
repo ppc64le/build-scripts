@@ -2,9 +2,9 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: github.com/uber/jaeger-lib
-# Version	: v2.2.0+incompatible , v2.4.1+incompatible 
+# Version	: v2.2.0+incompatible, v2.4.1+incompatible 
 # Source repo	: https://github.com/uber/jaeger-lib
-# Tested on	: RHEL 8.3 , UBI 8.3
+# Tested on	: RHEL 8.3, UBI 8.3
 # Language      : GO
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
