@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 # Package          : drush
-# Version          : 10.x 
+# Version          : 10.x ,9.x
 # Source repo      : https://github.com/drush-ops/drush
 # Tested on        : UBI 8.5
 # Language         : PHP
@@ -57,3 +57,13 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
+
+# To run integration and functional test need to install mysql database. Unit test case does not intract with database.
+# Functional test case take around 18 mins to complete.
+# Integration test case take around 1.07 minutes to complete.
+
+  #vendor/bin/phpunit --colors=always --configuration tests --testsuite integration --debug
+  #vendor/bin/phpunit --colors=always --configuration tests --testsuite functional --debug
+
+# 1) sudo yum install mysql-server   
+# 2) systemctl start mysqld
