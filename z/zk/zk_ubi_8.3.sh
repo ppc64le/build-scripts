@@ -28,7 +28,6 @@ cd /opt && git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-go mod init $PACKAGE_NAME
 go mod tidy
 
 make setup ZK_VERSION=3.4.12
