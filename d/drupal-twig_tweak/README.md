@@ -103,3 +103,26 @@ Testing ../modules/twig_tweak/tests/
 Time: 1.42 minutes, Memory: 6.00 MB
 
 OK (11 tests, 236 assertions)
+
+
+Note :-
+------
+
+Following version needed to run twig_tweak 8.x-2.9
+
+1. drupal/core 8.9.11
+2. twig_tweak  2.9.0
+3. composer require --dev phpunit/phpunit --with-all-dependencies ^7
+
+ 
+bash-4.4# pwd
+/opt/app-root/src/drupal/core
+
+bash-4.4# cp phpunit.xml.dist phpunit.xml
+
+bash-4.4# vim phpunit.xml
+Edit it like
+
+    <env name="SIMPLETEST_BASE_URL" value="http://0.0.0.0:8081"/>
+   
+    <env name="SIMPLETEST_DB" value="pgsql://postgres:postgres@localhost/dru2_pg"/>
