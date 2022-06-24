@@ -27,14 +27,14 @@ yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm python3
 # Install Go and setup working directory
 wget https://golang.org/dl/go1.16.1.linux-ppc64le.tar.gz && \
     tar -C /bin -xf go1.16.1.linux-ppc64le.tar.gz && \
-    mkdir -p /home/tester/go/src /home/tester/go/bin /home/tester/go/pkg /home/tester/output
+    mkdir -p /home/tester/go/src /home/tester/go/bin /home/tester/go/pkg /home/tester/output /home/tester/go/src/github.com/cucumber/
 
 export PATH=$PATH:/bin/go/bin
 export GOPATH=/home/tester/go
 
 export PATH=$GOPATH/bin:$PATH
 export GO111MODULE=on
-
+cd /home/tester/go/src/github.com/cucumber/
 git clone $PACKAGE_URL
 
 cd godog
