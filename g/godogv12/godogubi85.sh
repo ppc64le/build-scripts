@@ -27,7 +27,7 @@ yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm python3
 # Install Go and setup working directory
 wget https://golang.org/dl/go1.16.1.linux-ppc64le.tar.gz && \
     tar -C /bin -xf go1.16.1.linux-ppc64le.tar.gz && \
-    mkdir -p /home/tester/go/src /home/tester/go/bin /home/tester/go/pkg
+    mkdir -p /home/tester/go/src /home/tester/go/bin /home/tester/go/pkg /home/tester/output
 
 export PATH=$PATH:/bin/go/bin
 export GOPATH=/home/tester/go
