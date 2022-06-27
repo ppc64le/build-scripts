@@ -39,7 +39,7 @@ fi
 cd "$HOME_DIR"/$PACKAGE_NAME || exit
 git checkout "$PACKAGE_VERSION"
 
-composer require symfony/phpunit-bridge
+composer require --dev symfony/phpunit-bridge
 composer require --dev phpunit/phpunit --with-all-dependencies ^9
 
 if ! composer install; then
