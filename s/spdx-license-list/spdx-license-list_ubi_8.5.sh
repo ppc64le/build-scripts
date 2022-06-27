@@ -1,13 +1,15 @@
 #!/bin/bash -e
-# ----------------------------------------------------------------------------
-# Package          : drush
-# Version          : 10.x ,9.x
-# Source repo      : https://github.com/drush-ops/drush
+
+# -----------------------------------------------------------------------------
+#
+# Package          : spdx-license-list
+# Version          : v6.4.0
+# Source repo      : https://github.com/sindresorhus/spdx-license-list
 # Tested on        : UBI 8.5
-# Language         : PHP
+# Language         : Node
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Ambuj Kumar <Ambuj.Kumar3@ibm.com>
+# Maintainer       : Bhagat Singh <Bhagat.singh1@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -17,53 +19,64 @@
 #   
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=drush
-PACKAGE_URL=https://github.com/drush-ops/drush
+PACKAGE_NAME=spdx-license-list
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-10.x}
+PACKAGE_VERSION=${1:-v6.4.0}
+PACKAGE_URL=https://github.com/sindresorhus/spdx-license-list
 
+yum install -y yum-utils git jq 
 
-yum install -y git php php-json php-dom php-mbstring zip unzip gd gd-devel php-gd php-pdo php-mysqlnd
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/bin --filename=composer
-OS_NAME=`cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f2 | tr -d '"'`
+NODE_VERSION=v12.22.4
+#installing nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+source ~/.bashrc
+nvm install $NODE_VERSION
 
+OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
+
+#Check if package exists
 if [ -d "$PACKAGE_NAME" ] ; then
   rm -rf $PACKAGE_NAME
-  echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"
+  echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"  
+ 
 fi
-HOME_DIR=`pwd`
+ 
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
         echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
         exit 0
 fi
-cd $HOME_DIR/$PACKAGE_NAME
+
+cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-if ! composer install --no-interaction; then
-        echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+PACKAGE_VERSION=$(jq -r ".version" package.json)
+# run the test command from test.sh
+
+if ! npm install && npm audit fix && npm audit fix --force; then
+    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-if ! vendor/bin/phpunit --colors=always --configuration tests --testsuite unit --debug; then
+
+if ! npm test; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_URL $PACKAGE_NAME" 
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
     exit 1
 else
     echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-     echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
 
-# To run integration and functional test need to install mysql database. Unit test case does not intract with database.
-# Functional test case take around 18 mins to complete.
-# Integration test case take around 1.07 minutes to complete.
-
-  #vendor/bin/phpunit --colors=always --configuration tests --testsuite integration --debug
-  #vendor/bin/phpunit --colors=always --configuration tests --testsuite functional --debug
-
-# 1) sudo yum install mysql-server   
-# 2) systemctl start mysqld
+# Test is in parity with intel.
+  #3 errors
+  #full.js:2:26
+  #✖  2:26  Unexpected use of file extension "json" for "./spdx-full.json"    import/extensions
+  #index.js:2:26
+  #✖  2:26  Unexpected use of file extension "json" for "./spdx.json"         import/extensions
+  #simple.js:2:34
+  #✖  2:34  Unexpected use of file extension "json" for "./spdx-simple.json"  import/extensions
