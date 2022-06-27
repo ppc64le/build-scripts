@@ -4,18 +4,18 @@
 # Package          : drupal-warmer 
 # Version          : 2.0.2, 2.0.3
 # Source repo      : https://git.drupalcode.org/project/warmer
-# Tested on	: UBI: 8.5
-# Language      : PHP
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer	: Vishaka Desai <Vishaka.Desai@ibm.com>
+# Tested on        : UBI 8.5
+# Language         : PHP
+# Travis-Check     : True
+# Script License   : Apache License, Version 2 or later
+# Maintainer       : Bhagat Singh <Bhagat.singh1@ibm.com>, Vishaka Desai <Vishaka.FDesai@ibm.com>
 #
-# Disclaimer: This script has been tested in root mode on given
-# ==========  platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of the
-#             package and/or distribution. In such case, please
-#             contact "Maintainer" of this script.
-#
+# Disclaimer       : This script has been tested in root mode on given
+# ==========         platform using the mentioned version of the package.
+#                    It may not work as expected with newer versions of the
+#                    package and/or distribution. In such case, please
+#                    contact "Maintainer" of this script.
+#   
 # ----------------------------------------------------------------------------
 
 # Variables
@@ -24,7 +24,7 @@ CORE_PACKAGE_NAME=drupal
 PACKAGE_URL=https://git.drupalcode.org/project/warmer
 CORE_PACKAGE_URL=https://github.com/drupal/drupal
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-2.0.2}
+PACKAGE_VERSION=${1:-2.0.3}
 
 
 yum module enable php:7.4 -y
