@@ -27,7 +27,7 @@ CORE_PACKAGE_URL=https://github.com/drupal/drupal
 PACKAGE_VERSION=${1:-8.x-3.0-beta1}
 
 
-yum install -y git php phpgd
+yum install -y git php php-dom php-mbstring zip unzip gd gd-devel php-gd php-pdo php-mysqlnd
 
 OS_NAME=`cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f2 | tr -d '"'`
 
@@ -70,7 +70,7 @@ fi
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-cd ../
+cd ../..
   ./vendor/bin/drush en ctools
  ./vendor/bin/drush en password_policy
  
