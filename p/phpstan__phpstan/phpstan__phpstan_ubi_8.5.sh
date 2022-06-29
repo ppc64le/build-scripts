@@ -52,9 +52,13 @@ else
 	exit 0
 fi
 
-# no test cases available
+# test failure with 1 error, at parity with Intel x86 system
 
-# if ! vendor/bin/phpunit; then
+# cd e2e
+# composer require phpstan/phpstan-strict-rules --dev --with-all-dependencies
+# composer install --ignore-platform-reqs
+
+# if ! vendor/bin/phpunit PharTest.php; then
 # 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 # 	echo "$PACKAGE_URL $PACKAGE_NAME"
 # 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
