@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package       : hibernate-ogm-ehcache
@@ -16,8 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
-#!/bin/bash
 
 export REPO=https://github.com/hibernate/hibernate-ogm-ehcache.git
 
