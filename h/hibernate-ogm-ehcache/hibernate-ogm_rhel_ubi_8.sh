@@ -4,6 +4,8 @@
 # Version       : 5.2.0.Alpha1
 # Source repo   : https://github.com/hibernate/hibernate-ogm-ehcache.git
 # Tested on     : RHEL8
+# Language      : java
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Ankit Paraskar <ankit.paraskar@ibm.com>
 #
