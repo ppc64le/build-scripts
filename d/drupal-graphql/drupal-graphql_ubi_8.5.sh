@@ -63,7 +63,6 @@ composer config allow-plugins true
 composer update --ignore-platform-req=ext-gd
 cd core/
 
-# functional and kernel test will not run without drupal specific database set up
 # running unit test cases, no additional set up required
 if ! ../vendor/bin/phpunit modules/$PACKAGE_NAME/tests/src/Unit; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
@@ -76,3 +75,7 @@ else
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
 	exit 0
 fi
+
+# kernel test require drupal specific database set up
+# refer to README for further details
+# kernel test failure observed, at parity with intel x86 system
