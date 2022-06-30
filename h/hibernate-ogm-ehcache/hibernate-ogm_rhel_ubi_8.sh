@@ -20,23 +20,23 @@
 
 export REPO=https://github.com/hibernate/hibernate-ogm-ehcache.git
 
-sudo yum install rubygem-bundler
-sudo yum install -y java java-devel
+yum install rubygem-bundler -y
+yum install -y java java-devel
 
-sudo yum update -y
-sudo yum install -y git wget
+yum update -y
+yum install -y git wget
 
 # install java
-sudo yum install -y java-1.8.0-openjdk-devel
+yum install -y java-1.8.0-openjdk-devel
 
 # install maven
 MAVEN_VERSION=3.6.3
-sudo wget http://mirrors.estointernet.in/apache/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
-sudo ls /usr/local
-sudo tar -C /usr/local/ -xzf apache-maven-$MAVEN_VERSION-bin.tar.gz
-sudo mv /usr/local/apache-maven-$MAVEN_VERSION /usr/local/maven
-sudo ls /usr/local
-sudo rm apache-maven-$MAVEN_VERSION-bin.tar.gz
+wget http://mirrors.estointernet.in/apache/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
+ls /usr/local
+tar -C /usr/local/ -xzf apache-maven-$MAVEN_VERSION-bin.tar.gz
+mv /usr/local/apache-maven-$MAVEN_VERSION /usr/local/maven
+ls /usr/local
+rm apache-maven-$MAVEN_VERSION-bin.tar.gz
 export M2_HOME=/usr/local/maven
 # update the path env. variable
 export PATH=$PATH:$M2_HOME/bin
