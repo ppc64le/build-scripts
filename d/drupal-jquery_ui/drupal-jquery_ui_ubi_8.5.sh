@@ -71,7 +71,7 @@ cd ../../
 cd core/
  
 #Unit test case.
-if ! ../vendor/phpunit/phpunit/phpunit ../modules/blazy/tests/src/Unit; then
+if ! ../vendor/phpunit/phpunit/phpunit ../modules/jquery_ui/tests/src/Unit; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
