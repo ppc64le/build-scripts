@@ -15,7 +15,7 @@
 #
 # ----------------------------------------------------------------------------
 set -ex
-trap cleanup EXIT
+trap cleanup ERR
 function cleanup {
   echo "ERROR: Script failed"
 }
