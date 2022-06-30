@@ -18,6 +18,8 @@
 #
 # ----------------------------------------------------------------------------
 
+#please use php version 5 to 6 for vendor testing
+
 # Variables
 
 PACKAGE_NAME=Php-jwt
@@ -59,7 +61,7 @@ if ! composer install; then
 fi
 
 cd "$HOME_DIR"/$PACKAGE_NAME || exit
-if ! ./vendor/bin/phpunit; then
+if  ./vendor/bin/phpunit; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
