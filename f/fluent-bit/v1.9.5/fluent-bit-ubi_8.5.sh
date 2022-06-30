@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: fluent-bit
@@ -16,7 +17,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-set -ex
+
 trap cleanup ERR
 function cleanup {
   echo "ERROR: Script failed"
