@@ -43,6 +43,7 @@ export PATH=$PATH:$M2_HOME/bin
 
 
 git clone ${REPO}
+cd hibernate-ogm-ehcache
 git checkout ${VERSION}
 ret=$?
 if [ $ret -eq 0 ] ; then
@@ -52,7 +53,7 @@ else
   exit
 fi
 
-cd hibernate-ogm-ehcache
+
 
 mvn -B -q -s settings-example.xml -Ptest -DskipTests=true -Dmaven.javadoc.skip=true -DskipDistro=true clean install
 ret=$?
