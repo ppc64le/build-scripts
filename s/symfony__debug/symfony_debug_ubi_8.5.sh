@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : symfony/debug
-# Version       : v4.4.31
+# Version       : v4.4.31, v4.4.22, 4.4 , v3.4.41
 # Source repo   : https://github.com/symfony/debug.git
 # Tested on     : UBI 8.5
 # Language      : PHP
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : vathsala . <vaths367@in.ibm.com>
+# Maintainer    : vathsala . <vaths367@in.ibm.com>, Amit Mukati <amit.mukati3@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
