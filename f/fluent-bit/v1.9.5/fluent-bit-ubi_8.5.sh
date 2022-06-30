@@ -27,6 +27,7 @@ FLUENTBIT_VERSION=${1:-1.9.5}
 USE_CENTOS_REPOS=${2:-1}
 USE_MOONJIT=${3:-1}
 BUILD_HOME=$(pwd)
+SCRIPT_PATH=$(dirname $0)
 
 #Install dependencies
 if [ "$USE_CENTOS_REPOS" -eq 1 ]
@@ -45,7 +46,7 @@ cd fluent-bit/
 git checkout v$FLUENTBIT_VERSION
 
 #Apply libco, pack and luajit patch
-cp ../ppc64le.c lib/monkey/deps/flb_libco/
+cp $SCRIPT_PATH/ppc64le.c lib/monkey/deps/flb_libco/
 sed -i 's#ppc.c#ppc64le.c#g' lib/monkey/deps/flb_libco/libco.c
 sed -i 's#luajit-2.1.0-1e66d0f#luajit2#g' cmake/libraries.cmake
 sed -i.bak '706,741d' src/flb_utils.c
