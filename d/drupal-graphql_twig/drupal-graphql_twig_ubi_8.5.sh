@@ -39,7 +39,7 @@ fi
 
 cd $CORE_PACKAGE_NAME
 git checkout 8.9.0
-cd $CORE_PACKAGE_NAME/modules
+cd modules
 
 #Check if package exists
 if [ -d "$PACKAGE_NAME" ] ; then
