@@ -4,6 +4,8 @@
 # Version	: v1.9.5
 # Source repo	: https://github.com/fluent/fluent-bit
 # Tested on	: RHEL 8.5
+# Language      : C++
+# Travis-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sumit Dubey <sumit.dubey2@ibm.com>
 #
