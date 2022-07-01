@@ -3,11 +3,12 @@
 #
 # Package		: clipboardjs
 # Version		: 2.0.1
-# Source repo	: https://git.drupalcode.org/project/clipboardjs.git
+# Source repo		: https://git.drupalcode.org/project/clipboardjs.git
 # Tested on		: RHEL 8.5 
-#Language       : PHP
-# Script License: Apache License, Version 2 or later
-# Maintainer	: Saraswati Patra <saraswati.patra@ibm.com>
+#Language       	: PHP
+#Travis-Check  		: True
+# Script License	: Apache License, Version 2 or later
+# Maintainer		: Saraswati Patra <saraswati.patra@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
