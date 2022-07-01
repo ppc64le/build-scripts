@@ -28,7 +28,7 @@ RUN set -eux; \
 RUN yum install -y wget dirmngr ca-certificates gnupg
 RUN wget https://github.com/tianon/gosu/releases/download/1.14/gosu-ppc64el && mv gosu-ppc64el /usr/bin/gosu && chmod +x /usr/bin/gosu
 
-ENV ZOOKEEPER_VERSION 3.7.0
+ARG ZOOKEEPER_VERSION 3.7.0
 
 #Download Java
 RUN yum install -y java-11-openjdk && export JAVA_HOME=$(echo "1" | alternatives --config java | grep java-11-openjdk | cut -d "(" -f 2 | sed -e "s/bin\/java)$//")
@@ -73,6 +73,6 @@ ENV PATH=$PATH:/$DISTRO_NAME/bin \
     ZOOCFGDIR=$ZOO_CONF_DIR
 
 COPY docker-entrypoint.sh /
+RUN chmod +x /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["zkServer.sh", "start-foreground"]
-

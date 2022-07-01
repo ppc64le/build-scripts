@@ -1,11 +1,14 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package               : jszip
-# Version               : 3.3.0
+# Version               : v3.3.0 , v3.7.0, v3.7.1
 # Source repo           : https://github.com/Stuk/jszip
 # Tested on             : UBI 8
+# Language      	: Node
+# Travis-Check  	: True
 # Script License        : Apache License, Version 2 or later
-# Maintainer            : Swati Singhal <swati.singhal@ibm.com>
+# Maintainer            : Swati Singhal <swati.singhal@ibm.com>, Vaishnavi Patil <Vaishnavi.Patil3@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -15,7 +18,6 @@
 #
 # ----------------------------------------------------------------------------
 
-#!/bin/bash
 PACKAGE_VERSION=3.3.0
 
 echo "Usage: $0 [-v <PACKAGE_VERSION>]"
@@ -38,4 +40,4 @@ git clone https://github.com/Stuk/jszip
 cd jszip
 git checkout v$PACKAGE_VERSION
 npm install
-npm test
+npm run test-node

@@ -3,13 +3,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : node-http-proxy-agent
-# Version       : 5.0.0
+# Version       : 5.0.0,4.0.1
 # Source repo   : https://github.com/TooTallNate/node-http-proxy-agent.git
 # Tested on     : UBI 8.5
 # Language      : Node
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Vikas Kumar <kumar.vikas@in.ibm.com>
+# Maintainer    : Vikas Kumar <kumar.vikas@in.ibm.com> , Bhagat Singh <Bhagat.singh1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.

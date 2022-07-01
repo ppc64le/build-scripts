@@ -1,0 +1,31 @@
+{
+    "package_name" : "zookeeper",
+    "github_url":"https://github.com/apache/zookeeper.git",
+    "package_dir": "z/zookeeper/Dockerfiles/",
+    "docker_cmd" : "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "build_script": "zookeeper_ubi_8.5.sh",
+
+    "release-3.4.14" : {
+        "dir":"3.4.14_ubi7"
+    },
+    
+    "release-3.6.2" : {
+        "dir":"3.6.2_ubi7"
+    },
+
+    "release-3.6.3" : {
+        "dir":"3.6.3_ubi8"
+    },
+
+    "release-3.7.0" : {
+        "dir":"3.7.0_ubi8"
+    },
+
+    "release-*.*.*" : {
+        "dir":"template",
+        "gitcommit" : "26d526845db22ff2dd8d2449276a3f265eea1f67",
+        "args" : {
+            "ZOOKEEPER_VERSION": "$(echo $PACKAGE_VERSION | sed 's/release-//')"
+        }
+    }
+}
