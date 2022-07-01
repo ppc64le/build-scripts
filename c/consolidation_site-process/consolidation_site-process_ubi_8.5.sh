@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/consolidation/site-process.git
 # Tested on     : UBI 8.5
 # Language      : PHP
-# Travis-Check  : True
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : vathsala . <vaths367@in.ibm.com>
 #
@@ -51,3 +51,10 @@ else
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
         exit 0
 fi
+
+
+#.......................S..............S................           55 / 55 (100%)
+#Time: 248 ms, Memory: 4.00 MB
+#OK, but incomplete, skipped, or risky tests!
+#Tests: 55, Assertions: 59, Skipped: 2.
+#Build and test success
