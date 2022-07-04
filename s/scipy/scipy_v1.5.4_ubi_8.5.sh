@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : scipy
-# Version       : v1.5.4
+# Version       : v1.5.4, v1.6.1
 # Source repo   : https://github.com/scipy/scipy
 # Tested on     : UBI 8.5
 # Language      : Python
@@ -49,8 +49,16 @@ git checkout $PACKAGE_VERSION
 patch -u scipy/stats/stats.py -i $STATS_PATCH
 patch -u scipy/stats/tests/test_stats.py -i $TEST_STATS_PATCH
 patch -u scipy/sparse/csgraph/tests/test_shortest_path.py -i $TEST_SHORTEST_PATH_PATCH
-patch -u scipy/signal/tests/test_signaltools.py -i $TEST_SIGNALTOOLS_PATCH
 sed -i '2513s/skip/skipif/' scipy/linalg/tests/test_decomp.py
+sed -i '2526s/skip/skipif/' scipy/linalg/tests/test_decomp.py
+
+if [ $PACKAGE_VERSION == v1.6.1 ] ; then
+        patch -u scipy/ndimage/_ni_support.py -i $TEST_NI_SUPPORT_PATCH
+elif [ $PACKAGE_VERSION == v1.5.4 ] ; then
+        patch -u scipy/signal/tests/test_signaltools.py -i $TEST_SIGNALTOOLS_PATCH
+else
+        echo "add your version to check any condition."
+fi
 
 if ! python3.9 runtests.py --build-only; then
         echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
