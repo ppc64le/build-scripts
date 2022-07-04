@@ -37,7 +37,7 @@ if ! git clone $CORE_PACKAGE_URL $CORE_PACKAGE_NAME; then
         echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
                 echo "$CORE_PACKAGE_URL $CORE_PACKAGE_NAME"
         echo "$CORE_PACKAGE_NAME  |  $CORE_PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
-        exit 0
+        exit 1
 fi
 
 cd $CORE_PACKAGE_NAME
@@ -63,7 +63,7 @@ if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
         echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
                 echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
-        exit 0
+        exit 1
 fi
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
