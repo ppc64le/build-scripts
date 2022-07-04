@@ -51,3 +51,5 @@ if ! ../vendor/bin/phpunit modules/ctools/tests/src/Unit ; then
 else
         echo "$PACKAGE_NAME  |  $PACKAGE_VERSION------------------Test_success-------------------------"
 fi
+
+#For testing functional and kernel test cases follow the step given in the readme file
