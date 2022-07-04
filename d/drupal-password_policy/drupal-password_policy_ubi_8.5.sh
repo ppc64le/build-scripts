@@ -8,7 +8,7 @@
 # Language         : PHP
 # Travis-Check     : False
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Bhagat Singh <Bhagat.singh1@ibm.com>
+# Maintainer       : Raju Sah <Raju.Sah@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
