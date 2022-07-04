@@ -1,10 +1,10 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package		: clipboardjs
-# Version		: 2.0.1
+# Package	: clipboardjs
+# Version	: 2.0.1
 # Source repo	: https://git.drupalcode.org/project/clipboardjs.git
-# Tested on		: RHEL 8.5 
+# Tested on	: RHEL 8.5 
 #Travis-Check   : True
 #Language       : PHP
 # Script License: Apache License, Version 2 or later
