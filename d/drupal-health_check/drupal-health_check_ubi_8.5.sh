@@ -58,8 +58,9 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 cd ../../
+composer config allow-plugins true --no-interaction
 
-if ! composer update --no-interaction ; then
+if ! composer update --no-interaction --ignore-platform-req=ext-gd; then
     	echo "------------------$PACKAGE_NAME:install_fails---------------------------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
