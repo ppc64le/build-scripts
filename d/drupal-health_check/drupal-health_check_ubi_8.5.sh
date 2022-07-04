@@ -68,7 +68,7 @@ if ! composer update --no-interaction --ignore-platform-req=ext-gd; then
 else 
         echo "------------------$PACKAGE_NAME:install_success---------------------------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Success"
     	exit 0
 fi
 
