@@ -2,13 +2,13 @@
 
 # ----------------------------------------------------------------------------
 # Package          : drupal-warmer 
-# Version          : 2.0.3
+# Version          : 2.0.2, 2.0.3
 # Source repo      : https://git.drupalcode.org/project/warmer
 # Tested on        : UBI 8.5
 # Language         : PHP
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Bhagat Singh <Bhagat.singh1@ibm.com>
+# Maintainer       : Bhagat Singh <Bhagat.singh1@ibm.com>, Vishaka Desai <Vishaka.Desai@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
