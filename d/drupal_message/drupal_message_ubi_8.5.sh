@@ -94,3 +94,5 @@ else
         exit 0
 fi
 
+# drupal-message has 3 types of test Unit/Functional/Kernel.Unit test dont need drupal framework and DB etc. So can be executed by given script.
+# Please follow README file for more information to run Functional test cases.
