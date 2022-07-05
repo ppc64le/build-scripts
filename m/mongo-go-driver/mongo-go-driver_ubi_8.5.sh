@@ -44,6 +44,9 @@ if ! go build -v ./...; then
     echo "------------------$PACKAGE_NAME: build failed-------------------------"
     exit 1
 fi
+
+TOPOLOGY=server
+
 if ! go test -v ./...; then
     echo "------------------$PACKAGE_NAME: test failed-------------------------"
     exit 1
