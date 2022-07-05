@@ -32,6 +32,10 @@ if ! git clone $PACKAGE_URL; then
 fi
 cd $PACKAGE_NAME
 
+if ! go mod tidy; then
+    echo "------------------$PACKAGE_NAME: mod tidy failed-------------------------"
+    exit 1
+fi
 if ! go mod vendor; then
     echo "------------------$PACKAGE_NAME: mod vendor failed-------------------------"
     exit 1
