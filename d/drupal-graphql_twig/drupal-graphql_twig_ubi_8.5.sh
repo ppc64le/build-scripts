@@ -5,7 +5,7 @@
 # Version	: 8.x-1.0-alpha5
 # Source repo	: https://git.drupalcode.org/project/graphql_twig
 # Tested on	: UBI: 8.5
-# Language		: PHP
+# Language	: PHP
 # Travis-Check	: True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Vishaka Desai <Vishaka.Desai@ibm.com>
