@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/mongodb/mongo-go-driver
 # Tested on     : UBI: 8.5
 # Language      : Go
-# Travis-Check  : True
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Shreya Kajbaje <Shreya.Kajbaje@ibm.com>
 #
@@ -44,8 +44,6 @@ if ! go build -v ./...; then
     echo "------------------$PACKAGE_NAME: build failed-------------------------"
     exit 1
 fi
-
-TOPOLOGY=server
 
 if ! go test -v ./...; then
     echo "------------------$PACKAGE_NAME: test failed-------------------------"
