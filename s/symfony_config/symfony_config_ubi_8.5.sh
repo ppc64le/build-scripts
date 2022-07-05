@@ -2,13 +2,13 @@
 
 # ----------------------------------------------------------------------------
 # Package          : symfony_config
-# Version          : v4.4.30
+# Version          : v4.4.23, v4.4.30
 # Source repo      : https://github.com/symfony/config
 # Tested on        : UBI 8.5
 # Language         : PHP
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Bhagat Singh <Bhagat.singh1@ibm.com>
+# Maintainer       : Bhagat Singh <Bhagat.singh1@ibm.com>, Vathsala .<Vaths367@in.ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -66,6 +66,6 @@ fi
 #  Tests: 442, Assertions: 662, Failures: 1.
 #   Symfony\Component\Config\Tests\Util\XmlUtilsTest::testLoadFile
 #    Failed asserting that 'File "/root/config/Tests/Util/../Fixtures/Util/not_readable.xml" does not contain valid XML, it is empty.' contains "is not readable".
-
+#For version v4.4.23 Tests: 439, Assertions: 659, Failures: 1, Risky: 2.Fails with same error as v4.4.30 
 
  
