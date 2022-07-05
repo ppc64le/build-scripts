@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : phar-io/version
-# Version       : 1.0.1, 3.0.1, 3.1.0
+# Version       : 3.0.1, 3.1.0
 # Source repo   : https://github.com/phar-io/version
 # Tested on     : UBI 8.5
 # Language      : PHP
@@ -56,7 +56,7 @@ if [ $PACKAGE_VERSION == 3.1.0 ] ; then
         if [ ! -f "$HOME/.phive/phive.phar" ]; then ant getphive; mv phive.phar "$HOME/.phive/"; fi
         install --mode=0755 -T "$HOME/.phive/phive.phar" "$HOME/bin/phive"
 
-elif [ $PACKAGE_VERSION == 3.0.1 ] || [ $PACKAGE_VERSION == 1.0.1 ] ; then
+elif [ $PACKAGE_VERSION == 3.0.1 ] ; then
         wget "https://phar.io/releases/phive.phar"
         chmod +x phive.phar && ./phive.phar install
         mv phive.phar /usr/local/bin/phive
