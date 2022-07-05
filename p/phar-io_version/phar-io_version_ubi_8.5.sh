@@ -83,8 +83,3 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
-
-#Both build and test passing for v3.0.1 and 3.1.0, and v1.0.1 is quite older and test is failing with deprication error
-#PHP Fatal error:  Declaration of SebastianBergmann\Comparator\DOMNodeComparator::assertEquals($expected, $actual, $delta = 0, $canonicalize = false, $ignoreCase = false) must be 
-#compatible with SebastianBergmann\Comparator\ObjectComparator::assertEquals($expected, $actual, $delta = 0, $canonicalize = false, $ignoreCase = false, array &$processed = Array) 
-#in phar:///root/.phive/phars/phpunit-5.7.5.phar/sebastian-comparator/DOMNodeComparator.php on line 110
