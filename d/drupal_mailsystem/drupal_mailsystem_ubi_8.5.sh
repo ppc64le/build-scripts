@@ -89,5 +89,5 @@ else
         exit 0
 fi
 
-# drupal-cshs has 2 types of test Unit/Functional.Unit test dont need drupal framework and DB etc. So can be executed by given script.
+# drupal-mailsystem has 2 types of test Unit/Functional.Unit test dont need drupal framework and DB etc. So can be executed by given script.
 # Please follow README file for more information to run Functional test cases.
