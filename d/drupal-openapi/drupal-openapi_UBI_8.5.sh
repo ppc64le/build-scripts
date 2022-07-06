@@ -50,6 +50,10 @@ fi
 cd $CORE_PACKAGE_NAME
 git checkout 8.9.0
 composer update --no-interaction
+composer config --no-plugins allow-plugins.composer/installers true
+composer config --no-plugins allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
+composer config --no-plugins allow-plugins.drupal/core-project-message true
+composer config --no-plugins allow-plugins.drupal/core-vendor-hardening true
 
 if ! composer install --no-interaction; then
   echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
