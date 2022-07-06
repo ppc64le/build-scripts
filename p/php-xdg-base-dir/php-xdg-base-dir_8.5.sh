@@ -2,11 +2,11 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: php-xdg-base-dir
-# Version	: 0.1
+# Version	: 0.1,v0.1.1
 # Source repo	: https://github.com/dnoegel/php-xdg-base-dir.git
 # Tested on	: UBI 8.5
 # Language	: PHP
-# Travis-Check	: True
+# Travis-Check	: False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Saraswati patra <saraswati patra@ibm.com>
 #
