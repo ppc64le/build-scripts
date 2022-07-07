@@ -77,7 +77,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 cd ../../
 cd core/
-if ! ../vendor/phpunit/phpunit/phpunit ../modules/masonry/tests; then
+if ! ../vendor/phpunit/phpunit/phpunit ../modules/masonry; then
         echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
