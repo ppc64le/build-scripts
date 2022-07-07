@@ -3,9 +3,9 @@ How to run drupal related modules test cases.
 
 Summary :-
 
-    To run test cases in drupal module we need drupal core package and drupal complete framework which incluse one database,apache server,and core package itself.
-    There are 3 type of tests in drupal unit,functional,intergration. For unit test we dont need drupal full framework like database.
-    Unit test does not use database testing.
+    To run test cases in drupal module, we need drupal core package and drupal complete framework which incluse a database,apache server and core package itself.
+    There are 3 type of tests in drupal unit, functional, intergration. For unit tests we don't need drupal full framework like database.
+    Unit tests does not use database.
 
 *************************
 
@@ -18,22 +18,22 @@ Copy following files into VM thats needed to run docker file succesfully.
 
 Rename 2 files:-
 
-    #cp Dockerfile.drupal.ubi Dockerfile
-    #cp automate_drupal.sh.txt automate_drupal.sh
-    #chmod +x automate_drupal.sh
+    # cp Dockerfile.drupal.ubi Dockerfile
+    # cp automate_drupal.sh.txt automate_drupal.sh
+    # chmod +x automate_drupal.sh
 
 
 Now create an image from dockerfile (Dockerfile.drupal.ubi i.e Dockerfile)
 
-     #docker build -t drupal_image .
-     #docker images
+     # docker build -t drupal_image .
+     # docker images
 
 
 Then run a container using that image.
 
-    #docker run -it -d drupal_image /bin/bash
-    #docker ps
-    #docker exec -it 69cabf536f6f /bin/bash
+    # docker run -it -d drupal_image /bin/bash
+    # docker ps
+    # docker exec -it 69cabf536f6f /bin/bash
 
 Live drupal webserver will be available at http://<ip>:8081
 
@@ -50,20 +50,20 @@ Step 2:-
 
 Go to :-
 
-    #cd /opt/app-root/src/drupal/modules
+    # cd /opt/app-root/src/drupal/modules
 
 Clone the module which you wanted to test :-
 
-    #git clone https://git.drupalcode.org/project/flag.git
-    #git checkout <versions>
+    # git clone https://git.drupalcode.org/project/flag.git
+    # git checkout <versions>
 
 Follow automate_drupal.sh for more detail:-
-    #cd /opt/app-root/src/drupal/modules/flag
+    # cd /opt/app-root/src/drupal/modules/flag
     bash-4.4# pwd
     /opt/app-root/src/drupal/modules/flag
-    #cd /opt/app-root/src/drupal
+    # cd /opt/app-root/src/drupal
 
-    bash-4.4#yum install -y git php php-gd
+    bash-4.4# yum install -y git php php-gd
 
 
         bash-4.4# pwd
