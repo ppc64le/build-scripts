@@ -5,7 +5,7 @@
 # Version       : 4340aa3071a0
 # Source repo   : https://github.com/gonum/gonum.git
 # Tested on     : UBI 8.5
-# Travis-Check  : True
+# Travis-Check  : False
 # Language      : Go
 # Script License: Apache License, Version 2 or later
 # Maintainer    : saraswati patra <saraswati.patra@ibm.com>
