@@ -31,9 +31,27 @@ RUN     echo "exit 0" > /rstudio-${RStudio_BUILD_VERSION}/dependencies/common/in
 	RSTUDIO_DISABLE_CRASHPAD=1 ./install-dependencies-focal && \
 	cd /rstudio-${RStudio_BUILD_VERSION}/build && \
 	cmake -j4 .. -DRSTUDIO_TARGET=Server -DCMAKE_BUILD_TYPE=Release
-RUN	make -j4 install
-#Facing below issue in make -j4 install command-
-#BUILD FAILED
-#/rstudio-2022.02.2-485/src/gwt/build.xml:150: Java returned: 1
+RUN     cd /rstudio-${RStudio_BUILD_VERSION}/dependencies/common && \
+        sed -i '36 a "Linux-ppc64le") NODE_FILE="node-v${NODE_VERSION}-linux-ppc64le" ;; ' install-node && \
+        ./install-npm-dependencies && \
+        export PATH=/usr/lib/jvm/java-11-openjdk-ppc64el/bin:$PATH && \
+        JAVA_HOME=/usr/lib/jvm/java-11-openjdk-ppc64el/ && \
+        cd /rstudio-${RStudio_BUILD_VERSION}/build && \
+        make -j4 install && \
+        useradd -r rstudio-server  && \
+        cp /usr/local/extras/init.d/debian/rstudio-server /etc/init.d/ && \
+        update-rc.d rstudio-server defaults && \
+        ln -f -s /usr/local/bin/rstudio-server /usr/sbin/rstudio-server && \
+        mkdir -p /var/run/rstudio-server && \
+        mkdir -p /var/lock/rstudio-server && \
+        mkdir -p /var/log/rstudio-server && \
+        mkdir -p /var/lib/rstudio-server && \
+        set -e && useradd -m -d /home/rstudio -G sudo rstudio && \
+        echo rstudio:rstudio | chpasswd && \
+        rstudio-server online && cd / && \
+        echo -e '#!/bin/bash\ncd /usr/sbin\nrstudio-server start' >> startup.sh && \
+        chmod +x startup.sh
 
-
+EXPOSE 8787
+VOLUME /home/rstudio
+CMD /startup.sh ; sleep infinity
