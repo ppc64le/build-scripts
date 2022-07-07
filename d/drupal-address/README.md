@@ -3,9 +3,9 @@ How to run drupal related modules test cases.
 
 Summary :-
 
-    To run test cases in drupal module we need drupal core package and drupal complete framework which incluse one database,apache server,and core package itself.
-    There are 3 type of tests in drupal unit,functional,intergration. For unit test we dont need drupal full framework like database.
-    Unit test does not use database testing.
+    To run test cases in drupal module, we need drupal core package and drupal complete framework which includes a database, apache server and core package itself.
+    There are 3 type of tests in drupal unit, functional, integration. For unit tests, we don't need drupal full framework like database.
+    Unit tests don't use database.
 
 *************************
 
