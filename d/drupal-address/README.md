@@ -9,7 +9,7 @@ Summary :-
 
 *************************
 
-Copy following files into VM thats needed to run docker file succesfully.
+Copy following files into the VM that is needed to run docker file successfully.
 
     1) automate_drupal.sh.txt
     2) Dockerfile.drupal.ubi
@@ -18,26 +18,25 @@ Copy following files into VM thats needed to run docker file succesfully.
 
 Rename 2 files:-
 
-    #cp Dockerfile.drupal.ubi Dockerfile
-    #cp automate_drupal.sh.txt automate_drupal.sh
-    #chmod +x automate_drupal.sh
+    # cp Dockerfile.drupal.ubi Dockerfile
+    # cp automate_drupal.sh.txt automate_drupal.sh
+    # chmod +x automate_drupal.sh
 
 
 Now create an image from dockerfile (Dockerfile.drupal.ubi i.e Dockerfile)
 
-     #docker build -t drupal_image .
-     #docker images
-
+     # docker build -t drupal_image .
+     # docker images
 
 Then run a container using that image.
 
-    #docker run -it -d drupal_image /bin/bash
-    #docker ps
-    #docker exec -it 69cabf536f6f /bin/bash
+    # docker run -it -d drupal_image /bin/bash
+    # docker ps
+    # docker exec -it <container-id> /bin/bash
 
 Live drupal webserver will be available at http://<ip>:8081
 
-After that we need to run below command inside container.Run it in single command . Step 1 will take sometime to exec.
+After that we need to run below command inside the container. Run it in single command. Step 1 will take some time to exec.
 
 Step 1:-
 
@@ -50,43 +49,33 @@ Step 2:-
 
 Go to :-
 
-    #cd /opt/app-root/src/drupal/modules
+    # cd /opt/app-root/src/drupal/modules
 
 Clone the module which you wanted to test :-
 
-    #git clone https://git.drupalcode.org/project/address.git
-    #git checkout <versions>
+    # git clone https://git.drupalcode.org/project/address.git
+    # git checkout <versions>
 
 Follow automate_drupal.sh for more detail:-
-    #cd /opt/app-root/src/drupal/modules/address
-    bash-4.4# pwd
-    /opt/app-root/src/drupal/modules/address
-    #cd /opt/app-root/src/drupal
+    # cd /opt/app-root/src/drupal
 
-    bash-4.4#yum install -y git php php-gd
-    bash-4.4# composer require 'drupal/token:^1.10'
-    bash-4.4# composer require 'commerceguys/addressing:*'
-
-
-        bash-4.4# pwd
-        /opt/app-root/src/drupal
-	bash-4.4# ./vendor/bin/drush en address
+    # yum install -y git php php-gd
+    # composer require 'drupal/token:^1.10'
+    # composer require 'commerceguys/addressing:*'
+    # cd /opt/app-root/src/drupal
+	# ./vendor/bin/drush en address
            [notice] Already enabled: address
 
-    cd /opt/app-root/src/drupal/core
-    bash-4.4# pwd
-    /opt/app-root/src/drupal/core
+    # cd /opt/app-root/src/drupal/core
 
 
 RUN TEST:-
 ----------
-
-    bash-4.4# ../vendor/phpunit/phpunit/phpunit ../modules/address/tests/src
-
+    # ../vendor/phpunit/phpunit/phpunit ../modules/address/tests/src
 
 Test output
 ----------------
-bash-4.4# ../vendor/phpunit/phpunit/phpunit ../modules/address/tests/src
+    # ../vendor/phpunit/phpunit/phpunit ../modules/address/tests/src
 PHPUnit 7.5.20 by Sebastian Bergmann and contributors.
 
 Testing ../modules/address/tests/src
