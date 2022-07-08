@@ -34,25 +34,25 @@ if [ -d "$CORE_PACKAGE_NAME" ] ; then
 
 fi
 if ! git clone $CORE_PACKAGE_URL $CORE_PACKAGE_NAME; then
-        echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-                echo "$CORE_PACKAGE_URL $CORE_PACKAGE_NAME"
-        echo "$CORE_PACKAGE_NAME  |  $CORE_PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
-        exit 1
+  echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
+  echo "$CORE_PACKAGE_URL $CORE_PACKAGE_NAME"
+  echo "$CORE_PACKAGE_NAME  |  $CORE_PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
+  exit 1
 fi
 
 cd $CORE_PACKAGE_NAME
 git checkout 8.9.0
 composer update --no-interaction
 if ! composer install --no-interaction; then
-        echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
-        exit 1
+  echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+  echo "$PACKAGE_URL $PACKAGE_NAME"
+  echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
+  exit 1
 fi
 
-    composer require --dev phpunit/phpunit --with-all-dependencies ^7 --no-interaction
+composer require --dev phpunit/phpunit --with-all-dependencies ^7 --no-interaction
 
-    cd modules/
+cd modules/
 #Check if package exists
 if [ -d "$PACKAGE_NAME" ] ; then
   rm -rf $PACKAGE_NAME
@@ -60,26 +60,27 @@ if [ -d "$PACKAGE_NAME" ] ; then
 
 fi
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
-        echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-                echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
-        exit 1
+  echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
+  echo "$PACKAGE_URL $PACKAGE_NAME"
+  echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
+  exit 1
 fi
+
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 cd ../../
 cd core/
 if ! ../vendor/phpunit/phpunit/phpunit ../modules/libraries/tests/src/Unit; then
-        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
-        exit 1
+  echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+  echo "$PACKAGE_URL $PACKAGE_NAME"
+  echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
+  exit 1
 else
-        echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
-        exit 0
+  echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+  echo "$PACKAGE_URL $PACKAGE_NAME"
+  echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
+  exit 0
 fi
 
-# drupal-libraries has 3 types of test Unit/Functional/Kernel.Unit test dont need drupal framework and DB etc. So can be executed by given script.
+# drupal-libraries has 3 types of test Unit/Functional/Kernel.Unit test don't need drupal framework and DB etc. So can be executed by given script.
 # Please follow README file for more information to run Functional and kernel test cases.
