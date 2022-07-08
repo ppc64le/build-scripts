@@ -20,8 +20,6 @@
 PACKAGE_NAME=cache
 PACKAGE_VERSION=${1:-1.11.0}
 PACKAGE_URL=https://github.com/doctrine/cache
-#yum install && yum install -y git php php-json php-dom php-mbstring php-devel php-pear make zip unzip
-#yum -y update && yum install-y git php php-json php-dom php-mbstring php-devel php-pear make zip unzip
 yum install -y git php php-json php-dom php-mbstring php-devel php-pear make zip unzip
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/bin --filename=composer
 composer require --dev phpunit/phpunit --with-all-dependencies ^7
