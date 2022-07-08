@@ -53,3 +53,6 @@ else
     echo "$PACKAGE_VERSION $PACKAGE_NAME"
     echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass |  build_&_test_both_success"
 fi
+
+# Travis check is set to false as the script needs to be run on VM along with a running standalone
+# MongoDB server instance.
