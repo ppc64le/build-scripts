@@ -22,12 +22,10 @@ Rename 2 files:-
     #cp automate_drupal.sh.txt automate_drupal.sh
     #chmod +x automate_drupal.sh
 
-
 Now create an image from dockerfile (Dockerfile.drupal.ubi i.e Dockerfile)
 
      #docker build -t drupal_image .
      #docker images
-
 
 Then run a container using that image.
 
@@ -47,7 +45,6 @@ Step 2:-
 
     /usr/sbin/httpd -k start;
 
-
 Go to :-
 
     #cd /opt/app-root/src/drupal/modules
@@ -61,8 +58,8 @@ Clone the prerequisite dependency like ctools
 
     #git clone https://git.drupalcode.org/project/ctools
     #git checkout <versions>
-	#git clone https://git.drupalcode.org/project/search_api.git
-	#git checkout <versions>
+    #git clone https://git.drupalcode.org/project/search_api.git
+    #git checkout <versions>
 		
 Follow automate_drupal.sh for more detail:-
 
@@ -79,8 +76,8 @@ Follow automate_drupal.sh for more detail:-
     /opt/app-root/src/drupal
     bash-4.4# ./vendor/bin/drush en ctools
     [success] Successfully enabled: ctools
-	bash-4.4# ./vendor/bin/drush en search_api
-	[success] Successfully enabled: search_api
+    bash-4.4# ./vendor/bin/drush en search_api
+    [success] Successfully enabled: search_api
 
     bash-4.4# ./vendor/bin/drush en contact_block
     [success] Successfully enabled: contact_block
@@ -96,12 +93,10 @@ RUN TEST:-
 
     bash-4.4#  ../vendor/phpunit/phpunit/phpunit ../modules/search_api_autocomplete/src/Tests/
 
-
 Test output
 ----------------
+
 PHPUnit 7.5.20 by Sebastian Bergmann and contributors.
-
-
 
 Time: 223 ms, Memory: 4.00 MB
 

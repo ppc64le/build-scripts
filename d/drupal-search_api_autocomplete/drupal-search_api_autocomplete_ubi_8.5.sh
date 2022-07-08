@@ -40,7 +40,7 @@ fi
 
 if ! git clone $CORE_PACKAGE_URL $CORE_PACKAGE_NAME; then
         echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-                echo "$CORE_PACKAGE_URL $CORE_PACKAGE_NAME"
+        echo "$CORE_PACKAGE_URL $CORE_PACKAGE_NAME"
         echo "$CORE_PACKAGE_NAME  |  $CORE_PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
         exit 0
 fi
@@ -60,14 +60,14 @@ fi
     cd modules/
     git clone https://git.drupalcode.org/project/ctools
 	
-	git clone https://git.drupalcode.org/project/search_api.git
-	cd search_api/
-	git checkout 8.x-1.7
-	cd ..
+    git clone https://git.drupalcode.org/project/search_api.git
+    cd search_api/
+    git checkout 8.x-1.7
+    cd ..
 
  if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
         echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-                echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
         exit 0
 fi
