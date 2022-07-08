@@ -43,6 +43,8 @@ fi
 cd $CORE_PACKAGE_NAME
 git checkout 8.9.0
 composer update --no-interaction
+composer config allow-plugins.composer/installers true
+
 if ! composer install --no-interaction; then
   echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
   echo "$PACKAGE_URL $PACKAGE_NAME"
