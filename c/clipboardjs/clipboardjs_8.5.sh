@@ -47,6 +47,7 @@ fi
 
 cd $CORE_PACKAGE_NAME
 git checkout 8.9.0
+composer config allow-plugins true
 composer update --no-interaction
 
 if ! composer install --no-interaction; then
