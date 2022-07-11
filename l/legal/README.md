@@ -92,10 +92,6 @@ Follow automate_drupal.sh for more detail:-(Dependes on your package which versi
  
 RUN TESTS:- 
 ----------
-
-To run unit tests :-      
-
-    bash-4.4# ../vendor/phpunit/phpunit/phpunit ../modules/legal/tests/src/Unit
     
 To run Functional tests :-      
 
