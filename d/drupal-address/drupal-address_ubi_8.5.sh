@@ -85,5 +85,5 @@ else
     exit 0
 fi
 
-# drupal-rules has 4 types of test Unit/Functional/Kernel/FunctionalJavascript. Unit test don't need drupal framework and DB etc. So can be executed by given script.
+# drupal-address has 4 types of test Unit/Functional/Kernel/FunctionalJavascript. Unit test don't need drupal framework and DB etc. So can be executed by given script.
 # Please follow README file for more information to run /Functional/Kernel/FunctionalJavascript test cases.
