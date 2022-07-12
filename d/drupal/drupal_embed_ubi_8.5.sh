@@ -45,7 +45,7 @@ else
         echo "$PACKAGE_NAME  |  $PACKAGE_VERSION ------------------Build_success-------------------------"
 fi
 cd core
-if ! ../vendor/bin/phpunit modules/diff/tests/src/Unit ; then
+if ! ../vendor/bin/phpunit modules/embed/tests/src/Unit ; then
         echo "$PACKAGE_NAME  |  $PACKAGE_VERSION ------------------Test_fails---------------------"
         exit 1
 else
