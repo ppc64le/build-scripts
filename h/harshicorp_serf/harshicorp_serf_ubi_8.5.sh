@@ -51,5 +51,11 @@ gotestsum --format=short-verbose --junitfile ../gotestsum-report.xml -- ./...
 
 #Build and Test pass
 #This should be the output of the test in case of success:
+
+#PASS serf.TestSnapshotter_slowDiskNotBlockingEventCh (0.11s)
+#PASS serf.TestSnapshotter_blockedUpstreamNotBlockingMemberlist (0.03s)
+#PASS serf.TestBroadcastFinished_nilNotify (0.00s)
+#PASS serf.TestBroadcastFinished (0.00s)
+#PASS serf
 #EMPTY version
 #DONE 255 tests in 43.843s
