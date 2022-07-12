@@ -17,7 +17,7 @@
 #
 # ----------------------------------------------------------------------------
 #Run the sript ./drupal_embed_ubi_8.5.sh 8.x-1.0(version to test)
-PACKAGE_NAME=diff
+PACKAGE_NAME=embed
 PACKAGE_VERSION=${1:-8.x-1.0}
 PACKAGE_URL=https://git.drupalcode.org/project/embed.git
 
