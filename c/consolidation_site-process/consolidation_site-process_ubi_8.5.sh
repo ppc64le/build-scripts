@@ -52,7 +52,7 @@ else
         exit 0
 fi
 
-
+#Travis job failing with this epermission related error..that is why flag has set to False : errorSymfony\Component\Process\Exception\RuntimeException: TTY mode requires /dev/tty to be read/writable.
 #.......................S..............S................           55 / 55 (100%)
 #Time: 248 ms, Memory: 4.00 MB
 #OK, but incomplete, skipped, or risky tests!
