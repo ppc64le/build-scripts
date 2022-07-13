@@ -48,16 +48,7 @@ if ! git clone $CORE_PACKAGE_URL $CORE_PACKAGE_NAME; then
 fi
 
 cd $CORE_PACKAGE_NAME
-if ! composer install --no-interaction; then
-     	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
-	echo "$PACKAGE_URL $PACKAGE_NAME"
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
-	exit 1
-fi
 
-    composer require --dev phpunit/phpunit --with-all-dependencies ^8
-
-    cd modules/
  
 #Check if package exists
 if [ -d "$PACKAGE_NAME" ] ; then
@@ -74,10 +65,18 @@ fi
 fi
 
 cd $PACKAGE_NAME
+
 git checkout $PACKAGE_VERSION
 
-cd ../../
-cd core/
- 
-#No Unit test case.
+composer require --dev phpunit/phpunit --with-all-dependencies ^8
+
+
+if ! composer install --no-interaction; then
+     	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+	echo "$PACKAGE_URL $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
+	exit 1
+fi
+
+#No test case available.
 
