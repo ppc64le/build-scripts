@@ -26,6 +26,7 @@ for file in mirror.centos.org/centos/8-stream/AppStream/ppc64le/os/ mirror.cento
 do
   yum-config-manager --add-repo http://${file}
   repo=$(echo $files | sed "s#/#_#g")
+  yum-config-manager --enable $repo
   echo "gpgcheck=0" >>  /etc/yum.repos.d/${repo}.repo
 done
 
