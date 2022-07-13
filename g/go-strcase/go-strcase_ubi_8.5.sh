@@ -20,7 +20,7 @@
 
 export PACKAGE_NAME=go-strcase
 export PACKAGE_VERSION=${1:-v1.2.0}
-export PACKAGE_URL=https://github.com/openzipkin-contrib/zipkin-go-opentracing
+export PACKAGE_URL=https://github.com/stoewer/go-strcase
 
 dnf install -y git wget gcc make diffutils golang
 
