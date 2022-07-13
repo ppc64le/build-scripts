@@ -49,22 +49,11 @@ if ! git clone $CORE_PACKAGE_URL $CORE_PACKAGE_NAME; then
 fi
 
 cd $CORE_PACKAGE_NAME
-if ! composer install --no-interaction; then
-     	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
-	echo "$PACKAGE_URL $PACKAGE_NAME"
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
-	exit 1
-fi
-
-    composer require --dev phpunit/phpunit --with-all-dependencies ^7
-
-    cd modules/
  
 #Check if package exists
 if [ -d "$PACKAGE_NAME" ] ; then
   rm -rf $PACKAGE_NAME
-  echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"  
- 
+  echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"   
 fi
 
  if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
@@ -76,19 +65,13 @@ fi
 
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+composer require --dev phpunit/phpunit --with-all-dependencies ^8
 
-cd ../../
-cd core/
- 
-#Unit test case.
-if ! ../vendor/phpunit/phpunit/phpunit ../modules/unlimited_number/; then
-	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+if ! composer install --no-interaction; then
+     	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
 	exit 1
-else
-	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-	echo "$PACKAGE_URL $PACKAGE_NAME"
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
-	exit 0
 fi
+
+#No test case available
