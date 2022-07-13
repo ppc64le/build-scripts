@@ -20,7 +20,7 @@
 #
 # Adding repos, to fix travis failures
 #
-yum install yum-tools -y
+yum install yum-utils -y
 yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/AppStream/ppc64le/os/
 yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/PowerTools/ppc64le/os/
 yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/BaseOS/ppc64le/os/
