@@ -28,7 +28,7 @@ yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/BaseOS/pp
 # Install required packages 
 #
 yum install -y git python3 libtool automake curl cmake openssl-devel npm openssl clang
-yum install -y libstdc++-devel-8.5.0-4.el8_5 
+# yum install -y libstdc++-devel-8.5.0-4.el8_5 
 yum install -y gcc-c++-8.5.0-4.el8_5 gcc-8.5.0-4.el8_5
 yum install -y perl lld patch
 yum install -y java-11-openjdk-devel
