@@ -43,7 +43,6 @@ if ! git clone $CORE_PACKAGE_URL $CORE_PACKAGE_NAME; then
         echo "$CORE_PACKAGE_NAME  |  $CORE_PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
         exit 1
 fi
-
 cd $CORE_PACKAGE_NAME
 git checkout 8.9.0
 composer config allow-plugins true
