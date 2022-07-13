@@ -20,10 +20,16 @@
 #
 # Adding repos, to fix travis failures
 #
-yum install yum-tools -y
-yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/AppStream/ppc64le/os/
-yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/PowerTools/ppc64le/os/
-yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/BaseOS/ppc64le/os/
+yum install yum-utils -y
+
+for file in mirror.centos.org/centos/8-stream/AppStream/ppc64le/os/ mirror.centos.org/centos/8-stream/PowerTools/ppc64le/os/ mirror.centos.org/centos/8-stream/BaseOS/ppc64le/os/
+do
+  yum-config-manager --add-repo http://${file}
+  repo=$(echo $file | sed "s#/#_#g")
+  yum-config-manager --enable $repo
+  echo "gpgcheck=0" >>  /etc/yum.repos.d/${repo}.repo
+done
+
 # 
 # Install required packages 
 #
