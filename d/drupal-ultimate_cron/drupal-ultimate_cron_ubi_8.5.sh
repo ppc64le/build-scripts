@@ -79,15 +79,5 @@ git checkout $PACKAGE_VERSION
 cd ../../
 cd core/
  
-#Unit test case.
-if ! ../vendor/phpunit/phpunit/phpunit ../modules/ultimate_cron/; then
-	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-	echo "$PACKAGE_URL $PACKAGE_NAME"
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
-	exit 1
-else
-	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-	echo "$PACKAGE_URL $PACKAGE_NAME"
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
-	exit 0
-fi
+#No Unit test case.
+
