@@ -93,6 +93,6 @@ git clone https://github.com/maistra/envoy.git
 cd envoy/
 git checkout maistra-2.2
 bazel clean
-bazel build -c opt //source/exe:envoy-static --sandbox_debug --verbose_failures --copt "-w" --copt "-DENVOY_IGNORE_GLIBCXX_USE_CXX11_ABI_ERROR=1" --cxxopt=-Wimplicit-fallthrough=0 --cxxopt=-Wno-error=type-limits --config=ppc64le --config=clang  --//bazel:http3=false --local_ram_resources=12288 --local_cpu_resources=6 --jobs=3
+bazel build -c opt //source/exe:envoy-static --sandbox_debug --verbose_failures --copt "-w" --copt "-DENVOY_IGNORE_GLIBCXX_USE_CXX11_ABI_ERROR=1" --cxxopt=-Wimplicit-fallthrough=0 --cxxopt=-Wno-error=type-limits --config=ppc --config=clang  --//bazel:http3=false --local_ram_resources=12288 --local_cpu_resources=6 --jobs=3
 
 
