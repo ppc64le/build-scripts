@@ -71,6 +71,5 @@ if ! composer install --no-interaction; then
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
 	exit 1
 fi
-
 #No test case available
 
