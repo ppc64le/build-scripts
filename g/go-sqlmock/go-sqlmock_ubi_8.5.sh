@@ -30,6 +30,7 @@ if ! git clone $PACKAGE_URL; then
     exit 1
 fi
 cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 
 if ! go mod tidy; then
     echo "------------------$PACKAGE_NAME: mod tidy failed-------------------------"
