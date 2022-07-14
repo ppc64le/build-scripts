@@ -2,7 +2,7 @@
 
 # ----------------------------------------------------------------------------
 # Package          : drupal-views_bootstrap 
-# Version          : 5.3.x
+# Version          : 5.3.x,8.x-3.8,8.x-3.6 
 # Source repo      : https://git.drupalcode.org/project/views_bootstrap
 # Tested on        : UBI 8.5
 # Language         : PHP

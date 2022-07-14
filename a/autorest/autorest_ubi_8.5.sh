@@ -1,7 +1,8 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: github.com/azure/go-autorest/autorest
-# Version	: v0.11.23
+# Version	: v0.11.23 , v0.11.19
 # Source repo	: https://github.com/Azure/go-autorest
 # Tested on	: UBI 8.5
 # Language	: GO

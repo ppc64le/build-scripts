@@ -2,13 +2,13 @@
 
 # ----------------------------------------------------------------------------
 # Package          : drupal-autocomplete_deluxe 
-# Version          : 2.0.1
+# Version          : 2.0.1, 2.0.0
 # Source repo      : https://git.drupalcode.org/project/autocomplete_deluxe
 # Tested on        : UBI 8.5
 # Language         : PHP
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Bhagat Singh <Bhagat.singh1@ibm.com>
+# Maintainer       : Bhagat Singh <Bhagat.singh1@ibm.com>, Vaishnavi Patil <Vaishnavi.Patil3@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -50,7 +50,7 @@ fi
 cd $CORE_PACKAGE_NAME
 git checkout 8.9.0
 rm -rf composer.lock
-
+composer config allow-plugins true --no-interaction
 if ! composer install --no-interaction; then
      	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
