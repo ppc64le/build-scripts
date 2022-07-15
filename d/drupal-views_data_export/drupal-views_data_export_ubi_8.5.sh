@@ -82,7 +82,6 @@ composer require drupal/xls_serialization:*
 composer require drupal/search_api:*
 cd core/
 
-#running Kernel tests
 if !  ../vendor/phpunit/phpunit/phpunit ../modules/$PACKAGE_NAME/tests/modules; then
         echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
