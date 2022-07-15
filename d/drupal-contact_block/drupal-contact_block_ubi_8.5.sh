@@ -84,4 +84,4 @@ else
     exit 0
 fi
 
-#Tests N/A for version 8.x-1.5.
+#Tests N/A for version 8.x-1.5 .
