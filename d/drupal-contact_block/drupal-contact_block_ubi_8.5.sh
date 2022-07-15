@@ -2,7 +2,7 @@
 
 # ----------------------------------------------------------------------------
 # Package          : contact_block
-# Version          : 8.x-2.x
+# Version          : 8.x-2.x ,8.x-1.5
 # Source repo      : https://git.drupalcode.org/project/contact_block.git
 # Tested on        : UBI 8.5
 # Language         : PHP
@@ -83,3 +83,5 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
+
+#Tests N/A for version 8.x-1.5.
