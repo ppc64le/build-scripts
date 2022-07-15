@@ -83,7 +83,7 @@ composer require drupal/search_api:*
 cd core/
 
 #running Kernel tests
-if !  ../vendor/phpunit/phpunit/phpunit ../modules/$PACKAGE_NAME/tests/src/Kernel; then
+if !  ../vendor/phpunit/phpunit/phpunit ../modules/$PACKAGE_NAME/tests/modules; then
         echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
