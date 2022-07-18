@@ -55,6 +55,8 @@ composer config --no-plugins allow-plugins.dealerdirect/phpcodesniffer-composer-
 composer config --no-plugins allow-plugins.drupal/core-project-message true
 composer config --no-plugins allow-plugins.drupal/core-vendor-hardening true
 
+composer update --no-interaction
+
 if ! composer install --no-interaction; then
      	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
