@@ -39,7 +39,7 @@ if [ -d "$CORE_PACKAGE_NAME" ] ; then
 fi
 if ! git clone $CORE_PACKAGE_URL $CORE_PACKAGE_NAME; then
         echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-                echo "$CORE_PACKAGE_URL $CORE_PACKAGE_NAME"
+            echo "$CORE_PACKAGE_URL $CORE_PACKAGE_NAME"
         echo "$CORE_PACKAGE_NAME  |  $CORE_PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
         exit 1
 fi
