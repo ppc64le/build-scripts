@@ -54,7 +54,7 @@ if ! composer install --no-interaction; then
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
         exit 1
 fi
-    composer require --dev phpunit/phpunit --with-all-dependencies ^7 --no-interaction
+composer require --dev phpunit/phpunit --with-all-dependencies ^7 --no-interaction
     cd modules/
 
 #Check if package exists
