@@ -2,7 +2,7 @@
 
 # ----------------------------------------------------------------------------
 # Package          : taxonomy_manager  
-# Version          : 2.0.6
+# Version          : 2.0.7
 # Source repo      : https://git.drupalcode.org/project/taxonomy_manager
 # Tested on        : UBI 8.5
 # Language         : PHP
@@ -24,7 +24,7 @@ CORE_PACKAGE_NAME=drupal
 PACKAGE_URL=https://git.drupalcode.org/project/taxonomy_manager
 CORE_PACKAGE_URL=https://github.com/drupal/drupal
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-2.0.6}
+PACKAGE_VERSION=${1:-2.0.7}
 
 
 yum module enable php:7.4 -y
@@ -48,9 +48,12 @@ if ! git clone $CORE_PACKAGE_URL $CORE_PACKAGE_NAME; then
 fi
 
 cd $CORE_PACKAGE_NAME
+git checkout 8.9.0
 
-composer require  drupal/jquery_ui
-#composer require  drush/drush
+composer config --no-plugins allow-plugins.composer/installers true
+composer config --no-plugins allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
+composer config --no-plugins allow-plugins.drupal/core-project-message true
+composer config --no-plugins allow-plugins.drupal/core-vendor-hardening true
 
 if ! composer install --no-interaction; then
      	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
@@ -58,8 +61,8 @@ if ! composer install --no-interaction; then
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
 	exit 1
 fi
-    #./vendor/bin/drush pm:enable taxonomy_manager
-    composer require --dev phpunit/phpunit --with-all-dependencies ^8
+    composer require --dev phpunit/phpunit --with-all-dependencies ^7
+    composer require  drupal/jquery_ui
 
     cd modules/
  
