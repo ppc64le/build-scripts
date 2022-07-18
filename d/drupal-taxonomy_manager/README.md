@@ -85,74 +85,51 @@ RUN TEST:-
 
     bash-4.4# ../vendor/phpunit/phpunit/phpunit ../modules/taxonomy_manager/src/Tests/
     
-    
+Version 2.0.4 , 2.0.0 ,2.0.6 has code issue which is resolved in 2.0.7 so validating 2.0.7 latest only. 
+
 Test output
 ----------------    
+bash-4.4# ../vendor/phpunit/phpunit/phpunit ../modules/taxonomy_manager/src/Tests/
 
-bash-4.4# ../vendor/phpunit/phpunit/phpunit ../modules/taxonomy_manager/src/Tests/TaxonomyManagerPagesTest.php
 PHPUnit 7.5.20 by Sebastian Bergmann and contributors.
 
-Testing Drupal\taxonomy_manager\Tests\TaxonomyManagerPagesTest
-EEE                                                                 3 / 3 (100%)
+Testing ../modules/taxonomy_manager/src/Tests/
+EEEE                                                                4 / 4 (100%)
 
-Time: 1.05 minutes, Memory: 4.00 MB
+Time: 1.73 minutes, Memory: 4.00 MB
 
-There were 3 errors:
+There were 4 errors:
 
-1) Drupal\taxonomy_manager\Tests\TaxonomyManagerPagesTest::testConfigurationPageIsAccessible
-Drupal\Core\Config\Schema\SchemaIncompleteException: Schema errors for taxonomy_manager.settings with the following errors: taxonomy_manager.settings:_core missing schema, taxonomy_manager.settings:langcode missing schema
+1) Drupal\taxonomy_manager\Tests\TaxonomyManagerConfigTest::testTaxonomyManagerConfiguration
+Error: Call to undefined method Drupal\taxonomy_manager\Tests\TaxonomyManagerConfigTest::t()
 
-/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/Development/ConfigSchemaChecker.php:95
-/opt/app-root/src/drupal/core/lib/Drupal/Component/EventDispatcher/ContainerAwareEventDispatcher.php:111
-/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/Config.php:231
-/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/ConfigInstaller.php:378
-/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/ConfigInstaller.php:137
-/opt/app-root/src/drupal/core/lib/Drupal/Core/ProxyClass/Config/ConfigInstaller.php:75
-/opt/app-root/src/drupal/core/lib/Drupal/Core/Extension/ModuleInstaller.php:288
-/opt/app-root/src/drupal/core/lib/Drupal/Core/ProxyClass/Extension/ModuleInstaller.php:83
-/opt/app-root/src/drupal/core/lib/Drupal/Core/Test/FunctionalTestSetupTrait.php:476
-/opt/app-root/src/drupal/core/tests/Drupal/Tests/BrowserTestBase.php:578
-/opt/app-root/src/drupal/core/tests/Drupal/Tests/BrowserTestBase.php:406
-/opt/app-root/src/drupal/modules/taxonomy_manager/src/Tests/TaxonomyManagerPagesTest.php:41
+/opt/app-root/src/drupal/modules/taxonomy_manager/src/Tests/TaxonomyManagerConfigTest.php:34
 
-2) Drupal\taxonomy_manager\Tests\TaxonomyManagerPagesTest::testVocabulariesListIsAccessible
-Drupal\Core\Config\Schema\SchemaIncompleteException: Schema errors for taxonomy_manager.settings with the following errors: taxonomy_manager.settings:_core missing schema, taxonomy_manager.settings:langcode missing schema
+2) Drupal\taxonomy_manager\Tests\TaxonomyManagerPagesTest::testConfigurationPageIsAccessible
+Behat\Mink\Exception\ExpectationException: Current response status code is 403, but 200 expected.
 
-/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/Development/ConfigSchemaChecker.php:95
-/opt/app-root/src/drupal/core/lib/Drupal/Component/EventDispatcher/ContainerAwareEventDispatcher.php:111
-/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/Config.php:231
-/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/ConfigInstaller.php:378
-/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/ConfigInstaller.php:137
-/opt/app-root/src/drupal/core/lib/Drupal/Core/ProxyClass/Config/ConfigInstaller.php:75
-/opt/app-root/src/drupal/core/lib/Drupal/Core/Extension/ModuleInstaller.php:288
-/opt/app-root/src/drupal/core/lib/Drupal/Core/ProxyClass/Extension/ModuleInstaller.php:83
-/opt/app-root/src/drupal/core/lib/Drupal/Core/Test/FunctionalTestSetupTrait.php:476
-/opt/app-root/src/drupal/core/tests/Drupal/Tests/BrowserTestBase.php:578
-/opt/app-root/src/drupal/core/tests/Drupal/Tests/BrowserTestBase.php:406
-/opt/app-root/src/drupal/modules/taxonomy_manager/src/Tests/TaxonomyManagerPagesTest.php:41
+/opt/app-root/src/drupal/vendor/behat/mink/src/WebAssert.php:768
+/opt/app-root/src/drupal/vendor/behat/mink/src/WebAssert.php:130
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/AssertLegacyTrait.php:211
+/opt/app-root/src/drupal/modules/taxonomy_manager/src/Tests/TaxonomyManagerPagesTest.php:53
 
-3) Drupal\taxonomy_manager\Tests\TaxonomyManagerPagesTest::testTermsEditingPageIsAccessible
-Drupal\Core\Config\Schema\SchemaIncompleteException: Schema errors for taxonomy_manager.settings with the following errors: taxonomy_manager.settings:_core missing schema, taxonomy_manager.settings:langcode missing schema
+3) Drupal\taxonomy_manager\Tests\TaxonomyManagerPagesTest::testVocabulariesListIsAccessible
+Behat\Mink\Exception\ExpectationException: Current response status code is 403, but 200 expected.
 
-/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/Development/ConfigSchemaChecker.php:95
-/opt/app-root/src/drupal/core/lib/Drupal/Component/EventDispatcher/ContainerAwareEventDispatcher.php:111
-/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/Config.php:231
-/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/ConfigInstaller.php:378
-/opt/app-root/src/drupal/core/lib/Drupal/Core/Config/ConfigInstaller.php:137
-/opt/app-root/src/drupal/core/lib/Drupal/Core/ProxyClass/Config/ConfigInstaller.php:75
-/opt/app-root/src/drupal/core/lib/Drupal/Core/Extension/ModuleInstaller.php:288
-/opt/app-root/src/drupal/core/lib/Drupal/Core/ProxyClass/Extension/ModuleInstaller.php:83
-/opt/app-root/src/drupal/core/lib/Drupal/Core/Test/FunctionalTestSetupTrait.php:476
-/opt/app-root/src/drupal/core/tests/Drupal/Tests/BrowserTestBase.php:578
-/opt/app-root/src/drupal/core/tests/Drupal/Tests/BrowserTestBase.php:406
-/opt/app-root/src/drupal/modules/taxonomy_manager/src/Tests/TaxonomyManagerPagesTest.php:41
+/opt/app-root/src/drupal/vendor/behat/mink/src/WebAssert.php:768
+/opt/app-root/src/drupal/vendor/behat/mink/src/WebAssert.php:130
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/AssertLegacyTrait.php:211
+/opt/app-root/src/drupal/modules/taxonomy_manager/src/Tests/TaxonomyManagerPagesTest.php:64
+
+4) Drupal\taxonomy_manager\Tests\TaxonomyManagerPagesTest::testTermsEditingPageIsAccessible
+Behat\Mink\Exception\ExpectationException: Current response status code is 404, but 200 expected.
+
+/opt/app-root/src/drupal/vendor/behat/mink/src/WebAssert.php:768
+/opt/app-root/src/drupal/vendor/behat/mink/src/WebAssert.php:130
+/opt/app-root/src/drupal/core/tests/Drupal/FunctionalTests/AssertLegacyTrait.php:211
+/opt/app-root/src/drupal/modules/taxonomy_manager/src/Tests/TaxonomyManagerPagesTest.php:81
 
 ERRORS!
-Tests: 3, Assertions: 0, Errors: 3.
+Tests: 4, Assertions: 31, Errors: 4.
 
-Remaining deprecation notices (3)
-
-  3x: Drupal\Tests\BrowserTestBase::$defaultTheme is required in drupal:9.0.0 when using an install profile that does not set a default theme. See https://www.drupal.org/node/3083055, which includes recommendations on which theme to use.
-    1x in TaxonomyManagerPagesTest::testConfigurationPageIsAccessible from Drupal\taxonomy_manager\Tests
-    1x in TaxonomyManagerPagesTest::testVocabulariesListIsAccessible from Drupal\taxonomy_manager\Tests
-    1x in TaxonomyManagerPagesTest::testTermsEditingPageIsAccessible from Drupal\taxonomy_manager\Tests
+---------
