@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: php-code-coverage
-# Version	: 6.1.4
+# Version	: 6.1.4,9.2.7
 # Source repo	: https://github.com/sebastianbergmann/php-code-coverage/
 # Tested on	: UBI 8.5
 # Language      : PHP

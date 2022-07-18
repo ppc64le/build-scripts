@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : go-internal
-# Version       : v1.5.0
+# Version       : v1.5.0, v1.6.1
 # Source repo   : https://github.com/rogpeppe/go-internal
 # Tested on     : UBI 8.5
 # Language      : GO
