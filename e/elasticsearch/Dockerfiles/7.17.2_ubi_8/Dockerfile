@@ -51,8 +51,6 @@ RUN wget https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17
     ln -sf /usr/local/jdk-17.0.2+8/bin/java /usr/bin/ && \
     rm -f OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.2_8.tar.gz
 
-COPY elasticsearch_v7.17.2.patch .
-
 RUN git clone --single-branch --branch v7.17.2  https://github.com/elastic/elasticsearch.git && \
     cd elasticsearch && \
     wget $PATCH && \
