@@ -18,12 +18,9 @@
 #
 # ----------------------------------------------------------------------------
 
-
-
 PACKAGE_NAME="github.com/dgraph-io/ristretto"
 PACKAGE_VERSION=${1:-"v0.1.0"}
 PACKAGE_URL="https://github.com/dgraph-io/ristretto"
-
 
 echo "installing dependencies"
 yum install -y gcc-c++ make wget git
@@ -36,7 +33,6 @@ rm -f go"$GO_VERSION".linux-ppc64le.tar.gz
 
 export PATH=$PATH:/bin/go/bin
 export GOPATH=/home/tester/go
-
 
 mkdir -p $GOPATH/src && cd $GOPATH/src
 git clone $PACKAGE_URL
