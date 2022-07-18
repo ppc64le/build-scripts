@@ -101,3 +101,5 @@ else
 fi
 
 #Test cases are in parity with intel. To run test cases we need drupal framework. Please follow readMe file.
+    
+# Version 2.0.4 , 2.0.0 ,2.0.6 has code issue which is resolved in 2.0.7 so validating 2.0.7 latest only. 
