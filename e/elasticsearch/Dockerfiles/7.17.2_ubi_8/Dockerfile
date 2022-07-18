@@ -11,7 +11,12 @@
 # Extract Elasticsearch artifact
 ################################################################################
 
+ARG PACKAGE_VERSION=v7.17.2
+
 FROM registry.access.redhat.com/ubi8/ubi:latest AS builder
+
+ARG PACKAGE_VERSION
+ARG PATCH=https://raw.githubusercontent.com/ppc64le/build-scripts/elastic-currency/e/elasticsearch/elasticsearch_v7.17.2.patch
 
 # `tini` is a tiny but valid init for containers. This is used to cleanly
 # control how ES and any child processes are shut down.
@@ -50,7 +55,8 @@ COPY elasticsearch_v7.17.2.patch .
 
 RUN git clone --single-branch --branch v7.17.2  https://github.com/elastic/elasticsearch.git && \
     cd elasticsearch && \
-    git apply ../elasticsearch_v7.17.2.patch && \
+    wget $PATCH && \
+    git apply ${PATCH##*/} && \
     ./gradlew :distribution:archives:linux-ppc64le-tar:assemble --parallel && \
     mv ./distribution/archives/linux-ppc64le-tar/build/distributions/elasticsearch-7.17.2-SNAPSHOT-linux-ppc64le.tar.gz /opt
 
@@ -96,6 +102,8 @@ RUN sed -i -e 's/ES_DISTRIBUTION_TYPE=tar/ES_DISTRIBUTION_TYPE=docker/' bin/elas
 ################################################################################
 
 FROM registry.access.redhat.com/ubi8/ubi:latest
+
+ARG PACKAGE_VERSION
 
 RUN for iter in {1..10}; do \
     yum update --setopt=tsflags=nodocs -y && \
@@ -145,7 +153,7 @@ LABEL org.label-schema.build-date="2022-03-28T17:35:51.740591902Z" \
     org.label-schema.vcs-ref="de7261de50d90919ae53b0eff9413fd7e5307301" \
     org.label-schema.vcs-url="https://github.com/elastic/elasticsearch" \
     org.label-schema.vendor="Elastic" \
-    org.label-schema.version="7.17.2" \
+    org.label-schema.version="$PACKAGE_VERSION" \
     org.opencontainers.image.created="2022-03-28T17:35:51.740591902Z" \
     org.opencontainers.image.documentation="https://www.elastic.co/guide/en/elasticsearch/reference/index.html" \
     org.opencontainers.image.licenses="Elastic-License-2.0" \
@@ -154,7 +162,7 @@ LABEL org.label-schema.build-date="2022-03-28T17:35:51.740591902Z" \
     org.opencontainers.image.title="Elasticsearch" \
     org.opencontainers.image.url="https://www.elastic.co/products/elasticsearch" \
     org.opencontainers.image.vendor="Elastic" \
-    org.opencontainers.image.version="7.17.2"
+    org.opencontainers.image.version="$PACKAGE_VERSION"
 
 ENTRYPOINT ["/bin/tini", "--", "/usr/local/bin/docker-entrypoint.sh"]
 # Dummy overridable parameter parsed by entrypoint
