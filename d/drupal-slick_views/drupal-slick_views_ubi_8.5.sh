@@ -55,7 +55,7 @@ if ! composer install --no-interaction; then
         exit 1
 fi
 composer require --dev phpunit/phpunit --with-all-dependencies ^7 --no-interaction
-    cd modules/
+cd modules/
 
 #Check if package exists
 if [ -d "$PACKAGE_NAME" ] ; then
