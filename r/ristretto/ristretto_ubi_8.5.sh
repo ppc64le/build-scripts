@@ -41,15 +41,23 @@ git checkout $PACKAGE_VERSION
 
 go mod init 
 go mod tidy 
-if ! go build && go test; then
-	echo "............................$PACKAGE_NAME:build & test_fail ......................."
+go mod vendor
+
+if ! go build -v ./...; then
+	echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME"
-    	echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $PACKAGE_VERSION | $OS_NAME | Github | Fail  | Build & Test_Fail"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
+	exit 1
+fi
+if ! go test -v ./...; then
+	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+	echo "$PACKAGE_URL $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
 	exit 1
 else
-	echo "............................$PACKAGE_NAME:build & test_success ......................."
+	echo "------------------$PACKAGE_NAME:install_and_test_success-------------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME"
-    	echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $PACKAGE_VERSION | $OS_NAME | Github | Success  | Build & Test_Success"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Install_and_Test_Success"
 	exit 0
 fi
 
