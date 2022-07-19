@@ -95,6 +95,15 @@ direct we can also execute below command :--
 	  
 	  
       Note:drupal 8.9.0 used in this package.
+      
+---------------------------------------------------
+Remove existing drupal folder from directory /opt/app-root/src/drupal and clone the 8.9.0 version.
+        #  git clone https://github.com/drupal/drupal  
+        #   cd /opt/app-root/src/drupal/core
+        #   cp phpunit.xml.dist phpunit.xml
+    Edit the phpunit.xml file to update database url and apache server url.
+    <env name="SIMPLETEST_BASE_URL" value="http://0.0.0.0:8081"/>
+    <env name="SIMPLETEST_DB" value="pgsql://postgres:postgres@localhost/dru2_pg"/>
  
 RUN TESTS:- 
 ----------
