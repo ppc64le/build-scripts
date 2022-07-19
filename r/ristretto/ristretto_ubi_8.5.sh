@@ -1,11 +1,11 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: ristretto
 # Version	: v0.1.0
 # Source repo	: https://github.com/dgraph-io/ristretto
 # Tested on	: ubi 8.5
-# Language      : GO
+# Language      : go
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Haritha Patchari <haritha.patchari@ibm.com>
@@ -18,10 +18,11 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME="github.com/dgraph-io/ristretto"
-PACKAGE_VERSION=${1:-"v0.1.0"}
-PACKAGE_URL="https://github.com/dgraph-io/ristretto"
 
+
+PACKAGE_NAME=github.com/dgraph-io/ristretto
+PACKAGE_VERSION=${1:-v0.1.0}
+PACKAGE_URL=https://github.com/dgraph-io/ristretto
 echo "installing dependencies"
 yum install -y gcc-c++ make wget git
 
@@ -40,15 +41,15 @@ cd ristretto
 git checkout $PACKAGE_VERSION
 
 go mod tidy 
-go mod vendor
+go install
 
-if ! go build -v ./...; then
+if ! go build; then
 	echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
 	exit 1
 fi
-if ! go test -v ./...; then
+if ! go test; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
