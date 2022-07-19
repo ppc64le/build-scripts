@@ -39,7 +39,6 @@ git clone $PACKAGE_URL
 cd ristretto
 git checkout $PACKAGE_VERSION
 
-go mod init 
 go mod tidy 
 go mod vendor
 
