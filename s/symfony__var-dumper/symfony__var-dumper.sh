@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: VarDumper
-# Version	: 5.3, v4.4.8, v4.4.18, v4.4.30,v5.3.8 
+# Version	: 5.3, v4.4.8, v4.4.18, v4.4.30,v5.3.8,v4.4.17,v3.4.28,v5.2.8 
 # Source repo	: https://github.com/symfony/var-dumper
 # Tested on	: UBI 8.5
 # Language      : PHP
@@ -43,7 +43,13 @@ git reset --hard
 git pull
 git checkout $PACKAGE_VERSION
 
-composer require --dev phpunit/phpunit --with-all-dependencies ^7
+# VarDumper version v3.4.28 need phpunit-6 to run test with success.All other versions run successfully with phpunit-7.
+if [ $PACKAGE_VERSION = v3.4.28 ];
+then
+    composer require --dev phpunit/phpunit --with-all-dependencies ^6
+else
+    composer require --dev phpunit/phpunit --with-all-dependencies ^7
+fi
 
 if ! composer install; then
      	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"

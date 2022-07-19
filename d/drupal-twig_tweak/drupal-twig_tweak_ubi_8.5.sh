@@ -2,7 +2,7 @@
 
 # ----------------------------------------------------------------------------
 # Package          : drupal-twig_tweak  
-# Version          : 3.1.3
+# Version          : 3.1.3, 8.x-2.9
 # Source repo      : https://git.drupalcode.org/project/twig_tweak
 # Tested on        : UBI 8.5
 # Language         : PHP

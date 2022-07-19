@@ -2,7 +2,7 @@
 
 # ----------------------------------------------------------------------------
 # Package          : drupal-views_infinite_scroll  
-# Version          : 8.x-1.x
+# Version          : 8.x-1.x, 8.x-1.9 ,8.x-1.8
 # Source repo      : https://git.drupalcode.org/project/views_infinite_scroll
 # Tested on        : UBI 8.5
 # Language         : PHP
@@ -92,6 +92,7 @@ else
 	exit 0
 fi
 
+#Requested version 8.x-1.9 ,8.x-1.8 pass/pass with drupal-core version  8.9.11
 
 # drupal-views_infinite_scroll has 2 types of test Functional/Functionaljavascript. Drupal framework is needed to run it. 
 # Please follow README file for more information to run Functional/Functionaljavascript testcases .

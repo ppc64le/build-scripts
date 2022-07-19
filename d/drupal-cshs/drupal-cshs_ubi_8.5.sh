@@ -2,7 +2,7 @@
 
 # ----------------------------------------------------------------------------
 # Package          : drupal-cshs  
-# Version          : 8.x-3.x
+# Version          : 8.x-3.x,8.x-3.5,8.x-3.4,8.x-2.3
 # Source repo      : https://git.drupalcode.org/project/cshs
 # Tested on        : UBI 8.5
 # Language         : PHP
