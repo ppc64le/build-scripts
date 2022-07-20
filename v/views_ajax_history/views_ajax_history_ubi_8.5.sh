@@ -103,6 +103,7 @@ else
 		exit 0
 fi
 
+
 #------------------views_ajax_history:install_success---------------------------------------
 #https://git.drupalcode.org/project/views_ajax_history.git views_ajax_history
 #Testoutput:
