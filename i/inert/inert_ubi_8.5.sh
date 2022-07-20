@@ -79,12 +79,3 @@ else
 # Please refer to README.md to install the chrome binaries required for the testing
 
 # ************** test ******************** 
-
-
-
-
-
-
-
-
-
