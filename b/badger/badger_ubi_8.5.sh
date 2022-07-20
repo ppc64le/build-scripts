@@ -43,10 +43,13 @@ git clone $PACKAGE_URL
 cd badger
 git checkout $PACKAGE_VERSION
 
-go mod init
 go mod tidy
+go install
+
 if ! go build; then
         echo "............................$PACKAGE_NAME:build_fails ......................"
+        echo "$PACKAGE_VERSION $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
         exit 1
 fi
 
