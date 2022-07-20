@@ -96,5 +96,4 @@ fi
 #..............                                                    14 / 14 (100%)
 
 #Time: 3.69 minutes, Memory: 4.00 MB
-
 #OK (14 tests, 110 assertions)
