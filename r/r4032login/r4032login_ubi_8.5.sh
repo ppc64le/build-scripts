@@ -91,4 +91,3 @@ else
 fi
 # r4032login has 2 types of test Unit/Functional . Unit test dont need drupal framework and DB etc. So can be executed by given script.
 # Please follow README file for more information to run /Functional test cases.and make the script travis-check false for Functional test.
-
