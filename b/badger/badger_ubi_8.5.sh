@@ -5,7 +5,7 @@
 # Version       : v1.6.2
 # Source repo   : https://github.com/dgraph-io/badger
 # Tested on     : ubi 8.5
-# Language      : go
+# Language      : GO
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Haritha Patchari <haritha.patchari@ibm.com>
