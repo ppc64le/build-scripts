@@ -1,22 +1,22 @@
 #!/bin/bash -e
-# -----------------------------------------------------------------------------
-#
-# Package       : cache
-# Version       : 1.11.0,1.12.1
-# Source repo   : https://github.com/doctrine/cache
-# Tested on     : RHEL 8.5
-# Language      : PHP
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer    : Saraswati Patra <saraswati.patra@ibm.com>
-#
-# Disclaimer: This script has been tested in root mode on given
-# ==========  platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of the
-#             package and/or distribution. In such case, please
-#             contact "Maintainer" of this script.
-#
 # ----------------------------------------------------------------------------
+# Package          : cache
+# Version          : 1.11.0,1.12.1
+# Source repo      : https://github.com/doctrine/cache
+# Tested on        : UBI 8.5
+# Language         : PHP
+# Travis-Check     : True
+# Script License   : Apache License, Version 2 or later
+# Maintainer       : Saraswati Patra <saraswati.patra@ibm.com>
+#
+# Disclaimer       : This script has been tested in root mode on given
+# ==========         platform using the mentioned version of the package.
+#                    It may not work as expected with newer versions of the
+#                    package and/or distribution. In such case, please
+#                    contact "Maintainer" of this script.
+#   
+# ----------------------------------------------------------------------------
+# Variables
 PACKAGE_NAME=cache
 PACKAGE_VERSION=${1:-1.11.0}
 PACKAGE_URL=https://github.com/doctrine/cache
