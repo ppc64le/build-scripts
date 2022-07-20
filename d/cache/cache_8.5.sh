@@ -5,8 +5,8 @@
 # Version       : 1.11.0,1.12.1
 # Source repo   : https://github.com/doctrine/cache
 # Tested on     : RHEL 8.5
-#Language         : PHP
-# Travis-Check     : True
+# Language      : PHP
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Saraswati Patra <saraswati.patra@ibm.com>
 #
