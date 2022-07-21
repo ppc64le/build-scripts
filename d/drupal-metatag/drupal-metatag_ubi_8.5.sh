@@ -51,6 +51,9 @@ composer config allow-plugins true --no-interaction
 composer require --dev phpunit/phpunit --with-all-dependencies ^7 --no-interaction
 composer require 'drupal/token:^1.10'
 composer require 'drupal/metatag:*'
+composer require 'drupal/redirect:*'
+composer require 'drupal/page_manager:*'
+composer require 'drupal/panelizer:*'
 
 if ! composer install --no-interaction; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
