@@ -20,7 +20,7 @@
 PACKAGE_NAME="LuaJIT"
 #PACKAGE_VERSION=${1:-Luajit-2.1.0-beta3}
 PACKAGE_URL="https://github.com/PPC64/LuaJIT.git"
-yum update -y
+yum update -y --allowerasing --nobest
 yum install -y vim cmake make git gcc-c++ perl
 OS_NAME=`cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f2 | tr -d '"'`
 HOME_DIR=`pwd`
