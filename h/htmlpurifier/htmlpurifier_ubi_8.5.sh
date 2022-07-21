@@ -1,23 +1,22 @@
 #!/bin/bash -e
-# -----------------------------------------------------------------------------
-#
-# Package	: htmlpurifier
-# Version	: v4.13.0
-# Source repo	: https://github.com/ezyang/htmlpurifier.git
-# Tested on	: UBI 8.5
-# Language      : PHP
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer	: saraswati patra <saraswati.patra@ibm.com>
-#
-# Disclaimer: This script has been tested in root mode on given
-# ==========  platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of the
-#             package and/or distribution. In such case, please
-#             contact "Maintainer" of this script.
-#
 # ----------------------------------------------------------------------------
-
+# Package          : htmlpurifier
+# Version          : v4.13.0
+# Source repo      : https://github.com/ezyang/htmlpurifier.git
+# Tested on        : UBI 8.5
+# Language         : PHP
+# Travis-Check     : True
+# Script License   : Apache License, Version 2 or later
+# Maintainer       : Saraswati Patra <saraswati.patra@ibm.com>
+#
+# Disclaimer       : This script has been tested in root mode on given
+# ==========         platform using the mentioned version of the package.
+#                    It may not work as expected with newer versions of the
+#                    package and/or distribution. In such case, please
+#                    contact "Maintainer" of this script.
+#   
+# ----------------------------------------------------------------------------
+# Variables
 PACKAGE_NAME="htmlpurifier"
 PACKAGE_VERSION=${1:-v4.13.0}
 PACKAGE_URL="https://github.com/ezyang/htmlpurifier.git"
