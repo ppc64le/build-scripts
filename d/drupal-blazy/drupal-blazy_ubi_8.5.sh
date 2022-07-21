@@ -125,4 +125,4 @@ fi
             # Time: 03:57.545, Memory: 12.00 MB
 
             # OK, but incomplete, skipped, or risky tests!
-            # Tests: 49, Assertions: 441, Skipped: 3.
+            # Tests: 49, Assertions: 441, Skipped: 3
