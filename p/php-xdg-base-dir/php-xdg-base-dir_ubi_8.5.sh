@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/dnoegel/php-xdg-base-dir.git
 # Tested on	: UBI 8.5
 # Language	: PHP
-# Travis-Check	: False
+# Travis-Check	: True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Saraswati patra <saraswati patra@ibm.com>
 #
@@ -67,3 +67,4 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
+
