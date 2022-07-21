@@ -35,7 +35,7 @@ if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
     echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $OS_NAME | GitHub | Fail |  Clone_Fails"
-    exit 0
+    exit 1
 fi
 
 cd "$HOME_DIR"/$PACKAGE_NAME || exit 1
@@ -45,13 +45,13 @@ if ! make ; then
     echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $OS_NAME | GitHub | Fail |  Install_Fails"
-    exit 0
+    exit 1
 fi
 if ! make install; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $OS_NAME | GitHub | Fail |  Install_Fails"
-    exit 0
+    exit 1
 fi
 
 #install_success_but_test not available .
