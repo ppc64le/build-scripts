@@ -17,9 +17,9 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_NAME="htmlpurifier"
+PACKAGE_NAME=htmlpurifier
 PACKAGE_VERSION=${1:-v4.13.0}
-PACKAGE_URL="https://github.com/ezyang/htmlpurifier.git"
+PACKAGE_URL=https://github.com/ezyang/htmlpurifier.git
 yum update -y --allowerasing --nobest
 yum install -y git php php-common php-json php-dom php-zip php-pdo php-mbstring wget yum-utils
 yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/AppStream/ppc64le/os/ 
