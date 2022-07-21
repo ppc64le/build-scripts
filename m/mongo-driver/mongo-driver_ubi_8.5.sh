@@ -5,7 +5,7 @@
 # Version       : v1.7.3
 # Source repo   : https://github.com/mongodb/mongo-go-driver.git
 # Tested on     : UBI 8.5
-# Travis-Check  : false
+# Travis-Check  : True
 # Language      : Go
 # Script License: Apache License, Version 2 or later
 # Maintainer    : saraswati patra <saraswati.patra@ibm.com>
@@ -30,7 +30,6 @@ fi
 # Dependency installation
 yum module install -y go-toolset
 dnf install -y git
-
 # Download the repos
 
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
@@ -81,3 +80,4 @@ else
 	echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
 	exit 0
 fi
+
