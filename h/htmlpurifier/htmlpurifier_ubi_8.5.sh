@@ -22,13 +22,13 @@ PACKAGE_VERSION=${1:-v4.13.0}
 PACKAGE_URL=https://github.com/ezyang/htmlpurifier.git
 yum update -y --allowerasing --nobest
 yum install -y git php php-common php-json php-dom php-zip php-pdo php-mbstring wget yum-utils
-#yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/AppStream/ppc64le/os/ 
-#yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/PowerTools/ppc64le/os/
-#yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/BaseOS/ppc64le/os/
+yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/AppStream/ppc64le/os/ 
+yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/PowerTools/ppc64le/os/
+yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/BaseOS/ppc64le/os/
 
-#wget https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official
-#mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/. 
-#rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
+wget https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official
+mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/. 
+rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 
 yum install -y expect
 
