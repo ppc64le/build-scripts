@@ -60,9 +60,11 @@ if ! npm install && npm audit fix && npm audit fix --force; then
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
 	exit 1
 fi
+
 #version:0.0.6
 #Source Repo: https://github.com/ibc/yaeti.git
 #License Link: https://github.com/ibc/yaeti/blob/master/LICENSE
 #License Type: MIT License
 #CLA: None
+
 
