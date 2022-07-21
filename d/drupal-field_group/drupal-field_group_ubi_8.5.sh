@@ -2,7 +2,7 @@
 
 # ----------------------------------------------------------------------------
 # Package          : drupal/field_group
-# Version          : 3.1.0
+# Version          : 3.1.0, 3.2.0
 # Source repo      : https://git.drupalcode.org/project/field_group
 # Tested on        : UBI 8.5
 # Language         : PHP
