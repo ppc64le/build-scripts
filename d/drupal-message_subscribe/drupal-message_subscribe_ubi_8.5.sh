@@ -3,7 +3,7 @@
 # ----------------------------------------------------------------------------
 # Package          : message_subscribe
 # Version          : 8.x-1.x
-# Source repo      : https://git.uwaterloo.ca/drupal-org/metatag.git
+# Source repo      : https://git.drupalcode.org/project/message_subscribe.git
 # Tested on        : UBI 8.5
 # Language         : PHP
 # Travis-Check     : True
@@ -21,7 +21,7 @@
 # Variables
 PACKAGE_NAME=message_subscribe
 CORE_PACKAGE_NAME=drupal
-PACKAGE_URL=https://git.uwaterloo.ca/drupal-org/metatag.git
+PACKAGE_URL=https://git.drupalcode.org/project/message_subscribe.git
 CORE_PACKAGE_URL=https://github.com/drupal/drupal
 PACKAGE_VERSION=${1:-8.x-1.x}
 
@@ -50,7 +50,7 @@ rm -rf composer.lock
 composer config allow-plugins true --no-interaction
 composer require --dev phpunit/phpunit --with-all-dependencies ^7 --no-interaction
 composer require 'drupal/token:^1.10'
-composer require 'drupal/metatag:*'
+composer require 'drupal/message_subscribe:*'
 
 if ! composer install --no-interaction; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
