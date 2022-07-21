@@ -146,4 +146,4 @@ fi
                 # /opt/app-root/src/drupal/modules/contrib/jwt/tests/src/Functional/JwtAuthTest.php:93
 
                 # ERRORS!
-                # Tests: 7, Assertions: 117, Errors: 1.
+                # Tests: 7, Assertions: 117, Errors: 1
