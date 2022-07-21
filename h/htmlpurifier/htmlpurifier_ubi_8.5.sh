@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: htmlpurifier
-# Version	: 	v4.13.0
+# Version	: v4.13.0
 # Source repo	: https://github.com/ezyang/htmlpurifier.git
 # Tested on	: UBI 8.5
 # Language      : PHP
