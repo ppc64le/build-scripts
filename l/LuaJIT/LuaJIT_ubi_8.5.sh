@@ -1,22 +1,22 @@
 #!/bin/bash -e
-# -----------------------------------------------------------------------------
-#
-# Package	: LuaJIT
-# Version	: 	luajit-2.1.0-beta3 
-# Source repo	: 
-# Tested on	: UBI 8.5
-# Language      : C
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer	: saraswati patra <saraswati.patra@ibm.com>
-#
-# Disclaimer: This script has been tested in root mode on given
-# ==========  platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of the
-#             package and/or distribution. In such case, please
-#             contact "Maintainer" of this script.
-#
 # ----------------------------------------------------------------------------
+# Package          : LuaJIT
+# Version          : Luajit-2.1.0-beta3
+# Source repo      : https://github.com/PPC64/LuaJIT.git
+# Tested on        : UBI 8.5
+# Language         : C
+# Travis-Check     : True
+# Script License   : Apache License, Version 2 or later
+# Maintainer       : Saraswati Patra <saraswati.patra@ibm.com>
+#
+# Disclaimer       : This script has been tested in root mode on given
+# ==========         platform using the mentioned version of the package.
+#                    It may not work as expected with newer versions of the
+#                    package and/or distribution. In such case, please
+#                    contact "Maintainer" of this script.
+#   
+# ----------------------------------------------------------------------------
+# Variables
 PACKAGE_NAME="LuaJIT"
 #PACKAGE_VERSION=${1:-Luajit-2.1.0-beta3}
 PACKAGE_URL="https://github.com/PPC64/LuaJIT.git"
@@ -41,14 +41,8 @@ fi
 cd "$HOME_DIR"/$PACKAGE_NAME || exit 1
 #git checkout "$PACKAGE_VERSION"
 
-if ! make ; then
+if ! make && make install ; then
     echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $OS_NAME | GitHub | Fail |  Install_Fails"
-    exit 1
-fi
-if ! make install; then
-    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $OS_NAME | GitHub | Fail |  Install_Fails"
     exit 1
