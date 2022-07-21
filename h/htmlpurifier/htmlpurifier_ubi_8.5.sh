@@ -70,8 +70,6 @@ if ! php tests/index.php; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  install_success"
     exit 1
 fi
-
-
 #All HTML Purifier tests on PHP 7.2.24
 #1) Identical expectation [String: xn--fa-hia.de] fails with [String: fass.de] at character 0 with [xn--fa-hia.de] and [fass.de] at [/root/htmlpurifier/tests/HTMLPurifier/AttrDef/URI/HostTest.php line 52]
         #in testIDNA
