@@ -72,6 +72,7 @@ fi
 fi
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+composer install
 cd ../../
 cd core/
 
