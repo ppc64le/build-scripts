@@ -17,7 +17,7 @@
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
 #
-# ----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 PACKAGE_NAME=jquery_ui
 CORE_PACKAGE_NAME=drupal
