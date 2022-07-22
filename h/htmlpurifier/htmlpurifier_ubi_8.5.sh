@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: htmlpurifier
-# Version	: 	v4.13.0
-# Source repo	: https://github.com/ezyang/htmlpurifier.git
-# Tested on	: UBI 8.5
+# Package	      : htmlpurifier
+# Version	      : v4.13.0
+# Source repo	  : https://github.com/ezyang/htmlpurifier.git
+# Tested on	    : UBI 8.5
 # Language      : PHP
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: saraswati patra <saraswati.patra@ibm.com>
+# Maintainer	  : saraswati patra <saraswati.patra@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
