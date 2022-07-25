@@ -31,9 +31,9 @@ yum -y install java-1.8.0-openjdk-devel
 
 #install maven
 cd /opt/
-wget https://www-eu.apache.org/dist/maven/maven-3/3.8.4/binaries/apache-maven-3.8.4-bin.tar.gz
-tar xzf apache-maven-3.8.4-bin.tar.gz
-ln -s apache-maven-3.8.4 maven
+wget https://dlcdn.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz
+tar xzf apache-maven-3.8.6-bin.tar.gz
+ln -s apache-maven-3.8.6 maven
 export MVN_HOME=/opt/maven
 export PATH=${MVN_HOME}/bin:${PATH}
 mvn -version
