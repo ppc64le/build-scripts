@@ -24,7 +24,7 @@ PACKAGE_URL=https://github.com/babel/preset-modules.git
 
 yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm git jq
 
-npm install n -g && n latest && npm install -g npm@latest
+npm install n -g && n latest && npm install -g npm@8.15.0
 
 export npm_config_yes=true
 
