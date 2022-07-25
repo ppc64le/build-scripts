@@ -17,7 +17,7 @@
 #
 # ----------------------------------------------------------------------------
 #Run the sript ./drupal_editor_file_ubi_8.5.sh 2.0.1(version to test)
-PACKAGE_NAME=droxy
+PACKAGE_NAME=editor_file
 PACKAGE_VERSION=${1:-8.x-1.6}
 PACKAGE_URL=https://git.drupalcode.org/project/editor_file.git
 
