@@ -1,13 +1,14 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package       : commons-cli
-# Version       : 1.4
+# Version       : commons-cli-1.5.0, cli-1.4
 # Source repo   : https://github.com/apache/commons-cli.git
 # Tested on     : UBI: 8.4
 # Script License: Apache License 2.0
-# Maintainer's  : Sapana Khemkar <Sapana.Khemkar@ibm.com>
-# Language	: Java
-#
+# Maintainer    : Sapana Khemkar <Sapana.Khemkar@ibm.com>/ Balavva Mirji <Balavva.Mirji@ibm.com>
+# Language	    : Java
+# Travis-Check  : True
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -16,13 +17,11 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
-set -e
 
 # Variables
 PACKAGE_NAME=commons-cli
 PACKAGE_URL=https://github.com/apache/commons-cli.git
-PACKAGE_VERSION=commons-cli-1.5.0
+PACKAGE_VERSION=${1:-commons-cli-1.5.0}
 
 
 # install tools and dependent packages

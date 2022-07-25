@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package       : BeanShell
@@ -5,8 +6,9 @@
 # Source repo   : https://github.com/beanshell/beanshell
 # Tested on     : UBI: 8.4
 # Script License: Apache License 2.0
-# Maintainer  : Sapana Khemkar <Sapana.Khemkar@ibm.com>
-# Language	: Java
+# Maintainer    : Sapana Khemkar <Sapana.Khemkar@ibm.com>/ Balavva Mirji <Balavva.Mirji@ibm.com>
+# Language	    : Java
+# Travis-Check  : True
 #
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -16,15 +18,11 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
-set -e
 
 # Variables
 PACKAGE_NAME=beanshell
 PACKAGE_URL=https://github.com/beanshell/beanshell.git
-PACKAGE_VERSION=2.0b6
-
-#HOME=/home
+PACKAGE_VERSION=${1:-2.0b6}
 
 # install tools and dependent packages
 yum install -y git wget

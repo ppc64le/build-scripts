@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package       : aether-api, aether-spi
@@ -5,8 +6,9 @@
 # Source repo   : https://github.com/sonatype/sonatype-aether
 # Tested on     : UBI: 8.4
 # Script License: Apache License 2.0
-# Maintainer  : Sapana Khemkar <Sapana.Khemkar@ibm.com>
-# Language	: Java
+# Maintainer    : Sapana Khemkar <Sapana.Khemkar@ibm.com>/ Balavva Mirji <Balavva.Mirji@ibm.com>
+# Language	    : Java
+# Travis-Check  : True
 #
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -16,13 +18,11 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
-set -e
 
 # Variables
 PACKAGE_NAME=sonatype-aether
 PACKAGE_URL=https://github.com/sonatype/sonatype-aether.git
-PACKAGE_VERSION=aether-1.13.1
+PACKAGE_VERSION=${1:-aether-1.13.1}
 
 
 # install tools and dependent packages

@@ -1,12 +1,14 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
-# Package	: commons-codec
-# Version	: commons-codec-1.13, commons-codec-1.12, 1.9
+# Package	    : commons-codec
+# Version	    : commons-codec-1.13, commons-codec-1.12, 1.9
 # Source repo	: https://github.com/apache/commons-codec
-# Tested on	: ubi 8.4
+# Tested on	    : ubi 8.4
 # Script License: Apache License Version 2.0
-# Maintainer	: Sapana Khemkar <sapana.khemkar@ibm.com>
-# Language	: Java
+# Maintainer	: Sapana Khemkar <sapana.khemkar@ibm.com>/ Balavva Mirji <Balavva.Mirji@ibm.com>
+# Language	    : Java
+# Travis-Check  : True
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -16,19 +18,10 @@
 #
 # ----------------------------------------------------------------------------
 
-#!/bin/bash
-set -e
-
 # Variables
 PACKAGE_NAME=commons-codec
 PACKAGE_URL=https://github.com/apache/commons-codec.git
-PACKAGE_VERSION=commons-codec-1.13
-
-echo "Usage: $0 [-v <PACKAGE_VERSION>]"
-echo "PACKAGE_VERSION is an optional paramater whose default value is r1rv68, not all versions are supported."
-
-PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
-
+PACKAGE_VERSION=${1:-commons-codec-1.13}
 
 # install tools and dependent packages
 yum install -y git wget tar

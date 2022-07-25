@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package       : Commons-BeanUtils
@@ -5,8 +6,9 @@
 # Source repo   : https://github.com/apache/commons-beanutils.git
 # Tested on     : UBI: 8.4
 # Script License: Apache License 2.0
-# Maintainer's  : Sapana Khemkar <Sapana.Khemkar@ibm.com>
-# Language	: Java
+# Maintainer    : Sapana Khemkar <Sapana.Khemkar@ibm.com>/ Balavva Mirji <Balavva.Mirji@ibm.com>
+# Language	    : Java
+# Travis-Check  : True
 #
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -16,13 +18,11 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
-set -e
 
 # Variables
 PACKAGE_NAME=commons-beanutils
 PACKAGE_URL=https://github.com/apache/commons-beanutils.git
-PACKAGE_VERSION=commons-beanutils-1.9.4
+PACKAGE_VERSION=${1:-commons-beanutils-1.9.4}
 
 
 # install tools and dependent packages
