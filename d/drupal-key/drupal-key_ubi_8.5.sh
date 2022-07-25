@@ -49,6 +49,11 @@ fi
 
 cd $CORE_PACKAGE_NAME
 git checkout 8.9.0
+composer config --no-plugins allow-plugins.composer/installers true
+composer config --no-plugins allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
+composer config --no-plugins allow-plugins.drupal/core-project-message true
+composer config --no-plugins allow-plugins.drupal/core-vendor-hardening true
+
 composer update --no-interaction
 
 if ! composer install --no-interaction; then
