@@ -21,12 +21,14 @@
 PACKAGE_NAME=preset-modules
 PACKAGE_VERSION=${1:-0.1.4}
 PACKAGE_URL=https://github.com/babel/preset-modules.git
+export NODE_VERSION=${NODE_VERSION:-v18.6.0}
 
 yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm git jq
 
 npm install n -g && n latest && npm install -g npm@8.15.0
 
 export npm_config_yes=true
+
 
 HOME_DIR=`pwd`
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
@@ -36,6 +38,10 @@ if [ -d "$PACKAGE_NAME" ] ; then
   rm -rf $PACKAGE_NAME
   echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"
 fi
+#installing nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+source "$HOME/.bashrc"
+nvm install "$NODE_VERSION"
 
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
     	echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
