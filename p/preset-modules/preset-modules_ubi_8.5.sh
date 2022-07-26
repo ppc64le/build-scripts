@@ -46,7 +46,6 @@ fi
 
 cd $HOME_DIR/$PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-#npm install -g yarn
 yarn install
 
 if ! npm run build; then
