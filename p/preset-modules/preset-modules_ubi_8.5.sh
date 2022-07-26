@@ -25,9 +25,6 @@ PACKAGE_URL=https://github.com/babel/preset-modules.git
 yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm git jq
 
 npm install n -g && n latest && npm install -g npm@latest
-
-export npm_config_yes=true
-
 HOME_DIR=`pwd`
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
@@ -48,8 +45,6 @@ cd $HOME_DIR/$PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 npm install -g yarn
 yarn install
-yarn config set "strict-ssl" false -g
-
 if ! npm run build; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
