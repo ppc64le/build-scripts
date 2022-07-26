@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : flood_control
-# Version       : 2.1.0
+# Version       : 2.1.0, 2.2.2
 # Source repo   : https://git.drupalcode.org/project/flood_control.git
 # Tested on     : UBI 8.5
 # Language      : PHP
@@ -23,7 +23,7 @@
 PACKAGE_NAME=flood_control
 PACKAGE_URL=https://git.drupalcode.org/project/flood_control.git
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-2.1.0}
+PACKAGE_VERSION=${1:-2.2.2}
 yum install -y git curl php php-curl php-dom php-mbstring php-json php-gd php-pecl-zip
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/bin --filename=composer
 HOME_DIR=$(pwd)
