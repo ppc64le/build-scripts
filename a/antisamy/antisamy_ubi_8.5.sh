@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : antisamy
-# Version       : v1.6.2
+# Version       : v1.6.2, v1.6.4
 # Source repo   : https://github.com/nahsra/antisamy.git
 # Tested on     : ubi 8.5
 # Language      : java
