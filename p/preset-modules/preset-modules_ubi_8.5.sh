@@ -48,6 +48,7 @@ cd $HOME_DIR/$PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 npm install -g yarn
 yarn install
+yarn config set "strict-ssl" false -g
 
 if ! npm run build; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
