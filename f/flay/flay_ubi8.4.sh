@@ -22,11 +22,9 @@ PACKAGE_NAME=flay
 PACKAGE_VERSION=${1:-v2.12.1}
 PACKAGE_URL=https://github.com/seattlerb/flay
 
-yum install -y git wget curl ruby ruby-devel rubygem-rake procps libcurl-devel libffi-devel sqlite sqlite-devel nodejs nodejs-devel nodejs-packaging 
+yum install -y git wget curl ruby ruby-devel rubygem-rake procps libcurl-devel libffi-devel sqlite sqlite-devel 
 
-yum install -y --allowerasing gcc gcc-c++ yum-utils make automake autoconf libtool gdb* binutils rpm-build gettext 
-
-yum-config-manager --add-repo http://mirror.centos.org/centos/8/AppStream/ppc64le/os/ && yum-config-manager --add-repo http://mirror.centos.org/centos/8/PowerTools/ppc64le/os/ && yum-config-manager --add-repo http://mirror.centos.org/centos/8/BaseOS/ppc64le/os/ && yum-config-manager --add-repo http://mirror.centos.org/centos/8/virt/ppc64le/ovirt-44/
+yum config-manager --add-repo http://vault.centos.org/centos/8/AppStream/ppc64le/os/ && yum config-manager --add-repo http://vault.centos.org/centos/8/BaseOS/ppc64le/os/
 
 wget https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official && mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/. && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 
@@ -41,6 +39,7 @@ curl -L https://get.rvm.io | bash -s stable
 export PATH=$PATH:/usr/local/rvm/bin
 
 /bin/bash -c "source /etc/profile.d/rvm.sh; rvm install ruby-2.7"
+export PATH="/usr/local/rvm/rubies/ruby-2.7.2/bin:$PATH"
 
 mkdir -p /home/tester/output
 cd /home/tester
