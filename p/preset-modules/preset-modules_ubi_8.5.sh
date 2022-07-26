@@ -47,8 +47,6 @@ fi
 cd $HOME_DIR/$PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 npm install yarn --global
-yarn install
-
 if ! npm run build; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
