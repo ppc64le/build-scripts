@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 #Run the script:./antisamy_ubi_8.5.sh v1.6.2(version_to_test)
 PACKAGE_NAME=antisamy
-PACKAGE_VERSION=${1:-v1.6.2}
+PACKAGE_VERSION=${1:-v1.6.4}
 PACKAGE_URL=https://github.com/nahsra/antisamy.git
 
 dnf install git maven -y
