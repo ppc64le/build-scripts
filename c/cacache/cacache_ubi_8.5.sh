@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: cacache
-# Version	: v12.0.3
+# Package	    : cacache
+# Version	    : v12.0.3
 # Source repo	: https://github.com/npm/cacache
-# Tested on	: UBI 8.4
+# Tested on	    : UBI 8.5
 # Language      : Node
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: BulkPackageSearch Automation {maintainer}
+# Maintainer	: Sapana Khemkar <spana.khemkar@ibm.com>/ Balavva Mirji <Balavva.Mirji@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -34,11 +34,8 @@ git checkout $PACKAGE_VERSION
 npm install
 
 #Test summary is 
-#  282 passing (8s)
-#  7 pending
-#  2 failing
+#failed 1 of 15 tests
 # This is in parity with x86
 npm test
 
 exit 0
-
