@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-# ----------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 # Package          : drupal-unlimited_number
 # Version          : 2.0.1
 # Source repo      : https://git.drupalcode.org/project/unlimited_number
