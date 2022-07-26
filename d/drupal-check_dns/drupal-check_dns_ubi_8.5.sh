@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
-# ----------------------------------------------------------------------------
-# Package          : drupalcheck_dns
+# ---------------------------------------------------------------------------
+# Package          : drupal-check_dns
 # Version          : 8.x-1.3
 # Source repo      : https://git.drupalcode.org/project/check_dns
 # Tested on        : UBI 8.5
