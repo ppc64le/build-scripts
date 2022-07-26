@@ -1,7 +1,8 @@
+#!/bin/bash -ex
 # -----------------------------------------------------------------------------
 #
 # Package	: github.com/golang/geo
-# Version	: v0.0.0-20210211234256-740aa86cb551
+# Version	: 740aa86cb551, 5b978397cfec, master
 # Source repo	: https://github.com/golang/geo
 # Tested on	: UBI 8.6
 # Language      : GO
@@ -17,13 +18,14 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=github.com/golang/geo
-PACKAGE_VERSION=v0.0.0-20210211234256-740aa86cb551
-PACKAGE_URL=https://github.com/golang/geo
-COMMIT_ID=740aa86cb551d6388f5cf4a8f39568d52fac6ed7
-CURDIR="$(pwd)"
 
-yum install -y git wget golang
+PACKAGE_NAME=github.com/golang/geo
+# Defaults to PACKAGE_VERSION=v0.0.0-20210211234256-740aa86cb551
+# This script also works with master branch.
+PACKAGE_VERSION=${1:-740aa86cb551}
+PACKAGE_URL="https://github.com/golang/geo.git"
+
+dnf install -y git golang
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
@@ -35,9 +37,9 @@ export PATH=$GOPATH/bin:$PATH
 # Install geo 
 mkdir -p $GOPATH/src/github.com/golang/
 cd $GOPATH/src/github.com/golang/
-git clone $PACKAGE_URL.git
+git clone $PACKAGE_URL
 cd geo
-git checkout $COMMIT_ID
+git checkout $PACKAGE_VERSION
 
 #add testcase patch
 sed -i '71d' r3/vector.go
