@@ -44,9 +44,10 @@ git checkout $PACKAGE_VERSION
 
 
 if ! mvn package; then
-        INSTALL_SUCCESS="false"
-        else
-        INSTALL_SUCCESS="true"
+        echo "------------------$PACKAGE_NAME:install_fails---------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails" > /home/tester/output/version_tracker
+        exit 1
 fi
 
 if ! mvn test; then
