@@ -1,9 +1,12 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: github.com/davecgh/go-spew
-# Version	: v1.1.1
+# Version	: v1.1.1, v0.0.0-20151105211317-5215b55f46b2
 # Source repo	: https://github.com/davecgh/go-spew
 # Tested on	: UBI 8.5
+# Language      : GO
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>
 #

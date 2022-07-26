@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: go-oidc
-# Version	: v2.1.0
+# Version	: v2.1.0, v0.0.0-20180117170138-065b426bd416
 # Source repo	: https://github.com/coreos/go-oidc.git
 # Tested on	: UBI: 8.5
 # Language      : GO

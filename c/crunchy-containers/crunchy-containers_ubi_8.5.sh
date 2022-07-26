@@ -3,7 +3,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package               : crunchy-containers
-# Version               : v4.7.2
+# Version               : v4.7.2, v4.5.1
 # Source repo           : https://github.com/CrunchyData/crunchy-containers
 # Tested on             : RHEL 8.5,UBI 8.5
 # Language              : GO
