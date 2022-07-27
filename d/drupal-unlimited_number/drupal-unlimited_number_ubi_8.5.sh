@@ -72,7 +72,6 @@ fi
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 cd ../../
-composer install
 cd core/
 
 composer config allow-plugins true --no-interaction
