@@ -75,7 +75,7 @@ RUN TEST:-
 
 Test output
 ----------------
-    # ../vendor/phpunit/phpunit/phpunit ../modules/address/tests/src
+    # ../vendor/phpunit/phpunit/phpunit ../modules/metatag/tests/src
 PHPUnit 7.5.20 by Sebastian Bergmann and contributors.
 
 Time: 442 ms, Memory: 4.00 MB
