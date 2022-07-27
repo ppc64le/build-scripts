@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 # -----------------------------------------------------------------------------
 #
 # Package       : github.com/uber/jaeger-client-go
