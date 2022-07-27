@@ -17,14 +17,18 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
 PACKAGE_NAME=preset-modules
 PACKAGE_VERSION=${1:-0.1.4}
 PACKAGE_URL=https://github.com/babel/preset-modules.git
 
-yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm git jq
+yum install -y yum-utils git jq
+NODE_VERSION=v12.22.4
+#installing nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+source ~/.bashrc
+nvm install $NODE_VERSION
 
-npm install n -g && n latest && npm install -g npm@latest
+npm install n -g && n latest && npm install -g npm@8.15.0
 HOME_DIR=`pwd`
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
