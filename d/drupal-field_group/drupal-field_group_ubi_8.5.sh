@@ -6,7 +6,7 @@
 # Source repo      : https://git.drupalcode.org/project/field_group
 # Tested on        : UBI 8.5
 # Language         : PHP
-# Travis-Check     : True
+# Travis-Check     : False
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Vaishnavi Patil <Vaishnavi.Patil3@ibm.com>
 #
@@ -79,7 +79,7 @@ composer require drupal/field:*
 
 cd core/
 
-if !  ../vendor/phpunit/phpunit/phpunit ../modules/$PACKAGE_NAME/tests/modules; then
+if !  ../vendor/phpunit/phpunit/phpunit ../modules/$PACKAGE_NAME/tests/src; then
         echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
