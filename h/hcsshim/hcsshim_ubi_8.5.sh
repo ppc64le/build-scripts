@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 
-sudo docker run -e COUCHDB_USER=currency -e COUCHDB_PASSWORD=automation -p 5984:5984 -d couchdb
+docker run -e COUCHDB_USER=currency -e COUCHDB_PASSWORD=automation -p 5984:5984 -d couchdb
 
 curl localhost:5984
 
