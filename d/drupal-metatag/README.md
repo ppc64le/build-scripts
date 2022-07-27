@@ -71,13 +71,16 @@ Follow automate_drupal.sh for more detail:-
 
 RUN TEST:-
 ----------
-    # ../vendor/phpunit/phpunit/phpunit ../modules/metatag/src/Tests/
+    # ../vendor/phpunit/phpunit/phpunit ../modules/metatag/tests/src/Kernel/
 
 Test output
 ----------------
-    # ../vendor/phpunit/phpunit/phpunit ../modules/metatag/tests/src
+    # ../vendor/phpunit/phpunit/phpunit ../modules/metatag/src/Kernel/
 PHPUnit 7.5.20 by Sebastian Bergmann and contributors.
 
-Time: 442 ms, Memory: 4.00 MB
+Testing ../modules/metatag/tests/src/Kernel/
+..                                                                  2 / 2 (100%)
 
-No tests executed!
+Time: 2.89 seconds, Memory: 4.00 MB
+
+OK (2 tests, 2 assertions)
