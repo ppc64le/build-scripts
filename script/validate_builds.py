@@ -82,7 +82,8 @@ def trigger_script_validation_checks(file_name, image_name = "registry.access.re
         network = 'host',
         detach = True,
         volumes = {
-            current_dir : {'bind': '/home/tester/', 'mode': 'rw'}
+            current_dir : {'bind': '/home/tester/', 'mode': 'rw'},
+            '/var/run/docker.sock': {'bind': '/var/run/docker.sock', 'mode': 'rw'}
         },
         stderr = True, # Return logs from STDERR
     )
