@@ -7,7 +7,7 @@
 # Tested on        : RHEL 8.5,UBI 8.5
 # Language         : Node
 # Travis-Check     : True
-# Script License   : Apache License, Version 2 or later
+# Script License   : Apache License,Version 2 or later
 # Maintainer       : Vathsala . <vaths367@in.ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
