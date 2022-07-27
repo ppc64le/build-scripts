@@ -51,7 +51,7 @@ cd go
 go mod tidy
 
 go install ./...
-# test cases not available. Hence skipping test
-go test -v ./...
+# test cases not available for both versions. Hence skipping test
+# go test -v ./...
 
 exit 0
