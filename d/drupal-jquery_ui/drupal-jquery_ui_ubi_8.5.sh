@@ -70,7 +70,6 @@ fi
 fi
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-
 cd ../../
 cd core/
 
