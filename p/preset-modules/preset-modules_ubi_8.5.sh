@@ -28,7 +28,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 source ~/.bashrc
 nvm install $NODE_VERSION
 
-npm install n -g && n latest && npm install -g npm@8.15.0
+npm install n -g && n latest && npm install -g npm@latest
 HOME_DIR=`pwd`
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
