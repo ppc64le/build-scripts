@@ -45,8 +45,10 @@ function test_with_master_without_flag_u(){
         echo "Testing $PACKAGE_PATH with master branch without flag -u"
 		# Ensure go.mod file exists
 		if[! -f go.mod]; then
-			go mod init 
-		go mod init $PACKAGE_NAME/$PACKAGE_VERSION
+		    go mod init
+		else
+		    go mod init $PACKAGE_NAME/$PACKAGE_VERSION
+		fi
 		if ! go test ./...; then
 		        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 		        echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master  | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
@@ -71,8 +73,9 @@ function test_with_master(){
 	echo "Testing $PACKAGE_PATH with $PACKAGE_VERSION"
 	# Ensure go.mod file exists
 	if[! -f go.mod]; then
-		go mod init 
-	go mod init $PACKAGE_NAME/$PACKAGE_VERSION
+	    go mod init
+	else
+	    go mod init $PACKAGE_NAME/$PACKAGE_VERSION
 	if ! go test ./...; then
 		test_with_master_without_flag_u
 		exit 0
@@ -94,8 +97,9 @@ function test_without_flag_u(){
 	echo "Testing $PACKAGE_PATH with $PACKAGE_VERSION"
 	# Ensure go.mod file exists
 	if[! -f go.mod]; then
-		go mod init 
-	go mod init $PACKAGE_NAME/$PACKAGE_VERSION 
+	    go mod init
+	else
+	    go mod init $PACKAGE_NAME/$PACKAGE_VERSION 
 	if ! go test ./...; then
 		test_with_master
 		exit 0
@@ -117,8 +121,9 @@ cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_NAME@$PACKAGE_VERSION)
 echo "Testing $PACKAGE_PATH with $PACKAGE_VERSION"
 # Ensure go.mod file exists
 if[! -f go.mod]; then
-	go mod init 
-go mod init $PACKAGE_NAME/$PACKAGE_VERSION 
+    go mod init
+else
+    go mod init $PACKAGE_NAME/$PACKAGE_VERSION 
 if ! go test ./...; then
 	test_with_master
 	exit 0
