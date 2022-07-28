@@ -72,7 +72,7 @@ function test_with_master(){
 	cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_NAME@$PACKAGE_VERSION)
 	echo "Testing $PACKAGE_PATH with $PACKAGE_VERSION"
 	# Ensure go.mod file exists
-	if[! -f go.mod]; then
+	if [! -f go.mod ]; then
 	    go mod init
 	else
 	    go mod init $PACKAGE_NAME/$PACKAGE_VERSION
@@ -96,7 +96,7 @@ function test_without_flag_u(){
 	cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_NAME@$PACKAGE_VERSION)
 	echo "Testing $PACKAGE_PATH with $PACKAGE_VERSION"
 	# Ensure go.mod file exists
-	if[! -f go.mod]; then
+	if [ ! -f go.mod ]; then
 	    go mod init
 	else
 	    go mod init $PACKAGE_NAME/$PACKAGE_VERSION 
@@ -120,7 +120,7 @@ fi
 cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_NAME@$PACKAGE_VERSION)
 echo "Testing $PACKAGE_PATH with $PACKAGE_VERSION"
 # Ensure go.mod file exists
-if[! -f go.mod]; then
+if [ ! -f go.mod ]; then
     go mod init
 else
     go mod init $PACKAGE_NAME/$PACKAGE_VERSION 
