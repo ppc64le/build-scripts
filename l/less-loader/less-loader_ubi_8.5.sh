@@ -4,7 +4,7 @@
 # Package          : less-loader
 # Version          : 3203eb7
 # Source repo      : https://github.com/webpack-contrib/less-loader
-# Tested on        : RHEL 8.5,UBI 8.5
+# Tested on        : RHEL 8.5, UBI 8.5
 # Language         : Node
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
