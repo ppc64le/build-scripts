@@ -4,7 +4,7 @@
 # Package          : iconv-lite
 # Version          : v0.5.0, v0.5.1
 # Source repo      : https://github.com/ashtuchkin/iconv-lite
-# Tested on        : RHEL 8.5,UBI 8.5
+# Tested on        : RHEL 8.5, UBI 8.5
 # Language         : Node
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
