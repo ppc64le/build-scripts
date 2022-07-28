@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/floridoo/concat-with-sourcemaps.git
 
 yum install -y yum-utils git jq
 
-NODE_VERSION=v12.22.4
+NODE_VERSION=v10.18.0
 #installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 source ~/.bashrc
