@@ -1,7 +1,8 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: mink
-# Version	: v1.8.0
+# Version	: v1.8.0, v1.9.0
 # Source repo	: https://github.com/minkphp/Mink
 # Tested on	: ubi 8.5
 # Language      : PHP
