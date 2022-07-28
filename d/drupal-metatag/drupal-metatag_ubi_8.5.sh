@@ -2,11 +2,11 @@
 
 # ----------------------------------------------------------------------------
 # Package          : metatag
-# Version          : 8.x-1.9
+# Version          : 8.x-1.4
 # Source repo      : https://git.uwaterloo.ca/drupal-org/metatag.git
 # Tested on        : UBI 8.5
 # Language         : PHP
-# Travis-Check     : False
+# Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Raju Sah <Raju.Sah@ibm.com>
 #
@@ -23,7 +23,7 @@ PACKAGE_NAME=metatag
 CORE_PACKAGE_NAME=drupal
 PACKAGE_URL=https://git.uwaterloo.ca/drupal-org/metatag.git
 CORE_PACKAGE_URL=https://github.com/drupal/drupal
-PACKAGE_VERSION=${1:-8.x-1.9}
+PACKAGE_VERSION=${1:-8.x-1.4}
 
 yum module enable php:7.4 -y
 yum install -y git php php-dom php-mbstring zip unzip gd gd-devel php-gd php-pdo php-mysqlnd
@@ -76,7 +76,7 @@ git checkout $PACKAGE_VERSION
 
 cd ../..
 cd core/
-if ! ../vendor/phpunit/phpunit/phpunit ../modules/metatag/src/Tests/; then
+if ! ../vendor/phpunit/phpunit/phpunit ../modules/metatag/tests/src/; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
@@ -87,4 +87,4 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
-#Note: test is in pairity.
+
