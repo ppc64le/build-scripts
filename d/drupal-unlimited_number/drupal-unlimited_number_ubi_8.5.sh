@@ -80,11 +80,6 @@ if ! composer update --no-interaction --ignore-platform-req=ext-gd; then
 		echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
     	exit 1
-else 
-        echo "------------------$PACKAGE_NAME:install_success---------------------------------------"
-		echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Success"
-    	exit 0
 fi
 
 if !  ../vendor/phpunit/phpunit/phpunit ../modules/unlimited_number/; then
