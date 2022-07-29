@@ -2,7 +2,7 @@
 
 # ----------------------------------------------------------------------------
 # Package          : drupal/eu_cookie_compliance
-# Version          : 1.14.0
+# Version          : 1.14.0, 1.19.0
 # Source repo      : https://git.drupalcode.org/project/eu_cookie_compliance
 # Tested on        : UBI 8.5
 # Language         : PHP
