@@ -2,7 +2,7 @@
 
 # ----------------------------------------------------------------------------
 # Package          : drupal-ultimate_cron
-# Version          : 7.x-2.x
+# Version          : 7.x-2.0
 # Source repo      : https://git.drupalcode.org/project/ultimate_cron
 # Tested on        : UBI 8.5
 # Language         : PHP
