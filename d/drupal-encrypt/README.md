@@ -4,9 +4,9 @@ How to run drupal related modules test cases.
 
 Summary :-
     
-    To run test cases in drupal module we need drupal core package and drupal complete framework which incluse one database,apache server,and core package itself.
-    There are 3 type of tests in drupal unit,functional,intergration. For unit test we dont need drupal full framework like database.
-    Unit test does not use database testing.
+    To run test cases in drupal module, we need drupal core package and drupal complete framework which incluse one database, apache server, and core package itself.
+    There are 3 type of tests in drupal unit, functional, intergration. For unit test we don't need drupal full framework like database.
+    Unit test don't use database testing.
  
 *************************
 
@@ -19,22 +19,22 @@ Copy following files into VM thats needed to run docker file succesfully.
 
 Rename 2 files:-
 
-    #cp Dockerfile.drupal.ubi Dockerfile
-    #cp automate_drupal.sh.txt automate_drupal.sh
-    #chmod +x automate_drupal.sh
+    # cp Dockerfile.drupal.ubi Dockerfile
+    # cp automate_drupal.sh.txt automate_drupal.sh
+    # chmod +x automate_drupal.sh
      
 
 Now create an image from dockerfile (Dockerfile.drupal.ubi i.e Dockerfile)
   
-     #docker build -t drupal_image .
-     #docker images
+     # docker build -t drupal_image .
+     # docker images
  
  
 Then run a container using that image.
 
-    #docker run -it -d drupal_image /bin/bash
-    #docker ps
-    #docker exec -it <Container_Id> /bin/bash
+    # docker run -it -d drupal_image /bin/bash
+    # docker ps
+    # docker exec -it <Container_Id> /bin/bash
 
 Live drupal webserver will be available at http://<ip>:8081
 
@@ -51,29 +51,29 @@ Step 2:-
 
 Go to :-
 
-    #cd /opt/app-root/src/drupal/modules
+    # cd /opt/app-root/src/drupal/modules
 
 Clone the module which you wanted to test :-
 
-    #git clone https://git.drupalcode.org/project/encrypt
-    #git checkout <versions>   
+    # git clone https://git.drupalcode.org/project/encrypt
+    # git checkout <versions>   
     
 Follow automate_drupal.sh for more detail:-
   
-    #cd /opt/app-root/src/drupal
+    # cd /opt/app-root/src/drupal
     
-     bash-4.4#yum install -y git php php-json php-dom php-mbstring zip unzip gd gd-devel php-gd php-pdo php-mysqlnd
-     bash-4.4#php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/bin --filename=composer
+     bash-4.4# yum install -y git php php-json php-dom php-mbstring zip unzip gd gd-devel php-gd php-pdo php-mysqlnd
+     bash-4.4# php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/bin --filename=composer
  
      bash-4.4# composer install
      bash-4.4# composer require drupal/key:1.15.0
-	 bash-4.4# composer require drupal/encrypt
+     bash-4.4# composer require drupal/encrypt
 	 
-    #cd /opt/app-root/src/drupal/modules/encrypt
+    # cd /opt/app-root/src/drupal/modules/encrypt
     bash-4.4# pwd
     /opt/app-root/src/drupal/modules/encrypt
 
-    #composer require --dev drush/drush
+    # composer require --dev drush/drush
     bash-4.4# ./vendor/bin/drush pm:enable encrypt   
 
     cd /opt/app-root/src/drupal/core
@@ -85,15 +85,9 @@ RUN Test Kernel/Functional:-
 -----------------------    
 
     bash-4.4# ../vendor/phpunit/phpunit/phpunit ../modules/encrypt/tests/
-    
-    
- 
- 
+     
 Test output
 ----------------
-
-Tested with  drupal/core - 9.4.x
- 
 
 bash-4.4# ../vendor/phpunit/phpunit/phpunit ../modules/encrypt/tests/src/
 PHPUnit 7.5.20 by Sebastian Bergmann and contributors.
@@ -104,26 +98,3 @@ Testing ../modules/encrypt/tests/src/
 Time: 1.85 minutes, Memory: 6.00 MB
 
 OK (16 tests, 95 assertions)
-
-
-Note :-
-------
-
-Following version needed to run encrypt 8.x-3.0
-
-1. drupal/core 8.9.11
-2. encrypt
-3. composer require --dev phpunit/phpunit --with-all-dependencies ^7
-
- 
-bash-4.4# pwd
-/opt/app-root/src/drupal/core
-
-bash-4.4# cp phpunit.xml.dist phpunit.xml
-
-bash-4.4# vim phpunit.xml
-Edit it like
-
-    <env name="SIMPLETEST_BASE_URL" value="http://0.0.0.0:8081"/>
-   
-    <env name="SIMPLETEST_DB" value="pgsql://postgres:postgres@localhost/dru2_pg"/>
