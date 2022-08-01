@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: node-fetch-h2
-# Version	: 1daae67
+# Version	: v2.3.0
 # Source repo	: https://github.com/MikeRalphson/node-fetch-h2.git
 # Tested on	: UBI 8.5
 # Language      : Node
@@ -19,12 +19,11 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=node-fetch-h2
-PACKAGE_VERSION=${1:-1daae67}
+PACKAGE_VERSION=${1:-v2.3.0}
 PACKAGE_URL=https://github.com/MikeRalphson/node-fetch-h2.git
 
 yum install -y yum-utils git jq
-
-NODE_VERSION=v12.22.4
+NODE_VERSION=v10.23.1
 #installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 source ~/.bashrc
