@@ -19,12 +19,11 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=github.com/matryer
+PACKAGE_NAME=try
 # Defaults to PACKAGE_VERSION=9ac251b645a2
 # This script also works with master branch.
 PACKAGE_VERSION=${1:-9ac251b645a2}
 PACKAGE_URL="https://github.com/matryer/try.git"
-CURDIR="$(pwd)"
 
 dnf install -y git golang 
 
@@ -36,8 +35,8 @@ export PATH=$GOPATH/bin:$PATH
 
 
 # Install geo 
-mkdir -p $GOPATH/src/$PACKAGE_NAME
-cd $GOPATH/src/$PACKAGE_NAME
+mkdir -p $GOPATH/src/github.com/matryer
+cd $GOPATH/src/github.com/matryer
 git clone $PACKAGE_URL
 cd try
 git checkout $PACKAGE_VERSION
@@ -62,7 +61,7 @@ if ! go mod tidy ; then
 fi
 
 
-if ! go test ./... ; then
+if ! go test -v  ./... ; then
         echo "------------------$PACKAGE_NAME:test_fails---------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails"
@@ -75,5 +74,3 @@ else
 fi
 
 echo "Complete!"
-
-
