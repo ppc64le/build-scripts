@@ -4,7 +4,7 @@
 # Package	: github.com/golang/geo
 # Version	: 740aa86cb551, 5b978397cfec, master
 # Source repo	: https://github.com/golang/geo
-# Tested on	: UBI 8.6
+# Tested on	: UBI 8.5, 8.6
 # Language      : GO
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
