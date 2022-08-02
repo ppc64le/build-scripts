@@ -32,7 +32,7 @@ OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 # set GOPATH
 export GOPATH=$HOME/go
 
-# Install geo 
+# Install try 
 mkdir -p $GOPATH/src/github.com/matryer
 cd $GOPATH/src/github.com/matryer
 git clone $PACKAGE_URL
