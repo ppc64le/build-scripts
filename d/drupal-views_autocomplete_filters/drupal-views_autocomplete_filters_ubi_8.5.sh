@@ -24,7 +24,7 @@ CORE_PACKAGE_NAME=drupal
 PACKAGE_URL=https://git.drupalcode.org/project/views_autocomplete_filters
 CORE_PACKAGE_URL=https://github.com/drupal/drupal
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-8.x-1.3}https://git.drupalcode.org/project/views_autocomplete_filters
+PACKAGE_VERSION=${1:-8.x-1.3}
 
 yum module enable php:7.4 -y
 yum install -y git php php-json php-dom php-mbstring zip unzip gd gd-devel php-gd php-pdo php-mysqlnd
@@ -94,4 +94,3 @@ else
 fi
 
 #No test case available
-
