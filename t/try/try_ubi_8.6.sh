@@ -31,8 +31,6 @@ OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
 # set GOPATH
 export GOPATH=$HOME/go
-export PATH=$GOPATH/bin:$PATH
-
 
 # Install geo 
 mkdir -p $GOPATH/src/github.com/matryer
