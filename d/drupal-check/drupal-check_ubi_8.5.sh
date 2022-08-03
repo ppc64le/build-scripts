@@ -57,10 +57,10 @@ fi
 cd modules/
 
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
-        echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
-        exit 0
+    echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
+    exit 0
 fi
 
 cd $PACKAGE_NAME
@@ -68,6 +68,7 @@ git checkout $PACKAGE_VERSION
 cd ../..
 cd core/
 
+#drupal_check is static anlyser tool that will check the correctness and deprecation error of drupal PHP package
 if ! php ../vendor/bin/drupal-check ../modules/drupal-check/tests/; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
