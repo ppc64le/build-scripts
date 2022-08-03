@@ -41,8 +41,8 @@ mkdir -p /home/tester/go
 cd $GOPATH
 
 #clone package
-mkdir -p $GOPATH/src/github.com/sigurn
-cd $GOPATH/src/github.com/sigurn
+mkdir -p $GOPATH/src/github.com/xtgo
+cd $GOPATH/src/github.com/xtgo
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_COMMIT_HASH
