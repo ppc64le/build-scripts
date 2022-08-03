@@ -30,7 +30,7 @@ yum install -y git wget
 
 #install go
 rm -rf /bin/go
-wget https:/go.dev/dl/$GO_VERSION.linux-ppc64le.tar.gz 
+wget https://go.dev/dl/$GO_VERSION.linux-ppc64le.tar.gz 
 tar -C /bin -xzf $GO_VERSION.linux-ppc64le.tar.gz  
 rm -f $GO_VERSION.linux-ppc64le.tar.gz
 
