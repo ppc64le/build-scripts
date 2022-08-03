@@ -57,7 +57,7 @@ echo "FLUSHDB / FLUSHALL should replicate" >> skipfile
 
 cd $HOME_DIR/$PACKAGE_NAME
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/r/redis/redis_7.0.4.patch
-git apply $HOME_DIR/redis_7.0.4.patch
+git apply redis_7.0.4.patch
 
 if ! ./runtest --skipfile skipfile; then
 	if ! ./runtest --skipfile skipfile; then
