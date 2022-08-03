@@ -22,7 +22,7 @@ PACKAGE_NAME=redis
 PACKAGE_VERSION=${1:-7.0.4}
 PACKAGE_URL=https://github.com/redis/redis
 
-yum install -y git gcc diffutils tcl procps make
+yum install -y git gcc diffutils tcl procps make wget
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 HOME_DIR=`pwd`
