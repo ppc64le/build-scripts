@@ -38,7 +38,7 @@ cd $HOME_DIR/$PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 # Clean any previously build dependencies and files, useful for reinstall/upgrade
 if ! make distclean; then
-     	echo "------------------$PACKAGE_NAME:cleanup_fails-------------------------------------"
+    echo "------------------$PACKAGE_NAME:cleanup_fails-------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Cleanup_Fails"
 	exit 1
