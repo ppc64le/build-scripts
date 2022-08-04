@@ -36,12 +36,37 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_COMMIT_HASH
 
-go mod init
+if ! go mod init; then
+        echo "------------------$PACKAGE_NAME:initialize_fails-------------------------------------"
+        echo "$PACKAGE_VERSION $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Initialize_Fails"
+        exit 1
+fi
+
 #To upgrade to the versions selected by go 1.16
-go mod tidy -go=1.16 && go mod tidy -go=1.17
+if ! go mod tidy -go=1.16 && go mod tidy -go=1.17; then
+        echo "------------------$PACKAGE_NAME:dependency_fails-------------------------------------"
+        echo "$PACKAGE_VERSION $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Dependency_Fails"
+        exit 1
+fi
 
-go install ./...
-go test -v ./...
+if ! go install ./...; then
+        echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+        echo "$PACKAGE_VERSION $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+        exit 1
+fi
 
-exit 0
+if ! go test -v ./...; then
+        echo "------------------$PACKAGE_NAME:test_fails---------------------"
+        echo "$PACKAGE_VERSION $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Test_Fails"
+        exit 1
+else
+        echo "------------------$PACKAGE_NAME:install_and_test_success-------------------------"
+        echo "$PACKAGE_VERSION $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub  | Pass |  Build_and_Test_Success"
+        exit 0
+fi
 
