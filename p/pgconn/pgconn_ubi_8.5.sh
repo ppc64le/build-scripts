@@ -1,9 +1,9 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 
 # -----------------------------------------------------------------------------
 #
 # Package       : pgconn
-# Version       : REL8_4
+# Version       : v1.9.0
 # Source repo   : https://github.com/jackc/pgconn.git
 # Tested on     : UBI 8.5
 # Language      : go
@@ -22,12 +22,10 @@
 
 
 PACKAGE_NAME=pgconn
-PACKAGE_VERSION=v1.9.0
+PACKAGE_VERSION=${1:-v1.9.0}
 PACKAGE_URL=https://github.com/jackc/pgconn.git
 
 dnf install wget git -y
-
-PACKAGE_VERSION=${1:-v1.9.0}
 
 cat > /etc/yum.repos.d/centos.repo<<EOF
 [local-rhn-server-baseos]
@@ -51,8 +49,7 @@ yum group install -y 'Development Tools'
 yum install -y readline-devel
 
 if [ -d "postgres" ] ; then
-  rm -rf postgres
-
+    rm -rf postgres
 fi
 
 # Build and install postgresql to build and test pgconn package
@@ -63,12 +60,10 @@ cd postgres
 make
 make install
 
-#if [ ! -d "/usr/sbin/adduser" ] ; then
-   adduser postgres || true
-#fi
-if [ -d "/usr/local/pgsql/data2" ] ; then
-  rm -rf /usr/local/pgsql/data2
+adduser postgres || true
 
+if [ -d "/usr/local/pgsql/data2" ] ; then
+    rm -rf /usr/local/pgsql/data2
 fi
 mkdir /usr/local/pgsql/data2
 chown postgres:postgres /usr/local/pgsql/data2
@@ -95,17 +90,16 @@ OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
 #Check if package exists
 if [ -d "$PACKAGE_NAME" ] ; then
-  rm -rf $PACKAGE_NAME
-  echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"
-
+    rm -rf $PACKAGE_NAME
+    echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"
 fi
 
 
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
-        echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-                echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
-        exit 0
+    echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
+    exit 0
 fi
 cd /home/tester/$PACKAGE_NAME
 #cd  $PACKAGE_NAME
@@ -113,20 +107,20 @@ git checkout $PACKAGE_VERSION
 
 
 if ! (go build); then
-       echo "------------------$PACKAGE_NAME:build failed---------------------"
-       echo "$PACKAGE_VERSION $PACKAGE_NAME"
-       echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  build_Fails"
-       exit 1
+    echo "------------------$PACKAGE_NAME:build failed---------------------"
+    echo "$PACKAGE_VERSION $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  build_Fails"
+    exit 1
 fi
 
 if ! PGX_TEST_CONN_STRING="host=127.0.0.1 port=5433 dbname=postgres user=postgres password=password" go test -v ./...; then
-        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-        exit 1
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
+    exit 1
 else
-        echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-        echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/test_success
-        echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success" > /home/tester/output/version_tracker
-        exit 0
+    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/test_success
+    echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success" > /home/tester/output/version_tracker
+    exit 0
 fi
