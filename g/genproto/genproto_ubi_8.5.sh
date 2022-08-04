@@ -1,12 +1,12 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	    : google.golang.org/genproto
-# Version	    : v0.0.0, 0.0.0-20210204154452-deb828366460
+# Package	: google.golang.org/genproto
+# Version	: v0.0.0, 0.0.0-20210204154452-deb828366460
 # Source repo	: https://pkg.go.dev/google.golang.org/genproto
-# Tested on	    : UBI 8.5
+# Tested on	: UBI 8.5
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>
+# Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>/ Balavva Mirji <Balavva.Mirji@ibm.com>
 # Language      : GO
 # Travis-Check  : True
 #
