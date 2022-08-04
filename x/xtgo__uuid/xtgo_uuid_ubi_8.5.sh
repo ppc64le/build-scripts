@@ -1,10 +1,10 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	     : github.com/xtgo/uuid
-# Version	     : a0b114877d4caeffbd7f87e3757c17fce570fea7
+# Package	 : github.com/xtgo/uuid
+# Version	 : a0b114877d4caeffbd7f87e3757c17fce570fea7
 # Source repo	 : https://github.com/xtgo/uuid
-# Tested on	     : UBI 8.5
+# Tested on	 : UBI 8.5
 # Language       : GO
 # Travis-Check   : True
 # Script License : Apache License, Version 2 or later
