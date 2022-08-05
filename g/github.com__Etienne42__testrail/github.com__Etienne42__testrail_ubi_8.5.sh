@@ -23,7 +23,7 @@ PACKAGE_VERSION=${1:-9def6bd24a47723c046553ec5504f9ee54b73f9e}
 PACKAGE_URL=https://github.com/etienne42/testrail
 
 
-yum install -y git wget
+yum install -y git wget gcc
 wget https://golang.org/dl/go1.15.6.linux-ppc64le.tar.gz
 tar -C /bin -xf go1.15.6.linux-ppc64le.tar.gz
 export PATH=$PATH:/bin/go/bin
