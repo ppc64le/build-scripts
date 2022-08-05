@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: php-encryption
-# Version	: v2.2.1
+# Version	: v2.2.1,2.3.1
 # Source repo	: https://github.com/defuse/php-encryption
 # Tested on	: UBI 8.5
 # Language	: PHP
@@ -39,3 +39,8 @@ composer install
 sed -i '23d' test.sh && sed -i '23i./test/phpunit.sh "$BOOTSTRAP"' test.sh
 
 ./test.sh
+#Time: 2.01 minutes, Memory: 14.00MB
+
+#OK (1371 tests, 207547 assertions)
+
+#[root@powerVMlatest1 php-encryption]#
