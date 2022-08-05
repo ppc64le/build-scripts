@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: toxiproxy
-# Version	: v2.1.4
+# Version	: v2.1.4,v2.1.6
 # Source repo	: https://github.com/shopify/toxiproxy
 # Tested on	: UBI 8.5
 # Language      : GO
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Anup Kodlekere <Anup.Kodlekere@ibm.com>
+# Maintainer	: Anup Kodlekere <Anup.Kodlekere@ibm.com>, Haritha Patchari<haritha.patchari@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
