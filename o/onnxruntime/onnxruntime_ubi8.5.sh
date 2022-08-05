@@ -42,4 +42,4 @@ git checkout v$PACKAGE_VERSION
 ./build.sh
 
 exit 0
-
+#Package taking more than 40 min for testing so we need to do travis check false
