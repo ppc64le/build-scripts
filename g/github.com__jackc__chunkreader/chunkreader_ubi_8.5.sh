@@ -33,9 +33,6 @@ fi
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-go mod init github.com/jackc/chunkreader
-go mod tidy
-
 if ! go build -v ./...; then
     echo "------------------$PACKAGE_NAME: build failed-------------------------"
     exit 1
