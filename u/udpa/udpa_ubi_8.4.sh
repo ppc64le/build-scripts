@@ -48,10 +48,24 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_COMMIT_HASH
 
 cd go
-go mod tidy
+if ! go mod tidy; then
+        echo "------------------$PACKAGE_NAME:dependency_fails-------------------------------------"
+        echo "$PACKAGE_VERSION $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Dependency_Fails"
+        exit 1
+fi
 
-go install ./...
-# test cases not available for both versions. Hence skipping test
+if ! go install ./...; then
+        echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+        echo "$PACKAGE_VERSION $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+        exit 1
+else
+        echo "------------------$PACKAGE_NAME:build_and_install_success-------------------------"
+        echo "$PACKAGE_VERSION $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub  | Pass |  Install_Success"
+        exit 0
+fi
+
+# test cases are not available for both versions. Hence skipping test
 # go test -v ./...
-
-exit 0
