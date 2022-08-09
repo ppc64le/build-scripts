@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	 : github.com/serenize/snaker
-# Version	 : de5293a32fd929048775e277fa6dd163bdeac7b3
+# Version	 : de5293a32fd929048775e277fa6dd163bdeac7b3, a683aaf2d516deecd70cad0c72e3ca773ecfcef0
 # Source repo	 : https://github.com/serenize/snaker
 # Tested on	 : UBI 8.5
 # Language       : GO
