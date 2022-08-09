@@ -45,12 +45,37 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-go mod init
-go mod tidy
+if ! go mod init; then
+	echo "------------------$PACKAGE_NAME:initialize_fails-------------------------------------"
+	echo "$PACKAGE_VERSION $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Initialize_Fails"
+	exit 1
+fi
 
-go install ./...
+if ! go mod tidy; then
+	echo "------------------$PACKAGE_NAME:dependency_fails-------------------------------------"
+	echo "$PACKAGE_VERSION $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Dependency_Fails"
+	exit 1
+fi
+
+if ! go build -v ./...; then
+	echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
+	echo "$PACKAGE_VERSION $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
+	exit 1
+fi
+
 #test cases failed with below error. Same behviour observed on x86 platform as well
 #logex_test.go:58: except .test:logex_test.go:20][INFO] b not found
-go test -v ./...
-
-exit 0
+if ! go test -v ./...; then
+	echo "------------------$PACKAGE_NAME:test_fails---------------------"
+	echo "$PACKAGE_VERSION $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Test_Fails"
+	exit 1
+else
+	echo "------------------$PACKAGE_NAME:build_and_test_success-------------------------"
+	echo "$PACKAGE_VERSION $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub  | Pass |  Build_and_Test_Success"
+	exit 0
+fi
