@@ -8,13 +8,14 @@
 # Language      : go
 # Travis-Check  : true
 # Script License: Apache License, Version 2 or later
-# Maintainer    : BulkPackageSearch Automation {maintainer}
+# Maintainer    : Ankit Paraskar <Ankit.Paraskar@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
+# Note :- Script test case will fail due to unavailablity for dependent package to be installed on VM.
 #
 # ----------------------------------------------------------------------------
 
