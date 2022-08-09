@@ -15,7 +15,7 @@
 #                    It may not work as expected with newer versions of the
 #                    package and/or distribution. In such case, please
 #                    contact "Maintainer" of this script.
-#
+# Note:- Travis check is made false since it takes more time than travis timeout value.
 # ----------------------------------------------------------------------------
 
 # Variables
