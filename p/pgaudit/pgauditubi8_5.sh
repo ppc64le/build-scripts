@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/pgaudit/set_user.git
 # Tested on        : UBI 8.5
 # Language         : C++
-# Travis-Check     : False
+# Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Ankit Paraskar <Ankit.Paraskar@ibm.com>
 #
@@ -54,14 +54,17 @@ cd ..
 
 git clone https://github.com/postgres/postgres.git
 cd postgres
-./configure
+git checkout REL9_5_STABLE
+./configure --without-readline --without-zlib
 make install -s
 
 cd contrib
 git clone https://github.com/pgaudit/set_user.git
-git checkout $PACKAGE_VERSION
 
 cd set_user
+
+git checkout $PACKAGE_VERSION
+
 
 if ! (make && make install) ; then
                         echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
