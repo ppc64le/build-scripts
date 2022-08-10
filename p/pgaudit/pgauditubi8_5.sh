@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/pgaudit/set_user.git
 #PACKAGE_VERSION is configurable can be passed as an argument.
 PACKAGE_VERSION=REL2_0_1
 
-yum install -y git automake libtool make unzip gcc-c++ autoconf zlib xz m4 gettext help2man wget
+yum install -y git automake libtool make unzip gcc-c++ autoconf zlib xz m4 gettext help2man wget diffutils
 
 dnf install -qy http://mirror.nodesdirect.com/centos/8-stream/BaseOS/ppc64le/os/Packages/centos-gpg-keys-8-6.el8.noarch.rpm
 dnf install -qy http://mirror.nodesdirect.com/centos/8-stream/BaseOS/ppc64le/os/Packages/centos-stream-repos-8-6.el8.noarch.rpm
