@@ -7,7 +7,7 @@
 # Tested on     : UBI 8.4
 # Language      : GO
 # Travis-Check  : True
-# Script License: MIT License
+# Script License: Apache License, Version 2 or later
 # Maintainer    : Vaishnavi Patil <Vaishnavi.Patil3@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
