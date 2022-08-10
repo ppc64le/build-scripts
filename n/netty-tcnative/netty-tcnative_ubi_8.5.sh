@@ -28,7 +28,7 @@ if [ -z "$1" ]
     PACKAGE_VERSION=netty-tcnative-parent-2.0.54.Final
 fi
 
-dnf install make maven git sudo wget gcc-c++ apr-devel perl openssl-devel automake autoconf libtool -y
+yum install make maven git sudo wget gcc-c++ apr-devel perl openssl-devel automake autoconf libtool -y
 
 #Install cmake 21 and above
 wget https://github.com/Kitware/CMake/releases/download/v3.21.2/cmake-3.21.2.tar.gz
