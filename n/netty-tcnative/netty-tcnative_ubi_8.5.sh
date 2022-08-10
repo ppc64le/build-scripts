@@ -2,7 +2,7 @@
 #----------------------------------------------------------------------------
 #
 # Package       : netty-tcnative
-# Version       : 2.0.54
+# Version       : netty-tcnative-parent-2.0.54.Final
 # Source repo   : https://github.com/netty/netty-tcnative.git
 # Tested on     : UBI:8.5
 # Language      : C, Java
