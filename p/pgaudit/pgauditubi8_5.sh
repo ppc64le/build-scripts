@@ -34,46 +34,31 @@ dnf install -qy epel-release
 dnf install -qy gettext-devel
 
 wget https://ftp.gnu.org/gnu/bison/bison-3.8.tar.xz
-
 xz -d bison-3.8.tar.xz
-
 tar -xvf bison-3.8.tar
-
 cd bison-3.8
 
 ./configure
 make
 make install
-
 cd ..
 
 wget https://github.com/westes/flex/releases/download/v2.6.3/flex-2.6.3.tar.gz
-
 tar -xvf flex-2.6.3.tar.gz
-
 cd flex-2.6.3
-
-
-
 ./autogen.sh
 ./configure
 make 
 make install
-
 cd ..
 
 git clone https://github.com/postgres/postgres.git
-
 cd postgres
-
 ./configure
-
 make install -s
 
 cd contrib
-
 git clone https://github.com/pgaudit/set_user.git
-
 git checkout $PACKAGE_VERSION
 
 cd set_user
@@ -87,4 +72,3 @@ if ! (make && make install) ; then
                         echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
                         exit 0
                 fi
-
