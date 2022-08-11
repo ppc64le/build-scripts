@@ -48,6 +48,7 @@ cd $PACKAGE_NAME
 
 git checkout $PACKAGE_VERSION
 
+go mod init
 
 if ! go test -v ./...; then
    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
