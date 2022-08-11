@@ -1,12 +1,22 @@
 
-How to run drupal related modules test cases (Unit/Functional/Intergration).
+How to run drupal related modules test cases (Kernel).
 -------------
 
 Summary :-
 
-    To run test cases in drupal module we need build drupal core package and drupal complete framework which include one database,apache server,and drupal core package.
-    There are 3 type of tests in drupal unit,functional,intergration. For unit test we dont need drupal full framework like database.
-    Unit test does not use database testing as i tested some packages.
+    To run test cases in drupal module we need drupal core package and drupal complete framework which incluse one database,apache server,and core package itself.
+    There are different types of tests in drupal. For unit test we dont need drupal full framework like database.
+    Unit test does not use database testing.
+	
+	Some packages may require drupal 9.4.x version to run successfully. 
+	For drupal 9.4.x: 
+    Remove existing drupal folder from directory /opt/app-root/src/drupal and clone the 9.4.x version.
+        #  git clone https://github.com/drupal/drupal  
+        #  cd /opt/app-root/src/drupal/core
+        #  cp phpunit.xml.dist phpunit.xml
+    Edit the phpunit.xml file to update database url and apache server url.
+    <env name="SIMPLETEST_BASE_URL" value="http://0.0.0.0:8081"/>
+    <env name="SIMPLETEST_DB" value="pgsql://postgres:postgres@localhost/dru2_pg"/>
 
 *************************
 
@@ -50,53 +60,80 @@ Step 2:-
     /usr/sbin/httpd -k start;
 
 
-step 3 Go to :-
+Go to :-
 
     #cd /opt/app-root/src/drupal/modules
 
 Clone the module which you wanted to test :-
 
-/usr/sbin/httpd -k start
+    #git clone  https://git.drupalcode.org/project/<package_name>
+    #cd <package_name>
+    #git checkout <version>   
+  
+Follow automate_drupal.sh for more detail:-
 
-export PACKAGE_NAME=externalauth
+	#cd /opt/app-root/src/drupal
 
-cd /opt/app-root/src/drupal/modules
-git clone  https://git.drupalcode.org/project/$PACKAGE_NAME
-cd $PACKAGE_NAME
-git checkout 8.x-1.3
+	bash-4.4#yum install -y git php php-json php-dom php-mbstring zip unzip gd gd-devel php-gd php-pdo php-mysqlnd
+	bash-4.4#php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/bin --filename=composer
+	bash-4.4#composer require --dev phpunit/phpunit --with-all-dependencies ^8  --no-interaction
 
-cd /opt/app-root/src/drupal/core/
-../vendor/bin/drush pm:enable $PACKAGE_NAME
+	bash-4.4# composer install	
+	
+	bash-4.4# cd /opt/app-root/src/drupal/modules/<package_name>
+	
+	
+	#composer require --dev drush/drush
+	bash-4.4# ./vendor/bin/drush pm:enable   
+	
+	bash-4.4# cd /opt/app-root/src/drupal/core
+	    
+     
+	
+RUN TESTS:- 
+----------
 
-RUN TEST:---
+To run Kernel tests :-      
 
-bash-4.4# ../vendor/phpunit/phpunit/phpunit ../modules/externalauth/tests
-PHPUnit 7.5.20 by Sebastian Bergmann and contributors.
+    bash-4.4# ../vendor/phpunit/phpunit/phpunit ../modules/<package_name>/tests/src/Kernel/
 
-Testing ../modules/externalauth/tests
-................                                                  16 / 16 (100%)
+  
+Run all tests in one go :-
+    
+    bash-4.4# ../vendor/phpunit/phpunit/phpunit ../modules/<package_name>/tests
+    
+    
+Testcase Output :-
+--------------------------------
 
-Time: 4.21 seconds, Memory: 4.00 MB
+Kernel tests :-
 
-OK (16 tests, 41 assertions)
+	bash-4.4#  ../vendor/phpunit/phpunit/phpunit ../modules/externalauth/tests/src/Kernel/
+  PHPUnit 7.5.20 by Sebastian Bergmann and contributors.
+    
+  Testing ../modules/externalauth/tests/src/Kernel/
+  ..                                                                  2 / 2 (100%)
+      
+  Time: 5.25 seconds, Memory: 4.00 MB
+  
+  OK (2 tests, 21 assertions)
 
-bash-4.4# ../vendor/phpunit/phpunit/phpunit ../modules/externalauth/tests/src/Unit
-PHPUnit 7.5.20 by Sebastian Bergmann and contributors.
+All tests in one go :-
 
-Testing ../modules/externalauth/tests/src/Unit
-...............                                                   15 / 15 (100%)
+  bash-4.4#  ../vendor/phpunit/phpunit/phpunit ../modules/externalauth/tests
+  PHPUnit 7.5.20 by Sebastian Bergmann and contributors.
+  
+  Testing ../modules/externalauth/tests
+  .................                                                 17 / 17 (100%)
+  
+  Time: 5.37 seconds, Memory: 6.00 MB
+  
+  OK (17 tests, 55 assertions)
 
-Time: 992 ms, Memory: 4.00 MB
+Note:-
+----------
 
-OK (15 tests, 34 assertions)
+https://deninet.com/blog/2019/01/13/writing-automated-tests-drupal-8-part-2-functional-tests
+https://deninet.com/blog/2018/12/31/writing-automated-tests-drupal-8-part-1-test-types-and-set
 
-bash-4.4# ../vendor/phpunit/phpunit/phpunit ../modules/externalauth/tests/src/Kernel
-PHPUnit 7.5.20 by Sebastian Bergmann and contributors.
-
-Testing ../modules/externalauth/tests/src/Kernel
-.                                                                   1 / 1 (100%)
-
-Time: 3.29 seconds, Memory: 4.00 MB
-
-OK (1 test, 7 assertions)
-
+-------
