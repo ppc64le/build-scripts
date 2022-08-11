@@ -50,14 +50,14 @@ git checkout $PACKAGE_VERSION
 
 
 if ! go test -v ./...; then
-                        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-                        echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/test_fails
-                        echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master  | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
-                        exit 1
-                else
-                        echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-                        echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/test_success
-                        echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success" > /home/tester/output/version_tracker
-                        exit 0
-                fi
+   echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+   echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/test_fails
+   echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master  | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
+   exit 1
+else
+   echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+   echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/test_success
+   echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success" > /home/tester/output/version_tracker
+   exit 0
+fi
 
