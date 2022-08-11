@@ -21,10 +21,11 @@
 PACKAGE_NAME=github.com/uber/jaeger-client-go
 PACKAGE_VERSION=v2.20.1+incompatible
 PACKAGE_URL=https://github.com/uber/jaeger-client-go
+export GO_VERSION=${GO_VERSION:-1.15}
 
 yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git jq wget gcc-c++
 
-wget https://golang.org/dl/go1.15.linux-ppc64le.tar.gz && tar -C /bin -xf go1.15.linux-ppc64le.tar.gz && mkdir -p /home/tester/go/src /home/tester/go/bin /home/tester/go/pkg
+wget https://golang.org/dl/$GO_VERSION.linux-ppc64le.tar.gz && tar -C /bin -xf $GO_VERSION.linux-ppc64le.tar.gz && mkdir -p /home/tester/go/src /home/tester/go/bin /home/tester/go/pkg
 export PATH=$PATH:/bin/go/bin
 export GOPATH=/home/tester/go
 
