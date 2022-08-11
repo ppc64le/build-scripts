@@ -15,7 +15,7 @@
 #                    It may not work as expected with newer versions of the
 #                    package and/or distribution. In such case, please
 #                    contact "Maintainer" of this script.
-# Note:- Travis check is made false since it takes more time than travis timeout value.
+# 
 # ----------------------------------------------------------------------------
 
 # Variables
@@ -67,11 +67,11 @@ git checkout $PACKAGE_VERSION
 
 
 if ! (make && make install) ; then
-                        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-                        echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master  | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
-                        exit 0
-                else
-                        echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-                        echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
-                        exit 0
-                fi
+     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+     echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master  | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
+     exit 0
+else
+     echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+     echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
+     exit 0
+fi
