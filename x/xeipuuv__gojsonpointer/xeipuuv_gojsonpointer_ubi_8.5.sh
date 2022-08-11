@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	 : xeipuuv/gojsonpointer
-# Version	 : 02993c407bfbf5f6dae44c4f4b1cf6a39b5fc5bb
+# Version	 : 02993c407bfbf5f6dae44c4f4b1cf6a39b5fc5bb, 4e3ac2762d5f479393488629ee9370b50873b3a6, 6fe8760cad3569743d51ddbb243b26f8456742dc
 # Source repo	 : https://github.com/xeipuuv/gojsonpointer
 # Tested on	 : UBI 8.5
 # Language       : GO
