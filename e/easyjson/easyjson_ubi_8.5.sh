@@ -47,8 +47,14 @@ fi
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-go mod init
-go mod tidy
+if ! go mod init; then
+    echo "------------------$PACKAGE_NAME: mod init failed-------------------------"
+    exit 1
+fi
+if ! go mod tidy; then
+    echo "------------------$PACKAGE_NAME: mod tidy failed-------------------------"
+    exit 1
+fi
 
 if ! go build; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
