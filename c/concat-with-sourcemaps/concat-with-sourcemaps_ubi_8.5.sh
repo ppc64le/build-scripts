@@ -4,7 +4,7 @@
 #
 # Package          : concat-with-sourcemaps
 # Version          : v1.0.7
-# Source repo      : https://github.com/floridoo/concat-with-sourcemaps
+# Source repo      : https://github.com/floridoo/concat-with-sourcemaps.git
 # Tested on        : RHEL 8.5,UBI 8.5
 # Language         : Node
 # Travis-Check     : True
@@ -50,6 +50,7 @@ fi
 
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+npm install --save-dev mocha
 if ! npm install && npm audit fix && npm audit fix --force; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -69,12 +70,10 @@ else
     exit 0
 fi
 
-#✓ should not allocate an uninitialized buffer when pass
 # tests 77
 # pass  77
 #✓ ok
-#------------------concat-with-sourcemaps:install_&_test-------------
-#https://github.com/floridoo/concat-with-sourcemaps.git
-#concat-with-sourcemaps  |  https://github.com/floridoo/t | v1.0.7 | "Red Hat Enterprise Linux 8.5 (Ootpa)" | Gtall_and_Test_Success
-#[root@99e5b2686e53 /]#
+#------------------concat-with-sourcemaps:install_&_test_both_success-------------------------
+#https://github.com/floridoo/concat-with-sourcemaps.git concat-with-sourcemaps
+#concat-with-sourcemaps  |  https://github.com/floridoo/concat-with-sourcemaps.git | v1.0.7 | "Red Hat Enterprise Linux 8.5 (Ootpa)" | GitHub  | Pass |  Both_Install_and_Test_Success
 
