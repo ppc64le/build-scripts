@@ -1,13 +1,14 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package       : go-tools
-# Version       : v0.3.0-0.dev
+# Version       : v0.3.0-0.dev, v0.2.1
 # Source repo   : https://github.com/dominikh/go-tools
 # Tested on     : UBI 8.4
 # Language      : GO
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Saurabh Ghumnar / Siddhesh Ghadi <Siddhesh.Ghadi@ibm.com>
+# Maintainer	: Saurabh Ghumnar / Siddhesh Ghadi <Siddhesh.Ghadi@ibm.com> / Vaishnavi Patil <Vaishnavi.Patil3@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -16,9 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
-
-set -eu
 
 VERSION=${1:-v0.3.0-0.dev}
 

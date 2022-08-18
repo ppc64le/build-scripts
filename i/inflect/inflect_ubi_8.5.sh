@@ -2,13 +2,13 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : inflect
-# Version       : v0.19.0
+# Version       : v0.19.0, 16a898ed1f4943794fb9b0e7afb7376a7619cf21
 # Source repo   : https://github.com/go-openapi/inflect
 # Tested on     : UBI: 8.5
 # Language      : Go
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Shreya Kajbaje <Shreya.Kajbaje@ibm.com>
+# Maintainer    : Shreya Kajbaje <Shreya.Kajbaje@ibm.com>, Vaishnavi Patil <Vaishnavi.Patil3@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
