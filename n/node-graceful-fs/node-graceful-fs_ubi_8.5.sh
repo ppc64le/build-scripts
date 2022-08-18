@@ -3,13 +3,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : node-graceful-fs
-# Version       : v4.2.3, v4.2.6
+# Version       : v4.2.3, v4.2.6,v4.2.8
 # Source repo   : https://github.com/isaacs/node-graceful-fs.git
 # Tested on     : UBI 8.5
 # Language      : Node
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Vikas Kumar <kumar.vikas@in.ibm.com>
+# Maintainer    : Vikas Kumar <kumar.vikas@in.ibm.com>, Bhagat Singh <Bhagat.singh1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
