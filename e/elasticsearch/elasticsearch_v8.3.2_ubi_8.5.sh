@@ -38,7 +38,8 @@ git clone https://github.com/elastic/elasticsearch.git
 cd elasticsearch && git checkout $ELASTICSEARCH_VERSION
 
 # apply patch
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_v8.3.2.patch
+# wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_v8.3.2.patch
+wget https://raw.githubusercontent.com/vishakadesai/build-scripts/es832/e/elasticsearch/elasticsearch_v8.3.2.patch
 git apply elasticsearch_v8.3.2.patch
 
 sed -i 's/openjdk/adoptium/' build-tools-internal/version.properties
