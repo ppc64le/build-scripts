@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: MinkGoutteDriver
+# Package	: mink-goutte-driver
 # Version	: v1.2.1
 # Source repo	: https://github.com/minkphp/MinkGoutteDriver
 # Tested on	: UBI 8.6
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=MinkGoutteDriver
+PACKAGE_NAME=mink-goutte-driver
 PACKAGE_VERSION=${1:-v1.2.1}
 PACKAGE_URL=https://github.com/minkphp/MinkGoutteDriver
 
@@ -26,9 +26,9 @@ dnf update -y
 dnf module enable php:7.4 -y
 dnf install php php-devel php-json php-dom php-mbstring php-zip php-gd zip git nc gd gd-devel php-gd php-pdo php-mysqlnd php-xdebug -y
 
-#Install MinkGoutteDriver
+#Install mink-goutte-driver
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+cd MinkGoutteDriver
 git checkout $PACKAGE_VERSION
 curl -sS https://getcomposer.org/installer | php
 php composer.phar require fabpot/goutte '~2' --no-update  --no-interaction 
