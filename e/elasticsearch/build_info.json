@@ -75,8 +75,8 @@
         "build_script" : "elasticsearch_v8.2.1_ubi_8.5.sh"
     },
 
-    "v8.3.*" : {
-        "dir":"8.3.0_ubi_8",
+    "v8.3.2" : {
+        "dir":"8.3.2_ubi_8",
         "patches": {
             "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_v8.3.2.patch"
         },
