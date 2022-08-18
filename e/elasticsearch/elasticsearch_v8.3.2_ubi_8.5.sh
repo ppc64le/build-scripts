@@ -40,6 +40,11 @@ cd elasticsearch && git checkout $ELASTICSEARCH_VERSION
 # apply patch
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_v8.3.2.patch
 git apply elasticsearch_v8.3.2.patch
+
+sed -i 's/openjdk/adoptium/' build-tools-internal/version.properties
+sed -i 's/18.0.1.*/18.0.1+10/' build-tools-internal/version.properties
+sed -i 's/18.0.2.*/18.0.2+9/' build-tools-internal/version.properties
+
 mkdir -p distribution/archives/linux-ppc64le-tar
 echo "// This file is intentionally blank. All configuration of the distribution is done in the parent project." > distribution/archives/linux-ppc64le-tar/build.gradle
 mkdir -p distribution/archives/oss-linux-ppc64le-tar

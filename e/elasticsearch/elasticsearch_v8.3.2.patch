@@ -32,22 +32,7 @@ index dff5c3b28d2..9ea09ba9660 100644
 +            "unknown architecture [unknown] for jdk [testjdk], must be one of [aarch64, x64, ppc64le]"
          );
      }
- 
-diff --git a/build-tools-internal/version.properties b/build-tools-internal/version.properties
-index 99f254daac5..e5827e12906 100644
---- a/build-tools-internal/version.properties
-+++ b/build-tools-internal/version.properties
-@@ -1,8 +1,8 @@
- elasticsearch     = 8.3.2
- lucene            = 9.2.0
- 
--bundled_jdk_vendor = openjdk
--bundled_jdk = 18.0.1.1+2@65ae32619e2f40f3a9af3af1851d6e19
-+bundled_jdk_vendor = adoptium
-+bundled_jdk = 18.0.1+10
- 
- checkstyle = 9.3
- 
+  
 diff --git a/build-tools/src/main/java/org/elasticsearch/gradle/Architecture.java b/build-tools/src/main/java/org/elasticsearch/gradle/Architecture.java
 index 665568e3373..33ae20cbc3d 100644
 --- a/build-tools/src/main/java/org/elasticsearch/gradle/Architecture.java
