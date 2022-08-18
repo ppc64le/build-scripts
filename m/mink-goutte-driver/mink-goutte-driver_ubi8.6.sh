@@ -19,14 +19,12 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=MinkGoutteDriver
-PACKAGE_VERSION=v1.2.1
+PACKAGE_VERSION=${1:-v1.2.1}
 PACKAGE_URL=https://github.com/minkphp/MinkGoutteDriver
 
-yum update -y
-yum module enable php:7.4 -y
-yum install php php-devel php-json php-dom php-mbstring php-zip php-gd zip git nc gd gd-devel php-gd php-pdo php-mysqlnd php-xdebug -y
-
-
+dnf update -y
+dnf module enable php:7.4 -y
+dnf install php php-devel php-json php-dom php-mbstring php-zip php-gd zip git nc gd gd-devel php-gd php-pdo php-mysqlnd php-xdebug -y
 
 #Install MinkGoutteDriver
 git clone $PACKAGE_URL
