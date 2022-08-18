@@ -40,7 +40,6 @@ cd vault
 git checkout $PACKAGE_VERSION
 
 go mod init
-make fmt
 make bootstrap
 go mod vendor
 make
