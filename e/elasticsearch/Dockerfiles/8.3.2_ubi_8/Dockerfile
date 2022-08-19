@@ -16,8 +16,7 @@ ARG PACKAGE_VERSION=v8.3.2
 FROM registry.access.redhat.com/ubi8/ubi:latest AS builder
 
 ARG PACKAGE_VERSION=v8.3.2
-# ARG PATCH=https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_v8.3.2.patch
-ARG PATCH=https://raw.githubusercontent.com/vishakadesai/build-scripts/es832/e/elasticsearch/elasticsearch_v8.3.2.patch
+ARG PATCH=https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_v8.3.2.patch
 # `tini` is a tiny but valid init for containers. This is used to cleanly
 # control how ES and any child processes are shut down.
 #
