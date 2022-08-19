@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=vault
 PACKAGE_VERSION=${1:-v1.11.2}
-PACKAGE_URL=https://github.com/hashicorp/vault.git
+PACKAGE_URL=https://github.com/hashicorp/vault
 
 yum install -y openssl sudo make git gcc wget
 
@@ -39,7 +39,6 @@ git clone $PACKAGE_URL
 cd vault
 git checkout $PACKAGE_VERSION
 
-go mod init
 go mod tidy
 make bootstrap
 go mod vendor
@@ -48,9 +47,9 @@ make
 if ! make; then
 	echo "------------------$PACKAGE_NAME:build_fails---------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME"
-	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Test_Fails"
 else
 	echo "------------------$PACKAGE_NAME:build_success-------------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME"
-	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Install_and_Test_Success"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub  | Pass |  Install_and_Test_Success"
 fi
