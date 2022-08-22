@@ -1,6 +1,14 @@
 # This file has been adapted from the original work at "https://github.com/fluent/fluentd-docker-image/blob/master/v1.14/alpine/Dockerfile"
 
+
+
 FROM registry.access.redhat.com/ubi8/ubi:latest
+
+
+ARG PACKAGE_VERSION=v1.14.5
+ARG ElASTIC_VERSION=7.17
+ARG FLUENT_PLUGIN_ELASTIC_VERSION=4.0.5
+
 
 # `tini` is a tiny but valid init for containers. This is used to cleanly
 # control how ES and any child processes are shut down.
@@ -8,6 +16,8 @@ FROM registry.access.redhat.com/ubi8/ubi:latest
 # The tini GitHub page gives instructions for verifying the binary using
 # gpg, but the keyservers are slow to return the key and this can fail the
 # build. Instead, we check the binary against the published checksum.
+
+
 RUN set -eux ; \
     tini_bin="" ; \
     case "$(arch)" in \
@@ -23,6 +33,7 @@ RUN set -eux ; \
     mv ${tini_bin} /bin/tini ; \
     chmod +x /bin/tini
 
+
 RUN yum install -y gcc make redhat-rpm-config ca-certificates ruby ruby-irb ruby-devel gnupg \
     && echo 'gem: --no-document' >> /etc/gemrc \
     && gem install yajl-ruby -v 1.4.1 \
@@ -32,10 +43,12 @@ RUN yum install -y gcc make redhat-rpm-config ca-certificates ruby ruby-irb ruby
     && gem install json -v 2.4.1 \
     && gem install async-http -v 0.54.0 \
     && gem install ext_monitor -v 0.1.2 \
-    && gem install fluentd -v 1.14.5 \
+    && GEM_VERSION=`echo $PACKAGE_VERSION | tr -d '[A-Z][a-z]'` \
+    && gem install fluentd -v ${GEM_VERSION} \
     && gem install bigdecimal -v 1.4.4 \
     && yum remove -y gcc make redhat-rpm-config ruby-devel \
     && rm -rf /tmp/* /var/tmp/* /usr/lib/ruby/gems/*/cache/*.gem /usr/lib/ruby/gems/2.*/gems/fluentd-*/test
+
 
 RUN groupadd -r fluent && useradd -r -g fluent fluent \
     # for log storage (maybe shared with host)
@@ -44,17 +57,24 @@ RUN groupadd -r fluent && useradd -r -g fluent fluent \
     && mkdir -p /fluentd/etc /fluentd/plugins \
     && chown -R fluent /fluentd && chgrp -R fluent /fluentd
 
+
 COPY fluent.conf /fluentd/etc/
 COPY entrypoint.sh /bin/
+
 
 RUN chmod +x /bin/entrypoint.sh
 ENV FLUENTD_CONF="fluent.conf"
 
+
 ENV LD_PRELOAD=""
 EXPOSE 24224 5140
 
-RUN ["gem", "install", "elasticsearch", "-v", "7.17"]
-RUN ["gem", "install", "fluent-plugin-elasticsearch", "--no-document", "--version", "4.0.5"]
+
+RUN /bin/bash -c "gem install elasticsearch -v ${ElASTIC_VERSION}"
+
+RUN /bin/bash -c "gem install fluent-plugin-elasticsearch --no-document --version ${FLUENT_PLUGIN_ELASTIC_VERSION}"
+
+
 
 USER fluent
 ENTRYPOINT ["tini",  "--", "/bin/entrypoint.sh"]
