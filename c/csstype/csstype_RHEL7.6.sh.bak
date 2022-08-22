@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : csstype
-# Version       : v2.6.0,v2.6.9
+# Version       : v2.6.0
 # Source        : https://github.com/frenic/csstype
 # Tested on     : RHEL 7.6
 # Node Version  : v12.19.1
