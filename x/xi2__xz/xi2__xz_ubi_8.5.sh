@@ -48,7 +48,13 @@ cd $PACKAGE_NAME
 
 echo " --------------------------------- checkout version  $PACKAGE_VERSION ------------------------------------"
 git checkout $PACKAGE_VERSION
-go mod init $PACKAGE_NAME
+
+if ! go mod init $PACKAGE_NAME; then
+	echo "------------------$PACKAGE_NAME:initialize_fails-------------------------------------"
+	echo "$PACKAGE_VERSION $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Initialize_Fails"
+	exit 1
+fi
 
 if ! go build -v ./...; then
     echo "------------------$PACKAGE_NAME: build failed-------------------------"
