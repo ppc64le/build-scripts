@@ -21,7 +21,7 @@ PACKAGE_NAME="LuaJIT2-openresty"
 PACKAGE_VERSION=${1:-v2.1.0-beta3}
 PACKAGE_URL="https://github.com/openresty/luajit2.git"
 yum update -y --allowerasing --nobest
-yum install -y vim cmake make git gcc-c++ perl patch
+yum install -y vim cmake make git gcc-c++ perl patch wget
 OS_NAME=`cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f2 | tr -d '"'`
 HOME_DIR=`pwd`
 
