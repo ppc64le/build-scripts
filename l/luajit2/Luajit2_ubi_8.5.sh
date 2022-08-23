@@ -41,7 +41,7 @@ fi
 cd $HOME_DIR/$PACKAGE_NAME || exit 1
 git checkout "$PACKAGE_VERSION"
 
-git apply ../luajit2_v2.1.0-beta3.patch 
+git apply luajit2_v2.1.0-beta3.patch
 
 if ! make && make install ; then
     echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
