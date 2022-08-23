@@ -5,7 +5,7 @@
 # Source repo           : https://github.com/groupon/cson-parser
 # Tested on             : UBI 8
 # Script License        : Apache License, Version 2 or later
-# Maintainer            : Swati Singhal <swati.singhal@ibm.com>
+# Maintainer            : Swati Singhal <swati.singhal@ibm.com>,Saraswati Patra<saraswati.patra@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.

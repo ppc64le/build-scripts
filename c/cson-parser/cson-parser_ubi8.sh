@@ -4,6 +4,8 @@
 # Version               : 4.0.4,v4.0.5
 # Source repo           : https://github.com/groupon/cson-parser
 # Tested on             : UBI 8
+# Language              : Node
+# Travis-Check          : True
 # Script License        : Apache License, Version 2 or later
 # Maintainer            : Swati Singhal <swati.singhal@ibm.com>,Saraswati Patra<saraswati.patra@ibm.com>
 #
