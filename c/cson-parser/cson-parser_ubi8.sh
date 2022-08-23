@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package               : cson-parser
-# Version               : 4.0.4,v4.0.5
+# Version               : v4.0.4,v4.0.5
 # Source repo           : https://github.com/groupon/cson-parser
 # Tested on             : UBI 8
 # Language              : Node
@@ -18,7 +18,7 @@
 # ----------------------------------------------------------------------------
 
 #!/bin/bash
-PACKAGE_VERSION=4.0.4
+PACKAGE_VERSION=v4.0.4
 
 echo "Usage: $0 [-v <PACKAGE_VERSION>]"
 echo "       PACKAGE_VERSION is an optional paramater whose default value is 4.0.4"
