@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : is-natural-number
-# Version          : master
+# Version          : ee904d17384c85f5ed94c1294afd3cfb4ab48bdc
 # Source repo      : https://github.com/shinnn/is-natural-number.js
 # Tested on        : RHEL 8.5,UBI 8.5
 # Language         : Node
@@ -21,7 +21,7 @@
 
 PACKAGE_NAME=is-natural-number
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-master}
+PACKAGE_VERSION=${1:-ee904d17384c85f5ed94c1294afd3cfb4ab48bdc}
 PACKAGE_URL=https://github.com/shinnn/is-natural-number.js
 yum install -y yum-utils git jq
 NODE_VERSION=v12.22.4
