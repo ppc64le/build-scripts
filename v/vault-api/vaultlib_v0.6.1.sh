@@ -3,13 +3,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : vault-api
-# Version          : v0.6.1
+# Version          : v1.1.1
 # Source repo      : https://github.com/hashicorp/vault
 # Tested on        : RHEL 8.5,UBI 8.5
 # Language         : GO
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Stuti Wali <Stuti.Wali@ibm.com>
+# Maintainer       : Bhagat Singh <Bhagat.singh1@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -22,7 +22,7 @@
 PACKAGE_NAME=vault
 SUB_PACKAGE_NAME=vault-api
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-v0.6.1}
+PACKAGE_VERSION=${1:-v1.1.1}
 PACKAGE_URL=https://github.com/hashicorp/vault
 
 # Dependency installation
