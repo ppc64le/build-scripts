@@ -17,7 +17,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_VERSION=v1.0.3
+PACKAGE_VERSION=v1.1.2
 
 echo "Usage: $0 [-v <PACKAGE_VERSION>]"
 echo "       PACKAGE_VERSION is an optional paramater whose default value is v1.0.3"
