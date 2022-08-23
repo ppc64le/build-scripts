@@ -23,9 +23,10 @@ echo "Usage: $0 [-v <PACKAGE_VERSION>]"
 echo "       PACKAGE_VERSION is an optional paramater whose default value is v1.0.3"
 
 PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
-
 PACKAGE_NAME=colors.js
 PACKAGE_URL=https://github.com/Marak/colors.js
+
+yum install -y yum-utils git jq make
 
 NODE_VERSION=v12.22.4
 #installing nvm
