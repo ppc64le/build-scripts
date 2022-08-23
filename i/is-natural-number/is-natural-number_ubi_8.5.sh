@@ -55,18 +55,6 @@ if ! npm install && npm audit fix && npm audit fix --force; then
     exit 1
 fi
 
-if ! npm test; then
-    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME" 
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
-    exit 1
-else
-    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
-    exit 0
-fi
-
 #Build passed no test N/A
 #[root@f60de5b94502 is-natural-number.js]# npm test
 #> is-natural-number@4.0.1 pretest /root/is-natural-number.js
