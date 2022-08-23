@@ -27,7 +27,7 @@ dnf install git npm jq -y
 
 if [ -z "$1" ]
   then
-    PACKAGE_VERSION=5.1.5
+    PACKAGE_VERSION=5.1.0
 fi
 
 mkdir -p /home/tester/output
