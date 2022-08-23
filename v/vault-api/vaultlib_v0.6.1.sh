@@ -70,7 +70,7 @@ fi
     cd api/
     go mod vendor
 
-if ! go build -v ./...; then
+if ! go build -v ./... ; then
 
     echo "------------------$SUB_PACKAGE_NAME:build failed---------------------"
     echo "$PACKAGE_VERSION $SUB_PACKAGE_NAME"
