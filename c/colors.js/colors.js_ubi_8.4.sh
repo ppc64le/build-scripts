@@ -63,3 +63,9 @@ else
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
         exit 0
 fi
+
+#Build and test passing on VM
+#> colors@1.1.2 test /colors.js
+#> node tests/basic-test.js && node tests/safe-test.js
+
+#------------------colors.js:install_&_test_both_success-------------------------
