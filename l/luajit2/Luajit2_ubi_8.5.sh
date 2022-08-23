@@ -41,6 +41,8 @@ fi
 cd $HOME_DIR/$PACKAGE_NAME || exit 1
 git checkout "$PACKAGE_VERSION"
 
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/l/luajit2/luajit2_v2.1.0-beta3.patch
+
 git apply luajit2_v2.1.0-beta3.patch
 
 if ! make && make install ; then
