@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : cross-spawn
-# Version       : 5.1.0
+# Version       : 5.1.0,v6.0.5
 # Source repo   : https://github.com/moxystudio/node-cross-spawn.git
 # Tested on     : ubi 8.5
 # Language      : node
