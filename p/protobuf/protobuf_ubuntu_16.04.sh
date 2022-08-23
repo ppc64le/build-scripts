@@ -4,6 +4,8 @@
 # Version	: 3.4.1
 # Source repo	: https://github.com/google/protobuf
 # Tested on	: ubuntu_16.04
+# Language      : Java,C++
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Atul Sowani <sowania@us.ibm.com>
 #

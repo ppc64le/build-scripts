@@ -1,0 +1,25 @@
+{
+    "package_name" : "protobuf",
+    "package_dir": "p/protobuf/Dockerfiles/",
+    "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+
+    "v21.5" : {
+		"build_script":"protobuf_ubi_8.5_v21.5.sh"
+    },
+
+    "v21.*" : {
+      "build_script":"protobuf_ubi_8.5_v21.5.sh"
+    },
+
+    "v3.21.*" : {
+       "build_script":"protobuf_ubi_8.5_v21.5.sh"
+    },
+
+    "v3.*.*" : {
+      "build_script":"protobuf_ubi_8.5_v21.5.sh"
+      },
+    
+    "*.*.*" : {
+      "build_script":"protobuf_ubi_8.5.sh"
+    }
+}
