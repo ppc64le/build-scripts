@@ -70,7 +70,7 @@ fi
     cd api/
     go mod vendor
 
-if ! go build -v ./... ; then
+if ! go build -v ./...; then
 
     echo "------------------$SUB_PACKAGE_NAME:build failed---------------------"
     echo "$PACKAGE_VERSION $SUB_PACKAGE_NAME"
@@ -78,7 +78,7 @@ if ! go build -v ./... ; then
     exit 1
 else
 
-   if ! go test -v ./... ; then
+   if ! go test -v ./...; then
    
              echo "------------------$SUB_PACKAGE_NAME:install_success_but_test_fails---------------------"
              echo "$SUB_PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails"    
