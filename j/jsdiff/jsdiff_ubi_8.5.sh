@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : jsdiff
-# Version          : v3.3.1,v4.0.1
+# Version          : v3.3.1,v4.0.1,v3.5.0
 # Source repo      : https://github.com/kpdecker/jsdiff
 # Tested on        : RHEL 8.5,UBI 8.5
 # Language         : Node
