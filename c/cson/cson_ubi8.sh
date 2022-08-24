@@ -39,7 +39,7 @@ nvm install $NODE_VERSION
 git clone https://github.com/bevry/cson
 cd cson
 git checkout v$PACKAGE_VERSION
-npm install
+npm install && npm audit fix && npm audit fix --force
 #1 test failing
 npm test
 
