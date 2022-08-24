@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : gotestyourself
-# Version       : v2.2.0
+# Version       : v3.0.1
 # Source repo   : https://github.com/gotestyourself/gotestyourself
 # Tested on     : UBI 8.5
 # Language      : GO
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 #VARIABLES
 PACKAGE_NAME=gotestyourself
-PACKAGE_VERSION=${1:-v2.2.0+incompatible}
+PACKAGE_VERSION=${1:-v3.0.1}
 PACKAGE_URL=https://github.com/gotestyourself/gotestyourself
 
 # Install dependencies
