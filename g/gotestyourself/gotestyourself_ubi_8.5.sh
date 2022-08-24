@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 #VARIABLES
 PACKAGE_NAME=gotestyourself
-PACKAGE_VERSION=${1:-v2.2.0}
+PACKAGE_VERSION=${1:-v2.2.0+incompatible}
 PACKAGE_URL=https://github.com/gotestyourself/gotestyourself
 
 # Install dependencies
