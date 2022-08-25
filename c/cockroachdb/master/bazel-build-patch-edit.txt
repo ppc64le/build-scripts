@@ -1,0 +1,75 @@
+#!/bin/bash
+
+echo 5.2.0 > .bazelversion
+
+# .bazelrc
+sed -i "/build:crosslinuxs390xbase --config=cross/abuild:crosslinuxppc64le '--workspace_status_command=./build/bazelutil/stamp.sh ppc64le-redhat-linux-gnu'\n\
+build:crosslinuxppc64le --config=crosslinuxppc64lebase\n\
+build:crosslinuxppc64lebase --platforms=//build/toolchains:cross_linux_ppc64le\n\
+build:crosslinuxppc64lebase --config=cross\n\
+build:crosslinuxppc '--workspace_status_command=./build/bazelutil/stamp.sh ppc-redhat-linux-gnu'\n\
+build:crosslinuxppc --config=crosslinuxppcbase\n\
+build:crosslinuxppcbase --platforms=//build/toolchains:cross_linux_ppc\n\
+build:crosslinuxppc --config=cross\n" .bazelrc
+
+# WORKSPACE
+sed -i -E 's/^(go_download_sdk\(|    name = \"go_sdk\",|    sdks = \{)$/#&/' WORKSPACE
+sed -i -e '/go_download_sdk(/,+12d' WORKSPACE
+sed -i '/# To use your whatever your local SDK is/igo_local_sdk(\n    name = "go_sdk",\n    path = "/usr/local/go",\n)\n' WORKSPACE
+sed -i '/build\/toolchains:cross_arm64_s390x_toolchain\",/a\    "//build\/toolchains:cross_ppc_linux_toolchain",' WORKSPACE
+
+# build/builder/mkrelease.sh
+sed -i '/unknown release configuration/i\\n  ?(ppc64le-)linux?(-gnu))\
+    \# Manually set the correct values for configure checks that libkrb5 will not be\
+    \# able to perform because we are cross-compiling.\
+    export krb5_cv_attr_constructor_destructor=yes\
+    export ac_cv_func_regcomp=yes\
+    export ac_cv_printf_positional=yes\
+    args=\(\
+      XGOOS=linux\
+      XGOARCH=ppc64le\
+      XCMAKE_SYSTEM_NAME=Linux\
+      TARGET_TRIPLE=ppc64le-redhat-linux-gnu\
+      # -lrt is needed as clock_gettime is not part of glibc prior to 2.17.\
+      # If we update to a newer glibc, the -lrt can be removed.\
+      LDFLAGS="-static-libgcc -static-libstdc++ -lrt"\
+      SUFFIX=-linux-2.6.32-gnu-ppc64le\
+    \) \;\;\n' build/builder/mkrelease.sh
+
+# build/toolchains/BUILD.bazel
+sed -i '/toolchain = "\@toolchain_cross_s390x-ibm-linux-gnu.*"/{N;N;s/$/\n\n\
+toolchain(\
+    name = "cross_ppc_linux_toolchain",\
+    exec_compatible_with = [\
+        "\@platforms\/\/os:linux",\
+        "\@platforms\/\/cpu:ppc",\
+    ],\
+    target_compatible_with = [\
+        "\@platforms\/\/os:linux",\
+        "\@platforms\/\/cpu:ppc",\
+    ],\
+    target_settings = [\
+        ":cross",\
+    ],\
+    toolchain = "\@toolchain_cross_ppc-unknown-linux-gnu\/\/:toolchain",\
+    toolchain_type = "\@bazel_tools\/\/tools\/cpp:toolchain_type",\
+)\
+\
+platform(\
+    name = "cross_linux_ppc",\
+    constraint_values = [\
+        "\@platforms\/\/os:linux",\
+        "\@platforms\/\/cpu:ppc",\
+    ],\
+)/}' build/toolchains/BUILD.bazel
+
+# build/toolchains/crosstool-ng/cc_toolchain_config.bzl.tmpl
+sed -i 's/"s390x-ibm-linux-gnu"/"s390x-ibm-linux-gnu", "ppc64le-redhat-linux-gnu"/' build/toolchains/crosstool-ng/cc_toolchain_config.bzl.tmpl
+
+# build/toolchains/toolchainbuild/crosstool-ng/perform-build.sh
+sed -i '/build_ctng s390x-ibm-linux-gnu/abuild_ctng ppc64le-redhat-linux-gnu' build/toolchains/toolchainbuild/crosstool-ng/perform-build.sh
+sed -i '/build_ncurses s390x-ibm-linux-gnu/abuild_ncurses ppc64le-redhat-linux-gnu' build/toolchains/toolchainbuild/crosstool-ng/perform-build.sh
+sed -i '/x86_64-w64-mingw32/abundle /x-tools/ppc64le-redhat-linux-gnu' build/toolchains/toolchainbuild/crosstool-ng/perform-build.sh
+
+# c-deps/BUILD.bazel
+sed -i '/aarch64-unknown-linux-gnu/a\        "@io_bazel_rules_go\/\/go/platform:linux_ppc64le": ["--host=ppc64le-redhat-linux-gnu"],' c-deps/BUILD.bazel
