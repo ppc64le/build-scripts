@@ -1,0 +1,11 @@
+{
+    "package_name" : "apache-flink",
+    "github_url":"https://github.com/apache/flink",
+    "package_dir": "a/apache-flink/Dockerfiles/",
+    "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+
+    "release-1.15.*" : {
+        "dir":"ubi8",
+        "build_script" : "apache-flink_ubi_8.5.sh"
+    }
+}
