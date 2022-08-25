@@ -97,7 +97,5 @@ function test_with_ruby(){
                 fi
         fi
 }
-
 test_with_ruby
-
 #Tests failure can be seen. kindly refer to github issue - https://github.com/logstash-plugins/logstash-output-elasticsearch/issues/1019
