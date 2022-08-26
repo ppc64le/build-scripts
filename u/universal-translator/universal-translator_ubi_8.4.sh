@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package               : universal-translator
@@ -16,9 +17,6 @@
 #                         contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
-
-set -e
 
 if [ -z "$1" ]; then
   export VERSION=v0.17.0
