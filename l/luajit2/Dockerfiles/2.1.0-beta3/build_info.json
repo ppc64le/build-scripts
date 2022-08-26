@@ -1,0 +1,12 @@
+{
+    "package_name" : "LuaJIT2-openresty",
+	"github_url":"https://github.com/openresty/luajit2.git",
+    "package_dir": "l/luajit2/Dockerfiles/",
+    "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "build_script" : "Luajit2_ubi_8.5.sh",
+    
+    "v2.1.0-beta3" : {
+        "dir":"2.1.0-beta3"
+    },
+
+}
