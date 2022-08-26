@@ -1,13 +1,13 @@
 # ----------------------------------------------------------------------------
 #
 # Package               : universal-translator
-# Version               : v0.18.0
+# Version               : v0.18.0, v0.17.0
 # Source repo           : https://github.com/go-playground/universal-translator.git
 # Tested on             : UBI 8.4
 # Language              : GO
 # Travis-Check          : True
 # Script License        : Apache License, Version 2 or later
-# Maintainer            : Vikas . <kumar.vikas@in.ibm.com>
+# Maintainer            : Vikas . <kumar.vikas@in.ibm.com>, Vaishnavi Patil <Vaishnavi.Patil3@ibm.com>
 #
 # Disclaimer            : This script has been tested in root mode on given
 # ==========              platform using the mentioned version of the package.
@@ -21,7 +21,7 @@
 set -e
 
 if [ -z "$1" ]; then
-  export VERSION=v0.18.0
+  export VERSION=v0.17.0
 else
   export VERSION=$1
 fi
@@ -66,7 +66,7 @@ ret=$?
 if [ $ret -ne 0 ] ; then
   echo "Build failed "
 else
-# Observed 1 test failure for the version v0.18.0, which is in parity with Intel.
+# Observed 1 test failure for the version v0.18.0 & v0.17.0, which is in parity with Intel.
 # === RUN   TestBadExport
 # testdata/readonly <nil> false
 #     import_export_test.go:783: Expected 'open testdata/readonly/en.json: permission denied' Got '%!s(<nil>)'
