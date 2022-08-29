@@ -22,7 +22,7 @@ PACKAGE_NAME=arrow
 PACKAGE_VERSION=${1:-v0.0.0-20191024131854-af6fa24be0db}
 PACKAGE_URL=https://github.com/apache/arrow
 CURDIR="$(pwd)"
-yum install -y git wget gcc-c++ openssl-devel golang tar
+dnf install -y git wget gcc-c++ openssl-devel golang tar
 
 # set GOPATH
 export GOPATH=$HOME/go
