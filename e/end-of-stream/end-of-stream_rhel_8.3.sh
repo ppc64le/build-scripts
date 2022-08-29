@@ -3,7 +3,9 @@
 # Package	: end-of-stream
 # Version	: 1.4.4,daba5d692f7f016bad7831b4f61caad3ba2d2544
 # Source repo	: https://github.com/mafintosh/end-of-stream
-# Tested on	: RHEL 8.3
+# Tested on	: RHEL 8.3,8.5
+# Language              : Node
+# Travis-Check          : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation<sethp@us.ibm.com>Saraswati patra<saraswati.patra2ibm.com>
 #
