@@ -8,7 +8,7 @@
 # Language      : GO
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Reynold Vaz <Reynold.Vaz@ibm.com>
+# Maintainer	: Reynold Vaz <Reynold.Vaz@ibm.com>/ Balavva Mirji <Balavva.Mirji@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -36,12 +36,18 @@ git checkout $PACKAGE_VERSION
 go mod init
 go mod tidy
 
+if ! go build -v ./...; then
+	echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
+	exit 1
+fi
+
 if ! go test -v ./... ; then
-	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-	echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" 
+	echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
+	echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_success_but_test_Fails" 
 	exit 1
 else
-	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-	echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
+	echo "------------------$PACKAGE_NAME:build_&_test_both_success-------------------------"
+	echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
 	exit 0
 fi

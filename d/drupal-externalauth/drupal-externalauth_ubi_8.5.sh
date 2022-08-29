@@ -1,13 +1,13 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 # Package          : drupal-externalauth
-# Version          : 8.x-1.3
+# Version          : 8.x-1.3, 8.x-1.4
 # Source repo      : https://git.drupalcode.org/project/externalauth
 # Tested on        : UBI 8.5
 # Language         : PHP
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Vathsala . <vaths367@in.ibm.com>
+# Maintainer       : Vathsala . <vaths367@in.ibm.com>, Vaishnavi Patil <Vaishnavi.Patil3@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.

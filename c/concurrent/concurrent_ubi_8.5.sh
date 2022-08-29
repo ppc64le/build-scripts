@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : concurrent
-# Version       : v1.0.3
+# Version       : v1.0.3,bacd9c7ef1dd9b15be4a9909b8ac7a4e313eec94
 # Source repo   : https://github.com/modern-go/concurrent
 # Tested on     : UBI: 8.5
 # Language      : Go
