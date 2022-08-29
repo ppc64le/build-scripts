@@ -5,7 +5,7 @@
 # Source repo	: https://github.com/mafintosh/end-of-stream
 # Tested on	: RHEL 8.3
 # Script License: Apache License, Version 2 or later
-# Maintainer	: BulkPackageSearch Automation<sethp@us.ibm.com>Saraswati patra<saraswati.patra2ibm.com>
+# Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
