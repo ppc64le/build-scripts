@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: end-of-stream
-# Version	: 1.4.4,daba5d692f7f016bad7831b4f61caad3ba2d2544
+# Version	: v1.4.4,daba5d692f7f016bad7831b4f61caad3ba2d2544
 # Source repo	: https://github.com/mafintosh/end-of-stream
 # Tested on	: RHEL 8.3,8.5
 # Language              : Node
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=end-of-stream
-PACKAGE_VERSION=1.4.4
+PACKAGE_VERSION=v1.4.4
 PACKAGE_URL=https://github.com/mafintosh/end-of-stream
 
 yum -y update && yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git gcc gcc-c++ libffi libffi-devel ncurses git jq make cmake
@@ -31,6 +31,12 @@ yum install -y firefox liberation-fonts xdg-utils && npm install n -g && n lates
 
 OS_NAME=`python3 -c "os_file_data=open('/etc/os-release').readlines();os_info = [i.replace('PRETTY_NAME=','').strip() for i in os_file_data if i.startswith('PRETTY_NAME')];print(os_info[0])"`
 HOME_DIR=`pwd`
+#Check if package exists
+if [ -d "$PACKAGE_NAME" ] ; then
+  rm -rf $PACKAGE_NAME
+  echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"  
+ 
+fi
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
     	echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/clone_fails
