@@ -1,10 +1,10 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	     : go-acme/lego
-# Version	     : v2.5.0
+# Package	 : go-acme/lego
+# Version	 : v2.5.0
 # Source repo	 : https://github.com/go-acme/lego
-# Tested on	     : UBI 8.5
+# Tested on	 : UBI 8.5
 # Language       : GO
 # Travis-Check   : True
 # Script License : Apache License, Version 2 or later
@@ -35,11 +35,11 @@ rm -f $GO_VERSION.linux-ppc64le.tar.gz
 # set go path
 export PATH=$PATH:/bin/go/bin
 export GOPATH=/home/go
-mkdir -p /home/go/src
 
 # install lego package
-GO111MODULE="off" go get $PACKAGE_NAME
-cd $GOPATH/src/$PACKAGE_NAME
+mkdir -p `dirname $PACKAGE_NAME` && cd `dirname $PACKAGE_NAME`
+git clone $PACKAGE_URL
+cd `basename $PACKAGE_NAME`
 go get -tags $PACKAGE_VERSION -t ./...
 
 if ! go build -v ./...; then
