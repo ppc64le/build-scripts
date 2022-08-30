@@ -29,7 +29,7 @@ rm -rf $PACKAGE_NAME
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-git apply test_subfigure_ss_fix.patch
+git apply ../test_subfigure_ss_fix.patch
 if ! tox; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo  "$PACKAGE_URL $PACKAGE_NAME "
