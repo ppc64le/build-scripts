@@ -5,11 +5,12 @@
     "build_script": "fluentd_ubi_8.5.sh",
     "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
 
-    "v0.12.43" : {
+
+    "v1.14.*" : {
         "dir":"1.14.5_es7.17.2_ubi8"
     },
 
-    "v1.14.*" : {
+    "v1.15.*" : {
         "dir":"1.14.5_es7.17.2_ubi8"
     }
 } 
