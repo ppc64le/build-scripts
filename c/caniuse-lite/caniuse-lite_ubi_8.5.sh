@@ -3,13 +3,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : caniuse-lite
-# Version       : 1.0.30001304
+# Version       : 1.0.30001304, 1.0.30001385, main
 # Source repo   : https://github.com/browserslist/caniuse-lite.git
 # Tested on     : UBI 8.5
 # Language      : Node
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Vikas Kumar <kumar.vikas@in.ibm.com>
+# Maintainer    : Vikas Kumar <kumar.vikas@in.ibm.com>, Vishaka Desai <Vishaka.Desai@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -21,7 +21,7 @@
 
 PACKAGE_NAME=caniuse-lite
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-1.0.30001304}
+PACKAGE_VERSION=${1:-main}
 PACKAGE_URL=https://github.com/browserslist/caniuse-lite.git
 
 yum install -y git jq
