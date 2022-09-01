@@ -1,0 +1,14 @@
+{
+    "package_name" : "aws-sdk-go",
+    "github_url":"https://github.com/aws/aws-sdk-go",
+    "package_dir": "a/aws-sdk-go/",
+
+    "v1.44.89" : {
+        "build_script" : "aws-sdk-go_ubi_8.5.sh"
+    },
+
+    "v1.44.*" : {
+        "build_script" : "aws-sdk-go_ubi_8.5.sh"
+    }
+    
+}
