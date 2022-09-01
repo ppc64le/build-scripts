@@ -19,7 +19,6 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e
 PACKAGE_NAME=${2:-uuid}
 PACKAGE_URL=https://github.com/pborman/uuid
 PACKAGE_VERSION=${1:-ca53cad383cad2479bbba7f7a1a05797ec1386e4}
@@ -75,10 +74,3 @@ else
 	echo "$$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Pass |  Install_and_Test_Success"
 	exit 0
 fi
-
-bash
-EOF
-exit 0
-
-
-
