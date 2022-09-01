@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : caniuse-lite
-# Version       : 1.0.30001304, 1.0.30001385, main
+# Version       : 1.0.30001304, 1.0.30001385, 1.0.30001387
 # Source repo   : https://github.com/browserslist/caniuse-lite.git
 # Tested on     : UBI 8.5
 # Language      : Node
@@ -21,7 +21,7 @@
 
 PACKAGE_NAME=caniuse-lite
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-main}
+PACKAGE_VERSION=${1:-1.0.30001387}
 PACKAGE_URL=https://github.com/browserslist/caniuse-lite.git
 
 yum install -y git jq
