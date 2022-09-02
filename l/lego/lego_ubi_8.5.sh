@@ -42,7 +42,7 @@ git clone $PACKAGE_URL
 cd `basename $PACKAGE_NAME`
 go get -tags $PACKAGE_VERSION -t ./...
 
-if ! go build -v ./...; then
+if ! make build; then
 	echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
@@ -50,7 +50,7 @@ if ! go build -v ./...; then
 fi
 
 
-if ! go test -v ./...; then
+if ! make test; then
 	echo "------------------$PACKAGE_NAME:test_fails---------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Test_Fails"
