@@ -1,0 +1,14 @@
+{
+    "package_name" : "oniguruma",
+    "github_url":"https://github.com/kkos/oniguruma",
+    "package_dir": "o/oniguruma/",
+
+    "v6.9.8" : {
+        "build_script" : "oniguruma_ubi_8.5_v6.9.8.sh"
+    },
+
+    "v6.9.*" : {
+        "build_script" : "oniguruma_ubi_8.5_v6.9.8.sh"
+    }
+
+}

@@ -1,0 +1,14 @@
+{
+    "package_name" : "mink",
+    "github_url":"https://github.com/minkphp/Mink",
+    "package_dir": "m/mink/",
+
+    "v1.10.0" : {
+        "build_script" : "mink_ubi_8.5_v1.10.0.sh"
+    },
+
+    "v1.8.*" : {
+        "build_script" : "mink_ubi_8.5_v1.10.0.sh"
+    }
+
+}
