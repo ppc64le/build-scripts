@@ -45,11 +45,11 @@ go mod vendor
 make
 
 if ! make; then
-	echo "------------------$PACKAGE_NAME:build_fails---------------------"
+	echo "------------------$PACKAGE_NAME:Build_fails---------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME"
-	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Test_Fails"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
 else
-	echo "------------------$PACKAGE_NAME:build_success-------------------------"
+	echo "------------------$PACKAGE_NAME:Build_and_Test_success-------------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME"
-	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub  | Pass |  Install_and_Test_Success"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub  | Pass |  Build_and_Test_Success"
 fi
