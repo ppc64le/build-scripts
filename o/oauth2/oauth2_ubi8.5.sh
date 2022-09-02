@@ -79,7 +79,7 @@ else
         exit 0
 fi
 
-#This test case is failing parity with intel
+#This test case is failing with parity on intel
 #=== RUN   TestRetrieveTokenBustedNoSecret
 #    token_test.go:42: RetrieveToken = unexpected end of JSON input; want no error
 #--- FAIL: TestRetrieveTokenBustedNoSecret (0.00s)
