@@ -4,7 +4,7 @@
     "package_dir": "m/mink/",
     "docker_build": false,
 
-    "v1.8.*, v1.10.*" : {
+    "v1.*.*" : {
         "build_script" : "mink-ubi_8.5.sh"
     }
 
