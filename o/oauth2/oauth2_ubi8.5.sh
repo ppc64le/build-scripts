@@ -71,7 +71,7 @@ fi
 
 if ! go test -v ./...; then
         echo "------------------$PACKAGE_NAME: build and  Test failed-------------------------"
-        exit 0
+        exit 1
 else
         echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/test_success
