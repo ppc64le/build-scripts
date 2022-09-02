@@ -49,6 +49,7 @@ if ! go build -v ./...; then
 	exit 1
 fi
 
+
 if ! go test -v ./...; then
 	echo "------------------$PACKAGE_NAME:test_fails---------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME"
