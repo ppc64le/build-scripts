@@ -5,7 +5,7 @@
     "docker_build": false,
 
     "v1.8.*, v1.10.*" : {
-        "build_script" : "mink_ubi_8.5_v1.10.0.sh"
+        "build_script" : "mink-ubi_8.5.sh"
     }
 
 }
