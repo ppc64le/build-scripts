@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=github.com/go-acme/lego
 PACKAGE_URL=https://github.com/go-acme/lego
-PACKAGE_VERSION=${1:-v2.5.0}
+PACKAGE_VERSION=${1:-v4.8.0}
 
 GO_VERSION=go1.18.5
 
@@ -42,7 +42,7 @@ git clone $PACKAGE_URL
 cd `basename $PACKAGE_NAME`
 go get -tags $PACKAGE_VERSION -t ./...
 
-if ! make build; then
+if ! go build -v ./...; then
 	echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
@@ -50,7 +50,7 @@ if ! make build; then
 fi
 
 
-if ! make test; then
+if ! go test -v ./...; then
 	echo "------------------$PACKAGE_NAME:test_fails---------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Test_Fails"
