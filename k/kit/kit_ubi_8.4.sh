@@ -5,6 +5,8 @@
 # Version       : v0.12.0, v0.10.0, v0.9.0
 # Source repo	: https://github.com/go-kit/kit
 # Tested on	: UBI 8.4
+# Language      : GO
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Nageswara Rao K<nagesh4193@gmail.com>/ Balavva Mirji <Balavva.Mirji@ibm.com>
 #
