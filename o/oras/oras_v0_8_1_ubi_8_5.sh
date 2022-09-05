@@ -70,7 +70,7 @@ fi
 
 
 #Test failure is in parity with Intel
-#On first attempt one test case is failing, but on second attempt the test case is passing.
+#One test case if failing in first test run, and the same test case passing in later test runs
 #=== RUN   TestContentTestSuite
 #    content_test.go:51:
 #                Error Trace:    content_test.go:51
