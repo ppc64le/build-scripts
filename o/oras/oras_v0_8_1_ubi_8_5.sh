@@ -45,9 +45,7 @@ fi
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-go mod init
 go mod tidy
-
 
 if ! go build -v ./...; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
