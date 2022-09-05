@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=github.com/go-acme/lego
 PACKAGE_URL=https://github.com/go-acme/lego
-PACKAGE_VERSION=${1:-v4.8.0}
+PACKAGE_VERSION=${1:-v2.5.0}
 
 GO_VERSION=go1.18.5
 
