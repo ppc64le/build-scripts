@@ -3,13 +3,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : vault-api
-# Version          : v1.1.1
+# Version          : v1.1.1, v0.6.1
 # Source repo      : https://github.com/hashicorp/vault
 # Tested on        : RHEL 8.5,UBI 8.5
 # Language         : GO
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Bhagat Singh <Bhagat.singh1@ibm.com>
+# Maintainer       : Bhagat Singh <Bhagat.singh1@ibm.com>, Stuti Wali <Stuti.Wali@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -76,17 +76,15 @@ if ! go build -v ; then
     echo "$PACKAGE_VERSION $SUB_PACKAGE_NAME"
     echo "$SUB_PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  build_Fails"
     exit 1
-else
-
-   if ! go test -v; then
+fi
+if ! go test -v; then
    
              echo "------------------$SUB_PACKAGE_NAME:install_success_but_test_fails---------------------"
              echo "$SUB_PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails"    
     exit 1
-  else
+else
        echo "------------------$SUB_PACKAGE_NAME:install_build_and_test_success-------------------------"
        echo "$SUB_PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass |  Install_Build_and_Test_Success"
     exit 0 
-fi
 fi
  
