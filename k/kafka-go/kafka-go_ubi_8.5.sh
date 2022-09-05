@@ -38,9 +38,15 @@ cp /home/tester/go/bin/golint /usr/bin
 
 go mod init
 go mod tidy
-go build  ./...
-go get -v -t ./...
-go vet ./...
+if ! go build  ./...; then
+    echo "------------------$PACKAGE_NAME: build failed-------------------------"
+    exit 1
+else
+    go get -v -t ./...
+    go vet ./...
+    echo "------------------$PACKAGE_NAME: build success-------------------------"
+fi
+
 if ! go test -v -cover ./...; then
     echo "------------------$PACKAGE_NAME: test failed-------------------------"
     exit 1
