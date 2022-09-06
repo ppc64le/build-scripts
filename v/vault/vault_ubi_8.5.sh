@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: github.com/hashicorp/vault
-# Version	: v1.11.2
+# Version	: v1.11.2,v1.11.3
 # Source repo	: https://github.com/hashicorp/vault
 # Tested on	: UBI: 8.5
 # Language      : Go
