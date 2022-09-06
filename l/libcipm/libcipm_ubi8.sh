@@ -1,11 +1,14 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package               : libcipm
-# Version               : 4.0.7
+# Version               : 4.0.7,9ab1a620db485c137b1c89979c80beddf7e2da42
 # Source repo           : https://github.com/npm/libcipm
 # Tested on             : UBI 8
+# Language              : Node
+# Travis-Check          : True
 # Script License        : Apache License, Version 2 or later
-# Maintainer            : Swati Singhal <swati.singhal@ibm.com>
+# Maintainer            : Swati Singhal <swati.singhal@ibm.com>,Saraswati patra<saraswati.patra@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -14,8 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
-#!/bin/bash
 PACKAGE_VERSION=4.0.7
 
 echo "Usage: $0 [-v <PACKAGE_VERSION>]"
