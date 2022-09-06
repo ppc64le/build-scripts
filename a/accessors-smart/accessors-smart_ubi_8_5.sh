@@ -1,5 +1,5 @@
  -----------------------------------------------------------------------------
-#
+#!/bin/bash
 # Package       : json-smart-v2
 # Version       : 2.4.8
 # Source repo   : https://github.com/netplex/json-smart-v2.git
@@ -17,7 +17,7 @@
 #
 # ----------------------------------------------------------------------------
 
-#!/bin/bash
+
 set -e
 PACKAGE_NAME=json-smart-v2
 PACKAGE_VERSION=${1:-2.4.8}
