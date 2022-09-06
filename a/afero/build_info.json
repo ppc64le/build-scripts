@@ -1,0 +1,11 @@
+{
+    "package_name" : "afero",
+    "github_url":"https://github.com/spf13/afero",
+    "package_dir": "a/afero",
+    "docker_build": false,
+
+    "v1.*.*" : {
+        "build_script" : "afero_ubi_8.5.sh"
+    }
+
+}
