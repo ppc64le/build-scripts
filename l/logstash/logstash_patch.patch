@@ -1,0 +1,36 @@
+diff --git a/logstash-core/src/test/java/org/logstash/ackedqueue/QueueTest.java b/logstash-core/src/test/java/org/logstash/ackedqueue/QueueTest.java
+index e182cf160..f5bf941b2 100644
+--- a/logstash-core/src/test/java/org/logstash/ackedqueue/QueueTest.java
++++ b/logstash-core/src/test/java/org/logstash/ackedqueue/QueueTest.java
+@@ -423,7 +423,7 @@ public class QueueTest {
+         }
+     }
+
+-    @Test(timeout = 300_000)
++    @Test(timeout = 800_000)
+     public void reachMaxUnread() throws IOException, InterruptedException, ExecutionException {
+         Queueable element = new StringElement("foobarbaz");
+         int singleElementCapacity = computeCapacityForMmapPageIO(element);
+@@ -712,7 +712,7 @@ public class QueueTest {
+         }
+     }
+
+-    @Test(timeout = 300_000)
++    @Test(timeout = 800_000)
+     public void concurrentWritesTest() throws IOException, InterruptedException, ExecutionException {
+
+         final int WRITER_COUNT = 5;
+diff --git a/logstash_patch.patch b/logstash_patch.patch
+new file mode 100644
+index 000000000..e69de29bb
+diff --git a/rakelib/artifacts.rake b/rakelib/artifacts.rake
+index 4b5253ec2..5dfc3a5ff 100644
+--- a/rakelib/artifacts.rake
++++ b/rakelib/artifacts.rake
+@@ -1,5 +1,4 @@
+ # Licensed to Elasticsearch B.V. under one or more contributor
+-# license agreements. See the NOTICE file distributed with
+ # this work for additional information regarding copyright
+ # ownership. Elasticsearch B.V. licenses this file to you under
+ # the Apache License, Version 2.0 (the "License"); you may
+
