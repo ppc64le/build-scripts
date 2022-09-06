@@ -62,3 +62,19 @@ else
 	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Install_and_Test_Success"
 	exit 0
 fi
+
+
+#=== RUN   TestGenerator
+#Suite: Generator
+#Total: 29 | Focused: 0 | Pending: 0
+#=== RUN   TestGenerator/Generator
+#=== RUN   TestGenerator/Generator/constructing_a_fake_with_NewFake()/the_target_is_a_nonexistent_package/errors
+#=== RUN   TestGenerator/Generator/constructing_a_fake_with_NewFake()/the_target_is_a_package_with_a_nonexistent_interface/errors
+#FAIL	github.com/maxbrunsfeld/counterfeiter/v6/generator	3.886s
+#=== RUN   TestIntegration
+#Suite: integration
+#Total: 44 | Focused: 0 | Pending: 0
+#=== RUN   TestIntegration/integration
+#=== RUN   TestIntegration/integration/round_trip_as_module/generating_a_fake_for_stdlib_interfaces/succeeds
+#FAIL	github.com/maxbrunsfeld/counterfeiter/v6/integration	3.480s
+#FAIL
