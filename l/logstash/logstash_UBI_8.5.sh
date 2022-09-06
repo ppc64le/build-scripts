@@ -4,6 +4,8 @@
 # Version       : 8.4.0,8,4.1
 # Source repo   : https://github.com/elastic/logstash.git
 # Tested on     : UBI 8.5
+# Language      : Ruby
+# Travis-Check  : True
 # Script License: Apache License Version 2.0
 # Maintainer    : Vinod K <Vinod.K1@ibm.com>
 #
