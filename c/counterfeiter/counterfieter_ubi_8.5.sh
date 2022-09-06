@@ -39,7 +39,6 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-go mod init
 go mod tidy
 
 echo "Building $PACKAGE_PATH$PACKAGE_NAME with $PACKAGE_VERSION"
