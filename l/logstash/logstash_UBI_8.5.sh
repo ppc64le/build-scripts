@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : logstash
-# Version       : 8.4.0,8,4.1
+# Version       : v8.4.0, v8.4.1
 # Source repo   : https://github.com/elastic/logstash.git
 # Tested on     : UBI 8.5
 # Language      : Ruby
@@ -19,8 +19,7 @@
 # ----------------------------------------------------------------------------
 
 
-WORKDIR=$1
-cd $WORKDIR
+PACKAGE_VERSION=${1:v8.4.1}
 
 # installing dependencies
 yum update -y && yum install -y git make unzip tar ruby gcc-c++  wget gzip procps shadow-utils zip which
@@ -48,7 +47,7 @@ rvm install "jruby-9.3.4.0"
 cd $WORKDIR
 git clone https://github.com/elastic/logstash.git
 cd logstash
-git checkout v8.4.1
+git checkout $PACKAGE_VERSION
 sed -i '2d' ./rakelib/artifacts.rake
 rake bootstrap
 rake plugin:install-default
@@ -56,4 +55,3 @@ rake plugin:install-default
 git apply logstash_patch.patch 
 
 ./gradlew test
-
