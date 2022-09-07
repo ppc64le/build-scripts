@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 #Run the script:./z-schema_ubi_8.5.sh v5.0.3
 PACKAGE_NAME=z-schema
-PACKAGE_VERSION=$1
+PACKAGE_VERSION=${1:-v5.0.3}
 PACKAGE_URL=https://github.com/zaggino/z-schema.git
 dnf module enable nodejs:12 -y
 dnf install git wget fontconfig bzip2 npm -y
@@ -27,10 +27,7 @@ wget https://github.com/ibmsoe/phantomjs/releases/download/2.1.1/phantomjs-2.1.1
 tar -xvf phantomjs-2.1.1-linux-ppc64.tar.bz2
 ln -sf $(pwd)/phantomjs-2.1.1-linux-ppc64/bin/phantomjs /usr/local/bin/phantomjs
 export PATH=$PATH:/usr/local/bin/phantomjs
-if [ -z "$1" ]
-  then
-    PACKAGE_VERSION=v5.0.3
-fi
+
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
