@@ -5,10 +5,6 @@
     "build_script": "js-xss_ubi_8.5.sh",
     "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
 
-    "v1.0.14" : {
-        "build_script": "js-xss_ubi_8.5.sh"
-    },
-
     "v1.0.*" : {
         "build_script": "js-xss_ubi_8.5.sh"
     }
