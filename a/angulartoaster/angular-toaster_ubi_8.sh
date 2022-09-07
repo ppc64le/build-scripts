@@ -31,6 +31,7 @@ cd /home/tester
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
+npm i npm-upgrade
 
 npm install --save angularjs-toaster
 
