@@ -17,7 +17,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=eventsource
-PACKAGE_VERSION=0.0.10
+PACKAGE_VERSION=v0.0.1
 PACKAGE_URL=https://github.com/EventSource/eventsource
 
 yum -y update && yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git gcc gcc-c++ libffi libffi-devel ncurses git jq make cmake
