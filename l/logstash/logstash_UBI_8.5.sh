@@ -42,13 +42,6 @@ source /usr/local/rvm/scripts/rvm
 gem install rake 
 gem install bundler
 
-cd $WORKDIR
-wget https://github.com/jnr/jffi/archive/jffi-1.2.18.zip
-unzip -u jffi-1.2.18.zip
-cd jffi-jffi-1.2.18
-cd ..
-rm -rf jffi-jffi-1.2.18 jffi-1.2.18.zip
-
 rvm install "jruby-9.3.4.0"
 
 # install logstash
