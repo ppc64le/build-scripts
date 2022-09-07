@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 
-PACKAGE_VERSION=${1:v8.4.1}
+PACKAGE_VERSION=${1:-v8.4.1}
 
 # installing dependencies
 yum update -y && yum install -y git make unzip tar ruby gcc-c++  wget gzip procps shadow-utils zip which
