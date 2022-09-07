@@ -7,5 +7,4 @@
     "v5.0.*" : {
         "build_script" : "z-schema_ubi_8_5.sh"
     }
-
 }
