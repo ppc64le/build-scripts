@@ -6,7 +6,7 @@
 # Source repo	 : https://github.com/go-acme/lego
 # Tested on	 : UBI 8.5
 # Language       : GO
-# Travis-Check   : True
+# Travis-Check   : False
 # Script License : Apache License, Version 2 or later
 # Maintainer	 : Balavva Mirji <Balavva.Mirji@ibm.com>
 #
