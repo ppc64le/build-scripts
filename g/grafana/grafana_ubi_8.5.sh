@@ -20,8 +20,8 @@ yum -y update
 yum -y install wget git
 
 # Install GO
-wget https://golang.org/dl/go1.16.6.linux-ppc64le.tar.gz
-tar -C /usr/local -xzf go1.16.6.linux-ppc64le.tar.gz
+wget https://golang.org/dl/go1.17.1.linux-ppc64le.tar.gz
+tar -C /usr/local -xzf go1.17.1.linux-ppc64le.tar.gz
 export PATH=$PATH:/usr/local/go/bin
 
 #Install Node
