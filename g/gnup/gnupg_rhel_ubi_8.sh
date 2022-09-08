@@ -23,7 +23,7 @@ PACKAGE_VERSION=V1-0-6
 PACKAGE_URL=https://github.com/gpg/gnupg.git
 
 
-yum -y install bzip2 wget
+yum -y install bzip2 wget gcc-c++
 wget https://gnupg.org/ftp/gcrypt/npth/npth-1.6.tar.bz2
 bzip2 -d npth-1.6.tar.bz2
 tar -xvf npth-1.6.tar
