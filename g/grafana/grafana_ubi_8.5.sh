@@ -39,6 +39,7 @@ cd grafana
 git checkout v9.1.3
 go mod verify
 
+go run build.go setup
 go run build.go build
 
 #Test Grafana
