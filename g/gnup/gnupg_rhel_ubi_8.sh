@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: {package_name}
-# Version	: {package_version}
-# Source repo	: {package_url}
-# Tested on	: {distro_name} {distro_version}
-# Language      : PHP
-# Travis-Check  : True
+# Package       : gnupg
+# Version       : V1-0-6
+# Source repo   : https://github.com/go-playground/universal-translator.git
+# Tested on     : UBI 8.5
+# Language      : go
+# Travis-Check  : true
 # Script License: Apache License, Version 2 or later
-# Maintainer	: BulkPackageSearch Automation {maintainer}
+# Maintainer    : BulkPackageSearch Automation {maintainer}
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -20,7 +20,7 @@
 
 PACKAGE_URL =https://github.com/gpg/gnupg
 PACKAGE_NAME = gnupg
-PACKAGE_VERSION = 2.2.28 
+PACKAGE_VERSION = V1-0-6
 
 yum -y install bzip2
 wget https://gnupg.org/ftp/gcrypt/npth/npth-1.6.tar.bz2
