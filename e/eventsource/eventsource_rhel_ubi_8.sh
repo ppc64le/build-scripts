@@ -1,7 +1,7 @@
 # #!/bin/bash -e
 #
 # Package	: eventsource
-# Version	: 0.1.6
+# Version	: 0.0.1
 # Source repo	: https://github.com/EventSource/eventsource
 # Tested on	: RHEL 8.3
 # Script License: Apache License, Version 2 or later
@@ -26,8 +26,6 @@ yum-config-manager --add-repo http://rhn.pbm.ihost.com/rhn/latest/8.3Server/ppc6
 yum-config-manager --add-repo http://rhn.pbm.ihost.com/rhn/latest/7Server/ppc64le/optional/
 
 yum install -y firefox liberation-fonts xdg-utils && npm install n -g && n latest && npm install -g npm@latest && export PATH="$PATH" && npm install --global yarn grunt-bump xo testem acorn
-
-n 8.5
 
 OS_NAME=`python3 -c "os_file_data=open('/etc/os-release').readlines();os_info = [i.replace('PRETTY_NAME=','').strip() for i in os_file_data if i.startswith('PRETTY_NAME')];print(os_info[0])"`
 HOME_DIR=`pwd`
