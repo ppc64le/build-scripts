@@ -1,9 +1,9 @@
-# #!/bin/bash -e
+# !/bin/bash -e
 #
 # Package	: eventsource
 # Version	: 0.0.1
 # Source repo	: https://github.com/EventSource/eventsource
-# Tested on	: RHEL 8.3
+# Tested on	: UBI 8.5
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 # Language	: Node
