@@ -26,7 +26,7 @@ dnf install git wget fontconfig bzip2 npm -y
 wget https://github.com/ibmsoe/phantomjs/releases/download/2.1.1/phantomjs-2.1.1-linux-ppc64.tar.bz2
 tar -xvf phantomjs-2.1.1-linux-ppc64.tar.bz2
 ln -sf $(pwd)/phantomjs-2.1.1-linux-ppc64/bin/phantomjs /usr/local/bin/phantomjs
-export PATH=$PATH:/usr/local/bin/phantomjs
+export PATH=$PATH:/usr/local/bin
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
