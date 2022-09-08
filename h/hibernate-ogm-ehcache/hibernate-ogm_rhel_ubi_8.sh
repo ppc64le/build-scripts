@@ -48,7 +48,7 @@ if [ $ret -eq 0 ] ; then
   echo  "${VERSION} found to checkout"
 else
   echo  "${VERSION} not found"
-  exit
+  exit 1
 fi
 
 
