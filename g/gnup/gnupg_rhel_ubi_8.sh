@@ -3,7 +3,7 @@
 #
 # Package       : gnupg
 # Version       : V1-0-6
-# Source repo   : https://github.com/go-playground/universal-translator.git
+# Source repo   : https://github.com/gpg/gnupg.git
 # Tested on     : UBI 8.5
 # Language      : go
 # Travis-Check  : true
@@ -18,9 +18,10 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_URL =https://github.com/gpg/gnupg
-PACKAGE_NAME = gnupg
-PACKAGE_VERSION = V1-0-6
+PACKAGE_NAME=gnupg
+PACKAGE_VERSION=V1-0-6
+PACKAGE_URL=https://github.com/gpg/gnupg.git
+
 
 yum -y install bzip2
 wget https://gnupg.org/ftp/gcrypt/npth/npth-1.6.tar.bz2
