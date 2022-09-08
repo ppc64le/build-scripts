@@ -40,8 +40,6 @@ rm apache-maven-$MAVEN_VERSION-bin.tar.gz
 export M2_HOME=/usr/local/maven
 # update the path env. variable
 export PATH=$PATH:$M2_HOME/bin
-
-
 git clone ${REPO}
 cd hibernate-ogm-ehcache
 git checkout ${VERSION}
