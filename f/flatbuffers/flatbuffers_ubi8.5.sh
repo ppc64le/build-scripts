@@ -22,7 +22,7 @@ PACKAGE_NAME=flatbuffers
 PACKAGE_VERSION=v1.12.0
 PACKAGE_URL=https://github.com/google/flatbuffers.git
 
-yum install -y git wget gcc-c++
+yum install -y git wget gcc-c++ cmake
 yum -y update --allowerasing --skip-broken --nobest
 
 rm -rf $PACKAGE_NAME
