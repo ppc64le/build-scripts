@@ -17,7 +17,7 @@
 #   
 # ----------------------------------------------------------------------------
 yum -y update
-yum -y install wget git gcc-c++
+yum -y install wget git gcc-c++ make
 
 # Install GO
 wget https://golang.org/dl/go1.18.1.linux-ppc64le.tar.gz
