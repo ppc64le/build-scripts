@@ -5,6 +5,6 @@
     "docker_build": false,
 
     "v*.*.*" : {
-        "build_script" : "z-schema_ubi_8_5.sh"
+        "build_script" : "z-schema_ubi_8.5.sh"
     }
 }
