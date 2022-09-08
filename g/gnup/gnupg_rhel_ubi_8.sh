@@ -81,8 +81,8 @@ cd ..
 
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
     	echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/clone_fails
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails" > /home/tester/output/version_tracker
+		echo "$PACKAGE_URL $PACKAGE_NAME" > /home
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails" > /home
     	exit 0
 fi
 
