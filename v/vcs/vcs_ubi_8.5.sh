@@ -71,3 +71,20 @@ else
 	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Install_and_Test_Success"
 	exit 0
 fi
+
+#Parity with power and Intel
+#testing.tRunner.func1.2({0x102c2460, 0x10500c20})
+#        /usr/bin/go/src/testing/testing.go:1209 +0x27c
+#testing.tRunner.func1(0xc000142340)
+#        /usr/bin/go/src/testing/testing.go:1212 +0x228
+#panic({0x102c2460, 0x10500c20})
+#        /usr/bin/go/src/runtime/panic.go:1038 +0x240
+#vcs.(*BzrRepo).CheckLocal(0x0)
+#        /home/go/src/vcs/bzr.go:199 +0x24
+#vcs.TestBzrCheckLocal(0xc000142340)
+#        /home/go/src/vcs/bzr_test.go:253 +0x118
+#testing.tRunner(0xc000142340, 0x10324398)
+#        /usr/bin/go/src/testing/testing.go:1259 +0xf0
+#created by testing.(*T).Run
+#        /usr/bin/go/src/testing/testing.go:1306 +0x370
+#FAIL    vcs     0.008s
