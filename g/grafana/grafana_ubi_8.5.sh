@@ -37,8 +37,9 @@ export GOPATH=`pwd`
 git clone https://github.com/grafana/grafana.git
 cd grafana
 git checkout v9.1.3
+
 go mod verify
-make run
+make 
 go run build.go setup
 go run build.go build
 
