@@ -17,7 +17,7 @@
 #   
 # ----------------------------------------------------------------------------
 yum -y update
-yum -y install wget git gcc-c++ make
+yum -y install wget git gcc-c++ make yarn 
 
 # Install GO
 wget https://golang.org/dl/go1.18.1.linux-ppc64le.tar.gz
@@ -39,7 +39,7 @@ cd grafana
 git checkout v9.1.3
 
 go mod verify
-make run
+yarn run
 go run build.go setup
 go run build.go build
 
