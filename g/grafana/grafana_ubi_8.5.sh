@@ -17,12 +17,14 @@
 #   
 # ----------------------------------------------------------------------------
 yum -y update
-yum -y install wget git gcc-c++ make yarn 
+yum -y install wget git gcc-c++ npm
 
 # Install GO
 wget https://golang.org/dl/go1.18.1.linux-ppc64le.tar.gz
 tar -C /usr/local -xzf go1.18.1.linux-ppc64le.tar.gz
 export PATH=$PATH:/usr/local/go/bin
+
+npm install -g yarn
 
 #Install Node
 yum install -y openssl-devel.ppc64le curl
