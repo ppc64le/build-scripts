@@ -3,7 +3,7 @@
 #
 # Package          : rasha.js
 # Version          : v1.2.5
-# Source repo      : ttps://git.coolaj86.com/coolaj86/rasha.js
+# Source repo      : https://git.coolaj86.com/coolaj86/rasha.js
 # Tested on        : RHEL 8.5,UBI 8.5
 # Language         : Node
 # Travis-Check     : True
