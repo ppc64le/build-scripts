@@ -5,10 +5,12 @@
 # Version	    : 9.4.48
 # Source repo	: https://github.com/eclipse/jetty.project.git
 # Tested on	    : UBI: 8.5
-# Script License: Apache License, Version 2 or later
-# Maintainer	: Vishaka Desai <Vishaka.Desai@ibm.com>
+# Travis-Check  : True
+# Language      : Java
+# Script License: Apache License Version 2.0
+# Maintainer    : Vishaka Desai <Vishaka.Desai@ibm.com>
 #
-# Disclaimer: This script has been tested in non-root mode on given
+# Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
