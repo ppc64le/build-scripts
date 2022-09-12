@@ -23,7 +23,7 @@ PACKAGE_NAME=rasha.js
 PACKAGE_VERSION=${1:-v1.2.5}
 PACKAGE_URL=https://git.coolaj86.com/coolaj86/rasha.js.git
 
-yum install -y yum-utils git jq
+yum install -y yum-utils diffutils openssl git jq
 
 NODE_VERSION=v10.17.0
 #installing nvm
