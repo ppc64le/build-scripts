@@ -44,12 +44,7 @@ make bootstrap
 go mod vendor
 make
 
-if ! make; then
-	echo "------------------$PACKAGE_NAME:Build_fails---------------------"
-	echo "$PACKAGE_VERSION $PACKAGE_NAME"
-	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
-else
-	echo "------------------$PACKAGE_NAME:Build_and_Test_success-------------------------"
-	echo "$PACKAGE_VERSION $PACKAGE_NAME"
-	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub  | Pass |  Build_and_Test_Success"
-fi
+make test TEST=./vault
+make testacc TEST=./builtin/logical/pki
+make testacc TEST=./builtin/logical/totp
+ 
