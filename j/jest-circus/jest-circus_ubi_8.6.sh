@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 # -----------------------------------------------------------------------------
 #
 # Package	: jest-circus
@@ -37,7 +37,6 @@ cd jest
 git checkout $PACKAGE_VERSION
 yarn add --dev jest@v27.0.5
 yarn add --dev jest-circus@v27.0.5
-npx browserslist@latest --update-db
 yarn install
 yarn build
 
