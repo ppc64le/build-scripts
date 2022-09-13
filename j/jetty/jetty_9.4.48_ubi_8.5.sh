@@ -18,6 +18,9 @@
 #
 # ----------------------------------------------------------------------------
 
+PACKAGE_URL=https://github.com/eclipse/jetty.project.git
+PACKAGE_VERSION=${1:-jetty-9.4.48.v20220622}
+
 # Install dependencies.
 yum -y install git wget java-1.8.0-openjdk-devel.ppc64le
 
@@ -31,5 +34,5 @@ export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
 
 # Clone and build source.
 git clone https://github.com/eclipse/jetty.project.git
-cd jetty.project && git checkout jetty-9.4.48.v20220622
-mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+cd jetty.project && git checkout $PACKAGE_VERSION
+mvn install -DskipTests=true
