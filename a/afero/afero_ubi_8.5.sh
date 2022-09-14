@@ -1,13 +1,14 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package       : afero
-# Version       : v1.2.2
+# Version       : v1.2.2, v1.9.2
 # Source repo   : https://github.com/spf13/afero.git
-# Tested on     : UBI 8.3
+# Tested on     : UBI-8.3, UBI-8.5
 # Language      : GO
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Raju.Sah@ibm.com
+# Maintainer    : Raju.Sah@ibm.com, Vishaka Desai <Vishaka.Desai@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -17,9 +18,8 @@
 #
 # ------------------------------------------------------------------------------
 
-set -e
 PACKAGE_NAME=github.com/spf13/afero
-PACKAGE_VERSION=${1:-v1.2.2}
+PACKAGE_VERSION=${1:-v1.9.2}
 
 export GOPATH=$HOME/go
 mkdir $GOPATH

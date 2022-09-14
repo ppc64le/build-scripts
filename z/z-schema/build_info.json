@@ -1,0 +1,10 @@
+{
+    "package_name" : "z-schema",
+    "github_url":"https://github.com/zaggino/z-schema",
+    "package_dir": "z/z-schema",
+    "docker_build": false,
+
+    "v*.*.*" : {
+        "build_script" : "z-schema_ubi_8.5.sh"
+    }
+}
