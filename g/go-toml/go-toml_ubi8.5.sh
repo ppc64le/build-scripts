@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : go-toml
-# Version       : master
+# Version       : master, v1.4.0, v2.0.5
 # Source repo   : https://github.com/pelletier/go-toml
 # Tested on     : ubi 8.5
 # Language      : GO
 # Travis-Check  : True
 # Script License: Apache License 2.0
-# Maintainer    : Amit Mukati <amit.mukati3@ibm.com>
+# Maintainer    : Amit Mukati <amit.mukati3@ibm.com>/ Balavva Mirji <Balavva.Mirji@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -56,6 +56,11 @@ if ! go build -v ./...; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
     exit 1
 fi
+
+# For v1.4.0 one test case is failing on power, which is in parity with Intel.
+# === RUN   TestUnmarshalBadDuration
+#    marshal_test.go:1315: unexpected error: (1, 1): Can't convert 1z(string) to time.Duration. time: unknown unit "z" in duration "1z"
+#--- FAIL: TestUnmarshalBadDuration (0.00s)
 
 if ! go test -v ./...; then
     echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
