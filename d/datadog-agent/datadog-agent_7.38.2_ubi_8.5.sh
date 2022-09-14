@@ -51,6 +51,7 @@ git apply datadog-agent_7.38.2.patch
 
 # Build and install dependencies
 python3 -m pip install codecov -r requirements.txt
+python3 -m pip install invoke==1.7.1
 invoke -e install-tools
 invoke agent.build --build-exclude=systemd
 
