@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: schema
-# Version	: v0.1.3
+# Version	: v0.1.2, v0.1.3
 # Source repo	: https://github.com/istanbuljs/schema
 # Tested on	: ubi 8.5
 # Language      : node
