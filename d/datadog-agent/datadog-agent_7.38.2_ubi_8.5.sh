@@ -50,8 +50,9 @@ wget https://raw.githubusercontent.com/vishakadesai/build-scripts/dda/d/datadog-
 git apply datadog-agent_7.38.2.patch
 
 # Build and install dependencies
-python3 -m pip install codecov -r requirements.txt && \
-inv -e install-tools && \
+python3 -m pip install codecov -r requirements.txt 
+export PATH=$PATH:/usr/local/bin
+inv -e install-tools 
 invoke agent.build --build-exclude=systemd
 
 # To build rtloader
