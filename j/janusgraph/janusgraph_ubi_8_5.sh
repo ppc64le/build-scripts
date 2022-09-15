@@ -5,6 +5,7 @@
 # Version       : 0.6.2
 # Source repo   : https://github.com/JanusGraph/janusgraph.git
 # Tested on     : ubi8.5
+# Language      : java
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Stuti.Wali@ibm.com
