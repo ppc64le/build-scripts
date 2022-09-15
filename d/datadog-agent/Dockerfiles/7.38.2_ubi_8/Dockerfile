@@ -1,8 +1,7 @@
 FROM registry.access.redhat.com/ubi8/ubi:latest 
 
 ARG PACKAGE_VERSION=7.38.2
-# ARG PATCH=https://raw.githubusercontent.com/ppc64le/build-scripts/master/d/datadog-agent/datadog-agent_7.38.2.patch
-ARG PATCH=https://raw.githubusercontent.com/vishakadesai/build-scripts/dda/d/datadog-agent/datadog-agent_7.38.2.patch
+ARG PATCH=https://raw.githubusercontent.com/ppc64le/build-scripts/master/d/datadog-agent/datadog-agent_7.38.2.patch
 
 # Install all dependencies
 RUN yum install -y wget git python38 python38-devel openssl openssl-devel make gcc gcc-c++ diffutils cmake
