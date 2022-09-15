@@ -5,11 +5,6 @@ ARG PACKAGE_VERSION=7.38.2
 # Install all dependencies
 RUN yum install -y wget git python38 python38-devel openssl openssl-devel make gcc gcc-c++ diffutils cmake
 
-# ENV PYTHON_VENV=Datadog_agent_venv
-
-# RUN python3 -m venv --system-site-packages $PYTHON_VENV \
-# 	&& source $PYTHON_VENV/bin/activate
-
 # Install go
 RUN export WORKDIR=`pwd` && \
 	wget https://go.dev/dl/go1.17.6.linux-ppc64le.tar.gz && \
@@ -35,7 +30,3 @@ RUN cd $GOPATH/src && \
 	invoke test --skip-linters --build-exclude=systemd
 
 ENV PATH=$PATH:$GOPATH/src/datadog-agent/bin/agent
-
-# Deactivating python8 virtual environment
-# RUN deactivate
-
