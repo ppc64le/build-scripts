@@ -1,20 +1,25 @@
 #!/bin/bash -e
-# ----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #
-# Package	: JanusGraph
-# Version	: 0.6.2 
-# Source repo	: https://github.com/JanusGraph/janusgraph.git 
-# Tested on	: ubi8.5
+# Package       : JanusGraph
+# Version       : 0.6.2
+# Source repo   : https://github.com/JanusGraph/janusgraph.git
+# Tested on     : ubi8.5
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Stuti.Wali@ibm.com
+# Maintainer    : Stuti.Wali@ibm.com
 #
-# Disclaimer: This script has been tested in non-root mode on given
+# Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
+
+PACKAGE_NAME=janusgraph
+PACKAGE_VERSION=v0.6.2
+PACKAGE_URL=https://github.com/JanusGraph/janusgraph.git
 
 yum install -y maven git wget gcc-c++ make autoconf
 cd ~
@@ -38,3 +43,4 @@ grpc_version=$(grep '<grpc.version>' pom.xml | grep -Po '\d*\.\d*\.\d*')
 mvn install:install-file -DgroupId=io.grpc -DartifactId=protoc-gen-grpc-java -Dversion=$grpc_version -Dclassifier=linux-ppcle_64 -Dpackaging=exe -Dfile=$(which protoc-gen-grpc-java)
 mvn clean install --projects janusgraph-all -Pjanusgraph-cache -Dmaven.javadoc.skip=true -DskipTests=true --batch-mode --also-make
 mvn verify --projects janusgraph-all -Pjanusgraph-cache
+
