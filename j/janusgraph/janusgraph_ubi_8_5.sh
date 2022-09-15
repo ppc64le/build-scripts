@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/JanusGraph/janusgraph.git
 yum install -y maven git wget gcc-c++ make autoconf
 cd ~
 wget https://github.com/protocolbuffers/protobuf/releases/download/v21.5/protobuf-all-21.5.tar.gz
-tar xf protobuf-all-21.5.tar.gz
+tar xf protobuf-all-21.5.tar.gz --no-same-owner
 cd protobuf-21.5
 ./configure --disable-shared
 make -j $(nproc)
