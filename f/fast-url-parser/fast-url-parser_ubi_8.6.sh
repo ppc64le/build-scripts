@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=fast-url-parser
-PACKAGE_VERSION=${1:-1.1.3}
+PACKAGE_VERSION=${1:-v1.1.3}
 PACKAGE_URL=https://github.com/petkaantonov/urlparser.git
 CURDIR="$(pwd)"
 dnf install -y wget git yum-utils nodejs nodejs-devel nodejs-packaging npm 
