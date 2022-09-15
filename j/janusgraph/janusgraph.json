@@ -1,0 +1,11 @@
+{
+    "package_name" : "janusgraph",
+    "github_url":"https://github.com/JanusGraph/janusgraph.git",
+    "package_dir": "j/janusgraph",
+    "docker_build": true,
+
+    "v*.*.*" : {
+        "build_script" : "janusgraph_ubi_8_5.sh"
+    }
+
+}
