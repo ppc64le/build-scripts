@@ -3,6 +3,7 @@ FROM registry.access.redhat.com/ubi8
 MAINTAINER Vinod K <Vinod.K1@ibm.com>
 
 ARG VAULT_VERSION=v1.11.2
+ARG GO_VERSION=1.17.12
 
 RUN groupadd vault && \
     useradd -g vault vault
@@ -13,9 +14,9 @@ ENV PATH $PATH:$GOPATH/bin
 RUN set -eux; \
     yum install -y openssl sudo \ 
     make git gcc wget && \
-    wget https://golang.org/dl/go1.16.7.linux-ppc64le.tar.gz && \
-    tar -C /usr/local -xvzf go1.16.7.linux-ppc64le.tar.gz && \
-    rm -rf go1.16.7.linux-ppc64le.tar.gz && \    
+    wget https://golang.org/dl/go$GO_VERSION.linux-ppc64le.tar.gz && \
+    tar -C /usr/local -xvzf go$GO_VERSION.linux-ppc64le.tar.gz && \
+    rm -rf go$GO_VERSION.linux-ppc64le.tar.gz && \    
     export PATH=/usr/local/go/bin:$PATH && \
     wget https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_ppc64le && \
     chmod a+x dumb-init_1.2.2_ppc64le && mv ./dumb-init_1.2.2_ppc64le ./dumb-init && cp ./dumb-init /usr/bin && \
