@@ -7,4 +7,4 @@
     "v*.*.*": {
         "build_script" : "caniuse-lite_ubi_8.5.sh"
     }
-} 
+}
