@@ -2,13 +2,13 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : copy
-# Version       : v1.7.0
+# Version       : v1.7.0,v1.0.2,v1.2.0
 # Source repo   : https://github.com/otiai10/copy
 # Tested on     : UBI: 8.5
 # Language      : GO
 # Travis-Check  : True
 # Script License: Apache License 2.0
-# Maintainer's  : Balavva Mirji <Balavva.Mirji@ibm.com>
+# Maintainer's  : Balavva Mirji <Balavva.Mirji@ibm.com> , Haritha Patchari<haritha.patchari@ibm.com>
 #
 #
 # Disclaimer: This script has been tested in root mode on given

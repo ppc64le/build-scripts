@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package           : downshift
-# Version           : v5.2.1, v1.31.16
+# Version           : v5.2.1, v1.31.16,v6.1.7
 # Source repo       : https://github.com/downshift-js/downshift
 # Tested on         : RHEL 8.5,UBI 8.5
 # Language          : Node
