@@ -4,7 +4,7 @@
     "package_dir": "c/caniuse-lite/",
     "docker_build": false,
 
-    "v*.*.*": {
+    "v?*.*.*": {
         "build_script" : "caniuse-lite_ubi_8.5.sh"
     }
 }
