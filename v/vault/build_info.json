@@ -7,25 +7,25 @@
 
 
     "v1.11.*" : {
-        "dir":"1.11.2-ubi8"
+        "dir":"1.11.2-ubi8",
 	"args": {
-            "VAULT_VERSION":"$PACKAGE_VERSION"
+            "VAULT_VERSION":"$PACKAGE_VERSION",
 	    "GO_VERSION":"1.17.12"
          }
     },
     
      "v1.5.*" : {
-        "dir":"1.5.3-ubi8"
+        "dir":"1.5.3-ubi8",
 	"args": {
-            "VAULT_VERSION":"$PACKAGE_VERSION"
-	    "GO_VERSION":"1.14.7"
+            "VAULT_VERSION":"$PACKAGE_VERSION",
+	    "GO_VERSION":"1.14.7",
          }
     },
     
      "v1.7.*" : {
-        "dir":"1.7.0-ubi8"
+        "dir":"1.7.0-ubi8",
 	"args": {
-            "VAULT_VERSION":"$PACKAGE_VERSION"
+            "VAULT_VERSION":"$PACKAGE_VERSION",
 	    "GO_VERSION":"1.16.7"
          }
     }
