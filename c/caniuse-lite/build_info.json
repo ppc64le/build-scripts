@@ -1,0 +1,10 @@
+{
+    "package_name" : "caniuse-lite",
+    "github_url":"https://github.com/browserslist/caniuse-lite.git",
+    "package_dir": "c/caniuse-lite/",
+    "docker_build": false,
+
+    "*.*.*": {
+        "build_script" : "caniuse-lite_ubi_8.5.sh"
+    }
+}
