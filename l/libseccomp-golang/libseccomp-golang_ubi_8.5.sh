@@ -3,7 +3,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : libseccomp-golang
-# Version       : main branch
+# Version       : PACKAGE_VERSION=${1:-main}
 # Source repo   : https://github.com/seccomp/libseccomp-golang.git
 # Tested on     : UBI 8.5
 # Language      : GO
@@ -55,4 +55,3 @@ fi
 bash
 EOF
 exit 0
-#make check
