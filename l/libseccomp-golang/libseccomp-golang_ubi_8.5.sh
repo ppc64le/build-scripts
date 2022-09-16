@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 # ----------------------------------------------------------------------------
 #
@@ -6,6 +6,8 @@
 # Version       : main branch
 # Source repo   : https://github.com/seccomp/libseccomp-golang.git
 # Tested on     : UBI 8.5
+# Language      : GO
+# Travis-Check  : false
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Chandranana Naik <Naik.Chandranana@ibm.com>
 #
@@ -19,14 +21,14 @@
 
 set -e
 PACKAGE_NAME=${2:-libseccomp-golang}
-PACKAGE_PATH=https://github.com/seccomp/libseccomp-golang/
+PACKAGE_URL=https://github.com/seccomp/libseccomp-golang/
 
 # Install dependencies
 yum install -y git tar make wget libseccomp-devel gcc
 
 #install go 
 cd /root
-wget https://golang.org/dl/go1.19.linux-ppc64le.tar.gz
+wget https://golang.org/dl/go1.19.linux-ppc64le.tar.gz 
 tar -C /bin -xf go1.19.linux-ppc64le.tar.gz 
 mkdir -p /home/tester/go/src /home/tester/go/bin /home/tester/go/pkg
 rm -rf go1.19.linux-ppc64le.tar.gz
@@ -37,7 +39,7 @@ export GO111MODULE=on
 
 #Download source for libseccomp-golang 
 cd /root
-git clone $PACKAGE_PATH
+git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 
 if ! go test -v ./... --outputdir /tmp ; then
