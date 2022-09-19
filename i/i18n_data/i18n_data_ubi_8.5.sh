@@ -28,20 +28,11 @@ if [ -d "i18n_data" ] ; then
   rm -rf i18n_data
 fi
 
-yum install -y git ruby procps ruby-devel yum-utils wget
+yum install git ruby ruby-devel -y
+gem install bundle
 
-gem install bundle 
-gem install rake 
-curl -sSL https://rvm.io/mpapis.asc | gpg2 --import - 
-curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import - 
-curl -L https://get.rvm.io | bash -s stable 
-source /etc/profile.d/rvm.sh
-rvm install ruby-2.7
-gem install bundler:1.17.3
-gem install kramdown-parser-gfm
-
-git clone https://github.com/grosser/i18n_data
-cd i18n_data
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 ret=$?
 if [ $ret -eq 0 ] ; then
@@ -50,6 +41,11 @@ else
  echo "$PACKAGE_VERSION not found "
  exit
 fi
+
+export BUNDLE_GEMFILE=$PWD/Gemfile
+
+which bundle || gem install bundler
+gem update bundler
 
 #Observed 24 failures:rake aborted and all are in parity with Intel 
 #rake aborted!
@@ -60,13 +56,12 @@ fi
 #Tasks: TOP => default
 #Build and test
 
-bundle _1.17.3_ install
-
+bundle install --verbose
 ret=$?
 if [ $ret -ne 0 ] ; then
   echo "Build failed "
 else
-  bundle _1.17.3_ exec rake
+  bundle exec rake
   ret=$?
   if [ $ret -ne 0 ] ; then
     echo "Tests failed "
