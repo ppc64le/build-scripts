@@ -31,8 +31,8 @@ fi
 yum install git ruby ruby-devel -y
 gem install bundle
 
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+git clone https://github.com/grosser/i18n_data
+cd i18n_data
 git checkout $PACKAGE_VERSION
 ret=$?
 if [ $ret -eq 0 ] ; then
