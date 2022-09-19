@@ -23,7 +23,7 @@ GO_VERSION=1.17.1
 
 cd /
 PATH=/node-$NODE_VERSION-linux-ppc64le/bin:$PATH
-yum install -y wget git npm && \
+yum install -y wget git npm  make && \
     wget https://nodejs.org/dist/$NODE_VERSION/node-$NODE_VERSION-linux-ppc64le.tar.gz && \
     tar -C / -xzf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
     rm -rf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
@@ -45,7 +45,7 @@ git checkout $PACKAGE_VERSION
 
 yarn install --mode update-lockfile
 yarn start
-
+make run
 go run build.go build
 yarn test 
 go test -v ./pkg/...
