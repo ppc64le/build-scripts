@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : node-https-proxy-agent
-# Version       : 2.2.4
+# Version       : 2.2.4 , 4.0.0, 5.0.0
 # Source repo   : https://github.com/TooTallNate/node-https-proxy-agent.git
 # Tested on     : UBI 8.5
 # Language      : Node
