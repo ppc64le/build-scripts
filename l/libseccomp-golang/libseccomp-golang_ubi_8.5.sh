@@ -7,7 +7,7 @@
 # Source repo   : https://github.com/seccomp/libseccomp-golang.git
 # Tested on     : UBI 8.5
 # Language      : GO
-# Travis-Check  : false
+# Travis-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Chandranana Naik <Naik.Chandranana@ibm.com>
 #
