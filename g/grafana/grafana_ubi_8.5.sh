@@ -16,34 +16,38 @@
 #                    contact "Maintainer" of this script.
 #   
 # ----------------------------------------------------------------------------
-yum -y update
-yum -y install wget git gcc-c++ npm
 
-# Install GO
-wget https://golang.org/dl/go1.18.1.linux-ppc64le.tar.gz
-tar -C /usr/local -xzf go1.18.1.linux-ppc64le.tar.gz
-export PATH=$PATH:/usr/local/go/bin
+PACKAGE_VERSION="${1:-v9.1.5}"
+NODE_VERSION=v14.17.6
+GO_VERSION=1.17.1
 
-npm install -g yarn
+cd /
+PATH=/node-$NODE_VERSION-linux-ppc64le/bin:$PATH
+yum install -y wget git npm && \
+    wget https://nodejs.org/dist/$NODE_VERSION/node-$NODE_VERSION-linux-ppc64le.tar.gz && \
+    tar -C / -xzf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
+    rm -rf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
+    npm install -g yarn
 
-#Install Node
-yum install -y openssl-devel.ppc64le curl
-curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
-source ~/.nvm/nvm.sh
-nvm install node
+cd /
+GOPATH=/go
+PATH=$PATH:/usr/local/go/bin
+yum install -y gcc  gcc-c++ && \
+    wget https://golang.org/dl/go$GO_VERSION.linux-ppc64le.tar.gz && \
+    tar -C /usr/local -xzf go$GO_VERSION.linux-ppc64le.tar.gz && \
+    rm -rf go$GO_VERSION.linux-ppc64le.tar.gz
 
-#Build Grafana
-mkdir grafana
-cd grafana
-export GOPATH=`pwd`
+mkdir -p $GOPATH/src/github.com/grafana/
+cd $GOPATH/src/github.com/grafana/
 git clone https://github.com/grafana/grafana.git
 cd grafana
-git checkout v9.1.3
+git checkout $PACKAGE_VERSION
 
-go mod verify
-yarn run
-go run build.go setup
+yarn install --mode update-lockfile
+yarn start
+
 go run build.go build
-
-#Test Grafana
+yarn test 
 go test -v ./pkg/...
+
+exit 0
