@@ -44,9 +44,8 @@ cd grafana
 git checkout $PACKAGE_VERSION
 
 yarn install --mode update-lockfile
-yarn run
 make run
-go run build.go build
+
 yarn test 
 go test -v ./pkg/...
 
