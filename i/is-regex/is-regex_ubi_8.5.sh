@@ -1,8 +1,8 @@
-#! /bin/bash
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: is-regex
-# Version	: v1.1.3, v1.1.4
+# Version	: v1.1.2, v1.1.3, v1.1.4
 # Source repo	: https://github.com/inspect-js/is-regex.git
 # Tested on     : RHEL 8.5,UBI8.5
 # Language      : Node
