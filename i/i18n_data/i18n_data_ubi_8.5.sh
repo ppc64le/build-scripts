@@ -28,7 +28,7 @@ if [ -d "i18n_data" ] ; then
   rm -rf i18n_data
 fi
 
-yum install -y git ruby procps yum-utils wget
+yum install -y git ruby procps ruby-devel yum-utils wget
 
 gem install bundle 
 gem install rake 
