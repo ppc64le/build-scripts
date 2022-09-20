@@ -29,7 +29,7 @@ if [ -d "byebug" ] ; then
 fi
 
 yum install git ruby ruby-devel -y
-gem install bundle
+gem install bundle:1.16.1
 
 git clone https://github.com/deivid-rodriguez/byebug
 cd byebug
