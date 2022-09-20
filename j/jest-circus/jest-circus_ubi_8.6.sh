@@ -42,7 +42,7 @@ export PATH=/root/.nvm/versions/node/v16.14.2/bin/:$PATH
 git clone $PACKAGE_URL jest
 cd jest 
 git checkout $PACKAGE_VERSION
-yarn add --dev @jest/globals@27.0.5  -
+yarn add --dev @jest/globals@27.0.5  
 yarn add --dev @jest/test-utils@0.0.0  
 yarn add --dev jest@27.0.5 
 yarn add --dev jest-changed-files@27.0.2 
