@@ -55,11 +55,11 @@ yarn build:js
 if ! yarn jest ./packages/jest-circus/ 2>&1 | tee test.log ; then
      	echo "------------------$PACKAGE_NAME:test_fails-------------------------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" 
-		echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails" 
+		echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  test_fail" 
 		exit 1
 else
 		echo "------------------$PACKAGE_NAME:test_success-------------------------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" 
-		echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  test_success" 
-		exit 1
+		echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Success |  test_success" 
+		exit 0
 fi
