@@ -19,7 +19,6 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e
 PACKAGE_NAME=${2:-libseccomp-golang}
 PACKAGE_URL=https://github.com/seccomp/libseccomp-golang/
 
@@ -52,6 +51,3 @@ else
 	exit 0
 fi
 
-bash
-EOF
-exit 0
