@@ -28,17 +28,8 @@ if [ -d "byebug" ] ; then
   rm -rf byebug
 fi
 
-yum install -y git ruby procps yum-utils wget
-
-gem install bundle 
-gem install rake 
-curl -sSL https://rvm.io/mpapis.asc | gpg2 --import - 
-curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import - 
-curl -L https://get.rvm.io | bash -s stable 
-source /etc/profile.d/rvm.sh
-rvm install ruby-2.7
-gem install bundler:1.17.3
-gem install kramdown-parser-gfm
+yum install git ruby ruby-devel -y
+gem install bundle
 
 git clone https://github.com/deivid-rodriguez/byebug
 cd byebug
@@ -51,6 +42,11 @@ else
  exit
 fi
 
+export BUNDLE_GEMFILE=$PWD/Gemfile
+
+which bundle || gem install bundler
+gem update bundler
+
 #Observed 7 test failures and all are in parity with intel
 # Failure:
 #Byebug::ThreadTest#test_thread_list_shows_all_available_threads [/root/rubybuildscripts/byebug/test/support/matchers.rb:29]:
@@ -58,13 +54,12 @@ fi
 #test_per_test_class,#test_runs,#test_with_verbose_option,#test_combinations[/root/rubybuildscripts/byebug/test/minitest_runner_test.rb:60]:
 #Build and test
 
-bundle _1.17.3_ install
-
+bundle install --verbose
 ret=$?
 if [ $ret -ne 0 ] ; then
   echo "Build failed "
 else
-  bundle _1.17.3_ exec rake
+  bundle exec rake
   ret=$?
   if [ $ret -ne 0 ] ; then
     echo "Tests failed "
