@@ -5,6 +5,8 @@
 # Version	: v0.5.7, v0.6.9
 # Source repo	: https://github.com/google/gnostic
 # Tested on	: UBI 8.5
+# Language      : GO
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>/ Balavva Mirji <Balavva.Mirji@ibm.com>
 #
