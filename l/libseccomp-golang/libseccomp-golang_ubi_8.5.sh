@@ -21,12 +21,13 @@
 
 PACKAGE_NAME=${2:-libseccomp-golang}
 PACKAGE_URL=https://github.com/seccomp/libseccomp-golang/
+WORKDIR=/root
 
 # Install dependencies
 yum install -y git tar make wget libseccomp-devel gcc
 
 #install go 
-cd /root
+cd $WORKDIR
 wget https://golang.org/dl/go1.19.linux-ppc64le.tar.gz 
 tar -C /bin -xf go1.19.linux-ppc64le.tar.gz 
 mkdir -p /home/tester/go/src /home/tester/go/bin /home/tester/go/pkg
@@ -37,7 +38,7 @@ export PATH=$GOPATH/bin:$PATH
 export GO111MODULE=on
 
 #Download source for libseccomp-golang 
-cd /root
+cd $WORKDIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 
