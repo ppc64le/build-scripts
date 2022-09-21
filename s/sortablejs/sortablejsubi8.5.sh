@@ -17,6 +17,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
+# Note:- Please change test.js chrome:headless to firefox:headless so test case will pass
 
 PACKAGE_NAME=Sortable
 PACKAGE_VERSION=1.10.2
