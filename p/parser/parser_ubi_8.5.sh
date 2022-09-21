@@ -1,13 +1,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: parser
-# Version	: 4.4.0
+# Version	: 4.4.0, 4.5.0
 # Source repo	: https://github.com/nikic/PHP-Parser
 # Tested on	: UBI 8.5
 # Language      : PHP
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>
+# Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>, Shalmon Titre <Shalmon.Titre@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
