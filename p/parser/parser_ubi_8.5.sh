@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: PHP-Parser
-# Version	: 4.4.0, 4.5.0
+# Version	: v4.4.0, 4.5.0
 # Source repo	: https://github.com/nikic/PHP-Parser
 # Tested on	: UBI 8.5
 # Language      : PHP
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=PHP-Parser
-PACKAGE_VERSION=4.4.0
+PACKAGE_VERSION=v4.4.0
 PACKAGE_URL=https://github.com/nikic/PHP-Parser.git
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
