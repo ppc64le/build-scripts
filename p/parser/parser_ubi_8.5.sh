@@ -19,8 +19,8 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME="parser"
-PACKAGE_VERSION=${1:-"4.4.0"}
-PACKAGE_URL="https://github.com/nikic/PHP-Parser"
+PACKAGE_VERSION=4.4.0
+PACKAGE_URL=https://github.com/nikic/PHP-Parser.git
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
 yum install -y git php php-curl php-dom php-mbstring php-json php-gd php-pecl-zip zip
