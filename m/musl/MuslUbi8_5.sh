@@ -32,13 +32,13 @@ wget $PACKAGE_URL
 cd $PACKAGE_NAME
 
 
-# configure will fail due to musl does not support ppc64 little endian
+# configure will fail due to musl does not support ppc64 little endian and changes not included due to OSCC approval
 
 
 ./configure
 
 
-# make will fail due changes needed in code/tool chain build suggested by musl ommunity
+# make will fail as changes needed in code/tool chain build suggested by musl community / changes not included due to OSCC approval
 make
 
 make install
