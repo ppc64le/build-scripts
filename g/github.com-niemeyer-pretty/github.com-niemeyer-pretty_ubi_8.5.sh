@@ -51,7 +51,6 @@ fi
 
 cd $(ls -d $GOPATH/pkg/mod/$PACKAGE_NAME*)
 
-go mod init $PACKAGE_NAME
 go mod tidy
 
 # patch
