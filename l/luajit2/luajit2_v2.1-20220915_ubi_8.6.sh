@@ -5,7 +5,7 @@
 # Version       : v2.1-20220915
 # Source repo   : https://github.com/openresty/luajit2
 # Tested on	    : UBI 8.6
-# Language      : Lua
+# Language      : C, Lua
 # Travis-Check  : True
 # Script License: Apache License 2.0
 # Maintainer    : Reynold Vaz <Reynold.Vaz@ibm.com>
