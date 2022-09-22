@@ -1,0 +1,9 @@
+{
+    "package_name" : "luajit2",
+	"github_url":"https://github.com/openresty/luajit2.git",
+    "build_script" : "luajit2_v2.1-20220915_ubi_8.6.sh",
+    
+    "v2.1-20220915" : {
+        "build_script" : "luajit2_v2.1-20220915_ubi_8.6.sh"
+    }
+}
