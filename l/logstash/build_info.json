@@ -1,0 +1,18 @@
+{
+    "package_name" : "logstash",
+    "github_url":"https://github.com/elastic/logstash",
+    "version": "v8.4.2",
+    "default_branch": "main",
+    "package_dir": "l/logstash/",
+    "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "build_script": "logstash_8.4.1_ubi_8.5.sh",
+
+    "v8.4.*" : {
+        "dir" : "8.4.2_ubi",
+        "build_script" : "logstash_8.4.1_ubi_8.5.sh"
+    },
+    
+    "v8.3.*" : {
+        "build_script" : "logstash_8.3.3_ubi_8.5.sh"
+    }
+}
