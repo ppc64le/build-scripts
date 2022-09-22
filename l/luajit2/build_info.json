@@ -2,8 +2,9 @@
     "package_name" : "luajit2",
 	"github_url":"https://github.com/openresty/luajit2.git",
     "build_script" : "luajit2_v2.1-20220915_ubi_8.6.sh",
+    "docker_build": false,
     
-    "v2.1-20220915" : {
+    "v2.1-20201*,  v2.1-2021*, v2.1-2022*" : {
         "build_script" : "luajit2_v2.1-20220915_ubi_8.6.sh"
     }
 }
