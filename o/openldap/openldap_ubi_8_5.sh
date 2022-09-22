@@ -1,6 +1,5 @@
 #!/bin/bash
 # ----------------------------------------------------------------------------
-#
 # Package       : openldap
 # Version       : OPENLDAP_REL_ENG_2_6_3
 # Source repo   : https://github.com/openldap/openldap
@@ -9,7 +8,6 @@
 # Language      : C
 # Script License: Apache License 2.0
 # Maintainer's  : Stuti.Wali@ibm.com
-#
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
