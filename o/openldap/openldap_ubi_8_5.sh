@@ -5,6 +5,7 @@
 # Source repo   : https://github.com/openldap/openldap
 # Tested on     : UBI: 8.5
 # Travis-Check  : True
+# Language      : C
 # Script License: Apache License 2.0
 # Maintainer's  : Stuti.Wali@ibm.com
 #
