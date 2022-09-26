@@ -6,15 +6,20 @@
 # Source repo	: https://github.com/vishvananda/netns
 # Tested on	: UBI 8.5
 # Language      : GO
-# Travis-Check  : False
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Anup Kodlekere <Anup.Kodlekere@ibm.com>
+# Maintainer	: Anup Kodlekere <Anup.Kodlekere@ibm.com>, Shantanu Kadam <Shantanu.Kadam@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
+# 
+#docker run -it --privileged --name netns registry.access.redhat.com/ubi8/ubi:8.5 /bin/bash
+#Requested version requires some permissions to run test cases, so we need to pass --privileged tag while creating container.
 #
 # ----------------------------------------------------------------------------
 
@@ -24,7 +29,7 @@ PACKAGE_URL=https://github.com/vishvananda/netns
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
-yum install -y golang git
+yum install -y go git sudo
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
@@ -51,3 +56,4 @@ else
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
 	exit 0
 fi
+
