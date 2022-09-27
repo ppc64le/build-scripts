@@ -22,7 +22,7 @@ PACKAGE_NAME=shepherd
 PACKAGE_VERSION=v8.3.1
 PACKAGE_URL=https://github.com/shipshapecode/shepherd.git
 
-yum install java java-devel yum-utils nodejs nodejs-devel nodejs-packaging npm wget -y
+yum install java java-devel yum-utils nodejs nodejs-devel nodejs-packaging npm wget git -y
 
 npm install -g n
 
