@@ -3,14 +3,14 @@
 	"github_url":"https://github.com/hashicorp/vault.git",
     "package_dir": "v/vault/Dockerfiles/",
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "build_script" : "vault_ubi_8.5.sh",
 
     "v1.11.*" : {
         "dir":"1.11.2-ubi8",
 	"args": {
             "VAULT_VERSION":"$PACKAGE_VERSION",
 	    "GO_VERSION":"1.17.12",
-         },
-	"build_script" : "vault_ubi_8.5.sh",
+         }	
     },
     
      "v1.5.*" : {
@@ -18,8 +18,7 @@
 	"args": {
             "VAULT_VERSION":"$PACKAGE_VERSION",
 	    "GO_VERSION":"1.14.7",
-         },
-	"build_script" : "vault_ubi_8.5.sh",
+         }
     },
     
      "v1.7.*" : {
@@ -27,8 +26,7 @@
 	"args": {
             "VAULT_VERSION":"$PACKAGE_VERSION",
 	    "GO_VERSION":"1.16.7",
-         },
-	"build_script" : "vault_ubi_8.5.sh",
+         }
     },
 
      "v1.8.*" : {
@@ -36,17 +34,15 @@
         "args": {
             "VAULT_VERSION":"$PACKAGE_VERSION",
             "GO_VERSION":"1.17.3",
-         },
-        "build_script" : "vault_ubi_8.5.sh",
+         }
     },
 
      "v1.9.*" : {
         "dir":"1.9.1-ubi8",
         "args": {
             "VAULT_VERSION":"$PACKAGE_VERSION",
-            "GO_VERSION":"1.17.3",
-         },
-        "build_script" : "vault_ubi_8.5.sh",
+            "GO_VERSION":"1.17.13",
+         }
     },
 
      "v0.10.*" : {
@@ -54,8 +50,7 @@
         "args": {
             "VAULT_VERSION":"$PACKAGE_VERSION",
             "GO_VERSION":"1.10.3",
-         },
-        "build_script" : "vault_ubi_8.5.sh",
+         }
     },
 
 }
