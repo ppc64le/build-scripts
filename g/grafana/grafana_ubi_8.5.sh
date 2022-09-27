@@ -30,8 +30,6 @@ yum install -y wget git npm make gcc-c++ python3-devel && \
     tar -C / -xzf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
     rm -rf node-$NODE_VERSION-linux-ppc64le.tar.gz 
 
-npm install -g yarn
-
 cd /
 GOPATH=/go
 PATH=$PATH:/usr/local/go/bin
@@ -45,6 +43,7 @@ cd $GOPATH/src/github.com/grafana/
 git clone https://github.com/grafana/grafana.git
 cd grafana
 git checkout $PACKAGE_VERSION
+npm install -g yarn
 
 yarn install --immutable
 yarn run
