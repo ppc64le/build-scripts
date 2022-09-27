@@ -18,7 +18,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_VERSION="${1:-v9.1.5}"
-NODE_VERSION=v14.17.6
+NODE_VERSION=v18.9.0
 GO_VERSION=1.17.1
 
 cd /
@@ -43,10 +43,10 @@ git clone https://github.com/grafana/grafana.git
 cd grafana
 git checkout $PACKAGE_VERSION
 
-yarn install --mode update-lockfile
-make run
-
-yarn test 
+yarn install --immutable
+make gen-go
+go run build.go build
+yarn run lingui compile
+yarn test --watchAll
 go test -v ./pkg/...
-
 exit 0
