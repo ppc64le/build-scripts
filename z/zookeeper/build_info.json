@@ -25,7 +25,7 @@
         "dir":"template",
         "gitcommit" : "26d526845db22ff2dd8d2449276a3f265eea1f67",
         "args" : {
-            "ZOOKEEPER_VERSION": "$(echo $PACKAGE_VERSION | sed 's/release-//')"
+            "ZOOKEEPER_VERSION": "$(echo $PACKAGE_VERSION | sed 's/release-//' | sed 's/-[0-9]*$//')"
         }
     }
 }
