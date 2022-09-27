@@ -1,6 +1,17 @@
-FROM golang:1.17.3
+FROM registry.access.redhat.com/ubi8/ubi:8.5
 
 ARG VAULT_VERSION=v1.9.1
+
+ARG GO_VERSION=v1.17.13
+
+RUN yum install -y gcc-c++ wget && \
+    wget https://go.dev/dl/${GO_VERSION}.linux-ppc64le.tar.gz
+    tar xzf ${GO_VERSION}.linux-ppc64le.tar.gz
+    mv go /usr/local/go
+    ln -s /usr/local/go/bin/go /usr/local/bin/go
+    rm -rf ${GO_VER}.linux-ppc64le.tar.gz
+    
+ENV PATH=/usr/local/bin/:$PATH
 
 RUN mkdir -p /go/src/github.com/hashicorp && cd /go/src/github.com/hashicorp && \
     git clone https://github.com/hashicorp/vault && cd vault && \
