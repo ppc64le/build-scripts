@@ -28,8 +28,7 @@ PATH=/node-$NODE_VERSION-linux-ppc64le/bin:$PATH
 yum install -y wget git make gcc-c++ python3-devel && \
     wget https://nodejs.org/dist/$NODE_VERSION/node-$NODE_VERSION-linux-ppc64le.tar.gz && \
     tar -C / -xzf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
-    rm -rf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
-    npm install -g yarn
+    rm -rf node-$NODE_VERSION-linux-ppc64le.tar.gz 
 
 cd /
 GOPATH=/go
