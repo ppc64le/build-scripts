@@ -14,5 +14,13 @@
 
     "jetty-11.0.12": {
         "build_script" : "jetty_11.0.12_ubi_8.5.sh"
+    },
+    
+    "jetty-*.*.*.v*": {
+        "build_script" : "jetty_9.4.48_ubi_8.5.sh"
+    },
+    
+    "jetty-*.*.*": {
+        "build_script" : "jetty_11.0.12_ubi_8.5.sh"
     }
 }
