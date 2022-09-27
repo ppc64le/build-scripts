@@ -18,8 +18,8 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_VERSION="${1:-v9.1.6}"
-NODE_VERSION=v18.9.0
-GO_VERSION=1.17.1
+NODE_VERSION=v16.17.0
+GO_VERSION=1.19.1
 
 yum update -y
 
