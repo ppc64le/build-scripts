@@ -25,7 +25,7 @@ yum update -y
 
 cd /
 PATH=/node-$NODE_VERSION-linux-ppc64le/bin:$PATH
-yum install -y wget sudo git make gcc-c++ python3-devel && \
+yum install -y wget sudo git npm make gcc-c++ python3-devel && \
     wget https://nodejs.org/dist/$NODE_VERSION/node-$NODE_VERSION-linux-ppc64le.tar.gz && \
     tar -C / -xzf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
     rm -rf node-$NODE_VERSION-linux-ppc64le.tar.gz 
