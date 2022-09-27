@@ -16,7 +16,10 @@ ENV PATH=/usr/local/bin/:$PATH
 RUN mkdir -p /go/src/github.com/hashicorp && cd /go/src/github.com/hashicorp && \
     git clone https://github.com/hashicorp/vault && cd vault && \
     git checkout $VAULT_VERSION && \
-    make bootstrap && make
+    go mod tidy && \
+    make bootstrap && \
+    go mod vendor && \
+    make
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal
 
