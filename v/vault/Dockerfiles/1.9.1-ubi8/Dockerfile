@@ -4,11 +4,11 @@ ARG VAULT_VERSION=v1.9.1
 
 ARG GO_VERSION=v1.17.13
 
-RUN yum install -y gcc-c++ wget && \
-    wget https://go.dev/dl/${GO_VERSION}.linux-ppc64le.tar.gz
-    tar xzf ${GO_VERSION}.linux-ppc64le.tar.gz
-    mv go /usr/local/go
-    ln -s /usr/local/go/bin/go /usr/local/bin/go
+RUN yum install -y gcc-c++ wget tar gzip && \
+    wget https://go.dev/dl/${GO_VERSION}.linux-ppc64le.tar.gz && \
+    tar xzf ${GO_VERSION}.linux-ppc64le.tar.gz && \
+    mv go /usr/local/go && \
+    ln -s /usr/local/go/bin/go /usr/local/bin/go && \
     rm -rf ${GO_VER}.linux-ppc64le.tar.gz
     
 ENV PATH=/usr/local/bin/:$PATH
