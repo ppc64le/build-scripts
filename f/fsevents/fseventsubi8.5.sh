@@ -22,7 +22,7 @@ PACKAGE_NAME=fsevents
 PACKAGE_VERSION=v2.2.0
 PACKAGE_URL=https://github.com/fsevents/fsevents.git
 
-yum install yum-utils nodejs nodejs-devel nodejs-packaging npm wget -y
+yum install yum-utils nodejs nodejs-devel nodejs-packaging npm wget git -y
 
 
 npm install -g n
