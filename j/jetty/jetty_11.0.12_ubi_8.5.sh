@@ -5,6 +5,8 @@
 # Version	    : 10.0.12, 11.0.12
 # Source repo	: https://github.com/eclipse/jetty.project.git
 # Tested on	    : UBI: 8.5
+# Travis-Check  : True
+# Language      : Java
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Vishaka Desai <Vishaka.Desai@ibm.com>
 #
