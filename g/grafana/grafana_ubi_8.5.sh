@@ -32,8 +32,7 @@ yum install -y wget git npm make gcc-c++ python3-devel && \
     tar -C / -xzf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
     rm -rf node-$NODE_VERSION-linux-ppc64le.tar.gz
     
-npm config delete proxy
-npm install -g yarn
+dnf install -g yarn
 
 cd /
 GOPATH=/go
