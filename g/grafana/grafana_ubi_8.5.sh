@@ -32,7 +32,7 @@ yum install -y wget git npm make gcc-c++ python3-devel && \
     tar -C / -xzf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
     rm -rf node-$NODE_VERSION-linux-ppc64le.tar.gz
     
-dnf install -g yarn
+dnf install -y yarn
 
 cd /
 GOPATH=/go
