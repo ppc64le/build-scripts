@@ -25,15 +25,11 @@ GO_VERSION=1.17.1
 
 yum update -y
 
-cd /
-PATH=/node-$NODE_VERSION-linux-ppc64le/bin:$PATH
-yum install -y wget git npm make gcc-c++ python3-devel && \
-    wget https://nodejs.org/dist/$NODE_VERSION/node-$NODE_VERSION-linux-ppc64le.tar.gz && \
-    tar -C / -xzf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
-    rm -rf node-$NODE_VERSION-linux-ppc64le.tar.gz
+yum install -y openssl-devel.ppc64le curl wget git npm make gcc-c++ python3-devel
+curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
+source ~/.nvm/nvm.sh
+nvm install node
 
-curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo
-rpm --import https://dl.yarnpkg.com/rpm/pubkey.gpg
 dnf install -y yarn
 
 cd /
