@@ -17,42 +17,44 @@
 #   
 # ----------------------------------------------------------------------------
 
+PACKAGE_NAME="grafana"
 PACKAGE_VERSION="${1:-v9.1.6}"
+PACKAGE_URL="https://github.com/grafana/grafana.git"
 NODE_VERSION=v18.9.0
-GO_VERSION=1.19.1
+GO_VERSION=1.17.1
 
 yum update -y
 
 cd /
 PATH=/node-$NODE_VERSION-linux-ppc64le/bin:$PATH
-yum install -y wget sudo git npm make gcc-c++ python3-devel && \
+yum install -y wget git npm make gcc-c++ python3-devel && \
     wget https://nodejs.org/dist/$NODE_VERSION/node-$NODE_VERSION-linux-ppc64le.tar.gz && \
     tar -C / -xzf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
-    rm -rf node-$NODE_VERSION-linux-ppc64le.tar.gz 
-
-sudo npm install --global yarn 
+    rm -rf node-$NODE_VERSION-linux-ppc64le.tar.gz
+    
+npm config set proxy false
+npm cache clean
+npm install -g yarn
 
 cd /
 GOPATH=/go
 PATH=$PATH:/usr/local/go/bin
-yum install -y gcc gcc-c++ && \
-    wget https://golang.org/dl/go$GO_VERSION.linux-ppc64le.tar.gz && \
-    tar -C /usr/local -xzf go$GO_VERSION.linux-ppc64le.tar.gz && \
-    rm -rf go$GO_VERSION.linux-ppc64le.tar.gz
+
+wget https://golang.org/dl/go$GO_VERSION.linux-ppc64le.tar.gz && \
+tar -C /usr/local -xzf go$GO_VERSION.linux-ppc64le.tar.gz && \
+rm -rf go$GO_VERSION.linux-ppc64le.tar.gz
 
 mkdir -p $GOPATH/src/github.com/grafana/
 cd $GOPATH/src/github.com/grafana/
-git clone https://github.com/grafana/grafana.git
-cd grafana
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 yarn install --immutable
-yarn run
 make gen-go
 go run build.go build
 go test -v ./pkg/...
 yarn run lingui compile
-yarn test --forceExit
-
+yarn test
 exit 0
 
