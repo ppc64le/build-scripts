@@ -4,7 +4,7 @@
     "package_dir": "a/apache-nifi/",
     "docker_build": false,
 
-    "rel/nifi-1.17.0": {
+    "1.17.0": {
         "build_script" : "apache-nifi_1.17.0_ubi_8.5.sh"
     }
 }
