@@ -32,7 +32,6 @@ yum install -y wget git npm make gcc-c++ python3-devel && \
     tar -C / -xzf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
     rm -rf node-$NODE_VERSION-linux-ppc64le.tar.gz
     
-npm cache clean --force
 npm install -g yarn
 
 cd /
