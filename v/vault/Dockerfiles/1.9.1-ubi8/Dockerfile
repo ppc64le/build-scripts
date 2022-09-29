@@ -1,11 +1,26 @@
-FROM golang:1.17.3
+FROM registry.access.redhat.com/ubi8/ubi:8.5
 
 ARG VAULT_VERSION=v1.9.1
 
-RUN mkdir -p /go/src/github.com/hashicorp && cd /go/src/github.com/hashicorp && \
+ARG GO_VERSION=v1.17.13
+
+ENV GOPATH=/go
+ENV PATH=/usr/local/bin/:$GOPATH/bin/:$PATH
+
+RUN yum install -y gcc-c++ wget tar gzip git make && \
+    wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz && \
+    tar xzf go${GO_VERSION}.linux-ppc64le.tar.gz && \
+    mv go /usr/local/go && \
+    ln -s /usr/local/go/bin/go /usr/local/bin/go && \
+    rm -rf go${GO_VER}.linux-ppc64le.tar.gz && \
+    mkdir -p /go/src/github.com/hashicorp && cd /go/src/github.com/hashicorp && \
     git clone https://github.com/hashicorp/vault && cd vault && \
     git checkout $VAULT_VERSION && \
-    make bootstrap && make
+    go mod tidy && \
+    make bootstrap && \
+    go mod vendor && \
+    make && \
+    yum remove -y gcc-c++ wget git make
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal
 
@@ -39,11 +54,13 @@ VOLUME /vault/file
 # Vault.
 EXPOSE 8200
 
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 USER 100
 
 ENV SKIP_CHOWN true
 ENV SKIP_SETCAP true
 
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["server", "-dev"]
