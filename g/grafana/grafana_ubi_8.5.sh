@@ -20,16 +20,19 @@
 PACKAGE_NAME="grafana"
 PACKAGE_VERSION="${1:-v9.1.6}"
 PACKAGE_URL="https://github.com/grafana/grafana.git"
-NODE_VERSION=v18.9.0
+NODE_VERSION=v16.14.2
 GO_VERSION=1.17.1
 
 yum update -y
 
-yum install -y openssl-devel.ppc64le curl wget git npm make gcc-c++ python3-devel
-curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
-source ~/.nvm/nvm.sh
-nvm install node
-
+cd /
+PATH=/node-$NODE_VERSION-linux-ppc64le/bin:$PATH
+yum install -y wget git npm make gcc-c++ python3-devel && \
+    wget https://nodejs.org/dist/$NODE_VERSION/node-$NODE_VERSION-linux-ppc64le.tar.gz && \
+    tar -C / -xzf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
+    rm -rf node-$NODE_VERSION-linux-ppc64le.tar.gz
+    
+npm cache clean --force
 npm install -g yarn
 
 cd /
@@ -53,4 +56,3 @@ go test -v ./pkg/...
 yarn run lingui compile
 yarn test
 exit 0
-
