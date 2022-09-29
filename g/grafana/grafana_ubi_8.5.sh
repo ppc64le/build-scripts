@@ -20,7 +20,7 @@
 PACKAGE_NAME="grafana"
 PACKAGE_VERSION="${1:-v9.1.6}"
 PACKAGE_URL="https://github.com/grafana/grafana.git"
-NODE_VERSION=v16.14.2
+NODE_VERSION=v18.9.0
 GO_VERSION=1.17.1
 
 yum update -y
@@ -32,6 +32,7 @@ yum install -y wget git npm make gcc-c++ python3-devel && \
     tar -C / -xzf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
     rm -rf node-$NODE_VERSION-linux-ppc64le.tar.gz
     
+npm cache clean --force
 npm install -g yarn
 
 cd /
