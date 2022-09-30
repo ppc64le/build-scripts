@@ -1,8 +1,8 @@
 diff --git a/pom.xml b/pom.xml
-index b38391af9d..1c69357ba3 100644
+index b38391af9d..46906f2878 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -640,6 +640,16 @@
+@@ -640,6 +640,17 @@
                          </includes>
                          <excludes>
                              <exclude>**/*ITSpec.class</exclude>
@@ -16,6 +16,7 @@ index b38391af9d..1c69357ba3 100644
 +                            <exclude>TestFetchFile.java</exclude>
 +                            <exclude>TestListFile.java</exclude>
 +                            <exclude>HikariCPConnectionPoolTest.java</exclude>
++                            <exclude>TestExecuteStateless.java</exclude>
                          </excludes>
                          <redirectTestOutputToFile>true</redirectTestOutputToFile>
                      </configuration>
