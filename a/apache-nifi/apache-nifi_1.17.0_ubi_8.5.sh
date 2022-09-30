@@ -23,6 +23,7 @@ PACKAGE_VERSION=${1:-1.17.0}
 SCRIPT=$(readlink -f $0)
 SCRIPT_DIR=$(dirname $SCRIPT)
 PATCH_FILE=$SCRIPT_DIR/nifi_1.17.0.patch
+cat $PATCH_FILE
 
 #Install dependecies
 yum install -y wget git java-1.8.0-openjdk-devel
