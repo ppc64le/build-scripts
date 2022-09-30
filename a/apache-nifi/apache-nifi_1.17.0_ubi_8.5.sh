@@ -34,8 +34,8 @@ git clone https://github.com/apache/nifi
 cd nifi
 git checkout rel/nifi-${PACKAGE_VERSION}
 
-wget https://raw.githubusercontent.com/vishakadesai/build-scripts/nifi/a/apache-nifi/nifi_1.17.0.patch
-if git apply nifi_1.17.0.patch; then
+wget https://raw.githubusercontent.com/vishakadesai/build-scripts/nifi/a/apache-nifi/nifi-1.17.0.patch
+if git apply nifi-1.17.0.patch; then
     echo "patch applied"
 else
     echo "patch fails"
