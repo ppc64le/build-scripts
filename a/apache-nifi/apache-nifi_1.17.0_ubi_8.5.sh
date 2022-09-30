@@ -20,6 +20,10 @@
 
 PACKAGE_VERSION=${1:-1.17.0}
 
+SCRIPT=$(readlink -f $0)
+SCRIPT_DIR=$(dirname $SCRIPT)
+PATCH_FILE=$SCRIPT_DIR/nifi_1.17.0.patch
+
 #Install dependecies
 yum install -y wget git java-1.8.0-openjdk-devel
 
@@ -34,8 +38,8 @@ git clone https://github.com/apache/nifi
 cd nifi
 git checkout rel/nifi-${PACKAGE_VERSION}
 
-wget https://raw.githubusercontent.com/vishakadesai/build-scripts/nifi/a/apache-nifi/nifi_1.17.0.patch
-if git apply nifi_1.17.0.patch; then
+# wget https://raw.githubusercontent.com/vishakadesai/build-scripts/nifi/a/apache-nifi/nifi_1.17.0.patch
+if git apply $PATCH_FILE; then
     echo "patch applied"
 else
     echo "patch fails"
