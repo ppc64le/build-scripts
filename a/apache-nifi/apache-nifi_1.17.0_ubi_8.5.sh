@@ -33,8 +33,14 @@ ln -s /usr/local/apache-maven-3.8.6/bin/mvn /usr/bin/mvn
 git clone https://github.com/apache/nifi
 cd nifi
 git checkout rel/nifi-${PACKAGE_VERSION}
+
 wget https://raw.githubusercontent.com/vishakadesai/build-scripts/nifi/a/apache-nifi/nifi_1.17.0.patch
-git apply nifi_1.17.0.patch
+if git apply nifi_1.17.0.patch; then
+    echo "patch applied"
+else
+    echo "patch fails"
+fi
+
 mvn install -Dmaven.test.skip=true
 
 #Test failures noted to be in parity with Intel
