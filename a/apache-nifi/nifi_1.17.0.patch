@@ -1,5 +1,5 @@
 diff --git a/pom.xml b/pom.xml
-index b38391af9d..ec20d4feff 100644
+index b38391af9d..3d30f1f7b0 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -640,6 +640,16 @@
@@ -19,37 +19,36 @@ index b38391af9d..ec20d4feff 100644
                          </excludes>
                          <redirectTestOutputToFile>true</redirectTestOutputToFile>
                      </configuration>
-@@ -948,6 +958,33 @@
-             </plugin>
-         </plugins>
-     </build>
-+    <build>
-+        <plugins>
-+            <plugin>
-+                <groupId>org.codehaus.mojo</groupId>
-+                <artifactId>build-helper-maven-plugin</artifactId>
-+                <version>1.12</version>
-+                <executions>
-+                    <execution>
-+                        <id>regex-property</id>
-+                        <goals>
-+                            <goal>regex-property</goal>
-+                        </goals>
-+                        <configuration>
-+                            <name>maven.test.skip</name>
-+                            <value>${project.artifactId}</value>
-+                            <regex>nifi-stateless-processor-tests</regex>
-+                            <replacement>true</replacement>
-+                            <failIfNoMatch>false</failIfNoMatch>
-+                        </configuration>
-+                    </execution>
-+                </executions>
-+            </plugin>
-+        </plugins>
-+    </build>
-+    <modules>
-+        <module>nifi-stateless-processor-tests</module>
-+    </modules>
-     <profiles>
-         <profile>
-             <!-- Performs execution of Integration Tests using the Maven
+@@ -1114,5 +1124,32 @@
+                 </plugins>
+             </build>
+         </profile>
++        <build>
++            <plugins>
++                <plugin>
++                    <groupId>org.codehaus.mojo</groupId>
++                    <artifactId>build-helper-maven-plugin</artifactId>
++                    <version>1.12</version>
++                    <executions>
++                        <execution>
++                            <id>regex-property</id>
++                            <goals>
++                                <goal>regex-property</goal>
++                            </goals>
++                            <configuration>
++                                <name>maven.test.skip</name>
++                                <value>${project.artifactId}</value>
++                                <regex>nifi-stateless-processor-tests</regex>
++                                <replacement>true</replacement>
++                                <failIfNoMatch>false</failIfNoMatch>
++                            </configuration>
++                        </execution>
++                    </executions>
++                </plugin>
++            </plugins>
++        </build>
++        <modules>
++            <module>nifi-stateless-processor-tests</module>
++        </modules>
+     </profiles>
+ </project>
