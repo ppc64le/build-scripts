@@ -20,11 +20,6 @@
 
 PACKAGE_VERSION=${1:-1.17.0}
 
-SCRIPT=$(readlink -f $0)
-SCRIPT_DIR=$(dirname $SCRIPT)
-PATCH_FILE=$SCRIPT_DIR/nifi_1.17.0.patch
-cat $PATCH_FILE
-
 #Install dependecies
 yum install -y wget git java-1.8.0-openjdk-devel
 
@@ -38,15 +33,7 @@ ln -s /usr/local/apache-maven-3.8.6/bin/mvn /usr/bin/mvn
 git clone https://github.com/apache/nifi
 cd nifi
 git checkout rel/nifi-${PACKAGE_VERSION}
-
-# wget https://raw.githubusercontent.com/vishakadesai/build-scripts/nifi/a/apache-nifi/nifi_1.17.0.patch
-if git apply $PATCH_FILE; then
-    echo "patch applied"
-else
-    echo "patch fails"
-fi
-
 mvn install -Dmaven.test.skip=true
 
-#Test failures noted to be in parity with Intel
-mvn test
+# Test failures noted to be in parity with Intel, thus disabled
+# mvn test
