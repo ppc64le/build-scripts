@@ -2,7 +2,7 @@
 FROM registry.access.redhat.com/ubi8/ubi:8.4
 
 
-ARG PACKAGE_VERSION=${1:-24.0.0.Final}
+ARG PACKAGE_VERSION=${1:-27.0.0.Alpha5}
 
 RUN yum update -y && \
     yum install -y git wget sudo tar java-11-openjdk-devel && \
