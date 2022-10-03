@@ -1,0 +1,10 @@
+{
+    "package_name" : "babel",
+    "github_url":"https://github.com/babel/babel.git",
+    "package_dir": "b/babel",
+    "docker_build": false,
+
+    "v*.*.*" : {
+        "build_script" : "babel_ubi_8.5.sh"
+    }
+}
