@@ -7,5 +7,10 @@
     "1.17.0": {
         "dir":"1.17.0_ubi_8",
         "build_script" : "apache-nifi_1.17.0_ubi_8.5.sh"
+    },
+
+    "*.*.*": {
+        "dir":"1.17.0_ubi_8",
+        "build_script" : "apache-nifi_1.17.0_ubi_8.5.sh"
     }
 }
