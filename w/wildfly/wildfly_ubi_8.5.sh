@@ -24,10 +24,10 @@ PACKAGE_VERSION=${1:-27.0.0.Alpha5}
 PACKAGE_URL=https://github.com/wildfly/wildfly.git
 
 yum update -y
-yum install git wget  tar
+yum install -y git wget  tar
 
 
-yum install java-11-openjdk-devel
+yum install -y java-11-openjdk-devel
 
 
 # Install maven.
