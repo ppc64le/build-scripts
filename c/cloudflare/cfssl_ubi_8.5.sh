@@ -1,10 +1,10 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	     : cloudflare/cfssl
-# Version	     : v1.6.2
+# Package	 : cloudflare/cfssl
+# Version	 : v1.6.2
 # Source repo	 : https://github.com/cloudflare/cfssl/
-# Tested on	     : UBI 8.5
+# Tested on	 : UBI 8.5
 # Language       : GO
 # Travis-Check   : True
 # Script License : Apache License, Version 2 or later
