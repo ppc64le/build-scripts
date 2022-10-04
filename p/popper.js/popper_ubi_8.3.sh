@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------------------------------------------------
 #
 # Package       : popper.js (popper-core)
-# Version       : master, 2.10.2
+# Version       : master, 2.10.2, 2.9.2
 # Source repo   : https://github.com/chtd/psycopg2cffi.git
 # Tested on     : UBI 8.3 (Docker)
 # Script License: Apache License, Version 2 or later
@@ -26,7 +26,7 @@ set -ex
 
 #Variables
 REPO=https://github.com/popperjs/popper-core.git
-PACKAGE_VERSION=master
+PACKAGE_VERSION=2.9.2
 
 echo "Usage: $0 [-v <PACKAGE_VERSION>]"
 echo "PACKAGE_VERSION is an optional paramater whose default value is master, not all versions are supported."
