@@ -25,10 +25,10 @@
 set -ex
 
 #Variables
-REPO=https://github.com/popperjs/popper-core.git
-PACKAGE_VERSION=2.9.2
+PACKAGE_NAME=popper-core
+PACKAGE_URL=https://github.com/popperjs/popper-core.git
+PACKAGE_VERSION=${1:-2.9.2}
 
-echo "Usage: $0 [-v <PACKAGE_VERSION>]"
 echo "PACKAGE_VERSION is an optional paramater whose default value is master, not all versions are supported."
 
 PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
@@ -41,8 +41,8 @@ rpm --import https://dl.yarnpkg.com/rpm/pubkey.gpg
 dnf install -y yarn
 
 #clone the repo
-cd /opt && git clone $REPO
-cd popper-core/
+cd /opt && git clone $PACKAGE_URL
+cd $PACKAGE_NAME/
 if [[ "$PACKAGE_VERSION" = "master" ]]
 then
 	git checkout master
