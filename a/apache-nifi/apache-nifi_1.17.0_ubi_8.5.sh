@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_VERSION=${1:-1.17.0}
+PACKAGE_VERSION=${1:-rel/nifi-1.17.0}
 
 #Install dependecies
 yum install -y wget git java-1.8.0-openjdk-devel
@@ -32,7 +32,7 @@ ln -s /usr/local/apache-maven-3.8.6/bin/mvn /usr/bin/mvn
 #Build and test the package
 git clone https://github.com/apache/nifi
 cd nifi
-git checkout rel/nifi-${PACKAGE_VERSION}
+git checkout $PACKAGE_VERSION
 mvn install -Dmaven.test.skip=true
 
 # Test failures noted to be in parity with Intel, thus disabled
