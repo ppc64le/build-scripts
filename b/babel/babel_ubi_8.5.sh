@@ -17,21 +17,24 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
+
 PACKAGE_NAME=babel/babel
 PACKAGE_VERSION="${1:-v7.19.2}"
 PACKAGE_URL=https://github.com/babel/babel.git
 NODE_VERSION=v16.17.0
 
-cd $HOME
-sudo yum install -y wget git gcc-c++ make && \
-    wget https://nodejs.org/dist/$NODE_VERSION/node-$NODE_VERSION-linux-ppc64le.tar.gz && \
-    tar -C $HOME -xzf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
-    rm -rf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
-    npm install -g yarn
+WORKDIR=`pwd`
+sudo yum install -y wget git gcc-c++ make
 
-PATH=$HOME/node-$NODE_VERSION-linux-ppc64le/bin:$PATH
+wget https://nodejs.org/dist/$NODE_VERSION/node-$NODE_VERSION-linux-ppc64le.tar.gz && \
+    tar -C $WORKDIR -xzf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
+    rm -rf node-$NODE_VERSION-linux-ppc64le.tar.gz
 
-cd $HOME
+PATH=$WORKDIR/node-$NODE_VERSION-linux-ppc64le/bin:$PATH
+
+npm install -g yarn
+
+cd $WORKDIR
 git clone $PACKAGE_URL $PACKAGE_NAME
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
