@@ -3,7 +3,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : libseccomp-golang
-# Version       : 9006a28
+# Version       : 9006a281d6713ba604f36f9b5caeac23a16bbd55
 # Source repo   : https://github.com/seccomp/libseccomp-golang.git
 # Tested on     : UBI 8.5
 # Language      : GO
@@ -20,6 +20,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=libseccomp-golang
+PACKAGE_VERSION=${1:-9006a281d6713ba604f36f9b5caeac23a16bbd55}
 PACKAGE_URL=https://github.com/seccomp/libseccomp-golang/
 WORKDIR=/root
 
