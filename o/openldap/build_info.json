@@ -4,7 +4,7 @@
     "package_dir": "o/openldap",
     "docker_build": false,
 
-    "vOPENLDAP_REL_ENG_*_*_*" : {
+    "OPENLDAP_REL_ENG_*_*_*" : {
         "build_script" : "openldap_ubi_8.3.sh"
     }
 }
