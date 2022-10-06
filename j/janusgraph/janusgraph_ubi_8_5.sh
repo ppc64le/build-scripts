@@ -1,14 +1,16 @@
 #!/bin/bash -e
-# ----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #
-# Package	: JanusGraph
-# Version	: 0.6.2 
-# Source repo	: https://github.com/JanusGraph/janusgraph.git 
-# Tested on	: ubi8.5
+# Package       : JanusGraph
+# Version       : 0.6.2
+# Source repo   : https://github.com/JanusGraph/janusgraph.git
+# Tested on     : ubi8.5
+# Language      : java
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Stuti.Wali@ibm.com
+# Maintainer    : Stuti.Wali@ibm.com
 #
-# Disclaimer: This script has been tested in non-root mode on given
+# Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
@@ -16,10 +18,14 @@
 #
 # ----------------------------------------------------------------------------
 
+PACKAGE_NAME=janusgraph
+PACKAGE_VERSION=v0.6.2
+PACKAGE_URL=https://github.com/JanusGraph/janusgraph.git
+
 yum install -y maven git wget gcc-c++ make autoconf
 cd ~
 wget https://github.com/protocolbuffers/protobuf/releases/download/v21.5/protobuf-all-21.5.tar.gz
-tar xf protobuf-all-21.5.tar.gz
+tar xf protobuf-all-21.5.tar.gz --no-same-owner
 cd protobuf-21.5
 ./configure --disable-shared
 make -j $(nproc)
@@ -38,3 +44,4 @@ grpc_version=$(grep '<grpc.version>' pom.xml | grep -Po '\d*\.\d*\.\d*')
 mvn install:install-file -DgroupId=io.grpc -DartifactId=protoc-gen-grpc-java -Dversion=$grpc_version -Dclassifier=linux-ppcle_64 -Dpackaging=exe -Dfile=$(which protoc-gen-grpc-java)
 mvn clean install --projects janusgraph-all -Pjanusgraph-cache -Dmaven.javadoc.skip=true -DskipTests=true --batch-mode --also-make
 mvn verify --projects janusgraph-all -Pjanusgraph-cache
+
