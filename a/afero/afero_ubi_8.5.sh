@@ -19,7 +19,7 @@
 # ------------------------------------------------------------------------------
 
 PACKAGE_NAME=github.com/spf13/afero
-PACKAGE_VERSION=${1:-v1.6.0}
+PACKAGE_VERSION=${1:-v1.9.2}
 
 export GOPATH=$HOME/go
 mkdir $GOPATH
