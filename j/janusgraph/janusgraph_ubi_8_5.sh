@@ -19,8 +19,12 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=janusgraph
-PACKAGE_VERSION=v0.6.2
 PACKAGE_URL=https://github.com/JanusGraph/janusgraph.git
+if [ -z "$1" ]; then
+  export VERSION="0.6.2"
+else
+  export VERSION="$1"
+fi
 
 yum install -y maven git wget gcc-c++ make autoconf
 cd ~
@@ -40,6 +44,7 @@ cp build/exe/java_plugin/protoc-gen-grpc-java /usr/local/bin/
 cd ~
 git clone https://github.com/JanusGraph/janusgraph
 cd janusgraph
+git checkout v${VERSION}
 grpc_version=$(grep '<grpc.version>' pom.xml | grep -Po '\d*\.\d*\.\d*')
 mvn install:install-file -DgroupId=io.grpc -DartifactId=protoc-gen-grpc-java -Dversion=$grpc_version -Dclassifier=linux-ppcle_64 -Dpackaging=exe -Dfile=$(which protoc-gen-grpc-java)
 mvn clean install --projects janusgraph-all -Pjanusgraph-cache -Dmaven.javadoc.skip=true -DskipTests=true --batch-mode --also-make
