@@ -3,7 +3,8 @@
     "github_url":"https://github.com/zabbix/zabbix.git",
     "package_dir": "z/zabbix/Dockerfiles/",
 	"docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-    "build_script" : "zabbix_ubi_8.sh"
+    "build_script" : "zabbix_ubi_8.sh",
+    "docker_build": false
 
 
     "6.*.*" : {
