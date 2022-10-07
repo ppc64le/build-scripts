@@ -28,15 +28,14 @@ PACKAGE_VERSION=v2.2.6
 # Install nodejs and npm
 curl https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh| bash
 source ~/.nvm/nvm.sh
-nvm install stable
-nvm use stable
+nvm install 6
+nvm use 6
 
 # Clone required project
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-npm config set registry https://registry.npmjs.org/
 
 # Build and test
 npm install --no-audit
