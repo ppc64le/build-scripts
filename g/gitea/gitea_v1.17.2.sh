@@ -38,4 +38,4 @@ git checkout v$PACKAGE_VERSION
 #harden step
 sed -i '30iRUN apk --upgrade --no-cache add expat' Dockerfile
 
-docker build --rm -t gitea:$PACKAGE_VERSION .
+docker build --rm -t ibmcom/gitea-ppc64le:$PACKAGE_VERSION .
