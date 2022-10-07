@@ -15,7 +15,6 @@
 #
 # ----------------------------------------------------------------------------
 
-# Package,# Version,# Source repo,# Tested on,# Maintainer,# Language,# Travis-Check
 PACKAGE_NAME=apache-flink
 PACKAGE_VERSION=${1:-master}
 PACKAGE_URL=https://github.com/apache/flink.git
