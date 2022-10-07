@@ -34,7 +34,7 @@ echo "PACKAGE_VERSION is an optional paramater whose default value is master, no
 PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 
 #install dependencies
-yum install git sed unzip procps java-1.8.0-openjdk java-1.8.0-openjdk-devel -y
+yum install gcc-c++ make python3 python3-pip git sed unzip procps java-1.8.0-openjdk java-1.8.0-openjdk-devel -y
 dnf module install -y nodejs:14
 curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo
 rpm --import https://dl.yarnpkg.com/rpm/pubkey.gpg
