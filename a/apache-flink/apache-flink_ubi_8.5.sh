@@ -1,4 +1,6 @@
-# Source repo   : https://github.com/apache/flink.git
+# Package       : Apache Flink
+# Version       : master
+# Source repo   : https://github.com/apache/flink
 # Tested on     : UBI: 8.5
 # Language      : Java
 # Travis-Check  : True
@@ -13,6 +15,7 @@
 #
 # ----------------------------------------------------------------------------
 
+# Package,# Version,# Source repo,# Tested on,# Maintainer,# Language,# Travis-Check
 PACKAGE_NAME=apache-flink
 PACKAGE_VERSION=${1:-master}
 PACKAGE_URL=https://github.com/apache/flink.git
