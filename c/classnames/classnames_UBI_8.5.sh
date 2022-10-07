@@ -36,6 +36,8 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+npm config set registry https://registry.npmjs.org/
+
 # Build and test
 npm install --no-audit
 npm test
