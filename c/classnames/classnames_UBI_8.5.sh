@@ -23,7 +23,7 @@ PACKAGE_VERSION=v2.2.6
 
 # Install dependencies
  yum -y update  
- yum install -y curl git tar nodejs nodejs-devel nodejs-packaging  jq python38 python38-devel python39 python39-devel python2 python2-devel python3 python3-devel 
+ yum install -y curl git tar 
 
 # Install nodejs and npm
 curl https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh| bash
