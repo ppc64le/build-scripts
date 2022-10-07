@@ -1,3 +1,6 @@
+#!/bin/bash -e
+# ----------------------------------------------------------------------------
+# 
 # Package       : Apache Flink
 # Version       : master
 # Source repo   : https://github.com/apache/flink
