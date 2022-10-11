@@ -41,6 +41,7 @@ git clone https://github.com/grpc/grpc-java
 cd grpc-java/compiler/
 ../gradlew build  -PskipAndroid=true
 cp build/exe/java_plugin/protoc-gen-grpc-java /usr/local/bin/
+export PATH=/usr/local/bin/:$PATH
 cd ~
 git clone https://github.com/JanusGraph/janusgraph
 cd janusgraph
