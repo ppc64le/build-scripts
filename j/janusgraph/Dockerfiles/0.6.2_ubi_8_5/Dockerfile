@@ -57,7 +57,6 @@ RUN  yum update -y && \
     yum install -y libkadm5.ppc64le && \
     rm -rf /var/lib/apt/lists/*
 
-
 COPY --from=builder /opt/janusgraph/ /opt/janusgraph/
 COPY --from=builder /opt/yq /usr/bin/yq
 COPY docker-entrypoint.sh /usr/local/bin/
