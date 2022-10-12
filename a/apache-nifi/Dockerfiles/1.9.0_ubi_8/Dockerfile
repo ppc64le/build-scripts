@@ -1,6 +1,6 @@
 FROM registry.access.redhat.com/ubi8/ubi:latest 
 
-ARG PACKAGE_VERSION=rel/nifi-1.17.0
+ARG PACKAGE_VERSION=rel/nifi-1.9.0
 
 ENV NIFI_BASE_DIR=/opt/nifi
 ENV NIFI_HOME ${NIFI_BASE_DIR}/nifi-current
