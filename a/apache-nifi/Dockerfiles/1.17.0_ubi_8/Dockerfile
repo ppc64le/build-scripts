@@ -1,6 +1,6 @@
 FROM registry.access.redhat.com/ubi8/ubi:latest 
 
-ARG PACKAGE_VERSION=rel/nifi-1.17.0
+ARG PACKAGE_VERSION=1.17.0
 
 ENV NIFI_BASE_DIR=/opt/nifi
 ENV NIFI_HOME ${NIFI_BASE_DIR}/nifi-current
@@ -16,7 +16,7 @@ RUN wget https://archive.apache.org/dist/maven/maven-3/3.8.6/binaries/apache-mav
 
 #Build and test the package
 RUN git clone https://github.com/apache/nifi.git && \
-    cd nifi && git checkout ${PACKAGE_VERSION} && \
+    cd nifi && git checkout rel/nifi-${PACKAGE_VERSION} && \
     mvn install -Dmaven.test.skip=true
 
 EXPOSE 8080 8443 10000 8000
