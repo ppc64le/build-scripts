@@ -33,7 +33,8 @@ ln -s /usr/local/apache-maven-3.8.6/bin/mvn /usr/bin/mvn
 git clone https://github.com/apache/nifi
 cd nifi
 git checkout $PACKAGE_VERSION
-git apply ../nifi-1.9.0.patch
+wget https://raw.githubusercontent.com/vishakadesai/build-scripts/nifi/a/apache-nifi/nifi-1.9.0.patch 
+git apply nifi-1.9.0.patch 
 mvn install -Dmaven.test.skip=true
 
 # Test failures noted to be in parity with Intel, thus disabled
