@@ -26,7 +26,7 @@ PACKAGE_NAME=form
 PACKAGE_URL=https://github.com/jquery-form/form.git
 PACKAGE_VERSION=${1:-v4.3.0}
 
-#install dependencies
+#Install dependencies
 yum install -y npm git wget bzip2 fontconfig-devel
 npm install -g grunt-cli
 wget https://github.com/ibmsoe/phantomjs/releases/download/2.1.1/phantomjs-2.1.1-linux-ppc64.tar.bz2
@@ -39,7 +39,6 @@ cd /opt && git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 
-#install and test the package.
+#Install and Test the package.
 npm install --save-dev grunt
 grunt test
-
