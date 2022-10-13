@@ -19,7 +19,7 @@
 
 #!/bin/bash
 
-set -ex
+set -e
 
 #Variables
 PACKAGE_NAME=form
