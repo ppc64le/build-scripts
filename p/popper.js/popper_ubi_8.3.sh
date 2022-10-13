@@ -5,6 +5,8 @@
 # Source repo   : https://github.com/chtd/psycopg2cffi.git
 # Tested on     : UBI 8.3 (Docker)
 # Script License: Apache License, Version 2 or later
+# Language       : NPM
+# Travis-Check   : True
 # Maintainer    : Sumit Dubey <Sumit.Dubey2@ibm.com>
 # Instructions	: 1. Run the docker container as: 
 #		  docker run -t -d --privileged --shm-size=1gb registry.access.redhat.com/ubi8/ubi:8.3 /usr/sbin/init
