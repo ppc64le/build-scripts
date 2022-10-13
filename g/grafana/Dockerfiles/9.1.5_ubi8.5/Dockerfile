@@ -1,6 +1,6 @@
 FROM registry.access.redhat.com/ubi8/ubi:8.4
 
-ARG GRAFANA_VERSION=v1.9.6
+ARG GRAFANA_VERSION=v9.1.6
 
 ENV GOPATH=/grafana
 ENV PATH=$PATH:/usr/local/go/bin
