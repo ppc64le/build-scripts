@@ -6,9 +6,6 @@
 
     "rel/nifi-1.9.0": {
         "dir":"1.9.0_ubi_8",
-        "args" : {
-            "PACKAGE_VERSION": "$(echo $PACKAGE_VERSION | sed 's+rel/nifi-++')"
-        },
         "patches": {
             "PATCH": "https://raw.githubusercontent.com/vishakadesai/build-scripts/nifi/a/apache-nifi/nifi-1.9.0.patch"
         },
@@ -17,9 +14,6 @@
     
     "rel/nifi-1.17.0": {
         "dir":"1.17.0_ubi_8",
-        "args" : {
-            "PACKAGE_VERSION": "$(echo $PACKAGE_VERSION | sed 's+rel/nifi-++')"
-        },
         "build_script" : "apache-nifi_1.17.0_ubi_8.5.sh"
     }
 }
