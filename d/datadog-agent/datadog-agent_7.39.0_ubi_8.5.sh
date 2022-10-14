@@ -45,7 +45,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Fetch and apply patch
-wget https://raw.githubusercontent.com/vishakadesai/build-scripts/dda/d/datadog-agent/datadog-agent_7.39.0.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/d/datadog-agent/datadog-agent_7.39.0.patch
 git apply --ignore-whitespace datadog-agent_7.39.0.patch
 
 # Build and install dependencies
