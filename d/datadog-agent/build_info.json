@@ -3,11 +3,19 @@
     "github_url":"https://github.com/DataDog/datadog-agent.git",
     "package_dir": "d/datadog-agent/Dockerfiles",
 
-    "*.*.*": {
+    "7.38.2": {
         "dir" : "7.38.2_ubi_8",
         "patches" : {
             "PATCH" : "https://raw.githubusercontent.com/ppc64le/build-scripts/master/d/datadog-agent/datadog-agent_7.38.2.patch"
         },
         "build_script" : "datadog-agent_7.38.2_ubi_8.5.sh"
+    },
+    
+    "7.39.0": {
+        "dir" : "7.39.0_ubi_8",
+        "patches" : {
+            "PATCH" : "https://raw.githubusercontent.com/vishakadesai/build-scripts/dda/d/datadog-agent/datadog-agent_7.39.0.patch"
+        },
+        "build_script" : "datadog-agent_7.39.0_ubi_8.5.sh"
     }
 }

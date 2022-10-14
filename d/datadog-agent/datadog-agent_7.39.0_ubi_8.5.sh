@@ -32,10 +32,6 @@ wget https://go.dev/dl/go1.17.6.linux-ppc64le.tar.gz && \
 tar -C /bin -xf go1.17.6.linux-ppc64le.tar.gz && \
 mkdir -p $WORKDIR/go/src $WORKDIR/go/bin $WORKDIR/go/pkg
 
-# wget https://go.dev/dl/go1.17.6.linux-amd64.tar.gz && \
-# tar -C /bin -xf go1.17.6.linux-amd64.tar.gz && \
-# mkdir -p $WORKDIR/go/src $WORKDIR/go/bin $WORKDIR/go/pkg
-
 export PATH=$PATH:/bin/go/bin
 export GOPATH=$WORKDIR/go
 export PATH=$PATH:$WORKDIR/go/bin
@@ -49,7 +45,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Fetch and apply patch
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/d/datadog-agent/datadog-agent_7.39.0.patch
+wget https://raw.githubusercontent.com/vishakadesai/build-scripts/dda/d/datadog-agent/datadog-agent_7.39.0.patch
 git apply --ignore-whitespace datadog-agent_7.39.0.patch
 
 # Build and install dependencies
