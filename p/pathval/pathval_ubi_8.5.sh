@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : pathval
-# Version          : v1.1.0
+# Version          : v1.1.0, v1.1.1
 # Source repo      : https://github.com/chaijs/pathval
 # Tested on        : RHEL 8.5,UBI 8.5
 # Language         : Node
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Vathsala . <vaths367@in.ibm.com>
+# Maintainer       : Vathsala .<vaths367@in.ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.

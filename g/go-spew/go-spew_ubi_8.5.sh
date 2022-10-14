@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: github.com/davecgh/go-spew
-# Version	: v1.1.1, v0.0.0-20151105211317-5215b55f46b2
+# Version	: v1.1.1, v0.0.0-20151105211317-5215b55f46b2, 5215b55f46b2b919f50a1df0eaa5886afe4e3b3d, 782f4967f2dc4564575ca782fe2d04090b5faca8
 # Source repo	: https://github.com/davecgh/go-spew
 # Tested on	: UBI 8.5
 # Language      : GO
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>
+# Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>/ Balavva Mirji <Balavva.Mirji@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.

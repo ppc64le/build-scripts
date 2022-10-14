@@ -1,0 +1,9 @@
+{
+    "package_name" : "gitea",
+	"github_url":"https://github.com/go-gitea/gitea.git",
+    "build_script" : "gitea_v1.17.2.sh",
+    
+    "v1.17.*, v1.18.*" : {
+        "build_script" : "gitea_v1.17.2.sh"
+    }
+}
