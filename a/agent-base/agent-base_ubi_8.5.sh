@@ -1,9 +1,12 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package               : agent-base
-# Version               : 6.0.2
+# Version               : 5.1.1, 6.0.2
 # Source repo           : https://github.com/TooTallNate/node-agent-base
-# Tested on             : UBI 8
+# Tested on             : UBI 8.5
+# Language              : node
+# Travis-Check          : True
 # Script License        : Apache License, Version 2 or later
 # Maintainer            : Swati Singhal <swati.singhal@ibm.com>
 #

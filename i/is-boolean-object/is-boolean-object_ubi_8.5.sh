@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : is-boolean-object
-# Version          : v1.1.1
+# Version          : v1.1.0, v1.1.1
 # Source repo      : https://github.com/inspect-js/is-boolean-object
 # Tested on        : RHEL 8.5,UBI 8.5
 # Language         : Node
