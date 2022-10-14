@@ -50,6 +50,7 @@ git apply --ignore-whitespace datadog-agent_7.39.0.patch
 
 # Build and install dependencies
 python3 -m pip install codecov -r requirements.txt
+export PATH=$PATH:/usr/local/bin
 invoke -e install-tools
 invoke agent.build --build-exclude=systemd
 
