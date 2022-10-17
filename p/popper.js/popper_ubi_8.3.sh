@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------------------------------------------------
 #
 # Package       : popper.js (popper-core)
@@ -21,11 +22,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------------------------------------------------
-
-#!/bin/bash
-
-set -ex
-
 #Variables
 PACKAGE_NAME=popper-core
 PACKAGE_URL=https://github.com/popperjs/popper-core.git
