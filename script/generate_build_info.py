@@ -41,7 +41,7 @@ def log(type:log_type, text:str):
     
 
 
-def get_files_list(dirname:str, recursive:bool=True) -> list[str]:
+def get_files_list(dirname:str, recursive:bool=True):
     file_list = []
     for file in os.listdir(dirname):
         current_file = os.path.join(dirname, file)
