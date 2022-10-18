@@ -1,0 +1,11 @@
+{
+    "package_name" : "netty",
+    "github_url":"https://github.com/netty/netty.git",
+    "package_dir": "n/netty/Dockerfiles/",
+    "docker_build": false,
+
+    "4.1.84.Final" : {
+        "dir":"4.1.84.Final_ubi_8",
+        "build_script" : "netty-4.1.84.Final_ubi_8.5.sh"
+    }
+}
