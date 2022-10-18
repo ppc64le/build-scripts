@@ -133,4 +133,4 @@ for entry in dockerfile_versions:
 log(log_type.HEADER, "Sample Json contents as below")
 log(log_type.HEADER, "-" * 25)
 log(log_type.CONTENT, json.dumps(final_json, indent = 3))
-log(log_type.ERROR, "Note: This is automatically generated file, please verify/review before commit to github.")
+log(log_type.ERROR, "Note: Above contents are automatically generated, please verify/review before commit it to github.")
