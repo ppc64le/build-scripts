@@ -47,7 +47,8 @@ cd ~
 git clone https://github.com/JanusGraph/janusgraph
 cd janusgraph
 git checkout ${VERSION}
-git apply /root/build-scripts/j/janusgraph/janus_0_6_2.patch
+wget https://github.com/ppc64le/build-scripts/pull/2759/files#diff-723315f8ef1157f8b14f0ed1f64f2e6b6c41436b736e3d903d216abe96752a39
+git apply janus_0_6_2.patch
 grpc_version=$(grep '<grpc.version>' pom.xml | grep -Po '\d*\.\d*\.\d*')
 
 mvn install:install-file -DgroupId=io.grpc -DartifactId=protoc-gen-grpc-java -Dversion=$grpc_version -Dclassifier=linux-ppcle_64 -Dpackaging=exe -Dfile=$(which protoc-gen-grpc-java)
