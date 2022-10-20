@@ -20,17 +20,15 @@
 
 PACKAGE_NAME=janusgraph
 PACKAGE_URL=https://github.com/JanusGraph/janusgraph.git
-<<<<<<< HEAD
+
 if [ -z "$1" ]; then
   export VERSION="e0fc21f060e782603d6206075ef1f149b6b32971"
 else
   export VERSION="$1"
 fi
-=======
-VERSION=${1:-0.6.2}
->>>>>>> 5a3a49cffad012421af5e08d2b6361a58131bece
 
-yum install -y maven git wget gcc-c++ make autoconf which diffutils
+
+yum install -y maven git wget gcc-c++ make autoconf 
 cd ~
 wget https://github.com/protocolbuffers/protobuf/releases/download/v21.5/protobuf-all-21.5.tar.gz
 tar xf protobuf-all-21.5.tar.gz --no-same-owner
