@@ -4,9 +4,9 @@
     "package_dir": "j/janusgraph/Dockerfiles/",
     "docker_build": true,
 
-    "*.*.*" : {
+    "v0.6.*" : {
         "dir" : "0.6.2_ubi_8_5"
-        "build_script" : "janusgraph_ubi_8_5.sh"
+        "build_script" : "janusgraph_0_6_2_ubi_8_5.sh"
     }
 
 }

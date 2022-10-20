@@ -21,7 +21,7 @@
 PACKAGE_NAME=janusgraph
 PACKAGE_URL=https://github.com/JanusGraph/janusgraph.git
 if [ -z "$1" ]; then
-  export VERSION="e0fc21f060e782603d6206075ef1f149b6b32971"
+  export VERSION="v0.6.2"
 else
   export VERSION="$1"
 fi
@@ -47,6 +47,7 @@ cd ~
 git clone https://github.com/JanusGraph/janusgraph
 cd janusgraph
 git checkout ${VERSION}
+git apply /root/build-scripts/j/janusgraph/janus_0_6_2.patch
 grpc_version=$(grep '<grpc.version>' pom.xml | grep -Po '\d*\.\d*\.\d*')
 
 mvn install:install-file -DgroupId=io.grpc -DartifactId=protoc-gen-grpc-java -Dversion=$grpc_version -Dclassifier=linux-ppcle_64 -Dpackaging=exe -Dfile=$(which protoc-gen-grpc-java)

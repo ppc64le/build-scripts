@@ -1,0 +1,92 @@
+diff --git a/patch_0_6_2.patch b/patch_0_6_2.patch
+new file mode 100644
+index 000000000..5b35490ac
+--- /dev/null
++++ b/patch_0_6_2.patch
+@@ -0,0 +1,43 @@
++diff --git a/pom.xml b/pom.xml
++index 2c5f62992..2f1144b27 100644
++--- a/pom.xml
+++++ b/pom.xml
++@@ -112,8 +112,8 @@
++         <scylladb.version>4.4.0</scylladb.version>
++         <testcontainers.version>1.16.0</testcontainers.version>
++         <easymock.version>4.2</easymock.version>
++-        <protobuf.version>3.15.6</protobuf.version>
++-        <grpc.version>1.38.1</grpc.version>
+++        <protobuf.version>3.21.6</protobuf.version>
+++        <grpc.version>1.47.0</grpc.version>
++         <protoc.version>3.15.3</protoc.version>
++         <jmh.version>1.21</jmh.version>
++         <graalvm-nativeimage.version>22.0.0.2</graalvm-nativeimage.version>
++@@ -877,12 +877,12 @@
++                 -->
++                 <groupId>com.google.guava</groupId>
++                 <artifactId>guava</artifactId>
++-                <version>29.0-jre</version>
+++                <version>31.1-jre</version>
++             </dependency>
++             <dependency>
++                 <groupId>com.google.errorprone</groupId>
++                 <artifactId>error_prone_annotations</artifactId>
++-                <version>2.7.1</version>
+++                <version>2.14.0</version>
++             </dependency>
++             <dependency>
++                 <groupId>commons-codec</groupId>
++@@ -1039,6 +1039,12 @@
++                 <groupId>com.google.protobuf</groupId>
++                 <artifactId>protobuf-java-util</artifactId>
++                 <version>${protobuf.version}</version>
+++       <exclusions>
+++                        <exclusion>
+++                            <groupId>com.google.code.gson</groupId>
+++                            <artifactId>gson</artifactId>
+++                        </exclusion>
+++                     </exclusions>
++             </dependency>
++             <dependency>
++                 <groupId>io.grpc</groupId>
+diff --git a/pom.xml b/pom.xml
+index 2c5f62992..2f1144b27 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -112,8 +112,8 @@
+         <scylladb.version>4.4.0</scylladb.version>
+         <testcontainers.version>1.16.0</testcontainers.version>
+         <easymock.version>4.2</easymock.version>
+-        <protobuf.version>3.15.6</protobuf.version>
+-        <grpc.version>1.38.1</grpc.version>
++        <protobuf.version>3.21.6</protobuf.version>
++        <grpc.version>1.47.0</grpc.version>
+         <protoc.version>3.15.3</protoc.version>
+         <jmh.version>1.21</jmh.version>
+         <graalvm-nativeimage.version>22.0.0.2</graalvm-nativeimage.version>
+@@ -877,12 +877,12 @@
+                 -->
+                 <groupId>com.google.guava</groupId>
+                 <artifactId>guava</artifactId>
+-                <version>29.0-jre</version>
++                <version>31.1-jre</version>
+             </dependency>
+             <dependency>
+                 <groupId>com.google.errorprone</groupId>
+                 <artifactId>error_prone_annotations</artifactId>
+-                <version>2.7.1</version>
++                <version>2.14.0</version>
+             </dependency>
+             <dependency>
+                 <groupId>commons-codec</groupId>
+@@ -1039,6 +1039,12 @@
+                 <groupId>com.google.protobuf</groupId>
+                 <artifactId>protobuf-java-util</artifactId>
+                 <version>${protobuf.version}</version>
++       <exclusions>
++                        <exclusion>
++                            <groupId>com.google.code.gson</groupId>
++                            <artifactId>gson</artifactId>
++                        </exclusion>
++                     </exclusions>
+             </dependency>
+             <dependency>
+                 <groupId>io.grpc</groupId>
