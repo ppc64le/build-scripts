@@ -20,13 +20,17 @@
 
 PACKAGE_NAME=janusgraph
 PACKAGE_URL=https://github.com/JanusGraph/janusgraph.git
+<<<<<<< HEAD
 if [ -z "$1" ]; then
   export VERSION="e0fc21f060e782603d6206075ef1f149b6b32971"
 else
   export VERSION="$1"
 fi
+=======
+VERSION=${1:-0.6.2}
+>>>>>>> 5a3a49cffad012421af5e08d2b6361a58131bece
 
-yum install -y maven git wget gcc-c++ make autoconf
+yum install -y maven git wget gcc-c++ make autoconf which diffutils
 cd ~
 wget https://github.com/protocolbuffers/protobuf/releases/download/v21.5/protobuf-all-21.5.tar.gz
 tar xf protobuf-all-21.5.tar.gz --no-same-owner
@@ -34,8 +38,12 @@ cd protobuf-21.5
 ./configure --disable-shared
 make -j $(nproc)
 make install
-export CXXFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib"
+
+export CXXFLAGS="-I/usr/local/include"
+export LDFLAGS="-L/usr/local/lib"
+export LD_LIBRARY_PATH="/usr/local/lib/":$LD_LIBRARY_PATH
 ln -s -T $(which g++) /usr/bin/powerpc64le-linux-gnu-g++
+
 cd ~
 git clone https://github.com/grpc/grpc-java
 
@@ -43,6 +51,9 @@ cd grpc-java/compiler/
 ../gradlew build  -PskipAndroid=true
 
 cp build/exe/java_plugin/protoc-gen-grpc-java /usr/local/bin/
+export PATH=/usr/local/bin/:$PATH
+
+
 cd ~
 git clone https://github.com/JanusGraph/janusgraph
 cd janusgraph
