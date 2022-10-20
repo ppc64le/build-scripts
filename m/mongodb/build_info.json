@@ -5,7 +5,7 @@
     "docker_cmd" : "docker build -t ${package_name}-ppc64le:$PACKAGE_VERSION ${dir}",
     "validate_build_script": false,
 
-    "r4.4.*" : {
+    "r4.4.*, r6.*.*, r.5.*.*" : {
         "dir":"ubuntu_focal",
         "args": {
             "MONGO_VERSION": "echo $PACKAGE_VERSION | sed 's/r//'"
