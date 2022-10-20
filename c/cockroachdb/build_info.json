@@ -1,0 +1,48 @@
+{
+    "package_name" : "cockroachdb",
+	"github_url":"https://github.com/cockroachdb/cockroach",
+    "package_dir": "c/cockroachdb/Dockerfiles/",
+    "build_script" : "cockroachdb_ubi_8.6.sh",
+    "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    
+    "v22.1.8" : {
+        "dir" : "v22.1.8-oss/Dockerfiles",
+        "build_script" : "v22.1.8-oss/cockroachdb_ubi_8.6.sh"
+    },
+    "v22.1.5" : {
+        "dir" : "v22.1.5-oss/Dockerfiles",
+        "build_script" : "v22.1.5-oss/cockroachdb_ubi_8.5.sh"
+    },
+    "v22.1.6" : {
+        "dir" : "v22.1.6-oss/Dockerfiles",
+        "build_script" : "v22.1.6-oss/cockroachdb_ubi_8.5.sh"
+    },
+    "v20.2.17" : {
+        "dir" : "v20.2.17-oss/Dockerfiles",
+        "build_script" : "v20.2.17-oss/cockroachdb_ubi8.sh"
+    },
+    "v20.1.12" : {
+        "dir" : "v20.1.12-oss/Dockerfiles",
+        "build_script" : "v20.1.12-oss/cockroachdb_ubi8.sh"
+    },
+    "v20.1.0" : {
+        "dir" : "v20.1.0-oss/Dockerfiles",
+        "build_script" : "v20.1.0-oss/cockroachdb_ubi8.sh"
+    },
+    "v19.2.2" : {
+        "dir" : "v19.2.2/Dockerfiles",
+        "build_script" : "v19.2.2/cockroachdb_ubi7.6.sh"
+    },
+    "v19.2.10" : {
+        "dir" : "v19.2.10-oss/Dockerfiles",
+        "build_script" : "v19.2.10-oss/cockroachdb_ubi8.sh"
+    },
+    "v19.1.8" : {
+        "dir" : "v19.1.8-oss/Dockerfiles",
+        "build_script" : "v19.1.8-oss/cockroachdb_ubi7.sh"
+    },
+    "v19.1.5" : {
+        "dir" : "v19.1.5/Dockerfiles",
+        "build_script" : "v19.1.5/cockroachdb_ubi7.6.sh"
+    }
+}
