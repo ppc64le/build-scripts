@@ -8,7 +8,7 @@
     "r4.4.*, r6.*.*, r.5.*.*" : {
         "dir":"ubuntu_focal",
         "args": {
-            "MONGO_VERSION": "echo $PACKAGE_VERSION | sed 's/r//'"
+            "MONGO_VERSION": $(echo $PACKAGE_VERSION | sed 's/r//')
         }
     }
 }
