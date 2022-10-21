@@ -1,0 +1,39 @@
+global:
+  openshift: true
+injector:
+  image:
+    repository: "image-registry.openshift-image-registry.svc:5000/vault/vault-k8s"
+    tag: "latest"
+    pullPolicy: IfNotPresent
+
+  # agentImage sets the repo and tag of the Vault image to use for the Vault Agent
+  # containers.  This should be set to the official Vault image.  Vault 1.3.1+ is
+  # required.
+  agentImage:
+    repository: "icr.io/ppc64le-oss/vault-ppc64le"
+    tag: "v1.9.9"
+
+server:
+     
+  image:
+    repository: "icr.io/ppc64le-oss/vault-ppc64le"
+    tag: "v1.9.9"
+    # Overrides the default Image Pull Policy
+    pullPolicy: IfNotPresent
+  route:
+    enabled: true
+    host: vault.apps.domain.name
+  standalone:
+    enabled: true
+    config: |
+      ui = true
+      listener "tcp" {
+        address = "[::]:8200"
+        cluster_address = "[::]:8201"
+        tls_cert_file = "/var/run/secrets/kubernetes.io/certs/tls.crt"
+        tls_key_file = "/var/run/secrets/kubernetes.io/certs/tls.key"
+      }
+      storage "file" {
+       path = "/vault/data"
+      }
+ 
