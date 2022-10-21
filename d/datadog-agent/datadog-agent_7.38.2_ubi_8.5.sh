@@ -23,6 +23,9 @@ PACKAGE_URL=https://github.com/DataDog/datadog-agent.git
 PACKAGE_VERSION=${1:-7.38.2}
 
 export WORKDIR=`pwd`
+SCRIPT=$(readlink -f $0)
+SCRIPT_DIR=$(dirname $SCRIPT)
+PATCH=$SCRIPT_DIR/datadog-agent_7.38.2.patch
 
 # Install required dependencies
 yum install -y wget git python38 python38-devel openssl openssl-devel make gcc gcc-c++ diffutils cmake
@@ -40,13 +43,12 @@ export PATH=$PATH:$WORKDIR/go/bin
 python3 -m pip install --upgrade pip 
 
 cd $GOPATH/src
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+git clone $PACKAGE_URL $GOPATH/src/github.com/DataDog/$PACKAGE_NAME 
+cd $GOPATH/src/github.com/DataDog/$PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-# Fetch and apply patch
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/d/datadog-agent/datadog-agent_7.38.2.patch
-git apply datadog-agent_7.38.2.patch
+# Apply patch
+git apply --ignore-whitespace $PATCH
 
 # Build and install dependencies
 python3 -m pip install codecov -r requirements.txt 
