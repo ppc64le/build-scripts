@@ -20,14 +20,14 @@
 PACKAGE_NAME="grafana"
 PACKAGE_VERSION="${1:-v9.1.6}"
 PACKAGE_URL="https://github.com/grafana/grafana.git"
-NODE_VERSION=v18.9.0
+NODE_VERSION=v16.17.0
 GO_VERSION=1.19.1
 
 yum update -y
 
 cd /
 PATH=/node-$NODE_VERSION-linux-ppc64le/bin:$PATH
-yum install -y wget git && \
+yum install -y wget git make && \
     wget https://nodejs.org/dist/$NODE_VERSION/node-$NODE_VERSION-linux-ppc64le.tar.gz && \
     tar -C / -xzf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
     rm -rf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
