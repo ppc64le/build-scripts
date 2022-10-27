@@ -20,8 +20,8 @@
 PACKAGE_NAME="grafana"
 PACKAGE_VERSION="${1:-v9.1.6}"
 PACKAGE_URL="https://github.com/grafana/grafana.git"
-NODE_VERSION=v18.12.0
-GO_VERSION=1.19.1
+NODE_VERSION=v14.17.6
+GO_VERSION=1.17.1
 
 yum update -y
 
