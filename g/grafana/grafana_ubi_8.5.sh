@@ -24,7 +24,7 @@ GO_VERSION=1.17.1
 yum update -y
 cd /
 PATH=/node-$NODE_VERSION-linux-ppc64le/bin:$PATH
-yum install -y wget git npm make gcc-c++  && \
+yum install -y wget git  make gcc-c++  && \
     wget https://nodejs.org/dist/$NODE_VERSION/node-$NODE_VERSION-linux-ppc64le.tar.gz && \
     tar -C / -xzf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
     rm -rf node-$NODE_VERSION-linux-ppc64le.tar.gz 
