@@ -18,16 +18,16 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_VERSION="${1:-v9.1.6}"
-NODE_VERSION=v18.9.0
 GO_VERSION=1.17.1
 
 yum update -y
 cd /
 PATH=/node-$NODE_VERSION-linux-ppc64le/bin:$PATH
-yum install -y wget git make python3 gcc-c++  && \
-    git clone https://github.com/nodejs/node.git && \
-    cd node && git checkout v18.9.0 && ./configure && make && make install
-
+yum install -y wget git make curl tar gcc-c++  && \
+curl https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh| bash
+source ~/.nvm/nvm.sh
+nvm install 6
+nvm use 6
 
 npm install -g yarn
 
