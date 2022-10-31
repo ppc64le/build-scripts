@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 # Package          : grafana
-# Version          : v9.1.6
+# Version          : v9.2.0
 # Source repo      : https://github.com/grafana/grafana.git
 # Tested on        : UBI 8.5
 # Language         : Go
@@ -18,7 +18,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_VERSION="${1:-v9.1.6}"
-GO_VERSION=1.17.1
+GO_VERSION=1.18
 
 yum update -y
 cd /
