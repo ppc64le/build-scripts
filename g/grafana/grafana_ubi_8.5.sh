@@ -26,8 +26,8 @@ PATH=/node-$NODE_VERSION-linux-ppc64le/bin:$PATH
 yum install -y wget git make curl tar gcc-c++  && \
 curl https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh| bash
 source ~/.nvm/nvm.sh
-nvm install 14
-nvm use 14
+nvm install 16
+nvm use 16
 
 npm install -g yarn
 
