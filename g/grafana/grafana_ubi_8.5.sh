@@ -18,7 +18,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_VERSION="${1:-v9.1.6}"
-GO_VERSION=1.18
+GO_VERSION=1.17
 
 yum update -y
 cd /
@@ -26,10 +26,8 @@ PATH=/node-$NODE_VERSION-linux-ppc64le/bin:$PATH
 yum install -y wget git make curl tar gcc-c++  && \
 curl https://raw.githubusercontent.com/creationix/nvm/v0.39.1/install.sh| bash
 source ~/.nvm/nvm.sh
-nvm install v19.0.0
-nvm use v19.0.0
-
-npm install -g yarn
+nvm install v18.12.0
+nvm use v18.12.0
 
 cd /
 GOPATH=/go
@@ -44,6 +42,7 @@ cd $GOPATH/src/github.com/grafana/
 git clone https://github.com/grafana/grafana.git 
 cd grafana
 git checkout $PACKAGE_VERSION
+npm install -g yarn
 
 yarn install --immutable
 make gen-go
