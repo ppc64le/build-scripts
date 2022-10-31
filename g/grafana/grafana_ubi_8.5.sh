@@ -42,7 +42,7 @@ cd $GOPATH/src/github.com/grafana/
 git clone https://github.com/grafana/grafana.git 
 cd grafana
 git checkout $PACKAGE_VERSION
-npm install -g yarn
+npm install 
 
 yarn install --immutable
 make gen-go
