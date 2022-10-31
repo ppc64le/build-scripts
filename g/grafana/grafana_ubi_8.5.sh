@@ -24,7 +24,7 @@ GO_VERSION=1.17.1
 yum update -y
 cd /
 PATH=/node-$NODE_VERSION-linux-ppc64le/bin:$PATH
-yum install -y wget git make gcc-c++  && \
+yum install -y wget git make python3 gcc-c++  && \
     git clone https://github.com/nodejs/node.git && \
     cd node && git checkout v18.9.0 && ./configure && make && make install
 
