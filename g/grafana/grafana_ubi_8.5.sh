@@ -19,6 +19,7 @@
 
 PACKAGE_VERSION="${1:-v9.1.6}"
 GO_VERSION=1.17
+NODE_VERSION=v18.12.0
 
 yum update -y
 cd /
