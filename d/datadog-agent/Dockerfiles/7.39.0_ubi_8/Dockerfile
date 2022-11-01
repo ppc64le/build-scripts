@@ -1,7 +1,7 @@
 FROM registry.access.redhat.com/ubi8/ubi:latest as builder
 
-ARG PACKAGE_VERSION=7.38.2
-ARG PATCH=https://raw.githubusercontent.com/ppc64le/build-scripts/master/d/datadog-agent/datadog-agent_7.38.2.patch
+ARG PACKAGE_VERSION=7.39.0
+ARG PATCH=https://raw.githubusercontent.com/ppc64le/build-scripts/master/d/datadog-agent/datadog-agent_7.39.0.patch
 
 WORKDIR /root
 

@@ -1,0 +1,10 @@
+{
+    "package_name" : "openldap",
+    "github_url":"https://github.com/openldap/openldap",
+    "package_dir": "o/openldap",
+    "docker_build": false,
+
+    "OPENLDAP_REL_ENG_*_*_*" : {
+        "build_script" : "openldap_2.6.3_ubi_8.5.sh"
+    }
+}

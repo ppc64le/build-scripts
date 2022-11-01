@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package           : Datadog-Agent
-# Version           : 7.38.2
+# Version           : 7.39.0
 # Source repo       : https://github.com/DataDog/datadog-agent.git
 # Tested on         : UBI: 8.5
 # Language          : Go
@@ -20,12 +20,12 @@
 
 PACKAGE_NAME=datadog-agent
 PACKAGE_URL=https://github.com/DataDog/datadog-agent.git
-PACKAGE_VERSION=${1:-7.38.2}
+PACKAGE_VERSION=${1:-7.39.0}
 
 export WORKDIR=`pwd`
 SCRIPT=$(readlink -f $0)
 SCRIPT_DIR=$(dirname $SCRIPT)
-PATCH=$SCRIPT_DIR/datadog-agent_7.38.2.patch
+PATCH=$SCRIPT_DIR/datadog-agent_7.39.0.patch
 
 # Install required dependencies
 yum install -y wget git python38 python38-devel openssl openssl-devel make gcc gcc-c++ diffutils cmake
@@ -51,9 +51,9 @@ git checkout $PACKAGE_VERSION
 git apply --ignore-whitespace $PATCH
 
 # Build and install dependencies
-python3 -m pip install codecov -r requirements.txt 
+python3 -m pip install codecov -r requirements.txt
 export PATH=$PATH:/usr/local/bin
-inv -e install-tools 
+invoke -e install-tools
 invoke agent.build --build-exclude=systemd
 
 # To build rtloader
