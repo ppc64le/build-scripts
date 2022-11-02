@@ -60,7 +60,7 @@ cd `basename $PACKAGE_NAME`
 git checkout $PACKAGE_VERSION 
 
 
-sed -i -e '401 s/10/30/; 30 s/30/60/' queue_test.go
+sed -i -e '401 s/10/30/; 30 s/30/90/' queue_test.go
 sed -i '3147 s/1/5/' z_test.go
 sed -i '283i rec.rec.id := i;' z_plsql_types_test.go
 
