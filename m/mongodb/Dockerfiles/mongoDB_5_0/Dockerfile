@@ -71,7 +71,7 @@ RUN set -ex; \
         rm -r "$GNUPGHOME"; \
         apt-key list
 
-ARG MONGO_MAJOR 5.0
+ARG MONGO_MAJOR=5.0
 ARG MONGO_VERSION=5.0.13
 
 # We install the necesary tools to compile mongo on ppc64le
