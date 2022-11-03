@@ -47,7 +47,7 @@ cd ~
 git clone https://github.com/JanusGraph/janusgraph
 cd janusgraph
 git checkout ${VERSION}
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/j/janusgraph/janus_0_6_2.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/j/janusgraph/janus_0_6_2.patch
 git apply janus_0_6_2.patch
 grpc_version=$(grep '<grpc.version>' pom.xml | grep -Po '\d*\.\d*\.\d*')
 
