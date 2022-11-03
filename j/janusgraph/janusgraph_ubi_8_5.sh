@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : JanusGraph
-# Version       : 0.6.2
+# Version       : master
 # Source repo   : https://github.com/JanusGraph/janusgraph.git
 # Tested on     : ubi8.5
 # Language      : java
@@ -20,15 +20,13 @@
 
 PACKAGE_NAME=janusgraph
 PACKAGE_URL=https://github.com/JanusGraph/janusgraph.git
-<<<<<<< HEAD
+
 if [ -z "$1" ]; then
   export VERSION="e0fc21f060e782603d6206075ef1f149b6b32971"
 else
   export VERSION="$1"
 fi
-=======
-VERSION=${1:-0.6.2}
->>>>>>> 5a3a49cffad012421af5e08d2b6361a58131bece
+
 
 yum install -y maven git wget gcc-c++ make autoconf which diffutils
 cd ~
