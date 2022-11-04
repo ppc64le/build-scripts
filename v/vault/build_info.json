@@ -9,7 +9,7 @@
         "dir":"1.11.2-ubi8",
 	"args": {
             "VAULT_VERSION":"$PACKAGE_VERSION",
-	    "GO_VERSION":"1.17.12",
+	    "GO_VERSION":"1.17.12"
          }	
     },
     
@@ -17,7 +17,7 @@
         "dir":"1.5.3-ubi8",
 	"args": {
             "VAULT_VERSION":"$PACKAGE_VERSION",
-	    "GO_VERSION":"1.14.7",
+	    "GO_VERSION":"1.14.7"
          }
     },
     
@@ -25,7 +25,7 @@
         "dir":"1.7.0-ubi8",
 	"args": {
             "VAULT_VERSION":"$PACKAGE_VERSION",
-	    "GO_VERSION":"1.16.7",
+	    "GO_VERSION":"1.16.7"
          }
     },
 
@@ -33,7 +33,7 @@
         "dir":"1.8.5-ubi8",
         "args": {
             "VAULT_VERSION":"$PACKAGE_VERSION",
-            "GO_VERSION":"1.17.3",
+            "GO_VERSION":"1.17.3"
          }
     },
 
@@ -41,7 +41,7 @@
         "dir":"1.9.1-ubi8",
         "args": {
             "VAULT_VERSION":"$PACKAGE_VERSION",
-            "GO_VERSION":"1.17.13",
+            "GO_VERSION":"1.17.13"
          }
     },
 
@@ -49,8 +49,7 @@
         "dir":"0.10.4",
         "args": {
             "VAULT_VERSION":"$PACKAGE_VERSION",
-            "GO_VERSION":"1.10.3",
+            "GO_VERSION":"1.10.3"
          }
-    },
-
+    }
 }

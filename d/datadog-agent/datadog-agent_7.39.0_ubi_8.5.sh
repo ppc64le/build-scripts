@@ -43,13 +43,11 @@ export PATH=$PATH:$WORKDIR/go/bin
 python3 -m pip install --upgrade pip 
 
 cd $GOPATH/src
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+git clone $PACKAGE_URL $GOPATH/src/github.com/DataDog/$PACKAGE_NAME 
+cd $GOPATH/src/github.com/DataDog/$PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-# Fetch and apply patch
-# wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/d/datadog-agent/datadog-agent_7.39.0.patch
-# git apply --ignore-whitespace datadog-agent_7.39.0.patch
+# Apply patch
 git apply --ignore-whitespace $PATCH
 
 # Build and install dependencies
