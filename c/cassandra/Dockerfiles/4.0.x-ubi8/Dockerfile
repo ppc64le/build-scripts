@@ -8,7 +8,7 @@ ARG VERSION=4.0.x
 
 ###Required Labels
 LABEL name="cassandra" \
-      maintainer="amits2@us.ibm.com" \
+      maintainer="Pratik.Tonage@ibm.com" \
       vendor="cassandra" \
       version=$VERSION \
       release="1" \
