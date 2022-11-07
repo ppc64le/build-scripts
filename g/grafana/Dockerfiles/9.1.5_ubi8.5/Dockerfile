@@ -21,15 +21,11 @@ RUN yum install -y python3 make && \
     rm -rf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
     npm install -g yarn
 
-RUN npm install -g yarn
-
 RUN cd / && mkdir grafana && cd grafana && \
     git clone https://github.com/grafana/grafana.git && cd grafana && \
     git checkout $GRAFANA_VERSION && \
     make gen-go && \
     go run build.go build && \
-    yarn install --immutable && \
-    go test -v ./pkg/... && \
     yum remove wget git make gcc gcc-c++ -y
  
 FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
