@@ -52,6 +52,6 @@ make gen-go
 go run build.go build
 go test -v ./pkg/...
 yarn run lingui compile
-yarn test --watchAll
+yarn test --watchAll --forceExit
 exit 0
 
