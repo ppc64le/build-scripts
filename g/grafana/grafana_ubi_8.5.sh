@@ -27,7 +27,7 @@ yum update -y
 
 cd /
 PATH=/node-$NODE_VERSION-linux-ppc64le/bin:$PATH
-yum install -y wget git make && \
+yum install -y wget git make gcc-c++ && \
     wget https://nodejs.org/dist/$NODE_VERSION/node-$NODE_VERSION-linux-ppc64le.tar.gz && \
     tar -C / -xzf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
     rm -rf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
@@ -52,6 +52,6 @@ make gen-go
 go run build.go build
 go test -v ./pkg/...
 yarn run lingui compile
-yarn test
+yarn test --watchAll
 exit 0
 
