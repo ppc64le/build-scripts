@@ -9,14 +9,14 @@
         "dir": "6.x",
         "args": {
             "MONGO_VERSION": "$(echo $PACKAGE_VERSION | sed 's/r//')",
-            "MONGO_MAJOR": "$(echo $PACKAGE_VERSION |  sed 's/r//' | grep -Eo '[0-9]+\\.[0-9]+'"
+            "MONGO_MAJOR": "$(echo $PACKAGE_VERSION |  sed 's/r//' | grep -Eo '[0-9]+\\.[0-9]+')"
         }
     },
     "r5.*.*": {
         "dir": "mongoDB_5_0",
         "args": {
             "MONGO_VERSION": "$(echo $PACKAGE_VERSION | sed 's/r//')",
-            "MONGO_MAJOR": "$(echo $PACKAGE_VERSION |  sed 's/r//' | grep -Eo '[0-9]+\\.[0-9]+'"
+            "MONGO_MAJOR": "$(echo $PACKAGE_VERSION |  sed 's/r//' | grep -Eo '[0-9]+\\.[0-9]+')"
         }
     },
     "r4.4.*" : {
