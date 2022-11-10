@@ -18,6 +18,7 @@ ARGS = 'args'
 DOCKER_FILE = 'docker_file'
 BASE_CONTAINER = 'base_container'
 NON_ROOT_USER = 'use_non_root_user'
+BUILD_SCRIPT_RAW_URL = 'build_script_raw_url'
 
 build_details = {
     DOCKER_DIR : '',
@@ -28,7 +29,8 @@ build_details = {
     BASE_CONTAINER : 'registry.access.redhat.com/ubi8/ubi',
     DOCKER_BUILD: True,
     VALIDATE_BUILD_SCRIPT: True,
-    NON_ROOT_USER : False
+    NON_ROOT_USER : False,
+    BUILD_SCRIPT_RAW_URL : ""
 }
 
 if len(sys.argv) == 3:
@@ -45,6 +47,8 @@ package_name = package_name.lower()
 image_name = "ibmcom/" + package_name + "-ppc64le:" + version.replace('/', '_')
 version_key =  None
 branch = "master"
+build_scipt = ''
+raw_url_prefix = "https://raw.githubusercontent.com/ppc64le/build-scripts/" + branch + "/" + "/" .join([package_name[0], package_name])
 
 config_json = {}
 
@@ -54,14 +58,14 @@ if(os.path.exists(config_file_name)):
     contents = f.read()
     config_json = json.loads(contents)
 else:
-    github_url = "https://raw.githubusercontent.com/ppc64le/build-scripts/" + branch + "/" + "/" .join([package_name[0], package_name, "build_info.json"])
+    github_url = raw_url_prefix + "/build_info.json"
     r = requests.get(github_url)
     if r.status_code == 200:
         config_json = r.json()
 
 if config_json:
     build_details[DOCKER_COMMAND] = config_json[DOCKER_COMMAND] if DOCKER_COMMAND in config_json else ''
-    build_details[BUILD_SCRIPT] = config_json[BUILD_SCRIPT] if BUILD_SCRIPT in config_json else ''
+    build_scipt = config_json[BUILD_SCRIPT] if BUILD_SCRIPT in config_json else ''
     build_details[DOCKER_BUILD] = config_json[DOCKER_BUILD] if DOCKER_BUILD in config_json else True
     build_details[VALIDATE_BUILD_SCRIPT] = config_json[VALIDATE_BUILD_SCRIPT] if VALIDATE_BUILD_SCRIPT in config_json else True
     build_details[NON_ROOT_USER] = config_json[NON_ROOT_USER] if NON_ROOT_USER in config_json else False
@@ -98,7 +102,14 @@ if config_json:
         for arg_name in version_config[ARGS].keys():
             build_details[ARGS][arg_name] = version_config[ARGS][arg_name]
             build_args += f" --build-args {arg_name}={version_config[ARGS][arg_name]} "
+    
+    
+    build_scipt = version_config[BUILD_SCRIPT] if version_config[BUILD_SCRIPT] else build_scipt
+    if not build_scipt:
+        print("Build-script is not mentioned...")
+        exit(1)
 
+    build_details[BUILD_SCRIPT_RAW_URL] = raw_url_prefix + f"/{build_scipt}"
     build_details[DOCKER_COMMAND] = f"sudo docker build -t {image_name}" + (build_args if build_args else '') + (f"-f {version_config[DOCKER_FILE]}" if DOCKER_FILE in version_config else '') + f" {build_details[DOCKER_DIR]}"
     build_details[BUILD_SCRIPT] = 'sudo ' if build_details[NON_ROOT_USER] else '' + (" ".join([f"{x}={build_details[ARGS][x]}" for x in build_details[ARGS].keys()])) + " ./" + (version_config[BUILD_SCRIPT].strip() if BUILD_SCRIPT in version_config else build_details[BUILD_SCRIPT].strip()) + " " + version
     build_details[BASE_CONTAINER] = version_config[BASE_CONTAINER] if BASE_CONTAINER in version_config else 'registry.access.redhat.com/ubi8/ubi'
