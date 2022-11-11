@@ -9,11 +9,11 @@ RUN yum install -y wget gcc-c++ make git && \
     export PATH=$PATH:$GOPATH/bin && \
     export CGO_ENABLED="0" && \
     echo $GOPATH && mkdir -p $GOPATH/src/github.com/elastic && \
-     cd $GOPATH/src/github.com/elastic && \
-     git clone https://github.com/elastic/beats && \
-     cd beats && git checkout v8.5.0 && \
-     cd filebeat && \
-     make
+    cd $GOPATH/src/github.com/elastic && \
+    git clone https://github.com/elastic/beats && \
+    cd beats && git checkout v8.5.0 && \
+    cd filebeat && \
+    make
 
 FROM registry.access.redhat.com/ubi8/ubi
 
