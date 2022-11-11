@@ -19,8 +19,9 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=filebeat
-PACKAGE_VERSION=v8.5.0
+PACKAGE_VERSION=${1:-v8.5.0}
 PACKAGE_URL=https://github.com/elastic/beats.git
+GO_VERSION=${GO_VERSION:-1.17}
 
 WORKDIR=`pwd`
 
@@ -29,8 +30,8 @@ yum update -y
 yum install -y wget git make gcc-c++ python3-virtualenv
 
 cd $WORKDIR
-wget https://golang.org/dl/go1.17.linux-ppc64le.tar.gz
-tar -zxvf go1.17.linux-ppc64le.tar.gz
+wget https://golang.org/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
+tar -zxvf go${GO_VERSION}.linux-ppc64le.tar.gz
 
 export GOPATH=$WORKDIR/go
 export PATH=$PATH:$GOPATH/bin
@@ -45,4 +46,3 @@ git checkout $BEATS_VERSION
 cd $PACKAGE_NAME
 make
 make unit
-

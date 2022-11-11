@@ -1,6 +1,14 @@
-FROM golang:1.17 as builder
+FROM registry.access.redhat.com/ubi8/ubi as builder
 
-RUN echo $GOPATH && mkdir -p $GOPATH/src/github.com/elastic && \
+ARG GO_VERSION=1.17
+
+RUN yum install -y wget gcc-c++ make git && \
+    wget https://golang.org/dl/go${GO_VERSION}.linux-ppc64le.tar.gz && \
+    tar -xvzf go${GO_VERSION}.linux-ppc64le.tar.gz && \
+    export GOPATH=$PWD/go && \
+    export PATH=$PATH:$GOPATH/bin && \
+    export CGO_ENABLED="0" && \
+    echo $GOPATH && mkdir -p $GOPATH/src/github.com/elastic && \
      cd $GOPATH/src/github.com/elastic && \
      git clone https://github.com/elastic/beats && \
      cd beats && git checkout v8.5.0 && \
