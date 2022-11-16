@@ -6,6 +6,7 @@
 # Language      : Java
 # Source repo   : https://github.com/netty/netty
 # Tested on     : UBI 8.5
+# Travis-Check  : True
 # Script License: Apache-2.0 License    
 # Maintainer    : Pratik Tonage <Pratik.Tonage@ibm.com>
 #
