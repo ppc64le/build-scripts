@@ -1,3 +1,4 @@
+#!/bin/bash
 # ----------------------------------------------------------------------------
 #
 # Package       : netty-all
@@ -15,7 +16,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
+
 
 #Variables
 PACKAGE_URL=https://github.com/netty/netty.git
