@@ -40,7 +40,7 @@ export PATH=$PATH:$GOPATH/bin
 mkdir -p ${GOPATH}/src/github.com/influxdata
 cd ${GOPATH}/src/github.com/influxdata
 git clone $PACKAGE_URL
-git checkout $PACKAGE_VERSION
 cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 make
 make test
