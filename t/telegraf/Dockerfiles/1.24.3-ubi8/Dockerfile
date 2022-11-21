@@ -1,26 +1,20 @@
-FROM registry.access.redhat.com/ubi8/ubi
-
-ARG LATEST_STABLE_RELEASE=1.24.3
+FROM registry.access.redhat.com/ubi8/ubi as builder
 
 ARG GO_VERSION=1.17
 
-RUN yum install -y make git wget gcc-c++ && \
-        cd /tmp && \
-        wget https://golang.org/dl/go${GO_VERSION}.linux-ppc64le.tar.gz && \
-        tar -xvzf /usr/local go${GO_VERSION}.linux-ppc64le.tar.gz && \
-        export PATH=$PATH:/usr/local/go/bin && \
-        export GOPATH=$HOME/go && \
-        go get -d github.com/influxdata/telegraf && \
-        go get github.com/golang/dep  && \
-        go get github.com/golang/dep/cmd/dep && \
-        cd $GOPATH/src/github.com/golang/dep  && \
-        go install ./... && \
-        cd $GOPATH/src/github.com/influxdata/telegraf && \
-        git checkout ${LATEST_STABLE_RELEASE} && \
-        make && \
-        rm -rf /tmp/go${GO_VERSION}.linux-ppc64le.tar.gz /usr/local/go $GOPATH/src/github.com/golang  $GOPATH/bin/ $GOPATH/pkg/ && \
-        yum remove -y make git wget gcc-c++ && \
-        sed -i 's/# skip_database_creation = false/skip_database_creation = true/g' /root/go/src/github.com/influxdata/telegraf/etc/telegraf.conf
+ARG PACKAGE_VERSION=v1.24.3
+
+RUN yum -y update && \
+        yum install -y make git wget gcc-c++ && \
+            wget https://golang.org/dl/go${GO_VERSION}.linux-ppc64le.tar.gz && \
+                tar -xvzf go${GO_VERSION}.linux-ppc64le.tar.gz && \
+                export GOPATH=$PWD/go && \
+                export PATH=$PATH:$GOPATH/bin && \
+                echo $GOPATH && mkdir -p $GOPATH/src/github.com/influxdata && \
+                cd $GOPATH/src/github.com/influxdata && \
+                git clone  https://github.com/influxdata/telegraf.git && \
+                cd telegraf && git checkout $PACKAGE_VERSION && \
+                make
 
 EXPOSE 8125/udp 8092/udp 8094
 
@@ -34,4 +28,3 @@ USER telegraf
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["telegraf"]
-
