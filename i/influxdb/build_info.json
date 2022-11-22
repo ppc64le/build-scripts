@@ -1,0 +1,12 @@
+{
+    "package_name" : "influxdb",
+    "github_url":"https://github.com/influxdata/influxdb.git",
+    "package_dir": "i/influxdb/Dockerfiles/",
+    "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+
+    "v2.*.*" : {
+        "dir" : "v2.5.1_ubi_8.5",
+        "build_script" : "influxdb_ubi_8.5.sh"
+
+    }
+}
