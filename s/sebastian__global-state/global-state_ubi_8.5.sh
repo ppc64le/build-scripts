@@ -5,7 +5,7 @@
 # Version       : 5.0.2
 # Source repo   : https://github.com/sebastianbergmann/global-state
 # Tested on     : UBI: 8.5
-# Language      : Go
+# Language      : PHP
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Shreya Kajbaje <Shreya.Kajbaje@ibm.com>
