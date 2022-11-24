@@ -26,13 +26,8 @@ yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarc
 yum update -y
 yum install -y wget git gcc gcc-c++ make python36 cmake python2 libstdc++-static python3-devel
 
-python --version > /dev/null 3>/dev/null
-if [ $? != 0 ]
-then
-    PYTHON3=$(command which python3)
-    PYTHONDIR=$(command dirname $PYTHON3)
-    ln -s $PYTHON3 ${PYTHONDIR}/python
-fi
+alternatives --set python /usr/bin/python3
+alias python="python3"
 
 git clone --recursive https://github.com/RediSearch/RediSearch.git
 cd $PACKAGE_NAME/
