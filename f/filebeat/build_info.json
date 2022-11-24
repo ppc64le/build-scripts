@@ -6,7 +6,9 @@
     "build_script" : "filebeat_UBI_8.5.sh",
 
     "8.*.*" : {
-        "dir":"8.5.0_ubi"
+        "dir":"8.5.0_ubi",
+        "GO_VERSION":"1.17"
+
     }
 
 }
