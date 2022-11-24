@@ -24,7 +24,7 @@ PACKAGE_NAME=RediSearch
 
 yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 yum update -y
-yum install -y wget git gcc gcc-c++ make python3 cmake python2 libstdc++-static python3-devel
+yum install -y wget git gcc python gcc-c++ make python3 cmake python2 libstdc++-static python3-devel
 
 python --version > /dev/null 3>/dev/null
 if [ $? != 0 ]
