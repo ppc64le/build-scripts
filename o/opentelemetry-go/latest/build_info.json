@@ -1,6 +1,6 @@
 {
     "package_name" : "opentelemetry-go",
-    "github_url":"https://github.com/open-telemetry/opentelemetry-go.git",
+    "github_url":"https://github.com/open-telemetry/opentelemetry-go",
     "package_dir": "o/opentelemetry-go/latest",
     "docker_build": false,
     "build_script" : "opentelemetry-go_ubi_8.5.sh",
