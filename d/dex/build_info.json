@@ -8,7 +8,7 @@
         "build_script" : "dex_v2.35.3_ubi_8.5.sh"
     },
     
-    "*.*.*": {
+    "v*.*.*": {
         "dir" : "2.35.3_ubi_8",
         "build_script" : "dex_v2.35.3_ubi_8.5.sh"
     }
