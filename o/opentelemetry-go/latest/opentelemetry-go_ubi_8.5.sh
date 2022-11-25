@@ -3,7 +3,7 @@
 #
 # Package       : opentelemetry-go
 # Version       : v1.11.1
-# Source repo   : https://github.com/open-telemetry/opentelemetry-go.git
+# Source repo   : https://github.com/open-telemetry/opentelemetry-go
 # Tested on     : ubi 8.5
 # Language      : go
 # Travis-Check  : true
@@ -21,7 +21,7 @@
 PACKAGE_NAME=opentelemetry-go
 PACKAGE_VERSION=${1:-v1.11.1}
 GO_VERSION=1.18.5
-PACKAGE_URL=https://github.com/open-telemetry/opentelemetry-go.git
+PACKAGE_URL=https://github.com/open-telemetry/opentelemetry-go
 
 dnf install git wget sudo diffutils.ppc64le make gcc gcc-c++ -y
 
