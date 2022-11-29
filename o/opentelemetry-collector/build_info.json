@@ -6,10 +6,8 @@
     "build_script" : "opentelemetry-collector_ubi_8.5.sh",
     
     "v0.*.*" : {
- 
 	"args": {
-	    "GO_VERSION":"1.18.5",
+	    "GO_VERSION":"1.18.5"
         }
-    }, 
-
+    }
 }
