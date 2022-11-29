@@ -1,20 +1,19 @@
 {
     "package_name" : "grafana",
-	"github_url":"https://github.com/grafana/grafana.git",
+    "github_url":"https://github.com/grafana/grafana.git",
     "package_dir": "g/grafana/Dockerfiles/",
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "build_script" : "grafana_ubi_8.5.sh",
 
     "v8.1.*" : {
-        "dir":"8.1.5_ubi8.4",
+        "dir":"8.1.5_ubi8.4"
     },
 
     "v5.4.*" : {
-        "dir":"5.4.2_debian_jessie",
+        "dir":"5.4.2_debian_jessie"
     },
 	
-	"v9.*.*" : {
-        "dir":"9.1.5_ubi8.5",
-    },
-
+    "v9.*.*" : {
+        "dir":"9.1.5_ubi8.5"
+    }
 }
