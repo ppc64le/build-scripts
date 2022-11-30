@@ -1,11 +1,12 @@
 {
     "package_name" : "telegraf",
 	"github_url":"https://github.com/influxdata/telegraf.git",
-    "package_dir": "f/filebeat/Dockerfiles/",
+    "version": "v1.24.4",
+    "package_dir": "i/influxdata/",
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "build_script" : "telegraf_UBI_8.5.sh",
 
-    "1.24.*" : {
+    "v1.24.*" : {
         "dir":"1.24.3-ubi8",
         "GO_VERSION":"1.17"
     },

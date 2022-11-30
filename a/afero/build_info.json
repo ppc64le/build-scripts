@@ -1,6 +1,7 @@
 {
     "package_name" : "afero",
     "github_url":"https://github.com/spf13/afero",
+    "version": "v1.9.3",
     "package_dir": "a/afero",
     "docker_build": false,
 

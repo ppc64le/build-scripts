@@ -1,7 +1,8 @@
 {
     "package_name" : "dex",
     "github_url":"https://github.com/dexidp/dex.git",
-    "package_dir": "d/dex/Dockerfiles",
+    "version": "v2.35.3",
+    "package_dir": "d/dex/",
 
     "v2.35.3": {
         "dir" : "2.35.3_ubi_8",
