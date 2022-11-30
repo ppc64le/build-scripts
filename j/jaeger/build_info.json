@@ -1,0 +1,13 @@
+{
+    "package_name" : "jaeger",
+    "github_url":"",
+    "package_dir": "j/jaeger/Dockerfiles/",
+	"docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "build_script" : "jaeger_ubi8.sh"
+
+    "1.*.*" : {
+       "dir":"1.39.0-ubi8"
+    }
+}
+
+
