@@ -1,6 +1,7 @@
 {
     "package_name" : "aws-sdk-go",
     "github_url":"https://github.com/aws/aws-sdk-go",
+    "version": "v1.44.149",
     "package_dir": "a/aws-sdk-go/",
     "docker_build": false,
 

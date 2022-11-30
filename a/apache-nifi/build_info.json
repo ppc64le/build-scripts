@@ -1,6 +1,7 @@
 {
     "package_name" : "nifi",
     "github_url":"https://github.com/apache/nifi",
+    "version": "rel/nifi-1.17.0",
     "package_dir": "a/apache-nifi/",
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
 

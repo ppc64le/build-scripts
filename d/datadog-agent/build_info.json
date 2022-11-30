@@ -1,7 +1,8 @@
 {
     "package_name" : "datadog-agent",
     "github_url":"https://github.com/DataDog/datadog-agent.git",
-    "package_dir": "d/datadog-agent/Dockerfiles",
+    "version": "7.40.1",
+    "package_dir": "d/datadog-agent/",
 
     "7.38.*": {
         "dir" : "7.38.2_ubi_8",
