@@ -1,13 +1,16 @@
 {
     "package_name" : "jaeger",
-    "github_url":"",
-    "package_dir": "j/jaeger/Dockerfiles/",
-	"docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-    "build_script" : "jaeger_ubi8.sh"
+    "github_url":"https://github.com/jaegertracing/jaeger.git",
+    "version": "v1.39.0",
+    "package_dir": "j/jaeger/",
+    "docker_cmd":"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "build_script": "jaeger_ubi8.sh",
+    "docker_build": "true",
+    "validate_build_script": "true",
+    "use_non_root_user": "true",
 
-    "1.*.*" : {
-       "dir":"1.39.0-ubi8"
+    "v1.*.*": {
+        "dir": "1.39.0-ubi8",
+  
     }
 }
-
-
