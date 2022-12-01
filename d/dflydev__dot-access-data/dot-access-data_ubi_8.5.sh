@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : dot-access-data
-# Version       : 1.1.0
+# Version       : 2.0.0
 # Source repo   : https://github.com/dflydev/dflydev-dot-access-data
 # Tested on     : UBI: 8.5
 # Language      : PHP
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=dflydev/dot-access-data
-PACKAGE_VERSION=${1:-1.1.0}
+PACKAGE_VERSION=${1:-v2.0.0}
 PACKAGE_URL=https://github.com/dflydev/dflydev-dot-access-data
 
 yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git jq curl php php-curl php-dom php-mbstring php-json nodejs make gcc-c++ patch diffutils php-gd php-pecl-zip
