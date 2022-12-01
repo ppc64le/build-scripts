@@ -1,6 +1,6 @@
 {
     "package_name" : "jaeger",
-    "github_url":"https://github.com/jaegertracing/jaeger",
+    "github_url":"https://github.com/jaegertracing/jaeger.git",
     "version": "v1.39.0",
     "package_dir": "j/jaeger/",
     "docker_cmd":"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
