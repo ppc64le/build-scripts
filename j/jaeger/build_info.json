@@ -10,9 +10,9 @@
     "use_non_root_user": true,
 
     "v1.39.*": {
-        "dir": "1.39.0-ubi8",
+        "dir": "1.39.0-ubi8"
      "args": {
-	    "GO_VERSION":"1.19",
+	    "GO_VERSION":"1.19"
         }
-    },
+    }
 }
