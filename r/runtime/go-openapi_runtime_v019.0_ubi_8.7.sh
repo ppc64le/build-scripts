@@ -21,11 +21,11 @@
 PACKAGE_NAME=runtime
 PACKAGE_VERSION=${1:-v0.19.0}
 PACKAGE_URL=https://github.com/go-openapi/runtime.git
-GO_VERSION=1.12.2
+GO_VERSION=${GO_VERSION:-1.12.2}
 
 OS_NAME=`cat /etc/os-release | grep "PRETTY" | awk -F '=' '{print $2}'`
 
-yum install -y git wget
+yum install -y git gcc wget
 wget https://golang.org/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
 tar -C /usr/local -xvzf go${GO_VERSION}.linux-ppc64le.tar.gz
 rm -rf go${GO_VERSION}.linux-ppc64le.tar.gz
