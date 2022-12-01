@@ -5,11 +5,11 @@
     "package_dir": "j/jaeger/",
     "docker_cmd":"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "build_script": "jaeger_ubi8.sh",
-    "docker_build": "true",
-    "validate_build_script": "true",
-    "use_non_root_user": "true",
+    "docker_build": true,
+    "validate_build_script": true,
+    "use_non_root_user": true,
 
-    "v1.*.*": {
+    "v1.39.*": {
         "dir": "1.39.0-ubi8",
   
     }
