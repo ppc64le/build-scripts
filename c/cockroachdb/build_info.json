@@ -3,6 +3,7 @@
 	"github_url":"https://github.com/cockroachdb/cockroach",
     "package_dir": "c/cockroachdb/Dockerfiles/",
     "build_script" : "cockroachdb_ubi_8.6.sh",
+    "docker_build" : false,
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     
     "v22.1.8" : {

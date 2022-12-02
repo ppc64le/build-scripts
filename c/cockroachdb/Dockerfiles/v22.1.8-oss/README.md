@@ -1,6 +1,6 @@
-# Build CockroachDB v20.2.17-oss
+# Build CockroachDB v22.1.8-oss
 
-Please find the instructions to build v20.2.17 release of CockroachDB and to execute the
+Please find the instructions to build v22.1.8-oss release of CockroachDB and to execute the
 community tests inside a UBI8 container below.
 
 ## UBI8 container
@@ -8,17 +8,17 @@ community tests inside a UBI8 container below.
 To run the container so that the build script and patches are available inside it, execute:
 
 ```
-# docker container run -it -v `pwd`:/v20.2.17-oss --workdir /v20.2.17-oss --name ubi8_cockroach20.2.17-oss registry.access.redhat.com/ubi8/ubi:latest /bin/bash
+# docker container run -it -v `pwd`:/v22.1.8-oss --workdir /v22.1.8-oss --name ubi8_cockroach22.1.8-oss registry.access.redhat.com/ubi8/ubi:latest /bin/bash
 ```
 
-If you face any issue in accessing the contents of /v20.2.17-oss inside the container, please
+If you face any issue in accessing the contents of /v22.1.8-oss inside the container, please
 try deleting the container and adding `--privileged=true` option to the run command.
 
 Enable execute permissions for the build script and run it as:
 
 ```
-# chmod +x cockroachdb_ubi8.sh
-# ./cockroachdb_ubi8.sh
+# chmod +x cockroachdb_ubi8.6.sh
+# ./cockroachdb_ubi8.6.sh
 ```
 
 # Known issues
