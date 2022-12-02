@@ -1,6 +1,7 @@
 {
     "package_name" : "opentelemetry-go-contrib",
     "github_url":"https://github.com/open-telemetry/opentelemetry-go-contrib",
+    "version": "zpages/v0.36.4"
     "package_dir": "o/opentelemetry-go-contrib",
     "docker_build": false,
     "build_script" : "opentelemetry-go-contrib_ubi_8.5.sh",
@@ -8,8 +9,8 @@
     "zpages/v0.*.*" : {
  
 	"args": {
-	    "GO_VERSION":"1.18.5",
+	    "GO_VERSION":"1.18.5"
         }
-    }, 
+    }
 
 }
