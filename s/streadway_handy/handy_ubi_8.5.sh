@@ -49,6 +49,6 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 go mod init && go mod tidy
-go build
+go build -v ./...
 
 go test -v ./...
