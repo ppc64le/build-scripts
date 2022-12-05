@@ -4,7 +4,7 @@
     "version":"v2.4.0",
     "package_dir": "r/redisearch/Dockerfiles/",
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-    "build_script" : "redisearch_ubi8.sh"
+    "build_script" : "redisearch_ubi8.sh",
 
     "2.0.*" : {
        "dir":"2.0.0-ubi8"
