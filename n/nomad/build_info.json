@@ -4,7 +4,7 @@
     "version": "v1.4.3",
     "package_dir": "n/nomad",
     "build_script": "nomad_ubi_8_5.sh",
-    "validate_build_script": "true"
+    "validate_build_script": "true",
 
     "v1.4.3": {
         "build_script": "nomad_ubi_8_5.sh"        
