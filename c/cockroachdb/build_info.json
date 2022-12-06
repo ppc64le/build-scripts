@@ -12,7 +12,10 @@
     },
     "v22.1.5" : {
         "dir" : "v22.1.5-oss/Dockerfiles",
-        "build_script" : "v22.1.5-oss/cockroachdb_ubi_8.5.sh"
+        "build_script" : "v22.1.5-oss/cockroachdb_ubi_8.5.sh",
+        "patches": {
+            "WEBPACK_VENDOR_PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/v22.1.5-oss/patches/webpack_vendor.patch"
+        }
     },
     "v22.1.6" : {
         "dir" : "v22.1.6-oss/Dockerfiles",
@@ -24,26 +27,59 @@
     },
     "v20.1.12" : {
         "dir" : "v20.1.12-oss/Dockerfiles",
-        "build_script" : "v20.1.12-oss/cockroachdb_ubi8.sh"
+        "build_script" : "v20.1.12-oss/cockroachdb_ubi8.sh",
+        "patches": {
+            "COCKROACH_MAKEFILE_PATCH" : "https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/Dockerfiles/v20.1.12-oss/patches/cockroach_makefile.patch",
+            "JEMALLOC_PATCH" : "https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/Dockerfiles/v20.1.12-oss/patches/jemalloc_stats_test.patch",
+            "ARROW_MEMORY_PATCH" : "https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/v20.1.12-oss/patches/arrow_memory.patch"
+        }
     },
     "v20.1.0" : {
         "dir" : "v20.1.0-oss/Dockerfiles",
-        "build_script" : "v20.1.0-oss/cockroachdb_ubi8.sh"
-    },
-    "v19.2.2" : {
-        "dir" : "v19.2.2/Dockerfiles",
-        "build_script" : "v19.2.2/cockroachdb_ubi7.6.sh"
+        "build_script" : "v20.1.0-oss/cockroachdb_ubi8.sh",
+        "patches": {
+            "COCKROACH_MAKEFILE_PATCH" : "https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/Dockerfiles/v20.1.0-oss/patches/cockroach_makefile.patch",
+            "JEMALLOC_PATCH" : "https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/Dockerfiles/v20.1.0-oss/patches/jemalloc_stats_test.patch",
+            "ARROW_MEMORY_PATCH" : "https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/v20.1.0-oss/patches/arrow_memory.patch"
+        }
     },
     "v19.2.10" : {
         "dir" : "v19.2.10-oss/Dockerfiles",
-        "build_script" : "v19.2.10-oss/cockroachdb_ubi8.sh"
+        "build_script" : "v19.2.10-oss/cockroachdb_ubi8.sh",
+        "patches": {
+            "COCKROACH_MAKEFILE_PATCH" : "https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/Dockerfiles/v19.2.10-oss/patches/cockroach_makefile.patch",
+            "JEMALLOC_PATCH" : "https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/Dockerfiles/v19.2.10-oss/patches/jemalloc_stats_test.patch",
+            "ARROW_MEMORY_PATCH" : "https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/v19.2.10-oss/patches/arrow_memory.patch"
+        }
+    },
+    "v19.2.2" : {
+        "dir" : "v19.2.2/Dockerfiles",
+        "build_script" : "v19.2.2/cockroachdb_ubi7.6.sh",
+        "patches": {
+            "COCKROACH_MAKEFILE_PATCH" : "https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/Dockerfiles/v19.2.2/patches/cockroach_makefile.patch",
+            "JEMALLOC_PATCH" : "https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/Dockerfiles/v19.2.2/patches/jemalloc_stats_test.patch",
+            "ARROW_MEMORY_PATCH" : "https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/v19.2.2/patches/arrow_memory.patch",
+            "ROCKSDB_CMAKELISTS" : "https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/v19.2.2/patches/rocksdb_cmakelists.patch"
+        }
     },
     "v19.1.8" : {
         "dir" : "v19.1.8-oss/Dockerfiles",
-        "build_script" : "v19.1.8-oss/cockroachdb_ubi7.sh"
+        "build_script" : "v19.1.8-oss/cockroachdb_ubi7.sh",
+        "patches": {
+            "COCKROACH_MAKEFILE_PATCH" : "https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/Dockerfiles/v19.1.8-oss/patches/cockroach_makefile.patch",
+            "JEMALLOC_PATCH" : "https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/Dockerfiles/v19.1.8-oss/patches/jemalloc_stats_test.patch",
+            "ARROW_MEMORY_PATCH" : "https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/v19.1.8-oss/patches/arrow_memory.patch",
+            "ROCKSDB_CMAKELISTS" : "https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/v19.1.8-oss/patches/rocksdb_cmakelists.patch"
+        }
     },
     "v19.1.5" : {
         "dir" : "v19.1.5/Dockerfiles",
-        "build_script" : "v19.1.5/cockroachdb_ubi7.6.sh"
+        "build_script" : "v19.1.5/cockroachdb_ubi7.6.sh",
+        "patches": {
+            "COCKROACH_MAKEFILE_PATCH" : "https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/Dockerfiles/v19.1.5/patches/cockroach_makefile.patch",
+            "JEMALLOC_PATCH" : "https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/Dockerfiles/v19.1.5/patches/jemalloc_stats_test.patch",
+            "ARROW_MEMORY_PATCH" : "https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/v19.1.5/patches/arrow_memory.patch",
+            "ROCKSDB_CMAKELISTS" : "https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/v19.1.5/patches/rocksdb_cmakelists.patch"
+        }
     }
 }

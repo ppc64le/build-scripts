@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package        : cockroach
@@ -15,14 +16,17 @@
 #
 # ----------------------------------------------------------------------------
 
-#!/bin/bash
-
 # Install all dependencies
 yum install -y git.ppc64le make.ppc64le gcc-c++.ppc64le autoconf.noarch ncurses-devel.ppc64le wget.ppc64le openssl-devel.ppc64le subscription-manager.ppc64le
 subscription-manager repos --enable rhel-7-server-for-power-le-rhscl-rpms
 yum install -y rh-nodejs8-nodejs.ppc64le
 export PATH=$PATH:/opt/rh/rh-nodejs8/root/usr/bin/
 npm install yarn --global
+
+COCKROACH_MAKEFILE_PATCH=${COCKROACH_MAKEFILE:-'https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/Dockerfiles/v19.1.8-oss/patches/cockroach_makefile.patch'}
+JEMALLOC_PATCH=${JEMALLOC_PATCH:-'https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/Dockerfiles/v19.1.8-oss/patches/jemalloc_stats_test.patch'}
+ARROW_MEMORY_PATCH=${ARRAOW_MEMORY_PATCH:-'https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/Dockerfiles/v19.1.8-oss/patches/arrow_memory.patch'}
+ROCKSDB_CMAKELISTS=${ROCKSDB_CMAKELISTS:-'https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/Dockerfiles/v19.1.8-oss/patches/rocksdb_cmakelists.patch'}
 
 CWD=`pwd`
 
@@ -50,9 +54,14 @@ export PATH=$PATH:/usr/local/go/bin
 cd $COCKROACH_HOME
 git clone https://github.com/cockroachdb/cockroach.git
 cd cockroach
-git checkout -b v19.1.8 tags/v19.1.8
-# This step assumes that you have already copied the patches directory as a sibbling of this script
-cp $CWD/patches/* .
+COCKROACH_VERSION=${1:-v19.1.8}
+git checkout -b $COCKROACH_VERSION tags/$COCKROACH_VERSION
+
+# Download the patches
+wget ${COCKROACH_MAKEFILE_PATCH}
+wget ${ARRAOW_MEMORY_PATCH}
+wget ${JEMALLOC_PATCH}
+wget ${ROCKSDB_CMAKELISTS}
 git apply cockroach_makefile.patch
 git apply jemalloc_stats_test.patch
 make buildoss
