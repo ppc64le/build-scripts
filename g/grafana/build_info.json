@@ -1,7 +1,8 @@
 {
     "package_name" : "grafana",
     "github_url":"https://github.com/grafana/grafana.git",
-    "package_dir": "g/grafana/Dockerfiles/",
+    "version": "v9.2.7",
+    "package_dir": "g/grafana/",
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "build_script" : "grafana_ubi_8.5.sh",
 

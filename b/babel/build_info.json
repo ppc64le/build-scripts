@@ -1,6 +1,7 @@
 {
     "package_name" : "babel",
     "github_url":"https://github.com/babel/babel.git",
+    "version": "v7.20.6",
     "package_dir": "b/babel",
     "docker_build": false,
 
