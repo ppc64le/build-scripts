@@ -3,12 +3,12 @@
 #
 # Package	    : opentelemetry-js
 # Version	    : v1.8.0 
-# Source repo	: https://github.com/open-telemetry/opentelemetry-js
+# Source repo	    : https://github.com/open-telemetry/opentelemetry-js
 # Tested on	    : ubi 8.5
-# Language      : node
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer	: Pratik Tonage <Pratik.Tonage@ibm.com>
+# Language          : node
+# Travis-Check      : True
+# Script License    : Apache License, Version 2 or later
+# Maintainer	    : Pratik Tonage <Pratik.Tonage@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -58,7 +58,7 @@ fi
 # If api directory is available in the package then first need to run npm run compile in the api directory before running tests 
 # because it requires the ESM targets are generated with npm run compile in the API directory.
   
-  if [ -d "/opentelemetry-js/api" ]; then
+  if [ -d "api" ]; then
       cd api/
       npm run compile
       cd ..
