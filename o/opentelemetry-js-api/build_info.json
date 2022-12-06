@@ -7,6 +7,9 @@
     "build_script" : "opentelemetry-js-api_ubi_8.5.sh",
     
     "v1.*.*" : {
-        "build_script" : "opentelemetry-js-api_ubi_8.5.sh"
-    } 
+        "build_script" : "opentelemetry-js-api_ubi_8.5.sh",
+        "args": {
+	        "NODE_VERSION":"16"
+        }
+    }
 }
