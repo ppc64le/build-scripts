@@ -64,5 +64,8 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout v$PACKAGE_VERSION
 go build -v ./...
+
+# As Nomad testing requires clusters. Currently not supporting it.
+# We need to work on cluster testing (probably using minikube or something) and enable tests.
 #go test -v ./...
 
