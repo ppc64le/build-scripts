@@ -8,5 +8,8 @@
     
     "v1.*.*" : {
         "build_script" : "opentelemetry-js_ubi_8.5.sh"
+        "args": {
+	        "NODE_VERSION":"16"
+        }
     } 
 }
