@@ -25,7 +25,7 @@ PACKAGE_NAME=rethinkdb
 
 yum update -y
 
-yum install -y patch bzip2 git make gcc-c++ python2-devel openssl-devel libcurl-devel wget python2 m4 ncurses-devel libicu-devel python36 
+yum install -y patch bzip2 git make gcc-c++ python2-devel openssl-devel libcurl-devel wget python2 m4 ncurses-devel libicu-devel python36 python3-devel protobuf-c
 
 curl -O https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 dnf install -y epel-release-latest-8.noarch.rpm
