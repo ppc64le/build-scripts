@@ -44,7 +44,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 ./configure --allow-fetch
-make -j4 DEBUG=1
+make 
 make install
 
 make unit
