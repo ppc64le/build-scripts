@@ -1,0 +1,10 @@
+{
+    "package_name" : "kibana",
+    "github_url":"https://github.com/elastic/kibana",
+    "version": "v8.5.0",
+    "package_dir": "k/kibana/",
+
+    "v8.5.0": {
+        "build_script" : "kafka_ubi_8.5.sh"
+    }
+}
