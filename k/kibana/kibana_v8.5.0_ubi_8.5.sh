@@ -54,7 +54,7 @@ export USE_BAZEL_VERSION=/bazel/output/bazel
 cd ..
 git clone -b v1.15.0 https://github.com/bazelbuild/bazelisk.git
 cd /bazelisk
-# wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/k/kibana/Dockerfiles/8.1.0_ubi_8/bazelisk_v1.10.1_ppc64le.patch
+wget https://raw.githubusercontent.com/vishakadesai/build-scripts/kib850/k/kibana/Dockerfiles/8.5.0_ubi_8/bazelisk_v1.15.0_ppc64le.patch
 git apply --ignore-whitespace ./bazelisk_v1.15.0_ppc64le.patch 
 go build && ./bazelisk build --config=release //:bazelisk-linux-ppc64 
 cp -r bazel-out/ppc-opt-*/bin/bazelisk-linux_ppc64 /usr/lib/node_modules/@bazel/bazelisk/
@@ -63,7 +63,7 @@ cp -r bazel-out/ppc-opt-*/bin/bazelisk-linux_ppc64 /usr/lib/node_modules/@bazel/
 cd ..
 git clone -b v8.5.0 https://github.com/elastic/kibana.git
 cd /kibana 
-# wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/k/kibana/Dockerfiles/8.1.0_ubi_8/kibana_v8.1.0_ppc64le.patch
+wget https://raw.githubusercontent.com/vishakadesai/build-scripts/kib850/k/kibana/Dockerfiles/8.5.0_ubi_8/kibana_v8.5.0_ppc64le.patch
 git apply --ignore-whitespace ./kibana_v8.5.0_ppc64le.patch 
 yarn install 2>/dev/null || true # this is expected to fail, we just need it to rebuild lmdb-store before bootstrapping
 
