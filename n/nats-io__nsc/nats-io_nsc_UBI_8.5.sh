@@ -45,6 +45,16 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 go mod tidy
+
+if ! go build -v ./...; then
+    echo "------------------$PACKAGE_NAME:Build_fails---------------------"
+    echo "$PACKAGE_VERSION $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails"
+else
+    echo "------------------$PACKAGE_NAME:Build_success-------------------------"
+    echo "$PACKAGE_VERSION $PACKAGE_NAME"
+fi 
+
 if ! go test ./... -v ; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
