@@ -1,10 +1,15 @@
 {
     "package_name" : "kibana",
-    "github_url":"https://github.com/elastic/kibana",
-    "version": "v8.5.0",
-    "package_dir": "k/kibana/",
+    "github_url" :"https://github.com/elastic/kibana",
+    "version" : "v8.5.0",
+    "package_dir" : "k/kibana/",
 
     "v8.5.0": {
+        "dir" : "8.5.0_ubi_8",
+        "build_script" : "kibana_v8.5.0_ubi_8.5.sh"
+    },
+
+    "v*.*.*": {
         "dir" : "8.5.0_ubi_8",
         "build_script" : "kibana_v8.5.0_ubi_8.5.sh"
     }
