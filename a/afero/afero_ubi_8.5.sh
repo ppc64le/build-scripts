@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : afero
-# Version       : v1.2.2, v1.9.2
+# Version       : v1.2.2, v1.9.2, v1.6.0
 # Source repo   : https://github.com/spf13/afero.git
 # Tested on     : UBI-8.3, UBI-8.5
 # Language      : GO
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Raju.Sah@ibm.com, Vishaka Desai <Vishaka.Desai@ibm.com>
+# Maintainer    : Raju.Sah@ibm.com, Vishaka Desai <Vishaka.Desai@ibm.com>, Shalmon Titre <Shalmon.Titre@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
