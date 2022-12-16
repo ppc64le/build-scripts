@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: opentelemetry-proto-java
-# Version	: v0.18.0
+# Version	: v0.18.0,v0.19.0
 # Source repo	: https://github.com/open-telemetry/opentelemetry-proto-java
 # Tested on	: ubi 8.5
 # Language      : java
-# Travis-Check  : False
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>
+# Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>, Stuti Wali <Stuti.Wali@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME="opentelemetry-proto-java"
-PACKAGE_VERSION=${1:-"0.18.0"}
+PACKAGE_VERSION=${1:-"0.19.0"}
 PACKAGE_URL="https://github.com/open-telemetry/opentelemetry-proto-java"
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 HOME_DIR=$PWD
