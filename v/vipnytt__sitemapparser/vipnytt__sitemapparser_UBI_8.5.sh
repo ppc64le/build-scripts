@@ -16,6 +16,10 @@
 #                    contact "Maintainer" of this script.
 #   
 # ----------------------------------------------------------------------------
+CURRENT_DIR=`pwd`
+SCRIPT=$(readlink -f $0)
+SCRIPT_DIR=$(dirname $SCRIPT)
+
 PACKAGE_NAME=SitemapParser
 PACKAGE_VERSION=1.1.4
 PACKAGE_URL=https://github.com/VIPnytt/SitemapParser.git
@@ -38,8 +42,7 @@ fi
 
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-cp ../sitemap.patch /SitemapParser/sitemap.patch
-git apply sitemap.patch
+git apply $SCRIPT_DIR/sitemap.patch
 
 if ! composer install; then
      	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
