@@ -16,6 +16,9 @@
 #                    contact "Maintainer" of this script.
 #   
 # ----------------------------------------------------------------------------
+CURRENT_DIR=`pwd`
+SCRIPT=$(readlink -f $0)
+SCRIPT_DIR=$(dirname $SCRIPT)
 
 PACKAGE_NAME=config
 PACKAGE_URL=https://github.com/symfony/config
@@ -36,8 +39,7 @@ fi
 cd "$HOME_DIR"/$PACKAGE_NAME || exit
 git checkout "$PACKAGE_VERSION"
 
-mv symfony.patch .
-git apply symfony.patch
+git apply $SCRIPT_DIR/symfony.patch
 
 composer require symfony/phpunit-bridge
 composer require --dev phpunit/phpunit --with-all-dependencies ^9
