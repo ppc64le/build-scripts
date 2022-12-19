@@ -50,11 +50,9 @@ def get_files_list(dirname:str, recursive:bool=True):
         else:
             file_list.append(current_file)
     return file_list
-        
-
 
 path_separator = os.path.sep
-ROOT = path_separator.join(os.getcwd().split(path_separator)[:-1])
+ROOT = os.path.dirname(os.path.dirname(__file__))
 
 package_name = input("Enter Package name (Package name should match with the directory name): ")
 #package_name = 'elasticsearch'
@@ -74,7 +72,7 @@ github_url = ''
 file_list = get_files_list(dir_name)
 for file in file_list:
     if file.endswith(".sh") and "Dockerfiles" not in file:
-        with open(file, 'r') as f:
+        with open(file, 'r', encoding='utf-8') as f:
             contents = f.readlines()
             for line in contents:
                 if not github_url and line.startswith('# Source repo') :
@@ -115,20 +113,36 @@ for file in file_list:
 final_json = {
     "package_name" : package_name,
     "github_url": github_url,
-    "package_dir": dir_name.replace(ROOT, '').strip(path_separator)
+    "version": dockerfile_versions[-1]['version'].strip('"') if dockerfile_versions else build_scripts_versions[-1]['version'].strip('"'),
+    "package_dir": dir_name.replace(ROOT, '').strip(path_separator),
+    "docker_build": True if dockerfile_versions else False,
+    "validate_build_script": True if build_scripts_versions else False
 }
 
 for entry in dockerfile_versions:
-    final_json[entry['version']] = {
-        'dir': entry['dir']
+    version = entry['version'].strip('"')
+    final_json[version] = {
+        'dir': entry['dir'],
     }
+    if  entry['base_image']:
+        base_image = entry['base_image']
+        final_json[version]['base_docker_image'] = base_image
+        if 'ubi' in base_image.lower() or 'rhel' in base_image.lower():
+            final_json[version]['base_docker_variant'] = 'redhat'
+        elif 'ubuntu' in base_image.lower() or 'debian' in base_image.lower():
+            final_json[version]['base_docker_variant'] = 'ubuntu'
+        elif 'alpine' in base_image.lower():
+            final_json[version]['base_docker_variant'] = 'alpine'
+        else:
+            final_json[version]['base_docker_variant'] = 'Not defined'
+
     for build_script_entry in build_scripts_versions:
-        if build_script_entry['version'] in entry['version']:
-            final_json[entry['version']]['build_script'] = build_script_entry['file']
+        if build_script_entry['version'] in version:
+            final_json[version]['build_script'] = build_script_entry['file']
     
     for k in entry:
         if 'patch' in k.lower():
-            final_json[entry['version']][k] = entry[k]
+            final_json[version][k] = entry[k]
 
 log(log_type.HEADER, "Sample Json contents as below")
 log(log_type.HEADER, "-" * 25)
