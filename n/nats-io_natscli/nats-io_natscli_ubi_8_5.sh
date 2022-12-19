@@ -47,12 +47,18 @@ fi
 
 cd $PACKAGE_NAME
 
-go mod tidy
+if ! go mod tidy; then
+    echo "------------------$PACKAGE_NAME:dependency_fails-------------------------------------"
+    echo "$PACKAGE_VERSION $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Dependency_Fails"
+    exit 1
+fi
 
 if ! go build -v ./...; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_VERSION $PACKAGE_NAME"
     echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails"
+    exit 1
 else
     echo "------------------$PACKAGE_NAME:Build_success-------------------------"
     echo "$PACKAGE_VERSION $PACKAGE_NAME"
