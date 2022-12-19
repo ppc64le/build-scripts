@@ -36,6 +36,11 @@ fi
 cd "$HOME_DIR"/$PACKAGE_NAME || exit
 git checkout "$PACKAGE_VERSION"
 
+cd ..
+mv symfony.patch config/
+cd config
+git apply symfony.patch
+
 composer require symfony/phpunit-bridge
 composer require --dev phpunit/phpunit --with-all-dependencies ^9
 
@@ -45,24 +50,6 @@ if ! composer install; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-
-sed -i '22s/.*/\    protected function setUp(): void/' Tests/ConfigCacheTest.php 
-sed -i '27s/.*/\    protected function tearDown(): void/' Tests/ConfigCacheTest.php 
-
-sed -i '21s/.*/\    protected function setUp(): void/' Tests/Resource/DirectoryResourceTest.php 
-sed -i '30s/.*/\    protected function tearDown(): void/' Tests/Resource/DirectoryResourceTest.php
-sed -i '38s/.*/\    protected function removeDirectory(string $directory): void/' Tests/Resource/DirectoryResourceTest.php
-
-sed -i '23s/.*/\    protected function setUp(): void/' Tests/Resource/FileExistenceResourceTest.php 
-sed -i '30s/.*/\    protected function tearDown(): void/' Tests/Resource/FileExistenceResourceTest.php
-
-sed -i '23s/.*/\    protected function setUp(): void/' Tests/Resource/FileResourceTest.php 
-sed -i '31s/.*/\    protected function tearDown(): void/' Tests/Resource/FileResourceTest.php
-
-sed -i '19s/.*/\    protected function tearDown(): void/' Tests/Resource/GlobResourceTest.php
-
-sed -i '23s/.*/\    protected function setUp(): void/' Tests/ResourceCheckerConfigCacheTest.php 
-sed -i '28s/.*/\    protected function tearDown(): void/' Tests/ResourceCheckerConfigCacheTest.php
 
 cd "$HOME_DIR"/$PACKAGE_NAME || exit
 if ! ./vendor/bin/phpunit --dont-report-useless-tests; then
