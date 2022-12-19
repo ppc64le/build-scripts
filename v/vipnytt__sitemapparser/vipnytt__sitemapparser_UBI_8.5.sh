@@ -38,34 +38,8 @@ fi
 
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-
-sed -i '8 i \ \ \  <filter>' phpunit.xml
-sed -i '9 i \ \ \ \ \ \ \ \ \<whitelist>' phpunit.xml
-sed -i '10 i \ \ \ \ \ \ \ \ \ \ \ \ \<directory>src</directory>' phpunit.xml
-sed -i '11 i \ \ \ \ \ \ \ \ \</whitelist>' phpunit.xml
-sed -i '12 i \ \ \  </filter>' phpunit.xml
-
-sed -i '18s/.*/\        $this->assertTrue(is_array($parser->getSitemaps()));/' tests/DownloadTest.php
-sed -i '19s/.*/\        $this->assertTrue(is_array($parser->getURLs()));/' tests/DownloadTest.php
-sed -i '22s/.*/\        $this->assertTrue(is_string($url));/' tests/DownloadTest.php
-sed -i '23s/.*/\        $this->assertTrue(is_array($tags));/' tests/DownloadTest.php
-sed -i '28s/.*/\        $this->assertTrue(is_string($url));/' tests/DownloadTest.php
-sed -i '29s/.*/\        $this->assertTrue(is_array($tags));/' tests/DownloadTest.php
-
-sed -i '19s/.*/\        $this->assertTrue(is_array($parser->getSitemaps()));/' tests/RecursiveTest.php
-sed -i '20s/.*/\        $this->assertTrue(is_array($parser->getURLs()));/' tests/RecursiveTest.php
-sed -i '23s/.*/\        $this->assertTrue(is_string($url));/' tests/RecursiveTest.php
-sed -i '24s/.*/\        $this->assertTrue(is_array($tags));/' tests/RecursiveTest.php
-sed -i '29s/.*/\        $this->assertTrue(is_string($url));/' tests/RecursiveTest.php
-sed -i '30s/.*/\        $this->assertTrue(is_array($tags));/' tests/RecursiveTest.php
-
-sed -i '19s/.*/\        $this->assertTrue(is_array($parser->getSitemaps()));/' tests/StringTest.php
-sed -i '20s/.*/\        $this->assertTrue(is_array($parser->getURLs()));/' tests/StringTest.php
-sed -i '24s/.*/\        $this->assertTrue(is_string($url));/' tests/StringTest.php
-sed -i '25s/.*/\        $this->assertTrue(is_array($tags));/' tests/StringTest.php
-sed -i '30s/.*/\        $this->assertTrue(is_string($url));/' tests/StringTest.php
-sed -i '31s/.*/\        $this->assertTrue(is_array($tags));/' tests/StringTest.php
-
+cp ../sitemap.patch /SitemapParser/sitemap.patch
+git apply sitemap.patch
 
 if ! composer install; then
      	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
