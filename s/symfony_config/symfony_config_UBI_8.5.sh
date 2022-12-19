@@ -36,9 +36,7 @@ fi
 cd "$HOME_DIR"/$PACKAGE_NAME || exit
 git checkout "$PACKAGE_VERSION"
 
-cd ..
-mv symfony.patch config/
-cd config
+mv symfony.patch .
 git apply symfony.patch
 
 composer require symfony/phpunit-bridge
