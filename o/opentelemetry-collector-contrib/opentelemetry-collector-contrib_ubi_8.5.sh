@@ -1,8 +1,8 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: opentelemetry-collector-contrib
-# Version	: v0.67.0 
+# Package	    : opentelemetry-collector-contrib
+# Version	    : v0.67.0 
 # Source repo	: https://github.com/open-telemetry/opentelemetry-collector-contrib
 # Tested on  	: ubi 8.5
 # Language      : GO
@@ -10,11 +10,11 @@
 # Script License: Apache License 2.0
 # Maintainer	: Pratik Tonage <Pratik.Tonage@ibm.com>
 #
-# Disclaimer: This script has been tested in root mode on given
-# ==========  platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of the
-#             package and/or distribution. In such case, please
-#             contact "Maintainer" of this script.
+# Disclaimer    : This script has been tested in root mode on given
+# ==========      platform using the mentioned version of the package.
+#                 It may not work as expected with newer versions of the
+#                 package and/or distribution. In such case, please
+#                 contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
 
