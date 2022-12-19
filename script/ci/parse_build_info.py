@@ -16,7 +16,7 @@ DIR = 'dir'
 PATCHES = 'patches'
 ARGS = 'args'
 DOCKER_FILE = 'docker_file'
-BASE_CONTAINER = 'base_container'
+BASE_CONTAINER = 'base_docker_image'
 NON_ROOT_USER = 'use_non_root_user'
 BUILD_SCRIPT_RAW_URL = 'build_script_raw_url'
 
