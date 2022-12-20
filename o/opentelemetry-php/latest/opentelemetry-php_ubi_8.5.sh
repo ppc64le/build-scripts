@@ -1,12 +1,12 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	      : opentelemetry-php
-# Version	      : 0.0.17
+# Package	    : opentelemetry-php
+# Version	    : 0.0.17
 # Source repo 	: https://github.com/open-telemetry/opentelemetry-php
 # Tested on	    : ubi 8.5
 # Language      : php
-# Travis-Check  : True
+# Travis-Check : True
 # Script License: Apache License, Version 2 or later
 # Maintainer  	: Pratik Tonage <Pratik.Tonage@ibm.com>
 #
