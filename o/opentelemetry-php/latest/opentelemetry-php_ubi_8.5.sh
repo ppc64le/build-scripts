@@ -1,14 +1,14 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	    : opentelemetry-php
-# Version	    : 0.0.17
-# Source repo	: https://github.com/open-telemetry/opentelemetry-php
-# Tested on	    : ubi 8.5
+# Package	 : opentelemetry-php
+# Version	 : 0.0.17
+# Source repo 	: https://github.com/open-telemetry/opentelemetry-php
+# Tested on	  : ubi 8.5
 # Language      : php
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Pratik Tonage <Pratik.Tonage@ibm.com>
+# Maintainer  	: Pratik Tonage <Pratik.Tonage@ibm.com>
 #
 # Disclaimer    : This script has been tested in root mode on given
 # ==========      platform using the mentioned version of the package.
@@ -20,9 +20,9 @@
 
 PACKAGE_NAME="opentelemetry-php"
 PACKAGE_VERSION=${1:-"0.0.17"}
-PACKAGE_URL=https://github.com/open-telemetry/opentelemetry-php
+PACKAGE_URL="https://github.com/open-telemetry/opentelemetry-php"
 HOME_DIR="$PWD"
-export PHP_VERSION=${PHP_VERSION:-8.0.25}
+export PHP_VERSION=${PHP_VERSION:-"8.0.25"}
 dnf install -qy http://mirror.nodesdirect.com/centos/8-stream/BaseOS/ppc64le/os/Packages/centos-gpg-keys-8-6.el8.noarch.rpm
 dnf install -qy http://mirror.nodesdirect.com/centos/8-stream/BaseOS/ppc64le/os/Packages/centos-stream-repos-8-6.el8.noarch.rpm
 dnf config-manager --enable powertools
