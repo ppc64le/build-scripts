@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: opentelemetry-js-api
-# Version	: bafcf0d
+# Version	: v1.2.0
 # Source repo	: https://github.com/open-telemetry/opentelemetry-js-api
 # Tested on	: ubi 8.5
 # Language      : node
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>
+# Maintainer	: Pratik Tonage <Pratik.Tonage@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,13 +19,13 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME="opentelemetry-js-api"
-PACKAGE_VERSION=${1:-"bafcf0d"}
+PACKAGE_VERSION=${1:-"v1.2.0"}
 PACKAGE_URL="https://github.com/open-telemetry/opentelemetry-js-api"
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 HOME_DIR=$PWD
-export NODE_VERSION=${NODE_VERSION:-14.13}
+export NODE_VERSION=${NODE_VERSION:-16}
 
-echo "insstalling dependencies from system repo..."
+echo "installing dependencies from system repo..."
 dnf install -qy git make gcc-c++ python39-devel
 update-alternatives --set python /usr/bin/python3.9
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
@@ -42,6 +42,7 @@ if ! git clone -q $PACKAGE_URL $PACKAGE_NAME; then
 fi
 
 cd $PACKAGE_NAME
+git checkout "$PACKAGE_VERSION"
 
 npm install
 
