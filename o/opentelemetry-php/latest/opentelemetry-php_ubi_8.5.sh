@@ -1,14 +1,14 @@
 #!/bin/bash -ex
 # -----------------------------------------------------------------------------
 #
-# Package	    : opentelemetry-php
-# Version	    : 0.0.17
-# Source repo	: https://github.com/open-telemetry/opentelemetry-php
+# Package	      : opentelemetry-php
+# Version	      : 0.0.17
+# Source repo 	: https://github.com/open-telemetry/opentelemetry-php
 # Tested on	    : ubi 8.5
 # Language      : php
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Pratik Tonage <Pratik.Tonage@ibm.com>
+# Maintainer  	: Pratik Tonage <Pratik.Tonage@ibm.com>
 #
 # Disclaimer    : This script has been tested in root mode on given
 # ==========      platform using the mentioned version of the package.
