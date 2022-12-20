@@ -123,7 +123,11 @@ if config_json:
     
     version_config = config_json[version_key]
 
-    build_details[DOCKER_DIR] = version_config[DIR]
+    if build_details[DOCKER_BUILD] and DIR not in version_config:
+        print("Not docker directory provided, hence exiting.")
+        exit(2)
+
+    build_details[DOCKER_DIR] = version_config[DIR] if DIR in version_config else ''
 
     build_args = ''
     if PATCHES in version_config:
@@ -138,7 +142,7 @@ if config_json:
     
     
     build_scipt = version_config[BUILD_SCRIPT].strip() if BUILD_SCRIPT in version_config else build_scipt
-    if not build_scipt:
+    if not build_scipt and build_details[VALIDATE_BUILD_SCRIPT]:
         print("Build-script is not mentioned...")
         exit(1)
 
@@ -146,7 +150,7 @@ if config_json:
     # Generating docker build command with
     #    --build-args with ARG values
     #    --build-args with PATCH values
-    build_details[DOCKER_COMMAND] = f"sudo docker build -t {image_name}" + (build_args if build_args else '') + (f"-f {version_config[DOCKER_FILE]}" if DOCKER_FILE in version_config else '') + f" {build_details[DOCKER_DIR]}"
+    build_details[DOCKER_COMMAND] = f"sudo docker build -t {image_name}" + (build_args if build_args else '') + (f"-f {version_config[DOCKER_FILE]}" if DOCKER_FILE in version_config else '') + f" {build_details[DOCKER_DIR]}" if build_details[DOCKER_DIR] else ''
     # Geneating build & validation command with
     #    Setting variable mentioned in ARG key value pairs.
     #    Running it as sudo if root user otherwise running it as non-root depending on `use_non_root_user` key in info file.
