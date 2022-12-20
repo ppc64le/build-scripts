@@ -7,7 +7,7 @@
     "build_script" : "opentelemetry-collector-contrib_ubi_8.5.sh",
     
     "v0.*.*" : {
-        "build_script" : "opentelemetry-collector-contrib_ubi_8.5.sh"
+        "build_script" : "opentelemetry-collector-contrib_ubi_8.5.sh",
 	"args": {
 	     "GO_VERSION":"1.19.3"
         }
