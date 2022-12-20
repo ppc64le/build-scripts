@@ -1,7 +1,7 @@
 {
     "package_name" : "opentelemetry-php",
-	"github_url":"https://github.com/open-telemetry/opentelemetry-php",
-	"version": "0.0.17",
+    "github_url":"https://github.com/open-telemetry/opentelemetry-php",
+    "version": "0.0.17",
     "package_dir": "o/opentelemetry-php/latest",
     "docker_build": false,
     "build_script" : "opentelemetry-php_ubi_8.5.sh",
