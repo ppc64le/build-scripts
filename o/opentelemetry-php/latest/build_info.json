@@ -6,7 +6,7 @@
     "docker_build": false,
     "build_script" : "opentelemetry-php_ubi_8.5.sh",
     
-    "0.*.*" : {
+    "0.0.*" : {
         "build_script" : "opentelemetry-php_ubi_8.5.sh",
 	"args": {
 	      "PHP_VERSION":"8.0.25"
