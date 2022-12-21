@@ -1,5 +1,18 @@
 #!/usr/bin/env python3
 
+'''
+This script is to generate the sample build_info.json file for any package.
+
+Once done with generating build-scripts and Dockerfiles, we can run this script
+to generate the sample build_info.json file.
+
+This script parse the package build-scripts and Dockerfiles available in local filesystem,
+read the data and generates the build_info contents.
+
+Note : Content generated from this scipt are not final.
+       Please review the generated build info data before committing.
+'''
+
 from distutils.log import ERROR, INFO, WARN
 from logging import WARNING
 
@@ -24,7 +37,7 @@ class log_type:
     HEADER = 3,
     CONTENT = 4
 
-def log(type:log_type, text:str):
+def log(type:log_type, *phrases):
     color = ''
     if type == log_type.INFO:
         color = bcolors.OKGREEN
@@ -36,6 +49,8 @@ def log(type:log_type, text:str):
         color = bcolors.HEADER
     elif type == log_type.CONTENT:
         color = bcolors.OKCYAN
+    
+    text = " ".join(phrases)
     
     print(color + text + bcolors.ENDC)
     
@@ -72,6 +87,7 @@ github_url = ''
 file_list = get_files_list(dir_name)
 for file in file_list:
     if file.endswith(".sh") and "Dockerfiles" not in file:
+        # Read the available build-scripts and load the data.
         with open(file, 'r', encoding='utf-8') as f:
             contents = f.readlines()
             for line in contents:
@@ -85,18 +101,18 @@ for file in file_list:
                     build_scripts_versions.append( {'version': line.split(':')[1].strip(),
                                                     'file': file.replace(dir_name, '').strip(path_separator)})
     elif 'Dockerfile' in file.split(path_separator)[-1]:
+        # Read Dockerfiles and store details
         docker_details = {}
         with open(file, 'r') as f:
             contents = f.readlines()
-            docker_details['dir'] = file.replace(dir_name, '').strip(path_separator).replace('Dockerfiles','').strip(path_separator).split(path_separator, 2)[0]
-            file.split(path_separator)
+            docker_details['dir'] = os.path.basename(os.path.dirname(file))
+            
             for line in contents:
                 if line.lower().startswith('from '):
                     docker_details ['base_image'] = line.split(' ')[1].strip()
                 if line.lower().startswith('arg ') and 'version' in line.lower():
-                    line = line.replace('=', ' ', 1)
-                    if len(line.split(' ')) > 2:
-                        docker_details ['version'] = line.split(' ')[2].strip()
+                    if len(line.split('=')) > 1:
+                        docker_details ['version'] = line.split('=')[1].strip()
                 if line.lower().startswith('arg ') and 'patch' in line.lower():
                     line = line.split(' ')[1]
                     patch_details = line.split('=', 1)
@@ -105,26 +121,24 @@ for file in file_list:
             docker_details ['version'] = '*'
         dockerfile_versions.append(docker_details)
 
-# print(github_url)
-# print(build_scripts_versions)
-# print(dockerfile_versions)
-
 
 final_json = {
     "package_name" : package_name,
     "github_url": github_url,
-    "version": dockerfile_versions[-1]['version'].strip('"') if dockerfile_versions else build_scripts_versions[-1]['version'].strip('"'),
+    "version": dockerfile_versions[-1]['version'] if dockerfile_versions else build_scripts_versions[-1]['version'],
     "package_dir": dir_name.replace(ROOT, '').strip(path_separator),
     "docker_build": True if dockerfile_versions else False,
     "validate_build_script": True if build_scripts_versions else False
 }
 
 for entry in dockerfile_versions:
-    version = entry['version'].strip('"')
+    version = entry['version']
     final_json[version] = {
         'dir': entry['dir'],
     }
     if  entry['base_image']:
+        # Store base image and variant depending on base image.
+        # These 2 are useful while running LICENSE AUTOMATION tool.        
         base_image = entry['base_image']
         final_json[version]['base_docker_image'] = base_image
         if 'ubi' in base_image.lower() or 'rhel' in base_image.lower():
