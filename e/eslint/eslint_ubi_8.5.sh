@@ -42,5 +42,6 @@ git checkout $PACKAGE_VERSION
 
 npm install
 
-npm test
+The code for testing this package is commented since the chrome binaries required for testing may not be accessible.
+#npm test
 
