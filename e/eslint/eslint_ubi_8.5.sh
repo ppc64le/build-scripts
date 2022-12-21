@@ -22,6 +22,7 @@ PACKAGE_VERSION=v8.30.0
 PACKAGE_NAME=eslint
 PACKAGE_URL=https://github.com/eslint/eslint.git
 
+WORKDIR=`pwd`
 yum update -y
 yum install git wget bzip2 gcc-c++ make python36 -y
 
@@ -35,6 +36,7 @@ tar -xvf phantomjs-2.1.1-linux-ppc64.tar.bz2
 mv phantomjs-2.1.1-linux-ppc64/bin/phantomjs /usr/bin
 rm -rf phantomjs-2.1.1-linux-ppc64.tar.bz2
 
+cd $WORKDIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
