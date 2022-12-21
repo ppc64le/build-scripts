@@ -28,7 +28,7 @@ yum install -y git wget
 # setup java environment
 yum install -y java java-devel
 
-export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.352.b08-2.el8_7.ppc64le
+export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-)(?=.*ppc64le)') 
 # update the path env. variable
 export PATH=$PATH:$JAVA_HOME/bin
 

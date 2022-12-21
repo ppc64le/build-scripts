@@ -7,7 +7,7 @@
     "use_non_root_user": "false",
     "docker_build":false,
 
-    "v1.*.*": {
+    "v2.*.*": {
         "build_script": "jackson-annotations_ubi8.5.sh"
     }
 }
