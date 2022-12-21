@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : gotest.tools
-# Version       : v3.4.0
+# Version       : v3.0.2, v3.0.3, v3.4.0
 # Source repo   : https://github.com/gotestyourself/gotest.tools
 # Tested on     : UBI 8.5
 # Language      : GO
