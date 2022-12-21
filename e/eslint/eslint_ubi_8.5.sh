@@ -35,7 +35,6 @@ tar -xvf phantomjs-2.1.1-linux-ppc64.tar.bz2
 mv phantomjs-2.1.1-linux-ppc64/bin/phantomjs /usr/bin
 rm -rf phantomjs-2.1.1-linux-ppc64.tar.bz2
 
-cd $HOME
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
