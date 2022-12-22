@@ -46,17 +46,27 @@ export M2_HOME=/usr/local/maven
 # update the path env. variable
 export PATH=$PATH:$M2_HOME/bin
 
-# create folder for saving logs
-mkdir -p /logs
-
 # variables
-LOGS_DIRECTORY=/logs
-LOCAL_DIRECTORY=/root
 REPOSITORY="https://github.com/FasterXML/jackson-annotations.git"
 
 # clone, build and test specified version
-cd $LOCAL_DIRECTORY
+cd
 git clone $REPOSITORY $PACKAGE_NAME-$PACKAGE_VERSION
 cd $PACKAGE_NAME-$PACKAGE_VERSION/
 git checkout -b $PACKAGE_VERSION tags/$PACKAGE_NAME-$PACKAGE_VERSION
-mvn clean install | tee $LOGS_DIRECTORY/$PACKAGE_NAME-$PACKAGE_VERSION.txt
+
+#Build
+mvn clean install -DskipTests=true
+if [ $? != 0 ]
+then
+  echo "Build failed for $PACKAGE_NAME-$PACKAGE_VERSION"
+  exit 1
+fi
+#Test
+mvn clean install
+if [ $? != 0 ]
+then
+  echo "Test execution failed for $PACKAGE_NAME-$PACKAGE_VERSION"
+  exit 2
+fi
+exit 0
