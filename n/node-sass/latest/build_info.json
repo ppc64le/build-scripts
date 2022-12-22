@@ -4,7 +4,6 @@
     "package_dir": "n/node-sass/latest",
     "version":"v8.0.0",
     "docker_build":false,
-
      "v8.0.0":{
 	"build_script":"node-sass_v8.0.0_ubi_8.7.sh"
 	}
