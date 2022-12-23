@@ -1,3 +1,4 @@
+#!/bin/bash
 # ----------------------------------------------------------------------------
 #
 # Package        : jaeger-operator
@@ -12,10 +13,7 @@
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
-#
 # ----------------------------------------------------------------------------
-
-#!/bin/bash
 
 WORKDIR=`pwd`
 BUILD_VERSION=v1.39.0
