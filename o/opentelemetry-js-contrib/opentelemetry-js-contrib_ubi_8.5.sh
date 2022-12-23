@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: opentelemetry-js-contrib
-# Version	: auto-instrumentations-node-v0.31.0
+# Version	: auto-instrumentations-node-v0.31.0,instrumentation-user-interaction-v0.32.0
 # Source repo	: https://github.com/open-telemetry/opentelemetry-js-contrib
 # Tested on	: ubi 8.5
 # Language      : node
-# Travis-Check  : True
+# Travis-Check  : false
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>
+# Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>,Pratik Tonage <Pratik.Tonage@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME="opentelemetry-js-contrib"
-PACKAGE_VERSION=${1:-"auto-instrumentations-node-v0.31.0"}
+PACKAGE_VERSION=${1:-"instrumentation-user-interaction-v0.32.0"}
 PACKAGE_URL="https://github.com/open-telemetry/opentelemetry-js-contrib"
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 HOME_DIR=$PWD
@@ -64,3 +64,9 @@ else
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
 	exit 0
 fi
+
+#To run test cases in mongoose instrumentation module, it requires first to run mongodb in the background.
+#Mentioned the steps in README.md to run mongodb in the backround.
+#That's why we keep the travis check as false.
+#Also need to export variable as below:
+#export MONGODB_HOST=<container_ip/container_name>
