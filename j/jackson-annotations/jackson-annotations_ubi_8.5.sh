@@ -17,7 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
 PACKAGE_NAME="jackson-annotations"
 PACKAGE_VERSION="jackson-annotations-2.14.1"
 PACKAGE_URL="https://github.com/FasterXML/jackson-annotations"
