@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: jackson-annotations
-# Version	: 2.14.1
+# Version	: jackson-annotations-2.14.1
 # Source repo	: https://github.com/FasterXML/jackson-annotations.git
 # Tested on	: UBI 8.5
 # Language      : Go
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME="jackson-annotations"
-PACKAGE_VERSION=2.14.1
+PACKAGE_VERSION="jackson-annotations-2.14.1"
 PACKAGE_URL="https://github.com/FasterXML/jackson-annotations"
 
 # install tools and dependent packages
@@ -51,9 +51,9 @@ REPOSITORY="https://github.com/FasterXML/jackson-annotations.git"
 
 # clone, build and test specified version
 cd
-git clone $REPOSITORY $PACKAGE_NAME-$PACKAGE_VERSION
-cd $PACKAGE_NAME-$PACKAGE_VERSION/
-git checkout -b $PACKAGE_VERSION tags/$PACKAGE_NAME-$PACKAGE_VERSION
+git clone $REPOSITORY
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 
 #Build
 mvn clean install -DskipTests=true
