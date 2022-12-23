@@ -8,6 +8,6 @@
     "docker_build":false,
 
     "v2.*.*": {
-        "build_script": "jackson-annotations_ubi8.5.sh"
+        "build_script": "jackson-annotations_ubi_8.5.sh"
     }
 }
