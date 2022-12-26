@@ -8,7 +8,6 @@
     "use_non_root_user": "true",
 
     "v1.21.0": {
-
         "build_script": "opentelemetry-java_ubi_8.5.sh"        
     }
 }
