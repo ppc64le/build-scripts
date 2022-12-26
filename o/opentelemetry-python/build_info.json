@@ -1,6 +1,6 @@
 {
     "package_name" : "opentelemetry-python",
-    "github_url":" https://github.com/open-telemetry/opentelemetry-python",
+    "github_url":"https://github.com/open-telemetry/opentelemetry-python",
     "version": "v1.15.0",
     "package_dir": "o/opentelemetry-python",
     "docker_build": false,
