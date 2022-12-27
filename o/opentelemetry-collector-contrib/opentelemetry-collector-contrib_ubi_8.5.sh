@@ -1,8 +1,8 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	    : opentelemetry-collector-contrib
-# Version	    : v0.67.0 
+# Package	  : opentelemetry-collector-contrib
+# Version	  : v0.67.0 
 # Source repo	: https://github.com/open-telemetry/opentelemetry-collector-contrib
 # Tested on  	: ubi 8.5
 # Language      : GO
@@ -63,7 +63,7 @@ if ! go test -v ./...; then
     echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_success_but_test_Fails"
-    exit 2
+    exit 1
 else
     echo "------------------$PACKAGE_NAME:build_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
