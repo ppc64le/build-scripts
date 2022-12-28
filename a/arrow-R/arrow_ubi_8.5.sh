@@ -25,8 +25,8 @@ OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 #Dependencies
 dnf install -y git wget make gcc gcc-c++
-wget https://go.dev/dl/go1.17.linux-ppc64le.tar.gz
-tar -C  /usr/local -xf go1.17.linux-ppc64le.tar.gz
+wget https://go.dev/dl/go1.19.linux-ppc64le.tar.gz
+tar -C  /usr/local -xf go1.19.linux-ppc64le.tar.gz
 export GOROOT=/usr/local/go
 export GOPATH=$HOME
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
