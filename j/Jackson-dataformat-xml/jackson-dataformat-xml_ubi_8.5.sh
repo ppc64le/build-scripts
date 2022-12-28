@@ -5,6 +5,7 @@
 # Version       : jackson-dataformat-xml-2.14.1
 # Source repo   : https://github.com/FasterXML/jackson-dataformat-xml
 # Tested on     : ubi 8.5
+# Language      : java
 # Travis-Check  : True
 # Script License: Apache License 2.0
 # Maintainer    : Pratik Tonage <Pratik.Tonage@ibm.com>
