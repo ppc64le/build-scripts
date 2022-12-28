@@ -54,7 +54,7 @@ cd go
 
 go mod tidy
 
-if ! go test -v ./... ; then
+if ! go test ./... ; then
         echo "------------------$PACKAGE_NAME:test_fails---------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails"
