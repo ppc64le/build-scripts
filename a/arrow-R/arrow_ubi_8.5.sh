@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/apache/arrow
 # Tested on        : UBI 8.5
 # Language         : Go
-# Travis-Check     : True
+# Travis-Check     : True 
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Vinod.K <Vinod.K1@ibm.com>
 #
@@ -20,7 +20,6 @@
 
 PACKAGE_NAME=arrow
 PACKAGE_URL=https://github.com/apache/arrow.git
-#PACKAGE_VERSION is configurable can be passed as an argument.
 PACKAGE_VERSION=go/v10.0.1
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
