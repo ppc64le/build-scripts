@@ -65,6 +65,7 @@ else
   echo  "Failed build ......"
 fi
 
+
 mvn test
 ret=$?
 if [ $ret -eq 0 ] ; then
