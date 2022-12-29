@@ -6,8 +6,9 @@
 # Source repo   : https://github.com/FasterXML/jackson-modules-java8
 # Tested on     : ubi: 8.5
 # Script License: Apache License 2.0
-# Maintainer's  : Stuti Wali <Stuti.Wali@ibm.com>
-#
+# Maintainer    : Stuti Wali <Stuti.Wali@ibm.com>
+# Language      : Java
+# Travis-Check  : True
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
