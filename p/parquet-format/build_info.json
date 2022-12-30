@@ -1,0 +1,11 @@
+{
+    "package_name" : "parquet-format",
+    "github_url":"https://github.com/apache/parquet-format.git",
+    "version": "apache-parquet-format-2.9.0",
+    "package_dir": "p/parquet-format",
+    "docker_build": false,
+
+    "apache-parquet-format-2.9.0" : {
+        "build_script" : "parquet_format_ubi_8.5.sh"
+        }
+}
