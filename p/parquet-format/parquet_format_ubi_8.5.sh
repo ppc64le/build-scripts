@@ -30,7 +30,7 @@ make install
 cd $WORKDIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
-git checkout $PACKAGE_VERSION
+git checkout $PACKAGE_VERSION 
 
 #Install build tools
 
