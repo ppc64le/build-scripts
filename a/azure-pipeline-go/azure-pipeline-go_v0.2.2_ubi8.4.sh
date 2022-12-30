@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package       : azure-pipeline-go
@@ -5,9 +6,10 @@
 # Source repo   : https://github.com/Azure/azure-pipeline-go
 # Tested on     : UBI 8.4
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Vikas Gupta <vikas.gupta8@ibm.com>
+# Maintainer    : Vikas Gupta <vikas.gupta8@ibm.com>/ Balavva Mirji <Balavva.Mirji@ibm.com>
 # Language 	: GO
 # Travis-Check  : True
+#
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
@@ -15,8 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#
-set -e
 
 PACKAGE_NAME=azure-pipeline-go
 PACKAGE_VERSION=${1:-v0.2.2}
@@ -47,6 +47,7 @@ if ! git clone $PACKAGE_URL; then
 fi
 
 cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 
 echo `pwd`
 
