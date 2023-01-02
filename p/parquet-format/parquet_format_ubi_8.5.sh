@@ -36,7 +36,7 @@ cd protobuf-2.6.1/
 ./configure
 make
 make install
-ldconfig
+
 
 #install thrift
 wget -nv http://archive.apache.org/dist/thrift/0.13.0/thrift-0.13.0.tar.gz
