@@ -29,7 +29,8 @@ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
 
 #install protobuf compiler
-wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz && tar xvzf protobuf-2.6.1.tar.gz
+wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz 
+tar -xzvf protobuf-2.6.1.tar.gz
 rm -f protobuf-2.6.1.tar.gz
 cd protobuf-2.6.1/
 ./configure
@@ -39,7 +40,7 @@ ldconfig
 
 #install thrift
 wget -nv http://archive.apache.org/dist/thrift/0.13.0/thrift-0.13.0.tar.gz
-tar xzf thrift-0.13.0.tar.gz
+tar -xzvf thrift-0.13.0.tar.gz
 cd thrift-0.13.0
 chmod +x ./configure
 ./configure --disable-libs
