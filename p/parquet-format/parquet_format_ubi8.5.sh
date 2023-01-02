@@ -5,7 +5,7 @@
 # Version	: apache-parquet-format-2.9.0
 # Source repo	: https://github.com/apache/parquet-format
 # Tested on	: UBI 8.5
-# Language      : Java,Thrift
+# Language      : Java
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Vinod K <Vinod.K1@ibm.com>
@@ -30,7 +30,7 @@ export PATH=$PATH:$JAVA_HOME/bin
 
 #install protobuf compiler
 wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz 
-tar -xzvf protobuf-2.6.1.tar.gz
+tar -xzvf protobuf-2.6.1.tar.gz --no-same-owner
 rm -f protobuf-2.6.1.tar.gz
 cd protobuf-2.6.1/
 ./configure
@@ -40,7 +40,7 @@ make install
 
 #install thrift
 wget -nv http://archive.apache.org/dist/thrift/0.13.0/thrift-0.13.0.tar.gz
-tar -xzvf thrift-0.13.0.tar.gz
+tar -xzvf thrift-0.13.0.tar.gz --no-same-owner
 cd thrift-0.13.0
 chmod +x ./configure
 ./configure --disable-libs
