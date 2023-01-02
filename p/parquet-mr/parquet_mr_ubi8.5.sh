@@ -31,7 +31,7 @@ export PATH=$PATH:$JAVA_HOME/bin
 
 #install protobuf compiler
 wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz 
-tar -xvzf protobuf-2.6.1.tar.gz
+tar -xvzf protobuf-2.6.1.tar.gz --no-same-owner
 rm -f protobuf-2.6.1.tar.gz
 cd protobuf-2.6.1/
 ./configure
