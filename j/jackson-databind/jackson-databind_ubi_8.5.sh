@@ -46,11 +46,11 @@ git checkout $PACKAGE_VERSION
 if !$(mvn clean install -DskipTests) 
 then
   echo "Failed to build the package"
-  exit (1)
+  exit 1
 fi
 
 if !$(mvn install) 
 then
   echo "Failed to validate the package"
-  exit (2)
+  exit 2
 fi
