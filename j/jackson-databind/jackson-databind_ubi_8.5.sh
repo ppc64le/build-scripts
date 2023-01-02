@@ -43,11 +43,14 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Build and test
-./mvnw clean install 
-ret=$?
-if [ $ret -eq 0 ] ; then
-  echo  "Done build and test for $PACKAGE_NAME-$PACKAGE_VERSION ..."
-else
-  echo  "Failed build and test for $PACKAGE_NAME-$PACKAGE_VERSION ..."
-  exit 1
+if !$(mvn clean install -DskipTests) 
+then
+  echo "Failed to build the package"
+  exit (1)
+fi
+
+if !$(mvn install) 
+then
+  echo "Failed to validate the package"
+  exit (2)
 fi
