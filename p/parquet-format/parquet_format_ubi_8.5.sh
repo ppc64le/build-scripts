@@ -1,3 +1,22 @@
+#!/bin/bash -e
+# -----------------------------------------------------------------------------
+#
+# Package	: parquet-format
+# Version	: apache-parquet-format-2.9.0
+# Source repo	: https://github.com/apache/parquet-format
+# Tested on	: UBI 8.5
+# Language      : Java,Thrift
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
+# Maintainer	: Vinod K <Vinod.K1@ibm.com>
+#
+# Disclaimer: This script has been tested in root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
 PACKAGE_NAME=parquet-format
 PACKAGE_VERSION=apache-parquet-format-2.9.0
 PACKAGE_URL=https://github.com/apache/parquet-format.git
