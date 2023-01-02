@@ -1,0 +1,12 @@
+{
+    "package_name" : "opentelemetry-cpp",
+    "github_url":"https://github.com/open-telemetry/opentelemetry-cpp",
+    "version": "v1.8.0",
+    "package_dir": "o/opentelemetry-cpp",
+    "docker_build": false,
+    "build_script" : "opentelemetry-cpp_ubi_8.5.sh",
+    
+    "v1.*.*" : {
+        "build_script" : "opentelemetry-cpp_ubi_8.5.sh"
+    }
+}

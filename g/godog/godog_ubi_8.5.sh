@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: godog
@@ -8,7 +8,7 @@
 # Language      : GO
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>
+# Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>/ Balavva Mirji <Balavva.Mirji@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -16,7 +16,6 @@
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
 #
-#note: version: 07.4 has a test case failure which is in pairity with intel x86.
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME="godog"
@@ -63,12 +62,19 @@ go get github.com/DATA-DOG/go-txdb
 go get "golang.org/x/lint"
 find "$GOPATH" -name ".git" -exec sh -c -x 'cd $(dirname $1) && git log -1 --before="$COMMIT_DATE" --pretty="%h" | xargs git checkout ' _ {} \; || true
 git checkout "$PACKAGE_VERSION"
+
 if ! go install; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
     exit 1
 fi
+
+# Note: version: 0.7.4 has a test case failure which is in pairity with intel x86.
+# Test case execution fails with below failure
+# === RUN   TestBuildTestRunner
+#     builder_test.go:43: failed to build godog test binary: open /tmp/go-build555006506/github.com/DATA-DOG/godog/_test/_testmain.go: no such file or directory
+# --- FAIL: TestBuildTestRunner (0.49s)
 
 if ! go test -v; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
