@@ -18,6 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
+
 echo "Usage: $0 [<PACKAGE_VERSION>]"
 echo "PACKAGE_VERSION is an optional paramater whose default value is jackson-modules-java8-2.14.1"
 
