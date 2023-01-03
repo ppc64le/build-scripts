@@ -3,7 +3,7 @@
 #
 # Package       : jackson-core
 # Version       : jackson-core-2.14.1
-# Source repo   : https://github.com/FasterXML/jackson-core.git
+# Source repo   : https://github.com/FasterXML/jackson-core
 # Tested on     : ubi: 8.5
 # Travis-Check  : True
 # Language      : java
@@ -23,7 +23,7 @@
 PACKAGE_NAME=jackson-core
 PACKAGE_VERSION=jackson-core-2.14.1
 PACKAGE_VERSION=${1:-$PACKAGE_VERSION}
-PACKAGE_URL=https://github.com/FasterXML/jackson-core.git
+PACKAGE_URL=https://github.com/FasterXML/jackson-core
 
 # For rerunning build
 if [ -d "$PACKAGE_NAME" ] ; then
