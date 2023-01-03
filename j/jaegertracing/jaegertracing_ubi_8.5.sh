@@ -20,7 +20,7 @@
 set -e
 
 PACKAGE_NAME=jaeger
-#PACKAGE_VERSION=${1:-v1.40.0}
+PACKAGE_VERSION=${1:-v1.40.0}
 PACKAGE_URL=https://github.com/jaegertracing/jaeger.git
 
 dnf install -y jq git wget gcc-c++ gcc
@@ -40,7 +40,7 @@ mkdir -p $GOPATH/src/github.com/jaegertracing
 cd $GOPATH/src/github.com/jaegertracing
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
-#git checkout $PACKAGE_VERSION
+git checkout $PACKAGE_VERSION
 
 git submodule update --init --recursive
 yarn install
