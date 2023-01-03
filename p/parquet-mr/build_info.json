@@ -1,5 +1,5 @@
 {
-    "package_name" : "",
+    "package_name" : "parquet-format",
     "github_url":"https://github.com/apache/parquet-format.git",
     "version": "apache-parquet-1.12.3",
     "package_dir": "p/parquet-mr",
