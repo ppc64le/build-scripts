@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : eslint
+# Package          : arrow-Go
 # Version          : go/v10.0.1
 # Source repo      : https://github.com/apache/arrow
 # Tested on        : UBI 8.5
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=arrow
+PACKAGE_NAME=arrow-Go
 PACKAGE_URL=https://github.com/apache/arrow.git
 PACKAGE_VERSION=go/v10.0.1
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)

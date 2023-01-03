@@ -1,8 +1,8 @@
 {
-    "package_name" : "arrow",
+    "package_name" : "arrow-Go",
     "github_url":"https://github.com/apache/arrow.git",
     "version":"go/v10.0.1",
-    "package_dir":"a/arrow-R",
+    "package_dir":"a/arrow-Go",
     "docker_build":false,
 
     "go/v10.0.*" : {
