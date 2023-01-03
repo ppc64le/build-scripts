@@ -2,7 +2,7 @@ FROM ppc64le/alpine:3.6
 MAINTAINER Vaibhav Sood <vaibhavs@us.ibm.com>
 
 # This is the release of Vault to pull in.
-ENV VAULT_VERSION=v0.7.3
+ARG VAULT_VERSION=v0.7.3
 
 # Create a vault user and group first so the IDs get set the same way,
 # even as the rest of this may change over time.

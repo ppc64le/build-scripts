@@ -1,0 +1,27 @@
+{
+    "package_name" : "jetty",
+    "github_url":"https://github.com/eclipse/jetty.project.git",
+    "version": "jetty-11.0.12",
+    "package_dir": "j/jetty/",
+    "docker_build": false,
+
+    "jetty-9.4.48.v20220622": {
+        "build_script" : "jetty_9.4.48_ubi_8.5.sh"
+    },
+
+    "jetty-10.0.12": {
+        "build_script" : "jetty_11.0.12_ubi_8.5.sh"
+    },
+
+    "jetty-11.0.12": {
+        "build_script" : "jetty_11.0.12_ubi_8.5.sh"
+    },
+    
+    "jetty-*.*.*.v*": {
+        "build_script" : "jetty_9.4.48_ubi_8.5.sh"
+    },
+    
+    "jetty-*.*.*": {
+        "build_script" : "jetty_11.0.12_ubi_8.5.sh"
+    }
+}
