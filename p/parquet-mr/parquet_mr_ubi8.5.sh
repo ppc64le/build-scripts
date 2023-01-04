@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=parquet-mr
-PACKAGE_VERSION=apache-parquet-1.12.3
+PACKAGE_VERSION=${1:apache-parquet-1.12.3}
 PACKAGE_URL=https://github.com/apache/parquet-mr.git
 WORKDIR=`pwd`
 
