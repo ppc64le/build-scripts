@@ -101,9 +101,18 @@ def trigger_script_validation_checks(file_name, image_name = "registry.access.re
 def validate_build_info_file(file_name):
     try:
         script_path = os.path.join(HOME, file_name)
-        json.load(open(script_path, 'r'))
+        data = json.load(open(script_path, 'r'))
+        # Check for mandatory fields.
+        if 'package_name' not in data :
+            raise ValueError(f'No `package_name` field available in the {file_name}.')
+        if 'github_url' not in data:
+            raise ValueError(f'No `github_url` field available in the {file_name}.')
+        if 'version' not in data:
+            raise ValueError(f'No `version` field available in the {file_name}.')            
+        print("Valid file")
         return True
     except Exception as e:
+        print(str(e))
         print(f"Failed to load build_info file at {file_name} !")
         raise e
 
@@ -133,10 +142,13 @@ def trigger_build_validation_travis(pr_number):
             else:
                 print("Skipping Build script validation for {} as Travis-Check flag is set to False".format(file_name))
             # Keep track of validated files.
+            validated_file_list.append(file_name)
         elif file_name.lower().endswith('build_info.json') and status != "removed":
             validate_build_info_file(file_name)
+            # Keep track of validated files.
+            validated_file_list.append(file_name)
         
-        validated_file_list.append(file_name)
+        
 
     
     if len(validated_file_list) == 0 :
