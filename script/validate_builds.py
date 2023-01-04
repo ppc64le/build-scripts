@@ -101,14 +101,14 @@ def trigger_script_validation_checks(file_name, image_name = "registry.access.re
 def validate_build_info_file(file_name):
     try:
         script_path = os.path.join(HOME, file_name)
+        mandatory_fields = ['package_name', 'github_url', 'version']
+        error_message = f"No `{{}}` field available in {file_name}."
+
         data = json.load(open(script_path, 'r'))
         # Check for mandatory fields.
-        if 'package_name' not in data :
-            raise ValueError(f'No `package_name` field available in the {file_name}.')
-        if 'github_url' not in data:
-            raise ValueError(f'No `github_url` field available in the {file_name}.')
-        if 'version' not in data:
-            raise ValueError(f'No `version` field available in the {file_name}.')            
+        for field in mandatory_fields:
+            if field not in data:
+                raise ValueError(error_message.format(field))
         print("Valid file")
         return True
     except Exception as e:
