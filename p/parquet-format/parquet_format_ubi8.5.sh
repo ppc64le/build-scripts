@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=parquet-format
-PACKAGE_VERSION=apache-parquet-format-2.9.0
+PACKAGE_VERSION=${1:apache-parquet-format-2.9.0}
 PACKAGE_URL=https://github.com/apache/parquet-format.git
 WORKDIR=`pwd`
 
