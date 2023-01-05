@@ -1,0 +1,15 @@
+{
+    "package_name" : "opentelemetry-collector-contrib",
+    "github_url":"https://github.com/open-telemetry/opentelemetry-collector-contrib",
+    "version": "v0.67.0",
+    "package_dir": "o/opentelemetry-collector-contrib",
+    "docker_build": false,
+    "build_script" : "opentelemetry-collector-contrib_ubi_8.5.sh",
+    
+    "v0.*.*" : {
+        "build_script" : "opentelemetry-collector-contrib_ubi_8.5.sh",
+	"args": {
+	     "GO_VERSION":"1.19.3"
+        }
+    } 
+}
