@@ -52,8 +52,10 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION 
 
-#Install build tools
+#Build and test
 
-mvn install --batch-mode -DskipTests=true -Dmaven.javadoc.skip=true -Dsource.skip=true -Djava.version=11
+mvn package
+
+mvn test
 
 
