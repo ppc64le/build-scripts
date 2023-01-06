@@ -1,0 +1,15 @@
+{
+    "package_name":"opentelemetry-operator",
+    "github_url":"https://github.com/open-telemetry/opentelemetry-operator",
+    "package_dir":"o/opentelemetry-operator/",
+    "version":"v0.66.0",
+    "docker_build":false,
+
+     "v0.66.0":{
+	"build_script":"opentelemetry-operator_v0.66.0_ubi_8.7.sh"
+	},
+
+     "v0.*.*":{
+       "build_script":"opentelemetry-operator_v0.66.0_ubi_8.7.sh"
+     	    }
+}
