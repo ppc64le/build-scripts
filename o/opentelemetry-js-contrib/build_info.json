@@ -1,12 +1,12 @@
 {
     "package_name" : "opentelemetry-js-contrib",
     "github_url":"https://github.com/open-telemetry/opentelemetry-js-contrib",
-    "version": "instrumentation-user-interaction-v0.32.0",
+    "version": "auto-instrumentations-node-v0.36.0",
     "package_dir": "o/opentelemetry-js-contrib",
     "docker_build": false,
     "build_script" : "opentelemetry-js-contrib_ubi_8.5.sh",
     
-    "instrumentation-user-interaction-v0.*.*" : {
+    "auto-instrumentations-node-v0.*.*" : {
         "build_script" : "opentelemetry-js-contrib_ubi_8.5.sh",
 	"args": {
 	      "NODE_VERSION":"16"
