@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: opentelemetry-js
-# Version	: v1.4.0 
+# Version	: v1.4.0,v1.8.0 
 # Source repo	: https://github.com/open-telemetry/opentelemetry-js
 # Tested on	: ubi 8.5
 # Language      : node
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>
+# Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>,Pratik Tonage <Pratik.Tonage@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME="opentelemetry-js"
-PACKAGE_VERSION=${1:-"v1.4.0"}
+PACKAGE_VERSION=${1:-"v1.8.0"}
 PACKAGE_URL="https://github.com/open-telemetry/opentelemetry-js"
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 HOME_DIR=$PWD
@@ -54,6 +54,15 @@ if ! npm run compile; then
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
 	exit 1
 fi
+
+# If api directory is available in the package then first need to run npm run compile in the api directory before running tests 
+# because it requires the ESM targets are generated with npm run compile in the API directory.
+  
+  if [ -d "api" ]; then
+      cd api/
+      npm run compile
+      cd ..
+  fi
 
 if ! npm run test; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
