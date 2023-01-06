@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: opentelemetry-js-contrib
-# Version	: auto-instrumentations-node-v0.31.0,instrumentation-user-interaction-v0.32.0
+# Version	: auto-instrumentations-node-v0.36.0
 # Source repo	: https://github.com/open-telemetry/opentelemetry-js-contrib
 # Tested on	: ubi 8.5
 # Language      : node
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME="opentelemetry-js-contrib"
-PACKAGE_VERSION=${1:-"instrumentation-user-interaction-v0.32.0"}
+PACKAGE_VERSION=${1:-"auto-instrumentations-node-v0.36.0"}
 PACKAGE_URL="https://github.com/open-telemetry/opentelemetry-js-contrib"
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 HOME_DIR=$PWD
