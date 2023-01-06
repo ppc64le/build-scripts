@@ -1,5 +1,5 @@
 Pakckage    : opentelemetry-js-contrib
-Version     : instrumentation-user-interaction-v0.32.0
+Version     : auto-instrumentations-node-v0.36.0
 Source repo : https://github.com/open-telemetry/opentelemetry-js-contrib
 Tested on   : UBI 8.5
 
