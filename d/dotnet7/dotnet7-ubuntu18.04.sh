@@ -3,7 +3,7 @@
 #
 # Package   : dotnet
 # Version   : 7.0
-# Source repo   : 
+# Source repo   : https://github.com/dotnet/runtime
 # Tested on : Ubuntu-1804
 # Language      : C, C#
 # Travis-Check  : False
