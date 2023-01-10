@@ -54,17 +54,28 @@ git checkout $PACKAGE_VERSION
 
 #Build and test
 
-if ! mvn package && mvn test; then
-    echo "------------------$PACKAGE_NAME:Build_&_Test_fails---------------------"
+if ! mvn package; then
+    echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_&_Test_Fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
     exit 1
 else
-    echo "------------------$PACKAGE_NAME::Build_&_Test_success-------------------------"
+    echo "------------------$PACKAGE_NAME::Build_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_&_Test_Success"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_Success"
     exit 0
 fi
 
+ if ! mvn test; then
+    echo "------------------$PACKAGE_NAME::Test_fails-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Test_fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME::Test_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Test_Success"
+    exit 0
+fi
 
 
