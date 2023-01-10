@@ -3,69 +3,17 @@
 apt install -y dpkg-dev
 
 dpkg --add-architecture ppc64el
-sudo apt-get update
-
-apt install -y crossbuild-essential-ppc64el
-apt install -y clang
-apt install -y clang-10
-apt install -y cmake
-apt install -y cpp-8-powerpc64le-linux-gnu
-apt install -y g++-9
-apt install -y comerr-dev:amd64
-apt install -y comerr-dev:ppc64el
-apt install -y gcc-8-powerpc64le-linux-gnu
-apt install -y mono-complete
-#apt install -y npm
-apt install -y pkg-config-powerpc64le-linux-gnu
-apt install -y binutils-multiarch
-apt install -y gir1.2-glib-2.0:ppc64el
-apt install -y gir1.2-harfbuzz-0.0:ppc64el
-apt install -y gir1.2-packagekitglib-1.0
-apt install -y krb5-multidev:amd64
-apt install -y krb5-multidev:ppc64el
-apt install -y lib32asan5
-apt install -y lib32atomic1
-apt install -y lib32gomp1
-apt install -y lib32itm1
-apt install -y lib32quadmath0
-apt install -y lib32ubsan1
-apt install -y libasan5:amd64
-apt install -y libasan5:ppc64el
-apt install -y libasan5-amd64-cross
-apt install -y libatomic1:ppc64el
-apt install -y libblkid-dev:ppc64el
-apt install -y libc-bin
-apt install -y libc6-x32
-apt install -y libffi-dev:ppc64el
-apt install -y libgcc-8-dev:ppc64el
-apt install -y libglib2.0-dev:ppc64el
-apt install -y libgraphite2-3:amd64
-apt install -y libgraphite2-dev:ppc64el
-apt install -y libharfbuzz-dev:ppc64el
-apt install -y libharfbuzz0b:amd64
-apt install -y libidn2-0:ppc64el
-apt install -y libkrb5-dev:ppc64el
-apt install -y liblttng-ust-ctl4:amd64
-apt install -y liblttng-ust-ctl4:ppc64el
-apt install -y liblttng-ust-dev:amd64
-apt install -y liblttng-ust-dev:ppc64el
-apt install -y libmount-dev:ppc64el
-apt install -y libnuma1:ppc64el
-apt install -y libpcre2-16-0:ppc64el
-apt install -y libpcre2-32-0:ppc64el
-apt install -y libpcre2-8-0:amd64
-apt install -y libpcre2-8-0:ppc64el
-apt install -y libpcre2-dev:ppc64el
-apt install -y libselinux1-dev:ppc64el
-apt install -y libssl-dev:amd64
-apt install -y libssl-dev:ppc64el
-apt install -y libstdc++-8-dev:ppc64el
-apt install -y libstdc++-8-dev-ppc64el-cross
-apt install -y libubsan1:amd64
-apt install -y qemu-block-extra:amd64
-apt install -y qemu-system-common
-apt install -y qemu-utils
-apt install -y quilt
+apt-get update && apt install -y crossbuild-essential-ppc64el clang clang-10 cmake cpp-8-powerpc64le-linux-gnu g++-9 \
+comerr-dev:amd64  comerr-dev:ppc64el gcc-8-powerpc64le-linux-gnu mono-complete npm pkg-config-powerpc64le-linux-gnu \
+binutils-multiarch gir1.2-glib-2.0:ppc64el gir1.2-harfbuzz-0.0:ppc64el gir1.2-packagekitglib-1.0 krb5-multidev:amd64 \
+krb5-multidev:ppc64el lib32asan5 lib32atomic1 lib32gomp1 lib32itm1 lib32quadmath0 lib32ubsan1 libasan5:amd64 \
+libasan5:ppc64el libasan5-amd64-cross libatomic1:ppc64el libblkid-dev:ppc64el libc-bin libc6-x32 libffi-dev:ppc64el \
+libgcc-8-dev:ppc64el libglib2.0-dev:ppc64el libgraphite2-3:amd64 libgraphite2-dev:ppc64el libharfbuzz-dev:ppc64el \
+libharfbuzz0b:amd64 libidn2-0:ppc64el libkrb5-dev:ppc64el liblttng-ust-ctl4:amd64 liblttng-ust-ctl4:ppc64el \
+liblttng-ust-dev:amd64 liblttng-ust-dev:ppc64el libmount-dev:ppc64el libnuma1:ppc64el libpcre2-16-0:ppc64el \
+libpcre2-32-0:ppc64el libpcre2-8-0:amd64 libpcre2-8-0:ppc64el libpcre2-dev:ppc64el libselinux1-dev:ppc64el \
+libssl-dev:amd64 libssl-dev:ppc64el libstdc++-8-dev:ppc64el libstdc++-8-dev-ppc64el-cross libubsan1:amd64 \
+qemu-block-extra:amd64 qemu-system-common qemu-utils  quilt
 
 wget https://cmake.org/files/v3.16/cmake-3.16.3.tar.gz
 tar -xvzf cmake-3.16.3.tar.gz
@@ -73,9 +21,9 @@ cd cmake-3.16.3/
 ./bootstrap
 make -j4
 apt install checkinstall
-sudo checkinstall --pkgname=cmake --pkgversion="3.16.3" --default
+checkinstall --pkgname=cmake --pkgversion="3.16.3" --default
 cd ..
 
-#curl -s https://deb.nodesource.com/setup_16.x | sudo bash
-#sudo apt install nodejs -y
+curl -s https://deb.nodesource.com/setup_16.x | bash
+apt install nodejs -y
 node -v
