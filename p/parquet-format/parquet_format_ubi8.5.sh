@@ -58,12 +58,12 @@ if ! mvn package && mvn test; then
     echo "------------------$PACKAGE_NAME:Build_&_Test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_&_Test_Fails"
-    exit 2
+    exit 1
 else
     echo "------------------$PACKAGE_NAME::Build_&_Test_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_&_Test_Success"
-    exit 1
+    exit 0
 fi
 
 
