@@ -15,7 +15,7 @@ The Odoo server requires Postgres to run successfully however Postgres is not ab
 
 - In a different shell, connect to the Postgres container as non-root user and create a database:
 
-    `docker exec -it db psql -U odoo`
+    `docker exec -it db psql -U odoo`  
     `create databse mydb;`
 
 - Create and run UBI container to build Odoo:
