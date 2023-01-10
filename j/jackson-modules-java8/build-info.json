@@ -7,7 +7,7 @@
     "validate_build_script": "true",
     "use_non_root_user": "false",
 
-    "jackson-modules-java8-2.14.1": {
+    "jackson-modules-java8-2.*": {
 
         "build_script": "jackson_module_java8_ubi_8_5.sh"        
     }
