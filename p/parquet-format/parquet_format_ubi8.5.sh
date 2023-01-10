@@ -54,8 +54,17 @@ git checkout $PACKAGE_VERSION
 
 #Build and test
 
-mvn package
+if ! mvn package && mvn test; then
+    echo "------------------$PACKAGE_NAME:Build_&_Test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_&_Test_Fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME::Build_&_Test_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_&_Test_Success"
+    exit 1
+fi
 
-mvn test
 
 
