@@ -51,5 +51,5 @@ git checkout $PACKAGE_VERSION
 python3.10 -m pip install pip wheel
 python3.10 -m pip install -r requirements.txt
 
-# Start Odoo
+# Start Odoo server, refer README
 # python3.10 odoo-bin -d mydb -r odoo -w odoo --db_host 172.21.0.2 --db_port 5432 -i INIT
