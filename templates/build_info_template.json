@@ -1,7 +1,8 @@
 {
     "package_name" : "Name of the packages (Eg: vault) Mandatory Argument.",
-	"github_url":"Github URL for the package (Eg: https://github.com/hashicorp/vault.git) Mandatory Argument.",
+    "github_url":"Github URL for the package (Eg: https://github.com/hashicorp/vault.git) Mandatory Argument.",
     "version": "Release version or Tag version available in github repo (Eg: v1.12.0). Mandatory Argument.",
+    "category": "Category of the build-script (Eg: default/rhp). Optional Argument.",
     "package_dir": "Directory path to the package on build-scripts repo (Eg: v/vault/)",
     "docker_cmd":"This is a generic Docker command that can be run by default on any version. If no tag details mentioned, this docker command will be consider for buiding the docker image. (Eg: docker build -t ${package_name}:$PACKAGE_VERSION ${dir})",
     "build_script": "Default build script for the package. If no build_script mentioned in below version tags, this build-script will be picked for build and validation. (Eg: vault_ubi_8.5.sh)",
