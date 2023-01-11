@@ -62,7 +62,6 @@ go install github.com/bufbuild/buf/cmd/protoc-gen-buf-breaking@latest
 go install github.com/bufbuild/buf/cmd/protoc-gen-buf-lint@latest
 go install istio.io/tools/cmd/protoc-gen-golang-jsonshim@latest
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-go get github.com/grpc/grpc-go
 go install istio.io/tools/cmd/protoc-gen-golang-deepcopy@latest
 go install istio.io/tools/cmd/license-lint@latest
 go install github.com/nilslice/protolock/cmd/protolock@latest
