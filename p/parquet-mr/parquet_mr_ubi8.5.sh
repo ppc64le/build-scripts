@@ -21,7 +21,6 @@
 PACKAGE_NAME=parquet-mr
 PACKAGE_VERSION=apache-parquet-1.12.3
 PACKAGE_URL=https://github.com/apache/parquet-mr.git
-cd $HOME;
 
 #Install required dependencies
 yum install -y git make wget gcc-c++ patch java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless 
@@ -64,16 +63,12 @@ chmod +x ./configure
 ./configure --disable-libs
 make install
 
-
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/p/parquet-mr/parquet_mr.patch;
-
 #Clone the top-level repository
-cd $WORKDIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-patch -p1 < $HOME/parquet_mr.patch;
+git apply parquet_mr.patch;
 
 #Build and test
 
