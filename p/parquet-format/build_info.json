@@ -5,7 +5,7 @@
     "package_dir": "p/parquet-format",
     "docker_build": false,
 
-    "apache-parquet-format-2.9.0" : {
+    "apache-parquet-format-2.9.*" : {
         "build_script" : "parquet_format_ubi_8.5.sh"
         }
 }
