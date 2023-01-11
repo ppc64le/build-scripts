@@ -36,7 +36,8 @@ cp -R apache-maven-3.8.7 /usr/local
 ln -s /usr/local/apache-maven-3.8.7/bin/mvn /usr/bin/mvn
 
 #install protobuf compiler
-wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz && tar xvzf protobuf-2.6.1.tar.gz
+wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz 
+tar xvzf protobuf-2.6.1.tar.gz --no-same-owner
 rm -f protobuf-2.6.1.tar.gz
 cd protobuf-2.6.1/
 ./configure
@@ -45,7 +46,7 @@ make install
 
 #install thrift
 wget -nv http://archive.apache.org/dist/thrift/0.13.0/thrift-0.13.0.tar.gz
-tar xzf thrift-0.13.0.tar.gz
+tar xzf thrift-0.13.0.tar.gz --no-same-owner
 cd thrift-0.13.0
 chmod +x ./configure
 ./configure --disable-libs
@@ -57,7 +58,7 @@ mvn package
 mvn test
 
 wget -nv http://archive.apache.org/dist/thrift/0.16.0/thrift-0.16.0.tar.gz
-tar xzf thrift-0.16.0.tar.gz
+tar xzf thrift-0.16.0.tar.gz --no-same-owner
 cd thrift-0.16.0
 chmod +x ./configure
 ./configure --disable-libs
