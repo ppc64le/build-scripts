@@ -31,6 +31,7 @@ cd Python-3.10.8
 ./configure --with-system-ffi --with-computed-gotos --enable-loadable-sqlite-extensions 
 make -j ${nproc}
 make altinstall
+export PATH=$PATH:/usr/local/bin
 cd .. && rm Python-3.10.8.tgz 
 
 # Install Rust
