@@ -21,20 +21,28 @@
 PACKAGE_NAME=https://github.com/istio/api
 PACKAGE_VERSION=${master}
 PACKAGE_URL=https://github.com/istio/api
+
 WORKDIR=`pwd`
+
+echo "# Install all dependencies"
 yum install -y libtool patch
 yum install -y automake autoconf make curl unzip
 yum install -y wget tar git cmake3 zip
 yum install -y gcc gcc-c++
+
 mkdir -p source_root
 export SOURCE_ROOT=$PWD/source_root
+
+#Install Go
 curl -O https://dl.google.com/go/go1.18.1.linux-ppc64le.tar.gz
 tar -C /usr/local -xzf go1.18.1.linux-ppc64le.tar.gz
 export PATH=$PATH:/usr/local/go/bin
 export GOPATH=/root/go
 export GOBIN=/usr/local/go/bin
 go version
+
 cd $SOURCE_ROOT
+
 wget https://github.com/protocolbuffers/protobuf/releases/download/v3.11.2/protobuf-all-3.11.2.tar.gz
 tar -xzf protobuf-all-3.11.2.tar.gz  --no-same-owner
 cd "protobuf-3.11.2"
@@ -45,6 +53,8 @@ make install
 git clone https://github.com/Masterminds/glide
 git clone https://github.com/nilslice/protolock
 git clone https://github.com/gogo/protobuf
+
+# Clone istio/api and build
 cd $SOURCE_ROOT
 git clone https://github.com/istio/api
 cd api && git checkout $PACKAGE_VERSION
@@ -65,5 +75,6 @@ go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 go install istio.io/tools/cmd/protoc-gen-golang-deepcopy@latest
 go install istio.io/tools/cmd/license-lint@latest
 go install github.com/nilslice/protolock/cmd/protolock@latest
+
 make
 
