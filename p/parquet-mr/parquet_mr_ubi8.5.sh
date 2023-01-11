@@ -30,11 +30,10 @@ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
 
 #install maven
-wget https://www-eu.apache.org/dist/maven/maven-3/3.8.7/binaries/apache-maven-3.8.7-bin.tar.gz
-tar xzf apache-maven-3.8.7-bin.tar.gz
-ln -s apache-maven-3.8.7 maven
-export MVN_HOME=/opt/maven
-export PATH=${MVN_HOME}/bin:${PATH}
+wget https://archive.apache.org/dist/maven/maven-3/3.8.7/binaries/apache-maven-3.8.7-bin.tar.gz
+tar -zxf apache-maven-3.8.7-bin.tar.gz
+cp -R apache-maven-3.8.7 /usr/local
+ln -s /usr/local/apache-maven-3.8.7/bin/mvn /usr/bin/mvn
 
 #install protobuf compiler
 wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz && tar xvzf protobuf-2.6.1.tar.gz
