@@ -5,7 +5,7 @@
     "package_dir": "o/odoo/",
 
     "16.0" : {
-        "dir":"16.0_debian_bullseye",
+        "dir":"16.0_ubi_8",
         "build_script" :"odoo_16.0_ubi_8.5.sh"
     }
 }   
