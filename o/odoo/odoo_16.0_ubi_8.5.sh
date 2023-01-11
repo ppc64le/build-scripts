@@ -44,6 +44,7 @@ python3.10 -m venv odoo-venv
 . ./odoo-venv/bin/activate
 
 # Clone Odoo
+rm -rf odoo
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
