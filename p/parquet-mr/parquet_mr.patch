@@ -1,0 +1,40 @@
+diff --git a/parquet-hadoop/pom.xml b/parquet-hadoop/pom.xml
+index 4f3ac00b4..8a314a95e 100644
+--- a/parquet-hadoop/pom.xml
++++ b/parquet-hadoop/pom.xml
+@@ -191,15 +191,6 @@
+           <arch>!aarch64</arch>
+         </os>
+       </activation>
+-      <dependencies>
+-        <dependency>
+-          <groupId>com.github.rdblue</groupId>
+-          <artifactId>brotli-codec</artifactId>
+-          <version>${brotli-codec.version}</version>
+-          <scope>runtime</scope>
+-          <optional>true</optional>
+-        </dependency>
+-      </dependencies>
+     </profile>
+   </profiles>
+
+diff --git a/parquet-hadoop/src/test/java/org/apache/parquet/hadoop/TestDirectCodecFactory.java b/parquet-hadoop/src/test/java/org/apache/parquet/hadoop/TestDirectCodecFactory.java
+index 76e6880e8..bde72649c 100644
+--- a/parquet-hadoop/src/test/java/org/apache/parquet/hadoop/TestDirectCodecFactory.java
++++ b/parquet-hadoop/src/test/java/org/apache/parquet/hadoop/TestDirectCodecFactory.java
+@@ -157,11 +157,8 @@ public class TestDirectCodecFactory {
+     codecsToSkip.add(LZO); // not distributed because it is GPL
+     codecsToSkip.add(LZ4); // not distributed in the default version of Hadoop
+     codecsToSkip.add(ZSTD); // not distributed in the default version of Hadoop
+-    final String arch = System.getProperty("os.arch");
+-    if ("aarch64".equals(arch)) {
+-      // PARQUET-1975 brotli-codec does not have natives for ARM64 architectures
+-      codecsToSkip.add(BROTLI);
+-    }
++    codecsToSkip.add(BROTLI);
++
+
+     for (final int size : sizes) {
+       for (final boolean useOnHeapComp : comp) {
+
+
