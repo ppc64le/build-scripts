@@ -24,7 +24,7 @@ PACKAGE_URL=https://github.com/apache/parquet-mr.git
 cd $HOME;
 
 #Install required dependencies
-yum install -y git make wget gcc-c++ java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless
+yum install -y git make wget gcc-c++ patch java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless 
 
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
