@@ -1,10 +1,16 @@
 {
     "package_name":"sentry-python",
     "github_url":"https://github.com/getsentry/sentry-python",
-    "package_dir":"s/sentry-python/latest/",
+    "package_dir":"s/sentry-python/",
     "version":"1.12.1",
     "docker_build":false,
      "1.12.1":{
 	"build_script":"sentry-python_1.12.1_ubi_8.7.sh"
+	},
+     "1.11.*":{
+	 "build_script":"sentry-python_1.12.1_ubi_8.7.sh"
+	},
+     "0.*.*":{
+	 "build_script":"sentry-python_ubi_8.4.sh"
 	}
 }
