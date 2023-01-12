@@ -3,9 +3,10 @@
     "github_url":"https://github.com/odoo/odoo",
     "version": "16.0",
     "package_dir": "o/odoo/",
+    "docker_build": false,
 
     "16.0" : {
-        "dir":"16.0_ubi_8",
+        "dir":"16.0_debian_bullseye",
         "build_script" :"odoo_16.0_ubi_8.5.sh"
     }
 }   
