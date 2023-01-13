@@ -21,7 +21,7 @@
 #For package version 0.*.* use go version(1.17.4)
 PACKAGE_NAME=opentelemetry-go
 PACKAGE_VERSION=${1:-v1.11.1}
-GO_VERSION=1.18.5
+GO_VERSION=${GO_VERSION:-1.18.5}
 PACKAGE_URL=https://github.com/open-telemetry/opentelemetry-go.git
 
 dnf install git wget sudo diffutils.ppc64le make gcc gcc-c++ -y
