@@ -21,7 +21,7 @@
 PACKAGE_NAME=go-metrics
 PACKAGE_URL=https://github.com/hashicorp/go-metrics.git
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-0.4.1}
+PACKAGE_VERSION=${1:-v0.4.1}
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 #Dependencies
