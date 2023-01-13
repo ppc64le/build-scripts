@@ -42,7 +42,7 @@ fi
 # Cloning the repository from remote to local
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
-git checkout v$PACKAGE_VERSION
+git checkout $PACKAGE_VERSION
 go mod tidy
 if ! go build -v ./...; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
