@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : opentelemetry-go
-# Version       : v0.13.0, v0.20.0
+# Version       : v0.13.0, v0.20.0,v1.11.1
 # Source repo   : https://github.com/open-telemetry/opentelemetry-go.git
 # Tested on     : ubi 8.5
 # Language      : go
 # Travis-Check  : true
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Sachin K {sachin.kakatkar@ibm.com}
+# Maintainer    : Sachin K {sachin.kakatkar@ibm.com},Pratik Tonage <Pratik.Tonage@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -17,10 +17,10 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#Run the script:./opentelemetry-go_ubi_8.5.sh v0.13.0(version_to_test)
+#Run the script:./opentelemetry-go_ubi_8.5.sh v1.11.1(version_to_test)
 PACKAGE_NAME=opentelemetry-go
-PACKAGE_VERSION=${1:-v0.13.0}
-GO_VERSION=1.17.4
+PACKAGE_VERSION=${1:-v1.11.1}
+GO_VERSION=1.18.5
 PACKAGE_URL=https://github.com/open-telemetry/opentelemetry-go.git
 
 dnf install git wget sudo diffutils.ppc64le make gcc gcc-c++ -y
