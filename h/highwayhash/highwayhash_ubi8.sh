@@ -21,7 +21,7 @@
 PACKAGE_NAME=highwayhash
 PACKAGE_URL=https://github.com/minio/highwayhash.git
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-1.0.2}
+PACKAGE_VERSION=${1:-v1.0.2}
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 #Dependencies
