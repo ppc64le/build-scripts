@@ -2,14 +2,15 @@
     "package_name" : "opentelemetry-js",
     "github_url":"https://github.com/open-telemetry/opentelemetry-js",
     "version": "v1.8.0",
-    "package_dir": "o/opentelemetry-js/latest",
+    "package_dir": "o/opentelemetry-js",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
     "docker_build": false,
     "build_script" : "opentelemetry-js_ubi_8.5.sh",
-    
+
     "v1.*.*" : {
-        "build_script" : "opentelemetry-js_ubi_8.5.sh",
         "args": {
-	        "NODE_VERSION":"16"
+            "NODE_VERSION":"16"
         }
-    } 
+    }
 }
