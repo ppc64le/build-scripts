@@ -68,7 +68,7 @@ cd $WORKDIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/p/parquet-mr/parquet_mr.patch
+wget https://raw.githubusercontent.com/vinodk99/build-scripts/parquet-mr1/p/parquet-mr/parquet_mr.patch
 git apply parquet_mr.patch;
 
 #Build and test
