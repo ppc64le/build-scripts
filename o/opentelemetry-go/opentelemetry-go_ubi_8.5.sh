@@ -18,6 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 #Run the script:./opentelemetry-go_ubi_8.5.sh v1.11.1(version_to_test)
+#For package version 0.*.* use go version(1.17.4)
 PACKAGE_NAME=opentelemetry-go
 PACKAGE_VERSION=${1:-v1.11.1}
 GO_VERSION=1.18.5
