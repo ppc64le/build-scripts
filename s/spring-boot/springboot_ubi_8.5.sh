@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 #!/bin/bash
-VERSION=v3.0.1
+VERSION=${1:-v3.0.1}
 
 #Install dependencies
 yum update -y
