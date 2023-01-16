@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=leveldb
-PACKAGE_VERSION={1:-1.23}
+PACKAGE_VERSION=${1:-1.23}
 PACKAGE_URL=https://github.com/google/leveldb.git
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
