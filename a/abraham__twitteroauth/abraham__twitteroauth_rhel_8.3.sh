@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=abraham/twitteroauth
-PACKAGE_VERSION=${1:-'0.9'}
+PACKAGE_VERSION=${1:-'0.9.0'}
 PACKAGE_URL=https://github.com/abraham/twitteroauth
 
 yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git jq curl php php-curl php-dom php-mbstring php-json nodejs make gcc-c++ patch diffutils php-gd php-pecl-zip
