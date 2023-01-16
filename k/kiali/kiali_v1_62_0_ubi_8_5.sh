@@ -2,12 +2,14 @@
 
 # ----------------------------------------------------------------------------
 #
-# Package	: kiali
-# Version	: v1.62.0
-# Source repo	: https://github.com/kiali/kiali
-# Tested on	: UBI 8.5
+# Package	      : kiali
+# Version	      : v1.62.0
+# Source repo	  : https://github.com/kiali/kiali
+# Tested on	    : UBI 8.5
+# Language      : GO
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Shantanu Kadam <Shantanu.Kadam@ibm.com>
+# Maintainer	  : Shantanu Kadam <Shantanu.Kadam@ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
