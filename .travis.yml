@@ -20,7 +20,6 @@ script:
         else
             sudo echo '{ "ipv6": true, "fixed-cidr-v6": "2001:db8:1::/64" }' > /etc/docker/daemon.json
         fi
-    - cat /etc/docker/daemon.json
     - sudo systemctl reload docker
     - pip3 install requests
     - pip3 install docker
