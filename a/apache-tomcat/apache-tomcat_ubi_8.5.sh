@@ -24,7 +24,7 @@ PACKAGE_URL=https://github.com/apache/tomcat.git
 cd ${HOME}
 yum update -y
 TOMCAT_VERSION="11.0.0"
-yum install -y git
+yum install -y git wget
 yum install -y java-11-openjdk-devel
 wget http://mirror.downloadvn.com/apache/ant/binaries/apache-ant-1.10.12-bin.tar.gz
 tar -xf apache-ant-1.10.12-bin.tar.gz
