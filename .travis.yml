@@ -11,7 +11,9 @@ before_install:
     - docker pull registry.access.redhat.com/ubi8/ubi:8.5
 
 script:
-    - sudo apt update -y && sudo apt-get install file -y
+    - sudo apt update -y && sudo apt-get install file jq -y
+    - if [ -f /etc/docker/daemon.json ]; then jq '. += { "ipv6": true, "fixed-cidr-v6": "2001:db8:1::/64" }' /etc/docker/daemon.json > /tmp/daemon.json && mv /tmp/daemon.json /etc/docker/daemon.json; else echo '{ "ipv6": true, "fixed-cidr-v6": "2001:db8:1::/64" }' > /etc/docker/daemon.json; fi
+    - systemctl reload docker
     - pip3 install requests
     - pip3 install docker
     - python3 script/validate_builds.py $TRAVIS_PULL_REQUEST &
