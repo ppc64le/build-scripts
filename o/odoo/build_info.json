@@ -6,6 +6,8 @@
 
     "16.0" : {
         "dir":"16.0_debian_bullseye",
-        "build_script" :"odoo_16.0_ubi_8.5.sh"
+        "build_script" :"odoo_16.0_ubi_8.5.sh",
+        "base_docker_image": "debian:bullseye-slim",
+        "base_docker_variant": "ubuntu"
     }
 }   
