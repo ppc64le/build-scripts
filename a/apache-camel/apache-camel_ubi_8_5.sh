@@ -2,11 +2,13 @@
 
 # ----------------------------------------------------------------------------
 #
-# Package		: camel
-# Version		: camel-3.20.1
+# Package	: camel
+# Version	: camel-3.20.1
 # Source repo	: https://github.com/apache/camel
-# Tested on		: UBI 8
-# Script License	: Apache License, Version 2 or later
+# Tested on	: UBI 8.5
+# Language      : go
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
 # Maintainer	: Shantanu Kadam <Shantanu.Kadam@ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
