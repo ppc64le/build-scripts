@@ -7,7 +7,7 @@
 # Tested on      : UBI 8.4
 # Language       : GO
 # Script License : Apache License, Version 2 or later
-# Maintainer     : Sapana Khemkar <spana.khemkar@ibm.com>/ Balavva Mirji <Balavva.Mirji@ibm.com>
+# Maintainer     : Balavva Mirji <Balavva.Mirji@ibm.com>
 # Travis-Check   : True
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -49,10 +49,35 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_COMMIT_HASH
 
 
-go mod init
-go mod tidy
+if ! go mod init; then
+	echo "------------------$PACKAGE_NAME:initialize_fails-------------------------------------"
+	echo "$PACKAGE_VERSION $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Initialize_Fails"
+	exit 1
+fi
 
-go install ./...
-go test -v ./...
+if ! go mod tidy; then
+	echo "------------------$PACKAGE_NAME:dependency_fails-------------------------------------"
+	echo "$PACKAGE_VERSION $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Dependency_Fails"
+	exit 1
+fi
 
-exit 0
+if ! go install ./...; then
+	echo "------------------$PACKAGE_NAME:installation_fails-------------------------------------"
+	echo "$PACKAGE_VERSION $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Installation_Fails"
+	exit 1
+fi
+
+if ! go test -v ./...; then
+	echo "------------------$PACKAGE_NAME:test_fails---------------------"
+	echo "$PACKAGE_VERSION $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Test_Fails"
+	exit 1
+else
+	echo "------------------$PACKAGE_NAME:build_and_test_success-------------------------"
+	echo "$PACKAGE_VERSION $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub  | Pass |  Build_and_Test_Success"
+	exit 0
+fi

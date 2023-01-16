@@ -4,6 +4,7 @@ import requests
 import sys
 import subprocess
 import docker
+import json
 
 
 GITHUB_BUILD_SCRIPT_BASE_REPO = "build-scripts"
@@ -64,7 +65,7 @@ def trigger_basic_validation_checks(file_name):
             print("Requried keys: {}".format(",".join(key_checks.keys())))
             print("Found keys: {}".format(",".join(matched_keys)))
             print("Missing required keys: {}".format(",".join(set(key_checks.keys())-set(matched_keys))))
-            raise ValueError("Basic Validation Checks Failed!!!")
+            raise ValueError(f"Basic Validation Checks Failed for {file_name} !!!")
     else:
         raise ValueError("Build script not found.")
 
@@ -93,9 +94,27 @@ def trigger_script_validation_checks(file_name, image_name = "registry.access.re
         print(container.logs())
     container.remove()
     if int(result["StatusCode"]) != 0:
-        raise Exception("Build script validation failed!")
+        raise Exception(f"Build script validation failed for {file_name} !")
     else:
         return True
+
+def validate_build_info_file(file_name):
+    try:
+        script_path = os.path.join(HOME, file_name)
+        mandatory_fields = ['package_name', 'github_url', 'version']
+        error_message = f"No `{{}}` field available in {file_name}."
+
+        data = json.load(open(script_path, 'r'))
+        # Check for mandatory fields.
+        for field in mandatory_fields:
+            if field not in data:
+                raise ValueError(error_message.format(field))
+        print("Valid file")
+        return True
+    except Exception as e:
+        print(str(e))
+        print(f"Failed to load build_info file at {file_name} !")
+        raise e
 
 def trigger_build_validation_travis(pr_number):
     pull_request_file_url = "https://api.github.com/repos/{}/{}/pulls/{}/files".format(
@@ -108,6 +127,8 @@ def trigger_build_validation_travis(pr_number):
     # Trigger validation for all shell scripts
     for i in response:
         file_name = i.get('filename', "")
+        if not file_name:
+            continue
         status = i.get('status', "")
         if file_name.endswith('.sh') and "dockerfile" not in file_name.lower() and status != "removed":
             # perform basic validation check
@@ -122,6 +143,13 @@ def trigger_build_validation_travis(pr_number):
                 print("Skipping Build script validation for {} as Travis-Check flag is set to False".format(file_name))
             # Keep track of validated files.
             validated_file_list.append(file_name)
+        elif file_name.lower().endswith('build_info.json') and status != "removed":
+            validate_build_info_file(file_name)
+            # Keep track of validated files.
+            validated_file_list.append(file_name)
+        
+        
+
     
     if len(validated_file_list) == 0 :
         print("No scripts available for validation.")
