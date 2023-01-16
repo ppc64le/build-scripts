@@ -6,7 +6,7 @@
 # Version	: camel-3.20.1
 # Source repo	: https://github.com/apache/camel
 # Tested on	: UBI 8.5
-# Language      : go
+# Language      : java
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Shantanu Kadam <Shantanu.Kadam@ibm.com>
