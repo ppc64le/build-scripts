@@ -71,6 +71,8 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git apply ../parquet_mr.patch;
 
+mvn -Drat.ignoreErrors=true install
+
 #Build and test
 
 if ! mvn package; then
