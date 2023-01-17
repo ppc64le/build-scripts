@@ -1,5 +1,7 @@
 FROM registry.access.redhat.com/ubi8/ubi:8.5 
 
+ARG PACKAGE_VERSION=1.23
+
 RUN yum install -y git gcc-c++ gcc wget make  python38 yum-utils apr-devel perl openssl-devel automake autoconf libtool
  
 RUN wget https://github.com/Kitware/CMake/releases/download/v3.21.2/cmake-3.21.2.tar.gz && \
@@ -12,7 +14,7 @@ RUN wget https://github.com/Kitware/CMake/releases/download/v3.21.2/cmake-3.21.2
 
 RUN git clone --recurse-submodules https://github.com/google/leveldb.git && \
     cd leveldb && \
-    git checkout 1.23 && \
+    git checkout $PACKAGE_VERSION && \
     mkdir build && \
     cd build && \
     cmake .. && \
