@@ -1,7 +1,7 @@
 {
     "package_name" : "leveldb",
     "github_url":"https://github.com/google/leveldb.git",
-    "package_dir": "l/leveldb/Dockerfiles/",
+    "package_dir": "l/leveldb/",
     "version": "1.23",
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "build_script" : "leveldb_ubi_8.5.sh",
