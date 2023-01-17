@@ -45,4 +45,4 @@ catalina.sh run &
 
 curl localhost:8080
 
-#catalina.sh stop
+catalina.sh stop
