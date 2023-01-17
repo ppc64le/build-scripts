@@ -20,7 +20,7 @@
 
 
 PACKAGE_NAME=https://github.com/apache/tomcat.git
-PACKAGE_VERSION=${1:-11.0.0-M1}
+PACKAGE_VERSION=${1:-v11.0.0-M1}
 PACKAGE_URL=https://github.com/apache/tomcat.git
 cd ${HOME}
 yum update -y
