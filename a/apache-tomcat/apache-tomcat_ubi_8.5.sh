@@ -40,10 +40,9 @@ echo "skip.installer=true" >> build.properties
 ant release
 export CATALINA_HOME=${HOME}/tomcat/output/dist
 export PATH=${HOME}/tomcat/output/dist/bin:${PATH}
-ant test
-#catalina.sh start &
-#catalina.sh run &
+catalina.sh start &
+catalina.sh run &
 
-#curl localhost:8080
+curl localhost:8080
 
-#catalina.sh stop
+catalina.sh stop
