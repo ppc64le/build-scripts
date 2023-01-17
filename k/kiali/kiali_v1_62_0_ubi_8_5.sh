@@ -20,13 +20,7 @@
 # ----------------------------------------------------------------------------
 
 # Install dependencies
-yum update -y
-yum install -y gcc-c++
-yum install -y make
-yum install -y python36
-yum install -y wget git
-yum install -y tar zip
-yum install -y npm
+yum update -y && yum install -y gcc-c++ make python36 wget git tar zip npm
 npm install -g yarn
 
 BUILD_VERSION=v1.62.0
