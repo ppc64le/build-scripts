@@ -42,8 +42,9 @@ export CATALINA_HOME=${HOME}/tomcat/output/dist
 export PATH=${HOME}/tomcat/output/dist/bin:${PATH}
 catalina.sh start &
 catalina.sh run &
-
 sleep 30
+
+
 
 
 curl localhost:8080
