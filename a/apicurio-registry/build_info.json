@@ -1,0 +1,14 @@
+{
+    "package_name" : "apicurio-registry",
+    "github_url":"https://github.com/Apicurio/apicurio-registry",
+    "version": "2.3.1.Final",
+    "package_dir": "a/apicurio-registry",
+    "build_script": "apicurio-registry_ubi_8_5.sh",
+    "validate_build_script": "true",
+
+    "2.3.1.Final": {
+        "build_script": "apicurio-registry_ubi_8_5.sh"        
+    }
+}
+
+
