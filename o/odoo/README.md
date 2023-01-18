@@ -26,6 +26,8 @@ The Odoo server requires Postgres to run successfully however Postgres is not ab
 
     `docker inspect db`
 
-- Use the IPAddress from above to run the Odoo server:
+- Use the IPAddress from above to run the test suite and the Odoo server:
+    
+    `python3.10 odoo-bin -d mydb -r user1 -w pass --db_host <IPAddress> --db_port 5432 -i base --stop-after-init --log-level=test --max-cron-threads=0`
 
     `python3.10 odoo-bin -d mydb -r odoo -w odoo --db_host <IPAddress> --db_port 5432 -i INIT`
