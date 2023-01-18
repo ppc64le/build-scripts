@@ -43,8 +43,12 @@ export PATH=${HOME}/tomcat/output/dist/bin:${PATH}
 catalina.sh start &
 catalina.sh run &
 
-sleep 60
+sleep 30
+
+#netstat -tulnp | grep 8005
+#netstat -tulnp | grep 8080
 
 curl localhost:8080
+#curl localhost:8005
 
 catalina.sh stop
