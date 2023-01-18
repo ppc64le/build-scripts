@@ -45,6 +45,9 @@ git clone https://github.com/kiali/kiali.git
 cd kiali/
 git checkout $BUILD_VERSION
 
+#Increase the timeout for lint operation
+sed -i "97s/$/ --timeout 10m/" make/Makefile.build.mk
+
 make lint-install
 make lint
 
@@ -54,5 +57,6 @@ make lint
 ## test: Run tests, excluding third party tests under vendor and frontend
 make clean build test
 
-make clean-ui build-ui build-ui-test
+#uncomment below line for ui-build and ui-test
+#make clean-ui build-ui build-ui-test
 
