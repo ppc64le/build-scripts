@@ -5,6 +5,8 @@
 # Version       : 2.3.1.Final
 # Source repo   : https://github.com/Apicurio/apicurio-registry
 # Tested on     : UBI 8.5
+# Language         : Java
+# Travis-Check     : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Stuti Wali <Stuti.wali@ibm.com>
 #
@@ -16,6 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
+set -e
 PACKAGE_NAME=apicurio-registry
 PACKAGE_VERSION=2.3.1.Final
 PACKAGE_URL=https://github.com/Apicurio/apicurio-registry
