@@ -32,24 +32,10 @@ export GOROOT=/usr/local/go/
 export GOPATH=$HOME
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
-# node setup
-curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-nvm install 14
-nvm use 14
-
 # Clone git repository
 git clone https://github.com/kiali/kiali.git
 cd kiali/
 git checkout $BUILD_VERSION
-
-#Increase the timeout for lint operation
-sed -i "97s/$/ --timeout 10m/" make/Makefile.build.mk
-
-make lint-install
-make lint
 
 # Build and test
 
@@ -57,6 +43,18 @@ make lint
 ## test: Run tests, excluding third party tests under vendor and frontend
 make clean build test
 
-#uncomment below line for ui-build and ui-test
+#uncomment below lines for ui-build and ui-test
+
+## node setup
+#curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
+#export NVM_DIR="$HOME/.nvm"
+#[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+#[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+#nvm install 14
+#nvm use 14
+#
+#sed -i "97s/$/ --timeout 10m/" make/Makefile.build.mk
+#make lint-install
+#make lint
 #make clean-ui build-ui build-ui-test
 
