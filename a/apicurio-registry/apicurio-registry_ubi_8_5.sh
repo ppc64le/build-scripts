@@ -18,6 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
+set -e
 PACKAGE_NAME=apicurio-registry
 PACKAGE_VERSION=2.3.1.Final
 PACKAGE_URL=https://github.com/Apicurio/apicurio-registry
