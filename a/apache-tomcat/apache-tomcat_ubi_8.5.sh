@@ -48,6 +48,6 @@ sleep 30
 
 
 curl localhost:8080
-#curl localhost:8005
+
 
 catalina.sh stop
