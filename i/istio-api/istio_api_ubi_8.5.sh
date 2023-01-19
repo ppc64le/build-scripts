@@ -50,7 +50,7 @@ cd "protobuf-3.11.2"
 ./configure
 make
 make install
-#git clone https://github.com/Masterminds/glide
+git clone https://github.com/Masterminds/glide
 git clone https://github.com/nilslice/protolock
 git clone https://github.com/gogo/protobuf
 
