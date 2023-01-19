@@ -19,7 +19,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=https://github.com/istio/api
-PACKAGE_VERSION=${1:-v1.16.0}
+PACKAGE_VERSION=${1:-v1.16.1}
 PACKAGE_URL=https://github.com/istio/api
 
 WORKDIR=`pwd`
