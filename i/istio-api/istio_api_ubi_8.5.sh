@@ -19,7 +19,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=https://github.com/istio/api
-PACKAGE_VERSION=${master}
+PACKAGE_VERSION=${1:-v1.16.1}
 PACKAGE_URL=https://github.com/istio/api
 
 WORKDIR=`pwd`
@@ -50,7 +50,7 @@ cd "protobuf-3.11.2"
 ./configure
 make
 make install
-git clone https://github.com/Masterminds/glide
+#git clone https://github.com/Masterminds/glide
 git clone https://github.com/nilslice/protolock
 git clone https://github.com/gogo/protobuf
 
