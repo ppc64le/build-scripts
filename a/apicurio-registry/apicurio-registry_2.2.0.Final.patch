@@ -1,0 +1,12 @@
+diff --git a/app/pom.xml b/app/pom.xml
+index 78116732..666dd30d 100644
+--- a/app/pom.xml
++++ b/app/pom.xml
+@@ -388,7 +388,6 @@
+                                 <id>make-index</id>
+                                 <goals>
+                                     <goal>jandex</goal>
+-                                </goals>
+                             </execution>
+                         </executions>
+                     </plugin>
