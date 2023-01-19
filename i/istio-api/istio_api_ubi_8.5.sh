@@ -57,7 +57,7 @@ make install
 # Clone istio/api and build
 cd $SOURCE_ROOT
 git clone https://github.com/istio/api
-cd api && git checkout $PACKAGE_VERSION
+cd api
 sed -i '33a else ifeq ($(LOCAL_ARCH),ppc64le)' Makefile
 sed -i '34a TARGET_ARCH ?= ppc64le' Makefile
 export BUILD_WITH_CONTAINER=0
