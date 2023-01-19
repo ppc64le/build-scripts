@@ -59,5 +59,5 @@ sleep 30
 
 curl localhost:8080
 
-
+#Stop the server
 catalina.sh stop
