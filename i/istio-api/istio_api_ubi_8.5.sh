@@ -19,7 +19,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=https://github.com/istio/api
-PACKAGE_VERSION=${1:-v1.16.1}
+PACKAGE_VERSION=${1:-v1.16.0}
 PACKAGE_URL=https://github.com/istio/api
 
 WORKDIR=`pwd`
@@ -57,8 +57,7 @@ make install
 # Clone istio/api and build
 cd $SOURCE_ROOT
 git clone https://github.com/istio/api
-cd api 
-# && git checkout $PACKAGE_VERSION
+cd api && git checkout $PACKAGE_VERSION
 sed -i '33a else ifeq ($(LOCAL_ARCH),ppc64le)' Makefile
 sed -i '34a TARGET_ARCH ?= ppc64le' Makefile
 export BUILD_WITH_CONTAINER=0
