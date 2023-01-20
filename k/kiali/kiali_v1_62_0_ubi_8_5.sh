@@ -45,7 +45,7 @@ git clone https://github.com/kiali/kiali.git
 cd kiali/
 git checkout $BUILD_VERSION
 
-sed -i "97s/$/ --timeout 4m/" make/Makefile.build.mk
+sed -i "97s/$/ --timeout 6m/" make/Makefile.build.mk
 make lint-install
 make lint
 
