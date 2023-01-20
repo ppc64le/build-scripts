@@ -51,7 +51,7 @@ git checkout $BUILD_VERSION
 ## test: Run tests, excluding third party tests under vendor and frontend
 make clean build test
 
-sed -i "97s/$/ --timeout 2m/" make/Makefile.build.mk
+sed -i "97s/$/ --timeout 4m/" make/Makefile.build.mk
 make lint-install
 make lint
 
