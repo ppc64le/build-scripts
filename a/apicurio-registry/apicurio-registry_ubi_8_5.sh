@@ -50,6 +50,14 @@ git checkout $PACKAGE_VERSION
 
 
 #wget https://raw.githubusercontent.com/stutiibm/build-scripts/master/a/apicurio-registry/apicurio-registry_${PACKAGE_VERSION}.patch
+echo $PWD
+ls
+cd ..
+echo $PWD
+cp apicurio-registry_2.4.1.Final.patch /apicurio-registry
+echo "copying---------------------------------------------------------"
+ls
+cd /apicurio-registry
 git apply apicurio-registry_${PACKAGE_VERSION}.patch
 
 
