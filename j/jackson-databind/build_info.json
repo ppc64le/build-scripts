@@ -1,0 +1,13 @@
+{
+    "package_name": "jackson-databind",
+    "github_url": "https://github.com/FasterXML/jackson-databind",
+    "version": "jackson-databind-2.14.1",
+    "package_dir": "j/jackson-databind",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build":false,
+
+    "jackson-databind-2.*.*": {
+        "build_script": "jackson-databind_ubi_8.5.sh"
+    }
+}

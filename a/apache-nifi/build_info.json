@@ -1,0 +1,17 @@
+{
+    "package_name" : "apache-nifi",
+    "github_url":"https://github.com/apache/nifi",
+    "version": "rel/nifi-1.17.0",
+    "package_dir": "a/apache-nifi/",
+    "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+
+    "rel/nifi-1.17.0": {
+        "dir":"1.17.0_ubi_8",
+        "build_script" : "apache-nifi_1.17.0_ubi_8.5.sh"
+    },
+
+    "rel/nifi-*.*.*": {
+        "dir":"1.17.0_ubi_8",
+        "build_script" : "apache-nifi_1.17.0_ubi_8.5.sh"
+    }
+}

@@ -1,0 +1,68 @@
+diff --git a/Makefile b/Makefile
+index dd4a78f120..f42352da00 100644
+--- a/Makefile
++++ b/Makefile
+@@ -23,7 +23,7 @@ VENV_BASE ?= /var/lib/awx/venv
+ DEV_DOCKER_TAG_BASE ?= ghcr.io/ansible
+ DEVEL_IMAGE_NAME ?= $(DEV_DOCKER_TAG_BASE)/awx_devel:$(COMPOSE_TAG)
+
+-RECEPTOR_IMAGE ?= quay.io/ansible/receptor:devel
++RECEPTOR_IMAGE ?= receptor:devel
+
+ # Python packages to install only from source (not from binary wheels)
+ # Comma separated list
+diff --git a/tools/ansible/roles/dockerfile/defaults/main.yml b/tools/ansible/roles/dockerfile/defaults/main.yml
+index 71f56dace1..68d2e5f259 100644
+--- a/tools/ansible/roles/dockerfile/defaults/main.yml
++++ b/tools/ansible/roles/dockerfile/defaults/main.yml
+@@ -6,8 +6,8 @@ dockerfile_dest: '../..'
+ dockerfile_name: 'Dockerfile'
+ template_dest: '_build'
+
+-receptor_image: quay.io/ansible/receptor:devel
++receptor_image: receptor:devel
+
+ # Helper vars to construct the proper download URL for the current architecture
+-tini_architecture: '{{ { "x86_64": "amd64", "aarch64": "arm64", "armv7": "arm" }[ansible_facts.architecture] }}'
+-kubectl_architecture: '{{ { "x86_64": "amd64", "aarch64": "arm64", "armv7": "arm" }[ansible_facts.architecture] }}'
++tini_architecture: '{{ { "x86_64": "amd64", "aarch64": "arm64", "armv7": "arm", "ppc64le": "ppc64le" }[ansible_facts.architecture] }}'
++kubectl_architecture: '{{ { "x86_64": "amd64", "aarch64": "arm64", "armv7": "arm", "ppc64le": "ppc64le" }[ansible_facts.architecture] }}'
+diff --git a/tools/docker-compose/ansible/roles/sources/defaults/main.yml b/tools/docker-compose/ansible/roles/sources/defaults/main.yml
+index 364b7da3da..a94fc4e56e 100644
+--- a/tools/docker-compose/ansible/roles/sources/defaults/main.yml
++++ b/tools/docker-compose/ansible/roles/sources/defaults/main.yml
+@@ -8,7 +8,7 @@ pg_database: 'awx'
+ control_plane_node_count: 1
+ minikube_container_group: false
+ receptor_socket_file: /var/run/awx-receptor/receptor.sock
+-receptor_image: quay.io/ansible/receptor:devel
++receptor_image: receptor:devel
+
+ # Keys for signing work
+ receptor_rsa_bits: 4096
+diff --git a/tools/ansible/roles/dockerfile/templates/Dockerfile.j2 b/tools/ansible/roles/dockerfile/templates/Dockerfile.j2
+index 4659288024..b68778cd86 100644
+--- a/tools/ansible/roles/dockerfile/templates/Dockerfile.j2
++++ b/tools/ansible/roles/dockerfile/templates/Dockerfile.j2
+@@ -41,10 +41,19 @@ RUN dnf -y update && dnf install -y 'dnf-command(config-manager)' && \
+     swig \
+     unzip \
+     xmlsec1-devel \
+-    xmlsec1-openssl-devel
++    xmlsec1-openssl-devel \
++    libjpeg-devel \
++    libselinux \
++    libselinux-devel \
++    openssl-devel
+
+ RUN pip3 install virtualenv
+
++RUN dnf -y update && dnf install -y wget && \
++    wget https://static.rust-lang.org/dist/rust-1.41.0-powerpc64le-unknown-linux-gnu.tar.gz && \
++    tar -zxvf rust-1.41.0-powerpc64le-unknown-linux-gnu.tar.gz && \
++    cd rust-1.41.0-powerpc64le-unknown-linux-gnu && \
++    sh install.sh
+
+ # Install & build requirements
+ ADD Makefile /tmp/Makefile
+ 
