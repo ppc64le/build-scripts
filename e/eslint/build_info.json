@@ -2,6 +2,7 @@
     "package_name" : "eslint",
     "github_url":"https://github.com/eslint/eslint.git",
     "version": "v8.30.0",
+    "default_version": "main",
     "package_dir": "e/eslint/",
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
 

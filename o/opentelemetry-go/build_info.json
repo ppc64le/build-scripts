@@ -2,6 +2,7 @@
     "package_name" : "opentelemetry-go",
     "github_url":"https://github.com/open-telemetry/opentelemetry-go",
     "version": "v1.11.1",
+    "default_version": "main",
     "package_dir": "o/opentelemetry-go",
     "docker_build": false,
     "validate_build_script": "true",

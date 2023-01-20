@@ -2,6 +2,7 @@
     "package_name" : "z-schema",
     "github_url":"https://github.com/zaggino/z-schema",
     "version": "v5.0.3",
+    "default_version": "master",
     "package_dir": "z/z-schema/",
     "docker_build": false,
 

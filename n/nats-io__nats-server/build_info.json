@@ -2,6 +2,7 @@
     "package_name" : "nats-io__nats-server",
     "github_url":"https://github.com/nats-io/nats-server",
     "version": "v2.9.8",
+    "default_version": "main",
     "package_dir": "n/nats-io__nats-server/",
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
 

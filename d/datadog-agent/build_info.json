@@ -2,6 +2,7 @@
     "package_name" : "datadog-agent",
     "github_url":"https://github.com/DataDog/datadog-agent.git",
     "version": "7.40.1",
+    "default_version": "main",
     "package_dir": "d/datadog-agent/",
 
     "7.38.*": {

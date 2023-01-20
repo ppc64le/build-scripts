@@ -2,6 +2,7 @@
     "package_name" : "mink",
     "github_url":"https://github.com/minkphp/Mink",
     "version": "v1.10.0",
+    "default_version": "master",
     "package_dir": "m/mink/",
     "docker_build": false,
 

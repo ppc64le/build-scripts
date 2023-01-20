@@ -2,6 +2,7 @@
     "package_name" : "parquet-mr",
     "github_url":"https://github.com/apache/parquet-mr.git",
     "version": "apache-parquet-1.12.3",
+    "default_version": "master",
     "package_dir": "p/parquet-mr",
     "docker_build": false,
 

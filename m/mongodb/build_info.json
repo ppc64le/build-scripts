@@ -2,6 +2,7 @@
     "package_name" : "mongodb",
     "github_url":"https://github.com/mongodb/mongo.git",
     "version": "r6.1.0",
+    "default_version": "master",
     "package_dir": "m/mongodb/",
     "docker_cmd" : "docker build -t ${package_name}-ppc64le:$PACKAGE_VERSION ${dir}",
     "validate_build_script": false,

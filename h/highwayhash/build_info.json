@@ -2,6 +2,7 @@
     "package_name" : "highwayhash",
     "github_url":"https://github.com/minio/highwayhash",
     "version": "v1.0.2",
+    "default_version": "master",
     "package_dir": "h/ghighwayhash",
     "validate_build_script": "true",
     "use_non_root_user": "false",

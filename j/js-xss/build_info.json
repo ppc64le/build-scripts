@@ -2,6 +2,7 @@
     "package_name" : "js-xss",
     "github_url": "https://github.com/leizongmin/js-xss",
     "version": "v1.0.14",
+    "default_version": "master",
     "package_dir": "j/js-xss/",
     "build_script": "js-xss_ubi_8.5.sh",
     "docker_build": false,

@@ -2,6 +2,7 @@
     "package_name" : "openldap",
     "github_url":"https://github.com/openldap/openldap",
     "version": "OPENLDAP_REL_ENG_2_6_0",
+    "default_version": "master",
     "package_dir": "o/openldap/",
     "docker_build": false,
 

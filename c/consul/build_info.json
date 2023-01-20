@@ -2,6 +2,7 @@
     "package_name" : "consul",
 	"github_url":"https://github.com/hashicorp/consul.git",
     "version": "v1.8.3",
+    "default_version": "main",
     "package_dir": "c/consul/",
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "build_script" : "consul_v1.12.0_ubi_8.5.sh",

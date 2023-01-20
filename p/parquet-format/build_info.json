@@ -2,6 +2,7 @@
     "package_name" : "parquet-format",
     "github_url":"https://github.com/apache/parquet-format.git",
     "version": "apache-parquet-format-2.9.0",
+    "default_version": "master",
     "package_dir": "p/parquet-format",
     "docker_build": false,
 

@@ -2,6 +2,7 @@
     "package_name" : "jackson-modules-java8",
     "github_url":"https://github.com/FasterXML/jackson-modules-java8",
     "version": "jackson-modules-java8-2.14.1",
+    "default_version": "2.15",
     "package_dir": "j/jackson-modules-java8",
     "build_script": "jackson_module_java8_ubi_8_5.sh",
     "validate_build_script": "true",

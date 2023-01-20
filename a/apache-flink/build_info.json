@@ -2,6 +2,7 @@
     "package_name" : "apache-flink",
     "github_url":"https://github.com/apache/flink",
     "version": "release-1.15.2",
+    "default_version": "master",
     "package_dir": "a/apache-flink/",
     "docker_build": true,
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",

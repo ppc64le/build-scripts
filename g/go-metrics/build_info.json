@@ -2,6 +2,7 @@
     "package_name" : "go-metrics",
     "github_url":"https://github.com/hashicorp/go-metrics",
     "version": "v0.4.1",
+    "default_version": "master",
     "package_dir": "g/go-metrics",
     "validate_build_script": "true",
     "use_non_root_user": "false",

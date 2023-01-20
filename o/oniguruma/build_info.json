@@ -2,6 +2,7 @@
     "package_name" : "oniguruma",
     "github_url":"https://github.com/kkos/oniguruma",
     "version": "v6.9.8",
+    "default_version": "master",
     "package_dir": "o/oniguruma/",
     "docker_build": false,
 

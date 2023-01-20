@@ -2,6 +2,7 @@
     "package_name" : "elasticsearch",
     "github_url":"https://github.com/elastic/elasticsearch.git",
     "version": "v8.2.1",
+    "default_version": "main",
     "package_dir": "e/elasticsearch/",
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
 

@@ -2,6 +2,7 @@
     "package_name" : "dex",
     "github_url":"https://github.com/dexidp/dex.git",
     "version": "v2.35.3",
+    "default_version": "master",
     "package_dir": "d/dex/",
 
     "v2.35.3": {
