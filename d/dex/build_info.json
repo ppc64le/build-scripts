@@ -3,6 +3,7 @@
     "github_url":"https://github.com/dexidp/dex.git",
     "version": "v2.35.3",
     "default_version": "master",
+    "build_script" : "dex_v2.35.3_ubi_8.5.sh",
     "package_dir": "d/dex/",
 
     "v2.35.3": {

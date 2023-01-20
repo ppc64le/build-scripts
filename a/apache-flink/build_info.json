@@ -4,6 +4,7 @@
     "version": "release-1.15.2",
     "default_version": "master",
     "package_dir": "a/apache-flink/",
+    "build_script" : "apache-flink_ubi_8.5.sh",
     "docker_build": true,
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
 

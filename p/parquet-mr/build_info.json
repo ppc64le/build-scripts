@@ -3,6 +3,7 @@
     "github_url":"https://github.com/apache/parquet-mr.git",
     "version": "apache-parquet-1.12.3",
     "default_version": "master",
+    "build_script" : "parquet_mr_ubi8.5.sh",
     "package_dir": "p/parquet-mr",
     "docker_build": false,
 

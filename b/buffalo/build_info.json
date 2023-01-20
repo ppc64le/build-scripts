@@ -4,6 +4,7 @@
     "package_dir": "b/buffalo/",
     "version":"v1.0.1",
     "default_version": "v1",
+    "build_script":"buffalo_v1.0.1_ubi_8.7.sh",
     "docker_build":false,
 
      "v1.0.1":{

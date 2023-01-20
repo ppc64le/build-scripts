@@ -2,6 +2,7 @@
     "package_name" : "node-red",
     "github_url":"https://github.com/node-red/node-red.git",
     "default_version": "master",
+    "build_script" : "node-red_ubi_8.5.sh",
     "version": "3.0.2",
     "package_dir": "n/node-red/",
     "docker_build": false,
