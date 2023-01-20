@@ -57,3 +57,4 @@ make clean build test
 # build-ui: Runs the yarn commands to build the frontend UI
 # build-ui-test: Runs the yarn commands to build the dev frontend UI and runs the UI tests
 make clean-ui build-ui build-ui-test
+
