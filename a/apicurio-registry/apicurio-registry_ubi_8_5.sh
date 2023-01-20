@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : apicurio-registry
-# Version       : 2.4.1.Final, 2.4.0.Final, 2.3.1.Final, 2.2.5.Final, 2.2.3.Final, 2.2.1.Final, 2.2.0.Final
+# Version       : 2.4.1.Final, 2.4.0.Final, 2.3.1.Final, 2.3.0.Final, 2.2.5.Final, 2.2.4.Final, 2.2.3.Final, 2.2.2.Final, 2.2.1.Final, 2.2.0.Final
 # Source repo   : https://github.com/Apicurio/apicurio-registry
 # Tested on     : UBI 8.5
 # Language      : Java
