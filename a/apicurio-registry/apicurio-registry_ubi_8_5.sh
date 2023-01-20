@@ -49,8 +49,8 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 
-#wget https://raw.githubusercontent.com/stutiibm/build-scripts/master/a/apicurio-registry/apicurio-registry_${PACKAGE_VERSION}.patch
-wget https://github.com/ppc64le/build-scripts/pull/2954/files#diff-297ecb7403ac4667d7893fa4252f9cf4745fd2b32f1a65d403c1e9b15215cab7
+wget https://raw.githubusercontent.com/stutiibm/build-scripts/apicurio-reg-patch/a/apicurio-registry/apicurio-registry_${PACKAGE_VERSION}.patch
+#wget https://raw.githubusercontent.com/stutiibm/build-scripts/janus_build_script/j/janusgraph/janus_0_6_2.patch
 git apply apicurio-registry_${PACKAGE_VERSION}.patch
 
 
