@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/Apicurio/apicurio-registry
 # Tested on     : UBI 8.5
 # Language      : Java
-# Travis-Check  : True
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Stuti Wali <Stuti.wali@ibm.com>
 #
@@ -49,8 +49,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 
-wget https://raw.githubusercontent.com/stutiibm/build-scripts/apicurio-reg-patch/a/apicurio-registry/apicurio-registry_${PACKAGE_VERSION}.patch
-#wget https://raw.githubusercontent.com/stutiibm/build-scripts/janus_build_script/j/janusgraph/janus_0_6_2.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/a/apicurio-registry/apicurio-registry_${PACKAGE_VERSION}.patch
 git apply apicurio-registry_${PACKAGE_VERSION}.patch
 
 
