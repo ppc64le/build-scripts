@@ -23,7 +23,16 @@
 yum update -y && yum install -y gcc-c++ make python36 wget git tar zip npm
 npm install -g yarn
 
-## node setup
+BUILD_VERSION=v1.62.0
+
+# go setup
+wget https://go.dev/dl/go1.18.7.linux-ppc64le.tar.gz
+tar -C /usr/local -xzf go1.18.7.linux-ppc64le.tar.gz
+export GOROOT=/usr/local/go/
+export GOPATH=$HOME
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+
+# node setup
 curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -31,35 +40,20 @@ export NVM_DIR="$HOME/.nvm"
 nvm install 14
 nvm use 14
 
-BUILD_VERSION=v1.62.0
-
-## go setup
-wget https://go.dev/dl/go1.18.7.linux-ppc64le.tar.gz
-tar -C /usr/local -xzf go1.18.7.linux-ppc64le.tar.gz
-export GOROOT=/usr/local/go/
-export GOPATH=$HOME
-export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
-
 # Clone git repository
 git clone https://github.com/kiali/kiali.git
 cd kiali/
 git checkout $BUILD_VERSION
 
-# Build and test
-
-## build: Runs `make go-check` internally and build Kiali binary
-## test: Run tests, excluding third party tests under vendor and frontend
-make clean build test
-
 sed -i "97s/$/ --timeout 4m/" make/Makefile.build.mk
 make lint-install
 make lint
 
-## build-ui: Runs the yarn commands to build the frontend UI
-## build-ui-test: Runs the yarn commands to build the dev frontend UI and runs the UI tests
+# Build and test
+# build: Runs `make go-check` internally and build Kiali binary
+# test: Run tests, excluding third party tests under vendor and frontend
+make clean build test
+
+# build-ui: Runs the yarn commands to build the frontend UI
+# build-ui-test: Runs the yarn commands to build the dev frontend UI and runs the UI tests
 make clean-ui build-ui build-ui-test
-
-echo "`date +'%d-%m-%Y %T'` - Build and Test Completed ---------------------------------------"
-echo "- --------------------------------------------------------------------------------------"
-
-
