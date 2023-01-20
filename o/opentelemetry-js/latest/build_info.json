@@ -5,10 +5,10 @@
     "default_version": "main",
     "package_dir": "o/opentelemetry-js/latest",
     "docker_build": false,
-    "build_script" : "opentelemetry-js_ubi_8.5.sh",
+    "build_script" : "opentelemetry-js_ubi-8.5.sh",
     
     "v1.*.*" : {
-        "build_script" : "opentelemetry-js_ubi_8.5.sh",
+        "build_script" : "opentelemetry-js_ubi-8.5.sh",
         "args": {
 	        "NODE_VERSION":"16"
         }

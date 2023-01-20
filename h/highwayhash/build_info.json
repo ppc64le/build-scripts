@@ -4,7 +4,7 @@
     "version": "v1.0.2",
     "default_version": "master",
     "build_script": "highwayhash_ubi8.sh",
-    "package_dir": "h/ghighwayhash",
+    "package_dir": "h/highwayhash",
     "validate_build_script": "true",
     "use_non_root_user": "false",
     "docker_build":false,
