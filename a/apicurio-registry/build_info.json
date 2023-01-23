@@ -3,7 +3,7 @@
     "github_url":"https://github.com/Apicurio/apicurio-registry",
     "version": "2.4.1.Final",
     "package_dir": "a/apicurio-registry",
-    "build_script": "apicurio-registry_2.4.1_ubi_8_5.sh",
+    "build_script": "apicurio-registry_ubi_8_5.sh",
     "validate_build_script": "true",
 
 
