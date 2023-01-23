@@ -1,15 +1,18 @@
 diff --git a/rt/transports/pom.xml b/rt/transports/pom.xml
-index 8002c7d269..7bb6d36ee1 100644
+index 8002c7d269..86615b4865 100644
 --- a/rt/transports/pom.xml
 +++ b/rt/transports/pom.xml
-@@ -37,7 +37,6 @@
+@@ -36,10 +36,7 @@
+         <module>http-undertow</module>
          <module>http-hc</module>
          <module>http-hc5</module>
 -        <module>http-netty/netty-server</module>
 -        <module>http-netty/netty-client</module>
--        <module>jms</module>
          <module>udp</module>
+-        <module>jms</module>
          <module>websocket</module>
+     </modules>
+ </project>
 diff --git a/services/xkms/xkms-x509-handlers/src/test/java/org/apache/cxf/xkms/x509/validator/TrustedAuthorityValidatorCRLTest.java b/services/xkms/xkms-x509-handlers/src/test/java/org/apache/cxf/xkms/x509/validator/TrustedAuthorityValidatorCRLTest.java
 index e759f775de..625f0a1b48 100644
 --- a/services/xkms/xkms-x509-handlers/src/test/java/org/apache/cxf/xkms/x509/validator/TrustedAuthorityValidatorCRLTest.java
@@ -26,10 +29,10 @@ index e759f775de..625f0a1b48 100644
 
      private static X509Certificate readCertificate(String path) throws CertificateException {
 diff --git a/services/xkms/xkms-x509-handlers/src/test/java/org/apache/cxf/xkms/x509/validator/TrustedAuthorityValidatorTest.java b/services/xkms/xkms-x509-handlers/src/test/java/org/apache/cxf/xkms/x509/validator/TrustedAuthorityValidatorTest.java
-index 1d14e2585e..a8bef9e6c5 100644
+index 1d14e2585e..73012ce424 100644
 --- a/services/xkms/xkms-x509-handlers/src/test/java/org/apache/cxf/xkms/x509/validator/TrustedAuthorityValidatorTest.java
 +++ b/services/xkms/xkms-x509-handlers/src/test/java/org/apache/cxf/xkms/x509/validator/TrustedAuthorityValidatorTest.java
-@@ -77,26 +77,26 @@ public class TrustedAuthorityValidatorTest extends BasicValidationTest {
+@@ -77,8 +77,8 @@ public class TrustedAuthorityValidatorTest extends BasicValidationTest {
          TrustedAuthorityValidator validator = new TrustedAuthorityValidator(certificateRepo);
          Assert.assertTrue("Root should be valid",
                            validator.isCertificateChainValid(Arrays.asList(certificateRoot)));
@@ -40,8 +43,10 @@ index 1d14e2585e..a8bef9e6c5 100644
      }
 
      @Test
-     public void testRootCertIsValid() throws JAXBException, CertificateException {
-         StatusType result = processRequest("validateRequestOKRoot.xml");
+@@ -93,19 +93,19 @@ public class TrustedAuthorityValidatorTest extends BasicValidationTest {
+     @Test
+     public void testAliceSignedByRootIsValid() throws JAXBException, CertificateException {
+         StatusType result = processRequest("validateRequestOKAlice.xml");
 -        Assert.assertEquals(KeyBindingEnum.HTTP_WWW_W_3_ORG_2002_03_XKMS_VALID, result.getStatusValue());
 -        Assert.assertFalse(result.getValidReason().isEmpty());
 +        Assert.assertEquals(result.getStatusValue(), KeyBindingEnum.HTTP_WWW_W_3_ORG_2002_03_XKMS_INVALID);
@@ -52,8 +57,8 @@ index 1d14e2585e..a8bef9e6c5 100644
      }
 
      @Test
-     public void testAliceSignedByRootIsValid() throws JAXBException, CertificateException {
-         StatusType result = processRequest("validateRequestOKAlice.xml");
+     public void testDaveSignedByAliceSginedByRootIsValid() throws JAXBException, CertificateException {
+         StatusType result = processRequest("validateRequestOKDave.xml");
 -        Assert.assertEquals(KeyBindingEnum.HTTP_WWW_W_3_ORG_2002_03_XKMS_VALID, result.getStatusValue());
 -        Assert.assertFalse(result.getValidReason().isEmpty());
 +        Assert.assertEquals(result.getStatusValue(), KeyBindingEnum.HTTP_WWW_W_3_ORG_2002_03_XKMS_INVALID);
@@ -103,4 +108,3 @@ index 3dab98c569..0e19e6f7b3 100644
 
          ((java.io.Closeable)dispatch).close();
      }
-
