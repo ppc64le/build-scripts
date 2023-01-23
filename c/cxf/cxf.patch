@@ -1,9 +1,8 @@
 diff --git a/rt/transports/pom.xml b/rt/transports/pom.xml
-index 4ebd176ea5..cbdcde5eba 100644
+index 8002c7d269..7bb6d36ee1 100644
 --- a/rt/transports/pom.xml
 +++ b/rt/transports/pom.xml
-@@ -36,9 +36,6 @@
-         <module>http-undertow</module>
+@@ -37,7 +37,6 @@
          <module>http-hc</module>
          <module>http-hc5</module>
 -        <module>http-netty/netty-server</module>
@@ -11,7 +10,6 @@ index 4ebd176ea5..cbdcde5eba 100644
 -        <module>jms</module>
          <module>udp</module>
          <module>websocket</module>
-     </modules>
 diff --git a/services/xkms/xkms-x509-handlers/src/test/java/org/apache/cxf/xkms/x509/validator/TrustedAuthorityValidatorCRLTest.java b/services/xkms/xkms-x509-handlers/src/test/java/org/apache/cxf/xkms/x509/validator/TrustedAuthorityValidatorCRLTest.java
 index e759f775de..625f0a1b48 100644
 --- a/services/xkms/xkms-x509-handlers/src/test/java/org/apache/cxf/xkms/x509/validator/TrustedAuthorityValidatorCRLTest.java
