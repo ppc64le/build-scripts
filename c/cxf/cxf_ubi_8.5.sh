@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=cxf
-PACKAGE_VERSION=${1:cxf-4.0.0}
+PACKAGE_VERSION=cxf-4.0.0
 PACKAGE_URL=https://github.com/apache/cxf.git
 
 yum -y update
