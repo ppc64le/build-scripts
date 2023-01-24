@@ -42,7 +42,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git apply ../cxf.patch;
 
-mvn install
+mvn -Pfastinstall
 
 mvn test
 
