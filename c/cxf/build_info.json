@@ -6,6 +6,6 @@
     "docker_build":false,
 
     "cxf-4.0.0" : {
-        "build_script" :"cxf_ubi8.5.sh"
+        "build_script" :"cxf_ubi_8.5.sh"
         }
 }
