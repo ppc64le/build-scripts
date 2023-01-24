@@ -89,4 +89,5 @@ else
 fi
 
 #Test case is failing due to quay.io/artemiscloud/fake-broker:latest is a placeholder image 
+#And the image is not available for ppc64 architecture
 #Discussed with Red-Hat team and added images on RTC task
