@@ -1,14 +1,14 @@
 diff --git a/rt/transports/pom.xml b/rt/transports/pom.xml
-index 8002c7d269..86615b4865 100644
+index 8002c7d269..c5f6e5e551 100644
 --- a/rt/transports/pom.xml
 +++ b/rt/transports/pom.xml
-@@ -36,10 +36,7 @@
+@@ -36,10 +36,6 @@
          <module>http-undertow</module>
          <module>http-hc</module>
          <module>http-hc5</module>
 -        <module>http-netty/netty-server</module>
 -        <module>http-netty/netty-client</module>
-         <module>udp</module>
+-        <module>udp</module>
 -        <module>jms</module>
          <module>websocket</module>
      </modules>
