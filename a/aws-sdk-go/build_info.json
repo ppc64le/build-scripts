@@ -2,7 +2,7 @@
     "package_name" : "aws-sdk-go",
     "github_url":"https://github.com/aws/aws-sdk-go",
     "version": "v1.44.149",
-    "default_version": "main",
+    "default_branch": "main",
     "build_script" : "aws-sdk-go_ubi_8.5.sh",
     "package_dir": "a/aws-sdk-go/",
     "docker_build": false,

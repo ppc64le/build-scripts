@@ -2,7 +2,7 @@
     "package_name" : "datadog-agent",
     "github_url":"https://github.com/DataDog/datadog-agent.git",
     "version": "7.40.1",
-    "default_version": "main",
+    "default_branch": "main",
     "build_script" : "datadog-agent_7.38.2_ubi_8.5.sh",
     "package_dir": "d/datadog-agent/",
 

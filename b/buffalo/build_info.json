@@ -3,7 +3,7 @@
     "github_url":"https://github.com/gobuffalo/buffalo",
     "package_dir": "b/buffalo/",
     "version":"v1.0.1",
-    "default_version": "v1",
+    "default_branch": "v1",
     "build_script":"buffalo_v1.0.1_ubi_8.7.sh",
     "docker_build":false,
 

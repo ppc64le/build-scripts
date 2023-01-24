@@ -2,7 +2,7 @@
     "package_name": "jackson-dataformat-xml",
     "github_url": "https://github.com/FasterXML/jackson-dataformat-xml",
     "version": "jackson-dataformat-xml-2.14.1",
-    "default_version": "2.15",
+    "default_branch": "2.15",
     "build_script": "jackson-dataformat-xml_ubi_8.5.sh",
     "package_dir": "j/Jackson-dataformat-xml",
     "validate_build_script": "true",

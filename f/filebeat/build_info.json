@@ -2,7 +2,7 @@
     "package_name" : "filebeat",
 	"github_url":"https://github.com/elastic/beats.git",
     "version": "v8.5.2",
-    "default_version": "main",
+    "default_branch": "main",
     "package_dir": "f/filebeat/",
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "build_script" : "filebeat_UBI_8.5.sh",

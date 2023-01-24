@@ -2,7 +2,7 @@
     "package_name" : "go-openapi-runtime",
     "github_url":"https://github.com/go-openapi/runtime",
     "package_dir": "g/go-openapi-runtime/",
-    "default_version": "master",
+    "default_branch": "master",
     "build_script":"go-openapi_runtime_v019.0_ubi_8.7.sh",
     "version":"v0.19.0",
     "docker_build":false,

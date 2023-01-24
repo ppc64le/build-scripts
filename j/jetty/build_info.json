@@ -2,7 +2,7 @@
     "package_name" : "jetty",
     "github_url":"https://github.com/eclipse/jetty.project.git",
     "version": "jetty-11.0.12",
-    "default_version": "jetty-10.0.x",
+    "default_branch": "jetty-10.0.x",
     "build_script" : "jetty_11.0.12_ubi_8.5.sh",
     "package_dir": "j/jetty/",
     "docker_build": false,

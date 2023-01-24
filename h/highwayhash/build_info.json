@@ -2,7 +2,7 @@
     "package_name" : "highwayhash",
     "github_url":"https://github.com/minio/highwayhash",
     "version": "v1.0.2",
-    "default_version": "master",
+    "default_branch": "master",
     "build_script": "highwayhash_ubi8.sh",
     "package_dir": "h/highwayhash",
     "validate_build_script": "true",

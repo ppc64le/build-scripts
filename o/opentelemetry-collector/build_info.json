@@ -2,7 +2,7 @@
     "package_name" : "opentelemetry-collector",
     "github_url":"https://github.com/open-telemetry/opentelemetry-collector",
     "version": "v0.66.0",
-    "default_version": "main",
+    "default_branch": "main",
     "package_dir": "o/opentelemetry-collector/",
     "docker_build": false,
     "build_script" : "opentelemetry-collector_ubi_8.5.sh",
