@@ -36,7 +36,7 @@ if ! git clone -q $PACKAGE_URL $PACKAGE_NAME; then
 fi
 
 cd $PACKAGE_NAME
-git checkout v"$PACKAGE_VERSION"
+git checkout "$PACKAGE_VERSION"
 export GRPC_JAVA_VERSION=$(grep -m1 grpcVersion build.gradle.kts | cut -d "=" -f 2 | sed "s/\"//g" | sed "s/\s//g")
 export PROTOBUF_VERSION=$(grep -m1 protobufVersion build.gradle.kts | cut -d "=" -f 2 | sed "s/\"//g" | sed "s/\s//g")
 IFS=. read -r major minor patch < <(echo "$GRPC_JAVA_VERSION")
