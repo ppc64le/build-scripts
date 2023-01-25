@@ -1,3 +1,26 @@
+diff --git a/rt/javascript/pom.xml b/rt/javascript/pom.xml
+index 9918953a07..bd0f5686d9 100644
+--- a/rt/javascript/pom.xml
++++ b/rt/javascript/pom.xml
+@@ -32,6 +32,5 @@
+     </parent>
+     <modules>
+         <module>javascript-rt</module>
+-        <module>javascript-tests</module>
+     </modules>
+ </project>
+diff --git a/rt/pom.xml b/rt/pom.xml
+index 75a13b8f0a..0182721213 100644
+--- a/rt/pom.xml
++++ b/rt/pom.xml
+@@ -39,7 +39,6 @@
+         <module>ws</module>
+         <module>rs</module>
+         <module>management</module>
+-        <module>javascript</module>
+         <module>security</module>
+         <module>security-saml</module>
+     </modules>
 diff --git a/rt/transports/pom.xml b/rt/transports/pom.xml
 index 8002c7d269..c5f6e5e551 100644
 --- a/rt/transports/pom.xml
@@ -13,6 +36,30 @@ index 8002c7d269..c5f6e5e551 100644
          <module>websocket</module>
      </modules>
  </project>
+diff --git a/services/pom.xml b/services/pom.xml
+index 3b4fb7be85..1fa303c132 100644
+--- a/services/pom.xml
++++ b/services/pom.xml
+@@ -31,7 +31,6 @@
+         <version>4.0.0</version>
+     </parent>
+     <modules>
+-        <module>sts</module>
+         <module>wsn</module>
+         <module>ws-discovery</module>
+         <module>xkms</module>
+diff --git a/services/xkms/pom.xml b/services/xkms/pom.xml
+index a109b80e1b..bf54d72099 100644
+--- a/services/xkms/pom.xml
++++ b/services/xkms/pom.xml
+@@ -35,7 +35,6 @@
+         <module>xkms-common</module>
+         <module>xkms-x509-handlers</module>
+         <module>xkms-service</module>
+-        <module>xkms-client</module>
+         <module>xkms-war</module>
+         <module>xkms-x509-repo-ldap</module>
+     </modules>
 diff --git a/services/xkms/xkms-x509-handlers/src/test/java/org/apache/cxf/xkms/x509/validator/TrustedAuthorityValidatorCRLTest.java b/services/xkms/xkms-x509-handlers/src/test/java/org/apache/cxf/xkms/x509/validator/TrustedAuthorityValidatorCRLTest.java
 index e759f775de..625f0a1b48 100644
 --- a/services/xkms/xkms-x509-handlers/src/test/java/org/apache/cxf/xkms/x509/validator/TrustedAuthorityValidatorCRLTest.java
@@ -70,10 +117,24 @@ index 1d14e2585e..73012ce424 100644
 
      @Test
 diff --git a/systests/pom.xml b/systests/pom.xml
-index 4d5e605e53..16e866cfa9 100644
+index 4d5e605e53..ff924abd63 100644
 --- a/systests/pom.xml
 +++ b/systests/pom.xml
-@@ -56,6 +56,5 @@
+@@ -33,13 +33,8 @@
+     <modules>
+         <module>container-integration</module>
+         <module>uncategorized</module>
+-        <module>transports</module>
+-        <module>forked</module>
+-        <module>transport-undertow</module>
+-        <module>jaxws</module>
+         <module>databinding</module>
+         <module>ws-specs</module>
+-        <module>ws-rm</module>
+         <module>ws-security</module>
+         <module>ws-security-examples</module>
+         <module>kerberos</module>
+@@ -56,6 +51,5 @@
          <module>transport-netty</module>
          <module>transport-hc5</module>
          <module>transport-jms</module>
