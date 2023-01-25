@@ -57,7 +57,7 @@ if ! ./mvnw -Dmaven.test.failure.ignore=true install; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
-    exit 1
+    exit 2
 fi
 
 if ! mvn test; then
