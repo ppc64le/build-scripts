@@ -51,7 +51,6 @@ export ARROW_TEST_DATA="${PWD}/testing/data"
 
 go install honnef.co/go/tools/cmd/staticcheck@latest
 cd go
-
 go mod tidy
 
 if ! go test ./... ; then
