@@ -6,7 +6,7 @@
     "package_dir": "o/opentelemetry-java",
     "build_script": "opentelemetry-java_ubi_8.5.sh",
     "validate_build_script": "true",
-    "use_non_root_user": "true",
+    "use_non_root_user": "false",
 
     "v1.21.0": {
 

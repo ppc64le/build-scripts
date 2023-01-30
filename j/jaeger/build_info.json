@@ -8,7 +8,7 @@
     "build_script": "jaeger_ubi8.sh",
     "docker_build": true,
     "validate_build_script": true,
-    "use_non_root_user": true,
+    "use_non_root_user": false,
 
     "v1.39.*": {
         "dir": "1.39.0-ubi8"
