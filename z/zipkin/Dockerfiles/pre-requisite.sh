@@ -33,22 +33,5 @@ yum install -y java-11-openjdk-devel maven
 mvn -DskipTests package
 # ensure zipkin-server/target/zipkin-server-*slim.jar & zipkin-server/target/zipkin-server-*exec.jar  jars are created
 ls -l target/
-
-#sed -i '23d' build-bin/docker/docker_build
-#sed -i '22 aDOCKER_BUILDKIT=1 docker build ${docker_args} --tag ${docker_tag} .' build-bin/docker/docker_build
-
-#sed -i '33d' docker/Dockerfile
-#sed -i '32 aFROM openzipkin/java:test as install' docker/Dockerfile
-
-#sed -i '49,52d' docker/Dockerfile
-#sed -i '48 aRUN mkdir zipkin && cd zipkin && \' docker/Dockerfile
-#sed -i '49 a\    jar -xf /code/zipkin-server/target/zipkin-server-*exec.jar && cd .. && \' docker/Dockerfile
-#sed -i '50 a\    mkdir zipkin-slim && cd zipkin-slim && \' docker/Dockerfile
-#sed -i '51 a\    jar -xf /code/zipkin-server/target/zipkin-server-*slim.jar && cd ..' docker/Dockerfile
-
-#sed -i '55d' docker/Dockerfile
-#sed -i '54 aFROM openzipkin/java:test-jre as base-server' docker/Dockerfile
-
-#build-bin/docker/docker_build openzipkin/zipkin:test
 cd ..
 
