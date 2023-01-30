@@ -2,7 +2,7 @@
 
 Prerequisites :
 
-1. Build zipkin package by running the build script od zipkin
+1. Build zipkin package by running the build script of zipkin
 2. Navigate to "Dockerfiles" directory and run the script pre-requisite.sh 
 3. Build Dockerfile of zipkin using build command.
 
