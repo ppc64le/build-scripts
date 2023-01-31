@@ -4,7 +4,7 @@
 # Package       : csstype
 # Version       : v2.6.0,v2.6.9
 # Source repo   : https://github.com/frenic/csstype
-# Tested on     : RHEL 7.6,8.5
+# Tested on     : RHEL 7.6, RHEL 8.5
 # Language      : Node
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
