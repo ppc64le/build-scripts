@@ -5,7 +5,7 @@ WORKDIR /opt/antlr4
 ARG PACKAGE_VERSION="4.11.1"
 ARG MAVEN_OPTS="-Xmx1G"
 
-ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.17.0.8-2.el8_6.ppc64le
+ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.18.0.10-2.el8_7.ppc64le
 ENV M2_HOME=/usr/local/maven
 ENV PATH=$PATH:$M2_HOME/bin
 
@@ -32,7 +32,6 @@ ARG uid=1000
 ARG gid=1000
 
 RUN adduser \
-    --disabled-login \
     --comment "" \
     --home-dir "$(pwd)" \
     --no-create-home \
