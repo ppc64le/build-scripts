@@ -37,6 +37,7 @@ export PATH=$PATH:$M2_HOME/bin
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+PACKAGE_DIR=`pwd`
 
 cd /usr/local/lib
 wget https://www.antlr.org/download/antlr-4.11.1-complete.jar
@@ -46,7 +47,7 @@ export MAVEN_OPTS="-Xmx1G"
 alias antlr4='java -Xmx500M -cp "/usr/local/lib/antlr-4.11.1-complete.jar:$CLASSPATH" org.antlr.v4.Tool'
 alias grun='java -Xmx500M -cp "/usr/local/lib/antlr-4.11.1-complete.jar:$CLASSPATH" org.antlr.v4.gui.TestRig'
 
-cd && cd antlr4/
+cd ${PACKAGE_DIR}
 if ! mvn clean; then
 	if ! mvn -DskipTests install; then
 		echo "Build fails"
