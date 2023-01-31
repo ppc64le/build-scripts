@@ -11,6 +11,6 @@
 
     "v4.11.*": {
         "dir": "ubi-8.5",
-        "build_script": "antlr4_v4.11.1_ubi_8.5"
+        "build_script": "antlr4_v4.11.1_ubi_8.5.sh"
     }
 }
