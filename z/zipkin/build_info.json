@@ -1,0 +1,17 @@
+{
+    "package_name" : "Zipkin",
+    "github_url":"https://github.com/openzipkin/zipkin",
+    "version": "2.23.19",
+    "package_dir": "z/zipkin/",
+    "build_script": "zipkin_ubi_8.5.sh",
+    "docker_build": "true",
+    "validate_build_script": "true",
+
+    "2.23.19": {
+        "dir": "2.23.19_ubi_8.5",
+        "build_script": "zipkin_ubi_8.5.sh",
+        "base_docker_image": "registry.access.redhat.com/ubi8/ubi:8.5"
+
+    }
+}
+

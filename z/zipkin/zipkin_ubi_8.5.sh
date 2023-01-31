@@ -1,13 +1,13 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 # Package          : zipkin
-# Version          : 2.20.0
+# Version          : 2.20.0, 2.23.19
 # Source repo      : https://github.com/openzipkin/zipkin
 # Tested on        : UBI 8.5
 # Language         : Java
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Bhagat Singh <Bhagat.singh1@ibm.com>
+# Maintainer       : Bhagat Singh <Bhagat.singh1@ibm.com>,  Stuti Wali <Stuti.Wali@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -21,7 +21,7 @@
 PACKAGE_NAME=zipkin
 PACKAGE_URL=https://github.com/openzipkin/zipkin
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-2.20.0}
+PACKAGE_VERSION=${1:-2.23.19}
 
 #Dependencies
 yum install -y java-11-openjdk-devel git maven
