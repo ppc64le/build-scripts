@@ -3,7 +3,6 @@
     "github_url":"https://github.com/openzipkin/zipkin",
     "version": "2.23.19",
     "package_dir": "z/zipkin/",
-    "docker_cmd":"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "build_script": "zipkin_ubi_8.5.sh",
     "docker_build": "true",
     "validate_build_script": "true",
