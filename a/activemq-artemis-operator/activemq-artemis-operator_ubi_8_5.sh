@@ -23,6 +23,7 @@ PACKAGE_NAME=activemq-artemis-operator
 SDK_PACKAGE_NAME=operator-sdk
 PACKAGE_URL=https://github.com/artemiscloud/activemq-artemis-operator.git
 SDK_PACKAGE_URL=https://github.com/operator-framework/operator-sdk
+PACKAGE_VERSION=main
 
 dnf install -y git wget gcc-c++ gcc make
 
@@ -66,7 +67,7 @@ if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
 fi
 
 cd $PACKAGE_NAME/
-git checkout main
+git checkout $PACKAGE_VERSION
 
 #building and testing 
 if !  make build; then
