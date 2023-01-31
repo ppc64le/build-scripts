@@ -41,7 +41,6 @@ git checkout $PACKAGE_VERSION
 cd /usr/local/lib
 wget https://www.antlr.org/download/antlr-4.11.1-complete.jar
 export CLASSPATH=".:/usr/local/lib/antlr-4.11.1-complete.jar:$CLASSPATH"
-cd /
 
 export MAVEN_OPTS="-Xmx1G"
 alias antlr4='java -Xmx500M -cp "/usr/local/lib/antlr-4.11.1-complete.jar:$CLASSPATH" org.antlr.v4.Tool'
