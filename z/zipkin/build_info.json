@@ -6,7 +6,6 @@
     "build_script": "zipkin_ubi_8.5.sh",
     "docker_build": "true",
     "validate_build_script": "true",
-    "use_non_root_user": "true",
 
     "2.23.19": {
         "dir": "2.23.19_ubi_8.5",
