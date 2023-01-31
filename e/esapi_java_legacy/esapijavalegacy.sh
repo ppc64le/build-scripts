@@ -34,7 +34,7 @@ export GPG_TTY=$(tty)
 if ! (mvn install) ; then
                         echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
                         echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master  | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
-                        exit 0
+                        exit 1
                 else
                         echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
                         echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
