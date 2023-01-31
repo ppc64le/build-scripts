@@ -1,4 +1,3 @@
-
 #docker-alpine
 git clone https://github.com/openzipkin/docker-alpine.git
 cd docker-alpine
