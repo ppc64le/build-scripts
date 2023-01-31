@@ -23,19 +23,15 @@ PACKAGE_VERSION=esapi-2.2.3.0
 PACKAGE_URL=https://github.com/ESAPI/esapi-java-legacy.git
 
 yum install -y git wget gcc-c++ pinentry maven
-yum -y update --allowerasing --skip-broken --nobest
 
 rm -rf $PACKAGE_NAME
-
 git clone $PACKAGE_URL
-
 cd $PACKAGE_NAME
-
 git checkout $PACKAGE_VERSION
 
 export GPG_TTY=$(tty)
 
-if ! (mvn install && mvn test) ; then
+if ! (mvn install) ; then
                         echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
                         echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master  | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
                         exit 0
