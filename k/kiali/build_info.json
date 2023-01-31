@@ -10,7 +10,7 @@
     "use_non_root_user": "false",
 
     "v1.62.*": {
-	"dir" : "1.62_ubi8"
+	"dir" : "1.62_ubi8",
         "build_script": "kiali_ubi_8.5.sh"
     }
 }
