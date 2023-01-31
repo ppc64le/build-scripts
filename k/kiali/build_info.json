@@ -1,6 +1,6 @@
 {
     "package_name" : "kiali",
-    "github_url": "https://github.com/kiali/kiali.git",
+    "github_url": "https://github.com/kiali/kiali",
      "version": "v1.62.0",
     "package_dir": "k/kiali/",
     "docker_cmd":"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
