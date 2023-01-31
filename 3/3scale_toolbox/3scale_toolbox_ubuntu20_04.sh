@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/3scale/3scale_toolbox.git
 # Tested on     : ubuntu:20.04
 # Language      : Ruby
-# Travis-Check  : False
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Ujwal Akare <Ujwal.Akare@ibm.com>
 #
