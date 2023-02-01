@@ -7,6 +7,7 @@
     "validate_build_script": "true",
 
 
+
     "2.4.*": {
         "build_script": "apicurio-registry_ubi_8_5.sh"      
     },
