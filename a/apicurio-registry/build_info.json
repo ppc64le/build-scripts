@@ -7,74 +7,17 @@
     "validate_build_script": "true",
 
 
-    "2.4.1.Final": {
-	  "patches": {
-            "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/a/apicurio-registry/apicurio-registry_2.4.1.Final.patch"
-        },
-        "build_script": "apicurio-registry_ubi_8_5.sh"      
-    },
-
-    "2.4.0.Final": {
-	  "patches": {
-            "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/a/apicurio-registry/apicurio-registry_2.4.0.Final.patch"
-        },
+    "2.4.*": {
         "build_script": "apicurio-registry_ubi_8_5.sh"      
     },
 
     "2.3.*": {
-      "patches": {
-            "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/a/apicurio-registry/apicurio-registry_2.3.1.Final.patch"
-        },
-        "build_script": "apicurio-registry_ubi_8_5.sh"         
+         "build_script": "apicurio-registry_ubi_8_5.sh"         
     },
 
-    "2.2.5.Final": {
-      "patches": {
-            "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/a/apicurio-registry/apicurio-registry_2.2.5.Final.patch"
-        },
-        "build_script": "apicurio-registry_ubi_8_5.sh"         
-    },
-
-    "2.2.4.Final": {
-      "patches": {
-            "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/a/apicurio-registry/apicurio-registry_2.2.5.Final.patch"
-        },
-        "build_script": "apicurio-registry_ubi_8_5.sh"         
-    },
-
-    "2.2.3.Final": {
-	  "patches": {
-            "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/a/apicurio-registry/apicurio-registry_2.2.3.Final.patch"
-        },
-        "build_script": "apicurio-registry_ubi_8_5.sh"      
-    },
-
-    "2.2.2.Final": {
-	  "patches": {
-            "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/a/apicurio-registry/apicurio-registry_2.2.3.Final.patch"
-        },
-        "build_script": "apicurio-registry_ubi_8_5.sh"      
-    },
-
-    "2.2.1.Final": {
-	  "patches": {
-            "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/a/apicurio-registry/apicurio-registry_2.2.1.Final.patch"
-        },
-        "build_script": "apicurio-registry_ubi_8_5.sh"      
-    },
-
-    "2.2.0.Final": {
-	  "patches": {
-            "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/a/apicurio-registry/apicurio-registry_2.2.0.Final.patch"
-        },
-        "build_script": "apicurio-registry_ubi_8_5.sh"      
+    "2.2.*": {
+         "build_script": "apicurio-registry_ubi_8_5.sh"         
     }
-
-
-
-    
-
-
 }
 
 
