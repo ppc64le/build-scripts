@@ -9,7 +9,7 @@
 	
     "1.16.*": {
         "build_script": "istio_api_ubi_8.5.sh"
-    }
+    },
 	
     "1.15.*": {
         "build_script": "istio_api_ubi_8.5.sh"
