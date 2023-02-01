@@ -8,7 +8,7 @@
 # Language      : go
 # Travis-Check  : True
 # Script License: Apache License 2.0 or later
-# Maintainer's  : Haritha Patchari <haritha.patchari@ibm.com>
+# Maintainer's  : Haritha Patchari <haritha.patchari@ibm.com>,Pratik Tonage <Pratik.Tonage@ibm.com>
 #
 #
 # Disclaimer: This script has been tested in root mode on given
