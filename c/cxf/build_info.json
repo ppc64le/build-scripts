@@ -3,8 +3,10 @@
     "github_url":"https://github.com/apache/cxf.git",
     "version":"cxf-4.0.0",
     "package_dir":"c/cxf",
-    "docker_build":false,
-
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": false,
+    
     "cxf-4.0.0" : {
         "build_script" :"cxf_ubi_8.5.sh"
         }
