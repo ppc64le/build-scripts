@@ -1,7 +1,8 @@
 {
     "package_name" : "kiali",
     "github_url": "https://github.com/kiali/kiali",
-     "version": "v1.62.0",
+    "version": "v1.62.0",
+    "default_branch":"master",
     "package_dir": "k/kiali/",
     "docker_cmd":"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "build_script": "kiali_ubi_8.5.sh",
