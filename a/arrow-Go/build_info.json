@@ -4,7 +4,7 @@
     "version": "go/v11.0.0",
     "default_branch": "master",
     "package_dir": "a/arrow-Go/",
-    "build_script": "arrow_ubi_8.5.sh",
+    "build_script": "arrow-go_ubi_8.5.sh",
     "validate_build_script": "true",
     "use_non_root_user": "false"
 
