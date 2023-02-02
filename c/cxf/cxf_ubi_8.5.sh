@@ -40,7 +40,8 @@ wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cxf/cxf.pa
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-git apply ../cxf.patch;
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cxf/cxf.patch
+git apply cxf.patch;
 
 if ! mvn -Pfastinstall ; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
