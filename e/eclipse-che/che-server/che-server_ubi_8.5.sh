@@ -43,7 +43,7 @@ cd che-server
 git checkout $PACKAGE_VERSION
 
 # Build & Test
-mvn clean install -X
+mvn clean install
 
 
 
