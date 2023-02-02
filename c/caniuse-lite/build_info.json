@@ -2,6 +2,8 @@
     "package_name" : "caniuse-lite",
     "github_url":"https://github.com/browserslist/caniuse-lite.git",
     "version": "v1.0.30001224",
+    "default_branch": "main",
+    "build_script" : "caniuse-lite_ubi_8.5.sh",
     "package_dir": "c/caniuse-lite/",
     "docker_build": false,
 

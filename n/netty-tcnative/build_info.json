@@ -2,6 +2,8 @@
     "package_name": "netty-tcnative",
     "github_url": "https://github.com/netty/netty-tcnative.git",
     "version": "netty-tcnative-parent-2.0.54.Final",
+    "default_branch": "main",
+    "build_script" : "netty-tcnative_ubi_8.5.sh",
     "package_dir": "n/netty-tcnative/",
     "docker_build": false,
 

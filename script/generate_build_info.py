@@ -18,6 +18,9 @@ from logging import WARNING
 
 import os
 import json
+import requests
+
+GITHUB_PACKAGE_INFO_API = "https://api.github.com/repos/{}/{}"
 
 class bcolors:
     HEADER = '\033[95m'
@@ -54,7 +57,10 @@ def log(type:log_type, *phrases):
     
     print(color + text + bcolors.ENDC)
     
-
+def get_default_branch(package_url):
+    owner, repo = package_url.replace('.git','').split('/')[-2:]
+    response = requests.get(GITHUB_PACKAGE_INFO_API.format(owner, repo)).json()
+    return response["default_branch"]
 
 def get_files_list(dirname:str, recursive:bool=True):
     file_list = []
@@ -83,6 +89,7 @@ else:
 build_scripts_versions = []
 dockerfile_versions = []
 github_url = ''
+default_build_script = None
 
 file_list = get_files_list(dir_name)
 for file in file_list:
@@ -98,8 +105,9 @@ for file in file_list:
                     if package_name.lower() != pname:
                         log(WARNING, f"Found change in package name in {file}")
                 elif line.startswith('# Version'):
+                    default_build_script = file.replace(dir_name, '').strip(path_separator)
                     build_scripts_versions.append( {'version': line.split(':')[1].strip(),
-                                                    'file': file.replace(dir_name, '').strip(path_separator)})
+                                                    'file': default_build_script})
     elif 'Dockerfile' in file.split(path_separator)[-1]:
         # Read Dockerfiles and store details
         docker_details = {}
@@ -126,6 +134,8 @@ final_json = {
     "package_name" : package_name,
     "github_url": github_url,
     "version": dockerfile_versions[-1]['version'] if dockerfile_versions else build_scripts_versions[-1]['version'],
+    "default_branch": get_default_branch(github_url),
+    "build_script": default_build_script,
     "package_dir": dir_name.replace(ROOT, '').strip(path_separator),
     "docker_build": True if dockerfile_versions else False,
     "validate_build_script": True if build_scripts_versions else False
