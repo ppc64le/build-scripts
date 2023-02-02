@@ -43,3 +43,8 @@ cd $GOPATH/src/github.com/wildfly/wildfly-operator
 git checkout 0.5.6
 
 make build
+
+#e2e tests has dependency on below images -
+#quay.io/operator-framework/scorecard-test:v1.3.1
+#quay.io/wildfly-quickstarts/wildfly-operator-quickstart:bootable-21.0
+#quay.io/wildfly-quickstarts/clusterbench:latest
