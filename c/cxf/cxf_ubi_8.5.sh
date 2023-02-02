@@ -36,7 +36,6 @@ export M2_HOME=/usr/local/maven
 export PATH=$PATH:$M2_HOME/bin
 
 cd $WORKDIR
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cxf/cxf.patch
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
