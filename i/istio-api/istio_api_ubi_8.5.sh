@@ -84,7 +84,7 @@ if ! go test -v ./...; then
 	echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_success_but_test_Fails"
-	exit 1
+	exit 2
 else
 	echo "------------------$PACKAGE_NAME: build_and_test_success-------------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME"
