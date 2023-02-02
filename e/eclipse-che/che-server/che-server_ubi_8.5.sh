@@ -4,9 +4,8 @@
 # Package	: che-server
 # Version	: 7.59.0
 # Source repo	: https://github.com/eclipse-che/che-server
-# Tested on	: UBI 8.5
+# Tested on	: ubuntu:20.04
 # Language      : GO
-# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Haritha Patchari <haritha.patchari@ibm.com>
 #
