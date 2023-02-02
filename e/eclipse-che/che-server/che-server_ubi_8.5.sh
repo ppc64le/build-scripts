@@ -27,9 +27,9 @@ yum update -y
 yum install -y git wget
 
 yum install -y java-11-openjdk-devel
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.18.0.10-2.el8_7.ppc64le
-export PATH=$PATH:$JAVA_HOME/bin
-cd $JAVA_HOME/bin/
+# export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.18.0.10-2.el8_7.ppc64le
+# export PATH=$PATH:$JAVA_HOME/bin
+# cd $JAVA_HOME/bin/
 
 # Install Maven
 
