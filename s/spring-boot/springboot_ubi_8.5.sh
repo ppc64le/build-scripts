@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : spring-boot
-# Version       : 3.0.1,3.0.2
+# Version       : v3.0.1,v3.0.2
 # Source repo   : https://github.com/spring-projects/spring-boot
 # Tested on     : ubi8.5
 # Language      : Java
