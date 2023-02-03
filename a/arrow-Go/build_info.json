@@ -1,5 +1,5 @@
 {
-    "package_name" : "arrow-Go",
+    "package_name" : "arrow",
     "github_url":"https://github.com/apache/arrow.git",
     "version":"go/v10.0.1",
     "package_dir":"a/arrow-Go",
