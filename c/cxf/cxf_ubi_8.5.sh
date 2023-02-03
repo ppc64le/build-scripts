@@ -1,4 +1,4 @@
-#!/bin/bash -e
+###!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package       : cxf
@@ -49,7 +49,12 @@ if ! mvn -Pfastinstall ; then
     exit 1
 fi
 
-if ! mvn test ; then
+mvn test > error.log
+test_status=$?
+
+tail error.log
+
+if [ $test_status != 0 ] ; then
     echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
