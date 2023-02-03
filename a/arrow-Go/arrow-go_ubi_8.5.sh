@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=arrow/go
+PACKAGE_NAME=arrow
 PACKAGE_URL=https://github.com/apache/arrow.git
 PACKAGE_VERSION=go/v10.0.1
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
@@ -50,6 +50,7 @@ export PARQUET_TEST_DATA="${PWD}/cpp/submodules/parquet-testing/data"
 export ARROW_TEST_DATA="${PWD}/testing/data"
 
 go install honnef.co/go/tools/cmd/staticcheck@latest
+cd go
 go mod tidy
 
 if ! go test ./... ; then
