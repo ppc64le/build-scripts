@@ -69,7 +69,7 @@ export PATH=$CWD/node-$NODE_VERSION-$NODE_DISTRO/bin:$PATH
 # Prepare for build
 export DEPOT_TOOLS_UPDATE=0
 export VPYTHON_BYPASS="manually managed python not supported by chrome operations"
-export GIT_CACHE_PATH="${HOME}/.git_cache"
+export GIT_CACHE_PATH="${CWD}/.git_cache"
 mkdir -p "${GIT_CACHE_PATH}"
 if [ -z "$(ls -A $CWD/electron/src)" ]; then
 	# Download and extract ppc64le patches
@@ -129,8 +129,10 @@ if [ -z "$(ls -A $CWD/llvm-project)" ]; then
         cd llvm-build
         cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_TARGETS_TO_BUILD="PowerPC" -DLLVM_ENABLE_PROJECTS="clang;lld" -G "Ninja" ../llvm
         ninja -j$(nproc)
+else
+        cd llvm-project/llvm-build
 fi
-LLVM_BUILD_DIR=$CWD/llvm-project/llvm-build
+LLVM_BUILD_DIR=$(pwd)
 export PATH=$LLVM_BUILD_DIR/bin/:$PATH
 cd ../../
 
