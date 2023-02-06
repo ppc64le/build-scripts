@@ -143,6 +143,7 @@ if [ ! -f "$CWD/electron/src/out/Release/electron" ]; then
 	ninja -C out/Release electron
 	ninja -C out/Release electron:electron_dist_zip
 	ninja -C out/Release electron:electron_chromedriver_zip
+	ninja -C out/Release electron:electron_ffmpeg_zip
 	ninja -C out/Release third_party/electron_node:headers
 fi
 
@@ -173,4 +174,7 @@ EOF
 
 # Conclude
 set +x
-echo "Complete! The 9 test failures are in parity with x86. Distributable zip files located at: $CWD/electron/src/out/Release/dist.zip $CWD/electron/src/out/Release/chromedriver.zip"
+echo "Complete! The 9 test failures are in parity with x86. Distributable zip files located at:"
+echo "1. Electron: $CWD/electron/src/out/Release/dist.zip"
+echo "2. ChromeDriver: $CWD/electron/src/out/Release/chromedriver.zip"
+echo "3. FFmpeg: $CWD/electron/src/out/Release/ffmpeg.zip"
