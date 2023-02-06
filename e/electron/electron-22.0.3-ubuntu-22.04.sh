@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/electron/electron
 # Tested on	: Ubuntu 22.04
 # Language      : C++
-# Travis-Check  : true
+# Travis-Check  : false
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sumit Dubey <sumit.dubey2@ibm.com>
 # Instructions	: docker run -t -d --shm-size=2gb --privileged --name <cname> docker.io/ubuntu:22.04
