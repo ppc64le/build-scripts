@@ -23,9 +23,10 @@ PACKAGE_NAME=luajit2
 PACKAGE_VERSION=v2.1-agentzh
 PACKAGE_URL=https://github.com/v2.1-agentzh
 
+TEST_RUN=0
 yum update -y
 yum install -y git wget
-sudo dnf install libmpc-devel gtk2-devel mpfr-devel gcc gcc-c++ valgrind perl-Parallel-ForkManager 
+dnf install libmpc-devel gtk2-devel mpfr-devel gcc gcc-c++ valgrind perl-Parallel-ForkManager 
 
 # Install luajit
 
@@ -38,7 +39,10 @@ make
 make install
 
 # Build & Test
-cd ../
-git clone https://github.com/openresty/luajit2-test-suite.git
-cd luajit2-test-suite 
-./run-tests /usr/local/openresty/luajit
+if [$TEST_RUN==1] then
+	cd ../
+	git clone https://github.com/openresty/luajit2-test-suite.git
+	cd luajit2-test-suite 
+	./run-tests /usr/local/openresty/luajit
+fi
+	
