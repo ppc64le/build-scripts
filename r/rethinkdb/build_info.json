@@ -2,6 +2,7 @@
     "package_name" : "rethinkdb",
     "github_url":"https://github.com/rethinkdb/rethinkdb.git",
     "version": "v2.4.3",
+    "default_branch": "v2.4.x",   
     "package_dir": "r/rethinkdb/",
     "docker_cmd":"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "build_script": "rethinkdb_ubi_8.5.sh",
