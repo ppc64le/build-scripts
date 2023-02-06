@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : rethinkdb
-# Version       : v2.4.x
+# Version       : v2.4.3
 # Source repo   : https://github.com/rethinkdb/rethinkdb.git
 # Tested on     : UBI 8.5
 # Language      : C++
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 
-PACKAGE_VERSION=${1:-v2.4.x}
+PACKAGE_VERSION=${1:-v2.4.3}
 PACKAGE_URL=https://github.com/rethinkdb/rethinkdb.git
 PACKAGE_NAME=rethinkdb
 
