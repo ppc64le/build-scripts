@@ -9,7 +9,7 @@
 # Travis-Check  : false
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sumit Dubey <sumit.dubey2@ibm.com>
-# Instructions	: docker run -t -d --shm-size=2gb --privileged --name <cname> docker.io/ubuntu:22.04
+#
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
