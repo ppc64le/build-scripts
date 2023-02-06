@@ -14,7 +14,7 @@ RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh| ba
 RUN ln -s /usr/bin/python2 /usr/bin/python && \
    git clone https://github.com/rethinkdb/rethinkdb.git && \
     cd rethinkdb && \
-    git checkout v2.4.x && \
+    git checkout v2.4.3 && \
     ./configure --allow-fetch && \
     make -j4 && \
     make install
