@@ -41,9 +41,11 @@ RUN yum install -y gcc make redhat-rpm-config ca-certificates ruby ruby-irb ruby
     && gem install webrick -v 1.7.0 \
     && gem install oj -v 3.10.18 \
     && gem install json -v 2.4.1 \
+    && gem install console -v 1.15.3 \
     && gem install async-http -v 0.54.0 \
     && gem install ext_monitor -v 0.1.2 \
     && GEM_VERSION=`echo $PACKAGE_VERSION | tr -d '[A-Z][a-z]'` \
+    && gem install bundler -v 2.3.26 \
     && gem install fluentd -v ${GEM_VERSION} \
     && gem install bigdecimal -v 1.4.4 \
     && yum remove -y gcc make redhat-rpm-config ruby-devel \
