@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : afero
-# Version       : v1.2.2, v1.9.2, v1.6.0
+# Version       : v1.2.2, v1.9.3, v1.6.0
 # Source repo   : https://github.com/spf13/afero.git
 # Tested on     : UBI-8.3, UBI-8.5
 # Language      : GO
@@ -18,17 +18,17 @@
 #
 # ------------------------------------------------------------------------------
 
+PACKAGE_URL=https://github.com/spf13/afero
 PACKAGE_NAME=github.com/spf13/afero
-PACKAGE_VERSION=${1:-v1.9.2}
+PACKAGE_VERSION=${1:-v1.9.3}
 
-export GOPATH=$HOME/go
+export GOPATH=$ROOT/go
 mkdir $GOPATH
-yum install -y golang
+yum install -y golang git
 
-#Add dependency 
-go get -d -t $PACKAGE_NAME@$PACKAGE_VERSION
-cd $GOPATH/pkg/mod/$PACKAGE_NAME@$PACKAGE_VERSION/
+git clone $PACKAGE_URL $PACKAGE_NAME
+cd $PACKAGE_NAME
 
 #Build and test the package
-go install
+go install -v
 go test -v
