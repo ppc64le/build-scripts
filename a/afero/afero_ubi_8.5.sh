@@ -30,13 +30,13 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 
 #Build and test the package
-if !$(go install -v)
+if !(go install -v)
 then
   echo "Failed to build the package"
   exit 1
 fi
 
-if !$(go test -v)
+if !(go test -v)
 then
   echo "Failed to validate the package"
   exit 2
