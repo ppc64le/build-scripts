@@ -1,0 +1,15 @@
+{
+    "package_name" : "eslint",
+    "github_url":"https://github.com/eslint/eslint.git",
+    "version": "v8.30.0",
+    "default_branch": "main",
+    "build_script" : "eslint_ubi_8.5.sh",
+    "package_dir": "e/eslint/",
+    "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+
+    "v8.30.*" : {
+        "dir" : "8.30.0_ubi8",
+        "build_script" : "eslint_ubi_8.5.sh"
+
+    }
+}

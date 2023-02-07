@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: MinkGoutteDriver
-# Version	: v2.0.0
+# Version	: v2.0.0, v1.3.0
 # Source repo	: https://github.com/minkphp/MinkGoutteDriver
 # Tested on	: UBI 8.5
 # Language      : PHP
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Vedang Wartikar <Vedang.Wartikar@ibm.com>
+# Maintainer	: Vedang Wartikar <Vedang.Wartikar@ibm.com>, Shalmon Titre <Shalmon.Titre@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.

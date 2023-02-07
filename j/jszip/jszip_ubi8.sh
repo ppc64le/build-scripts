@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package               : jszip
-# Version               : v3.3.0 , v3.7.0, v3.7.1
+# Version               : v3.3.0 , v3.6.0, v3.7.0, v3.7.1
 # Source repo           : https://github.com/Stuk/jszip
 # Tested on             : UBI 8
 # Language      	: Node
