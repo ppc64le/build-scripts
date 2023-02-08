@@ -2,10 +2,10 @@
 
 # ----------------------------------------------------------------------------
 # Package          : php-ext-brotli
-# Version          : 7ae4fcd(master)
+# Version          : 0.13.1
 # Source repo      : https://github.com/kjdev/php-ext-brotli.git
 # Tested on        : UBI 8.5
-# Language         : C
+# Language         : PHP
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Vathsala . <Vaths367@in.ibm.com>
@@ -23,14 +23,14 @@
 PACKAGE_NAME=php-ext-brotli
 PACKAGE_URL=https://github.com/kjdev/php-ext-brotli.git
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-7ae4fcd}
+PACKAGE_VERSION=${1:0.13.1}
 
 yum install -y git automake libtool make unzip gcc-c++ autoconf zlib xz m4 gettext help2man wget diffutils php-devel
 
 git clone --recursive --depth=1 $PACKAGE_URL
 cd $PACKAGE_NAME
 
-git checkout "$PACKAGE_VERSION" || exit 1
+git checkout "$PACKAGE_VERSION"
 
 phpize
 ./configure
