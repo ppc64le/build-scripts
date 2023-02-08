@@ -36,15 +36,33 @@ export GOPATH=/home/go
 
 mkdir -p $GOPATH/src && cd $GOPATH/src
 
-git clone https://github.com/wildfly/wildfly-operator.git $GOPATH/src/github.com/wildfly/wildfly-operator
+if ! git clone $PACKAGE_URL $GOPATH/src/github.com/wildfly/wildfly-operator; then
+    echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    exit 0
+fi
 
 cd $GOPATH/src/github.com/wildfly/wildfly-operator
 
-git checkout 0.5.6
+git checkout $PACKAGE_VERSION
 
-make build
+if ! make build; then
+    echo "------------------$PACKAGE_NAME:build_fails---------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    exit 0
+fi
 
-#e2e tests has dependency on below images -
+#e2e tests has dependency on below images which are not available for Power -
 #quay.io/operator-framework/scorecard-test:v1.3.1
 #quay.io/wildfly-quickstarts/wildfly-operator-quickstart:bootable-21.0
 #quay.io/wildfly-quickstarts/clusterbench:latest
+
+#Minikube setup is required for E2E tests execution commenting this as minikube doesnt work within container. 
+# Steps for Minikube Setup -
+#1. curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-ppc64le
+#2. sudo install minikube-linux-ppc64le /usr/local/bin/minikube
+#3. minikube start --driver=docker - to start mimnikube container
+#4. minikube status - check minikube status running and configured
+
+#For E2E tests run -
+#eval $(minikube -p minikube docker-env) && make test-e2e-minikube
