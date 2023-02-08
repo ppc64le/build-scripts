@@ -22,10 +22,11 @@ PACKAGE_URL=https://github.com/spf13/afero
 PACKAGE_NAME=afero
 PACKAGE_VERSION=${1:-v1.9.3}
 
-export GOPATH=$ROOT/go
-mkdir $GOPATH
+export GOPATH=$HOME/go
+mkdir $GOPATH && mkdir $GOPATH/pkg 
 yum install -y golang git
 
+mkdir $GOPATH/pkg/mod && cd $GOPATH/pkg/mod 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 
