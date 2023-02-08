@@ -3,6 +3,8 @@
     "github_url":"https://github.com/sass/node-sass",
     "package_dir":"n/node-sass/",
     "version":"v8.0.0",
+    "default_branch":"master",
+    "build_script":"node-sass_v8.0.0_ubi_8.7.sh",
     "docker_build":false,
     "v4.14.1":{
 	   "build_script":"node-sass-v4.14.1_UBI_8.4.sh"

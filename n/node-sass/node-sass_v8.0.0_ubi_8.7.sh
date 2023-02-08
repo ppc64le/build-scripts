@@ -35,7 +35,13 @@ if ! npm install; then
     exit 1
 fi
 
-node scripts/build -f
+if ! node scripts/build -f; then
+        echo "------------------$PACKAGE_NAME:build_fails---------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
+        exit 1
+fi
+
 sed -i "46 s/default: return false;/case 'ppc64':return '64-bit'; \n\t default: return false;/" lib/extensions.js
 
 #Build and test
