@@ -62,7 +62,7 @@ export PATH=$PATH:$CWD/depot_tools
 if [ -z "$(ls -A $CWD/node-$NODE_VERSION-$NODE_DISTRO)" ]; then
 	wget "https://nodejs.org/dist/$NODE_VERSION/node-$NODE_VERSION-$NODE_DISTRO.tar.xz"
 	tar -xJvf node-$NODE_VERSION-$NODE_DISTRO.tar.xz --no-same-owner
-	rm -rf node-$NODE_VERSION-$NODE_DISTRO.tar.xz
+	\rm -rf node-$NODE_VERSION-$NODE_DISTRO.tar.xz
 fi
 export PATH=$CWD/node-$NODE_VERSION-$NODE_DISTRO/bin:$PATH
 
@@ -78,7 +78,7 @@ if [ -z "$(ls -A $CWD/electron/src)" ]; then
 	wget https://raw.githubusercontent.com/PF4Public/gentoo-overlay/master/dev-util/electron/files/ppc64le/libpng-pdfium-compile-98.patch
 	wget https://raw.githubusercontent.com/PF4Public/gentoo-overlay/master/dev-util/electron/files/ppc64le/fix-swiftshader-compile.patch
         tar -xf chromium_108.0.5359.71-2raptor0~deb11u1.debian.tar.xz
-        rm -rf chromium_108.0.5359.71-2raptor0~deb11u1.debian.tar.xz
+        \rm -rf chromium_108.0.5359.71-2raptor0~deb11u1.debian.tar.xz
 	
 	# Checkout source
 	mkdir -p electron && cd electron
@@ -107,10 +107,10 @@ if [ -z "$(ls -A $CWD/electron/src)" ]; then
 	sed -i '70i \ \ \ \ info->arch = extensions::api::runtime::PLATFORM_ARCH_PPC64;' electron/shell/browser/extensions/api/runtime/electron_runtime_api_delegate.cc
 	
 	# Remove intermediate files
-	rm -rf ${CWD}/debian
-        rm -rf ${CWD}/fix-breakpad-compile.patch
-        rm -rf ${CWD}/fix-swiftshader-compile.patch
-        rm -rf ${CWD}/libpng-pdfium-compile-98.patch
+	\rm -rf ${CWD}/debian
+        \rm -rf ${CWD}/fix-breakpad-compile.patch
+        \rm -rf ${CWD}/fix-swiftshader-compile.patch
+        \rm -rf ${CWD}/libpng-pdfium-compile-98.patch
 	cd ../../
 fi
 
