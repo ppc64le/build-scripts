@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : get-stream
-# Version          : main
+# Version          : v6.0.1
 # Source repo      : https://github.com/sindresorhus/get-stream
 # Tested on        : RHEL 8.5,UBI 8.5
 # Language         : Node
@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=get-stream
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-main}
+PACKAGE_VERSION=${1:-v6.0.1}
 PACKAGE_URL=https://github.com/sindresorhus/get-stream.git
 
 yum install -y yum-utils git jq
