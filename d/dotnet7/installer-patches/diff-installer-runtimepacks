@@ -1,0 +1,32 @@
+Index: installer/src/redist/targets/GenerateLayout.targets
+===================================================================
+--- installer.orig/src/redist/targets/GenerateLayout.targets
++++ installer/src/redist/targets/GenerateLayout.targets
+@@ -134,6 +134,13 @@
+         <RelativeLayoutPath>packs/%(PackageName)/%(PackageVersion)</RelativeLayoutPath>
+       </BundledLayoutPackage>
+ 
++      <BundledLayoutPackage Include="MicrosoftNetCoreAppRuntimePackNupkg">
++        <PackageName>Microsoft.NETCore.App.Runtime.$(SharedFrameworkRid)</PackageName>
++        <PackageVersion>$(MicrosoftNETCoreAppRefPackageVersion)</PackageVersion>
++        <TargetFramework>$(TargetFramework)</TargetFramework>
++        <RelativeLayoutPath>packs/%(PackageName)/%(PackageVersion)</RelativeLayoutPath>
++      </BundledLayoutPackage>
++
+       <BundledLayoutPackage Include="MicrosoftNetStandardTargetingPackNupkg">
+         <PackageName>NETStandard.Library.Ref</PackageName>
+         <PackageVersion>$(NETStandardLibraryRefPackageVersion)</PackageVersion>
+@@ -146,6 +153,13 @@
+         <PackageVersion>$(MicrosoftAspNetCoreAppRefPackageVersion)</PackageVersion>
+         <TargetFramework>$(TargetFramework)</TargetFramework>
+         <RelativeLayoutPath>packs/%(PackageName)/%(PackageVersion)</RelativeLayoutPath>
++      </BundledLayoutPackage>
++
++      <BundledLayoutPackage Include="MicrosoftAspNetCoreAppRuntimePackNupkg">
++        <PackageName>Microsoft.AspNetCore.App.Runtime.$(SharedFrameworkRid)</PackageName>
++        <PackageVersion>$(MicrosoftAspNetCoreAppRefPackageVersion)</PackageVersion>
++        <TargetFramework>$(TargetFramework)</TargetFramework>
++        <RelativeLayoutPath>packs/%(PackageName)/%(PackageVersion)</RelativeLayoutPath>
+       </BundledLayoutPackage>
+ 
+       <BundledLayoutPackage Include="MicrosoftNetCoreAppHostPackNupkg">
