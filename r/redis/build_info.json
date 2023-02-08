@@ -1,6 +1,9 @@
 {
     "package_name" : "redis",
-    "package_dir": "r/redis/Dockerfiles/",
+    "github_url": "https://github.com/redis/redis",
+    "version": "7.0.5",
+    "default_branch": "unstable",
+    "package_dir": "r/redis/",
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "build_script" : "redis_ubi_8.5.sh",
 

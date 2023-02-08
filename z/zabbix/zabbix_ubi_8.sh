@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : Zabbix
-# Version       : 6e90007
+# Version       : 6.2.3rc2,6.2.3rc1,6.2.2
 # Source repo   : https://github.com/zabbix/zabbix.git
 # Tested on     : UBI 8.5
 # Language      : PHP, C
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Vaishnavi Patil <Vaishnavi.Patil3@ibm.com>
+# Maintainer    : Vaishnavi Patil <Vaishnavi.Patil3@ibm.com>,Vinod K <Vinod.K1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=zabbix
-PACKAGE_VERSION=${1:-6e90007}
+PACKAGE_VERSION=${1:-6.2.3rc2}
 PACKAGE_URL=https://github.com/zabbix/zabbix.git
 
 yum update -y

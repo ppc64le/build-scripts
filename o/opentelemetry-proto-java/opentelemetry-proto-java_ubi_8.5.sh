@@ -1,14 +1,14 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: opentelemetry-proto-java
-# Version	: v0.18.0
+# Version	: v0.18.0,v0.19.0
 # Source repo	: https://github.com/open-telemetry/opentelemetry-proto-java
 # Tested on	: ubi 8.5
 # Language      : java
 # Travis-Check  : False
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>
+# Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>, Stuti Wali <Stuti.Wali@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME="opentelemetry-proto-java"
-PACKAGE_VERSION=${1:-"0.18.0"}
+PACKAGE_VERSION=${1:-"0.19.0"}
 PACKAGE_URL="https://github.com/open-telemetry/opentelemetry-proto-java"
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 HOME_DIR=$PWD
@@ -36,7 +36,7 @@ if ! git clone -q $PACKAGE_URL $PACKAGE_NAME; then
 fi
 
 cd $PACKAGE_NAME
-git checkout v"$PACKAGE_VERSION"
+git checkout "$PACKAGE_VERSION"
 export GRPC_JAVA_VERSION=$(grep -m1 grpcVersion build.gradle.kts | cut -d "=" -f 2 | sed "s/\"//g" | sed "s/\s//g")
 export PROTOBUF_VERSION=$(grep -m1 protobufVersion build.gradle.kts | cut -d "=" -f 2 | sed "s/\"//g" | sed "s/\s//g")
 IFS=. read -r major minor patch < <(echo "$GRPC_JAVA_VERSION")
@@ -85,3 +85,4 @@ else
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
 	exit 0
 fi
+

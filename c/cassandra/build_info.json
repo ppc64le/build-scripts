@@ -1,0 +1,19 @@
+{
+    "package_name" : "cassandra",
+    "github_url":"https://github.com/apache/cassandra",
+    "version": "cassandra-4.0.7",
+    "default_branch": "trunk",
+    "build_script": "",
+    "package_dir": "c/cassndra",
+    "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "validate_build_script" :false,
+ 
+    "cassandra-4.0.*" : {
+        "dir": "4.0.x-ubi8"
+    },
+	
+    "cassandra-3.11.*" : {
+        "dir": "3.11.x-ubi8"
+    }
+
+}

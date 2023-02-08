@@ -1,0 +1,1872 @@
+diff --git a/pkg/process/procutil/process_linux_test.go b/pkg/process/procutil/process_linux_test.go
+index 135a1ab06..b8d8a3fb6 100644
+--- a/pkg/process/procutil/process_linux_test.go
++++ b/pkg/process/procutil/process_linux_test.go
+@@ -141,6 +141,11 @@ func testGetCmdline(t *testing.T) {
+ func TestProcessesByPIDTestFS(t *testing.T) {
+ 	os.Setenv("HOST_PROC", "resources/test_procfs/proc/")
+ 	defer os.Unsetenv("HOST_PROC")
++switch PageSize {
++        case 65536:
++                os.Setenv("HOST_PROC", "resources/test_procfs/proc_ppc64/")
++                defer os.Unsetenv("HOST_PROC")
++        }
+ 
+ 	testProcessesByPID(t)
+ }
+@@ -232,6 +237,11 @@ func compareStats(t *testing.T, st1, st2 *Stats) {
+ func TestStatsForPIDsTestFS(t *testing.T) {
+ 	os.Setenv("HOST_PROC", "resources/test_procfs/proc/")
+ 	defer os.Unsetenv("HOST_PROC")
++switch PageSize {
++        case 65536:
++                os.Setenv("HOST_PROC", "resources/test_procfs/proc_ppc64/")
++                defer os.Unsetenv("HOST_PROC")
++        }
+ 
+ 	testStatsForPIDs(t)
+ }
+@@ -486,6 +496,11 @@ func TestParseStatusLine(t *testing.T) {
+ func TestParseStatusTestFS(t *testing.T) {
+ 	os.Setenv("HOST_PROC", "resources/test_procfs/proc/")
+ 	defer os.Unsetenv("HOST_PROC")
++switch PageSize {
++        case 65536:
++                os.Setenv("HOST_PROC", "resources/test_procfs/proc_ppc64/")
++                defer os.Unsetenv("HOST_PROC")
++        }
+ 
+ 	testParseStatus(t)
+ }
+@@ -840,6 +855,11 @@ func testParseStatm(t *testing.T) {
+ func TestParseStatmStatusMatchTestFS(t *testing.T) {
+ 	os.Setenv("HOST_PROC", "resources/test_procfs/proc/")
+ 	defer os.Unsetenv("HOST_PROC")
++switch PageSize {
++        case 65536:
++                os.Setenv("HOST_PROC", "resources/test_procfs/proc_ppc64/")
++                defer os.Unsetenv("HOST_PROC")
++        }
+ 
+ 	testParseStatmStatusMatch(t)
+ }
+diff --git a/pkg/process/procutil/resources/test_procfs/proc_ppc64/1/io b/pkg/process/procutil/resources/test_procfs/proc_ppc64/1/io
+new file mode 100644
+index 000000000..361d0cdc9
+--- /dev/null
++++ b/pkg/process/procutil/resources/test_procfs/proc_ppc64/1/io
+@@ -0,0 +1,7 @@
++rchar: 26703114070
++wchar: 878398541
++syscr: 3135097
++syscw: 34297
++read_bytes: 1015808
++write_bytes: 2398617600
++cancelled_write_bytes: 1233453056
+diff --git a/pkg/process/procutil/resources/test_procfs/proc_ppc64/1/stat b/pkg/process/procutil/resources/test_procfs/proc_ppc64/1/stat
+new file mode 100644
+index 000000000..4f3a650e9
+--- /dev/null
++++ b/pkg/process/procutil/resources/test_procfs/proc_ppc64/1/stat
+@@ -0,0 +1 @@
++1 (bash) S 0 1 1 34816 1806 4194560 795 359447 0 175 13 5 10884 1779 20 0 1 0 447093803 14024704 93 18446744073709551615 4752932864 4754381860 140736576352736 0 0 0 65536 3670020 1266777851 1 0 0 17 4 0 0 0 0 0 4754492320 4754538964 1100107218944 140736576356200 140736576356210 140736576356210 140736576356334 0
+diff --git a/pkg/process/procutil/resources/test_procfs/proc_ppc64/1/statm b/pkg/process/procutil/resources/test_procfs/proc_ppc64/1/statm
+new file mode 100644
+index 000000000..6ab413083
+--- /dev/null
++++ b/pkg/process/procutil/resources/test_procfs/proc_ppc64/1/statm
+@@ -0,0 +1 @@
++214 93 72 23 0 16 0
+diff --git a/pkg/process/procutil/resources/test_procfs/proc_ppc64/1/status b/pkg/process/procutil/resources/test_procfs/proc_ppc64/1/status
+new file mode 100644
+index 000000000..e7780931e
+--- /dev/null
++++ b/pkg/process/procutil/resources/test_procfs/proc_ppc64/1/status
+@@ -0,0 +1,55 @@
++Name:	bash
++Umask:	0022
++State:	S (sleeping)
++Tgid:	1
++Ngid:	0
++Pid:	1
++PPid:	0
++TracerPid:	0
++Uid:	0	0	0	0
++Gid:	0	0	0	0
++FDSize:	256
++Groups:
++NStgid:	1
++NSpid:	1
++NSpgid:	1
++NSsid:	1
++VmPeak:	   13696 kB
++VmSize:	   13696 kB
++VmLck:	       0 kB
++VmPin:	       0 kB
++VmHWM:	    5952 kB
++VmRSS:	    5952 kB
++RssAnon:	    1344 kB
++RssFile:	    4608 kB
++RssShmem:	       0 kB
++VmData:	     832 kB
++VmStk:	     192 kB
++VmExe:	    1472 kB
++VmLib:	    2816 kB
++VmPTE:	      50 kB
++VmSwap:	       0 kB
++HugetlbPages:	       0 kB
++CoreDumping:	0
++THP_enabled:	1
++Threads:	1
++SigQ:	3/126193
++SigPnd:	0000000000000000
++ShdPnd:	0000000000000000
++SigBlk:	0000000000010000
++SigIgn:	0000000000380004
++SigCgt:	000000004b817efb
++CapInh:	00000000a80425fb
++CapPrm:	00000000a80425fb
++CapEff:	00000000a80425fb
++CapBnd:	00000000a80425fb
++CapAmb:	0000000000000000
++NoNewPrivs:	0
++Seccomp:	2
++Speculation_Store_Bypass:	vulnerable
++Cpus_allowed:	ff
++Cpus_allowed_list:	0-7
++Mems_allowed:	00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001
++Mems_allowed_list:	0
++voluntary_ctxt_switches:	1059
++nonvoluntary_ctxt_switches:	1
+diff --git a/pkg/process/procutil/resources/test_procfs/proc_ppc64/2421860/io b/pkg/process/procutil/resources/test_procfs/proc_ppc64/2421860/io
+new file mode 100644
+index 000000000..97f7634ec
+--- /dev/null
++++ b/pkg/process/procutil/resources/test_procfs/proc_ppc64/2421860/io
+@@ -0,0 +1,7 @@
++rchar: 17668494100
++wchar: 666325117
++syscr: 2642725
++syscw: 116771
++read_bytes: 44064768
++write_bytes: 1710882816
++cancelled_write_bytes: 1661468672
+diff --git a/pkg/process/procutil/resources/test_procfs/proc_ppc64/2421860/stat b/pkg/process/procutil/resources/test_procfs/proc_ppc64/2421860/stat
+new file mode 100644
+index 000000000..af80ab377
+--- /dev/null
++++ b/pkg/process/procutil/resources/test_procfs/proc_ppc64/2421860/stat
+@@ -0,0 +1 @@
++2421860 (containerd-shim) S 1 2421860 1965339 0 -1 1077936128 448 396505 0 181 3426 604 13588 2817 20 0 12 0 387342422 728825856 99 18446744073709551615 65536 4554112 140736613336752 0 0 0 1006249984 0 2143420159 0 0 0 17 6 0 0 0 0 0 8716288 8877984 1100571148288 140736613383726 140736613383885 140736613383885 140736613384151 0
+diff --git a/pkg/process/procutil/resources/test_procfs/proc_ppc64/2421860/statm b/pkg/process/procutil/resources/test_procfs/proc_ppc64/2421860/statm
+new file mode 100644
+index 000000000..b587a3161
+--- /dev/null
++++ b/pkg/process/procutil/resources/test_procfs/proc_ppc64/2421860/statm
+@@ -0,0 +1 @@
++11121 99 55 69 0 1631 0
+diff --git a/pkg/process/procutil/resources/test_procfs/proc_ppc64/2421860/status b/pkg/process/procutil/resources/test_procfs/proc_ppc64/2421860/status
+new file mode 100644
+index 000000000..2eabdff35
+--- /dev/null
++++ b/pkg/process/procutil/resources/test_procfs/proc_ppc64/2421860/status
+@@ -0,0 +1,55 @@
++Name:	containerd-shim
++Umask:	0022
++State:	S (sleeping)
++Tgid:	2421860
++Ngid:	0
++Pid:	2421860
++PPid:	1
++TracerPid:	0
++Uid:	0	0	0	0
++Gid:	0	0	0	0
++FDSize:	64
++Groups:
++NStgid:	2421860
++NSpid:	2421860
++NSpgid:	2421860
++NSsid:	1965339
++VmPeak:	  711744 kB
++VmSize:	  711744 kB
++VmLck:	       0 kB
++VmPin:	       0 kB
++VmHWM:	    6336 kB
++VmRSS:	    6336 kB
++RssAnon:	    2816 kB
++RssFile:	    3520 kB
++RssShmem:	       0 kB
++VmData:	  104192 kB
++VmStk:	     192 kB
++VmExe:	    4416 kB
++VmLib:	     128 kB
++VmPTE:	      56 kB
++VmSwap:	       0 kB
++HugetlbPages:	       0 kB
++CoreDumping:	0
++THP_enabled:	1
++Threads:	12
++SigQ:	3/126193
++SigPnd:	0000000000000000
++ShdPnd:	0000000000000000
++SigBlk:	fffffffe3bfa2800
++SigIgn:	0000000000000000
++SigCgt:	fffffffe7fc1feff
++CapInh:	0000000000000000
++CapPrm:	0000003fffffffff
++CapEff:	0000003fffffffff
++CapBnd:	0000003fffffffff
++CapAmb:	0000000000000000
++NoNewPrivs:	0
++Seccomp:	0
++Speculation_Store_Bypass:	vulnerable
++Cpus_allowed:	ff
++Cpus_allowed_list:	0-7
++Mems_allowed:	00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001
++Mems_allowed_list:	0
++voluntary_ctxt_switches:	8
++nonvoluntary_ctxt_switches:	0
+diff --git a/pkg/process/procutil/resources/test_procfs/proc_ppc64/2421898/io b/pkg/process/procutil/resources/test_procfs/proc_ppc64/2421898/io
+new file mode 100644
+index 000000000..ec6f601da
+--- /dev/null
++++ b/pkg/process/procutil/resources/test_procfs/proc_ppc64/2421898/io
+@@ -0,0 +1,7 @@
++rchar: 18819685060
++wchar: 771395917
++syscr: 3188148
++syscw: 94212
++read_bytes: 4096
++write_bytes: 1830092800
++cancelled_write_bytes: 1457455104
+diff --git a/pkg/process/procutil/resources/test_procfs/proc_ppc64/2421898/stat b/pkg/process/procutil/resources/test_procfs/proc_ppc64/2421898/stat
+new file mode 100644
+index 000000000..8e13829fe
+--- /dev/null
++++ b/pkg/process/procutil/resources/test_procfs/proc_ppc64/2421898/stat
+@@ -0,0 +1 @@
++2421898 (bash) S 2421860 2421898 2421898 34816 2431217 4194560 708 537500 0 220 8 3 19533 3897 20 0 1 0 387342433 14024704 43 18446744073709551615 4519231488 4520680484 140736684863824 0 0 0 65536 3670020 1266777851 1 0 0 17 0 0 0 0 0 0 4520790944 4520837588 1100346556416 140736684883816 140736684883826 140736684883826 140736684883950 0
+diff --git a/pkg/process/procutil/resources/test_procfs/proc_ppc64/2421898/statm b/pkg/process/procutil/resources/test_procfs/proc_ppc64/2421898/statm
+new file mode 100644
+index 000000000..79f7eb479
+--- /dev/null
++++ b/pkg/process/procutil/resources/test_procfs/proc_ppc64/2421898/statm
+@@ -0,0 +1 @@
++214 43 22 23 0 16 0
+diff --git a/pkg/process/procutil/resources/test_procfs/proc_ppc64/2421898/status b/pkg/process/procutil/resources/test_procfs/proc_ppc64/2421898/status
+new file mode 100644
+index 000000000..b19fd988a
+--- /dev/null
++++ b/pkg/process/procutil/resources/test_procfs/proc_ppc64/2421898/status
+@@ -0,0 +1,55 @@
++Name:	bash
++Umask:	0022
++State:	S (sleeping)
++Tgid:	2421898
++Ngid:	0
++Pid:	2421898
++PPid:	2421860
++TracerPid:	0
++Uid:	0	0	0	0
++Gid:	0	0	0	0
++FDSize:	256
++Groups:
++NStgid:	2421898	1
++NSpid:	2421898	1
++NSpgid:	2421898	1
++NSsid:	2421898	1
++VmPeak:	   13696 kB
++VmSize:	   13696 kB
++VmLck:	       0 kB
++VmPin:	       0 kB
++VmHWM:	    5952 kB
++VmRSS:	    2752 kB
++RssAnon:	    1344 kB
++RssFile:	    1408 kB
++RssShmem:	       0 kB
++VmData:	     832 kB
++VmStk:	     192 kB
++VmExe:	    1472 kB
++VmLib:	    2816 kB
++VmPTE:	      50 kB
++VmSwap:	       0 kB
++HugetlbPages:	       0 kB
++CoreDumping:	0
++THP_enabled:	1
++Threads:	1
++SigQ:	3/126193
++SigPnd:	0000000000000000
++ShdPnd:	0000000000000000
++SigBlk:	0000000000010000
++SigIgn:	0000000000380004
++SigCgt:	000000004b817efb
++CapInh:	00000000a80425fb
++CapPrm:	00000000a80425fb
++CapEff:	00000000a80425fb
++CapBnd:	00000000a80425fb
++CapAmb:	0000000000000000
++NoNewPrivs:	0
++Seccomp:	2
++Speculation_Store_Bypass:	vulnerable
++Cpus_allowed:	ff
++Cpus_allowed_list:	0-7
++Mems_allowed:	00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001
++Mems_allowed_list:	0
++voluntary_ctxt_switches:	312
++nonvoluntary_ctxt_switches:	0
+diff --git a/pkg/process/procutil/resources/test_procfs/proc_ppc64/3105995/io b/pkg/process/procutil/resources/test_procfs/proc_ppc64/3105995/io
+new file mode 100644
+index 000000000..482f20b28
+--- /dev/null
++++ b/pkg/process/procutil/resources/test_procfs/proc_ppc64/3105995/io
+@@ -0,0 +1,7 @@
++rchar: 765434
++wchar: 641270
++syscr: 7553
++syscw: 3744
++read_bytes: 4390912
++write_bytes: 0
++cancelled_write_bytes: 0
+diff --git a/pkg/process/procutil/resources/test_procfs/proc_ppc64/3105995/stat b/pkg/process/procutil/resources/test_procfs/proc_ppc64/3105995/stat
+new file mode 100644
+index 000000000..113e520d4
+--- /dev/null
++++ b/pkg/process/procutil/resources/test_procfs/proc_ppc64/3105995/stat
+@@ -0,0 +1 @@
++3105995 (containerd-shim) S 1 3105995 1965339 0 -1 1077936128 370 2623 0 1 2048 347 7 4 20 0 12 0 413924909 730791936 141 18446744073709551615 65536 4554112 140737028221168 0 0 0 1006249984 0 2143420159 0 0 0 17 3 0 0 0 0 0 8716288 8877984 1100059377664 140737028226606 140737028226765 140737028226765 140737028227031 0
+diff --git a/pkg/process/procutil/resources/test_procfs/proc_ppc64/3105995/statm b/pkg/process/procutil/resources/test_procfs/proc_ppc64/3105995/statm
+new file mode 100644
+index 000000000..a95d7b7ad
+--- /dev/null
++++ b/pkg/process/procutil/resources/test_procfs/proc_ppc64/3105995/statm
+@@ -0,0 +1 @@
++11151 141 99 69 0 1661 0
+diff --git a/pkg/process/procutil/resources/test_procfs/proc_ppc64/3105995/status b/pkg/process/procutil/resources/test_procfs/proc_ppc64/3105995/status
+new file mode 100644
+index 000000000..9aec0db2e
+--- /dev/null
++++ b/pkg/process/procutil/resources/test_procfs/proc_ppc64/3105995/status
+@@ -0,0 +1,55 @@
++Name:	containerd-shim
++Umask:	0022
++State:	S (sleeping)
++Tgid:	3105995
++Ngid:	0
++Pid:	3105995
++PPid:	1
++TracerPid:	0
++Uid:	0	0	0	0
++Gid:	0	0	0	0
++FDSize:	64
++Groups:
++NStgid:	3105995
++NSpid:	3105995
++NSpgid:	3105995
++NSsid:	1965339
++VmPeak:	  713664 kB
++VmSize:	  713664 kB
++VmLck:	       0 kB
++VmPin:	       0 kB
++VmHWM:	    9024 kB
++VmRSS:	    9024 kB
++RssAnon:	    2688 kB
++RssFile:	    6336 kB
++RssShmem:	       0 kB
++VmData:	  106112 kB
++VmStk:	     192 kB
++VmExe:	    4416 kB
++VmLib:	     128 kB
++VmPTE:	      58 kB
++VmSwap:	       0 kB
++HugetlbPages:	       0 kB
++CoreDumping:	0
++THP_enabled:	1
++Threads:	12
++SigQ:	3/126193
++SigPnd:	0000000000000000
++ShdPnd:	0000000000000000
++SigBlk:	fffffffe3bfa2800
++SigIgn:	0000000000000000
++SigCgt:	fffffffe7fc1feff
++CapInh:	0000000000000000
++CapPrm:	0000003fffffffff
++CapEff:	0000003fffffffff
++CapBnd:	0000003fffffffff
++CapAmb:	0000000000000000
++NoNewPrivs:	0
++Seccomp:	0
++Speculation_Store_Bypass:	vulnerable
++Cpus_allowed:	ff
++Cpus_allowed_list:	0-7
++Mems_allowed:	00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001
++Mems_allowed_list:	0
++voluntary_ctxt_switches:	8
++nonvoluntary_ctxt_switches:	1
+diff --git a/pkg/process/procutil/resources/test_procfs/proc_ppc64/3106031/io b/pkg/process/procutil/resources/test_procfs/proc_ppc64/3106031/io
+new file mode 100644
+index 000000000..9f9afc769
+--- /dev/null
++++ b/pkg/process/procutil/resources/test_procfs/proc_ppc64/3106031/io
+@@ -0,0 +1,7 @@
++rchar: 1863034962
++wchar: 855669996
++syscr: 289678
++syscw: 71240
++read_bytes: 14159872
++write_bytes: 1656356864
++cancelled_write_bytes: 34734080
+diff --git a/pkg/process/procutil/resources/test_procfs/proc_ppc64/3106031/stat b/pkg/process/procutil/resources/test_procfs/proc_ppc64/3106031/stat
+new file mode 100644
+index 000000000..881bc74dc
+--- /dev/null
++++ b/pkg/process/procutil/resources/test_procfs/proc_ppc64/3106031/stat
+@@ -0,0 +1 @@
++3106031 (bash) S 3105995 3106031 3106031 34816 3106031 4194560 358 157806 0 12 4 1 5321 514 20 0 1 0 413924917 14024704 91 18446744073709551615 4947181568 4948636004 140737184389776 0 0 0 0 3670020 1266777851 1 0 0 17 3 0 0 0 0 0 4948741024 4948787668 1100134088704 140737184399208 140737184399218 140737184399218 140737184399342 0
+diff --git a/pkg/process/procutil/resources/test_procfs/proc_ppc64/3106031/statm b/pkg/process/procutil/resources/test_procfs/proc_ppc64/3106031/statm
+new file mode 100644
+index 000000000..94fc26dd7
+--- /dev/null
++++ b/pkg/process/procutil/resources/test_procfs/proc_ppc64/3106031/statm
+@@ -0,0 +1 @@
++214 91 72 23 0 16 0
+diff --git a/pkg/process/procutil/resources/test_procfs/proc_ppc64/3106031/status b/pkg/process/procutil/resources/test_procfs/proc_ppc64/3106031/status
+new file mode 100644
+index 000000000..626102d57
+--- /dev/null
++++ b/pkg/process/procutil/resources/test_procfs/proc_ppc64/3106031/status
+@@ -0,0 +1,55 @@
++Name:	bash
++Umask:	0022
++State:	S (sleeping)
++Tgid:	3106031
++Ngid:	0
++Pid:	3106031
++PPid:	3105995
++TracerPid:	0
++Uid:	0	0	0	0
++Gid:	0	0	0	0
++FDSize:	256
++Groups:
++NStgid:	3106031	1
++NSpid:	3106031	1
++NSpgid:	3106031	1
++NSsid:	3106031	1
++VmPeak:	   13696 kB
++VmSize:	   13696 kB
++VmLck:	       0 kB
++VmPin:	       0 kB
++VmHWM:	    5824 kB
++VmRSS:	    5824 kB
++RssAnon:	    1216 kB
++RssFile:	    4608 kB
++RssShmem:	       0 kB
++VmData:	     832 kB
++VmStk:	     192 kB
++VmExe:	    1472 kB
++VmLib:	    2816 kB
++VmPTE:	      50 kB
++VmSwap:	       0 kB
++HugetlbPages:	       0 kB
++CoreDumping:	0
++THP_enabled:	1
++Threads:	1
++SigQ:	3/126193
++SigPnd:	0000000000000000
++ShdPnd:	0000000000000000
++SigBlk:	0000000000000000
++SigIgn:	0000000000380004
++SigCgt:	000000004b817efb
++CapInh:	00000000a80425fb
++CapPrm:	00000000a80425fb
++CapEff:	00000000a80425fb
++CapBnd:	00000000a80425fb
++CapAmb:	0000000000000000
++NoNewPrivs:	0
++Seccomp:	2
++Speculation_Store_Bypass:	vulnerable
++Cpus_allowed:	ff
++Cpus_allowed_list:	0-7
++Mems_allowed:	00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001
++Mems_allowed_list:	0
++voluntary_ctxt_switches:	134
++nonvoluntary_ctxt_switches:	0
+diff --git a/pkg/quantile/ddsketch_test.go b/pkg/quantile/ddsketch_test.go
+index 4bb372691..bbca2a55d 100644
+--- a/pkg/quantile/ddsketch_test.go
++++ b/pkg/quantile/ddsketch_test.go
+@@ -73,7 +73,7 @@ func TestCreateDDSketchWithSketchMapping(t *testing.T) {
+ 				if 3/alpha*y-math.Pow(beta-a, 3) < 0 {
+ 					sign = -1.0
+ 				}
+-				return beta + sign*math.Pow(sign*(3/alpha*y-math.Pow(beta-a, 3)), 1.0/3.0)
++				return beta + float64(int64(sign*math.Pow(sign*(3/alpha*y-math.Pow(beta-a, 3)), 1.0/3.0)))
+ 			},
+ 		},
+ 	}
+@@ -216,7 +216,7 @@ func TestConvertDDSketchIntoSketch(t *testing.T) {
+ 				if 3/alpha*y-math.Pow(beta-a, 3) < 0 {
+ 					sign = -1.0
+ 				}
+-				return beta + sign*math.Pow(sign*(3/alpha*y-math.Pow(beta-a, 3)), 1.0/3.0)
++				return beta + float64(int64(sign*math.Pow(sign*(3/alpha*y-math.Pow(beta-a, 3)), 1.0/3.0)))
+ 			},
+ 		},
+ 	}
+diff --git a/pkg/security/ebpf/probes/syscall_helpers.go b/pkg/security/ebpf/probes/syscall_helpers.go
+index b46600b65..a776a8c87 100644
+--- a/pkg/security/ebpf/probes/syscall_helpers.go
++++ b/pkg/security/ebpf/probes/syscall_helpers.go
+@@ -34,6 +34,8 @@ func resolveRuntimeArch() {
+ 		RuntimeArch = "x64"
+ 	case "aarch64":
+ 		RuntimeArch = "arm64"
++	case "ppc64le":
++		RuntimeArch = "ppc64le"
+ 	default:
+ 		RuntimeArch = "ia32"
+ 	}
+diff --git a/pkg/security/secl/model/consts_common.go b/pkg/security/secl/model/consts_common.go
+index f4f0c2738..57134642f 100644
+--- a/pkg/security/secl/model/consts_common.go
++++ b/pkg/security/secl/model/consts_common.go
+@@ -803,10 +803,6 @@ func initProtConstansts() {
+ }
+ 
+ func initMMapFlagsConstants() {
+-	for k, v := range mmapFlagArchConstants {
+-		mmapFlagConstants[k] = v
+-	}
+-
+ 	for k, v := range mmapFlagConstants {
+ 		SECLConstants[k] = &eval.IntEvaluator{Value: int(v)}
+ 	}
+diff --git a/pkg/security/secl/model/consts_linux_ppc64le.go b/pkg/security/secl/model/consts_linux_ppc64le.go
+new file mode 100644
+index 000000000..b4db5a355
+--- /dev/null
++++ b/pkg/security/secl/model/consts_linux_ppc64le.go
+@@ -0,0 +1,36 @@
++// Unless explicitly stated otherwise all files in this repository are licensed
++// under the Apache License Version 2.0.
++// This product includes software developed at Datadog (https://www.datadoghq.com/).
++// Copyright 2016-present Datadog, Inc.
++
++//go:build linux
++// +build linux
++
++package model
++
++import (
++        "golang.org/x/sys/unix"
++)
++
++var (
++        ptraceArchConstants = map[string]uint32{
++                "PTRACE_GETEVRREGS":        unix.PTRACE_GETEVRREGS,
++                "PTRACE_GETFPREGS":         unix.PTRACE_GETFPREGS,
++                "PTRACE_GETREGS64":         unix.PTRACE_GETREGS64,
++                "PTRACE_GETVRREGS":         unix.PTRACE_GETVRREGS,
++                "PTRACE_GETVSRREGS":        unix.PTRACE_GETVSRREGS,
++                "PTRACE_GET_DEBUGREG":      unix.PTRACE_GET_DEBUGREG,
++                "PTRACE_SETEVRREGS":        unix.PTRACE_SETEVRREGS,
++                "PTRACE_SETFPREGS":         unix.PTRACE_SETFPREGS,
++                "PTRACE_SETREGS64":         unix.PTRACE_SETREGS64,
++                "PTRACE_SETVRREGS":         unix.PTRACE_SETVRREGS,
++                "PTRACE_SETVSRREGS":        unix.PTRACE_SETVSRREGS,
++                "PTRACE_SET_DEBUGREG":      unix.PTRACE_SET_DEBUGREG,
++                "PTRACE_SINGLEBLOCK":       unix.PTRACE_SINGLEBLOCK,
++                "PTRACE_SYSEMU":                    unix.PTRACE_SYSEMU,
++                "PTRACE_SYSEMU_SINGLESTEP":    unix.PTRACE_SYSEMU_SINGLESTEP,
++        }
++
++        mmapFlagArchConstants = map[string]int{}
++)
++
+diff --git a/pkg/security/secl/model/syscalls.go b/pkg/security/secl/model/syscalls.go
+index 1b92d0ceb..d3535aad7 100644
+--- a/pkg/security/secl/model/syscalls.go
++++ b/pkg/security/secl/model/syscalls.go
+@@ -8,6 +8,7 @@
+ 
+ //go:generate go run github.com/DataDog/datadog-agent/pkg/security/secl/model/syscall_table_generator -table-url https://raw.githubusercontent.com/torvalds/linux/v5.17/arch/x86/entry/syscalls/syscall_64.tbl -output syscalls_linux_amd64.go -output-string syscalls_string_linux_amd64.go -abis common,64
+ //go:generate go run github.com/DataDog/datadog-agent/pkg/security/secl/model/syscall_table_generator -table-url https://raw.githubusercontent.com/torvalds/linux/v5.17/include/uapi/asm-generic/unistd.h -output syscalls_linux_arm64.go -output-string syscalls_string_linux_arm64.go
++//go:generate go run github.com/DataDog/datadog-agent/pkg/security/secl/model/syscall_table_generator -table-url https://raw.githubusercontent.com/torvalds/linux/master/arch/powerpc/kernel/syscalls/syscall.tbl -output syscalls_linux_ppc64le.go -output-string syscalls_string_linux_ppc64le.go -abis common,64,nospu
+ 
+ package model
+ 
+diff --git a/pkg/security/secl/model/syscalls_linux_ppc64le.go b/pkg/security/secl/model/syscalls_linux_ppc64le.go
+new file mode 100644
+index 000000000..62cb37d3f
+--- /dev/null
++++ b/pkg/security/secl/model/syscalls_linux_ppc64le.go
+@@ -0,0 +1,420 @@
++// Code generated - DO NOT EDIT.
++// Unless explicitly stated otherwise all files in this repository are licensed
++// under the Apache License Version 2.0.
++// This product includes software developed at Datadog (https://www.datadoghq.com/).
++// Copyright 2016-present Datadog, Inc.
++
++//go:build linux
++// +build linux
++
++package model
++
++// Syscall represents a syscall identifier
++type Syscall int
++
++// Linux syscall identifiers
++const (
++	SysRestartSyscall        Syscall = 0
++	SysExit                  Syscall = 1
++	SysFork                  Syscall = 2
++	SysRead                  Syscall = 3
++	SysWrite                 Syscall = 4
++	SysOpen                  Syscall = 5
++	SysClose                 Syscall = 6
++	SysWaitpid               Syscall = 7
++	SysCreat                 Syscall = 8
++	SysLink                  Syscall = 9
++	SysUnlink                Syscall = 10
++	SysExecve                Syscall = 11
++	SysChdir                 Syscall = 12
++	SysTime                  Syscall = 13
++	SysMknod                 Syscall = 14
++	SysChmod                 Syscall = 15
++	SysLchown                Syscall = 16
++	SysBreak                 Syscall = 17
++	SysOldstat               Syscall = 18
++	SysLseek                 Syscall = 19
++	SysGetpid                Syscall = 20
++	SysMount                 Syscall = 21
++	SysUmount                Syscall = 22
++	SysSetuid                Syscall = 23
++	SysGetuid                Syscall = 24
++	SysStime                 Syscall = 25
++	SysPtrace                Syscall = 26
++	SysAlarm                 Syscall = 27
++	SysOldfstat              Syscall = 28
++	SysPause                 Syscall = 29
++	SysUtime                 Syscall = 30
++	SysStty                  Syscall = 31
++	SysGtty                  Syscall = 32
++	SysAccess                Syscall = 33
++	SysNice                  Syscall = 34
++	SysFtime                 Syscall = 35
++	SysSync                  Syscall = 36
++	SysKill                  Syscall = 37
++	SysRename                Syscall = 38
++	SysMkdir                 Syscall = 39
++	SysRmdir                 Syscall = 40
++	SysDup                   Syscall = 41
++	SysPipe                  Syscall = 42
++	SysTimes                 Syscall = 43
++	SysProf                  Syscall = 44
++	SysBrk                   Syscall = 45
++	SysSetgid                Syscall = 46
++	SysGetgid                Syscall = 47
++	SysSignal                Syscall = 48
++	SysGeteuid               Syscall = 49
++	SysGetegid               Syscall = 50
++	SysAcct                  Syscall = 51
++	SysUmount2               Syscall = 52
++	SysLock                  Syscall = 53
++	SysIoctl                 Syscall = 54
++	SysFcntl                 Syscall = 55
++	SysMpx                   Syscall = 56
++	SysSetpgid               Syscall = 57
++	SysUlimit                Syscall = 58
++	SysOldolduname           Syscall = 59
++	SysUmask                 Syscall = 60
++	SysChroot                Syscall = 61
++	SysUstat                 Syscall = 62
++	SysDup2                  Syscall = 63
++	SysGetppid               Syscall = 64
++	SysGetpgrp               Syscall = 65
++	SysSetsid                Syscall = 66
++	SysSigaction             Syscall = 67
++	SysSgetmask              Syscall = 68
++	SysSsetmask              Syscall = 69
++	SysSetreuid              Syscall = 70
++	SysSetregid              Syscall = 71
++	SysSigsuspend            Syscall = 72
++	SysSigpending            Syscall = 73
++	SysSethostname           Syscall = 74
++	SysSetrlimit             Syscall = 75
++	SysGetrlimit             Syscall = 76
++	SysGetrusage             Syscall = 77
++	SysGettimeofday          Syscall = 78
++	SysSettimeofday          Syscall = 79
++	SysGetgroups             Syscall = 80
++	SysSetgroups             Syscall = 81
++	SysSelect                Syscall = 82
++	SysSymlink               Syscall = 83
++	SysOldlstat              Syscall = 84
++	SysReadlink              Syscall = 85
++	SysUselib                Syscall = 86
++	SysSwapon                Syscall = 87
++	SysReboot                Syscall = 88
++	SysReaddir               Syscall = 89
++	SysMmap                  Syscall = 90
++	SysMunmap                Syscall = 91
++	SysTruncate              Syscall = 92
++	SysFtruncate             Syscall = 93
++	SysFchmod                Syscall = 94
++	SysFchown                Syscall = 95
++	SysGetpriority           Syscall = 96
++	SysSetpriority           Syscall = 97
++	SysProfil                Syscall = 98
++	SysStatfs                Syscall = 99
++	SysFstatfs               Syscall = 100
++	SysIoperm                Syscall = 101
++	SysSocketcall            Syscall = 102
++	SysSyslog                Syscall = 103
++	SysSetitimer             Syscall = 104
++	SysGetitimer             Syscall = 105
++	SysStat                  Syscall = 106
++	SysLstat                 Syscall = 107
++	SysFstat                 Syscall = 108
++	SysOlduname              Syscall = 109
++	SysIopl                  Syscall = 110
++	SysVhangup               Syscall = 111
++	SysIdle                  Syscall = 112
++	SysVm86                  Syscall = 113
++	SysWait4                 Syscall = 114
++	SysSwapoff               Syscall = 115
++	SysSysinfo               Syscall = 116
++	SysIpc                   Syscall = 117
++	SysFsync                 Syscall = 118
++	SysSigreturn             Syscall = 119
++	SysClone                 Syscall = 120
++	SysSetdomainname         Syscall = 121
++	SysUname                 Syscall = 122
++	SysModifyLdt             Syscall = 123
++	SysAdjtimex              Syscall = 124
++	SysMprotect              Syscall = 125
++	SysSigprocmask           Syscall = 126
++	SysCreateModule          Syscall = 127
++	SysInitModule            Syscall = 128
++	SysDeleteModule          Syscall = 129
++	SysGetKernelSyms         Syscall = 130
++	SysQuotactl              Syscall = 131
++	SysGetpgid               Syscall = 132
++	SysFchdir                Syscall = 133
++	SysBdflush               Syscall = 134
++	SysSysfs                 Syscall = 135
++	SysPersonality           Syscall = 136
++	SysAfsSyscall            Syscall = 137
++	SysSetfsuid              Syscall = 138
++	SysSetfsgid              Syscall = 139
++	SysLlseek                Syscall = 140
++	SysGetdents              Syscall = 141
++	SysNewselect             Syscall = 142
++	SysFlock                 Syscall = 143
++	SysMsync                 Syscall = 144
++	SysReadv                 Syscall = 145
++	SysWritev                Syscall = 146
++	SysGetsid                Syscall = 147
++	SysFdatasync             Syscall = 148
++	SysSysctl                Syscall = 149
++	SysMlock                 Syscall = 150
++	SysMunlock               Syscall = 151
++	SysMlockall              Syscall = 152
++	SysMunlockall            Syscall = 153
++	SysSchedSetparam         Syscall = 154
++	SysSchedGetparam         Syscall = 155
++	SysSchedSetscheduler     Syscall = 156
++	SysSchedGetscheduler     Syscall = 157
++	SysSchedYield            Syscall = 158
++	SysSchedGetPriorityMax   Syscall = 159
++	SysSchedGetPriorityMin   Syscall = 160
++	SysSchedRrGetInterval    Syscall = 161
++	SysNanosleep             Syscall = 162
++	SysMremap                Syscall = 163
++	SysSetresuid             Syscall = 164
++	SysGetresuid             Syscall = 165
++	SysQueryModule           Syscall = 166
++	SysPoll                  Syscall = 167
++	SysNfsservctl            Syscall = 168
++	SysSetresgid             Syscall = 169
++	SysGetresgid             Syscall = 170
++	SysPrctl                 Syscall = 171
++	SysRtSigreturn           Syscall = 172
++	SysRtSigaction           Syscall = 173
++	SysRtSigprocmask         Syscall = 174
++	SysRtSigpending          Syscall = 175
++	SysRtSigtimedwait        Syscall = 176
++	SysRtSigqueueinfo        Syscall = 177
++	SysRtSigsuspend          Syscall = 178
++	SysPread64               Syscall = 179
++	SysPwrite64              Syscall = 180
++	SysChown                 Syscall = 181
++	SysGetcwd                Syscall = 182
++	SysCapget                Syscall = 183
++	SysCapset                Syscall = 184
++	SysSigaltstack           Syscall = 185
++	SysSendfile              Syscall = 186
++	SysGetpmsg               Syscall = 187
++	SysPutpmsg               Syscall = 188
++	SysVfork                 Syscall = 189
++	SysUgetrlimit            Syscall = 190
++	SysReadahead             Syscall = 191
++	SysPciconfigRead         Syscall = 198
++	SysPciconfigWrite        Syscall = 199
++	SysPciconfigIobase       Syscall = 200
++	SysMultiplexer           Syscall = 201
++	SysGetdents64            Syscall = 202
++	SysPivotRoot             Syscall = 203
++	SysMadvise               Syscall = 205
++	SysMincore               Syscall = 206
++	SysGettid                Syscall = 207
++	SysTkill                 Syscall = 208
++	SysSetxattr              Syscall = 209
++	SysLsetxattr             Syscall = 210
++	SysFsetxattr             Syscall = 211
++	SysGetxattr              Syscall = 212
++	SysLgetxattr             Syscall = 213
++	SysFgetxattr             Syscall = 214
++	SysListxattr             Syscall = 215
++	SysLlistxattr            Syscall = 216
++	SysFlistxattr            Syscall = 217
++	SysRemovexattr           Syscall = 218
++	SysLremovexattr          Syscall = 219
++	SysFremovexattr          Syscall = 220
++	SysFutex                 Syscall = 221
++	SysSchedSetaffinity      Syscall = 222
++	SysSchedGetaffinity      Syscall = 223
++	SysTuxcall               Syscall = 225
++	SysIoSetup               Syscall = 227
++	SysIoDestroy             Syscall = 228
++	SysIoGetevents           Syscall = 229
++	SysIoSubmit              Syscall = 230
++	SysIoCancel              Syscall = 231
++	SysSetTidAddress         Syscall = 232
++	SysFadvise64             Syscall = 233
++	SysExitGroup             Syscall = 234
++	SysLookupDcookie         Syscall = 235
++	SysEpollCreate           Syscall = 236
++	SysEpollCtl              Syscall = 237
++	SysEpollWait             Syscall = 238
++	SysRemapFilePages        Syscall = 239
++	SysTimerCreate           Syscall = 240
++	SysTimerSettime          Syscall = 241
++	SysTimerGettime          Syscall = 242
++	SysTimerGetoverrun       Syscall = 243
++	SysTimerDelete           Syscall = 244
++	SysClockSettime          Syscall = 245
++	SysClockGettime          Syscall = 246
++	SysClockGetres           Syscall = 247
++	SysClockNanosleep        Syscall = 248
++	SysSwapcontext           Syscall = 249
++	SysTgkill                Syscall = 250
++	SysUtimes                Syscall = 251
++	SysStatfs64              Syscall = 252
++	SysFstatfs64             Syscall = 253
++	SysRtas                  Syscall = 255
++	SysSysDebugSetcontext    Syscall = 256
++	SysMigratePages          Syscall = 258
++	SysMbind                 Syscall = 259
++	SysGetMempolicy          Syscall = 260
++	SysSetMempolicy          Syscall = 261
++	SysMqOpen                Syscall = 262
++	SysMqUnlink              Syscall = 263
++	SysMqTimedsend           Syscall = 264
++	SysMqTimedreceive        Syscall = 265
++	SysMqNotify              Syscall = 266
++	SysMqGetsetattr          Syscall = 267
++	SysKexecLoad             Syscall = 268
++	SysAddKey                Syscall = 269
++	SysRequestKey            Syscall = 270
++	SysKeyctl                Syscall = 271
++	SysWaitid                Syscall = 272
++	SysIoprioSet             Syscall = 273
++	SysIoprioGet             Syscall = 274
++	SysInotifyInit           Syscall = 275
++	SysInotifyAddWatch       Syscall = 276
++	SysInotifyRmWatch        Syscall = 277
++	SysSpuRun                Syscall = 278
++	SysSpuCreate             Syscall = 279
++	SysPselect6              Syscall = 280
++	SysPpoll                 Syscall = 281
++	SysUnshare               Syscall = 282
++	SysSplice                Syscall = 283
++	SysTee                   Syscall = 284
++	SysVmsplice              Syscall = 285
++	SysOpenat                Syscall = 286
++	SysMkdirat               Syscall = 287
++	SysMknodat               Syscall = 288
++	SysFchownat              Syscall = 289
++	SysFutimesat             Syscall = 290
++	SysNewfstatat            Syscall = 291
++	SysUnlinkat              Syscall = 292
++	SysRenameat              Syscall = 293
++	SysLinkat                Syscall = 294
++	SysSymlinkat             Syscall = 295
++	SysReadlinkat            Syscall = 296
++	SysFchmodat              Syscall = 297
++	SysFaccessat             Syscall = 298
++	SysGetRobustList         Syscall = 299
++	SysSetRobustList         Syscall = 300
++	SysMovePages             Syscall = 301
++	SysGetcpu                Syscall = 302
++	SysEpollPwait            Syscall = 303
++	SysUtimensat             Syscall = 304
++	SysSignalfd              Syscall = 305
++	SysTimerfdCreate         Syscall = 306
++	SysEventfd               Syscall = 307
++	SysSyncFileRange2        Syscall = 308
++	SysFallocate             Syscall = 309
++	SysSubpageProt           Syscall = 310
++	SysTimerfdSettime        Syscall = 311
++	SysTimerfdGettime        Syscall = 312
++	SysSignalfd4             Syscall = 313
++	SysEventfd2              Syscall = 314
++	SysEpollCreate1          Syscall = 315
++	SysDup3                  Syscall = 316
++	SysPipe2                 Syscall = 317
++	SysInotifyInit1          Syscall = 318
++	SysPerfEventOpen         Syscall = 319
++	SysPreadv                Syscall = 320
++	SysPwritev               Syscall = 321
++	SysRtTgsigqueueinfo      Syscall = 322
++	SysFanotifyInit          Syscall = 323
++	SysFanotifyMark          Syscall = 324
++	SysPrlimit64             Syscall = 325
++	SysSocket                Syscall = 326
++	SysBind                  Syscall = 327
++	SysConnect               Syscall = 328
++	SysListen                Syscall = 329
++	SysAccept                Syscall = 330
++	SysGetsockname           Syscall = 331
++	SysGetpeername           Syscall = 332
++	SysSocketpair            Syscall = 333
++	SysSend                  Syscall = 334
++	SysSendto                Syscall = 335
++	SysRecv                  Syscall = 336
++	SysRecvfrom              Syscall = 337
++	SysShutdown              Syscall = 338
++	SysSetsockopt            Syscall = 339
++	SysGetsockopt            Syscall = 340
++	SysSendmsg               Syscall = 341
++	SysRecvmsg               Syscall = 342
++	SysRecvmmsg              Syscall = 343
++	SysAccept4               Syscall = 344
++	SysNameToHandleAt        Syscall = 345
++	SysOpenByHandleAt        Syscall = 346
++	SysClockAdjtime          Syscall = 347
++	SysSyncfs                Syscall = 348
++	SysSendmmsg              Syscall = 349
++	SysSetns                 Syscall = 350
++	SysProcessVmReadv        Syscall = 351
++	SysProcessVmWritev       Syscall = 352
++	SysFinitModule           Syscall = 353
++	SysKcmp                  Syscall = 354
++	SysSchedSetattr          Syscall = 355
++	SysSchedGetattr          Syscall = 356
++	SysRenameat2             Syscall = 357
++	SysSeccomp               Syscall = 358
++	SysGetrandom             Syscall = 359
++	SysMemfdCreate           Syscall = 360
++	SysBpf                   Syscall = 361
++	SysExecveat              Syscall = 362
++	SysSwitchEndian          Syscall = 363
++	SysUserfaultfd           Syscall = 364
++	SysMembarrier            Syscall = 365
++	SysMlock2                Syscall = 378
++	SysCopyFileRange         Syscall = 379
++	SysPreadv2               Syscall = 380
++	SysPwritev2              Syscall = 381
++	SysKexecFileLoad         Syscall = 382
++	SysStatx                 Syscall = 383
++	SysPkeyAlloc             Syscall = 384
++	SysPkeyFree              Syscall = 385
++	SysPkeyMprotect          Syscall = 386
++	SysRseq                  Syscall = 387
++	SysIoPgetevents          Syscall = 388
++	SysSemtimedop            Syscall = 392
++	SysSemget                Syscall = 393
++	SysSemctl                Syscall = 394
++	SysShmget                Syscall = 395
++	SysShmctl                Syscall = 396
++	SysShmat                 Syscall = 397
++	SysShmdt                 Syscall = 398
++	SysMsgget                Syscall = 399
++	SysMsgsnd                Syscall = 400
++	SysMsgrcv                Syscall = 401
++	SysMsgctl                Syscall = 402
++	SysPidfdSendSignal       Syscall = 424
++	SysIoUringSetup          Syscall = 425
++	SysIoUringEnter          Syscall = 426
++	SysIoUringRegister       Syscall = 427
++	SysOpenTree              Syscall = 428
++	SysMoveMount             Syscall = 429
++	SysFsopen                Syscall = 430
++	SysFsconfig              Syscall = 431
++	SysFsmount               Syscall = 432
++	SysFspick                Syscall = 433
++	SysPidfdOpen             Syscall = 434
++	SysClone3                Syscall = 435
++	SysCloseRange            Syscall = 436
++	SysOpenat2               Syscall = 437
++	SysPidfdGetfd            Syscall = 438
++	SysFaccessat2            Syscall = 439
++	SysProcessMadvise        Syscall = 440
++	SysEpollPwait2           Syscall = 441
++	SysMountSetattr          Syscall = 442
++	SysQuotactlFd            Syscall = 443
++	SysLandlockCreateRuleset Syscall = 444
++	SysLandlockAddRule       Syscall = 445
++	SysLandlockRestrictSelf  Syscall = 446
++	SysProcessMrelease       Syscall = 448
++	SysFutexWaitv            Syscall = 449
++	SysSetMempolicyHomeNode  Syscall = 450
++)
+diff --git a/pkg/security/secl/model/syscalls_string_linux_ppc64le.go b/pkg/security/secl/model/syscalls_string_linux_ppc64le.go
+new file mode 100644
+index 000000000..f6995fdc9
+--- /dev/null
++++ b/pkg/security/secl/model/syscalls_string_linux_ppc64le.go
+@@ -0,0 +1,829 @@
++// Code generated by "stringer -type Syscall -output syscalls_string_linux_ppc64le.go syscalls_linux_ppc64le.go"; DO NOT EDIT.
++
++package model
++
++import "strconv"
++
++func _() {
++	// An "invalid array index" compiler error signifies that the constant values have changed.
++	// Re-run the stringer command to generate them again.
++	var x [1]struct{}
++	_ = x[SysRestartSyscall-0]
++	_ = x[SysExit-1]
++	_ = x[SysFork-2]
++	_ = x[SysRead-3]
++	_ = x[SysWrite-4]
++	_ = x[SysOpen-5]
++	_ = x[SysClose-6]
++	_ = x[SysWaitpid-7]
++	_ = x[SysCreat-8]
++	_ = x[SysLink-9]
++	_ = x[SysUnlink-10]
++	_ = x[SysExecve-11]
++	_ = x[SysChdir-12]
++	_ = x[SysTime-13]
++	_ = x[SysMknod-14]
++	_ = x[SysChmod-15]
++	_ = x[SysLchown-16]
++	_ = x[SysBreak-17]
++	_ = x[SysOldstat-18]
++	_ = x[SysLseek-19]
++	_ = x[SysGetpid-20]
++	_ = x[SysMount-21]
++	_ = x[SysUmount-22]
++	_ = x[SysSetuid-23]
++	_ = x[SysGetuid-24]
++	_ = x[SysStime-25]
++	_ = x[SysPtrace-26]
++	_ = x[SysAlarm-27]
++	_ = x[SysOldfstat-28]
++	_ = x[SysPause-29]
++	_ = x[SysUtime-30]
++	_ = x[SysStty-31]
++	_ = x[SysGtty-32]
++	_ = x[SysAccess-33]
++	_ = x[SysNice-34]
++	_ = x[SysFtime-35]
++	_ = x[SysSync-36]
++	_ = x[SysKill-37]
++	_ = x[SysRename-38]
++	_ = x[SysMkdir-39]
++	_ = x[SysRmdir-40]
++	_ = x[SysDup-41]
++	_ = x[SysPipe-42]
++	_ = x[SysTimes-43]
++	_ = x[SysProf-44]
++	_ = x[SysBrk-45]
++	_ = x[SysSetgid-46]
++	_ = x[SysGetgid-47]
++	_ = x[SysSignal-48]
++	_ = x[SysGeteuid-49]
++	_ = x[SysGetegid-50]
++	_ = x[SysAcct-51]
++	_ = x[SysUmount2-52]
++	_ = x[SysLock-53]
++	_ = x[SysIoctl-54]
++	_ = x[SysFcntl-55]
++	_ = x[SysMpx-56]
++	_ = x[SysSetpgid-57]
++	_ = x[SysUlimit-58]
++	_ = x[SysOldolduname-59]
++	_ = x[SysUmask-60]
++	_ = x[SysChroot-61]
++	_ = x[SysUstat-62]
++	_ = x[SysDup2-63]
++	_ = x[SysGetppid-64]
++	_ = x[SysGetpgrp-65]
++	_ = x[SysSetsid-66]
++	_ = x[SysSigaction-67]
++	_ = x[SysSgetmask-68]
++	_ = x[SysSsetmask-69]
++	_ = x[SysSetreuid-70]
++	_ = x[SysSetregid-71]
++	_ = x[SysSigsuspend-72]
++	_ = x[SysSigpending-73]
++	_ = x[SysSethostname-74]
++	_ = x[SysSetrlimit-75]
++	_ = x[SysGetrlimit-76]
++	_ = x[SysGetrusage-77]
++	_ = x[SysGettimeofday-78]
++	_ = x[SysSettimeofday-79]
++	_ = x[SysGetgroups-80]
++	_ = x[SysSetgroups-81]
++	_ = x[SysSelect-82]
++	_ = x[SysSymlink-83]
++	_ = x[SysOldlstat-84]
++	_ = x[SysReadlink-85]
++	_ = x[SysUselib-86]
++	_ = x[SysSwapon-87]
++	_ = x[SysReboot-88]
++	_ = x[SysReaddir-89]
++	_ = x[SysMmap-90]
++	_ = x[SysMunmap-91]
++	_ = x[SysTruncate-92]
++	_ = x[SysFtruncate-93]
++	_ = x[SysFchmod-94]
++	_ = x[SysFchown-95]
++	_ = x[SysGetpriority-96]
++	_ = x[SysSetpriority-97]
++	_ = x[SysProfil-98]
++	_ = x[SysStatfs-99]
++	_ = x[SysFstatfs-100]
++	_ = x[SysIoperm-101]
++	_ = x[SysSocketcall-102]
++	_ = x[SysSyslog-103]
++	_ = x[SysSetitimer-104]
++	_ = x[SysGetitimer-105]
++	_ = x[SysStat-106]
++	_ = x[SysLstat-107]
++	_ = x[SysFstat-108]
++	_ = x[SysOlduname-109]
++	_ = x[SysIopl-110]
++	_ = x[SysVhangup-111]
++	_ = x[SysIdle-112]
++	_ = x[SysVm86-113]
++	_ = x[SysWait4-114]
++	_ = x[SysSwapoff-115]
++	_ = x[SysSysinfo-116]
++	_ = x[SysIpc-117]
++	_ = x[SysFsync-118]
++	_ = x[SysSigreturn-119]
++	_ = x[SysClone-120]
++	_ = x[SysSetdomainname-121]
++	_ = x[SysUname-122]
++	_ = x[SysModifyLdt-123]
++	_ = x[SysAdjtimex-124]
++	_ = x[SysMprotect-125]
++	_ = x[SysSigprocmask-126]
++	_ = x[SysCreateModule-127]
++	_ = x[SysInitModule-128]
++	_ = x[SysDeleteModule-129]
++	_ = x[SysGetKernelSyms-130]
++	_ = x[SysQuotactl-131]
++	_ = x[SysGetpgid-132]
++	_ = x[SysFchdir-133]
++	_ = x[SysBdflush-134]
++	_ = x[SysSysfs-135]
++	_ = x[SysPersonality-136]
++	_ = x[SysAfsSyscall-137]
++	_ = x[SysSetfsuid-138]
++	_ = x[SysSetfsgid-139]
++	_ = x[SysLlseek-140]
++	_ = x[SysGetdents-141]
++	_ = x[SysNewselect-142]
++	_ = x[SysFlock-143]
++	_ = x[SysMsync-144]
++	_ = x[SysReadv-145]
++	_ = x[SysWritev-146]
++	_ = x[SysGetsid-147]
++	_ = x[SysFdatasync-148]
++	_ = x[SysSysctl-149]
++	_ = x[SysMlock-150]
++	_ = x[SysMunlock-151]
++	_ = x[SysMlockall-152]
++	_ = x[SysMunlockall-153]
++	_ = x[SysSchedSetparam-154]
++	_ = x[SysSchedGetparam-155]
++	_ = x[SysSchedSetscheduler-156]
++	_ = x[SysSchedGetscheduler-157]
++	_ = x[SysSchedYield-158]
++	_ = x[SysSchedGetPriorityMax-159]
++	_ = x[SysSchedGetPriorityMin-160]
++	_ = x[SysSchedRrGetInterval-161]
++	_ = x[SysNanosleep-162]
++	_ = x[SysMremap-163]
++	_ = x[SysSetresuid-164]
++	_ = x[SysGetresuid-165]
++	_ = x[SysQueryModule-166]
++	_ = x[SysPoll-167]
++	_ = x[SysNfsservctl-168]
++	_ = x[SysSetresgid-169]
++	_ = x[SysGetresgid-170]
++	_ = x[SysPrctl-171]
++	_ = x[SysRtSigreturn-172]
++	_ = x[SysRtSigaction-173]
++	_ = x[SysRtSigprocmask-174]
++	_ = x[SysRtSigpending-175]
++	_ = x[SysRtSigtimedwait-176]
++	_ = x[SysRtSigqueueinfo-177]
++	_ = x[SysRtSigsuspend-178]
++	_ = x[SysPread64-179]
++	_ = x[SysPwrite64-180]
++	_ = x[SysChown-181]
++	_ = x[SysGetcwd-182]
++	_ = x[SysCapget-183]
++	_ = x[SysCapset-184]
++	_ = x[SysSigaltstack-185]
++	_ = x[SysSendfile-186]
++	_ = x[SysGetpmsg-187]
++	_ = x[SysPutpmsg-188]
++	_ = x[SysVfork-189]
++	_ = x[SysUgetrlimit-190]
++	_ = x[SysReadahead-191]
++	_ = x[SysPciconfigRead-198]
++	_ = x[SysPciconfigWrite-199]
++	_ = x[SysPciconfigIobase-200]
++	_ = x[SysMultiplexer-201]
++	_ = x[SysGetdents64-202]
++	_ = x[SysPivotRoot-203]
++	_ = x[SysMadvise-205]
++	_ = x[SysMincore-206]
++	_ = x[SysGettid-207]
++	_ = x[SysTkill-208]
++	_ = x[SysSetxattr-209]
++	_ = x[SysLsetxattr-210]
++	_ = x[SysFsetxattr-211]
++	_ = x[SysGetxattr-212]
++	_ = x[SysLgetxattr-213]
++	_ = x[SysFgetxattr-214]
++	_ = x[SysListxattr-215]
++	_ = x[SysLlistxattr-216]
++	_ = x[SysFlistxattr-217]
++	_ = x[SysRemovexattr-218]
++	_ = x[SysLremovexattr-219]
++	_ = x[SysFremovexattr-220]
++	_ = x[SysFutex-221]
++	_ = x[SysSchedSetaffinity-222]
++	_ = x[SysSchedGetaffinity-223]
++	_ = x[SysTuxcall-225]
++	_ = x[SysIoSetup-227]
++	_ = x[SysIoDestroy-228]
++	_ = x[SysIoGetevents-229]
++	_ = x[SysIoSubmit-230]
++	_ = x[SysIoCancel-231]
++	_ = x[SysSetTidAddress-232]
++	_ = x[SysFadvise64-233]
++	_ = x[SysExitGroup-234]
++	_ = x[SysLookupDcookie-235]
++	_ = x[SysEpollCreate-236]
++	_ = x[SysEpollCtl-237]
++	_ = x[SysEpollWait-238]
++	_ = x[SysRemapFilePages-239]
++	_ = x[SysTimerCreate-240]
++	_ = x[SysTimerSettime-241]
++	_ = x[SysTimerGettime-242]
++	_ = x[SysTimerGetoverrun-243]
++	_ = x[SysTimerDelete-244]
++	_ = x[SysClockSettime-245]
++	_ = x[SysClockGettime-246]
++	_ = x[SysClockGetres-247]
++	_ = x[SysClockNanosleep-248]
++	_ = x[SysSwapcontext-249]
++	_ = x[SysTgkill-250]
++	_ = x[SysUtimes-251]
++	_ = x[SysStatfs64-252]
++	_ = x[SysFstatfs64-253]
++	_ = x[SysRtas-255]
++	_ = x[SysSysDebugSetcontext-256]
++	_ = x[SysMigratePages-258]
++	_ = x[SysMbind-259]
++	_ = x[SysGetMempolicy-260]
++	_ = x[SysSetMempolicy-261]
++	_ = x[SysMqOpen-262]
++	_ = x[SysMqUnlink-263]
++	_ = x[SysMqTimedsend-264]
++	_ = x[SysMqTimedreceive-265]
++	_ = x[SysMqNotify-266]
++	_ = x[SysMqGetsetattr-267]
++	_ = x[SysKexecLoad-268]
++	_ = x[SysAddKey-269]
++	_ = x[SysRequestKey-270]
++	_ = x[SysKeyctl-271]
++	_ = x[SysWaitid-272]
++	_ = x[SysIoprioSet-273]
++	_ = x[SysIoprioGet-274]
++	_ = x[SysInotifyInit-275]
++	_ = x[SysInotifyAddWatch-276]
++	_ = x[SysInotifyRmWatch-277]
++	_ = x[SysSpuRun-278]
++	_ = x[SysSpuCreate-279]
++	_ = x[SysPselect6-280]
++	_ = x[SysPpoll-281]
++	_ = x[SysUnshare-282]
++	_ = x[SysSplice-283]
++	_ = x[SysTee-284]
++	_ = x[SysVmsplice-285]
++	_ = x[SysOpenat-286]
++	_ = x[SysMkdirat-287]
++	_ = x[SysMknodat-288]
++	_ = x[SysFchownat-289]
++	_ = x[SysFutimesat-290]
++	_ = x[SysNewfstatat-291]
++	_ = x[SysUnlinkat-292]
++	_ = x[SysRenameat-293]
++	_ = x[SysLinkat-294]
++	_ = x[SysSymlinkat-295]
++	_ = x[SysReadlinkat-296]
++	_ = x[SysFchmodat-297]
++	_ = x[SysFaccessat-298]
++	_ = x[SysGetRobustList-299]
++	_ = x[SysSetRobustList-300]
++	_ = x[SysMovePages-301]
++	_ = x[SysGetcpu-302]
++	_ = x[SysEpollPwait-303]
++	_ = x[SysUtimensat-304]
++	_ = x[SysSignalfd-305]
++	_ = x[SysTimerfdCreate-306]
++	_ = x[SysEventfd-307]
++	_ = x[SysSyncFileRange2-308]
++	_ = x[SysFallocate-309]
++	_ = x[SysSubpageProt-310]
++	_ = x[SysTimerfdSettime-311]
++	_ = x[SysTimerfdGettime-312]
++	_ = x[SysSignalfd4-313]
++	_ = x[SysEventfd2-314]
++	_ = x[SysEpollCreate1-315]
++	_ = x[SysDup3-316]
++	_ = x[SysPipe2-317]
++	_ = x[SysInotifyInit1-318]
++	_ = x[SysPerfEventOpen-319]
++	_ = x[SysPreadv-320]
++	_ = x[SysPwritev-321]
++	_ = x[SysRtTgsigqueueinfo-322]
++	_ = x[SysFanotifyInit-323]
++	_ = x[SysFanotifyMark-324]
++	_ = x[SysPrlimit64-325]
++	_ = x[SysSocket-326]
++	_ = x[SysBind-327]
++	_ = x[SysConnect-328]
++	_ = x[SysListen-329]
++	_ = x[SysAccept-330]
++	_ = x[SysGetsockname-331]
++	_ = x[SysGetpeername-332]
++	_ = x[SysSocketpair-333]
++	_ = x[SysSend-334]
++	_ = x[SysSendto-335]
++	_ = x[SysRecv-336]
++	_ = x[SysRecvfrom-337]
++	_ = x[SysShutdown-338]
++	_ = x[SysSetsockopt-339]
++	_ = x[SysGetsockopt-340]
++	_ = x[SysSendmsg-341]
++	_ = x[SysRecvmsg-342]
++	_ = x[SysRecvmmsg-343]
++	_ = x[SysAccept4-344]
++	_ = x[SysNameToHandleAt-345]
++	_ = x[SysOpenByHandleAt-346]
++	_ = x[SysClockAdjtime-347]
++	_ = x[SysSyncfs-348]
++	_ = x[SysSendmmsg-349]
++	_ = x[SysSetns-350]
++	_ = x[SysProcessVmReadv-351]
++	_ = x[SysProcessVmWritev-352]
++	_ = x[SysFinitModule-353]
++	_ = x[SysKcmp-354]
++	_ = x[SysSchedSetattr-355]
++	_ = x[SysSchedGetattr-356]
++	_ = x[SysRenameat2-357]
++	_ = x[SysSeccomp-358]
++	_ = x[SysGetrandom-359]
++	_ = x[SysMemfdCreate-360]
++	_ = x[SysBpf-361]
++	_ = x[SysExecveat-362]
++	_ = x[SysSwitchEndian-363]
++	_ = x[SysUserfaultfd-364]
++	_ = x[SysMembarrier-365]
++	_ = x[SysMlock2-378]
++	_ = x[SysCopyFileRange-379]
++	_ = x[SysPreadv2-380]
++	_ = x[SysPwritev2-381]
++	_ = x[SysKexecFileLoad-382]
++	_ = x[SysStatx-383]
++	_ = x[SysPkeyAlloc-384]
++	_ = x[SysPkeyFree-385]
++	_ = x[SysPkeyMprotect-386]
++	_ = x[SysRseq-387]
++	_ = x[SysIoPgetevents-388]
++	_ = x[SysSemtimedop-392]
++	_ = x[SysSemget-393]
++	_ = x[SysSemctl-394]
++	_ = x[SysShmget-395]
++	_ = x[SysShmctl-396]
++	_ = x[SysShmat-397]
++	_ = x[SysShmdt-398]
++	_ = x[SysMsgget-399]
++	_ = x[SysMsgsnd-400]
++	_ = x[SysMsgrcv-401]
++	_ = x[SysMsgctl-402]
++	_ = x[SysPidfdSendSignal-424]
++	_ = x[SysIoUringSetup-425]
++	_ = x[SysIoUringEnter-426]
++	_ = x[SysIoUringRegister-427]
++	_ = x[SysOpenTree-428]
++	_ = x[SysMoveMount-429]
++	_ = x[SysFsopen-430]
++	_ = x[SysFsconfig-431]
++	_ = x[SysFsmount-432]
++	_ = x[SysFspick-433]
++	_ = x[SysPidfdOpen-434]
++	_ = x[SysClone3-435]
++	_ = x[SysCloseRange-436]
++	_ = x[SysOpenat2-437]
++	_ = x[SysPidfdGetfd-438]
++	_ = x[SysFaccessat2-439]
++	_ = x[SysProcessMadvise-440]
++	_ = x[SysEpollPwait2-441]
++	_ = x[SysMountSetattr-442]
++	_ = x[SysQuotactlFd-443]
++	_ = x[SysLandlockCreateRuleset-444]
++	_ = x[SysLandlockAddRule-445]
++	_ = x[SysLandlockRestrictSelf-446]
++	_ = x[SysProcessMrelease-448]
++	_ = x[SysFutexWaitv-449]
++	_ = x[SysSetMempolicyHomeNode-450]
++}
++
++const _Syscall_name = "SysRestartSyscallSysExitSysForkSysReadSysWriteSysOpenSysCloseSysWaitpidSysCreatSysLinkSysUnlinkSysExecveSysChdirSysTimeSysMknodSysChmodSysLchownSysBreakSysOldstatSysLseekSysGetpidSysMountSysUmountSysSetuidSysGetuidSysStimeSysPtraceSysAlarmSysOldfstatSysPauseSysUtimeSysSttySysGttySysAccessSysNiceSysFtimeSysSyncSysKillSysRenameSysMkdirSysRmdirSysDupSysPipeSysTimesSysProfSysBrkSysSetgidSysGetgidSysSignalSysGeteuidSysGetegidSysAcctSysUmount2SysLockSysIoctlSysFcntlSysMpxSysSetpgidSysUlimitSysOldoldunameSysUmaskSysChrootSysUstatSysDup2SysGetppidSysGetpgrpSysSetsidSysSigactionSysSgetmaskSysSsetmaskSysSetreuidSysSetregidSysSigsuspendSysSigpendingSysSethostnameSysSetrlimitSysGetrlimitSysGetrusageSysGettimeofdaySysSettimeofdaySysGetgroupsSysSetgroupsSysSelectSysSymlinkSysOldlstatSysReadlinkSysUselibSysSwaponSysRebootSysReaddirSysMmapSysMunmapSysTruncateSysFtruncateSysFchmodSysFchownSysGetprioritySysSetprioritySysProfilSysStatfsSysFstatfsSysIopermSysSocketcallSysSyslogSysSetitimerSysGetitimerSysStatSysLstatSysFstatSysOldunameSysIoplSysVhangupSysIdleSysVm86SysWait4SysSwapoffSysSysinfoSysIpcSysFsyncSysSigreturnSysCloneSysSetdomainnameSysUnameSysModifyLdtSysAdjtimexSysMprotectSysSigprocmaskSysCreateModuleSysInitModuleSysDeleteModuleSysGetKernelSymsSysQuotactlSysGetpgidSysFchdirSysBdflushSysSysfsSysPersonalitySysAfsSyscallSysSetfsuidSysSetfsgidSysLlseekSysGetdentsSysNewselectSysFlockSysMsyncSysReadvSysWritevSysGetsidSysFdatasyncSysSysctlSysMlockSysMunlockSysMlockallSysMunlockallSysSchedSetparamSysSchedGetparamSysSchedSetschedulerSysSchedGetschedulerSysSchedYieldSysSchedGetPriorityMaxSysSchedGetPriorityMinSysSchedRrGetIntervalSysNanosleepSysMremapSysSetresuidSysGetresuidSysQueryModuleSysPollSysNfsservctlSysSetresgidSysGetresgidSysPrctlSysRtSigreturnSysRtSigactionSysRtSigprocmaskSysRtSigpendingSysRtSigtimedwaitSysRtSigqueueinfoSysRtSigsuspendSysPread64SysPwrite64SysChownSysGetcwdSysCapgetSysCapsetSysSigaltstackSysSendfileSysGetpmsgSysPutpmsgSysVforkSysUgetrlimitSysReadaheadSysPciconfigReadSysPciconfigWriteSysPciconfigIobaseSysMultiplexerSysGetdents64SysPivotRootSysMadviseSysMincoreSysGettidSysTkillSysSetxattrSysLsetxattrSysFsetxattrSysGetxattrSysLgetxattrSysFgetxattrSysListxattrSysLlistxattrSysFlistxattrSysRemovexattrSysLremovexattrSysFremovexattrSysFutexSysSchedSetaffinitySysSchedGetaffinitySysTuxcallSysIoSetupSysIoDestroySysIoGeteventsSysIoSubmitSysIoCancelSysSetTidAddressSysFadvise64SysExitGroupSysLookupDcookieSysEpollCreateSysEpollCtlSysEpollWaitSysRemapFilePagesSysTimerCreateSysTimerSettimeSysTimerGettimeSysTimerGetoverrunSysTimerDeleteSysClockSettimeSysClockGettimeSysClockGetresSysClockNanosleepSysSwapcontextSysTgkillSysUtimesSysStatfs64SysFstatfs64SysRtasSysSysDebugSetcontextSysMigratePagesSysMbindSysGetMempolicySysSetMempolicySysMqOpenSysMqUnlinkSysMqTimedsendSysMqTimedreceiveSysMqNotifySysMqGetsetattrSysKexecLoadSysAddKeySysRequestKeySysKeyctlSysWaitidSysIoprioSetSysIoprioGetSysInotifyInitSysInotifyAddWatchSysInotifyRmWatchSysSpuRunSysSpuCreateSysPselect6SysPpollSysUnshareSysSpliceSysTeeSysVmspliceSysOpenatSysMkdiratSysMknodatSysFchownatSysFutimesatSysNewfstatatSysUnlinkatSysRenameatSysLinkatSysSymlinkatSysReadlinkatSysFchmodatSysFaccessatSysGetRobustListSysSetRobustListSysMovePagesSysGetcpuSysEpollPwaitSysUtimensatSysSignalfdSysTimerfdCreateSysEventfdSysSyncFileRange2SysFallocateSysSubpageProtSysTimerfdSettimeSysTimerfdGettimeSysSignalfd4SysEventfd2SysEpollCreate1SysDup3SysPipe2SysInotifyInit1SysPerfEventOpenSysPreadvSysPwritevSysRtTgsigqueueinfoSysFanotifyInitSysFanotifyMarkSysPrlimit64SysSocketSysBindSysConnectSysListenSysAcceptSysGetsocknameSysGetpeernameSysSocketpairSysSendSysSendtoSysRecvSysRecvfromSysShutdownSysSetsockoptSysGetsockoptSysSendmsgSysRecvmsgSysRecvmmsgSysAccept4SysNameToHandleAtSysOpenByHandleAtSysClockAdjtimeSysSyncfsSysSendmmsgSysSetnsSysProcessVmReadvSysProcessVmWritevSysFinitModuleSysKcmpSysSchedSetattrSysSchedGetattrSysRenameat2SysSeccompSysGetrandomSysMemfdCreateSysBpfSysExecveatSysSwitchEndianSysUserfaultfdSysMembarrierSysMlock2SysCopyFileRangeSysPreadv2SysPwritev2SysKexecFileLoadSysStatxSysPkeyAllocSysPkeyFreeSysPkeyMprotectSysRseqSysIoPgeteventsSysSemtimedopSysSemgetSysSemctlSysShmgetSysShmctlSysShmatSysShmdtSysMsggetSysMsgsndSysMsgrcvSysMsgctlSysPidfdSendSignalSysIoUringSetupSysIoUringEnterSysIoUringRegisterSysOpenTreeSysMoveMountSysFsopenSysFsconfigSysFsmountSysFspickSysPidfdOpenSysClone3SysCloseRangeSysOpenat2SysPidfdGetfdSysFaccessat2SysProcessMadviseSysEpollPwait2SysMountSetattrSysQuotactlFdSysLandlockCreateRulesetSysLandlockAddRuleSysLandlockRestrictSelfSysProcessMreleaseSysFutexWaitvSysSetMempolicyHomeNode"
++
++var _Syscall_map = map[Syscall]string{
++	0:   _Syscall_name[0:17],
++	1:   _Syscall_name[17:24],
++	2:   _Syscall_name[24:31],
++	3:   _Syscall_name[31:38],
++	4:   _Syscall_name[38:46],
++	5:   _Syscall_name[46:53],
++	6:   _Syscall_name[53:61],
++	7:   _Syscall_name[61:71],
++	8:   _Syscall_name[71:79],
++	9:   _Syscall_name[79:86],
++	10:  _Syscall_name[86:95],
++	11:  _Syscall_name[95:104],
++	12:  _Syscall_name[104:112],
++	13:  _Syscall_name[112:119],
++	14:  _Syscall_name[119:127],
++	15:  _Syscall_name[127:135],
++	16:  _Syscall_name[135:144],
++	17:  _Syscall_name[144:152],
++	18:  _Syscall_name[152:162],
++	19:  _Syscall_name[162:170],
++	20:  _Syscall_name[170:179],
++	21:  _Syscall_name[179:187],
++	22:  _Syscall_name[187:196],
++	23:  _Syscall_name[196:205],
++	24:  _Syscall_name[205:214],
++	25:  _Syscall_name[214:222],
++	26:  _Syscall_name[222:231],
++	27:  _Syscall_name[231:239],
++	28:  _Syscall_name[239:250],
++	29:  _Syscall_name[250:258],
++	30:  _Syscall_name[258:266],
++	31:  _Syscall_name[266:273],
++	32:  _Syscall_name[273:280],
++	33:  _Syscall_name[280:289],
++	34:  _Syscall_name[289:296],
++	35:  _Syscall_name[296:304],
++	36:  _Syscall_name[304:311],
++	37:  _Syscall_name[311:318],
++	38:  _Syscall_name[318:327],
++	39:  _Syscall_name[327:335],
++	40:  _Syscall_name[335:343],
++	41:  _Syscall_name[343:349],
++	42:  _Syscall_name[349:356],
++	43:  _Syscall_name[356:364],
++	44:  _Syscall_name[364:371],
++	45:  _Syscall_name[371:377],
++	46:  _Syscall_name[377:386],
++	47:  _Syscall_name[386:395],
++	48:  _Syscall_name[395:404],
++	49:  _Syscall_name[404:414],
++	50:  _Syscall_name[414:424],
++	51:  _Syscall_name[424:431],
++	52:  _Syscall_name[431:441],
++	53:  _Syscall_name[441:448],
++	54:  _Syscall_name[448:456],
++	55:  _Syscall_name[456:464],
++	56:  _Syscall_name[464:470],
++	57:  _Syscall_name[470:480],
++	58:  _Syscall_name[480:489],
++	59:  _Syscall_name[489:503],
++	60:  _Syscall_name[503:511],
++	61:  _Syscall_name[511:520],
++	62:  _Syscall_name[520:528],
++	63:  _Syscall_name[528:535],
++	64:  _Syscall_name[535:545],
++	65:  _Syscall_name[545:555],
++	66:  _Syscall_name[555:564],
++	67:  _Syscall_name[564:576],
++	68:  _Syscall_name[576:587],
++	69:  _Syscall_name[587:598],
++	70:  _Syscall_name[598:609],
++	71:  _Syscall_name[609:620],
++	72:  _Syscall_name[620:633],
++	73:  _Syscall_name[633:646],
++	74:  _Syscall_name[646:660],
++	75:  _Syscall_name[660:672],
++	76:  _Syscall_name[672:684],
++	77:  _Syscall_name[684:696],
++	78:  _Syscall_name[696:711],
++	79:  _Syscall_name[711:726],
++	80:  _Syscall_name[726:738],
++	81:  _Syscall_name[738:750],
++	82:  _Syscall_name[750:759],
++	83:  _Syscall_name[759:769],
++	84:  _Syscall_name[769:780],
++	85:  _Syscall_name[780:791],
++	86:  _Syscall_name[791:800],
++	87:  _Syscall_name[800:809],
++	88:  _Syscall_name[809:818],
++	89:  _Syscall_name[818:828],
++	90:  _Syscall_name[828:835],
++	91:  _Syscall_name[835:844],
++	92:  _Syscall_name[844:855],
++	93:  _Syscall_name[855:867],
++	94:  _Syscall_name[867:876],
++	95:  _Syscall_name[876:885],
++	96:  _Syscall_name[885:899],
++	97:  _Syscall_name[899:913],
++	98:  _Syscall_name[913:922],
++	99:  _Syscall_name[922:931],
++	100: _Syscall_name[931:941],
++	101: _Syscall_name[941:950],
++	102: _Syscall_name[950:963],
++	103: _Syscall_name[963:972],
++	104: _Syscall_name[972:984],
++	105: _Syscall_name[984:996],
++	106: _Syscall_name[996:1003],
++	107: _Syscall_name[1003:1011],
++	108: _Syscall_name[1011:1019],
++	109: _Syscall_name[1019:1030],
++	110: _Syscall_name[1030:1037],
++	111: _Syscall_name[1037:1047],
++	112: _Syscall_name[1047:1054],
++	113: _Syscall_name[1054:1061],
++	114: _Syscall_name[1061:1069],
++	115: _Syscall_name[1069:1079],
++	116: _Syscall_name[1079:1089],
++	117: _Syscall_name[1089:1095],
++	118: _Syscall_name[1095:1103],
++	119: _Syscall_name[1103:1115],
++	120: _Syscall_name[1115:1123],
++	121: _Syscall_name[1123:1139],
++	122: _Syscall_name[1139:1147],
++	123: _Syscall_name[1147:1159],
++	124: _Syscall_name[1159:1170],
++	125: _Syscall_name[1170:1181],
++	126: _Syscall_name[1181:1195],
++	127: _Syscall_name[1195:1210],
++	128: _Syscall_name[1210:1223],
++	129: _Syscall_name[1223:1238],
++	130: _Syscall_name[1238:1254],
++	131: _Syscall_name[1254:1265],
++	132: _Syscall_name[1265:1275],
++	133: _Syscall_name[1275:1284],
++	134: _Syscall_name[1284:1294],
++	135: _Syscall_name[1294:1302],
++	136: _Syscall_name[1302:1316],
++	137: _Syscall_name[1316:1329],
++	138: _Syscall_name[1329:1340],
++	139: _Syscall_name[1340:1351],
++	140: _Syscall_name[1351:1360],
++	141: _Syscall_name[1360:1371],
++	142: _Syscall_name[1371:1383],
++	143: _Syscall_name[1383:1391],
++	144: _Syscall_name[1391:1399],
++	145: _Syscall_name[1399:1407],
++	146: _Syscall_name[1407:1416],
++	147: _Syscall_name[1416:1425],
++	148: _Syscall_name[1425:1437],
++	149: _Syscall_name[1437:1446],
++	150: _Syscall_name[1446:1454],
++	151: _Syscall_name[1454:1464],
++	152: _Syscall_name[1464:1475],
++	153: _Syscall_name[1475:1488],
++	154: _Syscall_name[1488:1504],
++	155: _Syscall_name[1504:1520],
++	156: _Syscall_name[1520:1540],
++	157: _Syscall_name[1540:1560],
++	158: _Syscall_name[1560:1573],
++	159: _Syscall_name[1573:1595],
++	160: _Syscall_name[1595:1617],
++	161: _Syscall_name[1617:1638],
++	162: _Syscall_name[1638:1650],
++	163: _Syscall_name[1650:1659],
++	164: _Syscall_name[1659:1671],
++	165: _Syscall_name[1671:1683],
++	166: _Syscall_name[1683:1697],
++	167: _Syscall_name[1697:1704],
++	168: _Syscall_name[1704:1717],
++	169: _Syscall_name[1717:1729],
++	170: _Syscall_name[1729:1741],
++	171: _Syscall_name[1741:1749],
++	172: _Syscall_name[1749:1763],
++	173: _Syscall_name[1763:1777],
++	174: _Syscall_name[1777:1793],
++	175: _Syscall_name[1793:1808],
++	176: _Syscall_name[1808:1825],
++	177: _Syscall_name[1825:1842],
++	178: _Syscall_name[1842:1857],
++	179: _Syscall_name[1857:1867],
++	180: _Syscall_name[1867:1878],
++	181: _Syscall_name[1878:1886],
++	182: _Syscall_name[1886:1895],
++	183: _Syscall_name[1895:1904],
++	184: _Syscall_name[1904:1913],
++	185: _Syscall_name[1913:1927],
++	186: _Syscall_name[1927:1938],
++	187: _Syscall_name[1938:1948],
++	188: _Syscall_name[1948:1958],
++	189: _Syscall_name[1958:1966],
++	190: _Syscall_name[1966:1979],
++	191: _Syscall_name[1979:1991],
++	198: _Syscall_name[1991:2007],
++	199: _Syscall_name[2007:2024],
++	200: _Syscall_name[2024:2042],
++	201: _Syscall_name[2042:2056],
++	202: _Syscall_name[2056:2069],
++	203: _Syscall_name[2069:2081],
++	205: _Syscall_name[2081:2091],
++	206: _Syscall_name[2091:2101],
++	207: _Syscall_name[2101:2110],
++	208: _Syscall_name[2110:2118],
++	209: _Syscall_name[2118:2129],
++	210: _Syscall_name[2129:2141],
++	211: _Syscall_name[2141:2153],
++	212: _Syscall_name[2153:2164],
++	213: _Syscall_name[2164:2176],
++	214: _Syscall_name[2176:2188],
++	215: _Syscall_name[2188:2200],
++	216: _Syscall_name[2200:2213],
++	217: _Syscall_name[2213:2226],
++	218: _Syscall_name[2226:2240],
++	219: _Syscall_name[2240:2255],
++	220: _Syscall_name[2255:2270],
++	221: _Syscall_name[2270:2278],
++	222: _Syscall_name[2278:2297],
++	223: _Syscall_name[2297:2316],
++	225: _Syscall_name[2316:2326],
++	227: _Syscall_name[2326:2336],
++	228: _Syscall_name[2336:2348],
++	229: _Syscall_name[2348:2362],
++	230: _Syscall_name[2362:2373],
++	231: _Syscall_name[2373:2384],
++	232: _Syscall_name[2384:2400],
++	233: _Syscall_name[2400:2412],
++	234: _Syscall_name[2412:2424],
++	235: _Syscall_name[2424:2440],
++	236: _Syscall_name[2440:2454],
++	237: _Syscall_name[2454:2465],
++	238: _Syscall_name[2465:2477],
++	239: _Syscall_name[2477:2494],
++	240: _Syscall_name[2494:2508],
++	241: _Syscall_name[2508:2523],
++	242: _Syscall_name[2523:2538],
++	243: _Syscall_name[2538:2556],
++	244: _Syscall_name[2556:2570],
++	245: _Syscall_name[2570:2585],
++	246: _Syscall_name[2585:2600],
++	247: _Syscall_name[2600:2614],
++	248: _Syscall_name[2614:2631],
++	249: _Syscall_name[2631:2645],
++	250: _Syscall_name[2645:2654],
++	251: _Syscall_name[2654:2663],
++	252: _Syscall_name[2663:2674],
++	253: _Syscall_name[2674:2686],
++	255: _Syscall_name[2686:2693],
++	256: _Syscall_name[2693:2714],
++	258: _Syscall_name[2714:2729],
++	259: _Syscall_name[2729:2737],
++	260: _Syscall_name[2737:2752],
++	261: _Syscall_name[2752:2767],
++	262: _Syscall_name[2767:2776],
++	263: _Syscall_name[2776:2787],
++	264: _Syscall_name[2787:2801],
++	265: _Syscall_name[2801:2818],
++	266: _Syscall_name[2818:2829],
++	267: _Syscall_name[2829:2844],
++	268: _Syscall_name[2844:2856],
++	269: _Syscall_name[2856:2865],
++	270: _Syscall_name[2865:2878],
++	271: _Syscall_name[2878:2887],
++	272: _Syscall_name[2887:2896],
++	273: _Syscall_name[2896:2908],
++	274: _Syscall_name[2908:2920],
++	275: _Syscall_name[2920:2934],
++	276: _Syscall_name[2934:2952],
++	277: _Syscall_name[2952:2969],
++	278: _Syscall_name[2969:2978],
++	279: _Syscall_name[2978:2990],
++	280: _Syscall_name[2990:3001],
++	281: _Syscall_name[3001:3009],
++	282: _Syscall_name[3009:3019],
++	283: _Syscall_name[3019:3028],
++	284: _Syscall_name[3028:3034],
++	285: _Syscall_name[3034:3045],
++	286: _Syscall_name[3045:3054],
++	287: _Syscall_name[3054:3064],
++	288: _Syscall_name[3064:3074],
++	289: _Syscall_name[3074:3085],
++	290: _Syscall_name[3085:3097],
++	291: _Syscall_name[3097:3110],
++	292: _Syscall_name[3110:3121],
++	293: _Syscall_name[3121:3132],
++	294: _Syscall_name[3132:3141],
++	295: _Syscall_name[3141:3153],
++	296: _Syscall_name[3153:3166],
++	297: _Syscall_name[3166:3177],
++	298: _Syscall_name[3177:3189],
++	299: _Syscall_name[3189:3205],
++	300: _Syscall_name[3205:3221],
++	301: _Syscall_name[3221:3233],
++	302: _Syscall_name[3233:3242],
++	303: _Syscall_name[3242:3255],
++	304: _Syscall_name[3255:3267],
++	305: _Syscall_name[3267:3278],
++	306: _Syscall_name[3278:3294],
++	307: _Syscall_name[3294:3304],
++	308: _Syscall_name[3304:3321],
++	309: _Syscall_name[3321:3333],
++	310: _Syscall_name[3333:3347],
++	311: _Syscall_name[3347:3364],
++	312: _Syscall_name[3364:3381],
++	313: _Syscall_name[3381:3393],
++	314: _Syscall_name[3393:3404],
++	315: _Syscall_name[3404:3419],
++	316: _Syscall_name[3419:3426],
++	317: _Syscall_name[3426:3434],
++	318: _Syscall_name[3434:3449],
++	319: _Syscall_name[3449:3465],
++	320: _Syscall_name[3465:3474],
++	321: _Syscall_name[3474:3484],
++	322: _Syscall_name[3484:3503],
++	323: _Syscall_name[3503:3518],
++	324: _Syscall_name[3518:3533],
++	325: _Syscall_name[3533:3545],
++	326: _Syscall_name[3545:3554],
++	327: _Syscall_name[3554:3561],
++	328: _Syscall_name[3561:3571],
++	329: _Syscall_name[3571:3580],
++	330: _Syscall_name[3580:3589],
++	331: _Syscall_name[3589:3603],
++	332: _Syscall_name[3603:3617],
++	333: _Syscall_name[3617:3630],
++	334: _Syscall_name[3630:3637],
++	335: _Syscall_name[3637:3646],
++	336: _Syscall_name[3646:3653],
++	337: _Syscall_name[3653:3664],
++	338: _Syscall_name[3664:3675],
++	339: _Syscall_name[3675:3688],
++	340: _Syscall_name[3688:3701],
++	341: _Syscall_name[3701:3711],
++	342: _Syscall_name[3711:3721],
++	343: _Syscall_name[3721:3732],
++	344: _Syscall_name[3732:3742],
++	345: _Syscall_name[3742:3759],
++	346: _Syscall_name[3759:3776],
++	347: _Syscall_name[3776:3791],
++	348: _Syscall_name[3791:3800],
++	349: _Syscall_name[3800:3811],
++	350: _Syscall_name[3811:3819],
++	351: _Syscall_name[3819:3836],
++	352: _Syscall_name[3836:3854],
++	353: _Syscall_name[3854:3868],
++	354: _Syscall_name[3868:3875],
++	355: _Syscall_name[3875:3890],
++	356: _Syscall_name[3890:3905],
++	357: _Syscall_name[3905:3917],
++	358: _Syscall_name[3917:3927],
++	359: _Syscall_name[3927:3939],
++	360: _Syscall_name[3939:3953],
++	361: _Syscall_name[3953:3959],
++	362: _Syscall_name[3959:3970],
++	363: _Syscall_name[3970:3985],
++	364: _Syscall_name[3985:3999],
++	365: _Syscall_name[3999:4012],
++	378: _Syscall_name[4012:4021],
++	379: _Syscall_name[4021:4037],
++	380: _Syscall_name[4037:4047],
++	381: _Syscall_name[4047:4058],
++	382: _Syscall_name[4058:4074],
++	383: _Syscall_name[4074:4082],
++	384: _Syscall_name[4082:4094],
++	385: _Syscall_name[4094:4105],
++	386: _Syscall_name[4105:4120],
++	387: _Syscall_name[4120:4127],
++	388: _Syscall_name[4127:4142],
++	392: _Syscall_name[4142:4155],
++	393: _Syscall_name[4155:4164],
++	394: _Syscall_name[4164:4173],
++	395: _Syscall_name[4173:4182],
++	396: _Syscall_name[4182:4191],
++	397: _Syscall_name[4191:4199],
++	398: _Syscall_name[4199:4207],
++	399: _Syscall_name[4207:4216],
++	400: _Syscall_name[4216:4225],
++	401: _Syscall_name[4225:4234],
++	402: _Syscall_name[4234:4243],
++	424: _Syscall_name[4243:4261],
++	425: _Syscall_name[4261:4276],
++	426: _Syscall_name[4276:4291],
++	427: _Syscall_name[4291:4309],
++	428: _Syscall_name[4309:4320],
++	429: _Syscall_name[4320:4332],
++	430: _Syscall_name[4332:4341],
++	431: _Syscall_name[4341:4352],
++	432: _Syscall_name[4352:4362],
++	433: _Syscall_name[4362:4371],
++	434: _Syscall_name[4371:4383],
++	435: _Syscall_name[4383:4392],
++	436: _Syscall_name[4392:4405],
++	437: _Syscall_name[4405:4415],
++	438: _Syscall_name[4415:4428],
++	439: _Syscall_name[4428:4441],
++	440: _Syscall_name[4441:4458],
++	441: _Syscall_name[4458:4472],
++	442: _Syscall_name[4472:4487],
++	443: _Syscall_name[4487:4500],
++	444: _Syscall_name[4500:4524],
++	445: _Syscall_name[4524:4542],
++	446: _Syscall_name[4542:4565],
++	448: _Syscall_name[4565:4583],
++	449: _Syscall_name[4583:4596],
++	450: _Syscall_name[4596:4619],
++}
++
++func (i Syscall) String() string {
++	if str, ok := _Syscall_map[i]; ok {
++		return str
++	}
++	return "Syscall(" + strconv.FormatInt(int64(i), 10) + ")"
++}
+diff --git a/pkg/security/secl/model/syscalls_unsupported.go b/pkg/security/secl/model/syscalls_unsupported.go
+index 61d522f09..2b1d4f6fc 100644
+--- a/pkg/security/secl/model/syscalls_unsupported.go
++++ b/pkg/security/secl/model/syscalls_unsupported.go
+@@ -3,8 +3,8 @@
+ // This product includes software developed at Datadog (https://www.datadoghq.com/).
+ // Copyright 2016-present Datadog, Inc.
+ 
+-//go:build !linux || !(amd64 || arm64)
+-// +build !linux !amd64,!arm64
++//go:build !linux || !(amd64 || arm64 || ppc64le)
++// +build !linux !amd64,!arm64,!ppc64le
+ 
+ package model
+ 
