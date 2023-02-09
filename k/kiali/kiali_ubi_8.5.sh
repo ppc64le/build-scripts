@@ -46,19 +46,51 @@ cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 
 sed -i "97s/$/ --timeout 6m/" make/Makefile.build.mk
-#Build and test for backend
+
 make lint-install
 make lint
-#build
-make -e GO_BUILD_FLAGS=-race -e CGO_ENABLED=1 clean-all build
-make -e GO_TEST_FLAGS="-race" test
 
-#Build and test for frontend
-make clean-all build-ui
+#Build and test for backend.
+if ! make -e GO_BUILD_FLAGS=-race -e CGO_ENABLED=1 clean-all build ; then
+        echo "------------------$PACKAGE_NAME:Build_fails---------------------"
+        echo "$PACKAGE_VERSION $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails_"
+        exit 1
+fi
+
+if ! make -e GO_TEST_FLAGS="-race" test ; then
+       echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
+       echo "$PACKAGE_URL $PACKAGE_NAME"
+       echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
+       exit 2
+fi
+#Build and test for frontend.
+if ! make clean-all build-ui ; then
+      echo "------------------$PACKAGE_NAME::Install_fails-------------------------"
+      echo "$PACKAGE_URL $PACKAGE_NAME"
+      echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail | Install_fails"
+fi
 
 cd frontend
-yarn pretty-quick --check --verbose 
-yarn test --watchAll=false
+
+if ! yarn pretty-quick --check --verbose ; then
+       echo "------------------$PACKAGE_NAME:Build_fails---------------------"
+       echo "$PACKAGE_VERSION $PACKAGE_NAME"
+       echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
+       exit 1
+fi
+if ! yarn test --watchAll=false ; then
+      echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
+      echo "$PACKAGE_URL $PACKAGE_NAME"
+      echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
+      exit 2
+else
+      echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
+      echo "$PACKAGE_URL $PACKAGE_NAME"
+      echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
+      exit 0
+fi
+
 
 
 
