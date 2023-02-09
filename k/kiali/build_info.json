@@ -5,7 +5,6 @@
     "default_branch": "master",
     "package_dir": "k/kiali/",
     "docker_cmd":"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-    "build_script": "kiali_ubi_8.5.sh",
     "docker_build": "true",
     "validate_build_script": "true",
     "use_non_root_user": "false",
@@ -13,5 +12,14 @@
     "v1.62.*": {
 	"dir" : "1.62_ubi8",
         "build_script": "kiali_ubi_8.5.sh"
+    },
+     "v1.35.0": {
+        "build_script": "kiali_ubi_8.3.sh"
+    },
+     "v1.12.1": {
+        "build_script": "kiali_rhel_7.6.sh"
+    },
+     "f72ddd308c155aa00bd492a423b5aebc88b5922f": {
+        "build_script": "kiali_ubi_8.4.sh"
     }
 }
