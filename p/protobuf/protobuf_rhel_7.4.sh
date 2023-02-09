@@ -1,9 +1,12 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package	: protobuf
 # Version	: 3.4.1
 # Source repo	: https://github.com/google/protobuf
 # Tested on	: rhel_7.4
+# Language      : Java,C++
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Atul Sowani <sowania@us.ibm.com>
 #

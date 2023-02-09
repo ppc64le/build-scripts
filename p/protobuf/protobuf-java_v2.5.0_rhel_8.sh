@@ -1,9 +1,12 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package       : protobuf-java
 # Version       : v2.5.0
 # Source repo   : https://github.com/protocolbuffers/protobuf.git
 # Tested on     : rhel 8
+# Language      : Java,C++
+# Travis-Check  : True
 # Script License: Apache License Version 2.0
 # Maintainer    : Sachin Kakatkar <sachin.kakatkar@ibm.com>
 #

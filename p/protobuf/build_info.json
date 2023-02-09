@@ -1,0 +1,14 @@
+{
+  "package_name" : "protobuf",
+  "github_url": "https://github.com/protocolbuffers/protobuf",
+  "version": "v21.5",
+  "default_branch": "main",
+  "package_dir": "p/protobuf/",
+  "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "build_script": "protobuf_ubi_8.5_v21.5.sh",
+
+  "v21.*, v3.21.*, v3.*.*" : {
+  "build_script":"protobuf_ubi_8.5_v21.5.sh"
+  }
+
+}
