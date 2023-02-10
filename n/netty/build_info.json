@@ -11,7 +11,10 @@
     "use_non_root_user": "false",
 
     "netty-4.1.84.Final" : {
-        "dir":"4.1.84.Final_ubi_8",
         "build_script" : "netty-4.1.84.Final_ubi_8.5.sh"
+    },
+    
+    "4.1.43.Final-SNAPSHOT" : {
+        "build_script" : "netty_build_ppc64le_rhel7.6.sh"
     }
 }
