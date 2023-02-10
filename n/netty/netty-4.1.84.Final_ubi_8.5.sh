@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : netty
-# Version       : netty-4.1.79.Final
+# Version       : netty-4.1.84.Final
 # Language      : Java
 # Source repo   : https://github.com/netty/netty
 # Tested on     : UBI 8.5
@@ -39,7 +39,7 @@ if ! mvn install ; then
     echo "------------------$PACKAGE_NAME::install_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  install_fails"
-    exit 2
+    exit 1
 fi
 
 if ! mvn test ; then
