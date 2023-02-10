@@ -25,6 +25,7 @@ PACKAGE_VERSION="${1:-netty-4.1.84.Final}"
 
 #Install required files
 yum install -y git maven
+OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 #Cloning Repo
 git clone $PACKAGE_URL
@@ -34,7 +35,21 @@ git checkout $PACKAGE_VERSION
 git branch
 
 #Build and test package
-mvn install
-mvn test
+if ! mvn install ; then
+    echo "------------------$PACKAGE_NAME::install_fails-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  install_fails"
+    exit 2
+fi
 
-echo "Complete!"
+if ! mvn test ; then
+    echo "------------------$PACKAGE_NAME::test_fails-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  test_fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME::Install_and_Test_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
+    exit 0
+fi
