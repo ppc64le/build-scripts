@@ -26,7 +26,7 @@ PACKAGE_URL=https://github.com/libgeos/geos
 yum install -y git cmake gcc gcc-c++
 
 git clone https://github.com/libgeos/geos
-mkdir geos
+cd geos
 mkdir build
 cd build
 cmake ..
