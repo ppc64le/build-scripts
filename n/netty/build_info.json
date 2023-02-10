@@ -1,7 +1,7 @@
 {
     "package_name" : "netty",
     "github_url":"https://github.com/netty/netty.git",
-    "package_dir": "n/netty/Dockerfiles/",
+    "package_dir": "n/netty/",
     "docker_build": false,
     "version": "netty-4.1.84.Final",
     "default_branch": "4.1",
