@@ -7,7 +7,7 @@
     "package_dir": "g/geos",
     "docker_build": false,
 
-    "3.11.1" : {
+    "*.*.*" : {
         "build_script" : "geos_ubi_8.5.sh"
     }
 }
