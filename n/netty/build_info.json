@@ -1,0 +1,20 @@
+{
+    "package_name" : "netty",
+    "github_url":"https://github.com/netty/netty.git",
+    "package_dir": "n/netty/",
+    "docker_build": false,
+    "version": "netty-4.1.84.Final",
+    "default_branch": "4.1",
+    "build_script" : "netty-4.1.84.Final_ubi_8.5.sh",
+    "docker_build": "false",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+
+    "netty-4.1.84.Final" : {
+        "build_script" : "netty-4.1.84.Final_ubi_8.5.sh"
+    },
+    
+    "4.1.43.Final-SNAPSHOT" : {
+        "build_script" : "netty_build_ppc64le_rhel7.6.sh"
+    }
+}
