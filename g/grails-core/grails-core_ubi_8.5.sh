@@ -1,6 +1,6 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
-# Package	: grails
+# Package	: grails-core
 # Version	: v5.0.2,v5.2.5
 # Source repo	: https://github.com/grails/grails-core.git
 # Tested on	: ubi 8.5
