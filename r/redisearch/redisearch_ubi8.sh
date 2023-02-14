@@ -18,13 +18,13 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_VERSION=v2.4.0
+PACKAGE_VERSION=v2.4.16
 PACKAGE_URL=https://github.com/RediSearch/RediSearch.git
 PACKAGE_NAME=RediSearch
 
 yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 yum update -y
-yum install -y wget git gcc gcc-c++ make python36 cmake python2 libstdc++-static python3-devel
+yum install -y wget git gcc gcc-c++ make python38 cmake  libstdc++-static python3-devel
 
 alternatives --set python /usr/bin/python3
 alias python="python3"
@@ -32,15 +32,8 @@ alias python="python3"
 git clone --recursive https://github.com/RediSearch/RediSearch.git
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
-pip3 install --upgrade pip
-python3 -m pip install --no-cache-dir git+https://github.com/RedisLabsModules/RLTest.git@master
-python3 -m pip install --no-cache-dir git+https://github.com/Grokzen/redis-py-cluster.git@master
-python3 -m pip install --no-cache-dir git+https://github.com/RedisLabs/RAMP@master
-
 
 make fetch
 make build TEST=1
-sed -i "s/\(.*\)'Development Tools'\(.*\)/#\1'Development Tools'\2/g" deps/readies/bin/getredis 
-./deps/readies/bin/getredis
 
 make c_tests
