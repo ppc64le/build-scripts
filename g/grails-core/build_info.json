@@ -2,12 +2,14 @@
     "package_name": "grails-core",
     "github_url": "https://github.com/grails/grails-core.git",
     "version": "v5.2.5",
-    "package_dir": "g/grails",
+    "default_branch": "5.3.x",
+    "package_dir": "g/grails-core",
+    "build_script": "grails-core_ubi_8.5.sh",
     "validate_build_script": "true",
     "use_non_root_user": "false",
     "docker_build":false,
 	
     "v5.*.*": {
-        "build_script": "grails_ubi_8.5.sh"
+        "build_script": "grails-core_ubi_8.5.sh"
     }
 }
