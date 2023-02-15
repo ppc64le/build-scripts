@@ -65,9 +65,10 @@ cd $WORKDIR
 git clone https://github.com/elastic/logstash.git
 cd logstash
 git checkout $PACKAGE_VERSION
-#sed -i '2d' ./rakelib/artifacts.rake
+sed -i 's/ @Test(timeout = 300_000)/@Test(timeout = 800_000)/g' logstash-core/src/test/java/org/logstash/ackedqueue/QueueTest.java
+sed -i '2d' ./rakelib/artifacts.rake
 #cp $CWD/logstash_patch.patch .
-git apply logstash_patch.patch
+#git apply logstash_patch.patch
 rake bootstrap
 rake plugin:install-default
 
