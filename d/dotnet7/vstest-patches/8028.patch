@@ -1,0 +1,294 @@
+From 96591cb1ac589021b9f31854a13f8fe3dd565f25 Mon Sep 17 00:00:00 2001
+From: Sapana Khemkar <Sapana.Khemkar@ibm.com>
+Date: Tue, 27 Sep 2022 13:08:43 +0530
+Subject: [PATCH 1/4] add support for ppc64le processor architecture
+
+---
+ src/Microsoft.TestPlatform.ObjectModel/Architecture.cs        | 3 ++-
+ .../Interfaces/System/PlatformArchitecture.cs                 | 1 +
+ .../netcore/System/PlatformEnvironment.cs                     | 1 +
+ .../netcore/System/ProcessHelper.cs                           | 1 +
+ .../Hosting/DefaultTestHostManager.cs                         | 1 +
+ src/vstest.console/TestPlatformHelpers/TestRequestManager.cs  | 2 ++
+ .../Processors/PlatformArgumentProcessorTests.cs              | 4 ++--
+ 7 files changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/src/Microsoft.TestPlatform.ObjectModel/Architecture.cs b/src/Microsoft.TestPlatform.ObjectModel/Architecture.cs
+index 6c9b9bcde5..7879358840 100644
+--- a/src/Microsoft.TestPlatform.ObjectModel/Architecture.cs
++++ b/src/Microsoft.TestPlatform.ObjectModel/Architecture.cs
+@@ -11,5 +11,6 @@ public enum Architecture
+     ARM,
+     AnyCPU,
+     ARM64,
+-    S390x
++    S390x,
++    PPC64le
+ }
+diff --git a/src/Microsoft.TestPlatform.PlatformAbstractions/Interfaces/System/PlatformArchitecture.cs b/src/Microsoft.TestPlatform.PlatformAbstractions/Interfaces/System/PlatformArchitecture.cs
+index b1d477c7d3..aa81ca0ffc 100644
+--- a/src/Microsoft.TestPlatform.PlatformAbstractions/Interfaces/System/PlatformArchitecture.cs
++++ b/src/Microsoft.TestPlatform.PlatformAbstractions/Interfaces/System/PlatformArchitecture.cs
+@@ -13,4 +13,5 @@ public enum PlatformArchitecture
+     ARM,
+     ARM64,
+     S390x,
++    PPC64le,
+ }
+diff --git a/src/Microsoft.TestPlatform.PlatformAbstractions/netcore/System/PlatformEnvironment.cs b/src/Microsoft.TestPlatform.PlatformAbstractions/netcore/System/PlatformEnvironment.cs
+index 10d4a61570..14d1234ef6 100644
+--- a/src/Microsoft.TestPlatform.PlatformAbstractions/netcore/System/PlatformEnvironment.cs
++++ b/src/Microsoft.TestPlatform.PlatformAbstractions/netcore/System/PlatformEnvironment.cs
+@@ -28,6 +28,7 @@ public PlatformArchitecture Architecture
+                 // preview 6 or later, so use the numerical value for now.
+                 // case System.Runtime.InteropServices.Architecture.S390x:
+                 (Architecture)5 => PlatformArchitecture.S390x,
++                (Architecture)6 => PlatformArchitecture.PPC64le,
+                 _ => throw new NotSupportedException(),
+             };
+         }
+diff --git a/src/Microsoft.TestPlatform.PlatformAbstractions/netcore/System/ProcessHelper.cs b/src/Microsoft.TestPlatform.PlatformAbstractions/netcore/System/ProcessHelper.cs
+index 6cf4b0f91b..d1e31bb0f6 100644
+--- a/src/Microsoft.TestPlatform.PlatformAbstractions/netcore/System/ProcessHelper.cs
++++ b/src/Microsoft.TestPlatform.PlatformAbstractions/netcore/System/ProcessHelper.cs
+@@ -41,6 +41,7 @@ public PlatformArchitecture GetCurrentProcessArchitecture()
+             // preview 6 or later, so use the numerical value for now.
+             // case System.Runtime.InteropServices.Architecture.S390x:
+             (Architecture)5 => PlatformArchitecture.S390x,
++            (Architecture)6 => PlatformArchitecture.PPC64le,
+             _ => throw new NotSupportedException(),
+         };
+     }
+diff --git a/src/Microsoft.TestPlatform.TestHostProvider/Hosting/DefaultTestHostManager.cs b/src/Microsoft.TestPlatform.TestHostProvider/Hosting/DefaultTestHostManager.cs
+index 2eca302b43..54fa36e344 100644
+--- a/src/Microsoft.TestPlatform.TestHostProvider/Hosting/DefaultTestHostManager.cs
++++ b/src/Microsoft.TestPlatform.TestHostProvider/Hosting/DefaultTestHostManager.cs
+@@ -274,6 +274,7 @@ private static string GetTestHostName(Architecture architecture, Framework targe
+             PlatformArchitecture.ARM => Architecture.ARM,
+             PlatformArchitecture.ARM64 => Architecture.ARM64,
+             PlatformArchitecture.S390x => Architecture.S390x,
++            PlatformArchitecture.PPC64le => Architecture.PPC64le,
+             _ => throw new NotSupportedException(),
+         };
+
+diff --git a/src/vstest.console/TestPlatformHelpers/TestRequestManager.cs b/src/vstest.console/TestPlatformHelpers/TestRequestManager.cs
+index 642e36bb9e..c7a0f93927 100644
+--- a/src/vstest.console/TestPlatformHelpers/TestRequestManager.cs
++++ b/src/vstest.console/TestPlatformHelpers/TestRequestManager.cs
+@@ -841,6 +841,8 @@ static Architecture TranslateToArchitecture(PlatformArchitecture targetArchitect
+                     return Architecture.ARM64;
+                 case PlatformArchitecture.S390x:
+                     return Architecture.S390x;
++                case PlatformArchitecture.PPC64le:
++                    return Architecture.PPC64le;
+                 default:
+                     EqtTrace.Error($"TestRequestManager.TranslateToArchitecture: Unhandled architecture '{targetArchitecture}'.");
+                     break;
+diff --git a/test/vstest.console.UnitTests/Processors/PlatformArgumentProcessorTests.cs b/test/vstest.console.UnitTests/Processors/PlatformArgumentProcessorTests.cs
+index 207e4590fd..472688248d 100644
+--- a/test/vstest.console.UnitTests/Processors/PlatformArgumentProcessorTests.cs
++++ b/test/vstest.console.UnitTests/Processors/PlatformArgumentProcessorTests.cs
+@@ -85,7 +85,7 @@ public void InitializeShouldThrowIfArgumentIsNotAnArchitecture()
+     {
+         ExceptionUtilities.ThrowsException<CommandLineException>(
+             () => _executor.Initialize("foo"),
+-            "Invalid platform type: {0}. Valid platform types are X86, X64, ARM, ARM64, S390x.",
++            "Invalid platform type: {0}. Valid platform types are X86, X64, ARM, ARM64, S390x, PPC64le.",
+             "foo");
+     }
+
+@@ -94,7 +94,7 @@ public void InitializeShouldThrowIfArgumentIsNotASupportedArchitecture()
+     {
+         ExceptionUtilities.ThrowsException<CommandLineException>(
+             () => _executor.Initialize("AnyCPU"),
+-            "Invalid platform type: {0}. Valid platform types are X86, X64, ARM, ARM64, S390x.",
++            "Invalid platform type: {0}. Valid platform types are X86, X64, ARM, ARM64, S390x, PPC64le.",
+             "AnyCPU");
+     }
+
+
+From 750b193e964a446dad5fc5927b745861eb19a9a9 Mon Sep 17 00:00:00 2001
+From: Sapana Khemkar <Sapana.Khemkar@ibm.com>
+Date: Wed, 28 Sep 2022 11:06:08 +0530
+Subject: [PATCH 2/4] change enum name from PPC64le to Ppc64le to match with
+ System.Runtime.InteropServices.Architecture enum name
+
+---
+ src/Microsoft.TestPlatform.ObjectModel/Architecture.cs        | 2 +-
+ .../Interfaces/System/PlatformArchitecture.cs                 | 2 +-
+ .../netcore/System/PlatformEnvironment.cs                     | 2 +-
+ .../netcore/System/ProcessHelper.cs                           | 2 +-
+ .../Hosting/DefaultTestHostManager.cs                         | 2 +-
+ src/vstest.console/TestPlatformHelpers/TestRequestManager.cs  | 4 ++--
+ .../Processors/PlatformArgumentProcessorTests.cs              | 4 ++--
+ 7 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/src/Microsoft.TestPlatform.ObjectModel/Architecture.cs b/src/Microsoft.TestPlatform.ObjectModel/Architecture.cs
+index 7879358840..f3d59e7ae4 100644
+--- a/src/Microsoft.TestPlatform.ObjectModel/Architecture.cs
++++ b/src/Microsoft.TestPlatform.ObjectModel/Architecture.cs
+@@ -12,5 +12,5 @@ public enum Architecture
+     AnyCPU,
+     ARM64,
+     S390x,
+-    PPC64le
++    Ppc64le
+ }
+diff --git a/src/Microsoft.TestPlatform.PlatformAbstractions/Interfaces/System/PlatformArchitecture.cs b/src/Microsoft.TestPlatform.PlatformAbstractions/Interfaces/System/PlatformArchitecture.cs
+index aa81ca0ffc..907ec721dd 100644
+--- a/src/Microsoft.TestPlatform.PlatformAbstractions/Interfaces/System/PlatformArchitecture.cs
++++ b/src/Microsoft.TestPlatform.PlatformAbstractions/Interfaces/System/PlatformArchitecture.cs
+@@ -13,5 +13,5 @@ public enum PlatformArchitecture
+     ARM,
+     ARM64,
+     S390x,
+-    PPC64le,
++    Ppc64le,
+ }
+diff --git a/src/Microsoft.TestPlatform.PlatformAbstractions/netcore/System/PlatformEnvironment.cs b/src/Microsoft.TestPlatform.PlatformAbstractions/netcore/System/PlatformEnvironment.cs
+index 14d1234ef6..f2163db898 100644
+--- a/src/Microsoft.TestPlatform.PlatformAbstractions/netcore/System/PlatformEnvironment.cs
++++ b/src/Microsoft.TestPlatform.PlatformAbstractions/netcore/System/PlatformEnvironment.cs
+@@ -28,7 +28,7 @@ public PlatformArchitecture Architecture
+                 // preview 6 or later, so use the numerical value for now.
+                 // case System.Runtime.InteropServices.Architecture.S390x:
+                 (Architecture)5 => PlatformArchitecture.S390x,
+-                (Architecture)6 => PlatformArchitecture.PPC64le,
++                (Architecture)8 => PlatformArchitecture.Ppc64le,
+                 _ => throw new NotSupportedException(),
+             };
+         }
+diff --git a/src/Microsoft.TestPlatform.PlatformAbstractions/netcore/System/ProcessHelper.cs b/src/Microsoft.TestPlatform.PlatformAbstractions/netcore/System/ProcessHelper.cs
+index d1e31bb0f6..d2d048e355 100644
+--- a/src/Microsoft.TestPlatform.PlatformAbstractions/netcore/System/ProcessHelper.cs
++++ b/src/Microsoft.TestPlatform.PlatformAbstractions/netcore/System/ProcessHelper.cs
+@@ -41,7 +41,7 @@ public PlatformArchitecture GetCurrentProcessArchitecture()
+             // preview 6 or later, so use the numerical value for now.
+             // case System.Runtime.InteropServices.Architecture.S390x:
+             (Architecture)5 => PlatformArchitecture.S390x,
+-            (Architecture)6 => PlatformArchitecture.PPC64le,
++            (Architecture)8 => PlatformArchitecture.Ppc64le,
+             _ => throw new NotSupportedException(),
+         };
+     }
+diff --git a/src/Microsoft.TestPlatform.TestHostProvider/Hosting/DefaultTestHostManager.cs b/src/Microsoft.TestPlatform.TestHostProvider/Hosting/DefaultTestHostManager.cs
+index 54fa36e344..02001d23ab 100644
+--- a/src/Microsoft.TestPlatform.TestHostProvider/Hosting/DefaultTestHostManager.cs
++++ b/src/Microsoft.TestPlatform.TestHostProvider/Hosting/DefaultTestHostManager.cs
+@@ -274,7 +274,7 @@ private static string GetTestHostName(Architecture architecture, Framework targe
+             PlatformArchitecture.ARM => Architecture.ARM,
+             PlatformArchitecture.ARM64 => Architecture.ARM64,
+             PlatformArchitecture.S390x => Architecture.S390x,
+-            PlatformArchitecture.PPC64le => Architecture.PPC64le,
++            PlatformArchitecture.Ppc64le => Architecture.Ppc64le,
+             _ => throw new NotSupportedException(),
+         };
+
+diff --git a/src/vstest.console/TestPlatformHelpers/TestRequestManager.cs b/src/vstest.console/TestPlatformHelpers/TestRequestManager.cs
+index c7a0f93927..25cca0ca07 100644
+--- a/src/vstest.console/TestPlatformHelpers/TestRequestManager.cs
++++ b/src/vstest.console/TestPlatformHelpers/TestRequestManager.cs
+@@ -841,8 +841,8 @@ static Architecture TranslateToArchitecture(PlatformArchitecture targetArchitect
+                     return Architecture.ARM64;
+                 case PlatformArchitecture.S390x:
+                     return Architecture.S390x;
+-                case PlatformArchitecture.PPC64le:
+-                    return Architecture.PPC64le;
++                case PlatformArchitecture.Ppc64le:
++                    return Architecture.Ppc64le;
+                 default:
+                     EqtTrace.Error($"TestRequestManager.TranslateToArchitecture: Unhandled architecture '{targetArchitecture}'.");
+                     break;
+diff --git a/test/vstest.console.UnitTests/Processors/PlatformArgumentProcessorTests.cs b/test/vstest.console.UnitTests/Processors/PlatformArgumentProcessorTests.cs
+index 472688248d..f33166ae6c 100644
+--- a/test/vstest.console.UnitTests/Processors/PlatformArgumentProcessorTests.cs
++++ b/test/vstest.console.UnitTests/Processors/PlatformArgumentProcessorTests.cs
+@@ -85,7 +85,7 @@ public void InitializeShouldThrowIfArgumentIsNotAnArchitecture()
+     {
+         ExceptionUtilities.ThrowsException<CommandLineException>(
+             () => _executor.Initialize("foo"),
+-            "Invalid platform type: {0}. Valid platform types are X86, X64, ARM, ARM64, S390x, PPC64le.",
++            "Invalid platform type: {0}. Valid platform types are X86, X64, ARM, ARM64, S390x, ppc64le.",
+             "foo");
+     }
+
+@@ -94,7 +94,7 @@ public void InitializeShouldThrowIfArgumentIsNotASupportedArchitecture()
+     {
+         ExceptionUtilities.ThrowsException<CommandLineException>(
+             () => _executor.Initialize("AnyCPU"),
+-            "Invalid platform type: {0}. Valid platform types are X86, X64, ARM, ARM64, S390x, PPC64le.",
++            "Invalid platform type: {0}. Valid platform types are X86, X64, ARM, ARM64, S390x, ppc64le.",
+             "AnyCPU");
+     }
+
+
+From 4d97db82c39caf0aa6ca7bd3f47f1c3714aa6f2c Mon Sep 17 00:00:00 2001
+From: Sapana Khemkar <Sapana.Khemkar@ibm.com>
+Date: Wed, 28 Sep 2022 17:58:27 +0530
+Subject: [PATCH 3/4] add defination of enum
+ Microsoft.VisualStudio.TestPlatform.PlatformAbstractions.PlatformArchitecture.Ppc64le
+ and Microsoft.VisualStudio.TestPlatform.ObjectModel.Architecture.Ppc64le in
+ Microsoft.TestPlatform.ObjectModel and
+ /Microsoft.TestPlatform.PlatformAbstractions PublicAPI.Shipped.txt file.
+
+---
+ .../PublicAPI/PublicAPI.Shipped.txt                              | 1 +
+ .../PublicAPI/PublicAPI.Shipped.txt                              | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/src/Microsoft.TestPlatform.ObjectModel/PublicAPI/PublicAPI.Shipped.txt b/src/Microsoft.TestPlatform.ObjectModel/PublicAPI/PublicAPI.Shipped.txt
+index 9df7e09b00..5d69e70774 100644
+--- a/src/Microsoft.TestPlatform.ObjectModel/PublicAPI/PublicAPI.Shipped.txt
++++ b/src/Microsoft.TestPlatform.ObjectModel/PublicAPI/PublicAPI.Shipped.txt
+@@ -113,6 +113,7 @@ Microsoft.VisualStudio.TestPlatform.ObjectModel.Architecture.ARM = 3 -> Microsof
+ Microsoft.VisualStudio.TestPlatform.ObjectModel.Architecture.ARM64 = 5 -> Microsoft.VisualStudio.TestPlatform.ObjectModel.Architecture
+ Microsoft.VisualStudio.TestPlatform.ObjectModel.Architecture.Default = 0 -> Microsoft.VisualStudio.TestPlatform.ObjectModel.Architecture
+ Microsoft.VisualStudio.TestPlatform.ObjectModel.Architecture.S390x = 6 -> Microsoft.VisualStudio.TestPlatform.ObjectModel.Architecture
++Microsoft.VisualStudio.TestPlatform.ObjectModel.Architecture.Ppc64le = 7 -> Microsoft.VisualStudio.TestPlatform.ObjectModel.Architecture
+ Microsoft.VisualStudio.TestPlatform.ObjectModel.Architecture.X64 = 2 -> Microsoft.VisualStudio.TestPlatform.ObjectModel.Architecture
+ Microsoft.VisualStudio.TestPlatform.ObjectModel.Architecture.X86 = 1 -> Microsoft.VisualStudio.TestPlatform.ObjectModel.Architecture
+ Microsoft.VisualStudio.TestPlatform.ObjectModel.AttachmentSet
+diff --git a/src/Microsoft.TestPlatform.PlatformAbstractions/PublicAPI/PublicAPI.Shipped.txt b/src/Microsoft.TestPlatform.PlatformAbstractions/PublicAPI/PublicAPI.Shipped.txt
+index 696ed76517..8f0f763f94 100644
+--- a/src/Microsoft.TestPlatform.PlatformAbstractions/PublicAPI/PublicAPI.Shipped.txt
++++ b/src/Microsoft.TestPlatform.PlatformAbstractions/PublicAPI/PublicAPI.Shipped.txt
+@@ -67,6 +67,7 @@ Microsoft.VisualStudio.TestPlatform.PlatformAbstractions.PlatformArchitecture
+ Microsoft.VisualStudio.TestPlatform.PlatformAbstractions.PlatformArchitecture.ARM = 2 -> Microsoft.VisualStudio.TestPlatform.PlatformAbstractions.PlatformArchitecture
+ Microsoft.VisualStudio.TestPlatform.PlatformAbstractions.PlatformArchitecture.ARM64 = 3 -> Microsoft.VisualStudio.TestPlatform.PlatformAbstractions.PlatformArchitecture
+ Microsoft.VisualStudio.TestPlatform.PlatformAbstractions.PlatformArchitecture.S390x = 4 -> Microsoft.VisualStudio.TestPlatform.PlatformAbstractions.PlatformArchitecture
++Microsoft.VisualStudio.TestPlatform.PlatformAbstractions.PlatformArchitecture.Ppc64le = 5 -> Microsoft.VisualStudio.TestPlatform.PlatformAbstractions.PlatformArchitecture
+ Microsoft.VisualStudio.TestPlatform.PlatformAbstractions.PlatformArchitecture.X64 = 1 -> Microsoft.VisualStudio.TestPlatform.PlatformAbstractions.PlatformArchitecture
+ Microsoft.VisualStudio.TestPlatform.PlatformAbstractions.PlatformArchitecture.X86 = 0 -> Microsoft.VisualStudio.TestPlatform.PlatformAbstractions.PlatformArchitecture
+ Microsoft.VisualStudio.TestPlatform.PlatformAbstractions.PlatformAssemblyExtensions
+
+From 389b923569be952cfa6875af209e70d9490bfd73 Mon Sep 17 00:00:00 2001
+From: Sapana Khemkar <Sapana.Khemkar@ibm.com>
+Date: Wed, 28 Sep 2022 19:45:55 +0530
+Subject: [PATCH 4/4] corrected typo in ppc64le arch name
+
+---
+ .../Processors/PlatformArgumentProcessorTests.cs              | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/test/vstest.console.UnitTests/Processors/PlatformArgumentProcessorTests.cs b/test/vstest.console.UnitTests/Processors/PlatformArgumentProcessorTests.cs
+index f33166ae6c..b452b48408 100644
+--- a/test/vstest.console.UnitTests/Processors/PlatformArgumentProcessorTests.cs
++++ b/test/vstest.console.UnitTests/Processors/PlatformArgumentProcessorTests.cs
+@@ -85,7 +85,7 @@ public void InitializeShouldThrowIfArgumentIsNotAnArchitecture()
+     {
+         ExceptionUtilities.ThrowsException<CommandLineException>(
+             () => _executor.Initialize("foo"),
+-            "Invalid platform type: {0}. Valid platform types are X86, X64, ARM, ARM64, S390x, ppc64le.",
++            "Invalid platform type: {0}. Valid platform types are X86, X64, ARM, ARM64, S390x, Ppc64le.",
+             "foo");
+     }
+
+@@ -94,7 +94,7 @@ public void InitializeShouldThrowIfArgumentIsNotASupportedArchitecture()
+     {
+         ExceptionUtilities.ThrowsException<CommandLineException>(
+             () => _executor.Initialize("AnyCPU"),
+-            "Invalid platform type: {0}. Valid platform types are X86, X64, ARM, ARM64, S390x, ppc64le.",
++            "Invalid platform type: {0}. Valid platform types are X86, X64, ARM, ARM64, S390x, Ppc64le.",
+             "AnyCPU");
+     }
+
