@@ -1,0 +1,13 @@
+{
+    "package_name":"py4j",
+    "github_url":"https://github.com/py4j/py4j",
+    "package_dir":"p/py4j/",
+    "version":"0.10.9",
+    "default_branch":"master",
+    "build_script":"py4j_0.10.9_ubi_8.5.sh",
+    "docker_build":false,
+     "0.10.9, 0.10.8.*":{
+	"build_script":"py4j_0.10.9_ubi_8.5.sh"
+	}
+}
+

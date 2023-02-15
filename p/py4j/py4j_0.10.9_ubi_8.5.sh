@@ -44,4 +44,4 @@ pip3 install -r requirements-test.txt
 
 #Tests taking lot of time for execution. Please uncomment if needed.
 #pytest
-
+cd ../..
