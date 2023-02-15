@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: zap
-# Version	: v1.13.0, v1.19.1
+# Version	: v1.13.0, v1.19.1, v1.15.0
 # Source repo	: https://github.com/uber-go/zap
 # Tested on	: ubi 8.5
 # Language      : go
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>, Vaishnavi Patil <Vaishnavi.Patil3@ibm.com>
+# Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>, Vaishnavi Patil <Vaishnavi.Patil3@ibm.com>, Stuti Wali <Stuti.Wali@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
