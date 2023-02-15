@@ -66,7 +66,7 @@ git clone https://github.com/elastic/logstash.git
 cd logstash
 git checkout $PACKAGE_VERSION
 #sed -i '2d' ./rakelib/artifacts.rake
-cp $CWD/logstash_patch.patch .
+#cp $CWD/logstash_patch.patch .
 git apply logstash_patch.patch
 rake bootstrap
 rake plugin:install-default
