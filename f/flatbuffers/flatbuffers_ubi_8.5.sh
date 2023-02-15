@@ -36,16 +36,26 @@ git checkout $PACKAGE_VERSION
 
 cmake ./
 
-# Build and test
-if ! (make && make test) ; then
-                        echo "------------------$PACKAGE_NAME:build or test fail---------------------"
-                        echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master  | $OS_NAME | GitHub | Fail |  build or test fail"
-                        exit 1
-                else
-                        echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-                        echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
-                        exit 0
-                fi
+# Build 
+if ! make; then
+    echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
+    exit 1
+fi
+
+# Test
+if ! make test; then
+    echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME:build_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Build_and_Test_Success"
+    exit 0
+fi
 
 # We can also test with following command
 # ./flattests
