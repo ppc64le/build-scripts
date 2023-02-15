@@ -1,0 +1,13 @@
+{
+    "package_name" : "geos",
+    "github_url":"https://github.com/spf13/afero",
+    "version": "3.11.1",
+    "default_branch": "master",
+    "build_script" : "geos_ubi_8.5.sh",
+    "package_dir": "g/geos",
+    "docker_build": false,
+
+    "*.*.*" : {
+        "build_script" : "geos_ubi_8.5.sh"
+    }
+}
