@@ -78,5 +78,3 @@ if ! ./build.sh -t 7.60.1-rhel; then
         exit 0
     fi                
 fi
-
-
