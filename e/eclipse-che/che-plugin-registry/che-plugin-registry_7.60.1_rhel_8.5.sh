@@ -15,7 +15,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
 #!/bin/bash
 set -e
 
@@ -25,7 +24,6 @@ PACKAGE_URL=https://github.com/eclipse/che-plugin-registry.git
 PACKAGE_NAME=che-plugin-registry
 
 echo "Installing libraries and dependencies..."
-
 yum install git -y
 curl https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
@@ -34,18 +32,15 @@ export NVM_DIR="$HOME/.nvm"
 yum install npm -y
 
 echo "configuring npm and nvm..."
-
 npm install -g -y yarn
 nvm install 14
 nvm use 14
 
 echo "Installing additional dependencies..."
-
 yum install -y python39
 export PYTHONPATH=/usr/local/bin/python3
 
 echo "cloning the repository..."
-
 #Check if package exists
 if [ -d "$PACKAGE_NAME" ] ; then
     rm -rf $PACKAGE_NAME
