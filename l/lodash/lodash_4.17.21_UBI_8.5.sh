@@ -3,6 +3,8 @@
 # Package       : lodash
 # Version       : 4.17.21
 # Source repo   : https://github.com/lodash/lodash
+# Language      : Node
+# Travis-Check  : True
 # Tested on     : UBI 8.5
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Shubham Garud <Shubham.Garud@ibm.com>
