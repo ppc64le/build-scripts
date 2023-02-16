@@ -20,7 +20,7 @@
 set -eux
 
 CWD=`pwd`
-NODE_VERSION=v19.4.0
+NODE_VERSION=v16.17.1
 NODE_DISTRO=linux-ppc64le
 GN_VERSION=5e19d2fb166fbd4f6f32147fbb2f497091a54ad8 
 DEPOT_VERSION=26b6c9b4cf9617cfa196a0415baadd764a069e57
@@ -65,6 +65,7 @@ if [ -z "$(ls -A $CWD/node-$NODE_VERSION-$NODE_DISTRO)" ]; then
 	\rm -rf node-$NODE_VERSION-$NODE_DISTRO.tar.xz
 fi
 export PATH=$CWD/node-$NODE_VERSION-$NODE_DISTRO/bin:$PATH
+npm install --global yarn
 
 # Prepare for build
 export DEPOT_TOOLS_UPDATE=0
@@ -143,18 +144,20 @@ cp $(which eu-strip) buildtools/third_party/eu-strip/bin/eu-strip
 if [ ! -f "$CWD/electron/src/out/Release/electron" ]; then
 	gn gen out/Release --args="import(\"//electron/build/args/release.gn\") clang_base_path = \"$LLVM_BUILD_DIR\" is_clang=true use_gnome_keyring=false treat_warnings_as_errors=false clang_use_chrome_plugins = false"
 	ninja -C out/Release electron
+	electron/script/strip-binaries.py -d out/Release
 	ninja -C out/Release electron:electron_dist_zip
 	ninja -C out/Release electron:electron_chromedriver_zip
 	ninja -C out/Release electron:electron_ffmpeg_zip
+	ninja -C out/Release electron:electron_mksnapshot_zip
 	ninja -C out/Release third_party/electron_node:headers
 fi
 
 # Test
 cd electron
-npm install --global yarn
 adduser --disabled-password --gecos "" electron || true
 chmod 4755 ../out/Release/chrome_sandbox
 chmod -R 777 $CWD/electron
+service dbus start
 export DISPLAY=:99
 Xvfb :99 -screen 0 640x480x8 -nolisten tcp &
 export XDG_RUNTIME_DIR=/run/user/$(id -u electron)
@@ -171,12 +174,18 @@ sudo -u electron -i bash << EOF
 	cd $CWD/electron/src/electron && yarn install
 	cd $CWD/electron/src/electron/spec && yarn install
 	cd $CWD/electron/src
-	$CWD/electron/src/out/Release/electron electron/spec --disable-gpu || true
+	$CWD/electron/src/out/Release/electron electron/spec --disable-gpu --disable-features=DefaultPassthroughCommandDecoder || true
 EOF
 
 # Conclude
+export ELECTRON_DIST=$CWD/electron/src/out/Release/dist.zip
+export CHROMEDRIVER_DIST=$CWD/electron/src/out/Release/chromedriver.zip
+export FFMPEG_DIST=$CWD/electron/src/out/Release/ffmpeg.zip
+export MKSNAPSHOT_DIST=$CWD/electron/src/out/Release/mksnapshot.zip
 set +x
 echo "Complete! The 9 test failures are in parity with x86. Distributable zip files located at:"
-echo "1. Electron: $CWD/electron/src/out/Release/dist.zip"
-echo "2. ChromeDriver: $CWD/electron/src/out/Release/chromedriver.zip"
-echo "3. FFmpeg: $CWD/electron/src/out/Release/ffmpeg.zip"
+echo "1. Electron: $ELECTRON_DIST"
+echo "2. ChromeDriver: $CHROMEDRIVER_DIST"
+echo "3. FFmpeg: $FFMPEG_DIST"
+echo "4. mksnapshot: $MKSNAPSHOT_DIST"
+
