@@ -1,9 +1,10 @@
 # ----------------------------------------------------------------------------
 #
 # Package         : eclipse/che-plugin-registry
-# Version         : 7.60.1
+# Version         : 7.59.0, 7.60.1
 # Source repo     : https://github.com/eclipse/che-plugin-registry
 # Tested on       : rhel_8.5
+# Travis-Check    : True
 # Script License  : Apache License, Version 2.0
 # Maintainer      : Shubham Bhagwat <shubham.bhagwat@ibm.com>
 #
@@ -16,6 +17,7 @@
 # ----------------------------------------------------------------------------
 
 #!/bin/bash
+set -a
 
 WORKDIR=`pwd`
 BUILD_VERSION=7.60.1
