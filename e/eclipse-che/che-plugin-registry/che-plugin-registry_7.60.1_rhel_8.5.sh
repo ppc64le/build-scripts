@@ -17,7 +17,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
+set -e
 WORKDIR=`pwd`
 BUILD_VERSION=${1:-7.60.1}
 PACKAGE_URL=https://github.com/eclipse/che-plugin-registry.git 
