@@ -22,8 +22,7 @@ PACKAGE_VERSION=${1:-v1.62.0}
 PACKAGE_NAME=kiali
 PACKAGE_URL=https://github.com/kiali/kiali.git
 
-yum update -y && yum install -y gcc-c++ make python36 wget git tar zip npm
-npm install -g yarn
+yum update -y && yum install -y gcc-c++ make python38 wget git tar zip 
 
 # Install go
 wget https://go.dev/dl/go1.18.7.linux-ppc64le.tar.gz
@@ -64,6 +63,7 @@ if ! make -e GO_TEST_FLAGS="-race" test ; then
        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
        exit 2
 fi
+npm install -g yarn
 #Build and test for frontend.
 if ! make clean-all build-ui ; then
       echo "------------------$PACKAGE_NAME::Install_fails-------------------------"
