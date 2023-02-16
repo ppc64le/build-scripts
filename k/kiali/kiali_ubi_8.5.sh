@@ -44,6 +44,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 
+sed -i "97s/$/ --timeout 6m/" make/Makefile.build.mk
 
 make lint-install
 make lint
