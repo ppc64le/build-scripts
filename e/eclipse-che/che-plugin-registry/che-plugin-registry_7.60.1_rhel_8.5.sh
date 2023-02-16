@@ -5,9 +5,9 @@
 # Version         : 7.60.1
 # Source repo     : https://github.com/eclipse/che-plugin-registry
 # Tested on       : rhel 8.5
-# Language      : Node
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
+# Language        : Typescript
+# Travis-Check    : True
+# Script License  : Apache License, Version 2 or later
 # Maintainer      : Shubham Bhagwat <shubham.bhagwat@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
