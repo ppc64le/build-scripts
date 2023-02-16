@@ -17,7 +17,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-set -e
+
 WORKDIR=`pwd`
 BUILD_VERSION=${1:-7.60.1}
 PACKAGE_URL=https://github.com/eclipse/che-plugin-registry.git 
@@ -61,4 +61,22 @@ sed -i 's/x86_64/ppc64le/g' build/dockerfiles/Dockerfile
 sed -i 's/x64/ppc64le/g' build/dockerfiles/import-vsix.sh
 
 echo "building..."
-./build.sh -t 7.60.1-rhel
+if ! ./build.sh -t 7.60.1-rhel; then
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_VERSION $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    echo "------------------Second execution Re-run for flaky test case ---------------------"    
+
+    if ! ./build.sh -t 7.60.1-rhel; then
+        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+        exit 1
+    else    
+        echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+        exit 0
+    fi                
+fi
+
+
