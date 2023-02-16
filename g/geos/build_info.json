@@ -1,6 +1,6 @@
 {
     "package_name" : "geos",
-    "github_url":"https://github.com/spf13/afero",
+    "github_url":"https://github.com/libgeos/geos",
     "version": "3.11.1",
     "default_branch": "master",
     "build_script" : "geos_ubi_8.5.sh",
