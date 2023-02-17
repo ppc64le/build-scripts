@@ -9,7 +9,7 @@
     "docker_build": "true",
     "validate_build_script": "true",
     "use_non_root_user": "false",
-
+ 
     "v2.9.*": {
 	"dir" : "2.9.6_ubi8",
         "build_script": "traefik_ubi_8.5.sh"
