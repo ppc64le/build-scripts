@@ -1,3 +1,4 @@
+
 #!/bin/bash -e
 
 # ----------------------------------------------------------------------------
@@ -27,11 +28,13 @@ PACKAGE_VERSION=${1:-1.4.3}
 
 #Dependencies
 dnf install -y git wget make gcc gcc-c++
-wget https://go.dev/dl/go1.19.3.linux-ppc64le.tar.gz
-tar -C  /usr/local -xf go1.19.3.linux-ppc64le.tar.gz
+wget https://go.dev/dl/go1.20.1.linux-ppc64le.tar.gz
+rm -rf /usr/local/go 
+tar -C /usr/local -xzf go1.20.1.linux-ppc64le.tar.gz
 export GOROOT=/usr/local/go
-export GOPATH=$HOME
-export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:/usr/local/bin
+go version
 
 go install gotest.tools/gotestsum@latest
 go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.50.1
@@ -47,6 +50,7 @@ cd ..
 git clone https://github.com/hashicorp/vault
 cd vault
 go mod tidy
+ls
 go mod vendor
 make bootstrap
 make dev
@@ -64,8 +68,10 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout v$PACKAGE_VERSION
 go build -v ./...
+echo "BUILD-SUCCESSFUL"
 
-# As Nomad testing requires clusters. Currently not supporting it.
-# We need to work on cluster testing (probably using minikube or something) and enable tests.
-#go test -v ./...
 
+
+
+
+ 
