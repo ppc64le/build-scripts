@@ -24,7 +24,7 @@ PACKAGE_URL=https://github.com/eclipse/che-plugin-registry.git
 PACKAGE_NAME=che-plugin-registry
 
 echo "Installing libraries and dependencies..."
-yum install git -y
+yum install git wget -y
 curl https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
