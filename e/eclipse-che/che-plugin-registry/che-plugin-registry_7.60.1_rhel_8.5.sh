@@ -46,5 +46,4 @@ git checkout $PACKAGE_VERSION
 
 sed -i 's/x86_64/ppc64le/g' build/dockerfiles/Dockerfile
 sed -i 's/x64/ppc64le/g' build/dockerfiles/import-vsix.sh
-
 ./build.sh -t 7.60.1-rhel
