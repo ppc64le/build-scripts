@@ -31,13 +31,17 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 yum install npm -y
 
-yum install -y yum-utils
-yum-config-manager \
-    --add-repo \
-    https://download.docker.com/linux/rhel/docker-ce.repo
-	
-yum install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-systemctl start docker
+wget https://download.docker.com/linux/static/stable/ppc64le/docker-18.06.3-ce.tgz 
+tar xzvf docker-18.06.3-ce.tgz 
+cp docker/* /usr/bin/ 
+wget https://raw.githubusercontent.com/moby/moby/master/contrib/init/systemd/docker.service 
+wget https://raw.githubusercontent.com/moby/moby/master/contrib/init/systemd/docker.socket 
+cp docker.* /etc/systemd/system/ 
+groupadd docker
+usermod -a -G docker <user> 
+systemctl enable docker 
+systemctl start docker 
+systemctl status docker 
 
 echo "configuring npm and nvm..."
 npm install -g -y yarn
