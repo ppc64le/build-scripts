@@ -1,0 +1,13 @@
+{
+    "package_name" : "apache-avro",
+    "github_url":"https://github.com/apache/avro",
+    "version": "release-1.11.1",
+    "default_branch": "main",
+    "package_dir": "a/apache-avro",
+    "build_script": "avro_ubi_8_5.sh",
+    "validate_build_script": "true",
+
+    "release-1.11.1": {
+        "build_script": "avro_ubi_8_5.sh"        
+    }
+}
