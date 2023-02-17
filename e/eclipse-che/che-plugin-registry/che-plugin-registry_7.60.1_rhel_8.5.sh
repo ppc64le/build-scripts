@@ -38,7 +38,6 @@ wget https://raw.githubusercontent.com/moby/moby/master/contrib/init/systemd/doc
 wget https://raw.githubusercontent.com/moby/moby/master/contrib/init/systemd/docker.socket 
 cp docker.* /etc/systemd/system/ 
 groupadd docker
-usermod -a -G docker <user> 
 systemctl enable docker 
 systemctl start docker 
 systemctl status docker 
@@ -59,6 +58,3 @@ git checkout $PACKAGE_VERSION
 sed -i 's/x86_64/ppc64le/g' build/dockerfiles/Dockerfile
 sed -i 's/x64/ppc64le/g' build/dockerfiles/import-vsix.sh
 ./build.sh -t 7.60.1-rhel
-
-
-
