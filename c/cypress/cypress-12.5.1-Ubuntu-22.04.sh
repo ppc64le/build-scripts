@@ -26,7 +26,7 @@ VERSION=v12.5.1
 CWD=`pwd`
 
 if [[ ! -f dist.zip || ! -f mksnapshot.zip ]]; then
-	echo "Error: This script expects the electron distribution (dist.zip) and the mksnaphot distribution (mksnaphot.zip) in the current directory ($CWD)."
+	echo "Error: This script expects the electron distribution (dist.zip) and the mksnapshot distribution (mksnapshot.zip) in the current directory ($CWD)."
 	exit 1;
 fi
 
