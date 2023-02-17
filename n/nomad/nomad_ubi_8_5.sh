@@ -16,7 +16,6 @@
 #                    contact "Maintainer" of this script.
 #   
 # ----------------------------------------------------------------------------
-
 # Variables
 set -e
 PACKAGE_NAME=nomad
