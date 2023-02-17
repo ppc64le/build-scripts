@@ -157,8 +157,8 @@ rpm -i boost-program-options-1.66.0-13.el8.ppc64le.rpm
 echo "------------------------------------------------------boost-program-options INSTALLED------------------------------------------"
 
 wget https://rpmfind.net/linux/centos/8-stream/AppStream/ppc64le/os/Packages/boost-math-1.66.0-13.el8.ppc64le.rpm
-rpm -i boost-math-1.66.0-13.el8.ppc64le.rpmINS
-echo "------------------------------------------------------boost-math TALLED------------------------------------------"
+rpm -i boost-math-1.66.0-13.el8.ppc64le.rpm
+echo "------------------------------------------------------boost-math INSTALLED------------------------------------------"
 
 wget https://rpmfind.net/linux/centos/8-stream/BaseOS/ppc64le/os/Packages/libicu-60.3-2.el8_1.ppc64le.rpm
 rpm -i libicu-60.3-2.el8_1.ppc64le.rpm
