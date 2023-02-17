@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: abyss
-# Version	: v2.3.5
+# Version	: 2.3.5
 # Source repo	: https://github.com/bcgsc/abyss.git
 # Tested on	: UBI: 8.5
 # Language      : Go 
