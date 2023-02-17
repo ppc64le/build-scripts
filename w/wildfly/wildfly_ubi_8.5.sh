@@ -41,7 +41,7 @@ cd /home
 rm -rf $PACKAGE_NAME
 git clone $PACKAGE_URL 
 
-cd  $PACKAGE_NAME 
+cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 mvn install
