@@ -30,7 +30,10 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 yum install npm -y
-sudo yum install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+wget https://download.docker.com/linux/static/stable/ppc64le/docker-18.06.3-ce.tgz 
+tar xzvf docker-18.06.3-ce.tgz 
+cp docker/* /usr/bin/ 
 
 echo "configuring npm and nvm..."
 npm install -g -y yarn
