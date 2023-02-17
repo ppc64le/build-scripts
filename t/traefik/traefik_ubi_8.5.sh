@@ -18,6 +18,10 @@
 #
 # ----------------------------------------------------------------------------
 
+PACKAGE_VERSION=${1:-v2.9.6}
+PACKAGE_NAME=traefik
+PACKAGE_URL=https://github.com/traefik/traefik
+
 yum install -y gcc-c++ make wget git tar
 
 wget https://go.dev/dl/go1.19.3.linux-ppc64le.tar.gz
@@ -25,9 +29,9 @@ rm -rf /usr/local/go
 tar -C /usr/local -xzf  go1.19.3.linux-ppc64le.tar.gz
 export PATH=$PATH:/usr/local/go/bin
 
-git clone https://github.com/traefik/traefik
-cd traefik
-git checkout v2.9.6
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 
 if ! go build -v ./... ; then
        echo "------------------$PACKAGE_NAME:Build_fails---------------------"
