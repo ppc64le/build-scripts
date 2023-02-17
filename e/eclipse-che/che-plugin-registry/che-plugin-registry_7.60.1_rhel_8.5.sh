@@ -31,16 +31,12 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 yum install npm -y
 
-wget https://download.docker.com/linux/static/stable/ppc64le/docker-18.06.3-ce.tgz 
-tar xzvf docker-18.06.3-ce.tgz 
-cp docker/* /usr/bin/ 
-wget https://raw.githubusercontent.com/moby/moby/master/contrib/init/systemd/docker.service 
-wget https://raw.githubusercontent.com/moby/moby/master/contrib/init/systemd/docker.socket 
-cp docker.* /etc/systemd/system/ 
-groupadd docker
+dnf install https://dl.fedoraproject.org/pub/epel/7/ppc64le/Packages/c/containerd-1.2.14-1.el7.ppc64le.rpm
+dnf install https://oplab9.parqtec.unicamp.br/pub/ppc64el/docker/version-19.03.8/centos/docker-ce-cli-19.03.8-3.el7.ppc64le.rpm 
+dnf install https://oplab9.parqtec.unicamp.br/pub/ppc64el/docker/version-19.03.8/centos/docker-ce-19.03.8-3.el7.ppc64le.rpm 
 systemctl enable docker 
 systemctl start docker 
-systemctl status docker 
+systemctl is-active docker
 
 echo "configuring npm and nvm..."
 npm install -g -y yarn
