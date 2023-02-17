@@ -3,14 +3,9 @@
     "github_url":"https://github.com/open-telemetry/opentelemetry-php",
     "version": "0.0.17",
     "default_branch": "main",
-    "package_dir": "o/opentelemetry-php/latest",
-    "docker_build": false,
+    "package_dir": "o/opentelemetry-php",
+    "validate_build_script": "true",
     "build_script" : "opentelemetry-php_ubi_8.5.sh",
-    
-    "0.0.*" : {
-        "build_script" : "opentelemetry-php_ubi_8.5.sh",
-	"args": {
-	      "PHP_VERSION":"8.0.25"
-        }
-    } 
+    "use_non_root_user": "false",
+    "docker_build": false,
 }
