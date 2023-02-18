@@ -79,7 +79,8 @@ if [ ! -f "/etc/apt/sources.list.d/sources-debian-sid.list" ];
 then
 	sed -i '11i echo "deb [trusted=yes] http://deb.debian.org/debian sid main" > /etc/apt/sources.list.d/sources-debian-sid.list' factory/installScripts/chrome/default.sh
 fi
-sed -i "s#apt-get install -f -y /usr/src/google-chrome-stable_current_amd64.deb#apt-get install -y chromium#g" factory/installScripts/chrome/default.sh
+sed -i "s#apt-get install -f -y /usr/src/google-chrome-stable_current_amd64.deb#apt-get install -y chromium\nln -fs /usr/bin/chromium /usr/bin/google-chrome-stable#g" factory/installScripts/chrome/default.sh
+sed -i '17d' factory/installScripts/chrome/default.sh
 sed -i '3,10d' factory/installScripts/chrome/default.sh
 
 #patch cypress script
