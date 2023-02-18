@@ -7,5 +7,5 @@
     "validate_build_script": "true",
     "build_script" : "opentelemetry-php_ubi_8.5.sh",
     "use_non_root_user": "false",
-    "docker_build": false,
+    "docker_build": false
 }
