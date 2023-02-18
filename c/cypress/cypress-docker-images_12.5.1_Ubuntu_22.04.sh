@@ -51,18 +51,6 @@ EOT
 service docker start
 docker run hello-world
 
-# Install node.js
-cd $CWD
-NODE_VERSION=v19.6.0
-NODE_DISTRO=linux-ppc64le
-if [ -z "$(ls -A $CWD/node-$NODE_VERSION-$NODE_DISTRO)" ]; then
-        wget "https://nodejs.org/dist/$NODE_VERSION/node-$NODE_VERSION-$NODE_DISTRO.tar.xz"
-        tar -xJvf node-$NODE_VERSION-$NODE_DISTRO.tar.xz --no-same-owner
-        rm -rf node-$NODE_VERSION-$NODE_DISTRO.tar.xz
-fi
-export PATH=$CWD/node-$NODE_VERSION-$NODE_DISTRO/bin:$PATH
-npm install --global yarn
-
 #clone
 cd $CWD
 git clone $REPO
