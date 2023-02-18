@@ -1,7 +1,7 @@
 FROM registry.access.redhat.com/ubi8
 
 # This is the release of Consul to pull in.
-ARG PACKAGE_VERSION=v1.12.0
+ARG PACKAGE_VERSION=v1.14.4
 
 # Create a consul user and group first so the IDs get set the same way, even as
 # the rest of this may change over time.

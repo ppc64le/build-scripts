@@ -1,13 +1,13 @@
 {
     "package_name" : "abyss",
     "github_url":"https://github.com/bcgsc/abyss.git",
-    "version": "v2.3.5",
+    "version": "2.3.5",
     "package_dir": "a/abyss/",
     "build_script" : "abyss_ubi_8.5.sh",
     "default_branch": "master",
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
 
-    "v2.3.*" : {
+    "2.3.*" : {
         "dir" : "ubi_8.5",
         "build_script" : "abyss_ubi_8.5.sh"
 

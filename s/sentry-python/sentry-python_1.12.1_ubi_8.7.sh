@@ -42,7 +42,7 @@ if ! pip3 install -r test-requirements.txt ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-
+pip3 install pytest tox
 
 #Build and test
 
