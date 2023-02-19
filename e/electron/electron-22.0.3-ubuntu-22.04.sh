@@ -157,7 +157,6 @@ cd electron
 adduser --disabled-password --gecos "" electron || true
 chmod 4755 ../out/Release/chrome_sandbox
 chmod -R 777 $CWD/electron
-service dbus start
 export DISPLAY=:99
 Xvfb :99 -screen 0 640x480x8 -nolisten tcp &
 export XDG_RUNTIME_DIR=/run/user/$(id -u electron)
@@ -174,7 +173,7 @@ sudo -u electron -i bash << EOF
 	cd $CWD/electron/src/electron && yarn install
 	cd $CWD/electron/src/electron/spec && yarn install
 	cd $CWD/electron/src
-	$CWD/electron/src/out/Release/electron electron/spec --disable-gpu --disable-features=DefaultPassthroughCommandDecoder || true
+	$CWD/electron/src/out/Release/electron electron/spec --disable-gpu || true
 EOF
 
 # Conclude
