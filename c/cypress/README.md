@@ -1,11 +1,20 @@
 To build the Cypress docker images:
 --------------------------------------
 
-**1. Run a docker container with the following command...**
+**1. First ensure the storage driver on the docker host is set to overlay2**
+
+cat <<EOT > /etc/docker/daemon.json
+{
+"storage-driver": "overlay2"
+}
+EOT
+service docker restart
+
+**2. Run a docker container with the following command...**
 
 docker run -it --network host --shm-size=2gb --privileged  -v /var/run/docker.sock:/var/run/docker.sock --name cypress docker.io/ubuntu:22.04 bash
 
-**2. Run the following script in the above container (took 6 hours on our hardware)...**
+**3. Run the following script in the above container (took 6 hours on our hardware)...**
 
 #######################################################################################################################################################
 #######################################################################################################################################################
@@ -46,6 +55,6 @@ echo "Complete!"
 #######################################################################################################################################################
 #######################################################################################################################################################
 
-**3. List the newly built Cypress docker images in the host**
+**4. List the newly built Cypress docker images in the host**
 
 docker images | grep cypress
