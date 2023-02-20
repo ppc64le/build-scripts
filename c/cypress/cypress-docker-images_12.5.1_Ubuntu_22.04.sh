@@ -86,11 +86,12 @@ sed -i '3,10d' factory/installScripts/chrome/default.sh
 #patch cypress script
 sed -i -e '$aapt-get update -y && apt-get install -y unzip' factory/installScripts/cypress/default.sh
 sed -i -e '$arm -rf /root/.cache/Cypress/${1}/Cypress' factory/installScripts/cypress/default.sh
-sed -i -e '$aunzip /opt/installScripts/cypress/cypress.zip -d /root/.cache/Cypress/${1}/' factory/installScripts/cypress/default.sh
+sed -i -e '$aunzip -q /opt/installScripts/cypress/cypress.zip -d /root/.cache/Cypress/${1}/' factory/installScripts/cypress/default.sh
 
 #patch chrome and firefox versions
 sed -i "s#FIREFOX_VERSION='109.0'#FIREFOX_VERSION='108.0.2'#g" factory/.env
 sed -i "s#CHROME_VERSION='109.0.5414.74-1'#CHROME_VERSION='110.0.5481.77'#g" factory/.env
+sed -i "s#debian:bullseye-slim#ubuntu:22.04#g" factory/.env
 
 #build
 cd factory
@@ -101,6 +102,12 @@ docker compose build --progress plain
 #test
 cd test-project
 docker compose build --progress plain test-factory-all-included
+
+#Smoke tests
+docker run -it --rm cypress/cypress cypress verify
+docker run -it --rm cypress/base node --version
+docker run -it --rm cypress/firefox firefox --version
+docker run -it --rm cypress/chrome google-chrome-stable --version
 
 #list cypress images just built
 docker images | grep cypress
