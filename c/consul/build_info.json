@@ -1,7 +1,10 @@
 {
     "package_name" : "consul",
 	"github_url":"https://github.com/hashicorp/consul.git",
-    "package_dir": "c/consul/Dockerfiles/",
+    "version": "v1.8.3",
+    "default_branch": "main",
+    "build_script" : "consul_ubi_8.5.sh",
+    "package_dir": "c/consul/",
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "build_script" : "consul_v1.12.0_ubi_8.5.sh",
     
@@ -18,6 +21,11 @@
         "dir":"1.9.4-ubi8"
     },
 
+    "v1.14.*" : {
+        "dir":"1.14.4-ubi8",
+        "build_script": "consul_v1.14.4_ubi_8.5.sh"
+    },
+
     "v1.1*.*": {
         "dir": "1.9.4-ubi8",
         "args" : {
@@ -26,6 +34,7 @@
         }
         
     },
+
     
     "v*.*.*" : {
         "dir":"template"

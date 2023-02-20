@@ -1,0 +1,16 @@
+{
+    "package_name" : "antlr4",
+    "github_url": "https://github.com/antlr/antlr4",
+     "version": "v4.11.1",
+    "package_dir": "a/antlr4/",
+    "docker_cmd":"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "build_script": "antlr4_v4.11.1_ubi_8.5.sh",
+    "docker_build": "true",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+
+    "v4.11.*": {
+        "dir": "ubi-8.5",
+        "build_script": "antlr4_v4.11.1_ubi_8.5.sh"
+    }
+}

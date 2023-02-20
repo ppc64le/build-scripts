@@ -1,0 +1,26 @@
+{
+    "package_name" : "Name of the packages (Eg: vault) Mandatory Argument.",
+    "github_url":"Github URL for the package (Eg: https://github.com/hashicorp/vault.git) Mandatory Argument.",
+    "version": "Release version or Tag version available in github repo (Eg: v1.12.0). Mandatory Argument.",
+    "default_branch": "default checkout version available in github repo (Eg: master). Mandatory Argument.",
+    "category": "Category of the build-script (Eg: default/rhp). Optional Argument.",
+    "package_dir": "Directory path to the package on build-scripts repo (Eg: v/vault/)",
+    "docker_cmd":"This is a generic Docker command that can be run by default on any version. If no tag details mentioned, this docker command will be consider for buiding the docker image. (Eg: docker build -t ${package_name}:$PACKAGE_VERSION ${dir})",
+    "build_script": "Default build script for the package. If no build_script mentioned in below version tags, this build-script will be picked for build and validation. (Eg: vault_ubi_8.5.sh)",
+    "docker_build": "Boolean variable to enable or diasble building docker image for a package. Optional argument. Default value is `true` (Eg: true/false)",
+    "validate_build_script": "Boolean variable to enable or diasble the build-script execution for a package. Optional argument. Default value is `true` (Eg: true/false)",
+    "use_non_root_user": "Boolean variable to run build-script as non root user. Optional argument. Default value is `false` (Eg: true/false)",
+
+    "version string(s)/version regex(es) (Eg: `v8.1.*, v8.2.0`)": {
+        "dir": "Directory name on which `docker build` should run. Mention directory name under `Dockerfile` directory of a package. (Eg: 8.1.0_ubi_8 - Incase if elasticsearch)",
+        "build_script": "Version specific build-script. If not mentioned, default build-script will be picked which is mentioned at outside of Tag details (Eg: elasticsearch_v8.1.1_ubi_8.5.sh).",
+        "base_docker_image": "Mention base docker image which is used in DockerFile (FROM ). Optional argument. Default value is `registry.redhat.com/ubi8/ubi:latest`.",
+        "base_docker_variant": "Base docker image variant. Allowed values are | redhat | ubuntu | alpine |. Optional argument. Default value is `redhat`.",
+        "args": {
+            "DOCKER_BUILD_ARG_NAME (Eg: GO_VERSION)": "Build argument value (Eg: 1.17.2)"
+         },
+         "patches": {
+            "PATCH_NAME_USED_AS_BUILD_ARG_IN_DOCKERFILE": "Raw URL path to the patch in build-scripts (Eg: https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_v8.1.1.patch - In case of elasticsearch)."
+         }
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "package_name" : "odoo",
+    "github_url":"https://github.com/odoo/odoo",
+    "version": "16.0",
+    "default_branch": "16.0",
+    "build_script" : "odoo_16.0_ubi_8.5.sh",
+    "package_dir": "o/odoo/",
+    "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+
+
+    "16.0" : {
+        "dir":"16.0_debian_bullseye",
+        "build_script" :"odoo_16.0_ubi_8.5.sh",
+        "base_docker_image": "debian:bullseye-slim",
+        "base_docker_variant": "ubuntu"
+    }
+}   

@@ -1,7 +1,9 @@
 {
     "package_name" : "fluentd",
     "github_url":"https://github.com/fluent/fluentd",
-    "package_dir": "f/fluentd/Dockerfiles/",
+    "version": "v1.15.3",
+    "default_branch": "master",
+    "package_dir": "f/fluentd/",
     "build_script": "fluentd_ubi_8.5.sh",
     "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
 

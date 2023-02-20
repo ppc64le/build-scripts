@@ -1,0 +1,68 @@
+diff --git a/docker-compose.yml b/docker-compose.yml
+index ee918417..3c78eb26 100644
+--- a/docker-compose.yml
++++ b/docker-compose.yml
+@@ -135,14 +135,14 @@ services:
+     working_dir: /app/instrumentation/sinatra/example
+ 
+   mongo:
+-    image: mongo:4.4
++    image: ibmcom/mongodb-ppc64le:4.4
+     expose:
+       - "27017"
+     ports:
+       - "27017:27017"
+ 
+   mysql:
+-    image: mysql:5.6
++    image: mariadb:10.0
+     environment:
+       - MYSQL_DATABASE=mysql
+       - MYSQL_ROOT_PASSWORD=root
+@@ -163,7 +163,7 @@ services:
+       - "5432:5432"
+ 
+   redis:
+-    image: bitnami/redis:6.2
++    image: ibmcom/redis-ppc64le:6.2.6
+     environment:
+       - REDIS_PASSWORD=passw0rd
+     volumes:
+@@ -182,36 +182,13 @@ services:
+     ports:
+      - "11211:11211"
+ 
+-  zookeeper:
+-    image: confluentinc/cp-zookeeper:latest
+-    ports:
+-      - 2181:2181
+-    environment:
+-      ZOOKEEPER_CLIENT_PORT: 2181
+-      ZOOKEEPER_TICK_TIME: 2000
+-
+-  kafka:
+-    image: confluentinc/cp-kafka:latest
+-    ports:
+-      - "9092:9092"
+-      - "29092:29092"
+-    environment:
+-      KAFKA_BROKER_ID: 1
+-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:29092,PLAINTEXT_HOST://kafka:9092
+-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+-    depends_on:
+-      - zookeeper
+-
+   jaeger:
+     image: jaegertracing/all-in-one
+     ports:
+       - "16686:16686"
+ 
+   otelcol:
+-    image: otel/opentelemetry-collector:0.54.0
++    image: otel/opentelemetry-collector:0.57.2
+     command: [ "--config=/etc/otelcol-config.yml" ]
+     volumes:
+       - ./otelcol-config.yml:/etc/otelcol-config.yml
