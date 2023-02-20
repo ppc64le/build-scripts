@@ -23,7 +23,7 @@ PACKAGE_URL=https://github.com/wildfly/wildfly.git
 
 yum update -y
 yum install -y git wget  tar
-
+ 
 yum install -y java-11-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
