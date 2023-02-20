@@ -6,7 +6,7 @@
 # Source repo     : https://github.com/eclipse/che-plugin-registry
 # Tested on       : rhel 8.5
 # Language        : Typescript
-# Travis-Check    : False
+# Travis-Check    : True
 # Script License  : Apache License, Version 2 or later
 # Maintainer      : Shubham Bhagwat <shubham.bhagwat@ibm.com>
 #
@@ -31,6 +31,10 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 yum install npm -y
 
+wget https://download.docker.com/linux/static/stable/ppc64le/docker-18.06.3-ce.tgz 
+tar xzvf docker-18.06.3-ce.tgz 
+cp docker/* /usr/bin/ 
+
 echo "configuring npm and nvm..."
 npm install -g -y yarn
 nvm install 14
@@ -40,10 +44,43 @@ echo "Installing additional dependencies..."
 yum install -y python39
 export PYTHONPATH=/usr/local/bin/python3
 
-git clone $PACKAGE_URL $PACKAGE_NAME; 
+echo "cloning the repository..."
+#Check if package exists
+if [ -d "$PACKAGE_NAME" ] ; then
+    rm -rf $PACKAGE_NAME
+    echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"
+fi
+
+if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
+    echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail |  Install_Fails"
+    exit 0
+fi
+
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 
 sed -i 's/x86_64/ppc64le/g' build/dockerfiles/Dockerfile
 sed -i 's/x64/ppc64le/g' build/dockerfiles/import-vsix.sh
-./build.sh -t 7.60.1-rhel
+
+echo "building..."
+if ! ./build.sh -t 7.60.1-rhel; then
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_VERSION $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    echo "------------------Second execution Re-run for flaky test case ---------------------"    
+
+    if ! ./build.sh -t 7.60.1-rhel; then
+        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+        exit 1
+    else    
+        echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+        exit 0
+    fi                
+fi
+
+
