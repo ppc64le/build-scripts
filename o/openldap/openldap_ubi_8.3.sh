@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package       : openldap
@@ -17,7 +18,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
+
 
 # Variables
 REPO=https://github.com/openldap/openldap
