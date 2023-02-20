@@ -1,7 +1,10 @@
 {
     "package_name" : "elasticsearch",
     "github_url":"https://github.com/elastic/elasticsearch.git",
-    "package_dir": "e/elasticsearch/Dockerfiles/",
+    "version": "v8.2.1",
+    "default_branch": "main",
+    "build_script" : "elasticsearch_v8.2.1_ubi_8.5.sh",
+    "package_dir": "e/elasticsearch/",
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
 
     "v7.6.0" : {
