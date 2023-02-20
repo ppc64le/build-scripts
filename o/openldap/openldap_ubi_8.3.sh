@@ -35,7 +35,7 @@ yum install -y git make autoconf automake libtool gcc-c++
 git clone $REPO
 cd openldap
 git checkout ${VERSION}
-cd /openldap/libraries/liblmdb
+cd ./libraries/liblmdb
 
 # Build and test package
 mkdir -p /usr/local/man/man1

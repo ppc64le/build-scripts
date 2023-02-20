@@ -5,6 +5,7 @@
     "default_branch": "main",
     "build_script" : "babel_ubi_8.5.sh",
     "package_dir": "b/babel",
+    "use_non_root_user": "true",
     "docker_build": false,
 
     "v*.*.*" : {
