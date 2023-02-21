@@ -1,5 +1,9 @@
 FROM registry.access.redhat.com/ubi8/ubi:latest as builder
 
+ARG PACKAGE_VERSION=7.42.2
+ARG PATCH=https://raw.githubusercontent.com/ppc64le/build-scripts/master/d/datadog-agent/datadog-agent_7.42.2.patch
+ARG GO_VERSION=1.18.5
+
 WORKDIR /root
 
 ENV PATH=$PATH:/bin/go/bin:$WORKDIR/go/bin
