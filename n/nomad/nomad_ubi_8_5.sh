@@ -22,12 +22,14 @@ PACKAGE_NAME=nomad
 PACKAGE_URL=https://github.com/hashicorp/nomad
 #PACKAGE_VERSION is configurable can be passed as an argument.
 PACKAGE_VERSION=${1:-1.4.3}
+GO_VERSION=${GO_VERSION:-1.20.1}
+
 
 #Dependencies
 dnf install -y git wget make gcc gcc-c++
-wget https://go.dev/dl/go1.20.1.linux-ppc64le.tar.gz
+wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
 rm -rf /usr/local/go 
-tar -C /usr/local -xzf go1.20.1.linux-ppc64le.tar.gz
+tar -C /usr/local -xzf go${GO_VERSION}.linux-ppc64le.tar.gz
 export GOROOT=/usr/local/go
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:/usr/local/bin
@@ -64,10 +66,20 @@ fi
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout v$PACKAGE_VERSION
-go build -v ./...
-echo "BUILD-SUCCESSFUL!"
 
+if ! go build -v ./... ; then
+    echo "------------------$PACKAGE_NAME:build_fail---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    exit 1
+else
+    echo "------------------$PACKAGE_NAME:build_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    exit 0
+fi
 
+# As Nomad testing requires clusters. Currently not supporting it.
+# We need to work on cluster testing (probably using minikube or something) and enable tests.
+# go test -v ./...
 
 
 
