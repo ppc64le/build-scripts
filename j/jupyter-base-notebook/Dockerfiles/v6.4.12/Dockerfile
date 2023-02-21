@@ -1,8 +1,10 @@
+#Reference Dockerfile taken from : https://github.com/jupyter/docker-stacks
+#Jupyter Project <jupyter@googlegroups.com>
 ARG ROOT_CONTAINER=ubuntu:20.04
 
 FROM $ROOT_CONTAINER
 
-LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
+LABEL maintainer="Srividya.Chittiboina@ibm.com"
 ARG NB_USER="jovyan"
 ARG NB_UID="1000"
 ARG NB_GID="100"
