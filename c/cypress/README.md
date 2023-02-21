@@ -18,41 +18,41 @@ docker run -it --network host --shm-size=2gb --privileged  -v /var/run/docker.so
 
 #######################################################################################################################################################
 #######################################################################################################################################################
+
 set -ex
 
-WORK_DIR=`pwd`
+WORK_DIR=$(pwd)
 
-#Install dependencies
-apt-get update -y
+#Install dependencies 
+apt-get update -y 
 apt-get install -y wget
 
-#download scripts
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/electron/electron-22.0.3-Ubuntu-22.04.sh
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cypress/cypress_12.5.1_Ubuntu_22.04.sh
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cypress/cypress-docker-images_12.5.1_Ubuntu_22.04.sh
+#download scripts 
+wget https://raw.githubusercontent.com/sumitd2/build-scripts/cypress_12.5.1/e/electron/electron-22.0.3-Ubuntu-22.04.sh 
+wget https://raw.githubusercontent.com/sumitd2/build-scripts/cypress_12.5.1/c/cypress/cypress_12.5.1_Ubuntu_22.04.sh 
+wget https://raw.githubusercontent.com/sumitd2/build-scripts/cypress_12.5.1/c/cypress/cypress-docker-images_12.5.1_Ubuntu_22.04.sh
 
-#source electron
-chmod +x electron-22.0.3-Ubuntu-22.04.sh
+#source electron 
+chmod +x electron-22.0.3-Ubuntu-22.04.sh 
 source ./electron-22.0.3-Ubuntu-22.04.sh
 
-#copy electron redistributables
-cd $WORK_DIR
-cp $ELECTRON_DIST .
+#copy electron redistributables 
+cd $WORK_DIR cp $ELECTRON_DIST . 
 cp $MKSNAPSHOT_DIST .
 
-#source cypress
-chmod +x cypress_12.5.1_Ubuntu_22.04.sh
+#source cypress 
+chmod +x cypress_12.5.1_Ubuntu_22.04.sh 
 source ./cypress_12.5.1_Ubuntu_22.04.sh
 
-#copy cypress redistributable
-cd $WORK_DIR
-cp $CYPRESS_DIST .
+#copy cypress redistributable 
+cd $WORK_DIR cp $CYPRESS_DIST .
 
-#source cypress docker images
-chmod +x cypress-docker-images_12.5.1_Ubuntu_22.04.sh
+#source cypress docker images 
+chmod +x cypress-docker-images_12.5.1_Ubuntu_22.04.sh 
 source ./cypress-docker-images_12.5.1_Ubuntu_22.04.sh
 
 echo "Complete!"
+
 #######################################################################################################################################################
 #######################################################################################################################################################
 
