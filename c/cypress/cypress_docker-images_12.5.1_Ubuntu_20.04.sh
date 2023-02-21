@@ -105,6 +105,12 @@ docker compose build --progress plain
 cd test-project
 docker compose build --progress plain
 
+#Smoke tests
+docker run -it --rm cypress/cypress cypress verify
+docker run -it --rm cypress/base node --version
+docker run -it --rm cypress/firefox firefox --version
+docker run -it --rm cypress/chrome google-chrome-stable --version
+
 #list cypress images just built
 docker images | grep cypress
 
