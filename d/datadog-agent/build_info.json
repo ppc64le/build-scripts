@@ -16,6 +16,9 @@
     
     "7.39.*": {
         "dir" : "7.39.0_ubi_8",
+        "args" : {
+            "GO_VESRION" : "1.17.6"
+        },
         "patches" : {
             "PATCH" : "https://raw.githubusercontent.com/ppc64le/build-scripts/master/d/datadog-agent/datadog-agent_7.39.0.patch"
         },
@@ -24,10 +27,13 @@
 
     "7.42.*": {
         "dir" : "7.39.0_ubi_8",
+        "args" : {
+            "GO_VESRION" : "1.18.5"
+        },
         "patches" : {
             "PATCH" : "https://raw.githubusercontent.com/ppc64le/build-scripts/master/d/datadog-agent/datadog-agent_7.42.2.patch"
         },
-        "build_script" : "datadog-agent_7.39.0_ubi_8.5.sh"
+        "build_script" : "datadog-agent_7.42.2_ubi_8.5.sh"
     },
 
     "*.*.*": {
