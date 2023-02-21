@@ -27,9 +27,9 @@ apt-get update -y
 apt-get install -y wget
 
 #source electron
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/electron/electron-22.0.3-ubuntu-22.04.sh
-chmod +x electron-22.0.3-ubuntu-22.04.sh
-source ./electron-22.0.3-ubuntu-22.04.sh
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/electron/electron-22.0.3-Ubuntu-22.04.sh
+chmod +x electron-22.0.3-Ubuntu-22.04.sh
+source ./electron-22.0.3-Ubuntu-22.04.sh
 
 #copy electron redistributables
 cd $WORK_DIR
