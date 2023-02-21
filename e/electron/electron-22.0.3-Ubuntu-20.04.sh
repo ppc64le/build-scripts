@@ -28,7 +28,7 @@ ELECTRON_VERSION=v22.0.3
 
 # Install and Setup Ubuntu Dependencies
 apt-get update -y
-DEBIAN_FRONTEND=noninteractive apt-get install -y  build-essential libdbus-1-dev libgtk-3-dev libnotify-dev libasound2-dev libcap-dev libcups2-dev libxtst-dev libxss1 libnss3-dev curl gperf bison python3-dbusmock openjdk-8-jre git wget python3-httplib2 python3-six lsof libdrm-dev libgbm-dev mesa-common-dev ninja-build cmake unzip sudo libre2-dev xvfb  libgl1-mesa-glx xcb libxcb-xkb-dev x11-xkb-utils libx11-xcb-dev libxkbcommon-x11-dev libpci-dev libcurl4-gnutls-dev libkrb5-dev libpulse-dev libxshmfence-dev elfutils linux-headers-$(uname -r)
+DEBIAN_FRONTEND=noninteractive apt-get install -y  build-essential libdbus-1-dev libgtk-3-dev libnotify-dev libasound2-dev libcap-dev libcups2-dev libxtst-dev libxss1 libnss3-dev curl gperf bison python3-dbusmock openjdk-8-jre git wget python3-httplib2 python3-six lsof libdrm-dev libgbm-dev mesa-common-dev ninja-build cmake unzip sudo libre2-dev xvfb  libgl1-mesa-glx xcb libxcb-xkb-dev x11-xkb-utils libx11-xcb-dev libxkbcommon-x11-dev libpci-dev libcurl4-gnutls-dev libkrb5-dev libpulse-dev libxshmfence-dev elfutils
 export JAVA_PATH=$(dirname $(which java))
 
 # Install gn
