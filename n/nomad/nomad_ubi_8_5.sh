@@ -49,7 +49,6 @@ cd ..
 git clone https://github.com/hashicorp/vault
 cd vault
 go mod tidy
-ls
 go mod vendor
 make bootstrap
 make dev
@@ -65,7 +64,7 @@ fi
 # Cloning the repository from remote to local
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
-git checkout v$PACKAGE_VERSION
+git checkout $PACKAGE_VERSION
 
 if ! go build -v ./... ; then
     echo "------------------$PACKAGE_NAME:build_fail---------------------"
