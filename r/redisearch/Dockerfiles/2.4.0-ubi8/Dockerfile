@@ -4,20 +4,14 @@ ENV REDISEARCH_VERSION=v2.4.0
 
 RUN yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm; \
         yum update -y; \
-        yum install -y wget git gcc gcc-c++ make python3 cmake python2  python3-devel libstdc++-static;
+        yum install -y wget git gcc gcc-c++ make python38 cmake  python3-devel libstdc++-static;
 
 RUN ln -s /usr/bin/python3 /usr/bin/python \
     && git clone --recursive https://github.com/RediSearch/RediSearch.git \
     && cd RediSearch \
     && git checkout ${REDISEARCH_VERSION} \
-    && pip3 install --upgrade pip \
-    && python3 -m pip install --no-cache-dir git+https://github.com/RedisLabsModules/RLTest.git@master \
-    && python3 -m pip install --no-cache-dir git+https://github.com/Grokzen/redis-py-cluster.git@master \
-    && python3 -m pip install --no-cache-dir git+https://github.com/RedisLabs/RAMP@master \
     && make fetch \
-    && make build \
-    && sed -i "s/\(.*\)'Development Tools'\(.*\)/#\1'Development Tools'\2/g" deps/readies/bin/getredis \
-    && ./deps/readies/bin/getredis
+    && make build 
 
 # Build redis
 FROM registry.access.redhat.com/ubi8/ubi
