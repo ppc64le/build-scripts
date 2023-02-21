@@ -58,3 +58,10 @@ echo "Complete!"
 **4. List the newly built Cypress docker images in the host**
 
 docker images | grep cypress
+
+Building on Ubuntu 22.04 results in images with Ubuntu 22.04 as the base image.
+
+**5. Building on Ubuntu 20.04**
+
+Replace 22.04 above with 20.04.
+This results in images with Debian Bullseye Slim as the base image.
