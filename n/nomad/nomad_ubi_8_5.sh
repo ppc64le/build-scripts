@@ -1,5 +1,4 @@
 #!/bin/bash -e
-
 # ----------------------------------------------------------------------------
 # Package          : nomad
 # Version          : v1.4.3
@@ -17,21 +16,24 @@
 #                    contact "Maintainer" of this script.
 #   
 # ----------------------------------------------------------------------------
-
 # Variables
 set -e
 PACKAGE_NAME=nomad
 PACKAGE_URL=https://github.com/hashicorp/nomad
 #PACKAGE_VERSION is configurable can be passed as an argument.
 PACKAGE_VERSION=${1:-1.4.3}
+GO_VERSION=${GO_VERSION:-1.20.1}
+
 
 #Dependencies
 dnf install -y git wget make gcc gcc-c++
-wget https://go.dev/dl/go1.19.3.linux-ppc64le.tar.gz
-tar -C  /usr/local -xf go1.19.3.linux-ppc64le.tar.gz
+wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
+rm -rf /usr/local/go 
+tar -C /usr/local -xzf go${GO_VERSION}.linux-ppc64le.tar.gz
 export GOROOT=/usr/local/go
-export GOPATH=$HOME
-export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:/usr/local/bin
+go version
 
 go install gotest.tools/gotestsum@latest
 go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.50.1
@@ -47,6 +49,7 @@ cd ..
 git clone https://github.com/hashicorp/vault
 cd vault
 go mod tidy
+ls
 go mod vendor
 make bootstrap
 make dev
@@ -63,9 +66,21 @@ fi
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout v$PACKAGE_VERSION
-go build -v ./...
+
+if ! go build -v ./... ; then
+    echo "------------------$PACKAGE_NAME:build_fail---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    exit 1
+else
+    echo "------------------$PACKAGE_NAME:build_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    exit 0
+fi
 
 # As Nomad testing requires clusters. Currently not supporting it.
 # We need to work on cluster testing (probably using minikube or something) and enable tests.
-#go test -v ./...
+# go test -v ./...
 
+
+
+ 
