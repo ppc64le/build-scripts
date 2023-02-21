@@ -65,7 +65,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout v$PACKAGE_VERSION
 go build -v ./...
-echo "BUILD-SUCCESSFUL"
+echo "BUILD-SUCCESSFUL!"
 
 
 
