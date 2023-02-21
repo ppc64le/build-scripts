@@ -26,8 +26,12 @@ WORK_DIR=`pwd`
 apt-get update -y
 apt-get install -y wget
 
+#download scripts
+wget https://raw.githubusercontent.com/sumitd2/build-scripts/cypress_12.5.1/e/electron/electron-22.0.3-Ubuntu-22.04.sh
+wget https://raw.githubusercontent.com/sumitd2/build-scripts/cypress_12.5.1/c/cypress/cypress_12.5.1_Ubuntu_22.04.sh
+wget https://raw.githubusercontent.com/sumitd2/build-scripts/cypress_12.5.1/c/cypress/cypress-docker-images_12.5.1_Ubuntu_22.04.sh
+
 #source electron
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/electron/electron-22.0.3-Ubuntu-22.04.sh
 chmod +x electron-22.0.3-Ubuntu-22.04.sh
 source ./electron-22.0.3-Ubuntu-22.04.sh
 
@@ -37,21 +41,18 @@ cp $ELECTRON_DIST .
 cp $MKSNAPSHOT_DIST .
 
 #source cypress
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cypress/cypress-12.5.1-Ubuntu-22.04.sh
-chmod +x cypress-12.5.1-Ubuntu-22.04.sh
-source ./cypress-12.5.1-Ubuntu-22.04.sh
+chmod +x cypress_12.5.1_Ubuntu_22.04.sh
+source ./cypress_12.5.1_Ubuntu_22.04.sh
 
 #copy cypress redistributable
 cd $WORK_DIR
 cp $CYPRESS_DIST .
 
 #source cypress docker images
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cypress/cypress-docker-images_12.5.1_Ubuntu_22.04.sh
 chmod +x cypress-docker-images_12.5.1_Ubuntu_22.04.sh
 source ./cypress-docker-images_12.5.1_Ubuntu_22.04.sh
 
 echo "Complete!"
-
 #######################################################################################################################################################
 #######################################################################################################################################################
 
