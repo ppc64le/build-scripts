@@ -19,8 +19,8 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=joda-convert
-PACKAGE_URL=https://github.com/JodaOrg/joda-convert
 PACKAGE_VERSION=${1:-v2.2.3}
+PACKAGE_URL=https://github.com/JodaOrg/joda-convert
 
 yum install -y git make wget gcc-c++ java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless
 
@@ -42,14 +42,14 @@ if ! mvn clean install ; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
-    exit 1
+    exit 2
 fi
 
 if ! mvn test ; then
     echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
-    exit 2
+    exit 1
 else
     echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
