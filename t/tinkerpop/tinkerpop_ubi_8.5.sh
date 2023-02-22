@@ -22,6 +22,8 @@ PACKAGE_VERSION=${1:-3.6.2}
 PACKAGE_NAME=tinkerpop
 PACKAGE_URL=https://github.com/apache/tinkerpop
 
+OS_NAME=`cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f2 | tr -d '"'`
+
 yum -y update
 yum install -y git make wget gcc-c++ java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless
 
@@ -39,6 +41,12 @@ git checkout $PACKAGE_VERSION
 
 #Build and test.
 if ! mvn clean install -pl -:gremlin-javascript,-:gremlin-server ; then
+    echo "------------------$PACKAGE_NAME:Build_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
+    exit 1
+fi
+if ! mvn verfiy -pl -:gremlin-javascript,-:gremlin-server ; then
     echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
