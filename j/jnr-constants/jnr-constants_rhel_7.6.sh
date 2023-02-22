@@ -21,7 +21,7 @@
 
 # install tools and dependent packages
 #yum -y update
-yum install -y git wget curl unzip nano vim make build-essential
+yum install -y git wget curl unzip nano vim make gcc gcc-c++
 #yum install -y gcc ant
 
 # setup java environment
