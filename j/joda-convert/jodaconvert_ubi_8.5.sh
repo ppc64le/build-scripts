@@ -4,7 +4,7 @@
 # Package       : joda-convert
 # Version       : v2.2.3
 # Source repo   : https://github.com/JodaOrg/joda-convert
-# Tested on     : ubi8.5
+# Tested on     : UBI 8.5
 # Language      : Java
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
