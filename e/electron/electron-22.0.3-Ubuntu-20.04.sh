@@ -184,7 +184,7 @@ export CHROMEDRIVER_DIST=$CWD/electron/src/out/Release/chromedriver.zip
 export FFMPEG_DIST=$CWD/electron/src/out/Release/ffmpeg.zip
 export MKSNAPSHOT_DIST=$CWD/electron/src/out/Release/mksnapshot.zip
 set +x
-echo "Complete! The 9 test failures are in parity with x86. Distributable zip files located at:"
+echo "Complete! The 10 test failures are in parity with x86. Distributable zip files located at:"
 echo "1. Electron: $ELECTRON_DIST"
 echo "2. ChromeDriver: $CHROMEDRIVER_DIST"
 echo "3. FFmpeg: $FFMPEG_DIST"
