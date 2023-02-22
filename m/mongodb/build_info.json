@@ -33,5 +33,5 @@
             "base_docker_image": "ubuntu:focal",
             "base_docker_variant": "ubuntu"
         }
-    },
+    }
 }
