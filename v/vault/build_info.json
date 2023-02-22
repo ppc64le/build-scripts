@@ -1,13 +1,13 @@
 {
     "package_name" : "vault",
-	"github_url":"https://github.com/hashicorp/vault.git",
+    "github_url":"https://github.com/hashicorp/vault.git",
     "version": "v1.12.0",
     "default_branch": "main",
     "package_dir": "v/vault/",
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "build_script" : "vault_ubi_8.5.sh",
 
-    "v1.11.*" : {
+    "v1.11.*", "v1.12.*" : {
         "dir":"1.11.2-ubi8",
 	"args": {
             "VAULT_VERSION":"$PACKAGE_VERSION",
