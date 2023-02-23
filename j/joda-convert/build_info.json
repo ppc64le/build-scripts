@@ -4,8 +4,8 @@
     "version": "v2.2.3",
     "default_branch": "main",
     "package_dir": "j/joda-convert",
+    "build_script": "joda_convert_ubi_8.5.sh",
     "validate_build_script": "true",
-    "build_script": "joda-convert_ubi_8.5.sh",
     "use_non_root_user": "false",
     "docker_build": false
 }
