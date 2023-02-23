@@ -37,7 +37,8 @@ chmod +x electron-22.0.3-Ubuntu-22.04.sh
 source ./electron-22.0.3-Ubuntu-22.04.sh
 
 #copy electron redistributables  
-cd $WORK_DIR cp $ELECTRON_DIST .  
+cd $WORK_DIR  
+cp $ELECTRON_DIST .  
 cp $MKSNAPSHOT_DIST .  
 
 #source cypress  
@@ -45,7 +46,8 @@ chmod +x cypress_12.5.1_Ubuntu_22.04.sh
 source ./cypress_12.5.1_Ubuntu_22.04.sh  
 
 #copy cypress redistributable  
-cd $WORK_DIR cp $CYPRESS_DIST .  
+cd $WORK_DIR  
+cp $CYPRESS_DIST .  
 
 #source cypress docker images  
 chmod +x cypress-docker-images_12.5.1_Ubuntu_22.04.sh  
