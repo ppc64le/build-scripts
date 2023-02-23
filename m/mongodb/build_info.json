@@ -12,8 +12,8 @@
         "dir": "6.x",
         "args": {
             "MONGO_VERSION": "$(echo $PACKAGE_VERSION | sed 's/r//')",
-            "MONGO_MAJOR": "$(echo $PACKAGE_VERSION |  sed 's/r//' | grep -Eo '[0-9]+\\.[0-9]+')",
-        }
+            "MONGO_MAJOR": "$(echo $PACKAGE_VERSION |  sed 's/r//' | grep -Eo '[0-9]+\\.[0-9]+')"
+        },
         "base_docker_image": "ubuntu:focal",
         "base_docker_variant": "ubuntu"
     },
@@ -21,16 +21,16 @@
         "dir": "mongoDB_5_0",
         "args": {
             "MONGO_VERSION": "$(echo $PACKAGE_VERSION | sed 's/r//')",
-            "MONGO_MAJOR": "$(echo $PACKAGE_VERSION |  sed 's/r//' | grep -Eo '[0-9]+\\.[0-9]+')",
-        }
+            "MONGO_MAJOR": "$(echo $PACKAGE_VERSION |  sed 's/r//' | grep -Eo '[0-9]+\\.[0-9]+')"
+        },
         "base_docker_image": "ubuntu:focal",
         "base_docker_variant": "ubuntu"
     },
     "r4.4.*" : {
         "dir":"ubuntu_focal",
         "args": {
-            "MONGO_VERSION": "$(echo $PACKAGE_VERSION | sed 's/r//')",
-        }
+            "MONGO_VERSION": "$(echo $PACKAGE_VERSION | sed 's/r//')"
+        },
         "base_docker_image": "ubuntu:focal",
         "base_docker_variant": "ubuntu"
     }
