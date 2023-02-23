@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=joda-convert
+PACKAGE_NAME=joda-convert 
 PACKAGE_VERSION=${1:-v2.2.3}
 PACKAGE_URL=https://github.com/JodaOrg/joda-convert
 
