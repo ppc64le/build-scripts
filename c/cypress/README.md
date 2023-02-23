@@ -28,7 +28,7 @@ apt-get update -y
 apt-get install -y wget
 
 #download scripts  
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/electron/electron-22.0.3-Ubuntu-22.04.sh  
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/electron/electron-22.0.3-ubuntu-22.04.sh  
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cypress/cypress_12.5.1_Ubuntu_22.04.sh  
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cypress/cypress-docker-images_12.5.1_Ubuntu_22.04.sh  
   
