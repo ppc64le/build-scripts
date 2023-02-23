@@ -35,7 +35,6 @@ export PATH=$PATH:/usr/local/bin
 cd .. && rm Python-3.10.8.tgz 
 
 # Install Rust
-cd ..
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 source "$HOME/.cargo/env"
 
