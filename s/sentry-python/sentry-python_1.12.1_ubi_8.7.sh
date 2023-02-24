@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package          : sentry-python
@@ -43,7 +43,10 @@ if ! pip3 install -r test-requirements.txt ; then
     exit 1
 fi
 
+#Setting up PATH for using tox command
 PATH=$PATH:/usr/local/bin/
+
+#Build and test
 
 if ! tox -e py3.6 ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
