@@ -20,18 +20,19 @@
 PACKAGE_NAME="grafana"
 PACKAGE_VERSION="${1:-v9.3.6}"
 PACKAGE_URL="https://github.com/grafana/grafana.git"
-NODE_VERSION=v18.9.0
 GO_VERSION=1.19.6
 
 yum update -y
 
-cd /
-PATH=/node-$NODE_VERSION-linux-ppc64le/bin:$PATH
-yum install -y wget git make sed gcc-c++ && \
-    wget https://nodejs.org/dist/$NODE_VERSION/node-$NODE_VERSION-linux-ppc64le.tar.gz && \
-    tar -C / -xzf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
-    rm -rf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
-    npm install -g yarn
+yum install -y wget git make sed gcc-c++ 
+
+curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+nvm install 18.9.0
+nvm use 18.9.0
+npm install -g yarn
 
 cd /
 GOPATH=/go
