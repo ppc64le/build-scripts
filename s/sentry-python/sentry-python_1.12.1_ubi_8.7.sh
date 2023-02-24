@@ -44,10 +44,16 @@ if ! pip3 install -r test-requirements.txt ; then
 fi
 
 pwd
-find / -name tox
-pip3 install pytest tox
-find / -name tox
+ls -ltr /usr/local/lib/python3.6/site-packages/tox
+ls -ltr /usr/local/bin/tox
+# find / -name tox
+# pip3 install pytest tox
+# find / -name tox
 #Build and test
+
+tox -e py3.6
+
+sudo tox -e py3.6
 
 if ! tox -e py3.6 ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
