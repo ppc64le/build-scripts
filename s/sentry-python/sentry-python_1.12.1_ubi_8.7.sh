@@ -51,7 +51,7 @@ ls -ltr /usr/local/bin/tox
 # find / -name tox
 #Build and test
 
-tox -e py3.6
+#tox -e py3.6
 
 sudo tox -e py3.6
 
