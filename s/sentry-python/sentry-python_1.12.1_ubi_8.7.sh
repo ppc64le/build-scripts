@@ -48,13 +48,12 @@ ls -ltr /usr/local/lib/python3.6/site-packages/tox
 ls -ltr /usr/local/bin/tox
 # find / -name tox
 # pip3 install pytest tox
-# find / -name tox
 #Build and test
 
 #tox -e py3.6
 
-sudo tox -e py3.6
-
+tox -e py3.6
+find / -name tox &>>/dev/null
 if ! tox -e py3.6 ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
