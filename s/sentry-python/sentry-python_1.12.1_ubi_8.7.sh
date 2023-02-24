@@ -25,6 +25,8 @@ dnf install -y ncurses git python36 make python3-devel gcc gcc-c++
 
 ln -s /usr/bin/python3 /usr/bin/python
 
+#Activate python environment
+python -m venv ~/py36
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
@@ -44,8 +46,8 @@ if ! pip3 install -r test-requirements.txt ; then
 fi
 
 pwd
-ls -ltr /usr/local/lib/python3.6/site-packages/tox
-ls -ltr /usr/local/bin/tox
+ls -ltrR
+
 echo $PATH
 # find / -name tox
 # pip3 install pytest tox
@@ -53,14 +55,13 @@ echo $PATH
 
 #tox -e py3.6
 
-echo " Running /usr/local/lib/python3.6/site-packages/tox -e py3.6"
-/usr/local/lib/python3.6/site-packages/tox
+# echo " Running /usr/local/lib/python3.6/site-packages/tox -e py3.6"
+# /usr/local/lib/python3.6/site-packages/tox
 
-echo "Running /usr/local/bin/tox -e py3.6"
-/usr/local/bin/tox -e py3.6
+# echo "Running /usr/local/bin/tox -e py3.6"
+# /usr/local/bin/tox -e py3.6
 
-find / -name tox &>>/dev/null
-if ! /usr/local/bin/tox -e py3.6 ; then
+if ! tox -e py3.6 ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
