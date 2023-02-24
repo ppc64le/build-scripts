@@ -25,8 +25,8 @@ dnf install -y ncurses git python36 make python3-devel gcc gcc-c++
 
 ln -s /usr/bin/python3 /usr/bin/python
 
-#Activate python environment
-python -m venv ~/py36
+# #Activate python environment
+# python -m venv ~/py36
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
@@ -49,6 +49,7 @@ pwd
 ls -ltrR
 
 echo $PATH
+PATH=$PATH:/usr/local/bin/
 # find / -name tox
 # pip3 install pytest tox
 #Build and test
