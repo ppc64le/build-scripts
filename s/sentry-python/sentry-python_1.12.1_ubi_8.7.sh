@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 # -----------------------------------------------------------------------------
 #
 # Package          : sentry-python
@@ -42,8 +42,11 @@ if ! pip3 install -r test-requirements.txt ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-pip3 install pytest tox
 
+pwd
+find / -name tox
+pip3 install pytest tox
+find / -name tox
 #Build and test
 
 if ! tox -e py3.6 ; then
