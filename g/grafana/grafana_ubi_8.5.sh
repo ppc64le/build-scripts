@@ -24,7 +24,7 @@ GO_VERSION=1.19.6
 
 yum update -y
 
-yum install -y wget git make sed gcc-c++ 
+yum install -y wget git make sed gcc-c++ python38
 
 curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
