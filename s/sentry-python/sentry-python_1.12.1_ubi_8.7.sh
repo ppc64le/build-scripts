@@ -46,15 +46,21 @@ fi
 pwd
 ls -ltr /usr/local/lib/python3.6/site-packages/tox
 ls -ltr /usr/local/bin/tox
+echo $PATH
 # find / -name tox
 # pip3 install pytest tox
 #Build and test
 
 #tox -e py3.6
 
-tox -e py3.6
+echo " Running /usr/local/lib/python3.6/site-packages/tox -e py3.6"
+/usr/local/lib/python3.6/site-packages/tox
+
+echo "Running /usr/local/bin/tox -e py3.6"
+/usr/local/bin/tox -e py3.6
+
 find / -name tox &>>/dev/null
-if ! tox -e py3.6 ; then
+if ! /usr/local/bin/tox -e py3.6 ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
