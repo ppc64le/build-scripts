@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: nats-server
+# Package	: nats-io_nats-server
 # Version	: v2.9.8
 # Source repo	: https://github.com/nats-io/nats-server
 # Tested on	: UBI: 8.5
