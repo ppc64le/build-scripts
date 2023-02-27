@@ -45,7 +45,7 @@ enabled=1
 gpgcheck=0
 EOF
 
-yum install texinfo
+yum install -y texinfo
 
 wget https://archive.apache.org/dist/maven/maven-3/3.8.7/binaries/apache-maven-3.8.7-bin.tar.gz
 tar -zxf apache-maven-3.8.7-bin.tar.gz
