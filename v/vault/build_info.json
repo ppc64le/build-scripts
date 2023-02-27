@@ -1,6 +1,6 @@
 {
     "package_name" : "vault",
-	"github_url":"https://github.com/hashicorp/vault.git",
+    "github_url":"https://github.com/hashicorp/vault.git",
     "version": "v1.12.0",
     "default_branch": "main",
     "package_dir": "v/vault/",
@@ -9,11 +9,19 @@
 
     "v1.11.*" : {
         "dir":"1.11.2-ubi8",
-	"args": {
+        "args": {
             "VAULT_VERSION":"$PACKAGE_VERSION",
-	    "GO_VERSION":"1.17.12"
-         }	
-    },
+            "GO_VERSION":"1.17.12"
+         }
+    }, 
+
+     "v1.12.*": {
+        "dir":"1.11.2-ubi8",
+        "args":{
+            "VAULT_VERSION":"$PACKAGE_VERSION",
+            "GO_VERSION":"1.19.6"
+         }
+     },
     
      "v1.5.*" : {
         "dir":"1.5.3-ubi8",
