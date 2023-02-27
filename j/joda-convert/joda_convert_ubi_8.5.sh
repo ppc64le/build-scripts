@@ -42,14 +42,14 @@ if ! mvn clean install ; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
-    exit 2
+    exit 1
 fi
 
 if ! mvn test ; then
     echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
-    exit 1
+    exit 2
 else
     echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
