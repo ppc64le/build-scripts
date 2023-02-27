@@ -22,7 +22,7 @@ PACKAGE_NAME=jffi
 PACKAGE_URL=https://github.com/jnr/jffi
 PACKAGE_VERSION=jffi-1.3.10
 
-yum install -y git make wget gcc-c++ texinfo java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless
+yum install -y git make wget gcc-c++ java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless
 
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
@@ -44,6 +44,8 @@ baseurl=http://mirror.centos.org/centos/8-stream/PowerTools/\$basearch/os/
 enabled=1
 gpgcheck=0
 EOF
+
+yum install texinfo
 
 wget https://archive.apache.org/dist/maven/maven-3/3.8.7/binaries/apache-maven-3.8.7-bin.tar.gz
 tar -zxf apache-maven-3.8.7-bin.tar.gz
