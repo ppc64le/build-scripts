@@ -47,6 +47,8 @@ cd thrift-0.13.0
 chmod +x ./configure
 ./configure --disable-libs
 make install
+export PATH=$PATH:/usr/local/bin
+thrift --version
 
 #Clone the top-level repository
 cd $WORKDIR
