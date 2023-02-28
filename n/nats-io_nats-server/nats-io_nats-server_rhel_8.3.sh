@@ -1,9 +1,12 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: nats-io/nats-server
 # Version	: v2.1.6
 # Source repo	: https://github.com/nats-io/nats-server
 # Tested on	: RHEL 8.3
+# Language      : Go
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
