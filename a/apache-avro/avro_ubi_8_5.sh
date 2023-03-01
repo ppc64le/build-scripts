@@ -400,6 +400,13 @@ git checkout $PACKAGE_VERSION
 echo "------------------------------------------------------AVRO INSTALLED------------------------------------------"
 
 #build and test package
-mvn clean install -PallModules -Drat.numUnapprovedLicenses=200 -DskipTests
-mvn test -PallModules -Drat.numUnapprovedLicenses=200
-
+if ! mvn clean install -PallModules -Drat.numUnapprovedLicenses=200 -DskipTests; then
+    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    exit 1
+fi
+if ! mvn test -PallModules -Drat.numUnapprovedLicenses=200; then
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    exit 2
+fi
