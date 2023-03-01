@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=parquet-mr
-PACKAGE_VERSION=${1:apache-parquet-1.12.3}
+PACKAGE_VERSION=${1:-apache-parquet-1.12.3}
 PACKAGE_URL=https://github.com/apache/parquet-mr.git
 WORKDIR=`pwd`
 
@@ -30,7 +30,7 @@ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$PATH:$JAVA_HOME/bin:/usr/local/bin
 
 #install protobuf compiler
-wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz 
+wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz
 tar -xvzf protobuf-2.6.1.tar.gz --no-same-owner
 rm -f protobuf-2.6.1.tar.gz
 cd protobuf-2.6.1/
@@ -40,19 +40,21 @@ make install
 
 
 #install thrift
-wget -nv http://archive.apache.org/dist/thrift/0.13.0/thrift-0.13.0.tar.gz
-tar -xzf thrift-0.13.0.tar.gz
-cd thrift-0.13.0
+wget -nv http://archive.apache.org/dist/thrift/0.14.0/thrift-0.14.0.tar.gz
+tar -xzf thrift-0.14.0.tar.gz
+cd thrift-0.14.0
 chmod +x ./configure
 ./configure --disable-libs
 make install
+thrift --version
+
 
 git clone https://github.com/apache/parquet-format.git
 cd parquet-format
 mvn install --batch-mode -DskipTests=true -Dmaven.javadoc.skip=true -Dsource.skip=true -Djava.version=11
 
 wget -nv http://archive.apache.org/dist/thrift/0.16.0/thrift-0.16.0.tar.gz
-tar -xzf thrift-0.16.0.tar.gz 
+tar -xzf thrift-0.16.0.tar.gz
 cd thrift-0.16.0
 chmod +x ./configure
 ./configure --disable-libs
@@ -70,4 +72,5 @@ git checkout $PACKAGE_VERSION
 #Install build tools
 
 mvn install --batch-mode -DskipTests=true -Dmaven.javadoc.skip=true -Dsource.skip=true -Djava.version=11
+
 
