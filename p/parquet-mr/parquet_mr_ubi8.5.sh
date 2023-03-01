@@ -27,7 +27,7 @@ WORKDIR=`pwd`
 yum install -y git make wget gcc-c++ java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless maven
 
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
-export PATH=$PATH:$JAVA_HOME/bin
+export PATH=$PATH:$JAVA_HOME/bin:/usr/local/bin
 
 #install protobuf compiler
 wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz 
@@ -57,7 +57,8 @@ cd thrift-0.16.0
 chmod +x ./configure
 ./configure --disable-libs
 make install
-export PATH=$PATH:/usr/local/bin
+
+#verify available thrift installation
 thrift --version
 
 #Clone the top-level repository
