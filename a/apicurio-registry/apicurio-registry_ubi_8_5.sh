@@ -20,7 +20,7 @@
 
 set -e
 PACKAGE_NAME=apicurio-registry
-PACKAGE_VERSION=2.4.1.Final
+PACKAGE_VERSION=${1:-2.4.1.Final}
 PACKAGE_URL=https://github.com/Apicurio/apicurio-registry
 
 yum install -y git java-11-openjdk-devel wget
@@ -40,7 +40,7 @@ export PATH=$PATH:$M2_HOME/bin
 #Check if package exists
 if [ -d "$PACKAGE_NAME" ] ; then
       rm -rf $PACKAGE_NAME
-  echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"
+  echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Removed existing package if any"
 fi
 
 # Cloning the repository from remote to local
@@ -56,19 +56,19 @@ git apply apicurio-registry_${PACKAGE_VERSION}.patch
 if ! ./mvnw -Dmaven.test.failure.ignore=true install; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
-    exit 2
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    exit 1
 fi
 
 if ! mvn test; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
-    exit 1
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    exit 2
 else
     echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
 
