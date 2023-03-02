@@ -1,0 +1,17 @@
+{
+    "package_name" : "rocksdb",
+    "github_url": "https://github.com/facebook/rocksdb",
+    "version": "v7.9.2",
+    "package_dir": "r/rocksdb/",
+    "default_branch": "main",
+    "docker_cmd":"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "build_script": "rocksdb_v7.9.2_ubi_8.5.sh",
+    "docker_build": "true",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+
+    "v7.9.*": {
+        "dir": "ubi_8.5",
+        "build_script": "rocksdb_v7.9.2_ubi_8.5.sh"
+    }
+}
