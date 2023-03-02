@@ -75,9 +75,9 @@ mkdir -p "${GIT_CACHE_PATH}"
 if [ -z "$(ls -A $CWD/electron/src)" ]; then
 	# Download and extract ppc64le patches
         wget 'https://quickbuild.io/~raptor-engineering-public/+archive/ubuntu/chromium/+files/chromium_108.0.5359.71-2raptor0~deb11u1.debian.tar.xz'
-	wget https://raw.githubusercontent.com/PF4Public/gentoo-overlay/master/dev-util/electron/files/ppc64le/fix-breakpad-compile.patch
-	wget https://raw.githubusercontent.com/PF4Public/gentoo-overlay/master/dev-util/electron/files/ppc64le/libpng-pdfium-compile-98.patch
-	wget https://raw.githubusercontent.com/PF4Public/gentoo-overlay/master/dev-util/electron/files/ppc64le/fix-swiftshader-compile.patch
+	wget https://raw.githubusercontent.com/PF4Public/gentoo-overlay/d751edc24f85db39911abf94fde35c8cb68aac1a/dev-util/electron/files/ppc64le/fix-breakpad-compile.patch
+	wget https://raw.githubusercontent.com/PF4Public/gentoo-overlay/d751edc24f85db39911abf94fde35c8cb68aac1a/dev-util/electron/files/ppc64le/libpng-pdfium-compile-98.patch
+	wget https://raw.githubusercontent.com/PF4Public/gentoo-overlay/d751edc24f85db39911abf94fde35c8cb68aac1a/dev-util/electron/files/ppc64le/fix-swiftshader-compile.patch
         tar -xf chromium_108.0.5359.71-2raptor0~deb11u1.debian.tar.xz
         \rm -rf chromium_108.0.5359.71-2raptor0~deb11u1.debian.tar.xz
 	
