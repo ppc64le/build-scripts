@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=joda-time
-PACKAGE_VERSION={1:-v2.12.1}
+PACKAGE_VERSION=${1:-v2.12.1}
 PACKAGE_URL=https://github.com/JodaOrg/joda-time
 
 yum install -y git make wget gcc-c++ java-1.8.0-openjdk java-1.8.0-openjdk-devel java-1.8.0-openjdk-headless
