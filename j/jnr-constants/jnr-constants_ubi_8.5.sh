@@ -21,7 +21,7 @@
 
 # variables
 PACKAGE_NAME="jnr-constants"
-PACKAGE_VERSION=jnr-constants-0.10.4
+PACKAGE_VERSION=${1:-jnr-constants-0.10.4}
 PACKAGE_URL=https://github.com/jnr/jnr-constants
 
 # install tools and dependent packages
