@@ -1,5 +1,5 @@
 {
-    "package_name" : "jena",
+    "package_name" : "apache-jena",
     "github_url":"https://github.com/apache/jena",
     "version": "jena-4.7.0",
     "default_branch" : "main",
