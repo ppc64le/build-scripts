@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=jffi
 PACKAGE_URL=https://github.com/jnr/jffi
-PACKAGE_VERSION={1:-jffi-1.3.10}
+PACKAGE_VERSION=${1:-jffi-1.3.10}
 
 yum install -y git make wget gcc-c++ java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless
 
