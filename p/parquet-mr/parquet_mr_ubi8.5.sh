@@ -40,9 +40,9 @@ make install
 
 
 #install thrift
-wget -nv http://archive.apache.org/dist/thrift/0.14.0/thrift-0.14.0.tar.gz
-tar -xzf thrift-0.14.0.tar.gz
-cd thrift-0.14.0
+wget -nv http://archive.apache.org/dist/thrift/0.13.0/thrift-0.13.0.tar.gz
+tar -xzf thrift-0.13.0.tar.gz
+cd thrift-0.13.0
 chmod +x ./configure
 ./configure --disable-libs
 make install
@@ -51,6 +51,7 @@ thrift --version
 
 git clone https://github.com/apache/parquet-format.git
 cd parquet-format
+git checkout apache-parquet-format-2.9.0
 mvn install --batch-mode -DskipTests=true -Dmaven.javadoc.skip=true -Dsource.skip=true -Djava.version=11
 
 wget -nv http://archive.apache.org/dist/thrift/0.16.0/thrift-0.16.0.tar.gz
