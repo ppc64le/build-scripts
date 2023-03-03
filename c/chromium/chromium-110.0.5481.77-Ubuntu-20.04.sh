@@ -3,12 +3,12 @@
 #
 # Package		: Chromium
 # Version		: 110.0.5481.77
-# Source repo	: https://github.com/chromium/chromium
+# Source repo		: https://github.com/chromium/chromium
 # Tested on		: Ubuntu 20.04
 # Language		: C++
-# Travis-Check	: false
+# Travis-Check		: false
 # Script License	: Apache License, Version 2 or later
-# Maintainer	: Sumit Dubey <sumit.dubey2@ibm.com>
+# Maintainer		: Sumit Dubey <sumit.dubey2@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -118,8 +118,8 @@ if [ -z "$(ls -A $CWD/chromium/src)" ]; then
 	sed -i '135i #if BUILDFLAG(IS_LINUX) && defined(ARCH_CPU_PPC64)' ./base/system/sys_info_linux.cc
 	sed -i '78i #elif BUILDFLAG(IS_LINUX) && defined(ARCH_CPU_PPC64)' ./base/system/sys_info_linux.cc
 	sed -i '79i \ \ const char kCpuModelPrefix[] = "model";' ./base/system/sys_info_linux.cc
-	sed -i.bak '2373d' chromium/src/chrome/browser/extensions/extension_service_unittest.cc
-	sed -i '2373i #if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN) || defined(ARCH_CPU_PPC64)' chromium/src/chrome/browser/extensions/extension_service_unittest.cc
+	sed -i.bak '2373d' chrome/browser/extensions/extension_service_unittest.cc
+	sed -i '2373i #if BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN) || defined(ARCH_CPU_PPC64)' chrome/browser/extensions/extension_service_unittest.cc
 
 	# Remove intermediate files
 	\rm -rf ${CWD}/debian
