@@ -1,0 +1,14 @@
+{
+    "package_name" : "apache-jena",
+    "github_url":"https://github.com/apache/jena",
+    "version": "jena-4.7.0",
+    "default_branch" : "main",
+    "package_dir": "a/apache-jena",
+    "build_script": "jena_ubi_8_5.sh",
+    "docker_build": "false",
+    "validate_build_script": "true",
+    "use_non_root_user": "false"
+
+}
+
+
