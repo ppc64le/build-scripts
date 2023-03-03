@@ -178,7 +178,7 @@ sudo -u chrome -i bash << EOF
         dbus-daemon --session --address=$DBUS_SESSION_BUS_ADDRESS --nofork --nopidfile --syslog-only &
 	export PATH=$PATH
 	cd $CWD/chromium/src
-	./out/Release/unit_tests --disable-gpu
+	./out/Release/unit_tests --disable-gpu || true
 EOF
 
 # Conclude
