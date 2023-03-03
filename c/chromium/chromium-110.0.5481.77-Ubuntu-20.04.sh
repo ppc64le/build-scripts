@@ -182,8 +182,8 @@ sudo -u chrome -i bash << EOF
 EOF
 
 # Conclude
-export $CHROME_BIN=$CWD/chromium/src/out/Release/chrome
-export $CHROMEDRIVER_BIN=$CWD/chromium/src/out/Release/chromedriver
+export CHROME_BIN=$CWD/chromium/src/out/Release/chrome
+export CHROMEDRIVER_BIN=$CWD/chromium/src/out/Release/chromedriver
 set +x
 echo "Build and Test Successful!. The 8 failing and 1 crashing tests are in parity with Intel."
 echo "Chromium binary is located at $CHROME_BIN"
