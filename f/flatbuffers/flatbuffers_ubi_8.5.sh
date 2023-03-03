@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=flatbuffers
-PACKAGE_VERSION=v23.1.21
+PACKAGE_VERSION=${1:-v23.1.21}
 PACKAGE_URL=https://github.com/google/flatbuffers.git
 
 # Install required dependencies
