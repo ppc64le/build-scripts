@@ -1,14 +1,14 @@
 #!/bin/bash
 #---------------------------------------------------------------------------------------------------
 #
-# Package         : Chromium
-# Version         : 110.0.5481.77
-# Source repo     : https://github.com/chromium/chromium
-# Tested on       : UBI 8.6 (docker)
-# Language        : C++
+# Package		: Chromium
+# Version		: 110.0.5481.77
+# Source repo		: https://github.com/chromium/chromium
+# Tested on		: UBI 8.6 (docker)
+# Language		: C++
 # Travis-Check		: true
-# Script License  : Apache License, Version 2 or later
-# Maintainer      : Sumit Dubey <sumit.dubey2@ibm.com>
+# Script License	: Apache License, Version 2 or later
+# Maintainer		: Sumit Dubey <sumit.dubey2@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
