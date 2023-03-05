@@ -33,14 +33,14 @@ wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cypress/cy
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cypress/cypress-docker-images_12.5.1_Ubuntu_20.04.sh  
   
 #source electron  
-chmod +x electron-22.0.3-Ubuntu-20.04.sh  
-source ./electron-22.0.3-Ubuntu-20.04.sh
+chmod +x electron-22.0.3-ubuntu-20.04.sh  
+source ./electron-22.0.3-ubuntu-20.04.sh
 
 #copy electron redistributables  
 cd $WORK_DIR && cp $ELECTRON_DIST . && cp $MKSNAPSHOT_DIST .  
 
 #source cypress  
-chmod +x cypress_12.5.1_Ubuntu_20.04.sh  
+chmod +x cypress_12.5.1_Ubuntu_20.04.sh
 source ./cypress_12.5.1_Ubuntu_20.04.sh  
 
 #copy cypress redistributable  
