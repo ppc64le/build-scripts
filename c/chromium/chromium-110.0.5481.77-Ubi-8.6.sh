@@ -40,7 +40,7 @@ then
 fi
 
 # Install and Setup RHEL Dependencies
-dnf install -y wget python38 python38-devel unzip sudo pkgconfig bison cups-devel dbus-devel dbus-glib-devel gcc gcc-c++ glib2-devel glibc libcap-devel libgcc libstdc++ libXtst-devel nss-devel pciutils-devel pulseaudio-libs-devel xorg-x11-server-Xvfb cmake krb5-devel curl xz elfutils libnotify-devel lsof git libxkbcommon-x11-devel make gperf libxkbcommon ninja-build gtk3-devel libXtst-devel libXScrnSaver java-1.8.0-openjdk-devel libdrm-devel mesa-libGL-devel re2 xcb-util libxcb-devel libcurl-devel libxshmfence-devel qt5-qtbase-devel bzip2 procps libffi-devel qt5-devel qt5-qtbase libgbm-devel alsa-lib-devel
+dnf install -y wget python38 python38-devel unzip sudo pkgconfig bison cups-devel dbus-devel dbus-glib-devel gcc gcc-c++ glib2-devel glibc libcap-devel libgcc libstdc++ libXtst-devel nss-devel pciutils-devel pulseaudio-libs-devel xorg-x11-server-Xvfb cmake krb5-devel curl xz elfutils libnotify-devel lsof git libxkbcommon-x11-devel make gperf libxkbcommon ninja-build gtk3-devel libXtst-devel libXScrnSaver java-1.8.0-openjdk-devel libdrm-devel mesa-libGL-devel re2 xcb-util libxcb-devel libcurl-devel libxshmfence-devel qt5-qtbase-devel bzip2 procps libffi-devel libgbm-devel alsa-lib-devel
 pip3 install -v python-dbusmock httplib2 six dataclasses importlib-metadata
 export JAVA_PATH=$(dirname $(which java))
 ln -sf /usr/lib64/qt5/bin/moc /usr/bin/moc
