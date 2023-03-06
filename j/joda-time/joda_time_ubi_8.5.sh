@@ -16,7 +16,7 @@
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
 #
-# ----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 PACKAGE_NAME=joda-time
 PACKAGE_VERSION=${1:-v2.12.1}
