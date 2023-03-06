@@ -1,0 +1,20 @@
+{
+    "package_name" : "opentelemetry-php-contrib",
+    "github_url":"https://github.com/open-telemetry/opentelemetry-php-contrib",
+    "version": "1.0.0beta2",
+    "default_branch": "main",
+    "package_dir": "o/opentelemetry-php-contrib",
+    "validate_build_script": "true",
+    "build_script" : "opentelemetry-php-contrib_1.0.0beta2_ubi_8.5.sh",
+    "use_non_root_user": "true",
+    "docker_build": false,
+	
+	
+    "1.0.0beta*,0.0.16,0.0.17" : {
+        "build_script" : "opentelemetry-php-contrib_1.0.0beta2_ubi_8.5.sh"
+    },
+    
+    "0.0.12" : {
+        "build_script" : "opentelemetry-php-contrib_ubi_8.5.sh"
+    }
+}
