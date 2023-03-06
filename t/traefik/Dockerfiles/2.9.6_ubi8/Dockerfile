@@ -2,7 +2,7 @@ FROM registry.access.redhat.com/ubi8/ubi:8.5
 # Install required packages
 RUN yum -y update && \
     yum -y install wget tar && \
-    yum clean all
+    yum clean all 
   
 # Download and extract Traefik
 RUN wget https://github.com/containous/traefik/releases/download/v2.9.6/traefik_v2.9.6_linux_ppc64le.tar.gz && \
