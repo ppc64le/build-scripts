@@ -113,6 +113,9 @@ cd $CWD
 git clone https://github.com/develar/app-builder
 cd app-builder
 git checkout v3.4.2
+go get github.com/develar/app-builder/pkg/codesign
+go get github.com/develar/app-builder/pkg/zap-cli-encoder
+go get github.com/develar/app-builder/pkg/log
 go build '-ldflags=-s -w' -o dist/app-builder_linux_ppc64le/app-builder
 
 #clone
