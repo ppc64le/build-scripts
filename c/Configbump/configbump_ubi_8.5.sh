@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=configbump
-PACKAGE_VERSION=${1:-0.1.5}
+PACKAGE_VERSION=v0.1.5
 PACKAGE_URL=https://github.com/che-incubator/configbump
 
 yum install -y git gcc wget make
