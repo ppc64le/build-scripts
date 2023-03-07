@@ -1,14 +1,14 @@
 #!/bin/bash
 #---------------------------------------------------------------------------------------------------
 #
-# Package	: Electron
-# Version	: v22.0.3
-# Source repo	: https://github.com/electron/electron
-# Tested on	: Ubuntu 22.04
-# Language      : C++
-# Travis-Check  : false
-# Script License: Apache License, Version 2 or later
-# Maintainer	: Sumit Dubey <sumit.dubey2@ibm.com>
+# Package		: Electron
+# Version		: v22.0.3
+# Source repo		: https://github.com/electron/electron
+# Tested on		: Ubuntu 22.04
+# Language      	: C++
+# Travis-Check		: false
+# Script License	: Apache License, Version 2 or later
+# Maintainer		: Sumit Dubey <sumit.dubey2@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -20,7 +20,7 @@
 set -eux
 
 CWD=`pwd`
-NODE_VERSION=v19.4.0
+NODE_VERSION=v16.17.1
 NODE_DISTRO=linux-ppc64le
 GN_VERSION=5e19d2fb166fbd4f6f32147fbb2f497091a54ad8 
 DEPOT_VERSION=26b6c9b4cf9617cfa196a0415baadd764a069e57
@@ -65,6 +65,7 @@ if [ -z "$(ls -A $CWD/node-$NODE_VERSION-$NODE_DISTRO)" ]; then
 	\rm -rf node-$NODE_VERSION-$NODE_DISTRO.tar.xz
 fi
 export PATH=$CWD/node-$NODE_VERSION-$NODE_DISTRO/bin:$PATH
+npm install --global yarn
 
 # Prepare for build
 export DEPOT_TOOLS_UPDATE=0
@@ -74,9 +75,9 @@ mkdir -p "${GIT_CACHE_PATH}"
 if [ -z "$(ls -A $CWD/electron/src)" ]; then
 	# Download and extract ppc64le patches
         wget 'https://quickbuild.io/~raptor-engineering-public/+archive/ubuntu/chromium/+files/chromium_108.0.5359.71-2raptor0~deb11u1.debian.tar.xz'
-	wget https://raw.githubusercontent.com/PF4Public/gentoo-overlay/master/dev-util/electron/files/ppc64le/fix-breakpad-compile.patch
-	wget https://raw.githubusercontent.com/PF4Public/gentoo-overlay/master/dev-util/electron/files/ppc64le/libpng-pdfium-compile-98.patch
-	wget https://raw.githubusercontent.com/PF4Public/gentoo-overlay/master/dev-util/electron/files/ppc64le/fix-swiftshader-compile.patch
+	wget https://raw.githubusercontent.com/PF4Public/gentoo-overlay/d751edc24f85db39911abf94fde35c8cb68aac1a/dev-util/electron/files/ppc64le/fix-breakpad-compile.patch
+	wget https://raw.githubusercontent.com/PF4Public/gentoo-overlay/d751edc24f85db39911abf94fde35c8cb68aac1a/dev-util/electron/files/ppc64le/libpng-pdfium-compile-98.patch
+	wget https://raw.githubusercontent.com/PF4Public/gentoo-overlay/d751edc24f85db39911abf94fde35c8cb68aac1a/dev-util/electron/files/ppc64le/fix-swiftshader-compile.patch
         tar -xf chromium_108.0.5359.71-2raptor0~deb11u1.debian.tar.xz
         \rm -rf chromium_108.0.5359.71-2raptor0~deb11u1.debian.tar.xz
 	
@@ -143,15 +144,16 @@ cp $(which eu-strip) buildtools/third_party/eu-strip/bin/eu-strip
 if [ ! -f "$CWD/electron/src/out/Release/electron" ]; then
 	gn gen out/Release --args="import(\"//electron/build/args/release.gn\") clang_base_path = \"$LLVM_BUILD_DIR\" is_clang=true use_gnome_keyring=false treat_warnings_as_errors=false clang_use_chrome_plugins = false"
 	ninja -C out/Release electron
+	electron/script/strip-binaries.py -d out/Release
 	ninja -C out/Release electron:electron_dist_zip
 	ninja -C out/Release electron:electron_chromedriver_zip
 	ninja -C out/Release electron:electron_ffmpeg_zip
+	ninja -C out/Release electron:electron_mksnapshot_zip
 	ninja -C out/Release third_party/electron_node:headers
 fi
 
 # Test
 cd electron
-npm install --global yarn
 adduser --disabled-password --gecos "" electron || true
 chmod 4755 ../out/Release/chrome_sandbox
 chmod -R 777 $CWD/electron
@@ -175,8 +177,13 @@ sudo -u electron -i bash << EOF
 EOF
 
 # Conclude
+export ELECTRON_DIST=$CWD/electron/src/out/Release/dist.zip
+export CHROMEDRIVER_DIST=$CWD/electron/src/out/Release/chromedriver.zip
+export FFMPEG_DIST=$CWD/electron/src/out/Release/ffmpeg.zip
+export MKSNAPSHOT_DIST=$CWD/electron/src/out/Release/mksnapshot.zip
 set +x
 echo "Complete! The 9 test failures are in parity with x86. Distributable zip files located at:"
-echo "1. Electron: $CWD/electron/src/out/Release/dist.zip"
-echo "2. ChromeDriver: $CWD/electron/src/out/Release/chromedriver.zip"
-echo "3. FFmpeg: $CWD/electron/src/out/Release/ffmpeg.zip"
+echo "1. Electron: $ELECTRON_DIST"
+echo "2. ChromeDriver: $CHROMEDRIVER_DIST"
+echo "3. FFmpeg: $FFMPEG_DIST"
+echo "4. mksnapshot: $MKSNAPSHOT_DIST"
