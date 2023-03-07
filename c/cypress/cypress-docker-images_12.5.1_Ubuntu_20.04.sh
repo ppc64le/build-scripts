@@ -91,6 +91,10 @@ sed -i -e '$aunzip -qq /opt/installScripts/cypress/cypress.zip -d /root/.cache/C
 #patch chrome and firefox versions
 sed -i "s#FIREFOX_VERSION='109.0'#FIREFOX_VERSION='108.0.2'#g" factory/.env
 sed -i "s#CHROME_VERSION='109.0.5414.74-1'#CHROME_VERSION='110.0.5481.77'#g" factory/.env
+source /etc/lsb-release
+if [ $DISTRIB_RELEASE == "22.04" ]; then
+        sed -i "s#debian:bullseye-slim#ubuntu:22.04#g" factory/.env
+fi
 
 #patch tests
 sed -i 's#RUN ./node_modules/.bin/cypress verify#\#RUN ./node_modules/.bin/cypress verify#g' factory/test-project/Dockerfile factory/test-project/argsDefined.Dockerfile
