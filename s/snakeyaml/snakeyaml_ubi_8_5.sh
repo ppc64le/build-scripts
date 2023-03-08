@@ -19,7 +19,7 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e
+
 PACKAGE_NAME=snakeyaml
 PACKAGE_URL=https://github.com/snakeyaml/snakeyaml
 
