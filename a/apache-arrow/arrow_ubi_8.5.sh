@@ -27,7 +27,7 @@ OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 #Dependencies
 yum install -y git sudo wget make gcc gcc-c++ cmake
-wget https://go.dev/dl/go${GO_VERSION}linux-ppc64le.tar.gz
+wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
 tar -C /usr/local -xf go${GO_VERSION}.linux-ppc64le.tar.gz
 export GOROOT=/usr/local/go
 export GOPATH=$HOME
