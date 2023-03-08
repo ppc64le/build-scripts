@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/snakeyaml/snakeyaml
 # Tested on     : UBI: 8.5
 # Language      : Java
-# Travis-Check  : True
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer  : Stuti Wali <Stuti.Wali@ibm.com>
 #
@@ -19,7 +19,7 @@
 #
 # ----------------------------------------------------------------------------
 
-
+set -e
 PACKAGE_NAME=snakeyaml
 PACKAGE_URL=https://github.com/snakeyaml/snakeyaml
 
