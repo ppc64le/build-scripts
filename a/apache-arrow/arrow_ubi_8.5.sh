@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=arrow
 PACKAGE_URL=https://github.com/apache/arrow.git
-PACKAGE_VERSION=go/v10.0.1
+PACKAGE_VERSION=${1:-go/v10.0.1}
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 #Dependencies
