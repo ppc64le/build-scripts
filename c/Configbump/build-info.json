@@ -4,7 +4,6 @@
     "version": "v0.1.5",
     "default_branch": "main",
     "package_dir": "c/Configbump",
-    "docker_cmd":"This is a generic Docker command that can be run by default on any version. If no tag details mentioned, this docker command will be consider for buiding the docker image. (Eg: docker build -t ${package_name}:$PACKAGE_VERSION ${dir})",
     "build_script": "configbump_ubi_8.5.sh",
     "docker_build": "false",
     "validate_build_script": "true",
