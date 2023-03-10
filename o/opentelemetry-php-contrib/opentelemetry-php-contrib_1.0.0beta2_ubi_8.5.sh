@@ -33,7 +33,7 @@ dnf install -qy libxml2-devel bzip2-devel gcc-c++ openssl-devel sqlite-devel cur
 curl -L https://raw.githubusercontent.com/phpenv/phpenv-installer/master/bin/phpenv-installer | bash
 
 echo "
-export PHPENV_ROOT=\"/root/.phpenv\"
+export PHPENV_ROOT=\"$HOME/.phpenv\"
 if [ -d \"\${PHPENV_ROOT}\" ]; then
   export PATH=\"\${PHPENV_ROOT}/bin:\${PATH}\"
   eval \"\$(phpenv init -)\"
@@ -62,7 +62,7 @@ export GRPC_LIB_SUBDIR="libs/opt"
 ./configure --enable-grpc="${grpc_root}"
 make
 make install
-echo "extension=grpc.so" >>/root/.phpenv/versions/"$PHP_VERSION"/etc/php.ini
+echo "extension=grpc.so" >>$HOME/.phpenv/versions/"$PHP_VERSION"/etc/php.ini
 
 cd $HOME_DIR
 # Setup otel_instrumentation-main
@@ -72,7 +72,7 @@ phpize
 ./configure
 make
 make install
-echo "extension=otel_instrumentation.so" >>/root/.phpenv/versions/"$PHP_VERSION"/etc/php.ini
+echo "extension=otel_instrumentation.so" >>$HOME/.phpenv/versions/"$PHP_VERSION"/etc/php.ini
 
 cd $HOME_DIR
 git clone -q $PACKAGE_URL $PACKAGE_NAME
