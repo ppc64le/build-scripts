@@ -50,7 +50,8 @@ fi
 git clone $PACKAGE_URL
 cd atlas
 git checkout $PACKAGE_VERSION
-cp /atlas_v2.3.0.patch .
+#cp /atlas_v2.3.0.patch .
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/a/atlas/atlas_v2.3.0.patch
 git apply atlas_v2.3.0.patch
 mvn clean install -DskipTests
 rm -rf distro/target/atlas-distro-2.3.0.jar
