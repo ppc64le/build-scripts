@@ -46,6 +46,9 @@ if ! mvn clean install -pl -:gremlin-javascript,-:gremlin-server ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
     exit 1
 fi
+
+#For testing skipping some modules for test because these modules require docker to be install inside the container.
+
 if ! mvn verify -pl -:gremlin-javascript,-:gremlin-server,-:gremlin-archetype-tinkergraph,-:gremlin-archetype-server,-:gremlin-archetype-dsl ; then
     echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
