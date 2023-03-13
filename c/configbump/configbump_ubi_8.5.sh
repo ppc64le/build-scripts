@@ -19,20 +19,19 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=configbump
-PACKAGE_VERSION=${1:-0.1.5}
+PACKAGE_VERSION=${1:-v0.1.5}
 PACKAGE_URL=https://github.com/che-incubator/configbump
 
 yum install -y git gcc wget make
 
-GO_VERSION=${GO_VERSION:-1.13}
+export GO_VERSION=${GO_VERSION:-"1.13"}
+export GOROOT=${GOROOT:-"/usr/local/go"}
+export GOPATH=${GOPATH:-$HOME/go}
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:/usr/local/bin
 
-wget https://golang.org/dl/go$GO_VERSION.linux-ppc64le.tar.gz
-tar -C /bin -xf go$GO_VERSION.linux-ppc64le.tar.gz
-
-rm -f go$GO_VERSION.linux-ppc64le.tar.gz
-
-export PATH=$PATH:/bin/go/bin
-export GOPATH=/home/go
+wget https://golang.org/dl/go"$GO_VERSION".linux-ppc64le.tar.gz
+tar -C /usr/local/ -xzf go"$GO_VERSION".linux-ppc64le.tar.gz
+rm -f go"$GO_VERSION".linux-ppc64le.tar.gz
 
 if ! git clone $PACKAGE_URL; then
     echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
