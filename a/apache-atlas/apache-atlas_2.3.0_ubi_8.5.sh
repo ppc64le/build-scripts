@@ -61,7 +61,7 @@ if ! mvn clean install -DskipTests ; then
 fi
 #mvn clean install -DskipTests
 rm -rf distro/target/atlas-distro-2.3.0.jar
-if [ ! mvn install ] ; then
+if ! mvn install ; then
     echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
