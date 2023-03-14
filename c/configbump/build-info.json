@@ -3,7 +3,7 @@
     "github_url":"https://github.com/che-incubator/configbump.git",
     "version": "v0.1.5",
     "default_branch": "main",
-    "package_dir": "c/Configbump",
+    "package_dir": "c/configbump",
     "build_script": "configbump_ubi_8.5.sh",
     "docker_build": "false",
     "validate_build_script": "true",
