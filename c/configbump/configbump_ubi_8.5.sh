@@ -46,11 +46,11 @@ git checkout $PACKAGE_VERSION
 if ! go mod download; then
     echo "------------------$PACKAGE_NAME:build_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    exit 0
+    exit 1
 fi
 
 if ! go test -v  ./...; then
     echo "------------------$PACKAGE_NAME:build_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    exit 0
+    exit 2
 fi
