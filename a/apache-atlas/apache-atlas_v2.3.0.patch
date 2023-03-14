@@ -1,8 +1,19 @@
 diff --git a/pom.xml b/pom.xml
-index 534e646eb..d66ede585 100644
+index 1217ccc34..7ee0bb89f 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -856,7 +856,12 @@
+@@ -763,8 +763,8 @@
+         <maven-site-plugin.version>3.7</maven-site-plugin.version>
+         <MaxPermGen>512m</MaxPermGen>
+         <netty.version>4.1.78.Final</netty.version>
+-        <node-for-v2.version>v12.16.0</node-for-v2.version>
+-        <npm-for-v2.version>6.13.7</npm-for-v2.version>
++        <node-for-v2.version>v18.12.1</node-for-v2.version>
++        <npm-for-v2.version>9.5.1</npm-for-v2.version>
+         <opencsv.version>5.0</opencsv.version>
+         <paranamer.version>2.7</paranamer.version>
+         <PermGen>64m</PermGen>
+@@ -846,7 +846,12 @@
              <snapshots>
                  <enabled>false</enabled>
              </snapshots>
@@ -16,18 +27,16 @@ index 534e646eb..d66ede585 100644
          <repository>
              <id>hortonworks.repo</id>
              <url>https://repo.hortonworks.com/content/repositories/releases</url>
-@@ -1894,15 +1899,11 @@
-                     </configuration>
+@@ -1880,14 +1885,10 @@
                  </plugin>
 
--                <plugin>
+                 <plugin>
 -                    <groupId>org.apache.maven.plugins</groupId>
 -                    <artifactId>maven-remote-resources-plugin</artifactId>
 -                    <version>1.5</version>
 -                    <configuration>
 -                        <excludeGroupIds>org.restlet.jee</excludeGroupIds>
 -                    </configuration>
-+                <plugin>
 +                         <groupId>org.restlet.jee</groupId>
 +                        <artifactId>org.restlet</artifactId>
 +                        <version>2.4.3</version>

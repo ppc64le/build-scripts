@@ -1,7 +1,7 @@
 {
    "package_name": "apache-atlas",
    "github_url": "https://github.com/apache/atlas.git",
-   "version": "v2.3.0",
+   "version": "release-2.3.0",
    "default_branch": "master",
    "build_script": "apache-atlas_2.3.0_ubi_8.5.sh",
    "package_dir": "a/apache-atlas",

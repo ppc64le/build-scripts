@@ -1,7 +1,7 @@
 #!/bin/bash -ex
 # ----------------------------------------------------------------------------
 # Package        : atlas
-# Version        : v2.3.0
+# Version        : release-2.3.0
 # Source repo    : https://github.com/apache/atlas.git
 # Tested on      : UBI 8.5
 # Language       : JAVA
