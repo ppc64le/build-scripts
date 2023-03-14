@@ -20,8 +20,8 @@
 PACKAGE_NAME=py4j
 PACKAGE_VERSION=${1:-0.10.9}
 PACKAGE_URL=https://github.com/py4j/py4j
+OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
-yum update -y
 yum install -y git wget gcc java-1.8.0-openjdk-devel python38 python38-pip python38-devel python27
 
 pip3 install pytest tox
@@ -35,13 +35,40 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 cd py4j-java
-mvn install
-mvn test
+
+if ! mvn install; then
+echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
+        exit 1
+fi
+if ! mvn test; then
+        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
+        exit 2
+fi
 
 cd ..
 cd py4j-python/
-pip3 install -r requirements-test.txt
 
-#Tests taking lot of time for execution. Please uncomment if needed.
-#pytest
-cd ../..
+if ! pip3 install -r requirements-test.txt; then
+     echo "------------------$PACKAGE_NAME:test-requirements install_fails-------------------------------------"
+     echo "$PACKAGE_URL $PACKAGE_NAME"
+     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+     exit 1
+fi
+
+
+if ! pytest -k "not java_tls_test. and not java_gateway_test."; then
+     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+     echo "$PACKAGE_URL $PACKAGE_NAME"
+     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+     exit 2
+else
+    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    exit 0
+fi
+
