@@ -1,10 +1,10 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
-# Package	     : directory-ldap-api
+# Package	    : directory-ldap-api
 # Version           : 2.1.2
 # Source repo	    : https://github.com/apache/directory-ldap-api
-# Tested on	     : ubi 8.5
+# Tested on	    : ubi 8.5
 # Language          : java
 # Travis-Check      : true
 # Script License    : Apache License, Version 2 or later
