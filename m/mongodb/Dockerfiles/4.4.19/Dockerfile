@@ -4,6 +4,8 @@ FROM ubuntu:focal
 # add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 RUN groupadd -r mongodb && useradd -r -g mongodb mongodb
 
+ENV DEBIAN_FRONTEND noninteractive
+
 RUN set -eux; \
         apt-get update; \
         apt-get install -y --no-install-recommends \
@@ -71,8 +73,8 @@ RUN set -ex; \
         rm -r "$GNUPGHOME"; \
         apt-key list
 
-ENV MONGO_MAJOR 5.0
-ARG MONGO_VERSION=5.0.15
+ENV MONGO_MAJOR 4.4
+ARG MONGO_VERSION=4.4.19
 
 # We install the necesary tools to compile mongo on ppc64le
 RUN apt-get update \
