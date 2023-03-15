@@ -1,10 +1,10 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
-# Package	    : directory-ldap-api
+# Package	        : directory-ldap-api
 # Version           : 2.1.2
 # Source repo	    : https://github.com/apache/directory-ldap-api
-# Tested on	    : ubi 8.5
+# Tested on	        : ubi 8.5
 # Language          : java
 # Travis-Check      : true
 # Script License    : Apache License, Version 2 or later
@@ -32,7 +32,7 @@ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
 
 # Install maven
-MAVEN_VERSION=${MAVEN_VERSION:-3.8.6}
+MAVEN_VERSION=${MAVEN_VERSION:-3.8.5}
 wget http://mirrors.estointernet.in/apache/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
 ls /usr/local
 tar -C /usr/local/ -xzf apache-maven-$MAVEN_VERSION-bin.tar.gz
