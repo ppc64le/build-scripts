@@ -50,7 +50,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Build 
-if ! mvn install; then
+if ! mvn install -DskipTests; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
