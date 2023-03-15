@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=flowable-engine
-PACKAGE_VERSION=flowable-6.8.0
+PACKAGE_VERSION=${1:-flowable-6.8.0}
 PACKAGE_URL=https://github.com/flowable/flowable-engine
 
 yum -y update
@@ -26,6 +26,7 @@ yum install -y git make wget gcc-c++ java-17-openjdk java-17-openjdk-devel java-
 
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
+
 #install maven
 wget https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
 tar -C /usr/local/ -xzvf apache-maven-3.6.3-bin.tar.gz
