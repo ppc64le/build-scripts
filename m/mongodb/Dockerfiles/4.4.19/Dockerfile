@@ -86,7 +86,7 @@ RUN apt-get update \
                 libcurl4-openssl-dev \
                 libssl-dev python3-dev python3-pip \
                 scons \
-#        && apt-get install -y python3-pip \
+		tzdata \
         && rm -rf /var/lib/apt/lists/* \
         && mkdir -p /tmp/mongodb-src-r${MONGO_VERSION} \
         && cd /tmp/mongodb-src-r${MONGO_VERSION} \
