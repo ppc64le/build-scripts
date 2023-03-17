@@ -53,7 +53,8 @@ git checkout $PACKAGE_VERSION
 #cp /atlas_v2.3.0.patch .
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/a/apache-atlas/apache-atlas_v2.3.0.patch;
 git apply apache-atlas_v2.3.0.patch;
-if ! mvn clean install -DskipTests ; then
+#if ! mvn clean install -DskipTests ; then
+if ! mvn clean install -P autoInstallPackage -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -DskipTests ; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
