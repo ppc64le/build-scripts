@@ -5,10 +5,10 @@
 # Version	: v0.18.0,v0.19.0
 # Source repo	: https://github.com/open-telemetry/opentelemetry-proto-java
 # Tested on	: ubi 8.5
-# Language      : java
-# Travis-Check  : False
+# Language      : kotlin
+# Travis-Check  : true
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>, Stuti Wali <Stuti.Wali@ibm.com>
+# Maintainer	: Stuti Wali <Stuti.Wali@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
