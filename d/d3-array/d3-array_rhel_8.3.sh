@@ -4,6 +4,8 @@
 # Version	: 1.2.1
 # Source repo	: https://github.com/d3/d3-array
 # Tested on	: RHEL 8.3
+# Language      : JavaScript
+# Travis-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
