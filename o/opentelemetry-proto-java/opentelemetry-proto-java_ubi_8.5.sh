@@ -5,7 +5,7 @@
 # Version	: v0.18.0,v0.19.0
 # Source repo	: https://github.com/open-telemetry/opentelemetry-proto-java
 # Tested on	: ubi 8.5
-# Language      : kotlin
+# Language      : java, kotlin
 # Travis-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Stuti Wali <Stuti.Wali@ibm.com>
