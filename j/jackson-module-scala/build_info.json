@@ -1,0 +1,15 @@
+{
+    "package_name":"jackson-module-scala",
+    "github_url":"https://github.com/FasterXML/jackson-module-scala",
+    "package_dir":"j/jackson-module-scala/",
+    "version":"v2.14.2", 
+    "default_branch":"2.15",
+    "build_script":"jackson-module-scala_v2.14.2_UBI_8.5.sh",
+    "use_non_root_user": false,
+    "docker_build":false,
+
+    "jackson-module-scala-2.10.5":{
+     	"build_script":"jackson-module-scala_ubi8_3.sh"
+    }
+}
+

@@ -1,6 +1,6 @@
 FROM registry.access.redhat.com/ubi8/ubi as builder
 
-ARG GO_VERSION=1.17
+ARG GO_VERSION=1.18
 
 RUN yum install -y wget gcc-c++ make git && \
     wget https://golang.org/dl/go${GO_VERSION}.linux-ppc64le.tar.gz && \

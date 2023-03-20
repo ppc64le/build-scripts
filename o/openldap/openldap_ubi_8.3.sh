@@ -1,9 +1,12 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package       : openldap
 # Version       : 0.9.15
 # Source repo   : https://github.com/openldap/openldap
+# Language      : c,shell,c++
 # Tested on     : UBI: 8.3
+# Travis-Check  : True
 # Script License: Apache License 2.0
 # Maintainer's  : Balavva Mirji <Balavva.Mirji@ibm.com>
 #
@@ -15,7 +18,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
+
 
 # Variables
 REPO=https://github.com/openldap/openldap
@@ -35,7 +38,7 @@ yum install -y git make autoconf automake libtool gcc-c++
 git clone $REPO
 cd openldap
 git checkout ${VERSION}
-cd /openldap/libraries/liblmdb
+cd ./libraries/liblmdb
 
 # Build and test package
 mkdir -p /usr/local/man/man1
