@@ -26,7 +26,7 @@ export NODE_VERSION=${NODE_VERSION:-14}
 
 # Install dependencies
 #yum -y update
-yum install -y  git gcc gcc-c++ make python38 python38-devel libffi cmake
+yum install -y  git gcc gcc-c++ make
 
 #Installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
