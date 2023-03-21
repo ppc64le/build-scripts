@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: d3-array
-# Version	: 1.2.1
+# Version	: v1.2.1
 # Source repo	: https://github.com/d3/d3-array
 # Tested on	: RHEL 8.3
 # Language      : JavaScript
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=d3-array
-PACKAGE_VERSION=1.2.1
+PACKAGE_VERSION=v1.2.1
 PACKAGE_URL=https://github.com/d3/d3-array
 
 yum -y update && yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git gcc gcc-c++ libffi libffi-devel ncurses git jq make cmake
