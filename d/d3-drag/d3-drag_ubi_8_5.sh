@@ -1,10 +1,10 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
-# Package	    : d3-drag
-# Version	    : v3.0.0
+# Package	: d3-drag
+# Version	: v3.0.0
 # Source repo   : https://github.com/d3/d3-drag
-# Tested on	    : ubi 8.5
+# Tested on	: ubi 8.5
 # Language      : JavaScript
 # Travis-Check  : true
 # Script License: Apache License, Version 2 or later
