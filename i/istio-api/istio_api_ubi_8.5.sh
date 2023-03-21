@@ -19,8 +19,9 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=https://github.com/istio/api
-PACKAGE_VERSION=1.16.1
+PACKAGE_VERSION=${1:-"1.16.1"}
 PACKAGE_URL=https://github.com/istio/api
+GO_VERSION=${GO_VERSION:-1.19}
 
 WORKDIR=`pwd`
 
@@ -34,10 +35,10 @@ mkdir -p source_root
 export SOURCE_ROOT=$PWD/source_root
 
 #Install Go
-curl -O https://dl.google.com/go/go1.18.1.linux-ppc64le.tar.gz
-tar -C /usr/local -xzf go1.18.1.linux-ppc64le.tar.gz
+curl -O https://dl.google.com/go/go${GO_VERSION}.linux-ppc64le.tar.gz
+tar -C /usr/local -xzf go${GO_VERSION}.linux-ppc64le.tar.gz
 export PATH=$PATH:/usr/local/go/bin
-export GOPATH=/root/go
+export GOPATH=$HOME/go
 export GOBIN=/usr/local/go/bin
 go version
 
