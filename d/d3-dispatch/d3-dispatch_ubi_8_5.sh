@@ -1,17 +1,17 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
-# Package	    : d3-dispatch
-# Version	    : v3.0.1
+# Package	: d3-dispatch
+# Version	: v3.0.1
 # Source repo   : https://github.com/d3/d3-dispatch
-# Tested on	    : ubi 8.5
+# Tested on	: ubi 8.5
 # Language      : JavaScript
 # Travis-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Stuti Wali <Stuti.Wali@ibm.com>
 #
 #
-#Disclaimer: This script has been tested in root mode on given
+# Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
