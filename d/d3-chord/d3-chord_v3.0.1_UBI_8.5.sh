@@ -23,6 +23,7 @@ PACKAGE_VERSION=${1:-v3.0.1}
 PACKAGE_URL=https://github.com/d3/d3-chord
 
 yum install -y yum-utils git wget openssl-devel python2 nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses gcc gcc-c++ libffi libffi-devel jq
+npm install n -g && n latest && npm install -g npm@latest && export PATH="$PATH" && npm install --global yarn grunt-bump xo testem acorn
 
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
