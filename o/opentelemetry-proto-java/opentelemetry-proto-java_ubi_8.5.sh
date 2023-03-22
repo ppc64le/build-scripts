@@ -26,7 +26,7 @@ HOME_DIR=$PWD
 
 # Default tag opentelemetry-proto-java
 if [ -z "$1" ]; then
-  export PACKAGE_VERSION="0.19.0"
+  export PACKAGE_VERSION="v0.19.0"
 else
   export PACKAGE_VERSION="$1"
 fi
@@ -41,7 +41,7 @@ export PROTOBUF_VERSION="3.19.4"
 
 git clone $PACKAGE_URL $PACKAGE_NAME
 cd $PACKAGE_NAME
-git checkout "v$PACKAGE_VERSION"
+git checkout "$PACKAGE_VERSION"
 
 sed -i "s/\(grpcVersion = \).*/\1\"1\.53\.0\"/" build.gradle.kts
 sed -i "s/mavenLocal/mavenCentral/" build.gradle.kts
@@ -76,15 +76,22 @@ echo "org.gradle.jvmargs=-Xmx4g -XX:MetaspaceSize=2048m -XX:+HeapDumpOnOutOfMemo
 
 ./gradlew publishToMavenLocal -PskipAndroid=true
 
+
+#We are passing below variable as a paramater to gradlew build command. As this command internally create one task
+#which needs package version as "0.19.0" but not as "v0.19.0" thus we are passing UPDATED_PACKAGE_VERSION by updating PACKAGE_VERSION
+
+UPDATED_PACKAGE_VERSION=$(echo $PACKAGE_VERSION | sed 's/v//')
+echo "UPDATED_PACKAGE_VERSION = $UPDATED_PACKAGE_VERSION "
+
 cd "$HOME_DIR"/$PACKAGE_NAME
-if ! ./gradlew -Prelease.version="$PACKAGE_VERSION" build; then
+if ! ./gradlew -Prelease.version="$UPDATED_PACKAGE_VERSION" build; then
 	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
 	exit 1
 fi
 
-if ! ./gradlew -Prelease.version="$PACKAGE_VERSION" test; then
+if ! ./gradlew -Prelease.version="$UPDATED_PACKAGE_VERSION" test; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
