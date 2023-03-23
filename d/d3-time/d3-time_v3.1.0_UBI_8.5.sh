@@ -23,6 +23,7 @@ PACKAGE_VERSION=${1:-v3.1.0}
 PACKAGE_URL=https://github.com/d3/d3-time
  yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git gcc gcc-c++ libffi libffi-devel ncurses git jq
 npm install n -g && n latest && npm install -g npm@latest && export PATH="$PATH" && npm install --global yarn grunt-bump xo testem acorn
+npm install mocha
 
 OS_NAME=`python3 -c "os_file_data=open('/etc/os-release').readlines();os_info = [i.replace('PRETTY_NAME=','').strip() for i in os_file_data if i.startswith('PRETTY_NAME')];print(os_info[0])"`
 HOME_DIR=`pwd`
