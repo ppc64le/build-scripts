@@ -2,8 +2,9 @@
     "package_name":"opentelemetry-operator",
     "github_url":"https://github.com/open-telemetry/opentelemetry-operator",
     "package_dir":"o/opentelemetry-operator/",
-    "version":"v0.66.0",
+    "version":"v0.73.0",
     "default_branch":"main",
-    "build_script":"opentelemetry-operator_v0.66.0_ubi_8.7.sh",
+    "build_script":"opentelemetry-operator_ubi_8.5.sh",
+    "use_non_root_user":false,
     "docker_build":false
 }
