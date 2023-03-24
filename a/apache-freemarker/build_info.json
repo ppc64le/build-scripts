@@ -10,7 +10,7 @@
     "validate_build_script": "true",
     "use_non_root_user": "false",
 
-    "v3.2.*": {
+    "v2.3.*": {
         "dir": "ubi_8.5",
         "build_script": "apache-freemarker_v2.3.31_ubi_8.5.sh"
     }
