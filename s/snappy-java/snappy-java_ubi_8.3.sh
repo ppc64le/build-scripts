@@ -4,6 +4,8 @@
 # Version         : 1.1.7.3
 # Source repo     : https://github.com/xerial/snappy-java.git
 # Tested on       : ubi:8.3
+# Language        : Java, C++
+# Travis-Check    : True
 # Script License  : Apache License 2.0
 # Maintainer      : srividya chittiboina <Srividya.Chittiboina@ibm.com>
 #
