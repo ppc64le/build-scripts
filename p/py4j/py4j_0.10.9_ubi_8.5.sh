@@ -24,7 +24,9 @@ OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 yum install -y git wget gcc java-1.8.0-openjdk-devel python38 python38-pip python38-devel python27
 
-pip3 install pytest tox
+pip3 install pytest
+
+PATH=$PATH:/usr/local/bin/
 
 wget https://archive.apache.org/dist/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz
 tar -xvzf apache-maven-3.8.6-bin.tar.gz
