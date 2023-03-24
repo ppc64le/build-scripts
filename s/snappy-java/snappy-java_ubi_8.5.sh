@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: snappy-java
-# Version	: 1.1.9.1
+# Version	: v1.1.9.0, v1.1.9.1
 # Source repo	: https://github.com/xerial/snappy-java.git
 # Tested on	: UBI: 8.5
 # Language      : Java, C++
