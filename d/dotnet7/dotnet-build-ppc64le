@@ -1,0 +1,88 @@
+#!/bin/bash
+set -e
+
+function version_build_id {
+    version=$1
+    suffix=${version#*-}
+    if [ "$suffix" = "$version" ]; then
+	# Dummy BuildID used when official BuildID is unknown.
+        echo "20200101.1"
+    else
+	revision=${suffix##*.}
+	suffix=${suffix%.*}
+	short_date=${suffix##*.}
+	yy=$((${short_date} / 1000))
+	mm=$(((${short_date} - 1000 * ${yy}) / 50))
+	dd=$((${short_date} - 1000 * ${yy} - 50 * ${mm}))
+	printf "20%02d%02d%02d.%s\n" $yy $mm $dd $revision
+    fi
+}
+
+BASEDIR=`pwd`
+PACKAGESDIR=${BASEDIR}/local-packages
+DOWNLOADDIR=${BASEDIR}/local-downloads
+OUTPUTDIR=${BASEDIR}/output
+
+rm -rf ~/.nuget
+rm -rf ~/.local/share/NuGet/
+rm -rf ${PACKAGESDIR}
+mkdir ${PACKAGESDIR}
+rm -rf ${DOWNLOADDIR}
+mkdir ${DOWNLOADDIR}
+rm -rf ${OUTPUTDIR}
+mkdir ${OUTPUTDIR}
+
+RUNTIME_CONF=Release
+RUNTIME_VERSION=7.0.0-rtm.22518.5
+pushd runtime
+ROOTFS_DIR=/ ./build.sh --ci -c ${RUNTIME_CONF} -arch ppc64le -cross -clang /p:OfficialBuildId=$(version_build_id ${RUNTIME_VERSION})
+cp artifacts/packages/${RUNTIME_CONF}/Shipping/Microsoft.NETCore.App.Host.linux-ppc64le.*.nupkg ${PACKAGESDIR}
+cp artifacts/packages/${RUNTIME_CONF}/Shipping/Microsoft.NETCore.App.Runtime.linux-ppc64le.*.nupkg ${PACKAGESDIR}
+mkdir -p ${DOWNLOADDIR}/Runtime/${RUNTIME_VERSION}
+cp artifacts/packages/${RUNTIME_CONF}/Shipping/dotnet-runtime-*-linux-ppc64le.tar.gz ${DOWNLOADDIR}/Runtime/${RUNTIME_VERSION}
+cp artifacts/packages/${RUNTIME_CONF}/Shipping/dotnet-runtime-*-linux-ppc64le.tar.gz ${OUTPUTDIR}
+cp artifacts/packages/${RUNTIME_CONF}/Shipping/Microsoft.NETCore.App.Host.linux-ppc64le.*.nupkg ${OUTPUTDIR}
+cp artifacts/packages/${RUNTIME_CONF}/Shipping/Microsoft.NETCore.App.Runtime.linux-ppc64le.*.nupkg ${OUTPUTDIR}
+cp artifacts/packages/${RUNTIME_CONF}/Shipping/runtime.linux-ppc64le.Microsoft.NETCore.DotNetHost.*.nupkg ${OUTPUTDIR}
+cp artifacts/packages/${RUNTIME_CONF}/Shipping/runtime.linux-ppc64le.Microsoft.NETCore.DotNetHostPolicy.*.nupkg ${OUTPUTDIR}
+cp artifacts/packages/${RUNTIME_CONF}/Shipping/runtime.linux-ppc64le.Microsoft.NETCore.DotNetHostResolver.*.nupkg ${OUTPUTDIR}
+cp artifacts/packages/${RUNTIME_CONF}/Shipping/runtime.linux-ppc64le.Microsoft.NETCore.ILAsm.*.nupkg ${OUTPUTDIR}
+cp artifacts/packages/${RUNTIME_CONF}/Shipping/runtime.linux-ppc64le.Microsoft.NETCore.ILDAsm.*.nupkg ${OUTPUTDIR}
+popd
+
+SDK_CONF=Release
+SDK_VERSION=7.0.100-rtm.22521.7
+pushd sdk
+./build.sh --pack --ci -c ${SDK_CONF} /p:Architecture=ppc64le /p:OfficialBuildId=$(version_build_id ${SDK_VERSION})
+mkdir -p ${DOWNLOADDIR}/Sdk/${SDK_VERSION}
+cp artifacts/packages/Release/NonShipping/dotnet-toolset-internal-*.zip ${DOWNLOADDIR}/Sdk/${SDK_VERSION}
+cp artifacts/packages/${SDK_CONF}/Shipping/Microsoft.DotNet.Common.*.nupkg ${PACKAGESDIR}
+popd
+
+ASPNETCORE_CONF=Release
+ASPNETCORE_VERSION=7.0.0-rtm.22518.19
+pushd aspnetcore
+./eng/build.sh --pack --ci -c ${ASPNETCORE_CONF} -arch ppc64le /p:OfficialBuildId=$(version_build_id ${ASPNETCORE_VERSION}) /p:DotNetAssetRootUrl=file://${DOWNLOADDIR}/
+cp artifacts/packages/${ASPNETCORE_CONF}/Shipping/Microsoft.AspNetCore.App.Runtime.linux-ppc64le.*.nupkg ${PACKAGESDIR}
+mkdir -p ${DOWNLOADDIR}/aspnetcore/Runtime/${ASPNETCORE_VERSION}
+cp artifacts/installers/${ASPNETCORE_CONF}/aspnetcore-runtime-internal-*-linux-ppc64le.tar.gz ${DOWNLOADDIR}/aspnetcore/Runtime/${ASPNETCORE_VERSION}
+cp artifacts/installers/${ASPNETCORE_CONF}/aspnetcore_base_runtime.version ${DOWNLOADDIR}/aspnetcore/Runtime/${ASPNETCORE_VERSION}
+cp artifacts/packages/${ASPNETCORE_CONF}/Shipping/Microsoft.AspNetCore.App.Runtime.linux-ppc64le.*.nupkg ${OUTPUTDIR}
+cp artifacts/packages/${ASPNETCORE_CONF}/Shipping/Microsoft.DotNet.Web.*.nupkg ${PACKAGESDIR}
+popd
+
+pushd vstest
+./build.sh -c Release -vs release-20221019-01
+#${NUGET} add artifacts/Release/packages/Microsoft.TestPlatform.Build.17.4.0-release-20221019-01.nupkg -Source ${PACKAGESDIR}
+#${NUGET} add artifacts/Release/packages/Microsoft.TestPlatform.CLI.17.4.0-release-20221019-01.nupkg -Source ${PACKAGESDIR}
+cp artifacts/Release/packages/*.nupkg ${DOWNLOADDIR}
+popd
+
+INSTALLER_CONF=Release
+INSTALLER_VERSION=7.0.0  # BuildID unknown, but not visible in generated output.
+pushd installer
+rm -rf artifacts
+# Setting HostRid to linux- instead of ubuntu- avoids requiring Debian installer packages
+./build.sh --ci -c ${INSTALLER_CONF} -a ppc64le /p:OfficialBuildId=$(version_build_id ${INSTALLER_VERSION}) /p:HostRid=linux-x64 /p:PublicBaseURL=file://${DOWNLOADDIR}/
+cp artifacts/packages/${INSTALLER_CONF}/Shipping/dotnet-sdk-*-linux-ppc64le.tar.gz ${OUTPUTDIR}
+popd
