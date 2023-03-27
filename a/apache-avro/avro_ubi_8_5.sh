@@ -349,7 +349,6 @@ wget https://rpmfind.net/linux/centos/8-stream/BaseOS/ppc64le/os/Packages/libxsl
 rpm -i libxslt-1.1.32-6.el8.ppc64le.rpm
 echo "------------------------------------------------------LIBXSLT INSTALLED------------------------------------------"
 
-<<<<<<< HEAD
 #Check if gtk2 exists
 if [ -d "gtk2-2.24.32-5.el8.ppc64le.rpm" ] ; then
    rm -rf gtk2-2.24.32-5.el8.ppc64le.rpm
@@ -359,13 +358,6 @@ fi
 wget https://rpmfind.net/linux/centos/8-stream/AppStream/ppc64le/os/Packages/gtk2-2.24.32-5.el8.ppc64le.rpm
 rpm -i gtk2-2.24.32-5.el8.ppc64le.rpm
 echo "------------------------------------------------------GTK2 INSTALLED------------------------------------------"
-=======
-
-#wget https://rpmfind.net/linux/centos/8-stream/AppStream/ppc64le/os/Packages/gtk2-2.24.32-5.el8.ppc64le.rpm
-#rpm -i gtk2-2.24.32-5.el8.ppc64le.rpm
-#echo "------------------------------------------------------GTK2 INSTALLED------------------------------------------"
->>>>>>> 8e4c11fb0870095ea8e16b95b0ac90ab560543d2
-
 
 #inter for asciidoc
 wget https://rpmfind.net/linux/centos/8-stream/AppStream/ppc64le/os/Packages/graphviz-2.40.1-43.el8.ppc64le.rpm
