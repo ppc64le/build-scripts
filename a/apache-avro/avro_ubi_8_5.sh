@@ -375,6 +375,7 @@ echo "------------------------------------------------------FORREST INSTALLED---
 
 # Install Perl modules
 curl -L https://cpanmin.us | perl - App::cpanminus
+yum install -y cpanminus
 cpanm install Module::Install Module::Install::ReadmeFromPod \
   Module::Install::Repository \
   Math::BigInt JSON::XS Try::Tiny Regexp::Common Encode \
