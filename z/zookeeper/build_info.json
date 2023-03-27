@@ -2,6 +2,7 @@
     "package_name" : "zookeeper",
     "github_url":"https://github.com/apache/zookeeper.git",
     "version": "release-3.7.1",
+    "default_branch": "master",
     "package_dir": "z/zookeeper/",
     "docker_cmd" : "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "build_script": "zookeeper_ubi_8.5.sh",

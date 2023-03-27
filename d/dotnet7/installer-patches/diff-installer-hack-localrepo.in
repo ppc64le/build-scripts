@@ -1,0 +1,12 @@
+Index: installer/NuGet.config
+===================================================================
+--- a/NuGet.config
++++ b/NuGet.config
+@@ -7,6 +7,7 @@
+     <clear />
+     <!--Begin: Package sources managed by Dependency Flow automation. Do not edit the sources below.-->
+     <!--  Begin: Package sources from dotnet-aspnetcore -->
++    <add key="local" value="@@PACKAGESDIR@@" />
+     <add key="darc-int-dotnet-aspnetcore-bb01bbf" value="https://pkgs.dev.azure.com/dnceng/internal/_packaging/darc-int-dotnet-aspnetcore-bb01bbf4/nuget/v3/index.json" />
+     <add key="darc-int-dotnet-aspnetcore-bb01bbf-2" value="https://pkgs.dev.azure.com/dnceng/internal/_packaging/darc-int-dotnet-aspnetcore-bb01bbf4-2/nuget/v3/index.json" />
+     <add key="darc-int-dotnet-aspnetcore-bb01bbf-1" value="https://pkgs.dev.azure.com/dnceng/internal/_packaging/darc-int-dotnet-aspnetcore-bb01bbf4-1/nuget/v3/index.json" />

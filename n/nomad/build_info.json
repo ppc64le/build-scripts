@@ -2,11 +2,16 @@
     "package_name" : "nomad",
     "github_url":"https://github.com/hashicorp/nomad",
     "version": "v1.4.3",
+    "default_branch": "main",
     "package_dir": "n/nomad",
     "build_script": "nomad_ubi_8_5.sh",
     "validate_build_script": "true",
-
-    "v1.4.3": {
-        "build_script": "nomad_ubi_8_5.sh"        
+    "docker_build": "false",   
+    
+    "v1.4.3" : {
+        "build_script": "nomad_ubi_8_5.sh",
+	"args": {
+            "GO_VERSION":"1.20.1"
+         }	
     }
 }
