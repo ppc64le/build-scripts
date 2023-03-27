@@ -31,7 +31,7 @@ dnf module -y update ruby:2.6
 yum install -y ruby
 ruby -v
 yum install -y rubygem-rake ruby-devel
-yum install -y wget git curl make  gcc-c++ cmake  fontconfig fontconfig-devel glib2 glib2-devel jansson perl  python3 python3-pip
+yum install -y wget git curl make  gcc-c++ cmake  fontconfig fontconfig-devel glib2 glib2-devel jansson perl  python3 python3-pip gtk2.ppc64le gtk3.ppc64le gtk-update-icon-cache.ppc64le
 yum install -y urw-base35-fonts.noarch urw-base35-fonts-common.noarch
 yum install -y adobe-mappings-cmap.noarch adobe-mappings-cmap-deprecated.noarch adobe-mappings-pdf.noarch google-droid-sans-fonts.noarch
 
@@ -349,15 +349,10 @@ wget https://rpmfind.net/linux/centos/8-stream/BaseOS/ppc64le/os/Packages/libxsl
 rpm -i libxslt-1.1.32-6.el8.ppc64le.rpm
 echo "------------------------------------------------------LIBXSLT INSTALLED------------------------------------------"
 
-#Check if gtk2 exists
-if [ -d "gtk2-2.24.32-5.el8.ppc64le.rpm" ] ; then
-   rm -rf gtk2-2.24.32-5.el8.ppc64le.rpm
-   echo "gtk2-2.24.32-5.el8.ppc64le.rpm | GitHub | Removed existing package if any"
-fi
 
-wget https://rpmfind.net/linux/centos/8-stream/AppStream/ppc64le/os/Packages/gtk2-2.24.32-5.el8.ppc64le.rpm
-rpm -i gtk2-2.24.32-5.el8.ppc64le.rpm
-echo "------------------------------------------------------GTK2 INSTALLED------------------------------------------"
+#wget https://rpmfind.net/linux/centos/8-stream/AppStream/ppc64le/os/Packages/gtk2-2.24.32-5.el8.ppc64le.rpm
+#rpm -i gtk2-2.24.32-5.el8.ppc64le.rpm
+#echo "------------------------------------------------------GTK2 INSTALLED------------------------------------------"
 
 #inter for asciidoc
 wget https://rpmfind.net/linux/centos/8-stream/AppStream/ppc64le/os/Packages/graphviz-2.40.1-43.el8.ppc64le.rpm
