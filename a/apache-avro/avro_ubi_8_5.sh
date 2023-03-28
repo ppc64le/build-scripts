@@ -374,7 +374,7 @@ export FORREST_HOME=/usr/local/apache-forrest
 echo "------------------------------------------------------FORREST INSTALLED------------------------------------------"
 
 # Install Perl modules
-curl -L https://cpanmin.us | perl - App::cpanminus
+#curl -L https://cpanmin.us | perl - App::cpanminus
 yum install -y cpanminus
 cpanm install Module::Install Module::Install::ReadmeFromPod \
   Module::Install::Repository \
