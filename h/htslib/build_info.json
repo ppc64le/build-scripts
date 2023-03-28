@@ -7,5 +7,13 @@
     "build_script": "htslib_ubi_8.5.sh",
     "validate_build_script": "true",
     "use_non_root_user": "false",
-    "docker_build": false
+    "docker_build": false,
+    
+    "1.17" {
+       "build_script" : "htslib_ubi_8.5.sh"
+    },
+    
+    "1.5-5-gda5c0c7" {
+       "build_script" : "htslib_rhel_7.3.sh"
+    }
 }
