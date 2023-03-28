@@ -1,0 +1,10 @@
+{
+    "package_name":"d3-scale",
+    "github_url":"https://github.com/d3/d3-scale",
+    "package_dir":"d/d3-scale/",
+    "version":"v4.0.2", 
+    "default_branch":"main",
+    "build_script":"d3-scale_v4.0.2_UBI_8.5.sh",
+    "use_non_root_user":false,
+    "docker_build":false
+}
