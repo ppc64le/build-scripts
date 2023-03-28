@@ -31,9 +31,9 @@ else
 fi
 
 #install Java8
-yum install java-1.8.0-openjdk-devel git wget -y
-export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.302.b08-0.el8_4.ppc64le
-export PATH=${JAVA_HOME}/bin:${PATH}
+yum install java-1.8.0-openjdk-devel.ppc64le git wget -y
+export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-)(?=.*ppc64le)')
+export PATH=$PATH:$JAVA_HOME/bin
 
 #install maven
 wget https://www-eu.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
