@@ -41,12 +41,14 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 
-if ! mvn clean install -P -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -DskipTests ; then
+if ! mvn clean install -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -DskipTests ; then
     echo "------------------$PACKAGE_NAME:Install_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
     exit 1
 fi
+
+export MAVEN_OPTS="-Xmx2048m -Xms1024m  -Djava.awt.headless=true"
 
 if ! mvn -U -B clean install ; then
     echo "------------------$PACKAGE_NAME::Install_and_Test_fails-------------------------"
