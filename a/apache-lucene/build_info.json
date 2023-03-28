@@ -1,5 +1,5 @@
 {
-    "package_name": "lucene",
+    "package_name": "apache-lucene",
     "github_url": "https://github.com/apache/lucene.git",
     "version": "releases/lucene/9.5.0",
     "default_branch": "main",
