@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
-# Package	    : directory-ldap-api
+# Package	    : apache-directory-ldap-api
 # Version           : 2.1.2
 # Source repo	    : https://github.com/apache/directory-ldap-api
 # Tested on	    : ubi 8.5

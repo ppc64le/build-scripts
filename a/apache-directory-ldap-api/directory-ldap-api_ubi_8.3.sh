@@ -1,9 +1,12 @@
+#!/bin/bash -e
 #----------------------------------------------------------------------------
 #
 # Package         : apache/directory-ldap-api
 # Version         : 2.1.0
 # Source repo     : https://github.com/apache/directory-ldap-api.git
 # Tested on       : ubi:8.3
+# Language      : java
+# Travis-Check    : true
 # Script License  : Apache License 2.0
 # Maintainer      : srividya chittiboina <Srividya.Chittiboina@ibm.com>
 #
@@ -14,7 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
 #
 #
 # ----------------------------------------------------------------------------
