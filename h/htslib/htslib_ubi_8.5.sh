@@ -24,7 +24,6 @@ PACKAGE_URL=https://github.com/samtools/htslib
 
 OS_NAME=`cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f2 | tr -d '"'`
 
-yum update -y
 yum install -y autoconf automake make gcc \
     zlib-devel bzip2 bzip2-devel xz-devel curl-devel openssl-devel \
     ncurses-devel diffutils git
@@ -41,6 +40,7 @@ if ! make install ; then
       echo "------------------$PACKAGE_NAME::Install_fails-------------------------"
       echo "$PACKAGE_URL $PACKAGE_NAME"
       echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail | Install_fails"
+      exit 1
 fi
 
 if ! make -j 4 $MAKE_OPTS ; then
