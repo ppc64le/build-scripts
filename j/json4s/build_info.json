@@ -9,7 +9,7 @@
     "docker_build": "true",
     "validate_build_script": "true",
 
-    "v4.1.0-M*": {
+    "v4.1.0-M2": {
         "dir": "ubi_8.5",
         "build_script": "json4s_ubi_8.5.sh"
     }
