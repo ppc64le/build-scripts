@@ -349,11 +349,6 @@ wget https://rpmfind.net/linux/centos/8-stream/BaseOS/ppc64le/os/Packages/libxsl
 rpm -i libxslt-1.1.32-6.el8.ppc64le.rpm
 echo "------------------------------------------------------LIBXSLT INSTALLED------------------------------------------"
 
-
-#wget https://rpmfind.net/linux/centos/8-stream/AppStream/ppc64le/os/Packages/gtk2-2.24.32-5.el8.ppc64le.rpm
-#rpm -i gtk2-2.24.32-5.el8.ppc64le.rpm
-#echo "------------------------------------------------------GTK2 INSTALLED------------------------------------------"
-
 #inter for asciidoc
 wget https://rpmfind.net/linux/centos/8-stream/AppStream/ppc64le/os/Packages/graphviz-2.40.1-43.el8.ppc64le.rpm
 rpm -i graphviz-2.40.1-43.el8.ppc64le.rpm
@@ -374,7 +369,6 @@ export FORREST_HOME=/usr/local/apache-forrest
 echo "------------------------------------------------------FORREST INSTALLED------------------------------------------"
 
 # Install Perl modules
-#curl -L https://cpanmin.us | perl - App::cpanminus
 yum install -y cpanminus
 cpanm install Module::Install Module::Install::ReadmeFromPod \
   Module::Install::Repository \
