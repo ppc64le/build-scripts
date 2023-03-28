@@ -41,23 +41,21 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 
-if ! mvn install -Peverything,fastinstall ; then
-    echo "------------------$PACKAGE_NAME:Build_fails---------------------"
+if ! mvn clean install -P -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -DskipTests ; then
+    echo "------------------$PACKAGE_NAME:Install_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
     exit 1
 fi
 
-cd distribution
-
-if ! mvn test; then
-    echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
+if ! mvn -U -B clean install ; then
+    echo "------------------$PACKAGE_NAME::Install_and_Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Install_and_Test_fails"
     exit 2
 else
-    echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
+    echo "------------------$PACKAGE_NAME::Install_and_Test_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
