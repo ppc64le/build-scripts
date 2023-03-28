@@ -4,7 +4,7 @@
     "version": "v0.48.0",
     "default_branch": "master",
     "package_dir": "k/kallisto/",
-    "build_script": "kallsito_ubi_8.5.sh",
+    "build_script": "kallisto_ubi_8.5.sh",
     "validate_build_script": "true",
     "use_non_root_user": "false",
     "docker_build": false
