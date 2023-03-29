@@ -26,15 +26,7 @@ yum update -y
 yum install git wget  gcc gcc-c++ openssl  -y
 dnf install java-1.8.0-openjdk-devel -y
 
-MAVEN_VERSION=${MAVEN_VERSION:-3.8.5}
-wget http://mirrors.estointernet.in/apache/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
-
-ls /usr/local
-tar -C /usr/local/ -xzf apache-maven-$MAVEN_VERSION-bin.tar.gz
-mv /usr/local/apache-maven-$MAVEN_VERSION /usr/local/maven
-ls /usr/local
-rm apache-maven-$MAVEN_VERSION-bin.tar.gz
-export M2_HOME=/usr/local/maven
+dnf -y install maven
 
 if ! git clone $PACKAGE_URL; then
     echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
