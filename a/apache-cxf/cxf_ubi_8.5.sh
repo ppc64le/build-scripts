@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=cxf
-PACKAGE_VERSION=cxf-4.0.0
+PACKAGE_VERSION=${1:-cxf-4.0.0}
 PACKAGE_URL=https://github.com/apache/cxf.git
 
 yum -y update
@@ -39,30 +39,27 @@ cd $WORKDIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cxf/cxf.patch;
-git apply cxf.patch;
 
-if ! mvn -Pfastinstall ; then
-    echo "------------------$PACKAGE_NAME:Build_fails---------------------"
+
+if ! mvn clean install -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -DskipTests ; then
+    echo "------------------$PACKAGE_NAME:Install_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
     exit 1
 fi
 
-mvn test > error.log
-test_status=$?
+export MAVEN_OPTS="-Xmx2048m -Xms1024m  -Djava.awt.headless=true"
 
-tail error.log
-
-if [ $test_status != 0 ] ; then
-    echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/a/apache-cxf/cxf.patch;
+git apply cxf.patch 
+if ! mvn -U -B clean install ; then
+    echo "------------------$PACKAGE_NAME::Install_and_Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Install_and_Test_fails"
     exit 2
 else
-    echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
+    echo "------------------$PACKAGE_NAME::Install_and_Test_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
-

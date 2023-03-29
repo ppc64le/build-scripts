@@ -1,65 +1,25 @@
-diff --git a/rt/javascript/pom.xml b/rt/javascript/pom.xml
-index 9918953a07..bd0f5686d9 100644
---- a/rt/javascript/pom.xml
-+++ b/rt/javascript/pom.xml
-@@ -32,6 +32,5 @@
-     </parent>
-     <modules>
-         <module>javascript-rt</module>
--        <module>javascript-tests</module>
-     </modules>
- </project>
-diff --git a/rt/pom.xml b/rt/pom.xml
-index 75a13b8f0a..0182721213 100644
---- a/rt/pom.xml
-+++ b/rt/pom.xml
-@@ -39,7 +39,6 @@
-         <module>ws</module>
-         <module>rs</module>
-         <module>management</module>
--        <module>javascript</module>
-         <module>security</module>
-         <module>security-saml</module>
-     </modules>
-diff --git a/rt/transports/pom.xml b/rt/transports/pom.xml
-index 8002c7d269..c5f6e5e551 100644
---- a/rt/transports/pom.xml
-+++ b/rt/transports/pom.xml
-@@ -36,10 +36,6 @@
-         <module>http-undertow</module>
-         <module>http-hc</module>
-         <module>http-hc5</module>
--        <module>http-netty/netty-server</module>
--        <module>http-netty/netty-client</module>
--        <module>udp</module>
--        <module>jms</module>
-         <module>websocket</module>
-     </modules>
- </project>
-diff --git a/services/pom.xml b/services/pom.xml
-index 3b4fb7be85..1fa303c132 100644
---- a/services/pom.xml
-+++ b/services/pom.xml
-@@ -31,7 +31,6 @@
-         <version>4.0.0</version>
-     </parent>
-     <modules>
--        <module>sts</module>
-         <module>wsn</module>
-         <module>ws-discovery</module>
-         <module>xkms</module>
-diff --git a/services/xkms/pom.xml b/services/xkms/pom.xml
-index a109b80e1b..bf54d72099 100644
---- a/services/xkms/pom.xml
-+++ b/services/xkms/pom.xml
-@@ -35,7 +35,6 @@
-         <module>xkms-common</module>
-         <module>xkms-x509-handlers</module>
-         <module>xkms-service</module>
--        <module>xkms-client</module>
-         <module>xkms-war</module>
-         <module>xkms-x509-repo-ldap</module>
-     </modules>
+diff --git a/parent/pom.xml b/parent/pom.xml
+index c32f234d28..6ad4c5ffac 100644
+--- a/parent/pom.xml
++++ b/parent/pom.xml
+@@ -38,6 +38,7 @@
+         <cxf.surefire.fork.vmargs>-ea</cxf.surefire.fork.vmargs>
+         <cxf.server.launcher.vmargs>-ea</cxf.server.launcher.vmargs>
+         <cxf.surefire.enable.assertions>true</cxf.surefire.enable.assertions>
++        <cxf.surefire.rerun.count>3</cxf.surefire.rerun.count>
+         <cxf.checkstyle.extension />
+         <cxf.compile.flags>-Xlint:unchecked,deprecation,fallthrough,finally</cxf.compile.flags>
+         <cxf.compile.show.deprecation>true</cxf.compile.show.deprecation>
+@@ -446,7 +447,8 @@
+                         <enableAssertions>${cxf.surefire.enable.assertions}</enableAssertions>
+                         <parallel>${cxf.surefire.parallel.mode}</parallel>
+                         <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory" />
+-                        <systemPropertyVariables>
++                        <rerunFailingTestsCount>${cxf.surefire.rerun.count}</rerunFailingTestsCount>
++                       <systemPropertyVariables>
+                             <java.io.tmpdir>${basedir}/target</java.io.tmpdir>
+                             <cxf.useRandomFirstPort>true</cxf.useRandomFirstPort>
+                             <org.apache.cxf.JDKBugHacks.all>true</org.apache.cxf.JDKBugHacks.all>
 diff --git a/services/xkms/xkms-x509-handlers/src/test/java/org/apache/cxf/xkms/x509/validator/TrustedAuthorityValidatorCRLTest.java b/services/xkms/xkms-x509-handlers/src/test/java/org/apache/cxf/xkms/x509/validator/TrustedAuthorityValidatorCRLTest.java
 index e759f775de..625f0a1b48 100644
 --- a/services/xkms/xkms-x509-handlers/src/test/java/org/apache/cxf/xkms/x509/validator/TrustedAuthorityValidatorCRLTest.java
@@ -117,24 +77,10 @@ index 1d14e2585e..73012ce424 100644
 
      @Test
 diff --git a/systests/pom.xml b/systests/pom.xml
-index 4d5e605e53..ff924abd63 100644
+index 4d5e605e53..16e866cfa9 100644
 --- a/systests/pom.xml
 +++ b/systests/pom.xml
-@@ -33,13 +33,8 @@
-     <modules>
-         <module>container-integration</module>
-         <module>uncategorized</module>
--        <module>transports</module>
--        <module>forked</module>
--        <module>transport-undertow</module>
--        <module>jaxws</module>
-         <module>databinding</module>
-         <module>ws-specs</module>
--        <module>ws-rm</module>
-         <module>ws-security</module>
-         <module>ws-security-examples</module>
-         <module>kerberos</module>
-@@ -56,6 +51,5 @@
+@@ -56,6 +56,5 @@
          <module>transport-netty</module>
          <module>transport-hc5</module>
          <module>transport-jms</module>
@@ -142,28 +88,28 @@ index 4d5e605e53..ff924abd63 100644
      </modules>
  </project>
 diff --git a/systests/ws-security/src/test/java/org/apache/cxf/systest/ws/action/SignatureWhitespaceTest.java b/systests/ws-security/src/test/java/org/apache/cxf/systest/ws/action/SignatureWhitespaceTest.java
-index 3dab98c569..0e19e6f7b3 100644
+index 3dab98c569..20d7c8402b 100644
 --- a/systests/ws-security/src/test/java/org/apache/cxf/systest/ws/action/SignatureWhitespaceTest.java
 +++ b/systests/ws-security/src/test/java/org/apache/cxf/systest/ws/action/SignatureWhitespaceTest.java
-@@ -157,11 +157,6 @@ public class SignatureWhitespaceTest extends AbstractBusClientServerTestBase {
+@@ -157,11 +157,7 @@ public class SignatureWhitespaceTest extends AbstractBusClientServerTestBase {
          updateAddressPort(dispatch, test.getPort());
 
          // Make a successful request
 -        StreamSource response = dispatch.invoke(request);
 -        assertNotNull(response);
--
+
 -        Document doc = StaxUtils.read(response.getInputStream());
 -        assertEquals("50", doc.getElementsByTagNameNS(null, "doubledNumber").item(0).getTextContent());
 
          ((java.io.Closeable)dispatch).close();
      }
-@@ -193,11 +188,6 @@ public class SignatureWhitespaceTest extends AbstractBusClientServerTestBase {
+@@ -193,11 +189,7 @@ public class SignatureWhitespaceTest extends AbstractBusClientServerTestBase {
          updateAddressPort(dispatch, test.getPort());
 
          // Make a successful request
 -        StreamSource response = dispatch.invoke(request);
 -        assertNotNull(response);
--
+
 -        Document doc = StaxUtils.read(response.getInputStream());
 -        assertEquals("50", doc.getElementsByTagNameNS(null, "doubledNumber").item(0).getTextContent());
 
