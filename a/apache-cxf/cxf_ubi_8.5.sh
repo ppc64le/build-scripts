@@ -50,7 +50,7 @@ fi
 
 export MAVEN_OPTS="-Xmx2048m -Xms1024m  -Djava.awt.headless=true"
 
-wget https://raw.githubusercontent.com/vinodk99/build-scripts/apache-cxf/a/apache-cxf/cxf.patch;
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/a/apache-cxf/cxf.patch;
 git apply cxf.patch 
 if ! mvn -U -B clean install ; then
     echo "------------------$PACKAGE_NAME::Install_and_Test_fails-------------------------"
