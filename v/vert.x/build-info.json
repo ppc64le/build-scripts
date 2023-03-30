@@ -1,0 +1,11 @@
+{
+    "package_name" : "vert.x",
+    "github_url":"https://github.com/eclipse-vertx/vert.x",
+    "version": "4.3.7",
+    "default_branch": "master",
+    "package_dir": "v/vert.x/", 
+    "build_script": "vertx_ubi_8.5.sh",
+    "docker_build": "false",
+    "validate_build_script": "true",
+    "use_non_root_user": "false"
+}    
