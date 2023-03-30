@@ -25,8 +25,8 @@ PACKAGE_URL=https://github.com/eclipse-vertx/vert.x.git
 yum update -y
 yum install git wget  gcc gcc-c++ openssl  -y
 dnf install java-1.8.0-openjdk-devel -y
-dnf install maven
 
+dnf -y install maven
 
 if ! git clone $PACKAGE_URL; then
     echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
