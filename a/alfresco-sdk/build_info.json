@@ -1,0 +1,14 @@
+{
+    "package_name" : "alfresco-sdk",
+    "github_url":"https://github.com/Alfresco/alfresco-sdk",
+    "version": "alfresco-sdk-aggregator-4.5.0",
+    "default_branch" : "master",
+    "package_dir": "a/alfresco-sdk",
+    "build_script": "alfresco-sdk_ubi_8_5.sh",
+    "docker_build": "false",
+    "validate_build_script": "true",
+    "use_non_root_user": "false"
+
+}
+
+
