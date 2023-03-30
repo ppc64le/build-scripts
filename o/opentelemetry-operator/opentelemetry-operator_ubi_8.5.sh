@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: opentelemetry-operator
-# Version	: v0.66.0
+# Version	: v0.73.0
 # Source repo	: https://github.com/open-telemetry/opentelemetry-operator
 # Tested on	: ubi 8.5
 # Language      : GO
