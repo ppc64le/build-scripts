@@ -1,0 +1,11 @@
+{
+    "package_name" : "odo",
+    "github_url": "https://github.com/redhat-developer/odo.git",
+    "version": "v3.8.0",
+    "default_branch": "master",
+    "package_dir": "o/odo",
+    "build_script": "odo_ubi_8.4.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": false
+}
