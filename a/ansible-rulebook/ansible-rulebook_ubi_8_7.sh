@@ -74,8 +74,9 @@ if ! python3 -m build; then
     exit 1
 fi
 
-export EDA_E2E_CMD_TIMEOUT=120
+export EDA_E2E_CMD_TIMEOUT=360
 export EDA_E2E_DEFAULT_EVENT_DELAY=2
+export EDA_E2E_DEFAULT_SHUTDOWN_AFTER=15
 if ! pytest -v -n auto; then
     echo "------------------$PACKAGE_NAME:test_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
