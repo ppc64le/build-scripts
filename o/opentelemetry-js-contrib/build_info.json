@@ -1,0 +1,12 @@
+{
+    "package_name" : "opentelemetry-js-contrib",
+    "github_url":"https://github.com/open-telemetry/opentelemetry-js-contrib",
+    "version": "auto-instrumentations-node-v0.36.4",
+    "default_branch": "main",
+    "package_dir": "o/opentelemetry-js-contrib",
+    "build_script" : "opentelemetry-js-contrib_ubi_8.5.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": false
+     
+}

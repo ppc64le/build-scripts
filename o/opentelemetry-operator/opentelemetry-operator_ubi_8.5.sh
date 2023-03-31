@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: opentelemetry-operator
-# Version	: v0.52.0
+# Version	: v0.66.0
 # Source repo	: https://github.com/open-telemetry/opentelemetry-operator
 # Tested on	: ubi 8.5
 # Language      : GO
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME="opentelemetry-operator"
-PACKAGE_VERSION=${1:-"v0.52.0"}
+PACKAGE_VERSION=${1:-"v0.66.0"}
 PACKAGE_URL="https://github.com/open-telemetry/opentelemetry-operator"
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 

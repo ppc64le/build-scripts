@@ -2,6 +2,7 @@
     "package_name" : "zabbix",
     "github_url":"https://github.com/zabbix/zabbix.git",
     "version": "6.2.3",
+    "default_branch": "master",
     "package_dir": "z/zabbix/",
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "build_script" : "zabbix_ubi_8.sh",

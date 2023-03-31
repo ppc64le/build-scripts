@@ -8,7 +8,7 @@
 # Language      : Go
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Nikhil Kalbande <nkalbande@us.ibm.com>
+# Maintainer	: Nikhil Kalbande <nkalband@us.ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
