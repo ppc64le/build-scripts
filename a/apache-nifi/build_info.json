@@ -2,9 +2,19 @@
     "package_name" : "apache-nifi",
     "github_url":"https://github.com/apache/nifi",
     "version": "rel/nifi-1.17.0",
+    "default_branch": "main",
+    "build_script" : "apache-nifi_1.17.0_ubi_8.5.sh",
     "package_dir": "a/apache-nifi/",
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
 
+    "rel/nifi-1.9.0": {
+        "dir":"1.9.0_ubi_8",
+        "patches": {
+            "PATCH": "https://raw.githubusercontent.com/vishakadesai/build-scripts/nifi/a/apache-nifi/nifi-1.9.0.patch"
+        },
+        "build_script" : "apache-nifi_1.9.0_ubi_8.5.sh"
+    },
+    
     "rel/nifi-1.17.0": {
         "dir":"1.17.0_ubi_8",
         "build_script" : "apache-nifi_1.17.0_ubi_8.5.sh"

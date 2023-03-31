@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: github.com/hashicorp/vault
-# Version	: v1.11.2,v1.11.3
+# Version	: v1.11.2, v1.11.3, v1.12.3
 # Source repo	: https://github.com/hashicorp/vault
 # Tested on	: UBI: 8.5
 # Language      : Go
@@ -19,8 +19,8 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=vault
-PACKAGE_VERSION=${1:-v1.11.2}
-GO_VERSION=${GO_VERSION:-1.17.12}
+PACKAGE_VERSION=${1:-v1.12.3}
+GO_VERSION=${GO_VERSION:-1.19.6}
 PACKAGE_URL=https://github.com/hashicorp/vault
 
 yum install -y openssl sudo make git gcc wget

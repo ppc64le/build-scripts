@@ -17,7 +17,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_VERSION=${1:-1.17.2}
+PACKAGE_VERSION=${1:-v1.17.2}
 PACKAGE_NAME=gitea
 PACKAGE_URL=https://github.com/go-gitea/gitea.git
 
@@ -33,7 +33,7 @@ fi
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
-git checkout v$PACKAGE_VERSION
+git checkout $PACKAGE_VERSION
 
 #harden step
 sed -i '30iRUN apk --upgrade --no-cache add expat' Dockerfile

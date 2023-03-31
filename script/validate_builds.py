@@ -101,7 +101,7 @@ def trigger_script_validation_checks(file_name, image_name = "registry.access.re
 def validate_build_info_file(file_name):
     try:
         script_path = os.path.join(HOME, file_name)
-        mandatory_fields = ['package_name', 'github_url', 'version']
+        mandatory_fields = ['package_name', 'github_url', 'version', 'default_branch', 'build_script', 'package_dir']
         error_message = f"No `{{}}` field available in {file_name}."
 
         data = json.load(open(script_path, 'r'))

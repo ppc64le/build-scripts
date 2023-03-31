@@ -2,6 +2,8 @@
     "package_name" : "mongodb",
     "github_url":"https://github.com/mongodb/mongo.git",
     "version": "r6.1.0",
+    "default_branch": "master",
+    "build_script": "",
     "package_dir": "m/mongodb/",
     "docker_cmd" : "docker build -t ${package_name}-ppc64le:$PACKAGE_VERSION ${dir}",
     "validate_build_script": false,
@@ -11,19 +13,25 @@
         "args": {
             "MONGO_VERSION": "$(echo $PACKAGE_VERSION | sed 's/r//')",
             "MONGO_MAJOR": "$(echo $PACKAGE_VERSION |  sed 's/r//' | grep -Eo '[0-9]+\\.[0-9]+')"
-        }
+        },
+        "base_docker_image": "ubuntu:focal",
+        "base_docker_variant": "ubuntu"
     },
     "r5.*.*": {
         "dir": "mongoDB_5_0",
         "args": {
             "MONGO_VERSION": "$(echo $PACKAGE_VERSION | sed 's/r//')",
             "MONGO_MAJOR": "$(echo $PACKAGE_VERSION |  sed 's/r//' | grep -Eo '[0-9]+\\.[0-9]+')"
-        }
+        },
+        "base_docker_image": "ubuntu:focal",
+        "base_docker_variant": "ubuntu"
     },
     "r4.4.*" : {
         "dir":"ubuntu_focal",
         "args": {
             "MONGO_VERSION": "$(echo $PACKAGE_VERSION | sed 's/r//')"
-        }
+        },
+        "base_docker_image": "ubuntu:focal",
+        "base_docker_variant": "ubuntu"
     }
 }
