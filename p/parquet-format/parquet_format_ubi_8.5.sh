@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=parquet-format
-PACKAGE_VERSION=${1:apache-parquet-format-2.9.0}
+PACKAGE_VERSION=${1:-apache-parquet-format-2.9.0}
 PACKAGE_URL=https://github.com/apache/parquet-format.git
 WORKDIR=`pwd`
 
@@ -28,7 +28,7 @@ OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 yum install -y git make wget gcc-c++ java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless maven
 
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
-export PATH=$PATH:$JAVA_HOME/bin
+export PATH=$PATH:$JAVA_HOME/bin:/usr/local/bin
 
 #install protobuf compiler
 wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz 
@@ -47,7 +47,8 @@ cd thrift-0.13.0
 chmod +x ./configure
 ./configure --disable-libs
 make install
-export PATH=$PATH:/usr/local/bin
+
+#Verify thrift installation
 thrift --version
 
 #Clone the top-level repository

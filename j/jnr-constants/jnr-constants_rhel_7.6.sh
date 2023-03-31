@@ -1,10 +1,13 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
-# Package			: jnr-constants
-# Version			: 0.9.9, 0.9.15
+# Package			  : jnr-constants
+# Version			  : 0.9.9, 0.9.15
 # Source repo		: https://github.com/jnr/jnr-constants
 # Tested on			: RHEL 7.6
-# Script License	: Apache License Version 2.0
+# Language      : java
+# Travis-Check  : true
+# Script License: Apache License Version 2.0
 # Maintainer		: Pratham Murkute <prathamm@us.ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -15,11 +18,10 @@
 #			  
 # ----------------------------------------------------------------------------
 
-#!/bin/bash
 
 # install tools and dependent packages
 #yum -y update
-yum install -y git wget curl unzip nano vim make build-essential
+yum install -y git wget curl unzip nano vim make gcc gcc-c++
 #yum install -y gcc ant
 
 # setup java environment

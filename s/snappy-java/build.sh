@@ -1,8 +1,11 @@
+#!/bin/bash
 # ----------------------------------------------------------------------------
 # Package       : snappy-java
 # Version       : master
 # Source repo   : https://github.com/xerial/snappy-java
 # Tested on     : RHEL_7.9
+# Language      : Java, C++
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Krishna Harsha Voora <krishvoor@in.ibm.com>
 #
@@ -12,7 +15,6 @@
 #             In such case, please contact "Maintainer" of this script.
 # ----------------------------------------------------------------------------
 
-#!/bin/bash
 
 # clone branch passed as argument, if none, use master
 if [ -z $1 ]
