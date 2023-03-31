@@ -1,14 +1,14 @@
 #!/bin/bash
 #---------------------------------------------------------------------------------------------------
 #
-# Package		: Electron
-# Version		: v22.0.3
-# Source repo		: https://github.com/electron/electron
-# Tested on		: Ubuntu 22.04
-# Language      	: C++
-# Travis-Check		: false
-# Script License	: Apache License, Version 2 or later
-# Maintainer		: Sumit Dubey <sumit.dubey2@ibm.com>
+# Package         : Electron
+# Version         : v22.0.3
+# Source repo     : https://github.com/electron/electron
+# Tested on       : Ubuntu 20.04
+# Language        : C++
+# Travis-Check    : false
+# Script License  : Apache License, Version 2 or later
+# Maintainer      : Sumit Dubey <sumit.dubey2@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -28,8 +28,8 @@ ELECTRON_VERSION=v22.0.3
 
 # Install and Setup Ubuntu Dependencies
 apt-get update -y
-DEBIAN_FRONTEND=noninteractive apt-get install -y  build-essential libdbus-1-dev libgtk-3-dev libnotify-dev libasound2-dev libcap-dev libcups2-dev libxtst-dev libxss1 libnss3-dev curl gperf bison python3-dbusmock openjdk-8-jre git wget python3.10 python3-httplib2 python3-six lsof libdrm-dev libgbm-dev mesa-common-dev ninja-build cmake unzip sudo libre2-dev xvfb  libgl1-mesa-glx xcb libxcb-xkb-dev x11-xkb-utils libx11-xcb-dev libxkbcommon-x11-dev libpci-dev libcurl4-gnutls-dev libkrb5-dev libpulse-dev libxshmfence-dev elfutils
-update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
+DEBIAN_FRONTEND=noninteractive apt-get install -y  build-essential software-properties-common libdbus-1-dev libgtk-3-dev libnotify-dev libasound2-dev libcap-dev libcups2-dev libxtst-dev libxss1 libnss3-dev curl gperf bison python3-dbusmock openjdk-8-jre wget python3-httplib2 python3-six lsof libdrm-dev libgbm-dev mesa-common-dev ninja-build cmake unzip sudo libre2-dev xvfb  libgl1-mesa-glx xcb libxcb-xkb-dev x11-xkb-utils libx11-xcb-dev libxkbcommon-x11-dev libpci-dev libcurl4-gnutls-dev libkrb5-dev libpulse-dev libxshmfence-dev elfutils
+add-apt-repository -y ppa:git-core/ppa && apt update -y && apt install git -y
 export JAVA_PATH=$(dirname $(which java))
 
 # Install gn
@@ -106,6 +106,9 @@ if [ -z "$(ls -A $CWD/electron/src)" ]; then
 	sed -i '85i \ \ \ \ info->nacl_arch = extensions::api::runtime::PLATFORM_NACL_ARCH_PPC64;' electron/shell/browser/extensions/api/runtime/electron_runtime_api_delegate.cc
 	sed -i '69i \ \ } else if (strcmp(arch, "ppc64") == 0) {' electron/shell/browser/extensions/api/runtime/electron_runtime_api_delegate.cc
 	sed -i '70i \ \ \ \ info->arch = extensions::api::runtime::PLATFORM_ARCH_PPC64;' electron/shell/browser/extensions/api/runtime/electron_runtime_api_delegate.cc
+	sed -i '24i #if !defined(__NR_faccessat2)' sandbox/linux/system_headers/ppc64_linux_syscalls.h	
+	sed -i '25i #define __NR_faccessat2 439' sandbox/linux/system_headers/ppc64_linux_syscalls.h
+	sed -i '26i #endif' sandbox/linux/system_headers/ppc64_linux_syscalls.h
 	
 	# Remove intermediate files
 	\rm -rf ${CWD}/debian
@@ -182,7 +185,7 @@ export CHROMEDRIVER_DIST=$CWD/electron/src/out/Release/chromedriver.zip
 export FFMPEG_DIST=$CWD/electron/src/out/Release/ffmpeg.zip
 export MKSNAPSHOT_DIST=$CWD/electron/src/out/Release/mksnapshot.zip
 set +x
-echo "Complete! The 9 test failures are in parity with x86. Distributable zip files located at:"
+echo "Complete! The 10 test failures are in parity with x86. Distributable zip files located at:"
 echo "1. Electron: $ELECTRON_DIST"
 echo "2. ChromeDriver: $CHROMEDRIVER_DIST"
 echo "3. FFmpeg: $FFMPEG_DIST"
