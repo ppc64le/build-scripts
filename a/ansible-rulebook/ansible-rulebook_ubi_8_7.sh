@@ -60,6 +60,9 @@ export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 pip3 install -r requirements_test.txt
 pip3 install .
 ls -lrt /usr/local/bin
+export ANSIBLE_HOME="/usr/local/bin"
+export PATH=$PATH:$ANSIBLE_HOME
+echo $PATH
 echo $PATH
  
 ansible-galaxy collection install git+https://github.com/ansible/event-driven-ansible
