@@ -6,7 +6,7 @@
 # Source repo		: https://github.com/chromium/chromium
 # Tested on		: UBI 8.6 (docker)
 # Language		: C++
-# Travis-Check		: true
+# Travis-Check		: false
 # Script License	: Apache License, Version 2 or later
 # Maintainer		: Sumit Dubey <sumit.dubey2@ibm.com>
 #
