@@ -31,12 +31,12 @@ yum install java-17-openjdk-devel openssl-devel git wget tar python39-devel.ppc6
 wget https://dlcdn.apache.org/maven/maven-3/$PACKAGE_MVN/binaries/apache-maven-$PACKAGE_MVN-bin.tar.gz
 ls /usr/local
 tar -C /usr/local/ -xzf apache-maven-$PACKAGE_MVN-bin.tar.gz
-mv /usr/local/apache-maven-$PACKAGE_MVN /usr/local/bin
+mv /usr/local/apache-maven-$PACKAGE_MVN /usr/local/maven
 ls /usr/local
 rm apache-maven-$PACKAGE_MVN-bin.tar.gz
-export M2_HOME=/usr/local/bin
+export M2_HOME=/usr/local/maven
 # update the path env. variable
-export PATH=$PATH:$M2_HOME
+export PATH=$PATH:$M2_HOME/bin
 
 
 #Check if package exists
