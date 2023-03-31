@@ -5,8 +5,8 @@
     "default_branch": "master",
     "build_script": "go_metrics_ubi8.sh",
     "package_dir": "g/go-metrics",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
+    "validate_build_script": true,
+    "use_non_root_user": false,
     "docker_build":false,
 
     "v0.4.*": {

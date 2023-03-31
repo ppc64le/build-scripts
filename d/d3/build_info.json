@@ -4,9 +4,9 @@
     "version": "v7.8.2",
     "package_dir": "d/d3/",
     "build_script": "d3_ubi_8.5.sh",
-    "validate_build_script": "true",
+    "validate_build_script": true,
     "default_branch": "main",
-    "docker_build": "false",
+    "docker_build": false,
 
     "v7.*.*": {
         "build_script": "d3_ubi_8.5.sh"
