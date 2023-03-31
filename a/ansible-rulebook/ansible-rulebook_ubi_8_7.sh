@@ -31,12 +31,12 @@ yum install java-17-openjdk-devel openssl-devel git wget tar python39-devel.ppc6
 wget https://dlcdn.apache.org/maven/maven-3/$PACKAGE_MVN/binaries/apache-maven-$PACKAGE_MVN-bin.tar.gz
 ls /usr/local
 tar -C /usr/local/ -xzf apache-maven-$PACKAGE_MVN-bin.tar.gz
-mv /usr/local/apache-maven-$PACKAGE_MVN /usr/local/maven
+mv /usr/local/apache-maven-$PACKAGE_MVN /usr/local/bin
 ls /usr/local
 rm apache-maven-$PACKAGE_MVN-bin.tar.gz
-export M2_HOME=/usr/local/maven
+export M2_HOME=/usr/local/bin
 # update the path env. variable
-export PATH=$PATH:$M2_HOME/bin
+export PATH=$PATH:$M2_HOME
 
 
 #Check if package exists
@@ -59,6 +59,7 @@ export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 
 pip3 install -r requirements_test.txt
 pip3 install .
+which ansible
 ansible-galaxy collection install git+https://github.com/ansible/event-driven-ansible
 pip3 install pyparsing jsonschema websockets drools-jpy build
 
