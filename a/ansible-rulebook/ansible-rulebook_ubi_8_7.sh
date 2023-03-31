@@ -60,6 +60,10 @@ export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 pip3 install -r requirements_test.txt
 pip3 install .
 which ansible
+export ANISBLE_PATH="/usr/local/bin:$PATH"
+export PATH=$PATH:$M2_HOME/bin:$ANISBLE_PATH
+echo $PATH
+which ansible
 ansible-galaxy collection install git+https://github.com/ansible/event-driven-ansible
 pip3 install pyparsing jsonschema websockets drools-jpy build
 
