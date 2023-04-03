@@ -5,9 +5,9 @@
     "default_branch" : "main",
     "package_dir": "d/d3-quadtree",
     "build_script": "d3-quadtree_ubi_8_5.sh",
-    "docker_build": "false",
-    "validate_build_script": "true",
-    "use_non_root_user": "false"
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false
 
 }
 
