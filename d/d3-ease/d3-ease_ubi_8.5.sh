@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : d3-ease
-# Version       : v1.0.7
+# Version       : v3.0.1
 # Source repo   : https://github.com/d3/d3-ease
 # Tested on	: UBI 8.5
-# Language      : Node
+# Language      : Javascript
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Vathsala . <vaths367@in.ibm.com>
+# Maintainer    : Vathsala . <vaths367@in.ibm.com>,Vinod K<Vinod.K1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=d3-ease
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-v1.0.7}
+PACKAGE_VERSION=${1:-v3.0.1}
 PACKAGE_URL=https://github.com/d3/d3-ease
 
 yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm git jq
