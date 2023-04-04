@@ -4,8 +4,8 @@
     "version": "v23.1.21",
     "default_branch": "master",
     "package_dir": "f/flatbuffers",
-    "validate_build_script": "true",
+    "validate_build_script": true,
     "build_script": "flatbuffers_ubi_8.5.sh",
-    "use_non_root_user": "false",
+    "use_non_root_user": false,
     "docker_build": false
 }

@@ -6,9 +6,9 @@
     "package_dir": "g/grafana/",
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "build_script" : "grafana_ubi_8.5.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build":"true",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build":true,
 
     "v8.1.*" : {
         "dir":"8.1.5_ubi8.4"

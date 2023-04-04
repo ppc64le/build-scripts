@@ -5,7 +5,7 @@
     "default_branch": "main",
     "package_dir": "a/ansible-rulebook",
     "build_script": "ansible-rulebook_ubi_8_7.sh",
-    "docker_build": "false",
-    "validate_build_script": "true",
-    "use_non_root_user": "false"
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false
 }

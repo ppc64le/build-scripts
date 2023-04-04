@@ -4,8 +4,8 @@
     "version": "0.0.17",
     "default_branch": "main",
     "package_dir": "o/opentelemetry-php",
-    "validate_build_script": "true",
+    "validate_build_script": true,
     "build_script" : "opentelemetry-php_ubi_8.5.sh",
-    "use_non_root_user": "false",
+    "use_non_root_user": false,
     "docker_build": false
 }

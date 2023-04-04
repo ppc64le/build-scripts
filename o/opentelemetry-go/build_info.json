@@ -5,8 +5,8 @@
     "default_branch": "main",
     "package_dir": "o/opentelemetry-go",
     "docker_build": false,
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
+    "validate_build_script": true,
+    "use_non_root_user": false,
     "build_script" : "opentelemetry-go_ubi_8.5.sh",
 
     "v1.*.*" : {
