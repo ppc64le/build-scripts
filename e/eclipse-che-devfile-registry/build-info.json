@@ -3,7 +3,7 @@
     "github_url":"https://github.com/eclipse-che/che-devfile-registry.git",
     "version": "7.63.0",
     "default_branch": "main",
-    "package_dir": "c/che-devfile-registry", 
+    "package_dir": "e/eclipse-che-devfile-registry", 
     "build_script": "che-devfile-registry_ubi_8.6.sh",
     "docker_build": "false",
     "validate_build_script": "true",
