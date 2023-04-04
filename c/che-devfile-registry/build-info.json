@@ -1,0 +1,11 @@
+{
+    "package_name" : "che-devfile-registry",
+    "github_url":"https://github.com/eclipse-che/che-devfile-registry.git",
+    "version": "7.63.0",
+    "default_branch": "main",
+    "package_dir": "c/che-devfile-registry", 
+    "build_script": "che-devfile-registry_ubi_8.6.sh",
+    "docker_build": "false",
+    "validate_build_script": "true",
+    "use_non_root_user": "false"
+}    
