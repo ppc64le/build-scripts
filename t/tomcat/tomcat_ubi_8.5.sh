@@ -66,14 +66,17 @@ fi
 export CATALINA_HOME=${HOME}/tomcat/output/dist
 export PATH=${HOME}/tomcat/output/dist/bin:${PATH}
 
-catalina.sh run &
-pid=$!
-wait $pid
+echo "==========================================================================="
+echo "Tomcat server installed successfully. Use below commands to start the server"
+echo "============================================================================"
 
-##Testing tomcat server
-## on port 8080
+##Testing tomcat server on port 8080
 
-curl localhost:8080
-
-#Stop the server
-catalina.sh stop
+echo "export CATALINA_HOME=${HOME}/tomcat/output/dist"
+printf 'export PATH=%s/tomcat/output/dist/bin:${PATH} \n' "${HOME}"
+echo "cd ${HOME}/tomcat/output/dist/bin"
+printf "\n"
+echo "Start the server using command(server might take few seconds to start): catalina.sh run &"
+echo "curl localhost:8080"
+printf "\n"
+echo "To stop the server: catalina.sh stop"
