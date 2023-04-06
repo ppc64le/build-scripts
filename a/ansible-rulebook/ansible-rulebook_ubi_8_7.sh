@@ -79,7 +79,7 @@ export EDA_E2E_DEFAULT_EVENT_DELAY=2
 export EDA_E2E_DEFAULT_SHUTDOWN_AFTER=60
 export EDA_E2E_OPERATORS_SHUTDOWN_AFTER=2
 echo "Ashwini1 test running on jenkins"
-if ! pytest -v -n auto; then
+if ! pytest -vv -rP tests/test_examples.py ; then
     echo "------------------$PACKAGE_NAME:test_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     exit 2
