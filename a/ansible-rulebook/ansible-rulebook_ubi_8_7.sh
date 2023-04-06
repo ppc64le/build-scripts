@@ -87,7 +87,7 @@ echo "Ashwini2 test running on jenkins"
    # exit 2
 #fi
 
-if ! pytest -vv -rP -n auto ; then
+if ! pytest -v -n auto ; then
     echo "------------------$PACKAGE_NAME:test_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     exit 2
