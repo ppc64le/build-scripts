@@ -74,10 +74,11 @@ if ! python3 -m build; then
     exit 1
 fi
 
-export EDA_E2E_CMD_TIMEOUT=1200
+export EDA_E2E_CMD_TIMEOUT=600
 export EDA_E2E_DEFAULT_EVENT_DELAY=2
-#export EDA_E2E_DEFAULT_SHUTDOWN_AFTER=30
-echo "Ashwini test running on jenkins"
+export EDA_E2E_DEFAULT_SHUTDOWN_AFTER=30
+export EDA_E2E_OPERATORS_SHUTDOWN_AFTER=2
+echo "Ashwini1 test running on jenkins"
 if ! pytest -v -n auto; then
     echo "------------------$PACKAGE_NAME:test_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
