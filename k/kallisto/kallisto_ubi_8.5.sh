@@ -52,6 +52,8 @@ if ! make ; then
        exit 1
 fi
 
+cp /usr/local/bin/bustools /usr/bin/bustools
+
 if ! make test ; then
       echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
       echo "$PACKAGE_URL $PACKAGE_NAME"
