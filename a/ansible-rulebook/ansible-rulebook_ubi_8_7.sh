@@ -76,7 +76,7 @@ fi
 
 export EDA_E2E_CMD_TIMEOUT=600
 export EDA_E2E_DEFAULT_EVENT_DELAY=2
-export EDA_E2E_DEFAULT_SHUTDOWN_AFTER=30
+export EDA_E2E_DEFAULT_SHUTDOWN_AFTER=60
 export EDA_E2E_OPERATORS_SHUTDOWN_AFTER=2
 echo "Ashwini1 test running on jenkins"
 if ! pytest -v -n auto; then
