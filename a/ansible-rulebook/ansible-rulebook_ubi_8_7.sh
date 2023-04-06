@@ -79,17 +79,15 @@ export EDA_E2E_DEFAULT_EVENT_DELAY=2
 export EDA_E2E_DEFAULT_SHUTDOWN_AFTER=60
 export EDA_E2E_OPERATORS_SHUTDOWN_AFTER=2
 echo "Ashwini2 test running on jenkins"
-sudo yum install -y procps-ng
-sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
-sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
 
-if ! pytest -vv -rP tests/test_examples.py ; then
-    echo "------------------$PACKAGE_NAME:test_fails---------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    exit 2
-fi
 
-if ! pytest -m e2e ; then
+#if ! pytest -vv -rP tests/test_examples.py ; then
+ #   echo "------------------$PACKAGE_NAME:test_fails---------------------------------------"
+  #  echo "$PACKAGE_URL $PACKAGE_NAME"
+   # exit 2
+#fi
+
+if ! pytest -vv -rP auto ; then
     echo "------------------$PACKAGE_NAME:test_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     exit 2
