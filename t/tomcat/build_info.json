@@ -5,7 +5,7 @@
     "default_branch": "master",
     "package_dir": "t/tomcat/",
     "build_script": "tomcat_ubi_8.5.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
+    "validate_build_script": true,
+    "use_non_root_user": false,
     "docker_build": false
 }
