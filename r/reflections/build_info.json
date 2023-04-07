@@ -1,0 +1,14 @@
+{
+    "package_name" : "reflections",
+    "github_url":"https://github.com/ronmamo/reflections",
+    "version": "0.10.2",
+    "default_branch" : "master",
+    "package_dir": "r/reflections",
+    "build_script": "reflections_ubi_8_5.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false
+
+}
+
+
