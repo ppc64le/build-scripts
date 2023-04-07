@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/redhat-developer/odo.git
 OS_NAME=`cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f2 | tr -d '"'`
 
 
-yum install -y bash-completion podman postfix mailx git make gcc-c++ patch
+yum install -y bash-completion podman postfix mailx git make gcc-c++ patch wget
 
 #Commenting below lines as these steps are required for verification 
 #Setting up Mail client Works only on Fyre
