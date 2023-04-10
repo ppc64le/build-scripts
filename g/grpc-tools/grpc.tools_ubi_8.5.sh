@@ -1,4 +1,3 @@
-
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
@@ -75,9 +74,3 @@ fi
 echo "Testing $PACKAGE_NAME with $PACKAGE_VERSION"
 cd Grpc.Tools.Tests
 dotnet run --framework net7.0
-
-
- 
-
-
-
