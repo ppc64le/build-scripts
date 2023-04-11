@@ -74,7 +74,7 @@ if ! make bin; then
 fi
 
 #Setting odo executable file in $PATH:
-echo "export PATH=/root/go/src/github.com/redhat-developer/odo/:$PATH" >> ~/.bashrc
+echo "export PATH=$HOME/go/src/github.com/redhat-developer/odo/:$PATH" >> ~/.bashrc
 
 #Skipping test execution due to openshift power9 fyre cluster requirement
 #make test-integration
