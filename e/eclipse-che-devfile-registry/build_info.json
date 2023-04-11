@@ -1,5 +1,5 @@
 {
-    "package_name" : "che-devfile-registry",
+    "package_name" : "eclipse-che-devfile-registry",
     "github_url":"https://github.com/eclipse-che/che-devfile-registry.git",
     "version": "7.63.0",
     "default_branch": "main",
