@@ -1,0 +1,14 @@
+{
+    "package_name" : "javaewah",
+    "github_url":"https://github.com/lemire/javaewah",
+    "version": "JavaEWAH-1.2.3",
+    "default_branch" : "master",
+    "package_dir": "j/javaewah",
+    "build_script": "javaewah_ubi_8_5.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false
+
+}
+
+
