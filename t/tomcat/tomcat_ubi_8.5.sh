@@ -10,7 +10,7 @@
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Haritha Patchari <haritha.patchari@ibm.com>
 #
-# Disclaimer: This script has been tested in non-root mode on given
+# Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
@@ -26,9 +26,9 @@ PACKAGE_URL=https://github.com/apache/tomcat.git
 OS_NAME=`cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f2 | tr -d '"'`
 
 cd ${HOME}
-sudo yum update -y
-sudo yum install -y git wget
-sudo yum install -y java-17-openjdk-devel.ppc64le
+yum update -y
+yum install -y git wget
+yum install -y java-17-openjdk-devel.ppc64le
 
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-17.0.6.0.10-3.el8_7.ppc64le
 export PATH=$JAVA_HOME/bin:$PATH
