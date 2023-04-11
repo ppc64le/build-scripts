@@ -31,8 +31,8 @@ yum install -y git wget curl gcc clang zip
 yum install -y dotnet-sdk-7.0
 
 #Install bazel 
-dnf copr enable -y vbatts/bazel
-dnf install -y bazel5
+yum copr enable -y vbatts/bazel
+yum install -y bazel5
 
 #clone the repository
 git clone $PACKAGE_URL 
