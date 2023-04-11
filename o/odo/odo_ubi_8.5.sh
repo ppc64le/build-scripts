@@ -10,7 +10,7 @@
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Chandranana Naik <Naik.Chandranana@ibm.com>
 #
-# Disclaimer: This script has been tested in root mode on given
+# Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
@@ -24,10 +24,12 @@ PACKAGE_URL=https://github.com/redhat-developer/odo.git
 
 OS_NAME=`cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f2 | tr -d '"'`
 
-
 yum install -y bash-completion podman postfix mailx git make gcc-c++ patch wget
 
-#Commenting below lines as these steps are required for verification 
+#chrony dependency is not available in yum repository of ubi containers, however it can be installed on rhel hosts
+#This build will be verified inside container
+#Hence commenting below lines which are required for verification only. 
+
 #Setting up Mail client Works only on Fyre
 #sed -i "s/inet_interfaces\(.*\)/#inet_interfaces\1\ninet_interfaces = $(hostname -i | cut -d' ' -f 2), localhost, 127.0.0.1/g" /etc/postfix/main.cf
 #sed -i "s/::1/#::1/g" /etc/hosts
@@ -60,7 +62,7 @@ if ! git clone $PACKAGE_URL; then
 fi
 
 #Build odo
-export PATH=/root/go/src/github.com/redhat-developer/odo/:$PATH
+export PATH=$HOME/go/src/github.com/redhat-developer/odo/:$PATH
 cd odo
 git checkout $PACKAGE_VERSION
 
@@ -74,6 +76,7 @@ fi
 #Setting odo executable file in $PATH:
 echo "export PATH=/root/go/src/github.com/redhat-developer/odo/:$PATH" >> ~/.bashrc
 
+#Skipping test execution due to openshift power9 fyre cluster requirement
 #make test-integration
 #make test-e2e-all
 
