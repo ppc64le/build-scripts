@@ -1,0 +1,14 @@
+{
+    "package_name" : "node-jwks-rsa",
+    "github_url": "https://github.com/auth0/node-jwks-rsa.git",
+    "version": "v3.0.1",
+    "package_dir": "n/node-jwks-rsa",
+    "default_branch": "master",
+    "build_script": "node-jwks_rsa_ubi_8.5.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+
+    "v3.*.*, v2.*.*": {
+        "build_script": "node-jwks_rsa_ubi_8.5.sh"
+    }
+}
