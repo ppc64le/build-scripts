@@ -26,10 +26,9 @@ PACKAGE_URL=https://github.com/apache/tomcat.git
 OS_NAME=`cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f2 | tr -d '"'`
 
 cd ${HOME}
-yum update -y
-TOMCAT_VERSION="11.0.0"
-yum install -y git wget
-yum install -y java-17-openjdk-devel.ppc64le
+sudo yum update -y
+sudo yum install -y git wget
+sudo yum install -y java-17-openjdk-devel.ppc64le
 
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-17.0.6.0.10-3.el8_7.ppc64le
 export PATH=$JAVA_HOME/bin:$PATH
@@ -63,9 +62,6 @@ if ! ant release ; then
        exit 1
 fi
 
-export CATALINA_HOME=${HOME}/tomcat/output/dist
-export PATH=${HOME}/tomcat/output/dist/bin:${PATH}
-
 echo "==========================================================================="
 echo "Tomcat server installed successfully. Use below commands to start the server"
 echo "============================================================================"
@@ -74,6 +70,8 @@ echo "==========================================================================
 
 echo "export CATALINA_HOME=${HOME}/tomcat/output/dist"
 printf 'export PATH=%s/tomcat/output/dist/bin:${PATH} \n' "${HOME}"
+echo "export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-17.0.6.0.10-3.el8_7.ppc64le"
+printf 'export PATH=$JAVA_HOME/bin:$PATH \n'
 echo "cd ${HOME}/tomcat/output/dist/bin"
 printf "\n"
 echo "Start the server using command(server might take few seconds to start): catalina.sh run &"
