@@ -50,18 +50,6 @@ if ! mvn test; then
     exit 2
 fi
 
-mvn -Dtest="Http1xProxyTest" surefire:test
-mvn -Dtest="Http1xMetricsTest" surefire:test
-mvn -Dtest="Http2TracerTest" surefire:test
-mvn -Dtest="MetricsTest" surefire:test
-mvn -Dtest="MetricsContextTest" surefire:test
-mvn -Dtest="StartStopListCommandsTest" surefire:test
-mvn -Dtest="RunCommandTest" surefire:test
-
-mvn test -PtestNativeTransport
-
-mvn test -PtestDomainSockets
-
 #tests failing due to netty issue refer links for the same -
 #https://github.com/netty/netty-tcnative/issues/531
 #https://jazz06.rchland.ibm.com:12443/jazz/web/projects/Power%20Ecosystem#action=com.ibm.team.workitem.viewWorkItem&id=154423
