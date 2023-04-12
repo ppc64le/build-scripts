@@ -6,7 +6,7 @@
 # Source repo    : https://github.com/apache/lucene.git
 # Tested on      : UBI: 8.5
 # Language       : Java
-# Travis-check   : true
+# Travis-Check   : true
 # Script License : Apache License 2.0
 # Maintainer     : tirumala_nithya@persistent.com
 #
