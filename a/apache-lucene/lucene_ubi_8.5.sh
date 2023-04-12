@@ -1,14 +1,13 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
-# Package           : apache-lucene
-# Version	    : releases/lucene/9.5.0
-# Source repo       : https://github.com/apache/lucene.git
-# Tested on	    : ubi 8.5
-# Language          : java
-# Travis-Check      : true
-# Script License    : Apache License, Version 2 or later
-# Maintainer	    : Pratik Tonage <Pratik.Tonage@ibm.com>
+# Package        : apache_lucene
+# Version        : releases/lucene/9.5.0
+# Source repo    : https://github.com/apache/lucene.git
+# Tested on      : UBI: 8.5
+# Language       : Java
+# Script License : Apache License 2.0
+# Maintainer     : tirumala_nithya@persistent.com
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -18,43 +17,49 @@
 #
 # ----------------------------------------------------------------------------
 
-# Variables
-PACKAGE_NAME="lucene"
+PACKAGE_NAME=lucene
+PACKAGE_URL= https://github.com/apache/lucene.git
 PACKAGE_VERSION=${1:-"releases/lucene/9.5.0"}
-PACKAGE_URL=https://github.com/apache/lucene.git
 
-# Install dependencies
-yum install -y git wget 
+yum update -y
 
-# Setup java environment
-wget https://github.com/adoptium/temurin19-binaries/releases/download/jdk-19.0.2%2B7/OpenJDK19U-jdk_ppc64le_linux_hotspot_19.0.2_7.tar.gz
-tar -C /usr/lib/ -xzf OpenJDK19U-jdk_ppc64le_linux_hotspot_19.0.2_7.tar.gz
-export JAVA_HOME=/usr/lib/jdk-19.0.2+7
-# update the path env. variable 
+#Dependencies
+
+yum install -y java-17-openjdk java-17-openjdk-devel java-17-openjdk-headless git
+
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+
 export PATH=$PATH:$JAVA_HOME/bin
 
-# clone the repository
+java --version
+
+#Cloning the repository from remote to local
+
 git clone $PACKAGE_URL
+
 cd $PACKAGE_NAME
+
 git checkout $PACKAGE_VERSION
 
-# Building latest release
-if ! ./gradlew; then
-    echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
+#Building and testing Lucene latest release
+
+if ! ./gradlew ; then
+    echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION| GitHub | Fail |  Build_Fails"
     exit 1
 fi
 
-# Testing latest release
-if ! ./gradlew test; then
-    echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
+if ! ./gradlew test ; then
+    echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION| GitHub  | Fail|  Build_and_Test_fails"
     exit 2
 else
-    echo "------------------$PACKAGE_NAME:build_&_test_both_success-------------------------"
+    echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Build_and_Test_Success"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION| GitHub  | Pass |  Both_Build_and_Test_Success"
     exit 0
 fi
+
+
