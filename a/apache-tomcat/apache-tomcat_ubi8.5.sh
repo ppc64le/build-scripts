@@ -8,7 +8,7 @@
 # Language      : Java
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Haritha Patchari <haritha.patchari@ibm.com>
+# Maintainer	: Chandranana Naik <Naik.Chandranana@ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
