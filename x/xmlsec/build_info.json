@@ -1,0 +1,16 @@
+{
+  "package_name" : "xmlsec",
+  "github_url": "https://github.com/lsh123/xmlsec.git",
+  "version": "xmlsec-1_2_37",
+  "default_branch": "master",
+  "package_dir": "x/xmlsec/",
+  "docker_build" : true,
+  "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "build_script": "xmlsec_ubi_8.5.sh",
+  "validate_build_script": true,
+  
+  "xmlsec-1_2_*" : {
+    "dir" : "ubi_8.5",
+    "build_script" : "xmlsec_ubi_8.5.sh"
+    }
+}
