@@ -116,9 +116,9 @@ zip $ENVOY_ZIP $ENVOY_BIN
 $ENVOY_BIN --version
 
 #Run tests (take several hours to execute, hence disabling by default)
-bazel test --config=clang --test_timeout=9000 --cxxopt=-fpermissive --define=wasm=disabled //test/... --cache_test_results=no --//source/extensions/filters/common/lua:moonjit=1 || true
+#bazel test --config=clang --test_timeout=9000 --cxxopt=-fpermissive --define=wasm=disabled //test/... --cache_test_results=no --//source/extensions/filters/common/lua:moonjit=1 || true
 
 #Conclude
 echo "Build successful!"
 echo "Envoy binary available at [$ENVOY_BIN]"
-echo "Redistributable zip located at [$ENVOY_ZIP]"
+echo "Redistributable zip available at [$ENVOY_ZIP]"
