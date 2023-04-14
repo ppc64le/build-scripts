@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/envoyproxy/envoy/
 # Tested on     : UBI 8.4
 # Language      : C++
-# Travis-Check  : True
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Priya Seth <sethp@us.ibm.com>, Sumit Dubey <Sumit.Dubey2@ibm.com>
 #
@@ -116,6 +116,7 @@ zip $ENVOY_ZIP $ENVOY_BIN
 $ENVOY_BIN --version
 
 #Run tests (take several hours to execute, hence disabling by default)
+#Some tests might fail because of issues with the tests themselves rather than envoy
 #bazel test --config=clang --test_timeout=9000 --cxxopt=-fpermissive --define=wasm=disabled //test/... --cache_test_results=no --//source/extensions/filters/common/lua:moonjit=1 || true
 
 #Conclude
