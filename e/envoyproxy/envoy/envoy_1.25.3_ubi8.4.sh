@@ -110,7 +110,7 @@ strip -s $ENVOY_BIN
 cp $ENVOY_BIN $wdir/envoy/
 export ENVOY_BIN=$wdir/envoy/envoy-static
 export ENVOY_ZIP=$wdir/envoy/envoy-static_${PACKAGE_VERSION}_UBI8.4.zip
-zip $ENVOY_ZIP $ENVOY_BIN
+zip $ENVOY_ZIP envoy-static
 
 # Smoke test
 $ENVOY_BIN --version
