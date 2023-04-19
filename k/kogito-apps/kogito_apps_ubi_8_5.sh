@@ -56,8 +56,6 @@ npm install -g yarn
 yarn install
 yarn run init
 
-export NODE_OPTIONS=--openssl-legacy-provider
-
 if ! yarn run build:prod; then
     echo "------------------$PACKAGE_NAME:build_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
