@@ -4,9 +4,9 @@
     "version": "v3.0.0",
     "package_dir": "d/d3-zoom/",
     "build_script": "d3-zoom_ubi_8.5.sh",
-    "validate_build_script": "true",
+    "validate_build_script": true,
     "default_branch": "main",
-    "docker_build": "false",
+    "docker_build": false,
 
     "v3.0.0": {
         "build_script": "d3-zoom_ubi_8.5.sh"

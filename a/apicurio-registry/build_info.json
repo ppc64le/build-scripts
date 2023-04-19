@@ -5,9 +5,9 @@
     "default_branch" : "main",
     "package_dir": "a/apicurio-registry",
     "build_script": "apicurio-registry_ubi_8_5.sh",
-    "docker_build": "false",
-    "validate_build_script": "true",
-    "use_non_root_user": "false"
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false
 }
 
 

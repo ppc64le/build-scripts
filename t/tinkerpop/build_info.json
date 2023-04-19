@@ -6,12 +6,12 @@
     "package_dir": "t/tinkerpop/",
     "build_script": "tinkerpop_ubi_8.5.sh",
     "docker_cmd":"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-    "docker_build": "true",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
+    "docker_build": true,
+    "validate_build_script": true,
+    "use_non_root_user": false,
 
     "3.6.*": {
-	"dir" : "3.6_ubi8",
+        "dir" : "3.6_ubi8",
         "build_script": "tinkerpop_ubi_8.5.sh"
     }
 }
