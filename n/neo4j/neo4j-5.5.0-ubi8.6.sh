@@ -6,7 +6,7 @@
 # Source repo		: https://github.com/neo4j/neo4j.git
 # Tested on		: UBI 8.6 (docker)
 # Language		: Java
-# Travis-Check		: true
+# Travis-Check		: false
 # Script License	: Apache License, Version 2 or later
 # Maintainer		: Sumit Dubey <sumit.dubey2@ibm.com>
 #
@@ -20,6 +20,8 @@
 set -eux
 
 CWD=$(pwd)
+NEO4J_VERSION=5.5.0
+MAVEN_VERSION=3.9.0
 
 #Install RHEL deps
 yum install java-17-openjdk git wget curl -y \
@@ -28,14 +30,14 @@ yum install java-17-openjdk git wget curl -y \
     && gosu nobody true
 
 #Install maven
-wget https://dlcdn.apache.org/maven/maven-3/3.9.0/binaries/apache-maven-3.9.0-bin.tar.gz
-tar xvf apache-maven-3.9.0-bin.tar.gz
-rm -rf apache-maven-3.9.0-bin.tar.gz
-PATH=$CWD/apache-maven-3.9.0/bin:$PATH
+wget https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
+tar xvf apache-maven-${MAVEN_VERSION}-bin.tar.gz
+rm -rf apache-maven-${MAVEN_VERSION}-bin.tar.gz
+PATH=$CWD/apache-maven-${MAVEN_VERSION}/bin:$PATH
 
 #Clone
 git clone https://github.com/neo4j/neo4j.git
-cd neo4j && git checkout 5.5.0
+cd neo4j && git checkout ${NEO4J_VERSION}
 
 #Add hostname
 HOST=$(hostname)
@@ -51,4 +53,17 @@ sed -i '280i \ \ \ \ \ \ \ \ \ \ \ \ }' ./community/io/src/main/java/org/neo4j/i
 
 #Build and test
 export MAVEN_OPTS="-Xmx4096m"
-mvn clean install
+ret = 0
+mvn clean install -DskipTests || ret=$?
+if [ "$ret" -ne 0 ]
+then
+	echo "FAIL: Build failed."
+	exit 1
+fi
+mvn clean install || ret=$?
+if [ "$ret" -ne 0 ]
+then
+	echo "FAIL: Tests failed."
+	exit 2
+fi
+echo "SUCCESS: Build and test success!"

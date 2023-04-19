@@ -2,15 +2,15 @@
     "package_name" : "neo4j",
     "github_url": "https://github.com/neo4j/neo4j",
     "version": "5.5.0",
-    "package_dir": "n/neo4j/5.5.0",
-    "default_branch": "5.5.0",
+    "package_dir": "n/neo4j",
+    "default_branch": "5.6",
     "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-    "build_script": "neo4j-5.5.0-ubi-8.6.sh",
+    "build_script": "neo4j-5.5.0-ubi8.6.sh",
     "docker_build": "true",
     "validate_build_script": "true",
 
     "5.5.0": {
-        "dir": "ubi_8.6",
-        "build_script": "neo4j-5.5.0-ubi-8.6.sh"
+        "dir": "5.5.0_ubi_8",
+        "build_script": "neo4j-5.5.0-ubi8.6.sh"
     }
 }
