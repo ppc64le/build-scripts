@@ -47,7 +47,7 @@ function test_with_master_without_flag_u(){
         echo "Testing $PACKAGE_PATH with master branch without flag -u"
 		# Ensure go.mod file exists
 		go mod init
-		if ! gi test ./...; then
+		if ! go test ./...; then
 		        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 		        echo "$PACKAGE_VERSION $PACKAGE_NAME" > /home/tester/output/test_fails
 		        echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master  | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > /home/tester/output/version_tracker
