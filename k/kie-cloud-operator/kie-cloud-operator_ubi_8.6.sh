@@ -28,6 +28,18 @@ wget https://github.com/operator-framework/operator-sdk/releases/download/v0.19.
 chmod +x operator-sdk-v0.19.1-ppc64le-linux-gnu
 mv operator-sdk-v0.19.1-ppc64le-linux-gnu /usr/local/bin/operator-sdk
 
+GO_VERSION=1.19
+
+wget https://golang.org/dl/go$GO_VERSION.linux-ppc64le.tar.gz
+tar -C /bin -xf go$GO_VERSION.linux-ppc64le.tar.gz
+
+rm -f go$GO_VERSION.linux-ppc64le.tar.gz
+
+export PATH=$PATH:/bin/go/bin
+export GOPATH=/home/go
+
+mkdir -p $GOPATH/src && cd $GOPATH/src
+
 if ! git clone $PACKAGE_URL; then
     echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
