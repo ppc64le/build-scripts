@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/fluent/fluent-bit
 # Tested on	: UBI 8.6
 # Language      : C++
-# Travis-Check  : false
+# Travis-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sumit Dubey <sumit.dubey2@ibm.com>
 #
