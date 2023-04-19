@@ -1,0 +1,11 @@
+{
+    "package_name" : "kogito-apps",
+    "github_url":"https://github.com/kiegroup/kogito-apps.git",
+    "version": "1.36.1.Final",
+    "default_branch": "main",
+    "package_dir": "k/kogito-apps/",
+    "build_script": "kogito_apps_ubi_8_5.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false
+}
