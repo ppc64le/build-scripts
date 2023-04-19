@@ -52,11 +52,12 @@ git checkout $PACKAGE_VERSION
 
 cd ui-packages/
 yum install npm -y
+npm config set registry http://registry.npmjs.org/
 npm install -g yarn
 yarn install
 yarn run init
 
-export NODE_OPTIONS = "--dns-result-order=ipv4first"
+export NODE_OPTIONS=--openssl-legacy-provider
 
 if ! yarn run build:prod; then
     echo "------------------$PACKAGE_NAME:build_fails---------------------------------------"
