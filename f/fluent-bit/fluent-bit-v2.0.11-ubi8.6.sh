@@ -26,6 +26,7 @@ function cleanup {
 FLUENTBIT_VERSION=${1:-v2.0.11}
 USE_CENTOS_REPOS=${2:-1}
 BUILD_HOME=$(pwd)
+SCRIPT_PATH=$(dirname $0)
 
 #Install dependencies
 if [ "$USE_CENTOS_REPOS" -eq 1 ]
@@ -42,7 +43,7 @@ cd fluent-bit/
 git checkout $FLUENTBIT_VERSION
 
 #Apply patch
-git apply ../fluent-bit-${FLUENTBIT_VERSION}.patch
+git apply $SCRIPT_PATH/fluent-bit-${FLUENTBIT_VERSION}.patch
 
 #Build
 cd $BUILD_HOME/fluent-bit/build/
