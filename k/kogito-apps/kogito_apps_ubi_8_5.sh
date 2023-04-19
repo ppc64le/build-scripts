@@ -52,7 +52,6 @@ git checkout $PACKAGE_VERSION
 
 cd ui-packages/
 yum install npm -y
-npm config set registry http://registry.npmjs.org/
 npm install -g yarn
 yarn install
 yarn run init
