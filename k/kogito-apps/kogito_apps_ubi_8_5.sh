@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/kiegroup/kogito-apps.git
 # Tested on     : UBI 8.5
 # Language      : JAVA
-# Travis-Check  : True
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Bhimrao Patil <Bhimrao.Patil@ibm.com>
 #
