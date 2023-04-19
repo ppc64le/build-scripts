@@ -4,7 +4,7 @@
 # Package	: fluent-bit
 # Version	: v2.0.11
 # Source repo	: https://github.com/fluent/fluent-bit
-# Tested on	: RHEL 8.5
+# Tested on	: UBI 8.6
 # Language      : C++
 # Travis-Check  : true
 # Script License: Apache License, Version 2 or later
