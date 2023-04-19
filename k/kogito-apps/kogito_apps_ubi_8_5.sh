@@ -23,8 +23,8 @@ PACKAGE_NAME=kogito-apps
 PACKAGE_VERSION=${1:-1.36.1.Final}
 PACKAGE_URL=https://github.com/kiegroup/kogito-apps.git
 
-sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1 ;
-sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1 ;
+sysctl -w net.ipv6.conf.all.disable_ipv6=1 ;
+sysctl -w net.ipv6.conf.default.disable_ipv6=1 ;
 
 yum update -y
 yum install -y git curl
