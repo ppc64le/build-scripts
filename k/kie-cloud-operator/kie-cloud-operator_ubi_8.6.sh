@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/kiegroup/kie-cloud-operator.git
 # Tested on     : UBI 8.6
 # Language      : Go
-# Travis-Check  : True
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Shreya Kajbaje <Shreya.Kajbaje@ibm.com>
 #
@@ -61,3 +61,5 @@ if ! make test; then
     echo "$PACKAGE_URL $PACKAGE_NAME"
     exit 2
 fi
+
+#script build and validated on host 
