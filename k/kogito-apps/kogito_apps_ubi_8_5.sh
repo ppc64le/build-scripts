@@ -23,9 +23,8 @@ PACKAGE_NAME=kogito-apps
 PACKAGE_VERSION=${1:-1.36.1.Final}
 PACKAGE_URL=https://github.com/kiegroup/kogito-apps.git
 
-yum install procps-ng -y
-sysctl -w net.ipv6.conf.all.disable_ipv6=1 ;
-sysctl -w net.ipv6.conf.default.disable_ipv6=1 ;
+echo "node-options=--max_old_space_size=4096" >> ~/.npmrc
+echo "alias npm='node --dns-result-order=ipv4first /usr/bin/npm'" >> ~/.bashrc
 
 yum update -y
 yum install -y git curl
