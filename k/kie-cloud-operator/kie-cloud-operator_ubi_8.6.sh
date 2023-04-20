@@ -22,7 +22,7 @@ PACKAGE_NAME=kie-cloud-operator
 PACKAGE_VERSION=${1:-7.13.2-2}
 PACKAGE_URL=https://github.com/kiegroup/kie-cloud-operator.git
 
-yum install -y git wget make gcc docker
+yum install -y git wget make gcc
 
 wget https://github.com/operator-framework/operator-sdk/releases/download/v0.19.1/operator-sdk-v0.19.1-ppc64le-linux-gnu
 chmod +x operator-sdk-v0.19.1-ppc64le-linux-gnu
