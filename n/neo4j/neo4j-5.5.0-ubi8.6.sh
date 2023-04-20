@@ -21,7 +21,7 @@ set -eux
 
 CWD=$(pwd)
 NEO4J_VERSION=5.5.0
-MAVEN_VERSION=3.9.0
+MAVEN_VERSION=3.8.8
 
 #Install RHEL deps
 yum install java-17-openjdk git wget curl -y \
