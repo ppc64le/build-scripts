@@ -31,7 +31,8 @@ export NVM_DIR="$HOME/.nvm" && \
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion && \
 nvm install 18.9.0 && \
 nvm use 18.9.0
-
+echo "node-options=--max_old_space_size=4096" >> ~/.npmrc
+echo "alias npm='node --dns-result-order=ipv4first /usr/bin/npm'" >> ~/.bashrc
 
 #Check if package exists
 if [ -d "$PACKAGE_NAME" ] ; then
