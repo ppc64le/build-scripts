@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------
 #
 # Package       : kiegroup
-# Version       : main
+# Version       : 1.36.1.Final
 # Source repo   : https://github.com/kiegroup/kogito-apps.git
 # Tested on     : UBI 8.5
 # Language      : JAVA
