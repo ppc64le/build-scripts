@@ -4,7 +4,7 @@
 # Package	: Traefik
 # Version	: v2.9.6
 # Source repo	: https://github.com/traefik/traefik
-# Tested on	: UBI 8.5
+# Tested on	: UBI 8.7
 # Language   	: Go
 # Travis-Check  : True
 # Script License: Apache License 2.0 or later
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_VERSION=${1:-v2.9.6}
+PACKAGE_VERSION=${1:-v2.9.10}
 PACKAGE_NAME=traefik
 PACKAGE_URL=https://github.com/traefik/traefik
 
