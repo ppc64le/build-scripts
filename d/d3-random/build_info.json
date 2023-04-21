@@ -1,0 +1,19 @@
+{
+    "package_name" : "d3-random",
+    "github_url": "https://github.com/d3/d3-random",
+    "version": "v3.0.1",
+    "default_branch": "main",
+    "package_dir": "d/d3-random/",
+    "build_script": "d3-random_ubi_8.5.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": false,
+
+    "v3.0.*" : {
+       "build_script" : "d3-random_ubi_8.5.sh"
+    },
+
+    "1.1.0" : {
+       "build_script" : "d3-random_rhel_8.3.sh"
+    }
+}
