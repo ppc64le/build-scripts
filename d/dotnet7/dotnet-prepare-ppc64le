@@ -1,0 +1,95 @@
+#!/bin/bash
+set -e
+
+BASEDIR=`pwd`
+NUGET="mono ${BASEDIR}/nuget.exe"
+PACKAGESDIR=${BASEDIR}/local-packages
+
+curl -o nuget.exe https://dist.nuget.org/win-x86-commandline/v6.0.0/nuget.exe
+${NUGET} >/dev/null
+
+git clone https://github.com/dotnet/runtime
+pushd runtime
+git checkout v7.0.0 
+git submodule init
+git submodule update
+git apply ../runtime-77269.diff
+git apply ../runtime-77270.diff
+#git apply ../runtime-77308.diff
+git apply ../runtime-77682.diff
+git apply ../runtime-78146.diff
+popd
+
+#git clone https://github.com/dotnet/roslyn
+#pushd roslyn
+#git checkout a9ddbc56659be7d9fdd956c926af3b7cd5b8e44f
+#git submodule init
+#git submodule update
+#git apply ../roslyn-patches/lambda.patch
+#git apply ../roslyn-patches/net6_fix.patch
+#popd
+
+# Remove files with crypto implementations 
+# We MUST NOT ship any files that
+# have unapproved licenses and unexpected cryptographic
+# implementations.
+# Unnecessary crypto implementation: IDEA
+#rm -r ./src/tests/JIT/Performance/CodeQuality/Bytemark/
+
+git clone https://github.com/dotnet/sdk
+pushd sdk
+git checkout v7.0.100-rtm.22521.7 
+git submodule init
+git submodule update
+ln -s ../sdk-patches patches
+sed -e "s#@@PACKAGESDIR@@#${PACKAGESDIR}#" <patches/diff-sdk-hack-localrepo.in >patches/diff-sdk-hack-localrepo
+quilt push -a
+popd
+
+git clone https://github.com/dotnet/aspnetcore
+pushd aspnetcore
+git checkout v7.0.0 
+git submodule init
+git submodule update
+git apply ../aspnetcore-44583.diff
+
+# Remove files with funny licenses and crypto implementations and 
+# other not-very-useful artifacts. We MUST NOT ship any files that
+# have unapproved licenses and unexpected cryptographic
+# implementations.
+#
+# We use rm -r (no -f) to make sure the operation fails if the files
+# are not at the expected locations. If the files are not at the
+# expected location, we need to find the new location of the files and
+# delete them, or verify that upstream has already removed the files.
+#rm -r ./src/Security/samples/ClaimsTransformation
+#rm -r ./src/Security/samples/Cookies
+#rm -r ./src/Security/samples/DynamicSchemes
+#rm -r ./src/Security/samples/Identity.ExternalClaims
+#rm -r ./src/Security/samples/PathSchemeSelection
+#rm -r ./src/Security/samples/StaticFilesAuth
+#rm -r ./src/Security/test/AuthSamples.FunctionalTests
+#rm -r ./src/SignalR/clients/java/signalr/gradle*
+
+popd
+
+git clone https://github.com/microsoft/vstest
+pushd vstest
+git checkout c02ece877c62577810f893c44279ce79af820112
+git submodule update --init --recursive --progress
+#ln -s ../vstest-patches patches
+#git apply ../vstest-patches/diff-vstest-hostmanager.patch
+#git apply ../vstest-patches/8028.patch
+#quilt push -a
+popd
+
+git clone https://github.com/dotnet/installer
+pushd installer
+git checkout v7.0.100-rtm.22521.12
+git submodule init
+git submodule update
+ln -s ../installer-patches patches
+sed -e "s#@@PACKAGESDIR@@#${PACKAGESDIR}#" <patches/diff-installer-hack-localrepo.in >patches/diff-installer-hack-localrepo
+quilt push -a
+git apply ../installer-14792.diff
+popd

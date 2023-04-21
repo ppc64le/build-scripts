@@ -69,7 +69,7 @@ def trigger_basic_validation_checks(file_name):
     else:
         raise ValueError("Build script not found.")
 
-def trigger_script_validation_checks(file_name, image_name = "registry.access.redhat.com/ubi8/ubi:8.5"):
+def trigger_script_validation_checks(file_name, image_name = "registry.access.redhat.com/ubi8/ubi:8.7"):
     # Spawn a container and pass the build script
     client = docker.DockerClient(base_url='unix://var/run/docker.sock')
     st = os.stat(file_name)
@@ -101,9 +101,18 @@ def trigger_script_validation_checks(file_name, image_name = "registry.access.re
 def validate_build_info_file(file_name):
     try:
         script_path = os.path.join(HOME, file_name)
-        json.load(open(script_path, 'r'))
+        mandatory_fields = ['package_name', 'github_url', 'version', 'default_branch', 'build_script', 'package_dir']
+        error_message = f"No `{{}}` field available in {file_name}."
+
+        data = json.load(open(script_path, 'r'))
+        # Check for mandatory fields.
+        for field in mandatory_fields:
+            if field not in data:
+                raise ValueError(error_message.format(field))
+        print("Valid file")
         return True
     except Exception as e:
+        print(str(e))
         print(f"Failed to load build_info file at {file_name} !")
         raise e
 
@@ -133,10 +142,13 @@ def trigger_build_validation_travis(pr_number):
             else:
                 print("Skipping Build script validation for {} as Travis-Check flag is set to False".format(file_name))
             # Keep track of validated files.
+            validated_file_list.append(file_name)
         elif file_name.lower().endswith('build_info.json') and status != "removed":
             validate_build_info_file(file_name)
+            # Keep track of validated files.
+            validated_file_list.append(file_name)
         
-        validated_file_list.append(file_name)
+        
 
     
     if len(validated_file_list) == 0 :

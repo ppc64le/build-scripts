@@ -1,0 +1,11 @@
+{
+    "package_name" : "apache-tomcat",
+    "github_url": "https://github.com/apache/tomcat.git",
+    "version": "11.0.0-M3",
+    "default_branch": "main",
+    "package_dir": "a/apache-tomcat/",
+    "build_script": "apache-tomcat_ubi8.5.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false
+}

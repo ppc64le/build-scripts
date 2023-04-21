@@ -1,0 +1,16 @@
+{
+    "package_name" : "jackson-modules-java8",
+    "github_url":"https://github.com/FasterXML/jackson-modules-java8",
+    "version": "jackson-modules-java8-2.14.1",
+    "default_branch": "2.15",
+    "package_dir": "j/jackson-modules-java8",
+    "build_script": "jackson_module_java8_ubi_8_5.sh",
+    "validate_build_script": true,
+    "docker_build": false,
+    "use_non_root_user": false,
+
+    "jackson-modules-java8-2.*": {
+
+        "build_script": "jackson_module_java8_ubi_8_5.sh"        
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "package_name": "d3-hierarchy",
+    "github_url": "https://github.com/d3/d3-hierarchy",
+    "version": "v3.1.2",
+    "default_branch": "main",
+    "package_dir": "d/d3-hierarchy",
+    "validate_build_script": true,
+    "build_script": "d3-hierarchy_ubi_8.5.sh",
+    "use_non_root_user": false,
+    "docker_build": false,
+	
+	
+    "v3.*.*" : {
+        "build_script" : "d3-hierarchy_ubi_8.5.sh"
+    },
+    
+    "v1.1.5" : {
+        "build_script" : "d3-hierarchy_rhel_8.3.sh"
+    }
+}

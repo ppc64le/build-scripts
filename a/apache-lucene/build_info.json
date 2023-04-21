@@ -1,0 +1,11 @@
+{
+    "package_name": "apache-lucene",
+    "github_url": "https://github.com/apache/lucene.git",
+    "version": "releases/lucene/9.5.0",
+    "default_branch": "main",
+    "package_dir": "a/apache-lucene",
+    "validate_build_script": true,
+    "build_script": "lucene_ubi_8.5.sh",
+    "use_non_root_user": false,
+    "docker_build": false
+}
