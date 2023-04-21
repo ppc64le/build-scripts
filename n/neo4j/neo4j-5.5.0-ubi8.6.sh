@@ -22,9 +22,10 @@ set -eux
 CWD=$(pwd)
 NEO4J_VERSION=5.5.0
 MAVEN_VERSION=3.8.8
+GOSU_VERSION=1.16
 
 #Install RHEL deps
-yum install java-17-openjdk git wget curl -y \
+yum install java-17-openjdk-devel git wget curl hostname -y \
     && curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-ppc64el" \
     && chmod +x /usr/local/bin/gosu \
     && gosu nobody true
@@ -53,7 +54,7 @@ sed -i '280i \ \ \ \ \ \ \ \ \ \ \ \ }' ./community/io/src/main/java/org/neo4j/i
 
 #Build and test
 export MAVEN_OPTS="-Xmx4096m"
-ret = 0
+ret=0
 mvn clean install -DskipTests || ret=$?
 if [ "$ret" -ne 0 ]
 then
