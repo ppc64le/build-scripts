@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/apache/solr
 # Install dependencies
 yum install -y wget git java-11-openjdk java-11-openjdk-devel
 
-java -XshowSettings:properties -version 2>&1 > /dev/null | grep 'java.home'
+echo `java -XshowSettings:properties -version 2>&1 > /dev/null | grep 'java.home'`
 
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.18.0.10-2.el8_7.ppc64le
 export PATH=/usr/lib/jvm/java-11-openjdk-11.0.12.0.7-0.el8_4.ppc64le/bin/:$PATH
