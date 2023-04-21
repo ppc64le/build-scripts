@@ -23,7 +23,7 @@ PACKAGE_NAME=kogito-apps
 PACKAGE_VERSION=${1:-1.36.1.Final}
 PACKAGE_URL=https://github.com/kiegroup/kogito-apps.git
 
-NODE_OPTIONS = "--dns-result-order=ipv4first"
+export NODE_OPTIONS = "--dns-result-order=ipv4first"
 
 yum update -y
 yum install -y git curl
