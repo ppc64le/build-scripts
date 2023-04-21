@@ -23,17 +23,14 @@ PACKAGE_NAME=kogito-apps
 PACKAGE_VERSION=${1:-1.36.1.Final}
 PACKAGE_URL=https://github.com/kiegroup/kogito-apps.git
 
-export NODE_OPTIONS = "--dns-result-order=ipv4first"
-
 yum update -y
 yum install -y git curl
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" 
-nvm install v18.12.0
-ln -s $HOME/.nvm/versions/node/v18.12.0/bin/node /usr/bin/node
-ln -s $HOME/.nvm/versions/node/v18.12.0/bin/npm /usr/bin/npm
+curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash && \
+export NVM_DIR="$HOME/.nvm" && \
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm && \
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion && \
+nvm install 18.9.0 && \
+nvm use 18.9.0
 
 
 #Check if package exists
