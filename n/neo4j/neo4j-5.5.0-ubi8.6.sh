@@ -25,7 +25,7 @@ MAVEN_VERSION=3.8.8
 GOSU_VERSION=1.16
 
 #Install RHEL deps
-yum install java-17-openjdk-devel git wget curl hostname -y \
+yum install java-17-openjdk-devel git wget curl hostname procps-ng -y \
     && curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-ppc64el" \
     && chmod +x /usr/local/bin/gosu \
     && gosu nobody true
