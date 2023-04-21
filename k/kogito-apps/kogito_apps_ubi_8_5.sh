@@ -28,12 +28,13 @@ echo "alias npm='node --dns-result-order=ipv4first /usr/bin/npm'" >> ~/.bashrc
 
 yum update -y
 yum install -y git curl
-curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash && \
-export NVM_DIR="$HOME/.nvm" && \
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm && \
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion && \
-nvm install 18.9.0 && \
-nvm use 18.9.0
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+nvm install v18.12.0
+ln -s $HOME/.nvm/versions/node/v18.12.0n/bin/node /usr/bin/node
+ln -s $HOME/.nvm/versions/node/v18.12.0n/bin/npm /usr/bin/npm
 
 #Check if package exists
 if [ -d "$PACKAGE_NAME" ] ; then
@@ -82,6 +83,3 @@ if ! yarn test -u; then
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
 	exit 2
 fi
-
-
-
