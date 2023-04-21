@@ -23,6 +23,9 @@ PACKAGE_NAME=kogito-apps
 PACKAGE_VERSION=${1:-1.36.1.Final}
 PACKAGE_URL=https://github.com/kiegroup/kogito-apps.git
 
+echo "node-options=--max_old_space_size=4096" >> ~/.npmrc
+echo "alias npm='node --dns-result-order=ipv4first /usr/bin/npm'" >> ~/.bashrc
+
 yum update -y
 yum install -y git curl
 curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash && \
@@ -31,8 +34,6 @@ export NVM_DIR="$HOME/.nvm" && \
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion && \
 nvm install 18.9.0 && \
 nvm use 18.9.0
-echo "node-options=--max_old_space_size=4096" >> ~/.npmrc
-echo "alias npm='node --dns-result-order=ipv4first /usr/bin/npm'" >> ~/.bashrc
 
 #Check if package exists
 if [ -d "$PACKAGE_NAME" ] ; then
