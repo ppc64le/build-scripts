@@ -18,6 +18,8 @@
 #
 # ----------------------------------------------------------------------------
 
+export NODE_OPTIONS="--dns-result-order=ipv4first"
+
 PACKAGE_NAME=devfile-converter
 PACKAGE_VERSION=${1:-main}
 PACKAGE_URL=https://github.com/che-incubator/devfile-converter.git
