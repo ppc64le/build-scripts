@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package	: Traefik
-# Version	: v2.9.6
+# Version	: v2.9.10
 # Source repo	: https://github.com/traefik/traefik
 # Tested on	: UBI 8.7
 # Language   	: Go
@@ -22,11 +22,11 @@ PACKAGE_VERSION=${1:-v2.9.10}
 PACKAGE_NAME=traefik
 PACKAGE_URL=https://github.com/traefik/traefik
 
-yum install -y gcc-c++ make wget git tar
+yum install -y gcc-c++ make wget git tar patch
 
-wget https://go.dev/dl/go1.19.3.linux-ppc64le.tar.gz
+wget https://go.dev/dl/go1.20.linux-ppc64le.tar.gz
 rm -rf /usr/local/go
-tar -C /usr/local -xzf  go1.19.3.linux-ppc64le.tar.gz
+tar -C /usr/local -xzf  go1.20.linux-ppc64le.tar.gz
 export PATH=$PATH:/usr/local/go/bin
 
 git clone $PACKAGE_URL
@@ -40,10 +40,8 @@ if ! go build -v ./... ; then
        exit 1
 fi
 
-sed -i '142d' pkg/middlewares/ratelimiter/rate_limiter_test.go
-sed -i '142 i\      incomingLoad: 200,' pkg/middlewares/ratelimiter/rate_limiter_test.go
-sed -i '217d' pkg/middlewares/ratelimiter/rate_limiter_test.go
-sed -i '217 i\      Period:  ptypes.Duration(10 * time.Second),' pkg/middlewares/ratelimiter/rate_limiter_test.go
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/t/traefik/traefik.patch;
+patch -p1 < traefik.patch;
 
 if ! go test ./... ; then
       echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"

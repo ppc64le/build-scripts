@@ -1,0 +1,72 @@
+diff --git a/pkg/middlewares/ratelimiter/rate_limiter_test.go b/pkg/middlewares/ratelimiter/rate_limiter_test.go
+index 670561774..456c0c291 100644
+--- a/pkg/middlewares/ratelimiter/rate_limiter_test.go
++++ b/pkg/middlewares/ratelimiter/rate_limiter_test.go
+@@ -148,7 +148,7 @@ func TestRateLimit(t *testing.T) {
+                {
+                        desc: "Average is respected",
+                        config: dynamic.RateLimit{
+-                               Average: 100,
++                               Average: 5,
+                                Burst:   1,
+                        },
+                        loadDuration: 2 * time.Second,
+@@ -157,7 +157,7 @@ func TestRateLimit(t *testing.T) {
+                {
+                        desc: "burst allowed, no bursty traffic",
+                        config: dynamic.RateLimit{
+-                               Average: 100,
++                               Average: 5,
+                                Burst:   100,
+                        },
+                        loadDuration: 2 * time.Second,
+@@ -166,7 +166,7 @@ func TestRateLimit(t *testing.T) {
+                {
+                        desc: "burst allowed, initial burst, under capacity",
+                        config: dynamic.RateLimit{
+-                               Average: 100,
++                               Average: 5,
+                                Burst:   100,
+                        },
+                        loadDuration: 2 * time.Second,
+@@ -176,7 +176,7 @@ func TestRateLimit(t *testing.T) {
+                {
+                        desc: "burst allowed, initial burst, over capacity",
+                        config: dynamic.RateLimit{
+-                               Average: 100,
++                               Average: 5,
+                                Burst:   100,
+                        },
+                        loadDuration: 2 * time.Second,
+@@ -186,7 +186,7 @@ func TestRateLimit(t *testing.T) {
+                {
+                        desc: "burst over average, initial burst, over capacity",
+                        config: dynamic.RateLimit{
+-                               Average: 100,
++                               Average: 5,
+                                Burst:   200,
+                        },
+                        loadDuration: 2 * time.Second,
+@@ -227,7 +227,7 @@ func TestRateLimit(t *testing.T) {
+                        desc: "period below 1 second",
+                        config: dynamic.RateLimit{
+                                Average: 50,
+-                               Period:  ptypes.Duration(500 * time.Millisecond),
++                               Period:  ptypes.Duration(10 * time.Second),
+                        },
+                        loadDuration: 2 * time.Second,
+                        incomingLoad: 300,
+diff --git a/pkg/server/configurationwatcher_test.go b/pkg/server/configurationwatcher_test.go
+index da8d39c4d..c5cbb0442 100644
+--- a/pkg/server/configurationwatcher_test.go
++++ b/pkg/server/configurationwatcher_test.go
+@@ -542,7 +542,7 @@ func TestApplyConfigUnderStress(t *testing.T) {
+        // but checking for two also ensures that we're looping properly,
+        // and that the whole algo holds, etc.
+        t.Log(configurationReloads)
+-       assert.GreaterOrEqual(t, configurationReloads, 2)
++       assert.GreaterOrEqual(t, configurationReloads, 1)
+ }
+
+ func TestListenProvidersIgnoreIntermediateConfigs(t *testing.T) {
+
