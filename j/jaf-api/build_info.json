@@ -1,0 +1,13 @@
+{
+    "package_name" : "jaf-api",
+    "github_url": "https://github.com/jakartaee/jaf-api",
+    "version": "2.1.1",
+    "default_branch": "master",
+    "package_dir": "j/jaf-api/",
+    "build_script": "jaf-api_2.1.1_ubi_8.5.sh",
+    "docker_build": false,
+
+    "2.1.*": {
+        "build_script": "jaf-api_2.1.1_ubi_8.5.sh"
+    }
+}

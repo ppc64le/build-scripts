@@ -1,0 +1,15 @@
+{
+    "package_name": "d3",
+    "github_url": "https://github.com/d3/d3.git",
+    "version": "v7.8.2",
+    "package_dir": "d/d3/",
+    "build_script": "d3_ubi_8.5.sh",
+    "validate_build_script": true,
+    "default_branch": "main",
+    "docker_build": false,
+
+    "v7.*.*": {
+        "build_script": "d3_ubi_8.5.sh"
+    }
+
+}

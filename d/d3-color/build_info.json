@@ -1,0 +1,19 @@
+{
+    "package_name" : "d3-color",
+    "github_url": "https://github.com/d3/d3-color",
+    "version": "v3.1.0",
+    "default_branch": "main",
+    "package_dir": "d/d3-color/",
+    "build_script": "d3-color_ubi_8.5.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+
+    "v3.1.*" : {
+       "build_script" : "d3-color_ubi_8.5.sh"
+    },
+
+    "1.0.3" : {
+       "build_script" : "d3-color_rhel_8.3.sh"
+    }
+}
