@@ -18,9 +18,6 @@
 #
 # ----------------------------------------------------------------------------
 
-echo "node-options=--max_old_space_size=4096" >> ~/.npmrc
-echo "alias npm='node --dns-result-order=ipv4first /usr/bin/npm'" >> ~/.bashrc
-
 PACKAGE_NAME=devfile-converter
 PACKAGE_VERSION=${1:-main}
 PACKAGE_URL=https://github.com/che-incubator/devfile-converter.git
