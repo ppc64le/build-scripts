@@ -21,7 +21,7 @@
 PACKAGE_NAME=highwayhash
 PACKAGE_URL=https://github.com/minio/highwayhash.git
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-1.0.2}
+PACKAGE_VERSION=${1:-v1.0.2}
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 #Dependencies
@@ -42,7 +42,7 @@ fi
 # Cloning the repository from remote to local
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
-git checkout v$PACKAGE_VERSION
+git checkout $PACKAGE_VERSION
 go mod tidy
 if ! go build -v ./...; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
