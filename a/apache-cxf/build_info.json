@@ -1,0 +1,11 @@
+{
+    "package_name" : "apache-cxf",
+    "github_url":"https://github.com/apache/cxf.git",
+    "version":"cxf-4.0.0",
+    "default_branch":"main",
+    "package_dir":"a/apache-cxf/",
+    "build_script" :"cxf_ubi_8.5.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false
+}

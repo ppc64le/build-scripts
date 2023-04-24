@@ -1,0 +1,156 @@
+diff --git a/WORKSPACE b/WORKSPACE
+index 0f789feb23..a96cba5013 100644
+--- a/WORKSPACE
++++ b/WORKSPACE
+@@ -16,10 +16,6 @@ load("//bazel:repositories_extra.bzl", "envoy_dependencies_extra")
+
+ envoy_dependencies_extra()
+
+-load("//bazel:python_dependencies.bzl", "envoy_python_dependencies")
+-
+-envoy_python_dependencies()
+-
+ load("//bazel:dependency_imports.bzl", "envoy_dependency_imports")
+
+ envoy_dependency_imports()
+diff --git a/bazel/foreign_cc/BUILD b/bazel/foreign_cc/BUILD
+index 1aac78152b..ebeac0de79 100644
+--- a/bazel/foreign_cc/BUILD
++++ b/bazel/foreign_cc/BUILD
+@@ -111,6 +111,7 @@ configure_make(
+     lib_source = "@com_github_moonjit_moonjit//:all",
+     out_include_dir = "include/moonjit-2.2",
+     out_static_libs = ["libluajit-5.1.a"],
++    targets = [],
+     tags = ["skip_on_windows"],
+ )
+
+diff --git a/bazel/foreign_cc/moonjit.patch b/bazel/foreign_cc/moonjit.patch
+index 5d34b8be5f..67043e772b 100644
+--- a/bazel/foreign_cc/moonjit.patch
++++ b/bazel/foreign_cc/moonjit.patch
+@@ -1,3 +1,37 @@
++diff --git a/src/host/buildvm_asm.c b/src/host/buildvm_asm.c
++index 7033e654..6bf27a33 100644
++--- a/src/host/buildvm_asm.c
+++++ b/src/host/buildvm_asm.c
++@@ -387,7 +387,7 @@ void emit_asm(BuildCtx *ctx)
++ #if !(LJ_TARGET_PS3 || LJ_TARGET_PSVITA)
++     fprintf(ctx->fp, "\t.section .note.GNU-stack,\"\"," ELFASM_PX "progbits\n");
++ #endif
++-#if LJ_TARGET_PPC && !LJ_TARGET_PS3 && !LJ_ABI_SOFTFP
+++#if LJ_TARGET_PPC && !LJ_TARGET_PS3 && !LJ_ABI_SOFTFP && !__clang__
++     /* Hard-float ABI. */
++     fprintf(ctx->fp, "\t.gnu_attribute 4, 1\n");
++ #endif
++diff --git a/src/lj_arch.h b/src/lj_arch.h
++index 2a61af9a..fb88ac18 100644
++--- a/src/lj_arch.h
+++++ b/src/lj_arch.h
++@@ -445,6 +445,16 @@
++ #error "Need at least GCC 4.8 or newer"
++ #endif
++ #endif
+++#elif LUAJIT_ARCH_PPC
+++#if __clang__
+++#if ((__clang_major__ < 3) || ((__clang_major__ == 3) && __clang_minor__ < 5)) && !defined(__NX_TOOLCHAIN_MAJOR__)
+++#error "Need at least Clang 3.5 or newer"
+++#endif
+++#else
+++#if (__GNUC__ < 4) || ((__GNUC__ == 4) && __GNUC_MINOR__ < 8)
+++#error "Need at least GCC 4.8 or newer"
+++#endif
+++#endif
++ #elif !LJ_TARGET_PS3
++ #if (__GNUC__ < 4) || ((__GNUC__ == 4) && __GNUC_MINOR__ < 3)
++ #error "Need at least GCC 4.3 or newer"
+ diff --git a/build.py b/build.py
+ new file mode 100644
+ index 00000000..dab3606c
+diff --git a/bazel/repositories_extra.bzl b/bazel/repositories_extra.bzl
+index 9d1b31c5d6..1c7273027a 100644
+--- a/bazel/repositories_extra.bzl
++++ b/bazel/repositories_extra.bzl
+@@ -1,23 +1,35 @@
+ load("@emsdk//:deps.bzl", emsdk_deps = "deps")
+-load("@rules_python//python:repositories.bzl", "python_register_toolchains")
++load("@rules_python//python:pip.bzl", "pip_install", "pip_parse")
+ load("@proxy_wasm_cpp_host//bazel/cargo/wasmtime:crates.bzl", "wasmtime_fetch_remote_crates")
+ load("//bazel/external/cargo:crates.bzl", "raze_fetch_remote_crates")
+ load("@aspect_bazel_lib//lib:repositories.bzl", "aspect_bazel_lib_dependencies")
+
+-# Python version for `rules_python`
+-PYTHON_VERSION = "3.10.2"
++# Python dependencies.
++def _python_deps():
++    pip_parse(
++        name = "base_pip3",
++        requirements_lock = "@envoy//tools/base:requirements.txt",
++        extra_pip_args = ["--require-hashes"],
++    )
++
++    # These need to use `pip_install`
++    pip_install(
++        # Note: dev requirements do *not* check hashes
++        name = "dev_pip3",
++        requirements = "@envoy//tools/dev:requirements.txt",
++    )
++    pip_install(
++        name = "fuzzing_pip3",
++        requirements = "@rules_fuzzing//fuzzing:requirements.txt",
++        extra_pip_args = ["--require-hashes"],
++    )
++
+
+ # Envoy deps that rely on a first stage of dependency loading in envoy_dependencies().
+-def envoy_dependencies_extra(python_version = PYTHON_VERSION):
++def envoy_dependencies_extra():
++    _python_deps()
+     emsdk_deps()
+     raze_fetch_remote_crates()
+     wasmtime_fetch_remote_crates()
+
+-    # Registers underscored Python minor version - eg `python3_10`
+-    python_register_toolchains(
+-        name = "python%s" % ("_".join(python_version.split(".")[:-1])),
+-        python_version = python_version,
+-        ignore_root_user_error = True,
+-    )
+-
+     aspect_bazel_lib_dependencies()
+diff --git a/bazel/rules_go.patch b/bazel/rules_go.patch
+index 39f99ebb18..dfefd55e92 100644
+--- a/bazel/rules_go.patch
++++ b/bazel/rules_go.patch
+@@ -12,6 +12,18 @@
+ # - https://github.com/bazelbuild/rules_go/pull/2542
+ # - https://github.com/envoyproxy/envoy/issues/11657
+ #
++diff --git a/go/private/platforms.bzl b/go/private/platforms.bzl
++index a16e2993..21a62e90 100644
++--- a/go/private/platforms.bzl
+++++ b/go/private/platforms.bzl
++@@ -30,7 +30,6 @@ BAZEL_GOARCH_CONSTRAINTS = {
++     "amd64": "@platforms//cpu:x86_64",
++     "arm": "@platforms//cpu:arm",
++     "arm64": "@platforms//cpu:aarch64",
++-    "ppc64": "@platforms//cpu:ppc",
++     "ppc64le": "@platforms//cpu:ppc",
++     "s390x": "@platforms//cpu:s390x",
++ }
+ diff --git a/go/private/rules/binary.bzl b/go/private/rules/binary.bzl
+ index b88dfd96..e68b5ece 100644
+ --- a/go/private/rules/binary.bzl
+diff --git a/envoy/common/optref.h b/envoy/common/optref.h
+index 869720b6ae..05e0d27af3 100644
+--- a/envoy/common/optref.h
++++ b/envoy/common/optref.h
+@@ -101,7 +101,7 @@ template <class T> struct OptRef {
+    *
+    * @return a reference_wrapper around the value.
+    */
+-  std::reference_wrapper<const T> value() const { return std::reference_wrapper<T>(*ptr_); }
++  std::reference_wrapper<const T> value() const { return std::reference_wrapper<const T>(*ptr_); }
+   std::reference_wrapper<T> value() { return std::reference_wrapper<T>(*ptr_); }
+
+   /**

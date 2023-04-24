@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : d3-ease
-# Version       : v1.0.7
+# Version       : v3.0.1
 # Source repo   : https://github.com/d3/d3-ease
 # Tested on	: UBI 8.5
-# Language      : Node
+# Language      : Javascript
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Vathsala . <vaths367@in.ibm.com>
+# Maintainer    : Vathsala . <vaths367@in.ibm.com>,Vinod K<Vinod.K1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,44 +19,52 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=d3-ease
-#PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-v1.0.7}
+PACKAGE_VERSION=${1:-v3.0.1}
 PACKAGE_URL=https://github.com/d3/d3-ease
+HOME_DIR=${PWD}
 
-yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm git jq
+yum install -y yum-utils git wget tar gzip
 
-OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
-#Check if package exists
-if [ -d "$PACKAGE_NAME" ] ; then
-  rm -rf $PACKAGE_NAME
-  echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"  
- 
-fi
- 
-if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
-        echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
-        exit 0
-fi
-cd  $PACKAGE_NAME
+#Installing Nodejs v14.21.2
+cd $HOME_DIR
+wget https://nodejs.org/dist/v14.21.2/node-v14.21.2-linux-ppc64le.tar.gz
+tar -xzf node-v14.21.2-linux-ppc64le.tar.gz
+export PATH=$HOME_DIR/node-v14.21.2-linux-ppc64le/bin:$PATH
+node -v
+npm -v
+
+#yarn installation
+npm install -g yarn
+
+#Cloning d3 repo
+cd $HOME_DIR
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
-PACKAGE_VERSION=$(jq -r ".version" package.json)
-# run the test command from test.sh
-if ! npm install && npm audit fix && npm audit fix --force; then
-        echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
-    exit 1
+
+#Install dependencies from package.json
+
+if ! yarn --frozen-lockfile ; then
+      echo "------------------$PACKAGE_NAME::Install_fails-------------------------"
+      echo "$PACKAGE_URL $PACKAGE_NAME"
+      echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail | Install_fails"
 fi
-if ! npm test; then
-    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
-    exit 1
+
+if ! yarn run eslint src test --format=compact ; then
+       echo "------------------$PACKAGE_NAME:Build_fails---------------------"
+       echo "$PACKAGE_VERSION $PACKAGE_NAME"
+       echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
+       exit 1
+fi
+
+if ! yarn test ; then
+      echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
+      echo "$PACKAGE_URL $PACKAGE_NAME"
+      echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
+      exit 2
 else
-    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
-    exit 0
+      echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
+      echo "$PACKAGE_URL $PACKAGE_NAME"
+      echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
+      exit 0
 fi

@@ -1,0 +1,20 @@
+{
+    "package_name": "d3-axis",
+    "github_url": "https://github.com/d3/d3-axis",
+    "version": "v3.0.0",
+    "default_branch": "main",
+    "package_dir": "d/d3-axis",
+    "validate_build_script": true,
+    "build_script": "d3-axis_ubi_8.5.sh",
+    "use_non_root_user": false,
+    "docker_build": false,
+	
+	
+    "v3.*.*" : {
+        "build_script" : "d3-axis_ubi_8.5.sh"
+    },
+    
+    "v1.0.8" : {
+        "build_script" : "d3-axis_rhel_8.3.sh"
+    }
+}

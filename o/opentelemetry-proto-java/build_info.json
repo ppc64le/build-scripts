@@ -2,14 +2,10 @@
     "package_name" : "opentelemetry-proto-java",
     "github_url":"https://github.com/open-telemetry/opentelemetry-proto-java",
     "version": "v0.19.0",
-    "default_branch": "main",
+    "default_branch" : "main",
     "package_dir": "o/opentelemetry-proto-java",
     "build_script": "opentelemetry-proto-java_ubi_8.5.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-
-    "v0.19.0": {
-
-        "build_script": "opentelemetry-proto-java_ubi_8.5.sh"        
-    }
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false
 }

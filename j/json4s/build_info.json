@@ -1,0 +1,16 @@
+{
+    "package_name" : "json4s",
+    "github_url": "https://github.com/json4s/json4s",
+    "version": "v4.1.0-M2",
+    "package_dir": "j/json4s",
+    "default_branch": "master",
+    "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "build_script": "json4s_ubi_8.5.sh",
+    "docker_build": true,
+    "validate_build_script": true,
+
+    "v4.1.0-M2": {
+        "dir": "ubi_8.5",
+        "build_script": "json4s_ubi_8.5.sh"
+    }
+}

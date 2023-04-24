@@ -6,8 +6,8 @@
     "package_dir": "r/rethinkdb/",
     "docker_cmd":"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "build_script": "rethinkdb_ubi_8.5.sh",
-    "docker_build": "true",
-    "validate_build_script": "true",
+    "docker_build": true,
+    "validate_build_script": true,
 
     "v2.4.*": {
         "dir": "2.4.x_ubi_8"

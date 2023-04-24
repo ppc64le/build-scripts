@@ -2,11 +2,11 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: opentelemetry-js-contrib
-# Version	: auto-instrumentations-node-v0.36.0
+# Version	: auto-instrumentations-node-v0.36.4
 # Source repo	: https://github.com/open-telemetry/opentelemetry-js-contrib
 # Tested on	: ubi 8.5
 # Language      : node
-# Travis-Check  : false
+# Travis-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>,Pratik Tonage <Pratik.Tonage@ibm.com>
 #
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME="opentelemetry-js-contrib"
-PACKAGE_VERSION=${1:-"auto-instrumentations-node-v0.36.0"}
+PACKAGE_VERSION=${1:-"auto-instrumentations-node-v0.36.4"}
 PACKAGE_URL="https://github.com/open-telemetry/opentelemetry-js-contrib"
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 HOME_DIR=$PWD
@@ -53,7 +53,7 @@ if ! npm run compile; then
 	exit 1
 fi
 
-if ! npm test; then
+if ! npm run test -- --ignore @opentelemetry/instrumentation-mongoose; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
@@ -65,8 +65,8 @@ else
 	exit 0
 fi
 
-#To run test cases in mongoose instrumentation module, it requires first to run mongodb in the background.
-#Mentioned the steps in README.md to run mongodb in the backround.
-#That's why we keep the travis check as false.
+#To run test cases in the Mongoose Instrumentation module, you must first run mongodb in the background.
+#That's why when testing we are skipping tests that require mongodb.
+#If anyone wants to run those tests,mentioned the steps in README.md to run mongodb in the backround.
 #Also need to export variable as below:
 #export MONGODB_HOST=<container_ip/container_name>

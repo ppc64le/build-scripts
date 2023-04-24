@@ -18,13 +18,13 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=babel/babel
+PACKAGE_NAME=babel
 PACKAGE_VERSION="${1:-v7.19.2}"
 PACKAGE_URL=https://github.com/babel/babel.git
 NODE_VERSION=v16.17.0
 
 WORKDIR=`pwd`
-yum install -y sudo
+sudo yum install -y sudo
 sudo yum install -y wget git gcc-c++ make
 
 wget https://nodejs.org/dist/$NODE_VERSION/node-$NODE_VERSION-linux-ppc64le.tar.gz && \

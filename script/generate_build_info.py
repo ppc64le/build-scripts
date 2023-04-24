@@ -9,6 +9,9 @@ to generate the sample build_info.json file.
 This script parse the package build-scripts and Dockerfiles available in local filesystem,
 read the data and generates the build_info contents.
 
+This script can be executed from base build-script repo folder like 
+$python3 script/generate_build_info.py
+
 Note : Content generated from this scipt are not final.
        Please review the generated build info data before committing.
 '''
@@ -73,8 +76,8 @@ def get_files_list(dirname:str, recursive:bool=True):
     return file_list
 
 path_separator = os.path.sep
-ROOT = os.path.dirname(os.path.dirname(__file__))
-
+#ROOT = os.path.dirname(os.path.dirname(__file__))
+ROOT = os.getcwd()
 package_name = input("Enter Package name (Package name should match with the directory name): ")
 #package_name = 'elasticsearch'
 package_name = package_name.lower()
