@@ -1,8 +1,9 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
+#
 # Package          : type-parser
 # Version          : master
-# Source repo      : https://github.com/drapostolos/type-parser.git
+# Source repo      : https://github.com/drapostolos/type-parser
 # Tested on        : UBI 8.5
 # Language         : Java
 # Travis-Check     : True
@@ -17,8 +18,9 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=type-parser
-PACKAGE_URL=https://github.com/drapostolos/type-parser.git
 PACKAGE_VERSION=master
+PACKAGE_URL=https://github.com/drapostolos/type-parser
+
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 #Dependencies
