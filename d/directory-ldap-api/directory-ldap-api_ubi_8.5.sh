@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package          : directory-ldap-api
-# Version          : master
+# Version          : 2.1.3
 # Source repo      : https://github.com/apache/directory-ldap-api
 # Tested on        : UBI 8.5
 # Language         : Java
@@ -18,7 +18,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=directory-ldap-api
-PACKAGE_VERSION=master
+PACKAGE_VERSION=2.1.3
 PACKAGE_URL=https://github.com/apache/directory-ldap-api
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
@@ -40,6 +40,7 @@ export PATH=$PATH:$M2_HOME/bin
 # Cloning the repository from remote to local
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 if ! mvn -U clean install -Djava.awt.headless=true -fae -B ; then
 	echo "------------------$PACKAGE_NAME:Build_fails---------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
