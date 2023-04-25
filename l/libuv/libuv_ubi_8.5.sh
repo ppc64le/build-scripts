@@ -1,5 +1,5 @@
 
-#!/bin/bash -e
+#!/bin/bash 
 # ----------------------------------------------------------------------------
 # Package          : libuv
 # Version          : v1.x
@@ -44,7 +44,7 @@ sudo chown -R libuv-tester .
 if ! sudo -u libuv-tester make check ; then
         echo "------------------$PACKAGE_NAME::build_success_but_Test_fails-------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | OS_NAME | GitHub  | Fail|  Build_succecc_and_Test_fails"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | OS_NAME | GitHub  | Fail|  Build_success_and_Test_fails"
 	exit 2
 else
 	echo "------------------$PACKAGE_NAME::build_and_Test_success-------------------------"
