@@ -52,6 +52,5 @@ fi
 
 #tests failing due to netty issue refer links for the same -
 #https://github.com/netty/netty-tcnative/issues/531
-#https://jazz06.rchland.ibm.com:12443/jazz/web/projects/Power%20Ecosystem#action=com.ibm.team.workitem.viewWorkItem&id=154423
 #https://github.com/eclipse-vertx/vert.x/issues/4227
 #https://github.com/netty/netty/issues/12432
