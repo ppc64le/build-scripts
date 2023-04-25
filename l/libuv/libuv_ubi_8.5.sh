@@ -43,15 +43,15 @@ fi
 sudo useradd -r libuv-tester
 sudo chown -R libuv-tester .
 if ! sudo -u libuv-tester make check ; then
- 	echo "------------------$PACKAGE_NAME::build_success_but_Test_fails-------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | OS_NAME | GitHub  | Fail|  Build_success_and_Test_fails"
-	exit 2
+      echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
+      echo "$PACKAGE_URL $PACKAGE_NAME"
+      echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
+      exit 2
 else
-	echo "------------------$PACKAGE_NAME::build_and_Test_success-------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
-        exit 0
+      echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
+      echo "$PACKAGE_URL $PACKAGE_NAME"
+      echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
+      exit 0
 fi
 
  
