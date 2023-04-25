@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : grizzly
-# Version          : v4.0.0
+# Version          : 4.0.0
 # Source repo      : https://github.com/eclipse-ee4j/grizzly
 # Tested on        : UBI 8.7
 # Language         : Java
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=grizzly
-PACKAGE_VERSION=${1:-v4.0.0}
+PACKAGE_VERSION=${1:-4.0.0}
 PACKAGE_URL=https://github.com/eclipse-ee4j/grizzly
 HOME_DIR=${PWD}
 
