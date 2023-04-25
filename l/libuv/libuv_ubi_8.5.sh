@@ -1,6 +1,6 @@
-
-#!/bin/bash 
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
+#
 # Package          : libuv
 # Version          : v1.x
 # Source repo      : https://github.com/libuv/libuv.git
@@ -18,8 +18,9 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=libuv
-PACKAGE_URL=https://github.com/libuv/libuv.git
 PACKAGE_VERSION=v1.x
+PACKAGE_URL=https://github.com/libuv/libuv
+
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 
