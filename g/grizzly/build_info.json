@@ -1,0 +1,25 @@
+{
+    "package_name" : "grizzly",
+    "github_url": "https://github.com/eclipse-ee4j/grizzly",
+    "version": "v4.0.0",
+    "default_branch": "master",
+    "package_dir": "g/grizzly/",
+    "docker_cmd":"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "build_script": "grizzly_ubi_8.7.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": true,
+
+    "v4.0.*" : {
+       "dir" : "4.0.0_ubi8",
+       "build_script" : "grizzly_ubi_8.7.sh"
+    },
+
+    "2.4.3" : {
+       "build_script" : "_rhel_8.3.sh"
+    }
+}
+
+
+
+
