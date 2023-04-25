@@ -1,0 +1,20 @@
+{
+    "package_name": "jnr-constants",
+    "github_url": "https://github.com/jnr/jnr-constants",
+    "version": "jnr-constants-0.10.4",
+    "default_branch": "master",
+    "package_dir": "j/jnr-constants",
+    "validate_build_script": true,
+    "build_script": "jnr-constants_ubi_8.5.sh",
+    "use_non_root_user": false,
+    "docker_build": false,
+	
+	
+    "jnr-constants-0.10.*" : {
+        "build_script" : "jnr-constants_ubi_8.5.sh"
+    },
+    
+    "0.9.9,0.9.15" : {
+        "build_script" : "jnr-constants_rhel_7.6.sh"
+    }
+}

@@ -1,9 +1,12 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: d3-axis
 # Version	: 1.0.8
 # Source repo	: https://github.com/d3/d3-axis
 # Tested on	: RHEL 8.3
+# Language      : JavaScript,HTML
+# Travis-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
@@ -16,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=d3-axis
-PACKAGE_VERSION=1.0.8
+PACKAGE_VERSION=v1.0.8
 PACKAGE_URL=https://github.com/d3/d3-axis
 
 yum -y update && yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git gcc gcc-c++ libffi libffi-devel ncurses git jq make cmake

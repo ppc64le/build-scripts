@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : caniuse-lite
-# Version       : 1.0.30001304, 1.0.30001385, 1.0.30001387
+# Version       : 1.0.30001304, 1.0.30001385, 1.0.30001387, 1.0.30001451
 # Source repo   : https://github.com/browserslist/caniuse-lite.git
 # Tested on     : UBI 8.5
 # Language      : Node
@@ -21,10 +21,10 @@
 
 PACKAGE_NAME=caniuse-lite
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-1.0.30001387}
+PACKAGE_VERSION=${1:-1.0.30001451}
 PACKAGE_URL=https://github.com/browserslist/caniuse-lite.git
 
-yum install -y git jq
+yum install -y git
 
 curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
@@ -35,26 +35,9 @@ export NVM_DIR="$HOME/.nvm"
 nvm install v15.14.0
 npm install -g pnpm
 
-OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
-
-#Check if package exists
-if [ -d "$PACKAGE_NAME" ] ; then
-  rm -rf $PACKAGE_NAME
-  echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"  
- 
-fi
-
-
-if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
-    	echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-		echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
-    	exit 0
-fi
-
+git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-PACKAGE_VERSION=$(jq -r ".version" package.json)
 
 if ! npm install --legacy-peer-deps && npm audit fix && npm audit fix --force; then
      	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
@@ -67,7 +50,7 @@ if ! npm test; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME" 
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
-	exit 1
+	exit 2
 else
 	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
