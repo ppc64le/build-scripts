@@ -16,7 +16,7 @@
     },
 
     "2.4.3" : {
-       "build_script" : "_rhel_8.3.sh"
+       "build_script" : "grizzly_rhel_7.3.sh"
     }
 }
 
