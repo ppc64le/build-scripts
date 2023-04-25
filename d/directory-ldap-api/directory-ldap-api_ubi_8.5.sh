@@ -1,8 +1,9 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
+#
 # Package          : directory-ldap-api
 # Version          : master
-# Source repo      : https://github.com/apache/directory-ldap-api.git
+# Source repo      : https://github.com/apache/directory-ldap-api
 # Tested on        : UBI 8.5
 # Language         : Java
 # Travis-Check     : True
@@ -17,8 +18,9 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=directory-ldap-api
-PACKAGE_URL=https://github.com/apache/directory-ldap-api.git
 PACKAGE_VERSION=master
+PACKAGE_URL=https://github.com/apache/directory-ldap-api
+
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 #Dependencies
