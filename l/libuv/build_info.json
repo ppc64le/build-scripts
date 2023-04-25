@@ -1,0 +1,16 @@
+{
+    "package_name": "libuv",
+    "github_url": "https://github.com/libuv/libuv.git",
+    "version": "v1.x",
+    "default_branch": "v1.x",
+    "package_dir": "l/libuv",
+    "validate_build_script": true,
+    "build_script": "libuv_ubi_8.5.sh",
+    "use_non_root_user": false,
+    "docker_build": false,
+	
+	
+    "v1.x" : {
+        "build_script" : "libuv_ubi_8.5.sh"
+    }
+ }
