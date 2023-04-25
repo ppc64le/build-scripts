@@ -1,0 +1,12 @@
+{
+    "package_name": "directory-ldap-api",
+    "github_url": "https://github.com/apache/directory-ldap-api.git",
+    "version": "master",
+    "default_branch": "master",
+    "package_dir": "d/directory-ldap-api",
+    "validate_build_script": true,
+    "build_script": "directory-ldap-api_ubi_8.5.sh",
+    "use_non_root_user": false,
+    "docker_build": false
+}
+
