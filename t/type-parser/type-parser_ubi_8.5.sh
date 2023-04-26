@@ -31,27 +31,25 @@ export PATH=$PATH:$JAVA_HOME/bin
 # Cloning the repository from remote to local
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
-
-chmod +x gradlew
-chmod +x gradle/wrapper/gradle-wrapper.jar
+git checkout $PACKAGE_VERSION
 
 if ! ./gradlew ; then
-        echo "------------------$PACKAGE_NAME:Build_fails---------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
+	echo "------------------$PACKAGE_NAME:build_fails---------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | OS_NAME | GitHub | Fail |  Build_Fails"
 	exit 1
 fi
 
 if ! ./gradlew test ; then
-        echo "------------------$PACKAGE_NAME::Build_success_but_Test_fails-------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_success_but_Test_fails"
-	exit 2
+      echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
+      echo "$PACKAGE_URL $PACKAGE_NAME"
+      echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
+      exit 2
 else
-	echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
-        exit 0
+      echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
+      echo "$PACKAGE_URL $PACKAGE_NAME"
+      echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
+      exit 0
 fi
 
 
