@@ -4,13 +4,13 @@
     "version": "master",
     "default_branch": "master",
     "package_dir": "t/type-parser",
-    "build_script": "type-parser_ubi_8.5.sh",
+    "build_script": "typeparser_ubi_8.5.sh",
     "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": false,
     
     "master" : {
-        "build_script" : "type-parser_ubi_8.5.sh"
+        "build_script" : "typeparser_ubi_8.5.sh"
     } 
 }
 
