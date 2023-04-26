@@ -4,7 +4,7 @@
 # Package       : openshift/oc
 # Version       : openshift-clients-4.12.0-202208031327
 # Source repo   : https://github.com/openshift/oc.git
-# Tested on     : UBI 8.6
+# Tested on     : UBI 8.7
 # Language      : Go
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
