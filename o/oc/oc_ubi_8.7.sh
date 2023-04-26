@@ -36,9 +36,9 @@ export GOPATH=/home/go
 
 mkdir -p $GOPATH/src && cd $GOPATH/src
 
-dnf install krb5-devel
-dnf install gpgme-devel
-dnf install libassuan-devel
+dnf install -y krb5-devel
+dnf install -y gpgme-devel
+dnf install -y libassuan-devel
 
 if ! git clone $PACKAGE_URL; then
     echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
