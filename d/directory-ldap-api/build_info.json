@@ -1,7 +1,7 @@
 {
     "package_name": "directory-ldap-api",
     "github_url": "https://github.com/apache/directory-ldap-api",
-    "version": "2.1.3",
+    "version": "master",
     "default_branch": "master",
     "package_dir": "d/directory-ldap-api",
     "build_script": "directory-ldap-api_ubi_8.5.sh",
@@ -10,7 +10,7 @@
     "use_non_root_user": false,
     
     
-     "2.1.3" : {
+     "master" : {
         "build_script" : "directory-ldap-api_ubi_8.5.sh"
     }
 
