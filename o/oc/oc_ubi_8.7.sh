@@ -43,7 +43,7 @@ dnf install -y libassuan-devel
 if ! git clone $PACKAGE_URL; then
     echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    exit 0
+    exit
 fi
 
 cd $PACKAGE_NAME
