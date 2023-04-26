@@ -3,7 +3,7 @@
 #
 # Package          : directory-ldap-api
 # Version          : 2.1.3
-# Source repo      : https://github.com/apache/directory-ldap-api
+# Source repo      : https://github.com/apache/directory-ldap-api.git
 # Tested on        : UBI 8.5
 # Language         : Java
 # Travis-Check     : True
