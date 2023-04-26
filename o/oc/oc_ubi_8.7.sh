@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=openshift/oc
+PACKAGE_NAME=oc
 PACKAGE_VERSION=${1:-openshift-clients-4.12.0-202208031327}
 PACKAGE_URL=https://github.com/openshift/oc.git
 
