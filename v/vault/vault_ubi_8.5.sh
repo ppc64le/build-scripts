@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=vault
-PACKAGE_VERSION=${1:-v1.12.3}
+PACKAGE_VERSION=${1:-v1.13.1}
 GO_VERSION=${GO_VERSION:-1.19.6}
 PACKAGE_URL=https://github.com/hashicorp/vault
 
