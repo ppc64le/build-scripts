@@ -51,11 +51,3 @@ else
       echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
       exit 0
 fi
-
-
-
-
-
-
-
-
