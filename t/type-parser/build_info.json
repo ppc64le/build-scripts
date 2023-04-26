@@ -9,12 +9,8 @@
     "validate_build_script": true,
     "use_non_root_user": false,
     
-	
-	
     "master" : {
         "build_script" : "type-parser_ubi_8.5.sh"
-    }
-    
-    
+    } 
 }
 
