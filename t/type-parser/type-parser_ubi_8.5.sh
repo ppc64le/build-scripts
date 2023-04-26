@@ -31,6 +31,10 @@ export PATH=$PATH:$JAVA_HOME/bin
 # Cloning the repository from remote to local
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
+
+chmod +x gradlew
+chmod +x gradle/wrapper/gradle-wrapper.jar
+
 if ! ./gradlew ; then
         echo "------------------$PACKAGE_NAME:Build_fails---------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
