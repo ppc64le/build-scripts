@@ -7,7 +7,15 @@
     "build_script": "reflections_ubi_8_5.sh",
     "docker_build": false,
     "validate_build_script": true,
-    "use_non_root_user": false
+    "use_non_root_user": false,
+
+    "0.10.*" : {
+       "build_script" : "reflections_ubi_8_5.sh"
+    },
+
+    "0.9.12" : {
+       "build_script" : "reflections_ubi_8_5.sh"
+    }
 
 }
 
