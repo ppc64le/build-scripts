@@ -19,11 +19,9 @@
 
 PACKAGE_NAME=javaewah
 PACKAGE_VERSION=master
-PACKAGE_URL=https://github.com/lemire/javaewah.git
+PACKAGE_URL=https://github.com/lemire/javaewah
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
-
-
 
 #Dependencies
 yum install -y java-17-openjdk-devel wget git 
