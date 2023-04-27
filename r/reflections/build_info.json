@@ -1,6 +1,6 @@
 {
     "package_name" : "reflections",
-    "github_url":"https://github.com/ronmamo/reflections",
+    "github_url": "https://github.com/ronmamo/reflections",
     "version": "0.10.2",
     "default_branch" : "master",
     "package_dir": "r/reflections",
