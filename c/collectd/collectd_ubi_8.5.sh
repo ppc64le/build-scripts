@@ -38,22 +38,23 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 ./build.sh
 ./configure $CONFIGURE_FLAGS
-if ! make $MAKEFLAGS ; then
-	echo "------------------$PACKAGE_NAME:Build_fails---------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
-        exit 1
+if ! make $MAKEFLAGS; then
+    echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
+    exit 1
 fi
 make $MAKEFLAGS check
 cat ./test-suite.log || true
-if ! make $MAKEFLAG distcheck DISTCHECK_CONFIGURE_FLAGS="--disable-dependency-tracking --enable-debug" ; then
-	echo "------------------$PACKAGE_NAME::Build_success_but_Test_fails-------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_success_but_Test_fails"
-        exit 2
+ 
+if ! make $MAKEFLAG distcheck DISTCHECK_CONFIGURE_FLAGS="--disable-dependency-tracking --enable-debug"; then
+    echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  build_success_but_test_Fails"
+    exit 2
 else
-	echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
-        exit 0
+    echo "------------------$PACKAGE_NAME:build_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  both_build_and_test_success"
+    exit 0
 fi
