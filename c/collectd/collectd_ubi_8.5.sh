@@ -25,7 +25,7 @@ OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 
 #Dependencies
-yum install git autoconf automake libtool wget make perl bzip2 m4 -y
+yum install -y git autoconf automake libtool wget make perl bzip2 m4 
 wget https://rpmfind.net/linux/centos/8-stream/AppStream/ppc64le/os/Packages/flex-2.6.1-9.el8.ppc64le.rpm
 rpm -i flex-2.6.1-9.el8.ppc64le.rpm
 #flex --version
@@ -57,9 +57,3 @@ else
       echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
       exit 0
 fi
-
-
-
-
-
-
