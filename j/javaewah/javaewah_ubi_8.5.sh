@@ -3,7 +3,7 @@
 #
 # Package          : javaewah
 # Version          : master
-# Source repo      : https://github.com/lemire/javaewah.git
+# Source repo      : https://github.com/lemire/javaewah
 # Tested on        : UBI 8.5
 # Language         : Java
 # Travis-Check     : True
@@ -41,20 +41,20 @@ export PATH=$PATH:$M2_HOME/bin
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 if ! mvn clean install -DskipTests -Dgpg.skip=true ; then
-	echo "------------------$PACKAGE_NAME:Build_fails---------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
-        exit 1
+    echo "------------------$PACKAGE_NAME:Build_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
+    exit 1
 fi
 
 if ! mvn test ; then
-	echo "------------------$PACKAGE_NAME::Build_success_but_Test_fails-------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_success_but_Test_fails"
-        exit 2
+    echo "------------------$PACKAGE_NAME::Build_success_but_Test_fails-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_success_but_Test_fails"
+    exit 2
 else
-	echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
-        exit 0
+    echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
+    exit 0
 fi
