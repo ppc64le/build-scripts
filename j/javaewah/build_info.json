@@ -9,7 +9,7 @@
     "validate_build_script": true,
     "use_non_root_user": false,
  
-    "1.2.*": {
+    "JavaEWAH-1.2*": {
        "build_script": "javaewah_ubi_8_5.sh"
     }
 
