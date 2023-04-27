@@ -23,6 +23,7 @@ PACKAGE_URL=https://github.com/lemire/javaewah
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
+yum update -y
 #Dependencies
 yum install -y java-17-openjdk-devel wget git 
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
