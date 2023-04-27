@@ -9,7 +9,7 @@
     "validate_build_script": true,
     "use_non_root_user": false,
 
-    "2.2.*": {
+    "jnr-ffi-2.2.*": {
        "build_script": "jnr-ffi_ubi_8_5.sh"
     }
 
