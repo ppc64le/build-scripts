@@ -38,6 +38,8 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+sed -i "s/go-bindata@latest/go-bindata@v3.24.0/" build/assets.sh
+
 if ! make build ; then
         echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
