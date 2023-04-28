@@ -1,0 +1,19 @@
+{
+    "package_name" : "engine.io-parser",
+    "github_url": "https://github.com/socketio/engine.io-parser",
+    "version": "5.0.6",
+    "default_branch": "main",
+    "package_dir": "e/engine.io-parser/",
+    "build_script": "engine.io-parser_ubi_8.7.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": false,
+
+    "5.0.*" : {
+       "build_script" : "engine.io-parser_ubi_8.7.sh"
+    },
+
+    "2.1.3" : {
+       "build_script" : "engine.io-parser_rhel_7.6.sh"
+    }
+}
