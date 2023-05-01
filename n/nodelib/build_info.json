@@ -7,5 +7,5 @@
     "build_script": "nodelib_ubi_8.7.sh",
     "docker_build": false,
     "validate_build_script": true,
-    "use_non_root_user": false,
+    "use_non_root_user": false
 }
