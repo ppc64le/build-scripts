@@ -53,7 +53,23 @@ cd ..
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-./mvnw clean install -DskipTests -Dtcnative.classifier=linux-ppcle_64-fedora
-#Skipping some modules due to netty-handler module issue 
-./mvnw test -Dtcnative.classifier=linux-ppcle_64-fedora -pl -:netty-handler,-:netty-codec,-:netty-codec-http2,-:netty-codec-http,-:netty-handler-ssl-ocsp,-:netty-transport-sctp,-:netty-transport-native-epoll,-:netty-testsuite-osgi
+
+if ! ./mvnw clean install -DskipTests -Dtcnative.classifier=linux-ppcle_64-fedora ; then
+       echo "------------------$PACKAGE_NAME:Install_fails---------------------"
+       echo "$PACKAGE_VERSION $PACKAGE_NAME"
+       echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
+       exit 1
+fi
+
+if ! ./mvnw test -Dtcnative.classifier=linux-ppcle_64-fedora -pl -:netty-handler,-:netty-codec,-:netty-codec-http2,-:netty-codec-http,-:netty-handler-ssl-ocsp,-:netty-transport-sctp,-:netty-transport-native-epoll,-:netty-testsuite-osgi ; then
+      echo "------------------$PACKAGE_NAME::Install_and_Test_fails-------------------------"
+      echo "$PACKAGE_URL $PACKAGE_NAME"
+      echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
+      exit 2
+else
+      echo "------------------$PACKAGE_NAME::Install_and_Test_success-------------------------"
+      echo "$PACKAGE_URL $PACKAGE_NAME"
+      echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
+      exit 0
+fi
 
