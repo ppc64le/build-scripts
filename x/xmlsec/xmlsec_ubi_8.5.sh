@@ -46,7 +46,8 @@ elif ! make install; then
         echo "Install Fails"
 	exit 1
 else
-        xmlsec1 --version
+        export PATH=/usr/local/bin:$PATH
+	xmlsec1 --version
         echo "Build, Install and Test Success"
         exit 0
 fi
