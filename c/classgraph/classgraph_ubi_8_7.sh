@@ -51,7 +51,7 @@ cd narcissus
 git checkout narcissus-1.0.7 
 mvn clean install 
 cd ..
-cp /root/.m2/repository/io/github/toolfactory/narcissus/1.0.7/narcissus-1.0.7.jar usr/local/maven/
+cp /root/.m2/repository/io/github/toolfactory/narcissus/1.0.7/narcissus-1.0.7.jar /usr/local/maven/
 export LD_LIBRARY_PATH=/usr/local/maven/lib:$LD_LIBRARY_PATH
 
 #Check if package exists
