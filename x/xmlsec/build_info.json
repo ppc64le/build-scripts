@@ -9,7 +9,7 @@
   "build_script": "xmlsec_ubi_8.5.sh",
   "validate_build_script": true,
   
-  "xmlsec-1_2_37" : {
+  "xmlsec-1_2_*" : {
     "dir" : "ubi_8.5",
     "build_script" : "xmlsec_ubi_8.5.sh"
     }
