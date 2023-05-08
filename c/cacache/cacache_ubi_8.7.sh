@@ -23,7 +23,7 @@ PACKAGE_NAME=cacache
 PACKAGE_URL=https://github.com/npm/cacache
 HOME_DIR=${PWD}
 
-yum install git wget curl tar gcc gcc-c++
+yum install -y git wget curl tar gcc gcc-c++ 
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
