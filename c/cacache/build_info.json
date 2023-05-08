@@ -1,0 +1,20 @@
+{
+    "package_name" : "cacache",
+    "github_url": "https://github.com/npm/cacache",
+    "version": "v17.0.7",
+    "default_branch": "main",
+    "package_dir": "c/cacache/",
+    "build_script": "cacache_ubi_8.7.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": false,
+
+    "v17.0.*" : {
+       "build_script" : "cacache_ubi_8.7.sh"
+    },
+
+    "v12.0.3" : {
+       "build_script" : "cacache_ubi_8.5.sh"
+    }
+}
+ 
