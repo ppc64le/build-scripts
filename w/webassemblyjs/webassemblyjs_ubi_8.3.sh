@@ -4,6 +4,8 @@
 # Version         : v1.7.10
 # Source repo     : https://github.com/xtuc/webassemblyjs
 # Tested on       : ubi:8.3
+# Language        : JavaScript
+# Travis-Check    : true
 # Script License  : MIT License
 # Maintainer      : srividya chittiboina <Srividya.Chittiboina@ibm.com>
 #
