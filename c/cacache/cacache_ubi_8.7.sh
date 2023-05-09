@@ -35,7 +35,6 @@ export NVM_DIR="$HOME/.nvm"
 nvm install 18
 nvm use 18
 
-
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
