@@ -23,7 +23,6 @@ PACKAGE_VERSION=${1:-0.1.1}
 PACKAGE_URL=https://github.com/ansible/ansible-sign.git
 
 yum install openssl-devel git wget tar python39-devel.ppc64le gcc rust cargo gcc-c++ cmake.ppc64le -y
-yum install tmux
 pip3 install tox
 pip3 install build
 
