@@ -35,8 +35,8 @@ tar -C /bin -xf go$GO_VERSION.linux-ppc64le.tar.gz
 
 rm -f go$GO_VERSION.linux-ppc64le.tar.gz
 
-export PATH=$PATH:/bin/go/bin
-export GOPATH=/home/go
+export PATH=$PATH:/bin/go/bin:/usr/local/bin
+export GOPATH=$HOME/go
 
 mkdir -p $GOPATH/src && cd $GOPATH/src
 
