@@ -50,6 +50,8 @@ cd $PACKAGE_NAME
 
 git checkout $PACKAGE_VERSION
 
+sed -i 's/'registry.redhat.io'/'registry.access.redhat.com'/g' build/Dockerfile
+
 if ! BUILDER=docker make; then
     echo "------------------$PACKAGE_NAME:build_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
