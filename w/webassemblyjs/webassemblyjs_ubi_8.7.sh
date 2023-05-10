@@ -20,7 +20,7 @@
 
 # Variables
 PACKAGE_NAME="webassemblyjs"
-PACKAGE_VERSION=${1:-"1.11.4"}
+PACKAGE_VERSION=${1:-"v1.11.4"}
 PACKAGE_URL=https://github.com/xtuc/webassemblyjs.git
 HOME_DIR=${PWD}
 
