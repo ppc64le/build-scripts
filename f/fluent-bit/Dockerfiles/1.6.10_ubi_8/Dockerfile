@@ -1,8 +1,8 @@
 FROM registry.access.redhat.com/ubi8/ubi:8.7
 
 ENV FLUENTBIT_VERSION=v1.6.10
-#ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/f/fluent-bit/fluent-bit_${FLUENTBIT_VERSION}.patch
-ENV PATCH_FILE=https://raw.githubusercontent.com/sumitd2/build-scripts/fluent-bit-1.6.10/f/fluent-bit/fluent-bit_${FLUENTBIT_VERSION}.patch
+ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/f/fluent-bit/fluent-bit_${FLUENTBIT_VERSION}.patch
+#ENV PATCH_FILE=https://raw.githubusercontent.com/sumitd2/build-scripts/fluent-bit-1.6.10/f/fluent-bit/fluent-bit_${FLUENTBIT_VERSION}.patch
 
 #Install required repos
 RUN dnf -y install --nogpgcheck https://vault.centos.org/8.5.2111/BaseOS/ppc64le/os/Packages/centos-linux-repos-8-3.el8.noarch.rpm \
@@ -28,7 +28,7 @@ RUN yum install gcc gcc-c++ libyaml-devel wget cmake3 python3 git openssl-devel 
     && echo "exit 0;" >> configure \
     && chmod +x configure \
     && cd ../../build \
-    && cmake -DFLB_DEBUG=On .. \
+    && cmake .. -DFLB_TESTS_RUNTIME=On -DFLB_TESTS_INTERNAL=On  \
     && make -j $(nproc) \
     && mkdir -p /fluent-bit/bin /fluent-bit/etc /fluent-bit/log \
     && install bin/fluent-bit /fluent-bit/bin/ \
