@@ -40,8 +40,8 @@ if ! go build -v ./... ; then
        exit 1
 fi
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/t/traefik/traefik.patch;
-patch -p1 < traefik.patch;
+sed -i '230d' pkg/middlewares/ratelimiter/rate_limiter_test.go
+sed -i '230 i\      Period:  ptypes.Duration(10 * time.Second),' pkg/middlewares/ratelimiter/rate_limiter_test.go
 
 if ! go test ./... ; then
       echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
