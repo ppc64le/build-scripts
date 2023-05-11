@@ -9,10 +9,6 @@
     "validate_build_script": true,
     "use_non_root_user": false,
 
-    "1.23": {
-       "build_script": "animal-sniffer_ubi_8_7.sh"
-    },
- 
     "animal-sniffer-parent-1.2*": {
        "build_script": "animal-sniffer_ubi_8_7.sh"
     }
