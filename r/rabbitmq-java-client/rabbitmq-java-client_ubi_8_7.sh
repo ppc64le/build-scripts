@@ -23,7 +23,7 @@ set -e
 PACKAGE_NAME=rabbitmq-java-client
 PACKAGE_URL=https://github.com/rabbitmq/rabbitmq-java-client
 
-# Default tag jenarabbitmq-java-client
+#Default tag rabbitmq-java-client
 if [ -z "$1" ]; then
   export PACKAGE_VERSION="v5.17.0"
 else
