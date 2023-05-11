@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package	: Traefik
-# Version	: v2.9.10
+# Version	: v2.10.1
 # Source repo	: https://github.com/traefik/traefik
 # Tested on	: UBI 8.7
 # Language   	: Go
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_VERSION=${1:-v2.9.10}
+PACKAGE_VERSION=${1:-v2.10.1}
 PACKAGE_NAME=traefik
 PACKAGE_URL=https://github.com/traefik/traefik
 
