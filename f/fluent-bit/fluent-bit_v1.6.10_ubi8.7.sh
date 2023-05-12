@@ -4,7 +4,7 @@
 # Package	: fluent-bit
 # Version	: v1.6.10
 # Source repo	: https://github.com/fluent/fluent-bit
-# Tested on	: RHEL 8.5
+# Tested on	: RHEL 8.7
 # Language      : C++
 # Travis-Check  : true
 # Script License: Apache License, Version 2 or later
@@ -28,7 +28,7 @@ PKG_VERSION=${1:-v1.6.10}
 PKG_URL=https://github.com/fluent/fluent-bit.git
 USE_CENTOS_REPOS=${2:-1}
 BUILD_HOME=$(pwd)
-SCRIPT_PATH=$(dirname $0)
+SCRIPT_PATH=$(dirname $BUILD_HOME)
 
 #Install dependencies
 if [ "$USE_CENTOS_REPOS" -eq 1 ]
@@ -45,7 +45,7 @@ cd $PKG_NAME
 git checkout $PKG_VERSION
 
 #Apply patch
-git apply ../fluent-bit_$PKG_VERSION.patch
+git apply $SCRIPT_PATH/fluent-bit_$PKG_VERSION.patch
 
 #Get moonjit and create ./configure
 cd $BUILD_HOME/$PKG_NAME/lib/
