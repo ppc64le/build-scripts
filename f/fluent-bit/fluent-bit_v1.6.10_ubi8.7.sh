@@ -28,7 +28,7 @@ PKG_VERSION=${1:-v1.6.10}
 PKG_URL=https://github.com/fluent/fluent-bit.git
 USE_CENTOS_REPOS=${2:-1}
 BUILD_HOME=$(pwd)
-SCRIPT_PATH=$(realpath $0)
+SCRIPT_PATH=$(dirname $(realpath $0))
 
 #Install dependencies
 if [ "$USE_CENTOS_REPOS" -eq 1 ]
