@@ -45,7 +45,7 @@ cd $PKG_NAME
 git checkout $PKG_VERSION
 
 #Apply patch
-git apply $SCRIPT_PATH/fluent-bit_$PKG_VERSION.patch
+git apply $BUILD_HOME/fluent-bit_$PKG_VERSION.patch
 
 #Get moonjit and create ./configure
 cd $BUILD_HOME/$PKG_NAME/lib/
