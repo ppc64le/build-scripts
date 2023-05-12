@@ -28,7 +28,7 @@ PKG_VERSION=${1:-v1.6.10}
 PKG_URL=https://github.com/fluent/fluent-bit.git
 USE_CENTOS_REPOS=${2:-1}
 BUILD_HOME=$(pwd)
-SCRIPT_PATH=$(dirname $BUILD_HOME)
+SCRIPT_PATH=$(realpath $0)
 
 #Install dependencies
 if [ "$USE_CENTOS_REPOS" -eq 1 ]
@@ -45,7 +45,7 @@ cd $PKG_NAME
 git checkout $PKG_VERSION
 
 #Apply patch
-git apply $BUILD_HOME/fluent-bit_$PKG_VERSION.patch
+git apply $SCRIPT_PATH/fluent-bit_$PKG_VERSION.patch
 
 #Get moonjit and create ./configure
 cd $BUILD_HOME/$PKG_NAME/lib/
