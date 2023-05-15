@@ -1,16 +1,28 @@
 FROM registry.access.redhat.com/ubi8/ubi:8.7
 
-ENV FLUENTBIT_VERSION=v1.6.10
-ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/f/fluent-bit/fluent-bit_${FLUENTBIT_VERSION}.patch
-#ENV PATCH_FILE=https://raw.githubusercontent.com/sumitd2/build-scripts/fluent-bit-1.6.10/f/fluent-bit/fluent-bit_${FLUENTBIT_VERSION}.patch
+LABEL "name"="Fluent Bit"
+LABEL "vendor"="IBM"
+LABEL "version"="1.6.10"
+LABEL "release"="1.6.10"
+LABEL "summary"="Fluent Bit 1.6.10"
+LABEL "description"="Fluent Bit 1.6.10"
 
-#Install required repos
+ENV FLUENTBIT_VERSION=v1.6.10
+#ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/f/fluent-bit/fluent-bit_${FLUENTBIT_VERSION}.patch
+ENV PATCH_FILE=https://raw.githubusercontent.com/sumitd2/build-scripts/fluent-bit-1.6.10/f/fluent-bit/fluent-bit_${FLUENTBIT_VERSION}.patch
+
+RUN groupadd -r fluent --gid=1000; \
+    useradd -r -g fluent --uid=1000 fluent;
+
 RUN dnf -y install --nogpgcheck https://vault.centos.org/8.5.2111/BaseOS/ppc64le/os/Packages/centos-linux-repos-8-3.el8.noarch.rpm \
     https://vault.centos.org/8.5.2111/BaseOS/ppc64le/os/Packages/centos-gpg-keys-8-3.el8.noarch.rpm \
     && sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Linux-* \
     && sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-*
 
 RUN yum install gcc gcc-c++ libyaml-devel wget cmake3 python3 git openssl-devel flex bison diffutils autoconf postgresql-devel cyrus-sasl-devel systemd-devel valgrind-devel libarchive glibc-devel nc -y \
+    && mkdir /licenses \
+    && cd /licenses \
+    && wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/f/fluent-bit/LICENSE \
     && cd /tmp \
     && git clone https://github.com/fluent/fluent-bit.git \
     && cd fluent-bit \
@@ -47,6 +59,8 @@ RUN yum install gcc gcc-c++ libyaml-devel wget cmake3 python3 git openssl-devel 
 
 #Expose port
 EXPOSE 2020
+
+USER fluent
 
 #Entry point
 CMD ["/fluent-bit/bin/fluent-bit", "-c", "/fluent-bit/etc/fluent-bit.conf"]

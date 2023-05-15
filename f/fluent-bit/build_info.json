@@ -5,12 +5,12 @@
     "package_dir": "f/fluent-bit",
     "default_branch": "master",
     "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-    "build_script": "fluent-bit_v1.6.10_ubi8.7.sh",
+    "build_script": "fluent-bit_v1.6.10_ubi_8.7.sh",
     "docker_build": "true",
     "validate_build_script": "true",
 
     "v1.6.10": {
         "dir": "1.6.10_ubi_8",
-        "build_script": "fluent-bit_v1.6.10_ubi8.7.sh"
+        "build_script": "fluent-bit_v1.6.10_ubi_8.7.sh"
     }
 }
