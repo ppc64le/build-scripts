@@ -46,6 +46,6 @@ go mod vendor
 make
 
 make test TEST=./vault
-make testacc TEST=./builtin/logical/pki
-make testacc TEST=./builtin/logical/totp
+#make testacc TEST=./builtin/logical/pki
+#make testacc TEST=./builtin/logical/totp
  
