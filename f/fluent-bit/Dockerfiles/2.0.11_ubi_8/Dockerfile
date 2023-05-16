@@ -8,7 +8,7 @@ LABEL "summary"="Fluent Bit 2.0.11"
 LABEL "description"="Fluent Bit 2.0.11"
 
 ENV FLUENTBIT_VERSION=v2.0.11
-ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/f/fluent-bit/fluent-bit-${FLUENTBIT_VERSION}.patch
+ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/f/fluent-bit/fluent-bit_${FLUENTBIT_VERSION}.patch
 
 RUN groupadd -r fluent --gid=1000; \
     useradd -r -g fluent --uid=1000 fluent;
@@ -25,7 +25,7 @@ RUN yum install gcc gcc-c++ libyaml-devel wget cmake3 python3 git openssl-devel 
     && cd fluent-bit \
     && git checkout $FLUENTBIT_VERSION \
     && wget ${PATCH_FILE} \
-    && git apply fluent-bit-${FLUENTBIT_VERSION}.patch \
+    && git apply fluent-bit_${FLUENTBIT_VERSION}.patch \
     && cd build \
     && cmake -DFLB_RELEASE=On .. \
     && make -j $(nproc) \
