@@ -1,7 +1,7 @@
 {
     "package_name" : "webassemblyjs",
     "github_url": "https://github.com/xtuc/webassemblyjs.git",
-    "version": "v1.11.4",
+    "version": "v1.11.3",
     "default_branch" : "master",
     "package_dir": "w/webassemblyjs",
     "build_script": "webassemblyjs_ubi_8.7.sh",
