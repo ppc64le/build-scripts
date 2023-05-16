@@ -21,7 +21,7 @@ set -e
 
 PACKAGE_NAME=ansible
 PACKAGE_URL=https://github.com/ansible/ansible
-PACKAGE_VERSION=${1:-devel}
+PACKAGE_VERSION=${1:-v2.15.0}
 PACKAGE_MVN=${PACKAGE_MVN:-"3.8.8"}
 
 yum install java-17-openjdk-devel openssl-devel git wget tar python39-devel.ppc64le gcc rust cargo man gcc-c++ cmake.ppc64le -y
