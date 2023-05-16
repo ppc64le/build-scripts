@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package	    : webassemblyjs
-# Version	    : v1.11.4
+# Version	    : v1.11.3
 # Source repo	    : https://github.com/xtuc/webassemblyjs.git
 # Tested on	    : ubi 8.7
 # Language          : JavaScript
@@ -20,7 +20,7 @@
 
 # Variables
 PACKAGE_NAME="webassemblyjs"
-PACKAGE_VERSION=${1:-"v1.11.4"}
+PACKAGE_VERSION=${1:-"v1.11.3"}
 PACKAGE_URL=https://github.com/xtuc/webassemblyjs.git
 HOME_DIR=${PWD}
 
@@ -64,3 +64,7 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  both_build_and_test_success"
     exit 0
 fi
+
+#There are some issues for version V1.11.4 and a PR is open at https://github.com/xtuc/webassemblyjs/pull/1135
+#to upgrade dependencies in the ast package to version 1.11.4
+#This is working on master and for v1.11.3.
