@@ -47,8 +47,7 @@ git checkout $PACKAGE_VERSION
 cd $PACKAGE_NAME/
 
 #Cloning bc-test-data repo required for running tests
-cd $HOME_DIR
-git clone https://github.com/bcgit/bc-test-data.git
+git clone https://github.com/bcgit/bc-test-data
 
 cd $HOME_DIR/bc-java/prov
 export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
