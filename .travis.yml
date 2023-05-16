@@ -8,7 +8,7 @@ services:
     - docker
 
 before_install:
-    - docker pull registry.access.redhat.com/ubi8/ubi:8.5
+    - docker pull registry.access.redhat.com/ubi8/ubi:8.7
 
 script:
     - sudo apt update -y && sudo apt-get install file -y

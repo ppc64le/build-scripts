@@ -35,12 +35,12 @@ index e53a07848d..43799b40d1 100644
    # Used by base tests
    metricbeat:
 -    image: docker.elastic.co/integrations-ci/beats-metricbeat:${BEAT_VERSION:-8.5.0}-1
-+    image: metricbeat:8.5.1
++    image: metricbeat:8.7.0
      build:
        context: ./module/beat/_meta
        args:
 -        BEAT_VERSION: ${BEAT_VERSION:-8.5.0}
-+        BEAT_VERSION: metricbeat:8.5.1
++        BEAT_VERSION: metricbeat:8.7.0
      command: '-e'
      ports:
        - 5066:5066
@@ -51,7 +51,7 @@ index 1f9a3eeb05..0e858c5234 100644
 @@ -1,5 +1,5 @@
  ARG BEAT_VERSION
 -FROM docker.elastic.co/beats/metricbeat:${BEAT_VERSION}
-+FROM metricbeat:8.5.1
++FROM metricbeat:8.7.0
 
  COPY healthcheck.sh /
  HEALTHCHECK --interval=1s --retries=300 CMD sh /healthcheck.sh

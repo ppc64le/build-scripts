@@ -1,0 +1,10 @@
+{
+    "package_name":"cadvisor",
+    "github_url":"https://github.com/google/cadvisor",
+    "package_dir":"c/cadvisor/", 
+    "version":"v0.47.0",
+    "default_branch":"master",
+    "build_script":"cadvisor_v0.47.0_ubi_8.5.sh",
+    "docker_build":false,
+    "use_non_root_user": false
+}
