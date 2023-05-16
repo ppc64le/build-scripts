@@ -66,4 +66,4 @@ COPY --from=build /root/kong/bin/* /bin/
 RUN kong start || echo
 STOPSIGNAL SIGQUIT
 
-CMD ["kong", "docker-start"]
+CMD ["kong", "start"]
