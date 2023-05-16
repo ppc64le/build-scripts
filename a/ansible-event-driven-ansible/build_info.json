@@ -1,7 +1,7 @@
 {
     "package_name" : "ansible-event-driven-ansible",
     "github_url": "https://github.com/ansible/event-driven-ansible",
-    "version": "main",
+    "version": "v1.3.8",
     "default_branch": "main",
     "package_dir": "a/ansible-event-driven-ansible",
     "build_script": "event-driven-ansible_ubi_8_7.sh",

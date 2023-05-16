@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------
 #
 # Package       : event-driven-ansible
-# Version       : main
+# Version       : v1.3.8
 # Source repo   : https://github.com/ansible/event-driven-ansible/
 # Tested on     : UBI 8.7
 # Language      : Python
@@ -21,7 +21,7 @@ set -e
 
 PACKAGE_NAME=event-driven-ansible
 PACKAGE_URL=https://github.com/ansible/event-driven-ansible/
-PACKAGE_VERSION=${1:-main}
+PACKAGE_VERSION=${1:-v1.3.8}
 PACKAGE_MVN=${PACKAGE_MVN:-"3.8.8"}
 
 yum install java-17-openjdk-devel openssl-devel git wget tar python39-devel.ppc64le gcc rust cargo gcc-c++ cmake.ppc64le systemd-devel -y
