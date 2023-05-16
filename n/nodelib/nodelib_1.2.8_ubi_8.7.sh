@@ -1,15 +1,14 @@
 #!/bin/bash -e
-
 # -----------------------------------------------------------------------------
 #
 # Package          : nodelib
-# Version          : d6a7960
+# Version          : @nodelib/fs.walk@1.2.8
 # Source repo      : https://github.com/nodelib/nodelib
-# Tested on        : RHEL 8.5,UBI 8.5
+# Tested on        : ubi:8.7
 # Language         : Node
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Bhagat Singh <Bhagat.singh1@ibm.com>
+# Maintainer       : Pratik Tonage <Pratik.Tonage@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -21,17 +20,18 @@
 
 PACKAGE_NAME=nodelib
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-d6a7960}
+PACKAGE_VERSION=${1:-"@nodelib/fs.walk@1.2.8"}
 PACKAGE_URL=https://github.com/nodelib/nodelib
-
+NODE_VERSION=${NODE_VERSION:-14}
 
 yum install -y yum-utils git jq 
 
-NODE_VERSION=v12.22.4
-#installing nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-source ~/.bashrc
-nvm install $NODE_VERSION
+#Installing nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+source "$HOME"/.bashrc
+echo "installing nodejs $NODE_VERSION"
+nvm install "$NODE_VERSION" >/dev/null
+nvm use $NODE_VERSION
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
@@ -42,7 +42,7 @@ if [ -d "$PACKAGE_NAME" ] ; then
  
 fi
  
-
+#clone the source repo.
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
         echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -52,10 +52,9 @@ fi
 
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-PACKAGE_VERSION=$(jq -r ".version" package.json)
-# run the test command from test.sh
 
-if ! npm install && npm audit fix && npm audit fix --force; then
+#Install root dependencies
+if ! npm install; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
@@ -64,8 +63,11 @@ fi
 
 #“lerna bootstrap” is used to install all dependencies and any cross-dependencies between packages.
      npx lerna bootstrap
+
+#Compile sources
      npm run compile
  
+#Run unit tests
 if ! npm run test; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME" 
@@ -78,10 +80,4 @@ else
     exit 0
 fi
  
- 
-# All different requested version has same commit id so can be tested in one go all the packages.
-# We need to create single script (nodelib) for all sub packages.
-
-#@nodelib/fs.scandir@2.1.5   d6a7960
-#@nodelib/fs.stat@2.0.5      d6a7960
-#@nodelib/fs.walk@1.2.7      d6a7960
+    
