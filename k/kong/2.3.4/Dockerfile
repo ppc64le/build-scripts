@@ -63,7 +63,9 @@ COPY --from=build /usr/local/openssl /usr/local/openssl
 COPY --from=build /root/libyaml/src/.libs /usr/local/lib/
 RUN ln -s /usr/local/luarocks/share/lua /usr/local/share/lua && ln -s /usr/local/luarocks/lib/lua /usr/local/lib/lua
 COPY --from=build /root/kong/bin/* /bin/
-RUN kong start || echo
-STOPSIGNAL SIGQUIT
+EXPOSE 8000
+EXPOSE 8001
+EXPOSE 8443
+EXPOSE 8444
 
 CMD ["kong", "start"]
