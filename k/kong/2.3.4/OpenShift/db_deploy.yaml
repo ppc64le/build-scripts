@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: registry.redhat.io/rhel8/postgresql-12
+          env:
+            - name: POSTGRESQL_USER
+              value: kong
+            - name: POSTGRESQL_PASSWORD
+              value: kong
+            - name: POSTGRESQL_DATABASE
+              value: kong
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/pgsql/data
+      volumes:
+        - name: postgres-data
+          emptyDir: {}
