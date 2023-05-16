@@ -1,7 +1,17 @@
-FROM registry.access.redhat.com/ubi8/ubi:8.6
+FROM registry.access.redhat.com/ubi8/ubi:8.7
+
+LABEL "name"="Fluent Bit"
+LABEL "vendor"="IBM"
+LABEL "version"="2.0.11"
+LABEL "release"="2.0.11"
+LABEL "summary"="Fluent Bit 2.0.11"
+LABEL "description"="Fluent Bit 2.0.11"
 
 ENV FLUENTBIT_VERSION=v2.0.11
 ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/f/fluent-bit/fluent-bit-${FLUENTBIT_VERSION}.patch
+
+RUN groupadd -r fluent --gid=1000; \
+    useradd -r -g fluent --uid=1000 fluent;
 
 #Install required repos
 RUN dnf -y install --nogpgcheck https://vault.centos.org/8.5.2111/BaseOS/ppc64le/os/Packages/centos-linux-repos-8-3.el8.noarch.rpm \
@@ -36,6 +46,8 @@ RUN yum install gcc gcc-c++ libyaml-devel wget cmake3 python3 git openssl-devel 
 
 #Expose port
 EXPOSE 2020
+
+USER fluent
 
 #Entry point
 CMD ["/fluent-bit/bin/fluent-bit", "-c", "/fluent-bit/etc/fluent-bit.conf"]

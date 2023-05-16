@@ -23,10 +23,12 @@ function cleanup {
   echo "ERROR: Script failed"
 }
 
-FLUENTBIT_VERSION=${1:-v2.0.11}
+PKG_NAME=fluent-bit
+PKG_VERSION=${1:-v2.0.11}
+PKG_URL=https://github.com/fluent/fluent-bit.git
 USE_CENTOS_REPOS=${2:-1}
 BUILD_HOME=$(pwd)
-SCRIPT_PATH=$(dirname $0)
+SCRIPT_PATH=$(dirname $(realpath $0))
 
 #Install dependencies
 if [ "$USE_CENTOS_REPOS" -eq 1 ]
@@ -38,12 +40,12 @@ fi
 yum install gcc gcc-c++ libyaml-devel wget cmake3 python3 git openssl-devel flex bison diffutils autoconf postgresql-devel cyrus-sasl-devel systemd-devel valgrind-devel libarchive glibc-devel nc -y
 
 #Get repo
-git clone https://github.com/fluent/fluent-bit.git
-cd fluent-bit/
-git checkout $FLUENTBIT_VERSION
+git clone $PKG_URL
+cd $PKG_NAME
+git checkout $PKG_VERSION
 
 #Apply patch
-git apply $SCRIPT_PATH/fluent-bit-${FLUENTBIT_VERSION}.patch
+git apply $SCRIPT_PATH/fluent-bit_${PKG_VERSION}.patch
 
 #Build
 cd $BUILD_HOME/fluent-bit/build/
@@ -57,10 +59,27 @@ fi
 export FLUENTBIT_BIN=$BUILD_HOME/fluent-bit/build/bin/fluent-bit
 
 #Smoke test
-$FLUENTBIT_BIN --version
+$FLUENTBIT_BIN --version || ret=$?
+if [ "$ret" -ne 0 ]
+then
+	echo "FAIL: Smoke test failed."
+	exit 2
+fi
+
+#Disable one failing test that is in parity with x86_64
+sed -i '129,130d' ./tests/runtime/CTestTestfile.cmake #flb-rt-out_td
+
+#Disable lua and wasm tests as they are disabled in the build
+sed -i '73,74d' ./tests/runtime/CTestTestfile.cmake #flb-rt-out_wasm
+sed -i '65,66d' ./tests/runtime/CTestTestfile.cmake #flb-rt-out_lua
 
 #Test
-make test || true
+make test || ret=$?
+if [ "$ret" -ne 0 ]
+then
+	echo "FAIL: Tests failed."
+	exit 2
+fi
 echo "SUCCESS: Build and test success!"
 echo "Fluent bit binary is available at [$FLUENTBIT_BIN]."
 echo "Luajit and Wasm are disabled."
