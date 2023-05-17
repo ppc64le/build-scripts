@@ -1,0 +1,10 @@
+{
+    "package_name":"trivy",
+    "github_url":"https://github.com/aquasecurity/trivy",
+    "package_dir":"t/trivy/",
+    "version":"v0.41.0", 
+    "default_branch":"main",
+    "build_script":"trivy_v0.41.0_UBI_8.7.sh",
+    "use_non_root_user":false,
+    "docker_build":false
+}
