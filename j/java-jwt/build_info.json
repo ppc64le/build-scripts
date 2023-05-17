@@ -1,0 +1,14 @@
+{
+	"package_name" : "java-jwt",
+	"github_url":"https://github.com/auth0/java-jwt.git",
+	"version": "4.4.0",
+	"default_branch": "master",
+	"package_dir": "j/java-jwt/",
+	"build_script" : "java-jwt_ubi_8.7.sh",
+	"validate_build_script": true,
+	"docker_build" : false,
+	
+	"4.*.*" : {
+	    "build_script" : "java-jwt_ubi_8.7.sh"
+	}
+}
