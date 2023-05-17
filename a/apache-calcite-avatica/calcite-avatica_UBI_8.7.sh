@@ -25,8 +25,6 @@ PACKAGE_URL=https://github.com/apache/calcite-avatica
 # Install dependencies
 yum install -y wget git java-11-openjdk java-11-openjdk-devel
 
-java -XshowSettings:properties -version 2>&1 > /dev/null | grep 'java.home'
-echo "Check java path"
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.19.0.7-4.el8.ppc64le
 export PATH=/usr/lib/jvm/java-11-openjdk-11.0.19.0.7-4.el8.ppc64le/bin/:$PATH
 
