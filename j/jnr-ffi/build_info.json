@@ -1,0 +1,18 @@
+{
+    "package_name": "jnr-ffi",
+    "github_url": "https://github.com/jnr/jnr-ffi",
+    "version": "jnr-ffi-2.2.13",
+    "default_branch": "master",
+    "package_dir": "j/jnr-ffi",
+    "build_script": "jnr-ffi_ubi_8_5.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+
+    "jnr-ffi-2.2.*": {
+       "build_script": "jnr-ffi_ubi_8_5.sh"
+    }
+
+}
+
+
