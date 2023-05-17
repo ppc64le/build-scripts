@@ -80,3 +80,6 @@ fi
 #Commenting below,the code requires a docker container, docker-compose for tests and we can't install docker in a container in currency.
 #Common tests
 #rebar3 ct --cover
+#Here we are building default branch i.e main,because on latest tag/release (v1.3.0) we are facing 1 test failure,
+#For that failure they did some updates in main branch (commit id:ca03dd1) and after that all test cases are passing on main branch.
+#Once they release the next release/tag, we'll build it and add it to the script.
