@@ -4,7 +4,7 @@
 # Package	: fluent-bit
 # Version	: v2.0.11
 # Source repo	: https://github.com/fluent/fluent-bit
-# Tested on	: UBI 8.6
+# Tested on	: UBI 8.7
 # Language      : C++
 # Travis-Check  : true
 # Script License: Apache License, Version 2 or later
@@ -23,9 +23,9 @@ function cleanup {
   echo "ERROR: Script failed"
 }
 
-PKG_NAME=fluent-bit
-PKG_VERSION=${1:-v2.0.11}
-PKG_URL=https://github.com/fluent/fluent-bit.git
+PACKAGE_NAME=fluent-bit
+PACKAGE_VERSION=${1:-v2.0.11}
+PACKAGE_URL=https://github.com/fluent/fluent-bit.git
 USE_CENTOS_REPOS=${2:-1}
 BUILD_HOME=$(pwd)
 SCRIPT_PATH=$(dirname $(realpath $0))
@@ -40,12 +40,12 @@ fi
 yum install gcc gcc-c++ libyaml-devel wget cmake3 python3 git openssl-devel flex bison diffutils autoconf postgresql-devel cyrus-sasl-devel systemd-devel valgrind-devel libarchive glibc-devel nc -y
 
 #Get repo
-git clone $PKG_URL
-cd $PKG_NAME
-git checkout $PKG_VERSION
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 
 #Apply patch
-git apply $SCRIPT_PATH/fluent-bit_${PKG_VERSION}.patch
+git apply $SCRIPT_PATH/fluent-bit_${PACKAGE_VERSION}.patch
 
 #Build
 cd $BUILD_HOME/fluent-bit/build/
