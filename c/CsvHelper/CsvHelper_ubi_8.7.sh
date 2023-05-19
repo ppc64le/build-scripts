@@ -24,7 +24,7 @@ PACKAGE_URL=https://github.com/JoshClose/CsvHelper.git
 
 DOTNET_VERSION=7.0
 
-yum -y update && yum install -y  $DOTNET_SDK git
+yum -y update && yum install -y  dotnet-sdk-"${DONTNET_VERSION}" git
 
 SDK_VERSION=$(dotnet --version)
 echo $SDK_VERSION
