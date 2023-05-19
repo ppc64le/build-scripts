@@ -1,0 +1,11 @@
+{
+   "package_name": "csvhelper",
+   "github_url": "https://github.com/JoshClose/CsvHelper.git",
+   "version": "30.0.1",
+   "default_branch": "master",
+   "build_script": "csvhelper_ubi_8.7.sh",
+   "package_dir": "c/csvhelper",
+   "docker_build": false,
+   "validate_build_script": true
+}
+
