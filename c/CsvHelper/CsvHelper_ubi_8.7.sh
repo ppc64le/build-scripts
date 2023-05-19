@@ -22,26 +22,30 @@ PACKAGE_NAME=CsvHelper
 PACKAGE_VERSION=${1:30.0.1}
 PACKAGE_URL=https://github.com/JoshClose/CsvHelper.git
 
-yum -y update && yum install -y dotnet-sdk-7.0 git
+DOTNET_VERSION=7.0
+
+yum -y update && yum install -y  $DOTNET_SDK git
+
+SDK_VERSION=$(dotnet --version)
+echo $SDK_VERSION
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #update dotnet version to  be used
-sed -i '/"version":/c\"version": "7.0.100"' global.json
+sed -i '/"version":/c\"version":  "'"$SDK_VERSION"'" ' global.json
 
-#update target frameworks to net7.0
-for i in `find . -type f -name "*.csproj"`;
+#update target frameworks 
+for file in `find . -type f -name "*.csproj"`;
 do
-	echo "updating target frameworks for $i";
-	sed -i '/^[[:blank:]]*<TargetFrameworks>/c\<TargetFrameworks>net7.0</TargetFrameworks>' $i  ;
+	sed -i '/^[[:blank:]]*<TargetFrameworks>/c\<TargetFrameworks>net'"$DOTNET_VERSION"'</TargetFrameworks>' $file  ;
 done
 
 #update test sdk version to 17.5.0 (from this version onwards power arch is supported
-for i in `grep "<PackageReference Include=\"Microsoft.NET.Test.Sdk\"" -rl `;
+for file in `grep "<PackageReference Include=\"Microsoft.NET.Test.Sdk\"" -rl `;
 do
-	sed -i '/^[[:blank:]]*<PackageReference Include=\"Microsoft.NET.Test.Sdk\"/c\<PackageReference Include=\"Microsoft.NET.Test.Sdk\" Version=\"17.5.0\" />' $i  ;
+	sed -i '/^[[:blank:]]*<PackageReference Include=\"Microsoft.NET.Test.Sdk\"/c\<PackageReference Include=\"Microsoft.NET.Test.Sdk\" Version=\"17.5.0\" />' $file  ;
 done
 
 cd tests/CsvHelper.Tests 
