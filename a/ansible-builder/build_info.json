@@ -1,0 +1,11 @@
+{
+    "package_name" : "ansible-builder",
+    "github_url": "https://github.com/ansible/ansible-builder",
+    "version": "3.0.0",
+    "default_branch": "devel",
+    "package_dir": "a/ansible-builder",
+    "build_script": "ansible-builder_ubi_8_7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false
+}
