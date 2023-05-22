@@ -4,7 +4,7 @@
 # Package       : kiegroup
 # Version       : 1.36.1.Final
 # Source repo   : https://github.com/kiegroup/kogito-apps.git
-# Tested on     : UBI 8.5
+# Tested on     : UBI 8.7
 # Language      : JAVA
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -19,11 +19,11 @@
 # ---------------------------------------------------------------------
 set -e
 export NODE_OPTIONS="--dns-result-order=ipv4first"
+
 PACKAGE_NAME=kogito-apps
 PACKAGE_VERSION=${1:-1.36.1.Final}
 PACKAGE_URL=https://github.com/kiegroup/kogito-apps.git
 
-yum update -y
 yum install -y git curl
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
@@ -41,8 +41,7 @@ fi
 
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
 	echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-	echo "$PACKAGE_URL $PACKAGE_NAME"
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
 	exit 0
 fi
 
@@ -62,20 +61,8 @@ if ! yarn run build:prod; then
     exit 1
 fi
 
-if ! yarn run build; then
-    echo "------------------$PACKAGE_NAME:build_fails---------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    exit 1
-fi
-
-if ! yarn run build:fast; then
-    echo "------------------$PACKAGE_NAME:build_fails---------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    exit 1
-fi
-
 if ! yarn test -u; then
-	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
-	exit 2
+    echo "------------------$PACKAGE_NAME:test_fails---------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    exit 2
 fi
