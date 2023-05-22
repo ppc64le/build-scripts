@@ -52,7 +52,7 @@ yum install -y  ninja-build-1.8.2-1.el8.ppc64le.rpm
 cd tinygo
 make llvm-source
 make llvm-build
-go install
+
 make wasi-libc
 make binaryen
 make
