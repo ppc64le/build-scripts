@@ -1,5 +1,13 @@
-#!/bin/sh
+#!/usr/bin/dumb-init /bin/sh
 set -e
+
+# This script has been adopted from the original work
+# @ https://github.com/hashicorp/docker-vault/blob/master/0.X/docker-entrypoint.sh
+
+# Note above that we run dumb-init as PID 1 in order to reap zombie processes
+# as well as forward signals to all processes in its session. Normally, sh
+# wouldn't do either of these functions so we'd leak zombies as well as do
+# unclean termination of all our sub-processes.
 
 # Prevent core dumps
 ulimit -c 0
@@ -82,27 +90,18 @@ if [ "$1" = 'vault' ]; then
 
     if [ -z "$SKIP_SETCAP" ]; then
         # Allow mlock to avoid swapping Vault memory to disk
-        setcap cap_ipc_lock=+ep $(readlink -f /bin/vault)
+        setcap cap_ipc_lock=+ep $(readlink -f $(which vault))
 
         # In the case vault has been started in a container without IPC_LOCK privileges
         if ! vault -version 1>/dev/null 2>/dev/null; then
             >&2 echo "Couldn't start vault with IPC_LOCK. Disabling IPC_LOCK, please use --privileged or --cap-add IPC_LOCK"
-            setcap cap_ipc_lock=-ep $(readlink -f /bin/vault)
+            setcap cap_ipc_lock=-ep $(readlink -f $(which vault))
         fi
+    fi
+
+    if [ "$(id -u)" = '0' ]; then
+      set -- su-exec vault "$@"
     fi
 fi
 
-# In case of Docker, where swap may be enabled, we 
-# still require mlocking to be available. So this script 
-# was executed as root to make this happen, however, 
-# we're now rerunning the entrypoint script as the Vault 
-# user but no longer need to run setup code for setcap
-# or chowning directories (previously done on the first run).
-if [[ "$(id -u)" == '0' ]]
-then
-    export SKIP_CHOWN="true"
-    export SKIP_SETCAP="true"
-    exec su vault -p "$0" -- "$@"
-else
-    exec "$@" 
-fi
+exec "$@"
