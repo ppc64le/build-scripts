@@ -1,0 +1,20 @@
+{
+    "package_name" : "zstd-jni",
+    "github_url": "https://github.com/luben/zstd-jni",
+    "version": "v1.5.5-3",
+    "default_branch" : "master",
+    "package_dir": "z/zstd-jni",
+    "build_script": "zstd-jni_ubi_8.7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+	
+	
+    "v1.5.5-*" : {
+       "build_script" : "zstd-jni_ubi_8.7.sh"
+    },
+
+    "v1.5.0-4" : {
+       "build_script" : "zstd-jni_ubi_8.3.sh"
+    }
+}
