@@ -1,0 +1,11 @@
+{
+   "package_name": "automapper.collection",
+   "github_url": "https://github.com/AutoMapper/AutoMapper.Collection.git",
+   "version": "v9.0.0",
+   "default_branch": "master",
+   "build_script": "automapper.collection_ubi_8.7.sh",
+   "package_dir": "a/automapper.collection",
+   "docker_build": false,
+   "validate_build_script": true
+}
+
