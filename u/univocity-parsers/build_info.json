@@ -1,0 +1,23 @@
+{
+    "package_name": "univocity-parsers",
+    "github_url": "https://github.com/univocity/univocity-parsers",
+    "version": "v2.9.1",
+    "default_branch": "master",
+    "package_dir": "u/univocity-parsers",
+    "build_script": "univocity-parsers_ubi_8_7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+ 
+    "v2.9.*": {
+       "build_script": "univocity-parsers_ubi_8_7.sh"
+    },
+
+    "v2.8.*": {
+       "build_script": "univocity-parsers_ubi_8_7.sh"
+    }
+
+
+}
+
+
