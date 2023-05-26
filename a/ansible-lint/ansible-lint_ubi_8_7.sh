@@ -39,7 +39,10 @@ fi
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 yum install java-17-openjdk-devel openssl-devel git wget tar python39-devel.ppc64le gcc rust cargo  gcc-c++ cmake.ppc64le -y
+
 pip3 install tox build
+export ANSIBLE_HOME="/usr/local/bin"
+export PATH=$PATH:$ANSIBLE_HOME
 
 #Need to increase npm socket timeout as depdencies require more time
 yum install npm -y
