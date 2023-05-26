@@ -44,6 +44,8 @@ export JDK_HOME=/usr/lib/jvm/java-17-openjdk
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 
 pip3 install tox build
+export ANSIBLE_HOME="/usr/local/bin"
+export PATH=$PATH:$ANSIBLE_HOME
 #Set Tox environment
 tox --notest
 
