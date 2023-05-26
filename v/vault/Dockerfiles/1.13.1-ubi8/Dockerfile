@@ -12,7 +12,7 @@ ENV GOPATH /go
 ENV PATH $PATH:$GOPATH/bin   
 
 RUN set -eux; \
-    yum install -y openssl sudo \ 
+    yum install -y openssl \ 
     make git gcc wget && \
     wget https://golang.org/dl/go$GO_VERSION.linux-ppc64le.tar.gz && \
     tar -C /usr/local -xvzf go$GO_VERSION.linux-ppc64le.tar.gz && \
