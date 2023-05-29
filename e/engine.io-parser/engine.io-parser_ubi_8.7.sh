@@ -37,12 +37,12 @@ nvm use 14
 git clone https://github.com/bubenshchykov/ngrok.git && cd ngrok
 git checkout v3.4.0
 sed -i -e "47 a linuxppc64: cdn + cdnPath + 'linux-ppc64le.zip' ," download.js
-npm install
+npm install --unsafe-perm
 
 #2. Building zulngrok version 4.1.0
 cd ..
 git clone https://github.com/rase-/zuul-ngrok.git && cd zuul-ngrok
-npm install --save file:../ngrok
+npm install --unsafe-perm --save file:../ngrok
 cd ..
 
 git clone $PACKAGE_URL
