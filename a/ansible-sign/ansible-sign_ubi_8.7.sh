@@ -26,6 +26,10 @@ yum install openssl-devel git wget tar python39-devel.ppc64le gcc rust cargo gcc
 pip3 install tox
 pip3 install build
 
+#update PATH environment variable for installations
+export ANSIBLE_HOME="/usr/local/bin"
+export PATH=$PATH:$ANSIBLE_HOME
+
 if ! git clone $PACKAGE_URL; then
     echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
