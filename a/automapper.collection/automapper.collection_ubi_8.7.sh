@@ -30,17 +30,14 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-#update target frameworks and EntityFramework
 for file in `find . -type f -name "*.csproj"`;
 do
-        sed -i '/^[[:blank:]]*<PackageReference Include="EntityFramework" Version="*"/c\<PackageReference Include="EntityFramework" Version="6.4" />' $file  ;
-        sed -i '/^[[:blank:]]*<TargetFrameworks>/c\<TargetFrameworks>net'"$DOTNET_VERSION"'</TargetFrameworks>' $file  ;
-done
-
-#update test sdk version to 17.5.0 (from this version onwards power arch is supported
-for file in `grep "<PackageReference Include=\"Microsoft.NET.Test.Sdk\"" -rl `;
-do
-        sed -i '/^[[:blank:]]*<PackageReference Include=\"Microsoft.NET.Test.Sdk\"/c\<PackageReference Include=\"Microsoft.NET.Test.Sdk\" Version=\"17.5.0\" />' $file  ;
+        # Update target frameworks 
+        sed -i '/^[[:blank:]]*<PackageReference Include="EntityFramework" Version="*"/c\<PackageReference Include="EntityFramework" Version="6.4" />' $file;
+        # Updatating EntityFramework
+        sed -i '/^[[:blank:]]*<TargetFrameworks>/c\<TargetFrameworks>net'"$DOTNET_VERSION"'</TargetFrameworks>' $file;
+        # Update test sdk version to 17.5.0 (from this version onwards power arch is supported)
+        sed -i '/^[[:blank:]]*<PackageReference Include=\"Microsoft.NET.Test.Sdk\"/c\<PackageReference Include=\"Microsoft.NET.Test.Sdk\" Version=\"17.5.0\" />' $file;
 done
 
 #Building the package
