@@ -23,7 +23,7 @@ set -e
 PACKAGE_NAME=univocity-parsers
 PACKAGE_URL=https://github.com/univocity/univocity-parsers
 
-# Default tag animal-sniffer
+# Default tag univocity-parsers
 if [ -z "$1" ]; then
   export PACKAGE_VERSION="v2.9.1"
 else
@@ -33,7 +33,7 @@ fi
 # install tools and dependent packages
 yum install -y git wget
 yum install -y java-1.8.0-openjdk-devel.ppc64le
-export JDK8_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.372.b07-1.el8_7.ppc64le
+export JDK8_HOME=/usr/lib/jvm/java-1.8.0-openjdk
 export PATH=$JDK8_HOME/bin:$PATH
 
 #installing maven 3.8.6
