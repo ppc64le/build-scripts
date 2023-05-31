@@ -1,0 +1,10 @@
+{
+    "package_name":"apache-calcite-avatica",
+    "github_url":"https://github.com/apache/calcite-avatica",
+    "package_dir":"a/apache-calcite-avatica/",
+    "version":"rel/avatica-1.23.0", 
+    "default_branch":"main",
+    "build_script":"calcite-avatica_UBI_8.7.sh",
+    "use_non_root_user":false,
+    "docker_build":false
+}
