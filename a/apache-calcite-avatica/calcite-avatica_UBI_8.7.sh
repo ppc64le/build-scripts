@@ -34,20 +34,20 @@ cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 if ! ./gradlew build; then
-    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+    echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  build_Fails"
     exit 1
 fi
 
 if ! ./gradlew --no-parallel --no-daemon build javadoc; then
-    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  build__success_but_test_Fails"
     exit 2
 else
-    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "------------------$PACKAGE_NAME:build_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Build_and_Test_Success"
     exit 0
 fi
