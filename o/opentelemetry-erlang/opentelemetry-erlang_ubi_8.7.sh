@@ -19,6 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=opentelemetry-erlang
+PACKAGE_VERSION=${1:-"main"}
 PACKAGE_URL=https://github.com/open-telemetry/opentelemetry-erlang
 
 #Install docker 
@@ -50,6 +51,7 @@ cd ..
 
 #Clone the repository and build.
 git clone $PACKAGE_URL
+git checkout $PACKAGE_VERSION
 cd $PACKAGE_NAME
 
 #Commenting out below command, as docker inside docker is disabled in currency.
