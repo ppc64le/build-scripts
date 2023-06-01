@@ -1,0 +1,11 @@
+{
+   "package_name": "fluentvalidation",
+   "github_url": "https://github.com/FluentValidation/FluentValidation.git",
+   "version": "11.5.2",
+   "default_branch": "main",
+   "build_script": "fluentvalidation_ubi_8.7.sh",
+   "package_dir": "f/fluentvalidation",
+   "docker_build": false,
+   "validate_build_script": true
+}
+
