@@ -51,8 +51,8 @@ cd ..
 
 #Clone the repository and build.
 git clone $PACKAGE_URL
-git checkout $PACKAGE_VERSION
 cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 
 #Commenting out below command, as docker inside docker is disabled in currency.
 #sudo docker compose up -d
