@@ -10,7 +10,7 @@
     "use_non_root_user": false,
     "docker_build": true,
 
-    "v4.0.*" : {
+    "4.0.*" : {
        "dir" : "4.0.0_ubi8",
        "build_script" : "grizzly_ubi_8.7.sh"
     },
