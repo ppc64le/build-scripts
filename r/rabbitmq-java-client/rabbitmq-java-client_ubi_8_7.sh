@@ -44,8 +44,7 @@ yum install -y git wget zip unzip tar make java-1.8.0-openjdk-devel.ppc64le gcc 
 pip3 install simplejson
 ln -sf /usr/bin/python3 /usr/bin/python
 
-export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-8)(?=.*ppc64le)')
-export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.372.b07-1.el8_7.ppc64le
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8"
 export RABBIT_VSN=0.0.0
