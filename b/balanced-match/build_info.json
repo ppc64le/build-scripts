@@ -7,7 +7,7 @@
     "build_script": "balanced-match_ubi_8_7.sh",
     "docker_build": false,
     "validate_build_script": true,
-    "use_non_root_user": false,
+    "use_non_root_user": true,
     
     "v1.0.*": {
        "build_script": "balanced-match_ubi_8_7.sh"
