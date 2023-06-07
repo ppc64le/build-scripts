@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=gulp
 PACKAGE_VERSION=${1:-v4.0.2}
-PACKAGE_URL=https://github.com/bcgit/bc-java.git
+PACKAGE_URL=https://github.com/gulpjs/gulp
 NODE_VERSION=v18.9.0
 
 HOME_DIR=${PWD}
