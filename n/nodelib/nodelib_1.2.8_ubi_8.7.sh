@@ -22,16 +22,18 @@ PACKAGE_NAME=nodelib
 #PACKAGE_VERSION is configurable can be passed as an argument.
 PACKAGE_VERSION=${1:-"@nodelib/fs.walk@1.2.8"}
 PACKAGE_URL=https://github.com/nodelib/nodelib
-NODE_VERSION=${NODE_VERSION:-14}
+NODE_VERSION=${NODE_VERSION:-14.21.3}
+HOME_DIR=${PWD}
 
-yum install -y yum-utils git jq 
+yum install -y yum-utils git jq wget
 
-#Installing nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-source "$HOME"/.bashrc
-echo "installing nodejs $NODE_VERSION"
-nvm install "$NODE_VERSION" >/dev/null
-nvm use $NODE_VERSION
+#Installing node
+cd $HOME_DIR
+wget https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-ppc64le.tar.gz
+tar -xzf node-v${NODE_VERSION}-linux-ppc64le.tar.gz
+export PATH=$HOME_DIR/node-v${NODE_VERSION}-linux-ppc64le/bin:$PATH
+node -v
+npm -v
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
@@ -41,7 +43,8 @@ if [ -d "$PACKAGE_NAME" ] ; then
   echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"  
  
 fi
- 
+
+cd $HOME_DIR 
 #clone the source repo.
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
         echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
