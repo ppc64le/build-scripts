@@ -25,7 +25,6 @@ PACKAGE_URL=https://github.com/nodelib/nodelib
 NODE_VERSION=${NODE_VERSION:-14.21.3}
 HOME_DIR=${PWD}
 
-yum update -y
 yum install -y yum-utils git jq wget
 
 #Installing node
