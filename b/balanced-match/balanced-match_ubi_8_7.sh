@@ -25,18 +25,20 @@ set -e
 PACKAGE_NAME=balanced-match
 PACKAGE_VERSION=${1:-"v2.0.0"}
 PACKAGE_URL=https://github.com/juliangruber/balanced-match
+export NODE_VERSION=${NODE_VERSION:-16}
 
 
 # Install dependencies
-yum -y update && yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git gcc gcc-c++ libffi libffi-devel ncurses git jq make cmake
-yum-config-manager --add-repo http://rhn.pbm.ihost.com/rhn/latest/8.3Server/ppc64le/appstream/
-yum-config-manager --add-repo http://rhn.pbm.ihost.com/rhn/latest/8.3Server/ppc64le/baseos/
-yum-config-manager --add-repo http://rhn.pbm.ihost.com/rhn/latest/7Server/ppc64le/optional/
+yum install -y python38 python38-devel git gcc gcc-c++ libffi make
 
-yum install -y firefox liberation-fonts xdg-utils && npm install n -g && n latest && npm install -g npm@latest && export PATH="$PATH" && npm install --global yarn grunt-bump xo testem acorn
-
-OS_NAME=`python3 -c "os_file_data=open('/etc/os-release').readlines();os_info = [i.replace('PRETTY_NAME=','').strip() for i in os_file_data if i.startswith('PRETTY_NAME')];print(os_info[0])"`
 HOME_DIR=`pwd`
+
+#Installing nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+source "$HOME"/.bashrc
+echo "installing nodejs $NODE_VERSION"
+nvm install "$NODE_VERSION" >/dev/null
+nvm use $NODE_VERSION
 
 # clone the repository
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
@@ -48,10 +50,14 @@ fi
 
 cd $HOME_DIR/$PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+npm install 
 
 # Build  package
-if !(npm install && npm audit fix --force); then
-     	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+if !(npm audit fix & npm audit fix --force); then
+     	echo "------------------$PACKAGE_NAME:installed_successfully-------------------------------------"
+	echo "$PACKAGE_URL $PACKAGE_NAME"
+else
+        echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
 	exit 1
