@@ -31,7 +31,7 @@ yum install -y yum-utils git jq wget
 #Installing node
 cd $HOME_DIR
 wget https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-ppc64le.tar.gz
-sudo tar -xzf node-v${NODE_VERSION}-linux-ppc64le.tar.gz
+tar -xzf node-v${NODE_VERSION}-linux-ppc64le.tar.gz
 export PATH=$HOME_DIR/node-v${NODE_VERSION}-linux-ppc64le/bin:$PATH
 node -v
 npm -v
