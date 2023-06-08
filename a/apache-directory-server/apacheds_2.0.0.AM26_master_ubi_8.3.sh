@@ -2,7 +2,7 @@
 #
 # Package       : directory-server
 # Version       : 2.0.0.AM26, master
-# Source repo	  : https://github.com/apache/directory-server
+# Source repo	: https://github.com/apache/directory-server
 # Tested on     : UBI 8.3 (Docker)
 # Language      : java
 # Travis-Check  : false
