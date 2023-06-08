@@ -2,7 +2,10 @@
 #
 # Package       : directory-server
 # Version       : 2.0.0.AM26, master
+# Source repo	  : https://github.com/apache/directory-server
 # Tested on     : UBI 8.3 (Docker)
+# Language      : java
+# Travis-Check  : false
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sumit Dubey <Sumit.Dubey2@ibm.com>
 # Disclaimer: This script has been tested in root mode on given
