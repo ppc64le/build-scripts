@@ -3,7 +3,8 @@ FROM registry.access.redhat.com/ubi8:8.7
 ARG PACKAGE_VERSION=4.0
 ARG PACKAGE_NAME=egeria
 ARG PACKAGE_URL=https://github.com/odpi/egeria.git
-ENV SOURCE_DIR=$(pwd)
+
+ENV SOURCE_DIR=$PWD
 
 RUN yum update -y && \
 	yum install -y git wget tar java-17-openjdk-devel && \
@@ -20,7 +21,7 @@ RUN yum update -y && \
 WORKDIR /opt/egeria
 
 # Copy egeria distribution
-COPY ${SOURCE_DIR}/egeria/open-metadata-resources/open-metadata-deployment/docker/egeria/build/assembly .
+COPY ${SOURCE_DIR}/egeria/open-metadata-resources/open-metadata-deployment/docker/egeria/build/assembly /deployments
 COPY ${SOURCE_DIR}/egeria/open-metadata-resources/open-metadata-deployment/docker/egeria/build/assembly/truststore.p12 .
 
 # Expose port 8080 (default) for client access, and allow for 5005 being used for remote java debug
