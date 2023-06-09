@@ -5,6 +5,8 @@
 # Version       : v1.5.20.1002
 # Source repo   : https://github.com/rstudio/shiny-server.git
 # Tested on     : ubuntu_20.04
+# Language      : Javascript
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Ujwal Akare <Ujwal.Akare@ibm.com>
 #
