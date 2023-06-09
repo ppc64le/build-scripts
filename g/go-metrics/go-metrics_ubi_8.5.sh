@@ -1,13 +1,14 @@
+#!/bin/bash -xe
 # -----------------------------------------------------------------------------
 #
 # Package	: github.com/rcrowley/go-metrics
-# Version	: master
+# Version	: master, v0.0.0-20201227073835-cf1acfcdf475
 # Source repo	: https://github.com/rcrowley/go-metrics
 # Tested on	: UBI 8.5
 # Language      : GO
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>
+# Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>, Raju Sah <Raju.Sah@ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -51,12 +52,12 @@ if ! go mod tidy; then
 	exit 1
 fi
 
-# Failing Tests on Power due to Floating point precision errors.
-# Failing Tests:
-# TestEWMA1
-# TestEWMA5
-# TestUniformSampleSnapshot
-# TestUniformSampleStatistics
+echo "Failing Tests on Power due to Floating point precision errors."
+echo "Failing Tests:"
+echo "TestEWMA1"
+echo "TestEWMA5"
+echo "TestUniformSampleSnapshot"
+echo "TestUniformSampleStatistics"
 cd ~/go/pkg/mod/$PACKAGE_NAME
 if ! go test; then
 	echo "------------------$PACKAGE_NAME:test_fails---------------------"
