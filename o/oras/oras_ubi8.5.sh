@@ -1,11 +1,11 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: github.com/oras-project/oras
-# Version	: v0.12.0
+# Version	: v0.12.0, v0.8.1
 # Source repo	: https://github.com/oras-project/oras
 # Tested on	: ubi8.5
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Sapna Shukla <Sapna.Shukla@ibm.com>
+# Maintainer	: Sapna Shukla <Sapna.Shukla@ibm.com>, Shantanu Kadam <Shantanu.Kadam@ibm.com>
 # Language	: GO
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -64,3 +64,34 @@ else
 	echo "------------------$PACKAGE_NAME:Installed at path: /home/tester/go/src/$PACKAGE_NAME------------------------"
 	exit 0
 fi
+
+#for v0.8.1
+#Test failure is in parity with Intel
+#On first attempt one test case is failing, but on second attempt the test case is passing.
+#=== RUN   TestContentTestSuite
+#    content_test.go:51:
+#                Error Trace:    content_test.go:51
+#                                                        suite.go:102
+#                                                        content_test.go:171
+#                Error:          Expected nil, but got: &fs.PathError{Op:"open", Path:"/home/tester/go/src/github.com/oras/.test/testfile", Err:0x2}
+#                Test:           TestContentTestSuite
+#                Messages:       no error creating test file on disk
+#    content_test.go:54:
+#                Error Trace:    content_test.go:54
+#                                                        suite.go:102
+#                                                        content_test.go:171
+#                Error:          Expected nil, but got: &fs.PathError{Op:"stat", Path:"/home/tester/go/src/github.com/oras/.test/testfile", Err:0x2}
+#                Test:           TestContentTestSuite
+#                Messages:       no error adding item to file store
+#=== RUN   TestContentTestSuite/Test_0_Ingesters
+#cannot commit on closed writer: failed precondition
+#cannot commit on closed writer: failed precondition
+#=== RUN   TestContentTestSuite/Test_1_Providers
+#=== RUN   TestContentTestSuite/Test_2_GetByName
+#--- FAIL: TestContentTestSuite (2.84s)
+#    --- PASS: TestContentTestSuite/Test_0_Ingesters (2.84s)
+#    --- PASS: TestContentTestSuite/Test_1_Providers (0.00s)
+#    --- PASS: TestContentTestSuite/Test_2_GetByName (0.00s)
+#FAIL
+#FAIL    github.com/deislabs/oras/pkg/content    2.866s
+
