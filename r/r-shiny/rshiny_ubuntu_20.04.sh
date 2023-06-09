@@ -31,10 +31,10 @@ PACKAGE_BRANCH=master
 PACKAGE_URL=https://github.com/rstudio/shiny-server.git
 
 #Download Updates and Dependencies
-sudo apt-get update -y
+apt-get update -y
 
 #install required prerequisites
-sudo apt install -y gcc g++ git wget cmake make python3.8 r-base libssl-dev
+apt install -y gcc g++ git wget cmake make python3.8 r-base libssl-dev
 
 #Check if package exists
 if [ -d "$PACKAGE_NAME" ] ; then
