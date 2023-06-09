@@ -31,7 +31,7 @@ PACKAGE_BRANCH=master
 PACKAGE_URL=https://github.com/rstudio/shiny-server.git
 
 #Download Updates and Dependencies
-apt-get update -y
+#apt-get update -y
 
 #install required prerequisites
 apt install -y gcc g++ git wget cmake make python3.8 r-base libssl-dev
@@ -52,6 +52,8 @@ fi
 echo "BRANCH_NAME = $PACKAGE_BRANCH"
 chown -R $USER_NAME:$USER_NAME $USERDIR
 cd $PACKAGE_NAME
+
+#checkout to latest version
 git checkout v1.5.20.1002
 sudo mkdir tmp
 
