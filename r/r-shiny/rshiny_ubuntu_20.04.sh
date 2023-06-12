@@ -6,7 +6,6 @@
 # Source repo   : https://github.com/rstudio/shiny-server.git
 # Tested on     : ubuntu_20.04
 # Language      : Javascript
-# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Ujwal Akare <Ujwal.Akare@ibm.com>
 #
@@ -31,14 +30,14 @@ PACKAGE_BRANCH=master
 PACKAGE_URL=https://github.com/rstudio/shiny-server.git
 
 #Download Updates and Dependencies
-#apt-get update -y
+apt-get update -y
 
 #install required prerequisites
-apt install -y gcc g++ git wget cmake make python3.8 r-base libssl-dev
+sudo apt install -y gcc g++ git wget cmake make python3.8 r-base libssl-dev
 
 #Check if package exists
 if [ -d "$PACKAGE_NAME" ] ; then
-  rm -rf $PACKAGE_NAME
+  sudo rm -rf $PACKAGE_NAME
   echo "$PACKAGE_NAME  | $PACKAGE_TAG | $OS_NAME | GitHub | Removed existing package if any"
 fi
 
