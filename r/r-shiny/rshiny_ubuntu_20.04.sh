@@ -30,7 +30,7 @@ PACKAGE_BRANCH=master
 PACKAGE_URL=https://github.com/rstudio/shiny-server.git
 
 #Download Updates and Dependencies
-apt-get update -y
+sudo apt-get update -y
 
 #install required prerequisites
 sudo apt install -y gcc g++ git wget cmake make python3.8 r-base libssl-dev
@@ -53,9 +53,9 @@ chown -R $USER_NAME:$USER_NAME $USERDIR
 cd $PACKAGE_NAME
 
 #checkout to latest version
-git checkout v1.5.20.1002
-sudo mkdir tmp
+git checkout $PACKAGE_TAG
 
+sudo mkdir tmp
 cd tmp
 
 #update line 8 of the install-node.sh file by replacing its content with the specified NODE_SHA256 value.
@@ -70,13 +70,13 @@ PATH=$DIR/../bin:$PATH
 export PYTHON=`which python3.8`
 export PATH=$PYTHON:$PATH
 
-#configure the build system using cmake,
+#configure the build system using cmake.
 sudo cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DPYTHON="$PYTHON" ../
 
 sudo make
 sudo mkdir ../build
 
-#change the current working directory to the parent directory and then execute the npm install
+#change the current working directory to the parent directory and then execute the npm install.
 (cd .. && ./bin/npm install)
 
 #install the built files
