@@ -1,6 +1,6 @@
 FROM registry.access.redhat.com/ubi8:8.7
 
-ARG PACKAGE_VERSION=4.0
+ARG PACKAGE_VERSION=V4.0
 ARG PACKAGE_NAME=egeria
 ARG PACKAGE_URL=https://github.com/odpi/egeria.git
 
@@ -13,7 +13,7 @@ RUN yum update -y && \
 	cd ${SOURCE_DIR} && \
 	git clone $PACKAGE_URL && \
 	cd $PACKAGE_NAME && \
-	git checkout V$PACKAGE_VERSION && \
+	git checkout $PACKAGE_VERSION && \
 	./gradlew build -x test && \
 	mkdir -p open-metadata-resources/open-metadata-deployment/docker/egeria/build/assembly && \
 	cp -r open-metadata-distribution/open-metadata-assemblies/build/unpacked/egeria-4.0-distribution.tar.gz/. open-metadata-resources/open-metadata-deployment/docker/egeria/build/assembly/
