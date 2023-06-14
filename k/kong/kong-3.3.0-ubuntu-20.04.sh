@@ -2,10 +2,10 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : kong
-# Version       : v3.3.0
+# Version       : 3.3.0
 # Source repo   : https://github.com/kong/kong/
 # Tested on     : Ubuntu 20.04 (docker)
-# Language      : C++
+# Language      : Rust, Lua
 # Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sumit Dubey <Sumit.Dubey2@ibm.com>
@@ -43,7 +43,7 @@ apt install -y \
     zlib1g-dev \
     wget \
     cmake \
-    openjdk-11-jdk 
+    openjdk-11-jdk
 
 wdir=`pwd`
 #Set environment variables
@@ -109,7 +109,7 @@ git apply $wdir/kong-${PACKAGE_VERSION}.patch
 make build-release > /dev/null 2>&1 || true
 
 #Patch rules_rust
-pushd /root/.cache/bazel/_bazel_root/e0af2e41084ad4bbf78eb15b72f107f9/external/rules_rust/
+pushd $HOME/.cache/bazel/_bazel_root/e0af2e41084ad4bbf78eb15b72f107f9/external/rules_rust/
 git apply $wdir/kong-${PACKAGE_VERSION}-rules_rust.patch
 
 #Build cargo-bazel native binary
@@ -131,9 +131,9 @@ NFPM_BIN=$(pwd)/nfpm
 echo "Building Kong debian package..."
 cd $wdir/${PACKAGE_NAME}
 make package/deb  > /dev/null 2>&1 || true
-cp -f $NFPM_BIN /root/.cache/bazel/_bazel_root/e0af2e41084ad4bbf78eb15b72f107f9/external/nfpm/nfpm
+cp -f $NFPM_BIN $HOME/.cache/bazel/_bazel_root/e0af2e41084ad4bbf78eb15b72f107f9/external/nfpm/nfpm
 make package/deb
-cp /root/.cache/bazel/_bazel_root/e0af2e41084ad4bbf78eb15b72f107f9/execroot/kong/bazel-out/ppc-opt/bin/pkg/kong.ppc64le.deb $wdir
+cp $HOME/.cache/bazel/_bazel_root/e0af2e41084ad4bbf78eb15b72f107f9/execroot/kong/bazel-out/ppc-opt/bin/pkg/kong.ppc64le.deb $wdir
 export KONG_DEB=$wdir/kong.ppc64le.deb
 
 #Conclude
