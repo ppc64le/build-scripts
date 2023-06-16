@@ -71,7 +71,7 @@ fi
 ln -s /usr/bin/python3 /usr/bin/python
 
 #skipping podman and docker as podman can/t be installed inside docker container also timeout failures as it required to increase time runtime.
-if ! pytest -k "not podman and test_keepalive_setting" -v; then
+if ! pytest -k "not podman and not test_keepalive_setting" -v; then
     echo "------------------$PACKAGE_NAME:test_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     exit 2
