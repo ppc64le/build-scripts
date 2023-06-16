@@ -67,4 +67,3 @@ if ! mvn test;then
     echo "$PACKAGE_URL $PACKAGE_NAME"
     exit 2
 fi
-
