@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/ubi:8.6
+FROM registry.access.redhat.com/ubi8/ubi:8.7
 MAINTAINER "Sumit Dubey <sumit.dubey2@ibm.com>"
 ENV TINI_VERSION 0.19.0
 ENV GOSU_VERSION=1.16
