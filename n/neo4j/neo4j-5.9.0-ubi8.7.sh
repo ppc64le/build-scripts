@@ -2,11 +2,11 @@
 #---------------------------------------------------------------------------------------------------
 #
 # Package		: Neo4j
-# Version		: 5.5.0
+# Version		: 5.9.0
 # Source repo		: https://github.com/neo4j/neo4j.git
-# Tested on		: UBI 8.6 (docker)
+# Tested on		: UBI 8.7 (docker)
 # Language		: Java
-# Travis-Check		: false
+# Travis-Check		: true
 # Script License	: Apache License, Version 2 or later
 # Maintainer		: Sumit Dubey <sumit.dubey2@ibm.com>
 #
@@ -20,7 +20,9 @@
 set -eux
 
 CWD=$(pwd)
-NEO4J_VERSION=5.5.0
+PACKAGE_NAME=neo4j
+PACKAGE_URL=https://github.com/neo4j/neo4j.git
+PACKAGE_VERSION=5.9.0
 MAVEN_VERSION=3.8.8
 GOSU_VERSION=1.16
 
@@ -37,20 +39,12 @@ rm -rf apache-maven-${MAVEN_VERSION}-bin.tar.gz
 PATH=$CWD/apache-maven-${MAVEN_VERSION}/bin:$PATH
 
 #Clone
-git clone https://github.com/neo4j/neo4j.git
-cd neo4j && git checkout ${NEO4J_VERSION}
+git clone ${PACKAGE_URL}
+cd ${PACKAGE_NAME} && git checkout ${PACKAGE_VERSION}
 
 #Add hostname
 HOST=$(hostname)
 echo "127.0.0.1   $HOST" >> /etc/hosts
-
-#Patch
-sed -i.bak '276d' ./community/io/src/main/java/org/neo4j/io/pagecache/impl/muninn/PageList.java
-sed -i '276i \ \ \ \ \ \ \ \ \ \ \ \ if (bufferAlignment == UnsafeUtil.pageSize()) {' ./community/io/src/main/java/org/neo4j/io/pagecache/impl/muninn/PageList.java
-sed -i '277i \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ address = memoryAllocator.allocateAligned(getCachePageSize(), getCachePageSize());' ./community/io/src/main/java/org/neo4j/io/pagecache/impl/muninn/PageList.java
-sed -i '278i \ \ \ \ \ \ \ \ \ \ \ \ } else {' ./community/io/src/main/java/org/neo4j/io/pagecache/impl/muninn/PageList.java
-sed -i '279i \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ address = memoryAllocator.allocateAligned(getCachePageSize(), bufferAlignment);' ./community/io/src/main/java/org/neo4j/io/pagecache/impl/muninn/PageList.java
-sed -i '280i \ \ \ \ \ \ \ \ \ \ \ \ }' ./community/io/src/main/java/org/neo4j/io/pagecache/impl/muninn/PageList.java
 
 #Build and test
 export MAVEN_OPTS="-Xmx4096m"
