@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=babel/babel
+PACKAGE_NAME=babel
 PACKAGE_VERSION="${1:-v7.19.2}"
 PACKAGE_URL=https://github.com/babel/babel.git
 NODE_VERSION=v16.17.0

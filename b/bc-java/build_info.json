@@ -1,0 +1,10 @@
+{
+    "package_name" : "bc-java",
+    "github_url":"https://github.com/bcgit/bc-java.git",
+    "version": "r1rv73",
+    "default_branch": "master",
+    "package_dir": "b/bc-java/",
+    "build_script" : "bc-java_ubi_8.7.sh",
+    "docker_build": false,
+    "validate_build_script": true
+}

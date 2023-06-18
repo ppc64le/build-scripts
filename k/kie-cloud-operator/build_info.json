@@ -1,0 +1,11 @@
+{
+    "package_name" : "kie-cloud-operator",
+    "github_url":"https://github.com/kiegroup/kie-cloud-operator.git",
+    "version": "7.13.2-2",
+    "default_branch": "main",
+    "package_dir": "k/kie-cloud-operator/", 
+    "build_script": "kie-cloud-operator_ubi_8.6.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false
+}    
