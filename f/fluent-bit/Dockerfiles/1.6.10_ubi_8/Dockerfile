@@ -8,8 +8,7 @@ LABEL "summary"="Fluent Bit 1.6.10"
 LABEL "description"="Fluent Bit 1.6.10"
 
 ENV FLUENTBIT_VERSION=v1.6.10
-#ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/f/fluent-bit/fluent-bit_${FLUENTBIT_VERSION}.patch
-ENV PATCH_FILE=https://raw.githubusercontent.com/sumitd2/build-scripts/fluent-bit-1.6.10/f/fluent-bit/fluent-bit_${FLUENTBIT_VERSION}.patch
+ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/f/fluent-bit/fluent-bit_${FLUENTBIT_VERSION}.patch
 
 RUN groupadd -r fluent --gid=1000; \
     useradd -r -g fluent --uid=1000 fluent;
