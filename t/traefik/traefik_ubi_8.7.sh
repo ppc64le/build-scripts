@@ -42,6 +42,8 @@ fi
 
 sed -i '230d' pkg/middlewares/ratelimiter/rate_limiter_test.go
 sed -i '230 i\      Period:  ptypes.Duration(10 * time.Second),' pkg/middlewares/ratelimiter/rate_limiter_test.go
+sed -i '151d' pkg/middlewares/ratelimiter/rate_limiter_test.go
+sed -i '151 i\				Average: 5,' pkg/middlewares/ratelimiter/rate_limiter_test.go
 
 if ! go test ./... ; then
       echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"

@@ -1,0 +1,11 @@
+{
+   "package_name": "dotnetdbf",
+   "github_url": "https://github.com/ekonbenefits/dotnetdbf",
+   "version": "414321a",
+   "default_branch": "master",
+   "build_script": "dotnetdbf_ubi_8.7.sh",
+   "package_dir": "d/dotnetdbf",
+   "docker_build": false,
+   "validate_build_script": true
+}
+

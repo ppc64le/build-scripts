@@ -1,0 +1,10 @@
+{
+   "package_name": "commonservicelocator",
+   "github_url": "https://github.com/unitycontainer/commonservicelocator.git",
+   "version": "v2.0.1",
+   "default_branch": "master",
+   "build_script": "commonservicelocator_ubi_8.7.sh",
+   "package_dir": "c/commonservicelocator",
+   "docker_build": false,
+   "validate_build_script": true
+}

@@ -45,7 +45,7 @@ make bootstrap
 go mod vendor
 make
 
-make test TEST=./vault
+make testrace TEST=./vault
 make testacc TEST=./builtin/logical/pki
 make testacc TEST=./builtin/logical/totp
  
