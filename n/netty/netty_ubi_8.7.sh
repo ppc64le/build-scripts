@@ -21,7 +21,7 @@
 WORKDIR=`pwd`
 PACKAGE_NAME=netty
 PACKAGE_URL=https://github.com/netty/netty
-PACKAGE_VERSION=netty-4.1.92.Final
+PACKAGE_VERSION=${1:-netty-4.1.92.Final}
 
 yum install -y make maven git sudo wget gcc-c++ apr-devel perl go openssl-devel automake autoconf libtool libstdc++-static
 
@@ -39,7 +39,8 @@ cmake -Bbuild-cmake -H.
 cmake --build build-cmake
 sudo ln -sf $WORKDIR/ninja/build-cmake/ninja /usr/bin/ninja
 cd ..
-   
+
+#netty requires netty-tcnative binaries to build and test ,tried to build and test the netty-tcnative with the following link:https://github.com/linux-on-ibm-z/docs/wiki/Building-netty-tcnative
 git clone https://github.com/netty/netty-tcnative.git 
 cd netty-tcnative/
 git checkout netty-tcnative-parent-2.0.60.Final
