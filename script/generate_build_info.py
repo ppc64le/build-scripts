@@ -157,9 +157,9 @@ for file in file_list:
     elif file.endswith(".json"):
 
         new_key_value={"maintainer":f"{maintainer}"}
-        dummy_data=json.load(open(f"{dir_name}/build_info.json"))
+        build_info__data=json.load(open(f"{dir_name}/build_info.json"))
 
-        new_key_value.update(dummy_data)
+        new_key_value.update(build_info_data)
         updated_build_info=new_key_value
 
         with open(f"{dir_name}/build_info.json",'w') as f:
