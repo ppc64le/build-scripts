@@ -22,6 +22,7 @@ from logging import WARNING
 import os
 import json
 import requests
+import glob
 
 GITHUB_PACKAGE_INFO_API = "https://api.github.com/repos/{}/{}"
 
@@ -93,8 +94,29 @@ build_scripts_versions = []
 dockerfile_versions = []
 github_url = ''
 default_build_script = None
-
+maintainer=''
 file_list = get_files_list(dir_name)
+
+def latest_updated_build_script(dir_name):
+    files_path=os.path.join(dir_name,"*")
+    files=sorted(glob.iglob(files_path),key=os.path.getctime,reverse=True)
+
+    for script_file in files:
+        if script_file.endswith(".sh"):
+            latest_updated_script=script_file
+            break
+
+    return latest_updated_script
+
+latest_updated_script=latest_updated_build_script(dir_name)
+
+with open(latest_updated_script,'r',encoding='utf-8') as f:
+    contents=f.readlines()
+    for line in contents:
+        if line.startswith('# Maintainer'):
+            maintainer=line.split(':')[1]
+            maintainer=maintainer.split('<')[1].split('>')[0]
+
 for file in file_list:
     if file.endswith(".sh") and "Dockerfiles" not in file:
         # Read the available build-scripts and load the data.
@@ -131,9 +153,21 @@ for file in file_list:
         if 'version' not in docker_details:
             docker_details ['version'] = '*'
         dockerfile_versions.append(docker_details)
+    
+    elif file.endswith(".json"):
+
+        new_key_value={"maintainer":f"{maintainer}"}
+        dummy_data=json.load(open(f"{dir_name}/build_info.json"))
+
+        new_key_value.update(dummy_data)
+        updated_build_info=new_key_value
+
+        with open(f"{dir_name}/build_info.json",'w') as f:
+            json.dump(updated_build_info,f,indent=2)
 
 
 final_json = {
+    "maintainer":maintainer,    
     "package_name" : package_name,
     "github_url": github_url,
     "version": dockerfile_versions[-1]['version'] if dockerfile_versions else build_scripts_versions[-1]['version'],
