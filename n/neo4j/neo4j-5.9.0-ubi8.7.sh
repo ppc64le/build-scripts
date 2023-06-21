@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 #---------------------------------------------------------------------------------------------------
 #
 # Package		: Neo4j
@@ -16,8 +16,6 @@
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
 #---------------------------------------------------------------------------------------------------
-
-set -eux
 
 CWD=$(pwd)
 PACKAGE_NAME=neo4j
