@@ -1,11 +1,14 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package        : openssl
-# Version        : openssl-3.0.0-alpha17
+# Version        : openssl-3.0.0-alpha17,OpenSSL_1_1_1g
 # Source repo    : https://github.com/openssl/openssl.git
-# Tested on      : ubi:8.3
+# Tested on      : ubi:8.5
+# Language      : C
+# Travis-Check  : True
 # Script License : Apache License, Version 2 or later
-# Maintainer     : Anant Pednekar <Anant.Pednekar@ibm.com>
+# Maintainer     : Anant Pednekar <Anant.Pednekar@ibm.com>, Amit Mukati <amit.mukati3@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -15,7 +18,6 @@
 #
 # ----------------------------------------------------------------------------
 
-#!/bin/bash
 #Update Repos
 #yum -y update
 
