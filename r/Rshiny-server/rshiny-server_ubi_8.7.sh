@@ -1,7 +1,7 @@
 #!/bin/bash
 # ----------------------------------------------------------------------------
 #
-# Package       : Rshiny-server
+# Package       : R-shiny
 # Version       : v1.5.20.1002
 # Source repo   : https://github.com/rstudio/shiny-server.git
 # Tested on     : UBI 8.7
@@ -23,36 +23,34 @@
 # add "test     ALL=(ALL)       ALL" in visudo file.
 # su test
 # cd
+set -e
 USER_NAME=test
 USERDIR=/home/test
-PACKAGE_NAME=Rshiny-server
+PACKAGE_NAME=shiny-server
 PACKAGE_TAG=${1:-v1.5.20.1002}
 PACKAGE_BRANCH=master
 PACKAGE_URL=https://github.com/rstudio/shiny-server.git
 
-#Download Updates and Dependencies
-dnf update -y
-
 #install required prerequisites
-dnf install -y gcc gcc-c++ git wget xz cmake make python3.8 openssl-devel
+dnf install -y gcc gcc-c++ gcc-gfortran git wget xz cmake make openssl-devel yum-utils wget sudo python39 python39-devel llvm -y
 
 #Install R from Source
+dnf config-manager --add-repo http://mirror.centos.org/centos/8-stream/AppStream/ppc64le/os/
+dnf config-manager --add-repo http://mirror.centos.org/centos/8-stream/PowerTools/ppc64le/os/
+dnf config-manager --add-repo http://mirror.centos.org/centos/8-stream/BaseOS/ppc64le/os/
+
+wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
+mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
+rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 
 # Required repo to pickup additional EPEL package
 dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-dnf update -y
+dnf install -y R-core R-core-devel libsqlite3x-devel soci-sqlite3 
+
 #Install required dependencies
 dnf builddep R -y
-export R_VERSION=4.2.3
-# Download and extract R
-curl -O https://cran.rstudio.com/src/base/R-4/R-${R_VERSION}.tar.gz
-tar -xzvf R-${R_VERSION}.tar.gz
-cd R-${R_VERSION}
-#Build and install R
-./configure --prefix=/opt/R/${R_VERSION} --enable-R-shlib --enable-memory-profiling
-make
-make install
-export PATH=$PATH:/opt/R/4.2.3/bin
+R_VERSION=$(R --version)
+export PATH=$PATH:/opt/R/${R_VERSION}
 R --version
 
 #Check if package exists
@@ -76,7 +74,6 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_TAG 
 
 mkdir tmp
-
 cd tmp
 
 #update line 8 of the install-node.sh file by replacing its content with the specified NODE_SHA256 value.
@@ -123,4 +120,3 @@ else
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_TAG | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
         exit 0
 fi
-
