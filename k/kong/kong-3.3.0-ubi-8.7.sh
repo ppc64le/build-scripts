@@ -116,7 +116,7 @@ git apply $wdir/kong-${PACKAGE_VERSION}.patch
 make build-release > /dev/null 2>&1 || true
 
 #Patch rules_rust
-pushd $HOME/.cache/bazel/_bazel_root/e0af2e41084ad4bbf78eb15b72f107f9/external/rules_rust/
+pushd $(find $HOME/.cache/bazel -name rules_rust) 
 git apply $wdir/kong-${PACKAGE_VERSION}-rules_rust.patch
 
 #Build cargo-bazel native binary
@@ -138,9 +138,9 @@ NFPM_BIN=$(pwd)/nfpm
 echo "Building Kong debian package..."
 cd $wdir/${PACKAGE_NAME}
 make package/deb  > /dev/null 2>&1 || true
-cp -f $NFPM_BIN /$HOME/.cache/bazel/_bazel_root/e0af2e41084ad4bbf78eb15b72f107f9/external/nfpm/nfpm
+cp -f $NFPM_BIN $(find $HOME/.cache/bazel -type d -name nfpm)
 make package/rpm
-cp /$HOME/.cache/bazel/_bazel_root/e0af2e41084ad4bbf78eb15b72f107f9/execroot/kong/bazel-out/ppc-opt/bin/pkg/kong.el8.ppc64le.rpm $wdir
+cp $(find / -name kong.el8.ppc64le.rpm) $wdir
 export KONG_RPM=$wdir/kong.el8.ppc64le.rpm
 
 #Conclude
