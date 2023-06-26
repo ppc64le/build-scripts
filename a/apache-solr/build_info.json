@@ -4,7 +4,8 @@
     "package_dir":"a/apache-solr/", 
     "version":"releases/solr/9.2.0",
     "default_branch":"main",
-    "build_script":"solr_ubi_8.5.sh",
+    "build_script":"solr_ubi_8.7.sh",
+    "validate_build_script": true,
     "docker_build":false,
     "use_non_root_user": false
 }
