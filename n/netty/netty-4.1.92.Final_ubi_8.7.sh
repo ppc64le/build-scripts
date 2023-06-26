@@ -40,7 +40,7 @@ cmake --build build-cmake
 sudo ln -sf $WORKDIR/ninja/build-cmake/ninja /usr/bin/ninja
 cd ..
 
-#netty requires netty-tcnative binaries to build and test ,tried to build and test the netty-tcnative with the following link:https://github.com/linux-on-ibm-z/docs/wiki/Building-netty-tcnative
+#netty requires netty-tcnative binaries to build and test ,community made this changes to build netty-tcnative binaries,tried to build and test the netty-tcnative with the following link:https://github.com/linux-on-ibm-z/docs/wiki/Building-netty-tcnative
 git clone https://github.com/netty/netty-tcnative.git 
 cd netty-tcnative/
 git checkout netty-tcnative-parent-2.0.60.Final
@@ -74,3 +74,7 @@ else
       exit 0
 fi
 
+#skipping some modules for netty test:
+#for netty-handler module there is open issue:https://github.com/netty/netty/issues/13116
+#for netty-codec,netty-codec-http2,netty-codec-http modules requires brotli library which is not supported on power.
+#for netty-handler-ssl-ocsp,netty-transport-sctp,netty-transport-native-epoll,netty-testsuite-osgi modules depends on netty-handler module.
