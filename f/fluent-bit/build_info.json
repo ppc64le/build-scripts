@@ -1,16 +1,16 @@
 {
-    "package_name" : "fluent-bit",
-    "github_url": "https://github.com/fluent/fluent-bit",
-    "version": "v2.0.11",
-    "package_dir": "f/fluent-bit",
-    "default_branch": "master",
-    "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-    "build_script": "fluent-bit_v2.0.11_ubi_8.7.sh",
-    "docker_build": "true",
-    "validate_build_script": "true",
-
-    "v2.0.11": {
-        "dir": "2.0.11_ubi_8",
-        "build_script": "fluent-bit_v2.0.11_ubi_8.7.sh"
-    }
+  "maintainer": "sumit.dubey2@ibm.com",
+  "package_name": "fluent-bit",
+  "github_url": "https://github.com/fluent/fluent-bit",
+  "version": "v2.0.11",
+  "package_dir": "f/fluent-bit",
+  "default_branch": "master",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "build_script": "fluent-bit_v2.0.11_ubi_8.7.sh",
+  "docker_build": "true",
+  "validate_build_script": "true",
+  "v2.0.11": {
+    "dir": "2.0.11_ubi_8",
+    "build_script": "fluent-bit_v2.0.11_ubi_8.7.sh"
+  }
 }

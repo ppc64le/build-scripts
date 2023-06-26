@@ -1,16 +1,15 @@
 {
-    "package_name": "jnr-posix",
-    "github_url": "https://github.com/jnr/jnr-posix.git",
-    "version": "jnr-posix-3.1.16",
-    "default_branch": "master",
-    "package_dir": "j/jnr-posix",
-    "build_script": "jnr-posix_ubi_8.7.sh",
-    "docker_build": false,
-    "validate_build_script": true,
-    "use_non_root_user": true,
-
-    "jnr-posix-3.1.*": {
-       "build_script": "jnr-posix_ubi_8.7.sh"
-    }
-
+  "maintainer": "Pooja.Shah4@ibm.com",
+  "package_name": "jnr-posix",
+  "github_url": "https://github.com/jnr/jnr-posix.git",
+  "version": "jnr-posix-3.1.16",
+  "default_branch": "master",
+  "package_dir": "j/jnr-posix",
+  "build_script": "jnr-posix_ubi_8.7.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": true,
+  "jnr-posix-3.1.*": {
+    "build_script": "jnr-posix_ubi_8.7.sh"
+  }
 }

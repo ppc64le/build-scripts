@@ -1,15 +1,14 @@
 {
-    "package_name": "collectd",
-    "github_url": "https://github.com/collectd/collectd.git",
-    "version": "collectd-5.12.0",
-    "package_dir": "c/collectd",
-    "build_script": "collectd_ubi_8.7.sh",
-    "default_branch": "main",
-    "docker_build": false,
-    "validate_build_script": true,
-    	
-    "collectd-5.*.*" : {
-        "build_script" : "collectd_ubi_8.7.sh"
-    }
-
+  "maintainer": "Pooja.Shah4@ibm.com",
+  "package_name": "collectd",
+  "github_url": "https://github.com/collectd/collectd.git",
+  "version": "collectd-5.12.0",
+  "package_dir": "c/collectd",
+  "build_script": "collectd_ubi_8.7.sh",
+  "default_branch": "main",
+  "docker_build": false,
+  "validate_build_script": true,
+  "collectd-5.*.*": {
+    "build_script": "collectd_ubi_8.7.sh"
+  }
 }
