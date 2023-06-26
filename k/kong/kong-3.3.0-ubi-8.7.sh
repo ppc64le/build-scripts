@@ -1,14 +1,14 @@
-#!/bin/bash -ex
-# ----------------------------------------------------------------------------
+#!/bin/bash -e
+# -----------------------------------------------------------------------------
 #
-# Package       : kong
-# Version       : 3.3.0
-# Source repo   : https://github.com/kong/kong/
-# Tested on     : UBI 8.7
-# Language      : Rust 
-# Travis-Check  : True
+# Package	    : kong
+# Version	    : 3.3.0
+# Source repo	: https://github.com/kong/kong
+# Tested on	    : UBI 8.7
+# Language      : Rust
+# Travis-Check  : true
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Sumit Dubey <Sumit.Dubey2@ibm.com>
+# Maintainer	: Sumit Dubey <sumit.dubey2@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
