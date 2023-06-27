@@ -1,0 +1,15 @@
+{
+    "package_name": "yargs-unparser",
+    "github_url": "https://github.com/yargs/yargs-unparser.git",
+    "version": "v2.0.0",
+    "default_branch": "master",
+    "package_dir": "y/yargs-unparser",
+    "build_script": "yargs-unparser_ubi_8.7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+
+    "v1.6.0" : {
+       "build_script": "yargs-unparser_rhel_8.3.sh"
+    }
+}
