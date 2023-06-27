@@ -75,6 +75,7 @@ if ! git clone $PACKAGE_URL -b $PACKAGE_BRANCH ; then
 fi
 
 echo "BRANCH_NAME = $PACKAGE_BRANCH"
+git config --global --add safe.directory $USERDIR/$PACKAGE_NAME
 chown -R $USER_NAME:$USER_NAME $USERDIR
 cd $PACKAGE_NAME
 
