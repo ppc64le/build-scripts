@@ -31,6 +31,13 @@ PACKAGE_TAG=${1:-v1.5.20.1002}
 PACKAGE_BRANCH=master
 PACKAGE_URL=https://github.com/rstudio/shiny-server.git
 
+#Create a non root user
+useradd --create-home --home-dir $USERDIR --shell /bin/bash $USER_NAME
+usermod -aG wheel $USER_NAME
+yum install -y sudo
+su $USER_NAME
+cd $USERDIR
+
 #install required prerequisites
 dnf install -y gcc gcc-c++ gcc-gfortran git wget xz cmake make openssl-devel yum-utils wget sudo python39 python39-devel llvm -y
 
@@ -47,7 +54,7 @@ rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 dnf install -y R-core R-core-devel libsqlite3x-devel soci-sqlite3 
 
-#Install required dependencies
+#Install required dependencies for R
 dnf builddep R -y
 R_VERSION=$(R --version)
 export PATH=$PATH:/opt/R/${R_VERSION}
@@ -74,6 +81,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_TAG 
 
 mkdir tmp
+
 cd tmp
 
 #update line 8 of the install-node.sh file by replacing its content with the specified NODE_SHA256 value.
