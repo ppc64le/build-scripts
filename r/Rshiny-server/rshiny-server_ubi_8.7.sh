@@ -37,6 +37,7 @@ usermod -aG wheel $USER_NAME
 yum install -y sudo
 su $USER_NAME
 cd $USERDIR
+echo " Current directory: $PWD "
 
 #install required prerequisites
 dnf install -y gcc gcc-c++ gcc-gfortran git wget xz cmake make openssl-devel yum-utils wget sudo python39 python39-devel llvm -y
