@@ -1,9 +1,12 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: yargs-unparser
 # Version	: 1.6.0
 # Source repo	: https://github.com/yargs/yargs-unparser
 # Tested on	: RHEL 8.3
+# Language      : JavaScript
+# Travis-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
@@ -16,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=yargs-unparser
-PACKAGE_VERSION=1.6.0
+PACKAGE_VERSION=v1.6.0
 PACKAGE_URL=https://github.com/yargs/yargs-unparser
 
 yum -y update && yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git gcc gcc-c++ libffi libffi-devel ncurses git jq make cmake
