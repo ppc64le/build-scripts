@@ -7,7 +7,7 @@
 # Tested on     : UBI: 8.7
 # Language      : Java
 # Travis-Check  : True
-# Script License: GeoServer License, Version 2 
+# Script License: Apache License, Version 2 or later 
 # Maintainer    : Stuti Wali <Stuti.Wali@ibm.com>
 #
 #
