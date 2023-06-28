@@ -9,7 +9,7 @@
     "validate_build_script": true,
     "use_non_root_user": false,
 
-    "v8.*.*, v6.*.*, v5.*.* : {
+    "v8.*.*, v6.*.*, v5.*.*" : {
        "build_script" : "wrap-ansi_ubi_8.7.sh"
     }
 }
