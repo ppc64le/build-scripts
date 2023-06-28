@@ -1,5 +1,5 @@
 {
-  "maintainer": "amol.patil2@ibm.com",
+  "maintainer": "sethp@us.ibm.com",
   "package_name": "kafka",
   "github_url": "https://github.com/apache/kafka",
   "version": "3.3.1",

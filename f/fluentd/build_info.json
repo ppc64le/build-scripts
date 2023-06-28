@@ -1,5 +1,5 @@
 {
-  "maintainer": "sowania@us.ibm.com",
+  "maintainer": "Muskaan.Sheik@ibm.com",
   "package_name": "fluentd",
   "github_url": "https://github.com/fluent/fluentd",
   "version": "v1.15.3",

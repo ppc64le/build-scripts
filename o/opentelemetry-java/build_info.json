@@ -1,5 +1,5 @@
 {
-  "maintainer": "Adilhusain.Shaikh@ibm.com",
+  "maintainer": "Stuti.Wali@ibm.com",
   "package_name": "opentelemetry-java",
   "github_url": "https://github.com/open-telemetry/opentelemetry-java",
   "default_branch": "main",

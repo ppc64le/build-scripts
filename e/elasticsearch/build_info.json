@@ -1,5 +1,5 @@
 {
-  "maintainer": "Muskaan.Sheik@ibm.com",
+  "maintainer": "vishaka.Desai@ibm.com",
   "package_name": "elasticsearch",
   "github_url": "https://github.com/elastic/elasticsearch.git",
   "version": "v8.2.1",

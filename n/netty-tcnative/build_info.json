@@ -1,5 +1,5 @@
 {
-  "maintainer": "santosh.magdum@us.ibm.com",
+  "maintainer": "Pratik.Tonage@ibm.com",
   "package_name": "netty-tcnative",
   "github_url": "https://github.com/netty/netty-tcnative.git",
   "version": "netty-tcnative-parent-2.0.54.Final",

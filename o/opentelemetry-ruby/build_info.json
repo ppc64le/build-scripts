@@ -1,5 +1,5 @@
 {
-  "maintainer": "Adilhusain.Shaikh@ibm.com",
+  "maintainer": "Vinod.K1@ibm.com",
   "package_name": "opentelemetry-ruby",
   "github_url": "https://github.com/open-telemetry/opentelemetry-ruby.git",
   "version": "opentelemetry-sdk-experimental/v0.1.0",
