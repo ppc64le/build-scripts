@@ -2,9 +2,9 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : arrow
-# Version          : go/v10.0.1
+# Version          : go/v10.0.1,go/v12.0.1
 # Source repo      : https://github.com/apache/arrow
-# Tested on        : UBI 8.5
+# Tested on        : UBI 8.7
 # Language         : C++,Go
 # Travis-Check     : True 
 # Script License   : Apache License, Version 2 or later
@@ -20,8 +20,8 @@
 
 PACKAGE_NAME=arrow
 PACKAGE_URL=https://github.com/apache/arrow.git
-PACKAGE_VERSION=${1:-go/v10.0.1}
-GO_VERSION=${GO_VERSION:-1.19.6}
+PACKAGE_VERSION=${1:-go/v12.0.1}
+GO_VERSION=${GO_VERSION:-1.20.3}
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
