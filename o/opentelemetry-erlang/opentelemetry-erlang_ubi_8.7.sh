@@ -50,7 +50,7 @@ cd rebar3/
 git checkout 3.19.0
 ./bootstrap
 ./rebar3 local install
-export PATH=$HOME_DIR/.cache/rebar3/bin:$PATH
+export PATH=~/.cache/rebar3/bin:$PATH
 cd ..
 
 #Clone the repository and build.
