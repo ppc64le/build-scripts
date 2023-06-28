@@ -92,7 +92,7 @@ cd ../
 cd "$HOME_DIR"/$PACKAGE_NAME
 
 #building opentelemetry java
-if ! ./gradlew build -x test; then
+if ! ./gradlew build --exclude-task test; then
         echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
