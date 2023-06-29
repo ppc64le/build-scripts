@@ -47,7 +47,7 @@ dnf install -y http://mirror.centos.org/centos/8-stream/PowerTools/ppc64le/os/Pa
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 source "$HOME"/.bashrc
 nvm install 16
-cp /root/.nvm/versions/node/v16.20.0/bin/node  /usr/bin
+cp /root/.nvm/versions/node/v16.20.1/bin/node  /usr/bin
 
 git clone https://github.com/rstudio/rstudio
 cd rstudio
