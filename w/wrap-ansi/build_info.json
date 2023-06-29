@@ -1,0 +1,16 @@
+{
+    "package_name" : "wrap-ansi",
+    "github_url": "https://github.com/chalk/wrap-ansi",
+    "version": "v8.1.0",
+    "default_branch" : "main",
+    "package_dir": "w/wrap-ansi",
+    "build_script": "wrap-ansi_ubi_8.7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+
+    "v8.*.*, v6.*.*, v5.*.*" : {
+       "build_script" : "wrap-ansi_ubi_8.7.sh"
+    }
+}
+

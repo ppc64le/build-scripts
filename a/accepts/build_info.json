@@ -1,0 +1,11 @@
+{
+    "package_name" : "accepts",
+    "github_url":"https://github.com/jshttp/accepts",
+    "version": "1.3.8",
+    "default_branch" : "master",
+    "package_dir": "a/accepts",
+    "build_script": "accepts_ubi_8.7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false
+}

@@ -4,7 +4,7 @@
 # Package	: leveldb
 # Version	: 1.23
 # Source repo	: https://github.com/google/leveldb.git
-# Tested on	: UBI 8.5
+# Tested on	: UBI 8.7
 # Language      : C++
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -24,19 +24,7 @@ PACKAGE_URL=https://github.com/google/leveldb.git
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
-yum install -y git gcc-c++ gcc wget make  python38 yum-utils apr-devel perl openssl-devel automake autoconf libtool
-
-# Build cmake from source, as leveldb needs latest version
-wget https://github.com/Kitware/CMake/releases/download/v3.21.2/cmake-3.21.2.tar.gz
-tar -xvf cmake-3.21.2.tar.gz
-cd cmake-3.21.2
-./bootstrap
-make
-make install
-cd ..
-
-# Set Environment to use latest cmake built
-export PATH=$PATH:$HOME/CMake/bin
+yum install -y git gcc-c++ gcc wget make  python38 yum-utils apr-devel perl openssl-devel automake autoconf libtool cmake
 
 # Clone and build code.
 cd $HOME
