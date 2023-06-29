@@ -5,7 +5,7 @@
 # Version       : 3.3.0
 # Source repo   : https://github.com/kong/kong/
 # Tested on     : Ubuntu 20.04 (docker)
-# Language      : Rust, Lua
+# Language      : Rust
 # Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sumit Dubey <Sumit.Dubey2@ibm.com>

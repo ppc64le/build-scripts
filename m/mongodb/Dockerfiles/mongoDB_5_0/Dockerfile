@@ -72,7 +72,7 @@ RUN set -ex; \
         apt-key list
 
 ARG MONGO_MAJOR=5.0
-ARG MONGO_VERSION=5.0.13
+ARG MONGO_VERSION=5.0.18
 
 # We install the necesary tools to compile mongo on ppc64le
 RUN apt-get update \
