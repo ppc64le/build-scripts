@@ -1,28 +1,8 @@
 diff --git a/Makefile b/Makefile
-index 917e0070b..7f231a5d3 100644
+index 917e0070b..4ce00f90f 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -39,7 +39,7 @@ endif
- 
- ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
- KONG_SOURCE_LOCATION ?= $(ROOT_DIR)
--GRPCURL_VERSION ?= 1.8.5
-+GRPCURL_VERSION ?= 1.8.7
- BAZLISK_VERSION ?= 1.16.0
- BAZEL := $(shell command -v bazel 2> /dev/null)
- VENV = /dev/null # backward compatibility when no venv is built
-@@ -67,9 +67,7 @@ build-kong: check-bazel
- build-venv: check-bazel
- 	$(eval VENV := bazel-bin/build/$(BUILD_NAME)-venv.sh)
- 
--	@if [ ! -e bazel-bin/build/$(BUILD_NAME)-venv.sh ]; then \
--		$(BAZEL) build //build:venv --verbose_failures --action_env=BUILD_NAME=$(BUILD_NAME); \
--	fi
-+	$(BAZEL) build //build:venv --verbose_failures --action_env=BUILD_NAME=$(BUILD_NAME)
- 
- install-dev-rocks: build-venv
- 	@. $(VENV) ;\
-@@ -86,7 +84,6 @@ install-dev-rocks: build-venv
+@@ -86,7 +86,6 @@ install-dev-rocks: build-venv
  dev: build-venv install-dev-rocks bin/grpcurl
  
  build-release: check-bazel
@@ -31,30 +11,24 @@ index 917e0070b..7f231a5d3 100644
  
  package/deb: check-bazel build-release
 diff --git a/build/nfpm/repositories.bzl b/build/nfpm/repositories.bzl
-index cc719072e..8939bc929 100644
+index cc719072e..c3bbf0eb2 100644
 --- a/build/nfpm/repositories.bzl
 +++ b/build/nfpm/repositories.bzl
-@@ -13,8 +13,8 @@ def _nfpm_release_select_impl(ctx):
- 
-     if os_arch == "aarch64":
+@@ -15,6 +15,8 @@ def _nfpm_release_select_impl(ctx):
          os_arch = "arm64"
--    elif os_arch == "amd64":
--        os_arch = "x86_64"
+     elif os_arch == "amd64":
+         os_arch = "x86_64"
 +    elif os_arch == "ppc64le":
 +        os_arch = "ppc64le"
      else:
          fail("Unsupported arch %s" % os_arch)
  
-@@ -36,15 +36,16 @@ nfpm_release_select = repository_rule(
- 
- def nfpm_repositories():
+@@ -38,13 +40,14 @@ def nfpm_repositories():
      npfm_matrix = [
--        ["linux", "x86_64", "4c63031ddbef198e21c8561c438dde4c93c3457ffdc868d7d28fa670e0cc14e5"],
-+        ["linux", "ppc64le", "4c63031ddbef198e21c8561c438dde4c93c3457ffdc868d7d28fa670e0cc14e5"],
+         ["linux", "x86_64", "4c63031ddbef198e21c8561c438dde4c93c3457ffdc868d7d28fa670e0cc14e5"],
          ["linux", "arm64", "2af1717cc9d5dcad5a7e42301dabc538acf5d12ce9ee39956c66f30215311069"],
--        ["Darwin", "x86_64", "fb3b8ab5595117f621c69cc51db71d481fbe733fa3c35500e1b64319dc8fd5b4"],
 +        ["linux", "ppc64le", "4c63031ddbef198e21c8561c438dde4c93c3457ffdc868d7d28fa670e0cc14e5"],
-+        ["Darwin", "ppc64le", "fb3b8ab5595117f621c69cc51db71d481fbe733fa3c35500e1b64319dc8fd5b4"],
+         ["Darwin", "x86_64", "fb3b8ab5595117f621c69cc51db71d481fbe733fa3c35500e1b64319dc8fd5b4"],
          ["Darwin", "arm64", "9ca3ac6e0c4139a9de214f78040d1d11dd221496471696cc8ab5d357850ccc54"],
      ]
      for name, arch, sha in npfm_matrix:
@@ -66,44 +40,32 @@ index cc719072e..8939bc929 100644
              build_file = "//build/nfpm:BUILD.bazel",
          )
 diff --git a/build/nfpm/rules.bzl b/build/nfpm/rules.bzl
-index d6f5bb94f..84ce36ef3 100644
+index d6f5bb94f..14a6ca678 100644
 --- a/build/nfpm/rules.bzl
 +++ b/build/nfpm/rules.bzl
-@@ -9,8 +9,8 @@ def _nfpm_pkg_impl(ctx):
-     env = dicts.add(ctx.attr.env, ctx.attr.extra_env, KONG_VAR, ctx.configuration.default_shell_env)
- 
+@@ -11,6 +11,8 @@ def _nfpm_pkg_impl(ctx):
      target_cpu = ctx.attr._cc_toolchain[cc_common.CcToolchainInfo].cpu
--    if target_cpu == "k8" or target_cpu == "x86_64" or target_cpu == "amd64":
--        target_arch = "amd64"
-+    if target_cpu == "k8" or target_cpu == "ppc" or target_cpu == "ppc64le":
+     if target_cpu == "k8" or target_cpu == "x86_64" or target_cpu == "amd64":
+         target_arch = "amd64"
++    if target_cpu == "ppc" or target_cpu == "ppc64le":
 +        target_arch = "ppc64le"
      elif target_cpu == "aarch64" or target_cpu == "arm64":
          target_arch = "arm64"
      else:
-@@ -24,7 +24,7 @@ def _nfpm_pkg_impl(ctx):
+@@ -24,7 +26,7 @@ def _nfpm_pkg_impl(ctx):
      if pkg_ext == "apk":
          pkg_ext = "apk.tar.gz"
  
 -    # create like kong.amd64.deb
-+    # create like kong.ppc64le.deb
++    # create like kong.<target_arch>.deb package
      out = ctx.actions.declare_file("%s/%s.%s.%s" % (
          ctx.attr.out_dir,
          ctx.attr.pkg_name,
 diff --git a/build/openresty/BUILD.openresty.bazel b/build/openresty/BUILD.openresty.bazel
-index 812ddfb9e..e613eba02 100644
+index 812ddfb9e..4cfaa90e8 100644
 --- a/build/openresty/BUILD.openresty.bazel
 +++ b/build/openresty/BUILD.openresty.bazel
-@@ -36,9 +36,6 @@ genrule(
-             if [[ $$cross -ne 1 ]]; then
-                 flags="$$flags -DLUA_USE_VALGRIND"
-             fi
--            if [[ $$aarch64 -ne 1 ]]; then
--                flags="$$flags -DLUAJIT_USE_SYSMALLOC"
--            fi
-         fi
-     fi
- 
-@@ -84,6 +81,7 @@ make(
+@@ -84,6 +84,7 @@ make(
          "-j" + KONG_VAR["NPROC"],
          "install",
      ],
@@ -398,7 +360,7 @@ index 000000000..8c22e48e9
 +     |  .endif
 +     |  b <1
 diff --git a/kong/pdk/nginx.lua b/kong/pdk/nginx.lua
-index f5715e03e..045443276 100644
+index f5715e03e..7d1daa479 100644
 --- a/kong/pdk/nginx.lua
 +++ b/kong/pdk/nginx.lua
 @@ -12,7 +12,7 @@ local arch = ffi.arch
@@ -406,7 +368,7 @@ index f5715e03e..045443276 100644
  local tonumber = tonumber
  
 -if arch == "x64" or arch == "arm64" then
-+if arch == "ppc64le" or arch == "arm64" then
++if arch == "x64" or arch == "ppc64le" or arch == "arm64" then
    ffi.cdef[[
      uint64_t *ngx_stat_active;
      uint64_t *ngx_stat_reading;
