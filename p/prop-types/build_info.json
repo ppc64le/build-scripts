@@ -1,0 +1,22 @@
+{
+    "package_name": "prop-types",
+    "github_url": "https://github.com/facebook/prop-types",
+    "version": "v15.8.1",
+    "default_branch": "main",
+    "package_dir": "p/prop-types",
+    "build_script": "prop-types_ubi_8_7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    
+    "v15.8.*": {
+       "build_script": "prop-types_ubi_8_7.sh"
+    },
+
+    "v15.7.*": {
+       "build_script": "prop-types_ubi_8_7.sh"
+    }
+
+}
+
+

@@ -1,0 +1,11 @@
+{
+    "package_name": "session",
+    "github_url": "https://github.com/expressjs/session.git",
+    "version": "v1.17.3",
+    "package_dir": "s/session/",
+    "build_script": "session_ubi_8.7.sh",
+    "validate_build_script": true,
+    "default_branch": "master",
+    "docker_build": false
+
+}
