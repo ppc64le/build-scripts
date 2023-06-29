@@ -1,7 +1,7 @@
 FROM docker.io/ubuntu:20.04 
 
-ENV KONG_PATCH=https://raw.githubusercontent.com/sumitd2/build-scripts/kong-3.0.0-ubuntu/k/kong/kong-3.3.0.patch
-ENV RULES_RUST_PATCH=https://raw.githubusercontent.com/sumitd2/build-scripts/kong-3.0.0-ubuntu/k/kong/kong-3.3.0-rules_rust.patch
+ENV KONG_PATCH=https://raw.githubusercontent.com/ppc64le/build-scripts/master/k/kong/kong-3.3.0.patch
+ENV RULES_RUST_PATCH=https://raw.githubusercontent.com/ppc64le/build-scripts/master/k/kong/kong-3.3.0-rules_rust.patch
 ENV PACKAGE_NAME=kong
 ENV PACKAGE_VERSION=3.3.0
 ENV PACKAGE_URL=https://github.com/kong/kong/
