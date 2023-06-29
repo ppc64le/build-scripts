@@ -31,6 +31,9 @@ yum install java-17-openjdk-devel git wget curl hostname procps-ng -y \
     && curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-ppc64el" \
     && chmod +x /usr/local/bin/gosu \
     && gosu nobody true
+export JAVA_HOME=$(compgen -G '/usr/lib/jvm/java-17-openjdk-*')
+export JRE_HOME=${JAVA_HOME}/jre
+export PATH=${JAVA_HOME}/bin:$PATH
 
 #Install maven
 wget https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
