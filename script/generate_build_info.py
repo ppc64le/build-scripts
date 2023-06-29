@@ -96,6 +96,7 @@ else:
 build_scripts_versions = []
 dockerfile_versions = []
 github_url = ''
+
 default_build_script = None
 
 file_list = get_files_list(dir_name)
@@ -104,7 +105,6 @@ file_list = get_files_list(dir_name)
 def get_maintainer_for_package(dir_name):
     files_path=os.path.join(dir_name,"*")
     files=sorted(glob.iglob(files_path),key=os.path.getctime,reverse=True)
-
     for script_file in files:
         if script_file.endswith(".sh"):
             with open(script_file, 'r' , encoding='utf-8') as f:
@@ -113,7 +113,22 @@ def get_maintainer_for_package(dir_name):
                     if line.startswith('# Maintainer'):
                         maintainer = line.split(':')[1]
                         maintainer = maintainer.split('<')[1].split('>')[0]
-                        return maintainer 
+                        return maintainer
+    return "Unknown"
+
+def get_maintainer_from_dockerfile(dir_name):
+    maintainer=''
+    files_path=os.path.join(dir_name,"*")
+    files=sorted((glob.glob(files_path + '/**/Dockerfile' , recursive=True)),key=os.path.getctime,reverse=True)
+    for docker_file in files:
+        with open(docker_file, 'r', encoding='utf-8') as f:
+            contents = f.readlines()
+            for line in contents:
+                line=line.strip()
+                if line.startswith('maintainer'):
+                    maintainer=line.split('=')[1].split('\"')[1]
+                    return maintainer
+    return "Unknown"
 
 for file in file_list:
     if file.endswith(".sh") and "Dockerfiles" not in file:
@@ -155,15 +170,18 @@ for file in file_list:
 
         new_key_value = {"maintainer":"{}".format(get_maintainer_for_package(dir_name))}
         build_info_data = json.load(open(f"{dir_name}/build_info.json"))
-
+        
         new_key_value.update(build_info_data)
         updated_build_info = new_key_value
         with open(f"{dir_name}/build_info.json",'w') as f:
             json.dump(updated_build_info,f,indent=2)
-
-
+        
+maintainer=get_maintainer_for_package(dir_name)
+if maintainer=="Unknown":
+    maintainer= get_maintainer_from_dockerfile(dir_name)
+    
 final_json = {
-    "maintainer" : get_maintainer_for_package(dir_name),
+    "maintainer" : maintainer,
     "package_name" : package_name,
     "github_url": github_url,
     "version": dockerfile_versions[-1]['version'] if dockerfile_versions else build_scripts_versions[-1]['version'],
