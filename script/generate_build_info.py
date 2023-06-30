@@ -130,6 +130,10 @@ def get_maintainer_from_dockerfile(dir_name):
                     return maintainer
     return "Unknown"
 
+maintainer=get_maintainer_for_package(dir_name)
+if maintainer=="Unknown":
+    maintainer= get_maintainer_from_dockerfile(dir_name)
+
 for file in file_list:
     if file.endswith(".sh") and "Dockerfiles" not in file:
         # Read the available build-scripts and load the data.
@@ -168,7 +172,7 @@ for file in file_list:
         dockerfile_versions.append(docker_details)
     elif file.endswith(".json"):
 
-        new_key_value = {"maintainer":"{}".format(get_maintainer_for_package(dir_name))}
+        new_key_value = {"maintainer":maintainer}
         build_info_data = json.load(open(f"{dir_name}/build_info.json"))
         
         new_key_value.update(build_info_data)
@@ -176,9 +180,6 @@ for file in file_list:
         with open(f"{dir_name}/build_info.json",'w') as f:
             json.dump(updated_build_info,f,indent=2)
         
-maintainer=get_maintainer_for_package(dir_name)
-if maintainer=="Unknown":
-    maintainer= get_maintainer_from_dockerfile(dir_name)
     
 final_json = {
     "maintainer" : maintainer,
