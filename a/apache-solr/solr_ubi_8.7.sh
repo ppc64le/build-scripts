@@ -4,9 +4,9 @@
 # Package          : solr
 # Version          : releases/solr/9.2.0
 # Source repo      : https://github.com/apache/solr
-# Tested on        : UBI 8.5
+# Tested on        : UBI 8.7
 # Language         : Java
-# Travis-Check     : False 
+# Travis-Check     : True 
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Shubham Garud <Shubham.Garud@ibm.com>
 #
@@ -21,16 +21,16 @@
 PACKAGE_NAME=solr
 PACKAGE_VERSION=${1:-releases/solr/9.2.0}
 PACKAGE_URL=https://github.com/apache/solr
+HOME_DIR=${PWD}
 
 # Install dependencies
 yum install -y wget git java-11-openjdk java-11-openjdk-devel
 
-echo `java -XshowSettings:properties -version 2>&1 > /dev/null | grep 'java.home'`
-echo `PATH`
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.19.0.7-1.el8_7.ppc64le
-export PATH=/usr/lib/jvm/java-11-openjdk-11.0.12.0.7-0.el8_4.ppc64le/bin/:$PATH
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+export PATH=$HOME_DIR/bin/:$PATH
 
-
+# Clone solr repo
+cd $HOME_DIR
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
