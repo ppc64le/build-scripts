@@ -90,5 +90,6 @@ chown rstudio: themes
 cd /rstudio/build/src/cpp &&  ./rstudio-tests --scope core
 cd /rstudio/build/src/cpp &&  ./rstudio-tests --scope rserver
 
-runuser -l rstudio -c "cd /rstudio/build/src/cpp &&  ./rstudio-tests --scope r"
-runuser -l rstudio -c "cd /rstudio/build/src/cpp &&  ./rstudio-tests --scope rsession"
+su rstudio
+cd /rstudio/build/src/cpp &&  ./rstudio-tests --scope r
+cd /rstudio/build/src/cpp &&  ./rstudio-tests --scope rsession
