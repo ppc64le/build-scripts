@@ -7,8 +7,9 @@ vault-k8s 1.2.1 - Steps to build binary and the docker image
 3. Download and run the script
    yum install wget -y
    wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/v/vault-k8s/vault-k8s-1.2.1-ubi-8.7.sh
+   chmod +x vault-k8s-1.2.1-ubi-8.7.sh
    source ./vault-k8s-1.2.1-ubi-8.7.sh
-   echo $$VAULTK8S_BIN
+   echo $VAULTK8S_BIN
    echo $IMAGE_TAG
-5. List docker image on the host
+4. List docker image on the host
    docker images | grep vault-k8s
