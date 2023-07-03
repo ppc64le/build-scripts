@@ -3,7 +3,7 @@
 #
 # Package       : vault-k8s
 # Version       : 1.2.1
-# Source repo   : https://github.com/kong/kong/
+# Source repo   : https://github.com/hashicorp/vault-k8s
 # Tested on     : UBI 8.7
 # Language      : Go 
 # Travis-Check  : True
