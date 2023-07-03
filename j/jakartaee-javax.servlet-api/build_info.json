@@ -1,0 +1,11 @@
+{
+    "package_name" : "jakartaee-javax.servlet-api",
+    "github_url": "https://github.com/jakartaee/servlet",
+    "version": "6.0.0-RELEASE",
+    "default_branch": "master",
+    "package_dir": "j/jakartaee-javax.servlet-api",
+    "build_script": "jakartaee-javax.servlet-api_ubi_8.7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false
+}

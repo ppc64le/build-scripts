@@ -1,0 +1,14 @@
+diff --git a/third_party/BUILD b/third_party/BUILD
+index a021f77a62..5fb172597e 100644
+--- a/third_party/BUILD
++++ b/third_party/BUILD
+@@ -645,7 +645,6 @@ distrib_java_import(
+     enable_distributions = ["debian"],
+     jars = [
+       "netty_tcnative/netty-tcnative-classes-2.0.51.Final.jar",
+-      ":netty_tcnative/netty-tcnative-filtered.jar",
+     ],
+ )
+
+
+

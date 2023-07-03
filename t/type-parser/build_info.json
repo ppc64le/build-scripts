@@ -1,0 +1,14 @@
+{
+    "package_name": "type-parser",
+    "github_url": "https://github.com/drapostolos/type-parser.git",
+    "version": "type-parser-0.8.1",
+    "package_dir": "t/type-parser/",
+    "build_script": "type-parser_ubi_8.5.sh",
+    "validate_build_script": true,
+    "default_branch": "master",
+    "docker_build": false,
+
+    "type-parser-0.8.*, type-parser-0.7.0": {
+        "build_script": "type-parser_ubi_8.5.sh"
+    }
+}

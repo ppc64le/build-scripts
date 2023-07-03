@@ -17,9 +17,9 @@ ENV PATH $PATH:$GOPATH/bin
 
 RUN set -eux; \
     yum install -y git gcc make wget && \
-    wget https://golang.org/dl/go1.17.linux-ppc64le.tar.gz && \
-    tar -C /usr/local -xvzf go1.17.linux-ppc64le.tar.gz && \
-    rm -rf go1.17.linux-ppc64le.tar.gz && \
+    wget https://go.dev/dl/$(curl https://go.dev/VERSION?m=text).linux-ppc64le.tar.gz && \
+    tar -C /usr/local -xvzf $(ls go*) && \
+    rm -rf $(ls go*) && \
     export PATH=/usr/local/go/bin:$PATH && \
     wget https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_ppc64le && \
     chmod a+x dumb-init_1.2.2_ppc64le && mv ./dumb-init_1.2.2_ppc64le ./dumb-init && cp ./dumb-init /usr/bin && \

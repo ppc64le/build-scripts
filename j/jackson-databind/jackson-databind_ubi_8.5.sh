@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package       : jackson-databind
@@ -33,7 +33,7 @@ fi
 # Install required dependencies
 #yum -y update
 yum install git maven java-11-openjdk-devel -y  
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.17.0.8-2.el8_6.ppc64le
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 # update the path env. variable
 export PATH=$PATH:$JAVA_HOME/bin
 
@@ -43,13 +43,13 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Build and test
-if !$(mvn clean install -DskipTests) 
+if ! mvn clean install -DskipTests
 then
   echo "Failed to build the package"
   exit 1
 fi
 
-if !$(mvn install) 
+if ! mvn install
 then
   echo "Failed to validate the package"
   exit 2

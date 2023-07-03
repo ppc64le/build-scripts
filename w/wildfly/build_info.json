@@ -2,6 +2,7 @@
     "package_name" : "wildfly",
 	"github_url":"https://github.com/wildfly/wildfly.git",
     "version": "27.0.0.Final",
+    "default_branch": "main",
     "package_dir": "w/wildfly/",
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "build_script" : "wildfly_ubi_8.5.sh",

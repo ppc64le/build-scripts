@@ -2,7 +2,8 @@
     "package_name" : "telegraf",
 	"github_url":"https://github.com/influxdata/telegraf.git",
     "version": "v1.24.4",
-    "package_dir": "i/influxdata/",
+    "default_branch": "master",
+    "package_dir": "t/telegraf/",
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "build_script" : "telegraf_UBI_8.5.sh",
 

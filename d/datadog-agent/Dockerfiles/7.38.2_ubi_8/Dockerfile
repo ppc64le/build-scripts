@@ -28,4 +28,4 @@ RUN yum install -y wget git python38 python38-devel gcc-c++ cmake && \
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal
 RUN microdnf install -y gcc-c++
-COPY --from=builder $GOPATH/bin/agent /usr/bin/
+COPY --from=builder $WORKDIR/go/bin/agent /usr/bin/

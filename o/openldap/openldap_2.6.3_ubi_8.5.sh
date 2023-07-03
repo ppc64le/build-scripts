@@ -29,7 +29,7 @@ yum install -y git make autoconf automake libtool gcc-c++
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout ${PACKAGE_VERSION}
-cd /$PACKAGE_NAME/libraries/liblmdb
+cd libraries/liblmdb
 
 # Build and test package
 mkdir -p /usr/local/man/man1

@@ -43,6 +43,8 @@ if ! pip3 install -r test-requirements.txt ; then
     exit 1
 fi
 
+#Setting up PATH for using tox command
+PATH=$PATH:/usr/local/bin/
 
 #Build and test
 
