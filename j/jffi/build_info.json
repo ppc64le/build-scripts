@@ -1,0 +1,11 @@
+{
+    "package_name" : "jffi",
+    "github_url": "https://github.com/jnr/jffi",
+    "version": "jffi-1.3.10",
+    "default_branch": "master",
+    "package_dir": "j/jffi/",
+    "build_script": "jffi_ubi_8.5.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false
+}

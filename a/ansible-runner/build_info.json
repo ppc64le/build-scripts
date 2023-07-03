@@ -1,0 +1,11 @@
+{
+    "package_name" : "ansible-runner",
+    "github_url": "https://github.com/ansible/ansible-runner",
+    "version": "2.3.3",
+    "default_branch": "devel",
+    "package_dir": "a/ansible-runner",
+    "build_script": "ansible-runner_ubi_8_7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false
+}

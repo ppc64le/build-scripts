@@ -1,0 +1,10 @@
+{
+    "package_name":"d3-time",
+    "github_url":"https://github.com/d3/d3-time",
+    "package_dir":"d/d3-time",
+    "version":"v3.1.0",
+    "default_branch":"main",
+    "build_script":"d3-time_v3.1.0_UBI_8.5.sh",
+    "use_non_root_user":false,
+    "docker_build":false
+}

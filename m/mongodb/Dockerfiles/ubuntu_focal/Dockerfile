@@ -72,7 +72,7 @@ RUN set -ex; \
         apt-key list
 
 ENV MONGO_MAJOR 4.4
-ARG MONGO_VERSION=4.4.17
+ARG MONGO_VERSION=4.4.22
 
 # We install the necesary tools to compile mongo on ppc64le
 RUN apt-get update \

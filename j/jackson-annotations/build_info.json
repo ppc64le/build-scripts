@@ -2,9 +2,11 @@
     "package_name" : "jackson-annotations",
     "github_url":"https://github.com/FasterXML/jackson-annotations",
     "version": "jackson-annotations-2.14.1",
+    "default_branch": "2.15",
+    "build_script": "jackson-annotations_ubi_8.5.sh",
     "package_dir": "j/jackson-annotations",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
+    "validate_build_script": true,
+    "use_non_root_user": false,
     "docker_build":false,
 
     "jackson-annotations-2.*.*": {

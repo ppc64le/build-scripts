@@ -1,11 +1,14 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: github.com/google/gnostic
-# Version	: v0.5.7
+# Version	: v0.5.7, v0.6.9
 # Source repo	: https://github.com/google/gnostic
 # Tested on	: UBI 8.5
+# Language      : GO
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>
+# Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>/ Balavva Mirji <Balavva.Mirji@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -20,9 +23,16 @@ PACKAGE_VERSION=${1:-v0.5.7}
 
 yum install -y git golang make wget unzip
 
+if [ $PACKAGE_VERSION > v0.5.7 ]
+then
+export PROTOBUF_VERSION=3.15.0
+else
+export PROTOBUF_VERSION=3.13.0
+fi
+
 # Install Protobuf
-wget https://github.com/protocolbuffers/protobuf/releases/download/v3.9.1/protoc-3.9.1-linux-ppcle_64.zip
-unzip protoc-3.9.1-linux-ppcle_64.zip
+wget https://github.com/protocolbuffers/protobuf/releases/download/v$PROTOBUF_VERSION/protoc-$PROTOBUF_VERSION-linux-ppcle_64.zip
+unzip protoc-$PROTOBUF_VERSION-linux-ppcle_64.zip
 cp -r include/* /usr/local/include
 cp bin/protoc /usr/local/bin
 

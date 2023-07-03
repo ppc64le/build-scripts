@@ -27,7 +27,7 @@ PACKAGE_URL=https://github.com/FasterXML/jackson-dataformat-xml
 
 # Install required dependencies
 yum install git maven java-11-openjdk-devel -y  
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.17.0.8-2.el8_6.ppc64le
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
 
 # Cloning the repository from remote to local. 

@@ -1,0 +1,180 @@
+diff --git a/src/csharp/Grpc.Tools.Tests/Grpc.Tools.Tests.csproj b/src/csharp/Grpc.Tools.Tests/Grpc.Tools.Tests.csproj
+index 5e80fd8b5b..f74548afed 100644
+--- a/src/csharp/Grpc.Tools.Tests/Grpc.Tools.Tests.csproj
++++ b/src/csharp/Grpc.Tools.Tests/Grpc.Tools.Tests.csproj
+@@ -1,6 +1,6 @@
+ <Project Sdk="Microsoft.NET.Sdk" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+   <PropertyGroup>
+-    <TargetFrameworks>net45;netcoreapp3.1</TargetFrameworks>
++    <TargetFrameworks>net7.0</TargetFrameworks>
+     <OutputType>Exe</OutputType>
+     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+   </PropertyGroup>
+diff --git a/src/csharp/Grpc.Tools.Tests/ProtoToolsPlatformTaskTest.cs b/src/csharp/Grpc.Tools.Tests/ProtoToolsPlatformTaskTest.cs
+index e98f6e93fa..91cee98f9b 100644
+--- a/src/csharp/Grpc.Tools.Tests/ProtoToolsPlatformTaskTest.cs
++++ b/src/csharp/Grpc.Tools.Tests/ProtoToolsPlatformTaskTest.cs
+@@ -56,6 +56,16 @@ namespace Grpc.Tools.Tests
+                 Assert.AreEqual("x86", _task.Cpu);
+             }
+         }
++        
++	[Test]
++        public void CpuIsppc64le()
++        {
++            if (RuntimeInformation.OSArchitecture == Architecture.Ppc64le)
++            {
++                _cpuMatched++;
++                Assert.AreEqual("ppc64le", _task.Cpu);
++            }
++        }
+ 
+         [Test]
+         public void CpuIsX64()
+diff --git a/src/csharp/Grpc.Tools/CommonPlatformDetection.cs b/src/csharp/Grpc.Tools/CommonPlatformDetection.cs
+index 56e24b877b..ac47c1307b 100644
+--- a/src/csharp/Grpc.Tools/CommonPlatformDetection.cs
++++ b/src/csharp/Grpc.Tools/CommonPlatformDetection.cs
+@@ -29,7 +29,7 @@ namespace Grpc.Core.Internal
+     internal static class CommonPlatformDetection
+     {
+         public enum OSKind { Unknown, Windows, Linux, MacOSX };
+-        public enum CpuArchitecture { Unknown, X86, X64, Arm64 };
++        public enum CpuArchitecture { Unknown, X86, X64, Arm64, Ppc64le };
+ 
+         public static OSKind GetOSKind()
+         {
+@@ -85,7 +85,9 @@ namespace Grpc.Core.Internal
+                     return CpuArchitecture.X64;
+                 case Architecture.Arm64:
+                     return CpuArchitecture.Arm64;
+-                // We do not support other architectures,
++                case Architecture.Ppc64le:
++                    return CpuArchitecture.Ppc64le;
++		 // We do not support other architectures,
+                 // so we simply return "unrecognized".
+                 default: 
+                    return CpuArchitecture.Unknown;
+diff --git a/src/csharp/Grpc.Tools/Grpc.Tools.csproj b/src/csharp/Grpc.Tools/Grpc.Tools.csproj
+index 30a11eaf8b..090c07a03d 100644
+--- a/src/csharp/Grpc.Tools/Grpc.Tools.csproj
++++ b/src/csharp/Grpc.Tools/Grpc.Tools.csproj
+@@ -3,7 +3,7 @@
+     <AssemblyName>Protobuf.MSBuild</AssemblyName>
+     <VersionPrefix>$(GrpcCsharpVersion)</VersionPrefix>
+     <!-- If changing targets, change also paths in Google.Protobuf.Tools.targets. -->
+-    <TargetFrameworks>net45;netstandard1.3</TargetFrameworks>
++    <TargetFrameworks>net7.0</TargetFrameworks>
+     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+   </PropertyGroup>
+ 
+@@ -67,6 +67,7 @@ Linux and MacOS. Managed runtime is supplied separately in the Grpc.Core package
+     <_Asset PackagePath="tools/linux_x86/" Include="$(Assets_ProtoCompiler)linux_x86/protoc" />
+     <_Asset PackagePath="tools/linux_x64/" Include="$(Assets_ProtoCompiler)linux_x64/protoc" />
+     <_Asset PackagePath="tools/linux_arm64/" Include="$(Assets_ProtoCompiler)linux_aarch64/protoc" />
++    <_Asset PackagePath="tools/linux_ppc64le/" Include="$(Assets_ProtoCompiler)linux_ppc64le/protoc" />
+     <_Asset PackagePath="tools/macosx_x64/" Include="$(Assets_ProtoCompiler)macos_x64/protoc" /> <!-- GPB: macosx-->
+ 
+     <!-- gRPC assets (for Grpc.Tools) -->
+@@ -75,6 +76,7 @@ Linux and MacOS. Managed runtime is supplied separately in the Grpc.Core package
+     <_Asset PackagePath="tools/linux_x86/" Include="$(Assets_GrpcPlugins)protoc_linux_x86/grpc_csharp_plugin" />
+     <_Asset PackagePath="tools/linux_x64/" Include="$(Assets_GrpcPlugins)protoc_linux_x64/grpc_csharp_plugin" />
+     <_Asset PackagePath="tools/linux_arm64/" Include="$(Assets_GrpcPlugins)protoc_linux_aarch64/grpc_csharp_plugin" />
++    <_Asset PackagePath="tools/linux_ppc64le/" Include="$(Assets_GrpcPlugins)protoc_linux_ppc64le/grpc_csharp_plugin" />
+     <_Asset PackagePath="tools/macosx_x64/" Include="$(Assets_GrpcPlugins)protoc_macos_x64/grpc_csharp_plugin" />
+ 
+     <None Include="@(_Asset)" Pack="true" Visible="false" />
+diff --git a/src/csharp/Grpc.Tools/ProtoToolsPlatform.cs b/src/csharp/Grpc.Tools/ProtoToolsPlatform.cs
+index 2bccb0c3ba..d3d7a64ba6 100644
+--- a/src/csharp/Grpc.Tools/ProtoToolsPlatform.cs
++++ b/src/csharp/Grpc.Tools/ProtoToolsPlatform.cs
+@@ -57,6 +57,7 @@ namespace Grpc.Tools
+                 case CommonPlatformDetection.CpuArchitecture.X86: Cpu = "x86"; break;
+                 case CommonPlatformDetection.CpuArchitecture.X64: Cpu = "x64"; break;
+                 case CommonPlatformDetection.CpuArchitecture.Arm64: Cpu = "arm64"; break;
++		case CommonPlatformDetection.CpuArchitecture.Ppc64le: Cpu = "ppc64le"; break;
+                 default: Cpu = ""; break;
+             }
+ 
+diff --git a/src/csharp/Grpc.Tools/build/_protobuf/Google.Protobuf.Tools.targets b/src/csharp/Grpc.Tools/build/_protobuf/Google.Protobuf.Tools.targets
+index 427e4e741d..1cb6ab01a9 100644
+--- a/src/csharp/Grpc.Tools/build/_protobuf/Google.Protobuf.Tools.targets
++++ b/src/csharp/Grpc.Tools/build/_protobuf/Google.Protobuf.Tools.targets
+@@ -6,7 +6,7 @@
+     <Protobuf_Generator Condition=" '$(Protobuf_Generator)' == '' and '$(Language)' == 'C#' ">CSharp</Protobuf_Generator>
+     <!-- Configuration is passing the smoke test. -->
+     <Protobuf_ProjectSupported Condition=" '$(Protobuf_Generator)' != '' ">true</Protobuf_ProjectSupported>
+-    <_Protobuf_MsBuildAssembly Condition=" '$(MSBuildRuntimeType)' == 'Core' ">netstandard1.3\Protobuf.MSBuild.dll</_Protobuf_MsBuildAssembly>
++    <_Protobuf_MsBuildAssembly Condition=" '$(MSBuildRuntimeType)' == 'Core' ">net7.0\Protobuf.MSBuild.dll</_Protobuf_MsBuildAssembly>
+     <_Protobuf_MsBuildAssembly Condition=" '$(MSBuildRuntimeType)' != 'Core' ">net45\Protobuf.MSBuild.dll</_Protobuf_MsBuildAssembly>
+   </PropertyGroup>
+ 
+diff --git a/src/csharp/build/common.props b/src/csharp/build/common.props
+index 5b15a45407..8e8d0286c2 100644
+--- a/src/csharp/build/common.props
++++ b/src/csharp/build/common.props
+@@ -18,7 +18,7 @@
+   </PropertyGroup>
+ 
+   <PropertyGroup>
+-    <LangVersion>8.0</LangVersion>
++    <LangVersion>9.0</LangVersion>
+   </PropertyGroup>
+ </Project>
+ 
+diff --git a/src/csharp/build_nuget.sh b/src/csharp/build_nuget.sh
+index a521e003c5..7b22fa22e1 100755
+--- a/src/csharp/build_nuget.sh
++++ b/src/csharp/build_nuget.sh
+@@ -21,7 +21,7 @@ mkdir -p ../../artifacts
+ 
+ # Collect protoc artifacts built by the previous build step
+ mkdir -p protoc_plugins
+-cp -r "${EXTERNAL_GIT_ROOT}"/input_artifacts/protoc_* protoc_plugins || true
++#cp -r "${EXTERNAL_GIT_ROOT}"/input_artifacts/protoc_* protoc_plugins || true
+ 
+ # Add current timestamp to dev nugets
+ ./nuget_helpers/expand_dev_version.sh
+@@ -38,7 +38,8 @@ cp -r "${EXTERNAL_GIT_ROOT}"/input_artifacts/protoc_* protoc_plugins || true
+ # whenever we are building such nugets, we clearly mark them as
+ # "singleplatform only" to avoid mixing them up with the full "multiplatform"
+ # nugets by accident.
+-if [ "${GRPC_CSHARP_BUILD_SINGLE_PLATFORM_NUGET}" != "" ]
++export GRPC_CSHARP_BUILD_SINGLE_PLATFORM_NUGET=1
++if [ "${GRPC_CSHARP_BUILD_SINGLE_PLATFORM_NUGET}" == 1 ]
+ then
+   # create placeholders for artifacts that can't be built
+   # on the current platform.
+@@ -47,9 +48,17 @@ then
+   # add a suffix to the nuget's version
+   # to avoid confusing the package with a full nuget package.
+   # NOTE: adding the suffix must be done AFTER expand_dev_version.sh has run.
+-  sed -ibak "s/<\/GrpcCsharpVersion>/-singleplatform<\/GrpcCsharpVersion>/" build/dependencies.props
++ # sed -ibak "s/<\/GrpcCsharpVersion>/-singleplatform<\/GrpcCsharpVersion>/" build/dependencies.props
+ fi
+ 
++cd protoc_plugins
++mkdir protoc_linux_ppc64le
++cd protoc_linux_ppc64le
++cp ../../../../bazel-bin/src/compiler/grpc_csharp_plugin ./
++cp ../../../../bazel-bin/external/com_google_protobuf/protoc ./
++cd ..
++cd ..
++
+ dotnet restore Grpc.sln
+ 
+ dotnet pack --configuration Release Grpc.Tools --output ../../artifacts
+diff --git a/src/csharp/nuget_helpers/create_fake_native_artifacts.sh b/src/csharp/nuget_helpers/create_fake_native_artifacts.sh
+index 9f568fc891..9fc6416860 100755
+--- a/src/csharp/nuget_helpers/create_fake_native_artifacts.sh
++++ b/src/csharp/nuget_helpers/create_fake_native_artifacts.sh
+@@ -26,7 +26,7 @@ cd src/csharp
+ mkdir -p protoc_plugins
+ pushd protoc_plugins
+ 
+-if [[ "$(uname)" != "Linux" ]]
++if [[ "$(uname)" == "Linux" ]]
+ then
+   mkdir -p protoc_linux_x64
+   touch protoc_linux_x64/protoc
+

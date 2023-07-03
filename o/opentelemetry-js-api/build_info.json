@@ -2,6 +2,7 @@
     "package_name" : "opentelemetry-js-api",
     "github_url":"https://github.com/open-telemetry/opentelemetry-js-api",
     "version": "v1.2.0",
+    "default_branch": "main",
     "package_dir": "o/opentelemetry-js-api",
     "docker_build": false,
     "build_script" : "opentelemetry-js-api_ubi_8.5.sh",

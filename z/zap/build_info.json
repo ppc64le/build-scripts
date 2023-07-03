@@ -1,0 +1,22 @@
+{
+    "package_name": "zap",
+    "github_url": "https://github.com/uber-go/zap",
+    "version": "v1.24.0",
+    "default_branch": "master",
+    "package_dir": "z/zap",
+    "build_script": "zap_ubi_8_7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+ 
+    "v1.2*": {
+       "build_script": "zap_ubi_8_7.sh"
+    },
+
+    "v1.13.0, v1.19.1": {
+       "build_script": "zap_ubi_8.5.sh"
+    }
+
+}
+
+

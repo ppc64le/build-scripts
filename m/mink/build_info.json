@@ -2,6 +2,8 @@
     "package_name" : "mink",
     "github_url":"https://github.com/minkphp/Mink",
     "version": "v1.10.0",
+    "default_branch": "master",
+    "build_script" : "mink-ubi_8.5.sh",
     "package_dir": "m/mink/",
     "docker_build": false,
 

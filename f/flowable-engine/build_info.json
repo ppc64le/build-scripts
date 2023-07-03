@@ -1,0 +1,11 @@
+{
+    "package_name" : "flowable-engine",
+    "github_url": "https://github.com/flowable/flowable-engine",
+    "version": "flowable-6.8.0",
+    "default_branch": "main",
+    "package_dir": "f/flowable-engine/",
+    "build_script" : "flowable_engine_ubi_8.7.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false
+ }

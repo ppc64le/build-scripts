@@ -1,0 +1,22 @@
+{
+    "package_name": "classgraph",
+    "github_url": "https://github.com/classgraph/classgraph",
+    "version": "classgraph-4.8.157",
+    "default_branch": "latest",
+    "package_dir": "c/classgraph",
+    "build_script": "classgraph_ubi_8_7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+
+    "classgraph-4.8.15*": {
+       "build_script": "classgraph_ubi_8_7.sh"
+    },
+
+    "classgraph-4.8.14*": {
+       "build_script": "classgraph_ubi_8_7.sh"
+    }
+ 
+}
+
+

@@ -23,8 +23,8 @@ PACKAGE_VERSION=${1:-v2.5.1}
 PACKAGE_URL=https://github.com/influxdata/influxdb.git
 
 yum install -y sudo
-sudo yum update -y
-sudo yum install -y gcc-c++ wget git clang make pkg-config pkgconfig unzip
+yum update -y
+yum install -y gcc-c++ wget git clang make pkg-config pkgconfig unzip
 
 #install bazel to build protobuf
 dnf install -y dnf-plugins-core
@@ -42,8 +42,8 @@ wget https://static.rust-lang.org/dist/rust-1.65.0-powerpc64le-unknown-linux-gnu
 tar -xzf rust-1.65.0-powerpc64le-unknown-linux-gnu.tar.gz
 cd rust-1.65.0-powerpc64le-unknown-linux-gnu
 ./install.sh
-cd ..
 
+cd $HOME
 #install protobuf
 git clone https://github.com/protocolbuffers/protobuf.git
 cd protobuf
@@ -51,16 +51,17 @@ git checkout v21.5
 git submodule update --init --recursive
 bazel build :protoc :protobuf
 cp bazel-bin/protoc /usr/local/bin
+export PATH=$PATH:/usr/local/bin
 
-cd ..
 
-cd /tmp
+cd $HOME
 wget https://github.com/protocolbuffers/protobuf/releases/download/v21.9/protoc-21.9-linux-ppcle_64.zip
 unzip protoc-21.9-linux-ppcle_64.zip
 cd include
 cp -r google /usr/local/include/
+export PATH=$PATH:/usr/local/include
 
-cd /
+cd $HOME
 export PATH=/root/go/bin:$PATH
 
 go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28

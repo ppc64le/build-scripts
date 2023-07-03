@@ -1,0 +1,11 @@
+{
+    "package_name" : "ansible-lint",
+    "github_url": "https://github.com/ansible/ansible-lint",
+    "version": "v6.16.2",
+    "default_branch": "main",
+    "package_dir": "a/ansible-lint",
+    "build_script": "ansible-lint_ubi_8_7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false
+}

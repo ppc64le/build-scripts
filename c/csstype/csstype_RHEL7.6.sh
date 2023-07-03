@@ -2,11 +2,13 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : csstype
-# Version       : v2.6.0
-# Source        : https://github.com/frenic/csstype
-# Tested on     : RHEL 7.6
-# Node Version  : v12.19.1
-# Maintainer    : Vedang Wartikar <vedang.wartikar@ibm.com>
+# Version       : v2.6.0,v2.6.9
+# Source repo   : https://github.com/frenic/csstype
+# Tested on     : RHEL 7.6, RHEL 8.5
+# Language      : Node
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Vedang Wartikar <vedang.wartikar@ibm.com>,Saraswati Patra <Saraswati.Patra@ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
