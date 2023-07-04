@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : nifi
-# Version       : 1.17.0
+# Version       : 1.22.0
 # Source repo   : https://github.com/apache/nifi
 # Tested on     : UBI: 8.5
 # Travis-Check  : True
@@ -18,22 +18,33 @@
 #
 # ----------------------------------------------------------------------------
 
+set -e
+
 PACKAGE_VERSION=${1:-rel/nifi-1.22.0}
 
-#Install dependecies
-yum install -y wget git java-1.8.0-openjdk-devel
+# Install dependecies
+yum install -y wget git 
 
-# Install maven.
+# Install java
+yum install -y java-1.8.0-openjdk-devel
+export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-1.8.0)(?=.*ppc64le)')
+export PATH=$JAVA_HOME/bin:$PATH
+
+# Install maven
 wget https://archive.apache.org/dist/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz
 tar -xvzf apache-maven-3.8.6-bin.tar.gz
 cp -R apache-maven-3.8.6 /usr/local
 ln -s /usr/local/apache-maven-3.8.6/bin/mvn /usr/bin/mvn
+export M2_HOME=/usr/local/maven
+export PATH=$PATH:$M2_HOME/bin
 
-#Build and test the package
+# Build the package
 git clone https://github.com/apache/nifi
 cd nifi
 git checkout $PACKAGE_VERSION
-sed -i "s+<version>1.1.8.4</version>+<version>1.1.8</version>+g" pom.xml
+# sed -i "s+<version>1.1.8.4</version>+<version>1.1.8</version>+g" pom.xml
+sed -i '/<artifactId>snappy-java<\/artifactId>/!b;n;c\\t\t<version>1.1.8</version>' pom.xml
+sed -i 's/Xmx512m/Xmx2g/g' pom.xml
 mvn install -Dmaven.test.skip=true
 
 # Test failures noted to be in parity with Intel, thus disabled
