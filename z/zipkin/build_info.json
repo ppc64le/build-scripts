@@ -4,12 +4,14 @@
     "version": "zipkin-0.7.0",
     "default_branch": "master",
     "package_dir": "z/zipkin",
+    "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "build_script": "zipkin_ubi_8_7.sh",
-    "docker_build": false,
+    "docker_build": true,
     "validate_build_script": true,
     "use_non_root_user": false,
  
     "zipkin-0.*": {
+       "dir": "zipkin-0.7.0_ubi_8.7",
        "build_script": "zipkin_ubi_8_7.sh"
     },
 
