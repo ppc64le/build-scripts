@@ -11,7 +11,7 @@
     "use_non_root_user": false,
  
     "zipkin-0.*": {
-       "dir": "zipkin-0.7.0_ubi_8.7",
+       "dir": "zipkin-0.7.0_ubi_8.7/docker",
        "build_script": "zipkin_ubi_8_7.sh"
     },
 
