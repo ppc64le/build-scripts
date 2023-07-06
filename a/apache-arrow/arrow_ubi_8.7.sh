@@ -21,17 +21,15 @@
 PACKAGE_NAME=arrow
 PACKAGE_URL=https://github.com/apache/arrow.git
 PACKAGE_VERSION=${1:-go/v12.0.1}
-GO_VERSION=${GO_VERSION:-1.20.3}
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 #Dependencies
 yum install -y git sudo wget make gcc gcc-c++ cmake
-wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
-tar -C /usr/local -xf go${GO_VERSION}.linux-ppc64le.tar.gz
-export GOROOT=/usr/local/go
-export GOPATH=$HOME
-export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+
+wget "https://go.dev/dl/$(curl 'https://go.dev/VERSION?m=text').linux-ppc64le.tar.gz" 
+rm -rf /usr/local/go 
+tar -C /usr/local -xzf go*.linux-ppc64le.tar.gz
 
 go install gotest.tools/gotestsum@latest
 go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.50.1
