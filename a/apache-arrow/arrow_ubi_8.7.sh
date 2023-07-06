@@ -29,7 +29,11 @@ yum install -y git sudo wget make gcc gcc-c++ cmake
 
 wget "https://go.dev/dl/$(curl 'https://go.dev/VERSION?m=text').linux-ppc64le.tar.gz" 
 rm -rf /usr/local/go 
-tar -C /usr/local -xzf go*.linux-ppc64le.tar.gz
+tar -C /usr/local -xf go*.linux-ppc64le.tar.gz
+export GOROOT=/usr/local/go
+export GOPATH=$HOME
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+
 
 go install gotest.tools/gotestsum@latest
 go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.50.1
