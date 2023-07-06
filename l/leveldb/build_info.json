@@ -5,7 +5,7 @@
     "version": "1.23",
     "default_branch": "main",
     "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-    "build_script" : "leveldb_ubi_8.5.sh",
+    "build_script" : "leveldb_ubi_8.7.sh",
 
     "1.*" : {
        "dir":"1.23-ubi8"
