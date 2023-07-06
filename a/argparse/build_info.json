@@ -1,0 +1,15 @@
+{
+    "package_name" : "argparse",
+    "github_url":"https://github.com/nodeca/argparse.git",
+    "version": "2.0.1",
+    "default_branch": "master",
+    "package_dir": "a/argparse",
+    "build_script": "argparse_ubi_8.7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": true,
+
+    "2.*.*" : {
+        "build_script": "argparse_ubi_8.7.sh"
+    }
+}
