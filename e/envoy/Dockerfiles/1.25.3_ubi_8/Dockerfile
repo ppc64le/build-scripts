@@ -7,7 +7,7 @@ ENV PACKAGE_URL=https://github.com/envoyproxy/envoy/
 ENV PYTHON_VERSION=3.10.2
 ENV wdir=/tmp
 
-#Build and install Kong
+#Build and install
 RUN yum install -y cmake libatomic libstdc++ libstdc++-static libtool lld patch python3-pip openssl-devel libffi-devel unzip wget zip java-11-openjdk-devel git gcc-c++ xz file binutils libffi-devel \
     && rpm -ivh https://rpmfind.net/linux/centos/8-stream/PowerTools/ppc64le/os/Packages/ninja-build-1.8.2-1.el8.ppc64le.rpm https://rpmfind.net/linux/centos/8-stream/AppStream/ppc64le/os/Packages/aspell-0.60.6.1-22.el8.ppc64le.rpm https://rpmfind.net/linux/centos/8-stream/AppStream/ppc64le/os/Packages/aspell-en-2017.08.24-2.el8.ppc64le.rpm \
     && export JAVA_HOME=$(compgen -G '/usr/lib/jvm/java-11-openjdk-*') \
