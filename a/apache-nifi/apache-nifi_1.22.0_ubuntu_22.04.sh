@@ -4,7 +4,7 @@
 # Package       : nifi
 # Version       : 1.22.0
 # Source repo   : https://github.com/apache/nifi
-# Tested on     : UBI: 8.5
+# Tested on     : Ubuntu: 22.04
 # Travis-Check  : True
 # Language      : Java
 # Script License: Apache License Version 2.0
@@ -23,12 +23,12 @@ set -e
 PACKAGE_VERSION=${1:-rel/nifi-1.22.0}
 
 # Install dependecies
-yum install -y wget git 
+apt update
+apt install -y wget git
 
 # Install java
-# yum install -y java-1.8.0-openjdk-devel
-yum install -y java-17-openjdk-devel
-export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-17)(?=.*ppc64le)')
+apt install -y openjdk-17-jdk
+export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:/bin/java::")
 export PATH=$JAVA_HOME/bin:$PATH
 
 # Install maven
@@ -39,13 +39,21 @@ ln -s /usr/local/apache-maven-3.8.6/bin/mvn /usr/bin/mvn
 # export M2_HOME=/usr/local/maven
 # export PATH=$PATH:$M2_HOME/bin
 
+# Install node
+# wget https://nodejs.org/dist/v16.13.2/node-v16.13.2-linux-ppc64le.tar.gz
+# tar -xzf node-v16.13.2-linux-ppc64le.tar.gz
+# rm -rf node-v16.13.2-linux-ppc64le.tar.gz
+# export PATH=$HOME_DIR/node-v16.13.2-linux-ppc64le/bin:$PATH
+
 # Build the package
 git clone https://github.com/apache/nifi
 cd nifi
 git checkout $PACKAGE_VERSION
-
 # sed -i "s+<version>1.1.8.4</version>+<version>1.1.8</version>+g" pom.xml
-sed -i '/<artifactId>snappy-java<\/artifactId>/!b;n;c\\t\t<version>1.1.8</version>' pom.xml
+# sed -i '/<artifactId>snappy-java<\/artifactId>/!b;n;c\\t\t<version>1.1.8</version>' pom.xml
+# sed -i 's/Xmx512m/Xmx2g/g' pom.xml
+# mvn install -Dmaven.test.skip=true
+
 find="<additionalJOption>\-J\-Xmx512m<\/additionalJOption>"
 replace="<additionalJOptions>\
 <additionalJOption>\-J\-Xmx3g</additionalJOption>\
