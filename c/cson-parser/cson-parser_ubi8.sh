@@ -1,11 +1,14 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package               : cson-parser
-# Version               : 4.0.4
+# Version               : 4.0.4,v4.0.5
 # Source repo           : https://github.com/groupon/cson-parser
 # Tested on             : UBI 8
+# Language              : Node
+# Travis-Check          : True
 # Script License        : Apache License, Version 2 or later
-# Maintainer            : Swati Singhal <swati.singhal@ibm.com>
+# Maintainer            : Swati Singhal <swati.singhal@ibm.com>,Saraswati Patra<saraswati.patra@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -15,7 +18,6 @@
 #
 # ----------------------------------------------------------------------------
 
-#!/bin/bash
 PACKAGE_VERSION=4.0.4
 
 echo "Usage: $0 [-v <PACKAGE_VERSION>]"

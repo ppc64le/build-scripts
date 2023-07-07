@@ -1,7 +1,8 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: mink
-# Version	: v1.8.0
+# Version	: v1.8.0, v1.9.0
 # Source repo	: https://github.com/minkphp/Mink
 # Tested on	: ubi 8.5
 # Language      : PHP
@@ -19,7 +20,7 @@
 
 PACKAGE_NAME="mink"
 PACKAGE_URL="https://github.com/minkphp/Mink"
-PACKAGE_VERSION=${1-:"v1.8.0"}
+PACKAGE_VERSION=${1:-v1.8.0}
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 yum install -y git curl php php-curl php-dom php-mbstring php-json php-gd php-pecl-zip

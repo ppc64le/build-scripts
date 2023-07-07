@@ -1,0 +1,19 @@
+--- scipy/sparse/csgraph/tests/test_shortest_path.py    2022-03-23 09:46:07.249291296 +0000
++++ /scipy/scipy/sparse/csgraph/tests/test_shortest_path.py     2022-03-23 05:27:20.227417377 +0000
+@@ -6,6 +6,7 @@
+                                   NegativeCycleError)
+ import scipy.sparse
+ import pytest
++import warnings
+
+ directed_G = np.array([[0, 3, 3, 0, 0],
+                        [0, 0, 0, 2, 4],
+@@ -312,7 +313,7 @@
+
+
+ def test_NaN_warnings():
+-    with pytest.warns(None) as record:
++    with warnings.catch_warnings(record=True) as record:
+         shortest_path(np.array([[0, 1], [np.nan, 0]]))
+     for r in record:
+         assert r.category is not RuntimeWarning

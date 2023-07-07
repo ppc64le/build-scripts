@@ -1,7 +1,8 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: phar-stream-wrapper
-# Version	: v3.1.5
+# Version	: v3.1.5 , v3.1.7
 # Source repo	: https://github.com/TYPO3/phar-stream-wrapper.git
 # Tested on	: ubi 8.5
 # Language      : PHP

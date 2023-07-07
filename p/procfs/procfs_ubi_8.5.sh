@@ -1,10 +1,13 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: github.com/prometheus/procfs
-# Version	: v0.2.0
+# Package		: github.com/prometheus/procfs
+# Version		: v0.2.0, v0.0.11
 # Source repo	: https://github.com/prometheus/procfs
-# Tested on	: UBI 8.5
-# Script License: Apache License, Version 2 or later
+# Tested on		: UBI 8.5
+# Language      	: GO
+# Travis-Check  	: True
+# Script License	: Apache License, Version 2 or later
 # Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given

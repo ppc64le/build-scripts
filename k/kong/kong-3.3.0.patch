@@ -1,0 +1,374 @@
+diff --git a/Makefile b/Makefile
+index 917e0070b..4ce00f90f 100644
+--- a/Makefile
++++ b/Makefile
+@@ -86,7 +86,6 @@ install-dev-rocks: build-venv
+ dev: build-venv install-dev-rocks bin/grpcurl
+ 
+ build-release: check-bazel
+-	$(BAZEL) build clean --expunge
+ 	$(BAZEL) build //build:kong --verbose_failures --config release
+ 
+ package/deb: check-bazel build-release
+diff --git a/build/nfpm/repositories.bzl b/build/nfpm/repositories.bzl
+index cc719072e..c3bbf0eb2 100644
+--- a/build/nfpm/repositories.bzl
++++ b/build/nfpm/repositories.bzl
+@@ -15,6 +15,8 @@ def _nfpm_release_select_impl(ctx):
+         os_arch = "arm64"
+     elif os_arch == "amd64":
+         os_arch = "x86_64"
++    elif os_arch == "ppc64le":
++        os_arch = "ppc64le"
+     else:
+         fail("Unsupported arch %s" % os_arch)
+ 
+@@ -38,13 +40,14 @@ def nfpm_repositories():
+     npfm_matrix = [
+         ["linux", "x86_64", "4c63031ddbef198e21c8561c438dde4c93c3457ffdc868d7d28fa670e0cc14e5"],
+         ["linux", "arm64", "2af1717cc9d5dcad5a7e42301dabc538acf5d12ce9ee39956c66f30215311069"],
++        ["linux", "ppc64le", "4c63031ddbef198e21c8561c438dde4c93c3457ffdc868d7d28fa670e0cc14e5"],
+         ["Darwin", "x86_64", "fb3b8ab5595117f621c69cc51db71d481fbe733fa3c35500e1b64319dc8fd5b4"],
+         ["Darwin", "arm64", "9ca3ac6e0c4139a9de214f78040d1d11dd221496471696cc8ab5d357850ccc54"],
+     ]
+     for name, arch, sha in npfm_matrix:
+         http_archive(
+             name = "nfpm_%s_%s" % (name, arch),
+-            url = "https://github.com/goreleaser/nfpm/releases/download/v2.23.0/nfpm_2.23.0_%s_%s.tar.gz" % (name, arch),
++            url = "https://github.com/goreleaser/nfpm/releases/download/v2.23.0/nfpm_2.23.0_%s_x86_64.tar.gz" % (name),
+             sha256 = sha,
+             build_file = "//build/nfpm:BUILD.bazel",
+         )
+diff --git a/build/nfpm/rules.bzl b/build/nfpm/rules.bzl
+index d6f5bb94f..14a6ca678 100644
+--- a/build/nfpm/rules.bzl
++++ b/build/nfpm/rules.bzl
+@@ -11,6 +11,8 @@ def _nfpm_pkg_impl(ctx):
+     target_cpu = ctx.attr._cc_toolchain[cc_common.CcToolchainInfo].cpu
+     if target_cpu == "k8" or target_cpu == "x86_64" or target_cpu == "amd64":
+         target_arch = "amd64"
++    if target_cpu == "ppc" or target_cpu == "ppc64le":
++        target_arch = "ppc64le"
+     elif target_cpu == "aarch64" or target_cpu == "arm64":
+         target_arch = "arm64"
+     else:
+@@ -24,7 +26,7 @@ def _nfpm_pkg_impl(ctx):
+     if pkg_ext == "apk":
+         pkg_ext = "apk.tar.gz"
+ 
+-    # create like kong.amd64.deb
++    # create like kong.<target_arch>.deb package
+     out = ctx.actions.declare_file("%s/%s.%s.%s" % (
+         ctx.attr.out_dir,
+         ctx.attr.pkg_name,
+diff --git a/build/openresty/BUILD.openresty.bazel b/build/openresty/BUILD.openresty.bazel
+index 812ddfb9e..4cfaa90e8 100644
+--- a/build/openresty/BUILD.openresty.bazel
++++ b/build/openresty/BUILD.openresty.bazel
+@@ -84,6 +84,7 @@ make(
+         "-j" + KONG_VAR["NPROC"],
+         "install",
+     ],
++    postfix_script = "make clean; ASFLAGS= make all PREFIX=$INSTALLDIR; ASFLAGS= make install PREFIX=$INSTALLDIR",
+     visibility = ["//visibility:public"],
+ )
+ 
+diff --git a/build/openresty/patches/LuaJIT-2.1-20220411_04.patch b/build/openresty/patches/LuaJIT-2.1-20220411_04.patch
+new file mode 100644
+index 000000000..8c22e48e9
+--- /dev/null
++++ b/build/openresty/patches/LuaJIT-2.1-20220411_04.patch
+@@ -0,0 +1,280 @@
++diff --git a/bundle/LuaJIT-2.1-20220411/src/lj_api.c b/bundle/LuaJIT-2.1-20220411/src/lj_api.c
++index 65de95de..2162fe58 100644
++--- a/bundle/LuaJIT-2.1-20220411/src/lj_api.c
+++++ b/bundle/LuaJIT-2.1-20220411/src/lj_api.c
++@@ -893,7 +893,7 @@ LUA_API int lua_next(lua_State *L, int idx)
++   cTValue *t = index2adr(L, idx);
++   int more;
++   lj_checkapi(tvistab(t), "stack slot %d is not a table", idx);
++-  more = lj_tab_next(tabV(t), L->top-1, L->top-1);
+++  more = lj_tab_next(L, tabV(t), L->top-1); 
++   if (more > 0) {
++     incr_top(L);  /* Return new key and value slot. */
++   } else if (!more) {  /* End of traversal. */
++diff --git a/bundle/LuaJIT-2.1-20220411/src/lj_dispatch.c b/bundle/LuaJIT-2.1-20220411/src/lj_dispatch.c
++index ded382aa..b7cbdb6b 100644
++--- a/bundle/LuaJIT-2.1-20220411/src/lj_dispatch.c
+++++ b/bundle/LuaJIT-2.1-20220411/src/lj_dispatch.c
++@@ -68,8 +68,6 @@ void lj_dispatch_init(GG_State *GG)
++   /* The JIT engine is off by default. luaopen_jit() turns it on. */
++   disp[BC_FORL] = disp[BC_IFORL];
++   disp[BC_ITERL] = disp[BC_IITERL];
++-  /* Workaround for stable v2.1 bytecode. TODO: Replace with BC_IITERN. */
++-  disp[BC_ITERN] = &lj_vm_IITERN;
++   disp[BC_LOOP] = disp[BC_ILOOP];
++   disp[BC_FUNCF] = disp[BC_IFUNCF];
++   disp[BC_FUNCV] = disp[BC_IFUNCV];
++@@ -120,21 +118,19 @@ void lj_dispatch_update(global_State *g)
++   mode |= (g->hookmask & LUA_MASKRET) ? DISPMODE_RET : 0;
++   if (oldmode != mode) {  /* Mode changed? */
++     ASMFunction *disp = G2GG(g)->dispatch;
++-    ASMFunction f_forl, f_iterl, f_itern, f_loop, f_funcf, f_funcv;
+++    ASMFunction f_forl, f_iterl, f_loop, f_funcf, f_funcv;
++     g->dispatchmode = mode;
++ 
++     /* Hotcount if JIT is on, but not while recording. */
++     if ((mode & (DISPMODE_JIT|DISPMODE_REC)) == DISPMODE_JIT) {
++       f_forl = makeasmfunc(lj_bc_ofs[BC_FORL]);
++       f_iterl = makeasmfunc(lj_bc_ofs[BC_ITERL]);
++-      f_itern = makeasmfunc(lj_bc_ofs[BC_ITERN]);
++       f_loop = makeasmfunc(lj_bc_ofs[BC_LOOP]);
++       f_funcf = makeasmfunc(lj_bc_ofs[BC_FUNCF]);
++       f_funcv = makeasmfunc(lj_bc_ofs[BC_FUNCV]);
++     } else {  /* Otherwise use the non-hotcounting instructions. */
++       f_forl = disp[GG_LEN_DDISP+BC_IFORL];
++       f_iterl = disp[GG_LEN_DDISP+BC_IITERL];
++-      f_itern = &lj_vm_IITERN;
++       f_loop = disp[GG_LEN_DDISP+BC_ILOOP];
++       f_funcf = makeasmfunc(lj_bc_ofs[BC_IFUNCF]);
++       f_funcv = makeasmfunc(lj_bc_ofs[BC_IFUNCV]);
++@@ -142,7 +138,6 @@ void lj_dispatch_update(global_State *g)
++     /* Init static counting instruction dispatch first (may be copied below). */
++     disp[GG_LEN_DDISP+BC_FORL] = f_forl;
++     disp[GG_LEN_DDISP+BC_ITERL] = f_iterl;
++-    disp[GG_LEN_DDISP+BC_ITERN] = f_itern;
++     disp[GG_LEN_DDISP+BC_LOOP] = f_loop;
++ 
++     /* Set dynamic instruction dispatch. */
++@@ -170,7 +165,6 @@ void lj_dispatch_update(global_State *g)
++       /* Otherwise set dynamic counting ins. */
++       disp[BC_FORL] = f_forl;
++       disp[BC_ITERL] = f_iterl;
++-      disp[BC_ITERN] = f_itern;
++       disp[BC_LOOP] = f_loop;
++       /* Set dynamic return dispatch. */
++       if ((mode & DISPMODE_RET)) {
++diff --git a/bundle/LuaJIT-2.1-20220411/src/lj_tab.c b/bundle/LuaJIT-2.1-20220411/src/lj_tab.c
++index 9b93ffe1..49e4c247 100644
++--- a/bundle/LuaJIT-2.1-20220411/src/lj_tab.c
+++++ b/bundle/LuaJIT-2.1-20220411/src/lj_tab.c
++@@ -584,52 +584,49 @@ uint32_t LJ_FASTCALL lj_tab_keyindex(GCtab *t, cTValue *key)
++   if (tvisint(key)) {
++     int32_t k = intV(key);
++     if ((uint32_t)k < t->asize)
++-      return (uint32_t)k + 1;
+++      return (uint32_t)k;  /* Array key indexes: [0..t->asize-1] */
++     setnumV(&tmp, (lua_Number)k);
++     key = &tmp;
++   } else if (tvisnum(key)) {
++     lua_Number nk = numV(key);
++     int32_t k = lj_num2int(nk);
++     if ((uint32_t)k < t->asize && nk == (lua_Number)k)
++-      return (uint32_t)k + 1;
+++      return (uint32_t)k;  /* Array key indexes: [0..t->asize-1] */
++   }
++   if (!tvisnil(key)) {
++     Node *n = hashkey(t, key);
++     do {
++       if (lj_obj_equal(&n->key, key))
++-	return t->asize + (uint32_t)((n+1) - noderef(t->node));
+++	return t->asize + (uint32_t)(n - noderef(t->node));
+++	/* Hash key indexes: [t->asize..t->asize+t->nmask] */
++     } while ((n = nextnode(n)));
++-    if (key->u32.hi == LJ_KEYINDEX)  /* Despecialized ITERN while running. */
++-      return key->u32.lo;
++-    return ~0u;  /* Invalid key to next. */
+++    if (key->u32.hi == 0xfffe7fff)  /* ITERN was despecialized while running. */
+++      return key->u32.lo - 1;
+++    //lj_err_msg(L, LJ_ERR_NEXTIDX);
+++    return 0;  /* unreachable */
++   }
++-  return 0;  /* A nil key starts the traversal. */
+++  return ~0u;  /* A nil key starts the traversal. */
++ }
++ 
++-/* Get the next key/value pair of a table traversal. */
++-int lj_tab_next(GCtab *t, cTValue *key, TValue *o)
+++/* Advance to the next step in a table traversal. */
+++int lj_tab_next(lua_State *L, GCtab *t, TValue *key)
++ {
++-  uint32_t idx = lj_tab_keyindex(t, key);  /* Find successor index of key. */
++-  /* First traverse the array part. */
++-  for (; idx < t->asize; idx++) {
++-    cTValue *a = arrayslot(t, idx);
++-    if (LJ_LIKELY(!tvisnil(a))) {
++-      setintV(o, idx);
++-      o[1] = *a;
+++  uint32_t i = lj_tab_keyindex(t, key);  /* Find predecessor key index. */
+++  for (i++; i < t->asize; i++)  /* First traverse the array keys. */
+++    if (!tvisnil(arrayslot(t, i))) {
+++      setintV(key, i);
+++      copyTV(L, key+1, arrayslot(t, i));
++       return 1;
++     }
++-  }
++-  idx -= t->asize;
++-  /* Then traverse the hash part. */
++-  for (; idx <= t->hmask; idx++) {
++-    Node *n = &noderef(t->node)[idx];
+++  for (i -= t->asize; i <= t->hmask; i++) {  /* Then traverse the hash keys. */
+++    Node *n = &noderef(t->node)[i];
++     if (!tvisnil(&n->val)) {
++-      o[0] = n->key;
++-      o[1] = n->val;
+++      copyTV(L, key, &n->key);
+++      copyTV(L, key+1, &n->val);
++       return 1;
++     }
++   }
++-  return (int32_t)idx < 0 ? -1 : 0;  /* Invalid key or end of traversal. */
+++  return 0;  /* End of traversal. */
++ }
++ 
++ /* -- Table length calculation -------------------------------------------- */
++diff --git a/bundle/LuaJIT-2.1-20220411/src/lj_tab.h b/bundle/LuaJIT-2.1-20220411/src/lj_tab.h
++index ed0348a9..038d0117 100644
++--- a/bundle/LuaJIT-2.1-20220411/src/lj_tab.h
+++++ b/bundle/LuaJIT-2.1-20220411/src/lj_tab.h
++@@ -87,7 +87,7 @@ LJ_FUNC TValue *lj_tab_set(lua_State *L, GCtab *t, cTValue *key);
++   (inarray((t), (key)) ? arrayslot((t), (key)) : lj_tab_setinth(L, (t), (key)))
++ 
++ LJ_FUNC uint32_t LJ_FASTCALL lj_tab_keyindex(GCtab *t, cTValue *key);
++-LJ_FUNCA int lj_tab_next(GCtab *t, cTValue *key, TValue *o);
+++LJ_FUNCA int lj_tab_next(lua_State *L, GCtab *t, TValue *key);
++ LJ_FUNCA MSize LJ_FASTCALL lj_tab_len(GCtab *t);
++ #if LJ_HASJIT
++ LJ_FUNC MSize LJ_FASTCALL lj_tab_len_hint(GCtab *t, size_t hint);
++diff --git a/bundle/LuaJIT-2.1-20220411/src/vm_ppc.dasc b/bundle/LuaJIT-2.1-20220411/src/vm_ppc.dasc
++index 14a7f821..796260b9 100644
++--- a/bundle/LuaJIT-2.1-20220411/src/vm_ppc.dasc
+++++ b/bundle/LuaJIT-2.1-20220411/src/vm_ppc.dasc
++@@ -977,8 +977,10 @@ static void build_subroutines(BuildCtx *ctx)
++   |.if FFI
++   |  cmplwi TMP0, 1
++   |.endif
++-  |     lwz PC, -16(RB)			// Restore PC from [cont|PC].
++-  |   subi TMP2, RD, 8
+++  |     lwz PC, FRAME_CONTPC(RB)	// Restore PC from [cont|PC].
+++  |  addi BASEP4, BASE, 4
+++  |   addi TMP2, RD, WORD_HI-8
+++  |    lwz TMP1, LFUNC:TMP1->pc
++   |   stwx TISNIL, RA, TMP2		// Ensure one valid arg.
++   |.if P64
++   |   ld TMP3, 0(DISPATCH)
++@@ -986,7 +988,9 @@ static void build_subroutines(BuildCtx *ctx)
++   |.if FFI
++   |  ble >1
++   |.endif
++-  |    lwz TMP1, LFUNC:TMP1->pc
+++  |.if P64
+++  |  add TMP0, TMP0, TMP3
+++  |.endif
++   |    lwz KBASE, PC2PROTO(k)(TMP1)
++   |  // BASE = base, RA = resultptr, RB = meta base
++   |  mtctr TMP0
++@@ -1715,24 +1719,48 @@ static void build_subroutines(BuildCtx *ctx)
++   |
++   |//-- Base library: iterators -------------------------------------------
++   |
++-  |.ffunc_1 next
+++  |.ffunc next
+++  |  cmplwi NARGS8:RC, 8
+++  |   lwz CARG1, WORD_HI(BASE)
+++  |    lwz TAB:CARG2, WORD_LO(BASE)
+++  |  blt ->fff_fallback
+++  |.if ENDIAN_LE
+++  |   add TMP1, BASE, NARGS8:RC
+++  |   stw TISNIL, WORD_HI(TMP1)		// Set missing 2nd arg to nil.
+++  |.else
++   |   stwx TISNIL, BASE, NARGS8:RC	// Set missing 2nd arg to nil.
++-  |  checktab CARG3
+++  |.endif
+++  |  checktab CARG1
++   |   lwz PC, FRAME_PC(BASE)
++   |  bne ->fff_fallback
++-  |  la CARG2, 8(BASE)
++-  |  la CARG3, -8(BASE)
++-  |  bl extern lj_tab_next		// (GCtab *t, cTValue *key, TValue *o)
++-  |  // Returns 1=found, 0=end, -1=error.
++-  |  cmpwi CRET1, 0
++-  |   la RA, -8(BASE)
++-  |   li RD, (2+1)*8
++-  |  bgt ->fff_res			// Found key/value.
+++  |   stp BASE, L->base			// Add frame since C call can throw.
+++  |  mr CARG1, L
+++  |   stp BASE, L->top			// Dummy frame length is ok.
+++  |  la CARG3, 8(BASE)
+++  |   stw PC, SAVE_PC
+++  |  bl extern lj_tab_next	// (lua_State *L, GCtab *t, TValue *key)
+++  |  // Returns 0 at end of traversal.
+++  |  cmplwi CRET1, 0
++   |   li CARG3, LJ_TNIL
++   |  beq ->fff_restv			// End of traversal: return nil.
++-  |   lwz CFUNC:RB, FRAME_FUNC(BASE)
++-  |   li NARGS8:RC, 2*8
++-  |  b ->fff_fallback			// Invalid key.
+++  |   la RA, -8(BASE)
+++  |.if FPU
+++  |  lfd f0, 8(BASE)			// Copy key and value to results.
+++  |  lfd f1, 16(BASE)
+++  |  stfd f0, 0(RA)
+++  |  stfd f1, 8(RA)
+++  |.else
+++  |  lwz CARG1, 8(BASE)
+++  |  lwz CARG2, 12(BASE)
+++  |  lwz CARG3, 16(BASE)
+++  |  lwz CARG4, 20(BASE)
+++  |  stw CARG1, 0(RA)
+++  |  stw CARG2, 4(RA)
+++  |  stw CARG3, 8(RA)
+++  |  stw CARG4, 12(RA)
+++  |.endif
+++  |   li RD, (2+1)*8
+++  |  b ->fff_res
++   |
++   |.ffunc_1 pairs
++   |  checktab CARG3
++@@ -5545,9 +5573,8 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
++   case BC_ITERN:
++     |  // RA = base*8, (RB = (nresults+1)*8, RC = (nargs+1)*8 (2+1)*8)
++     |.if JIT
++-    |  // NYI on big-endian
+++    |  // NYI: add hotloop, record BC_ITERN.
++     |.endif
++-    |->vm_IITERN:
++     |  add RA, BASE, RA
++     |  lwz TAB:RB, WORD_LO-16(RA)
++     |  lwz RC, WORD_LO-8(RA)		// Get index from control var.
++@@ -5667,10 +5694,10 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
++     |  crand 4*cr0+eq, 4*cr0+eq, 4*cr7+eq
++     |    add TMP3, PC, TMP0
++     |  bne cr0, >5
++-    |  lus TMP1, (LJ_KEYINDEX >> 16)
++-    |  ori TMP1, TMP1, (LJ_KEYINDEX & 0xffff)
++-    |  stw ZERO, -4(RA)			// Initialize control var.
++-    |  stw TMP1, -8(RA)
+++    |  lus TMP1, 0xfffe
+++    |  ori TMP1, TMP1, 0x7fff
+++    |  stw ZERO, WORD_LO-8(RA)		// Initialize control var.
+++    |  stw TMP1, WORD_HI-8(RA)
++     |    addis PC, TMP3, -(BCBIAS_J*4 >> 16)
++     |1:
++     |  ins_next
++@@ -5686,7 +5713,6 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
++     |  .if ENDIAN_LE
++     |   stb TMP1, 0(PC)
++     |  .else
++-    |  // NYI on big-endian: unpatch JLOOP.
++     |   stb TMP1, 3(PC)
++     |  .endif
++     |  b <1
+diff --git a/kong/pdk/nginx.lua b/kong/pdk/nginx.lua
+index f5715e03e..7d1daa479 100644
+--- a/kong/pdk/nginx.lua
++++ b/kong/pdk/nginx.lua
+@@ -12,7 +12,7 @@ local arch = ffi.arch
+ local ngx  = ngx
+ local tonumber = tonumber
+ 
+-if arch == "x64" or arch == "arm64" then
++if arch == "x64" or arch == "ppc64le" or arch == "arm64" then
+   ffi.cdef[[
+     uint64_t *ngx_stat_active;
+     uint64_t *ngx_stat_reading;

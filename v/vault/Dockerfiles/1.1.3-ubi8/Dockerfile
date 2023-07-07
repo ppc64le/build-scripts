@@ -3,7 +3,7 @@ FROM registry.access.redhat.com/ubi8
 MAINTAINER Priya Seth <sethp@us.ibm.com>
 
 # This is the release of Vault to pull in.
-ENV VAULT_VERSION=v1.1.3
+ARG VAULT_VERSION=v1.1.3
 
 # Create a vault user and group first so the IDs get set the same way,
 # even as the rest of this may change over time.

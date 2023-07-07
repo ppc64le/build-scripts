@@ -1,9 +1,12 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
-# Package       : Elasticsearch
+# Package       : elasticsearch
 # Version       : 5.6.3
 # Source repo   : https://github.com/elastic/elasticsearch.git
 # Tested on     : rhel_7.4
+# Travis-Check  : True
+# Language      : Java
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Yugandha Deshpande <yugandha@us.ibm.com>
 #
@@ -15,11 +18,10 @@
 #
 # ----------------------------------------------------------------------------
 
-#!/bin/bash
-
 export ELASTICSEARCH_VERSION=5.6.3
 
 #Install Dependencies
+yum install -y sudo
 sudo yum -y update
 sudo yum -y install maven git wget tar zip unzip java-1.8.0-openjdk-devel
 

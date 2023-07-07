@@ -1,11 +1,14 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
-# Package		: kit
-# Version		: v0.12.0,v0.10.0
+# Package       : kit
+# Version       : v0.12.0, v0.10.0, v0.9.0
 # Source repo	: https://github.com/go-kit/kit
-# Tested on		: UBI 8.4
+# Tested on	: UBI 8.4
+# Language      : GO
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Nageswara Rao K<nagesh4193@gmail.com>/Priya Seth<sethp@us.ibm.com>
+# Maintainer	: Nageswara Rao K<nagesh4193@gmail.com>/ Balavva Mirji <Balavva.Mirji@ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -14,46 +17,35 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
 
-if [ -z "$1" ]; then
-  export VERSION=master
-else
-  export VERSION=$1
-fi
-
-if [ -d "kit" ] ; then
-  rm -rf kit 
-fi
+PACKAGE_NAME=kit
+PACKAGE_URL=https://github.com/go-kit/kit
+PACKAGE_VERSION=${1:-v0.9.0}
 
 # Dependency installation
-sudo dnf install -y git golang 
-# Download the repos
-git clone  https://github.com/go-kit/kit
+dnf install -y git golang 
 
+# Clone the repo
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
 
-# Build and Test kit 
-cd kit 
-git checkout $VERSION
-ret=$?
-if [ $ret -eq 0 ] ; then
- echo "$Version found to checkout "
-else
- echo "$Version not found "
- exit
+go get -tags $PACKAGE_VERSION -t ./...
+
+if ! go build -v ./...; then
+	echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
+	echo "$PACKAGE_VERSION $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
+	exit 1
 fi
 
-#Build and test
-go get -v -t ./...
-
-ret=$?
-if [ $ret -ne 0 ] ; then
-  echo "Build failed "
+if ! go test -v ./...; then
+	echo "------------------$PACKAGE_NAME:test_fails---------------------"
+	echo "$PACKAGE_VERSION $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Test_Fails"
+	exit 1
 else
-  go test -v ./...
-  if [ $ret -ne 0 ] ; then
-    echo "Tests failed "
-  else
-    echo "Build & unit tests Success "
-  fi
-fi
+	echo "------------------$PACKAGE_NAME:build_and_test_success-------------------------"
+	echo "$PACKAGE_VERSION $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub  | Pass |  Build_and_Test_Success"
+	exit 0
+fi 

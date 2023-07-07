@@ -1,0 +1,67 @@
+diff --git a/image/service-available/:ssl-tools/download.sh b/image/service-available/:ssl-tools/download.sh
+index a699f0f..7e87841 100755
+--- a/image/service-available/:ssl-tools/download.sh
++++ b/image/service-available/:ssl-tools/download.sh
+@@ -21,6 +21,10 @@ case "${UARCH}" in
+         HOST_ARCH="386"
+     ;;
+     
++    "ppc64le")
++	HOST_ARCH="ppc64le"
++    ;;
++
+     *)
+         echo "Architecture not supported. Exiting."
+         exit 1
+@@ -51,17 +55,42 @@ if [[ "${HOST_ARCH}" == 'arm' ]]; then
+     LC_ALL=C DEBIAN_FRONTEND=noninteractive c_rehash
+ fi
+ 
+-echo "Download cfssl ..."
+-echo "curl -o /usr/sbin/cfssl -SL https://github.com/osixia/cfssl/releases/download/1.5.0/cfssl_linux-${HOST_ARCH}"
+-curl -o /usr/sbin/cfssl -SL "https://github.com/osixia/cfssl/releases/download/1.5.0/cfssl_linux-${HOST_ARCH}"
+-chmod 700 /usr/sbin/cfssl
++if [[ "${HOST_ARCH}" == 'ppc64le' ]]; then
++    LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y wget gcc git make
++    #Install golang >=1.12 (using 1.16.13)
++    wget https://go.dev/dl/go1.16.13.linux-ppc64le.tar.gz
++    tar -C /bin -xf go1.16.13.linux-ppc64le.tar.gz
++    rm -f go1.16.13.linux-ppc64le.tar.gz
++    export PATH=$PATH:/bin/go/bin
++
++    # Build cfssl binaries
++    git clone https://github.com/osixia/cfssl.git && cd cfssl
++    git checkout 1.5.0
++    make
++    cp bin/cfssl /bin/
++    cp bin/cfssljson /bin/
++
++    # Remove downloaded folders
++    cd ..
++    rm -rf cfssl/
++    rm -rf /bin/go
+ 
+-echo "Download cfssljson ..."
+-echo "curl -o /usr/sbin/cfssljson -SL https://github.com/osixia/cfssl/releases/download/1.5.0/cfssljson_linux-${HOST_ARCH}"
+-curl -o /usr/sbin/cfssljson -SL "https://github.com/osixia/cfssl/releases/download/1.5.0/cfssljson_linux-${HOST_ARCH}"
+-chmod 700 /usr/sbin/cfssljson
++    # Remove build dependencies
++    apt-get remove -y --purge --auto-remove wget gcc git make
++else
++    echo "Download cfssl ..."
++    echo "curl -o /usr/sbin/cfssl -SL https://github.com/osixia/cfssl/releases/download/1.5.0/cfssl_linux-${HOST_ARCH}"
++    curl -o /usr/sbin/cfssl -SL "https://github.com/osixia/cfssl/releases/download/1.5.0/cfssl_linux-${HOST_ARCH}"
++    chmod 700 /usr/sbin/cfssl
++
++    echo "Download cfssljson ..."
++    echo "curl -o /usr/sbin/cfssljson -SL https://github.com/osixia/cfssl/releases/download/1.5.0/cfssljson_linux-${HOST_ARCH}"
++    curl -o /usr/sbin/cfssljson -SL "https://github.com/osixia/cfssl/releases/download/1.5.0/cfssljson_linux-${HOST_ARCH}"
++    chmod 700 /usr/sbin/cfssljson
++
++    echo "Project sources: https://github.com/cloudflare/cfssl"
++fi
+ 
+-echo "Project sources: https://github.com/cloudflare/cfssl"
+ 
+ # remove tools installed to download cfssl
+ if [ ${#to_install[@]} -ne 0 ]; then

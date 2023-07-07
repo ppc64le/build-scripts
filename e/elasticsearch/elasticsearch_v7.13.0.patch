@@ -57,6 +57,19 @@ index e835e816f4c..195cf4ea2aa 100644
          );
      }
  
+diff --git a/buildSrc/version.properties b/buildSrc/version.properties
+index 18f9d856c9f..15a2dd6f741 100644
+--- a/buildSrc/version.properties
++++ b/buildSrc/version.properties
+@@ -14,7 +14,7 @@ snakeyaml         = 1.26
+ icu4j             = 62.1
+ supercsv          = 2.4.0
+ # when updating log4j, please update also docs/java-api/index.asciidoc
+-log4j             = 2.11.1
++log4j             = 2.12.2
+ slf4j             = 1.6.2
+ 
+ # when updating the JNA version, also update the version in buildSrc/build.gradle
 diff --git a/distribution/archives/build.gradle b/distribution/archives/build.gradle
 index 0c56b8e02a0..c1da60ddb60 100644
 --- a/distribution/archives/build.gradle
@@ -98,7 +111,7 @@ index 8ce0dfc0000..5372cc99235 100644
            excludePlatforms.remove(excludePlatforms.indexOf(platform))
          } else {
 diff --git a/distribution/docker/build.gradle b/distribution/docker/build.gradle
-index 4464166d2b0..a9a0a0ad823 100644
+index 4464166d2b0..3bd8ec87d0d 100644
 --- a/distribution/docker/build.gradle
 +++ b/distribution/docker/build.gradle
 @@ -39,6 +39,7 @@ configurations {
@@ -149,7 +162,7 @@ index 4464166d2b0..a9a0a0ad823 100644
      dependsOn(buildContextTask)
  
 -    String arch = architecture == Architecture.AARCH64 ? '-aarch64' : ''
-+    String arch = architecture == Architecture.AARCH64 ? '-aarch64' : (architecture == Architecture.PPC64LE ? '-ppc64le' : '') 
++    String arch = architecture == Architecture.AARCH64 ? '-aarch64' : (architecture == Architecture.PPC64LE ? '-ppc64le' : '')
      String archiveName = "elasticsearch${base.suffix}-${VersionProperties.elasticsearch}-docker-build-context${arch}"
      String distributionName = "elasticsearch-${VersionProperties.elasticsearch}-linux-${architecture.classifier}.tar.gz"
  
@@ -305,3 +318,16 @@ index b08e06d7a8c..df1358cbe8a 100644
    'distribution:packages:rpm',
    'distribution:packages:no-jdk-rpm',
    'distribution:bwc:bugfix',
+diff --git a/x-pack/plugin/watcher/build.gradle b/x-pack/plugin/watcher/build.gradle
+index cea848236e3..9f9555ffa0b 100644
+--- a/x-pack/plugin/watcher/build.gradle
++++ b/x-pack/plugin/watcher/build.gradle
+@@ -34,7 +34,7 @@ dependencies {
+   testImplementation project(xpackModule('ilm'))
+ 
+   // watcher deps
+-  api 'com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:20191001.1'
++  api 'com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:20211018.1'
+   runtimeOnly 'com.google.guava:guava:27.1-jre' // needed by watcher for the html sanitizer
+   runtimeOnly 'com.google.guava:failureaccess:1.0.1'
+   api 'com.sun.mail:jakarta.mail:1.6.4'

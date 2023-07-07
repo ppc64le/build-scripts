@@ -1,0 +1,11 @@
+{
+    "package_name" : "joda-convert",
+    "github_url": "https://github.com/JodaOrg/joda-convert",
+    "version": "v2.2.3",
+    "default_branch": "main",
+    "package_dir": "j/joda-convert/",
+    "build_script": "joda-convert_ubi_8.7.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false
+} 

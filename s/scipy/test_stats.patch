@@ -1,0 +1,26 @@
+--- scipy/stats/tests/test_stats.py     2022-03-23 09:46:07.309292660 +0000
++++ /scipy/scipy/stats/tests/test_stats.py      2022-03-23 04:46:17.701804996 +0000
+@@ -14,6 +14,7 @@
+                            assert_almost_equal, assert_array_almost_equal,
+                            assert_array_equal, assert_approx_equal,
+                            assert_allclose, assert_warns, suppress_warnings)
++from numpy.lib import NumpyVersion
+ import pytest
+ from pytest import raises as assert_raises
+ import numpy.ma.testutils as mat
+@@ -2350,6 +2351,15 @@
+         assert_equal(stats.iqr(x, rng=(25, 80), interpolation='midpoint'), 2.5)
+         assert_equal(stats.iqr(y, interpolation='midpoint'), 2)
+
++       # Check all method= values new in numpy 1.22.0 are accepted
++        if NumpyVersion(np.__version__) >= '1.22.0':
++            for method in ('inverted_cdf', 'averaged_inverted_cdf',
++                           'closest_observation', 'interpolated_inverted_cdf',
++                           'hazen', 'weibull', 'median_unbiased',
++                           'normal_unbiased'):
++                stats.iqr(y, interpolation=method)
++
++
+         assert_raises(ValueError, stats.iqr, x, interpolation='foobar')
+
+     def test_keepdims(self):

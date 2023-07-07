@@ -1,13 +1,14 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: zap
-# Version	: v1.13.0
+# Version	: v1.13.0, v1.19.1
 # Source repo	: https://github.com/uber-go/zap
 # Tested on	: ubi 8.5
 # Language      : go
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>
+# Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>, Vaishnavi Patil <Vaishnavi.Patil3@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -17,7 +18,6 @@
 #
 # ----------------------------------------------------------------------------
 
-#!/bin/bash
 
 PACKAGE_NAME="zap"
 PACKAGE_URL="https://github.com/uber-go/zap"

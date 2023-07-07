@@ -1,0 +1,13 @@
+diff --git a/pkg/ui/workspaces/db-console/webpack.vendor.js b/pkg/ui/workspaces/db-console/webpack.vendor.js
+index c8b6781f140f..875cb4133510 100644
+--- a/pkg/ui/workspaces/db-console/webpack.vendor.js
++++ b/pkg/ui/workspaces/db-console/webpack.vendor.js
+@@ -15,7 +15,7 @@ const webpack = require("webpack");
+
+ const pkg = require("./package.json");
+
+-const prodDependencies = Object.keys(pkg.dependencies);
++const prodDependencies = Object.keys(pkg.dependencies).filter(name => !name.startsWith("@cockroachlabs"));
+
+ // tslint:disable:object-literal-sort-keys
+ module.exports = (env, argv) => {

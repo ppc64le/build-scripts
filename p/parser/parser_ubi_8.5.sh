@@ -1,13 +1,14 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: parser
-# Version	: 4.4.0
+# Version	: 4.4.0, 4.5.0
 # Source repo	: https://github.com/nikic/PHP-Parser
 # Tested on	: UBI 8.5
 # Language      : PHP
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>
+# Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>, Shalmon Titre <Shalmon.Titre@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -18,8 +19,8 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME="parser"
-PACKAGE_VERSION=${1:-"4.4.0"}
-PACKAGE_URL="https://github.com/nikic/PHP-Parser"
+PACKAGE_VERSION=${1:-"v4.5.0"}
+PACKAGE_URL=https://github.com/nikic/PHP-Parser.git
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
 yum install -y git php php-curl php-dom php-mbstring php-json php-gd php-pecl-zip zip

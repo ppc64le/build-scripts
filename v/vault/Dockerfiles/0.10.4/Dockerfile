@@ -3,7 +3,7 @@ FROM ppc64le/golang:1.10.3-alpine3.7
 MAINTAINER Anita Nayak <anitanayak@in.ibm.com>
 
 # This is the release of Vault to pull in.
-ENV VAULT_VERSION=v0.10.4
+ARG VAULT_VERSION=v0.10.4
 
 # Create a vault user and group first so the IDs get set the same way,
 # even as the rest of this may change over time.

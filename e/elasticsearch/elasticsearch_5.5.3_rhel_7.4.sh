@@ -1,11 +1,14 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
-# Package	: Elasticsearch
-# Version	: 5.5.3
-# Source repo	: https://github.com/elastic/elasticsearch.git
-# Tested on	: rhel_7.4
+# Package       : elasticsearch
+# Version       : 5.5.3
+# Source repo   : https://github.com/elastic/elasticsearch.git
+# Tested on     : rhel_7.4
+# Travis-Check  : True
+# Language      : Java
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Yugandha Deshpande <yugandha@us.ibm.com>
+# Maintainer    : Yugandha Deshpande <yugandha@us.ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -15,11 +18,10 @@
 #
 # ----------------------------------------------------------------------------
 
-#!/bin/bash
-
 export ELASTICSEARCH_VERSION=5.5.3
 
 #Install Dependencies
+yum install -y sudo
 sudo yum -y update 
 sudo yum -y install maven git wget tar zip unzip java-1.8.0-openjdk-devel
 

@@ -1,0 +1,20 @@
+{
+    "package_name": "d3-array",
+    "github_url": "https://github.com/d3/d3-array",
+    "version": "v3.2.2",
+    "default_branch": "main",
+    "package_dir": "d/d3-array",
+    "validate_build_script": true,
+    "build_script": "d3-array_ubi_8.5.sh",
+    "use_non_root_user": false,
+    "docker_build": false,
+	
+	
+    "v3.2.*" : {
+        "build_script" : "d3-array_ubi_8.5.sh"
+    },
+    
+    "v1.2.1" : {
+        "build_script" : "d3-array_rhel_8.3.sh"
+    }
+}

@@ -1,0 +1,12 @@
+--- scipy/signal/tests/test_signaltools.py      2022-04-19 04:41:39.646991663 -0700
++++ /scipy/scipy/signal/tests/test_signaltools.py 2022-04-19 04:42:55.977430989 -0700
+@@ -1761,8 +1761,6 @@
+     assert_raises(TypeError, lfilter, [1.0], [1.0], [1.0, None, 2.0])
+     assert_raises(TypeError, lfilter, [1.0], [None], [1.0, 2.0, 3.0])
+     assert_raises(TypeError, lfilter, [None], [1.0], [1.0, 2.0, 3.0])
+-    with assert_raises(ValueError, match='common type'):
+-        lfilter([1.], [1., 1.], ['a', 'b', 'c'])
+
+
+ def test_lfilter_notimplemented_input():
+

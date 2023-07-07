@@ -1,0 +1,322 @@
+diff --git a/build-tools-internal/src/integTest/resources/org/elasticsearch/gradle/internal/fake_git/remote/settings.gradle b/build-tools-internal/src/integTest/resources/org/elasticsearch/gradle/internal/fake_git/remote/settings.gradle
+index 12a802078e8..e26c54de773 100644
+--- a/build-tools-internal/src/integTest/resources/org/elasticsearch/gradle/internal/fake_git/remote/settings.gradle
++++ b/build-tools-internal/src/integTest/resources/org/elasticsearch/gradle/internal/fake_git/remote/settings.gradle
+@@ -17,4 +17,5 @@ include ":distribution:archives:oss-darwin-tar"
+ include ":distribution:archives:darwin-aarch64-tar"
+ include ":distribution:archives:oss-darwin-aarch64-tar"
+ include ":distribution:archives:linux-aarch64-tar"
++include ":distribution:archives:linux-ppc64le-tar"
+ include ":distribution:archives:oss-linux-aarch64-tar"
+diff --git a/build-tools-internal/src/main/java/org/elasticsearch/gradle/internal/Jdk.java b/build-tools-internal/src/main/java/org/elasticsearch/gradle/internal/Jdk.java
+index 85f23f6e23e..9cf8717956d 100644
+--- a/build-tools-internal/src/main/java/org/elasticsearch/gradle/internal/Jdk.java
++++ b/build-tools-internal/src/main/java/org/elasticsearch/gradle/internal/Jdk.java
+@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
+ 
+ public class Jdk implements Buildable, Iterable<File> {
+ 
+-    private static final List<String> ALLOWED_ARCHITECTURES = List.of("aarch64", "x64");
++    private static final List<String> ALLOWED_ARCHITECTURES = List.of("aarch64", "x64", "ppc64le");
+     private static final List<String> ALLOWED_VENDORS = List.of("adoptium", "openjdk");
+     private static final List<String> ALLOWED_PLATFORMS = List.of("darwin", "linux", "windows", "mac");
+     private static final Pattern VERSION_PATTERN = Pattern.compile(
+diff --git a/build-tools-internal/src/test/java/org/elasticsearch/gradle/internal/JdkDownloadPluginTests.java b/build-tools-internal/src/test/java/org/elasticsearch/gradle/internal/JdkDownloadPluginTests.java
+index c36ade03f77..7c6bbe855ae 100644
+--- a/build-tools-internal/src/test/java/org/elasticsearch/gradle/internal/JdkDownloadPluginTests.java
++++ b/build-tools-internal/src/test/java/org/elasticsearch/gradle/internal/JdkDownloadPluginTests.java
+@@ -84,7 +84,7 @@ public class JdkDownloadPluginTests extends GradleUnitTestCase {
+             "11.0.2+33",
+             "linux",
+             "unknown",
+-            "unknown architecture [unknown] for jdk [testjdk], must be one of [aarch64, x64]"
++            "unknown architecture [unknown] for jdk [testjdk], must be one of [aarch64, x64, ppc64le]"
+         );
+     }
+ 
+diff --git a/build-tools-internal/version.properties b/build-tools-internal/version.properties
+index ecbbbdfcb6e..eac969a0755 100644
+--- a/build-tools-internal/version.properties
++++ b/build-tools-internal/version.properties
+@@ -1,8 +1,8 @@
+ elasticsearch     = 8.2.1
+ lucene            = 9.1.0
+ 
+-bundled_jdk_vendor = openjdk
+-bundled_jdk = 18.0.1.1+2@65ae32619e2f40f3a9af3af1851d6e19
++bundled_jdk_vendor = adoptium
++bundled_jdk = 18.0.1+10
+ 
+ checkstyle = 9.3
+ 
+diff --git a/build-tools/src/main/java/org/elasticsearch/gradle/Architecture.java b/build-tools/src/main/java/org/elasticsearch/gradle/Architecture.java
+index 665568e3373..c1fd6acee27 100644
+--- a/build-tools/src/main/java/org/elasticsearch/gradle/Architecture.java
++++ b/build-tools/src/main/java/org/elasticsearch/gradle/Architecture.java
+@@ -11,7 +11,8 @@ package org.elasticsearch.gradle;
+ public enum Architecture {
+ 
+     X64("x86_64"),
+-    AARCH64("aarch64");
++    AARCH64("aarch64"),
++    PPC64LE("ppc64le");
+ 
+     public final String classifier;
+ 
+@@ -24,6 +25,7 @@ public enum Architecture {
+         return switch (architecture) {
+             case "amd64", "x86_64" -> X64;
+             case "aarch64" -> AARCH64;
++           case "ppc64le" -> PPC64LE;
+             default -> throw new IllegalArgumentException("can not determine architecture from [" + architecture + "]");
+         };
+     }
+diff --git a/distribution/archives/build.gradle b/distribution/archives/build.gradle
+index dcd9fbf7330..340f778865e 100644
+--- a/distribution/archives/build.gradle
++++ b/distribution/archives/build.gradle
+@@ -97,6 +97,13 @@ distribution_archives {
+     }
+   }
+ 
++  linuxPpc64leTar {
++    archiveClassifier = 'linux-ppc64le'
++    content {
++      archiveFiles(modulesFiles('linux-ppc64le'), 'tar', 'linux', 'ppc64le', false)
++    }
++  }
++
+   linuxTar {
+     archiveClassifier = 'linux-x86_64'
+     content {
+diff --git a/distribution/build.gradle b/distribution/build.gradle
+index 0c33ea03b7c..f12338453ef 100644
+--- a/distribution/build.gradle
++++ b/distribution/build.gradle
+@@ -214,7 +214,7 @@ configure(subprojects.findAll { ['archives', 'packages'].contains(it.name) }) {
+   // Setup all required JDKs
+   project.jdks {
+     ['darwin', 'windows', 'linux'].each { platform ->
+-      (platform == 'linux' || platform == 'darwin' ? ['x64', 'aarch64'] : ['x64']).each { architecture ->
++      (platform == 'linux' || platform == 'darwin' ? ['x64', 'aarch64', 'ppc64le'] : ['x64']).each { architecture ->
+         "bundled_${platform}_${architecture}" {
+           it.platform = platform
+           it.version = VersionProperties.bundledJdkVersion
+@@ -300,7 +300,7 @@ configure(subprojects.findAll { ['archives', 'packages'].contains(it.name) }) {
+             it.mode = 0644
+           }
+         }
+-        List excludePlatforms = ['linux-x86_64', 'linux-aarch64', 'windows-x86_64', 'darwin-x86_64', 'darwin-aarch64']
++        List excludePlatforms = ['linux-x86_64', 'linux-aarch64', 'windows-x86_64', 'darwin-x86_64', 'darwin-aarch64', 'linux-ppc64le']
+         if (platform != null) {
+           excludePlatforms.remove(excludePlatforms.indexOf(platform))
+         } else {
+diff --git a/distribution/docker/build.gradle b/distribution/docker/build.gradle
+index caa007ec0a5..943452cf4f1 100644
+--- a/distribution/docker/build.gradle
++++ b/distribution/docker/build.gradle
+@@ -62,13 +62,15 @@ configurations {
+   allPlugins
+   filebeat
+   metricbeat
++  ppc64leDockerSource
+ }
+ 
+-String beatsArch = Architecture.current() == Architecture.AARCH64 ? 'arm64' : 'x86_64'
+-String tiniArch = Architecture.current() == Architecture.AARCH64 ? 'arm64' : 'amd64'
++String beatsArch = Architecture.current() == Architecture.AARCH64 ? 'arm64' : (Architecture.current() == Architecture.PPC64LE ? 'ppc64le' : 'x86_64')
++String tiniArch = Architecture.current() == Architecture.AARCH64 ? 'arm64' : (Architecture.current() == Architecture.PPC64LE ? 'ppc64le' : 'amd64')
+ 
+ dependencies {
+   aarch64DockerSource project(path: ":distribution:archives:linux-aarch64-tar", configuration: 'default')
++  ppc64leDockerSource project(path: ":distribution:archives:linux-ppc64le-tar", configuration: 'default')
+   dockerSource project(path: ":distribution:archives:linux-tar", configuration: 'default')
+   log4jConfig project(path: ":distribution", configuration: 'log4jConfig')
+   tini "krallin:tini:0.19.0:${tiniArch}"
+@@ -119,7 +121,7 @@ private static String toCamel(String input) {
+ 
+ private static String taskName(String prefix, Architecture architecture, DockerBase base, String suffix) {
+   return prefix +
+-    (architecture == Architecture.AARCH64 ? 'Aarch64' : '') +
++    (architecture == Architecture.AARCH64 ? 'Aarch64' : (architecture == Architecture.PPC64LE ? 'Ppc64le' : '')) +
+     (base == DockerBase.DEFAULT ? "" : toCamel(base.name())) +
+     suffix
+ }
+@@ -178,7 +180,7 @@ tasks.register("copyNodeKeyMaterial", Sync) {
+ 
+ elasticsearch_distributions {
+   Architecture.values().each { eachArchitecture ->
+-    "docker_${eachArchitecture == Architecture.AARCH64 ? '_aarch64' : ''}" {
++    "docker_${eachArchitecture == Architecture.AARCH64 ? '_aarch64' : (eachArchitecture == Architecture.PPC64LE ? '_ppc64le' : '')}" {
+       architecture = eachArchitecture
+       type = InternalElasticsearchDistributionTypes.DOCKER
+       version = VersionProperties.getElasticsearch()
+@@ -234,7 +236,7 @@ tasks.named("composeUp").configure {
+ 
+ void addBuildDockerContextTask(Architecture architecture, DockerBase base) {
+   String configDirectory = base == DockerBase.IRON_BANK ? 'scripts' : 'config'
+-  String arch = architecture == Architecture.AARCH64 ? '-aarch64' : ''
++  String arch = architecture == Architecture.AARCH64 ? '-aarch64' : (architecture == Architecture.PPC64LE ? '-ppc64le' : '')
+ 
+   final TaskProvider<Tar> buildDockerContextTask =
+     tasks.register(taskName('build', architecture, base, 'DockerContext'), Tar) {
+@@ -280,7 +282,7 @@ void addTransformDockerContextTask(Architecture architecture, DockerBase base) {
+     TaskProvider<Tar> buildContextTask = tasks.named(taskName("build", architecture, base, "DockerContext"))
+     dependsOn(buildContextTask)
+ 
+-    String arch = architecture == Architecture.AARCH64 ? '-aarch64' : ''
++    String arch = architecture == Architecture.AARCH64 ? '-aarch64' : (architecture == Architecture.PPC64LE ? '-ppc64le' : '')
+     String archiveName = "elasticsearch${base.suffix}-${VersionProperties.elasticsearch}-docker-build-context${arch}"
+     String distributionName = "elasticsearch-${VersionProperties.elasticsearch}-linux-${architecture.classifier}.tar.gz"
+ 
+@@ -377,7 +379,7 @@ void addBuildDockerImageTask(Architecture architecture, DockerBase base) {
+ 
+ void addBuildEssDockerImageTask(Architecture architecture) {
+   DockerBase base = DockerBase.CLOUD_ESS
+-  String arch = architecture == Architecture.AARCH64 ? '-aarch64' : ''
++  String arch = architecture == Architecture.AARCH64 ? '-aarch64' : (architecture == Architecture.PPC64LE ? '-ppc64le' : '')
+   String contextDir = "${project.buildDir}/docker-context/elasticsearch${base.suffix}-${VersionProperties.elasticsearch}-docker-build-context${arch}"
+ 
+   final TaskProvider<Sync> buildContextTask =
+@@ -440,7 +442,7 @@ subprojects { Project subProject ->
+   if (subProject.name.endsWith('-export')) {
+     apply plugin: 'distribution'
+ 
+-    final Architecture architecture = subProject.name.contains('aarch64-') ? Architecture.AARCH64 : Architecture.X64
++    final Architecture architecture = subProject.name.contains('aarch64-') ? Architecture.AARCH64 : (subProject.name.contains('ppc64le-') ? Architecture.PPC64LE : Architecture.X64)
+     DockerBase base = DockerBase.DEFAULT
+     if (subProject.name.contains('ubi-')) {
+       base = DockerBase.UBI
+@@ -452,7 +454,7 @@ subprojects { Project subProject ->
+       base = DockerBase.CLOUD
+     }
+ 
+-    final String arch = architecture == Architecture.AARCH64 ? '-aarch64' : ''
++    final String arch = architecture == Architecture.AARCH64 ? '-aarch64' : (architecture == Architecture.PPC64LE ? '-ppc64le' : '')
+     final String extension = base == DockerBase.UBI ? 'ubi.tar' :
+       (base == DockerBase.IRON_BANK ? 'ironbank.tar' :
+         (base == DockerBase.CLOUD ? 'cloud.tar' :
+diff --git a/distribution/docker/src/docker/Dockerfile b/distribution/docker/src/docker/Dockerfile
+index dcb2151298e..c5cbea0f60c 100644
+--- a/distribution/docker/src/docker/Dockerfile
++++ b/distribution/docker/src/docker/Dockerfile
+@@ -58,6 +58,7 @@ RUN set -eux ; \\
+     case "\$(arch)" in \\
+         aarch64) tini_bin='tini-arm64' ;; \\
+         x86_64)  tini_bin='tini-amd64' ;; \\
++       ppc64le) tini_bin='tini-ppc64le' ;; \\
+         *) echo >&2 ; echo >&2 "Unsupported architecture \$(arch)" ; echo >&2 ; exit 1 ;; \\
+     esac ; \\
+     curl --retry 10 -S -L -O https://github.com/krallin/tini/releases/download/v0.19.0/\${tini_bin} ; \\
+diff --git a/distribution/docker/src/docker/config/elasticsearch.yml b/distribution/docker/src/docker/config/elasticsearch.yml
+index 50b154702b9..b0364864e8e 100644
+--- a/distribution/docker/src/docker/config/elasticsearch.yml
++++ b/distribution/docker/src/docker/config/elasticsearch.yml
+@@ -1,2 +1,6 @@
+ cluster.name: "docker-cluster"
+ network.host: 0.0.0.0
++xpack.ml.enabled: false
++discovery.seed_hosts: []
++bootstrap.system_call_filter: false
++discovery.type: single-node
+diff --git a/distribution/packages/build.gradle b/distribution/packages/build.gradle
+index 53fcbaef8ca..2bd49d27feb 100644
+--- a/distribution/packages/build.gradle
++++ b/distribution/packages/build.gradle
+@@ -91,6 +91,8 @@ def commonPackageConfig(String type, String architecture) {
+     if (type == 'deb') {
+       if (architecture == 'x64') {
+         arch('amd64')
++      } else if (architecture == 'ppc64le') {
++       arch('ppc64le')
+       } else {
+         assert architecture == 'aarch64' : architecture
+         arch('arm64')
+@@ -99,13 +101,15 @@ def commonPackageConfig(String type, String architecture) {
+       assert type == 'rpm' : type
+       if (architecture == 'x64') {
+         arch('X86_64')
++      } else if (architecture == 'ppc64le') {
++       arch('ppc64le')
+       } else {
+         assert architecture == 'aarch64' : architecture
+         arch('aarch64')
+       }
+     }
+     // Follow elasticsearch's file naming convention
+-    String prefix = "${architecture == 'aarch64' ? 'aarch64-' : ''}${type}"
++    String prefix = "${architecture == 'aarch64' ? 'aarch64-' : (architecture == 'ppc64le' ? 'ppc64le-' : '')}${type}"
+     destinationDirectory = file("${prefix}/build/distributions")
+     archiveFileName.value(project.provider({ "${packageName}-${project.version}-${archString}.${type}" } ))
+     String packagingFiles = "build/packaging/${type}"
+@@ -316,6 +320,10 @@ tasks.register('buildAarch64Deb', Deb) {
+   configure(commonDebConfig('aarch64'))
+ }
+ 
++tasks.register('buildPpc64leDeb', Deb) {
++  configure(commonDebConfig('ppc64le'))
++}
++
+ tasks.register('buildDeb', Deb) {
+   configure(commonDebConfig('x64'))
+ }
+@@ -349,6 +357,10 @@ tasks.register('buildAarch64Rpm', Rpm) {
+   configure(commonRpmConfig('aarch64'))
+ }
+ 
++tasks.register('buildPpc64leRpm', Rpm) {
++  configure(commonRpmConfig('ppc64le'))
++}
++
+ tasks.register('buildRpm', Rpm) {
+   configure(commonRpmConfig('x64'))
+ }
+diff --git a/server/src/main/java/org/elasticsearch/bootstrap/SystemCallFilter.java b/server/src/main/java/org/elasticsearch/bootstrap/SystemCallFilter.java
+index c5afb9c3ffa..a36077521bd 100644
+--- a/server/src/main/java/org/elasticsearch/bootstrap/SystemCallFilter.java
++++ b/server/src/main/java/org/elasticsearch/bootstrap/SystemCallFilter.java
+@@ -216,7 +216,9 @@ final class SystemCallFilter {
+             "amd64",
+             new Arch(0xC000003E, 0x3FFFFFFF, 57, 58, 59, 322, 317),
+             "aarch64",
+-            new Arch(0xC00000B7, 0xFFFFFFFF, 1079, 1071, 221, 281, 277)
++            new Arch(0xC00000B7, 0xFFFFFFFF, 1079, 1071, 221, 281, 277),
++           "ppc64le",
++           new Arch(0xC0000015, 0xFFFFFFFF, 2, 189, 11, 362, 358)
+         );
+     }
+ 
+diff --git a/settings.gradle b/settings.gradle
+index f28f7ec51eb..49b55045c84 100644
+--- a/settings.gradle
++++ b/settings.gradle
+@@ -32,21 +32,29 @@ List projects = [
+   'distribution:archives:darwin-tar',
+   'distribution:archives:darwin-aarch64-tar',
+   'distribution:archives:linux-aarch64-tar',
++  'distribution:archives:linux-ppc64le-tar',
+   'distribution:archives:linux-tar',
+   'distribution:docker',
+   'distribution:docker:cloud-docker-export',
+   'distribution:docker:cloud-docker-aarch64-export',
++  'distribution:docker:cloud-docker-ppc64le-export',
+   'distribution:docker:cloud-ess-docker-export',
+   'distribution:docker:cloud-ess-docker-aarch64-export',
++  'distribution:docker:cloud-ess-docker-ppc64le-export',
+   'distribution:docker:docker-aarch64-export',
++  'distribution:docker:docker-ppc64le-export',
+   'distribution:docker:docker-export',
+   'distribution:docker:ironbank-docker-aarch64-export',
++  'distribution:docker:ironbank-docker-ppc64le-export',
+   'distribution:docker:ironbank-docker-export',
+   'distribution:docker:ubi-docker-aarch64-export',
++  'distribution:docker:ubi-docker-ppc64le-export',
+   'distribution:docker:ubi-docker-export',
+   'distribution:packages:aarch64-deb',
++  'distribution:packages:ppc64le-deb',
+   'distribution:packages:deb',
+   'distribution:packages:aarch64-rpm',
++  'distribution:packages:ppc64le-rpm',
+   'distribution:packages:rpm',
+   'distribution:bwc:bugfix',
+   'distribution:bwc:maintenance',

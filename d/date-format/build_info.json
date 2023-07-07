@@ -1,0 +1,15 @@
+{
+    "package_name": "date-format",
+    "github_url": "https://github.com/nomiddlename/date-format.git",
+    "version": "v4.0.14",
+    "package_dir": "d/date-format/",
+    "build_script": "date-format_ubi_8.7.sh",
+    "validate_build_script": true,
+    "default_branch": "master",
+    "docker_build": false,
+
+    "v4.*.*": {
+        "build_script": "date-format_ubi_8.7.sh"
+    }
+
+}

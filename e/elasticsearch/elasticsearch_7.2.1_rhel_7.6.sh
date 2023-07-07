@@ -1,9 +1,12 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package       : elasticsearch
 # Version       : 7.2.1
 # Source repo   : https://github.com/elastic/elasticsearch.git
 # Tested on     : rhel 7.6
+# Travis-Check  : True
+# Language      : Java
 # Script License: Apache License Version 2.0
 # Maintainer    : Lysanne Fernandes <lysannef@us.ibm.com>
 #
@@ -14,7 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
 
 
 WORKDIR=$1

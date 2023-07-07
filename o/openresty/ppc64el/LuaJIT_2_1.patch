@@ -1,0 +1,11 @@
+--- bundle/LuaJIT-2.1-20210510/src/lj_ccallback.c	2022-02-09 13:06:15.339365263 +0000
++++ /tmp/lj_ccallback.c	2022-02-10 11:38:04.185108487 +0000
+@@ -226,7 +226,7 @@
+   MSize slot;
+ #if LJ_ARCH_PPC_ELFV2
+   // Needs to be in sync with lj_vm_ffi_callback.
+-  lua_assert(CALLBACK_MCODE_SIZE == 4096);
++  //lua_assert(CALLBACK_MCODE_SIZE == 4096);
+   for (slot = 0; slot < CALLBACK_MAX_SLOT; slot++) {
+     *p = PPCI_B | (((page+CALLBACK_MAX_SLOT-p) & 0x00ffffffu) << 2);
+     p++;

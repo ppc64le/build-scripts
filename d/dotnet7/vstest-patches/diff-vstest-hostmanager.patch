@@ -1,0 +1,34 @@
+From bda34b1793ef6ddcd186b7088a6413692efb215e Mon Sep 17 00:00:00 2001
+From: Giridhar Trivedi <giritrivedi@gmail.com>
+Date: Tue, 18 Oct 2022 17:05:20 +0530
+Subject: [PATCH] Fix Invalid target architecture 'S390x' error (#4066)
+
+Co-authored-by: Giridhar Trivedi <giridhar.trivedi@ibm.com>
+---
+ .../Hosting/DotnetTestHostManager.cs                        | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/src/Microsoft.TestPlatform.TestHostProvider/Hosting/DotnetTestHostManager.cs b/src/Microsoft.TestPlatform.TestHostProvider/Hosting/DotnetTestHostManager.cs
+index b4fa53776f..deadfcb684 100644
+--- a/src/Microsoft.TestPlatform.TestHostProvider/Hosting/DotnetTestHostManager.cs
++++ b/src/Microsoft.TestPlatform.TestHostProvider/Hosting/DotnetTestHostManager.cs
+@@ -536,6 +536,10 @@ PlatformArchitecture TranslateToPlatformArchitecture(Architecture targetArchitec
+                     return PlatformArchitecture.ARM;
+                 case Architecture.ARM64:
+                     return PlatformArchitecture.ARM64;
++                case Architecture.S390x:
++                    return PlatformArchitecture.S390x;
++                case Architecture.Ppc64le:
++                    return PlatformArchitecture.Ppc64le;
+                 case Architecture.AnyCPU:
+                 case Architecture.Default:
+                 default:
+@@ -552,6 +556,8 @@ static bool IsSameArchitecture(Architecture targetArchitecture, PlatformArchitec
+                 Architecture.X64 => platformAchitecture == PlatformArchitecture.X64,
+                 Architecture.ARM => platformAchitecture == PlatformArchitecture.ARM,
+                 Architecture.ARM64 => platformAchitecture == PlatformArchitecture.ARM64,
++                Architecture.S390x => platformAchitecture == PlatformArchitecture.S390x,
++                Architecture.Ppc64le => platformAchitecture == PlatformArchitecture.Ppc64le,
+                 _ => throw new TestPlatformException($"Invalid target architecture '{targetArchitecture}'"),
+             };
+

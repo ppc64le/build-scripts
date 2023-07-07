@@ -1,11 +1,14 @@
-# ----------------------------------------------------------------------------
+#!/bin/bash -e
+# -----------------------------------------------------------------------------
 #
-# Package       : redis
-# Version       : 5.0.4
-# Source repo   : https://github.com/antirez/redis.git
-# Tested on     : rhel 7.6
+# Package	: redis
+# Version	: 5.0.4
+# Source repo	: https://github.com/antirez/redis.git
+# Tested on	: rhel 7.6
+# Language      : C
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Amit Ghatwal <ghatwala@us.ibm.com>
+# Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -14,15 +17,16 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
 
 # Install dependencies.
+PACKAGE_VERSION=${1:-5.0.4}
 sudo yum update -y
 sudo yum install -y git tcl make gcc
 
 # Clone and build source.
 git clone https://github.com/antirez/redis.git
 cd redis
-git checkout 5.0.4
+git checkout $PACKAGE_VERSION
+make V=1 MALLOC=libc
 sudo make install
 redis-cli --version

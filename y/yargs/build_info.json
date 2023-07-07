@@ -1,0 +1,23 @@
+{
+    "package_name" : "yargs",
+    "github_url": "https://github.com/yargs/yargs",
+    "version": "v17.7.2",
+    "default_branch": "main",
+    "package_dir": "y/yargs",
+    "build_script": "yargs_ubi_8.7.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": false,
+
+    "v17.7.*" : {
+       "build_script" : "yargs_ubi_8.7.sh"
+    },
+
+    "14.2.3": {
+	"build_script" : "yargs_rhel_8.3.sh"
+     },
+
+    "v12.0.5": {
+	"build_script" : "yargs_v12.0.5_ubi8.5.sh"
+    }
+}

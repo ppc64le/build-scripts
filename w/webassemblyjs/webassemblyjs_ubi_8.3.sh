@@ -1,9 +1,12 @@
+#!/bin/bash -e
 #----------------------------------------------------------------------------
 #
 # Package         : xtuc/webassemblyjs
 # Version         : v1.7.10
 # Source repo     : https://github.com/xtuc/webassemblyjs
 # Tested on       : ubi:8.3
+# Language        : JavaScript
+# Travis-Check    : true
 # Script License  : MIT License
 # Maintainer      : srividya chittiboina <Srividya.Chittiboina@ibm.com>
 #
@@ -14,7 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
 #Tested versions: v1.11.1,v1.7.10.v1.7.11
 # ----------------------------------------------------------------------------
 

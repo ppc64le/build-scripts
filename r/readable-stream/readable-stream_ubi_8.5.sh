@@ -1,7 +1,9 @@
+#!/bin/bash -e
+
 # -----------------------------------------------------------------------------
 #
 # Package	: readable-stream
-# Version	: v3.6.0
+# Version	: v3.6.0,v3.4.0
 # Source repo	: https://github.com/nodejs/readable-stream
 # Tested on	: ubi 8.5
 # Language      : node

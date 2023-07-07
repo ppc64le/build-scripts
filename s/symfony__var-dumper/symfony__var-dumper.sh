@@ -1,13 +1,14 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: VarDumper
-# Version	: 5.3
+# Version	: 5.3, v4.4.8, v4.4.18, v4.4.30,v5.3.8,v4.4.17,v3.4.28,v5.2.8 
 # Source repo	: https://github.com/symfony/var-dumper
 # Tested on	: UBI 8.5
-# Language      : GO
+# Language      : PHP
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>
+# Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>, Apurva Agrawal <Apurva.Agrawal3@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -18,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=VarDumper
-PACKAGE_VERSION={1:-5.3}
+PACKAGE_VERSION=${1:-v5.3.0}
 PACKAGE_URL=https://github.com/symfony/var-dumper
 
 yum -y update && yum install -y git php php-json php-dom php-mbstring zip unzip
@@ -36,11 +37,20 @@ if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
     	exit 0
 fi
 
-cd $HOME_DIR/$PACKAGE_NAME
-composer require --dev phpunit/phpunit --with-all-dependencies ^7
 
 cd $HOME_DIR/$PACKAGE_NAME
+git reset --hard
+git pull
 git checkout $PACKAGE_VERSION
+
+# VarDumper version v3.4.28 need phpunit-6 to run test with success.All other versions run successfully with phpunit-7.
+if [ $PACKAGE_VERSION = v3.4.28 ];
+then
+    composer require --dev phpunit/phpunit --with-all-dependencies ^6
+else
+    composer require --dev phpunit/phpunit --with-all-dependencies ^7
+fi
+
 if ! composer install; then
      	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"

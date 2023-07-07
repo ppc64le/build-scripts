@@ -9,6 +9,7 @@
 #
 # ----------------------------------------------------------------------------
 #!/bin/bash
+yum install -y sudo
 sudo yum update -y
 
 export PKG_CONFIG=/usr/bin/pkg-config

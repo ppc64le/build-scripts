@@ -1,0 +1,11 @@
+--- scipy/ndimage/_ni_support.py	2022-04-21 00:24:09.810959901 -0700
++++ /scipy/scipy/ndimage/_ni_support.py	2022-04-21 00:31:44.083442390 -0700
+@@ -86,7 +86,7 @@
+             output = numpy.promote_types(output, numpy.complex64)
+         output = numpy.zeros(shape, dtype=output)
+     elif isinstance(output, str):
+-        output = numpy.typeDict[output]
++        output = numpy.sctypeDict[output]
+         if complex_output and numpy.dtype(output).kind != 'c':
+             raise RuntimeError("output must have complex dtype")
+         output = numpy.zeros(shape, dtype=output)

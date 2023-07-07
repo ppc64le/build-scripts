@@ -1,0 +1,19 @@
+--- from_value.go       2022-03-15 05:19:21.390672848 +0000
++++ from_value_updated.go       2022-03-15 05:18:22.859342282 +0000
+@@ -160,7 +160,15 @@
+                case *pb.Value_DoubleValue:
+                        f = x.DoubleValue
+                case *pb.Value_IntegerValue:
+-                       f = float64(x.IntegerValue)
++
++                       if(x.IntegerValue == (1<<63-1)) {
++                               var ONE int = 1
++                               var MAX_INT int = ONE << 63
++                               f = float64(MAX_INT)
++                       } else {
++                               f = float64(x.IntegerValue)
++                       }
++
+                        if int64(f) != x.IntegerValue {
+                                return overflowErr(v, x.IntegerValue)
+                        }

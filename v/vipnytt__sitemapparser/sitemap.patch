@@ -1,0 +1,104 @@
+diff --git a/phpunit.xml b/phpunit.xml
+index e65e377..7954088 100644
+--- a/phpunit.xml
++++ b/phpunit.xml
+@@ -5,6 +5,11 @@
+             <directory>tests</directory>
+         </testsuite>
+     </testsuites>
++    <filter>
++        <whitelist>
++            <directory>src</directory>
++        </whitelist>
++    </filter>
+     <logging>
+         <log type="coverage-clover" target="build/logs/clover.xml"/>
+     </logging>
+diff --git a/tests/DownloadTest.php b/tests/DownloadTest.php
+index 35dc515..2a7d406 100644
+--- a/tests/DownloadTest.php
++++ b/tests/DownloadTest.php
+@@ -15,18 +15,18 @@ class DownloadTest extends TestCase
+         $parser = new SitemapParser('SitemapParser');
+         $this->assertInstanceOf('vipnytt\SitemapParser', $parser);
+         $parser->parse($url);
+-        $this->assertInternalType('array', $parser->getSitemaps());
+-        $this->assertInternalType('array', $parser->getURLs());
++        $this->assertTrue(is_array($parser->getSitemaps()));
++        $this->assertTrue(is_array($parser->getURLs()));
+         $this->assertTrue(count($parser->getSitemaps()) > 0 || count($parser->getURLs()) > 0);
+         foreach ($parser->getSitemaps() as $url => $tags) {
+-            $this->assertInternalType('string', $url);
+-            $this->assertInternalType('array', $tags);
++        $this->assertTrue(is_string($url));
++        $this->assertTrue(is_array($tags));
+             $this->assertTrue($url === $tags['loc']);
+             $this->assertNotFalse(filter_var($url, FILTER_VALIDATE_URL));
+         }
+         foreach ($parser->getURLs() as $url => $tags) {
+-            $this->assertInternalType('string', $url);
+-            $this->assertInternalType('array', $tags);
++        $this->assertTrue(is_string($url));
++        $this->assertTrue(is_array($tags));
+             $this->assertTrue($url === $tags['loc']);
+             $this->assertNotFalse(filter_var($url, FILTER_VALIDATE_URL));
+         }
+diff --git a/tests/RecursiveTest.php b/tests/RecursiveTest.php
+index 815d2d7..a1c788f 100644
+--- a/tests/RecursiveTest.php
++++ b/tests/RecursiveTest.php
+@@ -16,18 +16,18 @@ class RecursiveTest extends TestCase
+         $parser = new SitemapParser('SitemapParser');
+         $this->assertInstanceOf('vipnytt\SitemapParser', $parser);
+         $parser->parseRecursive($url);
+-        $this->assertInternalType('array', $parser->getSitemaps());
+-        $this->assertInternalType('array', $parser->getURLs());
++        $this->assertTrue(is_array($parser->getSitemaps()));
++        $this->assertTrue(is_array($parser->getURLs()));
+         $this->assertTrue(count($parser->getSitemaps()) > 1 || count($parser->getURLs()) > 100);
+         foreach ($parser->getSitemaps() as $url => $tags) {
+-            $this->assertInternalType('string', $url);
+-            $this->assertInternalType('array', $tags);
++        $this->assertTrue(is_string($url));
++        $this->assertTrue(is_array($tags));
+             $this->assertTrue($url === $tags['loc']);
+             $this->assertNotFalse(filter_var($url, FILTER_VALIDATE_URL));
+         }
+         foreach ($parser->getURLs() as $url => $tags) {
+-            $this->assertInternalType('string', $url);
+-            $this->assertInternalType('array', $tags);
++        $this->assertTrue(is_string($url));
++        $this->assertTrue(is_array($tags));
+             $this->assertTrue($url === $tags['loc']);
+             $this->assertNotFalse(filter_var($url, FILTER_VALIDATE_URL));
+         }
+diff --git a/tests/StringTest.php b/tests/StringTest.php
+index 3d8c92d..82114ff 100644
+--- a/tests/StringTest.php
++++ b/tests/StringTest.php
+@@ -16,19 +16,19 @@ class StringTest extends TestCase
+         $parser = new SitemapParser('SitemapParser', ['strict' => false]);
+         $this->assertInstanceOf('vipnytt\SitemapParser', $parser);
+         $parser->parse($url);
+-        $this->assertInternalType('array', $parser->getSitemaps());
+-        $this->assertInternalType('array', $parser->getURLs());
++        $this->assertTrue(is_array($parser->getSitemaps()));
++        $this->assertTrue(is_array($parser->getURLs()));
+         $this->assertTrue(count($parser->getSitemaps()) > 1);
+         $this->assertTrue(count($parser->getURLs()) >= 1000);
+         foreach ($parser->getSitemaps() as $url => $tags) {
+-            $this->assertInternalType('string', $url);
+-            $this->assertInternalType('array', $tags);
++        $this->assertTrue(is_string($url));
++        $this->assertTrue(is_array($tags));
+             $this->assertTrue($url === $tags['loc']);
+             $this->assertNotFalse(filter_var($url, FILTER_VALIDATE_URL));
+         }
+         foreach ($parser->getURLs() as $url => $tags) {
+-            $this->assertInternalType('string', $url);
+-            $this->assertInternalType('array', $tags);
++        $this->assertTrue(is_string($url));
++        $this->assertTrue(is_array($tags));
+             $this->assertTrue($url === $tags['loc']);
+             $this->assertNotFalse(filter_var($url, FILTER_VALIDATE_URL));
+         }

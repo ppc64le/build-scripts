@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: etcd
-# Version	: v3.5.1
+# Version	: v3.5.1, v3.5.0
 # Source repo	: https://github.com/etcd-io/etcd
 # Tested on	: UBI 8.5
 # Script License: Apache License, Version 2 or later

@@ -1,0 +1,200 @@
+diff --git a/nifi-assembly/pom.xml b/nifi-assembly/pom.xml
+index 53e74e0f36..e203f945b7 100755
+--- a/nifi-assembly/pom.xml
++++ b/nifi-assembly/pom.xml
+@@ -313,12 +313,6 @@ language governing permissions and limitations under the License. -->
+             <version>1.9.0</version>
+             <type>nar</type>
+         </dependency>
+-        <dependency>
+-            <groupId>org.apache.nifi</groupId>
+-            <artifactId>nifi-solr-nar</artifactId>
+-            <version>1.9.0</version>
+-            <type>nar</type>
+-        </dependency>
+         <dependency>
+             <groupId>org.apache.nifi</groupId>
+             <artifactId>nifi-social-media-nar</artifactId>
+@@ -571,12 +565,6 @@ language governing permissions and limitations under the License. -->
+             <version>1.9.0</version>
+             <type>nar</type>
+         </dependency>
+-        <dependency>
+-            <groupId>org.apache.nifi</groupId>
+-            <artifactId>nifi-hive-nar</artifactId>
+-            <version>1.9.0</version>
+-            <type>nar</type>
+-        </dependency>
+         <dependency>
+             <groupId>org.apache.nifi</groupId>
+             <artifactId>nifi-site-to-site-reporting-nar</artifactId>
+diff --git a/nifi-nar-bundles/nifi-extension-utils/nifi-syslog-utils/pom.xml b/nifi-nar-bundles/nifi-extension-utils/nifi-syslog-utils/pom.xml
+index 6f0e2b4988..1a515c6386 100644
+--- a/nifi-nar-bundles/nifi-extension-utils/nifi-syslog-utils/pom.xml
++++ b/nifi-nar-bundles/nifi-extension-utils/nifi-syslog-utils/pom.xml
+@@ -26,7 +26,7 @@
+         <dependency>
+             <groupId>com.github.palindromicity</groupId>
+             <artifactId>simple-syslog-5424</artifactId>
+-            <version>0.0.8</version>
++            <version>0.0.16</version>
+         </dependency>
+         <dependency>
+             <groupId>org.apache.nifi</groupId>
+diff --git a/nifi-nar-bundles/nifi-mqtt-bundle/nifi-mqtt-nar/pom.xml b/nifi-nar-bundles/nifi-mqtt-bundle/nifi-mqtt-nar/pom.xml
+index 845df9be14..373cc8917d 100644
+--- a/nifi-nar-bundles/nifi-mqtt-bundle/nifi-mqtt-nar/pom.xml
++++ b/nifi-nar-bundles/nifi-mqtt-bundle/nifi-mqtt-nar/pom.xml
+@@ -33,9 +33,5 @@
+             <version>1.9.0</version>
+             <type>nar</type>
+         </dependency>
+-        <dependency>
+-            <groupId>org.apache.nifi</groupId>
+-            <artifactId>nifi-mqtt-processors</artifactId>
+-        </dependency>
+     </dependencies>
+ </project>
+diff --git a/nifi-nar-bundles/nifi-mqtt-bundle/pom.xml b/nifi-nar-bundles/nifi-mqtt-bundle/pom.xml
+index 07f521ec0c..bf0170b23d 100644
+--- a/nifi-nar-bundles/nifi-mqtt-bundle/pom.xml
++++ b/nifi-nar-bundles/nifi-mqtt-bundle/pom.xml
+@@ -22,7 +22,6 @@
+     <artifactId>nifi-mqtt-bundle</artifactId>
+     <packaging>pom</packaging>
+     <modules>
+-        <module>nifi-mqtt-processors</module>
+         <module>nifi-mqtt-nar</module>
+     </modules>
+     <dependencyManagement>
+diff --git a/nifi-nar-bundles/nifi-riemann-bundle/pom.xml b/nifi-nar-bundles/nifi-riemann-bundle/pom.xml
+index ea50df0899..96d2202f6f 100644
+--- a/nifi-nar-bundles/nifi-riemann-bundle/pom.xml
++++ b/nifi-nar-bundles/nifi-riemann-bundle/pom.xml
+@@ -29,7 +29,7 @@
+     <repositories>
+         <repository>
+             <id>clojars.org</id>
+-            <url>http://clojars.org/repo</url>
++            <url>https://clojars.org/repo</url>
+         </repository>
+     </repositories>
+     <dependencyManagement>
+diff --git a/nifi-nar-bundles/nifi-splunk-bundle/pom.xml b/nifi-nar-bundles/nifi-splunk-bundle/pom.xml
+index 150cb902bd..96532d4ad4 100644
+--- a/nifi-nar-bundles/nifi-splunk-bundle/pom.xml
++++ b/nifi-nar-bundles/nifi-splunk-bundle/pom.xml
+@@ -34,9 +34,9 @@
+ 
+     <repositories>
+         <repository>
+-            <id>splunk</id>
+-            <name>Splunk Artifactory</name>
+-            <url>http://splunk.artifactoryonline.com/splunk/ext-releases-local/</url>
++            <id>splunk-artifactory</id>
++            <name>Splunk Releases</name>
++            <url>https://splunk.jfrog.io/splunk/ext-releases-local</url>
+             <releases>
+                 <enabled>true</enabled>
+             </releases>
+diff --git a/nifi-nar-bundles/nifi-standard-bundle/nifi-standard-processors/pom.xml b/nifi-nar-bundles/nifi-standard-bundle/nifi-standard-processors/pom.xml
+index 16c5064b17..0d81b3f60f 100644
+--- a/nifi-nar-bundles/nifi-standard-bundle/nifi-standard-processors/pom.xml
++++ b/nifi-nar-bundles/nifi-standard-bundle/nifi-standard-processors/pom.xml
+@@ -212,7 +212,7 @@
+             <artifactId>okhttp</artifactId>
+         </dependency>
+         <dependency>
+-            <groupId>com.burgstaller</groupId>
++            <groupId>io.github.rburgst</groupId>
+             <artifactId>okhttp-digest</artifactId>
+             <type>jar</type>
+         </dependency>
+@@ -320,7 +320,7 @@
+         </dependency>
+         <dependency>
+             <groupId>com.fluenda</groupId>
+-            <artifactId>ParCEFone</artifactId>
++            <artifactId>parcefone</artifactId>
+         </dependency>
+         <dependency>
+             <groupId>com.github.wnameless</groupId>
+diff --git a/nifi-nar-bundles/nifi-standard-bundle/nifi-standard-processors/src/main/java/org/apache/nifi/processors/standard/ParseCEF.java b/nifi-nar-bundles/nifi-standard-bundle/nifi-standard-processors/src/main/java/org/apache/nifi/processors/standard/ParseCEF.java
+index b7da32fe92..1ba6fc2aad 100644
+--- a/nifi-nar-bundles/nifi-standard-bundle/nifi-standard-processors/src/main/java/org/apache/nifi/processors/standard/ParseCEF.java
++++ b/nifi-nar-bundles/nifi-standard-bundle/nifi-standard-processors/src/main/java/org/apache/nifi/processors/standard/ParseCEF.java
+@@ -25,8 +25,8 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
+ import com.fasterxml.jackson.databind.node.ObjectNode;
+ import com.fluenda.parcefone.event.CEFHandlingException;
+ import com.fluenda.parcefone.event.CommonEvent;
++import com.fluenda.parcefone.event.MacAddress;
+ import com.fluenda.parcefone.parser.CEFParser;
+-import com.martiansoftware.macnificent.MacAddress;
+ import java.io.BufferedOutputStream;
+ import java.io.IOException;
+ import java.io.InputStream;
+diff --git a/nifi-nar-bundles/nifi-standard-bundle/pom.xml b/nifi-nar-bundles/nifi-standard-bundle/pom.xml
+index b9b1b0afc8..3c6274a12f 100644
+--- a/nifi-nar-bundles/nifi-standard-bundle/pom.xml
++++ b/nifi-nar-bundles/nifi-standard-bundle/pom.xml
+@@ -284,9 +284,9 @@
+                 <version>3.8.1</version>
+             </dependency>
+             <dependency>
+-                <groupId>com.burgstaller</groupId>
++                <groupId>io.github.rburgst</groupId>
+                 <artifactId>okhttp-digest</artifactId>
+-                <version>1.18</version>
++                <version>2.5</version>
+                 <type>jar</type>
+             </dependency>
+             <dependency>
+@@ -323,8 +323,8 @@
+             </dependency>
+             <dependency>
+                 <groupId>com.fluenda</groupId>
+-                <artifactId>ParCEFone</artifactId>
+-                <version>1.2.6</version>
++                <artifactId>parcefone</artifactId>
++                <version>2.1.0</version>
+                 <exclusions>
+                     <exclusion>
+                         <groupId>org.slf4j</groupId>
+diff --git a/nifi-nar-bundles/nifi-standard-services/nifi-lookup-services-bundle/nifi-lookup-services/pom.xml b/nifi-nar-bundles/nifi-standard-services/nifi-lookup-services-bundle/nifi-lookup-services/pom.xml
+index 1fb938268c..20cbd602cf 100644
+--- a/nifi-nar-bundles/nifi-standard-services/nifi-lookup-services-bundle/nifi-lookup-services/pom.xml
++++ b/nifi-nar-bundles/nifi-standard-services/nifi-lookup-services-bundle/nifi-lookup-services/pom.xml
+@@ -141,9 +141,9 @@
+             <scope>test</scope>
+         </dependency>
+         <dependency>
+-            <groupId>com.burgstaller</groupId>
++            <groupId>io.github.rburgst</groupId>
+             <artifactId>okhttp-digest</artifactId>
+-            <version>1.18</version>
++            <version>2.5</version>
+             <scope>compile</scope>
+         </dependency>
+     </dependencies>
+diff --git a/nifi-nar-bundles/pom.xml b/nifi-nar-bundles/pom.xml
+index b4cb2028b8..d96a43202a 100755
+--- a/nifi-nar-bundles/pom.xml
++++ b/nifi-nar-bundles/pom.xml
+@@ -34,8 +34,7 @@
+         <module>nifi-update-attribute-bundle</module>
+         <module>nifi-kafka-bundle</module>
+         <module>nifi-kite-bundle</module>
+-        <module>nifi-kudu-bundle</module>
+-        <module>nifi-solr-bundle</module>
++        <module>nifi-kudu-bundle</module>        
+         <module>nifi-confluent-platform-bundle</module>
+         <module>nifi-aws-bundle</module>
+         <module>nifi-social-media-bundle</module>
+@@ -64,7 +63,6 @@
+         <module>nifi-beats-bundle</module>
+         <module>nifi-cassandra-bundle</module>
+         <module>nifi-spring-bundle</module>
+-        <module>nifi-hive-bundle</module>
+ 	<module>nifi-site-to-site-reporting-bundle</module>
+         <module>nifi-mqtt-bundle</module>
+         <module>nifi-evtx-bundle</module>

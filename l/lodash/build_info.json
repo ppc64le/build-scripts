@@ -1,0 +1,9 @@
+{
+    "package_name":"lodash",
+    "github_url":"https://github.com/lodash/lodash",
+    "package_dir":"l/lodash/",
+    "version":"4.17.21", 
+    "default_branch":"master",
+    "build_script":"lodash_4.17.21_UBI_8.5.sh",
+    "docker_build":false
+}

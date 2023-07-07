@@ -1,11 +1,14 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
-# Package	: elasticsearch
-# Version	: 6.5.4
-# Source repo	: https://github.com/elastic/elasticsearch.git
-# Tested on	: ubuntu_18.04
+# Package       : elasticsearch
+# Version       : 6.5.4
+# Source repo   : https://github.com/elastic/elasticsearch.git
+# Tested on     : ubuntu_18.04
+# Travis-Check  : True
+# Language      : Java
 # Script License: Apache License Version 2.0
-# Maintainer	: Shivani Junawane <shivanij@us.ibm.com>
+# Maintainer    : Shivani Junawane <shivanij@us.ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -14,7 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#!/bin/bash
 
 
 WORKDIR=$1

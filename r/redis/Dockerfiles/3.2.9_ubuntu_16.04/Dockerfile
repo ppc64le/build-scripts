@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y make \
 	&& git clone https://github.com/antirez/redis.git && \
 	cd redis && \
 	git checkout 3.2.9 && \
-	make V=1 && \
+	make V=1 MALLOC=libc && \
 	make install && \
 	cd / && \
 	rm -fr redis && \
