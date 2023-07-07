@@ -21,6 +21,7 @@
 PACKAGE_NAME=vault-k8s
 PACKAGE_VERSION=${1:-1.2.1}
 PACKAGE_URL=https://github.com/hashicorp/vault-k8s
+GO_VERSION=1.20.5
 
 #Install dependencies
 dnf install -y \
@@ -39,22 +40,16 @@ cd ${PACKAGE_NAME} && git checkout v${PACKAGE_VERSION}
 
 #Install Golang
 cd $wdir
-wget https://go.dev/dl/go1.20.5.linux-ppc64le.tar.gz
-rm -rf /usr/local/go && tar -C /usr/local -xzf go1.20.5.linux-ppc64le.tar.gz
-rm -rf go1.20.5.linux-ppc64le.tar.gz
+wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
+rm -rf /usr/local/go && tar -C /usr/local -xzf go${GO_VERSION}.linux-ppc64le.tar.gz
+rm -rf go${GO_VERSION}.linux-ppc64le.tar.gz
 export PATH=$PATH:/usr/local/go/bin
 go version
 export PATH=$PATH:$HOME/go/bin
 
 #Install docker
-yum remove -y docker \
-                  docker-client \
-                  docker-client-latest \
-                  docker-common \
-                  docker-latest \
-                  docker-latest-logrotate \
-                  docker-logrotate \
-                  docker-engine
+#Remove the following packages if you experience docker conflicts
+#yum remove -y docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-engine
 yum install -y yum-utils
 yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 yum install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
