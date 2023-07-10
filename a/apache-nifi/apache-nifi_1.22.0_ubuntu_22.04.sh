@@ -36,14 +36,6 @@ wget https://archive.apache.org/dist/maven/maven-3/3.8.6/binaries/apache-maven-3
 tar -xvzf apache-maven-3.8.6-bin.tar.gz
 cp -R apache-maven-3.8.6 /usr/local
 ln -s /usr/local/apache-maven-3.8.6/bin/mvn /usr/bin/mvn
-# export M2_HOME=/usr/local/maven
-# export PATH=$PATH:$M2_HOME/bin
-
-# Install node
-# wget https://nodejs.org/dist/v16.13.2/node-v16.13.2-linux-ppc64le.tar.gz
-# tar -xzf node-v16.13.2-linux-ppc64le.tar.gz
-# rm -rf node-v16.13.2-linux-ppc64le.tar.gz
-# export PATH=$HOME_DIR/node-v16.13.2-linux-ppc64le/bin:$PATH
 
 # Build the package
 git clone https://github.com/apache/nifi
