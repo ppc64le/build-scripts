@@ -102,7 +102,13 @@ rm -rf clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4.tar.xz
 cd $wdir/${PACKAGE_NAME}
 git apply ../${PACKAGE_NAME}_${PACKAGE_VERSION}.patch
 bazel/setup_clang.sh $wdir/clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4/
-bazel build -c opt envoy --config=clang --cxxopt=-fpermissive
+ret = 0
+bazel build -c opt envoy --config=clang --cxxopt=-fpermissive || ret=$?
+if [ "$ret" -ne 0 ]
+then
+	echo "FAIL: Build failed."
+	exit 1
+fi
 ENVOY_BIN=$wdir/envoy/bazel-bin/source/exe/envoy-static
 
 #Prepare binary for distribution
@@ -113,7 +119,12 @@ export ENVOY_ZIP=$wdir/envoy/envoy-static_${PACKAGE_VERSION}_UBI8.4.zip
 zip $ENVOY_ZIP envoy-static
 
 # Smoke test
-$ENVOY_BIN --version
+$ENVOY_BIN --version || ret=$?
+if [ "$ret" -ne 0 ]
+then
+	echo "FAIL: Smoke test failed."
+	exit 2
+fi
 
 #Run tests (take several hours to execute, hence disabling by default)
 #Some tests might fail because of issues with the tests themselves rather than envoy
