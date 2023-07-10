@@ -20,8 +20,13 @@
         "build_script" : "apache-nifi_1.17.0_ubi_8.5.sh"
     },
 
-    "rel/nifi-*.*.*": {
+    "rel/nifi-1.22.0": {
         "dir":"1.17.0_ubi_8",
-        "build_script" : "apache-nifi_1.17.0_ubi_8.5.sh"
+        "build_script" : "apache-nifi_1.22.0_ubi_8.5.sh"
+    },
+
+    "rel/nifi-*.*.*": {
+        "dir":"1.22.0_ubi_8",
+        "build_script" : "apache-nifi_1.22.0_ubi_8.5.sh"
     }
 }
