@@ -15,5 +15,5 @@
     
     "v7.1.0" : {
        "build_script" : "supports-color_rhel_7.6.sh"
-    },
+    }
 }
