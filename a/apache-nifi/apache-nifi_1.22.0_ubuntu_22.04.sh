@@ -49,10 +49,6 @@ ln -s /usr/local/apache-maven-3.8.6/bin/mvn /usr/bin/mvn
 git clone https://github.com/apache/nifi
 cd nifi
 git checkout $PACKAGE_VERSION
-# sed -i "s+<version>1.1.8.4</version>+<version>1.1.8</version>+g" pom.xml
-# sed -i '/<artifactId>snappy-java<\/artifactId>/!b;n;c\\t\t<version>1.1.8</version>' pom.xml
-# sed -i 's/Xmx512m/Xmx2g/g' pom.xml
-# mvn install -Dmaven.test.skip=true
 
 find="<additionalJOption>\-J\-Xmx512m<\/additionalJOption>"
 replace="<additionalJOptions>\

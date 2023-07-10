@@ -26,7 +26,6 @@ PACKAGE_VERSION=${1:-rel/nifi-1.22.0}
 yum install -y wget git 
 
 # Install java
-# yum install -y java-1.8.0-openjdk-devel
 yum install -y java-17-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-17)(?=.*ppc64le)')
 export PATH=$JAVA_HOME/bin:$PATH
@@ -36,8 +35,6 @@ wget https://archive.apache.org/dist/maven/maven-3/3.8.6/binaries/apache-maven-3
 tar -xvzf apache-maven-3.8.6-bin.tar.gz
 cp -R apache-maven-3.8.6 /usr/local
 ln -s /usr/local/apache-maven-3.8.6/bin/mvn /usr/bin/mvn
-# export M2_HOME=/usr/local/maven
-# export PATH=$PATH:$M2_HOME/bin
 
 # Build the package
 git clone https://github.com/apache/nifi
