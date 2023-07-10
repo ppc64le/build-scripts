@@ -52,7 +52,7 @@ replace="<additionalJOptions>\
 <additionalJOption>\-J\-XX:+UseG1GC<\/additionalJOption>\
 <additionalJOption>\-J\-XX:ReservedCodeCacheSize=1g<\/additionalJOption>\
 <\/additionalJOptions>"
-sed -i "s+$find+$replace+g" pom.xml
+sed -i "s#$find#$replace#g" pom.xml
 
 mvn install -Dmaven.test.skip=true
 
