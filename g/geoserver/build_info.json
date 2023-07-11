@@ -1,4 +1,5 @@
 {
+    "maintainer": "Stuti.Wali@ibm.com",
     "package_name": "geoserver",
     "github_url": "https://github.com/geoserver/geoserver",
     "version": "2.23.1",
