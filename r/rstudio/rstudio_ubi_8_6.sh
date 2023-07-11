@@ -76,6 +76,10 @@ mkdir -p /var/lib/rstudio-server
 mkdir -p /var/lock/subsys/
 rstudio-server start
 
+cd /rstudio/src/gwt
+sed -i "386i\         \<jvmarg value='"-Xms16M"'/>" build.xml
+sed -i "387i\         \<jvmarg value='"-Xmx1536M"'/>" build.xml
+
 cd /rstudio/build/src/gwt &&  ./gwt-unit-tests.sh
 
 cd /rstudio/build/src/
