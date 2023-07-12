@@ -21,6 +21,7 @@
 set -e
 
 PACKAGE_VERSION=${1:-rel/nifi-1.22.0}
+HOME_DIR=`pwd`
 
 # Install dependecies
 apt update
@@ -50,7 +51,29 @@ replace="<additionalJOptions>\
 <\/additionalJOptions>"
 sed -i "s#$find#$replace#g" pom.xml
 
-mvn install -Dmaven.test.skip=true
+if ! mvn install -Dmaven.test.skip=true; then
+	echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+	echo "$PACKAGE_VERSION $PACKAGE_NAME" > $HOME_DIR/output/install_fails
+	echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master | $OS_NAME | GitHub | Fail |  Install_Fails" > $HOME_DIR/output/version_tracker
+	exit 1
+else
+    echo "------------------$PACKAGE_NAME:install_success-------------------------------------"
+	echo "$PACKAGE_VERSION $PACKAGE_NAME" > $HOME_DIR/output/install_success
+	echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master | $OS_NAME | GitHub | Fail |  Install_Success" > $HOME_DIR/output/version_tracker
+	exit 0
+fi
 
 # Test failures noted to be in parity with Intel, thus disabled
-# mvn test
+# if ! mvn test; then
+# 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+# 	echo "$PACKAGE_URL $PACKAGE_NAME" > $HOME_DIR/output/test_fails 
+# 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > $HOME_DIR/output/version_tracker
+# 	exit 1
+# else
+# 	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+# 	echo "$PACKAGE_URL $PACKAGE_NAME" > $HOME_DIR/output/test_success 
+# 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success" > $HOME_DIR/output/version_tracker
+# 	find -name *.jar >> $HOME_DIR/output/post_build_jars.txt
+# 	echo "------------PATH of .JAR created for $WORK_DIR can be checked in text file:$HOME_DIR/output/post_build_jars.txt -----------"
+# 	exit 0
+# fi
