@@ -21,26 +21,30 @@
 PACKAGE_NAME=opentelemetry-erlang
 PACKAGE_VERSION=${1:-"main"}
 PACKAGE_URL=https://github.com/open-telemetry/opentelemetry-erlang
+HOME_DIR=$PWD
 
 #Install docker 
-dnf install -y yum-utils device-mapper-persistent-data lvm2
-yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo docker-compose-plugin
-dnf install -y docker-ce docker-ce-cli containerd.io
-systemctl enable docker
+sudo dnf install -y yum-utils device-mapper-persistent-data lvm2
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo docker-compose-plugin
+sudo dnf install -y docker-ce docker-ce-cli containerd.io
+sudo systemctl enable docker
 #Commenting out below command, as docker inside docker is disabled in currency.
 #systemctl start docker
 
+sudo yum install -y yum-utils autoconf gawk gcc gcc-c++ gzip libxml2-devel libxslt ncurses-devel openssl-devel make tar unixODBC-devel wget git
+
 #Install erlang/otp-25.0.3
-yum install -y yum-utils autoconf gawk gcc gcc-c++ gzip libxml2-devel libxslt ncurses-devel openssl-devel make tar unixODBC-devel wget git
+cd $HOME_DIR
 git clone https://github.com/erlang/otp.git
 cd otp
 git checkout OTP-25.0.3
 ./configure
 make -j2
-make install
+sudo make install
 cd ..
 
 #Install rebar3
+cd $HOME_DIR
 git clone https://github.com/erlang/rebar3.git
 cd rebar3/
 git checkout 3.19.0
@@ -50,6 +54,7 @@ export PATH=~/.cache/rebar3/bin:$PATH
 cd ..
 
 #Clone the repository and build.
+cd $HOME_DIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION

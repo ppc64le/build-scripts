@@ -1,14 +1,14 @@
 {
-    "package_name": "erlang-otp",
-    "github_url": "https://github.com/erlang/otp.git",
-    "version": "OTP-25.3",
-    "package_dir": "e/erlang/",
-    "build_script": "erlang-otp_ubi_8.5.sh",
-    "validate_build_script": true,
-    "default_branch": "master",
-    "docker_build": false,
-
-    "OTP-25.*.*": {
-        "build_script": "erlang-otp_ubi_8.5.sh"
-    }
+  "maintainer": "Pooja.Shah4@ibm.com",
+  "package_name": "erlang-otp",
+  "github_url": "https://github.com/erlang/otp.git",
+  "version": "OTP-25.3",
+  "package_dir": "e/erlang/",
+  "build_script": "erlang-otp_ubi_8.5.sh",
+  "validate_build_script": true,
+  "default_branch": "master",
+  "docker_build": false,
+  "OTP-25.*.*": {
+    "build_script": "erlang-otp_ubi_8.5.sh"
+  }
 }

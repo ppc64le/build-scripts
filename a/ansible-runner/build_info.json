@@ -1,4 +1,5 @@
 {
+    "maintainer": "Ashwini.Kadam@ibm.com",
     "package_name" : "ansible-runner",
     "github_url": "https://github.com/ansible/ansible-runner",
     "version": "2.3.3",

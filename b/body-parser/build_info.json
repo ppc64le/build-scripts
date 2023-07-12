@@ -1,15 +1,15 @@
 {
-    "package_name" : "body-parser",
-    "github_url": "https://github.com/expressjs/body-parser",
-    "version": "1.20.2",
-    "default_branch": "master",
-    "package_dir": "b/body-parser",
-    "build_script": "body-parser_ubi_8.7.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build": false,
-
-    "1.20.*" : {
-       "build_script" : "body-parser_ubi_8.7.sh"
-    }
+  "maintainer": "Vinod.K1@ibm.com",
+  "package_name": "body-parser",
+  "github_url": "https://github.com/expressjs/body-parser",
+  "version": "1.20.2",
+  "default_branch": "master",
+  "package_dir": "b/body-parser",
+  "build_script": "body-parser_ubi_8.7.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": false,
+  "1.20.*": {
+    "build_script": "body-parser_ubi_8.7.sh"
+  }
 }

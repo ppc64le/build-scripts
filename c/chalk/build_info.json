@@ -1,15 +1,14 @@
 {
-    "package_name": "chalk",
-    "github_url": "https://github.com/chalk/chalk.git",
-    "version": "v5.2.0",
-    "package_dir": "c/chalk/",
-    "build_script": "chalk_ubi_8.7.sh",
-    "validate_build_script": true,
-    "default_branch": "main",
-    "docker_build": false,
-
-    "v5.*.*": {
-        "build_script": "chalk_ubi_8.7.sh"
-    }
-
+  "maintainer": "Pooja.Shah4@ibm.com",
+  "package_name": "chalk",
+  "github_url": "https://github.com/chalk/chalk.git",
+  "version": "v5.2.0",
+  "package_dir": "c/chalk/",
+  "build_script": "chalk_ubi_8.7.sh",
+  "validate_build_script": true,
+  "default_branch": "main",
+  "docker_build": false,
+  "v5.*.*": {
+    "build_script": "chalk_ubi_8.7.sh"
+  }
 }
