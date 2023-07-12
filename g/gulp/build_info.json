@@ -1,15 +1,15 @@
 {
-    "package_name" : "gulp",
-    "github_url": "https://github.com/gulpjs/gulp",
-    "version": "v4.0.2",
-    "default_branch": "master",
-    "package_dir": "g/gulp",
-    "build_script": "gulp_ubi_8.7.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build": false,
-
-    "v4.0.*" : {
-       "build_script" : "gulp_ubi_8.7.sh"
-    }
+  "maintainer": "Vinod.K1@ibm.com",
+  "package_name": "gulp",
+  "github_url": "https://github.com/gulpjs/gulp",
+  "version": "v4.0.2",
+  "default_branch": "master",
+  "package_dir": "g/gulp",
+  "build_script": "gulp_ubi_8.7.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": false,
+  "v4.0.*": {
+    "build_script": "gulp_ubi_8.7.sh"
+  }
 }

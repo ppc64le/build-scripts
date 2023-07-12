@@ -22,6 +22,9 @@ from logging import WARNING
 import os
 import json
 import requests
+import sys
+import glob
+
 
 GITHUB_PACKAGE_INFO_API = "https://api.github.com/repos/{}/{}"
 
@@ -78,6 +81,7 @@ def get_files_list(dirname:str, recursive:bool=True):
 path_separator = os.path.sep
 #ROOT = os.path.dirname(os.path.dirname(__file__))
 ROOT = os.getcwd()
+
 package_name = input("Enter Package name (Package name should match with the directory name): ")
 #package_name = 'elasticsearch'
 package_name = package_name.lower()
@@ -92,9 +96,44 @@ else:
 build_scripts_versions = []
 dockerfile_versions = []
 github_url = ''
+
 default_build_script = None
 
 file_list = get_files_list(dir_name)
+
+
+def get_maintainer_for_package(dir_name):
+    files_path=os.path.join(dir_name,"*")
+    files=sorted(glob.iglob(files_path),key=os.path.getctime,reverse=True)
+    for script_file in files:
+        if script_file.endswith(".sh"):
+            with open(script_file, 'r' , encoding='utf-8') as f:
+                contents = f.readlines()
+                for line in contents:
+                    if line.startswith('# Maintainer'):
+                        maintainer = line.split(':')[1]
+                        maintainer = maintainer.split('<')[1].split('>')[0]
+                        return maintainer
+    return "Unknown"
+
+def get_maintainer_from_dockerfile(dir_name):
+    maintainer=''
+    files_path=os.path.join(dir_name,"*")
+    files=sorted((glob.glob(files_path + '/**/Dockerfile' , recursive=True)),key=os.path.getctime,reverse=True)
+    for docker_file in files:
+        with open(docker_file, 'r', encoding='utf-8') as f:
+            contents = f.readlines()
+            for line in contents:
+                line=line.strip()
+                if line.startswith('maintainer'):
+                    maintainer=line.split('=')[1].split('\"')[1]
+                    return maintainer
+    return "Unknown"
+
+maintainer=get_maintainer_for_package(dir_name)
+if maintainer=="Unknown":
+    maintainer= get_maintainer_from_dockerfile(dir_name)
+
 for file in file_list:
     if file.endswith(".sh") and "Dockerfiles" not in file:
         # Read the available build-scripts and load the data.
@@ -131,9 +170,19 @@ for file in file_list:
         if 'version' not in docker_details:
             docker_details ['version'] = '*'
         dockerfile_versions.append(docker_details)
+    elif file.endswith(".json"):
 
-
+        new_key_value = {"maintainer":maintainer}
+        build_info_data = json.load(open(f"{dir_name}/build_info.json"))
+        
+        new_key_value.update(build_info_data)
+        updated_build_info = new_key_value
+        with open(f"{dir_name}/build_info.json",'w') as f:
+            json.dump(updated_build_info,f,indent=2)
+        
+    
 final_json = {
+    "maintainer" : maintainer,
     "package_name" : package_name,
     "github_url": github_url,
     "version": dockerfile_versions[-1]['version'] if dockerfile_versions else build_scripts_versions[-1]['version'],

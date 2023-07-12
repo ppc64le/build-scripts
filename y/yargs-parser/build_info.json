@@ -1,4 +1,5 @@
 {
+    "maintainer": "Vinod.K1@ibm.com",
     "package_name" : "yargs-parser",
     "github_url": "https://github.com/yargs/yargs-parser",
     "version": "yargs-parser-v21.1.1",

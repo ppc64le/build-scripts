@@ -1,4 +1,5 @@
 {
+    "maintainer": "mohit.pawar@ibm.com",
     "package_name" : "netty",
     "github_url":"https://github.com/netty/netty.git",
     "package_dir": "n/netty/",
@@ -22,4 +23,3 @@
     }
 
 }
-

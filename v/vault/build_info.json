@@ -1,73 +1,66 @@
 {
-    "package_name" : "vault",
-    "github_url":"https://github.com/hashicorp/vault.git",
-    "version": "v1.13.1",
-    "default_branch": "main",
-    "package_dir": "v/vault/",
-    "docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-    "build_script" : "vault_ubi_8.7.sh",
-
-    "v1.11.*" : {
-        "dir":"1.11.2-ubi8",
-        "args": {
-            "VAULT_VERSION":"$PACKAGE_VERSION",
-            "GO_VERSION":"1.17.12"
-         }
-    }, 
-
-     "v1.12.*": {
-        "dir":"1.11.2-ubi8",
-        "args":{
-            "VAULT_VERSION":"$PACKAGE_VERSION",
-            "GO_VERSION":"1.19.6"
-         }
-     },
-	
-     "v1.13.*": {
-        "dir":"1.13.1-ubi8",
-        "args":{
-            "VAULT_VERSION":"$PACKAGE_VERSION",
-            "GO_VERSION":"1.20.1"
-         }
-     },
-    
-     "v1.5.*" : {
-        "dir":"1.5.3-ubi8",
-	"args": {
-            "VAULT_VERSION":"$PACKAGE_VERSION",
-	    "GO_VERSION":"1.14.7"
-         }
-    },
-    
-     "v1.7.*" : {
-        "dir":"1.7.0-ubi8",
-	"args": {
-            "VAULT_VERSION":"$PACKAGE_VERSION",
-	    "GO_VERSION":"1.16.7"
-         }
-    },
-
-     "v1.8.*" : {
-        "dir":"1.8.5-ubi8",
-        "args": {
-            "VAULT_VERSION":"$PACKAGE_VERSION",
-            "GO_VERSION":"1.17.3"
-         }
-    },
-
-     "v1.9.*" : {
-        "dir":"1.9.1-ubi8",
-        "args": {
-            "VAULT_VERSION":"$PACKAGE_VERSION",
-            "GO_VERSION":"1.17.13"
-         }
-    },
-
-     "v0.10.*" : {
-        "dir":"0.10.4",
-        "args": {
-            "VAULT_VERSION":"$PACKAGE_VERSION",
-            "GO_VERSION":"1.10.3"
-         }
+  "maintainer": "Vinod.K1@ibm.com",
+  "package_name": "vault",
+  "github_url": "https://github.com/hashicorp/vault.git",
+  "version": "v1.13.1",
+  "default_branch": "main",
+  "package_dir": "v/vault/",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "build_script": "vault_ubi_8.7.sh",
+  "v1.11.*": {
+    "dir": "1.11.2-ubi8",
+    "args": {
+      "VAULT_VERSION": "$PACKAGE_VERSION",
+      "GO_VERSION": "1.17.12"
     }
+  },
+  "v1.12.*": {
+    "dir": "1.11.2-ubi8",
+    "args": {
+      "VAULT_VERSION": "$PACKAGE_VERSION",
+      "GO_VERSION": "1.19.6"
+    }
+  },
+  "v1.13.*": {
+    "dir": "1.13.1-ubi8",
+    "args": {
+      "VAULT_VERSION": "$PACKAGE_VERSION",
+      "GO_VERSION": "1.20.1"
+    }
+  },
+  "v1.5.*": {
+    "dir": "1.5.3-ubi8",
+    "args": {
+      "VAULT_VERSION": "$PACKAGE_VERSION",
+      "GO_VERSION": "1.14.7"
+    }
+  },
+  "v1.7.*": {
+    "dir": "1.7.0-ubi8",
+    "args": {
+      "VAULT_VERSION": "$PACKAGE_VERSION",
+      "GO_VERSION": "1.16.7"
+    }
+  },
+  "v1.8.*": {
+    "dir": "1.8.5-ubi8",
+    "args": {
+      "VAULT_VERSION": "$PACKAGE_VERSION",
+      "GO_VERSION": "1.17.3"
+    }
+  },
+  "v1.9.*": {
+    "dir": "1.9.1-ubi8",
+    "args": {
+      "VAULT_VERSION": "$PACKAGE_VERSION",
+      "GO_VERSION": "1.17.13"
+    }
+  },
+  "v0.10.*": {
+    "dir": "0.10.4",
+    "args": {
+      "VAULT_VERSION": "$PACKAGE_VERSION",
+      "GO_VERSION": "1.10.3"
+    }
+  }
 }

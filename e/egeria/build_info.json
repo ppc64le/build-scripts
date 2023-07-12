@@ -1,15 +1,15 @@
 {
-	"package_name" : "egeria",
-	"github_url":"https://github.com/odpi/egeria.git",
-	"version": "V4.0",
-	"default_branch": "main",
-	"package_dir": "e/egeria/",
-	"build_script" : "egeria_ubi_8.7.sh",
-	"validate_build_script": true,
-	"docker_cmd" :"docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-	
-	"V4.*" : {
-	    "dir" : "ubi_8.7",
-	    "build_script" : "egeria_ubi_8.7.sh"
-	}
+  "maintainer": "Pooja.Shah4@ibm.com",
+  "package_name": "egeria",
+  "github_url": "https://github.com/odpi/egeria.git",
+  "version": "V4.0",
+  "default_branch": "main",
+  "package_dir": "e/egeria/",
+  "build_script": "egeria_ubi_8.7.sh",
+  "validate_build_script": true,
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "V4.*": {
+    "dir": "ubi_8.7",
+    "build_script": "egeria_ubi_8.7.sh"
+  }
 }

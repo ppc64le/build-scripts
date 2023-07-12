@@ -1,4 +1,5 @@
 {
+    "maintainer": "Stuti.Wali@ibm.com",
     "package_name": "jgrapht",
     "github_url": "https://github.com/jgrapht/jgrapht",
     "version": "jgrapht-1.5.1",

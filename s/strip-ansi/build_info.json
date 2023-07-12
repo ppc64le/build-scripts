@@ -1,4 +1,5 @@
 {
+    "maintainer": "Pooja.Shah4@ibm.com",
     "package_name": "strip-ansi",
     "github_url": "https://github.com/chalk/strip-ansi.git",
     "version": "v7.1.0",

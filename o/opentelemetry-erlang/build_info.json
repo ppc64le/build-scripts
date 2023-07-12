@@ -1,4 +1,5 @@
 {
+    "maintainer": "Pratik.Tonage@ibm.com",
     "package_name": "opentelemetry-erlang",
     "github_url": "https://github.com/open-telemetry/opentelemetry-erlang",
     "version": "main",

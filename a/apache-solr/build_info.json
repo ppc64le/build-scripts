@@ -1,4 +1,5 @@
 {
+    "maintainer":"Shubham.Garud@ibm.com",
     "package_name":"apache-solr",
     "github_url":"https://github.com/apache/solr",
     "package_dir":"a/apache-solr/", 

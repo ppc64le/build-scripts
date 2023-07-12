@@ -1,11 +1,12 @@
 {
-    "package_name" : "ansible-sign",
-    "github_url":"https://github.com/ansible/ansible-sign.git",
-    "version": "0.1.1",
-    "default_branch": "main",
-    "package_dir": "a/ansible-sign/", 
-    "build_script": "ansible-sign_ubi_8.7.sh",
-    "docker_build": false,
-    "validate_build_script": true,
-    "use_non_root_user": false
-}    
+  "maintainer": "Shreya.Kajbaje@ibm.com",
+  "package_name": "ansible-sign",
+  "github_url": "https://github.com/ansible/ansible-sign.git",
+  "version": "0.1.1",
+  "default_branch": "main",
+  "package_dir": "a/ansible-sign/",
+  "build_script": "ansible-sign_ubi_8.7.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false
+}
