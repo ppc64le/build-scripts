@@ -24,7 +24,7 @@
   "v1.13.*": {
     "dir": "1.13.1-ubi8",
     "args": {
-      "VAULT_VERSION": "$PACKAGE_VERSION",
+      "VAULT_VERSION": "$PACKAGE_VERSION"
     }
   },
   "v1.5.*": {
