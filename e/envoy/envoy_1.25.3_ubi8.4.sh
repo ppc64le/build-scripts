@@ -102,7 +102,7 @@ rm -rf clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4.tar.xz
 cd $wdir/${PACKAGE_NAME}
 git apply ../${PACKAGE_NAME}_${PACKAGE_VERSION_WO_LEADING_V}.patch
 bazel/setup_clang.sh $wdir/clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4/
-ret = 0
+ret=0
 bazel build -c opt envoy --config=clang --cxxopt=-fpermissive || ret=$?
 if [ "$ret" -ne 0 ]
 then
