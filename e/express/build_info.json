@@ -1,4 +1,5 @@
 {
+    "maintainer": "Shubham.Garud@ibm.com",
     "package_name":"express",
     "github_url":"https://github.com/expressjs/express",
     "package_dir":"e/express/",
@@ -7,6 +8,5 @@
     "build_script":"express_ubi_8.7.sh",
     "use_non_root_user":false,
     "docker_build":false,
-    "validate_build_script":true,
-    "use_non_root_user":false
+    "validate_build_script":true
 }
