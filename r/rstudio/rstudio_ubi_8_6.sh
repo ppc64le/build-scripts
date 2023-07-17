@@ -91,6 +91,7 @@ chown rstudio: themes
 cd /rstudio/build/src/cpp &&  ./rstudio-tests --scope core
 cd /rstudio/build/src/cpp &&  ./rstudio-tests --scope rserver
 
-su rstudio
+sudo -E -u rstudio bash -c 'bash << EOF
 cd /rstudio/build/src/cpp &&  ./rstudio-tests --scope r
 cd /rstudio/build/src/cpp &&  ./rstudio-tests --scope rsession
+EOF'
