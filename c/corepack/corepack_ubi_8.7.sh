@@ -55,7 +55,7 @@ if ! corepack yarn build ; then
        exit 1
 fi
 
-wget https://raw.githubusercontent.com/vinodk99/build-scripts/corepack/c/corepack/corepack.patch;
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/corepack/corepack.patch;
 git apply corepack.patch
  
 if ! corepack yarn test ; then
