@@ -1,0 +1,12 @@
+{
+    "maintainer":"Shubham.Garud@ibm.com",
+    "package_name":"DefinitelyTyped",
+    "github_url":"https://github.com/DefinitelyTyped/DefinitelyTyped",
+    "package_dir":"d/DefinitelyTyped/",
+    "version":"master", 
+    "default_branch":"master",
+    "build_script":"DefinitelyTyped_ubi_8.7.sh",
+    "use_non_root_user":false,
+    "docker_build":false,
+    "validate_build_script":true
+}
