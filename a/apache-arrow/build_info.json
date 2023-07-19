@@ -13,5 +13,5 @@
     "go/v12.0.*" : {
        "build_script" : "arrow_ubi_8.7.sh"
        }
-     }
- }
+}
+ 
