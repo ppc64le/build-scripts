@@ -1,0 +1,16 @@
+{
+    "maintainer" : "Vinod.K1@ibm.com",
+    "package_name" : "engine.io-client",
+    "github_url": "https://github.com/socketio/engine.io-client",
+    "version": "6.4.0",
+    "default_branch": "main",
+    "package_dir": "e/engine.io-client/",
+    "build_script": "engine.io-client_ubi_8.7.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": false,
+
+    "6.4.*" : {
+       "build_script" : "engine.io-client_ubi_8.7.sh"
+    }
+}
