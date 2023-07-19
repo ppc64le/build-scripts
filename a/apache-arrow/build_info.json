@@ -10,7 +10,7 @@
     "validate_build_script": true,
     "use_non_root_user": false,
     
-    "go/v12.0.*" : {
+    "go/v10.0.1,go/v12.0.*" : {
        "build_script" : "arrow_ubi_8.7.sh"
        }
 }
