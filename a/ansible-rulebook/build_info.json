@@ -1,12 +1,16 @@
 {
-  "maintainer": "Ashwini.Kadam@ibm.com",
+  "maintainer": "Stuti Wali <Stuti.Wali@ibm.com>",
   "package_name": "ansible-rulebook",
   "github_url": "https://github.com/ansible/ansible-rulebook.git",
-  "version": "v0.11.0",
+  "version": "v1.0.1",
   "default_branch": "main",
   "package_dir": "a/ansible-rulebook",
   "build_script": "ansible-rulebook_ubi_8_7.sh",
   "docker_build": false,
   "validate_build_script": true,
-  "use_non_root_user": false
+  "use_non_root_user": false,
+
+  "v1.0.*": {
+    "build_script": "ansible-rulebook_ubi_8_7.sh"
+ }
 }
