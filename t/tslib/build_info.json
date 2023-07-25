@@ -10,6 +10,6 @@
     "validate_build_script": true,
 
     "2.6.*,2.5.*" : {
-        "build_script": "argparse_ubi_8.7.sh"
+        "build_script": "tslib_ubi_8.7.sh"
     }
 }
