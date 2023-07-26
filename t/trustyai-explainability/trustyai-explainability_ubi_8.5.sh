@@ -23,10 +23,10 @@ USER_NAME=trustyAI
 USERDIR=/home/trustyAI
 grep $USER_NAME /etc/passwd > /dev/null
 if [ $? -eq 0  -a  -d $USERDIR ]; then
-echo username $USER_NAME and user_dir $USERDIR exits; else
-echo username $USER_NAME and user_dir $USERDIR not exits
-useradd --create-home --home-dir $USERDIR --shell /bin/bash $USER_NAME
-usermod -aG wheel $USER_NAME
+  echo username $USER_NAME and user_dir $USERDIR exits; else
+  echo username $USER_NAME and user_dir $USERDIR not exits
+  useradd --create-home --home-dir $USERDIR --shell /bin/bash $USER_NAME
+  usermod -aG wheel $USER_NAME
 fi
 yum install -y sudo
 su $USER_NAME
