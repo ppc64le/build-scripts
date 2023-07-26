@@ -6,6 +6,7 @@
 # Version       : v0.2.0
 # Tested on     : UBI:8.5
 # Language      : java
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Viren Dalgade <Viren.Dalgade@ibm.com>
 #
