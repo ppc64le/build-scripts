@@ -48,7 +48,7 @@
   },
   "v7.17.10": {
     "patches": {
-      "PATCH": "https://github.com/vinodk99/build-scripts/blob/elastic_patch/e/elasticsearch/elasticsearch_v7.17.10.patch"
+      "PATCH": "https://raw.githubusercontent.com/vinodk99/build-scripts/elastic_patch/e/elasticsearch/elasticsearch_v7.17.10.patch"
     },
     "build_script": "elasticsearch_v7.17.10_ubi_8.5.sh"
   },
