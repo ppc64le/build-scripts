@@ -38,7 +38,7 @@ git clone https://github.com/elastic/elasticsearch.git
 cd elasticsearch && git checkout $ELASTICSEARCH_VERSION
 # Apply patches
 wget https://github.com/vinodk99/build-scripts/blob/elastic_patch/e/elasticsearch/elasticsearch_v7.17.10.patch
-patch -p1 < elasticsearch_v7.17.10.patch
+git apply elasticsearch_v7.17.10.patch
 mkdir -p distribution/archives/linux-ppc64le-tar
 echo "// This file is intentionally blank. All configuration of the distribution is done in the parent project." > distribution/archives/linux-ppc64le-tar/build.gradle
 mkdir -p distribution/archives/oss-linux-ppc64le-tar
