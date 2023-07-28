@@ -8,6 +8,7 @@ index 12a802078e8..e26c54de773 100644
  include ":distribution:archives:linux-aarch64-tar"
 +include ":distribution:archives:linux-ppc64le-tar"
  include ":distribution:archives:oss-linux-aarch64-tar"
+
 diff --git a/build-tools-internal/version.properties b/build-tools-internal/version.properties
 index d67d5b1e8f3..0b044ee08ce 100644
 --- a/build-tools-internal/version.properties
@@ -24,7 +25,7 @@ index d67d5b1e8f3..0b044ee08ce 100644
  # optional dependencies
  spatial4j         = 0.7
 diff --git a/build-tools/src/main/java/org/elasticsearch/gradle/Architecture.java b/build-tools/src/main/java/org/elasticsearch/gradle/Architecture.java
-index b506569c60c..fc2b7f68ce6 100644
+index b506569c60c..a4f8f9be5e4 100644
 --- a/build-tools/src/main/java/org/elasticsearch/gradle/Architecture.java
 +++ b/build-tools/src/main/java/org/elasticsearch/gradle/Architecture.java
 @@ -11,6 +11,7 @@ package org.elasticsearch.gradle;
@@ -39,11 +40,12 @@ index b506569c60c..fc2b7f68ce6 100644
              case "amd64":
              case "x86_64":
                  return X64;
-+            case "ppc64le":
-+                return PPC64LE;
++           case "ppc64le":
++               return PPC64LE;
              case "aarch64":
                  return AARCH64;
              default:
+
 diff --git a/build-tools/src/main/java/org/elasticsearch/gradle/Jdk.java b/build-tools/src/main/java/org/elasticsearch/gradle/Jdk.java
 index f378f6c48af..5c2c1f360bf 100644
 --- a/build-tools/src/main/java/org/elasticsearch/gradle/Jdk.java
@@ -57,6 +59,7 @@ index f378f6c48af..5c2c1f360bf 100644
      private static final List<String> ALLOWED_VENDORS = List.of("adoptium", "openjdk", "zulu");
      private static final List<String> ALLOWED_PLATFORMS = List.of("darwin", "linux", "windows", "mac");
      private static final Pattern VERSION_PATTERN = Pattern.compile(
+
 diff --git a/build-tools/src/test/java/org/elasticsearch/gradle/JdkDownloadPluginTests.java b/build-tools/src/test/java/org/elasticsearch/gradle/JdkDownloadPluginTests.java
 index 6d37ad44a75..8791504962a 100644
 --- a/build-tools/src/test/java/org/elasticsearch/gradle/JdkDownloadPluginTests.java
@@ -71,7 +74,7 @@ index 6d37ad44a75..8791504962a 100644
      }
 
 diff --git a/distribution/archives/build.gradle b/distribution/archives/build.gradle
-index 9eb5033bb41..4fc98dd1a14 100644
+index 9eb5033bb41..2ac1cf1c04a 100644
 --- a/distribution/archives/build.gradle
 +++ b/distribution/archives/build.gradle
 @@ -97,6 +97,13 @@ distribution_archives {
@@ -102,7 +105,7 @@ index 9eb5033bb41..4fc98dd1a14 100644
    linuxAarch64Tar {
      archiveClassifier = 'linux-aarch64'
      content {
-@@ -118,6 +132,14 @@ distribution_archives {
+@@ -118,6 +132,13 @@ distribution_archives {
      }
    }
 
@@ -112,7 +115,6 @@ index 9eb5033bb41..4fc98dd1a14 100644
 +      archiveFiles(modulesFiles('linux-ppc64le'), 'tar', 'linux', 'ppc64le', false, true)
 +    }
 +  }
-+
 +
    linuxTar {
      archiveClassifier = 'linux-x86_64'
@@ -140,7 +142,7 @@ index 1b94e064049..8dbb6abd3eb 100644
            excludePlatforms.remove(excludePlatforms.indexOf(platform))
          } else {
 diff --git a/distribution/docker/build.gradle b/distribution/docker/build.gradle
-index 3ed0b8da567..90911ab8112 100644
+index 3ed0b8da567..f25ac8c54af 100644
 --- a/distribution/docker/build.gradle
 +++ b/distribution/docker/build.gradle
 @@ -44,15 +44,17 @@ configurations {
@@ -203,7 +205,7 @@ index 3ed0b8da567..90911ab8112 100644
      apply plugin: 'distribution'
 
 -    final Architecture architecture = subProject.name.contains('aarch64-') ? Architecture.AARCH64 : Architecture.X64
-+    final Architecture architecture = subProject.name.contains('aarch64-') ? Architecture.AARCH64 : (subProject.name.contains('ppc64le-') ? Architecture.PPC64LE : Architecture.X64
++    final Architecture architecture = subProject.name.contains('aarch64-') ? Architecture.AARCH64 : (subProject.name.contains('ppc64le-') ? Architecture.PPC64LE : Architecture.X64)
      DockerBase base = DockerBase.DEFAULT
      if (subProject.name.contains('ubi-')) {
        base = DockerBase.UBI
@@ -229,18 +231,18 @@ index ea4237c0abd..6806b759577 100644
      esac ; \\
      curl --retry 10 -S -L -O https://github.com/krallin/tini/releases/download/v0.19.0/\${tini_bin} ; \\
 diff --git a/distribution/docker/src/docker/config/elasticsearch.yml b/distribution/docker/src/docker/config/elasticsearch.yml
-index 50b154702b9..6f82472e89e 100644
+index 50b154702b9..b0364864e8e 100644
 --- a/distribution/docker/src/docker/config/elasticsearch.yml
 +++ b/distribution/docker/src/docker/config/elasticsearch.yml
-@@ -1,2 +1,4 @@
--cluster.name: "docker-cluster"
--network.host: 0.0.0.0
+@@ -1,2 +1,6 @@
+ cluster.name: "docker-cluster"
+ network.host: 0.0.0.0
 +xpack.ml.enabled: false
 +discovery.seed_hosts: []
 +bootstrap.system_call_filter: false
 +discovery.type: single-node
 diff --git a/distribution/packages/build.gradle b/distribution/packages/build.gradle
-index 4de8fa74b97..5a94bc2ee1e 100644
+index 4de8fa74b97..c9fbdcdad26 100644
 --- a/distribution/packages/build.gradle
 +++ b/distribution/packages/build.gradle
 @@ -100,6 +100,8 @@ Closure commonPackageConfig(String type, boolean oss, boolean jdk, String archit
@@ -270,7 +272,7 @@ index 4de8fa74b97..5a94bc2ee1e 100644
      destinationDirectory = file("${prefix}/build/distributions")
      archiveFileName.value(project.provider({ "${packageName}-${project.version}-${jdkString}${archString}.${type}" } ))
      String packagingFiles = "build/packaging/${oss ? 'oss-' : ''}${jdk ? '' : 'no-jdk-'}${type}"
-@@ -363,6 +367,15 @@ tasks.register('buildOssNoJdkDeb', Deb) {
+@@ -363,6 +367,14 @@ tasks.register('buildOssNoJdkDeb', Deb) {
    configure(commonDebConfig(true, false, 'x64'))
  }
 
@@ -282,11 +284,10 @@ index 4de8fa74b97..5a94bc2ee1e 100644
 +  configure(commonDebConfig(true, true, 'ppc64le'))
 +}
 +
-+
  Closure commonRpmConfig(boolean oss, boolean jdk, String architecture) {
    return {
      configure(commonPackageConfig('rpm', oss, jdk, architecture))
-@@ -416,6 +429,14 @@ tasks.register('buildOssNoJdkRpm', Rpm) {
+@@ -416,6 +428,14 @@ tasks.register('buildOssNoJdkRpm', Rpm) {
    configure(commonRpmConfig(true, false, 'x64'))
  }
 
@@ -353,7 +354,7 @@ index ddf1bb041b3..f6634178cc8 100644
    'server:cli',
    'test:framework',
 diff --git a/x-pack/plugin/ml/build.gradle b/x-pack/plugin/ml/build.gradle
-index c13d178c3b2..44f27776d4d 100644
+index c13d178c3b2..defaeef8dda 100644
 --- a/x-pack/plugin/ml/build.gradle
 +++ b/x-pack/plugin/ml/build.gradle
 @@ -1,5 +1,3 @@
@@ -362,7 +363,7 @@ index c13d178c3b2..44f27776d4d 100644
  apply plugin: 'elasticsearch.internal-es-plugin'
  apply plugin: 'elasticsearch.internal-cluster-test'
  apply plugin: 'elasticsearch.internal-test-artifact'
-@@ -13,50 +11,30 @@ esplugin {
+@@ -13,111 +11,87 @@ esplugin {
    extendedPlugins = ['x-pack-autoscaling', 'lang-painless']
  }
 
@@ -409,6 +410,7 @@ index c13d178c3b2..44f27776d4d 100644
      }
    }
  }
++
  configurations {
    nativeBundle {
 -    resolutionStrategy.dependencySubstitution {
@@ -419,3 +421,118 @@ index c13d178c3b2..44f27776d4d 100644
      resolutionStrategy.cacheChangingModulesFor 2, 'hours'
    }
  }
+
+-tasks.named("bundlePlugin").configure {
+-  dependsOn configurations.nativeBundle
+-  from {
+-    project.zipTree(configurations.nativeBundle.singleFile)
+-  }
+-
+-  // We don't ship the individual nativeBundle licenses - instead
+-  // they get combined into the top level NOTICES file we ship
+-  exclude 'platform/licenses/**'
+-}
+-
+-dependencies {
+-  compileOnly project(':modules:lang-painless:spi')
+-  compileOnly project(path: xpackModule('core'))
+-  compileOnly project(path: xpackModule('autoscaling'))
+-  testImplementation(testArtifact(project(xpackModule('core'))))
+-  testImplementation project(path: xpackModule('ilm'))
+-  testImplementation project(path: xpackModule('shutdown'))
+-  testImplementation project(path: xpackModule('data-streams'))
+-  testImplementation project(path: xpackModule('monitoring'))
+-  testImplementation project(':modules:ingest-common')
+-  testImplementation project(':modules:reindex')
+-  testImplementation project(':modules:analysis-common')
+-  // This should not be here
+-  testImplementation(testArtifact(project(xpackModule('security'))))
+-  // ml deps
+-  api project(':libs:elasticsearch-grok')
+-  api "net.sf.supercsv:super-csv:${versions.supercsv}"
+-  api "org.apache.commons:commons-math3:3.6.1"
+-  nativeBundle("org.elasticsearch.ml:ml-cpp:${project.version}@zip") {
+-    changing = true
+-  }
+-  testImplementation 'org.ini4j:ini4j:0.5.2'
+-}
+-
+-artifacts {
+-  // normal es plugins do not publish the jar but we need to since users need it for extensions
+-  archives tasks.named("jar")
+-}
+-
+-tasks.register("extractNativeLicenses", Copy) {
+-  dependsOn configurations.nativeBundle
+-  into "${buildDir}/extractedNativeLicenses"
+-  from {
+-    project.zipTree(configurations.nativeBundle.singleFile)
+-  }
+-  include 'platform/licenses/**'
+-}
+-project.afterEvaluate {
+-  // Add an extra licenses directory to the combined notices
+-  tasks.named('generateNotice').configure {
+-    dependsOn "extractNativeLicenses"
+-    licensesDir new File("${project.buildDir}/extractedNativeLicenses/platform/licenses")
+-    outputs.upToDateWhen {
+-      extractNativeLicenses.didWork
+-    }
+-  }
+-}
+-
++tasks.named("bundlePlugin").configure {
++  dependsOn configurations.nativeBundle
++  from {
++    project.zipTree(configurations.nativeBundle.singleFile)
++  }
++  // We don't ship the individual nativeBundle licenses - instead
++  // they get combined into the top level NOTICES file we ship
++  exclude 'platform/licenses/**'
++}
++dependencies {
++  compileOnly project(':modules:lang-painless:spi')
++  compileOnly project(path: xpackModule('core'))
++  compileOnly project(path: xpackModule('autoscaling'))
++  testImplementation(testArtifact(project(xpackModule('core'))))
++  testImplementation project(path: xpackModule('ilm'))
++  testImplementation project(path: xpackModule('shutdown'))
++  testImplementation project(path: xpackModule('data-streams'))
++  testImplementation project(path: xpackModule('monitoring'))
++  testImplementation project(':modules:ingest-common')
++  testImplementation project(':modules:reindex')
++  testImplementation project(':modules:analysis-common')
++  // This should not be here
++  testImplementation(testArtifact(project(xpackModule('security'))))
++  // ml deps
++  api project(':libs:elasticsearch-grok')
++  api "net.sf.supercsv:super-csv:${versions.supercsv}"
++  api "org.apache.commons:commons-math3:3.6.1"
++  nativeBundle("org.elasticsearch.ml:ml-cpp:${project.version}@zip") {
++    changing = true
++  }
++  testImplementation 'org.ini4j:ini4j:0.5.2'
++}
++artifacts {
++  // normal es plugins do not publish the jar but we need to since users need it for extensions
++  archives tasks.named("jar")
++}
++tasks.register("extractNativeLicenses", Copy) {
++  dependsOn configurations.nativeBundle
++  into "${buildDir}/extractedNativeLicenses"
++  from {
++    project.zipTree(configurations.nativeBundle.singleFile)
++  }
++  include 'platform/licenses/**'
++}
++project.afterEvaluate {
++  // Add an extra licenses directory to the combined notices
++  tasks.named('generateNotice').configure {
++    dependsOn "extractNativeLicenses"
++    licensesDir new File("${project.buildDir}/extractedNativeLicenses/platform/licenses")
++    outputs.upToDateWhen {
++      extractNativeLicenses.didWork
++    }
++  }
++}
+ addQaCheckDependencies()
