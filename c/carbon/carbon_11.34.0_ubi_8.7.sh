@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : carbon
-# Version       : v11.34.0
+# Version       : 11.34.0
 # Source repo   : https://github.com/carbon-design-system/carbon
 # Tested on     : UBI: 8.7
 # Travis-Check  : True
@@ -66,21 +66,16 @@ if ! yarn build; then
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
     exit 1
-else
-    echo "------------------$PACKAGE_NAME:build_success-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Success |  Build_Success"
-	exit 0
 fi
 
 if ! yarn test; then
-	echo "------------------$PACKAGE_NAME:test_fails---------------------"
+	echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
   echo "$PACKAGE_URL $PACKAGE_NAME"
-  echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails"
-	exit 1
+  echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Sucess_but_Test_Fails"
+	exit 2
 else
-	echo "------------------$PACKAGE_NAME:test_success-------------------------"
+	echo "------------------$PACKAGE_NAME:build_and_test_success-------------------------"
   echo "$PACKAGE_URL $PACKAGE_NAME"
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Test_Success"
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_and_Test_Success"
 	exit 0
 fi
