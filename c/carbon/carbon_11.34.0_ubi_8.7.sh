@@ -57,9 +57,6 @@ sed -i 's/"next": "12.1.4"/"next": "13.4.7"/' examples/light-dark-mode/package.j
 # Reinstall dependencies
 yarn install
 
-# Skip test suite noted to fail in parity with Intel
-sed -i 's/describe/describe.skip/g' packages/upgrade/src/commands/__tests__/upgrade-test.js
-
 # Build and test
 if ! yarn build; then
 	echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
@@ -67,6 +64,9 @@ if ! yarn build; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
     exit 1
 fi
+
+# Skip test suite noted to fail in parity with Intel
+sed -i 's/describe/describe.skip/g' packages/upgrade/src/commands/__tests__/upgrade-test.js
 
 if ! yarn test; then
 	echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
