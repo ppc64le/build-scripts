@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : carbon
-# Version       : 11.34.0
+# Version       : 11.34.1
 # Source repo   : https://github.com/carbon-design-system/carbon
 # Tested on     : UBI: 8.7
 # Travis-Check  : True
@@ -21,7 +21,7 @@
 set -e
 
 PACKAGE_NAME=carbon
-PACKAGE_VERSION=${1:-v11.34.0}
+PACKAGE_VERSION=${1:-v11.34.1}
 PACKAGE_URL=https://github.com/carbon-design-system/carbon
 HOME_DIR=${PWD}
 
@@ -51,7 +51,7 @@ yarn install --check-cache --inline-builds || true
 
 sed -i "s/'x64')/'x64' || process.arch === 'ppc64')/" node_modules/chromedriver/install.js
 sed -i 's/"next": "12.1.4"/"next": "13.4.7"/' examples/incremental-migration/package.json
-sed -i 's/"version": "0.32.0"/"version": "0.34.0"/' examples/light-dark-mode/package.json
+# sed -i 's/"version": "0.32.0"/"version": "0.34.0"/' examples/light-dark-mode/package.json
 sed -i 's/"next": "12.1.4"/"next": "13.4.7"/' examples/light-dark-mode/package.json
 
 # Reinstall dependencies
