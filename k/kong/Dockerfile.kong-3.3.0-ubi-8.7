@@ -16,7 +16,7 @@ RUN dnf -y install --nogpgcheck https://vault.centos.org/8.5.2111/BaseOS/ppc64le
     && sed -i 's|enabled=0|enabled=1|g' /etc/yum.repos.d/CentOS-Linux-PowerTools.repo
 
 #Build and install Kong
-RUN dnf install -y automake gcc gcc-c++ git libyaml-devel make patch perl perl-IPC-Cmd protobuf-devel zip unzip valgrind valgrind-devel zlib-devel wget cmake java-11-openjdk-devel curl file libffi-devel \
+RUN dnf install -y automake gcc gcc-c++ git libyaml-devel make patch perl perl-IPC-Cmd protobuf-devel zip unzip valgrind valgrind-devel zlib-devel wget cmake java-11-openjdk-devel tzdata-java curl file libffi-devel \
     && export JAVA_HOME=$(compgen -G '/usr/lib/jvm/java-11-openjdk-*') \
     && export JRE_HOME=${JAVA_HOME}/jre \
     && export PATH=${JAVA_HOME}/bin:$PATH \
