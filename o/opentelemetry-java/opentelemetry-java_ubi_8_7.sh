@@ -26,7 +26,7 @@ HOME_DIR=$PWD
 
 # Default tag opentelemetry-java
 if [ -z "$1" ]; then
-  export PACKAGE_VERSION="v1.27.0"
+  export PACKAGE_VERSION="v1.28.0"
 else
   export PACKAGE_VERSION="$1"
 fi
@@ -39,6 +39,21 @@ export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-17)(?=.*p
 export PATH=$JAVA_HOME/bin:$PATH
 export GRPC_JAVA_VERSION="1.53.0"
 export PROTOBUF_VERSION="21.12"
+
+# Check if Docker is installed
+if which docker >/dev/null 2>&1; then
+    # Docker is installed, so remove it
+    echo "Docker is installed inside the container. Removing Docker..."
+    systemctl stop docker
+    systemctl disable docker
+    dnf remove -y docker-ce docker-ce-cli containerd.io
+    rm -rf /var/lib/docker
+else
+    # Docker is not installed, execute the rest of the script here
+    echo "Docker is not installed inside the container. Continue with the rest of the script."
+    # Place the remaining commands of your script here
+fi
+
 
 echo "cloning..."
 
