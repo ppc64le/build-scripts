@@ -49,6 +49,7 @@ dnf install -y \
     wget \
     cmake \
     java-11-openjdk-devel \
+    tzdata-java \
     curl \
     file
 
