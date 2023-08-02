@@ -61,7 +61,7 @@ if ! npm install && npm audit fix && npm audit fix --force; then
 	echo "$PACKAGE_URL $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
 	exit 1
-else;
+else
 	echo "------------------$PACKAGE_NAME:install_success-------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Success |  Install_Success"
