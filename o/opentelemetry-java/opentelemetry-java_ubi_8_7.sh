@@ -44,8 +44,6 @@ export PROTOBUF_VERSION="21.12"
 if which docker >/dev/null 2>&1; then
     # Docker is installed, so remove it
     echo "Docker is installed inside the container. Removing Docker..."
-    systemctl stop docker
-    systemctl disable docker
     dnf remove -y docker-ce docker-ce-cli containerd.io
     rm -rf /var/lib/docker
 else
