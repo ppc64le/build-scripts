@@ -80,7 +80,7 @@ RUN dnf install -y automake gcc gcc-c++ git libyaml-devel make patch perl perl-I
     && cp $(find / -name kong.el8.ppc64le.rpm) $wdir \
     && export KONG_RPM=$wdir/kong.el8.ppc64le.rpm \
     && rm -rf /tmp/kong /tmp/bazel \
-    && dnf -y remove automake gcc gcc-c++ git libyaml-devel make patch perl perl-IPC-Cmd protobuf-devel zip unzip valgrind valgrind-devel zlib-devel wget cmake java-11-openjdk-devel file libffi-devel \
+    && dnf -y remove automake gcc gcc-c++ git libyaml-devel make patch perl perl-IPC-Cmd protobuf-devel zip unzip valgrind valgrind-devel zlib-devel wget cmake java-11-openjdk-devel tzdata-java file libffi-devel \
     && dnf -y install $KONG_RPM
 
 #Expose port
