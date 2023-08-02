@@ -34,7 +34,7 @@ fi
 
 #installing required dependencies
 echo "installing dependencies from system repo..."
-dnf install -y git make gcc gcc-c++ java-17-openjdk-devel.ppc64le  libtool file diffutils bc wget
+dnf install -y git make gcc gcc-c++ java-17-openjdk-devel.ppc64le  libtool file diffutils bc wget initscripts
 export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-17)(?=.*ppc64le)')
 export PATH=$JAVA_HOME/bin:$PATH
 export GRPC_JAVA_VERSION="1.53.0"
@@ -44,8 +44,7 @@ export PROTOBUF_VERSION="21.12"
 if which docker >/dev/null 2>&1; then
     # Docker is installed, so remove it
     echo "Docker is installed inside the container. Removing Docker..."
-    dnf remove -y docker-ce docker-ce-cli containerd.io
-    rm -rf /var/lib/docker
+    service docker stop
 else
     # Docker is not installed, execute the rest of the script here
     echo "Docker is not installed inside the container. Continue with the rest of the script."
