@@ -22,7 +22,7 @@
 PACKAGE_NAME="entities"
 PACKAGE_VERSION=${1:-"v4.5.0"}
 PACKAGE_URL=https://github.com/fb55/entities
-NODE_VERSION=${NODE_VERSION:-18}
+NODE_VERSION=${NODE_VERSION:-18.17.0}
 HOME_DIR=${PWD}
 
 #Install dependencies
