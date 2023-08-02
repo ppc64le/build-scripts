@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : opentelemetry-java
-# Version       : v1.27.0
+# Version       : v1.28.0
 # Source repo   : https://github.com/open-telemetry/opentelemetry-java
 # Tested on     : ubi 8.7
 # Language      : java
@@ -107,7 +107,7 @@ cd ../
 cd "$HOME_DIR"/$PACKAGE_NAME
 
 #building opentelemetry java
-if ! ./gradlew build --exclude-task test; then
+if ! ./gradlew build -x test; then
         echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
