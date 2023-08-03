@@ -6,6 +6,8 @@
     "default_branch": "main",
     "build_script" : "carbon_11.34.0_ubi_8.7.sh",
     "package_dir": "c/carbon/",
+    "docker_build": false,
+    "validate_build_script": true,
     
     "v11.34.0": {
       "build_script" : "carbon_11.34.0_ubi_8.7.sh"
