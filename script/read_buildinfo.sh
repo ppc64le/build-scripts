@@ -87,11 +87,11 @@ if [ -f $configFile ]; then
   fi
 fi
 
-echo "BUILD_SCRIPT=$build_script" > $CUR_DIR/variable.sh
-echo "PKG_DIR_PATH=$packageDirPath" >> $CUR_DIR/variable.sh
-echo "IMAGE_NAME=$imageName" >> $CUR_DIR/variable.sh
-echo "BUILD_DOCKER=$build_docker" >> $CUR_DIR/variable.sh
-echo "VALIDATE_BUILD_SCRIPT=$validate_build_script" >> $CUR_DIR/variable.sh
+echo "export BUILD_SCRIPT=$build_script" > $CUR_DIR/variable.sh
+echo "export PKG_DIR_PATH=$packageDirPath" >> $CUR_DIR/variable.sh
+echo "export IMAGE_NAME=$imageName" >> $CUR_DIR/variable.sh
+echo "export BUILD_DOCKER=$build_docker" >> $CUR_DIR/variable.sh
+echo "export VALIDATE_BUILD_SCRIPT=$validate_build_script" >> $CUR_DIR/variable.sh
 
 chmod +x $CUR_DIR/variable.sh
 cat $CUR_DIR/variable.sh
