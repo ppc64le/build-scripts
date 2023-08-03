@@ -47,7 +47,7 @@ jobs:
         - if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/build_docker.sh; bash -x ./script/build_docker.sh; fi
         - echo "printing docker images"
         - docker images
-        - docker save -o "/home/travis/build/saiNammi/build-scripts/image.tar" icr.io/ppc64le-oss/dex-ppc64le:v2.35.3
+        - docker save -o "/home/travis/build/saiNammi/build-scripts/image.tar" $IMAGE_NAME
       workspaces:
         create:
           name: docker_image_tar
