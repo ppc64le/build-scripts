@@ -1,0 +1,18 @@
+{   
+    "maintainer": "Stuti Wali <Stuti.Wali@ibm.com>",
+    "package_name": "redigo",
+    "github_url": "https://github.com/gomodule/redigo",
+    "version": "v1.8.9",
+    "default_branch": "master",
+    "package_dir": "r/redigo",
+    "build_script": "redigo_ubi_8_7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+ 
+    "v1.8.9, v1.8.8, v1.8.7, v1.8.6, v1.8.5, v1.8.4": {
+       "build_script": "redigo_ubi_8_7.sh"
+    }
+
+}
+
