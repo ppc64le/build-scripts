@@ -1,13 +1,10 @@
 #!/bin/bash -xe
 
-echo "Sourcing variables to get values of build_info.json"
-source variable.sh
-
 version="$VERSION"
 packageDirPath="$PKG_DIR_PATH"
 configFile="build_info.json"
 imageName=$IMAGE_NAME
-buildDocker=true
+buildDocker=$BUILD_DOCKER
 
 cd $packageDirPath
 
