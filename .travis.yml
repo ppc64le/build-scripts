@@ -1,18 +1,84 @@
----
-arch: ppc64le
-dist: focal
 os: linux
-language: shell
+dist: focal
+arch: ppc64le
+language: java
 
 services:
     - docker
 
 before_install:
-    - docker pull registry.access.redhat.com/ubi8/ubi:8.7
+    - sudo apt install -y jq; jq --version
 
-script:
-    - sudo apt update -y && sudo apt-get install file -y
-    - pip3 install requests
-    - pip3 install docker
-    - python3 script/validate_builds.py $TRAVIS_PULL_REQUEST &
-    - SCRIPT_PID=$!;while ps -p $SCRIPT_PID > /dev/null;do echo "$SCRIPT_PID is running"; sleep 300; done; wait $SCRIPT_PID; my_pid_status=$?; travis_terminate $my_pid_status
+env:
+  global:
+    - PACKAGE_NAME="dex"
+    - VERSION="v2.35.3"
+    - LANGUAGE="Nodejs"
+
+jobs:
+  include:
+    - stage: Build info
+      name: Get Build info details
+      script:
+        - chmod +x ./script/read_buildinfo.sh;bash ./script/read_buildinfo.sh
+      workspaces:
+        create:
+          name: build_cache
+          paths:
+            - variable.sh
+
+    - stage: Build package
+      name: Build script run
+      workspaces:
+        use: build_cache
+      script: 
+        - source variable.sh
+        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/build_package.sh; bash -x ./script/build_package.sh; fi
+
+
+    - stage: Build docker image
+      name: Docker build
+      workspaces:
+        use: build_cache
+      script: 
+        - source variable.sh
+        - if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/build_docker.sh; bash -x ./script/build_docker.sh; fi
+        - echo "printing docker images"
+        - docker images
+        - docker save -o "/home/travis/build/saiNammi/build-scripts/image.tar" icr.io/ppc64le-oss/dex-ppc64le:v2.35.3
+      workspaces:
+        create:
+          name: docker_image_tar
+          paths:
+            - image.tar
+        
+
+    - stage: Run Scanner
+      name: Run trivy scan
+      workspaces:
+        use: 
+          - build_cache
+          - docker_image_tar
+      script:
+        - ls -ltr
+        - docker load -i /home/travis/build/saiNammi/build-scripts/image.tar
+        - chmod +x ./script/trivy_scan.sh;bash ./script/trivy_scan.sh
+        
+    - name: Run syft scan
+      workspaces:
+        use: 
+          - build_cache
+          - docker_image_tar
+      script:
+        - docker load -i /home/travis/build/saiNammi/build-scripts/image.tar
+        - chmod +x ./script/syft_scan.sh;bash ./script/syft_scan.sh
+
+    - name: Run grype scan
+      workspaces:
+        use: 
+          - build_cache
+          - docker_image_tar
+      script:
+        - docker load -i /home/travis/build/saiNammi/build-scripts/image.tar
+        - chmod +x ./script/grype_scan.sh;bash ./script/grype_scan.sh
+ 
