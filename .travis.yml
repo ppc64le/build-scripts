@@ -48,7 +48,9 @@ jobs:
         - if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/build_docker.sh; bash -x ./script/build_docker.sh; fi
         - echo "printing docker images"
         - docker images
-        - docker save -o "$HOME/image.tar" $IMAGE_NAME
+        - docker save -o "$HOME/build/$TRAVIS_REPO_SLUG/image.tar" $IMAGE_NAME
+        - ls -ltr
+        - env
       workspaces:
         create:
           name: docker_image_tar
@@ -64,7 +66,7 @@ jobs:
           - docker_image_tar
       script:
         - source variable.sh
-        - docker load -i $HOME/image.tar
+        - docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"
         - chmod +x ./script/trivy_scan.sh;bash ./script/trivy_scan.sh
         
     - name: Run syft scan
@@ -74,7 +76,9 @@ jobs:
           - docker_image_tar
       script:
         - source variable.sh
-        - docker load -i $HOME/image.tar
+        - ls -ltr
+        - env
+        - docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"
         - chmod +x ./script/syft_scan.sh;bash ./script/syft_scan.sh
 
     - name: Run grype scan
@@ -84,6 +88,6 @@ jobs:
           - docker_image_tar
       script:
         - source variable.sh
-        - docker load -i $HOME/image.tar
+        - docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"
         - chmod +x ./script/grype_scan.sh;bash ./script/grype_scan.sh
  
