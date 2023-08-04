@@ -7,7 +7,7 @@ pip3 install docker
 
 echo "Running build script execution in background for "$PKG_DIR_PATH/$BUILD_SCRIPT" "$VERSION" " 
       
-python3 $HOME/build/$TRAVIS_REPO_SLUG/script/validate_builds.py "$PKG_DIR_PATH/$BUILD_SCRIPT" "$VERSION" &
+python3 $HOME/build/$TRAVIS_REPO_SLUG/script/validate_builds.py "$PKG_DIR_PATH/$BUILD_SCRIPT" "$VERSION"
 
 SCRIPT_PID=$!
 while ps -p $SCRIPT_PID > /dev/null
