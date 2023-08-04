@@ -68,8 +68,19 @@ fi
 
 export EDA_E2E_CMD_TIMEOUT=120
 export EDA_E2E_DEFAULT_EVENT_DELAY=2
+
+#Skipping 2 tests.
+#test_websocket.py ---> this test requires ipv6 container which is not allowed in currency infrastructure as of now. So skipping it.
+#test_actions.py ---> this test is flaky, so skipping it.
+
 if ! pytest -v -n auto -k "not test_websocket.py and not test_actions.py"; then
     echo "------------------$PACKAGE_NAME:test_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     exit 2
+else
+    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
+    exit 0
 fi
+
