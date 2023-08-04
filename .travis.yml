@@ -21,9 +21,6 @@ jobs:
       name: Get Build info details
       script:
         - chmod +x ./script/read_buildinfo.sh;bash ./script/read_buildinfo.sh
-        - env
-        - echo $HOME
-        - echo $OLDPWD
       workspaces:
         create:
           name: build_cache
@@ -49,8 +46,6 @@ jobs:
         - echo "printing docker images"
         - docker images
         - docker save -o "$HOME/build/$TRAVIS_REPO_SLUG/image.tar" $IMAGE_NAME
-        - ls -ltr
-        - env
       workspaces:
         create:
           name: docker_image_tar
@@ -76,8 +71,6 @@ jobs:
           - docker_image_tar
       script:
         - source variable.sh
-        - ls -ltr
-        - env
         - docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"
         - chmod +x ./script/syft_scan.sh;bash ./script/syft_scan.sh
 
