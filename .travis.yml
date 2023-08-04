@@ -21,6 +21,9 @@ jobs:
       name: Get Build info details
       script:
         - chmod +x ./script/read_buildinfo.sh;bash ./script/read_buildinfo.sh
+        - env
+        - echo $HOME
+        - echo $OLDPWD
       workspaces:
         create:
           name: build_cache
