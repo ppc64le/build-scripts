@@ -1,0 +1,12 @@
+{
+    "package_name": "odh-dashboard",
+    "github_url": "https://github.com/opendatahub-io/odh-dashboard",
+    "version": "v2.9.0",
+    "default_branch": "main",
+    "package_dir": "o/odh-dashboard/",
+    "build_script": "ODH_Dashboard_ubi_8.5",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "maintainer": "Sonal Mahambrey <Sonal.Mahambrey1@ibm.com>"
+}
