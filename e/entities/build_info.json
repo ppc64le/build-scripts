@@ -1,0 +1,12 @@
+{   
+    "maintainer": "Pratik.Tonage@ibm.com",
+    "package_name" : "entities",
+    "github_url": "https://github.com/fb55/entities",
+    "version": "v7.0.0",
+    "default_branch" : "master",
+    "package_dir": "e/entities",
+    "build_script": "entities_ubi_8.7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false
+}
