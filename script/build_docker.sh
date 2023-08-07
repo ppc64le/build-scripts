@@ -44,6 +44,7 @@ if [ $buildDocker != false ];then
     #docker rmi -f ${baseName}
     echo "Building docker image"
     sudo docker build $buildArgs -t $imageName $dockerBuildDir
+    docker save -o "$HOME/build/$TRAVIS_REPO_SLUG/image.tar" $IMAGE_NAME
 else
     echo "Docker image is not supported"
 fi
