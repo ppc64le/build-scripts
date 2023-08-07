@@ -2,17 +2,17 @@
     "maintainer": "Vishaka.Desai@ibm.com",
     "package_name": "carbon",
     "github_url": "https://github.com/carbon-design-system/carbon",
-    "version": "v11.34.0",
+    "version": "v11.35.0",
     "default_branch": "main",
-    "build_script" : "carbon_11.34.0_ubi_8.7.sh",
+    "build_script" : "carbon_11.35.0_ubi_8.7.sh",
     "package_dir": "c/carbon/",
     "docker_build": false,
     
-    "v11.34.0": {
-      "build_script" : "carbon_11.34.0_ubi_8.7.sh"
+    "v11.35.0": {
+      "build_script" : "carbon_11.35.0_ubi_8.7.sh"
     },
   
     "v*.*.*": {
-      "build_script" : "carbon_11.34.0_ubi_8.7.sh"
+      "build_script" : "carbon_11.35.0_ubi_8.7.sh"
     }
   }
