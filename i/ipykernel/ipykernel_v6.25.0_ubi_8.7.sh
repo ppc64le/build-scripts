@@ -27,8 +27,12 @@ HOME_DIR=${PWD}
 
 yum install -y git python3.11  python3.11-devel gcc-c++
 
-# Install pip
+# Install pip and activate venv
 python3 -m ensurepip --upgrade
+export PATH=$PATH:/usr/local/bin
+python3.10 -m venv ipyk-venv
+. ./ipyk-venv/bin/activate
+
 
 # Clone package repository
 cd $HOME_DIR
