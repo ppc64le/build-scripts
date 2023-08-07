@@ -45,7 +45,6 @@ jobs:
         - if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/build_docker.sh; bash -x ./script/build_docker.sh; fi
         - echo "printing docker images"
         - docker images
-        - docker save -o "$HOME/build/$TRAVIS_REPO_SLUG/image.tar" $IMAGE_NAME
       workspaces:
         create:
           name: docker_image_tar
