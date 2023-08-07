@@ -51,7 +51,7 @@ yarn install --check-cache --inline-builds || true
 
 sed -i "s/'x64')/'x64' || process.arch === 'ppc64')/" node_modules/chromedriver/install.js
 sed -i 's/"next": "12.1.4"/"next": "13.4.7"/' examples/incremental-migration/package.json
-# sed -i 's/"version": "0.32.0"/"version": "0.34.0"/' examples/light-dark-mode/package.json
+sed -i 's/"version": "0.32.0"/"version": "0.34.0"/' examples/light-dark-mode/package.json
 sed -i 's/"next": "12.1.4"/"next": "13.4.7"/' examples/light-dark-mode/package.json
 
 # Reinstall dependencies
