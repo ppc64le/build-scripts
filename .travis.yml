@@ -1,7 +1,7 @@
 os: linux
 dist: focal
 arch: ppc64le
-language: java
+language: python3
 
 services:
     - docker
@@ -31,14 +31,9 @@ jobs:
       name: Build script run
       workspaces:
         use: build_cache
-      before_script:
-        - sudo apt update -y && sudo apt-get install file -y
-        - docker pull registry.access.redhat.com/ubi8/ubi:8.7
-        - pip3 install requests
-        - pip3 install docker
       script: 
         - source variable.sh
-        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then pwd; echo $PKG_DIR_PATH; echo ${VALIDATE_BUILD_SCRIPT}; echo $VERSION; fi
+        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/build_package.sh; bash -x ./script/build_package.sh; fi
 
 
     - stage: Build docker image
