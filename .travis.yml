@@ -31,9 +31,14 @@ jobs:
       name: Build script run
       workspaces:
         use: build_cache
+      before_script:
+        - sudo apt update -y && sudo apt-get install file -y
+        - docker pull registry.access.redhat.com/ubi8/ubi:8.7
+        - pip3 install requests
+        - pip3 install docker
       script: 
         - source variable.sh
-        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/build_package.sh; bash -x ./script/build_package.sh; fi
+        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then python3 script/validate_builds.py "$PKG_DIR_PATH/$BUILD_SCRIPT" "$VERSION" &; fi
 
 
     - stage: Build docker image
