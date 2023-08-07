@@ -35,7 +35,7 @@ export JAVA17_HOME=$JAVA_HOME
 git clone https://github.com/elastic/elasticsearch.git
 cd elasticsearch && git checkout $ELASTICSEARCH_VERSION
 # Apply patches
-wget https://raw.githubusercontent.com/vinodk99/build-scripts/elasticsearch_7.16.3/e/elasticsearch/elasticsearch_v7.16.3.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_v7.16.3.patch
 git apply elasticsearch_v7.16.3.patch
 mkdir -p distribution/archives/linux-ppc64le-tar
 echo "// This file is intentionally blank. All configuration of the distribution is done in the parent project." > distribution/archives/linux-ppc64le-tar/build.gradle
