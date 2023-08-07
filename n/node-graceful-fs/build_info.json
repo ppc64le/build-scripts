@@ -1,0 +1,17 @@
+{
+    "maintainer": "Vishaka.Desai@ibm.com",
+    "package_name": "node-graceful-fs",
+    "github_url": "https://github.com/isaacs/node-graceful-fs",
+    "version": "v4.2.11",
+    "default_branch": "main",
+    "build_script" : "node-graceful-fs_ubi_8.5.sh",
+    "package_dir": "n/node-graceful-fs/",
+    
+    "v4.2.11": {
+      "build_script" : "node-graceful-fs_ubi_8.5.sh"
+    },
+  
+    "v*.*.*": {
+      "build_script" : "node-graceful-fs_ubi_8.5.sh"
+    }
+  }
