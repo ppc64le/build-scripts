@@ -30,7 +30,7 @@ yum install -y git python3.11  python3.11-devel gcc-c++
 # Install pip and activate venv
 python3 -m ensurepip --upgrade
 export PATH=$PATH:/usr/local/bin
-python3.10 -m venv ipyk-venv
+python3 -m venv ipyk-venv
 . ./ipyk-venv/bin/activate
 
 
