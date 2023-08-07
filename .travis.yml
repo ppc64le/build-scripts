@@ -38,7 +38,7 @@ jobs:
         - pip3 install docker
       script: 
         - source variable.sh
-        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then python3 script/validate_builds.py "$PKG_DIR_PATH/$BUILD_SCRIPT" "$VERSION" &; fi
+        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then python3 "script/validate_builds.py" "${PKG_DIR_PATH}/${BUILD_SCRIPT}" "${VERSION}" &; fi
 
 
     - stage: Build docker image
