@@ -6,6 +6,7 @@ configFile="build_info.json"
 imageName=$IMAGE_NAME
 buildDocker=$BUILD_DOCKER
 
+
 cd $packageDirPath
 
 if [ $buildDocker != false ];then
