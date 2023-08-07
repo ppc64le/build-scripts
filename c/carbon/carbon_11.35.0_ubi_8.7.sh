@@ -51,9 +51,11 @@ yarn install --check-cache --inline-builds || true
 
 sed -i "s/'x64')/'x64' || process.arch === 'ppc64')/" node_modules/chromedriver/install.js
 # sed -i 's/"next": "12.1.4"/"next": "13.4.7"/' examples/incremental-migration/package.json
-# sed -i 's/"version": "0.32.0"/"version": "0.34.0"/' examples/light-dark-mode/package.json
+sed -i 's/"version": "0.33.0"/"version": "0.35.0"/' examples/light-dark-mode/package.json
 sed -i 's/"next": "12.1.4"/"next": "13.4.7"/' examples/light-dark-mode/package.json
-cat examples/light-dark-mode/package.json
+
+# Skip test suite noted to fail in parity with Intel
+sed -i 's/describe/describe.skip/g' packages/upgrade/src/commands/__tests__/upgrade-test.js
 
 # Reinstall dependencies
 yarn install
@@ -65,9 +67,6 @@ if ! yarn build; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
     exit 1
 fi
-
-# Skip test suite noted to fail in parity with Intel
-sed -i 's/describe/describe.skip/g' packages/upgrade/src/commands/__tests__/upgrade-test.js
 
 if ! yarn test; then
 	echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
