@@ -1,13 +1,13 @@
-#!/bin/bash
-# ----------------------------------------------------------------------------
+#!/bin/bash -e
+# -----------------------------------------------------------------------------
 #
 # Package       : ipykernel
-# Version       : 6.25.0
+# Version       : v6.25.0
 # Source repo   : https://github.com/ipython/ipykernel
 # Tested on     : UBI: 8.7
-# Travis-Check  : True
 # Language      : Python
-# Script License: Apache License Version 2.0
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
 # Maintainer    : Vishaka Desai <Vishaka.Desai@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -17,8 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
-set -e
 
 PACKAGE_NAME=ipykernel
 PACKAGE_VERSION=${1:-v6.25.0}
