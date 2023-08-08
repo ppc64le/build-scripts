@@ -31,7 +31,6 @@ export PATH=$PATH:/usr/local/bin
 python3 -m venv ipyk-venv
 . ./ipyk-venv/bin/activate
 
-
 # Clone package repository
 cd $HOME_DIR
 git clone $PACKAGE_URL
