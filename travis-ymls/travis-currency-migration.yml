@@ -13,12 +13,6 @@ services:
 before_install:
     - sudo apt install -y jq; jq --version
 
-env:
-  global:
-    - PACKAGE_NAME="dex"
-    - VERSION="v2.35.3"
-    - LANGUAGE="Nodejs"
-
 jobs:
   include:
     - stage: Build info
@@ -64,8 +58,7 @@ jobs:
           - docker_image_tar
       script:
         - source variable.sh
-        - docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"
-        - chmod +x ./script/trivy_scan.sh;bash ./script/trivy_scan.sh
+        - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/trivy_scan.sh;bash ./script/trivy_scan.sh; fi
         
     - name: Run syft scan
       workspaces:
@@ -74,8 +67,7 @@ jobs:
           - docker_image_tar
       script:
         - source variable.sh
-        - docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"
-        - chmod +x ./script/syft_scan.sh;bash ./script/syft_scan.sh
+        - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/syft_scan.sh;bash ./script/syft_scan.sh; fi
 
     - name: Run grype scan
       workspaces:
@@ -84,6 +76,5 @@ jobs:
           - docker_image_tar
       script:
         - source variable.sh
-        - docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"
-        - chmod +x ./script/grype_scan.sh;bash ./script/grype_scan.sh
+        - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/grype_scan.sh;bash ./script/grype_scan.sh; fi
  
