@@ -28,7 +28,7 @@ yum install -y git wget make gcc-c++ unzip
 rm -rf /bin/go
 
 GO_VERSION=go1.20.4
-GO_VERSION=${GO_VERSION:-1.20.4}
+
 wget https://go.dev/dl/$GO_VERSION.linux-ppc64le.tar.gz
 tar -C /bin -xzf $GO_VERSION.linux-ppc64le.tar.gz
 rm -f $GO_VERSION.linux-ppc64le.tar.gz
