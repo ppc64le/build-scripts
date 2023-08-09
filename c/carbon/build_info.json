@@ -4,9 +4,11 @@
     "github_url": "https://github.com/carbon-design-system/carbon",
     "version": "v11.35.0",
     "default_branch": "main",
-    "build_script" : "carbon_11.35.0_ubi_8.7.sh",
     "package_dir": "c/carbon/",
+    "build_script" : "carbon_11.35.0_ubi_8.7.sh",
     "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
     
     "v11.35.0": {
       "build_script" : "carbon_11.35.0_ubi_8.7.sh"
