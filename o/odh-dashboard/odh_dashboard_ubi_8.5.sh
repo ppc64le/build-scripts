@@ -33,7 +33,6 @@ source ~/.bashrc
 nvm install $NODE_VERSION
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
-
 # install ODH-Dashboard package
 cd /
 if ! git clone -q $PACKAGE_URL $PACKAGE_NAME; then
