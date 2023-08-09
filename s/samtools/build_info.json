@@ -1,0 +1,12 @@
+{   
+    "maintainer": "Pratik.Tonage@ibm.com",
+    "package_name" : "samtools",
+    "github_url": "https://github.com/samtools/samtools",
+    "version": "1.18",
+    "default_branch" : "develop",
+    "package_dir": "s/samtools",
+    "build_script": "samtools_ubi_8.7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false
+}
