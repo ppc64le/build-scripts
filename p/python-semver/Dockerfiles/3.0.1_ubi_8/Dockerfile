@@ -9,10 +9,10 @@ ARG PACKAGE_URL=https://github.com/python-semver/python-semver
 RUN yum update -y && \
     yum install git gcc gcc-c++ make python39 python39-devel -y && \
     git clone $PACKAGE_URL && \
-    cd PACKAGE_NAME && \
+    cd $PACKAGE_NAME && \
     git checkout $PACKAGE_VERSION && \
     python3 -m pip install --upgrade pip && \
     python3 -m pip install tox tox-gh-actions && \
-	python3 -m pip install .
+    python3 -m pip install .
     
 CMD ["/bin/bash"]
