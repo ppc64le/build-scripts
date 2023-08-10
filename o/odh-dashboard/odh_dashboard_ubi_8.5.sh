@@ -26,7 +26,6 @@ NODE_VERSION=v18.14.0
 
 yum install -y git wget
 
-
 #installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 source ~/.bashrc
