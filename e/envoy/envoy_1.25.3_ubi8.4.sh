@@ -22,6 +22,9 @@ PACKAGE_NAME=envoy
 PACKAGE_VERSION=${1:-v1.25.3}
 PACKAGE_URL=https://github.com/envoyproxy/envoy/
 PACKAGE_VERSION_WO_LEADING_V="${PACKAGE_VERSION:1}"
+
+export PATH=/usr/local/bin:/usr/bin:$PATH
+
 #Install dependencies
 yum install -y \
     cmake \
