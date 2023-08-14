@@ -52,7 +52,7 @@ RUN yum install -y cmake libatomic libstdc++ libstdc++-static libtool lld patch 
     && cd $wdir && git clone https://github.com/ncopa/su-exec && cd su-exec && make su-exec && cp su-exec /usr/bin \
     && mkdir -p /etc/envoy && cp $wdir/envoy/VERSION.txt /etc/envoy && cp $wdir/envoy/configs/envoyproxy_io_proxy.yaml /etc/envoy/envoy.yaml \
     && cp $wdir/envoy/ci/docker-entrypoint.sh /docker-entrypoint.sh \
-    && rm -rf $wdir/envoy $wdir/bazel $wdir/su-exec $wdir/clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4 \
+    && rm -rf $wdir/envoy $wdir/bazel $wdir/su-exec $wdir/clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4 $HOME/.cache/bazel \
     && yum -y remove cmake libatomic libstdc++-static libtool lld patch python3-pip openssl-devel libffi-devel unzip wget zip java-11-openjdk-devel git gcc-c++ xz file binutils libffi-devel
 
 #Expose port
