@@ -1,7 +1,6 @@
 os: linux
 dist: focal
 arch: ppc64le
-language: python3
 
 branches:
   only:
