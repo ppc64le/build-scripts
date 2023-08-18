@@ -7,6 +7,12 @@ branches:
   only:
   - travis-currency-poc
 
+env:
+  global:
+    - PACKAGE_NAME="dex"
+    - VERSION="v2.35.3"
+    - LANGUAGE="Nodejs"
+
 services:
     - docker
 
