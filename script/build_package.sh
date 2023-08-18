@@ -13,7 +13,7 @@ SCRIPT_PID=$!
 while ps -p $SCRIPT_PID > /dev/null
 do 
   echo "$SCRIPT_PID is running"
-  sleep 300
+  sleep 60
 done
 wait $SCRIPT_PID
 my_pid_status=$?
