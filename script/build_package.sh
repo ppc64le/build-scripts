@@ -7,7 +7,7 @@ pip3 install docker
 
 echo "Running build script execution in background for "$PKG_DIR_PATH/$BUILD_SCRIPT" "$VERSION" " 
       
-python3 script/validate_builds.py "$PKG_DIR_PATH/$BUILD_SCRIPT" "$VERSION"
+python3 script/validate_builds.py "$PKG_DIR_PATH/$BUILD_SCRIPT" "$VERSION" > build_log.txt 2>&1 &
 
 SCRIPT_PID=$!
 while ps -p $SCRIPT_PID > /dev/null
@@ -22,3 +22,5 @@ then
     echo "Script execution failed for "$PKG_DIR_PATH/$BUILD_SCRIPT" "$VERSION" "
     exit 1
 fi
+cat build_log.txt
+
