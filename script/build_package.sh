@@ -17,7 +17,7 @@ do
 done
 wait $SCRIPT_PID
 my_pid_status=$?
-if [ $? != 0 ]
+if [ $my_pid_status != 0 ]
 then
     echo "Script execution failed for "$PKG_DIR_PATH/$BUILD_SCRIPT" "$VERSION" "
     exit 1
