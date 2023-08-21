@@ -76,8 +76,8 @@ if [ -f $configFile ]; then
     # END_OF_PYTHON_SCRIPT
     # # End of Python script
     # )
-    echo "result_version = $result_version"
-    VERSION=$result_version
+    # echo "result_version = $result_version"
+    # VERSION=$result_version
 
   fi
   #Getting specific build_script name for version
