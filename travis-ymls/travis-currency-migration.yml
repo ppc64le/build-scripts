@@ -19,7 +19,7 @@ jobs:
     - stage: Build info
       name: Get Build info details
       script:
-        - chmod +x ./script/read_buildinfo.sh;bash ./script/read_buildinfo.sh
+        - chmod +x ./script/read_buildinfo.sh;bash -x ./script/read_buildinfo.sh
       workspaces:
         create:
           name: build_cache
