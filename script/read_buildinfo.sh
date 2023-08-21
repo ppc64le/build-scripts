@@ -46,7 +46,7 @@ if [ -f $configFile ]; then
     jsonObj=$(cat $configFile)
     # Inline Python code using python3 -c
     result_version=$(python $CUR_DIR/script/parse_buildinfo.py)
-    
+    echo "result_version = $result_version"
     VERSION=$result_version
 
   fi
