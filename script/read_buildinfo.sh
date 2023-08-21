@@ -50,6 +50,11 @@ if [ -f $configFile ]; then
     VERSION=$result_version
 
   fi
+  #Getting specific build_script name for version
+  if [[ $(jq --arg ver $VERSION '.[$ver]' $configFile) != null ]] && 
+    [[ $(jq -r --arg ver $VERSION '.[$ver].build_script' $configFile) != null ]]; then
+    build_script=$(jq -r --arg ver $VERSION '.[$ver].build_script' $configFile)
+  fi
 
   if [[ $(jq --arg ver $VERSION '.[$ver]' $configFile) != null ]] && 
     [[ $(jq -r --arg ver $VERSION '.[$ver].base_docker_image' $configFile) != null ]]; then
