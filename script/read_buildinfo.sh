@@ -45,8 +45,8 @@ if [ -f $configFile ]; then
   if [[ $(jq --arg ver $VERSION '.[$ver]' $configFile) == null ]]; then
     jsonObj=$(cat $configFile)
     # Inline Python code using python3 -c
-    result_version=$(python $CUR_DIR/script/parse_buildinfo.py)
-    
+    # result_version=$(python $CUR_DIR/script/parse_buildinfo.py)
+    python $CUR_DIR/script/parse_buildinfo.py
     # result_version=$(python3<< END_OF_PYTHON_SCRIPT
 
     # import re
@@ -111,6 +111,8 @@ if [ -f $configFile ]; then
   fi
 fi
 
+
+echo "export VERSION=$version" >> $CUR_DIR/variable.sh
 echo "export BUILD_SCRIPT=$build_script" > $CUR_DIR/variable.sh
 echo "export PKG_DIR_PATH=$packageDirPath" >> $CUR_DIR/variable.sh
 echo "export IMAGE_NAME=$imageName" >> $CUR_DIR/variable.sh

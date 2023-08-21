@@ -21,4 +21,5 @@ def find_matching_version(jsonObj, version):
 input_version = str(os.environ['VERSION'])
 input_jsonObj = os.environ['jsonObj']
 result_version = find_matching_version(input_jsonObj, input_version)
-print(f"BREAK3 {result_version}")
+os.environ['VERSION'] = result_version
+#print(f"BREAK3 {result_version}")
