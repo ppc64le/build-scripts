@@ -8,7 +8,6 @@
  buildInfoPath=$packageDirPath'build_info.json'
  
 
-
 if [ -f $buildInfoPath ]; then
   echo $packageDirPath 'exists'
 else
@@ -40,28 +39,42 @@ if [ -f $configFile ]; then
   if $(jq 'has("validate_build_script")' $jsonObj); then
     validate_build_script=$(jq .validate_build_script $jsonObj)
   fi
-  # TODO: convert below to shell script
-  #if (jsonObj[version] == null) {
-  #    OUTERLOOP:
-  #    for (def entry : jsonObj) {
-  #        key = entry.key
-  #        def subKeys = key.split(',')
-  #        subKeys = subKeys.collect {it.trim()}
-  #        if (subKeys.contains(version)) {
-  #            version = key
-  #            break
-  #        } else {
-  #            for(def subKey : subKeys) { 
-  #        def regex_str = '^' + subKey + '$'
-  #        def regex = ~regex_str
-  #        if (version =~ regex) {
-  #                    version = key
-  #                    break OUTERLOOP
-  #                }
-  #            }
-  #        }
-  #    }
-  #}
+
+  if [[ $(jq --arg ver $version '.[$ver]' $configFile) == null ]]; then
+    jsonObj=$(cat $configFile)
+    # Inline Python code using python3 -c
+    result_version=$(python3<< END_OF_PYTHON_SCRIPT
+
+    import re
+
+    def find_matching_version(jsonObj, version):
+        for entry in jsonObj:
+            key = entry
+            subKeys = [subKey.strip() for subKey in key.split(',')]
+            if version in subKeys:
+                version = key
+                print (f"BREAK1 {version}")
+                return version
+            else:
+                for subKey in subKeys:
+                    regex_str = '^' + subKey.replace(".", "\\.").replace("*", ".*") + '$'
+                    regex = re.compile(regex_str)
+                    if regex.match(version):
+                        version = key
+                        print (f"BREAK2 {version}")
+                        return version
+
+    input_version = str("$VERSION")
+    input_jsonObj = "$jsonObj"
+    result_version = find_matching_version(input_jsonObj, input_version)
+    print(f"BREAK3 {result_version}")
+
+    END_OF_PYTHON_SCRIPT
+    # End of Python script
+    )
+
+  fi
+
   if [[ $(jq --arg ver $VERSION '.[$ver]' $configFile) != null ]] && 
     [[ $(jq -r --arg ver $VERSION '.[$ver].base_docker_image' $configFile) != null ]]; then
     baseName=$(jq -r --arg ver $VERSION '.[$ver].base_docker_image' $configFile)
