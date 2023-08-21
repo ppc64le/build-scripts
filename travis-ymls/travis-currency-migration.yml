@@ -5,7 +5,7 @@ language: shell
 
 branches:
   only:
-  - travis-currency-poc
+  - tr-poc-ver-regcode
 
 
 services:
