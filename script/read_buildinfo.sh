@@ -40,6 +40,7 @@ if [ -f $configFile ]; then
   if $(jq 'has("validate_build_script")' $jsonObj); then
     validate_build_script=$(jq .validate_build_script $jsonObj)
   fi
+  echo "Checking for string/pattern match for version in build_info.json"
 
   if [[ $(jq --arg ver $version '.[$ver]' $configFile) == null ]]; then
     jsonObj=$(cat $configFile)
