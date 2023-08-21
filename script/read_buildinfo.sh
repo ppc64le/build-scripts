@@ -14,8 +14,9 @@ else
   packageDirPath="$initialChar/$PACKAGE_NAME"
   echo "Correct packageDirPath is $packageDirPath"
 fi
+
 CUR_DIR=$(pwd)
-cd $packageDirPath;
+cd $packageDirPath
 
 configFile='build_info.json'
 if [ -f $configFile ]; then
@@ -72,6 +73,8 @@ if [ -f $configFile ]; then
     END_OF_PYTHON_SCRIPT
     # End of Python script
     )
+    
+    VERSION=$result_version
 
   fi
 
