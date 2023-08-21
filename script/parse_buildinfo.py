@@ -24,5 +24,5 @@ input_jsonObj = os.environ['jsonObj']
 result_version = find_matching_version(input_jsonObj, input_version)
 print("result_version")
 print(result_version)
-os.environ['VERSION'] = result_version
+os.environ['result_version'] = result_version
 #print(f"BREAK3 {result_version}")
