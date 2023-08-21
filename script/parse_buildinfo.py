@@ -1,4 +1,5 @@
 import re
+import os
 
 def find_matching_version(jsonObj, version):
     for entry in jsonObj:
@@ -17,7 +18,7 @@ def find_matching_version(jsonObj, version):
                     print (f"BREAK2 {version}")
                     return version
 
-input_version = str("$VERSION")
-input_jsonObj = "$jsonObj"
+input_version = str(os.environ['VERSION'])
+input_jsonObj = os.environ['jsonObj']
 result_version = find_matching_version(input_jsonObj, input_version)
 print(f"BREAK3 {result_version}")

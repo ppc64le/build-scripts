@@ -20,9 +20,10 @@ my_pid_status=$?
 if [ $my_pid_status != 0 ]
 then
     echo "Script execution failed for "$PKG_DIR_PATH/$BUILD_SCRIPT" "$VERSION" "
+    cat build_log
     exit 1
 else
     echo "Script execution completed successfully for "$PKG_DIR_PATH/$BUILD_SCRIPT" "$VERSION" "
-    cat build_log&
+    cat build_log
 fi
 
