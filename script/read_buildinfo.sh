@@ -4,7 +4,7 @@
  imageName="icr.io/ppc64le-oss/$packageName-ppc64le:$VERSION"
  url_prefix=$(files_upload_link)${packageName}'-ppc64le/'${VERSION}
  initialChar=${packageName:0:1}
- packageDirPath="$initialChar/$packageName"
+ packageDirPath="$initialChar/$packageName/"
  buildInfoPath=$packageDirPath'build_info.json'
  
 
