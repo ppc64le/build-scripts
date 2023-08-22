@@ -23,21 +23,22 @@ PACKAGE_VERSION=${1:-v1.14.0}
 GO_VERSION=${GO_VERSION:-1.20.5}
 PACKAGE_URL=https://github.com/hashicorp/vault
 
+WORKDIR=`pwd`
+
 yum install -y openssl sudo make git gcc wget
 
+cd $WORKDIR
 wget https://golang.org/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
 tar -zxvf go${GO_VERSION}.linux-ppc64le.tar.gz
 export GOPATH=$WORKDIR/go
 export PATH=$PATH:$GOPATH/bin
 
-mkdir -p /go/src/github.com/hashicorp
+#Clone and build the source
+mkdir -p ${GOPATH}/src/github.com/hashicorp
+cd ${GOPATH}/src/github.com/hashicorp
 
-export GOPATH=/go
-export PATH=$PATH:$GOPATH/bin
-
-cd /go/src/github.com/hashicorp
 git clone $PACKAGE_URL
-cd vault
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 go mod tidy
