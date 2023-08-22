@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=vault
 PACKAGE_VERSION=${1:-v1.14.0}
-GO_VERSION=${GO_VERSION:-1.20.5}
+GO_VERSION=${GO_VERSION:-1.20.6}
 PACKAGE_URL=https://github.com/hashicorp/vault
 
 WORKDIR=`pwd`
