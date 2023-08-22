@@ -45,33 +45,9 @@ if [ -f $configFile ]; then
   if [[ $(jq --arg ver $VERSION '.[$ver]' $configFile) == null ]]; then
     # Inline Python code using python3 -c
     # result_version=$(python $CUR_DIR/script/parse_buildinfo.py)
-    cat > match_buildinfo.py <<EOF
-    import json
-    import os
-    import re
-    version = str(os.environ['VERSION'])
-    match_version=""
-    f = open('build_info.json')
-    data = json.load(f)
-    for key,value in data.items():
-      subKeys = [subKey.strip() for subKey in key.split(',')]
-      if version in subKeys:
-        match_version = key
-        break
-      else:
-        for subKey in subKeys:
-          regex_str = '^' + subKey.replace(".", "\\.").replace("*", ".*") + '$'
-          regex = re.compile(regex_str)
-          if regex.match(version):
-            match_version = key
-      if len(match_version) != 0:
-        break
-    print(match_version)
-    EOF
-    
-    
-    match_version=$(python match_buildinfo.py)
+    match_version=$(python $CUR_DIR/script/parse_buildinfo.py)
     echo "match_version = $match_version"
+    # VERSION=$match_version
 
   fi
   #Getting specific build_script name for version
