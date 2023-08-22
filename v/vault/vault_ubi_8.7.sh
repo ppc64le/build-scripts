@@ -28,10 +28,13 @@ WORKDIR=`pwd`
 yum install -y openssl sudo make git gcc wget
 
 cd $WORKDIR
-wget https://golang.org/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
-tar -zxvf go${GO_VERSION}.linux-ppc64le.tar.gz
-export GOPATH=$WORKDIR/go
-export PATH=$PATH:$GOPATH/bin
+ #install go
+wget https://golang.org/dl/go$GO_VERSION.linux-ppc64le.tar.gz && \
+tar -C /usr/local -xzf go$GO_VERSION.linux-ppc64le.tar.gz && \
+rm -rf go$GO_VERSION.linux-ppc64le.tar.gz
+export GOROOT=/usr/local/go && \
+export GOPATH=$HOME && \
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
 #Clone and build the source
 mkdir -p ${GOPATH}/src/github.com/hashicorp
