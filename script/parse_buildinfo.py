@@ -16,7 +16,6 @@ for key,value in data.items():
       regex = re.compile(regex_str)
       if regex.match(version):
         match_version = key
-        print("String mathing")
   if len(match_version) != 0:
     break
 print(match_version)

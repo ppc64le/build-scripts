@@ -6,6 +6,7 @@
  initialChar=${packageName:0:1}
  packageDirPath="$initialChar/$packageName/"
  buildInfoPath=$packageDirPath'build_info.json'
+ match_version=$VERSION
  
 
 if [ -f $buildInfoPath ]; then
@@ -45,25 +46,24 @@ if [ -f $configFile ]; then
   if [[ $(jq --arg ver $VERSION '.[$ver]' $configFile) == null ]]; then
     # Inline Python code using python3 -c
     # result_version=$(python $CUR_DIR/script/parse_buildinfo.py)
-    result_version=""
-    result_version=$(python $CUR_DIR/script/parse_buildinfo.py)
-    echo "result_version = $result_version"
-    # VERSION=$result_version
+    match_version=$(python $CUR_DIR/script/parse_buildinfo.py)
+    echo "match_version = $match_version"
+    # VERSION=$match_version
 
   fi
   #Getting specific build_script name for version
-  if [[ $(jq --arg ver $result_version '.[$ver]' $configFile) != null ]] && 
-    [[ $(jq -r --arg ver $VERSION '.[$ver].build_script' $configFile) != null ]]; then
-    build_script=$(jq -r --arg ver $VERSION '.[$ver].build_script' $configFile)
+  if [[ $(jq --arg ver $match_version '.[$ver]' $configFile) != null ]] && 
+    [[ $(jq -r --arg ver $match_version '.[$ver].build_script' $configFile) != null ]]; then
+    build_script=$(jq -r --arg ver $match_version '.[$ver].build_script' $configFile)
   fi
 
-  if [[ $(jq --arg ver $VERSION '.[$ver]' $configFile) != null ]] && 
-    [[ $(jq -r --arg ver $VERSION '.[$ver].base_docker_image' $configFile) != null ]]; then
-    baseName=$(jq -r --arg ver $VERSION '.[$ver].base_docker_image' $configFile)
+  if [[ $(jq --arg ver $match_match_version '.[$ver]' $configFile) != null ]] && 
+    [[ $(jq -r --arg ver $match_version '.[$ver].base_docker_image' $configFile) != null ]]; then
+    baseName=$(jq -r --arg ver $match_version '.[$ver].base_docker_image' $configFile)
   fi
-  if [[ $(jq --arg ver $VERSION '.[$ver]' $configFile) != null ]] && 
-    [[ $(jq -r --arg ver $VERSION '.[$ver].base_docker_variant' $configFile) != null ]]; then
-    variant_str=$(jq -r --arg ver $VERSION '.[$ver].base_docker_variant' $configFile)
+  if [[ $(jq --arg ver $match_version '.[$ver]' $configFile) != null ]] && 
+    [[ $(jq -r --arg ver $match_version '.[$ver].base_docker_variant' $configFile) != null ]]; then
+    variant_str=$(jq -r --arg ver $match_version '.[$ver].base_docker_variant' $configFile)
     case "$variant_str" in
       "rhel")
         variant=1
@@ -83,7 +83,7 @@ if [ -f $configFile ]; then
 fi
 
 
-echo "export VERSION=$version" >> $CUR_DIR/variable.sh
+echo "export VERSION=$VERSION" >> $CUR_DIR/variable.sh
 echo "export BUILD_SCRIPT=$build_script" > $CUR_DIR/variable.sh
 echo "export PKG_DIR_PATH=$packageDirPath" >> $CUR_DIR/variable.sh
 echo "export IMAGE_NAME=$imageName" >> $CUR_DIR/variable.sh
