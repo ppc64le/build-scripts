@@ -6,14 +6,16 @@ configFile="build_info.json"
 imageName=$IMAGE_NAME
 buildDocker=$BUILD_DOCKER
 
-
+CUR_DIR=$(pwd)
 cd $packageDirPath
 
+match_version=$(python $CUR_DIR/script/parse_buildinfo.py)
+
 if [ $buildDocker != false ];then
-    if [[ $(jq --arg ver $version '.[$ver]' $configFile) != null ]]; then
-        dockerBuildDir=$(jq -r --arg ver $version '.[$ver].dir' $configFile)
-        args=$(jq -r --arg ver $version '.[$ver].args' $configFile)
-        patches=$(jq -r --arg ver $version '.[$ver].patches' $configFile)
+    if [[ $(jq --arg ver $match_version '.[$ver]' $configFile) != null ]]; then
+        dockerBuildDir=$(jq -r --arg ver $match_version '.[$ver].dir' $configFile)
+        args=$(jq -r --arg ver $match_version '.[$ver].args' $configFile)
+        patches=$(jq -r --arg ver $match_version '.[$ver].patches' $configFile)
         # By default send PACKAGE_VERSION argument.
         buildArgs ="--build-arg PACKAGE_VERSION=$(VERSION)"
         if [ $args != null ]; then
@@ -30,9 +32,9 @@ if [ $buildDocker != false ];then
             buildArgs=$(echo $buildArgs --build-arg $key=$value )
             done
         fi
-        if [[ $(jq --arg ver $version '.[$ver]' $configFile) != null ]] && 
-            [[ $(jq -r --arg ver $version '.[$ver].base_docker_image' $configFile) != null ]]; then
-            baseName=$(jq -r --arg ver $version '.[$ver].base_docker_image' $configFile)
+        if [[ $(jq --arg ver $match_version '.[$ver]' $configFile) != null ]] && 
+            [[ $(jq -r --arg ver $match_version '.[$ver].base_docker_image' $configFile) != null ]]; then
+            baseName=$(jq -r --arg ver $match_version '.[$ver].base_docker_image' $configFile)
         fi
         cmd="$buildArgs -t $imageName $dockerBuildDir"
         final_upload_image_link=$(DOCKER_UPLOAD_LINK)/$imageName
