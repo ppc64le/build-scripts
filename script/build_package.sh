@@ -25,5 +25,6 @@ then
 else
     echo "Script execution completed successfully for "$PKG_DIR_PATH/$BUILD_SCRIPT" "$VERSION" "
     cat build_log
+    exit 0
 fi
 

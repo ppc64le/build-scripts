@@ -39,7 +39,7 @@ jobs:
         - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/build_package.sh; bash -x ./script/build_package.sh; fi
 
 
-    - stage: Build docker image
+    - #stage: Build docker image
       name: Docker build
       before_script:
         - chmod +x ./script/read_buildinfo.sh;bash ./script/read_buildinfo.sh
