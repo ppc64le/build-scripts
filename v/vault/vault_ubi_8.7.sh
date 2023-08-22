@@ -20,16 +20,15 @@
 
 PACKAGE_NAME=vault
 PACKAGE_VERSION=${1:-v1.14.0}
+GO_VERSION=${GO_VERSION:-1.20.5}
 PACKAGE_URL=https://github.com/hashicorp/vault
 
 yum install -y openssl sudo make git gcc wget
 
-wget https://go.dev/dl/$(curl 'https://go.dev/VERSION?m=text').linux-ppc64le.tar.gz 
-rm -rf /usr/local/go 
-tar -C /usr/local -xf go*.linux-ppc64le.tar.gz
-export GOROOT=/usr/local/go
-export GOPATH=$HOME
-export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+wget https://golang.org/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
+tar -zxvf go${GO_VERSION}.linux-ppc64le.tar.gz
+export GOPATH=$WORKDIR/go
+export PATH=$PATH:$GOPATH/bin
 
 mkdir -p /go/src/github.com/hashicorp
 
