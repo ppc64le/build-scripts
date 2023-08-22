@@ -51,33 +51,45 @@ if [ -f $configFile ]; then
 
   fi
   #Getting specific build_script name for version
-  if [[ $(jq --arg ver "$match_version" '.[$ver]' $configFile) != null ]] && 
-    [[ $(jq -r --arg ver "$match_version" '.[$ver].build_script' $configFile) != null ]]; then
-    build_script=$(jq -r --arg ver "$match_version" '.[$ver].build_script' $configFile)
-  fi
+  if [[ $(jq --arg ver "$match_version" '.[$ver]' $configFile) != null ]]; then
+    if [[ $(jq -r --arg ver "$match_version" '.[$ver].build_script' $configFile) != null ]]; then
+      build_script=$(jq -r --arg ver "$match_version" '.[$ver].build_script' $configFile)
+    fi
 
-  if [[ $(jq --arg ver "$match_version" '.[$ver]' $configFile) != null ]] && 
-    [[ $(jq -r --arg ver "$match_version" '.[$ver].base_docker_image' $configFile) != null ]]; then
+    if [[ $(jq -r --arg ver "$match_version" '.[$ver].dir' $configFile) != null ]]; then
+      docker_build_dir=$(jq -r --arg ver "$match_version" '.[$ver].dir' $configFile)
+    fi
+
+    if [[ $(jq -r --arg ver "$match_version" '.[$ver].patches' $configFile) != null ]]; then
+      patches=$(jq -r --arg ver "$match_version" '.[$ver].patches' $configFile)
+    fi
+    
+    if [[ $(jq -r --arg ver "$match_version" '.[$ver].args' $configFile) != null ]]; then
+      args=$(jq -r --arg ver "$match_version" '.[$ver].args' $configFile)
+    fi
+    
+    if [[ $(jq -r --arg ver "$match_version" '.[$ver].base_docker_image' $configFile) != null ]]; then
     baseName=$(jq -r --arg ver "$match_version" '.[$ver].base_docker_image' $configFile)
-  fi
-  if [[ $(jq --arg ver "$match_version" '.[$ver]' $configFile) != null ]] && 
-    [[ $(jq -r --arg ver "$match_version" '.[$ver].base_docker_variant' $configFile) != null ]]; then
+    fi
+  
+    if [[ $(jq -r --arg ver "$match_version" '.[$ver].base_docker_variant' $configFile) != null ]]; then
     variant_str=$(jq -r --arg ver "$match_version" '.[$ver].base_docker_variant' $configFile)
-    case "$variant_str" in
-      "rhel")
-        variant=1
-        ;;
-      "ubuntu")
-        variant=2
-        ;;
-      "alpine")
-        variant=3
-        ;;
-      *)
-        echo "No valid distro variant, picking default one"
-        variant=1
-        ;;
-    esac
+      case "$variant_str" in
+        "rhel")
+          variant=1
+          ;;
+        "ubuntu")
+          variant=2
+          ;;
+        "alpine")
+          variant=3
+          ;;
+        *)
+          echo "No valid distro variant, picking default one"
+          variant=1
+          ;;
+      esac
+   fi
   fi
 fi
 
@@ -88,6 +100,9 @@ echo "export PKG_DIR_PATH=$packageDirPath" >> $CUR_DIR/variable.sh
 echo "export IMAGE_NAME=$imageName" >> $CUR_DIR/variable.sh
 echo "export BUILD_DOCKER=$build_docker" >> $CUR_DIR/variable.sh
 echo "export VALIDATE_BUILD_SCRIPT=$validate_build_script" >> $CUR_DIR/variable.sh
+echo "export DOCKER_BUILD_DIR=$docker_build_dir" >> $CUR_DIR/variable.sh
+echo "export ARGS=$args" >> $CUR_DIR/variable.sh
+echo "export PATCHES=$patches" >> $CUR_DIR/variable.sh
 
 chmod +x $CUR_DIR/variable.sh
 cat $CUR_DIR/variable.sh
