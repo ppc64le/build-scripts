@@ -24,8 +24,7 @@ if [ -f $configFile ]; then
 
   jsonObj=$configFile
   build_script=$(jq .build_script $jsonObj)
-
-  echo -n $build_script | tee $(results.build_script.path)
+  
   if $(jq 'has("use_non_root_user")' $jsonObj); then    
     nonRootBuild=$(jq .use_non_root_user $jsonObj)
   fi
@@ -52,18 +51,18 @@ if [ -f $configFile ]; then
 
   fi
   #Getting specific build_script name for version
-  if [[ $(jq --arg ver $match_version '.[$ver]' $configFile) != null ]] && 
-    [[ $(jq -r --arg ver $match_version '.[$ver].build_script' $configFile) != null ]]; then
-    build_script=$(jq -r --arg ver $match_version '.[$ver].build_script' $configFile)
+  if [[ $(jq --arg ver "$match_version" '.[$ver]' $configFile) != null ]] && 
+    [[ $(jq -r --arg ver "$match_version" '.[$ver].build_script' $configFile) != null ]]; then
+    build_script=$(jq -r --arg ver "$match_version" '.[$ver].build_script' $configFile)
   fi
 
-  if [[ $(jq --arg ver $match_match_version '.[$ver]' $configFile) != null ]] && 
-    [[ $(jq -r --arg ver $match_version '.[$ver].base_docker_image' $configFile) != null ]]; then
-    baseName=$(jq -r --arg ver $match_version '.[$ver].base_docker_image' $configFile)
+  if [[ $(jq --arg ver "$match_version" '.[$ver]' $configFile) != null ]] && 
+    [[ $(jq -r --arg ver "$match_version" '.[$ver].base_docker_image' $configFile) != null ]]; then
+    baseName=$(jq -r --arg ver "$match_version" '.[$ver].base_docker_image' $configFile)
   fi
-  if [[ $(jq --arg ver $match_version '.[$ver]' $configFile) != null ]] && 
-    [[ $(jq -r --arg ver $match_version '.[$ver].base_docker_variant' $configFile) != null ]]; then
-    variant_str=$(jq -r --arg ver $match_version '.[$ver].base_docker_variant' $configFile)
+  if [[ $(jq --arg ver "$match_version" '.[$ver]' $configFile) != null ]] && 
+    [[ $(jq -r --arg ver "$match_version" '.[$ver].base_docker_variant' $configFile) != null ]]; then
+    variant_str=$(jq -r --arg ver "$match_version" '.[$ver].base_docker_variant' $configFile)
     case "$variant_str" in
       "rhel")
         variant=1
@@ -83,8 +82,8 @@ if [ -f $configFile ]; then
 fi
 
 
-echo "export VERSION=$VERSION" >> $CUR_DIR/variable.sh
-echo "export BUILD_SCRIPT=$build_script" > $CUR_DIR/variable.sh
+echo "export VERSION=$VERSION" > $CUR_DIR/variable.sh
+echo "export BUILD_SCRIPT=$build_script" >> $CUR_DIR/variable.sh
 echo "export PKG_DIR_PATH=$packageDirPath" >> $CUR_DIR/variable.sh
 echo "export IMAGE_NAME=$imageName" >> $CUR_DIR/variable.sh
 echo "export BUILD_DOCKER=$build_docker" >> $CUR_DIR/variable.sh
