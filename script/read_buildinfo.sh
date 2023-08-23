@@ -100,9 +100,9 @@ echo "export PKG_DIR_PATH=$packageDirPath" >> $CUR_DIR/variable.sh
 echo "export IMAGE_NAME=$imageName" >> $CUR_DIR/variable.sh
 echo "export BUILD_DOCKER=$build_docker" >> $CUR_DIR/variable.sh
 echo "export VALIDATE_BUILD_SCRIPT=$validate_build_script" >> $CUR_DIR/variable.sh
-echo "export DOCKER_BUILD_DIR=$docker_build_dir" >> $CUR_DIR/variable.sh
-echo "export ARGS=$args" >> $CUR_DIR/variable.sh
-echo "export PATCHES=$patches" >> $CUR_DIR/variable.sh
+# echo "export DOCKER_BUILD_DIR=$docker_build_dir" >> $CUR_DIR/variable.sh
+# echo "export ARGS=$args" >> $CUR_DIR/variable.sh
+# echo "export PATCHES=$patches" >> $CUR_DIR/variable.sh
 
 chmod +x $CUR_DIR/variable.sh
 cat $CUR_DIR/variable.sh
