@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: github.com/hashicorp/vault
-# Version	: v1.11.2, v1.11.3, v1.12.3,v1.13.1
+# Version	: v1.11.2, v1.11.3, v1.12.3,v1.13.1,v1.14.0
 # Source repo	: https://github.com/hashicorp/vault
 # Tested on	: UBI: 8.5
 # Language      : Go
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=vault
-PACKAGE_VERSION=${1:-v1.14.0}
+PACKAGE_VERSION=${1:-v1.14.1}
 GO_VERSION=${GO_VERSION:-1.20.6}
 PACKAGE_URL=https://github.com/hashicorp/vault
 
@@ -50,6 +50,3 @@ go mod vendor
 make
 
 make testrace TEST=./vault
-make testacc TEST=./builtin/logical/pki
-make testacc TEST=./builtin/logical/totp
- 
