@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: consul
-# Version	: v1.16.1
+# Version	: v1.12.0
 # Source repo	: https://github.com/hashicorp/consul
-# Tested on	: UBI 8.7
+# Tested on	: UBI 8.5
 # Language      : Go
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
+# Maintainer	: Kandarpa Malipeddi <kandarpa.malipeddi@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -20,7 +20,7 @@
 
 yum install -y wget tar zip gcc-c++ make git procps diffutils
 
-PACKAGE_VERSION=${1:-v1.16.1}
+PACKAGE_VERSION=${1:-v1.12.0}
 GO_VERSION=`curl https://go.dev/VERSION?m=text | head -n 1`
 
 wget  https://go.dev/dl/$GO_VERSION.linux-ppc64le.tar.gz
@@ -49,27 +49,17 @@ git clone --branch $PACKAGE_VERSION https://github.com/hashicorp/consul.git
 cd consul
 go mod download
 go mod tidy
-
-if ! make dev; then
-       echo "------------------$PACKAGE_NAME:Build_fails---------------------"
-       echo "$PACKAGE_VERSION $PACKAGE_NAME"
-       echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
-       exit 1
-fi
+make dev
 
 export PATH=$(go env GOPATH)/bin:$PATH
 cd sdk
 gotestsum --format=short-verbose ./...
 cd ..
-
-if ! go test -v ./acl && go test -v ./command && go test -v ./ipaddr && go test -v ./lib && go test -v ./tlsutil && go test -v ./snapshot && go test --race ; then
-    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
-    exit 2
-else
-    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
-    exit 0
-fi
+go test -v ./acl
+go test -v ./command
+go test -v ./ipaddr
+go test -v ./lib
+go test -v ./proto/pbservice
+go test -v ./tlsutil
+go test -v ./snapshot
+go test --race
