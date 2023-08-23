@@ -49,7 +49,7 @@ if ! python -m pip install numpy pytest ; then
        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
        exit 1
 fi
-conda install -q hdf4
+conda install -y hdf4
 pytest
 if !  python examples/runall.py ; then
       echo "------------------$PACKAGE_NAME::Install_and_Test_fails-------------------------"
