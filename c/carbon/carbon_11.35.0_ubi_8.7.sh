@@ -48,7 +48,7 @@ git checkout $PACKAGE_VERSION
 
 # Install dependencies and build modules
 yarn install --check-cache --inline-builds 
-yarn build || true
+# yarn build || true
 
 # sed -i "s/'x64')/'x64' || process.arch === 'ppc64')/" node_modules/chromedriver/install.js
 # sed -i 's/"next": "12.1.4"/"next": "13.4.7"/' examples/incremental-migration/package.json
