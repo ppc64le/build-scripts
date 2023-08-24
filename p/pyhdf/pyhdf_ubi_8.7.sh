@@ -26,7 +26,7 @@ HOME_DIR=${PWD}
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
-yum install -y git make wget gcc-c++ python38 gcc
+yum install -y git make wget gcc-c++  gcc
 
 #Install miniconda
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-ppc64le.sh
@@ -41,15 +41,17 @@ cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 
 #Install dependencies
-python -m pip install -U pip
+conda config --set always_yes yes --set changeps1 no --set auto_update_conda no --set safety_checks disabled
+conda install -c conda-forge hdf4
 
+python -m pip install -U pip
+pip install -e .
 if ! python -m pip install numpy pytest ; then
        echo "------------------$PACKAGE_NAME:Install_fails---------------------"
        echo "$PACKAGE_VERSION $PACKAGE_NAME"
        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
        exit 1
 fi
-conda install -y hdf4
 pytest
 if !  python examples/runall.py ; then
       echo "------------------$PACKAGE_NAME::Install_and_Test_fails-------------------------"
@@ -62,4 +64,3 @@ else
       echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
       exit 0
 fi
-
