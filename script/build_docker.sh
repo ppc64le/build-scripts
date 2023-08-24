@@ -48,6 +48,7 @@ if [ $build_docker != false ];then
     #docker rmi -f ${basename}
     echo "Building docker image"
     echo "sudo docker build $build_args -t $image_name $docker_builddir"
+    echo "*************************************************************************************"
     sudo docker build $build_args -t $image_name $docker_builddir
     docker save -o "$HOME/build/$TRAVIS_REPO_SLUG/image.tar" $image_name
 else
