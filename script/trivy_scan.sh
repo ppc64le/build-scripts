@@ -1,33 +1,33 @@
 #!/bin/bash -xe
 
 version="$VERSION"
-packageDirPath="$PKG_DIR_PATH"
-configFile="build_info.json"
-imageName=$IMAGE_NAME
-buildDocker=$BUILD_DOCKER
+package_dirpath="$PKG_DIR_PATH"
+config_file="build_info.json"
+image_name=$IMAGE_NAME
+build_docker=$BUILD_DOCKER
 
-cd $packageDirPath
+cd $package_dirpath
 
-if [ $buildDocker == true ];then
+if [ $build_docker == true ];then
 	echo "downloading trivy package"
 	wget https://github.com/aquasecurity/trivy/releases/download/v0.40.0/trivy_0.40.0_Linux-PPC64LE.tar.gz
  	ls -ltr
 	tar -xf trivy_0.40.0_Linux-PPC64LE.tar.gz
         chmod +x trivy
         sudo mv trivy /usr/bin
-	sudo trivy -q image --timeout 10m -f json ${imageName} > vulnerabilities_results.json
+	sudo trivy -q image --timeout 10m -f json ${image_name} > vulnerabilities_results.json
  	echo "printing the vulnerabilities_results.json"
   	echo "------------------------------------------"
    	echo
  	cat vulnerabilities_results.json
 	#curl -s -k -u ${env.dockerHubUser}:${env.dockerHubPassword} --upload-file vulnerabilities_results.json ${url_prefix}/Trivy_vulnerabilities_results.json
-	sudo trivy -q image --timeout 10m ${imageName} > vulnerabilities_results.txt
+	sudo trivy -q image --timeout 10m ${image_name} > vulnerabilities_results.txt
  	echo "printing the vulnerabilities_results.txt"
   	echo "----------------------------------------"
    	echo
   	cat vulnerabilities_results.txt
 	#curl -s -k -u ${env.dockerHubUser}:${env.dockerHubPassword} --upload-file vulnerabilities_results.txt ${url_prefix}/Trivy_vulnerabilities_results.txt
-	sudo trivy -q image --timeout 10m -f cyclonedx ${imageName} > sbom_results.cyclonedx
+	sudo trivy -q image --timeout 10m -f cyclonedx ${image_name} > sbom_results.cyclonedx
  	echo "printing the sbom_results"
   	echo "-------------------------"
    	echo
