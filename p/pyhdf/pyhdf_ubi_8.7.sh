@@ -40,13 +40,14 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 
-#Install dependencies
+#Installing hdf4 dependency through conda
 conda config --set always_yes yes --set changeps1 no --set auto_update_conda no --set safety_checks disabled
 conda install -c conda-forge hdf4
 
 python -m pip install -U pip
-pip install -e .
-if ! python -m pip install numpy pytest ; then
+python -m pip install numpy pytest
+
+if ! pip install -e . ; then
        echo "------------------$PACKAGE_NAME:Install_fails---------------------"
        echo "$PACKAGE_VERSION $PACKAGE_NAME"
        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
