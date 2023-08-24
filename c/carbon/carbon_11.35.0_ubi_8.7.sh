@@ -46,6 +46,10 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+export PUPPETEER_SKIP_DOWNLOAD=true
+export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+export CHROMEDRIVER_SKIP_DOWNLOAD=true
+
 # Install dependencies and build modules
 yarn install --check-cache --inline-builds || true 
 yarn build || true
@@ -54,10 +58,6 @@ yarn build || true
 # sed -i 's/"next": "12.1.4"/"next": "13.4.7"/' examples/incremental-migration/package.json
 # sed -i 's/"version": "0.33.0"/"version": "0.35.0"/' examples/light-dark-mode/package.json
 # sed -i 's/"next": "12.1.4"/"next": "13.4.7"/' examples/light-dark-mode/package.json
-
-export PUPPETEER_SKIP_DOWNLOAD=true
-export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-export CHROMEDRIVER_SKIP_DOWNLOAD=true
 
 # sed -i 's/"version": "0.34.0"/"version": "0.36.0"/' examples/light-dark-mode/package.json
 sed -i '/version/d' examples/light-dark-mode/package.json
