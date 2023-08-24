@@ -1,7 +1,7 @@
 os: linux
 dist: focal
 arch: ppc64le
-language: python
+language: shell
 
 branches:
   only:
@@ -9,8 +9,8 @@ branches:
 
 env:
   global:
-    - PACKAGE_NAME="elasticsearch"
-    - VERSION="v8.3.2"
+    - PACKAGE_NAME="d3-array"
+    - VERSION="v3.2.3"
 
 services:
     - docker
@@ -23,9 +23,11 @@ jobs:
     - stage: Build info
       name: Get Build info details
       script:
+        # This script will read build_info.sh and create variable.sh file with export statement, so that we can source this file latest stages to use variables. 
         - chmod +x ./script/read_buildinfo.sh;bash -x ./script/read_buildinfo.sh
       workspaces:
         create:
+          #To share file creaing workspace 
           name: build_cache
           paths:
             - variable.sh
@@ -41,14 +43,11 @@ jobs:
 
     - #stage: Build docker image
       name: Docker build
-      # before_script:
-        # - chmod +x ./script/read_buildinfo.sh;bash ./script/read_buildinfo.sh
       script: 
+        #With workspace limitaton to either we can use already created workspace or create new workspace any time. We had to read build_info explicitly before actual docker build code
         - chmod +x ./script/read_buildinfo.sh;bash -x ./script/read_buildinfo.sh
         - source variable.sh
-        - if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/build_docker.sh; bash -x ./script/build_docker.sh; fi
-        - echo "printing docker images"
-        - docker images
+        - if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/build_docker.sh; bash -x ./script/build_docker.sh;echo "printing docker images"; docker images; fi
       workspaces:
         create:
           name: docker_image_tar
