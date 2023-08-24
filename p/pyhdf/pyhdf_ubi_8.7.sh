@@ -7,7 +7,7 @@
 # Tested on        : UBI 8.7
 # Language         : C,Python
 # Travis-Check     : True
-# Script License   : MIT license
+# Script License   : Apache License, Version 2 or later
 # Maintainer       : Vinod K <Vinod.K1@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
