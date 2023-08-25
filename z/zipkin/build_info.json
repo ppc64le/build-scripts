@@ -1,0 +1,23 @@
+{
+    "maintainer": "Stuti.Wali@ibm.com",
+    "package_name": "zipkin",
+    "github_url": "https://github.com/openzipkin/zipkin",
+    "version": "2.24.2",
+    "default_branch": "master",
+    "package_dir": "z/zipkin",
+    "build_script": "zipkin_ubi_8_7.sh",
+    "docker_build": true,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+ 
+    "2.24.*": {
+       "dir": "2.24.2_ubi_8_7",
+       "build_script": "zipkin_ubi_8_7.sh"
+    },
+
+    "2.20.0": {
+       "build_script": "zipkin_ubi_8.5.sh"
+    }
+   
+}
+
