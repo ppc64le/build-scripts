@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : carbon
-# Version       : 11.35.0
+# Version       : 11.36.0
 # Source repo   : https://github.com/carbon-design-system/carbon
 # Tested on     : UBI: 8.7
 # Travis-Check  : True
@@ -54,12 +54,6 @@ export CHROMEDRIVER_SKIP_DOWNLOAD=true
 yarn install --check-cache --inline-builds || true 
 yarn build || true
 
-# sed -i "s/'x64')/'x64' || process.arch === 'ppc64')/" node_modules/chromedriver/install.js
-# sed -i 's/"next": "12.1.4"/"next": "13.4.7"/' examples/incremental-migration/package.json
-# sed -i 's/"version": "0.33.0"/"version": "0.35.0"/' examples/light-dark-mode/package.json
-# sed -i 's/"next": "12.1.4"/"next": "13.4.7"/' examples/light-dark-mode/package.json
-
-# sed -i 's/"version": "0.34.0"/"version": "0.36.0"/' examples/light-dark-mode/package.json
 sed -i '/version/d' examples/light-dark-mode/package.json
 sed -i 's+true\,+&\n  \"version\": \"0.36.0\"\,+g' examples/light-dark-mode/package.json
 sed -i 's/"next": "12.1.4"/"next": "13.4.7"/' examples/light-dark-mode/package.json
