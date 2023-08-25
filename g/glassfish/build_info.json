@@ -1,0 +1,14 @@
+{
+    "maintainer": "Vishaka.Desai@ibm.com",
+    "package_name": "glassfish",
+    "github_url": "https://github.com/eclipse-ee4j/glassfish",
+    "version": "7.0.7",
+    "default_branch": "master",
+    "build_script" : "glassfish_ubi_8.7.sh",
+    "package_dir": "g/glassfish/",
+    "docker_build": false,
+    
+    "*.*.*": {
+        "build_script" : "glassfish_ubi_8.7.sh"
+    }
+  }
