@@ -51,7 +51,7 @@ git checkout $PACKAGE_VERSION
 # export CHROMEDRIVER_SKIP_DOWNLOAD=true
 
 # Install dependencies and build modules
-yarn install --check-cache --inline-builds || true
+yarn install || true
 yarn build || true
 
 sed -i "s/'x64')/'x64' || process.arch === 'ppc64')/" node_modules/chromedriver/install.js
