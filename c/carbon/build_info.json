@@ -1,0 +1,20 @@
+{
+    "maintainer": "Vishaka.Desai@ibm.com",
+    "package_name": "carbon",
+    "github_url": "https://github.com/carbon-design-system/carbon",
+    "version": "v11.36.0",
+    "default_branch": "main",
+    "package_dir": "c/carbon/",
+    "build_script" : "carbon_11.36.0_ubi_8.7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    
+    "v11.36.0": {
+      "build_script" : "carbon_11.36.0_ubi_8.7.sh"
+    },
+  
+    "v*.*.*": {
+      "build_script" : "carbon_11.36.0_ubi_8.7.sh"
+    }
+  }
