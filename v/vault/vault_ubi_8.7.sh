@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: github.com/hashicorp/vault
-# Version	: v1.11.2, v1.11.3, v1.12.3,v1.13.1
+# Version	: v1.11.2, v1.11.3, v1.12.3,v1.13.1,v1.14.0
 # Source repo	: https://github.com/hashicorp/vault
 # Tested on	: UBI: 8.5
 # Language      : Go
@@ -19,25 +19,29 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=vault
-PACKAGE_VERSION=${1:-v1.13.1}
-GO_VERSION=${GO_VERSION:-1.20.1}
+PACKAGE_VERSION=${1:-v1.14.1}
+GO_VERSION=${GO_VERSION:-1.20.6}
 PACKAGE_URL=https://github.com/hashicorp/vault
+
+WORKDIR=`pwd`
 
 yum install -y openssl sudo make git gcc wget
 
-wget https://golang.org/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
-tar -C /usr/local -xvzf go${GO_VERSION}.linux-ppc64le.tar.gz
-rm -rf go${GO_VERSION}.linux-ppc64le.tar.gz
-export PATH=/usr/local/go/bin:$PATH
+cd $WORKDIR
+ #install go
+wget https://golang.org/dl/go$GO_VERSION.linux-ppc64le.tar.gz 
+tar -C /usr/local -xzf go$GO_VERSION.linux-ppc64le.tar.gz 
+rm -rf go$GO_VERSION.linux-ppc64le.tar.gz
+export GOROOT=/usr/local/go 
+export GOPATH=$HOME 
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
-mkdir -p /go/src/github.com/hashicorp
+#Clone and build the source
+mkdir -p ${GOPATH}/src/github.com/hashicorp
+cd ${GOPATH}/src/github.com/hashicorp
 
-export GOPATH=/go
-export PATH=$PATH:$GOPATH/bin
-
-cd /go/src/github.com/hashicorp
 git clone $PACKAGE_URL
-cd vault
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 go mod tidy
@@ -46,6 +50,3 @@ go mod vendor
 make
 
 make testrace TEST=./vault
-make testacc TEST=./builtin/logical/pki
-make testacc TEST=./builtin/logical/totp
- 

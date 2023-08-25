@@ -6,6 +6,7 @@
     "default_branch": "main",
     "build_script" : "node-graceful-fs_ubi_8.5.sh",
     "package_dir": "n/node-graceful-fs/",
+    "docker_build": false,
     
     "v4.2.11": {
       "build_script" : "node-graceful-fs_ubi_8.5.sh"
