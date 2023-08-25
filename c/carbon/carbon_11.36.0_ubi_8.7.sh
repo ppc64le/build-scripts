@@ -69,7 +69,7 @@ if ! yarn build; then
     exit 1
 fi
 
-# Skip test suite noted to fail in parity with Intel
+# Skip tests noted to fail in parity with Intel
 sed -i 's/describe/describe.skip/g' packages/upgrade/src/commands/__tests__/upgrade-test.js
 sed -i "s+describe('react+describe.skip('react+g" packages/react/src/components/DatePicker/DatePicker-test.js
 
