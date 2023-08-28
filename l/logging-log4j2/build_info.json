@@ -1,0 +1,16 @@
+{
+    "maintainer":"Vinod.K1@ibm.com",
+    "package_name" : "logging-log4j2",
+    "github_url": "https://github.com/apache/logging-log4j2",
+    "version": "rel/3.0.0-alpha1",
+    "default_branch": "2.x",
+    "package_dir": "l/logging-log4j2",
+    "build_script": "logging-log4j2_ubi_8.7.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": false,
+
+    "rel/3.0.0-alpha1" : {
+       "build_script" : "logging-log4j2_ubi_8.7.sh"
+    }
+}
