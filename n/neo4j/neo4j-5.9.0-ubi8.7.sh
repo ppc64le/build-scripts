@@ -25,7 +25,7 @@ MAVEN_VERSION=3.8.8
 GOSU_VERSION=1.16
 
 export PATH=$PATH:/usr/local/bin
-ulimit -n 65536
+ulimit -s 65536
 
 #Install RHEL deps
 yum install java-17-openjdk-devel git wget curl hostname procps-ng -y \
