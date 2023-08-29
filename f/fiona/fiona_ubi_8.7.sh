@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=fiona
+PACKAGE_NAME=Fiona
 PACKAGE_VERSION=${1:-1.9.4.post1}
 PACKAGE_URL=https://github.com/Toblerity/Fiona
 
