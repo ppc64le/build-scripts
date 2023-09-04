@@ -1,0 +1,240 @@
+from distutils.log import ERROR, INFO, WARN
+from logging import WARNING
+
+import os
+import json
+import requests
+import subprocess
+from subprocess import call
+import glob
+import stat
+import docker
+import shutil
+import sys
+from datetime import date
+
+
+GITHUB_PACKAGE_INFO_API = "https://api.github.com/repos/{}/{}/{}/{}"
+
+
+path_separator = os.path.sep
+#ROOT = os.path.dirname(os.path.dirname(__file__))
+ROOT = os.getcwd()
+package_name = input("Enter Package name (Package name should match with the directory name): ")
+#package_name = 'elasticsearch'
+package_name = package_name.lower()
+dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_name}"
+
+
+github_url=''
+latest_release=''
+active_repo=False
+new_build_script=''
+
+
+def get_latest_build_script(dir_name):
+    files_path = os.path.join(dir_name,"*")
+    files = sorted(glob.iglob(files_path),key=os.path.getctime,reverse=True)
+    latest_existing_build_script =""
+    for script_file in files:
+        if script_file.endswith(".sh") and (script_file.find("ubuntu")==-1):
+            global github_url
+            github_url = get_repo_url(script_file)
+            global active_repo
+            if github_url!="NUrl" and github_url!='':
+                if (check_repo_activeness(github_url)):
+                    active_repo = True
+                    global latest_release
+                    latest_release = get_latest_release(github_url)
+                else:
+                    active_repo = False
+                    print("\n Repo is Not active . Stopping the further process.")
+                    exit()
+
+            return script_file
+
+    return "NPresent"
+
+def get_repo_url(script_file):
+    with open(script_file,'r',encoding='utf-8') as f:
+        contents=f.readlines()
+        for line in contents:
+            if line.startswith('# Source repo') :
+                github_url = ":".join(line.split(':')[1:]).strip()
+                return github_url
+    return "NUrl"
+
+def check_repo_activeness(package_url):
+    owner, repo = package_url.replace('.git','').split('/')[-2:]
+    active_response=requests.get(GITHUB_PACKAGE_INFO_API.format(owner,repo,'branches','master'))
+
+   
+    last_commit_date=active_response.json()["commit"]["commit"]["committer"]["date"]
+    last_commit_year=last_commit_date.split('-')[0]
+    today_date=str(date.today())
+    today_date=today_date.split('-')[0]
+
+    if (int(today_date) - int(last_commit_year))>=3:
+        #print(f"{package_url} Package Not Active")
+        return False
+    return True
+
+def get_latest_release(package_url):
+    owner, repo = package_url.replace('.git','').split('/')[-2:]
+    #response = requests.get(GITHUB_PACKAGE_INFO_API.format(owner, repo)).json()
+    #release_github_url=GITHUB_PACKAGE_INFO_API+'/latest/releases'
+    print("\n Owner :",owner)
+    print("\n Repo  :",repo)
+    response = requests.get(GITHUB_PACKAGE_INFO_API.format(owner,repo,'releases','latest'))
+    if response.status_code!=200:
+        print("\n Release Not Present")
+        #print("type",type(response.status_code))
+    
+        #print("Printing Response",response)
+    
+        response_tag=requests.get("https://api.github.com/repos/{}/{}/{}/{}/{}".format(owner,repo,'git','refs','tags'))
+        #print(response_tag)
+        latest_tag=response_tag.json()[-1]
+        latest_tag=latest_tag['ref'].split('/')[-1]
+        print("\n Present Tag:",latest_tag)
+        return latest_tag
+    else:
+        lc_release=response.json()["html_url"]
+        lc_release=lc_release.split('/')[-1]
+        print("\n Recent Release:",lc_release)
+        if response.json()["name"]=="":
+            return lc_release
+    
+    #print("response name:",response.json()["name"])
+    return response.json()["name"]
+
+
+def create_latest_script(old_script):
+
+    '''
+    with open(old_script,'r') as old_file, open(f"{dir_name}/latest_build_script.sh",'a') as newfile:
+        for line in old_file:
+            if line.startswith("PACKAGE_VERSION"):
+                newfile.write(f"PACKAGE_VERSION={latest_release}\n")
+            else:
+                newfile.write(line)
+  
+
+   #update template.sh with latest_release , github_url ,package_name
+ 
+    with open("/home/user8/shubham_garud/build-scripts/script/template.sh",'r') as newfile:
+        template_lines=newfile.readlines() 
+
+    for i in range(len(template_lines)):
+        if template_lines[i].startswith("PACKAGE_VERSION"):
+            template_lines[i]= f"PACKAGE_VERSION={latest_release}\n"
+        elif template_lines[i].startswith('# Version'):
+            template_lines[i]= f"# Version          : {latest_release}\n"
+        elif template_lines[i].startswith("PACKAGE_URL"):
+            template_lines[i]=f"PACKAGE_URL={github_url}\n"
+        elif template_lines[i].startswith("# Source repo"):
+              template_lines[i]= f"# Source repo      : {github_url}\n"
+        elif template_lines[i].startswith("# Package"):
+            template_lines[i]=f"# Package          : {package_name}\n"
+        elif template_lines[i].startswith("PACKAGE_NAME"):
+            template_lines[i]=f"PACKAGE_NAME={package_name}\n"
+    
+    #for dattaa in template_lines:
+        #print(dattaa)
+    
+    with open ("/home/user8/shubham_garud/build-scripts/script/template.sh",'w') as newfile:
+        newfile.writelines(template_lines)
+
+
+    #new_build_script=f"{dir_name}/latest_build_script.sh"
+    shutil.copyfile("/home/user8/shubham_garud/build-scripts/script/template.sh",f"{dir_name}/{package_name}_{latest_release}_ubi.sh")
+    print(f"\n\n latest_build_script.sh created at {dir_name}")
+   '''
+    #triggering container to execute latest_build_script
+    #import pdb
+    #pdb.set_trace()
+
+    # Stop execution if repo is not active
+
+
+    print("\n1. Enter 1 to execute latest build_script")
+    print("\n2. Enter 2 to execute template_script")
+    script_option=int(input("\n Select option:"))   
+    if script_option==1:
+        new_cmd="python3 script/trigger_container.py -f script/latest_build_script.sh"
+    else:
+        #new_cmd="python3 script/trigger_container.py -f script/template.sh"
+
+        #branch_cmd=f"git branch"
+        #print("\n\n Printing Current Branch")
+        #subprocess.Popen(branch_cmd,shell=True)
+
+        branch_chout=f"git checkout -b {package_name}_automation"
+        print("\n\n Creating Branch and Checking Out")
+        subprocess.Popen(branch_chout,shell=True)
+
+        branch_cmd=f"git branch"
+        print("\n\n Printing Current Branch")
+        subprocess.Popen(branch_cmd,shell=True)
+
+
+        with open("/home/user8/shubham_garud/build-scripts/script/template.sh",'r') as newfile:
+            template_lines=newfile.readlines()
+
+        for i in range(len(template_lines)):
+            if template_lines[i].startswith("PACKAGE_VERSION"):
+                template_lines[i]= f"PACKAGE_VERSION={latest_release}\n"
+            elif template_lines[i].startswith('# Version'):
+                template_lines[i]= f"# Version          : {latest_release}\n"
+            elif template_lines[i].startswith("PACKAGE_URL"):
+                template_lines[i]=f"PACKAGE_URL={github_url}\n"
+            elif template_lines[i].startswith("# Source repo"):
+                template_lines[i]= f"# Source repo      : {github_url}\n"
+            elif template_lines[i].startswith("# Package"):
+                template_lines[i]=f"# Package          : {package_name}\n"
+            elif template_lines[i].startswith("PACKAGE_NAME"):
+                template_lines[i]=f"PACKAGE_NAME={package_name}\n"
+        
+        with open ("/home/user8/shubham_garud/build-scripts/script/template.sh",'w') as newfile:
+            newfile.writelines(template_lines)
+
+        shutil.copyfile("/home/user8/shubham_garud/build-scripts/script/template.sh",f"{dir_name}/{package_name}_ubi.sh")
+        new_cmd="python3 script/trigger_container.py -f script/template.sh"
+     
+        #new_cmd="python3 test.py -f latest_build_script.sh"
+    container_result=subprocess.Popen(new_cmd,shell=True)
+    stdout, stderr=container_result.communicate()
+    exit_code=container_result.wait()
+    print("\n PRinting exit code")
+    print(exit_code)
+
+
+    
+    cmd_2=f"python3 script/generate_build_info.py {package_name}"
+    print("\n\n Generating build_info.json")
+    #subprocess.Popen(cmd_2,shell=True)
+
+    #cmd_3=f"git branch"
+    #print("\n\n Printing Current Branch")
+    #subprocess.Popen(cmd_3,shell=True)
+    #print('sdfsf',os.getcwd())
+       
+    
+def display_details():
+    print(f"\n\n Github URL :{github_url}")
+    print(f"\n\n Latest Release: {latest_release}")
+    print(f"\n\n Repo Activeness: {active_repo}")
+
+
+old_script=get_latest_build_script(dir_name)
+if old_script!="NPresent":
+    print("\n ** Old Script Present**")
+    display_details()
+    create_latest_script(old_script)
+    #print(f"old script name : {old_script}")
+    #print("directory",os.getcwd())
+else:
+    print("\n Old_script not Present")
+
+
+
