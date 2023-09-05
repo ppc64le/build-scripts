@@ -1,0 +1,16 @@
+{
+    "maintainer":"Vinod.K1@ibm.com",
+    "package_name" : "pyhdf",
+    "github_url": "https://github.com/fhs/pyhdf",
+    "version": "v0.11.3",
+    "default_branch": "master",
+    "package_dir": "p/pyhdf",
+    "build_script": "pyhdf_ubi_8.7.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": false,
+
+    "v0.11.*" : {
+       "build_script" : "pyhdf_ubi_8.7.sh"
+    }
+}

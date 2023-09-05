@@ -6,11 +6,12 @@
     "default_branch": "master",
     "package_dir": "z/zipkin",
     "build_script": "zipkin_ubi_8_7.sh",
-    "docker_build": false,
+    "docker_build": true,
     "validate_build_script": true,
     "use_non_root_user": false,
  
     "2.24.*": {
+       "dir": "2.24.2_ubi_8_7",
        "build_script": "zipkin_ubi_8_7.sh"
     },
 
