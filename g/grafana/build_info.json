@@ -2,11 +2,11 @@
   "maintainer": "Vinod.K1@ibm.com",
   "package_name": "grafana",
   "github_url": "https://github.com/grafana/grafana.git",
-  "version": "v9.3.6",
+  "version": "v10.1.1",
   "default_branch": "main",
   "package_dir": "g/grafana/",
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-  "build_script": "grafana_ubi_8.5.sh",
+  "build_script": "grafana_ubi_8.7.sh",
   "validate_build_script": true,
   "use_non_root_user": false,
   "docker_build": true,
@@ -25,5 +25,12 @@
       "GRAFANA_VERSION": "$PACKAGE_VERSION",
       "GO_VERSION": "1.19.6"
     }
-  }
-}
+  },
+    "v10.1.*": {
+      "dir": "9.1.5_ubi8.5",
+    "args": {
+      "GRAFANA_VERSION": "$PACKAGE_VERSION",
+      "GO_VERSION": "1.20.6"
+     }
+   }
+}  
