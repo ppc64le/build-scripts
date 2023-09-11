@@ -1,5 +1,5 @@
 import:
-- source: travis-currency-ymls/main.yml
+- source: travis-currency-ymls/pr-build.yml
   if: type = pull_request
 - source: travis-currency-ymls/currency-build.yml
   if: type != pull_request
