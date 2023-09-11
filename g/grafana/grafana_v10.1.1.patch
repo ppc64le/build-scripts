@@ -23,7 +23,7 @@ index f21e55e9bd..b60722ceda 100644
      expect(systemDateFormats.interval.second).toBe('HH:mm:ss');
      expect(systemDateFormats.interval.minute).toBe('HH:mm');
 diff --git a/public/app/features/alerting/unified/components/rule-editor/notificaton-preview/NotificationPreview.test.tsx b/public/app/features/alerting/unified/components/rule-editor/notificaton-preview/NotificationPreview.test.tsx
-index e9f00220b5..3ee14b0835 100644
+index e9f00220b5..009800d12f 100644
 --- a/public/app/features/alerting/unified/components/rule-editor/notificaton-preview/NotificationPreview.test.tsx
 +++ b/public/app/features/alerting/unified/components/rule-editor/notificaton-preview/NotificationPreview.test.tsx
 @@ -148,12 +148,16 @@ describe('NotificationPreview', () => {
@@ -44,7 +44,7 @@ index e9f00220b5..3ee14b0835 100644
 +      const matchingPoliciesElements = ui.route.queryAll();
 +      expect(matchingPoliciesElements).toHaveLength(1);
 +      expect(matchingPoliciesElements[0]).toHaveTextContent(/tomato = red/);
-+     });
++    });
    });
    it('should render notification preview with alert manager sections, when having more than one alert manager configured to receive alerts', async () => {
      // two alert managers configured  to receive alerts
