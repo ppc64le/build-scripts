@@ -22,30 +22,6 @@ index f21e55e9bd..b60722ceda 100644
      expect(systemDateFormats.interval.millisecond).toBe('HH:mm:ss.SSS');
      expect(systemDateFormats.interval.second).toBe('HH:mm:ss');
      expect(systemDateFormats.interval.minute).toBe('HH:mm');
-diff --git a/public/app/features/alerting/unified/CloneRuleEditor.test.tsx b/public/app/features/alerting/unified/CloneRuleEditor.test.tsx
-index a2fa421db8..9978d9b31f 100644
---- a/public/app/features/alerting/unified/CloneRuleEditor.test.tsx
-+++ b/public/app/features/alerting/unified/CloneRuleEditor.test.tsx
-@@ -71,7 +71,7 @@ afterAll(() => {
-
- const ui = {
-   inputs: {
--    name: byRole('textbox', { name: /rule name name for the alert rule\./i }),
-+    name: byRole('textbox', { name: 'name' }),
-     expr: byTestId('expr'),
-     folderContainer: byTestId(selectors.components.FolderPicker.containerV2),
-     namespace: byTestId('namespace-picker'),
-@@ -164,7 +164,9 @@ describe('CloneRuleEditor', function () {
-       });
-
-       await waitForElementToBeRemoved(ui.loadingIndicator.query());
--      await waitForElementToBeRemoved(within(ui.inputs.group.get()).getByTestId('Spinner'));
-+      await waitFor(() => {
-+        expect(within(ui.inputs.group.get()).queryByTestId('Spinner')).not.toBeInTheDocument();
-+      });
-
-       await waitFor(() => {
-         expect(ui.inputs.name.get()).toHaveValue('First Grafana Rule (copy)');
 diff --git a/public/app/features/alerting/unified/components/rule-editor/notificaton-preview/NotificationPreview.test.tsx b/public/app/features/alerting/unified/components/rule-editor/notificaton-preview/NotificationPreview.test.tsx
 index e9f00220b5..3ee14b0835 100644
 --- a/public/app/features/alerting/unified/components/rule-editor/notificaton-preview/NotificationPreview.test.tsx
