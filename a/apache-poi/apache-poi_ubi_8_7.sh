@@ -11,7 +11,7 @@
 # Maintainer    : Stuti Wali <Stuti.Wali@ibm.com>
 #
 #
-# Disclaimer: This script has been tested in root mode on given
+# Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
