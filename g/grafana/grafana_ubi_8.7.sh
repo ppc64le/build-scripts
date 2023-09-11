@@ -4,7 +4,7 @@ PACKAGE_VERSION=v10.1.1
 NODE_VERSION=${NODE_VERSION:-18}
 GO_VERSION=1.20.6
 
-yum install wget git curl make gcc-c++ python38 -y 
+yum install wget git curl make gcc-c++ patch python38 -y 
 
 #install nodejs
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
@@ -25,8 +25,8 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #Apply patch
-wget https://raw.githubusercontent.com/vinodk99/build-scripts/grafana_v10.1.1/g/grafana/grafana.patch
-git apply grafana.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/g/grafana/grafana_v10.1.1.patch
+git apply grafana_v10.1.1.patch
 
 #Build frontend
 yarn install
@@ -42,5 +42,5 @@ make build-go
 #Test backend
 make test-go
 
-#Test backend
+#Test frontend
 yarn test --watchAll=false
