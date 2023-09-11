@@ -22,6 +22,32 @@ index f21e55e9bd..b60722ceda 100644
      expect(systemDateFormats.interval.millisecond).toBe('HH:mm:ss.SSS');
      expect(systemDateFormats.interval.second).toBe('HH:mm:ss');
      expect(systemDateFormats.interval.minute).toBe('HH:mm');
+diff --git a/public/app/features/alerting/unified/components/rule-editor/notificaton-preview/NotificationPreview.test.tsx b/public/app/features/alerting/unified/components/rule-editor/notificaton-preview/NotificationPreview.test.tsx
+index e9f00220b5..3ee14b0835 100644
+--- a/public/app/features/alerting/unified/components/rule-editor/notificaton-preview/NotificationPreview.test.tsx
++++ b/public/app/features/alerting/unified/components/rule-editor/notificaton-preview/NotificationPreview.test.tsx
+@@ -148,12 +148,16 @@ describe('NotificationPreview', () => {
+       expect(ui.loadingIndicator.query()).not.toBeInTheDocument();
+     });
+     // we expect the alert manager label to be missing as there is only one alert manager configured to receive alerts
+-    expect(ui.grafanaAlertManagerLabel.query()).not.toBeInTheDocument();
+-    expect(ui.otherAlertManagerLabel.query()).not.toBeInTheDocument();
++    await waitFor(() => {
++      expect(ui.grafanaAlertManagerLabel.query()).not.toBeInTheDocument();
++      expect(ui.otherAlertManagerLabel.query()).not.toBeInTheDocument();
++    });
+
+-    const matchingPoliciesElements = ui.route.queryAll();
+-    expect(matchingPoliciesElements).toHaveLength(1);
+-    expect(matchingPoliciesElements[0]).toHaveTextContent(/tomato = red/);
++    await waitFor(() => {
++      const matchingPoliciesElements = ui.route.queryAll();
++      expect(matchingPoliciesElements).toHaveLength(1);
++      expect(matchingPoliciesElements[0]).toHaveTextContent(/tomato = red/);
++     });
+   });
+   it('should render notification preview with alert manager sections, when having more than one alert manager configured to receive alerts', async () => {
+     // two alert managers configured  to receive alerts
 diff --git a/public/app/plugins/datasource/prometheus/components/PromLink.test.tsx b/public/app/plugins/datasource/prometheus/components/PromLink.test.tsx
 index c0e99277e2..bb115283ad 100644
 --- a/public/app/plugins/datasource/prometheus/components/PromLink.test.tsx
