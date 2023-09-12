@@ -1,5 +1,5 @@
 import:
-- source: builds/travis-master-pr.yml
+- source: builds/merges.yml
   if: type = pull_request
-- source: builds/travis-currency-migration.yml
+- source: builds/pipeline.yml
   if: type != pull_request
