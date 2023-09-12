@@ -1,0 +1,270 @@
+diff --git a/cargo/cargo_build_script_runner/bin.rs b/cargo/cargo_build_script_runner/bin.rs
+index b7b78c2c..5b123320 100644
+--- a/cargo/cargo_build_script_runner/bin.rs
++++ b/cargo/cargo_build_script_runner/bin.rs
+@@ -31,6 +31,7 @@ fn run_buildrs() -> Result<(), String> {
+     // relative to themselves, to fail.
+     let exec_root = env::current_dir().expect("Failed to get current directory");
+     let manifest_dir_env = env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR was not set");
++    let link_search_prefix = env::var("CARGO_LINKSEARCH_PREFIX").expect("CARGO_LINKSEARCH_PREFIX was not set");
+     let rustc_env = env::var("RUSTC").expect("RUSTC was not set");
+     let manifest_dir = exec_root.join(manifest_dir_env);
+     let rustc = exec_root.join(&rustc_env);
+@@ -184,7 +185,7 @@ fn run_buildrs() -> Result<(), String> {
+         compile_flags,
+         link_flags,
+         link_search_paths,
+-    } = BuildScriptOutput::outputs_to_flags(&buildrs_outputs, &exec_root.to_string_lossy());
++    } = BuildScriptOutput::outputs_to_flags(&buildrs_outputs, &exec_root.to_string_lossy(), &link_search_prefix);
+
+     write(&compile_flags_file, compile_flags.as_bytes())
+         .unwrap_or_else(|_| panic!("Unable to write file {:?}", compile_flags_file));
+diff --git a/cargo/cargo_build_script_runner/lib.rs b/cargo/cargo_build_script_runner/lib.rs
+index 8a1b7655..3828276b 100644
+--- a/cargo/cargo_build_script_runner/lib.rs
++++ b/cargo/cargo_build_script_runner/lib.rs
+@@ -176,7 +176,7 @@ impl BuildScriptOutput {
+     }
+
+     /// Convert a vector of [BuildScriptOutput] into a flagfile.
+-    pub fn outputs_to_flags(outputs: &[BuildScriptOutput], exec_root: &str) -> CompileAndLinkFlags {
++    pub fn outputs_to_flags(outputs: &[BuildScriptOutput], exec_root: &str, link_search_prefix: &str) -> CompileAndLinkFlags {
+         let mut compile_flags = Vec::new();
+         let mut link_flags = Vec::new();
+         let mut link_search_paths = Vec::new();
+@@ -187,7 +187,7 @@ impl BuildScriptOutput {
+                 BuildScriptOutput::Flags(e) => compile_flags.push(e.to_owned()),
+                 BuildScriptOutput::LinkArg(e) => compile_flags.push(format!("-Clink-arg={e}")),
+                 BuildScriptOutput::LinkLib(e) => link_flags.push(format!("-l{e}")),
+-                BuildScriptOutput::LinkSearch(e) => link_search_paths.push(format!("-L{e}")),
++                BuildScriptOutput::LinkSearch(e) => link_search_paths.push(format!("-L{}/{e}", link_search_prefix)),
+                 _ => {}
+             }
+         }
+@@ -286,7 +286,7 @@ cargo:rustc-env=no_trailing_newline=true",
+             "FOO=BAR\nBAR=FOO\nSOME_PATH=${pwd}/beep\nno_trailing_newline=true".to_owned()
+         );
+         assert_eq!(
+-            BuildScriptOutput::outputs_to_flags(&result, "/some/absolute/path"),
++            BuildScriptOutput::outputs_to_flags(&result, "/some/absolute/path", "some/relative/path"),
+             CompileAndLinkFlags {
+                 // -Lblah was output as a rustc-flags, so even though it probably _should_ be a link
+                 // flag, we don't treat it like one.
+@@ -294,7 +294,7 @@ cargo:rustc-env=no_trailing_newline=true",
+                     "-Lblah\n--cfg=feature=awesome\n-Clink-arg=-weak_framework\n-Clink-arg=Metal"
+                         .to_owned(),
+                 link_flags: "-lsdfsdf".to_owned(),
+-                link_search_paths: "-L${pwd}/bleh".to_owned(),
++                link_search_paths: "-Lsome/relative/path/${pwd}/bleh".to_owned(),
+             }
+         );
+     }
+diff --git a/cargo/private/cargo_build_script.bzl b/cargo/private/cargo_build_script.bzl
+index 4de061b2..c744e639 100644
+--- a/cargo/private/cargo_build_script.bzl
++++ b/cargo/private/cargo_build_script.bzl
+@@ -86,6 +86,7 @@ def _cargo_build_script_impl(ctx):
+     flags_out = ctx.actions.declare_file(ctx.label.name + ".flags")
+     link_flags = ctx.actions.declare_file(ctx.label.name + ".linkflags")
+     link_search_paths = ctx.actions.declare_file(ctx.label.name + ".linksearchpaths")  # rustc-link-search, propagated from transitive dependencies
++    link_search_prefix = "%s" % (ctx.label.workspace_root)
+     manifest_dir = "%s.runfiles/%s/%s" % (script.path, ctx.label.workspace_name or ctx.workspace_name, ctx.label.package)
+     compilation_mode_opt_level = get_compilation_mode_opts(ctx, toolchain).opt_level
+
+@@ -107,6 +108,7 @@ def _cargo_build_script_impl(ctx):
+     env.update({
+         "CARGO_CRATE_NAME": name_to_crate_name(pkg_name),
+         "CARGO_MANIFEST_DIR": manifest_dir,
++        "CARGO_LINKSEARCH_PREFIX": link_search_prefix,
+         "CARGO_PKG_NAME": pkg_name,
+         "HOST": toolchain.exec_triple.str,
+         "NUM_JOBS": "1",
+diff --git a/crate_universe/3rdparty/crates/BUILD.linux-raw-sys-0.3.8.bazel b/crate_universe/3rdparty/crates/BUILD.linux-raw-sys-0.3.8.bazel
+index 87f0ae4c..77fe9fe1 100644
+--- a/crate_universe/3rdparty/crates/BUILD.linux-raw-sys-0.3.8.bazel
++++ b/crate_universe/3rdparty/crates/BUILD.linux-raw-sys-0.3.8.bazel
+@@ -48,6 +48,9 @@ rust_library(
+         "@rules_rust//rust/platform:x86_64-unknown-linux-gnu": [
+             "errno",
+         ],
++        "@rules_rust//rust/platform:powerpc64le-unknown-linux-gnu": [
++            "errno",
++        ],
+         "//conditions:default": [],
+     }),
+     crate_root = "src/lib.rs",
+diff --git a/crate_universe/private/vendor_utils.bzl b/crate_universe/private/vendor_utils.bzl
+index a866edd0..cf674e97 100644
+--- a/crate_universe/private/vendor_utils.bzl
++++ b/crate_universe/private/vendor_utils.bzl
+@@ -10,6 +10,7 @@ _BUILDIFIER_SHA256S = {
+     "buildifier-darwin-arm64": "4da23315f0dccabf878c8227fddbccf35545b23b3cb6225bfcf3107689cc4364",
+     "buildifier-linux-amd64": "3ed7358c7c6a1ca216dc566e9054fd0b97a1482cb0b7e61092be887d42615c5d",
+     "buildifier-linux-arm64": "c657c628fca72b7e0446f1a542231722a10ba4321597bd6f6249a5da6060b6ff",
++    "buildifier-linux-ppc64le": "3ed7358c7c6a1ca216dc566e9054fd0b97a1482cb0b7e61092be887d42615c5d",
+     "buildifier-windows-amd64.exe": "45e13b2951e4c611d346dacdaf0aafaa484045a3e7300fbc5dd01a896a688177",
+ }
+
+@@ -42,6 +43,12 @@ def crates_vendor_deps_targets():
+         constraint_values = ["@platforms//os:linux", "@platforms//cpu:arm64"],
+         visibility = ["//visibility:public"],
+     )
++
++    native.config_setting(
++        name = "linux_ppc64le",
++        constraint_values = ["@platforms//os:linux", "@platforms//cpu:ppc"],
++        visibility = ["//visibility:public"],
++    )
+
+     native.config_setting(
+         name = "macos_amd64",
+@@ -66,6 +73,7 @@ def crates_vendor_deps_targets():
+         actual = select({
+             ":linux_amd64": "@cargo_bazel.buildifier-linux-amd64//file",
+             ":linux_arm64": "@cargo_bazel.buildifier-linux-arm64//file",
++            ":linux_ppc64le": "@cargo_bazel.buildifier-linux-amd64//file",
+             ":macos_amd64": "@cargo_bazel.buildifier-darwin-amd64//file",
+             ":macos_arm64": "@cargo_bazel.buildifier-darwin-arm64//file",
+             ":windows": "@cargo_bazel.buildifier-windows-amd64.exe//file",
+diff --git a/rust/platform/platform.bzl b/rust/platform/platform.bzl
+index f6517d60..077300fc 100644
+--- a/rust/platform/platform.bzl
++++ b/rust/platform/platform.bzl
+@@ -15,6 +15,7 @@ _SUPPORTED_CPU_ARCH = [
+     "armv7",
+     "i686",
+     "powerpc",
++    "powerpc64le",
+     "s390x",
+     "x86_64",
+     "riscv32",
+diff --git a/rust/platform/triple.bzl b/rust/platform/triple.bzl
+index 2c993638..8617abd7 100644
+--- a/rust/platform/triple.bzl
++++ b/rust/platform/triple.bzl
+@@ -125,6 +125,10 @@ def _query_cpu_architecture(repository_ctx, expected_archs, is_windows = False):
+         if "mac" in repository_ctx.os.name and arch == "arm64":
+             arch = "aarch64"
+
++        # Correct the ppc64le architecture
++        if arch == "ppc64le":
++            arch = "powerpc64le"
++
+     if not arch in expected_archs:
+         fail("{} is not a expected cpu architecture {}\n{}".format(
+             arch,
+@@ -168,7 +172,7 @@ def get_host_triple(repository_ctx, abi = None):
+     # Detect the host's cpu architecture
+
+     supported_architectures = {
+-        "linux": ["aarch64", "x86_64"],
++        "linux": ["aarch64", "x86_64", "powerpc64le"],
+         "macos": ["aarch64", "x86_64"],
+         "windows": ["aarch64", "x86_64"],
+     }
+diff --git a/rust/platform/triple_mappings.bzl b/rust/platform/triple_mappings.bzl
+index 61a71c73..eae2f331 100644
+--- a/rust/platform/triple_mappings.bzl
++++ b/rust/platform/triple_mappings.bzl
+@@ -33,6 +33,7 @@ SUPPORTED_T2_PLATFORM_TRIPLES = [
+     "i686-linux-android",
+     "i686-unknown-freebsd",
+     "powerpc-unknown-linux-gnu",
++    "powerpc64le-unknown-linux-gnu",
+     "riscv32imc-unknown-none-elf",
+     "riscv64gc-unknown-none-elf",
+     "s390x-unknown-linux-gnu",
+@@ -64,7 +65,7 @@ _CPU_ARCH_TO_BUILTIN_PLAT_SUFFIX = {
+     "mipsel": None,
+     "powerpc": "ppc",
+     "powerpc64": None,
+-    "powerpc64le": None,
++    "powerpc64le": "ppc",
+     "riscv32": "riscv32",
+     "riscv32imc": "riscv32",
+     "riscv64": "riscv64",
+diff --git a/rust/private/repository_utils.bzl b/rust/private/repository_utils.bzl
+index 80c51ff8..53a93152 100644
+--- a/rust/private/repository_utils.bzl
++++ b/rust/private/repository_utils.bzl
+@@ -730,13 +730,16 @@ def load_arbitrary_tool(ctx, tool_name, tool_subdirectories, version, iso_date,
+     for subdirectory in tool_subdirectories:
+         # As long as the sha256 value is consistent accross calls here the
+         # cost of downloading an artifact is negated as by Bazel's caching.
+-        result = ctx.download_and_extract(
+-            urls,
+-            sha256 = sha256,
+-            auth = _make_auth_dict(ctx, urls),
+-            stripPrefix = "{}/{}".format(tool_path, subdirectory),
+-        )
+-
++        tool_path = tool_path.replace("ppc64le", "powerpc64le")
++        subdirectory = subdirectory.replace("ppc64le", "powerpc64le")
++        for url in urls:
++            url = url.replace("ppc64le", "powerpc64le")
++            result = ctx.download_and_extract(
++                url,
++                sha256 = sha256,
++                auth = _make_auth_dict(ctx, urls),
++                stripPrefix = "{}/{}".format(tool_path, subdirectory),
++            )
+         # In the event no sha256 was provided, set it to the value of the first
+         # downloaded item so subsequent downloads use a cached artifact.
+         if not sha256:
+diff --git a/rust/private/rustc.bzl b/rust/private/rustc.bzl
+index af958a47..72c30ff7 100644
+--- a/rust/private/rustc.bzl
++++ b/rust/private/rustc.bzl
+@@ -940,7 +940,7 @@ def construct_arguments(
+     if error_format != "json":
+         # Color is not compatible with json output.
+         rustc_flags.add("--color=always")
+-    rustc_flags.add("--target=" + toolchain.target_flag_value)
++    rustc_flags.add("--target=" + toolchain.target_flag_value.replace("ppc64le", "powerpc64le"))
+     if hasattr(attr, "crate_features"):
+         rustc_flags.add_all(getattr(attr, "crate_features"), before_each = "--cfg", format_each = 'feature="%s"')
+     if linker_script:
+diff --git a/rust/repositories.bzl b/rust/repositories.bzl
+index 3306ed0f..7ab5e913 100644
+--- a/rust/repositories.bzl
++++ b/rust/repositories.bzl
+@@ -43,6 +43,7 @@ DEFAULT_TOOLCHAIN_TRIPLES = {
+     "x86_64-pc-windows-msvc": "rust_windows_x86_64",
+     "x86_64-unknown-freebsd": "rust_freebsd_x86_64",
+     "x86_64-unknown-linux-gnu": "rust_linux_x86_64",
++    "powerpc64le-unknown-linux-gnu": "rust_linux_powerpc64le",
+ }
+
+ def rules_rust_dependencies():
+diff --git a/test/unit/native_deps/native_deps_test.bzl b/test/unit/native_deps/native_deps_test.bzl
+index a086afb3..0685a63a 100644
+--- a/test/unit/native_deps/native_deps_test.bzl
++++ b/test/unit/native_deps/native_deps_test.bzl
+@@ -154,6 +154,13 @@ def _bin_has_native_dep_and_alwayslink_test_impl(ctx):
+                 "link-arg=bazel-out/x64_windows-{}/bin/{}test/unit/native_deps/alwayslink.lo.lib".format(compilation_mode, workspace_prefix),
+                 "link-arg=-Wl,--no-whole-archive",
+             ]
++    elif toolchain.target_arch == "powerpc64le":
++        want = [
++           "-lstatic=native_dep",
++           "link-arg=-Wl,--whole-archive",
++           "link-arg=bazel-out/ppc-{}/bin/{}test/unit/native_deps/libalwayslink.lo".format(compilation_mode, workspace_prefix),
++           "link-arg=-Wl,--no-whole-archive",
++        ]
+     else:
+         want = [
+             "-lstatic=native_dep",
+@@ -197,6 +204,13 @@ def _cdylib_has_native_dep_and_alwayslink_test_impl(ctx):
+                 "link-arg=bazel-out/x64_windows-{}/bin/{}test/unit/native_deps/alwayslink.lo.lib".format(compilation_mode, workspace_prefix),
+                 "link-arg=-Wl,--no-whole-archive",
+             ]
++    elif toolchain.target_arch == "powerpc64le":
++        want = [
++            "-lstatic=native_dep{}".format(pic_suffix),
++            "link-arg=-Wl,--whole-archive",
++            "link-arg=bazel-out/ppc-{}/bin/{}test/unit/native_deps/libalwayslink{}.lo".format(compilation_mode, workspace_prefix, pic_suffix),
++            "link-arg=-Wl,--no-whole-archive",
++        ]
+     else:
+         want = [
+             "-lstatic=native_dep{}".format(pic_suffix),

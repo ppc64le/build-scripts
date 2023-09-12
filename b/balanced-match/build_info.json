@@ -1,18 +1,15 @@
 {
-    "package_name": "balanced-match",
-    "github_url": "https://github.com/juliangruber/balanced-match",
-    "version": "v2.0.0",
-    "default_branch": "master",
-    "package_dir": "b/balanced-match",
-    "build_script": "balanced-match_ubi_8_7.sh",
-    "docker_build": false,
-    "validate_build_script": true,
-    "use_non_root_user": false,
-    
-    "v1.0.*": {
-       "build_script": "balanced-match_ubi_8_7.sh"
-    }
-
+  "maintainer": "Stuti.Wali@ibm.com",
+  "package_name": "balanced-match",
+  "github_url": "https://github.com/juliangruber/balanced-match",
+  "version": "v2.0.0",
+  "default_branch": "master",
+  "package_dir": "b/balanced-match",
+  "build_script": "balanced-match_ubi_8_7.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v1.0.*": {
+    "build_script": "balanced-match_ubi_8_7.sh"
+  }
 }
-
-

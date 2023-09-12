@@ -1,4 +1,5 @@
 {
+    "maintainer":"Email id of the maintainer Mandatory Argument.",
     "package_name" : "Name of the packages (Eg: vault) Mandatory Argument.",
     "github_url":"Github URL for the package (Eg: https://github.com/hashicorp/vault.git) Mandatory Argument.",
     "version": "Release version or Tag version available in github repo (Eg: v1.12.0). Mandatory Argument.",

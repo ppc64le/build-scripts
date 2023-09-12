@@ -1,0 +1,16 @@
+{
+    "maintainer":"Vinod.K1@ibm.com",
+    "package_name" : "graphql-tag",
+    "github_url": "https://github.com/apollographql/graphql-tag",
+    "version": "v2.12.6",
+    "default_branch": "main",
+    "package_dir": "g/graphql-tag",
+    "build_script": "graphql-tag_ubi_8.7.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": false,
+
+    "v2.12.*" : {
+       "build_script" : "graphql-tag_ubi_8.7.sh"
+    }
+}

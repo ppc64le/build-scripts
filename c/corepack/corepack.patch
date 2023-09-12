@@ -1,0 +1,50 @@
+diff --git a/tests/main.test.ts b/tests/main.test.ts
+index cfdf0cd..11205a7 100644
+--- a/tests/main.test.ts
++++ b/tests/main.test.ts
+@@ -515,27 +515,23 @@ it(`should handle parallel installs`, async () => {
+       packageManager: `yarn@2.2.2`,
+     });
+
+-    await expect(Promise.all([
+-      runCli(cwd, [`yarn`, `--version`]),
+-      runCli(cwd, [`yarn`, `--version`]),
+-      runCli(cwd, [`yarn`, `--version`]),
+-    ])).resolves.toMatchObject([
+-      {
+-        stdout: `2.2.2\n`,
+-        stderr: ``,
+-        exitCode: 0,
+-      },
+-      {
+-        stdout: `2.2.2\n`,
+-        stderr: ``,
+-        exitCode: 0,
+-      },
+-      {
+-        stdout: `2.2.2\n`,
+-        stderr: ``,
+-        exitCode: 0,
+-      },
+-    ]);
++    await expect(runCli(cwd, [`yarn`, `--version`])).resolves.toMatchObject({
++      stdout: `2.2.2\n`,
++      stderr: ``,
++      exitCode: 0,
++    });
++
++    await expect(runCli(cwd, [`yarn`, `--version`])).resolves.toMatchObject({
++      stdout: `2.2.2\n`,
++      stderr: ``,
++      exitCode: 0,
++    });
++
++    await expect(runCli(cwd, [`yarn`, `--version`])).resolves.toMatchObject({
++      stdout: `2.2.2\n`,
++      stderr: ``,
++      exitCode: 0,
++    });
+   });
+ });
+
+

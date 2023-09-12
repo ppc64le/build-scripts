@@ -1,0 +1,15 @@
+{
+    "maintainer": "Abhishek.Dwivedi6@ibm.com",
+    "package_name" : "tslib",
+    "github_url":"https://github.com/microsoft/tslib.git",
+    "version": "2.6.0",
+    "default_branch": "main",
+    "package_dir": "t/tslib",
+    "build_script": "tslib_ubi_8.7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+
+    "2.6.*,2.5.*" : {
+        "build_script": "tslib_ubi_8.7.sh"
+    }
+}

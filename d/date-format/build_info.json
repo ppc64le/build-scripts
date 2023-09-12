@@ -1,4 +1,5 @@
 {
+    "maintainer": "Pooja.Shah4@ibm.com",	
     "package_name": "date-format",
     "github_url": "https://github.com/nomiddlename/date-format.git",
     "version": "v4.0.14",

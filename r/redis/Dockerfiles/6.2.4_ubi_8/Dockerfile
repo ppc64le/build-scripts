@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/ubi:latest
+FROM registry.access.redhat.com/ubi8:8.7
 
 # Required Labels
 LABEL name="redis" \

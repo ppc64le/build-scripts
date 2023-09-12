@@ -26,7 +26,8 @@ HOME_DIR=${PWD}
 yum update -y
 yum install -y curl unzip wget git maven java-11-openjdk.ppc64le java-11-openjdk-devel.ppc64le make cmake gcc gcc-c++ libstdc++-static
 
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.18.0.10-2.el8_7.ppc64le
+#export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.18.0.10-2.el8_7.ppc64le
+export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-11)(?=.*ppc64le)')
 export PATH=$JAVA_HOME/bin:$PATH
 java -version
 

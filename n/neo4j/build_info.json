@@ -1,4 +1,5 @@
 {
+    "maintainer": "sumit.dubey2@ibm.com",
     "package_name" : "neo4j",
     "github_url": "https://github.com/neo4j/neo4j",
     "version": "5.9.0",

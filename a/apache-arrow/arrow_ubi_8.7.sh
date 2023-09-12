@@ -2,9 +2,9 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : arrow
-# Version          : go/v10.0.1
+# Version          : go/v10.0.1,go/v12.0.1
 # Source repo      : https://github.com/apache/arrow
-# Tested on        : UBI 8.5
+# Tested on        : UBI 8.7
 # Language         : C++,Go
 # Travis-Check     : True 
 # Script License   : Apache License, Version 2 or later
@@ -20,18 +20,20 @@
 
 PACKAGE_NAME=arrow
 PACKAGE_URL=https://github.com/apache/arrow.git
-PACKAGE_VERSION=${1:-go/v10.0.1}
-GO_VERSION=${GO_VERSION:-1.19.6}
+PACKAGE_VERSION=${1:-go/v12.0.1}
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 #Dependencies
 yum install -y git sudo wget make gcc gcc-c++ cmake
-wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
-tar -C /usr/local -xf go${GO_VERSION}.linux-ppc64le.tar.gz
+
+wget "https://go.dev/dl/$(curl 'https://go.dev/VERSION?m=text').linux-ppc64le.tar.gz" 
+rm -rf /usr/local/go 
+tar -C /usr/local -xf go*.linux-ppc64le.tar.gz
 export GOROOT=/usr/local/go
 export GOPATH=$HOME
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+
 
 go install gotest.tools/gotestsum@latest
 go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.50.1

@@ -2,9 +2,9 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : telegraf
-# Version       : 1.24.3
+# Version       : 1.27.4
 # Source repo   : https://github.com/influxdata/telegraf
-# Tested on     : UBI 8.5
+# Tested on     : UBI 8.7
 # Language      : Go
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -19,9 +19,9 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=telegraf
-PACKAGE_VERSION=${1:-v1.24.3}
+PACKAGE_VERSION=${1:-v1.27.4}
 PACKAGE_URL=https://github.com/influxdata/telegraf.git
-GO_VERSION=${GO_VERSION:-1.19}
+GO_VERSION=${GO_VERSION:-1.20.5}
 
 WORKDIR=`pwd`
 

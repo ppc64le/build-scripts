@@ -1,0 +1,26 @@
+{   
+    "maintainer": "Stuti.Wali@ibm.com",
+    "package_name": "log4js-node",
+    "github_url": "https://github.com/log4js-node/log4js-node",
+    "version": "v6.9.1",
+    "default_branch": "master",
+    "package_dir": "l/log4js-node",
+    "build_script": "log4js-node_ubi_8_7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    
+    "v6.9.*": {
+       "build_script": "log4js-node_ubi_8_7.sh"
+    },
+    
+    "v6.8.0": {
+       "build_script": "log4js-node_ubi_8_7.sh"
+    },
+    
+    "v6.7.*": {
+       "build_script": "log4js-node_ubi_8_7.sh"
+    }
+}
+
+

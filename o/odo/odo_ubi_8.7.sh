@@ -2,13 +2,13 @@
 # ----------------------------------------------------------------------------
 #
 # Package	: odo
-# Version	: v3.8.0
+# Version	: v3.13.0
 # Source repo	: https://github.com/redhat-developer/odo.git
-# Tested on	: ubi 8.5
+# Tested on	: ubi 8.7
 # Language      : Go
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Chandranana Naik <Naik.Chandranana@ibm.com>
+# Maintainer	: Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,12 +19,14 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=odo
-PACKAGE_VERSION=${1:-v3.8.0}
+PACKAGE_VERSION=${1:-v3.13.0}
 PACKAGE_URL=https://github.com/redhat-developer/odo.git
 
 OS_NAME=`cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f2 | tr -d '"'`
 
-yum install -y bash-completion podman postfix mailx git make gcc-c++ patch wget
+sudo yum install -y bash-completion postfix mailx git make gcc-c++ patch wget
+
+sudo yum install -y podman --allowerasing
 
 #chrony dependency is not available in yum repository of ubi containers, however it can be installed on rhel hosts
 #This build will be verified inside container
@@ -42,8 +44,8 @@ yum install -y bash-completion podman postfix mailx git make gcc-c++ patch wget
 cd /tmp
 wget https://golang.org/dl/go1.19.linux-ppc64le.tar.gz
 tar xzf go1.19.linux-ppc64le.tar.gz
-mv go /usr/local/go
-ln -s /usr/local/go/bin/go /usr/local/bin/go
+sudo mv go /usr/local/go
+sudo ln -s /usr/local/go/bin/go /usr/local/bin/go
 rm -rf go1.19.linux-ppc64le.tar.gz
 
 export PATH=/usr/local/bin:${PATH}
@@ -81,7 +83,3 @@ echo "export PATH=$HOME/go/src/github.com/redhat-developer/odo/:$PATH" >> ~/.bas
 #make test-e2e-all
 
 odo version
-
-
-
-

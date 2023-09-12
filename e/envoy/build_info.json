@@ -1,0 +1,17 @@
+{
+    "maintainer": "Sumit.Dubey2@ibm.com",
+    "package_name" : "envoy",
+    "github_url": "https://github.com/envoyproxy/envoy",
+    "version": "v1.25.3",
+    "package_dir": "e/envoy",
+    "default_branch": "main",
+    "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "build_script": "envoy_1.25.3_ubi8.4.sh",
+    "docker_build": "true",
+    "validate_build_script": "true",
+
+    "v1.25.3": {
+        "dir": "1.25.3_ubi_8",
+        "build_script": "envoy_1.25.3_ubi8.4.sh"
+    }
+}

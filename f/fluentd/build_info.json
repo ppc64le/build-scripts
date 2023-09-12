@@ -1,4 +1,5 @@
 {
+    "maintainer": "Muskaan.Sheik@ibm.com",
     "package_name" : "fluentd",
     "github_url":"https://github.com/fluent/fluentd.git",
     "version": "v1.16.1",
@@ -15,4 +16,4 @@
     "v*.*.*" : {
         "dir":"1.14.5_es7.17.2_ubi8"
     }
-} 
+}

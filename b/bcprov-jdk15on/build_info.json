@@ -1,0 +1,16 @@
+{
+    "maintainer" : "Vinod.K1@ibm.com",
+    "package_name" : "bcprov-jdk15on",
+    "github_url": "https://github.com/bcgit/bc-java.git",
+    "version": "r1rv73",
+    "default_branch": "master",
+    "package_dir": "b/bcprov-jdk15on/",
+    "build_script": "bcprov-jdk15on_ubi_8.7.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": false,
+
+    "r1rv73" : {
+       "build_script" : "bcprov-jdk15on_ubi_8.7.sh"
+    }
+}
