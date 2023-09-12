@@ -1,3 +1,23 @@
+#!/bin/bash -e
+# ----------------------------------------------------------------------------
+#
+# Package       : grafana
+# Version       : v10.1.1
+# Source repo   : https://github.com/grafana/grafana.git
+# Tested on     : UBI-8.7
+# Travis-Check  : True
+# Language      : Typescript,Go
+# Script License: Apache License Version 2.0
+# Maintainer    : Vinod K <Vinod.K1@ibm.com>
+#
+# Disclaimer: This script has been tested in root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
+
 PACKAGE_NAME="grafana"
 PACKAGE_URL="https://github.com/grafana/grafana.git"
 PACKAGE_VERSION=v10.1.1
