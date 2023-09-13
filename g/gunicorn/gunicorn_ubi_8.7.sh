@@ -39,15 +39,16 @@ cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 
 python3 -m pip install --upgrade pip
+python3 -m pip install tox
 
-if ! pip3 install tox==3.4.0 ; then
+if ! python3 -m pip install . ; then
        echo "------------------$PACKAGE_NAME:Install_fails---------------------"
        echo "$PACKAGE_VERSION $PACKAGE_NAME"
        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
        exit 1
 fi
 
-if ! tox -e py ; then
+if ! python3 -m tox ; then
       echo "------------------$PACKAGE_NAME::Install_and_Test_fails-------------------------"
       echo "$PACKAGE_URL $PACKAGE_NAME"
       echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Fails"
