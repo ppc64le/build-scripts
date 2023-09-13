@@ -40,7 +40,7 @@ git checkout $PACKAGE_VERSION
 
 python3 -m pip install --upgrade pip
 
-if ! pip3 install tox==3.27.1 -U tox-factor ; then
+if ! pip3 install tox==3.4.0 ; then
        echo "------------------$PACKAGE_NAME:Install_fails---------------------"
        echo "$PACKAGE_VERSION $PACKAGE_NAME"
        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
