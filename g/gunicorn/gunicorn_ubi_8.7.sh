@@ -29,9 +29,9 @@ OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 yum install -y git make wget gcc-c++ python3.11-devel python3.11 python3.11-pip gcc openssl-devel
 
 #Install rustc
-curl https://sh.rustup.rs -sSf | sh -s -- -y
-source "$HOME/.cargo/env"
-rustc --version
+#curl https://sh.rustup.rs -sSf | sh -s -- -y
+#source "$HOME/.cargo/env"
+#rustc --version
 
 cd $HOME_DIR
 git clone $PACKAGE_URL
@@ -39,7 +39,10 @@ cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 
 python3 -m pip install --upgrade pip
-pip3 install cryptography
+
+curl https://sh.rustup.rs -sSf | sh -s -- -y
+source "$HOME/.cargo/env"
+rustc --version
 #python3 -m pip install tox
 #export PATH=/usr/local/bin
 
