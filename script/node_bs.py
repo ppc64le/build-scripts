@@ -183,7 +183,9 @@ def create_latest_script(old_script):
 
         for i in range(len(template_lines)):
             if template_lines[i].startswith("PACKAGE_VERSION"):
-                template_lines[i]= f"PACKAGE_VERSION={latest_release}\n"
+                temp_rel="${1:-"
+                temp_rel=temp_rel+latest_release+"}"
+                template_lines[i]= f"PACKAGE_VERSION={temp_rel}\n"
             elif template_lines[i].startswith('# Version'):
                 template_lines[i]= f"# Version          : {latest_release}\n"
             elif template_lines[i].startswith("PACKAGE_URL"):
@@ -198,26 +200,56 @@ def create_latest_script(old_script):
         with open ("/home/user8/shubham_garud/build-scripts/script/template.sh",'w') as newfile:
             newfile.writelines(template_lines)
 
-        shutil.copyfile("/home/user8/shubham_garud/build-scripts/script/template.sh",f"{dir_name}/{package_name}_ubi.sh")
+        shutil.copyfile("/home/user8/shubham_garud/build-scripts/script/template.sh",f"{dir_name}/{package_name}_ubi_8.7.sh")
         new_cmd="python3 script/trigger_container.py -f script/template.sh"
      
         #new_cmd="python3 test.py -f latest_build_script.sh"
     container_result=subprocess.Popen(new_cmd,shell=True)
     stdout, stderr=container_result.communicate()
     exit_code=container_result.wait()
-    print("\n PRinting exit code")
-    print(exit_code)
+    #print("\n PRinting exit code")
+    #print(exit_code)
 
 
     
     cmd_2=f"python3 script/generate_build_info.py {package_name}"
     print("\n\n Generating build_info.json")
-    #subprocess.Popen(cmd_2,shell=True)
-
+    build_info_w=subprocess.Popen(cmd_2,shell=True)
+    build_info_w.wait()
+    
     #cmd_3=f"git branch"
     #print("\n\n Printing Current Branch")
     #subprocess.Popen(cmd_3,shell=True)
     #print('sdfsf',os.getcwd())
+
+    #git add commands
+    print("printing currecnt directory before adding \n",os.getcwd())
+    print("printing dir_name",dir_name)
+    print("printing package_name",package_name)
+    
+    cmd_add=f"git add {dir_name}/{package_name}_ubi_8.7.sh"
+    print("\n\n Git Adding build_script")
+    git_add_w=subprocess.Popen(cmd_add,shell=True)
+    git_add_w.wait()
+
+    cmd_add=f"git add {dir_name}/build_info.json"
+    print("\n\n Git Adding build_info.json")
+    git_add_w=subprocess.Popen(cmd_add,shell=True)
+    git_add_w.wait()
+
+     
+    #git commit command
+    commit_msg="Added build_script and Build_info.json using automation"
+    cmd_commit=f"git commit -m \"{commit_msg}\" "
+    print("\n\n Commiting")
+    git_commit_w=subprocess.Popen(cmd_commit,shell=True)
+    git_commit_w.wait()
+    
+    #git push commands
+    cmd_push=f"git push origin {package_name}_automation"
+    print("\n\n pushing code")
+    git_push_w=subprocess.Popen(cmd_push,shell=True)
+    git_push_w.wait()
        
     
 def display_details():

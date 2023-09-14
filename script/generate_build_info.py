@@ -81,8 +81,10 @@ def get_files_list(dirname:str, recursive:bool=True):
 path_separator = os.path.sep
 #ROOT = os.path.dirname(os.path.dirname(__file__))
 ROOT = os.getcwd()
-
-package_name = input("Enter Package name (Package name should match with the directory name): ")
+if len(sys.argv)>1:
+    package_name=sys.argv[1]
+else:
+    package_name = input("Enter Package name (Package name should match with the directory name): ")
 #package_name = 'elasticsearch'
 package_name = package_name.lower()
 dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_name}"
@@ -100,7 +102,6 @@ github_url = ''
 default_build_script = None
 
 file_list = get_files_list(dir_name)
-
 
 def get_maintainer_for_package(dir_name):
     files_path=os.path.join(dir_name,"*")
@@ -130,6 +131,28 @@ def get_maintainer_from_dockerfile(dir_name):
                     return maintainer
     return "Unknown"
 
+def get_default_build_script(build_scripts_versions):
+    #print(build_scripts_versions[-1]['version'])
+    print((build_scripts_versions))
+    #def_script=''
+    result=[]
+    for data in build_scripts_versions:
+        if 'ubi_8.7' in data['file']:
+            #def_script=data['file']
+
+            #print(data['file'])
+            return [data['version'],data['file']]
+        else:
+            #def_script=data['file']
+            result.append(data['version'])
+            result.append(data['file'])
+    return result
+
+
+
+#print(type(data))
+
+
 maintainer=get_maintainer_for_package(dir_name)
 if maintainer=="Unknown":
     maintainer= get_maintainer_from_dockerfile(dir_name)
@@ -150,6 +173,7 @@ for file in file_list:
                     default_build_script = file.replace(dir_name, '').strip(path_separator)
                     build_scripts_versions.append( {'version': line.split(':')[1].strip(),
                                                     'file': default_build_script})
+                    #print(build_scripts_versions)
     elif 'Dockerfile' in file.split(path_separator)[-1]:
         # Read Dockerfiles and store details
         docker_details = {}
@@ -180,12 +204,17 @@ for file in file_list:
         with open(f"{dir_name}/build_info.json",'w') as f:
             json.dump(updated_build_info,f,indent=2)
         
-    
+default_version,default_build_script=get_default_build_script(build_scripts_versions)
+#print("hi\n")
+#print(get_default_build_script(build_scripts_versions))
+print("\n Printing default_build_script",default_build_script)
+print("\n Printing default_version",default_version)
+
 final_json = {
     "maintainer" : maintainer,
     "package_name" : package_name,
     "github_url": github_url,
-    "version": dockerfile_versions[-1]['version'] if dockerfile_versions else build_scripts_versions[-1]['version'],
+    "version": dockerfile_versions[-1]['version'] if dockerfile_versions else default_version,
     "default_branch": get_default_branch(github_url),
     "build_script": default_build_script,
     "package_dir": dir_name.replace(ROOT, '').strip(path_separator),
@@ -219,6 +248,13 @@ for entry in dockerfile_versions:
     for k in entry:
         if 'patch' in k.lower():
             final_json[version][k] = entry[k]
+
+#default_build_script=get_default_build_script(build_scripts_versions)
+print("\n\n Creating build_info.json file locally")
+print("\n\n")
+
+with open(f"{dir_name}/build_info.json",'w') as f:
+            json.dump(final_json,f,indent = 3)
 
 log(log_type.HEADER, "Sample Json contents as below")
 log(log_type.HEADER, "-" * 25)
