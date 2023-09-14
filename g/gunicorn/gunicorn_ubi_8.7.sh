@@ -39,6 +39,7 @@ cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 
 python3 -m pip install --upgrade pip
+pip3 install cryptograpy
 #python3 -m pip install tox
 #export PATH=/usr/local/bin
 
