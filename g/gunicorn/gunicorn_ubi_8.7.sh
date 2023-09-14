@@ -26,7 +26,7 @@ HOME_DIR=${PWD}
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
-yum install -y git make wget gcc-c++ python3.11-devel python3.11 python3.11-pip gcc openssl-devel
+yum install -y git make wget gcc-c++ python3.11-devel python3.11 python3.11-pip gcc openssl-devel virtualenv
 
 #Install rustc
 #curl https://sh.rustup.rs -sSf | sh -s -- -y
