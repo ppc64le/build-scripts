@@ -28,10 +28,10 @@ OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 yum install -y git make wget gcc-c++ python3.11-devel python3.11 python3.11-pip gcc openssl-devel virtualenv
 
-#Install rustc
-#curl https://sh.rustup.rs -sSf | sh -s -- -y
-#source "$HOME/.cargo/env"
-#rustc --version
+#install rustc
+curl https://sh.rustup.rs -sSf | sh -s -- -y
+source "$HOME/.cargo/env"
+rustc --version
 
 cd $HOME_DIR
 git clone $PACKAGE_URL
@@ -40,19 +40,12 @@ git checkout $PACKAGE_VERSION
 
 python3 -m pip install --upgrade pip
 
-curl https://sh.rustup.rs -sSf | sh -s -- -y
-source "$HOME/.cargo/env"
-rustc --version
-#python3 -m pip install tox
-#export PATH=/usr/local/bin
-
 if ! make ; then
        echo "------------------$PACKAGE_NAME:Install_fails---------------------"
        echo "$PACKAGE_VERSION $PACKAGE_NAME"
        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
        exit 1
 fi
-#export PATH=/usr/local/bin
 
 if ! make test ; then
       echo "------------------$PACKAGE_NAME::Install_and_Test_fails-------------------------"
