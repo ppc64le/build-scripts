@@ -1,0 +1,19 @@
+{
+    "maintainer": "Stuti.Wali@ibm.com",
+    "package_name": "leaflet",
+    "github_url": "https://github.com/Leaflet/Leaflet",
+    "version": "v1.9.4",
+    "default_branch": "main",
+    "package_dir": "l/leaflet",
+    "build_script": "leaflet_ubi_8_7.sh",
+    "docker_build": true,
+    "validate_build_script": true,
+    "use_non_root_user": true,
+ 
+    "v1.9.*": {
+        "dir": "ubi8_7",
+        "build_script": "leaflet_ubi_8_7.sh"
+     } 
+
+}
+
