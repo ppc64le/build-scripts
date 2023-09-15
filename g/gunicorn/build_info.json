@@ -1,0 +1,16 @@
+{
+    "maintainer":"Vinod.K1@ibm.com",
+    "package_name" : "gunicorn",
+    "github_url": "https://github.com/benoitc/gunicorn",
+    "version": "21.2.0",
+    "default_branch": "master",
+    "package_dir": "g/gunicorn",
+    "build_script": "gunicorn_ubi_8.7.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": false,
+
+    "21.2.*" : {
+       "build_script" : "gunicorn_ubi_8.7.sh"
+    }
+}
