@@ -28,6 +28,15 @@ OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 yum install -y git wget gcc gcc-c++ systemd-devel.ppc64le
 
+GO_VERSION=${GO_VERSION:-1.20.6}
+wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
+rm -rf /usr/local/go
+tar -C /usr/local -xzf go${GO_VERSION}.linux-ppc64le.tar.gz
+export GOROOT=/usr/local/go
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:/usr/local/bin
+go version
+
 cd $HOME_DIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
