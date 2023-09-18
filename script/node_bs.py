@@ -113,11 +113,6 @@ def create_latest_script(old_script):
             
     #new_cmd="python3 script/trigger_container.py -f script/template.sh"
 
-    
-    branch_chout=f"git checkout master"
-    print("\n\n Checking Out to master")
-    subprocess.Popen(branch_chout,shell=True)
-
     branch_chout=f"git checkout -b {package_name}_automation"
     print("\n\n Creating Branch and Checking Out")
     subprocess.Popen(branch_chout,shell=True)
