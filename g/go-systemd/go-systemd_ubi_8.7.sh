@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : go-systemd
-# Version          : 22.5.0
+# Version          : v22.5.0
 # Source repo      : https://github.com/coreos/go-systemd
 # Tested on        : UBI 8.7
 # Language         : Go
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=go-systemd
-PACKAGE_VERSION=${1:-22.5.0}
+PACKAGE_VERSION=${1:-v22.5.0}
 PACKAGE_URL=https://github.com/coreos/go-systemd
 
 HOME_DIR=${PWD}
