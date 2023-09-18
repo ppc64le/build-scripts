@@ -2,7 +2,7 @@
     "maintainer":"Vinod.K1@ibm.com",
     "package_name" : "go-systemd",
     "github_url": "https://github.com/coreos/go-systemd",
-    "version": "22.5.0",
+    "version": "v22.5.0",
     "default_branch": "main",
     "package_dir": "g/go-systemd",
     "build_script": "go-systemd_ubi_8.7.sh",
