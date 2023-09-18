@@ -105,103 +105,52 @@ def get_latest_release(package_url):
         if response.json()["name"]=="":
             return lc_release
     
-    #print("response name:",response.json()["name"])
     return response.json()["name"]
 
 
 def create_latest_script(old_script):
 
-    '''
-    with open(old_script,'r') as old_file, open(f"{dir_name}/latest_build_script.sh",'a') as newfile:
-        for line in old_file:
-            if line.startswith("PACKAGE_VERSION"):
-                newfile.write(f"PACKAGE_VERSION={latest_release}\n")
-            else:
-                newfile.write(line)
-  
+            
+    #new_cmd="python3 script/trigger_container.py -f script/template.sh"
 
-   #update template.sh with latest_release , github_url ,package_name
- 
-    with open("/home/user8/shubham_garud/build-scripts/script/template.sh",'r') as newfile:
-        template_lines=newfile.readlines() 
+    
+    branch_chout=f"git checkout master"
+    print("\n\n Checking Out to master")
+    subprocess.Popen(branch_chout,shell=True)
+
+    branch_chout=f"git checkout -b {package_name}_automation"
+    print("\n\n Creating Branch and Checking Out")
+    subprocess.Popen(branch_chout,shell=True)
+
+    branch_cmd=f"git branch"
+    print("\n\n Printing Current Branch")
+    subprocess.Popen(branch_cmd,shell=True)
+    
+    current_directory = os.getcwd()
+    with open(f"{current_directory}/script/template.sh",'r') as newfile:
+        template_lines=newfile.readlines()
 
     for i in range(len(template_lines)):
         if template_lines[i].startswith("PACKAGE_VERSION"):
-            template_lines[i]= f"PACKAGE_VERSION={latest_release}\n"
+            temp_rel="${1:-"
+            temp_rel=temp_rel+latest_release+"}"
+            template_lines[i]= f"PACKAGE_VERSION={temp_rel}\n"
         elif template_lines[i].startswith('# Version'):
             template_lines[i]= f"# Version          : {latest_release}\n"
         elif template_lines[i].startswith("PACKAGE_URL"):
             template_lines[i]=f"PACKAGE_URL={github_url}\n"
         elif template_lines[i].startswith("# Source repo"):
-              template_lines[i]= f"# Source repo      : {github_url}\n"
+            template_lines[i]= f"# Source repo      : {github_url}\n"
         elif template_lines[i].startswith("# Package"):
             template_lines[i]=f"# Package          : {package_name}\n"
         elif template_lines[i].startswith("PACKAGE_NAME"):
             template_lines[i]=f"PACKAGE_NAME={package_name}\n"
-    
-    #for dattaa in template_lines:
-        #print(dattaa)
-    
-    with open ("/home/user8/shubham_garud/build-scripts/script/template.sh",'w') as newfile:
+        
+    with open (f"{current_directory}/script/template.sh",'w') as newfile:
         newfile.writelines(template_lines)
 
-
-    #new_build_script=f"{dir_name}/latest_build_script.sh"
-    shutil.copyfile("/home/user8/shubham_garud/build-scripts/script/template.sh",f"{dir_name}/{package_name}_{latest_release}_ubi.sh")
-    print(f"\n\n latest_build_script.sh created at {dir_name}")
-   '''
-    #triggering container to execute latest_build_script
-    #import pdb
-    #pdb.set_trace()
-
-    # Stop execution if repo is not active
-
-
-    print("\n1. Enter 1 to execute latest build_script")
-    print("\n2. Enter 2 to execute template_script")
-    script_option=int(input("\n Select option:"))   
-    if script_option==1:
-        new_cmd="python3 script/trigger_container.py -f script/latest_build_script.sh"
-    else:
-        #new_cmd="python3 script/trigger_container.py -f script/template.sh"
-
-        #branch_cmd=f"git branch"
-        #print("\n\n Printing Current Branch")
-        #subprocess.Popen(branch_cmd,shell=True)
-
-        branch_chout=f"git checkout -b {package_name}_automation"
-        print("\n\n Creating Branch and Checking Out")
-        subprocess.Popen(branch_chout,shell=True)
-
-        branch_cmd=f"git branch"
-        print("\n\n Printing Current Branch")
-        subprocess.Popen(branch_cmd,shell=True)
-
-
-        with open("/home/user8/shubham_garud/build-scripts/script/template.sh",'r') as newfile:
-            template_lines=newfile.readlines()
-
-        for i in range(len(template_lines)):
-            if template_lines[i].startswith("PACKAGE_VERSION"):
-                temp_rel="${1:-"
-                temp_rel=temp_rel+latest_release+"}"
-                template_lines[i]= f"PACKAGE_VERSION={temp_rel}\n"
-            elif template_lines[i].startswith('# Version'):
-                template_lines[i]= f"# Version          : {latest_release}\n"
-            elif template_lines[i].startswith("PACKAGE_URL"):
-                template_lines[i]=f"PACKAGE_URL={github_url}\n"
-            elif template_lines[i].startswith("# Source repo"):
-                template_lines[i]= f"# Source repo      : {github_url}\n"
-            elif template_lines[i].startswith("# Package"):
-                template_lines[i]=f"# Package          : {package_name}\n"
-            elif template_lines[i].startswith("PACKAGE_NAME"):
-                template_lines[i]=f"PACKAGE_NAME={package_name}\n"
-        
-        with open ("/home/user8/shubham_garud/build-scripts/script/template.sh",'w') as newfile:
-            newfile.writelines(template_lines)
-
-        shutil.copyfile("/home/user8/shubham_garud/build-scripts/script/template.sh",f"{dir_name}/{package_name}_ubi_8.7.sh")
-        new_cmd="python3 script/trigger_container.py -f script/template.sh"
+    shutil.copyfile(f"{current_directory}/script/template.sh",f"{dir_name}/{package_name}_ubi_8.7.sh")
+    new_cmd="python3 script/trigger_container.py -f script/template.sh"
      
         #new_cmd="python3 test.py -f latest_build_script.sh"
     container_result=subprocess.Popen(new_cmd,shell=True)
@@ -209,9 +158,7 @@ def create_latest_script(old_script):
     exit_code=container_result.wait()
     #print("\n PRinting exit code")
     #print(exit_code)
-
-
-    
+   
     cmd_2=f"python3 script/generate_build_info.py {package_name}"
     print("\n\n Generating build_info.json")
     build_info_w=subprocess.Popen(cmd_2,shell=True)
@@ -226,31 +173,38 @@ def create_latest_script(old_script):
     print("printing currecnt directory before adding \n",os.getcwd())
     print("printing dir_name",dir_name)
     print("printing package_name",package_name)
-    
-    cmd_add=f"git add {dir_name}/{package_name}_ubi_8.7.sh"
-    print("\n\n Git Adding build_script")
-    git_add_w=subprocess.Popen(cmd_add,shell=True)
-    git_add_w.wait()
 
-    cmd_add=f"git add {dir_name}/build_info.json"
-    print("\n\n Git Adding build_info.json")
-    git_add_w=subprocess.Popen(cmd_add,shell=True)
-    git_add_w.wait()
 
-     
-    #git commit command
-    commit_msg="Added build_script and Build_info.json using automation"
-    cmd_commit=f"git commit -m \"{commit_msg}\" "
-    print("\n\n Commiting")
-    git_commit_w=subprocess.Popen(cmd_commit,shell=True)
-    git_commit_w.wait()
+    user_push_response = input("Do you wish to commit and push this code ? (y/n):")
+    user_push_response=user_push_response.lower()
+    if user_push_response=='y':
+        cmd_add=f"git add {dir_name}/{package_name}_ubi_8.7.sh"
+        print("\n\n Git Adding build_script")
+        git_add_w=subprocess.Popen(cmd_add,shell=True)
+        git_add_w.wait()
+
+        cmd_add=f"git add {dir_name}/build_info.json"
+        print("\n\n Git Adding build_info.json")
+        git_add_w=subprocess.Popen(cmd_add,shell=True)
+        git_add_w.wait()
+
+        #git commit command
+        commit_msg="Added build_script and Build_info.json using automation for "+ package_name
+        cmd_commit=f"git commit -m \"{commit_msg}\" "
+        print("\n\n Commiting")
+        git_commit_w=subprocess.Popen(cmd_commit,shell=True)
+        git_commit_w.wait()
     
-    #git push commands
-    cmd_push=f"git push origin {package_name}_automation"
-    print("\n\n pushing code")
-    git_push_w=subprocess.Popen(cmd_push,shell=True)
-    git_push_w.wait()
-       
+        #git push commands
+        cmd_push=f"git push origin {package_name}_automation"
+        print("\n\n pushing code")
+        git_push_w=subprocess.Popen(cmd_push,shell=True)
+        git_push_w.wait()
+    else:
+        print("\n Not Pushing code")
+        exit()
+
+  
     
 def display_details():
     print(f"\n\n Github URL :{github_url}")
