@@ -11,7 +11,7 @@
     "docker_build": "true",
 
     "v2.25.*" : {
-       "dir": "2.25.0_ubi",
+       "dir": "2.25.0_ubi8",
        "build_script": "filebrowser_ubi_8.7.sh"
     }
 }
