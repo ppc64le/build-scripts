@@ -38,9 +38,9 @@ sudo python3 -m pipenv --python /usr/bin/python3.9
 git apply $SCRIPT_DIR/tarball.diff
 sudo ./build.sh legacy-manifests/2.7.0/opensearch-2.7.0.yml -s -c OpenSearch
 
-PACKAGE_NAME=geospatial;
-PACKAGE_URL=https://github.com/opensearch-project/geospatial;
-PACKAGE_VERSION=${1:-2.7.0.0};
+PACKAGE_NAME=geospatial
+PACKAGE_URL=https://github.com/opensearch-project/geospatial
+PACKAGE_VERSION=${1:-2.7.0.0}
 
 cd $CURRENT_DIR
 git clone $PACKAGE_URL
