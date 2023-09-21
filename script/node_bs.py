@@ -142,6 +142,7 @@ def raise_pull_request():
 				json = pull_request_data,   
 				headers = headers
 			)
+    print("\n PR response" ,response)
     print("\n PR status code",response.status_code)
     if response.status_code ==200 :
         return {"message" : "success"}
