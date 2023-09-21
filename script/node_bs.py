@@ -112,19 +112,23 @@ def get_latest_release(package_url):
 def raise_pull_request():
 
     print("\n Creating Pull Request")
-    pr_owner = input("\n Enter github username:")
-    pr_token = input("\n Enter token")
+    pr_owner = "ppc64le"  
+    github_token=input("Enter github token:")
     
     pr_repo = "build-scripts"
+
     pr_title = "Currency: Added build_script and build_info.json for "+package_name
     base ="master"
     body = ""
     head = "{}:{}".format(pr_owner,branch_pkg),
     maintainer_can_modify = True
     draft = False
+
+    #pull_request_auth = HTTPBasicAuth(github_username,github_token)
+
     headers = {
             "accept": "application/vnd.github.v3+json",
-            "Authorization": "Bearer{}".format(pr_owner)
+            "Authorization": "Bearer {}".format(github_token)
               }
 
     pull_request_data={
@@ -139,7 +143,8 @@ def raise_pull_request():
     pull_request_url = "https://api.github.com/repos/{}/{}/pulls".format(pr_owner, pr_repo)
     response = requests.post(
 				pull_request_url,
-				json = pull_request_data,   
+                                data = json.dumps(pull_request_data),
+				json = json.dumps(pull_request_data),
 				headers = headers
 			)
     print("\n PR response" ,response)
