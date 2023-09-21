@@ -128,12 +128,12 @@ def raise_pull_request():
               }
 
     pull_request_data={
-            "title" = pr_title,
-            "body" = body,
-            "head" = head = "{}:{}".format(pr_owner,branch_pkg),
-            "base" = base
-            "maintainer_can_modify"=maintainer_can_modify
-            "draft" = draft
+            "title": pr_title,
+            "body" : body,
+            "head" : "{}:{}".format(pr_owner,branch_pkg),
+            "base" : base,
+            "maintainer_can_modify" : maintainer_can_modify,
+            "draft" : draft
     }
 
     pull_request_url = "https://api.github.com/repos/{}/{}/pulls".format(pr_owner, pr_repo)
