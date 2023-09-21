@@ -215,6 +215,7 @@ def create_latest_script(old_script):
     user_push_response = input("Do you wish to commit and push this code ? (y/n):")
     user_push_response=user_push_response.lower()
     if user_push_response=='y':
+
         cmd_add=f"git add {dir_name}/{package_name}_ubi_8.7.sh"
         print("\n\n Git Adding build_script")
         git_add_w=subprocess.Popen(cmd_add,shell=True)
@@ -242,17 +243,15 @@ def create_latest_script(old_script):
         user_pr_response=user_pr_response.lower()
 
         if user_push_response=='y':
-
             pull_request_response = raise_pull_request()
             print(pull_request_response)
             if pull_request_response['message']=="success":
                 print("\n\n Pull Request Created Successfully")
             else:
-                print("\n\n Pull Request Not Created"
+                print("\n\n Pull Request Not Created")
         else:
             print("\n Not Creating Pull Request")
-
-    else:
+    else :
         print("\n Not Pushing code")
         exit()
 
