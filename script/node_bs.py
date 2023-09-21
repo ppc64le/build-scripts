@@ -142,6 +142,7 @@ def raise_pull_request():
 				json = pull_request_data,   
 				headers = headers
 			)
+    print("\n PR status code",response.status_code)
     if response.status_code ==200 :
         return {"message" : "success"}
     return {"message" : "fail"}
@@ -241,12 +242,13 @@ def create_latest_script(old_script):
         user_pr_response=user_pr_response.lower()
 
         if user_push_response=='y':
+
             pull_request_response = raise_pull_request()
+            print(pull_request_response)
             if pull_request_response['message']=="success":
                 print("\n\n Pull Request Created Successfully")
-
-            elif pull_request_response['message']=="fail" :
-                print("\n\n Pull Request Not Created" 
+            else:
+                print("\n\n Pull Request Not Created"
         else:
             print("\n Not Creating Pull Request")
 
