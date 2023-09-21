@@ -30,6 +30,7 @@ github_url=''
 latest_release=''
 active_repo=False
 new_build_script=''
+branch_pkg=""
 
 
 def get_latest_build_script(dir_name):
@@ -108,12 +109,52 @@ def get_latest_release(package_url):
     return response.json()["name"]
 
 
+def raise_pull_request():
+
+    print("\n Creating Pull Request")
+    pr_owner = input("\n Enter github username:")
+    pr_token = input("\n Enter token")
+    
+    pr_repo = "build-scripts"
+    pr_title = "Currency: Added build_script and build_info.json for "+package_name
+    base ="master"
+    body = ""
+    head = "{}:{}".format(pr_owner,branch_pkg),
+    maintainer_can_modify = True
+    draft = False
+    headers = {
+            "accept": "application/vnd.github.v3+json",
+            "Authorization": "Bearer{}".format(pr_owner)
+              }
+
+    pull_request_data={
+            "title" = pr_title,
+            "body" = body,
+            "head" = head = "{}:{}".format(pr_owner,branch_pkg),
+            "base" = base
+            "maintainer_can_modify"=maintainer_can_modify
+            "draft" = draft
+    }
+
+    pull_request_url = "https://api.github.com/repos/{}/{}/pulls".format(pr_owner, pr_repo)
+    response = requests.post(
+				pull_request_url,
+				json = pull_request_data,   
+				headers = headers
+			)
+    if response.status_code ==200 :
+        return {"message" : "success"}
+    return {"message" : "fail"}
+
+
+
 def create_latest_script(old_script):
 
             
     #new_cmd="python3 script/trigger_container.py -f script/template.sh"
 
     branch_chout=f"git checkout -b {package_name}_automation"
+    branch_pkg=f"{package_name}_automation"
     print("\n\n Creating Branch and Checking Out")
     subprocess.Popen(branch_chout,shell=True)
 
@@ -195,6 +236,20 @@ def create_latest_script(old_script):
         print("\n\n pushing code")
         git_push_w=subprocess.Popen(cmd_push,shell=True)
         git_push_w.wait()
+        
+        user_pr_response=input("Do you wish to create a Pull Request ? (y/n):")
+        user_pr_response=user_pr_response.lower()
+
+        if user_push_response=='y':
+            pull_request_response = raise_pull_request()
+            if pull_request_response['message']=="success":
+                print("\n\n Pull Request Created Successfully")
+
+            elif pull_request_response['message']=="fail" :
+                print("\n\n Pull Request Not Created" 
+        else:
+            print("\n Not Creating Pull Request")
+
     else:
         print("\n Not Pushing code")
         exit()
