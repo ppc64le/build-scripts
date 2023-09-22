@@ -109,7 +109,7 @@ def get_latest_release(package_url):
     return response.json()["name"]
 
 
-def raise_pull_request():
+def raise_pull_request(branch_pkg):
 
     print("\n Creating Pull Request")
     user_name=input("Enter username:")
@@ -246,7 +246,7 @@ def create_latest_script(old_script):
         user_pr_response=user_pr_response.lower()
 
         if user_push_response=='y':
-            pull_request_response = raise_pull_request()
+            pull_request_response = raise_pull_request(branch_pkg)
             print(pull_request_response)
             if pull_request_response['message']=="success":
                 print("\n\n Pull Request Created Successfully")
