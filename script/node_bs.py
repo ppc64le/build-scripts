@@ -112,6 +112,8 @@ def get_latest_release(package_url):
 def raise_pull_request():
 
     print("\n Creating Pull Request")
+    user_name=input("Enter username")
+
     pr_owner = "ppc64le"  
     github_token=input("Enter github token:")
     
@@ -119,22 +121,20 @@ def raise_pull_request():
 
     pr_title = "Currency: Added build_script and build_info.json for "+package_name
     base ="master"
-    body = ""
-    head = "{}:{}".format(pr_owner,branch_pkg),
+    
+    head="{}:{}".format(user_name,branch_pkg)
     maintainer_can_modify = True
     draft = False
 
-    #pull_request_auth = HTTPBasicAuth(github_username,github_token)
-
     headers = {
-            "accept": "application/vnd.github.v3+json",
+            "Accept": "application/vnd.github.v3+json",
             "Authorization": "Bearer {}".format(github_token)
               }
 
     pull_request_data={
             "title": pr_title,
-            "body" : body,
-            "head" : "{}:{}".format(pr_owner,branch_pkg),
+            "body" : "Adding build_script and build_info.json",
+            "head" : head,
             "base" : base,
             "maintainer_can_modify" : maintainer_can_modify,
             "draft" : draft
@@ -143,13 +143,12 @@ def raise_pull_request():
     pull_request_url = "https://api.github.com/repos/{}/{}/pulls".format(pr_owner, pr_repo)
     response = requests.post(
 				pull_request_url,
-                                data = json.dumps(pull_request_data),
-				json = json.dumps(pull_request_data),
+                                json = pull_request_data,
 				headers = headers
 			)
     print("\n PR response" ,response)
     print("\n PR status code",response.status_code)
-    if response.status_code ==200 :
+    if response.status_code >=200 and response.status_code <=299 :
         return {"message" : "success"}
     return {"message" : "fail"}
 
@@ -207,10 +206,6 @@ def create_latest_script(old_script):
     build_info_w=subprocess.Popen(cmd_2,shell=True)
     build_info_w.wait()
     
-    #cmd_3=f"git branch"
-    #print("\n\n Printing Current Branch")
-    #subprocess.Popen(cmd_3,shell=True)
-    #print('sdfsf',os.getcwd())
 
     #git add commands
     print("printing currecnt directory before adding \n",os.getcwd())
