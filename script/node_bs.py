@@ -112,7 +112,7 @@ def get_latest_release(package_url):
 def raise_pull_request():
 
     print("\n Creating Pull Request")
-    user_name=input("Enter username")
+    user_name=input("Enter username:")
 
     pr_owner = "ppc64le"  
     github_token=input("Enter github token:")
@@ -139,6 +139,7 @@ def raise_pull_request():
             "maintainer_can_modify" : maintainer_can_modify,
             "draft" : draft
     }
+    print("\n Head:",head)
 
     pull_request_url = "https://api.github.com/repos/{}/{}/pulls".format(pr_owner, pr_repo)
     response = requests.post(
