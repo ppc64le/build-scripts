@@ -129,7 +129,7 @@ def raise_pull_request():
     headers = {
             "Accept": "application/vnd.github.v3+json",
             "Authorization": "Bearer {}".format(github_token)
-              }
+    }
 
     pull_request_data={
             "title": pr_title,
@@ -145,7 +145,7 @@ def raise_pull_request():
 				pull_request_url,
                                 json = pull_request_data,
 				headers = headers
-			)
+    )
     print("\n PR response" ,response)
     print("\n PR status code",response.status_code)
     if response.status_code >=200 and response.status_code <=299 :
