@@ -1,0 +1,16 @@
+{
+    "maintainer":"Vinod.K1@ibm.com",
+    "package_name" : "grpc-go",
+    "github_url": "https://github.com/grpc/grpc-go",
+    "version": "v1.58.2",
+    "default_branch": "master",
+    "package_dir": "g/grpc-go",
+    "build_script": "grpc-go_ubi_8.7.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": false,
+
+    "v1.58.*" : {
+       "build_script" : "grpc-go_ubi_8.7.sh"
+    }
+}
