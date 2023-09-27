@@ -19,11 +19,10 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e
 PACKAGE_NAME=bazel
 PACKAGE_URL=https://github.com/bazelbuild/bazel
 
-# Default tag jgrapht
+# Default tag bazel
 if [ -z "$1" ]; then
   export PACKAGE_VERSION="6.3.2"
 else
