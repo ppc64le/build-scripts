@@ -156,7 +156,7 @@ def raise_pull_request(branch_pkg):
 
 
 
-def create_latest_script(old_script):
+def create_new_script():
 
             
     #new_cmd="python3 script/trigger_container.py -f script/template.sh"
@@ -270,7 +270,7 @@ old_script=get_latest_build_script(dir_name)
 if old_script!="NPresent":
     print("\n ** Old Script Present**")
     display_details()
-    create_latest_script(old_script)
+    create_new_script()
     #print(f"old script name : {old_script}")
     #print("directory",os.getcwd())
 else:
