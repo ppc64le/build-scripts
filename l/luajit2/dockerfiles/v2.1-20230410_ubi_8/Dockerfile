@@ -45,5 +45,5 @@ COPY --from=build /usr/local/bin/luajit /bin/luajit2
 USER luajit2
 
 #Entry point
-CMD ["/bin/luajit2"]
+ENTRYPOINT ["/bin/luajit2"]
 
