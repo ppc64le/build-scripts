@@ -44,8 +44,6 @@ jobs:
     - #stage: Build docker image
       name: Docker build
       script: 
-        #With workspace limitaton to either we can use already created workspace or create new workspace any time. We had to read build_info explicitly before actual docker build code
-        - chmod +x ./script/read_buildinfo.sh;bash -x ./script/read_buildinfo.sh
         - source variable.sh
         - if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/build_docker.sh; bash -x ./script/build_docker.sh;echo "printing docker images"; docker images; fi
       workspaces:
@@ -53,6 +51,7 @@ jobs:
           name: docker_image_tar
           paths:
             - image.tar
+        use: build_cache
         
 
     - stage: Run Scanner
