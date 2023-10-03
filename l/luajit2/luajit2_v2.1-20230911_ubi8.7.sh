@@ -54,7 +54,7 @@ yum install -y \
 cd $wdir
 git clone ${PACKAGE_URL}
 cd ${PACKAGE_NAME} && git checkout ${PACKAGE_VERSION}
-git apply ../${PACKAGE_NAME}-${PACKAGE_VERSION}.patch
+git apply $wdir/${PACKAGE_NAME}-${PACKAGE_VERSION}.patch
 
 #Build
 ret=0
@@ -78,7 +78,7 @@ cd $wdir
 git clone https://github.com/openresty/luajit2-test-suite.git
 cd luajit2-test-suite
 git checkout ${TEST_SUITE_VERSION}
-git apply ../luajit2-test-suite-${TEST_SUITE_VERSION}.patch
+git apply $wdir/luajit2-test-suite-${TEST_SUITE_VERSION}.patch
 ./run-tests -v  /usr/local || ret=$?
 if [ "$ret" -ne 0 ]
 then
