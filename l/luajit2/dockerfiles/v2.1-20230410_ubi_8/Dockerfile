@@ -3,8 +3,8 @@ FROM registry.access.redhat.com/ubi8/ubi:8.7 AS build
 ENV LUAJIT_VERSION=v2.1-20230911
 ENV LUAJIT_PACKAGE_NAME=luajit2
 ENV LUAJIT_PACKAGE_URL=https://github.com/openresty/${LUAJIT_PACKAGE_NAME}.git
-#ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/l/luajit2/luajit2_${LUAJIT_VERSION}.patch
-ENV PATCH_FILE=https://raw.githubusercontent.com/sumitd2/build-scripts/luajit2/l/luajit2/luajit2_${LUAJIT_VERSION}.patch
+ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/l/luajit2/luajit2_${LUAJIT_VERSION}.patch
+#ENV PATCH_FILE=https://raw.githubusercontent.com/sumitd2/build-scripts/luajit2/l/luajit2/luajit2_${LUAJIT_VERSION}.patch
 
 #Install required repos
 RUN yum install -y dnf && \
