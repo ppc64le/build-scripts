@@ -1,0 +1,19 @@
+diff --git a/test/misc/iter-bug.lua b/test/misc/iter-bug.lua
+index f033f03..5e735b9 100644
+--- a/test/misc/iter-bug.lua
++++ b/test/misc/iter-bug.lua
+@@ -1,4 +1,3 @@
+ -- from Mike Pall
+ 
+-require "jit.opt".start("maxside=0")
+ local t={1}; for i=1,100 do for k,v in pairs(t) do end end
+diff --git a/test/misc/jit_record.lua b/test/misc/jit_record.lua
+index afd46ed..4f32f6a 100644
+--- a/test/misc/jit_record.lua
++++ b/test/misc/jit_record.lua
+@@ -1,4 +1,4 @@
+-require "jit.opt".start("hotloop=2", "hotexit=1", "maxsnap=9")
++
+ 
+ local m = 1
+ 
