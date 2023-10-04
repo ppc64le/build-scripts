@@ -191,14 +191,11 @@ def create_new_script():
         elif template_lines[i].startswith("PACKAGE_NAME"):
             template_lines[i]=f"PACKAGE_NAME={package_name}\n"
         
-    #with open (f"{current_directory}/script/template.sh",'w') as newfile:
-        #newfile.writelines(template_lines)
-
-    with open (f"{dir_name}/{package_name}_ubi_8.7.sh",'w') as newfile:
+    with open (f"{current_directory}/script/template.sh",'w') as newfile:
         newfile.writelines(template_lines)
 
     shutil.copyfile(f"{current_directory}/script/template.sh",f"{dir_name}/{package_name}_ubi_8.7.sh")
-    new_cmd=f"python3 script/trigger_container.py -f {dir_name}/{package_name}_ubi_8.7.sh"
+    new_cmd=f"python3 script/trigger_container.py -f script/template.sh"
      
         #new_cmd="python3 test.py -f latest_build_script.sh"
     container_result=subprocess.Popen(new_cmd,shell=True)
