@@ -22,7 +22,7 @@ PACKAGE_NAME=filebeat
 
 PACKAGE_VERSION=${1:-v8.5.0}
 PACKAGE_URL=https://github.com/elastic/beats.git
-GO_VERSION=${GO_VERSION:-1.18}
+GO_VERSION=${GO_VERSION:-1.20.6}
 
 
 WORKDIR=`pwd`
