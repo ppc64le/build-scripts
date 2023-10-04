@@ -194,7 +194,7 @@ def create_new_script():
     #with open (f"{current_directory}/script/template.sh",'w') as newfile:
         #newfile.writelines(template_lines)
 
-    with open (f"{dir_name}/{package_name}_ubi_8.7.sh}",'w') as newfile:
+    with open (f"{dir_name}/{package_name}_ubi_8.7.sh",'w') as newfile:
         newfile.writelines(template_lines)
 
     shutil.copyfile(f"{current_directory}/script/template.sh",f"{dir_name}/{package_name}_ubi_8.7.sh")
