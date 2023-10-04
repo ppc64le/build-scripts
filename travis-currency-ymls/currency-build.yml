@@ -27,18 +27,22 @@ jobs:
         - chmod +x ./script/read_buildinfo.sh;bash -x ./script/read_buildinfo.sh
       workspaces:
         create:
-          #To share file creaing workspace 
+          #To share file creating workspace 
           name: build_cache
           paths:
             - variable.sh
 
     - stage: Build
       name: Build script run
-      workspaces:
-        use: build_cache
       script: 
         - source variable.sh
         - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/build_package.sh; bash -x ./script/build_package.sh; fi
+      workspaces:
+        create:
+          name: package_build_folder_cache
+          paths:
+            - .
+        use: build_cache
 
 
     - #stage: Build docker image
@@ -51,14 +55,14 @@ jobs:
           name: docker_image_tar
           paths:
             - image.tar
-        use: build_cache
+        use: package_build_folder_cache
         
 
     - stage: Run Scanner
       name: Run trivy scan
       workspaces:
         use: 
-          - build_cache
+          - package_build_folder_cache
           - docker_image_tar
       script:
         - source variable.sh
@@ -67,7 +71,7 @@ jobs:
     - name: Run syft scan
       workspaces:
         use: 
-          - build_cache
+          - package_build_folder_cache
           - docker_image_tar
       script:
         - source variable.sh
@@ -76,7 +80,7 @@ jobs:
     - name: Run grype scan
       workspaces:
         use: 
-          - build_cache
+          - package_build_folder_cache
           - docker_image_tar
       script:
         - source variable.sh
