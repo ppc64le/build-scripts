@@ -1,0 +1,18 @@
+{
+    "maintainer": "Stuti.Wali@ibm.com",
+    "package_name": "snap",
+    "github_url": "https://github.com/amplab/snap",
+    "version": "v2.0.3",
+    "default_branch": "master",
+    "package_dir": "s/snap",
+    "build_script": "snap_ubi_8_7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+ 
+    "v2.0.*": {
+       "build_script": "snap_ubi_8_7.sh"
+    }
+
+}
+
