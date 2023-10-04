@@ -45,7 +45,7 @@ jobs:
         use: build_cache
 
 
-    - #stage: Build docker image
+    - stage: Build docker image
       name: Docker build
       script: 
         - source variable.sh
