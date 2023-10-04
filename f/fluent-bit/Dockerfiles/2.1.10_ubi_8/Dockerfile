@@ -2,10 +2,8 @@ FROM registry.access.redhat.com/ubi8/ubi:8.7 as build
 
 ENV FLUENTBIT_VERSION=v2.1.10
 ENV LUAJIT2_VERSION=v2.1-20230911
-ENV PATCH_FILE=https://raw.githubusercontent.com/sumitd2/build-scripts/fluent-bit_v2.1.10/f/fluent-bit/fluent-bit_${FLUENTBIT_VERSION}.patch
-#ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/f/fluent-bit/fluent-bit_${FLUENTBIT_VERSION}.patch
-ENV LUAJIT2_PATCH_FILE=https://raw.githubusercontent.com/sumitd2/build-scripts/fluent-bit_v2.1.10/f/fluent-bit/luajit2_${LUAJIT2_VERSION}.patch
-#ENV LUAJIT2_PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/f/fluent-bit/luajit2_${LUAJIT2_VERSION}.patch
+ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/f/fluent-bit/fluent-bit_${FLUENTBIT_VERSION}.patch
+ENV LUAJIT2_PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/f/fluent-bit/luajit2_${LUAJIT2_VERSION}.patch
 
 #Install required repos
 RUN dnf -y install --nogpgcheck https://vault.centos.org/8.5.2111/BaseOS/ppc64le/os/Packages/centos-linux-repos-8-3.el8.noarch.rpm \
