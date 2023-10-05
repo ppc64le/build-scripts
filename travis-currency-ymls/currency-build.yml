@@ -36,7 +36,10 @@ jobs:
       name: Build script run
       script:
         - source variable.sh
+        - ls -ltr
         - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/build_package.sh; bash -x ./script/build_package.sh; fi
+        - pwd
+        - ls -ltr   
       workspaces:
         create:
           name: package_build_folder_cache
