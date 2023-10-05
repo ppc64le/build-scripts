@@ -15,7 +15,7 @@ from datetime import date
 
 
 GITHUB_PACKAGE_INFO_API = "https://api.github.com/repos/{}/{}/{}/{}"
-
+GITHUB_PACKAGE_INFO_API_2 = "https://api.github.com/repos/{}/{}"
 
 path_separator = os.path.sep
 #ROOT = os.path.dirname(os.path.dirname(__file__))
@@ -67,7 +67,7 @@ def get_repo_url(script_file):
 
 def get_default_branch(package_url):
     owner, repo = package_url.replace('.git','').split('/')[-2:]
-    response = requests.get(GITHUB_PACKAGE_INFO_API.format(owner, repo)).json()
+    response = requests.get(GITHUB_PACKAGE_INFO_API_2.format(owner, repo)).json()
     return response["default_branch"]
 
 def check_repo_activeness(package_url):
