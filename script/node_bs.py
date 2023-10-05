@@ -65,18 +65,25 @@ def get_repo_url(script_file):
                 return github_url
     return False
 
+def get_default_branch(package_url):
+    owner, repo = package_url.replace('.git','').split('/')[-2:]
+    response = requests.get(GITHUB_PACKAGE_INFO_API.format(owner, repo)).json()
+    return response["default_branch"]
+
 def check_repo_activeness(package_url):
     owner, repo = package_url.replace('.git','').split('/')[-2:]
-    active_response=requests.get(GITHUB_PACKAGE_INFO_API.format(owner,repo,'branches','master'))
+    def_branch = get_default_branch(package_url)
+    active_response=requests.get(GITHUB_PACKAGE_INFO_API.format(owner,repo,'branches',def_branch))
 
    
     last_commit_date=active_response.json()["commit"]["commit"]["committer"]["date"]
+    if last_commit_date == "":
+        return False
     last_commit_year=last_commit_date.split('-')[0]
     today_date=str(date.today())
     today_date=today_date.split('-')[0]
 
     if (int(today_date) - int(last_commit_year))>=3:
-        #print(f"{package_url} Package Not Active")
         return False
     return True
 
@@ -89,12 +96,8 @@ def get_latest_release(package_url):
     response = requests.get(GITHUB_PACKAGE_INFO_API.format(owner,repo,'releases','latest'))
     if response.status_code!=200:
         print("\n Release Not Present")
-        #print("type",type(response.status_code))
-    
-        #print("Printing Response",response)
     
         response_tag=requests.get("https://api.github.com/repos/{}/{}/{}/{}/{}".format(owner,repo,'git','refs','tags'))
-        #print(response_tag)
         latest_tag=response_tag.json()[-1]
         latest_tag=latest_tag['ref'].split('/')[-1]
         print("\n Present Tag:",latest_tag)
@@ -172,7 +175,7 @@ def create_new_script():
     
     current_directory = os.getcwd()
     
-    with open(f"{current_directory}/script/template.sh",'r') as newfile:
+    with open(f"{current_directory}/templates/build_script_node.sh",'r') as newfile:
         template_lines=newfile.readlines()
 
     for i in range(len(template_lines)):
@@ -191,11 +194,11 @@ def create_new_script():
         elif template_lines[i].startswith("PACKAGE_NAME"):
             template_lines[i]=f"PACKAGE_NAME={package_name}\n"
         
-    with open (f"{current_directory}/script/template.sh",'w') as newfile:
+    with open (f"{current_directory}/templates/build_script_node.sh",'w') as newfile:
         newfile.writelines(template_lines)
 
-    shutil.copyfile(f"{current_directory}/script/template.sh",f"{dir_name}/{package_name}_ubi_8.7.sh")
-    new_cmd=f"python3 script/trigger_container.py -f script/template.sh"
+    shutil.copyfile(f"{current_directory}/templates/build_script_node.sh",f"{dir_name}/{package_name}_ubi_8.7.sh")
+    new_cmd=f"python3 script/trigger_container.py -f templates/build_script_node.sh"
      
         #new_cmd="python3 test.py -f latest_build_script.sh"
     container_result=subprocess.Popen(new_cmd,shell=True)
