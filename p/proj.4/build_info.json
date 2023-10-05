@@ -13,6 +13,6 @@
   
   "9.*.*": {
     "dir": "9.3.0_ubi_8",
-    "build_script": "proj_ubi_8.7.sh"
+    "build_script": "proj.4_ubi_8.7.sh"
   }
 }
