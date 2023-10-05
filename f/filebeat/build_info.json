@@ -7,12 +7,11 @@
   "package_dir": "f/filebeat/",
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
   "build_script": "filebeat_UBI_8.5.sh",
-  "v8.*.*": {
+  
+  "v8.*.*,v7.*.*": {
     "dir": "8.5.0_ubi",
-    "GO_VERSION": "1.20.6"
-  },
-  "v7.*.*": {
-    "dir": "8.5.0_ubi",
-    "GO_VERSION": "1.20.6"
-  }
+    "args": {
+            "GO_VERSION": "1.20.6"
+         }
+    }
 }
