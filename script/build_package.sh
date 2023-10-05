@@ -2,8 +2,8 @@
 
 sudo apt update -y && sudo apt-get install file -y
 docker pull registry.access.redhat.com/ubi8/ubi:8.7
-pip3 install requests
-pip3 install docker
+pip3 install --upgrade requests
+pip3 install --upgrade docker
 
 echo "Running build script execution in background for "$PKG_DIR_PATH/$BUILD_SCRIPT" "$VERSION" " 
 echo "*************************************************************************************"
