@@ -132,25 +132,14 @@ def get_maintainer_from_dockerfile(dir_name):
     return "Unknown"
 
 def get_default_build_script(build_scripts_versions):
-    #print(build_scripts_versions[-1]['version'])
-    print((build_scripts_versions))
-    #def_script=''
     result=[]
     for data in build_scripts_versions:
         if 'ubi_8.7' in data['file']:
-            #def_script=data['file']
-
-            #print(data['file'])
             return [data['version'],data['file']]
         else:
-            #def_script=data['file']
             result.append(data['version'])
             result.append(data['file'])
     return result
-
-
-
-#print(type(data))
 
 
 maintainer=get_maintainer_for_package(dir_name)
@@ -173,7 +162,6 @@ for file in file_list:
                     default_build_script = file.replace(dir_name, '').strip(path_separator)
                     build_scripts_versions.append( {'version': line.split(':')[1].strip(),
                                                     'file': default_build_script})
-                    #print(build_scripts_versions)
     elif 'Dockerfile' in file.split(path_separator)[-1]:
         # Read Dockerfiles and store details
         docker_details = {}
@@ -205,10 +193,6 @@ for file in file_list:
             json.dump(updated_build_info,f,indent=2)
         
 default_version,default_build_script=get_default_build_script(build_scripts_versions)
-#print("hi\n")
-#print(get_default_build_script(build_scripts_versions))
-print("\n Printing default_build_script",default_build_script)
-print("\n Printing default_version",default_version)
 
 final_json = {
     "maintainer" : maintainer,
@@ -249,9 +233,7 @@ for entry in dockerfile_versions:
         if 'patch' in k.lower():
             final_json[version][k] = entry[k]
 
-#default_build_script=get_default_build_script(build_scripts_versions)
 print("\n\n Creating build_info.json file locally")
-print("\n\n")
 
 with open(f"{dir_name}/build_info.json",'w') as f:
             json.dump(final_json,f,indent = 3)
