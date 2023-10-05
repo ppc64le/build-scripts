@@ -50,7 +50,9 @@ if ! npm install && npm audit fix && npm audit fix --force; then
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
         exit 1
 fi
-
+echo "output current working directory contents"
+pwd
+ls -ltr
 #Run test cases
 if ! npm test; then
         echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
