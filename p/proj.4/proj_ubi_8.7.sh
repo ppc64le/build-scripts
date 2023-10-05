@@ -1,9 +1,9 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : PROJ
+# Package          : proj.4
 # Version          : 9.3.0
-# Source repo      : https://github.com/OSGeo/PROJ
+# Source repo      : https://github.com/OSGeo/proj.4.git
 # Tested on        : UBI 8.7
 # Language         : C++,C
 # Travis-Check     : True
@@ -18,9 +18,9 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=PROJ
+PACKAGE_NAME=proj.4
 PACKAGE_VERSION=${1:-9.3.0}
-PACKAGE_URL=https://github.com/OSGeo/PROJ
+PACKAGE_URL=https://github.com/OSGeo/proj.4.git
 
 HOME_DIR=${PWD}
 

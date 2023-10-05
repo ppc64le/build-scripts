@@ -1,7 +1,7 @@
 {
   "maintainer": "Vinod.K1@ibm.com",
-  "package_name": "PROJ",
-  "github_url": "https://github.com/OSGeo/PROJ",
+  "package_name": "proj.4",
+  "github_url": "https://github.com/OSGeo/proj.4.git",
   "version": "9.3.0",
   "package_dir": "p/proj.4",
   "default_branch": "master",

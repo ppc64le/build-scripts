@@ -6,8 +6,8 @@ ARG DESTDIR="/build"
 # Setup build env
 RUN yum install -y git gcc-c++ gcc wget make cmake python38 yum-utils apr-devel perl openssl-devel automake autoconf libtool sqlite-devel libtiff-devel  curl-devel diffutils
 
-RUN git clone https://github.com/OSGeo/PROJ \
-    && cd /PROJ \
+RUN git clone https://github.com/OSGeo/proj.4.git \
+    && cd proj.4 \
     && git checkout $PACKAGE_VERSION\
     && mkdir build \
     && cd build \
