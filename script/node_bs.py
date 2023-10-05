@@ -38,11 +38,11 @@ def get_latest_build_script(dir_name):
     files = sorted(glob.iglob(files_path),key=os.path.getctime,reverse=True)
     latest_existing_build_script =""
     for script_file in files:
-        if script_file.endswith(".sh") and (script_file.find("ubuntu")==-1):
+        if script_file.endswith(".sh") and script_file.find("ubuntu")<0:
             global github_url
             github_url = get_repo_url(script_file)
             global active_repo
-            if github_url!="NUrl" and github_url!='':
+            if github_url!=False and github_url!='':
                 if (check_repo_activeness(github_url)):
                     active_repo = True
                     global latest_release
@@ -54,7 +54,7 @@ def get_latest_build_script(dir_name):
 
             return script_file
 
-    return "NPresent"
+    return False
 
 def get_repo_url(script_file):
     with open(script_file,'r',encoding='utf-8') as f:
@@ -63,7 +63,7 @@ def get_repo_url(script_file):
             if line.startswith('# Source repo') :
                 github_url = ":".join(line.split(':')[1:]).strip()
                 return github_url
-    return "NUrl"
+    return False
 
 def check_repo_activeness(package_url):
     owner, repo = package_url.replace('.git','').split('/')[-2:]
@@ -268,7 +268,7 @@ def display_details():
 
 
 old_script=get_latest_build_script(dir_name)
-if old_script!="NPresent":
+if old_script!=False:
     print("\n ** Old Script Present**")
     display_details()
     create_new_script()
