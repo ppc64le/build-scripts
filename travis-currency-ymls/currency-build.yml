@@ -40,8 +40,6 @@ jobs:
         - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/build_package.sh; bash -x ./script/build_package.sh; fi
         - pwd
         - ls -ltr
-        - cd /home
-        - ls -ltr  
       workspaces:
         create:
           name: package_build_folder_cache
