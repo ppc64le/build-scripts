@@ -40,7 +40,7 @@ jobs:
         - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/build_package.sh; bash -x ./script/build_package.sh; fi
         - pwd
         - ls -ltr
-        - cd /home/travis/build/saiNammi
+        - cd /home
         - ls -ltr  
       workspaces:
         create:
