@@ -6,7 +6,7 @@
   "package_dir": "p/proj.4",
   "default_branch": "master",
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-  "build_script": "proj_ubi_8.7.sh",
+  "build_script": "proj.4_ubi_8.7.sh",
   "docker_build": "true",
   "use_non_root_user": "false",
   "validate_build_script": "true",
