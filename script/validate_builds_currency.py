@@ -74,8 +74,7 @@ def trigger_script_validation_checks(file_name,version, image_name = "registry.a
     client = docker.DockerClient(base_url='unix://var/run/docker.sock')
     st = os.stat(file_name)
     current_dir = os.getcwd()
-    echo "printing host current directory"
-    echo $current_dir
+    print("printing host current directory - {}".format(current_dir))
     os.chmod("{}/{}".format(current_dir, file_name), st.st_mode | stat.S_IEXEC)
     # Let the container run in non detach mode, as we need to delete the container on operation completion
     container = client.containers.run(
