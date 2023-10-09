@@ -7,6 +7,5 @@
     "package_dir": "j/jruby",
     "build_script": "jruby_ubi_8.7.sh",
     "validate_build_script": true,
-    "use_non_root_user": true,
     "docker_build": false
   }
