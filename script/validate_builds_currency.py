@@ -95,6 +95,18 @@ def trigger_script_validation_checks(file_name,version, image_name = "registry.a
         print(container.logs().decode("utf-8"))
     except Exception:
         print(container.logs())
+
+    file_path = /home/tester/{}.format(package_name)
+    print(file_path)
+    try:
+        container.get_archive(file_path)
+        with open(os.path.basename(package-lock.json), 'wb') as tar_data:
+            for chunk in container.get_archive(file_path)[0]:
+                tar_data.write(chunk)
+    except Exception as e:
+        print(f"Failed to copy {file_path} from the container: {e}")
+
+    
     container.remove()
     if int(result["StatusCode"]) != 0:
         raise Exception(f"Build script validation failed for {file_name} !")
