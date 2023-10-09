@@ -1,0 +1,16 @@
+{
+    "maintainer":"Vinod.K1@ibm.com",
+    "package_name" : "wazuh",
+    "github_url": "https://github.com/wazuh/wazuh",
+    "version": "v4.5.2",
+    "default_branch": "master",
+    "package_dir": "w/wazuh",
+    "build_script": "wazuh_ubi_8.7.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": false,
+
+    "v4.*.*" : {
+       "build_script" : "wazuh_ubi_8.7.sh"
+    }
+}
