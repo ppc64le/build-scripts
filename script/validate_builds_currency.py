@@ -100,9 +100,10 @@ def trigger_script_validation_checks(file_name,version, image_name = "registry.a
 
     file_path = "/{}/package-lock.json".format(package_name)
     print(file_path)
+    destination_path = "{}/package-lock.json".format(current_dir)
     try:
         container.get_archive(file_path)
-        with open(os.path.basename(package-lock.json), 'wb') as tar_data:
+        with open(os.path.basename(destination_path), 'wb') as tar_data:
             for chunk in container.get_archive(file_path)[0]:
                 tar_data.write(chunk)
     except Exception as e:
