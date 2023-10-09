@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: jruby
-# Version	: 9.4.3.0
-# Source repo	: https://github.com/jruby/jruby.git
-# Tested on	: UBI 8.7
+# Package       : jruby
+# Version       : 9.4.3.0
+# Source repo   : https://github.com/jruby/jruby.git
+# Tested on     : UBI 8.7
 # Language      : Ruby
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
+# Maintainer    : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -26,17 +26,17 @@ OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 HOME_DIR=${PWD}
 
 yum update -y
-yum install -y wget git make gcc java-1.8.0-openjdk-devel 
+yum install -y wget git make gcc java-1.8.0-openjdk-devel
 
 export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
-java --version
+java -version
 
-wget https://mirrors.estointernet.in/apache/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.tar.gz
+wget https://dlcdn.apache.org/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.tar.gz
 tar -zxf apache-maven-3.8.8-bin.tar.gz
 cp -R apache-maven-3.8.8 /usr/local
 ln -s /usr/local/apache-maven-3.8.8/bin/mvn /usr/bin/mvn
-mvn --version
+mvn -version
 
 wget https://dlcdn.apache.org//ant/binaries/apache-ant-1.9.16-bin.tar.gz
 tar -xvzf apache-ant-1.9.16-bin.tar.gz
