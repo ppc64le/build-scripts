@@ -92,8 +92,10 @@ def trigger_script_validation_checks(file_name,version, image_name = "registry.a
         print(f"Failed to create container: {e}")
     
     container.start()
-    result = container.exec_run(["/bin/bash", "-c", "/home/tester/{} {}".format(file_name,version)])
-    print(result.output.decode("utf-8"))
+    script_output = container.exec_run(["/bin/bash", "-c", "/home/tester/{} {}".format(file_name,version)])
+    print(script_output.output.decode("utf-8"))
+
+    result = container.wait()
     
 
     file_path = "/{}/package-lock.json".format(package_name)
