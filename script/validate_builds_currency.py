@@ -75,7 +75,7 @@ def trigger_script_validation_checks(file_name,version, image_name = "registry.a
     st = os.stat(file_name)
     current_dir = os.getcwd()
     print("printing host current directory - {}".format(current_dir))
-    package_name = file_name.split('_')[0]
+    package_name = file_name.split('/')[-2].strip('/')
     print(package_name)
     os.chmod("{}/{}".format(current_dir, file_name), st.st_mode | stat.S_IEXEC)
     # Let the container run in non detach mode, as we need to delete the container on operation completion
