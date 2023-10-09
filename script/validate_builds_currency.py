@@ -97,7 +97,7 @@ def trigger_script_validation_checks(file_name,version, image_name = "registry.a
     except Exception as e:
         print(f"Failed to start container: {e}")
 
-    script_output = container.exec_run(["/bin/bash", "-c", "/home/tester/{} {}".format(file_name,version)])
+    script_output = container.exec_run(["/bin/bash", "-c", "{} {}".format(file_name,version)])
     print(script_output.output.decode("utf-8"))
 
     result = container.wait()
