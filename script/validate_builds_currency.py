@@ -86,6 +86,7 @@ def trigger_script_validation_checks(file_name,version, image_name = "registry.a
           volumes = {
               current_dir : {'bind': '/home/tester/', 'mode': 'rw'}
           },
+          detach = True,
           stderr = True, # Return logs from STDERR
       )
     except Exception as e:
