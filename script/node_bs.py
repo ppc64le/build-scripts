@@ -159,11 +159,7 @@ def raise_pull_request(branch_pkg):
 
 
 
-def create_new_script():
-
-            
-    #new_cmd="python3 script/trigger_container.py -f script/template.sh"
-
+def create_new_script():       
     branch_chout=f"git checkout -b {package_name}_automation"
     branch_pkg=f"{package_name}_automation"
     print("\n\n Creating Branch and Checking Out")
@@ -200,12 +196,9 @@ def create_new_script():
     shutil.copyfile(f"{current_directory}/templates/build_script_node.sh",f"{dir_name}/{package_name}_ubi_8.7.sh")
     new_cmd=f"python3 script/trigger_container.py -f templates/build_script_node.sh"
      
-        #new_cmd="python3 test.py -f latest_build_script.sh"
     container_result=subprocess.Popen(new_cmd,shell=True)
     stdout, stderr=container_result.communicate()
     exit_code=container_result.wait()
-    #print("\n PRinting exit code")
-    #print(exit_code)
    
     cmd_2=f"python3 script/generate_build_info.py {package_name}"
     print("\n\n Generating build_info.json")
@@ -274,9 +267,7 @@ old_script=get_latest_build_script(dir_name)
 if old_script!=False:
     print("\n ** Old Script Present**")
     display_details()
-    create_new_script()
-    #print(f"old script name : {old_script}")
-    #print("directory",os.getcwd())
+    create_new_script()   
 else:
     print("\n Old_script not Present")
 
