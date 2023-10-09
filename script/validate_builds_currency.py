@@ -79,7 +79,8 @@ def trigger_script_validation_checks(file_name,version, image_name = "registry.a
     print("package_name - {}".format(package_name))
     os.chmod("{}/{}".format(current_dir, file_name), st.st_mode | stat.S_IEXEC)
     # Let the container run in non detach mode, as we need to delete the container on operation completion
-    container = client.containers.run(
+    try:
+      container = client.containers.run(
         image_name,
         "/home/tester/{} {}".format(file_name,version),
         #"cat /home/tester/{}".format(file_name),
@@ -88,7 +89,9 @@ def trigger_script_validation_checks(file_name,version, image_name = "registry.a
             current_dir : {'bind': '/home/tester/', 'mode': 'rw'}
         },
         stderr = True, # Return logs from STDERR
-    )
+      )
+    except Exception as e:
+        print(f"Failed to create container: {e}")
     
     try:
         print(container.logs().decode("utf-8"))
