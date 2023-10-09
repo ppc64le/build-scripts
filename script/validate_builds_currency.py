@@ -81,8 +81,7 @@ def trigger_script_validation_checks(file_name,version, image_name = "registry.a
     # Let the container run in non detach mode, as we need to delete the container on operation completion
     container = client.containers.run(
         image_name,
-        "/home/tester/{} {}".format(file_name,version),
-        #"cat /home/tester/{}".format(file_name),
+        "/bin/bash -c '/home/tester/{} {} && tail -f /dev/null'".format(file_name,version),
         network = 'host',
         detach = True,
         volumes = {
