@@ -81,22 +81,20 @@ def trigger_script_validation_checks(file_name,version, image_name = "registry.a
     # Let the container run in non detach mode, as we need to delete the container on operation completion
     try:
       container = client.containers.run(
-        image_name,
-        "/home/tester/{} {}".format(file_name,version),
-        #"cat /home/tester/{}".format(file_name),
-        network = 'host',
-        volumes = {
-            current_dir : {'bind': '/home/tester/', 'mode': 'rw'}
-        },
-        stderr = True, # Return logs from STDERR
+          image_name,
+          network = 'host',
+          volumes = {
+              current_dir : {'bind': '/home/tester/', 'mode': 'rw'}
+          },
+          stderr = True, # Return logs from STDERR
       )
     except Exception as e:
         print(f"Failed to create container: {e}")
     
-    try:
-        print(container.logs().decode("utf-8"))
-    except Exception:
-        print(container.logs())
+    container.start()
+    result = container.exec_run(["/bin/bash", "-c", "/home/tester/{} {}".format(file_name,version)])
+    print(result.output.decode("utf-8"))
+    
 
     file_path = "/{}/package-lock.json".format(package_name)
     print(file_path)
