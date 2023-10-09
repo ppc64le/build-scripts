@@ -86,16 +86,11 @@ def trigger_script_validation_checks(file_name,version, image_name = "registry.a
           volumes = {
               current_dir : {'bind': '/home/tester/', 'mode': 'rw'}
           },
-          detach = True,
           stderr = True, # Return logs from STDERR
       )
     except Exception as e:
         print(f"Failed to create container: {e}")
     
-    try:
-        container.start()
-    except Exception as e:
-        print(f"Failed to start container: {e}")
 
     script_output = container.exec_run(["/bin/bash", "-c", "{} {}".format(file_name,version)])
     print(script_output.output.decode("utf-8"))
