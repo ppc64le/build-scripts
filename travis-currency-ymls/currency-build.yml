@@ -36,7 +36,7 @@ jobs:
       name: Build script run
       script:
         - source variable.sh
-        - ls -ltr
+        - ls -ltra
         - mkdir package-cache
         - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/build_package.sh; bash -x ./script/build_package.sh; fi
         - pwd
@@ -44,7 +44,7 @@ jobs:
         - find . -type f -name "package-lock.json" -exec cp {} /home/travis/build/saiNammi/build-scripts/package-cache/ \;
         - ls -ltr
         - cd package-cache
-        - ls
+        - ls -ltra
       workspaces:
         create:
           name: package_build_folder_cache
