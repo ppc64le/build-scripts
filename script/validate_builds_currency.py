@@ -89,7 +89,7 @@ def trigger_script_validation_checks(file_name,version, image_name = "registry.a
         },
         stderr = True, # Return logs from STDERR
     )
-    result = container.wait()
+    
     try:
         print(container.logs().decode("utf-8"))
     except Exception:
