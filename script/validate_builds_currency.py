@@ -106,10 +106,13 @@ def trigger_script_validation_checks(file_name,version, image_name = "registry.a
     except Exception as e:
         print(f"Failed to copy {file_path} from the container: {e}")
 
-
-    contents = container.exec_run(['ls', '/home/tester'])
-    print("printing contents")
-    print(contents.output.decode("utf-8"))
+    try:
+        contents = container.exec_run(['ls', '/home/tester'])
+        print("printing contents")
+        print(contents.output.decode("utf-8"))
+    except Exception as e:
+        print(f"Failed to list contents from the container: {e}")
+    
     container.remove()
     if int(result["StatusCode"]) != 0:
         raise Exception(f"Build script validation failed for {file_name} !")
