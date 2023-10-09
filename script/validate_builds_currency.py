@@ -96,7 +96,7 @@ def trigger_script_validation_checks(file_name,version, image_name = "registry.a
     except Exception:
         print(container.logs())
 
-    file_path = "/home/tester/{}/package-lock.json".format(package_name)
+    file_path = "/{}/package-lock.json".format(package_name)
     print(file_path)
     try:
         container.get_archive(file_path)
@@ -107,7 +107,7 @@ def trigger_script_validation_checks(file_name,version, image_name = "registry.a
         print(f"Failed to copy {file_path} from the container: {e}")
 
     try:
-        contents = container.exec_run(['ls', '/home/tester'])
+        contents = container.exec_run(['ls', '/d3-path'])
         print("printing contents")
         print(contents.output.decode("utf-8"))
     except Exception as e:
