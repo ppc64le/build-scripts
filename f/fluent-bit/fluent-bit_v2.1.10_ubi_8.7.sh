@@ -89,7 +89,7 @@ then
 fi
 echo "SUCCESS: Build and test success!"
 echo "Fluent bit binary is available at [$FLUENTBIT_BIN]."
-echo "Luajit and Wasm are disabled."
+echo "Wasm is disabled."
 echo "The remaining one failing test (62 - flb-rt-out_td) is in parity with x86_64."
 
 #Run
