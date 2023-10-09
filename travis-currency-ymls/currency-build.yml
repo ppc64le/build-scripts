@@ -41,9 +41,12 @@ jobs:
         - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/build_package.sh; bash -x ./script/build_package.sh; fi
         - pwd
         - ls -ltra
+        - locate package-lock.json
         - find . -type f -name "package-lock.json" -exec cp {} /home/travis/build/saiNammi/build-scripts/package-cache/ \;
         - ls -ltr
         - cd package-cache
+        - ls -ltra
+        - cd ..
         - ls -ltra
       workspaces:
         create:
