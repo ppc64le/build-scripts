@@ -1,0 +1,17 @@
+{
+  "maintainer": "Shubham.Garud@ibm.com",
+  "package_name": "grpc-gateway",
+  "github_url": "https://github.com/grpc-ecosystem/grpc-gateway",
+  "package_dir": "g/grpc-gateway/",
+  "default_branch": "main",
+
+  "build_script": "grpc-gateway_ubi_8.7.sh",
+  "version": "v2.18.0",
+  "docker_build": false,
+  "v2.18.0": {
+    "build_script": "grpc-gateway_ubi_8.7.sh"
+  },
+  "v1.9.5": {
+    "build_script": "grpc-gateway_v1.9.5_ubi_8.5.sh"
+  }
+}
