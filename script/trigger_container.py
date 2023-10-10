@@ -18,8 +18,6 @@ HOME = os.getcwd()
 
 package_data = {}
 
-file_name= "/home/user8/shubham_garud/build-scripts/script/template.sh"
-
 
 def trigger_script_validation_checks(image_name = "registry.access.redhat.com/ubi8/ubi:8.7"):
     
@@ -42,7 +40,6 @@ def trigger_script_validation_checks(image_name = "registry.access.redhat.com/ub
     container = client.containers.run(
         image_name,
         "/home/tester/{}".format(file_name),
-        #"cat /home/tester/{}".format(file_name),
         network = 'host',
         detach = True,
         volumes = {
@@ -65,9 +62,6 @@ def trigger_script_validation_checks(image_name = "registry.access.redhat.com/ub
     else:
         return True
 
- 
-
-#trigger_script_validation_checks(file_name, image_name = "registry.access.redhat.com/ubi8/ubi:8.7")
 
 container_result=trigger_script_validation_checks(image_name = "registry.access.redhat.com/ubi8/ubi:8.7")
 if container_result:
@@ -76,8 +70,5 @@ if container_result:
 else:
     print("FAILING")
     print("Some Error while executing script in container")
-    #trigger_script_validation_checks(image_name = "registry.access.redhat.com/ubi8/ubi:8.7")
-    #print("FAILING")
-    #print("Some Error while executing script in container")
 
 sys.exit()
