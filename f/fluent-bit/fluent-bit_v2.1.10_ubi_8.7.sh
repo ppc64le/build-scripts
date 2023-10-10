@@ -23,9 +23,9 @@ function cleanup {
   echo "ERROR: Script failed"
 }
 
-PKG_NAME=fluent-bit
-PKG_VERSION=${1:-v2.1.10}
-PKG_URL=https://github.com/fluent/fluent-bit.git
+PACKAGE_NAME=fluent-bit
+PACKAGE_VERSION=${1:-v2.1.10}
+PACKAGE_URL=https://github.com/fluent/fluent-bit.git
 LUAJIT2_VERSION=v2.1-20230911
 BUILD_HOME=$(pwd)
 SCRIPT_PATH=$(dirname $(realpath $0))
@@ -39,12 +39,12 @@ yum install -y dnf && \
 yum install gcc gcc-c++ libyaml-devel wget cmake3 python3 git openssl-devel flex bison diffutils autoconf postgresql-devel cyrus-sasl-devel systemd-devel valgrind-devel libarchive glibc-devel nc -y
 
 #Get repo
-git clone $PKG_URL
-cd $PKG_NAME
-git checkout $PKG_VERSION
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 
 #Apply patch
-git apply $SCRIPT_PATH/fluent-bit_${PKG_VERSION}.patch
+git apply $SCRIPT_PATH/fluent-bit_${PACKAGE_VERSION}.patch
 
 #Clone luajit2 and apply power patch
 cd lib
