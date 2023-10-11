@@ -4,7 +4,7 @@
 
 FROM registry.access.redhat.com/ubi8/ubi:latest
 
-ARG VERSION=4.0.11
+ARG VERSION=4.1.3
 
 ###Required Labels
 LABEL name="cassandra" \
@@ -23,14 +23,14 @@ RUN yum update -y \
 	&& echo "JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")" | sudo tee -a /etc/profile \
     && source /etc/profile
 
-#Install the latest stable release of Apache Cassandra 4.0.11	
+#Install the latest stable release of Apache Cassandra 4.1.3
 RUN echo $'[cassandra]\n\
 name=Apache Cassandra\n\
-baseurl=https://redhat.cassandra.apache.org/40x/\n\
+baseurl=https://redhat.cassandra.apache.org/41x/\n\
 gpgcheck=1\n\
 repo_gpgcheck=1\n\
 gpgkey=https://downloads.apache.org/cassandra/KEYS\n'\
->> /etc/yum.repos.d/cassandra40x.repo
+>> /etc/yum.repos.d/cassandra41x.repo
 	
 RUN yum update -y \
     && yum -y install cassandra 
