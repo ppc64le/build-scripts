@@ -12,5 +12,8 @@
 
     "0.26.*" : {
        "build_script" : "rules_rust_ubi_8.7.sh"
+    },
+    "0.28.0" : {
+        "build_script": "rules_rust_0.28.0_ubi8.7.sh"
     }
 }
