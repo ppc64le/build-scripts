@@ -157,6 +157,12 @@ def raise_pull_request(branch_pkg):
         return {"message" : "success"}
     return {"message" : "fail"}
 
+def add_license_file():
+    if not os.path.exists(f"{dir_name}/LICENSE"):
+        current_directory = os.getcwd()
+        shutil.copy(f"{current_directory}/LICENSE",dir_name)
+        return True
+    return False
 
 
 def create_new_script():       
@@ -170,6 +176,9 @@ def create_new_script():
     subprocess.Popen(branch_cmd,shell=True)
     
     current_directory = os.getcwd()
+
+    license_added = add_license_file()
+
     
     with open(f"{current_directory}/templates/build_script_node.sh",'r') as newfile:
         template_lines=newfile.readlines()
@@ -226,6 +235,13 @@ def create_new_script():
         git_add_w=subprocess.Popen(cmd_add,shell=True)
         git_add_w.wait()
 
+        if license_added:
+            cmd_add=f"git add {dir_name}/LICENSE"
+            print("\n\n Git Adding LICENSE")
+            git_add_w=subprocess.Popen(cmd_add,shell=True)
+            git_add_w.wait()
+
+
         #git commit command
         commit_msg="Added build_script and Build_info.json using automation for "+ package_name
         cmd_commit=f"git commit -m \"{commit_msg}\" "
@@ -270,6 +286,15 @@ if old_script!=False:
     create_new_script()   
 else:
     print("\n Old_script not Present")
+    github_url=input("Enter Github URL:")
+    latest_release=input("Enter version/tag to build:")
+    package_name = input("Enter Package name (Package name should match with the directory name): ")
+    package_name = package_name.lower()
+    dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_name}"
+    if not os.path.exists(dir_name):
+        os.makedirs(dir_name)
+        create_new_script()
+        display_details()
 
 
 
