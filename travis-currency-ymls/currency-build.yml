@@ -23,63 +23,74 @@ jobs:
     - stage: Build info
       name: Get Build info details
       script:
-        # This script will read build_info.sh and create variable.sh file with export statement, so that we can source this file latest stages to use variables. 
+        # This script will read build_info.sh and create variable.sh file with export statement, so that we can source this file in later stages to use variables.
         - chmod +x ./script/read_buildinfo.sh;bash -x ./script/read_buildinfo.sh
       workspaces:
         create:
-          #To share file creaing workspace 
+          #need to cache file variable.sh using workspaces by the name build_cache
           name: build_cache
           paths:
             - variable.sh
 
     - stage: Build
       name: Build script run
-      workspaces:
-        use: build_cache
-      script: 
+      script:
         - source variable.sh
+        # creating a folder package-cache to store the variable.sh and package folder
+        - mkdir package-cache
         - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/build_package.sh; bash -x ./script/build_package.sh; fi
+        - ls -ltr
+        - echo $PACKAGE_NAME
+        - sudo mv $PACKAGE_NAME variable.sh package-cache
+        - cd package-cache
+        - ls -ltr
+   
+      workspaces:
+        create:
+          # package_cache contains both variable.sh file as well as cloned package directory.
+          name: package_cache
+          paths:
+            - .
+        use: build_cache
 
 
-    - #stage: Build docker image
+    - stage: Build docker image
       name: Docker build
-      script: 
-        #With workspace limitaton to either we can use already created workspace or create new workspace any time. We had to read build_info explicitly before actual docker build code
-        - chmod +x ./script/read_buildinfo.sh;bash -x ./script/read_buildinfo.sh
-        - source variable.sh
+      script:
+        - source package-cache/variable.sh;
         - if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/build_docker.sh; bash -x ./script/build_docker.sh;echo "printing docker images"; docker images; fi
       workspaces:
         create:
           name: docker_image_tar
           paths:
             - image.tar
-        
+        use: package_cache
+
 
     - stage: Run Scanner
       name: Run trivy scan
       workspaces:
-        use: 
-          - build_cache
+        use:
+          - package_cache
           - docker_image_tar
       script:
-        - source variable.sh
+        - source package-cache/variable.sh;
         - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/trivy_scan.sh;bash ./script/trivy_scan.sh; fi
-        
+
     - name: Run syft scan
       workspaces:
-        use: 
-          - build_cache
+        use:
+          - package_cache
           - docker_image_tar
       script:
-        - source variable.sh
+        - source package-cache/variable.sh;
         - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/syft_scan.sh;bash ./script/syft_scan.sh; fi
 
     - name: Run grype scan
       workspaces:
-        use: 
-          - build_cache
+        use:
+          - package_cache
           - docker_image_tar
       script:
-        - source variable.sh
+        - source package-cache/variable.sh;
         - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/grype_scan.sh;bash ./script/grype_scan.sh; fi
- 
