@@ -45,8 +45,6 @@ def get_latest_build_script(dir_name):
             if github_url!=False and github_url!='':
                 if (check_repo_activeness(github_url)):
                     active_repo = True
-                    #global latest_release
-                    #latest_release = get_latest_release(github_url)
                 else:
                     active_repo = False
                     print("\n Repo is Not active . Stopping the further process.")
@@ -87,31 +85,6 @@ def check_repo_activeness(package_url):
         return False
     return True
 
-'''
-def get_latest_release(package_url):
-    owner, repo = package_url.replace('.git','').split('/')[-2:]
-    #response = requests.get(GITHUB_PACKAGE_INFO_API.format(owner, repo)).json()
-    #release_github_url=GITHUB_PACKAGE_INFO_API+'/latest/releases'
-    print("\n Owner :",owner)
-    print("\n Repo  :",repo)
-    response = requests.get(GITHUB_PACKAGE_INFO_API.format(owner,repo,'releases','latest'))
-    if response.status_code!=200:
-        print("\n Release Not Present")
-    
-        response_tag=requests.get("https://api.github.com/repos/{}/{}/{}/{}/{}".format(owner,repo,'git','refs','tags'))
-        latest_tag=response_tag.json()[-1]
-        latest_tag=latest_tag['ref'].split('/')[-1]
-        print("\n Present Tag:",latest_tag)
-        return latest_tag
-    else:
-        lc_release=response.json()["html_url"]
-        lc_release=lc_release.split('/')[-1]
-        print("\n Recent Release:",lc_release)
-        if response.json()["name"]=="":
-            return lc_release
-    
-    return response.json()["name"]
-'''
 
 def raise_pull_request(branch_pkg):
 
