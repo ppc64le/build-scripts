@@ -27,7 +27,7 @@ dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_nam
 
 
 github_url=''
-latest_release=''
+latest_release=sys.argv[1]
 active_repo=False
 new_build_script=''
 branch_pkg=""
@@ -45,8 +45,8 @@ def get_latest_build_script(dir_name):
             if github_url!=False and github_url!='':
                 if (check_repo_activeness(github_url)):
                     active_repo = True
-                    global latest_release
-                    latest_release = get_latest_release(github_url)
+                    #global latest_release
+                    #latest_release = get_latest_release(github_url)
                 else:
                     active_repo = False
                     print("\n Repo is Not active . Stopping the further process.")
@@ -87,6 +87,7 @@ def check_repo_activeness(package_url):
         return False
     return True
 
+'''
 def get_latest_release(package_url):
     owner, repo = package_url.replace('.git','').split('/')[-2:]
     #response = requests.get(GITHUB_PACKAGE_INFO_API.format(owner, repo)).json()
@@ -110,7 +111,7 @@ def get_latest_release(package_url):
             return lc_release
     
     return response.json()["name"]
-
+'''
 
 def raise_pull_request(branch_pkg):
 
