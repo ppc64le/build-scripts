@@ -29,9 +29,11 @@ OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 yum install -y git wget curl make sudo cmake gcc gcc-c++ autoconf procps diffutils libffi-devel sqlite-libs sqlite-devel python38 python38-devel python3-policycoreutils automake libtool openssl-devel yum-utils libstdc++-static  hostname
 
 NODE_VERSION=v18.9.0
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-source ~/.bashrc
-nvm install $NODE_VERSION
+cd /
+PATH=/node-$NODE_VERSION-linux-ppc64le/bin:$PATH
+wget https://nodejs.org/dist/$NODE_VERSION/node-$NODE_VERSION-linux-ppc64le.tar.gz && \
+tar -C / -xzf node-$NODE_VERSION-linux-ppc64le.tar.gz && \
+rm -rf node-$NODE_VERSION-linux-ppc64le.tar.gz 
 
 #To build wazuh-api we require wazuh-server binaries to build 
 git clone https://github.com/wazuh/wazuh
