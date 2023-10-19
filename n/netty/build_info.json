@@ -13,7 +13,9 @@
     "netty-4.1.84.Final" : {
         "build_script" : "netty-4.1.84.Final_ubi_8.5.sh"
     },
-
+    "netty-4.1.92.Final" : {
+        "build_script" : "netty-4.1.92.Final_ubi_8.7.sh"
+    },
     "4.1.43.Final-SNAPSHOT" : {
         "build_script" : "netty_build_ppc64le_rhel7.6.sh"
     },
