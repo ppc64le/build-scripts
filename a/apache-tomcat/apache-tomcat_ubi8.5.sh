@@ -30,7 +30,8 @@ yum update -y
 yum install -y git wget
 yum install -y java-17-openjdk-devel.ppc64le
 
-export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-17.0.6.0.10-3.el8_7.ppc64le
+##Set JAVA_HOME
+JAVA_HOME=$(update-alternatives --list | grep java_sdk_17_openjdk | cut -f  3)
 export PATH=$JAVA_HOME/bin:$PATH
 
 ## Installing apache-ant
@@ -70,7 +71,7 @@ echo "==========================================================================
 
 echo "export CATALINA_HOME=${HOME}/tomcat/output/dist"
 printf 'export PATH=%s/tomcat/output/dist/bin:${PATH} \n' "${HOME}"
-echo "export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-17.0.6.0.10-3.el8_7.ppc64le"
+echo "export JAVA_HOME=$JAVA_HOME"
 printf 'export PATH=$JAVA_HOME/bin:$PATH \n'
 echo "cd ${HOME}/tomcat/output/dist/bin"
 printf "\n"

@@ -1,0 +1,12 @@
+{
+    "maintainer":"Sunidhi.Gaonkar@ibm.com",
+    "package_name" : "opensearch-project-cross-cluster-replication",
+    "github_url": "https://github.com/opensearch-project/cross-cluster-replication",
+    "version": "2.7.0.0",
+    "default_branch": "main",
+    "package_dir": "o/opensearch-project-cross-cluster-replication",
+    "build_script": "opensearch-project-cross-cluster-replication_ubi_8.7.sh",
+    "validate_build_script": true,
+    "use_non_root_user": true,
+    "docker_build": false
+}

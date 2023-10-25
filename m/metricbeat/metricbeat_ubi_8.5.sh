@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: beats/metricbeat
-# Version	: v8.5.1
-# Source repo	: https://github.com/elastic/beats/tree/main/metricbeat
+# Package	: metricbeat
+# Version	: v8.7.0
+# Source repo	: https://github.com/elastic/beats
 # Tested on	: UBI: 8.5
 # Language      : GO
 # Travis-Check  : False
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Sunidhi Gaonkar<Sunidhi.Gaonkar@ibm.com>
+# Maintainer	: Stuti Wali <Stuti.Wali@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -18,6 +18,13 @@
 #
 # ----------------------------------------------------------------------------
 
+# Variables
+set -e
+PACKAGE_NAME=metricbeat
+PACKAGE_URL=https://github.com/elastic/beats
+#PACKAGE_VERSION is configurable can be passed as an argument.
+PACKAGE_VERSION=${1:-v8.7.0}
+GO_VERSION=${GO_VERSION:-1.20.1}
 CURRENT_DIR=`pwd`
 SCRIPT=$(readlink -f $0)
 SCRIPT_DIR=$(dirname $SCRIPT)
@@ -26,10 +33,13 @@ SCRIPT_DIR=$(dirname $SCRIPT)
 yum install git make gcc python39 python39-devel wget gcc-c++ openssl openssl-devel -y
 
 #Install go
-GO_VERSION=1.19
-wget https://golang.org/dl/go$GO_VERSION.linux-ppc64le.tar.gz
-tar -C /bin -xzf go$GO_VERSION.linux-ppc64le.tar.gz
-rm -rf go$GO_VERSION.linux-ppc64le.tar.gz
+wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
+rm -rf /usr/local/go
+tar -C /usr/local -xzf go${GO_VERSION}.linux-ppc64le.tar.gz
+export GOROOT=/usr/local/go
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:/usr/local/bin
+go version
 
 #Install Rust compiler
 curl https://sh.rustup.rs -sSf | sh -s -- -y
@@ -38,37 +48,36 @@ source $HOME/.cargo/env
 
 pip3 install docker-compose pytest
 
-git clone https://github.com/elastic/beats
+# Cloning the repository from remote to local
+git clone $PACKAGE_URL
 cd beats
-git checkout v8.5.1
-
-#set GOPATH
-export PATH=$PATH:/bin/go/bin
-export GOPATH=/root/beats/metricbeat/go
-export PATH=$GOPATH/bin:$PATH
+git checkout $PACKAGE_VERSION
 
 #Build
 make
-cd metricbeat
+cd $PACKAGE_NAME
 mage build
 
 #Test
-mage unitTest
+mage goUnitTest
 
-git apply $SCRIPT_DIR/metricbeat.diff
-docker build -t metricbeat:8.5.1 .
-docker pull prom/prometheus:v2.40.1
-MODULE="prometheus" mage goIntegTest
+#Below script is for integration tests. It requires virtual environment (Docker inside docker) which is disabled in Currency. That's why commenting out below script
+
+#git apply $SCRIPT_DIR/metricbeat.diff
+#docker build -t metricbeat:8.7.0 .
+#docker pull prom/prometheus:v2.40.1
+#MODULE="prometheus" mage goIntegTest
 
 #Creating virtual environment for python intgration tests.
-cd ..
-make python-env
-cp /root/.cargo /beats/build/python-env/bin/ -r
-RUSTUP_HOME=/beats/build/python-env/bin/
-CARGO_HOME=/beats/build/python-env/bin/
-cd build/python-env/bin
-./python3 pip install --quiet  -Ur /beats/libbeat/tests/system/requirements.txt
-cd /beats/metricbeat
-/beats/build/python-env/bin/pytest  --timeout=90 --durations=20 --junit-xml=build/TEST-python-integration.xml module/prometheus/test_prometheus.py tests/system/test_base.py
+#cd ..
+#make python-env
+#cp /root/.cargo /beats/build/python-env/bin/ -r
+#RUSTUP_HOME=/beats/build/python-env/bin/
+#CARGO_HOME=/beats/build/python-env/bin/
+#cd build/python-env/bin
+#./python3 pip install grpcio==1.42.0
+#./python3 pip install --quiet  -Ur /beats/libbeat/tests/system/requirements.txt
+#cd /beats/metricbeat
+#/beats/build/python-env/bin/pytest  --timeout=90 --durations=20 --junit-xml=build/TEST-python-integration.xml module/prometheus/test_prometheus.py tests/system/test_base.py
 
 #Travis check is set to false as the container needs to be run with --priviledged flag.

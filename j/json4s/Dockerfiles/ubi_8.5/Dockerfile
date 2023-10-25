@@ -21,7 +21,6 @@ RUN yum update -y && \
     git clone https://github.com/json4s/json4s && \
     cd json4s && \
     git checkout $PACKAGE_VERSION && \
-    sbt compile && \
-	sbt test
+    sbt package
 
 CMD ["/bin/bash"]

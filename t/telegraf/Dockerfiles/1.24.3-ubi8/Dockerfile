@@ -1,6 +1,6 @@
-FROM registry.access.redhat.com/ubi8/ubi as builder
+FROM registry.access.redhat.com/ubi8/ubi:8.7 as builder
 
-ARG GO_VERSION=1.19
+ARG GO_VERSION=1.20.6
 
 ARG PACKAGE_VERSION=v1.24.3
 

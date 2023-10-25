@@ -1,0 +1,18 @@
+{
+  "maintainer": "Vinod.K1@ibm.com",
+  "package_name": "proj.4",
+  "github_url": "https://github.com/OSGeo/proj.4.git",
+  "version": "9.3.0",
+  "package_dir": "p/proj.4",
+  "default_branch": "master",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "build_script": "proj.4_ubi_8.7.sh",
+  "docker_build": "true",
+  "use_non_root_user": "false",
+  "validate_build_script": "true",
+  
+  "9.*.*": {
+    "dir": "9.3.0_ubi_8",
+    "build_script": "proj.4_ubi_8.7.sh"
+  }
+}

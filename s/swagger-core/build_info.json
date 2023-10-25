@@ -1,0 +1,17 @@
+{
+    "maintainer":"Vinod.K1@ibm.com",
+    "package_name" : "swagger-core",
+    "github_url": "https://github.com/swagger-api/swagger-core",
+    "version": "v2.2.16",
+    "default_branch": "master",
+    "package_dir": "s/swagger-core",
+    "build_script": "swagger-core_ubi_8.7.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": "true",
+
+    "v2.2.*" : {
+       "dir": "2.2.16_ubi8",
+       "build_script": "swagger-core_ubi_8.7.sh"
+    }
+}

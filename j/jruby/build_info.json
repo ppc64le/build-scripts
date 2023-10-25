@@ -1,0 +1,11 @@
+{
+    "maintainer": "Abhishek.Dwivedi6@ibm.com",
+    "package_name": "jruby",
+    "github_url": "https://github.com/jruby/jruby.git",
+    "version": "9.4.3.0",
+    "default_branch": "master",
+    "package_dir": "j/jruby",
+    "build_script": "jruby_ubi_8.7.sh",
+    "validate_build_script": true,
+    "docker_build": false
+  }

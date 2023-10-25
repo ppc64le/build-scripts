@@ -1,6 +1,7 @@
 FROM registry.access.redhat.com/ubi8/ubi as builder
 
 ARG GO_VERSION=1.18
+ARG PACKAGE_VERSION=v8.5.0
 
 RUN yum install -y wget gcc-c++ make git && \
     wget https://golang.org/dl/go${GO_VERSION}.linux-ppc64le.tar.gz && \
@@ -11,7 +12,7 @@ RUN yum install -y wget gcc-c++ make git && \
     echo $GOPATH && mkdir -p $GOPATH/src/github.com/elastic && \
     cd $GOPATH/src/github.com/elastic && \
     git clone https://github.com/elastic/beats && \
-    cd beats && git checkout v8.5.0 && \
+    cd beats && git checkout $PACKAGE_VERSION && \
     cd filebeat && \
     make
 

@@ -1,0 +1,20 @@
+{    
+    "maintainer":"Vinod.K1@ibm.com",
+    "package_name" : "supports-color",
+    "github_url": "https://github.com/chalk/supports-color",
+    "version": "v9.4.0",
+    "default_branch": "main",
+    "package_dir": "s/supports-color",
+    "build_script": "supports-color_ubi_8.7.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": false,
+
+    "v9.4.0" : {
+       "build_script" : "supports-color_ubi_8.7.sh"
+    },
+    
+    "v7.1.0" : {
+       "build_script" : "supports-color_rhel_7.6.sh"
+    }
+}

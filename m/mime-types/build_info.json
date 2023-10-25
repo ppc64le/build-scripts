@@ -1,0 +1,18 @@
+{
+    "maintainer": "Stuti.Wali@ibm.com",
+    "package_name": "mime-types",
+    "github_url": "https://github.com/jshttp/mime-types",
+    "version": "2.1.35",
+    "default_branch": "master",
+    "package_dir": "m/mime-types",
+    "build_script": "mime-types_ubi_8_7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    
+    "2.1.*": {
+       "build_script": "mime-types_ubi_8_7.sh"
+    }
+}
+
+

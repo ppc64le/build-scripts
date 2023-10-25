@@ -1,0 +1,11 @@
+{
+  "maintainer": "Shubham.Garud@ibm.com",
+  "package_name": "narayana-spring-boot",
+  "github_url": "https://github.com/snowdrop/narayana-spring-boot",
+  "package_dir": "n/narayana-spring-boot/",
+  "version": "release-2.6.0",
+  "default_branch": "main",
+  "build_script": "narayana-spring-boot_ubi_8.7.sh",
+  "docker_build": false,
+  "use_non_root_user": false
+}

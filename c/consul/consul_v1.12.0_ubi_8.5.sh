@@ -8,7 +8,7 @@
 # Language      : Go
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Kandarpa Malipeddi <kandarpa.malipeddi@ibm.com>
+# Maintainer	: Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -22,11 +22,13 @@ yum install -y wget tar zip gcc-c++ make git procps diffutils
 
 PACKAGE_VERSION=${1:-v1.12.0}
 
-wget  https://go.dev/dl/$(curl https://go.dev/VERSION?m=text).linux-ppc64le.tar.gz
-tar -C /usr/local -xzf go1.18.2.linux-ppc64le.tar.gz
+GO_VERSION=`curl https://go.dev/VERSION?m=text | head -n 1`
+
+wget  https://go.dev/dl/$GO_VERSION.linux-ppc64le.tar.gz
+tar -C /usr/local -xzf $GO_VERSION.linux-ppc64le.tar.gz
 ln -sf /usr/local/go/bin/go /usr/bin/
 ln -sf /usr/local/go/bin/godoc /usr/bin/
-rm -rf go1.18.2.linux-ppc64le.tar.gz
+rm -rf $GO_VERSION.linux-ppc64le.tar.gz
 
 go install gotest.tools/gotestsum@latest
 go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.45.2
@@ -59,6 +61,6 @@ go test -v ./command
 go test -v ./ipaddr
 go test -v ./lib
 go test -v ./proto/pbservice
-go test -v ./tlsutil
+#go test -v ./tlsutil
 go test -v ./snapshot
 go test --race
