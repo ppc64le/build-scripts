@@ -8,5 +8,9 @@
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
   "validate_build_script": false,
   "use_non_root_user": false,
-  "docker_build": true
+  "docker_build": true,
+  
+  "v6.6.*": {
+    "dir": "6.6.0"
+  }
 }
