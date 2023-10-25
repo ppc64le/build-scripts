@@ -39,9 +39,7 @@ jobs:
         # creating a folder package-cache to store the variable.sh and package folder
         - mkdir package-cache
         - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/build_package.sh; bash -x ./script/build_package.sh; fi
-        - ls -ltr
-        - echo $PACKAGE_NAME
-        - sudo mv $PACKAGE_NAME variable.sh package-cache
+        - sudo mv variable.sh package-cache
         - cd package-cache
         - ls -ltr
    
@@ -52,6 +50,18 @@ jobs:
           paths:
             - .
         use: build_cache
+
+
+    - stage: Source code scanner
+      name: Run trivy scan
+      workspaces:
+        use:
+          - package_cache
+      script:
+        - source package-cache/variable.sh;
+        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/trivy_code_scan.sh;bash ./script/trivy_code_scan.sh; fi
+
+
 
 
     - stage: Build docker image
@@ -67,7 +77,7 @@ jobs:
         use: package_cache
 
 
-    - stage: Run Scanner
+    - stage: Docker image Scanner
       name: Run trivy scan
       workspaces:
         use:
