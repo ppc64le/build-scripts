@@ -80,18 +80,28 @@ def trigger_script_validation_checks(file_name,version, image_name = "registry.a
     # Let the container run in non detach mode, as we need to delete the container on operation completion
     print(current_dir)
     print(file_name)
-    container = client.containers.run(
-        image_name,
-        "bash -c 'cd /home/tester/ && ./{} {}'".format(file_name,version),
-        #"cat /home/tester/{}".format(file_name),
-        network = 'host',
-        detach = True,
-        volumes = {
-            current_dir : {'bind': '/home/tester/', 'mode': 'rw'}
-        },
-        stderr = True, # Return logs from STDERR
-    )
-    result = container.wait()
+    package = file_name.split("/")[1]
+    print(package)
+    try:
+        command = [
+            "bash",
+            "-c",
+            f"cd /home/tester/ && ./{file_name} {version} && find / -type d -name .git -exec dirname {{}} \\; 2>/dev/null | awk -v package={package} -F'/' '{{if (index(package, $NF) != 0) system(\"mv \\\"\" $0 \"\\\" /home/tester/package-cache\")}}'"
+        ]
+        
+        container = client.containers.run(
+            image_name,
+            command,
+            network = 'host',
+            detach = True,
+            volumes = {
+                current_dir : {'bind': '/home/tester/', 'mode': 'rw'}
+            },
+            stderr = True, # Return logs from STDERR
+        )
+        result = container.wait()
+    except Exception as e:
+        print(f"Failed to created container: {e}")    
     try:
         print(container.logs().decode("utf-8"))
     except Exception:
