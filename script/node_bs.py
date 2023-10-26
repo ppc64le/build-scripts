@@ -59,7 +59,7 @@ def get_repo_url(script_file):
         contents=f.readlines()
         for line in contents:
             if line.startswith('# Source repo') :
-                github_url = ":".join(line.split(':')[1:]).strip()
+                github_url = line.split(':', 1)[1].strip()
                 return github_url
     return False
 
