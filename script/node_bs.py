@@ -265,10 +265,9 @@ else:
     package_name = input("Enter Package name (Package name should match with the directory name): ")
     package_name = package_name.lower()
     dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_name}"
-    if not os.path.exists(dir_name):
-        os.makedirs(dir_name)
-        create_new_script()
-        display_details()
+    os.makedirs(dir_name, exist_ok = True)
+    create_new_script()
+    display_details()
 
 
 
