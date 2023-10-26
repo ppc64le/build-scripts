@@ -137,9 +137,8 @@ def get_default_build_script(build_scripts_versions):
         if 'ubi_8.7' in data['file']:
             return [data['version'],data['file']]
         else:
-            result.append(data['version'])
-            result.append(data['file'])
-    return result
+            result.append((data['version'],data['file']))
+    return max(result,key=lambda x:x[0]) 
 
 
 maintainer=get_maintainer_for_package(dir_name)
@@ -191,8 +190,10 @@ for file in file_list:
         updated_build_info = new_key_value
         with open(f"{dir_name}/build_info.json",'w') as f:
             json.dump(updated_build_info,f,indent=2)
-        
+
+
 default_version,default_build_script=get_default_build_script(build_scripts_versions)
+
 
 final_json = {
     "maintainer" : maintainer,
