@@ -8,7 +8,7 @@
 # Language      : Node
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Shubham Garud <Shubham.Garud@ibm.com>
+# Maintainer	: ICH <ich@us.ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -33,7 +33,7 @@ nvm use $NODE_VERSION
 
 
 
-git clone $PACKAGE_URL
+git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
