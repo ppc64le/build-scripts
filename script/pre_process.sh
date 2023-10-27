@@ -13,9 +13,6 @@ for language in "${langs[@]}"; do
     elif [ "$language" == "javascript" ] || [ "$language" == "typescript" ]; then
     	nvm_path='/home/travis/.nvm/nvm.sh'
         if [ -f "package-lock.json" ] || [ -f "yarn.lock" ]; then
-	    sudo chown travis:travis -R .
-	    pwd
-	    echo "IN javascript block"
 	    echo '
      	    if [ -d ${nvm_path} ]; then
 	  	source ${nvm_path}
