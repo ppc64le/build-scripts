@@ -82,8 +82,6 @@ jobs:
         - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/grype_code_scan.sh;bash ./script/grype_code_scan.sh; fi          
 
 
-
-
     - stage: Build docker image
       name: Docker build
       script:
