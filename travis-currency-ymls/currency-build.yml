@@ -6,7 +6,6 @@ language: shell
 branches:
   only:
   - travis-currency-poc
-  - travis-pre-process
 
 env:
   global:
