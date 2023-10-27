@@ -6,6 +6,7 @@ language: shell
 branches:
   only:
   - travis-currency-poc
+  - travis-pre-process
 
 env:
   global:
@@ -39,9 +40,12 @@ jobs:
         # creating a folder package-cache to store the variable.sh and package folder
         - mkdir package-cache
         - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/build_package.sh; bash -x ./script/build_package.sh; fi
+        - actual_package_name=$(awk -F'/' 'tolower($0) ~ /^# source repo.*github.com/{sub(/\.git/, "", $NF); print $NF}' $PKG_DIR_PATH$BUILD_SCRIPT)
         - sudo mv variable.sh package-cache
         - cd package-cache
-        - ls -ltr
+        - sudo chown travis:travis -R .
+        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ../script/pre_process.sh; bash -x ../script/pre_process.sh; fi
+        - ls -ltr $actual_package_name
    
       workspaces:
         create:
@@ -60,6 +64,22 @@ jobs:
       script:
         - source package-cache/variable.sh;
         - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/trivy_code_scan.sh;bash ./script/trivy_code_scan.sh; fi
+
+    - name: Run syft scan
+      workspaces:
+        use:
+          - package_cache
+      script:
+        - source package-cache/variable.sh;
+        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/syft_code_scan.sh;bash ./script/syft_code_scan.sh; fi  
+
+    - name: Run grype scan
+      workspaces:
+        use:
+          - package_cache
+      script:
+        - source package-cache/variable.sh;
+        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/grype_code_scan.sh;bash ./script/grype_code_scan.sh; fi          
 
 
 
