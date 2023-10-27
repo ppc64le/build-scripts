@@ -37,13 +37,17 @@ jobs:
       name: Build script run
       script:
         - source variable.sh
-        # creating a folder package-cache to store the variable.sh and package folder
+        # creating a folder package-cache to store the variable.sh and cloned package folder
         - mkdir package-cache
         - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/build_package.sh; bash -x ./script/build_package.sh; fi
+        # setting a variable actual_package_name, here it is taking package reference name from the package build-script itself.
         - actual_package_name=$(awk -F'/' 'tolower($0) ~ /^# source repo.*github.com/{sub(/\.git/, "", $NF); print $NF}' $PKG_DIR_PATH$BUILD_SCRIPT)
         - sudo mv variable.sh package-cache
         - cd package-cache
+        # changing the ownership of package-cache and it's sub directories to travis, the reason for doing that is to facilitate creation of files 
+        # in the cloned package folder(note: currently cloned package folder is owned by the root)
         - sudo chown travis:travis -R .
+        # executing pre-process script which creates some files based on the package language.(python, javascript, typescript)
         - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ../script/pre_process.sh; bash -x ../script/pre_process.sh; fi
         - ls -ltr $actual_package_name
    
