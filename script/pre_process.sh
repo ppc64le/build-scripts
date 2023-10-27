@@ -1,5 +1,5 @@
 #!/bin/bash
-actual_package_name=$(awk -F'/' 'tolower($0) ~ /^# source repo.*github.com/{sub(/\.git/, "", $NF); print $NF}' $PKG_DIR_PATH$BUILD_SCRIPT)
+actual_package_name=$(awk -F'/' 'tolower($0) ~ /^# source repo.*github.com/{sub(/\.git/, "", $NF); print $NF}' /home/travis/build/saiNammi/build-scripts/$PKG_DIR_PATH$BUILD_SCRIPT)
 
 cd $actual_package_name
 
