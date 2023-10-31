@@ -28,9 +28,20 @@ dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_nam
 
 github_url=''
 latest_release=sys.argv[1]
+package_language=sys.argv[2]
+
 active_repo=False
 new_build_script=''
 branch_pkg=""
+
+def select_template_script(package_language):
+    package_language=package_language.lower()
+    if package_language == 'node' or package_language == 'javascript':
+        return 'build_script_node.sh'
+    elif package_language == 'go':
+        return 'build_script_go.sh'
+    elif package_language == 'python':
+        return 'build_script_python.sh'
 
 
 def get_latest_build_script(dir_name):
@@ -153,8 +164,10 @@ def create_new_script():
 
     license_added = add_license_file()
 
+    script_language=select_template_script(package_language)
+    print("\n template script selected ",script_language)
     
-    with open(f"{current_directory}/templates/build_script_node.sh",'r') as newfile:
+    with open(f"{current_directory}/templates/{script_language}",'r') as newfile:
         template_lines=newfile.readlines()
 
     for i in range(len(template_lines)):
