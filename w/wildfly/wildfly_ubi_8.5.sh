@@ -22,17 +22,16 @@ PACKAGE_VERSION=${1:-27.0.0.Alpha5}
 PACKAGE_URL=https://github.com/wildfly/wildfly.git
 
 yum update -y
-yum install -y git wget  tar
- 
-yum install -y java-11-openjdk-devel
+yum install -y git wget tar java-11-openjdk-devel
+
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
 
 # Install maven.
 cd /opt/
-wget https://www-eu.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
-tar xzf apache-maven-3.6.3-bin.tar.gz
-ln -s apache-maven-3.6.3 maven
+wget https://downloads.apache.org/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.tar.gz
+tar xzf apache-maven-3.8.8-bin.tar.gz
+ln -s apache-maven-3.8.8 maven
 export MVN_HOME=/opt/maven
 export PATH=${MVN_HOME}/bin:${PATH}
 mvn -version

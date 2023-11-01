@@ -1,8 +1,7 @@
 FROM registry.access.redhat.com/ubi8/ubi:8.4
 
 # Set the WILDFLY_VERSION env variable
-ENV WILDFLY_VERSION=26.1.2.Final
-ENV WILDFLY_SHA1=3dda0f3795c00cedf8b14c83f8c341244e7cad44
+ENV WILDFLY_VERSION=27.0.0.Final
 ENV JBOSS_HOME=/opt/jboss/wildfly
 
 # Add the WildFly distribution to /opt, and make wildfly the owner of the extracted tar content
@@ -10,7 +9,8 @@ ENV JBOSS_HOME=/opt/jboss/wildfly
 RUN yum install -y java-11-openjdk-devel \
     && mkdir -p /opt/jboss && cd $HOME \
     && curl -L -O https://github.com/wildfly/wildfly/releases/download/$WILDFLY_VERSION/wildfly-$WILDFLY_VERSION.tar.gz \
-    && sha1sum wildfly-$WILDFLY_VERSION.tar.gz | grep $WILDFLY_SHA1 \
+    && curl -L -O https://github.com/wildfly/wildfly/releases/download/$WILDFLY_VERSION/wildfly-$WILDFLY_VERSION.tar.gz.sha1 \
+    && sha1sum wildfly-$WILDFLY_VERSION.tar.gz | grep -f wildfly-$WILDFLY_VERSION.tar.gz.sha1 \
     && tar xf wildfly-$WILDFLY_VERSION.tar.gz \
     && mv $HOME/wildfly-$WILDFLY_VERSION $JBOSS_HOME \
     && rm wildfly-$WILDFLY_VERSION.tar.gz \
