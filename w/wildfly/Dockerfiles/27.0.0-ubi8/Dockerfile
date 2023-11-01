@@ -1,7 +1,7 @@
 FROM registry.access.redhat.com/ubi8/ubi:8.4
 
 # Set the WILDFLY_VERSION env variable
-ENV WILDFLY_VERSION=27.0.0.Alpha5
+ENV WILDFLY_VERSION=27.0.0.Final
 ENV JBOSS_HOME=/opt/jboss/wildfly
 
 # Add the WildFly distribution to /opt, and make wildfly the owner of the extracted tar content
