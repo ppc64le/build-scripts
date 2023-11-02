@@ -137,7 +137,7 @@ def raise_pull_request(branch_pkg):
     )
     print("\n PR response" ,response)
     print("\n PR status code",response.status_code)
-    print("\n PR response text",response.text)
+    
     if response.status_code >=200 and response.status_code <=299 :
         return {"message" : "success"}
     return {"message" : "fail"}
