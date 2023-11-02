@@ -1,9 +1,9 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: 
-# Version	: 
-# Source repo	: 
+# Package          : cli-cursor
+# Version          : v4.0.0
+# Source repo      : https://github.com/sindresorhus/cli-cursor
 # Tested on	: UBI 8.7
 # Language      : Node
 # Travis-Check  : True
@@ -17,9 +17,9 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_NAME=
-PACKAGE_VERSION=
-PACKAGE_URL=
+PACKAGE_NAME=cli-cursor
+PACKAGE_VERSION=${1:-v4.0.0}
+PACKAGE_URL=https://github.com/sindresorhus/cli-cursor
 
 export NODE_VERSION=${NODE_VERSION:-16}
 yum install -y python38 python38-devel git gcc gcc-c++ libffi make

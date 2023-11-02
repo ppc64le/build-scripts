@@ -1,9 +1,9 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: 
-# Version	: 
-# Source repo	: 
+# Package          : log-symbols
+# Version          : v6.0.0
+# Source repo      : https://github.com/sindresorhus/log-symbols
 # Tested on	: UBI 8.7
 # Language      : Node
 # Travis-Check  : True
@@ -17,9 +17,9 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_NAME=
-PACKAGE_VERSION=
-PACKAGE_URL=
+PACKAGE_NAME=log-symbols
+PACKAGE_VERSION=${1:-v6.0.0}
+PACKAGE_URL=https://github.com/sindresorhus/log-symbols
 
 export NODE_VERSION=${NODE_VERSION:-16}
 yum install -y python38 python38-devel git gcc gcc-c++ libffi make

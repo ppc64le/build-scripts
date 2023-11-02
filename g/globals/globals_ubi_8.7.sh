@@ -1,9 +1,9 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: 
-# Version	: 
-# Source repo	: 
+# Package          : globals
+# Version          : v13.22.0
+# Source repo      : https://github.com/sindresorhus/globals
 # Tested on	: UBI 8.7
 # Language      : Node
 # Travis-Check  : True
@@ -17,9 +17,9 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_NAME=
-PACKAGE_VERSION=
-PACKAGE_URL=
+PACKAGE_NAME=globals
+PACKAGE_VERSION=${1:-v13.22.0}
+PACKAGE_URL=https://github.com/sindresorhus/globals
 
 export NODE_VERSION=${NODE_VERSION:-16}
 yum install -y python38 python38-devel git gcc gcc-c++ libffi make

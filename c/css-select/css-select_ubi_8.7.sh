@@ -1,9 +1,9 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: 
-# Version	: 
-# Source repo	: 
+# Package          : css-select
+# Version          : v5.1.0
+# Source repo      : https://github.com/fb55/css-select
 # Tested on	: UBI 8.7
 # Language      : Node
 # Travis-Check  : True
@@ -17,9 +17,9 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_NAME=
-PACKAGE_VERSION=
-PACKAGE_URL=
+PACKAGE_NAME=css-select
+PACKAGE_VERSION=${1:-v5.1.0}
+PACKAGE_URL=https://github.com/fb55/css-select
 
 export NODE_VERSION=${NODE_VERSION:-16}
 yum install -y python38 python38-devel git gcc gcc-c++ libffi make

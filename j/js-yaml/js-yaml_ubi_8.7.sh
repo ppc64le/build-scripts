@@ -1,9 +1,9 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: 
-# Version	: 
-# Source repo	: 
+# Package          : js-yaml
+# Version          : 4.1.0
+# Source repo      : https://github.com/nodeca/js-yaml
 # Tested on	: UBI 8.7
 # Language      : Node
 # Travis-Check  : True
@@ -17,9 +17,9 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_NAME=
-PACKAGE_VERSION=
-PACKAGE_URL=
+PACKAGE_NAME=js-yaml
+PACKAGE_VERSION=${1:-4.1.0}
+PACKAGE_URL=https://github.com/nodeca/js-yaml
 
 export NODE_VERSION=${NODE_VERSION:-16}
 yum install -y python38 python38-devel git gcc gcc-c++ libffi make
