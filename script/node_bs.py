@@ -190,7 +190,7 @@ def create_new_script():
         newfile.writelines(template_lines)
 
     shutil.copyfile(f"{current_directory}/templates/{script_language}",f"{dir_name}/{package_name}_ubi_8.7.sh")
-    new_cmd=f"python3 script/trigger_container.py -f {dir_name}/{package_name}_ubi_8.7.sh"
+    new_cmd=f"python3 script/trigger_container.py -f {package_name}_ubi_8.7.sh"
      
     container_result=subprocess.Popen(new_cmd,shell=True)
     stdout, stderr=container_result.communicate()
