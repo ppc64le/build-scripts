@@ -18,7 +18,9 @@ fi
 
 CUR_DIR=$(pwd)
 cd $package_dirpath
-
+echo "printing the list of contents"
+pwd
+ls -ltr
 config_file='build_info.json'
 if [ -f $config_file ]; then
 
