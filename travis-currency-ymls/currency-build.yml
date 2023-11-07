@@ -83,7 +83,6 @@ jobs:
 
 
 
-
     - stage: Build docker image
       name: Docker build
       script:
