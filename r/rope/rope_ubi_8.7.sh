@@ -43,6 +43,7 @@ if ! python3 -m pip install -e .[dev] ; then
     exit 1
 fi
 
+#Skipping ropetest/contrib/autoimporttest.py test as mulitple github issues are still open related to the same test.
 if ! python3 -m pytest --ignore=ropetest/contrib/autoimporttest.py ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
