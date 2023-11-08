@@ -4,7 +4,7 @@
     "github_url": "https://github.com/FRRouting/frr",
     "version": "frr-9.0.1",
     "default_branch": "master",
-    "package_dir": "f/FRRouting",
+    "package_dir": "f/frr",
     "build_script": "frr_ubi_8_7.sh",
     "docker_build": true,
     "validate_build_script": true,

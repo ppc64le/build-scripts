@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
-# Package       : FRRouting 
+# Package       : frr 
 # Version       : frr-9.0.1
 # Source repo   : https://github.com/FRRouting/frr
 # Tested on     : UBI: 8.7
