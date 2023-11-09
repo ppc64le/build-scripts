@@ -1,6 +1,6 @@
 {
     "maintainer": "Stuti.Wali@ibm.com",
-    "package_name": "FRRouting",
+    "package_name": "frr",
     "github_url": "https://github.com/FRRouting/frr",
     "version": "frr-9.0.1",
     "default_branch": "master",
@@ -14,5 +14,4 @@
         "dir": "ubi8_7",
         "build_script": "frr_ubi_8_7.sh"
      } 
-
 }
