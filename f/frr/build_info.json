@@ -14,5 +14,4 @@
         "dir": "ubi8_7",
         "build_script": "frr_ubi_8_7.sh"
      } 
-
 }
