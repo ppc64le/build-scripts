@@ -46,7 +46,7 @@ mvn --version
 
 #install nodejs
 NODE_VERSION=v18.9.0
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 source ~/.bashrc
 nvm install $NODE_VERSION
 
