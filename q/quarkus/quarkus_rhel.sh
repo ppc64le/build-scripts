@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : quarkusio/quarkus
-# Version       : 3.2.0.Final
+# Version       : 3.2.0.Final, 3.2.5.Final
 # Source repo   : https://github.com/quarkusio/quarkus.git
 # Tested on     : Linux k8s-b800e3-bastion-1.power-iaas.cloud.ibm.com 4.18.0-425.19.2.el8_7.ppc64le
 # Language      : Java
