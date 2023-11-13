@@ -1,0 +1,12 @@
+{
+    "maintainer":"Email id of the maintainer Mandatory Argument.",
+    "package_name" : "quarkus",
+    "github_url":"https://github.com/quarkusio/quarkus.git",
+    "version": "3.2.5.Final",
+    "default_branch": "main",
+    "category": "rhp",
+    "package_dir": "q/quarkus",
+    "build_script": "quarkus_rhel.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false
+}
