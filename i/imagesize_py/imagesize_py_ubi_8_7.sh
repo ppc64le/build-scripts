@@ -31,7 +31,7 @@ export PACKAGE_URL=https://github.com/shibukawa/imagesize_py
 yum install -y gcc gcc-c++ make cmake git wget  autoconf automake libtool pkgconf-pkg-config.ppc64le info.ppc64le python39-devel.ppc64le curl gzip tar bzip2 zip unzip zlib-devel yum-utils fontconfig.ppc64le fontconfig-devel.ppc64le openssl-devel python39-setuptools
 
 pip3 install pytest
-
+PATH=$PATH:/usr/local/bin/
 
 # Clone the repository
 git clone $PACKAGE_URL
