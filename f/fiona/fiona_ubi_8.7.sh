@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : fiona
-# Version          : 1.9.4.post1
+# Version          : 1.9.4.post1,1.9.5
 # Source repo      : https://github.com/Toblerity/Fiona
 # Tested on        : UBI 8.7
 # Language         : Python,Cython
@@ -19,14 +19,14 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=Fiona
-PACKAGE_VERSION=${1:-1.9.4.post1}
+PACKAGE_VERSION=${1:-1.9.5}
 PACKAGE_URL=https://github.com/Toblerity/Fiona
 
 HOME_DIR=${PWD}
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
-yum install -y git make wget gcc-c++ python38 gcc
+yum install wget git make gcc gcc-c++ python3.11 python3.11-pip python3.11-devel -y
 
 #Install miniconda
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-ppc64le.sh
@@ -36,7 +36,8 @@ export PATH=$HOME/conda/bin/:$PATH
 conda config --prepend channels conda-forge
 conda config --set channel_priority strict
 conda create -n test libgdal geos=3.10.3 cython=3 -y
-source activate test
+conda activate test
+
 
 cd $HOME_DIR
 git clone $PACKAGE_URL
