@@ -1,3 +1,23 @@
+#!/bin/bash -e
+# -----------------------------------------------------------------------------
+#
+# Package          : fiona
+# Version          : 1.9.4.post1,1.9.5
+# Source repo      : https://github.com/Toblerity/Fiona
+# Tested on        : UBI 8.7
+# Language         : Python,Cython
+# Travis-Check     : True
+# Script License   : Apache License, Version 2 or later
+# Maintainer       : Vinod K <Vinod.K1@ibm.com>
+#
+# Disclaimer       : This script has been tested in root mode on given
+# ==========         platform using the mentioned version of the package.
+#                    It may not work as expected with newer versions of the
+#                    package and/or distribution. In such case, please
+#                    contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
+
 PACKAGE_NAME=Fiona
 PACKAGE_VERSION=${1:-1.9.5}
 PACKAGE_URL=https://github.com/Toblerity/Fiona
