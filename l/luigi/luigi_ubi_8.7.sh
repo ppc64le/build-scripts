@@ -37,7 +37,9 @@ cd $HOME_DIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-pip3 install tox
+python3.9 -m venv ~/py39
+source ~/py39/bin/activate
+pip install tox==3.27.1 -U tox-factor
 
 if ! pip3 install deps ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
