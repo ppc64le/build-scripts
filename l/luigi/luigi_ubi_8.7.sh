@@ -37,7 +37,7 @@ cd $HOME_DIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-python3 -m pip install  tox<4.0
+pip3 install tox
 
 if ! pip3 install deps ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
