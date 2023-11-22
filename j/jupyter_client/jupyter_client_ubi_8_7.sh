@@ -39,6 +39,8 @@ yum install -y sqlite-libs.ppc64le sqlite-devel.ppc64le sqlite.ppc64le fontconfi
 pip3 install --upgrade pip
 pip3 install cryptography
 pip3 install hatch
+PATH=$PATH:/usr/local/bin/
+
 
 # Clone the repository
 git clone $PACKAGE_URL
