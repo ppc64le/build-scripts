@@ -34,6 +34,7 @@ git checkout $PACKAGE_VERSION
 
 pip3 install tox 
 python3 -m pip install -r dev-requirements.txt
+python3 -m pip install build
 
 if ! python3 -m build ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
