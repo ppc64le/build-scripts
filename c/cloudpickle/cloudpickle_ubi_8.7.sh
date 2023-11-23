@@ -35,6 +35,7 @@ git checkout $PACKAGE_VERSION
 pip3 install tox 
 python3 -m pip install -r dev-requirements.txt
 python3 -m pip install build
+python3 -m pip install tox --ignore-installed
 
 if ! python3 -m build ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
@@ -42,8 +43,6 @@ if ! python3 -m build ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-
-python3 -m pip install tox --ignore-installed
 
 if ! tox -e py3 ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
