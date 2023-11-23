@@ -36,6 +36,7 @@ pip3 install tox
 python3 -m pip install -r dev-requirements.txt
 python3 -m pip install build
 python3 -m pip install tox --ignore-installed
+PATH=$PATH:/usr/local/bin/
 
 if ! python3 -m build ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
