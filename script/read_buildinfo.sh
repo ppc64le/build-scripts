@@ -90,6 +90,7 @@ echo "export BUILD_DOCKER=$build_docker" >> $CUR_DIR/variable.sh
 echo "export VALIDATE_BUILD_SCRIPT=$validate_build_script" >> $CUR_DIR/variable.sh
 echo "export VARIANT=$variant" >> $CUR_DIR/variable.sh
 echo "export BASENAME=$basename" >> $CUR_DIR/variable.sh
+echo "export NON_ROOT_BUILD=$nonRootBuild" >> $CUR_DIR/variable.sh
 
 chmod +x $CUR_DIR/variable.sh
 cat $CUR_DIR/variable.sh
