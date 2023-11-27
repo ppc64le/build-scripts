@@ -1,8 +1,8 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : 
-# Version          : MathJax
+# Package          : MathJax
+# Version          : 3.2.2
 # Source repo      : https://github.com/mathjax/MathJax
 # Tested on        : UBI 8.7
 # Language         : Javascript
