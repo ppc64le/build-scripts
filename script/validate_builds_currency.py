@@ -71,7 +71,7 @@ def trigger_basic_validation_checks(file_name):
         raise ValueError("Build script not found.")
 
         
-def trigger_script_validation_checks(file_name,version, image_name = "registry.access.redhat.com/ubi8/ubi:8.7"):
+def trigger_script_validation_checks(file_name,version, image_name):
     # Spawn a container and pass the build script
     client = docker.DockerClient(base_url='unix://var/run/docker.sock')
     st = os.stat(file_name)
@@ -174,4 +174,4 @@ def trigger_build_validation_travis(pr_number):
 if __name__=="__main__":
     #trigger_build_validation_travis(sys.argv[1])
     print("Inside python program")
-    trigger_script_validation_checks(sys.argv[1],sys.argv[2])
+    trigger_script_validation_checks(sys.argv[1],sys.argv[2],sys.argv[3])
