@@ -38,7 +38,7 @@ python3 -m pip install cython pytest
 python3 -m pip install git+https://github.com/pytoolz/toolz.git
 python3 setup.py build_ext --inplace --with-cython
 
-if ! pip install -e . ; then
+if ! python3 -m pip install -e . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
