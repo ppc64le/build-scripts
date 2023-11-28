@@ -34,8 +34,8 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 python3 -m pip install --upgrade pip setuptools wheel
-pip install cython pytest
-pip install git+https://github.com/pytoolz/toolz.git
+python3 -m pip install cython pytest
+python3 -m pip install git+https://github.com/pytoolz/toolz.git
 python3 setup.py build_ext --inplace --with-cython
 
 if ! pip install -e . ; then
