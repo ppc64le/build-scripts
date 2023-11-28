@@ -51,6 +51,14 @@ make install
 #Verify thrift installation
 thrift --version
 
+#For latest version of parquet-format it requires thrift-0.19.0
+wget -nv http://archive.apache.org/dist/thrift/0.19.0/thrift-0.19.0.tar.gz
+tar -xzvf thrift-0.19.0.tar.gz --no-same-owner
+cd thrift-0.19.0
+chmod +x ./configure
+./configure --disable-libs
+make install
+
 #Clone the top-level repository
 cd $WORKDIR
 git clone $PACKAGE_URL
