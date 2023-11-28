@@ -36,7 +36,6 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-
 # Install
 if ! npm install; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
