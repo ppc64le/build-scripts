@@ -1,0 +1,139 @@
+os: linux
+dist: focal
+arch: ppc64le
+language: shell
+
+branches:
+  only:
+  - travis-currency-poc
+  - travis-currency-poc-2
+
+env:
+  global:
+    - PACKAGE_NAME="d3-array"
+    - VERSION="v3.2.3"
+
+services:
+    - docker
+
+before_install:
+    - sudo apt install -y jq; jq --version
+
+jobs:
+  include:
+    - stage: Build info
+      name: Get Build info details
+      script:
+        # This script will read build_info.sh and create variable.sh file with export statement, so that we can source this file in later stages to use variables.
+        - chmod +x ./script/read_buildinfo.sh;bash -x ./script/read_buildinfo.sh
+      workspaces:
+        create:
+          #need to cache file variable.sh using workspaces by the name build_cache
+          name: build_cache
+          paths:
+            - variable.sh
+
+    - stage: Build
+      name: Build script run
+      script:
+        - source variable.sh
+        # creating a folder package-cache to store the variable.sh and cloned package folder
+        - mkdir package-cache
+        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/build_package.sh; bash -x ./script/build_package.sh; fi
+        # setting a variable actual_package_name, here it is taking package reference name from the package build-script itself.
+        - actual_package_name=$(awk -F'/' 'tolower($0) ~ /^# source repo.*github.com/{sub(/\.git/, "", $NF); print $NF}' $PKG_DIR_PATH$BUILD_SCRIPT)
+        - sudo mv variable.sh package-cache
+        - cd package-cache
+        # changing the ownership of package-cache and it's sub directories to travis, the reason for doing that is to facilitate creation of files 
+        # in the cloned package folder(note: currently cloned package folder is owned by the root)
+        - sudo chown travis:travis -R .
+        # executing pre-process script which creates some files based on the package language.(python, javascript, typescript)
+        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ../script/pre_process.sh; bash -x ../script/pre_process.sh; fi
+        - ls -ltr $actual_package_name
+      after_script:
+        - cd $TRAVIS_BUILD_DIR
+        - ls -ltr
+        #todo: need to check on build log length using a condition, if it is within the limit we can avoid pushing into the cos.
+        - gzip $TRAVIS_BUILD_DIR/build_log
+        - ls -ltr
+        - chmod +x ./script/upload_build_log.sh; bash -x ./script/upload_build_log.sh   
+      workspaces:
+        create:
+          # package_cache contains both variable.sh file as well as cloned package directory.
+          name: package_cache
+          paths:
+            - .
+        use: build_cache
+
+
+    - stage: Source code scanner
+      name: Run trivy scan
+      workspaces:
+        use:
+          - package_cache
+      script:
+        - source package-cache/variable.sh;
+        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/trivy_code_scan.sh;bash ./script/trivy_code_scan.sh; fi
+
+    - name: Run syft scan
+      workspaces:
+        use:
+          - package_cache
+      script:
+        - source package-cache/variable.sh;
+        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/syft_code_scan.sh;bash ./script/syft_code_scan.sh; fi  
+
+    - name: Run grype scan
+      workspaces:
+        use:
+          - package_cache
+      script:
+        - source package-cache/variable.sh;
+        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/grype_code_scan.sh;bash ./script/grype_code_scan.sh; fi          
+
+
+    - stage: Build docker image
+      name: Docker build
+      script:
+        - source package-cache/variable.sh;
+        - if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/build_docker.sh; bash -x ./script/build_docker.sh;echo "printing docker images"; docker images; fi
+      after_script:
+        - echo "$icr-service-id-api-key" | docker login -u iamapikey --password-stdin icr.io
+        - package_name=$(echo $PACKAGE_NAME | tr '[:upper:]' '[:lower:]')
+        - docker tag $IMAGE_NAME icr.io/currency-images/$package_name-ppc64le:$VERSION
+        - docker push icr.io/currency-images/$package_name-ppc64le:$VERSION        
+      workspaces:
+        create:
+          name: docker_image_tar
+          paths:
+            - image.tar
+        use: package_cache
+
+
+    - stage: Docker image Scanner
+      name: Run trivy scan
+      workspaces:
+        use:
+          - package_cache
+          - docker_image_tar
+      script:
+        - source package-cache/variable.sh;
+        - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/trivy_scan.sh;bash ./script/trivy_scan.sh; fi
+
+    - name: Run syft scan
+      workspaces:
+        use:
+          - package_cache
+          - docker_image_tar
+      script:
+        - source package-cache/variable.sh;
+        - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/syft_scan.sh;bash ./script/syft_scan.sh; fi
+
+    - name: Run grype scan
+      workspaces:
+        use:
+          - package_cache
+          - docker_image_tar
+      script:
+        - source package-cache/variable.sh;
+        - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/grype_scan.sh;bash ./script/grype_scan.sh; fi
