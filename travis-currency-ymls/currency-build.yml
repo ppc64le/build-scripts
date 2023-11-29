@@ -53,6 +53,7 @@ jobs:
       after_script:
         - cd $TRAVIS_BUILD_DIR
         - ls -ltr
+        #todo: need to check on build log length using a condition, if it is within the limit we can avoid pushing into the cos.
         - gzip $TRAVIS_BUILD_DIR/build_log
         - ls -ltr
         - chmod +x ./script/upload_build_log.sh; bash -x ./script/upload_build_log.sh   
