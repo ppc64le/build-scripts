@@ -1,4 +1,4 @@
- #!/bin/bash -xe
+ #!/bin/bash -e
  files_upload_link='https://163.69.91.4:8443/repository/currency-artifacts/docker-details/local/'
  package_name=$(echo $PACKAGE_NAME | tr '[:upper:]' '[:lower:]')
  image_name="icr.io/ppc64le-oss/$package_name-ppc64le:$VERSION"
