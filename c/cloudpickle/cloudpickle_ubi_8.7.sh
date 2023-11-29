@@ -22,7 +22,7 @@ PACKAGE_NAME=cloudpickle
 PACKAGE_VERSION=v3.0.0
 PACKAGE_URL=https://github.com/cloudpipe/cloudpickle.git
 
-yum install -y gcc gcc-c++ yum-utils make automake autoconf libtool gdb* binutils rpm-build gettext wget
+yum install -y git gcc gcc-c++ yum-utils make automake autoconf libtool gdb* binutils rpm-build gettext wget
 yum install -y python39 python39-devel python39-setuptools
 
 python3 -m ensurepip --upgrade
