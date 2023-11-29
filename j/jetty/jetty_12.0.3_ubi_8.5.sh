@@ -35,4 +35,15 @@ export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 # Clone and build source.
 git clone https://github.com/eclipse/jetty.project.git
 cd jetty.project && git checkout $PACKAGE_VERSION
-mvn install -DskipTests=true
+
+if ! mvn install -DskipTests=true; then
+    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Fails"
+    exit 1
+else
+    echo "------------------$PACKAGE_NAME:install_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | Install_Success"
+    exit 0
+fi
