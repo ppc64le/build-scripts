@@ -99,12 +99,11 @@ jobs:
         - source package-cache/variable.sh;
         - if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/build_docker.sh; bash -x ./script/build_docker.sh;echo "printing docker images"; docker images; fi
       after_script:
-        - if [ ${BUILD_DOCKER} == true ]; then
+        - if [ ${BUILD_DOCKER} == true ]; then \
             echo "$icr_service_id_api_key" | docker login -u iamapikey --password-stdin icr.io; \
             package_name=$(echo $PACKAGE_NAME | tr '[:upper:]' '[:lower:]'); \
             docker tag $IMAGE_NAME icr.io/currency-images/$package_name-ppc64le:$VERSION; \
-            docker push icr.io/currency-images/$package_name-ppc64le:$VERSION; \
-          fi      
+            docker push icr.io/currency-images/$package_name-ppc64le:$VERSION; fi  
       workspaces:
         create:
           name: docker_image_tar
