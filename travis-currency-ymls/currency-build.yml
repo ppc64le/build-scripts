@@ -18,6 +18,7 @@ services:
 
 before_install:
     - sudo apt install -y jq; jq --version
+    - set +x
 
 jobs:
   include:
