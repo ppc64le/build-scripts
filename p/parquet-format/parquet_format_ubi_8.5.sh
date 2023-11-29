@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: parquet-format
-# Version	: apache-parquet-format-2.9.0
+# Version	: apache-parquet-format-2.10.0
 # Source repo	: https://github.com/apache/parquet-format
 # Tested on	: UBI 8.5
 # Language      : Java
