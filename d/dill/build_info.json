@@ -12,7 +12,7 @@
     "docker_build": "true",
 
     "dill-0.3.*" : {
-        "build_script" : "dill_ubi_8.7.sh",
-        "dir" : "ubi8.7"
+        "dir" : "ubi8.7",
+        "build_script" : "dill_ubi_8.7.sh"
     }
 }
