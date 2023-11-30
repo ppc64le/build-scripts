@@ -1,0 +1,16 @@
+{
+    "maintainer":"mohit.pawar@ibm.com",
+    "package_name" : "BTrees",
+    "github_url": "https://github.com/zopefoundation/BTrees.git",
+    "version": "5.1",
+    "default_branch": "master",
+    "package_dir": "b/btrees",
+    "build_script": "btrees_ubi_8.7.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": "false",
+
+    "5.*" : {
+       "build_script" : "btrees_ubi_8.7.sh"
+    }
+}
