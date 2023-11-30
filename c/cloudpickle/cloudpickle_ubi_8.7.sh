@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=cloudpickle
-PACKAGE_VERSION=v3.0.0
+PACKAGE_VERSION=${1:-v3.0.0}
 PACKAGE_URL=https://github.com/cloudpipe/cloudpickle.git
 
 yum install -y git gcc gcc-c++ yum-utils make automake autoconf libtool gdb* binutils rpm-build gettext wget

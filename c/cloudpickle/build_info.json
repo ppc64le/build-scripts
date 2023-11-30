@@ -10,7 +10,7 @@
     "use_non_root_user": "false",
     "docker_build": "false",
 
-    "v1.2.*" : {
+    "v3.0.*" : {
        "build_script" : "cloudpickle_ubi_8.7.sh"
     }
 }
