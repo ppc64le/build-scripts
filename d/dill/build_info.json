@@ -5,12 +5,14 @@
     "version": "dill-0.3.7",
     "default_branch": "master",
     "package_dir": "d/dill",
+    "docker_cmd" : "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "build_script": "dill_ubi_8.7.sh",
     "validate_build_script": "true",
     "use_non_root_user": "false",
-    "docker_build": "false",
+    "docker_build": "true",
 
     "dill-0.3.*" : {
-       "build_script" : "dill_ubi_8.7.sh"
+        "build_script" : "dill_ubi_8.7.sh",
+        "dir" : "ubi8.7"
     }
 }
