@@ -37,7 +37,7 @@ export PKG_CONFIG_PATH="/usr/bin/pg_config"
 
 yum install -y python3.11 python3.11-devel python3.11-setuptools
 python3 -m ensurepip --upgrade
-pip3 install tox
+#pip3 install tox
 python3 -m pip install tox --ignore-installed
 PATH=$PATH:/usr/local/bin/
 
