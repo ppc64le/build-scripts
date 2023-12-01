@@ -18,7 +18,7 @@ services:
 
 before_install:
     - sudo apt install -y jq; jq --version
-    - set +x
+   
 
 jobs:
   include:
@@ -40,7 +40,7 @@ jobs:
         - source variable.sh
         # creating a folder package-cache to store the variable.sh and cloned package folder
         - mkdir package-cache
-        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/build_package.sh; bash -x ./script/build_package.sh; fi
+        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/build_package.sh; bash ./script/build_package.sh; fi
         # setting a variable actual_package_name, here it is taking package reference name from the package build-script itself.
         - actual_package_name=$(awk -F'/' 'tolower($0) ~ /^# source repo.*github.com/{sub(/\.git/, "", $NF); print $NF}' $PKG_DIR_PATH$BUILD_SCRIPT)
         - sudo mv variable.sh package-cache
@@ -49,7 +49,7 @@ jobs:
         # in the cloned package folder(note: currently cloned package folder is owned by the root)
         - sudo chown travis:travis -R .
         # executing pre-process script which creates some files based on the package language.(python, javascript, typescript)
-        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ../script/pre_process.sh; bash -x ../script/pre_process.sh; fi
+        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ../script/pre_process.sh; bash ../script/pre_process.sh; fi
         - ls -ltr $actual_package_name
       after_script:
         - cd $TRAVIS_BUILD_DIR
@@ -57,7 +57,7 @@ jobs:
         #todo: need to check on build log length using a condition, if it is within the limit we can avoid pushing into the cos.
         - gzip $TRAVIS_BUILD_DIR/build_log
         - ls -ltr
-        - chmod +x ./script/upload_build_log.sh; bash -x ./script/upload_build_log.sh   
+        - chmod +x ./script/upload_build_log.sh; bash ./script/upload_build_log.sh   
       workspaces:
         create:
           # package_cache contains both variable.sh file as well as cloned package directory.
@@ -97,9 +97,9 @@ jobs:
       name: Docker build
       script:
         - source package-cache/variable.sh;
-        - if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/build_docker.sh; bash -x ./script/build_docker.sh;echo "printing docker images"; docker images; fi
+        - if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/build_docker.sh; bash ./script/build_docker.sh;echo "printing docker images"; docker images; fi
       after_script:
-        - if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/upload_docker_image.sh; bash -x ./script/upload_docker_image.sh; fi
+        - if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/upload_docker_image.sh; bash ./script/upload_docker_image.sh; fi
       workspaces:
         create:
           name: docker_image_tar
