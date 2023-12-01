@@ -2,7 +2,7 @@
   "maintainer": "Vinod.K1@ibm.com",
   "package_name": "opentelemetry-ruby",
   "github_url": "https://github.com/open-telemetry/opentelemetry-ruby.git",
-  "version": "opentelemetry-sdk-experimental/v0.1.0",
+  "version": "opentelemetry-sdk-experimental/v0.3.2",
   "default_branch": "main",
   "build_script": "opentelemetry-ruby_ubi_8.5.sh",
   "package_dir": "o/opentelemetry-ruby",
