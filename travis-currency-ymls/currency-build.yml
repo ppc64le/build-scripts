@@ -26,7 +26,7 @@ jobs:
       name: Get Build info details
       script:
         # This script will read build_info.sh and create variable.sh file with export statement, so that we can source this file in later stages to use variables.
-        - chmod +x ./script/read_buildinfo.sh;bash -x ./script/read_buildinfo.sh
+        - chmod +x ./script/read_buildinfo.sh;bash ./script/read_buildinfo.sh
       workspaces:
         create:
           #need to cache file variable.sh using workspaces by the name build_cache
