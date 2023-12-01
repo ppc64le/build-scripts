@@ -25,7 +25,7 @@ for language in "${langs[@]}"; do
             yarn import || true
 	    ' > generate.sh
 	    chmod +x generate.sh
-            sudo ./generate.sh
+            source ./generate.sh
             sudo rm -rf node_modules/ package-lock.json
         fi
     fi
