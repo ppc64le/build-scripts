@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash -e
 
 version="$VERSION"
 package_dirpath="$PKG_DIR_PATH"
