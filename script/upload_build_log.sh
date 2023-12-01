@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash -e
 
 token_request=$(curl -X POST https://iam.cloud.ibm.com/identity/token \
   -H "content-type: application/x-www-form-urlencoded" \
