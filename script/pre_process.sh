@@ -19,7 +19,7 @@ for language in "${langs[@]}"; do
 	  	. $nvm_path
     	    else
 	    	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-            	source ~/.bashrc
+            	. ~/.bashrc
             	nvm install 16
 	    fi
 	    npm install -g yarn
