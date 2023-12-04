@@ -14,6 +14,7 @@ for language in "${langs[@]}"; do
     	nvm_path='/home/travis/.nvm/nvm.sh'
         if [ -f "package-lock.json" ] || [ -f "yarn.lock" ]; then
 	    echo '
+     	    #!/bin/bash -e
      	    if [ -f ${nvm_path} ]; then
 	  	source ${nvm_path}
     	    else
@@ -25,7 +26,7 @@ for language in "${langs[@]}"; do
             yarn import || true
 	    ' > generate.sh
 	    chmod +x generate.sh
-            sudo ./generate.sh
+            bash ./generate.sh
             sudo rm -rf node_modules/ package-lock.json
         fi
     fi
