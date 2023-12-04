@@ -13,10 +13,10 @@ for language in "${langs[@]}"; do
     elif [ "$language" == "javascript" ] || [ "$language" == "typescript" ]; then
     	nvm_path='/home/travis/.nvm/nvm.sh'
         if [ -f "package-lock.json" ] || [ -f "yarn.lock" ]; then
+	    sudo chown travis:travis -R .
 	    echo '
-     	    #!/bin/bash -e
-     	    if [ -f ${nvm_path} ]; then
-	  	source ${nvm_path}
+     	    if [ -f "$nvm_path" ]; then
+	  	source $nvm_path
     	    else
 	    	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
             	source ~/.bashrc
@@ -26,7 +26,7 @@ for language in "${langs[@]}"; do
             yarn import || true
 	    ' > generate.sh
 	    chmod +x generate.sh
-            bash ./generate.sh
+            sudo ./generate.sh
             sudo rm -rf node_modules/ package-lock.json
         fi
     fi
