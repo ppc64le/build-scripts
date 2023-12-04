@@ -1,5 +1,5 @@
 {
-  "maintainer": "Vishaka.Desai@ibm.com",
+  "maintainer": "Atharv.Phadnis@ibm.com",
   "package_name": "jetty",
   "github_url": "https://github.com/eclipse/jetty.project.git",
   "version": "jetty-11.0.12",
