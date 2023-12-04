@@ -51,7 +51,13 @@ jobs:
         # executing pre-process script which creates some files based on the package language.(python, javascript, typescript)
         - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ../script/pre_process.sh; bash ../script/pre_process.sh; fi
         - ls -ltr $actual_package_name
-
+      after_script:
+        - cd $TRAVIS_BUILD_DIR
+        - ls -ltr
+        #todo: need to check on build log length using a condition, if it is within the limit we can avoid pushing into the cos.
+        - gzip $TRAVIS_BUILD_DIR/build_log
+        - ls -ltr
+        - chmod +x ./script/upload_build_log.sh; bash ./script/upload_build_log.sh   
       workspaces:
         create:
           # package_cache contains both variable.sh file as well as cloned package directory.
