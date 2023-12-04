@@ -16,7 +16,7 @@ for language in "${langs[@]}"; do
 	    sudo chown travis:travis -R .
 	    echo '
      	    if [ -f "$nvm_path" ]; then
-	  	source $nvm_path
+	  	. $nvm_path
     	    else
 	    	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
             	source ~/.bashrc
