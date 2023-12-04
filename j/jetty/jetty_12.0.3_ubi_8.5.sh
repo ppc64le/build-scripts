@@ -2,9 +2,9 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : jetty
-# Version		: 12.0.3
-# Source repo	: https://github.com/eclipse/jetty.project.git
-# Tested on	    : UBI: 8.7
+# Version       : 12.0.3
+# Source repo   : https://github.com/eclipse/jetty.project.git
+# Tested on     : UBI: 8.7
 # Travis-Check  : True
 # Language      : Java
 # Script License: Apache License Version 2.0
