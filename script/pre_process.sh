@@ -11,15 +11,15 @@ for language in "${langs[@]}"; do
 	find ./ -type f -name '*requirements*.txt' -exec cat {} + >> final-requirements
 	mv final-requirements requirements.txt
     elif [ "$language" == "javascript" ] || [ "$language" == "typescript" ]; then
-    	nvm_path='/home/travis/.nvm/nvm.sh'
+    	export nvm_path='$HOME/.nvm/nvm.sh'
         if [ -f "package-lock.json" ] || [ -f "yarn.lock" ]; then
 	    sudo chown travis:travis -R .
 	    echo '
      	    if [ -f "$nvm_path" ]; then
-	  	. $nvm_path
+	  	source $nvm_path
     	    else
 	    	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-            	. ~/.bashrc
+            	source ~/.bashrc
             	nvm install 16
 	    fi
 	    npm install -g yarn
