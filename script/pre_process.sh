@@ -11,7 +11,7 @@ for language in "${langs[@]}"; do
 	find ./ -type f -name '*requirements*.txt' -exec cat {} + >> final-requirements
 	mv final-requirements requirements.txt
     elif [ "$language" == "javascript" ] || [ "$language" == "typescript" ]; then
-    	export nvm_path='$HOME/.nvm/nvm.sh'
+    	nvm_path='/home/travis/.nvm/nvm.sh'
         if [ -f "package-lock.json" ] || [ -f "yarn.lock" ]; then
 	    sudo chown travis:travis -R .
 	    echo '
