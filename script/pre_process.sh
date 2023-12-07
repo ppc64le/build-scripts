@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 actual_package_name=$(awk -F'/' 'tolower($0) ~ /^# source repo.*github.com/{sub(/\.git/, "", $NF); print $NF}' $HOME/build/$TRAVIS_REPO_SLUG/$PKG_DIR_PATH$BUILD_SCRIPT)
 
 cd $actual_package_name
@@ -13,8 +13,9 @@ for language in "${langs[@]}"; do
     elif [ "$language" == "javascript" ] || [ "$language" == "typescript" ]; then
     	nvm_path='/home/travis/.nvm/nvm.sh'
         if [ -f "package-lock.json" ] || [ -f "yarn.lock" ]; then
+	    sudo chown travis:travis -R .
 	    echo '
-     	    if [ -d ${nvm_path} ]; then
+     	    if [ -f ${nvm_path} ]; then
 	  	source ${nvm_path}
     	    else
 	    	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash

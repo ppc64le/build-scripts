@@ -1,4 +1,4 @@
- #!/bin/bash -xe
+ #!/bin/bash -e
 
 sudo apt update -y && sudo apt-get install file -y
 docker pull registry.access.redhat.com/ubi8/ubi:8.7
