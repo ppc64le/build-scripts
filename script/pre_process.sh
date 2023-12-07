@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/bash -e
 actual_package_name=$(awk -F'/' 'tolower($0) ~ /^# source repo.*github.com/{sub(/\.git/, "", $NF); print $NF}' $HOME/build/$TRAVIS_REPO_SLUG/$PKG_DIR_PATH$BUILD_SCRIPT)
 
 cd $actual_package_name
