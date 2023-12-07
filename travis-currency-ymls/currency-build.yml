@@ -6,7 +6,7 @@ language: shell
 branches:
   only:
   - travis-currency-poc
-  - currency-travis-migration
+  - currency-travis-migration-scanner
 
 env:
   global:
@@ -53,10 +53,8 @@ jobs:
         - ls -ltr $actual_package_name
       after_script:
         - cd $TRAVIS_BUILD_DIR
-        - ls -ltr
         #todo: need to check on build log length using a condition, if it is within the limit we can avoid pushing into the cos.
         - gzip $TRAVIS_BUILD_DIR/build_log
-        - ls -ltr
         - chmod +x ./script/upload_build_log.sh; bash ./script/upload_build_log.sh   
       workspaces:
         create:
@@ -69,30 +67,61 @@ jobs:
 
     - stage: Source code scanner
       name: Run trivy scan
-      workspaces:
-        use:
-          - package_cache
       script:
         - source package-cache/variable.sh;
         - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/trivy_code_scan.sh;bash ./script/trivy_code_scan.sh; fi
-
-    - name: Run syft scan
+        - mkdir source_trivy
+        - mv package-cache/trivy_source_vulnerabilities_results.json package-cache/trivy_source_sbom_results.cyclonedx source_trivy
+        - ls -ltr
       workspaces:
+        create:
+          name: source_trivy
+          paths:
+            - source_trivy
         use:
           - package_cache
+          
+    - name: Run syft scan
       script:
         - source package-cache/variable.sh;
         - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/syft_code_scan.sh;bash ./script/syft_code_scan.sh; fi  
-
-    - name: Run grype scan
+        - mkdir source_syft
+        - mv package-cache/syft_source_sbom_results.json source_syft
       workspaces:
+        create:
+          name: source_syft
+          paths:
+            - source_syft
         use:
           - package_cache
+          
+    - name: Run grype scan
       script:
         - source package-cache/variable.sh;
-        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/grype_code_scan.sh;bash ./script/grype_code_scan.sh; fi          
-
-
+        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/grype_code_scan.sh;bash ./script/grype_code_scan.sh; fi   
+        - mkdir source_grype
+        - mv package-cache/grype_source_sbom_results.json package-cache/grype_source_vulnerabilities_results.json source_grype
+      workspaces:
+        create:
+          name: source_grype
+          paths:
+            - source_grype
+        use:
+          - package_cache
+          
+    - stage: Upload source scanner results
+      name: source scanner results
+      workspaces:
+        use:
+          - source_trivy
+          - source_syft
+          - source_grype
+      script:
+        - mkdir source
+        - mv source_trivy/* source_syft/* source_grype/* source
+        - tar cvzf source_scanner.tar.gz source
+        - chmod +x ./script/upload_scanner_results.sh; bash ./script/upload_scanner_results.sh source_scanner.tar.gz
+      
     - stage: Build docker image
       name: Docker build
       script:
@@ -110,28 +139,53 @@ jobs:
 
     - stage: Docker image Scanner
       name: Run trivy scan
+      script:
+        - source package-cache/variable.sh;
+        - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/trivy_image_scan.sh;bash ./script/trivy_image_scan.sh; mkdir image_trivy; mv package-cache/trivy_image_vulnerabilities_results.json package-cache/trivy_image_sbom_results.cyclonedx image_trivy; fi        
       workspaces:
+        create:
+          name: image_trivy
+          paths:
+            - image_trivy
         use:
           - package_cache
           - docker_image_tar
-      script:
-        - source package-cache/variable.sh;
-        - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/trivy_scan.sh;bash ./script/trivy_scan.sh; fi
-
+          
     - name: Run syft scan
+      script:
+        - source package-cache/variable.sh;
+        - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/syft_image_scan.sh;bash ./script/syft_image_scan.sh; mkdir image_syft; mv package-cache/syft_image_sbom_results.json image_syft; fi
       workspaces:
+        create:
+          name: image_syft
+          paths:
+            - image_syft
         use:
           - package_cache
           - docker_image_tar
-      script:
-        - source package-cache/variable.sh;
-        - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/syft_scan.sh;bash ./script/syft_scan.sh; fi
 
     - name: Run grype scan
+      script:
+        - source package-cache/variable.sh;
+        - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/grype_image_scan.sh;bash ./script/grype_image_scan.sh; mkdir image_grype; mv package-cache/grype_image_sbom_results.json package-cache/grype_image_vulnerabilities_results.json image_grype; fi
       workspaces:
+        create:
+          name: image_grype
+          paths:
+            - image_grype
         use:
           - package_cache
           - docker_image_tar
+
+    - stage: Upload image scanner results
+      name: image scanner results
+      workspaces:
+        use:
+          - image_trivy
+          - image_syft
+          - image_grype
+          - package_cache
       script:
         - source package-cache/variable.sh;
-        - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/grype_scan.sh;bash ./script/grype_scan.sh; fi
+        - if [ ${BUILD_DOCKER} == true ]; then mkdir image; mv image_trivy/* image_syft/* image_grype/* image; tar cvzf image_scanner.tar.gz image; chmod +x ./script/upload_scanner_results.sh; bash ./script/upload_scanner_results.sh image_scanner.tar.gz; fi
+          
