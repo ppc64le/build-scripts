@@ -6,7 +6,7 @@ language: shell
 branches:
   only:
   - travis-currency-poc
-  - currency-travis-migration-scanner
+  - currency-travis-migration
 
 env:
   global:
