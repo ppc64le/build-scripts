@@ -7,11 +7,13 @@
   "build_script": "opentelemetry-ruby_ubi_8.5.sh",
   "package_dir": "o/opentelemetry-ruby",
   "docker_build": false,
-  "opentelemetry-sdk-experimental/v0.*.*": {
-    "build_script": "opentelemetry-ruby_ubi_8.5.sh"
-  },
   
+  "opentelemetry-sdk-experimental/v0.*.*": {
+    "build_script": "opentelemetry-ruby_ubi_8.5.sh",
+     "RUBY_VERSION": "3.0.1"
+  },
   "opentelemetry-test-helpers/v0.*.*": {
-    "build_script": "opentelemetry-ruby_ubi_8.5.sh"
+    "build_script": "opentelemetry-ruby_ubi_8.5.sh",
+    "RUBY_VERSION": "3.0.1"
   }
 }
