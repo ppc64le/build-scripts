@@ -123,7 +123,7 @@ jobs:
         - chmod +x ./script/upload_scanner_results.sh; bash ./script/upload_scanner_results.sh source_scanner.tar.gz
       
     - stage: Build docker image
-      env: DOCKER_BUILD=$DOCKER_BUILD
+      if: env(DOCKER_BUILD) = true
       name: Docker build
       script:
         - source package-cache/variable.sh;
@@ -189,9 +189,4 @@ jobs:
       script:
         - source package-cache/variable.sh;
         - if [ ${BUILD_DOCKER} == true ]; then mkdir image; mv image_trivy/* image_syft/* image_grype/* image; tar cvzf image_scanner.tar.gz image; chmod +x ./script/upload_scanner_results.sh; bash ./script/upload_scanner_results.sh image_scanner.tar.gz; fi
-  
-  exclude:
-    - stage: Build docker image 
-      env: DOCKER_BUILD=false
-   
           
