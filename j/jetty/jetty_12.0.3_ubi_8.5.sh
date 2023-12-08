@@ -36,6 +36,8 @@ export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 git clone https://github.com/eclipse/jetty.project.git
 cd jetty.project && git checkout $PACKAGE_VERSION
 
+export MAVEN_OPTS='-Xmx2048m'
+
 if ! mvn install -DskipTests=true; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
