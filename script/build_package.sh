@@ -26,16 +26,26 @@ do
 done
 wait $SCRIPT_PID
 my_pid_status=$?
-if [ $my_pid_status != 0 ]
+build_size=$(stat -c %s build_log)
+
+if [ $my_pid_status != 0 ];
 then
     echo "Script execution failed for "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "
     echo "*************************************************************************************"
-    tail -100 build_log
+    if [ $build_size -lt 1800000]; then
+       cat build_log
+    else
+       tail -100 build_log
+    fi
     exit 1
 else
     echo "Script execution completed successfully for "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "
     echo "*************************************************************************************"
-    tail -100 build_log
+    if [ $build_size -lt 1800000]; then
+       cat build_log
+    else
+       tail -100 build_log
+    fi    
 fi
 exit 0
 
