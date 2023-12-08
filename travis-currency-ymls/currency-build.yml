@@ -5,8 +5,8 @@ language: shell
 
 branches:
   only:
-  - travis-currency-poc
-  - currency-travis-migration
+  - master
+
 
 env:
   global:
