@@ -32,7 +32,8 @@ if [ $my_pid_status != 0 ];
 then
     echo "Script execution failed for "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "
     echo "*************************************************************************************"
-    if [ $build_size -lt 1800000]; then
+    if [ $build_size -lt 1800000 ];
+    then
        cat build_log
     else
        tail -100 build_log
@@ -41,7 +42,8 @@ then
 else
     echo "Script execution completed successfully for "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "
     echo "*************************************************************************************"
-    if [ $build_size -lt 1800000]; then
+    if [ $build_size -lt 1800000 ];
+    then
        cat build_log
     else
        tail -100 build_log
