@@ -5,8 +5,8 @@ language: shell
 
 branches:
   only:
-  - travis-currency-poc
-  - currency-travis-migration
+  - master
+
 
 env:
   global:
@@ -118,16 +118,21 @@ jobs:
           - source_grype
       script:
         - mkdir source
+        # the below commands will copy the files from all the scanner folders to source folder,
+        #later we tar that source folder and use the upload scanner script to push into cos bucket.
         - mv source_trivy/* source_syft/* source_grype/* source
         - tar cvzf source_scanner.tar.gz source
         - chmod +x ./script/upload_scanner_results.sh; bash ./script/upload_scanner_results.sh source_scanner.tar.gz
       
     - stage: Build docker image
+      # the below condition checks if docker_build flag set to true or false, it it is true it will build this stage and if it is false it will exclude this stage.
+      if: env(DOCKER_BUILD) = true
       name: Docker build
       script:
         - source package-cache/variable.sh;
         - if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/build_docker.sh; bash ./script/build_docker.sh;echo "printing docker images"; docker images; fi
       after_script:
+        # the below command is used to upload docker image to ibm icr registry.
         - if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/upload_docker_image.sh; bash ./script/upload_docker_image.sh; fi
       workspaces:
         create:
@@ -138,6 +143,7 @@ jobs:
 
 
     - stage: Docker image Scanner
+      if: env(DOCKER_BUILD) = true
       name: Run trivy scan
       script:
         - source package-cache/variable.sh;
@@ -152,6 +158,7 @@ jobs:
           - docker_image_tar
           
     - name: Run syft scan
+      if: env(DOCKER_BUILD) = true
       script:
         - source package-cache/variable.sh;
         - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/syft_image_scan.sh;bash ./script/syft_image_scan.sh; mkdir image_syft; mv package-cache/syft_image_sbom_results.json image_syft; fi
@@ -165,6 +172,7 @@ jobs:
           - docker_image_tar
 
     - name: Run grype scan
+      if: env(DOCKER_BUILD) = true
       script:
         - source package-cache/variable.sh;
         - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/grype_image_scan.sh;bash ./script/grype_image_scan.sh; mkdir image_grype; mv package-cache/grype_image_sbom_results.json package-cache/grype_image_vulnerabilities_results.json image_grype; fi
@@ -178,6 +186,7 @@ jobs:
           - docker_image_tar
 
     - stage: Upload image scanner results
+      if: env(DOCKER_BUILD) = true
       name: image scanner results
       workspaces:
         use:
@@ -187,5 +196,6 @@ jobs:
           - package_cache
       script:
         - source package-cache/variable.sh;
+        # the below command will copy the files from all the scanner folders to image folder, later we tar that image folder and use the upload scanner script to push into cos bucket.
         - if [ ${BUILD_DOCKER} == true ]; then mkdir image; mv image_trivy/* image_syft/* image_grype/* image; tar cvzf image_scanner.tar.gz image; chmod +x ./script/upload_scanner_results.sh; bash ./script/upload_scanner_results.sh image_scanner.tar.gz; fi
           
