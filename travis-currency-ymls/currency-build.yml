@@ -5,7 +5,7 @@ language: shell
 
 branches:
   only:
-  - currency-travis-migrtion
+  - currency-travis-migration
 
 
 env:
