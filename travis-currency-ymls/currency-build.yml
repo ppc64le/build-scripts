@@ -123,6 +123,7 @@ jobs:
         - chmod +x ./script/upload_scanner_results.sh; bash ./script/upload_scanner_results.sh source_scanner.tar.gz
       
     - stage: Build docker image
+      env: DOCKER_BUILD=$DOCKER_BUILD
       name: Docker build
       script:
         - source package-cache/variable.sh;
