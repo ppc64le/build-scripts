@@ -4,6 +4,8 @@
 # Version       : 1.3.9
 # Source repo   : https://github.com/jpmml/jpmml-model
 # Tested on     : RHEL 7.3
+# Language      : Java
+# Travis-Check  : False 
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Meghali Dhoble <dhoblem@us.ibm.com>
 #
