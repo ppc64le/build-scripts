@@ -244,7 +244,7 @@ def create_new_script():
         user_pr_response=input("Do you wish to create a Pull Request ? (y/n):")
         user_pr_response=user_pr_response.lower()
 
-        if user_push_response=='y':
+        if user_pr_response=='y':
             pull_request_response = raise_pull_request(branch_pkg)
             print(pull_request_response)
             if pull_request_response['message']=="success":
