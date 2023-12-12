@@ -1,0 +1,12 @@
+{
+  "maintainer": "Pratik.Tonage@ibm.com",
+  "package_name": "postgresql-bv",
+  "github_url": "https://github.com/bitnami/containers",
+  "version": "5b5ff16",
+  "default_branch": "main",
+  "package_dir": "p/postgresql-bv",
+  "build_script": "postgresql-bv_14.10.0_ubi_8.7.sh",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+}
