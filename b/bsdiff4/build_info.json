@@ -1,0 +1,18 @@
+{
+    "maintainer":"Vinod.K1@ibm.com",
+    "package_name" : "bsdiff4",
+    "github_url": "https://github.com/ilanschnell/bsdiff4",
+    "version": "1.2.4",
+    "default_branch": "master",
+    "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "package_dir": "b/bsdiff4",
+    "build_script": "bsdiff4_ubi_8.7.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": "true",
+
+    "1.2.*" : {
+       "dir": "1.2.4_ubi8",
+       "build_script": "bsdiff4_ubi_8.7.sh"
+    }
+}

@@ -1,0 +1,11 @@
+{
+  "maintainer": "Shubham.Garud@ibm.com",
+  "package_name": "jpmml-model",
+  "github_url": "https://github.com/jpmml/jpmml-model",
+  "package_dir": "j/jpmml-model",
+  "version": "1.6.4",
+  "default_branch": "master",
+  "build_script": "jpmml-model_ubi_8.7.sh",
+  "docker_build": false,
+  "use_non_root_user": false
+}
