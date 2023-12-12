@@ -164,6 +164,8 @@ def create_new_script():
 
     license_added = add_license_file()
 
+    if package_language=='':
+        package_language=input("Enter Package Language (node,go,python):")
     script_language=select_template_script(package_language)
     print("\n template script selected ",script_language)
     
@@ -277,6 +279,12 @@ else:
         latest_release = sys.argv[1]
     else:
         latest_release=input("Enter version/tag to build:")
+
+    if sys.argv[2]!='':
+        package_language = sys.argv[2]
+    else:
+        package_language=input("Enter Package Language (node,go,python):")
+
         
     package_name = input("Enter Package name (Package name should match with the directory name): ")
     package_name = package_name.lower()
