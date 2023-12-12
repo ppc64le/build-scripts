@@ -31,7 +31,7 @@ def trigger_script_validation_checks(image_name = "registry.access.redhat.com/ub
     client = docker.DockerClient(base_url='unix://var/run/docker.sock')
     st = os.stat(file_name)
     current_dir = os.getcwd()
-    os.chmod("{}/{}".format(current_dir, file_name), st.st_mode | stat.S_IEXEC)
+    os.chmod("{}/{}".format(current_dir,file_name), st.st_mode | stat.S_IEXEC)
 
     # Let the container run in non detach mode, as we need to delete the container on operation completion
     print("\n Creating Container....")
