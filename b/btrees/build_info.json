@@ -5,12 +5,14 @@
     "version": "5.1",
     "default_branch": "master",
     "package_dir": "b/btrees",
+    "docker_cmd" : "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "build_script": "btrees_ubi_8.7.sh",
     "validate_build_script": "true",
     "use_non_root_user": "false",
-    "docker_build": "false",
+    "docker_build": "true",
 
     "5.*" : {
+       "dir" : "ubi8.7", 
        "build_script" : "btrees_ubi_8.7.sh"
     }
 }
