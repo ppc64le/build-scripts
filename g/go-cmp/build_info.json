@@ -1,0 +1,11 @@
+{
+   "maintainer": "ich@us.ibm.com",
+   "package_name": "go-cmp",
+   "github_url": "https://github.com/google/go-cmp",
+   "version": "v0.6.0",
+   "default_branch": "master",
+   "build_script": "go-cmp_ubi_8.7.sh",
+   "package_dir": "g/go-cmp",
+   "docker_build": false,
+   "validate_build_script": true
+}
