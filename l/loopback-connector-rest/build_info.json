@@ -2,7 +2,7 @@
     "maintainer":"Vinod.K1@ibm.com",
     "package_name" : "loopback-connector-rest",
     "github_url": "https://github.com/loopbackio/loopback-connector-rest",
-    "version": "v5.0.3",
+    "version": "v5.0.0",
     "default_branch": "master",
     "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "package_dir": "l/loopback-connector-rest",
