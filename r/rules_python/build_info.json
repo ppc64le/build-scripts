@@ -1,0 +1,16 @@
+{
+    "maintainer": "Vinod.K1@ibm.com",
+    "package_name" : "rules_python",
+    "github_url": "https://github.com/bazelbuild/rules_python",
+    "version": "0.27.1",
+    "default_branch": "main",
+    "package_dir": "r/rules_python",
+    "build_script": "rules_python_ubi_8.7.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": false,
+
+    "0.*.*" : {
+       "build_script" : "rules_python_ubi_8.7.sh"
+    }
+}

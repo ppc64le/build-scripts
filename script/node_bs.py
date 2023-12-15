@@ -28,9 +28,20 @@ dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_nam
 
 github_url=''
 latest_release=sys.argv[1]
+package_language=sys.argv[2]
+
 active_repo=False
 new_build_script=''
 branch_pkg=""
+
+def select_template_script(package_language):
+    package_language=package_language.lower()
+    if package_language == 'node' or package_language == 'javascript':
+        return 'build_script_node.sh'
+    elif package_language == 'go':
+        return 'build_script_go.sh'
+    elif package_language == 'python':
+        return 'build_script_python.sh'
 
 
 def get_latest_build_script(dir_name):
@@ -126,7 +137,7 @@ def raise_pull_request(branch_pkg):
     )
     print("\n PR response" ,response)
     print("\n PR status code",response.status_code)
-    print("\n PR response text",response.text)
+    
     if response.status_code >=200 and response.status_code <=299 :
         return {"message" : "success"}
     return {"message" : "fail"}
@@ -153,8 +164,12 @@ def create_new_script():
 
     license_added = add_license_file()
 
+    if package_language=='':
+        package_language=input("Enter Package Language (node,go,python):")
+    script_language=select_template_script(package_language)
+    print("\n template script selected ",script_language)
     
-    with open(f"{current_directory}/templates/build_script_node.sh",'r') as newfile:
+    with open(f"{current_directory}/templates/{script_language}",'r') as newfile:
         template_lines=newfile.readlines()
 
     for i in range(len(template_lines)):
@@ -173,11 +188,10 @@ def create_new_script():
         elif template_lines[i].startswith("PACKAGE_NAME"):
             template_lines[i]=f"PACKAGE_NAME={package_name}\n"
         
-    with open (f"{current_directory}/templates/build_script_node.sh",'w') as newfile:
+    with open (f"{dir_name}/{package_name}_ubi_8.7.sh",'w') as newfile:
         newfile.writelines(template_lines)
 
-    shutil.copyfile(f"{current_directory}/templates/build_script_node.sh",f"{dir_name}/{package_name}_ubi_8.7.sh")
-    new_cmd=f"python3 script/trigger_container.py -f templates/build_script_node.sh"
+    new_cmd=f"python3 script/trigger_container.py -f {package_name[0]}/{package_name}/{package_name}_ubi_8.7.sh"
      
     container_result=subprocess.Popen(new_cmd,shell=True)
     stdout, stderr=container_result.communicate()
@@ -232,7 +246,7 @@ def create_new_script():
         user_pr_response=input("Do you wish to create a Pull Request ? (y/n):")
         user_pr_response=user_pr_response.lower()
 
-        if user_push_response=='y':
+        if user_pr_response=='y':
             pull_request_response = raise_pull_request(branch_pkg)
             print(pull_request_response)
             if pull_request_response['message']=="success":
@@ -261,7 +275,17 @@ if old_script!=False:
 else:
     print("\n Old_script not Present")
     github_url=input("Enter Github URL:")
-    latest_release=input("Enter version/tag to build:")
+    if sys.argv[1]!='':
+        latest_release = sys.argv[1]
+    else:
+        latest_release=input("Enter version/tag to build:")
+
+    if sys.argv[2]!='':
+        package_language = sys.argv[2]
+    else:
+        package_language=input("Enter Package Language (node,go,python):")
+
+        
     package_name = input("Enter Package name (Package name should match with the directory name): ")
     package_name = package_name.lower()
     dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_name}"

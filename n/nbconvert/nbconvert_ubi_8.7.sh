@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : nbconvert
-# Version       : v7.7.3
+# Version       : v7.7.3, v7.12.0
 # Source repo   : https://github.com/jupyter/nbconvert
 # Tested on     : UBI 8.7
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Vishaka Desai <Vishaka.Desai@ibm.com>
+# Maintainer    : Stuti Wali <Stuti.Wali@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -20,7 +20,7 @@
 set -e
 
 PACKAGE_NAME=nbconvert
-PACKAGE_VERSION=${1:-v7.7.3}
+PACKAGE_VERSION=${1:-v7.12.0}
 PACKAGE_URL=https://github.com/jupyter/nbconvert
 HOME_DIR=${PWD}
 
@@ -36,6 +36,11 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+pip3 install jupyter
+export JUPYTER_PLATFORM_DIRS=1
+jupyter --paths
+
+
 # Install
 if !  python3 -m pip install -e .; then
 	echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
@@ -46,7 +51,7 @@ fi
 
 # Test
 python3 -m pip install nbconvert[test]
-if ! py.test --pyargs nbconvert; then
+if ! pytest; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
