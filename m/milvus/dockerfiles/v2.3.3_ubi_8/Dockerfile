@@ -4,8 +4,7 @@ ENV MILVUS_VERSION=v2.3.3
 ENV MILVUS_PACKAGE_NAME=milvus
 ENV MILVUS_PACKAGE_URL=https://github.com/milvus-io/${MILVUS_PACKAGE_NAME}.git
 ENV CMAKE_VERSION=3.27.7
-#ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/m/milvus/milvus-${MILVUS_VERSION}.patch
-ENV PATCH_FILE=https://raw.githubusercontent.com/sumitd2/build-scripts/milvus/m/milvus/milvus-${MILVUS_VERSION}.patch
+ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/m/milvus/milvus-${MILVUS_VERSION}.patch
 ENV PATH=${HOME}/go/bin:/usr/local/go/bin:/usr/local/cmake/bin:${PATH}
 ENV VCPKG_FORCE_SYSTEM_BINARIES=1
 
