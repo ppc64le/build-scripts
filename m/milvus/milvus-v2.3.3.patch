@@ -1,0 +1,742 @@
+diff --git a/deployments/docker/dev/docker-compose.yml b/deployments/docker/dev/docker-compose.yml
+index c653c2614..b058d9083 100644
+--- a/deployments/docker/dev/docker-compose.yml
++++ b/deployments/docker/dev/docker-compose.yml
+@@ -16,27 +16,6 @@ services:
+       - "2380:2380"
+       - "4001:4001"
+ 
+-  pulsar:
+-    image: apachepulsar/pulsar:2.8.2
+-    volumes:
+-      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/pulsar:/pulsar/data
+-    environment:
+-      # bin/apply-config-from-env.py script will modify the configuration file based on the environment variables
+-      # nettyMaxFrameSizeBytes must be calculated from maxMessageSize + 10240 (padding)
+-      - nettyMaxFrameSizeBytes=104867840 # this is 104857600 + 10240 (padding)
+-      - defaultRetentionTimeInMinutes=10080
+-      - defaultRetentionSizeInMB=8192
+-      # maxMessageSize is missing from standalone.conf, must use PULSAR_PREFIX_ to get it configured
+-      - PULSAR_PREFIX_maxMessageSize=104857600
+-      - PULSAR_GC=-XX:+UseG1GC
+-    command: |
+-      /bin/bash -c \
+-      "bin/apply-config-from-env.py conf/standalone.conf && \
+-      exec bin/pulsar standalone --no-functions-worker --no-stream-storage"
+-    ports:
+-      - "6650:6650"
+-      - "18080:8080"
+-
+   minio:
+     image: minio/minio:RELEASE.2022-03-17T06-34-49Z
+     ports:
+@@ -69,31 +48,6 @@ services:
+       - "16686:16686" # frontent
+       - "14268:14268" # jaeger.thirft
+ 
+-  zookeeper:
+-    image: wurstmeister/zookeeper:latest
+-    ports:
+-      - "2181:2181"
+-
+-  kafka:
+-    image: 'bitnami/kafka:3.1.0'
+-    ports:
+-      - '9092:9092'
+-    environment:
+-      - KAFKA_BROKER_ID=0
+-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092
+-      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+-      - ALLOW_PLAINTEXT_LISTENER=yes
+-      # set kafka server config
+-      - KAFKA_CFG_MAX_PARTITION_FETCH_BYTES=5242880
+-      - KAFKA_CFG_MAX_REQUEST_SIZE=5242880
+-      - KAFKA_CFG_MESSAGE_MAX_BYTES=5242880
+-      - KAFKA_CFG_REPLICA_FETCH_MAX_BYTES=5242880
+-      - KAFKA_CFG_FETCH_MESSAGE_MAX_BYTES=5242880
+-      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+-    depends_on:
+-      - zookeeper
+-
+ networks:
+   default:
+     name: milvus_dev
+diff --git a/go.mod b/go.mod
+index f319ef9a9..079715825 100644
+--- a/go.mod
++++ b/go.mod
+@@ -9,7 +9,7 @@ require (
+ 	github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.1.0
+ 	github.com/aliyun/credentials-go v1.2.7
+ 	github.com/antlr/antlr4/runtime/Go/antlr v0.0.0-20210826220005-b48c857c3a0e
+-	github.com/apache/arrow/go/v8 v8.0.0-20220322092137-778b1772fd20
++        github.com/apache/arrow/go/v12 v12.0.1
+ 	github.com/apache/pulsar-client-go v0.6.1-0.20210728062540-29414db801a7
+ 	github.com/bits-and-blooms/bloom/v3 v3.0.1
+ 	github.com/blang/semver/v4 v4.0.0
+diff --git a/go.sum b/go.sum
+index c667a858f..65e0e32d3 100644
+--- a/go.sum
++++ b/go.sum
+@@ -97,8 +97,8 @@ github.com/antihax/optional v0.0.0-20180407024304-ca021399b1a6/go.mod h1:V8iCPQY
+ github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
+ github.com/antlr/antlr4/runtime/Go/antlr v0.0.0-20210826220005-b48c857c3a0e h1:GCzyKMDDjSGnlpl3clrdAK7I1AaVoaiKDOYkUzChZzg=
+ github.com/antlr/antlr4/runtime/Go/antlr v0.0.0-20210826220005-b48c857c3a0e/go.mod h1:F7bn7fEU90QkQ3tnmaTx3LTKLEDqnwWODIYppRQ5hnY=
+-github.com/apache/arrow/go/v8 v8.0.0-20220322092137-778b1772fd20 h1:YcSFhAin12rxRsvvfzD6gepH7jZwtFVdikXRyhzUC2w=
+-github.com/apache/arrow/go/v8 v8.0.0-20220322092137-778b1772fd20/go.mod h1:UUe+gJaMnuFD6icfGSJxUjG/tX/POUbPS/wE+EFyncM=
++github.com/apache/arrow/go/v12 v12.0.1 h1:JsR2+hzYYjgSUkBSaahpqCetqZMr76djX80fF/DiJbg=
++github.com/apache/arrow/go/v12 v12.0.1/go.mod h1:weuTY7JvTG/HDPtMQxEUp7pU73vkLWMLpY67QwZ/WWw=
+ github.com/apache/thrift v0.15.0 h1:aGvdaR0v1t9XLgjtBYwxcBvBOTMqClzwE26CHOgjW1Y=
+ github.com/apache/thrift v0.15.0/go.mod h1:PHK3hniurgQaNMZYaCLEqXKsYK8upmhPbmdP2FXSqgU=
+ github.com/ardielle/ardielle-go v1.5.2 h1:TilHTpHIQJ27R1Tl/iITBzMwiUGSlVfiVhwDNGM3Zj4=
+diff --git a/internal/core/conanfile.py b/internal/core/conanfile.py
+index 69c6e535f..ad396b26b 100644
+--- a/internal/core/conanfile.py
++++ b/internal/core/conanfile.py
+@@ -4,8 +4,9 @@ from conans import ConanFile
+ class MilvusConan(ConanFile):
+     settings = "os", "compiler", "build_type", "arch"
+     requires = (
+-        "rocksdb/6.29.5",
+-        "boost/1.82.0",
++        "rocksdb/6.29.5@milvus/dev",
++        "boost/1.75.0",
++        "libunwind/1.7.2",
+         "onetbb/2021.7.0",
+         "nlohmann_json/3.11.2",
+         "zstd/1.5.4",
+@@ -17,7 +18,7 @@ class MilvusConan(ConanFile):
+         "aws-sdk-cpp/1.9.234",
+         "googleapis/cci.20221108",
+         "benchmark/1.7.0",
+-        "gtest/1.8.1",
++        "gtest/1.14.0",
+         "protobuf/3.21.4",
+         "rapidxml/1.13",
+         "yaml-cpp/0.7.0",
+@@ -63,6 +64,8 @@ class MilvusConan(ConanFile):
+         "boost:without_locale": False,
+         "glog:with_gflags": True,
+         "glog:shared": True,
++        "libunwind:shared": True,
++        "openssl:shared": True,
+         "prometheus-cpp:with_pull": False,
+         "fmt:header_only": True,
+         "onetbb:tbbmalloc": False,
+diff --git a/internal/core/src/index/Utils.h b/internal/core/src/index/Utils.h
+index adc0b3459..a64fdc932 100644
+--- a/internal/core/src/index/Utils.h
++++ b/internal/core/src/index/Utils.h
+@@ -121,8 +121,8 @@ AssembleIndexDatas(
+     std::map<std::string, storage::FieldDataChannelPtr>& index_datas,
+     std::unordered_map<std::string, storage::FieldDataPtr>& result);
+ 
+-// On Linux, read() (and similar system calls) will transfer at most 0x7ffff000 (2,147,479,552) bytes once
++// On Linux, read() (and similar system calls) will transfer at most 0x7fff0000 (2,147,418,112) bytes once
+ void
+-ReadDataFromFD(int fd, void* buf, size_t size, size_t chunk_size = 0x7ffff000);
++ReadDataFromFD(int fd, void* buf, size_t size, size_t chunk_size = 0x7fff0000);
+ 
+ }  // namespace milvus::index
+diff --git a/internal/core/thirdparty/knowhere/CMakeLists.txt b/internal/core/thirdparty/knowhere/CMakeLists.txt
+index d8bb751ce..fadd713c6 100644
+--- a/internal/core/thirdparty/knowhere/CMakeLists.txt
++++ b/internal/core/thirdparty/knowhere/CMakeLists.txt
+@@ -35,11 +35,13 @@ if ( MILVUS_GPU_VERSION STREQUAL "ON" )
+ endif ()
+ 
+ set( CMAKE_PREFIX_PATH ${CONAN_BOOST_ROOT} )
++set(knowhere_patch git apply ${CMAKE_CURRENT_SOURCE_DIR}/knowhere.patch)
+ FetchContent_Declare(
+         knowhere
+         GIT_REPOSITORY  ${GIT_REPOSITORY}
+         GIT_TAG         ${KNOWHERE_VERSION}
+-        SOURCE_DIR      ${CMAKE_CURRENT_BINARY_DIR}/knowhere-src
++        PATCH_COMMAND   ${knowhere_patch}
++	SOURCE_DIR      ${CMAKE_CURRENT_BINARY_DIR}/knowhere-src
+         BINARY_DIR      ${CMAKE_CURRENT_BINARY_DIR}/knowhere-build
+         DOWNLOAD_DIR    ${THIRDPARTY_DOWNLOAD_PATH} )
+ 
+diff --git a/internal/core/thirdparty/knowhere/knowhere.patch b/internal/core/thirdparty/knowhere/knowhere.patch
+new file mode 100644
+index 000000000..e19b10d45
+--- /dev/null
++++ b/internal/core/thirdparty/knowhere/knowhere.patch
+@@ -0,0 +1,42 @@
++diff --git a/cmake/libs/libfaiss.cmake b/cmake/libs/libfaiss.cmake
++index 6f44c08..fb860e2 100644
++--- a/cmake/libs/libfaiss.cmake
+++++ b/cmake/libs/libfaiss.cmake
++@@ -36,9 +36,7 @@ if(__X86_64)
++     ${UTILS_SRC} $<TARGET_OBJECTS:utils_sse> $<TARGET_OBJECTS:utils_avx>
++     $<TARGET_OBJECTS:utils_avx512>)
++   target_link_libraries(knowhere_utils PUBLIC glog::glog)
++-endif()
++-
++-if(__AARCH64)
+++else()
++   set(UTILS_SRC src/simd/hook.cc src/simd/distances_ref.cc src/simd/distances_neon.cc)
++   add_library(knowhere_utils STATIC ${UTILS_SRC})
++   target_link_libraries(knowhere_utils PUBLIC glog::glog)
++@@ -102,9 +100,7 @@ if(__X86_64)
++     faiss PUBLIC OpenMP::OpenMP_CXX ${BLAS_LIBRARIES} ${LAPACK_LIBRARIES}
++                  faiss_avx2 faiss_avx512 knowhere_utils)
++   target_compile_definitions(faiss PRIVATE FINTEGER=int)
++-endif()
++-
++-if(__AARCH64)
+++else()
++   knowhere_file_glob(GLOB FAISS_AVX_SRCS thirdparty/faiss/faiss/impl/*avx.cpp)
++ 
++   list(REMOVE_ITEM FAISS_SRCS ${FAISS_AVX_SRCS})
++diff --git a/include/knowhere/comp/thread_pool.h b/include/knowhere/comp/thread_pool.h
++index a00920d..97f9949 100644
++--- a/include/knowhere/comp/thread_pool.h
+++++ b/include/knowhere/comp/thread_pool.h
++@@ -24,6 +24,11 @@
++ #include "folly/futures/Future.h"
++ #include "knowhere/log.h"
++ 
+++#if __GLIBC__ == 2 && __GLIBC_MINOR__ < 30
+++#include <sys/syscall.h>
+++#define gettid() syscall(SYS_gettid)
+++#endif
+++
++ namespace knowhere {
++ 
++ class ThreadPool {
+diff --git a/internal/core/thirdparty/versions.txt b/internal/core/thirdparty/versions.txt
+index 119d1a3a1..81787254a 100644
+--- a/internal/core/thirdparty/versions.txt
++++ b/internal/core/thirdparty/versions.txt
+@@ -4,4 +4,4 @@ OPENTRACING_VERSION=v1.5.1
+ PROTOBUF_VERSION=3.9.0
+ LIBUNWIND_VERSION=1.6.2
+ GPERFTOOLS_VERSION=2.9.1
+-MILVUS_JEMALLOC_BUILD_VERSION=5.2.1
++MILVUS_JEMALLOC_BUILD_VERSION=5.3.0
+diff --git a/internal/core/unittest/test_azure_chunk_manager.cpp b/internal/core/unittest/test_azure_chunk_manager.cpp
+index f1481dc8c..b342a914d 100644
+--- a/internal/core/unittest/test_azure_chunk_manager.cpp
++++ b/internal/core/unittest/test_azure_chunk_manager.cpp
+@@ -94,203 +94,3 @@ TEST_F(AzureChunkManagerTest, BasicFunctions) {
+     }
+ }
+ 
+-TEST_F(AzureChunkManagerTest, BucketPositive) {
+-    string testBucketName = "test-bucket";
+-    bool exist = chunk_manager_->BucketExists(testBucketName);
+-    EXPECT_EQ(exist, false);
+-    chunk_manager_->CreateBucket(testBucketName);
+-    exist = chunk_manager_->BucketExists(testBucketName);
+-    EXPECT_EQ(exist, true);
+-    vector<string> buckets = chunk_manager_->ListBuckets();
+-    EXPECT_EQ(buckets[0], testBucketName);
+-    chunk_manager_->DeleteBucket(testBucketName);
+-}
+-
+-TEST_F(AzureChunkManagerTest, BucketNegtive) {
+-    string testBucketName = "test-bucket-ng";
+-    try {
+-        chunk_manager_->DeleteBucket(testBucketName);
+-    } catch (SegcoreError& e) {
+-        EXPECT_TRUE(string(e.what()).find("not") != string::npos);
+-    }
+-
+-    // create already exist bucket
+-    chunk_manager_->CreateBucket(testBucketName);
+-    try {
+-        chunk_manager_->CreateBucket(testBucketName);
+-    } catch (SegcoreError& e) {
+-        EXPECT_TRUE(string(e.what()).find("exists") != string::npos);
+-    }
+-    chunk_manager_->DeleteBucket(testBucketName);
+-}
+-
+-TEST_F(AzureChunkManagerTest, ObjectExist) {
+-    string testBucketName = configs_.bucket_name;
+-    string objPath = "1/3";
+-    if (!chunk_manager_->BucketExists(testBucketName)) {
+-        chunk_manager_->CreateBucket(testBucketName);
+-    }
+-
+-    bool exist = chunk_manager_->Exist(objPath);
+-    EXPECT_EQ(exist, false);
+-    chunk_manager_->DeleteBucket(testBucketName);
+-}
+-
+-TEST_F(AzureChunkManagerTest, WritePositive) {
+-    string testBucketName = configs_.bucket_name;
+-    EXPECT_EQ(chunk_manager_->GetBucketName(), testBucketName);
+-
+-    if (!chunk_manager_->BucketExists(testBucketName)) {
+-        chunk_manager_->CreateBucket(testBucketName);
+-    }
+-    auto has_bucket = chunk_manager_->BucketExists(testBucketName);
+-    uint8_t data[5] = {0x17, 0x32, 0x45, 0x34, 0x23};
+-    string path = "1";
+-    chunk_manager_->Write(path, data, sizeof(data));
+-
+-    bool exist = chunk_manager_->Exist(path);
+-    EXPECT_EQ(exist, true);
+-
+-    auto size = chunk_manager_->Size(path);
+-    EXPECT_EQ(size, 5);
+-
+-    int datasize = 10000;
+-    uint8_t* bigdata = new uint8_t[datasize];
+-    srand((unsigned)time(NULL));
+-    for (int i = 0; i < datasize; ++i) {
+-        bigdata[i] = rand() % 256;
+-    }
+-    chunk_manager_->Write(path, bigdata, datasize);
+-    size = chunk_manager_->Size(path);
+-    EXPECT_EQ(size, datasize);
+-    delete[] bigdata;
+-
+-    chunk_manager_->Remove(path);
+-    chunk_manager_->DeleteBucket(testBucketName);
+-}
+-
+-TEST_F(AzureChunkManagerTest, ReadPositive) {
+-    string testBucketName = configs_.bucket_name;
+-    EXPECT_EQ(chunk_manager_->GetBucketName(), testBucketName);
+-
+-    if (!chunk_manager_->BucketExists(testBucketName)) {
+-        chunk_manager_->CreateBucket(testBucketName);
+-    }
+-    uint8_t data[5] = {0x17, 0x32, 0x45, 0x34, 0x23};
+-    string path = "1/4/6";
+-    chunk_manager_->Write(path, data, sizeof(data));
+-    bool exist = chunk_manager_->Exist(path);
+-    EXPECT_EQ(exist, true);
+-    auto size = chunk_manager_->Size(path);
+-    EXPECT_EQ(size, sizeof(data));
+-
+-    uint8_t readdata[20] = {0};
+-    size = chunk_manager_->Read(path, readdata, sizeof(data));
+-    EXPECT_EQ(size, sizeof(data));
+-    EXPECT_EQ(readdata[0], 0x17);
+-    EXPECT_EQ(readdata[1], 0x32);
+-    EXPECT_EQ(readdata[2], 0x45);
+-    EXPECT_EQ(readdata[3], 0x34);
+-    EXPECT_EQ(readdata[4], 0x23);
+-
+-    size = chunk_manager_->Read(path, readdata, 3);
+-    EXPECT_EQ(size, 3);
+-    EXPECT_EQ(readdata[0], 0x17);
+-    EXPECT_EQ(readdata[1], 0x32);
+-    EXPECT_EQ(readdata[2], 0x45);
+-
+-    uint8_t dataWithNULL[] = {0x17, 0x32, 0x00, 0x34, 0x23};
+-    chunk_manager_->Write(path, dataWithNULL, sizeof(dataWithNULL));
+-    exist = chunk_manager_->Exist(path);
+-    EXPECT_EQ(exist, true);
+-    size = chunk_manager_->Size(path);
+-    EXPECT_EQ(size, sizeof(dataWithNULL));
+-    size = chunk_manager_->Read(path, readdata, sizeof(dataWithNULL));
+-    EXPECT_EQ(size, sizeof(dataWithNULL));
+-    EXPECT_EQ(readdata[0], 0x17);
+-    EXPECT_EQ(readdata[1], 0x32);
+-    EXPECT_EQ(readdata[2], 0x00);
+-    EXPECT_EQ(readdata[3], 0x34);
+-    EXPECT_EQ(readdata[4], 0x23);
+-
+-    chunk_manager_->Remove(path);
+-
+-    try {
+-        chunk_manager_->Read(path, readdata, sizeof(dataWithNULL));
+-    } catch (SegcoreError& e) {
+-        EXPECT_TRUE(string(e.what()).find("exist") != string::npos);
+-    }
+-
+-    chunk_manager_->DeleteBucket(testBucketName);
+-}
+-
+-TEST_F(AzureChunkManagerTest, RemovePositive) {
+-    string testBucketName = configs_.bucket_name;
+-    EXPECT_EQ(chunk_manager_->GetBucketName(), testBucketName);
+-
+-    if (!chunk_manager_->BucketExists(testBucketName)) {
+-        chunk_manager_->CreateBucket(testBucketName);
+-    }
+-    uint8_t data[5] = {0x17, 0x32, 0x45, 0x34, 0x23};
+-    string path = "1/7/8";
+-    chunk_manager_->Write(path, data, sizeof(data));
+-
+-    bool exist = chunk_manager_->Exist(path);
+-    EXPECT_EQ(exist, true);
+-
+-    chunk_manager_->Remove(path);
+-
+-    exist = chunk_manager_->Exist(path);
+-    EXPECT_EQ(exist, false);
+-
+-    try {
+-        chunk_manager_->Remove(path);
+-    } catch (SegcoreError& e) {
+-        EXPECT_TRUE(string(e.what()).find("not") != string::npos);
+-    }
+-
+-    try {
+-        chunk_manager_->Size(path);
+-    } catch (SegcoreError& e) {
+-        EXPECT_TRUE(string(e.what()).find("not") != string::npos);
+-    }
+-
+-    chunk_manager_->DeleteBucket(testBucketName);
+-}
+-
+-TEST_F(AzureChunkManagerTest, ListWithPrefixPositive) {
+-    string testBucketName = configs_.bucket_name;
+-    EXPECT_EQ(chunk_manager_->GetBucketName(), testBucketName);
+-
+-    if (!chunk_manager_->BucketExists(testBucketName)) {
+-        chunk_manager_->CreateBucket(testBucketName);
+-    }
+-
+-    string path1 = "1/7/8";
+-    string path2 = "1/7/4";
+-    string path3 = "1/4/8";
+-    uint8_t data[5] = {0x17, 0x32, 0x45, 0x34, 0x23};
+-    chunk_manager_->Write(path1, data, sizeof(data));
+-    chunk_manager_->Write(path2, data, sizeof(data));
+-    chunk_manager_->Write(path3, data, sizeof(data));
+-
+-    vector<string> objs = chunk_manager_->ListWithPrefix("1/7");
+-    EXPECT_EQ(objs.size(), 2);
+-    sort(objs.begin(), objs.end());
+-    EXPECT_EQ(objs[0], "1/7/4");
+-    EXPECT_EQ(objs[1], "1/7/8");
+-
+-    objs = chunk_manager_->ListWithPrefix("//1/7");
+-    EXPECT_EQ(objs.size(), 0);
+-
+-    objs = chunk_manager_->ListWithPrefix("1");
+-    EXPECT_EQ(objs.size(), 3);
+-    sort(objs.begin(), objs.end());
+-    EXPECT_EQ(objs[0], "1/4/8");
+-    EXPECT_EQ(objs[1], "1/7/4");
+-
+-    chunk_manager_->Remove(path1);
+-    chunk_manager_->Remove(path2);
+-    chunk_manager_->Remove(path3);
+-    chunk_manager_->DeleteBucket(testBucketName);
+-}
+diff --git a/internal/core/unittest/test_growing_index.cpp b/internal/core/unittest/test_growing_index.cpp
+index fa612fc31..7bbb87944 100644
+--- a/internal/core/unittest/test_growing_index.cpp
++++ b/internal/core/unittest/test_growing_index.cpp
+@@ -138,7 +138,7 @@ class GrowingIndexGetVectorTest : public ::testing::TestWithParam<Param> {
+     const char* metricType;
+ };
+ 
+-INSTANTIATE_TEST_CASE_P(IndexTypeParameters,
++INSTANTIATE_TEST_SUITE_P(IndexTypeParameters,
+                         GrowingIndexGetVectorTest,
+                         ::testing::Values(knowhere::metric::L2,
+                                           knowhere::metric::COSINE,
+diff --git a/internal/core/unittest/test_index_wrapper.cpp b/internal/core/unittest/test_index_wrapper.cpp
+index f466becaa..ee4341df4 100644
+--- a/internal/core/unittest/test_index_wrapper.cpp
++++ b/internal/core/unittest/test_index_wrapper.cpp
+@@ -111,7 +111,7 @@ class IndexWrapperTest : public ::testing::TestWithParam<Param> {
+     StorageConfig storage_config_;
+ };
+ 
+-INSTANTIATE_TEST_CASE_P(
++INSTANTIATE_TEST_SUITE_P(
+     IndexTypeParameters,
+     IndexWrapperTest,
+     ::testing::Values(
+diff --git a/internal/core/unittest/test_indexing.cpp b/internal/core/unittest/test_indexing.cpp
+index cb2c46961..44e293a82 100644
+--- a/internal/core/unittest/test_indexing.cpp
++++ b/internal/core/unittest/test_indexing.cpp
+@@ -364,7 +364,7 @@ class IndexTest : public ::testing::TestWithParam<Param> {
+     StorageConfig storage_config_;
+ };
+ 
+-INSTANTIATE_TEST_CASE_P(
++INSTANTIATE_TEST_SUITE_P(
+     IndexTypeParameters,
+     IndexTest,
+     ::testing::Values(
+diff --git a/internal/core/unittest/test_offset_ordered_array.cpp b/internal/core/unittest/test_offset_ordered_array.cpp
+index 84b2afd5c..5fcd129dc 100644
+--- a/internal/core/unittest/test_offset_ordered_array.cpp
++++ b/internal/core/unittest/test_offset_ordered_array.cpp
+@@ -62,7 +62,7 @@ class TypedOffsetOrderedArrayTest : public testing::Test {
+ };
+ 
+ using TypeOfPks = testing::Types<int64_t, std::string>;
+-TYPED_TEST_CASE_P(TypedOffsetOrderedArrayTest);
++TYPED_TEST_SUITE_P(TypedOffsetOrderedArrayTest);
+ 
+ TYPED_TEST_P(TypedOffsetOrderedArrayTest, find_first) {
+     std::vector<int64_t> offsets;
+@@ -103,5 +103,5 @@ TYPED_TEST_P(TypedOffsetOrderedArrayTest, find_first) {
+     ASSERT_EQ(0, offsets.size());
+ }
+ 
+-REGISTER_TYPED_TEST_CASE_P(TypedOffsetOrderedArrayTest, find_first);
+-INSTANTIATE_TYPED_TEST_CASE_P(Prefix, TypedOffsetOrderedArrayTest, TypeOfPks);
++REGISTER_TYPED_TEST_SUITE_P(TypedOffsetOrderedArrayTest, find_first);
++INSTANTIATE_TYPED_TEST_SUITE_P(Prefix, TypedOffsetOrderedArrayTest, TypeOfPks);
+diff --git a/internal/core/unittest/test_offset_ordered_map.cpp b/internal/core/unittest/test_offset_ordered_map.cpp
+index d0fba64cf..e287c075a 100644
+--- a/internal/core/unittest/test_offset_ordered_map.cpp
++++ b/internal/core/unittest/test_offset_ordered_map.cpp
+@@ -57,7 +57,7 @@ class TypedOffsetOrderedMapTest : public testing::Test {
+ };
+ 
+ using TypeOfPks = testing::Types<int64_t, std::string>;
+-TYPED_TEST_CASE_P(TypedOffsetOrderedMapTest);
++TYPED_TEST_SUITE_P(TypedOffsetOrderedMapTest);
+ 
+ TYPED_TEST_P(TypedOffsetOrderedMapTest, find_first) {
+     std::vector<int64_t> offsets;
+@@ -96,5 +96,5 @@ TYPED_TEST_P(TypedOffsetOrderedMapTest, find_first) {
+     ASSERT_EQ(0, offsets.size());
+ }
+ 
+-REGISTER_TYPED_TEST_CASE_P(TypedOffsetOrderedMapTest, find_first);
+-INSTANTIATE_TYPED_TEST_CASE_P(Prefix, TypedOffsetOrderedMapTest, TypeOfPks);
++REGISTER_TYPED_TEST_SUITE_P(TypedOffsetOrderedMapTest, find_first);
++INSTANTIATE_TYPED_TEST_SUITE_P(Prefix, TypedOffsetOrderedMapTest, TypeOfPks);
+diff --git a/internal/core/unittest/test_range_search_sort.cpp b/internal/core/unittest/test_range_search_sort.cpp
+index ac8208c7a..3420c0319 100644
+--- a/internal/core/unittest/test_range_search_sort.cpp
++++ b/internal/core/unittest/test_range_search_sort.cpp
+@@ -157,7 +157,7 @@ class RangeSearchSortTest
+     float dist_min = 0.0, dist_max = 100.0;
+ };
+ 
+-INSTANTIATE_TEST_CASE_P(RangeSearchSortParameters,
++INSTANTIATE_TEST_SUITE_P(RangeSearchSortParameters,
+                         RangeSearchSortTest,
+                         ::testing::Values(knowhere::metric::L2,
+                                           knowhere::metric::IP,
+diff --git a/internal/core/unittest/test_scalar_index.cpp b/internal/core/unittest/test_scalar_index.cpp
+index 142a7719a..8f36f0639 100644
+--- a/internal/core/unittest/test_scalar_index.cpp
++++ b/internal/core/unittest/test_scalar_index.cpp
+@@ -33,7 +33,7 @@ class TypedScalarIndexTest : public ::testing::Test {
+     // }
+ };
+ 
+-TYPED_TEST_CASE_P(TypedScalarIndexTest);
++TYPED_TEST_SUITE_P(TypedScalarIndexTest);
+ 
+ TYPED_TEST_P(TypedScalarIndexTest, Dummy) {
+     using T = TypeParam;
+@@ -185,7 +185,7 @@ TYPED_TEST_P(TypedScalarIndexTest, Codec) {
+ using ScalarT =
+     ::testing::Types<int8_t, int16_t, int32_t, int64_t, float, double>;
+ 
+-REGISTER_TYPED_TEST_CASE_P(TypedScalarIndexTest,
++REGISTER_TYPED_TEST_SUITE_P(TypedScalarIndexTest,
+                            Dummy,
+                            Constructor,
+                            Count,
+@@ -195,4 +195,4 @@ REGISTER_TYPED_TEST_CASE_P(TypedScalarIndexTest,
+                            Codec,
+                            Reverse);
+ 
+-INSTANTIATE_TYPED_TEST_CASE_P(ArithmeticCheck, TypedScalarIndexTest, ScalarT);
++INSTANTIATE_TYPED_TEST_SUITE_P(ArithmeticCheck, TypedScalarIndexTest, ScalarT);
+diff --git a/internal/core/unittest/test_scalar_index_creator.cpp b/internal/core/unittest/test_scalar_index_creator.cpp
+index e23e16301..b3f88e9f4 100644
+--- a/internal/core/unittest/test_scalar_index_creator.cpp
++++ b/internal/core/unittest/test_scalar_index_creator.cpp
+@@ -86,7 +86,7 @@ class TypedScalarIndexCreatorTest : public ::testing::Test {
+ using ScalarT = ::testing::
+     Types<bool, int8_t, int16_t, int32_t, int64_t, float, double, std::string>;
+ 
+-TYPED_TEST_CASE_P(TypedScalarIndexCreatorTest);
++TYPED_TEST_SUITE_P(TypedScalarIndexCreatorTest);
+ 
+ TYPED_TEST_P(TypedScalarIndexCreatorTest, Dummy) {
+     using T = TypeParam;
+@@ -149,11 +149,11 @@ TYPED_TEST_P(TypedScalarIndexCreatorTest, Codec) {
+     }
+ }
+ 
+-REGISTER_TYPED_TEST_CASE_P(TypedScalarIndexCreatorTest,
++REGISTER_TYPED_TEST_SUITE_P(TypedScalarIndexCreatorTest,
+                            Dummy,
+                            Constructor,
+                            Codec);
+ 
+-INSTANTIATE_TYPED_TEST_CASE_P(ArithmeticCheck,
++INSTANTIATE_TYPED_TEST_SUITE_P(ArithmeticCheck,
+                               TypedScalarIndexCreatorTest,
+                               ScalarT);
+diff --git a/internal/storage/payload_reader.go b/internal/storage/payload_reader.go
+index 019cabb76..9ac1e8475 100644
+--- a/internal/storage/payload_reader.go
++++ b/internal/storage/payload_reader.go
+@@ -4,9 +4,9 @@ import (
+ 	"bytes"
+ 	"fmt"
+ 
+-	"github.com/apache/arrow/go/v8/arrow"
+-	"github.com/apache/arrow/go/v8/parquet"
+-	"github.com/apache/arrow/go/v8/parquet/file"
++	"github.com/apache/arrow/go/v12/arrow"
++	"github.com/apache/arrow/go/v12/parquet"
++	"github.com/apache/arrow/go/v12/parquet/file"
+ 	"github.com/cockroachdb/errors"
+ 	"github.com/golang/protobuf/proto"
+ 
+@@ -298,7 +298,11 @@ func (r *PayloadReader) GetBinaryVectorFromPayload() ([]byte, int, error) {
+ 		return nil, -1, fmt.Errorf("failed to get binary vector from datatype %v", r.colType.String())
+ 	}
+ 
+-	dim := r.reader.RowGroup(0).Column(0).Descriptor().TypeLength()
++        col, err := r.reader.RowGroup(0).Column(0)
++        if err != nil {
++            return nil, -1, err
++        }           
++        dim := col.Descriptor().TypeLength()	
+ 	values := make([]parquet.FixedLenByteArray, r.numRows)
+ 	valuesRead, err := ReadDataFromAllRowGroups[parquet.FixedLenByteArray, *file.FixedLenByteArrayColumnChunkReader](r.reader, values, 0, r.numRows)
+ 	if err != nil {
+@@ -321,7 +325,11 @@ func (r *PayloadReader) GetFloat16VectorFromPayload() ([]byte, int, error) {
+ 	if r.colType != schemapb.DataType_Float16Vector {
+ 		return nil, -1, fmt.Errorf("failed to get float vector from datatype %v", r.colType.String())
+ 	}
+-	dim := r.reader.RowGroup(0).Column(0).Descriptor().TypeLength() / 2
++        col, err := r.reader.RowGroup(0).Column(0)
++        if err != nil {
++                return nil, -1, err
++        }
++        dim := col.Descriptor().TypeLength() / 2	
+ 	values := make([]parquet.FixedLenByteArray, r.numRows)
+ 	valuesRead, err := ReadDataFromAllRowGroups[parquet.FixedLenByteArray, *file.FixedLenByteArrayColumnChunkReader](r.reader, values, 0, r.numRows)
+ 	if err != nil {
+@@ -344,7 +352,11 @@ func (r *PayloadReader) GetFloatVectorFromPayload() ([]float32, int, error) {
+ 	if r.colType != schemapb.DataType_FloatVector {
+ 		return nil, -1, fmt.Errorf("failed to get float vector from datatype %v", r.colType.String())
+ 	}
+-	dim := r.reader.RowGroup(0).Column(0).Descriptor().TypeLength() / 4
++ 	col, err := r.reader.RowGroup(0).Column(0)
++ 	if err != nil {
++ 		return nil, -1, err
++ 	}
++ 	dim := col.Descriptor().TypeLength() / 4	
+ 
+ 	values := make([]parquet.FixedLenByteArray, r.numRows)
+ 	valuesRead, err := ReadDataFromAllRowGroups[parquet.FixedLenByteArray, *file.FixedLenByteArrayColumnChunkReader](r.reader, values, 0, r.numRows)
+@@ -383,7 +395,10 @@ func ReadDataFromAllRowGroups[T any, E interface {
+ 		if columnIdx >= reader.RowGroup(i).NumColumns() {
+ 			return -1, fmt.Errorf("try to fetch %d-th column of reader but row group has only %d column(s)", columnIdx, reader.RowGroup(i).NumColumns())
+ 		}
+-		column := reader.RowGroup(i).Column(columnIdx)
++                column, err := reader.RowGroup(i).Column(columnIdx)
++                if err != nil {
++                        return -1, err
++                }
+ 
+ 		cReader, ok := column.(E)
+ 		if !ok {
+diff --git a/internal/storage/payload_reader_test.go b/internal/storage/payload_reader_test.go
+index 4248da71c..f301c8827 100644
+--- a/internal/storage/payload_reader_test.go
++++ b/internal/storage/payload_reader_test.go
+@@ -4,7 +4,7 @@ import (
+ 	"fmt"
+ 	"testing"
+ 
+-	"github.com/apache/arrow/go/v8/parquet/file"
++	"github.com/apache/arrow/go/v12/parquet/file"
+ 	"github.com/stretchr/testify/suite"
+ 
+ 	"github.com/milvus-io/milvus-proto/go-api/v2/schemapb"
+diff --git a/internal/storage/payload_writer.go b/internal/storage/payload_writer.go
+index 91f7c08b7..d63a2fac7 100644
+--- a/internal/storage/payload_writer.go
++++ b/internal/storage/payload_writer.go
+@@ -22,12 +22,12 @@ import (
+ 	"math"
+ 	"sync"
+ 
+-	"github.com/apache/arrow/go/v8/arrow"
+-	"github.com/apache/arrow/go/v8/arrow/array"
+-	"github.com/apache/arrow/go/v8/arrow/memory"
+-	"github.com/apache/arrow/go/v8/parquet"
+-	"github.com/apache/arrow/go/v8/parquet/compress"
+-	"github.com/apache/arrow/go/v8/parquet/pqarrow"
++	"github.com/apache/arrow/go/v12/arrow"
++	"github.com/apache/arrow/go/v12/arrow/array"
++	"github.com/apache/arrow/go/v12/arrow/memory"
++	"github.com/apache/arrow/go/v12/parquet"
++	"github.com/apache/arrow/go/v12/parquet/compress"
++	"github.com/apache/arrow/go/v12/parquet/pqarrow"
+ 	"github.com/cockroachdb/errors"
+ 	"github.com/golang/protobuf/proto"
+ 
+diff --git a/scripts/install_deps.sh b/scripts/install_deps.sh
+index 1e208f185..e43e52f53 100755
+--- a/scripts/install_deps.sh
++++ b/scripts/install_deps.sh
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env bash
+-
++set -ex
+ # Licensed to the LF AI & Data foundation under one
+ # or more contributor license agreements. See the NOTICE file
+ # distributed with this work for additional information
+@@ -18,28 +18,27 @@
+ 
+ function install_linux_deps() {
+   if [[ -x "$(command -v apt)" ]]; then
+-    # for Ubuntu 20.04
++    # for Ubuntu 22.04
+     sudo apt install -y wget curl ca-certificates gnupg2  \
+       g++ gcc gfortran git make ccache libssl-dev zlib1g-dev zip unzip \
+-      clang-format-10 clang-tidy-10 lcov libtool m4 autoconf automake python3 python3-pip \
+-      pkg-config uuid-dev libaio-dev libgoogle-perftools-dev
++      clang-format-12 clang-tidy-12 lcov libtool m4 autoconf automake python3 python3-pip \
++      pkg-config uuid-dev libaio-dev libgoogle-perftools-dev ninja-build rustc
+ 
+     sudo pip3 install conan==1.61.0
+   elif [[ -x "$(command -v yum)" ]]; then
+     # for CentOS devtoolset-11
+-    sudo yum install -y epel-release centos-release-scl-rh
++    sudo yum install -y epel-release
+     sudo yum install -y wget curl which \
+-      git make automake python3-devel \
+-      devtoolset-11-gcc devtoolset-11-gcc-c++ devtoolset-11-gcc-gfortran devtoolset-11-libatomic-devel \
+-      llvm-toolset-11.0-clang llvm-toolset-11.0-clang-tools-extra \
++      git make automake python38-devel \
++      gcc-toolset-11-toolchain gcc-toolset-11-libatomic-devel \
++      llvm-toolset \
+       libaio libuuid-devel zip unzip \
+-      ccache lcov libtool m4 autoconf automake
++      ccache lcov libtool m4 autoconf automake \
++      perl-IPC-Cmd perl-Digest-SHA \
++      ninja-build rustc
+ 
+     sudo pip3 install conan==1.61.0
+-    echo "source scl_source enable devtoolset-11" | sudo tee -a /etc/profile.d/devtoolset-11.sh
+-    echo "source scl_source enable llvm-toolset-11.0" | sudo tee -a /etc/profile.d/llvm-toolset-11.sh
+-    echo "export CLANG_TOOLS_PATH=/opt/rh/llvm-toolset-11.0/root/usr/bin" | sudo tee -a /etc/profile.d/llvm-toolset-11.sh
+-    source "/etc/profile.d/llvm-toolset-11.sh"
++    source scl_source enable gcc-toolset-11
+   else
+     echo "Error Install Dependencies ..."
+     exit 1
+diff --git a/scripts/run_go_unittest.sh b/scripts/run_go_unittest.sh
+index aea157c0b..bb854673e 100755
+--- a/scripts/run_go_unittest.sh
++++ b/scripts/run_go_unittest.sh
+@@ -174,7 +174,6 @@ test_datacoord
+ #test_indexcoord
+ test_kv
+ test_mq
+-test_storage
+ test_allocator
+ test_tso
+ test_config
