@@ -22,6 +22,7 @@ PACKAGE_NAME=milvus
 PACKAGE_VERSION=${1:-v2.3.3}
 PACKAGE_URL=https://github.com/milvus-io/${PACKAGE_NAME}
 CMAKE_VERSION=3.27.7
+SCRIPT_PATH=$(dirname $(realpath $0))
 wdir=`pwd`
 
 create_cmake_conanfile()
@@ -96,13 +97,14 @@ cat <<EOT > /etc/docker/daemon.json
 }
 EOT
 dockerd &
+sleep 5
 docker run hello-world
 
 #Get milvus source and apply patch
 cd $wdir
 git clone -b ${PACKAGE_VERSION} ${PACKAGE_URL}
 cd ${PACKAGE_NAME}
-git apply ../milvus-${PACKAGE_VERSION}.patch
+git apply ${SCRIPT_PATH}/${PACKAGE_NAME}-${PACKAGE_VERSION}.patch
 
 #Build
 scripts/install_deps.sh
