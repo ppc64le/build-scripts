@@ -95,7 +95,7 @@ cat <<EOT > /etc/docker/daemon.json
 "mtu": 1450
 }
 EOT
-systemctl start docker
+dockerd &
 docker run hello-world
 
 #Get milvus source and apply patch
