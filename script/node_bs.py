@@ -164,8 +164,6 @@ def create_new_script():
 
     license_added = add_license_file()
 
-    if package_language=='':
-        package_language=input("Enter Package Language (node,go,python):")
     script_language=select_template_script(package_language)
     print("\n template script selected ",script_language)
     
