@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/milvus-io/milvus
 # Tested on     : UBI 8.7 (docker)
 # Language      : C++, Go
-# Travis-Check  : True
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sumit Dubey <Sumit.Dubey2@ibm.com>
 #
@@ -96,8 +96,9 @@ cat <<EOT > /etc/docker/daemon.json
 "mtu": 1450
 }
 EOT
-sudo dockerd &
-sleep 5
+echo "The docker container running this script must be started with the --privileged OPTION and /usr/sbin/init as the COMMAND"
+systemctl start docker
+sleep 10
 docker run hello-world
 
 #Get milvus source and apply patch
