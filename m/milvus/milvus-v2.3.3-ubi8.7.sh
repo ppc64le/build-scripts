@@ -96,7 +96,7 @@ cat <<EOT > /etc/docker/daemon.json
 "mtu": 1450
 }
 EOT
-dockerd &
+sudo dockerd &
 sleep 5
 docker run hello-world
 
