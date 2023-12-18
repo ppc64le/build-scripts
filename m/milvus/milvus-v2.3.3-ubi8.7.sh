@@ -127,4 +127,4 @@ make test-cpp -j$(nproc)
 #Conclude
 set +ex
 echo "Complete: Build and Test successful! Milvus binary available at [$MILVUS_BIN]"
-
+echo "8 (7 Cpp + 1 Go) Azure related tests were disabled: https://github.com/milvus-io/milvus/pull/29021"
