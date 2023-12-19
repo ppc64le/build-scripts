@@ -1,5 +1,5 @@
 {
-   "maintainer": "ich@us.ibm.com",
+   "maintainer": "Vinod.K1@ibm.com",
    "package_name": "domhandler",
    "github_url": "https://github.com/fb55/DomHandler",
    "version": "v5.0.3",
@@ -8,4 +8,8 @@
    "package_dir": "d/domhandler",
    "docker_build": false,
    "validate_build_script": true
+
+   "v5.*.*" : {
+       "build_script" : "domhandler_ubi_8.7.sh"
+    }
 }
