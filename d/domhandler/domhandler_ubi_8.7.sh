@@ -4,11 +4,11 @@
 # Package          : domhandler
 # Version          : v5.0.3
 # Source repo      : https://github.com/fb55/DomHandler
-# Tested on	: UBI 8.7
-# Language      : Node
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer	: ICH <ich@us.ibm.com>
+# Tested on	       : UBI 8.7
+# Language         : Node
+# Travis-Check     : True
+# Script License   : Apache License, Version 2 or later
+# Maintainer	   : Vinod K <Vinod.K1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
