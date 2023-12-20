@@ -13,6 +13,12 @@ env:
   global:
     - PACKAGE_NAME="d3-array"
     - VERSION="v3.2.3"
+    - TRIVY_SOURCE_SCAN=true
+    - SYFT_SOURCE_SCAN=true
+    - GRYPE_SOURCE_SCAN=true
+    - TRIVY_IMAGE_SCAN=true
+    - SYFT_IMAGE_SCAN=true
+    - GRYPE_IMAGE_SCAN=true
 
 services:
     - docker
