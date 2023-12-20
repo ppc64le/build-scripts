@@ -13,12 +13,10 @@ env:
   global:
     - PACKAGE_NAME="d3-array"
     - VERSION="v3.2.3"
-    - TRIVY_SOURCE_SCAN=true
-    - SYFT_SOURCE_SCAN=true
-    - GRYPE_SOURCE_SCAN=true
-    - TRIVY_IMAGE_SCAN=true
-    - SYFT_IMAGE_SCAN=true
-    - GRYPE_IMAGE_SCAN=true
+    - TRIVY_SCAN=true
+    - SYFT_SCAN=true
+    - GRYPE_SCAN=true
+
 
 services:
     - docker
@@ -73,7 +71,7 @@ jobs:
 
 
     - stage: Source code scanner
-      if: env(TRIVY_SOURCE_SCAN) = true
+      if: env(TRIVY_SCAN) = true
       name: Run trivy scan
       script:
         - source package-cache/variable.sh;
@@ -90,7 +88,7 @@ jobs:
           - package_cache
           
     - name: Run syft scan
-      if: env(SYFT_SOURCE_SCAN) = true
+      if: env(SYFT_SCAN) = true
       script:
         - source package-cache/variable.sh;
         - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/syft_code_scan.sh;bash ./script/syft_code_scan.sh; fi  
@@ -105,7 +103,7 @@ jobs:
           - package_cache
           
     - name: Run grype scan
-      if: env(GRYPE_SOURCE_SCAN) = true
+      if: env(GRYPE_SCAN) = true
       script:
         - source package-cache/variable.sh;
         - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/grype_code_scan.sh;bash ./script/grype_code_scan.sh; fi   
@@ -155,7 +153,7 @@ jobs:
 
 
     - stage: Docker image Scanner
-      if: env(DOCKER_BUILD) = true AND env(TRIVY_IMAGE_SCAN) = true
+      if: env(DOCKER_BUILD) = true AND env(TRIVY_SCAN) = true
       name: Run trivy scan
       script:
         - source package-cache/variable.sh;
@@ -170,7 +168,7 @@ jobs:
           - docker_image_tar
           
     - name: Run syft scan
-      if: env(DOCKER_BUILD) = true AND env(SYFT_IMAGE_SCAN) = true
+      if: env(DOCKER_BUILD) = true AND env(SYFT_SCAN) = true
       script:
         - source package-cache/variable.sh;
         - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/syft_image_scan.sh;bash ./script/syft_image_scan.sh; mkdir image_syft; mv package-cache/syft_image_sbom_results.json image_syft; fi
@@ -184,7 +182,7 @@ jobs:
           - docker_image_tar
 
     - name: Run grype scan
-      if: env(DOCKER_BUILD) = true AND env(GRYPE_IMAGE_SCAN) = true
+      if: env(DOCKER_BUILD) = true AND env(GRYPE_SCAN) = true
       script:
         - source package-cache/variable.sh;
         - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/grype_image_scan.sh;bash ./script/grype_image_scan.sh; mkdir image_grype; mv package-cache/grype_image_sbom_results.json package-cache/grype_image_vulnerabilities_results.json image_grype; fi
