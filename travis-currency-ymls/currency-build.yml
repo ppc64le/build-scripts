@@ -6,6 +6,7 @@ language: shell
 branches:
   only:
   - master
+  - currency-travis-migration
 
 
 env:
