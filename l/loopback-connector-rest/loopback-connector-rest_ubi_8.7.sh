@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=loopback-connector-rest
-PACKAGE_VERSION=v5.0.0
+PACKAGE_VERSION=${1:-v5.0.0}
 PACKAGE_URL=https://github.com/loopbackio/loopback-connector-rest
 
 export NODE_VERSION=${NODE_VERSION:-18}
