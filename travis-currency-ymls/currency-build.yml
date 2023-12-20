@@ -124,9 +124,9 @@ jobs:
         - mkdir source
         # the below commands will copy the files from all the scanner folders to source folder,
         #later we tar that source folder and use the upload scanner script to push into cos bucket.
-        - find source_trivy -mindepth 1 -exec mv -t source {} + > /dev/null
-        - find source_syft -mindepth 1 -exec mv -t source {} + > /dev/null
-        - find source_grype -mindepth 1 -exec mv -t source {} + > /dev/null
+        - find source_trivy -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
+        - find source_syft -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
+        - find source_grype -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
         - tar cvzf source_scanner.tar.gz source
         - chmod +x ./script/upload_scanner_results.sh; bash ./script/upload_scanner_results.sh source_scanner.tar.gz
       
@@ -204,9 +204,9 @@ jobs:
         - source package-cache/variable.sh;
         # the below command will copy the files from all the scanner folders to image folder, later we tar that image folder and use the upload scanner script to push into cos bucket.
         - mkdir image
-        - find image_trivy -mindepth 1 -exec mv -t image {} + > /dev/null
-        - find image_syft -mindepth 1 -exec mv -t image {} + > /dev/null
-        - find image_grype -mindepth 1 -exec mv -t image {} + > /dev/null
+        - find image_trivy -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
+        - find image_syft -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
+        - find image_grype -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
         - tar cvzf image_scanner.tar.gz image
         - chmod +x ./script/upload_scanner_results.sh; bash ./script/upload_scanner_results.sh image_scanner.tar.gz
           
