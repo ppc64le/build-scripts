@@ -49,6 +49,9 @@ curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import -
 curl -L https://get.rvm.io | bash -s stable --ruby=$(cat .ruby-version)
 source /etc/profile.d/rvm.sh
 
+#print rvm and ruby versions
+rvm --version
+ruby --version
 #echo "install ruby using rvm"
 #rvm install ruby
 
@@ -59,18 +62,26 @@ source /etc/profile.d/rvm.sh
 gem install rake
 gem install bundler
 
+rake --version
+
+bundle -v
+
 #build and install using gradle
 export OSS=true
 export LOGSTASH_SOURCE=1
 export LOGSTASH_PATH=/logstash
 if ! ./gradlew installDevelopmentGems; then 
  echo "failed to build/install development dependencies"
- exit 0
+ exit 1
+else
+ echo "Successfully completed  build/install development dependencies"
 fi
 
 if ! ./gradlew installDefaultGems; then 
  echo "failed to build/install default plugins and other dependencies"
- exit 0
+ exit 1
+else
+ echo "Successfully completed build/install default plugins and other dependencies"
 fi
 
 #run tests
@@ -79,20 +90,28 @@ export LS_HEAP_SIZE=2048m
 # run the core tests
 if ! ./gradlew test; then
 	echo "Core test failed"
-	exit 0
+	exit 1
+else
+	echo "Successfully completed core test"
 fi
 
 # execute the complete test-suite including the integration tests run
 if ! ./gradlew check; then
 	echo "Integration test failed"
-	exit 0
+	exit 1
+else
+	echo "Successfully completed Integration test"
 fi
 
 # run the tests of all currently installed plugins (i.e. default plugins)
 if ! rake test:plugins; then
 	echo "Default plugin tests failed"
-	exit 0
+	exit 1
+else
+	echo "Plugin tests completed successfully"
 fi
+
+exit 0
 
 
 
