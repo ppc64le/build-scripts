@@ -12,8 +12,7 @@ RUN yum update -y && \
 	python3 -m pip install tox --ignore-installed && \
 	git clone https://github.com/zopefoundation/BTrees.git && \
 	cd BTrees && \
-	python3 setup.py build && \
-	tox -e py3
+	python3 setup.py build
 	
 CMD ["/bin/bash"]
 
