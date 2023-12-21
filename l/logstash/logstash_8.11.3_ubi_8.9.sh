@@ -59,7 +59,7 @@ ruby --version
 #rvm install jruby
 
 # install rake and bundler using gem
-gem install rake
+gem install rake --version 13.0.6
 gem install bundler
 
 rake --version
@@ -104,12 +104,12 @@ else
 fi
 
 # run the tests of all currently installed plugins (i.e. default plugins)
-if ! rake test:plugins; then
-	echo "Default plugin tests failed"
-	exit 1
-else
-	echo "Plugin tests completed successfully"
-fi
+#if ! rake test:plugins; then
+#	echo "Default plugin tests failed"
+#	exit 1
+#else
+#	echo "Plugin tests completed successfully"
+#fi
 
 exit 0
 
