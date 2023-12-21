@@ -116,7 +116,13 @@ conan profile update settings.compiler.libcxx=libstdc++11 default
 popd
 go mod tidy
 export VCPKG_FORCE_SYSTEM_BINARIES=1
-make -j$(nproc)
+ret=0
+make -j$(nproc) || ret=$?
+if [ "$ret" -ne 0 ]
+then
+	echo "FAIL: Build failed."
+	exit 1
+fi
 export MILVUS_BIN=$wdir/milvis/bin/milvus
 
 #Start Milvus dev stack
@@ -124,9 +130,18 @@ docker compose -f ./deployments/docker/dev/docker-compose.yml up -d
 
 #Test
 sed -i "43d" ./internal/core/thirdparty/knowhere/CMakeLists.txt
-make test-go -j$(nproc)
-make test-cpp -j$(nproc)
-
+make test-go -j$(nproc) || ret=$?
+if [ "$ret" -ne 0 ]
+then
+	echo "Tests fail."
+	exit 2
+fi
+make test-cpp -j$(nproc) || ret=$?
+if [ "$ret" -ne 0 ]
+then
+	echo "Tests fail."
+	exit 2
+fi
 #Conclude
 set +ex
 echo "Complete: Build and Test successful! Milvus binary available at [$MILVUS_BIN]"
