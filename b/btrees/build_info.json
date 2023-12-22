@@ -11,7 +11,7 @@
     "use_non_root_user": "false",
     "docker_build": "true",
 
-    "5.*" : {
+    "5.1" : {
        "dir" : "5.1_ubi_8", 
        "build_script" : "btrees_ubi_8.7.sh"
     }
