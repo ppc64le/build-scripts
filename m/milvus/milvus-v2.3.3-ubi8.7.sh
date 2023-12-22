@@ -18,8 +18,9 @@
 #
 # ----------------------------------------------------------------------------
 
+SCRIPT_PACKAGE_VERSION=v2.3.3
 PACKAGE_NAME=milvus
-PACKAGE_VERSION=${1:-v2.3.3}
+PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
 PACKAGE_URL=https://github.com/milvus-io/${PACKAGE_NAME}
 CMAKE_VERSION=3.27.7
 SCRIPT_PATH=$(dirname $(realpath $0))
@@ -97,7 +98,7 @@ cat <<EOT > /etc/docker/daemon.json
 }
 EOT
 echo "The docker container running this script must be started with the --privileged OPTION and /usr/sbin/init as the COMMAND"
-systemctl start docker
+sudo dockerd &
 sleep 10
 docker run hello-world
 
@@ -105,7 +106,7 @@ docker run hello-world
 cd $wdir
 git clone -b ${PACKAGE_VERSION} ${PACKAGE_URL}
 cd ${PACKAGE_NAME}
-git apply ${SCRIPT_PATH}/${PACKAGE_NAME}-${PACKAGE_VERSION}.patch
+git apply ${SCRIPT_PATH}/${PACKAGE_NAME}-${SCRIPT_PACKAGE_VERSION}.patch
 
 #Build
 scripts/install_deps.sh
