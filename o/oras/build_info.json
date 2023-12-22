@@ -1,0 +1,11 @@
+{
+   "maintainer": "ich@us.ibm.com",
+   "package_name": "oras",
+   "github_url": "https://github.com/oras-project/oras",
+   "version": "v1.0.0",
+   "default_branch": "main",
+   "build_script": "oras_ubi_8.7.sh",
+   "package_dir": "o/oras",
+   "docker_build": false,
+   "validate_build_script": true
+}
