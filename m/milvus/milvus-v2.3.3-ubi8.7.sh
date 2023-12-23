@@ -23,6 +23,7 @@ PACKAGE_NAME=milvus
 PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
 PACKAGE_URL=https://github.com/milvus-io/${PACKAGE_NAME}
 CMAKE_VERSION=3.27.7
+GO_VERSION=1.20.5
 SCRIPT_PATH=$(dirname $(realpath $0))
 wdir=`pwd`
 
@@ -35,7 +36,7 @@ from conans import ConanFile, tools
 class CmakeConan(ConanFile):
   name = "cmake"
   package_type = "application"
-  version = "3.27.7"
+  version = "${CMAKE_VERSION}"
   description = "CMake, the cross-platform, open-source build system."
   homepage = "https://github.com/Kitware/CMake"
   license = "BSD-3-Clause"
@@ -79,9 +80,9 @@ cmake --version
 
 #Install Golang
 cd $wdir
-wget https://go.dev/dl/go1.20.5.linux-ppc64le.tar.gz
-rm -rf /usr/local/go && tar -C /usr/local -xzf go1.20.5.linux-ppc64le.tar.gz
-rm -rf go1.20.5.linux-ppc64le.tar.gz
+wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
+rm -rf /usr/local/go && tar -C /usr/local -xzf go${GO_VERSION}.linux-ppc64le.tar.gz
+rm -rf go${GO_VERSION}.linux-ppc64le.tar.gz
 export PATH=$PATH:/usr/local/go/bin
 go version
 export PATH=$PATH:$HOME/go/bin
