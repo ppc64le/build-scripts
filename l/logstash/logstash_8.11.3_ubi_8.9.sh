@@ -21,6 +21,9 @@ PACKAGE_NAME=elastic/logstash
 PACKAGE_VERSION=v8.11.3
 PACKAGE_URL=https://github.com/elastic/logstash
 
+OS_VERSION=$(grep ^VERSION_ID /etc/os-release | cut -d= -f2 | cut -d\" -f2)
+echo "RHEL VERSION is $OS_VERSION"
+
 yum -y update && yum install -y git procps yum-utils wget ncurses make gcc-c++ libffi-devel java-17-openjdk java-17-openjdk-devel java-17-openjdk-headless
 
 # Adding repo to install bison and readline
@@ -59,7 +62,16 @@ ruby --version
 #rvm install jruby
 
 # install rake and bundler using gem
-gem install rake --version 13.0.6
+if [[ "$OS_VERSION" == "8.7" ]]
+ then
+  # On ubi8.7 older version of rake is required.
+  # To fix CI pipeline failure added this.
+  echo "Installing rake version 13.0.6"
+  gem install rake --version 13.0.6
+else
+  echo "Installing rake latest version"
+  gem install rake
+fi
 gem install bundler
 
 rake --version
