@@ -13,6 +13,7 @@ env:
   global:
     - PACKAGE_NAME="d3-array"
     - VERSION="v3.2.3"
+    - BUILD_DOCKER=true
     - ENABLE_TRIVY=true
     - ENABLE_SYFT=true
     - ENABLE_GRYPE=true
@@ -136,7 +137,7 @@ jobs:
       
     - stage: Build docker image
       # the below condition checks if docker_build flag set to true or false, it it is true it will build this stage and if it is false it will exclude this stage.
-      if: env(DOCKER_BUILD) = true
+      if: env(BUILD_DOCKER) = true
       name: Docker build
       script:
         - source package-cache/variable.sh;
@@ -153,7 +154,7 @@ jobs:
 
 
     - stage: Docker image Scanner
-      if: env(DOCKER_BUILD) = true AND env(ENABLE_TRIVY) = true
+      if: env(BUILD_DOCKER) = true AND env(ENABLE_TRIVY) = true
       name: Run trivy scan
       script:
         - source package-cache/variable.sh;
@@ -168,7 +169,7 @@ jobs:
           - docker_image_tar
           
     - name: Run syft scan
-      if: env(DOCKER_BUILD) = true AND env(ENABLE_SYFT) = true
+      if: env(BUILD_DOCKER) = true AND env(ENABLE_SYFT) = true
       script:
         - source package-cache/variable.sh;
         - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/syft_image_scan.sh;bash ./script/syft_image_scan.sh; mkdir image_syft; mv package-cache/syft_image_sbom_results.json image_syft; fi
@@ -182,7 +183,7 @@ jobs:
           - docker_image_tar
 
     - name: Run grype scan
-      if: env(DOCKER_BUILD) = true AND env(ENABLE_GRYPE) = true
+      if: env(BUILD_DOCKER) = true AND env(ENABLE_GRYPE) = true
       script:
         - source package-cache/variable.sh;
         - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/grype_image_scan.sh;bash ./script/grype_image_scan.sh; mkdir image_grype; mv package-cache/grype_image_sbom_results.json package-cache/grype_image_vulnerabilities_results.json image_grype; fi
@@ -196,7 +197,7 @@ jobs:
           - docker_image_tar
 
     - stage: Upload image scanner results
-      if: env(DOCKER_BUILD) = true
+      if: env(BUILD_DOCKER) = true
       name: image scanner results
       workspaces:
         use:
