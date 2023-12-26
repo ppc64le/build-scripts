@@ -41,18 +41,14 @@ cd $wrkdir
 git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+git submodule update --init --recursive
 
-if ! npm install && npm audit fix --force; then
+if ! npm install --unsafe-perm; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-
-cd test/data/ &&\
-git clone https://github.com/html5lib/html5lib-tests.git html5lib-tests &&\
-git clone https://github.com/HTMLParseErrorWG/html5lib-tests.git html5lib-tests-fork &&\
-cd $wrkdir/$PACKAGE_NAME
 
 if ! npm test; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
