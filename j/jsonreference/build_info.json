@@ -1,5 +1,5 @@
 {
-   "maintainer": "ich@us.ibm.com",
+   "maintainer": "Shubham.Garud@ibm.com",
    "package_name": "jsonreference",
    "github_url": "https://github.com/go-openapi/jsonreference",
    "version": "v0.20.2",
