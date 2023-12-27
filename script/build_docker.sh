@@ -18,7 +18,7 @@ if [ $build_docker != false ];then
         args=$(jq -r --arg ver "$match_version" '.[$ver].args' $config_file)
         patches=$(jq -r --arg ver "$match_version" '.[$ver].patches' $config_file)
         # By default send PACKAGE_VERSION argument.
-        build_args ="--build-arg PACKAGE_VERSION=$(VERSION)"
+        build_args ="--build-arg PACKAGE_VERSION=$version"
         if [ $args != null ]; then
             for row in $(echo "$args" | jq -r 'to_entries[] | @base64'); do
             key=$(echo "$row" | base64 -d | jq -r '.key')
@@ -38,7 +38,7 @@ if [ $build_docker != false ];then
             basename=$(jq -r --arg ver "$match_version" '.[$ver].base_docker_image' $config_file)
         fi
         cmd="$build_args -t $image_name $docker_builddir"
-        final_upload_image_link=$(DOCKER_UPLOAD_LINK)/$image_name
+        #final_upload_image_link=$(DOCKER_UPLOAD_LINK)/$image_name
         docker_file_path="${package_dirpath}/Dockerfiles"
     fi
 
