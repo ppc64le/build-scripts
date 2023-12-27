@@ -1,5 +1,5 @@
 {
-   "maintainer": "ich@us.ibm.com",
+   "maintainer": "Shubham.Garud@ibm.com",
    "package_name": "decimal",
    "github_url": "https://github.com/shopspring/decimal",
    "version": "v1.3.1",
