@@ -1,5 +1,5 @@
 {
-   "maintainer": "ich@us.ibm.com",
+   "maintainer": "Shubham.Garud@ibm.com",
    "package_name": "golang-set",
    "github_url": "https://github.com/deckarep/golang-set",
    "version": "v2.3.1",
