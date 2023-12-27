@@ -4,11 +4,11 @@
 # Package          : openapi-specification
 # Version          : main
 # Source repo      : https://github.com/OAI/OpenAPI-Specification.git
-# Tested on	: UBI 8.7
-# Language      : Node
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer	: ICH <ich@us.ibm.com>
+# Tested on	       : UBI 8.7
+# Language         : Node
+# Travis-Check     : True
+# Script License   : Apache License, Version 2 or later
+# Maintainer	   : Vinod K <Vinod.K1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -30,8 +30,6 @@ source "$HOME"/.bashrc
 echo "installing nodejs $NODE_VERSION"
 nvm install "$NODE_VERSION" >/dev/null
 nvm use $NODE_VERSION
-
-
 
 git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME
