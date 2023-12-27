@@ -4,14 +4,14 @@
     "github_url": "https://github.com/google/python-fire.git",
     "version": "v0.5.0",
     "default_branch": "master",
-    "package_dir": "f/fire",
+    "package_dir": "p/python-fire",
     "build_script": "python_fire_ubi_8.7.sh",
     "validate_build_script": "true",
     "use_non_root_user": "false",
     "docker_build": "false",
 
     "v0.5.*" : {
-       "dir" : "f/fire", 
+       "dir" : "p/python-fire", 
        "build_script" : "python_fire_ubi_8.7.sh"
     }
 }
