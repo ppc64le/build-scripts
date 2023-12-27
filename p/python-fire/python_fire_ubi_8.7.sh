@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=python-fire
-PACKAGE_VERSION=${1:-0.5.0}
+PACKAGE_VERSION=${1:-v0.5.0}
 PACKAGE_URL=https://github.com/google/python-fire.git
 
 yum install -y git gcc gcc-c++ yum-utils make automake autoconf libtool gdb* binutils rpm-build gettext wget
