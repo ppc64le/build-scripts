@@ -8,15 +8,15 @@ token_request=$(curl -X POST https://iam.cloud.ibm.com/identity/token \
 #token=$(echo "$token_request" | jq -r '.access_token')
 #curl -X PUT -H "Authorization: bearer $token" -H "Content-Type: application/gzip" -T $1 "https://s3.au-syd.cloud-object-storage.appdomain.cloud/currency-automation-toolci-bucket/$PACKAGE_NAME/$VERSION/$1"
 
-# Check if the token request was successful (HTTP status code 2xx)
-if [[ $(echo "$token_request" | jq -r '.status') =~ ^[2-9][0-9][0-9]$ ]]; then
+# Check if the token request was successful based on the presence of 'errorCode'
+if [[ $(echo "$token_request" | jq -r '.errorCode') == "null" ]]; then
     token=$(echo "$token_request" | jq -r '.access_token')
     
     # curl command for uploading the file
-    response=$(curl -X PUT -H "Authorization: bearer $token" -H "Content-Type: application/gzip" -T $1 "https://s3.au-syd.cloud-object-storage.appdomain.cloud/currency-automation-toolci-bucket/$PACKAGE_NA/$VERSION/$1")
+    response=$(curl -X PUT -H "Authorization: bearer $token" -H "Content-Type: application/gzip" -H "accept: application/json" -T $1 "https://s3.au-syd.cloud-object-storage.appdomain.cloud/currency-automation-toolci-bucket/$PACKAGE_NAME/$VERSION/$1")
 
-    # Check if the PUT request was successful (HTTP status code 2xx)
-    if [[ $(echo "$response" | jq -r '.status') =~ ^[2-9][0-9][0-9]$ ]]; then
+    # Check if the PUT request was successful based on the presence of 'errorCode'
+    if [[ $(echo "$response" | jq -r '.errorCode') == "null" ]]; then
         echo "File successfully uploaded."
     else
         # Handle PUT request failure
