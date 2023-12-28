@@ -1,0 +1,18 @@
+{
+    "maintainer":"Vinod.K1@ibm.com",
+    "package_name" : "loopback-connector-rest", 
+    "github_url": "https://github.com/loopbackio/loopback-connector-rest",
+    "version": "v5.0.0",
+    "default_branch": "master",
+    "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "package_dir": "l/loopback-connector-rest",
+    "build_script": "loopback-connector-rest_ubi_8.7.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": "true",
+
+    "v5.*.*" : {
+       "dir": "5.0.0_ubi8",
+       "build_script": "loopback-connector-rest_ubi_8.7.sh"
+    }
+}
