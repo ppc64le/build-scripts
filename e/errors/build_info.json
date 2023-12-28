@@ -1,5 +1,5 @@
 {
-   "maintainer": "ich@us.ibm.com",
+   "maintainer": "Shubham.Garud@ibm.com",
    "package_name": "errors",
    "github_url": "https://github.com/go-openapi/errors",
    "version": "v0.20.4",
