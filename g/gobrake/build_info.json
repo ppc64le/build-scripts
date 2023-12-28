@@ -1,5 +1,5 @@
 {
-   "maintainer": "ich@us.ibm.com",
+   "maintainer": "Shubham.Garud@ibm.com",
    "package_name": "gobrake",
    "github_url": "https://github.com/airbrake/gobrake",
    "version": "v5.6.1",
