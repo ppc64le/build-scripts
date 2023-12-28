@@ -1,0 +1,17 @@
+{
+   "maintainer": "Stuti.Wali@ibm.com",
+   "package_name": "loopback-connector",
+   "github_url": "https://github.com/strongloop/loopback-connector.git",
+   "version": "v6.1.0",
+   "default_branch": "master",
+   "build_script": "loopback-connector_ubi_8.7.sh",
+   "package_dir": "l/loopback-connector",
+   "docker_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+
+   "v6.1.0": {
+      "dir": "ubi8_7",
+      "build_script": "loopback-connector_ubi_8.7.sh"
+   }
+}
