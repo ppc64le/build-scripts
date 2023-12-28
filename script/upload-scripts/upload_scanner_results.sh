@@ -13,7 +13,7 @@ if [[ $(echo "$token_request" | jq -r '.status') =~ ^[2-9][0-9][0-9]$ ]]; then
     token=$(echo "$token_request" | jq -r '.access_token')
     
     # curl command for uploading the file
-    response=$(curl -X PUT -H "Authorization: bearer $token" -H "Content-Type: application/gzip" -T $1 "https://s3.au-syd.cloud-object-storage.appdomain.cloud/currency-automation-toolci-bucket/$PACKAGE_NAME/$VERSION/$1")
+    response=$(curl -X PUT -H "Authorization: bearer $token" -H "Content-Type: application/gzip" -T $1 "https://s3.au-syd.cloud-object-storage.appdomain.cloud/currency-automation-toolci-bucket/$PACKAGE_NA/$VERSION/$1")
 
     # Check if the PUT request was successful (HTTP status code 2xx)
     if [[ $(echo "$response" | jq -r '.status') =~ ^[2-9][0-9][0-9]$ ]]; then
