@@ -1,5 +1,5 @@
 {
-  "maintainer": "Pratik.Tonage@ibm.com",
+  "maintainer": "Stuti.Wali@ibm.com",
   "package_name": "opentelemetry-php",
   "github_url": "https://github.com/open-telemetry/opentelemetry-php",
   "version": "0.0.17",

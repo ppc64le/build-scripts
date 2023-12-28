@@ -1,5 +1,6 @@
 {
     "package_name" : "z-schema",
+    "maintainer": "Atharv.Phadnis@ibm.com",
     "github_url":"https://github.com/zaggino/z-schema",
     "version": "v5.0.3",
     "default_branch": "master",

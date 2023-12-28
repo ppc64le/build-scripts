@@ -1,14 +1,14 @@
 {
-    "maintainer": "Vishaka.Desai@ibm.com",
+    "maintainer": "Stuti.Wali@ibm.com",
     "package_name": "nbconvert",
     "github_url": "https://github.com/jupyter/nbconvert",
-    "version": "v7.7.3",
+    "version": "v7.12.0",
     "default_branch": "main",
     "build_script" : "nbconvert_ubi_8.7.sh",
     "package_dir": "n/nbconvert/",
     "docker_build": false,
     
-    "v7.7.3": {
+    "v7.7.3, v7.12.0": {
         "build_script" : "nbconvert_ubi_8.7.sh"
     },
     
