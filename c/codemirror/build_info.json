@@ -1,0 +1,17 @@
+{
+    "maintainer": "Stuti.Wali@ibm.com",
+    "package_name": "codemirror",
+    "github_url": "https://github.com/codemirror/codemirror",
+    "version": "5.65.16",
+    "default_branch": "master",
+    "package_dir": "c/codemirror",
+    "build_script": "codemirror_ubi_8_7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+
+    "5.65.16": {
+        "build_script": "codemirror_ubi_8_7.sh"
+     } 
+
+}
