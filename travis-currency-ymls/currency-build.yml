@@ -59,9 +59,8 @@ jobs:
         - ls -ltr $actual_package_name
       after_script:
         - cd $TRAVIS_BUILD_DIR
-        #todo: need to check on build log length using a condition, if it is within the limit we can avoid pushing into the cos.
         - gzip $TRAVIS_BUILD_DIR/build_log
-        - chmod +x ./script/upload-scripts/upload_build_log.sh; bash ./script/upload-scripts/upload_build_log.sh   
+        - chmod +x ./script/upload-scripts/upload_logs.sh; bash ./script/upload-scripts/upload_logs.sh build_log.gz
       workspaces:
         create:
           # package_cache contains both variable.sh file as well as cloned package directory.
@@ -133,7 +132,7 @@ jobs:
         - find source_syft -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
         - find source_grype -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
         - tar cvzf source_scanner.tar.gz source
-        - chmod +x ./script/upload-scripts/upload_scanner_results.sh; bash ./script/upload-scripts/upload_scanner_results.sh source_scanner.tar.gz
+        - chmod +x ./script/upload-scripts/upload_logs.sh; bash ./script/upload-scripts/upload_logs.sh source_scanner.tar.gz
       
     - stage: Build docker image
       # the below condition checks if docker_build flag set to true or false, it it is true it will build this stage and if it is false it will exclude this stage.
@@ -213,5 +212,5 @@ jobs:
         - find image_syft -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
         - find image_grype -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
         - tar cvzf image_scanner.tar.gz image
-        - chmod +x ./script/upload-scripts/upload_scanner_results.sh; bash ./script/upload-scripts/upload_scanner_results.sh image_scanner.tar.gz
+        - chmod +x ./script/upload-scripts/upload_logs.sh; bash ./script/upload-scripts/upload_logs.sh image_scanner.tar.gz
           
