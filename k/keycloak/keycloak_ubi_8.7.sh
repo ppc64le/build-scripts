@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: keycloak
-# Version	: v22.0.4
+# Version	: 22.0.4
 # Source repo	: https://github.com/keycloak/keycloak.git
 # Tested on	: ubi 8.7
 # Language      : Java
@@ -81,7 +81,7 @@ done
 if ! mvn test -nsu -B -pl "$PROJECTS" -am; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
-	exit 0
+	exit 2
 else
 	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
