@@ -7,7 +7,7 @@ if [ $? -ne 0 ]; then
 fi
 package_name=$(echo $PACKAGE_NAME | tr '[:upper:]' '[:lower:]')
 docker tag $IMAGE_NAME icr.io/currency-images/$package_name-ppc64le:$VERSION
-docker push icr.io/currency-images/$package_name-ppc64le:$VERSION
+docker push icr.io/currency-images/$package_name-ppc64le:$VERSIO
 if [ $? -ne 0 ]; then
     echo "Docker push failed. Exiting script."
     exit 1
