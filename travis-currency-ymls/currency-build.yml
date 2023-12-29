@@ -57,7 +57,8 @@ jobs:
         # executing pre-process script which creates some files based on the package language.(python, javascript, typescript)
         - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ../script/pre_process.sh; bash ../script/pre_process.sh; fi
         - ls -ltr $actual_package_name
-      after_script:
+        - pwd
+        - echo $TRAVIS_BUILD_DIR
         - cd $TRAVIS_BUILD_DIR
         - gzip $TRAVIS_BUILD_DIR/build_log
         - chmod +x ./script/upload-scripts/upload_logs.sh; bash ./script/upload-scripts/upload_logs.sh build_log.gz
