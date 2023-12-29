@@ -1,0 +1,18 @@
+{
+    "maintainer":"Vinod.K1@ibm.com",
+    "package_name" : "ipywidgets", 
+    "github_url": "https://github.com/jupyter-widgets/ipywidgets",
+    "version": "8.1.1",
+    "default_branch": "main",
+    "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "package_dir": "i/ipywidgets",
+    "build_script": "ipywidgets_ubi_8.7.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": "true",
+
+    "8.*.*" : {
+       "dir": "8.1.1_ubi8",
+       "build_script": "ipywidgets_ubi_8.7.sh"
+    }
+}

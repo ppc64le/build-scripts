@@ -1,0 +1,11 @@
+{
+   "maintainer": "Vinod.K1@ibm.com",
+   "package_name": "openapi-specification",
+   "github_url": "https://github.com/OAI/OpenAPI-Specification.git",
+   "version": "main",
+   "default_branch": "main",
+   "build_script": "openapi-specification_ubi_8.7.sh",
+   "package_dir": "o/openapi-specification",
+   "docker_build": false,
+   "validate_build_script": true
+}
