@@ -7,7 +7,7 @@
 # Tested on        : UBI 8.7
 # Language         : Python
 # Travis-Check     : True
-# Script License   : GNU General Public License v3.0
+# Script License   : Apache License, Version 2 or later
 # Maintainer       : Mohit Pawar <mohit.pawar@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
@@ -17,6 +17,8 @@
 #                    contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
+
+set -e
 
 PACKAGE_NAME=python-fire
 PACKAGE_VERSION=${1:-v0.5.0}
