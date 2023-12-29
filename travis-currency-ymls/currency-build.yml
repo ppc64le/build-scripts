@@ -142,7 +142,6 @@ jobs:
       script:
         - source package-cache/variable.sh;
         - if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/build_docker.sh; bash ./script/build_docker.sh;echo "printing docker images"; docker images; fi
-      after_script:
         # the below command is used to upload docker image to ibm icr registry.
         - if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/upload-scripts/upload_docker_image.sh; bash ./script/upload-scripts/upload_docker_image.sh; fi
       workspaces:
