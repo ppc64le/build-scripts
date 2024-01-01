@@ -7,7 +7,7 @@ ENV HOME_DIR=${PWD}
 ARG PACKAGE_VERSION=v3.0.0
 
 RUN yum update -y && \
-        yum install -y wget gcc git gcc-c++ gcc-gfortran.ppc64le openblas.ppc64le &&\
+        yum install -y wget gcc git gcc-c++ gcc-gfortran.ppc64le openblas.ppc64le zlib-devel &&\
 	      wget https://repo.anaconda.com/miniconda/Miniconda3-py39_4.9.2-Linux-ppc64le.sh -O miniconda.sh &&\
 	      bash miniconda.sh -b -p $HOME/miniconda &&\
 	      export PATH="$HOME/miniconda/bin:$PATH" &&\
