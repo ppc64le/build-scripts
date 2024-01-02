@@ -2,4 +2,4 @@ import:
 - source: travis-currency-ymls/pr-build.yml
   if: type = pull_request
 - source: travis-currency-ymls/currency-build.yml
-  if: type != pull_request
+  if: type = api
