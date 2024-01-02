@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package           : passport
+# Package           : strftime
 # Version           : v0.10.2
 # Source repo       : https://github.com/samsonjs/strftime/
 # Tested on         : UBI 8.7
