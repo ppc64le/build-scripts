@@ -1,18 +1,9 @@
----
-arch: ppc64le
-dist: focal
-os: linux
-language: shell
+# Travis builds are triggered for pull requests and api events only.
+if: type IN (api, pull_request)
 
-services:
-    - docker
-
-before_install:
-    - docker pull registry.access.redhat.com/ubi8/ubi:8.7
-
-script:
-    - sudo apt update -y && sudo apt-get install file -y
-    - pip3 install --upgrade requests
-    - pip3 install --upgrade docker
-    - python3 script/validate_builds.py $TRAVIS_PULL_REQUEST &
-    - SCRIPT_PID=$!;while ps -p $SCRIPT_PID > /dev/null;do echo "$SCRIPT_PID is running"; sleep 300; done; wait $SCRIPT_PID; my_pid_status=$?; travis_terminate $my_pid_status
+# will import the desired travis config file based on the request type.
+import:
+- source: travis-currency-ymls/pr-build.yml
+  if: type = pull_request
+- source: travis-currency-ymls/currency-build.yml
+  if: type = api

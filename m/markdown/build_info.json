@@ -1,0 +1,12 @@
+{
+    "maintainer":"Abhishek.Dwivedi6@ibm.com",
+    "package_name" : "markdown",
+    "github_url": "https://github.com/Python-Markdown/markdown",
+    "version": "3.5.1",
+    "default_branch": "master",
+    "package_dir": "m/markdown",
+    "build_script": "markdown_ubi_8.7.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": "false"
+}

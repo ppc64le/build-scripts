@@ -1,0 +1,17 @@
+{
+    "maintainer": "Stuti.Wali@ibm.com",
+    "package_name": "jupyter_client",
+    "github_url": "https://github.com/jupyter/jupyter_client",
+    "version": "v8.6.0",
+    "default_branch": "main",
+    "package_dir": "j/jupyter_client",
+    "build_script": "jupyter_client_ubi_8_7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+
+    "v8.6.0": {
+        "build_script": "jupyter_client_ubi_8_7.sh"
+     } 
+
+}
