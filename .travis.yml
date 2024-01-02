@@ -1,3 +1,5 @@
+if: type IN (api, pull_request)
+
 import:
 - source: travis-currency-ymls/pr-build.yml
   if: type = pull_request
