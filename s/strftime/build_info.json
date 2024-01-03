@@ -1,0 +1,16 @@
+{
+    "maintainer": "Abhishek.Dwivedi6@ibm.com",
+    "package_name": "strftime",
+    "github_url": "https://github.com/samsonjs/strftime/",
+    "version": "v0.10.2",
+    "default_branch": "main",
+    "build_script": "strftime_ubi_8.7.sh",
+    "package_dir": "s/strftime",
+    "docker_cmd" : "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "docker_build": true,
+    "validate_build_script": true,
+    "v0.10.*": {
+       "dir": "ubi8.7",
+       "build_script" : "strftime_ubi_8.7.sh"
+    }
+ }
