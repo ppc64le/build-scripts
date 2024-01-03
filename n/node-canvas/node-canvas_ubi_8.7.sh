@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=node-canvas
 PACKAGE_VERSION=${1:-v2.11.2}
-PACKAGE_URL= https://github.com/Automattic/node-canvas
+PACKAGE_URL=https://github.com/Automattic/node-canvas
 
 yum update -y --allowerasing
 yum install -y --allowerasing yum-utils python38 python38-devel git wget gcc gcc-c++ libffi make
