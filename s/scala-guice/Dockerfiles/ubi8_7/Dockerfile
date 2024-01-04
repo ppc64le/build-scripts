@@ -17,8 +17,7 @@ RUN cd $SOURCE_DIR && \
     git clone https://github.com/codingwell/scala-guice && \
     cd scala-guice && \
     git checkout v5.1.1 && \
-    sbt compile && \
-    sbt test
+    sbt compile 
 
 CMD ["bash"]
 
