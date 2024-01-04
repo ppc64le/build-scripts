@@ -10,7 +10,6 @@
     "validate_build_script": "true",
     "use_non_root_user": "false",
     "docker_build": "true",
-
     "v3.0.*" : {
         "dir" : "ubi8.7",
         "build_script" : "MACS_ubi_8.7.sh"
