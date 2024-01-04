@@ -17,6 +17,7 @@
 #                    contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
+set -e
 
 PACKAGE_NAME=MACS
 PACKAGE_VERSION=${1:-v3.0.0}
