@@ -20,7 +20,6 @@ RUN yum install -y git pkgconf-pkg-config librsvg2 diffutils pixman pixman-devel
     nvm install "$NODE_VERSION" >/dev/null && \
     nvm use $NODE_VERSION
 
-
 RUN git clone https://github.com/Automattic/node-canvas && \
     cd node-canvas/ && \
     git checkout $PACKAGE_VERSION && \
@@ -28,4 +27,3 @@ RUN git clone https://github.com/Automattic/node-canvas && \
     npm install
 
 CMD ["/bin/bash"]
-
