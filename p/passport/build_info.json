@@ -1,0 +1,16 @@
+{
+   "maintainer": "Abhishek.Dwivedi6@ibm.com",
+   "package_name": "passport",
+   "github_url": "https://github.com/jaredhanson/passport",
+   "version": "v0.7.0",
+   "default_branch": "master",
+   "build_script": "passport_ubi_8.7.sh",
+   "package_dir": "p/passport",
+   "docker_cmd" : "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+   "docker_build": true,
+   "validate_build_script": true,
+   "v0.7.*": {
+      "dir": "ubi8.7",
+      "build_script" : "passport_ubi_8.7.sh"
+   }
+}
