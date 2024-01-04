@@ -33,7 +33,7 @@ export JAVA_HOME=export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 java -version
 
-#install maven 3.9.5
+#install maven
 MAVEN_VERSION=3.9.5
 wget https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
 tar xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz
