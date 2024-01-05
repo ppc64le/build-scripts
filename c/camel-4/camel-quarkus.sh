@@ -1,9 +1,9 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
-# Package	    : camel
-# Version	    : camel-4.2.0
-# Source repo	: https://github.com/apache/camel
+# Package	    : camel-quarkus
+# Version	    : main
+# Source repo	: https://github.com/apache/camel-quarkus.git
 # Tested on	    : UBI 8.5
 # Language      : java
 # Travis-Check  : True
