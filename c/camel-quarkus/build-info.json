@@ -1,6 +1,6 @@
 {
     "package_name" : "camel-quarkus",
-    "github_url":"https://github.com/apache/camel",
+    "github_url":"https://github.com/apache/camel-quarkus",
     "version": "main",
     "default_branch": "main",
     "package_dir": "c/camel-quarkus/", 
