@@ -45,14 +45,17 @@ if ! go build ./...; then
         echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Init_Fails"
+	echo 1
 fi
 
 if ! go test ./...; then
         echo "------------------$PACKAGE_NAME:test_fails---------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails"
+	echo 2
 else
         echo "------------------$PACKAGE_NAME:install_and_test_success-------------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Install_and_Test_Success"
+	echo 0
 fi
