@@ -1,0 +1,20 @@
+{
+    "package_name": "orientdb",
+    "github_url": "https://github.com/orientechnologies/orientdb.git",
+    "version": "3.2.20",
+    "package_dir": "o/orientdb",
+    "build_script": "orientdb_ubi_8.7.sh",
+    "validate_build_script": true,
+    "default_branch": "develop",
+    "docker_build": true,
+    "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+	
+	"3.2.*" : {
+        "dir": "ubi_8.7",
+        "build_script": "orientdb_ubi_8.7.sh"
+    },
+
+    "3.0.15" : {
+        "dir": "latest_ubi_8"
+    }
+}
