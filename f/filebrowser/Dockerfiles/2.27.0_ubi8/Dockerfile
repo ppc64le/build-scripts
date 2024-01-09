@@ -1,10 +1,11 @@
 FROM registry.access.redhat.com/ubi8/ubi:8.7 as builder
 
 RUN yum install -y git go make gcc wget patch
+ARG PACKAGE_VERSION=v2.27.0
 
 RUN git clone https://github.com/filebrowser/filebrowser.git /filebrowser-src && \
     cd filebrowser-src && \
-    git checkout v2.27.0
+    git checkout $PACKAGE_VERSION
 
 WORKDIR /filebrowser-src
 
