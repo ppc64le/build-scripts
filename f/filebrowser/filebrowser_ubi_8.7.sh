@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : filebrowser
-# Version          : v2.25.0
+# Version          : v2.27.0
 # Source repo      : https://github.com/filebrowser/filebrowser
 # Tested on        : UBI 8.7
 # Language         : Go
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME="filebrowser"
-PACKAGE_VERSION=${1:-"v2.25.0"}
+PACKAGE_VERSION=${1:-"v2.27.0"}
 PACKAGE_URL=https://github.com/filebrowser/filebrowser
 export NODE_VERSION=${NODE_VERSION:-14}
 
