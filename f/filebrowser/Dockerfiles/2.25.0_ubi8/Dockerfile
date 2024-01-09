@@ -4,7 +4,7 @@ RUN yum install -y git go make gcc wget patch
 
 RUN git clone https://github.com/filebrowser/filebrowser.git /filebrowser-src && \
     cd filebrowser-src && \
-    git checkout v2.25.0
+    git checkout v2.27.0
 
 WORKDIR /filebrowser-src
 
