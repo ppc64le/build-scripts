@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
-# Package	    : camel-quarkus
+# Package	    : camel4-csb-ceq-camel-k
 # Version	    : main
 # Source repo	: https://github.com/apache/camel-quarkus.git
 # Tested on	    : UBI 8.5
@@ -33,7 +33,7 @@ ln -s /usr/local/apache-maven-3.8.4/bin/mvn /usr/bin/mvn
 #-------------------------------Camel Build & Tests-------------------------------
 
 PACKAGE_NAME=camel
-PACKAGE_VERSION=${1:-camel-4.2.0}
+PACKAGE_VERSION=camel-4.2.0
 PACKAGE_URL=https://github.com/apache/camel.git
 
 export MAVEN_PARAMS="-B -e -fae -V -Dnoassembly -Dmaven.compiler.fork=true -Dsurefire.rerunFailingTestsCount=2 -Dfailsafe.rerunFailingTestsCount=1"
@@ -69,7 +69,7 @@ mvn dependency:get -Dartifact=org.apache.camel:camel-buildtools:4.3.0-SNAPSHOT -
 #-------------------------------Camel-Spring-boot Build & Tests-------------------------------
 
 PACKAGE_NAME=camel-spring-boot
-PACKAGE_VERSION=${1:-camel-spring-boot-4.2.0}
+PACKAGE_VERSION=camel-spring-boot-4.2.0
 PACKAGE_URL=https://github.com/apache/camel-spring-boot.git
 
 #export MAVEN_PARAMS='-U -B -e -fae -V -Dmaven.repo.local=/home/.m2/repository -Dmaven.compiler.fork=true'
