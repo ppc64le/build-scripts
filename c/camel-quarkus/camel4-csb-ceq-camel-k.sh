@@ -42,7 +42,7 @@ export MAVEN_PARAMS="-B -e -fae -V -Dnoassembly -Dmaven.compiler.fork=true -Dsur
 if ! git clone $PACKAGE_URL; then
     echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    exit 0
+    exit 1
 fi
 
 cd $PACKAGE_NAME
@@ -78,7 +78,7 @@ PACKAGE_URL=https://github.com/apache/camel-spring-boot.git
 if ! git clone $PACKAGE_URL; then
     echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    exit 0
+    exit 1
 fi
 
 cd $PACKAGE_NAME
@@ -102,7 +102,7 @@ PACKAGE_URL=https://github.com/apache/camel-quarkus.git
 if ! git clone $PACKAGE_URL; then
     echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    exit 0
+    exit 1
 fi
 
 cd $PACKAGE_NAME
