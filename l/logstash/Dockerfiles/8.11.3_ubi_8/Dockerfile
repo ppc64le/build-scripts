@@ -4,7 +4,8 @@ FROM registry.access.redhat.com/ubi8/ubi:8.9 as build
 
 MAINTAINER "Sapana Khemkar <Sapana.Khemkar@ibm.com>"
 
-ENV PACKAGE_VERSION=v8.11.3
+ARG PACKAGE_VERSION=v8.11.3
+ARG PATCH=https://raw.githubusercontent.com/ppc64le/build-scripts/master/l/logstash/assemble-tar-withoutjdk.patch
 ENV PACKAGE_NAME=logstash
 ENV PACKAGE_URL=https://github.com/elastic/logstash.git
 
@@ -31,11 +32,12 @@ ENV PATH=/usr/lib/jvm/java-17-openjdk-17.0.9.0.9-2.el8.ppc64le/bin:$PATH
 
 #Get logstash source to build
 WORKDIR /tmp
-COPY assemble-tar-withoutjdk.patch /tmp/assemble-tar-withoutjdk.patch 
+#COPY assemble-tar-withoutjdk.patch /tmp/assemble-tar-withoutjdk.patch 
 RUN git clone https://github.com/elastic/logstash &&\
     cd ${PACKAGE_NAME} && \
     git checkout $PACKAGE_VERSION && \
-    git apply /tmp/assemble-tar-withoutjdk.patch
+    wget $PATCH && \
+    git apply assemble-tar-withoutjdk.patch
 
 #install rvm and ruby (ruby version should be same as in .ruby_version in logstash
 RUN curl -sSL https://rvm.io/mpapis.asc | gpg2 --import - && \
