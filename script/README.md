@@ -19,7 +19,7 @@ The process creates,executes the build_script ,validates it and eventually creat
 1. Traverse to the base level of the ppc64le repo.
 2. Activate the previously created python environment.
 3. Run the following command to run the automation:
-     python3 script/node_bs.py <package_version> <package_language>
+     + python3 script/node_bs.py <package_version> <package_language>
 4. The process expects the name of the package to be built from user. Enter the package name.
 5. Respond to any prompts from the system and monitor the logs for success/failure.
 6. Push the code and create a pull request in case of success.
