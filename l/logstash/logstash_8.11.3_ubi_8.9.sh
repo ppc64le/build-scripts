@@ -4,7 +4,7 @@
 # Package	: elastic/logstash
 # Version	: v8.11.3
 # Source repo	: https://github.com/elastic/logstash
-# Tested on	: UBI_8.9
+# Tested on	: UBI8.7, UBI_8.9
 # Language      : JAVA/Ruby
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=elastic/logstash
-PACKAGE_VERSION=v8.11.3
+PACKAGE_VERSION= ${1:-v8.11.3}
 PACKAGE_URL=https://github.com/elastic/logstash
 
 OS_VERSION=$(grep ^VERSION_ID /etc/os-release | cut -d= -f2 | cut -d\" -f2)
@@ -102,7 +102,7 @@ export LS_HEAP_SIZE=2048m
 # run the core tests
 if ! ./gradlew test; then
 	echo "Core test failed"
-	exit 1
+	exit 2
 else
 	echo "Successfully completed core test"
 fi
@@ -110,7 +110,7 @@ fi
 # execute the complete test-suite including the integration tests run
 if ! ./gradlew check; then
 	echo "Integration test failed"
-	exit 1
+	exit 2
 else
 	echo "Successfully completed Integration test"
 fi
