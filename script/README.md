@@ -6,12 +6,12 @@ The process creates,executes the build_script ,validates it and eventually creat
 # Pre-requisites
 
 + Create a fork of the build-scripts repo,update it if already present.
-+ Have the following details of package to be ported:
++ Have the following details of the package to be ported:
   * Package name
   * Package version
   * Package URL
   * Package language 
-+ Create a python environment and activate it. Refer gfg url to create an environment.
++ Create a python environment and activate it. Refer to [this](https://www.geeksforgeeks.org/creating-python-virtual-environment-windows-linux/) to create an environment.
  
 
 # Steps to execute
