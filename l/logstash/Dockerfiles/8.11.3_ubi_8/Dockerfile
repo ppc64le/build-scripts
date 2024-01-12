@@ -37,7 +37,7 @@ RUN git clone https://github.com/elastic/logstash &&\
     cd ${PACKAGE_NAME} && \
     git checkout $PACKAGE_VERSION && \
     wget $PATCH && \
-    git apply assemble-tar-withoutjdk.patch
+    git apply ${PATCH##*/}  
 
 #install rvm and ruby (ruby version should be same as in .ruby_version in logstash
 RUN curl -sSL https://rvm.io/mpapis.asc | gpg2 --import - && \
