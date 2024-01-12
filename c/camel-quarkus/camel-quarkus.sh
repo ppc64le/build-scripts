@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
-# Package	    : camel4-csb-ceq-camel-k
+# Package	    : camel-quarkus
 # Version	    : main
 # Source repo	: https://github.com/apache/camel-quarkus.git
 # Tested on	    : UBI 8.5
