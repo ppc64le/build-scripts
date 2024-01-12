@@ -4,6 +4,8 @@
 # Version	: d65c7fdb29eca313476e529628176fe17e58c488
 # Source repo	: https://github.com/go-openapi/strfmt
 # Tested on	: RHEL 8.3
+# Language      : GO
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
