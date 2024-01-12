@@ -4,6 +4,8 @@
 # Version	: b44dc874b601d9e4e2f6e19140e794ba24bead3b
 # Source repo	: https://github.com/go-openapi/analysis
 # Tested on	: RHEL 8.3
+# Language      : GO
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
