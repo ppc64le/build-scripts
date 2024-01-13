@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=elastic/logstash
-PACKAGE_VERSION= ${1:-v8.11.3}
+PACKAGE_VERSION=${1:-v8.11.3}
 PACKAGE_URL=https://github.com/elastic/logstash
 
 OS_VERSION=$(grep ^VERSION_ID /etc/os-release | cut -d= -f2 | cut -d\" -f2)
