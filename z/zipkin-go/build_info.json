@@ -1,5 +1,5 @@
 {
-   "maintainer": "ich@us.ibm.com",
+   "maintainer": "Shubham.Garud@ibm.com",
    "package_name": "zipkin-go",
    "github_url": "https://github.com/openzipkin/zipkin-go",
    "version": "v0.4.2",
