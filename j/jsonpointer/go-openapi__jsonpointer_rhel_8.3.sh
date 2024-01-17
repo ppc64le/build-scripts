@@ -4,6 +4,8 @@
 # Version	: 46af16f9f7b149af66e5d1bd010e3574dc06de98
 # Source repo	: https://github.com/go-openapi/jsonpointer
 # Tested on	: RHEL 8.3
+# Language      : GO
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
