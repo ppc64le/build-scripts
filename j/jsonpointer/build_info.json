@@ -1,0 +1,11 @@
+{
+   "maintainer": "ich@us.ibm.com",
+   "package_name": "jsonpointer",
+   "github_url": "https://github.com/go-openapi/jsonpointer",
+   "version": "v0.20.0",
+   "default_branch": "master",
+   "build_script": "jsonpointer_ubi_8.7.sh",
+   "package_dir": "j/jsonpointer",
+   "docker_build": false,
+   "validate_build_script": true
+}
