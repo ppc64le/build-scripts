@@ -24,14 +24,10 @@ PACKAGE_URL=https://github.com/NaturalHistoryMuseum/pylibdmtx
 yum install -y git python39 python39-devel gcc gcc-c++ make wget sudo openssl-devel libcurl-devel automake libjpeg-turbo libjpeg-turbo-devel autoconf m4 autoconf atlas-devel libtool diffutils 
 
 #Install rustc
-wget https://static.rust-lang.org/dist/rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
-tar -xzf rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
-cd rust-1.75.0-powerpc64le-unknown-linux-gnu
-sudo ./install.sh
-export PATH=$HOME/.cargo/bin:$PATH
-rustc -V
-cargo  -V
-cd ..
+curl https://sh.rustup.rs -sSf | sh -s -- -y
+PATH="$HOME/.cargo/bin:$PATH"
+source $HOME/.cargo/env
+rustc --version
 
 #Build libdmtx binaries
 git clone https://github.com/dmtx/libdmtx
