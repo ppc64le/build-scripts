@@ -1,0 +1,11 @@
+{
+   "maintainer": "ich@us.ibm.com",
+   "package_name": "component-emitter",
+   "github_url": "https://github.com/component/emitter",
+   "version": "v2.0.0",
+   "default_branch": "main",
+   "build_script": "component-emitter_ubi_8.7.sh",
+   "package_dir": "c/component-emitter",
+   "docker_build": false,
+   "validate_build_script": true
+}
