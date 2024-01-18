@@ -1,5 +1,5 @@
 {
-   "maintainer": "ich@us.ibm.com",
+   "maintainer": "Shubham.Garud@ibm.com",
    "package_name": "cmd-shim",
    "github_url": "https://github.com/npm/cmd-shim",
    "version": "v6.0.2",
