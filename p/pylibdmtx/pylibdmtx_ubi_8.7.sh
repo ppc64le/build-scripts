@@ -20,6 +20,8 @@
 PACKAGE_NAME=pylibdmtx
 PACKAGE_VERSION=${1:-v0.1.10}
 PACKAGE_URL=https://github.com/NaturalHistoryMuseum/pylibdmtx
+WDIR=`pwd`
+
 
 yum install -y git python39 python39-devel gcc gcc-c++ make wget sudo openssl-devel libcurl-devel automake libjpeg-turbo libjpeg-turbo-devel autoconf m4 autoconf atlas-devel libtool diffutils 
 
@@ -38,14 +40,14 @@ make
 make install
 cd ..
 
-git clone $PACKAGE_URL $PACKAGE_NAME
-cd  $PACKAGE_NAME
+git clone $PACKAGE_URL 
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 python3 -m pip install pytest pytest-cov
 pip3 install -r requirements-test.txt
-echo "$PWD/usr/local/lib" | sudo tee /etc/ld.so.conf.d/libdmtx.conf
-echo "$PWD/script/libdmtx/.libs" | sudo tee -a /etc/ld.so.conf.d/libdmtx.conf
+echo "$WDIR/usr/local/lib" | sudo tee /etc/ld.so.conf.d/libdmtx.conf
+echo "$WDIR/script/libdmtx/.libs" | sudo tee -a /etc/ld.so.conf.d/libdmtx.conf
 sudo ldconfig
 
 if ! python3 setup.py install ;  then
