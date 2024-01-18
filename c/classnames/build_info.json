@@ -1,0 +1,11 @@
+{
+   "maintainer": "ich@us.ibm.com",
+   "package_name": "classnames",
+   "github_url": "https://github.com/JedWatson/classnames.git",
+   "version": "v2.5.2",
+   "default_branch": "main",
+   "build_script": "classnames_ubi_8.7.sh",
+   "package_dir": "c/classnames",
+   "docker_build": false,
+   "validate_build_script": true
+}
