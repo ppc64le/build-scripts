@@ -1,0 +1,11 @@
+{
+   "maintainer": "ich@us.ibm.com",
+   "package_name": "cmd-shim",
+   "github_url": "https://github.com/npm/cmd-shim",
+   "version": "v6.0.2",
+   "default_branch": "main",
+   "build_script": "cmd-shim_ubi_8.7.sh",
+   "package_dir": "c/cmd-shim",
+   "docker_build": false,
+   "validate_build_script": true
+}
