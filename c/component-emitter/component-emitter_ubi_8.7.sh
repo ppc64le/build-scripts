@@ -3,12 +3,12 @@
 #
 # Package          : component-emitter
 # Version          : v2.0.0
-# Source repo      : https://github.com/component/emitter
+# Source repo      : https://github.com/sindresorhus/component-emitter
 # Tested on	: UBI 8.7
 # Language      : Node
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: ICH <ich@us.ibm.com>
+# Maintainer	: Shubham Garud <Shubham.Garud@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=component-emitter
 PACKAGE_VERSION=${1:-v2.0.0}
-PACKAGE_URL=https://github.com/component/emitter
+PACKAGE_URL=https://github.com/sindresorhus/component-emitter
 
 export NODE_VERSION=${NODE_VERSION:-16}
 yum install -y python38 python38-devel git gcc gcc-c++ libffi make
