@@ -48,6 +48,7 @@ python3 -m pip install pytest pytest-cov
 pip3 install -r requirements-test.txt
 echo "$WDIR/usr/local/lib" | sudo tee /etc/ld.so.conf.d/libdmtx.conf
 echo "$WDIR/script/libdmtx/.libs" | sudo tee -a /etc/ld.so.conf.d/libdmtx.conf
+export LD_LIBRARY_PATH=/usr/local/lib
 sudo ldconfig
 
 if ! python3 setup.py install ;  then
