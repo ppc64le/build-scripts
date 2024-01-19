@@ -28,7 +28,9 @@ wrkdir=`pwd`
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 yum install -y wget gcc git gcc-c++
-wget https://repo.anaconda.com/miniconda/Miniconda3-py39_4.9.2-Linux-ppc64le.sh -O miniconda.sh &&bash miniconda.sh -b -p $HOME/miniconda &&export PATH="$HOME/miniconda/bin:$PATH"
+wget https://repo.anaconda.com/miniconda/Miniconda3-py39_4.9.2-Linux-ppc64le.sh -O miniconda.sh
+bash miniconda.sh -b -p $HOME/miniconda
+export PATH="$HOME/miniconda/bin:$PATH"
 python3 -m pip install -U pip
 
 git clone $PACKAGE_URL
