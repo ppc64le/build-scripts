@@ -4,7 +4,7 @@
     "version": "main",
     "default_branch": "main",
     "package_dir": "c/camel-quarkus/", 
-    "build_script": "camel-quarkus.sh",
+    "build_script": "camel-quarkus_ubi_8.7.sh",
     "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": false
