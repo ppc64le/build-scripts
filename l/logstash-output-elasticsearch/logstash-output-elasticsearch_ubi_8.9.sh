@@ -83,13 +83,6 @@ else
  echo "Logstash successfully completed  build/install development dependencies"
 fi
 
-if ! ./gradlew installDefaultGems; then 
- echo "Logstash failed to build/install default plugins and other dependencies"
- exit 2
-else
- echo "Logstash successfully completed build/install default plugins and other dependencies"
-fi
-
 # Clone repo and checkout to required version for logstash-output-elasticsearch
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
