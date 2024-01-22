@@ -1,7 +1,7 @@
 {
     "maintainer":"Abhishek.Dwivedi6@ibm.com",
     "package_name" : "MACS",
-    "github_url": "https://github.com/macs3-project/MACS/",
+    "github_url": "https://github.com/macs3-project/MACS",
     "version": "v3.0.0",
     "default_branch": "master",
     "package_dir": "m/macs",
