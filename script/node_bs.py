@@ -26,6 +26,23 @@ package_name = package_name.lower()
 dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_name}"
 
 
+user_name_command ="git config user.name"
+user_name_response = subprocess.Popen(user_name_command,shell=True)
+
+if user_name_response == '':
+    user_name_response = 'ICH'
+
+email_command = "git config user.email"
+user_email_response = subprocess.Popen(email_command,shell=True)
+
+if user_email_response =='':
+    user_email_response='ich@us.ibm.com'
+
+print("\n PRINTING USER NAME:",user_name_response)
+
+print("\n PRINTING USER EMAIL:",user_email_response)
+
+
 github_url=''
 latest_release=sys.argv[1]
 package_language=sys.argv[2]
