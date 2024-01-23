@@ -107,7 +107,7 @@ def validate_build_info_file(file_name):
         data = json.load(open(script_path, 'r'))
 
         # Check for valid Github url
-        print(str(obj['github_url']))
+        print(str(data['github_url']))
 
         # Check for mandatory fields.
         for field in mandatory_fields:
