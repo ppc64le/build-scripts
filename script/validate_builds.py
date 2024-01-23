@@ -112,8 +112,9 @@ def validate_build_info_file(file_name):
             raise Exception(f"Build info validation failed for {file_name} due to invalid github url")
         
         # Check for empty lines
+
         for line in data :
-            if not line.strip():
+            if line.strip():
                 raise Exception(f"Build info validation failed for {file_name} due to empty line present")
 
         # Check for mandatory fields.
