@@ -78,7 +78,7 @@ export LOGSTASH_SOURCE=1
 export LOGSTASH_PATH=/logstash
 if ! ./gradlew installDevelopmentGems; then 
  echo "Logstash failed to build/install development dependencies"
- exit 2
+ exit 1
 else
  echo "Logstash successfully completed  build/install development dependencies"
 fi
@@ -93,7 +93,7 @@ bundle update
 
 if ! bundle install; then
   echo "Ruby dependency installation failed"
-  exit 2
+  exit 1
 fi
 
 # execute the complete test-suite of logstash-output-elasticsearch including integration tests run
