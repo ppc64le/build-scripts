@@ -30,19 +30,17 @@ export PATH=$PATH:$JAVA_HOME/bin
 
 
 #install node
-curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-nvm install 18
-nvm use 18
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash 
+source "$HOME"/.bashrc 
+echo "installing nodejs $NODE_VERSION" 
+nvm install "$NODE_VERSION" >/dev/null
+nvm use $NODE_VERSION
 
 cd $HOME_DIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 npm ci --ignore-scripts
-
 
 if ! npm run build ;  then
     echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
