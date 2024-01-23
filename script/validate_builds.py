@@ -105,6 +105,17 @@ def validate_build_info_file(file_name):
         error_message = f"No `{{}}` field available in {file_name}."
 
         data = json.load(open(script_path, 'r'))
+
+        # Check for valid Github url
+        print(str(data['github_url']))
+        if str(data['github_url']).endswith('/'):
+            raise Exception(f"Build info validation failed for {file_name} due to invalid github url !")
+        
+        # Check for empty lines
+        for line in data :
+            if line.strip():
+                raise Exception(f"Build info validation failed for {file_name} due to empty line present !")
+
         # Check for mandatory fields.
         for field in mandatory_fields:
             if field not in data:
