@@ -1,4 +1,5 @@
 {
+    "maintainer":"Shreya.Kajbaje@ibm.com"
     "package_name" : "camel-quarkus",
     "github_url":"https://github.com/apache/camel-quarkus",
     "version": "main",
