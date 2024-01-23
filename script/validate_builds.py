@@ -108,6 +108,8 @@ def validate_build_info_file(file_name):
 
         # Check for valid Github url
         print(str(data['github_url']))
+        if str(data['github_url']).endswith('/'):
+            raise Exception(f"Build info validation failed for {file_name} due to invalid github url")
 
         # Check for mandatory fields.
         for field in mandatory_fields:
