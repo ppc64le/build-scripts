@@ -27,19 +27,22 @@ dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_nam
 
 
 user_name_command ="git config user.name"
-user_name_response = subprocess.Popen(user_name_command,shell=True)
+user_name_response = subprocess.Popen(user_name_command,shell=True,stdout=subprocess.PIPE).communicate()[0].rstrip()
+user_name_response = user_name_response.split('b')
+print(user_name_response)
+print("AAAA",user_name_response)
 
 if user_name_response == '':
     user_name_response = 'ICH'
 
 email_command = "git config user.email"
-user_email_response = subprocess.Popen(email_command,shell=True)
 
+user_email_response = subprocess.check_output(email_command,shell=True)
+user_email_response = user_email_response.split('b')[1]
 if user_email_response =='':
     user_email_response='ich@us.ibm.com'
 
 print("\n PRINTING USER NAME:",user_name_response)
-
 print("\n PRINTING USER EMAIL:",user_email_response)
 
 
@@ -281,7 +284,7 @@ def display_details():
     print(f"\n\n Latest Release: {latest_release}")
     print(f"\n\n Repo Activeness: {active_repo}")
 
-
+'''
 old_script=get_latest_build_script(dir_name)
 if old_script!=False:
     print("\n ** Old Script Present**")
@@ -309,4 +312,4 @@ else:
     display_details()
 
 
-
+'''
