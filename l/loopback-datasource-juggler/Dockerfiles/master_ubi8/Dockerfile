@@ -2,7 +2,6 @@ FROM registry.access.redhat.com/ubi8/ubi:8.7
 
 MAINTAINER "Vinod K <Vinod.K1@ibm.com>"
 
-ARG PACKAGE_VERSION=master
 ARG NODE_VERSION=v18.19.0
 
 RUN yum install -y git make wget gcc-c++ java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless sudo librsvg2 libjpeg-turbo libjpeg-turbo-devel giflib && \
@@ -17,6 +16,7 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | b
 
 RUN git clone https://github.com/loopbackio/loopback-datasource-juggler && \
     cd loopback-datasource-juggler/ && \
+    source "$HOME"/.bashrc && \
     npm ci --ignore-scripts && \
     npm run build
 
