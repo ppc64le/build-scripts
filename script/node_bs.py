@@ -41,10 +41,6 @@ user_email_response=''.join(user_email_response.split('\n'))
 if user_email_response =='':
     user_email_response='ich@us.ibm.com'
 
-print("\n PRINTING USER NAME:",user_name_response)
-print("\n PRINTING USER EMAIL:",user_email_response)
-
-
 github_url=''
 latest_release=sys.argv[1]
 package_language=sys.argv[2]
