@@ -72,8 +72,6 @@ PACKAGE_NAME=camel-spring-boot
 PACKAGE_VERSION=camel-spring-boot-4.2.0
 PACKAGE_URL=https://github.com/apache/camel-spring-boot.git
 
-#export MAVEN_PARAMS='-U -B -e -fae -V -Dmaven.repo.local=/home/.m2/repository -Dmaven.compiler.fork=true'
-
 # Clone git repository
 if ! git clone $PACKAGE_URL; then
     echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
