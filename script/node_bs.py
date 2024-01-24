@@ -201,6 +201,8 @@ def create_new_script():
             template_lines[i]=f"# Package          : {package_name}\n"
         elif template_lines[i].startswith("PACKAGE_NAME"):
             template_lines[i]=f"PACKAGE_NAME={package_name}\n"
+        elif template_lines[i].startswith("# Maintainer"):
+            templates_lines[i]=f"# Maintainer	: {user_name_response} <{user_email_response}> "
         
     with open (f"{dir_name}/{package_name}_ubi_8.7.sh",'w') as newfile:
         newfile.writelines(template_lines)
