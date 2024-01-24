@@ -112,7 +112,7 @@ def validate_build_info_file(file_name):
             raise Exception(f"Build info validation failed for {file_name} due to invalid github url !")
         
         # Check for empty lines
-        lines = open('build_info.json', 'r').read().splitlines()
+        lines = open(script_path, 'r').read().splitlines()
         for line in lines :
             if line.isspace() == True:
                 raise Exception(f"Build info validation failed for {file_name} due to empty line present !")
