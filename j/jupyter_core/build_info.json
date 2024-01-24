@@ -11,5 +11,4 @@
     "v5.5.*" : {
        "build_script" : "jupyter_core_ubi_8.7.sh"
     }
-    
 }
