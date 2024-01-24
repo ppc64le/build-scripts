@@ -8,6 +8,7 @@
     "build_script": "jupyter_core_ubi_8.7.sh",
     "validate_build_script": "true",
     "use_non_root_user": "false",
+    
     "v5.5.*" : {
        "build_script" : "jupyter_core_ubi_8.7.sh"
     }
