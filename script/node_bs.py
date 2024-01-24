@@ -35,6 +35,8 @@ if user_name_response == '':
 email_command = "git config user.email"
 user_email_response = subprocess.check_output(email_command,shell=True)
 user_email_response = user_email_response.decode("utf-8")
+user_email_response=''.join(user_email_response.split('\n'))
+
 if user_email_response =='':
     user_email_response='ich@us.ibm.com'
 
