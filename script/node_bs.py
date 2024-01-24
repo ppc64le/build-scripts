@@ -28,6 +28,7 @@ dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_nam
 user_name_command ="git config user.name"
 user_name_response = subprocess.check_output(user_name_command,shell=True)
 user_name_response = user_name_response.decode("utf-8")
+user_name_response=''.join(user_name_response.split('\n'))
 
 if user_name_response == '':
     user_name_response = 'ICH'
