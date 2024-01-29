@@ -8,7 +8,6 @@
     "build_script": "jquery-ui_ubi_8_7.sh",
     "docker_build": true,
     "validate_build_script": true,
-    "use_non_root_user": true,
 
     "1.13.2": {
         "dir": "ubi8_7",
