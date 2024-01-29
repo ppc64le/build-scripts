@@ -9,6 +9,7 @@
     "docker_build": true,
     "validate_build_script": true,
 
+    
     "1.13.2": {
         "dir": "ubi8_7",
         "build_script": "jquery-ui_ubi_8_7.sh"
