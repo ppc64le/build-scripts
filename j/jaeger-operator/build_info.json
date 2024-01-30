@@ -13,7 +13,7 @@
 
     "v1.*.*" : {
        "dir": "1.53.0_ubi8",
-       "build_script": "jaeger-opearator_ubi_8.7.sh"
+       "build_script": "jaeger-operator_ubi_8.7.sh"
     },
  
     "v1.16.0" : {
