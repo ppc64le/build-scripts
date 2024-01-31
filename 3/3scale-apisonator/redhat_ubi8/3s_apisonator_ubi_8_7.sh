@@ -23,7 +23,6 @@ PACKAGE_NAME=apisonator
 PACKAGE_VERSION=${1:-3scale-2.14-stable}
 PACKAGE_URL=https://github.com/3scale/apisonator.git
 
-yum update -y
 yum install -y git make
 
 #Check if package exists
@@ -52,7 +51,7 @@ if ! make ci-build ; then
 fi
 
 
-#tests
+#tests - run if needed 
 #if ! make test; then
 #		echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 #		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_fails 
