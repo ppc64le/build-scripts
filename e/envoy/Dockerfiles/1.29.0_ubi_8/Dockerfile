@@ -20,9 +20,8 @@ RUN yum install -y cmake libatomic libstdc++ libstdc++-static libtool lld patch 
 RUN useradd envoy
 
 #Copy patch
-#RUN wget $ENVOY_PATCH
-#RUN cp ${PACKAGE_NAME}_${PACKAGE_VERSION}.patch $wdir/
-COPY ${PACKAGE_NAME}_${PACKAGE_VERSION}.patch $wdir
+RUN wget $ENVOY_PATCH
+RUN cp ${PACKAGE_NAME}_${PACKAGE_VERSION}.patch $wdir/
 
 #Run build as user envoy
 RUN sudo -u envoy -- bash <<EOF
@@ -53,8 +52,9 @@ RUN sudo -u envoy -- bash <<EOF
     bazel/setup_clang.sh $wdir/clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4/ 
     bazel build -c opt --config=libc++ envoy --config=clang --define=wasm=disabled --cxxopt=-fpermissive 
 
-    chmod +x $wdir/envoy/bazel-bin/source/exe/envoy-static
-    strip -s $wdir/envoy/bazel-bin/source/exe/envoy-static
+    cp $wdir/envoy/bazel-bin/source/exe/envoy-static $wdir/envoy/envoy-static
+    chmod -R 755 $wdir/envoy
+    strip -s $wdir/envoy/envoy-static
 EOF
 
 RUN cd $wdir && git clone https://github.com/ncopa/su-exec && cd su-exec && make su-exec && cp su-exec /usr/bin
@@ -70,7 +70,7 @@ COPY --from=build /usr/bin/su-exec /usr/bin/
 COPY --from=build $wdir/envoy/VERSION.txt /etc/envoy 
 COPY --from=build $wdir/envoy/configs/envoyproxy_io_proxy.yaml /etc/envoy/envoy.yaml
 COPY --from=build $wdir/envoy/ci/docker-entrypoint.sh /docker-entrypoint.sh
-COPY --from=build $wdir/envoy/bazel-bin/source/exe/envoy-static /usr/bin/envoy
+COPY --from=build $wdir/envoy/envoy-static /usr/bin/envoy
 
 #Expose port
 EXPOSE 9901 10000
