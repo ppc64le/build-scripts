@@ -1,5 +1,5 @@
 {
-   "maintainer": "ich@us.ibm.com",
+   "maintainer": "Shubham.Garud@ibm.com",
    "package_name": "hosted-git-info",
    "github_url": "https://github.com/npm/hosted-git-info",
    "version": "v7.0.1",
