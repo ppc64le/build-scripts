@@ -9,9 +9,7 @@
     "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": false,
-
     "3.4.0": {
         "build_script": "fixedheader_ubi_8_7.sh"
-     }  
-
+     }
 }
