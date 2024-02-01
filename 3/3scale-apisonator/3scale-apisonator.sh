@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 #
-# Package	: 3scale_apisonator
+# Package	: 3scale-apisonator
 # Version	: 2.14-stable
 # Source repo	: https://github.com/3scale/apisonator.git
 # Tested on	: Red Hat Enterprise Linux 87(8.7) && 9 (9.3)
@@ -35,7 +35,7 @@ if ! git clone $PACKAGE_URL -b $PACKAGE_VERSION ; then
     echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
-    exit 0
+    exit 1
 fi
 
 echo "BRANCH_NAME = $PACKAGE_VERSION"
@@ -61,5 +61,5 @@ fi
 #		echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 #		echo "$PACKAGE_URL $PACKAGE_NAME" > /home/tester/output/test_success 
 #		echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success" > /home/tester/output/version_tracker
-#		exit 0
+#		exit 1
 #fi

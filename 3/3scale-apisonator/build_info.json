@@ -1,17 +1,17 @@
 {
     "maintainer": "Shubham.Bhagwat@ibm.com",
-    "package_name" : "apisonator",
+    "package_name" : "3scale-apisonator",
     "github_url": "https://github.com/3scale/apisonator.git",
     "version": "2.14-stable",
-    "package_dir": "3/3scale-apisonator/redhat_ubi8",
+    "package_dir": "3/3scale-apisonator/",
     "default_branch": "main",
-    "build_script": "3s_apisonator_ubi_8_7.sh",
+    "build_script": "3scale-apisonator.sh",
     "docker_build": "false",
     "use_non_root_user": false,
     "validate_build_script": "true",
-
+    
     "2.14-stable": {
-        "build_script": "3s_apisonator_ubi_8_7.sh"
+        "build_script": "3scale-apisonator.sh"
     }
 
 }
