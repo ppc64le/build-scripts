@@ -5,7 +5,7 @@
 # Source repo	: https://github.com/3scale/apisonator.git
 # Tested on	: Red Hat Enterprise Linux 87(8.7) && 9 (9.3)
 # Language      : Ruby
-# Travis-Check  : False
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Shubham Bhagwat(shubham.bhagwat@ibm.com)
 #
