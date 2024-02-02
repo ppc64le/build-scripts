@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/envoyproxy/envoy/
 # Tested on     : UBI 8.7
 # Language      : C++
-# Travis-Check  : False
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sumit Dubey <Sumit.Dubey2@ibm.com>
 #
@@ -61,7 +61,6 @@ export JRE_HOME=${JAVA_HOME}/jre
 export PATH=${JAVA_HOME}/bin:$PATH
 scriptdir=$(pwd)
 wdir=/home/envoy
-home=/home/envoy
 export ENVOY_BIN=$wdir/envoy/envoy-static
 export ENVOY_ZIP=$wdir/envoy/envoy-static_${PACKAGE_VERSION}_UBI8.7.zip
 
