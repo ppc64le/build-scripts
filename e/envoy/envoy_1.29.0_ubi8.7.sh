@@ -59,7 +59,7 @@ sudo rpm -ivh https://rpmfind.net/linux/centos/8-stream/PowerTools/ppc64le/os/Pa
 export JAVA_HOME=$(compgen -G '/usr/lib/jvm/java-11-openjdk-*')
 export JRE_HOME=${JAVA_HOME}/jre
 export PATH=${JAVA_HOME}/bin:$PATH
-scriptdir=$(pwd)
+scriptdir=$(dirname $(realpath $0))
 wdir=/home/envoy
 export ENVOY_BIN=$wdir/envoy/envoy-static
 export ENVOY_ZIP=$wdir/envoy/envoy-static_${PACKAGE_VERSION}_UBI8.7.zip
