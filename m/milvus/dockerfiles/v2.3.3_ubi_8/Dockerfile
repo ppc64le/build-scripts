@@ -1,6 +1,6 @@
-ARG APPLYMCPU=0
-
 FROM registry.access.redhat.com/ubi8/ubi:8.7 AS build
+
+ARG APPLYMCPU=0
 
 ENV MILVUS_VERSION=v2.3.3
 ENV MILVUS_PACKAGE_NAME=milvus
