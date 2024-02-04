@@ -1,9 +1,13 @@
+ARG APPLYMCPU=0
+
 FROM registry.access.redhat.com/ubi8/ubi:8.7 AS build
 
 ENV MILVUS_VERSION=v2.3.3
 ENV MILVUS_PACKAGE_NAME=milvus
 ENV MILVUS_PACKAGE_URL=https://github.com/milvus-io/${MILVUS_PACKAGE_NAME}.git
-ENV CMAKE_VERSION=3.27.7
+ENV CMAKE_VERSION=3.28.1
+ENV GO_VERSION=1.21.4
+
 ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/m/milvus/milvus-${MILVUS_VERSION}.patch
 ENV PATH=${HOME}/go/bin:/usr/local/go/bin:/usr/local/cmake/bin:${PATH}
 ENV VCPKG_FORCE_SYSTEM_BINARIES=1
@@ -16,7 +20,8 @@ RUN yum install -y dnf && \
     dnf install -y epel-release
 
 #Install dependencies
-RUN yum install -y make wget git sudo curl zip unzip tar pkg-config openssl-devel gcc-toolset-11-toolchain
+RUN yum install -y make wget git sudo curl zip unzip tar pkg-config python39-devel perl-IPC-Cmd perl-Digest-SHA openssl-devel scl-utils gcc-toolset-11-toolchain gcc-toolset-11-libatomic-devel which libaio libuuid-devel ncurses-devel ccache lcov libtool m4 autoconf automake ninja-build rust libxslt && \
+    pip3 install conan==1.61.0
 
 #Install cmake
 WORKDIR /tmp
@@ -31,29 +36,31 @@ RUN source scl_source enable gcc-toolset-11 && \
 
 #Install Golang
 WORKDIR /tmp
-RUN wget https://go.dev/dl/go1.20.5.linux-ppc64le.tar.gz && \
-    rm -rf /usr/local/go && tar -C /usr/local -xzf go1.20.5.linux-ppc64le.tar.gz && \
-    rm -rf go1.20.5.linux-ppc64le.tar.gz && \
+RUN wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz && \
+    rm -rf /usr/local/go && tar -C /usr/local -xzf go${GO_VERSION}.linux-ppc64le.tar.gz && \
+    rm -rf go${GO_VERSION}.linux-ppc64le.tar.gz && \
     go version
 
 #Get milvus source and apply patch
 WORKDIR /tmp
-RUN wget ${PATCH_FILE} && \
+COPY milvus-${MILVUS_VERSION}.patch /tmp/
+RUN \
+#RUN wget ${PATCH_FILE} && \
     git clone -b ${MILVUS_VERSION} ${MILVUS_PACKAGE_URL} && \
     cd ${MILVUS_PACKAGE_NAME} && \
-    git apply ../milvus-${MILVUS_VERSION}.patch
+    git apply ../milvus-${MILVUS_VERSION}.patch && \
+    if [[ "${APPLYMCPU}" -eq 1 ]]; then sed -i "49d" ./internal/core/CMakeLists.txt; sed -i '49i set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -mcpu=power10")' ./internal/core/CMakeLists.txt; fi
 
 #Build
 WORKDIR /tmp/${MILVUS_PACKAGE_NAME}
 RUN source scl_source enable gcc-toolset-11 && \
-    ./scripts/install_deps.sh && \
     pushd /usr/local/cmake && \
     touch /usr/local/cmake/conanfile.py && \
     printf 'from conans import ConanFile, tools \n\
 class CmakeConan(ConanFile): \n\
   name = "cmake" \n\
   package_type = "application" \n\
-  version = "3.27.7" \n\
+  version = '\""${CMAKE_VERSION}\""' \n\
   description = "CMake, the cross-platform, open-source build system." \n\
   homepage = "https://github.com/Kitware/CMake" \n\
   license = "BSD-3-Clause" \n\
