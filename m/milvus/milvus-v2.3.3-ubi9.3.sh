@@ -4,7 +4,7 @@
 # Package       : milvus
 # Version       : 2.3.3
 # Source repo   : https://github.com/milvus-io/milvus
-# Tested on     : UBI 8.7 (docker)
+# Tested on     : UBI 9.3 (docker)
 # Language      : C++, Go
 # Travis-Check  : False
 # Script License: Apache License, Version 2 or later
@@ -27,6 +27,15 @@ GO_VERSION=1.21.4
 SCRIPT_PATH=$(dirname $(realpath $0))
 wdir=`pwd`
 
+if [ "$1" = "--power10" ]; then
+        PACKAGE_VERSION=${SCRIPT_PACKAGE_VERSION}
+        APPLYMCPU=1
+fi
+
+if [ "$2" = "--power10" ]; then
+        APPLYMCPU=1
+fi
+
 create_cmake_conanfile()
 {
 touch /usr/local/cmake/conanfile.py
@@ -48,31 +57,36 @@ class CmakeConan(ConanFile):
 EOT
 }
 
-if [ "$1" = "--power10" ]; then
-        PACKAGE_VERSION=${SCRIPT_PACKAGE_VERSION}
-        APPLYMCPU=1
-fi
+create_ibm_toolchain_repo()
+{
+touch /etc/yum.repos.d/advance-toolchain.repo
+cat <<EOT >> /etc/yum.repos.d/advance-toolchain.repo
+[advance-toolchain]
+name=Advance Toolchain IBM FTP
+baseurl=https://public.dhe.ibm.com/software/server/POWER/Linux/toolchain/at/redhat/RHEL9
+enabled=1
+gpgcheck=1
+gpgkey=https://public.dhe.ibm.com/software/server/POWER/Linux/toolchain/at/redhat/RHEL9/gpg-pubkey-615d762f-62f504a1
+EOT
+}
 
-if [ "$2" = "--power10" ]; then
-        APPLYMCPU=1
-fi
-
-#Install repos
-dnf -y install \
-http://vault.centos.org/centos/8/BaseOS/ppc64le/os/Packages/centos-linux-repos-8-3.el8.noarch.rpm \
-http://vault.centos.org/centos/8/BaseOS/ppc64le/os/Packages/centos-gpg-keys-8-3.el8.noarch.rpm
-sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Linux-*
-sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-*
-sed -i 's|enabled=0|enabled=1|g' /etc/yum.repos.d/CentOS-Linux-PowerTools.repo
+#Install IBM Advanced Toolchain repo
+yum install -y wget
+wget https://public.dhe.ibm.com/software/server/POWER/Linux/toolchain/at/redhat/RHEL9/gpg-pubkey-615d762f-62f504a1
+rpm --import gpg-pubkey-615d762f-62f504a1
+create_ibm_toolchain_repo
 
 #Install and setup RHEL deps
-yum install -y make wget git sudo curl zip unzip tar pkg-config python39-devel perl-IPC-Cmd perl-Digest-SHA openssl-devel scl-utils gcc-toolset-11-toolchain gcc-toolset-11-libatomic-devel
-yum install -y epel-release
-yum install -y which libaio libuuid-devel ncurses-devel ccache lcov libtool m4 autoconf automake ninja-build rust libxslt
+yum install -y --allowerasing make wget git sudo curl zip unzip tar pkg-config python3-devel perl-IPC-Cmd perl-Digest-SHA perl-FindBin perl-File-Compare openssl-devel scl-utils advance-toolchain-at16.0-runtime advance-toolchain-at16.0-devel advance-toolchain-at16.0-perf
+export PATH=/opt/at16.0/bin:$PATH
+rm -rf /opt/at16.0/bin/pip3 /opt/at16.0/bin/python3
+dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+yum install -y which \
+      libaio libuuid-devel ncurses-devel \
+      ccache libtool m4 autoconf automake \
+      ninja-build rust
 pip3 install conan==1.61.0
 
-#Activate gcc 11 toolset
-source scl_source enable gcc-toolset-11
 
 #Install cmake
 cd $wdir
@@ -124,11 +138,16 @@ if [ "$APPLYMCPU" -eq 1 ]; then
 fi
 
 #Build
+yum remove -y gcc gcc-c++
+yum install -y libxcrypt-devel
+gcc --version
 pushd /usr/local/cmake
 create_cmake_conanfile
 conan export-pkg . cmake/${CMAKE_VERSION}@ -s os="Linux" -s arch="ppc64le"
 conan profile update settings.compiler.libcxx=libstdc++11 default
 popd
+#sed -i 's#"12.3"#"12.3", "11.4.1"#g' $HOME/.conan/settings.yml
+sed -i 's#"12.3"#"12.3", "12.3.1"#g' $HOME/.conan/settings.yml
 go mod tidy
 export VCPKG_FORCE_SYSTEM_BINARIES=1
 ret=0

@@ -19,18 +19,28 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=milvus
-PACKAGE_VERSION=${1:-v2.3.3}
+SCRIPT_PACKAGE_VERSION=v2.3.3
+PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
 PACKAGE_URL=https://github.com/milvus-io/${PACKAGE_NAME}
 CMAKE_VERSION=3.27.7
-GO_VERSION=1.20.5
+GO_VERSION=1.21.4
+SCRIPT_PATH=$(dirname $(realpath $0))
 wdir=`pwd`
+
+if [ "$1" = "--power10" ]; then
+	PACKAGE_VERSION=${SCRIPT_PACKAGE_VERSION}
+	APPLYMCPU=1
+fi
+
+if [ "$2" = "--power10" ]; then
+        APPLYMCPU=1
+fi
 
 create_cmake_conanfile()
 {
-touch /usr/local/cmake/conanfile.py 
+touch /usr/local/cmake/conanfile.py
 cat <<EOT >> /usr/local/cmake/conanfile.py
 from conans import ConanFile, tools
-
 class CmakeConan(ConanFile):
   name = "cmake"
   package_type = "application"
@@ -47,9 +57,21 @@ class CmakeConan(ConanFile):
 EOT
 }
 
+#Install IBM Advanced Toolchain repo
+apt-get update -y
+DEBIAN_FRONTEND=noninteractive apt-get install -y wget
+wget -qO- https://public.dhe.ibm.com/software/server/POWER/Linux/toolchain/at/ubuntu/dists/jammy/615d762f.gpg.key | tee -a /etc/apt/trusted.gpg.d/615d762f.asc
+echo "deb [signed-by=/etc/apt/trusted.gpg.d/615d762f.asc] https://public.dhe.ibm.com/software/server/POWER/Linux/toolchain/at/ubuntu jammy at16.0"  >> /etc/apt/sources.list
+
 # Install and setup Ubuntu deps
 apt-get update -y
-DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential wget git sudo curl zip unzip tar pkg-config libssl-dev vim lldb
+DEBIAN_FRONTEND=noninteractive apt-get install -y make wget git sudo curl zip unzip tar pkg-config libssl-dev advance-toolchain-at16.0-runtime advance-toolchain-at16.0-devel advance-toolchain-at16.0-perf advance-toolchain-at16.0-mcore-libs
+DEBIAN_FRONTEND=noninteractive apt-get install -y gfortran ccache zlib1g-dev \
+      lcov libtool m4 autoconf automake python3 python3-pip \
+      pkg-config uuid-dev libaio-dev libgoogle-perftools-dev ninja-build rustc
+pip3 install conan==1.61.0
+export PATH=/opt/at16.0/bin:$PATH
+rm -rf /opt/at16.0/bin/pip3 /opt/at16.0/bin/python3
 
 #Install cmake
 cd $wdir
@@ -71,7 +93,7 @@ cd $wdir
 wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
 rm -rf /usr/local/go && tar -C /usr/local -xzf go${GO_VERSION}.linux-ppc64le.tar.gz
 rm -rf go${GO_VERSION}.linux-ppc64le.tar.gz
-export PATH=$PATH:/usr/local/go/bin
+export PATH=/usr/local/go/bin:$PATH
 go version
 export PATH=$PATH:$HOME/go/bin
 
@@ -90,15 +112,20 @@ docker run hello-world
 cd $wdir
 git clone -b ${PACKAGE_VERSION} ${PACKAGE_URL}
 cd ${PACKAGE_NAME}
-git apply ../milvus-${PACKAGE_VERSION}.patch
+git apply ${SCRIPT_PATH}/${PACKAGE_NAME}-${SCRIPT_PACKAGE_VERSION}.patch
+if [ "$APPLYMCPU" -eq 1 ]; then
+	sed -i "49d" ./internal/core/CMakeLists.txt
+	sed -i '49i set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -mcpu=power10")' ./internal/core/CMakeLists.txt
+fi
 
 #Build
-scripts/install_deps.sh
+apt remove gcc g++ -y
 pushd /usr/local/cmake
 create_cmake_conanfile
 conan export-pkg . cmake/${CMAKE_VERSION}@ -s os="Linux" -s arch="ppc64le"
 conan profile update settings.compiler.libcxx=libstdc++11 default
 popd
+sed -i 's#"12.3"#"12.3", "12.3.1"#g' $HOME/.conan/settings.yml
 go mod tidy
 export VCPKG_FORCE_SYSTEM_BINARIES=1
 make -j$(nproc)
@@ -108,7 +135,7 @@ export MILVUS_BIN=$wdir/milvis/bin/milvus
 docker compose -f ./deployments/docker/dev/docker-compose.yml up -d
 
 #Test
-sed -i "43d" ./internal/core/thirdparty/knowhere/CMakeLists.txt
+sed -i "44d" ./internal/core/thirdparty/knowhere/CMakeLists.txt
 make test-go -j$(nproc)
 make test-cpp -j$(nproc)
 
@@ -116,4 +143,6 @@ make test-cpp -j$(nproc)
 set +ex
 echo "Complete: Build and Test successful! Milvus binary available at [$MILVUS_BIN]"
 echo "8 (7 Cpp + 1 Go) Azure related tests were disabled: https://github.com/milvus-io/milvus/pull/29021"
+
+
 
