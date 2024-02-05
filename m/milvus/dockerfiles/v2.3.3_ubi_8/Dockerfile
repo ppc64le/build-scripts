@@ -43,9 +43,7 @@ RUN wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz && \
 
 #Get milvus source and apply patch
 WORKDIR /tmp
-COPY milvus-${MILVUS_VERSION}.patch /tmp/
-RUN \
-#RUN wget ${PATCH_FILE} && \
+RUN wget ${PATCH_FILE} && \
     git clone -b ${MILVUS_VERSION} ${MILVUS_PACKAGE_URL} && \
     cd ${MILVUS_PACKAGE_NAME} && \
     git apply ../milvus-${MILVUS_VERSION}.patch && \
