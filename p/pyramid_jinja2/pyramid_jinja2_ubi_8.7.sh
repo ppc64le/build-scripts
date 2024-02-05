@@ -24,7 +24,7 @@ PACKAGE_NAME=pyramid_jinja2
 PACKAGE_VERSION=${1:-"2.10"}
 PACKAGE_URL=https://github.com/Pylons/pyramid_jinja2.git
 
-yum install -y gcc gcc-c++ yum-utils make automake autoconf libtool gdb* binutils rpm-build gettext wget
+yum install -y git gcc gcc-c++ yum-utils make automake autoconf libtool gdb* binutils rpm-build gettext wget
 yum install -y python39 python39-devel python39-setuptools
 
 python3 -m ensurepip --upgrade
