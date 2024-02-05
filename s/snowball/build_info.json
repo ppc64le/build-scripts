@@ -1,0 +1,12 @@
+{
+    "maintainer":"Abhishek.Dwivedi6@ibm.com",
+    "package_name" : "snowball",
+    "github_url": "https://github.com/snowballstem/snowball.git",
+    "version": "v2.2.0",
+    "default_branch": "master",
+    "package_dir": "s/snowball",
+    "build_script": "snowball_ubi_8.7.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": "false"
+}
