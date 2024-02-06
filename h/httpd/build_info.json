@@ -1,0 +1,12 @@
+{
+    "maintainer":"Abhishek.Dwivedi6@ibm.com",
+    "package_name" : "httpd",
+    "github_url": "https://github.com/apache/httpd",
+    "version": "2.4.58",
+    "default_branch": "trunk",
+    "package_dir": "h/httpd",
+    "build_script": "httpd_ubi_8.7.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": "false"
+}
