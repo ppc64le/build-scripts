@@ -79,7 +79,7 @@ fi
 #tests
 python3 -m pip install --upgrade pip
 
-dnf install redhat-rpm-config gcc libffi-devel python3-devel \
+dnf install -y redhat-rpm-config gcc libffi-devel python3-devel \
     openssl-devel cargo pkg-config
 pip install cryptography --no-binary cryptography
 pip3 install poetry
