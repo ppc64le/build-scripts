@@ -5,12 +5,14 @@
     "version": "master",
     "default_branch": "master",
     "package_dir": "p/pyramid_chameleon",
+    "docker_cmd" : "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "build_script": "pyramid_chameleon_ubi_8.7.sh",
     "validate_build_script": "true",
     "use_non_root_user": "false",
-    "docker_build": "false",
+    "docker_build": "true",
 
     "master" : {
-       "build_script": "pyramid_chameleon_ubi_8.7.sh"
+	    "dir" : "master_ubi_8",
+	    "build_script" : "pyramid_chameleon_ubi_8.7.sh"
     }
 }
