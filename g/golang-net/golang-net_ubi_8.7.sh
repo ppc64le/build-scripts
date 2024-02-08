@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : net
+# Package       : golang-net
 # Version       : v0.20.0
 # Source repo   : https://github.com/golang/net
 # Tested on     : UBI 8.7
