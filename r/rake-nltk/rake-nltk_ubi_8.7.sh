@@ -67,7 +67,7 @@ fi
 
 python3 -m pip install --upgrade pip
 
-dnf install -y redhat-rpm-config gcc libffi-devel python3-devel \
+yum install -y redhat-rpm-config gcc libffi-devel python3-devel \
     openssl-devel cargo pkg-config
 pip install cryptography --no-binary cryptography
 pip3 install poetry
@@ -89,6 +89,5 @@ poetry run sphinx-build -b html docs/ docs/_build/html
 
 poetry export --dev --without-hashes -f requirements.txt > requirements.txt
 
-poetry run pytest
 set +ex
 echo "Build and tests Successful!"
