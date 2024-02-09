@@ -28,8 +28,8 @@ yum install -y git gcc gcc-c++ yum-utils make automake autoconf libtool gdb* bin
 yum install -y python39 python39-devel python39-setuptools
 
 python3 -m ensurepip --upgrade 
-pip3 install tox build
-python3 -m pip install pytest
+#pip3 install tox build
+python3 -m pip install pytest tox build
 
 # Clone and build source code.
 git clone $PACKAGE_URL
