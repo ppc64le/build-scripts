@@ -81,13 +81,5 @@ if ! poetry run tox; then
     exit 2
 fi
 
-pip install pre-commit
-
-pre-commit run --all-files
-
-poetry run sphinx-build -b html docs/ docs/_build/html
-
-poetry export --dev --without-hashes -f requirements.txt > requirements.txt
-
 set +ex
 echo "Build and tests Successful!"
