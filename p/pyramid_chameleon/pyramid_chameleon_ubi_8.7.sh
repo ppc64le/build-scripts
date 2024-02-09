@@ -25,7 +25,8 @@ PACKAGE_VERSION=${1:-master}
 PACKAGE_URL=https://github.com/Pylons/pyramid_chameleon
 
 yum install -y git gcc gcc-c++ yum-utils make automake autoconf libtool gdb* binutils rpm-build gettext wget
-yum install -y python39 python39-devel python39-setuptools
+#yum install -y python39 python39-devel python39-setuptools
+yum install -y python3.11 python3.11-devel python3.11-setuptools
 
 python3 -m ensurepip --upgrade 
 #pip3 install tox build
