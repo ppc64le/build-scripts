@@ -31,6 +31,7 @@ yum install -y python3.11 python3.11-devel python3.11-setuptools
 python3 -m ensurepip --upgrade 
 #pip3 install tox build
 python3 -m pip install pytest tox build
+PATH=$PATH:/usr/local/bin/
 
 # Clone and build source code.
 git clone $PACKAGE_URL
