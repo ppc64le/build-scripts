@@ -1,0 +1,16 @@
+{
+  "maintainer": "Vinod.K1@ibm.com",
+  "package_name": "rust-prometheus",
+  "github_url": "https://github.com/tikv/rust-prometheus",
+  "version": "v0.13.3",
+  "default_branch": "master",
+  "build_script": "rust-prometheus_ubi_8.7.sh",
+  "package_dir": "r/rust-prometheus",
+  "docker_build": false,
+  "v0.*.*": {
+    "build_script": "rust-prometheus_ubi_8.7.sh"
+  },
+  "0.2": {
+    "build_script": "rust-prometheus_rhel_7.3.sh"
+  }
+}
