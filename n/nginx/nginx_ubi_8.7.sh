@@ -45,7 +45,7 @@ if ! make DESTDIR=/tmp/nginx-install install ; then
 else
     echo "------------------$PACKAGE_NAME:Install_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_Success"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Install_Success"
     exit 0
 fi
 
