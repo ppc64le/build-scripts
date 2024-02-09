@@ -61,6 +61,7 @@ sed -i '52s/Listen 80/Listen 8081/' /usr/local/apache2/conf/httpd.conf
 sed -i '197s/#ServerName www.example.com:80/ServerName localhost/' /usr/local/apache2/conf/httpd.conf
 /usr/local/apache2/bin/apachectl start
 
+
 if ! curl localhost:8081 ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
