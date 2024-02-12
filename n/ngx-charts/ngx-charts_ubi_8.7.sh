@@ -40,6 +40,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 npm install @angular/cli -g
+npm install
 
 if ! npm run build && npm fund ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
