@@ -50,6 +50,7 @@ if ! npm run build && npm fund ; then
 fi
 
 nohup ng serve &
+sleep 5m
 
 if ! curl localhost:4200 ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
