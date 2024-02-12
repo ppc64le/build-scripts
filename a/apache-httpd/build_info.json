@@ -8,5 +8,8 @@
     "build_script": "apache-httpd_ubi_8.7.sh",
     "validate_build_script": "true",
     "use_non_root_user": "false" ,
-    "docker_build": "false"
+    "docker_build": "false",
+    "2.4.*": {
+    "build_script": "apache-httpd_ubi_8.5.sh"
+  }
 }
