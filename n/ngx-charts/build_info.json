@@ -10,6 +10,6 @@
     "use_non_root_user": "false" ,
     "docker_build": "false",
     "20.5.*": {
-    "build_script": "ngx-charts_ubi_8.5.sh"
+    "build_script": "ngx-charts_ubi_8.7.sh"
   }
 }
