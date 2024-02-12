@@ -3,7 +3,7 @@
     "package_name" : "ngx-charts",
     "github_url": "https://github.com/swimlane/ngx-charts",
     "version": "20.5.0",
-    "default_branch": "trunk",
+    "default_branch": "master",
     "package_dir": "n/ngx-charts",
     "build_script": "ngx-charts_ubi_8.7.sh",
     "validate_build_script": "true",
