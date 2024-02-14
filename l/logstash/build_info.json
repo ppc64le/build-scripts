@@ -8,9 +8,9 @@
   "package_dir": "l/logstash/",
   "validate_build_script": true,
   "use_non_root_user": true,
-  "docker_build": false,
+  "docker_build": true,
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-  "v8.11.*": {
+  "v*.*.*": {
     "dir": "8.11.3_ubi_8",
     "patches": {
       "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/l/logstash/assemble-tar-withoutjdk.patch"
