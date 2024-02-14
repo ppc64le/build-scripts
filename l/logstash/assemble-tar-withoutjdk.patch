@@ -1,0 +1,36 @@
+diff --git a/build.gradle b/build.gradle
+index 4edf72548..bd3ba187a 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -336,6 +336,24 @@ tasks.register("assembleTarDistribution") {
+   }
+ }
+ 
++tasks.register("assembleTarDistributionWithoutJdk") {
++  dependsOn bootstrap
++  inputs.files fileTree("${projectDir}/rakelib")
++  inputs.files fileTree("${projectDir}/bin")
++  inputs.files fileTree("${projectDir}/config")
++  inputs.files fileTree("${projectDir}/lib")
++  inputs.files fileTree("${projectDir}/modules")
++  inputs.files fileTree("${projectDir}/logstash-core-plugin-api")
++  inputs.files fileTree("${projectDir}/logstash-core/lib")
++  inputs.files fileTree("${projectDir}/logstash-core/src")
++  inputs.files fileTree("${projectDir}/x-pack")
++  outputs.files file("${buildDir}/logstash-${project.version}-SNAPSHOT.tar.gz")
++  doLast {
++      rake(projectDir, buildDir, 'artifact:no_bundle_jdk_tar')
++  }
++}
++
++
+ tasks.register("assembleOssTarDistribution") {
+   dependsOn bootstrap
+   inputs.files fileTree("${projectDir}/rakelib")
+@@ -891,4 +909,4 @@ if (System.getenv('OSS') != 'true') {
+  tasks.register("runXPackIntegrationTests") {
+      dependsOn copyPluginTestAlias
+      dependsOn ":logstash-xpack:rubyIntegrationTests"
+- }
+\ No newline at end of file
++ }
