@@ -7,7 +7,7 @@ ARG PACKAGE_VERSION=release-1.25.3
 RUN yum install git gcc gcc-c++ pcre-devel zlib-devel which rpm rpm-build make -y
 
 # Clone the git repo
-RUN git clone https://github.com/nginx/nginx
+RUN git clone https://github.com/nginx/nginx \
         && cd nginx/ \
         && git checkout $PACKAGE_VERSION \
         && ./auto/configure \
