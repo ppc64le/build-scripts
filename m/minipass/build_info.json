@@ -1,0 +1,11 @@
+{
+   "maintainer": "Shubham.Garud@ibm.com",
+   "package_name": "minipass",
+   "github_url": "https://github.com/isaacs/minipass",
+   "version": "v7.0.4",
+   "default_branch": "main",
+   "build_script": "minipass_ubi_8.7.sh",
+   "package_dir": "m/minipass",
+   "docker_build": false,
+   "validate_build_script": true
+}
