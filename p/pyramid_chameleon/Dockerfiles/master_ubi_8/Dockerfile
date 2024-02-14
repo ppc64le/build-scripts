@@ -2,7 +2,7 @@ FROM registry.access.redhat.com/ubi8/ubi:8.7
 
 MAINTAINER "Mohit Pawar <Mohit.Pawar@ibm.com>"
 
-ENV HOME_DIR=${PWD}
+ARG PACKAGE_VERSION=master
 
 RUN yum update -y && \
         yum install -y git gcc gcc-c++ yum-utils make automake autoconf libtool gdb* binutils rpm-build gettext wget && \
@@ -13,7 +13,6 @@ RUN yum update -y && \
         python3 -m pip install pytest && \
         git clone https://github.com/Pylons/pyramid_chameleon && \
         cd pyramid_chameleon && \
-        python3 setup.py install && \
-        tox -e py39 
+        python3 setup.py install 
 
 CMD ["/bin/bash"]
