@@ -10,7 +10,7 @@
     "validate_build_script": "true",
     "use_non_root_user": "false",
     "docker_build": "true",
-    "release-1.25.*" : {
+    "release-1.*.*" : {
         "dir" : "ubi8.7",
         "build_script" : "nginx_ubi_8.7.sh"
     }
