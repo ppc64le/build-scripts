@@ -10,7 +10,6 @@
     "validate_build_script": "true",
     "use_non_root_user": "false",
     "docker_build": "true",
-
     "master" : {
 	    "dir" : "master_ubi_8",
 	    "build_script" : "pyramid_chameleon_ubi_8.7.sh"
