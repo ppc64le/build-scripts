@@ -103,7 +103,7 @@ def trigger_script_validation_checks(file_name):
     else:
         return True
 
-def build_custom_docker_image():
+def build_non_root_custom_docker_image():
     global image_name
     print("Building custom docker image for non root user build")
     os.system('docker build -t docker_non_root_image -f script/dockerfile_non_root .')
@@ -141,7 +141,7 @@ def validate_build_info_file(file_name):
         print("Non root user: " + str(data['use_non_root_user']).lower())
         use_non_root = str(data['use_non_root_user']).lower()
         if use_non_root == "true":
-            build_custom_docker_image()
+            build_non_root_custom_docker_image()
 
         print("Validated build_info.json file successfully")
         return True
