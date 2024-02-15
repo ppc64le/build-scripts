@@ -22,7 +22,7 @@ PACKAGE_VERSION=${1:-v2.18.0}
 PACKAGE_URL=https://github.com/nodejs/nan
  
 yum install -y gcc gcc-c++ git wget make python39 python39-devel python39-pip
-export NODE_VERSION=v18.19.0 
+export NODE_VERSION=${NODE_VERSION:-18}
 
 #install node
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
