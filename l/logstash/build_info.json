@@ -7,7 +7,7 @@
   "build_script": "logstash_8.11.3_ubi_8.9.sh",
   "package_dir": "l/logstash/",
   "validate_build_script": true,
-  "use_non_root_user": true,
+  "use_non_root_user": false,
   "docker_build": true,
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
   "v*.*.*": {
