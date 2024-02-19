@@ -1,0 +1,11 @@
+{
+    "maintainer": "Saddi.Saikumar3@ibm.com",
+    "package_name": "super_diff",
+    "github_url": "https://github.com/mcmire/super_diff.git",
+    "version": "v0.11.0",
+    "default_branch": "main",
+    "build_script": "super-diff_ubi_8.7.sh",
+    "package_dir": "s/super_diff",
+    "docker_build": false,
+    "validate_build_script": true
+ }
