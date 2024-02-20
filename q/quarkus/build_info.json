@@ -1,5 +1,5 @@
 {
-    "maintainer":"Email id of the maintainer Mandatory Argument.",
+    "maintainer":"Shreya.Kajbaje@ibm.com",
     "package_name" : "quarkus",
     "github_url":"https://github.com/quarkusio/quarkus.git",
     "version": "3.2.5.Final",
