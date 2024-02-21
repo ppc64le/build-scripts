@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : http2-wrapper 
-# Version       : 2.2.1
+# Version       : v2.2.1
 # Source repo   : https://github.com/szmarczak/http2-wrapper.git
 # Tested on     : UBI 8.7
 # Language      : Node
