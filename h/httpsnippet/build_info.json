@@ -8,4 +8,10 @@
    "package_dir": "h/httpsnippet",
    "docker_build": false,
    "validate_build_script": true
+   "3.*.*": {
+    "build_script": "httpsnippet_ubi_8.7.sh"
+  },
+  " 1.25.0": {
+    "build_script": "httpsnippet_rhel_8.3.sh"
+  }
 }
