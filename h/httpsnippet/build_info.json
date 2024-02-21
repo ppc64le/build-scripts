@@ -7,7 +7,7 @@
    "build_script": "httpsnippet_ubi_8.7.sh",
    "package_dir": "h/httpsnippet",
    "docker_build": false,
-   "validate_build_script": true
+   "validate_build_script": true,
    "3.*.*": {
     "build_script": "httpsnippet_ubi_8.7.sh"
   },
