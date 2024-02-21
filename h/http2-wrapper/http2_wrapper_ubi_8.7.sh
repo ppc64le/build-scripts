@@ -27,13 +27,14 @@ PACKAGE_URL=https://github.com/szmarczak/http2-wrapper.git
 export NODE_VERSION=${NODE_VERSION:-16}
 yum install -y python38 python38-devel git gcc gcc-c++ libffi make
 
-#Installing nvm
+#Installing nvm 
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 source "$HOME"/.bashrc
 echo "installing nodejs $NODE_VERSION"
 nvm install "$NODE_VERSION" >/dev/null
 nvm use $NODE_VERSION
 
+# clone package
 git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
