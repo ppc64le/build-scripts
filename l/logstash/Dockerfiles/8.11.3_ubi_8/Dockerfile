@@ -26,8 +26,8 @@ RUN yum-config-manager --add-repo http://rpmfind.net/linux/centos/8-stream/AppSt
 #RUN yum install -y make wget git sudo curl zip unzip tar pkg-config openssl-devel gcc-toolset-11-toolchain
 
 #set JAVA_HOME
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-17.0.9.0.9-2.el8.ppc64le/
-ENV PATH=/usr/lib/jvm/java-17-openjdk-17.0.9.0.9-2.el8.ppc64le/bin:$PATH
+#ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-17.0.9.0.9-2.el8.ppc64le/
+#ENV PATH=/usr/lib/jvm/java-17-openjdk-17.0.9.0.9-2.el8.ppc64le/bin:$PATH
 
 
 #Get logstash source to build
