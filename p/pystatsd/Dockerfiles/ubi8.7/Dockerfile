@@ -12,6 +12,6 @@ RUN yum update -y && \
         git clone https://github.com/jsocol/pystatsd && \
         cd pystatsd && \
 		git checkout $PACKAGE_VERSION && \
-        npm install && npm fund
+        pip3 install .
 
 CMD ["/bin/bash"]
