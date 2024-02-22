@@ -35,7 +35,7 @@ if ! pip3 install . ; then
     exit 1
 fi
 
-if ! tox -e py38 ; then
+if ! python3 -m tox -e py38 ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
