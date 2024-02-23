@@ -1,6 +1,6 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
-#
+# 
 # Package       : xxhash
 # Version       : v0.8.2
 # Source repo   : https://github.com/Cyan4973/xxHash
