@@ -25,7 +25,7 @@ PACKAGE_VERSION=${1:-master}
 PACKAGE_URL=https://github.com/jpvanhal/inflection.git
 
 yum install -y git gcc gcc-c++ yum-utils make automake autoconf libtool gdb* binutils rpm-build gettext wget
-yum install -y python3.11 python3.11-devel python3.11-setuptools
+yum install -y python3 python3-devel python3-setuptools
 
 python3 -m ensurepip --upgrade 
 python3 -m pip install pytest tox build
