@@ -12,7 +12,7 @@
 if [ -f $buildinfo_path ]; then
   echo $package_dirpath 'exists'
 else
-  package_dirpath="$initial_char/$PACKAGE_NAME"
+  package_dirpath="$initial_char/$PACKAGE_NAME/"
   echo "Correct package_dirpath is $package_dirpath"
 fi
 
