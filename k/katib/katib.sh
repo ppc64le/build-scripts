@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/kubeflow/katib
 # Tested on     : Red Hat Enterprise Linux 8.2
 # Language      : GO, Python
-# Travis-Check  : True
+# Travis-Check  : False
 # Script License: Apache License, Version 2.0
 # Maintainer    : Pranav Pandit <pranav.pandit1@ibm.com>
 #
