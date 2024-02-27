@@ -8,6 +8,7 @@
    "package_dir": "p/pgtype",
    "docker_build": false,
    "validate_build_script": true,
+   "use_non_root_user": "false",
    "v1.*.*": {
     "build_script": "pgtype_ubi_8.7.sh"
    },
