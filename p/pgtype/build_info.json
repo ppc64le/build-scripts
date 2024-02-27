@@ -1,0 +1,17 @@
+{
+   "maintainer": "Vinod.K1@ibm.com",
+   "package_name": "pgtype",
+   "github_url": "https://github.com/jackc/pgtype",
+   "version": "v1.14.2",
+   "default_branch": "master",
+   "build_script": "pgtype_ubi_8.7.sh",
+   "package_dir": "p/pgtype",
+   "docker_build": false,
+   "validate_build_script": true,
+   "v1.*.*": {
+    "build_script": "pgtype_ubi_8.7.sh"
+   },
+   "v1.8.0": {
+    "build_script": "pgtype_ubi_8.5.sh"
+  }
+}
