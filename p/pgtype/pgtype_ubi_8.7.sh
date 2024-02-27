@@ -21,7 +21,7 @@ PACKAGE_NAME=pgtype
 PACKAGE_VERSION=${1:-v1.14.2}
 PACKAGE_URL=https://github.com/jackc/pgtype
 
-yum install sudo git wget gcc gcc-c++ -y
+yum install -y sudo git wget gcc gcc-c++ 
 
 #intall postgresql server for tests
 sudo dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-ppc64le/pgdg-redhat-repo-latest.noarch.rpm
