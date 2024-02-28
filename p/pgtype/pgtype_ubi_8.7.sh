@@ -48,7 +48,7 @@ psql "host=127.0.0.1 dbname=pgx_test user=postgres password=secret sslmode=disab
 psql "host=127.0.0.1 dbname=pgx_test user=postgres password=secret sslmode=disable" -c "CREATE TYPE int8multirange AS RANGE (subtype = bigint);"
 psql "host=127.0.0.1 dbname=pgx_test user=postgres password=secret sslmode=disable" -c "CREATE TYPE int4multirange AS RANGE (subtype = bigint);"
 psql "host=127.0.0.1 dbname=pgx_test user=postgres password=secret sslmode=disable" -c "SET client_encoding=UTF8;"
-
+psql -h 127.0.0.1 -p 5432 -U postgres -d pgx_test -c "SHOW client_encoding;"
 
 if ! go build ./... ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
@@ -57,7 +57,7 @@ if ! go build ./... ; then
     exit 1
 fi
 
-if ! PGX_TEST_DATABASE="host=127.0.0.1 port=5432 database=pgx_test user=pgx_pw password=secret sslmode=disable" go test -v ./... ; then
+if ! PGX_TEST_DATABASE="host=127.0.0.1 port=5432 database=pgx_test user=pgx_pw password=secret sslmode=disable" go test ./... ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
