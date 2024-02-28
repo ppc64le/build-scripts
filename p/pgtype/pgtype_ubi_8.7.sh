@@ -48,6 +48,8 @@ psql "host=127.0.0.1 dbname=pgx_test user=postgres password=secret sslmode=disab
 psql "host=127.0.0.1 dbname=pgx_test user=postgres password=secret sslmode=disable" -c "CREATE EXTENSION ltree;"
 psql "host=127.0.0.1 dbname=pgx_test user=postgres password=secret sslmode=disable" -c "CREATE TYPE int8multirange AS RANGE (subtype = bigint);"
 psql "host=127.0.0.1 dbname=pgx_test user=postgres password=secret sslmode=disable" -c "CREATE TYPE int4multirange AS RANGE (subtype = bigint);"
+psql "host=127.0.0.1 dbname=pgx_test user=postgres password=secret sslmode=disable" -c "SET CLIENT_ENCODING TO 'UTF8';"
+
 
 if ! go build ./... ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
