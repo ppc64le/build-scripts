@@ -9,7 +9,8 @@
     "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": false,
-    "4.12.1": {
+    "*.*.*": {
+        "dir": "ubi8_7",
         "build_script": "pyramid_debugtoolbar_ubi_8_7.sh"
      }
 }
