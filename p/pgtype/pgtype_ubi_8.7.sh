@@ -29,8 +29,7 @@ sudo dnf install -y postgresql16-server postgresql16-contrib
 sudo -u postgres /usr/pgsql-16/bin/initdb -D /var/lib/pgsql/16/data
 sudo -u postgres /usr/pgsql-16/bin/pg_ctl -D /var/lib/pgsql/16/data start
 
-export LANG=en_US.UTF-8
-
+export client_encoding=UTF8
 #install go
 wget https://go.dev/dl/go1.21.6.linux-ppc64le.tar.gz
 tar -C  /usr/local -xf go1.21.6.linux-ppc64le.tar.gz
