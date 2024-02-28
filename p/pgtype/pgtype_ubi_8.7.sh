@@ -48,7 +48,8 @@ psql "host=127.0.0.1 dbname=pgx_test user=postgres password=secret sslmode=disab
 psql "host=127.0.0.1 dbname=pgx_test user=postgres password=secret sslmode=disable" -c "CREATE TYPE int8multirange AS RANGE (subtype = bigint);"
 psql "host=127.0.0.1 dbname=pgx_test user=postgres password=secret sslmode=disable" -c "CREATE TYPE int4multirange AS RANGE (subtype = bigint);"
 psql "host=127.0.0.1 dbname=pgx_test user=postgres password=secret sslmode=disable" -c "SET client_encoding=UTF8;"
-psql -h 127.0.0.1 -p 5432 -U postgres -d pgx_test -c "SHOW client_encoding;"
+sed -i '727d' /var/lib/pgsql/16/data/postgresql.conf
+sed -i '727 i\ client_encoding=UTF8' /var/lib/pgsql/16/data/postgresql.conf
 
 if ! go build ./... ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
