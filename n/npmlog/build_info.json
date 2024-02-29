@@ -1,11 +1,11 @@
 {
-   "maintainer": "ich@us.ibm.com",
-   "package_name": "npmlog",
-   "github_url": "https://github.com/npm/npmlog",
-   "version": "v7.0.1",
-   "default_branch": "main",
-   "build_script": "npmlog_ubi_8.7.sh",
-   "package_dir": "n/npmlog",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "IBM-Currency-Helper",
+  "package_name": "npmlog",
+  "github_url": "https://github.com/npm/npmlog",
+  "version": "v7.0.1",
+  "default_branch": "main",
+  "build_script": "npmlog_ubi_8.7.sh",
+  "package_dir": "n/npmlog",
+  "docker_build": false,
+  "validate_build_script": true
 }

@@ -1,16 +1,15 @@
 {
-    "maintainer":"Vinod.K1@ibm.com",
-    "package_name" : "PyTables",
-    "github_url": "https://github.com/PyTables/PyTables",
-    "version": "v3.9.1",
-    "default_branch": "master",
-    "package_dir": "p/PyTables",
-    "build_script": "PyTables_ubi_8.7.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build": false,
-
-    "v3.*.*" : {
-       "build_script" : "PyTables_ubi_8.7.sh"
-    }
+  "maintainer": "vinodk99",
+  "package_name": "PyTables",
+  "github_url": "https://github.com/PyTables/PyTables",
+  "version": "v3.9.1",
+  "default_branch": "master",
+  "package_dir": "p/PyTables",
+  "build_script": "PyTables_ubi_8.7.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": false,
+  "v3.*.*": {
+    "build_script": "PyTables_ubi_8.7.sh"
+  }
 }

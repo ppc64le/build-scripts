@@ -1,5 +1,5 @@
 {
-  "maintainer": "Shubham.Garud@ibm.com",
+  "maintainer": "shubham-garud",
   "package_name": "d3-chord",
   "github_url": "https://github.com/d3/d3-chord",
   "package_dir": "d/d3-chord/",

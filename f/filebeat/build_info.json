@@ -1,5 +1,5 @@
 {
-  "maintainer": "Vinod.K1@ibm.com",
+  "maintainer": "vinodk99",
   "package_name": "filebeat",
   "github_url": "https://github.com/elastic/beats.git",
   "version": "v8.5.2",
@@ -7,11 +7,10 @@
   "package_dir": "f/filebeat/",
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
   "build_script": "filebeat_UBI_8.5.sh",
-  
   "v8.*.*,v7.*.*": {
     "dir": "8.5.0_ubi",
     "args": {
-            "GO_VERSION": "1.20.6"
-         }
+      "GO_VERSION": "1.20.6"
     }
+  }
 }

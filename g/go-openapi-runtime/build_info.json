@@ -1,5 +1,5 @@
 {
-  "maintainer": "Shubham.Garud@ibm.com",
+  "maintainer": "shubham-garud",
   "package_name": "go-openapi-runtime",
   "github_url": "https://github.com/go-openapi/runtime",
   "package_dir": "g/go-openapi-runtime/",
