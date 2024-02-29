@@ -6,6 +6,7 @@
     "default_branch": "main",
     "build_script": "super_diff_ubi_8.7.sh",
     "package_dir": "s/super_diff",
+    "use_non_root_user": false,
     "docker_build": false,
     "validate_build_script": true
  }
