@@ -7,5 +7,6 @@
    "build_script": "negotiator_ubi_8.7.sh",
    "package_dir": "n/negotiator",
    "docker_build": false,
+   "use_non_root_user":false,
    "validate_build_script": true
 }
