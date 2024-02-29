@@ -50,7 +50,11 @@ psql "host=127.0.0.1 dbname=pgx_test user=postgres password=secret sslmode=disab
 # Set client encoding to UTF8 in postgresql.conf using ALTER SYSTEM
 echo "ALTER SYSTEM SET client_encoding TO 'UTF8';" | sudo -u postgres /usr/pgsql-16/bin/postgres --single -D /var/lib/pgsql/16/data
 # Restart PostgreSQL to apply the changes
-sudo -u postgres /usr/pgsql-16/bin/pg_ctl -D /var/lib/pgsql/16/data restart
+# Stop the existing PostgreSQL instance
+sudo -u postgres /usr/pgsql-16/bin/pg_ctl -D /var/lib/pgsql/16/data stop
+rm /var/lib/pgsql/16/data/postmaster.pid
+# Start PostgreSQL
+sudo -u postgres /usr/pgsql-16/bin/pg_ctl -D /var/lib/pgsql/16/data start
 # Check if client encoding is set to UTF8
 psql -h 127.0.0.1 -p 5432 -U postgres -d pgx_test -c "SHOW client_encoding;"
 
