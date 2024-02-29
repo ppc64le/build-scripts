@@ -7,5 +7,6 @@
    "build_script": "punycode.js_ubi_8.7.sh",
    "package_dir": "p/punycode.js",
    "docker_build": false,
+   "use_non_root_user":false,
    "validate_build_script": true
 }
