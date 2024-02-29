@@ -40,7 +40,7 @@ git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-#Create a database,password,extension and type for the postgresql tests
+#Create a database,password,extension and type for the postgresql tests 
 psql -U postgres -p 5432 -c 'create database pgx_test' || true
 psql -U postgres -p 5432 -c "create user pgx_pw  SUPERUSER PASSWORD 'secret'" || true
 psql "host=127.0.0.1 dbname=pgx_test user=postgres password=secret sslmode=disable" -c "CREATE EXTENSION hstore;"
