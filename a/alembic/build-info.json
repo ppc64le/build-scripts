@@ -5,7 +5,7 @@
     "version": "1_13_1",
     "default_branch": "master",
     "build_script": "alembic_8.7.sh",
-    "package_dir": "r/alembic",
+    "package_dir": "r/ale",
     "docker_build": false,
     "validate_build_script": true
  }
