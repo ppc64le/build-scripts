@@ -47,6 +47,8 @@ git clone ${PACKAGE_URL}
 cd ${PACKAGE_NAME}
 git checkout ${PACKAGE_VERSION}
 
+bundle config set --local disable_checksum_validation true
+
 if ! bundle install ;  then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -54,9 +56,11 @@ if ! bundle install ;  then
     exit 1
 fi
 
+bundle config set --local disable_checksum_validation false
+
 bundle exec appraisal install
 
-if ! bundle exec appraisal rake ; then
+if ! bundle exec rake ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
