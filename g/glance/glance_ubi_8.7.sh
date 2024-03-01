@@ -31,8 +31,7 @@ wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
 mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 
-yum install -y git wget gcc gcc-c++ python39 python39-pip python39-devel python39-psycopg2 libxslt libxslt-devel make libpq libpq-devel openssl-devel cmake xz libaio pixman pixman-devel
-
+yum install -y git wget gcc gcc-c++ python39 python39-pip python39-devel python39-psycopg2 libxslt libxslt-devel make libpq libpq-devel openssl-devel cmake xz libaio pixman pixman-devel ninja-build glib2 glib2-devel bzip2 
 #Install qemu dependency for tests
 wget https://download.qemu.org/qemu-6.2.0.tar.xz
 tar xvJf qemu-6.2.0.tar.xz
