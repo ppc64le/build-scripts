@@ -4,8 +4,9 @@
     "github_url": "https://github.com/zzzeek/alembic.git",
     "version": "1_13_1",
     "default_branch": "master",
-    "build_script": "alembic_8.7.sh",
-    "package_dir": "r/ale",
+    "build_script": "alembic_ubi_8.7.sh",
+    "package_dir": "r/alembic",
     "docker_build": false,
     "validate_build_script": true
+	"use_non_root_user": false
  }
