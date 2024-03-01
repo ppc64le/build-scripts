@@ -19,7 +19,6 @@
 
 #!/bin/bash
 
-set -e
 
 PACKAGE_NAME=alembic
 PACKAGE_VERSION=${1:-rel_1_13_1}
