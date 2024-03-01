@@ -21,7 +21,7 @@ PACKAGE_NAME=glance
 PACKAGE_VERSION=${1:-yoga-eom}
 PACKAGE_URL=https://github.com/openstack/glance
 
-yum install -y yum-utils
+yum install -y yum-utils wget
 yum update -y --allowerasing
 yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/AppStream/ppc64le/os/
 yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/PowerTools/ppc64le/os/
