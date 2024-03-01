@@ -29,7 +29,7 @@ yum-config-manager --add-repo http://mirror.centos.org/centos/8-stream/BaseOS/pp
 
 wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
 mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Offici
+rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 
 yum install -y git wget gcc gcc-c++ python39 python39-pip python39-devel python39-psycopg2 libxslt libxslt-devel make libpq libpq-devel openssl-devel cmake xz libaio pixman pixman-devel
 
