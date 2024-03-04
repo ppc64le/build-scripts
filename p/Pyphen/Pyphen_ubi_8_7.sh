@@ -5,7 +5,7 @@
 # Version       : 0.14.0
 # Source repo   : https://github.com/Kozea/Pyphen
 # Tested on     : UBI: 8.7
-# Language      : JavaScript
+# Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Stuti Wali <Stuti.Wali@ibm.com>
