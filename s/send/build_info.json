@@ -1,0 +1,16 @@
+{
+    "maintainer": "Abhishek.Dwivedi6@ibm.com",
+    "package_name": "send",
+    "github_url": "https://github.com/pillarjs/send",
+    "version": "0.18.0",
+    "default_branch": "master",
+    "build_script": "send_ubi_8.7.sh",
+    "package_dir": "s/send",
+    "docker_cmd" : "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "docker_build": true,
+    "validate_build_script": true,
+    "v0.18.*": {
+       "dir": "ubi8.7",
+       "build_script" : "send_ubi_8.7.sh"
+    }
+ }
