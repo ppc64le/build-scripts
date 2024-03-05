@@ -8,6 +8,7 @@
     "package_dir": "s/send",
     "docker_cmd" : "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "docker_build": true,
+    "use_non_root_user": "false",
     "validate_build_script": true,
     "v0.18.*": {
        "dir": "ubi8.7",
