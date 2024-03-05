@@ -13,5 +13,9 @@
     "yoga-eom" : {
        "dir": "yogaeom_ubi8",
        "build_script": "python_glanceclient_ubi_8.7.sh"
+    },
+    "*.*.*" : {
+       "dir": "yogaeom_ubi8",
+       "build_script": "python_glanceclient_ubi_8.7.sh"
     }
 }
