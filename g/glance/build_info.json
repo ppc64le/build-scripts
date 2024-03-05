@@ -13,5 +13,10 @@
     "yoga-eom" : {
        "dir": "yogaeom_ubi8",
        "build_script": "glance_ubi_8.7.sh"
-    }
+    },
+     "*.*.*" : {
+       "dir": "yogaeom_ubi8",
+       "build_script": "glance_ubi_8.7.sh"
+    },
+    
 }
