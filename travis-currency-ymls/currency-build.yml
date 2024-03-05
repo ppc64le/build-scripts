@@ -10,9 +10,6 @@ branches:
 
 env:
   global:
-    - PACKAGE_NAME="d3-array"
-    - VERSION="v3.2.3"
-    - BUILD_DOCKER=true
     - ENABLE_TRIVY=true
     - ENABLE_SYFT=true
     - ENABLE_GRYPE=true
