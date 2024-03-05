@@ -2,7 +2,7 @@ FROM registry.access.redhat.com/ubi8/ubi:8.7
 
 MAINTAINER "Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>"
 
-ENV HOME_DIR=${PWD}
+ARG PACKAGE_VERSION=v1.15.0
 
 RUN yum update -y && \
         yum install -y git && \
@@ -14,6 +14,7 @@ RUN yum update -y && \
         nvm use $NODE_VERSION && \
         git clone https://github.com/expressjs/serve-static && \
         cd serve-static && \
+        git checkout $PACKAGE_VERSION && \
         npm install && npm fund
 
 CMD ["/bin/bash"]
