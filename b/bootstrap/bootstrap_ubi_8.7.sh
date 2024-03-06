@@ -34,6 +34,7 @@ nvm use $NODE_VERSION
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+source "$HOME"/.bashrc
 
 npm install npm-run-all eslint lockfile-lint stylelint css-lint lint find-unused-sass-variables rollup stylelint-config-twbs-bootstrap -g
 
