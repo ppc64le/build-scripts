@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : python-glanceclient
-# Version       : yoga-eom
+# Version       : yoga-eom,4.5.0
 # Source repo   : https://github.com/openstack/python-glanceclient
 # Tested on     : UBI 8.7
 # Language      : Python
