@@ -21,7 +21,7 @@ PACKAGE_NAME=bootstrap
 PACKAGE_VERSION=${1:-v5.3.3}
 PACKAGE_URL=https://github.com/twbs/bootstrap
 
-yum install -y yum install git wget gcc gcc-c++ 
+yum install -y git wget gcc gcc-c++ 
 export NODE_VERSION=${NODE_VERSION:-18}
 
 #Installing nvm
