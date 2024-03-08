@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : jdcal
-# Version          : 1.4.1	
+# Version          : master	
 # Source repo      : https://github.com/phn/jdcal
 # Tested on	       : UBI 8.7
 # Language         : Python
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=jdcal
-PACKAGE_VERSION=${1:-1.4.1}
+PACKAGE_VERSION=${1:-master}
 PACKAGE_URL=https://github.com/phn/jdcal
 
 yum install -y python3 git
