@@ -1,0 +1,16 @@
+{
+   "maintainer": "Vinod.K1@ibm.com",
+   "package_name": "jdcal",
+   "github_url": "https://github.com/phn/jdcal",
+   "version": "1.4.1",
+   "default_branch": "master",
+   "build_script": "jdcal_ubi_8.7.sh",
+   "package_dir": "j/jdcal",
+   "docker_build": false,
+   "validate_build_script": true,
+   "1.*.*": {
+    "build_script": "jdcal_ubi_8.7.sh"
+  }
+}
+
+
