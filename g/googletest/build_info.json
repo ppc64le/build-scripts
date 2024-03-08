@@ -1,17 +1,15 @@
 {
-    "maintainer": "Stuti.Wali@ibm.com",
-    "package_name": "googletest",
-    "github_url": "https://github.com/google/googletest",
-    "version": "v1.14.0",
-    "default_branch": "main",
-    "package_dir": "g/googletest",
-    "build_script": "googletest_ubi_8_7.sh",
-    "docker_build": false,
-    "validate_build_script": true,
-    "use_non_root_user": false,
-
-    "v1.14.0": {
-        "build_script": "googletest_ubi_8_7.sh"
-     } 
-
+  "maintainer": "stutiibm",
+  "package_name": "googletest",
+  "github_url": "https://github.com/google/googletest",
+  "version": "v1.14.0",
+  "default_branch": "main",
+  "package_dir": "g/googletest",
+  "build_script": "googletest_ubi_8_7.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v1.14.0": {
+    "build_script": "googletest_ubi_8_7.sh"
+  }
 }

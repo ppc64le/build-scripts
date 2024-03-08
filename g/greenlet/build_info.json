@@ -1,16 +1,15 @@
 {
-    "maintainer":"Abhishek.Dwivedi6@ibm.com",
-    "package_name" : "greenlet",
-    "github_url": "https://github.com/python-greenlet/greenlet.git",
-    "version": "3.0.1",
-    "default_branch": "master",
-    "package_dir": "g/greenlet",
-    "build_script": "greenlet_ubi_8.7.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build": "false",
-
-    "3.0.*" : {
-       "build_script" : "greenlet_ubi_8.7.sh"
-    }
+  "maintainer": "AbhiIBM",
+  "package_name": "greenlet",
+  "github_url": "https://github.com/python-greenlet/greenlet.git",
+  "version": "3.0.1",
+  "default_branch": "master",
+  "package_dir": "g/greenlet",
+  "build_script": "greenlet_ubi_8.7.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "false",
+  "3.0.*": {
+    "build_script": "greenlet_ubi_8.7.sh"
+  }
 }

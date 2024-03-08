@@ -1,5 +1,5 @@
 {
-  "maintainer": "Shubham.Garud@ibm.com",
+  "maintainer": "shubham-garud",
   "package_name": "d3-time-format",
   "github_url": "https://github.com/d3/d3-time-format",
   "package_dir": "d/d3-time-format/",

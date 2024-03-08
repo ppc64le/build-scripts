@@ -1,5 +1,5 @@
 {
-  "maintainer": "Stuti.Wali@ibm.com",
+  "maintainer": "stutiibm",
   "package_name": "metricbeat",
   "github_url": "https://github.com/elastic/beats",
   "version": "v8.7.0",

@@ -1,17 +1,16 @@
 {
-    "maintainer":"Vinod.K1@ibm.com",
-    "package_name" : "luigi",
-    "github_url": "https://github.com/spotify/luigi.git",
-    "version": "3.4.0",
-    "default_branch": "master",
-    "package_dir": "l/luigi",
-    "build_script": "luigi_ubi_8.7.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build": "true",
-
-    "3.*.*" : {
-       "dir": "3.4.0_ubi8",
-       "build_script": "luigi_ubi_8.7.sh"
-    }
+  "maintainer": "vinodk99",
+  "package_name": "luigi",
+  "github_url": "https://github.com/spotify/luigi.git",
+  "version": "3.4.0",
+  "default_branch": "master",
+  "package_dir": "l/luigi",
+  "build_script": "luigi_ubi_8.7.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "true",
+  "3.*.*": {
+    "dir": "3.4.0_ubi8",
+    "build_script": "luigi_ubi_8.7.sh"
+  }
 }

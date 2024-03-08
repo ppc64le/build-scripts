@@ -1,5 +1,5 @@
 {
-  "maintainer": "sumit.dubey2@ibm.com",
+  "maintainer": "sumitd2",
   "package_name": "fluent-bit",
   "github_url": "https://github.com/fluent/fluent-bit",
   "version": "v2.0.11",

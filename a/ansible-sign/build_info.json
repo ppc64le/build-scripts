@@ -1,5 +1,5 @@
 {
-  "maintainer": "Shreya.Kajbaje@ibm.com",
+  "maintainer": "shreyakajbaje",
   "package_name": "ansible-sign",
   "github_url": "https://github.com/ansible/ansible-sign.git",
   "version": "0.1.1",

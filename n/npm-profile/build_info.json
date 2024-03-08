@@ -1,11 +1,11 @@
 {
-   "maintainer": "ich@us.ibm.com",
-   "package_name": "npm-profile",
-   "github_url": "https://github.com/npm/npm-profile",
-   "version": "v9.0.0",
-   "default_branch": "main",
-   "build_script": "npm-profile_ubi_8.7.sh",
-   "package_dir": "n/npm-profile",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "IBM-Currency-Helper",
+  "package_name": "npm-profile",
+  "github_url": "https://github.com/npm/npm-profile",
+  "version": "v9.0.0",
+  "default_branch": "main",
+  "build_script": "npm-profile_ubi_8.7.sh",
+  "package_dir": "n/npm-profile",
+  "docker_build": false,
+  "validate_build_script": true
 }

@@ -1,5 +1,5 @@
 {
-  "maintainer": "Naik.Chandranana@ibm.com",
+  "maintainer": "Chandranana",
   "package_name": "apache-tomcat",
   "github_url": "https://github.com/apache/tomcat.git",
   "version": "11.0.0-M3",

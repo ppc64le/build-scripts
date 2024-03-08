@@ -1,11 +1,11 @@
 {
-   "maintainer": "Shubham.Garud@ibm.com",
-   "package_name": "gocql",
-   "github_url": "https://github.com/gocql/gocql",
-   "version": "v1.6.0",
-   "default_branch": "master",
-   "build_script": "gocql_ubi_8.7.sh",
-   "package_dir": "g/gocql",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "shubham-garud",
+  "package_name": "gocql",
+  "github_url": "https://github.com/gocql/gocql",
+  "version": "v1.6.0",
+  "default_branch": "master",
+  "build_script": "gocql_ubi_8.7.sh",
+  "package_dir": "g/gocql",
+  "docker_build": false,
+  "validate_build_script": true
 }

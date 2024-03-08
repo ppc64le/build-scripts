@@ -1,5 +1,5 @@
 {
-  "maintainer": "Pooja.Shah4@ibm.com",
+  "maintainer": "pooja0805",
   "package_name": "erlang-otp",
   "github_url": "https://github.com/erlang/otp.git",
   "version": "OTP-25.3",

@@ -1,5 +1,5 @@
 {
-  "maintainer": "Bhagat.singh1@ibm.com",
+  "maintainer": "IBM-Currency-Helper",
   "package_name": "nodelib",
   "github_url": "https://github.com/nodelib/nodelib",
   "version": "@nodelib/fs.walk@1.2.8",

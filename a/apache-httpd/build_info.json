@@ -1,15 +1,15 @@
 {
-    "maintainer":"Abhishek.Dwivedi6@ibm.com",
-    "package_name" : "apache-httpd",
-    "github_url": "https://github.com/apache/httpd",
-    "version": "2.4.58",
-    "default_branch": "trunk",
-    "package_dir": "a/apache-httpd",
-    "build_script": "apache-httpd_ubi_8.7.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false" ,
-    "docker_build": "false",
-    "2.4.*": {
+  "maintainer": "AbhiIBM",
+  "package_name": "apache-httpd",
+  "github_url": "https://github.com/apache/httpd",
+  "version": "2.4.58",
+  "default_branch": "trunk",
+  "package_dir": "a/apache-httpd",
+  "build_script": "apache-httpd_ubi_8.7.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "false",
+  "2.4.*": {
     "build_script": "apache-httpd_ubi_8.7.sh"
   }
 }

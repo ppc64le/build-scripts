@@ -1,11 +1,11 @@
 {
-   "maintainer": "Shubham.Garud@ibm.com",
-   "package_name": "fs-minipass",
-   "github_url": "https://github.com/npm/fs-minipass",
-   "version": "v3.0.3",
-   "default_branch": "main",
-   "build_script": "fs-minipass_ubi_8.7.sh",
-   "package_dir": "f/fs-minipass",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "shubham-garud",
+  "package_name": "fs-minipass",
+  "github_url": "https://github.com/npm/fs-minipass",
+  "version": "v3.0.3",
+  "default_branch": "main",
+  "build_script": "fs-minipass_ubi_8.7.sh",
+  "package_dir": "f/fs-minipass",
+  "docker_build": false,
+  "validate_build_script": true
 }

@@ -1,11 +1,11 @@
 {
-   "maintainer": "Shubham.Garud@ibm.com",
-   "package_name": "is-fullwidth-code-point",
-   "github_url": "https://github.com/sindresorhus/is-fullwidth-code-point",
-   "version": "v5.0.0",
-   "default_branch": "main",
-   "build_script": "is-fullwidth-code-point_ubi_8.7.sh",
-   "package_dir": "i/is-fullwidth-code-point",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "shubham-garud",
+  "package_name": "is-fullwidth-code-point",
+  "github_url": "https://github.com/sindresorhus/is-fullwidth-code-point",
+  "version": "v5.0.0",
+  "default_branch": "main",
+  "build_script": "is-fullwidth-code-point_ubi_8.7.sh",
+  "package_dir": "i/is-fullwidth-code-point",
+  "docker_build": false,
+  "validate_build_script": true
 }

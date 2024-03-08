@@ -1,5 +1,5 @@
 {
-  "maintainer": "Pooja.Shah4@ibm.com",
+  "maintainer": "pooja0805",
   "package_name": "collectd",
   "github_url": "https://github.com/collectd/collectd.git",
   "version": "collectd-5.12.0",

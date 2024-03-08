@@ -1,5 +1,5 @@
 {
-  "maintainer": "Muskaan.Sheik@ibm.com",
+  "maintainer": "IBM-Currency-Helper",
   "package_name": "jaf-api",
   "github_url": "https://github.com/jakartaee/jaf-api",
   "version": "2.1.1",

@@ -1,5 +1,5 @@
 {
-  "maintainer": "Vinod.K1@ibm.com",
+  "maintainer": "vinodk99",
   "package_name": "pylibdmtx",
   "github_url": "https://github.com/NaturalHistoryMuseum/pylibdmtx",
   "version": "v0.1.10",
@@ -7,11 +7,9 @@
   "build_script": "pylibdmtx_ubi_8.7.sh",
   "package_dir": "p/pylibdmtx",
   "docker_build": false,
-  
   "v0.*.*": {
     "build_script": "pylibdmtx_ubi_8.7.sh"
   },
-
   "v0.1.9": {
     "build_script": "pylibdmtx_rhel_7.6.sh"
   }

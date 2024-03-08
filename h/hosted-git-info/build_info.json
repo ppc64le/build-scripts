@@ -1,11 +1,11 @@
 {
-   "maintainer": "Shubham.Garud@ibm.com",
-   "package_name": "hosted-git-info",
-   "github_url": "https://github.com/npm/hosted-git-info",
-   "version": "v7.0.1",
-   "default_branch": "main",
-   "build_script": "hosted-git-info_ubi_8.7.sh",
-   "package_dir": "h/hosted-git-info",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "shubham-garud",
+  "package_name": "hosted-git-info",
+  "github_url": "https://github.com/npm/hosted-git-info",
+  "version": "v7.0.1",
+  "default_branch": "main",
+  "build_script": "hosted-git-info_ubi_8.7.sh",
+  "package_dir": "h/hosted-git-info",
+  "docker_build": false,
+  "validate_build_script": true
 }

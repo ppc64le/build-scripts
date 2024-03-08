@@ -1,18 +1,16 @@
 {
-    "maintainer": "Stuti.Wali@ibm.com",
-    "package_name": "scala-logging",
-    "github_url": "https://github.com/lightbend-labs/scala-logging",
-    "version": "v3.9.5",
-    "default_branch": "main",
-    "package_dir": "s/scala-logging",
-    "build_script": "scala-logging_ubi_8_7.sh",
-    "docker_build": true,
-    "validate_build_script": true,
-    "use_non_root_user": false,
-    "v*.*.*": {
-        "dir": "ubi8_7",
-        "build_script": "scala-logging_ubi_8_7.sh"
-     } 
+  "maintainer": "stutiibm",
+  "package_name": "scala-logging",
+  "github_url": "https://github.com/lightbend-labs/scala-logging",
+  "version": "v3.9.5",
+  "default_branch": "main",
+  "package_dir": "s/scala-logging",
+  "build_script": "scala-logging_ubi_8_7.sh",
+  "docker_build": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v*.*.*": {
+    "dir": "ubi8_7",
+    "build_script": "scala-logging_ubi_8_7.sh"
+  }
 }
-
-

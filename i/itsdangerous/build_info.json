@@ -1,17 +1,15 @@
 {
-    "maintainer": "Stuti.Wali@ibm.com",
-    "package_name": "itsdangerous",
-    "github_url": "https://github.com/pallets/itsdangerous",
-    "version": "2.1.2",
-    "default_branch": "main",
-    "package_dir": "i/itsdangerous",
-    "build_script": "itsdangerous_ubi_8_7.sh",
-    "docker_build": false,
-    "validate_build_script": true,
-    "use_non_root_user": false,
-
-    "2.1.*": {
-        "build_script": "itsdangerous_ubi_8_7.sh"
-     } 
-
+  "maintainer": "stutiibm",
+  "package_name": "itsdangerous",
+  "github_url": "https://github.com/pallets/itsdangerous",
+  "version": "2.1.2",
+  "default_branch": "main",
+  "package_dir": "i/itsdangerous",
+  "build_script": "itsdangerous_ubi_8_7.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "2.1.*": {
+    "build_script": "itsdangerous_ubi_8_7.sh"
+  }
 }

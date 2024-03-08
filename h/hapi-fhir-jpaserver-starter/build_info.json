@@ -1,5 +1,5 @@
 {
-  "maintainer": "Naik.Chandranana@ibm.com",
+  "maintainer": "Chandranana",
   "package_name": "hapi-fhir-jpaserver-starter",
   "github_url": "https://github.com/hapifhir/hapi-fhir-jpaserver-starter",
   "version": "v6.6.0",
@@ -10,7 +10,6 @@
   "validate_build_script": false,
   "use_non_root_user": false,
   "docker_build": true,
-  
   "v6.6.*": {
     "dir": "6.6.0"
   }

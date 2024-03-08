@@ -1,15 +1,15 @@
 {
-    "maintainer":"Abhishek.Dwivedi6@ibm.com",
-    "package_name" : "pyephem",
-    "github_url": "https://github.com/brandon-rhodes/pyephem.git",
-    "version": "4.1.5",
-    "default_branch": "master",
-    "package_dir": "p/pyephem",
-    "build_script": "pyephem_ubi_8.7.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build": "false",
-    "4.1.*" : {
-       "build_script" : "pyephem_ubi_8.7.sh"
-    }
+  "maintainer": "AbhiIBM",
+  "package_name": "pyephem",
+  "github_url": "https://github.com/brandon-rhodes/pyephem.git",
+  "version": "4.1.5",
+  "default_branch": "master",
+  "package_dir": "p/pyephem",
+  "build_script": "pyephem_ubi_8.7.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "false",
+  "4.1.*": {
+    "build_script": "pyephem_ubi_8.7.sh"
+  }
 }

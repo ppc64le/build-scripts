@@ -1,5 +1,5 @@
 {
-  "maintainer": "Pratik.Tonage@ibm.com",
+  "maintainer": "Pratikt2312",
   "package_name": "opentelemetry-collector-contrib",
   "github_url": "https://github.com/open-telemetry/opentelemetry-collector-contrib",
   "version": "v0.67.0",

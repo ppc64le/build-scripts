@@ -1,5 +1,5 @@
 {
-  "maintainer": "Vishaka.Desai@ibm.com",
+  "maintainer": "IBM-Currency-Helper",
   "package_name": "openldap",
   "github_url": "https://github.com/openldap/openldap",
   "version": "OPENLDAP_REL_ENG_2_6_0",

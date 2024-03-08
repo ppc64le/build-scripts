@@ -1,18 +1,17 @@
 {
-    "maintainer":"Abhishek.Dwivedi6@ibm.com",
-    "package_name" : "cytoolz",
-    "github_url": "https://github.com/pytoolz/cytoolz.git",
-    "version": "0.12.2",
-    "default_branch": "master",
-    "package_dir": "c/cytoolz",
-    "docker_cmd" : "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-    "build_script": "cytoolz_ubi_8.7.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build": "true",
-
-    "0.12.*" : {
-        "dir" : "ubi8.7",
-        "build_script" : "cytoolz_ubi_8.7.sh"
-    }
+  "maintainer": "AbhiIBM",
+  "package_name": "cytoolz",
+  "github_url": "https://github.com/pytoolz/cytoolz.git",
+  "version": "0.12.2",
+  "default_branch": "master",
+  "package_dir": "c/cytoolz",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "build_script": "cytoolz_ubi_8.7.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "true",
+  "0.12.*": {
+    "dir": "ubi8.7",
+    "build_script": "cytoolz_ubi_8.7.sh"
+  }
 }

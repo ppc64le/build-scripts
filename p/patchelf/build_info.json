@@ -1,15 +1,15 @@
 {
-    "maintainer":"Vinod.K1@ibm.com",
-    "package_name" : "patchelf",
-    "github_url": "https://github.com/NixOS/patchelf",
-    "version": "0.18.0",
-    "default_branch": "master",
-    "package_dir": "p/patchelf",
-    "build_script": "patchelf_ubi_8.7.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build": false,
-    "0.*.*" : {
-       "build_script" : "patchelf_ubi_8.7.sh"
-    }
+  "maintainer": "vinodk99",
+  "package_name": "patchelf",
+  "github_url": "https://github.com/NixOS/patchelf",
+  "version": "0.18.0",
+  "default_branch": "master",
+  "package_dir": "p/patchelf",
+  "build_script": "patchelf_ubi_8.7.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": false,
+  "0.*.*": {
+    "build_script": "patchelf_ubi_8.7.sh"
+  }
 }
