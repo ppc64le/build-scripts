@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : alembic
-# Version       : rel_1_7_4
+# Version       : rel_1_13_1
 # Source repo   : https://github.com/zzzeek/alembic.git
-# Tested on     : UBI 8.3
+# Tested on     : UBI 8.7
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Raju.Sah@ibm.com
+# Maintainer    : govind.jadhav3@ibm.com
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
