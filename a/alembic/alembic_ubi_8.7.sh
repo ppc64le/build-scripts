@@ -62,7 +62,7 @@ fi
 tox  || ret$?
 if [ "$ret" -ne 0 ]
 then
-  #echo "FAIL: tests failed."
+  echo "FAIL: tests failed."
   exit 2
 fi
 exit 0
