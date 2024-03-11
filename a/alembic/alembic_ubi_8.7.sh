@@ -39,5 +39,12 @@ git checkout $PACKAGE_VERSION
 
 #Build and test the package
 #Note: Three test cases are failing on both architecture power and intel.
-tox
+tox || ret=$?
+if [ "$ret" -ne 0 ]
+then
+        echo "FAIL: Build and test failed."
+        exit 1
+fi
+echo "Success :Build and tests passed"
 exit 0
+
