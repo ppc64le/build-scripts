@@ -1,0 +1,11 @@
+{
+   "maintainer": "Shubham.Garud@ibm.com",
+   "package_name": "node-glob",
+   "github_url": "https://github.com/isaacs/node-glob",
+   "version": "v10.3.10",
+   "default_branch": "main",
+   "build_script": "node-glob_ubi_8.7.sh",
+   "package_dir": "n/node-glob",
+   "docker_build": false,
+   "validate_build_script": true
+}
