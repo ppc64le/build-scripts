@@ -68,7 +68,6 @@ fi
 #python3 -m pip install -r ./alembic/tests/requirements.txt
 #note few tests are failing
 #exit 2
-rm $PACKAGE_NAME/tests/test_command.py
 tox  
 echo "Build and tests Successful!"
 
