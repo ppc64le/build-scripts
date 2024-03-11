@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # Tested on     : UBI 8.7
 # Language      : Python
 # Travis-Check  : True
