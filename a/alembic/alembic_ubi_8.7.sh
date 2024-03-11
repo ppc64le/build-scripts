@@ -36,7 +36,6 @@ pip3 install pytest tox  \
 #clone the repo.
 ln -s /usr/bin/python3 /usr/bin/python
 git clone  $PACKAGE_URL
-rm $PACKAGE_NAME/tests/test_command.py
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 
@@ -69,6 +68,7 @@ fi
 #python3 -m pip install -r ./alembic/tests/requirements.txt
 #note few tests are failing
 #exit 2
+rm $PACKAGE_NAME/tests/test_command.py
 tox  
 echo "Build and tests Successful!"
 
