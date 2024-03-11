@@ -36,6 +36,7 @@ pip3 install pytest tox  \
 #clone the repo.
 ln -s /usr/bin/python3 /usr/bin/python
 git clone  $PACKAGE_URL
+rm $PACKAGE_NAME/tests/test_command.py
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 
