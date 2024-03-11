@@ -39,12 +39,36 @@ git checkout $PACKAGE_VERSION
 
 #Build and test the package
 #Note: Three test cases are failing on both architecture power and intel.
-tox || ret=$?
+
+python setup.py build || ret=$?
+# Build step for a Python project
+#python3 setup.py build || ret=$?
+
 if [ "$ret" -ne 0 ]
 then
-        echo "FAIL: Build and test failed."
-        exit 1
+  echo "FAIL: Build failed."
+  exit 1
 fi
-echo "Success :Build and tests passed"
+
+# Install step for a Python project
+python3 setup.py install || ret=$?
+
+if [ "$ret" -ne 0 ]
+then
+  #echo "FAIL: Install failed."
+  exit 1
+fi
+
+
+
+
+python3 -m pip install -r /constructor/tests/requirements.txt
+tox  || ret$?
+if [ "$ret" -ne 0 ]
+then
+  #echo "FAIL: tests failed."
+  exit 2
+fi
 exit 0
+echo "Build and tests Successful!"
 
