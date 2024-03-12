@@ -42,6 +42,7 @@ gem install nokogiri
 gem install rspec
 gem install zeus
 gem install kramdown-parser-gfm
+gem install appraisal
 
 git clone ${PACKAGE_URL} 
 cd ${PACKAGE_NAME}
@@ -54,7 +55,7 @@ if ! bundle install ;  then
     exit 1
 fi
 
-bundle exec appraisal install
+#bundle exec appraisal install
 
 if ! bundle exec rake --trace ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
