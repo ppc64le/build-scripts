@@ -31,10 +31,11 @@ yum install -y make git wget tar gcc-c++
 
 cd $WORKDIR
 #Install go
-wget https://golang.org/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
-tar -zxvf go${GO_VERSION}.linux-ppc64le.tar.gz
-export GOPATH=$WORKDIR/go
-export PATH=$PATH:$GOPATH/bin
+wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
+tar -C  /usr/local -xf go${GO_VERSION}.linux-ppc64le.tar.gz
+export GOROOT=/usr/local/go
+export GOPATH=$HOME
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
 #Clone and build the source
 git clone $PACKAGE_URL
