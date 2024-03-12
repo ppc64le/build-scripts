@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : telegraf
-# Version       : 1.27.4
+# Version       : 1.27.4,v1.30.0
 # Source repo   : https://github.com/influxdata/telegraf
 # Tested on     : UBI 8.7
 # Language      : Go
@@ -19,9 +19,9 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=telegraf
-PACKAGE_VERSION=${1:-v1.27.4}
+PACKAGE_VERSION=${1:-v1.30.0}
 PACKAGE_URL=https://github.com/influxdata/telegraf.git
-GO_VERSION=${GO_VERSION:-1.20.5}
+GO_VERSION=${GO_VERSION:-1.22.0}
 
 WORKDIR=`pwd`
 
@@ -30,17 +30,32 @@ yum update -y
 yum install -y make git wget tar gcc-c++
 
 cd $WORKDIR
+#Install go
 wget https://golang.org/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
 tar -zxvf go${GO_VERSION}.linux-ppc64le.tar.gz
-
 export GOPATH=$WORKDIR/go
 export PATH=$PATH:$GOPATH/bin
 
 #Clone and build the source
-mkdir -p ${GOPATH}/src/github.com/influxdata
-cd ${GOPATH}/src/github.com/influxdata
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-make
-make test
+
+if ! make ; then
+    echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
+    exit 1
+fi
+
+if ! make test ; then
+    echo "------------------$PACKAGE_NAME:Build_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME:Build_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Build_and_Test_Success"
+    exit 0
+fi
