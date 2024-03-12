@@ -1,5 +1,5 @@
 {
-   "maintainer": "ich@us.ibm.com",
+   "maintainer": "Abhishek.Dwivedi6@ibm.com",
    "package_name": "analysis",
    "github_url": "https://github.com/go-openapi/analysis",
    "version": "v0.21.4",
@@ -7,5 +7,8 @@
    "build_script": "analysis_ubi_8.7.sh",
    "package_dir": "a/analysis",
    "docker_build": false,
-   "validate_build_script": true
+   "validate_build_script": true,
+   "v0.*.*": {
+      "build_script": "analysis_ubi_8.7.sh"
+   }
 }
