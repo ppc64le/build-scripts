@@ -28,7 +28,7 @@ OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 yum install -y git wget gcc gcc-c++ java-17-openjdk java-17-openjdk-devel java-17-openjdk-headless tzdata-java
 
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
 
 #Install maven
