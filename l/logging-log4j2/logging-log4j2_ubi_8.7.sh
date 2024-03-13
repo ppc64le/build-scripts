@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : logging-log4j2
-# Version          : rel/3.0.0-alpha1,rel/3.0.0-beta2
+# Version          : rel/3.0.0-alpha1,rel/3.0.0-beta2,rel/2.23.1
 # Source repo      : https://github.com/apache/logging-log4j2
 # Tested on        : UBI 8.7
 # Language         : Java
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=logging-log4j2
-PACKAGE_VERSION=${1:-rel/3.0.0-alpha1}
+PACKAGE_VERSION=${1:-rel/2.23.1}
 PACKAGE_URL=https://github.com/apache/logging-log4j2
 
 HOME_DIR=${PWD}
@@ -51,7 +51,7 @@ if ! ./mvnw clean install -DskipTests; then
 fi
 
 #Skipping mongodb modules because mongodb is not supprted on power.
-if !  ./mvnw clean install -pl -:log4j-mongodb4 ; then
+if !  ./mvnw clean install -pl -:log4j-mongodb3,-:log4j-mongodb4 ; then
       echo "------------------$PACKAGE_NAME::Install_and_Test_fails-------------------------"
       echo "$PACKAGE_URL $PACKAGE_NAME"
       echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Fails"
