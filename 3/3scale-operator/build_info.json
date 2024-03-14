@@ -1,0 +1,13 @@
+{
+    "maintainer": "Shreya.Kajbaje@ibm.com",
+    "package_name": "3scale-operator",
+    "github_url": "https://github.com/3scale/3scale-operator.git",
+    "version": "2.14.1",
+    "default_branch": "main",
+    "category": "rhp",
+    "package_dir": "3scale/3scale-operator",
+    "build_script": "3scale-operator_ubi_8.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+}
