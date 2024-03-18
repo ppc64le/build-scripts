@@ -81,6 +81,7 @@ if [ -f $config_file ]; then
   fi
 fi
 
+# Below code is used to get the tested on parameter value from the build script
 build_script_with_quotes=$build_script
 stripped_build_script=$(echo "$build_script_with_quotes" | sed 's/"//g')
 echo $stripped_build_script
