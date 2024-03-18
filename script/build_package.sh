@@ -23,7 +23,7 @@ docker_build_non_root() {
   docker_image="docker_non_root_image"
 }
 
-#for testing
+#Below conditions are used to select the base image based on the 2 flags, tested_on and non_root_build. 
 if [[ "$TESTED_ON" == UBI:9* ]];
 then
     docker pull registry.access.redhat.com/ubi9/ubi:9.3
@@ -32,16 +32,13 @@ then
     then
         docker_build_non_root "registry.access.redhat.com/ubi9/ubi:9.3"
     fi
-elif [[ "$TESTED_ON" == UBI:8* ]];
-then
+else
     docker pull registry.access.redhat.com/ubi8/ubi:8.7
     docker_image="registry.access.redhat.com/ubi8/ubi:8.7"
     if [[ "$NON_ROOT_BUILD" == "true" ]];
     then
         docker_build_non_root "registry.access.redhat.com/ubi8/ubi:8.7"
     fi    
-else
-    echo "Tested_on value of $TESTED_ON is not satisfied"
 fi
 
 python3 script/validate_builds_currency.py "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "$docker_image" > build_log &
