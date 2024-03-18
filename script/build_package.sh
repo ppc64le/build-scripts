@@ -1,19 +1,47 @@
  #!/bin/bash -e
 
 sudo apt update -y && sudo apt-get install file -y
-docker pull registry.access.redhat.com/ubi8/ubi:8.7
 pip3 install --upgrade requests
 pip3 install --upgrade docker
 
 echo "Running build script execution in background for "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" " 
 echo "*************************************************************************************"
 
-docker_image="registry.access.redhat.com/ubi8/ubi:8.7"
+docker_image=""
+:' 
 if [ "$NON_ROOT_BUILD" == "true" ];
 then
     echo "building docker image for non root user build"
     docker build -t docker_non_root_image -f script/dockerfile_non_root .
     docker_image="docker_non_root_image"
+fi
+':
+
+docker_build_non_root() {
+  echo "building docker image for non root user build"
+  docker build --build-arg BASE_IMAGE="$1" -t docker_non_root_image -f script/dockerfile_non_root .
+  docker_image="docker_non_root_image"
+}
+
+#for testing
+if [[ "$TESTED_ON" == UBI:9* ]];
+then
+    docker pull registry.access.redhat.com/ubi9/ubi:9.3
+    docker_image="registry.access.redhat.com/ubi9/ubi:9.3"
+    if [[ "$NON_ROOT_BUILD" == "true" ]];
+    then
+        docker_build_non_root "registry.access.redhat.com/ubi9/ubi:9.3"
+    fi
+elif [[ "$TESTED_ON" == UBI:8* ]];
+then
+    docker pull registry.access.redhat.com/ubi8/ubi:8.7
+    docker_image="registry.access.redhat.com/ubi8/ubi:8.7"
+    if [[ "$NON_ROOT_BUILD" == "true" ]];
+    then
+        docker_build_non_root "registry.access.redhat.com/ubi8/ubi:8.7"
+    fi    
+else
+    echo "Tested_on value of $TESTED_ON is not satisfied"
 fi
 
 python3 script/validate_builds_currency.py "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "$docker_image" > build_log &
