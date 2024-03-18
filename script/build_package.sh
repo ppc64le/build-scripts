@@ -8,22 +8,16 @@ echo "Running build script execution in background for "$PKG_DIR_PATH$BUILD_SCRI
 echo "*************************************************************************************"
 
 docker_image=""
-:' 
-if [ "$NON_ROOT_BUILD" == "true" ];
-then
-    echo "building docker image for non root user build"
-    docker build -t docker_non_root_image -f script/dockerfile_non_root .
-    docker_image="docker_non_root_image"
-fi
-':
 
+# the below function is used for building a custom docker image, it will be called only when non root user build is set to true.
+# function accepts one argument, which is the base image value.
 docker_build_non_root() {
   echo "building docker image for non root user build"
   docker build --build-arg BASE_IMAGE="$1" -t docker_non_root_image -f script/dockerfile_non_root .
   docker_image="docker_non_root_image"
 }
 
-#Below conditions are used to select the base image based on the 2 flags, tested_on and non_root_build. 
+#Below conditions are used to select the base image based on the 2 flags, tested_on and non_root_build. A docker_build_non_root function is called when non root build is true.
 if [[ "$TESTED_ON" == UBI:9* ]];
 then
     docker pull registry.access.redhat.com/ubi9/ubi:9.3
