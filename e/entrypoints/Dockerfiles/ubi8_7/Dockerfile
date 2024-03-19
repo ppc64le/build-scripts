@@ -2,6 +2,8 @@ FROM registry.access.redhat.com/ubi8:8.7
 
 MAINTAINER "Stuti Wali <Stuti.Wali@ibm.com>"
 
+ARG PACKAGE_VERSION=0.4
+
 ENV SOURCE_DIR=$PWD
 ENV PATH=/usr/local/bin:$PATH
 
@@ -22,7 +24,7 @@ ENV PATH=$PATH:/usr/local/bin/
 
 RUN git clone https://github.com/takluyver/entrypoints && \
     cd entrypoints && \
-    git checkout 0.4 && \
+    git checkout $PACKAGE_VERSION && \
     pip3 install setuptools wheel && \
     pip3 install configparser && \
     pip3 install -U entrypoints && \

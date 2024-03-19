@@ -9,7 +9,8 @@
     "docker_build": true,
     "validate_build_script": true,
     "use_non_root_user": false,
-    "0.4": {
+    "0.*": {
+        "dir": "ubi8_7",
         "build_script": "entrypoints_ubi_8_7.sh"
      }
 }
