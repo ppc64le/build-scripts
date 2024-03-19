@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package	    : 3scale-operator
-# Version	    : 2.14.1
+# Version	    : master
 # Source repo	: https://github.com/3scale/3scale-operator.git
 # Tested on	    : UBI 8.5
 # Language      : Go
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=3scale-operator
-PACKAGE_VERSION=2.14.1
+PACKAGE_VERSION=master
 PACKAGE_URL=https://github.com/3scale/3scale-operator.git
 PACKAGE_BRANCH=master
 
