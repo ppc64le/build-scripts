@@ -1,0 +1,12 @@
+{
+   "maintainer": "shubham-garud",
+   "package_name": "flatpickr",
+   "github_url": "https://github.com/chmln/flatpickr",
+   "version": "v4.6.13",
+   "default_branch": "master",
+   "build_script": "flatpickr_ubi_8.7.sh",
+   "package_dir": "f/flatpickr",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user":false
+}
