@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : markdown-it
-# Version          : 14.0.0	
+# Version          : 14.1.0
 # Source repo      : https://github.com/markdown-it/markdown-it
 # Tested on	       : UBI 8.7
 # Language         : Javascript
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=markdown-it
-PACKAGE_VERSION=${1:-14.0.0}
+PACKAGE_VERSION=${1:-14.1.0}
 PACKAGE_URL=https://github.com/markdown-it/markdown-it
 
 yum install -y git wget gcc gcc-c++ curl 
