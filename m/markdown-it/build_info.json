@@ -7,6 +7,7 @@
    "build_script": "markdown-it_ubi_8.7.sh",
    "package_dir": "m/markdown-it",
    "docker_build": false,
+   "use_non_root_user": "false",
    "validate_build_script": true,
    "14.*.*": {
     "build_script": "markdown-it_ubi_8.7.sh"
