@@ -2,9 +2,9 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : node-newrelic
-# Version          : 11.13.0
+# Version          : v11.14.0
 # Source repo      : https://github.com/newrelic/node-newrelic
-# Tested on		   : UBI 8.7
+# Tested on		   : UBI 9.3
 # Language         : Node
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=node-newrelic
-PACKAGE_VERSION=${1:-11.13.0}
+PACKAGE_VERSION=${1:-v11.14.0}
 PACKAGE_URL=https://github.com/newrelic/node-newrelic
 
 export NODE_VERSION=${NODE_VERSION:-20}
@@ -31,10 +31,9 @@ echo "installing nodejs $NODE_VERSION"
 nvm install "$NODE_VERSION" >/dev/null
 nvm use $NODE_VERSION
 
-
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
-git checkout v$PACKAGE_VERSION
+git checkout $PACKAGE_VERSION
 source "$HOME"/.bashrc
 npm install -g node-gyp
 
