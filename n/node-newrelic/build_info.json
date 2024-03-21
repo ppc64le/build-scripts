@@ -2,14 +2,14 @@
     "maintainer":"Vinod.K1@ibm.com",
     "package_name" : "node-newrelic", 
     "github_url": "https://github.com/newrelic/node-newrelic",
-    "version": "11.13.0",
+    "version": "v11.14.0",
     "default_branch": "main",
-    "build_script": "node-newrelic_ubi_8.7.sh",
+    "build_script": "node-newrelic_ubi_9.3.sh",
     "package_dir": "n/node-newrelic",
     "docker_build": false,
     "use_non_root_user": "false",
     "validate_build_script": true,
-    "11.*.*" : {
-       "build_script": "node-newrelic_ubi_8.7.sh"
+    "v11.*.*" : {
+       "build_script": "node-newrelic_ubi_9.3.sh"
     }
 }
