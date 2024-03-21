@@ -50,7 +50,7 @@ if ! npm install --unsafe-perm && npm audit fix ; then
     exit 1
 fi
 
-if ! npm test; then
+if ! npm run unit-tests ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
