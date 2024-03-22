@@ -4,7 +4,7 @@
 # Package       : d3-quadtree
 # Version       : v3.0.1
 # Source repo   : https://github.com/d3/d3-quadtree
-# Tested on     : ubi 8.5
+# Tested on     : ubi 9.3
 # Language      : JavaScript
 # Travis-Check  : true
 # Script License: Apache License, Version 2 or later
@@ -63,4 +63,3 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Build_and_Test_Success"
     exit 0
 fi
-
