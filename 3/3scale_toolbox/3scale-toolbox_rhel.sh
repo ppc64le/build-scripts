@@ -6,6 +6,7 @@
 # Source repo   : https://github.com/3scale/3scale_toolbox.git
 # Tested on     : RHEL
 # Language      : Ruby
+# Travis-Check : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Shreya Kajbaje <Shreya.Kajbaje@ibm.com>
 #
