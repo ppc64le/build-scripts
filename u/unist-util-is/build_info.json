@@ -1,0 +1,11 @@
+{
+   "maintainer": "Shubham.Garud@ibm.com",
+   "package_name": "unist-util-is",
+   "github_url": "https://github.com/syntax-tree/unist-util-is",
+   "version": "6.0.0",
+   "default_branch": "main",
+   "build_script": "unist-util-is_ubi_8.7.sh",
+   "package_dir": "u/unist-util-is",
+   "docker_build": false,
+   "validate_build_script": true
+}
