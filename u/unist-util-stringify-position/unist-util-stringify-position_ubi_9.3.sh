@@ -4,7 +4,7 @@
 # Package          : unist-util-stringify-position
 # Version          : 4.0.0
 # Source repo      : https://github.com/syntax-tree/unist-util-stringify-position
-# Tested on	: UBI 8.7
+# Tested on	: UBI 9.3
 # Language      : Node
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
