@@ -2,9 +2,9 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : go-metrics
-# Version       : v0.4.1
+# Version       : v0.5.3
 # Source repo   : https://github.com/hashicorp/go-metrics.git
-# Tested on     : UBI 8.5
+# Tested on     : UBI 9.3
 # Language      : Go
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -21,7 +21,7 @@
 PACKAGE_NAME=go-metrics
 PACKAGE_URL=https://github.com/hashicorp/go-metrics.git
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-v0.4.1}
+PACKAGE_VERSION=${1:-v0.5.3}
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 #Dependencies
@@ -51,7 +51,7 @@ if ! go build -v ./...; then
     exit 1
 fi
 
-if ! go test -v ./...; then
+if ! go test -race ./...; then
     echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_success_but_test_Fails"
