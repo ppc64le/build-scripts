@@ -13,8 +13,5 @@
     "v*.*.*": {
        "dir": "2.2.8_ubi9",
        "build_script" : "keepalived_ubi_9.3.sh"
-    },
-    "2.0.4": {
-	      "build_script" : "keepalived_rhel_7.4.sh"
     }
  }
