@@ -40,6 +40,7 @@ git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
 conda install openblas cython numpy scipy -y
+conda install conda-forge::meson-python
 conda install conda-forge::pybind11 -y
 conda install conda-forge::pythran -y
 conda install conda-forge::cython -y
