@@ -1,9 +1,9 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 # Package          : nomad
-# Version          : v1.4.3, v1.7.6
+# Version          : v1.7.6
 # Source repo      : https://github.com/hashicorp/nomad
-# Tested on        : UBI 8.5
+# Tested on        : UBI 9.3
 # Language         : Java
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
@@ -81,7 +81,3 @@ fi
 # As Nomad testing requires clusters. Currently not supporting it.
 # We need to work on cluster testing (probably using minikube or something) and enable tests.
 # go test -v ./...
-
-
-
- 
