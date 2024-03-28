@@ -1,0 +1,11 @@
+{
+   "maintainer": "Shubham.Garud@ibm.com",
+   "package_name": "winston",
+   "github_url": "https://github.com/winstonjs/winston",
+   "version": "v3.13.0",
+   "default_branch": "master",
+   "build_script": "winston_ubi_8.7.sh",
+   "package_dir": "w/winston",
+   "docker_build": false,
+   "validate_build_script": true
+}
