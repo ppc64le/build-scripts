@@ -4,7 +4,7 @@
 # Package          : vfile
 # Version          : 6.0.1
 # Source repo      : https://github.com/vfile/vfile
-# Tested on	: UBI 8.7
+# Tested on	: UBI 9.3
 # Language      : Node
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -22,7 +22,7 @@ PACKAGE_VERSION=${1:-6.0.1}
 PACKAGE_URL=https://github.com/vfile/vfile
 
 export NODE_VERSION=${NODE_VERSION:-16}
-yum install -y python38 python38-devel git gcc gcc-c++ libffi make
+yum install -y  git gcc gcc-c++ libffi make
 
 #Installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
