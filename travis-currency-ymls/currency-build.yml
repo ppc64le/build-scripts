@@ -41,19 +41,18 @@ jobs:
       script:
         - source variable.sh
         # creating a folder package-cache to store the variable.sh and cloned package folder
-        - mkdir package-cache
+        - mkdir package-cache && sudo mv variable.sh package-cache
         - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/build_package.sh; bash ./script/build_package.sh; fi
-        # setting a variable actual_package_name, here it is taking package reference name from the package build-script itself.
-        - actual_package_name=$(awk -F'/' 'tolower($0) ~ /^# source repo.*github.com/{sub(/\.git/, "", $NF); print $NF}' $PKG_DIR_PATH$BUILD_SCRIPT)
-        - sudo mv variable.sh package-cache
+        # setting a variable cloned_package based on the recently cloned package.
+        - cloned_package=$(ls -td -- */ | head -n 1) && sudo mv "$cloned_package" package-cache
+        - echo "export CLONED_PACKAGE=\"$cloned_package\"" >> package-cache/variable.sh
         - cd package-cache
         # changing the ownership of package-cache and it's sub directories to travis, the reason for doing that is to facilitate creation of files 
         # in the cloned package folder(note: currently cloned package folder is owned by the root)
         - sudo chown travis:travis -R .
+        - ls -ltr
         # executing pre-process script which creates some files based on the package language.(python, javascript, typescript)
         - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ../script/pre_process.sh; bash ../script/pre_process.sh; fi
-        - ls -ltr $actual_package_name
-        - pwd
         - echo $TRAVIS_BUILD_DIR
         - cd $TRAVIS_BUILD_DIR
         - gzip $TRAVIS_BUILD_DIR/build_log
@@ -66,16 +65,15 @@ jobs:
             - .
         use: build_cache
 
-
     - stage: Source code scanner
       if: env(ENABLE_TRIVY) = true
       name: Run trivy scan
       script:
+        - ls -ltr package-cache
         - source package-cache/variable.sh;
         - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/scanner-scripts/trivy_code_scan.sh;bash ./script/scanner-scripts/trivy_code_scan.sh; fi
         - mkdir source_trivy
         - mv package-cache/trivy_source_vulnerabilities_results.json package-cache/trivy_source_sbom_results.cyclonedx source_trivy
-        - ls -ltr
       workspaces:
         create:
           name: source_trivy
@@ -129,7 +127,7 @@ jobs:
         - find source_syft -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
         - find source_grype -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
         - tar cvzf source_scanner.tar.gz source
-        - chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh source_scanner.tar.gz
+        #- chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh source_scanner.tar.gz
       
     - stage: Build docker image
       # the below condition checks if docker_build flag set to true or false, it it is true it will build this stage and if it is false it will exclude this stage.
@@ -208,5 +206,5 @@ jobs:
         - find image_syft -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
         - find image_grype -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
         - tar cvzf image_scanner.tar.gz image
-        - chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh image_scanner.tar.gz
+        #- chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh image_scanner.tar.gz
           
