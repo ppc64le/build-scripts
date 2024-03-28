@@ -22,7 +22,7 @@ PACKAGE_VERSION=${1:-v4.7.0}
 PACKAGE_URL=https://github.com/winstonjs/winston-transport
 
 export NODE_VERSION=${NODE_VERSION:-16}
-yum install -y python38 python38-devel git gcc gcc-c++ libffi make
+yum install -y git gcc gcc-c++ libffi make
 
 #Installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
