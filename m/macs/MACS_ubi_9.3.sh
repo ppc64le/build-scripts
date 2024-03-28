@@ -2,9 +2,9 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : MACS
-# Version          : v3.0.0
+# Version          : v3.0.1
 # Source repo      : https://github.com/macs3-project/MACS/
-# Tested on        : UBI 8.7
+# Tested on        : UBI 9.3
 # Language         : Cython, Python
 # Travis-Check     : True
 # Script License   : GNU General Public License v3.0
@@ -20,7 +20,7 @@
 set -e
 
 PACKAGE_NAME=MACS
-PACKAGE_VERSION=${1:-v3.0.0}
+PACKAGE_VERSION=${1:-v3.0.1}
 PACKAGE_URL=https://github.com/macs3-project/MACS/
 
 wrkdir=`pwd`
@@ -44,6 +44,7 @@ conda install conda-forge::meson-python -y
 conda install conda-forge::pybind11 -y
 conda install conda-forge::pythran -y
 conda install conda-forge::cython -y
+
 yum install zlib-devel -y
 python3 -m pip install --upgrade --progress-bar off pytest
 
@@ -54,7 +55,7 @@ if ! python3 -m pip install --upgrade-strategy only-if-needed --no-build-isolati
     exit 1
 fi
 
-if ! pytest --runxfail && cd test && ./cmdlinetest-nohmmratac macs3 ; then
+if ! pytest --runxfail && cd test && ./cmdlinetest macs3 ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
