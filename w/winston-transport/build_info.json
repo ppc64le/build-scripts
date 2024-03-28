@@ -1,0 +1,11 @@
+{
+   "maintainer": "Shubham.Garud@ibm.com",
+   "package_name": "winston-transport",
+   "github_url": "https://github.com/winstonjs/winston-transport",
+   "version": "v4.7.0",
+   "default_branch": "master",
+   "build_script": "winston-transport_ubi_8.7.sh",
+   "package_dir": "w/winston-transport",
+   "docker_build": false,
+   "validate_build_script": true
+}
