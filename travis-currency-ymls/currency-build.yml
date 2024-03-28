@@ -43,7 +43,7 @@ jobs:
         # creating a folder package-cache to store the variable.sh and cloned package folder
         - mkdir package-cache && sudo mv variable.sh package-cache
         - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/build_package.sh; bash ./script/build_package.sh; fi
-        # setting a variable cloned_package based on the recently cloned package.
+        # setting a variable cloned_package,the value of the variable is based on recently cloned package through build-script execution.
         - cloned_package=$(ls -td -- */ | head -n 1) && sudo mv "$cloned_package" package-cache
         - echo "export CLONED_PACKAGE=\"$cloned_package\"" >> package-cache/variable.sh
         - cd package-cache
