@@ -1,0 +1,11 @@
+{
+   "maintainer": "Shubham.Garud@ibm.com",
+   "package_name": "universalify",
+   "github_url": "https://github.com/RyanZim/universalify",
+   "version": "2.0.1",
+   "default_branch": "master",
+   "build_script": "universalify_ubi_8.7.sh",
+   "package_dir": "u/universalify",
+   "docker_build": false,
+   "validate_build_script": true
+}
