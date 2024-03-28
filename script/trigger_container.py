@@ -19,7 +19,7 @@ HOME = os.getcwd()
 package_data = {}
 
 
-def trigger_script_validation_checks(image_name = "registry.access.redhat.com/ubi8/ubi:8.7"):
+def trigger_script_validation_checks(image_name = "registry.access.redhat.com/ubi9/ubi:9.3"):
     
     parser = argparse.ArgumentParser(description="""Pass `build script` name""")
     parser.add_argument('-f','--filename', type=str, help='Filename', required=True)
@@ -63,7 +63,7 @@ def trigger_script_validation_checks(image_name = "registry.access.redhat.com/ub
         return True
 
 
-container_result=trigger_script_validation_checks(image_name = "registry.access.redhat.com/ubi8/ubi:8.7")
+container_result=trigger_script_validation_checks(image_name = "registry.access.redhat.com/ubi9/ubi:9.3")
 if container_result:
     print("Executed script in container")
     
