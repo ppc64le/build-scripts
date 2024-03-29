@@ -31,7 +31,7 @@ source /etc/profile.d/rvm.sh
 export RUBY_VERSION=${RUBY_VERSION:-3.2.1}
 
 dnf install -qy http://mirror.nodesdirect.com/centos/8-stream/BaseOS/ppc64le/os/Packages/centos-gpg-keys-8-6.el8.noarch.rpm
-#dnf install -qy http://mirror.nodesdirect.com/centos/8-stream/BaseOS/ppc64le/os/Packages/centos-stream-repos-8-6.el8.noarch.rpm
+dnf install -qy http://mirror.nodesdirect.com/centos/8-stream/BaseOS/ppc64le/os/Packages/centos-stream-repos-8-6.el8.noarch.rpm
 rvm install "$RUBY_VERSION"
 ruby --version
 
