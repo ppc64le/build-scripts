@@ -24,14 +24,14 @@ PACKAGE_URL=https://github.com/mcmire/super_diff.git
 
 yum install -y git procps yum-utils wget xz
 yum install sudo -y
-yum install -y gcc openssl-devel libyaml-devel libffi-devel zlib-devel gdbm-devel ncurses-devel libxml2-devel libxslt-devel zlib-devel libxml2
+yum install -y gcc openssl-devel libyaml-devel libffi-devel zlib-devel ncurses-devel libxml2-devel libxslt-devel zlib-devel libxml2
 
 curl https://raw.githubusercontent.com/rvm/rvm/master/binscripts/rvm-installer | bash
 source /etc/profile.d/rvm.sh
 export RUBY_VERSION=${RUBY_VERSION:-3.2.1}
 
 dnf install -qy http://mirror.nodesdirect.com/centos/8-stream/BaseOS/ppc64le/os/Packages/centos-gpg-keys-8-6.el8.noarch.rpm
-dnf install -qy http://mirror.nodesdirect.com/centos/8-stream/BaseOS/ppc64le/os/Packages/centos-stream-repos-8-6.el8.noarch.rpm
+#dnf install -qy http://mirror.nodesdirect.com/centos/8-stream/BaseOS/ppc64le/os/Packages/centos-stream-repos-8-6.el8.noarch.rpm
 rvm install "$RUBY_VERSION"
 ruby --version
 
