@@ -48,14 +48,14 @@ git clone ${PACKAGE_URL}
 cd ${PACKAGE_NAME}
 git checkout ${PACKAGE_VERSION}
 
+export BUNDLE_GEMFILE=gemfiles/rails_7_0_rspec_lt_3_10.gemfile
+
 if ! bundle install ;  then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-
-bundle exec appraisal install
 
 if ! bundle exec rake --trace ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
