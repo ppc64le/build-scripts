@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -xe
 cloned_package=$(ls -td -- */ | head -n 1)
 cd $cloned_package
 
