@@ -24,7 +24,7 @@ PACKAGE_URL=https://github.com/mcmire/super_diff.git
 
 yum install -y git procps yum-utils wget xz
 yum install sudo -y
-yum install -y gcc openssl-devel libyaml-devel libffi-devel zlib-devel  ncurses-devel libxml2-devel libxslt-devel zlib-devel libxml2
+yum install -y gcc openssl-devel libyaml-devel libffi-devel zlib-devel gdbm-devel ncurses-devel libxml2-devel libxslt-devel zlib-devel libxml2
 
 curl https://raw.githubusercontent.com/rvm/rvm/master/binscripts/rvm-installer | bash
 source /etc/profile.d/rvm.sh
