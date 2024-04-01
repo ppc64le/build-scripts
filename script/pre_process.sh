@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -xe
 cloned_package=$(ls -td -- */ | head -n 1)
 cd $cloned_package
 
@@ -16,19 +16,15 @@ for language in "${langs[@]}"; do
     	nvm_path='/home/travis/.nvm/nvm.sh'
         if [ -f "package-lock.json" ] || [ -f "yarn.lock" ]; then
 	    sudo chown travis:travis -R .
-	    echo '
      	    if [ -f ${nvm_path} ]; then
-	  	source ${nvm_path}
+	  	sudo source ${nvm_path}
     	    else
 	    	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-            	source ~/.bashrc
-            	nvm install 16
+            	sudo source ~/.bashrc
+            	sudo nvm install 16
 	    fi
-	    npm install -g yarn
-            yarn import || true
-	    ' > generate.sh
-	    chmod +x generate.sh
-            sudo ./generate.sh
+	    sudo npm install -g yarn
+            sudo yarn import || true
             sudo rm -rf node_modules/ package-lock.json
 	    ls -ltr
         fi
