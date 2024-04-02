@@ -28,8 +28,8 @@ echo "       PKG_VERSION is an optional paramater whose default value is v0.11.0
 echo "============================================YUM  INSTALL============================================"
 # install tools and dependent packages
 echo "max_parallel_downloads=$(nproc)" >>/etc/yum.conf
-yum -y update sudo
-yum install -y make gcc gcc-c++ autoconf automake glibc-headers glibc-devel openssl-devel git procps ncurses-devel wget m4 redhat-rpm-config xz info libyaml-devel zlib-devel nodejs ruby-devel
+yum -y update 
+yum install -y sudo make gcc gcc-c++ autoconf automake glibc-headers glibc-devel openssl-devel git procps ncurses-devel wget m4 redhat-rpm-config xz info libyaml-devel zlib-devel nodejs ruby-devel
 
 # installing bison & readline-devel from rpm, otherwise ruby-3.x installation fails
 # wget https://rpmfind.net/linux/centos/8-stream/AppStream/ppc64le/os/Packages/bison-3.0.4-10.el8.ppc64le.rpm
