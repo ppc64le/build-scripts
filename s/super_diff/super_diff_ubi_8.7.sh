@@ -28,7 +28,7 @@ echo "       PKG_VERSION is an optional paramater whose default value is v0.11.0
 echo "============================================YUM  INSTALL============================================"
 # install tools and dependent packages
 echo "max_parallel_downloads=$(nproc)" >>/etc/yum.conf
-yum -y update
+yum -y update sudo
 yum install -y make gcc gcc-c++ autoconf automake glibc-headers glibc-devel openssl-devel git procps ncurses-devel wget m4 redhat-rpm-config xz info libyaml-devel zlib-devel nodejs ruby-devel
 
 # installing bison & readline-devel from rpm, otherwise ruby-3.x installation fails
@@ -58,8 +58,8 @@ cd $PKG_NAME-$PKG_VERSION/
 git checkout $PKG_VERSION
 
 # setup build environment
-sed -i s/sudo//g bin/setup
-bin/setup
+#sed -i s/sudo//g bin/setup
+source bin/setup
 
 echo "============================================RUBY INSTALL============================================"
 # install appropriate ruby version
