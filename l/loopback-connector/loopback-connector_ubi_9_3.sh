@@ -1,14 +1,15 @@
 #!/bin/bash -e
-# -----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 #
-# Package          : loopback-connector
-# Version          : v6.1.0
-# Source repo      : https://github.com/loopbackio/loopback-connector
-# Tested on	: UBI 8.7
-# Language      : Node
+# Package       : loopback-connector
+# Version       : v6.1.3
+# Source repo   : https://github.com/loopbackio/loopback-connector
+# Tested on     : UBI: 9.3
+# Language      : java-script
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: ICH <ich@us.ibm.com>
+# Maintainer    : Stuti Wali <Stuti.Wali@ibm.com>
+#
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -17,12 +18,14 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
+
+set -e
 PACKAGE_NAME=loopback-connector
-PACKAGE_VERSION=${1:-v6.1.0}
+PACKAGE_VERSION=${1:-v6.1.3}
 PACKAGE_URL=https://github.com/loopbackio/loopback-connector
 
 export NODE_VERSION=${NODE_VERSION:-16}
-yum install -y  git gcc gcc-c++ libffi make
+yum install -y git gcc gcc-c++ libffi make wget zlib
 
 #Installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
