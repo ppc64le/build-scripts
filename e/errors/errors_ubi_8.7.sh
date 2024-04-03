@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : errors
-# Version          : v0.20.4
+# Version          : v0.22.0
 # Source repo      : https://github.com/go-openapi/errors
 # Tested on	: UBI 8.7
 # Language      : GO
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Shubham Garud <Shubham.Garud@ibm.com>
+# Maintainer	: Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=errors
-PACKAGE_VERSION=${1:-v0.20.4}
+PACKAGE_VERSION=${1:-v0.22.0}
 PACKAGE_URL=https://github.com/go-openapi/errors
 
 HOME_DIR=${PWD}

@@ -12,7 +12,7 @@
 if [ -f $buildinfo_path ]; then
   echo $package_dirpath 'exists'
 else
-  package_dirpath="$initial_char/$PACKAGE_NAME"
+  package_dirpath="$initial_char/$PACKAGE_NAME/"
   echo "Correct package_dirpath is $package_dirpath"
 fi
 
@@ -81,6 +81,23 @@ if [ -f $config_file ]; then
   fi
 fi
 
+# Below code is used to get the tested on parameter value from the build script
+build_script_with_quotes=$build_script
+stripped_build_script=$(echo "$build_script_with_quotes" | sed 's/"//g')
+echo $stripped_build_script
+if [ -f $stripped_build_script ]; then
+  echo "build script found"
+  while IFS= read -r line; do
+      # Check if the line starts with '# Tested on'
+      if [[ "$line" == "# Tested on"* ]]; then
+          # Extract the value after the first colon
+          tested_on=$(echo "$line" | cut -d ':' -f 2- | tr -d '[:space:]')
+          break
+      fi
+  done < "$stripped_build_script"  # Use input redirection from the file
+  echo "Tested on value: $tested_on"
+fi
+
 
 echo "export VERSION=$VERSION" > $CUR_DIR/variable.sh
 echo "export BUILD_SCRIPT=$build_script" >> $CUR_DIR/variable.sh
@@ -91,6 +108,7 @@ echo "export VALIDATE_BUILD_SCRIPT=$validate_build_script" >> $CUR_DIR/variable.
 echo "export VARIANT=$variant" >> $CUR_DIR/variable.sh
 echo "export BASENAME=$basename" >> $CUR_DIR/variable.sh
 echo "export NON_ROOT_BUILD=$nonRootBuild" >> $CUR_DIR/variable.sh
+echo "export TESTED_ON=$tested_on" >> $CUR_DIR/variable.sh
 
 chmod +x $CUR_DIR/variable.sh
 cat $CUR_DIR/variable.sh
