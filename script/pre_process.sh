@@ -23,7 +23,7 @@ for language in "${langs[@]}"; do
             	source ~/.bashrc
             	sudo nvm install 16
 	    fi
-	    sudo npm install -g yarn
+	    npm install -g yarn
             yarn import || true
             rm -rf node_modules/ package-lock.json
 	    ls -ltr
