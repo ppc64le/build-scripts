@@ -38,10 +38,11 @@ export TOXENV=py39
 virtualenv -p python3 --system-site-packages env2 
 /bin/bash -c "source env2/bin/activate"
 PATH=$PATH:/usr/local/bin/
+pip3 install tox
 
 
 # Build package
-if !(pip3 install tox) ; then
+if !(pip3 install .) ; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
