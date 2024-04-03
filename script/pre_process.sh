@@ -21,7 +21,7 @@ for language in "${langs[@]}"; do
     	    else
 	    	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
             	source ~/.bashrc
-            	sudo nvm install 16
+            	nvm install 16
 	    fi
 	    npm install -g yarn
             yarn import || true
