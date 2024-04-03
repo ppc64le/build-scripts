@@ -1,0 +1,16 @@
+{
+    "maintainer": "Shubham.Bhagwat@ibm.com",
+    "package_name" : "infinispan-operator",
+    "github_url": "https://github.com/infinispan/infinispan-operator.git",
+    "version": "2.4.0.Final",
+    "package_dir": "i/infinispan/redhat_ubi8",
+    "default_branch": "main",
+    "build_script": "infinispan-operator_ubi_8_7.sh",
+    "docker_build": "false",
+    "use_non_root_user": false,
+    "validate_build_script": "true",
+  
+    "2.4.0.Final": {
+        "build_script": "infinispan-operator_ubi_8_7.sh"
+    }
+}
