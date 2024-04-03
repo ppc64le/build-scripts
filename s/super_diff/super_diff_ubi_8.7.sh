@@ -59,7 +59,7 @@ git checkout $PKG_VERSION
 
 # setup build environment
 #sed -i s/sudo//g bin/setup
-source bin/setup
+#source bin/setup
 
 echo "============================================RUBY INSTALL============================================"
 # install appropriate ruby version
