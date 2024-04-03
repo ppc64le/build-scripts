@@ -9,7 +9,7 @@
     "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": false,
-    "0.*": {
+    "v0.*": {
         "build_script": "parameterized_ubi_9_3.sh"
      }
 }
