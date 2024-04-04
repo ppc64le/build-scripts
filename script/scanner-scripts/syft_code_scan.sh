@@ -9,6 +9,7 @@ if [ $validate_build_script == true ];then
       tar -xf syft_0.90.0_linux_ppc64le.tar.gz
       chmod +x syft
       sudo mv syft /usr/bin                           
+      echo "Executing syft scanner"
       sudo syft -q -o cyclonedx-json dir:${cloned_package} > syft_source_sbom_results.json
       #cat syft_source_sbom_results.json
 fi
