@@ -11,6 +11,7 @@ if [ $build_docker == true ];then
         tar -xf syft_0.90.0_linux_ppc64le.tar.gz
         chmod +x syft
         sudo mv syft /usr/bin  
+        echo "Executing syft scanner"
         sudo syft -q -s AllLayers -o cyclonedx-json ${image_name} > syft_image_sbom_results.json
 fi
 
