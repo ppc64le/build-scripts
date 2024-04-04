@@ -17,7 +17,7 @@
 #                    contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_NAME=luigi
+PACKAGE_NAME=twemproxy
 PACKAGE_VERSION=${1:-master}
 PACKAGE_URL=https://github.com/twitter/twemproxy
 
