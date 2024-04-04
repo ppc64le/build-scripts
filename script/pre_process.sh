@@ -16,14 +16,11 @@ for language in "${langs[@]}"; do
     	nvm_path='/home/travis/.nvm/nvm.sh'
         if [ -f "package-lock.json" ] || [ -f "yarn.lock" ]; then
 	    sudo chown travis:travis -R .
-     	    if [ -f ${nvm_path} ]; then
-	  	source ${nvm_path}
-    	    else
-	    	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-            	source ~/.bashrc
-	     	nvm install 16
-	   	source ${nvm_path}
-	    fi
+	    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+            source ~/.bashrc
+	    nvm install 16
+     	    nvm use 16
+	    source ${nvm_path}
 	    npm install -g yarn
             yarn import || true
             rm -rf node_modules/ package-lock.json
