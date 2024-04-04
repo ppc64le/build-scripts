@@ -21,7 +21,7 @@ PACKAGE_NAME=ck
 PACKAGE_VERSION=${1:-0.7.2}
 PACKAGE_URL=https://github.com/concurrencykit/ck
 
-yum install -y gcc gcc-c++ make
+yum install -y git gcc gcc-c++ make
 
 git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME
