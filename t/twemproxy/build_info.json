@@ -8,9 +8,10 @@
     "build_script": "twemproxy_ubi_9.3.sh",
     "validate_build_script": "true",
     "use_non_root_user": "false",
+    "docker_cmd" : "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "docker_build": "true",
     "master" : {
-       "dir": "master_ubi8",
+       "dir": "master_ubi9",
        "build_script": "twemproxy_ubi_9.3.sh"
     }
 }
