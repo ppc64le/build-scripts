@@ -9,7 +9,8 @@
     "validate_build_script": "true",
     "use_non_root_user": "false",
     "docker_build": "true",
-    "3.4.0.*" : {
+    "docker_cmd" : "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "3.4.0." : {
        "dir": "3.4.0_ubi8",
        "build_script": "luigi_ubi_8.7.sh"
     },
