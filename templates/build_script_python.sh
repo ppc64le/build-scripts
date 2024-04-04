@@ -26,12 +26,6 @@ yum install -y git python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo
 pip3 install pytest tox
 PATH=$PATH:/usr/local/bin/
 
-# Clone the repository
-git clone $PACKAGE_URL $PACKAGE_NAME
-
-cd $PACKAGE_NAME
-git checkout $PACKAGE_VERSION
-
 #install rust
 wget https://static.rust-lang.org/dist/rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
 tar -xzf rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
@@ -40,7 +34,13 @@ sudo ./install.sh
 export PATH=$HOME/.cargo/bin:$PATH
 rustc -V
 cargo  -V
+cd ../
 
+# Clone the repository
+git clone $PACKAGE_URL $PACKAGE_NAME
+
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 
 #install dependencies from requirements.txt
 
