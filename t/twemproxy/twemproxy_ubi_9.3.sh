@@ -4,7 +4,7 @@
 # Package          : twemproxy
 # Version          : master
 # Source repo      : https://github.com/twitter/twemproxy
-# Tested on        : UBI 9.3
+# Tested on        : UBI:9.3
 # Language         : C
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
