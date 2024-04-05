@@ -4,7 +4,7 @@
 # Package          : corepack
 # Version          : v0.26.0
 # Source repo      : https://github.com/nodejs/corepack
-# Tested on        : UBI 9.3
+# Tested on        : UBI:9.3
 # Language         : Typescript
 # Travis-Check     : True
 # Script License   : MIT license
@@ -23,8 +23,6 @@ PACKAGE_VERSION=${1:-v0.26.0}
 PACKAGE_URL=https://github.com/nodejs/corepack
 NODE_VERSION=v20.11.1
 
-HOME_DIR=${PWD}
-
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 yum install -y git wget gcc-c++ gcc  patch
@@ -35,8 +33,6 @@ echo "installing nodejs $NODE_VERSION"
 nvm install "$NODE_VERSION" >/dev/null
 nvm use $NODE_VERSION
 
-
-cd $HOME_DIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
