@@ -4,7 +4,7 @@
 # Package          : icu
 # Version          : release-75-rc
 # Source repo      : https://github.com/unicode-org/icu
-# Tested on        : UBI 9.3
+# Tested on        : UBI:9.3
 # Language         : C++,Java
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
