@@ -4,7 +4,7 @@
 # Package          : wazuh
 # Version          : v4.7.3
 # Source repo      : https://github.com/wazuh/wazuh
-# Tested on        : UBI 9.3
+# Tested on        : UBI: 9.3
 # Language         : C,Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
@@ -22,13 +22,10 @@ PACKAGE_NAME=wazuh
 PACKAGE_VERSION=${1:-v4.7.3}
 PACKAGE_URL=https://github.com/wazuh/wazuh
 
-HOME_DIR=${PWD}
-
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 yum install -y git wget make cmake gcc gcc-c++ autoconf procps diffutils python3.11 python3.11-devel python3.11-pip
 
-cd $HOME_DIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
