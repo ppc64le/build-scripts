@@ -10,7 +10,7 @@
     "use_non_root_user": "false",
     "docker_build": false,
      "v4.*.*,v*.*.*-*" : {
-       "build_script" : "wazuh_ubi_8.7.sh"
+       "build_script" : "wazuh_ubi_9.3.sh"
     },
     "v4.5.2" : {
        "build_script" : "wazuh_ubi_8.7.sh"
