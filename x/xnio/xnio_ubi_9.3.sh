@@ -23,7 +23,7 @@ PACKAGE_URL=https://github.com/xnio/xnio
 
 yum install -y g++ wget git
 
-#installing temurin java 8
+#installing temurin java 11
 cat <<EOF > /etc/yum.repos.d/adoptium.repo
 [Adoptium]
 name=Adoptium
@@ -33,7 +33,7 @@ gpgcheck=1
 gpgkey=https://packages.adoptium.net/artifactory/api/gpg/key/public
 EOF
 
-yum install -y temurin-8-jdk
+yum install -y temurin-11-jdk
 
 #install maven
 wget https://archive.apache.org/dist/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.tar.gz
@@ -53,7 +53,7 @@ if ! mvn -U -B -fae -DskipTests clean install; then
     exit 1
 fi
 
-if ! mvn test; then
+if ! mvn -U -B -fae test; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
