@@ -4,7 +4,7 @@
 # Package          : wazuh
 # Version          : v4.7.3
 # Source repo      : https://github.com/wazuh/wazuh
-# Tested on        : UBI: 9.3
+# Tested on        : UBI:9.3
 # Language         : C,Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
