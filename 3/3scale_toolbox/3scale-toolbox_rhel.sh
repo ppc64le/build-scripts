@@ -3,7 +3,7 @@
 #
 # Package       : 3scale/toolbox
 # Version       : 2.14.1
-# Source repo   : https://github.com/3scale/3scale_toolbox.git
+# Source repo   : https://github.com/3scale/3scale_toolbox
 # Tested on     : RHEL
 # Language      : Ruby
 # Travis-Check : False
@@ -21,7 +21,7 @@
 PACKAGE_NAME=3scale_toolbox
 PACKAGE_VERSION=${1:-v2.14.1}
 PACKAGE_BRANCH=master
-PACKAGE_URL=https://github.com/3scale/3scale_toolbox.git
+PACKAGE_URL=https://github.com/3scale/3scale_toolbox
 
 #clone branch/release passed as argument, if none, use last stable release
 #Download Updates and Dependencies
@@ -29,18 +29,7 @@ PACKAGE_URL=https://github.com/3scale/3scale_toolbox.git
 #install git
 yum install -y git 
 
-#Check if package exists
-if [ -d "$PACKAGE_NAME" ] ; then
-  rm -rf $PACKAGE_NAME
-  echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"
-fi
-
-if ! git clone $PACKAGE_URL -b $PACKAGE_BRANCH ; then
-    echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
-    exit 1
-fi
+git clone $PACKAGE_URL
 
 echo "BRANCH_NAME = $PACKAGE_BRANCH"
 
