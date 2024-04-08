@@ -8,5 +8,8 @@
    "package_dir": "c/ck",
    "use_non_root_user": "false",
    "docker_build": false,
-   "validate_build_script": true
+   "validate_build_script": true,
+   "0.7.*" : {
+      "build_script" : "ck_ubi_9.3.sh"
+   }
 }
