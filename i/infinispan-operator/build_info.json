@@ -3,7 +3,7 @@
     "package_name" : "infinispan-operator",
     "github_url": "https://github.com/infinispan/infinispan-operator",
     "version": "2.4.0.Final",
-    "package_dir": "i/",
+    "package_dir": "i/infinispan-operator",
     "default_branch": "main",
     "build_script": "infinispan-operator_ubi_8.7.sh",
     "docker_build": "false",
