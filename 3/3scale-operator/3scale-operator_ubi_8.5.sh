@@ -3,7 +3,7 @@
 #
 # Package	    : 3scale-operator
 # Version	    : master
-# Source repo	: https://github.com/3scale/3scale-operator.git
+# Source repo	: https://github.com/3scale/3scale-operator
 # Tested on	    : UBI 8.5
 # Language      : Go
 # Travis-Check  : True
@@ -20,23 +20,13 @@
 
 PACKAGE_NAME=3scale-operator
 PACKAGE_VERSION=master
-PACKAGE_URL=https://github.com/3scale/3scale-operator.git
+PACKAGE_URL=https://github.com/3scale/3scale-operator
 PACKAGE_BRANCH=master
 
 #Install the required dependencies
 yum install git gcc make wget tar zip -y
 
-#Check if package exists
-if [ -d "$PACKAGE_NAME" ] ; then
-  rm -rf $PACKAGE_NAME
-  echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"
-fi
-
-if ! git clone $PACKAGE_URL -b $PACKAGE_BRANCH ; then
-    echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    exit 0
-fi
+git clone $PACKAGE_URL
 
 GO_VERSION=1.21.8
 
