@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: 
-# Version	: 
-# Source repo	: 
-# Tested on	: UBI 9.3
+# Package          : winston
+# Version          : v3.13.0
+# Source repo      : https://github.com/winstonjs/winston
+# Tested on	: UBI 9.3 
 # Language      : Node
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: ICH <ich@us.ibm.com>
+# Maintainer    : Shubham Garud <Shubham.Garud@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -17,12 +17,12 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_NAME=
-PACKAGE_VERSION=
-PACKAGE_URL=
+PACKAGE_NAME=winston
+PACKAGE_VERSION=${1:-v3.13.0}
+PACKAGE_URL=https://github.com/winstonjs/winston
 
 export NODE_VERSION=${NODE_VERSION:-16}
-yum install -y python3 python3-devel.ppc64le git gcc gcc-c++ libffi make
+yum install -y git gcc gcc-c++ libffi make
 
 #Installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash

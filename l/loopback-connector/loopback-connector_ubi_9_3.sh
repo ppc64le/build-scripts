@@ -1,14 +1,15 @@
 #!/bin/bash -e
-# -----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 #
-# Package	: 
-# Version	: 
-# Source repo	: 
-# Tested on	: UBI 9.3
-# Language      : Node
+# Package       : loopback-connector
+# Version       : v6.1.3
+# Source repo   : https://github.com/loopbackio/loopback-connector
+# Tested on     : UBI: 9.3
+# Language      : java-script
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: ICH <ich@us.ibm.com>
+# Maintainer    : Stuti Wali <Stuti.Wali@ibm.com>
+#
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -17,12 +18,14 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_NAME=
-PACKAGE_VERSION=
-PACKAGE_URL=
+
+set -e
+PACKAGE_NAME=loopback-connector
+PACKAGE_VERSION=${1:-v6.1.3}
+PACKAGE_URL=https://github.com/loopbackio/loopback-connector
 
 export NODE_VERSION=${NODE_VERSION:-16}
-yum install -y python3 python3-devel.ppc64le git gcc gcc-c++ libffi make
+yum install -y git gcc gcc-c++ libffi make wget zlib
 
 #Installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
@@ -37,7 +40,7 @@ git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if ! npm install && npm audit fix --force; then
+if ! npm install && ! npm audit fix --force; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"

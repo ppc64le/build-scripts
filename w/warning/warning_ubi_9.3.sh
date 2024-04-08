@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: 
-# Version	: 
-# Source repo	: 
-# Tested on	: UBI 9.3
-# Language      : Node
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer	: ICH <ich@us.ibm.com>
+# Package           : warning
+# Version           : master
+# Source repo       : https://github.com/BerkeleyTrue/warning.git
+# Tested on         : UBI 9.3
+# Language          : JavaScript
+# Travis-Check      : True
+# Script License    : Apache License, Version 2 or later
+# Maintainer        : Mohit Pawar <mohit.pawar@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -17,12 +17,12 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_NAME=
-PACKAGE_VERSION=
-PACKAGE_URL=
+PACKAGE_NAME=warning
+PACKAGE_VERSION=${1:-master}
+PACKAGE_URL=https://github.com/BerkeleyTrue/warning.git
 
 export NODE_VERSION=${NODE_VERSION:-16}
-yum install -y python3 python3-devel.ppc64le git gcc gcc-c++ libffi make
+yum install git make -y
 
 #Installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
@@ -31,13 +31,18 @@ echo "installing nodejs $NODE_VERSION"
 nvm install "$NODE_VERSION" >/dev/null
 nvm use $NODE_VERSION
 
-
-
 git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if ! npm install && npm audit fix --force; then
+if ! npm install ; then
+    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    exit 1
+fi
+
+if ! npm audit fix --force ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"

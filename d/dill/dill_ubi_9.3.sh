@@ -1,11 +1,11 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : MACS
-# Version          : v3.0.0
-# Source repo      : https://github.com/macs3-project/MACS/
-# Tested on        : UBI 8.7
-# Language         : Cython, Python
+# Package          : dill
+# Version          : 0.3.8
+# Source repo      : https://github.com/uqfoundation/dill
+# Tested on        : UBI 9.3
+# Language         : Python
 # Travis-Check     : True
 # Script License   : GNU General Public License v3.0
 # Maintainer       : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
@@ -17,44 +17,35 @@
 #                    contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-set -e
 
-PACKAGE_NAME=MACS
-PACKAGE_VERSION=${1:-v3.0.0}
-PACKAGE_URL=https://github.com/macs3-project/MACS/
+PACKAGE_NAME=dill
+PACKAGE_VERSION=${1:-0.3.8}
+PACKAGE_URL=https://github.com/uqfoundation/dill
 
 wrkdir=`pwd`
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
-yum install -y wget gcc git gcc-c++ gcc-gfortran.ppc64le openblas.ppc64le cmake procps-ng diffutils bc
+yum install -y python3-devel pip git gcc gcc-c++
 
-wget https://repo.anaconda.com/miniconda/Miniconda3-py310_23.10.0-1-Linux-ppc64le.sh -O miniconda.sh
-bash miniconda.sh -b -p $HOME/miniconda
-export PATH="$HOME/miniconda/bin:$PATH"
-python3 -m pip install -U pip
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-git submodule update --init --recursive
 
-conda install openblas cython numpy scipy -y
-conda install conda-forge::meson-python -y
-conda install conda-forge::pybind11 -y
-conda install conda-forge::pythran -y
-conda install conda-forge::cython -y
-yum install zlib-devel -y
-python3 -m pip install --upgrade --progress-bar off pytest
+python3 -m pip install coverage numpy tox
+# python3 -m pip install numpy
 
-if ! python3 -m pip install --upgrade-strategy only-if-needed --no-build-isolation --progress-bar off . ; then
+if ! python3 setup.py install ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-if ! pytest --runxfail && cd test && ./cmdlinetest-nohmmratac macs3 ; then
+# python3 -m pip install tox
+
+if ! /usr/local/bin/tox -e py39 ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
