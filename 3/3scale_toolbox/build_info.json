@@ -6,7 +6,7 @@
     "default_branch": "main",
     "category": "rhp",
     "package_dir": "3scale/3scale_toolbox",
-    "build_script": "3scale-toolbox_rhel.sh",
+    "build_script": "3scale-toolbox_ubi_8.5.sh",
     "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": false
