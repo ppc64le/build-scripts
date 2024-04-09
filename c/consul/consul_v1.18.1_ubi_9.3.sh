@@ -4,7 +4,7 @@
 # Package          : consul
 # Version          : v1.18.1
 # Source repo      : https://github.com/hashicorp/consul
-# Tested on	       : UBI 9.3
+# Tested on        : UBI: 9.3
 # Language         : Go
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
