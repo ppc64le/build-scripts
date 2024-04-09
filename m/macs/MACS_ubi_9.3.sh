@@ -4,7 +4,7 @@
 # Package          : MACS
 # Version          : v3.0.1
 # Source repo      : https://github.com/macs3-project/MACS/
-# Tested on        : UBI 9.3
+# Tested on        : UBI: 9.3
 # Language         : Cython, Python
 # Travis-Check     : True
 # Script License   : GNU General Public License v3.0
