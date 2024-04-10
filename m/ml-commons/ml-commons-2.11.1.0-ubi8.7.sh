@@ -10,7 +10,7 @@
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Pratik Tonage <pratik.tonage@ibm.com>, Sumit Dubey <Sumit.Dubey2@ibm.com>
 #
-# Disclaimer: This script has been tested in root mode on given
+# Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
