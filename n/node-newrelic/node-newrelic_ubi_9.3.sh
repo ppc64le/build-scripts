@@ -4,7 +4,7 @@
 # Package          : node-newrelic
 # Version          : v11.14.0
 # Source repo      : https://github.com/newrelic/node-newrelic
-# Tested on		   : UBI 9.3
+# Tested on		   : UBI:9.3
 # Language         : Node
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
