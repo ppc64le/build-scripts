@@ -13,6 +13,5 @@
     "1.*.*,1.*.*-*": {
        "dir": "1.0.19_ubi9",
        "build_script" : "libsodium_ubi_9.3.sh"
-    }
-	
+    }	
  }
