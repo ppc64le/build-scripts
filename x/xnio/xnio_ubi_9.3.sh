@@ -4,7 +4,7 @@
 # Package       : xnio
 # Version       : 3.8.13.Final
 # Source repo   : https://github.com/xnio/xnio
-# Tested on     : UBI 9.3
+# Tested on     : UBI:9.3
 # Language      : Java
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -53,7 +53,9 @@ if ! mvn -U -B -fae -DskipTests clean install; then
     exit 1
 fi
 
-if ! mvn -U -B -fae test; then
+mvn clean
+
+if ! mvn test; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
