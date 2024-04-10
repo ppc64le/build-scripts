@@ -4,7 +4,7 @@
 # Package	: 
 # Version	: 
 # Source repo	: 
-# Tested on	: UBI 8.7
+# Tested on	: UBI 9.3 
 # Language      : GO
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -44,15 +44,18 @@ go mod tidy
 if ! go build ./...; then
         echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Init_Fails"
+        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
+	exit 1
 fi
 
 if ! go test ./...; then
         echo "------------------$PACKAGE_NAME:test_fails---------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails"
+	exit 2
 else
         echo "------------------$PACKAGE_NAME:install_and_test_success-------------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Install_and_Test_Success"
+	exit 0
 fi

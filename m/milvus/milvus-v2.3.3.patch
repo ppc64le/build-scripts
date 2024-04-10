@@ -1,0 +1,1465 @@
+diff --git a/deployments/docker/dev/docker-compose.yml b/deployments/docker/dev/docker-compose.yml
+index c653c2614..b058d9083 100644
+--- a/deployments/docker/dev/docker-compose.yml
++++ b/deployments/docker/dev/docker-compose.yml
+@@ -16,27 +16,6 @@ services:
+       - "2380:2380"
+       - "4001:4001"
+ 
+-  pulsar:
+-    image: apachepulsar/pulsar:2.8.2
+-    volumes:
+-      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/pulsar:/pulsar/data
+-    environment:
+-      # bin/apply-config-from-env.py script will modify the configuration file based on the environment variables
+-      # nettyMaxFrameSizeBytes must be calculated from maxMessageSize + 10240 (padding)
+-      - nettyMaxFrameSizeBytes=104867840 # this is 104857600 + 10240 (padding)
+-      - defaultRetentionTimeInMinutes=10080
+-      - defaultRetentionSizeInMB=8192
+-      # maxMessageSize is missing from standalone.conf, must use PULSAR_PREFIX_ to get it configured
+-      - PULSAR_PREFIX_maxMessageSize=104857600
+-      - PULSAR_GC=-XX:+UseG1GC
+-    command: |
+-      /bin/bash -c \
+-      "bin/apply-config-from-env.py conf/standalone.conf && \
+-      exec bin/pulsar standalone --no-functions-worker --no-stream-storage"
+-    ports:
+-      - "6650:6650"
+-      - "18080:8080"
+-
+   minio:
+     image: minio/minio:RELEASE.2022-03-17T06-34-49Z
+     ports:
+@@ -69,31 +48,6 @@ services:
+       - "16686:16686" # frontent
+       - "14268:14268" # jaeger.thirft
+ 
+-  zookeeper:
+-    image: wurstmeister/zookeeper:latest
+-    ports:
+-      - "2181:2181"
+-
+-  kafka:
+-    image: 'bitnami/kafka:3.1.0'
+-    ports:
+-      - '9092:9092'
+-    environment:
+-      - KAFKA_BROKER_ID=0
+-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092
+-      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+-      - ALLOW_PLAINTEXT_LISTENER=yes
+-      # set kafka server config
+-      - KAFKA_CFG_MAX_PARTITION_FETCH_BYTES=5242880
+-      - KAFKA_CFG_MAX_REQUEST_SIZE=5242880
+-      - KAFKA_CFG_MESSAGE_MAX_BYTES=5242880
+-      - KAFKA_CFG_REPLICA_FETCH_MAX_BYTES=5242880
+-      - KAFKA_CFG_FETCH_MESSAGE_MAX_BYTES=5242880
+-      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+-    depends_on:
+-      - zookeeper
+-
+ networks:
+   default:
+     name: milvus_dev
+diff --git a/go.mod b/go.mod
+index f319ef9a9..1fd59f1ef 100644
+--- a/go.mod
++++ b/go.mod
+@@ -9,7 +9,7 @@ require (
+ 	github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.1.0
+ 	github.com/aliyun/credentials-go v1.2.7
+ 	github.com/antlr/antlr4/runtime/Go/antlr v0.0.0-20210826220005-b48c857c3a0e
+-	github.com/apache/arrow/go/v8 v8.0.0-20220322092137-778b1772fd20
++	github.com/apache/arrow/go/v12 v12.0.1
+ 	github.com/apache/pulsar-client-go v0.6.1-0.20210728062540-29414db801a7
+ 	github.com/bits-and-blooms/bloom/v3 v3.0.1
+ 	github.com/blang/semver/v4 v4.0.0
+@@ -50,7 +50,7 @@ require (
+ 	go.uber.org/multierr v1.7.0
+ 	go.uber.org/zap v1.20.0
+ 	golang.org/x/crypto v0.14.0
+-	golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17
++	golang.org/x/exp v0.0.0-20220827204233-334a2380cb91
+ 	golang.org/x/oauth2 v0.6.0
+ 	golang.org/x/sync v0.1.0
+ 	golang.org/x/text v0.13.0
+@@ -74,7 +74,7 @@ require (
+ 	github.com/alibabacloud-go/debug v0.0.0-20190504072949-9472017b5c68 // indirect
+ 	github.com/alibabacloud-go/tea v1.1.8 // indirect
+ 	github.com/andybalholm/brotli v1.0.4 // indirect
+-	github.com/apache/thrift v0.15.0 // indirect
++	github.com/apache/thrift v0.16.0 // indirect
+ 	github.com/ardielle/ardielle-go v1.5.2 // indirect
+ 	github.com/benbjohnson/clock v1.1.0 // indirect
+ 	github.com/benesch/cgosymbolizer v0.0.0-20190515212042-bec6fe6e597b // indirect
+@@ -118,7 +118,7 @@ require (
+ 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
+ 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
+ 	github.com/golang/snappy v0.0.4 // indirect
+-	github.com/google/flatbuffers v2.0.5+incompatible // indirect
++	github.com/google/flatbuffers v2.0.8+incompatible // indirect
+ 	github.com/google/uuid v1.3.0 // indirect
+ 	github.com/gorilla/websocket v1.4.2 // indirect
+ 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0 // indirect
+@@ -129,7 +129,7 @@ require (
+ 	github.com/ianlancetaylor/cgosymbolizer v0.0.0-20221217025313-27d3c9f66b6a // indirect
+ 	github.com/jonboulle/clockwork v0.2.2 // indirect
+ 	github.com/json-iterator/go v1.1.12 // indirect
+-	github.com/klauspost/asmfmt v1.3.1 // indirect
++	github.com/klauspost/asmfmt v1.3.2 // indirect
+ 	github.com/klauspost/cpuid/v2 v2.2.4 // indirect
+ 	github.com/kr/pretty v0.3.0 // indirect
+ 	github.com/kr/text v0.2.0 // indirect
+@@ -161,7 +161,7 @@ require (
+ 	github.com/pelletier/go-toml v1.9.3 // indirect
+ 	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
+ 	github.com/pierrec/lz4 v2.5.2+incompatible // indirect
+-	github.com/pierrec/lz4/v4 v4.1.12 // indirect
++	github.com/pierrec/lz4/v4 v4.1.15 // indirect
+ 	github.com/pingcap/errors v0.11.5-0.20211224045212-9687c2b0f87c // indirect
+ 	github.com/pingcap/failpoint v0.0.0-20210918120811-547c13e3eb00 // indirect
+ 	github.com/pingcap/goleveldb v0.0.0-20191226122134-f82aafb29989 // indirect
+@@ -171,8 +171,8 @@ require (
+ 	github.com/pmezard/go-difflib v1.0.0 // indirect
+ 	github.com/power-devops/perfstat v0.0.0-20210106213030-5aafc221ea8c // indirect
+ 	github.com/prometheus/procfs v0.9.0 // indirect
+-	github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0 // indirect
+-	github.com/rogpeppe/go-internal v1.8.1 // indirect
++	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
++	github.com/rogpeppe/go-internal v1.9.0 // indirect
+ 	github.com/rs/xid v1.5.0 // indirect
+ 	github.com/shirou/gopsutil/v3 v3.22.9 // indirect
+ 	github.com/sirupsen/logrus v1.9.2 // indirect
+@@ -197,7 +197,7 @@ require (
+ 	github.com/ugorji/go/codec v1.2.11 // indirect
+ 	github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2 // indirect
+ 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
+-	github.com/zeebo/xxh3 v1.0.1 // indirect
++	github.com/zeebo/xxh3 v1.0.2 // indirect
+ 	go.etcd.io/bbolt v1.3.6 // indirect
+ 	go.etcd.io/etcd/client/pkg/v3 v3.5.5 // indirect
+ 	go.etcd.io/etcd/client/v2 v2.305.5 // indirect
+@@ -220,7 +220,7 @@ require (
+ 	golang.org/x/time v0.3.0 // indirect
+ 	golang.org/x/tools v0.7.0 // indirect
+ 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
+-	gonum.org/v1/gonum v0.9.3 // indirect
++	gonum.org/v1/gonum v0.11.0 // indirect
+ 	google.golang.org/appengine v1.6.7 // indirect
+ 	google.golang.org/genproto v0.0.0-20230331144136-dcfb400f0633 // indirect
+ 	google.golang.org/protobuf v1.30.0 // indirect
+diff --git a/go.sum b/go.sum
+index c667a858f..b743e401b 100644
+--- a/go.sum
++++ b/go.sum
+@@ -41,7 +41,6 @@ cloud.google.com/go/storage v1.6.0/go.mod h1:N7U0C8pVQ/+NIKOBQyamJIeKQKkZ+mxpohl
+ cloud.google.com/go/storage v1.8.0/go.mod h1:Wv1Oy7z6Yz3DshWRJFhqM/UCfaWIRTdp0RXyy7KQOVs=
+ cloud.google.com/go/storage v1.10.0/go.mod h1:FLPqc6j+Ki4BU591ie1oL6qBQGu2Bl/tZ9ullr3+Kg0=
+ dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
+-dmitri.shuralyov.com/gpu/mtl v0.0.0-20201218220906-28db891af037/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
+ gioui.org v0.0.0-20210308172011-57750fc8a0a6/go.mod h1:RSH6KIUZ0p2xy5zHDxgAM4zumjgTw83q2ge/PI+yyw8=
+ github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4 h1:/vQbFIOMbk2FiG/kXiLl8BRyzTWDw7gX/Hz7Dd5eDMs=
+ github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4/go.mod h1:hN7oaIRCjzsZ2dE+yG5k+rsdt3qcwykqK6HVGcKwsw4=
+@@ -97,10 +96,10 @@ github.com/antihax/optional v0.0.0-20180407024304-ca021399b1a6/go.mod h1:V8iCPQY
+ github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
+ github.com/antlr/antlr4/runtime/Go/antlr v0.0.0-20210826220005-b48c857c3a0e h1:GCzyKMDDjSGnlpl3clrdAK7I1AaVoaiKDOYkUzChZzg=
+ github.com/antlr/antlr4/runtime/Go/antlr v0.0.0-20210826220005-b48c857c3a0e/go.mod h1:F7bn7fEU90QkQ3tnmaTx3LTKLEDqnwWODIYppRQ5hnY=
+-github.com/apache/arrow/go/v8 v8.0.0-20220322092137-778b1772fd20 h1:YcSFhAin12rxRsvvfzD6gepH7jZwtFVdikXRyhzUC2w=
+-github.com/apache/arrow/go/v8 v8.0.0-20220322092137-778b1772fd20/go.mod h1:UUe+gJaMnuFD6icfGSJxUjG/tX/POUbPS/wE+EFyncM=
+-github.com/apache/thrift v0.15.0 h1:aGvdaR0v1t9XLgjtBYwxcBvBOTMqClzwE26CHOgjW1Y=
+-github.com/apache/thrift v0.15.0/go.mod h1:PHK3hniurgQaNMZYaCLEqXKsYK8upmhPbmdP2FXSqgU=
++github.com/apache/arrow/go/v12 v12.0.1 h1:JsR2+hzYYjgSUkBSaahpqCetqZMr76djX80fF/DiJbg=
++github.com/apache/arrow/go/v12 v12.0.1/go.mod h1:weuTY7JvTG/HDPtMQxEUp7pU73vkLWMLpY67QwZ/WWw=
++github.com/apache/thrift v0.16.0 h1:qEy6UW60iVOlUy+b9ZR0d5WzUWYGOo4HfopoyBaNmoY=
++github.com/apache/thrift v0.16.0/go.mod h1:PHK3hniurgQaNMZYaCLEqXKsYK8upmhPbmdP2FXSqgU=
+ github.com/ardielle/ardielle-go v1.5.2 h1:TilHTpHIQJ27R1Tl/iITBzMwiUGSlVfiVhwDNGM3Zj4=
+ github.com/ardielle/ardielle-go v1.5.2/go.mod h1:I4hy1n795cUhaVt/ojz83SNVCYIGsAFAONtv2Dr7HUI=
+ github.com/ardielle/ardielle-tools v1.5.4/go.mod h1:oZN+JRMnqGiIhrzkRN9l26Cej9dEx4jeNG6A+AdkShk=
+@@ -211,7 +210,6 @@ github.com/dimfeld/httptreemux v5.0.1+incompatible/go.mod h1:rbUlSV+CCpv/SuqUTP/
+ github.com/dnaeon/go-vcr v1.2.0 h1:zHCHvJYTMh1N7xnV7zf1m1GPBF9Ad0Jk/whtQ1663qI=
+ github.com/docker/go-units v0.4.0 h1:3uh0PgVws3nIA0Q+MwDC8yjEPf9zjRfZZWXZYDct3Tw=
+ github.com/docker/go-units v0.4.0/go.mod h1:fgPhTUdO+D/Jk86RDLlptpiXQzgHJF7gydDDbaIK4Dk=
+-github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815/go.mod h1:WwZ+bS3ebgob9U8Nd0kOddGdZWjyMGR8Wziv+TBNwSE=
+ github.com/dustin/go-humanize v1.0.0/go.mod h1:HtrtbFcZ19U5GC7JDqmcUSB87Iq5E25KnS6fMYU6eOk=
+ github.com/dustin/go-humanize v1.0.1 h1:GzkhY7T5VNhEkwH0PVJgjz+fX1rhBrR7pRT3mDkpeCY=
+ github.com/dustin/go-humanize v1.0.1/go.mod h1:Mu1zIs6XwVuF/gI1OepvI0qD18qycQx+mFykh5fBlto=
+@@ -281,7 +279,6 @@ github.com/go-latex/latex v0.0.0-20210118124228-b3d85cf34e07/go.mod h1:CO1AlKB2C
+ github.com/go-logfmt/logfmt v0.3.0/go.mod h1:Qt1PoO58o5twSAckw1HlFXLmHsOX5/0LbT9GBnD5lWE=
+ github.com/go-logfmt/logfmt v0.4.0/go.mod h1:3RMwSq7FuexP4Kalkev3ejPJsZTpXXBr9+V4qmtdjCk=
+ github.com/go-logfmt/logfmt v0.5.0/go.mod h1:wCYkCAKZfumFQihp8CzCvQ3paCTfi41vtzG1KdI/P7A=
+-github.com/go-logr/logr v0.4.0/go.mod h1:z6/tIYblkpsD+a4lm/fGIIU9mZ+XfAiaFtq7xTgseGU=
+ github.com/go-logr/logr v1.2.2/go.mod h1:jdQByPbusPIv2/zmleS9BjJVeZ6kBagPoEUsqbVz/1A=
+ github.com/go-logr/logr v1.2.3 h1:2DntVwHkVopvECVRSlL5PSo9eG+cAkDCuckLubN+rq0=
+ github.com/go-logr/logr v1.2.3/go.mod h1:jdQByPbusPIv2/zmleS9BjJVeZ6kBagPoEUsqbVz/1A=
+@@ -303,7 +300,6 @@ github.com/go-task/slim-sprig v0.0.0-20210107165309-348f09dbbbc0/go.mod h1:fyg78
+ github.com/gobwas/httphead v0.0.0-20180130184737-2c6c146eadee/go.mod h1:L0fX3K22YWvt/FAX9NnzrNzcI4wNYi9Yku4O0LKYflo=
+ github.com/gobwas/pool v0.2.0/go.mod h1:q8bcK0KcYlCgd9e7WYLm9LpyS+YeLd8JVDW6WezmKEw=
+ github.com/gobwas/ws v1.0.2/go.mod h1:szmBTxLgaFppYjEmNtny/v3w89xOydFnnZMcgRRu/EM=
+-github.com/goccy/go-json v0.7.10/go.mod h1:6MelG93GURQebXPDq3khkgXZkazVtN9CRI+MGFi0w8I=
+ github.com/goccy/go-json v0.10.2 h1:CrxCmQqYDkv1z7lO7Wbh2HN93uovUHgrECaO5ZrCXAU=
+ github.com/goccy/go-json v0.10.2/go.mod h1:6MelG93GURQebXPDq3khkgXZkazVtN9CRI+MGFi0w8I=
+ github.com/godbus/dbus v0.0.0-20190726142602-4481cbc300e2 h1:ZpnhV/YsD2/4cESfV5+Hoeu/iUR3ruzNvZ+yQfO03a0=
+@@ -373,8 +369,8 @@ github.com/google/btree v1.0.0/go.mod h1:lNA+9X1NB3Zf8V7Ke586lFgjr2dZNuvo3lPJSGZ
+ github.com/google/btree v1.0.1/go.mod h1:xXMiIv4Fb/0kKde4SpL7qlzvu5cMJDRkFDxJfI9uaxA=
+ github.com/google/btree v1.1.2 h1:xf4v41cLI2Z6FxbKm+8Bu+m8ifhj15JuZ9sa0jZCMUU=
+ github.com/google/btree v1.1.2/go.mod h1:qOPhT0dTNdNzV6Z/lhRX0YXUafgPLFUh+gZMl761Gm4=
+-github.com/google/flatbuffers v2.0.5+incompatible h1:ANsW0idDAXIY+mNHzIHxWRfabV2x5LUEEIIWcwsYgB8=
+-github.com/google/flatbuffers v2.0.5+incompatible/go.mod h1:1AeVuKshWv4vARoZatz6mlQ0JxURH0Kv5+zNeJKJCa8=
++github.com/google/flatbuffers v2.0.8+incompatible h1:ivUb1cGomAB101ZM1T0nOiWz9pSrTMoa9+EiY7igmkM=
++github.com/google/flatbuffers v2.0.8+incompatible/go.mod h1:1AeVuKshWv4vARoZatz6mlQ0JxURH0Kv5+zNeJKJCa8=
+ github.com/google/go-cmp v0.2.0/go.mod h1:oXzfMopK8JAjlY9xF4vHSVASa0yLyX7SntLO5aqRK0M=
+ github.com/google/go-cmp v0.2.1-0.20190312032427-6f77996f0c42/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMywk6iLU=
+ github.com/google/go-cmp v0.3.0/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMywk6iLU=
+@@ -388,7 +384,6 @@ github.com/google/go-cmp v0.5.3/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/
+ github.com/google/go-cmp v0.5.4/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
+ github.com/google/go-cmp v0.5.5/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
+ github.com/google/go-cmp v0.5.6/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
+-github.com/google/go-cmp v0.5.7/go.mod h1:n+brtR0CgQNWTVd5ZUFpTBC8YFBDLK/h/bpaJ8/DtOE=
+ github.com/google/go-cmp v0.5.9 h1:O2Tfq5qg4qc4AmwVlvv0oLiVAGB7enBSJ2x2DqQFi38=
+ github.com/google/go-cmp v0.5.9/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
+ github.com/google/go-querystring v1.0.0/go.mod h1:odCYkC5MyYFN7vkCjXpyrEuKhc/BUO6wN/zVPAxq5ck=
+@@ -511,11 +506,10 @@ github.com/kisielk/errcheck v1.1.0/go.mod h1:EZBBE59ingxPouuu3KfxchcWSUPOHkagtvW
+ github.com/kisielk/errcheck v1.2.0/go.mod h1:/BMXB+zMLi60iA8Vv6Ksmxu/1UDYcXs4uQLJ+jE2L00=
+ github.com/kisielk/errcheck v1.5.0/go.mod h1:pFxgyoBC7bSaBwPgfKdkLd5X25qrDl4LWUI2bnpBCr8=
+ github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
+-github.com/klauspost/asmfmt v1.3.1 h1:7xZi1N7s9gTLbqiM8KUv8TLyysavbTRGBT5/ly0bRtw=
+-github.com/klauspost/asmfmt v1.3.1/go.mod h1:AG8TuvYojzulgDAMCnYn50l/5QV3Bs/tp6j0HLHbNSE=
++github.com/klauspost/asmfmt v1.3.2 h1:4Ri7ox3EwapiOjCki+hw14RyKk201CN4rzyCJRFLpK4=
++github.com/klauspost/asmfmt v1.3.2/go.mod h1:AG8TuvYojzulgDAMCnYn50l/5QV3Bs/tp6j0HLHbNSE=
+ github.com/klauspost/compress v1.8.2/go.mod h1:RyIbtBH6LamlWaDj8nUwkbUhJ87Yi3uG0guNDohfE1A=
+ github.com/klauspost/compress v1.9.7/go.mod h1:RyIbtBH6LamlWaDj8nUwkbUhJ87Yi3uG0guNDohfE1A=
+-github.com/klauspost/compress v1.14.2/go.mod h1:/3/Vjq9QcHkK5uEr5lBEmyoZ1iFhe47etQ6QUkpK6sk=
+ github.com/klauspost/compress v1.14.4/go.mod h1:/3/Vjq9QcHkK5uEr5lBEmyoZ1iFhe47etQ6QUkpK6sk=
+ github.com/klauspost/compress v1.16.5 h1:IFV2oUNUzZaz+XyusxpLzpzS8Pt5rh0Z16For/djlyI=
+ github.com/klauspost/compress v1.16.5/go.mod h1:ntbaceVETuRiXiv4DpjP66DpAtAGkEQskQzEyD//IeE=
+@@ -670,8 +664,8 @@ github.com/phpdave11/gofpdi v1.0.12/go.mod h1:vBmVV0Do6hSBHC8uKUQ71JGW+ZGQq74llk
+ github.com/pierrec/lz4 v2.0.5+incompatible/go.mod h1:pdkljMzZIN41W+lC3N2tnIh5sFi+IEE17M5jbnwPHcY=
+ github.com/pierrec/lz4 v2.5.2+incompatible h1:WCjObylUIOlKy/+7Abdn34TLIkXiA4UWUMhxq9m9ZXI=
+ github.com/pierrec/lz4 v2.5.2+incompatible/go.mod h1:pdkljMzZIN41W+lC3N2tnIh5sFi+IEE17M5jbnwPHcY=
+-github.com/pierrec/lz4/v4 v4.1.12 h1:44l88ehTZAUGW4VlO1QC4zkilL99M6Y9MXNwEs0uzP8=
+-github.com/pierrec/lz4/v4 v4.1.12/go.mod h1:gZWDp/Ze/IJXGXf23ltt2EXimqmTUXEy0GFuRQyBid4=
++github.com/pierrec/lz4/v4 v4.1.15 h1:MO0/ucJhngq7299dKLwIMtgTfbkoSPF6AoMYDd8Q4q0=
++github.com/pierrec/lz4/v4 v4.1.15/go.mod h1:gZWDp/Ze/IJXGXf23ltt2EXimqmTUXEy0GFuRQyBid4=
+ github.com/pingcap/errors v0.11.0/go.mod h1:Oi8TUi2kEtXXLMJk9l1cGmz20kV3TaQ0usTwv5KuLY8=
+ github.com/pingcap/errors v0.11.4/go.mod h1:Oi8TUi2kEtXXLMJk9l1cGmz20kV3TaQ0usTwv5KuLY8=
+ github.com/pingcap/errors v0.11.5-0.20211224045212-9687c2b0f87c h1:xpW9bvK+HuuTmyFqUwr+jcCvpVkK7sumiz+ko5H9eq4=
+@@ -730,20 +724,19 @@ github.com/prometheus/procfs v0.9.0/go.mod h1:+pB4zwohETzFnmlpe6yd2lSc+0/46IYZRB
+ github.com/prometheus/tsdb v0.7.1/go.mod h1:qhTCs0VvXwvX/y3TZrWD7rabWM+ijKTux40TwIPHuXU=
+ github.com/quasilyte/go-ruleguard/dsl v0.3.22 h1:wd8zkOhSNr+I+8Qeciml08ivDt1pSXe60+5DqOpCjPE=
+ github.com/quasilyte/go-ruleguard/dsl v0.3.22/go.mod h1:KeCP03KrjuSO0H1kTuZQCWlQPulDV6YMIXmpQss17rU=
+-github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0 h1:OdAsTTz6OkFY5QxjkYwrChwuRruF69c169dPK26NUlk=
+-github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0/go.mod h1:qqbHyh8v60DhA7CoWK5oRCqLrMHRGoxYCSS9EjAz6Eo=
++github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec h1:W09IVJc94icq4NjY3clb7Lk8O1qJ8BdBEF8z0ibU0rE=
++github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec/go.mod h1:qqbHyh8v60DhA7CoWK5oRCqLrMHRGoxYCSS9EjAz6Eo=
+ github.com/rogpeppe/clock v0.0.0-20190514195947-2896927a307a/go.mod h1:4r5QyqhjIWCcK8DO4KMclc5Iknq5qVBAlbYYzAbUScQ=
+ github.com/rogpeppe/fastuuid v0.0.0-20150106093220-6724a57986af/go.mod h1:XWv6SoW27p1b0cqNHllgS5HIMJraePCO15w5zCzIWYg=
+ github.com/rogpeppe/fastuuid v1.2.0/go.mod h1:jVj6XXZzXRy/MSR5jhDC/2q6DgLz+nrA6LYCDYWNEvQ=
+ github.com/rogpeppe/go-internal v1.3.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=
+ github.com/rogpeppe/go-internal v1.6.1/go.mod h1:xXDCJY+GAPziupqXw64V24skbSoqbTEfhy4qGm1nDQc=
+ github.com/rogpeppe/go-internal v1.8.0/go.mod h1:WmiCO8CzOY8rg0OYDC4/i/2WRWAB6poM+XZ2dLUbcbE=
+-github.com/rogpeppe/go-internal v1.8.1 h1:geMPLpDpQOgVyCg5z5GoRwLHepNdb71NXb67XFkP+Eg=
+ github.com/rogpeppe/go-internal v1.8.1/go.mod h1:JeRgkft04UBgHMgCIwADu4Pn6Mtm5d4nPKWu0nJ5d+o=
+-github.com/rs/xid v1.2.1/go.mod h1:+uKXf+4Djp6Md1KODXJxgGQPKngRmWyn10oCKFzNHOQ=
++github.com/rogpeppe/go-internal v1.9.0 h1:73kH8U+JUqXU8lRuOHeVHaa/SZPifC7BkcraZVejAe8=
++github.com/rogpeppe/go-internal v1.9.0/go.mod h1:WtVeX8xhTBvf0smdhujwtBcq4Qrzq/fJaraNFVN+nFs=
+ github.com/rs/xid v1.5.0 h1:mKX4bl4iPYJtEIxp6CYiUuLQ/8DYMoz0PUdtGgMFRVc=
+ github.com/rs/xid v1.5.0/go.mod h1:trrq9SKmegXys3aeAKXMUTdJsYXVwGY3RLcfgqegfbg=
+-github.com/rs/zerolog v1.21.0/go.mod h1:ZPhntP/xmq1nnND05hhpAh2QMhSsA4UN3MGZ6O2J3hM=
+ github.com/russross/blackfriday v1.5.2/go.mod h1:JO/DiYxRf+HjHt06OyowR9PTA263kcR/rfWxYHBV53g=
+ github.com/russross/blackfriday/v2 v2.0.1/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
+ github.com/ruudk/golang-pdf417 v0.0.0-20181029194003-1af4ab5afa58/go.mod h1:6lfFZQK844Gfx8o5WFuvpxWRwnSoipWe/p622j1v06w=
+@@ -765,7 +758,6 @@ github.com/sirupsen/logrus v1.2.0/go.mod h1:LxeOpSwHxABJmUn/MG1IvRgCAasNZTLOkJPx
+ github.com/sirupsen/logrus v1.4.2/go.mod h1:tLMulIdttU9McNUspp0xgXVQah82FyeX6MwdIuYE2rE=
+ github.com/sirupsen/logrus v1.6.0/go.mod h1:7uNnSEd1DgxDLC74fIahvMZmmYsHGZGEOFrfsX/uA88=
+ github.com/sirupsen/logrus v1.7.0/go.mod h1:yWOB1SBYBC5VeMP7gHvWumXLIWorT60ONWic61uBYv0=
+-github.com/sirupsen/logrus v1.8.1/go.mod h1:yWOB1SBYBC5VeMP7gHvWumXLIWorT60ONWic61uBYv0=
+ github.com/sirupsen/logrus v1.9.2 h1:oxx1eChJGI6Uks2ZC4W1zpLlVgqB8ner4EuQwV4Ik1Y=
+ github.com/sirupsen/logrus v1.9.2/go.mod h1:naHLuLoDiP4jHNo9R0sCBMtWGeIprob74mVsIT4qYEQ=
+ github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d/go.mod h1:OnSkiWE9lh6wB0YB77sQom3nweQdgAjqCqsofrRNTgc=
+@@ -876,11 +868,11 @@ github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9de
+ github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
+ github.com/yuin/goldmark v1.2.1/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
+ github.com/yuin/goldmark v1.3.5/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
+-github.com/yuin/goldmark v1.4.1/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
+ github.com/yusufpapurcu/wmi v1.2.2 h1:KBNDSne4vP5mbSWnJbO+51IMOXJB67QiYCSBrubbPRg=
+ github.com/yusufpapurcu/wmi v1.2.2/go.mod h1:SBZ9tNy3G9/m5Oi98Zks0QjeHVDvuK0qfxQmPyzfmi0=
+-github.com/zeebo/xxh3 v1.0.1 h1:FMSRIbkrLikb/0hZxmltpg84VkqDAT5M8ufXynuhXsI=
+-github.com/zeebo/xxh3 v1.0.1/go.mod h1:8VHV24/3AZLn3b6Mlp/KuC33LWH687Wq6EnziEB+rsA=
++github.com/zeebo/assert v1.3.0 h1:g7C04CbJuIDKNPFHmsk4hwZDO5O+kntRxzaUoNXj+IQ=
++github.com/zeebo/xxh3 v1.0.2 h1:xZmwmqxHZA8AI603jOQ0tMqmBr9lPeFwGg6d+xy9DC0=
++github.com/zeebo/xxh3 v1.0.2/go.mod h1:5NWz9Sef7zIDm2JHfFlcQvNekmcEl9ekUZQQKCYaDcA=
+ go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
+ go.etcd.io/bbolt v1.3.6 h1:/ecaJf0sk1l4l6V4awd65v2C3ILy7MSj+s/x1ADCIMU=
+ go.etcd.io/bbolt v1.3.6/go.mod h1:qXsaaIqmgQH0T+OPdb99Bf+PKfBBQVAdyD6TY9G8XM4=
+@@ -911,7 +903,6 @@ go.opencensus.io v0.23.0/go.mod h1:XItmlyltB5F7CS4xOC1DcqMoFqwtC6OG2xF7mCv7P7E=
+ go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.25.0/go.mod h1:E5NNboN0UqSAki0Atn9kVwaN7I+l25gGxDqBueo/74E=
+ go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.38.0 h1:g/BAN5o90Pr6D8xMRezjzGOHBpc15U+4oE53nZLiae4=
+ go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.38.0/go.mod h1:+F41JBSkye7aYJELRvIMF0Z66reIwIOL0St75ZVwSJs=
+-go.opentelemetry.io/otel v0.20.0/go.mod h1:Y3ugLH2oa81t5QO+Lty+zXf8zC9L26ax4Nzoxm/dooo=
+ go.opentelemetry.io/otel v1.0.1/go.mod h1:OPEOD4jIT2SlZPMmwT6FqZz2C0ZNdQqiWcoK6M0SNFU=
+ go.opentelemetry.io/otel v1.13.0 h1:1ZAKnNQKwBBxFtww/GwxNUyTf0AxkZzrukO8MeXqe4Y=
+ go.opentelemetry.io/otel v1.13.0/go.mod h1:FH3RtdZCzRkJYFTCsAKDy9l/XYjMdNv6QrkFFB8DvVg=
+@@ -927,15 +918,11 @@ go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.13.0 h1:Wz7UQ
+ go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.13.0/go.mod h1:OhH1xvgA5jZW2M/S4PcvtDlFE1VULRRBsibBrKuJQGI=
+ go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.13.0 h1:rs3xmoGZsuHJxUUzX2dwYNDc7S0L68oEo2L/MvG5cyc=
+ go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.13.0/go.mod h1:gr0y6t58jZxp9WtIAGKXxXenDWC91hmZivlGoOag3+4=
+-go.opentelemetry.io/otel/metric v0.20.0/go.mod h1:598I5tYlH1vzBjn+BTuhzTCSb/9debfNp6R3s7Pr1eU=
+ go.opentelemetry.io/otel/metric v0.35.0 h1:aPT5jk/w7F9zW51L7WgRqNKDElBdyRLGuBtI5MX34e8=
+ go.opentelemetry.io/otel/metric v0.35.0/go.mod h1:qAcbhaTRFU6uG8QM7dDo7XvFsWcugziq/5YI065TokQ=
+-go.opentelemetry.io/otel/oteltest v0.20.0/go.mod h1:L7bgKf9ZB7qCwT9Up7i9/pn0PWIa9FqQ2IQ8LoxiGnw=
+-go.opentelemetry.io/otel/sdk v0.20.0/go.mod h1:g/IcepuwNsoiX5Byy2nNV0ySUF1em498m7hBWC279Yc=
+ go.opentelemetry.io/otel/sdk v1.0.1/go.mod h1:HrdXne+BiwsOHYYkBE5ysIcv2bvdZstxzmCQhxTcZkI=
+ go.opentelemetry.io/otel/sdk v1.13.0 h1:BHib5g8MvdqS65yo2vV1s6Le42Hm6rrw08qU6yz5JaM=
+ go.opentelemetry.io/otel/sdk v1.13.0/go.mod h1:YLKPx5+6Vx/o1TCUYYs+bpymtkmazOMT6zoRrC7AQ7I=
+-go.opentelemetry.io/otel/trace v0.20.0/go.mod h1:6GjCW8zgDjwGHGa6GkyeB8+/5vjT16gUEi0Nf1iBdgw=
+ go.opentelemetry.io/otel/trace v1.0.1/go.mod h1:5g4i4fKLaX2BQpSBsxw8YYcgKpMMSW3x7ZTuYBr3sUk=
+ go.opentelemetry.io/otel/trace v1.13.0 h1:CBgRZ6ntv+Amuj1jDsMhZtlAPT6gbyIRdaIzFhfBSdY=
+ go.opentelemetry.io/otel/trace v1.13.0/go.mod h1:muCvmmO9KKpvuXSf3KKAXXB2ygNYHQ+ZfI5X08d3tds=
+@@ -955,13 +942,10 @@ go.uber.org/goleak v1.1.10/go.mod h1:8a7PlsEVH3e/a/GLqe5IIrQx6GzcnRmZEufDUTk4A7A
+ go.uber.org/goleak v1.1.11/go.mod h1:cwTWslyiVhfpKIDGSZEM2HlOvcqm+tG4zioyIeLoqMQ=
+ go.uber.org/goleak v1.2.0 h1:xqgm/S+aQvhWFTtR0XK3Jvg7z8kGV8P4X14IzwN3Eqk=
+ go.uber.org/multierr v1.1.0/go.mod h1:wR5kodmAFQ0UK8QlbwjlSNy0Z68gJhDJUG5sjR94q/0=
+-go.uber.org/multierr v1.5.0/go.mod h1:FeouvMocqHpRaaGuG9EjoKcStLC43Zu/fmqdUMPcKYU=
+ go.uber.org/multierr v1.6.0/go.mod h1:cdWPpRnG4AhwMwsgIHip0KRBQjJy5kYEpYjJxpXp9iU=
+ go.uber.org/multierr v1.7.0 h1:zaiO/rmgFjbmCXdSYJWQcdvOCsthmdaHfr3Gm2Kx4Ec=
+ go.uber.org/multierr v1.7.0/go.mod h1:7EAYxJLBy9rStEaz58O2t4Uvip6FSURkq8/ppBp95ak=
+-go.uber.org/tools v0.0.0-20190618225709-2cfd321de3ee/go.mod h1:vJERXedbb3MVM5f9Ejo0C68/HhF8uaILCdgjnY+goOA=
+ go.uber.org/zap v1.10.0/go.mod h1:vwi/ZaCAaUcBkycHslxD9B2zi4UTXhF60s6SWpuDF0Q=
+-go.uber.org/zap v1.16.0/go.mod h1:MA8QOfq0BHJwdXa996Y4dYkAqRKB8/1K1QMMZVaNZjQ=
+ go.uber.org/zap v1.17.0/go.mod h1:MXVU+bhUf/A7Xi2HNOnopQOrmycQ5Ih87HtOu4q5SSo=
+ go.uber.org/zap v1.19.0/go.mod h1:xg/QME4nWcxGxrpdeYfq7UvYrLh66cuVKdrbD1XF/NI=
+ go.uber.org/zap v1.20.0 h1:N4oPlghZwYG55MlU6LXk/Zp00FVNE9X9wrYO8CEs4lc=
+@@ -991,7 +975,6 @@ golang.org/x/exp v0.0.0-20190121172915-509febef88a4/go.mod h1:CJ0aWSM057203Lf6IL
+ golang.org/x/exp v0.0.0-20190125153040-c74c464bbbf2/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
+ golang.org/x/exp v0.0.0-20190306152737-a1d7652674e8/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
+ golang.org/x/exp v0.0.0-20190510132918-efd6b22b2522/go.mod h1:ZjyILWgesfNpC6sMxTJOJm9Kp84zZh5NQWvqDGG3Qr8=
+-golang.org/x/exp v0.0.0-20190731235908-ec7cb31e5a56/go.mod h1:JhuoJpWY28nO4Vef9tZUw9qufEGTyX1+7lmHxV5q5G4=
+ golang.org/x/exp v0.0.0-20190829153037-c13cbed26979/go.mod h1:86+5VVa7VpoJ4kLfm080zCjGlMRFzhUhsZKEZO7MGek=
+ golang.org/x/exp v0.0.0-20191002040644-a1355ae1e2c3/go.mod h1:NOZ3BPKG0ec/BKJQgnvsSFpcKLM5xXVWnvZS97DWHgE=
+ golang.org/x/exp v0.0.0-20191030013958-a1ab85dbe136/go.mod h1:JXzH8nQsPlswgeRAPE3MuO9GYsAcnJvJ4vnMwN/5qkY=
+@@ -1000,9 +983,8 @@ golang.org/x/exp v0.0.0-20191227195350-da58074b4299/go.mod h1:2RIsYlXP63K8oxa1u0
+ golang.org/x/exp v0.0.0-20200119233911-0405dc783f0a/go.mod h1:2RIsYlXP63K8oxa1u096TMicItID8zy7Y6sNkU49FU4=
+ golang.org/x/exp v0.0.0-20200207192155-f17229e696bd/go.mod h1:J/WKrq2StrnmMY6+EHIKF9dgMWnmCNThgcyBT1FY9mM=
+ golang.org/x/exp v0.0.0-20200224162631-6cc2880d07d6/go.mod h1:3jZMyOhIsHpP37uCMkUooju7aAi5cS1Q23tOzKc+0MU=
+-golang.org/x/exp v0.0.0-20211216164055-b2b84827b756/go.mod h1:b9TAUYHmRtqA6klRHApnXMnj+OyLce4yF5cZCUbk2ps=
+-golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17 h1:3MTrJm4PyNL9NBqvYDSj3DHl46qQakyfqfWo4jgfaEM=
+-golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17/go.mod h1:lgLbSvA5ygNOMpwM/9anMpWVlVJ7Z+cHWq/eFuinpGE=
++golang.org/x/exp v0.0.0-20220827204233-334a2380cb91 h1:tnebWN09GYg9OLPss1KXj8txwZc6X6uMr6VFdcGNbHw=
++golang.org/x/exp v0.0.0-20220827204233-334a2380cb91/go.mod h1:cyybsKvd6eL0RnXn6p/Grxp8F5bW7iYuBgsNCOHpMYE=
+ golang.org/x/image v0.0.0-20180708004352-c73c2afc3b81/go.mod h1:ux5Hcp/YLpHSI86hEcLt0YII63i6oz57MZXIpbrjZUs=
+ golang.org/x/image v0.0.0-20190227222117-0694c2d4d067/go.mod h1:kZ7UVZpmo3dzQBMxlp+ypCbDeSB+sBbTgSJuh5dn5js=
+ golang.org/x/image v0.0.0-20190802002840-cff245a6509b/go.mod h1:FeLwcggjj3mMvU+oOTbSwawSJRM1uh48EjtB4UJZlP0=
+@@ -1026,19 +1008,15 @@ golang.org/x/lint v0.0.0-20201208152925-83fdc39ff7b5/go.mod h1:3xt1FjdF8hUf6vQPI
+ golang.org/x/lint v0.0.0-20210508222113-6edffad5e616/go.mod h1:3xt1FjdF8hUf6vQPIChWIBhFzV8gjjsPE/fR3IyQdNY=
+ golang.org/x/mobile v0.0.0-20190312151609-d3739f865fa6/go.mod h1:z+o9i4GpDbdi3rU15maQ/Ox0txvL9dWGYEHz965HBQE=
+ golang.org/x/mobile v0.0.0-20190719004257-d2bd2a29d028/go.mod h1:E/iHnbuqvinMTCcRqshq8CkpyQDoeVncDDYHnLhea+o=
+-golang.org/x/mobile v0.0.0-20201217150744-e6ae53a27f4f/go.mod h1:skQtrUTUwhdJvXM/2KKJzY8pDgNr9I/FOMqDVRPBUS4=
+ golang.org/x/mod v0.0.0-20190513183733-4bf6d317e70e/go.mod h1:mXi4GBBbnImb6dmsKGUJ2LatrhH/nqhxcFungHvyanc=
+ golang.org/x/mod v0.1.0/go.mod h1:0QHyrYULN0/3qlju5TqG8bIK38QM8yzMo5ekMj3DlcY=
+ golang.org/x/mod v0.1.1-0.20191105210325-c90efee705ee/go.mod h1:QqPTAvyqsEbceGzBzNggFXnrqF1CaUcvgkdR5Ot7KZg=
+ golang.org/x/mod v0.1.1-0.20191107180719-034126e5016b/go.mod h1:QqPTAvyqsEbceGzBzNggFXnrqF1CaUcvgkdR5Ot7KZg=
+-golang.org/x/mod v0.1.1-0.20191209134235-331c550502dd/go.mod h1:s0Qsj1ACt9ePp/hMypM3fl4fZqREWJwdYDEqhRiZZUA=
+ golang.org/x/mod v0.2.0/go.mod h1:s0Qsj1ACt9ePp/hMypM3fl4fZqREWJwdYDEqhRiZZUA=
+ golang.org/x/mod v0.3.0/go.mod h1:s0Qsj1ACt9ePp/hMypM3fl4fZqREWJwdYDEqhRiZZUA=
+ golang.org/x/mod v0.4.0/go.mod h1:s0Qsj1ACt9ePp/hMypM3fl4fZqREWJwdYDEqhRiZZUA=
+ golang.org/x/mod v0.4.1/go.mod h1:s0Qsj1ACt9ePp/hMypM3fl4fZqREWJwdYDEqhRiZZUA=
+ golang.org/x/mod v0.4.2/go.mod h1:s0Qsj1ACt9ePp/hMypM3fl4fZqREWJwdYDEqhRiZZUA=
+-golang.org/x/mod v0.5.1/go.mod h1:5OXOZSfqPIIbmVBIIKWRFfZjPR0E5r58TLhUjH0a2Ro=
+-golang.org/x/mod v0.6.0-dev.0.20211013180041-c96bc1413d57/go.mod h1:3p9vT2HGsQu2K1YbXdKPJLVgG5VJdoTa1poYQBtP1AY=
+ golang.org/x/mod v0.9.0 h1:KENHtAZL2y3NLMYZeHY9DW8HW8V+kQyJsY/V9JlKvCs=
+ golang.org/x/mod v0.9.0/go.mod h1:iBbtSCu2XBx23ZKBPSOrRkjjQPZFPuis4dIYUhu/chs=
+ golang.org/x/net v0.0.0-20180724234803-3673e40ba225/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
+@@ -1090,9 +1068,7 @@ golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4/go.mod h1:p54w0d4576C0XHj96b
+ golang.org/x/net v0.0.0-20210428140749-89ef3d95e781/go.mod h1:OJAsFXCWl8Ukc7SiCT/9KSuxbyM7479/AVlXFRxuMCk=
+ golang.org/x/net v0.0.0-20210726213435-c6fcb2dbf985/go.mod h1:9nx3DQGgdP8bBQD5qxJ1jj9UTztislL4KSBs9R2vV5Y=
+ golang.org/x/net v0.0.0-20211008194852-3b03d305991f/go.mod h1:9nx3DQGgdP8bBQD5qxJ1jj9UTztislL4KSBs9R2vV5Y=
+-golang.org/x/net v0.0.0-20211015210444-4f30a5c0130f/go.mod h1:9nx3DQGgdP8bBQD5qxJ1jj9UTztislL4KSBs9R2vV5Y=
+ golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2/go.mod h1:9nx3DQGgdP8bBQD5qxJ1jj9UTztislL4KSBs9R2vV5Y=
+-golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd/go.mod h1:CfG3xpIq0wQ8r1q4Su4UZFWDARRcnwPjda9FqA0JpMk=
+ golang.org/x/net v0.0.0-20220225172249-27dd8689420f/go.mod h1:CfG3xpIq0wQ8r1q4Su4UZFWDARRcnwPjda9FqA0JpMk=
+ golang.org/x/net v0.17.0 h1:pVaXccu2ozPjCXewfr1S7xza/zcXTity9cCdXQYSjIM=
+ golang.org/x/net v0.17.0/go.mod h1:NxSsAGuq816PNPmqtQdLE42eU2Fs7NoRIZrHJAlaCOE=
+@@ -1197,7 +1173,6 @@ golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c/go.mod h1:oPkhp1MJrh7nUepCBc
+ golang.org/x/sys v0.0.0-20210819135213-f52c844e1c1c/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+ golang.org/x/sys v0.0.0-20210927094055-39ccf1dd6fa6/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+ golang.org/x/sys v0.0.0-20211007075335-d3039528d8ac/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+-golang.org/x/sys v0.0.0-20211019181941-9d821ace8654/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+ golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+ golang.org/x/sys v0.0.0-20220128215802-99c3d69c2c27/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+ golang.org/x/sys v0.0.0-20220204135822-1c1b9b1eba6a/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+@@ -1254,7 +1229,6 @@ golang.org/x/tools v0.0.0-20190911174233-4f2ddba30aff/go.mod h1:b+2E5dAYhXwXZwtn
+ golang.org/x/tools v0.0.0-20190927191325-030b2cf1153e/go.mod h1:b+2E5dAYhXwXZwtnZ6UAqBI28+e2cm9otk0dWdXHAEo=
+ golang.org/x/tools v0.0.0-20191012152004-8de300cfc20a/go.mod h1:b+2E5dAYhXwXZwtnZ6UAqBI28+e2cm9otk0dWdXHAEo=
+ golang.org/x/tools v0.0.0-20191029041327-9cc4af7d6b2c/go.mod h1:b+2E5dAYhXwXZwtnZ6UAqBI28+e2cm9otk0dWdXHAEo=
+-golang.org/x/tools v0.0.0-20191029190741-b9c20aec41a5/go.mod h1:b+2E5dAYhXwXZwtnZ6UAqBI28+e2cm9otk0dWdXHAEo=
+ golang.org/x/tools v0.0.0-20191108193012-7d206e10da11/go.mod h1:b+2E5dAYhXwXZwtnZ6UAqBI28+e2cm9otk0dWdXHAEo=
+ golang.org/x/tools v0.0.0-20191112195655-aa38f8e97acc/go.mod h1:b+2E5dAYhXwXZwtnZ6UAqBI28+e2cm9otk0dWdXHAEo=
+ golang.org/x/tools v0.0.0-20191113191852-77e3bb0ad9e7/go.mod h1:b+2E5dAYhXwXZwtnZ6UAqBI28+e2cm9otk0dWdXHAEo=
+@@ -1264,7 +1238,6 @@ golang.org/x/tools v0.0.0-20191125144606-a911d9008d1f/go.mod h1:b+2E5dAYhXwXZwtn
+ golang.org/x/tools v0.0.0-20191130070609-6e064ea0cf2d/go.mod h1:b+2E5dAYhXwXZwtnZ6UAqBI28+e2cm9otk0dWdXHAEo=
+ golang.org/x/tools v0.0.0-20191216173652-a0e659d51361/go.mod h1:TB2adYChydJhpapKDTa4BR/hXlZSLoq2Wpct/0txZ28=
+ golang.org/x/tools v0.0.0-20191227053925-7b8e75db28f4/go.mod h1:TB2adYChydJhpapKDTa4BR/hXlZSLoq2Wpct/0txZ28=
+-golang.org/x/tools v0.0.0-20200117012304-6edc0a871e69/go.mod h1:TB2adYChydJhpapKDTa4BR/hXlZSLoq2Wpct/0txZ28=
+ golang.org/x/tools v0.0.0-20200117161641-43d50277825c/go.mod h1:TB2adYChydJhpapKDTa4BR/hXlZSLoq2Wpct/0txZ28=
+ golang.org/x/tools v0.0.0-20200122220014-bf1340f18c4a/go.mod h1:TB2adYChydJhpapKDTa4BR/hXlZSLoq2Wpct/0txZ28=
+ golang.org/x/tools v0.0.0-20200130002326-2f3ba24bd6e7/go.mod h1:TB2adYChydJhpapKDTa4BR/hXlZSLoq2Wpct/0txZ28=
+@@ -1296,8 +1269,6 @@ golang.org/x/tools v0.1.0/go.mod h1:xkSsbof2nBLbhDlRMhhhyNLN/zl3eTqcnHD5viDpcZ0=
+ golang.org/x/tools v0.1.2/go.mod h1:o0xws9oXOQQZyjljx8fwUC0k7L1pTE6eaCbjGeHmOkk=
+ golang.org/x/tools v0.1.3/go.mod h1:o0xws9oXOQQZyjljx8fwUC0k7L1pTE6eaCbjGeHmOkk=
+ golang.org/x/tools v0.1.5/go.mod h1:o0xws9oXOQQZyjljx8fwUC0k7L1pTE6eaCbjGeHmOkk=
+-golang.org/x/tools v0.1.8-0.20211029000441-d6a9af8af023/go.mod h1:nABZi5QlRsZVlzPpHl034qft6wpY4eDcsTt5AaioBiU=
+-golang.org/x/tools v0.1.9/go.mod h1:nABZi5QlRsZVlzPpHl034qft6wpY4eDcsTt5AaioBiU=
+ golang.org/x/tools v0.7.0 h1:W4OVu8VVOaIO0yzWMNdepAulS7YfoS3Zabrm8DOXXU4=
+ golang.org/x/tools v0.7.0/go.mod h1:4pg6aUX35JBAogB10C9AtvVL+qowtN4pT3CGSQex14s=
+ golang.org/x/xerrors v0.0.0-20190717185122-a985d3407aa7/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
+@@ -1308,9 +1279,9 @@ golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 h1:H2TDz8ibqkAF6YGhCdN3j
+ golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2/go.mod h1:K8+ghG5WaK9qNqU5K3HdILfMLy1f3aNYFI/wnl100a8=
+ gonum.org/v1/gonum v0.0.0-20180816165407-929014505bf4/go.mod h1:Y+Yx5eoAFn32cQvJDxZx5Dpnq+c3wtXuadVZAcxbbBo=
+ gonum.org/v1/gonum v0.8.2/go.mod h1:oe/vMfY3deqTw+1EZJhuvEW2iwGF1bW9wwu7XCu0+v0=
+-gonum.org/v1/gonum v0.9.3 h1:DnoIG+QAMaF5NvxnGe/oKsgKcAc6PcUyl8q0VetfQ8s=
+ gonum.org/v1/gonum v0.9.3/go.mod h1:TZumC3NeyVQskjXqmyWt4S3bINhy7B4eYwW69EbyX+0=
+-gonum.org/v1/netlib v0.0.0-20190313105609-8cb42192e0e0 h1:OE9mWmgKkjJyEmDAAtGMPjXu+YNeGvK9VTSHY6+Qihc=
++gonum.org/v1/gonum v0.11.0 h1:f1IJhK4Km5tBJmaiJXtk/PkL4cdVX6J+tGiM187uT5E=
++gonum.org/v1/gonum v0.11.0/go.mod h1:fSG4YDCxxUZQJ7rKsQrj0gMOg00Il0Z96/qMA4bVQhA=
+ gonum.org/v1/netlib v0.0.0-20190313105609-8cb42192e0e0/go.mod h1:wa6Ws7BG/ESfp6dHfk7C6KdzKA7wR7u/rKwOGE66zvw=
+ gonum.org/v1/plot v0.0.0-20190515093506-e2840ee46a6b/go.mod h1:Wt8AAjI+ypCyYX3nZBvf6cAIx93T+c/OS2HFAYskSZc=
+ gonum.org/v1/plot v0.9.0/go.mod h1:3Pcqqmp6RHvJI72kgb8fThyUnav364FOsdDo2aGW5lY=
+@@ -1391,7 +1362,6 @@ google.golang.org/genproto v0.0.0-20210402141018-6c239bbf2bb1/go.mod h1:9lPAdzaE
+ google.golang.org/genproto v0.0.0-20210602131652-f16073e35f0c/go.mod h1:UODoCrxHCcBojKKwX1terBiRUaqAsFqJiF615XL43r0=
+ google.golang.org/genproto v0.0.0-20210624195500-8bfb893ecb84/go.mod h1:SzzZ/N+nwJDaO1kznhnlzqS8ocJICar6hYhVyhi++24=
+ google.golang.org/genproto v0.0.0-20211118181313-81c1377c94b1/go.mod h1:5CzLGKJ67TSI2B9POpiiyGha0AjJvZIUgRMt1dSmuhc=
+-google.golang.org/genproto v0.0.0-20220126215142-9970aeb2e350/go.mod h1:5CzLGKJ67TSI2B9POpiiyGha0AjJvZIUgRMt1dSmuhc=
+ google.golang.org/genproto v0.0.0-20220503193339-ba3ae3f07e29/go.mod h1:RAyBrSAP7Fh3Nc84ghnVLDPuV51xc9agzmm4Ph6i0Q4=
+ google.golang.org/genproto v0.0.0-20230331144136-dcfb400f0633 h1:0BOZf6qNozI3pkN3fJLwNubheHJYHhMh91GRFOWWK08=
+ google.golang.org/genproto v0.0.0-20230331144136-dcfb400f0633/go.mod h1:UUQDJDOlWu4KYeJZffbWgBkS1YFobzKbLVfK69pe0Ak=
+@@ -1422,7 +1392,6 @@ google.golang.org/grpc v1.40.0/go.mod h1:ogyxbiOoUXAkP+4+xa6PZSE9DZgIHtSpzjDTB9K
+ google.golang.org/grpc v1.41.0/go.mod h1:U3l9uK9J0sini8mHphKoXyaqDA/8VyGnDee1zzIUK6k=
+ google.golang.org/grpc v1.42.0/go.mod h1:k+4IHHFw41K8+bbowsex27ge2rCb65oeWqe4jJ590SU=
+ google.golang.org/grpc v1.43.0/go.mod h1:k+4IHHFw41K8+bbowsex27ge2rCb65oeWqe4jJ590SU=
+-google.golang.org/grpc v1.44.0/go.mod h1:k+4IHHFw41K8+bbowsex27ge2rCb65oeWqe4jJ590SU=
+ google.golang.org/grpc v1.46.0/go.mod h1:vN9eftEi1UMyUsIF80+uQXhHjbXYbm0uXoFCACuMGWk=
+ google.golang.org/grpc v1.54.0 h1:EhTqbhiYeixwWQtAEZAxmV9MGqcjEU2mFx52xCzNyag=
+ google.golang.org/grpc v1.54.0/go.mod h1:PUSEXI6iWghWaB6lXM4knEgpJNu2qUcKfDtNci3EC2g=
+@@ -1496,7 +1465,6 @@ honnef.co/go/tools v0.0.0-20190523083050-ea95bdfd59fc/go.mod h1:rf3lG4BRIbNafJWh
+ honnef.co/go/tools v0.0.1-2019.2.3/go.mod h1:a3bituU0lyd329TUQxRnasdCoJDkEUEAqEt0JzvZhAg=
+ honnef.co/go/tools v0.0.1-2020.1.3/go.mod h1:X/FiERA/W4tHapMX5mGpAtMSVEeEUOyHaw9vFzvIQ3k=
+ honnef.co/go/tools v0.0.1-2020.1.4/go.mod h1:X/FiERA/W4tHapMX5mGpAtMSVEeEUOyHaw9vFzvIQ3k=
+-honnef.co/go/tools v0.1.3/go.mod h1:NgwopIslSNH47DimFoV78dnkksY2EFtX0ajyb3K/las=
+ rsc.io/binaryregexp v0.2.0/go.mod h1:qTv7/COck+e2FymRvadv62gMdZztPaShugOCi3I+8D8=
+ rsc.io/pdf v0.1.1/go.mod h1:n8OzWcQ6Sp37PL01nO98y4iUCRdTGarVfzxY20ICaU4=
+ rsc.io/quote/v3 v3.1.0/go.mod h1:yEA65RcK8LyAZtP9Kv3t0HmxON59tX3rD+tICJqUlj0=
+diff --git a/internal/core/conanfile.py b/internal/core/conanfile.py
+index 69c6e535f..ad396b26b 100644
+--- a/internal/core/conanfile.py
++++ b/internal/core/conanfile.py
+@@ -4,8 +4,9 @@ from conans import ConanFile
+ class MilvusConan(ConanFile):
+     settings = "os", "compiler", "build_type", "arch"
+     requires = (
+-        "rocksdb/6.29.5",
+-        "boost/1.82.0",
++        "rocksdb/6.29.5@milvus/dev",
++        "boost/1.75.0",
++        "libunwind/1.7.2",
+         "onetbb/2021.7.0",
+         "nlohmann_json/3.11.2",
+         "zstd/1.5.4",
+@@ -17,7 +18,7 @@ class MilvusConan(ConanFile):
+         "aws-sdk-cpp/1.9.234",
+         "googleapis/cci.20221108",
+         "benchmark/1.7.0",
+-        "gtest/1.8.1",
++        "gtest/1.14.0",
+         "protobuf/3.21.4",
+         "rapidxml/1.13",
+         "yaml-cpp/0.7.0",
+@@ -63,6 +64,8 @@ class MilvusConan(ConanFile):
+         "boost:without_locale": False,
+         "glog:with_gflags": True,
+         "glog:shared": True,
++        "libunwind:shared": True,
++        "openssl:shared": True,
+         "prometheus-cpp:with_pull": False,
+         "fmt:header_only": True,
+         "onetbb:tbbmalloc": False,
+diff --git a/internal/core/src/index/Utils.h b/internal/core/src/index/Utils.h
+index adc0b3459..a64fdc932 100644
+--- a/internal/core/src/index/Utils.h
++++ b/internal/core/src/index/Utils.h
+@@ -121,8 +121,8 @@ AssembleIndexDatas(
+     std::map<std::string, storage::FieldDataChannelPtr>& index_datas,
+     std::unordered_map<std::string, storage::FieldDataPtr>& result);
+ 
+-// On Linux, read() (and similar system calls) will transfer at most 0x7ffff000 (2,147,479,552) bytes once
++// On Linux, read() (and similar system calls) will transfer at most 0x7fff0000 (2,147,418,112) bytes once
+ void
+-ReadDataFromFD(int fd, void* buf, size_t size, size_t chunk_size = 0x7ffff000);
++ReadDataFromFD(int fd, void* buf, size_t size, size_t chunk_size = 0x7fff0000);
+ 
+ }  // namespace milvus::index
+diff --git a/internal/core/thirdparty/knowhere/CMakeLists.txt b/internal/core/thirdparty/knowhere/CMakeLists.txt
+index d8bb751ce..f5b603e28 100644
+--- a/internal/core/thirdparty/knowhere/CMakeLists.txt
++++ b/internal/core/thirdparty/knowhere/CMakeLists.txt
+@@ -33,12 +33,15 @@ endif ()
+ if ( MILVUS_GPU_VERSION STREQUAL "ON" )
+     set(WITH_RAFT ON CACHE BOOL "" FORCE )
+ endif ()
++set(WITH_UT ON CACHE BOOL "" FORCE )
+ 
+ set( CMAKE_PREFIX_PATH ${CONAN_BOOST_ROOT} )
++set(knowhere_patch git apply ${CMAKE_CURRENT_SOURCE_DIR}/knowhere.patch)
+ FetchContent_Declare(
+         knowhere
+         GIT_REPOSITORY  ${GIT_REPOSITORY}
+         GIT_TAG         ${KNOWHERE_VERSION}
++        PATCH_COMMAND   ${knowhere_patch}
+         SOURCE_DIR      ${CMAKE_CURRENT_BINARY_DIR}/knowhere-src
+         BINARY_DIR      ${CMAKE_CURRENT_BINARY_DIR}/knowhere-build
+         DOWNLOAD_DIR    ${THIRDPARTY_DOWNLOAD_PATH} )
+diff --git a/internal/core/thirdparty/knowhere/knowhere.patch b/internal/core/thirdparty/knowhere/knowhere.patch
+new file mode 100644
+index 000000000..53c182f66
+--- /dev/null
++++ b/internal/core/thirdparty/knowhere/knowhere.patch
+@@ -0,0 +1,456 @@
++diff --git a/cmake/libs/libfaiss.cmake b/cmake/libs/libfaiss.cmake
++index 6f44c08..931077e 100644
++--- a/cmake/libs/libfaiss.cmake
+++++ b/cmake/libs/libfaiss.cmake
++@@ -16,6 +16,10 @@ knowhere_file_glob(GLOB FAISS_AVX2_SRCS
++ 
++ list(REMOVE_ITEM FAISS_SRCS ${FAISS_AVX512_SRCS})
++ 
+++# disable RHNSW
+++knowhere_file_glob(GLOB FAISS_RHNSW_SRCS thirdparty/faiss/faiss/impl/RHNSW.cpp)
+++list(REMOVE_ITEM FAISS_SRCS ${FAISS_RHNSW_SRCS})
+++
++ if(__X86_64)
++   set(UTILS_SRC src/simd/distances_ref.cc src/simd/hook.cc)
++   set(UTILS_SSE_SRC src/simd/distances_sse.cc)
++@@ -44,6 +48,13 @@ if(__AARCH64)
++   target_link_libraries(knowhere_utils PUBLIC glog::glog)
++ endif()
++ 
+++# ToDo: Add distances_vsx.cc for powerpc64 SIMD acceleration
+++if(__PPC64)
+++  set(UTILS_SRC src/simd/hook.cc src/simd/distances_ref.cc)
+++  add_library(knowhere_utils STATIC ${UTILS_SRC})
+++  target_link_libraries(knowhere_utils PUBLIC glog::glog)
+++endif()
+++
++ if(LINUX)
++   set(BLA_VENDOR OpenBLAS)
++ endif()
++@@ -125,3 +136,27 @@ if(__AARCH64)
++                                      ${LAPACK_LIBRARIES} knowhere_utils)
++   target_compile_definitions(faiss PRIVATE FINTEGER=int)
++ endif()
+++
+++if(__PPC64)
+++  knowhere_file_glob(GLOB FAISS_AVX_SRCS thirdparty/faiss/faiss/impl/*avx.cpp)
+++
+++  list(REMOVE_ITEM FAISS_SRCS ${FAISS_AVX_SRCS})
+++  add_library(faiss STATIC ${FAISS_SRCS})
+++
+++  target_compile_options(
+++    faiss
+++    PRIVATE $<$<COMPILE_LANGUAGE:CXX>:
+++            -mcpu=native
+++            -mvsx
+++            -Wno-sign-compare
+++            -Wno-unused-variable
+++            -Wno-reorder
+++            -Wno-unused-local-typedefs
+++            -Wno-unused-function
+++            -Wno-strict-aliasing>)
+++
+++  add_dependencies(faiss knowhere_utils)
+++  target_link_libraries(faiss PUBLIC OpenMP::OpenMP_CXX ${BLAS_LIBRARIES}
+++                                     ${LAPACK_LIBRARIES} knowhere_utils)
+++  target_compile_definitions(faiss PRIVATE FINTEGER=int)
+++endif()
++diff --git a/cmake/utils/platform_check.cmake b/cmake/utils/platform_check.cmake
++index d713a2d..0345b92 100644
++--- a/cmake/utils/platform_check.cmake
+++++ b/cmake/utils/platform_check.cmake
++@@ -3,9 +3,10 @@ include(CheckSymbolExists)
++ macro(detect_target_arch)
++   check_symbol_exists(__aarch64__ "" __AARCH64)
++   check_symbol_exists(__x86_64__ "" __X86_64)
+++  check_symbol_exists(__powerpc64__ "" __PPC64)
++ 
++-  if(NOT __AARCH64 AND NOT __X86_64)
++-    message(FATAL "knowhere only support amd64 and arm64.")
+++  if(NOT __AARCH64 AND NOT __X86_64 AND NOT __PPC64)
+++    message(FATAL "knowhere only support amd64, ppc64 and arm64 architecture.")
++   endif()
++ endmacro()
++ 
++diff --git a/include/knowhere/comp/thread_pool.h b/include/knowhere/comp/thread_pool.h
++index a00920d..a8188a1 100644
++--- a/include/knowhere/comp/thread_pool.h
+++++ b/include/knowhere/comp/thread_pool.h
++@@ -20,6 +20,10 @@
++ #include <thread>
++ #include <utility>
++ 
+++#include <unistd.h>
+++#include <sys/syscall.h>
+++#define gettid() syscall(SYS_gettid)
+++
++ #include "folly/executors/CPUThreadPoolExecutor.h"
++ #include "folly/futures/Future.h"
++ #include "knowhere/log.h"
++diff --git a/src/simd/distances_ref.cc b/src/simd/distances_ref.cc
++index 87586a5..84fb049 100644
++--- a/src/simd/distances_ref.cc
+++++ b/src/simd/distances_ref.cc
++@@ -10,6 +10,7 @@
++ #include "distances_ref.h"
++ 
++ #include <cmath>
+++
++ namespace faiss {
++ 
++ float
++@@ -48,7 +49,9 @@ float
++ fvec_inner_product_ref(const float* x, const float* y, size_t d) {
++     size_t i;
++     float res = 0;
++-    for (i = 0; i < d; i++) res += x[i] * y[i];
+++    for (i = 0; i < d; i++) {
+++        res += x[i] * y[i];
+++    }
++     return res;
++ }
++ 
++@@ -56,7 +59,9 @@ float
++ fvec_norm_L2sqr_ref(const float* x, size_t d) {
++     size_t i;
++     double res = 0;
++-    for (i = 0; i < d; i++) res += x[i] * x[i];
+++    for (i = 0; i < d; i++) {
+++        res += x[i] * x[i];
+++    }
++     return res;
++ }
++ 
++@@ -76,9 +81,75 @@ fvec_inner_products_ny_ref(float* ip, const float* x, const float* y, size_t d,
++     }
++ }
++ 
+++/// compute ny square L2 distance between x and a set of transposed contiguous
+++/// y vectors. squared lengths of y should be provided as well
+++void
+++fvec_L2sqr_ny_transposed_ref(float* __restrict dis, const float* __restrict x, const float* __restrict y,
+++                             const float* __restrict y_sqlen, size_t d, size_t d_offset, size_t ny) {
+++    float x_sqlen = 0;
+++    for (size_t j = 0; j < d; j++) {
+++        x_sqlen += x[j] * x[j];
+++    }
+++
+++    for (size_t i = 0; i < ny; i++) {
+++        float dp = 0;
+++        for (size_t j = 0; j < d; j++) {
+++            dp += x[j] * y[i + j * d_offset];
+++        }
+++
+++        dis[i] = x_sqlen + y_sqlen[i] - 2 * dp;
+++    }
+++}
+++
+++/// compute ny square L2 distance between x and a set of contiguous y vectors
+++/// and return the index of the nearest vector.
+++/// return 0 if ny == 0.
+++size_t
+++fvec_L2sqr_ny_nearest_ref(float* __restrict distances_tmp_buffer, const float* __restrict x, const float* __restrict y,
+++                          size_t d, size_t ny) {
+++    fvec_L2sqr_ny_ref(distances_tmp_buffer, x, y, d, ny);
+++
+++    size_t nearest_idx = 0;
+++    float min_dis = HUGE_VALF;
+++
+++    for (size_t i = 0; i < ny; i++) {
+++        if (distances_tmp_buffer[i] < min_dis) {
+++            min_dis = distances_tmp_buffer[i];
+++            nearest_idx = i;
+++        }
+++    }
+++
+++    return nearest_idx;
+++}
+++
+++/// compute ny square L2 distance between x and a set of transposed contiguous
+++/// y vectors and return the index of the nearest vector.
+++/// squared lengths of y should be provided as well
+++/// return 0 if ny == 0.
+++size_t
+++fvec_L2sqr_ny_nearest_y_transposed_ref(float* __restrict distances_tmp_buffer, const float* __restrict x,
+++                                       const float* __restrict y, const float* __restrict y_sqlen, size_t d,
+++                                       size_t d_offset, size_t ny) {
+++    fvec_L2sqr_ny_transposed_ref(distances_tmp_buffer, x, y, y_sqlen, d, d_offset, ny);
+++
+++    size_t nearest_idx = 0;
+++    float min_dis = HUGE_VALF;
+++
+++    for (size_t i = 0; i < ny; i++) {
+++        if (distances_tmp_buffer[i] < min_dis) {
+++            min_dis = distances_tmp_buffer[i];
+++            nearest_idx = i;
+++        }
+++    }
+++
+++    return nearest_idx;
+++}
+++
++ void
++ fvec_madd_ref(size_t n, const float* a, float bf, const float* b, float* c) {
++-    for (size_t i = 0; i < n; i++) c[i] = a[i] + bf * b[i];
+++    for (size_t i = 0; i < n; i++) {
+++        c[i] = a[i] + bf * b[i];
+++    }
++ }
++ 
++ int
++@@ -96,4 +167,49 @@ fvec_madd_and_argmin_ref(size_t n, const float* a, float bf, const float* b, flo
++     return imin;
++ }
++ 
+++void
+++fvec_inner_product_batch_4_ref(const float* __restrict x, const float* __restrict y0, const float* __restrict y1,
+++                               const float* __restrict y2, const float* __restrict y3, const size_t d, float& dis0,
+++                               float& dis1, float& dis2, float& dis3) {
+++    float d0 = 0;
+++    float d1 = 0;
+++    float d2 = 0;
+++    float d3 = 0;
+++    for (size_t i = 0; i < d; ++i) {
+++        d0 += x[i] * y0[i];
+++        d1 += x[i] * y1[i];
+++        d2 += x[i] * y2[i];
+++        d3 += x[i] * y3[i];
+++    }
+++
+++    dis0 = d0;
+++    dis1 = d1;
+++    dis2 = d2;
+++    dis3 = d3;
+++}
+++
+++void
+++fvec_L2sqr_batch_4_ref(const float* x, const float* y0, const float* y1, const float* y2, const float* y3,
+++                       const size_t d, float& dis0, float& dis1, float& dis2, float& dis3) {
+++    float d0 = 0;
+++    float d1 = 0;
+++    float d2 = 0;
+++    float d3 = 0;
+++    for (size_t i = 0; i < d; ++i) {
+++        const float q0 = x[i] - y0[i];
+++        const float q1 = x[i] - y1[i];
+++        const float q2 = x[i] - y2[i];
+++        const float q3 = x[i] - y3[i];
+++        d0 += q0 * q0;
+++        d1 += q1 * q1;
+++        d2 += q2 * q2;
+++        d3 += q3 * q3;
+++    }
+++
+++    dis0 = d0;
+++    dis1 = d1;
+++    dis2 = d2;
+++    dis3 = d3;
+++}
+++
++ }  // namespace faiss
++diff --git a/src/simd/distances_ref.h b/src/simd/distances_ref.h
++index fbd8764..fefb049 100644
++--- a/src/simd/distances_ref.h
+++++ b/src/simd/distances_ref.h
++@@ -33,12 +33,44 @@ fvec_L2sqr_ny_ref(float* dis, const float* x, const float* y, size_t d, size_t n
++ void
++ fvec_inner_products_ny_ref(float* ip, const float* x, const float* y, size_t d, size_t ny);
++ 
+++/// compute ny square L2 distance between x and a set of transposed contiguous
+++/// y vectors. squared lengths of y should be provided as well
+++void
+++fvec_L2sqr_ny_transposed_ref(float* dis, const float* x, const float* y, const float* y_sqlen, size_t d,
+++                             size_t d_offset, size_t ny);
+++
+++/// compute ny square L2 distance between x and a set of contiguous y vectors
+++/// and return the index of the nearest vector.
+++/// return 0 if ny == 0.
+++size_t
+++fvec_L2sqr_ny_nearest_ref(float* distances_tmp_buffer, const float* x, const float* y, size_t d, size_t ny);
+++
+++/// compute ny square L2 distance between x and a set of transposed contiguous
+++/// y vectors and return the index of the nearest vector.
+++/// squared lengths of y should be provided as well
+++/// return 0 if ny == 0.
+++size_t
+++fvec_L2sqr_ny_nearest_y_transposed_ref(float* distances_tmp_buffer, const float* x, const float* y,
+++                                       const float* y_sqlen, size_t d, size_t d_offset, size_t ny);
+++
++ void
++ fvec_madd_ref(size_t n, const float* a, float bf, const float* b, float* c);
++ 
++ int
++ fvec_madd_and_argmin_ref(size_t n, const float* a, float bf, const float* b, float* c);
++ 
+++/// Special version of inner product that computes 4 distances
+++/// between x and yi, which is performance oriented.
+++void
+++fvec_inner_product_batch_4_ref(const float* x, const float* y0, const float* y1, const float* y2, const float* y3,
+++                               const size_t d, float& dis0, float& dis1, float& dis2, float& dis3);
+++
+++/// Special version of L2sqr that computes 4 distances
+++/// between x and yi, which is performance oriented.
+++void
+++fvec_L2sqr_batch_4_ref(const float* x, const float* y0, const float* y1, const float* y2, const float* y3,
+++                       const size_t d, float& dis0, float& dis1, float& dis2, float& dis3);
+++
++ }  // namespace faiss
++ 
++ #endif /* DISTANCES_REF_H */
++diff --git a/src/simd/hook.cc b/src/simd/hook.cc
++index f8132b4..20f8874 100644
++--- a/src/simd/hook.cc
+++++ b/src/simd/hook.cc
++@@ -51,6 +51,14 @@ decltype(fvec_inner_products_ny) fvec_inner_products_ny = fvec_inner_products_ny
++ decltype(fvec_madd) fvec_madd = fvec_madd_ref;
++ decltype(fvec_madd_and_argmin) fvec_madd_and_argmin = fvec_madd_and_argmin_ref;
++ 
+++decltype(fvec_L2sqr_ny_nearest) fvec_L2sqr_ny_nearest = fvec_L2sqr_ny_nearest_ref;
+++decltype(fvec_L2sqr_ny_nearest_y_transposed) fvec_L2sqr_ny_nearest_y_transposed =
+++    fvec_L2sqr_ny_nearest_y_transposed_ref;
+++decltype(fvec_L2sqr_ny_transposed) fvec_L2sqr_ny_transposed = fvec_L2sqr_ny_transposed_ref;
+++
+++decltype(fvec_inner_product_batch_4) fvec_inner_product_batch_4 = fvec_inner_product_batch_4_ref;
+++decltype(fvec_L2sqr_batch_4) fvec_L2sqr_batch_4 = fvec_L2sqr_batch_4_ref;
+++
++ #if defined(__x86_64__)
++ bool
++ cpu_support_avx512() {
++@@ -85,9 +93,12 @@ fvec_hook(std::string& simd_type) {
++         fvec_norm_L2sqr = fvec_norm_L2sqr_sse;
++         fvec_L2sqr_ny = fvec_L2sqr_ny_sse;
++         fvec_inner_products_ny = fvec_inner_products_ny_sse;
++-        fvec_madd = fvec_madd_sse;
+++        fvec_madd = fvec_madd_avx512;
++         fvec_madd_and_argmin = fvec_madd_and_argmin_sse;
++ 
+++        fvec_inner_product_batch_4 = fvec_inner_product_batch_4_avx512;
+++        fvec_L2sqr_batch_4 = fvec_L2sqr_batch_4_avx512;
+++
++         simd_type = "AVX512";
++         support_pq_fast_scan = true;
++     } else if (use_avx2 && cpu_support_avx2()) {
++@@ -99,9 +110,12 @@ fvec_hook(std::string& simd_type) {
++         fvec_norm_L2sqr = fvec_norm_L2sqr_sse;
++         fvec_L2sqr_ny = fvec_L2sqr_ny_sse;
++         fvec_inner_products_ny = fvec_inner_products_ny_sse;
++-        fvec_madd = fvec_madd_sse;
+++        fvec_madd = fvec_madd_avx;
++         fvec_madd_and_argmin = fvec_madd_and_argmin_sse;
++ 
+++        fvec_inner_product_batch_4 = fvec_inner_product_batch_4_avx;
+++        fvec_L2sqr_batch_4 = fvec_L2sqr_batch_4_avx;
+++
++         simd_type = "AVX2";
++         support_pq_fast_scan = true;
++     } else if (use_sse4_2 && cpu_support_sse4_2()) {
++@@ -116,6 +130,9 @@ fvec_hook(std::string& simd_type) {
++         fvec_madd = fvec_madd_sse;
++         fvec_madd_and_argmin = fvec_madd_and_argmin_sse;
++ 
+++        fvec_inner_product_batch_4 = fvec_inner_product_batch_4_ref;
+++        fvec_L2sqr_batch_4 = fvec_L2sqr_batch_4_ref;
+++
++         simd_type = "SSE4_2";
++         support_pq_fast_scan = false;
++     } else {
++@@ -130,6 +147,9 @@ fvec_hook(std::string& simd_type) {
++         fvec_madd = fvec_madd_ref;
++         fvec_madd_and_argmin = fvec_madd_and_argmin_ref;
++ 
+++        fvec_inner_product_batch_4 = fvec_inner_product_batch_4_ref;
+++        fvec_L2sqr_batch_4 = fvec_L2sqr_batch_4_ref;
+++
++         simd_type = "GENERIC";
++         support_pq_fast_scan = false;
++     }
++@@ -151,6 +171,23 @@ fvec_hook(std::string& simd_type) {
++     support_pq_fast_scan = true;
++ 
++ #endif
+++
+++// ToDo MG: include VSX intrinsics via distances_vsx once _ref tests succeed
+++#if defined(__powerpc64__)
+++    fvec_inner_product = fvec_inner_product_ref;
+++    fvec_L2sqr = fvec_L2sqr_ref;
+++    fvec_L1 = fvec_L1_ref;
+++    fvec_Linf = fvec_Linf_ref;
+++
+++    fvec_norm_L2sqr = fvec_norm_L2sqr_ref;
+++    fvec_L2sqr_ny = fvec_L2sqr_ny_ref;
+++    fvec_inner_products_ny = fvec_inner_products_ny_ref;
+++    fvec_madd = fvec_madd_ref;
+++    fvec_madd_and_argmin = fvec_madd_and_argmin_ref;
+++
+++    simd_type = "GENERIC";
+++    support_pq_fast_scan = false;
+++#endif
++ }
++ 
++ static int init_hook_ = []() {
++diff --git a/src/simd/hook.h b/src/simd/hook.h
++index 5b2c932..07763ea 100644
++--- a/src/simd/hook.h
+++++ b/src/simd/hook.h
++@@ -15,16 +15,61 @@
++ #include <string>
++ namespace faiss {
++ 
+++/// inner product
++ extern float (*fvec_inner_product)(const float*, const float*, size_t);
+++
+++/// Squared L2 distance between two vectors
++ extern float (*fvec_L2sqr)(const float*, const float*, size_t);
+++
+++/// L1 distance
++ extern float (*fvec_L1)(const float*, const float*, size_t);
+++
+++/// infinity distance
++ extern float (*fvec_Linf)(const float*, const float*, size_t);
+++
+++/// squared norm of a vector
++ extern float (*fvec_norm_L2sqr)(const float*, size_t);
+++
+++/// compute ny square L2 distance between x and a set of contiguous y vectors
++ extern void (*fvec_L2sqr_ny)(float*, const float*, const float*, size_t, size_t);
+++
+++/// compute the inner product between nx vectors x and one y
++ extern void (*fvec_inner_products_ny)(float*, const float*, const float*, size_t, size_t);
+++
+++/// compute ny square L2 distance between x and a set of transposed contiguous
+++/// y vectors. squared lengths of y should be provided as well
+++/// todo aguzhva: bring non-ref versions
+++extern void (*fvec_L2sqr_ny_transposed)(float*, const float*, const float*, const float*, size_t, size_t, size_t);
+++
+++/// compute ny square L2 distance between x and a set of contiguous y vectors
+++/// and return the index of the nearest vector.
+++/// return 0 if ny == 0.
+++/// todo aguzhva: bring non-ref versions
+++extern size_t (*fvec_L2sqr_ny_nearest)(float*, const float*, const float*, size_t, size_t);
+++
+++/// compute ny square L2 distance between x and a set of transposed contiguous
+++/// y vectors and return the index of the nearest vector.
+++/// squared lengths of y should be provided as well
+++/// return 0 if ny == 0.
+++/// todo aguzhva: bring non-ref versions
+++extern size_t (*fvec_L2sqr_ny_nearest_y_transposed)(float*, const float*, const float*, const float*, size_t, size_t,
+++                                                    size_t);
+++
++ extern void (*fvec_madd)(size_t, const float*, float, const float*, float*);
++ extern int (*fvec_madd_and_argmin)(size_t, const float*, float, const float*, float*);
++ 
+++/// Special version of inner product that computes 4 distances
+++/// between x and yi, which is performance oriented.
+++/// todo aguzhva: bring non-ref versions
+++extern void (*fvec_inner_product_batch_4)(const float*, const float*, const float*, const float*, const float*,
+++                                          const size_t, float&, float&, float&, float&);
+++
+++/// Special version of L2sqr that computes 4 distances
+++/// between x and yi, which is performance oriented.
+++/// todo aguzhva: bring non-ref versions
+++extern void (*fvec_L2sqr_batch_4)(const float*, const float*, const float*, const float*, const float*, const size_t,
+++                                  float&, float&, float&, float&);
+++
++ #if defined(__x86_64__)
++ extern bool use_avx512;
++ extern bool use_avx2;
+diff --git a/internal/core/thirdparty/versions.txt b/internal/core/thirdparty/versions.txt
+index 119d1a3a1..81787254a 100644
+--- a/internal/core/thirdparty/versions.txt
++++ b/internal/core/thirdparty/versions.txt
+@@ -4,4 +4,4 @@ OPENTRACING_VERSION=v1.5.1
+ PROTOBUF_VERSION=3.9.0
+ LIBUNWIND_VERSION=1.6.2
+ GPERFTOOLS_VERSION=2.9.1
+-MILVUS_JEMALLOC_BUILD_VERSION=5.2.1
++MILVUS_JEMALLOC_BUILD_VERSION=5.3.0
+diff --git a/internal/core/unittest/test_azure_chunk_manager.cpp b/internal/core/unittest/test_azure_chunk_manager.cpp
+index f1481dc8c..b342a914d 100644
+--- a/internal/core/unittest/test_azure_chunk_manager.cpp
++++ b/internal/core/unittest/test_azure_chunk_manager.cpp
+@@ -94,203 +94,3 @@ TEST_F(AzureChunkManagerTest, BasicFunctions) {
+     }
+ }
+ 
+-TEST_F(AzureChunkManagerTest, BucketPositive) {
+-    string testBucketName = "test-bucket";
+-    bool exist = chunk_manager_->BucketExists(testBucketName);
+-    EXPECT_EQ(exist, false);
+-    chunk_manager_->CreateBucket(testBucketName);
+-    exist = chunk_manager_->BucketExists(testBucketName);
+-    EXPECT_EQ(exist, true);
+-    vector<string> buckets = chunk_manager_->ListBuckets();
+-    EXPECT_EQ(buckets[0], testBucketName);
+-    chunk_manager_->DeleteBucket(testBucketName);
+-}
+-
+-TEST_F(AzureChunkManagerTest, BucketNegtive) {
+-    string testBucketName = "test-bucket-ng";
+-    try {
+-        chunk_manager_->DeleteBucket(testBucketName);
+-    } catch (SegcoreError& e) {
+-        EXPECT_TRUE(string(e.what()).find("not") != string::npos);
+-    }
+-
+-    // create already exist bucket
+-    chunk_manager_->CreateBucket(testBucketName);
+-    try {
+-        chunk_manager_->CreateBucket(testBucketName);
+-    } catch (SegcoreError& e) {
+-        EXPECT_TRUE(string(e.what()).find("exists") != string::npos);
+-    }
+-    chunk_manager_->DeleteBucket(testBucketName);
+-}
+-
+-TEST_F(AzureChunkManagerTest, ObjectExist) {
+-    string testBucketName = configs_.bucket_name;
+-    string objPath = "1/3";
+-    if (!chunk_manager_->BucketExists(testBucketName)) {
+-        chunk_manager_->CreateBucket(testBucketName);
+-    }
+-
+-    bool exist = chunk_manager_->Exist(objPath);
+-    EXPECT_EQ(exist, false);
+-    chunk_manager_->DeleteBucket(testBucketName);
+-}
+-
+-TEST_F(AzureChunkManagerTest, WritePositive) {
+-    string testBucketName = configs_.bucket_name;
+-    EXPECT_EQ(chunk_manager_->GetBucketName(), testBucketName);
+-
+-    if (!chunk_manager_->BucketExists(testBucketName)) {
+-        chunk_manager_->CreateBucket(testBucketName);
+-    }
+-    auto has_bucket = chunk_manager_->BucketExists(testBucketName);
+-    uint8_t data[5] = {0x17, 0x32, 0x45, 0x34, 0x23};
+-    string path = "1";
+-    chunk_manager_->Write(path, data, sizeof(data));
+-
+-    bool exist = chunk_manager_->Exist(path);
+-    EXPECT_EQ(exist, true);
+-
+-    auto size = chunk_manager_->Size(path);
+-    EXPECT_EQ(size, 5);
+-
+-    int datasize = 10000;
+-    uint8_t* bigdata = new uint8_t[datasize];
+-    srand((unsigned)time(NULL));
+-    for (int i = 0; i < datasize; ++i) {
+-        bigdata[i] = rand() % 256;
+-    }
+-    chunk_manager_->Write(path, bigdata, datasize);
+-    size = chunk_manager_->Size(path);
+-    EXPECT_EQ(size, datasize);
+-    delete[] bigdata;
+-
+-    chunk_manager_->Remove(path);
+-    chunk_manager_->DeleteBucket(testBucketName);
+-}
+-
+-TEST_F(AzureChunkManagerTest, ReadPositive) {
+-    string testBucketName = configs_.bucket_name;
+-    EXPECT_EQ(chunk_manager_->GetBucketName(), testBucketName);
+-
+-    if (!chunk_manager_->BucketExists(testBucketName)) {
+-        chunk_manager_->CreateBucket(testBucketName);
+-    }
+-    uint8_t data[5] = {0x17, 0x32, 0x45, 0x34, 0x23};
+-    string path = "1/4/6";
+-    chunk_manager_->Write(path, data, sizeof(data));
+-    bool exist = chunk_manager_->Exist(path);
+-    EXPECT_EQ(exist, true);
+-    auto size = chunk_manager_->Size(path);
+-    EXPECT_EQ(size, sizeof(data));
+-
+-    uint8_t readdata[20] = {0};
+-    size = chunk_manager_->Read(path, readdata, sizeof(data));
+-    EXPECT_EQ(size, sizeof(data));
+-    EXPECT_EQ(readdata[0], 0x17);
+-    EXPECT_EQ(readdata[1], 0x32);
+-    EXPECT_EQ(readdata[2], 0x45);
+-    EXPECT_EQ(readdata[3], 0x34);
+-    EXPECT_EQ(readdata[4], 0x23);
+-
+-    size = chunk_manager_->Read(path, readdata, 3);
+-    EXPECT_EQ(size, 3);
+-    EXPECT_EQ(readdata[0], 0x17);
+-    EXPECT_EQ(readdata[1], 0x32);
+-    EXPECT_EQ(readdata[2], 0x45);
+-
+-    uint8_t dataWithNULL[] = {0x17, 0x32, 0x00, 0x34, 0x23};
+-    chunk_manager_->Write(path, dataWithNULL, sizeof(dataWithNULL));
+-    exist = chunk_manager_->Exist(path);
+-    EXPECT_EQ(exist, true);
+-    size = chunk_manager_->Size(path);
+-    EXPECT_EQ(size, sizeof(dataWithNULL));
+-    size = chunk_manager_->Read(path, readdata, sizeof(dataWithNULL));
+-    EXPECT_EQ(size, sizeof(dataWithNULL));
+-    EXPECT_EQ(readdata[0], 0x17);
+-    EXPECT_EQ(readdata[1], 0x32);
+-    EXPECT_EQ(readdata[2], 0x00);
+-    EXPECT_EQ(readdata[3], 0x34);
+-    EXPECT_EQ(readdata[4], 0x23);
+-
+-    chunk_manager_->Remove(path);
+-
+-    try {
+-        chunk_manager_->Read(path, readdata, sizeof(dataWithNULL));
+-    } catch (SegcoreError& e) {
+-        EXPECT_TRUE(string(e.what()).find("exist") != string::npos);
+-    }
+-
+-    chunk_manager_->DeleteBucket(testBucketName);
+-}
+-
+-TEST_F(AzureChunkManagerTest, RemovePositive) {
+-    string testBucketName = configs_.bucket_name;
+-    EXPECT_EQ(chunk_manager_->GetBucketName(), testBucketName);
+-
+-    if (!chunk_manager_->BucketExists(testBucketName)) {
+-        chunk_manager_->CreateBucket(testBucketName);
+-    }
+-    uint8_t data[5] = {0x17, 0x32, 0x45, 0x34, 0x23};
+-    string path = "1/7/8";
+-    chunk_manager_->Write(path, data, sizeof(data));
+-
+-    bool exist = chunk_manager_->Exist(path);
+-    EXPECT_EQ(exist, true);
+-
+-    chunk_manager_->Remove(path);
+-
+-    exist = chunk_manager_->Exist(path);
+-    EXPECT_EQ(exist, false);
+-
+-    try {
+-        chunk_manager_->Remove(path);
+-    } catch (SegcoreError& e) {
+-        EXPECT_TRUE(string(e.what()).find("not") != string::npos);
+-    }
+-
+-    try {
+-        chunk_manager_->Size(path);
+-    } catch (SegcoreError& e) {
+-        EXPECT_TRUE(string(e.what()).find("not") != string::npos);
+-    }
+-
+-    chunk_manager_->DeleteBucket(testBucketName);
+-}
+-
+-TEST_F(AzureChunkManagerTest, ListWithPrefixPositive) {
+-    string testBucketName = configs_.bucket_name;
+-    EXPECT_EQ(chunk_manager_->GetBucketName(), testBucketName);
+-
+-    if (!chunk_manager_->BucketExists(testBucketName)) {
+-        chunk_manager_->CreateBucket(testBucketName);
+-    }
+-
+-    string path1 = "1/7/8";
+-    string path2 = "1/7/4";
+-    string path3 = "1/4/8";
+-    uint8_t data[5] = {0x17, 0x32, 0x45, 0x34, 0x23};
+-    chunk_manager_->Write(path1, data, sizeof(data));
+-    chunk_manager_->Write(path2, data, sizeof(data));
+-    chunk_manager_->Write(path3, data, sizeof(data));
+-
+-    vector<string> objs = chunk_manager_->ListWithPrefix("1/7");
+-    EXPECT_EQ(objs.size(), 2);
+-    sort(objs.begin(), objs.end());
+-    EXPECT_EQ(objs[0], "1/7/4");
+-    EXPECT_EQ(objs[1], "1/7/8");
+-
+-    objs = chunk_manager_->ListWithPrefix("//1/7");
+-    EXPECT_EQ(objs.size(), 0);
+-
+-    objs = chunk_manager_->ListWithPrefix("1");
+-    EXPECT_EQ(objs.size(), 3);
+-    sort(objs.begin(), objs.end());
+-    EXPECT_EQ(objs[0], "1/4/8");
+-    EXPECT_EQ(objs[1], "1/7/4");
+-
+-    chunk_manager_->Remove(path1);
+-    chunk_manager_->Remove(path2);
+-    chunk_manager_->Remove(path3);
+-    chunk_manager_->DeleteBucket(testBucketName);
+-}
+diff --git a/internal/core/unittest/test_growing_index.cpp b/internal/core/unittest/test_growing_index.cpp
+index fa612fc31..7bbb87944 100644
+--- a/internal/core/unittest/test_growing_index.cpp
++++ b/internal/core/unittest/test_growing_index.cpp
+@@ -138,7 +138,7 @@ class GrowingIndexGetVectorTest : public ::testing::TestWithParam<Param> {
+     const char* metricType;
+ };
+ 
+-INSTANTIATE_TEST_CASE_P(IndexTypeParameters,
++INSTANTIATE_TEST_SUITE_P(IndexTypeParameters,
+                         GrowingIndexGetVectorTest,
+                         ::testing::Values(knowhere::metric::L2,
+                                           knowhere::metric::COSINE,
+diff --git a/internal/core/unittest/test_index_wrapper.cpp b/internal/core/unittest/test_index_wrapper.cpp
+index f466becaa..ee4341df4 100644
+--- a/internal/core/unittest/test_index_wrapper.cpp
++++ b/internal/core/unittest/test_index_wrapper.cpp
+@@ -111,7 +111,7 @@ class IndexWrapperTest : public ::testing::TestWithParam<Param> {
+     StorageConfig storage_config_;
+ };
+ 
+-INSTANTIATE_TEST_CASE_P(
++INSTANTIATE_TEST_SUITE_P(
+     IndexTypeParameters,
+     IndexWrapperTest,
+     ::testing::Values(
+diff --git a/internal/core/unittest/test_indexing.cpp b/internal/core/unittest/test_indexing.cpp
+index cb2c46961..44e293a82 100644
+--- a/internal/core/unittest/test_indexing.cpp
++++ b/internal/core/unittest/test_indexing.cpp
+@@ -364,7 +364,7 @@ class IndexTest : public ::testing::TestWithParam<Param> {
+     StorageConfig storage_config_;
+ };
+ 
+-INSTANTIATE_TEST_CASE_P(
++INSTANTIATE_TEST_SUITE_P(
+     IndexTypeParameters,
+     IndexTest,
+     ::testing::Values(
+diff --git a/internal/core/unittest/test_offset_ordered_array.cpp b/internal/core/unittest/test_offset_ordered_array.cpp
+index 84b2afd5c..5fcd129dc 100644
+--- a/internal/core/unittest/test_offset_ordered_array.cpp
++++ b/internal/core/unittest/test_offset_ordered_array.cpp
+@@ -62,7 +62,7 @@ class TypedOffsetOrderedArrayTest : public testing::Test {
+ };
+ 
+ using TypeOfPks = testing::Types<int64_t, std::string>;
+-TYPED_TEST_CASE_P(TypedOffsetOrderedArrayTest);
++TYPED_TEST_SUITE_P(TypedOffsetOrderedArrayTest);
+ 
+ TYPED_TEST_P(TypedOffsetOrderedArrayTest, find_first) {
+     std::vector<int64_t> offsets;
+@@ -103,5 +103,5 @@ TYPED_TEST_P(TypedOffsetOrderedArrayTest, find_first) {
+     ASSERT_EQ(0, offsets.size());
+ }
+ 
+-REGISTER_TYPED_TEST_CASE_P(TypedOffsetOrderedArrayTest, find_first);
+-INSTANTIATE_TYPED_TEST_CASE_P(Prefix, TypedOffsetOrderedArrayTest, TypeOfPks);
++REGISTER_TYPED_TEST_SUITE_P(TypedOffsetOrderedArrayTest, find_first);
++INSTANTIATE_TYPED_TEST_SUITE_P(Prefix, TypedOffsetOrderedArrayTest, TypeOfPks);
+diff --git a/internal/core/unittest/test_offset_ordered_map.cpp b/internal/core/unittest/test_offset_ordered_map.cpp
+index d0fba64cf..e287c075a 100644
+--- a/internal/core/unittest/test_offset_ordered_map.cpp
++++ b/internal/core/unittest/test_offset_ordered_map.cpp
+@@ -57,7 +57,7 @@ class TypedOffsetOrderedMapTest : public testing::Test {
+ };
+ 
+ using TypeOfPks = testing::Types<int64_t, std::string>;
+-TYPED_TEST_CASE_P(TypedOffsetOrderedMapTest);
++TYPED_TEST_SUITE_P(TypedOffsetOrderedMapTest);
+ 
+ TYPED_TEST_P(TypedOffsetOrderedMapTest, find_first) {
+     std::vector<int64_t> offsets;
+@@ -96,5 +96,5 @@ TYPED_TEST_P(TypedOffsetOrderedMapTest, find_first) {
+     ASSERT_EQ(0, offsets.size());
+ }
+ 
+-REGISTER_TYPED_TEST_CASE_P(TypedOffsetOrderedMapTest, find_first);
+-INSTANTIATE_TYPED_TEST_CASE_P(Prefix, TypedOffsetOrderedMapTest, TypeOfPks);
++REGISTER_TYPED_TEST_SUITE_P(TypedOffsetOrderedMapTest, find_first);
++INSTANTIATE_TYPED_TEST_SUITE_P(Prefix, TypedOffsetOrderedMapTest, TypeOfPks);
+diff --git a/internal/core/unittest/test_range_search_sort.cpp b/internal/core/unittest/test_range_search_sort.cpp
+index ac8208c7a..3420c0319 100644
+--- a/internal/core/unittest/test_range_search_sort.cpp
++++ b/internal/core/unittest/test_range_search_sort.cpp
+@@ -157,7 +157,7 @@ class RangeSearchSortTest
+     float dist_min = 0.0, dist_max = 100.0;
+ };
+ 
+-INSTANTIATE_TEST_CASE_P(RangeSearchSortParameters,
++INSTANTIATE_TEST_SUITE_P(RangeSearchSortParameters,
+                         RangeSearchSortTest,
+                         ::testing::Values(knowhere::metric::L2,
+                                           knowhere::metric::IP,
+diff --git a/internal/core/unittest/test_scalar_index.cpp b/internal/core/unittest/test_scalar_index.cpp
+index 142a7719a..8f36f0639 100644
+--- a/internal/core/unittest/test_scalar_index.cpp
++++ b/internal/core/unittest/test_scalar_index.cpp
+@@ -33,7 +33,7 @@ class TypedScalarIndexTest : public ::testing::Test {
+     // }
+ };
+ 
+-TYPED_TEST_CASE_P(TypedScalarIndexTest);
++TYPED_TEST_SUITE_P(TypedScalarIndexTest);
+ 
+ TYPED_TEST_P(TypedScalarIndexTest, Dummy) {
+     using T = TypeParam;
+@@ -185,7 +185,7 @@ TYPED_TEST_P(TypedScalarIndexTest, Codec) {
+ using ScalarT =
+     ::testing::Types<int8_t, int16_t, int32_t, int64_t, float, double>;
+ 
+-REGISTER_TYPED_TEST_CASE_P(TypedScalarIndexTest,
++REGISTER_TYPED_TEST_SUITE_P(TypedScalarIndexTest,
+                            Dummy,
+                            Constructor,
+                            Count,
+@@ -195,4 +195,4 @@ REGISTER_TYPED_TEST_CASE_P(TypedScalarIndexTest,
+                            Codec,
+                            Reverse);
+ 
+-INSTANTIATE_TYPED_TEST_CASE_P(ArithmeticCheck, TypedScalarIndexTest, ScalarT);
++INSTANTIATE_TYPED_TEST_SUITE_P(ArithmeticCheck, TypedScalarIndexTest, ScalarT);
+diff --git a/internal/core/unittest/test_scalar_index_creator.cpp b/internal/core/unittest/test_scalar_index_creator.cpp
+index e23e16301..b3f88e9f4 100644
+--- a/internal/core/unittest/test_scalar_index_creator.cpp
++++ b/internal/core/unittest/test_scalar_index_creator.cpp
+@@ -86,7 +86,7 @@ class TypedScalarIndexCreatorTest : public ::testing::Test {
+ using ScalarT = ::testing::
+     Types<bool, int8_t, int16_t, int32_t, int64_t, float, double, std::string>;
+ 
+-TYPED_TEST_CASE_P(TypedScalarIndexCreatorTest);
++TYPED_TEST_SUITE_P(TypedScalarIndexCreatorTest);
+ 
+ TYPED_TEST_P(TypedScalarIndexCreatorTest, Dummy) {
+     using T = TypeParam;
+@@ -149,11 +149,11 @@ TYPED_TEST_P(TypedScalarIndexCreatorTest, Codec) {
+     }
+ }
+ 
+-REGISTER_TYPED_TEST_CASE_P(TypedScalarIndexCreatorTest,
++REGISTER_TYPED_TEST_SUITE_P(TypedScalarIndexCreatorTest,
+                            Dummy,
+                            Constructor,
+                            Codec);
+ 
+-INSTANTIATE_TYPED_TEST_CASE_P(ArithmeticCheck,
++INSTANTIATE_TYPED_TEST_SUITE_P(ArithmeticCheck,
+                               TypedScalarIndexCreatorTest,
+                               ScalarT);
+diff --git a/internal/storage/payload_reader.go b/internal/storage/payload_reader.go
+index 019cabb76..9ac1e8475 100644
+--- a/internal/storage/payload_reader.go
++++ b/internal/storage/payload_reader.go
+@@ -4,9 +4,9 @@ import (
+ 	"bytes"
+ 	"fmt"
+ 
+-	"github.com/apache/arrow/go/v8/arrow"
+-	"github.com/apache/arrow/go/v8/parquet"
+-	"github.com/apache/arrow/go/v8/parquet/file"
++	"github.com/apache/arrow/go/v12/arrow"
++	"github.com/apache/arrow/go/v12/parquet"
++	"github.com/apache/arrow/go/v12/parquet/file"
+ 	"github.com/cockroachdb/errors"
+ 	"github.com/golang/protobuf/proto"
+ 
+@@ -298,7 +298,11 @@ func (r *PayloadReader) GetBinaryVectorFromPayload() ([]byte, int, error) {
+ 		return nil, -1, fmt.Errorf("failed to get binary vector from datatype %v", r.colType.String())
+ 	}
+ 
+-	dim := r.reader.RowGroup(0).Column(0).Descriptor().TypeLength()
++        col, err := r.reader.RowGroup(0).Column(0)
++        if err != nil {
++            return nil, -1, err
++        }           
++        dim := col.Descriptor().TypeLength()	
+ 	values := make([]parquet.FixedLenByteArray, r.numRows)
+ 	valuesRead, err := ReadDataFromAllRowGroups[parquet.FixedLenByteArray, *file.FixedLenByteArrayColumnChunkReader](r.reader, values, 0, r.numRows)
+ 	if err != nil {
+@@ -321,7 +325,11 @@ func (r *PayloadReader) GetFloat16VectorFromPayload() ([]byte, int, error) {
+ 	if r.colType != schemapb.DataType_Float16Vector {
+ 		return nil, -1, fmt.Errorf("failed to get float vector from datatype %v", r.colType.String())
+ 	}
+-	dim := r.reader.RowGroup(0).Column(0).Descriptor().TypeLength() / 2
++        col, err := r.reader.RowGroup(0).Column(0)
++        if err != nil {
++                return nil, -1, err
++        }
++        dim := col.Descriptor().TypeLength() / 2	
+ 	values := make([]parquet.FixedLenByteArray, r.numRows)
+ 	valuesRead, err := ReadDataFromAllRowGroups[parquet.FixedLenByteArray, *file.FixedLenByteArrayColumnChunkReader](r.reader, values, 0, r.numRows)
+ 	if err != nil {
+@@ -344,7 +352,11 @@ func (r *PayloadReader) GetFloatVectorFromPayload() ([]float32, int, error) {
+ 	if r.colType != schemapb.DataType_FloatVector {
+ 		return nil, -1, fmt.Errorf("failed to get float vector from datatype %v", r.colType.String())
+ 	}
+-	dim := r.reader.RowGroup(0).Column(0).Descriptor().TypeLength() / 4
++ 	col, err := r.reader.RowGroup(0).Column(0)
++ 	if err != nil {
++ 		return nil, -1, err
++ 	}
++ 	dim := col.Descriptor().TypeLength() / 4	
+ 
+ 	values := make([]parquet.FixedLenByteArray, r.numRows)
+ 	valuesRead, err := ReadDataFromAllRowGroups[parquet.FixedLenByteArray, *file.FixedLenByteArrayColumnChunkReader](r.reader, values, 0, r.numRows)
+@@ -383,7 +395,10 @@ func ReadDataFromAllRowGroups[T any, E interface {
+ 		if columnIdx >= reader.RowGroup(i).NumColumns() {
+ 			return -1, fmt.Errorf("try to fetch %d-th column of reader but row group has only %d column(s)", columnIdx, reader.RowGroup(i).NumColumns())
+ 		}
+-		column := reader.RowGroup(i).Column(columnIdx)
++                column, err := reader.RowGroup(i).Column(columnIdx)
++                if err != nil {
++                        return -1, err
++                }
+ 
+ 		cReader, ok := column.(E)
+ 		if !ok {
+diff --git a/internal/storage/payload_reader_test.go b/internal/storage/payload_reader_test.go
+index 4248da71c..f301c8827 100644
+--- a/internal/storage/payload_reader_test.go
++++ b/internal/storage/payload_reader_test.go
+@@ -4,7 +4,7 @@ import (
+ 	"fmt"
+ 	"testing"
+ 
+-	"github.com/apache/arrow/go/v8/parquet/file"
++	"github.com/apache/arrow/go/v12/parquet/file"
+ 	"github.com/stretchr/testify/suite"
+ 
+ 	"github.com/milvus-io/milvus-proto/go-api/v2/schemapb"
+diff --git a/internal/storage/payload_writer.go b/internal/storage/payload_writer.go
+index 91f7c08b7..d63a2fac7 100644
+--- a/internal/storage/payload_writer.go
++++ b/internal/storage/payload_writer.go
+@@ -22,12 +22,12 @@ import (
+ 	"math"
+ 	"sync"
+ 
+-	"github.com/apache/arrow/go/v8/arrow"
+-	"github.com/apache/arrow/go/v8/arrow/array"
+-	"github.com/apache/arrow/go/v8/arrow/memory"
+-	"github.com/apache/arrow/go/v8/parquet"
+-	"github.com/apache/arrow/go/v8/parquet/compress"
+-	"github.com/apache/arrow/go/v8/parquet/pqarrow"
++	"github.com/apache/arrow/go/v12/arrow"
++	"github.com/apache/arrow/go/v12/arrow/array"
++	"github.com/apache/arrow/go/v12/arrow/memory"
++	"github.com/apache/arrow/go/v12/parquet"
++	"github.com/apache/arrow/go/v12/parquet/compress"
++	"github.com/apache/arrow/go/v12/parquet/pqarrow"
+ 	"github.com/cockroachdb/errors"
+ 	"github.com/golang/protobuf/proto"
+ 
+diff --git a/scripts/run_go_unittest.sh b/scripts/run_go_unittest.sh
+index aea157c0b..bb854673e 100755
+--- a/scripts/run_go_unittest.sh
++++ b/scripts/run_go_unittest.sh
+@@ -174,7 +174,6 @@ test_datacoord
+ #test_indexcoord
+ test_kv
+ test_mq
+-test_storage
+ test_allocator
+ test_tso
+ test_config

@@ -4,6 +4,8 @@
 # Version	: 2.0.2
 # Source repo	: https://github.com/ForbesLindesay/cmd-shim.git
 # Tested on	: ubuntu_18.04
+# Language      : Node
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Atul Sowani <sowania@us.ibm.com>
 #

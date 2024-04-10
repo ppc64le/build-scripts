@@ -9,7 +9,6 @@
     "validate_build_script": "true",
     "use_non_root_user": "false",
     "docker_build": "false",
-
     "4.1.*" : {
        "build_script" : "pyephem_ubi_8.7.sh"
     }

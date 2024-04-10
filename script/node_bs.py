@@ -25,6 +25,21 @@ package_name = input("Enter Package name (Package name should match with the dir
 package_name = package_name.lower()
 dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_name}"
 
+user_name_command ="git config user.name"
+user_name_response = subprocess.check_output(user_name_command,shell=True)
+user_name_response = user_name_response.decode("utf-8")
+user_name_response=''.join(user_name_response.split('\n'))
+
+if user_name_response == '':
+    user_name_response = 'ICH'
+
+email_command = "git config user.email"
+user_email_response = subprocess.check_output(email_command,shell=True)
+user_email_response = user_email_response.decode("utf-8")
+user_email_response=''.join(user_email_response.split('\n'))
+
+if user_email_response =='':
+    user_email_response='ich@us.ibm.com'
 
 github_url=''
 latest_release=sys.argv[1]
@@ -177,6 +192,9 @@ def create_new_script():
             template_lines[i]= f"PACKAGE_VERSION={temp_rel}\n"
         elif template_lines[i].startswith('# Version'):
             template_lines[i]= f"# Version          : {latest_release}\n"
+
+        elif template_lines[i].startswith("# Maintainer"):
+            template_lines[i]=f"# Maintainer    : {user_name_response} <{user_email_response}>\n"
         elif template_lines[i].startswith("PACKAGE_URL"):
             template_lines[i]=f"PACKAGE_URL={github_url}\n"
         elif template_lines[i].startswith("# Source repo"):

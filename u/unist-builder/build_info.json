@@ -1,0 +1,12 @@
+{
+   "maintainer": "shubham-garud",
+   "package_name": "unist-builder",
+   "github_url": "https://github.com/syntax-tree/unist-builder",
+   "version": "4.0.0",
+   "default_branch": "main",
+   "build_script": "unist-builder_ubi_8.7.sh",
+   "package_dir": "u/unist-builder",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user":false
+}

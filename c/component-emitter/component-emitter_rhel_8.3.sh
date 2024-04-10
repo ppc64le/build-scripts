@@ -4,6 +4,8 @@
 # Version	: 1.2.0
 # Source repo	: https://github.com/component/emitter
 # Tested on	: RHEL 8.3
+# Language      : Node
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
