@@ -11,7 +11,7 @@ RUN git clone https://github.com/jedisct1/libsodium && \
     git checkout $PACKAGE_VERSION && \
     autoreconf -fvi && \
     ./configure --build=ppc64le-redhat-linux && \
-	  make && \ 
-	  make install
+    make && \ 
+    make install
  
 CMD ["/bin/bash"]
