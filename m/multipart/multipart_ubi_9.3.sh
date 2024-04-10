@@ -4,7 +4,7 @@
 # Package       : multipart
 # Version       : master
 # Source repo   : https://github.com/defnull/multipart
-# Tested on     : UBI 9.3
+# Tested on     : UBI:9.3
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
