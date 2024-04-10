@@ -4,7 +4,7 @@
 # Package          : nestedSortable
 # Version          : master
 # Source repo      : https://github.com/ilikenwf/nestedSortable
-# Tested on        : UBI 9.3
+# Tested on        : UBI:9.3
 # Language         : Node
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
