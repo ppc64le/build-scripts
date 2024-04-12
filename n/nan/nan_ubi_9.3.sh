@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=nan
-PACKAGE_VERSION=v2.19.0
+PACKAGE_VERSION=${1:-v2.19.0}
 PACKAGE_URL=https://github.com/nodejs/nan
 
 export NODE_VERSION=${NODE_VERSION:-16}
