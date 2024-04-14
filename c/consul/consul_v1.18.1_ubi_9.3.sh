@@ -38,10 +38,7 @@ go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.45.2
 ulimit -n 2048
 umask 0022
 
-export CWD=`pwd`
 export PATH=$GOPATH/bin:$PATH
-
-cd $wrkdir
 
 git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME
