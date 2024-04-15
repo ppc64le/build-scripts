@@ -1,13 +1,13 @@
 FROM registry.access.redhat.com/ubi9/ubi:9.3 as builder
 
-ENV REDISEARCH_VERSION=v2.8.13
+ENV PACKAGE_VERSION=v2.8.13
 
 RUN yum install -y https://dl.fedoraproject.org/pub/epel/9/Everything/ppc64le/Packages/e/epel-release-9-7.el9.noarch.rpm && \
         yum install -y wget git gcc gcc-c++ make cmake libstdc++-static python3.11 python3.11-devel python3.11-pip gtest gtest-devel python3-psutil
 
 RUN git clone --recursive https://github.com/RediSearch/RediSearch.git && \
     cd RediSearch && \
-    git checkout ${REDISEARCH_VERSION} && \
+    git checkout $PACKAGE_VERSION && \
     cd .install/ && \
     ./install_boost.sh 1.83.0 && cd .. && \
     make fetch && \
