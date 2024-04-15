@@ -1,6 +1,5 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
-#
 # Package       : rethinkdb
 # Version       : v2.4.4
 # Source repo   : https://github.com/rethinkdb/rethinkdb.git
