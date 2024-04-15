@@ -21,7 +21,7 @@ PACKAGE_VERSION=${1:-v2.4.4}
 PACKAGE_URL=https://github.com/rethinkdb/rethinkdb.git
 PACKAGE_NAME=rethinkdb
 
-yum install -y patch bzip2 git make gcc-c++ openssl-devel libcurl-devel wget m4 ncurses-devel libicu-devel python3 python3-devel protobuf-c
+yum install -y patch bzip2 git make gcc-c++ openssl-devel tar libcurl-devel wget m4 ncurses-devel libicu-devel python3 python3-devel protobuf-c
 yum install -y https://dl.fedoraproject.org/pub/epel/9/Everything/ppc64le/Packages/e/epel-release-9-7.el9.noarch.rpm
 
 #Install nodejs
