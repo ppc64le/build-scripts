@@ -26,7 +26,7 @@ yum install -y https://dl.fedoraproject.org/pub/epel/9/Everything/ppc64le/Packag
 
 #Install protobuf-c
 wget https://github.com/protocolbuffers/protobuf/releases/download/v3.19.4/protobuf-cpp-3.19.4.tar.gz
-tar -xzf protobuf-cpp-3.19.4.tar.gz
+tar -xzf protobuf-cpp-3.19.4.tar.gz --no-same-owner
 cd protobuf-3.19.4
 ./configure --prefix=/usr/local
 make 
