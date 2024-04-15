@@ -39,7 +39,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 ./configure --allow-fetch
 
-if ! make && make install; then
+if ! make -j8; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
