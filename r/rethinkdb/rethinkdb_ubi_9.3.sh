@@ -31,6 +31,7 @@ cd protobuf-3.19.4
 ./configure --prefix=/usr/local
 make 
 make install
+export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 protoc --version
 
 #Install nodejs
