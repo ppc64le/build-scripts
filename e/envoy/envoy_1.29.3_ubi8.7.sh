@@ -122,7 +122,7 @@ fi
 
 #Run tests (take several hours to execute, hence disabling by default)
 #Some tests might fail because of issues with the tests themselves rather than envoy
-bazel test --config=clang --config=libc++ --test_timeout=1000 --cxxopt=-fpermissive --define=wasm=disabled //test/... --cache_test_results=no || true
+#bazel test --config=clang --config=libc++ --test_timeout=2000 --cxxopt=-fpermissive --define=wasm=disabled //test/... --cache_test_results=no || true
 EOF
 
 #Conclude
