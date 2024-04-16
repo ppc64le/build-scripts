@@ -44,11 +44,10 @@ nvm use $NODE_VERSION
 
 ln -s /usr/bin/python3 /usr/bin/python
 
-
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-./configure --allow-fetch
+./configure --allow-fetch 
 
 if ! make && make install ; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
