@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : pyramid_jinja2
-# Version          : 2.10
+# Version          : 2.10.1
 # Source repo      : https://github.com/Pylons/pyramid_jinja2.git
 # Tested on        : UBI 8.7
 # Language         : Python
@@ -21,7 +21,7 @@
 set -e
 
 PACKAGE_NAME=pyramid_jinja2
-PACKAGE_VERSION=${1:-"2.10"}
+PACKAGE_VERSION=${1:-"2.10.1"}
 PACKAGE_URL=https://github.com/Pylons/pyramid_jinja2.git
 
 yum install -y git gcc gcc-c++ yum-utils make automake autoconf libtool gdb* binutils rpm-build gettext wget

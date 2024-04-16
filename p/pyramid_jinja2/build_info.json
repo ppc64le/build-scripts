@@ -2,7 +2,7 @@
     "maintainer": "mohit.pawar@ibm.com",
     "package_name": "pyramid_jinja2",
     "github_url": "https://github.com/Pylons/pyramid_jinja2.git",
-    "version": "2.10",
+    "version": "2.10.1",
     "default_branch": "main",
     "package_dir": "p/pyramid_jinja2",
     "build_script": "pyramid_jinja2_ubi_8.7.sh",
