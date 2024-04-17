@@ -24,7 +24,7 @@ PACKAGE_URL=https://github.com/apollographql/graphql-tag
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
-export NODE_VERSION=${NODE_VERSION:-18}
+export NODE_VERSION=${NODE_VERSION:-16}
 yum install -y git wget gcc-c++ gcc 
 
 #Installing nvm
