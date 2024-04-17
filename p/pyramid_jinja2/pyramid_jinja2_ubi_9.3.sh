@@ -25,10 +25,10 @@ PACKAGE_VERSION=${1:-"2.10.1"}
 PACKAGE_URL=https://github.com/Pylons/pyramid_jinja2.git
 
 yum install -y git gcc gcc-c++ yum-utils make automake autoconf libtool gdb* binutils rpm-build gettext wget
-yum install -y python3 python3-devel python3-setuptools
+yum install -y python39 python39-devel python39-setuptools
 
-python3 -m ensurepip --upgrade
-python3 -m pip install build tox webtest
+python3 -m pip install -U pip
+pip install build tox webtest
 
 pip install --upgrade jinja2==3.0.3
 
