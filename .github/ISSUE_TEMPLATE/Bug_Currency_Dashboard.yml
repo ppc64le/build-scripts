@@ -1,0 +1,39 @@
+name: Bug for Currency Dashboard
+title: "[BUG]: "
+description: "Bug reporting for currency dashboard"
+labels: "dashboard bug"
+projects: "ppc64le/1"
+assignees: "ICH"
+body:
+  - type: markdown
+    attributes:
+      value: >
+        Github is reserved for bug or feedback reports for Currency Dashboard. Also to request currency for any package or report currency issues for any package.
+        Please fill in the following details to provide bug details for Currency Dashboard.
+  - type: dropdown
+    id: dashboard_version
+    attributes:
+      label: Currency Dashboard Version
+      options:
+        - v0.5
+        - v0.6
+        - v1.0
+      description: |
+        The version of Currency Dashboard on which you see behavior or registering your feedback for dashboard.
+    validations:
+      required: true
+  - type: textarea
+    id: bug_details
+    attributes:
+      label: Bug Details
+      description: A description of the problem/bug Currency Dashboard usage. Please provide screenshots if possible.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce the bug or issue
+      description: |
+        Steps to reporduce issue if you are reporting any bug
+    validations:
+      required: true
