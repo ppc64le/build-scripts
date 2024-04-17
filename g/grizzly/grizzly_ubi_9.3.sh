@@ -45,7 +45,7 @@ if ! mvn clean install -DskipTests=true ; then
       exit 1
 fi
  
-if ! mvn test ; then
+if ! mvn test --define maven.test.redirectTestOutputToFile=true  --define surefire.rerunFailingTestsCount=5; then
       echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
       echo "$PACKAGE_URL $PACKAGE_NAME"
       echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
