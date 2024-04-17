@@ -29,8 +29,9 @@ yum install -y python39 python39-devel python39-setuptools
 
 python3 -m ensurepip --upgrade
 python3 -m pip install build tox webtest
+PATH=$PATH:/usr/local/bin/
 
-pip install --upgrade jinja2==3.0.3
+python3 -m pip install --upgrade jinja2==3.0.3
 
 # Clone and build source code.
 git clone $PACKAGE_URL
