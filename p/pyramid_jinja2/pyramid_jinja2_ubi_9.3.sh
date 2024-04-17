@@ -4,7 +4,7 @@
 # Package          : pyramid_jinja2
 # Version          : 2.10.1
 # Source repo      : https://github.com/Pylons/pyramid_jinja2.git
-# Tested on        : UBI 9.3
+# Tested on        : UBI:9.3
 # Language         : Python
 # Travis-Check     : True
 # Script License   : GNU General Public License v3.0
