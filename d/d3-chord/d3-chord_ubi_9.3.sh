@@ -4,7 +4,7 @@
 # Package       : d3-chord
 # Version       : v3.0.1
 # Source repo   : https://github.com/d3/d3-chord
-# Tested on     : UBI 9.3
+# Tested on     : UBI:9.3
 # Language      : Node
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
