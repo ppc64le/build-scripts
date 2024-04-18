@@ -17,6 +17,7 @@
     "dir": "2.4.16-ubi8"
   },
   "v2.*.*": {
-  "dir": "2.8.13-ubi9"
-  }
+     "dir": "2.8.13_ubi9",
+      "build_script": "redisearch_ubi_9.3.sh"
+    }
 }
