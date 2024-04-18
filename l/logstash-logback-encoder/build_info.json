@@ -1,0 +1,15 @@
+{
+    "maintainer": "stutiibm",
+    "package_name": "logstash-logback-encoder",
+    "github_url": "https://github.com/logfellow/logstash-logback-encoder",
+    "version": "logstash-logback-encoder-7.4",
+    "default_branch": "main",
+    "package_dir": "l/logstash-logback-encoder",
+    "build_script": "logstash-logback-encoder_ubi_9_3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "logstash-logback-encoder-7.*": {
+        "build_script": "logstash-logback-encoder_ubi_9_3.sh"
+     }
+}
