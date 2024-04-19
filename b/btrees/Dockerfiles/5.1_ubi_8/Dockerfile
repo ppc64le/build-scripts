@@ -3,7 +3,10 @@ FROM registry.access.redhat.com/ubi8/ubi:8.7
 MAINTAINER "Mohit Pawar <Mohit.Pawar@ibm.com>"
 
 ENV HOME_DIR=${PWD}
+<<<<<<< HEAD
 ARG PACKAGE_VERSION=5.1
+=======
+>>>>>>> master
 
 RUN yum update -y && \
 	yum install -y git gcc gcc-c++ yum-utils make automake autoconf libtool gdb* binutils rpm-build gettext wget && \
@@ -13,7 +16,10 @@ RUN yum update -y && \
 	python3 -m pip install tox --ignore-installed && \
 	git clone https://github.com/zopefoundation/BTrees.git && \
 	cd BTrees && \
+<<<<<<< HEAD
 	git checkout $PACKAGE_VERSION && \
+=======
+>>>>>>> master
 	python3 setup.py build
 	
 CMD ["/bin/bash"]

@@ -1,17 +1,18 @@
 {
-  "maintainer": "Stuti.Wali@ibm.com",
+  "maintainer": "stutiibm",
   "package_name": "nomad",
   "github_url": "https://github.com/hashicorp/nomad",
-  "version": "v1.4.3",
+  "version": "v1.7.6",
   "default_branch": "main",
   "package_dir": "n/nomad",
-  "build_script": "nomad_ubi_8_5.sh",
+  "build_script": "nomad_ubi_9_3.sh",
   "validate_build_script": true,
   "docker_build": false,
-  "v1.4.3": {
-    "build_script": "nomad_ubi_8_5.sh",
+  "use_non_root_user": false,
+  "v1.*.*": {
+    "build_script": "nomad_ubi_9_3.sh",
     "args": {
-      "GO_VERSION": "1.20.1"
+      "GO_VERSION": "1.21.1"
     }
   }
 }

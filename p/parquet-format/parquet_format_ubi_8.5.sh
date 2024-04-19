@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: parquet-format
-# Version	: apache-parquet-format-2.9.0
+# Version	: apache-parquet-format-2.10.0
 # Source repo	: https://github.com/apache/parquet-format
 # Tested on	: UBI 8.5
 # Language      : Java
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=parquet-format
-PACKAGE_VERSION=${1:-apache-parquet-format-2.9.0}
+PACKAGE_VERSION=${1:-apache-parquet-format-2.10.0}
 PACKAGE_URL=https://github.com/apache/parquet-format.git
 WORKDIR=`pwd`
 
@@ -50,6 +50,14 @@ make install
 
 #Verify thrift installation
 thrift --version
+
+#For latest version of parquet-format it requires thrift-0.19.0
+wget -nv http://archive.apache.org/dist/thrift/0.19.0/thrift-0.19.0.tar.gz
+tar -xzvf thrift-0.19.0.tar.gz --no-same-owner
+cd thrift-0.19.0
+chmod +x ./configure
+./configure --disable-libs
+make install
 
 #Clone the top-level repository
 cd $WORKDIR

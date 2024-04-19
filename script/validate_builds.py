@@ -12,6 +12,9 @@ GITHUB_BUILD_SCRIPT_BASE_OWNER = "ppc64le"
 HOME = os.getcwd()
 
 package_data = {}
+use_non_root = ""
+image_name = "registry.access.redhat.com/ubi9/ubi:9.3"
+
 def trigger_basic_validation_checks(file_name):
     key_checks = {
         "# Package": "package_name",
@@ -69,7 +72,9 @@ def trigger_basic_validation_checks(file_name):
     else:
         raise ValueError("Build script not found.")
 
-def trigger_script_validation_checks(file_name, image_name = "registry.access.redhat.com/ubi8/ubi:8.7"):
+def trigger_script_validation_checks(file_name):
+    global image_name
+    print(f"Image used for the creating container: {image_name}")
     # Spawn a container and pass the build script
     client = docker.DockerClient(base_url='unix://var/run/docker.sock')
     st = os.stat(file_name)
@@ -98,18 +103,47 @@ def trigger_script_validation_checks(file_name, image_name = "registry.access.re
     else:
         return True
 
+def build_non_root_custom_docker_image():
+    global image_name
+    print("Building custom docker image for non root user build")
+    os.system('docker build --build-arg BASE_IMAGE="registry.access.redhat.com/ubi9/ubi:9.3" -t docker_non_root_image -f script/dockerfile_non_root .')
+    image_name = "docker_non_root_image"
+    return True
+
+
+
 def validate_build_info_file(file_name):
     try:
         script_path = os.path.join(HOME, file_name)
-        mandatory_fields = ['package_name', 'github_url', 'version', 'default_branch', 'build_script', 'package_dir','maintainer']
+        mandatory_fields = ['package_name', 'github_url', 'version', 'default_branch', 'build_script', 'package_dir', 'maintainer', 'use_non_root_user']
         error_message = f"No `{{}}` field available in {file_name}."
 
         data = json.load(open(script_path, 'r'))
+
         # Check for mandatory fields.
         for field in mandatory_fields:
             if field not in data:
                 raise ValueError(error_message.format(field))
-        print("Valid file")
+            
+        # Check for valid Github url
+        print(str(data['github_url']))
+        if str(data['github_url']).endswith('/'):
+            raise Exception(f"Build info validation failed for {file_name} due to \"/\" present at the end of github url !")
+        
+        # Check for empty lines
+        lines = open(script_path, 'r').read().splitlines()
+        for line in lines :
+            if line.isspace() == True:
+                raise Exception(f"Build info validation failed for {file_name} due to empty line present !")
+
+        # check for container user mode
+        global use_non_root
+        print("Non root user: " + str(data['use_non_root_user']).lower())
+        use_non_root = str(data['use_non_root_user']).lower()
+        if use_non_root == "true":
+            build_non_root_custom_docker_image()
+
+        print("Validated build_info.json file successfully")
         return True
     except Exception as e:
         print(str(e))
@@ -124,8 +158,18 @@ def trigger_build_validation_travis(pr_number):
     )
     validated_file_list = []
     response = requests.get(pull_request_file_url).json()
+
+    ordered_files = []
+    build_info = [file for file in response if 'build_info.json' in file.get('filename')]
+    other_files = [file for file in response if 'build_info.json' not in file.get('filename')]
+
+    ordered_files = build_info + other_files
+    for file in ordered_files:
+        filename = file.get('filename', "")
+        print(f"{filename}")
+        
     # Trigger validation for all shell scripts
-    for i in response:
+    for i in ordered_files:
         file_name = i.get('filename', "")
         if not file_name:
             continue

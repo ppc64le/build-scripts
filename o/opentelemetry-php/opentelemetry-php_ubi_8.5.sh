@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: opentelemetry-php
-# Version	: f3e9bdb,0.0.17
+# Version	: f3e9bdb,0.0.17,1.0.0beta1
 # Source repo	: https://github.com/open-telemetry/opentelemetry-php.git
 # Tested on	: ubi 8.5
 # Language      : php
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>,Pratik Tonage <Pratik.Tonage@ibm.com>
+# Maintainer	: Pratik Tonage <Pratik.Tonage@ibm.com>, Stuti Wali <Stuti.Wali@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME="opentelemetry-php"
-PACKAGE_VERSION=${1:-"0.0.17"}
+PACKAGE_VERSION=${1:-"1.0.0beta1"}
 PACKAGE_URL=https://github.com/open-telemetry/opentelemetry-php.git
 HOME_DIR="$PWD"
 export PHP_VERSION=${PHP_VERSION:-8.0.25}
@@ -27,12 +27,12 @@ dnf install -qy http://mirror.nodesdirect.com/centos/8-stream/BaseOS/ppc64le/os/
 dnf install -qy http://mirror.nodesdirect.com/centos/8-stream/BaseOS/ppc64le/os/Packages/centos-stream-repos-8-6.el8.noarch.rpm
 dnf config-manager --enable powertools
 dnf install -qy epel-release
-dnf install -qy libxml2-devel bzip2-devel gcc-c++ openssl-devel sqlite-devel curl-devel libpng-devel libjpeg-devel libicu-devel oniguruma-devel readline-devel libtidy-devel libxslt-devel libzip-devel diffutils autoconf bison-devel git bzip2 file make
+dnf install -qy patch libxml2-devel bzip2-devel gcc-c++ openssl-devel sqlite-devel curl-devel libpng-devel libjpeg-devel libicu-devel oniguruma-devel readline-devel libtidy-devel libxslt-devel libzip-devel diffutils autoconf bison-devel git bzip2 file make
 
 curl -L https://raw.githubusercontent.com/phpenv/phpenv-installer/master/bin/phpenv-installer | bash
 
 echo "
-export PHPENV_ROOT=\"/root/.phpenv\"
+export PHPENV_ROOT=\"$HOME/.phpenv\"
 if [ -d \"\${PHPENV_ROOT}\" ]; then
   export PATH=\"\${PHPENV_ROOT}/bin:\${PATH}\"
   eval \"\$(phpenv init -)\"
@@ -40,6 +40,7 @@ fi" >>~/.bashrc
 
 export MAKEFLAGS=-j$(nproc)
 source ~/.bashrc
+phpenv --version
 phpenv install "$PHP_VERSION"
 phpenv global "$PHP_VERSION"
 
@@ -61,7 +62,7 @@ export GRPC_LIB_SUBDIR="libs/opt"
 ./configure --enable-grpc="${grpc_root}"
 make
 make install
-echo "extension=grpc.so" >>/root/.phpenv/versions/"$PHP_VERSION"/etc/php.ini
+echo "extension=grpc.so" >>/$HOME/.phpenv/versions/"$PHP_VERSION"/etc/php.ini
 
 #Clone the repository
 cd $HOME_DIR

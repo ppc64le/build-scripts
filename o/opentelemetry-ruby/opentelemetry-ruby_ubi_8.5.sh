@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: opentelemetry-ruby
-# Version	: opentelemetry-sdk-experimental/v0.1.0
+# Version	: opentelemetry-sdk-experimental/v0.3.2
 # Source repo	: https://github.com/open-telemetry/opentelemetry-ruby.git
 # Tested on	: ubi 8.5
 # Language      : ruby
@@ -19,9 +19,9 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME="opentelemetry-ruby"
-PACKAGE_VERSION=${1:-"opentelemetry-sdk-experimental/v0.1.0"}
+PACKAGE_VERSION=${1:-"opentelemetry-sdk-experimental/v0.3.2"}
 PACKAGE_URL="https://github.com/open-telemetry/opentelemetry-ruby.git"
-export RUBY_VERSION=${RUBY_VERSION:-2.7.0}
+export RUBY_VERSION=${RUBY_VERSION:-3.0.1}
 
 dnf install -qy http://mirror.nodesdirect.com/centos/8-stream/BaseOS/ppc64le/os/Packages/centos-gpg-keys-8-6.el8.noarch.rpm
 dnf install -qy http://mirror.nodesdirect.com/centos/8-stream/BaseOS/ppc64le/os/Packages/centos-stream-repos-8-6.el8.noarch.rpm

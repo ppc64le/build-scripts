@@ -1,0 +1,17 @@
+{
+    "maintainer": "Stuti.Wali@ibm.com",
+    "package_name": "primer3",
+    "github_url": "https://github.com/primer3-org/primer3",
+    "version": "v2.6.1",
+    "default_branch": "main",
+    "package_dir": "p/primer3",
+    "build_script": "primer3_ubi_8_7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+
+    "v2.6.1": {
+        "build_script": "primer3_ubi_8_7.sh"
+     } 
+
+} 

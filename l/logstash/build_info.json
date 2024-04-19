@@ -1,0 +1,20 @@
+{
+  "maintainer": "Sapana.Khemkar@ibm.com",
+  "package_name": "logstash",
+  "github_url": "https://github.com/elastic/logstash.git",
+  "version": "v8.11.3",
+  "default_branch": "main",
+  "build_script": "logstash_8.11.3_ubi_8.9.sh",
+  "package_dir": "l/logstash/",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": true,
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "v*.*.*": {
+    "dir": "8.11.3_ubi_8",
+    "patches": {
+      "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/l/logstash/assemble-tar-withoutjdk.patch"
+    },
+    "build_script": "logstash_8.11.3_ubi_8.9.sh"
+  }
+}

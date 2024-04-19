@@ -1,0 +1,18 @@
+{
+  "maintainer": "Vinod.K1@ibm.com",
+  "package_name": "jsdom",
+  "github_url": "https://github.com/jsdom/jsdom",
+  "version": "24.0.0",
+  "default_branch": "main",
+  "build_script": "jsdom_ubi_8.7.sh",
+  "package_dir": "j/jsdom",
+  "docker_build": false,
+
+  "24.*.*": {
+    "build_script": "jsdom_ubi_8.7.sh"
+  },
+
+  "9.11.0": {
+    "build_script": "jsdom_rhel_7.6.sh"
+  }
+}

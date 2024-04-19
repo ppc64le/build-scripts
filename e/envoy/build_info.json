@@ -13,5 +13,13 @@
     "v1.25.3": {
         "dir": "1.25.3_ubi_8",
         "build_script": "envoy_1.25.3_ubi8.4.sh"
+    },
+    "v1.25.11": {
+        "dir": "1.25.11_ubi_8",
+        "build_script": "envoy_1.25.11_ubi8.4.sh"
+    },
+    "v1.29.0": {
+        "dir": "1.29.0_ubi_8",
+        "build_script": "envoy_1.29.0_ubi8.7.sh"
     }
 }

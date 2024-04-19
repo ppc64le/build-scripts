@@ -9,8 +9,7 @@
     "validate_build_script": "true",
     "use_non_root_user": "false",
     "docker_build": false,
-
-    "rel/3.0.0-alpha1" : {
+    "rel/*.*.*,rel/*.*.*-*" : {
        "build_script" : "logging-log4j2_ubi_8.7.sh"
     }
 }

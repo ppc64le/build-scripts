@@ -1,0 +1,17 @@
+{
+    "maintainer": "Naik.Chandranana@ibm.com",
+    "package_name" : "keycloak",
+    "github_url": "https://github.com/keycloak/keycloak.git",
+    "version": "22.0.4",
+    "package_dir": "k/keycloak",
+    "default_branch": "main",
+    "build_script": "keycloak_ubi_8.7.sh",
+    "docker_build": "false",
+    "use_non_root_user": false,
+    "validate_build_script": "true",
+
+    "22.0.4": {
+        "build_script": "keycloak_ubi_8.7.sh"
+    }
+
+}

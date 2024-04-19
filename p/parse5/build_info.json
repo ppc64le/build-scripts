@@ -1,0 +1,17 @@
+{
+    "maintainer":"Abhishek.Dwivedi6@ibm.com",
+    "package_name" : "parse5",
+    "github_url": "https://github.com/inikulin/parse5",
+    "version": "v7.1.2",
+    "default_branch": "master",
+    "package_dir": "p/parse5",
+    "docker_cmd" : "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "build_script": "parse5_ubi_8.7.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": "true",
+    "v7.1.*": {
+        "dir": "ubi8.7",
+        "build_script" : "parse5_ubi_8.7.sh"
+     }
+}

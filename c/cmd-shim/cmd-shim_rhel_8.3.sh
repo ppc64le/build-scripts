@@ -4,6 +4,8 @@
 # Version	: 3.0.3
 # Source repo	: https://github.com/npm/cmd-shim
 # Tested on	: RHEL 8.3
+# Language      : Node
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
