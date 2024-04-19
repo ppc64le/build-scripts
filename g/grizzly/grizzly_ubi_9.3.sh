@@ -1,6 +1,5 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
-#
 # Package          : grizzly
 # Version          : 4.0.2-RELEASE
 # Source repo      : https://github.com/eclipse-ee4j/grizzly
