@@ -13,4 +13,5 @@
     "5.*" : {
        "dir" : "5.2_ubi_9", 
        "build_script" : "btrees_ubi_9.3.sh"
+    }
 }
