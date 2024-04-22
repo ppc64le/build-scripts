@@ -5,7 +5,6 @@
     "version": "5.2",
     "default_branch": "master",
     "package_dir": "b/btrees",
-    "docker_cmd" : "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "build_script": "btrees_ubi_9.3.sh",
     "validate_build_script": "true",
     "use_non_root_user": "false",
