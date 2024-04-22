@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : rear
-# Version          : rear-2.7
-# Source repo      : https://github.com/rear/rear
-# Tested on	       : UBI: 9.3
-# Language         : Shell
-# Travis-Check     : True
-# Script License   : Apache License, Version 2 or later
-# Maintainer	   : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
+# Package       : multipart
+# Version       : master
+# Source repo   : https://github.com/defnull/multipart
+# Tested on     : UBI:9.3
+# Language      : Python
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Vinod K <Vinod.K1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -17,35 +17,30 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
+PACKAGE_NAME=multipart
+PACKAGE_VERSION=${1:-master}
+PACKAGE_URL=https://github.com/defnull/multipart
 
-set -e
+yum install -y git python39 python3-pip
 
-PACKAGE_NAME=rear
-PACKAGE_VERSION=${1:-rear-2.7}
-PACKAGE_URL=https://github.com/rear/rear
-
-yum update -y
-yum install git make -y
-
-git clone $PACKAGE_URL $PACKAGE_NAME
+git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-git submodule update --init --recursive
 
-if ! make install; then
-    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+if ! python3 -m pip install --upgrade pip tox; then
+    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-if ! rear -V; then
-    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+if ! tox -e py3; then
+    echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
     exit 2
 else
-    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
