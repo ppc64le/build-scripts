@@ -53,7 +53,7 @@ cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #Apply patch
-wget https://github.com/ramnathnayak/build-scripts/blob/rules_python/r/rules_python/rules_python_0.31.0.patch
+wget https://raw.githubusercontent.com/ramnathnayak/build-scripts/rules_python/r/rules_python/rules_python_0.31.0.patch
 patch -p1 < rules_python_0.31.0.patch
 
 
