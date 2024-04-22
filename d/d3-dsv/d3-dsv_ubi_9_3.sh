@@ -4,7 +4,7 @@
 # Package       : d3-dsv
 # Version       : v3.0.1
 # Source repo   : https://github.com/d3/d3-dsv
-# Tested on     : ubi 8.5
+# Tested on     : ubi 9.3
 # Language      : JavaScript
 # Travis-Check  : true
 # Script License: Apache License, Version 2 or later
@@ -28,7 +28,7 @@ PACKAGE_URL=https://github.com/d3/d3-dsv
 export NODE_VERSION=${NODE_VERSION:-16}
 
 # Install dependencies
-yum install -y python38 python38-devel git gcc gcc-c++ libffi make
+yum install -y python3 python3-devel git gcc gcc-c++ libffi make
 
 #Installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
@@ -63,4 +63,3 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Build_and_Test_Success"
     exit 0
 fi
-
