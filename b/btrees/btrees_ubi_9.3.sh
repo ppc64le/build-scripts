@@ -22,7 +22,9 @@ PACKAGE_NAME=BTrees
 PACKAGE_VERSION=${1:-5.2}
 PACKAGE_URL=https://github.com/zopefoundation/BTrees.git
 
-yum install -y --allowerasing git gcc gcc-c++ yum-utils make automake autoconf libtool gdb* binutils rpm-build gettext wget libffi-devel libpq-develexport PKG_CONFIG_PATH="/usr/bin/pg_config"
+yum install -y --allowerasing git gcc gcc-c++ yum-utils make automake autoconf libtool gdb* binutils rpm-build gettext wget libffi-devel libpq-devel
+
+export PKG_CONFIG_PATH="/usr/bin/pg_config"
 
 yum install -y python3 python3-devel python3-setuptools
 python3 -m ensurepip --upgrade
