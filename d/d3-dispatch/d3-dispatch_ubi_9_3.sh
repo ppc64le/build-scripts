@@ -1,10 +1,11 @@
+
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package	: d3-dispatch
 # Version	: v3.0.1
 # Source repo   : https://github.com/d3/d3-dispatch
-# Tested on	: ubi 8.5
+# Tested on	: ubi 9.3
 # Language      : JavaScript
 # Travis-Check  : true
 # Script License: Apache License, Version 2 or later
@@ -43,7 +44,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Build the package
-if !(npm install && npm audit fix --force); then
+if !(npm install; npm audit fix --force; npm audit fix); then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
