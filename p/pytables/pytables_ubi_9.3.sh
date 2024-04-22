@@ -22,8 +22,6 @@ PACKAGE_NAME=PyTables
 PACKAGE_VERSION=${1:-v3.9.2}
 PACKAGE_URL=https://github.com/PyTables/PyTables
 
-HOME_DIR=${PWD}
-
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 yum install -y git python3.11 python3.11-devel gcc-c++ cmake make pkgconfig gcc-gfortran python3.11-pip wget
@@ -48,7 +46,6 @@ conda activate myenv
 
 conda install -q -y setuptools pip wheel build packaging numpy cython bzip2 hdf5 lzo
 
-cd $HOME_DIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
