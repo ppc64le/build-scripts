@@ -10,6 +10,6 @@
   "validate_build_script": true,
   "use_non_root_user": false,
   "2.*.*.Final": {
-    "build_script": "json-smart_ubi_9_3.sh"
+    "build_script": "apicurio-registry_ubi_9_3.sh"
   } 
 }
