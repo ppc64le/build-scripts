@@ -28,7 +28,7 @@ yum install -y git gcc gcc-c++ yum-utils make automake autoconf libtool gdb* bin
 yum install -y python3 python3-devel python3-setuptools
 
 python3 -m ensurepip --upgrade
-python3 -m pip install build tox webtest
+python3 -m pip install build tox webtest --ignore-installed
 PATH=$PATH:/usr/local/bin/
 
 python3 -m pip install --upgrade jinja2==3.0.3
