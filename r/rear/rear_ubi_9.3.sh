@@ -24,12 +24,8 @@ PACKAGE_NAME=rear
 PACKAGE_VERSION=${1:-rear-2.7}
 PACKAGE_URL=https://github.com/rear/rear
 
-wrkdir=`pwd`
-
 yum update -y
 yum install git make -y
-
-cd $wrkdir
 
 git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME

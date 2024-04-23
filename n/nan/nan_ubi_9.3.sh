@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : consul
-# Version          : v1.18.1
-# Source repo      : https://github.com/hashicorp/consul
-# Tested on        : UBI: 9.3
-# Language         : Go
-# Travis-Check     : True
-# Script License   : Apache License, Version 2 or later
-# Maintainer	   : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
+# Package       : nan
+# Version       : v2.19.0
+# Source repo   : https://github.com/nodejs/nan
+# Tested on     : UBI:9.3
+# Language      : Node
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Vinod K <Vinod.K1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -17,49 +17,32 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
+PACKAGE_NAME=nan
+PACKAGE_VERSION=${1:-v2.19.0}
+PACKAGE_URL=https://github.com/nodejs/nan
 
-set -e
+export NODE_VERSION=${NODE_VERSION:-16}
+yum install -y python3 python3-devel.ppc64le git gcc gcc-c++ libffi make
 
-PACKAGE_NAME=consul
-PACKAGE_VERSION=${1:-v1.18.1}
-PACKAGE_URL=https://github.com/hashicorp/consul
-GO_VERSION=`curl https://go.dev/VERSION?m=text | head -n 1`
-
-yum install -y wget tar zip gcc-c++ make git procps diffutils
-
-wget  https://go.dev/dl/$GO_VERSION.linux-ppc64le.tar.gz
-tar -C /usr/local -xzf $GO_VERSION.linux-ppc64le.tar.gz
-ln -sf /usr/local/go/bin/go /usr/bin/
-ln -sf /usr/local/go/bin/godoc /usr/bin/
-rm -rf $GO_VERSION.linux-ppc64le.tar.gz
-
-go install gotest.tools/gotestsum@latest
-go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.45.2
-ulimit -n 2048
-umask 0022
-
-export PATH=$GOPATH/bin:$PATH
+#Installing nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+source "$HOME"/.bashrc
+echo "installing nodejs $NODE_VERSION"
+nvm install "$NODE_VERSION" >/dev/null
+nvm use $NODE_VERSION
 
 git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-go mod download
-go mod tidy
-
-if ! make dev; then
+if ! npm install && npm audit fix --force; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-
-export PATH=$(go env GOPATH)/bin:$PATH
-cd sdk
-gotestsum --format=short-verbose ./...
-cd ..
-
-if ! go test -v ./acl && go test -v ./command && go test -v ./ipaddr && go test -v ./lib && go test -v ./tlsutil && go test -v ./snapshot && go test --race; then
+npm run-script rebuild-tests
+if ! npm test; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
@@ -70,3 +53,4 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
+
