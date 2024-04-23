@@ -1,25 +1,21 @@
 #!/bin/bash -e
 
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #
-#Package             : moment
-#Version	     : 2.30.1
-#Source repo         : https://github.com/momemt/moment.git
-#Tested on           : UBI: 8.4
-#Language            : Javascript
-#Travis-Check        : True
-#Script License      : MIT Licence
-#Maintainer          : Stuti Wali <Stuti.Wali@ibm.com>   
+# Package          : moment
+# Version          : 2.30.1
+# Source repo      : https://github.com/moment/moment.git
+# Tested on        : UBI 8.4
+# Language         : Javascript
+# Travis-Check     : True
+# Script License   : MIT Licence
+# Maintainer       : Stuti Wali <Stuti.Wali@ibm.com>
 #
-#
-#Disclaimer          : This script has been tested in root mode on given
-#===========           platform using the mentioned version of the package.
-#                      It may not work as expected with newer versions of the
-#                      package and/or distribution. In such case, please
-#                      contact "Maintainer" of this script.
-#
-#
-#
+# Disclaimer       : This script has been tested in root mode on given
+# ==========         platform using the mentioned version of the package.
+#                    It may not work as expected with newer versions of the
+#                    package and/or distribution. In such case, please
+#                    contact "Maintainer" of this script.
 #
 #-------------------------------------------------------------------------------
 
