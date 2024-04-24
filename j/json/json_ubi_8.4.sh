@@ -21,9 +21,9 @@
 set -e
 
 #Variables
-PACKAGE_NAME=JSON
-PACKAGE_VERSION=${1:-4.10}
-PACKAGE_URL=https://github.com/makamaka/JSON.git
+export PACKAGE_NAME=JSON
+export PACKAGE_VERSION=${1:-4.10}
+export PACKAGE_URL=https://github.com/makamaka/JSON.git
 
 #installing dependencies
 yum install -y git perl make
@@ -35,10 +35,28 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 
-#Build and run test cases
-perl Makefile.PL
-make test
+#Build Package
+if !(perl Makefile.PL) ; 
+then
+    echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
+    exit 1
+fi
 
+# Run test cases
+if !(make test); 
+then
+    echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME:build_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Build_and_Test_Success"
+    exit 0
+fi
 
 
 
