@@ -36,7 +36,7 @@ git checkout $PACKAGE_VERSION
 
 
 #Build Package
-if !(perl Makefile.PL) ; 
+if !(perl Makefile.PL); 
 then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
