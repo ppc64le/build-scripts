@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : cpython
-# Version          : v3.11.9
+# Version          : v3.12.3
 # Source repo      : https://github.com/python/cpython
 # Tested on        : UBI: 9.3
 # Language         : Python, C
@@ -19,13 +19,12 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=cpython
-PACKAGE_VERSION=${1:-v3.11.9}
+PACKAGE_VERSION=${1:-v3.12.3}
 PACKAGE_URL=https://github.com/python/cpython
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 yum install -y git gcc-c++ zlib
-yum install -y 
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
@@ -47,7 +46,7 @@ else
 fi
 
 
-# Tests inside container fail as ipv6 and ftp is not enabled.
+# Tests inside container fail as ipv6 and ftp is not enabled but tests are passing when tested in VM.
 
 # if ! make test ; then
 #     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
