@@ -8,7 +8,7 @@
 # Tested on        : UBI 9.3
 # Language         : Javascript
 # Travis-Check     : True
-# Script License   : MIT Licence
+# Script License   : Apache License, Version 2 or later
 # Maintainer       : Stuti Wali <Stuti.Wali@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
@@ -39,11 +39,11 @@ npm install -g npm
 
 #clone the repository
 
-git clone https://github.com/moment/moment.git
+git clone $PACKAGE_URL
 cd moment
 git checkout $PACKAGE_VERSION
 
-#Checking for various conditions
+#Build Package
 if ! npm install && npm audit fix && npm audit fix --force ;
 then
         echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
@@ -51,6 +51,7 @@ then
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
         exit 1
 
+# Run test cases
 elif ! npm test ;
 then
 	echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
