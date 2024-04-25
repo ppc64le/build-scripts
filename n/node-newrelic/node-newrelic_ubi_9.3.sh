@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : node-newrelic
-# Version          : v11.14.0
+# Version          : v11.15.0
 # Source repo      : https://github.com/newrelic/node-newrelic
 # Tested on        : UBI:9.3
 # Language         : Node
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=node-newrelic
-PACKAGE_VERSION=${1:-v11.14.0}
+PACKAGE_VERSION=${1:-v11.15.0}
 PACKAGE_URL=https://github.com/newrelic/node-newrelic
 
 export NODE_VERSION=${NODE_VERSION:-20}
