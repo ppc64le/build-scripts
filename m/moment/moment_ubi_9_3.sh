@@ -44,7 +44,7 @@ cd moment
 git checkout $PACKAGE_VERSION
 
 #Build Package
-if ! npm install && npm audit fix && npm audit fix --force ;
+if ! npm install && npm audit fix && npm audit fix --force;
 then
         echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
