@@ -24,7 +24,7 @@ PACKAGE_URL=https://github.com/python/cpython
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
-yum install -y git gcc-c++ zlib
+yum install -y git gcc-c++ zlib zlib-devel
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
