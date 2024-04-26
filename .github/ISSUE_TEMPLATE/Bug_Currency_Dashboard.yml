@@ -8,7 +8,7 @@ body:
   - type: markdown
     attributes:
       value: >
-        Github is reserved for bug or feedback reports for Currency Dashboard. Also to request currency for any package or report currency issues for any package.
+        Use this form to submit a bug for Currency Dashboard.
         Please fill in the following details to provide bug details for Currency Dashboard.
   - type: dropdown
     id: dashboard_version

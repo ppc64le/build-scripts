@@ -8,7 +8,7 @@ body:
   - type: markdown
     attributes:
       value: >
-        Please fill in the following details to provide feedback or your suggstion for Currency Dashboard.
+        Use this form to provide feedback or your suggstions for Currency Dashboard.
   - type: dropdown
     id: dashboard_version
     attributes:
@@ -25,6 +25,6 @@ body:
     id: feedback
     attributes:
       label: Feedback Details
-      description: A feedback on current Currency Dashboard and any suggestions to make it better.
+      description: Your feedback on current Currency Dashboard and any suggestions to make it better.
     validations:
       required: true
