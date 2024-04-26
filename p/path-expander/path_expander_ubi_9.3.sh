@@ -43,16 +43,16 @@ gem install minitest
 
 if ! rake package; then
 	echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
+	echo "$PACKAGE_URL $PACKAGE_NAME"
 	exit 1
 fi
 
 if ! rake test; then
 	echo "------------------$PACKAGE_NAME:Build_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
+	echo "$PACKAGE_URL $PACKAGE_NAME"
 	exit 2
 else
 	echo "------------------$PACKAGE_NAME:Build_&_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    exit 0
+	echo "$PACKAGE_URL $PACKAGE_NAME"
+	exit 0
 fi
