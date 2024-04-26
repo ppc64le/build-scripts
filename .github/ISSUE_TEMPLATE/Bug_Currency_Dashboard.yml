@@ -9,7 +9,7 @@ body:
     attributes:
       value: >
         Use this form to submit a bug for Currency Dashboard.
-        Please fill in the following details to provide bug details for Currency Dashboard.
+        Please give us as much information, including screen shots when possible to help us reproduce your issue or better understand the problem.However, remember that any submitted information is public so do NOT include secrets, passwords, keys, PI, SPI, etc.
   - type: dropdown
     id: dashboard_version
     attributes:
@@ -19,14 +19,15 @@ body:
         - v0.6
         - v1.0
       description: |
-        The version of Currency Dashboard on which you see behavior or registering your feedback for dashboard.
+        Version of the currency dashboard that you are seeing the bug on or submitting feedback for.
     validations:
       required: true
   - type: textarea
     id: bug_details
     attributes:
       label: Bug Details
-      description: A description of the problem/bug Currency Dashboard usage. Please provide screenshots if possible.
+      description: |
+        Please provide a description of the issue you are having with the Currency Dashboard, including as much detail as possible with screen shots if that helps to identify the issue. However, remember that any submitted information is public so do NOT include secrets, passwords, keys, PI, SPI, etc.
     validations:
       required: true
   - type: textarea
@@ -34,6 +35,6 @@ body:
     attributes:
       label: Steps to Reproduce the bug or issue
       description: |
-        Steps to reporduce issue if you are reporting any bug
+        Please describe how to reproduce the issue you are encountering.
     validations:
       required: true

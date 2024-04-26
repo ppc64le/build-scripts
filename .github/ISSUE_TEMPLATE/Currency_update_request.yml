@@ -38,7 +38,7 @@ body:
       options:
         - build script only
         - container only
-        - build script and container both
+        - build script and container
       description: |
         Please provide details on desired packaging. You need build script or container for package.
     validations:
