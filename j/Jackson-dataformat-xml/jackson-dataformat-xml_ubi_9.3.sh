@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : jackson-dataformat-xml
-# Version          : jackson-dataformat-xml-2.17.1
+# Version          : jackson-dataformat-xml-2.17.0
 # Source repo      : https://github.com/FasterXML/jackson-dataformat-xml
 # Tested on        : UBI: 9.3
 # Language         : Java
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=jackson-dataformat-xml
-PACKAGE_VERSION=${1:-jackson-dataformat-xml-2.17.1}
+PACKAGE_VERSION=${1:-jackson-dataformat-xml-2.17.0}
 PACKAGE_URL=https://github.com/FasterXML/jackson-dataformat-xml
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)

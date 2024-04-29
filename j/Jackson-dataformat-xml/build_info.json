@@ -2,7 +2,7 @@
     "maintainer": "Abhishek.Dwivedi6@ibm.com",
     "package_name": "jackson-dataformat-xml",
     "github_url": "https://github.com/FasterXML/jackson-dataformat-xml",
-    "version": "jackson-dataformat-xml-2.17.1",
+    "version": "jackson-dataformat-xml-2.17.0",
     "default_branch": "2.18",
     "build_script": "jackson-dataformat-xml_ubi_9.3.sh",
     "package_dir": "j/Jackson-dataformat-xml",
