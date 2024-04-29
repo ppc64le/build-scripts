@@ -1,0 +1,12 @@
+{
+   "maintainer": "shubham-garud",
+   "package_name": "picomatch",
+   "github_url": "https://github.com/micromatch/picomatch",
+   "version": "4.0.1",
+   "default_branch": "master",
+   "build_script": "picomatch_ubi_8.7.sh",
+   "package_dir": "p/picomatch",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user":false
+}

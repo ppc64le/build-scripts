@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 validate_build_script=$VALIDATE_BUILD_SCRIPT
-actual_package_name=$(awk -F'/' 'tolower($0) ~ /^# source repo.*github.com/{sub(/\.git/, "", $NF); print $NF}' $PKG_DIR_PATH$BUILD_SCRIPT)
+cloned_package=$CLONED_PACKAGE
 
 cd package-cache
 
@@ -10,6 +10,9 @@ if [ $validate_build_script == true ];then
      tar -xf grype_0.67.0_linux_ppc64le.tar.gz
      chmod +x grype
      sudo mv grype /usr/bin                      
-     sudo grype -q -o cyclonedx-json dir:${actual_package_name} > grype_source_sbom_results.json                         
-     sudo grype -q -o json dir:${actual_package_name} > grype_source_vulnerabilities_results.json
+     echo "Executing Grype scanner"
+     sudo grype -q -o cyclonedx-json dir:${cloned_package} > grype_source_sbom_results.json    
+     #cat grype_source_sbom_results.json 
+     sudo grype -q -o json dir:${cloned_package} > grype_source_vulnerabilities_results.json
+     #cat grype_source_vulnerabilities_results.json
 fi

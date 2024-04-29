@@ -27,9 +27,9 @@ wrkdir=`pwd`
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
-yum install -y wget gcc git gcc-c++ gcc-gfortran.ppc64le openblas.ppc64le
+yum install -y wget gcc git gcc-c++ gcc-gfortran.ppc64le openblas.ppc64le cmake procps-ng diffutils bc
 
-wget https://repo.anaconda.com/miniconda/Miniconda3-py39_4.9.2-Linux-ppc64le.sh -O miniconda.sh
+wget https://repo.anaconda.com/miniconda/Miniconda3-py310_23.10.0-1-Linux-ppc64le.sh -O miniconda.sh
 bash miniconda.sh -b -p $HOME/miniconda
 export PATH="$HOME/miniconda/bin:$PATH"
 python3 -m pip install -U pip
@@ -40,6 +40,10 @@ git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
 conda install openblas cython numpy scipy -y
+conda install conda-forge::meson-python -y
+conda install conda-forge::pybind11 -y
+conda install conda-forge::pythran -y
+conda install conda-forge::cython -y
 yum install zlib-devel -y
 python3 -m pip install --upgrade --progress-bar off pytest
 

@@ -6,6 +6,9 @@
   "default_branch": "main",
   "package_dir": "v/vault/",
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "docker_build": true,
+  "use_non_root_user": "false",
+  "validate_build_script": true,
   "build_script": "vault_ubi_8.7.sh",
   "v1.11.*": {
     "dir": "1.11.2-ubi8",
@@ -26,6 +29,13 @@
     "args": {
       "VAULT_VERSION": "$PACKAGE_VERSION",
       "GO_VERSION": "1.20.6"
+    }
+  },
+  "v1.*.*": {
+    "dir": "1.13.1-ubi8",
+    "args": {
+      "VAULT_VERSION": "$PACKAGE_VERSION",
+      "GO_VERSION": "1.21.7"
     }
   },
   "v1.5.*": {
