@@ -1,0 +1,15 @@
+{
+    "maintainer": "Md.Hussain@ibm.com",
+    "package_name": "DOMPurify",
+    "github_url": "https://github.com/cure53/DOMPurify",
+    "version": "3.1.0",
+    "default_branch": "main",
+    "package_dir": "d/DOMPurify",
+    "build_script": "dompurify_ubi_9_3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "3.1.*": {
+        "build_script": "dompurify_ubi_9_3.sh"
+     } 
+}
