@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	    : path_expander
-# Version	    : v1.1.1
+# Package		: path_expander
+# Version		: v1.1.1
 # Source repo	: https://github.com/seattlerb/path_expander
-# Tested on	    : UBI 9.3
+# Tested on		: UBI 9.3
 # Language      : Ruby
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Aayushi Asati <Aayushi.Asati@ibm.com>
+# Maintainer	: Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
 #
 # Disclaimer    : This script has been tested in root mode on given
 # ==========      platform using the mentioned version of the package.
@@ -44,15 +44,18 @@ gem install minitest
 if ! rake package; then
 	echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
 	exit 1
 fi
 
 if ! rake test; then
 	echo "------------------$PACKAGE_NAME:Build_success_but_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
 	exit 2
 else
 	echo "------------------$PACKAGE_NAME:Build_&_test_both_success-------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass |  Both_Build_and_Test_Success"
 	exit 0
 fi
