@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=node-assert-plus
-PACKAGE_VERSION=master
+PACKAGE_VERSION=${1:-master}
 PACKAGE_URL=https://github.com/TritonDataCenter/node-assert-plus
 
 export NODE_VERSION=${NODE_VERSION:-16}
