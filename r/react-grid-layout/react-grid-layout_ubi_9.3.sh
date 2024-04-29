@@ -32,6 +32,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
 
 nvm install 18
+export NODE_OPTIONS="--dns-result-order=ipv4first"
 npm i --global yarn
 
 git clone $PACKAGE_URL $PACKAGE_NAME
