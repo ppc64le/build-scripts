@@ -9,7 +9,7 @@
 # Language          : Node
 # Travis-Check      : True
 # Script License    : Apache License, Version 2.0 or Mozilla Public License, version 2.0
-# Maintainer        : Md. Shafi Hussain <Md.Hussain@ibm.com>
+# Maintainer        : Vinod K <Vinod.K1@ibm.com>
 #
 # Disclaimer        : This script has been tested in root mode on given
 # ==========          platform using the mentioned version of the package.
