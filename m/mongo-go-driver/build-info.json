@@ -1,0 +1,11 @@
+{
+    "maintainer": "diptikri254@gmail.com",
+    "package_name": "mongo-go-driver",
+    "github_url": "https://github.com/mongodb/mongo-go-driver",
+    "version": "v1.15.0",
+    "default_branch": "master",
+    "build_script": "mongo-go-driver_ubi_9.3",
+    "package_dir": "m/mongo-go-driver",
+    "docker_build": false,
+    "validate_build_script": true
+ }
