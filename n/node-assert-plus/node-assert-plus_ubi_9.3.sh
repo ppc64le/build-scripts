@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package           : cookies
-# Version           : 0.9.1
-# Source repo       : http://github.com/pillarjs/cookies
-# Tested on         : UBI:9.3
-# Language          : JavaScript
-# Travis-Check      : True
-# Script License    : Apache License, Version 2 or later
-# Maintainer        : Mohit Pawar <mohit.pawar@ibm.com>
+# Package       : node-assert-plus
+# Version       : master
+# Source repo   : https://github.com/TritonDataCenter/node-assert-plus
+# Tested on     : UBI:9.3
+# Language      : Javascript
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Vinod K <Vinod.K1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -17,12 +17,12 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_NAME=cookies
-PACKAGE_VERSION=${1:-0.9.1}
-PACKAGE_URL=http://github.com/pillarjs/cookies
+PACKAGE_NAME=node-assert-plus
+PACKAGE_VERSION=${1:-master}
+PACKAGE_URL=https://github.com/TritonDataCenter/node-assert-plus
 
 export NODE_VERSION=${NODE_VERSION:-16}
-yum install git make -y
+yum install -y python3 python3-devel.ppc64le git gcc gcc-c++ libffi make
 
 #Installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash

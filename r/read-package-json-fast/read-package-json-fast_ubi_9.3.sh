@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package           : cookies
-# Version           : 0.9.1
-# Source repo       : http://github.com/pillarjs/cookies
-# Tested on         : UBI:9.3
-# Language          : JavaScript
-# Travis-Check      : True
-# Script License    : Apache License, Version 2 or later
-# Maintainer        : Mohit Pawar <mohit.pawar@ibm.com>
+# Package       : read-package-json-fast
+# Version       : v3.0.2
+# Source repo   : https://github.com/npm/read-package-json-fast
+# Tested on     : UBI 9.3
+# Language      : Node
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Shubham Garud <Shubham.Garud@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -17,12 +17,12 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_NAME=cookies
-PACKAGE_VERSION=${1:-0.9.1}
-PACKAGE_URL=http://github.com/pillarjs/cookies
+PACKAGE_NAME=read-package-json-fast
+PACKAGE_VERSION=${1:-v3.0.2}
+PACKAGE_URL=https://github.com/npm/read-package-json-fast
 
 export NODE_VERSION=${NODE_VERSION:-16}
-yum install git make -y
+yum install -y python3 python3-devel.ppc64le git gcc gcc-c++ libffi make
 
 #Installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
@@ -30,6 +30,8 @@ source "$HOME"/.bashrc
 echo "installing nodejs $NODE_VERSION"
 nvm install "$NODE_VERSION" >/dev/null
 nvm use $NODE_VERSION
+
+
 
 git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME
@@ -53,3 +55,4 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
+

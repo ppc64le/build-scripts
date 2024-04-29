@@ -1,4 +1,5 @@
 FROM registry.access.redhat.com/ubi9/ubi:9.3
+
 MAINTAINER Mohit Pawar <mohit.pawar@ibm.com>
 
 ARG PACKAGE_VERSION=0.9.1
