@@ -9,7 +9,8 @@ body:
     attributes:
       value: >
         Use this form to submit a bug for Currency Dashboard.
-        Please give us as much information, including screen shots when possible to help us reproduce your issue or better understand the problem.However, remember that any submitted information is public so do NOT include secrets, passwords, keys, PI, SPI, etc.
+        Please give us as much information, including screen shots when possible to help us reproduce your issue or better understand the problem.
+        However, remember that any submitted information is public so do NOT include secrets, passwords, keys, PI, SPI, etc.
   - type: dropdown
     id: dashboard_version
     attributes:
