@@ -22,6 +22,8 @@
 set -e
 export PACKAGE_NAME=jgrapht
 export PACKAGE_URL=https://github.com/jgrapht/jgrapht
+
+#variables to handle special characters occourance 
 export LC_ALL=C.UTF-8
 export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
