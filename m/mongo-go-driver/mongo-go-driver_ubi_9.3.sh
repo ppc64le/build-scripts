@@ -42,15 +42,15 @@ yum install https://repo.mongodb.com/yum/redhat/8/mongodb-enterprise/7.0/ppc64le
 yum install python3-devel -y
 echo "Building $PACKAGE_PATH$PACKAGE_NAME with $PACKAGE_VERSION"
 go get go.mongodb.org/mongo-driver/mongo
-
+echo "Testing $PACKAGE_PATH$PACKAGE_NAME with $PACKAGE_VERSION"
+cd x/mongo/driver/topology/
 if ! go build -v ./... ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-echo "Testing $PACKAGE_PATH$PACKAGE_NAME with $PACKAGE_VERSION"
-cd x/mongo/driver/topology/
+
 if ! go test -v ./... ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
