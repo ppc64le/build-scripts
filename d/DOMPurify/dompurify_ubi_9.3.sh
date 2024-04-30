@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package           : dompurify
-# Version           : 3.1.0
+# Version           : 3.1.2
 # Source repo       : https://github.com/cure53/DOMPurify
 # Tested on         : RHEL 9.3
 # Language          : Node
@@ -21,7 +21,7 @@
 
 PACKAGE_NAME=dompurify
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-3.1.0}
+PACKAGE_VERSION=${1:-3.1.2}
 PACKAGE_URL=https://github.com/cure53/DOMPurify
 export NODE_VERSION=${NODE_VERSION:-21}
 
@@ -71,4 +71,3 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
-
