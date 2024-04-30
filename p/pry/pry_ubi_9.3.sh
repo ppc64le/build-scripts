@@ -63,6 +63,9 @@ ret=$?
 if [ $ret -ne 0 ]; then
     echo "Build failed "
 else
+    export TERM=xterm-256color
+    export ROWS=40
+    export COLUMNS=160
     bundle exec rake
     ret=$?
     if [ $ret -ne 0 ]; then
