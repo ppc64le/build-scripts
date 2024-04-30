@@ -8,7 +8,7 @@
 # Language      : Go
 # Travis-Check  : False
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Dipti Kumari 
+# Maintainer    : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -45,17 +45,22 @@ go mod init
 go mod tidy
 go mod vendor
 
-if ! go build -v ./...; then
-        echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
-        exit 1
+if ! go build -v ./... ; then
+    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    exit 1
 fi
-
 echo "Testing $PACKAGE_PATH$PACKAGE_NAME with $PACKAGE_VERSION"
 cd x/mongo/driver/topology/
-if ! go test -v ./...; then
-        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-        exit 1
+if ! go test -v ./... ; then
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    exit 2
 else
-        echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
