@@ -1,16 +1,14 @@
 {
-    "maintainer": "Pooja.Shah4@ibm.com",
-    "package_name": "strip-ansi",
-    "github_url": "https://github.com/chalk/strip-ansi.git",
-    "version": "v7.1.0",
-    "package_dir": "s/strip-ansi/",
-    "build_script": "strip-ansi_ubi_8.7.sh",
-    "validate_build_script": true,
-    "default_branch": "main",
-    "docker_build": false,
-
-    "v7.1.*, v7.0.1": {
-        "build_script": "strip-ansi_ubi_8.7.sh"
-    }
-
+  "maintainer": "pooja0805",
+  "package_name": "strip-ansi",
+  "github_url": "https://github.com/chalk/strip-ansi.git",
+  "version": "v7.1.0",
+  "package_dir": "s/strip-ansi/",
+  "build_script": "strip-ansi_ubi_8.7.sh",
+  "validate_build_script": true,
+  "default_branch": "main",
+  "docker_build": false,
+  "v7.1.*, v7.0.1": {
+    "build_script": "strip-ansi_ubi_8.7.sh"
+  }
 }

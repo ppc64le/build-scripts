@@ -1,5 +1,5 @@
 {
-  "maintainer": "Stuti.Wali@ibm.com",
+  "maintainer": "stutiibm",
   "package_name": "snakeyaml",
   "github_url": "https://github.com/snakeyaml/snakeyaml",
   "version": "master",

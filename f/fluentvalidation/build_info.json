@@ -1,5 +1,5 @@
 {
-  "maintainer": "Sapana.Khemkar@ibm.com",
+  "maintainer": "Sapana-Khemkar",
   "package_name": "fluentvalidation",
   "github_url": "https://github.com/FluentValidation/FluentValidation.git",
   "version": "11.5.2",

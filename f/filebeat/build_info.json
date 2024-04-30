@@ -1,5 +1,5 @@
 {
-    "maintainer":"Vinod.K1@ibm.com",
+    "maintainer":"vinodk99",
     "package_name" : "filebeat",
     "github_url": "https://github.com/elastic/beats",
     "version": "v8.13.2",
@@ -14,4 +14,4 @@
        "dir": "8.13.2_ubi9",
        "build_script": "filebeat_ubi_9.3.sh"
     }
-}
+  }

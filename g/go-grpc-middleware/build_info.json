@@ -1,11 +1,11 @@
 {
-   "maintainer": "Shubham.Garud@ibm.com",
-   "package_name": "go-grpc-middleware",
-   "github_url": "https://github.com/grpc-ecosystem/go-grpc-middleware",
-   "version": "v2.0.1",
-   "default_branch": "main",
-   "build_script": "go-grpc-middleware_ubi_8.7.sh",
-   "package_dir": "g/go-grpc-middleware",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "shubham-garud",
+  "package_name": "go-grpc-middleware",
+  "github_url": "https://github.com/grpc-ecosystem/go-grpc-middleware",
+  "version": "v2.0.1",
+  "default_branch": "main",
+  "build_script": "go-grpc-middleware_ubi_8.7.sh",
+  "package_dir": "g/go-grpc-middleware",
+  "docker_build": false,
+  "validate_build_script": true
 }

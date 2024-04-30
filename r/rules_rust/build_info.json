@@ -1,5 +1,5 @@
 {
-    "maintainer": "Vinod.K1@ibm.com",
+    "maintainer": "vinodk99",
     "package_name" : "rules_rust",
     "github_url": "https://github.com/bazelbuild/rules_rust",
     "version": "0.42.1",
