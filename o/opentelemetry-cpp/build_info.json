@@ -1,12 +1,14 @@
 {
     "package_name" : "opentelemetry-cpp",
+    "maintainer": "IBM-Currency-Helper",
     "github_url":"https://github.com/open-telemetry/opentelemetry-cpp",
     "default_branch": "main",
     "version": "v1.8.0",
     "package_dir": "o/opentelemetry-cpp",
     "docker_build": false,
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
     "build_script" : "opentelemetry-cpp_ubi_8.5.sh",
-    
     "v1.*.*" : {
         "build_script" : "opentelemetry-cpp_ubi_8.5.sh"
     }
