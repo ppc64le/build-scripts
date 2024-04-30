@@ -1,5 +1,5 @@
 {
-  "maintainer": "Pratik.Tonage@ibm.com",
+  "maintainer": "Pratikt2312",
   "package_name": "opentelemetry-go-contrib",
   "github_url": "https://github.com/open-telemetry/opentelemetry-go-contrib",
   "version": "zpages/v0.36.4",

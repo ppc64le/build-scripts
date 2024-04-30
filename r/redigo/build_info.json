@@ -1,5 +1,5 @@
 {   
-    "maintainer": "Stuti Wali <Stuti.Wali@ibm.com>",
+    "maintainer": "stutiibm",
     "package_name": "redigo",
     "github_url": "https://github.com/gomodule/redigo",
     "version": "v1.9.2",

@@ -1,5 +1,5 @@
 {
-    "maintainer":"Vinod.K1@ibm.com",
+    "maintainer":"vinodk99",
     "package_name" : "rethinkdb",
     "github_url": "https://github.com/rethinkdb/rethinkdb",
     "version": "v2.4.4",

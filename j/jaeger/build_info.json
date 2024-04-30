@@ -1,5 +1,5 @@
 {
-  "maintainer": "Vinod.K1@ibm.com",
+  "maintainer": "vinodk99",
   "package_name": "jaeger",
   "github_url": "https://github.com/jaegertracing/jaeger.git",
   "version": "v1.56.0",
