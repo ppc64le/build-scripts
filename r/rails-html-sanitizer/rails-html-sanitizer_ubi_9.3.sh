@@ -21,6 +21,7 @@
 PACKAGE_NAME=rails-html-sanitizer
 PACKAGE_URL=https://github.com/rails/rails-html-sanitizer.git
 PACKAGE_VERSION=${1-v1.6.0}
+OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
 yum install -y make gcc gcc-c++ autoconf automake glibc-headers \
     glibc-devel openssl-devel git procps ncurses-devel m4 \
