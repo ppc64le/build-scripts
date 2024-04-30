@@ -18,17 +18,9 @@
 #
 # ----------------------------------------------------------------------------
 
-export PACKAGE_NAME=rails-html-sanitizer
-export PACKAGE_URL=https://github.com/rails/rails-html-sanitizer.git
-
-if [ -z "$1" ]; then
-    export PACKAGE_VERSION=v1.6.0
-else
-    export PACKAGE_VERSION=$1
-fi
-if [ -d "${PACKAGE_NAME}" ]; then
-    rm -rf ${PACKAGE_NAME}
-fi
+PACKAGE_NAME=rails-html-sanitizer
+PACKAGE_URL=https://github.com/rails/rails-html-sanitizer.git
+PACKAGE_VERSION=${1-v1.6.0}
 
 yum install -y make gcc gcc-c++ autoconf automake glibc-headers \
     glibc-devel openssl-devel git procps ncurses-devel m4 \
@@ -45,28 +37,31 @@ rvm install ruby-3.3.0
 
 gem install bundle
 
-git clone ${PACKAGE_URL} ${PACKAGE_NAME}
-cd ${PACKAGE_NAME}
-git checkout ${PACKAGE_VERSION}
-ret=$?
-if [ $ret -eq 0 ]; then
-    echo "Version $PACKAGE_VERSION found to checkout "
-else
-    echo "Version $PACKAGE_VERSION not found "
-    exit
+if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
+    echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
+    exit 0
 fi
 
-bundle install
-ret=$?
-if [ $ret -ne 0 ]; then
-    echo "Build failed "
-else
-    bundle exec rake
-    ret=$?
-    if [ $ret -ne 0 ]; then
-        echo "Test failed "
-    else
-        echo "Build & Test Successful "
-    fi
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
+
+if ! bundle install; then
+    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
+    exit 1
 fi
 
+if ! bundle exec rake; then
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
+    exit 1
+else
+    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
+    exit 0
+fi
