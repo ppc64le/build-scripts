@@ -7,7 +7,7 @@
 # Tested on             : UBI 9.3
 # Language              : Ruby
 # Travis-Check          : True
-# Script License        : MIT License
+# Script License        : Apache License, Version 2.0
 # Maintainer            : Vinod K <Vinod.K1@ibm.com>
 #
 # Disclaimer            : This script has been tested in root mode on given
@@ -18,19 +18,13 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e
+PACKAGE_NAME=pry
+PACKAGE_VERSION=${1:-v0.14.2}
+PACKAGE_URL=https://github.com/pry/pry.git
 
-export PACKAGE_NAME=pry
-export PACKAGE_URL=https://github.com/pry/pry.git
-
-if [ -z "$1" ]; then
-    export PACKAGE_VERSION=v0.14.2
-else
-    export PACKAGE_VERSION=$1
-fi
-if [ -d "${PACKAGE_NAME}" ]; then
-    rm -rf ${PACKAGE_NAME}
-fi
+export TERM=xterm-256color
+export ROWS=40
+export COLUMNS=160
 
 yum install -y make gcc gcc-c++ autoconf automake glibc-headers \
     glibc-devel openssl-devel git procps ncurses-devel m4 \
@@ -47,31 +41,25 @@ rvm install ruby-3.3.0
 
 gem install bundle
 
-git clone ${PACKAGE_URL} ${PACKAGE_NAME}
+git clone ${PACKAGE_URL}
 cd ${PACKAGE_NAME}
 git checkout ${PACKAGE_VERSION}
-ret=$?
-if [ $ret -eq 0 ]; then
-    echo "Version $PACKAGE_VERSION found to checkout "
-else
-    echo "Version $PACKAGE_VERSION not found "
-    exit
+
+if ! bundle install; then
+    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    exit 1
 fi
 
-bundle install
-ret=$?
-if [ $ret -ne 0 ]; then
-    echo "Build failed "
+if ! bundle exec rake; then
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    exit 2
 else
-    export TERM=xterm-256color
-    export ROWS=40
-    export COLUMNS=160
-    bundle exec rake
-    ret=$?
-    if [ $ret -ne 0 ]; then
-        echo "Test failed "
-    else
-        echo "Build & Test Successful "
-    fi
+    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    exit 0
 fi
-
