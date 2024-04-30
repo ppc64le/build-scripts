@@ -33,8 +33,6 @@ export GOPATH=`pwd`/gopath
 export PATH=`pwd`/go/bin:$GOPATH/bin:$PATH
 
 # Clone the repo and checkout submodules
-mkdir -p $GOPATH/src/$PACKAGE_PATH
-cd $GOPATH/src/$PACKAGE_PATH
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
