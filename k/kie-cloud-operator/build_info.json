@@ -1,5 +1,5 @@
 {
-  "maintainer": "Shreya.Kajbaje@ibm.com",
+  "maintainer": "shreyakajbaje",
   "package_name": "kie-cloud-operator",
   "github_url": "https://github.com/kiegroup/kie-cloud-operator.git",
   "version": "7.13.2-2",

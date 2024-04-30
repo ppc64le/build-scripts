@@ -1,18 +1,16 @@
 {
-    "maintainer": "Stuti.Wali@ibm.com",
-    "package_name": "scala-guice",
-    "github_url": "https://github.com/codingwell/scala-guice",
-    "version": "v5.1.1",
-    "default_branch": "develop",
-    "package_dir": "s/scala-guice",
-    "build_script": "scala-guice_ubi_8_7.sh",
-    "docker_build": true,
-    "validate_build_script": true,
-    "use_non_root_user": false,
-
-    "v5.1.1": {
-        "dir": "ubi8_7",
-        "build_script": "scala-guice_ubi_8_7.sh"
-     }  
-
+  "maintainer": "stutiibm",
+  "package_name": "scala-guice",
+  "github_url": "https://github.com/codingwell/scala-guice",
+  "version": "v5.1.1",
+  "default_branch": "develop",
+  "package_dir": "s/scala-guice",
+  "build_script": "scala-guice_ubi_8_7.sh",
+  "docker_build": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v5.1.1": {
+    "dir": "ubi8_7",
+    "build_script": "scala-guice_ubi_8_7.sh"
+  }
 }

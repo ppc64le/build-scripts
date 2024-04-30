@@ -1,11 +1,11 @@
 {
-   "maintainer": "ich@us.ibm.com",
-   "package_name": "strfmt",
-   "github_url": "https://github.com/go-openapi/strfmt",
-   "version": "v0.21.9",
-   "default_branch": "master",
-   "build_script": "strfmt_ubi_8.7.sh",
-   "package_dir": "s/strfmt",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "IBM-Currency-Helper",
+  "package_name": "strfmt",
+  "github_url": "https://github.com/go-openapi/strfmt",
+  "version": "v0.21.9",
+  "default_branch": "master",
+  "build_script": "strfmt_ubi_8.7.sh",
+  "package_dir": "s/strfmt",
+  "docker_build": false,
+  "validate_build_script": true
 }

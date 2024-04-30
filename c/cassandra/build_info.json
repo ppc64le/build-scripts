@@ -1,5 +1,5 @@
 {
-  "maintainer": "Pratik.Tonage@ibm.com",
+  "maintainer": "Pratikt2312",
   "package_name": "cassandra",
   "github_url": "https://github.com/apache/cassandra",
   "version": "cassandra-4.1.3",
