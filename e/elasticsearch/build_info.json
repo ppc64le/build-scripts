@@ -1,5 +1,5 @@
 {
-  "maintainer": "vishaka.Desai@ibm.com",
+  "maintainer": "IBM-Currency-Helper",
   "package_name": "elasticsearch",
   "github_url": "https://github.com/elastic/elasticsearch.git",
   "version": "v8.2.1",

@@ -1,5 +1,5 @@
 {
-  "maintainer": "Shubham.Garud@ibm.com",
+  "maintainer": "shubham-garud",
   "package_name": "lodash",
   "github_url": "https://github.com/lodash/lodash",
   "package_dir": "l/lodash/",

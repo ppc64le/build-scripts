@@ -1,11 +1,11 @@
 {
-   "maintainer": "ich@us.ibm.com",
-   "package_name": "superagent",
-   "github_url": "https://github.com/visionmedia/superagent",
-   "version": "v8.1.2",
-   "default_branch": "master",
-   "build_script": "superagent_ubi_8.7.sh",
-   "package_dir": "s/superagent",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "IBM-Currency-Helper",
+  "package_name": "superagent",
+  "github_url": "https://github.com/visionmedia/superagent",
+  "version": "v8.1.2",
+  "default_branch": "master",
+  "build_script": "superagent_ubi_8.7.sh",
+  "package_dir": "s/superagent",
+  "docker_build": false,
+  "validate_build_script": true
 }

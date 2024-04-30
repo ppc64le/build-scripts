@@ -1,5 +1,5 @@
 {
-  "maintainer": "Abhishek.Dwivedi6@ibm.com",
+  "maintainer": "AbhiIBM",
   "package_name": "nats-io_nats-server",
   "github_url": "https://github.com/nats-io/nats-server",
   "package_dir": "n/nats-io_nats-server/",
