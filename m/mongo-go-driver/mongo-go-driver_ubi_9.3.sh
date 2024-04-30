@@ -41,7 +41,7 @@ git checkout $PACKAGE_VERSION
 yum install https://repo.mongodb.com/yum/redhat/8/mongodb-enterprise/7.0/ppc64le/RPMS/mongodb-enterprise-server-7.0.8-1.el8.ppc64le.rpm -y
 
 echo "Building $PACKAGE_PATH$PACKAGE_NAME with $PACKAGE_VERSION"
-go mod init
+sed -i 's/go 1.18/go 1.17/g' go.mod
 go mod tidy
 go mod vendor
 
