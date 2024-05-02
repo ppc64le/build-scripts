@@ -140,11 +140,6 @@ def get_default_build_script(build_scripts_versions):
             result.append((data['version'],data['file']))
     return max(result,key=lambda x:x[0]) 
 
-'''
-maintainer=get_maintainer_for_package(dir_name)
-if maintainer=="Unknown":
-    maintainer= get_maintainer_from_dockerfile(dir_name)
-'''
 maintainer=input("Enter GitHub username:")
 if maintainer=='':
     maintainer="Unknown"
