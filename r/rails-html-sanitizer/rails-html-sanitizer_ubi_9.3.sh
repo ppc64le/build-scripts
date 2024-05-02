@@ -4,7 +4,7 @@
 # Package               : rails-html-sanitizer
 # Version               : v1.6.0
 # Source repo           : https://github.com/rails/rails-html-sanitizer.git
-# Tested on             : UBI 9.3
+# Tested on             : UBI:9.3
 # Language              : Ruby
 # Travis-Check          : True
 # Script License        : MIT License
