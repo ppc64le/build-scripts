@@ -7,7 +7,7 @@
 # Tested on     : UBI:9.3
 # Language      : Java
 # Travis-Check  : True
-# Script License: The BSD License
+# Script License: Apache License, Version 2.0
 # Maintainer's  : Vinod K <Vinod.K1@ibm.com>
 #
 #
