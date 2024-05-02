@@ -4,7 +4,7 @@
 # Package               : pry
 # Version               : v0.14.2
 # Source repo           : https://github.com/pry/pry.git
-# Tested on             : UBI 9.3
+# Tested on             : UBI:9.3
 # Language              : Ruby
 # Travis-Check          : True
 # Script License        : Apache License, Version 2.0
