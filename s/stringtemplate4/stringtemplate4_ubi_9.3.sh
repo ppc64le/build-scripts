@@ -4,7 +4,7 @@
 # Package       : stringtemplate4
 # Version       : 4.3.3
 # Source repo   : https://github.com/antlr/stringtemplate4.git
-# Tested on     : UBI: 9.3
+# Tested on     : UBI:9.3
 # Language      : Java
 # Travis-Check  : True
 # Script License: The BSD License
