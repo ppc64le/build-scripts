@@ -1,0 +1,15 @@
+{
+    "maintainer": "vinodk99",
+    "package_name": "super_diff",
+    "github_url": "https://github.com/mcmire/super_diff",
+    "version": "0.12.1",
+    "default_branch": "main",
+    "package_dir": "s/super_diff",
+    "build_script": "super_diff_ubi_9.3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "*.*.*": {
+        "build_script": "super_diff_ubi_9.3.sh"
+     } 
+}
