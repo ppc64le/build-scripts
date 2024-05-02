@@ -1,5 +1,5 @@
 {
-    "maintainer":"vinodk99",
+  "maintainer":"vinodk99",
     "package_name" : "leveldb", 
     "github_url": "https://github.com/google/leveldb",
     "version": "1.23",
@@ -11,7 +11,7 @@
     "use_non_root_user": "false",
     "docker_build": "true",
     "*.*,v*.*" : {
-	 "dir" : "1.23_ubi9",
-	 "build_script": "leveldb_ubi_9.3.sh"
+	      "dir" : "1.23_ubi9",
+	      "build_script": "leveldb_ubi_9.3.sh"
       }
 }

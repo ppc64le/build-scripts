@@ -1,12 +1,12 @@
 {
-    "maintainer":"Abhishek.Dwivedi6@ibm.com",
-    "package_name" : "mongo-python-driver",
-    "github_url": "https://github.com/mongodb/mongo-python-driver",
-    "version": "4.6.0",
-    "default_branch": "master",
-    "package_dir": "m/mongo-python-driver",
-    "build_script": "mongo-python-driver_ubi_8.7.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build": "false"
+  "maintainer": "AbhiIBM",
+  "package_name": "mongo-python-driver",
+  "github_url": "https://github.com/mongodb/mongo-python-driver",
+  "version": "4.6.0",
+  "default_branch": "master",
+  "package_dir": "m/mongo-python-driver",
+  "build_script": "mongo-python-driver_ubi_8.7.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "false"
 }

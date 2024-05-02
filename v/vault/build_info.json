@@ -1,5 +1,5 @@
 {
-  "maintainer": "Vinod.K1@ibm.com",
+  "maintainer": "vinodk99",
   "package_name": "vault",
   "github_url": "https://github.com/hashicorp/vault.git",
   "version": "v1.13.1",

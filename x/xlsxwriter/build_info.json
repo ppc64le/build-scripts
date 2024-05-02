@@ -1,17 +1,15 @@
 {
-    "maintainer": "Stuti.Wali@ibm.com",
-    "package_name": "XlsxWriter",
-    "github_url": "https://github.com/jmcnamara/XlsxWriter.git",
-    "version": "RELEASE_3.1.9",
-    "default_branch": "main",
-    "package_dir": "x/xlsxwriter",
-    "build_script": "xlsxwriter_ubi_8_7.sh",
-    "docker_build": false,
-    "validate_build_script": true,
-    "use_non_root_user": false,
-
-    "RELEASE_3.1.*": {
-        "build_script": "xlsxwriter_ubi_8_7.sh"
-     } 
-
+  "maintainer": "stutiibm",
+  "package_name": "XlsxWriter",
+  "github_url": "https://github.com/jmcnamara/XlsxWriter.git",
+  "version": "RELEASE_3.1.9",
+  "default_branch": "main",
+  "package_dir": "x/xlsxwriter",
+  "build_script": "xlsxwriter_ubi_8_7.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "RELEASE_3.1.*": {
+    "build_script": "xlsxwriter_ubi_8_7.sh"
+  }
 }

@@ -1,5 +1,5 @@
 {
-  "maintainer": "Pratik.Tonage@ibm.com",
+  "maintainer": "Pratikt2312",
   "package_name": "redis-bv",
   "github_url": "https://github.com/bitnami/containers",
   "version": "c277016",
@@ -8,5 +8,5 @@
   "build_script": "redis-bv_7.2.1_ubi_8.7.sh",
   "validate_build_script": true,
   "use_non_root_user": false,
-  "docker_build": false,
+  "docker_build": false
 }
