@@ -4,7 +4,7 @@
 # Package          : zipkin
 # Version          : 3.3.0
 # Source repo      : https://github.com/openzipkin/zipkin
-# Tested on        : UBI 9.3
+# Tested on        : UBI: 9.3
 # Language         : Java
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later

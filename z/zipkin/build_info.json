@@ -28,5 +28,9 @@
    "2.24.4": {
       "dir": "ubi9_3",
       "build_script": "zipkin_ubi_9_3.sh"
+   },
+   "2.20.0": {
+      "dir": "2.24.2_ubi_8_7",
+      "build_script": "zipkin_ubi_8_7.sh"
    }
 }
