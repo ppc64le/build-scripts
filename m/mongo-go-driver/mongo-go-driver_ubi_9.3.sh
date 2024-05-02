@@ -46,8 +46,8 @@ go get go.mongodb.org/mongo-driver/mongo
 #install mongodb
 yum install https://repo.mongodb.com/yum/redhat/8/mongodb-enterprise/7.0/ppc64le/RPMS/mongodb-enterprise-server-7.0.8-1.el8.ppc64le.rpm -y
 yum install python3-devel -y
-#systemctl start mongod
-cd x/mongo/driver/topology/
+systemctl start mongod
+
 #cd mongo/integration/
 
 echo "Building $PACKAGE_PATH$PACKAGE_NAME with $PACKAGE_VERSION"
@@ -58,6 +58,7 @@ if ! go build -v ./... ; then
     exit 1
 fi
 echo "Testing $PACKAGE_PATH$PACKAGE_NAME with $PACKAGE_VERSION"
+cd x/mongo/driver/topology/
 if ! go test -v ./... ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
