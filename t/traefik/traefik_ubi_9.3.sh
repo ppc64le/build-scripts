@@ -43,7 +43,7 @@ if ! go build -v ./... ; then
 fi
 
 if ! go test -race ./... ; then
-    echo "------------------$PACKAGE_NAME:Build_success_but_test_fails---------------------"
+    echo "------------------$PACKAGE_NAME:Build_success_but_test_fails----------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
     exit 2
