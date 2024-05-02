@@ -35,13 +35,7 @@ nvm install "$NODE_VERSION" >/dev/null
 nvm use $NODE_VERSION
 npm i --global yarn
 
-if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
-    echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
-    exit 0
-fi
-
+git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
@@ -58,7 +52,7 @@ if ! yarn test; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
-    exit 1
+    exit 2
 else
     echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
