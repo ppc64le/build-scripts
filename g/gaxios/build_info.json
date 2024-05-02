@@ -1,11 +1,11 @@
 {
-   "maintainer": "Shubham.Garud@ibm.com",
-   "package_name": "gaxios",
-   "github_url": "https://github.com/googleapis/gaxios",
-   "version": "v6.1.1",
-   "default_branch": "main",
-   "build_script": "gaxios_ubi_8.7.sh",
-   "package_dir": "g/gaxios",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "shubham-garud",
+  "package_name": "gaxios",
+  "github_url": "https://github.com/googleapis/gaxios",
+  "version": "v6.1.1",
+  "default_branch": "main",
+  "build_script": "gaxios_ubi_8.7.sh",
+  "package_dir": "g/gaxios",
+  "docker_build": false,
+  "validate_build_script": true
 }

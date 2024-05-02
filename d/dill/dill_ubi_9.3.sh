@@ -4,7 +4,7 @@
 # Package          : dill
 # Version          : 0.3.8
 # Source repo      : https://github.com/uqfoundation/dill
-# Tested on        : UBI 9.3
+# Tested on        : UBI: 9.3
 # Language         : Python
 # Travis-Check     : True
 # Script License   : GNU General Public License v3.0

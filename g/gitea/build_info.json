@@ -1,5 +1,5 @@
 {
-  "maintainer": "Reynold.Vaz@ibm.com",
+  "maintainer": "IBM-Currency-Helper",
   "package_name": "gitea",
   "github_url": "https://github.com/go-gitea/gitea.git",
   "version": "v1.17.3",

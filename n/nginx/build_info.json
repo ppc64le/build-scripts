@@ -1,17 +1,17 @@
 {
-    "maintainer":"Abhishek.Dwivedi6@ibm.com",
-    "package_name" : "nginx",
-    "github_url": "https://github.com/nginx/nginx",
-    "version": "release-1.25.3",
-    "default_branch": "master",
-    "package_dir": "n/nginx",
-    "docker_cmd" : "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-    "build_script": "nginx_ubi_8.7.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build": "true",
-    "release-1.*.*" : {
-        "dir" : "ubi8.7",
-        "build_script" : "nginx_ubi_8.7.sh"
-    }
+  "maintainer": "AbhiIBM",
+  "package_name": "nginx",
+  "github_url": "https://github.com/nginx/nginx",
+  "version": "release-1.25.3",
+  "default_branch": "master",
+  "package_dir": "n/nginx",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "build_script": "nginx_ubi_8.7.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "true",
+  "release-1.*.*": {
+    "dir": "ubi8.7",
+    "build_script": "nginx_ubi_8.7.sh"
+  }
 }

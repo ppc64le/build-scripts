@@ -1,11 +1,11 @@
 {
-   "maintainer": "Shubham.Garud@ibm.com",
-   "package_name": "loopback-connector-soap",
-   "github_url": "https://github.com/loopbackio/loopback-connector-soap",
-   "version": "v8.0.2",
-   "default_branch": "master",
-   "build_script": "loopback-connector-soap_ubi_8.7.sh",
-   "package_dir": "l/loopback-connector-soap",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "shubham-garud",
+  "package_name": "loopback-connector-soap",
+  "github_url": "https://github.com/loopbackio/loopback-connector-soap",
+  "version": "v8.0.2",
+  "default_branch": "master",
+  "build_script": "loopback-connector-soap_ubi_8.7.sh",
+  "package_dir": "l/loopback-connector-soap",
+  "docker_build": false,
+  "validate_build_script": true
 }

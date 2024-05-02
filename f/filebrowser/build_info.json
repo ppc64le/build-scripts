@@ -1,18 +1,17 @@
 {
-    "maintainer":"Vinod.K1@ibm.com",
-    "package_name" : "filebrowser",
-    "github_url": "https://github.com/filebrowser/filebrowser",
-    "version": "v2.27.0",
-    "default_branch": "master",
-    "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-    "package_dir": "f/filebrowser",
-    "build_script": "filebrowser_ubi_8.7.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build": "true",
-
-    "v2.*.*" : {
-       "dir": "2.27.0_ubi8",
-       "build_script": "filebrowser_ubi_8.7.sh"
-    }
+  "maintainer": "vinodk99",
+  "package_name": "filebrowser",
+  "github_url": "https://github.com/filebrowser/filebrowser",
+  "version": "v2.27.0",
+  "default_branch": "master",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "package_dir": "f/filebrowser",
+  "build_script": "filebrowser_ubi_8.7.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "true",
+  "v2.*.*": {
+    "dir": "2.27.0_ubi8",
+    "build_script": "filebrowser_ubi_8.7.sh"
+  }
 }

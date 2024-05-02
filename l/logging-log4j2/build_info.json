@@ -1,5 +1,5 @@
 {
-    "maintainer":"Vinod.K1@ibm.com",
+    "maintainer":"vinodk99",
     "package_name" : "logging-log4j2",
     "github_url": "https://github.com/apache/logging-log4j2",
     "version": "rel/3.0.0-alpha1",

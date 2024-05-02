@@ -1,14 +1,21 @@
 {
-  "maintainer": "Muskaan.Sheik@ibm.com",
+  "maintainer": "AbhiIBM",
   "package_name": "nats-io_nats-server",
   "github_url": "https://github.com/nats-io/nats-server",
-  "version": "v2.9.8",
-  "default_branch": "main",
-  "build_script": "nats-io_nata-server_ubi_8.5.sh",
   "package_dir": "n/nats-io_nats-server/",
+  "version": "v2.10.14",
+  "default_branch": "main",
+  "build_script": "nats-io_nata-server_ubi_9.3.sh",
+  "use_non_root_user": false,
+  "docker_build": true,
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "validate_build_script": true,
   "v2.9.*": {
     "dir": "v2.9.8_ubi8.5",
     "build_script": "nats-io_nata-server_ubi_8.5.sh"
+  },
+  "v2.*.*":{
+    "dir": "ubi9.3",
+    "build_script": "nats-io_nata-server_ubi_9.3.sh"
   }
 }
