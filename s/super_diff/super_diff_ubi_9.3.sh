@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package               : super_diff
-# Version               : 0.12.1
+# Version               : v0.12.1
 # Source repo           : https://github.com/mcmire/super_diff.git
 # Tested on             : UBI:9.3
 # Language              : Ruby
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=super_diff
-PACKAGE_VERSION=${1:-0.12.1}
+PACKAGE_VERSION=${1:-v0.12.1}
 PACKAGE_URL=https://github.com/mcmire/super_diff.git
 
 export TERM=xterm-256color
