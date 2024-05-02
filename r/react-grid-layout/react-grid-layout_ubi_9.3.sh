@@ -4,7 +4,7 @@
 # Package       : react-grid-layout
 # Version       : 1.4.1
 # Source repo   : https://github.com/STRML/react-grid-layout
-# Tested on     : UBI9.3
+# Tested on     : UBI:9.3
 # Language      : Node
 # Travis-Check  : True
 # Script License: MIT License
