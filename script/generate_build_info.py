@@ -148,15 +148,15 @@ def get_default_build_script(build_scripts_versions):
     return max(result,key=lambda x:x[0]) 
 
 maintainer=input("Enter GitHub username (github.com) :")
-if maintainer=='':
-    maintainer="Unknown"
-
 user_result = validate_username(maintainer)
-if user_result:
-    print("Valid Github Username \n")
-else:
+
+while (maintainer!='' and user_result!=True):
     print("\n Invalid Github Username \n")
-    maintainer=input("Please Enter GitHub username:")
+    maintainer=input("Please Enter GitHub username (github.com) :")
+    user_result = validate_username(maintainer)
+    if user_result:
+        print("\n Valid Github Username \n")
+
 
 for file in file_list:
     if file.endswith(".sh") and "Dockerfiles" not in file:
