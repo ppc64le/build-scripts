@@ -1,10 +1,12 @@
 {
-  "maintainer": "Unknown",
+  "maintainer": "IBM-Currency-Helper",
   "package_name": "mongodb",
   "github_url": "https://github.com/mongodb/mongo.git",
   "version": "r6.1.0",
   "default_branch": "master",
   "build_script": "",
+  "use_non_root_user": "false",
+  "docker_build": "true",
   "package_dir": "m/mongodb/",
   "docker_cmd": "docker build -t ${package_name}-ppc64le:$PACKAGE_VERSION ${dir}",
   "validate_build_script": false,

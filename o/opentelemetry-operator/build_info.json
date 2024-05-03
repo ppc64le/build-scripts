@@ -1,5 +1,5 @@
 {
-  "maintainer": "Adilhusain.Shaikh@ibm.com",
+  "maintainer": "adilhusain-s",
   "package_name": "opentelemetry-operator",
   "github_url": "https://github.com/open-telemetry/opentelemetry-operator",
   "package_dir": "o/opentelemetry-operator/",

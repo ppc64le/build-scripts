@@ -1,5 +1,5 @@
 {
-  "maintainer": "Shubham.Garud@ibm.com",
+  "maintainer": "shubham-garud",
   "package_name": "jackson-module-scala",
   "github_url": "https://github.com/FasterXML/jackson-module-scala",
   "package_dir": "j/jackson-module-scala/",
