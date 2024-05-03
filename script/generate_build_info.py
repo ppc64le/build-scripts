@@ -27,6 +27,7 @@ import glob
 
 
 GITHUB_PACKAGE_INFO_API = "https://api.github.com/repos/{}/{}"
+GITHUB_USER_API = "https://api.github.com/users/{}"
 
 class bcolors:
     HEADER = '\033[95m'
@@ -67,6 +68,12 @@ def get_default_branch(package_url):
     owner, repo = package_url.replace('.git','').split('/')[-2:]
     response = requests.get(GITHUB_PACKAGE_INFO_API.format(owner, repo)).json()
     return response["default_branch"]
+
+def validate_username(user_name):
+    response = requests.get(GITHUB_USER_API.format(user_name)).json()
+    if response.status_code==200:
+        return True
+    return False
 
 def get_files_list(dirname:str, recursive:bool=True):
     file_list = []
@@ -140,9 +147,16 @@ def get_default_build_script(build_scripts_versions):
             result.append((data['version'],data['file']))
     return max(result,key=lambda x:x[0]) 
 
-maintainer=input("Enter GitHub username:")
+maintainer=input("Enter GitHub username (github.com) :")
 if maintainer=='':
     maintainer="Unknown"
+
+user_result = validate_username(maintainer)
+if user_result:
+    print("Valid Github Username \n")
+else:
+    print("\n Invalid Github Username \n")
+    maintainer=input("Please Enter GitHub username:")
 
 for file in file_list:
     if file.endswith(".sh") and "Dockerfiles" not in file:
