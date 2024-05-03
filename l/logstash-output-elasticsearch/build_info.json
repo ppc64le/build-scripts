@@ -1,11 +1,11 @@
 {
-   "maintainer": "Ashutosh.Jadhav2@ibm.com",
-   "package_name": "logstash-output-elasticsearch",
-   "github_url": "https://github.com/logstash-plugins/logstash-output-elasticsearch",
-   "version": "v11.22.2",
-   "default_branch": "main",
-   "build_script": "logstash-output-elasticsearch_ubi_8.9.sh",
-   "package_dir": "l/logstash-output-elasticsearch",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "ashutoshjadhav9",
+  "package_name": "logstash-output-elasticsearch",
+  "github_url": "https://github.com/logstash-plugins/logstash-output-elasticsearch",
+  "version": "v11.22.2",
+  "default_branch": "main",
+  "build_script": "logstash-output-elasticsearch_ubi_8.9.sh",
+  "package_dir": "l/logstash-output-elasticsearch",
+  "docker_build": false,
+  "validate_build_script": true
 }

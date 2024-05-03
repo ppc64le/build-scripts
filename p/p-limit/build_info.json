@@ -1,11 +1,11 @@
 {
-   "maintainer": "Shubham.Garud@ibm.com",
-   "package_name": "p-limit",
-   "github_url": "https://github.com/sindresorhus/p-limit",
-   "version": "v5.0.0",
-   "default_branch": "main",
-   "build_script": "p-limit_ubi_8.7.sh",
-   "package_dir": "p/p-limit",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "shubham-garud",
+  "package_name": "p-limit",
+  "github_url": "https://github.com/sindresorhus/p-limit",
+  "version": "v5.0.0",
+  "default_branch": "main",
+  "build_script": "p-limit_ubi_8.7.sh",
+  "package_dir": "p/p-limit",
+  "docker_build": false,
+  "validate_build_script": true
 }

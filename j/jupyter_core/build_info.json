@@ -1,15 +1,15 @@
 {
-    "maintainer":"Abhishek.Dwivedi6@ibm.com",
-    "package_name" : "jupyter_core",
-    "github_url": "https://github.com/jupyter/jupyter_core.git",
-    "version": "v5.5.0",
-    "default_branch": "main",
-    "package_dir": "j/jupyter_core",
-    "build_script": "jupyter_core_ubi_8.7.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build": "false",
-    "v5.5.*" : {
-       "build_script" : "jupyter_core_ubi_8.7.sh"
-    }
+  "maintainer": "AbhiIBM",
+  "package_name": "jupyter_core",
+  "github_url": "https://github.com/jupyter/jupyter_core.git",
+  "version": "v5.5.0",
+  "default_branch": "main",
+  "package_dir": "j/jupyter_core",
+  "build_script": "jupyter_core_ubi_8.7.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "false",
+  "v5.5.*": {
+    "build_script": "jupyter_core_ubi_8.7.sh"
+  }
 }

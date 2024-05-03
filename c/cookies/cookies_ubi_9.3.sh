@@ -4,7 +4,7 @@
 # Package           : cookies
 # Version           : 0.9.1
 # Source repo       : http://github.com/pillarjs/cookies
-# Tested on         : UBI 9.3
+# Tested on         : UBI:9.3
 # Language          : JavaScript
 # Travis-Check      : True
 # Script License    : Apache License, Version 2 or later
