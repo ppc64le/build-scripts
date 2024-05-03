@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=certificate-transparency-go
 PACKAGE_VERSION=${1:-v1.1.8}
-PACKAGE_URL= https://github.com/google/certificate-transparency-go
+PACKAGE_URL=https://github.com/google/certificate-transparency-go
 
 HOME_DIR=${PWD}
 
