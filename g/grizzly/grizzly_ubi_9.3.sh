@@ -23,28 +23,35 @@ PACKAGE_URL=https://github.com/eclipse-ee4j/grizzly
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
-yum install -y java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless git make wget gcc-c++ 
+yum install -y git make wget gcc-c++
 
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
-export PATH=$PATH:$JAVA_HOME/bin
+#Install temurin11-binaries
+wget https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.22%2B7/OpenJDK11U-jdk_ppc64le_linux_hotspot_11.0.22_7.tar.gz 
+tar -C /usr/local -xzf OpenJDK11U-jdk_ppc64le_linux_hotspot_11.0.22_7.tar.gz 
+export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8" 
+export JAVA_HOME=/usr/local/jdk-11.0.22+7/ 
+export PATH=$PATH:/usr/local/jdk-11.0.22+7/bin 
+ln -sf /usr/local/jdk-11.0.22+7/bin/java /usr/bin/ 
+rm -rf OpenJDK11U-jdk_ppc64le_linux_hotspot_11.0.22_7.tar.gz
 
-wget https://archive.apache.org/dist/maven/maven-3/3.8.7/binaries/apache-maven-3.8.7-bin.tar.gz
-tar -zxf apache-maven-3.8.7-bin.tar.gz
-cp -R apache-maven-3.8.7 /usr/local
-ln -s /usr/local/apache-maven-3.8.7/bin/mvn /usr/bin/mvn
+#install maven
+wget https://archive.apache.org/dist/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.tar.gz 
+tar -zxf apache-maven-3.8.8-bin.tar.gz 
+cp -R apache-maven-3.8.8 /usr/local 
+ln -s /usr/local/apache-maven-3.8.8/bin/mvn /usr/bin/mvn
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if ! mvn clean install -DskipTests=true ; then
+if ! mvn --show-version --no-transfer-progress --activate-profiles staging --define skipTests=true install ; then
       echo "------------------$PACKAGE_NAME:Build_fails---------------------"
       echo "$PACKAGE_VERSION $PACKAGE_NAME"
       echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
       exit 1
 fi
- 
-if ! mvn test --define maven.test.redirectTestOutputToFile=true  --define surefire.rerunFailingTestsCount=5; then
+
+if ! mvn --show-version --no-transfer-progress --activate-profiles staging --define skipTests=false install; then
       echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
       echo "$PACKAGE_URL $PACKAGE_NAME"
       echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
@@ -55,3 +62,4 @@ else
       echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
       exit 0
 fi
+
