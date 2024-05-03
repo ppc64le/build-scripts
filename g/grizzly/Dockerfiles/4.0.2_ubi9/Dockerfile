@@ -19,7 +19,7 @@ RUN wget https://archive.apache.org/dist/maven/maven-3/3.8.8/binaries/apache-mav
 RUN git clone https://github.com/eclipse-ee4j/grizzly && \
     cd grizzly/ && \
     git checkout $PACKAGE_VERSION && \
-    mvn --show-version  --no-transfer-progress  --activate-profiles staging  --define skipTests=true install
+    mvn --show-version  --no-transfer-progress --activate-profiles staging  --define skipTests=true install
 
 EXPOSE 8080
 CMD ["/bin/bash"]
