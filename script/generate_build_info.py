@@ -70,7 +70,7 @@ def get_default_branch(package_url):
     return response["default_branch"]
 
 def validate_username(user_name):
-    response = requests.get(GITHUB_USER_API.format(user_name)).json()
+    response = requests.get(GITHUB_USER_API.format(user_name))
     if response.status_code==200:
         return True
     return False
