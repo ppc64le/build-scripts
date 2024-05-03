@@ -9,7 +9,7 @@
     "docker_build": "true",
     "validate_build_script": "true",
     "use_non_root_user": "false",
-    "v3.2.*": {
+    "v3.*.*": {
         "dir": "3.2.5_ubi9.3",
         "build_script": "async_ubi_9.3.sh"
      } 
