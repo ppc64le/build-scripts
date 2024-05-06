@@ -25,7 +25,7 @@ PACKAGE_VERSION=${1:-v2.2.1}
 PACKAGE_URL=https://github.com/szmarczak/http2-wrapper.git
 
 export NODE_VERSION=${NODE_VERSION:-16}
-yum install -y python38 python38-devel git gcc gcc-c++ libffi make
+yum install -y python3 python3-devel git gcc gcc-c++ libffi make
 
 #Installing nvm 
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
