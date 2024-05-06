@@ -21,7 +21,7 @@ PACKAGE_NAME=openapi-specification
 PACKAGE_VERSION=${1:-main}
 PACKAGE_URL=https://github.com/OAI/OpenAPI-Specification.git
 
-export NODE_VERSION=${NODE_VERSION:-16}
+export NODE_VERSION=${NODE_VERSION:-18}
 yum install -y python38 python38-devel git gcc gcc-c++ libffi make
 
 #Installing nvm
