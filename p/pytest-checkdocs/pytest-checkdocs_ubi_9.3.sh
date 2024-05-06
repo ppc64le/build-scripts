@@ -28,7 +28,7 @@ pip3 install setuptools==59.6.0
 pip3 install wheel
 
 git clone $PACKAGE_URL
-cd $PACKAGE_URL
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 
