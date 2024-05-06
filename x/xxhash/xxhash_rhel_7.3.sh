@@ -4,6 +4,8 @@
 # Version       : v0.6.2
 # Source repo   : https://github.com/Cyan4973/xxHash
 # Tested on     : RHEL_7.3
+# Language      : C
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Priya Seth <sethp@us.ibm.com>
 #
