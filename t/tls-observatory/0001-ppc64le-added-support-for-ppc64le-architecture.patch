@@ -1,0 +1,35 @@
+From 289a2dcb04867cc928c95d7a775220ef0ec32d88 Mon Sep 17 00:00:00 2001
+From: Sachin Kakatkar <sachin.kakatkar@ibm.com>
+Date: Tue, 19 Jul 2022 11:07:46 +0530
+Subject: [PATCH] ppc64le: added support for ppc64le architecture
+
+---
+ Makefile | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 81853028..8c123a34 100644
+--- a/Makefile
++++ b/Makefile
+@@ -8,13 +8,17 @@ BUILDENV	:= dev
+ BUILDREV	:= $(BUILDDATE)+$(BUILDREF).$(BUILDENV)
+ 
+ # Supported OSes: linux darwin windows
+-# Supported ARCHes: 386 amd64
++# Supported ARCHes: 386 amd64 ppc64le
+ ifeq ($(OS),windows)
+ 	OS := windows
+ else
+ 	OS := $(shell uname -s | tr [:upper:] [:lower:])
+ endif
++ifeq ($(shell uname -m), ppc64le)
++ARCH := ppc64le
++else
+ ARCH := amd64
++endif
+ 
+ ifeq ($(OS),windows)
+ 	BINSUFFIX   := ".exe"
+-- 
+2.33.0.windows.2
+
