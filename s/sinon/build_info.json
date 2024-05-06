@@ -9,7 +9,10 @@
     "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": false,
-    "v17.0.*", "v16.*.*": {
+    "v17.0.*": {
+        "build_script": "sinon_ubi_9_3.sh"
+    },
+    "v16.*.*": {
         "build_script": "sinon_ubi_9_3.sh"
      }
 }
