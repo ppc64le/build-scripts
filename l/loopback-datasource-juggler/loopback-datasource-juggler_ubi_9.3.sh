@@ -39,8 +39,6 @@ nvm use $NODE_VERSION
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
-source "$HOME"/.bashrc
-npm ci --ignore-scripts
 
 if ! npm run build ;  then
     echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
