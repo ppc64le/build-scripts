@@ -27,7 +27,7 @@ yum install -y git make wget gcc-c++ java-11-openjdk java-11-openjdk-devel java-
 
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
-export NODE_VERSION=v18.19.0
+export NODE_VERSION=${NODE_VERSION:-18}
 
 #install node
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
