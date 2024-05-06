@@ -35,7 +35,6 @@ wget https://dlcdn.apache.org//ant/ivy/2.5.2/apache-ivy-2.5.2-bin.tar.gz
 tar xvfvz apache-ivy-2.5.2-bin.tar.gz -C /opt/ant/lib
 
 wget https://dlcdn.apache.org//commons/lang/binaries/commons-lang3-3.14.0-bin.tar.gz
-#wget https://dlcdn.apache.org//commons/lang/binaries/commons-lang3-3.12.0-bin.tar.gz
 tar xvfvz commons-lang3-3.14.0-bin.tar.gz  -C /opt/ant/lib
 
 git clone $PACKAGE_URL
