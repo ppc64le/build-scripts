@@ -23,6 +23,10 @@ set -e
 PACKAGE_NAME=snakeyaml
 PACKAGE_URL=https://github.com/snakeyaml/snakeyaml
 
+#variables to handle special characters occourance 
+export LC_ALL=C.UTF-8
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
 
 # Default tag snakeyaml
 if [ -z "$1" ]; then
@@ -69,6 +73,10 @@ if ! mvn test;then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     exit 2
+else
+    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    exit 0
 fi
 
 
