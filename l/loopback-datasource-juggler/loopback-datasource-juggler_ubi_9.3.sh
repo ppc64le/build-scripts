@@ -39,6 +39,7 @@ nvm use $NODE_VERSION
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
+npm install
 
 if ! npm run build ;  then
     echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
@@ -47,7 +48,7 @@ if ! npm run build ;  then
     exit 1
 fi
 
-if ! npm test --ignore-scripts ; then
+if ! npm test ; then
     echo "------------------$PACKAGE_NAME:Build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
