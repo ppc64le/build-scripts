@@ -27,19 +27,30 @@ yum install python3.9-pip -y
 pip3 install setuptools==59.6.0
 pip3 install wheel
 
-if ! git clone $PACKAGE_URL; then 
-        echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-                echo "$PACKAGE_URL $PACKAGE_NAME"
-                echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail |  Clone_Fails"
-fi
-
-yum install sudo -y
-sudo pip3 install tox
-cd $PACKAGE_NAME
+git clone $PACKAGE_URL
+cd $PACKAGE_URL
 git checkout $PACKAGE_VERSION
 
+
+yum install sudo -y
+sudo pip3 install tox build
+
+if !python3 -m build; then
+    echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
+    exit 1
+fi
+
+# Run unit test cases
 if ! tox -vvvv; then
-        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
+    exit 2
 else
-        echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
+    echo "------------------$PACKAGE_NAME:build_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Build_and_Test_Success"
+    exit 0
 fi

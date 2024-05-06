@@ -1,11 +1,11 @@
 {
-    "maintainer": "Abhishek.Dwivedi6@ibm.com",
+    "maintainer": "AbhiIBM",
     "package_name": "pytest-checkdocs",
     "github_url": "https://github.com/jaraco/pytest-checkdocs",
     "version": "v2.13.0",
     "default_branch": "master",
     "build_script": "pytest-checkdocs_ubi_9.3",
-    "package_dir": "p/pytest",
+    "package_dir": "p/pytest-checkdocs",
     "use_non_root_user": "true",
     "docker_build": false,
     "validate_build_script": true,
