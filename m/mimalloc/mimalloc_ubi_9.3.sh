@@ -5,7 +5,7 @@
 # Package           : mimalloc
 # Version           : v2.1.4
 # Source repo       : https://github.com/microsoft/mimalloc.git
-# Tested on         : RHEL 9.3
+# Tested on         : UBI:9.3
 # Language          : C
 # Travis-Check      : True
 # Script License    : Apache License, Version 2.0
