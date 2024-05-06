@@ -23,13 +23,13 @@ PACKAGE_NAME=loopback-datasource-juggler
 PACKAGE_VERSION=${1:-master}
 PACKAGE_URL=https://github.com/loopbackio/loopback-datasource-juggler
 
+export NODE_VERSION=${NODE_VERSION:-16}
 yum install -y git make wget gcc-c++ java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless sudo  librsvg2 libjpeg-turbo libjpeg-turbo-devel giflib
 
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
-export NODE_VERSION=${NODE_VERSION:-18}
 
-#install node
+#Installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 source "$HOME"/.bashrc
 echo "installing nodejs $NODE_VERSION"
