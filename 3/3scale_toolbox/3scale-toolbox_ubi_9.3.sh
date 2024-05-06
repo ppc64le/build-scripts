@@ -3,7 +3,7 @@
 #
 # Package       : 3scale/toolbox
 # Version       : 2.14.1
-# Source repo   : https://github.com/3scale/3scale_toolbox.git
+# Source repo   : https://github.com/3scale/3scale_toolbox
 # Tested on     : UBI 9.3 (UBI9)
 # Language      : Ruby
 # Travis-Check  : True
