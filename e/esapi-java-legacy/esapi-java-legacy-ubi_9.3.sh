@@ -25,6 +25,13 @@ PACKAGE_VERSION=${1:-2.5.3.1}
 #Dependencies
 yum install -y java-11-openjdk-devel git maven
 
+OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
+
+#Check if package exists
+if [ -d "$PACKAGE_NAME" ] ; then
+      rm -rf $PACKAGE_NAME
+  echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"  
+fi
 # Cloning the repository from remote to local
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME

@@ -4,7 +4,7 @@
     "github_url": "https://github.com/ESAPI/esapi-java-legacy",
     "version": "v2.5.3.1",
     "default_branch": "master",
-    "build_script": "pytest-checkdocs_ubi_9.3",
+    "build_script": "esapi-java-legacy-ubi_9.3",
     "package_dir": "e/esapi-java-legacy",
     "use_non_root_user": "true",
     "docker_build": false,
@@ -13,6 +13,6 @@
         "build_script" : "esapi-java-legacy_ubi_8.5.sh"
      },
      "v2.5.*" :{
-        "build_script" :"esapi-java-legacy-ubi_9.3"
+        "build_script" :"esapi-java-legacy-ubi_9.3.sh"
      }
  }
