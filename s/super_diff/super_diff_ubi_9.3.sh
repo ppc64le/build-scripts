@@ -54,6 +54,22 @@ if ! bundle install; then
     exit 1
 fi
 
+echo "======================DEBUG:TRAVIS ENV========================="
+yum install -y procps
+echo ">>>>>>>>>>> lscpu"
+lscpu
+echo ">>>>>>>>>>> declare"
+declare
+echo ">>>>>>>>>>> ps -ef"
+ps -ef
+echo ">>>>>>>>>>> cat /etc/shells"
+cat /etc/shells
+echo ">>>>>>>>>>> cat /etc/os-release"
+cat /etc/os-release
+echo ">>>>>>>>>>> gem list"
+gem list
+echo "======================DEBUG:TRAVIS ENV========================="
+
 if ! bundle exec rake; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
