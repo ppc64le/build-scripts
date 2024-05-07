@@ -8,7 +8,7 @@
 # Language      : C++
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Muskaan Sheik <Muskaan.Sheik@ibm.com>
+# Maintainer    : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/ninja-build/ninja
 yum install -y gcc gcc-c++ make wget git
 
 git clone $PACKAGE_URL
-cd freemarker/
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 cmake -Bbuild-cmake
