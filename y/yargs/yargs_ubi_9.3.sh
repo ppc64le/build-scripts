@@ -36,7 +36,7 @@ nvm install "$NODE_VERSION" >/dev/null
 nvm use $NODE_VERSION
 
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME/
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 if ! npm --before 2023-04-27 install; then
