@@ -5,7 +5,7 @@
 # Source repo	: https://github.com/infinispan/infinispan-operator.git
 # Tested on	: Red Hat Enterprise Linux 87(8.7) && UBI 9 (9.3)
 # Language      : Go
-# Travis-Check  : False
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Shubham Bhagwat(shubham.bhagwat@ibm.com)
 #
