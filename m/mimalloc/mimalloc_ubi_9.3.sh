@@ -27,8 +27,8 @@ OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 dnf update -y && dnf install -y git gcc gcc-c++ make cmake
 
 git clone $PACKAGE_URL
-git checkout $PACKAGE_VERSION
 cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 
 mkdir -p out/release
 cd out/release
