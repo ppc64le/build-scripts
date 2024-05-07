@@ -7,7 +7,7 @@
 # Source repo   : https://github.com/3scale/porta.git
 # Tested on     : UBI:9.3
 # Language      : Ruby
-# Travis-Check  : False
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Shubham Bhagwat <Shubham.Bhagwat@ibm.com>
 #
