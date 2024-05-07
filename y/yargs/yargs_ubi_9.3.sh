@@ -22,7 +22,7 @@ PACKAGE_NAME=yargs
 PACKAGE_VERSION=${1:-v17.7.2}
 PACKAGE_URL=https://github.com/yargs/yargs
 
-export NODE_VERSION=${NODE_VERSION:-18}
+export NODE_VERSION=${NODE_VERSION:-20}
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
