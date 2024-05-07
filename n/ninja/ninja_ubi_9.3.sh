@@ -22,7 +22,7 @@ PACKAGE_NAME=ninja
 PACKAGE_VERSION=${1:-v1.12.0}
 PACKAGE_URL=https://github.com/ninja-build/ninja
 
-yum install -y gcc gcc-c++ make wget git
+yum install -y gcc gcc-c++ make wget git cmake
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
