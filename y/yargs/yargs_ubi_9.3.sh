@@ -26,7 +26,7 @@ export NODE_VERSION=${NODE_VERSION:-18}
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
-yum install -y git wget gcc-c++ gcc curl
+yum install -y git wget gcc-c++ gcc libcurl-devel
 
 #Installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
