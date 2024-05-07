@@ -4,7 +4,7 @@
 # Package       : ninja
 # Version       : v1.12.0
 # Source repo   : https://github.com/ninja-build/ninja
-# Tested on     : UBI 8.5
+# Tested on     : UBI: 9.3
 # Language      : C++
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
