@@ -4,7 +4,7 @@
 # Package          : openapi-specification
 # Version          : main
 # Source repo      : https://github.com/OAI/OpenAPI-Specification.git
-# Tested on	       : UBI:9.3
+# Tested on	   : UBI:9.3
 # Language         : Node
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
