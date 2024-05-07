@@ -22,7 +22,7 @@ PACKAGE_VERSION=${1:-main}
 PACKAGE_URL=https://github.com/OAI/OpenAPI-Specification.git
 
 export NODE_VERSION=${NODE_VERSION:-18}
-yum install -y python38 python38-devel git gcc gcc-c++ libffi make
+yum install -y git gcc gcc-c++ libffi make python3 python3-devel
 
 #Installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
