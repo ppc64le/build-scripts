@@ -5,12 +5,12 @@
   "version": "v17.7.2",
   "default_branch": "main",
   "package_dir": "y/yargs",
-  "build_script": "yargs_ubi_8.7.sh",
+  "build_script": "yargs_ubi_9.3.sh",
   "validate_build_script": "true",
   "use_non_root_user": "false",
   "docker_build": false,
-  "v17.7.*": {
-    "build_script": "yargs_ubi_8.7.sh"
+  "v*.*.*": {
+    "build_script": "yargs_ubi_9.3.sh"
   },
   "14.2.3": {
     "build_script": "yargs_rhel_8.3.sh"
