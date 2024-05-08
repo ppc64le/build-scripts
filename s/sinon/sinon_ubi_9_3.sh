@@ -28,6 +28,7 @@ PACKAGE_URL=https://github.com/sinonjs/sinon
 NODE_VERSION=${NODE_VERSION:-18.20.2}
 HOME_DIR=`pwd`
 export PUPPETEER_SKIP_DOWNLOAD=true
+export NODE_OPTIONS="--dns-result-order=ipv4first"
 
 
 #Install dependencies
