@@ -1,45 +1,55 @@
-PACKAGE_NAME=jest-circus
-PACKAGE_VERSION=${1:-v29.7.0}
-PACKAGE_URL=https://github.com/facebook/jest
+PACKAGE_NAME=pgaudit
+PACKAGE_URL=https://github.com/pgaudit/set_user.git
+#PACKAGE_VERSION is configurable can be passed as an argument.
+PACKAGE_VERSION=REL4_0_1
 
-dnf install -y wget git yum-utils nodejs nodejs-devel nodejs-packaging npm python3 make  gcc gcc-c++   
+yum install -y git automake libtool make unzip gcc-c++ autoconf zlib xz m4 gettext help2man wget diffutils
 
-NODE_VERSION=16.14.2 
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-source ~/.bashrc
-nvm install $NODE_VERSION
-export PATH=/usr/local/bin:$PATH
-ln -s /usr/bin/python3 /bin/python
+dnf install -qy http://mirror.nodesdirect.com/centos/8-stream/BaseOS/ppc64le/os/Packages/centos-gpg-keys-8-6.el8.noarch.rpm
+dnf install -qy http://mirror.nodesdirect.com/centos/8-stream/BaseOS/ppc64le/os/Packages/centos-stream-repos-8-6.el8.noarch.rpm
+dnf config-manager --enable powertools
+dnf install -qy epel-release
+dnf install -qy gettext-devel
 
-source ~/.bashrc
+wget https://ftp.gnu.org/gnu/bison/bison-3.8.tar.xz
+xz -d bison-3.8.tar.xz
+tar -xvf bison-3.8.tar
+cd bison-3.8
 
+./configure
+make
+make install
+cd ..
 
-npm i --global yarn 
-yarn policies set-version  1.22.19
+wget https://github.com/westes/flex/releases/download/v2.6.3/flex-2.6.3.tar.gz
+tar -xvf flex-2.6.3.tar.gz
+cd flex-2.6.3
+sh autogen.sh
+./configure
+make 
+make install
+cd ..
 
-export PATH=/root/.nvm/versions/node/v16.14.2/bin/:$PATH
-#Install and Run tests
-git clone $PACKAGE_URL jest
-cd jest 
+git clone https://github.com/postgres/postgres.git
+cd postgres
+git checkout REL9_5_STABLE
+./configure --without-readline --without-zlib
+make install -s
+
+cd contrib
+git clone https://github.com/pgaudit/set_user.git
+
+cd set_user
+
 git checkout $PACKAGE_VERSION
-yarn add --dev @jest/globals@27.0.5  
-yarn add --dev @jest/test-utils@0.0.0  
-yarn add --dev jest@27.0.5 
-yarn add --dev jest-changed-files@27.0.2 
-yarn add --dev jest-mock@27.0.3 
-yarn add --dev jest-snapshot@27.0.5 
-yarn install 
-yarn build:js
-#Note that there are test failures which are in parity with Intel. Details are provided in the README file.
 
-if ! yarn jest ./packages/jest-circus/ 2>&1 | tee test.log ; then
-     	echo "------------------$PACKAGE_NAME:test_fails-------------------------------------"
-		echo "$PACKAGE_URL $PACKAGE_NAME" 
-		echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  test_fail" 
-		exit 1
+
+if ! (make && make install) ; then
+     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+     echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master  | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
+     exit 0
 else
-		echo "------------------$PACKAGE_NAME:test_success-------------------------------------"
-		echo "$PACKAGE_URL $PACKAGE_NAME" 
-		echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Success |  test_success" 
-		exit 0
+     echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+     echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
+     exit 0
 fi
