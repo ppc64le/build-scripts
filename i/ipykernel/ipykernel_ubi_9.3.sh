@@ -31,7 +31,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Install
-if ! python3 -m pip install .; then
+if ! python3.11 -m pip install .; then
 	echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
