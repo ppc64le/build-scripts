@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: 
-# Version	: 
-# Source repo	: 
-# Tested on	: UBI:9.3 
+# Package       : certificate-transparency-go
+# Version       : v1.1.8
+# Source repo   : https://github.com/google/certificate-transparency-go
+# Tested on     : UBI 9.3
 # Language      : GO
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: ICH <ich@us.ibm.com>
+# Maintainer    : Shubham Garud <Shubham.Garud@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -17,16 +17,16 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_NAME=
-PACKAGE_VERSION=
-PACKAGE_URL=
+PACKAGE_NAME=certificate-transparency-go
+PACKAGE_VERSION=${1:-v1.1.8}
+PACKAGE_URL=https://github.com/google/certificate-transparency-go
 
 HOME_DIR=${PWD}
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 yum install -y git gcc wget
-export GO_VERSION=${GO_VERSION:-1.20.1}
+export GO_VERSION=${GO_VERSION:-1.21.7}
 export GOROOT=${GOROOT:-"/usr/local/go"}
 export GOPATH=${GOPATH:-$HOME/go}
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:/usr/local/bin
@@ -45,17 +45,18 @@ if ! go build ./...; then
         echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
-	exit 1
+        exit 1
 fi
 
 if ! go test ./...; then
         echo "------------------$PACKAGE_NAME:test_fails---------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails"
-	exit 2
+        exit 2
 else
         echo "------------------$PACKAGE_NAME:install_and_test_success-------------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Install_and_Test_Success"
-	exit 0
+        exit 0
 fi
+
