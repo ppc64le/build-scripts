@@ -1,58 +1,45 @@
-#!/bin/bash -e
-# ----------------------------------------------------------------------------
-#
-# Package       : esapi-java-legacy
-# Version       : v2.5.3.1
-# Source repo   : https://github.com/ESAPI/esapi-java-legacy.git
-# Tested on     : UBI 9.3
-# Language      : Java
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer    : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
-#
-# Disclaimer: This script has been tested in root mode on given
-# ==========  platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of the
-#             package and/or distribution. In such case, please
-#             contact "Maintainer" of this script.
-#
-# ----------------------------------------------------------------------------
-PACKAGE_NAME=esapi-java-legacy
-PACKAGE_URL=https://github.com/ESAPI/esapi-java-legacy
-#PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-2.5.3.1}
+PACKAGE_NAME=jest-circus
+PACKAGE_VERSION=${1:-v29.7.0}
+PACKAGE_URL=https://github.com/facebook/jest
 
-#Dependencies
-yum install -y java-11-openjdk-devel git maven
-mvn clean install -U
+dnf install -y wget git yum-utils nodejs nodejs-devel nodejs-packaging npm python3 make  gcc gcc-c++   
 
-OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
+NODE_VERSION=16.14.2 
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+source ~/.bashrc
+nvm install $NODE_VERSION
+export PATH=/usr/local/bin:$PATH
+ln -s /usr/bin/python3 /bin/python
 
-#Check if package exists
-if [ -d "$PACKAGE_NAME" ] ; then
-      rm -rf $PACKAGE_NAME
-  echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"  
-fi
-# Cloning the repository from remote to local
-git clone $PACKAGE_URL
-cd  $PACKAGE_NAME
+source ~/.bashrc
+
+
+npm i --global yarn 
+yarn policies set-version  1.22.19
+
+export PATH=/root/.nvm/versions/node/v16.14.2/bin/:$PATH
+#Install and Run tests
+git clone $PACKAGE_URL jest
+cd jest 
 git checkout $PACKAGE_VERSION
+yarn add --dev @jest/globals@27.0.5  
+yarn add --dev @jest/test-utils@0.0.0  
+yarn add --dev jest@27.0.5 
+yarn add --dev jest-changed-files@27.0.2 
+yarn add --dev jest-mock@27.0.3 
+yarn add --dev jest-snapshot@27.0.5 
+yarn install 
+yarn build:js
+#Note that there are test failures which are in parity with Intel. Details are provided in the README file.
 
-if ! mvn install -DskipTests -Dgpg.skip=true; then
-  echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
-    exit 1
-fi
-
-if ! mvn test; then
-    echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
-    exit 2
+if ! yarn jest ./packages/jest-circus/ 2>&1 | tee test.log ; then
+     	echo "------------------$PACKAGE_NAME:test_fails-------------------------------------"
+		echo "$PACKAGE_URL $PACKAGE_NAME" 
+		echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  test_fail" 
+		exit 1
 else
-    echo "------------------$PACKAGE_NAME:build_&_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Build_and_Test_Success"
-    exit 0
+		echo "------------------$PACKAGE_NAME:test_success-------------------------------------"
+		echo "$PACKAGE_URL $PACKAGE_NAME" 
+		echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Success |  test_success" 
+		exit 0
 fi
