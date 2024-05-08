@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi9/ubi:9.3
+FROM registry.access.redhat.com/ubi8/ubi:8.7
 
 MAINTAINER "Mohit Pawar <mohit.pawar@ibm.com>"
 
