@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-v0.10.3}
 PACKAGE_URL=https://github.com/helm/helm-2to3.git
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
-dnf update -y && dnf install -y git make gcc gcc-c++
+dnf install -y git make gcc gcc-c++
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
