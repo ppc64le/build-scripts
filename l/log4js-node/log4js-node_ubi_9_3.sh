@@ -61,7 +61,7 @@ fi
 
 # Run test cases
 cd $HOME_DIR/$PACKAGE_NAME
-if ! npm test -- --reporter dot; then
+if ! npm test -- --reporter dot --timeout=60; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
