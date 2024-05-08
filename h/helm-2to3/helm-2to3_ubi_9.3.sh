@@ -6,7 +6,7 @@
 # Version           : v0.10.3
 # Source repo       : https://github.com/helm/helm-2to3.git
 # Tested on         : UBI:9.3
-# Language          : Node
+# Language          : Go
 # Travis-Check      : True
 # Script License    : Apache License, Version 2.0
 # Maintainer        : Vinod K <Vinod.K1@ibm.com>
@@ -43,17 +43,11 @@ if ! make build; then
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
     exit 1
+else
+    echo "------------------$PACKAGE_NAME:install_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Install_Success"
+    exit 0
 fi
 
 # there are no tests available for this reposiory as of v0.10.3
-if ! go test -v ./...; then
-    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
-    exit 2
-else
-    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
-    exit 0
-fi
