@@ -6,7 +6,7 @@
 # Version           : 2.3.0
 # Source repo       : https://github.com/RobLoach/jquery-once
 # Tested on         : UBI:9.3
-# Language          : Node
+# Language          : JavaScript
 # Travis-Check      : True
 # Script License    : Apache License, Version 2.0
 # Maintainer        : Vinod K <Vinod.K1@ibm.com>
@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-2.3.0}
 PACKAGE_URL=https://github.com/RobLoach/jquery-once
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
-dnf update -y && dnf install -y git
+dnf install -y git
 
 export NODE_VERSION=${NODE_VERSION:-18}
 export NODE_OPTIONS="--dns-result-order=ipv4first"
