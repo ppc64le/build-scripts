@@ -23,7 +23,7 @@ PACKAGE_VERSION=18.6.0
 PACKAGE_URL=https://github.com/openstack/python-novaclient.git
 
 yum install -y git python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo
-yum install -y python3-cryptography libffi-devel openssl-devel
+yum install -y python3-cryptography libffi-devel openssl-devel pcre pcre-devel 
 pip3 install pytest tox
 PATH=$PATH:/usr/local/bin/
 
