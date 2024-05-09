@@ -4,6 +4,8 @@
 # Version	: v3.2.0+incompatible
 # Source repo	: https://github.com/gofrs/uuid
 # Tested on	: RHEL 8.3
+# Language      : GO
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
