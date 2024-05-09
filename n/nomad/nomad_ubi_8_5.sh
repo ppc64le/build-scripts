@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 # Package          : nomad
-# Version          : v1.4.3
+# Version          : v1.4.3, v1.7.6
 # Source repo      : https://github.com/hashicorp/nomad
 # Tested on        : UBI 8.5
 # Language         : Java
@@ -21,8 +21,8 @@ set -e
 PACKAGE_NAME=nomad
 PACKAGE_URL=https://github.com/hashicorp/nomad
 #PACKAGE_VERSION is configurable can be passed as an argument.
-PACKAGE_VERSION=${1:-1.4.3}
-GO_VERSION=${GO_VERSION:-1.20.1}
+PACKAGE_VERSION=${1:-v1.7.6}
+GO_VERSION=${GO_VERSION:-1.21.1}
 
 
 #Dependencies
@@ -41,6 +41,7 @@ go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.50.1
 #building consul 
 git clone https://github.com/hashicorp/consul
 cd consul
+git checkout v1.15.1
 make dev-build
 consul version
 cd ..
@@ -48,6 +49,7 @@ cd ..
 #building vault
 git clone https://github.com/hashicorp/vault
 cd vault
+git checkout v1.13.0
 go mod tidy
 go mod vendor
 make bootstrap

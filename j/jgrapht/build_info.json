@@ -1,27 +1,21 @@
 {
-    "maintainer": "Stuti.Wali@ibm.com",
+    "maintainer": "stutiibm",
     "package_name": "jgrapht",
     "github_url": "https://github.com/jgrapht/jgrapht",
-    "version": "jgrapht-1.5.1",
+    "version": "jgrapht-1.5.2",
     "default_branch": "master",
     "package_dir": "j/jgrapht",
-    "build_script": "jgrapht_ubi_8_7.sh",
+    "build_script": "jgrapht_ubi_9_3.sh",
     "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": false,
- 
     "jgrapht-1.5.*": {
-       "build_script": "jgrapht_ubi_8_7.sh"
+       "build_script": "jgrapht_ubi_9_3.sh"
     },
-
     "1.4.0": {
-       "build_script": "jgrapht_ubi_8_7.sh"
+       "build_script": "jgrapht_ubi_9_3.sh"
     },
-
     "jgrapht-1.3.*": {
-       "build_script": "jgrapht_ubi_8_7.sh"
+       "build_script": "jgrapht_ubi_9_3.sh"
     }
-
 }
-
-

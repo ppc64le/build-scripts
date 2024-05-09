@@ -1,0 +1,15 @@
+{
+  "maintainer": "vinodk99",
+  "package_name": "flatpickr",
+  "github_url": "https://github.com/flatpickr/flatpickr",
+  "version": "v4.6.13",
+  "default_branch": "master",
+  "build_script": "flatpickr_ubi_9.3.sh",
+  "package_dir": "f/flatpickr",
+  "docker_build": false,
+  "use_non_root_user": "false",
+  "validate_build_script": true,
+  "v4.*.*": {
+    "build_script": "flatpickr_ubi_9.3.sh"
+  }
+}

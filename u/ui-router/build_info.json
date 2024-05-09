@@ -1,0 +1,15 @@
+{
+  "maintainer": "vinodk99",
+  "package_name": "ui-router",
+  "github_url": "https://github.com/angular-ui/ui-router",
+  "version": "1.1.0r",
+  "default_branch": "master",
+  "build_script": "ui-router_ubi_9.3.sh",
+  "package_dir": "u/ui-router",
+  "docker_build": false,
+  "use_non_root_user": "false",
+  "validate_build_script": true,
+  "1.*.*": {
+    "build_script": "ui-router_ubi_9.3.sh"
+  }
+}

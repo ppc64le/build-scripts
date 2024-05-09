@@ -1,0 +1,15 @@
+{
+  "maintainer": "vinodk99",
+  "package_name": "hoek",
+  "github_url": "https://github.com/hapijs/hoek",
+  "version": "v11.0.4",
+  "default_branch": "master",
+  "build_script": "hoek_ubi_9.3.sh",
+  "package_dir": "h/hoek",
+  "docker_build": false,
+  "use_non_root_user": "false",
+  "validate_build_script": true,
+  "v11.*.*": {
+    "build_script": "hoek_ubi_9.3.sh"
+  }
+}

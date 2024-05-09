@@ -1,5 +1,5 @@
 {
-  "maintainer": "Vishaka.Desai@ibm.com",
+  "maintainer": "IBM-Currency-Helper",
   "package_name": "odoo",
   "github_url": "https://github.com/odoo/odoo",
   "version": "16.0",

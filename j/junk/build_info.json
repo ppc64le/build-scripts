@@ -1,11 +1,11 @@
 {
-   "maintainer": "Shubham.Garud@ibm.com",
-   "package_name": "junk",
-   "github_url": "https://github.com/sindresorhus/junk",
-   "version": "v4.0.1",
-   "default_branch": "main",
-   "build_script": "junk_ubi_8.7.sh",
-   "package_dir": "j/junk",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "shubham-garud",
+  "package_name": "junk",
+  "github_url": "https://github.com/sindresorhus/junk",
+  "version": "v4.0.1",
+  "default_branch": "main",
+  "build_script": "junk_ubi_8.7.sh",
+  "package_dir": "j/junk",
+  "docker_build": false,
+  "validate_build_script": true
 }

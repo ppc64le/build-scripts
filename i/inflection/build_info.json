@@ -1,15 +1,15 @@
 {
-    "maintainer": "mohit.pawar@ibm.com",
-    "package_name": "inflection",
-    "github_url": "https://github.com/jpvanhal/inflection.git",
-    "version": "master",
-    "default_branch": "master",
-    "package_dir": "i/inflection",
-    "build_script": "inflection_ubi_8.7.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build": "false",
-    "master" : {
-	    "build_script" : "inflection_ubi_8.7.sh"
-    }
+  "maintainer": "mohitp333",
+  "package_name": "inflection",
+  "github_url": "https://github.com/jpvanhal/inflection.git",
+  "version": "master",
+  "default_branch": "master",
+  "package_dir": "i/inflection",
+  "build_script": "inflection_ubi_8.7.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "false",
+  "master": {
+    "build_script": "inflection_ubi_8.7.sh"
+  }
 }

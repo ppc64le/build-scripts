@@ -43,8 +43,8 @@ if [ $build_docker != false ];then
     fi
 
     cd Dockerfiles
-    echo "Deleting existing docker image"
-    docker rmi -f ${image_name}
+    #echo "Deleting existing docker image"
+    #docker rmi -f ${image_name}
     #docker rmi -f ${basename}
     echo "Building docker image"
     echo "sudo docker build $build_args -t $image_name $docker_builddir"

@@ -1,0 +1,17 @@
+{
+  "maintainer": "vinodk99",
+  "package_name": "xxHash",
+  "github_url": "https://github.com/Cyan4973/xxHash",
+  "version": "v0.8.2",
+  "default_branch": "dev",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "package_dir": "x/xxhash",
+  "build_script": "xxhash_ubi_9.3.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "true",
+  "v*.*.*": {
+    "dir": "0.8.2_ubi9",
+    "build_script": "xxhash_ubi_9.3.sh"
+  }
+}

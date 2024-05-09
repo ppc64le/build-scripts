@@ -1,16 +1,15 @@
 {
-    "maintainer":"Vinod.K1@ibm.com",
+    "maintainer":"vinodk99",
     "package_name" : "PyTables",
     "github_url": "https://github.com/PyTables/PyTables",
-    "version": "v3.9.1",
+    "version": "v3.9.2",
     "default_branch": "master",
     "package_dir": "p/PyTables",
-    "build_script": "PyTables_ubi_8.7.sh",
+    "build_script": "pytables_ubi_9.3.sh",
     "validate_build_script": "true",
     "use_non_root_user": "false",
     "docker_build": false,
-
-    "v3.*.*" : {
-       "build_script" : "PyTables_ubi_8.7.sh"
+    "v*.*.*" : {
+       "build_script" : "pytables_ubi_9.3.sh"
     }
 }

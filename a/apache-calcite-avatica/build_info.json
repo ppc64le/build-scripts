@@ -1,5 +1,5 @@
 {
-  "maintainer": "Shubham.Garud@ibm.com",
+  "maintainer": "shubham-garud",
   "package_name": "apache-calcite-avatica",
   "github_url": "https://github.com/apache/calcite-avatica",
   "package_dir": "a/apache-calcite-avatica/",
