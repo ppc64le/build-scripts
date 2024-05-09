@@ -1,11 +1,11 @@
 {
-   "maintainer": "ich@us.ibm.com",
-   "package_name": "npm-audit-report",
-   "github_url": "https://github.com/npm/npm-audit-report",
-   "version": "v5.0.0",
-   "default_branch": "main",
-   "build_script": "npm-audit-report_ubi_8.7.sh",
-   "package_dir": "n/npm-audit-report",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "IBM-Currency-Helper",
+  "package_name": "npm-audit-report",
+  "github_url": "https://github.com/npm/npm-audit-report",
+  "version": "v5.0.0",
+  "default_branch": "main",
+  "build_script": "npm-audit-report_ubi_8.7.sh",
+  "package_dir": "n/npm-audit-report",
+  "docker_build": false,
+  "validate_build_script": true
 }

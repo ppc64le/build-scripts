@@ -1,0 +1,12 @@
+{
+   "maintainer": "shubham-garud",
+   "package_name": "unist-util-stringify-position",
+   "github_url": "https://github.com/syntax-tree/unist-util-stringify-position",
+   "version": "4.0.0",
+   "default_branch": "main",
+   "build_script": "unist-util-stringify-position_ubi_9.3.sh",
+   "package_dir": "u/unist-util-stringify-position",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user":false
+}

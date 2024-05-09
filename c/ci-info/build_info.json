@@ -1,11 +1,11 @@
 {
-   "maintainer": "Shubham.Garud@ibm.com",
-   "package_name": "ci-info",
-   "github_url": "https://github.com/watson/ci-info",
-   "version": "v4.0.0",
-   "default_branch": "master",
-   "build_script": "ci-info_ubi_8.7.sh",
-   "package_dir": "c/ci-info",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "shubham-garud",
+  "package_name": "ci-info",
+  "github_url": "https://github.com/watson/ci-info",
+  "version": "v4.0.0",
+  "default_branch": "master",
+  "build_script": "ci-info_ubi_8.7.sh",
+  "package_dir": "c/ci-info",
+  "docker_build": false,
+  "validate_build_script": true
 }

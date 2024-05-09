@@ -1,11 +1,16 @@
 {
-   "maintainer": "Shubham.Garud@ibm.com",
+   "maintainer": "shubham-garud",
    "package_name": "certificate-transparency-go",
    "github_url": "https://github.com/google/certificate-transparency-go",
-   "version": "v1.1.7",
+   "version": "v1.1.8",
    "default_branch": "master",
-   "build_script": "certificate-transparency-go_ubi_8.7.sh",
+   "build_script": "certificate-transparency-go_ubi_9.3.sh",
    "package_dir": "c/certificate-transparency-go",
    "docker_build": false,
-   "validate_build_script": true
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "v1.1.*":{
+        "build_script": "certificate-transparency-go_ubi_9.3.sh"
+   }
+
 }

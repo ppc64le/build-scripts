@@ -204,10 +204,10 @@ def create_new_script():
         elif template_lines[i].startswith("PACKAGE_NAME"):
             template_lines[i]=f"PACKAGE_NAME={package_name}\n"
         
-    with open (f"{dir_name}/{package_name}_ubi_8.7.sh",'w') as newfile:
+    with open (f"{dir_name}/{package_name}_ubi_9.3.sh",'w') as newfile:
         newfile.writelines(template_lines)
 
-    new_cmd=f"python3 script/trigger_container.py -f {package_name[0]}/{package_name}/{package_name}_ubi_8.7.sh"
+    new_cmd=f"python3 script/trigger_container.py -f {package_name[0]}/{package_name}/{package_name}_ubi_9.3.sh"
      
     container_result=subprocess.Popen(new_cmd,shell=True)
     stdout, stderr=container_result.communicate()
@@ -229,7 +229,7 @@ def create_new_script():
     user_push_response=user_push_response.lower()
     if user_push_response=='y':
 
-        cmd_add=f"git add {dir_name}/{package_name}_ubi_8.7.sh"
+        cmd_add=f"git add {dir_name}/{package_name}_ubi_9.3.sh"
         print("\n\n Git Adding build_script")
         git_add_w=subprocess.Popen(cmd_add,shell=True)
         git_add_w.wait()
