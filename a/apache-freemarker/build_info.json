@@ -13,9 +13,5 @@
   "v2.*.*": {
     "dir": "ubi9.3",
     "build_script": "apache-freemarker_ubi_9.3.sh"
-  },
-  "v2.3.31": {
-    "dir": "ubi_8.5",
-    "build_script": "apache-freemarker_v2.3.31_ubi_9.3.sh"
   }
 }
