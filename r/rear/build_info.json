@@ -13,5 +13,9 @@
   "rear-2.*": {
     "dir": "ubi9.3",
     "build_script": "rear_ubi_9.3.sh"
+  },
+  "*": {
+    "dir": "ubi9.3",
+    "build_script": "rear_ubi_9.3.sh"
   }
 }
