@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: 
-# Version	: 
-# Source repo	: 
-# Tested on	: UBI:9.3
-# Language      : Node
+# Package       : ninja
+# Version       : v1.12.0
+# Source repo   : https://github.com/ninja-build/ninja
+# Tested on     : UBI: 9.3
+# Language      : C++
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: ICH <ich@us.ibm.com>
+# Maintainer    : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -17,34 +17,27 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_NAME=
-PACKAGE_VERSION=
-PACKAGE_URL=
 
-export NODE_VERSION=${NODE_VERSION:-16}
-yum install -y python3 python3-devel.ppc64le git gcc gcc-c++ libffi make
+PACKAGE_NAME=ninja
+PACKAGE_VERSION=${1:-v1.12.0}
+PACKAGE_URL=https://github.com/ninja-build/ninja
 
-#Installing nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-source "$HOME"/.bashrc
-echo "installing nodejs $NODE_VERSION"
-nvm install "$NODE_VERSION" >/dev/null
-nvm use $NODE_VERSION
+yum install -y gcc gcc-c++ make wget git cmake
 
-
-
-git clone $PACKAGE_URL $PACKAGE_NAME
-cd  $PACKAGE_NAME
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if ! npm install && npm audit fix --force; then
+cmake -Bbuild-cmake
+
+if ! cmake --build build-cmake ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-if ! npm test; then
+if ! ./build-cmake/ninja_test ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"

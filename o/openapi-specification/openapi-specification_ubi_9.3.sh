@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: 
-# Version	: 
-# Source repo	: 
-# Tested on	: UBI:9.3
-# Language      : Node
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer	: ICH <ich@us.ibm.com>
+# Package          : openapi-specification
+# Version          : main
+# Source repo      : https://github.com/OAI/OpenAPI-Specification.git
+# Tested on	   : UBI:9.3
+# Language         : Node
+# Travis-Check     : True
+# Script License   : Apache License, Version 2 or later
+# Maintainer	   : Vinod K <Vinod.K1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -17,12 +17,12 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_NAME=
-PACKAGE_VERSION=
-PACKAGE_URL=
+PACKAGE_NAME=openapi-specification
+PACKAGE_VERSION=${1:-main}
+PACKAGE_URL=https://github.com/OAI/OpenAPI-Specification.git
 
-export NODE_VERSION=${NODE_VERSION:-16}
-yum install -y python3 python3-devel.ppc64le git gcc gcc-c++ libffi make
+export NODE_VERSION=${NODE_VERSION:-20}
+yum install -y git gcc gcc-c++ libffi make python3 python3-devel
 
 #Installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
@@ -30,8 +30,6 @@ source "$HOME"/.bashrc
 echo "installing nodejs $NODE_VERSION"
 nvm install "$NODE_VERSION" >/dev/null
 nvm use $NODE_VERSION
-
-
 
 git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME

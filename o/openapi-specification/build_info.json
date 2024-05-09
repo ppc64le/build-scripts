@@ -1,11 +1,16 @@
+
 {
   "maintainer": "vinodk99",
   "package_name": "openapi-specification",
   "github_url": "https://github.com/OAI/OpenAPI-Specification.git",
   "version": "main",
   "default_branch": "main",
-  "build_script": "openapi-specification_ubi_8.7.sh",
+  "build_script": "openapi-specification_ubi_9.3.sh",
   "package_dir": "o/openapi-specification",
+  "validate_build_script": true,
+  "use_non_root_user": "false",
   "docker_build": false,
-  "validate_build_script": true
+  "main" : {
+       "build_script" : "openapi-specification_ubi_9.3.sh"
+    }
 }

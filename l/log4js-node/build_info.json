@@ -5,17 +5,17 @@
   "version": "v6.9.1",
   "default_branch": "master",
   "package_dir": "l/log4js-node",
-  "build_script": "log4js-node_ubi_8_7.sh",
+  "build_script": "log4js-node_ubi_9_3.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
   "v6.9.*": {
-    "build_script": "log4js-node_ubi_8_7.sh"
+    "build_script": "log4js-node_ubi_9_3.sh"
   },
   "v6.8.0": {
-    "build_script": "log4js-node_ubi_8_7.sh"
+    "build_script": "log4js-node_ubi_9_3.sh"
   },
   "v6.7.*": {
-    "build_script": "log4js-node_ubi_8_7.sh"
+    "build_script": "log4js-node_ubi_9_3.sh"
   }
 }
