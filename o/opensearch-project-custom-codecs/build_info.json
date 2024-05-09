@@ -1,0 +1,12 @@
+{
+    "maintainer": "PankhudiJain17",
+    "package_name": "opensearch-project-custom-codecs",
+    "github_url": "https://github.com/opensearch-project/custom-codecs",
+    "version": "2.13.0.0",
+    "default_branch": "main",
+    "package_dir": "o/opensearch-project-custom-codecs",
+    "build_script": "opensearch-project-custom-codecs_ubi_9.3.sh",
+    "validate_build_script": true,
+    "use_non_root_user": true,
+    "docker_build": false
+}
