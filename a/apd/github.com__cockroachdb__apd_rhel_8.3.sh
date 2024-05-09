@@ -4,6 +4,8 @@
 # Version	: v1.1.0
 # Source repo	: https://github.com/cockroachdb/apd
 # Tested on	: RHEL 8.3
+# Language      : GO
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
