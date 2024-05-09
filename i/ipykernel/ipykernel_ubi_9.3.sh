@@ -45,7 +45,7 @@ if ! python3.11 -m pytest -vv -s --cov ipykernel --cov-branch --cov-report term-
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
-	exit 1
+	exit 2
 else
 	echo "------------------$PACKAGE_NAME:install_and_test_success-------------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME"
