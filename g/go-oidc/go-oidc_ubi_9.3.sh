@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package		: go-oidc
-# Version		: v3.10.0
+# Package	: go-oidc
+# Version	: v3.10.0
 # Source repo	: https://github.com/coreos/go-oidc.git
-# Tested on		: UBI 9.3
-# Language      : Ruby
-# Travis-Check  : True
+# Tested on	: UBI : 9.3
+# Language	: GO
+# Travis-Check	: True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
+# Maintainer    : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
 #
 # Disclaimer    : This script has been tested in root mode on given
 # ==========      platform using the mentioned version of the package.
