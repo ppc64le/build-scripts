@@ -17,7 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
->>>>>>> 20e46db45a217f16ce07548d3b9ca59aeeb80364
 PACKAGE_PATH=github.com/mongodb/
 PACKAGE_NAME=mongo-go-driver
 PACKAGE_VERSION=v1.15.0
@@ -58,13 +57,8 @@ if ! go build -v ./... ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-<<<<<<< HEAD
 cd x/mongo/driver/topology/
 echo "Testing $PACKAGE_PATH$PACKAGE_NAME with $PACKAGE_VERSION"
-=======
-echo "Testing $PACKAGE_PATH$PACKAGE_NAME with $PACKAGE_VERSION"
-cd x/mongo/driver/topology/
->>>>>>> 20e46db45a217f16ce07548d3b9ca59aeeb80364
 if ! go test -v ./... ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
