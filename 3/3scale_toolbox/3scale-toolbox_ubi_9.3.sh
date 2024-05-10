@@ -4,7 +4,7 @@
 # Package       : 3scale/toolbox
 # Version       : 2.14.1
 # Source repo   : https://github.com/3scale/3scale_toolbox
-# Tested on     : UBI 9.3 (UBI9)
+# Tested on     : UBI:9.3
 # Language      : Ruby
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -97,15 +97,24 @@ bundle install
 gem install racc
  
 # Rake install
- 
-bundle exec rake install
- 
+
+if ! bundle exec rake install; then
+	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+	exit 2
+else	
+	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+	echo "$PACKAGE_URL $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+	exit 0
+fi	
+
 # Running Unit Test
  
 if ! bundle exec rake spec:unit; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
-	exit 1
+	exit 2
 else	
 	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
