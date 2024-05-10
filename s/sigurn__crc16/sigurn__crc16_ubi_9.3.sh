@@ -2,9 +2,9 @@
 # -----------------------------------------------------------------------------
 #
 # Package	 : github.com/sigurn/crc16
-# Version        : 83fcde1e29d10de8a8bfd2279244673d91cdce38
+# Version        : master
 # Source repo	 : https://github.com/sigurn/crc16
-# Tested on	 : UBI 9.3 
+# Tested on	 : UBI: 9.3 
 # Language       : GO
 # Travis-Check   : True
 # Script License : Apache License, Version 2 or later
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=crc16
 PACKAGE_URL=https://github.com/sigurn/crc16
-PACKAGE_VERSION=${1:-83fcde1e29d10de8a8bfd2279244673d91cdce38}
+PACKAGE_VERSION=${1:-master}
 
 PACKAGE_COMMIT_HASH=`echo $PACKAGE_VERSION | cut -d'-' -f3`
 
@@ -66,7 +66,7 @@ if ! go test -v ./...; then
 	echo "------------------$PACKAGE_NAME:test_fails---------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Test_Fails"
-	exit 1
+	exit 2
 else
 	echo "------------------$PACKAGE_NAME:install_and_test_success-------------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME"
