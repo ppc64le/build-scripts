@@ -3,7 +3,7 @@
 # Package	: infinispan-operator
 # Version	: 2.4.0.Final
 # Source repo	: https://github.com/infinispan/infinispan-operator.git
-# Tested on	: Red Hat Enterprise Linux 87(8.7) && UBI 9 (9.3)
+# Tested on	: UBI:9.3
 # Language      : Go
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -23,7 +23,6 @@ PACKAGE_NAME=infinispan-operator
 PACKAGE_VERSION=2.4.0.Final
 PACKAGE_URL=https://github.com/infinispan/infinispan-operator.git
 PACKAGE_BRANCH=2.4.0.Final
-
 
 GO_VERSION=1.21.6
 
@@ -45,28 +44,26 @@ chmod +x operator-sdk_linux_ppc64le
 mv operator-sdk_linux_ppc64le /usr/local/bin/operator-sdk
 operator-sdk version
 
-
 #Clone the repository
 git clone $PACKAGE_URL
 
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if ! git clone $PACKAGE_URL -b $PACKAGE_BRANCH ; then
-    echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    exit 0
-fi
-
 # Increase timeout to resolve golangcli-lint timeout error
 /home/go/src/infinispan-operator/bin/golangci-lint run --enable errorlint --timeout=10m
 go mod vendor
-make lint
+
+if ! make lint; then
+	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+	exit 2
+else
 
 if ! make test; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
-	exit 1
+	exit 2
 else	
 	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
