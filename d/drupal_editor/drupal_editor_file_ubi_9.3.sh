@@ -1,36 +1,25 @@
-#!/bin/bash -e
-# -----------------------------------------------------------------------------
-# Package       : drupal/editor_file
-# Version       : 8.x-1.6
-# Source repo   : https://git.drupalcode.org/project/editor_file.git
-# Tested on     : UBI: 9.3
-# Language      : PHP
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer    : Sachin Kakatkar<Sachin.Kakatkar@ibm.com>
-#
-# Disclaimer: This script has been tested in root mode on given
-# ==========  platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of the
-#             package and/or distribution. In such case, please
-#             contact "Maintainer" of this script.
-#
-# ----------------------------------------------------------------------------
-#Run the sript ./drupal_editor_file_ubi_8.5.sh 8.x-1.6(version to test)
 PACKAGE_NAME=editor_file
 PACKAGE_VERSION=${1:-8.x-1.6}
 PACKAGE_URL=https://git.drupalcode.org/project/editor_file.git
 
-yum module enable php:7.3 -y
-yum install php php-json php-devel zip unzip php-zip wget git php-pdo php-dom php-mbstring -y
+#yum module enable php:7.3 -y
+yum update -y
+yum install php -y
+yum install php-mysql -y
 
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/bin --filename=composer
+yum install php php-json php-devel zip unzip php-zip wget git php-pdo php-dom php-mbstring -y
+ 
+/usr/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && /usr/bin/php composer-setup.php --install-dir=/bin --filename=composer
 
 rm -rf drupal
 git clone https://github.com/drupal/drupal.git
 cd drupal
 git checkout 8.9.0
 cd core/modules
+
+ curl -sS https://getcomposer.org/installer | php
+ mv composer.phar /usr/local/bin/composer
+ composer install --ignore-platform-reqs
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
@@ -44,5 +33,3 @@ if ! composer update --ignore-platform-req=ext-gd ; then
 else
         echo "$PACKAGE_NAME  |  $PACKAGE_VERSION ------------------Build_success-------------------------"
 fi
-
-#Test cases not available
