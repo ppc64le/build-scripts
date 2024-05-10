@@ -18,7 +18,7 @@ git checkout 8.9.0
 cd core/modules
 
  curl -sS https://getcomposer.org/installer | php
- mv composer.phar /usr/local/bin/composer
+ #mv composer.phar /usr/local/bin/composer
  composer install --ignore-platform-reqs
 
 git clone $PACKAGE_URL
