@@ -1,4 +1,22 @@
-
+#!/bin/bash -e
+# -----------------------------------------------------------------------------
+#
+# Package	 : github.com/sigurn/crc16
+# Version        : 83fcde1e29d10de8a8bfd2279244673d91cdce38
+# Source repo	 : https://github.com/sigurn/crc16
+# Tested on	 : UBI 9.3 
+# Language       : GO
+# Travis-Check   : True
+# Script License : Apache License, Version 2 or later
+# Maintainer	 : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
+#
+# Disclaimer: This script has been tested in root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
 PACKAGE_NAME=crc16
 PACKAGE_URL=https://github.com/sigurn/crc16
 PACKAGE_VERSION=${1:-83fcde1e29d10de8a8bfd2279244673d91cdce38}
