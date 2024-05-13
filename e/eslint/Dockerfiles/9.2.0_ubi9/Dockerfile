@@ -10,12 +10,12 @@ RUN wget https://github.com/ibmsoe/phantomjs/releases/download/2.1.1/phantomjs-2
     mv phantomjs-2.1.1-linux-ppc64/bin/phantomjs /usr/bin && \
     rm -rf phantomjs-2.1.1-linux-ppc64.tar.bz2
 
-ARG VERSION=v9.2.0
+ARG PACKAGE_VERSION=v9.2.0
 RUN set -eux \
-        && if [ ${VERSION} = "latest" ]; then \
+        && if [ ${PACKAGE_VERSION} = "latest" ]; then \
                 npm install -g --production --remove-dev eslint; \
         else \
-                npm install -g --production --remove-dev eslint@^${VERSION}; \
+                npm install -g --production --remove-dev eslint@^${PACKAGE_VERSION}; \
         fi \
         \
         && /usr/local/lib/node_modules/eslint/bin/eslint.js --version | grep -E '^v?[0-9]+'
