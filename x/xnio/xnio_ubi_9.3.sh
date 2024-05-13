@@ -22,7 +22,7 @@ PACKAGE_NAME=xnio
 PACKAGE_VERSION=${1:-3.8.14.Final}
 PACKAGE_URL=https://github.com/xnio/xnio
 
-yum install -y g++ wget git
+yum install -y g++ wget git gcc gcc-c++
 
 wget https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.22%2B7/OpenJDK11U-jdk_ppc64le_linux_hotspot_11.0.22_7.tar.gz 
 tar -C /usr/local -xzf OpenJDK11U-jdk_ppc64le_linux_hotspot_11.0.22_7.tar.gz 
