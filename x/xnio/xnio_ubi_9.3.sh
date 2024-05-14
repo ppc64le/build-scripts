@@ -24,13 +24,11 @@ PACKAGE_URL=https://github.com/xnio/xnio
 
 yum install -y g++ wget git gcc gcc-c++
 
-wget https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.22%2B7/OpenJDK11U-jdk_ppc64le_linux_hotspot_11.0.22_7.tar.gz 
-tar -C /usr/local -xzf OpenJDK11U-jdk_ppc64le_linux_hotspot_11.0.22_7.tar.gz 
-export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8" 
-export JAVA_HOME=/usr/local/jdk-11.0.22+7/ 
-export PATH=$PATH:/usr/local/jdk-11.0.22+7/bin 
-ln -sf /usr/local/jdk-11.0.22+7/bin/java /usr/bin/ 
-rm -rf OpenJDK11U-jdk_ppc64le_linux_hotspot_11.0.22_7.tar.gz
+#Install temurin java17
+wget https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.9%2B9/OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.9_9.tar.gz
+tar -zxf OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.9_9.tar.gz
+export JAVA_HOME=$HOME_DIR/jdk-17.0.9+9
+export PATH=$JAVA_HOME/bin:$PATH
 
 #install maven
 wget https://archive.apache.org/dist/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.tar.gz
@@ -49,8 +47,6 @@ if ! mvn -U -B -fae -DskipTests clean install; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-
-mvn clean
 
 if ! mvn test; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
