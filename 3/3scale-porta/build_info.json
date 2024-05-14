@@ -6,7 +6,7 @@
     "package_dir": "3scale/porta",
     "default_branch": "main",
     "build_script": "3scale-porta_ubi_9.3.sh",
-    "docker_build": "true",
+    "docker_build": "false",
     "use_non_root_user": false,
     "validate_build_script": "true",
     "3scale-2.14.1-GA": {
