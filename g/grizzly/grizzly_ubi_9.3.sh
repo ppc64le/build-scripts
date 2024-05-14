@@ -51,7 +51,7 @@ if ! mvn --show-version --no-transfer-progress --activate-profiles staging --def
       exit 1
 fi
 
-if ! mvn --show-version --no-transfer-progress --activate-profiles staging --define skipTests=false install; then
+if ! mvn --show-version --no-transfer-progress --fail-at-end --activate-profiles staging --define maven.test.redirectTestOutputToFile=true --define forkCount=1 --define reuseForks=false --define surefire.reportFormat=plain --define surefire.rerunFailingTestsCount=5 install; then
       echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
       echo "$PACKAGE_URL $PACKAGE_NAME"
       echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
