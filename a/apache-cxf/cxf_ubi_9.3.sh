@@ -39,7 +39,7 @@ ln -s /usr/local/apache-maven-3.8.7/bin/mvn /usr/bin/mvn
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-export MAVEN_OPTS = "-Xmx1024m"
+export MAVEN_OPTS="-Xmx1024m"
 
 if ! mvn clean install -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -DskipTests ; then
     echo "------------------$PACKAGE_NAME:Install_fails---------------------"
