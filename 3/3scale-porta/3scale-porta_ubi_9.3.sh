@@ -230,7 +230,7 @@ if ! bundle exec rake test TEST='
     echo "------------------$PACKAGE_NAME:install_success_but_unit_test_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Unit test Failure"
-    exit 1
+    exit 2
 fi
 
 # Run integration tests
@@ -267,7 +267,7 @@ if ! bundle exec rake test TEST='
     echo "------------------$PACKAGE_NAME:install_success_but_integration_test_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Integration test Failure"
-    exit 1
+    exit 2
 fi
 
 else
