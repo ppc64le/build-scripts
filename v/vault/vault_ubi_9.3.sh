@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=vault
 PACKAGE_VERSION=${1:-v1.16.2}
-PACKAGE_URL= https://github.com/hashicorp/vault
+PACKAGE_URL=https://github.com/hashicorp/vault
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
