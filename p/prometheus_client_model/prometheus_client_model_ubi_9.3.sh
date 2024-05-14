@@ -1,10 +1,10 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: github.com/prometheus/client_model
+# Package	: client_model
 # Version	: v0.6.1
 # Source repo	: https://github.com/prometheus/client_model
-# Tested on	: UBI:9.3 (Docker)
+# Tested on	: UBI:9.3
 # Language      : GO
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later

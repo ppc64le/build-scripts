@@ -1,5 +1,5 @@
 {
-    "maintainer": "gauravshewale",
+    "maintainer": "AbhiIBM",
     "package_name": "client_model",
     "github_url": "https://github.com/prometheus/client_model",
     "version": "v0.6.1",
@@ -9,7 +9,7 @@
     "validate_build_script": true,
     "use_non_root_user": false,
     "docker_build": true,
-    "v0.6.1": {
+    "v*.*.*": {
       "build_script": "prometheus_client_model_ubi_9.3.sh"
     }
   }
