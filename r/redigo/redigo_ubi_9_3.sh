@@ -30,6 +30,8 @@ export GOROOT=${GOROOT:-"/usr/local/go"}
 export GOPATH=${GOPATH:-$HOME/go}
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:/usr/local/bin
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
+HOME_DIR=`pwd`
+
 
 #installing golang
 wget "https://golang.org/dl/go$GO_VERSION.linux-ppc64le.tar.gz"
@@ -37,7 +39,7 @@ tar -C /usr/local/ -xzf go$GO_VERSION.linux-ppc64le.tar.gz
 rm -f go$GO_VERSION.linux-ppc64le.tar.gz
 
 # installing redis server
-cd $HOME
+cd $HOME_DIR
 wget "https://download.redis.io/releases/redis-6.2.6.tar.gz"
 [[ $? -eq 0 ]] && {
     tar -xzf redis*.tar.gz
@@ -48,7 +50,7 @@ wget "https://download.redis.io/releases/redis-6.2.6.tar.gz"
 }
 
 #cloning the package source
-cd $HOME
+cd $HOME_DIR
 if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
     echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
