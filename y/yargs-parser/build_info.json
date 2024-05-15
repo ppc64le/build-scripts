@@ -5,12 +5,12 @@
   "version": "yargs-parser-v21.1.1",
   "default_branch": "main",
   "package_dir": "y/yargs-parser",
-  "build_script": "yarg-parser_ubi_8.7.sh",
+  "build_script": "yarg-parser_ubi_9.3.sh",
   "validate_build_script": "true",
   "use_non_root_user": "false",
   "docker_build": false,
-  "yargs-parser-v21.1.*": {
-    "build_script": "yargs-parser_ubi_8.7.sh"
+  "yargs-parser-v*.*.*,yargs-parser-v*.*.*-*": {
+    "build_script": "yargs-parser_ubi_9.3.sh"
   },
   "20.2.7": {
     "build_script": "yargs-parser_rhel_8.3.sh"
