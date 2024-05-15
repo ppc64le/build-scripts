@@ -28,7 +28,6 @@ wget https://github.com/ibmruntimes/semeru11-certified-binaries/releases/downloa
 tar -zxf ibm-semeru-certified-jdk_ppc64le_linux_11.0.18.0.tar.gz
 export JAVA_HOME=$HOME_DIR/jdk-11.0.18+10
 export PATH=$JAVA_HOME/bin:$PATH
-java -version
 
 #install maven
 wget https://archive.apache.org/dist/maven/maven-3/3.8.7/binaries/apache-maven-3.8.7-bin.tar.gz
