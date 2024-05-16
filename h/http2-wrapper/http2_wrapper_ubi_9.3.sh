@@ -20,6 +20,8 @@
 
 set -e
 
+WORK_DIR=`pwd`
+
 PACKAGE_NAME=http2-wrapper
 PACKAGE_VERSION=${1:-v2.2.1}
 PACKAGE_URL=https://github.com/szmarczak/http2-wrapper.git
@@ -35,10 +37,12 @@ nvm install "$NODE_VERSION" >/dev/null
 nvm use $NODE_VERSION
 
 # clone package
+cd $WORK_DIR
 git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+npm i --package-lock-only
 npm install yarn -g
 yarn --ignore-engines
 
