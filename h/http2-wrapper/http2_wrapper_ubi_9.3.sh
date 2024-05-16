@@ -47,14 +47,14 @@ npm install yarn -g
 yarn --ignore-engines
 
 #if ! npm install && npm audit fix && npm audit fix --force; then
-if ! yarn install ; then
+if ! yarn install --ignore-certificate-errors ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     eho "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-if ! yarn test ; then
+if ! yarn test --ignore-certificate-errors; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
