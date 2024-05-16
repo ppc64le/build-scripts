@@ -1,5 +1,5 @@
 {
-    "maintainer": "mohit.pawar@ibm.com",
+    "maintainer": "mohitp333",
     "package_name": "http2-wrapper",
     "github_url": "https://github.com/szmarczak/http2-wrapper.git",
     "version": "v2.2.1",
