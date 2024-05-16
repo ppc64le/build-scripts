@@ -4,6 +4,8 @@
 # Version	: 3.0.1
 # Source repo	: https://github.com/tkem/uritools/
 # Tested on	: RHEL 8.3
+# Language      : Python
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
