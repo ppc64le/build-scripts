@@ -35,7 +35,7 @@ export GOPATH=$HOME
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
 #install maven
-wget https://archive.apache.org/dist/maven/maven-3/3.8.7/binaries/apache-maven-3.8.7-bin.tar.gztar -zxf apache-maven-3.8.1-bin.tar.gz
+wget https://archive.apache.org/dist/maven/maven-3/3.8.7/binaries/apache-maven-3.8.7-bin.tar.gz
 tar -zxf apache-maven-3.8.7-bin.tar.gz
 cp -R apache-maven-3.8.7 /usr/local
 ln -s /usr/local/apache-maven-3.8.7/bin/mvn /usr/bin/mvn
