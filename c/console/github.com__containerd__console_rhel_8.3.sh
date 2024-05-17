@@ -4,6 +4,8 @@
 # Version	: v0.0.0-20180822173158-c12b1e7919c1
 # Source repo	: https://github.com/containerd/console
 # Tested on	: RHEL 8.3
+# Language      : GO
+# Travis-Check  : False 
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
