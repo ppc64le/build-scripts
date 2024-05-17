@@ -22,68 +22,45 @@ PACKAGE_NAME=pytest-aiohttp
 PACKAGE_VERSION=${1:-v1.0.5}
 PACKAGE_URL=https://github.com/aio-libs/pytest-aiohttp
 
-yum install -y git python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo
-pip3 install pytest tox
+yum install -y git gcc gcc-c++ make wget sudo
+
+#installation of python3.10
+yum install -y gcc openssl-devel bzip2-devel libffi-devel wget xz zlib-devel
+wget https://www.python.org/ftp/python/3.10.0/Python-3.10.0.tar.xz
+tar xf Python-3.10.0.tar.xz
+cd Python-3.10.0
+./configure --prefix=/usr/local --enable-optimizations
+make -j4
+make install
+python3.10 --version
+cd ..
+
+pip3 install pytest tox aiohttp pytest-asyncio
 PATH=$PATH:/usr/local/bin/
 
 
 # Clone the repository
 git clone $PACKAGE_URL $PACKAGE_NAME
-
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-#install dependencies from requirements.txt
-
-REQUIREMENTS_PRESENT=(`find . -print | grep -i requirements.txt`)
-
-for i in "${REQUIREMENTS_PRESENT[@]}"; do
-        echo "Installing using pip from file:"
-        echo $i
-        pip3  install -r $i
-done
-
-#check if setup.py file is present
-if [ -f "setup.py" ];then
-        if ! python3 setup.py install ; then
-        echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
-        exit 1
-        fi
-        echo "setup.py file exists"
-else
-        echo "setup.py not present"
+if !(python3 setup.py install) ; then
+    echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
+    exit 1
 fi
 
-
-#check if tox file is present
-if [ -f "tox.ini" ];then
-        echo "tox.ini file exists"
-        if ! (tox -e py3) ; then
-        echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
-        exit 2
-        else
-        echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-        exit 0
-        fi
+# Run test cases
+if !(pytest); then
+    echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
+    exit 2
 else
-        echo "tox.ini not present"
-        if ! pytest ; then
-        echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
-        exit 2
-        else
-        echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-        exit 0
-        fi
-
+    echo "------------------$PACKAGE_NAME:build_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Build_and_Test_Success"
+    exit 0
 fi
 
