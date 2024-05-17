@@ -28,14 +28,11 @@ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
 
 # Install go
-GO_VERSION=${GO_VERSION:-1.20.6}
-wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
-rm -rf /usr/local/go
-tar -C /usr/local -xzf go${GO_VERSION}.linux-ppc64le.tar.gz
+wget https://go.dev/dl/go1.21.6.linux-ppc64le.tar.gz
+tar -C /usr/local -xf go1.21.6.linux-ppc64le.tar.gz
 export GOROOT=/usr/local/go
-export GOPATH=$HOME/go
-export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:/usr/local/bin
-go version
+export GOPATH=$HOME
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
 #install maven
 wget https://archive.apache.org/dist/maven/maven-3/3.8.7/binaries/apache-maven-3.8.7-bin.tar.gztar -zxf apache-maven-3.8.1-bin.tar.gz
