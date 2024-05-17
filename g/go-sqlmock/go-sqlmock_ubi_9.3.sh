@@ -1,10 +1,10 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package		: go-sqlmock
-# Version		: v1.5.2
+# Package       : go-sqlmock
+# Version       : v1.5.2
 # Source repo	: https://github.com/DATA-DOG/go-sqlmock.git
-# Tested on		: UBI 9.3
+# Tested on     : UBI 9.3
 # Language      : GO
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
