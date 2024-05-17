@@ -22,8 +22,20 @@ PACKAGE_NAME=uritools
 PACKAGE_VERSION=${1:-v4.0.2}
 PACKAGE_URL=https://github.com/tkem/uritools/
 
-yum install -y git python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo
-pip3 install pytest tox
+yum install -y git gcc gcc-c++ make wget sudo sqlite-devel.ppc64le
+
+#installation of python3.10
+yum install -y openssl-devel bzip2-devel libffi-devel wget xz zlib-devel
+wget https://www.python.org/ftp/python/3.10.0/Python-3.10.0.tar.xz
+tar xf Python-3.10.0.tar.xz
+cd Python-3.10.0
+./configure --prefix=/usr/local --enable-optimizations
+make -j4
+make install
+python3.10 --version
+cd ..
+
+pip3 install pytest tox coverage
 PATH=$PATH:/usr/local/bin/
 
 
