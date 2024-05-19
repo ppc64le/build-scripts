@@ -22,7 +22,7 @@
 
 PACKAGE_NAME=porta
 PACKAGE_VERSION=master
-PACKAGE_BRANCH=master
+PACKAGE_BRANCH=3scale-2.14.1-GA
 PACKAGE_URL=https://github.com/3scale/porta.git
 
 # clone branch/release passed as argument, if none, use last stable release
