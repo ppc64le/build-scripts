@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package	    : 3scale-operator
-# Version	    : master
+# Version	    : 3scale-2.14.1-GA
 # Source repo	: https://github.com/3scale/3scale-operator
 # Tested on	    : UBI:9.3
 # Language      : Go
@@ -19,9 +19,9 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=3scale-operator
-PACKAGE_VERSION=master
+PACKAGE_VERSION=3scale-2.14.1-GA
 PACKAGE_URL=https://github.com/3scale/3scale-operator
-PACKAGE_BRANCH=master
+PACKAGE_BRANCH=3scale-2.14.1-GA
 
 #Install the required dependencies
 yum install git gcc make wget tar zip -y
