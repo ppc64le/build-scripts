@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: infinispan-operator
@@ -16,7 +17,7 @@
 #             contact "Maintainer" of this script.
 # run as root user
 # ----------------------------------------------------------------------------
-#!/bin/bash
+#
 
 PACKAGE_NAME=infinispan-operator
 PACKAGE_URL=https://github.com/infinispan/infinispan-operator
