@@ -19,15 +19,13 @@
 #!/bin/bash
 
 PACKAGE_NAME=infinispan-operator
-PACKAGE_VERSION=2.4.1.Final
 PACKAGE_URL=https://github.com/infinispan/infinispan-operator
-PACKAGE_BRANCH=2.4.1.Final
+PACKAGE_VERSION=2.4.1.Final
 
 #Install the required dependencies
 yum install git gcc make wget tar zip -y
 
 GO_VERSION=1.21.6
-
 # Install Go and setup working directory
 wget https://go.dev/dl/go$GO_VERSION.linux-ppc64le.tar.gz
 tar -C /bin -xf go$GO_VERSION.linux-ppc64le.tar.gz
@@ -35,7 +33,6 @@ tar -C /bin -xf go$GO_VERSION.linux-ppc64le.tar.gz
 export PATH=$PATH:/bin/go/bin
 export GOPATH=/home/go
 mkdir -p $GOPATH/src && cd $GOPATH/src
-
 
 # Install operator-sdk
 wget https://github.com/operator-framework/operator-sdk/releases/download/v1.24.1/operator-sdk_linux_ppc64le
@@ -46,7 +43,6 @@ operator-sdk version
 #Clone the repository
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
-PACKAGE_VERSION=2.4.1.Final
 git checkout $PACKAGE_VERSION
 
 # Increase timeout to resolve golangcli-lint timeout error
@@ -56,13 +52,13 @@ go mod vendor
 if ! make lint; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
-	exit 1
+	exit 2
 else
 
 if ! make test; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
-	exit 1
+	exit 2
 else	
 	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
