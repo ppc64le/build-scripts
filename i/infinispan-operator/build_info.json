@@ -1,5 +1,5 @@
 {
-    "maintainer": "Shubham.Bhagwat@ibm.com",
+    "maintainer": "shubham-bhagwat0",
     "package_name" : "infinispan-operator",
     "github_url": "https://github.com/infinispan/infinispan-operator",
     "version": "2.4.1.Final",
