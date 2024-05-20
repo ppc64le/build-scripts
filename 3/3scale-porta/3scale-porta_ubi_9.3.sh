@@ -1,9 +1,8 @@
 #!/bin/bash
-
 # ---------------------------------------------------------------------
 #
 # Package       : 3scale/porta
-# Version       : main
+# Version       : 3scale-2.14.1-GA
 # Source repo   : https://github.com/3scale/porta.git
 # Tested on     : UBI:9.3
 # Language      : Ruby
@@ -19,55 +18,30 @@
 #
 # ---------------------------------------------------------------------
 
-
 PACKAGE_NAME=porta
-PACKAGE_VERSION=master
-PACKAGE_BRANCH=3scale-2.14.1-GA
+PACKAGE_VERSION=3scale-2.14.1-GA
 PACKAGE_URL=https://github.com/3scale/porta.git
 
-# clone branch/release passed as argument, if none, use last stable release
-
-#install git and wget
-yum install -y git wget
-
-
-#Check if package exists
-if [ -d "$PACKAGE_NAME" ] ; then
-  rm -rf $PACKAGE_NAME
-  echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"
-fi
-
-if ! git clone $PACKAGE_URL -b $PACKAGE_BRANCH ; then
-    echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Clone Failure"
-    exit 1
-fi
-
-echo "BRANCH_NAME = $PACKAGE_BRANCH"
-
-cd $PACKAGE_NAME
-
-
 #Install required prerequisites
-yum install -y gcc gcc-c++ make automake autoconf curl-devel openssl-devel zlib-devel httpd-devel apr-devel apr-util-devel sqlite-devel bzip2 perl
+yum install -y git wget gcc gcc-c++ make automake autoconf curl-devel openssl-devel zlib-devel httpd-devel apr-devel apr-util-devel sqlite-devel bzip2 perl libxml2 zlib-devel xz patch 
 
+git clone $PACKAGE_URL -b $PACKAGE_VERSION
+echo "BRANCH_NAME = $PACKAGE_VERSION"
+cd $PACKAGE_NAME
 
 #To enable yum-config-manager
 yum install -y yum-utils
-
 #Adding repo to install flex, bison and readline
 yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
 yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream//ppc64le/os
 yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os
 curl -o /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
-
 yum install -y flex flex-devel bison readline-devel
 
 #Install Ruby Using Rbenv
 #Download and run the shell script used to install Rbenv:
 curl -fsSL https://github.com/rbenv/rbenv-installer/raw/HEAD/bin/rbenv-installer | bash
-
 #need to add $HOME/.rbenv/bin to our PATH environment variable to start using Rbenv for bash shell.
 echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
 echo 'eval "$(rbenv init -)"' >> ~/.bashrc
@@ -76,16 +50,8 @@ export PATH="$HOME/.rbenv/bin:$PATH"
 
 #ruby install using rbenv
 rbenv install 2.7.6
-
-#Set the newly installed version of Ruby as the global version:
 rbenv global 2.7.6
-
 export PATH="$HOME/.rbenv/shims:$PATH"
-
-
-# Install nokogiri
-yum install -y libxml2
-yum install -y zlib-devel xz patch
 gem install nokogiri -v 1.15.6
 
 # Install nodeJs
