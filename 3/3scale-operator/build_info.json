@@ -1,5 +1,5 @@
 {
-    "maintainer": "Shubham.Bhagwat@ibm.com",
+    "maintainer": "shubham-bhagwat0",
     "package_name": "3scale-operator",
     "github_url": "https://github.com/3scale/3scale-operator",
     "version": "3scale-2.14.1-GA",
