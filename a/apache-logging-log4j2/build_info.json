@@ -1,15 +1,15 @@
 {
     "maintainer":"vinodk99",
-    "package_name" : "logging-log4j2",
+    "package_name" : "apache-logging-log4j2",
     "github_url": "https://github.com/apache/logging-log4j2",
-    "version": "rel/3.0.0-alpha1",
+    "version": "rel/2.23.1",
     "default_branch": "2.x",
-    "package_dir": "l/logging-log4j2",
-    "build_script": "logging-log4j2_ubi_8.7.sh",
+    "package_dir": "a/apache-logging-log4j2",
+    "build_script": "logging-log4j2_ubi_9.3.sh",
     "validate_build_script": "true",
     "use_non_root_user": "false",
     "docker_build": false,
     "rel/*.*.*,rel/*.*.*-*" : {
-       "build_script" : "logging-log4j2_ubi_8.7.sh"
+       "build_script" : "logging-log4j2_ubi_9.3.sh"
     }
 }
