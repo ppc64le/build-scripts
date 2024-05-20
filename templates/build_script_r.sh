@@ -53,6 +53,8 @@ if ! R -e "install.packages('$PACKAGE_NAME', dependencies = TRUE, repos = 'http:
     exit 1
 fi
 
+#Note: vignettes are disabled
+#Refer to https://r-pkgs.org/vignettes.html
 
 if ! R CMD build $PACKAGE_NAME --no-build-vignettes; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
