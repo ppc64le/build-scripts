@@ -12,4 +12,5 @@
     "use_non_root_user": false
     "*-*.*.*-*": {
         "build_script": "3scale-operator_ubi_9.3.sh"
+    }
 }
