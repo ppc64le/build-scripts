@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------
 #
 # Package       : 3scale/toolbox
-# Version       : 2.14.1
+# Version       : 3scale-2.14.1-GA
 # Source repo   : https://github.com/3scale/3scale_toolbox
 # Tested on     : UBI:9.3
 # Language      : Ruby
@@ -17,43 +17,21 @@
 #             contact "Maintainer" of this script.
 #
 # ---------------------------------------------------------------------
- 
- 
+
 PACKAGE_NAME=3scale_toolbox
-PACKAGE_VERSION=${1:-v2.14.1}
-PACKAGE_BRANCH=main
+PACKAGE_VERSION=3scale-2.14.1-GA
 PACKAGE_URL=https://github.com/3scale/3scale_toolbox.git
- 
-# clone branch/release passed as argument, if none, use last stable release
- 
+
 #install git and wget
-yum install -y git wget
- 
- 
-#Check if package exists
-if [ -d "$PACKAGE_NAME" ] ; then
-  rm -rf $PACKAGE_NAME
-  echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing package if any"
-fi
- 
-if ! git clone $PACKAGE_URL -b $PACKAGE_BRANCH ; then
-    echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
-    exit 1
-fi
- 
-echo "BRANCH_NAME = $PACKAGE_BRANCH"
- 
+yum install -y git wget gcc gcc-c++ make automake autoconf curl-devel openssl-devel zlib-devel httpd-devel apr-devel apr-util-devel sqlite-devel perl-FindBin
+
+git clone $PACKAGE_URL -b $PACKAGE_VERSION
+echo "BRANCH_NAME = $PACKAGE_VERSION"
 cd $PACKAGE_NAME
- 
-#Install required prerequisites
-yum install -y gcc gcc-c++ make automake autoconf curl-devel openssl-devel zlib-devel httpd-devel apr-devel apr-util-devel sqlite-devel perl-FindBin
- 
- 
+
 #To enable yum-config-manager
 yum install -y yum-utils
- 
+
 #Adding repo to install flex, bison and readline
 yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
 yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream//ppc64le/os
@@ -61,43 +39,37 @@ yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/p
 curl -o /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 
- 
 yum install -y flex flex-devel bison readline-devel
- 
+
 #Install Ruby Using Rbenv
 #Download and run the shell script used to install Rbenv:
 curl -fsSL https://github.com/rbenv/rbenv-installer/raw/HEAD/bin/rbenv-installer | bash
- 
+
 #need to add $HOME/.rbenv/bin to our PATH environment variable to start using Rbenv for bash shell.
- 
- 
 echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
 echo 'eval "$(rbenv init -)"' >> ~/.bashrc
 source ~/.bashrc
 export PATH="$HOME/.rbenv/bin:$PATH"
- 
+
 #ruby install using rbenv
 rbenv install 3.0.0
- 
+
 #Set the newly installed version of Ruby as the global version:
 rbenv global 3.0.0
- 
 export PATH="$HOME/.rbenv/shims:$PATH"
- 
- 
+
 # Install nokogiri
 yum install -y libxml2
 yum install -y zlib-devel xz patch
 gem install nokogiri --platform=ruby
- 
+
 #install 3scale/3scale_toolbox
 gem install 3scale_toolbox
 gem install rails
 bundle install
 gem install racc
- 
-# Rake install
 
+# Rake install
 if ! bundle exec rake install; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
@@ -110,24 +82,22 @@ else
 fi	
 
 # Running Unit Test
- 
 if ! bundle exec rake spec:unit; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
 	exit 2
-else	
+else
 	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
 	exit 0
-fi	
+fi
+
 # Trigger Integration Tests
 #bundle exec rake spec:integration
 #When we try to create a service. The tenant (admin account) does not have permissions to add more services. 
 #The integration tests create services and then delete them when done. 
 #We can't create new services manually from the dashboard, Since to run Integration test we require paid account on 3scale to create multiple tenant, So we can't run test the Integration test.
- 
- 
 # cleanup
 cd ..
 rm -rf 3scale_toolbox
