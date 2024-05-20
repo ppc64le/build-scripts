@@ -21,14 +21,10 @@
 PACKAGE_NAME=3scale-operator
 PACKAGE_VERSION=3scale-2.14.1-GA
 PACKAGE_URL=https://github.com/3scale/3scale-operator
+GO_VERSION=1.21.8
 
 #Install the required dependencies
 yum install git gcc make wget tar zip -y
-
-git clone $PACKAGE_URL
-GO_VERSION=1.21.8
-cd $PACKAGE_NAME
-git checkout $PACKAGE_VERSION\
 
 # Install Go and setup working directory
 wget https://go.dev/dl/go$GO_VERSION.linux-ppc64le.tar.gz
@@ -38,6 +34,9 @@ export PATH=$PATH:/bin/go/bin
 export GOPATH=/home/go
 mkdir -p $GOPATH/src && cd $GOPATH/src
 
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION\
 
 # Install the dependencies
 if ! make download; then
