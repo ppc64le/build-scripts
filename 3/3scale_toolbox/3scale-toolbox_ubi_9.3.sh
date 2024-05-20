@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=3scale_toolbox
 PACKAGE_VERSION=3scale-2.14.1-GA
-PACKAGE_URL=https://github.com/3scale/3scale_toolbox.git
+PACKAGE_URL=https://github.com/3scale/3scale_toolbox
 
 #install git and wget
 yum install -y git wget gcc gcc-c++ make automake autoconf curl-devel openssl-devel zlib-devel httpd-devel apr-devel apr-util-devel sqlite-devel perl-FindBin
