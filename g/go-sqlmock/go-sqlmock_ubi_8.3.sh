@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : go-sqlmock
-# Version       : v1.5.2
+# Version       : v1.5.0
 # Source repo	: https://github.com/DATA-DOG/go-sqlmock.git
 # Tested on     : UBI 8.3
 # Language      : GO
