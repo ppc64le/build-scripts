@@ -1,19 +1,23 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: data-dog/go-sqlmock
-# Version	: v1.5.0
-# Source repo	: https://github.com/data-dog/go-sqlmock
-# Tested on	: RHEL 8.3
+# Package       : go-sqlmock
+# Version       : v1.5.0
+# Source repo	: https://github.com/DATA-DOG/go-sqlmock.git
+# Tested on     : UBI 8.3
+# Language      : GO
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
+# Maintainer	: Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
 #
-# Disclaimer: This script has been tested in root mode on given
-# ==========  platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of the
-#             package and/or distribution. In such case, please
-#             contact "Maintainer" of this script.
+# Disclaimer    : This script has been tested in root mode on given
+# ==========      platform using the mentioned version of the package.
+#                 It may not work as expected with newer versions of the
+#                 package and/or distribution. In such case, please
+#                 contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
+
 
 PACKAGE_NAME=data-dog/go-sqlmock
 PACKAGE_VERSION=v1.5.0
