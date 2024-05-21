@@ -22,7 +22,6 @@ PACKAGE_NAME=flowable-engine
 PACKAGE_VERSION=${1:-flowable-7.0.1}
 PACKAGE_URL=https://github.com/flowable/flowable-engine
 
-yum -y update
 yum install -y git make wget gcc-c++ java-17-openjdk java-17-openjdk-devel java-17-openjdk-headless
 
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
@@ -37,7 +36,6 @@ ln -s /usr/local/apache-maven-3.8.7/bin/mvn /usr/bin/mvn
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-
 
 if ! mvn clean install ; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
