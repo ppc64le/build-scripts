@@ -5,12 +5,12 @@
   "version": "v3.0.5",
   "default_branch": "main",
   "package_dir": "j/js-cookie",
-  "build_script": "js-cookie_ubi_8_7.sh",
+  "build_script": "js-cookie_ubi_9_3.sh",
   "docker_build": true,
   "validate_build_script": true,
-  "use_non_root_user": true,
-  "v3.0.5": {
-    "dir": "ubi8_7",
-    "build_script": "js-cookie_ubi_8_7.sh"
+  "use_non_root_user": false,
+  "v3\\.0\\.[0145]": {
+    "dir": "ubi9_3",
+    "build_script": "js-cookie_ubi_9_3.sh"
   }
 }
