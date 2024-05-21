@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi9/ubi:9.3
+FROM registry.access.redhat.com/ubi9:9.3
 
 MAINTAINER "Stuti Wali <Stuti.Wali@ibm.com>"
 
