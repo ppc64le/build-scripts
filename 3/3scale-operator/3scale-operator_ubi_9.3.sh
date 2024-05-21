@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=3scale-operator
-PACKAGE_VERSION=3scale-2.14.1-GA
+PACKAGE_VERSION=${1:-3scale-2.14.1-GA}
 PACKAGE_URL=https://github.com/3scale/3scale-operator
 GO_VERSION=1.21.8
 
