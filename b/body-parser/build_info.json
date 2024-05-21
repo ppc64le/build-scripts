@@ -5,11 +5,11 @@
   "version": "1.20.2",
   "default_branch": "master",
   "package_dir": "b/body-parser",
-  "build_script": "body-parser_ubi_8.7.sh",
+  "build_script": "body-parser_ubi_9.3.sh",
   "validate_build_script": "true",
   "use_non_root_user": "false",
   "docker_build": false,
-  "1.20.*": {
-    "build_script": "body-parser_ubi_8.7.sh"
+  "*.*.*": {
+    "build_script": "body-parser_ubi_9.3.sh"
   }
 }

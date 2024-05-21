@@ -1,9 +1,11 @@
 # -----------------------------------------------------------------------------
 #
-# Package	: github.com/joho/godotenv
-# Version	: v1.3.0
-# Source repo	: https://github.com/joho/godotenv
+# Package	: github.com/containerd/console
+# Version	: v0.0.0-20180822173158-c12b1e7919c1
+# Source repo	: https://github.com/containerd/console
 # Tested on	: RHEL 8.3
+# Language      : GO
+# Travis-Check  : False 
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
@@ -15,9 +17,9 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=github.com/joho/godotenv
-PACKAGE_VERSION=v1.3.0
-PACKAGE_URL=https://github.com/joho/godotenv
+PACKAGE_NAME=github.com/containerd/console
+PACKAGE_VERSION=v0.0.0-20180822173158-c12b1e7919c1
+PACKAGE_URL=https://github.com/containerd/console
 
 yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git jq wget gcc-c++
 

@@ -2,14 +2,14 @@
   "maintainer": "vinodk99",
   "package_name": "apache-beam",
   "github_url": "https://github.com/apache/beam",
-  "version": "v2.51.0",
+  "version": "v2.56.0",
   "default_branch": "master",
   "package_dir": "a/apache-beam",
-  "build_script": "apache-beam_ubi_8.7.sh",
+  "build_script": "apache-beam_ubi_9.3.sh",
   "validate_build_script": "true",
   "use_non_root_user": "false",
   "docker_build": false,
-  "v2.*.*": {
-    "build_script": "apache-beam_ubi_8.7.sh"
+  "v*.*.*,v*.*.*-*": {
+    "build_script": "apache-beam_ubi_9.3.sh"
   }
 }
