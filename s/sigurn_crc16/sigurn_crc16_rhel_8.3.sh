@@ -1,9 +1,12 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: sigurn/crc16
 # Version	: da416fad5162ac0f3338ba24dccdb26e4da22485
 # Source repo	: https://github.com/sigurn/crc16
 # Tested on	: RHEL 8.3
+# Language       : GO
+# Travis-Check   : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
