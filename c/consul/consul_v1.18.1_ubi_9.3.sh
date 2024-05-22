@@ -4,7 +4,7 @@
 # Package          : consul
 # Version          : v1.18.1
 # Source repo      : https://github.com/hashicorp/consul
-# Tested on	       : UBI 9.3
+# Tested on        : UBI: 9.3
 # Language         : Go
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
@@ -38,10 +38,7 @@ go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.45.2
 ulimit -n 2048
 umask 0022
 
-export CWD=`pwd`
 export PATH=$GOPATH/bin:$PATH
-
-cd $wrkdir
 
 git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME

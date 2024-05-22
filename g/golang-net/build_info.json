@@ -1,17 +1,17 @@
 {
-    "maintainer":"Vinod.K1@ibm.com",
-    "package_name" : "golang-net", 
-    "github_url": "https://github.com/golang/net",
-    "version": "v0.20.0",
-    "default_branch": "master",
-    "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-    "package_dir": "g/golang-net",
-    "build_script": "golang-net_ubi_8.7.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build": "true",
-    "v0.*.*" : {
-       "dir": "0.20.0_ubi8",
-       "build_script": "golang-net_ubi_8.7.sh"
-    }
+  "maintainer": "vinodk99",
+  "package_name": "golang-net",
+  "github_url": "https://github.com/golang/net",
+  "version": "v0.20.0",
+  "default_branch": "master",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "package_dir": "g/golang-net",
+  "build_script": "golang-net_ubi_8.7.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "true",
+  "v0.*.*": {
+    "dir": "0.20.0_ubi8",
+    "build_script": "golang-net_ubi_8.7.sh"
+  }
 }

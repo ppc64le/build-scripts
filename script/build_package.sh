@@ -1,7 +1,8 @@
  #!/bin/bash -e
 
 sudo apt update -y && sudo apt-get install file -y
-pip3 install --upgrade requests
+#pip3 install --upgrade requests
+pip3 install --force-reinstall -v "requests==2.31.0"
 pip3 install --upgrade docker
 
 echo "Running build script execution in background for "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" " 
@@ -18,7 +19,7 @@ docker_build_non_root() {
 }
 
 #Below conditions are used to select the base image based on the 2 flags, tested_on and non_root_build. A docker_build_non_root function is called when non root build is true.
-if [[ "$TESTED_ON" == UBI:9* ]];
+if [[ "$TESTED_ON" == UBI:9*  || "$TESTED_ON" == UBI9* ]];
 then
     docker pull registry.access.redhat.com/ubi9/ubi:9.3
     docker_image="registry.access.redhat.com/ubi9/ubi:9.3"

@@ -1,0 +1,45 @@
+name: New Currency Request
+title: "[Currency_Req]: "
+description: "Request to add currency for any new package with specific version for Linux on Power"
+labels: "new currency"
+projects: "ppc64le/1"
+assignees: "ICH"
+body:
+  - type: markdown
+    attributes:
+      value: >
+        Please complete the following fields to request currency for new package.
+  - type: input
+    id: pkg_name
+    attributes:
+      label: Package Name
+      description: >-
+        The package name you want to be supported for Linux on Power e.g. redis, elasticsearch
+    validations:
+      required: true
+  - type: input
+    id: version 
+    attributes:
+      label: Package Version
+      description: Specific version of package want to be supported for Linux on Power
+    validations:
+      required: false
+  - type: input
+    id: github_repo
+    attributes:
+      label: GitHub Repo url
+      description: The GitHub source url of package
+    validations:
+      required: true
+  - type: dropdown
+    id: desired_packaging
+    attributes:
+      label: Desired packaging 
+      options:
+        - build script only
+        - container only
+        - build script and container
+      description: |
+        Please provide details on desired packaging. You need build script or container for package.
+    validations:
+      required: true

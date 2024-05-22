@@ -1,5 +1,5 @@
 {
-  "maintainer": "Srividya.Chittiboina@ibm.com",
+  "maintainer": "csrividya",
   "package_name": "apache-directory-ldap-api",
   "github_url": "https://github.com/apache/directory-ldap-api",
   "version": "2.1.2",

@@ -1,17 +1,21 @@
 {
-  "maintainer": "Muskaan.Sheik@ibm.com",
+  "maintainer": "mohitp333",
   "package_name": "antlr4",
   "github_url": "https://github.com/antlr/antlr4",
-  "version": "v4.11.1",
+  "version": "4.13.1",
   "default_branch": "master",
   "package_dir": "a/antlr4/",
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-  "build_script": "antlr4_v4.11.1_ubi_8.5.sh",
+  "build_script": "antlr4_4.13.1_ubi_9.3.sh",
   "docker_build": true,
   "validate_build_script": true,
   "use_non_root_user": false,
   "v4.11.*": {
-    "dir": "ubi-8.5",
-    "build_script": "antlr4_v4.11.1_ubi_8.5.sh"
+    "dir": "4.11.1_ubi8.7",
+    "build_script": "antlr4_v4.11.1_ubi_8.7.sh"
+  },
+  "4.13.*": {
+    "dir": "4.13.1_ubi9",
+    "build_script": "antlr4_4.13.1_ubi_9.3.sh"
   }
 }

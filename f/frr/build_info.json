@@ -1,17 +1,21 @@
 {
-    "maintainer": "Stuti.Wali@ibm.com",
-    "package_name": "frr",
-    "github_url": "https://github.com/FRRouting/frr",
-    "version": "frr-9.0.1",
-    "default_branch": "master",
-    "package_dir": "f/frr",
-    "build_script": "frr_ubi_8_7.sh",
-    "docker_build": true,
-    "validate_build_script": true,
-    "use_non_root_user": false,
-
-    "frr-9.0.1": {
-        "dir": "ubi8_7",
-        "build_script": "frr_ubi_8_7.sh"
-     } 
+  "maintainer": "stutiibm",
+  "package_name": "frr",
+  "github_url": "https://github.com/FRRouting/frr",
+  "version": "frr-10.0",
+  "default_branch": "master",
+  "package_dir": "f/frr",
+  "build_script": "frr_ubi_9_3.sh",
+  "docker_build": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "frr-10.0": {
+    "dir": "ubi9_3",
+    "build_script": "frr_ubi_9_3.sh"
+  },
+  "frr-9.*": {
+    "dir": "ubi9_3",
+    "build_script": "frr_ubi_9_3.sh"
+  } 
 }
+

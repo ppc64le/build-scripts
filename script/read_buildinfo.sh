@@ -91,7 +91,7 @@ if [ -f $stripped_build_script ]; then
       # Check if the line starts with '# Tested on'
       if [[ "$line" == "# Tested on"* ]]; then
           # Extract the value after the first colon
-          tested_on=$(echo "$line" | cut -d ':' -f 2- | tr -d '[:space:]')
+          tested_on=$(echo "$line" | cut -d ':' -f 2- | tr -d '[:space:]' | tr '[:lower:]' '[:upper:]')
           break
       fi
   done < "$stripped_build_script"  # Use input redirection from the file

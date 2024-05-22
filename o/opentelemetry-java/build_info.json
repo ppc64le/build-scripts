@@ -1,14 +1,20 @@
 {
-  "maintainer": "Stuti.Wali@ibm.com",
+  "maintainer": "stutiibm",
   "package_name": "opentelemetry-java",
   "github_url": "https://github.com/open-telemetry/opentelemetry-java",
+  "version": "v1.38.0",
   "default_branch": "main",
-  "version": "v1.21.0",
   "package_dir": "o/opentelemetry-java",
-  "build_script": "opentelemetry-java_ubi_8.5.sh",
+  "build_script": "opentelemetry-java_ubi_9_3.sh",
+  "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
+  "v1.38.0": {
+    "build_script": "opentelemetry-java_ubi_9_3.sh"
+  },
   "v1.21.0": {
     "build_script": "opentelemetry-java_ubi_8.5.sh"
   }
 }
+
+

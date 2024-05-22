@@ -1,5 +1,5 @@
 {
-  "maintainer": "nkalband@us.ibm.com",
+  "maintainer": "nikhil-kalbande",
   "package_name": "jackson-annotations",
   "github_url": "https://github.com/FasterXML/jackson-annotations",
   "version": "jackson-annotations-2.14.1",
