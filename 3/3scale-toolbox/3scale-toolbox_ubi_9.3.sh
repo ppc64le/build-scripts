@@ -25,9 +25,11 @@ PACKAGE_URL=https://github.com/3scale/3scale_toolbox
 #install git and wget
 yum install -y git wget gcc gcc-c++ make automake autoconf curl-devel openssl-devel zlib-devel httpd-devel apr-devel apr-util-devel sqlite-devel perl-FindBin
 
-git clone $PACKAGE_URL -b $PACKAGE_VERSION
-echo "BRANCH_NAME = $PACKAGE_VERSION"
+#Clone the repository
+git clone $PACKAGE_URL
 cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
+
 
 #To enable yum-config-manager
 yum install -y yum-utils
