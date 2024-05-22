@@ -50,6 +50,7 @@ cd ..
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+wget https://raw.githubusercontent.com/vinodk99/build-scripts/engine.io-client6.5.3/e/engine.io-client/engine.io-client_6.5.3.patch
 git apply https://raw.githubusercontent.com/vinodk99/build-scripts/engine.io-client6.5.3/e/engine.io-client/engine.io-client_6.5.3.patch
 
 npm install --save file:../zuul-ngrok
