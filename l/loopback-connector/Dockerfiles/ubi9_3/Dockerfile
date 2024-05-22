@@ -1,8 +1,8 @@
-FROM registry.access.redhat.com/ubi8:8.7
+FROM registry.access.redhat.com/ubi9:9.3
 
 MAINTAINER "Stuti Wali <Stuti.Wali@ibm.com>"
 
-ARG PACKAGE_VERSION=v6.1.0
+ARG PACKAGE_VERSION=v6.1.3
 ARG NODE_VERSION=12.19.1
 
 ENV SOURCE_DIR=$PWD
@@ -22,4 +22,3 @@ RUN cd $SOURCE_DIR && \
     npm install
 
 CMD ["bash"]
-

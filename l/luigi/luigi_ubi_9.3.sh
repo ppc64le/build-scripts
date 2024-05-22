@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : MACS
-# Version          : v3.0.0
-# Source repo      : https://github.com/macs3-project/MACS/
-# Tested on        : UBI 8.7
-# Language         : Cython, Python
+# Package          : luigi
+# Version          : 3.5.0
+# Source repo      : https://github.com/spotify/luigi.git
+# Tested on        : UBI:9.3
+# Language         : Python,Javascript
 # Travis-Check     : True
-# Script License   : GNU General Public License v3.0
-# Maintainer       : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
+# Script License   : Apache License, Version 2 or later
+# Maintainer       : Vinod K <Vinod.K1@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -17,44 +17,38 @@
 #                    contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-set -e
+PACKAGE_NAME=luigi
+PACKAGE_VERSION=${1:-3.5.0}
+PACKAGE_URL=https://github.com/spotify/luigi.git
 
-PACKAGE_NAME=MACS
-PACKAGE_VERSION=${1:-v3.0.0}
-PACKAGE_URL=https://github.com/macs3-project/MACS/
-
-wrkdir=`pwd`
+HOME_DIR=${PWD}
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
-yum install -y wget gcc git gcc-c++ gcc-gfortran.ppc64le openblas.ppc64le cmake procps-ng diffutils bc
+yum install -y python3.11 python3.11-devel python3.11-pip git  gcc-c++ gcc wget bzip2 bzip2-devel openssl openssl-devel make
 
-wget https://repo.anaconda.com/miniconda/Miniconda3-py310_23.10.0-1-Linux-ppc64le.sh -O miniconda.sh
-bash miniconda.sh -b -p $HOME/miniconda
-export PATH="$HOME/miniconda/bin:$PATH"
-python3 -m pip install -U pip
+#install rustc
+curl https://sh.rustup.rs -sSf | sh -s -- -y
+PATH="$HOME/.cargo/bin:$PATH"
+source $HOME/.cargo/env
+rustc --version
 
+cd $HOME_DIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-git submodule update --init --recursive
+python3.11 -m venv ~/py3.11
+source ~/py3.11/bin/activate
+python3 -m pip install --upgrade pip 'tox<4.0'
 
-conda install openblas cython numpy scipy -y
-conda install conda-forge::meson-python -y
-conda install conda-forge::pybind11 -y
-conda install conda-forge::pythran -y
-conda install conda-forge::cython -y
-yum install zlib-devel -y
-python3 -m pip install --upgrade --progress-bar off pytest
-
-if ! python3 -m pip install --upgrade-strategy only-if-needed --no-build-isolation --progress-bar off . ; then
+if ! pip3 install deps ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-if ! pytest --runxfail && cd test && ./cmdlinetest-nohmmratac macs3 ; then
+if ! tox -e py311 ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
