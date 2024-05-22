@@ -83,7 +83,7 @@ if ! ./gradlew clean build -PjdkVersion=11 --no-daemon --refresh-dependencies -x
     echo "$PACKAGE_URL $PACKAGE_NAME"
     exit 1
 fi
-if ! ./gradlew test -PjdkVersion=11 --no-daemon --refresh-dependencies --exclude-task poi-integration:test ;then
+if ! ./gradlew test -PjdkVersion=11 --no-daemon --refresh-dependencies ;then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     exit 2
