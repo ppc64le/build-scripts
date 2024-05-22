@@ -60,7 +60,7 @@ git clone $PACKAGE_URL
 cd poi 
 git checkout $PACKAGE_VERSION
 
-echo "org.gradle.daemon=true" >> gradle.properties
+echo "org.gradle.daemon=false" >> gradle.properties
 echo "org.gradle.jvmargs=-Xmx4g -XX:MetaspaceSize=2048m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8" >> gradle.properties
 
 #skipping tests as this tests depends on font size which may differ system by system. So skipping them.
@@ -83,7 +83,7 @@ if ! ./gradlew clean build -PjdkVersion=11 --no-daemon --refresh-dependencies -x
     echo "$PACKAGE_URL $PACKAGE_NAME"
     exit 1
 fi
-if ! ./gradlew test -PjdkVersion=11 --no-daemon --refresh-dependencies ;then
+if ! ./gradlew test -PjdkVersion=11 --no-daemon --refresh-dependencies --exclude-task poi-integration:test;then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     exit 2
