@@ -3,7 +3,7 @@
 #
 # Package	: infinispan-operator
 # Version	: 2.4.1.Final
-# Source repo	: https://github.com/infinispan/infinispan-operator
+# Source repo	: https://github.com/infinispan/infinispan-operator.git
 # Tested on	: UBI:9.3
 # Language      : Go
 # Travis-Check  : True
@@ -47,9 +47,14 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+echo "$PATH"
+echo "$GOPATH"
+echo "$(pwd)"
+echo "$PWD"
+
 # Increase timeout to resolve golangcli-lint timeout error
 go install github.com/golangci/golangci-lint/cmd/golangci-lint@$GOLANGCI_LINT_VERSION
-/src/infinispan-operator/bin/golangci-lint run --enable errorlint --timeout=10m
+bin/golangci-lint run --enable errorlint --timeout=10m
 go mod vendor
 
 if ! make lint; then
