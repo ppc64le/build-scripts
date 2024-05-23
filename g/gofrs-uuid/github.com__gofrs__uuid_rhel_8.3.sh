@@ -1,9 +1,11 @@
 # -----------------------------------------------------------------------------
 #
-# Package	: github.com/digitalocean/godo
-# Version	: v1.6.0
-# Source repo	: https://github.com/digitalocean/godo
+# Package	: github.com/gofrs/uuid
+# Version	: v3.2.0+incompatible
+# Source repo	: https://github.com/gofrs/uuid
 # Tested on	: RHEL 8.3
+# Language      : GO
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
@@ -15,9 +17,9 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=github.com/digitalocean/godo
-PACKAGE_VERSION=v1.6.0
-PACKAGE_URL=https://github.com/digitalocean/godo
+PACKAGE_NAME=github.com/gofrs/uuid
+PACKAGE_VERSION=v3.2.0+incompatible
+PACKAGE_URL=https://github.com/gofrs/uuid
 
 yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git jq wget gcc-c++
 

@@ -3,7 +3,7 @@
 #
 # Package          : tinkerpop
 # Version          : 3.7.2
-# Source repo      : https://github.com/mathjax/MathJax
+# Source repo      : https://github.com/apache/tinkerpop
 # Tested on        : UBI:9.3
 # Language         : Java,C#
 # Travis-Check     : True
@@ -24,7 +24,6 @@ PACKAGE_URL=https://github.com/apache/tinkerpop
 
 OS_NAME=`cat /etc/os-release | grep PRETTY_NAME | cut -d '=' -f2 | tr -d '"'`
 
-yum -y update
 yum install -y git make wget gcc-c++ java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless
 
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
@@ -60,3 +59,4 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
     exit 0
 fi
+

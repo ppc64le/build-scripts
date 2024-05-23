@@ -1,0 +1,12 @@
+{
+   "maintainer": "shubham-garud",
+   "package_name": "hcl",
+   "github_url": "https://github.com/hashicorp/hcl",
+   "version": "v2.20.1",
+   "default_branch": "main",
+   "build_script": "hcl_ubi_9.3.sh",
+   "package_dir": "h/hcl",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}

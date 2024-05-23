@@ -1,10 +1,12 @@
 # -----------------------------------------------------------------------------
 #
-# Package	: github.com/hashicorp/hcl
-# Version	: v1.0.0
-# Source repo	: https://github.com/hashicorp/hcl
+# Package	: github.com/digitalocean/godo
+# Version	: v1.6.0
+# Source repo	: https://github.com/digitalocean/godo
 # Tested on	: RHEL 8.3
 # Script License: Apache License, Version 2 or later
+# Language      : GO
+# Travis-Check  : False
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -15,9 +17,9 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=github.com/hashicorp/hcl
-PACKAGE_VERSION=v1.0.0
-PACKAGE_URL=https://github.com/hashicorp/hcl
+PACKAGE_NAME=github.com/digitalocean/godo
+PACKAGE_VERSION=v1.6.0
+PACKAGE_URL=https://github.com/digitalocean/godo
 
 yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git jq wget gcc-c++
 

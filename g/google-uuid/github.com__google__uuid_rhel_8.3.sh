@@ -1,9 +1,11 @@
 # -----------------------------------------------------------------------------
 #
-# Package	: github.com/go-logr/zapr
-# Version	: v0.1.1
-# Source repo	: https://github.com/go-logr/zapr
+# Package	: github.com/google/uuid
+# Version	: v1.1.4
+# Source repo	: https://github.com/google/uuid
 # Tested on	: RHEL 8.3
+# Language      : GO
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
@@ -15,9 +17,9 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=github.com/go-logr/zapr
-PACKAGE_VERSION=v0.1.1
-PACKAGE_URL=https://github.com/go-logr/zapr
+PACKAGE_NAME=github.com/google/uuid
+PACKAGE_VERSION=v1.1.4
+PACKAGE_URL=https://github.com/google/uuid
 
 yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git jq wget gcc-c++
 

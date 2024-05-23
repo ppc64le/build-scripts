@@ -25,9 +25,13 @@ yum install -y git wget tar openssl-devel freetype fontconfig
 
 #install java
 wget https://github.com/ibmruntimes/semeru11-certified-binaries/releases/download/jdk-11.0.18%2B10_openj9-0.36.1/ibm-semeru-certified-jdk_ppc64le_linux_11.0.18.0.tar.gz
-tar -zxf ibm-semeru-certified-jdk_ppc64le_linux_11.0.18.0.tar.gz
-export JAVA_HOME=$HOME_DIR/jdk-11.0.18+10
-export PATH=$JAVA_HOME/bin:$PATH
+tar -C /usr/local -zxf ibm-semeru-certified-jdk_ppc64le_linux_11.0.18.0.tar.gz
+export JAVA_HOME=/usr/local/jdk-11.0.18+10
+export JAVA11_HOME=/usr/local/jdk-11.0.18+10
+export PATH=$PATH:/usr/local/jdk-11.0.18+10/bin
+ln -sf /usr/local/jdk-11.0.18+10/bin/java /usr/bin
+rm -f ibm-semeru-certified-jdk_ppc64le_linux_11.0.18.0.tar.gz
+
 
 #install maven
 wget https://archive.apache.org/dist/maven/maven-3/3.8.7/binaries/apache-maven-3.8.7-bin.tar.gz
