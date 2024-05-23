@@ -1,10 +1,10 @@
 {
   "maintainer": "vinodk99",
-  "package_name": "tinkerpop",
+  "package_name": "apache-tinkerpop",
   "github_url": "https://github.com/apache/tinkerpop",
   "version": "3.7.2",
   "default_branch": "master",
-  "package_dir": "t/tinkerpop/",
+  "package_dir": "a/apache-tinkerpop/",
   "build_script": "tinkerpop_ubi_9.3.sh",
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
   "docker_build": true,

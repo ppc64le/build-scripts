@@ -1,9 +1,12 @@
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package	: github.com/hashicorp/hcl
 # Version	: v1.0.0
 # Source repo	: https://github.com/hashicorp/hcl
 # Tested on	: RHEL 8.3
+# Language      : GO
+# Travis-Check  : False 
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
