@@ -4,8 +4,9 @@
   "github_url": "https://github.com/airbrake/gobrake",
   "version": "v5.6.1",
   "default_branch": "master",
-  "build_script": "gobrake_ubi_8.7.sh",
+  "build_script": "gobrake_ubi_9.3.sh",
   "package_dir": "g/gobrake",
   "docker_build": false,
-  "validate_build_script": true
+  "validate_build_script": true,
+  "use_non_root_user": false
 }
