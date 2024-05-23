@@ -6,10 +6,11 @@
     "default_branch": "master",
     "package_dir": "c/cyrus-sasl/",
     "build_script": "cyrus-sasl_ubi_9.3.sh",
-    "docker_build": false,
+    "docker_build": true,
     "validate_build_script": true,
     "use_non_root_user": false,
     "cyrus-sasl-2.*.*": {
-      "build_script": "cyrus-sasl_ubi_9.3.sh"
+        "dir": "ubi9.3",
+        "build_script": "cyrus-sasl_ubi_9.3.sh"
     }
 }
