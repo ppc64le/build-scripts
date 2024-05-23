@@ -9,7 +9,7 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": true,
-  "^REL_5_2_(?:[3-9]|[1-9]\\d+)$": {
+  "REL_5_2_*": {
     "build_script": "apache-poi_ubi_9_3.sh"
   }
 }
