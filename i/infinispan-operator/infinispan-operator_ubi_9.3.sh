@@ -54,7 +54,7 @@ echo "$PWD"
 
 # Increase timeout to resolve golangcli-lint timeout error
 go install github.com/golangci/golangci-lint/cmd/golangci-lint@$GOLANGCI_LINT_VERSION
-bin/golangci-lint run --enable errorlint --timeout=10m
+/home/go/bin/golangci-lint run --enable errorlint --timeout=10m
 go mod vendor
 
 if ! make lint; then
