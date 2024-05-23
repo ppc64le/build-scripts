@@ -25,7 +25,7 @@ PACKAGE_VERSION=${1:-release-3.2.18}
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 
-yum install -y curl unzip wget git maven
+yum install -y unzip wget git maven
 yum install -y java-11-openjdk.ppc64le java-11-openjdk-devel.ppc64le
 
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.12.0.7-0.el8_4.ppc64le
