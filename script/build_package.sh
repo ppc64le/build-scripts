@@ -1,7 +1,8 @@
  #!/bin/bash -e
 
 sudo apt update -y && sudo apt-get install file -y
-pip3 install --upgrade requests
+#pip3 install --upgrade requests
+pip3 install --force-reinstall -v "requests==2.31.0"
 pip3 install --upgrade docker
 
 echo "Running build script execution in background for "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" " 
