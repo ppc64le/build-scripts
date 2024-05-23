@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=python-novaclient
-PACKAGE_VERSION=18.6.0
+PACKAGE_VERSION=${1:-18.6.0}
 PACKAGE_URL=https://github.com/openstack/python-novaclient.git
 
 yum install -y git python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo
