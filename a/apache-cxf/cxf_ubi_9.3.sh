@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : cxf
+# Package       : apache-cxf
 # Version       : cxf-4.0.4
 # Source repo   : https://github.com/apache/cxf
 # Tested on     : UBI:9.3
