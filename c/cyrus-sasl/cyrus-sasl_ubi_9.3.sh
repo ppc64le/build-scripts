@@ -22,6 +22,7 @@ PACKAGE_NAME=cyrus-sasl
 PACKAGE_VERSION=${1:-cyrus-sasl-2.1.28}
 PACKAGE_URL=https://github.com/cyrusimap/cyrus-sasl
 
+yum install -y openssl openssl-devel openssl-libs which libtool
 yum install -y gcc gcc-c++ make wget git cmake
 
 git clone $PACKAGE_URL
