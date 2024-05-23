@@ -5,10 +5,10 @@
 # Version       : 3scale-2.14.1-GA
 # Source repo   : https://github.com/3scale/3scale_toolbox
 # Tested on     : UBI:9.3
+# Maintainer    : Shubham Bhagwat <Shubham.Bhagwat@ibm.com>
 # Language      : Ruby
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Shubham Bhagwat <Shubham.Bhagwat@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
