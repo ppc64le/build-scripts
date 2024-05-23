@@ -59,7 +59,7 @@ fi
 sed -i '33d' go/private/platforms.bzl
 sed -i '65d' go/private/platforms.bzl
 
-if !  bazel test //go/... --sandbox_debug ; then
+if !  bazel test //go/... ; then
       echo "------------------$PACKAGE_NAME::Install_and_Test_fails-------------------------"
       echo "$PACKAGE_URL $PACKAGE_NAME"
       echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Fails"
