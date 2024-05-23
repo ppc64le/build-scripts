@@ -56,8 +56,7 @@ if ! bazel build //go:go ; then
        exit 1
 fi
 
-sed -i '33d' go/private/platforms.bzl
-sed -i '65d' go/private/platforms.bzl
+sed -i '33d;65d' go/private/platforms.bzl
 
 if !  bazel test //go/... ; then
       echo "------------------$PACKAGE_NAME::Install_and_Test_fails-------------------------"
