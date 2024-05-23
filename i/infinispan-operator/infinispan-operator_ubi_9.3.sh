@@ -21,7 +21,7 @@
 
 PACKAGE_NAME=infinispan-operator
 PACKAGE_URL=https://github.com/infinispan/infinispan-operator
-PACKAGE_VERSION=${1:-2.4.1.Final}
+PACKAGE_VERSION=2.4.1.Final
 GOLANGCI_LINT_VERSION=v1.53.3
 GO_VERSION=1.21.8
 
@@ -47,8 +47,9 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-# Install golangci-lint and get vendor files
+# Increase timeout to resolve golangcli-lint timeout error
 go install github.com/golangci/golangci-lint/cmd/golangci-lint@$GOLANGCI_LINT_VERSION
+/src/infinispan-operator/bin/golangci-lint run --enable errorlint --timeout=10m
 go mod vendor
 
 if ! make lint; then
