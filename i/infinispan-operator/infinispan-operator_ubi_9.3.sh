@@ -47,9 +47,8 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-# Increase timeout to resolve golangcli-lint timeout error
+# Install golangci-lint and get vendor files
 go install github.com/golangci/golangci-lint/cmd/golangci-lint@$GOLANGCI_LINT_VERSION
-bin/golangci-lint run --enable errorlint --timeout=10m
 go mod vendor
 
 if ! make lint; then
