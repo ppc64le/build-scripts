@@ -25,6 +25,11 @@ PACKAGE_URL=https://github.com/apache/poi
 export PACKAGE_VERSION="REL_5_2_5"
 HOME_DIR=`pwd`
 
+#variables to handle special characters occourance 
+export LC_ALL=C.UTF-8
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
+
 # install tools and dependent packages
 sudo yum install -y wget git fontconfig-devel.ppc64le
 
