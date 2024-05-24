@@ -43,6 +43,7 @@ node -v
 npm -v
 
 # Clone the repository
+cd $HOME_DIR
 git clone $PACKAGE_URL 
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
@@ -50,7 +51,7 @@ npm install -g mocha
 
 
 # Build package
-if !(npm install; npm audit fix --force; npm audit fix); then
+if !(npm install --legacy-peer-deps ; npm audit fix --force; npm audit fix); then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
