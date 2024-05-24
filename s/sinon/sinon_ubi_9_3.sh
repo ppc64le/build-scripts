@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : sinon
-# Version       : v17.0.1
+# Version       : v18.0.0
 # Source repo   : https://github.com/sinonjs/sinon
 # Tested on     : UBI: 9.3
 # Language      : javascript
@@ -23,7 +23,7 @@ set -e
 
 #variables
 PACKAGE_NAME="sinon"
-PACKAGE_VERSION=${1:-"v17.0.1"}
+PACKAGE_VERSION=${1:-"v18.0.0"}
 PACKAGE_URL=https://github.com/sinonjs/sinon
 NODE_VERSION=${NODE_VERSION:-18.20.2}
 HOME_DIR=`pwd`
