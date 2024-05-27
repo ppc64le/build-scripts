@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : lmdb
-# Version       : 4.17.0
+# Version       : LMDB_0.9.31
 # Source repo   : https://github.com/LMDB/lmdb
 # Tested on     : UBI: 9.3
 # Language      : C
