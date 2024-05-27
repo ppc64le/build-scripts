@@ -22,7 +22,7 @@ PACKAGE_NAME=lmdb
 PACKAGE_VERSION=${1:-LMDB_0.9.31}
 PACKAGE_URL=https://github.com/LMDB/lmdb
 
-yum install java-1.8.0-openjdk maven-openjdk8 git -y
+yum install -y git  gcc-c++  gcc wget make python yum-utils
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/libraries/liblmdb 
