@@ -1,9 +1,11 @@
 # -----------------------------------------------------------------------------
 #
-# Package	: github.com/gofrs/uuid
-# Version	: v3.2.0+incompatible
-# Source repo	: https://github.com/gofrs/uuid
+# Package	: github.com/go-logr/zapr
+# Version	: v0.1.1
+# Source repo	: https://github.com/go-logr/zapr
 # Tested on	: RHEL 8.3
+# Language      : GO
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
@@ -15,9 +17,9 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=github.com/gofrs/uuid
-PACKAGE_VERSION=v3.2.0+incompatible
-PACKAGE_URL=https://github.com/gofrs/uuid
+PACKAGE_NAME=github.com/go-logr/zapr
+PACKAGE_VERSION=v0.1.1
+PACKAGE_URL=https://github.com/go-logr/zapr
 
 yum -y update && yum install -y nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git jq wget gcc-c++
 

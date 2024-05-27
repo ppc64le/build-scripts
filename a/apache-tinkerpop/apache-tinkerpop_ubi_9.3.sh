@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : tinkerpop
+# Package          : apache-tinkerpop
 # Version          : 3.7.2
 # Source repo      : https://github.com/apache/tinkerpop
 # Tested on        : UBI:9.3
