@@ -57,6 +57,8 @@ def select_template_script(package_language):
         return 'build_script_go.sh'
     elif package_language == 'python':
         return 'build_script_python.sh'
+    elif package_language == 'r' or package_language == 'R':
+        return 'build_script_r.sh'
 
 
 def get_latest_build_script(dir_name):
