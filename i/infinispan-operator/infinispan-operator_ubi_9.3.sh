@@ -33,7 +33,7 @@ wget https://go.dev/dl/go$GO_VERSION.linux-ppc64le.tar.gz
 tar -C /bin -xf go$GO_VERSION.linux-ppc64le.tar.gz
 rm -f go$GO_VERSION.linux-ppc64le.tar.gz
 mkdir -p $GOPATH/src && cd $GOPATH/src
-export PATH=$PATH:/bin/go/bin
+export PATH=$PATH:/home/go/bin
 export GOPATH=/home/go
 
 # Install operator-sdk
