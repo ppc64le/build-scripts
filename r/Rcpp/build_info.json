@@ -1,0 +1,13 @@
+{
+   "maintainer": "shubham-garud",
+   "package_name": "Rcpp",
+   "github_url": "https://github.com/RcppCore/Rcpp",
+   "version": "1.0.12",
+   "default_branch": "master",
+   "build_script": "Rcpp_ubi_9.3.sh",
+   "package_dir": "r/Rcpp",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
+
