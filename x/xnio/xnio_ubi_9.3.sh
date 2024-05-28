@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : xnio
-# Version       : 3.8.14.Final
+# Version       : 3.8.15.Final
 # Source repo   : https://github.com/xnio/xnio
 # Tested on     : UBI:9.3
 # Language      : Java
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=xnio
-PACKAGE_VERSION=${1:-3.8.14.Final}
+PACKAGE_VERSION=${1:-3.8.15.Final}
 PACKAGE_URL=https://github.com/xnio/xnio
 
 yum install -y g++ wget git gcc gcc-c++
