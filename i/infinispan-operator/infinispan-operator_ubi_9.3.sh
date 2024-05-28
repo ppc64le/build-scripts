@@ -33,8 +33,9 @@ wget https://go.dev/dl/go$GO_VERSION.linux-ppc64le.tar.gz
 tar -C /bin -xf go$GO_VERSION.linux-ppc64le.tar.gz
 rm -f go$GO_VERSION.linux-ppc64le.tar.gz
 mkdir -p $GOPATH/src && cd $GOPATH/src
-export PATH=$PATH:/home/go/bin
+export PATH=$PATH:/bin/go/bin
 export GOPATH=/home/go
+export PATH=$PATH:/home/go/bin
 
 # Install operator-sdk
 wget https://github.com/operator-framework/operator-sdk/releases/download/v1.24.1/operator-sdk_linux_ppc64le
