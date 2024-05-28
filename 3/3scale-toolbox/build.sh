@@ -3,6 +3,7 @@
 # Version       : v0.18.1
 # Source repo   : https://github.com/3scale/3scale_toolbox
 # Tested on     : RHEL_8.3
+# Language      : Go
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Abhijit Mane <abhijman@in.ibm.com>
 # Travis-Check  : True
