@@ -4,6 +4,8 @@
 # Version	: 1.2.3
 # Source repo	: https://github.com/pallets/pallets-sphinx-themes/
 # Tested on	: RHEL 8.3
+# Language      : Python
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
