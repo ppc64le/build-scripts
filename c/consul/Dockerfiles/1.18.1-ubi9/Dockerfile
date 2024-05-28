@@ -15,11 +15,9 @@ RUN go install gotest.tools/gotestsum@latest && \
     ulimit -n 2048 && \
     umask 0022
 
-ENV CWD=`pwd`
 ENV PATH=$GOPATH/bin:$PATH
 
-RUN cd $CWD && \
-    git clone https://github.com/hashicorp/consul && \
+RUN git clone https://github.com/hashicorp/consul && \
     cd consul && \
     git checkout $PACKAGE_VERSION && \
     go mod download && \
