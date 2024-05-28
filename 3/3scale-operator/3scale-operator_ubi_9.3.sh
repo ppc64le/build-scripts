@@ -1,10 +1,10 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
-# Package	    : 3scale-operator
-# Version	    : 3scale-2.14.1-GA
+# Package	: 3scale-operator
+# Version	: 3scale-2.14.1-GA
 # Source repo	: https://github.com/3scale/3scale-operator
-# Tested on	    : UBI:9.3
+# Tested on	: UBI:9.3
 # Language      : Go
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
