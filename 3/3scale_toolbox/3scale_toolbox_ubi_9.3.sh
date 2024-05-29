@@ -92,12 +92,3 @@ else
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
 	exit 0
 fi
-
-# Trigger Integration Tests
-#bundle exec rake spec:integration
-#When we try to create a service. The tenant (admin account) does not have permissions to add more services. 
-#The integration tests create services and then delete them when done. 
-#We can't create new services manually from the dashboard, Since to run Integration test we require paid account on 3scale to create multiple tenant, So we can't run test the Integration test.
-# cleanup
-cd ..
-rm -rf 3scale_toolbox
