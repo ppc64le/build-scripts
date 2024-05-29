@@ -21,7 +21,7 @@
 
 PACKAGE_NAME=infinispan-operator
 PACKAGE_URL=https://github.com/infinispan/infinispan-operator
-PACKAGE_VERSION=2.4.1.Final
+PACKAGE_VERSION=*.*.*.*
 GOLANGCI_LINT_VERSION=v1.53.3
 GO_VERSION=1.21.8
 
