@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: infinispan-operator
-# Version	: 2.4.1.Final
+# Version	: 2.4.2.Final
 # Source repo	: https://github.com/infinispan/infinispan-operator.git
 # Tested on	: UBI:9.3
 # Language      : Go
@@ -21,7 +21,7 @@
 
 PACKAGE_NAME=infinispan-operator
 PACKAGE_URL=https://github.com/infinispan/infinispan-operator
-PACKAGE_VERSION=*.*.*.*
+PACKAGE_VERSION=${1:-2.4.2.Final}
 GOLANGCI_LINT_VERSION=v1.53.3
 GO_VERSION=1.21.8
 
