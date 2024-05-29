@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : Rcpp
+# Package       : rcpp
 # Version       : 1.0.12
 # Source repo   : https://github.com/RcppCore/Rcpp
 # Tested on     : UBI:9.3
