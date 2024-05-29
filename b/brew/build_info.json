@@ -1,0 +1,12 @@
+{
+   "maintainer": "shubham-garud",
+   "package_name": "brew",
+   "github_url": "https://github.com/cran/brew",
+   "version": "1.0-10",
+   "default_branch": "master",
+   "build_script": "brew_ubi_9.3.sh",
+   "package_dir": "b/brew",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
