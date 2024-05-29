@@ -1,7 +1,7 @@
 #!/bin/bash
 # ---------------------------------------------------------------------
 #
-# Package       : 3scale/toolbox
+# Package       : 3scale_toolbox
 # Version       : 3scale-2.14.1-GA
 # Source repo   : https://github.com/3scale/3scale_toolbox
 # Tested on     : UBI:9.3
