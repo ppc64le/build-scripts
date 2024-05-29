@@ -1,6 +1,6 @@
 {
     "maintainer": "shubham-bhagwat0",
-    "package_name" : "3scale/toolbox",
+    "package_name" : "3scale_toolbox",
     "github_url": "https://github.com/3scale/3scale_toolbox",
     "version": "3scale-2.14.1-GA",
     "package_dir": "3/3scale_toolbox/",
