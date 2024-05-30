@@ -26,7 +26,7 @@ yum install -y git nodejs npm
 npm install -g yarn
 
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME/libraries/liblmdb 
+cd $PACKAGE_NAME 
 git checkout $PACKAGE_VERSION
 
 yarn install --frozen-lockfile
