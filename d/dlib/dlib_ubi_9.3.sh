@@ -23,7 +23,7 @@ PACKAGE_VERSION=${1:-v19.24.4}
 PACKAGE_URL=https://github.com/davisking/dlib
 
 
-yum install -y wget cmake unzip gcc gcc-c++ libX11-devel git python-devel
+yum install -y wget cmake unzip gcc gcc-c++ libX11-devel git python3-devel python3
 
 python -m venv venv
 source venv/bin/activate
@@ -35,7 +35,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Install
-if ! python -m build --wheel ; then
+if ! python3 -m build --wheel ; then
 	echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
@@ -46,7 +46,7 @@ fi
 # Replace the version as per your build
 
 # Test
-if ! python -m pytest --ignore docs --ignore dlib; then
+if ! python3 -m pytest --ignore docs --ignore dlib; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
