@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/davisking/dlib
 
 yum install -y wget cmake unzip gcc gcc-c++ libX11-devel git python3-devel python3
 
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate
 pip install build pytest
 
