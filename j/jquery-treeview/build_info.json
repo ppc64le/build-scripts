@@ -1,0 +1,15 @@
+{
+    "maintainer": "AbhiIBM",
+    "package_name": "jquery-treeview",
+    "github_url": "https://github.com/jzaefferer/jquery-treeview",
+    "version": "master",
+    "default_branch": "master",
+    "package_dir": "j/jquery-treeview/",
+    "build_script": "jquery-treeview_ubi_9.3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "*": {
+      "build_script": "jquery-treeview_ubi_9.3.sh"
+    }
+  }
