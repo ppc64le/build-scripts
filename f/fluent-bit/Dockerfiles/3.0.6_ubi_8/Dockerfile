@@ -1,7 +1,7 @@
 FROM registry.access.redhat.com/ubi8/ubi:8.7 as build
 
 ENV FLUENTBIT_VERSION=v3.0.6
-ENV PATCH_FILE=https://raw.githubusercontent.com/sumitd2/fluent-bit_v3.0.6/f/fluent-bit/fluent-bit_${FLUENTBIT_VERSION}.patch
+ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/f/fluent-bit/fluent-bit_${FLUENTBIT_VERSION}.patch
 
 #Install required repos
 RUN dnf -y install --nogpgcheck https://vault.centos.org/8.5.2111/BaseOS/ppc64le/os/Packages/centos-linux-repos-8-3.el8.noarch.rpm \
