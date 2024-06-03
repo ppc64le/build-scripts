@@ -19,7 +19,7 @@
     "build_script": "fluent-bit_v2.1.10_ubi_8.7.sh"
   },
   "v3.0.6": {
-    "dir": "3.0.6_ubi_8",
-    "build_script": "fluent-bit_v3.0.6_ubi_8.7.sh"
+    "dir": "3.0.6_ubi_9",
+    "build_script": "fluent-bit_v3.0.6_ubi_9.3.sh"
   }
 }
