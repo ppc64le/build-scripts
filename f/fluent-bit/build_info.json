@@ -8,6 +8,7 @@
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
   "build_script": "fluent-bit_v2.0.11_ubi_8.7.sh",
   "docker_build": "true",
+  "use_non_root_user": "false",
   "validate_build_script": "true",
   "v2.0.11": {
     "dir": "2.0.11_ubi_8",
