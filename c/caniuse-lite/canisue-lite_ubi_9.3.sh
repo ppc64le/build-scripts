@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=caniuse-lite
-PACKAGE_VERSION=1.0.30001627
+PACKAGE_VERSION=${1:-1.0.30001627}
 PACKAGE_URL=https://github.com/browserslist/caniuse-lite
 
 export NODE_VERSION=${NODE_VERSION:-20}
