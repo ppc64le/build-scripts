@@ -36,7 +36,7 @@ ln -s /usr/local/apache-maven-3.8.1/bin/mvn /usr/bin/mvn
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-
+cd api
 if ! mvn clean install; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
