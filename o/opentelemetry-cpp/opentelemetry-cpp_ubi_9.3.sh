@@ -44,6 +44,7 @@ cmake -E chdir "build" cmake -DBENCHMARK_DOWNLOAD_DEPENDENCIES=on -DCMAKE_BUILD_
 cmake --build "build" --config Release
 cmake -E chdir "build" ctest --build-config Release
 cmake --build "build" --config Release --target install
+cd ../..
 
 git clone --recursive $PACKAGE_URL 
 cd  $PACKAGE_NAME
