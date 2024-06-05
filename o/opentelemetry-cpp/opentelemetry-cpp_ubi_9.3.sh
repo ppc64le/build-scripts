@@ -17,7 +17,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_NAME=leveldb
+PACKAGE_NAME=opentelemetry-cpp
 PACKAGE_VERSION=${1:-v1.15.0}
 PACKAGE_URL=https://github.com/open-telemetry/opentelemetry-cpp
 
@@ -37,8 +37,6 @@ cd ../..
 #install benchmark 
 git clone https://github.com/google/benchmark.git
 cd benchmark
-mkdir build
-cd build
 cmake -E make_directory "build"
 cmake -E chdir "build" cmake -DBENCHMARK_DOWNLOAD_DEPENDENCIES=on -DCMAKE_BUILD_TYPE=Release ../
 cmake --build "build" --config Release
