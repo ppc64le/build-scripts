@@ -1,7 +1,7 @@
 {
     "maintainer": "vinodk99",
     "package_name": "qunit",
-    "github_url": "https://github.com/qunitjs/qunit ",
+    "github_url": "https://github.com/qunitjs/qunit",
     "version": "2.21.0",
     "default_branch": "main",
     "package_dir": "q/qunit",
