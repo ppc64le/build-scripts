@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e
+set -ex
 
 PACKAGE_NAME=nbconvert
 PACKAGE_VERSION=${1:-v7.16.4}
@@ -40,6 +40,7 @@ git checkout $PACKAGE_VERSION
 pip3 install jupyter
 export JUPYTER_PLATFORM_DIRS=1
 jupyter --paths
+JUPYTER_PATH=/usr/local/share/jupyter
 python3 -m pip install --upgrade pip
 
 
