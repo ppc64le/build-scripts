@@ -12,8 +12,6 @@ RUN wget https://github.com/containous/traefik/releases/download/$PACKAGE_VERSIO
 # Copy configuration file to the image
 COPY traefik.toml /etc/traefik/
 
-# Set the working directory
-
 # Expose the port
 EXPOSE 80
 
