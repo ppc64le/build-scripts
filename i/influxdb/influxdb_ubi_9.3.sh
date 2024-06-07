@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : influxdb/
+# Package       : influxdb
 # Version       : v2.7.6
 # Source repo   : https://github.com/influxdata/influxdb
 # Tested on     : UBI:9.3
