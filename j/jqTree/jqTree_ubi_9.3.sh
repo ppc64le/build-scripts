@@ -35,6 +35,8 @@ nvm install "$NODE_VERSION" >/dev/null
 nvm use $NODE_VERSION
 npm install -g pnpm
 
+npm fund
+
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME 
 git checkout $PACKAGE_VERSION
