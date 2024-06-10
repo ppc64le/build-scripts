@@ -24,6 +24,8 @@ PACKAGE_URL=https://github.com/mbraak/jqTree
 
 yum install git -y
 
+export NODE_OPTIONS="--dns-result-order=ipv4first"
+
 #Installing node v18
 export NODE_VERSION=${NODE_VERSION:-18}
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
