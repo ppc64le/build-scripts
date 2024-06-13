@@ -17,6 +17,7 @@ RUN yum -y update && yum install -y java-1.8.0-openjdk-devel wget git  && \
     git clone https://github.com/apache/freemarker && \
     cd freemarker && \
     git checkout $PACKAGE_VERSION && \
+    ant download-ivy && \
     ant
 
 CMD ["/bin/bash"]
