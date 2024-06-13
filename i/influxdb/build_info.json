@@ -5,11 +5,13 @@
   "version": "v2.7.6",
   "default_branch": "main",
   "package_dir": "i/influxdb",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
   "build_script": "influxdb_ubi_9.3.sh",
   "validate_build_script": true,
   "use_non_root_user": "false",
-  "docker_build": false,
+  "docker_build": true,
   "v*.*.*": {
+    "dir": "v2.7.6_ubi9",
     "build_script": "influxdb_ubi_9.3.sh"
   }
 }
