@@ -20,8 +20,9 @@
 
 set -ex
 
+# Variables
 PACKAGE_NAME=git2r
-PACKAGE_VERSION=0.33.0
+PACKAGE_VERSION=${1:-"0.33.0"}
 PACKAGE_URL=https://github.com/cran/git2r
 
 dnf install -y gcc gcc-c++ gcc-gfortran git wget xz cmake make openssl-devel yum-utils wget sudo llvm -y
@@ -36,7 +37,6 @@ rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 
 
 #install R
-
 dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 dnf install -y libtirpc.ppc64le
 dnf install -y R-core R-core-devel
@@ -71,7 +71,7 @@ if ! R CMD INSTALL $PACKAGE_NAME; then
     echo "------------------$PACKAGE_NAME:install_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
-    exit 1
+    exit 2
 fi
 
 
@@ -79,7 +79,7 @@ if ! R CMD check $PACKAGE_NAME --no-build-vignettes --ignore-vignettes --no-manu
     echo "------------------$PACKAGE_NAME:install_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
-    exit 2
+    exit 3
 else
     echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
