@@ -20,8 +20,9 @@
 
 set -ex
 
+#variables
 PACKAGE_NAME=fs
-PACKAGE_VERSION=1.6.4
+PACKAGE_VERSION=${1:-"1.6.4"}
 PACKAGE_URL=https://github.com/cran/fs
 
 dnf install -y gcc gcc-c++ gcc-gfortran git wget xz cmake make openssl-devel yum-utils wget sudo llvm -y
@@ -61,7 +62,7 @@ if ! R CMD build $PACKAGE_NAME --no-build-vignettes; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  build_Fails"
-    exit 1
+    exit 2
 fi
 
 
@@ -69,7 +70,7 @@ if ! R CMD INSTALL $PACKAGE_NAME; then
     echo "------------------$PACKAGE_NAME:install_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
-    exit 1
+    exit 3
 fi
 
 
@@ -77,7 +78,7 @@ if ! R CMD check $PACKAGE_NAME --no-build-vignettes --ignore-vignettes --no-manu
     echo "------------------$PACKAGE_NAME:install_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
-    exit 2
+    exit 4
 else
     echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
