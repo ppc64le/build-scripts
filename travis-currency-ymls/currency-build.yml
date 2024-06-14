@@ -41,6 +41,10 @@ jobs:
       name: Build script run
       script:
         - travis_wait 2 source variable.sh
+        - cat variable.sh
+        - echo "package path - $PKG_DIR_PATH"; echo "Tested on - $TESTED_ON"
+        - echo "printing environmental variables"
+        - env
         # creating a folder package-cache to store the variable.sh and cloned package folder
         - travis_wait 2 mkdir package-cache && sudo mv variable.sh package-cache
         - travis_wait 2 chmod +x ./script/build_package.sh
