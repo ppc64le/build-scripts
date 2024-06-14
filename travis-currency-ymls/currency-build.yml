@@ -40,10 +40,10 @@ jobs:
     - stage: Build
       name: Build script run
       script:
-        - source variable.sh
+        - travis_wait 2 source variable.sh
         # creating a folder package-cache to store the variable.sh and cloned package folder
-        - mkdir package-cache && sudo mv variable.sh package-cache
-        - chmod +x ./script/build_package.sh
+        - travis_wait 2 mkdir package-cache && sudo mv variable.sh package-cache
+        - travis_wait 2 chmod +x ./script/build_package.sh
         - travis_wait 100 bash ./script/build_package.sh
         # setting a variable cloned_package,the value of the variable is based on recently cloned package through build-script execution.
         - cloned_package=$(ls -td -- */ | head -n 1) && sudo mv "$cloned_package" package-cache
