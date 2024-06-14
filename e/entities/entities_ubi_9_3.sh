@@ -25,7 +25,7 @@ set -ex
 PACKAGE_NAME="entities"
 PACKAGE_VERSION=${1:-"v4.5.0"}
 PACKAGE_URL=https://github.com/fb55/entities
-NODE_VERSION=${NODE_VERSION:-"18.17.0"}
+NODE_VERSION=${NODE_VERSION:-"20.14.0"}
 HOME_DIR=${PWD}
 export NODE_OPTIONS="--dns-result-order=ipv4first"
 
