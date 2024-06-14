@@ -47,7 +47,7 @@ conda install -y conda-build conda-verify
 git clone $PACKAGE_URL
 
 #get the source url from meta.yaml
-url=$(sed -n '/^\s*url:/s/^\s*url:\s*\(.*\)$/\1/p' /${PACKAGE_NAME}-feedstock/recipe/meta.yaml)
+url=$(sed -n '/^\s*url:/s/^\s*url:\s*\(.*\)$/\1/p' ./${PACKAGE_NAME}-feedstock/recipe/meta.yaml)
 
 # Check if the URL contains only {{ version }} or both {{ version }} and {{ name }}
 if [[ "$url" == *"{{ version }}"* && "$url" == *"{{ name }}"* ]]; then
