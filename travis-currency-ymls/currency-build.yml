@@ -6,6 +6,7 @@ language: shell
 branches:
   only:
   - master
+  - test-travis-wait
 
 
 env:
