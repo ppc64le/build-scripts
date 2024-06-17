@@ -42,7 +42,10 @@ jobs:
       name: Build script run
       script:
         - travis_wait 5 source variable.sh
-        - sleep 10
+        - export TESTED_ON=UBI:8.5
+        - export PKG_DIR_PATH=d/d3-path/
+        - export NON_ROOT_BUILD=false
+        - export VALIDATE_BUILD_SCRIPT=true
         - cat variable.sh
         - echo "package path - $PKG_DIR_PATH"; echo "Tested on - $TESTED_ON"
         - echo "printing environmental variables"
