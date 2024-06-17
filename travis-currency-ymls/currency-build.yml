@@ -62,7 +62,7 @@ jobs:
         - echo $TRAVIS_BUILD_DIR
         - cd $TRAVIS_BUILD_DIR
         - gzip $TRAVIS_BUILD_DIR/build_log
-        - chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh build_log.gz
+        #- chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh build_log.gz
       workspaces:
         create:
           # package_cache contains both variable.sh file as well as cloned package directory.
@@ -133,7 +133,7 @@ jobs:
         - find source_syft -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
         - find source_grype -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
         - tar cvzf source_scanner.tar.gz source
-        - chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh source_scanner.tar.gz
+        #- chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh source_scanner.tar.gz
       
     - stage: Build docker image
       # the below condition checks if docker_build flag set to true or false, it it is true it will build this stage and if it is false it will exclude this stage.
@@ -143,7 +143,7 @@ jobs:
         - source package-cache/variable.sh;
         - if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/build_docker.sh; bash ./script/build_docker.sh;echo "printing docker images"; docker images; fi
         # the below command is used to upload docker image to ibm icr registry.
-        - if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/upload-scripts/upload_docker_image.sh; bash ./script/upload-scripts/upload_docker_image.sh; fi
+        #- if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/upload-scripts/upload_docker_image.sh; bash ./script/upload-scripts/upload_docker_image.sh; fi
       workspaces:
         create:
           name: docker_image_tar
@@ -212,5 +212,5 @@ jobs:
         - find image_syft -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
         - find image_grype -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
         - tar cvzf image_scanner.tar.gz image
-        - chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh image_scanner.tar.gz
+        #- chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh image_scanner.tar.gz
           
