@@ -41,7 +41,7 @@ jobs:
     - stage: Build
       name: Build script run
       script:
-        - while read p; do $p; done < variable.sh
+        - while read p; do eval "${p//\"/}"; done < variable.sh
         - echo "package path - $PKG_DIR_PATH"; echo "Tested on - $TESTED_ON"
         - echo "printing environmental variables"
         - env
