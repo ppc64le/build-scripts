@@ -46,6 +46,7 @@ jobs:
         - export PKG_DIR_PATH=d/d3-path/
         - export NON_ROOT_BUILD=false
         - export VALIDATE_BUILD_SCRIPT=true
+        - export BUILD_SCRIPT="d3-path_v3.1.0_UBI_8.5.sh"
         - cat variable.sh
         - echo "package path - $PKG_DIR_PATH"; echo "Tested on - $TESTED_ON"
         - echo "printing environmental variables"
