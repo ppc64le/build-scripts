@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=opentelemetry-go-contrib/
+PACKAGE_NAME=opentelemetry-go-contrib
 PACKAGE_VERSION=${1:-v1.27.0}
 PACKAGE_URL=https://github.com/open-telemetry/opentelemetry-go-contrib
 
