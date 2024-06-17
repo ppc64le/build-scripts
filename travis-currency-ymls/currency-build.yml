@@ -41,7 +41,7 @@ jobs:
     - stage: Build
       name: Build script run
       script:
-        - travis_wait 2 source ./variable.sh
+        - source variable.sh
         - cat variable.sh
         - echo "package path - $PKG_DIR_PATH"; echo "Tested on - $TESTED_ON"
         - echo "printing environmental variables"
