@@ -1,0 +1,15 @@
+{
+    "maintainer": "stutiibm",
+    "package_name": "treepoem",
+    "github_url": "https://github.com/adamchainz/treepoem",
+    "version": "3.24.0",
+    "default_branch": "main",
+    "package_dir": "t/treepoem",
+    "build_script": "treepoem_ubi_9_3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "*": {
+        "build_script": "treepoem_ubi_9_3.sh"
+     }
+}
