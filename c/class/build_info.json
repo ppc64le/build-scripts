@@ -1,0 +1,15 @@
+{
+   "maintainer": "stutiibm",
+   "package_name": "class",
+   "github_url": "https://github.com/cran/class",
+   "version": "7.3-22",
+   "default_branch": "master",
+   "build_script": "class_ubi_9.3.sh",
+   "package_dir": "c/class",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "7.3-*": {
+      "build_script": "class_ubi_9_3.sh"
+   }
+}
