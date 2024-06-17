@@ -1,0 +1,15 @@
+{
+    "maintainer": "stutiibm",
+    "package_name": "Cairo",
+    "github_url": "https://github.com/cran/Cairo",
+    "version": "1.6-2",
+    "default_branch": "master",
+    "package_dir": "c/Cairo",
+    "build_script": "Cairo_ubi_9_3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "*": {
+      "build_script": "Cairo_ubi_9_3.sh"
+    }
+  }
