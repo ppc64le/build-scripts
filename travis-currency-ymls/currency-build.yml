@@ -41,9 +41,7 @@ jobs:
     - stage: Build
       name: Build script run
       script:
-        - sed -i -e '1i#!/bin/bash\' variable.sh
-        - chmod +x ./variable.sh
-        - travis_wait 2 bash ./variable.sh
+        - travis_wait 2 source ./variable.sh
         - cat variable.sh
         - echo "package path - $PKG_DIR_PATH"; echo "Tested on - $TESTED_ON"
         - echo "printing environmental variables"
