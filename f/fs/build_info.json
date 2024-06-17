@@ -1,0 +1,15 @@
+{
+    "maintainer": "stutiibm",
+    "package_name": "fs",
+    "github_url": "https://github.com/cran/fs",
+    "version": "1.6.4",
+    "default_branch": "master",
+    "package_dir": "f/fs",
+    "build_script": "fs_ubi_9_3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "*": {
+      "build_script": "fs_ubi_9_3.sh"
+    }
+}
