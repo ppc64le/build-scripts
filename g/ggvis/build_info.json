@@ -1,0 +1,12 @@
+{
+   "maintainer": "stutiibm",
+   "package_name": "ggvis",
+   "github_url": "https://github.com/cran/ggvis",
+   "version": "0.4.9",
+   "default_branch": "master",
+   "build_script": "ggvis_ubi_9.3.sh",
+   "package_dir": "g/ggvis",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
