@@ -1,0 +1,12 @@
+{
+   "maintainer": "shubham-garud",
+   "package_name": "googlesheets4",
+   "github_url": "https://github.com/cran/googlesheets4",
+   "version": "1.1.1",
+   "default_branch": "master",
+   "build_script": "googlesheets4_ubi_9.3.sh",
+   "package_dir": "g/googlesheets4",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
