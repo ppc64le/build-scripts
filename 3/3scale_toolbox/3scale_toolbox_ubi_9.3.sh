@@ -71,15 +71,10 @@ gem install racc
 
 # Rake install
 if ! bundle exec rake install; then
-	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
-	exit 2
-else	
-	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-	echo "$PACKAGE_URL $PACKAGE_NAME"
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-	exit 0
-fi	
+	echo "------------------$PACKAGE_NAME:Install_Failure---------------------"
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Failure"
+	exit 1
+fi
 
 # Running Unit Test
 if ! bundle exec rake spec:unit; then
