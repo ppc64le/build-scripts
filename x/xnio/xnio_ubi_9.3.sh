@@ -26,9 +26,12 @@ yum install -y g++ wget git gcc gcc-c++
 
 #Install temurin java17
 wget https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.9%2B9/OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.9_9.tar.gz
-tar -zxf OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.9_9.tar.gz
-export JAVA_HOME=$HOME_DIR/jdk-17.0.9+9
-export PATH=$JAVA_HOME/bin:$PATH
+tar -C /usr/local -zxf OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.9_9.tar.gz
+export JAVA_HOME=/usr/local/jdk-17.0.9+9
+export JAVA17_HOME=/usr/local/jdk-17.0.9+9
+export PATH=$PATH:/usr/local/jdk-17.0.9+9/bin
+ln -sf /usr/local/jdk-17.0.9+9/bin/java /usr/bin
+rm -f OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.9_9.tar.gz
 
 #install maven
 wget https://archive.apache.org/dist/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.tar.gz
