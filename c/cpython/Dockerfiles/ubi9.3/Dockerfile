@@ -4,7 +4,7 @@ MAINTAINER Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
 
 ARG PACKAGE_VERSION=v3.12.3
 
-RUN yum install -y git gcc-c++ zlib && \
+RUN yum install -y git gcc-c++ zlib zlib-devel && \
     git clone https://github.com/python/cpython && \
     cd cpython/ && \
     git checkout $PACKAGE_VERSION && \
