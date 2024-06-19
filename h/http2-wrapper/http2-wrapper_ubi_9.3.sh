@@ -34,7 +34,7 @@ nvm use $NODE_VERSION
 
 
 
-git clone $PACKAGE_URL $PACKAGE_NAME
+git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
