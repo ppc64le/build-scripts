@@ -27,7 +27,7 @@ PACKAGE_URL=https://github.com/python-semver/python-semver
 yum install -y yum-utils git gcc gcc-c++ make 
 
 #Installing Python 3.9
-yum install python3 python3-devel -y 
+yum install python3 python3 -y 
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME 
