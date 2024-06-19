@@ -5,9 +5,9 @@
 # Version		 : 2.0.0
 # Source repo	         : https://github.com/RDFLib/sparqlwrapper
 # Tested on		 : UBI:9.3
-# Language      	  : Python
-# Travis-Check  	  : True
-# Script License	  : Apache License, Version 2 or later
+# Language      	 : Python
+# Travis-Check  	 : True
+# Script License	 : Apache License, Version 2 or later
 # Maintainer		 : Ramnath Nayak <Ramnath.Nayak@ibm.com>
 #
 # Disclaimer		 : This script has been tested in root mode on given
