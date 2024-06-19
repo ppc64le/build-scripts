@@ -34,6 +34,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 python3 -m pip install --upgrade pip
+python3 -m pip install --ignore-installed chardet
 python3 -m pip install tox tox-gh-actions
 
 if ! python3 -m pip install . ; then

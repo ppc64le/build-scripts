@@ -11,7 +11,6 @@ RUN yum update -y && \
     cd $PACKAGE_NAME && \
     git checkout $PACKAGE_VERSION && \
     python3 -m pip install --upgrade pip && \
-    python3 -m pip install tox tox-gh-actions && \
     python3 -m pip install .
     
 CMD ["/bin/bash"]
