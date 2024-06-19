@@ -27,11 +27,14 @@ PACKAGE_URL=https://github.com/python-semver/python-semver
 yum install -y yum-utils git gcc gcc-c++ make 
 
 #Installing Python 3.9
-yum install python3 python3 -y 
+yum install python3 python3-devel -y 
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME 
 git checkout $PACKAGE_VERSION
+
+python3 -m pip install --upgrade pip
+python3 -m pip install tox tox-gh-actions
 
 if ! python3 -m pip install . ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
