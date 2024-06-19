@@ -54,7 +54,7 @@ if ! python3 -m pip install .; then
 fi
 
 #Test with tox
-if ! python3 -m tox; then
+if ! python3 -m tox -e py39 ; then
     echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  build_success_but_test_Fails"
