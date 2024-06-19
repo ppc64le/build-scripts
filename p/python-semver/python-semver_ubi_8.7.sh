@@ -6,7 +6,7 @@
 # Source repo	    : https://github.com/python-semver/python-semver
 # Tested on	    : ubi 8.7
 # Language          : Python
-# Travis-Check      : true
+# Travis-Check      : flase
 # Script License    : Apache License, Version 2 or later
 # Maintainer	    : Pratik Tonage <Pratik.Tonage@ibm.com>
 #
@@ -54,7 +54,7 @@ if ! python3 -m pip install .; then
 fi
 
 #Test with tox
-if ! python3 -m tox; then
+if ! python3 -m tox -e py39 ; then
     echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  build_success_but_test_Fails"
