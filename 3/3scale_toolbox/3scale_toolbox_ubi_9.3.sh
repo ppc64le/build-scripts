@@ -1,7 +1,7 @@
 #!/bin/bash
 # ---------------------------------------------------------------------
 #
-# Package       : 3scale/toolbox
+# Package       : 3scale_toolbox
 # Version       : 3scale-2.14.1-GA
 # Source repo   : https://github.com/3scale/3scale_toolbox
 # Tested on     : UBI:9.3
@@ -71,15 +71,10 @@ gem install racc
 
 # Rake install
 if ! bundle exec rake install; then
-	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
-	exit 2
-else	
-	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-	echo "$PACKAGE_URL $PACKAGE_NAME"
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-	exit 0
-fi	
+	echo "------------------$PACKAGE_NAME:Install_Failure---------------------"
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Failure"
+	exit 1
+fi
 
 # Running Unit Test
 if ! bundle exec rake spec:unit; then
@@ -92,12 +87,3 @@ else
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
 	exit 0
 fi
-
-# Trigger Integration Tests
-#bundle exec rake spec:integration
-#When we try to create a service. The tenant (admin account) does not have permissions to add more services. 
-#The integration tests create services and then delete them when done. 
-#We can't create new services manually from the dashboard, Since to run Integration test we require paid account on 3scale to create multiple tenant, So we can't run test the Integration test.
-# cleanup
-cd ..
-rm -rf 3scale_toolbox
