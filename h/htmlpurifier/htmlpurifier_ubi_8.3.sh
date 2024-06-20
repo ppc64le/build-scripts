@@ -1,9 +1,9 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : htmlpurifier
-# Version       : v4.14.0
+# Version       : v4.14.0 v4.7.0
 # Source repo   : https://github.com/ezyang/htmlpurifier.git
-# Tested on     : UBI 8.3
+# Tested on     : UBI 8.3 UBI 8.5
 # Language      : PHP
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
