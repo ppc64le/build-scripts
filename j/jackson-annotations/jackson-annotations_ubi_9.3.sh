@@ -20,7 +20,7 @@
 set -e
 
 PACKAGE_NAME="jackson-annotations"
-PACKAGE_VERSION="jackson-annotations-2.17.0"
+PACKAGE_VERSION=${1:-jackson-annotations-2.17.0}
 PACKAGE_URL="https://github.com/FasterXML/jackson-annotations"
 
 # install tools and dependent packages
