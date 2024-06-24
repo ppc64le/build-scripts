@@ -20,7 +20,7 @@
 set -e
 
 PACKAGE_NAME=jackson-core
-PACKAGE_VERSION=jackson-core-2.17.0
+PACKAGE_VERSION=${1:-jackson-core-2.17.0}
 PACKAGE_URL=https://github.com/FasterXML/jackson-core
 
 # install tools and dependent packages
