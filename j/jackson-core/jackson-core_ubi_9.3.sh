@@ -3,7 +3,7 @@
 #
 # Package :jackson-core
 # Version : 2.17.0
-# Source repo : https://github.com/FasterXML/jackson-core/tree/2.17
+# Source repo : https://github.com/FasterXML/jackson-core
 # Tested on : UBI 9.3
 # Language : Java
 # Travis-Check : True
