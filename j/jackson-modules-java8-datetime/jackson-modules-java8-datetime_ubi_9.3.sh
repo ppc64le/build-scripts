@@ -1,20 +1,20 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package : com.fasterxml.jackson.datatype:jackson-datatype-jsr310
-# Version : 2.14.3
-# Source repo : https://github.com/FasterXML/jackson-modules-java8
-# Tested on : UBI 9.3
-# Language : Java,Logos
-# Travis-Check : True
+# Package       : com.fasterxml.jackson.datatype:jackson-datatype-jsr310
+# Version       : 2.14.3
+# Source repo   : https://github.com/FasterXML/jackson-modules-java8
+# Tested on     : UBI 9.3
+# Language      : Java,Logos
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer : kotla santhosh<kotla.santhosh@ibm.com>
+# Maintainer    : kotla santhosh<kotla.santhosh@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
-# ========== platform using the mentioned version of the package.
-#            It may not work as expected with newer versions of the
-#            package and/or distribution. In such case, please
-#            contact "Maintainer" of this script.
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
 set -e
