@@ -3,7 +3,7 @@
 #
 # Package :jackson-databind
 # Version : 2.17.0
-# Source repo : https://github.com/FasterXML/jackson-databind/tree/2.17 
+# Source repo : https://github.com/FasterXML/jackson-databind
 # Tested on : UBI 9.3
 # Language : Java, Logos
 # Travis-Check : True
