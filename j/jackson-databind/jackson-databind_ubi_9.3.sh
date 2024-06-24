@@ -7,7 +7,7 @@
 # Version : 2.17.0
 # Source repo : https://github.com/FasterXML/jackson-databind/tree/2.17 
 # Tested on : UBI 9.3
-# Language : Java
+# Language : Java, Logos
 # Travis-Check : True
 # Script License: Apache License, Version 2 or later
 # Maintainer : Pratibh Goshi<pratibh.goshi@ibm.com>
@@ -22,7 +22,7 @@
 set -e
 
 PACKAGE_NAME=jackson-databind
-PACKAGE_VERSION=jackson-databind-2.17.0
+PACKAGE_VERSION=${1:-jackson-databind-2.17.0}
 PACKAGE_URL=https://github.com/FasterXML/jackson-databind.git
 
 # install tools and dependent packages
@@ -54,7 +54,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #Build
-./mvnw -B -ff -ntp verify
+mvn install
 if [ $? != 0 ]
 then
   echo "Build failed for $PACKAGE_NAME-$PACKAGE_VERSION"
