@@ -3,7 +3,7 @@
 #
 # Package : jackson-annotations
 # Version : 2.17.0
-# Source repo : https://github.com/FasterXML/jackson-annotations/tree/2.17
+# Source repo : https://github.com/FasterXML/jackson-annotations
 # Tested on : UBI 9.3
 # Language : Java
 # Travis-Check : True
