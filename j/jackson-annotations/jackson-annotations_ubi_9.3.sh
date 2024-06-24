@@ -1,14 +1,14 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package : jackson-annotations
-# Version : 2.17.0
-# Source repo : https://github.com/FasterXML/jackson-annotations
-# Tested on : UBI 9.3
-# Language : Java
-# Travis-Check : True
+# Package       : jackson-annotations
+# Version       : 2.17.0
+# Source repo   : https://github.com/FasterXML/jackson-annotations
+# Tested on     : UBI 9.3
+# Language      : Java
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer : Pratibh Goshi<pratibh.goshi@ibm.com>
+# Maintainer    : Pratibh Goshi<pratibh.goshi@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ========== platform using the mentioned version of the package.
