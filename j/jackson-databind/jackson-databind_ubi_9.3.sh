@@ -1,14 +1,14 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package :jackson-databind
-# Version : 2.17.0
-# Source repo : https://github.com/FasterXML/jackson-databind
-# Tested on : UBI 9.3
-# Language : Java, Logos
-# Travis-Check : True
+# Package       : jackson-databind
+# Version       : 2.17.0
+# Source repo   : https://github.com/FasterXML/jackson-databind
+# Tested on     : UBI 9.3
+# Language      : Java, Logos
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer : Pratibh Goshi<pratibh.goshi@ibm.com>
+# Maintainer    : Pratibh Goshi<pratibh.goshi@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ========== platform using the mentioned version of the package.
