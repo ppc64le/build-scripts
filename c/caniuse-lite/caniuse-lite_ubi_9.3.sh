@@ -36,14 +36,14 @@ cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 npm install -g pnpm
 
-if ! npm install && npm audit fix --force; then
+if ! pnpm install --frozen-lockfile --ignore-scripts ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-if ! npm test; then
+if ! pnpm test ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
