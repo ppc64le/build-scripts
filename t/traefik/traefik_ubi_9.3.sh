@@ -21,7 +21,7 @@ set -e
 
 PACKAGE_NAME=traefik
 PACKAGE_VERSION=${1:-v3.0.3}
-PACKAGE_URL=https://github.com/apache/zookeeper
+PACKAGE_URL=https://github.com/traefik/traefik
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
