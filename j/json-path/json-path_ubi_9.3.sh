@@ -43,7 +43,6 @@ export PATH=${GRADLE_HOME}/bin:${PATH}
 
 
 # clone and checkout specified version
-cd
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
