@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : traefik
-# Version       : v3.0.1
+# Version       : v3.0.3
 # Source repo   : https://github.com/traefik/traefik
 # Tested on     : UBI:9.3
 # Language      : Go
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=traefik
-PACKAGE_VERSION=${1:-v3.0.1}
+PACKAGE_VERSION=${1:-v3.0.3}
 PACKAGE_URL=https://github.com/traefik/traefik
 
 yum install -y gcc-c++ make wget git tar patch
