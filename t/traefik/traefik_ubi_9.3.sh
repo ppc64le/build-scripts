@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash 
 # -----------------------------------------------------------------------------
 #
 # Package          : traefik
@@ -17,6 +17,7 @@
 #                    contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
+set -e
 
 PACKAGE_NAME=traefik
 PACKAGE_VERSION=${1:-v3.0.3}
