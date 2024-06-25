@@ -22,4 +22,3 @@ ENTRYPOINT ["./traefik"]
 
 # Pass the configuration file as an argument
 CMD ["--configFile=/etc/traefik/traefik.toml"]
-
