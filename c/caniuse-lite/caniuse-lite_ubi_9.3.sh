@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : caniuse-lite
-# Version       : 1.0.30001627
+# Version       : 1.0.30001636
 # Source repo   : https://github.com/browserslist/caniuse-lite
 # Tested on     : UBI:9.3
 # Language      : JavaScript
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=caniuse-lite
-PACKAGE_VERSION=${1:-1.0.30001627}
+PACKAGE_VERSION=${1:-1.0.30001636}
 PACKAGE_URL=https://github.com/browserslist/caniuse-lite
 
 export NODE_VERSION=${NODE_VERSION:-20}
@@ -36,14 +36,14 @@ cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 npm install -g pnpm
 
-if ! npm install && npm audit fix --force; then
+if ! pnpm install --frozen-lockfile --ignore-scripts ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-if ! npm test; then
+if ! pnpm test ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
