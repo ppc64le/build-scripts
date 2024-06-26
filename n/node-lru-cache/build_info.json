@@ -1,12 +1,15 @@
 {
-  "maintainer": "Pratikt2312",
+  "maintainer": "stutiibm",
   "package_name": "node-lru-cache",
   "github_url": "https://github.com/isaacs/node-lru-cache",
-  "version": "v10.0.0",
+  "version": "v10.2.2",
   "default_branch": "main",
   "package_dir": "n/node-lru-cache",
-  "build_script": "node-lru-cache_ubi_8.7.sh",
+  "build_script": "node-lru-cache_ubi_9_3.sh",
   "docker_build": false,
   "validate_build_script": true,
-  "use_non_root_user": false
+  "use_non_root_user": false,
+  "*": {
+    "build_script": "node-lru-cache_ubi_9_3.sh"
+  }
 }

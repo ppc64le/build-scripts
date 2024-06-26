@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : caniuse-lite
-# Version       : 1.0.30001627
-# Source repo   : https://github.com/browserslist/caniuse-lite
-# Tested on     : UBI:9.3
-# Language      : JavaScript
+# Package       : python-semver
+# Version       : 3.0.2
+# Source repo   : https://github.com/python-semver/python-semver
+# Tested on     : UBI: 9.3
+# Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Vinod K <Vinod.K1@ibm.com>
+# Maintainer    : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -17,33 +17,34 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_NAME=caniuse-lite
-PACKAGE_VERSION=${1:-1.0.30001627}
-PACKAGE_URL=https://github.com/browserslist/caniuse-lite
 
-export NODE_VERSION=${NODE_VERSION:-20}
-yum install -y python3 python3-devel.ppc64le git gcc gcc-c++ libffi make
+PACKAGE_NAME=python-semver
+PACKAGE_VERSION=${1:-3.0.2}
+PACKAGE_URL=https://github.com/python-semver/python-semver
 
-#Installing nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-source "$HOME"/.bashrc
-echo "installing nodejs $NODE_VERSION"
-nvm install "$NODE_VERSION" >/dev/null
-nvm use $NODE_VERSION
+#Install dependencies
+#yum -y update
+yum install -y yum-utils git gcc gcc-c++ make 
 
-git clone $PACKAGE_URL $PACKAGE_NAME
-cd  $PACKAGE_NAME
+#Installing Python 3.9
+yum install python3 python3-devel -y 
+
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME 
 git checkout $PACKAGE_VERSION
-npm install -g pnpm
 
-if ! npm install && npm audit fix --force; then
+python3 -m pip install --upgrade pip
+python3 -m pip install --ignore-installed chardet
+python3 -m pip install tox tox-gh-actions
+
+if ! python3 -m pip install . ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-if ! npm test; then
+if ! python3 -m tox -e py39 ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
