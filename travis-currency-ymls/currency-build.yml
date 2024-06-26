@@ -39,13 +39,10 @@ jobs:
     - stage: Build
       name: Build script run
       script:
-        #- source variable.sh
-        # using below while loop to run over each line in variable.sh file and execute it. Directly sourcing the variable.sh was not working in builds which are taking more than 1hr.
-        - while read p; do eval "${p//\"/}"; done < variable.sh        
+        - source variable.sh
         # creating a folder package-cache to store the variable.sh and cloned package folder
         - mkdir package-cache && sudo mv variable.sh package-cache
-        - chmod +x ./script/build_package.sh
-        - travis_wait 120 bash ./script/build_package.sh
+        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/build_package.sh; bash ./script/build_package.sh; fi
         # setting a variable cloned_package,the value of the variable is based on recently cloned package through build-script execution.
         - cloned_package=$(ls -td -- */ | head -n 1) && sudo mv "$cloned_package" package-cache
         - echo "export CLONED_PACKAGE=\"$cloned_package\"" >> package-cache/variable.sh
