@@ -48,6 +48,7 @@ export PATH=$PATH:$M2_HOME/bin
 
 # clone and checkout specified version
 git clone $PACKAGE_URL
+git checkout $PACKAGE_VERSION
 cd $REPO_NAME/$FOLDER_NAME/$PACKAGE_NAME
 
 #Build
