@@ -1,0 +1,15 @@
+{
+  "maintainer": "Chandranana",
+  "package_name": "proxy",
+  "github_url": "https://github.com/maistra/proxy",
+  "version": "maistra-2.5",
+  "package_dir": "p/proxy/",
+  "build_script": "proxy_ubi_8.9.sh",
+  "default_branch": "master",
+  "docker_build": false,
+  "maistra-2.5": {
+    "build_script": "proxy_ubi_8.9.sh"
+  },
+  "use_non_root_user": false
+}
+
