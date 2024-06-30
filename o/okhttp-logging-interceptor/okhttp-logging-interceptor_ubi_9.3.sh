@@ -32,8 +32,6 @@ yum install -y java-11-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
-
-
 #install gradle
 wget https://services.gradle.org/distributions/gradle-7.2-rc-1-bin.zip -P /tmp && unzip -d /gradle /tmp/gradle-7.2-rc-1-bin.zip
 export GRADLE_HOME=/gradle/gradle-7.2-rc-1
