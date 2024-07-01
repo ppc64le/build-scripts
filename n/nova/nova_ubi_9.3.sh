@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/openstack/nova
 #Install dependencies
 #yum -y update
 yum install -y python3.ppc64le python3-devel.ppc64le gcc gcc-c++ yum-utils make automake autoconf libtool gdb* binutils rpm-build gettext wget git
-yum install -y libffi-devel pkg-config libpq-devel postgresql postgresql-devel libxml2-devel libxmlsec1-devel libxslt-devel
+yum install -y libffi-devel pkg-config libpq-devel postgresql postgresql-devel libxml2-devel libxslt-devel
 python3 -m pip install --upgrade pip
 yum install libxml2-devel
 yum install -y libffi-devel pkg-config libpq-devel postgresql postgresql-devel libxml2-devel libxslt-devel
