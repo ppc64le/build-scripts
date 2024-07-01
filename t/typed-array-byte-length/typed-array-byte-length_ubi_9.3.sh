@@ -4,8 +4,8 @@
 # Version	: 1.0.1
 # Source repo	: https://github.com/inspect-js/typed-array-byte-length
 # Tested on	: RHEL 9.3
-# Script License: MIT, Version 1 or later
-# Maintainer	: Jordan Harband <ljharb@gmail.com>
+# Script License: Apache License, Version 2 or later
+# Maintainer	: Amit Singh <amit.singh41@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
