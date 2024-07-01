@@ -28,13 +28,13 @@ PACKAGE_URL=https://github.com/getsentry/sentry-python
 
 sudo dnf install -y ncurses wget git python3 python3-devel make gcc gcc-c++
 
-# miniconda installation
-wget https://repo.anaconda.com/miniconda/Miniconda3-py311_23.10.0-1-Linux-ppc64le.sh -O miniconda.sh
-bash miniconda.sh -b -p $HOME/miniconda
-export PATH="$HOME/miniconda/bin:$PATH"
-conda create -n $PACKAGE_NAME python=3.11 -y
-eval "$(conda shell.bash hook)"
-conda activate $PACKAGE_NAME
+#creating virtual environment
+pip3 install virtualenv
+virtualenv --version
+virtualenv myenv
+virtualenv -p /usr/bin/python3 myenv
+source myenv/bin/activate
+
 
 sudo ln -s /usr/bin/python3 /usr/bin/python
 

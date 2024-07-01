@@ -11,5 +11,14 @@
   "use_non_root_user": true,
   "2.*": {
       "build_script": "sentry-python_ubi_9_3.sh"
+   },
+   "1.12.*, 1.11.*": {
+    "build_script": "sentry-python_1.12.1_ubi_8.7.sh"
+   },
+   "0.*.*": {
+    "build_script": "sentry-python_ubi_8.4.sh"
    }
 }
+
+
+
