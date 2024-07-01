@@ -3,12 +3,12 @@
 #
 # Package	    : activemq-artemis-operator
 # Version	    : 1.2.3
-# Source repo	: https://github.com/artemiscloud/activemq-artemis-operator
-# Tested on     : UBI:9.3
-# Language      : Go
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer	: shubham-bhagwat0
+# Source repo	    : https://github.com/artemiscloud/activemq-artemis-operator
+# Tested on         : UBI:9.3
+# Language          : Go
+# Travis-Check      : True
+# Script License    : Apache License, Version 2 or later
+# Maintainer	    : Shubham Bhagwat(shubham.bhagwat@ibm.com)
 #
 # Disclaimer: This script has been tested in **root/non-root** mode on given
 # ==========  platform using the mentioned version of the package.
@@ -38,9 +38,8 @@ export GOBIN=$(go env GOPATH)/bin
 go version
 
 #operator-sdk
-git clone $SDK_PACKAGE_URL $SDK_PACKAGE_NAME
+git clone $SDK_PACKAGE_URL
 cd $SDK_PACKAGE_NAME
-git checkout $PACKAGE_VERSION
 make install
 cd ../
 
@@ -72,3 +71,4 @@ fi
 
 # As artemiscloud/activemq-artemis-operator testing requires clusters. Currently not supporting it.
 # We need to work on cluster testing (probably using minikube or something) and enable tests.
+# make test
