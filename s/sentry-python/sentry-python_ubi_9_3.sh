@@ -25,11 +25,13 @@ set -e
 PACKAGE_NAME=sentry-python
 PACKAGE_VERSION=${1:-2.7.1}
 PACKAGE_URL=https://github.com/getsentry/sentry-python
+HOME_DIR=${PWD}
 
-sudo dnf install -y ncurses wget git python3 python3-devel make gcc gcc-c++
+sudo dnf install -y ncurses wget git python3 python3-devel make gcc gcc-c++ 
 
 #creating virtual environment
 pip3 install virtualenv
+export PATH=$HOME_DIR/.local/bin:$PATH
 virtualenv --version
 virtualenv myenv
 virtualenv -p /usr/bin/python3 myenv
