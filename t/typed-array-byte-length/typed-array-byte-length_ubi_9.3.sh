@@ -35,7 +35,6 @@ if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
 fi
 
 cd $HOME_DIR/$PACKAGE_NAME
-git checkout $PACKAGE_VERSION
 
 
 if ! npm install; then
