@@ -1,11 +1,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: typed-array-byte-length
-# Version	: 1.0.1
+# Version	: v1.0.1
 # Source repo	: https://github.com/inspect-js/typed-array-byte-length
-# Tested on	: RHEL 9.3
-# Script License: Apache License, Version 2 or later
+# Tested on	: UBI 9.3
+# Script License: MIT License
 # Maintainer	: Amit Singh <amit.singh41@ibm.com>
+# Language      : Node
+# Travis-Check  : True
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
