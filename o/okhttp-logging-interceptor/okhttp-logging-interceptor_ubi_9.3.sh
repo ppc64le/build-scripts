@@ -47,7 +47,8 @@ git checkout $PACKAGE_VERSION
 cd $PACKAGE_NAME
   
 #Build
-gradle build 
+#gradle build
+gradle test -Dtest.java.version=11
 if [ $? != 0 ]
 then
   echo "Build failed for $PACKAGE_NAME-$PACKAGE_VERSION"
