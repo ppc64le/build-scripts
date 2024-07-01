@@ -1,0 +1,15 @@
+{
+    "maintainer": "Prachi Kurade",
+    "package_name": "react-contextmenu",
+    "github_url": "https://github.com/vkbansal/react-contextmenu",
+    "version": "2.14.0",
+    "default_branch": "Master",
+    "build_script": "react-contextmenu_ubi_9.3.sh",
+    "package_dir": "r/react-contextmenu",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "react-contextmenu-2.*.*": {
+      "build_script": "okhttp-logging-interceptor_ubi_9.3.sh"
+    }
+  }
