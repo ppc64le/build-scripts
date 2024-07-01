@@ -10,6 +10,6 @@
     "use_non_root_user": false,
     "docker_build": false,
     "react-contextmenu-2.*.*": {
-      "build_script": "okhttp-logging-interceptor_ubi_9.3.sh"
+      "build_script": "react-contextmenu_ubi_9.3.sh"
     }
   }
