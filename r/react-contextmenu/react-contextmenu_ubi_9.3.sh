@@ -5,6 +5,7 @@
 # Source repo	: https://github.com/vkbansal/react-contextmenu
 # Tested on	: UBI 9.3
 # Language : Node
+# Travis-Check  : True
 # Script License: MIT License
 # Maintainer	: BulkPackageSearch Automation {maintainer}
 #
