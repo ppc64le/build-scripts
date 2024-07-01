@@ -19,7 +19,7 @@
 # --------------------------------------------------------------------------------------------
 
 # Install RHEL dependencies
-sudo yum install -y git wget unzip make cmake gcc gcc-c++ cargo openssl-devel perl java-17-openjdk-devel bzip2-devel zlib-devel 
+sudo yum install -y git wget unzip make cmake gcc gcc-c++ openssl-devel perl java-17-openjdk-devel bzip2-devel zlib-devel 
 
 # Set variables
 WDIR=$(pwd)
@@ -36,6 +36,12 @@ DJL_HOME=$HOME/.djl.ai
 export JAVA_HOME=$(compgen -G '/usr/lib/jvm/java-17-openjdk-*')
 export JRE_HOME=${JAVA_HOME}/jre
 export PATH=${JAVA_HOME}/bin:$CONDA_HOME/bin:$PATH
+
+#Install rust and cargo
+curl https://sh.rustup.rs -sSf | sh -s -- -y
+source "$HOME/.cargo/env"
+rustup install 1.72.1
+rustup default 1.72.1
 
 # Install Miniconda
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-ppc64le.sh
