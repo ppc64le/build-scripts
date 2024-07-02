@@ -35,8 +35,8 @@ export PATH=$JAVA_HOME/bin:$PATH
 
 
 #install gradle
-wget https://services.gradle.org/distributions/gradle-7.2-rc-1-bin.zip -P /tmp && unzip -d /gradle /tmp/gradle-7.2-rc-1-bin.zip
-export GRADLE_HOME=/gradle/gradle-7.2-rc-1
+wget https://services.gradle.org/distributions/gradle-8.0-rc-1-bin.zip -P /tmp && unzip -d /gradle /tmp/gradle-8.0-rc-1-bin.zip
+export GRADLE_HOME=/gradle/gradle-8.0-rc-1
   
 # update the path env. variable
 export PATH=${GRADLE_HOME}/bin:${PATH}
