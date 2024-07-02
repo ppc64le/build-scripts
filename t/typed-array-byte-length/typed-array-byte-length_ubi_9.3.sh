@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=typed-array-byte-length
-PACKAGE_VERSION=1.0.1
+PACKAGE_VERSION=${1:-v1.0.1}
 PACKAGE_URL=https://github.com/inspect-js/typed-array-byte-length
 
 yum -y update && yum install -y yum-utils nodejs git
