@@ -1,11 +1,12 @@
 #!/bin/bash
+
 # -----------------------------------------------------------------------------
 #
-# Package	: immutable
-# Version	: v4.0.0, v4.1.0
+# Package	    : immutable
+# Version	    : v4.0.0, v4.1.0
 # Source repo	: https://github.com/immutable-js/immutable-js
-# Tested on	: UBI 9.3
-# Language : Node
+# Tested on	    : UBI 9.3
+# Language      : Node
 # Travis-Check  : True
 # Script License: MIT License
 # Maintainer	: BulkPackageSearch Automation {maintainer}
