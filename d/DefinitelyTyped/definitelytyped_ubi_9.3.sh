@@ -4,11 +4,11 @@
 # Package          : DefinitelyTyped
 # Version          : master
 # Source repo      : https://github.com/DefinitelyTyped/DefinitelyTyped
-# Tested on        : UBI 8.7
+# Tested on        : UBI: 9.3 
 # Language         : TypeScript
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Shubham Garud <Shubham.Garud@ibm.com>
+# Maintainer       : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -27,7 +27,7 @@ export NODE_VERSION=${NODE_VERSION:-16}
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 # Install dependencies
-yum install -y python38 python38-devel git gcc gcc-c++ libffi make
+yum install -y python3 python3-devel git gcc gcc-c++ libffi make
 
 #Installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
@@ -36,12 +36,11 @@ echo "installing nodejs $NODE_VERSION"
 nvm install "$NODE_VERSION" >/dev/null
 nvm use $NODE_VERSION
 
-
-
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+npm i pnpm --global
 
 if ! npm install && npm audit fix && npm audit fix --force; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
@@ -62,4 +61,3 @@ else
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
         exit 0
 fi
-
