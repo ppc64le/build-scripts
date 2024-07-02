@@ -4,12 +4,12 @@
 #
 # Package	    : immutable
 # Version	    : v4.0.0, v4.1.0
-# Source repo	: https://github.com/immutable-js/immutable-js
+# Source repo	    : https://github.com/immutable-js/immutable-js
 # Tested on	    : UBI 9.3
-# Language      : Node
-# Travis-Check  : True
-# Script License: MIT License
-# Maintainer	: BulkPackageSearch Automation {maintainer}
+# Language          : Node
+# Travis-Check      : True
+# Script License    : MIT License
+# Maintainer	    : BulkPackageSearch Automation {maintainer}
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
