@@ -33,6 +33,7 @@ if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
         echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails" > /home/tester/output/version_tracker
     	exit 0
 fi
+cd $HOME_DIR/$PACKAGE_NAME
 if ! npm install; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -45,7 +46,6 @@ if ! npm install typescript@4.7.2 --save-dev; then
 	echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $OS_NAME | GitHub | Fail |  Install_Fails"
 	exit 0
 fi
-cd $HOME_DIR/$PACKAGE_NAME
 if ! npm run test; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
