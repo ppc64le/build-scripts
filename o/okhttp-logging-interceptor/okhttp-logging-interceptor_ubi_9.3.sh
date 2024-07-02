@@ -19,8 +19,8 @@
 # ----------------------------------------------------------------------------
 set -e
 
-REPO_NAME="okhttp"
-PACKAGE_NAME="okhttp-logging-interceptor"
+#REPO_NAME="okhttp"
+PACKAGE_NAME="okhttp/okhttp-logging-interceptor"
 PACKAGE_VERSION=${1:-parent-4.10.0}
 PACKAGE_URL="https://github.com/square/okhttp.git"
 
@@ -42,7 +42,7 @@ export PATH=${GRADLE_HOME}/bin:${PATH}
   
 # clone and checkout specified version
 git clone $PACKAGE_URL
-cd $REPO_NAME
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 #cd $PACKAGE_NAME
   
