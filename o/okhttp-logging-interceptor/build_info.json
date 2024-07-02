@@ -3,7 +3,7 @@
     "package_name": "okhttp3-logging-interceptor",
     "github_url": "https://github.com/square/okhttp",
     "version": "4.10.0",
-    "default_branch": "Master",
+    "default_branch": "master",
     "build_script": "okhttp-logging-interceptor_ubi_9.3.sh",
     "package_dir": "o/okhttp-logging-interceptor",
     "validate_build_script": true,
