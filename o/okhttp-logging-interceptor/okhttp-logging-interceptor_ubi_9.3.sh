@@ -1,7 +1,7 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package       : okhttp3:logging-interceptor
+# Package       : okhttp-logging-interceptor
 # Version       : 4.10.0
 # Source repo   : https://github.com/square/okhttp
 # Tested on     : UBI 9.3
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 set -e
 
-#REPO_NAME="okhttp"
+REPO_NAME="okhttp"
 PACKAGE_NAME="okhttp/okhttp-logging-interceptor"
 PACKAGE_VERSION=${1:-parent-4.10.0}
 PACKAGE_URL="https://github.com/square/okhttp.git"
@@ -31,6 +31,8 @@ yum install -y git wget unzip
 yum install -y java-11-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
+
+
 
 #install gradle
 wget https://services.gradle.org/distributions/gradle-7.2-rc-1-bin.zip -P /tmp && unzip -d /gradle /tmp/gradle-7.2-rc-1-bin.zip
@@ -44,21 +46,18 @@ export PATH=${GRADLE_HOME}/bin:${PATH}
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-#cd $PACKAGE_NAME
   
 #Build
-gradle build
-# ./gradlew test -Dtest.java.version=11
+gradle build 
 if [ $? != 0 ]
 then
   echo "Build failed for $PACKAGE_NAME-$PACKAGE_VERSION"
   exit 1
 fi
   
-  
+
 #Test
-gradle check
-# ./gradlew test -Dtest.java.version=11
+gradle test
 if [ $? != 0 ]
 then
   echo "Test execution failed for $PACKAGE_NAME-$PACKAGE_VERSION"
