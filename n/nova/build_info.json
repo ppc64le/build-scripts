@@ -1,0 +1,15 @@
+{
+    "maintainer": "AbhiIBM",
+    "package_name": "nova",
+    "github_url": "https://github.com/openstack/nova",
+    "version": "29.0.2",
+    "default_branch": "master",
+    "package_dir": "n/nova",
+    "build_script": "nova_ubi_9.3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "29.*.*": {
+        "build_script": "nova_ubi_9.3.sh"
+    }
+}
