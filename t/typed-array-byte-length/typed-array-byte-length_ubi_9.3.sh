@@ -33,10 +33,6 @@ if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
         echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails" > /home/tester/output/version_tracker
     	exit 0
 fi
-
-cd $HOME_DIR/$PACKAGE_NAME
-
-
 if ! npm install; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
