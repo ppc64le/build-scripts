@@ -25,26 +25,17 @@ PACKAGE_VERSION=${1:-v7.16.4}
 PACKAGE_URL=https://github.com/jupyter/nbconvert
 HOME_DIR=${PWD}
 
-yum install -y git python3 python3-devel gcc-c++
-
-# Install pip and activate venv
-python3 -m ensurepip --upgrade
-export PATH=$PATH:/usr/local/bin
+yum install -y git python3 python3-devel gcc-c++ wget
 
 # Clone package repository
 cd $HOME_DIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-
-pip3 install jupyter
-export JUPYTER_PLATFORM_DIRS=1
-jupyter --paths
-python3 -m pip install --upgrade pip
-
+pip3 install pytest
 
 # Install
-if ! python3 -m pip install -e .; then
+if ! pip3 install .; then
 	echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
@@ -52,7 +43,9 @@ if ! python3 -m pip install -e .; then
 fi
 
 # Test
-python3 -m pip install nbconvert[test]
+
+pip install ".[test]"
+
 if ! pytest; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
