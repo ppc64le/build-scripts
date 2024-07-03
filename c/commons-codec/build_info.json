@@ -1,5 +1,5 @@
 {
-    "maintainer": "Pratibh-Goshi",
+    "maintainer": "pratibh-ibm",
     "package_name": "commons-codec",
     "github_url": "https://github.com/apache/commons-codec.git",
     "version": "rel/commons-codec-1.17.0",
