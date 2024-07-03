@@ -1,8 +1,8 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package       :gson
-# Version       : 2.10.1
+# Package       : gson
+# Version       : gson-parent-2.10.1
 # Source repo   : https://github.com/google/gson.git
 # Tested on     : UBI 9.3
 # Language      : Java
@@ -46,7 +46,7 @@ export PATH=$PATH:$M2_HOME/bin
 
 # clone and checkout specified version
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+cd $PACKAGE_NAME/$PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #Build
