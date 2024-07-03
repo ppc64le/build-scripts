@@ -2,7 +2,7 @@
 
 # -----------------------------------------------------------------------------
 #
-# Package	    : immutable
+# Package	    : immutable-js
 # Version	    : v4.0.0, v4.1.0
 # Source repo	    : https://github.com/immutable-js/immutable-js
 # Tested on	    : UBI 9.3
@@ -19,7 +19,7 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=immutable
+PACKAGE_NAME=immutable-js
 PACKAGE_VERSION=${1:-v4.1.0}
 PACKAGE_URL=https://github.com/immutable-js/immutable-js
 
