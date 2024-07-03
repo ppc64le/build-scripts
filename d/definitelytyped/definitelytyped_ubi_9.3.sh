@@ -23,7 +23,7 @@ PACKAGE_NAME=DefinitelyTyped
 PACKAGE_VERSION=master
 PACKAGE_URL=https://github.com/DefinitelyTyped/DefinitelyTyped
 
-export NODE_VERSION=${NODE_VERSION:-16}
+export NODE_VERSION=${NODE_VERSION:-18}
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 # Install dependencies
