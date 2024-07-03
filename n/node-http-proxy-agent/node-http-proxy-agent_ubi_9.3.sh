@@ -1,7 +1,7 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package	    : http-proxy-agent
+# Package	    : node-http-proxy-agent
 # Version	    : 5.0.0
 # Source repo	    : https://github.com/TooTallNate/node-http-proxy-agent
 # Tested on	    : UBI 9.3
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=http-proxy-agent
+PACKAGE_NAME=node-http-proxy-agent
 PACKAGE_VERSION=${1:-5.0.0}
 PACKAGE_URL=https://github.com/TooTallNate/node-http-proxy-agent
 
