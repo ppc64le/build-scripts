@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : JsonPath
-# Version       : 2.9.0
+# Version       : json-path-2.9.0
 # Source repo   : https://github.com/json-path/JsonPath
 # Tested on     : UBI 9.3
 # Language      : Java
