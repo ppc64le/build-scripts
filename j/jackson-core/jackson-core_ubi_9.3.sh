@@ -1,9 +1,9 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package       : jackson-annotations
+# Package       : jackson-core
 # Version       : 2.17.0
-# Source repo   : https://github.com/FasterXML/jackson-annotations
+# Source repo   : https://github.com/FasterXML/jackson-core
 # Tested on     : UBI 9.3
 # Language      : Java
 # Travis-Check  : True
@@ -19,9 +19,9 @@
 # ----------------------------------------------------------------------------
 set -e
 
-PACKAGE_NAME="jackson-annotations"
-PACKAGE_VERSION=${1:-jackson-annotations-2.17.0}
-PACKAGE_URL="https://github.com/FasterXML/jackson-annotations"
+PACKAGE_NAME=jackson-core
+PACKAGE_VERSION=${1:-jackson-core-2.17.0}
+PACKAGE_URL=https://github.com/FasterXML/jackson-core
 
 # install tools and dependent packages
 yum install -y git wget
@@ -46,6 +46,7 @@ export PATH=$PATH:$M2_HOME/bin
 
 
 # clone and checkout specified version
+cd
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION

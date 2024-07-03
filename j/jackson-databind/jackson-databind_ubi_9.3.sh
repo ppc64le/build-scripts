@@ -1,11 +1,11 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package       : jackson-annotations
+# Package       : jackson-databind
 # Version       : 2.17.0
-# Source repo   : https://github.com/FasterXML/jackson-annotations
+# Source repo   : https://github.com/FasterXML/jackson-databind
 # Tested on     : UBI 9.3
-# Language      : Java
+# Language      : Java, Logos
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Pratibh Goshi<pratibh.goshi@ibm.com>
@@ -19,9 +19,9 @@
 # ----------------------------------------------------------------------------
 set -e
 
-PACKAGE_NAME="jackson-annotations"
-PACKAGE_VERSION=${1:-jackson-annotations-2.17.0}
-PACKAGE_URL="https://github.com/FasterXML/jackson-annotations"
+PACKAGE_NAME=jackson-databind
+PACKAGE_VERSION=${1:-jackson-databind-2.17.0}
+PACKAGE_URL=https://github.com/FasterXML/jackson-databind.git
 
 # install tools and dependent packages
 yum install -y git wget
@@ -46,12 +46,13 @@ export PATH=$PATH:$M2_HOME/bin
 
 
 # clone and checkout specified version
+cd
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #Build
-./mvnw -B -q -ff -ntp verify
+mvn install
 if [ $? != 0 ]
 then
   echo "Build failed for $PACKAGE_NAME-$PACKAGE_VERSION"

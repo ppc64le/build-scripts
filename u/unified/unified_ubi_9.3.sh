@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : caniuse-lite
-# Version       : 1.0.30001627
-# Source repo   : https://github.com/browserslist/caniuse-lite
-# Tested on     : UBI:9.3
-# Language      : JavaScript
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer    : Vinod K <Vinod.K1@ibm.com>
+# Package          : unified
+# Version          : 11.0.5
+# Source repo      : https://github.com/unifiedjs/unified
+# Tested on        : UBI:9.3
+# Language         : Node
+# Travis-Check     : True
+# Script License   : Apache License, Version 2 or later
+# Maintainer       : Ramnath Nayak <Ramnath.Nayak@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -17,12 +17,12 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_NAME=caniuse-lite
-PACKAGE_VERSION=${1:-1.0.30001627}
-PACKAGE_URL=https://github.com/browserslist/caniuse-lite
+PACKAGE_NAME=unified
+PACKAGE_VERSION=${1:-11.0.5}
+PACKAGE_URL=https://github.com/unifiedjs/unified
 
-export NODE_VERSION=${NODE_VERSION:-20}
-yum install -y python3 python3-devel.ppc64le git gcc gcc-c++ libffi make
+export NODE_VERSION=${NODE_VERSION:-22}
+yum install -y python3 python3-devel git gcc gcc-c++ libffi make
 
 #Installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
@@ -31,10 +31,11 @@ echo "installing nodejs $NODE_VERSION"
 nvm install "$NODE_VERSION" >/dev/null
 nvm use $NODE_VERSION
 
+
+
 git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-npm install -g pnpm
 
 if ! npm install && npm audit fix --force; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
@@ -43,7 +44,7 @@ if ! npm install && npm audit fix --force; then
     exit 1
 fi
 
-if ! npm test; then
+if ! npm run test-api; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
