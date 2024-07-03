@@ -19,8 +19,7 @@
 # ----------------------------------------------------------------------------
 set -e
 
-REPO_NAME="okhttp"
-PACKAGE_NAME="okhttp/okhttp-logging-interceptor"
+PACKAGE_NAME="okhttp"
 PACKAGE_VERSION=${1:-parent-4.10.0}
 PACKAGE_URL="https://github.com/square/okhttp.git"
 
@@ -28,15 +27,15 @@ PACKAGE_URL="https://github.com/square/okhttp.git"
 yum install -y git wget unzip 
 
 # setup java environment
-yum install -y java-11-openjdk-devel
+yum install -y java-11-openjdk java-11-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
 
 
 #install gradle
-wget https://services.gradle.org/distributions/gradle-8.0-rc-1-bin.zip -P /tmp && unzip -d /gradle /tmp/gradle-8.0-rc-1-bin.zip
-export GRADLE_HOME=/gradle/gradle-8.0-rc-1
+wget https://services.gradle.org/distributions/gradle-7.2-rc-1-bin.zip -P /tmp && unzip -d /gradle /tmp/gradle-7.2-rc-1-bin.zip
+export GRADLE_HOME=/gradle/gradle-7.2-rc-1
   
 # update the path env. variable
 export PATH=${GRADLE_HOME}/bin:${PATH}
@@ -48,7 +47,8 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
   
 #Build
-gradle build 
+#gradle build 
+./gradlew -p ./okhttp-logging-interceptor clean build
 if [ $? != 0 ]
 then
   echo "Build failed for $PACKAGE_NAME-$PACKAGE_VERSION"
@@ -57,7 +57,7 @@ fi
   
 
 #Test
-gradle test
+gradle check
 if [ $? != 0 ]
 then
   echo "Test execution failed for $PACKAGE_NAME-$PACKAGE_VERSION"
