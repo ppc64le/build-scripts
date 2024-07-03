@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=https-proxy-agent
+PACKAGE_NAME=proxy-agents
 PACKAGE_VERSION=${1:-5.0.1}
 PACKAGE_URL=https://github.com/TooTallNate/proxy-agents
 
