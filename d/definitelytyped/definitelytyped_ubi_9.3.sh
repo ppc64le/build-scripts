@@ -8,7 +8,7 @@
 # Language         : TypeScript
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Shubham Garud <Shubham.Garud@ibm.com>
+# Maintainer       : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -25,6 +25,8 @@ PACKAGE_URL=https://github.com/DefinitelyTyped/DefinitelyTyped
 
 export NODE_VERSION=${NODE_VERSION:-18}
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
+
+export NODE_OPTIONS="--dns-result-order=ipv4first"
 
 # Install dependencies
 yum install -y python3 python3-devel git gcc gcc-c++ libffi make
