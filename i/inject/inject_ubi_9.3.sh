@@ -59,4 +59,4 @@ then
 fi
 
 # No Tests to run
-
+exit 0
