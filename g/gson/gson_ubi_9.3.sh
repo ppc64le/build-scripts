@@ -44,8 +44,6 @@ export M2_HOME=/usr/local/maven
 # update the path env. variable
 export PATH=$PATH:$M2_HOME/bin
 
-
-
 # clone and checkout specified version
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
@@ -61,7 +59,6 @@ then
   echo "Build failed for $PACKAGE_NAME-$PACKAGE_VERSION"
   exit 1
 fi
-
 
 #Test
 mvn test --batch-mode --no-transfer-progress -Dproguard.skip
