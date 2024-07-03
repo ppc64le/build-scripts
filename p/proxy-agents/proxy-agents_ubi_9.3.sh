@@ -1,7 +1,7 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package	    : https-proxy-agent
+# Package	    : proxy-agents
 # Version	    : 5.0.1
 # Source repo	    : https://github.com/TooTallNate/proxy-agents
 # Tested on	    : UBI 9.3
