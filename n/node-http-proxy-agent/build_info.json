@@ -4,12 +4,12 @@
     "github_url": "https://github.com/TooTallNate/node-http-proxy-agent",
     "version": "5.0.0",
     "default_branch": "master",
-    "build_script": "http-proxy-agent_ubi_9.3.sh",
-    "package_dir": "h/http-proxy-agent",
+    "build_script": "node-http-proxy-agent_ubi_9.3.sh",
+    "package_dir": "n/node-http-proxy-agent",
     "validate_build_script": true,
     "use_non_root_user": false,
     "docker_build": false,
-    "http-proxy-agent-5.*.*": {
-      "build_script": "http-proxy-agent_ubi_9.3.sh"
+    "node-http-proxy-agent-5.*.*": {
+      "build_script": "node-http-proxy-agent_ubi_9.3.sh"
     }
   }
