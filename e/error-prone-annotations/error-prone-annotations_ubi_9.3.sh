@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : error-prone
-# Version       : 2.26.1
+# Version       : v2.26.1
 # Source repo   : https://github.com/google/error-prone.git
 # Tested on     : UBI 9.3
 # Language      : Java
@@ -19,8 +19,9 @@
 # ----------------------------------------------------------------------------
 set -e
 
-PACKAGE_NAME=error-prone/annotations
+PACKAGE_NAME=error-prone
 PACKAGE_VERSION=${1:-v2.26.1}
+DIRECTORY=annotations
 PACKAGE_URL=https://github.com/google/error-prone.git
 
 # install tools and dependent packages
@@ -47,7 +48,7 @@ export PATH=$PATH:$M2_HOME/bin
 
 # clone and checkout specified version
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+cd $PACKAGE_NAME/$DIRECTORY
 git checkout $PACKAGE_VERSION
 
 #Build
