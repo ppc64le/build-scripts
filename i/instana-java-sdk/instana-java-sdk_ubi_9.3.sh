@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : instana-java-sdk
-# Version       : 1.2.0
+# Version       : instana-java-sdk-1.2.0
 # Source repo   : https://github.com/instana/instana-java-sdk.git
 # Tested on     : UBI 9.3
 # Language      : Java, Shell
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 set -e
 
-PACKAGE_NAME=instana-java-sdk/instana-java-sdk
+PACKAGE_NAME=instana-java-sdk
 PACKAGE_VERSION=${1:-instana-java-sdk-1.2.0}
 PACKAGE_URL=https://github.com/instana/instana-java-sdk.git
 
@@ -47,7 +47,7 @@ export PATH=$PATH:$M2_HOME/bin
 
 # clone and checkout specified version
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+cd $PACKAGE_NAME/$PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #Build
