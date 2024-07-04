@@ -1,0 +1,12 @@
+{
+    "maintainer": "RadhikaAjabe7",
+    "package_name": "hawtio",
+    "github_url": "https://github.com/hawtio/hawtio",
+    "version": "4.0.0",
+    "default_branch": "main",
+    "package_dir": "h/hawtio",
+    "build_script": "hawtio_ubi_9.3.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false
+  }
