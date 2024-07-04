@@ -9,7 +9,7 @@
     "validate_build_script": true,
     "use_non_root_user": false,
     "docker_build": false,
-    "node-http-proxy-agent-5.*.*": {
+    "5.*.*": {
       "build_script": "node-http-proxy-agent_ubi_9.3.sh"
     }
   }
