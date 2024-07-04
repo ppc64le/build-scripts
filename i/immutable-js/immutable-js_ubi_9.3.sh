@@ -9,7 +9,7 @@
 # Language          : Node
 # Travis-Check      : True
 # Script License    : MIT License
-# Maintainer	    : BulkPackageSearch Automation {maintainer}
+# Maintainer	    : Prachi Kurade <prachi.kurade1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.

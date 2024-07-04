@@ -9,7 +9,7 @@
     "validate_build_script": true,
     "use_non_root_user": false,
     "docker_build": false,
-    "immutable-js-4.*.*": {
+    "v4.*.*": {
       "build_script": "immutable-js_ubi_9.3.sh"
     }
   }
