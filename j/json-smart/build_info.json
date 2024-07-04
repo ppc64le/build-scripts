@@ -9,7 +9,7 @@
     "docker_build": true,
     "validate_build_script": true,
     "use_non_root_user": false,
-    "json-smart-v2-json-smart_ubi-2.*": {
+    "2.*": {
         "dir": "ubi9_3",
         "build_script": "json-smart-v2-json-smart_ubi_9_3.sh"
      }
