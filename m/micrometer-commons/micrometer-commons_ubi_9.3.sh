@@ -49,8 +49,6 @@ cd $PACKAGE_NAME
 
   
 #Build
-
-#./gradlew -p ./okhttp-logging-interceptor clean build
 gradle build 
 if [ $? != 0 ]
 then
@@ -58,7 +56,7 @@ then
   exit 1
 fi
   
-#./gradlew test -Dtest.java.version=11  
+  
 #Test
 gradle check
 if [ $? != 0 ]
