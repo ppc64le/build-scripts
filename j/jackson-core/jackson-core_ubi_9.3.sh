@@ -3,6 +3,12 @@
 #
 # Package       : jackson-core
 # Version       : jackson-core-2.17.0
+=======
+# Version       : 2.17.0
+>>>>>>> 82b7be6c51a37ecfe5f77eba4e3636ecd45b1d21
+=======
+# Version       : 2.17.0
+>>>>>>> 82b7be6c51a37ecfe5f77eba4e3636ecd45b1d21
 # Source repo   : https://github.com/FasterXML/jackson-core
 # Tested on     : UBI 9.3
 # Language      : Java
