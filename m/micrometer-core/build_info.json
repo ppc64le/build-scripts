@@ -9,7 +9,7 @@
     "validate_build_script": true,
     "use_non_root_user": false,
     "docker_build": false,
-    "micrometer-core-1.*.*": {
+    "v1.*.*": {
       "build_script": "micrometer-core_ubi_9.3.sh"
     }
   }
