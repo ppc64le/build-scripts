@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : jackson-annotations
-# Version       : 2.17.0
+# Version       : jackson-annotations-2.17.0
 # Source repo   : https://github.com/FasterXML/jackson-annotations
 # Tested on     : UBI 9.3
 # Language      : Java
@@ -46,7 +46,6 @@ export PATH=$PATH:$M2_HOME/bin
 
 
 # clone and checkout specified version
-cd
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
