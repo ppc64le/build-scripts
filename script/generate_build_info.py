@@ -138,6 +138,17 @@ def get_maintainer_from_dockerfile(dir_name):
                     return maintainer
     return "Unknown"
 
+def get_github_url(build_script):
+    with open(build_script,'r',encoding='utf-8') as f:
+        contents=f.readlines()
+        for line in contents:
+            line=line.strip()
+            if line.startswith('# Source repo'):
+                github_url=line.split(':', 1)[1].strip()
+                return github_url
+    return False
+
+
 def get_default_build_script(build_scripts_versions):
     result=[]
     for data in build_scripts_versions:
@@ -206,6 +217,7 @@ for file in file_list:
 
 
 default_version,default_build_script=get_default_build_script(build_scripts_versions)
+github_url=get_github_url(f"{dir_name}/{default_build_script}")
 
 
 final_json = {
