@@ -59,4 +59,5 @@ then
 fi
 
 #No Tests to Run
+exit 0
 
