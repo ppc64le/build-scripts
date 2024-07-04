@@ -1,10 +1,12 @@
-#!/bin/bash -e
+#!/bin/bash 
 # ----------------------------------------------------------------------------
 #
 # Package        : hawtio
+# Version        : 4.0.0
 # Source repo    : https://github.com/hawtio/hawtio.git
 # Tested on      : UBI:9.3
 # Language       : Java
+# Travis-Check   : True
 # Script License : Apache License Version 2
 # Maintainer     : Radhika Ajabe <Radhika.Ajabe@ibm.com>
 
