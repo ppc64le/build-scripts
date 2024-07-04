@@ -1,8 +1,8 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package       : com.fasterxml.jackson.datatype:jackson-datatype-jsr310
-# Version       : 2.14.3
+# Package       : jackson-modules-java8-datetime
+# Version       : jackson-modules-java8-2.14.3
 # Source repo   : https://github.com/FasterXML/jackson-modules-java8
 # Tested on     : UBI 9.3
 # Language      : Java,Logos
