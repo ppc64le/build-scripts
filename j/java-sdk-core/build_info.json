@@ -9,7 +9,7 @@
     "validate_build_script": true,
     "use_non_root_user": false,
     "docker_build": false,
-    "java-sdk-core-9.*.*": {
+    "9.*.*": {
       "build_script": "java-sdk-core_ubi_9.3.sh"
     }
   }
