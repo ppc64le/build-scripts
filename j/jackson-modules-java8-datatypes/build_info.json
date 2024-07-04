@@ -9,7 +9,7 @@
     "validate_build_script": true,
     "use_non_root_user": false,
     "docker_build": false,
-    "jackson-modules-java8-datatypes-2.*.*": {
+    "2.*.*": {
       "build_script": "jackson-modules-java8-datatypes_ubi_9.3.sh"
     }
   }
