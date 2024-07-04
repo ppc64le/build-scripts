@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : jackson-databind
-# Version       : 2.17.0
+# Version       : jackson-databind-2.17.0
 # Source repo   : https://github.com/FasterXML/jackson-databind
 # Tested on     : UBI 9.3
 # Language      : Java, Logos
@@ -11,10 +11,10 @@
 # Maintainer    : Pratibh Goshi<pratibh.goshi@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
-# ========== platform using the mentioned version of the package.
-#            It may not work as expected with newer versions of the
-#            package and/or distribution. In such case, please
-#            contact "Maintainer" of this script.
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
 set -e
@@ -46,7 +46,6 @@ export PATH=$PATH:$M2_HOME/bin
 
 
 # clone and checkout specified version
-cd
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
