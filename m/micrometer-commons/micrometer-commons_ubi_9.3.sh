@@ -1,8 +1,8 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package       : micrometer:micrometer-commons
-# Version       : 1.10.13
+# Package       : micrometer-commons
+# Version       : v1.10.13
 # Source repo   : https://github.com/micrometer-metrics/micrometer
 # Tested on     : UBI 9.3
 # Language      : Java,Others
