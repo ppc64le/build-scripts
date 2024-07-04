@@ -1,8 +1,8 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package       : com.google.guava:failureaccess
-# Version       : 1.0.2
+# Package       : guava-futures-failureaccess
+# Version       : failureaccess-v1.0.2
 # Source repo   : https://github.com/google/guava
 # Tested on     : UBI 9.3
 # Language      : Java
