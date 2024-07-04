@@ -35,10 +35,10 @@ ln -sf /usr/local/jdk-11.0.22+7/bin/java /usr/bin/
 rm -rf OpenJDK11U-jdk_ppc64le_linux_hotspot_11.0.22_7.tar.gz
 
 #install maven
-wget https://archive.apache.org/dist/maven/maven-3/3.9.1/binaries/apache-maven-3.9.1-bin.tar.gz
-tar -zxf apache-maven-3.9.1-bin.tar.gz
-cp -R apache-maven-3.9.1 /usr/local
-ln -s /usr/local/apache-maven-3.9.1/bin/mvn /usr/bin/mvn
+wget https://archive.apache.org/dist/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.tar.gz
+tar -zxf apache-maven-3.6.0-bin.tar.gz
+cp -R apache-maven-3.6.0 /usr/local
+ln -s /usr/local/apache-maven-3.6.0/bin/mvn /usr/bin/mvn
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
