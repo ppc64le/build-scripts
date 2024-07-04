@@ -9,7 +9,7 @@
     "validate_build_script": true,
     "use_non_root_user": false,
     "docker_build": false,
-    "guava-futures-failureaccess-1.*.*": {
+    "1.*.*": {
       "build_script": "guava-futures-failureaccess_ubi_9.3.sh"
     }
   }
