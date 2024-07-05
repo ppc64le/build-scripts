@@ -1,8 +1,8 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package       : micrometer-commons
-# Version       : v1.10.13
+# Package       : micrometer:micrometer-commons
+# Version       : 1.10.13
 # Source repo   : https://github.com/micrometer-metrics/micrometer
 # Tested on     : UBI 9.3
 # Language      : Java,Others
@@ -33,13 +33,11 @@ export PATH=$JAVA_HOME/bin:$PATH
 
 #install Gradle
 GRADLE_VERSION=gradle-8.2-rc-1
-wget https://services.gradle.org/distributions/${GRADLE_VERSION}-bin.zip  && unzip -d /gradle /${GRADLE_VERSION}-bin.zip
-export GRADLE_HOME=/gradle/${GRADLE_VERSION}/
- 
- 
-# update the path env. variable
+export WORK_DIR=`pwd`
+export HOME=$WORK_DIR
+wget https://services.gradle.org/distributions/${GRADLE_VERSION}-all.zip -P /tmp && unzip -d $WORK_DIR/gradle /tmp/${GRADLE_VERSION}-all.zip
+export GRADLE_HOME=$WORK_DIR/gradle/${GRADLE_VERSION}/
 export PATH=${GRADLE_HOME}/bin:${PATH}
-  
   
 # clone and checkout specified version
 git clone $PACKAGE_URL
