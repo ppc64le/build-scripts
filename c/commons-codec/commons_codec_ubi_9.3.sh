@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : commons-codec
-# Version       : 1.17.0
+# Version       : rel/commons-codec-1.17.0
 # Source repo   : https://github.com/apache/commons-codec.git
 # Tested on     : UBI 9.3
 # Language      : Java
