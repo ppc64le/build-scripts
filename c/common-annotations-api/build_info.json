@@ -1,6 +1,6 @@
 {
     "maintainer": "pratibh-ibm",
-    "package_name": "common-annotaions-api",
+    "package_name": "common-annotations-api",
     "github_url": "https://github.com/jakartaee/common-annotations-api.git",
     "version": "2.1.1",
     "default_branch": "master",
