@@ -1,8 +1,8 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package       : com.google.guava:failureaccess
-# Version       : 1.0.2
+# Package       : guava-futures-failureaccess
+# Version       : failureaccess-v1.0.2
 # Source repo   : https://github.com/google/guava
 # Tested on     : UBI 9.3
 # Language      : Java
@@ -48,7 +48,9 @@ export PATH=$PATH:$M2_HOME/bin
 
 # clone and checkout specified version
 git clone $PACKAGE_URL
-cd $REPO_NAME/$FOLDER_NAME/$PACKAGE_NAME
+cd $REPO_NAME
+git checkout $PACKAGE_VERSION
+cd $FOLDER_NAME/$PACKAGE_NAME
 
 #Build
 mvn install 
