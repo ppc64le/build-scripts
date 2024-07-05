@@ -1,7 +1,7 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package       : json-smart-v2
+# Package       : accessors-smart
 # Version       : 2.5.0
 # Source repo   : https://github.com/netplex/json-smart-v2.git
 # Tested on     : UBI 9.3
