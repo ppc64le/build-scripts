@@ -45,7 +45,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Build and test.
-if ! mvn -U clean install -Djava.awt.headless=true -fae -B --Dskiptests=true; then
+if ! mvn -U clean install -Djava.awt.headless=true -fae -B -Dskiptests=true; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
