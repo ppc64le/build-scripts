@@ -54,8 +54,6 @@ cd $PACKAGE_NAME
 
   
 #Build
-
-
 gradle build 
 if [ $? != 0 ]
 then
