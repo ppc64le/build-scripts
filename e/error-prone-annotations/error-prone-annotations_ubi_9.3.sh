@@ -1,7 +1,7 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package       : error-prone
+# Package       : error-prone-annotations
 # Version       : v2.26.1
 # Source repo   : https://github.com/google/error-prone.git
 # Tested on     : UBI 9.3
