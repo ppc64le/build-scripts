@@ -1,14 +1,14 @@
-#!/bin/bash -e
+#!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package       : caniuse-lite
-# Version       : 1.0.30001627
-# Source repo   : https://github.com/browserslist/caniuse-lite
-# Tested on     : UBI:9.3
-# Language      : JavaScript
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer    : Vinod K <Vinod.K1@ibm.com>
+# Package	    : cjs-module-lexer
+# Version	    : 1.2.3, 1.3.1
+# Source repo	    : https://github.com/nodejs/cjs-module-lexer
+# Tested on	    : UBI 9.3
+# Language          : Node
+# Travis-Check      : True
+# Script License    : MIT License
+# Maintainer	    : Prachi Kurade <prachi.kurade1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -17,11 +17,12 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_NAME=caniuse-lite
-PACKAGE_VERSION=${1:-1.0.30001627}
-PACKAGE_URL=https://github.com/browserslist/caniuse-lite
 
-export NODE_VERSION=${NODE_VERSION:-20}
+PACKAGE_NAME=cjs-module-lexer
+PACKAGE_VERSION=${1:-1.3.1}
+PACKAGE_URL=https://github.com/nodejs/cjs-module-lexer
+
+export NODE_VERSION=${NODE_VERSION:-16}
 yum install -y python3 python3-devel.ppc64le git gcc gcc-c++ libffi make
 
 #Installing nvm
@@ -34,12 +35,18 @@ nvm use $NODE_VERSION
 git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-npm install -g pnpm
 
 if ! npm install && npm audit fix --force; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    exit 1
+fi
+
+if ! npm run build; then
+    echo "------------------$PACKAGE_NAME:Install_success_but_build_Fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_build_Fails"
     exit 1
 fi
 
