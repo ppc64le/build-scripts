@@ -48,19 +48,23 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #Build
-./gradlew build 
-if [ $? != 0 ]
-then
-  echo "Build failed for $PACKAGE_NAME-$PACKAGE_VERSION"
-  exit 1
+if ! ./gradlew build --warning-mode all; then
+    echo "------------------$PACKAGE_NAME:Build_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
+    exit 1
 fi
-
 
 #Test
-./gradlew check
-if [ $? != 0 ]
-then
-  echo "Test execution failed for $PACKAGE_NAME-$PACKAGE_VERSION"
-  exit 2
+if ! ./gradlew check; then
+    echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
+    exit 0
 fi
-exit 0
+
