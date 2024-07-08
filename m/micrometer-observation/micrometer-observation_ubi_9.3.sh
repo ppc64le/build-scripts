@@ -44,15 +44,7 @@ git clone $PACKAGE_URL
 cd $REPO_NAME
 git checkout $PACKAGE_VERSION
 cd $PACKAGE_NAME
-  
-  
-# clone and checkout specified version
-git clone $PACKAGE_URL
-cd $REPO_NAME
-git checkout $PACKAGE_VERSION
-cd $PACKAGE_NAME
 
-  
 #Build
 gradle build 
 if [ $? != 0 ]
@@ -60,8 +52,7 @@ then
   echo "Build failed for $PACKAGE_NAME-$PACKAGE_VERSION"
   exit 1
 fi
-  
-  
+    
 #Test
 gradle check
 if [ $? != 0 ]
