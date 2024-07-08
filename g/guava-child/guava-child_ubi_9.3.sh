@@ -1,8 +1,8 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package       : com.google.guava:guava
-# Version       : 33.1.0-jre
+# Package       : guava-child
+# Version       : v33.1.0
 # Source repo   : https://github.com/google/guava
 # Tested on     : UBI 9.3
 # Language      : Java
