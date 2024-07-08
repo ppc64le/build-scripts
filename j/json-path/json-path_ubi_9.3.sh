@@ -1,7 +1,7 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package       : Json-path
+# Package       : json-path
 # Version       : json-path-2.9.0
 # Source repo   : https://github.com/json-path/JsonPath
 # Tested on     : UBI 9.3
