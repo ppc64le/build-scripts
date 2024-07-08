@@ -1,7 +1,7 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package       : micrometer:micrometer-core
+# Package       : micrometer-core
 # Version       : v1.10.13
 # Source repo   : https://github.com/micrometer-metrics/micrometer
 # Tested on     : UBI 9.3
