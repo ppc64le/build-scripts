@@ -44,7 +44,6 @@ git clone $PACKAGE_URL
 cd $REPO_NAME
 git checkout $PACKAGE_VERSION
 cd $PACKAGE_NAME
-
   
 #Build
 gradle build 
