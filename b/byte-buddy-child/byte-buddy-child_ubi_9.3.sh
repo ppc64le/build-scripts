@@ -1,7 +1,7 @@
 #!/bin/bash -e   
 # ----------------------------------------------------------------------------
 #
-# Package       : byte-buddy-byte-buddy
+# Package       : byte-buddy-child
 # Version       : byte-buddy-1.12.23
 # Source repo   : https://github.com/raphw/byte-buddy
 # Tested on     : UBI: 9.3
