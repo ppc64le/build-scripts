@@ -1,6 +1,6 @@
 {
     "maintainer": "pratibh-ibm",
-    "package_name": "JsonPath",
+    "package_name": "json-path",
     "github_url": "https://github.com/json-path/JsonPath",
     "version": "json-path-2.9.0",
     "default_branch": "master",
