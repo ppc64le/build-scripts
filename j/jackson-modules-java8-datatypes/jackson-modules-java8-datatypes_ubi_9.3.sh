@@ -1,21 +1,11 @@
 #!/bin/bash
-# -----------------------------------------------------------------------------
-#
-<<<<<<< HEAD:j/jackson-modules-java8-datatypes/jackson-modules-java8-datatypes_ubi_9.3.sh
-# Package : jacksom-modules-java8-datatypes
-# Version : jackson-modules-java8-2.14.3
-# Source repo : https://github.com/FasterXML/jackson-modules-java8
-# Tested on : UBI 9.3
-# Language : Java, Logos
-# Travis-Check : True
-=======
+# ----------------------------------------------------------------------------
 # Package       : jackson-modules-java8-datatypes
 # Version       : jackson-modules-java8-2.14.3
 # Source repo   : https://github.com/FasterXML/jackson-modules-java8
 # Tested on     : UBI 9.3
 # Language      : Java, Logos
 # Travis-Check  : True
->>>>>>> ed1dd77d18db6492e001cb306127a73c739ac315:j/jackson-modules-java8-datatypes/jackson_modules-java8-datatypes_ubi_9.3.sh
 # Script License: Apache License, Version 2 or later
 # Maintainer    : kotla santhosh<kotla.santhosh@ibm.com>
 #
@@ -38,7 +28,6 @@ yum install -y git wget
 
 # setup java environment
 yum install -y java-11-openjdk-devel
-
 
 # install maven
 MAVEN_VERSION=${MAVEN_VERSION:-3.8.8}
