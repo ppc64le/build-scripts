@@ -44,7 +44,7 @@ OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
  
 # Cloning the repository from remote to local
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME/$PACKAGE_NAME
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #build and test
