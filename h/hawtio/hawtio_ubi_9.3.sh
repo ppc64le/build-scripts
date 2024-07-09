@@ -38,10 +38,12 @@ export PATH=$MAVEN/bin:$PATH
 
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 source "$HOME"/.bashrc
-echo "installing nodejs 18.12.0"
-nvm install 18.12.0  >/dev/null
-nvm use 18.12.0
+echo "installing nodejs 20.5.0"
+nvm install 20.5.0  >/dev/null
+nvm use 20.5.0
+npm install -g npm@10.8.1
 npm install --global yarn -y
+
 
 if ! mvn install; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
