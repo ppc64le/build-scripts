@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	       : matrixStats
-# Version	       : 1.3.0
-# Source repo	   : https://github.com/cran/matrixStats.git
-# Tested on	     : UBI:9.3
-# Language       : R
-# Travis-Check   : True
-# Script License : Apache License, Version 2 or later
-# Maintainer	   : Vipul Ajmera <Vipul.Ajmera@ibm.com>
+# Package	: matrixStats
+# Version	: 1.3.0
+# Source repo	: https://github.com/cran/matrixStats.git
+# Tested on	: UBI:9.3
+# Language      : R
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
+# Maintainer	: Vipul Ajmera <Vipul.Ajmera@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -17,6 +17,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
+
 
 #variables
 PACKAGE_NAME=matrixStats
