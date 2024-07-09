@@ -1,6 +1,5 @@
 #!/bin/bash
-# -----------------------------------------------------------------------------
-#
+# ----------------------------------------------------------------------------
 # Package       : jackson-modules-java8-datatypes
 # Version       : jackson-modules-java8-2.14.3
 # Source repo   : https://github.com/FasterXML/jackson-modules-java8
@@ -29,7 +28,6 @@ yum install -y git wget
 
 # setup java environment
 yum install -y java-11-openjdk-devel
-
 
 # install maven
 MAVEN_VERSION=${MAVEN_VERSION:-3.8.8}
