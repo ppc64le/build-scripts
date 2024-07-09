@@ -39,11 +39,14 @@ nvm use 20.5.0
 npm install -g npm@10.8.1
 npm install --global yarn -y
 
-
 wget https://archive.apache.org/dist/maven/maven-3/3.8.2/binaries/apache-maven-3.8.2-bin.tar.gz
-tar -xvzf apache-maven-3.8.2-bin.tar.gz
-export PATH=$PATH:/home/hawtio/apache-maven-3.8.2/bin
-export PATH=$MAVEN/bin:$PATH
+tar -C /usr/local/ -xzvf apache-maven-3.8.2-bin.tar.gz
+rm -rf tar xzvf apache-maven-3.8.2-bin.tar.gz
+mv /usr/local/apache-maven-3.8.2 /usr/local/maven
+export M2_HOME=/usr/local/maven
+export PATH=$PATH:$M2_HOME/bin
+
+
 
 if ! mvn install; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
