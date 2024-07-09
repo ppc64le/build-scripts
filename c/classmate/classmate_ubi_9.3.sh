@@ -1,7 +1,7 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package       : java-classmate
+# Package       : classmate
 # Version       : classmate-1.5.1
 # Source repo   : https://github.com/FasterXML/java-classmate
 # Tested on     : UBI 9.3
