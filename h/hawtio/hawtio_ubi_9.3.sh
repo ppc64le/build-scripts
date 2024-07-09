@@ -36,13 +36,12 @@ tar -xvzf apache-maven-3.8.2-bin.tar.gz
 export PATH=$PATH:/home/hawtio/apache-maven-3.8.2/bin
 export PATH=$MAVEN/bin:$PATH
 
-
-wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh | bash
-source $HOME/.nvm/nvm.sh
-nvm install 18.12.0
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+source "$HOME"/.bashrc
+echo "installing nodejs 18.12.0"
+nvm install 18.12.0  >/dev/null
 nvm use 18.12.0
 npm install --global yarn -y
-
 
 if ! mvn install; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
