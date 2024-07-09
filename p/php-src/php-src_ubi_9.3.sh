@@ -50,7 +50,7 @@ if ! ./configure --enable-debug ; then
        echo "------------------$PACKAGE_NAME::Configure_fails-------------------------"
        echo "$PACKAGE_URL $PACKAGE_NAME"
        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Configure_fails"
-       exit 2
+       exit 1
 fi
 
 if ! make -j$(/usr/bin/nproc) && make install; then
