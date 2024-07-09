@@ -7,7 +7,7 @@
 # Tested on        : UBI:9.3
 # Language         : PHP
 # Travis-Check     : True
-# Script License   : PHP License
+# Script License   : Apache License, Version 2 or later
 # Maintainer       : Vinod K <Vinod.K1@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
@@ -39,8 +39,19 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-./buildconf --force
-./configure --enable-debug
+if ! ./buildconf --force ; then
+        echo "------------------$PACKAGE_NAME:Build_fails---------------------"
+        echo "$PACKAGE_VERSION $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_fails"
+        exit 1
+fi
+
+if ! ./configure --enable-debug ; then
+       echo "------------------$PACKAGE_NAME::Configure_Success-------------------------"
+       echo "$PACKAGE_URL $PACKAGE_NAME"
+       echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Configure_Success"
+       exit 2
+fi
 
 if ! make -j$(/usr/bin/nproc) && make install; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
