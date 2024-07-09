@@ -31,11 +31,6 @@ yum install java-17-openjdk java-17-openjdk-devel -y
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
-wget https://archive.apache.org/dist/maven/maven-3/3.8.2/binaries/apache-maven-3.8.2-bin.tar.gz
-tar -xvzf apache-maven-3.8.2-bin.tar.gz
-export PATH=$PATH:/home/hawtio/apache-maven-3.8.2/bin
-export PATH=$MAVEN/bin:$PATH
-
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 source "$HOME"/.bashrc
 echo "installing nodejs 20.5.0"
@@ -44,6 +39,11 @@ nvm use 20.5.0
 npm install -g npm@10.8.1
 npm install --global yarn -y
 
+
+wget https://archive.apache.org/dist/maven/maven-3/3.8.2/binaries/apache-maven-3.8.2-bin.tar.gz
+tar -xvzf apache-maven-3.8.2-bin.tar.gz
+export PATH=$PATH:/home/hawtio/apache-maven-3.8.2/bin
+export PATH=$MAVEN/bin:$PATH
 
 if ! mvn install; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
