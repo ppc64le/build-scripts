@@ -1,6 +1,6 @@
 {
     "maintainer": "pratibh-ibm",
-    "package_name": "java-classmate",
+    "package_name": "classmate",
     "github_url": "https://github.com/FasterXML/java-classmate",
     "version": "classmate-1.5.1",
     "default_branch": "master",
