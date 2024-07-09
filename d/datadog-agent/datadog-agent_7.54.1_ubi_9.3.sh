@@ -47,7 +47,7 @@ wget https://raw.githubusercontent.com/ramnathnayak-ibm/build-scripts/datadog-ag
 git apply --ignore-whitespace datadog-agent_7.54.1.patch
 
 # Build and install dependencies
-python3 -m pip install codecov -r requirements.txt
+python3 -m pip install codecov --ignore-installed -r requirements.txt
 export PATH=$PATH:/usr/local/bin
 invoke -e install-tools
 
