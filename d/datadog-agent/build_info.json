@@ -6,6 +6,9 @@
   "default_branch": "main",
   "build_script": "datadog-agent_7.54.1_ubi_9.3.sh",
   "package_dir": "d/datadog-agent/",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "true",
   "7.38.*": {
     "dir": "7.38.2_ubi_8",
     "patches": {
