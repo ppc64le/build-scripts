@@ -1,8 +1,8 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package : com.fasterxml.jackson.datatype:jackson-datatype-jdk8
-# Version : 2.14.3
+# Package : jacksom-modules-java8-datatypes
+# Version : jackson-modules-java8-2.14.3
 # Source repo : https://github.com/FasterXML/jackson-modules-java8
 # Tested on : UBI 9.3
 # Language : Java, Logos
