@@ -1,0 +1,15 @@
+{
+    "maintainer": "santhoshkotla2929",
+    "package_name": "micrometer-commons",
+    "github_url": "https://github.com/micrometer-metrics/micrometer",
+    "version": "v1.10.13",
+    "default_branch": "master",
+    "build_script": "micrometer-commons_ubi_9.3.sh",
+    "package_dir": "m/micrometer-commons",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v1.*.*": {
+      "build_script": "micrometer-commons_ubi_9.3.sh"
+    }
+  }

@@ -1,20 +1,19 @@
 #!/bin/bash
-# -----------------------------------------------------------------------------
-#
-# Package : jacksom-modules-java8-datatypes
-# Version : jackson-modules-java8-2.14.3
-# Source repo : https://github.com/FasterXML/jackson-modules-java8
-# Tested on : UBI 9.3
-# Language : Java, Logos
-# Travis-Check : True
+# ----------------------------------------------------------------------------
+# Package       : jackson-modules-java8-datatypes
+# Version       : jackson-modules-java8-2.14.3
+# Source repo   : https://github.com/FasterXML/jackson-modules-java8
+# Tested on     : UBI 9.3
+# Language      : Java, Logos
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer : kotla santhosh<kotla.santhosh@ibm.com>
+# Maintainer    : kotla santhosh<kotla.santhosh@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
-# ========== platform using the mentioned version of the package.
-# It may not work as expected with newer versions of the
-# package and/or distribution. In such case, please
-# contact "Maintainer" of this script.
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
 set -e
@@ -29,7 +28,6 @@ yum install -y git wget
 
 # setup java environment
 yum install -y java-11-openjdk-devel
-
 
 # install maven
 MAVEN_VERSION=${MAVEN_VERSION:-3.8.8}
