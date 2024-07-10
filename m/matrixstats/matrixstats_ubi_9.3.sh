@@ -21,7 +21,7 @@
 
 #variables
 PACKAGE_NAME=matrixStats
-PACKAGE_VERSION=1.3.0
+PACKAGE_VERSION=${1:-1.3.0}
 PACKAGE_URL=https://github.com/cran/matrixStats.git
 
 #install depedencies
