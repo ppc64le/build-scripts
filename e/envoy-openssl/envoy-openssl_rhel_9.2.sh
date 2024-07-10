@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/envoyproxy/envoy-openssl
 
 yum install -y perl git cmake wget 
 
-yum -y groupinstall 'Development Tools'
+#yum -y groupinstall 'Development Tools'
 
 yum install -y makecache libffi-devel python3 ninja-build openssl openssl-devel
 
