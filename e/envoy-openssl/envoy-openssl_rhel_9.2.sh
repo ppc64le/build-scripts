@@ -27,7 +27,7 @@ yum install -y perl git cmake wget
 
 #yum -y groupinstall 'Development Tools'
 
-yum install -y makecache libffi-devel python3 ninja-build openssl openssl-devel
+yum install -y libffi-devel python3 ninja-build openssl openssl-devel
 
 # Exporting path
 
