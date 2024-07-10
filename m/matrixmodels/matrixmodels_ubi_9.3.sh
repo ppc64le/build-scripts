@@ -21,7 +21,7 @@
 
 #variables
 PACKAGE_NAME=MatrixModels
-PACKAGE_VERSION=0.5-3
+PACKAGE_VERSION=${1:-0.5-3}
 PACKAGE_URL=https://github.com/cran/MatrixModels.git
 
 #install dependencies
