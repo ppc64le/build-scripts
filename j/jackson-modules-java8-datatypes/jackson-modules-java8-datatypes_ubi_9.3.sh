@@ -1,27 +1,28 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package       : guava
-# Version       : v33.1.0
-# Source repo   : https://github.com/google/guava
-# Tested on     : UBI 9.3
-# Language      : Java
-# Travis-Check  : True
+# Package : jacksom-modules-java8-datatypes
+# Version : jackson-modules-java8-2.14.3
+# Source repo : https://github.com/FasterXML/jackson-modules-java8
+# Tested on : UBI 9.3
+# Language : Java, Logos
+# Travis-Check : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : kotla santhosh<kotla.santhosh@ibm.com>
+# Maintainer : kotla santhosh<kotla.santhosh@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
-# ==========  platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of the
-#             package and/or distribution. In such case, please
-#             contact "Maintainer" of this script.
+# ========== platform using the mentioned version of the package.
+# It may not work as expected with newer versions of the
+# package and/or distribution. In such case, please
+# contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
 set -e
 
-PACKAGE_NAME="guava"
-PACKAGE_VERSION=${1:-v33.1.0}
-PACKAGE_URL="https://github.com/google/guava.git"
+REPO_NAME="jackson-modules-java8"
+PACKAGE_NAME="datatypes"
+PACKAGE_VERSION=${1:-jackson-modules-java8-2.14.3}
+PACKAGE_URL="https://github.com/FasterXML/jackson-modules-java8.git"
 
 # install tools and dependent packages
 yum install -y git wget
@@ -44,8 +45,9 @@ export PATH=$PATH:$M2_HOME/bin
 
 # clone and checkout specified version
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+cd $REPO_NAME
 git checkout $PACKAGE_VERSION
+cd $PACKAGE_NAME
 
 #Build
 mvn install 
