@@ -25,8 +25,6 @@ PACKAGE_URL=https://github.com/envoyproxy/envoy-openssl
 
 yum install -y perl git cmake wget gcc gcc-c++ make libffi-devel python3 ninja-build openssl openssl-devel
 
-#yum -y groupinstall 'Development Tools'
-
 # Exporting path
 
 export SOURCE_ROOT=/root
@@ -56,7 +54,6 @@ clang --version
 # Install go use 1.22.1
 
 cd $SOURCE_ROOT
-yum install -y curl
 wget https://go.dev/dl/go1.22.1.linux-ppc64le.tar.gz
 tar -C /usr/local -xzf go1.22.1.linux-ppc64le.tar.gz
 export PATH=$PATH:/usr/local/go/bin
