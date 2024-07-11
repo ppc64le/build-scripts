@@ -23,7 +23,7 @@ PACKAGE_URL=https://github.com/envoyproxy/envoy-openssl
 
 # Install dependencies
 
-yum install -y perl git cmake wget gcc gcc-c++ make libffi-devel python3 ninja-build openssl openssl-devel
+yum install -y perl git cmake wget gcc gcc-c++ make libffi-devel python3 ninja-build openssl openssl-devel diffutils patch
 
 # Exporting path
 
