@@ -24,7 +24,7 @@ export SOURCE_ROOT=/root
 
 # Install dependencies
 
-yum -y install wget git docker
+yum -y install wget git make docker
 
 # cloning the repository
 
