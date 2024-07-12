@@ -24,9 +24,9 @@ PACKAGE_VERSION=${1:-1.4.0}
 PACKAGE_URL=https://github.com/cran/pkgload.git
 
 #variables to handle special characters
-export LC_ALL=fr_FR.UTF-8
-export LANG=fr_FR.UTF-8
-export LANGUAGE=fr_FR.UTF-8
+export LC_ALL=C.UTF-8
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
 
 #install depedencies
 dnf install -y gcc gcc-c++ gcc-gfortran git wget xz cmake make openssl-devel yum-utils wget sudo llvm -y
