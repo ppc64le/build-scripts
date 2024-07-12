@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/grafana/tempo-operator
 # Tested on        : RHEL:9.3
 # Language         : Go
-# Travis-Check     : talse
+# Travis-Check     : true
 # Script License   : version 3 of the GNU Affero General Public License
 # Maintainer       : Anurag Chitrakar <Anurag.Chitrakar@ibm.com>
 #
