@@ -22,6 +22,9 @@ PACKAGE_VERSION=
 PACKAGE_URL=
 
 dnf install -y gcc gcc-c++ gcc-gfortran git wget xz cmake make openssl-devel yum-utils wget sudo llvm -y
+
+dnf install -y geos-devel gdal-devel udunits2-devel unixODBC-devel libpq-devel proj-devel sqlite-devel gsl-devel libgit2-devel
+
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
