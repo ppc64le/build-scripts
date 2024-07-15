@@ -1,7 +1,7 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package       : HdrHistogram
+# Package       : hdrhistogram
 # Version       : HdrHistogram-2.1.12
 # Source repo   : https://github.com/HdrHistogram/HdrHistogram.git
 # Tested on     : UBI 9.3
