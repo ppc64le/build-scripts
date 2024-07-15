@@ -59,7 +59,9 @@ then
 fi
 
 #Test
-mvn clean install -pl -:log4j-mongodb3,-:log4j-mongodb4,-:log4j-core-test
+mvn clean install -pl -:log4j-mongodb3,-:log4j-mongodb4,-:log4j-core-test >> /tmp/BUILD.log 2>&1
+cat /tmp/BUILD.log | grep 'SUCCESS'
+
 if [ $? != 0 ]
 then
   echo "Test execution failed for $PACKAGE_NAME-$PACKAGE_VERSION"
