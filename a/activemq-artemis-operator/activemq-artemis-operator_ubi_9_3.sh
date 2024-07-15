@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package           : activemq-artemis-operator
-# Version           : 1.2.3
+# Version           : 1.2.4
 # Source repo       : https://github.com/artemiscloud/activemq-artemis-operator
 # Tested on         : UBI:9.3
 # Language          : Go
