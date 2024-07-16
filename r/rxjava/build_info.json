@@ -10,8 +10,11 @@
     "docker_build": "true",
     "validate_build_script": "true",
     "use_non_root_user": "false",  
-    "v*.*.*" : {
+    "v3.*.*" : {
        "dir": "v3.1.8_ubi9",
        "build_script": "rxjava_ubi_9.3.sh"
+  }
+    "v2.*.*" : {
+       "build_script": "rxjava_ubi_9.3_2.x.sh"
   }
 }
