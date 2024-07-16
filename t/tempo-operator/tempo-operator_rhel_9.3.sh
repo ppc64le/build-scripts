@@ -20,31 +20,41 @@
 
 PACKAGE_NAME=tempo-operator
 PACKAGE_URL=https://github.com/grafana/tempo-operator
+PACKAGE_VERSION=${1:-main}
 export SOURCE_ROOT=/root
 
 # Install dependencies
 
 yum -y install wget git make docker
 
-# cloning the repository
+# Cloning the repository
 
 cd $SOURCE_ROOT
 git clone ${PACKAGE_URL}
 cd ${PACKAGE_NAME}
+git checkout ${PACKAGE_VERSION}
 export GO_VERSION=$(cat go.mod | grep go | head -n 1 | cut -d " " -f2)
 
-# install go 1.22.0
+# Install go 1.22.0
 
-cd $SOURCE_ROOT
-wget https://go.dev/dl/go$GO_VERSION.linux-ppc64le.tar.gz
-tar -C /usr/local -xzf go$GO_VERSION.linux-ppc64le.tar.gz
 export PATH=$PATH:/usr/local/go/bin
 export GOPATH=/root/go
 export GOBIN=/usr/local/go/bin
-which go
-go version
+if [ $( go version | cut -d " " -f3 ) = "go$GO_VERSION" ]; then
+    echo "$GO_VERSION is already installed"
+else
+    cd $SOURCE_ROOT
+    wget https://go.dev/dl/go$GO_VERSION.linux-ppc64le.tar.gz
+    tar -C /usr/local -xzf go$GO_VERSION.linux-ppc64le.tar.gz
+    export PATH=$PATH:/usr/local/go/bin
+    export GOPATH=/root/go
+    export GOBIN=/usr/local/go/bin
+    which go
+    go version
+fi
 
 # Build tempo-operator
 
 cd ${PACKAGE_NAME}
-make docker-build
+make build
+make test
