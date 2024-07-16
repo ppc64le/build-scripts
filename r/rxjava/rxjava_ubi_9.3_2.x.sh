@@ -8,7 +8,7 @@
 # Language      : Java
 # Travis-Check  : False
 # Script License: Apache License, Version 2 or later
-# Maintainer	: BulkPackageSearch Automation Siddesh Sangodkar <siddesh.sangodkar1@ibm.com>
+# Maintainer	: Siddesh Sangodkar <siddesh.sangodkar1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
