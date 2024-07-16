@@ -20,6 +20,8 @@
 
 PACKAGE_NAME=envoy-openssl
 PACKAGE_URL=https://github.com/envoyproxy/envoy-openssl
+PACKAGE_VERSION=${1:-release/v1.28}
+GO_VERSION=${1:-1.22.1}
 
 # Install dependencies
 
@@ -28,7 +30,9 @@ yum install -y perl git cmake wget gcc gcc-c++ make libffi-devel python3 ninja-b
 # Exporting path
 
 export SOURCE_ROOT=/root
-ln -s /usr/bin/python3 /usr/bin/python
+if [ ! -h /usr/bin/python ]; then
+  ln -s /usr/bin/python3 /usr/bin/python
+fi
 export PATH=$PATH:/usr/bin/ninja
 python --version
 ninja --version
@@ -48,19 +52,25 @@ ninja -j$(nproc)
 export PATH=$SOURCE_ROOT/llvm_build/bin:$PATH
 export CC=$SOURCE_ROOT/llvm_build/bin/clang
 export CXX=$SOURCE_ROOT/llvm_build/bin/clang++
-echo "============================================="
 clang --version
 
 # Install go use 1.22.1
 
-cd $SOURCE_ROOT
-wget https://go.dev/dl/go1.22.1.linux-ppc64le.tar.gz
-tar -C /usr/local -xzf go1.22.1.linux-ppc64le.tar.gz
 export PATH=$PATH:/usr/local/go/bin
 export GOPATH=/root/go
 export GOBIN=/usr/local/go/bin
-which go
-go version
+if [ $( go version | cut -d " " -f3 ) = "go${GO_VERSION}" ]; then
+    echo "${GO_VERSION} is already installed"
+else
+    cd $SOURCE_ROOT
+    wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
+    tar -C /usr/local -xzf go${GO_VERSION}.linux-ppc64le.tar.gz
+    export PATH=$PATH:/usr/local/go/bin
+    export GOPATH=/root/go
+    export GOBIN=/usr/local/go/bin
+    which go
+    go version
+fi
 
 # Build envoy openssl
 
@@ -69,6 +79,7 @@ git clone ${PACKAGE_URL}
 export LD_LIBRARY_PATH=/root/llvm_build/lib:$LD_LIBRARY_PATH
 export CPLUS_INCLUDE_PATH=/root/llvm-project/clang/include:/root/llvm_build/tools/clang/include
 cd ${PACKAGE_NAME}
+git checkout ${PACKAGE_VERSION}
 cd bssl-compat/
 git submodule init
 git submodule update
