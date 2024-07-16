@@ -44,6 +44,8 @@ if [ $( go version | cut -d " " -f3 ) = "go$GO_VERSION" ]; then
     echo "$GO_VERSION is already installed"
 else
     cd $SOURCE_ROOT
+    rm -rf $GOPATH
+    rm -rf /usr/local/go
     wget https://go.dev/dl/go$GO_VERSION.linux-ppc64le.tar.gz
     tar -C /usr/local -xzf go$GO_VERSION.linux-ppc64le.tar.gz
     export PATH=$PATH:/usr/local/go/bin
