@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: RxJava
+# Package	: rxjava
 # Version	: v2.2.21
 # Source repo	: https://github.com/ReactiveX/RxJava
 # Tested on	: UBI 9.3
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME="RxJava"
+PACKAGE_NAME="rxjava"
 PACKAGE_VERSION=${1:-v2.2.21}
 PACKAGE_URL="https://github.com/ReactiveX/RxJava.git"
 
@@ -37,7 +37,7 @@ if ! git clone $PACKAGE_URL; then
         exit 1
 fi
 
-cd $PACKAGE_NAME
+cd RxJava
 git checkout $PACKAGE_VERSION
 
 function try_gradle_with_jdk8(){
