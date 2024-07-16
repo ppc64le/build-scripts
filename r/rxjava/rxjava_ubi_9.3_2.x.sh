@@ -46,7 +46,7 @@ export JAVA_HOME="/usr/lib/jvm/jre-1.8.0-openjdk-1.8.0.412.b08-2.el9.ppc64le/"
 export PATH="/usr/lib/jvm/jre-1.8.0-openjdk-1.8.0.412.b08-2.el9.ppc64le/bin/":$PATH
 chmod u+x ./gradlew
 
-    if !./gradlew build -Dorg.gradle.jvmargs=-Xmx2g  --stacktrace; then
+    if ! ./gradlew build -Dorg.gradle.jvmargs=-Xmx2g  --stacktrace; then
                 echo "------------------$PACKAGE_NAME:install_&_test_both_fail---------------------"
                 exit 1
         else
