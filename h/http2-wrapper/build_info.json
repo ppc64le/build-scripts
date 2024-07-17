@@ -1,0 +1,15 @@
+{
+    "maintainer": "ramnathnayak-ibm",
+    "package_name": "http2-wrapper",
+    "github_url": "https://github.com/szmarczak/http2-wrapper",
+    "version": "v2.2.1",
+    "default_branch": "master",
+    "package_dir": "h/http2-wrapper",
+    "build_script": "http2-wrapper_ubi_9.3.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": "false",
+    "v*.*.*" : {
+       "build_script": "http2-wrapper_ubi_9.3.sh"
+    }
+}

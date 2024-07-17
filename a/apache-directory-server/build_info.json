@@ -1,12 +1,15 @@
 {
-  "maintainer": "Pratikt2312",
+  "maintainer": "vinodk99",
   "package_name": "apache-directory-server",
   "github_url": "https://github.com/apache/directory-server",
-  "version": "master",
+  "version": "2.0.0.AM27",
   "default_branch": "master",
   "package_dir": "a/apache-directory-server",
-  "build_script": "directory-server_ubi_8.7.sh",
+  "build_script": "directory-server_ubi_9.3.sh",
   "docker_build": false,
   "validate_build_script": true,
-  "use_non_root_user": false
+  "use_non_root_user": false,
+  "*.*.*.*": {
+    "build_script": "directory-server_ubi_9.3.sh"
+  }
 }

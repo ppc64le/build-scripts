@@ -1,0 +1,12 @@
+{
+    "maintainer": "Shubhamgupta1010",
+    "package_name": "activemq-artemis-operator",
+    "github_url": "https://github.com/artemiscloud/activemq-artemis-operator",
+    "version": "1.2.4",
+    "default_branch": "main",
+    "package_dir": "a/activemq-artemis-operator",
+    "build_script": "activemq-artemis-operator_ubi_9_3.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false
+  }

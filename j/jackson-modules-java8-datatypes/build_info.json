@@ -1,0 +1,15 @@
+{
+    "maintainer": "santhoshkotla2929",
+    "package_name": "jackson-modules-java8-datatypes",
+    "github_url": "https://github.com/FasterXML/jackson-modules-java8",
+    "version": "jackson-modules-java8-2.14.3",
+    "default_branch": "2.18",
+    "build_script": "jackson-modules-java8-datatypes_ubi_9.3.sh",
+    "package_dir": "j/jackson-modules-java8-datatypes",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "jackson-modules-java8-2.*.*": {
+      "build_script": "jackson-modules-java8-datatypes_ubi_9.3.sh"
+    }
+  }
