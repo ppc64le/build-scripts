@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "gen-mapping",
+    "github_url": "https://github.com/jridgewell/gen-mapping",
+    "version": "v0.3.5",
+    "default_branch": "main",
+    "build_script": "gen-mapping_ubi_9.3.sh",
+    "package_dir": "g/gen-mapping",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v0.*.*": {
+        "build_script": "gen-mapping_ubi_9.3.sh"
+    }
+}
