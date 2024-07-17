@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : jakartaee-rest
-# Version       : 3.1.0
+# Version       : 4.0.0-RELEASE
 # Source repo   : https://github.com/jakartaee/rest
 # Tested on     : UBI: 9.3
 # Language      : Java
@@ -22,13 +22,13 @@
 set -e
 PACKAGE_NAME=rest
 PACKAGE_URL=https://github.com/jakartaee/rest.git
-PACKAGE_VERSION=${1:-3.1.0}
+PACKAGE_VERSION=${1:-4.0.0-RELEASE}
 
 
 # install tools and dependent packages
-yum install -y git wget java-11-openjdk-devel
+yum install -y git wget java-17-openjdk-devel
 
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
 # install maven
