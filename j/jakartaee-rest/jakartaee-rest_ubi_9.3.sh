@@ -1,7 +1,7 @@
 #!/bin/bash -e   
 # ----------------------------------------------------------------------------
 #
-# Package       : rest-jaxrs-api
+# Package       : jakartaee-rest
 # Version       : 3.1.0
 # Source repo   : https://github.com/jakartaee/rest
 # Tested on     : UBI: 9.3
@@ -20,8 +20,7 @@
 # ----------------------------------------------------------------------------
 
 set -e
-REPO_NAME=rest
-PACKAGE_NAME=jaxrs-api
+PACKAGE_NAME=rest
 PACKAGE_URL=https://github.com/jakartaee/rest.git
 PACKAGE_VERSION=${1:-3.1.0}
 
@@ -46,9 +45,8 @@ export PATH=$PATH:$M2_HOME/bin
 
 # Cloning the repository
 git clone $PACKAGE_URL
-cd $REPO_NAME
-git checkout $PACKAGE_VERSION
 cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 
 #Build
 mvn install 
