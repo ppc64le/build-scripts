@@ -2,9 +2,9 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : tempo-operator
-# Version          : main
+# Version          : v0.11.1
 # Source repo      : https://github.com/grafana/tempo-operator
-# Tested on        : RHEL:9.3
+# Tested on        : UBI 9.3
 # Language         : Go
 # Travis-Check     : true
 # Script License   : version 3 of the GNU Affero General Public License
@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=tempo-operator
 PACKAGE_URL=https://github.com/grafana/tempo-operator
-PACKAGE_VERSION=${1:-main}
+PACKAGE_VERSION=${1:-0.11.1}
 export SOURCE_ROOT=/root
 
 # Install dependencies
@@ -31,8 +31,7 @@ yum -y install wget git make docker
 
 cd $SOURCE_ROOT
 git clone ${PACKAGE_URL}
-cd ${PACKAGE_NAME}
-git checkout ${PACKAGE_VERSION}
+cd ${PACKAGE_NAME} && git checkout v${PACKAGE_VERSION}
 export GO_VERSION=$(cat go.mod | grep go | head -n 1 | cut -d " " -f2)
 
 # Install go 1.22.0
