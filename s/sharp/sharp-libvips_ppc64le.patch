@@ -1,0 +1,88 @@
+diff --git a/build.sh b/build.sh
+index 46337e0..6314d8d 100755
+--- a/build.sh
++++ b/build.sh
+@@ -88,7 +88,7 @@ if [ "$PLATFORM" == "wasm32" ]; then
+ fi
+ 
+ # Update base images
+-for baseimage in alpine:3.15 amazonlinux:2 debian:bullseye debian:buster; do
++for baseimage in alpine:3.15 debian:bullseye; do
+   docker pull $baseimage
+ done
+ 
+@@ -106,6 +106,6 @@ for flavour in linux-x64 linuxmusl-x64 linux-armv6 linux-armv7 linux-arm64v8 lin
+   if [ $PLATFORM = "all" ] || [ $PLATFORM = $flavour ]; then
+     echo "Building $flavour..."
+     docker build -t vips-dev-$flavour platforms/$flavour
+-    docker run --rm -e "VERSION_VIPS=${VERSION_VIPS}" -e VERSION_LATEST_REQUIRED -v $PWD:/packaging vips-dev-$flavour sh -c "/packaging/build/lin.sh"
++    docker run --rm -e "VERSION_VIPS=${VERSION_VIPS}" -e VERSION_LATEST_REQUIRED=false -v $PWD:/packaging vips-dev-$flavour sh -c "/packaging/build/lin.sh"
+   fi
+ done
+diff --git a/build/lin.sh b/build/lin.sh
+index 6544f6e..471a3c6 100755
+--- a/build/lin.sh
++++ b/build/lin.sh
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env bash
+-set -e
++set -ex
+ 
+ # Environment / working directories
+ case ${PLATFORM} in
+diff --git a/npm/linux-ppc64/package.json b/npm/linux-ppc64/package.json
+index 5039afd..f920186 100644
+--- a/npm/linux-ppc64/package.json
++++ b/npm/linux-ppc64/package.json
+@@ -22,6 +22,7 @@
+     "versions.json"
+   ],
+   "exports": {
++    "./include": "./include/index.js",
+     "./lib": "./lib/index.js",
+     "./package": "./package.json",
+     "./versions": "./versions.json"
+diff --git a/npm/populate.sh b/npm/populate.sh
+index 3922954..7356ba1 100755
+--- a/npm/populate.sh
++++ b/npm/populate.sh
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env bash
+-set -e
++set -ex
+ 
+ LIBVIPS_VERSION=$(cat LIBVIPS_VERSION)
+ CURL="curl --silent --location"
+@@ -9,16 +9,19 @@ download_extract() {
+   case $1 in
+     *ppc64le)
+       PACKAGE="${1%??}" # package directory is named as npm/linux-ppc64
++      echo "$PLATFORM -> $PACKAGE"
++      rm -rf "npm/$PACKAGE/include" "npm/$PACKAGE/lib"
++      tar xzC "npm/$PACKAGE" --exclude="platform.json" -f libvips-8.15.2-linux-ppc64le.tar.gz
+       ;;
+     *)
+       PACKAGE="${1%v[68]}" # remove ARM version
++      echo "$PLATFORM -> $PACKAGE"
++      rm -rf "npm/$PACKAGE/include" "npm/$PACKAGE/lib"
++      $CURL \
++        "https://github.com/lovell/sharp-libvips/releases/download/v$LIBVIPS_VERSION/libvips-$LIBVIPS_VERSION-$PLATFORM.tar.gz" | \
++      tar xzC "npm/$PACKAGE" --exclude="platform.json"
+       ;;
+   esac
+-  echo "$PLATFORM -> $PACKAGE"
+-  rm -rf "npm/$PACKAGE/include" "npm/$PACKAGE/lib"
+-  $CURL \
+-    "https://github.com/lovell/sharp-libvips/releases/download/v$LIBVIPS_VERSION/libvips-$LIBVIPS_VERSION-$PLATFORM.tar.gz" | \
+-    tar xzC "npm/$PACKAGE" --exclude="platform.json"
+ }
+ 
+ download_cpp() {
+@@ -46,7 +49,6 @@ generate_index() {
+ remove_unused() {
+   PACKAGE="$1"
+   if [[ "$PACKAGE" != "dev"* ]]; then
+-    rm -r "npm/$PACKAGE/include"
+     rm "npm/$PACKAGE/THIRD-PARTY-NOTICES.md"
+   fi
+ }
