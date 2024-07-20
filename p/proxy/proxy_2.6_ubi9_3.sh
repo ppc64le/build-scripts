@@ -77,9 +77,9 @@ cd $SOURCE_ROOT
 git clone $PACKAGE_URL
 cd proxy/
 git checkout $PACKAGE_VERSION
-#wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/p/proxy/proxy_2.6.patch
-#git apply proxy_2.6.patch
-git apply $SOURCE_ROOT/proxy_2.6.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/p/proxy/proxy_2.6.patch
+git apply proxy_2.6.patch
+
 # Below commit is tested - tests passed
 if ! ./maistra/ci/pre-submit.sh; then
 	echo "Build/test execution Fails"
