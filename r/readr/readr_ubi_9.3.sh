@@ -1,31 +1,39 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: 
-# Version	: 
-# Source repo	: 
-# Tested on	: UBI:9.3
-# Language      : R
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer	: ICH <ich@us.ibm.com>
+# Package          : readr
+# Version          : 2.1.5
+# Source repo      : https://github.com/cran/readr.git
+# Tested on        : UBI:9.3
+# Language         : R
+# Travis-Check     : True
+# Script License   : Apache License, Version 2 or later
+# Maintainer       : Vipul Ajmera <Vipul.Ajmera@ibm.com>
 #
-# Disclaimer: This script has been tested in root mode on given
-# ==========  platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of the
-#             package and/or distribution. In such case, please
-#             contact "Maintainer" of this script.
+# Disclaimer       : This script has been tested in root mode on given
+# ==========         platform using the mentioned version of the package.
+#                    It may not work as expected with newer versions of the
+#                    package and/or distribution. In such case, please
+#                    contact "Maintainer" of this script.
 #
-# ----------------------------------------------------------------------------
-PACKAGE_NAME=
-PACKAGE_VERSION=
-PACKAGE_URL=
+# ---------------------------------------------------------------------------
 
+#variables
+PACKAGE_NAME=readr
+PACKAGE_VERSION=${1:-2.1.5}
+PACKAGE_URL=https://github.com/cran/readr.git
+
+#variables to handle special characters occurrence
+export LC_ALL=C.UTF-8
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
+
+#install depedencies
 dnf install -y gcc gcc-c++ gcc-gfortran git wget xz cmake make openssl-devel yum-utils wget sudo llvm -y
+
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
-
 
 wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
 mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
@@ -33,7 +41,6 @@ rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 
 
 #install R
-
 dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 dnf install -y libtirpc.ppc64le
 dnf install -y R-core R-core-devel
@@ -42,6 +49,7 @@ R --version
 
 dnf install -y geos-devel gdal-devel udunits2-devel unixODBC-devel libpq-devel proj-devel sqlite-devel gsl-devel libgit2-devel
 
+#clone repository
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
