@@ -36,6 +36,7 @@ ln -s /usr/local/apache-maven-3.9.6/bin/mvn /usr/bin/mvn
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+cd jaxb-ri
 
 if ! mvn clean install -U ; then
     echo "------------------$PACKAGE_NAME:Install_fails---------------------"
