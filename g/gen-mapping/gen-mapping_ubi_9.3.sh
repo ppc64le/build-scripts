@@ -45,7 +45,12 @@ if ! npm install --force && npm audit fix --force; then
     exit 1
 fi
 
-npm install npm-run-all
+if ! npm install npm-run-all@4.1.5 --save-dev; then
+    echo "------------------$PACKAGE_NAME:npm_run_all_install_fails-------------------------------------"
+	echo "$PACKAGE_URL $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $OS_NAME | GitHub | Fail |  Install_Fails"
+	exit 1
+fi
 
 if ! npm test; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
