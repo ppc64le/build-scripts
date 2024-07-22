@@ -7,7 +7,7 @@
 # Tested on        : UBI:9.3
 # Language         : Java
 # Travis-Check     : True
-# Script License   : Eclipse Public License - v 2.0, The GNU General Public License (GPL) Version 2, June 1991
+# Script License   : Apache License, Version 2 or later
 # Maintainer       : Vipul Ajmera <Vipul.Ajmera@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
