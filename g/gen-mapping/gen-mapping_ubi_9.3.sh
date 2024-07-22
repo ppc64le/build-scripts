@@ -43,10 +43,9 @@ if ! npm install --force && npm audit fix --force; then
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
-else
-    echo "install success"
 fi
 
+npm install npm-run-all
 
 if ! npm test; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
