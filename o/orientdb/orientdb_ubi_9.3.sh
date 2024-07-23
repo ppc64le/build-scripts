@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : orientdb
-# Version       : 3.2.29
+# Version       : 3.2.31
 # Source repo   : https://github.com/orientechnologies/orientdb.git
 # Tested on     : UBI:9.3
 # Language      : Java
@@ -18,20 +18,18 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=orientdb
-PACKAGE_VERSION=${1:-3.2.29}
+PACKAGE_VERSION=${1:-3.2.31}
 PACKAGE_URL=https://github.com/orientechnologies/orientdb.git
 
-yum install -y git wget tar openssl-devel freetype fontconfig
-
-#install java
-wget https://github.com/ibmruntimes/semeru11-certified-binaries/releases/download/jdk-11.0.18%2B10_openj9-0.36.1/ibm-semeru-certified-jdk_ppc64le_linux_11.0.18.0.tar.gz
-tar -C /usr/local -zxf ibm-semeru-certified-jdk_ppc64le_linux_11.0.18.0.tar.gz
-export JAVA_HOME=/usr/local/jdk-11.0.18+10
-export JAVA11_HOME=/usr/local/jdk-11.0.18+10
-export PATH=$PATH:/usr/local/jdk-11.0.18+10/bin
-ln -sf /usr/local/jdk-11.0.18+10/bin/java /usr/bin
-rm -f ibm-semeru-certified-jdk_ppc64le_linux_11.0.18.0.tar.gz
-
+yum install -y git make wget gcc-c++
+#install temurin java21
+wget https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.2%2B13/OpenJDK21U-jdk_ppc64le_linux_hotspot_21.0.2_13.tar.gz
+tar -C /usr/local -zxf OpenJDK21U-jdk_ppc64le_linux_hotspot_21.0.2_13.tar.gz
+export JAVA_HOME=/usr/local/jdk-21.0.2+13/
+export JAVA21_HOME=/usr/local/jdk-21.0.2+13/bin/
+export PATH=$PATH:/usr/local/jdk-21.0.2+13/bin/
+ln -sf /usr/local/jdk-21.0.2+13/bin/java /usr/bin/
+rm -rf OpenJDK21U-jdk_ppc64le_linux_hotspot_21.0.2_13.tar.gz
 
 #install maven
 wget https://archive.apache.org/dist/maven/maven-3/3.8.7/binaries/apache-maven-3.8.7-bin.tar.gz
@@ -43,16 +41,14 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 
-export MAVEN_OPTS="-Xmx2g"
-
-if ! ./mvnw clean install -DskipTests -Dpolyglot.engine.WarnInterpreterOnly=false ; then
+if ! mvn clean install -Dskiptests=true ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-if ! ./mvnw test -Dpolyglot.engine.WarnInterpreterOnly=false ; then
+if ! mvn clean test ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"

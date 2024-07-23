@@ -40,6 +40,7 @@ dnf install -y R-core R-core-devel
 dnf builddep R -y
 R --version
 
+dnf install -y geos-devel gdal-devel udunits2-devel unixODBC-devel libpq-devel proj-devel sqlite-devel gsl-devel libgit2-devel
 
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME

@@ -1,0 +1,15 @@
+{
+    "maintainer": "santhoshkotla2929",
+    "package_name": "reactive-streams-jvm",
+    "github_url": "https://github.com/reactive-streams/reactive-streams-jvm",
+    "version": "v1.0.4",
+    "default_branch": "master",
+    "build_script": "reactive-streams-jvm_ubi_9.3.sh",
+    "package_dir": "r/reactive-streams-jvm",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v1.*.*": {
+      "build_script": "reactive-streams-jvm_ubi_9.3.sh"
+    }
+  }

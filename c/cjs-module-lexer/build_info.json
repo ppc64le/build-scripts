@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "cjs-module-lexer",
+    "github_url": "https://github.com/nodejs/cjs-module-lexer",
+    "version": "1.3.1",
+    "default_branch": "main",
+    "build_script": "cjs-module-lexer_ubi_9.3.sh",
+    "package_dir": "c/cjs-module-lexer",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "1.*.*": {
+      "build_script": "cjs-module-lexer_ubi_9.3.sh"
+    }
+}
