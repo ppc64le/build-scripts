@@ -26,6 +26,11 @@ yum install git wget java-1.8.0-openjdk java-1.8.0-openjdk-devel java-1.8.0-open
 export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
 
+wget https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+tar -zxf apache-maven-3.6.3-bin.tar.gz
+cp -R apache-maven-3.6.3 /usr/local
+ln -s /usr/local/apache-maven-3.6.3/bin/mvn /usr/bin/mvn
+
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
