@@ -23,6 +23,7 @@ RUN yum install -y dnf && \
     cd .. && \
     R -e "install.packages('$PACKAGE_NAME', dependencies = TRUE, repos = 'http://cran.rstudio.com/')" && \
     R CMD build $PACKAGE_NAME --no-build-vignettes && \
-    R CMD INSTALL $PACKAGE_NAME
+    R CMD INSTALL $PACKAGE_NAME && \
+    R CMD check $PACKAGE_NAME --no-build-vignettes --ignore-vignettes --no-manual
 
 CMD ["/bin/bash"]
