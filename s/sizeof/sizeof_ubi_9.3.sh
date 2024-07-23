@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=jaxb-ri
+PACKAGE_NAME=sizeof
 PACKAGE_VERSION=${1:-master}
 PACKAGE_URL=https://github.com/ehcache/sizeof
 
