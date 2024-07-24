@@ -42,8 +42,8 @@ git checkout $PACKAGE_VERSION
 
 function try_gradle_with_jdk8(){
 echo "Building package with jdk 1.8"
-export JAVA_HOME="/usr/lib/jvm/jre-1.8.0-openjdk-1.8.0.412.b08-2.el9.ppc64le/"
-export PATH="/usr/lib/jvm/jre-1.8.0-openjdk-1.8.0.412.b08-2.el9.ppc64le/bin/":$PATH
+export JAVA_HOME=$(compgen -G '/usr/lib/jvm/jre-1.8.0-openjdk-*')
+export PATH="$JAVA_HOME/bin/":$PATH
 chmod u+x ./gradlew
 
     if ! ./gradlew build -Dorg.gradle.jvmargs=-Xmx2g  --stacktrace; then
