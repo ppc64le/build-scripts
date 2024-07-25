@@ -1,0 +1,15 @@
+{
+    "maintainer": "ramnathnayak-ibm",
+    "package_name": "java-uuid-generator",
+    "github_url": "https://github.com/cowtowncoder/java-uuid-generator",
+    "version": "java-uuid-generator-5.1.0",
+    "default_branch": "master",
+    "package_dir": "j/java-uuid-generator",
+    "build_script": "java-uuid-generator_ubi_9.3.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": "false",
+    "java-uuid-generator-*.*.*" : {
+       "build_script": "java-uuid-generator_ubi_9.3.sh"
+    }
+}
