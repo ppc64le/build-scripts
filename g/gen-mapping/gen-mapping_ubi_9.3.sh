@@ -23,6 +23,7 @@ PACKAGE_VERSION=${1:-v0.3.5}
 PACKAGE_URL=https://github.com/jridgewell/gen-mapping
 
 export NODE_VERSION=${NODE_VERSION:-18}
+export NODE_OPTIONS="--dns-result-order=ipv4first"
 yum install -y python3 python3-devel.ppc64le git gcc gcc-c++ libffi make
 
 #Installing nvm
@@ -38,18 +39,11 @@ git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if ! npm install --force && npm audit fix --force; then
+if ! npm install && npm audit fix --force; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
-fi
-
-if ! npm install npm-run-all@4.1.5 --save-dev; then
-    echo "------------------$PACKAGE_NAME:npm_run_all_install_fails-------------------------------------"
-	echo "$PACKAGE_URL $PACKAGE_NAME"
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $OS_NAME | GitHub | Fail |  Install_Fails"
-	exit 1
 fi
 
 if ! npm test; then
