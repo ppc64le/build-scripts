@@ -1,7 +1,7 @@
 {
   "maintainer": "Vipul-Ajmera",
   "package_name": "angus-activation",
-  "github_url": "https://github.com/orphan-oss/ognl.git",
+  "github_url": "https://github.com/eclipse-ee4j/angus-activation.git",
   "version": "2.0.2",
   "default_branch": "master",
   "package_dir": "a/angus-activation",
