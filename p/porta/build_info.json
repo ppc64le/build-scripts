@@ -1,0 +1,12 @@
+{
+    "maintainer": "Shubhamgupta1010",
+    "package_name": "porta",
+    "github_url": "https://github.com/3scale/porta.git",
+    "version": "3scale-2.14.1-GA",
+    "default_branch": "main",
+    "package_dir": "p/porta",
+    "build_script": "porta_ubi_9_3.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false
+  }
