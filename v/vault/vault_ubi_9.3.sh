@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : vault
-# Version          : v1.16.2
+# Version          : v1.16.2,v1.17.2
 # Source repo      : https://github.com/hashicorp/vault
 # Tested on        : UBI:9.3
 # Language         : Go
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=vault
-PACKAGE_VERSION=${1:-v1.16.2}
+PACKAGE_VERSION=${1:-v1.17.2}
 PACKAGE_URL=https://github.com/hashicorp/vault
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
@@ -27,7 +27,7 @@ OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 yum install -y openssl sudo make git gcc wget
 
 #Install go
-export GO_VERSION=${GO_VERSION:-1.22.1}
+export GO_VERSION=${GO_VERSION:-1.22.5}
 export GOROOT=${GOROOT:-"/usr/local/go"}
 export GOPATH=${GOPATH:-$HOME/go}
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:/usr/local/bin
