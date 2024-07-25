@@ -23,6 +23,8 @@ PACKAGE_VERSION=${1:-v1.2.1}
 PACKAGE_URL=https://github.com/jridgewell/set-array
 
 export NODE_VERSION=${NODE_VERSION:-18}
+export NODE_OPTIONS="--dns-result-order=ipv4first"
+
 yum install -y python3 python3-devel.ppc64le git gcc gcc-c++ libffi make
 
 #Installing nvm
