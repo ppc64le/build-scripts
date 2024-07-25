@@ -48,7 +48,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #Build
-mvn install 
+mvn install-x test
 if [ $? != 0 ]
 then
   echo "Build failed for $PACKAGE_NAME-$PACKAGE_VERSION"
@@ -57,7 +57,8 @@ fi
   
  
 #Test
-mvn test
+mvn test -Dlog4j.configuration=file:log4j.properties
+#mvn test
 if [ $? != 0 ]
 then
   echo "Test execution failed for $PACKAGE_NAME-$PACKAGE_VERSION"
