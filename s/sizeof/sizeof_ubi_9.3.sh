@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : sizeof
-# Version       : master
+# Version       : v0.4.3
 # Source repo   : https://github.com/ehcache/sizeof
 # Tested on     : UBI:9.3
 # Language      : Java
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=sizeof
-PACKAGE_VERSION=${1:-master}
+PACKAGE_VERSION=${1:-v0.4.3}
 PACKAGE_URL=https://github.com/ehcache/sizeof
 
 yum install git wget java-1.8.0-openjdk java-1.8.0-openjdk-devel java-1.8.0-openjdk-headless -y
