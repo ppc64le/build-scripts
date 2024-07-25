@@ -6,6 +6,8 @@
 # Source repo   : https://github.com/seaweedfs/seaweedfs.git
 # Tested on     : UBI:9.3
 # Script License: Apache License, Version 2 or later
+# Language          : go
+# Travis-Check      : True
 # Maintainer    :govind jadav <govind.jadhav3@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
