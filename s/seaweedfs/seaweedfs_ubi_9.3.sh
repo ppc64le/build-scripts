@@ -20,7 +20,7 @@ PACKAGE_NAME=seaweedfs
 PACKAGE_VERSION=${1:-3.71}
 PACKAGE_URL=https://github.com/seaweedfs/seaweedfs.git
 
-sudo yum install -y git gcc wget make java-17-openjdk java-17-openjdk-devel  openssl-devel bzip2-devel libffi-devel zlib-devel sqlite-devel python3 python3-devel python3-pip gcc-c++
+sudo yum install -y git gcc wget make java-17-openjdk java-17-openjdk-devel
 
 export GO_VERSION="1.22.0"
 wget https://golang.org/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
