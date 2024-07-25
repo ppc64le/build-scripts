@@ -48,7 +48,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #Build
-mvn install -x test
+mvn install -DskipTests
 if [ $? != 0 ]
 then
   echo "Build failed for $PACKAGE_NAME-$PACKAGE_VERSION"
