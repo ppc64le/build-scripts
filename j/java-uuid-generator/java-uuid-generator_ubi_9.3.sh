@@ -50,6 +50,7 @@ if ! mvn install -DskipTests; then
     exit 1
 fi
 
+#This test is skipped because it attempts to access a port that is either blocked or cannot be opened on the VM due to firewall restrictions.
 if ! mvn test -Dtest='!**/EgressInterfaceFinderTest.java'; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
