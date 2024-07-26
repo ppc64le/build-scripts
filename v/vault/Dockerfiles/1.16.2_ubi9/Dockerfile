@@ -1,8 +1,8 @@
 FROM registry.access.redhat.com/ubi9 as builder
 
-ARG VAULT_VERSION=v1.16.2
+ARG VAULT_VERSION=v1.17.2
 
-ARG GO_VERSION=1.22.1
+ARG GO_VERSION=1.22.5
 
 RUN yum install -y gcc-c++ wget tar gzip git make && \
     wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz && \

@@ -2,7 +2,7 @@
   "maintainer": "vinodk99",
   "package_name": "vault",
   "github_url": "https://github.com/hashicorp/vault.git",
-  "version": "v1.16.2",
+  "version": "v1.17.2",
   "default_branch": "main",
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
   "package_dir": "v/vault/",
@@ -32,7 +32,7 @@
       "GO_VERSION": "1.22.1"
     }
   },
-  "v1.*.*": {
+  "v1.13.1": {
     "dir": "1.13.1-ubi8",
     "args": {
       "VAULT_VERSION": "$PACKAGE_VERSION",
@@ -79,7 +79,7 @@
     "build_script": "vault_ubi_9.3.sh",
     "args": {
       "VAULT_VERSION": "$PACKAGE_VERSION",
-      "GO_VERSION": "1.22.1"
+      "GO_VERSION": "1.22.5"
     }
   }
 }
