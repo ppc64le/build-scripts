@@ -19,10 +19,6 @@
 # ----------------------------------------------------------------------------
 #
 
-PACKAGE_NAME=porta
-PACKAGE_VERSION=${1:-3scale-2.14.1-GA}
-PACKAGE_URL=https://github.com/3scale/porta.git
-
 docker run -t -d --network host --privileged --shm-size=3gb --name porta-ubi-9 registry.access.redhat.com/ubi9/ubi:9.3 /usr/sbin/init
 
 docker exec -i porta-ubi-9 /bin/bash << 'EOF'
@@ -90,7 +86,6 @@ mv node-v14.18.0-linux-ppc64le /opt/nodejs
 export PATH="/opt/nodejs/bin:${PATH}"
 
 # check node version
-node --version
 node --version
 
 # Install dependencies
