@@ -1,0 +1,15 @@
+{
+  "maintainer": "santhoshkotla2929",
+  "package_name": "jakartaee-rest",
+  "github_url": "https://github.com/jakartaee/rest",
+  "version": "4.0.0-RELEASE",
+  "default_branch": "master",
+  "build_script": "jakartaee-rest_ubi_9.3.sh",
+  "package_dir": "j/jakartaee-rest",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "4.*.*-RELEASE": {
+    "build_script": "jakartaee-rest_ubi_9.3.sh"
+  }
+}

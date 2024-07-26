@@ -1,0 +1,12 @@
+{
+    "maintainer": "anurag-chitrakar",
+    "package_name": "tempo-operator",
+    "github_url": "https://github.com/grafana/tempo-operator",
+    "version": "v0.11.1",
+    "package_dir": "t/tempo-operator",
+    "default_branch": "main",
+    "docker_build": true,
+    "build_script": "tempo-operator_rhel_9.3.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false
+  }

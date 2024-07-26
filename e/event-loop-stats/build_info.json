@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "event-loop-stats",
+    "github_url": "https://github.com/bripkens/event-loop-stats",
+    "version": "v1.4.1",
+    "default_branch": "main",
+    "build_script": "event-loop-stats_ubi_9.3.sh",
+    "package_dir": "e/event-loop-stats",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v1.*.*": {
+        "build_script": "event-loop-stats_ubi_9.3.sh"
+    }
+}

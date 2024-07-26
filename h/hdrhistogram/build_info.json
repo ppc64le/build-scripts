@@ -1,0 +1,15 @@
+{
+    "maintainer": "pratibh-ibm",
+    "package_name": "hdrhistogram",
+    "github_url": "https://github.com/HdrHistogram/HdrHistogram.git",
+    "version": "HdrHistogram-2.1.12",
+    "default_branch": "master",
+    "package_dir": "h/hdrhistogram",
+    "build_script": "HdrHistogram_ubi_9.3.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": false,
+    "HdrHistogram-2.*.*": {
+      "build_script": "HdrHistogram_ubi_9.3.sh"
+    }
+  }
