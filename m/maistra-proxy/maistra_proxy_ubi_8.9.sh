@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : proxy
-# Version       : maistra-2.5
+# Version       : maistra-2.5.0
 # Source repo   : https://github.com/maistra/proxy
 # Tested on     : UBI 8.9
 # Language      : C++
@@ -15,14 +15,16 @@
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
-#
+
+#Note: Tested the script on ubi8.9 as maistra-proxy 2.5.0 is based on openssl 1.1 and RHEL 9 has openssl 3.0.x 
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=proxy
-PACKAGE_VERSION=${1:-maistra-2.5}
+PACKAGE_VERSION=${1:-maistra-2.5.0}
 PACKAGE_URL=https://github.com/maistra/${PACKAGE_NAME}
 PATH=$PATH:/usr/local/go/bin
 SOURCE_ROOT=${HOME}
+GO_VERSION=1.22.5
 GOPATH=$SOURCE_ROOT/go
 GOBIN=/usr/local/go/bin
 
@@ -55,13 +57,13 @@ export CC=$SOURCE_ROOT/llvm_build/bin/clang
 export CXX=$SOURCE_ROOT/llvm_build/bin/clang++
 
 # Install go
-if echo $(go version) | grep -q '1.20'; then
+if echo $(go version) | grep -q $GO_VERSION; then
 	echo "=======================Go $(go version) is already installed====================="
 else
-	echo "=======================Installing Go v1.20.13====================="
+	echo "=======================Installing Go v$GO_VERSION====================="
 	cd $SOURCE_ROOT
-	wget https://go.dev/dl/go1.20.13.linux-ppc64le.tar.gz
-	tar -C /usr/local -xzf go1.20.13.linux-ppc64le.tar.gz
+	wget https://go.dev/dl/go$GO_VERSION.linux-ppc64le.tar.gz
+	tar -C /usr/local -xzf go$GO_VERSION.linux-ppc64le.tar.gz
 	which go
 	go version
 fi
