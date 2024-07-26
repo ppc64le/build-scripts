@@ -34,7 +34,7 @@ export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-)(?=.*ppc
 export PATH=$PATH:$JAVA_HOME/bin
 
 #Gradle Install
-GRADLE_VERSION=6.2.0-SNAPSHOT
+GRADLE_VERSION=gradle-8.2-rc-1
 wget https://services.gradle.org/distributions/${GRADLE_VERSION}-bin.zip  && unzip -d /gradle /${GRADLE_VERSION}-bin.zip
 export GRADLE_HOME=/gradle/${GRADLE_VERSION}/
  
