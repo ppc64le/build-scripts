@@ -54,7 +54,6 @@ then
   exit 1
 fi
 
-
 #Test
 gradle test
 if [ $? != 0 ]
