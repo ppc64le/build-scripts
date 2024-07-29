@@ -1,9 +1,11 @@
 # ----------------------------------------------------------------------------
 #
-# Package       : mdp
+# Package       : mdp-toolkit
 # Version       : 3.5
 # Source repo   : https://github.com/mdp-toolkit/mdp-toolkit
 # Tested on     : rhel_7.3
+# Travis-Check  : True
+# Language      : Python
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Archa Bhandare <barcha@us.ibm.com>
 #
