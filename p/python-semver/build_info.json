@@ -1,7 +1,7 @@
 {
   "maintainer": "Vipul-Ajmera",
   "package_name": "python-semver",
-  "github_url": "https://github.com/python-semver/python-semver",
+  "github_url": "https://github.com/python-semver/python-semver.git",
   "version": "3.0.2",
   "default_branch": "master",
   "package_dir": "p/python-semver",
