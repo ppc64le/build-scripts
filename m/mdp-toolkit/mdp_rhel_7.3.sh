@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package       : mdp-toolkit
@@ -16,8 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
-#!/bin/bash
 
 export DEBIAN_FRONTEND=noninteractive
 
