@@ -47,7 +47,8 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #Build
-gradle clean build
+gradle clean build >> /tmp/BUILD.log 2>&1
+cat /tmp/BUILD.log | grep 'SUCCESS'
 if [ $? != 0 ]
 then
   echo "Build failed for $PACKAGE_NAME-$PACKAGE_VERSION"
