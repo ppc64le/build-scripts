@@ -7,7 +7,7 @@
 # Tested on        : UBI:9.3
 # Travis-Check     : True
 # Language         : Python
-# Script License   : GNU General Public License v3.0
+# Script License   : Apache License, Version 2 or later
 # Maintainer       : Ramnath Nayak <Ramnath.Nayak@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
