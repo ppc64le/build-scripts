@@ -8,7 +8,7 @@
 # Language      : C
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
+# Maintainer    : Vipul Ajmera <Vipul.Ajmera@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -22,8 +22,8 @@ PACKAGE_NAME=cyrus-sasl
 PACKAGE_VERSION=${1:-cyrus-sasl-2.1.28}
 PACKAGE_URL=https://github.com/cyrusimap/cyrus-sasl
 
-yum install -y openssl openssl-devel openssl-libs which libtool
-yum install -y gcc gcc-c++ make wget git cmake
+yum install -y gcc gcc-c++ make wget git cmake 
+yum install -y autoconf automake openssl openssl-devel openssl-libs libtool
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
