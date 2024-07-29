@@ -5,8 +5,8 @@
 # Version          : master
 # Source repo      : https://github.com/mdp-toolkit/mdp-toolkit
 # Tested on        : UBI:9.3
-# Language         : Python
 # Travis-Check     : True
+# Language         : Python
 # Script License   : GNU General Public License v3.0
 # Maintainer       : Ramnath Nayak <Ramnath.Nayak@ibm.com>
 #
