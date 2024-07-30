@@ -1,6 +1,6 @@
 FROM registry.access.redhat.com/ubi9:9.3
 
-MAINTAINER "Mohit Pawar <Mohit.Pawar@ibm.com>"
+MAINTAINER "Ramnath Nayak <Ramnath.Nayak@ibm.com>"
 
 ARG PACKAGE_VERSION=v3.2.5
 ARG NODE_VERSION=18.1.0
