@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : opentelmetry-operator
+# Package          : opentelemetry-operator
 # Version          : v0.104.0
 # Source repo      : https://github.com/open-telemetry/opentelemetry-operator
 # Tested on        : UBI:9.3
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=opentelmetry-operator
+PACKAGE_NAME=opentelemetry-operator
 PACKAGE_VERSION=${1:-v0.104.0}
 PACKAGE_URL=https://github.com/open-telemetry/opentelemetry-operator
 
