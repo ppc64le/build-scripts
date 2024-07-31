@@ -24,6 +24,10 @@ PACKAGE_NAME=geoserver
 PACKAGE_URL=https://github.com/geoserver/geoserver
 PACKAGE_VERSION=${1:-"2.25.3"}
 
+export LC_ALL=C.UTF-8
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
+
 # install tools and dependent packages
 yum install -y git wget java-17-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-17)(?=.*ppc64le)')
