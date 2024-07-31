@@ -22,7 +22,6 @@
 PACKAGE_NAME="argparse"
 PACKAGE_VERSION=${1:-2.0.1}
 PACKAGE_URL="https://github.com/nodeca/argparse.git"
-export NODE_VERSION=${NODE_VERSION:-20}
 
 #install dependencies
 sudo yum install -y python3 python3-devel.ppc64le git gcc gcc-c++ libffi make nodejs
