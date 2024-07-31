@@ -1,9 +1,9 @@
 FROM registry.access.redhat.com/ubi9/ubi:9.3
 
-MAINTAINER "Mohit Pawar <Mohit.Pawar@ibm.com>"
+MAINTAINER "Ramnath Nayak <Ramnath.Nayak@ibm.com>"
 
 ENV HOME_DIR=${PWD}
-ARG PACKAGE_VERSION=5.2
+ARG PACKAGE_VERSION=6.0
 
 RUN yum update -y && \
         yum install -y git gcc gcc-c++ yum-utils make automake autoconf libtool gdb* binutils rpm-build gettext wget && \

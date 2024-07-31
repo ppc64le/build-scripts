@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : BTrees
-# Version          : 5.2
-# Source repo      : https://github.com/zopefoundation/BTrees.git
+# Version          : 6.0
+# Source repo      : https://github.com/zopefoundation/BTrees
 # Tested on        : UBI:9.3
 # Language         : Python
 # Travis-Check     : True
 # Script License   : GNU General Public License v3.0
-# Maintainer       : Mohit Pawar <mohit.pawar@ibm.com>
+# Maintainer       : Ramnath Nayak <Ramnath.Nayak@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=BTrees
-PACKAGE_VERSION=${1:-5.2}
+PACKAGE_VERSION=${1:-6.0}
 PACKAGE_URL=https://github.com/zopefoundation/BTrees.git
 
 yum install -y --allowerasing git gcc gcc-c++ yum-utils make automake autoconf libtool gdb* binutils rpm-build gettext wget libffi-devel libpq-devel
