@@ -1,6 +1,6 @@
 {
   "maintainer": "Vipul-Ajmera",
-  "package_name": "async",
+  "package_name": "socketry-async",
   "github_url": "https://github.com/socketry/async.git",
   "version": "v2.14.2",
   "default_branch": "main",
