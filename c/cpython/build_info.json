@@ -1,5 +1,5 @@
 {
-  "maintainer": "Vipul-AJmera",
+  "maintainer": "Vipul-Ajmera",
   "package_name": "cpython",
   "github_url": "https://github.com/python/cpython",
   "package_dir": "c/cpython",
