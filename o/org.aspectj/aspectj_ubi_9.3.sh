@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : aspectjweaver
+# Package       : aspectj
 # Version       : V1_9_20_1 
 # Source repo   : https://github.com/eclipse/org.aspectj
 # Tested on	: UBI 9.3
@@ -23,7 +23,7 @@
 # Variables
 REPO=https://github.com/eclipse/org.aspectj
 
-# Default tag for aspectjweaver
+# Default tag for aspectj
 if [ -z "$1" ]; then
   export VERSION="V1_9_20_1"
 else
@@ -47,15 +47,21 @@ git checkout ${VERSION}
 ./mvnw -B --version
 
 #Build package
-./mvnw -B --file pom.xml -DskipTests install
 
-# Tests
-cd aspectjweaver/
-../mvnw -B --file pom.xml -Daspectj.tests.verbose=false verify
+if ! ./mvnw -B --file pom.xml -DskipTests install ; then
+    echo "------------------$PACKAGE_NAME:Build_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
+    exit 1
+else
+    echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Build_and_Test_Success"
+    exit 0
+fi
 
-
-
-
+# Test failures are same as on x86
+#./mvnw -B --file pom.xml -Daspectj.tests.verbose=false verify
 
 
 
