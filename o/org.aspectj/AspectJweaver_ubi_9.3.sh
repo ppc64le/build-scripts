@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------------
 #
-# Package       : AspectJweaver
+# Package       : aspectjweaver
 # Version       : V1_9_20_1 
 # Source repo   : https://github.com/eclipse/org.aspectj
 # Tested on	: UBI 9.3
@@ -23,7 +23,7 @@
 # Variables
 REPO=https://github.com/eclipse/org.aspectj
 
-# Default tag for AspectJweaver
+# Default tag for aspectjweaver
 if [ -z "$1" ]; then
   export VERSION="V1_9_20_1"
 else
@@ -46,11 +46,12 @@ git checkout ${VERSION}
 # check maven
 ./mvnw -B --version
 
-#Build and test package
+#Build package
 ./mvnw -B --file pom.xml -DskipTests install
 
-# testcase failures same as x86
-#./mvnw -B --file pom.xml -Daspectj.tests.verbose=false verify
+# Tests
+cd aspectjweaver/
+../mvnw -B --file pom.xml -Daspectj.tests.verbose=false verify
 
 
 
