@@ -2,9 +2,9 @@
 # ---------------------------------------------------------------------
 #
 # Package       : event-driven-ansible
-# Version       : v1.3.8
+# Version       : v1.4.7
 # Source repo   : https://github.com/ansible/event-driven-ansible/
-# Tested on     : UBI 8.7
+# Tested on     : UBI 9.3
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -21,15 +21,17 @@ set -e
 
 PACKAGE_NAME=event-driven-ansible
 PACKAGE_URL=https://github.com/ansible/event-driven-ansible/
-PACKAGE_VERSION=${1:-v1.3.8}
+PACKAGE_VERSION=${1:-v1.4.7}
 PACKAGE_MVN=${PACKAGE_MVN:-"3.8.8"}
 
-yum install java-17-openjdk-devel openssl-devel git wget tar python39-devel.ppc64le gcc rust cargo gcc-c++ cmake.ppc64le systemd-devel -y
-      
+yum install java-17-openjdk-devel openssl-devel git wget tar python-devel python3-pip gcc gcc-c++ cmake.ppc64le systemd-devel zlib-devel -y
+#to install latest rust as required by EDA package
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+. "$HOME/.cargo/env"
 wget https://dlcdn.apache.org/maven/maven-3/$PACKAGE_MVN/binaries/apache-maven-$PACKAGE_MVN-bin.tar.gz
 ls /usr/local
 tar -C /usr/local/ -xzf apache-maven-$PACKAGE_MVN-bin.tar.gz
-mv /usr/local/apache-maven-$PACKAGE_MVN /usr/local/maven
+mv  /usr/local/apache-maven-$PACKAGE_MVN /usr/local/maven
 ls /usr/local
 rm apache-maven-$PACKAGE_MVN-bin.tar.gz
 export M2_HOME=/usr/local/maven
@@ -52,6 +54,10 @@ if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
 fi
 
 cd $PACKAGE_NAME
+pip3 install "cython<3.0.0" wheel
+pip3 install "pyyaml==5.4.1" --no-build-isolation
+pip3 install urllib3==1.25.4
+pip3 install "psycopg[binary,pool]"
 pip3 install -r test_requirements.txt
 pip3 install docker-compose build
 pip3 install awscli --ignore-installed six
