@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : async
+# Package          : socketry-async
 # Version          : v2.14.2
 # Source repo      : https://github.com/socketry/async.git
 # Tested on        : UBI:9.3
