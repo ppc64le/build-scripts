@@ -1,46 +1,47 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : jqTree
-# Version       : 1.8.3
-# Source repo   : https://github.com/mbraak/jqTree
-# Tested on     : UBI: 9.3
-# Language      : TypeScript
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer    : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
+# Package          : jqTree
+# Version          : 1.8.3
+# Source repo      : https://github.com/mbraak/jqTree.git
+# Tested on        : UBI:9.3
+# Language         : JavaScript
+# Travis-Check     : True
+# Script License   : Apache License, Version 2 or later
+# Maintainer       : Vipul Ajmera <Vipul.Ajmera@ibm.com>
 #
-# Disclaimer: This script has been tested in root mode on given
-# ==========  platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of the
-#             package and/or distribution. In such case, please
-#             contact "Maintainer" of this script.
+# Disclaimer       : This script has been tested in root mode on given
+# ==========         platform using the mentioned version of the package.
+#                    It may not work as expected with newer versions of the
+#                    package and/or distribution. In such case, please
+#                    contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
 
+#variables
 PACKAGE_NAME=jqTree
 PACKAGE_VERSION=${1:-1.8.3}
-PACKAGE_URL=https://github.com/mbraak/jqTree
+PACKAGE_URL=https://github.com/mbraak/jqTree.git
 
-yum install git -y
+export NODE_VERSION=${NODE_VERSION:-20}
 
-export NODE_OPTIONS="--dns-result-order=ipv4first"
+#install dependencies
+yum install -y python3.11 python3.11-devel git gcc gcc-c++ libffi make
 
-#Installing node v18
-export NODE_VERSION=${NODE_VERSION:-18}
+#installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 source "$HOME"/.bashrc
 echo "installing nodejs $NODE_VERSION"
 nvm install "$NODE_VERSION" >/dev/null
 nvm use $NODE_VERSION
-npm install -g pnpm
 
-npm fund
+npm install -g pnpm
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME 
 git checkout $PACKAGE_VERSION
 
+#install
 if ! pnpm install ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -48,6 +49,7 @@ if ! pnpm install ; then
     exit 1
 fi
 
+#test
 if ! pnpm run jest ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
