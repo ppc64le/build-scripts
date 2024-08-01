@@ -48,6 +48,12 @@ if ! make ci-build ; then
        echo "$PACKAGE_VERSION $PACKAGE_NAME"
        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
        exit 1
+    else
+        echo "------------------$PACKAGE_NAME:Build_Pass---------------------"
+        echo "$PACKAGE_VERSION $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass |  Build_Pass"
+        exit 0
+
 fi
 
 
