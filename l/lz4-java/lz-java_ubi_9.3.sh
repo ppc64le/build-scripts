@@ -22,7 +22,7 @@ PACKAGE_NAME=lz4-java
 PACKAGE_VERSION=${1:-master}
 PACKAGE_URL=https://github.com/lz4/lz4-java
 
-yum install git wget unzip gcc-c++ gcc java-1.8.0-openjdk java-1.8.0-openjdk-devel java-1.8.0-openjdk-headless -y
+yum install git wget unzip gcc-c++ gcc java-1.8.0-openjdk java-1.8.0-openjdk-devel java-1.8.0-openjdk-headless lz4 lz4-devel lz4-libs -y
 export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
 
