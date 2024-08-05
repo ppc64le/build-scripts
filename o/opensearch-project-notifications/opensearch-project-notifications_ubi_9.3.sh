@@ -29,6 +29,7 @@ export PATH=$PATH:$JAVA_HOME/bin
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+cd notifications
 
 if ! ./gradlew build  ; then
     echo "------------------$PACKAGE_NAME:Install_fails---------------------"
