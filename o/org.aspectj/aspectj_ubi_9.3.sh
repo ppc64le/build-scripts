@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : aspectj
+# Package       : org.aspectj
 # Version       : V1_9_20_1 
 # Source repo   : https://github.com/eclipse/org.aspectj
 # Tested on	: UBI 9.3
@@ -23,7 +23,7 @@
 # Variables
 REPO=https://github.com/eclipse/org.aspectj
 
-# Default tag for aspectj
+# Default tag for org.aspectj
 if [ -z "$1" ]; then
   export VERSION="V1_9_20_1"
 else
