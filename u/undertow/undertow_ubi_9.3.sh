@@ -26,9 +26,8 @@ PACKAGE_VERSION=${1:-2.3.15.Final}
 
 
 # install tools and dependent packages
-yum install -y git wget java-17-openjdk-devel
-
-export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+yum install -y git wget java-11-openjdk-devel
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
 # install maven
@@ -48,7 +47,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #Build
-mvn install -DskipTest  
+mvn install 
 if [ $? != 0 ]
 then
   echo "Build failed for $PACKAGE_NAME-$PACKAGE_VERSION"
