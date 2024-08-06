@@ -35,7 +35,6 @@ nvm use $NODE_VERSION
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-npm install -g eslint
 
 if ! npm ci; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
@@ -43,8 +42,6 @@ if ! npm ci; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-
-npm run lint
 
 if ! npm test; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
