@@ -37,7 +37,6 @@ wget https://downloads.apache.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-m
 tar -C /usr/local/ -xzf apache-maven-$MAVEN_VERSION-bin.tar.gz
 mv /usr/local/apache-maven-$MAVEN_VERSION /usr/local/maven
 export M2_HOME=/usr/local/maven
- 
 # update the path env. variable
 export PATH=$PATH:$M2_HOME/bin
 
