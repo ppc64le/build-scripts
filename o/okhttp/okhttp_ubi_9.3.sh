@@ -44,8 +44,9 @@ export PATH=$PATH:$M2_HOME/bin
   
 # clone and checkout specified version
 git clone $PACKAGE_URL
-git checkout $PACKAGE_VERSION
 cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
+
   
 #Build
 mvn install 
