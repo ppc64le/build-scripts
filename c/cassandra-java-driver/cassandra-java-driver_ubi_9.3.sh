@@ -40,7 +40,7 @@ if ! mvn clean install -DskipTests ; then
 fi
 
 #test
-if ! mvn test ; then
+if ! mvn verify ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
