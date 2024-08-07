@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : okhttp
-# Version       : 4.12.0
+# Version       : parent-4.12.0
 # Source repo   : https://github.com/square/okhttp
 # Tested on     : UBI 9.3
 # Language      : Kotlin,Others
