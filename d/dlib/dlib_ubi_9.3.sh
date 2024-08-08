@@ -48,7 +48,7 @@ cd ../dlib/test
 sed -i 's/max(abs(subm(mat(imout),rect) - subm(out,rect))) < 1e-7/max(abs(subm(mat(imout),rect) - subm(out,rect))) < 1e-5/' image.cpp
 mkdir build
 cd build
-cmake .. -DCMAKE_CXX_FLAGS="-Wno-error"
+cmake ..
 cmake --build . --config Release --parallel 4
 
 if ! ./dtest --runall ; then
