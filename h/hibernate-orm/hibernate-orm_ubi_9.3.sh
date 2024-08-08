@@ -22,7 +22,7 @@ PACKAGE_NAME=hibernate-orm
 PACKAGE_URL=https://github.com/hibernate/hibernate-orm
 PACKAGE_VERSION=${1:-6.4.10}
 
-sudo yum install -y  git gcc patch make java-17-openjdk-devel python3 python3-devel bzip2-devel zlib-devel openssl-devel
+yum install -y  git gcc patch make java-17-openjdk-devel python3 python3-devel bzip2-devel zlib-devel openssl-devel
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
 
