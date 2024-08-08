@@ -1,9 +1,9 @@
 #!/bin/bash
 # ----------------------------------------------------------------------------
 #
-# Package			: snowflake-jdbc
-# Version			: v3.18.0
-# Source repo		: https://github.com/snowflakedb/snowflake-jdbc
+# Package		: snowflake-jdbc
+# Version		: v3.18.0
+# Source repo	: https://github.com/snowflakedb/snowflake-jdbc
 # Tested on     : UBI 9.3
 # Language      : Java
 # Travis-Check  : True
