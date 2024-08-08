@@ -45,7 +45,7 @@ git checkout $PACKAGE_VERSION
 
   
 #Build
-./gradle build 
+./gradlew build 
 if [ $? != 0 ]
 then
   echo "Build failed for $PACKAGE_NAME-$PACKAGE_VERSION"
@@ -54,7 +54,7 @@ fi
   
   
 #Test
-./gradle test
+./gradlew test
 if [ $? != 0 ]
 then
   echo "Test execution failed for $PACKAGE_NAME-$PACKAGE_VERSION"
