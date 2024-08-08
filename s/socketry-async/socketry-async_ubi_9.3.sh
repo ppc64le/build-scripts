@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : socketry-async
-# Version          : v2.14.2
+# Version          : v2.15.3
 # Source repo      : https://github.com/socketry/async.git
 # Tested on        : UBI:9.3
 # Language         : Ruby
@@ -20,7 +20,7 @@
 
 #variables
 PACKAGE_NAME=async
-PACKAGE_VERSION=${1:-v2.14.2}
+PACKAGE_VERSION=${1:-v2.15.3}
 PACKAGE_URL=https://github.com/socketry/async.git
 
 #dependencies
