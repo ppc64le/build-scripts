@@ -31,15 +31,11 @@ yum install -y java-11-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
-# install maven
-MAVEN_VERSION=${MAVEN_VERSION:-3.8.8}
-wget https://downloads.apache.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
-tar -C /usr/local/ -xzf apache-maven-$MAVEN_VERSION-bin.tar.gz
-mv /usr/local/apache-maven-$MAVEN_VERSION /usr/local/maven
-export M2_HOME=/usr/local/maven
- 
+GRADLE_VERSION=gradle-8.2-rc-1
+wget https://services.gradle.org/distributions/${GRADLE_VERSION}-bin.zip  && unzip -d /gradle /${GRADLE_VERSION}-bin.zip
+export GRADLE_HOME=/gradle/${GRADLE_VERSION}/
 # update the path env. variable
-export PATH=$PATH:$M2_HOME/bin
+export PATH=${GRADLE_HOME}/bin:${PATH}
   
   
 # clone and checkout specified version
@@ -49,7 +45,7 @@ git checkout $PACKAGE_VERSION
 
   
 #Build
-mvn install 
+./gradle build 
 if [ $? != 0 ]
 then
   echo "Build failed for $PACKAGE_NAME-$PACKAGE_VERSION"
@@ -58,7 +54,7 @@ fi
   
   
 #Test
-mvn test
+./gradle test
 if [ $? != 0 ]
 then
   echo "Test execution failed for $PACKAGE_NAME-$PACKAGE_VERSION"
