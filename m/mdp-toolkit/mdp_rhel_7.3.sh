@@ -24,8 +24,8 @@ export DEBIAN_FRONTEND=noninteractive
 yum update -y
 
 ## Install dependencies
-yum install -y python git gcc-c++ python3-devel.ppc64le python-test \
-easy_install pip && pip install --upgrade setuptools \
+yum install -y python git gcc-c++ python3-devel.ppc64le python3-test python3-pip git \
+pip install --upgrade setuptools \
     virtualenv mock ipython_genutils pytest traitlets
 
 ## Clone repo
