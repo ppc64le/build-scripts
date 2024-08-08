@@ -49,7 +49,7 @@ sed -i 's/max(abs(subm(mat(imout),rect) - subm(out,rect))) < 1e-7/max(abs(subm(m
 mkdir build
 cd build
 cmake ..
-cmake --build . --config Release --parallel 4
+cmake --build . --config Release 
 
 if ! ./dtest --runall ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
