@@ -24,8 +24,7 @@ export DEBIAN_FRONTEND=noninteractive
 yum update -y
 
 ## Install dependencies
-yum install -y python git gcc-c++ python-devel.ppc64le \
-    python-virtualenv python-test spicy
+yum install -y python git gcc-c++ python3-devel.ppc64le python-test \
 easy_install pip && pip install --upgrade setuptools \
     virtualenv mock ipython_genutils pytest traitlets
 
@@ -34,4 +33,4 @@ git clone https://github.com/mdp-toolkit/mdp-toolkit
 
 ## Build and Install
 cd mdp-toolkit
-python setup.py install && python setup.py -q test -q
+python3 setup.py install && python3 setup.py -q test -q
