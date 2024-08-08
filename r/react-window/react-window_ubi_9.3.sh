@@ -23,6 +23,7 @@ PACKAGE_VERSION=${1:-1.8.10}
 PACKAGE_URL=https://github.com/bvaughn/react-window
 
 export NODE_VERSION=${NODE_VERSION:-16}
+export NODE_OPTIONS="--dns-result-order=ipv4first"
 
 yum install -y python3 python3-devel.ppc64le git gcc gcc-c++ libffi make
 
