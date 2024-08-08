@@ -41,13 +41,13 @@ cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 if ! npm install -g yarn; then
-    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+    echo "------------------$PACKAGE_NAME:yarn_install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Yarn_Install_Fails"
     exit 1
 fi
 
-if ! npm install && npm audit fix --force; then
+if ! yarn install; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
