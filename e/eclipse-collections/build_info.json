@@ -1,0 +1,15 @@
+{
+  "maintainer": "mayurbhosure2",
+  "package_name": "eclipse-collections",
+  "github_url": "https://github.com/eclipse/eclipse-collections",
+  "version": "eclipse-collections-11.1.0",
+  "default_branch": "2.18",
+  "build_script": "eclipse-collections_ubi_9.3.sh",
+  "package_dir": "e/eclipse-collections",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "eclipse-collections-11.*.*": {
+    "build_script": "eclipse-collections_ubi_9.3.sh"
+  }
+}
