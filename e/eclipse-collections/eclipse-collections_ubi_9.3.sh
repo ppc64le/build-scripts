@@ -3,8 +3,8 @@
 #
 # Package       : eclipse-collections
 # Version       : 11.1.0
-# Source repo   : 
-# Tested on     : UBI: 9.3 https://github.com/eclipse/eclipse-collections
+# Source repo   : https://github.com/eclipse/eclipse-collections
+# Tested on     : UBI 9.3 
 # Language      : Java
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -38,18 +38,23 @@ export PATH=$PATH:$M2_HOME/bin
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+
 #Build
-mvn -B clean install -fae
-if [ $? != 0 ]
-then
-  echo "Build failed for $PACKAGE_NAME-$PACKAGE_VERSION"
-  exit 1
+if ! mvn -B clean install -fae ; then
+    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    exit 1
+fi 
+
+if ! mvn test -DforkCount=2 ; then
+    echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    exit 0
 fi
-#Test
-mvn test -DforkCount=2
-if [ $? != 0 ]
-then
-  echo "Test execution failed for $PACKAGE_NAME-$PACKAGE_VERSION"
-  exit 2
-fi
-exit 0
