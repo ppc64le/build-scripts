@@ -2,7 +2,7 @@
   "maintainer": "mayurbhosure2",
   "package_name": "eclipse-collections",
   "github_url": "https://github.com/eclipse/eclipse-collections",
-  "version": "eclipse-collections-11.1.0",
+  "version": "11.1.0",
   "default_branch": "2.18",
   "build_script": "eclipse-collections_ubi_9.3.sh",
   "package_dir": "e/eclipse-collections",
