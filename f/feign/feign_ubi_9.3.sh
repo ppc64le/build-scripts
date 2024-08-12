@@ -5,7 +5,7 @@
 # Package       : feign
 # Version       : 13.3
 # Source repo   : https://github.com/OpenFeign/feign
-# Tested on     : UBI 8.7
+# Tested on     : UBI:9.3
 # Language      : Java
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
