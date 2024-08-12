@@ -29,7 +29,6 @@ yum install -y git wget unzip sudo make gcc gcc-c++ cmake
 
 # setup java environment
 yum install -y java java-devel
-
 export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-)(?=.*ppc64le)') 
 # update the path env. variable
 export PATH=$PATH:$JAVA_HOME/bin
