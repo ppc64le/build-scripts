@@ -41,8 +41,7 @@ export PATH=${GRADLE_HOME}/bin:${PATH}
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-
-  
+ 
 #Build
 #./gradlew build
 ./gradlew check -x test
