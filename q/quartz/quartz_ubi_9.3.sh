@@ -37,7 +37,6 @@ export GRADLE_HOME=/gradle/${GRADLE_VERSION}/
 # update the path env. variable
 export PATH=${GRADLE_HOME}/bin:${PATH}
 
-
 # Cloning the repository
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
