@@ -49,8 +49,7 @@ then
   echo "Build failed for $PACKAGE_NAME-$PACKAGE_VERSION"
   exit 1
 fi
-  
- 
+   
 #Test
 ./gradlew test
 if [ $? != 0 ]
