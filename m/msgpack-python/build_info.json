@@ -4,7 +4,7 @@
 	"github_url": "https://github.com/msgpack/msgpack-python",
 	"version": "v1.0.8",
 	"default_branch": "master",
-	"build_script": "pyyaml_ubi_9.3.sh",
+	"build_script": "msgpack-python_ubi_9.3.sh",
 	"package_dir": "m/msgpack-python",
 	"docker_build": false,
 	"validate_build_script": true,
