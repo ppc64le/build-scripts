@@ -1,0 +1,12 @@
+{
+    "maintainer": "pooja0805",
+    "package_name": "owasp-java-encoder",
+    "github_url": "https://github.com/OWASP/owasp-java-encoder.git",
+    "version": "v1.3.0",
+    "default_branch": "main",
+    "package_dir": "o/owasp-java-encoder/",
+    "build_script": "owasp-java-encoder_ubi_9.3.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_cmd": false
+}
