@@ -1,0 +1,12 @@
+{
+  "maintainer": "pooja0805",
+  "package_name": "json-flattener",
+  "github_url": "https://github.com/wnameless/json-flattener.git",
+  "version": "json-flattener-0.16.6",
+  "default_branch": "master",
+  "package_dir": "j/json-flattener/",
+  "build_script": "json-flattener_ubi_9.3.sh",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_cmd": false
+}
