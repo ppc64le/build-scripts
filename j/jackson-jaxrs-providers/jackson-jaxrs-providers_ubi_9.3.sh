@@ -24,7 +24,6 @@ PACKAGE_NAME=jackson-jaxrs-providers
 PACKAGE_URL=https://github.com/FasterXML/jackson-jaxrs-providers.git
 PACKAGE_VERSION=${1:-jackson-jaxrs-providers-2.17.2}
 
-
 # install tools and dependent packages
 yum install -y git wget unzip java-11-openjdk-devel
 
