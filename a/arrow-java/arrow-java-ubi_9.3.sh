@@ -40,7 +40,6 @@ tar -C /usr/local/ -xzf apache-maven-$MAVEN_VERSION-bin.tar.gz
 mv /usr/local/apache-maven-$MAVEN_VERSION /usr/local/maven
 
 export M2_HOME=/usr/local/maven
-
 # update the path env. variable
 export PATH=$PATH:$M2_HOME/bin
 
