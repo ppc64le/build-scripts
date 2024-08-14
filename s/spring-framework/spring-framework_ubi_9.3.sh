@@ -28,7 +28,6 @@ yum install -y git wget unzip
 
 # setup java environment
 yum install -y java-17-openjdk java-17-openjdk-devel
-
 export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-)(?=.*ppc64le)') 
 # update the path env. variable
 export PATH=$PATH:$JAVA_HOME/bin
