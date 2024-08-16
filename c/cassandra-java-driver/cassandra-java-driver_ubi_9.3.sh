@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : cassandra-java-driver
-# Version          : 4.17.0
+# Version          : 4.18.1
 # Source repo      : https://github.com/apache/cassandra-java-driver.git
 # Tested on        : UBI:9.3
 # Language         : Java
@@ -20,7 +20,7 @@
 
 #variables
 PACKAGE_NAME=cassandra-java-driver
-PACKAGE_VERSION=${1:-4.17.0}
+PACKAGE_VERSION=${1:-4.18.1}
 PACKAGE_URL=https://github.com/apache/cassandra-java-driver.git
 
 #install dependencies
