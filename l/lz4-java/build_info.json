@@ -1,0 +1,15 @@
+{
+    "maintainer": "vinodk99",
+    "package_name": "lz4-java",
+    "github_url": "https://github.com/lz4/lz4-java",
+    "version": "master",
+    "default_branch": "master",
+    "package_dir": "l/lz4-java/",
+    "build_script": "lz-java_ubi_9.3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "master": {
+      "build_script": "lz-java_ubi_9.3.sh"
+    } 
+  }
