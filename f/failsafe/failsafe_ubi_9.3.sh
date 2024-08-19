@@ -23,7 +23,7 @@ PACKAGE_VERSION=${1:-failsafe-parent-3.3.2}
 PACKAGE_URL=https://github.com/failsafe-lib/failsafe.git
 
 # Install dependencies.
-yum install -y yum-utils git wget tar java-17-openjdk-devel
+sudo yum install -y yum-utils git wget tar java-17-openjdk-devel
 
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
