@@ -21,6 +21,10 @@ PACKAGE_NAME=terra
 PACKAGE_VERSION=${1:-1.7-78}
 PACKAGE_URL=https://github.com/cran/terra
 
+export LC_ALL=C.UTF-8
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
+
 yum install -y wget
 
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
