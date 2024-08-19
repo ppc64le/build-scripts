@@ -39,6 +39,10 @@ export PATH=$HOME/apache-maven-${MAVEN_VERSION}/bin:${PATH}
 # Set ENV variables
 export M2_HOME=$HOME/apache-maven-${MAVEN_VERSION}
 
+export LC_ALL=C.UTF-8
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
+
 # Clone failsafe repo
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
