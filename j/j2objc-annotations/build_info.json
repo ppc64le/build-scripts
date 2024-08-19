@@ -1,0 +1,15 @@
+{
+  "maintainer": "stutiibm",
+  "package_name": "j2objc",
+  "github_url": "https://github.com/google/j2objc",
+  "version": "2.8",
+  "default_branch": "master",
+  "package_dir": "j/j2objc",
+  "build_script": "j2objc-annotations_ubi_9_3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+    "build_script": "j2objc-annotations_ubi_9_3.sh"
+  }
+}
