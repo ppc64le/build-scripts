@@ -1,11 +1,14 @@
 {
-  "maintainer": "shubham-garud",
+  "maintainer": "ramnathnayak-ibm",
   "package_name": "gcp-metadata",
   "github_url": "https://github.com/googleapis/gcp-metadata",
   "version": "v6.1.0",
   "default_branch": "main",
-  "build_script": "gcp-metadata_ubi_8.7.sh",
+  "build_script": "gcp-metadata_ubi_9.3.sh",
   "package_dir": "g/gcp-metadata",
   "docker_build": false,
-  "validate_build_script": true
+  "validate_build_script": true,
+  "v*.*.*" : {
+       "build_script": "gcp-metadata_ubi_9.3.sh"
+    }
 }
