@@ -6,7 +6,7 @@
 # Source repo	    : https://github.com/googleapis/retry-request
 # Tested on	    : UBI 9.3
 # Language          : Node
-# Travis-Check      : True
+# Travis-Check      : False
 # Script License    : MIT License
 # Maintainer	    : Prachi Kurade <prachi.kurade1@ibm.com>
 #
