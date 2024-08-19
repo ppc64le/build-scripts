@@ -48,7 +48,6 @@ mvn --version
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-cd annotations/
 
 if ! mvn -Dgpg.skip=true clean install; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
