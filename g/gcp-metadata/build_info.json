@@ -7,6 +7,7 @@
   "build_script": "gcp-metadata_ubi_9.3.sh",
   "package_dir": "g/gcp-metadata",
   "docker_build": false,
+  "use_non_root_user": false,
   "validate_build_script": true,
   "v*.*.*" : {
        "build_script": "gcp-metadata_ubi_9.3.sh"
