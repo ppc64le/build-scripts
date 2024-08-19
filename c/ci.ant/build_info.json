@@ -9,7 +9,7 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "liberty-ant-tasks-1.9.15": {
+  "liberty-ant-tasks-*": {
     "build_script": "ci.ant_ubi_9_3.sh"
   }
 }
