@@ -24,7 +24,7 @@ set -e
 # variables
 PACKAGE_NAME=delta
 PACKAGE_URL=https://github.com/delta-io/delta
-PACKAGE_VERSION=${1:-2.0.0}
+PACKAGE_VERSION=${1:-v2.0.0}
 
 
 # install tools and dependent packages
@@ -45,7 +45,10 @@ export SCALA_VERSION="2.13.13"
 #clone package
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
-git checkout v$PACKAGE_VERSION
+git checkout $PACKAGE_VERSION
+
+#clear command line arguments
+set --
 
 #Build
 if ! build/sbt compile ; then
