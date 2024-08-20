@@ -46,8 +46,9 @@ cp -R apache-maven-3.8.7 /usr/local
 ln -s /usr/local/apache-maven-3.8.7/bin/mvn /usr/bin/mvn
  
 #copying toolchains.xml file to .m2 folder to exceute tests
+wget wget https://raw.githubusercontent.com/Vipul-Ajmera/build-scripts/replica-master/f/feign/toolchains.xml
 mkdir ~/.m2
-cp /build-scripts/f/feign/toolchains.xml ~/.m2/
+cp toolchains.xml ~/.m2/
 
 #clone repository
 git clone $PACKAGE_URL 
