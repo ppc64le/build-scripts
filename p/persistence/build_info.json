@@ -1,0 +1,15 @@
+{
+    "maintainer": "vinodk99",
+    "package_name": "persistence",
+    "github_url": "https://github.com/jakartaee/persistence",
+    "version": "3.2-3.2.0-RELEASE",
+    "default_branch": "master",
+    "package_dir": "p/persistence",
+    "build_script": "persistence_ubi_9.3.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "*.*-*.*.*-*": {
+      "build_script": "persistence_ubi_9.3.sh"
+    }
+  }
