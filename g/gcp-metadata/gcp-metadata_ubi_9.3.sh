@@ -21,7 +21,7 @@ PACKAGE_NAME=gcp-metadata
 PACKAGE_VERSION=${1:-v6.1.0}
 PACKAGE_URL=https://github.com/googleapis/gcp-metadata
 
-export NODE_VERSION=${NODE_VERSION:-18} 
+export NODE_VERSION=${NODE_VERSION:-20} 
 yum install -y python3 python3-devel git gcc gcc-c++ libffi make wget
 
 #Installing nvm
