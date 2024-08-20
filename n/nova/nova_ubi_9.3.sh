@@ -35,7 +35,7 @@ cd rust-1.75.0-powerpc64le-unknown-linux-gnu
 export PATH=$HOME/.cargo/bin:$PATH
 rustc -V
 cargo  -V
-cd ../
+cd ..
 
 python3 -m venv nova-venv
 source nova-venv/bin/activate
