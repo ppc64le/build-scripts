@@ -26,7 +26,6 @@ PACKAGE_NAME=delta
 PACKAGE_URL=https://github.com/delta-io/delta
 PACKAGE_VERSION=${1:-v2.0.0}
 
-
 # install tools and dependent packages
 #yum -y update
 yum install -y git wget 
