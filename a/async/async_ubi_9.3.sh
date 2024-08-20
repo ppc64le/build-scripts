@@ -22,7 +22,7 @@ PACKAGE_NAME=async
 PACKAGE_VERSION=${1:-v3.2.5}
 PACKAGE_URL=https://github.com/caolan/async.git
 
-export NODE_VERSION=${NODE_VERSION:-18}
+export NODE_VERSION=${NODE_VERSION:-20}
 yum install git make -y
 
 #Installing nvm
@@ -36,7 +36,7 @@ git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if ! npm ci; then
+if ! npm install; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
