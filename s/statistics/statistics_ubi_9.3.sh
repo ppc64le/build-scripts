@@ -29,11 +29,11 @@ export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
 
 
 # Install maven
-wget https://archive.apache.org/dist/maven/maven-3/3.0.5/binaries/apache-maven-3.0.5-bin.tar.gz
-tar -xvzf apache-maven-3.0.5-bin.tar.gz
-cp -R apache-maven-3.0.5 /usr/local
-ln -s /usr/local/apache-maven-3.0.5/bin/mvn /usr/bin/mvn
-rm -f apache-maven-3.0.5-bin.tar.gz
+wget https://archive.apache.org/dist/maven/maven-3/3.0.5/binaries/apache-maven-3.8.6-bin.tar.gz
+tar -xvzf apache-maven-3.8.6-bin.tar.gz
+cp -R apache-maven-3.8.6 /usr/local
+ln -s /usr/local/apache-maven-3.8.6/bin/mvn /usr/bin/mvn
+rm -f apache-maven-3.8.6-bin.tar.gz
 mvn -version
 
 
