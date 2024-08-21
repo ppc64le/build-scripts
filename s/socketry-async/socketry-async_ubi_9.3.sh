@@ -23,23 +23,19 @@ PACKAGE_NAME=async
 PACKAGE_VERSION=${1:-v2.15.3}
 PACKAGE_URL=https://github.com/socketry/async.git
 
-#dependencies
-yum install -y git wget
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
-wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
-mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
+#install dependencies
+yum install -y make gcc gcc-c++ autoconf automake glibc-headers \
+    glibc-devel openssl-devel git procps ncurses-devel m4 \
+    redhat-rpm-config xz info libyaml-devel zlib-devel \
+    https://rpmfind.net/linux/centos-stream/9-stream/AppStream/ppc64le/os/Packages/bison-3.7.4-5.el9.ppc64le.rpm \
+    https://rpmfind.net/linux/centos-stream/9-stream/AppStream/ppc64le/os/Packages/readline-devel-8.1-4.el9.ppc64le.rpm
 
-dnf module list ruby
-dnf module reset ruby -y
-dnf module enable ruby:3.1 -y
-dnf module -y update ruby:3.1
-yum install -y ruby
-ruby -v
+curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
+curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import -
+curl -L https://get.rvm.io | bash -s stable
+source /etc/profile.d/rvm.sh
 
-yum install -y gcc gcc-c++ make libffi-devel libxml2-devel libxslt-devel zlib-devel ruby-devel
+rvm install ruby-3.3.0
 
 gem install bundle
 
@@ -47,7 +43,6 @@ gem install bundle
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-
 
 #build
 if ! bundle install; then
@@ -69,4 +64,3 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Build_and_Test_Success"
     exit 0
 fi
-
