@@ -1,7 +1,7 @@
 #!/bin/bash -e   
 # ----------------------------------------------------------------------------
 #
-# Package       : metrics
+# Package       : metrics-core
 # Version       : v4.2.18
 # Source repo   : https://github.com/dropwizard/metrics
 # Tested on     : UBI: 9.3 
