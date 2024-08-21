@@ -1,0 +1,16 @@
+{
+   "maintainer": "stutiibm",
+   "package_name": "selectr",
+   "github_url": "https://github.com/cran/selectr",
+   "version": "0.4.2",
+   "default_branch": "master",
+   "build_script": "selectr_ubi_9.3.sh",
+   "package_dir": "s/selectr",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*.*.*": {
+     "build_script": "selectr_ubi_9.3.sh"
+   }
+}
+
