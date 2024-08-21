@@ -23,7 +23,7 @@ PACKAGE_VERSION=${1:-v3.10.8}
 PACKAGE_URL=https://github.com/ehcache/ehcache3
 
 # Install dependencies and tools.
-yum install -y git wget java-17-openjdk-devel.ppc64le java-17-openjdk.ppc64le xz
+yum install -y git wget java-17-openjdk-devel.ppc64le java-17-openjdk.ppc64le java-17-openjdk-headless.ppc64le xz
 
 # Clone and build source
 git clone $PACKAGE_URL
@@ -31,14 +31,14 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 
-if ! ./gradlew build -x test; then
+if !./gradlew build -x test; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Fails"
     exit 1
 fi
 
-if ! ./gradlew test -x ':ehcache-impl:test'; then
+if !./gradlew test -x ':ehcache-impl:test'; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_success_but_test_Fails"
