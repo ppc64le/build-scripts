@@ -5,6 +5,7 @@
 # Version       : jena-4.9.0
 # Source repo   : https://github.com/apache/jena/tree/main/jena-base
 # Tested on     : UBI: 9.3
+# Travis-Check : True
 # Script License: Apache License 2.0
 # Maintainer's  : Mayur Bhosure <Mayur.Bhosure2@ibm.com>
 #
