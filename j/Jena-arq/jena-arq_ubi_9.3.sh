@@ -5,6 +5,7 @@
 # Version       : jena-4.9.0
 # Source repo   : https://github.com/apache/jena/tree/main/jena-arq
 # Tested on     : UBI: 9.3
+# Language : Java
 # Travis-Check : True
 # Script License: Apache License 2.0
 # Maintainer's  : Mayur Bhosure <Mayur.Bhosure2@ibm.com>
