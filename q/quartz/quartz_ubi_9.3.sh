@@ -24,7 +24,6 @@ PACKAGE_NAME=quartz
 PACKAGE_URL=https://github.com/quartz-scheduler/quartz.git
 PACKAGE_VERSION=${1:-v2.5.0-rc1}
 
-
 # install tools and dependent packages
 yum install -y git wget unzip java-11-openjdk-devel
 
