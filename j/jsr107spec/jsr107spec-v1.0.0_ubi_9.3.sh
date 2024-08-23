@@ -50,8 +50,7 @@ git checkout $PACKAGE_VERSION
 
 
 #Build and test
-mvn clean install >> /tmp/BUILD.log 2>&1
-cat /tmp/BUILD.log | grep 'SUCCESS'
+mvn clean install
 if [ $? != 0 ]
 then
   echo "Build and Test failed for $PACKAGE_NAME-$PACKAGE_VERSION"
