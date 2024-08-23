@@ -1,6 +1,6 @@
 {
     "maintainer": "santhoshkotla2929",
-    "package_name": "websocket",
+    "package_name": "websocket-java",
     "github_url": "https://github.com/jakartaee/websocket",
     "version": "2.2.0-RELEASE",
     "default_branch": "master",
