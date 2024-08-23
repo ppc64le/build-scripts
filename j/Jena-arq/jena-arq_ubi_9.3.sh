@@ -50,7 +50,7 @@ cd $DIR
 git checkout $VERSION
 
 # Build and test package
-if ! mvn -B clean install -Dmaven.javadoc.skip=true -fae ; then
+if ! mvn -B --file pom.xml -Dmaven.javadoc.skip=true install; then
     echo "------------------$DIR:Install_fails-------------------------------------"
     echo "$REPO $DIR"
     echo "$DIR  |  $REPO | $VERSION | GitHub | Fail |  Install_Fails"
