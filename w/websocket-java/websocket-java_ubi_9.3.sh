@@ -1,7 +1,7 @@
 #!/bin/bash -e   
 # ----------------------------------------------------------------------------
 #
-# Package       : websocket 
+# Package       : websocket-java
 # Version       : 2.2.0-RELEASE
 # Source repo   : https://github.com/jakartaee/websocket 
 # Tested on     : UBI: 9.3
