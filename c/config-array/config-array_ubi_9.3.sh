@@ -7,7 +7,7 @@
 # Tested on	    : UBI 9.3
 # Language          : Node
 # Travis-Check      : True
-# Script License    : MIT License
+# Script License    : Apache 2.0 License
 # Maintainer	    : Prachi Kurade <prachi.kurade1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
