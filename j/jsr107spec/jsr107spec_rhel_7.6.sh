@@ -4,11 +4,11 @@
 # Package       : jsr107spec
 # Version       : 1.0.0
 # Source repo   : https://github.com/jsr107/jsr107spec.git
-# Tested on     : UBI 9.3
+# Tested on     : RHEL 7.6
 # Language      : Java
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Pratibh Goshi<pratibh.goshi@ibm.com>
+# Maintainer    : Pratham Murkute <prathamm@us.ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
