@@ -1,0 +1,18 @@
+{
+    "maintainer": "santhoshkotla2929",
+    "package_name": "owlapi",
+    "github_url": "https://github.com/owlcs/owlapi",
+    "version": "owlapi-parent-5.5.0",
+    "default_branch": "master",
+    "build_script": "owlapi_ubi_9.3.sh",
+    "package_dir": "o/owlapi",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "owlapi-parent-5.5.*": {
+      "build_script": "owlapi-parent-5.5.0_ubi_9.3.sh"   
+    },
+    "owlapi-parent-5.1.20":{
+       "build_script":"owlapi-parent-5.1.20_ubi_9.3.sh"
+    }    
+}
