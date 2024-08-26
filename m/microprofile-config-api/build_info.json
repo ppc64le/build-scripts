@@ -9,7 +9,7 @@
   "validate_build_script": true,
   "use_non_root_user": false,
   "docker_build": false,
-  "*.*.*": {
+  "3.*.*": {
     "build_script": "microprofile-config-api_ubi_9.3.sh"
   }
 }
