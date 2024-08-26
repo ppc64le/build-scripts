@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : microprofile-config-api
-# Version       : 1.3
+# Version       : 3.1
 # Source repo   : https://github.com/eclipse/microprofile-config
 # Tested on     : UBI: 9.3
 # Language      : Java
@@ -21,7 +21,7 @@
 set -e
 PACKAGE_NAME=microprofile-config
 PACKAGE_URL=https://github.com/eclipse/microprofile-config.git
-PACKAGE_VERSION=${1:-1.3}
+PACKAGE_VERSION=${1:-3.1}
 
 # install tools and dependent packages
 yum install -y git wget java-11-openjdk-devel
