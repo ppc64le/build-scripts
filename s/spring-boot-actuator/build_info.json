@@ -11,8 +11,5 @@
   "validate_build_script": true,
     "3.*.*" : {
        "build_script": "spring-boot-actuator_ubi_9.3.sh"
-  },
-    "2.*.*" : {
-       "build_script": "spring-boot-actuator_ubuntu_18.04.sh"
   }
 }
