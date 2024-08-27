@@ -24,7 +24,7 @@ PACKAGE_NAME=spring-boot-autoconfigure
 PACKAGE_URL=https://github.com/spring-projects/spring-boot
 PACKAGE_VERSION=${1:-3.3.3}
 
-yum install wget ant maven java-17-openjdk java-17-openjdk-devel -y
+yum install wget maven java-17-openjdk java-17-openjdk-devel -y
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
