@@ -5,7 +5,7 @@
 # Version       : rel/commons-csv-1.11.0
 # Source repo   : https://github.com/apache/commons-csv 
 # Tested on     : UBI: 9.3
-# Language      : Java,Logos
+# Language      : Java,shell
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : kotla santhosh<kotla.santhosh@ibm.com>
