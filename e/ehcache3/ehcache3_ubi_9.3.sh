@@ -23,8 +23,8 @@ PACKAGE_VERSION=${1:-v3.10.8}
 PACKAGE_URL=https://github.com/ehcache/ehcache3
 
 # Install dependencies and tools.
-yum install -y git wget java-21-openjdk-devel.ppc64le java-21-openjdk.ppc64le java-21-openjdk-headless.ppc64le xz
-export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
+yum install -y git wget java-1.8.0-openjdk-devel.ppc64le java-1.8.0-openjdk.ppc64le java-1.8.0-openjdk-headless.ppc64le xz
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
 
 # Clone and build source
 git clone $PACKAGE_URL
