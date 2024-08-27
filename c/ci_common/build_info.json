@@ -1,0 +1,15 @@
+{
+    "maintainer": "vinodk99",
+    "package_name": "ci_common",
+    "github_url": "https://github.com/OpenLiberty/ci.common",
+    "version": "ci.common-1.8.33",
+    "default_branch": "master",
+    "package_dir": "c/ci_common",
+    "build_script": "ci_common_ubi_9.3.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "ci.common-*.*.*": {
+      "build_script": "ci_common_ubi_9.3.sh"
+    }
+  }
