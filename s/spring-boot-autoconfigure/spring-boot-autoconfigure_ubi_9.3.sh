@@ -19,7 +19,6 @@
 # ----------------------------------------------------------------------------
 
 set -e
-
 PACKAGE_NAME=spring-boot-autoconfigure
 PACKAGE_URL=https://github.com/spring-projects/spring-boot
 PACKAGE_VERSION=${1:-3.3.3}
