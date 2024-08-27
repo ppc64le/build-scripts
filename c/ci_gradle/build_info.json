@@ -1,0 +1,15 @@
+{
+    "maintainer": "vinodk99",
+    "package_name": "ci_gradle",
+    "github_url": "https://github.com/OpenLiberty/ci.gradle",
+    "version": "liberty-gradle-plugin-3.8.3",
+    "default_branch": "main",
+    "package_dir": "c/ci_gradle",
+    "build_script": "ci_gradle_ubi_9.3.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "liberty-gradle-plugin-*.*.*": {
+      "build_script": "ci_gradle_ubi_9.3.sh"
+    }
+  }
