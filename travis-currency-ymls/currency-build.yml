@@ -6,6 +6,7 @@ language: shell
 branches:
   only:
   - master
+  - Updating_workspace_names_in_docker_stages
 
 
 env:
