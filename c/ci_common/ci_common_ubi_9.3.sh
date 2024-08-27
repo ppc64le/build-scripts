@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=ci.common
 PACKAGE_URL=https://github.com/OpenLiberty/ci.common
-PACKAGE_VERSION=${1:-4.0.2}
+PACKAGE_VERSION=${1:-ci.common-1.8.33}
 
 yum install git wget gcc gcc-c++ java-21-openjdk java-21-openjdk-devel java-21-openjdk-headless -y
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
