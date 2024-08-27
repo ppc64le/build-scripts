@@ -1,7 +1,7 @@
 {
     "maintainer": "pratibh-ibm",
     "package_name": "hadoop-thirdparty",
-    "github_url": " https://github.com/apache/hadoop-thirdparty.git",
+    "github_url": "https://github.com/apache/hadoop-thirdparty.git",
     "version": "release-1.3.0-RC1",
     "default_branch": "trunk",
     "package_dir": "h/hadoop-thirdparty",
