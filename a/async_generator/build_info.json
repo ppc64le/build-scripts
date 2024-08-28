@@ -1,0 +1,15 @@
+{
+    "maintainer": "Python Eco System",
+    "package_name": "async_generator",
+    "github_url": "https://github.com/python-trio/async_generator.git",
+    "version": "1.1",
+    "package_dir": "a/async_generator/",
+    "default_branch": "master",
+    "build_script": "async_generator_ubi_9.3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": "false",
+    "*.*":{
+      "build_script":"async_generator_ubi_9.3.sh"
+    }
+  }
