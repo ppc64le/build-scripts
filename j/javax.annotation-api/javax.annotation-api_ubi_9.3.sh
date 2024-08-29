@@ -1,7 +1,7 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package       : javax.annotation
+# Package       : javax.annotation-api
 # Version       : 1.3
 # Source repo   : https://github.com/javaee/javax.annotation.git
 # Tested on     : UBI 9.3
