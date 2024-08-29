@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : keycloak
-# Version          : 25.0.2
+# Version          : 25.0.4
 # Source repo      : https://github.com/keycloak/keycloak
 # Tested on        : UBI:9.3
 # Language         : Go
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=keycloak
-PACKAGE_VERSION=${1:-25.0.2}
+PACKAGE_VERSION=${1:-25.0.4}
 PACKAGE_URL=https://github.com/keycloak/keycloak
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
