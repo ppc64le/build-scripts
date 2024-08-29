@@ -1,0 +1,15 @@
+{
+  "maintainer": "sid226",
+  "package_name": "spring-boot-starter-jdbc",
+  "github_url": "https://github.com/spring-projects/spring-boot.git",
+  "version": "3.3.3",
+  "default_branch": "main",
+  "build_script": "spring-boot-starter-jdbc_ubi_9.3.sh",
+  "package_dir": "s/spring-boot-starter-jdbc",
+  "docker_build": false,
+  "use_non_root_user": "false", 
+  "validate_build_script": true,
+    "3.*.*" : {
+       "build_script": "spring-boot-starter-jdbc_ubi_9.3.sh"
+  }
+}
