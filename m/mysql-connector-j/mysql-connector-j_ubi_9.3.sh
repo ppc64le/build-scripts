@@ -72,6 +72,7 @@ if ! git clone $PACKAGE_URL $PACKAGE_NAME; then
     	echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Clone_Fails"
+	exit 1
 fi
 
 cd  $PACKAGE_NAME
@@ -84,7 +85,7 @@ if ! ant -Dcom.mysql.cj.build.jdk=`which javac | xargs readlink -f | xargs dirna
 	exit 1
 fi
 
-# tTst failures have been observed which are in parity with intel platform:
+# Test failures have been observed which are in parity with intel platform:
 
 # Running the test cases require a running MySql server instance. Currently MySql is not supported on ppc64le.
 # As a workaround MySql server instance needs to be run on an x86 machine and the corresponding connection URL needs 
@@ -107,3 +108,4 @@ fi
 	# echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
 	# exit 0
 # fi
+exit 0
