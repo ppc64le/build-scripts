@@ -1,0 +1,15 @@
+{
+    "maintainer": "santhoshkotla2929",
+    "package_name": "jackson-dataformats-binary",
+    "github_url": "https://github.com/FasterXML/jackson-dataformats-binary",
+    "version": "jackson-dataformats-binary-2.17.2",
+    "default_branch": "master",
+    "build_script": "jackson-dataformats-binary_ubi_9.3.sh",
+    "package_dir": "j/jackson-dataformats-binary",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "jackson-dataformats-binary-2.*.*": {
+      "build_script": "jackson-dataformats-binary_ubi_9.3.sh"	   
+    }    
+}
