@@ -2,7 +2,7 @@
   "maintainer": "Vipul-Ajmera",
   "package_name": "socketry-async",
   "github_url": "https://github.com/socketry/async.git",
-  "version": "v2.15.3",
+  "version": "v2.16.1",
   "default_branch": "main",
   "package_dir": "s/socketry-async",
   "build_script": "socketry-async_ubi_9.3.sh",
