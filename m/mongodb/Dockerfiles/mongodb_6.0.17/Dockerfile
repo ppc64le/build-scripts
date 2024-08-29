@@ -2,8 +2,11 @@
 #
 FROM ubuntu:focal
 # add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
-RUN groupadd -r mongodb && useradd -r -g mongodb mongodb
-
+RUN set -eux; \
+        groupadd --gid 999 --system mongodb; \
+        useradd --uid 999 --system --gid mongodb --home-dir /data/db mongodb; \
+        mkdir -p /data/db /data/configdb; \
+        chown -R mongodb:mongodb /data/db /data/configdb
 RUN set -eux; \
         apt-get update; \
         apt-get install -y --no-install-recommends \
@@ -15,12 +18,10 @@ RUN set -eux; \
                 apt-get install -y --no-install-recommends procps; \
         fi; \
         rm -rf /var/lib/apt/lists/*
-
 # grab gosu for easy step-down from root (https://github.com/tianon/gosu/releases)
 ENV GOSU_VERSION 1.17
 # grab "js-yaml" for parsing mongod's YAML config files (https://github.com/nodeca/js-yaml/releases)
 ENV JSYAML_VERSION 3.13.1
-
 RUN set -ex; \
         \
         savedAptMark="$(apt-mark showmanual)"; \
@@ -46,7 +47,11 @@ RUN set -ex; \
         command -v gpgconf && gpgconf --kill all || :; \
         rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc; \
         \
-        wget -O /js-yaml.js "https://github.com/nodeca/js-yaml/raw/${JSYAML_VERSION}/dist/js-yaml.js"; \
+# download/install js-yaml
+        mkdir -p /opt/js-yaml/; \
+        wget -O /opt/js-yaml/js-yaml.js "https://github.com/nodeca/js-yaml/raw/${JSYAML_VERSION}/dist/js-yaml.js"; \
+        wget -O /opt/js-yaml/package.json "https://github.com/nodeca/js-yaml/raw/${JSYAML_VERSION}/package.json"; \
+        ln -s /opt/js-yaml/js-yaml.js /js-yaml.js; \
 # TODO some sort of download verification here
         \
         apt-mark auto '.*' > /dev/null; \
@@ -57,9 +62,7 @@ RUN set -ex; \
         chmod +x /usr/local/bin/gosu; \
         gosu --version; \
         gosu nobody true
-
 RUN mkdir /docker-entrypoint-initdb.d
-
 RUN set -ex; \
         export GNUPGHOME="$(mktemp -d)"; \
         set -- '20691EEC35216C63CAF66CE1656408E390CFB1F5'; \
@@ -70,10 +73,8 @@ RUN set -ex; \
         command -v gpgconf && gpgconf --kill all || :; \
         rm -r "$GNUPGHOME"; \
         apt-key list
-
-ARG MONGO_MAJOR=5.0
-ARG MONGO_VERSION=5.0.28
-
+ARG MONGO_MAJOR=6.0
+ARG MONGO_VERSION=6.0.17
 # We install the necesary tools to compile mongo on ppc64le
 RUN apt-get update \
         && apt-get upgrade -y \
@@ -86,6 +87,7 @@ RUN apt-get update \
                 libcurl4-openssl-dev \
                 libssl-dev python3-dev python3-pip \
                 scons \
+                liblzma-dev \
 #        && apt-get install -y python3-pip \
         && rm -rf /var/lib/apt/lists/* \
         && mkdir -p /tmp/mongodb-src-r${MONGO_VERSION} \
@@ -94,7 +96,7 @@ RUN apt-get update \
         && git checkout r${MONGO_VERSION} \
         && sed -i '/PyYAML/d' etc/pip/components/core.req && sed -i '4 a PyYAML >= 3.0.0' etc/pip/components/core.req \
         && python3 -m pip install -r etc/pip/compile-requirements.txt \
-        && python3 buildscripts/scons.py install-mongod install-mongo --separate-debug=on --disable-warnings-as-errors DESTDIR=/usr/ --ssl=on --no-cache --release \
+        && python3 buildscripts/scons.py -j8 install-mongod install-mongos --separate-debug=on --disable-warnings-as-errors DESTDIR=/usr/ --ssl=on --no-cache --release \
         && apt-get purge -y --auto-remove \
                 ca-certificates \
                 wget \
@@ -105,29 +107,32 @@ RUN apt-get update \
                 python3-pip python3-setuptools \
                 libssl-dev \
                 scons \
+                liblzma-dev \
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/* \
         && rm -rf /tmp/mongodb-src-r${MONGO_VERSION} \
         && rm -f /tmp/mongodb.zip
 # ToDo: uninstall scons
-
-
-RUN mkdir -p /data/db /data/configdb \
-        && chown -R mongodb:mongodb /data/db /data/configdb
+RUN apt-get update && \
+    apt-get install -y wget && \
+    mkdir -p /tmp/mongosh-2.2.0 && \
+    cd /tmp/mongosh-2.2.0 && \
+    wget https://downloads.mongodb.com/compass/mongosh-2.2.0-linux-ppc64le.tgz && \
+    tar -zxvf mongosh-2.2.0-linux-ppc64le.tgz && \
+    cp /tmp/mongosh-2.2.0/mongosh-2.2.0-linux-ppc64le/bin/mongosh /usr/local/bin/ && \
+    cp /tmp/mongosh-2.2.0/mongosh-2.2.0-linux-ppc64le/bin/mongosh_crypt_v1.so /usr/local/lib/ && \
+    ln -s $(pwd)/bin/* /usr/local/bin/ && \
+    rm -f /tmp/mongosh-2.2.0/mongosh-2.2.0-linux-ppc64le.tgz && \
+    rm -rf /tmp/mongosh-2.2.0/mongosh-2.2.0-linux-ppc64le/
 VOLUME /data/db /data/configdb
-
+ENV HOME /data/db
 COPY docker-entrypoint.sh /usr/local/bin/
-
 # backwards compat
 RUN ln -s /usr/local/bin/docker-entrypoint.sh /entrypoint.sh \
         && chmod +x /usr/local/bin/docker-entrypoint.sh \
         && chmod +x /entrypoint.sh
 ENTRYPOINT ["docker-entrypoint.sh"]
-
 EXPOSE 27017
-
 USER mongodb
-
 CMD ["mongod"]
-
 
