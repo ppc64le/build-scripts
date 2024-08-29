@@ -1,11 +1,11 @@
 {
   "maintainer": "sid226",
-  "package_name": "S2-JDBC-Connector",
+  "package_name": "s2-jdbc-connector",
   "github_url": "https://github.com/memsql/S2-JDBC-Connector.git",
   "version": "v1.2.3",
   "default_branch": "master",
   "build_script": "s2-jdbc-connector_ubi_9.3.sh",
-  "package_dir": "s/S2-JDBC-Connector",
+  "package_dir": "s/s2-jdbc-connector",
   "docker_build": false,
   "use_non_root_user": "false", 
   "validate_build_script": true,
