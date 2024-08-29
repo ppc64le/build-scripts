@@ -29,7 +29,6 @@ yum install -y git wget unzip sudo make gcc gcc-c++ cmake
 
 # setup java environment
 yum install -y java java-devel
-
 export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-)(?=.*ppc64le)') 
 # update the path env. variable
 export PATH=$PATH:$JAVA_HOME/bin
@@ -41,7 +40,6 @@ tar -C /usr/local/ -xzf apache-maven-$MAVEN_VERSION-bin.tar.gz
 mv /usr/local/apache-maven-$MAVEN_VERSION /usr/local/maven
 
 export M2_HOME=/usr/local/maven
-
 # update the path env. variable
 export PATH=$PATH:$M2_HOME/bin
 

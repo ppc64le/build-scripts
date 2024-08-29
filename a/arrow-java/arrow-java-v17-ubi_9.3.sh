@@ -29,7 +29,6 @@ yum install -y git wget unzip sudo make gcc gcc-c++ cmake
 
 # setup java environment
 yum install -y java-17-openjdk java-17-openjdk-devel
-
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
