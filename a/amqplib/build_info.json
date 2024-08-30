@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "amqblib",
+    "github_url": "https://github.com/amqp-node/amqplib",
+    "version": "v0.10.4",
+    "default_branch": "main",
+    "build_script": "amqblib_ubi_9.3.sh",
+    "package_dir": "a/amqblib",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v0.*.*": {
+        "build_script": "amqblib_ubi_9.3.sh"
+    }
+}
