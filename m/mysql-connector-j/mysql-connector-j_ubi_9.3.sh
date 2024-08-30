@@ -28,10 +28,10 @@ yum install -y git wget java-1.8.0-openjdk-devel
 
 export WORKDIR=$PWD
 cd $WORKDIR
-wget https://dlcdn.apache.org//ant/binaries/apache-ant-1.10.13-bin.tar.gz
-tar -xzf apache-ant-1.10.13-bin.tar.gz
+wget https://dlcdn.apache.org//ant/binaries/apache-ant-1.10.15-bin.tar.gz
+tar -xzf apache-ant-1.10.15-bin.tar.gz
 
-export PATH=$WORKDIR/apache-ant-1.10.13/bin/:$PATH
+export PATH=$WORKDIR/apache-ant-1.10.15/bin/:$PATH
 
 mkdir -p $WORKDIR/libs
 cd $WORKDIR/libs
