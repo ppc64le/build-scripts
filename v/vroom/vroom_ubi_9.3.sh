@@ -24,9 +24,8 @@ PACKAGE_VERSION=1.6.5
 PACKAGE_URL=https://github.com/cran/vroom.git
 
 #variables to handle special characters occurrence
-export LC_ALL=C.UTF-8
 export LANG=en_US.UTF-8
-export LANGUAGE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 
 #install dependencies
 dnf install -y gcc gcc-c++ gcc-gfortran git wget xz cmake make yum-utils wget sudo llvm 
