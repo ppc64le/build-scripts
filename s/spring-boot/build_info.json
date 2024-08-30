@@ -1,12 +1,18 @@
 {
-  "maintainer": "Chandranana",
+  "maintainer": "sid226",
   "package_name": "spring-boot",
   "github_url": "https://github.com/spring-projects/spring-boot",
-  "version": "v3.0.2",
+  "version": "v3.3.3",
   "default_branch": "main",
   "package_dir": "s/spring-boot/",
-  "build_script": "springboot_ubi_8.5.sh",
+  "build_script": "springboot_ubi_9.3.sh",
   "validate_build_script": true,
   "use_non_root_user": false,
-  "docker_build": false
+  "docker_build": false,
+  "3.3.*" : {
+       "build_script": "springboot_ubi_9.3.sh"
+  },
+  "3.0.*" : {
+       "build_script": "springboot_ubi_8.5.sh"
+  }
 }
