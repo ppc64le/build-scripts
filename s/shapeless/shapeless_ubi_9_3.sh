@@ -27,6 +27,9 @@ export PACKAGE_URL=https://github.com/milessabin/shapeless
 NODE_VERSION=${NODE_VERSION:-20.14.0}
 HOME_DIR=${PWD}
 
+export LC_ALL=C.UTF-8
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
 
 # Install dependencies
 yum install -y git gcc wget make python3-devel.ppc64le tar java-11-openjdk-devel clang
