@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : activation
-# Version       : master
+# Version       : JAF-1_2_0
 # Source repo   : https://github.com/javaee/activation
 # Tested on     : UBI 9.3
 # Language      : Java, Others
@@ -20,7 +20,7 @@
 set -e
 
 PACKAGE_NAME=activation
-PACKAGE_VERSION=${1:-master}
+PACKAGE_VERSION=${1:-JAF-1_2_0}
 PACKAGE_URL=https://github.com/javaee/activation
 
 # install tools and dependent packages
