@@ -30,14 +30,15 @@ export PATH=$JAVA_HOME/bin:$PATH
 java -version
 
 # Install Maven 3.8.8
-cd $HOME
 MAVEN_VERSION=3.8.8
 wget https://downloads.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
-tar xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz
-export PATH=$HOME/apache-maven-${MAVEN_VERSION}/bin:${PATH}
+tar -C /usr/local/ -xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz
+rm -rf apache-maven-${MAVEN_VERSION}-bin.tar.gz
+mv /usr/local/apache-maven-${MAVEN_VERSION} /usr/local/maven
 
 # Set ENV variables
-export M2_HOME=$HOME/apache-maven-${MAVEN_VERSION}
+export M2_HOME=/usr/local/maven
+export PATH=$M2_HOME/bin:${PATH}
 
 # Clone json-base repo
 git clone $PACKAGE_URL
