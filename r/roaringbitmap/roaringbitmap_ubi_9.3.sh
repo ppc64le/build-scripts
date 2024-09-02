@@ -1,7 +1,7 @@
 #!/bin/bash -e   
 # ----------------------------------------------------------------------------
 #
-# Package       : RoaringBitmap
+# Package       : roaringbitmap
 # Version       : 1.2.1
 # Source repo   : https://github.com/RoaringBitmap/RoaringBitmap 
 # Tested on     : UBI: 9.3
