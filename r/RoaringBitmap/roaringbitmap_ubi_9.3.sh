@@ -26,9 +26,9 @@ PACKAGE_VERSION=${1:-1.2.1}
 
 
 # install tools and dependent packages
-yum install -y git wget unzip java-11-openjdk-devel
+yum install -y git wget unzip java-21-openjdk-devel
 
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
 GRADLE_VERSION=gradle-8.2-rc-1
