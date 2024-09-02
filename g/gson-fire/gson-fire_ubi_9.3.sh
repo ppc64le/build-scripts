@@ -24,8 +24,8 @@ PACKAGE_URL=https://github.com/julman99/gson-fire.git
 PACKAGE_VERSION=${1:-v1.9.0}
 
 # install tools and dependent packages
-yum install -y git wget java-11-openjdk-devel
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+yum install -y git wget java-17-openjdk-devel
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
 # install maven
