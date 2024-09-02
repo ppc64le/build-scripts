@@ -1,0 +1,16 @@
+{
+    "maintainer": "stutiibm",
+    "package_name": "waffle",
+    "github_url": "https://github.com/Waffle/waffle.git",
+    "version": "waffle-3.4.0",
+    "default_branch": "master",
+    "package_dir": "w/waffle",
+    "build_script": "waffle_ubi_9_3.sh",
+    "docker_build": true,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "waffle-3.*.*": {
+      "build_script": "waffle_ubi_9_3.sh"
+    }
+}
+
