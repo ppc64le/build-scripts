@@ -22,12 +22,12 @@ set -e
 
 PACKAGE_NAME=spring-boot
 PACKAGE_URL=https://github.com/spring-projects/spring-boot
-PACKAGE_VERSION=${1:-3.3.3}
+PACKAGE_VERSION=${1:-v3.3.3}
 
 yum install git wget -y
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
-git checkout v$PACKAGE_VERSION
+git checkout $PACKAGE_VERSION
 
 yum install java-17-openjdk java-17-openjdk-devel -y
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
