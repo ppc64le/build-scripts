@@ -17,7 +17,6 @@
 #                    contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
 PACKAGE_NAME=keycloak
 PACKAGE_VERSION=${1:-25.0.4}
 PACKAGE_URL=https://github.com/keycloak/keycloak
