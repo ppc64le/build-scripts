@@ -24,7 +24,6 @@ PACKAGE_NAME=transactions
 PACKAGE_URL=https://github.com/jakartaee/transactions.git
 PACKAGE_VERSION=${1:-2.0.1}
 
-
 # install tools and dependent packages
 yum install -y git wget unzip java-17-openjdk-devel 
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
