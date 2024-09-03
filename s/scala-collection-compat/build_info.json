@@ -1,7 +1,7 @@
 {
   "maintainer": "sid226",
   "package_name": "scala-collection-compat",
-  "github_url": "https://github.com/scala/scala-collection-compat.git",
+  "github_url": "https://github.com/scala/scala-collection-compat",
   "version": "v2.12.0",
   "default_branch": "main",
   "build_script": "scala-collection-compat_ubi_9.3.sh",
