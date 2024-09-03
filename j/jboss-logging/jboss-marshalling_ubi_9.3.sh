@@ -26,8 +26,8 @@ PACKAGE_VERSION=${1:-2.1.4.Final}
 
 
 # install tools and dependent packages
-yum install -y git wget unzip java-21-openjdk-devel 
-export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
+yum install -y git wget unzip java-17-openjdk-devel 
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
 # Install maven
