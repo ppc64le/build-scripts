@@ -57,14 +57,14 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #Build
-if ! build.sbt compile ; then
+if ! /tmp/sbt compile ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi 
 
-if ! build.sbt test ; then
+if ! /tmp/sbt test ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
