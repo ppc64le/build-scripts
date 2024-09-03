@@ -3,12 +3,12 @@
 #
 # Package          : mdp-toolkit
 # Version          : master
-# Source repo      : https://github.com/mdp-toolkit/mdp-toolkit.git
+# Source repo      : https://github.com/mdp-toolkit/mdp-toolkit
 # Tested on        : UBI:9.3
-# Language         : Python
 # Travis-Check     : True
-# Script License   : GNU General Public License v3.0
-# Maintainer       : Mohit Pawar <mohit.pawar@ibm.com>
+# Language         : Python
+# Script License   : Apache License, Version 2 or later
+# Maintainer       : Ramnath Nayak <Ramnath.Nayak@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=mdp-toolkit
 PACKAGE_VERSION=${1:-master}
-PACKAGE_URL=https://github.com/mdp-toolkit/mdp-toolkit.git
+PACKAGE_URL=https://github.com/mdp-toolkit/mdp-toolkit
 
 yum install -y git python3 python3-devel gcc gcc-c++ make wget
 yum install -y python3-numpy
