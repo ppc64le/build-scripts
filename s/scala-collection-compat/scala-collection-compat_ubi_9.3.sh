@@ -4,12 +4,12 @@
 # Package       : scala-collection-compat
 # Version       : v2.12.0
 # Source repo   : https://github.com/scala/scala-collection-compat
-# Tested on     : UBI 9.3
+# Tested on	: UBI 9.3
 # Language      : Scala
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Siddesh Sangodkar <siddesh.sangodkar1@ibm.com>
-#
+
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
@@ -17,7 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
 
 set -e
 
@@ -28,7 +27,6 @@ PACKAGE_VERSION=${1:-v2.12.0}
 shift
 
 # install tools and dependent packages
-#yum -y update
 yum install -y git wget 
 yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel java-1.8.0-openjdk-headless gcc-c++ jq cmake ncurses unzip make  gcc-gfortran
 
@@ -49,7 +47,6 @@ echo '#!/bin/bash' > /tmp/sbt
 echo 'SBT_OPTS="-server -Xms2048M -Xmx3G -Xss1m -XX:+CMSClassUnloadingEnabled -XX:+UseCompressedOops -XX:NewRatio=9 -XX:ReservedCodeCacheSize=100m"' >> /tmp/sbt
 echo "java $SBT_OPTS -jar $WDIR/sbt-launch.jar \"$@\"" >> /tmp/sbt
 chmod u+x /tmp/sbt
-/tmp/sbt | echo 0
 
 
 # clone, build and test specified version
