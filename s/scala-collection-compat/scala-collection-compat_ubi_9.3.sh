@@ -22,7 +22,7 @@
 set -e
 
 # variables
-PACKAGE_NAME=/scala-collection-compat
+PACKAGE_NAME=scala-collection-compat
 PACKAGE_URL=https://github.com/scala/scala-collection-compat
 PACKAGE_VERSION=${1:-v2.12.0}
 shift
