@@ -24,7 +24,9 @@ set -e
 PACKAGE_NAME=scala-collection-compat
 PACKAGE_URL=https://github.com/scala/scala-collection-compat
 PACKAGE_VERSION=${1:-v2.12.0}
-shift
+
+#clear command line arguments
+set --
 
 # install tools and dependent packages
 yum install -y git wget 
