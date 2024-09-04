@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "string_decoder",
+    "github_url": "https://github.com/nodejs/string_decoder",
+    "version": "v1.3.0",
+    "default_branch": "main",
+    "build_script": "string_decoder_ubi_9.3.sh",
+    "package_dir": "s/string_decoder",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v1.*.*": {
+        "build_script": "string_decoder_ubi_9.3.sh"
+    }
+}
