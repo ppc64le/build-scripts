@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	    : hey-listen
-# Version	    : master
+# Version	    : 8452583
 # Source repo	    : https://github.com/mattgperry/hey-listen
 # Tested on	    : UBI 9.3
 # Language          : Node
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=hey-listen
-PACKAGE_VERSION=${1:-master}
+PACKAGE_VERSION=${1:-8452583}
 PACKAGE_URL=https://github.com/mattgperry/hey-listen
 
 export NODE_VERSION=${NODE_VERSION:-16}
