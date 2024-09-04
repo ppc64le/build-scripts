@@ -10,6 +10,6 @@
   "use_non_root_user": "false",
   "docker_build": "false",
   "v*.*.*": {
-    "build_script": "terracotta-platform_9.3.sh"
+    "build_script": "terracotta-platform_ubi_9.3.sh"
   }
 }
