@@ -1,12 +1,19 @@
+FROM registry.access.redhat.com/ubi9/ubi:9.3 as build-hapi
 
-FROM docker.io/library/maven:3.9.2-eclipse-temurin-17-focal as build-hapi
 WORKDIR /tmp
 
 ARG PACKAGE_VERSION=image/v7.4.0
 
 ARG OPENTELEMETRY_JAVA_AGENT_VERSION=1.17.0
 
-RUN git clone https://github.com/hapifhir/hapi-fhir-jpaserver-starter.git && \
+RUN yum install -y git make wget gcc-c++ java-17-openjdk java-17-openjdk-devel java-17-openjdk-headless && \
+    export JAVA_HOME=/usr/lib/jvm/java-17-openjdk && \
+    export PATH=$PATH:$JAVA_HOME/bin && \
+        wget https://archive.apache.org/dist/maven/maven-3/3.8.7/binaries/apache-maven-3.8.7-bin.tar.gz && \
+        tar -zxf apache-maven-3.8.7-bin.tar.gz && \
+        cp -R apache-maven-3.8.7 /usr/local && \
+        ln -s /usr/local/apache-maven-3.8.7/bin/mvn /usr/bin/mvn && \
+        git clone https://github.com/hapifhir/hapi-fhir-jpaserver-starter.git && \
         cd hapi-fhir-jpaserver-starter/ && \
         git checkout $PACKAGE_VERSION && \
         curl -LSsO https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v${OPENTELEMETRY_JAVA_AGENT_VERSION}/opentelemetry-javaagent.jar && \
@@ -19,7 +26,7 @@ RUN cd hapi-fhir-jpaserver-starter/ && \
     mvn package spring-boot:repackage -Pboot
 RUN mkdir /app && cp /tmp/hapi-fhir-jpaserver-starter/target/ROOT.war /app/main.war
 
-FROM docker.io/library/tomcat:9-jdk17-temurin-focal as tomcat
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest as tomcat
 
 RUN rm -rf /usr/local/tomcat/webapps/ROOT && \
     mkdir -p /usr/local/hapi/data/hapi/lucenefiles && \
@@ -37,11 +44,13 @@ COPY --from=build-hapi --chown=1001:1001 /tmp/hapi-fhir-jpaserver-starter/opente
 
 ENV ALLOW_EMPTY_PASSWORD=yes
 
-FROM eclipse-temurin:17.0.8.1_1-jdk-focal as default
+FROM registry.access.redhat.com/ubi9/ubi-minimal as default
+
 WORKDIR /app
 
 COPY --from=build-final /app /app
 COPY --from=build-hapi /tmp/hapi-fhir-jpaserver-starter/opentelemetry-javaagent.jar /app
 
+RUN microdnf install -y java-17-openjdk-headless
 
 ENTRYPOINT ["java", "--class-path", "/app/main.war", "-Dloader.path=main.war!/WEB-INF/classes/,main.war!/WEB-INF/,/app/extra-classes", "org.springframework.boot.loader.PropertiesLauncher", "app/main.war"]
