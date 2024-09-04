@@ -22,7 +22,7 @@ PACKAGE_NAME=http2-wrapper
 PACKAGE_VERSION=${1:-v2.2.1}
 PACKAGE_URL=https://github.com/szmarczak/http2-wrapper
 
-export NODE_VERSION=${NODE_VERSION:-16}
+export NODE_VERSION=${NODE_VERSION:-20}
 yum install -y python3 python3-devel.ppc64le git gcc gcc-c++ libffi make
 
 #Installing nvm
