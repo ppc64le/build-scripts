@@ -17,4 +17,4 @@ script:
     - pip3 install --upgrade docker
     - python3 script/validate_builds.py $TRAVIS_PULL_REQUEST > build_log &
     - SCRIPT_PID=$!;while ps -p $SCRIPT_PID > /dev/null;do echo "$SCRIPT_PID is running"; sleep 300; done; wait $SCRIPT_PID; my_pid_status=$?;
-    - build_size=$(stat -c %s build_log);[ $build_size -lt 2 ] && cat build_log || tail -100 build_log; travis_terminate $my_pid_status
+    - build_size=$(stat -c %s build_log);[ $build_size -lt 1800000 ] && cat build_log || tail -100 build_log; travis_terminate $my_pid_status
