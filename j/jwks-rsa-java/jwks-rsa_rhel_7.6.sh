@@ -1,11 +1,13 @@
 # ----------------------------------------------------------------------------
 #
-# Package			: jwks-rsa
-# Version			: 0.1.0
-# Source repo		: https://github.com/auth0/jwks-rsa-java
-# Tested on			: RHEL 7.6
-# Script License	: Apache License Version 2.0
-# Maintainer		: Pratham Murkute <prathamm@us.ibm.com>
+# Package	   : jwks-rsa
+# Version	   : 0.1.0
+# Source repo	   : https://github.com/auth0/jwks-rsa-java
+# Tested on	   : RHEL 7.6
+# Script License   : Apache License Version 2.0
+# Language         : Java
+# Travis-Check     : True
+# Maintainer	   : Pratham Murkute <prathamm@us.ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
