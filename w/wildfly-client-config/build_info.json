@@ -4,9 +4,12 @@
   "github_url": "https://github.com/wildfly/wildfly-client-config",
   "version": "1.0.1.Final",
   "default_branch": "main",
-  "package_dir": "w/wildfly-client-config/",
+  "package_dir": "w/wildfly-client-config",
   "build_script": "wildfly-client-config_ubi_9.3.sh",
   "validate_build_script": true,
   "use_non_root_user": false,
-  "docker_build": false
+  "docker_build": false,
+  "1.*.*.Final": {
+        "build_script": "wildfly-client-config_ubi_9.3.sh"
+     }
 }
