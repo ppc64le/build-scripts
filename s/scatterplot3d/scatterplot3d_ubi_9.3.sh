@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=scatterplot3d
-PACKAGE_VERSION=$1{:-0.3-44}
+PACKAGE_VERSION=${1:-0.3-44}
 PACKAGE_URL=https://github.com/cran/scatterplot3d
 
 dnf install -y gcc gcc-c++ gcc-gfortran git wget xz cmake make yum-utils sudo llvm
