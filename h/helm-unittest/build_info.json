@@ -7,6 +7,6 @@
    "package_dir": "h/helm-unittest",
    "build_script": "helm-unittest_ubi_9.3.sh",
    "validate_build_script": true,
-   "use_not_root_user": false,
-   "docker_build": false
+   "docker_build": false,
+   "use_non_root_user": false
 }
