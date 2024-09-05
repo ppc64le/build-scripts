@@ -4,8 +4,9 @@
    "github_url": "https://github.com/helm-unittest/helm-unittest", 
    "version": "v0.5.2", 
    "default_branch": "main", 
-   "build_script": "helm-unittest_ubi_9.3.sh", 
    "package_dir": "h/helm-unittest", 
+   "build_script": "helm-unittest_ubi_9.3.sh", 
+   "validate_build_script": true, 
+   "use_not_root_user": false,
    "docker_build": false, 
-   "validate_build_script": true 
 }
