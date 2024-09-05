@@ -20,7 +20,7 @@
 
 #variables
 PACKAGE_NAME=zoo
-PACKAGE_VERSION=1.8-12
+PACKAGE_VERSION=${1:-1.8-1}
 PACKAGE_URL=https://github.com/cran/zoo.git
 
 #install dependencies
