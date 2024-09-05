@@ -46,7 +46,8 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #Build
-mvn clean install  
+mvn clean install >> /tmp/BUILD1.log 2>&1
+cat /tmp/BUILD1.log 2>&1
 if [ $? != 0 ]
 then
   echo "Build failed for $PACKAGE_NAME-$PACKAGE_VERSION"
