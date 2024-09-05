@@ -1,0 +1,12 @@
+{
+   "maintainer": "shubham-garud",
+   "package_name": "scatterplot3d",
+   "github_url": "https://github.com/cran/scatterplot3d",
+   "version": "0.3-44",
+   "default_branch": "master",
+   "build_script": "scatterplot3d_ubi_9.3.sh",
+   "package_dir": "s/scatterplot3d",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
