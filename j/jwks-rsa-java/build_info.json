@@ -10,6 +10,6 @@
   "use_non_root_user": "false",
   "docker_build": "false",
   "*.*.*": {
-    "build_script": "jwks-rsa-java_9_3.sh"
+    "build_script": "jwks-rsa-java_ubi_9_3.sh"
   }
 }
