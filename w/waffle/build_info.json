@@ -6,7 +6,7 @@
     "default_branch": "master",
     "package_dir": "w/waffle",
     "build_script": "waffle_ubi_9_3.sh",
-    "docker_build": true,
+    "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": false,
     "waffle-3.*.*": {
