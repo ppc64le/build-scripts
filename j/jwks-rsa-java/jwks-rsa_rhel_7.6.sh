@@ -6,7 +6,7 @@
 # Tested on	   : RHEL 7.6
 # Script License   : Apache License Version 2.0
 # Language         : Java
-# Travis-Check     : True
+# Travis-Check     : False
 # Maintainer	   : Pratham Murkute <prathamm@us.ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
