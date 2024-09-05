@@ -55,7 +55,8 @@ fi
   
  
 #Test
-mvn test
+mvn test >> /tmp/BUILD.log 2>&1
+cat /tmp/BUILD.log | grep 'SUCCESS'
 if [ $? != 0 ]
 then
   echo "Test execution failed for $PACKAGE_NAME-$PACKAGE_VERSION"
