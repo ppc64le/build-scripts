@@ -45,7 +45,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-#Build
+#Build and Test
 mvn clean install >> /tmp/BUILD1.log 2>&1
 cat /tmp/BUILD1.log 2>&1
 if [ $? != 0 ]
@@ -53,15 +53,8 @@ then
   echo "Build failed for $PACKAGE_NAME-$PACKAGE_VERSION"
   exit 1
 fi
+exit 0
   
  
-#Test
-#mvn test >> /tmp/BUILD.log 2>&1
-#cat /tmp/BUILD.log | grep 'SUCCESS'
-#if [ $? != 0 ]
-#then
-#  echo "Test execution failed for $PACKAGE_NAME-$PACKAGE_VERSION"
-#  exit 2
-#fi
-#exit 0
+
 
