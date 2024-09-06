@@ -24,13 +24,12 @@ PACKAGE_VERSION=${1:-main}
 PACKAGE_URL=https://github.com/LLNL/certipy.git
 
 # Install dependencies
-yum install -y --allowerasing yum-utils git gcc gcc-c++ make curl openssl-devel pkg-config
+yum install -y --allowerasing yum-utils git gcc gcc-c++ make curl openssl-devel python3-pip python3-devel pkg-config
 
 # Check if Python version is empty or less than 3.7
 PYTHON_VERSION=$(python3 --version 2>&1 | awk '{print $2}')
 if [ -z "$PYTHON_VERSION" ] || [ "$(printf '%s\n' "3.7" "$PYTHON_VERSION" | sort -V | head -n1)" != "3.7" ]; then
-    echo "PYTHON_VERSION"
-    yum install -y python3 python3-pip python3-devel
+    yum install -y python3 
 else
     echo "Python version is $PYTHON_VERSION, requirement already satisfied."
 fi
@@ -40,7 +39,7 @@ if ! command -v rustc &> /dev/null; then
     # If Rust is not found, install Rust
     echo "Rust not found. Installing Rust..."
     curl https://sh.rustup.rs -sSf | sh -s -- -y
-    source "$HOME/.cargo/env"  # Update environment variables to use Rust
+    source "$HOME/.cargo/env"  
 else
     echo "Rust is already installed."
 fi
