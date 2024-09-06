@@ -20,7 +20,7 @@
 
 #variables
 PACKAGE_NAME=zoo
-PACKAGE_VERSION=${1:-1.8-1}
+PACKAGE_VERSION=1.8-12
 PACKAGE_URL=https://github.com/cran/zoo.git
 
 #install dependencies
@@ -52,6 +52,8 @@ git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 cd ..
+
+R -e "install.packages('vroom', dependencies = TRUE, repos = 'http://cran.rstudio.com/')"
 
 if ! R -e "install.packages('$PACKAGE_NAME', dependencies = TRUE, repos = 'http://cran.rstudio.com/')";then
     echo "------------------$PACKAGE_NAME:Dependencies installation fail-------------------------------------"
