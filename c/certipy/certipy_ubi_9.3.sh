@@ -27,6 +27,7 @@ PACKAGE_URL=https://github.com/LLNL/certipy.git
 yum install -y --allowerasing yum-utils git gcc gcc-c++ make curl openssl-devel pkg-config
 
 # Check if Python version is empty or less than 3.7
+PYTHON_VERSION=$(python3 --version 2>&1 | awk '{print $2}')
 if [ -z "$PYTHON_VERSION" ] || [ "$(printf '%s\n' "3.7" "$PYTHON_VERSION" | sort -V | head -n1)" != "3.7" ]; then
     echo "PYTHON_VERSION"
     yum install -y python3 python3-pip python3-devel
@@ -46,8 +47,8 @@ fi
 
 # Clone the repository
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME  # Change directory to the cloned repository
-git checkout $PACKAGE_VERSION  # Checkout the specified version
+cd $PACKAGE_NAME  
+git checkout $PACKAGE_VERSION  
 
 # Upgrade pip and install necessary Python packages
 python3 -m pip install --upgrade pip
