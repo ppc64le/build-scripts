@@ -41,6 +41,7 @@ operator-sdk version
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
+sed -i 's/errorlint/errorlint --timeout=10m/g' Makefile
 go mod vendor
 
 if ! make lint ; then
