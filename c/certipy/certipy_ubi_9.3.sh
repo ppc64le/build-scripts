@@ -23,10 +23,13 @@ PACKAGE_NAME=certipy
 PACKAGE_VERSION=${1:-main}
 PACKAGE_URL=https://github.com/LLNL/certipy.git
 
+# Install dependencies
+yum install -y --allowerasing yum-utils git gcc gcc-c++ make curl openssl-devel pkg-config
+
 # Check if Python version is empty or less than 3.7
 if [ -z "$PYTHON_VERSION" ] || [ "$(printf '%s\n' "3.7" "$PYTHON_VERSION" | sort -V | head -n1)" != "3.7" ]; then
     echo "PYTHON_VERSION"
-    yum install -y python3
+    yum install -y python3 python3-pip python3-devel
 else
     echo "Python version is $PYTHON_VERSION, requirement already satisfied."
 fi
@@ -40,10 +43,6 @@ if ! command -v rustc &> /dev/null; then
 else
     echo "Rust is already installed."
 fi
-
-# Install dependencies
-# Install various tools and libraries needed for building and running the package
-yum install -y --allowerasing yum-utils git gcc gcc-c++ make curl python3 python3-pip python3-devel openssl-devel pkg-config
 
 # Clone the repository
 git clone $PACKAGE_URL
