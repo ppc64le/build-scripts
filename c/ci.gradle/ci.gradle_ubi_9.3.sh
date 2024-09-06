@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : ci_gradle
+# Package          : ci.gradle
 # Version          : liberty-gradle-plugin-3.8.3
 # Source repo      : https://github.com/OpenLiberty/ci.gradle/
 # Tested on        : UBI:9.3
