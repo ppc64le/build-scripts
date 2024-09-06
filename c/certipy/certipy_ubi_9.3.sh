@@ -18,40 +18,51 @@
 #
 # ---------------------------------------------------------------------------
 
-#variables
+# Variables
 PACKAGE_NAME=certipy
 PACKAGE_VERSION=${1:-main}
 PACKAGE_URL=https://github.com/LLNL/certipy.git
 
-#install dependencies
-yum install -y --allowerasing yum-utils git gcc gcc-c++ make curl python3.11 python3.11-pip python3.11-devel openssl-devel pkg-config
+# Check if Python version is empty or less than 3.7
+if [ -z "$PYTHON_VERSION" ] || [ "$(printf '%s\n' "3.7" "$PYTHON_VERSION" | sort -V | head -n1)" != "3.7" ]; then
+    echo "PYTHON_VERSION"
+    yum install -y python3
+else
+    echo "Python version is $PYTHON_VERSION, requirement already satisfied."
+fi
 
-python3.11 -m venv cert-venv
-source cert-venv/bin/activate
+# Check if Rust is installed
+if ! command -v rustc &> /dev/null; then
+    # If Rust is not found, install Rust
+    echo "Rust not found. Installing Rust..."
+    curl https://sh.rustup.rs -sSf | sh -s -- -y
+    source "$HOME/.cargo/env"  # Update environment variables to use Rust
+else
+    echo "Rust is already installed."
+fi
 
-# clone repository
+# Install dependencies
+# Install various tools and libraries needed for building and running the package
+yum install -y --allowerasing yum-utils git gcc gcc-c++ make curl python3 python3-pip python3-devel openssl-devel pkg-config
+
+# Clone the repository
 git clone $PACKAGE_URL
-cd  $PACKAGE_NAME
-git checkout $PACKAGE_VERSION
+cd $PACKAGE_NAME  # Change directory to the cloned repository
+git checkout $PACKAGE_VERSION  # Checkout the specified version
 
-curl https://sh.rustup.rs -sSf | sh -s -- -y
-source "$HOME/.cargo/env"
+# Upgrade pip and install necessary Python packages
+python3 -m pip install --upgrade pip
+python3 -m pip install build wheel setuptools pypandoc requests flask pytest
 
-python3.11 -m pip install --upgrade pip
-python3.11 -m pip install build
-python3.11 -m pip install wheel
-python3.11 -m pip install setuptools wheel pypandoc requests flask pytest
-python3.11 -m pip install -e .
-
-#install
-if ! pyproject-build; then
+# Install the package
+if ! python3 -m pip install -e .; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-#test
+# Run tests
 if ! pytest; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
