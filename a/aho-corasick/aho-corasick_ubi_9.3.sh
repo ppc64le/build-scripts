@@ -49,7 +49,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #Build and test
-mvn clean install
+mvn install -Dgpg.skip=true
 if [ $? != 0 ]
 then
   echo "Build and Test failed for $PACKAGE_NAME-$PACKAGE_VERSION"
