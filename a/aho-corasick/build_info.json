@@ -1,0 +1,15 @@
+{
+    "maintainer": "pratibh-ibm",
+    "package_name": "aho-corasick",
+    "github_url": "https://github.com/robert-bor/aho-corasick.git",
+    "version": "v0.6.2",
+    "default_branch": "master",
+    "package_dir": "a/aho-corasick",
+    "build_script": "aho-corasick_ubi_9.3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "v0.*.8": {
+      "build_script": "aho-corasick_ubi_9.3.sh"
+    }
+  }
