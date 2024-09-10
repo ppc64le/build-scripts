@@ -25,9 +25,9 @@ PACKAGE_URL=https://github.com/quartz-scheduler/quartz.git
 PACKAGE_VERSION=${1:-v2.5.0-rc1}
 
 # install tools and dependent packages
-yum install -y git wget unzip java-17-openjdk-devel
+yum install -y git wget unzip java-11-openjdk-devel
 
-export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
 #GRADLE_VERSION=gradle-8.2-rc-1
