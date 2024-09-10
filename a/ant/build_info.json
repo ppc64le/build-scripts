@@ -1,0 +1,15 @@
+{
+    "maintainer": "pratibh-ibm",
+    "package_name": "ant",
+    "github_url": "https://github.com/apache/ant.git",
+    "version": "rel/1.10.15",
+    "default_branch": "master",
+    "package_dir": "a/ant",
+    "build_script": "ant_ubi_9.3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "rel/1.*.*": {
+      "build_script": "ant_ubi_9.3.sh"
+    }
+}

@@ -136,59 +136,59 @@ jobs:
       if: env(BUILD_DOCKER) = true
       name: Docker build
       script:
-        - source package-cache/variable.sh;
-        - if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/build_docker.sh; bash ./script/build_docker.sh;echo "printing docker images"; docker images; fi
+        - source variable.sh;
+        - chmod +x ./script/build_docker.sh; bash ./script/build_docker.sh;echo "printing docker images"; docker images;
         # the below command is used to upload docker image to ibm icr registry.
-        - if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/upload-scripts/upload_docker_image.sh; bash ./script/upload-scripts/upload_docker_image.sh; fi
+        - chmod +x ./script/upload-scripts/upload_docker_image.sh; bash ./script/upload-scripts/upload_docker_image.sh;
       workspaces:
         create:
           name: docker_image_tar
           paths:
             - image.tar
-        use: package_cache
+        use: build_cache
 
 
     - stage: Docker image Scanner
       if: env(BUILD_DOCKER) = true AND env(ENABLE_TRIVY) = true
       name: Run trivy scan
       script:
-        - source package-cache/variable.sh;
-        - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/scanner-scripts/trivy_image_scan.sh;bash ./script/scanner-scripts/trivy_image_scan.sh; mkdir image_trivy; mv package-cache/trivy_image_vulnerabilities_results.json package-cache/trivy_image_sbom_results.cyclonedx image_trivy; fi        
+        - source variable.sh;
+        - docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/scanner-scripts/trivy_image_scan.sh;bash ./script/scanner-scripts/trivy_image_scan.sh; mkdir image_trivy; mv trivy_image_vulnerabilities_results.json trivy_image_sbom_results.cyclonedx image_trivy;     
       workspaces:
         create:
           name: image_trivy
           paths:
             - image_trivy
         use:
-          - package_cache
+          - build_cache
           - docker_image_tar
           
     - name: Run syft scan
       if: env(BUILD_DOCKER) = true AND env(ENABLE_SYFT) = true
       script:
-        - source package-cache/variable.sh;
-        - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/scanner-scripts/syft_image_scan.sh;bash ./script/scanner-scripts/syft_image_scan.sh; mkdir image_syft; mv package-cache/syft_image_sbom_results.json image_syft; fi
+        - source variable.sh;
+        - docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/scanner-scripts/syft_image_scan.sh;bash ./script/scanner-scripts/syft_image_scan.sh; mkdir image_syft; mv syft_image_sbom_results.json image_syft;
       workspaces:
         create:
           name: image_syft
           paths:
             - image_syft
         use:
-          - package_cache
+          - build_cache
           - docker_image_tar
 
     - name: Run grype scan
       if: env(BUILD_DOCKER) = true AND env(ENABLE_GRYPE) = true
       script:
-        - source package-cache/variable.sh;
-        - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/scanner-scripts/grype_image_scan.sh;bash ./script/scanner-scripts/grype_image_scan.sh; mkdir image_grype; mv package-cache/grype_image_sbom_results.json package-cache/grype_image_vulnerabilities_results.json image_grype; fi
+        - source variable.sh;
+        - docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/scanner-scripts/grype_image_scan.sh;bash ./script/scanner-scripts/grype_image_scan.sh; mkdir image_grype; mv grype_image_sbom_results.json grype_image_vulnerabilities_results.json image_grype;
       workspaces:
         create:
           name: image_grype
           paths:
             - image_grype
         use:
-          - package_cache
+          - build_cache
           - docker_image_tar
 
     - stage: Upload image scanner results
@@ -199,9 +199,9 @@ jobs:
           - image_trivy
           - image_syft
           - image_grype
-          - package_cache
+          - build_cache
       script:
-        - source package-cache/variable.sh;
+        - source variable.sh;
         # the below command will copy the files from all the scanner folders to image folder, later we tar that image folder and use the upload scanner script to push into cos bucket.
         - mkdir image
         - find image_trivy -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
