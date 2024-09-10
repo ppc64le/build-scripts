@@ -26,13 +26,20 @@ PACKAGE_URL=https://github.com/ericvsmith/dataclasses.git
 # Install dependencies and tools.
 yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel zlib-devel
 
-#Install python3.6
-wget https://www.python.org/ftp/python/3.6.15/Python-3.6.15.tgz
-tar xzf Python-3.6.15.tgz
-cd Python-3.6.15
-./configure --enable-optimizations
-make altinstall
-cd ..
+PYTHON_VERSION="3.6"
+
+if command -v python${PYTHON_VERSION} ; then
+    echo "Python ${PYTHON_VERSION} is already installed."
+else
+    echo "Python ${PYTHON_VERSION} is not installed. Installing..."
+	#Install python3.6
+	wget https://www.python.org/ftp/python/3.6.15/Python-3.6.15.tgz
+	tar xzf Python-3.6.15.tgz
+	cd Python-3.6.15
+	./configure --enable-optimizations
+	make altinstall
+	cd ..
+fi
 
 python3.6 -m venv dataclasses_venv
 source dataclasses_venv/bin/activate
@@ -52,7 +59,7 @@ if ! (python3.6 setup.py install) ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-
+ 
 #test
 if ! pytest; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
