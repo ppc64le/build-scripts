@@ -34,7 +34,7 @@ export PATH=$JAVA_HOME/bin:$PATH
 #wget https://services.gradle.org/distributions/${GRADLE_VERSION}-bin.zip  && unzip -d /gradle /${GRADLE_VERSION}-bin.zip
 #export GRADLE_HOME=/gradle/${GRADLE_VERSION}/ 
 # update the path env. variable
-e#xport PATH=${GRADLE_HOME}/bin:${PATH}
+#export PATH=${GRADLE_HOME}/bin:${PATH}
 
 # Cloning the repository
 git clone $PACKAGE_URL
