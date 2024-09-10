@@ -23,13 +23,13 @@ PACKAGE_NAME=poetry-plugin-export
 PACKAGE_VERSION=${1:-1.8.0}
 PACKAGE_URL=https://github.com/python-poetry/poetry-plugin-export.git
 
+#install dependencies
+yum install -y --allowerasing python3-pip python3-devel git gcc gcc-c++ make curl openssl openssl-devel wget openssl-devel bzip2-devel libffi-devel zlib-devel
+
 # clone repository
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-
-#install dependencies
-yum install -y --allowerasing python3-pip python3-devel git gcc gcc-c++ make curl openssl openssl-devel wget openssl-devel bzip2-devel libffi-devel zlib-devel
 
 # Check if Python version is empty or less than or equal to 3.8
 PYTHON_VERSION=$(python3 --version 2>&1 | awk '{print $2}')
