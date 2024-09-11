@@ -45,8 +45,10 @@ if ! npm install && npm audit fix --force; then
     exit 1
 fi
 
+npm test >> /tmp/TEST.log 2>&1
+cat /tmp/TEST.log | grep 'fail'
 
-if ! npm test; then
+if [ $? == 0 ]; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
