@@ -50,10 +50,10 @@ cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #install pytest
-python3.6 -m pip install pytest
+python -m pip install pytest
 
 #install
-if ! (python3.6 setup.py install) ; then
+if ! (python setup.py install) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
