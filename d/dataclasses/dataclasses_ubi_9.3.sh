@@ -41,8 +41,7 @@ else
 	cd ..
 fi
 
-python3.6 -m venv dataclasses_venv
-source dataclasses_venv/bin/activate
+ln -s $(which python3.6) /usr/bin/python
 
 #clone repository 
 git clone $PACKAGE_URL
