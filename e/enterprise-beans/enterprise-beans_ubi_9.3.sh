@@ -20,7 +20,7 @@
 # ----------------------------------------------------------------------------
 
 set -e
-PACKAGE_NAME=enterprise-language
+PACKAGE_NAME=enterprise-beans
 PACKAGE_URL=https://github.com/jakartaee/enterprise-beans.git
 PACKAGE_VERSION=${1:-4.0.1-RELEASE}
 
