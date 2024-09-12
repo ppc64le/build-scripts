@@ -53,14 +53,14 @@ if ! python3 -m pip install -r test_requirements.txt ; then
      echo "------------------$PACKAGE_NAME:Build_fails---------------------"
      echo "$PACKAGE_VERSION $PACKAGE_NAME"
      echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails_"
-     exit 2
+     exit 1
 fi
 
 if ! tox -e py39-unit ; then
       echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
       echo "$PACKAGE_URL $PACKAGE_NAME"
       echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
-      exit 1
+      exit 2
 else
       echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
       echo "$PACKAGE_URL $PACKAGE_NAME"
