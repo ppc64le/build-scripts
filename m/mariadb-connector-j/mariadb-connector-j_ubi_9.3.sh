@@ -64,6 +64,7 @@ if ! mvn -Dmaven.test.skip -Dmaven.javadoc.skip package ; then
 fi 
 
 # Tests require setting up mariadb container
+# Testcase failures are in parity with intel
 # docker run --detach --network=host --name mariadb-container --env MARIADB_USER=example-user --env MARIADB_PASSWORD=my_cool_secret --env MARIADB_DATABASE=testj --env MARIADB_ROOT_PASSWORD=my-secret-pw  ppc64le/mariadb:latest
 # root@d765097f9cc7:/# mariadb -u root -p
 #Enter password: my-secret-pw
