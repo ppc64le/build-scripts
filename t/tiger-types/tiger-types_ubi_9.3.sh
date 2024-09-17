@@ -1,7 +1,7 @@
 #!/bin/bash -e   
 # ----------------------------------------------------------------------------
 #
-# Package       : tigertypes 
+# Package       : tiger-types 
 # Version       : tiger-types-2.2
 # Source repo   : https://github.com/kohsuke/tiger-types 
 # Tested on     : UBI: 9.3
@@ -20,7 +20,7 @@
 # ----------------------------------------------------------------------------
 
 set -e
-PACKAGE_NAME=tigertypes
+PACKAGE_NAME=tiger-types
 PACKAGE_URL=https://github.com/kohsuke/tiger-types.git
 PACKAGE_VERSION=${1:-tiger-types-2.2}
 
