@@ -42,9 +42,8 @@ RUN wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz && \
 
 #Get milvus source and apply patch
 WORKDIR /tmp
-COPY milvus-${MILVUS_VERSION}.patch .
-#RUN wget ${PATCH_FILE} && \
-RUN git clone -b ${MILVUS_VERSION} ${MILVUS_PACKAGE_URL} && \
+RUN wget ${PATCH_FILE} && \
+    git clone -b ${MILVUS_VERSION} ${MILVUS_PACKAGE_URL} && \
     cd ${MILVUS_PACKAGE_NAME} && \
     git apply ../milvus-${MILVUS_VERSION}.patch && \
     if [[ "${APPLYMCPU}" -eq 1 ]]; then sed -i "53d" ./internal/core/CMakeLists.txt; sed -i '53i set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -mcpu=power10")' ./internal/core/CMakeLists.txt; fi
