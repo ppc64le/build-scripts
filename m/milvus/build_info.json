@@ -1,6 +1,6 @@
 {
   "maintainer": "sumitd2",
-  "package_name": "fluent-bit",
+  "package_name": "milvus",
   "github_url": "https://github.com/milvus-io/milvus",
   "version": "v2.4.11",
   "package_dir": "m/milvus",
