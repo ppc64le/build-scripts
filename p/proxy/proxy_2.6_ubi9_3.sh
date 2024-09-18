@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/maistra/proxy
 # Tested on     : UBI 9.3
 # Language      : C++
-# Travis-Check  : True
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Chandranana
 #
@@ -24,6 +24,7 @@ PACKAGE_VERSION=${1:-maistra-2.6}
 PACKAGE_URL=https://github.com/${PACKAGE_ORG}/${PACKAGE_NAME}
 PATH=$PATH:/usr/local/go/bin
 SOURCE_ROOT=$HOME
+GO_VERSION=${1:-1.23.1}
 GOPATH=$SOURCE_ROOT/go
 GOBIN=/usr/local/go/bin 
 
@@ -52,34 +53,25 @@ export PATH=$SOURCE_ROOT/clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4/bin:$PATH
 export CC=$SOURCE_ROOT/clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4/bin/clang
 export CXX=$SOURCE_ROOT/clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4/bin/clang++
 
-
 # Install go
-if echo $(go version) | grep -q '1.21.11'; then
-	echo "================Go v1.21.11 is already installed=================="
+if [ $( go version | cut -d " " -f3 ) = "go${GO_VERSION}" ]; then
+    echo "${GO_VERSION} is already installed"
 else
-	echo "==================Installing Go v1.21.11=========================="
-	cd $SOURCE_DIR
-	wget https://go.dev/dl/go1.21.11.linux-ppc64le.tar.gz
-	tar -C /usr/local -xzf go1.21.11.linux-ppc64le.tar.gz
-	which go
-	go version
+    cd $SOURCE_ROOT
+    wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
+    tar -C /usr/local -xzf go${GO_VERSION}.linux-ppc64le.tar.gz
+    which go
+    go version
 fi
 
 #
 # Build proxy
 #
-
-export Clang_DIR=$SOURCE_ROOT/clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4/lib/cmake/clang
-export CMAKE_PREFIX_PATH=$SOURCE_ROOT/clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4
-export LD_LIBRARY_PATH=$SOURCE_ROOT/clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4/lib/cmake/clang:$SOURCE_ROOT/clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4/lib
-
 cd $SOURCE_ROOT
 git clone $PACKAGE_URL
 cd proxy/
 git checkout $PACKAGE_VERSION
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/p/proxy/proxy_2.6.patch
-git apply proxy_2.6.patch
-
+./maistra/vendor/envoy/bazel/setup_clang.sh $SOURCE_ROOT/clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4/
 # Below commit is tested - tests passed
 if ! ./maistra/ci/pre-submit.sh; then
 	echo "Build/test execution Fails"
