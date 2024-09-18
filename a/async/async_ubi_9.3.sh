@@ -8,7 +8,7 @@
 # Language          : JavaScript
 # Travis-Check      : True
 # Script License    : Apache License, Version 2 or later
-# Maintainer        : Mohit Pawar <mohit.pawar@ibm.com>
+# Maintainer        : Ramnath Nayak <Ramnath.Nayak@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -22,7 +22,7 @@ PACKAGE_NAME=async
 PACKAGE_VERSION=${1:-v3.2.5}
 PACKAGE_URL=https://github.com/caolan/async.git
 
-export NODE_VERSION=${NODE_VERSION:-16}
+export NODE_VERSION=${NODE_VERSION:-20}
 yum install git make -y
 
 #Installing nvm
@@ -32,11 +32,11 @@ echo "installing nodejs $NODE_VERSION"
 nvm install "$NODE_VERSION" >/dev/null
 nvm use $NODE_VERSION
 
-git clone $PACKAGE_URL $PACKAGE_NAME
+git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if ! npm install && npm audit fix --force; then
+if ! npm install; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"

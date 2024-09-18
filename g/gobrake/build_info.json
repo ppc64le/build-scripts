@@ -8,5 +8,8 @@
   "package_dir": "g/gobrake",
   "docker_build": false,
   "validate_build_script": true,
-  "use_non_root_user": false
+  "use_non_root_user": false,
+  "v*.*.*" : {
+       "build_script": "gobrake_ubi_9.3.sh"
+    }
 }

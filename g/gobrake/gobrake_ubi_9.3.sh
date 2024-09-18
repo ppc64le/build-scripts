@@ -48,7 +48,7 @@ if ! go build ./...; then
         exit 1
 fi
 
-if ! go test; then
+if ! go test ./... -short -race; then
         echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails"

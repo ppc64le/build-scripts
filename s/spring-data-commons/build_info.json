@@ -1,0 +1,15 @@
+{
+  "maintainer": "stutiibm",
+  "package_name": "spring-data-commons",
+  "github_url": "https://github.com/spring-projects/spring-data-commons",
+  "version": "3.3.2",
+  "default_branch": "main",
+  "package_dir": "s/spring-data-commons",
+  "build_script": "spring-data-commons_ubi_9_3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+    "build_script": "spring-data-commons_ubi_9_3.sh"
+  } 
+}

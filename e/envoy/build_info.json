@@ -9,6 +9,7 @@
   "build_script": "envoy_1.25.3_ubi8.4.sh",
   "docker_build": "true",
   "validate_build_script": "true",
+  "use_non_root_user": "false",
   "v1.25.3": {
     "dir": "1.25.3_ubi_8",
     "build_script": "envoy_1.25.3_ubi8.4.sh"
@@ -20,5 +21,10 @@
   "v1.29.0": {
     "dir": "1.29.0_ubi_8",
     "build_script": "envoy_1.29.0_ubi8.7.sh"
+  },
+  "v1.31.0": {
+    "dir": "1.31.0_ubi_9",
+    "build_script": "envoy_1.31.0_ubi9.3.sh"
   }
+
 }

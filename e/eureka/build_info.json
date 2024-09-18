@@ -1,0 +1,12 @@
+{
+    "maintainer": "pooja0805",
+    "package_name": "eureka",
+    "github_url": "https://github.com/Netflix/eureka.git",
+    "package_dir": "e/eureka/",
+    "version": "v2.0.3",
+    "default_branch": "main",
+    "build_script": "eureka_ubi_9.3.sh",
+    "validate_build_script": true,
+    "docker_build": false,
+    "use_non_root_user": false
+}
