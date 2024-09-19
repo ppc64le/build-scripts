@@ -22,12 +22,12 @@
 set -e
 PACKAGE_NAME="byte-buddy"
 PACKAGE_URL=https://github.com/raphw/byte-buddy.git
-PACKAGE_VERSION=${1:-byte-buddy-1.12.23}
+PACKAGE_VERSION=${1:-byte-buddy-1.14.9}
 
 
 # install tools and dependent packages
 yum install -y git wget java-1.8.0-openjdk-devel.ppc64le java-1.8.0-openjdk-headless.ppc64le xz
-export JAVA_HOME=/usr/lib/jvm/java-openjdk
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
 # Install maven
@@ -43,7 +43,7 @@ export PATH=$PATH:$M2_HOME/bin
 
 # Cloning the repository
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+cd $PACKAGE_NAME/$PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 
 #Build
