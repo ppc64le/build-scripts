@@ -4,7 +4,7 @@
 # Package       : milvus
 # Version       : 2.4.11
 # Source repo   : https://github.com/milvus-io/milvus
-# Tested on     : UBI 9.3 (docker)
+# Tested on     : UBI 9.3
 # Language      : C++, Go
 # Travis-Check  : False
 # Script License: Apache License, Version 2 or later
