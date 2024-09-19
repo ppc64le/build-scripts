@@ -26,7 +26,7 @@ PACKAGE_VERSION=${1:-byte-buddy-1.15.1}
 
 
 # install tools and dependent packages
-yum install -y git shasum wget java-1.8.0-openjdk-devel.ppc64le java-1.8.0-openjdk-headless.ppc64le xz
+yum install -y git perl-Digest-SHA wget java-1.8.0-openjdk-devel.ppc64le java-1.8.0-openjdk-headless.ppc64le xz
 export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
