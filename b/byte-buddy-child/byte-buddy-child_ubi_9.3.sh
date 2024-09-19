@@ -47,7 +47,7 @@ cd $PACKAGE_NAME/$PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 
 #Build
-mvn verify 
+mvn clean install 
 if [ $? != 0 ]
 then
   echo "Build failed for $PACKAGE_NAME-$PACKAGE_VERSION"
