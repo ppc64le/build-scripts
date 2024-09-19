@@ -1,17 +1,21 @@
 {
-  "maintainer": "vinodk99",
   "package_name": "traefik",
+  "maintainer": "vinodk99",
   "github_url": "https://github.com/traefik/traefik",
-  "version": "v2.10.1",
+  "version": "v3.0.3",
   "default_branch": "master",
   "package_dir": "t/traefik/",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "true",
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-  "build_script": "traefik_ubi_8.7.sh",
-  "validate_build_script": true,
-  "use_non_root_user": false,
-  "docker_build": true,
+  "build_script": "traefik_ubi_9.3.sh",
   "v2.10.*": {
     "dir": "2.10.1_ubi8",
     "build_script": "traefik_ubi_8.7.sh"
-  }
+  },
+  "v*.*.*" : {
+     "dir": "3.0.3_ubi9",
+     "build_script": "traefik_ubi_9.3.sh"
+   }
 }

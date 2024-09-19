@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "http-timer",
+    "github_url": "https://github.com/szmarczak/http-timer",
+    "version": "v5.0.1",
+    "default_branch": "master",
+    "build_script": "http-timer_ubi_9.3.sh",
+    "package_dir": "h/http-timer",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v5.*.*": {
+        "build_script": "http-timer_ubi_9.3.sh"
+    }
+}

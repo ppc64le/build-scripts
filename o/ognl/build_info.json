@@ -1,0 +1,15 @@
+{
+  "maintainer": "Vipul-Ajmera",
+  "package_name": "ognl",
+  "github_url": "https://github.com/orphan-oss/ognl.git",
+  "version": "OGNL_3_4_3",
+  "default_branch": "main",
+  "package_dir": "o/ognl",
+  "build_script": "ognl_ubi_9.3.sh",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "*_*_*_*": {
+    "build_script": "ognl_ubi_9.3.sh"
+  }
+}

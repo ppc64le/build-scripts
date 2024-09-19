@@ -1,0 +1,15 @@
+{
+    "maintainer": "pratibh-ibm",
+    "package_name": "java-sdk-core",
+    "github_url": "https://github.com/IBM/java-sdk-core.git",
+    "version": "9.20.0",
+    "default_branch": "main",
+    "build_script": "java-sdk-core_ubi_9.3.sh",
+    "package_dir": "j/java-sdk-core",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "9.*.*": {
+      "build_script": "java-sdk-core_ubi_9.3.sh"
+    }
+  }

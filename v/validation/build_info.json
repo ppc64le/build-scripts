@@ -1,0 +1,15 @@
+{
+    "maintainer": "pratibh-ibm",
+    "package_name": "validation",
+    "github_url": "https://github.com/jakartaee/validation.git",
+    "version": "3.0.2",
+    "default_branch": "main",
+    "build_script": "validation_ubi_9.3.sh",
+    "package_dir": "v/validation",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "3.*.*": {
+      "build_script": "validation_ubi_9.3.sh"
+    }
+  }

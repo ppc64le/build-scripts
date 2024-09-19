@@ -1,0 +1,15 @@
+{
+    "maintainer": "stutiibm",
+    "package_name": "onnxruntime",
+    "github_url": "https://github.com/microsoft/onnxruntime",
+    "version": "v1.18.1",
+    "default_branch": "master",
+    "package_dir": "o/onnxruntime",
+    "build_script": "onnxruntime_ubi_9_3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "v*.*.*": {
+        "build_script": "onnxruntime_ubi_9_3.sh"
+     }
+}

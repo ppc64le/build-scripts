@@ -1,0 +1,15 @@
+{
+    "maintainer": "santhoshkotla2929",
+    "package_name": "guava-futures-failureaccess",
+    "github_url": "https://github.com/google/guava",
+    "version": "failureaccess-v1.0.2",
+    "default_branch": "Master",
+    "build_script": "guava-futures-failureaccess_ubi_9.3.sh",
+    "package_dir": "g/guava-futures-failureaccess",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "failureaccess-v1.*.*": {
+      "build_script": "guava-futures-failureaccess_ubi_9.3.sh"
+    }
+  }

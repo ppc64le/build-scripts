@@ -1,0 +1,15 @@
+{
+  "maintainer": "Vipul-Ajmera",
+  "package_name": "lme4",
+  "github_url": "https://github.com/cran/lme4.git",
+  "version": "1.1-35.5",
+  "default_branch": "master",
+  "package_dir": "l/lme4",
+  "build_script": "lme4_ubi_9.3.sh",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "*.*-*.*": {
+    "build_script": "lme4_ubi_9.3.sh"
+  }
+}
