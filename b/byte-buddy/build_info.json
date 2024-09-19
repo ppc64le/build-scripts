@@ -1,0 +1,15 @@
+{
+    "maintainer": "santhoshkotla2929",
+    "package_name": "byte-buddy",
+    "github_url": "https://github.com/raphw/byte-buddy",
+    "version": "byte-buddy-1.15.1",
+    "default_branch": "master",
+    "build_script": "byte-buddy_ubi_9.3.sh",
+    "package_dir": "b/byte-buddy",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "byte-buddy-1.*.*": {
+      "build_script": "byte-buddy_ubi_9.3.sh"	   
+    }    
+}
