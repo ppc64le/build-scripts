@@ -9,7 +9,7 @@
     "validate_build_script": true,
     "use_non_root_user": false,
     "docker_build": false,
-    "byte-buddy-1.*.*": {
+    "byte-buddy-1.15.*": {
       "build_script": "byte-buddy_ubi_9.3.sh"	   
     }    
 }
