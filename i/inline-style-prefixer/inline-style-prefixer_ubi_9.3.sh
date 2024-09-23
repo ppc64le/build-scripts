@@ -33,14 +33,6 @@ echo "installing nodejs $NODE_VERSION"
 nvm install "$NODE_VERSION" >/dev/null
 nvm use $NODE_VERSION
 
-#Installing PhantomJS
-wget https://github.com/ibmsoe/phantomjs/releases/download/2.1.1/phantomjs-2.1.1-linux-ppc64.tar.bz2
-tar -xvf phantomjs-2.1.1-linux-ppc64.tar.bz2
-ln -s /phantomjs-2.1.1-linux-ppc64/bin/phantomjs /usr/local/bin/phantomjs
-export PATH=$PATH:/phantomjs-2.1.1-linux-ppc64/bin
-export OPENSSL_CONF=/etc/ssl
-
-
 git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
