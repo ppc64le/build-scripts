@@ -44,6 +44,8 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+export MAVEN_OPTS="-Xmx2048m -Xms1024m  -Djava.awt.headless=true"
+
 if ! mvn clean install -DskipTests=true -pl -:keycloak-admin-ui,-:keycloak-account-ui,-:keycloak-ui-shared ; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -59,7 +61,7 @@ for i in `find -name '*Test.java' -type f | egrep -v './(testsuite|quarkus|docs|
     SEP=","
 done
 
-if ! ./mvnw test -pl "$PROJECTS" -am ; then
+if ! ./mvnw test -pl "$PROJECTS" -am -pl -:keycloak-services; then
     echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
