@@ -1,9 +1,9 @@
 #!/bin/bash
 # ----------------------------------------------------------------------------
 #
-# Package			: java-annotations
-# Version			: 24.1.0
-# Source repo		: https://github.com/JetBrains/java-annotations
+# Package       : java-annotations
+# Version       : 24.1.0
+# Source repo   : https://github.com/JetBrains/java-annotations
 # Tested on     : UBI 9.3
 # Language      : Java
 # Travis-Check  : True
