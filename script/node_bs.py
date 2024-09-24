@@ -43,7 +43,15 @@ if user_email_response =='':
 
 github_url=''
 latest_release=sys.argv[1]
-package_language=sys.argv[2]
+
+def validate_language(package_language):
+    supported_languages=['r','go','javascript','node','python']
+    package_language = package_language.lower()
+    while package_language not in supported_languages:
+        package_language = input("Enter valid language (r,go,javascript,node,python):")
+    return package_language
+
+package_language=validate_language(sys.argv[2])
 
 active_repo=False
 new_build_script=''
@@ -299,9 +307,9 @@ else:
         latest_release=input("Enter version/tag to build:")
 
     if sys.argv[2]!='':
-        package_language = sys.argv[2]
+        package_language = validate_language(package_language)
     else:
-        package_language=input("Enter Package Language (node,go,python):")
+        package_language=input("Enter Package Language (r,go,javascript,node,python):")
 
         
     package_name = input("Enter Package name (Package name should match with the directory name): ")
