@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : spring-amqp
-# Version          : v3.1.3
+# Version          : v3.1.7
 # Source repo      : https://github.com/spring-projects/spring-amqp
 # Tested on        : UBI:9.3
 # Language         : Java
@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=spring-amqp
 PACKAGE_URL=https://github.com/spring-projects/spring-amqp.git
-PACKAGE_VERSION=${1:-v3.1.3}
+PACKAGE_VERSION=${1:-v3.1.7}
 
 yum install git wget gcc gcc-c++ java-17-openjdk java-17-openjdk-devel java-17-openjdk-headless -y
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
