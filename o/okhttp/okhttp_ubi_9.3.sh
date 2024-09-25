@@ -30,12 +30,6 @@ yum install -y git wget unzip
 yum install -y java-11-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
-
-GRADLE_VERSION=gradle-8.2-rc-1
-wget https://services.gradle.org/distributions/${GRADLE_VERSION}-bin.zip  && unzip -d /gradle /${GRADLE_VERSION}-bin.zip
-export GRADLE_HOME=/gradle/${GRADLE_VERSION}/
-# update the path env. variable
-export PATH=${GRADLE_HOME}/bin:${PATH}
   
 # clone and checkout specified version
 git clone $PACKAGE_URL
@@ -43,8 +37,8 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
  
 #Build
-#./gradlew build
-./gradlew check -x test
+./gradlew clean build
+#./gradlew check -x test
 if [ $? != 0 ]
 then
   echo "Build failed for $PACKAGE_NAME-$PACKAGE_VERSION"
@@ -53,8 +47,8 @@ fi
   
   
 #Test
-#./gradlew test
-./gradlew test -Dtest.java.version=11
+./gradlew test
+#./gradlew test -Dtest.java.version=11
 if [ $? != 0 ]
 then
   echo "Test execution failed for $PACKAGE_NAME-$PACKAGE_VERSION"
