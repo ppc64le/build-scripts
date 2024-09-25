@@ -31,23 +31,13 @@ yum install -y java-11-openjdk java-11-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
-
-
-#install gradle
-wget https://services.gradle.org/distributions/gradle-7.2-rc-1-bin.zip -P /tmp && unzip -d /gradle /tmp/gradle-7.2-rc-1-bin.zip
-export GRADLE_HOME=/gradle/gradle-7.2-rc-1
-  
-# update the path env. variable
-export PATH=${GRADLE_HOME}/bin:${PATH}
-  
-  
 # clone and checkout specified version
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
   
 #Build
-#gradle build 
+#./gradlew build 
 ./gradlew -p ./okhttp-logging-interceptor clean build
 if [ $? != 0 ]
 then
