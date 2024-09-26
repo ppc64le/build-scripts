@@ -22,8 +22,8 @@ PACKAGE_NAME=perfmark
 PACKAGE_URL=https://github.com/perfmark/perfmark.git
 PACKAGE_VERSION=${1:-v0.27.0}
 
-yum install git wget gcc gcc-c++ java-19-openjdk java-19-openjdk-devel java-19-openjdk-headless -y
-export JAVA_HOME=/usr/lib/jvm/java-19-openjdk
+yum install git wget gcc gcc-c++ java-17-openjdk java-17-openjdk-devel java-17-openjdk-headless -y
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export PATH=$PATH:$JAVA_HOME
 
 wget https://archive.apache.org/dist/maven/maven-3/3.8.7/binaries/apache-maven-3.8.7-bin.tar.gz
