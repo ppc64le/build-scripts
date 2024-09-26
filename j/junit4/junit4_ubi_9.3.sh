@@ -78,7 +78,7 @@ export PATH=$PATH:$M2_HOME/bin
 chown testuser -R /home/testuser
 
 if ! su -p testuser -c 'mvn verify javadoc:javadoc site:site --batch-mode --errors --settings settings.xml'; then
-    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
+    echo "------------------$PACKAGE_NAME:Build_and_Test_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
