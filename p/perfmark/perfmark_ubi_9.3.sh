@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : perfmark
-# Version          : v0.26.0
+# Version          : v0.27.0
 # Source repo      : https://github.com/perfmark/perfmark
 # Tested on        : UBI:9.3
 # Language         : Java
@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=perfmark
 PACKAGE_URL=https://github.com/perfmark/perfmark.git
-PACKAGE_VERSION=${1:-v0.26.0}
+PACKAGE_VERSION=${1:-v0.27.0}
 
 yum install git wget gcc gcc-c++ java-19-openjdk java-19-openjdk-devel java-19-openjdk-headless -y
 export JAVA_HOME=/usr/lib/jvm/java-19-openjdk
