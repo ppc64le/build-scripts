@@ -33,7 +33,7 @@ yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStrea
 yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os
 rpm --import http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
 
-yum install -y wget unzip zip git gcc-c++ zlib-devel openssl-devel libffi-devel sqlite-devel xz-devel perl ninja-build gfortran bzip2-devel xz lld libjpeg-turbo-devel openblas-devel texinfo
+yum install -y wget unzip zip git gcc-c++ zlib-devel openssl-devel libffi-devel sqlite-devel xz-devel perl ninja-build gfortran bzip2-devel xz lld libjpeg-turbo-devel openblas-devel texinfo clang-17.0.6
 
 #Install Python from source
 cd $BUILD_HOME
@@ -69,15 +69,20 @@ cmake --version
 
 #Setup clang
 cd $BUILD_HOME
-wget https://github.com/llvm/llvm-project/releases/download/llvmorg-$CLANG_VERSION/clang+llvm-$CLANG_VERSION-powerpc64le-linux-rhel-8.8.tar.xz
-tar -xvf clang+llvm-$CLANG_VERSION-powerpc64le-linux-rhel-8.8.tar.xz
-rm -rf clang+llvm-$CLANG_VERSION-powerpc64le-linux-rhel-8.8.tar.xz
-mv clang+llvm-$CLANG_VERSION-powerpc64le-linux-rhel-8.8 clang-$CLANG_VERSION
-export PATH=$BUILD_HOME/clang-$CLANG_VERSION/bin:$PATH
-export CC=$BUILD_HOME/clang-$CLANG_VERSION/bin/clang
-export CXX=$BUILD_HOME/clang-$CLANG_VERSION/bin/clang++
-export ASM=$BUILD_HOME/clang-$CLANG_VERSION/bin/clang
-clang --version
+if [ "$(command -v clang)" ]; then
+    echo "Clang is already installed at $(which clang)."
+else
+    wget https://github.com/llvm/llvm-project/releases/download/llvmorg-$CLANG_VERSION/clang+llvm-$CLANG_VERSION-powerpc64le-linux-rhel-8.8.tar.xz
+    tar -xvf clang+llvm-$CLANG_VERSION-powerpc64le-linux-rhel-8.8.tar.xz
+    rm -rf clang+llvm-$CLANG_VERSION-powerpc64le-linux-rhel-8.8.tar.xz
+    mv clang+llvm-$CLANG_VERSION-powerpc64le-linux-rhel-8.8 clang-$CLANG_VERSION
+    export PATH=$BUILD_HOME/clang-$CLANG_VERSION/bin:$PATH
+    export CC=$BUILD_HOME/clang-$CLANG_VERSION/bin/clang
+    export CXX=$BUILD_HOME/clang-$CLANG_VERSION/bin/clang++
+    export ASM=$BUILD_HOME/clang-$CLANG_VERSION/bin/clang
+    echo "need to install"
+    clang --version
+fi 
 
 #Clone the repository 	
 cd $BUILD_HOME
