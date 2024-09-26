@@ -4,17 +4,17 @@
 # Package       : keyring
 # Version       : 25.2.0
 # Source repo : https://github.com/jaraco/keyring
-# Tested on     : CentOS 7
+# Tested on     : UBI:9.3
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on the given
-#             platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of the
-#             package and/or distribution. In such a case, please
-#             contact the "Maintainer" of this script.
+# platform using the mentioned version of the package.
+# It may not work as expected with newer versions of the
+# package and/or distribution. In such a case, please
+# contact the "Maintainer" of this script.
 #
 # -----------------------------------------------------------------------------
  
@@ -42,19 +42,22 @@ curl -O $TARBALL_URL
 tar -xvzf keyring-25.2.0.tar.gz
 cd keyring-25.2.0
  
-# Install the keyring package in editable mode
-pip install -e .
- 
 # Build the project
 if ! python3 -m build; then
-    echo "------------------$PACKAGE_NAME: Install_fails ---------------------"
+    echo "------------------$PACKAGE_NAME: Build_fails ---------------------"
     exit 1
+fi
+ 
+# Install the keyring package
+if ! pip install .; then
+    echo "------------------$PACKAGE_NAME: Install_fails ---------------------"
+    exit 2
 fi
  
 # Run tests using pytest
 if ! pytest -v tests/; then
     echo "------------------$PACKAGE_NAME: Install_success_but_test_fails -----"
-    exit 2
+    exit 3
 else
     echo "------------------$PACKAGE_NAME: Install_&_test_both_success --------"
     exit 0
