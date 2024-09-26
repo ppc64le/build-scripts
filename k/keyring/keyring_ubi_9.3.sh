@@ -31,10 +31,6 @@ yum install -y --allowerasing yum-utils git gcc gcc-c++ make curl python3 python
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 source "$HOME/.cargo/env"
  
-# Create and activate Python virtual environment
-python3 -m venv keyring-env
-source keyring-env/bin/activate
- 
 # Upgrade pip, setuptools, and wheel
 pip install --upgrade pip setuptools wheel
  
