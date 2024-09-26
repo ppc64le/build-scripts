@@ -37,6 +37,8 @@ export JAVA_HOME=$(compgen -G '/usr/lib/jvm/jre-1.8.0-openjdk-*')
 # update the path env. variable 
 export PATH="$JAVA_HOME/bin/":$PATH
 export JAVA_OPTS="-Xms2048M -Xmx4096M -XX:MaxPermSize=4096M"
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
 export SCALA_VERSION="2.13.13"
 
 # clone, build and test specified version
@@ -57,7 +59,7 @@ if ! build/sbt compile ; then
     exit 1
 fi 
 
-if ! build/sbt "testOnly * -- -l 'org.apache.spark.sql.delta.DeltaGenerateSymlinkManifestSuite'" test ; then
+if ! build/sbt test ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
