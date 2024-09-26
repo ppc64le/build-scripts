@@ -57,7 +57,7 @@ if ! build/sbt compile ; then
     exit 1
 fi 
 
-if ! build/sbt "testOnly * -- -l substring on multibyte characters*" test ; then
+if ! build/sbt "testOnly * -- -l delete partition column with special char - incremental=true" test ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
