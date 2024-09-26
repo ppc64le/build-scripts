@@ -4,7 +4,7 @@
 # Package       : jupyterhub
 # Version       : 5.0.0b2
 # Source repo : https://github.com/jupyterhub/jupyterhub
-# Tested on     : CentOS
+# Tested on     : UBI:9.3
 # Language      : Python, Node.js
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
