@@ -59,6 +59,3 @@ else
     echo "------------------$PACKAGE_NAME: Install_&_test_both_success --------"
     exit 0
 fi
- 
-# Deactivate the Python virtual environment
-deactivate
