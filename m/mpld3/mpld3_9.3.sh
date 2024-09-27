@@ -36,8 +36,8 @@ cd $PACKAGE_NAME-$PACKAGE_VERSION
 # Step 2: Install necessary development tools and libraries
 echo "Installing required dependencies..."
 yum install -y python3-devel python3-setuptools python3-pip \
-    libjpeg-devel zlib-devel freetype-devel lcms2-devel libwebp-devel \
-    tcl-devel tk-devel gcc gcc-c++ make
+    libjpeg-devel zlib-devel freetype-devel  libwebp-devel \
+    gcc gcc-c++ make
 
 # Step 3: Install dependencies using pip
 echo "Installing Python dependencies..."
