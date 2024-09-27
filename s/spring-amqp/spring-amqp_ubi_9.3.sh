@@ -39,7 +39,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if ! gradle clean build -x javadoc ; then
+if ! gradle build -x javadoc ; then
      echo "------------------$PACKAGE_NAME:Build_fails---------------------"
      echo "$PACKAGE_VERSION $PACKAGE_NAME"
      echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails_"
