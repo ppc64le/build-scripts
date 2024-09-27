@@ -37,10 +37,16 @@ pip install --upgrade pip setuptools wheel
 # Install additional Python packages
 pip install build pytest
  
+# Install a specific pytest version to avoid compatibility issues with Python 3.9
+pip install pytest==6.2.5
+ 
 # Download and extract the keyring source tarball
 curl -O $TARBALL_URL
 tar -xvzf keyring-25.2.0.tar.gz
 cd keyring-25.2.0
+ 
+# Set PYTHONPATH to ensure correct module imports during tests
+export PYTHONPATH=$PYTHONPATH:$(pwd)
  
 # Build the project
 if ! python3 -m build; then
@@ -52,6 +58,12 @@ fi
 if ! pip install .; then
     echo "------------------$PACKAGE_NAME: Install_fails ---------------------"
     exit 2
+fi
+ 
+# Test the pytest collection to see if there's an issue with dynamic imports
+if ! pytest --collect-only; then
+    echo "------------------$PACKAGE_NAME: Test_collection_fails --------------"
+    exit 4
 fi
  
 # Run tests using pytest
