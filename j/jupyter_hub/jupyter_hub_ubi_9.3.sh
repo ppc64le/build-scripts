@@ -5,6 +5,8 @@
 # Source repo : https://github.com/jupyterhub/jupyterhub
 # Tested on    : UBI:9.3
 # Language     : Python, Node.js
+# Travis-Check : True
+# Script License   : Apache License, Version 2 or later
 # Maintainer   : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
 # -----------------------------------------------------------------------------
 # Variables
