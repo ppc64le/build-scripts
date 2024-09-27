@@ -44,9 +44,6 @@ cd $PACKAGE_NAME-$PACKAGE_VERSION
 echo "Installing build tools..."
 pip install build
 
-# Step 7: Build the package and resolve npm issues
+# Step 7: Build the package
 echo "Building the package..."
-if ! python3 -m build; then
-    echo "npm install failed. Trying with --legacy-peer-deps flag..."
-    npm install --progress=false --unsafe-perm --legacy-peer-deps
-fi
+python3 -m build;
