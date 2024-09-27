@@ -20,7 +20,7 @@
 
 #variables
 PACKAGE_NAME=tidyr
-PACKAGE_VERSION=1.3.1
+PACKAGE_VERSION=${1:-1.3.1}
 PACKAGE_URL=https://github.com/cran/tidyr.git
 
 #install dependencies
