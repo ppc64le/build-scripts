@@ -80,7 +80,6 @@ else
     export CC=$BUILD_HOME/clang-$CLANG_VERSION/bin/clang
     export CXX=$BUILD_HOME/clang-$CLANG_VERSION/bin/clang++
     export ASM=$BUILD_HOME/clang-$CLANG_VERSION/bin/clang
-    echo "need to install"
     clang --version
 fi 
 
@@ -123,4 +122,5 @@ fi
 #conclude
 echo "Build and test successful!"
 echo "Wheel located at:"
-echo "[$BUILD_HOME/catboost/catboost/python-package/dist/catboost-*_ppc64le.whl]"
+CATBOOST_WHEEL=$(ls $BUILD_HOME/catboost/catboost/python-package/dist/catboost-*_ppc64le.whl)
+echo "${CATBOOST_WHEEL}"
