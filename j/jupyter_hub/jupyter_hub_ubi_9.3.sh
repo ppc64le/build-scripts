@@ -27,8 +27,8 @@ source "$NVM_DIR/nvm.sh"
 nvm install 18.17.0
 
 # Step 3: Update npm to the latest version
-echo "Updating npm to the latest version..."
-npm install -g npm@latest
+#echo "Updating npm to the latest version..."
+#npm install -g npm@latest
 
 # Step 4: Clear npm cache
 echo "Clearing npm cache..."
