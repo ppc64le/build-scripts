@@ -26,7 +26,7 @@ yum install git wget gcc gcc-c++ unzip java-17-openjdk java-17-openjdk-devel jav
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export PATH=$PATH:$JAVA_HOME
 
-export GRADLE_VERSION="8.10.1"
+export GRADLE_VERSION="8.5"
 # download gradle distribution
 wget https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip -q -O /tmp/gradle-$GRADLE_VERSION-bin.zip
 
