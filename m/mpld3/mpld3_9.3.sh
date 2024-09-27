@@ -34,7 +34,7 @@ cd $PACKAGE_NAME-$PACKAGE_VERSION
  
 # Step 2: Install necessary development tools and libraries
 echo "Installing required dependencies..."
-yum install -y python3-devel python3-setuptools python3-pip \
+yum install -y python3-devel wget curl python3-setuptools python3-pip \
     libjpeg-devel zlib-devel freetype-devel lcms2-devel libwebp-devel \
     tcl-devel tk-devel gcc gcc-c++ make
  
