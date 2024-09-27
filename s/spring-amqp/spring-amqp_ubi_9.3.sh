@@ -22,7 +22,7 @@ PACKAGE_NAME=spring-amqp
 PACKAGE_URL=https://github.com/spring-projects/spring-amqp.git
 PACKAGE_VERSION=${1:-v3.1.7}
 
-yum install git wget gcc gcc-c++ java-17-openjdk java-17-openjdk-devel java-17-openjdk-headless -y
+yum install git wget gcc gcc-c++ unzip java-17-openjdk java-17-openjdk-devel java-17-openjdk-headless -y
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export PATH=$PATH:$JAVA_HOME
 
