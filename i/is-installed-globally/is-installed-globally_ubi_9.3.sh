@@ -43,7 +43,7 @@ if ! npm install && npm audit fix --force; then
     exit 1
 fi
 
-if ! npm test -- --testTimeout=30000; then
+if ! npx ava --timeout=30000; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
