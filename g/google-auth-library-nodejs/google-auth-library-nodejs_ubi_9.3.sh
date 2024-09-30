@@ -4,11 +4,11 @@
 # Package          : google-auth-library-nodejs
 # Version          : v9.14.1
 # Source repo      : https://github.com/googleapis/google-auth-library-nodejs.git
-# Tested on	: UBI:9.3
-# Language      : Node
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer    : ramnathnayak-ibm <ramnath.nayak@ibm.com>
+# Tested on	   : UBI:9.3
+# Language         : Node
+# Travis-Check     : True
+# Script License   : Apache License, Version 2 or later
+# Maintainer       : Ramnath Nayak <ramnath.nayak@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
