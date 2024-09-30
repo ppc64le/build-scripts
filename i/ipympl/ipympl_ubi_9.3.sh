@@ -62,7 +62,7 @@ python3 -m pip install --upgrade pip setuptools
 
 # Install Python dependencies
 pip install -e .
-pip install matplotlib ipywidgets numpy pytest nbval 
+pip install matplotlib ipywidgets numpy pytest nbval build
 
 #install
 if ! pyproject-build; then
