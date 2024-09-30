@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : agentkeepalive
-# Version          : master
+# Version          : 4.5.0
 # Source repo      : https://github.com/node-modules/agentkeepalive
 # Tested on	: UBI:9.3
 # Language      : Node
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=agentkeepalive
-PACKAGE_VERSION=${1:-master}
+PACKAGE_VERSION=${1:-4.5.0}
 PACKAGE_URL=https://github.com/node-modules/agentkeepalive
 
 export NODE_VERSION=${NODE_VERSION:-16}

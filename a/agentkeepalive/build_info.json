@@ -2,11 +2,14 @@
    "maintainer": "vinodk99",
    "package_name": "agentkeepalive",
    "github_url": "https://github.com/node-modules/agentkeepalive",
-   "version": "master",
+   "version": "4.5.0",
    "default_branch": "master",
    "build_script": "agentkeepalive_ubi_9.3.sh",
    "package_dir": "a/agentkeepalive",
    "docker_build": false,
    "validate_build_script": true,
-   "use_non_root_user": false
+   "use_non_root_user": false,
+   "*.*.*" : {
+       "build_script" : "agentkeepalive_ubi_9.3.sh"
+   }
 }
