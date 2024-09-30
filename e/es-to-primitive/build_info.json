@@ -1,0 +1,15 @@
+{
+    "maintainer": "Vipul-Ajmera",
+    "package_name": "es-to-primitive",
+    "github_url": "https://github.com/ljharb/es-to-primitive.git",
+    "version": "v1.2.1",
+    "default_branch": "main",
+    "package_dir": "e/es-to-primitive",
+    "build_script": "es-to-primitive_ubi_9.3.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": "false",
+    "v*.*.*" : {
+       "build_script": "es-to-primitive_ubi_9.3.sh"
+    }
+}
