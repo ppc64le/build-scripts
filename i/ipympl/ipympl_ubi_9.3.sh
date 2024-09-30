@@ -24,7 +24,8 @@ PACKAGE_VERSION=0.9.4
 PACKAGE_URL=https://github.com/matplotlib/ipympl.git
 
 # Install necessary system packages
-yum install -y --allowerasing curl git gcc gcc-c++ wget bzip2 python-pip python-devel bzip2-devel libffi-devel zlib-devel
+yum install -y --allowerasing curl git gcc gcc-c++ wget bzip2 python-pip python-devel libjpeg-devel libpng-devel libtiff-devel
+
 
 # Check and install Rust
 if ! command -v rustc &> /dev/null; then
