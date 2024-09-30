@@ -36,6 +36,9 @@ nvm use $NODE_VERSION
 git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+npm install -g tap@15 —save-dev
+npx tap
+
 
 if ! npm install && npm audit fix --force; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
