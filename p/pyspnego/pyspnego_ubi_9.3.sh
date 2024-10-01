@@ -46,7 +46,7 @@ python3 -m pip install --upgrade pip
 
 # Install dependencies
 pip install .
-pip install -r requirements.txt
+pip install -r requirements-test.txt
 pip install wheel build pytest pytest-mock mocker k5test
 
 
