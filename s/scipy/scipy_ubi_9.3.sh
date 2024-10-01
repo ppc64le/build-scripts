@@ -25,8 +25,7 @@ PACKAGE_URL=https://github.com/scipy/scipy
 OS_NAME=`cat /etc/os-release | grep "PRETTY" | awk -F '=' '{print $2}'`
 
 # install core dependencies
-yum install -y gcc gcc-c++ gcc-gfortran pkg-config openblas-devel python3.11 python3.11-pip python3.11-devel git atlas
-yum install -y lapack-devel --enablerepo=codeready-builder-for-rhel-9-ppc64le-rpms
+yum install -y gcc gcc-c++ gcc-gfortran pkg-config lapack-devel openblas-devel python3.11 python3.11-pip python3.11-devel git atlas
 
 # change symbolic links so that python can find them
 ln -s /usr/lib64/atlas/libtatlas.so.3 /usr/lib64/atlas/libtatlas.so
