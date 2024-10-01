@@ -36,10 +36,9 @@ nvm use $NODE_VERSION
 git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-npm install -g tap@15 
 
 
-if ! npm install && npm audit fix --force; then
+if ! npm install --legacy-peer-deps; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
