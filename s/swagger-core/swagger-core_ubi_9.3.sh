@@ -30,13 +30,6 @@ yum install -y git wget gcc gcc-c++ java-11-openjdk java-11-openjdk-devel java-1
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
 
-# #install maven
-# wget https://archive.apache.org/dist/maven/maven-3/3.8.7/binaries/apache-maven-3.8.7-bin.tar.gz
-# tar -zxf apache-maven-3.8.7-bin.tar.gz
-# cp -R apache-maven-3.8.7 /usr/local
-# ln -s /usr/local/apache-maven-3.8.7/bin/mvn /usr/bin/mvn
-# mvn --version
-
 cd $HOME_DIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
