@@ -3,7 +3,7 @@
     "package_name": "robustbase",
     "github_url": "https://github.com/cran/robustbase.git",
     "version": "0.99-4-1",
-    "default_branch": "main",
+    "default_branch": "master",
     "package_dir": "r/robustbase",
     "build_script": "robustbase_ubi_9.3.sh",
     "validate_build_script": "true",
