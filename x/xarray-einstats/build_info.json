@@ -1,0 +1,15 @@
+{
+  "maintainer": "aastha-sharma2",
+  "package_name": "xarray-einstats",
+  "github_url": "https://github.com/arviz-devs/xarray-einstats.git",
+  "version": "0.7.0",
+  "package_dir": "x/xarray-einstats",
+  "default_branch": "main",
+  "build_script": "xarray-einstats_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*.*.*": {
+    "build_script": "xarray-einstats_ubi_9.3.sh"
+  }
+}
