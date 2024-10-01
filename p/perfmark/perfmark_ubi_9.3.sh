@@ -22,7 +22,7 @@ PACKAGE_NAME=perfmark
 PACKAGE_URL=https://github.com/perfmark/perfmark.git
 PACKAGE_VERSION=${1:-v0.27.0}
 
-yum install git wget gcc gcc-c++ java-21-openjdk java-21-openjdk-devel java-21-openjdk-headless -y
+yum install git unzip wget gcc gcc-c++ java-21-openjdk java-21-openjdk-devel java-21-openjdk-headless -y
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 export PATH=$PATH:$JAVA_HOME
 
