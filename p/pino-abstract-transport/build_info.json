@@ -1,7 +1,7 @@
 {
     "maintainer": "Vipul-Ajmera",
     "package_name": "pino-abstract-transport",
-    "github_url": "https://github.com/dcodeIO/long.js.git",
+    "github_url": "https://github.com/pinojs/pino-abstract-transport.git",
     "version": "v2.0.0",
     "default_branch": "main",
     "package_dir": "p/pino-abstract-transport",
