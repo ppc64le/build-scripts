@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-master}
 PACKAGE_URL=https://github.com/matan-h/libtool.git
 
 # Install dependencies
-yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel zlib-devel
+yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel zlib-devel python-devel python-pip
 
 # Clone the repository
 git clone $PACKAGE_URL
