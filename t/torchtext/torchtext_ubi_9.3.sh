@@ -51,7 +51,7 @@ fi
 git clone --recursive https://github.com/pytorch/pytorch.git
 cd pytorch
 pip install -r requirements.txt
-python setup.py install 
+python3 setup.py install 
 
 # Back to torchtext directory
 cd "$ORIGINAL_DIR"
