@@ -28,8 +28,8 @@ yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel 
 
 # Clone the repository
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME  # Change to the cloned repository
-git checkout $PACKAGE_VERSION  # Checkout the specified version
+cd text  
+git checkout $PACKAGE_VERSION  
 
 #Original directory
 ORIGINAL_DIR=$(pwd)
