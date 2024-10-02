@@ -59,7 +59,7 @@ cd "$ORIGINAL_DIR"
 # Install additional dependencies
 pip install -r requirements.txt
 pip install spacy
-python -m spacy download en
+python3 -m spacy download en
 
 #install
 if ! (python3 setup.py install) ; then
