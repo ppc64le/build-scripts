@@ -37,6 +37,16 @@ ORIGINAL_DIR=$(pwd)
 # Upgrade pip
 python3 -m pip install --upgrade pip
 
+# Check if Rust is installed
+if ! command -v rustc &> /dev/null; then
+    # If Rust is not found, install Rust
+    echo "Rust not found. Installing Rust..."
+    curl https://sh.rustup.rs -sSf | sh -s -- -y
+    source "$HOME/.cargo/env"  # Update environment variables to use Rust
+else
+    echo "Rust is already installed."
+fi
+
 # Build torch
 git clone --recursive https://github.com/pytorch/pytorch.git
 cd pytorch
