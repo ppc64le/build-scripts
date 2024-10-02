@@ -19,7 +19,7 @@
 # ---------------------------------------------------------------------------
 
 # Variables
-PACKAGE_NAME=certipy
+PACKAGE_NAME=libtool
 PACKAGE_VERSION=${1:-master}
 PACKAGE_URL=https://github.com/matan-h/libtool.git
 
