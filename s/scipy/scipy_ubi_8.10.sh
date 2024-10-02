@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/scipy/scipy
 OS_NAME=`cat /etc/os-release | grep "PRETTY" | awk -F '=' '{print $2}'`
 
 # install core dependencies
-yum install -y gcc gcc-c++ gcc-gfortran lapack pkg-config python3.11 python3.11-pip python3.11-devel git atlas
+yum install -y gcc gcc-c++ gcc-gfortran pkg-config python3.11 python3.11-pip python3.11-devel git atlas
 yum install -y openblas-devel --enablerepo=codeready-builder-for-rhel-8-ppc64le-rpms
 
 # change symbolic links so that python can find them
