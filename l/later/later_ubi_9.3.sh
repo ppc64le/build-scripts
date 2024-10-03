@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=later
-PACKAGE_VERSION==${1:-1.3.2}
+PACKAGE_VERSION=${1:-1.3.2}
 PACKAGE_URL=https://github.com/cran/later
 
 dnf install -y gcc gcc-c++ gcc-gfortran git wget xz cmake make yum-utils sudo llvm
