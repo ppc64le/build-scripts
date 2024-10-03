@@ -44,7 +44,7 @@ fi
 #remove existing unnecessary dependency
 if yum list installed python3-chardet &> /dev/null; then
     echo "python3-chardet is installed. Removing it..."
-    sudo yum remove -y python3-chardet
+     yum remove -y python3-chardet
 else
     echo "python3-chardet is not installed."
 fi
