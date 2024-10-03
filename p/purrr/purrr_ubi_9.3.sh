@@ -17,7 +17,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_NAME=purr
+PACKAGE_NAME=purrr
 PACKAGE_VERSION=${1:-1.0.2}
 PACKAGE_URL=https://github.com/cran/purrr
 
