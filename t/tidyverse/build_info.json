@@ -1,0 +1,12 @@
+{
+   "maintainer": "shubham-garud",
+   "package_name": "tidyverse",
+   "github_url": "https://github.com/cran/tidyverse",
+   "version": "2.0.0",
+   "default_branch": "master",
+   "build_script": "tidyverse_ubi_9.3.sh",
+   "package_dir": "t/tidyverse",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
