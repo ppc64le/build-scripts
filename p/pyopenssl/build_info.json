@@ -1,0 +1,15 @@
+{
+  "maintainer": "aastha-sharma2",
+  "package_name": "pyopenssl",
+  "github_url": "https://github.com/pyca/pyopenssl.git",
+  "version": "24.1.0",
+  "package_dir": "p/pyopenssl",
+  "default_branch": "main",
+  "build_script": "pyopenssl_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*.*.*": {
+    "build_script": "pyopenssl_ubi_9.3.sh"
+  }
+}
