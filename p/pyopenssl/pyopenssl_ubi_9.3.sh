@@ -28,8 +28,8 @@ yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel 
 
 # Clone the repository
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME  # Change to the cloned repository
-git checkout $PACKAGE_VERSION  # Checkout the specified version
+cd $PACKAGE_NAME  
+git checkout $PACKAGE_VERSION  
 
 # Check if Rust is installed
 if ! command -v rustc &> /dev/null; then
@@ -41,6 +41,14 @@ else
     echo "Rust is already installed."
 fi
 
+#remove existing unnecessary dependency
+if yum list installed python3-chardet &> /dev/null; then
+    echo "python3-chardet is installed. Removing it..."
+    sudo yum remove -y python3-chardet
+else
+    echo "python3-chardet is not installed."
+fi
+ 
 # Upgrade pip
 python3 -m pip install --upgrade pip
 
