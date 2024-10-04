@@ -26,14 +26,6 @@ PACKAGE_URL=https://github.com/python-poetry/poetry.git
 #install dependencies
 yum install -y --allowerasing python3-pip python3-devel git gcc gcc-c++ make curl openssl openssl-devel wget openssl-devel bzip2-devel libffi-devel zlib-devel
 
-# Check if Python version is empty or less than or equal to 3.8
-PYTHON_VERSION=$(python3 --version 2>&1 | awk '{print $2}')
-if [ -z "$PYTHON_VERSION" ] || [ "$(printf '%s\n' "3.8" "$PYTHON_VERSION" | sort -V | head -n1)" != "3.8" ]; then
-    yum install -y python3
-else
-    echo "Python version is $PYTHON_VERSION, requirement already satisfied."
-fi
-
 # Create a symbolic link for python3
 ln -s /usr/bin/python3 /usr/bin/python
 
