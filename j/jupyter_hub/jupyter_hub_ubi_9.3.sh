@@ -16,7 +16,7 @@ PACKAGE_URL=https://github.com/jupyterhub/jupyterhub
  
 # Step 1: Install required dependencies
 echo "Installing required dependencies..."
-yum install -y wget curl --skip-broken
+yum install -y wget curl python-pip --skip-broken
  
 # Step 2: Install NVM and Node.js
 echo "Installing Node.js 18.17.0..."
