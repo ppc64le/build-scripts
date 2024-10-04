@@ -31,20 +31,12 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-# Check if Python version is empty or less than or equal to 3.8
-PYTHON_VERSION=$(python3 --version 2>&1 | awk '{print $2}')
-if [ -z "$PYTHON_VERSION" ] || [ "$(printf '%s\n' "3.8" "$PYTHON_VERSION" | sort -V | head -n1)" != "3.8" ]; then
-    yum install -y python3
-else
-    echo "Python version is $PYTHON_VERSION, requirement already satisfied."
-fi
-
 # Check if Rust is installed
 if ! command -v rustc &> /dev/null; then
     # If Rust is not found, install Rust
     echo "Rust not found. Installing Rust..."
     curl https://sh.rustup.rs -sSf | sh -s -- -y
-    source "$HOME/.cargo/env"  # Update environment variables to use Rust
+    source "$HOME/.cargo/env"  
 else
     echo "Rust is already installed."
 fi
