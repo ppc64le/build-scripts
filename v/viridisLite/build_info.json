@@ -1,0 +1,15 @@
+{
+   "maintainer": "stutiibm",
+   "package_name": "viridisLite",
+   "github_url": "https://github.com/cran/viridisLite",
+   "version": "0.4.2",
+   "default_branch": "master",
+   "build_script": "viridisLite_ubi_9.3.sh",
+   "package_dir": "v/viridisLite",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*.*.*": {
+     "build_script": "viridisLite_ubi_9.3.sh"
+   }
+}

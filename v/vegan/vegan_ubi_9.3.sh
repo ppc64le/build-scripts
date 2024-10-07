@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: 
-# Version	: 
-# Source repo	: 
+# Package	: vegan 
+# Version	: 2.6-8
+# Source repo	: https://github.com/cran/vegan 
 # Tested on	: UBI:9.3
 # Language      : R
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: ICH <ich@us.ibm.com>
+# Maintainer	: Shubham Garud <Shubham.Garud@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -17,9 +17,9 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_NAME=
-PACKAGE_VERSION=
-PACKAGE_URL=
+PACKAGE_NAME=vegan
+PACKAGE_VERSION=${1:-2.6-8}
+PACKAGE_URL=https://github.com/cran/vegan
 
 dnf install -y gcc gcc-c++ gcc-gfortran git wget xz cmake make yum-utils sudo llvm
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/

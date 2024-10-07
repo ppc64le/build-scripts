@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: 
-# Version	: 
-# Source repo	: 
-# Tested on	: UBI:9.3
+# Package       : viridis
+# Version       : 0.6.5
+# Source repo   : https://github.com/cran/viridis
+# Tested on     : UBI:9.3
 # Language      : R
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: ICH <ich@us.ibm.com>
+# Maintainer    : stutiibm <Stuti.Wali@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -17,11 +17,12 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-PACKAGE_NAME=
-PACKAGE_VERSION=
-PACKAGE_URL=
 
-dnf install -y gcc gcc-c++ gcc-gfortran git wget xz cmake make yum-utils sudo llvm
+PACKAGE_NAME=viridis
+PACKAGE_VERSION=${1:-0.6.5}
+PACKAGE_URL=https://github.com/cran/viridis
+
+dnf install -y gcc gcc-c++ gcc-gfortran git wget xz cmake make libcurl-devel yum-utils sudo llvm 
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
@@ -40,12 +41,15 @@ dnf install -y R-core R-core-devel
 dnf builddep R -y
 R --version
 
-dnf install -y geos-devel gdal-devel udunits2-devel unixODBC-devel libpq-devel proj-devel sqlite-devel gsl-devel libgit2-devel libcurl-devel libarchive-devel openssl-devel
+yum install -y udunits2-devel gdal-devel proj-devel netcdf-devel geos-devel sqlite sqlite-devel openssl-devel
 
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 cd ..
+
+yum install -y openssl-devel
+
 
 if ! R -e "install.packages('$PACKAGE_NAME', dependencies = TRUE, repos = 'http://cran.rstudio.com/')";then
     echo "------------------$PACKAGE_NAME:Dependencies installation fail-------------------------------------"

@@ -1,0 +1,15 @@
+{
+    "maintainer": "stutiibm",
+    "package_name": "shapeless",
+    "github_url": "https://github.com/milessabin/shapeless",
+    "version": "v2.3.12",
+    "default_branch": "main",
+    "package_dir": "s/shapeless",
+    "build_script": "shapeless_ubi_9_3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "v*.*.*": {
+      "build_script": "shapeless_ubi_9_3.sh"
+    }
+}
