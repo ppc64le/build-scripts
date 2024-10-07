@@ -26,7 +26,7 @@ BUILD_HOME=$(pwd)
 
 # Install required dependencies
 yum update -y
-yum install -y gcc gcc-c++ make git openssl-devel lz4-devel zlib-devel cyrus-sasl-devel libzstd-devel libtool libcurl-devel python3.11.ppc64le python3.11-pip diffutils
+yum install -y gcc gcc-c++ make git openssl-devel lz4-devel zlib-devel cyrus-sasl-devel libtool libcurl-devel python3.11.ppc64le python3.11-pip diffutils
 
 #Clone the repository 	
 cd $BUILD_HOME
