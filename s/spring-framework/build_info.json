@@ -1,0 +1,15 @@
+{
+    "maintainer": "pratibh-goshi",
+    "package_name": "spring-framework",
+    "github_url": "https://github.com/spring-projects/spring-framework.git",
+    "version": "v6.0.19",
+    "default_branch": "main",
+    "build_script": "spring-framework_ubi_9.3.sh",
+    "package_dir": "s/spring-framework",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v6.*.*": {
+      "build_script": "spring-framework_ubi_9.3.sh"
+    }
+  }
