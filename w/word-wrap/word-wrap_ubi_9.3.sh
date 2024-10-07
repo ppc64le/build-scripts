@@ -1,7 +1,7 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package	    : word-wrap-node
+# Package	    : word-wrap
 # Version	    : v1.2.7
 # Source repo	    : https://github.com/aashutoshrathi/word-wrap
 # Tested on	    : UBI 9.3
