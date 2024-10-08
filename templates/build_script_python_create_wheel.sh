@@ -1,34 +1,32 @@
 #!/bin/bash
-
 # How to run?
-# sh templates/build_script_python_create_wheel.sh "3.9" o/odoo/odoo_ubi_9.3.sh 
-# sh templates/build_script_python_create_wheel.sh "3.9" b/bandersnatch/bandersnatch_ubi_9_3.sh 
+# sh templates/build_script_python_create_wheel.sh "3.9" o/odoo/odoo_ubi_9.3.sh
+# sh templates/build_script_python_create_wheel.sh "3.9" b/bandersnatch/bandersnatch_ubi_9_3.sh
 # sh templates/build_script_python_create_wheel.sh "3.9" m/metricbeat/metricbeat_ubi_9_3.sh
 # sh templates/build_script_python_create_wheel.sh "3.9" p/pytest-aiohttp/pytest-aiohttp_ubi_9.3.sh
 
 PYTHON_VERSIONS=$1
 BUILD_SCRIPT_PATH=$2
-
 TEMP_BUILD_SCRIPT_PATH="temp_build_script.sh"
-EXTRA_ARGS="${@:3}"  # Capture all additional arguments passed to the script
+EXTRA_ARGS="${@:3}" # Capture all additional arguments passed to the script
 CURRENT_DIR="${PWD}"
 
 # Update and install required packages in a single command
 yum -y update && \
-    yum install -y sudo \
-                   wget \
-                   python39 python3-devel \
-                   ncurses git gcc gcc-c++ \
-                   libffi libffi-devel \
-                   sqlite sqlite-devel sqlite-libs \
-                   make cmake cargo openssl-devel
+yum install -y sudo \
+wget \
+python39 python3-devel \
+ncurses git gcc gcc-c++ \
+libffi libffi-devel \
+sqlite sqlite-devel sqlite-libs \
+make cmake cargo openssl-devel
 
 python3.9 -m pip install --upgrade pip setuptools wheel build pytest nox tox
 
 # Install python 3.10.14
 if ! python3.10 --version; then
     cd /usr/src && \
-    wget https://www.python.org/ftp/python/3.10.14/Python-3.10.14.tgz && \
+wget https://www.python.org/ftp/python/3.10.14/Python-3.10.14.tgz && \
     tar xzf Python-3.10.14.tgz && \
     cd Python-3.10.14 && \
     ./configure --enable-optimizations && \
@@ -37,13 +35,13 @@ if ! python3.10 --version; then
     ln -s /usr/local/bin/pip3.10 /usr/bin/pip3.10 && \
     cd /usr/src && \
     rm -rf Python-3.10.14.tgz Python-3.10.14
-
     python3.10 -m pip install --upgrade pip setuptools wheel build pytest nox tox
+fi
 
 # Install python 3.11.9
 if ! python3.11 --version; then
     cd /usr/src && \
-    wget https://www.python.org/ftp/python/3.11.9/Python-3.11.9.tgz && \
+wget https://www.python.org/ftp/python/3.11.9/Python-3.11.9.tgz && \
     tar xzf Python-3.11.9.tgz && \
     cd Python-3.11.9 && \
     ./configure --enable-optimizations && \
@@ -52,13 +50,13 @@ if ! python3.11 --version; then
     ln -s /usr/local/bin/pip3.11 /usr/bin/pip3.11 && \
     cd /usr/src && \
     rm -rf Python-3.11.9.tgz Python-3.11.9
-
     python3.11 -m pip install --upgrade pip setuptools wheel build pytest nox tox
+fi
 
 # Install python 3.12.5
 if ! python3.12 --version; then
     cd /usr/src && \
-    wget https://www.python.org/ftp/python/3.12.5/Python-3.12.5.tgz && \
+wget https://www.python.org/ftp/python/3.12.5/Python-3.12.5.tgz && \
     tar xzf Python-3.12.5.tgz && \
     cd Python-3.12.5 && \
     ./configure --enable-optimizations && \
@@ -68,11 +66,12 @@ if ! python3.12 --version; then
     cd /usr/src && \
     rm -rf Python-3.12.5.tgz Python-3.12.5
     python3.12 -m pip install --upgrade pip setuptools wheel build pytest nox tox
+fi
 
 # Install python 3.13.0
 if ! python3.13 --version; then
     cd /usr/src && \
-    wget https://www.python.org/ftp/python/3.13.0/Python-3.13.0rc1.tgz && \
+wget https://www.python.org/ftp/python/3.13.0/Python-3.13.0rc1.tgz && \
     tar xzf Python-3.13.0rc1.tgz && \
     cd Python-3.13.0rc1 && \
     ./configure --enable-optimizations && \
@@ -82,11 +81,12 @@ if ! python3.13 --version; then
     cd /usr/src && \
     rm -rf Python-3.13.0rc1.tgz Python-3.13.0rc1
     python3.13 -m pip install --upgrade pip setuptools wheel build pytest nox tox
+fi
 
 # Function to check for setup.py or *.toml files in a directory
 check_files_in_directory() {
     local dir=$1
-    if [ -f "$dir/setup.py" ] || ls "$dir"/*.toml 1> /dev/null 2>&1; then
+if [ -f "$dir/setup.py" ] || ls "$dir"/*.toml 1> /dev/null 2>&1; then
         return 0
     fi
     return 1
@@ -122,7 +122,6 @@ create_venv() {
     local python_version=$2
     # Create a virtual environment
     "python$python_version" -m venv --system-site-packages "$VENV_DIR"
-
     # Activate the virtual environment
     source "$VENV_DIR/bin/activate"
 }
@@ -143,15 +142,13 @@ IFS=',' read -r -a python_versions <<< "$PYTHON_VERSIONS"
 # Loop through each Python version
 for python_version in "${python_versions[@]}"; do
     echo "Processing Package with Python $python_version"
-
     VENV_DIR="$CURRENT_DIR/pyvenv_$python_version"
-
     create_venv "$VENV_DIR" "$python_version"
 
-    echo "===============  Running package build-script starts =================="
+    echo "=============== Running package build-script starts =================="
     # Run the temporary build script with dynamic extra arguments
     sh "$TEMP_BUILD_SCRIPT_PATH" $EXTRA_ARGS
-    echo "===============  Running package build-script ends =================="
+    echo "=============== Running package build-script ends =================="
 
     # Check if the build script executed successfully
     if [ $? -ne 0 ]; then
@@ -162,18 +159,18 @@ for python_version in "${python_versions[@]}"; do
     fi
 
     # To build wheel and store it in (wheels) folder
-    echo "===============  Building wheel  =================="
+    echo "=============== Building wheel =================="
 
-    # Check if setup.py or *.toml exists in the current directory
-    if [ ! -f "setup.py" ] && ! ls *.toml 1> /dev/null 2>&1; then
-        echo "setup.py or *.toml not found in the current directory. Checking subdirectories..."
-        
+# Check if setup.py or *.toml exists in the current directory
+if [ ! -f "setup.py" ] && ! ls *.toml 1> /dev/null 2>&1; then
+echo "setup.py or *.toml not found in the current directory. Checking subdirectories..."
+
         # Find and loop through subdirectories
         for dir in */; do
             if [ -d "$dir" ] && [[ ! "$dir" =~ ^Python ]]; then
                 check_files_in_directory "$dir"
                 if [ $? -eq 0 ]; then
-                    echo "setup.py or *.toml found in $dir"
+echo "setup.py or *.toml found in $dir"
                     cd "$dir"
                     break
                 fi
@@ -183,7 +180,7 @@ for python_version in "${python_versions[@]}"; do
 
     # Build the wheel and output to the designated directory
     if ! python -m build --wheel --outdir="$CURRENT_DIR/wheels/$python_version/"; then
-        echo "============ Wheel Creation Failed for Python $python_version  ================="
+        echo "============ Wheel Creation Failed for Python $python_version ================="
         cleanup "$VENV_DIR"
         rm "$CURRENT_DIR/$TEMP_BUILD_SCRIPT_PATH"
         exit 1
@@ -193,5 +190,4 @@ for python_version in "${python_versions[@]}"; do
 done
 
 rm "$CURRENT_DIR/$TEMP_BUILD_SCRIPT_PATH"
-
 exit 0
