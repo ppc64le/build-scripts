@@ -6,7 +6,7 @@
     "package_dir": "e/envoy-openssl",
     "default_branch": "release/v1.28",
     "docker_build": false,
-    "build_script": "envoy-bssl-compact_ubi_9.2.sh",
+    "build_script": "envoy_openssl_ubi_9.2.sh",
     "validate_build_script": true,
     "use_non_root_user": false
   }
