@@ -9,11 +9,13 @@
   "validate_build_script": "true",
   "use_non_root_user": "false",
   "docker_build": "true",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}", 
   "v2.2.16": {
     "dir": "2.2.16_ubi8",
     "build_script": "swagger-core_ubi_8.7.sh"
   },
   "v2.2.24": {
+    "dir": "2.2.16_ubi8",
     "build_script": "swagger-core_ubi_9.3.sh"
   }
 }
