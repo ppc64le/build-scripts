@@ -21,16 +21,12 @@
 PACKAGE_NAME=swagger-core
 PACKAGE_VERSION=${1:-v2.2.24}
 PACKAGE_URL=https://github.com/swagger-api/swagger-core
-
-HOME_DIR=${PWD}
-
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 yum install -y git wget gcc gcc-c++ java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless tzdata-java
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
 
-cd $HOME_DIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
