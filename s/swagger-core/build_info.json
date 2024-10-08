@@ -14,7 +14,7 @@
     "dir": "2.2.16_ubi8",
     "build_script": "swagger-core_ubi_8.7.sh"
   },
-  "v2.2.24": {
+  "v*.*.*": {
     "dir": "2.2.16_ubi8",
     "build_script": "swagger-core_ubi_9.3.sh"
   }
