@@ -27,8 +27,8 @@ PACKAGE_VERSION=${1:-redisson-3.37.0}
 
 # install tools and dependent packages
 yum install -y git wget 
-yum install -y java-17-openjdk-devel
-export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+yum install -y java-21-openjdk-devel
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
 # Install maven
