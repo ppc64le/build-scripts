@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : dlib
-# Version          : v19.24.5
+# Version          : v19.24.6
 # Source repo      : https://github.com/davisking/dlib.git
 # Tested on        : UBI:9.3
 # Language         : C++
@@ -20,7 +20,7 @@
 
 #variables
 PACKAGE_NAME=dlib
-PACKAGE_VERSION=${1:-v19.24.5}
+PACKAGE_VERSION=${1:-v19.24.6}
 PACKAGE_URL=https://github.com/davisking/dlib.git
 
 #install dependencies
@@ -36,7 +36,7 @@ mkdir build
 cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 
-if ! cmake --build . --config Release --parallel 2 ; then
+if ! cmake --build . --config Release ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
