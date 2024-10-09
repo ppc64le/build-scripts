@@ -47,7 +47,7 @@ fi
     
     # Check if running on UBI 9
     OS_VERSION=$(grep "^VERSION_ID=" /etc/os-release | cut -d '"' -f 2)
-    if [ "$OS_VERSION" == "9" ]; then
+    if [ "$OS_VERSION" == 9* ]; then
         checklist_status+="\n- [x] Script is running on UBI 9 container"
     else
         checklist_status+="\n- [ ] Script is not running on UBI 9 container"
