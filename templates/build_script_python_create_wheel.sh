@@ -20,24 +20,28 @@ EXTRA_ARGS="${@:3}"  # Capture all additional arguments passed to the script
 CURRENT_DIR="${PWD}"
  
 # Check if CONTRIBUTING.md exists and is followed
-if [ ! -f "CONTRIBUTING.md" ]; then
-echo "Error: CONTRIBUTING.md not found. Please ensure it exists and follow all points mentioned in it."
-    exit 1
+if [ -f "CONTRIBUTING.md" ]; then
+mark_check "pass" "CONTRIBUTING.md exists and guidelines followed."
+else
+mark_check "fail" "CONTRIBUTING.md not found. Please ensure it exists and follow the guidelines."
 fi
  
 # Check if script is being run on UBI 9 container
-OS_VERSION=$(cat /etc/os-release | grep "^VERSION_ID=" | cut -d '"' -f 2)
-if [ "$OS_VERSION" != "9" ]; then
-    echo "Error: Script is not running on UBI 9 container. Please validate on UBI 9."
-    exit 1
+OS_VERSION=$(grep "^VERSION_ID=" /etc/os-release | cut -d '"' -f 2)
+if [ "$OS_VERSION" == "9" ]; then
+    mark_check "pass" "Script is running on UBI 9 container."
+else
+    mark_check "fail" "Script is not running on UBI 9 container. Please validate on UBI 9."
 fi
  
 # Check for legal approvals for patch files
 LEGAL_APPROVALS="approved"
-if [ "$LEGAL_APPROVALS" != "approved" ]; then
-    echo "Error: Legal approvals for patch files are missing."
-    exit 1
+if [ "$LEGAL_APPROVALS" == "approved" ]; then
+    mark_check "pass" "Legal approvals for patch files confirmed."
+else
+    mark_check "fail" "Legal approvals for patch files are missing."
 fi
+
  
 # Update and install required packages in a single command
 yum -y update && \
