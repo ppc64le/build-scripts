@@ -21,30 +21,24 @@ CURRENT_DIR="${PWD}"
  
 # Check if CONTRIBUTING.md exists and is followed
 if [ -f "CONTRIBUTING.md" ]; then
-echo "[PASS] CONTRIBUTING.md exists and guidelines followed." >> "$checklist_log"
 echo "[PASS] CONTRIBUTING.md exists and guidelines followed."
 else
-echo "[FAIL] CONTRIBUTING.md not found. Please ensure it exists and follow the guidelines." >> "$checklist_log"
 echo "[FAIL] CONTRIBUTING.md not found. Please ensure it exists and follow the guidelines."
 fi
  
 # Check if script is being run on UBI 9 container
 OS_VERSION=$(grep "^VERSION_ID=" /etc/os-release | cut -d '"' -f 2)
 if [ "$OS_VERSION" == "9" ]; then
-    echo "[PASS] Script is running on UBI 9 container." >> "$checklist_log"
-    echo "[PASS] Script is running on UBI 9 container."
+    echo "[PASS] Script is running on UBI 9 container." 
 else
-    echo "[FAIL] Script is not running on UBI 9 container. Please validate on UBI 9." >> "$checklist_log"
     echo "[FAIL] Script is not running on UBI 9 container. Please validate on UBI 9."
 fi
  
 # Check for legal approvals for patch files
 LEGAL_APPROVALS="approved"
 if [ "$LEGAL_APPROVALS" == "approved" ]; then
-    echo "[PASS] Legal approvals for patch files confirmed." >> "$checklist_log"
     echo "[PASS] Legal approvals for patch files confirmed."
 else
-    echo "[FAIL] Legal approvals for patch files are missing." >> "$checklist_log"
     echo "[FAIL] Legal approvals for patch files are missing."
 fi
  
