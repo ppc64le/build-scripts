@@ -1,4 +1,14 @@
 #!/bin/bash
+# -----------------------------------------------------------------------------
+# Package       : 
+# Version       : 
+# Source repo : 
+# Tested on     : 
+# Language      : Python
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
+# Maintainer    : 
+# -----------------------------------------------------------------------------
  
 # Exit immediately if a command exits with a non-zero status
 set -e
