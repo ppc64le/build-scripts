@@ -3,13 +3,20 @@
 # Package       : 
 # Version       : 
 # Source repo : 
-# Tested on     : 
+# Tested on     : UBI:9.3
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : 
 # -----------------------------------------------------------------------------
- 
+#
+# Disclaimer: This script has been tested in root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
 # Exit immediately if a command exits with a non-zero status
 set -e
  
