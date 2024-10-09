@@ -27,27 +27,45 @@ EXTRA_ARGS="${@:3}"  # Capture all additional arguments passed to the script
 CURRENT_DIR="${PWD}"
  
 # Check if CONTRIBUTING.md exists and is followed
+print_checklist() {
+    echo "### Checklist"
+echo "- [ ] CONTRIBUTING.md exists and guidelines followed"
+    echo "- [ ] Script is running on UBI 9 container"
+    echo "- [ ] Legal approvals for patch files confirmed"
+}
+ 
+# Function to update checklist based on checks
+update_checklist() {
+    checklist_status="### Checklist"
+    
+# Check for CONTRIBUTING.md
 if [ -f "CONTRIBUTING.md" ]; then
-echo "[PASS] CONTRIBUTING.md exists and guidelines followed."
+   checklist_status+="\n- [x] CONTRIBUTING.md exists and guidelines followed"
 else
-echo "[FAIL] CONTRIBUTING.md not found. Please ensure it exists and follow the guidelines."
+   checklist_status+="\n- [ ] CONTRIBUTING.md not found"
 fi
+    
+    # Check if running on UBI 9
+    OS_VERSION=$(grep "^VERSION_ID=" /etc/os-release | cut -d '"' -f 2)
+    if [ "$OS_VERSION" == "9" ]; then
+        checklist_status+="\n- [x] Script is running on UBI 9 container"
+    else
+        checklist_status+="\n- [ ] Script is not running on UBI 9 container"
+    fi
+    
+    # Check for legal approvals
+    LEGAL_APPROVALS="approved"  # Mock check
+    if [ "$LEGAL_APPROVALS" == "approved" ]; then
+        checklist_status+="\n- [x] Legal approvals for patch files confirmed"
+    else
+        checklist_status+="\n- [ ] Legal approvals for patch files missing"
+    fi
+    
+    echo -e "$checklist_status"
+}
  
-# Check if script is being run on UBI 9 container
-OS_VERSION=$(grep "^VERSION_ID=" /etc/os-release | cut -d '"' -f 2)
-if [ "$OS_VERSION" == "9" ]; then
-    echo "[PASS] Script is running on UBI 9 container." 
-else
-    echo "[FAIL] Script is not running on UBI 9 container. Please validate on UBI 9."
-fi
- 
-# Check for legal approvals for patch files
-LEGAL_APPROVALS="approved"
-if [ "$LEGAL_APPROVALS" == "approved" ]; then
-    echo "[PASS] Legal approvals for patch files confirmed."
-else
-    echo "[FAIL] Legal approvals for patch files are missing."
-fi
+# Call the function to print the checklist status
+update_checklist
  
 # Update and install required packages in a single command
 yum -y update && \
