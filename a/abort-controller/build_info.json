@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "abort-controller",
+    "github_url": "https://github.com/mysticatea/abort-controller",
+    "version": "v3.0.0",
+    "default_branch": "master",
+    "build_script": "abort-controller_ubi_9.3.sh",
+    "package_dir": "a/abort-controller",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v3.*.*": {
+        "build_script": "abort-controller_ubi_9.3.sh"
+    }
+}
