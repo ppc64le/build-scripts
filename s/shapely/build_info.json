@@ -2,14 +2,11 @@
   "maintainer": "chandan-abhyankar",
   "package_name": "shapely",
   "github_url": "https://github.com/shapely/shapely.git",
-  "version": "v1.8.5",
+  "version": "1.8.5",
   "default_branch": "main",
   "package_dir": "s/shapely",
   "build_script": "shapely_ubi_9.3.sh",
   "validate_build_script": true,
   "use_non_root_user": false,
   "docker_build": false,
-  "shapely-*.*.*-*": {
-    "build_script": "shapely_ubi_9.3.sh"
-  }
 }

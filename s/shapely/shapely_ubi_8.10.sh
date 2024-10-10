@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : shapely
-# Version       : v1.8.5
+# Version       : 1.8.5
 # Source repo   : https://github.com/shapely/shapely.git
 # Tested on     : UBI 8.10
 # Language      : Python, C, Cython
@@ -22,13 +22,10 @@ yum install -y python311 python3.11-devel python3.11-pip git gcc-gfortran.ppc64l
 yum install -y openblas-devel openblas --enablerepo=codeready-builder-for-rhel-8-ppc64le-rpms
 pip3.11 install Cython pytest hypothesis build
 
-# Install required dependencies
-PACKAGE_NAME=GEOS
-PACKAGE_VERSION=${1:-3.11.1}
-PACKAGE_URL=https://github.com/libgeos/geos
-
+# Install GEOS dependencies (Version 3.11.1)
 git clone https://github.com/libgeos/geos
 cd geos
+git checkout 3.11.1
 mkdir build
 cd build
 cmake ..
@@ -36,20 +33,20 @@ cmake ..
 # Build and test the package
 if !(make)
 then
-  echo "Failed to build the package"
+  echo "Failed to build the dependent GEOS package"
   exit 1
 fi
 
 if !(ctest)
 then
-  echo "Failed to validate the package"
-  exit 2
+  echo "Failed to validate the dependent GEOS package"
+  exit 1
 fi
 
 make install
 
 # Clone the shapely package.
-cd /
+cd ../../
 PACKAGE_NAME=shapely
 PACKAGE_VERSION=${1:-1.8.5}
 PACKAGE_URL=https://github.com/shapely/shapely.git
