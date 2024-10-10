@@ -8,8 +8,5 @@
    "package_dir": "r/rclone",
    "docker_build": false,
    "validate_build_script": true,
-   "use_non_root_user": false,
-   "rclone-*.*.*-*": {
-      "build_script": "rclone_ubi_9.3.sh"
-   }
+   "use_non_root_user": false
 }

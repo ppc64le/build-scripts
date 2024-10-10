@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/rclone/rclone.git
 BUILD_HOME=$(pwd)
 
 # Install required dependencies
-yum install git make gcc gcc-c++ wget fuse3 fuse3-libs fuse3-devel nfs-utils -y
+yum install git make gcc gcc-c++ wget fuse3 fuse3-libs fuse3-devel -y
 
 # Install go
 wget https://go.dev/dl/go1.23.1.linux-ppc64le.tar.gz
