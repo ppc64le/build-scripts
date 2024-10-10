@@ -69,7 +69,7 @@ update_checklist
  
 # Update and install required packages in a single command
 yum -y update && \
-yum install -y sudo wget python39 python3-devel ncurses git gcc gcc-c++ \
+yum install -y sudo zlib pip wget python39 python3-devel ncurses git gcc gcc-c++ \
 libffi libffi-devel sqlite sqlite-devel sqlite-libs make cmake cargo openssl-devel
  
 python3.9 -m pip install --upgrade pip setuptools wheel build pytest nox tox
