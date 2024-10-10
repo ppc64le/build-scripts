@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "diffie-hellman",
+    "github_url": "https://github.com/browserify/diffie-hellman",
+    "version": "v5.0.3",
+    "default_branch": "master",
+    "build_script": "diffie-hellman_ubi_9.3.sh",
+    "package_dir": "d/diffie-hellman",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v5.*.*": {
+        "build_script": "diffie-hellman_ubi_9.3.sh"
+    }
+}
