@@ -1,7 +1,7 @@
 {
     "maintainer": "prachikurade1",
     "package_name": "trace-mapping",
-    "github_url": "https://github.com/codemirror/trace-mapping",
+    "github_url": "https://github.com/jridgewell/trace-mapping",
     "version": "v0.3.25",
     "default_branch": "main",
     "build_script": "trace-mapping_ubi_9.3.sh",
