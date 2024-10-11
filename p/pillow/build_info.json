@@ -8,8 +8,5 @@
    "package_dir": "p/pillow",
    "docker_build": false,
    "validate_build_script": true,
-   "use_non_root_user": false,
-   "pillow-*.*.*-*": {
-     "build_script": "pillow_ubi_9.3.sh"
-   }
+   "use_non_root_user": false
 }
