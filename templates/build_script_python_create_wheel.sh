@@ -22,7 +22,7 @@ set -e
 PYTHON_VERSIONS=$1
 BUILD_SCRIPT_PATH=${2:-""}
 if [ -n "$BUILD_SCRIPT_PATH" ]; then
-    BUILD_SCRIPT_PATH="temp_build_script.sh"
+    TEMP_BUILD_SCRIPT_PATH="temp_build_script.sh"
 else
     TEMP_BUILD_SCRIPT_PATH=""
 fi
