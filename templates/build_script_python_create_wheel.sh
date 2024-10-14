@@ -20,8 +20,12 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 PYTHON_VERSIONS=$1
-BUILD_SCRIPT_PATH=$2
-TEMP_BUILD_SCRIPT_PATH="temp_build_script.sh"
+BUILD_SCRIPT_PATH=${2:-""}
+if [ -n "$BUILD_SCRIPT_PATH" ]; then
+    BUILD_SCRIPT_PATH="temp_build_script.sh"
+else
+    TEMP_BUILD_SCRIPT_PATH=""
+fi
 EXTRA_ARGS="${@:3}"  # Capture all additional arguments passed to the script
 CURRENT_DIR="${PWD}"
 # Check if CONTRIBUTING.md exists and is followed
