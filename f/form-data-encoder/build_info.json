@@ -12,7 +12,7 @@
     "v4.*.*": {
         "build_script": "form-data-encoder_ubi_9.3.sh"
     },
-    "v2.*.*": {
+    "v2.1.14": {
         "build_script": "form-data-encoder_v2_ubi_9.3.sh"
     }
 }
