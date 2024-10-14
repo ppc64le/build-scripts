@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
-# Package       : JSON-java
+# Package       : json-java
 # Version       : 20231013
 # Source repo   : https://github.com/stleary/JSON-java
 # Tested on     : UBI 9.3
