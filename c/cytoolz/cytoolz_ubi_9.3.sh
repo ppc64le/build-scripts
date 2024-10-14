@@ -26,10 +26,10 @@ PACKAGE_URL=https://github.com/pytoolz/cytoolz.git
 # Install necessary system dependencies
 yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel zlib-devel python-devel python-pip
 
-# Clone the repository
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME  
-git checkout $PACKAGE_VERSION  
+#install package
+wget https://files.pythonhosted.org/packages/62/b1/7f16703fe4a497879b1b457adf1e472fad2d4f030477698b16d2febf38bb/cytoolz-0.10.1.tar.gz#sha256=82f5bba81d73a5a6b06f2a3553ff9003d865952fcb32e1df192378dd944d8a5c
+tar -xvzf cytoolz-0.10.1.tar.gz
+cd $PACKAGE_NAME-$PACKAGE_VERSION
 
 # Install additional dependencies
 pip install .
