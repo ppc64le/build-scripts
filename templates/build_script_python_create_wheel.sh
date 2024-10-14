@@ -1,13 +1,13 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
-# Package       : 
-# Version       : 
-# Source repo : 
+# Package       :
+# Version       :
+# Source repo :
 # Tested on     : UBI:9.3
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : 
+# Maintainer    :
 # -----------------------------------------------------------------------------
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -19,13 +19,11 @@
 # ----------------------------------------------------------------------------
 # Exit immediately if a command exits with a non-zero status
 set -e
- 
 PYTHON_VERSIONS=$1
 BUILD_SCRIPT_PATH=$2
 TEMP_BUILD_SCRIPT_PATH="temp_build_script.sh"
 EXTRA_ARGS="${@:3}"  # Capture all additional arguments passed to the script
 CURRENT_DIR="${PWD}"
- 
 # Check if CONTRIBUTING.md exists and is followed
 print_checklist() {
     echo "### Checklist"
@@ -33,18 +31,15 @@ echo "- [ ] CONTRIBUTING.md exists and guidelines followed"
     echo "- [ ] Script is running on UBI 9 container"
     echo "- [ ] Legal approvals for patch files confirmed"
 }
- 
 # Function to update checklist based on checks
 update_checklist() {
     checklist_status="### Checklist"
-    
 # Check for CONTRIBUTING.md
 if [ -f "CONTRIBUTING.md" ]; then
    checklist_status+="\n- [x] CONTRIBUTING.md exists and guidelines followed"
 else
    checklist_status+="\n- [ ] CONTRIBUTING.md not found"
 fi
-    
     # Check if running on UBI 9
     OS_VERSION=$(grep "^VERSION_ID=" /etc/os-release | cut -d '"' -f 2)
     if [ "$OS_VERSION" == 9* ]; then
@@ -52,7 +47,6 @@ fi
     else
         checklist_status+="\n- [ ] Script is not running on UBI 9 container"
     fi
-    
     # Check for legal approvals
     LEGAL_APPROVALS="approved"  # Mock check
     if [ "$LEGAL_APPROVALS" == "approved" ]; then
@@ -60,20 +54,16 @@ fi
     else
         checklist_status+="\n- [ ] Legal approvals for patch files missing"
     fi
-    
     echo -e "$checklist_status"
 }
- 
 # Call the function to print the checklist status
 update_checklist
- 
 # Update and install required packages in a single command
 yum -y update && \
-yum install -y sudo zlib pip wget python39 python3-devel ncurses git gcc gcc-c++ \
+yum install -y sudo zlib-devel pip wget python39 python3-devel ncurses git gcc gcc-c++ \
 libffi libffi-devel sqlite sqlite-devel sqlite-libs make cmake cargo openssl-devel
- 
 python3.9 -m pip install --upgrade pip setuptools wheel build pytest nox tox
- 
+
 # Install Python 3.10.14
 if ! python3.10 --version; then
     cd /usr/src && \
@@ -83,12 +73,20 @@ wget https://www.python.org/ftp/python/3.10.14/Python-3.10.14.tgz && \
     ./configure --enable-optimizations && \
     make altinstall && \
     ln -s /usr/local/bin/python3.10 /usr/bin/python3.10 && \
-    ln -s /usr/local/bin/pip3.10 /usr/bin/pip3.10 && \
     cd /usr/src && \
     rm -rf Python-3.10.14.tgz Python-3.10.14
+
+    # Manually install pip if it's not installed
+    if ! python3.10 -m pip --version; then
+wget https://bootstrap.pypa.io/get-pip.py && \
+python3.10 get-pip.py && \
+rm get-pip.py
+    fi
+
+    # Upgrade pip and install required packages
     python3.10 -m pip install --upgrade pip setuptools wheel build pytest nox tox
 fi
- 
+
 # Install Python 3.11.9
 if ! python3.11 --version; then
     cd /usr/src && \
@@ -98,27 +96,41 @@ wget https://www.python.org/ftp/python/3.11.9/Python-3.11.9.tgz && \
     ./configure --enable-optimizations && \
     make altinstall && \
     ln -s /usr/local/bin/python3.11 /usr/bin/python3.11 && \
-    ln -s /usr/local/bin/pip3.11 /usr/bin/pip3.11 && \
     cd /usr/src && \
     rm -rf Python-3.11.9.tgz Python-3.11.9
+
+    # Manually install pip if it's not installed
+    if ! python3.11 -m pip --version; then
+wget https://bootstrap.pypa.io/get-pip.py && \
+python3.11 get-pip.py && \
+rm get-pip.py
+    fi
+
+    # Upgrade pip and install required packages
     python3.11 -m pip install --upgrade pip setuptools wheel build pytest nox tox
 fi
- 
+
 # Install Python 3.12.5
 if ! python3.12 --version; then
-    cd /usr/src && \
-wget https://www.python.org/ftp/python/3.12.5/Python-3.12.5.tgz && \
-    tar xzf Python-3.12.5.tgz && \
-    cd Python-3.12.5 && \
-    ./configure --enable-optimizations && \
-    make altinstall && \
-    ln -s /usr/local/bin/python3.12 /usr/bin/python3.12 && \
-    ln -s /usr/local/bin/pip3.12 /usr/bin/pip3.12 && \
-    cd /usr/src && \
-    rm -rf Python-3.12.5.tgz Python-3.12.5
-    python3.12 -m pip install --upgrade pip setuptools wheel build pytest nox tox
+  cd /usr/src
+
+  # Retry logic and download integrity check
+wget -c https://www.python.org/ftp/python/3.12.5/Python-3.12.5.tgz || { echo "Download failed!"; exit 1; }
+
+  # Extract and handle errors
+  tar xzf Python-3.12.5.tgz || { echo "Extraction failed!"; exit 1; }
+
+  cd Python-3.12.5
+  ./configure --enable-optimizations
+  make altinstall
+  ln -s /usr/local/bin/python3.12 /usr/bin/python3.12
+  ln -s /usr/local/bin/pip3.12 /usr/bin/pip3.12
+  cd /usr/src
+  rm -rf Python-3.12.5.tgz Python-3.12.5
+
+  python3.12 -m pip install --upgrade pip setuptools wheel build pytest nox tox
 fi
- 
+
 # Install Python 3.13.0
 if ! python3.13 --version; then
     cd /usr/src && \
@@ -133,7 +145,6 @@ wget https://www.python.org/ftp/python/3.13.0/Python-3.13.0rc1.tgz && \
     rm -rf Python-3.13.0rc1.tgz Python-3.13.0rc1
     python3.13 -m pip install --upgrade pip setuptools wheel build pytest nox tox
 fi
- 
 # Function to check for setup.py or *.toml files in a directory
 check_files_in_directory() {
     local dir=$1
@@ -142,7 +153,6 @@ if [ -f "$dir/setup.py" ] || ls "$dir"/*.toml 1> /dev/null 2>&1; then
     fi
     return 1
 }
- 
 # Function to copy and format the build script
 format_build_script() {
     cp "$BUILD_SCRIPT_PATH" "$TEMP_BUILD_SCRIPT_PATH"
@@ -153,7 +163,6 @@ format_build_script() {
     sed -i '/bin\/activate/d' "$TEMP_BUILD_SCRIPT_PATH"
     sed -i '/^deactivate$/d' "$TEMP_BUILD_SCRIPT_PATH"
 }
- 
 # Function to create a virtual environment
 create_venv() {
     local VENV_DIR=$1
@@ -161,37 +170,30 @@ create_venv() {
     "python$python_version" -m venv --system-site-packages "$VENV_DIR"
     source "$VENV_DIR/bin/activate"
 }
- 
 # Function to clean up virtual environment
 cleanup() {
     local VENV_DIR=$1
     deactivate
     rm -rf "$VENV_DIR"
 }
- 
 # Format the build script
 format_build_script
- 
 # Split the Python versions into an array
 IFS=',' read -r -a python_versions <<< "$PYTHON_VERSIONS"
- 
 # Loop through each Python version
 for python_version in "${python_versions[@]}"; do
     echo "Processing Package with Python $python_version"
     VENV_DIR="$CURRENT_DIR/pyvenv_$python_version"
     create_venv "$VENV_DIR" "$python_version"
- 
     echo "=============== Running package build-script starts =================="
     sh "$TEMP_BUILD_SCRIPT_PATH" $EXTRA_ARGS
     echo "=============== Running package build-script ends =================="
- 
     if [ $? -ne 0 ]; then
         echo "Build script execution failed. Skipping wheel creation."
         cleanup "$VENV_DIR"
         rm "$CURRENT_DIR/$TEMP_BUILD_SCRIPT_PATH"
         exit 1
     fi
- 
     echo "=============== Building wheel =================="
 if [ ! -f "setup.py" ] && ! ls *.toml 1> /dev/null 2>&1; then
 echo "setup.py or *.toml not found in the current directory. Checking subdirectories..."
@@ -206,16 +208,13 @@ echo "setup.py or *.toml found in $dir"
             fi
         done
     fi
- 
     if ! python -m build --wheel --outdir="$CURRENT_DIR/wheels/$python_version/"; then
         echo "============ Wheel Creation Failed for Python $python_version ================="
         cleanup "$VENV_DIR"
         rm "$CURRENT_DIR/$TEMP_BUILD_SCRIPT_PATH"
         exit 1
     fi
- 
     cleanup "$VENV_DIR"
 done
- 
 rm "$CURRENT_DIR/$TEMP_BUILD_SCRIPT_PATH"
 exit 0
