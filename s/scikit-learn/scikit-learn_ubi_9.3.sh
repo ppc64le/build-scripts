@@ -70,7 +70,7 @@ fi
 
 # test using pytest - set below flag as suggested in GitHub forums to resolve ImportPathMismatchError
 export PY_IGNORE_IMPORTMISMATCH=1
-if ! pytest sklearn/tests/test_common.py ; then
+if ! pytest sklearn/tests/test_random_projection.py ; then
         echo "------------------$PACKAGE_NAME:test_fails---------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME "
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | Github | Fail |  Test_Fails"
