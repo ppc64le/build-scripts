@@ -1,6 +1,6 @@
 {
   "maintainer": "mayurbhosure",
-  "package_name": "JSON-java",
+  "package_name": "json-java",
   "github_url": "https://github.com/stleary/JSON-java",
   "version": "20231013",
   "default_branch": "master",
