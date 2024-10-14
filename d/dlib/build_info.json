@@ -2,7 +2,7 @@
     "maintainer": "Vipul-Ajmera",
     "package_name": "dlib",
     "github_url": "https://github.com/davisking/dlib.git",
-    "version": "v19.24.5",
+    "version": "v19.24.6",
     "default_branch": "master",
     "package_dir": "d/dlib",
     "build_script": "dlib_ubi_9.3.sh",
