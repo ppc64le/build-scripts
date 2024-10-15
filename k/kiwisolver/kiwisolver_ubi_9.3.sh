@@ -17,20 +17,22 @@
 # contact the "Maintainer" of this script.
 #
 # -----------------------------------------------------------------------------
- 
+# Exit immediately if a command exits with a non-zero status
+set -e
 #variables
 PACKAGE_NAME=kiwi
 PACKAGE_VERSION=${1:-1.2.0}
 PACKAGE_URL=https://github.com/nucleic/kiwi.git
- 
+
 # Install dependencies and tools.
-yum install -y wget gcc gcc-c++
- 
+yum install -y git wget gcc gcc-c++ python-pip python3-devel python3 python3-pip
+pip install build pytest wheel
+
 #clone repository
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
- 
+pip install .
 #install
 if ! (python3 setup.py install) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
