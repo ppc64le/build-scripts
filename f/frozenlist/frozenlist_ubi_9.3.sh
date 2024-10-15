@@ -31,7 +31,7 @@ git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-#install pytest
+#install cython,pytest-cov
 pip install cython pytest-cov
 
 cython frozenlist/_frozenlist.pyx
