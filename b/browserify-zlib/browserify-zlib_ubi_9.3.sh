@@ -43,7 +43,6 @@ export OPENSSL_CONF=/etc/ssl
 git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-git submodule update --init
 
 if ! npm install && npm audit fix --force; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
