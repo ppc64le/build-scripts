@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : pillow
-# Version       : 10.3.0
+# Version       : 10.4.0
 # Source repo   : https://github.com/python-pillow/Pillow
 # Tested on     : UBI:9.3
 # Language      : Python, C
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=pillow
-PACKAGE_VERSION=${1:-10.3.0}
+PACKAGE_VERSION=${1:-10.4.0}
 PACKAGE_URL=https://github.com/python-pillow/Pillow/
 
 OS_NAME=`cat /etc/os-release | grep "PRETTY" | awk -F '=' '{print $2}'`
