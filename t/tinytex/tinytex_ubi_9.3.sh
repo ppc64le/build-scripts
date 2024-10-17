@@ -22,7 +22,7 @@ PACKAGE_NAME=tinytex
 PACKAGE_VERSION=${1:-0.52}
 PACKAGE_URL=https://github.com/cran/tinytex
 
-dnf install -y gcc gcc-c++ gcc-gfortran git wget xz cmake make openssl-devel yum-utils wget sudo llvm -y
+dnf install -y gcc gcc-c++ gcc-gfortran git wget xz cmake make yum-utils wget sudo llvm -y
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
@@ -41,6 +41,7 @@ dnf install -y R-core R-core-devel
 dnf builddep R -y
 R --version
 
+yum install -y openssl-devel
 
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
