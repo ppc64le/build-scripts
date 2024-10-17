@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : cytoolz
-# Version          : 0.10.1
+# Version          : 0.12.3
 # Source repo      : https://github.com/pytoolz/cytoolz.git
 # Tested on        : UBI:9.3
 # Language         : Python
@@ -20,38 +20,53 @@
 
 # Variables
 PACKAGE_NAME=cytoolz
-PACKAGE_VERSION=${1:-0.10.1}
+PACKAGE_VERSION=${1:-0.12.3}
 PACKAGE_URL=https://github.com/pytoolz/cytoolz.git
 
 # Install necessary system dependencies
 yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel zlib-devel python-devel python-pip
 
 #install package
-wget https://files.pythonhosted.org/packages/62/b1/7f16703fe4a497879b1b457adf1e472fad2d4f030477698b16d2febf38bb/cytoolz-0.10.1.tar.gz#sha256=82f5bba81d73a5a6b06f2a3553ff9003d865952fcb32e1df192378dd944d8a5c
-tar -xvzf cytoolz-0.10.1.tar.gz
-cd $PACKAGE_NAME-$PACKAGE_VERSION
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 
 # Install additional dependencies
 pip install .
 pip install pytest wheel build Cython==0.29.21
-python3 -m pip install git+https://github.com/pytoolz/toolz.git
 
 #install
-if ! python3 -m setup build ; then
+if ! python3 -m setup build; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-if ! (cd /cytoolz-0.10.1/cytoolz/tests && pytest) ; then
-    echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
-    exit 2
+if [ "$PACKAGE_VERSION" == "0.10.1" ]; then
+    # For version 0.10.1, run pytest from the specific directory
+    if [[ -d "/cytoolz/cytoolz/tests" ]]; then
+        cd "/cytoolz/cytoolz/tests"
+        if ! pytest; then
+            echo "------------------$PACKAGE_NAME: Install_success_but_test_fails---------------------"
+            echo "$PACKAGE_URL $PACKAGE_NAME"
+            echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_success_but_test_Fails"
+            exit 2
+        fi
+    else
+        echo "Directory '/cytoolz/cytoolz/tests' does not exist."
+        exit 1
+    fi
 else
-    echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-    exit 0
+    # For version 0.12.3 or any other version, run pytest in the current directory
+    if ! pytest; then
+        echo "------------------$PACKAGE_NAME: Install_success_but_test_fails---------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_success_but_test_Fails"
+        exit 2
+    fi
 fi
+echo "------------------$PACKAGE_NAME: Install_&_test_both_success-------------------------"
+echo "$PACKAGE_URL $PACKAGE_NAME"
+echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass | Both_Install_and_Test_Success"
+exit 0
