@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : cryptography
-# Version          : 41.0.4
+# Version          : 42.0.7
 # Source repo      : https://github.com/pyca/cryptography.git
 # Tested on        : UBI:9.3
 # Language         : Python
@@ -20,7 +20,7 @@
 
 # Variables
 PACKAGE_NAME=cryptography
-PACKAGE_VERSION=${1:-41.0.4}
+PACKAGE_VERSION=${1:-42.0.7}
 PACKAGE_URL=https://github.com/pyca/cryptography.git
 
 # Install necessary system dependencies
