@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	    : react-router
-# Version	    : v5.1.1
+# Version	    : v5.3.4, v5.1.1
 # Source repo	    : https://github.com/remix-run/react-router
 # Tested on	    : UBI 9.3
 # Language          : Node
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=react-router
-PACKAGE_VERSION=${1:-v5.1.1}
+PACKAGE_VERSION=${1:-v5.3.4}
 PACKAGE_URL=https://github.com/remix-run/react-router
 
 export NODE_VERSION=${NODE_VERSION:-16}
