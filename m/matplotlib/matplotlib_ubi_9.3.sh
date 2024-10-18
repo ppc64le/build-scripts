@@ -37,8 +37,9 @@ git submodule update --init
 mkdir -p build
 wget 'http://www.qhull.org/download/qhull-2020-src-8.0.2.tgz'
 gunzip qhull-2020-src-8.0.2.tgz
-tar -xvf qhull-2020-src-8.0.2.tar
+tar -xvf qhull-2020-src-8.0.2.tar --no-same-owner
 mv qhull-2020.2 build/
+rm -f qhull-2020-src-8.0.2.tar
 
 # Build and Install the package (This is dependent on numpy,pillow)
 python3.11 -m build
