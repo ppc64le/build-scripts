@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : jsonassert 
-# Version       : jsonassert-1.5.3
+# Version       : jsonassert-2.0-rc1
 # Source repo   : https://github.com/skyscreamer/JSONassert 
 # Tested on     : UBI: 9.3
 # Language      : Java,Html,Css
@@ -22,7 +22,7 @@
 set -e
 PACKAGE_NAME=JSONassert
 PACKAGE_URL=https://github.com/skyscreamer/JSONassert.git
-PACKAGE_VERSION=${1:-jsonassert-1.5.3}
+PACKAGE_VERSION=${1:-jsonassert-2.0-rc1}
 
 
 # install tools and dependent packages
