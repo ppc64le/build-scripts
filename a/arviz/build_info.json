@@ -1,0 +1,15 @@
+{
+  "maintainer": "Harithanagothu2",
+  "package_name": "arviz",
+  "github_url": "https://github.com/arviz-devs/arviz.git",
+  "version": "v0.18.0",
+  "package_dir": "a/arviz",
+  "default_branch": "main",
+  "build_script": "arviz_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "v0.*.*": {
+    "build_script": "arviz_ubi_9.3.sh"
+  }
+}
