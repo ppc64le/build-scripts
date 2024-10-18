@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "react-autocomplete",
+    "github_url": "https://github.com/codemayonnaise/react-autocomplete",
+    "version": "v1.8.2",
+    "default_branch": "master",
+    "build_script": "react-autocomplete_ubi_9.3.sh",
+    "package_dir": "r/react-autocomplete",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v1.*.*": {
+        "build_script": "react-autocomplete_ubi_9.3.sh"
+    }
+}
