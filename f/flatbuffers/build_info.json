@@ -1,12 +1,12 @@
 {
-  "maintainer": "Pratikt2312",
+  "maintainer": "Harithanagothu2",
   "package_name": "flatbuffers",
   "github_url": "https://github.com/google/flatbuffers.git",
-  "version": "v23.1.21",
+  "version": "v2.0.0",
   "default_branch": "master",
   "package_dir": "f/flatbuffers",
   "validate_build_script": true,
-  "build_script": "flatbuffers_ubi_8.5.sh",
+  "build_script": "flatbuffers_ubi_9.3.sh",
   "use_non_root_user": false,
   "docker_build": false
 }
