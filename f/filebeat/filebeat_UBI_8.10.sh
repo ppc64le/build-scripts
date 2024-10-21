@@ -89,10 +89,9 @@ if ! make unit ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_Success_but_Unit_Test_Fails"
     exit 2
 else
-    echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
+    echo "------------------$PACKAGE_NAME::Build_and_Unit_Test_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Unit_Test_Success"
-    exit 0
 fi
 
 if ! make system-tests ; then
@@ -101,7 +100,7 @@ if ! make system-tests ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_Success_but_System_Test_Fails"
     exit 2
 else
-    echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
+    echo "------------------$PACKAGE_NAME::Build_and_Unit_Test_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_System_Test_Success"
     exit 0
