@@ -31,7 +31,7 @@ fi
 
 #Install required dependencies
 dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-dnf install -y unzip make maven git sudo wget gcc-c++ apr-devel perl openssl-devel automake autoconf libtool ninja-build golang  glibc-devel libaio-devel lksctp-tools apr-util-devel java-11-openjdk-devel perl-core gcc-c++
+dnf install -y unzip make maven git sudo wget gcc-c++ apr-devel perl openssl-devel automake autoconf libtool ninja-build golang  glibc-devel lksctp-tools apr-util-devel java-11-openjdk-devel perl-core gcc-c++
 
 # Set java 
 export JAVA_HOME=$(compgen -G '/usr/lib/jvm/java-11-openjdk-11*')
@@ -70,6 +70,13 @@ export CPPFLAGS="-I/usr/local/openssl_1_1_1j/include"
 
 
 if ! ./mvnw -Dmaven.javadoc.skip=true install -am -pl openssl-dynamic openssl-classes; then
+    echo "------------------$PACKAGE_NAME:Install and _fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    exit 1
+fi 
+
+if ! ./mvnw -Dmaven.javadoc.skip=true install -am -pl openssl-classes; then
     echo "------------------$PACKAGE_NAME:Install and _fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
