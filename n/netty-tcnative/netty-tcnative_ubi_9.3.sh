@@ -76,11 +76,11 @@ if ! ./mvnw -Dmaven.javadoc.skip=true install -am -pl openssl-dynamic openssl-cl
     exit 1
 fi 
 
-if ! ./mvnw -Dmaven.javadoc.skip=true install -am -pl openssl-classes; then
-    echo "------------------$PACKAGE_NAME:Install and _fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
-    exit 1
-fi 
+# if ! ./mvnw -Dmaven.javadoc.skip=true install -am -pl openssl-classes; then
+#     echo "------------------$PACKAGE_NAME:Install and _fails-------------------------------------"
+#     echo "$PACKAGE_URL $PACKAGE_NAME"
+#     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+#     exit 1
+# fi 
 
 exit 0
