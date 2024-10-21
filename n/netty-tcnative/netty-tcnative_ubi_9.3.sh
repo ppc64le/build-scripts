@@ -69,7 +69,7 @@ git checkout $PACKAGE_VERSION
 export CPPFLAGS="-I/usr/local/openssl_1_1_1j/include"
 
 
-if ! ./mvnw -Dmaven.javadoc.skip=true install -am -pl openssl-dynamic openssl-classes; then
+if ! ./mvnw -Dmaven.javadoc.skip=true install -am -pl openssl-dynamic; then
     echo "------------------$PACKAGE_NAME:Install and _fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
