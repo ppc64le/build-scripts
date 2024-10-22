@@ -2,7 +2,7 @@
     "maintainer": "santhoshkotla2929",
     "package_name": "undertow",
     "github_url": "https://github.com/undertow-io/undertow",
-    "version": "2.3.15.Final",
+    "version": "2.3.18.Final",
     "default_branch": "master",
     "build_script": "undertow_ubi_9.3.sh",
     "package_dir": "u/undertow",
