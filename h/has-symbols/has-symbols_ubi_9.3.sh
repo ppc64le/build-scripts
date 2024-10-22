@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : has-symbols
-# Version          : v1.0.3
+# Version          : main
 # Source repo      : https://github.com/inspect-js/has-symbols
 # Tested on	   : UBI:9.3
 # Language         : Node
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=has-symbols
-PACKAGE_VERSION=${1:-v1.0.3}
+PACKAGE_VERSION=${1:-main}
 PACKAGE_URL=https://github.com/inspect-js/has-symbols.git
 
 export NODE_VERSION=${NODE_VERSION:-20}
