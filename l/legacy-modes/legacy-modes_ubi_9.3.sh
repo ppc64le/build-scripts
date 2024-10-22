@@ -47,6 +47,6 @@ if ! npm install && npm audit fix --force; then
 fi
 
 ##No tests present for this package
-echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Success"
+echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass |  Install_Success"
 exit 0
 
