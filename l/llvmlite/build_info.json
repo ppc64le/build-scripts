@@ -8,5 +8,8 @@
    "package_dir": "l/llvmlite",
    "docker_build": false,
    "validate_build_script": true,
-   "use_non_root_user": false
+   "use_non_root_user": false,
+   "v0.41.1, v0.41.0": {
+     "build_script": "llvmlite_ubi_9_3.sh"
+  }
 }
