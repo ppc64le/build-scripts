@@ -25,7 +25,7 @@ set -e
 export PACKAGE_VERSION=${1:-"v0.41.1"}
 export PACKAGE_NAME=llvmlite
 export PACKAGE_URL=https://github.com/numba/llvmlite
-export PYTHON_VER=${1:-"3.11"}
+export PYTHON_VER=${2:-"3.11"}
 
 # Install dependencies
 
