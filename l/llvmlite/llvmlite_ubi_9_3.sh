@@ -86,7 +86,10 @@ cmake -DCMAKE_INSTALL_PREFIX="${PREFIX}"   \
       -DCOMPILER_RT_INCLUDE_TESTS=OFF      \
       ${CMAKE_ARGS}       -GNinja       ../llvm
 
-make && make install
+export CPU_COUNT=4
+ninja -j${CPU_COUNT}
+
+ninja install
 
 # Clone the repository
 git clone $PACKAGE_URL
