@@ -31,7 +31,7 @@ yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel 
 current_version=$(python3 --version 2>&1 | awk '{print $2}')
 echo "Current Python version: $current_version"
 
-# Check if current version is less than 3.10 using Python
+# Check if current python version is greater than or equal to 3.10.
 if python3 -c "import sys; sys.exit(0 if sys.version_info >= (3, 10) else 1)"; then
     echo "Python version is $current_version, which is 3.10 or greater."
 else
