@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : undertow
-# Version       : 2.3.15.Final
+# Version       : 2.3.18.Final
 # Source repo   : https://github.com/undertow-io/undertow
 # Tested on     : UBI: 9.3
 # Language      : Java
@@ -22,12 +22,12 @@
 set -e
 PACKAGE_NAME=undertow
 PACKAGE_URL=https://github.com/undertow-io/undertow.git
-PACKAGE_VERSION=${1:-2.3.15.Final}
+PACKAGE_VERSION=${1:-2.3.18.Final}
 
 
 # install tools and dependent packages
-yum install -y git wget java-17-openjdk-devel
-export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+yum install -y git wget java-11-openjdk-devel
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
 # install maven
@@ -54,7 +54,7 @@ then
   exit 1
 fi
   
- 
+mvn test 
 #Test
 #mvn -U -B -fae test -Pproxy '-DfailIfNoTests=false' -pl core
 #if [ $? != 0 ]
