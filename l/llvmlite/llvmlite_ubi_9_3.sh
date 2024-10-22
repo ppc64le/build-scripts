@@ -29,7 +29,7 @@ export PYTHON_VER=${1:-"3.11"}
 
 # Install dependencies
 
-yum install -y cmake sudo libffi-devel gcc-toolset-12 ninja-build python${PYTHON_VER}-devel python${PYTHON_VER}-wheel python${PYTHON_VER}-pip python${PYTHON_VER}-setuptools 
+yum install -y cmake git libffi-devel gcc-toolset-12 ninja-build python${PYTHON_VER}-devel python${PYTHON_VER}-wheel python${PYTHON_VER}-pip python${PYTHON_VER}-setuptools 
 
 python${PYTHON_VER} --version
 python${PYTHON_VER} -m pip install -U pip
