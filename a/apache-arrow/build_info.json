@@ -9,6 +9,9 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
+  "go/v10.0.1,go/v12.0.*": {
+    "build_script": "arrow_ubi_8.7.sh"
+  }
   "go/v16.1.*": {
     "build_script": "arrow_ubi_9.3.sh"
   }
