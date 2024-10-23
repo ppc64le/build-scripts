@@ -21,12 +21,12 @@
 set -e
 
 # Install tools and dependent packages
-yum install -y git wget curl unzip nano vim make dos2unix
+yum install -y git wget unzip nano vim make dos2unix
 yum install -y ant
 
 # Setup java environment
 # Update the path env. variable 
-yum install -y git wget gcc gcc-c++ java-1.8.0-openjdk java-1.8.0-openjdk-devel  
+yum install -y gcc gcc-c++ java-1.8.0-openjdk java-1.8.0-openjdk-devel  
 export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-)(?=.*ppc64le)')
 export PATH=$PATH:$JAVA_HOME/bin
 
