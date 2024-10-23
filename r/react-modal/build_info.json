@@ -1,0 +1,15 @@
+{
+   "maintainer": "stutiibm",
+   "package_name": "react-modal",
+   "github_url": "https://github.com/reactjs/react-modal",
+   "version": "v3.16.1",
+   "default_branch": "master",
+   "build_script": "react-modal_ubi_9.3.sh",
+   "package_dir": "r/react-modal",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "v*.*.*": {
+     "build_script": "react-modal_ubi_9.3.sh"
+   }
+}
