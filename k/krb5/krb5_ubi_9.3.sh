@@ -27,7 +27,7 @@ PACKAGE_VERSION=${1:-v0.5.1}
 PACKAGE_URL=https://github.com/jborean93/pykrb5.git
 
 # Install dependencies and tools
-yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip krb5-devel krb5-server krb5-libs
+yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip krb5-devel krb5-libs
 
 # Clone repository
 git clone $PACKAGE_URL
