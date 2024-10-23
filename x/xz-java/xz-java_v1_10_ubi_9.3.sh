@@ -38,7 +38,7 @@ PACKAGE_URL=https://github.com/tukaani-project/xz-java
 #Install ant
 wget https://dlcdn.apache.org//ant/binaries/apache-ant-1.10.15-bin.tar.gz
 tar -xzf apache-ant-1.10.15-bin.tar.gz
-export PATH=$WORKDIR/apache-ant-1.10.15/bin/:$PATH
+export PATH=$(pwd)/apache-ant-1.10.15/bin/:$PATH
 
 
 # clone, build and test specified version
@@ -53,7 +53,7 @@ if ! ant ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
     exit 1
 fi			
-
+# No tests found
 
 echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Success |  Install_Success"
 exit 0
