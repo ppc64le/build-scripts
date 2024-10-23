@@ -20,7 +20,7 @@
 
 set -e
 # Install tools and dependent packages
-yum install -y git wget curl unzip nano vim make dos2unix
+yum install -y git wget unzip nano vim make dos2unix
 
 # setup java environment
 # update the path env. variable 
