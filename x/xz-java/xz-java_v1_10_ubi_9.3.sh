@@ -24,9 +24,10 @@ yum install -y git wget unzip nano vim make dos2unix
 
 # setup java environment
 # update the path env. variable 
-yum install -y gcc gcc-c++ java-1.8.0-openjdk java-1.8.0-openjdk-devel 
-export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-)(?=.*ppc64le)')
-export PATH=$PATH:$JAVA_HOME/bin
+yum install -y git wget gcc gcc-c++ java-11-openjdk java-11-openjdk-devel
+
+export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-11)(?=.*ppc64le)')
+export PATH=$JAVA_HOME/bin:$PATH
 
 
 # variables
