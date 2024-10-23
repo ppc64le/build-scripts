@@ -2,14 +2,22 @@
    "maintainer": "npanpaliya",
    "package_name": "llvmlite",
    "github_url": "https://github.com/numba/llvmlite",
-   "version": "v0.41.1",
+   "version": "*",
    "default_branch": "main",
-   "build_script": "llvmlite_ubi_9_3.sh",
+   "build_script": "llvmlite_v0.41.1_ubi_9_3.sh",
    "package_dir": "l/llvmlite",
-   "docker_build": false,
+   "docker_build": true,
    "validate_build_script": true,
    "use_non_root_user": false,
-   "v0.41.1, v0.41.0": {
-     "build_script": "llvmlite_ubi_9_3.sh"
-  }
+   "*": {
+      "dir": "linux",
+      "base_docker_image": "base",
+      "base_docker_variant": "Not defined"
+   },
+   "v0.41.*": {
+       "build_script": "llvmlite_v0.41.1_ubi_9_3.sh"
+   },
+   "v0.43.*": {
+       "build_script": "llvmlite_v0.43.0_ubi_9_3.sh"
+   }
 }
