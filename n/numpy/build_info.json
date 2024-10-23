@@ -8,6 +8,6 @@
   "package_dir": "n\numpy",
   "docker_build": false,
   "v1.*.*": {
-    "build_script": ""
+    "build_script": "numpy_ubi_9.3.sh"
   }
 }
