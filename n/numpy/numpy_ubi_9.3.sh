@@ -65,6 +65,6 @@ fi
 if ! python${PYTHON_VERSION} runtests.py; then
     echo "------------------$PACKAGE_NAME:install_success_tests_executed---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Success | Tests_executed"
     exit 0
 fi
