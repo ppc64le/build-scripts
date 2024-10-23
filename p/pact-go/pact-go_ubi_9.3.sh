@@ -58,9 +58,6 @@ cd pact-plugins
 cd plugins/csv/
 cargo build --release
 cp /pact-plugins/plugins/csv/target/release/pact-csv-plugin /usr/local/lib/
-cd /pact-plugins/cli
-cargo build --release
-cp /pact-plugins/cli/target/release/pact-plugin-cli /root/.pact/bin/
 cd /
 
 # Clone git repository
