@@ -22,7 +22,6 @@ set -e
 
 # Install tools and dependent packages
 yum install -y git wget unzip nano vim make dos2unix
-yum install -y ant
 
 # Setup java environment
 # Update the path env. variable 
@@ -35,6 +34,11 @@ export PATH=$PATH:$JAVA_HOME/bin
 PACKAGE_NAME=xz-java
 PACKAGE_VERSION=${1:-v1.6}
 PACKAGE_URL=https://github.com/tukaani-project/xz-java
+
+#Install ant
+wget https://dlcdn.apache.org//ant/binaries/apache-ant-1.10.15-bin.tar.gz
+tar -xzf apache-ant-1.10.15-bin.tar.gz
+export PATH=$WORKDIR/apache-ant-1.10.15/bin/:$PATH
 
 # Clone, and build specified version
 git clone $PACKAGE_URL
