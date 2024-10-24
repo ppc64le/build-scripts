@@ -1,0 +1,15 @@
+{
+  "maintainer": "aastha-sharma2",
+  "package_name": "blosc",
+  "github_url": "https://github.com/Blosc/python-blosc.git",
+  "version": "1.11.1",
+  "default_branch": "main",
+  "package_dir": "b/blosc",
+  "build_script": "blosc_ubi_9.3.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": false,
+  "*": {
+    "build_script": "blosc_ubi_9.3.sh"
+  }
+}
