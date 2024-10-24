@@ -1,12 +1,15 @@
 {
-  "maintainer": "Shubhamgupta1010",
+  "maintainer": "vinodk99",
   "package_name": "oc",
-  "github_url": "https://github.com/openshift/oc.git",
-  "version": "openshift-clients-4.12.0-202208031327",
+  "github_url": "https://github.com/openshift/oc",
+  "version": "openshift-clients-4.17.0-202409111134",
   "default_branch": "master",
   "package_dir": "o/oc/",
   "build_script": "oc_ubi_9.3.sh",
   "docker_build": false,
   "validate_build_script": true,
-  "use_non_root_user": false
+  "use_non_root_user": false,
+  "openshift-clients-*.*.*-*" : {
+    "build_script": "oc_ubi_9.3.sh"
+  } 
 }
