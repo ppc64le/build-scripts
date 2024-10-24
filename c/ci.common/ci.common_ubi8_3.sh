@@ -1,10 +1,13 @@
-# ----------------------------------------------------------------------------
+#!/bin/bash -e
+#----------------------------------------------------------------------------
 #
 # Package       : ci.common
 # Version       : 1.5
 # Source repo   : https://github.com/OpenLiberty/ci.common/tree/ci.common-1.5
 # Tested on     : UBI 8.3
-# Script License: Apache License, Version 2 or later
+# Language         : Java
+# Travis-Check     : True
+# Script License   : Apache License, Version 2 or later
 # Maintainer    : Vaibhav Nazare <Vaibhav.Nazare@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -14,8 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
-#!/bin/bash
 
 #Variables
 REPO=https://github.com/OpenLiberty/ci.common.git
