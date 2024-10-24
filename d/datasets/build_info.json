@@ -1,0 +1,15 @@
+{
+  "maintainer": "Harithanagothu2",
+  "package_name": "datasets",
+  "github_url": "https://github.com/huggingface/datasets.git",
+  "version": "2.19.1",
+  "package_dir": "d/datasets",
+  "default_branch": "main",
+  "build_script": "datasets_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*.*.*": {
+    "build_script": "datasets_ubi_9.3.sh"
+  }
+}
