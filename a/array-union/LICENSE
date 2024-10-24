@@ -46,7 +46,14 @@ if ! npm install --production && npm audit fix --force; then
 fi
 
 #ava installed twice - once for the package, the other globally to use for test run
-if ! npm install ava@0.19.1 && npm install -g ava@0.19.1; then
+if ! npm install ava@0.19.1; then
+    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    exit 1
+fi
+
+if ! npm install -g ava@0.19.1; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
