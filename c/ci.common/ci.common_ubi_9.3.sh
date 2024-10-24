@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : ci_common
+# Package          : ci.common
 # Version          : ci.common-1.8.33
 # Source repo      : https://github.com/OpenLiberty/ci.common
 # Tested on        : UBI:9.3
