@@ -38,7 +38,7 @@ PACKAGE_URL=https://github.com/tukaani-project/xz-java
 #Install ant
 wget https://dlcdn.apache.org//ant/binaries/apache-ant-1.10.15-bin.tar.gz
 tar -xzf apache-ant-1.10.15-bin.tar.gz
-export PATH=$WORKDIR/apache-ant-1.10.15/bin/:$PATH
+export PATH=$(pwd)/apache-ant-1.10.15/bin/:$PATH
 
 # Clone, and build specified version
 git clone $PACKAGE_URL
