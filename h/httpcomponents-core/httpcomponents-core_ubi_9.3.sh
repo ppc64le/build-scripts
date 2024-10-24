@@ -26,7 +26,7 @@ PACKAGE_VERSION=${1:-rel/v5.3.1}
 
 
 # install tools and dependent packages
-yum install -y java-11-openjdk-devel
+yum install -y git wget java-11-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
