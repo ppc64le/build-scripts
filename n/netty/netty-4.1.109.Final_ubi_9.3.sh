@@ -75,7 +75,7 @@ if ! ./mvnw clean install -DskipTests -Dtcnative.classifier=linux-ppcle_64-fedor
        exit 1
 fi
 
-if ! ./mvnw test -Dtcnative.classifier=linux-ppcle_64-fedora -pl -:netty-handler, -:netty-codec-http2 ; then
+if ! ./mvnw test -Dtcnative.classifier=linux-ppcle_64-fedora -pl -:netty-handler,-:netty-codec-http2 ; then
       echo "------------------$PACKAGE_NAME::Install_and_Test_fails-------------------------"
       echo "$PACKAGE_URL $PACKAGE_NAME"
       echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
