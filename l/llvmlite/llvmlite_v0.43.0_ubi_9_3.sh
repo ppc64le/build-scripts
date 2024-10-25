@@ -40,7 +40,7 @@ source /opt/rh/gcc-toolset-12/enable
 pip install setuptools build
 
 # Build llvmdev which is a pre-req for llvmlite
-#git clone --recursive https://github.com/llvm/llvm-project
+git clone --recursive https://github.com/llvm/llvm-project
 cd llvm-project
 git checkout llvmorg-15.0.7
 export PREFIX=/usr

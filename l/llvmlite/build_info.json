@@ -4,7 +4,7 @@
    "github_url": "https://github.com/numba/llvmlite",
    "version": "*",
    "default_branch": "main",
-   "build_script": "llvmlite_v0.41.1_ubi_9_3.sh",
+   "build_script": "llvmlite_v0.43.0_ubi_9_3.sh",
    "package_dir": "l/llvmlite",
    "docker_build": false,
    "validate_build_script": true,
