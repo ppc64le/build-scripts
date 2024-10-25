@@ -1,6 +1,6 @@
 {
   "maintainer": "kiranNukal",
-  "package_name": "kiwisolver",
+  "package_name": "kiwi",
   "github_url": "ttps://github.com/nucleic/kiwi.git",
   "version": "v1.2.0",
   "default_branch": "master",
