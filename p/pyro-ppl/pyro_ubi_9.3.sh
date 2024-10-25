@@ -34,6 +34,9 @@ pip install numpy wheel
 git clone https://github.com/pytorch/pytorch.git
 cd pytorch
 git checkout v2.5.0
+wget https://repo.anaconda.com/miniconda/Miniconda3-py39_4.9.2-Linux-ppc64le.sh -O miniconda.sh
+bash miniconda.sh -b -u -p $HOME/miniconda
+export PATH="$HOME/miniconda/bin:$PATH"
 conda install -y cmake ninja rust
 pip install -r requirements.txt
 python setup.py install
