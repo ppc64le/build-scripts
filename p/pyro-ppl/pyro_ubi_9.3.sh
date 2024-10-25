@@ -30,6 +30,20 @@ PACKAGE_URL=https://github.com/pyro-ppl/pyro.git
 yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openblas-devel
 pip install numpy wheel
 
+#clone and install pytorh
+git clone https://github.com/pytorch/pytorch.git
+cd pytorch
+git checkout v2.5.0
+conda install -y cmake ninja rust
+pip install -r requirements.txt
+python setup.py install
+cd ..
+
+#clone repository 
+git clone $PACKAGE_URL
+cd  $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
+
 #install
 if ! (python3 setup.py install) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
