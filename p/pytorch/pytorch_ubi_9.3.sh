@@ -27,6 +27,7 @@ export _GLIBCXX_USE_CXX11_ABI=1
 
 dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
     git cmake ninja-build g++ python3-devel rust cargo
+ln -s $(command -v python3) /usr/bin/python
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
@@ -44,19 +45,20 @@ fi
 
 git submodule sync
 git submodule update --init --recursive
-pip3 install -r requirements.txt
+pip install -r requirements.txt
 
-if ! MAX_JOBS=4 python3 setup.py develop; then
+if ! MAX_JOBS=4 python setup.py bdist_wheel && pip install dist/*.whl; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-pip3 install pytest
+cd ..
+pip install pytest
 
 # basic sanity test (subset)
-if ! pytest test/test_utils.py; then
+if ! pytest $PACKAGE_NAME/test/test_utils.py; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
