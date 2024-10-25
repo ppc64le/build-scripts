@@ -1,0 +1,15 @@
+{
+  "maintainer": "kiranNukal",
+  "package_name": "lightning-bolts",
+  "github_url": "https://github.com/Lightning-Universe/lightning-bolts.git",
+  "version": "v0.7.0",
+  "default_branch": "master",
+  "package_dir": "p/pytorch-lightning-bolts",
+  "build_script": "pytorch-lightning-bolts_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v*.*.*": {
+    "build_script": "pytorch-lightning-bolts_ubi_9.3.sh"
+  }
+}
