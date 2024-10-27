@@ -17,20 +17,20 @@
 # contact the "Maintainer" of this script.
 #
 # -----------------------------------------------------------------------------
-
+ 
 # Exit immediately if a command exits with a non-zero status
 set -e
+ 
 # Variables
 PACKAGE_NAME=pytorch-lightning
 PACKAGE_VERSION=${1:-2.2.4}
 PACKAGE_URL=https://github.com/Lightning-AI/pytorch-lightning.git
-
-
+ 
 # Install dependencies and tools
 yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openblas-devel
 pip install numpy wheel
-
-#clone and install pytorh
+ 
+# Clone and install PyTorch
 git clone https://github.com/pytorch/pytorch.git
 cd pytorch
 git checkout v2.5.0
@@ -41,19 +41,34 @@ conda install -y cmake ninja rust
 pip install -r requirements.txt
 python setup.py install
 cd ..
-
-#clone repository 
+ 
+# Clone the Lightning Fabric repository
 git clone $PACKAGE_URL
-cd  $PACKAGE_NAME
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+ 
+# Comment out the torch version line in base.txt files
+FILES=(
+    "./requirements/fabric/base.txt"
+    "./requirements/pytorch/base.txt"
+)
+for FILE in "${FILES[@]}"; do
+    if [ -f "$FILE" ]; then
+        sed -i '/torch >=2.1.0, <2.5.0/s/^/# /' "$FILE"
+        echo "Commented torch version in $FILE"
+    else
+        echo "File $FILE not found."
+    fi
+done
+ 
+# Install requirements and package
 pip install -r requirements.txt
-
-#install
-if ! (python3 setup.py install) ; then
+if ! (python3 setup.py install); then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
     exit 1
 fi
-
+ 
+# Build the wheel package
 python3 setup.py bdist_wheel
