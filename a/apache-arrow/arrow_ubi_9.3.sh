@@ -7,7 +7,7 @@
 # Source repo      : https://github.com/apache/arrow
 # Tested on        : UBI 9.3
 # Language         : C++,Go
-# Travis-Check     : True 
+# Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Puneet Sharma <Puneet.Sharma21@ibm.com>
 #
@@ -27,10 +27,10 @@ OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 GO_VERSION=`curl -s 'https://go.dev/VERSION?m=text' | grep ^go`
 
 #Dependencies
-yum install -y git sudo wget make gcc gcc-c++ cmake
+yum install -y git sudo wget make gcc gcc-c++ cmake python3.11 python3.11-pip python3.11-devel
 
 wget "https://go.dev/dl/$GO_VERSION.linux-ppc64le.tar.gz"
-rm -rf /usr/local/go 
+rm -rf /usr/local/go
 tar -C /usr/local -xf $GO_VERSION.linux-ppc64le.tar.gz
 export GOROOT=/usr/local/go
 export GOPATH=$HOME
@@ -98,6 +98,24 @@ else
     echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
-    exit 0
 fi
 
+
+# ==================== Build the Python Wheel (.whl) file =================================
+cd ../python
+# Install necessary Python build tools
+pip3.11 install --upgrade setuptools wheel numpy
+python3.11 -m pip install Cython==3.0.8
+python3.11 setup.py build_ext --inplace
+python3.11 setup.py bdist_wheel
+
+# Find and display the generated WHL file
+WHL_FILE=$(ls dist/*.whl)
+if [ -f "$WHL_FILE" ]; then
+    echo "------------------$PACKAGE_NAME::WHL file generated successfully-------------------------"
+    echo "The generated WHL file is located at: $WHL_FILE"
+    exit 0
+else
+    echo "------------------$PACKAGE_NAME::WHL file generation failed-------------------------"
+    exit 3
+fi
