@@ -9,6 +9,9 @@
   "validate_build_script": "true",
   "use_non_root_user": "false",
   "docker_build": "false",
+  "v1.3.4": {
+    "build_script": "spring_retry_ubi_9.3.sh"
+  },
   "v2.0.5": {
     "build_script": "spring_retry_ubi_8.7.sh"
   }
