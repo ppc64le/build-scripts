@@ -42,7 +42,7 @@ git checkout $PACKAGE_VERSION
 # Install required Python dependencies
 python${PYTHON_VERSION} -m pip install -r requirements.txt
 # Upgrade setuptools
-python${PYTHON_VERSION} -m pip install --upgrade setuptools
+python${PYTHON_VERSION} -m pip install --upgrade setuptools absl-py
 
 # Set environment variable for OpenSSL
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true
@@ -55,31 +55,25 @@ if ! python${PYTHON_VERSION} setup.py bdist_wheel; then
     exit 1
 fi
 
-python${PYTHON_VERSION} -m pip install dist/grpcio-1.64.0-cp39-cp39-linux_ppc64le.whl
-if [ $? == 0 ]; then
-     echo "------------------$PACKAGE_NAME::Build_Pass---------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Build_Success"
-else
-     echo "------------------$PACKAGE_NAME::Build_Fail-------------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Build_Fail"
-     exit 1
+# Install the created wheel
+if ! python${PYTHON_VERSION} -m pip install dist/*.whl; then
+    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
+    exit 1
 fi
 
-# Test the package
-cd ..
-python${PYTHON_VERSION} -m pip show grpcio
-python${PYTHON_VERSION} -c "import grpc; print(grpc.__file__)"
-
-if [ $? == 0 ]; then
-     echo "------------------$PACKAGE_NAME::Test_Pass---------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Test_Success"
-     exit 0
+# Run specific tests
+cd src/python/grpcio_tests
+export PYTHONPATH=$(pwd)
+if ! python${PYTHON_VERSION} -m unittest tests.unit._invalid_metadata_test tests.unit._compression_test; then
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Success_But_Test_Fails"
+    exit 2
 else
-     echo "------------------$PACKAGE_NAME::Test_Fail-------------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Test_Fail"
-     exit 2
+    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Both_Install_and_Test_Success"
+    exit 0
 fi
