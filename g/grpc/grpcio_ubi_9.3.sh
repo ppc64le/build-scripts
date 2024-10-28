@@ -26,7 +26,7 @@ PACKAGE_URL=https://github.com/grpc/grpc.git
 # Update the package manager
 yum update -y
 
-# Install necessary development tools and libraries in one command
+# Install necessary development tools and libraries
 yum install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip python${PYTHON_VERSION}-setuptools git cmake autoconf libtool gcc gcc-c++ make openssl-devel zlib-devel libuuid-devel gcc-gfortran
 
 # Clone the gRPC repository
@@ -36,7 +36,7 @@ cd $PACKAGE_NAME
 # Initialize submodules
 git submodule update --init
 
-# Checkout the specified version (or master if no version is provided)
+# Checkout the specified version
 git checkout $PACKAGE_VERSION
 
 # Install required Python dependencies
