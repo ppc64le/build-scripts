@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : lightning-bolts
-# Version       : 0.7.0
-# Source repo : https://github.com/Lightning-Universe/lightning-bolts.git
+# Package       : pytorch-lightning
+# Version       : 2.2.4
+# Source repo : https://github.com/Lightning-AI/pytorch-lightning.git
 # Tested on     : UBI:9.3
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
+# Maintainer    : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on the given
 # platform using the mentioned version of the package.
@@ -22,53 +22,53 @@
 set -e
 
 # Variables
-PACKAGE_NAME=lightning-bolts
-PACKAGE_VERSION=${1:-0.7.0}
-PACKAGE_URL=https://github.com/Lightning-Universe/lightning-bolts.git
-TORCHVISION_URL=https://github.com/pytorch/vision.git
-
+PACKAGE_NAME=pytorch-lightning
+PACKAGE_VERSION=${1:-2.2.4}
+PACKAGE_URL=https://github.com/Lightning-AI/pytorch-lightning.git
 
 # Install dependencies and tools
 yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openblas-devel
+pip install numpy==1.26.4 wheel
+# Clone and install PyTorch
+git clone https://github.com/pytorch/pytorch.git
+cd pytorch
 wget https://repo.anaconda.com/miniconda/Miniconda3-py39_4.9.2-Linux-ppc64le.sh -O miniconda.sh
 bash miniconda.sh -b -u -p $HOME/miniconda
 export PATH="$HOME/miniconda/bin:$PATH"
-
-#clone and install pytorh
-git clone https://github.com/pytorch/pytorch.git
-cd pytorch
-git checkout v2.5.0
 conda install -y cmake ninja rust
 pip install -r requirements.txt
 python setup.py install
 cd ..
 
-
-# Step 1: Clone and install torchvision (dependency for lightning-bolts)
-yum install -y openblas-devel
-conda install conda-forge::pillow
-conda install libstdcxx-ng
-pip install numpy
-git clone $TORCHVISION_URL
-cd vision
-# Install torchvision package
-python3 setup.py install
-cd ..  # Exit torchvision folder after installing it
-
-# Step 2: Clone the main lightning-bolts repository
+# Clone the Lightning Fabric repository
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
-
-# Checkout the specified version of lightning-bolts
 git checkout $PACKAGE_VERSION
 
-# Step 3: Install grpcio via conda
-conda install -y grpcio
+# Comment out the torch version line in base.txt files
+FILES=(
+    "./requirements/fabric/base.txt"
+    "./requirements/pytorch/base.txt"
+)
+for FILE in "${FILES[@]}"; do
+    if [ -f "$FILE" ]; then
+        sed -i '/torch >=2.1.0, <2.5.0/s/^/# /' "$FILE"
+        echo "Commented torch version in $FILE"
+    else
+        echo "File $FILE not found."
+    fi
+done
 
-# Step 4: Install dependencies from the requirements.txt file
-pip install -r requirements.txt
+# Install requirements and package
+pip install -r requirements/app/app.txt
+pip install -r requirements/fabric/base.txt
+pip install -r requirements/pytorch/base.txt
+if ! (python3 setup.py install); then
+    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
+    exit 1
+fi
 
-# Step 5: Build the wheel for lightning-bolts
+# Build the wheel package
 python3 setup.py bdist_wheel
-
-echo "------------------$PACKAGE_NAME: Install and build succeeded----------------------"
