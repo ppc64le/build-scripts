@@ -1,13 +1,13 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : rstudio/rstudio
+# Package       : rstudio
 # Version       : main
 # Source repo   : https://github.com/rstudio/rstudio
 # Tested on     : UBI 9.4
 # Language      : Java/C++
 # Travis-Check  : False
-# Maintainer    : Tejas.Badjate@ibm.com
+# Maintainer    : Tejas Badjate <Tejas.Badjate@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -75,7 +75,7 @@ fi
 
 # change directory to rstudio
 cd ${TMPWS_DIR}/rstudio
-git checkout tags/v2024.04.2+764
+      git checkout tags/v2024.04.2+764
 
 # add patch
 git apply $SCRIPT_DIR/rstudio-server.patch
@@ -106,14 +106,13 @@ mkdir build && cd build
 
 cd ${TMPWS_DIR}/rstudio/build
 
-cmake .. -DRSTUDIO_TARGET=Server -DCMAKE_INSTALL_PREFIX=/usr/lib/rstudio-server -DCMAKE_BUILD_TYPE=Release -DQUARTO_ENABLED=False
+cmake .. -DRSTUDIO_TARGET=Server -DCMAKE_INSTALL_PREFIX=/usr/lib/rstudio-server -DCMAKE_BUILD_TYPE=Release -DQUARTO_ENABLED=False || { echo "CMake configuration failed"; exit 1; }
 cd ${TMPWS_DIR}/rstudio/src/gwt/lib/quarto
 sed -i '23 s/turbo/turbo-linux-ppc64le/' package.json
 sed -i '23 s/\^1.8.5/1.4.7/'  package.json
-
 export JAVA_HOME=/etc/alternatives/java_sdk_1.8.0
 cd ${TMPWS_DIR}/rstudio/build
-PATH=${TMPWS_DIR}/rstudio/dependencies/common/node/18.18.2/bin:$PATH make install
+PATH=${TMPWS_DIR}/rstudio/dependencies/common/node/18.18.2/bin:$PATH make install || { echo "Build or install failed"; exit 1; }
 
 # package RStudio server
 cd ${TMPWS_DIR}
@@ -128,8 +127,6 @@ useradd --uid $USER_UID --gid $USER_GID -m $USERNAME
 echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME 
 chmod 0775 /etc/sudoers.d/$USERNAME 
 echo "$USERNAME:$USERNAME" | sudo chpasswd
-
-
 
 cp /usr/lib/rstudio-server/extras/init.d/redhat/rstudio-server /etc/init.d/
 /sbin/chkconfig --add rstudio-server

@@ -1,6 +1,6 @@
 {
-    "maintainer":"Tejas.Badjate@ibm.com",
-    "package_name" : "rstudio/rstudio",
+    "maintainer":"tejasBadjateIBM",
+    "package_name" : "rstudio",
     "github_url": "https://github.com/rstudio/rstudio",
     "version": "2024.04.2+764",
     "default_branch": "main",
