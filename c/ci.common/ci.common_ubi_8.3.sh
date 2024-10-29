@@ -3,9 +3,7 @@
 # Package       : ci.common
 # Version       : 1.5
 # Source repo   : https://github.com/OpenLiberty/ci.common/tree/ci.common-1.5
-# Tested on        : UBI:8.3
-# Language         : Java
-# Travis-Check     : True
+# Tested on     : UBI 8.3
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Vaibhav Nazare <Vaibhav.Nazare@ibm.com>
 #
