@@ -7,6 +7,7 @@
     "default_branch": "main",
     "build_script": "neo4j-migrations_ubi_9.3.sh",
     "docker_build": "false",
+    "use_non_root_user": false,
     "validate_build_script": "true",
     "*.*.*": {
       "build_script": "neo4j-migrations_ubi_9.3.sh"
