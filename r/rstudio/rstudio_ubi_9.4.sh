@@ -168,3 +168,5 @@ sudo -E -u root bash -c 'bash << EOF
 yum remove -y openssl-devel libsqlite3x-devel libsecret-devel
 echo "Done building RStudio server"
 EOF'
+
+exit 0 
