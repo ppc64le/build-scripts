@@ -3,8 +3,8 @@
 #
 # Package          : neo4j-migrations
 # Version          : 2.13.3
-# Source repo      : https://github.com/TritonDataCenter/node-asn1
-# Tested on	       : UBI:9.3
+# Source repo      : https://github.com/michael-simons/neo4j-migrations
+# Tested on	   : UBI:9.3
 # Language         : Java
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
