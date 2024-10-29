@@ -21,17 +21,18 @@
 PACKAGE_NAME=pillow
 PACKAGE_VERSION=${1:-11.0.0}
 PACKAGE_URL=https://github.com/python-pillow/Pillow/
+PYTHON_VER=${2:-"3.11"}
 
 OS_NAME=$(grep '^PRETTY' /etc/os-release | awk -F '=' '{print $2}')
 
 # install core dependencies
-yum install -y python3.11 python3.11-pip python3.11-devel gcc git
+yum install -y python${PYTHON_VER} python${PYTHON_VER}-pip python${PYTHON_VER}-devel gcc git
 
 # install pillow's minimum dependencies
 yum install -y zlib zlib-devel libjpeg-turbo libjpeg-turbo-devel
 
 # install build tools for wheel generation
-python3.11 -m pip install --upgrade pip setuptools wheel pytest
+python${PYTHON_VER} -m pip install --upgrade pip setuptools wheel pytest
 
 # clone source repository
 git clone $PACKAGE_URL $PACKAGE_NAME
@@ -42,24 +43,24 @@ git submodule update --init
 # check if setup.py file is present
 if [ -f "setup.py" ]; then
     echo "setup.py file exists"
-    
+
     # Build the wheel file
-    if ! python3.11 setup.py bdist_wheel ; then
+    if ! python${PYTHON_VER} setup.py bdist_wheel ; then
         echo "------------------$PACKAGE_NAME:Build_wheel_fails-------------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_wheel_Fails"
         exit 1
     fi
-    
+
     # Install the package from the wheel
     WHEEL_FILE=$(ls dist/*.whl)
-    if ! python3.11 -m pip install $WHEEL_FILE ; then
+    if ! python${PYTHON_VER} -m pip install $WHEEL_FILE ; then
         echo "------------------$PACKAGE_NAME:Install_wheel_fails-------------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_wheel_Fails"
         exit 1
     fi
-    
+
 else
     echo "setup.py not present"
     exit 1
@@ -77,4 +78,3 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
-
