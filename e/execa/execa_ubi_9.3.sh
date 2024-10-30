@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : execa
-# Version          : v9.5.0
+# Version          : v9.5.1
 # Source repo      : https://github.com/sindresorhus/execa
 # Tested on        : UBI:9.3
 # Language         : Node
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=execa
-PACKAGE_VERSION=${1:-v9.5.0}
+PACKAGE_VERSION=${1:-v9.5.1}
 PACKAGE_URL=https://github.com/sindresorhus/execa
 
 export NODE_VERSION=${NODE_VERSION:-22}
