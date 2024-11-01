@@ -1,0 +1,15 @@
+{
+  "maintainer": "md.shafi.hussain",
+  "package_name": "torchvision",
+  "github_url": "https://github.com/pytorch/vision",
+  "version": "v0.16.1",
+  "default_branch": "main",
+  "package_dir": "t/torchvision",
+  "build_script": "torchvision_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v*.*.*": {
+    "build_script": "torchvision_ubi_9.3.sh"
+  }
+}
