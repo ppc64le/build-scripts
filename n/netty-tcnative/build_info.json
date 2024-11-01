@@ -9,6 +9,9 @@
   "validate_build_script": true,
   "use_non_root_user": false,
   "docker_build": false,
+  "netty-tcnative-parent-2.0.62.Final": {
+        "build_script": "netty-tcnative_ubi_9.3.sh"
+     },
   "netty-tcnative-parent-2.0.*.Final": {
         "build_script": "netty-tcnative_ubi_9.3.sh"
      }
