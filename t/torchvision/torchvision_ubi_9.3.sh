@@ -1,5 +1,5 @@
 #!/bin/bash -e
-
+set -x
 # -----------------------------------------------------------------------------
 #
 # Package           : vision
@@ -62,12 +62,10 @@ if ! (MAX_JOBS=$(nproc) python setup.py bdist_wheel && pip install dist/*.whl); 
 fi
 
 # register PrivateUse1HooksInterface
-set -x
 python test/test_utils.py TestDeviceUtilsCPU.test_device_mode_ops_sparse_mm_reduce_cpu_bfloat16
 python test/test_utils.py TestDeviceUtilsCPU.test_device_mode_ops_sparse_mm_reduce_cpu_float16
 python test/test_utils.py TestDeviceUtilsCPU.test_device_mode_ops_sparse_mm_reduce_cpu_float32
 python test/test_utils.py TestDeviceUtilsCPU.test_device_mode_ops_sparse_mm_reduce_cpu_float64
-set +x
 
 cd $WORKDIR
 pip install pytest pytest-xdist
