@@ -1,8 +1,8 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package       : error-prone
-# Version       : 2.30.0
+# Package       : error-prone-annotations
+# Version       : v2.30.0
 # Source repo   : https://github.com/google/error-prone.git
 # Tested on     : UBI 9.3
 # Language      : Java
@@ -20,7 +20,7 @@
 set -e
 
 PACKAGE_NAME=error-prone/annotations
-PACKAGE_VERSION=${1:-v2.30.0}
+PACKAGE_VERSION=${1:-v2.26.1}
 PACKAGE_URL=https://github.com/google/error-prone.git
 
 # install tools and dependent packages
@@ -46,9 +46,8 @@ export PATH=$PATH:$M2_HOME/bin
 
 
 # clone and checkout specified version
-cd
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+cd $PACKAGE_NAME/$DIRECTORY
 git checkout $PACKAGE_VERSION
 
 sed -i 's/<grpc.version>1.43.3<\/grpc.version>/<grpc.version>1.48.0<\/grpc.version>/g' pom.xml
