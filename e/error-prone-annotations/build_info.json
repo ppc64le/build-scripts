@@ -2,7 +2,7 @@
     "maintainer": "Pratibh-Goshi",
     "package_name": "error-prone-annotations",
     "github_url": "https://github.com/google/error-prone.git",
-    "version": "v2.26.1",
+    "version": "v2.30.0",
     "default_branch": "master",
     "build_script": "error-prone-annotations_ubi_9.3.sh",
     "package_dir": "e/error-prone-annotations",
