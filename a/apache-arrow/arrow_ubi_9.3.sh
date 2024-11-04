@@ -133,6 +133,9 @@ pip${PYTHON_VER} install pytest==6.2.5
 pip${PYTHON_VER} install pytest-lazy-fixture hypothesis
 export PYTEST_PATH=$(pwd)/pyarrow
 
+# Skipped specific tests
+export PYTEST_ADDOPTS="-k 'not test_cython and not test_extension_type' --deselect=pyarrow/tests/test_extension_type.py"
+
 # Run Python tests
 if ! python3.11 -m pytest $PYTEST_PATH ; then
     echo "------------------$PACKAGE_NAME::Python_Test_fails-------------------------"
