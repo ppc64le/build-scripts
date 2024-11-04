@@ -21,7 +21,7 @@ set -e
 
 
 PACKAGE_NAME=error-prone
-PACKAGE_VERSION=${1:-v2.30.1}
+PACKAGE_VERSION=${1:-v2.30.0}
 DIRECTORY=annotations
 PACKAGE_URL=https://github.com/google/error-prone.git
 
