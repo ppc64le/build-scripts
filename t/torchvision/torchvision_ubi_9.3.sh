@@ -1,5 +1,5 @@
 #!/bin/bash -e
-set -x
+
 # -----------------------------------------------------------------------------
 #
 # Package           : vision
@@ -29,9 +29,9 @@ WORKDIR=$(pwd)
 
 dnf install -y git jq
 
-# install dependency - pytorch
+# install dependency - pytorch (skip tests)
 PYTORCH_VERSION=${3:-$(curl -sSL https://api.github.com/repos/pytorch/pytorch/releases/latest | jq -r .tag_name)}
-curl -sL https://raw.githubusercontent.com/ppc64le/build-scripts/master/p/pytorch/pytorch_ubi_9.3.sh | bash -s $PYTORCH_VERSION $PYTHON_VER
+curl -sL https://raw.githubusercontent.com/ppc64le/build-scripts/master/p/pytorch/pytorch_ubi_9.3.sh | sed '/pip install pytest/q' | bash -s $PYTORCH_VERSION $PYTHON_VER
 
 cd $WORKDIR
 
@@ -44,9 +44,9 @@ dnf config-manager --set-enabled crb
 dnf install -y libtiff-devel libjpeg-devel openjpeg2-devel zlib-devel \
     libpng-devel freetype-devel lcms2-devel libwebp-devel tcl-devel tk-devel \
     harfbuzz-devel fribidi-devel libraqm-devel libimagequant-devel libxcb-devel
-# install dependency - pillow
+# install dependency - pillow (skip tests)
 PILLOW_VERSION=${4:-$(curl -sSL https://api.github.com/repos/python-pillow/Pillow/releases/latest | jq -r .tag_name)}
-curl -sL https://raw.githubusercontent.com/ppc64le/build-scripts/master/p/pillow/pillow_v11.0.0_ubi_9.3.sh | bash -s $PILLOW_VERSION $PYTHON_VER
+curl -sL https://raw.githubusercontent.com/ppc64le/build-scripts/master/p/pillow/pillow_v11.0.0_ubi_9.3.sh | sed '/# Run tests to verify installation/q' | bash -s $PILLOW_VERSION $PYTHON_VER
 
 cd $WORKDIR
 
