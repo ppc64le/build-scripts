@@ -1,15 +1,15 @@
 {
-  "maintainer": "shubham-bhagwat0",
+  "maintainer": "vinodk99",
   "package_name": "3scale-apisonator",
   "github_url": "https://github.com/3scale/apisonator.git",
-  "version": "2.14-stable",
-  "package_dir": "3/3scale-apisonator/",
-  "default_branch": "main",
-  "build_script": "3scale-apisonator_ubi8.7.sh",
-  "docker_build": "false",
+  "version": "3scale-2.14.1-GA",
+  "default_branch": "master",
+  "package_dir": "3/3scale-apisonator",
+  "build_script": "3scale-apisonator_ubi_9.3.sh",
+  "validate_build_script": true,
   "use_non_root_user": false,
-  "validate_build_script": "true",
-  "2.14-stable": {
-    "build_script": "3scale-apisonator_ubi8.7.sh"
+  "docker_build": false,
+  "3scale-*.*.*-*": {
+    "build_script": "3scale-apisonator_ubi_9.3.sh"
   }
 }

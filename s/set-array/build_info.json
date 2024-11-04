@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "set-array",
+    "github_url": "https://github.com/jridgewell/set-array",
+    "version": "v1.2.1",
+    "default_branch": "main",
+    "build_script": "set-array_ubi_9.3.sh",
+    "package_dir": "s/set-array",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v1.*.*": {
+        "build_script": "set-array_ubi_9.3.sh"
+    }
+}

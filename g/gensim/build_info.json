@@ -1,5 +1,5 @@
 {
-    "maintainer": "Stuti.Wali@ibm.com",
+    "maintainer": "stutiibm",
     "package_name": "gensim",
     "github_url": "https://github.com/RaRe-Technologies/gensim",
     "version": "4.3.2",

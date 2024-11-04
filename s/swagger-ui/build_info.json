@@ -1,0 +1,15 @@
+{
+    "maintainer": "vinodk99",
+    "package_name": "swagger-ui",
+    "github_url": "https://github.com/swagger-api/swagger-ui",
+    "version": "v5.17.14",
+    "default_branch": "master",
+    "package_dir": "s/swagger-ui",
+    "build_script": "swagger-ui_ubi_9.3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "v*.*.*": {
+      "build_script": "swagger-ui_ubi_9.3.sh"
+    }
+  }

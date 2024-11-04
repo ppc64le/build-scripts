@@ -1,0 +1,12 @@
+{
+   "maintainer": "shubham-garud",
+   "package_name": "processx",
+   "github_url": "https://github.com/cran/processx",
+   "version": "3.8.4",
+   "default_branch": "master",
+   "build_script": "processx_ubi_9.3.sh",
+   "package_dir": "p/processx",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}

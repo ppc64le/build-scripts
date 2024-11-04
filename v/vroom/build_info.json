@@ -1,0 +1,15 @@
+{
+  "maintainer": "Vipul-Ajmera",
+  "package_name": "vroom",
+  "github_url": "https://github.com/cran/vroom.git",
+  "version": "1.6.5",
+  "default_branch": "master",
+  "package_dir": "v/vroom",
+  "build_script": "vroom_ubi_9.3.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "false",
+  "*.*.*": {
+    "build_script": "vroom_ubi_9.3.sh"
+  }
+}

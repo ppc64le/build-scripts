@@ -1,0 +1,15 @@
+{
+    "maintainer": "vinodk99",
+    "package_name": "kryo",
+    "github_url": "https://github.com/EsotericSoftware/kryo",
+    "version": "kryo-parent-5.6.0",
+    "default_branch": "master",
+    "package_dir": "k/kryo",
+    "build_script": "kryo_ubi_9.3.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "kryo-parent-*.*.*": {
+      "build_script": "kryo_ubi_9.3.sh"
+    }
+  }

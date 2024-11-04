@@ -1,0 +1,15 @@
+{
+    "maintainer": "Vipul-Ajmera",
+    "package_name": "leafem",
+    "github_url": "https://github.com/cran/leafem",
+    "version": "0.2.3",
+    "default_branch": "master",
+    "package_dir": "l/leafem",
+    "build_script": "leafem_ubi_9.3.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": "false",
+    "*" : {
+       "build_script": "leafem_ubi_9.3.sh"
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "maintainer": "pratibh-ibm",
+    "package_name": "commons-codec",
+    "github_url": "https://github.com/apache/commons-codec.git",
+    "version": "rel/commons-codec-1.17.0",
+    "default_branch": "master",
+    "build_script": "commons_codec_ubi_9.3.sh",
+    "package_dir": "c/commons-codec",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "rel/commons-codec-1.*.*": {
+      "build_script": "commons_codec_ubi_9.3.sh"
+    }
+  }

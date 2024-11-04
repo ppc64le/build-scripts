@@ -1,0 +1,15 @@
+{
+   "maintainer": "amit.singh41",
+   "package_name": "typed-array-byte-length",
+   "github_url": "https://github.com/inspect-js/typed-array-byte-length",
+   "version": "v1.0.1",
+   "default_branch": "master",
+   "build_script": "typed-array-byte-length_ubi_9.3.sh",
+   "package_dir": "t/typed-array-byte-length",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "v1.*.*": {
+      "build_script": "typed-array-byte-length_ubi_9.3.sh"
+    }
+}

@@ -1,0 +1,17 @@
+{
+   "maintainer": "Vipul-Ajmera",
+   "package_name": "stringi",
+   "github_url": "https://github.com/cran/stringi.git",
+   "version": "1.8.4",
+   "default_branch": "master",
+   "package_dir": "s/stringi",
+   "build_script": "stringi_ubi_9.3.sh",
+   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+   "docker_build": "true",
+   "validate_build_script": "true",
+   "use_non_root_user": "false",
+   "*.*.*": {
+      "dir": "1.8.4_ubi9",
+      "build_script": "stringi_ubi_9.3.sh"
+   }
+}

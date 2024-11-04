@@ -2,7 +2,7 @@
   "maintainer": "vinodk99",
   "package_name": "orientdb",
   "github_url": "https://github.com/orientechnologies/orientdb",
-  "version": "3.2.29",
+  "version": "3.2.31",
   "default_branch": "develop",
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
   "package_dir": "o/orientdb",

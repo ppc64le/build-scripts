@@ -1,12 +1,15 @@
 {
-  "maintainer": "shreyakajbaje",
+  "maintainer": "vinodk99",
   "package_name": "kie-cloud-operator",
   "github_url": "https://github.com/kiegroup/kie-cloud-operator.git",
-  "version": "7.13.2-2",
+  "version": "7.13.4-1",
   "default_branch": "main",
   "package_dir": "k/kie-cloud-operator/",
-  "build_script": "kie-cloud-operator_ubi_8.6.sh",
+  "build_script": "kie-cloud-operator_ubi_9.3.sh",
   "docker_build": false,
   "validate_build_script": true,
-  "use_non_root_user": false
+  "use_non_root_user": false,
+  "*.*.*-*": {
+    "build_script": "kie-cloud-operator_ubi_9.3.sh"
+  }
 }

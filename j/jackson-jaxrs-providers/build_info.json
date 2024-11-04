@@ -1,0 +1,15 @@
+{
+    "maintainer": "santhoshkotla2929",
+    "package_name": "jackson-jaxrs-providers",
+    "github_url": "https://github.com/FasterXML/jackson-jaxrs-providers",
+    "version": "jackson-jaxrs-providers-2.17.2",
+    "default_branch": "master",
+    "build_script": "jackson-jaxrs-providers_ubi_9.3.sh",
+    "package_dir": "j/jackson-jaxrs-providers",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "jackson-jaxrs-providers-2.*.*": {
+      "build_script": "jackson-jaxrs-providers_ubi_9.3.sh"  
+    }    
+}

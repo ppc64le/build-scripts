@@ -19,8 +19,10 @@
 # ----------------------------------------------------------------------------
 set -e
 
-PACKAGE_NAME=error-prone/annotations
-PACKAGE_VERSION=${1:-v2.26.1}
+
+PACKAGE_NAME=error-prone
+PACKAGE_VERSION=${1:-v2.30.1}
+DIRECTORY=annotations
 PACKAGE_URL=https://github.com/google/error-prone.git
 
 # install tools and dependent packages

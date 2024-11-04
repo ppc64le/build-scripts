@@ -1,0 +1,15 @@
+{
+  "maintainer": "vinodk99",
+  "package_name": "mybatis-3",
+  "github_url": "https://github.com/mybatis/mybatis-3",
+  "version": "mybatis-3.5.16",
+  "default_branch": "master",
+  "package_dir": "m/mybatis-3/",
+  "build_script": "mybatis-3_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "mybatis-3*.*.*": {
+    "build_script": "mybatis-3_ubi_9.3.sh"
+  } 
+}

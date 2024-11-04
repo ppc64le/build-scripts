@@ -4,11 +4,11 @@
 # Package          : gobrake
 # Version          : v5.6.1
 # Source repo      : https://github.com/airbrake/gobrake
-# Tested on        : UBI 9.3
+# Tested on        : UBI:9.3
 # Language         : GO
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Shubham Garud <Shubham.Garud@ibm.com>
+# Maintainer       : Ramnath Nayak <Ramnath.Nayak@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -26,7 +26,7 @@ HOME_DIR=${PWD}
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 yum install -y git gcc wget
-export GO_VERSION=${GO_VERSION:-1.20.1}
+export GO_VERSION=${GO_VERSION:-1.19.13}
 export GOROOT=${GOROOT:-"/usr/local/go"}
 export GOPATH=${GOPATH:-$HOME/go}
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:/usr/local/bin
@@ -35,7 +35,7 @@ wget https://golang.org/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
 tar -C /usr/local -xvzf go${GO_VERSION}.linux-ppc64le.tar.gz
 rm -rf go${GO_VERSION}.linux-ppc64le.tar.gz
 
-git clone $PACKAGE_URL $PACKAGE_NAME
+git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
@@ -48,8 +48,8 @@ if ! go build ./...; then
         exit 1
 fi
 
-if ! go test ./...; then
-        echo "------------------$PACKAGE_NAME:test_fails---------------------"
+if ! go test ./... -short -race; then
+        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails"
         exit 2

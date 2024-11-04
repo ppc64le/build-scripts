@@ -1,0 +1,15 @@
+{
+    "maintainer": "ramnathnayak-ibm",
+    "package_name": "hibernate-validator",
+    "github_url": "https://github.com/hibernate/hibernate-validator",
+    "version": "8.0.1.Final",
+    "default_branch": "main",
+    "package_dir": "h/hibernate-validator",
+    "build_script": "hibernate-validator_ubi_9.3.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": "false",
+    "*.*.*.Final" : {
+       "build_script": "hibernate-validator_ubi_9.3.sh"
+    }
+}
