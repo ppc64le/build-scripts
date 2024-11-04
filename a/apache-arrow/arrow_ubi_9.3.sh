@@ -22,12 +22,21 @@
 PACKAGE_NAME=arrow
 PACKAGE_URL=https://github.com/apache/arrow.git
 PACKAGE_VERSION=${1:-go/v16.1.0}
+PYTHON_VER=${2:-"3.11"}
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 GO_VERSION=`curl -s 'https://go.dev/VERSION?m=text' | grep ^go`
 
 #Dependencies
-yum install -y git sudo wget make gcc gcc-c++ cmake python3.11 python3.11-pip python3.11-devel
+yum install -y git sudo wget make gcc gcc-c++ cmake python${PYTHON_VER} python${PYTHON_VER}-pip python${PYTHON_VER}-devel
+yum install -y https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
+https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
+https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os
+yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os
+yum config-manager --set-enabled crb
+
+yum install -y boost-devel.ppc64le gflags-devel rapidjson-devel.ppc64le re2-devel.ppc64le utf8proc-devel.ppc64le gtest-devel gmock-devel
 
 wget "https://go.dev/dl/$GO_VERSION.linux-ppc64le.tar.gz"
 rm -rf /usr/local/go
@@ -48,10 +57,15 @@ fi
 # Cloning the repository from remote to local
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
+
+# Set the Arrow installation path for bundling
+export ARROW_HOME=/repos/dist
+export LD_LIBRARY_PATH=$ARROW_HOME/lib64:$LD_LIBRARY_PATH
+
 git checkout $PACKAGE_VERSION
 
-git submodule init
-git submodule update
+git submodule update --init --recursive
+
 export PARQUET_TEST_DATA="${PWD}/cpp/submodules/parquet-testing/data"
 export ARROW_TEST_DATA="${PWD}/testing/data"
 
@@ -60,22 +74,15 @@ go install honnef.co/go/tools/cmd/staticcheck@latest
 # Build Arrow C++ library
 mkdir cpp/build
 cd cpp/build
-cmake .. \
-  -DARROW_WITH_SNAPPY=ON \
-  -DARROW_WITH_ZLIB=ON \
-  -DARROW_WITH_LZ4=ON \
-  -DARROW_WITH_ZSTD=ON \
-  -DARROW_PARQUET=ON \
-  -DARROW_CSV=ON \
-  -DARROW_DATASET=ON \
-  -DARROW_BUILD_TESTS=OFF \
-  -DARROW_BUILD_UTILITIES=OFF \
-  -DARROW_BUILD_SHARED=ON \
-  -DARROW_PYTHON=ON \
-  -DPython3_EXECUTABLE=/usr/bin/python3 \
-  -DARROW_JEMALLOC=OFF \
-  -DCMAKE_BUILD_TYPE=Release
-make -j4
+cmake -DCMAKE_BUILD_TYPE=release \
+      -DCMAKE_INSTALL_PREFIX=$ARROW_HOME \
+      -Dutf8proc_LIB=/usr/lib64/libutf8proc.so \
+      -Dutf8proc_INCLUDE_DIR=/usr/include \
+      -DARROW_PYTHON=ON \
+      -DARROW_BUILD_TESTS=ON \
+      -DARROW_JEMALLOC=ON \
+      ..
+make -j$(nproc)
 sudo make install
 
 # Build Arrow Go bindings
@@ -104,18 +111,36 @@ fi
 # ==================== Build the Python Wheel (.whl) file =================================
 cd ../python
 # Install necessary Python build tools
-pip3.11 install --upgrade setuptools wheel numpy
-python3.11 -m pip install Cython==3.0.8
-python3.11 setup.py build_ext --inplace
-python3.11 setup.py bdist_wheel
+pip${PYTHON_VER} install --upgrade setuptools wheel numpy
+python${PYTHON_VER} -m pip install Cython==3.0.8
 
-# Find and display the generated WHL file
-WHL_FILE=$(ls dist/*.whl)
-if [ -f "$WHL_FILE" ]; then
-    echo "------------------$PACKAGE_NAME::WHL file generated successfully-------------------------"
-    echo "The generated WHL file is located at: $WHL_FILE"
-    exit 0
-else
+# Set the environment variable if needed
+export ARROW_BUILD_TYPE=release
+
+# Build Python wheel with bundled Arrow C++ libraries
+if ! CMAKE_PREFIX_PATH=$ARROW_HOME python${PYTHON_VER} setup.py build_ext --inplace --build-type=$ARROW_BUILD_TYPE --bundle-arrow-cpp bdist_wheel; then
     echo "------------------$PACKAGE_NAME::WHL file generation failed-------------------------"
     exit 3
+fi
+
+# Install the generated Python package
+if ! CMAKE_PREFIX_PATH=$ARROW_HOME python${PYTHON_VER} setup.py install; then
+    echo "------------------$PACKAGE_NAME::Python package installation failed-------------------------"
+    exit 4
+fi
+
+pip${PYTHON_VER} install pytest==6.2.5
+pip${PYTHON_VER} install pytest-lazy-fixture hypothesis
+export PYTEST_PATH=$(pwd)/pyarrow
+
+# Run Python tests
+if ! python3.11 -m pytest $PYTEST_PATH ; then
+    echo "------------------$PACKAGE_NAME::Python_Test_fails-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Python_Test_Fails"
+    exit 3
+else
+    echo "------------------$PACKAGE_NAME::Build_and_All_Tests_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass | Build_and_All_Tests_Success"
 fi
