@@ -47,11 +47,12 @@ git checkout $PACKAGE_VERSION
 
 #Build
 gradle clean build > /tmp/BUILD.log &
+cat /tmp/BUILD.log
 if ! tail -c 3000 /tmp/BUILD.log | grep 'SUCCESS' ; then
   echo "Build failed for $PACKAGE_NAME-$PACKAGE_VERSION"
   exit 1
 fi
-cat /tmp/BUILD.log
+
 #Test
 gradle test > /tmp/TEST.log &
 if ! tail -c 3000 /tmp/TEST.log | grep 'SUCCESS' ; then
