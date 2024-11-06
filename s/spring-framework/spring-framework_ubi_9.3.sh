@@ -38,7 +38,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #Build
-./gradlew build -x test   >> /tmp/BUILD.log 2>&1 
+./gradlew build -x test > /tmp/BUILD.log
 
 if ! tail -c 1000 /tmp/BUILD.log | grep 'BUILD SUCCESSFUL' ; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
