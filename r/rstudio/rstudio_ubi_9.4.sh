@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/rstudio/rstudio
 # Tested on     : UBI 9.4
 # Language      : Java/C++
-# Travis-Check  : False
+# Travis-Check  : True
 # Maintainer    : Tejas Badjate <Tejas.Badjate@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
