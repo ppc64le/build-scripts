@@ -32,31 +32,33 @@ export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-)(?=.*ppc
 # update the path env. variable
 export PATH=$PATH:$JAVA_HOME/bin
 
-#Gradle Install
-GRADLE_VERSION=gradle-8.2-rc-1
-wget https://services.gradle.org/distributions/${GRADLE_VERSION}-bin.zip  && unzip -d /gradle /${GRADLE_VERSION}-bin.zip
-export GRADLE_HOME=/gradle/${GRADLE_VERSION}/
-
-# update the path env. variable
-export PATH=${GRADLE_HOME}/bin:${PATH}
-
 # clone and checkout specified version
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #Build
-gradle clean build > /tmp/BUILD.log &
-cat /tmp/BUILD.log
-if ! tail -c 3000 /tmp/BUILD.log | grep 'SUCCESS' ; then
-  echo "Build failed for $PACKAGE_NAME-$PACKAGE_VERSION"
-  exit 1
+./gradlew build  >> /tmp/BUILD.log 2>&1 
+
+if ! tail -c 3000 /tmp/BUILD.log | grep 'BUILD SUCCESSFUL' ; then
+    echo "------------------$PACKAGE_NAME:Build_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
+    exit 1
 fi
 
-#Test
-gradle test > /tmp/TEST.log &
-if ! tail -c 3000 /tmp/TEST.log | grep 'SUCCESS' ; then
-  echo "Test execution failed for $PACKAGE_NAME-$PACKAGE_VERSION"
-  exit 2
+#test
+./gradlew test >> /tmp/TEST.log 2>&1 
+
+
+if !  tail -c 3000 /tmp/TEST.log | grep 'BUILD SUCCESSFUL' ; then
+    echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
+    exit 0
 fi
-exit 0
