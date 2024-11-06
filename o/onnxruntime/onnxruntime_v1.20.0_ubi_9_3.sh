@@ -31,7 +31,7 @@ else
 fi
 
 # install tools and dependent packages
-yum install -y git gcc-c++ make wget java-11-openjdk-devel  openssl-devel bzip2 zip unzip yum-utils clang clang-devel clang-libs python3 python3-devel patch
+yum install -y git gcc-c++ make wget java-11-openjdk-devel  openssl-devel bzip2 zip unzip yum-utils clang clang-devel clang-libs python3.11 python3.11-devel patch
 export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-11)(?=.*ppc64le)')
 export PATH=$JAVA_HOME/bin:$PATH
 
@@ -62,6 +62,8 @@ git clone $PACKAGE_URL
 cd ${PACKAGE_NAME}
 git checkout $PACKAGE_VERSION
 
+python3.11 -m venv myenv
+source myenv/bin/activate
 
 # Build and test package
 if !(./build.sh --allow_running_as_root --compile_no_warning_as_error) ; then
