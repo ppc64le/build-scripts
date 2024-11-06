@@ -66,7 +66,7 @@ python3.11 -m venv myenv
 source myenv/bin/activate
 
 # Build and test package
-if !(./build.sh --allow_running_as_root --compile_no_warning_as_error) ; then
+if !(./build.sh --allow_running_as_root --compile_no_warning_as_error --config Release) ; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
