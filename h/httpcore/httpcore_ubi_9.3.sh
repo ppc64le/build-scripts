@@ -42,8 +42,8 @@ mvn -version
 # Cloning the repository
 git clone $PACKAGE_URL
 cd httpcomponents-core
-cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+cd $PACKAGE_NAME
 
 #Build
 mvn -Drat.skip=true -B clean install  
