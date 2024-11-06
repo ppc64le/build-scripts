@@ -1,0 +1,15 @@
+{
+  "maintainer": "aastha-sharma2",
+  "package_name": "array_record",
+  "github_url": "https://github.com/google/array_record.git",
+  "version": "v0.2.0",
+  "default_branch": "main",
+  "package_dir": "a/array_record",
+  "build_script": "array_record_ubi_9.3.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": false,
+  "*": {
+    "build_script": "array_record_ubi_9.3.sh"
+  }
+}
