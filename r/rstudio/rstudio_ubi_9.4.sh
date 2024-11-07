@@ -43,10 +43,10 @@ export LD_LIBRARY_PATH=/usr/local:/usr/lib64
 # installing dependencies
 if ! rpm -q openssl-devel &>/dev/null; then
      yum install -y openssl-devel
-else
-     yum install -y sudo wget git yum-utils llvm cmake \
-	           libsecret-devel npm nodejs
 fi
+yum install -y sudo wget git yum-utils llvm cmake \
+	           libsecret-devel npm nodejs
+
 yum install -y chkconfig 
 
 dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm;
