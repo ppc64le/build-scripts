@@ -6,7 +6,7 @@ language: shell
 branches:
   only:
     - master
-    - pr_python_ecosystem
+    - python_ecosystem
 
 env:
   global:
@@ -55,7 +55,7 @@ jobs:
         - echo $TRAVIS_BUILD_DIR
         - cd $TRAVIS_BUILD_DIR
         - gzip $TRAVIS_BUILD_DIR/build_log
-        #- chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh build_log.gz
+        - chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh build_log.gz
       workspaces:
         create:
           # package_cache contains both variable.sh file as well as cloned package directory.
@@ -64,7 +64,7 @@ jobs:
             - .
         use: build_cache
 
-    - stage: Wheel BUILD
+    - stage: Wheel build
       if: env(WHEEL_BUILD) = true
       name: "Create Wheel for Python 3.9"
       env: PYTHON_VERSION="3.9"
@@ -72,7 +72,7 @@ jobs:
         - source variable.sh
         - chmod +x ./script/build_package_python.sh; bash ./script/build_package_python.sh;
         - WHEEL_FILE=*.whl
-        #- chmod +x ./script/upload-scripts/upload_file_python.sh; bash ./script/upload-scripts/upload_file_python.sh $WHEEL_FILE
+        - chmod +x ./script/upload-scripts/upload_file_python.sh; bash ./script/upload-scripts/upload_file_python.sh $WHEEL_FILE
       workspaces:
         create:
           name: wheels_cache_39
@@ -88,7 +88,7 @@ jobs:
         - source variable.sh
         - chmod +x ./script/build_package_python.sh; bash ./script/build_package_python.sh;
         - WHEEL_FILE=*.whl
-        #- chmod +x ./script/upload-scripts/upload_file_python.sh; bash ./script/upload-scripts/upload_file_python.sh $WHEEL_FILE
+        - chmod +x ./script/upload-scripts/upload_file_python.sh; bash ./script/upload-scripts/upload_file_python.sh $WHEEL_FILE
       workspaces:
         create:
           name: wheels_cache_310
@@ -104,7 +104,7 @@ jobs:
         - source variable.sh
         - chmod +x ./script/build_package_python.sh; bash ./script/build_package_python.sh;
         - WHEEL_FILE=*.whl
-        #- chmod +x ./script/upload-scripts/upload_file_python.sh; bash ./script/upload-scripts/upload_file_python.sh $WHEEL_FILE
+        - chmod +x ./script/upload-scripts/upload_file_python.sh; bash ./script/upload-scripts/upload_file_python.sh $WHEEL_FILE
       workspaces:
         create:
           name: wheels_cache_311
@@ -119,7 +119,7 @@ jobs:
         - source variable.sh
         - chmod +x ./script/build_package_python.sh; bash ./script/build_package_python.sh;
         - WHEEL_FILE=*.whl
-        #- chmod +x ./script/upload-scripts/upload_file_python.sh; bash ./script/upload-scripts/upload_file_python.sh $WHEEL_FILE
+        - chmod +x ./script/upload-scripts/upload_file_python.sh; bash ./script/upload-scripts/upload_file_python.sh $WHEEL_FILE
       workspaces:
         create:
           name: wheels_cache_312
@@ -135,7 +135,7 @@ jobs:
         - source variable.sh
         - chmod +x ./script/build_package_python.sh; bash ./script/build_package_python.sh;
         - WHEEL_FILE=*.whl
-        #- chmod +x ./script/upload-scripts/upload_file_python.sh; bash ./script/upload-scripts/upload_file_python.sh $WHEEL_FILE
+        - chmod +x ./script/upload-scripts/upload_file_python.sh; bash ./script/upload-scripts/upload_file_python.sh $WHEEL_FILE
       workspaces:
         create:
           name: wheels_cache_313
@@ -217,7 +217,7 @@ jobs:
         - source variable.sh;
         - chmod +x ./script/build_docker.sh; bash ./script/build_docker.sh;echo "printing docker images"; docker images;
         # the below command is used to upload docker image to ibm icr registry.
-        #- chmod +x ./script/upload-scripts/upload_docker_image.sh; bash ./script/upload-scripts/upload_docker_image.sh;
+        - chmod +x ./script/upload-scripts/upload_docker_image.sh; bash ./script/upload-scripts/upload_docker_image.sh;
       workspaces:
         create:
           name: docker_image_tar
@@ -285,4 +285,4 @@ jobs:
         - find image_syft -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
         - find image_grype -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
         - tar cvzf image_scanner.tar.gz image
-        #- chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh image_scanner.tar.gz
+        - chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh image_scanner.tar.gz
