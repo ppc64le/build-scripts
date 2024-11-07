@@ -50,7 +50,7 @@ fi
 yum install -y chkconfig 
 
 dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm;
-sudo dnf install python3 python3-devel -y      
+dnf install python3 python3-devel -y      
 	       
 yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
 yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
