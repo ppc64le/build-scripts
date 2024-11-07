@@ -53,7 +53,6 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 cd $DIRECTORY
 
-
 #Build and Test
 mvn clean install >> /tmp/BUILD.log 2>&1
 cat /tmp/BUILD.log | grep 'SUCCESS'
