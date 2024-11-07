@@ -7,6 +7,6 @@
     "package_dir": "r/rstudio",
     "build_script": "rstudio_ubi_9.4.sh",
     "validate_build_script": true,
-    "use_non_root_user": true,
+    "use_non_root_user": false,
     "docker_build": false
 }
