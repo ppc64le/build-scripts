@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : JCTools
-# Version       : v4.0.5
+# Version       : 4.0.5
 # Source repo   : https://github.com/JCTools/JCTools
 # Tested on     : UBI 9.3
 # Language      : Java, Others
