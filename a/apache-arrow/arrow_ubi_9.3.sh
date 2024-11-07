@@ -22,13 +22,12 @@
 PACKAGE_NAME=arrow
 PACKAGE_URL=https://github.com/apache/arrow.git
 PACKAGE_VERSION=${1:-go/v16.1.0}
-PYTHON_VER=${2:-"3.11"}
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 GO_VERSION=`curl -s 'https://go.dev/VERSION?m=text' | grep ^go`
 
 #Dependencies
-yum install -y git sudo wget make gcc gcc-c++ cmake python${PYTHON_VER} python${PYTHON_VER}-pip python${PYTHON_VER}-devel
+yum install -y git sudo wget make gcc gcc-c++ cmake
 yum install -y https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
 https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
 https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
@@ -108,36 +107,32 @@ else
 fi
 
 
-# ==================== Build the Python Wheel (.whl) file =================================
 cd ../python
 # Install necessary Python build tools
-pip${PYTHON_VER} install --upgrade setuptools wheel numpy
-python${PYTHON_VER} -m pip install Cython==3.0.8
+pip install --upgrade setuptools wheel numpy
+pip install Cython==3.0.8
 
 # Set the environment variable if needed
-export ARROW_BUILD_TYPE=release
+export BUILD_TYPE=release 
+export BUNDLE_ARROW_CPP=1
 
-# Build Python wheel with bundled Arrow C++ libraries
-if ! CMAKE_PREFIX_PATH=$ARROW_HOME python${PYTHON_VER} setup.py build_ext --inplace --build-type=$ARROW_BUILD_TYPE --bundle-arrow-cpp bdist_wheel; then
-    echo "------------------$PACKAGE_NAME::WHL file generation failed-------------------------"
-    exit 3
-fi
+CMAKE_PREFIX_PATH=$ARROW_HOME python setup.py build_ext --inplace
 
 # Install the generated Python package
-if ! CMAKE_PREFIX_PATH=$ARROW_HOME python${PYTHON_VER} setup.py install; then
+if ! CMAKE_PREFIX_PATH=$ARROW_HOME python setup.py install; then
     echo "------------------$PACKAGE_NAME::Python package installation failed-------------------------"
     exit 4
 fi
 
-pip${PYTHON_VER} install pytest==6.2.5
-pip${PYTHON_VER} install pytest-lazy-fixture hypothesis
+pip install pytest==6.2.5
+pip install pytest-lazy-fixture hypothesis
 export PYTEST_PATH=$(pwd)/pyarrow
 
 # Skipped specific tests
 export PYTEST_ADDOPTS="-k 'not test_cython and not test_extension_type' --deselect=pyarrow/tests/test_extension_type.py"
 
 # Run Python tests
-if ! python3.11 -m pytest $PYTEST_PATH ; then
+if ! python -m pytest $PYTEST_PATH ; then
     echo "------------------$PACKAGE_NAME::Python_Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Python_Test_Fails"
