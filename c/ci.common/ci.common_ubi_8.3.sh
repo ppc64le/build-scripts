@@ -4,6 +4,7 @@
 # Version       : 1.5
 # Source repo   : https://github.com/OpenLiberty/ci.common/tree/ci.common-1.5
 # Tested on     : UBI 8.3
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Vaibhav Nazare <Vaibhav.Nazare@ibm.com>
 #
