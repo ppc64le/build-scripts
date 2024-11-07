@@ -27,8 +27,13 @@ PACKAGE_URL="https://github.com/square/okhttp.git"
 yum install -y git wget unzip 
 
 # setup java environment
-yum install -y java-11-openjdk-devel
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel java-1.8.0-openjdk-headless
+
+# setup java environment
+export JAVA_HOME=$(compgen -G '/usr/lib/jvm/jre-1.8.0-openjdk-*')
+
+# yum install -y java-11-openjdk-devel
+# export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 export JAVA_OPTS="-Xms2048M -Xmx4096M -XX:MaxPermSize=4096M"
 export LANG="en_US.UTF-8"
