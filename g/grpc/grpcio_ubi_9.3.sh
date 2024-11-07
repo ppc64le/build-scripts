@@ -29,51 +29,61 @@ yum update -y
 # Install necessary development tools and libraries
 yum install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip python${PYTHON_VERSION}-setuptools git cmake autoconf libtool gcc gcc-c++ make openssl-devel zlib-devel libuuid-devel gcc-gfortran
 
+# Create and activate a virtual environment
+python${PYTHON_VERSION} -m venv grpc_venv
+source grpc_venv/bin/activate
+
 # Clone the gRPC repository
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 
-# Initialize submodules
-git submodule update --init
-
 # Checkout the specified version
 git checkout $PACKAGE_VERSION
 
-# Install required Python dependencies
-python${PYTHON_VERSION} -m pip install -r requirements.txt
-# Upgrade setuptools
-python${PYTHON_VERSION} -m pip install --upgrade setuptools absl-py
+# Initialize submodules
+git submodule update --init
 
 # Set environment variable for OpenSSL
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true
 
+# Install required Python dependencies
+python -m pip install -r requirements.txt
+
+# Upgrade setuptools
+python -m pip install --upgrade setuptools
+
 # Build the grpcio package
-if ! python${PYTHON_VERSION} setup.py bdist_wheel; then
+if ! python setup.py bdist_wheel; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_Fails"
+    deactivate
     exit 1
 fi
 
 # Install the created wheel
-if ! python${PYTHON_VERSION} -m pip install dist/*.whl; then
+if ! python -m pip install dist/*.whl; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
+    deactivate
     exit 1
 fi
 
-# Run specific tests
+# Run tests
 cd src/python/grpcio_tests
 export PYTHONPATH=$(pwd)
-if ! python${PYTHON_VERSION} -m unittest tests.unit._invalid_metadata_test tests.unit._compression_test; then
+if ! python -m unittest tests.unit._invalid_metadata_test tests.unit._compression_test; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Success_But_Test_Fails"
+    deactivate
     exit 2
 else
     echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Both_Install_and_Test_Success"
-    exit 0
 fi
+
+# Deactivate the virtual environment
+deactivate
