@@ -10,6 +10,6 @@
   "use_non_root_user": "false",
   "docker_build": "false",
   "v*.*.*": {
-    "build_script": "offheap-store_9_3.sh"
+    "build_script": "offheap-store_ubi_9_3.sh"
   }
 }

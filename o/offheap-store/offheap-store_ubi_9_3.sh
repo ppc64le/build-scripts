@@ -38,7 +38,6 @@ wget https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-mav
 tar xvf apache-maven-${MAVEN_VERSION}-bin.tar.gz
 rm -rf apache-maven-${MAVEN_VERSION}-bin.tar.gz
 PATH=$CWD/apache-maven-${MAVEN_VERSION}/bin:$PATH
-mvn --version
 
 #copying toolchains.xml file to .m2 folder needed to build and test
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/offheap-store/toolchains.xml
