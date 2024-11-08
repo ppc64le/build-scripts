@@ -8,7 +8,7 @@
 # Language      : Java
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : kotla santhosh<kotla.santhosh@ibm.com>
+# Maintainer : Siddesh Sangodkar <siddesh.sangodkar1@ibm.com>
 #
 #
 # Disclaimer: This script has been tested in root mode on given
