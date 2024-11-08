@@ -36,8 +36,8 @@ yum install -y java-11-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 export JAVA_OPTS="-Xms2048M -Xmx4096M -XX:MaxPermSize=4096M"
-# export LANG="en_US.UTF-8"
-# export LC_ALL="en_US.UTF-8"
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
 
 # clone and checkout specified version
 git clone $PACKAGE_URL
@@ -54,7 +54,7 @@ if ! ./gradlew clean build ; then
 fi
 
 sudo bash -c "echo '127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4' > /etc/hosts"
-if ! ./gradlew test -Dtest.java.version=11 -Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false -Dkotlin.incremental=false -Dtest.ipv6=true ; then
+if ! ./gradlew test -Dtest.java.version=11 -Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false -Dkotlin.incremental=false ; then
       echo "------------------$PACKAGE_NAME::Install_and_Test_fails-------------------------"
       echo "$PACKAGE_URL $PACKAGE_NAME"
       echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail |  Both_Build_and_Test_Fail"
