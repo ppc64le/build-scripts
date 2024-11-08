@@ -11,5 +11,5 @@
   "use_non_root_user": false,
   "v0.0.28": {
     "build_script": "xformers_ubi_9_3.sh"
-  },
+  }
 }
