@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/spring-projects/spring-framework.git
 # Tested on     : UBI 8.3
 # Language      : Java, Others
-# Travis-Check  : True
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : srividya chittiboina <Srividya.Chittiboina@ibm.com>
 #
