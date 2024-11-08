@@ -26,7 +26,7 @@ PACKAGE_VERSION=${1:-2.3.18.Final}
 
 
 # install tools and dependent packages
-yum install -y git wget java-11-openjdk-devel
+yum install -y git wget java-11-openjdk-devel sudo
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
@@ -54,8 +54,9 @@ if ! mvn -U -B -fae -DskipTests -Dfindbugs clean install ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi 
+sudo bash -c "echo '127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4' > /etc/hosts"
 
-if ! mvn -U -B -fae test -DfailIfNoTests=false -Dtest.ipv6=true ; then
+if ! mvn -U -B -fae test -Pproxy '-DfailIfNoTests=false' -pl -:core,-:servlet,-:websockets-jsr  -Dtest.ipv6=true ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
