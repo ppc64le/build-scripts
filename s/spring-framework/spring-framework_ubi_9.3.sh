@@ -48,7 +48,7 @@ if ! tail -c 1000 /tmp/BUILD.log | grep 'BUILD SUCCESSFUL' ; then
 fi
 
 #test
-./gradlew test >> /tmp/TEST.log 2>&1 
+./gradlew --no-daemon -Dorg.gradle.jvmargs=-Xmx1536m -Dfile.encoding=UTF-8 -Dorg.gradle.daemon=false test >> /tmp/TEST.log 2>&1 
 
 
 if !  tail -c 1000 /tmp/TEST.log | grep 'BUILD SUCCESSFUL' ; then
