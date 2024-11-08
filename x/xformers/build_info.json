@@ -5,11 +5,11 @@
   "version": "v0.0.28",
   "default_branch": "main",
   "package_dir": "x/xformers",
-  "build_script": "xformer_ubi_9_3.sh",
+  "build_script": "xformers_ubi_9_3.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
   "v0.0.28": {
-    "build_script": "xformer_ubi_9_3.sh"
+    "build_script": "xformers_ubi_9_3.sh"
   },
 }
