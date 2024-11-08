@@ -45,19 +45,22 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #Build
-./gradlew clean build
-if [ $? != 0 ]
-then
-  echo "Build failed for $PACKAGE_NAME-$PACKAGE_VERSION"
-  exit 1
+
+if ! ./gradlew clean build ; then
+       echo "------------------$PACKAGE_NAME:Install_fails---------------------"
+       echo "$PACKAGE_VERSION $PACKAGE_NAME"
+       echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
+       exit 1
 fi
 
-
-#Test
-./gradlew test
-if [ $? != 0 ]
-then
-  echo "Test execution failed for $PACKAGE_NAME-$PACKAGE_VERSION"
-  exit 2
+if ! ./gradlew test -Dtest.java.version=8 -Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false -Dkotlin.incremental=false ; then
+      echo "------------------$PACKAGE_NAME::Install_and_Test_fails-------------------------"
+      echo "$PACKAGE_URL $PACKAGE_NAME"
+      echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail |  Both_Build_and_Test_Fail"
+      exit 2
+else
+      echo "------------------$PACKAGE_NAME::Install_and_Test_success-------------------------"
+      echo "$PACKAGE_URL $PACKAGE_NAME"
+      echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
+      exit 0
 fi
-exit 0
