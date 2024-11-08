@@ -22,12 +22,6 @@ PACKAGE_NAME=cryptography
 PACKAGE_VERSION=${1:-41.0.7}  # Default to 41.0.7 if no version is specified
 PACKAGE_URL=https://github.com/pyca/cryptography.git
 
-# Validate if the version is supported (40.0.0 to 43.0.3)
-if [[ ! "$PACKAGE_VERSION" =~ ^(40\.(0\.[0-9]|[1-2][0-9]|3)|41\.[0-9]+\.[0-9]+|42\.[0-9]+\.[0-9]+|43\.[0-3]\.[0-9]+)$ ]]; then
-    echo "Unsupported version: $PACKAGE_VERSION."
-    exit 1
-fi
-
 # Install necessary system dependencies
 yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel zlib-devel python-devel python-pip openssl
 
