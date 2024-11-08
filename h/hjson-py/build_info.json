@@ -1,0 +1,15 @@
+{
+  "maintainer": "aastha-sharma2",
+  "package_name": "hjson-py",
+  "github_url": "https://github.com/hjson/hjson-py.git",
+  "version": "v3.0.2",
+  "package_dir": "h/hjson-py",
+  "default_branch": "main",
+  "build_script": "hjson-py_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "hjson-py_ubi_9.3.sh"
+  }
+}
