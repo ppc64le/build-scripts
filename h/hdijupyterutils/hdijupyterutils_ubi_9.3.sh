@@ -38,8 +38,8 @@ pip install .
 pip install pytest mock
 pip install -r hdijupyterutils/requirements.txt -e hdijupyterutils
 
-
 #install
+cd ..
 if ! (pyproject-build) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
