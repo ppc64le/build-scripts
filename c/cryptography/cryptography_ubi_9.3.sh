@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------- 
 # Package          : cryptography
-# Versions         : 40.0.0 - 43.0.3
+# Versions         : 41.0.7
 # Source repo      : https://github.com/pyca/cryptography.git
 # Tested on        : UBI:9.3
 # Language         : Python
@@ -19,7 +19,7 @@
 
 # Variables
 PACKAGE_NAME=cryptography
-PACKAGE_VERSION=${1:-42.0.7}  # Default to 42.0.7 if no version is specified
+PACKAGE_VERSION=${1:-41.0.7}  # Default to 41.0.7 if no version is specified
 PACKAGE_URL=https://github.com/pyca/cryptography.git
 
 # Validate if the version is supported (40.0.0 to 43.0.3)
