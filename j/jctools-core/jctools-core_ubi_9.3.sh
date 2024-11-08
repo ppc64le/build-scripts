@@ -27,7 +27,6 @@ DIRECTORY=jctools-core
 # install dependencies
 yum install -y git wget 
 
-
 # setup java environment
 yum install -y java java-devel
 
