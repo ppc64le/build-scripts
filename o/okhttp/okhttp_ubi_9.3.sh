@@ -53,7 +53,8 @@ if ! ./gradlew clean build ; then
        exit 1
 fi
 
-if ! ./gradlew test -Dtest.java.version=11 -Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false -Dkotlin.incremental=false ; then
+sudo bash -c "echo '127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4' > /etc/hosts"
+if ! ./gradlew test -Dtest.java.version=11 -Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false -Dkotlin.incremental=false -Dtest.ipv6=true ; then
       echo "------------------$PACKAGE_NAME::Install_and_Test_fails-------------------------"
       echo "$PACKAGE_URL $PACKAGE_NAME"
       echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail |  Both_Build_and_Test_Fail"
