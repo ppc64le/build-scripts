@@ -1,5 +1,5 @@
 {
-   "maintainer": "shubham-garud",
+   "maintainer": "stutiibm",
    "package_name": "httr2",
    "github_url": "https://github.com/cran/httr2",
    "version": "1.0.1",
@@ -8,5 +8,8 @@
    "package_dir": "h/httr2",
    "docker_build": false,
    "validate_build_script": true,
-   "use_non_root_user": false
+   "use_non_root_user": false,
+   "*.*.*": {
+      "build_script": "httr2_ubi_9.3.sh"
+   }
 }

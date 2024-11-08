@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : httr2
-# Version          : 1.0.1
-# Source repo      : https://github.com/cran/httr2
+# Package       : httr2
+# Version       : 1.0.1
+# Source repo   : https://github.com/cran/httr2
 # Tested on	: UBI:9.3
 # Language      : R
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Shubham Garud <Shubham.Garud@ibm.com>
+# Maintainer    : Stuti Wali <Stuti.Wali@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -21,16 +21,17 @@ PACKAGE_NAME=httr2
 PACKAGE_VERSION=${1:-1.0.1}
 PACKAGE_URL=https://github.com/cran/httr2
 
-dnf install -y gcc gcc-c++ gcc-gfortran git wget xz cmake make openssl-devel yum-utils wget sudo llvm -y
+# Install dependencies
+yum install -y wget yum-utils
+
+dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
-
-
 wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
 mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 
+dnf install -y gcc gcc-c++ gcc-gfortran git wget xz cmake make yum-utils wget sudo llvm -y
 
 #install R
 
@@ -40,6 +41,7 @@ dnf install -y R-core R-core-devel
 dnf builddep R -y
 R --version
 
+yum install -y openssl-devel 
 
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
