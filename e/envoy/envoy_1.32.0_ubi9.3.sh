@@ -24,6 +24,8 @@ SCRIPT_PACKAGE_VERSION=v1.32.0
 PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
 PACKAGE_URL=https://github.com/${PACKAGE_ORG}/${PACKAGE_NAME}
 SCRIPT_PACKAGE_VERSION_WO_LEADING_V="${SCRIPT_PACKAGE_VERSION:1}"
+CROSS_VERSION=0.2.1
+RULES_RUST_VERSION=0.51.0
 
 #Install centos and epel repos
 yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
@@ -98,13 +100,13 @@ fi
 
 #Install rust and cross
 curl https://sh.rustup.rs -sSf | sh -s -- -y && source ~/.cargo/env
-cargo install cross --version 0.2.1
+cargo install cross --version ${CROSS_VERSION}
 
 #Build cargo-bazel native binary
 cd $wdir
 git clone https://github.com/bazelbuild/rules_rust
 cd rules_rust
-git checkout 0.51.0
+git checkout ${RULES_RUST_VERSION}
 cd crate_universe
 cross build --release --locked --bin cargo-bazel --target=powerpc64le-unknown-linux-gnu
 export CARGO_BAZEL_GENERATOR_URL=file://$(pwd)/target/powerpc64le-unknown-linux-gnu/release/cargo-bazel
@@ -137,7 +139,7 @@ fi
 
 #Run tests (take several hours to execute, hence disabling by default)
 #Some tests might fail because of issues with the tests themselves rather than envoy
-sysctl -w net.mptcp.enabled=1
+#sysctl -w net.mptcp.enabled=1
 #bazel test --config=clang --config=libc++ --test_timeout=1000 --cxxopt=-fpermissive --define=wasm=disabled //test/... --cache_test_results=no || true
 
 #Conclude
