@@ -31,7 +31,7 @@ yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel 
 
 # Clone the repository
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME  
+cd $PACKAGE_PATH  
 git checkout $PACKAGE_VERSION  
 
 # install necessay dependencies
