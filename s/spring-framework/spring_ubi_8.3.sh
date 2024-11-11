@@ -1,21 +1,20 @@
-#----------------------------------------------------------------------------
+#!/bin/bash
+# -----------------------------------------------------------------------------
 #
-# Package         : spring
-# Version         : v5.3.13
-# Source repo     : https://github.com/spring-projects/spring-framework.git
-# Tested on       : ubi:8.3
-# Script License  : Apache License 2.0
-# Maintainer      : srividya chittiboina <Srividya.Chittiboina@ibm.com>
+# Package       : spring-framework
+# Version       : v5.3.13
+# Source repo   : https://github.com/spring-projects/spring-framework.git
+# Tested on     : UBI 8.3
+# Language      : Java, Others
+# Travis-Check  : False
+# Script License: Apache License, Version 2 or later
+# Maintainer    : srividya chittiboina <Srividya.Chittiboina@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
-#
-# ----------------------------------------------------------------------------
-#!/bin/bash
-#
 #
 # ----------------------------------------------------------------------------
 
