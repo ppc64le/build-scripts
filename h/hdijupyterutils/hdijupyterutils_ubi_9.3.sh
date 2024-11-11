@@ -22,7 +22,7 @@
 PACKAGE_NAME=hdijupyterutils
 PACKAGE_VERSION=${1:-0.20.0}
 PACKAGE_URL=https://github.com/jupyter-incubator/sparkmagic.git
-INSTALL_DIR="/sparkmagic"     
+INSTALL_DIR="/sparkmagic"
 PACKAGE_PATH="$INSTALL_DIR/$PACKAGE_NAME"
 
 
@@ -31,16 +31,16 @@ yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel 
 
 # Clone the repository
 git clone $PACKAGE_URL
-cd $PACKAGE_PATH  
-git checkout $PACKAGE_VERSION  
+cd $PACKAGE_PATH
+git checkout $PACKAGE_VERSION
 
 # install necessay dependencies
 pip install .
-pip install pytest mock
-pip install -r hdijupyterutils/requirements.txt -e hdijupyterutils
+pip install pytest mock build
+pip install -r requirements.txt
 
 #install
-if ! (pyproject-build hdijupyterutils) ; then
+if ! (pyproject-build) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
