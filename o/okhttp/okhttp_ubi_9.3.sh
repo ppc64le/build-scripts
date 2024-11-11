@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-parent-4.12.0}
 PACKAGE_URL="https://github.com/square/okhttp.git"
 
 # install tools and dependent packages
-yum install -y git wget unzip 
+yum install -y git wget unzip sudo
 
 # setup java environment
 yum install -y java-11-openjdk-devel
@@ -35,7 +35,8 @@ export PATH=$JAVA_HOME/bin:$PATH
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
- 
+
+sudo bash -c "echo '127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4' > /etc/hosts" 
 #Build
 ./gradlew clean build
 if [ $? != 0 ]
