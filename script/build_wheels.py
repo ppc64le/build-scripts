@@ -6,7 +6,7 @@ import subprocess
 import docker
 import json
    
-def trigger_script_validation_checks(wrapper_file, python_version, image_name, file_name, version):
+def trigger_build_wheel(wrapper_file, python_version, image_name, file_name, version):
     # Docker client setup
     client = docker.DockerClient(base_url='unix://var/run/docker.sock')
     
@@ -64,4 +64,4 @@ def trigger_script_validation_checks(wrapper_file, python_version, image_name, f
 
 if __name__=="__main__":
     print("Inside python program")
-    trigger_script_validation_checks(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4],sys.argv[5])
+    trigger_build_wheel(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4],sys.argv[5])
