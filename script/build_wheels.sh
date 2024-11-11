@@ -37,7 +37,7 @@ else
 fi
 
 WHEEL_SCRIPT=script/build_script_python_create_wheel.sh
-python3 script/validate_wheels.py "$WHEEL_SCRIPT" "$PYTHON_VERSION" "$docker_image" "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" > build_log &
+python3 script/build_wheels.py "$WHEEL_SCRIPT" "$PYTHON_VERSION" "$docker_image" "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" > build_log &
 
 SCRIPT_PID=$!
 while ps -p $SCRIPT_PID > /dev/null
