@@ -46,7 +46,7 @@ jobs:
         - cloned_package=$(ls -td -- */ | head -n 1) && sudo mv "$cloned_package" package-cache
         - echo "export CLONED_PACKAGE=\"$cloned_package\"" >> package-cache/variable.sh
         - cd package-cache
-        # changing the ownership of package-cache and it's sub directories to travis, the reason for doing that is to facilitate BUILD of files
+        # changing the ownership of package-cache and it's sub directories to travis, the reason for doing that is to facilitate creation of files
         # in the cloned package folder(note: currently cloned package folder is owned by the root)
         - sudo chown travis:travis -R .
         - ls -ltr
