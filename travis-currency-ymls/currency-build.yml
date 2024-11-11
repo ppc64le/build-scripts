@@ -7,7 +7,6 @@ branches:
   only:
     - master
     - python-ecosystem
-    - final_pr_py
 
 env:
   global:
@@ -73,7 +72,7 @@ jobs:
         - source variable.sh
         - chmod +x ./script/build_wheels.sh; bash ./script/build_wheels.sh;
         - WHEEL_FILE=*.whl
-        #- chmod +x ./script/upload-scripts/upload_wheel.sh; bash ./script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+        - chmod +x ./script/upload-scripts/upload_wheel.sh; bash ./script/upload-scripts/upload_wheel.sh $WHEEL_FILE
       workspaces:
         create:
           name: wheels_cache_39
@@ -89,7 +88,7 @@ jobs:
         - source variable.sh
         - chmod +x ./script/build_wheels.sh; bash ./script/build_wheels.sh;
         - WHEEL_FILE=*.whl
-        #- chmod +x ./script/upload-scripts/upload_wheel.sh; bash ./script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+        - chmod +x ./script/upload-scripts/upload_wheel.sh; bash ./script/upload-scripts/upload_wheel.sh $WHEEL_FILE
       workspaces:
         create:
           name: wheels_cache_310
@@ -120,7 +119,7 @@ jobs:
         - source variable.sh
         - chmod +x ./script/build_wheels.sh; bash ./script/build_wheels.sh;
         - WHEEL_FILE=*.whl
-        #- chmod +x ./script/upload-scripts/upload_wheel.sh; bash ./script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+        - chmod +x ./script/upload-scripts/upload_wheel.sh; bash ./script/upload-scripts/upload_wheel.sh $WHEEL_FILE
       workspaces:
         create:
           name: wheels_cache_312
@@ -136,7 +135,7 @@ jobs:
         - source variable.sh
         - chmod +x ./script/build_wheels.sh; bash ./script/build_wheels.sh;
         - WHEEL_FILE=*.whl
-        #- chmod +x ./script/upload-scripts/upload_wheel.sh; bash ./script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+        - chmod +x ./script/upload-scripts/upload_wheel.sh; bash ./script/upload-scripts/upload_wheel.sh $WHEEL_FILE
       workspaces:
         create:
           name: wheels_cache_313
