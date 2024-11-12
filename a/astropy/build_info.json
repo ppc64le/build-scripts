@@ -3,6 +3,7 @@
   "package_name": "astropy",
   "github_url": "https://github.com/astropy/astropy.git",
   "version": "v4.0.1.post1",
+  "wheel_build" : true,
   "package_dir": "a/astropy",
   "default_branch": "main",
   "build_script": "astropy_ubi_9.3.sh",
