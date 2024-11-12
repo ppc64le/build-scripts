@@ -78,12 +78,12 @@ cd scipy
 git checkout v1.14.1
 git submodule update --init
 
-python${PYTHON_VER}-m pip install meson ninja numpy 'setuptools<60.0' Cython
-python${PYTHON_VER}-m pip install 'meson-python<0.15.0,>=0.12.1'
-python${PYTHON_VER}-m pip install pybind11
-python${PYTHON_VER}-m pip install 'patchelf>=0.11.0'
-python${PYTHON_VER}-m pip install 'pythran<0.15.0,>=0.12.0'
-python${PYTHON_VER}-m pip install build
+python${PYTHON_VER} -m pip install meson ninja numpy 'setuptools<60.0' Cython
+python${PYTHON_VER} -m pip install 'meson-python<0.15.0,>=0.12.1'
+python${PYTHON_VER} -m pip install pybind11
+python${PYTHON_VER} -m pip install 'patchelf>=0.11.0'
+python${PYTHON_VER} -m pip install 'pythran<0.15.0,>=0.12.0'
+python${PYTHON_VER} -m pip install build
 
 python${PYTHON_VER}-m pip install --no-build-isolation .
 
@@ -113,4 +113,3 @@ else
     echo "------------------$PACKAGE_NAME:test_success-------------------------"
     exit 0
 fi
-
