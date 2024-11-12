@@ -85,7 +85,7 @@ python${PYTHON_VER} -m pip install 'patchelf>=0.11.0'
 python${PYTHON_VER} -m pip install 'pythran<0.15.0,>=0.12.0'
 python${PYTHON_VER} -m pip install build
 
-python${PYTHON_VER}-m pip install --no-build-isolation .
+python${PYTHON_VER} -m pip install --no-build-isolation .
 
 # Build and install xformers
 cd ..
