@@ -3,6 +3,7 @@
   "package_name": "poetry-plugin-export",
   "github_url": "https://github.com/python-poetry/poetry-plugin-export.git",
   "version": "1.8.0",
+  "wheel_build" : true,
   "default_branch": "main",
   "package_dir": "p/poetry-plugin-export",
   "build_script": "poetry-plugin-export_ubi_9.3.sh",
