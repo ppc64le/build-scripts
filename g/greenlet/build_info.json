@@ -3,6 +3,7 @@
   "package_name": "greenlet",
   "github_url": "https://github.com/python-greenlet/greenlet.git",
   "version": "2.0.1",
+  "wheel_build" : true,
   "default_branch": "master",
   "package_dir": "g/greenlet",
   "build_script": "greenlet_ubi_9.3.sh",
