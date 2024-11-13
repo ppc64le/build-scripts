@@ -3,6 +3,7 @@
   "package_name": "sklearn-pandas",
   "github_url": " https://github.com/scikit-learn-contrib/sklearn-pandas.git",
   "version": "v2.2.0",
+  "wheel_build" : true,
   "package_dir": "s/sklearn-pandas/",
   "default_branch": "master",
   "build_script": "sklearn-pandas_ubi_9.3.sh",
