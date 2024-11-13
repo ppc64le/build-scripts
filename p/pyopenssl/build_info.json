@@ -3,6 +3,7 @@
   "package_name": "pyopenssl",
   "github_url": "https://github.com/pyca/pyopenssl.git",
   "version": "24.1.0",
+  "wheel_build" : true,
   "package_dir": "p/pyopenssl",
   "default_branch": "main",
   "build_script": "pyopenssl_ubi_9.3.sh",
