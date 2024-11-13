@@ -3,6 +3,7 @@
   "package_name": "flatbuffers",
   "github_url": "https://github.com/google/flatbuffers.git",
   "version": "v2.0.0",
+  "wheel_build" : true,
   "default_branch": "master",
   "package_dir": "f/flatbuffers",
   "validate_build_script": true,
