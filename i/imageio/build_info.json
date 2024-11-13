@@ -3,6 +3,7 @@
   "package_name": "imageio",
   "github_url": "https://github.com/imageio/imageio.git",
   "version": "v2.34.1",
+  "wheel_build" : true,
   "package_dir": "i/imageio",
   "default_branch": "master",
   "build_script": "imageio_ubi_9.3.sh",
