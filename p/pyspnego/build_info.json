@@ -3,6 +3,7 @@
   "package_name": "pyspnego",
   "github_url": "https://github.com/pyca/pyopenssl.git",
   "version": "0.10.2",
+  "wheel_build" : true,
   "package_dir": "p/pyspnego",
   "default_branch": "main",
   "build_script": "pyspnego_ubi_9.3.sh",
