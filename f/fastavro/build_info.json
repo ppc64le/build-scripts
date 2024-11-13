@@ -3,6 +3,7 @@
   "package_name": "fastavro",
   "github_url": "https://github.com/fastavro/fastavro.git",
   "version": "1.9.7",
+  "wheel_build" : true,
   "package_dir": "f/fastavro",
   "default_branch": "master",
   "build_script": "fastavro_ubi_9.3.sh",
