@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : jqTree
-# Version          : 1.8.3
+# Version          : 1.8.7
 # Source repo      : https://github.com/mbraak/jqTree.git
 # Tested on        : UBI:9.3
 # Language         : JavaScript
@@ -20,7 +20,7 @@
 
 #variables
 PACKAGE_NAME=jqTree
-PACKAGE_VERSION=${1:-1.8.3}
+PACKAGE_VERSION=${1:-1.8.7}
 PACKAGE_URL=https://github.com/mbraak/jqTree.git
 
 export NODE_VERSION=${NODE_VERSION:-20}
