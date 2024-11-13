@@ -3,6 +3,7 @@
   "package_name": "arviz",
   "github_url": "https://github.com/arviz-devs/arviz.git",
   "version": "v0.18.0",
+  "wheel_build" : true,
   "package_dir": "a/arviz",
   "default_branch": "main",
   "build_script": "arviz_ubi_9.3.sh",
