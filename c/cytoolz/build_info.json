@@ -3,6 +3,7 @@
   "package_name": "cytoolz",
   "github_url": "https://github.com/pytoolz/cytoolz.git",
   "version": "0.12.3",
+  "wheel_build" : "true",
   "default_branch": "master",
   "package_dir": "c/cytoolz",
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
