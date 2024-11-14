@@ -4,6 +4,8 @@
 # Version         : v3.0.0
 # Source repo     : https://github.com/linkedin/dustjs.git
 # Tested on       : ubi:8.3
+# Language        : Node
+# Travis-Check    : True
 # Script License  : Apache License, Version 2 or later
 # Maintainer      : srividya chittiboina <Srividya.Chittiboina@ibm.com>
 #
