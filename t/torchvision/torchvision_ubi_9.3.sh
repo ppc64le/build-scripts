@@ -23,9 +23,8 @@ PACKAGE_NAME=vision
 PACKAGE_VERSION=${1:-v0.16.1}
 PACKAGE_URL=https://github.com/pytorch/vision.git
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
-PYTHON_VER=${2:-3.9}
-PARALLEL=${PARALLEL:-$(nproc)}
-
+MAX_JOBS=${MAX_JOBS:-$(nproc)}
+export _GLIBCXX_USE_CXX11_ABI=${_GLIBCXX_USE_CXX11_ABI:-1}
 WORKDIR=$(pwd)
 
 dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
@@ -34,17 +33,9 @@ dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packa
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/`arch`/os
 dnf config-manager --set-enabled crb
 dnf install -y git cmake ninja-build g++ rust cargo jq \
-            python${PYTHON_VER}-devel python${PYTHON_VER}-wheel python${PYTHON_VER}-pip python${PYTHON_VER}-setuptools \
             libtiff-devel libjpeg-devel openjpeg2-devel zlib-devel \
             libpng-devel freetype-devel lcms2-devel libwebp-devel tcl-devel tk-devel \
             harfbuzz-devel fribidi-devel libraqm-devel libimagequant-devel libxcb-devel
-
-if ! command -v python; then
-    ln -s $(command -v python${PYTHON_VER}) /usr/bin/python
-fi
-if ! command -v pip; then
-    ln -s $(command -v pip${PYTHON_VER}) /usr/bin/pip
-fi
 
 # install dependency - pytorch
 PYTORCH_VERSION=${PYTORCH_VERSION:-$(curl -sSL https://api.github.com/repos/pytorch/pytorch/releases/latest | jq -r .tag_name)}
@@ -66,7 +57,7 @@ fi
 git submodule sync
 git submodule update --init --recursive
 pip install -r requirements.txt
-MAX_JOBS=$PARALLEL python setup.py install
+pip install -v -e . --no-build-isolation
 
 cd $WORKDIR
 
@@ -75,7 +66,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if ! (MAX_JOBS=$PARALLEL python setup.py bdist_wheel && pip install dist/*.whl); then
+if ! (pip install -v -e . --no-build-isolation); then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
