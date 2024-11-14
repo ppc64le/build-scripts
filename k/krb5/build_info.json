@@ -3,6 +3,7 @@
   "package_name": "krb5",
   "github_url": "https://github.com/jborean93/pykrb5.git",
   "version": "v0.5.1",
+  "wheel_build" : true,
   "default_branch": "main",
   "package_dir": "k/krb5",
   "build_script": "krb5_ubi_9.3.sh",
