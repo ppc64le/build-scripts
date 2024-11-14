@@ -20,14 +20,13 @@
 
 PACKAGE_NAME=grpc
 PACKAGE_VERSION=${1:-v1.64.0}
-PYTHON_VERSION=${2:-3.9}
 PACKAGE_URL=https://github.com/grpc/grpc.git
 
 # Update the package manager
 yum update -y
 
 # Install necessary development tools and libraries
-yum install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip python${PYTHON_VERSION}-setuptools git cmake autoconf libtool gcc gcc-c++ make openssl-devel zlib-devel libuuid-devel gcc-gfortran
+yum install -y python-devel python-pip python-setuptools git cmake autoconf libtool gcc gcc-c++ make openssl-devel zlib-devel libuuid-devel gcc-gfortran
 
 # Clone the gRPC repository
 git clone $PACKAGE_URL
@@ -43,13 +42,13 @@ git submodule update --init
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true
 
 # Install required Python dependencies
-python${PYTHON_VERSION} -m pip install -r requirements.txt
+python -m pip install -r requirements.txt
 
 # Upgrade setuptools
-python${PYTHON_VERSION} -m pip install --upgrade setuptools
+python -m pip install --upgrade setuptools
 
 # Build the grpcio package
-if ! python${PYTHON_VERSION} setup.py bdist_wheel; then
+if ! python setup.py install; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_Fails"
@@ -57,19 +56,10 @@ if ! python${PYTHON_VERSION} setup.py bdist_wheel; then
     exit 1
 fi
 
-# Install the created wheel
-if ! python${PYTHON_VERSION} -m pip install dist/*.whl; then
-    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
-    deactivate
-    exit 1
-fi
-
 # Run tests
 cd src/python/grpcio_tests
 export PYTHONPATH=$(pwd)
-if ! python${PYTHON_VERSION} -m unittest tests.unit._invalid_metadata_test tests.unit._compression_test; then
+if ! python -m unittest tests.unit._invalid_metadata_test tests.unit._compression_test; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Success_But_Test_Fails"
