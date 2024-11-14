@@ -3,6 +3,7 @@
   "package_name": "kiwisolver",
   "github_url": "ttps://github.com/nucleic/kiwi.git",
   "version": "v1.2.0",
+  "wheel_build" : true,
   "default_branch": "master",
   "package_dir": "k/kiwisolver",
   "build_script": "kiwisolver_ubi_9.3.sh",
