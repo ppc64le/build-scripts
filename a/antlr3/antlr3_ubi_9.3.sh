@@ -42,13 +42,13 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 if ! mvn -B -DskipTests package verify --file pom.xml; then
-    echo "------------------$PACKAGE_NAME:install_&_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_&_Test_Fails"
-    exit 2
+    echo "------------------$PACKAGE_NAME:Install_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_VERSION"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | Fail |  Install_Fails"
+    exit 1
 else
-    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
+    echo "------------------$PACKAGE_NAME:install_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_VERSION"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | Pass |  Install_Success"
     exit 0
 fi
