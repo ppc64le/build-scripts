@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	    : legacy-modes
-# Version	    : 6.4.1
+# Version	    : 6.4.2
 # Source repo	    : https://github.com/codemirror/legacy-modes
 # Tested on	    : UBI 9.3
 # Language          : Node
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=legacy-modes
-PACKAGE_VERSION=${1:-6.4.1}
+PACKAGE_VERSION=${1:-6.4.2}
 PACKAGE_URL=https://github.com/codemirror/legacy-modes
 
 export NODE_VERSION=${NODE_VERSION:-16}
