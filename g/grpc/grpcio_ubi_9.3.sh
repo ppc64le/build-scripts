@@ -42,13 +42,13 @@ git submodule update --init
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true
 
 # Install required Python dependencies
-python -m pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 
 # Upgrade setuptools
-python -m pip install --upgrade setuptools
+python3 -m pip install --upgrade setuptools
 
 # Build the grpcio package
-if ! python setup.py install; then
+if ! python3 setup.py install; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_Fails"
@@ -59,7 +59,7 @@ fi
 # Run tests
 cd src/python/grpcio_tests
 export PYTHONPATH=$(pwd)
-if ! python -m unittest tests.unit._invalid_metadata_test tests.unit._compression_test; then
+if ! python3 -m unittest tests.unit._invalid_metadata_test tests.unit._compression_test; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Success_But_Test_Fails"
