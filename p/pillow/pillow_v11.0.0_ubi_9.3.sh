@@ -21,17 +21,18 @@
 PACKAGE_NAME=pillow
 PACKAGE_VERSION=${1:-11.0.0}
 PACKAGE_URL=https://github.com/python-pillow/Pillow/
+PYTHON_VER=${2:-"3.11"}
 
 OS_NAME=$(grep '^PRETTY' /etc/os-release | awk -F '=' '{print $2}')
 
 # install core dependencies
-yum install -y gcc git
+yum install -y python${PYTHON_VER} python${PYTHON_VER}-pip python${PYTHON_VER}-devel gcc git
 
 # install pillow's minimum dependencies
 yum install -y zlib zlib-devel libjpeg-turbo libjpeg-turbo-devel
 
 # install build tools for wheel generation
-pip install --upgrade pip setuptools wheel pytest
+pip${PYTHON_VER} install --upgrade pip setuptools wheel pytest
 
 # clone source repository
 git clone $PACKAGE_URL $PACKAGE_NAME
@@ -41,7 +42,7 @@ git submodule update --init
 
 # check if setup.py file is present
 if [ -f "setup.py" ];then
-        if ! python3.11 setup.py install ; then
+        if ! python${PYTHON_VER} setup.py install ; then
         echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"

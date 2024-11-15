@@ -26,7 +26,8 @@ OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 export _GLIBCXX_USE_CXX11_ABI=1
 
 dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
-    git cmake ninja-build g++ rust cargo
+    git cmake ninja-build g++ rust cargo \
+    python-devel python-wheel python-pip python-setuptools
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
@@ -46,7 +47,7 @@ git submodule sync
 git submodule update --init --recursive
 pip install -r requirements.txt
 
-if ! (MAX_JOBS=$(nproc) python setup.py bdist_wheel && pip install dist/*.whl); then
+if ! (MAX_JOBS=$(nproc) python3 setup.py bdist_wheel && pip install dist/*.whl); then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"

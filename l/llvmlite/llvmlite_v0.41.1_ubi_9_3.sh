@@ -28,9 +28,9 @@ export PACKAGE_URL=https://github.com/numba/llvmlite
 
 # Install dependencies
 
-yum install -y cmake git libffi-devel gcc-toolset-12 ninja-build python-wheel python-setuptools
+yum install -y cmake git libffi-devel gcc-toolset-12 ninja-build python-devel python-pip python-wheel python-setuptools
 
-python -m pip install -U pip
+python3 -m pip install -U pip
 
 source /opt/rh/gcc-toolset-12/enable
 pip install setuptools build
@@ -97,7 +97,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Build package
-if !(python setup.py build) ; then
+if !(python3 setup.py build) ; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
@@ -105,7 +105,7 @@ if !(python setup.py build) ; then
 fi
 
 # Run test cases
-if !(python runtests.py); then
+if !(python3 runtests.py); then
     echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
