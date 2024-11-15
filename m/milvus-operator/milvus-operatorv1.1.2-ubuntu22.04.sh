@@ -1,3 +1,23 @@
+#!/bin/bash -ex
+# ----------------------------------------------------------------------------
+#
+# Package       : milvus-operator
+# Version       : v1.1.2
+# Source repo   : https://github.com/zilliztech/milvus-operator
+# Tested on     : Ubuntu 22.04 (docker)
+# Language      : Go
+# Travis-Check  : False
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Kavita Rane <Kavita.Rane2@ibm.com>
+#
+# Disclaimer: This script has been tested in root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
+
 PACKAGE_NAME=milvus-operator
 PACKAGE_VERSION=v1.1.2
 PACKAGE_URL=https://github.com/zilliztech/${PACKAGE_NAME}
