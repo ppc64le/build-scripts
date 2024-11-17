@@ -41,6 +41,8 @@ yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/p
 wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
 mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
+npm config set registry http://registry.npmjs.org/
+npm install -g yarn
 
 #installing R
 dnf install -y R-core R-core-devel libsqlite3x-devel soci-sqlite3
