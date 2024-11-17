@@ -1,0 +1,12 @@
+{
+    "maintainer":"tejasBadjateIBM",
+    "package_name" : "rstudio",
+    "github_url": "https://github.com/rstudio/rstudio",
+    "version": "2024.04.2+764",
+    "default_branch": "main",
+    "package_dir": "r/rstudio",
+    "build_script": "rstudio_ubi_9.4.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false
+}
