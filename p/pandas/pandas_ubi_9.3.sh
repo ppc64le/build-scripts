@@ -20,9 +20,10 @@
 
 PACKAGE_NAME=pandas
 PACKAGE_VERSION=${1:-v2.2.0}
+PYTHON_VERSION=${2:-3.11}
 PACKAGE_URL=https://github.com/pandas-dev/pandas.git
 
-yum install -y python-devel python-pip git gcc gcc-c++ cmake ninja-build
+yum install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip git gcc gcc-c++ cmake ninja-build
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
@@ -31,13 +32,13 @@ git submodule update --init --recursive
 
 pip install Cython pytest hypothesis build meson meson-python
 
-# Build the package and create whl file (This is dependent on cython)
-python3 -m build
+# Build the package
+python${PYTHON_VERSION} -m build
 
 # Test the package
 cd ..
-python3 -m pip show pandas
-python3 -c "import pandas; print(pandas.__file__)"
+python${PYTHON_VERSION} -m pip show pandas
+python${PYTHON_VERSION} -c "import pandas; print(pandas.__file__)"
 
 if [ $? == 0 ]; then
      echo "------------------$PACKAGE_NAME::Test_Pass---------------------"
