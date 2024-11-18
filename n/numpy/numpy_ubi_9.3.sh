@@ -44,34 +44,18 @@ git submodule update --init
 if [[ $PACKAGE_VERSION == "v1.26.0" ]]; then
     echo "Building NumPy using setup.py for version $PACKAGE_VERSION"
     # Build using setup.py and create a wheel
-    if ! python${PYTHON_VERSION} setup.py bdist_wheel; then
+    if ! python${PYTHON_VERSION} setup.py install; then
         echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
         exit 1
     fi
-    # Install the created wheel
-    if ! python${PYTHON_VERSION} -m pip install dist/*.whl; then
-        echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
-        exit 1
-    fi
-
 else
-    # Build and create a wheel for other versions
-    if ! python${PYTHON_VERSION} -m pip wheel . -w dist; then
+    # Build for other versions
+    if ! python${PYTHON_VERSION} -m pip  . ; then
         echo "------------------$PACKAGE_NAME:wheel_build_fails--------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Wheel_Build_Fails"
-        exit 1
-    fi
-
-    # Install the created wheel
-    if ! python${PYTHON_VERSION} -m pip install dist/*.whl; then
-        echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
         exit 1
     fi
 fi
