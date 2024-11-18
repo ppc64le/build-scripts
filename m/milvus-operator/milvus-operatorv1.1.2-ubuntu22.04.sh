@@ -124,5 +124,7 @@ make build
 make test
 
 make docker-build
-docker tag milvusdb/milvus-operator:dev-latest milvusdb/milvus-operator:v2.4.13
-docker tag milvusdb/milvus-operator:dev-latest milvusdb/milvus-operator:v1.1.0
+
+# Conclude
+set +ex
+echo "Complete: Build and Test successful!
