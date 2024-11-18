@@ -127,4 +127,4 @@ make docker-build
 
 # Conclude
 set +ex
-echo "Complete: Build and Test successful!
+echo "Complete: Build and Test successful!"
