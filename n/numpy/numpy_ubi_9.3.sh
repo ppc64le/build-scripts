@@ -52,7 +52,7 @@ if [[ $PACKAGE_VERSION == "v1.26.0" ]]; then
     fi
 else
     # Build for other versions
-    if ! python${PYTHON_VERSION} -m pip  . ; then
+    if ! python${PYTHON_VERSION} -m pip install . ; then
         echo "------------------$PACKAGE_NAME:wheel_build_fails--------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Wheel_Build_Fails"
