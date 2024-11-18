@@ -30,10 +30,12 @@ cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
-pip install Cython pytest hypothesis build meson meson-python
+python${PYTHON_VERSION} -m pip install Cython pytest hypothesis build meson meson-python
 
 # Build the package
 python${PYTHON_VERSION} -m build
+
+python${PYTHON_VERSION} -m pip install .
 
 # Test the package
 cd ..
