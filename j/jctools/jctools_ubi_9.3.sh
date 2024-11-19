@@ -22,17 +22,16 @@ set -e
 PACKAGE_NAME=JCTools
 PACKAGE_VERSION=${1:-v4.0.5}              
 PACKAGE_URL=https://github.com/JCTools/JCTools.git
-DIRECTORY=jctools-core
+
 
 # install dependencies
 yum install -y git wget 
 
 # setup java environment
-yum install -y java java-devel
-
-export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-)(?=.*ppc64le)') 
-# update the path env. variable
+yum install -y git wget java-1.8.0-openjdk-devel.ppc64le java-1.8.0-openjdk-headless.ppc64le 
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
+
 
 
 # install maven
@@ -50,7 +49,6 @@ export PATH=$PATH:$M2_HOME/bin
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-cd $DIRECTORY
 
 #Build and Test
 mvn clean install 
