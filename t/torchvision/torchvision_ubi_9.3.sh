@@ -36,7 +36,7 @@ dnf install -y git cmake ninja-build g++ rust cargo jq \
             libtiff-devel libjpeg-devel openjpeg2-devel zlib-devel \
             libpng-devel freetype-devel lcms2-devel libwebp-devel tcl-devel tk-devel \
             harfbuzz-devel fribidi-devel libraqm-devel libimagequant-devel libxcb-devel \
-            python-devel python-pip python-setuptools python-wheel
+            python-devel python-pip
 
 # install dependency - pytorch
 PYTORCH_VERSION=${PYTORCH_VERSION:-$(curl -sSL https://api.github.com/repos/pytorch/pytorch/releases/latest | jq -r .tag_name)}
@@ -59,6 +59,7 @@ git submodule sync
 git submodule update --init --recursive
 pip install -r requirements.txt
 pip install -v -e . --no-build-isolation
+pip install setuptools wheel
 
 cd $WORKDIR
 
