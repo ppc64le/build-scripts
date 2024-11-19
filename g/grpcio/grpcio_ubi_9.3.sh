@@ -21,7 +21,7 @@
 # Install dependencies
 yum install -y python311 python3.11-devel python3.11-pip openssl openssl-devel git gcc gcc-c++ cmake 
 
-# Clone the pandas package.
+# Clone the grpc package.
 PACKAGE_NAME=grpc
 PACKAGE_VERSION=${1:-v1.68.0}
 PACKAGE_URL=https://github.com/grpc/grpc.git
@@ -34,9 +34,10 @@ git submodule update --init --recursive
 # Setup virtual environment for python
 python3.11 -m venv grpcio-env
 source grpcio-env/bin/activate
-pip3.11 install pytest hypothesis build six
+python3 -m pip install pytest hypothesis build six
 
-pip3.11 install -r requirements.txt
+# Install requirements
+python3 -m pip install -r requirements.txt
 
 # Install the package
 GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1 python3 -m pip install -e .
@@ -63,7 +64,7 @@ if [ $? == 0 ]; then
      echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Test_Success"
      
      # Deactivate python environment (grpcio-env)
-	 deactivate
+     deactivate
 
      exit 0
 else
