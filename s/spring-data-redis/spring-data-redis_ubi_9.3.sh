@@ -59,6 +59,7 @@ then
 fi
 
 #Test
+# It has a parity with x86 
 # ./mvnw test
 # Run 5: RedisCacheTests.retrieveReturnsCachedValueWhenLockIsReleased:604 » Timeout is Failing
 # Tests run: 17366, Failures: 0, Errors: 1, Skipped: 453
