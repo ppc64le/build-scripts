@@ -1,7 +1,7 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package       : JCTools
+# Package       : jctools
 # Version       : v4.0.5
 # Source repo   : https://github.com/JCTools/JCTools
 # Tested on     : UBI 9.3

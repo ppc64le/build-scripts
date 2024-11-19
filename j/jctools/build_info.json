@@ -1,6 +1,6 @@
 {
     "maintainer": "pratibh-ibm",
-    "package_name": "JCTools",
+    "package_name": "jctools",
     "github_url": "https://github.com/JCTools/JCTools.git",
     "version": "v4.0.5",
     "default_branch": "master",
