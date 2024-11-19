@@ -24,7 +24,6 @@ PACKAGE_VERSION=${1:-v0.16.1}
 PACKAGE_URL=https://github.com/pytorch/vision.git
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 MAX_JOBS=${MAX_JOBS:-$(nproc)}
-PYTHON_VER=${2:-3.9}
 export _GLIBCXX_USE_CXX11_ABI=${_GLIBCXX_USE_CXX11_ABI:-1}
 WORKDIR=$(pwd)
 
@@ -37,14 +36,6 @@ dnf install -y git cmake ninja-build g++ rust cargo jq \
             libtiff-devel libjpeg-devel openjpeg2-devel zlib-devel \
             libpng-devel freetype-devel lcms2-devel libwebp-devel tcl-devel tk-devel \
             harfbuzz-devel fribidi-devel libraqm-devel libimagequant-devel libxcb-devel \
-            python${PYTHON_VER}-devel python${PYTHON_VER}-pip python${PYTHON_VER}-setuptools python${PYTHON_VER}-wheel
-
-if ! command -v pip; then
-    ln -s $(command -v pip${PYTHON_VER}) /usr/bin/pip
-fi
-if ! command -v python; then
-    ln -s $(command -v python${PYTHON_VER}) /usr/bin/python
-fi
 
 # install dependency - pytorch
 PYTORCH_VERSION=${PYTORCH_VERSION:-$(curl -sSL https://api.github.com/repos/pytorch/pytorch/releases/latest | jq -r .tag_name)}
