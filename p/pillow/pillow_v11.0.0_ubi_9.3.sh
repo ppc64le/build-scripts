@@ -43,7 +43,7 @@ git submodule update --init
 if [ -f "setup.py" ]; then
     echo "setup.py file exists"
     # Build the wheel file
-    if ! python setup.py install ; then
+    if ! python3 setup.py install ; then
         echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
