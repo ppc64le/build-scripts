@@ -1,0 +1,15 @@
+{
+  "maintainer": "puneetsharma21",
+  "package_name": "triton",
+  "github_url": "https://github.com/triton-lang/triton.git",
+  "version": "v2.1.0",
+  "default_branch": "main",
+  "package_dir": "x/triton",
+  "build_script": "triton_ubi_9_3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v2.1.0": {
+    "build_script": "triton_ubi_9_3.sh"
+  }
+}
