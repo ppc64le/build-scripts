@@ -22,9 +22,9 @@ PACKAGE_NAME=json4s
 PACKAGE_VERSION=${1:-v4.1.0-M8}
 PACKAGE_URL=https://github.com/json4s/json4s.git
 
-yum install -y curl git java-1.8.0-openjdk-devel nodejs clang wget tar --allowerasing
+yum install -y curl git java-11-openjdk-devel nodejs clang wget tar --allowerasing
 
-export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 java -version
 
@@ -45,8 +45,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 export TZ=Australia/Canberra
-export SBT_OPTS="-Xmx2G"
-
+export SBT_OPTS="-XX:+UseG1GC"
 if ! sbt compile ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
