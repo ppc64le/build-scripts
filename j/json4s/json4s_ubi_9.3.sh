@@ -22,22 +22,23 @@ PACKAGE_NAME=json4s
 PACKAGE_VERSION=${1:-v4.1.0-M8}
 PACKAGE_URL=https://github.com/json4s/json4s.git
 
-yum install -y curl git java-11-openjdk-devel nodejs clang wget tar --allowerasing
+sudo yum install -y curl git java-11-openjdk-devel nodejs clang wget tar --allowerasing
 
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 java -version
 
 #Install Scala
+cd $HOME
 wget https://github.com/lampepfl/dotty/releases/download/3.5.2/scala3-3.5.2.tar.gz
 tar -xvf scala3-3.5.2.tar.gz
 export PATH=$HOME/scala3-3.5.2/bin:$PATH
 
 #Install sbt
-rm -f /etc/yum.repos.d/bintray-rpm.repo
+sudo rm -f /etc/yum.repos.d/bintray-rpm.repo
 curl -L https://www.scala-sbt.org/sbt-rpm.repo > sbt-rpm.repo
-mv sbt-rpm.repo /etc/yum.repos.d/
-yum install -y sbt
+sudo mv sbt-rpm.repo /etc/yum.repos.d/
+sudo yum install -y sbt
 
 # Clone json4s
 cd $HOME_DIR
@@ -46,6 +47,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 export TZ=Australia/Canberra
 export SBT_OPTS="-XX:+UseG1GC"
+
 if ! sbt compile ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
