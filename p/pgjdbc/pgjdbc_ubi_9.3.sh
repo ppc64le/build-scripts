@@ -11,10 +11,10 @@
 # Maintainer : Pratibh Goshi<pratibh.goshi@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
-# ========== platform using the mentioned version of the package.
-# It may not work as expected with newer versions of the
-# package and/or distribution. In such case, please
-# contact "Maintainer" of this script.
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
 set -e
