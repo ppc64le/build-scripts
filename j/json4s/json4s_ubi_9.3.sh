@@ -29,9 +29,9 @@ export PATH=$JAVA_HOME/bin:$PATH
 java -version
 
 #Install Scala
-wget https://github.com/lampepfl/dotty/releases/download/3.6.1/scala3-3.6.1.tar.gz
-tar -xvf scala3-3.6.1.tar.gz
-export PATH=$HOME/scala3-3.6.1/bin:$PATH
+wget https://github.com/lampepfl/dotty/releases/download/3.5.2/scala3-3.5.2.tar.gz
+tar -xvf scala3-3.5.2.tar.gz
+export PATH=$HOME/scala3-3.5.2/bin:$PATH
 
 #Install sbt
 rm -f /etc/yum.repos.d/bintray-rpm.repo
