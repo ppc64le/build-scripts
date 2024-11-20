@@ -22,9 +22,9 @@ PACKAGE_NAME=json4s
 PACKAGE_VERSION=${1:-v4.1.0-M8}
 PACKAGE_URL=https://github.com/json4s/json4s.git
 
-yum install -y curl git java-1.8.0-openjdk-devel nodejs clang wget tar --allowerasing
+yum install -y curl git java-11-openjdk-devel nodejs clang wget tar --allowerasing
 
-export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 java -version
 
