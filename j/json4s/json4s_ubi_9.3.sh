@@ -22,16 +22,16 @@ PACKAGE_NAME=json4s
 PACKAGE_VERSION=${1:-v4.1.0-M8}
 PACKAGE_URL=https://github.com/json4s/json4s.git
 
-yum install -y curl git java-11-openjdk-devel nodejs clang wget tar --allowerasing
+yum install -y curl git java-1.8.0-openjdk-devel nodejs clang wget tar --allowerasing
 
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 java -version
 
 #Install Scala
-wget https://github.com/lampepfl/dotty/releases/download/3.5.2/scala3-3.5.2.tar.gz
-tar -xvf scala3-3.5.2.tar.gz
-export PATH=$HOME/scala3-3.5.2/bin:$PATH
+wget https://github.com/lampepfl/dotty/releases/download/3.6.1/scala3-3.6.1.tar.gz
+tar -xvf scala3-3.6.1.tar.gz
+export PATH=$HOME/scala3-3.6.1/bin:$PATH
 
 #Install sbt
 rm -f /etc/yum.repos.d/bintray-rpm.repo
@@ -45,6 +45,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 export TZ=Australia/Canberra
+export SBT_OPTS="-Xmx2G"
 
 if ! sbt compile ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
