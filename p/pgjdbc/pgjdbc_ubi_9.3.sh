@@ -1,14 +1,14 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
 #
-# Package : pgjdbc
-# Version : REL42.7.4
-# Source repo : https://github.com/pgjdbc/pgjdbc.git
-# Tested on : UBI 9.3
-# Language : Java
-# Travis-Check : True
+# Package       : pgjdbc
+# Version       : REL42.7.4
+# Source repo   : https://github.com/pgjdbc/pgjdbc.git
+# Tested on     : UBI 9.3
+# Language      : Java
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer : Pratibh Goshi<pratibh.goshi@ibm.com>
+# Maintainer    : Pratibh Goshi<pratibh.goshi@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
