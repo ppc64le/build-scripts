@@ -9,6 +9,7 @@
   "build_script": "json4s_ubi_9.3.sh",
   "docker_build": true,
   "validate_build_script": true,
+  "use_non_root_user": false,
   "v4.1.0-M*": {
     "dir": "ubi_9.3",
     "build_script": "json4s_ubi_9.3.sh"
