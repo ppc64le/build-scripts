@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : bottleneck
-# Version       : v1.3.8
+# Version       : v1.4.2
 # Source repo   : https://github.com/pydata/bottleneck
 # Tested on     : UBI: 9.3
 # Language      : Python
@@ -22,13 +22,13 @@
 set -e
 
 # Variables
-export PACKAGE_VERSION=${1:-"v1.3.8"}
-export PACKAGE_NAME=bottleneck
-export PACKAGE_URL=https://github.com/pydata/bottleneck
+PACKAGE_VERSION=${1:-"v1.4.2"}
+PACKAGE_NAME=bottleneck
+PACKAGE_URL=https://github.com/pydata/bottleneck
 HOME_DIR=`pwd`
 
 # Install dependencies
-yum install -y python3 git gcc gcc-c++ python3-devel python3-setuptools python3-test wget sqlite sqlite-devel libxml2-devel libxslt-devel make cmake
+yum install -y python git gcc gcc-c++ python-devel wget sqlite sqlite-devel libxml2-devel libxslt-devel make cmake
 
 #installation of rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
@@ -43,14 +43,11 @@ cd $HOME_DIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-export TOXENV=py39
-virtualenv -p python3 --system-site-packages env2 
-/bin/bash -c "source env2/bin/activate"
 pip3 install tox 
 PATH=$PATH:/usr/local/bin/
 
 # Build package
-if !(python3 setup.py install) ; then
+if !(python setup.py install) ; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
