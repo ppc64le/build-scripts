@@ -43,8 +43,8 @@ mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 
 #installing gcc
-yum install -y gcc-toolset-13-gcc gcc-toolset-13-gcc-c++
-source /opt/rh/gcc-toolset-13/enable
+yum install -y gcc-toolset-12-gcc gcc-toolset-12-gcc-c++
+source /opt/rh/gcc-toolset-12/enable
 
 # Cloning the repository 
 git clone $PACKAGE_URL
