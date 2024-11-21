@@ -25,12 +25,13 @@ set -e
 export PACKAGE_VERSION=${1:-"v0.41.1"}
 export PACKAGE_NAME=llvmlite
 export PACKAGE_URL=https://github.com/numba/llvmlite
+export PYTHON_VER=${2:-"3.11"}
 
 # Install dependencies
 
-yum install -y cmake git libffi-devel gcc-toolset-12 ninja-build python-devel python-pip python-wheel python-setuptools
+yum install -y cmake git libffi-devel gcc-toolset-12 ninja-build python${PYTHON_VER}-devel python${PYTHON_VER}-pip python${PYTHON_VER}-wheel python${PYTHON_VER}-setuptools
 
-python3 -m pip install -U pip
+python${PYTHON_VER} -m pip install -U pip
 
 source /opt/rh/gcc-toolset-12/enable
 pip install setuptools build
@@ -97,7 +98,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Build package
-if !(python3 setup.py build) ; then
+if !(python${PYTHON_VER} setup.py build) ; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
@@ -105,7 +106,7 @@ if !(python3 setup.py build) ; then
 fi
 
 # Run test cases
-if !(python3 runtests.py); then
+if !(python${PYTHON_VER} runtests.py); then
     echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
