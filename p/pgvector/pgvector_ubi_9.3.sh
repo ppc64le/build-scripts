@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: pgvector
-# Version	: v0.8.0
+# Version	: v0.7.4
 # Source repo	: https://github.com/pgvector/pgvector
 # Tested on	: UBI 9.3
 # Language      : C
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 set -e 
-SCRIPT_PACKAGE_VERSION=v0.8.0
+SCRIPT_PACKAGE_VERSION=v0.7.4
 PACKAGE_NAME=pgvector
 PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
 PACKAGE_URL=https://github.com/pgvector/pgvector.git

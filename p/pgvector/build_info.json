@@ -2,7 +2,7 @@
     "maintainer": "onkar-kubal",
     "package_name": "pgvector",
     "github_url": "https://github.com/pgvector/pgvector",
-    "version": "0.8.0",
+    "version": "0.7.4",
     "default_branch": "master",
     "build_script": "pgvector_ubi_9.3.sh",
     "package_dir": "p/pgvector",
