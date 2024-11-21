@@ -31,7 +31,7 @@ else
 fi
 
 # install tools and dependent packages
-yum install -y git gcc-c++ make wget java-11-openjdk-devel openssl-devel bzip2 zip unzip yum-utils clang clang-devel clang-libs patch
+yum install -y git gcc-c++ make wget java-11-openjdk-devel openssl-devel bzip2 zip unzip yum-utils clang clang-devel clang-libs patch cmake
 export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-11)(?=.*ppc64le)')
 export PATH=$JAVA_HOME/bin:$PATH
 
@@ -41,17 +41,6 @@ dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/p
 wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
 mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
-
-
-#install cmake
-wget https://github.com/Kitware/CMake/releases/download/v3.27.3/cmake-3.27.3.tar.gz
-tar -zxvf cmake-3.27.3.tar.gz
-cd cmake-3.27.3
-./bootstrap
-make
-make install
-cd ..
-cmake --version
 
 #installing gcc
 yum install -y gcc-toolset-13-gcc gcc-toolset-13-gcc-c++
