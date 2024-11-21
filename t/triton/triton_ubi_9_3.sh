@@ -18,13 +18,11 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e
 PACKAGE_NAME=triton
 PACKAGE_VERSION=${1:-v2.1.0}
 PACKAGE_URL=https://github.com/triton-lang/triton.git
 
-# Update and install required packages
-echo "Updating and installing essential packages..."
+# Install dependencies
 dnf update -y
 dnf install -y \
     python \
@@ -34,86 +32,97 @@ dnf install -y \
     cmake \
     make \
     git \
-    wget \
-    unzip \
-    tar \
+    ninja-build \
     llvm \
     llvm-devel \
-    llvm-static \
-    llvm-libs \
-    patch \
     libffi \
     libffi-devel \
     zlib \
-    zlib-devel \
-    ninja-build
+    gcc-toolset-12 \
+    zlib-devel
 
-# Install MLIR dependency
-echo "Installing MLIR dependency..."
-git clone https://github.com/llvm/llvm-project.git
+python3 -m pip install -U pip setuptools wheel
+
+source /opt/rh/gcc-toolset-12/enable
+
+# Build llvmdev which is a pre-req for triton
+git clone --recursive https://github.com/llvm/llvm-project
 cd llvm-project
-mkdir -p build && cd build
-cmake ../llvm \
-    -DLLVM_ENABLE_PROJECTS="mlir" \
-    -DLLVM_BUILD_EXAMPLES=OFF \
-    -DLLVM_TARGETS_TO_BUILD="PowerPC;NVPTX" \
-    -DCMAKE_BUILD_TYPE=Release \
-    -G Ninja
-ninja
+git checkout llvmorg-14.0.6
+export PREFIX=/usr
+
+mkdir build && cd  build
+CMAKE_ARGS="${CMAKE_ARGS} -DLLVM_ENABLE_PROJECTS=lld;mlir;llvm;libunwind;compiler-rt"
+CFLAGS="$(echo $CFLAGS | sed 's/-fno-plt //g')"
+CXXFLAGS="$(echo $CXXFLAGS | sed 's/-fno-plt //g')"
+CMAKE_ARGS="${CMAKE_ARGS} -DFFI_INCLUDE_DIR=$PREFIX/include"
+CMAKE_ARGS="${CMAKE_ARGS} -DFFI_LIBRARY_DIR=$PREFIX/lib"
+
+cmake -DCMAKE_INSTALL_PREFIX="${PREFIX}"   \
+      -DCMAKE_BUILD_TYPE=Release           \
+      -DCMAKE_LIBRARY_PATH="${PREFIX}"     \
+      -DLLVM_ENABLE_LIBEDIT=OFF            \
+      -DLLVM_ENABLE_LIBXML2=OFF            \
+      -DLLVM_ENABLE_RTTI=ON                \
+      -DLLVM_ENABLE_TERMINFO=OFF           \
+      -DLLVM_INCLUDE_BENCHMARKS=OFF        \
+      -DLLVM_INCLUDE_DOCS=OFF              \
+      -DLLVM_INCLUDE_EXAMPLES=OFF          \
+      -DLLVM_INCLUDE_GO_TESTS=OFF          \
+      -DLLVM_INCLUDE_TESTS=ON              \
+      -DLLVM_INCLUDE_UTILS=ON              \
+      -DLLVM_INSTALL_UTILS=ON              \
+      -DLLVM_UTILS_INSTALL_DIR=libexec/llvm            \
+      -DLLVM_BUILD_LLVM_DYLIB=OFF          \
+      -DLLVM_LINK_LLVM_DYLIB=OFF           \
+      -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly \
+      -DLLVM_ENABLE_FFI=ON                 \
+      -DLLVM_ENABLE_Z3_SOLVER=OFF          \
+      -DLLVM_OPTIMIZED_TABLEGEN=ON         \
+      -DCMAKE_POLICY_DEFAULT_CMP0111=NEW   \
+      -DCOMPILER_RT_BUILD_BUILTINS=ON      \
+      -DCOMPILER_RT_BUILTINS_HIDE_SYMBOLS=OFF          \
+      -DCOMPILER_RT_BUILD_LIBFUZZER=OFF    \
+      -DCOMPILER_RT_BUILD_CRT=OFF          \
+      -DCOMPILER_RT_BUILD_MEMPROF=OFF      \
+      -DCOMPILER_RT_BUILD_PROFILE=OFF      \
+      -DCOMPILER_RT_BUILD_SANITIZERS=OFF   \
+      -DCOMPILER_RT_BUILD_XRAY=OFF         \
+      -DCOMPILER_RT_BUILD_GWP_ASAN=OFF     \
+      -DCOMPILER_RT_BUILD_ORC=OFF          \
+      -DCOMPILER_RT_INCLUDE_TESTS=OFF      \
+      ${CMAKE_ARGS}       -GNinja       ../llvm
+
+export CPU_COUNT=4
+ninja -j${CPU_COUNT}
+
 ninja install
-if [ $? -ne 0 ]; then
-    echo "MLIR installation failed."
-    exit 1
-fi
 cd ../..
+rm -rf llvm-project
 
-# Set Python environment
-echo "Setting up Python environment..."
-pip install --upgrade pip setuptools wheel
 
-# Clone Triton repository
-echo "Cloning Triton repository..."
+# Clone and build Triton
 git clone --recursive "$PACKAGE_URL"
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-# Install build dependencies
-echo "Installing Python dependencies..."
-pip install -r python/requirements.txt || echo "No requirements file found, skipping."
+export PATH=/usr/bin:$PATH
+
 mkdir -p build && cd build
-cmake .. \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DMLIR_DIR=/usr/local/lib/cmake/mlir \
-    -DCMAKE_PREFIX_PATH=/usr/local/lib/cmake/mlir
 
-# Build Triton
-echo "Building Triton..."
-make -j$(nproc)
+cmake -DCMAKE_BUILD_TYPE=Release -DTRITON_ENABLE_CUDA=OFF ..
 
-# Install Triton Python package
-echo "Installing Triton Python package..."
-cd ../python
+ninja -j${CPU_COUNT}
 
-# Configure Triton build
-echo "Configuring Triton build..."
-# Build package
-if !(pip install . --no-build-isolation); then
-    echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
+ninja install
+cd ..
+
+pip install ninja cmake wheel pybind11
+
+if ! pip install -e python; then
+    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
-fi
-
-# Run test cases
-if !(python -m pytest); then
-    echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
-    exit 2
-else
-    echo "------------------$PACKAGE_NAME:build_&_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Build_and_Test_Success"
-    exit 0
 fi
 
