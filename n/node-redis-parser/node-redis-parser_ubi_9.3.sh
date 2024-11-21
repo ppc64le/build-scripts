@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=redux-socket.io
+PACKAGE_NAME=node-redis-parser
 PACKAGE_VERSION=${1:-v.3.0.0}
 PACKAGE_URL=https://github.com/NodeRedis/node-redis-parser
 
