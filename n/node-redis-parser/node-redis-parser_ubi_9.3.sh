@@ -24,7 +24,7 @@ PACKAGE_URL=https://github.com/NodeRedis/node-redis-parser
 
 export NODE_VERSION=${NODE_VERSION:-7}
 
-yum install -y python3 python3-devel.ppc64le git gcc gcc-c++ libffi make 
+yum install -y python3 python3-devel.ppc64le git gcc gcc-c++ libffi make xz
 
 #Installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
