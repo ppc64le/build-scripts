@@ -39,11 +39,11 @@ dnf install -y git cmake ninja-build g++ rust cargo jq \
             python-devel python-pip
 
 if ! command -v pip; then
-    ln -s $(command -v pip /usr/bin/pip
+    ln -s $(command -v pip3) /usr/bin/pip
 fi
 
 if ! command -v python; then
-    ln -s $(command -v python /usr/bin/python
+    ln -s $(command -v python3) /usr/bin/python
 fi
 
 # install dependency - pytorch
