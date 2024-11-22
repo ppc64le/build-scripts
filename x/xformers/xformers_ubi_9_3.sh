@@ -42,7 +42,7 @@ git submodule update --init
 python${PYTHON_VER} -m pip install ninja cmake 'pytest==8.2.2' hydra-core
 
 # Install dependency - pytorch
-PYTORCH_VERSION=v2.4.0
+PYTORCH_VERSION=v2.5.1
 
 git clone https://github.com/pytorch/pytorch.git
 
