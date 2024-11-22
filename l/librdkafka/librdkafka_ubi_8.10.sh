@@ -2,11 +2,11 @@
 # -----------------------------------------------------------------------------
 #
 # Package	: librdkafka
-# Version	: v2.6.0
+# Version	: v2.5.3
 # Source repo	: https://github.com/confluentinc/librdkafka
-# Tested on	: UBI 9.3
+# Tested on	: UBI 8.10
 # Language      : C
-# Travis-Check  : true
+# Travis-Check  : false
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Balavva Mirji <Balavva.Mirji@ibm.com>
 #
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 set -e 
-SCRIPT_PACKAGE_VERSION=v2.6.0
+SCRIPT_PACKAGE_VERSION=v2.5.3
 PACKAGE_NAME=librdkafka
 PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
 PACKAGE_URL=https://github.com/confluentinc/librdkafka
@@ -26,7 +26,7 @@ BUILD_HOME=$(pwd)
 
 # Install required dependencies
 yum update -y
-yum install -y gcc gcc-c++ make git openssl-devel lz4-devel zlib-devel cyrus-sasl-devel libtool libcurl-devel python3.11.ppc64le python3.11-pip diffutils
+yum install -y gcc gcc-c++ make git python3.11.ppc64le python3.11-pip cyrus-sasl-devel patch libcurl-devel zlib-devel
 
 #Clone the repository 	
 cd $BUILD_HOME
@@ -41,15 +41,22 @@ if ! ./configure --install-deps ; then
     exit 1
 fi
 
+if ! make; then
+    echo "------------------$PACKAGE_NAME: build fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
+    exit 1
+fi
+
 if ! make install; then
-    echo "------------------$PACKAGE_NAME:install_fails---------------------"
+    echo "------------------$PACKAGE_NAME: install_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
 if ! make -C tests run_local_quick; then
-    echo "------------------$PACKAGE_NAME:install_fails---------------------"
+    echo "------------------$PACKAGE_NAME: install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
     exit 2
