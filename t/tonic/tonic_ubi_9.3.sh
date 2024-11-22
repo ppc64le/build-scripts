@@ -57,17 +57,22 @@ set RUST_BACKTRACE=full
 cd /home/
 
 # downloading the protoc archive, extract the contents  
+echo "Download protoc archive"
 wget https://github.com/protocolbuffers/protobuf/releases/download/v$PROTOC_VERSION/protobuf-all-$PROTOC_VERSION.tar.gz
-tar -xvf protobuf-all-$PROTOC_VERSION.tar.gz
+echo "Extract protoc archive"
+tar -zvxf protobuf-all-$PROTOC_VERSION.tar.gz --no-same-owner
 cd protobuf-$PROTOC_VERSION
 
 # Set up the build environment
+echo "Set up the build environment"
 ./configure
 
 # Compile the source code
+echo "Compile protoc"
 make
 
 # Install the compiled protoc
+echo "Install protoc"
 make install
 
 # Check if protoc is installed successfully
