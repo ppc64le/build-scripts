@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #---------------------------------------------------------------------------------------------------
 #
-# Package       : Neo4j
+# Package       : neo4j
 # Version       : 5.20
 # Source repo   : https://github.com/neo4j/neo4j.git
 # Tested on     : UBI 9.3 
