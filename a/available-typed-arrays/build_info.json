@@ -1,0 +1,15 @@
+{
+    "maintainer": "vinodk99",
+    "package_name": "available-typed-arrays",
+    "github_url": "https://github.com/inspect-js/available-typed-arrays",
+    "version": "v1.0.7",
+    "package_dir": "a/available-typed-arrays",
+    "default_branch": "main",
+    "build_script": "available-typed-arrays_ubi_9.3.sh",
+    "docker_build": "false",
+    "use_non_root_user": false,
+    "validate_build_script": "true",
+    "v*.*.*": {
+      "build_script": "available-typed-arrays_ubi_9.3.sh"
+    }
+  }
