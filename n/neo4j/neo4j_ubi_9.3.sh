@@ -1,21 +1,22 @@
 #!/bin/bash -e
 #---------------------------------------------------------------------------------------------------
 #
-# Package		: Neo4j
-# Version		: 5.9.0
-# Source repo		: https://github.com/neo4j/neo4j.git
-# Tested on		: UBI 9.3 (docker)
-# Language		: Java
-# Travis-Check		: true
-# Script License	: Apache License, Version 2 or later
-# Maintainer		: Sumit Dubey <sumit.dubey2@ibm.com>
+# Package       : Neo4j
+# Version       : 5.9.0
+# Source repo   : https://github.com/neo4j/neo4j.git
+# Tested on     : UBI 9.3 
+# Language      : Java
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Siddesh Sangodkar <siddesh.sangodkar1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
-#---------------------------------------------------------------------------------------------------
+#
+# ----------------------------------------------------------------------------
 
 CWD=$(pwd)
 PACKAGE_NAME=neo4j
