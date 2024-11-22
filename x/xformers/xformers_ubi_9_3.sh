@@ -94,7 +94,7 @@ python${PYTHON_VER} -m pip install --no-build-isolation .
 
 # Build and install xformers
 cd ..
-if ! python${PYTHON_VER} -m pip install -e .; then
+if ! python${PYTHON_VER} -m pip install -e . --no-build-isolation; then
     echo "------------------$PACKAGE_NAME:build_fails---------------------"
     exit 1
 else
