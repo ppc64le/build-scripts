@@ -31,7 +31,7 @@ else
 fi
 
 # install tools and dependent packages
-yum install -y git gcc-c++ make wget java-11-openjdk-devel openssl-devel bzip2 zip unzip yum-utils clang clang-devel clang-libs patch cmake
+yum install -y git make wget java-11-openjdk-devel openssl-devel bzip2 zip unzip yum-utils clang clang-devel clang-libs patch cmake
 export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-11)(?=.*ppc64le)')
 export PATH=$JAVA_HOME/bin:$PATH
 
