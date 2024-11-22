@@ -1,0 +1,18 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "node-fs-extra",
+    "github_url": "https://github.com/jprichardson/node-fs-extra",
+    "version": "11.2.0",
+    "default_branch": "master",
+    "build_script": "node-fs-extra_ubi_9.3.sh",
+    "package_dir": "n/node-fs-extra",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "11.*.*": {
+        "build_script": "node-fs-extra_ubi_9.3.sh"
+    },
+    "8.1.0": {
+        "build_script": "node-fs-extra_8.1.0_ubi_9.3.sh"
+    }
+}
