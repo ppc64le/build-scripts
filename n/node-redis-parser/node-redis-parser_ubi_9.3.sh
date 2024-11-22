@@ -55,10 +55,14 @@ if ! npm install && npm audit fix --force; then
     exit 1
 fi
 
+echo "Running tests"
+echo `date`
+
 if ! node ./node_modules/istanbul/lib/cli.js cover --preserve-comments ./node_modules/mocha/bin/_mocha -- -R spec --timeout 10000; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    echo `date`
     exit 2
 else
     echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
