@@ -1,0 +1,15 @@
+{
+    "maintainer": "pratibh-ibm",
+    "package_name": "jsonp",
+    "github_url": "https://github.com/javaee/jsonp.git",
+    "version": "1.1.4-RELEASE",
+    "default_branch": "master",
+    "package_dir": "j/jsonp",
+    "build_script": "jsonp_ubi_9.3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "v4.*.*": {
+      "build_script": "jsonp_ubi_9.3.sh"
+    }
+  }
