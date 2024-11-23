@@ -41,30 +41,25 @@ git submodule update --init
 # Install Python dependencies
 python${PYTHON_VER} -m pip install ninja cmake 'pytest==8.2.2' hydra-core
 
-# Install dependency - PyTorch
-PYTORCH_VERSION="v2.4.1"
-PPC64LE_PATCH="69cbf05"
+# Install dependency - pytorch
+PYTORCH_VERSION=v2.5.1
 
-# Clone PyTorch repository
 git clone https://github.com/pytorch/pytorch.git
+
 cd pytorch
 
-# Check out the specified version tag
 git checkout tags/$PYTORCH_VERSION
 
-# Apply POWER patch if it hasn't been applied already
-# Check if patch is already applied
+PPC64LE_PATCH="69cbf05"
+
 if ! git log --pretty=format:"%H" | grep -q "$PPC64LE_PATCH"; then
-    echo "Checking if POWER patch is needed."
-    git cherry-pick "$PPC64LE_PATCH" || {
-        echo "Patch conflicts detected or redundant. Skipping patch application."
-        git cherry-pick --abort
-    }
+    echo "Applying POWER patch."
+    git config user.email "Puneet.Sharma21@ibm.com"
+    git config user.name "puneetsharma21"
+    git cherry-pick "$PPC64LE_PATCH"
 else
     echo "POWER patch not needed."
 fi
-
-
 
 git submodule sync
 git submodule update --init --recursive
@@ -94,7 +89,7 @@ python${PYTHON_VER} -m pip install --no-build-isolation .
 
 # Build and install xformers
 cd ..
-if ! python${PYTHON_VER} -m pip install -e . --no-build-isolation; then
+if ! python${PYTHON_VER} -m pip install -e .; then
     echo "------------------$PACKAGE_NAME:build_fails---------------------"
     exit 1
 else
