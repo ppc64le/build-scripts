@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : rstudio/rstudio
+# Package       : rstudio
 # Version       : v2024.09.0+375
 # Source repo   : https://github.com/rstudio/rstudio
 # Tested on     : UBI 9.3
