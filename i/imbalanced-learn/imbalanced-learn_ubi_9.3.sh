@@ -59,6 +59,8 @@ else
  echo "scikit-learn already installed"
 fi
 
+pip install pandas numpydoc
+
 #install
 if ! (python3 setup.py install) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
