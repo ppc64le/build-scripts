@@ -23,6 +23,7 @@ PACKAGE_VERSION=${1:-v0.0.28}
 PACKAGE_URL=https://github.com/facebookresearch/xformers.git
 PYTHON_VER=${2:-3.11}
 PARALLEL=${PARALLEL:-$(nproc)}
+OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 export _GLIBCXX_USE_CXX11_ABI=1
 
 # Install dependencies
@@ -90,17 +91,25 @@ python${PYTHON_VER} -m pip install --no-build-isolation .
 # Build and install xformers
 cd ..
 if ! python${PYTHON_VER} -m pip install -e .; then
-    echo "------------------$PACKAGE_NAME:build_fails---------------------"
+    echo "------------------$PACKAGE_NAME:Build_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail |  Build_fails"
     exit 1
 else
-    echo "------------------$PACKAGE_NAME:build_success-------------------------"
+    echo "------------------$PACKAGE_NAME:Build_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_Success"
 fi
 
 # Test installation
 if python${PYTHON_VER} -c "import xformers"; then
     echo "------------------$PACKAGE_NAME::Install_Success---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Install_Success"
 else
     echo "------------------$PACKAGE_NAME::Install_Fail-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail |  Install_Fails"
     exit 2
 fi
 
@@ -108,8 +117,12 @@ fi
 export PY_IGNORE_IMPORTMISMATCH=1
 if ! python${PYTHON_VER} -m pytest tests/test_unbind.py tests/test_rotary_embeddings.py tests/test_hydra_helper.py tests/test_compositional_attention.py tests/test_global_attention.py; then
     echo "------------------$PACKAGE_NAME:test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail |  Test_Fails"
     exit 2
 else
     echo "------------------$PACKAGE_NAME:test_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Test_Success"
     exit 0
 fi
