@@ -38,6 +38,7 @@ dnf install -y git cmake ninja-build g++ rust cargo jq \
             harfbuzz-devel fribidi-devel libraqm-devel libimagequant-devel libxcb-devel \
             python-devel python-pip
 
+echo "dependencies installed successfully"
 
 if ! command -v pip; then
     ln -s $(command -v pip3) /usr/bin/pip
@@ -46,7 +47,6 @@ fi
 if ! command -v python; then
     ln -s $(command -v python3) /usr/bin/python
 fi
-
 
 # install dependency - pytorch
 PYTORCH_VERSION=${PYTORCH_VERSION:-$(curl -sSL https://api.github.com/repos/pytorch/pytorch/releases/latest | jq -r .tag_name)}
@@ -72,6 +72,8 @@ pip install -v -e . --no-build-isolation
 pip install setuptools wheel
 
 cd $WORKDIR
+
+echo "Now building torchvision"
 
 # build torchvision
 git clone $PACKAGE_URL
