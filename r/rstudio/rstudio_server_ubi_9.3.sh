@@ -18,7 +18,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_URL=https://github.com/rstudio/rstudio.git
-PACKAGE_NAME=rstudio-server
+PACKAGE_NAME=rstudio
 PACKAGE_VERSION=${1:-v2024.09.0+375}
 export ARCH=$(uname -m)
 
@@ -47,7 +47,7 @@ rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 dnf install -y R-core R-core-devel libsqlite3x-devel soci-sqlite3
 
 git clone ${PACKAGE_URL}
-cd ${TMPWS_DIR}/rstudio
+cd ${TMPWS_DIR}/${PACKAGE_NAME}
 git checkout tags/${PACKAGE_VERSION}
 git apply $SCRIPT_DIR/rstudio_server_${PACKAGE_VERSION}.patch
 
