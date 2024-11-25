@@ -1,7 +1,7 @@
 {
     "maintainer": "Vipul-Ajmera",
     "package_name": "commons-dbutils",
-    "github_url": "https://github.com/apache/commons-dbutils.gitt",
+    "github_url": "https://github.com/apache/commons-dbutils.git",
     "version": "rel/commons-dbutils-1.8.1",
     "default_branch": "master",
     "package_dir": "c/commons-dbutils",
