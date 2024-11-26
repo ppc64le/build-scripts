@@ -35,13 +35,6 @@ git checkout $PACKAGE_VERSION
 pip install wheel numpy==1.21.0
 
 #install
-if ! (python3 setup.py bdist_wheel) ; then
-    echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
-    exit 1
-fi
-
 if ! (python3 -m setup install); then
         echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
