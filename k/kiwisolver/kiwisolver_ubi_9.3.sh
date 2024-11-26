@@ -32,7 +32,10 @@ pip install build pytest wheel
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+
 pip install .
+pip install cppy
+
 #install
 if ! (python3 setup.py install) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
