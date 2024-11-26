@@ -63,7 +63,7 @@ if !  mvn clean install -DskipTests  ; then
 fi 
 
 # Tests 
-if ! mvn clean install -Dlog4j2.disable.jmx=true  -Dlog4j.configuration=file:${PWD}/conf/log4j.properties; then
+if ! mvn clean install -Dlog4j2.disable.jmx=true  -Dlog4j.configurationFile="/tmp/log" ; then
     echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
