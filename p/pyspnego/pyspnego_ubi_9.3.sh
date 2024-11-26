@@ -41,9 +41,6 @@ else
     echo "Rust is already installed."
 fi
 
-#upgrade pip
-python3 -m pip install --upgrade pip
-
 # Install dependencies
 pip install -r requirements-test.txt
 pip install wheel build pytest pytest-mock mocker k5test
@@ -59,7 +56,7 @@ elif ! [ -x /usr/sbin/kdb5_util ]; then
 fi
 
 # Install the package
-if ! python3 setup.py install; then
+if ! python3 -m pip install .; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
