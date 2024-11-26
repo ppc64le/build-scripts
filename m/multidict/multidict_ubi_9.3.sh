@@ -34,7 +34,7 @@ git checkout $PACKAGE_VERSION  # Checkout the specified version
 # install necessary Python packages
 pip install pytest pytest-cov build
 
-#build
+#install
 if ! (python3 setup.py install) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
