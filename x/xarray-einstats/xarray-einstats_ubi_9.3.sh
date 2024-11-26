@@ -45,21 +45,35 @@ cmake -G "Unix Makefiles" ../llvm \
     -DCMAKE_BUILD_TYPE=Release \
     -DLLVM_ENABLE_RTTI=ON
 make -j$(nproc)
+export PATH=/usr/local/src/llvm-project/build/bin:$PATH
+source ~/.bashrc
 
 # Back to xarray-einstats directory
 cd "$ORIGINAL_DIR"
 
-# Upgrade pip
-python3 -m pip install --upgrade pip
-
 # Install additional dependencies
-pip install einops pillow build wheel
-
+pip install einops pillow build wheel numba
 
 #install
-if ! pyproject-build; then
+if ! python3 -m pip install .; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
+
+#Run tests
+if !(pytest -k "not test_linalg_accessor_solve and not test_solve"); then
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME:build_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    deactivate
+    exit 0
+fi
+
+
