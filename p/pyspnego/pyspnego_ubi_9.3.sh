@@ -45,7 +45,6 @@ fi
 python3 -m pip install --upgrade pip
 
 # Install dependencies
-pip install .
 pip install -r requirements-test.txt
 pip install wheel build pytest pytest-mock mocker k5test
 
@@ -59,11 +58,11 @@ elif ! [ -x /usr/sbin/kdb5_util ]; then
     export SKIP_TESTS=true
 fi
 
-# Build the package
-if ! pyproject-build; then
+# Install the package
+if ! python3 setup.py install; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
