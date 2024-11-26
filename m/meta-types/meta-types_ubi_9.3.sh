@@ -19,7 +19,7 @@
 # -----------------------------------------------------------------------------
 
 PACKAGE_NAME=meta-types
-PACKAGE_VERSION=${1:- v2.0.0}
+PACKAGE_VERSION=${1:-v2.0.0}
 PACKAGE_URL=https://github.com/grantila/meta-types
 
 yum install -y wget git libcurl-devel make gcc-c++ patch python3 python3-devel
