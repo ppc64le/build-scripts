@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-1.8.3}
 PACKAGE_URL=https://github.com/python-poetry/poetry.git
 
 #install dependencies
-yum install -y --allowerasing python3-pip python3-devel git gcc gcc-c++ make curl openssl openssl-devel wget openssl-devel bzip2-devel libffi-devel zlib-devel
+yum install -y --allowerasing python-pip python-devel git gcc gcc-c++ make curl openssl openssl-devel wget openssl-devel bzip2-devel libffi-devel zlib-devel
 
 # Create a symbolic link for python3
 ln -s /usr/bin/python3 /usr/bin/python
@@ -44,9 +44,6 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-# Upgrade pip
-python3 -m pip install --upgrade pip
-
 #check if requests is already installed
 if pip list | grep -q "requests"; then
     echo "Removing existing requests package..."
@@ -56,12 +53,11 @@ else
 fi
 
 # Install required Python packages
-pip install .
 pip install pytest==7.1.2 httpretty keyring
 pip install pytest-xdist mocker pytest-mock deepdiff
 
 #install
-if ! pyproject-build; then
+if ! python3 -m pip install .; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
