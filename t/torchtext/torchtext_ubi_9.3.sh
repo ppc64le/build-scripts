@@ -28,14 +28,11 @@ yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel 
 
 # Clone the repository
 git clone $PACKAGE_URL
-cd text  
-git checkout $PACKAGE_VERSION  
+cd text
+git checkout $PACKAGE_VERSION
 
 #Original directory
 ORIGINAL_DIR=$(pwd)
-
-# Upgrade pip
-python3 -m pip install --upgrade pip
 
 # Check if Rust is installed
 if ! command -v rustc &> /dev/null; then
@@ -51,14 +48,13 @@ fi
 git clone --recursive https://github.com/pytorch/pytorch.git
 cd pytorch
 pip install -r requirements.txt
-python3 setup.py install 
+python3 setup.py install
 
 # Back to torchtext directory
 cd "$ORIGINAL_DIR"
 
 # Install additional dependencies
-pip install .
-pip install spacy
+pip install spacy pytest revtok
 python3 -m spacy download en
 
 #install
@@ -67,4 +63,18 @@ if ! (python3 setup.py install) ; then
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
+fi
+
+#run tests
+if !(pytest -k "not (wikitext2 or csv_file_no_header_one_col_multiple_fields or json_dataset_one_key_multiple_fields or serialization_built_vocab or serialization_pre_build or serialization or get_tokenizer_spacy or get_tokenizer_toktokt or download_extract_tar or download_extract_to_path)"); then
+    echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    deactivate
+    exit 0
 fi
