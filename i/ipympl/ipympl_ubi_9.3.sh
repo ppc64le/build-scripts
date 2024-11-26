@@ -57,15 +57,11 @@ cd $PACKAGE_NAME
 # Checkout the specific version
 git checkout $PACKAGE_VERSION
 
-# Upgrade pip
-python3 -m pip install --upgrade pip setuptools
-
 # Install Python dependencies
-pip install -e .
-pip install matplotlib ipywidgets numpy pytest nbval build
+pip install setuptools matplotlib ipywidgets numpy pytest nbval build
 
 #install
-if ! pyproject-build; then
+if ! python3 setup.py install; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
