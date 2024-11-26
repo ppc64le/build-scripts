@@ -52,7 +52,7 @@ source ~/.bashrc
 cd "$ORIGINAL_DIR"
 
 # Install additional dependencies
-pip install einops pillow build wheel numba
+pip install einops pillow build wheel numba scipy
 
 #install
 if ! python3 -m pip install .; then
