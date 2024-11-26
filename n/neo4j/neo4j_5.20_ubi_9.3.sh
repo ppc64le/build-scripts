@@ -38,6 +38,11 @@ export JAVA_HOME=$(compgen -G '/usr/lib/jvm/java-17-openjdk-*')
 export JRE_HOME=${JAVA_HOME}/jre
 export PATH=${JAVA_HOME}/bin:$PATH
 
+# install sbt
+curl https://bintray.com/sbt/rpm/rpm | tee /etc/yum.repos.d/bintray-sbt-rpm.repo
+yum install -y sbt
+
+
 #Install maven
 wget https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
 tar xvf apache-maven-${MAVEN_VERSION}-bin.tar.gz
