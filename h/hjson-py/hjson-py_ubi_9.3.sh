@@ -32,7 +32,6 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION  
 
 # install necessary dependencies
-pip install .
 pip install pytest
 
 #install
