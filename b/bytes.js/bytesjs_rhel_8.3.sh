@@ -1,9 +1,12 @@
+#!/usr/bin/env bash
 # -----------------------------------------------------------------------------
 #
-# Package	: bytes
-# Version	: 3.0.0
+# Package		: bytes
+# Version		: 3.0.0
 # Source repo	: https://github.com/visionmedia/bytes.js
-# Tested on	: RHEL 8.3
+# Tested on		: RHEL 8.3
+# Language      : JavaScript
+# Travis-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
@@ -14,15 +17,24 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
+set -e
 PACKAGE_NAME=bytes
 PACKAGE_VERSION=3.0.0
 PACKAGE_URL=https://github.com/visionmedia/bytes.js
+NODE_VERSION=${NODE_VERSION:-22}
 
-yum -y update && yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git gcc gcc-c++ libffi libffi-devel ncurses git jq make cmake
+yum -y update && yum install -y yum-utils python3 python3-devel.ppc64le ncurses git gcc gcc-c++ libffi libffi-devel ncurses git jq make cmake
 yum-config-manager --add-repo http://rhn.pbm.ihost.com/rhn/latest/8.3Server/ppc64le/appstream/
 yum-config-manager --add-repo http://rhn.pbm.ihost.com/rhn/latest/8.3Server/ppc64le/baseos/
 yum-config-manager --add-repo http://rhn.pbm.ihost.com/rhn/latest/7Server/ppc64le/optional/
+
+# Install Node js 
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+source "$HOME"/.bashrc
+echo "Installing nodejs $NODE_VERSION"
+nvm install "$NODE_VERSION" >/dev/null
+nvm use $NODE_VERSION
+npm --version
 
 yum install -y firefox liberation-fonts xdg-utils && npm install n -g && n latest && npm install -g npm@latest && export PATH="$PATH" && npm install --global yarn grunt-bump xo testem acorn
 
