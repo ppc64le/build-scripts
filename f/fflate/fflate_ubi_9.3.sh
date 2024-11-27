@@ -46,14 +46,14 @@ if ! npm run build:lib ; then
     echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
-    exit 2
+    exit 1
 fi
 
 if ! npm test; then
     echo "------------------$PACKAGE_NAME:Build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
-    exit 3
+    exit 2
 else
     echo "------------------$PACKAGE_NAME:Build_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
