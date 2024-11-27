@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : shelljs
-# Version       : master
+# Version       : v0.8.5
 # Source repo   : https://github.com/shelljs/shelljs
 # Tested on     : UBI: 9.3
 # Language      : javascript
@@ -20,9 +20,9 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=shelljs
-PACKAGE_VERSION=${1:-master}
+PACKAGE_VERSION=${1:-v0.8.5}
 PACKAGE_URL=https://github.com/shelljs/shelljs
-export NODE_VERSION=${NODE_VERSION:-20.18.0}
+export NODE_VERSION=${NODE_VERSION:-8.17.0}
 HOME_DIR=${PWD}
 
 sudo yum install -y yum-utils git wget tar gzip python3 python3-devel gcc gcc-c++ make cmake libcurl-devel
@@ -45,8 +45,8 @@ if ! npm install; then
     exit 1
 fi
 
-#skipping test "quiet mode off", as pattern of returning path value may change system to system
-if ! npm test -- --match '!quiet mode off'; then
+
+if ! npm test; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
