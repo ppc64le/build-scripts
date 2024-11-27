@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-v0.7.0}
 PACKAGE_URL=https://github.com/arviz-devs/xarray-einstats.git
 
 # Install necessary system dependencies
-yum install -y git gcc gcc-c++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel python-devel python-pip gcc-gfortran libjpeg-devel
+yum install -y git gcc gcc-c++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel python-devel python-pip gcc-gfortran libjpeg-devel openblas openblas-devel
 
 # Clone the repository
 git clone $PACKAGE_URL
