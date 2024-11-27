@@ -1,0 +1,16 @@
+{
+  "maintainer": "Harithanagothu2",
+  "package_name": "pyodbc",
+  "github_url": "https://github.com/mkleehammer/pyodbc.git",
+  "version": "4.0.34",
+  "wheel_build" : true,
+  "package_dir": "p/pyodbc",
+  "default_branch": "master",
+  "build_script": "pyodbc_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "pyodbc_ubi_9.3.sh"
+  }
+}
