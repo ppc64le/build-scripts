@@ -26,7 +26,7 @@ PACKAGE_VERSION=${1:-v1.6.52}
 PACKAGE_URL=https://github.com/peterolson/BigInteger.js
 HOME_DIR=${PWD}
 
-export NODE_VERSION=${NODE_VERSION:-14}
+export NODE_VERSION=${NODE_VERSION:-20}
 
 yum install -y wget yum-utils
 
