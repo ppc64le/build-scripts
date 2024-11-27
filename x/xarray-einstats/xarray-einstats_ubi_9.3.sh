@@ -72,6 +72,5 @@ else
     echo "------------------$PACKAGE_NAME:build_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-    deactivate
     exit 0
 fi
