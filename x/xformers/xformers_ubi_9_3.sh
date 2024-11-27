@@ -116,13 +116,13 @@ fi
 # Run Specific tests
 export PY_IGNORE_IMPORTMISMATCH=1
 if ! python${PYTHON_VER} -m pytest tests/test_unbind.py tests/test_rotary_embeddings.py tests/test_hydra_helper.py tests/test_compositional_attention.py tests/test_global_attention.py; then
-    echo "------------------$PACKAGE_NAME:test_fails---------------------"
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail |  Test_Fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail |  Install_success_but_test_Fails"
     exit 2
 else
-    echo "------------------$PACKAGE_NAME:test_success-------------------------"
+    echo "------------------$PACKAGE_NAME:both_install_and_test_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Test_Success"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
