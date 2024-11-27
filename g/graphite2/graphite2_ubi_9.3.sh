@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 #variables
-PACKAGE_NAME=graphite
+PACKAGE_NAME=graphite2
 PACKAGE_VERSION=${1:-1.3.14}
 PACKAGE_URL=https://github.com/silnrsi/graphite
 
@@ -28,7 +28,7 @@ yum install -y wget gcc gcc-c++ gcc-gfortran git make  python-devel  openssl-dev
 
 #clone repository
 git clone $PACKAGE_URL
-cd  $PACKAGE_NAME
+cd graphite
 git checkout $PACKAGE_VERSION
 
 #install
