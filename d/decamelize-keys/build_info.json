@@ -1,0 +1,15 @@
+{
+    "maintainer": "vinodk99",
+    "package_name": "decamelize-keys",
+    "github_url": " https://github.com/sindresorhus/decamelize-keys",
+    "version": "v2.0.1",
+    "package_dir": "d/decamelize-keys",
+    "default_branch": "main",
+    "build_script": "decamelize-keys_ubi_9.3.sh",
+    "docker_build": "false",
+    "use_non_root_user": false,
+    "validate_build_script": "true",
+    "v*.*.*": {
+      "build_script": "decamelize-keys_ubi_9.3.sh"
+    }
+  }
