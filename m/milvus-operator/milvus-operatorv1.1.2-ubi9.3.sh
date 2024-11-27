@@ -152,4 +152,13 @@ else
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
 fi
 
-make docker-build
+if ! make docker-build; then
+        echo "------------------$PACKAGE_NAME:docke_build_fails---------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  docke_build_fails"
+        exit 1
+else
+        echo "------------------$PACKAGE_NAME:docker_build_success-------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  docker_build_success"
+fi
