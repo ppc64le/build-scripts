@@ -1,7 +1,7 @@
 {
     "maintainer": "vinodk99",
     "package_name": "decamelize-keys",
-    "github_url": " https://github.com/sindresorhus/decamelize-keys",
+    "github_url": "https://github.com/sindresorhus/decamelize-keys",
     "version": "v2.0.1",
     "package_dir": "d/decamelize-keys",
     "default_branch": "main",
