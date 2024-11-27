@@ -35,14 +35,27 @@ cd $PACKAGE_PATH
 git checkout $PACKAGE_VERSION
 
 # install necessay dependencies
-pip install .
 pip install pytest mock build
 pip install -r requirements.txt
 
 #install
-if ! (pyproject-build) ; then
+if ! (python3 setup.py install) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
+fi
+
+#run tests  
+if !(pytest -k "not test_send_to_handler"); then
+    echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME:build_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Build_and_Test_Success"
+    deactivate
+    exit 0
 fi
