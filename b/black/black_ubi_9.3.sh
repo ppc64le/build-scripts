@@ -43,11 +43,10 @@ fi
 
 #install necessary Python dependencies
 pip install -r test_requirements.txt
-pip install .
 pip install build
 
 #install
-if ! (pyproject-build) ; then
+if ! (python3 -m pip install . ) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
