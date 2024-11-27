@@ -38,9 +38,10 @@ export JAVA_HOME=$(compgen -G '/usr/lib/jvm/java-17-openjdk-*')
 export JRE_HOME=${JAVA_HOME}/jre
 export PATH=${JAVA_HOME}/bin:$PATH
 
-# install sbt
-curl https://bintray.com/sbt/rpm/rpm | tee /etc/yum.repos.d/bintray-sbt-rpm.repo
-yum install -y sbt
+#install sbt package
+curl -L https://www.scala-sbt.org/sbt-rpm.repo > sbt-rpm.repo
+mv sbt-rpm.repo /etc/yum.repos.d/
+yum -y install sbt
 
 
 #Install maven
