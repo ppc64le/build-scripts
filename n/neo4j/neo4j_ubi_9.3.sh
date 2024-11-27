@@ -37,6 +37,14 @@ export JAVA_HOME=$(compgen -G '/usr/lib/jvm/java-17-openjdk-*')
 export JRE_HOME=${JAVA_HOME}/jre
 export PATH=${JAVA_HOME}/bin:$PATH
 
+
+
+#install sbt package
+curl -L https://www.scala-sbt.org/sbt-rpm.repo > sbt-rpm.repo
+mv sbt-rpm.repo /etc/yum.repos.d/
+yum -y install sbt
+
+
 #Install maven
 wget https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
 tar xvf apache-maven-${MAVEN_VERSION}-bin.tar.gz
