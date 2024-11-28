@@ -83,7 +83,12 @@ git checkout $SHARP_PACKAGE_VERSION
 git apply $SCRIPT_PATH/${SHARP_PACKAGE_NAME}_${SHARP_PACKAGE_VERSION}.patch
 
 # Build sharp
+ret=0
 npm install --build-from-source || ret=$?
+if [ "$ret" -ne 0 ]
+then
+    exit 1
+fi
 rm -rf npm package-lock.json docs coverage test
 
 # Clone and build the Rocket.Chat image
@@ -93,4 +98,8 @@ cd Docker.Official.Image/$RC_MAJOR
 git apply $SCRIPT_DIR/${PACKAGE_NAME}_${PACKAGE_VERSION}.patch
 cp -r $BUILD_HOME/sharp $BUILD_HOME/Docker.Official.Image/$RC_MAJOR/
 
-docker build -t rocket.chat:$PACKAGE_VERSION .
+docker build -t rocket.chat:$PACKAGE_VERSION . || ret=$?
+if [ "$ret" -ne 0 ]
+then
+    exit 1
+fi
