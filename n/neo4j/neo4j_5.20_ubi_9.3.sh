@@ -57,9 +57,9 @@ cd ${PACKAGE_NAME} && git checkout ${PACKAGE_VERSION}
 #Add hostname
 HOST=$(hostname)
 echo "127.0.0.1   $HOST" >> /etc/hosts
-export JAVA_OPTS="-Xms2048M -Xmx4096M"
+#export JAVA_OPTS="-Xms2048M -Xmx4096M"
 #Build and test
-export MAVEN_OPTS="-Xmx4096m"
+#export MAVEN_OPTS="-Xmx4096m"
 #Build
 if !  mvn clean install -DskipTests  ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
