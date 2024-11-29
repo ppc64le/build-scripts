@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
 # -----------------------------------------------------------------------------
 #
-# Package	: tokio
-# Version	: tokio-1.41.1
-# Source repo	: https://github.com.mcas.ms/tokio-rs/tokio
-# Tested on	: UBI 9.3
+# Package	    : tokio
+# Version	    : tokio-1.41.1
+# Source repo	: https://github.com/tokio-rs/tokio
+# Tested on	    : UBI 9.3
 # Language      : Rust
 # Travis-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Onkar Kubal <onkar.kubal@ibm.com>
 #
-# Disclaimer: This script has been tested in root mode on given
-# ==========  platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of the
-#             package and/or distribution. In such case, please
-#             contact "Maintainer" of this script.
+# Disclaimer    : This script has been tested in root mode on given
+# ==========    platform using the mentioned version of the package.
+#               It may not work as expected with newer versions of the
+#               package and/or distribution. In such case, please
+#               contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
 set -e
