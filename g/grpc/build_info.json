@@ -1,0 +1,16 @@
+{
+  "maintainer": "bhagyashrigai",
+  "package_name": "grpcio",
+  "github_url": "https://github.com/grpc/grpc.git",
+  "version": "v1.64.0",
+  "wheel_build" : true,
+  "default_branch": "main",
+  "package_dir": "g/grpc",
+  "build_script": "grpcio_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v1.*.*": {
+    "build_script": "grpcio_ubi_9.3.sh"
+  }
+}
