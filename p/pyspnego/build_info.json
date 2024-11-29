@@ -1,7 +1,7 @@
 {
   "maintainer": "aastha-sharma2",
   "package_name": "pyspnego",
-  "github_url": "https://github.com/pyca/pyopenssl.git",
+  "github_url": "https://github.com/jborean93/pyspnego.git",
   "version": "0.10.2",
   "wheel_build" : true,
   "package_dir": "p/pyspnego",
@@ -10,7 +10,7 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
-  "*.*.*": {
+  "*": {
     "build_script": "pyspnego_ubi_9.3.sh"
   }
 }
