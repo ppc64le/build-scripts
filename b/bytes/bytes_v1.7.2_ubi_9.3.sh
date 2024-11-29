@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # -----------------------------------------------------------------------------
 #
-# Package	: bytes
-# Version	: v1.7.2
+# Package	    : bytes
+# Version	    : v1.7.2
 # Source repo	: https://github.com.mcas.ms/tokio-rs/bytes
-# Tested on	: UBI 9.3
+# Tested on	    : UBI 9.3
 # Language      : Rust
 # Travis-Check  : true
 # Script License: Apache License, Version 2 or later
