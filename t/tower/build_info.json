@@ -1,7 +1,7 @@
 {
     "maintainer": "onkar-kubal",
     "package_name": "tower",
-    "github_url": "https://github.com.mcas.ms/tower-rs/tower",
+    "github_url": "https://github.com/tower-rs/tower",
     "version": "tower-0.5.0",
     "default_branch": "master",
     "build_script": "tower_ubi_9.3.sh",
