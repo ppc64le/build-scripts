@@ -33,8 +33,7 @@ rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 
 # Install dependencies and tools.
-yum install -y gcc gcc-c++ gcc-gfortran git make python-devel zlib-devel libjpeg-devel libtiff-devel freetype-devel  ffmpeg-free-devel.ppc64le freeimage.ppc64le libwebp-devel  
-pkg-config ffmpeg-free.ppc64le
+yum install -y gcc gcc-c++ gcc-gfortran git make python-devel zlib-devel libjpeg-devel libtiff-devel freetype-devel  ffmpeg-free-devel.ppc64le freeimage.ppc64le libwebp-devel  pkg-config ffmpeg-free.ppc64le
 
 
 #clone repository 
@@ -56,8 +55,7 @@ fi
 #test
 #skipping the some testcase as it is failing on x_86 also.
 
-if ! (pytest --deselect tests/test_ffmpeg.py --deselect tests/test_pillow.py --deselect tests/test_pillow_legacy.py  --deselect tests/test_dicom.py 
---deselect tests/test_core.py  --deselect tests/test_ffmpeg_info.py  --deselect tests/test_freeimage.py --deselect tests/test_format.py); then
+if ! (pytest --deselect tests/test_ffmpeg.py --deselect tests/test_pillow.py --deselect tests/test_pillow_legacy.py  --deselect tests/test_dicom.py --deselect tests/test_core.py  --deselect tests/test_ffmpeg_info.py  --deselect tests/test_freeimage.py --deselect tests/test_format.py); then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
