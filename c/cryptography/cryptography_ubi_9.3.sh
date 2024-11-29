@@ -26,7 +26,6 @@ PACKAGE_URL=https://github.com/pyca/cryptography.git
 # Install necessary system dependencies
 yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel zlib-devel python-devel python-pip openssl openssl-devel
 
-# Clone the repository
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
@@ -63,5 +62,4 @@ else
     echo "------------------$PACKAGE_NAME:build_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Build_and_Test_Success"
-    exit 0
 fi
