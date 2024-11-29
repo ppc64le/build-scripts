@@ -3,7 +3,7 @@
 #
 # Package	    : bytes
 # Version	    : v1.7.2
-# Source repo	: https://github.com.mcas.ms/tokio-rs/bytes
+# Source repo	: https://github.com/tokio-rs/bytes
 # Tested on	    : UBI 9.3
 # Language      : Rust
 # Travis-Check  : true
