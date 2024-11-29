@@ -42,7 +42,7 @@ fi
 
 # Install additional dependencies
 pip install -r ci-constraints-requirements.txt
-pip install build wheel cython nox
+pip install build wheel cython nox cryptography_vectors==42.0.7
 
 #install
 if ! python3 -m pip install . ; then
