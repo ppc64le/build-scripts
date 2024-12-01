@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 #variables
-PACKAGE_NAME=gmpy
+PACKAGE_NAME=gmpy2
 PACKAGE_VERSION=${1:-gmpy2-2.1.2}
 PACKAGE_URL=https://github.com/aleaxit/gmpy.git
 # Install dependencies and tools.
@@ -27,7 +27,7 @@ yum install -y wget gcc gcc-c++ gcc-gfortran git make  python-devel  openssl-dev
 
 #clone repository 
 git clone $PACKAGE_URL
-cd  $PACKAGE_NAME
+cd  gmpy
 git checkout $PACKAGE_VERSION
 
 pip install cython
