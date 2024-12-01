@@ -67,16 +67,16 @@ if ! pytest -v; then
         echo "------------------$PACKAGE_NAME:no_tests_found---------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | No Tests |  No_tests_found"
-        exit 1
+        exit 0
     else
         echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
-        exit 2
+        exit 1
     fi
 else
     echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-    exit 0
+    exit 1
 fi
