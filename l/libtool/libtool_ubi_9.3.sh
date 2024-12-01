@@ -28,27 +28,39 @@ yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel 
 
 # Clone the repository
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME  # Change directory to the cloned repository
-git checkout $PACKAGE_VERSION  # Checkout the specified version
+cd $PACKAGE_NAME  
+git checkout $PACKAGE_VERSION  
 
 # Check if Rust is installed
 if ! command -v rustc &> /dev/null; then
     # If Rust is not found, install Rust
     echo "Rust not found. Installing Rust..."
     curl https://sh.rustup.rs -sSf | sh -s -- -y
-    source "$HOME/.cargo/env"  # Update environment variables to use Rust
+    source "$HOME/.cargo/env"  
 else
     echo "Rust is already installed."
 fi
 
 # Upgrade pip and install necessary Python packages
-python3 -m pip install --upgrade pip wheel setuptools pytest
-pip install .
+pip install --upgrade pip wheel setuptools tox
 
 #install
-if ! (python3 setup.py install) ; then
+if ! (pip install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
+fi
+
+# Run test cases
+if !(tox -v); then
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    exit 0
 fi
