@@ -28,8 +28,8 @@ yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel 
 
 # Clone the repository
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME  
-git checkout $PACKAGE_VERSION  
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 
 # Check if Rust is installed
 if ! command -v rustc &> /dev/null; then
@@ -48,18 +48,26 @@ if yum list installed python3-chardet &> /dev/null; then
 else
     echo "python3-chardet is not installed."
 fi
- 
-# Upgrade pip
-python3 -m pip install --upgrade pip
 
 # Install additional dependencies
-pip install .
-pip install pretend flaky build tox
+pip install pretend flaky build tox pytest
 
 #install
-if ! pyproject-build; then
+if ! pip install .; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
+fi
+
+# Run tests
+if ! pytest --disable-warnings --ignore=tests/test_crypto.py -p no:flaky; then
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+else
+    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    exit 0
 fi
