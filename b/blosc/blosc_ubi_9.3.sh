@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : blosc
+# Package          : python-blosc
 # Version          : 1.11.1
 # Source repo      : https://github.com/Blosc/python-blosc.git
 # Tested on        : UBI:9.3
@@ -48,15 +48,35 @@ export USE_SYSTEM_BLOSC=1
 cd ../..
 
 # Install additional dependencies
-pip install setuptools build scikit-build cmake ninja py-cpuinfo Pillow
-#pip install -r requirements.txt
+pip install setuptools build scikit-build cmake ninja py-cpuinfo Pillow pytest
 pip install . --use-feature=in-tree-build
 
 
 #install
-if ! pyproject-build ; then
+if ! pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
+fi
+
+#run tests
+if ! pytest -v; then
+    # Check if there were no tests collected
+    if pytest -v | grep -q "collected 0 items"; then
+        echo "------------------$PACKAGE_NAME:no_tests_found---------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | No Tests |  No_tests_found"
+        exit 1
+    else
+        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+        exit 2
+    fi
+else
+    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    exit 0
 fi
