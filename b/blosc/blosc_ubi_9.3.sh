@@ -48,12 +48,10 @@ export USE_SYSTEM_BLOSC=1
 cd ../..
 
 # Install additional dependencies
-pip install setuptools build scikit-build cmake ninja py-cpuinfo Pillow pytest
-pip install . --use-feature=in-tree-build
-
+pip install setuptools build scikit-build cmake ninja py-cpuinfo Pillow pytest numpy
 
 #install
-if ! pip install . ; then
+if ! pip install . --use-feature=in-tree-build ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -61,19 +59,11 @@ if ! pip install . ; then
 fi
 
 #run tests
-if ! pytest -v; then
-    # Check if there were no tests collected
-    if pytest -v | grep -q "collected 0 items"; then
-        echo "------------------$PACKAGE_NAME:no_tests_found---------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | No Tests |  No_tests_found"
-        exit 0
-    else
-        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
-        exit 1
-    fi
+if !(python3 -m unittest discover  -p "test.py") ; then
+    echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    exit 2
 else
     echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
