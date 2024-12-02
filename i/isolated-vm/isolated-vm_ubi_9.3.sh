@@ -46,7 +46,10 @@ if ! npm install --build-from-source ; then
     exit 1
 fi
 
+
 npm cache clean --force
+npm install segfault-handler
+
 if ! npm --max-old-space-size=4096 test; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
