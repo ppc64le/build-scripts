@@ -24,20 +24,12 @@ PACKAGE_VERSION=${1:-llvm-14.0.6}
 PACKAGE_URL=https://github.com/sighingnow/libclang.git
 
 # Install necessary system dependencies
-yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel zlib-devel python3-devel python3-pip cmake xz
+yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel zlib-devel python3-devel python3-pip cmake clang
 
 # Clone the repository
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-
-# Install llvm dependencies if not already installed
-if ! yum list installed clang &>/dev/null; then
-    echo "Clang not found. Installing Clang..."
-    yum install -y clang
-else
-    echo "Clang is already installed."
-fi
 
 # Check if Rust is installed
 if ! command -v rustc &> /dev/null; then
@@ -60,7 +52,7 @@ if ! pip install . ; then
 fi
 
 # Run tests
-if ! tox -v; then
+if ! python3 -m unittest discover -p "test_*.py"; then
         echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
