@@ -1,7 +1,7 @@
 {
   "maintainer": "aastha-sharma2",
   "package_name": "hdijupyterutils",
-  "github_url": "https://github.com/hjson/hjson-py.git",
+  "github_url": "https://github.com/jupyter-incubator/sparkmagic.git",
   "version": "0.20.0",
   "wheel_build" : true,
   "package_dir": "h/hdijupyterutils",
