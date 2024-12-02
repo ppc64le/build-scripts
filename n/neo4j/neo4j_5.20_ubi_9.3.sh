@@ -59,6 +59,9 @@ HOST=$(hostname)
 echo "127.0.0.1   $HOST" >> /etc/hosts
 unset JAVA_OPTS
 unset MAVEN_OPTS
+MAVEN_OPTS="-Xmx666m"
+JAVA_OPTS="-Xmx666m"
+
 #Build and test
 if !  mvn clean install -DskipTests  ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
