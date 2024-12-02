@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : timeDate
-# Version          : 4032.109
+# Version          : 4041.110
 # Source repo      : https://github.com/cran/timeDate.git
 # Tested on        : UBI:9.3
 # Language         : R
@@ -20,7 +20,7 @@
 
 #variables
 PACKAGE_NAME=timeDate
-PACKAGE_VERSION=4032.109
+PACKAGE_VERSION=4041.110
 PACKAGE_URL=https://github.com/cran/timeDate.git
 
 #install dependencies
@@ -86,3 +86,4 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
+

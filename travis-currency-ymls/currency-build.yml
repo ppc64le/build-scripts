@@ -18,7 +18,9 @@ services:
   - docker
 
 before_install:
-  - sudo apt install -y jq; jq --version
+    - sudo apt update -y
+    - sudo apt install -y jq; jq --version
+   
 
 jobs:
   include:
