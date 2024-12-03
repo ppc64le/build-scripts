@@ -23,7 +23,7 @@ PACKAGE_NAME=isolated-vm
 PACKAGE_VERSION=${1:-v5.0.1}
 PACKAGE_URL=https://github.com/laverdet/isolated-vm.git
 
-yum install -y wget tar git gzip gcc gcc-c++ make python3 python3-devel
+yum install -y wget tar git gzip gcc gcc-c++ make python3 python3-devel glibc
 
 export NODE_OPTIONS="--dns-result-order=ipv4first"
 
