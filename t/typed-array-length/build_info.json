@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "typed-array-length",
+    "github_url": "https://github.com/inspect-js/typed-array-length",
+    "version": "v1.0.6",
+    "default_branch": "main",
+    "build_script": "typed-array-length_ubi_9.3.sh",
+    "package_dir": "t/typed-array-length",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v1.*.*": {
+        "build_script": "typed-array-length_ubi_9.3.sh"
+    }
+}

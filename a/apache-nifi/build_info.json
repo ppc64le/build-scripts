@@ -1,11 +1,14 @@
 {
-  "maintainer": "IBM-Currency-Helper",
+  "maintainer": "vinodk99",
   "package_name": "apache-nifi",
   "github_url": "https://github.com/apache/nifi",
-  "version": "rel/nifi-1.22.0",
+  "version": "rel/nifi-2.0.0-M4",
   "default_branch": "main",
-  "build_script": "apache-nifi_1.22.0_ubi_8.5.sh",
+  "build_script": "apache-nifi_ubi_9.3.sh",
   "package_dir": "a/apache-nifi/",
+  "docker_build": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
   "rel/nifi-1.9.0": {
     "dir": "1.9.0_ubi_8",
@@ -22,8 +25,8 @@
     "dir": "1.22.0_ubi_8",
     "build_script": "apache-nifi_1.22.0_ubi_8.5.sh"
   },
-  "rel/nifi-*.*.*": {
-    "dir": "1.22.0_ubi_8",
-    "build_script": "apache-nifi_1.22.0_ubi_8.5.sh"
+  "rel/nifi-*.*.*,rel/nifi-*.*.*-*": {
+    "dir": "2.0.0_ubi_9",
+    "build_script": "apache-nifi_ubi_9.3.sh"
   }
 }

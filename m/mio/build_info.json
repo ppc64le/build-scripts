@@ -1,0 +1,15 @@
+{
+    "maintainer": "onkar-kubal",
+    "package_name": "mio",
+    "github_url": "https://github.com/tokio-rs/mio",
+    "version": "v1.0.2",
+    "default_branch": "master",
+    "build_script": "mio_1.0.2_ubi_9.3.sh",
+    "package_dir": "m/mio",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "*.*.*": {
+      "build_script": "mio_1.0.2_ubi_9.3.sh"
+    }
+ }

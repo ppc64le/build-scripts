@@ -1,0 +1,13 @@
+{
+  "maintainer": "chandan-abhyankar",
+  "package_name": "matplotlib",
+  "github_url": "https://github.com/matplotlib/matplotlib.git",
+  "version": "v3.9.2",
+  "default_branch": "main",
+  "package_dir": "m/matplotlib",
+  "build_script": "matplotlib_ubi_9.3.sh",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false
+}
+

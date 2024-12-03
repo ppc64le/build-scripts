@@ -1,8 +1,8 @@
 {
-    "maintainer": "shubham-bhagwat0",
+    "maintainer": "vinodk99",
     "package_name" : "infinispan-operator",
     "github_url": "https://github.com/infinispan/infinispan-operator",
-    "version": "2.4.2.Final",
+    "version": "2.4.3.Final",
     "package_dir": "i/infinispan-operator",
     "default_branch": "main",
     "build_script": "infinispan-operator_ubi_9.3.sh",

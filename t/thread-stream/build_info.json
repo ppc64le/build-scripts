@@ -1,0 +1,15 @@
+{
+    "maintainer": "vinodk99",
+    "package_name": "thread-stream",
+    "github_url": "https://github.com/pinojs/thread-stream",
+    "version": "v3.1.0",
+    "package_dir": "t/thread-stream",
+    "default_branch": "main",
+    "build_script": "thread-stream_ubi_9.3.sh",
+    "docker_build": "false",
+    "use_non_root_user": false,
+    "validate_build_script": "true",
+    "v*.*.*": {
+      "build_script": "thread-stream_ubi_9.3.sh"
+    }
+  }

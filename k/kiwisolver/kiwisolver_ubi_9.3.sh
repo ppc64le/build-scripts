@@ -26,7 +26,7 @@ PACKAGE_URL=https://github.com/nucleic/kiwi.git
 
 # Install dependencies and tools.
 yum install -y git wget gcc gcc-c++ python-pip python3-devel python3 python3-pip
-pip install build pytest wheel
+pip install build pytest wheel cppy
 
 #clone repository
 git clone $PACKAGE_URL
@@ -44,11 +44,11 @@ fi
 # Check if the 'tests' folder exists
 if [ -d "kiwi/tests" ]; then
     # Run tests using pytest
-if ! pytest; then
-        echo "-------------------- $PACKAGE_NAME: build success but test fails --------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_success_but_test_Fails"
-        exit 2
+    if ! pytest; then
+            echo "-------------------- $PACKAGE_NAME: build success but test fails --------------------"
+            echo "$PACKAGE_URL $PACKAGE_NAME"
+            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_success_but_test_Fails"
+            exit 2
     else
         echo "-------------------- $PACKAGE_NAME: build & test both success --------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"

@@ -1,0 +1,15 @@
+{
+  "maintainer": "stutiibm",
+  "package_name": "jwks-rsa-java",
+  "github_url": "https://github.com/auth0/jwks-rsa-java",
+  "version": "0.22.1",
+  "default_branch": "master",
+  "package_dir": "j/jwks-rsa-java",
+  "build_script": "jwks-rsa-java_ubi_9_3.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "false",
+  "*.*.*": {
+    "build_script": "jwks-rsa-java_ubi_9_3.sh"
+  }
+}
