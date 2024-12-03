@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : kiwisolver
-# Version       : 1.2.0
+# Version       : 1.4.6
 # Source repo   : https://github.com/nucleic/kiwi.git
 # Tested on     : UBI:9.3
 # Language      : Python
@@ -21,7 +21,7 @@
 set -e
 #variables
 PACKAGE_NAME=kiwi
-PACKAGE_VERSION=${1:-1.2.0}
+PACKAGE_VERSION=${1:-1.4.6}
 PACKAGE_URL=https://github.com/nucleic/kiwi.git
 
 # Install dependencies and tools.
@@ -32,7 +32,10 @@ pip install build pytest wheel
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+
 pip install .
+pip install cppy
+
 #install
 if ! (python3 setup.py install) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
