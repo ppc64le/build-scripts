@@ -28,7 +28,7 @@ PACKAGE_URL=https://github.com/mpld3/mpld3
 
 # Step 1: Install dependencies
 yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openblas-devel cmake libjpeg-devel zlib-devel freetype-devel  libwebp-devel make python3-setuptools
-pip3 install numpy matplotlib pillow wheel build diffimg
+pip3 install numpy matplotlib pillow pytest wheel build diffimg
 pip3 install setuptools==65.5.0
 
 #clone repository
