@@ -28,7 +28,7 @@ PACKAGE_URL=https://github.com/pyro-ppl/pyro.git
  
 # Install dependencies and tools
 yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openblas-devel cmake gcc-gfortran
-pip install numpy wheel scipy ninja
+pip install numpy wheel scipy ninja build pytest wheel
 pip install "numpy<2.0"
  
 #clone and install pytorch
