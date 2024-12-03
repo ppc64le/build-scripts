@@ -17,7 +17,17 @@ PACKAGE_URL=https://github.com/jupyterhub/jupyterhub
 
 # Step 1: Install required dependencies
 echo "Installing required dependencies..."
-yum install -y wget curl python-pip --skip-broken
+yum install -y git wget curl python-pip gcc openssl-devel gcc-c++ python python3-devel python3 python3-pip openblas-devel cmake libjpeg-devel zlib-devel freetype-devel  libwebp-devel make python3-setuptools --skip-broken
+pip install pytest build wheel ruamel-yaml
+
+# Check if Rust is installed
+if ! command -v rustc &> /dev/null; then
+    echo "Rust is not installed. Installing Rust..."
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    source $HOME/.cargo/env
+else
+    echo "Rust is already installed."
+fi
 
 # Check and install Node.js
 if ! command -v node &> /dev/null; then
@@ -32,17 +42,11 @@ else
     echo "Node.js is already installed."
 fi
 
-# Step 5: Download and extract the package
-echo "Downloading and extracting $PACKAGE_NAME-$PACKAGE_VERSION..."
-wget https://files.pythonhosted.org/packages/6a/85/814664a22f6012abf3d7c8e09413a0db56dcc79321a5bb7f0c6855f92417/$PACKAGE_NAME-$PACKAGE_VERSION.tar.gz
-tar -xvzf $PACKAGE_NAME-$PACKAGE_VERSION.tar.gz
-cd $PACKAGE_NAME-$PACKAGE_VERSION
+#clone repository
+git clone $PACKAGE_URL
+cd  $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 
-# Step 6: Install build tool and build the package
-echo "Installing build tools and building the package..."
-pip install build
-
-# Handle npm dependencies (if any) for the Node.js components
 echo "Installing npm dependencies..."
 if [ -f "package.json" ]; then
     npm install --progress=false --unsafe-perm || {
@@ -53,10 +57,35 @@ else
     echo "No package.json found, skipping npm install."
 fi
 
-# Final step: Build the Python package
-python3 -m build || {
-    echo "Python package build failed, exiting."
-    exit 1
-}
+if ! (python3 -m pip install build && python3 -m build); then
+    echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_Fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME::Build_Success---------------------"
+    echo "$PACKAGE_VERSION $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | Pass | Build_Success"
+fi
 
-echo "Build completed successfully!"
+
+# Check if the 'tests' folder exists
+if [ -d "tests" ]; then
+    echo "Debug: 'jupyterhub/tests' directory exists."
+
+    # Run tests using pytest
+    if ! pytest ; then
+        echo "------------------ $PACKAGE_NAME: build success but test fails ---------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_success_but_test_Fails"
+        exit 2
+    else
+        echo "------------------ $PACKAGE_NAME: build & test both success ---------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Both_Build_and_Test_Success"
+    fi
+else
+    # Skip tests if 'tests' folder is not available
+    echo "------------------ $PACKAGE_NAME: tests skipped as 'tests' folder is not available ---------------------"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Tests_Skipped"
+fi
