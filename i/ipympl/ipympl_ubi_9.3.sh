@@ -45,7 +45,7 @@ if ! command -v node &> /dev/null; then
     source ~/.bashrc  # Load nvm into the current session
     nvm install node
     nvm use node
-    
+
 else
     echo "Node.js is already installed."
 fi
@@ -61,7 +61,7 @@ git checkout $PACKAGE_VERSION
 pip install setuptools matplotlib ipywidgets numpy pytest nbval build
 
 #install
-if ! python3 setup.py install; then
+if ! pip install .; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
