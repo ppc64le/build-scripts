@@ -1,0 +1,15 @@
+{
+  "maintainer": "kiranNukal",
+  "package_name": "pytorch-lightning",
+  "github_url": "https://github.com/Lightning-AI/pytorch-lightning.git",
+  "version": "v2.2.4",
+  "default_branch": "master",
+  "package_dir": "p/pytorch-lightning",
+  "build_script": "pytorchlightning_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v*.*.*": {
+    "build_script": "pytorchlightning_ubi_9.3.sh"
+  }
+}
