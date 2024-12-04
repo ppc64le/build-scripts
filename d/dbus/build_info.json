@@ -1,0 +1,15 @@
+{
+    "maintainer": "Rakshith.r5",
+    "package_name": "dbus",
+    "github_url": "http://dbus.freedesktop.org/releases/dbus/",
+    "version": "1.13.16",
+    "package_dir": "d/dbus",
+    "default_branch": "master",
+    "build_script": "dbus_ubi_9.3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": "false",
+    "v1.*.*": {
+      "build_script": "dbus_ubi_9.3.sh"
+    }
+  }
