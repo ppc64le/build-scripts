@@ -1,0 +1,13 @@
+{
+   "maintainer": "atongse",
+   "package_name": "requests",
+   "github_url": "https://github.com/psf/requests",
+   "version": "v2.32.0",
+   "default_branch": "main",
+   "build_script": "requests_ubi_9.3.sh",
+   "package_dir": "r/requests",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
