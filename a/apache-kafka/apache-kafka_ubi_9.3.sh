@@ -36,7 +36,6 @@ rm -f OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.9_9.tar.gz
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
-go mod tidy
 
 if ! ./gradlew jar; then
        echo "------------------$PACKAGE_NAME:Build_fails---------------------"
