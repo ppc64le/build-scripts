@@ -4,6 +4,8 @@
 # Version       : 2.6.0
 # Source repo   : https://github.com/apache/kafka
 # Tested on     : UBI 8.2
+# Language      : Java
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Amol Patil <amol.patil2@ibm.com>
 #
