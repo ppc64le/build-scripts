@@ -24,22 +24,15 @@ PACKAGE_URL=https://github.com/sympy/sympy.git
 
 dnf update -y
 dnf groupinstall -y "Development Tools"
-dnf install -y python3-pip python3-devel gcc git
+dnf install -y python3-pip python3-devel gcc git pytest
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-pip3 install .
 
-installed_version=$(pip3 show sympy | grep -i version | awk '{print $2}')
-
-if [ "$installed_version" == "1.12" ]; then
-    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-    exit 0
-else
-    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+#install
+if ! pip install .; then
+    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
