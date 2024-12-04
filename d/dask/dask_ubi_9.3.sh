@@ -54,7 +54,7 @@ if ! python3 setup.py install; then
 fi
 
 # Run tests
-if ! pytest --disable-warnings --ignore=tests/test_dask.py -p no:flaky; then
+if ! pytest --disable-warnings; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
