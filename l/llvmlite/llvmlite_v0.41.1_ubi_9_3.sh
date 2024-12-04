@@ -29,13 +29,10 @@ export PYTHON_VER=${2:-"3.11"}
 
 # Install dependencies
 
-yum install -y cmake git libffi-devel gcc-toolset-12 ninja-build python${PYTHON_VER}-devel python${PYTHON_VER}-wheel python${PYTHON_VER}-pip python${PYTHON_VER}-setuptools 
+yum install -y cmake git libffi-devel gcc-toolset-12 ninja-build python${PYTHON_VER}-devel python${PYTHON_VER}-pip python${PYTHON_VER}-wheel python${PYTHON_VER}-setuptools
 
-python${PYTHON_VER} --version
 python${PYTHON_VER} -m pip install -U pip
 
-python${PYTHON_VER} -m venv buildenv
-source buildenv/bin/activate
 source /opt/rh/gcc-toolset-12/enable
 pip install setuptools build
 
@@ -101,32 +98,15 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Build package
-if !(python setup.py build) ; then
+if !(python${PYTHON_VER} setup.py build) ; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
     exit 1
 fi
 
-# Build the wheel file
-if !(python -m build --wheel) ; then
-    echo "------------------$PACKAGE_NAME:wheel creation fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Wheel_Fails"
-    exit 1
-fi
-
-ls dist/*
-
-deactivate
-
-python${PYTHON_VER} -m venv testenv
-source testenv/bin/activate
-
-pip install dist/llvmlite*.whl
-
 # Run test cases
-if !(python runtests.py); then
+if !(python${PYTHON_VER} runtests.py); then
     echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
@@ -135,6 +115,5 @@ else
     echo "------------------$PACKAGE_NAME:build_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Build_and_Test_Success"
-    deactivate
     exit 0
 fi

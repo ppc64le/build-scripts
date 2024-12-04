@@ -1,15 +1,16 @@
 {
-  "maintainer": "md.shafi.hussain",
+  "maintainer": "aastha-sharma2",
   "package_name": "cryptography",
-  "github_url": "https://github.com/pyca/cryptography",
-  "version": "38.0.1",
+  "github_url": "https://github.com/pyca/cryptography.git",
+  "version": "42.0.7",
+  "wheel_build" : true,
   "default_branch": "main",
   "package_dir": "c/cryptography",
   "build_script": "cryptography_ubi_9.3.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
   "docker_build": false,
-  "validate_build_script": true,
-  "use_non_root_user": false,
-  "*.*.*": {
+  "*": {
     "build_script": "cryptography_ubi_9.3.sh"
   }
 }
