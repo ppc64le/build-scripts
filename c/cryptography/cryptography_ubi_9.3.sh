@@ -52,5 +52,18 @@ if ! pyproject-build ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-
-echo "$PACKAGE_NAME version $PACKAGE_VERSION has been successfully built and installed."
+#run tests
+if !(pytest --disable-warnings --ignore=tests/hazmat/primitives/test_ssh.py); then
+    echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "------------------$PACKAGE_NAME:build_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    exit 0
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Build_and_Test_Success"
+fi
