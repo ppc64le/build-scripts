@@ -136,7 +136,7 @@ def raise_pull_request(branch_pkg):
 
     print("\n Creating Pull Request")
     if args.github_username_arg:
-        user_name=github_username_arg
+        user_name=args.github_username_arg
     else:
         user_name=input("Enter Github username:")
 
