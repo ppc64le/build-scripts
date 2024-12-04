@@ -5,6 +5,8 @@
 # Source repo   : https://github.com/apache/kafka
 # Tested on     : UBI 8.2. UBI 8.4
 # Script License: Apache License, Version 2 or later
+# Language      : Java
+# Travis-Check  : False
 # Maintainer    : Amol Patil <amol.patil2@ibm.com>, Priya Seth <sethp@us.ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
