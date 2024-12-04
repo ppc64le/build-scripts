@@ -50,7 +50,7 @@ systemctl start docker
 git clone $PACKAGE_URL $PACKAGE_NAME
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-git apply  --reject --whitespace=fix --ignore-space-change --ignore-whitespace $SCRIPT_DIR/openbao_v2.1.0_patch.patch
+git apply  --reject --whitespace=fix --ignore-space-change --ignore-whitespace $SCRIPT_DIR/openbao_v2.1.0.patch
 
 # Download required build tools
 echo "Installing build tools"
