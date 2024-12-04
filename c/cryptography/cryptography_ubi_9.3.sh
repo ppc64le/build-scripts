@@ -53,7 +53,7 @@ if ! pyproject-build ; then
     exit 1
 fi
 #run tests
-if !(pytest --disable-warnings --ignore=tests/hazmat/primitives/test_ssh.py); then
+if !(pytest --disable-warnings); then
     echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
