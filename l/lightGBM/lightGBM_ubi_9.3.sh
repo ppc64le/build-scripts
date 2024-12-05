@@ -47,7 +47,6 @@ if !(pip list | grep scipy) ;then
         pip install Cython setuptools pybind11 pytest pythran  wheel numpy==1.19.5
         ln -s /usr/lib64/atlas/libtatlas.so.3 /usr/lib64/atlas/libtatlas.so
         ln -s /usr/lib64/libopenblas.so.0 /usr/lib64/libopenblas.so
-        python3 setup.py build
         python3 setup.py install
         cd ..
 else
