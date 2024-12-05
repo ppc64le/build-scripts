@@ -50,6 +50,8 @@ try:
     user_name_response=''.join(user_name_response.split('\n'))
 except subprocess.CalledProcessError as e:
     print("User name not set in Config")
+    name_command = f'git config user.name "ICH"'
+    user_name_response = subprocess.check_output(name_command,shell=True)
     user_name_response = 'ICH'
 except Exception as e:
     print("Error")
@@ -61,6 +63,8 @@ try:
     user_email_response=''.join(user_email_response.split('\n'))
 except subprocess.CalledProcessError as e:
     print("User email not set in Config")
+    email_command = f'git config user.email "ich@us.ibm.com"'
+    user_email_response = subprocess.check_output(email_command,shell=True)
     user_email_response = 'ich@us.ibm.com'
 except Exception as e:
     print("Error")
