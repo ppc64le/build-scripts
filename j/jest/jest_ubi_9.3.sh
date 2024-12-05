@@ -3,7 +3,7 @@
 #
 # Package	    : jestjs
 # Version	    : v29.7.0
-# Source repo	    : https://github.com/jestjs
+# Source repo	    : https://github.com/jestjs/jest
 # Tested on	    : UBI 9.3
 # Language          : Node
 # Travis-Check      : True
@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=jestjs
 PACKAGE_VERSION=${1:-v29.7.0}
-PACKAGE_URL=https://github.com/jestjs
+PACKAGE_URL=https://github.com/jestjs/jest
 
 export NODE_VERSION=${NODE_VERSION:-19}
 export NODE_OPTIONS="--dns-result-order=ipv4first"
