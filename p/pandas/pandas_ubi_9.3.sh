@@ -20,15 +20,22 @@
 
 PACKAGE_NAME=pandas
 PACKAGE_VERSION=${1:-v2.2.0}
-PYTHON_VERSION=${2:-3.11}
+PYTHON_VERSION=${PYTHON_VERSION:-3.11}
 PACKAGE_URL=https://github.com/pandas-dev/pandas.git
 
 yum install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip git gcc gcc-c++ cmake ninja-build
 
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME/
-git checkout $PACKAGE_VERSION
-git submodule update --init --recursive
+if [ -z $PACKAGE_SOURCE_DIR ]; then
+  git clone $PACKAGE_URL
+  cd $PACKAGE_NAME/
+  git checkout $PACKAGE_VERSION
+  git submodule update --init --recursive
+  cd $PACKAGE_NAME
+  WORKDIR=$(pwd)
+else
+  WORKDIR=$PACKAGE_SOURCE_DIR
+  cd $WORKDIR
+fi
 
 # Setup virtual environment for python
 python${PYTHON_VERSION} -m venv pandas-env
