@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=numpy
 PACKAGE_VERSION=${1:-v1.26.4}
-PYTHON_VERSION=${2:-3.11}
+PYTHON_VERSION=${PYTHON_VERSION:-3.11}
 PACKAGE_URL=https://github.com/numpy/numpy.git
 
 # Install the specified Python version and development tools
@@ -30,15 +30,18 @@ yum install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYT
 python${PYTHON_VERSION} -m pip install --upgrade pip  # Ensure pip is up to date
 python${PYTHON_VERSION} -m pip install tox Cython pytest hypothesis wheel
 
-# Clone the NumPy repository
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME
-
-# Checkout the specified version (or branch)
-git checkout $PACKAGE_VERSION
+if [ -z $PACKAGE_SOURCE_DIR ]; then
+    git clone $PACKAGE_URL -b $PACKAGE_VERSION
+    cd $PACKAGE_NAME
+    WORKDIR=$(pwd)
+else
+    WORKDIR=$PACKAGE_SOURCE_DIR
+    cd $WORKDIR
+    git checkout $PACKAGE_VERSION
+fi
 
 # Initialize submodules if necessary
-git submodule update --init
+git submodule update --init --recursive
 
 # Check if the version is 1.26.0
 if [[ $PACKAGE_VERSION == "v1.26.0" ]]; then
