@@ -46,6 +46,8 @@ else
     cd $WORKDIR
     git checkout $PACKAGE_VERSION
 fi
+git submodule update --init --recursive
+
 
 # no venv - helps with meson build conflicts #
 rm -rf $WORKDIR/PY_PRIORITY
