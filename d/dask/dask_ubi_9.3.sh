@@ -22,7 +22,6 @@
 PACKAGE_NAME=dask
 PACKAGE_VERSION=${1:-2.20.0}  # Default version set to 2.20.0
 PACKAGE_URL=https://github.com/dask/dask.git
-VENV_DIR="dask_env"
 
 # Install necessary system dependencies
 yum install -y git gcc gcc-c++ make wget python3-devel python3-pip libyaml-devel
