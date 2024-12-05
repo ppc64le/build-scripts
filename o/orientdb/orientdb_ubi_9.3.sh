@@ -21,8 +21,10 @@ PACKAGE_NAME=orientdb
 PACKAGE_VERSION=${1:-3.2.31}
 PACKAGE_URL=https://github.com/orientechnologies/orientdb.git
 
+echo "Installing dependencies..."
 yum install -y git make wget gcc-c++
-#install temurin java21
+
+echo "Downloading and installing jdk21"
 wget https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.2%2B13/OpenJDK21U-jdk_ppc64le_linux_hotspot_21.0.2_13.tar.gz
 tar -C /usr/local -zxf OpenJDK21U-jdk_ppc64le_linux_hotspot_21.0.2_13.tar.gz
 export JAVA_HOME=/usr/local/jdk-21.0.2+13/
@@ -31,16 +33,18 @@ export PATH=$PATH:/usr/local/jdk-21.0.2+13/bin/
 ln -sf /usr/local/jdk-21.0.2+13/bin/java /usr/bin/
 rm -rf OpenJDK21U-jdk_ppc64le_linux_hotspot_21.0.2_13.tar.gz
 
-#install maven
+echo "Downloading and installing maven-3.8.7"
 wget https://archive.apache.org/dist/maven/maven-3/3.8.7/binaries/apache-maven-3.8.7-bin.tar.gz
 tar -zxf apache-maven-3.8.7-bin.tar.gz
 cp -R apache-maven-3.8.7 /usr/local
 ln -s /usr/local/apache-maven-3.8.7/bin/mvn /usr/bin/mvn
 
+echo "Cloning and installing..."
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 
+echo "Installing..."
 if ! mvn clean install -Dskiptests=true ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -48,6 +52,7 @@ if ! mvn clean install -Dskiptests=true ; then
     exit 1
 fi
 
+echo "Testing..."
 if ! mvn clean test ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
