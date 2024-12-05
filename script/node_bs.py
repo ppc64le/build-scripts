@@ -43,21 +43,27 @@ else:
 package_name = package_name.lower()
 dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_name}"
 
-user_name_command ="git config user.name"
-user_name_response = subprocess.check_output(user_name_command,shell=True)
-user_name_response = user_name_response.decode("utf-8")
-user_name_response=''.join(user_name_response.split('\n'))
-
-if user_name_response == '':
+try:
+    user_name_command ="git config user.name"
+    user_name_response = subprocess.check_output(user_name_command,shell=True)
+    user_name_response = user_name_response.decode("utf-8")
+    user_name_response=''.join(user_name_response.split('\n'))
+except subprocess.CalledProcessError as e:
+    print("User name not set in Config")
     user_name_response = 'ICH'
+except Exception as e:
+    print("Error")
 
-email_command = "git config user.email"
-user_email_response = subprocess.check_output(email_command,shell=True)
-user_email_response = user_email_response.decode("utf-8")
-user_email_response=''.join(user_email_response.split('\n'))
-
-if user_email_response =='':
-    user_email_response='ich@us.ibm.com'
+try:
+    email_command = "git config user.email"
+    user_email_response = subprocess.check_output(email_command,shell=True)
+    user_email_response = user_email_response.decode("utf-8")
+    user_email_response=''.join(user_email_response.split('\n'))
+except subprocess.CalledProcessError as e:
+    print("User email not set in Config")
+    user_email_response = 'ich@us.ibm.com'
+except Exception as e:
+    print("Error")
 
 github_url=args.github_url_arg
 latest_release = args.package_version_arg
