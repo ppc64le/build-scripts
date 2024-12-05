@@ -23,7 +23,7 @@ PACKAGE_NAME=rethinkdb
 
 echo "Installing dependencies..."
 yum install -y patch bzip2 git make gcc-c++ openssl-devel tar libcurl-devel wget m4 ncurses-devel libicu-devel python3 python3-devel 
-yum install -y https://dl.fedoraproject.org/pub/epel/9/Everything/ppc64le/Packages/e/epel-release-9-7.el9.noarch.rpm
+yum install -y https://dl.fedoraproject.org/pub/epel/9/Everything/ppc64le/Packages/e/epel-release-9-8.el9.noarch.rpm
 
 echo "Installing protobuf..."
 wget https://github.com/protocolbuffers/protobuf/releases/download/v3.19.4/protobuf-cpp-3.19.4.tar.gz
