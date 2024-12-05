@@ -4,6 +4,8 @@
 # Version       : 1.1.0
 # Source repo   : https://github.com/apache/kafka
 # Tested on     : Ubuntu_16.04
+# Language      : Java
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Priya Seth <sethp@us.ibm.com>
 #
