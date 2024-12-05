@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-2.20.0}  # Default version set to 2.20.0
 PACKAGE_URL=https://github.com/dask/dask.git
 
 # Install necessary system dependencies
-yum install -y git gcc gcc-c++ make wget python3-devel python3-pip python3-pytest libyaml-devel
+yum install -y git gcc gcc-c++ make wget python3-devel python3-pip libyaml-devel
 
 # Upgrade pip and install setuptools, wheel
 pip install --upgrade pip setuptools wheel
@@ -35,7 +35,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION  
 
 # Install Dask
-if ! pip install .; then
+if ! pip install -e .; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
@@ -43,8 +43,9 @@ if ! pip install .; then
 fi
 
 # Run tests
-if ! pytest --disable-warnings; then
-    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+cd dask/tests
+if ! pytest; then
+    echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
     exit 2
@@ -53,4 +54,4 @@ else
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
-fi    
+fi
