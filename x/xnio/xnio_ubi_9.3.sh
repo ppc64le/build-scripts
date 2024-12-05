@@ -22,9 +22,10 @@ PACKAGE_NAME=xnio
 PACKAGE_VERSION=${1:-3.8.15.Final}
 PACKAGE_URL=https://github.com/xnio/xnio
 
+echo "Installing dependencies..."
 yum install -y g++ wget git gcc gcc-c++
 
-#Install temurin java17
+echo "Installing jdk17..."
 wget https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.9%2B9/OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.9_9.tar.gz
 tar -C /usr/local -zxf OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.9_9.tar.gz
 export JAVA_HOME=/usr/local/jdk-17.0.9+9
@@ -33,17 +34,19 @@ export PATH=$PATH:/usr/local/jdk-17.0.9+9/bin
 ln -sf /usr/local/jdk-17.0.9+9/bin/java /usr/bin
 rm -f OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.9_9.tar.gz
 
-#install maven
+echo "Installing maven-3.8.8..."
 wget https://archive.apache.org/dist/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.tar.gz
 tar -zxf apache-maven-3.8.8-bin.tar.gz
 cp -R apache-maven-3.8.8 /usr/local
 ln -s /usr/local/apache-maven-3.8.8/bin/mvn /usr/bin/mvn
 mvn --version
 
+echo "Cloning and installing..."
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+echo "Installing...."
 if ! mvn -U -B -fae -DskipTests clean install; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -52,6 +55,7 @@ if ! mvn -U -B -fae -DskipTests clean install; then
 fi
 mvn clean
 
+echo "Testing..."
 if ! mvn test; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
