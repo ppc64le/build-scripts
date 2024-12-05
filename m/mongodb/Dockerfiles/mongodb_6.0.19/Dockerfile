@@ -74,7 +74,7 @@ RUN set -ex; \
         rm -r "$GNUPGHOME"; \
         apt-key list
 ARG MONGO_MAJOR=6.0
-ARG MONGO_VERSION=6.0.17
+ARG MONGO_VERSION=6.0.19
 # We install the necesary tools to compile mongo on ppc64le
 RUN apt-get update \
         && apt-get upgrade -y \

@@ -1,8 +1,8 @@
 {
-  "maintainer": "IBM-Currency-Helper",
+  "maintainer": "Pratikt2312",
   "package_name": "mongodb",
   "github_url": "https://github.com/mongodb/mongo.git",
-  "version": "r6.17.0",
+  "version": "r6.0.19",
   "default_branch": "master",
   "build_script": "",
   "use_non_root_user": "false",
@@ -16,7 +16,7 @@
       "MONGO_VERSION": "$(echo $PACKAGE_VERSION | sed 's/r//')",
       "MONGO_MAJOR": "$(echo $PACKAGE_VERSION |  sed 's/r//' | grep -Eo '[0-9]+\\.[0-9]+')"
     },
-    "dir": "mongodb_6.0.17",
+    "dir": "mongodb_6.0.19",
     "args": {
       "MONGO_VERSION": "$(echo $PACKAGE_VERSION | sed 's/r//')",
       "MONGO_MAJOR": "$(echo $PACKAGE_VERSION |  sed 's/r//' | grep -Eo '[0-9]+\\.[0-9]+')"
