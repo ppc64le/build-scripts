@@ -21,7 +21,7 @@ PACKAGE_NAME=execa
 PACKAGE_VERSION=${1:-v9.5.1}
 PACKAGE_URL=https://github.com/sindresorhus/execa
 
-export NODE_VERSION=${NODE_VERSION:-23}
+export NODE_VERSION=${NODE_VERSION:-16}
 yum install -y python3 python3-devel git gcc gcc-c++ libffi make
 
 #Installing nvm
