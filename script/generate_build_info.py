@@ -24,10 +24,17 @@ import json
 import requests
 import sys
 import glob
+import argparse
 
 
 GITHUB_PACKAGE_INFO_API = "https://api.github.com/repos/{}/{}"
 GITHUB_USER_API = "https://api.github.com/users/{}"
+
+parser = argparse.ArgumentParser(description='Automation of build_info.json Addition')
+parser.add_argument('--package_name_arg', help='Name of the package')
+parser.add_argument('--github_username_arg',help="GitHub Username")
+parser.add_argument('--generate_wheel_arg',action='store_true', help="Generate wheel")
+args=parser.parse_args()
 
 class bcolors:
     HEADER = '\033[95m'
@@ -88,8 +95,8 @@ def get_files_list(dirname:str, recursive:bool=True):
 path_separator = os.path.sep
 #ROOT = os.path.dirname(os.path.dirname(__file__))
 ROOT = os.getcwd()
-if len(sys.argv)>1:
-    package_name=sys.argv[1]
+if args.package_name_arg:
+    package_name=args.package_name_arg
 else:
     package_name = input("Enter Package name (Package name should match with the directory name): ")
 #package_name = 'elasticsearch'
@@ -158,16 +165,24 @@ def get_default_build_script(build_scripts_versions):
             result.append((data['version'],data['file']))
     return max(result,key=lambda x:x[0]) 
 
-maintainer=input("Enter GitHub username (github.com) :")
-user_result = validate_username(maintainer)
-
-while (maintainer!='' and user_result!=True):
-    print("\n Invalid Github Username \n")
-    maintainer=input("Please Enter GitHub username (github.com) :")
+if args.github_username_arg:
+    maintainer = args.github_username_arg
+else:
+    maintainer=input("Enter GitHub username (github.com) :")
     user_result = validate_username(maintainer)
-    if user_result:
-        print("\n Valid Github Username \n")
 
+    while (maintainer!='' and user_result!=True):
+        print("\n Invalid Github Username \n")
+        maintainer=input("Please Enter GitHub username (github.com) :")
+        user_result = validate_username(maintainer)
+        if user_result:
+            print("\n Valid Github Username \n")
+
+
+if args.generate_wheel_arg:
+    wheel_build_flag = True
+else :
+    wheel_build_flag = False
 
 for file in file_list:
     if file.endswith(".sh") and "Dockerfiles" not in file:
@@ -229,6 +244,7 @@ final_json = {
     "build_script": default_build_script,
     "package_dir": dir_name.replace(ROOT, '').strip(path_separator),
     "docker_build": True if dockerfile_versions else False,
+    "wheel_build" : True if wheel_build_flag else False,
     "validate_build_script": True if build_scripts_versions else False,
     "use_non_root_user":False
 }
