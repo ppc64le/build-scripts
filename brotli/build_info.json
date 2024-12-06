@@ -1,0 +1,16 @@
+{
+  "maintainer": "Harithanagothu2",
+  "package_name": "brotli",
+  "github_url": "https://github.com/google/brotli.git",
+  "version": "v1.0.9",
+  "wheel_build" : true,
+  "package_dir": "b/brotli",
+  "default_branch": "master",
+  "build_script": "brotli_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "v1.*.*": {
+    "build_script": "brotli_ubi_9.3.sh"
+  }
+}
