@@ -53,11 +53,19 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 ./configure --allow-fetch 
 
-echo "Installing..."
-if ! make && make install ; then
+echo "Building..."
+if ! make ; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
+    exit 2
+fi
+
+echo "Installing..."
+if ! make install ; then
+    echo "------------------$PACKAGE_NAME:Install_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
