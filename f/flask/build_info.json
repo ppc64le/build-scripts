@@ -1,0 +1,13 @@
+{
+   "maintainer": "atongse",
+   "package_name": "flask",
+   "github_url": "https://github.com/pallets/flask",
+   "version": "3.0.0",
+   "default_branch": "main",
+   "build_script": "flask_ubi_9.3.sh",
+   "package_dir": "f/flask",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
