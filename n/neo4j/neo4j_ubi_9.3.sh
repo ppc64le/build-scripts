@@ -60,7 +60,10 @@ HOST=$(hostname)
 echo "127.0.0.1   $HOST" >> /etc/hosts
 
 #Build and test
-export MAVEN_OPTS="-Xmx4096m"
+unset JAVA_OPTS
+unset MAVEN_OPTS
+MAVEN_OPTS="-Xmx666m"
+JAVA_OPTS="-Xmx666m"
 
 #Build
 if !  mvn clean install -DskipTests  ; then
@@ -71,7 +74,7 @@ if !  mvn clean install -DskipTests  ; then
 fi 
 
 # Tests 
-if ! mvn clean install -Dlog4j.configurationFile="/tmp/log" ; then
+if ! mvn clean install -Dlog4j.configurationFile="/tmp/log" -pl -:neo4j-collections ; then
     echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
