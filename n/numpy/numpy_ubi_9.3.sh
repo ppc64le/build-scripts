@@ -28,7 +28,7 @@ yum install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYT
 
 # Install Python build dependencies
 python${PYTHON_VERSION} -m pip install --upgrade pip  # Ensure pip is up to date
-python${PYTHON_VERSION} -m pip install tox Cython pytest hypothesis wheel
+python${PYTHON_VERSION} -m pip install --ignore-installed "chardet<5" tox Cython pytest hypothesis wheel
 
 if [ -z $PACKAGE_SOURCE_DIR ]; then
     git clone $PACKAGE_URL -b $PACKAGE_VERSION
