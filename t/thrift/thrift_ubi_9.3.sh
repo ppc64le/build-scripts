@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : thrift
-# Version          : 0.15.0
+# Version          : v0.15.0
 # Source repo      : https://github.com/apache/thrift
 # Tested on        : UBI:9.3
 # Language         : Python
@@ -20,7 +20,7 @@
 
 # Variables
 PACKAGE_NAME=thrift
-PACKAGE_VERSION=${1:-0.15.0}
+PACKAGE_VERSION=${1:-v0.15.0}
 PACKAGE_URL=https://github.com/apache/thrift
 
 # Install dependencies
