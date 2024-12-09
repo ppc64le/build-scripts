@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "stackframe",
+    "github_url": "https://github.com/stacktracejs/stackframe",
+    "version": "v1.3.4",
+    "default_branch": "master",
+    "build_script": "stackframe_ubi_9.3.sh",
+    "package_dir": "s/stackframe",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v1.*.*": {
+        "build_script": "stackframe_ubi_9.3.sh"
+    }
+}
