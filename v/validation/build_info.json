@@ -9,7 +9,11 @@
     "validate_build_script": true,
     "use_non_root_user": false,
     "docker_build": false,
-    "validation-3.*.*": {
+    "3.*.*": {
       "build_script": "validation_ubi_9.3.sh"
+    },
+    "1.1.0.Final": {
+      "build_script": "validation_v1.1.0.Final_ubi_9.3.sh"
     }
+
   }
