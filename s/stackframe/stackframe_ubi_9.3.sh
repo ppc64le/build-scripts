@@ -21,6 +21,7 @@
 PACKAGE_NAME=stackframe
 PACKAGE_VERSION=${1:-v1.3.4}
 PACKAGE_URL=https://github.com/stacktracejs/stackframe
+HOME_DIR=${PWD}
 
 export NODE_VERSION=${NODE_VERSION:-16}
 
@@ -37,7 +38,7 @@ nvm use $NODE_VERSION
 wget https://github.com/ibmsoe/phantomjs/releases/download/2.1.1/phantomjs-2.1.1-linux-ppc64.tar.bz2
 tar -xvf phantomjs-2.1.1-linux-ppc64.tar.bz2
 ln -s /phantomjs-2.1.1-linux-ppc64/bin/phantomjs /usr/local/bin/phantomjs
-export PATH=$PATH:/phantomjs-2.1.1-linux-ppc64/bin
+export PATH=$HOME_DIR/phantomjs-2.1.1-linux-ppc64/bin:$PATH
 export OPENSSL_CONF=/etc/ssl
 
 git clone $PACKAGE_URL $PACKAGE_NAME
