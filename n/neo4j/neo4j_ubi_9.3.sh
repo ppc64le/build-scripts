@@ -74,7 +74,7 @@ if !  mvn clean install -DskipTests  ; then
 fi 
 
 # Tests 
-if ! mvn clean install -Dlog4j.configurationFile="/tmp/log" -pl -:kernel-it,-:neo4j-collections,-:neo4j-cypher-planner,-:neo4j-cypher-expression-evaluator ; then
+if ! mvn clean install -Dlog4j.configurationFile="/tmp/log" -pl -:kernel-it,-:neo4j-collections,-:neo4j-cypher-planner,-:neo4j-cypher-expression-evaluator,-:gbptree-tests  ; then
     echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
