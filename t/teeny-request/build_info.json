@@ -1,0 +1,21 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "teeny-request",
+    "github_url": "https://github.com/googleapis/teeny-request",
+    "version": "v9.0.0",
+    "default_branch": "main",
+    "build_script": "teeny-request_ubi_9.3.sh",
+    "package_dir": "t/teeny-request",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v9.*.*": {
+        "build_script": "teeny-request_ubi_9.3.sh"
+    },
+    "v8.*.*": {
+        "build_script": "teeny-request_ubi_9.3.sh"
+    },
+    "v7.*.*": {
+        "build_script": "teeny-request-v7_ubi_9.3.sh"
+    }
+}
