@@ -55,8 +55,12 @@ echo "$PACKAGE_NAME | $PACKAGE_VERSION | $OS_NAME | GitHub | Removed existing pa
 fi
 
 # Cloning the repository from remote to local
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+if [ -z $PACKAGE_SOURCE_DIR ]; then
+  git clone $PACKAGE_URL
+  cd $PACKAGE_NAME  
+else  
+  cd $PACKAGE_SOURCE_DIR
+fi
 
 # Set the Arrow installation path for bundling
 export ARROW_HOME=/repos/dist
