@@ -31,7 +31,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 cd lib/py/
-
+pip install pytest
 #install
 if ! (python setup.py install) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
