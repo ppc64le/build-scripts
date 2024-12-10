@@ -42,6 +42,8 @@ python${PYTHON_VERSION}  -m pip install pytest hypothesis build six
 # Install requirements
 python${PYTHON_VERSION}  -m pip install -r requirements.txt
 
+python${PYTHON_VERSION} -m pip install --upgrade setuptools
+
 # Install the package
 GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1 python${PYTHON_VERSION}  -m pip install -e .
 
