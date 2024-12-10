@@ -35,7 +35,7 @@ git checkout $PACKAGE_VERSION
 pip install wheel pytest overlay
 
 #install
-if ! pip install -e .; then
+if ! pip install -e . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
