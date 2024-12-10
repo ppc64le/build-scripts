@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "immer",
+    "github_url": "https://github.com/immerjs/immer",
+    "version": "v10.1.1",
+    "default_branch": "main",
+    "build_script": "immer_ubi_9.3.sh",
+    "package_dir": "i/immer",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v10.*.*": {
+        "build_script": "immer_ubi_9.3.sh"
+    }
+}
