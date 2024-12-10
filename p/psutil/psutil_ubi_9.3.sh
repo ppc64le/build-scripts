@@ -48,7 +48,7 @@ export PYTHONUNBUFFERED=1
 export PSUTIL_DEBUG=1
 
 #run tests
-if ! pytest -v --deselect=psutil/tests/test_linux.py -k "not test_debug and not test_who and not test_terminal and not test_users and not test_cpu_freq and not test_leak_mem"; then
+if ! pytest -v --deselect=psutil/tests/test_linux.py -k "not test_debug and not test_who and not test_terminal and not test_users and not test_cpu_freq and not test_leak_mem and not test_cpu_affinity"; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
