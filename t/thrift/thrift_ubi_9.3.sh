@@ -28,7 +28,7 @@ yum install -y git make libtool gcc-c++ libevent-devel zlib-devel openssl-devel 
 
 # Clone the repository
 git clone $PACKAGE_URL
-cd $PACKAGE_PATH
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 cd lib/py/
 
