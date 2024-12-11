@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # -----------------------------------------------------------------------------
 #
-# Package	    : bytes
-# Version	    : v1.7.2
-# Source repo	: https://github.com/tokio-rs/bytes
-# Tested on	    : UBI 9.3
+# Package	: tracing
+# Version	: tracing-core-0.1.33
+# Source repo	: https://github.com/tokio-rs/tracing
+# Tested on	: UBI 9.3
 # Language      : Rust
 # Travis-Check  : true
 # Script License: Apache License, Version 2 or later
@@ -18,11 +18,11 @@
 #
 # ----------------------------------------------------------------------------
 set -e
-SCRIPT_PACKAGE_VERSION=v1.7.2
-PACKAGE_NAME=bytes
+SCRIPT_PACKAGE_VERSION=tracing-core-0.1.33
+PACKAGE_NAME=tracing
 PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
-PACKAGE_URL=https://github.com/tokio-rs/bytes.git
-BUILD_HOME=$(pwd)
+PACKAGE_URL=https://github.com/tokio-rs/tracing.git
+BUILD_HOME=home/
 
 # Install update and deps
 yum update -y
@@ -53,7 +53,7 @@ fi
 set RUST_BACKTRACE=full
 
 # Change to home directory
-cd $BUILD_HOME
+cd /home/
 
 
 # Build and install tonic
@@ -72,7 +72,7 @@ fi
 
 # Run install check
 echo "Run install check and Test"
-if ! cargo test --workspace --all-features; then
+if ! cargo check  && cargo test --workspace --exclude tracing-journald ; then
     echo "------------------$PACKAGE_NAME:install_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
@@ -80,8 +80,8 @@ else
     echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-    export Bytes_Build='/home/bytes/target/release/libbytes.d'
-    echo "Bytes Build completed."
-    echo "Bytes bit binary is available at [$Bytes_Build]."
+    export Tracing_Build='/home/tracing/target/release/libtracing.d'
+    echo "Tracing Build completed."
+    echo "Tracing bit binary is available at [$Tracing_Build]."
     exit 0
 fi

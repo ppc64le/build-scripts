@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # -----------------------------------------------------------------------------
 #
-# Package	    : bytes
-# Version	    : v1.7.2
-# Source repo	: https://github.com/tokio-rs/bytes
-# Tested on	    : UBI 9.3
+# Package	: tonic
+# Version	: v0.12.3
+# Source repo	: https://github.com/hyperium/tonic
+# Tested on	: UBI 9.3
 # Language      : Rust
 # Travis-Check  : true
 # Script License: Apache License, Version 2 or later
@@ -18,11 +18,12 @@
 #
 # ----------------------------------------------------------------------------
 set -e
-SCRIPT_PACKAGE_VERSION=v1.7.2
-PACKAGE_NAME=bytes
+SCRIPT_PACKAGE_VERSION=v0.12.3
+PACKAGE_NAME=tonic
 PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
-PACKAGE_URL=https://github.com/tokio-rs/bytes.git
-BUILD_HOME=$(pwd)
+PACKAGE_URL=https://github.com/hyperium/tonic.git
+BUILD_HOME=home/
+PROTOC_VERSION=21.7
 
 # Install update and deps
 yum update -y
@@ -53,8 +54,36 @@ fi
 set RUST_BACKTRACE=full
 
 # Change to home directory
-cd $BUILD_HOME
+cd /home/
 
+# downloading the protoc archive, extract the contents  
+echo "Download protoc archive"
+wget https://github.com/protocolbuffers/protobuf/releases/download/v$PROTOC_VERSION/protobuf-all-$PROTOC_VERSION.tar.gz
+echo "Extract protoc archive"
+tar -zvxf protobuf-all-$PROTOC_VERSION.tar.gz --no-same-owner
+cd protobuf-$PROTOC_VERSION
+
+# Set up the build environment
+echo "Set up the build environment"
+./configure
+
+# Compile the source code
+echo "Compile protoc"
+make
+
+# Install the compiled protoc
+echo "Install protoc"
+make install
+
+# Check if protoc is installed successfully
+if command -v protoc &>/dev/null; then
+    echo "protoc installed successfully!"
+    rustc --version
+else
+    echo "protoc installation failed."
+fi
+
+cd ..
 
 # Build and install tonic
 git clone $PACKAGE_URL
@@ -80,8 +109,8 @@ else
     echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-    export Bytes_Build='/home/bytes/target/release/libbytes.d'
-    echo "Bytes Build completed."
-    echo "Bytes bit binary is available at [$Bytes_Build]."
+    export Tonic_Build='/home/tonic/target/release/libtonic.d'
+    echo "Tonic Build completed."
+    echo "Tonic bit binary is available at [$Tonic_Build]."
     exit 0
 fi

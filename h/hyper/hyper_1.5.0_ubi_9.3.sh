@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # -----------------------------------------------------------------------------
 #
-# Package	    : bytes
-# Version	    : v1.7.2
-# Source repo	: https://github.com/tokio-rs/bytes
-# Tested on	    : UBI 9.3
+# Package	: hyper
+# Version	: v1.5.0
+# Source repo	: https://github.com/hyperium/hyper
+# Tested on	: UBI 9.3
 # Language      : Rust
 # Travis-Check  : true
 # Script License: Apache License, Version 2 or later
@@ -18,16 +18,17 @@
 #
 # ----------------------------------------------------------------------------
 set -e
-SCRIPT_PACKAGE_VERSION=v1.7.2
-PACKAGE_NAME=bytes
+SCRIPT_PACKAGE_VERSION=v1.5.0
+PACKAGE_NAME=hyper
 PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
-PACKAGE_URL=https://github.com/tokio-rs/bytes.git
-BUILD_HOME=$(pwd)
+PACKAGE_URL=https://github.com/hyperium/hyper.git
+BUILD_HOME=home/
 
 # Install update and deps
+
 yum update -y
 echo "Installing prerequisites..."
-yum install -y git gcc gcc-c++ make clang openssl-devel zlib-devel wget
+yum install -y git gcc gcc-c++ make clang openssl-devel zlib-devel
 
 echo "Installing Rust..."
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
@@ -53,17 +54,16 @@ fi
 set RUST_BACKTRACE=full
 
 # Change to home directory
-cd $BUILD_HOME
+cd /home/
 
-
-# Build and install tonic
+# Build and install tokio
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #Run Build
 echo "Rust build!"
-if ! cargo build --release; then
+if ! cargo build --release --target powerpc64le-unknown-linux-gnu; then
     echo "------------------$PACKAGE_NAME:install_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  build_Fails"
@@ -72,7 +72,7 @@ fi
 
 # Run install check
 echo "Run install check and Test"
-if ! cargo test --workspace --all-features; then
+if ! cargo test --features full; then
     echo "------------------$PACKAGE_NAME:install_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
@@ -80,8 +80,8 @@ else
     echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-    export Bytes_Build='/home/bytes/target/release/libbytes.d'
-    echo "Bytes Build completed."
-    echo "Bytes bit binary is available at [$Bytes_Build]."
+    export Hyper_Build='/home/hyper/target/powerpc64le-unknown-linux-gnu/release/libhyper.d'
+    echo "Hyper Build completed."
+    echo "Hyper bit binary is available at [$Hyper_Build]."
     exit 0
 fi

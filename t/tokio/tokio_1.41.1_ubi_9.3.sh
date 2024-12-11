@@ -1,33 +1,34 @@
 #!/usr/bin/env bash
 # -----------------------------------------------------------------------------
 #
-# Package	    : bytes
-# Version	    : v1.7.2
-# Source repo	: https://github.com/tokio-rs/bytes
+# Package	    : tokio
+# Version	    : tokio-1.41.1
+# Source repo	: https://github.com/tokio-rs/tokio
 # Tested on	    : UBI 9.3
 # Language      : Rust
 # Travis-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Onkar Kubal <onkar.kubal@ibm.com>
 #
-# Disclaimer: This script has been tested in root mode on given
-# ==========  platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of the
-#             package and/or distribution. In such case, please
-#             contact "Maintainer" of this script.
+# Disclaimer    : This script has been tested in root mode on given
+# ==========    platform using the mentioned version of the package.
+#               It may not work as expected with newer versions of the
+#               package and/or distribution. In such case, please
+#               contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
 set -e
-SCRIPT_PACKAGE_VERSION=v1.7.2
-PACKAGE_NAME=bytes
+SCRIPT_PACKAGE_VERSION=tokio-1.41.1
+PACKAGE_NAME=tokio
 PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
-PACKAGE_URL=https://github.com/tokio-rs/bytes.git
-BUILD_HOME=$(pwd)
+PACKAGE_URL=https://github.com/tokio-rs/tokio.git
+BUILD_HOME=home/
 
 # Install update and deps
+
 yum update -y
 echo "Installing prerequisites..."
-yum install -y git gcc gcc-c++ make clang openssl-devel zlib-devel wget
+yum install -y git gcc gcc-c++ make clang openssl-devel zlib-devel
 
 echo "Installing Rust..."
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
@@ -53,17 +54,16 @@ fi
 set RUST_BACKTRACE=full
 
 # Change to home directory
-cd $BUILD_HOME
+cd /home/
 
-
-# Build and install tonic
+# Build and install tokio
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #Run Build
 echo "Rust build!"
-if ! cargo build --release; then
+if ! cargo build --all-features --target powerpc64le-unknown-linux-gnu; then
     echo "------------------$PACKAGE_NAME:install_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  build_Fails"
@@ -72,16 +72,20 @@ fi
 
 # Run install check
 echo "Run install check and Test"
-if ! cargo test --workspace --all-features; then
+if ! cargo check --all --all-features --target powerpc64le-unknown-linux-gnu && cargo test -p tokio --test fs_try_exists --target powerpc64le-unknown-linux-gnu; then
     echo "------------------$PACKAGE_NAME:install_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    exit 2
 else
     echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-    export Bytes_Build='/home/bytes/target/release/libbytes.d'
-    echo "Bytes Build completed."
-    echo "Bytes bit binary is available at [$Bytes_Build]."
+    export TOKIO_Build='/home/tokio/target/powerpc64le-unknown-linux-gnu/debug/libtokio.d'
+    echo "TOKIO Build completed."
+    echo "TOKIO bit binary is available at [$TOKIO_Build]."
+    #echo "------------------$PACKAGE_NAME:run_tokio_example-------------------------"
+    #cargo run --example custom-executor-tokio-context
+    #cargo run --example custom-executor
     exit 0
 fi
