@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : envoy-openssl
-# Version       : v1.29.3
+# Version       : release/v1.28
 # Source repo   : https://github.com/envoyproxy/envoy-openssl/
 # Tested on     : RHEL 9.2
 # Language      : C++
@@ -34,7 +34,8 @@ yum install -y \
     libtool \
     lld \
     patch \
-    python3-pip \
+    python3.11-devel \
+    python3.11-pip \
     openssl-devel \
     libffi-devel \
     unzip \
@@ -49,6 +50,8 @@ yum install -y \
     rust \
     cargo \
     diffutils \
+    ninja-build \
+    libxcrypt-compat \
     sudo
 
 
@@ -86,7 +89,7 @@ export PATH=$PATH:$wdir/bazel/output
 #Setup clang
 cd $wdir
 wget https://github.com/llvm/llvm-project/releases/download/llvmorg-14.0.6/clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4.tar.xz
-tar -xvf clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4.tar.xz
+tar -xf clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4.tar.xz
 rm -rf clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4.tar.xz
 
 #Build Envoy-openssl
@@ -121,7 +124,7 @@ fi
 
 #Run tests (take several hours to execute, hence disabling by default)
 #Some tests might fail because of issues with the tests themselves rather than envoy
-bazel test --config=ppc --config=clang --test_timeout=3000 --cxxopt=-fpermissive --define=wasm=disabled //test/... --cache_test_results=no || true
+#bazel test --config=ppc --config=clang --test_timeout=3000 --cxxopt=-fpermissive --define=wasm=disabled //test/... --cache_test_results=no || true
 EOF
 
 #Conclude
