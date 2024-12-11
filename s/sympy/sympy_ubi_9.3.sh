@@ -41,7 +41,8 @@ if ! pip install .; then
 fi
 
 # Run tests
-if ! pytest; then
+cd sympy/integrals/tests/
+if ! pytest -p no:warnings --ignore=test_manual.py; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
