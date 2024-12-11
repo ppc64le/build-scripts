@@ -54,4 +54,10 @@ cd containers
 git checkout $PACKAGE_VERSION
 cd bitnami/$PACKAGE_NAME/$POSTGRESQL_MAJOR/debian-12
 git apply $SCRIPT_DIR/postgresql-bv_$POSTGRESQL_MAJOR_VERSION.patch
-docker build -t postgresql-bv:$POSTGRESQL_MAJOR_VERSION .
+
+ret=0
+docker build -t postgresql-bv:$POSTGRESQL_MAJOR_VERSION . || ret=$?
+if [ "$ret" -ne 0 ]
+then
+    exit 1
+fi
