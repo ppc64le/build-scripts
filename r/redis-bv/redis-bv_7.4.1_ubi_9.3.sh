@@ -56,10 +56,14 @@ cd bitnami/$PACKAGE_NAME/$REDIS_MAJOR/debian-12
 
 wget https://downloads.bitnami.com/files/stacksmith/redis-$REDIS_MAJOR_VERSION-1-linux-amd64-debian-12.tar.gz
 tar -xvf redis-$REDIS_MAJOR_VERSION-1-linux-amd64-debian-12.tar.gz
-
 cd prebuildfs/opt/bitnami && mkdir -p redis/etc && cd redis/etc
 cp $wdir/containers/bitnami/redis/$REDIS_MAJOR/debian-12/redis-$REDIS_MAJOR_VERSION-linux-amd64-debian-12/files/redis/etc/redis-default.conf .
-
 cd $wdir/containers/bitnami/redis/$REDIS_MAJOR/debian-12
 git apply $SCRIPT_DIR/redis-bv_$REDIS_MAJOR_VERSION.patch
-docker build -t redis-bv:$REDIS_MAJOR_VERSION .
+
+ret=0
+docker build -t redis-bv:$REDIS_MAJOR_VERSION . || ret=$?
+if [ "$ret" -ne 0 ]
+then
+    exit 1
+fi
