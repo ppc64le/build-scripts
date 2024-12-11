@@ -1,0 +1,16 @@
+{
+   "maintainer": "stutiibm",
+   "package_name": "minipass-flush",
+   "github_url": "https://github.com/isaacs/minipass-flush",
+   "version": "main",
+   "default_branch": "main",
+   "build_script": "minipass-flush_ubi_9.3.sh",
+   "package_dir": "m/minipass-flush",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*": {
+   	"build_script": "minipass-flush_ubi_9.3.sh"
+   }
+}
+
