@@ -21,18 +21,22 @@
 PACKAGE_NAME=pillow
 PACKAGE_VERSION=${1:-11.0.0}
 PACKAGE_URL=https://github.com/python-pillow/Pillow/
-PYTHON_VER=${2:-"3.11"}
 
 OS_NAME=$(grep '^PRETTY' /etc/os-release | awk -F '=' '{print $2}')
 
-# install core dependencies
-yum install -y python${PYTHON_VER} python${PYTHON_VER}-pip python${PYTHON_VER}-devel gcc git
+#Instead of using PYTHON_VER or PYTHON_VERSION directly, please use the specific version of Python, such as python3.11.
+#Additionally, instead of using the yum command to install setuptools and wheel, please use pip to install them, for example: pip install setuptools
 
-# install pillow's minimum dependencies
+#install dependencies
+yum install -y python3.11 python3.11-pip python3.11-devel gcc git
 yum install -y zlib zlib-devel libjpeg-turbo libjpeg-turbo-devel
 
+#There's no need to use this symbolic link eg:
+#ln -s $(command -v python${PYTHON_VER}) /usr/bin/python 
+#ln -s $(command -v pip${PYTHON_VER}) /usr/bin/pip
+
 # install build tools for wheel generation
-python${PYTHON_VER} -m pip install --upgrade pip setuptools wheel pytest
+python3.11 -m pip install --upgrade pip setuptools wheel pytest
 
 # clone source repository
 git clone $PACKAGE_URL $PACKAGE_NAME
@@ -40,29 +44,13 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init
 
-# check if setup.py file is present
-if [ -f "setup.py" ]; then
-    echo "setup.py file exists"
-
-    # Build the wheel file
-    if ! python${PYTHON_VER} setup.py bdist_wheel ; then
-        echo "------------------$PACKAGE_NAME:Build_wheel_fails-------------------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_wheel_Fails"
-        exit 1
-    fi
-
-    # Install the package from the wheel
-    WHEEL_FILE=$(ls dist/*.whl)
-    if ! python${PYTHON_VER} -m pip install $WHEEL_FILE ; then
-        echo "------------------$PACKAGE_NAME:Install_wheel_fails-------------------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_wheel_Fails"
-        exit 1
-    fi
-
-else
-    echo "setup.py not present"
+#No need to check setup.py also don't create wheel and install it 
+# wheel will be created by wrapper_script
+#Use eg:- python setup.py install, pip install ., or pip install -v -e . --no-build-isolation
+if ! (python3.11 setup.py install); then
+    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
