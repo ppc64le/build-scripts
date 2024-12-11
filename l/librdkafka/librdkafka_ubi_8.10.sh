@@ -26,7 +26,7 @@ BUILD_HOME=$(pwd)
 
 # Install required dependencies
 yum update -y
-yum install -y gcc gcc-c++ make git openssl-devel lz4-devel zlib-devel cyrus-sasl-devel libtool libcurl-devel python3.11.ppc64le python3.11-pip diffutils
+yum install -y gcc gcc-c++ make git python3.11.ppc64le python3.11-pip cyrus-sasl-devel patch libcurl-devel zlib-devel
 
 #Clone the repository 	
 cd $BUILD_HOME
@@ -41,15 +41,22 @@ if ! ./configure --install-deps ; then
     exit 1
 fi
 
+if ! make; then
+    echo "------------------$PACKAGE_NAME: build fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
+    exit 1
+fi
+
 if ! make install; then
-    echo "------------------$PACKAGE_NAME:install_fails---------------------"
+    echo "------------------$PACKAGE_NAME: install_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
 if ! make -C tests run_local_quick; then
-    echo "------------------$PACKAGE_NAME:install_fails---------------------"
+    echo "------------------$PACKAGE_NAME: install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
     exit 2

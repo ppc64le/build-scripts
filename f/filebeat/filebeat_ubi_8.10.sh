@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-v8.15.2}
 PACKAGE_URL=https://github.com/elastic/beats
 
 # Install required dependencies
-yum install -y git curl make wget tar gcc gcc-c++ libpcap-devel openssl openssl-devel which acl zlib-devel patch systemd-devel libjpeg-devel python3.11 python3.11-devel bzip2-devel gdbm-devel libdb-devel libffi-devel libuuid-devel ncurses-devel sqlite-devel xz xz-devel
+yum install -y git curl make wget tar gcc gcc-c++ openssl openssl-devel python3.11 python3.11-devel systemd-devel
 
 #Installing pip
 wget --no-check-certificate -q https://bootstrap.pypa.io/get-pip.py
