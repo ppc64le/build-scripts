@@ -25,6 +25,7 @@ PACKAGE_URL=https://github.com/dask/dask.git
 
 # Install necessary system dependencies
 yum install -y git gcc gcc-c++ make wget python3-devel python3-pip libyaml-devel
+yum groupinstall -y "Development Tools"
 
 # Upgrade pip and install setuptools, wheel
 pip install --upgrade pip setuptools wheel
@@ -44,10 +45,24 @@ fi
 
 #Install pytest
 pip install pytest
+pip install --upgrade pip setuptools wheel
+pip install packaging --no-binary :all:
+pip install pandas==1.5.3
+pip install numpy==1.23.0
+pip install cachey --no-binary :all:
+pip install distributed --no-binary :all:
+pip install graphviz --no-binary :all:
+pip install psutil --no-binary :all:
+
+sed -i '84s/if (cloudpickle.__version__) < Version("1.3.0")/if (cloudpickle.__version__) < str(Version("1.3.0"))/' dask/tests/test_multiprocessing.py
+sed -i '107s/for name, col in df.iteritems()/for name, col in df.items()/g' dask/sizeof.py
+sed -i 's/@implements(np.round, np.round_)/@implements(np.round)/' dask/array/routines.py
+sed -i 's/from distutils.version import LooseVersion/from packaging.version import Version/' dask/compatibility.py
+sed -i 's/LooseVersion/Version/' dask/compatibility.py
 
 #Run tests
 cd dask/tests
-if ! pytest --ignore=test_cache.py test_distributed.py test_dot.py test_hashing.py test_system.py; then
+if ! pytest -p no:warnings --ignore=test_base.py --ignore=test_config.py; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
