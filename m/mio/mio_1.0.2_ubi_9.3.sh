@@ -22,7 +22,7 @@ SCRIPT_PACKAGE_VERSION=v1.0.2
 PACKAGE_NAME=mio
 PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
 PACKAGE_URL=https://github.com/tokio-rs/mio.git
-BUILD_HOME=home/
+BUILD_HOME=$(pwd)
 
 # Install update and deps
 yum update -y
@@ -53,7 +53,7 @@ fi
 set RUST_BACKTRACE=full
 
 # Change to home directory
-cd /home/
+cd $BUILD_HOME
 
 
 # Build and install tonic
