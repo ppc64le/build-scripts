@@ -28,12 +28,11 @@ yum install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYT
 if [ -z $PACKAGE_SOURCE_DIR ]; then
     git clone $PACKAGE_URL -b $PACKAGE_VERSION
     cd $PACKAGE_NAME
-    WORKDIR=$(pwd)
 else
-    WORKDIR=$PACKAGE_SOURCE_DIR
-    cd $WORKDIR
-    git checkout $PACKAGE_VERSION
+    cd $PACKAGE_SOURCE_DIR
 fi
+
+git checkout $PACKAGE_VERSION
 
 git submodule update --init --recursive
 
@@ -58,22 +57,16 @@ else
      exit 1
 fi
 
-python${PYTHON_VERSION} -m build --wheel
-
 # Test the package
-cd ..
-python${PYTHON_VERSION}  -m pip show grpcio
-python${PYTHON_VERSION}  -c "import grpc; print(grpc.__version__)"
-
-if [ $? == 0 ]; then
-     echo "------------------$PACKAGE_NAME::Test_Pass---------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Test_Success"
-     exit 0
+cd src/python/grpcio_tests
+export PYTHONPATH=$(pwd)
+if ! python${PYTHON_VERSION} -m unittest tests.unit._invalid_metadata_test tests.unit._compression_test; then
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Success_But_Test_Fails"
+    exit 2
 else
-     echo "------------------$PACKAGE_NAME::Test_Fail-------------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Test_Fail"
-     exit 2
+    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Both_Install_and_Test_Success"
 fi
-
