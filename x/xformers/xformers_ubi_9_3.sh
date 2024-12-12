@@ -34,8 +34,13 @@ dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarc
 dnf install -y gcc-fortran pkg-config openblas-devel atlas
 
 # Clone repository
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+if [ -z $PACKAGE_SOURCE_DIR ]; then
+  git clone $PACKAGE_URL
+  cd $PACKAGE_NAME  
+else  
+  cd $PACKAGE_SOURCE_DIR
+fi
+
 git checkout $PACKAGE_VERSION
 git submodule update --init
 
