@@ -78,7 +78,7 @@ cmake -DCMAKE_INSTALL_PREFIX=$ARROW_HOME \
       -DARROW_WITH_ZSTD=ON \
       -DPARQUET_REQUIRE_ENCRYPTION=ON \
       ..
-make -j4
+make -j$(nproc)
 make install
 
 # Build PyArrow
