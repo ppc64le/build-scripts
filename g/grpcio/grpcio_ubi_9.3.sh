@@ -18,29 +18,33 @@
 #
 # ----------------------------------------------------------------------------
 
-# Install dependencies
-yum install -y python311 python3.11-devel python3.11-pip openssl openssl-devel git gcc gcc-c++ cmake 
-
-# Clone the grpc package.
 PACKAGE_NAME=grpc
 PACKAGE_VERSION=${1:-v1.68.0}
 PACKAGE_URL=https://github.com/grpc/grpc.git
+PYTHON_VERSION=${PYTHON_VERSION:-3.11}
+# Install dependencies
+yum install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip openssl openssl-devel git gcc gcc-c++ cmake gcc-gfortran zlib-devel libuuid-devel
 
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME/
+if [ -z $PACKAGE_SOURCE_DIR ]; then
+    git clone $PACKAGE_URL -b $PACKAGE_VERSION
+    cd $PACKAGE_NAME
+else
+    cd $PACKAGE_SOURCE_DIR
+fi
+
 git checkout $PACKAGE_VERSION
+
 git submodule update --init --recursive
 
-# Setup virtual environment for python
-python3.11 -m venv grpcio-env
-source grpcio-env/bin/activate
-python3 -m pip install pytest hypothesis build six
+python${PYTHON_VERSION}  -m pip install pytest hypothesis build six
 
 # Install requirements
-python3 -m pip install -r requirements.txt
+python${PYTHON_VERSION}  -m pip install -r requirements.txt
+
+python${PYTHON_VERSION} -m pip install --upgrade setuptools
 
 # Install the package
-GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1 python3 -m pip install -e .
+GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1 python${PYTHON_VERSION}  -m pip install -e .
 
 if [ $? == 0 ]; then
      echo "------------------$PACKAGE_NAME::Build_Pass---------------------"
@@ -54,23 +58,15 @@ else
 fi
 
 # Test the package
-cd ..
-python3 -m pip show grpcio
-python3 -c "import grpc; print(grpc.__version__)"
-
-if [ $? == 0 ]; then
-     echo "------------------$PACKAGE_NAME::Test_Pass---------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Test_Success"
-     
-     # Deactivate python environment (grpcio-env)
-     deactivate
-
-     exit 0
+cd src/python/grpcio_tests
+export PYTHONPATH=$(pwd)
+if ! python${PYTHON_VERSION} -m unittest tests.unit._invalid_metadata_test tests.unit._compression_test; then
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Success_But_Test_Fails"
+    exit 2
 else
-     echo "------------------$PACKAGE_NAME::Test_Fail-------------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Test_Fail"
-     exit 2
+    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Both_Install_and_Test_Success"
 fi
-
