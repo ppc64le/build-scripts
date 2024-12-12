@@ -76,22 +76,6 @@ export CXXFLAGS="-Wno-unused-variable -Wno-unused-parameter"
 pip${PYTHON_VER} install -r requirements.txt
 MAX_JOBS=$PARALLEL python${PYTHON_VER} setup.py install
 
-# Install dependency - Scipy
-# install scipy dependency(numpy wheel gets built and installed) and build-setup dependencies
-cd ..
-git clone https://github.com/scipy/scipy
-cd scipy
-git checkout v1.14.1
-git submodule update --init
-
-python${PYTHON_VER} -m pip install meson ninja numpy 'setuptools<60.0' Cython
-python${PYTHON_VER} -m pip install 'meson-python<0.15.0,>=0.12.1'
-python${PYTHON_VER} -m pip install pybind11
-python${PYTHON_VER} -m pip install 'patchelf>=0.11.0'
-python${PYTHON_VER} -m pip install 'pythran<0.15.0,>=0.12.0'
-python${PYTHON_VER} -m pip install build
-
-python${PYTHON_VER} -m pip install --no-build-isolation .
 
 # Build and install xformers
 cd ..
