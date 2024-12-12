@@ -33,12 +33,11 @@ python${PYTHON_VERSION} -m pip install --ignore-installed "chardet<5" tox Cython
 if [ -z $PACKAGE_SOURCE_DIR ]; then
     git clone $PACKAGE_URL -b $PACKAGE_VERSION
     cd $PACKAGE_NAME
-    WORKDIR=$(pwd)
 else
-    WORKDIR=$PACKAGE_SOURCE_DIR
-    cd $WORKDIR
-    git checkout $PACKAGE_VERSION
+    cd $PACKAGE_SOURCE_DIR
 fi
+
+git checkout $PACKAGE_VERSION
 
 # Initialize submodules if necessary
 git submodule update --init --recursive
@@ -54,7 +53,7 @@ if [[ $PACKAGE_VERSION == "v1.26.0" ]]; then
         exit 1
     fi
 else
-    # Build for other versions
+    # Using pip for versions other than v1.26.0
     if ! python${PYTHON_VERSION} -m pip install . ; then
         echo "------------------$PACKAGE_NAME:build_fails--------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
