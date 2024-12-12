@@ -2,8 +2,8 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : flask
-# Version          : 3.0.2
-# Source repo      : https://github.com/pallets/flask.git
+# Version          : 3.0.0
+# Source repo      : https://github.com/pallets/flask
 # Tested on	: UBI:9.3
 # Language      : Python
 # Travis-Check  : True
@@ -19,8 +19,8 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=flask
-PACKAGE_VERSION=${1:-3.0.2}
-PACKAGE_URL=https://github.com/pallets/flask.git
+PACKAGE_VERSION=${1:-3.0.0}
+PACKAGE_URL=https://github.com/pallets/flask
 
 yum install -y git python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo
 pip3 install pytest tox
