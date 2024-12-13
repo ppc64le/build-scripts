@@ -1,0 +1,15 @@
+{
+    "maintainer": "Vipul-Ajmera",
+    "package_name": "jqTree",
+    "github_url": "https://github.com/mbraak/jqTree",
+    "version": "1.8.7",
+    "default_branch": "dev",
+    "package_dir": "j/jqtree",
+    "build_script": "jqtree_ubi_9.3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "*.*.*": {
+        "build_script": "jqtree_ubi_9.3.sh"
+    }
+}
