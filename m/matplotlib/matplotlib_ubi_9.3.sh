@@ -82,7 +82,7 @@ if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then
     BUILD_ISOLATION="--no-build-isolation"
 fi
 
-if ! python -m pip install -v . $BUILD_ISOLATION; then
+if ! python -m pip install -vvv . $BUILD_ISOLATION; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
