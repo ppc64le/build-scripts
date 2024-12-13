@@ -55,9 +55,9 @@ if [[ $PACKAGE_VERSION == "v1.26.0" ]]; then
 else
     # Using pip for versions other than v1.26.0
     if ! python${PYTHON_VERSION} -m pip install . ; then
-        echo "------------------$PACKAGE_NAME:build_fails--------------------------------"
+        echo "------------------$PACKAGE_NAME:install_fails--------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_Fails"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
         exit 1
     fi
 fi
