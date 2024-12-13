@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/envoyproxy/envoy-openssl/
 # Tested on     : RHEL 9.2
 # Language      : C++
-# Travis-Check  : True
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Swapnali Pawar <Swapnali.Pawar1@ibm.com>
 #
