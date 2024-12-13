@@ -71,6 +71,8 @@ if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then
     dnf install -y libtiff-devel libjpeg-devel openjpeg2-devel zlib-devel \
         freetype-devel lcms2-devel libwebp-devel tcl-devel tk-devel \
         harfbuzz-devel fribidi-devel libraqm-devel libimagequant-devel libxcb-devel
+
+    python -m pip install numpy
 fi
 
 cd $WORKDIR
