@@ -97,7 +97,6 @@ jobs:
           paths:
             - ./*.whl
         use: build_cache
-      allow_failure: true
 
     - name: "Create Wheel for Python 3.11"
       if: env(WHEEL_BUILD) = true
