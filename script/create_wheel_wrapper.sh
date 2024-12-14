@@ -121,6 +121,8 @@ if [ -n "$TEMP_BUILD_SCRIPT_PATH" ]; then
     python$PYTHON_VERSION -m pip install --upgrade pip setuptools wheel build pytest nox tox
 
     package_dir=$(grep -oP '(?<=^PACKAGE_DIR=).*' "$TEMP_BUILD_SCRIPT_PATH" | tr -d '"')
+    package_url=$(grep -oP '(?<=^PACKAGE_URL=).*' "$TEMP_BUILD_SCRIPT_PATH" | tr -d '"')
+    package_name=$(basename "$package_url" .git)
 
     sh "$TEMP_BUILD_SCRIPT_PATH" $EXTRA_ARGS
 
@@ -136,9 +138,13 @@ else
     echo "No build script to run, skipping execution."
 fi
 
-# Navigate to the package directory
-echo "Navigating to the package directory"
-cd $package_dir
+if [ -d "$package_dir" ]; then
+    echo "Navigating to the package directory: $package_dir"
+    cd "$package_dir"
+else
+    echo "package_dir not found, Navigating to package_name: $package_name"
+    cd "$package_name"
+fi
 
 echo "=============== Building wheel =================="
 
