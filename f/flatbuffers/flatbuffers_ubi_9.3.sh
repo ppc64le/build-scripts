@@ -22,6 +22,7 @@
 PACKAGE_NAME=flatbuffers
 PACKAGE_VERSION=${1:-v2.0.0}
 PACKAGE_URL=https://github.com/google/flatbuffers.git
+PACKAGE_DIR=flatbuffers/python
 
 # Install dependencies and tools.
 yum install -y wget gcc gcc-c++ gcc-gfortran git make  python-devel  openssl-devel  cmake
@@ -35,7 +36,7 @@ cmake ./
 make 
 
 #checkout to Python folder
-cd python
+cd $PACKAGE_DIR
 
 #install
 if ! (pip install .) ; then
