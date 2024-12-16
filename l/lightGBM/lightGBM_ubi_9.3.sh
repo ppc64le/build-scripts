@@ -78,7 +78,7 @@ if ! (python3 setup.py install) ; then
     exit 1
 fi
 
-# Run test cases
+#run tests skipping few tests failing on both ppc64le and x86
 if !(pytest -v /LightGBM/tests -k "not test_contribs_sparse_multiclass"); then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
