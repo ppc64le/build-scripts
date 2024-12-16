@@ -24,7 +24,10 @@ PACKAGE_VERSION=${1:-2.20.0}  # Default version set to 2.20.0
 PACKAGE_URL=https://github.com/dask/dask.git
 
 # Install necessary system dependencies
-yum install -y git gcc gcc-c++ make wget python3-devel python3-pip libyaml-devel
+dnf install -y git python3-pip gcc gcc-c++ python3-devel epel-release
+dnf install -y git gcc gcc-c++ make openssl-devel bzip2-devel libffi-devel zlib-devel \
+    meson ninja-build gcc-gfortran openblas-devel libjpeg-devel \
+    zlib-devel libtiff-devel freetype-devel libyaml-devel
 
 # Upgrade pip and install setuptools, wheel
 pip install --upgrade pip setuptools wheel
