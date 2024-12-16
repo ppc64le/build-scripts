@@ -33,7 +33,6 @@ mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 dnf install -y git python3-pip gcc gcc-c++ python3-devel epel-release
-dnf groupinstall -y "Development Tools"
 dnf install -y gcc openssl-devel bzip2-devel libffi-devel zlib-devel \
     meson ninja-build gcc-gfortran openblas-devel libjpeg-devel \
     zlib-devel libtiff-devel freetype-devel
