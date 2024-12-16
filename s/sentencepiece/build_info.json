@@ -1,0 +1,15 @@
+{
+    "maintainer": "md.shafi.hussain",
+    "package_name": "sentencepiece",
+    "github_url": "https://github.com/google/sentencepiece.git",
+    "version": "v0.2.0",
+    "default_branch": "master",
+    "build_script": "sentencepiece_ubi_9.3.sh",
+    "package_dir": "p/sentencepiece",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "v*.*.*": {
+        "build_script": "sentencepiece_ubi_9.3.sh"
+    }
+}
