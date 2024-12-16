@@ -24,6 +24,7 @@ PACKAGE_VERSION=${1:-2.20.0}  # Default version set to 2.20.0
 PACKAGE_URL=https://github.com/dask/dask.git
 
 # Install necessary system dependencies
+dnf install wget
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
