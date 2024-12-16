@@ -23,7 +23,6 @@ PACKAGE_VERSION=${1:-1.13.16}
 PACKAGE_URL=http://dbus.freedesktop.org/releases/dbus/
 
 dnf update -y
-dnf groupinstall -y "Development Tools"
 dnf install -y wget xz glibc-devel dbus-devel pkgconfig automake autoconf libtool cairo-devel libxml2-devel gperf gcc-c++ make expat-devel
 wget $PACKAGE_URL/$PACKAGE_NAME-$PACKAGE_VERSION.tar.xz
 tar -xf $PACKAGE_NAME-$PACKAGE_VERSION.tar.xz
