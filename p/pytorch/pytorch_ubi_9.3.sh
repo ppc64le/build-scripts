@@ -98,10 +98,10 @@ if ! python setup.py develop; then
 fi
 
 cd ..
-python -m pip install pytest pytest-xdist
+python -m pip install pytest
 
 # basic sanity test (subset)
-if ! python -m pytest -n auto $PACKAGE_NAME/test/test_utils.py; then
+if ! python -m pytest $PACKAGE_NAME/test/test_utils.py; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
