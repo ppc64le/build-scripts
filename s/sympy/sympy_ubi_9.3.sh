@@ -23,7 +23,6 @@ PACKAGE_VERSION=${1:-sympy-1.12}
 PACKAGE_URL=https://github.com/sympy/sympy.git
 
 dnf update -y
-dnf groupinstall -y "Development Tools"
 dnf install -y python3-pip python3-devel gcc git 
 
 pip install pytest
