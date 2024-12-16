@@ -44,7 +44,7 @@ if ! pip install . ; then
     exit 1
 fi
 
-#run tests
+#run tests skipping few tests failing on both ppc64le and x86
 if ! pytest -k "not test_incremental_xmlfile and not test_io and not test_elementtree and not test_autolink and not test_basic and not test_clean and not test_clean_embed and not test_feedparser_data and not test_formfill and not test_forms and not test_rewritelinks and not test_etree and not _XIncludeTestCase" -p no:warnings; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
