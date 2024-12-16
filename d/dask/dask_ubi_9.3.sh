@@ -25,7 +25,6 @@ PACKAGE_URL=https://github.com/dask/dask.git
 
 # Install necessary system dependencies
 yum install -y git gcc gcc-c++ make wget python3-devel python3-pip libyaml-devel
-yum groupinstall -y "Development Tools"
 
 # Upgrade pip and install setuptools, wheel
 pip install --upgrade pip setuptools wheel
