@@ -25,9 +25,11 @@ PACKAGE_URL=https://github.com/dask/dask.git
 
 # Install necessary system dependencies
 dnf install -y git python3-pip gcc gcc-c++ python3-devel epel-release
-dnf install -y git gcc gcc-c++ make openssl-devel bzip2-devel libffi-devel zlib-devel \
+dnf install -y git graphviz gcc gcc-c++ make openssl-devel bzip2-devel libffi-devel zlib-devel \
     meson ninja-build gcc-gfortran openblas-devel libjpeg-devel \
     zlib-devel libtiff-devel freetype-devel libyaml-devel
+
+export PATH=$PATH:/usr/local/bin
 
 # Upgrade pip and install setuptools, wheel
 pip install --upgrade pip setuptools wheel
