@@ -1,0 +1,18 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "v8flags",
+    "github_url": "https://github.com/gulpjs/v8flags",
+    "version": "v4.0.1",
+    "default_branch": "master",
+    "build_script": "v8flags_ubi_9.3.sh",
+    "package_dir": "v/v8flags",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v4.*.*": {
+        "build_script": "v8flags_ubi_9.3.sh"
+    },
+    "v3.2.0": {
+        "build_script": "v8flags_ubi_9.3.sh"
+    }
+}
