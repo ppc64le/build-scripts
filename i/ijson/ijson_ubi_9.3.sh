@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/ICRAR/ijson.git
 # Update system and install dependencies
 dnf update -y
 dnf groupinstall -y "Development Tools"
-dnf install -y python3-pip python3-devel gcc git
+dnf install -y git python3-pip python3-devel gcc make automake
 
 # Install pytest 
 pip install pytest
