@@ -3,7 +3,7 @@
 #
 # Package          : dbus
 # Version          : 1.13.16
-# Source repo      : http://dbus.freedesktop.org/releases/dbus/
+# Source repo      : http://dbus.freedesktop.org/releases/dbus
 # Tested on        : UBI:9.3
 # Language         : Python
 # Travis-Check     : True
@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=dbus
 PACKAGE_VERSION=${1:-1.13.16}
-PACKAGE_URL=http://dbus.freedesktop.org/releases/dbus/
+PACKAGE_URL=http://dbus.freedesktop.org/releases/dbus
 
 dnf update -y
 dnf install -y wget xz glibc-devel dbus-devel pkgconfig automake autoconf libtool cairo-devel libxml2-devel gperf gcc-c++ make expat-devel
