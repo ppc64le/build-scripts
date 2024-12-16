@@ -42,7 +42,7 @@ if ! (pip install .) ; then
     exit 1
 fi
 
-# Run test cases
+#run tests skipping few tests failing on both ppc64le and x86
 cd mpmath
 if !(pytest -v -k "not bernfrac"); then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
