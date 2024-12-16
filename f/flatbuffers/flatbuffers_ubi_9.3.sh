@@ -36,7 +36,7 @@ cmake ./
 make 
 
 #checkout to Python folder
-cd $PACKAGE_DIR
+cd python
 
 #install
 if ! (pip install .) ; then
