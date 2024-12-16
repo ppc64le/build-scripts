@@ -1,0 +1,15 @@
+{
+    "maintainer": "onkar-kubal",
+    "package_name": "tower",
+    "github_url": "https://github.com/tower-rs/tower",
+    "version": "tower-0.5.0",
+    "default_branch": "master",
+    "build_script": "tower_0.5.0_ubi_9.3.sh",
+    "package_dir": "t/tower",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "*.*.*": {
+      "build_script": "tower_0.5.0_ubi_9.3.sh"
+    }
+ }
