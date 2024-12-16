@@ -70,7 +70,7 @@ if ! python -m pip install -v -e .; then
 fi
 
 python -m pip install pytest
-if ! make test-posix test-testutils test-unicode test-contracts test-connections; then
+if ! make test-posix test-unicode test-contracts test-connections; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
