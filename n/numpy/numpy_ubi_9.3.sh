@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : numpy
-# Version       : v1.26.4
-# Source repo   : https://github.com/numpy/numpy.git
-# Tested on     : UBI:9.3
+# Package          : numpy
+# Version          : v1.23.5
+# Source repo      : https://github.com/numpy/numpy.git
+# Tested on	: UBI:9.3
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Bhagyashri Gaikwad <Bhagyashri.Gaikwad2@ibm.com>
+# Maintainer    : ICH <ich@us.ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,67 +19,79 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=numpy
-PACKAGE_VERSION=${1:-v1.26.4}
-PYTHON_VERSION=${2:-3.11}
+PACKAGE_VERSION=${1:-v1.23.5}
 PACKAGE_URL=https://github.com/numpy/numpy.git
 
-# Install the specified Python version and development tools
-yum install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip git gcc-gfortran.ppc64le make g++
+yum install -y git python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo
+pip3 install pytest tox
+PATH=$PATH:/usr/local/bin/
 
-# Install Python build dependencies
-python${PYTHON_VERSION} -m pip install --upgrade pip  # Ensure pip is up to date
-python${PYTHON_VERSION} -m pip install tox Cython pytest hypothesis wheel
+#install rust
+wget https://static.rust-lang.org/dist/rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
+tar -xzf rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
+cd rust-1.75.0-powerpc64le-unknown-linux-gnu
+sudo ./install.sh
+export PATH=$HOME/.cargo/bin:$PATH
+rustc -V
+cargo  -V
+cd ../
 
-# Clone the NumPy repository
-git clone $PACKAGE_URL
+# Clone the repository
+git clone $PACKAGE_URL $PACKAGE_NAME
+
 cd $PACKAGE_NAME
-
-# Checkout the specified version (or branch)
 git checkout $PACKAGE_VERSION
 
-# Initialize submodules if necessary
-git submodule update --init
+#install dependencies from requirements.txt
 
-# Check if the version is 1.26.0
-if [[ $PACKAGE_VERSION == "v1.26.0" ]]; then
-    echo "Building NumPy using setup.py for version $PACKAGE_VERSION"
-    # Build using setup.py and create a wheel
-    if ! python${PYTHON_VERSION} setup.py bdist_wheel; then
-        echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
-        exit 1
-    fi
-    # Install the created wheel
-    if ! python${PYTHON_VERSION} -m pip install dist/*.whl; then
-        echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
-        exit 1
-    fi
+REQUIREMENTS_PRESENT=(`find . -print | grep -i requirements.txt`)
 
+for i in "${REQUIREMENTS_PRESENT[@]}"; do
+        echo "Installing using pip from file:"
+        echo $i
+        pip3  install -r $i
+done
+
+#check if setup.py file is present
+if [ -f "setup.py" ];then
+        if ! python3 setup.py install ; then
+        echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+        exit 1
+        fi
+        echo "setup.py file exists"
 else
-    # Build and create a wheel for other versions
-    if ! python${PYTHON_VERSION} -m pip wheel . -w dist; then
-        echo "------------------$PACKAGE_NAME:wheel_build_fails--------------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Wheel_Build_Fails"
-        exit 1
-    fi
-
-    # Install the created wheel
-    if ! python${PYTHON_VERSION} -m pip install dist/*.whl; then
-        echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
-        exit 1
-    fi
+        echo "setup.py not present"
 fi
 
-# Run tests
-if ! python${PYTHON_VERSION} runtests.py; then
-    echo "------------------$PACKAGE_NAME:install_success_tests_executed---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Success | Tests_executed"
-    exit 0
+
+#check if tox file is present
+if [ -f "tox.ini" ];then
+        echo "tox.ini file exists"
+        if ! (tox -e py3) ; then
+        echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+        exit 2
+        else
+        echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+        exit 0
+        fi
+else
+        echo "tox.ini not present"
+        if ! pytest ; then
+        echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+        exit 2
+        else
+        echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+        exit 0
+        fi
+
 fi
