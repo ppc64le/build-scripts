@@ -22,6 +22,7 @@ PACKAGE_NAME=xformers
 PACKAGE_VERSION=${1:-v0.0.28}
 PACKAGE_URL=https://github.com/facebookresearch/xformers.git
 PYTHON_VER=${2:-3.11}
+BUILD_DEPS=${3:-true}
 PARALLEL=${PARALLEL:-$(nproc)}
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 export _GLIBCXX_USE_CXX11_ABI=1
