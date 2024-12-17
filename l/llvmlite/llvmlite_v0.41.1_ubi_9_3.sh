@@ -107,14 +107,14 @@ git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
 # Build package
-if !(python setup.py build) ; then
+if !(python${PYTHON_VER} setup.py build) ; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
     exit 1
 fi
 # Run test cases
-if !(python runtests.py); then
+if !(python${PYTHON_VER} runtests.py); then
     echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
