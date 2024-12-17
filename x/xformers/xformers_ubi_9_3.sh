@@ -47,38 +47,48 @@ git submodule update --init
 # Install Python dependencies
 python${PYTHON_VER} -m pip install ninja cmake 'pytest==8.2.2' hydra-core
 
-# Install dependency - pytorch
-PYTORCH_VERSION=v2.5.1
+# Check BUILD_DEPS passed from Jenkins
+echo "BUILD_DEPS: $BUILD_DEPS"
 
-git clone https://github.com/pytorch/pytorch.git
+# Install PyTorch only if not installed and BUILD_DEPS is not False
+if [ -z $BUILD_DEPS ] || [ "$BUILD_DEPS" == "true" ]; then
 
-cd pytorch
+    # Install dependency - pytorch
+    PYTORCH_VERSION=v2.5.1
 
-git checkout tags/$PYTORCH_VERSION
+    git clone https://github.com/pytorch/pytorch.git
 
-PPC64LE_PATCH="69cbf05"
+    cd pytorch
 
-if ! git log --pretty=format:"%H" | grep -q "$PPC64LE_PATCH"; then
-    echo "Applying POWER patch."
-    git config user.email "Puneet.Sharma21@ibm.com"
-    git config user.name "puneetsharma21"
-    git cherry-pick "$PPC64LE_PATCH"
+    git checkout tags/$PYTORCH_VERSION
+
+    PPC64LE_PATCH="69cbf05"
+
+    if ! git log --pretty=format:"%H" | grep -q "$PPC64LE_PATCH"; then
+        echo "Applying POWER patch."
+        git config user.email "Puneet.Sharma21@ibm.com"
+        git config user.name "puneetsharma21"
+        git cherry-pick "$PPC64LE_PATCH"
+    else
+        echo "POWER patch not needed."
+    fi
+
+    git submodule sync
+    git submodule update --init --recursive
+
+    # Set flags to suppress warnings
+    export CXXFLAGS="-Wno-unused-variable -Wno-unused-parameter"
+
+    pip${PYTHON_VER} install -r requirements.txt
+    MAX_JOBS=$PARALLEL python${PYTHON_VER} setup.py install
+
+
+    cd ..
 else
-    echo "POWER patch not needed."
+    echo "Skipping PyTorch installation because BUILD_DEPS is set to False or not provided."
 fi
 
-git submodule sync
-git submodule update --init --recursive
-
-# Set flags to suppress warnings
-export CXXFLAGS="-Wno-unused-variable -Wno-unused-parameter"
-
-pip${PYTHON_VER} install -r requirements.txt
-MAX_JOBS=$PARALLEL python${PYTHON_VER} setup.py install
-
-
 # Build and install xformers
-cd ..
 if ! python${PYTHON_VER} -m pip install -e .; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
