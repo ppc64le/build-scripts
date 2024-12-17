@@ -28,7 +28,7 @@ PACKAGE_URL=https://github.com/jax-ml/ml_dtypes.git
 
 #Install Dependencies
 yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openssl-devel cmake zip unzip
-pip3 install absl-py numpy pytest
+pip3 install absl-py numpy pytest pybind11
 
 #Install eigen
 wget https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.zip
