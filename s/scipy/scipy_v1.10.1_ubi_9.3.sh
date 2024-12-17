@@ -41,13 +41,13 @@ echo "Upgrading pip..."
 pip install --upgrade pip
 
 # install scipy dependency (numpy wheel gets built and installed) and build-setup dependencies
-pip$ install meson ninja 'numpy<1.23' 'setuptools<60.0' Cython==0.29.37
-pip$ install 'meson-python<0.15.0,>=0.12.1'
-pip$ install pybind11
-pip$ install 'patchelf>=0.11.0'
-pip$ install 'pythran<0.15.0,>=0.12.0'
-pip$ install pooch pytest
-pip$ install build
+pip install meson ninja 'numpy<1.23' 'setuptools<60.0' Cython==0.29.37
+pip install 'meson-python<0.15.0,>=0.12.1'
+pip install pybind11
+pip install 'patchelf>=0.11.0'
+pip install 'pythran<0.15.0,>=0.12.0'
+pip install pooch pytest
+pip install build
 
 # Ensure meson is in PATH (inside virtual environment)
 export PATH=$VENV_DIR/bin:$PATH
