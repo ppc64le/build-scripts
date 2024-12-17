@@ -94,9 +94,6 @@ rm -rf llvm-project
 
 
 # Clone the repository
-git clone --recursive $PACKAGE_URL
-cd $PACKAGE_NAME
-
 if [ -z $PACKAGE_SOURCE_DIR ]; then
     git clone $PACKAGE_URL -b $PACKAGE_VERSION
     cd $PACKAGE_NAME
