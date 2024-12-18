@@ -1,0 +1,15 @@
+{
+    "maintainer": "Rakshith.r5",
+    "package_name": "numactl",
+    "github_url": "https://github.com/numactl/numactl.git",
+    "version": "v2.0.16",
+    "package_dir": "n/numactl",
+    "default_branch": "master",
+    "build_script": "numactl_ubi_9.3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": "false",
+    "v*.*": {
+      "build_script": "numactl_ubi_9.3.sh"
+    }
+  }
