@@ -24,12 +24,10 @@ PACKAGE_URL=https://github.com/contourpy/contourpy.git
 
 # Update system and install dependencies
 dnf update -y
-dnf groupinstall -y "Development Tools"
-dnf install -y python3-pip python3-devel libjpeg-devel gcc git
+dnf install -y make cmake automake autoconf g++ git gcc gcc-c++ wget openssl-devel bzip2-devel libffi-devel zlib-devel procps-ng python3-devel python3-pip libjpeg-devel
 
 # Install pytest for testing
-pip install matplotlib
-pip install pytest
+pip install setuptools wheel pytest overlay matplotlib
 
 # Clone the repository
 git clone $PACKAGE_URL
