@@ -56,7 +56,7 @@ if ! mvn clean install -DskipTests ; then
 fi
 
 #Test
-# TestClientAuthentication.testBasicAuthenticationSuccessWithNonRepeatableExpectContinue: skipped the test as it is parity with x86 
+# Tests for httpasyncclient module are skipped as one test fails for the module in parity with x86
 if !  mvn test -DskipTests -rf :httpasyncclient ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
