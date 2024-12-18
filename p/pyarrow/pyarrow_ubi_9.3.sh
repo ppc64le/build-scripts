@@ -97,7 +97,9 @@ CMAKE_PREFIX_PATH=$ARROW_HOME python setup.py build_ext --inplace
 # Install the generated Python package
 if ! CMAKE_PREFIX_PATH=$ARROW_HOME python3 setup.py install; then
     echo "------------------$PACKAGE_NAME::Python package installation failed-------------------------"
-    exit 4
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    exit 1
 fi
 
 export PYTEST_PATH=$(pwd)/pyarrow
@@ -107,9 +109,10 @@ if ! python3 -m pytest $PYTEST_PATH ; then
     echo "------------------$PACKAGE_NAME::Python_Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Python_Test_Fails"
-    exit 3
+    exit 2
 else
     echo "------------------$PACKAGE_NAME::Build_and_All_Tests_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass | Build_and_All_Tests_Success"
+    exit 0
 fi
