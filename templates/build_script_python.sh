@@ -21,13 +21,12 @@
 PACKAGE_NAME=
 PACKAGE_VERSION=
 PACKAGE_URL=
-PACKAGE_DIR=
+PACKAGE_DIR="$(pwd)/$PACKAGE_NAME"
 
 yum install -y git  python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo
 pip3 install pytest tox nox
 PATH=$PATH:/usr/local/bin/
 
-WORKDIR=$(pwd)
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 SOURCE=Github
 
@@ -38,7 +37,7 @@ if [[ "$PACKAGE_URL" == *github.com* ]]; then
         else
             if ! git clone "$PACKAGE_URL" "$PACKAGE_NAME"; then
                 echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-                echo "$PACKAGE_URL $PACKAGE_NAME"   "$WORKDIR/output/clone_fails"
+                echo "$PACKAGE_URL $PACKAGE_NAME"
                 echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Clone_Fails"  
                 exit 1
             fi
@@ -53,7 +52,7 @@ else
             # Use download and untar if it's not a Git repository
             if ! curl -L "$PACKAGE_URL" -o "$PACKAGE_NAME.tar.gz"; then
                 echo "------------------$PACKAGE_NAME:download_fails---------------------------------------"
-                echo "$PACKAGE_URL $PACKAGE_NAME"   "$WORKDIR/output/download_fails"
+                echo "$PACKAGE_URL $PACKAGE_NAME"
                 echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Download_Fails"  
                 exit 1
             fi
@@ -61,7 +60,7 @@ else
             # Extract the downloaded tarball
             if ! tar -xzf "$PACKAGE_NAME.tar.gz" -C "$PACKAGE_NAME" --strip-components=1; then
                 echo "------------------$PACKAGE_NAME:untar_fails---------------------------------------"
-                echo "$PACKAGE_URL $PACKAGE_NAME"   "$WORKDIR/output/untar_fails"
+                echo "$PACKAGE_URL $PACKAGE_NAME"
                 echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Untar_Fails"  
                 exit 1
             fi
@@ -73,45 +72,45 @@ fi
 # Install via pip3
 if !  python3 -m pip install ./; then
         echo "------------------$PACKAGE_NAME:install_fails------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"   "$WORKDIR/output/install_fails"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"  
-        exit 2
+        exit 1
 fi
 
 if [ -f tox.ini ]; then
     if !  python3 -m tox -e py39; then
         echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"   "$WORKDIR/output/test_fails"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"  
-        exit 0
+        exit 2
     else
         echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"   "$WORKDIR/output/test_success"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success" 
-        exit 1
+        exit 0
     fi
 elif [ -f noxfile.py ]; then
     if !  python3 -m nox; then
         echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"   "$WORKDIR/output/test_fails"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"  
-        exit 0
+        exit 2
     else
         echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"   "$WORKDIR/output/test_success"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"   
-        exit 1
+        exit 0
     fi
 else
     if ! python3 -m pytest; then
         echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"   "$WORKDIR/output/test_fails"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"  
-        exit 0
+        exit 2
     else
         echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"   "$WORKDIR/output/test_success"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"   
-        exit 1
+        exit 0
     fi
 fi
