@@ -49,14 +49,14 @@ else
 fi
 
 git checkout $PACKAGE_VERSION
-git submodule update --init
+git submodule update --init --recursive
 
 
 # Build the wheel file
 if ! python${PYTHON_VER} -m build --wheel; then
-    echo "------------------$PACKAGE_NAME:Build_wheel_fails-------------------------------------"
+    echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_wheel_Fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
     exit 1
 fi
 
@@ -71,9 +71,9 @@ fi
 # Install the package from the wheel
 echo "Installing wheel: $WHEEL_FILE for Python ${PYTHON_VER}"
 if ! python${PYTHON_VER} -m pip install "$WHEEL_FILE"; then
-    echo "------------------$PACKAGE_NAME:Install_wheel_fails-------------------------------------"
+    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_wheel_Fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
