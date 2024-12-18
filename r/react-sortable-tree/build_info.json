@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "react-sortable-tree",
+    "github_url": "https://github.com/codemayonnaise/react-sortable-tree",
+    "version": "v4.2.2",
+    "default_branch": "stable",
+    "build_script": "react-sortable-tree_ubi_9.3.sh",
+    "package_dir": "r/react-sortable-tree",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v4.*.*": {
+        "build_script": "react-sortable-tree_ubi_9.3.sh"
+    }
+}
