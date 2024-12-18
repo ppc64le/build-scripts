@@ -1,0 +1,15 @@
+{
+  "maintainer": "mayurbhosure",
+  "package_name": "exp4j",
+  "github_url": "https://github.com/fasseg/exp4j",
+  "version": "exp4j-0.4.8",
+  "default_branch": "master",
+  "build_script": "exp4j_ubi_9.3.sh",
+  "package_dir": "e/exp4j",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "exp4j-0.4.*": {
+    "build_script": "exp4j_ubi_9.3.sh"
+  }
+}

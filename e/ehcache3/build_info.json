@@ -1,0 +1,15 @@
+{
+    "maintainer": "ramnathnayak-ibm",
+    "package_name": "ehcache3",
+    "github_url": "https://github.com/ehcache/ehcache3",
+    "version": "v3.10.8",
+    "default_branch": "master",
+    "package_dir": "e/ehcache3",
+    "build_script": "ehcache3_ubi_9.3.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": "false",
+    "v*.*.*" : {
+       "build_script": "ehcache3_ubi_9.3.sh"
+    }
+}

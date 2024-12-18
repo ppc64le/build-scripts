@@ -1,0 +1,15 @@
+{
+   "maintainer": "stutiibm",
+   "package_name": "terra",
+   "github_url": "https://github.com/cran/terra",
+   "version": "1.7-78",
+   "default_branch": "master",
+   "build_script": "terra_ubi_9.3.sh",
+   "package_dir": "t/terra",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*.*.*": {
+     "build_script": "terra_ubi_9.3.sh"
+   }
+}
