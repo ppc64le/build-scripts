@@ -26,25 +26,53 @@ PYTHON_VER=${2:-"3.11"}
 OS_NAME=$(cat /etc/os-release | grep "PRETTY" | awk -F '=' '{print $2}')
 
 # install core dependencies
-yum install -y gcc gcc-c++ gcc-fortran pkg-config openblas-devel python${PYTHON_VER} python${PYTHON_VER}-pip python${PYTHON_VER}-devel git atlas
+yum install -y gcc gcc-c++ gcc-fortran pkg-config openblas-devel \
+    python${PYTHON_VER} python${PYTHON_VER}-pip python${PYTHON_VER}-devel git atlas
+
+# Create a Python virtual environment to isolate dependencies
+VENV_DIR="${PACKAGE_NAME}_venv"
+echo "Creating virtual environment in $VENV_DIR..."
+python${PYTHON_VER} -m venv $VENV_DIR
+
+# Activate the virtual environment
+source $VENV_DIR/bin/activate
+
+# Upgrade pip inside the virtual environment
+echo "Upgrading pip..."
+pip install --upgrade pip
 
 # install scipy dependency (numpy wheel gets built and installed) and build-setup dependencies
-python${PYTHON_VER} -m pip install meson ninja 'numpy<1.23' 'setuptools<60.0' Cython==0.29.37
-python${PYTHON_VER} -m pip install 'meson-python<0.15.0,>=0.12.1'
-python${PYTHON_VER} -m pip install pybind11
-python${PYTHON_VER} -m pip install 'patchelf>=0.11.0'
-python${PYTHON_VER} -m pip install 'pythran<0.15.0,>=0.12.0'
-python${PYTHON_VER} -m pip install pooch pytest
-python${PYTHON_VER} -m pip install build
+pip install meson ninja 'numpy<1.23' 'setuptools<60.0' Cython==0.29.37
+pip install 'meson-python<0.15.0,>=0.12.1' pybind11 'patchelf>=0.11.0' \
+    'pythran<0.15.0,>=0.12.0' pooch pytest build
 
-# clone source repository
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+# Ensure meson is in PATH (inside virtual environment)
+export PATH=$VENV_DIR/bin:$PATH
+
+# Cloning the repository from remote to local
+if [ -z $PACKAGE_SOURCE_DIR ]; then
+  git clone $PACKAGE_URL
+  cd $PACKAGE_NAME  
+else  
+  cd $PACKAGE_SOURCE_DIR
+fi
+
+
 git checkout $PACKAGE_VERSION
-git submodule update --init
+git submodule update --init --recursive
+
+# Patch meson.build dynamically
+if grep -q "join_paths(meson.source_root()," scipy/meson.build; then
+    sed -i 's|join_paths(meson.source_root(),|include_directories(|g' scipy/meson.build
+    echo "Patched meson.build to resolve absolute path issue."
+fi
+
+# Clean previous builds
+echo "Cleaning previous build directory..."
+rm -rf build
 
 # build and install
-if ! python${PYTHON_VER} -m pip install -e . --no-build-isolation; then
+if ! pip install -e . --no-build-isolation; then
     echo "------------------$PACKAGE_NAME:build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
@@ -56,7 +84,7 @@ else
 fi
 
 # run specific tests using pytest
-if ! python${PYTHON_VER} -m pytest scipy/interpolate/tests/test_polyint.py scipy/linalg/tests/test_basic.py; then
+if ! python -m pytest scipy/interpolate/tests/test_polyint.py scipy/linalg/tests/test_basic.py; then
     echo "------------------$PACKAGE_NAME::Test_Fail-------------------------"
     echo "$PACKAGE_VERSION $PACKAGE_NAME"
     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Test_Fail"
@@ -67,3 +95,5 @@ else
     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Test_Success"
 fi
 
+# Deactivate the virtual environment
+deactivate
