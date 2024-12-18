@@ -55,7 +55,7 @@ fi
 
 # install necessary Python packages
 pip install attrs multidict async-timeout yarl frozenlist aiosignal freezegun python-on-whales re-assert brotlicffi brotli Cython pytest-cov pytest-mock build proxy proxy.py
-make
+#make
 
 # Upgrade pip
 ln -s /usr/local/bin/pip3 /usr/bin/pip
