@@ -26,7 +26,7 @@ PYTHON_VER=${2:-"3.11"}
 OS_NAME=$(grep '^PRETTY' /etc/os-release | awk -F '=' '{print $2}')
 
 echo "Installing dependencies for Python ${PYTHON_VER}"
-yum install -y python${PYTHON_VER} python${PYTHON_VER}-pip python${PYTHON_VER}-devel python${PYTHON_VER}-wheel python${PYTHON_VER}-setuptools
+yum install -y python${PYTHON_VER} python${PYTHON_VER}-pip python${PYTHON_VER}-devel python${PYTHON_VER}-wheel python${PYTHON_VER}-setuptools git
 
 dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
 	https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
