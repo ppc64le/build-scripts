@@ -64,6 +64,14 @@ fi
 git checkout $PACKAGE_VERSION
 git submodule update --init
 
+# Patch the problematic meson.build file
+echo "Patching meson.build to fix absolute path issues..."
+sed -i 's|join_paths(meson.source_root(),|include_directories(|g' scipy/meson.build
+
+# Clean previous builds
+echo "Cleaning previous build directory..."
+rm -rf build
+
 # build and install
 if ! pip install -e . --no-build-isolation; then
     echo "------------------$PACKAGE_NAME:build_fails---------------------"
