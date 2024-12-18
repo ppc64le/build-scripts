@@ -22,7 +22,7 @@ SCRIPT_PACKAGE_VERSION=tokio-1.41.1
 PACKAGE_NAME=tokio
 PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
 PACKAGE_URL=https://github.com/tokio-rs/tokio.git
-BUILD_HOME=home/
+BUILD_HOME=$(pwd)
 
 # Install update and deps
 
@@ -54,7 +54,7 @@ fi
 set RUST_BACKTRACE=full
 
 # Change to home directory
-cd /home/
+cd $BUILD_HOME
 
 # Build and install tokio
 git clone $PACKAGE_URL

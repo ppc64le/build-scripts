@@ -33,7 +33,7 @@ yum install -y make g++ wget git libpq-devel python3-devel.ppc64le python-psycop
 
 
 # Change to home directory
-cd /home/
+cd $BUILD_HOME
 
 # Change root password
 echo "root:lormipsum" | chpasswd

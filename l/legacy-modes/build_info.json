@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "legacy-modes",
+    "github_url": "https://github.com/codemirror/legacy-modes",
+    "version": "6.4.2",
+    "default_branch": "main",
+    "build_script": "legacy-modes_ubi_9.3.sh",
+    "package_dir": "l/legacy-modes",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "6.*.*": {
+        "build_script": "legacy-modes_ubi_9.3.sh"
+    }
+}
