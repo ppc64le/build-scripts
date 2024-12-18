@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : numactl
-# Version          : Latest (from GitHub)
+# Version          : v2.0.16
 # Source repo      : https://github.com/numactl/numactl.git
 # Tested on        : UBI:9.3
 # Language         : C
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Your Name <your.email@example.com>
+# Maintainer       : Rakshith R <rakshith.r5@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
