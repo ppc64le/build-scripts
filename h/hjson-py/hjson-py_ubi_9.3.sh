@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-v3.0.2}
 PACKAGE_URL=https://github.com/hjson/hjson-py.git
 
 # Install dependencies
-yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel zlib-devel
+yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel zlib-devel python3-devel python3-pip
 
 # Clone the repository
 git clone $PACKAGE_URL
