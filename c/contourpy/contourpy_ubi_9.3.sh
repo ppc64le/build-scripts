@@ -24,7 +24,7 @@ PACKAGE_URL=https://github.com/contourpy/contourpy.git
 
 # Update system and install dependencies
 dnf update -y
-#dnf groupinstall -y "Development Tools"
+dnf groupinstall -y "Development Tools"
 dnf install -y python3-pip python3-devel libjpeg-devel gcc git
 
 # Install pytest for testing
