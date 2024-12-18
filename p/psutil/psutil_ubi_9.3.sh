@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-release-5.9.0}
 PACKAGE_URL=https://github.com/giampaolo/psutil.git
 
 # Install necessary system dependencies
-yum install -y make g++ git gcc gcc-c++ wget openssl-devel bzip2-devel libffi-devel zlib-devel procps-ng
+yum install -y make g++ git gcc gcc-c++ wget openssl-devel bzip2-devel libffi-devel zlib-devel procps-ng python-devel
 
 # Clone the repository
 git clone $PACKAGE_URL
@@ -32,10 +32,10 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Install additional dependencies
-pip3 install setuptools wheel pytest overlay
+pip install setuptools wheel pytest overlay
 
 #install
-if ! pip3 install -e . ; then
+if ! pip install -e . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"

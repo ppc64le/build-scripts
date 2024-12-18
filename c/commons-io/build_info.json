@@ -1,0 +1,15 @@
+{
+    "maintainer": "pratibh-ibm",
+    "package_name": "commons-io",
+    "github_url": "https://github.com/apache/commons-io.git",
+    "version": "rel/commons-io-2.17.0",
+    "default_branch": "master",
+    "package_dir": "c/commons-io",
+    "build_script": "commons-io_ubi_9.3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "rel/commons-io-2.*.*": {
+      "build_script": "commons-io_ubi_9.3.sh"
+    }
+  }

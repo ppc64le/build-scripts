@@ -1,14 +1,20 @@
 {
-  "maintainer": "mohitp333",
+  "maintainer": "sid226",
   "package_name": "netty",
   "github_url": "https://github.com/netty/netty.git",
   "package_dir": "n/netty/",
-  "version": "netty-4.1.94.Final",
+  "version": "netty-4.1.114.Final",
   "default_branch": "4.1",
-  "build_script": "netty-4.1.94.Final_ubi_8.7.sh",
+  "build_script": "netty-4.1.114.Final_ubi_9.3.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
+     "netty-4.1.*.Final": {
+    "build_script": "netty-4.1.114.Final_ubi_9.3.sh"
+  },
+    "netty-4.1.109.Final": {
+    "build_script": "netty-4.1.109.Final_ubi_9.3.sh"
+  },
   "netty-4.1.84.Final": {
     "build_script": "netty-4.1.84.Final_ubi_8.5.sh"
   },
