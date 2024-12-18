@@ -30,11 +30,11 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #install pytest
-pip3 install pytest
+pip install pytest
 
 #install chardet and psutil
-pip3 install "chardet<5,>=3.0.2" --force-reinstall
-pip3 install psutil
+pip install "chardet<5,>=3.0.2" --force-reinstall
+pip install psutil
 
 #install
 if ! (python3 setup.py install) ; then
