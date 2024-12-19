@@ -1,0 +1,13 @@
+{
+   "maintainer": "shubham-dayma-ibm",
+   "package_name": "pyzmq",
+   "github_url": "https://github.com/zeromq/pyzmq",
+   "version": "v23.2.0",
+   "default_branch": "main",
+   "build_script": "pyzmq_ubi_9.3.sh",
+   "package_dir": "p/pyzmq",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
