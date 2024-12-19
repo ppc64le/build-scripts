@@ -11,6 +11,6 @@
     "use_non_root_user": false,
     "validate_build_script": true,
     "*.*.*": {
-      "build_script": "flask.sh"
+      "build_script": "flask_ubi_9.3.sh.sh"
     }
   }
