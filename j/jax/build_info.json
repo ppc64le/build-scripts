@@ -1,0 +1,13 @@
+{
+   "maintainer": "shubham-dayma-ibm",
+   "package_name": "jax",
+   "github_url": "https://github.com/jax-ml/jax",
+   "version": "workflow_test",
+   "default_branch": "main",
+   "build_script": "jax_ubi_9.3.sh",
+   "package_dir": "j/jax",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
