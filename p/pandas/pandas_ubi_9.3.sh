@@ -20,13 +20,18 @@
 
 PACKAGE_NAME=pandas
 PACKAGE_VERSION=${1:-v2.2.0}
-PYTHON_VERSION=${2:-3.11}
+PYTHON_VERSION=${PYTHON_VERSION:-3.11}
 PACKAGE_URL=https://github.com/pandas-dev/pandas.git
 
 yum install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip git gcc gcc-c++ cmake ninja-build
 
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME/
+if [ -z $PACKAGE_SOURCE_DIR ]; then
+  git clone $PACKAGE_URL -b $PACKAGE_VERSION
+  cd $PACKAGE_NAME  
+else  
+  cd $PACKAGE_SOURCE_DIR
+fi
+
 git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
@@ -39,7 +44,7 @@ pip install Cython pytest hypothesis build meson meson-python
 python${PYTHON_VERSION} -m build --wheel
 
 # Install wheel
-python${PYTHON_VERSION} -m pip install dist/pandas-2.2.0-cp311-cp311-linux_ppc64le.whl
+python${PYTHON_VERSION} -m pip install dist/pandas-*.whl
 if [ $? == 0 ]; then
      echo "------------------$PACKAGE_NAME::Build_Pass---------------------"
      echo "$PACKAGE_VERSION $PACKAGE_NAME"
