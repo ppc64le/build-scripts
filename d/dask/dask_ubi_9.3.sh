@@ -24,6 +24,15 @@ PACKAGE_VERSION=${1:-2.20.0}  # Default version set to 2.20.0
 PACKAGE_URL=https://github.com/dask/dask.git
 
 # Install necessary system dependencies
+dnf install -y wget
+dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
+dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
+dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
+wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
+mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
+rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
+dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+
 dnf install -y make cmake automake autoconf g++ git gcc gcc-c++ wget openssl-devel bzip2-devel libffi-devel zlib-devel procps-ng python3-devel python3-pip libjpeg-devel
 dnf install -y gcc openssl-devel bzip2-devel libffi-devel zlib-devel \
     meson ninja-build gcc-gfortran openblas-devel libjpeg-devel \
