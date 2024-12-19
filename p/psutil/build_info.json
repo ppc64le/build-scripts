@@ -1,0 +1,15 @@
+{
+  "maintainer": "md.shafi.hussain",
+  "package_name": "psutil",
+  "github_url": "https://github.com/giampaolo/psutil.git",
+  "version": "release-6.1.0",
+  "default_branch": "master",
+  "package_dir": "p/psutil",
+  "build_script": "psutil_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "release-*.*.*": {
+    "build_script": "psutil_ubi_9.3.sh"
+  }
+}
