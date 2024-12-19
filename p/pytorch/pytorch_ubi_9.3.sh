@@ -78,7 +78,7 @@ ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip$PYTHON_VERSION
 ##############################################
 
 # Build Dependencies when BUILD_DEPS is unset or set to True
-if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True]; then
+if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then
     dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
         https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
         https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
