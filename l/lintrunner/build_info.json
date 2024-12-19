@@ -4,7 +4,7 @@
   "github_url": "https://github.com/suo/lintrunner.git",
   "version": "v0.12.7",
   "default_branch": "main",
-  "package_dir": "p/lintrunner",
+  "package_dir": "l/lintrunner",
   "build_script": "lintrunner_ubi_9.3.sh",
   "docker_build": false,
   "validate_build_script": true,
