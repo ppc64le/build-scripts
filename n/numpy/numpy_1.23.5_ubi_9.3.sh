@@ -36,8 +36,6 @@ cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 git submodule update --init
-python -m pip wheel -w dist -vv .
-cp dist/*.whl ../
 
 #install
 if ! (python3 setup.py install) ; then
