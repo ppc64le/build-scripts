@@ -26,7 +26,6 @@ PACKAGE_NAME=ml_dtypes
 PACKAGE_VERSION=${1:-0.1.0}
 PACKAGE_URL=https://github.com/jax-ml/ml_dtypes.git
 
-#Install Dependencies
 yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openssl-devel cmake zip unzip
 pip3 install absl-py numpy pytest pybind11
 
@@ -36,22 +35,22 @@ unzip eigen-3.4.0.zip
 cp -r eigen-3.4.0/Eigen/ /usr/local/include
 
 #Build ml_dtypes
-ML_DTYPES_VERSION=0.1.0
+ML_DTYPES_VERSION=0.5.0
 git clone -b v${ML_DTYPES_VERSION} https://github.com/jax-ml/ml_dtypes.git
 cd ml_dtypes
 git submodule init
 git submodule update
-python -m pip wheel -w dist -v .
+
+#Install 
 if ! (python3 setup.py install) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
     exit 1
 fi
-# Run test cases
-cd dist/
-pip install ml_dtypes-0.5.0-cp39-cp39-linux_ppc64le.whl
-cd ..
+
+pip install ml_dtypes
+#Run tests
 if !(pytest); then
     echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
