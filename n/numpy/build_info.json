@@ -1,5 +1,5 @@
 {
-  "maintainer": ["bhagyashrigai","kiranNukal"]
+  "maintainer": ["bhagyashrigai","kiranNukal"],
   "package_name": "numpy",
   "github_url": "https://github.com/numpy/numpy.git",
   "version": "v1.26.4",
