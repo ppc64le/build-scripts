@@ -4,7 +4,7 @@
     "github_url": "https://github.com/pallets/flask",
     "version": "3.0.0",
     "package_dir": "f/flask",
-    "default_branch": "master",
+    "default_branch": "main",
     "build_script": "flask_ubi_9.3.sh",
     "docker_build": false,
     "wheel_build": true,
