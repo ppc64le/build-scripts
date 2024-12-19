@@ -1,0 +1,15 @@
+{
+    "maintainer": "pratibh-ibm",
+    "package_name": "pgjdbc",
+    "github_url": "https://github.com/pgjdbc/pgjdbc.git",
+    "version": "REL42.7.4",
+    "default_branch": "master",
+    "package_dir": "p/pgjdbc",
+    "build_script": "pgjdbc_ubi_9.3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "REL42.*.*": {
+      "build_script": "pgjdbc_ubi_9.3.sh"
+    }
+  }

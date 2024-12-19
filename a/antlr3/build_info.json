@@ -1,0 +1,15 @@
+{
+  "maintainer": "sid226",
+  "package_name": "antlr3",
+  "github_url": "https://github.com/antlr/antlr3",
+  "version": "3.5.3",
+  "default_branch": "master",
+  "package_dir": "a/antlr3/",
+  "build_script": "antlr3_ubi_9.3.sh",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "3.*.*" : {
+       "build_script": "antlr3_ubi_9.3.sh"
+  }
+}

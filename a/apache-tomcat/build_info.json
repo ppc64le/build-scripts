@@ -1,12 +1,17 @@
 {
-  "maintainer": "Chandranana",
+  "maintainer": "vinodk99",
   "package_name": "apache-tomcat",
-  "github_url": "https://github.com/apache/tomcat.git",
-  "version": "11.0.0-M3",
+  "github_url": "https://github.com/apache/tomcat",
+  "version": "11.0.0-M26",
   "default_branch": "main",
-  "package_dir": "a/apache-tomcat/",
-  "build_script": "apache-tomcat_ubi8.5.sh",
-  "validate_build_script": true,
+  "build_script": "apache-tomcat_ubi_9.3.sh",
+  "package_dir": "a/apache_tomcat/",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "validate_build_script": false,
   "use_non_root_user": false,
-  "docker_build": false
+  "docker_build": true,
+  "*.*.*-M*,*.*.*": {
+    "dir": "11.0.0_ubi9",
+    "build_script": "apache-tomcat_ubi_9.3.sh"
+  }
 }

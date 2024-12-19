@@ -1,0 +1,15 @@
+{
+    "maintainer": "pooja0805",
+    "package_name": "colorette",
+    "github_url": "https://github.com/jorgebucaran/colorette.git",
+    "version": "2.0.20",
+    "default_branch": "main",
+    "build_script": "colorette_ubi_9.3.sh",
+    "package_dir": "c/colorette",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "*.*.*": {
+      "build_script": "colorette_ubi_9.3.sh"
+    }
+ }
