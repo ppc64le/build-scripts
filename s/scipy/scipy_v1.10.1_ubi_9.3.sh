@@ -42,7 +42,7 @@ echo "Upgrading pip..."
 pip install --upgrade pip
 
 # install scipy dependency (numpy wheel gets built and installed) and build-setup dependencies
-pip install meson ninja 'numpy<1.23' 'setuptools<60.0' Cython==0.29.37
+pip install ninja 'numpy<1.23' 'setuptools<60.0' Cython==0.29.37
 pip install 'meson-python<0.15.0,>=0.12.1' pybind11 'patchelf>=0.11.0' \
     'pythran<0.15.0,>=0.12.0' pooch pytest build wheel setuptools_scm
 
@@ -97,14 +97,14 @@ echo "Upgrading pip..."
 pip install --upgrade pip
 pip install 'meson-python<0.13.0,>=0.11.0' 'numpy==1.23.2' 'wheel<0.39.0' \
     'pybind11==2.10.1' 'pythran<0.13.0,>=0.12.0' 'setuptools<60.0' \
-    meson ninja Cython==0.29.37 patchelf>=0.11.0 pooch pytest build setuptools_scm
+     ninja Cython==0.29.37 patchelf>=0.11.0 pooch pytest build setuptools_scm
 
 # Ensure meson is in PATH (inside virtual environment)
 export PATH=$VENV_DIR2/bin:$PATH
 
 # Generate the .whl file
 export CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
-if ! python -m build --wheel --no-isolation; then
+if ! python -m build --wheel --no-isolation -Ccompile-args=-j32; then
     echo "------------------$PACKAGE_NAME:Build_wheel_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_wheel_Fails"
