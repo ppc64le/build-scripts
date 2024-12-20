@@ -33,8 +33,6 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-#ln -sf /usr/local/bin/python3.10 /usr/bin/python3
-
 #install
 if ! pip install .; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
