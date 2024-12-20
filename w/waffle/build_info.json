@@ -2,7 +2,7 @@
     "maintainer": "stutiibm",
     "package_name": "waffle",
     "github_url": "https://github.com/Waffle/waffle.git",
-    "version": "waffle-3.4.0",
+    "version": "waffle-3.5.0",
     "default_branch": "master",
     "package_dir": "w/waffle",
     "build_script": "waffle_ubi_9_3.sh",

@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : waffle
-# Version          : waffle-3.4.0
+# Version          : waffle-3.5.0
 # Source repo      : https://github.com/Waffle/waffle.git
 # Tested on        : UBI:9.3
 # Language         : Java
@@ -21,7 +21,7 @@
 #variables
 PACKAGE_NAME=waffle
 PACKAGE_URL=https://github.com/Waffle/waffle.git
-PACKAGE_VERSION=${1:-waffle-3.4.0}
+PACKAGE_VERSION=${1:-waffle-3.5.0}
 
 #dependencies
 yum install -y git wget java-21-openjdk-devel.ppc64le
@@ -30,10 +30,10 @@ export PATH=$JAVA_HOME/bin:$PATH
 java -version
 
 # maven installation
-wget https://archive.apache.org/dist/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
-tar -xvzf apache-maven-3.9.6-bin.tar.gz
-cp -R apache-maven-3.9.6 /usr/local
-ln -s /usr/local/apache-maven-3.9.6/bin/mvn /usr/bin/mvn
+wget https://archive.apache.org/dist/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz
+tar -xvzf apache-maven-3.9.9-bin.tar.gz
+cp -R apache-maven-3.9.9 /usr/local
+ln -s /usr/local/apache-maven-3.9.9/bin/mvn /usr/bin/mvn
 export M2_HOME=/usr/local/maven
 export PATH=$PATH:$M2_HOME/bin
 mvn -version

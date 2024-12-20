@@ -11,5 +11,8 @@
   "docker_build": false,
   "v4.2.*": {
     "build_script": "metrics-core_ubi_9.3.sh"
+  },
+  "v4.0.*": {
+    "build_script": "metrics-core-v4.0.7_ubi_9.3.sh"
   }
 }
