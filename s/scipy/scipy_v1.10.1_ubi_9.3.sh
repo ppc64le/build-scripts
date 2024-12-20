@@ -82,6 +82,25 @@ else
     echo "$PACKAGE_VERSION $PACKAGE_NAME"
     echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_Success"
 fi
+deactivate
+
+# Create a Python virtual environment to isolate dependencies
+VENV_DIR2="${PACKAGE_NAME}_venv2"
+echo "Creating virtual environment in $VENV_DIR2..."
+python${PYTHON_VER} -m venv $VENV_DIR2
+
+# Activate the virtual environment
+source $VENV_DIR2/bin/activate
+
+# Upgrade pip inside the virtual environment
+echo "Upgrading pip..."
+pip install --upgrade pip
+pip install 'meson-python<0.13.0,>=0.11.0' 'numpy==1.23.2' 'wheel<0.39.0' \
+    'pybind11==2.10.1' 'pythran<0.13.0,>=0.12.0' 'setuptools<60.0' \
+    meson ninja Cython==0.29.37 patchelf>=0.11.0 pooch pytest build setuptools_scm
+
+# Ensure meson is in PATH (inside virtual environment)
+export PATH=$VENV_DIR2/bin:$PATH
 
 # Generate the .whl file
 export CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
