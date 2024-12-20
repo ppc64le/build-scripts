@@ -22,13 +22,9 @@ PACKAGE_NAME=statsmodels
 PACKAGE_VERSION=${1:-v0.13.5}
 PACKAGE_URL=https://github.com/statsmodels/statsmodels.git
 
-# dnf groupinstall -y "Development Tools" 
-
-dnf install -y git gcc gcc-c++  gcc-gfortran openssl-devel python3-devel python3-pip \
-    meson ninja-build openblas-devel libjpeg-devel bzip2-devel libffi-devel zlib-devel \
-    libtiff-devel freetype-devel 
-dnf update -y
-dnf install -y make cmake automake autoconf g++ git gcc gcc-c++ wget openssl-devel bzip2-devel libffi-devel zlib-devel procps-ng python3-devel python3-pip libjpeg-devel
+dnf install -y git wget g++ gcc gcc-c++  gcc-gfortran make cmake automake autoconf procps-ng \
+python3-pip python3-devel openblas-devel libjpeg-devel bzip2-devel libffi-devel zlib-devel \
+openssl-devel libtiff-devel freetype-devel meson ninja-build   
 
 pip install pytest
 pip install numpy==1.23
