@@ -8,7 +8,7 @@
 	"package_dir": "p/psycopg2",
 	"docker_build": false,
 	"validate_build_script": true,
-  "wheel_build" : true,
+        "wheel_build" : true,
 	"use_non_root_user": false,
 	"*": {
 	   "build_script": "psycopg2_ubi_9.3.sh"
