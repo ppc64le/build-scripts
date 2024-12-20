@@ -35,7 +35,7 @@ python${PYTHON_VERSION} --version
 python${PYTHON_VERSION} -m pip install -U pip
 
 source /opt/rh/gcc-toolset-12/enable
-pip install setuptools build
+python${PYTHON_VERSION} -m pip install setuptools build
 
 # Build llvmdev which is a pre-req for llvmlite
 git clone --recursive https://github.com/llvm/llvm-project
