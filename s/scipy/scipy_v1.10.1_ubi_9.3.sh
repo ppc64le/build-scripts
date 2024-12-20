@@ -83,6 +83,20 @@ else
     echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_Success"
 fi
 
+# Generate the .whl file
+export CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
+if ! python -m build --wheel --no-isolation; then
+    echo "------------------$PACKAGE_NAME:Build_wheel_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_wheel_Fails"
+    exit 1
+else
+    echo "------------------$PACKAGE_NAME:Build_wheel_success-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_wheel_Success"
+
+fi
+
 # run specific tests using pytest
 if ! python -m pytest scipy/interpolate/tests/test_polyint.py scipy/linalg/tests/test_basic.py; then
     echo "------------------$PACKAGE_NAME::Test_Fail-------------------------"
