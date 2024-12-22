@@ -42,7 +42,6 @@ if ! (pip install -v -e .) ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-
 # Run tests skipping the tests in "test_mypy.py" since it requires python3.7 only
 if ! pytest zmq/tests --timeout=60 --disable-warnings -k "not test_mypy.py"; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
