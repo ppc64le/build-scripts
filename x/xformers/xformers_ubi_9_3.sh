@@ -87,11 +87,11 @@ if [ -z $BUILD_DEPS ] || [ "$BUILD_DEPS" == "true" ]; then
     cd ..
 else
     echo "Skipping PyTorch installation because BUILD_DEPS is set to False or not provided."
-    pip${PYTHON_VER} install -r requirements.txt
+    python${PYTHON_VER} -m pip install -r requirements.txt
 fi
 
 # Build and install xformers
-if ! python${PYTHON_VER} -m pip install -e .; then
+if ! python${PYTHON_VER} -m pip install -e . -vvv; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail |  Build_fails"
