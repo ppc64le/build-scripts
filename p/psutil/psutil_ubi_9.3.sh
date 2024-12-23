@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-release-5.9.0}
 PACKAGE_URL=https://github.com/giampaolo/psutil.git
 
 # Install necessary system dependencies
-yum install -y make g++ git gcc gcc-c++ wget openssl-devel bzip2-devel libffi-devel zlib-devel procps-ng python-devel
+yum install -y make g++ git gcc gcc-c++ wget openssl-devel bzip2-devel libffi-devel zlib-devel procps-ng python3-devel python3-pip
 
 # Clone the repository
 git clone $PACKAGE_URL
