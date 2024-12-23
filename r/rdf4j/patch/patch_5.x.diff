@@ -1,0 +1,98 @@
+diff --git a/bom/pom.xml b/bom/pom.xml
+index 3c31ef526a..7b836bc5f3 100644
+--- a/bom/pom.xml
++++ b/bom/pom.xml
+@@ -404,12 +404,18 @@
+                                <version>${slf4j.version}</version>
+                        </dependency>
+                        <!--  LMDB native extensions -->
+-                       <dependency>
++                        <dependency>
+                                <groupId>org.lwjgl</groupId>
+                                <artifactId>lwjgl-lmdb</artifactId>
+                                <classifier>natives-linux</classifier>
+                                <version>${lwjgl.version}</version>
+-                       </dependency>
++                        </dependency>
++                       <dependency>
++                                <groupId>org.lwjgl</groupId>
++                                <artifactId>lwjgl-lmdb</artifactId>
++                                <classifier>natives-linux-ppc64le</classifier>
++                                <version>${lwjgl.version}</version>
++                        </dependency>
+                        <dependency>
+                                <groupId>org.lwjgl</groupId>
+                                <artifactId>lwjgl-lmdb</artifactId>
+@@ -428,10 +434,16 @@
+                                <classifier>natives-windows</classifier>
+                                <version>${lwjgl.version}</version>
+                        </dependency>
++                        <dependency>
++                                <groupId>org.lwjgl</groupId>
++                                <artifactId>lwjgl</artifactId>
++                                <classifier>natives-linux</classifier>
++                                <version>${lwjgl.version}</version>
++                        </dependency>
+                        <dependency>
+                                <groupId>org.lwjgl</groupId>
+                                <artifactId>lwjgl</artifactId>
+-                               <classifier>natives-linux</classifier>
++                               <classifier>natives-linux-ppc64le</classifier>
+                                <version>${lwjgl.version}</version>
+                        </dependency>
+                        <dependency>
+diff --git a/core/sail/lmdb/pom.xml b/core/sail/lmdb/pom.xml
+index a6040aec85..09327f5db2 100644
+--- a/core/sail/lmdb/pom.xml
++++ b/core/sail/lmdb/pom.xml
+@@ -15,10 +15,17 @@
+                        <artifactId>lwjgl-lmdb</artifactId>
+                        <version>${lwjgl.version}</version>
+                </dependency>
++               <dependency>
++                        <groupId>org.lwjgl</groupId>
++                        <artifactId>lwjgl-lmdb</artifactId>
++                        <classifier>natives-linux</classifier>
++                        <version>${lwjgl.version}</version>
++                        <scope>runtime</scope>
++                </dependency>
+                <dependency>
+                        <groupId>org.lwjgl</groupId>
+                        <artifactId>lwjgl-lmdb</artifactId>
+-                       <classifier>natives-linux</classifier>
++                       <classifier>natives-linux-ppc64le</classifier>
+                        <version>${lwjgl.version}</version>
+                        <scope>runtime</scope>
+                </dependency>
+@@ -57,10 +64,17 @@
+                        <version>${lwjgl.version}</version>
+                        <scope>runtime</scope>
+                </dependency>
++                <dependency>
++                        <groupId>org.lwjgl</groupId>
++                        <artifactId>lwjgl</artifactId>
++                        <classifier>natives-linux</classifier>
++                        <version>${lwjgl.version}</version>
++                        <scope>runtime</scope>
++                </dependency>
+                <dependency>
+                        <groupId>org.lwjgl</groupId>
+                        <artifactId>lwjgl</artifactId>
+-                       <classifier>natives-linux</classifier>
++                       <classifier>natives-linux-ppc64le</classifier>
+                        <version>${lwjgl.version}</version>
+                        <scope>runtime</scope>
+                </dependency>
+diff --git a/pom.xml b/pom.xml
+index 8f342aab27..ca675d4e49 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -367,7 +367,7 @@
+                <jsonldjava.version>0.13.4</jsonldjava.version>
+                <last.japicmp.compare.version>5.0.0</last.japicmp.compare.version>
+                <jaxb.version>2.3.8</jaxb.version>
+-               <lwjgl.version>3.3.3</lwjgl.version>
++               <lwjgl.version>3.3.4</lwjgl.version>
+                <lucene.version>8.9.0</lucene.version>
+                <solr.version>8.9.0</solr.version>
+                <elasticsearch.version>7.15.2</elasticsearch.version>
