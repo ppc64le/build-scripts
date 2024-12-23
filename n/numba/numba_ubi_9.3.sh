@@ -24,7 +24,7 @@ PACKAGE_NAME=numba
 PACKAGE_URL=https://github.com/numba/numba
 
 # Install dependencies and tools.
-yum install -y git gcc gcc-c++ make wget xz-devel bzip2-devel openssl-devel zlib-devel libffi-devel
+yum install -y git gcc gcc-c++ make wget python-devel xz-devel bzip2-devel openssl-devel zlib-devel libffi-devel
 
 # Add repositories and Import GPG key
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
