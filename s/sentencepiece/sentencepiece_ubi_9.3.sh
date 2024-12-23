@@ -35,6 +35,7 @@ git checkout $PACKAGE_VERSION
 pip install pytest
 
 #install
+cd python
 if ! (pip install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
