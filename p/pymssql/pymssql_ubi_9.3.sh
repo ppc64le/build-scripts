@@ -41,7 +41,9 @@ git checkout $PACKAGE_VERSION
 
 pip install -r dev/requirements-dev.txt
 pip install cython==0.29.33
- 
+pip install setuptools_scm>=5.0
+pip install wheel>=0.36.2
+
 #install
 if ! ( python3 setup.py install) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
