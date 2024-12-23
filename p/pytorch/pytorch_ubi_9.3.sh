@@ -33,14 +33,14 @@ WORKDIR=$(pwd)
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
 dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
-    git cmake ninja-build gcc-toolset-14 rust cargo \
+    git cmake ninja-build gcc-toolset-13 rust cargo \
     python$PYTHON_VERSION-devel \
     python$PYTHON_VERSION-wheel \
     python$PYTHON_VERSION-pip \
     python$PYTHON_VERSION-setuptools
 
-export PATH=/opt/rh/gcc-toolset-14/root/bin:$PATH
-export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-14/root/lib:/opt/rh/gcc-toolset-14/root/lib64:$LD_LIBRARY_PATH
+export PATH=/opt/rh/gcc-toolset-13/root/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/lib:/opt/rh/gcc-toolset-13/root/lib64:$LD_LIBRARY_PATH
 
 if [ -z $PACKAGE_SOURCE_DIR ]; then
     git clone $PACKAGE_URL -b $PACKAGE_VERSION
