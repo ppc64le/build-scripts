@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : rdf4j
-# Version       : 5.0.3
+# Version       : 5.1.0
 # Source repo   : https://github.com/eclipse-rdf4j/rdf4j.git
 # Tested on     : UBI 9.3
 # Language      : Java
@@ -24,7 +24,7 @@ set -e
 # variables
 PACKAGE_NAME=rdf4j
 PACKAGE_URL=https://github.com/eclipse-rdf4j/rdf4j.git
-PACKAGE_VERSION=${1:-5.0.3}
+PACKAGE_VERSION=${1:-5.1.0}
 
 # install tools and dependent packages
 #yum -y update
@@ -58,6 +58,10 @@ export PATH=$PATH:$M2_HOME/bin
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+# Apply patches
+wget https://raw.githubusercontent.com/sid226/build-scripts/refs/heads/sid226_rd/r/rdf4j/patch/patch_5.x.diff
+git apply patch_5.x.diff
+
 
 #Build
 if !  mvn -B -U -T 2 clean install -Pquick,-formatting  ; then
@@ -67,7 +71,7 @@ if !  mvn -B -U -T 2 clean install -Pquick,-formatting  ; then
     exit 1
 fi 
 
-# Tests failures in parity with x86
+# Tests failures in parity with x86 rdf4j-shacl,-:rdf4j-sail-elasticsearch-store,-:rdf4j-sparql-compliance
 if ! mvn -B verify -P-skipSlowTests,-formatting -Dmaven.javadoc.skip=true -Djapicmp.skip -Denforcer.skip=true -Danimal.sniffer.skip=true -pl -:rdf4j-shacl,-:rdf4j-sail-elasticsearch-store,-:rdf4j-sparql-compliance ; then
     echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
