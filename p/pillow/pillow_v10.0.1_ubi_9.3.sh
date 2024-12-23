@@ -25,13 +25,13 @@ PACKAGE_URL=https://github.com/python-pillow/Pillow/
 OS_NAME=`cat /etc/os-release | grep "PRETTY" | awk -F '=' '{print $2}'`
 
 # install core dependencies
-yum install -y gcc git
+yum install -y wget git python-devel openssl-devel
 
 # pillow minimum dependencies
 yum install -y zlib zlib-devel libjpeg-turbo libjpeg-turbo-devel
 
 # test dependecy
-python3 -m pip install --upgrade pip setuptools wheel pytest
+python3 -m pip install setuptools wheel pytest
 
 # clone source repository
 git clone $PACKAGE_URL $PACKAGE_NAME
