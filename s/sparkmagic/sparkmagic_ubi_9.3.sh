@@ -53,7 +53,10 @@ if ! (python3 setup.py install) ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
- 
+
+#Installing pytest
+pip install pytest
+
 #test
 #skipping the some testcase as it is failing on x_86 also.
 
