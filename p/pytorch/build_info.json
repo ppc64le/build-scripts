@@ -14,6 +14,9 @@
     "build_script": "pytorch_ubi_9.3.sh"
   },
   "*":{
+    "patches": {
+      "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/p/pytorch/pytorch_v2.0.1.patch"
+    },
     "build_script":"pytorch_2.0.1_ubi_9.3.sh"
   }
 }
