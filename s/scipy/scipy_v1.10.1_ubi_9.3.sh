@@ -77,7 +77,7 @@ python -m pip install meson ninja \
     pooch pytest build
 
 # Build and install
-if ! python -m pip install -e . -vvv; then
+if ! python -m pip install -e . --no-build-isolation -vvv; then
     echo "------------------$PACKAGE_NAME:build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
