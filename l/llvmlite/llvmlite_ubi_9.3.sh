@@ -100,7 +100,7 @@ if ! (pip install .) ; then
     exit 1
 fi
 
-# Run test cases
+# Run tests
 if !(python3 runtests.py); then
     echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
