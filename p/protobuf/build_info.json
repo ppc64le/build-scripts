@@ -9,7 +9,7 @@
   "docker_build": false,
   "build_script": "protobuf_ubi_9.3.sh",
   "validate_build_script": true,
-  "use_non_root_user": true,
+  "use_non_root_user": false,
   "v21.*": {
     "build_script": "protobuf_v21.12_ubi_8.5.sh"
   },
