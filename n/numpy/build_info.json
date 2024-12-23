@@ -1,18 +1,19 @@
 {
-  "maintainer": ["bhagyashrigai","kiranNukal"],
+  "maintainer": "kiranNukal",
   "package_name": "numpy",
   "github_url": "https://github.com/numpy/numpy.git",
-  "version": "v1.26.4",
+  "version": "v1.23.5",
+  "wheel_build" : true,
   "default_branch": "main",
   "package_dir": "n/numpy",
   "build_script": "numpy_ubi_9.3.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "v1.*.*": {
+  "v1.26.4": {
     "build_script": "numpy_ubi_9.3.sh"
   },
-  "v1.23.5":{
+  "*":{
     "build_script":"numpy_1.23.5_ubi_9.3.sh"
   }
 }
