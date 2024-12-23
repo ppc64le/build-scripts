@@ -48,12 +48,12 @@ git submodule update --init --recursive
 rm -rf $WORKDIR/PY_PRIORITY
 mkdir $WORKDIR/PY_PRIORITY
 PATH=$WORKDIR/PY_PRIORITY:$PATH
-ln -sf $(command -v python$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/python
-ln -sf $(command -v python$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/python3
-ln -sf $(command -v python$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/python$PYTHON_VERSION
-ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip
-ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip3
-ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip$PYTHON_VERSION
+ln -sf $(command -v python$PYTHON_VER) $WORKDIR/PY_PRIORITY/python
+ln -sf $(command -v python$PYTHON_VER) $WORKDIR/PY_PRIORITY/python3
+ln -sf $(command -v python$PYTHON_VER) $WORKDIR/PY_PRIORITY/python$PYTHON_VER
+ln -sf $(command -v pip$PYTHON_VER) $WORKDIR/PY_PRIORITY/pip
+ln -sf $(command -v pip$PYTHON_VER) $WORKDIR/PY_PRIORITY/pip3
+ln -sf $(command -v pip$PYTHON_VER) $WORKDIR/PY_PRIORITY/pip$PYTHON_VER
 
 # install scipy dependency (numpy wheel gets built and installed) and build-setup dependencies
 python -m pip install --upgrade pip
