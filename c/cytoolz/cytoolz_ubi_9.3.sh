@@ -32,7 +32,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION  
 
 # Install additional dependencies
-pip install cython>=0.20.2 pytest
+pip install Cython==0.29.24 pytest
 pip install -e git+https://github.com/pytoolz/toolz.git#egg=toolz
 
 # Install
