@@ -61,8 +61,7 @@ pip install pytest
 #skipping the some testcase as it is failing on x_86 also.
 
 cd sparkmagic/tests
-if ! ( pytest --ignore=test_reliablehttpclient.py   --ignore=test_kernel_magics.py  --ignore=test_configuration.py  --ignore=test_sparkmagicsbase.py  --ignore=test_sparkstorecommand.py  
-       --ignore=test_sparkevents.py  --ignore=test_sparkkernelbase.py  --ignore=test_sparkcontroller.py --ignore=test_remotesparkmagics.py --ignore=test_exceptions.py); then
+if ! ( pytest --ignore=test_reliablehttpclient.py   --ignore=test_kernel_magics.py  --ignore=test_configuration.py  --ignore=test_sparkmagicsbase.py  --ignore=test_sparkstorecommand.py  --ignore=test_sparkevents.py  --ignore=test_sparkkernelbase.py  --ignore=test_sparkcontroller.py --ignore=test_remotesparkmagics.py --ignore=test_exceptions.py); then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
