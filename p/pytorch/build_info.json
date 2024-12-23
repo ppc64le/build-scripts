@@ -1,8 +1,8 @@
 {
-  "maintainer": ["md.shafi.hussain","kiranNukal"],
+  "maintainer": "kiranNukal",
   "package_name": "pytorch",
   "github_url": "https://github.com/pytorch/pytorch.git",
-  "version": "v2.4.0",
+  "version": "v2.0.1",
   "wheel_build" : true,
   "default_branch": "main",
   "package_dir": "p/pytorch",
@@ -10,10 +10,10 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "v*.*.*": {
+  "v2.4.0": {
     "build_script": "pytorch_ubi_9.3.sh"
   },
-  "v2.0.1":{
+  "*":{
     "build_script":"pytorch_2.0.1_ubi_9.3.sh"
   }
 }
