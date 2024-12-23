@@ -5,11 +5,11 @@
     "version": "commons-commons-collections-4.4",
     "default_branch": "master",
     "package_dir": "c/commons-collections",
-    "build_script": "commons-collections_ubi_9_3.sh",
+    "build_script": "commons-collections_ubi_9.3.sh",
     "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": false,
     "commons-commons-collections-4.*": {
-      "build_script": "commons-collections_ubi_9_3.sh"
+      "build_script": "commons-collections_ubi_9.3.sh"
     }
   }

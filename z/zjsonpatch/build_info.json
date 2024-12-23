@@ -1,0 +1,15 @@
+{
+   "maintainer": "ramnathnayak-ibm",
+   "package_name": "zjsonpatch",
+   "github_url": "https://github.com/flipkart-incubator/zjsonpatch",
+   "version": "0.4.16",
+   "default_branch": "master",
+   "build_script": "zjsonpatch_ubi_9.3.sh",
+   "package_dir": "z/zjsonpatch",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*.*.*" : {
+       "build_script": "zjsonpatch_ubi_9.3.sh"
+    }
+}

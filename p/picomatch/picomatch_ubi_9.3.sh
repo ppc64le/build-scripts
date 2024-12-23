@@ -43,6 +43,9 @@ if ! npm install && npm audit fix --force; then
     exit 1
 fi
 
+npm install --save-dev eslint
+npx eslint . --fix
+
 if ! npm test; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
