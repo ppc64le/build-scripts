@@ -1,16 +1,23 @@
 {
   "maintainer": "aastha-sharma2",
   "package_name": "protobuf",
-  "github_url": "https://github.com/protocolbuffers/protobuf.git",
-  "version": "v3.21.12",
+  "github_url": "https://github.com/protocolbuffers/protobuf",
+  "version": "v3.21.2",
+  "default_branch": "main",
   "wheel_build" : true,
-  "package_dir": "p/protobuf",
-  "default_branch": "master",
-  "build_script": "protobuf_ubi_9.3.sh",
+  "package_dir": "p/protobuf/",
   "docker_build": false,
+  "build_script": "protobuf_ubi_9.3.sh",
   "validate_build_script": true,
-  "use_non_root_user": "false",
+  "use_non_root_user": true,
+  "v21.*": {
+    "build_script": "protobuf_v21.12_ubi_8.5.sh"
+  },
+  "v22.*, v3.22.*": {
+    "build_script": "protobuf_v22.2_ubi_8.5.sh"
+  },
   "*": {
-    "build_script": "protobuf_ubi_9.3.sh"
+  "build_script": "protobuf_ubi_9.3.sh"
   }
 }
+
