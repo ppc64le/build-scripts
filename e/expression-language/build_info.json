@@ -1,0 +1,15 @@
+{
+    "maintainer": "santhoshkotla2929",
+    "package_name": "expression-language",
+    "github_url": "https://github.com/jakartaee/expression-language",
+    "version": "6.0.1-RELEASE-api",
+    "default_branch": "master",
+    "build_script": "expression-language_ubi_9.3.sh",
+    "package_dir": "e/expression-language",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "6.*.*-RELEASE-api": {
+      "build_script": "expression-language_ubi_9.3.sh"	   
+    }    
+}

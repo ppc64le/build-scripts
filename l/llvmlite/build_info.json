@@ -1,15 +1,18 @@
 {
-  "maintainer": "stutiibm",
-  "package_name": "llvmlite",
-  "github_url": "https://github.com/numba/llvmlite",
-  "version": "v0.41.1",
-  "default_branch": "main",
-  "package_dir": "l/llvmlite",
-  "build_script": "llvmlite_ubi_8_7.sh",
-  "docker_build": false,
-  "validate_build_script": true,
-  "use_non_root_user": false,
-  "v0.41.1, v0.41.0": {
-    "build_script": "llvmlite_ubi_8_7.sh"
-  }
+   "maintainer": "npanpaliya",
+   "package_name": "llvmlite",
+   "github_url": "https://github.com/numba/llvmlite",
+   "version": "*",
+   "default_branch": "main",
+   "build_script": "llvmlite_v0.43.0_ubi_9_3.sh",
+   "package_dir": "l/llvmlite",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "v0.41.*": {
+       "build_script": "llvmlite_v0.41.1_ubi_9_3.sh"
+   },
+   "v0.43.*": {
+       "build_script": "llvmlite_v0.43.0_ubi_9_3.sh"
+   }
 }
