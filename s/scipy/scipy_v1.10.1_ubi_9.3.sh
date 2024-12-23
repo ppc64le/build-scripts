@@ -62,7 +62,7 @@ python -m pip install 'meson-python<0.15.0,>=0.12.1' pybind11 'patchelf>=0.11.0'
     'pythran<0.15.0,>=0.12.0' pooch pytest build
 
 # build and install
-if ! python -m pip install -e . --no-build-isolation; then
+if ! python -m pip install -e . -vvv; then
     echo "------------------$PACKAGE_NAME:build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
