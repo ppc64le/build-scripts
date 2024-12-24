@@ -26,7 +26,7 @@ PACKAGE_URL=https://github.com/nucleic/kiwi.git
 
 # Install dependencies and tools.
 yum install -y git wget gcc gcc-c++ python-pip python3-devel python3 python3-pip
-pip install build pytest wheel
+pip install build pytest wheel cppy
 
 #clone repository
 git clone $PACKAGE_URL
@@ -39,4 +39,23 @@ if ! (python3 setup.py install) ; then
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
+fi
+
+# Check if the 'tests' folder exists
+if [ -d "kiwi/tests" ]; then
+    # Run tests using pytest
+    if ! pytest; then
+            echo "-------------------- $PACKAGE_NAME: build success but test fails --------------------"
+            echo "$PACKAGE_URL $PACKAGE_NAME"
+            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_success_but_test_Fails"
+            exit 2
+    else
+        echo "-------------------- $PACKAGE_NAME: build & test both success --------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Both_Build_and_Test_Success"
+    fi
+else
+    # Skip tests if 'tests' folder is not available
+    echo "-------------------- $PACKAGE_NAME: tests skipped as 'tests' folder is not available --------------------"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Tests_Skipped"
 fi

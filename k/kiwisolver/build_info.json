@@ -1,7 +1,7 @@
 {
   "maintainer": "kiranNukal",
   "package_name": "kiwisolver",
-  "github_url": "ttps://github.com/nucleic/kiwi.git",
+  "github_url": "https://github.com/nucleic/kiwi.git",
   "version": "v1.2.0",
   "default_branch": "master",
   "package_dir": "k/kiwisolver",
@@ -10,7 +10,7 @@
   "validate_build_script": true,
   "use_non_root_user": false,
   "wheel_build": true,
-  "v*.*.*": {
+  "*": {
     "build_script": "kiwisolver_ubi_9.3.sh"
   }
 }
