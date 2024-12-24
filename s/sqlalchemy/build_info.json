@@ -1,7 +1,7 @@
 {
   "maintainer": "shubham-dayma-ibm",
   "package_name": "sqlalchemy",
-  "github_url": "https://github.com/sqlalchemy/sqlalchemy/",
+  "github_url": "https://github.com/sqlalchemy/sqlalchemy",
   "version": "rel_1_4_39",
   "wheel_build" : true,
   "package_dir": "s/sqlalchemy",
