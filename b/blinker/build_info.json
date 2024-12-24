@@ -1,7 +1,7 @@
 {
    "maintainer": "shubham-dayma-ibm",
    "package_name": "blinker",
-   "github_url": "https://github.com/pallets-eco/blinker/",
+   "github_url": "https://github.com/pallets-eco/blinker",
    "version": "rel-1.4",
    "default_branch": "main",
    "build_script": "blinker_ubi_9.3.sh",
