@@ -1,0 +1,15 @@
+{
+  "maintainer": "bhagyashrigai",
+  "package_name": "tiktoken",
+  "github_url": "https://github.com/openai/tiktoken.git",
+  "version": "0.6.0",
+  "default_branch": "main",
+  "package_dir": "t/tiktoken",
+  "build_script": "tiktoken_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*.*.*": {
+    "build_script": "tiktoken_ubi_9.3.sh"
+  }
+}
