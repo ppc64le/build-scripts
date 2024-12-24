@@ -1,0 +1,52 @@
+diff --git a/6.11/Dockerfile b/6.11/Dockerfile
+index 637c316..86a4ffe 100644
+--- a/6.11/Dockerfile
++++ b/6.11/Dockerfile
+@@ -1,11 +1,11 @@
+-FROM debian:bullseye-slim
++FROM ubuntu:22.04
+ 
+ ## Installing Node.js
+ ENV NODE_ENV production
+ ENV NODE_VERSION 14.21.3
+ 
+ # Node installation based on https://github.com/nodejs/docker-node/blob/66b46292a6e5dd5856b1d5204dc51547c80eb17a/12/buster-slim/Dockerfile
+-RUN ARCH="x64" \
++RUN ARCH="ppc64le" \
+   && set -eux \
+   && apt-get update && apt-get install -y --no-install-recommends ca-certificates curl wget gnupg dirmngr xz-utils \
+   && rm -rf /var/lib/apt/lists/* \
+@@ -48,10 +48,11 @@ RUN groupadd -r rocketchat \
+ 
+ VOLUME /app/uploads
+ 
+-ENV RC_VERSION 6.11.3
++ENV RC_VERSION 6.11.1
+ 
+ WORKDIR /app
+-
++COPY sharp /app/sharp
++ENV LD_LIBRARY_PATH=/app/bundle/programs/server/npm/node_modules/sharp/sharp-libvips-linux-ppc64/lib/
+ RUN set -eux \
+   && apt-get update \
+   && apt-get install -y --no-install-recommends fontconfig \
+@@ -59,13 +60,18 @@ RUN set -eux \
+   && apt-get install -y --no-install-recommends g++ make python3 ca-certificates curl gnupg \
+   && rm -rf /var/lib/apt/lists/* \
+   # gpg: key 4FD08104: public key "Rocket.Chat Buildmaster <buildmaster@rocket.chat>" imported
+-  && gpg --batch --keyserver keyserver.ubuntu.com --recv-keys 0E163286C20D07B9787EBE9FD7F9D0414FD08104 \
++  # && gpg --batch --keyserver keyserver.ubuntu.com --recv-keys 0E163286C20D07B9787EBE9FD7F9D0414FD08104 \
++  && gpg --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-key 0E163286C20D07B9787EBE9FD7F9D0414FD08104 \
+   && curl -fSL "https://releases.rocket.chat/${RC_VERSION}/download" -o rocket.chat.tgz \
+   && curl -fSL "https://releases.rocket.chat/${RC_VERSION}/asc" -o rocket.chat.tgz.asc \
+   && gpg --batch --verify rocket.chat.tgz.asc rocket.chat.tgz \
+   && tar zxf rocket.chat.tgz \
+   && rm rocket.chat.tgz rocket.chat.tgz.asc \
+   && cd bundle/programs/server \
++# RUN COPY sharp /app/bundle/programs/server/npm/node_modules
++  && cp -r /app/sharp ./npm/node_modules/ \
++  && export LD_LIBRARY_PATH=/app/bundle/programs/server/npm/node_modules/sharp/sharp-libvips-linux-ppc64/lib/:$LD_LIBRARY_PATH \
++  && ln -s /app/bundle/programs/server/npm/node_modules/sharp/sharp-libvips-linux-ppc64/lib/libvips-cpp.so.42 /usr/local/lib/libvips-cpp.so.42 \
+   && npm install --unsafe-perm=true \
+   && apt-mark auto '.*' > /dev/null \
+   && apt-mark manual $aptMark > /dev/null \
