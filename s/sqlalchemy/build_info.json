@@ -1,0 +1,16 @@
+{
+  "maintainer": "shubham-dayma-ibm",
+  "package_name": "sqlalchemy",
+  "github_url": "https://github.com/sqlalchemy/sqlalchemy",
+  "version": "rel_1_4_39",
+  "wheel_build" : true,
+  "package_dir": "s/sqlalchemy",
+  "default_branch": "main",
+  "build_script": "sqlalchemy_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "rel_*_*_*": {
+    "build_script": "sqlalchemy_ubi_9.3.sh"
+  }
+}
