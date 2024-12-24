@@ -20,7 +20,7 @@
 set -e
 
 # Variables
-PACKAGE_NAME=arrow
+PACKAGE_NAME=pyarrow
 PACKAGE_VERSION=${1:-maint-11.0.0}
 PACKAGE_URL=https://github.com/apache/arrow.git
 # Install dependencies
@@ -28,7 +28,7 @@ yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip ope
 
 # Clone the repository
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+cd arrow
 git checkout $PACKAGE_VERSION
 git submodule update --init
 
