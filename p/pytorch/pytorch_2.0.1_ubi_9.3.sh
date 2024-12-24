@@ -39,6 +39,7 @@ if ! command -v rustc &> /dev/null; then
 else
     echo "Rust is already installed."
 fi
+
 #clone repository
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
