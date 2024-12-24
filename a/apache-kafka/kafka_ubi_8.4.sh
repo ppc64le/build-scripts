@@ -1,11 +1,13 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : kafka
-# Version       : 1.1.0
+# Version       : 2.7.0, 2.8.0
 # Source repo   : https://github.com/apache/kafka
-# Tested on     : Ubuntu_16.04
+# Tested on     : UBI 8.2. UBI 8.4
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Priya Seth <sethp@us.ibm.com>
+# Language      : Java
+# Travis-Check  : False
+# Maintainer    : Amol Patil <amol.patil2@ibm.com>, Priya Seth <sethp@us.ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -15,28 +17,25 @@
 #
 # ----------------------------------------------------------------------------
 #!/bin/bash
+
+VERSION=2.7.0
+
 #Install dependencies
-sudo apt-get update -y
-sudo apt-get install -y git openjdk-8-jdk wget unzip
-
-cd /tmp
-wget https://services.gradle.org/distributions/gradle-4.8-bin.zip
-unzip gradle-4.8-bin.zip
-
-#Set required environment variables
-export PATH=/tmp/gradle-4.8/bin:$PATH
-export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-ppc64el
-export JRE_HOME=${JAVA_HOME}/jre
-export PATH=$PATH:${JAVA_HOME}/bin:$PATH
+sudo yum update -y
+sudo yum install -y git wget unzip java-1.8.0-openjdk java-1.8.0-openjdk-devel
 
 #Build and run unit tests
 cd $HOME
 git clone https://github.com/apache/kafka
 cd kafka
-git checkout 1.1.0
+git checkout $VERSION
 
-gradle clean
-gradle
 ./gradlew jar
 ./gradlew releaseTarGz -x signArchives
+
+
+# Execute unit tests
+# Results are "6104 tests completed, 6 failed, 63 skipped"
+# There are 6 test failures in SslTransportLayerTest test suite, parity with intel 
 ./gradlew unitTest
+
