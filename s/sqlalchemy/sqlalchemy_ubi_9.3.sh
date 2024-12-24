@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : sqlalchemy
-# Version          : rel_2_0_36
+# Version          : rel_1_4_39
 # Source repo      : https://github.com/sqlalchemy/sqlalchemy/
 # Tested on	: UBI:9.3
 # Language      : Python
