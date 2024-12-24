@@ -20,7 +20,7 @@
 
 # Exit immediately if a command exits with a non-zero status
 set -e
-export wdir=`pwd`
+# export wdir=`pwd`
 # Variables
 PACKAGE_NAME=numpy
 PACKAGE_VERSION=${1:-v1.23.5}
