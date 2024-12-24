@@ -44,6 +44,8 @@ if ! npm install && npm audit fix --force; then
     exit 1
 fi
 
+#revert any files changed due to npm install to avoid test failures
+git checkout .
 
 if ! npm test; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
