@@ -1,7 +1,7 @@
 {
   "maintainer": "aastha-sharma2",
   "package_name": "sentencepiece",
-  "github_url": "https://github.com/zeromq/pyzmq.git",
+  "github_url": "https://github.com/google/sentencepiece.git",
   "version": "0.1.97",
   "wheel_build" : true,
   "package_dir": "s/sentencepiece",
