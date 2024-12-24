@@ -1,0 +1,17 @@
+{
+    "maintainer": "Vipul-Ajmera",
+    "package_name": "stripe-python",
+    "github_url": "https://github.com/stripe/stripe-python.git",
+    "version": "v10.5.0",
+    "default_branch": "master",
+    "package_dir": "s/stripe-python",
+    "build_script": "stripe-python_ubi_9.3.sh",
+    "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": "true",
+    "v*.*.*" : {
+       "dir": "v10.5.0_ubi9",
+       "build_script": "stripe-python_ubi_9.3.sh"
+    }
+}
