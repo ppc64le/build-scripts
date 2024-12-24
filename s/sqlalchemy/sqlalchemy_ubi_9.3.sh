@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=sqlalchemy
-PACKAGE_VERSION=${1:-rel_2_0_36}
+PACKAGE_VERSION=${1:-rel_1_4_39}
 PACKAGE_URL=https://github.com/sqlalchemy/sqlalchemy/
 PACKAGE_DIR="$(pwd)/$PACKAGE_NAME"
 
