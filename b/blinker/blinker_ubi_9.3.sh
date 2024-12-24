@@ -3,7 +3,7 @@
 #
 # Package          : blinker
 # Version          : rel-1.4
-# Source repo      : https://github.com/pallets-eco/blinker/
+# Source repo      : https://github.com/pallets-eco/blinker
 # Tested on	: UBI:9.3
 # Language      : Python
 # Travis-Check  : True
@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=blinker
 PACKAGE_VERSION=${1:-rel-1.4}
-PACKAGE_URL=https://github.com/pallets-eco/blinker/
+PACKAGE_URL=https://github.com/pallets-eco/blinker
 PACKAGE_DIR="$(pwd)/$PACKAGE_NAME"
 
 yum install -y git  python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo cmake
