@@ -5,6 +5,7 @@
 # Version       : 2.0.1
 # Source repo : https://github.com/pytorch/pytorch.git
 # Tested on     : UBI:9.3
+# Travis-Check  : True
 # Language      : Python
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
