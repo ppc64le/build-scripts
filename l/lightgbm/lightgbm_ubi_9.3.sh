@@ -29,7 +29,7 @@ yum install -y git gcc gcc-c++ cmake make wget openssl-devel bzip2-devel libffi-
 
 # Clone the repository
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 #set environment
