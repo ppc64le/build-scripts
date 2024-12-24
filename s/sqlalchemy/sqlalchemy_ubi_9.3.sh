@@ -3,7 +3,7 @@
 #
 # Package          : sqlalchemy
 # Version          : rel_1_4_39
-# Source repo      : https://github.com/sqlalchemy/sqlalchemy/
+# Source repo      : https://github.com/sqlalchemy/sqlalchemy
 # Tested on	: UBI:9.3
 # Language      : Python
 # Travis-Check  : True
@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=sqlalchemy
 PACKAGE_VERSION=${1:-rel_1_4_39}
-PACKAGE_URL=https://github.com/sqlalchemy/sqlalchemy/
+PACKAGE_URL=https://github.com/sqlalchemy/sqlalchemy
 PACKAGE_DIR="$(pwd)/$PACKAGE_NAME"
 
 yum install -y git  python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo cmake
