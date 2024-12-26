@@ -50,4 +50,4 @@ echo "Skipping all test cases as per the requirement."
 # Deactivate the virtual environment
 deactivate
 
-echo "Build and installation completed successfully, No tests are there.
+echo "Build and installation completed successfully, No tests are there."
