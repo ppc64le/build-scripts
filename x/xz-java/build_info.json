@@ -1,0 +1,18 @@
+{
+  "maintainer": "sid226",
+  "package_name": "xz-java",
+  "github_url": "https://github.com/tukaani-project/xz-java",
+  "version": "v1.10",
+  "default_branch": "master",
+  "package_dir": "x/xz-java",
+  "build_script": "xz-java_v1_10_ubi_9.3.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "false",
+  "v1.6": {
+    "build_script": "xz-java_ubi_9.3.sh"
+  },
+  "v1.*": {
+    "build_script": "xz-java_v1_10_ubi_9.3.sh"
+  }
+}

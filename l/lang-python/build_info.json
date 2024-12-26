@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "lang-python",
+    "github_url": "https://github.com/codemirror/lang-python",
+    "version": "6.1.6",
+    "default_branch": "main",
+    "build_script": "lang-python_ubi_9.3.sh",
+    "package_dir": "l/lang-python",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "6.*.*": {
+        "build_script": "lang-python_ubi_9.3.sh"
+    }
+}

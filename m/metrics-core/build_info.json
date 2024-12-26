@@ -1,0 +1,18 @@
+{
+  "maintainer": "mayurbhosure",
+  "package_name": "metrics-core",
+  "github_url": "https://github.com/dropwizard/metrics",
+  "version": "v4.2.18",
+  "default_branch": "master",
+  "build_script": "metrics-core_ubi_9.3.sh",
+  "package_dir": "m/metrics-core",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "v4.2.*": {
+    "build_script": "metrics-core_ubi_9.3.sh"
+  },
+  "v4.0.*": {
+    "build_script": "metrics-core-v4.0.7_ubi_9.3.sh"
+  }
+}

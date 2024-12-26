@@ -1,5 +1,5 @@
 {
-  "maintainer": "AbhiIBM",
+  "maintainer": "Vipul-Ajmera",
   "package_name": "cpython",
   "github_url": "https://github.com/python/cpython",
   "package_dir": "c/cpython",
@@ -10,7 +10,7 @@
   "docker_build": true,
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
   "validate_build_script": true,
-  "v3.*.*": {
+  "v*.*.*": {
     "dir": "ubi9.3",
     "build_script": "cpython_ubi_9.3.sh"
   }

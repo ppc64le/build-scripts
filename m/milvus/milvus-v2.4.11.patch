@@ -1,0 +1,435 @@
+diff --git a/Makefile b/Makefile
+index 4d42149f68..2f80eed5bd 100644
+--- a/Makefile
++++ b/Makefile
+@@ -81,9 +81,7 @@ ifeq (${ENABLE_AZURE}, false)
+ 	AZURE_OPTION := -Z
+ endif
+ 
+-milvus: build-cpp print-build-info build-go
+-
+-build-go:
++milvus: build-cpp print-build-info
+ 	@echo "Building Milvus ..."
+ 	@source $(PWD)/scripts/setenv.sh && \
+ 		mkdir -p $(INSTALL_PATH) && go env -w CGO_ENABLED="1" && \
+diff --git a/deployments/docker/dev/docker-compose.yml b/deployments/docker/dev/docker-compose.yml
+index b772b33964..46e4248eec 100644
+--- a/deployments/docker/dev/docker-compose.yml
++++ b/deployments/docker/dev/docker-compose.yml
+@@ -17,7 +17,7 @@ services:
+       - "4001:4001"
+ 
+   pulsar:
+-    image: apachepulsar/pulsar:2.8.2
++    image: peiit/pulsar:2.10.2
+     volumes:
+       - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/pulsar:/pulsar/data
+     environment:
+@@ -29,16 +29,12 @@ services:
+       # maxMessageSize is missing from standalone.conf, must use PULSAR_PREFIX_ to get it configured
+       - PULSAR_PREFIX_maxMessageSize=104857600
+       - PULSAR_GC=-XX:+UseG1GC
+-    command: |
+-      /bin/bash -c \
+-      "bin/apply-config-from-env.py conf/standalone.conf && \
+-      exec bin/pulsar standalone --no-functions-worker --no-stream-storage"
+     ports:
+       - "6650:6650"
+       - "18080:8080"
+ 
+   minio:
+-    image: minio/minio:RELEASE.2023-03-20T20-16-18Z
++    image: minio/minio:latest
+     ports:
+       - "9000:9000"
+       - "9001:9001"
+@@ -60,48 +56,6 @@ services:
+       timeout: 20s
+       retries: 3
+ 
+-  azurite:
+-    image: mcr.microsoft.com/azure-storage/azurite
+-    volumes:
+-      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/azurite:/data
+-    command: azurite-blob --blobHost 0.0.0.0
+-    ports:
+-      - "10000:10000"
+-
+-  jaeger:
+-    image: jaegertracing/all-in-one:latest
+-    ports:
+-      - "6831:6831/udp"
+-      - "4317:4317" # OLTP over gRPC
+-      - "4318:4318" # OLTP over HTTP
+-      - "16686:16686" # frontent
+-      - "14268:14268" # jaeger.thirft
+-
+-  zookeeper:
+-    image: wurstmeister/zookeeper:latest
+-    ports:
+-      - "2181:2181"
+-
+-  kafka:
+-    image: 'bitnami/kafka:3.1.0'
+-    ports:
+-      - '9092:9092'
+-    environment:
+-      - KAFKA_BROKER_ID=0
+-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092
+-      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+-      - ALLOW_PLAINTEXT_LISTENER=yes
+-      # set kafka server config
+-      - KAFKA_CFG_MAX_PARTITION_FETCH_BYTES=5242880
+-      - KAFKA_CFG_MAX_REQUEST_SIZE=5242880
+-      - KAFKA_CFG_MESSAGE_MAX_BYTES=5242880
+-      - KAFKA_CFG_REPLICA_FETCH_MAX_BYTES=5242880
+-      - KAFKA_CFG_FETCH_MESSAGE_MAX_BYTES=5242880
+-      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+-    depends_on:
+-      - zookeeper
+-
+ networks:
+   default:
+     name: milvus_dev
+diff --git a/internal/core/conanfile.py b/internal/core/conanfile.py
+index 53292992ee..53bf0ca969 100644
+--- a/internal/core/conanfile.py
++++ b/internal/core/conanfile.py
+@@ -14,11 +14,11 @@ class MilvusConan(ConanFile):
+         "snappy/1.1.9#0519333fef284acd04806243de7d3070",
+         "lzo/2.10#9517fc1bcc4d4cc229a79806003a1baa",
+         "arrow/15.0.0#0456d916ff25d509e0724c5b219b4c45",
+-        "openssl/3.1.2#02594c4c0a6e2b4feb3cd15119993597",
++        "openssl/3.1.6#977e6192420f30b53dd1fe3862835827",
+         "aws-sdk-cpp/1.9.234#28d6d2c175975900ce292bafe8022c88",
+         "googleapis/cci.20221108#65604e1b3b9a6b363044da625b201a2a",
+         "benchmark/1.7.0#459f3bb1a64400a886ba43047576df3c",
+-        "gtest/1.13.0#f9548be18a41ccc6367efcb8146e92be",
++        "gtest/1.14.0#25e2a474b4d1aecf5ff4f0555dcdf72c",
+         "protobuf/3.21.4#fd372371d994b8585742ca42c12337f9",
+         "rapidxml/1.13#10c11a4bfe073e131ed399d5c4f2e075",
+         "yaml-cpp/0.7.0#9c87b3998de893cf2e5a08ad09a7a6e0",
+@@ -74,6 +74,7 @@ class MilvusConan(ConanFile):
+         "boost:without_locale": False,
+         "glog:with_gflags": True,
+         "glog:shared": True,
++        "libunwind:shared": True,
+         "prometheus-cpp:with_pull": False,
+         "fmt:header_only": True,
+         "onetbb:tbbmalloc": False,
+@@ -90,7 +91,7 @@ class MilvusConan(ConanFile):
+ 
+     def requirements(self):
+         if self.settings.os != "Macos":
+-            self.requires("libunwind/1.7.2")
++            self.requires("libunwind/1.8.1")
+ 
+     def imports(self):
+         self.copy("*.dylib", "../lib", "lib")
+diff --git a/internal/core/thirdparty/versions.txt b/internal/core/thirdparty/versions.txt
+index 119d1a3a1f..81787254ac 100644
+--- a/internal/core/thirdparty/versions.txt
++++ b/internal/core/thirdparty/versions.txt
+@@ -4,4 +4,4 @@ OPENTRACING_VERSION=v1.5.1
+ PROTOBUF_VERSION=3.9.0
+ LIBUNWIND_VERSION=1.6.2
+ GPERFTOOLS_VERSION=2.9.1
+-MILVUS_JEMALLOC_BUILD_VERSION=5.2.1
++MILVUS_JEMALLOC_BUILD_VERSION=5.3.0
+diff --git a/internal/core/unittest/test_azure_chunk_manager.cpp b/internal/core/unittest/test_azure_chunk_manager.cpp
+index e1ac91a8ab..1afff0606c 100644
+--- a/internal/core/unittest/test_azure_chunk_manager.cpp
++++ b/internal/core/unittest/test_azure_chunk_manager.cpp
+@@ -69,241 +69,3 @@ class AzureChunkManagerTest : public testing::Test {
+     StorageConfig configs_;
+ };
+ 
+-TEST_F(AzureChunkManagerTest, WrongConfig) {
+-    StorageConfig configs = get_default_storage_config(true);
+-
+-    try {
+-        AzureChunkManagerPtr chunk_manager =
+-            make_unique<AzureChunkManager>(configs);
+-        EXPECT_TRUE(false);
+-    } catch (SegcoreError& e) {
+-        EXPECT_TRUE(std::string(e.what()).find("precheck") != string::npos);
+-    }
+-}
+-
+-TEST_F(AzureChunkManagerTest, AzureLogger) {
+-    AzureLogger(Azure::Core::Diagnostics::Logger::Level::Error, "");
+-    AzureLogger(Azure::Core::Diagnostics::Logger::Level::Warning, "");
+-    AzureLogger(Azure::Core::Diagnostics::Logger::Level::Informational, "");
+-    AzureLogger(Azure::Core::Diagnostics::Logger::Level::Verbose, "");
+-}
+-
+-TEST_F(AzureChunkManagerTest, BasicFunctions) {
+-    EXPECT_TRUE(chunk_manager_->GetName() == "AzureChunkManager");
+-    EXPECT_TRUE(chunk_manager_ptr_->GetName() == "AzureChunkManager");
+-    EXPECT_TRUE(chunk_manager_->GetRootPath() == "files");
+-
+-    string path = "test";
+-    uint8_t readdata[20] = {0};
+-    try {
+-        chunk_manager_->Read(path, 0, readdata, sizeof(readdata));
+-    } catch (SegcoreError& e) {
+-        EXPECT_TRUE(string(e.what()).find("Read") != string::npos);
+-    }
+-    try {
+-        chunk_manager_->Write(path, 0, readdata, sizeof(readdata));
+-    } catch (SegcoreError& e) {
+-        EXPECT_TRUE(string(e.what()).find("Write") != string::npos);
+-    }
+-}
+-
+-TEST_F(AzureChunkManagerTest, BucketPositive) {
+-    string testBucketName = "test-bucket";
+-    bool exist = chunk_manager_->BucketExists(testBucketName);
+-    EXPECT_EQ(exist, false);
+-    chunk_manager_->CreateBucket(testBucketName);
+-    exist = chunk_manager_->BucketExists(testBucketName);
+-    EXPECT_EQ(exist, true);
+-    vector<string> buckets = chunk_manager_->ListBuckets();
+-    EXPECT_EQ(buckets[0], testBucketName);
+-    chunk_manager_->DeleteBucket(testBucketName);
+-}
+-
+-TEST_F(AzureChunkManagerTest, BucketNegtive) {
+-    string testBucketName = "test-bucket-ng";
+-    try {
+-        chunk_manager_->DeleteBucket(testBucketName);
+-    } catch (SegcoreError& e) {
+-        EXPECT_TRUE(string(e.what()).find("not") != string::npos);
+-    }
+-
+-    // create already exist bucket
+-    chunk_manager_->CreateBucket(testBucketName);
+-    try {
+-        chunk_manager_->CreateBucket(testBucketName);
+-    } catch (SegcoreError& e) {
+-        EXPECT_TRUE(string(e.what()).find("exists") != string::npos);
+-    }
+-    chunk_manager_->DeleteBucket(testBucketName);
+-}
+-
+-TEST_F(AzureChunkManagerTest, ObjectExist) {
+-    string testBucketName = configs_.bucket_name;
+-    string objPath = "1/3";
+-    if (!chunk_manager_->BucketExists(testBucketName)) {
+-        chunk_manager_->CreateBucket(testBucketName);
+-    }
+-
+-    bool exist = chunk_manager_->Exist(objPath);
+-    EXPECT_EQ(exist, false);
+-    chunk_manager_->DeleteBucket(testBucketName);
+-}
+-
+-TEST_F(AzureChunkManagerTest, WritePositive) {
+-    string testBucketName = configs_.bucket_name;
+-    EXPECT_EQ(chunk_manager_->GetBucketName(), testBucketName);
+-
+-    if (!chunk_manager_->BucketExists(testBucketName)) {
+-        chunk_manager_->CreateBucket(testBucketName);
+-    }
+-    auto has_bucket = chunk_manager_->BucketExists(testBucketName);
+-    uint8_t data[5] = {0x17, 0x32, 0x45, 0x34, 0x23};
+-    string path = "1";
+-    chunk_manager_->Write(path, data, sizeof(data));
+-
+-    bool exist = chunk_manager_->Exist(path);
+-    EXPECT_EQ(exist, true);
+-
+-    auto size = chunk_manager_->Size(path);
+-    EXPECT_EQ(size, 5);
+-
+-    int datasize = 10000;
+-    uint8_t* bigdata = new uint8_t[datasize];
+-    srand((unsigned)time(NULL));
+-    for (int i = 0; i < datasize; ++i) {
+-        bigdata[i] = rand() % 256;
+-    }
+-    chunk_manager_->Write(path, bigdata, datasize);
+-    size = chunk_manager_->Size(path);
+-    EXPECT_EQ(size, datasize);
+-    delete[] bigdata;
+-
+-    chunk_manager_->Remove(path);
+-    chunk_manager_->DeleteBucket(testBucketName);
+-}
+-
+-TEST_F(AzureChunkManagerTest, ReadPositive) {
+-    string testBucketName = configs_.bucket_name;
+-    EXPECT_EQ(chunk_manager_->GetBucketName(), testBucketName);
+-
+-    if (!chunk_manager_->BucketExists(testBucketName)) {
+-        chunk_manager_->CreateBucket(testBucketName);
+-    }
+-    uint8_t data[5] = {0x17, 0x32, 0x45, 0x34, 0x23};
+-    string path = "1/4/6";
+-    chunk_manager_->Write(path, data, sizeof(data));
+-    bool exist = chunk_manager_->Exist(path);
+-    EXPECT_EQ(exist, true);
+-    auto size = chunk_manager_->Size(path);
+-    EXPECT_EQ(size, sizeof(data));
+-
+-    uint8_t readdata[20] = {0};
+-    size = chunk_manager_->Read(path, readdata, sizeof(data));
+-    EXPECT_EQ(size, sizeof(data));
+-    EXPECT_EQ(readdata[0], 0x17);
+-    EXPECT_EQ(readdata[1], 0x32);
+-    EXPECT_EQ(readdata[2], 0x45);
+-    EXPECT_EQ(readdata[3], 0x34);
+-    EXPECT_EQ(readdata[4], 0x23);
+-
+-    size = chunk_manager_->Read(path, readdata, 3);
+-    EXPECT_EQ(size, 3);
+-    EXPECT_EQ(readdata[0], 0x17);
+-    EXPECT_EQ(readdata[1], 0x32);
+-    EXPECT_EQ(readdata[2], 0x45);
+-
+-    uint8_t dataWithNULL[] = {0x17, 0x32, 0x00, 0x34, 0x23};
+-    chunk_manager_->Write(path, dataWithNULL, sizeof(dataWithNULL));
+-    exist = chunk_manager_->Exist(path);
+-    EXPECT_EQ(exist, true);
+-    size = chunk_manager_->Size(path);
+-    EXPECT_EQ(size, sizeof(dataWithNULL));
+-    size = chunk_manager_->Read(path, readdata, sizeof(dataWithNULL));
+-    EXPECT_EQ(size, sizeof(dataWithNULL));
+-    EXPECT_EQ(readdata[0], 0x17);
+-    EXPECT_EQ(readdata[1], 0x32);
+-    EXPECT_EQ(readdata[2], 0x00);
+-    EXPECT_EQ(readdata[3], 0x34);
+-    EXPECT_EQ(readdata[4], 0x23);
+-
+-    chunk_manager_->Remove(path);
+-
+-    try {
+-        chunk_manager_->Read(path, readdata, sizeof(dataWithNULL));
+-    } catch (SegcoreError& e) {
+-        EXPECT_TRUE(string(e.what()).find("exist") != string::npos);
+-    }
+-
+-    chunk_manager_->DeleteBucket(testBucketName);
+-}
+-
+-TEST_F(AzureChunkManagerTest, RemovePositive) {
+-    string testBucketName = configs_.bucket_name;
+-    EXPECT_EQ(chunk_manager_->GetBucketName(), testBucketName);
+-
+-    if (!chunk_manager_->BucketExists(testBucketName)) {
+-        chunk_manager_->CreateBucket(testBucketName);
+-    }
+-    uint8_t data[5] = {0x17, 0x32, 0x45, 0x34, 0x23};
+-    string path = "1/7/8";
+-    chunk_manager_->Write(path, data, sizeof(data));
+-
+-    bool exist = chunk_manager_->Exist(path);
+-    EXPECT_EQ(exist, true);
+-
+-    chunk_manager_->Remove(path);
+-
+-    exist = chunk_manager_->Exist(path);
+-    EXPECT_EQ(exist, false);
+-
+-    try {
+-        chunk_manager_->Remove(path);
+-    } catch (SegcoreError& e) {
+-        EXPECT_TRUE(string(e.what()).find("not") != string::npos);
+-    }
+-
+-    try {
+-        chunk_manager_->Size(path);
+-    } catch (SegcoreError& e) {
+-        EXPECT_TRUE(string(e.what()).find("not") != string::npos);
+-    }
+-
+-    chunk_manager_->DeleteBucket(testBucketName);
+-}
+-
+-TEST_F(AzureChunkManagerTest, ListWithPrefixPositive) {
+-    string testBucketName = configs_.bucket_name;
+-    EXPECT_EQ(chunk_manager_->GetBucketName(), testBucketName);
+-
+-    if (!chunk_manager_->BucketExists(testBucketName)) {
+-        chunk_manager_->CreateBucket(testBucketName);
+-    }
+-
+-    string path1 = "1/7/8";
+-    string path2 = "1/7/4";
+-    string path3 = "1/4/8";
+-    uint8_t data[5] = {0x17, 0x32, 0x45, 0x34, 0x23};
+-    chunk_manager_->Write(path1, data, sizeof(data));
+-    chunk_manager_->Write(path2, data, sizeof(data));
+-    chunk_manager_->Write(path3, data, sizeof(data));
+-
+-    vector<string> objs = chunk_manager_->ListWithPrefix("1/7");
+-    EXPECT_EQ(objs.size(), 2);
+-    sort(objs.begin(), objs.end());
+-    EXPECT_EQ(objs[0], "1/7/4");
+-    EXPECT_EQ(objs[1], "1/7/8");
+-
+-    objs = chunk_manager_->ListWithPrefix("//1/7");
+-    EXPECT_EQ(objs.size(), 0);
+-
+-    objs = chunk_manager_->ListWithPrefix("1");
+-    EXPECT_EQ(objs.size(), 3);
+-    sort(objs.begin(), objs.end());
+-    EXPECT_EQ(objs[0], "1/4/8");
+-    EXPECT_EQ(objs[1], "1/7/4");
+-
+-    chunk_manager_->Remove(path1);
+-    chunk_manager_->Remove(path2);
+-    chunk_manager_->Remove(path3);
+-    chunk_manager_->DeleteBucket(testBucketName);
+-}
+diff --git a/internal/json/sonic.go b/internal/json/sonic.go
+index f6cc101f9c..6066704447 100644
+--- a/internal/json/sonic.go
++++ b/internal/json/sonic.go
+@@ -1,3 +1,5 @@
++// +build !ppc64le
++
+ package json
+ 
+ import (
+diff --git a/internal/json/sonic_ppc64le.go b/internal/json/sonic_ppc64le.go
+new file mode 100644
+index 0000000000..9e4bec6c3c
+--- /dev/null
++++ b/internal/json/sonic_ppc64le.go
+@@ -0,0 +1,20 @@
++package json
++
++import (
++	"encoding/json"
++)
++
++var (
++	// Marshal is exported by gin/json package.
++	Marshal = json.Marshal
++	// Unmarshal is exported by gin/json package.
++	Unmarshal = json.Unmarshal
++	// MarshalIndent is exported by gin/json package.
++	MarshalIndent = json.MarshalIndent
++	// NewDecoder is exported by gin/json package.
++	NewDecoder = json.NewDecoder
++	// NewEncoder is exported by gin/json package.
++	NewEncoder = json.NewEncoder
++)
++
++type Number = json.Number
+diff --git a/scripts/3rdparty_build.sh b/scripts/3rdparty_build.sh
+index 2c894ba972..1ad6c63572 100644
+--- a/scripts/3rdparty_build.sh
++++ b/scripts/3rdparty_build.sh
+@@ -67,7 +67,7 @@ case "${unameOut}" in
+     if [[ `gcc -v 2>&1 | sed -n 's/.*\(--with-default-libstdcxx-abi\)=\(\w*\).*/\2/p'` == "gcc4" ]]; then
+       conan install ${CPP_SRC_DIR} --install-folder conan --build=missing -s compiler.version=${GCC_VERSION} -r default-conan-local -u || { echo 'conan install failed'; exit 1; }
+     else
+-      conan install ${CPP_SRC_DIR} --install-folder conan --build=missing -s compiler.version=${GCC_VERSION} -s compiler.libcxx=libstdc++11 -r default-conan-local -u || { echo 'conan install failed'; exit 1; }
++      conan install ${CPP_SRC_DIR} --install-folder conan --build=missing -s compiler.version=${GCC_VERSION} -s compiler.libcxx=libstdc++11 -u || { echo 'conan install failed'; exit 1; }
+     fi
+     ;;
+   *)
