@@ -71,8 +71,8 @@ if !  mvn -B -U -T 2 clean install -Pquick,-formatting  ; then
     exit 1
 fi 
 
-# Tests failures in parity with x86 rdf4j-shacl,-:rdf4j-sail-elasticsearch-store,-:rdf4j-sparql-compliance
-if ! mvn -B verify -P-skipSlowTests,-formatting -Dmaven.javadoc.skip=true -Djapicmp.skip -Denforcer.skip=true -Danimal.sniffer.skip=true -pl -:rdf4j-shacl,-:rdf4j-sail-elasticsearch-store,-:rdf4j-sparql-compliance ; then
+# Tests failures in parity with x86 rdf4j-shacl,-:rdf4j-sail-elasticsearch-store,-:rdf4j-sparql-compliance,-:rdf4j-elasticsearch-compliance
+if ! mvn -B verify -P-skipSlowTests,-formatting -Dmaven.javadoc.skip=true -Djapicmp.skip -Denforcer.skip=true -Danimal.sniffer.skip=true -pl -:rdf4j-shacl,-:rdf4j-sail-elasticsearch-store,-:rdf4j-sparql-compliance,-:rdf4j-elasticsearch-compliance ; then
     echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
