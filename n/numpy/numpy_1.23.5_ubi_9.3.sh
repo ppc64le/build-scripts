@@ -20,15 +20,15 @@
 
 # Exit immediately if a command exits with a non-zero status
 set -e
-
+wdir=""
 # Variables
 PACKAGE_NAME=numpy
 PACKAGE_VERSION=${1:-v1.23.5}
 PACKAGE_URL=https://github.com/numpy/numpy
 
 # Install dependencies and tools.
-yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openssl-devel cmake 
-pip3 install pytest==8.3.4 hypothesis==6.115.5 cython typing_extensions meson==1.6.0 ninja==1.11.1.1 
+yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openssl-devel cmake
+pip3 install pytest==8.3.4 hypothesis==6.115.5 cython typing_extensions meson==1.6.0 ninja==1.11.1.1
 
 #clone repository
 git clone $PACKAGE_URL
@@ -47,7 +47,7 @@ fi
 #test
 sed -i 's/suppress_health_check=hypothesis\.HealthCheck\.all()/suppress_health_check=list(hypothesis.HealthCheck)/' numpy/conftest.py
 export PYTEST_ADDOPTS="-k 'not test_cython and not test_extension_type' --deselect=typing/tests/test_generic_alias.py --deselect=random/tests/test_extending.py --deselect=core/tests/test_mem_policy.py --deselect=core/tests/test_numeric.py --deselect=array_api/tests/test_set_functions.py --deselect=numpy/typing/tests/test_typing.py"
-
+cd $wdir
 if ! (pytest --pyargs numpy); then
     echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
