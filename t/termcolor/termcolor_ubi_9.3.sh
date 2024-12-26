@@ -44,14 +44,6 @@ pip install --upgrade pip
 # Install the package
 pip install .
 
-# Run the demo (optional)
-python3 -m termcolor
-
-# Install development dependencies (if any)
-if [ -f "requirements-dev.txt" ]; then
-    pip install -r requirements-dev.txt
-fi
-
 # Skip all tests
 echo "Skipping all test cases as per the requirement."
 
