@@ -21,7 +21,7 @@
 PACKAGE_NAME=scipy
 PACKAGE_VERSION=${1:-v1.10.1}
 PACKAGE_URL=https://github.com/scipy/scipy
-PYTHON_VER=${2:-"3.11"}
+PYTHON_VER=${PYTHON_VERSION:-3.11}
 
 OS_NAME=$(cat /etc/os-release | grep "PRETTY" | awk -F '=' '{print $2}')
 
@@ -31,11 +31,11 @@ yum install -y gcc gcc-c++ gcc-fortran pkg-config openblas-devel \
 
 # Determine numpy version based on Python version
 if [[ $PYTHON_VER == "3.11" ]]; then
-    NUMPY_VER="1.23.2"
+    NUMPY_VER="numpy==1.23.2"
 elif [[ $PYTHON_VER == "3.10" ]]; then
-    NUMPY_VER="1.21.6"
+    NUMPY_VER="numpy==1.21.6"
 elif [[ $PYTHON_VER == "3.9" || $PYTHON_VER == "3.8" ]]; then
-    NUMPY_VER="1.19.5"
+    NUMPY_VER="numpy==1.19.5"
 else
     NUMPY_VER="numpy" # Default unpinned version for Python >= 3.12
 fi
@@ -67,7 +67,7 @@ ln -sf $(command -v pip$PYTHON_VER) $WORKDIR/PY_PRIORITY/pip$PYTHON_VER
 # Install build dependencies
 python -m pip install --upgrade pip
 python -m pip install meson ninja \
-    "numpy==$NUMPY_VER" \
+    "$NUMPY_VER" \
     "pybind11==2.10.1" \
     'meson-python>=0.11.0,<0.13.0' \
     'pythran>=0.12.0,<0.13.0' \
