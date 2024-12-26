@@ -34,9 +34,7 @@ pip3 install pytest==8.3.4 hypothesis==6.115.5 cython typing_extensions meson==1
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-
 git submodule update --init
-
 #install
 if ! pip install -e . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
