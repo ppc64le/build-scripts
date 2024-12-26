@@ -23,7 +23,7 @@ PACKAGE_URL=https://github.com/termcolor/termcolor.git
 
 # Install necessary system packages
 yum install -y git gcc gcc-c++ make wget sudo openssl-devel bzip2-devel libffi-devel zlib-devel sqlite-devel
-yum install pip
+yum install -y pip
 
 # Upgrade pip and install necessary Python packages
 pip install --upgrade pip setuptools wheel greenlet pytest
