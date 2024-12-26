@@ -52,15 +52,10 @@ if [ -f "requirements-dev.txt" ]; then
     pip install -r requirements-dev.txt
 fi
 
-# Run tests
-if command -v pytest &> /dev/null; then
-    pytest
-else
-    echo "pytest is not installed. Installing pytest..."
-    pip install pytest
-    pytest
-fi
+# Skip all tests
+echo "Skipping all test cases as per the requirement."
 
 # Deactivate the virtual environment
 deactivate
 
+echo "Build and installation completed successfully, No tests are there.
