@@ -6,6 +6,7 @@
 # Source repo    : https://github.com/termcolor/termcolor.git
 # Tested on      : UBI 9.3
 # Language       : Python
+# Travis-Check   : True
 # Script License : Apache License, Version 2 or later
 # Maintainer     : Vivek sharma<vivek.sharma20@ibm.com>
 #
