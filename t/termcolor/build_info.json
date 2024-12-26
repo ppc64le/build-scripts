@@ -8,7 +8,7 @@
 	"package_dir": "t/termcolor",
 	"docker_build": false,
 	"validate_build_script": true,
-	"Travis_Check": true
+	"Travis_Check": true,
 	"wheel_build" : true,
 	"use_non_root_user": false,
 	"*.*.*": {
