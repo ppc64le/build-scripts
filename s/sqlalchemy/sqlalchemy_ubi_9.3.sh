@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package        : SQLAlchemy
-# Version        : 1.4.39
+# Version        : rel_1.4.39
 # Source repo    : https://github.com/sqlalchemy/sqlalchemy.git
 # Tested on      : UBI 9.3
 # Language       : Python
@@ -34,7 +34,7 @@ pip3 install pytest
 export PATH=$PATH:/usr/local/bin/
 
 # Clone the repository
-git clone ${PACKAGE_URL} ${PACKAGE_NAME}
+git clone ${PACKAGE_URL}
 cd ${PACKAGE_NAME}
 git checkout ${PACKAGE_VERSION}
 
