@@ -61,10 +61,10 @@ then
 fi
 
 #Disable one failing test that is in parity with x86_64
-sed -i '151,152d' ./tests/runtime/CTestTestfile.cmake #flb-rt-out_td
+sed -i '155,156d' ./tests/runtime/CTestTestfile.cmake #flb-rt-out_td
 
 #Disable wasm test as it is disabled in the build
-sed -i '93,94d' ./tests/runtime/CTestTestfile.cmake #wasm
+sed -i '95,96d' ./tests/runtime/CTestTestfile.cmake #wasm
 
 #Test
 make test || ret=$?
