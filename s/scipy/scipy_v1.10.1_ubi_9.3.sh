@@ -81,6 +81,8 @@ python -m pip install meson ninja \
 
 pip show meson
 pip show meson-python
+meson --help
+which meson
 
 # Build and install
 if ! python -m pip install -e . --no-build-isolation -vvv; then
