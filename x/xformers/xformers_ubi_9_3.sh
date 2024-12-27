@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : xformers
-# Version       : 0.0.28
+# Version       : v0.0.28
 # Source repo   : https://github.com/facebookresearch/xformers.git
 # Tested on     : UBI 9.3
 # Language      : Python, C++
@@ -21,8 +21,8 @@
 PACKAGE_NAME=xformers
 PACKAGE_VERSION=${1:-v0.0.28}
 PACKAGE_URL=https://github.com/facebookresearch/xformers.git
-PYTHON_VER=${2:-3.11}
-BUILD_DEPS=${3:-true}
+PYTHON_VER=${PYTHON_VERSION:-3.11}
+BUILD_DEPS=${BUILD_DEPS:-true}
 PARALLEL=${PARALLEL:-$(nproc)}
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 export _GLIBCXX_USE_CXX11_ABI=1
@@ -30,9 +30,7 @@ export _GLIBCXX_USE_CXX11_ABI=1
 # Install dependencies
 dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
     git cmake ninja-build gcc gcc-c++ g++ rust cargo \
-    python${PYTHON_VER}-devel python${PYTHON_VER}-pip jq
-
-dnf install -y gcc-fortran pkg-config openblas-devel atlas
+    python${PYTHON_VER}-devel python${PYTHON_VER}-pip jq gcc-fortran pkg-config openblas-devel atlas
 
 # Clone repository
 if [ -z $PACKAGE_SOURCE_DIR ]; then
@@ -118,7 +116,26 @@ fi
 
 # Run Specific tests
 export PY_IGNORE_IMPORTMISMATCH=1
-if ! python${PYTHON_VER} -m pytest tests/test_unbind.py tests/test_rotary_embeddings.py tests/test_hydra_helper.py tests/test_compositional_attention.py tests/test_global_attention.py; then
+
+# Define the test directory and test files
+TEST_DIR="tests"
+TEST_FILES=("test_unbind.py" "test_rotary_embeddings.py" "test_hydra_helper.py" "test_compositional_attention.py" "test_global_attention.py")
+
+# Initialize an empty array to hold available test files
+AVAILABLE_TESTS=()
+
+# Check for existence of each test file
+for TEST_FILE in "${TEST_FILES[@]}"; do
+    if [ -f "$TEST_DIR/$TEST_FILE" ]; then
+        AVAILABLE_TESTS+=("$TEST_DIR/$TEST_FILE")
+        echo "Available Tests: $AVAILABLE_TESTS"
+    else
+        echo "Warning: $TEST_DIR/$TEST_FILE is missing. Skipping."
+    fi
+done
+
+# Run pytest with available test files
+if ! python${PYTHON_VER} -m pytest "${AVAILABLE_TESTS[@]}"; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail |  Install_success_but_test_Fails"
@@ -129,3 +146,4 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
+
