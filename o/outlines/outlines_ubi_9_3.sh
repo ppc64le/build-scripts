@@ -21,8 +21,8 @@
 PACKAGE_NAME=outlines
 PACKAGE_VERSION=${1:-main}
 PACKAGE_URL=https://github.com/dottxt-ai/outlines.git
-PYTHON_VER=${2:-3.11}
-BUILD_DEPS=${3:-true}
+PYTHON_VER=${PYTHON_VERSION:-3.11}
+BUILD_DEPS=${BUILD_DEPS:-true}
 PARALLEL=${PARALLEL:-$(nproc)}
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 export _GLIBCXX_USE_CXX11_ABI=1
