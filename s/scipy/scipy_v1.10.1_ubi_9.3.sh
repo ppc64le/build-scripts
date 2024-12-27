@@ -81,6 +81,8 @@ python -m pip install meson ninja \
 
 pip show meson
 pip show meson-python
+echo $PATH
+export PATH=$PATH:/usr/local/bin
 meson --help
 which meson
 
