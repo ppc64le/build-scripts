@@ -22,13 +22,14 @@
 PACKAGE_NAME=LightGBM
 PACKAGE_VERSION=${1:-v3.3.2}
 PACKAGE_URL=https://github.com/microsoft/LightGBM.git
+PACKAGE_DIR=LightGBM/python-package
 
 # Install dependencies
-yum install -y git gcc gcc-c++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel python-devel python-pip libjpeg-devel gcc-gfortran openblas atlas
+yum install -y git gcc gcc-c++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel python3-devel python3-pip libjpeg-devel gcc-gfortran openblas atlas
 
 # Clone the repository
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 #set environment
@@ -44,7 +45,7 @@ if !(pip list | grep scipy) ;then
         git checkout v1.10.1
         git submodule update --init
         pip install Cython==0.29.37 'numpy<1.23' 'setuptools<60.0' pybind11 pytest pythran  wheel
-        pip install Cython setuptools pybind11 pytest pythran  wheel numpy==1.19.5
+        #pip install Cython setuptools pybind11 pytest pythran  wheel numpy==1.19.5
         ln -s /usr/lib64/atlas/libtatlas.so.3 /usr/lib64/atlas/libtatlas.so
         ln -s /usr/lib64/libopenblas.so.0 /usr/lib64/libopenblas.so
         python3 setup.py install
@@ -66,11 +67,10 @@ else
 fi
 
 #install necessary Python packages
-pip install setuptools numpy==1.19.5 pandas==1.4.2 build joblib psutil pillow matplotlib
+pip install setuptools numpy==1.23.5 pandas==1.4.2 build joblib psutil pillow matplotlib
 
 #Install
 # Set the path to the python-package directory
-cd python-package
 if ! (python3 setup.py install) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -78,8 +78,8 @@ if ! (python3 setup.py install) ; then
     exit 1
 fi
 
-#run tests skipping few tests failing on both ppc64le and x86
-if !(pytest -v /LightGBM/tests -k "not test_contribs_sparse_multiclass"); then
+#run tests skipping few tests failing on ppc64le and x86
+if !(pytest -v /LightGBM/tests --disable-warnings -k "not test_contribs_sparse_multiclass"); then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
