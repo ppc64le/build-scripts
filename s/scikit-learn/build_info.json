@@ -1,0 +1,12 @@
+{
+   "maintainer": "Salil4IBM",
+   "package_name": "scikit-learn",
+   "github_url": "https://github.com/scikit-learn/scikit-learn.git",
+   "version": "1.5.2",
+   "default_branch": "main",
+   "build_script": "scikit-learn_ubi_9.3.sh",
+   "package_dir": "s/scikit-learn",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}

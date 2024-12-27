@@ -1,0 +1,15 @@
+{
+  "maintainer": "sid226",
+  "package_name": "netty-tcnative",
+  "github_url": "https://github.com/netty/netty-tcnative",
+  "version": "netty-tcnative-parent-2.0.62.Final",
+  "default_branch": "main",
+  "package_dir": "n/netty-tcnative",
+  "build_script": "netty-tcnative_ubi_9.3.sh",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "netty-tcnative-parent-2.0.*.Final": {
+        "build_script": "netty-tcnative_ubi_9.3.sh"
+     }
+}

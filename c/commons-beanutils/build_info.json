@@ -1,0 +1,15 @@
+{
+  "maintainer": "mayurbhosure",
+  "package_name": "commons-beanutils",
+  "github_url": "https://github.com/apache/commons-beanutils",
+  "version": "commons-beanutils-1.9.4",
+  "default_branch": "master",
+  "build_script": "commons-beanutils_ubi_9.3.sh",
+  "package_dir": "c/commons-beanutils",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "commons-beanutils-1.9.*": {
+    "build_script": "commons-beanutils_ubi_9.3.sh"
+  }
+}
