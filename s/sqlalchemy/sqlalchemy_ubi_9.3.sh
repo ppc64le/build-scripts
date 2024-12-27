@@ -23,8 +23,7 @@ PACKAGE_VERSION=rel_1_4_39
 PACKAGE_URL=https://github.com/sqlalchemy/sqlalchemy.git
 
 # Install necessary system packages
-yum install -y git gcc gcc-c++ make wget sudo openssl-devel bzip2-devel libffi-devel zlib-devel sqlite-devel
-yum install -y pip
+yum install -y git gcc gcc-c++ make wget sudo python-devel openssl-devel bzip2-devel libffi-devel zlib-devel sqlite-devel
 
 # Upgrade pip and install necessary Python packages
 pip3 install greenlet
