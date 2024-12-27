@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_VERSION=${1:-1.4.39}
+PACKAGE_VERSION=${1:-'1.4.39'}
 PACKAGE_NAME=sqlalchemy
 PACKAGE_URL=https://github.com/sqlalchemy/sqlalchemy.git
 
