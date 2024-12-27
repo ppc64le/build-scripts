@@ -64,6 +64,9 @@ ln -sf $(command -v pip$PYTHON_VER) $WORKDIR/PY_PRIORITY/pip
 ln -sf $(command -v pip$PYTHON_VER) $WORKDIR/PY_PRIORITY/pip3
 ln -sf $(command -v pip$PYTHON_VER) $WORKDIR/PY_PRIORITY/pip$PYTHON_VER
 
+python -V
+which python
+
 # Install build dependencies
 python -m pip install --upgrade pip
 python -m pip install meson ninja \
@@ -75,6 +78,9 @@ python -m pip install meson ninja \
     'wheel<0.39.0' \
     patchelf>=0.11.0 \
     pooch pytest build
+
+pip show meson
+pip show meson-python
 
 # Build and install
 if ! python -m pip install -e . --no-build-isolation -vvv; then
