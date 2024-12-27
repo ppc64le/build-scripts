@@ -18,8 +18,8 @@
 #
 # ----------------------------------------------------------------------------
 
+PACKAGE_VERSION=${1:-1.4.39}
 PACKAGE_NAME=sqlalchemy
-PACKAGE_VERSION=rel_1_4_39
 PACKAGE_URL=https://github.com/sqlalchemy/sqlalchemy.git
 
 # Install necessary system packages
