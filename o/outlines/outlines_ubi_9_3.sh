@@ -6,6 +6,7 @@
 # Source repo   : https://github.com/dottxt-ai/outlines.git
 # Tested on     : UBI 9.3
 # Language      : Python, C++
+# Travis-Check  : True
 # Script License: Apache License, Version 2.0
 # Maintainer    : Puneet Sharma <Puneet.Sharma21@ibm.com>
 #
