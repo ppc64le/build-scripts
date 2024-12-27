@@ -34,20 +34,16 @@ git clone ${PACKAGE_URL}
 cd ${PACKAGE_NAME}
 git checkout ${PACKAGE_VERSION}
 
-# Set up a virtual environment
-python3 -m venv env
-source env/bin/activate
-
 # Upgrade pip within the virtual environment
 pip install --upgrade pip
 
 # Install the package
-pip install .
+if ! (pip install .) ; then
+    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    exit 1
+fi   
 
-# Skip all tests
-echo "Skipping all test cases as per the requirement."
-
-# Deactivate the virtual environment
-deactivate
-
+# testcase is not there
 echo "Build and installation completed successfully, No tests are there."
