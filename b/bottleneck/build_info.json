@@ -11,6 +11,7 @@
     "validate_build_script": true,
     "use_non_root_user": false,
     "v1.*.*": {
+        "dir": "ubi9_3",
         "build_script": "bottleneck_1.3.5_ubi_9.3.sh"
      }
 }

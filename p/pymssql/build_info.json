@@ -1,0 +1,16 @@
+{
+  "maintainer": "Harithanagothu2",
+  "package_name": "pymssql",
+  "github_url": "https://github.com/pymssql/pymssql.git",
+  "version": "v2.2.5",
+  "wheel_build" : true,
+  "package_dir": "p/pymssql",
+  "default_branch": "master",
+  "build_script": "pymssql_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "v2.*.*":{
+    "build_script":"pymssql_ubi_9.3.sh"
+  }
+}
