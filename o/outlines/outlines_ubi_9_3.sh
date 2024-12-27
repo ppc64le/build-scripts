@@ -19,7 +19,7 @@
 # ------------------------------------------------------------------------
 
 PACKAGE_NAME=outlines
-PACKAGE_VERSION=${1:-latest}
+PACKAGE_VERSION=${1:-main}
 PACKAGE_URL=https://github.com/dottxt-ai/outlines.git
 PYTHON_VER=${2:-3.11}
 BUILD_DEPS=${3:-false}
