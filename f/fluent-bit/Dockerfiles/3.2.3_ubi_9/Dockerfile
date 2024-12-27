@@ -8,7 +8,7 @@ ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/f/
 RUN yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
 RUN yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream//ppc64le/os
 RUN yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os
-RUN rpm --import http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
+RUN rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official 
 RUN dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 
 #Install deps

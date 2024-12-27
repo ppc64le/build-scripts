@@ -29,7 +29,7 @@ SCRIPT_PATH=$(dirname $(realpath $0))
 yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
 yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream//ppc64le/os
 yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os
-rpm --import http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
+rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official
 dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 yum install gcc gcc-c++ libyaml-devel wget cmake3 python3 git openssl-devel diffutils autoconf postgresql-devel cyrus-sasl-devel systemd-devel libarchive glibc-devel nc flex bison valgrind-devel -y
 
