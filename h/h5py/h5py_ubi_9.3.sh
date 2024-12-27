@@ -24,26 +24,16 @@ PACKAGE_VERSION=${1:-3.7.0}
 PACKAGE_URL=https://github.com/h5py/h5py.git
 
 # Install dependencies and tools.
-yum install -y wget gcc gcc-c++ gcc-gfortran git make  python-devel  openssl-devel unzip 
+yum install -y wget gcc gcc-c++ gcc-gfortran git make  python-devel  openssl-devel unzip libzip-devel.ppc64le gzip.ppc64le
+yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+yum install -y gcc-c++ cmake make pkgconfig gcc-gfortran hdf5 hdf5-devel
 
 #clone repository 
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-#install hdf5
- wget https://github.com/HDFGroup/hdf5/archive/hdf5-1_10_6.zip
- unzip hdf5-1_10_6.zip
- cd hdf5-hdf5-1_10_6
-  ./configure --prefix=/usr/local
-  make
-  make install
-export LD_LIBRARY_PATH=/usr/local/hdf5/lib:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
-cd ..
-   
-#install cython
-pip install cython==0.29.21 numpy==1.19.5 pkgconfig
+pip install Cython==0.29.36 numpy==1.21.0 pkgconfig pytest-mpi
 
 #install
 if ! (python3 setup.py install) ; then
@@ -52,3 +42,19 @@ if ! (python3 setup.py install) ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
+
+#test
+cd h5py/tests
+export PY_IGNORE_IMPORTMISMATCH=1
+
+if ! ( pytest --ignore=test_dataset.py  --ignore=test_h5d_direct_chunk.py --ignore=test_h5t.py --ignore=test_vds/test_highlevel_vds.py --ignore=test_file.py); then
+    echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    exit 0
+fi	
