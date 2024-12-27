@@ -39,10 +39,6 @@ git clone ${PACKAGE_URL} ${PACKAGE_NAME}
 cd ${PACKAGE_NAME}
 git checkout ${PACKAGE_VERSION}
 
-# Set up a virtual environment
-python3 -m venv env
-source env/bin/activate
-
 # Upgrade pip and setuptools within the virtual environment
 pip install --upgrade pip setuptools wheel
 
@@ -78,5 +74,3 @@ else
     exit 1
 fi
 
-# Deactivate the virtual environment
-deactivate
