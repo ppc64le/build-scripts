@@ -1,0 +1,14 @@
+intainer": "puneetsharma21",
+  "package_name": "outlines",
+  "github_url": "https://github.com/dottxt-ai/outlines.git",
+  "version": "latest",
+  "default_branch": "main",
+  "package_dir": "o/outlines",
+  "build_script": "outlines_ubi_9_3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "latest": {
+    "build_script": "outlines_ubi_9_3.sh"
+  }
+}
