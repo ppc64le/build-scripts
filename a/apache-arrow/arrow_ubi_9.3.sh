@@ -22,7 +22,7 @@
 PACKAGE_NAME=arrow
 PACKAGE_URL=https://github.com/apache/arrow.git
 PACKAGE_VERSION=${1:-go/v16.1.0}
-PYTHON_VER=${2:-"3.11"}
+PYTHON_VER=${PYTHON_VERSION:-3.11}
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 GO_VERSION=`curl -s 'https://go.dev/VERSION?m=text' | grep ^go`
