@@ -40,3 +40,5 @@ if [ -f "setup.py" ];then
 else
         echo "setup.py not present"
 fi
+
+#no tests present in repo so skipping the testing part
