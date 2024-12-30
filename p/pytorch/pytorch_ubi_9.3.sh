@@ -41,7 +41,8 @@ dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packa
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/`arch`/os
 dnf config-manager --set-enabled crb
 
-dnf install -y git cmake ninja-build gcc-toolset-13 rust cargo lapack-devel blas-devel openblas-devel \
+dnf install -y git cmake ninja-build gcc-toolset-13 rust cargo \
+    openblas-devel lapack-devel pkgconfig \
     python$PYTHON_VERSION-devel \
     python$PYTHON_VERSION-wheel \
     python$PYTHON_VERSION-pip \
@@ -86,12 +87,6 @@ ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip
 ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip3
 ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip$PYTHON_VERSION
 ##############################################
-
-# Build Dependencies when BUILD_DEPS is unset or set to True
-if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then    
-    # dependencies for numpy
-    dnf install -y gfortran pkgconfig
-fi
 
 python -m pip install -r requirements.txt
 if ! python setup.py develop; then
