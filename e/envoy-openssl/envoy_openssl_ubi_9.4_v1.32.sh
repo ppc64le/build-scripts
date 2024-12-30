@@ -1,3 +1,23 @@
+#!/bin/bash -ex
+# ----------------------------------------------------------------------------
+#
+# Package       : envoy-openssl
+# Version       : release/v1.32
+# Source repo   : https://github.com/envoyproxy/envoy-openssl/
+# Tested on     : RHEL 9.4
+# Language      : C++
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Anurag Chitrakar <Anurag.Chitrakar@ibm.com>
+#
+# Disclaimer: This script has been tested in root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
+
 PACKAGE_NAME=envoy-openssl
 PACKAGE_ORG=envoyproxy
 SCRIPT_PACKAGE_VERSION=release/v1.32
