@@ -1,0 +1,16 @@
+{
+    "maintainer": "abhijeetdandekaribm",
+    "package_name": "kiwisolver",
+    "github_url": "https://github.com/nucleic/kiwi.git",
+    "version": "1.4.4",
+    "wheel_build" : true,
+    "package_dir": "k/kiwisolver",
+    "default_branch": "master",
+    "build_script": "kiwisolver_1.4.4_ubi_9.3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": "false",
+    "*": {
+      "build_script": "kiwisolver_1.4.4_ubi_9.3.sh"
+    }
+}
