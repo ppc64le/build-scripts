@@ -2,7 +2,7 @@
 # ------------------------------------------------------------------------
 #
 # Package       : outlines
-# Version       : latest (default branch)
+# Version       : 0.1.11
 # Source repo   : https://github.com/dottxt-ai/outlines.git
 # Tested on     : UBI 9.3
 # Language      : Python, C++
@@ -19,7 +19,7 @@
 # ------------------------------------------------------------------------
 
 PACKAGE_NAME=outlines
-PACKAGE_VERSION=${1:-main}
+PACKAGE_VERSION=${1:-0.1.11}
 PACKAGE_URL=https://github.com/dottxt-ai/outlines.git
 PYTHON_VER=${PYTHON_VERSION:-3.11}
 BUILD_DEPS=${BUILD_DEPS:-true}
@@ -104,14 +104,29 @@ fi
 
 # Test installation
 if python${PYTHON_VER} -c "import outlines"; then
-    echo "------------------$PACKAGE_NAME:Test_success-------------------------"
+    echo "------------------$PACKAGE_NAME:Install_Success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Test_Success"
-    exit 0
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Install_Success"
 else
-    echo "------------------$PACKAGE_NAME:Test_fails---------------------"
+    echo "------------------$PACKAGE_NAME:Install_Fail---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail |  Test_fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail |  Install_Fails"
     exit 2
+fi
+
+
+# Run Specific tests
+python${PYTHON_VER} -m pip install openai
+
+if ! python${PYTHON_VER} -m pytest tests/models/test_openai.py; then
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail |  Install_success_but_test_Fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME:both_install_and_test_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
+    exit 0
 fi
 
