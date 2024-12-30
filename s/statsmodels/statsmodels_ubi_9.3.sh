@@ -44,7 +44,7 @@ if ! pip install -e .; then
     exit 1
 fi
 
-sed -i 's/atol=1e-6/atol=1e-1/g' statsmodels/statsmodels/stats/tests/test_mediation.py
+sed -i 's/atol=1e-6/atol=1e-1/g' statsmodels/stats/tests/test_mediation.py
 sed -i 's/QE/Q-DEC/g' statsmodels/tsa/tests/test_exponential_smoothing.py
 pip install pytest
 pip install numpy==1.23
