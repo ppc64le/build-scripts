@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/pyca/cryptography.git
 # Tested on     : UBI:9.3
 # Language      : Python
-# Travis-check  : True
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Robin Jain <robin.jain1@ibm.com>
 #
