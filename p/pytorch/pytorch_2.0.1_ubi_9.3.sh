@@ -47,21 +47,8 @@ git submodule sync
 git submodule update --init --recursive
 pip install -r requirements.txt
  
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/p/pytorch/pytorch_v2.0.1.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/python-ecosystem/p/pytorch/pytorch_v2.0.1.patch
 git apply ./pytorch_v2.0.1.patch
-
-# Apply the patch before building
-if [ -f "$PATCH_FILE" ]; then
-    echo "Applying patch..."
-    git apply $PATCH_FILE
-    if [ $? -ne 0 ]; then
-        echo "Failed to apply patch. Exiting..."
-        exit 1
-    fi
-else
-    echo "Patch file not found. Exiting..."
-    exit 1
-fi
  
 # Build and install the package
 if ! (MAX_JOBS=$(nproc) python3 setup.py install); then
