@@ -5,7 +5,6 @@
 # Version       : 2.0.1
 # Source repo : https://github.com/pytorch/pytorch.git
 # Tested on     : UBI:9.3
-# Travis-Check  : True
 # Language      : Python
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
@@ -47,63 +46,20 @@ git submodule sync
 git submodule update --init --recursive
 pip install -r requirements.txt
  
-# Apply patch directly from script
-PATCH_CONTENT=$(cat << 'EOF'
---- a/aten/src/ATen/native/cpu/BinaryOpsKernel.cpp
-+++ b/aten/src/ATen/native/cpu/BinaryOpsKernel.cpp
-@@ -312,6 +312,14 @@ void bitwise_xor_kernel(TensorIteratorBase& iter) {
- }
- 
- void lshift_kernel(TensorIteratorBase& iter) {
-+#if defined(__VSX__)  || defined(CPU_CAPABILITY_VSX)
-+  AT_DISPATCH_INTEGRAL_TYPES(iter.dtype(), "lshift_cpu", [&]() {
-+    cpu_kernel(iter,
-+      [](scalar_t a, scalar_t b) -> scalar_t {
-+        return static_cast<std::make_unsigned_t<scalar_t>>(a) << b;
-+    });
-+  });
-+#else
-   AT_DISPATCH_INTEGRAL_TYPES(iter.dtype(), "lshift_cpu", [&]() {
-     cpu_kernel_vec(iter,
-         [](scalar_t a, scalar_t b) -> scalar_t {
-@@ -321,6 +329,7 @@ void lshift_kernel(TensorIteratorBase& iter) {
-             return a << b;
-         });
-   });
-+#endif
- }
- 
- void logical_and_kernel(TensorIterator& iter) {
-@@ -381,6 +390,14 @@ void logical_xor_kernel(TensorIterator& iter) {
- }
- 
- void rshift_kernel(TensorIteratorBase& iter) {
-+#if defined(__VSX__)  || defined(CPU_CAPABILITY_VSX)
-+  AT_DISPATCH_INTEGRAL_TYPES(iter.dtype(), "rshift_cpu", [&]() {
-+    cpu_kernel(iter,
-+      [](scalar_t a, scalar_t b) -> scalar_t {
-+        return a >> b;
-+      });
-+  });
-+#else
-   AT_DISPATCH_INTEGRAL_TYPES(iter.dtype(), "rshift_cpu", [&]() {
-     cpu_kernel_vec(iter,
-         [](scalar_t a, scalar_t b) -> scalar_t {
-@@ -390,6 +407,7 @@ void rshift_kernel(TensorIteratorBase& iter) {
-           return a >> b;
-         });
-   });
-+#endif
- }
- 
- void lt_kernel(TensorIteratorBase& iter) {
-EOF
-)
- 
-echo "$PATCH_CONTENT" | git apply -
-if [ $? -ne 0 ]; then
-    echo "Failed to apply patch. Exiting..."
-    exit 1
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/p/pytorch/pytorch_v2.0.1.patch
+git apply pytorch_v2.0.1.patch
+
+# Apply the patch before building
+if [ -f "$PATCH_FILE" ]; then
+    echo "Applying patch..."
+    git apply $PATCH_FILE
+    if [ $? -ne 0 ]; then
+        echo "Failed to apply patch. Exiting..."
+        exit 0
+    fi
+else
+    echo "Patch file not found. Exiting..."
+    exit 0
 fi
  
 # Build and install the package
