@@ -38,7 +38,7 @@ python3 -m pip install setuptools wheel pytest
 
 # clone source repository
 
-git clone $PACKAGE_URL $PACKAGE_DIR
+git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 
 git checkout $PACKAGE_VERSION
