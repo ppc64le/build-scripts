@@ -45,11 +45,14 @@ curl https://sh.rustup.rs -sSf | sh -s -- -y
 source "$HOME/.cargo/env"  # Update environment variables to use Rust
 
 #install pytorch
+echo "------------------------------------------------------------Cloning pytorch github repo--------------------------------------------------------------"
 git clone --recursive https://github.com/pytorch/pytorch.git
 cd pytorch
 git checkout v2.5.0
+echo "------------------------------------------------------------Installing requirements for pytorch------------------------------------------------------"
 pip install -r requirements.txt
 git submodule update --init --recursive
+echo "------------------------------------------------------------Installing setup.py for pytorch------------------------------------------------------"
 python3 setup.py install
 cd ..
 
@@ -60,10 +63,12 @@ python3 -c "import torch; print(torch.__version__)"
 python3 -c "import numpy; print(numpy.__version__)"
 python3 -c "import torchdata; print(torchdata.__version__)"
 
+echo "------------------------------------------------------------Cloning text github repo--------------------------------------------------------------"
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+echo "------------------------------------------------------------Installing requirements for vision------------------------------------------------------"
 python3 -m spacy download en_core_web_sm
 
 #install
