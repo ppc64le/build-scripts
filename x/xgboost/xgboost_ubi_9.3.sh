@@ -25,8 +25,7 @@ set -e
 PACKAGE_NAME=xgboost
 PACKAGE_VERSION=${1:-v1.6.2}
 PACKAGE_URL=https://github.com/dmlc/xgboost
-PACKAGE_DIR=xgboost/python-package
- 
+PACKAGE_DIR=xgboost/python-package 
 #set output folder
 export OUTPUT_FOLDER="$(pwd)/output"
 

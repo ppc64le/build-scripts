@@ -1,0 +1,16 @@
+{
+  "maintainer": "stutiibm",
+  "package_name": "text",
+  "github_url": "https://github.com/pytorch/text.git",
+  "version": "v0.15.2",
+  "wheel_build" : true,
+  "package_dir": "t/text",
+  "default_branch": "main",
+  "build_script": "text_v0.15.2_ubi_9_3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "v0.15.2": {
+    "build_script": "text_v0.15.2_ubi_9_3.sh"
+  }
+}
