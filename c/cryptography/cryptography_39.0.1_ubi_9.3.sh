@@ -32,7 +32,8 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Install pytest and other dependencies
-pip install pytest setuptools_rust cryptography_vectors==39.0.1 
+pip install pytest pytest-xdist pytest-benchmark
+pip install hypothesis iso8601 pretend setuptools_rust cryptography_vectors==39.0.1 
 pip install --upgrade pip setuptools cffi
 
 # Install the package
@@ -43,8 +44,7 @@ if ! python3 setup.py install ; then
     exit 1
 fi
 
-pip install -r ci-constraints-requirements.txt
-# Run tests
+# basic sanity test (subset)
 if ! pytest -n auto tests/conftest.py tests/test_cryptography_utils.py tests/test_rust_utils.py tests/test_fernet.py tests/test_warnings.py tests/hypothesis/ tests/bench/ tests/doubles.py; then
     echo "------------------$PACKAGE_NAME: Install success but test fails -----------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
