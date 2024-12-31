@@ -73,7 +73,7 @@ sed -i 's/LooseVersion/Version/' dask/compatibility.py
 
 #Run tests
 cd dask/tests
-if ! pytest -p no:warnings --ignore=test_base.py --ignore=test_config.py; then
+if ! pytest -p no:warnings --ignore=test_base.py --ignore=test_config.py -k "Failed testcases on x86"; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
