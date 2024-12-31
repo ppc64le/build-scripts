@@ -58,6 +58,7 @@ yum install -y \
 export JAVA_HOME=$(compgen -G '/usr/lib/jvm/java-11-openjdk-*')
 export JRE_HOME=${JAVA_HOME}/jre
 export PATH=${JAVA_HOME}/bin:$PATH
+scriptdir=$(dirname $(realpath $0))
 wdir=/home/envoy
 export ENVOY_BIN=$wdir/envoy-openssl/envoy-static
 export ENVOY_ZIP=$wdir/envoy-openssl/envoy-static_1.28_UBI9.2.zip
@@ -68,7 +69,7 @@ BAZEL_VERSION=$(cat .bazelversion)
 rm -rf .bazelversion
 
 useradd envoy
-echo "envoy  ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers > /dev/null
+#echo "envoy  ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers > /dev/null
 sudo -u envoy -- bash <<EOF
 set -ex
 
@@ -100,7 +101,7 @@ cargo install cross --version 0.2.1
 
 #Build Envoy-openssl
 cd $wdir/${PACKAGE_NAME}
-sudo git apply /root/envoy_openssl_v1.32.patch
+git apply $scriptdir/envoy_openssl_v1.32.patch
 bazel/setup_clang.sh $wdir/clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4/
 bazel build -c opt envoy --config=ppc --config=clang --cxxopt=-fpermissive > /dev/null 2>&1 || true
 
