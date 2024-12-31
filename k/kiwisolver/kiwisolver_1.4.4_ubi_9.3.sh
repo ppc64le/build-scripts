@@ -22,16 +22,13 @@ PACKAGE_NAME=kiwi
 PACKAGE_VERSION=${1:-1.4.4}
 PACKAGE_URL=https://github.com/nucleic/kiwi.git
 
-yum install -y wget gcc gcc-c++ gcc-gfortran git make python3 python3-devel openssl-devel
-
+yum install -y git wget gcc gcc-c++ gcc-gfortran python3-devel python3 python3-pip
 # Clone the repository
 git clone $PACKAGE_URL $PACKAGE_NAME
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-pip install -r docs/requirements.txt
-pip install cppy pytest
-pip install -r lint_requirements.txt
+pip install build pytest wheel
 pip install .
 
 #install
