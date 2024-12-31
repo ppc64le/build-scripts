@@ -21,30 +21,73 @@
 PACKAGE_NAME=scipy
 PACKAGE_VERSION=${1:-v1.10.1}
 PACKAGE_URL=https://github.com/scipy/scipy
-PYTHON_VER=${2:-"3.11"}
+PYTHON_VER=${PYTHON_VERSION:-3.11}
 
 OS_NAME=$(cat /etc/os-release | grep "PRETTY" | awk -F '=' '{print $2}')
 
-# install core dependencies
-yum install -y gcc gcc-c++ gcc-fortran pkg-config openblas-devel python${PYTHON_VER} python${PYTHON_VER}-pip python${PYTHON_VER}-devel git atlas
+# Install core dependencies
+yum install -y gcc gcc-c++ gcc-fortran pkg-config openblas-devel \
+    python${PYTHON_VER} python${PYTHON_VER}-pip python${PYTHON_VER}-devel git atlas
 
-# install scipy dependency (numpy wheel gets built and installed) and build-setup dependencies
-python${PYTHON_VER} -m pip install meson ninja 'numpy<1.23' 'setuptools<60.0' Cython==0.29.37
-python${PYTHON_VER} -m pip install 'meson-python<0.15.0,>=0.12.1'
-python${PYTHON_VER} -m pip install pybind11
-python${PYTHON_VER} -m pip install 'patchelf>=0.11.0'
-python${PYTHON_VER} -m pip install 'pythran<0.15.0,>=0.12.0'
-python${PYTHON_VER} -m pip install pooch pytest
-python${PYTHON_VER} -m pip install build
+# Determine numpy version based on Python version
+if [[ $PYTHON_VER == "3.11" ]]; then
+    NUMPY_VER="numpy==1.23.2"
+elif [[ $PYTHON_VER == "3.10" ]]; then
+    NUMPY_VER="numpy==1.21.6"
+elif [[ $PYTHON_VER == "3.9" || $PYTHON_VER == "3.8" ]]; then
+    NUMPY_VER="numpy==1.19.5"
+else
+    NUMPY_VER="numpy" # Default unpinned version for Python >= 3.12
+fi
 
-# clone source repository
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+# Cloning the repository
+if [ -z $PACKAGE_SOURCE_DIR ]; then
+  git clone $PACKAGE_URL
+  cd $PACKAGE_NAME
+  WORKDIR=$(pwd)
+else  
+  cd $PACKAGE_SOURCE_DIR
+  WORKDIR=$(pwd)
+fi
+
 git checkout $PACKAGE_VERSION
-git submodule update --init
+git submodule update --init --recursive
 
-# build and install
-if ! python${PYTHON_VER} -m pip install -e . --no-build-isolation; then
+# No venv - helps with meson build conflicts
+rm -rf $WORKDIR/PY_PRIORITY
+mkdir $WORKDIR/PY_PRIORITY
+PATH=$WORKDIR/PY_PRIORITY:$PATH
+ln -sf $(command -v python$PYTHON_VER) $WORKDIR/PY_PRIORITY/python
+ln -sf $(command -v python$PYTHON_VER) $WORKDIR/PY_PRIORITY/python3
+ln -sf $(command -v python$PYTHON_VER) $WORKDIR/PY_PRIORITY/python$PYTHON_VER
+ln -sf $(command -v pip$PYTHON_VER) $WORKDIR/PY_PRIORITY/pip
+ln -sf $(command -v pip$PYTHON_VER) $WORKDIR/PY_PRIORITY/pip3
+ln -sf $(command -v pip$PYTHON_VER) $WORKDIR/PY_PRIORITY/pip$PYTHON_VER
+
+python -V
+which python
+
+# Install build dependencies
+python -m pip install --upgrade pip
+python -m pip install meson ninja \
+    "$NUMPY_VER" \
+    "pybind11==2.10.1" \
+    'meson-python>=0.11.0,<0.13.0' \
+    'pythran>=0.12.0,<0.13.0' \
+    'Cython>=0.29.32,<3.0' \
+    'wheel<0.39.0' \
+    patchelf>=0.11.0 \
+    pooch pytest build
+
+pip show meson
+pip show meson-python
+echo $PATH
+export PATH=$PATH:/usr/local/bin
+meson --help
+which meson
+
+# Build and install
+if ! python -m pip install -e . --no-build-isolation -vvv; then
     echo "------------------$PACKAGE_NAME:build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
@@ -55,8 +98,8 @@ else
     echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_Success"
 fi
 
-# run specific tests using pytest
-if ! python${PYTHON_VER} -m pytest scipy/interpolate/tests/test_polyint.py scipy/linalg/tests/test_basic.py; then
+# Run specific tests using pytest
+if ! python -m pytest scipy/interpolate/tests/test_polyint.py scipy/linalg/tests/test_basic.py; then
     echo "------------------$PACKAGE_NAME::Test_Fail-------------------------"
     echo "$PACKAGE_VERSION $PACKAGE_NAME"
     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Test_Fail"
@@ -66,4 +109,3 @@ else
     echo "$PACKAGE_VERSION $PACKAGE_NAME"
     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Test_Success"
 fi
-
