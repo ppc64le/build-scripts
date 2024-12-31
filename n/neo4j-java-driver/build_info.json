@@ -1,0 +1,15 @@
+{
+    "maintainer": "ramnathnayak-ibm",
+    "package_name": "neo4j-java-driver",
+    "github_url": "https://github.com/neo4j/neo4j-java-driver",
+    "version": "5.23.0",
+    "default_branch": "5.0",
+    "package_dir": "n/neo4j-java-driver",
+    "build_script": "neo4j-java-driver_ubi_9.3.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": "false",
+    "*.*.*" : {
+       "build_script": "neo4j-java-driver_ubi_9.3.sh"
+    }
+}

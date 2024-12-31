@@ -22,7 +22,7 @@ PACKAGE_NAME=http2-wrapper
 PACKAGE_VERSION=${1:-v2.2.1}
 PACKAGE_URL=https://github.com/szmarczak/http2-wrapper
 
-export NODE_VERSION=${NODE_VERSION:-16}
+export NODE_VERSION=${NODE_VERSION:-20}
 yum install -y python3 python3-devel.ppc64le git gcc gcc-c++ libffi make
 
 #Installing nvm
@@ -45,7 +45,7 @@ if ! npm install && npm audit fix --force; then
     exit 1
 fi
 
-if ! AVA_TIMEOUT=90000 npm test; then
+if ! AVA_TIMEOUT=9000 npm test; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
