@@ -28,7 +28,7 @@ git clone $PACKAGE_URL $PACKAGE_NAME
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-pip install build pytest wheel
+pip install build pytest wheel cppy
 pip install .
 
 #install
