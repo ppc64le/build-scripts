@@ -7,7 +7,7 @@
     "package_dir": "b/bottleneck",
     "build_script": "bottleneck_1.3.5_ubi_9.3.sh",
     "wheel_build" : true,
-    "docker_build": true,
+    "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": false,
     "v1.*.*": {
