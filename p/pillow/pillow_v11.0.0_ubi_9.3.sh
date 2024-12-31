@@ -21,7 +21,7 @@
 PACKAGE_NAME=pillow
 PACKAGE_VERSION=${1:-11.0.0}
 PACKAGE_URL=https://github.com/python-pillow/Pillow/
-PYTHON_VER=${2:-"3.11"}
+PYTHON_VER=${PYTHON_VERSION:-3.11}
 
 OS_NAME=$(grep '^PRETTY' /etc/os-release | awk -F '=' '{print $2}')
 
