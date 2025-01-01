@@ -48,6 +48,8 @@ export PY_IGNORE_IMPORTMISMATCH=1
 cd h5py/tests
 
 #test
+#skipping the some testcase as it is failing on x_86 also.
+
 if ! ( pytest --ignore=test_dataset.py  --ignore=test_h5d_direct_chunk.py --ignore=test_h5t.py --ignore=test_vds/test_highlevel_vds.py --ignore=test_file.py); then
     echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
