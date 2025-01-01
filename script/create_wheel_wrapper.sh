@@ -80,7 +80,7 @@ format_build_script() {
         sed -i '/yum install/{s/\b\(python\|python-devel\|python-pip\)\b[[:space:]]*//g}' "$TEMP_BUILD_SCRIPT_PATH"
         sed -i '/dnf install/{s/\b\(python\|python-devel\|python-pip\)\b[[:space:]]*//g}' "$TEMP_BUILD_SCRIPT_PATH"
         sed -i 's/\bpython3 -m pytest/pytest/g' "$TEMP_BUILD_SCRIPT_PATH"
-        sed -i "s/tox -e py[0-9]\{3\}/tox -e py${PYTHON_VERSION//./}/g" "$TEMP_BUILD_SCRIPT_PATH"
+        sed -i "s/tox -e py[0-9]\{2,3\}\([[:space:]]*.*\)\?/tox -e py${PYTHON_VERSION//./}\1/g" "$TEMP_BUILD_SCRIPT_PATH"
         
     else
         echo "No build script specified, skipping copying."

@@ -66,13 +66,13 @@ if !(pip list |grep scikit-learn ); then
         python3 setup.py install
         cd ..
 else
- echo "scikit-learn already installed ..."
+ echo "scikit-learn already installed"
 fi
 
 echo "install necessary Python dependencies ..."
 pip install numpy==1.23.5 pandas==1.4.2 
 
-echo "installing necessary python dependencies"
+echo "installing necessary python dependencies ..."
 pip install setuptools build joblib psutil pillow matplotlib
 
 echo "installing package ..."
@@ -83,7 +83,7 @@ if ! (python3 setup.py install) ; then
     exit 1
 fi
 
-echo "run tests skipping few tests failing on ppc64le and x86"
+echo "run tests skipping few tests failing on ppc64le and x86 ..."
 if !(pytest -v /LightGBM/tests --disable-warnings -k "not test_contribs_sparse_multiclass"); then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
