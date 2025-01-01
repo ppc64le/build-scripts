@@ -33,7 +33,8 @@ git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-pip install Cython==0.29.36 numpy==1.21.0 pkgconfig pytest-mpi
+python3 -m pip install Cython==0.29.36 numpy==1.21.0 pkgconfig pytest-mpi 
+python3 -m pip install wheel oldest-supported-numpy
 
 #install
 if ! (python3 setup.py install) ; then
@@ -43,9 +44,11 @@ if ! (python3 setup.py install) ; then
     exit 1
 fi
 
-#test
-cd h5py/tests
 export PY_IGNORE_IMPORTMISMATCH=1
+cd h5py/tests
+
+#test
+#skipping the some testcase as it is failing on x_86 also.
 
 if ! ( pytest --ignore=test_dataset.py  --ignore=test_h5d_direct_chunk.py --ignore=test_h5t.py --ignore=test_vds/test_highlevel_vds.py --ignore=test_file.py); then
     echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
