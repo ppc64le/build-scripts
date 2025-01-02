@@ -40,7 +40,7 @@ dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packa
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/`arch`/os
 dnf config-manager --set-enabled crb
-dnf install -y git cmake ninja-build gcc-toolset-13 rust cargo jq \
+dnf install -y git cmake ninja-build gcc-toolset-13 rust cargo jq openblas-devel \
             libjpeg-devel openjpeg2-devel libpng-devel \
             python$PYTHON_VERSION-devel \
             python$PYTHON_VERSION-pip \
