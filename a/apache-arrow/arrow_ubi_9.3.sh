@@ -88,6 +88,7 @@ cmake -DCMAKE_BUILD_TYPE=release \
       ..
 make -j$(nproc)
 sudo make install
+cd ../..  # Return to the project root directory
 
 # Check if version requires Go-related steps to be skipped
 # Build Arrow Go bindings
@@ -99,7 +100,7 @@ fi
 
 # Build Arrow Go bindings if not skipped
 if [ "$SKIP_GO" = false ]; then
-    cd ../../go
+    cd go
     go mod tidy
 
     if ! go build -tags arrow -v ./...; then
@@ -120,10 +121,10 @@ if [ "$SKIP_GO" = false ]; then
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | Both_Build_and_Test_Success"
     fi
 
-    cd ../python
+    cd ..  # Return to the project root directory
 fi
 
-cd ../../python
+cd python
 # Install necessary Python build tools
 pip${PYTHON_VER} install --upgrade setuptools wheel numpy
 pip${PYTHON_VER} install Cython==3.0.8
