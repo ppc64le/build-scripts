@@ -61,7 +61,7 @@ ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip$PYTHON_VERSION
 
 # older pyyaml needs cython<3
 if [[ "$PACKAGE_VERSION" == "6.0" ]]; then
-	sed -i 's/Cython/Cython<3.0/g' pyproject.toml
+	sed -i 's/"Cython"/"Cython<3.0"/g' pyproject.toml
 fi
 
 if ! python -m pip install -v -e . ; then
