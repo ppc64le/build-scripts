@@ -87,19 +87,20 @@ pip${PYTHON_VER} install Cython==3.0.8
 export BUILD_TYPE=release 
 export BUNDLE_ARROW_CPP=1
 
-CMAKE_PREFIX_PATH=$ARROW_HOME python${PYTHON_VER} setup.py build_ext --inplace
+# CMAKE_PREFIX_PATH=$ARROW_HOME python${PYTHON_VER} setup.py build_ext --inplace
 
 # Install the generated Python package
-if ! CMAKE_PREFIX_PATH=$ARROW_HOME python${PYTHON_VER} setup.py install; then
-    echo "------------------$PACKAGE_NAME:build_fails---------------------"
+if ! python${PYTHON_VER} -m pip install -e .; then
+    echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail |  Build_fails"
     exit 1
 else
-    echo "------------------$PACKAGE_NAME:build_success-------------------------"
-    echo "$PACKAGE_VERSION $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_Success"
+    echo "------------------$PACKAGE_NAME:Build_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_Success"
 fi
+
 
 pip${PYTHON_VER} install pytest==6.2.5
 pip${PYTHON_VER} install pytest-lazy-fixture hypothesis
