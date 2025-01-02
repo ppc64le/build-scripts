@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package        : sqlalchemy
+# Package        : SQLAlchemy
 # Version        : rel_1.4.39
 # Source repo    : https://github.com/sqlalchemy/sqlalchemy.git
 # Tested on      : UBI 9.3
@@ -19,7 +19,8 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_VERSION=${1:-'rel_1_4_39'}
-PACKAGE_NAME=sqlalchemy
+PACKAGE_NAME=SQLAlchemy
+PACKAGE_DIR=sqlalchemy
 PACKAGE_URL=https://github.com/sqlalchemy/sqlalchemy.git
 
 # Install necessary system packages
@@ -35,7 +36,7 @@ export PATH=$PATH:/usr/local/bin/
 
 # Clone the repository
 git clone ${PACKAGE_URL}
-cd ${PACKAGE_NAME}
+cd ${PACKAGE_DIR}
 git checkout ${PACKAGE_VERSION}
 
 # Upgrade pip and setuptools within the virtual environment
