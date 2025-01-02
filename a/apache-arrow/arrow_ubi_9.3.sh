@@ -22,7 +22,7 @@
 PACKAGE_NAME=arrow
 PACKAGE_URL=https://github.com/apache/arrow.git
 PACKAGE_VERSION=${1:-go/v16.1.0}
-PYTHON_VER=${2:-"3.11"}
+PYTHON_VER=${PYTHON_VERSION:-3.11}
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 GO_VERSION=`curl -s 'https://go.dev/VERSION?m=text' | grep ^go`
@@ -88,31 +88,43 @@ cmake -DCMAKE_BUILD_TYPE=release \
       ..
 make -j$(nproc)
 sudo make install
+cd ../..  # Return to the project root directory
 
+# Check if version requires Go-related steps to be skipped
 # Build Arrow Go bindings
-cd ../../go
-go mod tidy
-
-if ! go build -tags arrow -v ./... ; then
-    echo "------------------$PACKAGE_NAME:Build_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
-    exit 1
+SKIP_GO=false
+if [[ $PACKAGE_VERSION == apache-arrow-* ]]; then
+    SKIP_GO=true
+    echo "Skipping Go build and tests for version: $PACKAGE_VERSION"
 fi
 
-if ! go test -tags arrow -v ./... ; then
-    echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
-    exit 2
-else
-    echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
+# Build Arrow Go bindings if not skipped
+if [ "$SKIP_GO" = false ]; then
+    cd go
+    go mod tidy
+
+    if ! go build -tags arrow -v ./...; then
+        echo "------------------$PACKAGE_NAME: Build_fails ---------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Build_Fails"
+        exit 1
+    fi
+
+    if ! go test -tags arrow -v ./...; then
+        echo "------------------$PACKAGE_NAME: Build_and_Test_fails -------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Build_and_Test_fails"
+        exit 2
+    else
+        echo "------------------$PACKAGE_NAME: Build_and_Test_success -------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | Both_Build_and_Test_Success"
+    fi
+
+    cd ..  # Return to the project root directory
 fi
 
-
-cd ../python
+cd python
 # Install necessary Python build tools
 pip${PYTHON_VER} install --upgrade setuptools wheel numpy
 pip${PYTHON_VER} install Cython==3.0.8
@@ -125,8 +137,14 @@ CMAKE_PREFIX_PATH=$ARROW_HOME python${PYTHON_VER} setup.py build_ext --inplace
 
 # Install the generated Python package
 if ! CMAKE_PREFIX_PATH=$ARROW_HOME python${PYTHON_VER} setup.py install; then
-    echo "------------------$PACKAGE_NAME::Python package installation failed-------------------------"
-    exit 4
+    echo "------------------$PACKAGE_NAME:build_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
+    exit 1
+else
+    echo "------------------$PACKAGE_NAME:build_success-------------------------"
+    echo "$PACKAGE_VERSION $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_Success"
 fi
 
 pip${PYTHON_VER} install pytest==6.2.5
