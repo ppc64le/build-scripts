@@ -72,4 +72,3 @@ else
     echo "pytest is not installed or not found in PATH"
     exit 1
 fi
-
