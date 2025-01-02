@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "stacktrace-gps",
+    "github_url": "https://github.com/stacktracejs/stacktrace-gps",
+    "version": "v3.1.2",
+    "default_branch": "master",
+    "build_script": "stacktrace-gps_ubi_9.3.sh",
+    "package_dir": "s/stacktrace-gps",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v3.*.*": {
+        "build_script": "stacktrace-gps_ubi_9.3.sh"
+    }
+}
