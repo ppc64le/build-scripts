@@ -71,6 +71,7 @@ cmake -DCMAKE_BUILD_TYPE=release \
       -Dutf8proc_LIB=/usr/lib64/libutf8proc.so \
       -Dutf8proc_INCLUDE_DIR=/usr/include \
       -DARROW_PYTHON=ON \
+      -DARROW_PARQUET=ON \
       -DARROW_BUILD_TESTS=ON \
       -DARROW_JEMALLOC=ON \
       ..
@@ -79,12 +80,14 @@ sudo make install
 
 cd ../../python
 # Install necessary Python build tools
-pip${PYTHON_VER} install --upgrade setuptools wheel numpy
+pip${PYTHON_VER} install --upgrade pip setuptools wheel numpy setuptools_scm
 pip${PYTHON_VER} install Cython==3.0.8
 
 # Set the environment variable if needed
 export BUILD_TYPE=release 
 export BUNDLE_ARROW_CPP=1
+
+CMAKE_PREFIX_PATH=$ARROW_HOME python${PYTHON_VER} setup.py build_ext --inplace
 
 # Install the generated Python package
 if ! CMAKE_PREFIX_PATH=$ARROW_HOME python${PYTHON_VER} setup.py install; then
@@ -92,7 +95,6 @@ if ! CMAKE_PREFIX_PATH=$ARROW_HOME python${PYTHON_VER} setup.py install; then
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
     exit 1
-fi
 else
     echo "------------------$PACKAGE_NAME:build_success-------------------------"
     echo "$PACKAGE_VERSION $PACKAGE_NAME"
