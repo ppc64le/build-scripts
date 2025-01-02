@@ -29,7 +29,10 @@ export MAX_JOBS=${MAX_JOBS:-$(nproc)}
 export BUILD_SOX=${BUILD_SOX:-1}
 export BUILD_KALDI=${BUILD_KALDI:-1}
 export BUILD_RNNT=${BUILD_RNNT:-1}
+# skip ffmpeg features
 export USE_FFMPEG=${USE_FFMPEG:-0}
+# disable ffmpeg tests
+export TORCHAUDIO_TEST_ALLOW_SKIP_IF_NO_FFMPEG=${TORCHAUDIO_TEST_ALLOW_SKIP_IF_NO_FFMPEG:-True}
 export USE_ROCM=${USE_ROCM:-0}
 export USE_CUDA=${USE_CUDA:-0}
 export _GLIBCXX_USE_CXX11_ABI=${_GLIBCXX_USE_CXX11_ABI:-1}
@@ -132,15 +135,6 @@ if ! (python -m pip install -v -e . $BUILD_ISOLATION --no-use-pep517); then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-
-# Build wheel
-# export BUILD_VERSION=${BUILD_VERSION:-${PACKAGE_VERSION:1}} # without BUILD_VERSION set, wheel name gets git-SHA
-# BUILD_ISOLATION=""
-# # When BUILD_DEPS is unset or set to True
-# if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then
-#     BUILD_ISOLATION="--no-isolation"
-# fi
-# python -m build --wheel $BUILD_ISOLATION
 
 python -m pip install pytest pytest-xdist typing scipy numpy parameterized expecttest
 
