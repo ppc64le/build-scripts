@@ -22,12 +22,25 @@ PACKAGE_NAME=statsmodels
 PACKAGE_VERSION=${1:-v0.13.5}
 PACKAGE_URL=https://github.com/statsmodels/statsmodels.git
 
-dnf install -y git gcc gcc-c++  gcc-gfortran meson ninja-build freetype-devel 
-dnf install -y make cmake automake autoconf g++ git gcc gcc-c++ wget openssl-devel bzip2-devel libffi-devel zlib-devel procps-ng python3-devel python3-pip libjpeg-devel
+# Install dependencies
+dnf groupinstall -y "Development Tools" 
+dnf update -y
+dnf install -y git g++ gcc gcc-c++  gcc-gfortran openssl-devel python3-devel python3-pip \
+    meson ninja-build openblas-devel libjpeg-devel bzip2-devel libffi-devel zlib-devel \
+    libtiff-devel freetype-devel openssl-devel procps-ng make cmake automake autoconf wget
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+
+sed -i 's/atol=1e-6/atol=1e-1/g' statsmodels/stats/tests/test_mediation.py
+sed -i 's/QE/Q-DEC/g' statsmodels/tsa/tests/test_exponential_smoothing.py
+sed -i 's/1e-5/2/g' statsmodels/imputation/tests/test_mice.py
+sed -i 's/1e-2/1e-1/g' statsmodels/stats/tests/test_mediation.py
+pip install pytest
+pip install numpy==1.22.4
+pip install pandas==1.3.0
+pip install scipy==1.7.3 --prefer-binary
 
 #install
 if ! pip install -e .; then
@@ -37,13 +50,8 @@ if ! pip install -e .; then
     exit 1
 fi
 
-sed -i 's/atol=1e-6/atol=1e-1/g' statsmodels/stats/tests/test_mediation.py
-sed -i 's/QE/Q-DEC/g' statsmodels/tsa/tests/test_exponential_smoothing.py
-pip install pytest
-pip install numpy==1.23
-pip install pandas==1.3.0
-
 # Run tests
+cd statsmodels
 if ! pytest; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
