@@ -59,6 +59,11 @@ ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip3
 ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip$PYTHON_VERSION
 ##############################################
 
+# older pyyaml needs cython<3
+if [[ "$PACKAGE_VERSION" == "6.0" ]]; then
+	sed -i 's/Cython/Cython<3.0/g' pyproject.toml
+fi
+
 if ! python -m pip install -v -e . ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -67,7 +72,15 @@ if ! python -m pip install -v -e . ; then
 fi
 
 python -m pip install pytest-xdist
-if ! python -m pytest -n auto; then
+
+# Note: 6.0 & 6.0.1 fails with pytest [upstream uses setup.py]
+if [[ "$PACKAGE_VERSION" == "6.0" ]] || [[ "$PACKAGE_VERSION" == "6.0.1" ]]; then
+	TEST_CMD="setup.py test"
+else
+    TEST_CMD="-m pytest -n auto"
+fi
+
+if ! python $TEST_CMD ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
