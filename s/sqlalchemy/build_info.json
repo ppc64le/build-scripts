@@ -1,6 +1,6 @@
 {
 	"maintainer": "vivek8123",
-	"package_name": "sqlalchemy",
+	"package_name": "SQLAlchemy",
 	"github_url": "https://github.com/sqlalchemy/sqlalchemy.git",
 	"version": "1.4.39",
 	"default_branch": "master",
