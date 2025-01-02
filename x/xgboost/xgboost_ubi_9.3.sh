@@ -25,6 +25,7 @@ set -e
 PACKAGE_NAME=xgboost
 PACKAGE_VERSION=${1:-v1.6.2}
 PACKAGE_URL=https://github.com/dmlc/xgboost
+PACKAGE_DIR=xgboost/python-package 
 #set output folder
 export OUTPUT_FOLDER="$(pwd)/output"
 
@@ -56,7 +57,7 @@ cp -f ${SRC_DIR}/src/c_api/*.h ${INCDIR}/xgboost/
 cd ../../
 
 #build xgboost python artifacts and wheel
-cd $PACKAGE_NAME/python-package
+cd $PACKAGE_DIR
 if ! (python3 setup.py install) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
