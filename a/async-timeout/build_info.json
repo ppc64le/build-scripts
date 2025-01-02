@@ -1,0 +1,16 @@
+{
+    "maintainer": "Abhinav Kumar",
+    "package_name": "async-timeout",
+    "github_url": "https://github.com/aio-libs/async-timeout",
+    "version": "v4.0.2",
+    "wheel_build" : true,
+    "default_branch": "main",
+    "build_script": "async-timeout_ubi_9.3.sh",
+    "package_dir": "a/async-timeout",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "*": {
+      "build_script": "async-timeout_ubi_9.3.sh"
+    }
+}
