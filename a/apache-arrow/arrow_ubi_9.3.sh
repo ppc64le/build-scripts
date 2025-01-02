@@ -133,6 +133,8 @@ pip${PYTHON_VER} install Cython==3.0.8
 export BUILD_TYPE=release 
 export BUNDLE_ARROW_CPP=1
 
+CMAKE_PREFIX_PATH=$ARROW_HOME python${PYTHON_VER} setup.py build_ext --inplace
+
 # Install the generated Python package
 if ! CMAKE_PREFIX_PATH=$ARROW_HOME python${PYTHON_VER} setup.py install; then
     echo "------------------$PACKAGE_NAME:build_fails---------------------"
