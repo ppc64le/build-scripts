@@ -22,16 +22,17 @@ PACKAGE_NAME=sympy
 PACKAGE_VERSION=${1:-sympy-1.12}
 PACKAGE_URL=https://github.com/sympy/sympy.git
 
+echo "------------------------------------------------------------Installing requirements for sympy------------------------------------------------------"
 dnf update -y
 dnf install -y python3-pip python3-devel gcc git 
-
 pip install pytest
 
+echo "------------------------------------------------------------Cloning sympy github repo--------------------------------------------------------------"
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-#install
+echo "------------------------------------------------------------Installing sympy------------------------------------------------------"
 if ! pip install .; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -39,7 +40,7 @@ if ! pip install .; then
     exit 1
 fi
 
-# Run tests
+echo "------------------------------------------------------------Run tests for sympy------------------------------------------------------"
 cd sympy/integrals/tests/
 if ! pytest -p no:warnings --ignore=test_manual.py; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
