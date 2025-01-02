@@ -102,26 +102,25 @@ if [ "$SKIP_GO" = false ]; then
     cd ../../go
     go mod tidy
 
-    if ! go build -tags arrow -v ./... ; then
-        echo "------------------$PACKAGE_NAME:Build_fails---------------------"
+    if ! go build -tags arrow -v ./...; then
+        echo "------------------$PACKAGE_NAME: Build_fails ---------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Build_Fails"
         exit 1
     fi
 
-    if ! go test -tags arrow -v ./... ; then
-        echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
+    if ! go test -tags arrow -v ./...; then
+        echo "------------------$PACKAGE_NAME: Build_and_Test_fails -------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Build_and_Test_fails"
         exit 2
     else
-        echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
+        echo "------------------$PACKAGE_NAME: Build_and_Test_success -------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
-    
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | Both_Build_and_Test_Success"
+    fi
+
     cd ../python
-else
-    echo "Go build and test steps are skipped. Proceeding with remaining tasks..."
 fi
 
 cd ../../python
