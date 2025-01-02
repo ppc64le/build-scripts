@@ -10,6 +10,15 @@
    "docker_build": false,
    "validate_build_script": true,
    "use_non_root_user": false,
+   "1.5.2": {
+    "build_script": "scikit-learn_ubi_9.3.sh"
+  },
+  "1.0.2": {
+    "build_script": "scikit-learn_ubi_8.5.sh"
+  },
+  "1.5.0": {
+   "build_script": "scikit-learn_ubi_8.10.sh"
+  },
    "*":{
    "build_script": "scikit-learn_1.1.0_ubi_9.3.sh"
    }
