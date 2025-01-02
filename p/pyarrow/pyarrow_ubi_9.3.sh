@@ -1,3 +1,4 @@
+
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
@@ -21,7 +22,7 @@ set -e
 
 # Variables
 PACKAGE_NAME=pyarrow
-PACKAGE_VERSION=${1:-maint-11.0.0}
+PACKAGE_VERSION=${1:-apache-arrow-11.0.0}
 PACKAGE_URL=https://github.com/apache/arrow.git
 PACKAGE_DIR=arrow
 # Install dependencies
