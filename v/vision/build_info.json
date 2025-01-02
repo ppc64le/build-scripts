@@ -1,0 +1,16 @@
+{
+  "maintainer": "stutiibm",
+  "package_name": "vision",
+  "github_url": "https://github.com/pytorch/vision",
+  "version": "v0.15.2",
+  "wheel_build" : true,
+  "package_dir": "v/vision",
+  "default_branch": "main",
+  "build_script": "vision_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "vision_ubi_9.3.sh"
+  }
+}
