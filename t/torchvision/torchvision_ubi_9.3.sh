@@ -7,7 +7,7 @@ set -x
 # Source repo       : https://github.com/pytorch/vision.git
 # Tested on         : UBI:9.3
 # Language          : Python
-# Travis-Check      : True
+# Travis-Check      : False
 # Script License    : Apache License, Version 2.0
 # Maintainer        : Md. Shafi Hussain <Md.Shafi.Hussain@ibm.com>
 #
