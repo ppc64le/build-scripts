@@ -28,6 +28,8 @@ yum install -y git libffi-devel gcc python${PYTHON_VERSION}-devel python${PYTHON
 python${PYTHON_VERSION} -m pip install pytest hypothesis
 
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+source $HOME/.cargo/env
 export PATH="$HOME/.cargo/bin:$PATH"
 
 if [ -z $PACKAGE_SOURCE_DIR ]; then
