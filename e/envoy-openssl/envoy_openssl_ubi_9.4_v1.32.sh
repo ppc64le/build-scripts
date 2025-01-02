@@ -106,9 +106,12 @@ bazel/setup_clang.sh $wdir/clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4/
 bazel build -c opt envoy --config=ppc --config=clang --cxxopt=-fpermissive > /dev/null 2>&1 || true
 
 #Generating the CARGO_BAZEL_GENERATOR_URL
-#scriptdir=$(dirname $(realpath $0))
-#echo $scriptdir
-#p=$(find . -name crate_universe)
+scriptdir=$(dirname $(realpath $0))
+echo $scriptdir
+pwd
+cd $wdir
+ls /home/envoy/.cache
+echo $(find /home/envoy/.cache/bazel -name rules_rust)
 echo $HOME
 pushd $(find /home/envoy/.cache/bazel -name rules_rust)
 cd crate_universe
