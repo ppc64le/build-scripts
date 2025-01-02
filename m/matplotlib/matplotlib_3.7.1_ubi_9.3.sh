@@ -21,7 +21,7 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 
-yum install -y python311 python3.11-devel python3.11-pip git gcc-c++ cmake wget
+yum install -y python3-pip python3 python python3-devel git gcc-c++ cmake wget
 yum install -y openblas-devel ninja-build
 yum install -y zlib zlib-devel libjpeg-turbo libjpeg-turbo-devel
 
@@ -44,13 +44,13 @@ mv qhull-2020.2 build/
 rm -f qhull-2020-src-8.0.2.tar
 
 # Setup virtual environment for python
-pip3.11 install pytest hypothesis build meson pybind11 meson-python
+pip install pytest hypothesis build meson pybind11 meson-python
 
 # Build and Install the package (This is dependent on numpy,pillow)
-pip3.11 install  'numpy<2' fontTools setuptools-scm contourpy kiwisolver python-dateutil cycler pyparsing pillow certifi
-
+pip install  'numpy<2' fontTools setuptools-scm contourpy kiwisolver python-dateutil cycler pyparsing pillow certifi
+pip install --upgrade setuptools
 #install
-if ! (python3.11 -m pip install -e .) ; then
+if ! (pip install -e .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
