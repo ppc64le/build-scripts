@@ -44,7 +44,7 @@ git submodule update
 echo "Cloned and checked out to version $PACKAGE_VERSION."
 
 echo "Building and installing $PACKAGE_NAME..."
-# python -m pip wheel -w dist -v .
+#Install 
 if ! (python3 setup.py install) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -55,6 +55,7 @@ pip install ml_dtypes
 echo "$PACKAGE_NAME installed successfully."
  
 echo "Running tests for $PACKAGE_NAME..."
+#Run tests
 if !(pytest); then
     echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
