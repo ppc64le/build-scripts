@@ -103,7 +103,8 @@ cargo install cross --version 0.2.1
 cd $wdir/${PACKAGE_NAME}
 git apply $scriptdir/envoy_openssl_v1.32.patch
 bazel/setup_clang.sh $wdir/clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4/
-bazel build -c opt envoy --config=ppc --config=clang --cxxopt=-fpermissive > /dev/null 2>&1 || true
+#bazel build -c opt envoy --config=ppc --config=clang --cxxopt=-fpermissive > /dev/null 2>&1 || true
+bazel build -c opt envoy --config=ppc --config=clang --cxxopt=-fpermissive || true
 
 #Generating the CARGO_BAZEL_GENERATOR_URL
 echo $(find / -name crate_universe)
