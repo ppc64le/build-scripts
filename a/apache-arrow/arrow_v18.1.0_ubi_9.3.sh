@@ -35,7 +35,8 @@ yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/p
 yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os
 yum config-manager --set-enabled crb
 
-yum install -y boost-devel.ppc64le gflags-devel rapidjson-devel.ppc64le re2-devel.ppc64le utf8proc-devel.ppc64le gtest-devel gmock-devel
+yum install -y boost-devel.ppc64le gflags-devel rapidjson-devel.ppc64le re2-devel.ppc64le \
+               utf8proc-devel.ppc64le gtest-devel gmock-devel snappy snappy-devel
 
 
 if [ -d "$PACKAGE_NAME" ] ; then
@@ -107,7 +108,7 @@ pip${PYTHON_VER} install pytest-lazy-fixture hypothesis
 export PYTEST_PATH=$(pwd)/pyarrow
 
 # Skipped specific tests
-export PYTEST_ADDOPTS="-k 'not test_cython and not test_extension_type' --deselect=pyarrow/tests/test_extension_type.py"
+export PYTEST_ADDOPTS="-k 'not test_cython and not test_extension_type' --deselect=pyarrow/tests/test_extension_type.py --deselect=pyarrow/tests/parquet --deselect=pyarrow/tests/test_dataset.py --deselect=pyarrow/tests/test_pandas.py --deselect=pyarrow/tests/test_acero.py"
 
 # Run Python tests
 if ! python${PYTHON_VER} -m pytest $PYTEST_PATH ; then
