@@ -1,5 +1,5 @@
 {
-   "maintainer": "shubham-dayma-ibm",
+   "maintainer": "vinodk99",
    "package_name": "dm-tree",
    "github_url": "https://github.com/deepmind/tree",
    "version": "0.1.7",
@@ -9,5 +9,9 @@
    "docker_build": false,
    "wheel_build": true,
    "validate_build_script": true,
-   "use_non_root_user": false
+   "use_non_root_user": false,
+   "*":{
+      "build_script": "dm-tree_ubi_9.3.sh"
+   }
+
 }
