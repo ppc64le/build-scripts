@@ -2,7 +2,7 @@
   "maintainer": "md.shafi.hussain",
   "package_name": "scipy",
   "github_url": "https://github.com/scipy/scipy",
-  "version": "v1.10.1",
+  "version": "v1.14.1",
   "default_branch": "main",
   "build_script": "scipy_ubi_9.3.sh",
   "package_dir": "s/scipy",
