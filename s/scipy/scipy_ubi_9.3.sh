@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package           : scipy
-# Version           : v1.10.1
+# Version           : v1.14.1
 # Source repo       : https://github.com/scipy/scipy.git
 # Tested on         : UBI:9.3
 # Language          : Python
