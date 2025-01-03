@@ -1,0 +1,16 @@
+{
+	"maintainer": "vivek8123",
+	"package_name": "boto3",
+	"github_url": "https://github.com/boto/boto3.git",
+	"version": "1.24.28",
+	"default_branch": "master",
+	"build_script": "boto3_ubi_9.3.sh",
+	"package_dir": "b/boto3",
+	"docker_build": false,
+	"validate_build_script": true,
+	"wheel_build" : true,
+	"use_non_root_user": false,
+	"*.*.*": {
+	   "build_script": "boto3_ubi_9.3.sh"
+	}
+}	
