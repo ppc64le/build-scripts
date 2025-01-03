@@ -2,10 +2,10 @@
   "maintainer": "puneetsharma21",
   "package_name": "apache-arrow",
   "github_url": "https://github.com/apache/arrow.git",
-  "version": "go/v16.1.0",
+  "version": "apache-arrow-18.1.0",
   "default_branch": "main",
   "package_dir": "a/apache-arrow",
-  "build_script": "arrow_ubi_9.3.sh",
+  "build_script": "arrow_v18.1.0_ubi_9.3.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
@@ -14,5 +14,8 @@
   },
   "go/v16.1.*": {
     "build_script": "arrow_ubi_9.3.sh"
+  },
+  "apache-arrow-18.1.0": {
+    "build_script": "arrow_v18.1.0_ubi_9.3.sh"
   }
 }
