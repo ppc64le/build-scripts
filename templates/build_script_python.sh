@@ -48,7 +48,7 @@ if [[ "$PACKAGE_URL" == *github.com* ]]; then
     if [ -d "$PACKAGE_NAME" ]; then
         cd "$PACKAGE_NAME" || exit
     else
-        if ! git clone "$PACKAGE_URL" "$PACKAGE_NAME"; then
+        if ! git clone "$PACKAGE_URL"; then
             echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
             echo "$PACKAGE_URL $PACKAGE_NAME"
             echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Clone_Fails"  
