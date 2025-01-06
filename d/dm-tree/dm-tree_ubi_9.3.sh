@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=dm-tree
+PACKAGE_NAME=tree
 PACKAGE_VERSION=${1:-0.1.7}
 PACKAGE_URL=https://github.com/deepmind/tree
 PACKAGE_DIR="$(pwd)/$PACKAGE_NAME"
