@@ -20,6 +20,6 @@
    "build_script": "scikit-learn_ubi_8.10.sh"
   },
    "*":{
-   "build_script": "scikit-learn_1.1.0_ubi_9.3.sh"
+   "build_script": "scikit-learn_1.1.1_ubi_9.3.sh"
    }
 }
