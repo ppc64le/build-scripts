@@ -113,9 +113,9 @@ cross build --release --locked --bin cargo-bazel --target=powerpc64le-unknown-li
 export CARGO_BAZEL_GENERATOR_URL=file:///home/envoy/.cache/bazel/_bazel_envoy/13d7d0439a5c9ee4cb9154fa27853f02/external/rules_rust/crate_universe/target/powerpc64le-unknown-linux-gnu/release/cargo-bazel
 echo "cargo-bazel build successful!"
 
+ret=0
 cd $wdir/${PACKAGE_NAME}
 export PATH=$PATH:$wdir/bazel/output
-ret=0
 bazel build -c opt envoy --config=ppc --config=clang --cxxopt=-fpermissive || ret=$?
 if [ -n "$ret" ]; then
     if [ "$ret" -ne 0 ]; then
