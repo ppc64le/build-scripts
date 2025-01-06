@@ -95,10 +95,6 @@ tar -xvf clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4.tar.xz
 export PATH=/home/envoy/clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4/bin:$PATH
 rm -rf clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4.tar.xz
 
-#installing cargo and cross
-curl https://sh.rustup.rs -sSf | sh -s -- -y && source ~/.cargo/env
-cargo install cross --version 0.2.1
-
 #Build Envoy-openssl
 export PATH=$PATH:$wdir/bazel/output
 cd $wdir/${PACKAGE_NAME}
@@ -106,6 +102,10 @@ git apply $scriptdir/envoy_openssl_v1.32.patch
 bazel/setup_clang.sh $wdir/clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4/
 #bazel build -c opt envoy --config=ppc --config=clang --cxxopt=-fpermissive > /dev/null 2>&1 || true
 bazel build -c opt envoy --config=ppc --config=clang --cxxopt=-fpermissive || true
+
+#installing cargo and cross
+curl https://sh.rustup.rs -sSf | sh -s -- -y && source ~/.cargo/env
+cargo install cross --version 0.2.1
 
 #Generating the CARGO_BAZEL_GENERATOR_URL
 cd $wdir/.cache/bazel/_bazel_envoy/13d7d0439a5c9ee4cb9154fa27853f02/external/rules_rust/crate_universe/
