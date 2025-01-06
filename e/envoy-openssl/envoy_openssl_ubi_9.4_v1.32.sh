@@ -110,7 +110,7 @@ cargo install cross --version 0.2.1
 #Generating the CARGO_BAZEL_GENERATOR_URL
 cd $wdir/.cache/bazel/_bazel_envoy/13d7d0439a5c9ee4cb9154fa27853f02/external/rules_rust/crate_universe/
 cross build --release --locked --bin cargo-bazel --target=powerpc64le-unknown-linux-gnu
-export CARGO_BAZEL_GENERATOR_URL=file://$(pwd)/target/powerpc64le-unknown-linux-gnu/release/cargo-bazel
+export CARGO_BAZEL_GENERATOR_URL=file:///home/envoy/.cache/bazel/_bazel_envoy/13d7d0439a5c9ee4cb9154fa27853f02/external/rules_rust/crate_universe/target/powerpc64le-unknown-linux-gnu/release/cargo-bazel
 echo "cargo-bazel build successful!"
 
 cd $wdir/${PACKAGE_NAME}
