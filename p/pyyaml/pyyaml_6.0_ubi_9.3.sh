@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : dm-tree
-# Version          : 0.1.7
-# Source repo      : https://github.com/deepmind/tree
-# Tested on	: UBI:9.3
+# Package       : pyyaml
+# Version       : 6.0
+# Source repo   : https://github.com/yaml/pyyaml
+# Tested on     : UBI:9.3
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Vinod K <Vinod.K1@ibm.com>
+# Maintainer    : Pranith Rao <Pranith.Rao@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -18,29 +18,28 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=dm-tree
-PACKAGE_VERSION=${1:-0.1.7}
-PACKAGE_URL=https://github.com/deepmind/tree
-PACKAGE_DIR="tree/"
+PACKAGE_NAME=pyyaml
+PACKAGE_VERSION=${1:-"6.0"}
+PACKAGE_URL=https://github.com/yaml/pyyaml.git
 
-yum install -y gcc gcc-c++ make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel libjpeg-turbo-devel python python-devel
+yum install -y git python3 python3-devel.ppc64le libyaml-devel gcc gcc-c++
 
-git clone $PACKAGE_URL
-cd $PACKAGE_DIR
+pip3 install --upgrade pip
+pip3 install "cython<3.0.0" wheel
+PATH=$PATH:/usr/local/bin/
+
+git clone $PACKAGE_URL $PACKAGE_NAME
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-# install scikit-learn dependencies and build dependencies
-pip install pytest absl-py attr numpy wrapt
-
-if ! (python setup.py install) ; then
+if ! python3 setup.py install ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-#run tests  
-if ! pytest --pyargs tree -k "not (testAttrsMapStructure or testAttrsFlattenAndUnflatten or testFlattenUpTo)"; then
+if ! python3 setup.py test ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"

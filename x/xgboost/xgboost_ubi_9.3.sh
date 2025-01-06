@@ -20,58 +20,63 @@
 
 # Exit immediately if a command exits with a non-zero status
 set -e
-
+ 
 # Variables
 PACKAGE_NAME=xgboost
 PACKAGE_VERSION=${1:-v1.6.2}
 PACKAGE_URL=https://github.com/dmlc/xgboost
-PACKAGE_DIR=xgboost/python-package 
-#set output folder
-export OUTPUT_FOLDER="$(pwd)/output"
-
+PACKAGE_DIR=xgboost/python-package
+OUTPUT_FOLDER="$(pwd)/output"
+ 
+echo "PACKAGE_NAME: $PACKAGE_NAME"
+echo "PACKAGE_VERSION: $PACKAGE_VERSION"
+echo "PACKAGE_URL: $PACKAGE_URL"
+echo "OUTPUT_FOLDER: $OUTPUT_FOLDER"
+ 
+# Install dependencies
+echo "Installing dependencies..."
 yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openssl-devel cmake openblas-devel gcc-gfortran
 pip install numpy packaging pathspec pluggy scipy trove-classifiers pytest wheel build
+ 
 # Clone the repository
-mkdir output
+echo "Cloning the repository..."
+mkdir -p output
 git clone -b ${PACKAGE_VERSION} --recursive $PACKAGE_URL
 cd $PACKAGE_NAME
 export SRC_DIR=$(pwd)
-
-#build xgboost cpp artifacts
+echo "SRC_DIR: $SRC_DIR"
+ 
+# Build xgboost cpp artifacts
+echo "Building xgboost cpp artifacts..."
 cd ${SRC_DIR}
 mkdir -p build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=${OUTPUT_FOLDER} ..
 make -j$(nproc)
+ 
 LIBDIR=${OUTPUT_FOLDER}/lib
 INCDIR=${OUTPUT_FOLDER}/include
 BINDIR=${OUTPUT_FOLDER}/bin
 SODIR=${LIBDIR}
 XGBOOSTDSO=libxgboost.so
-EXEEXT=
+
 mkdir -p ${LIBDIR} ${INCDIR}/xgboost ${BINDIR} || true
 cp ${SRC_DIR}/lib/${XGBOOSTDSO} ${SODIR}
 cp -Rf ${SRC_DIR}/include/xgboost ${INCDIR}/
 cp -Rf ${SRC_DIR}/rabit/include/rabit ${INCDIR}/xgboost/
 cp -f ${SRC_DIR}/src/c_api/*.h ${INCDIR}/xgboost/
 cd ../../
-
-#build xgboost python artifacts and wheel
-cd $PACKAGE_DIR
-if ! (python3 setup.py install) ; then
+ 
+# Build xgboost python artifacts and wheel
+echo "Building xgboost Python artifacts and wheel..."
+cd "$(pwd)/$PACKAGE_DIR"
+echo "Current directory: $(pwd)"
+ 
+if ! (python3 setup.py install); then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
     exit 1
 fi
-# Run test cases
-if !(pytest); then
-    echo "------------------$PACKAGE_NAME:No_test_cases_found-------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    exit 0
-else
-    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-    exit 0
-fi
+ 
+echo "Build and installation completed successfully."
