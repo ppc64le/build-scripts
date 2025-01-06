@@ -36,7 +36,6 @@ git submodule update --init --recursive
 # Install dependencies for Pandas and NumPy
 pip install cython==0.29.32
 pip install numpy==1.21.6
-pip install wheel "oldest-supported-numpy>=2022.8.16"
 
 # Install
 if !(python3 setup.py install) ; then
