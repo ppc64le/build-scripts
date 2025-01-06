@@ -18,7 +18,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=termcolor
-PACKAGE_VERSION=1.1.0
+PACKAGE_VERSION=${1:-1.1.0}
 PACKAGE_URL=https://github.com/termcolor/termcolor.git
 
 # Install necessary system packages
@@ -33,7 +33,7 @@ git clone ${PACKAGE_URL}
 cd ${PACKAGE_NAME}
 git checkout ${PACKAGE_VERSION}
 
-# Upgrade pip within the virtual environment
+# Upgrade pip
 pip install --upgrade pip
 
 # Install the package
@@ -46,3 +46,4 @@ fi
 
 # testcase is not there
 echo "Build and installation completed successfully, No tests are there."
+

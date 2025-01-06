@@ -1,7 +1,7 @@
 {
   "maintainer": "Harithanagothu2",
   "package_name": "sparkmagic",
-  "github_url": "https://github.com/jupyter-incubator/sparkmagic ",
+  "github_url": "https://github.com/jupyter-incubator/sparkmagic",
   "version": "0.20.0",
   "wheel_build" : true,
   "package_dir": "s/sparkmagic",
@@ -10,7 +10,7 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
-  "*": {
+  "*.*.*": {
     "build_script": "sparkmagic_ubi_9.3.sh"
   }
 }

@@ -2,7 +2,7 @@
   "maintainer": "kiranNukal",
   "package_name": "pyarrow",
   "github_url": "https://github.com/apache/arrow.git",
-  "version": "maint-11.0.0",
+  "version": "apache-arrow-11.0.0",
   "wheel_build" : true,
   "default_branch": "main",
   "package_dir": "p/pyarrow",
