@@ -4,7 +4,7 @@
     "github_url": "https://github.com/jawah/charset_normalizer",
     "version": "2.0.4",
     "wheel_build" : true,
-    "default_branch": "main",
+    "default_branch": "master",
     "build_script": "charset_normalizer_ubi_9.3.sh",
     "package_dir": "c/charset_normalizer",
     "validate_build_script": true,
