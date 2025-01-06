@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-v3.8.6}
 PACKAGE_URL=https://github.com/aio-libs/aiohttp.git
 
 # Install dependencies
-yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel zlib-devel npm cmake libjpeg-devel clang
+yum install -y git gcc gcc-c++ make wget python3-devel python3-pip openssl-devel bzip2-devel libffi-devel zlib-devel npm cmake libjpeg-devel clang
 
 # Clone the repository
 git clone $PACKAGE_URL
