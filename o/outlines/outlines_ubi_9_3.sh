@@ -46,7 +46,7 @@ else
 fi
 
 git checkout $PACKAGE_VERSION
-git submodule update --init
+git submodule update --init --recursive
 
 # Install Python dependencies
 python${PYTHON_VER} -m pip install --upgrade pip ninja cmake 'pytest==8.2.2' hydra-core setuptools wheel
