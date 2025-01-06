@@ -41,15 +41,10 @@ pip install "numpy>=1.21.0,<1.22.0"
 pip install wheel "oldest-supported-numpy>=2022.8.16"
 
 # Install
-if ! (python3 setup.py install) ; then
-    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
+if  (python3 setup.py install) ; then
+    echo "------------------$PACKAGE_NAME:Install_success-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
-    exit 1
-else
-    echo "------------------$PACKAGE_NAME:Install_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "pandas  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Install_success"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success"
     exit 0
 fi
 
