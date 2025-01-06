@@ -1,12 +1,25 @@
 {
-   "maintainer": "Salil4IBM",
+   "maintainer": "vinodk99",
    "package_name": "scikit-learn",
    "github_url": "https://github.com/scikit-learn/scikit-learn.git",
-   "version": "1.5.2",
+   "version": "1.1.1",
+   "wheel_build" : true,
    "default_branch": "main",
-   "build_script": "scikit-learn_ubi_9.3.sh",
+   "build_script": "scikit-learn_1.1.1_ubi_9.3.sh",
    "package_dir": "s/scikit-learn",
    "docker_build": false,
    "validate_build_script": true,
-   "use_non_root_user": false
+   "use_non_root_user": false,
+   "1.5.2": {
+    "build_script": "scikit-learn_ubi_9.3.sh"
+  },
+  "1.0.2": {
+    "build_script": "scikit-learn_ubi_8.5.sh"
+  },
+  "1.5.0": {
+   "build_script": "scikit-learn_ubi_8.10.sh"
+  },
+   "*":{
+   "build_script": "scikit-learn_1.1.0_ubi_9.3.sh"
+   }
 }
