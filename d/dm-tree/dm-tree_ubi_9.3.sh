@@ -18,15 +18,15 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=tree
+PACKAGE_NAME=dm-tree
 PACKAGE_VERSION=${1:-0.1.7}
 PACKAGE_URL=https://github.com/deepmind/tree
-PACKAGE_DIR="$(pwd)/$PACKAGE_NAME"
+PACKAGE_DIR="tree/"
 
 yum install -y gcc gcc-c++ make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel libjpeg-turbo-devel python python-devel
 
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 # install scikit-learn dependencies and build dependencies
