@@ -48,7 +48,7 @@ if command -v pytest &> /dev/null; then
         echo "------------------${PACKAGE_NAME}: Tests_Fail------------------"
         echo "${PACKAGE_URL} ${PACKAGE_NAME}"
         echo "${PACKAGE_NAME} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | GitHub | Fail | Tests_Fail"
-        exit 1
+        exit 2
     fi
 else
     echo "------------------$PACKAGE_NAME: Install & test both success ---------------------"
