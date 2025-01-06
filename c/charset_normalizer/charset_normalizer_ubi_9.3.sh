@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
-# Package       : charset_normalizer
+# Package       : charset-normalizer
 # Version       : 2.0.4
 # Source repo   : https://github.com/jawah/charset_normalizer.git
 # Tested on     : UBI:9.3
@@ -20,7 +20,7 @@
 
 # Variables
 PACKAGE_VERSION=${1:-2.0.4}
-PACKAGE_NAME=charset_normalizer
+PACKAGE_DIR=charset_normalizer
 PACKAGE_URL=https://github.com/jawah/charset_normalizer
 
 # Install dependencies and tools
@@ -28,7 +28,7 @@ yum install -y git gcc gcc-c++ gzip tar make wget xz cmake yum-utils openssl-dev
 
 # Clone the repository
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 # Install requirements
