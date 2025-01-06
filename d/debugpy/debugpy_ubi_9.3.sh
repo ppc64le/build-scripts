@@ -32,7 +32,6 @@ git checkout ${PACKAGE_VERSION}
 
 # Install pytest and other dependencies
 pip install debugpy pytest pytest-timeout psutil requests pytest-xdist 
-pip install --upgrade pytest-timeout
 pip install .
 
 # Build the package
@@ -48,7 +47,7 @@ if ! pytest --ignore=tests/debugpy/test_run.py --ignore=tests/debugpy/test_excep
     echo "------------------$PACKAGE_NAME: Tests_Fail------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Tests_Fail"
-    exit 1
+    exit 2
 else
     echo "------------------$PACKAGE_NAME: Install & test both success ---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
