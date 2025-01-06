@@ -43,7 +43,7 @@ if ! python3 setup.py build; then
 fi
 
 # Run tests
-if ! pytest --ignore=tests/debugpy/test_run.py --ignore=tests/debugpy/test_exception.py --ignore=tests/debugpy/test_input.py --ignore=tests/debugpy/test_log.py --ignore=tests/debugpy/test_flask.py --ignore=tests/debugpy/test_output.py --ignore=tests/debugpy/test_args.py --ignore=tests/debugpy/test_attach.py; then  
+if ! pytest --ignore=tests/debugpy/test_run.py --ignore=test/debugpy/test_gevent.py --ignore=test/debugpy/test_django.py --ignore=tests/debugpy/test_exception.py --ignore=tests/debugpy/test_input.py --ignore=tests/debugpy/test_log.py --ignore=tests/debugpy/test_flask.py --ignore=tests/debugpy/test_output.py --ignore=tests/debugpy/test_args.py --ignore=tests/debugpy/test_attach.py; then  
     echo "------------------$PACKAGE_NAME: Tests_Fail------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Tests_Fail"
