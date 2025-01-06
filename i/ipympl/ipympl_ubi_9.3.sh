@@ -20,7 +20,7 @@
 
 # Variables
 PACKAGE_NAME=ipympl
-PACKAGE_VERSION=0.9.4
+PACKAGE_VERSION=${1:-0.9.4}
 PACKAGE_URL=https://github.com/matplotlib/ipympl.git
 
 # Install necessary system packages
@@ -31,7 +31,7 @@ yum install -y --allowerasing curl git gcc gcc-c++ wget bzip2 python-pip python-
 if ! command -v rustc &> /dev/null; then
     echo "Rust not found. Installing Rust..."
     curl https://sh.rustup.rs -sSf | sh -s -- -y
-    source "$HOME/.cargo/env"  # Update environment variables
+    source "$HOME/.cargo/env"  
 else
     echo "Rust is already installed."
 fi
@@ -68,6 +68,7 @@ if ! pip install .; then
     exit 1
 fi
 
+#run tests
 if ! pytest -v; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
