@@ -46,7 +46,7 @@ git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
 echo "installing python dependencies...."
-pip install pytest nbval  cython 
+pip install pytest nbval   
 echo "installing numpy.."
 pip install numpy==1.23.2
 echo "installing cython.."
