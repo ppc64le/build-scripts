@@ -1,17 +1,20 @@
 {
-  "maintainer": "mohitp333",
+  "maintainer": "vivek8123",
   "package_name": "cycler",
   "github_url": "https://github.com/matplotlib/cycler.git",
-  "version": "v0.12.1",
+  "version": "v0.11.0",
   "default_branch": "main",
   "package_dir": "c/cycler",
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-  "build_script": "cycler_ubi_8.7.sh",
+  "build_script": "cycler_ubi_9.3.sh",
   "validate_build_script": "true",
+  "wheel_build" : true,
   "use_non_root_user": "false",
   "docker_build": "true",
   "v0.12.1": {
     "dir": "0.12.1_ubi_8",
-    "build_script": "cycler_ubi_8.7.sh"
+    "build_script": "cycler_ubi_9.3.sh"
   }
+
 }
+
