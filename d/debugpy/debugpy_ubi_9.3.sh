@@ -31,7 +31,8 @@ cd ${PACKAGE_NAME}
 git checkout ${PACKAGE_VERSION}
 
 # Install pytest and other dependencies
-pip install debugpy pytest pytest-timeout psutil requests pytest-xdist 
+pip install debugpy pytest pytest-timeout psutil requests pytest-xdist
+pip install --upgrade pytest-timeout
 pip install .
 
 # Build the package
