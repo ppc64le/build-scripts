@@ -3,7 +3,7 @@
 	"package_name": "boto3",
 	"github_url": "https://github.com/boto/boto3.git",
 	"version": "1.24.28",
-	"default_branch": "master",
+	"default_branch": "develop",
 	"build_script": "boto3_ubi_9.3.sh",
 	"package_dir": "b/boto3",
 	"docker_build": false,
