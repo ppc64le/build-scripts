@@ -15,7 +15,7 @@
     "dir": "0.12.1_ubi_8",
     "build_script": "cycler_ubi_8.7.sh"
   },
-  "*.*.*": {
+  "v0.*.*": {
 	   "build_script": "cycler_ubi_9.3.sh"
 	}
 }	
