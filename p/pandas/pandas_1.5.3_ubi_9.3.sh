@@ -20,11 +20,13 @@
 PACKAGE_NAME=pandas
 PACKAGE_VERSION=${1:-v1.5.3}
 PACKAGE_URL=https://github.com/pandas-dev/pandas.git
- 
+
 # Install system dependencies including SQLite and LZMA libraries
-yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel wget xz zlib-devel cmake openblas-devel sqlite-devel xz-devel python-devel
- 
- 
+yum install -y git gcc gcc-c++ gzip tar make wget xz cmake yum-utils openssl-devel \
+    openblas-devel bzip2-devel bzip2 zip unzip libffi-devel zlib-devel autoconf \
+    automake libtool cargo pkgconf-pkg-config.ppc64le info.ppc64le fontconfig.ppc64le \
+    fontconfig-devel.ppc64le sqlite-devel python-devel
+
 # Clone the pandas repository and checkout the required version
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
@@ -32,16 +34,20 @@ git checkout $PACKAGE_VERSION
  
 # Initialize and update submodules
 git submodule update --init --recursive
- 
+
 # Install dependencies for Pandas and NumPy
 pip3 install --upgrade pip
 pip install pytest hypothesis build meson meson-python
 pip install cython==0.29.32
+pip install --upgrade --force-reinstall setuptools
+pip install --upgrade six
+pip install "oldest-supported-numpy>=2022.8.16"
 pip install "numpy>=1.21.0,<1.22.0"
- 
+
+
 # Install the pandas package
 pip install .
- 
+
 # Attempt to install using setup.py
 if ! (python3 setup.py install) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
