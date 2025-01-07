@@ -7,7 +7,7 @@
 # Source repo       : https://github.com/pytorch/pytorch.git
 # Tested on         : UBI:9.3
 # Language          : Python
-# Travis-Check      : True
+# Travis-Check      : False
 # Script License    : Apache License, Version 2.0
 # Maintainer        : Md. Shafi Hussain <Md.Shafi.Hussain@ibm.com>
 #
@@ -20,26 +20,45 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=pytorch
-PACKAGE_VERSION=${1:-v2.4.0}
 PACKAGE_URL=https://github.com/pytorch/pytorch.git
+
+PACKAGE_VERSION=${1:-v2.4.0}
+PYTHON_VERSION=${PYTHON_VERSION:-3.11}
+
+export MAX_JOBS=${MAX_JOBS:-$(nproc)}
+export _GLIBCXX_USE_CXX11_ABI=${_GLIBCXX_USE_CXX11_ABI:-1}
+export USE_CUDA=${USE_CUDA:-0}
+export BLAS=${BLAS:-OpenBLAS}
+
+WORKDIR=$(pwd)
+
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
-PYTHON_VER=${2:-3.9}
-export _GLIBCXX_USE_CXX11_ABI=1
 
-dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
-    git cmake ninja-build g++ rust cargo \
-    python${PYTHON_VER}-devel python${PYTHON_VER}-wheel python${PYTHON_VER}-pip python${PYTHON_VER}-setuptools
 
-if ! command -v python; then
-    ln -s $(command -v python${PYTHON_VER}) /usr/bin/python
+dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
+    https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
+    https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/`arch`/os
+dnf config-manager --set-enabled crb
+
+dnf install -y git cmake ninja-build gcc-toolset-13 rust cargo \
+    openblas-devel lapack-devel pkgconfig \
+    python$PYTHON_VERSION-devel \
+    python$PYTHON_VERSION-wheel \
+    python$PYTHON_VERSION-pip \
+    python$PYTHON_VERSION-setuptools
+
+source /opt/rh/gcc-toolset-13/enable
+
+if [ -z $PACKAGE_SOURCE_DIR ]; then
+    git clone $PACKAGE_URL -b $PACKAGE_VERSION
+    cd $PACKAGE_NAME
+    WORKDIR=$(pwd)
+else
+    WORKDIR=$PACKAGE_SOURCE_DIR
+    cd $WORKDIR
+    git checkout $PACKAGE_VERSION
 fi
-if ! command -v pip; then
-    ln -s $(command -v pip${PYTHON_VER}) /usr/bin/pip
-fi
-
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME
-git checkout tags/$PACKAGE_VERSION
 
 PPC64LE_PATCH="69cbf05"
 if ! git log --pretty=format:"%H" | grep -q "$PPC64LE_PATCH"; then
@@ -53,20 +72,31 @@ fi
 
 git submodule sync
 git submodule update --init --recursive
-pip install -r requirements.txt
 
-if ! (MAX_JOBS=$(nproc) python setup.py bdist_wheel && pip install dist/*.whl); then
+# no venv - helps with meson build conflicts #
+rm -rf $WORKDIR/PY_PRIORITY
+mkdir $WORKDIR/PY_PRIORITY
+PATH=$WORKDIR/PY_PRIORITY:$PATH
+ln -sf $(command -v python$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/python
+ln -sf $(command -v python$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/python3
+ln -sf $(command -v python$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/python$PYTHON_VERSION
+ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip
+ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip3
+ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip$PYTHON_VERSION
+##############################################
+
+python -m pip install -r requirements.txt
+if ! python setup.py develop; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-cd ..
-pip install pytest
+python -m pip install pytest-xdist
 
 # basic sanity test (subset)
-if ! pytest $PACKAGE_NAME/test/test_utils.py; then
+if ! python -m pytest -n auto test/test_utils.py; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
