@@ -3,12 +3,12 @@
 #
 # Package          : ruamel.yaml.clib
 # Version          : 0.2.6
-# Source repo      : https://pypi.io/packages/source/r/ruamel.yaml.clib/ruamel.yaml.clib-0.2.6.tar.gz
-# Tested on	: UBI:9.3
-# Language      : Python
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer    : ICH <ich@us.ibm.com>
+# Source repo      : https://github.com/ruamel/yaml.clib.git
+# Tested on	       : UBI:9.3
+# Language         : Python
+# Travis-Check     : True
+# Script License   : Apache License, Version 2 or later
+# Maintainer       : ICH <ich@us.ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=ruamel.yaml.clib
 PACKAGE_VERSION=${1:-0.2.6}
-PACKAGE_URL=https://pypi.io/packages/source/r/ruamel.yaml.clib/ruamel.yaml.clib-0.2.6.tar.gz
+PACKAGE_URL=https://github.com/ruamel/yaml.clib.git
 PACKAGE_DIR="$(pwd)/$PACKAGE_NAME"
 
 yum install -y git  python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo cmake
