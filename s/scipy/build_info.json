@@ -1,5 +1,5 @@
 {
-  "maintainer": "puneetsharma21",
+  "maintainer": "md.shafi.hussain",
   "package_name": "scipy",
   "github_url": "https://github.com/scipy/scipy",
   "version": "v1.14.1",
@@ -9,10 +9,7 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "1.10.1": {
-    "build_script": "scipy_v1.10.1_ubi_9.3.sh"
-  },
-  "1.14.1": {
+  "v*.*.*": {
     "build_script": "scipy_ubi_9.3.sh"
   }
 }
