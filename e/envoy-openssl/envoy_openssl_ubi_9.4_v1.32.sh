@@ -69,7 +69,6 @@ BAZEL_VERSION=$(cat .bazelversion)
 rm -rf .bazelversion
 
 useradd envoy
-#echo "envoy  ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers > /dev/null
 sudo -u envoy -- bash <<EOF
 set -ex
 
@@ -100,8 +99,7 @@ export PATH=$PATH:$wdir/bazel/output
 cd $wdir/${PACKAGE_NAME}
 git apply $scriptdir/envoy_openssl_v1.32.patch
 bazel/setup_clang.sh $wdir/clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4/
-#bazel build -c opt envoy --config=ppc --config=clang --cxxopt=-fpermissive > /dev/null 2>&1 || true
-bazel build -c opt envoy --config=ppc --config=clang --cxxopt=-fpermissive || true
+bazel build -c opt envoy --config=ppc --config=clang --cxxopt=-fpermissive > /dev/null 2>&1 || true
 
 #installing cargo and cross
 curl https://sh.rustup.rs -sSf | sh -s -- -y && source ~/.cargo/env
