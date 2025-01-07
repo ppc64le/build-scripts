@@ -20,6 +20,7 @@
 
 # Variables
 PACKAGE_VERSION=${1:-2.0.4}
+PACKAGE_NAME=charset-normalizer
 PACKAGE_DIR=charset_normalizer
 PACKAGE_URL=https://github.com/jawah/charset_normalizer
 
