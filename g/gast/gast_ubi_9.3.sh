@@ -42,7 +42,7 @@ if ! python3 setup.py install ; then
     exit 1
 fi
 
-# Run tests
+# Run tests (Skipping some test cases as they are failing on x86 as well)
 if ! pytest -k "not testCompile" ; then
     echo "------------------$PACKAGE_NAME: Install success but test fails -----------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
