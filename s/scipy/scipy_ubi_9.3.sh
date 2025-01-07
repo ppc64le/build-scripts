@@ -71,10 +71,11 @@ ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip$PYTHON_VERSION
 
 # issue: https://github.com/scipy/scipy/issues/21100#issuecomment-2538514333
 if [[ $PACKAGE_VERSION == "v1.10.1" ]] && [[ $(git diff pyproject.toml | wc -l) -eq 0 ]]; then
-    sed -i 's/"pythran>=0.12.0,<0.13.0"/"pythran==0.12.1"/g' pyproject.toml
-    sed -i '/"pythran==0.12.1",/a "pyproject_metadata==0.8.1",' pyproject.toml
-    sed -i '/"pythran==0.12.1",/a "gast==0.5.0",' pyproject.toml
-    sed -i '/"pythran==0.12.1",/a "beniget==0.4.0",' pyproject.toml
+    sed -i \
+	-e 's/"pythran>=0.12.0,<0.13.0"/"pythran==0.12.1"/g' \
+	-e '/"pythran==0.12.1",/a "pyproject_metadata==0.8.1",' \
+	-e '/"pythran==0.12.1",/a "gast==0.5.0",' \
+	-e '/"pythran==0.12.1",/a "beniget==0.4.0",' pyproject.toml
 fi
 ###################################################################
 if ! python -m pip install -vvv . $BUILD_ISOLATION; then
