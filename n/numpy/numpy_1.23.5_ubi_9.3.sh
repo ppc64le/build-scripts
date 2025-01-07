@@ -33,11 +33,10 @@ pip3 install hypothesis==6.115.5 cython typing_extensions meson==1.6.0 ninja==1.
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-
 git submodule update --init
 
 #install
-if ! pip install -e . ; then
+if ! pip3 install -e . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -46,7 +45,6 @@ fi
 #test
 sed -i 's/suppress_health_check=hypothesis\.HealthCheck\.all()/suppress_health_check=list(hypothesis.HealthCheck)/' numpy/conftest.py
 export PYTEST_ADDOPTS="-k 'not test_clip_property and not test_new_policy' --deselect=numpy/random/tests/test_extending.py --deselect=numpy/lib/tests/test_histograms.py --deselect=numpy/core/tests/test_mem_policy.py --deselect=typing/tests/test_generic_alias.py --deselect=random/tests/test_extending.py --deselect=core/tests/test_mem_policy.py --deselect=core/tests/test_numeric.py --deselect=array_api/tests/test_set_functions.py --deselect=typing/tests/test_typing.py "
-
 if ! (pytest); then
     echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
