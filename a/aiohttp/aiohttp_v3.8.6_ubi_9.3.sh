@@ -58,7 +58,7 @@ make install
 
 #back to aiohttp dir
 cd $AIOHTTP_DIR
-#make cythonize
+make cythonize
 
 #install
 if ! (pip install .) ; then
