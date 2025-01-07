@@ -31,7 +31,7 @@ yum install -y git gcc gcc-c++ gzip tar make wget xz cmake yum-utils openssl-dev
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
-
+ 
 # Initialize and update submodules
 git submodule update --init --recursive
 
