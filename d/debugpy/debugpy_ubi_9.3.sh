@@ -43,7 +43,7 @@ if ! python3 setup.py build; then
     exit 1
 fi
 
-# Run tests
+# Run tests (skipping the some testcase as it is failing on x_86 also)
 if ! pytest --ignore=tests/debugpy/test_run.py --ignore=test/debugpy/test_gevent.py --ignore=test/debugpy/test_django.py --ignore=tests/debugpy/test_exception.py --ignore=tests/debugpy/test_input.py --ignore=tests/debugpy/test_log.py --ignore=tests/debugpy/test_flask.py --ignore=tests/debugpy/test_output.py --ignore=tests/debugpy/test_args.py --ignore=tests/debugpy/test_attach.py; then  
     echo "------------------$PACKAGE_NAME: Tests_Fail------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
