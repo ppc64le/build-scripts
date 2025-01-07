@@ -2,7 +2,7 @@
 #---------------------------------------------------------------------------------------------------
 #
 # Package       : neo4j
-# Version       : 5.26
+# Version       : release/5.26.0
 # Source repo   : https://github.com/neo4j/neo4j.git
 # Tested on     : UBI 9.3 
 # Language      : Java
@@ -21,7 +21,7 @@
 CWD=$(pwd)
 PACKAGE_NAME=neo4j
 PACKAGE_URL=https://github.com/neo4j/neo4j.git
-PACKAGE_VERSION=${1:-5.26}
+PACKAGE_VERSION=${1:-release/5.26.0}
 
 MAVEN_VERSION=3.8.8
 GOSU_VERSION=1.16
