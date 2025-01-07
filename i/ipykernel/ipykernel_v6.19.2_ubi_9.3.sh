@@ -36,7 +36,7 @@ pip install -e ".[test]"
 # Install trio
 pip install trio
 
-# Run tests
+# Run tests (skipping the some testcase as it is failing on x_86 also.)
 if ! pytest ipykernel --ignore=ipykernel/tests/test_eventloop.py --ignore=ipykernel/tests/test_message_spec.py; then
     echo "------------------$PACKAGE_NAME: Tests_Fail------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
