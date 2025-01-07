@@ -1,0 +1,19 @@
+{
+    "maintainer": "pranithraoibm",
+    "package_name": "executing",
+    "github_url": "https://github.com/alexmojaki/executing",
+    "version": "v0.8.3",
+    "wheel_build": true,
+    "default_branch": "master",
+    "build_script": "executing_0.8.3_ubi_9.3.sh",
+    "package_dir": "e/executing",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "v0.6.0": {
+        "build_script": "executing_ubi_8.3.sh"
+    },
+    "*.*.*": {
+        "build_script": "executing_0.8.3_ubi_9.3.sh"
+    }
+}
