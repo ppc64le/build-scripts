@@ -5,7 +5,7 @@
 # Version       : v0.1.90
 # Source repo   : github.com/k8ssandra/management-api-for-apache-cassandra 
 # Tested on     : Ubuntu 22.04 (docker)
-# Language      : Go
+# Language      : Java
 # Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sumit Dubey <Sumit.Dubey2@ibm.com>
