@@ -18,13 +18,18 @@ install_python_version() {
     echo "Installing Python version: $version"
     case $version in
     "3.9" | "3.11" | "3.12")
+        echo "Starting python installing..."
         yum install -y python${version} python${version}-devel python${version}-pip
         ;;
     "3.10")
         if ! python3.10 --version &>/dev/null; then
             echo "Installing dependencies required for python installation..."
-            yum install -y sudo zlib-devel wget ncurses git gcc gcc-c++ make cmake \
-                libffi libffi-devel sqlite sqlite-devel sqlite-libs openssl-devel
+            yum install -y sudo zlib-devel wget ncurses git gcc
+            echo "Installing..."
+            yum install -y gcc-c++ make cmake openssl-devel 
+            echo "Installing..."
+            yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs 
+            echo "Starting python installing..."
             wget https://www.python.org/ftp/python/3.10.15/Python-3.10.15.tgz
             tar xf Python-3.10.15.tgz
             cd Python-3.10.15
@@ -40,8 +45,12 @@ install_python_version() {
     "3.13")
         if ! python3.13 --version &>/dev/null; then
             echo "Installing dependencies required for python installation..."
-            yum install -y sudo zlib-devel wget ncurses git gcc gcc-c++ make cmake \
-                libffi libffi-devel sqlite sqlite-devel sqlite-libs openssl-devel
+            yum install -y sudo zlib-devel wget ncurses git gcc
+            echo "Installing..."
+            yum install -y gcc-c++ make cmake openssl-devel 
+            echo "Installing..."
+            yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs 
+            echo "Starting python installing..."
             wget https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tgz
             tar xzf Python-3.13.0.tgz
             cd Python-3.13.0
@@ -118,12 +127,16 @@ create_venv "$VENV_DIR" "$PYTHON_VERSION"
 echo "=============== Running package build-script starts =================="
 
 if [ -n "$TEMP_BUILD_SCRIPT_PATH" ]; then
+    echo "Installing required dependencies..."
     python$PYTHON_VERSION -m pip install --upgrade pip setuptools wheel build pytest nox tox
+    echo "Installing required dependencies completed..."
 
     package_dir=$(grep -oP '(?<=^PACKAGE_DIR=).*' "$TEMP_BUILD_SCRIPT_PATH" | tr -d '"')
     package_url=$(grep -oP '(?<=^PACKAGE_URL=).*' "$TEMP_BUILD_SCRIPT_PATH" | tr -d '"')
     package_name=$(basename "$package_url" .git)
 
+
+    echo "Running the script..."
     sh "$TEMP_BUILD_SCRIPT_PATH" $EXTRA_ARGS
 
     # Check if the build script execution was successful
