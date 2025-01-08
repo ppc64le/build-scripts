@@ -42,7 +42,7 @@ if ! mvn clean install ; then
     exit 1
 fi
 
-if ! mvn test ; then
+if ! mvn clean verify ; then
     echo "------------------$PACKAGE_NAME::Install_and_Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Install_and_Test_fails"

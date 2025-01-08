@@ -22,7 +22,7 @@ SCRIPT_PACKAGE_VERSION=v0.12.3
 PACKAGE_NAME=tonic
 PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
 PACKAGE_URL=https://github.com/hyperium/tonic.git
-BUILD_HOME=home/
+BUILD_HOME=$(pwd)
 PROTOC_VERSION=21.7
 
 # Install update and deps
@@ -54,7 +54,7 @@ fi
 set RUST_BACKTRACE=full
 
 # Change to home directory
-cd /home/
+cd $BUILD_HOME
 
 # downloading the protoc archive, extract the contents  
 echo "Download protoc archive"
