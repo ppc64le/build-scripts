@@ -1,0 +1,16 @@
+{
+	"maintainer": "Simran-Sirsat",
+	"package_name": "google-auth-oauthlib",
+	"github_url": "https://github.com/googleapis/google-auth-library-python-oauthlib.git",
+	"version": "0.5.2",
+	"default_branch": "main",
+	"build_script": "google-auth-oauthlib_v0.5.2_ubi_9.3.sh",
+	"package_dir": "g/google-auth-oauthlib",
+	"docker_build": false,
+	"validate_build_script": true,
+	"use_non_root_user": false,
+	"wheel_build" : true,
+	"*.*.*": {
+		"build_script": "google-auth-oauthlib_v0.5.2_ubi_9.3"
+	}
+}
