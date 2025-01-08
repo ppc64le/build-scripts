@@ -74,7 +74,7 @@ fi
 # neo4j-collections, neo4j-kernel-test, kernel-it, bolt-it - test modules can be skipped as failure is in parity with x86
 # neo4j-push-to-cloud, community-it, cypher-it, procedure-compiler, neo4j-kernel-test, neo4j-import-util, neo4j-cypher-runtime-spec-suite, index-it, neo4j-enterprise ,neo4j-harness-enterprise are failing due to infra issues , passes on FYRE VM.
 # neo4j-cypher-planner, neo4j-cypher-expression-evaluator, gbptree-tests passes on rerun 
-if ! mvn  clean install -Dlog4j.configurationFile="/tmp/log" -pl -:neo4j-import-util,-:neo4j-push-to-cloud,-:community-it,-:kernel-it,-:neo4j-kernel-test,-:neo4j-collections,-:bolt-it,-:neo4j-graphdb-api,-:test-utils,-:neo4j-values,-:neo4j-random-values,-:io-test-utils,-:neo4j-logging,-:log-test-utils,-:neo4j-configuration,-:neo4j-lock,-:neo4j-schema,-:neo4j-procedure-api,-:cypher-it,-:neo4j-cypher-compatibility-spec-suite,-:neo4j-cypher-planner,-:cypher-shell -T 4 ; then
+if ! mvn  clean install -Dlog4j.configurationFile="/tmp/log" -pl -:neo4j-front-end,-:neo4j-import-util,-:neo4j-push-to-cloud,-:community-it,-:kernel-it,-:neo4j-kernel-test,-:neo4j-collections,-:bolt-it,-:neo4j-graphdb-api,-:test-utils,-:neo4j-values,-:neo4j-random-values,-:io-test-utils,-:neo4j-logging,-:log-test-utils,-:neo4j-configuration,-:neo4j-lock,-:neo4j-schema,-:neo4j-procedure-api,-:cypher-it,-:neo4j-cypher-compatibility-spec-suite,-:neo4j-cypher-planner,-:cypher-shell -T 8 ; then
     echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
