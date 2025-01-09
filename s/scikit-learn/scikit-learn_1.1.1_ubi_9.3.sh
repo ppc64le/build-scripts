@@ -22,19 +22,34 @@ PACKAGE_NAME=scikit-learn
 PACKAGE_VERSION=${1:-1.1.1}
 PACKAGE_URL=https://github.com/scikit-learn/scikit-learn
 
+echo "Installing dependencies..."
 yum install -y gcc gcc-c++ make libtool cmake git wget xz python python-devel zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel libjpeg-turbo-devel gcc-gfortran openblas openblas-devel libgomp
 
-OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
-# clone source repository
+echo "Cloning and installing..."
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init
 
-# install scikit-learn dependencies and build dependencies
-pip install pytest cython==0.29.36 numpy==1.23.5 scipy joblib threadpoolctl meson-python ninja  setuptools==59.8.0
+echo "installing pytest...."
+pip install pytest 
+echo "installing cython.."
+pip install cython==0.29.36 
+echo "installing numpy.."
+pip install numpy==1.23.5 
+echo "installing scipy.."
+pip install scipy 
+echo "installing joblib.."
+pip install joblib 
+echo "installing threadpoolctl.."
+pip install threadpoolctl 
+echo "installing meson-python and ninja.."
+pip install meson-python ninja  
+echo "installing setuptools.."
+pip install setuptools==59.8.0
 
+echo "installing..."
 if ! (python setup.py install) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -43,7 +58,7 @@ if ! (python setup.py install) ; then
 fi
 export PY_IGNORE_IMPORTMISMATCH=1
 
-#run tests  
+echo "Testing..."
 if ! pytest sklearn/tests/test_random_projection.py; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
