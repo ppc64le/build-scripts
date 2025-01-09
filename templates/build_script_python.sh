@@ -64,13 +64,13 @@ else
     else
         # Use download and untar if it's not a Git repository
         if ! curl -L "$PACKAGE_URL" -o "$PACKAGE_DIR.tar.gz"; then
-            echo "------------------$PACKAGE_DIR:download_fails---------------------------------------"
+            echo "------------------$PACKAGE_URL:download_fails---------------------------------------"
             echo "$PACKAGE_URL $PACKAGE_NAME"
             echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Download_Fails"  
             exit 1
         fi
         mkdir "$PACKAGE_DIR"
-        
+
         if ! tar -xzf "$PACKAGE_DIR.tar.gz" -C "$PACKAGE_DIR" --strip-components=1; then
             echo "------------------$PACKAGE_NAME:untar_fails---------------------------------------"
             echo "$PACKAGE_URL $PACKAGE_NAME"
