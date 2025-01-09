@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : node-ignore
-# Version          : 6.0.1
+# Version          : 7.0.0
 # Source repo      : https://github.com/kaelzhang/node-ignore
 # Tested on        : UBI:9.3
 # Language         : Node
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=node-ignore
-PACKAGE_VERSION=${1:6.0.1}
+PACKAGE_VERSION=${1:7.0.0}
 PACKAGE_URL=https://github.com/kaelzhang/node-ignore
 
 export NODE_VERSION=${NODE_VERSION:-20}
