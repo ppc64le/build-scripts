@@ -1,0 +1,15 @@
+{
+   "maintainer": "ramnathnayak-ibm",
+   "package_name": "gnostic-models",
+   "github_url": "https://github.com/google/gnostic-models",
+   "version": "v0.6.9",
+   "default_branch": "main",
+   "build_script": "gnostic-models_ubi_9.3.sh",
+   "package_dir": "g/gnostic-models",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "v0.*.*" : {
+       "build_script": "gnostic-models_ubi_9.3.sh"
+    }
+}
