@@ -1,12 +1,15 @@
 {
-  "maintainer": "shubham-garud",
+  "maintainer": "stutiibm",
   "package_name": "scalatest",
   "github_url": "https://github.com/scalatest/scalatest",
   "package_dir": "s/scalatest/",
-  "version": "release-3.2.16",
+  "version": "release-3.2.19",
   "default_branch": "main",
-  "build_script": "scalatest_ubi_8.7.sh",
+  "build_script": "scalatest_ubi_9_3.sh",
   "use_non_root_user": false,
   "docker_build": false,
-  "validate_build_script": true
+  "validate_build_script": true,
+  "release-*.*.*": {
+    "build_script": "scalatest_ubi_9_3.sh"
+  }
 }
