@@ -26,7 +26,7 @@ HOME_DIR=${PWD}
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 yum install -y git gcc wget
-export GO_VERSION=${GO_VERSION:-1.20.1}
+export GO_VERSION=${GO_VERSION:-1.23.4}
 export GOROOT=${GOROOT:-"/usr/local/go"}
 export GOPATH=${GOPATH:-$HOME/go}
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:/usr/local/bin
