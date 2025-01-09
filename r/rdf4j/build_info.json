@@ -2,7 +2,7 @@
   "maintainer": "sid226",
   "package_name": "rdf4j",
   "github_url": "https://github.com/eclipse-rdf4j/rdf4j",
-  "version": "5.0.3",
+  "version": "5.1.0",
   "default_branch": "main",
   "package_dir": "r/rdf4j/",
   "build_script": "rdf4j_ubi_9.3.sh",
