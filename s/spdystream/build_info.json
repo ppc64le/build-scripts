@@ -1,0 +1,12 @@
+{
+   "maintainer": "stutiibm",
+   "package_name": "spdystream",
+   "github_url": "https://github.com/moby/spdystream",
+   "version": "v0.5.0",
+   "default_branch": "master",
+   "build_script": "spdystream_ubi_9.3.sh",
+   "package_dir": "s/spdystream",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
