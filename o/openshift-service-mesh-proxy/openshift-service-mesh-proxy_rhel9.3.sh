@@ -45,7 +45,7 @@ cd bazel/
 wget https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VERSION}/bazel-${BAZEL_VERSION}-dist.zip
 unzip bazel-${BAZEL_VERSION}-dist.zip
 rm -rf bazel-${BAZEL_VERSION}-dist.zip
-./compile.sh &
+./compile.sh
 export PATH=$PATH:$(pwd)/output
 
 #
