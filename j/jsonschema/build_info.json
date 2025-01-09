@@ -1,0 +1,16 @@
+{
+	"maintainer": "vivek8123",
+	"package_name": "jsonschema",
+	"github_url": "https://github.com/python-jsonschema/jsonschema.git",
+	"version": "v4.17.3",
+	"default_branch": "main",
+	"build_script": "jsonschema_ubi_9.3.sh",
+	"package_dir": "j/jsonschema",
+	"docker_build": false,
+	"validate_build_script": true,
+	"wheel_build" : true,
+	"use_non_root_user": false,
+	"v*.*.*": {
+	   "build_script": "jsonschema_ubi_9.3.sh"
+	}
+}				
