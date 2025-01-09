@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : axios
-# Version          : v1.7.7
+# Version          : v1.7.9
 # Source repo      : https://github.com/axios/axios
 # Tested on        : UBI:9.3
 # Language         : Node
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=axios
-PACKAGE_VERSION=${1:v1.7.7}
+PACKAGE_VERSION=${1:v1.7.9}
 PACKAGE_URL=https://github.com/axios/axios
 
 export NODE_VERSION=${NODE_VERSION:-22}
