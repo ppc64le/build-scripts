@@ -21,7 +21,7 @@
 PACKAGE_NAME=fire
 PACKAGE_VERSION=${1:-v0.4.0}
 PACKAGE_URL=https://github.com/google/python-fire
-PACKAGE_DIR="$(pwd)/$PACKAGE_NAME"
+PACKAGE_DIR="$(pwd)$PACKAGE_NAME"
 
 yum install -y git  python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo cmake
 pip3 install pytest tox nox
