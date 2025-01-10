@@ -57,8 +57,8 @@ if !  mvn clean install -Pjanusgraph-release ${BUILD_MAVEN_OPTS} -Dgpg.skip=true
     exit 1
 fi 
 
-# Tests   janusgraph-dist, janusgraph-cql requires docker 
-if !  mvn verify  -Pjanusgraph-release -Dgpg.skip=true -Pjava-11 -pl -:janusgraph-dist,-:janusgraph-cql  ; then
+# Tests   janusgraph-dist, janusgraph-cql janusgraph-hbase,-:janusgraph-lucene,-:janusgraph-es,-:janusgraph-solr,-:janusgraph-dist,-:example-common requires docker 
+if !  mvn verify  -Pjanusgraph-release -Dgpg.skip=true -Pjava-11 -pl -Pjanusgraph-release -Dgpg.skip=true -Pjava-11 -pl -:janusgraph-test,-:janusgraph-cql,-:janusgraph-hbase,-:janusgraph-lucene,-:janusgraph-es,-:janusgraph-solr,-:janusgraph-dist,-:example-common -T 8  ; then
     echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
