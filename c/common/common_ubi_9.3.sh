@@ -4,11 +4,11 @@
 # Package          : common
 # Version          : v0.61.0
 # Source repo      : https://github.com/prometheus/common
-# Tested on	: UBI:9.3 
-# Language      : GO
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer    : vinodk99 <Vinod.K1@ibm.com>
+# Tested on	   : UBI:9.3 
+# Language         : GO
+# Travis-Check     : True
+# Script License   : Apache License, Version 2 or later
+# Maintainer       : vinodk99 <Vinod.K1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
