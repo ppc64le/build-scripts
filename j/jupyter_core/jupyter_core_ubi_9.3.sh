@@ -23,7 +23,7 @@ PACKAGE_VERSION=${1:-v5.3.0}
 PACKAGE_URL=https://github.com/jupyter/jupyter_core.git
 
 # Install necessary system packages
-yum install -y git gcc gcc-c++ gzip tar make wget xz cmake yum-utils openssl-devel openblas-devel bzip2-devel bzip2 zip unzip libffi-devel zlib-devel autoconf automake libtool cargo pkgconf-pkg-config.ppc64le info.ppc64le fontconfig.ppc64le fontconfig-devel.ppc64le sqlite-devel python-deve
+yum install -y git gcc gcc-c++ gzip tar make wget xz cmake yum-utils openssl-devel openblas-devel bzip2-devel bzip2 zip unzip libffi-devel zlib-devel autoconf automake libtool cargo pkgconf-pkg-config.ppc64le info.ppc64le fontconfig.ppc64le fontconfig-devel.ppc64le sqlite-devel python-devel
 
 # Clone the repository
 git clone ${PACKAGE_URL} ${PACKAGE_NAME}
