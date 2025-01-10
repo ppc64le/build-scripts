@@ -8,5 +8,8 @@
    "package_dir": "c/continuity",
    "docker_build": false,
    "validate_build_script": true,
-   "use_non_root_user": false
+   "use_non_root_user": false,
+   "v0.*.*" : {
+      "build_script": "continuity_ubi_9.3.sh"
+   }
 }
