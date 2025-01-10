@@ -34,7 +34,7 @@ git checkout ${PACKAGE_VERSION}
 pip install pytest
 pip install -e ".[test]"
 
-# Run tests
+# Run tests (skipping the some testcase as it is failing on x_86 also.)
 if ! pytest -k "not (test_jupyter_path_prefer_env or test_jupyter_config_path_prefer_env or test_jupyter_path_user_site or test_jupyter_path_no_user_site)"; then
     echo "------------------$PACKAGE_NAME: Tests_Fail------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
