@@ -44,8 +44,8 @@ yum install -y --skip-broken nodejs nodejs-devel nodejs-packaging npm ncurses
 yum install -y java-21-openjdk.ppc64le java-21-openjdk-devel java-21-openjdk-headless java-17-openjdk maven java-17-openjdk-devel java-17-openjdk-headless java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless java-1.8.0-openjdk.ppc64le java-1.8.0-openjdk-devel java-1.8.0-openjdk-headless
 yum install -y hostname python3 python3-devel cairo-devel texlive-latex readline-devel apr-devel apr-util-devel golang ant tar libevent-devel java-latest-openjdk sudo
 # install gradle
-wget https://services.gradle.org/distributions/gradle-8.2-bin.zip -P /tmp && unzip -o -d /gradle /tmp/gradle-8.2-bin.zip
-export GRADLE_HOME=/gradle/gradle-8.2/
+wget https://services.gradle.org/distributions/gradle-8.2-bin.zip -P /tmp && unzip -o -d /home/tester/gradle /tmp/gradle-8.2-bin.zip
+export GRADLE_HOME=/home/tester/gradle/gradle-8.2/
 export PATH=${GRADLE_HOME}/bin:${PATH}
 
 # install maven
@@ -58,6 +58,9 @@ export PATH=/usr/lib/apache-maven-3.9.9/bin/:$PATH
 
 # install scala
 rm -f /etc/yum.repos.d/bintray-rpm.repo && curl -L https://www.scala-sbt.org/sbt-rpm.repo > sbt-rpm.repo && mv sbt-rpm.repo /etc/yum.repos.d/ && yum install -y sbt
+
+mkdir -p /home/tester/output
+cd /home/tester
 
 ln -s /usr/bin/python3 /bin/python
 
@@ -96,7 +99,7 @@ if ! git clone $CLONE_URL $PACKAGE_NAME; then
 	exit 1
 fi
 
-export HOME_DIR=$PACKAGE_NAME
+export HOME_DIR=/home/tester/$PACKAGE_NAME
 cd $HOME_DIR
 git checkout $PACKAGE_VERSION
 cd $WORKING_PATH
@@ -172,7 +175,7 @@ function try_mvn_with_jdk11_all(){
 # ant = build.xml file exists
 # maven = pom.xml file exists
 # gradle = gradle.properties file exists
-export GRADLE_HOME=gradle/gradle-8.2/
+export GRADLE_HOME=/home/tester/gradle/gradle-8.2/
 export PATH=${GRADLE_HOME}/bin:${PATH}
 
 function set_sbt_opts(){
@@ -197,7 +200,7 @@ function try_gradle_with_jdk21(){
 		echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master | $OS_NAME | GitHub | Fail |  Install_Fails" 
 		exit 1
 	fi
-	cd $PACKAGE_NAME
+	cd /home/tester/$PACKAGE_NAME
 	if ! ./gradlew test; then
 		echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" 
@@ -226,7 +229,7 @@ function try_mvn_with_jdk21(){
 		echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master | $OS_NAME | GitHub | Fail |  Install_Fails" 
 		exit 1
 	fi
-	cd $PACKAGE_NAME
+	cd /home/tester/$PACKAGE_NAME
 	if ! mvn test; then
 		echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" 
@@ -252,7 +255,7 @@ function try_mvn_with_jdk17(){
 		echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master | $OS_NAME | GitHub | Fail |  Install_Fails" 
 		try_mvn_with_jdk21
 	fi
-	cd $PACKAGE_NAME
+	cd /home/tester/$PACKAGE_NAME
 	if ! mvn test; then
 		echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" 
@@ -278,7 +281,7 @@ function try_ant_with_jdk17(){
 		echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master | $OS_NAME | GitHub | Fail |  Install_Fails" 
 		exit 1
 	fi
-	cd $PACKAGE_NAME
+	cd /home/tester/$PACKAGE_NAME
 	if ! ant test; then
 		echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" 
@@ -304,7 +307,7 @@ function try_gradle_with_jdk17(){
 		echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master | $OS_NAME | GitHub | Fail |  Install_Fails" 
 		try_gradle_with_jdk21
 	fi
-	cd $PACKAGE_NAME
+	cd /home/tester/$PACKAGE_NAME
 	if ! ./gradlew test; then
 		echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" 
@@ -327,7 +330,7 @@ function try_mvn_with_jdk11(){
 	if ! mvn -T 4 clean install -DskipTests -Dgpg.skip -Dmaven.javadoc.skip=true; then
         try_mvn_with_jdk17
 	fi
-	cd $PACKAGE_NAME
+	cd /home/tester/$PACKAGE_NAME
 	if ! mvn test; then
 		echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" 
@@ -350,7 +353,7 @@ function try_ant_with_jdk11(){
 	if ! ant build; then
         try_ant_with_jdk17
 	fi
-	cd  $PACKAGE_NAME
+	cd  /home/tester/$PACKAGE_NAME
 	if ! ant test; then
 		echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" 
@@ -374,7 +377,7 @@ function try_gradle_with_jdk11(){
 	if ! ./gradlew -x test; then
         try_gradle_with_jdk17
 	fi
-	cd  $PACKAGE_NAME
+	cd  /home/tester/$PACKAGE_NAME
 	if ! ./gradlew test; then
 		echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" 
@@ -400,7 +403,7 @@ function try_sbt_with_jdk11(){
 		echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | master | $OS_NAME | GitHub | Fail |  Install_Fails" 
 		exit 1
 	fi
-	cd  $PACKAGE_NAME
+	cd  /home/tester/$PACKAGE_NAME
 	if ! sbt test; then
 		echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 		echo "$PACKAGE_URL $PACKAGE_NAME" 
