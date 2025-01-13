@@ -88,6 +88,8 @@ def select_template_script(package_language):
         return 'build_script_python.sh'
     elif package_language == 'r' or package_language == 'R':
         return 'build_script_r.sh'
+    elif package_language =='java' or package_language =='Java':
+        return 'build_script_java.sh'
 
 
 def get_latest_build_script(dir_name):
