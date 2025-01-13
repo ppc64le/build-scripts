@@ -22,7 +22,7 @@ PACKAGE_NAME=
 PACKAGE_VERSION=
 PACKAGE_URL=
 
-export HOME=/
+export HOME=/home/tester
 
 yum install -y gcc gcc-c++ gcc-gfortran git xz cmake make yum-utils wget sudo llvm
 yum install libcurl-devel openssl openssl-devel -y
