@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : requires-port
-# Version          : master
+# Version          : 07e8e82
 # Source repo      : https://github.com/unshiftio/requires-port
 # Tested on	   : UBI:9.3
 # Language         : Node
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=requires-port
-PACKAGE_VERSION=${1:-master}
+PACKAGE_VERSION=${1:-07e8e82}
 PACKAGE_URL=https://github.com/unshiftio/requires-port
 
 export NODE_VERSION=${NODE_VERSION:-16}
@@ -33,7 +33,7 @@ nvm use $NODE_VERSION
 
 
 
-git clone $PACKAGE_URL $PACKAGE_NAME
+git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
