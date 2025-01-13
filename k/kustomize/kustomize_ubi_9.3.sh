@@ -24,7 +24,7 @@ PACKAGE_URL=https://github.com/kubernetes-sigs/kustomize
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
-yum install git wget gcc gcc-++ make -y
+yum install git wget gcc gcc-c++ make -y
 
 wget https://go.dev/dl/go1.23.1.linux-ppc64le.tar.gz
 tar -C  /usr/local -xf go1.23.1.linux-ppc64le.tar.gz
