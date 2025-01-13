@@ -48,8 +48,6 @@ if ! go build ./...; then
 	exit 1
 fi
 
-go run hello.go
-
 if ! go test ./...; then
         echo "------------------$PACKAGE_NAME:test_fails---------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
