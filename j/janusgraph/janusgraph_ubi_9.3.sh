@@ -50,7 +50,7 @@ export  ES_JAVA_OPTS="-Xms256m -Xmx512m"
 export  BUILD_MAVEN_OPTS="-DskipTests=true --batch-mode --also-make"
 export  VERIFY_MAVEN_OPTS="-Pcoverage"
 #Build
-if !  mvn clean install -Pjanusgraph-release ${BUILD_MAVEN_OPTS} -Dgpg.skip=true -Pjava-11 -pl -:janusgraph-dist  ; then
+if !  mvn clean install -Dlog4j.configurationFile="/tmp/log" -Pjanusgraph-release ${BUILD_MAVEN_OPTS} -Dgpg.skip=true -Pjava-11 -pl -:janusgraph-dist  ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -58,7 +58,7 @@ if !  mvn clean install -Pjanusgraph-release ${BUILD_MAVEN_OPTS} -Dgpg.skip=true
 fi 
 
 # Tests   janusgraph-dist, janusgraph-cql janusgraph-hbase,-:janusgraph-lucene,-:janusgraph-es,-:janusgraph-solr,-:janusgraph-dist,-:example-common requires docker 
-if !  mvn verify  -Pjanusgraph-release -Dgpg.skip=true -Pjava-11  -pl -:janusgraph-test,-:janusgraph-cql,-:janusgraph-hbase,-:janusgraph-lucene,-:janusgraph-es,-:janusgraph-solr,-:janusgraph-dist,-:example-common -T 8 ; then
+if !  mvn verify -Dlog4j.configurationFile="/tmp/log" -Pjanusgraph-release -Dgpg.skip=true -Pjava-11  -pl -:janusgraph-test,-:janusgraph-cql,-:janusgraph-hbase,-:janusgraph-lucene,-:janusgraph-es,-:janusgraph-solr,-:janusgraph-dist,-:example-common -T 8 ; then
     echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
