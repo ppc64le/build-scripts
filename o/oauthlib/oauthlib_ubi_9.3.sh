@@ -19,7 +19,7 @@
 # -----------------------------------------------------------------------------
 
 PACKAGE_NAME=oauthlib
-PACKAGE_VERSION=${1:-v3.2.2}
+PACKAGE_VERSION=${1:-3.2.2}
 PACKAGE_URL=https://github.com/oauthlib/oauthlib.git
 
 # Install necessary system packages
