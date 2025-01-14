@@ -47,7 +47,7 @@ if ! python${PYTHON_VERSION} -m pip install -v -e .[dev]; then
 fi
 
 # Run test cases
-if ! python${PYTHON_VERSION} -m pytest tests/test_base.py tests/test_dns.py tests/test_fs_event.py tests/test_process.py tests/test_runner.py tests/test_libuv_api.py; then
+if ! python${PYTHON_VERSION} -m pytest tests/test_base.py tests/test_dns.py tests/test_fs_event.py tests/test_process.py tests/test_runner.py tests/test_libuv_api.py tests/test_sockets.py tests/test_signals.py tests/test_dealloc.py ; then
     echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
