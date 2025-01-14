@@ -42,8 +42,8 @@ cd ${PACKAGE_NAME} && git checkout ${PACKAGE_VERSION}
 
 unset JAVA_OPTS
 unset MAVEN_OPTS
-MAVEN_OPTS="-Xmx666m"
-JAVA_OPTS="-Xmx666m"
+MAVEN_OPTS="-Xms256m -Xmx512m"
+JAVA_OPTS="-Xms256m -Xmx512m"
 
 #Build and test
 
@@ -59,7 +59,7 @@ if !  mvn clean install -Dlog4j.configurationFile="/tmp/log" -Pjanusgraph-releas
 fi 
 
 # Tests   janusgraph-dist, janusgraph-cql janusgraph-hbase,-:janusgraph-lucene,-:janusgraph-es,-:janusgraph-solr,-:janusgraph-dist,-:example-common requires docker 
-if !  mvn verify -Dlog4j2.configurationFile="/tmp/log4j2" -Dlog4j.configurationFile="/tmp/log4j" -Pjanusgraph-release -Dgpg.skip=true -Pjava-11  -pl -:janusgraph-test,-:janusgraph-cql,-:janusgraph-hbase,-:janusgraph-lucene,-:janusgraph-es,-:janusgraph-solr,-:janusgraph-dist,-:example-common -T 4 ; then
+if !  mvn verify -Dlog4j2.configurationFile="/tmp/log4j2" -Dlog4j.configurationFile="/tmp/log4j" -Pjanusgraph-release -Dgpg.skip=true -Pjava-11 --batch-mode  -pl -:janusgraph-test,-:janusgraph-cql,-:janusgraph-hbase,-:janusgraph-lucene,-:janusgraph-es,-:janusgraph-solr,-:janusgraph-dist,-:example-common -T 4 ; then
     echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
