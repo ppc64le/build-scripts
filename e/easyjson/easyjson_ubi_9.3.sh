@@ -40,7 +40,6 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 export PATH=$PATH:$(go env GOPATH)/bin
-go mod init
 go mod tidy
 
 
