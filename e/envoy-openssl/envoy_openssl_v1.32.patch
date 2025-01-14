@@ -1,0 +1,155 @@
+diff --git a/bazel/rules_rust.patch b/bazel/rules_rust.patch
+index 04fc47181b..fab8c6ba11 100644
+--- a/bazel/rules_rust.patch
++++ b/bazel/rules_rust.patch
+@@ -1,23 +1,112 @@
+---- rust/private/rustc.bzl
+-+++ rust/private/rustc.bzl
+-@@ -1451,7 +1451,7 @@ def rustc_compile_action(
+-         })
+-         crate_info = rust_common.create_crate_info(**crate_info_dict)
+- 
+--    if crate_info.type in ["staticlib", "cdylib"]:
+-+    if crate_info.type in ["staticlib", "cdylib"] and not out_binary:
+-         # These rules are not supposed to be depended on by other rust targets, and
+-         # as such they shouldn't provide a CrateInfo. However, one may still want to
+-         # write a rust_test for them, so we provide the CrateInfo wrapped in a provider
++diff --git cargo/private/cargo_build_script.bzl cargo/private/cargo_build_script.bzl
++index f1e16546..c657fd31 100644
++--- cargo/private/cargo_build_script.bzl
+++++ cargo/private/cargo_build_script.bzl
++@@ -297,7 +297,7 @@ def _cargo_build_script_impl(ctx):
++         "NUM_JOBS": "1",
++         "OPT_LEVEL": compilation_mode_opt_level,
++         "RUSTC": toolchain.rustc.path,
++-        "TARGET": toolchain.target_flag_value,
+++        "TARGET": toolchain.target_flag_value.replace("ppc64le", "powerpc64le"),
++         # OUT_DIR is set by the runner itself, rather than on the action.
++     })
++
++diff --git rust/platform/triple.bzl rust/platform/triple.bzl
++index 673240e8..5479c32e 100644
++--- rust/platform/triple.bzl
+++++ rust/platform/triple.bzl
++@@ -114,7 +114,7 @@ def get_host_triple(repository_ctx, abi = None):
++     # Detect the host's cpu architecture
++
++     supported_architectures = {
++-        "linux": ["aarch64", "x86_64", "s390x"],
+++        "linux": ["aarch64", "x86_64", "s390x", "ppc64le"],
++         "macos": ["aarch64", "x86_64"],
++         "windows": ["aarch64", "x86_64"],
++     }
++diff --git rust/platform/triple_mappings.bzl rust/platform/triple_mappings.bzl
++index 3ab6f6dd..36143938 100644
++--- rust/platform/triple_mappings.bzl
+++++ rust/platform/triple_mappings.bzl
++@@ -71,8 +71,9 @@ _CPU_ARCH_TO_BUILTIN_PLAT_SUFFIX = {
++     "mips": None,
++     "mipsel": None,
++     "powerpc": "ppc",
+++    "ppc64le": "ppc",
++     "powerpc64": None,
++-    "powerpc64le": None,
+++    "powerpc64le": "ppc",
++     "riscv32": "riscv32",
++     "riscv32imc": "riscv32",
++     "riscv64": "riscv64",
++diff --git rust/private/repository_utils.bzl rust/private/repository_utils.bzl
++index 79cf2e93..09ed992b 100644
++--- rust/private/repository_utils.bzl
+++++ rust/private/repository_utils.bzl
++@@ -803,12 +803,16 @@ def load_arbitrary_tool(
++     for subdirectory in tool_subdirectories:
++         # As long as the sha256 value is consistent accross calls here the
++         # cost of downloading an artifact is negated as by Bazel's caching.
++-        result = ctx.download_and_extract(
++-            urls,
++-            sha256 = sha256,
++-            auth = _make_auth_dict(ctx, urls),
++-            stripPrefix = "{}/{}".format(tool_path, subdirectory),
++-        )
+++        tool_path = tool_path.replace("ppc64le", "powerpc64le")
+++        subdirectory = subdirectory.replace("ppc64le", "powerpc64le")
+++        for url in urls:
+++            url = url.replace("ppc64le", "powerpc64le")
+++            result = ctx.download_and_extract(
+++                url,
+++                sha256 = sha256,
+++                auth = _make_auth_dict(ctx, urls),
+++                stripPrefix = "{}/{}".format(tool_path, subdirectory),
+++            )
+ 
++         # In the event no sha256 was provided, set it to the value of the first
++         # downloaded item so subsequent downloads use a cached artifact.
++diff --git rust/private/rustc.bzl rust/private/rustc.bzl
++index c82c236b..1ea682d3 100644
+ --- rust/private/rustc.bzl
+ +++ rust/private/rustc.bzl
++@@ -985,7 +985,7 @@ def construct_arguments(
++     if error_format != "json":
++         # Color is not compatible with json output.
++         rustc_flags.add("--color=always")
++-    rustc_flags.add(toolchain.target_flag_value, format = "--target=%s")
+++    rustc_flags.add(toolchain.target_flag_value.replace("ppc64le", "powerpc64le"), format = "--target=%s")
++     if hasattr(attr, "crate_features"):
++         rustc_flags.add_all(getattr(attr, "crate_features"), before_each = "--cfg", format_each = 'feature="%s"')
++     if linker_script:
+ @@ -1043,7 +1043,7 @@ def construct_arguments(
+- 
++
+      if toolchain.llvm_cov and ctx.configuration.coverage_enabled:
+          # https://doc.rust-lang.org/rustc/instrument-coverage.html
+ -        rustc_flags.add("--codegen=instrument-coverage")
+ +        pass
+- 
++
+      if toolchain._experimental_link_std_dylib:
+          rustc_flags.add("--codegen=prefer-dynamic")
++@@ -1516,7 +1516,7 @@ def rustc_compile_action(
++         })
++         crate_info = rust_common.create_crate_info(**crate_info_dict)
++
++-    if crate_info.type in ["staticlib", "cdylib"]:
+++    if crate_info.type in ["staticlib", "cdylib"] and not out_binary:
++         # These rules are not supposed to be depended on by other rust targets, and
++         # as such they shouldn't provide a CrateInfo. However, one may still want to
++         # write a rust_test for them, so we provide the CrateInfo wrapped in a provider
++diff --git rust/repositories.bzl rust/repositories.bzl
++index 44a82938..28274f93 100644
++--- rust/repositories.bzl
+++++ rust/repositories.bzl
++@@ -44,6 +44,8 @@ DEFAULT_TOOLCHAIN_TRIPLES = {
++     "x86_64-pc-windows-msvc": "rust_windows_x86_64",
++     "x86_64-unknown-freebsd": "rust_freebsd_x86_64",
++     "x86_64-unknown-linux-gnu": "rust_linux_x86_64",
+++    "ppc64le-unknown-linux-gnu": "rust_linux_ppc64le",
+++    "powerpc64le-unknown-linux-gnu": "rust_linux_powerpc64le",
++ }
++
++ def rules_rust_dependencies():
+\ No newline at end of file
+diff --git a/source/exe/BUILD b/source/exe/BUILD
+index e553335e20..44bc69150f 100644
+--- a/source/exe/BUILD
++++ b/source/exe/BUILD
+@@ -50,7 +50,6 @@ envoy_cc_library(
+         "//bazel:enable_http3_on_linux_ppc": envoy_all_extensions(PPC_SKIP_TARGETS),
+         "//bazel:disable_http3_on_windows_x86_64": envoy_all_extensions(NO_HTTP3_SKIP_TARGETS + WINDOWS_SKIP_TARGETS),
+         "//bazel:disable_http3_on_linux_ppc": envoy_all_extensions(NO_HTTP3_SKIP_TARGETS + PPC_SKIP_TARGETS),
+-        "//bazel:disable_http3": envoy_all_extensions(NO_HTTP3_SKIP_TARGETS),
+         "//conditions:default": envoy_all_extensions(),
+     }),
+ )
+diff --git a/test/config_test/BUILD b/test/config_test/BUILD
+index d45c0205b9..6304e1a5ab 100644
+--- a/test/config_test/BUILD
++++ b/test/config_test/BUILD
+@@ -69,7 +69,6 @@ envoy_cc_test_library(
+         "//bazel:enable_http3_on_linux_ppc": envoy_all_extensions(PPC_SKIP_TARGETS),
+         "//bazel:disable_http3_on_windows_x86_64": envoy_all_extensions(NO_HTTP3_SKIP_TARGETS + WINDOWS_SKIP_TARGETS),
+         "//bazel:disable_http3_on_linux_ppc": envoy_all_extensions(NO_HTTP3_SKIP_TARGETS + PPC_SKIP_TARGETS),
+-        "//bazel:disable_http3": envoy_all_extensions(NO_HTTP3_SKIP_TARGETS),
+         "//conditions:default": envoy_all_extensions(),
+     }),
+ )
