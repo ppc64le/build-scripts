@@ -59,7 +59,7 @@ if !  mvn clean install -Dlog4j.configurationFile="/tmp/log" -Pjanusgraph-releas
 fi 
 
 # Tests   janusgraph-dist, janusgraph-cql janusgraph-hbase,janusgraph-lucene,janusgraph-es,janusgraph-solr,janusgraph-dist,example-common,janusgraph-benchmark,janusgraph-scylla requires docker 
-if !  mvn verify -Dlog4j2.configurationFile="/tmp/log4j2" -Dlog4j.configurationFile="/tmp/log4j" -Pjanusgraph-release -Dgpg.skip=true -Pjava-11 --batch-mode  -pl -:janusgraph-test,-:janusgraph-cql,-:janusgraph-hbase,-:janusgraph-lucene,-:janusgraph-es,-:janusgraph-solr,-:janusgraph-dist,-:example-common,-:janusgraph-benchmark,-:janusgraph-scylla -T 8 ; then
+if !  mvn verify -Dlog4j2.configurationFile="/tmp/log4j2" -Dlog4j.configurationFile="/tmp/log4j" -Pjanusgraph-release -Dgpg.skip=true -Pjava-11 --batch-mode  -pl -:janusgraph-test,-:janusgraph-cql,-:janusgraph-hbase,-:janusgraph-lucene,-:janusgraph-es,-:janusgraph-solr,-:janusgraph-dist,-:example-common,-:janusgraph-benchmark,-:janusgraph-scylla,-:janusgraph-server -T 8 ; then
     echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
