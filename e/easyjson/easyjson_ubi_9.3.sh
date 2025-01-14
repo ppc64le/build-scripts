@@ -39,7 +39,6 @@ git clone $PACKAGE_URL $PACKAGE_NAME
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-go install golang.org/x/lint/golint@latest
 export PATH=$PATH:$(go env GOPATH)/bin
 go mod init
 go mod tidy
