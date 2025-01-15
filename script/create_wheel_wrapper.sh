@@ -28,7 +28,7 @@ install_python_version() {
             echo "Installing..."
             yum install -y gcc-c++ make cmake openssl-devel 
             echo "Installing..."
-            yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs 
+            yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
             echo "Starting python installing..."
             wget https://www.python.org/ftp/python/3.10.15/Python-3.10.15.tgz
             tar xf Python-3.10.15.tgz
@@ -49,7 +49,7 @@ install_python_version() {
             echo "Installing..."
             yum install -y gcc-c++ make cmake openssl-devel 
             echo "Installing..."
-            yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs 
+            yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
             echo "Starting python installing..."
             wget https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tgz
             tar xzf Python-3.13.0.tgz
