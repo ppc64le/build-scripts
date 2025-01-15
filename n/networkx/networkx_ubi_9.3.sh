@@ -23,8 +23,7 @@ PACKAGE_VERSION=${1:-2.8.4}
 PACKAGE_URL=https://github.com/networkx/networkx.git
 
 # Install necessary system packages
-yum install -y git gcc gcc-c++ gcc-gfortran gzip tar make wget xz cmake yum-utils openssl-devel openblas-devel bzip2-devel bzip2 zip unzip libffi-devel zlib-devel autoconf automake libtool cargo sqlite-devel python-devel
-
+yum install -y git gcc gcc-c++ gzip tar make wget xz cmake yum-utils libjpeg-devel zlib-devel openssl-devel openblas-devel bzip2-devel bzip2 zip unzip libffi-devel zlib-devel autoconf automake libtool cargo pkgconf-pkg-config.ppc64le info.ppc64le fontconfig.ppc64le fontconfig-devel.ppc64le sqlite-devel python-devel
 
 # Clone the repository
 git clone ${PACKAGE_URL} ${PACKAGE_NAME}
@@ -32,6 +31,7 @@ cd ${PACKAGE_NAME}
 git checkout networkx-${PACKAGE_VERSION}
 
 # Install the package
+pip install Pillow
 pip3 install .[default]
 
 # Install test dependencies
