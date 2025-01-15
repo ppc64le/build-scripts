@@ -1,0 +1,16 @@
+{
+    "maintainer": "robin-ibm",
+    "package_name": "parso",
+    "github_url": "https://github.com/davidhalter/parso.git",
+    "version": "v0.8.3",
+    "wheel_build" : true,
+    "default_branch": "main",
+    "build_script": "parso_ubi_9.3.sh",
+    "package_dir": "p/parso",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v0.*.*": {
+      "build_script": "parso_ubi_9.3.sh"
+    }
+}
