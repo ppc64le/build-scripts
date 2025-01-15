@@ -4,7 +4,7 @@
     "github_url": "https://github.com/davidhalter/parso.git",
     "version": "v0.8.3",
     "wheel_build" : true,
-    "default_branch": "main",
+    "default_branch": "master",
     "build_script": "parso_ubi_9.3.sh",
     "package_dir": "p/parso",
     "validate_build_script": true,
