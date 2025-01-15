@@ -1,4 +1,3 @@
-
 #!/bin/bash -e
 
 PYTHON_VERSION=$1
