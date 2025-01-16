@@ -45,7 +45,7 @@ fi
 
 #Clone the repository 
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 # Install via pip3
