@@ -27,9 +27,6 @@ yum install -y git  python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo cma
 pip3 install pytest tox nox
 PATH=$PATH:/usr/local/bin/
 
-OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
-SOURCE=Github
-
 # Install rust
 if ! command -v rustc &> /dev/null
 then
@@ -52,12 +49,12 @@ git checkout $PACKAGE_VERSION
 if !  python3 -m pip install ./; then
         echo "------------------$PACKAGE_NAME:install_fails------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"  
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails" 
         exit 1
 fi
 
 #Run tests
-if !(python3 -m pytest); then
+if !(pytest); then
     echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
