@@ -35,7 +35,7 @@ git checkout $PACKAGE_VERSION
 if ! command -v rustc &> /dev/null; then
     echo "Rust not found. Installing Rust..."
     curl https://sh.rustup.rs -sSf | sh -s -- -y
-    source "$HOME/.cargo/env"  # Update environment variables to use Rust
+    source "$HOME/.cargo/env"  
 else
     echo "Rust is already installed."
 fi

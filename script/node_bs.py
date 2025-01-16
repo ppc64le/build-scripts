@@ -21,6 +21,7 @@ GITHUB_PACKAGE_INFO_API_2 = "https://api.github.com/repos/{}/{}"
 parser = argparse.ArgumentParser(description='Automation of Manage Currency Package Addition')
 
 parser.add_argument('--package_name_arg', help='Name of the package')
+parser.add_argument('--package_dir_arg',help='Package directory')
 parser.add_argument('--package_version_arg', help='Version of package to be ported')
 parser.add_argument('--github_url_arg', help='Github URL the of package')
 parser.add_argument('--language_arg',help="Language Targetted")
@@ -87,6 +88,8 @@ def select_template_script(package_language):
         return 'build_script_python.sh'
     elif package_language == 'r' or package_language == 'R':
         return 'build_script_r.sh'
+    elif package_language =='java' or package_language =='Java':
+        return 'build_script_java.sh'
 
 
 def get_latest_build_script(dir_name):
@@ -242,6 +245,8 @@ def create_new_script():
             template_lines[i]=f"# Package          : {package_name}\n"
         elif template_lines[i].startswith("PACKAGE_NAME"):
             template_lines[i]=f"PACKAGE_NAME={package_name}\n"
+        elif template_lines[i].startswith("PACKAGE_DIR"):
+            template_lines[i]=f"PACKAGE_DIR={package_dir}\n"
         
     with open (f"{dir_name}/{package_name}_ubi_9.3.sh",'w') as newfile:
         newfile.writelines(template_lines)
@@ -357,6 +362,9 @@ else:
         package_name = args.package_name_arg
     else:
         package_name = input("Enter Package name (Package name should match with the directory name): ")
+
+    if args.package_dir_arg:
+        package_dir = args.package_dir_arg
 
     package_name = package_name.lower()
     dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_name}"

@@ -36,6 +36,7 @@ git clone --recursive https://github.com/llvm/llvm-project
 cd llvm-project
 git checkout llvmorg-14.0.1
 export PREFIX=/usr
+
 echo "build llvm ..."
 mkdir build && cd  build
 CMAKE_ARGS="${CMAKE_ARGS} -DLLVM_ENABLE_PROJECTS=lld;libunwind;compiler-rt"
@@ -43,6 +44,7 @@ CFLAGS="$(echo $CFLAGS | sed 's/-fno-plt //g')"
 CXXFLAGS="$(echo $CXXFLAGS | sed 's/-fno-plt //g')"
 CMAKE_ARGS="${CMAKE_ARGS} -DFFI_INCLUDE_DIR=$PREFIX/include"
 CMAKE_ARGS="${CMAKE_ARGS} -DFFI_LIBRARY_DIR=$PREFIX/lib"
+
 echo "starting cmake ..."
 cmake -DCMAKE_INSTALL_PREFIX="${PREFIX}"   \
       -DCMAKE_BUILD_TYPE=Release           \
