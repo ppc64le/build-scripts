@@ -32,7 +32,7 @@ cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 # Install
-if ! python3 -m setup.py install; then
+if ! python3 setup.py install; then
         echo "------------------$PACKAGE_NAME:install_fails------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"  
