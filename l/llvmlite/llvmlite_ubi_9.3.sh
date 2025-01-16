@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : llvmlite
-# Version       : v0.40.0
+# Version       : v0.42.0
 # Source repo   : https://github.com/numba/llvmlite
 # Tested on     : UBI: 9.3
 # Language      : python
@@ -20,7 +20,7 @@
 # ----------------------------------------------------------------------------
 
 # Variables
-PACKAGE_VERSION=${1:-"v0.40.0"}
+PACKAGE_VERSION=${1:-"v0.42.0"}
 PACKAGE_NAME=llvmlite
 PACKAGE_URL=https://github.com/numba/llvmlite
 
