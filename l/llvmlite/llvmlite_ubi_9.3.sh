@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : llvmlite
-# Version       : v0.40.0
+# Version       : v0.42.0
 # Source repo   : https://github.com/numba/llvmlite
 # Tested on     : UBI: 9.3
 # Language      : python
@@ -20,23 +20,24 @@
 # ----------------------------------------------------------------------------
 
 # Variables
-PACKAGE_VERSION=${1:-"v0.40.0"}
+PACKAGE_VERSION=${1:-"v0.42.0"}
 PACKAGE_NAME=llvmlite
 PACKAGE_URL=https://github.com/numba/llvmlite
 
-# Install dependencies
+echo "installing dependencies ..."
 yum install -y cmake git libffi-devel gcc-toolset-12 ninja-build python3-devel python3-pip
 
-#python dependencies
+echo "install python dependencies ..."
 source /opt/rh/gcc-toolset-12/enable
 pip install setuptools build
 
-# Build llvmdev which is a pre-req for llvmlite
+echo "Build llvmdev which is a pre-req for llvmlite ..."
 git clone --recursive https://github.com/llvm/llvm-project
 cd llvm-project
 git checkout llvmorg-14.0.1
 export PREFIX=/usr
 
+echo "build llvm ..."
 mkdir build && cd  build
 CMAKE_ARGS="${CMAKE_ARGS} -DLLVM_ENABLE_PROJECTS=lld;libunwind;compiler-rt"
 CFLAGS="$(echo $CFLAGS | sed 's/-fno-plt //g')"
@@ -44,6 +45,7 @@ CXXFLAGS="$(echo $CXXFLAGS | sed 's/-fno-plt //g')"
 CMAKE_ARGS="${CMAKE_ARGS} -DFFI_INCLUDE_DIR=$PREFIX/include"
 CMAKE_ARGS="${CMAKE_ARGS} -DFFI_LIBRARY_DIR=$PREFIX/lib"
 
+echo "starting cmake ..."
 cmake -DCMAKE_INSTALL_PREFIX="${PREFIX}"   \
       -DCMAKE_BUILD_TYPE=Release           \
       -DCMAKE_LIBRARY_PATH="${PREFIX}"     \
@@ -81,18 +83,18 @@ cmake -DCMAKE_INSTALL_PREFIX="${PREFIX}"   \
 
 export CPU_COUNT=4
 ninja -j${CPU_COUNT}
-
+echo "Starting make install..."
 ninja install
 
 cd ../..
 rm -rf llvm-project
 
-# Clone the repository
+echo "Clone the repository ..."
 git clone --recursive $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-# Install package
+echo "Install package ..."
 if ! (pip install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -100,7 +102,7 @@ if ! (pip install .) ; then
     exit 1
 fi
 
-# Run tests
+ echo "Run tests ... "
 if !(python3 runtests.py); then
     echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
