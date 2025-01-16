@@ -246,7 +246,7 @@ def create_new_script():
         elif template_lines[i].startswith("PACKAGE_NAME"):
             template_lines[i]=f"PACKAGE_NAME={package_name}\n"
         elif template_lines[i].startswith("PACKAGE_DIR"):
-            template_lines[i]=f"PACKAGE_DIR={package_dir}\n"
+            template_lines[i]=f"PACKAGE_DIR={package_name}\n"
         
     with open (f"{dir_name}/{package_name}_ubi_9.3.sh",'w') as newfile:
         newfile.writelines(template_lines)
