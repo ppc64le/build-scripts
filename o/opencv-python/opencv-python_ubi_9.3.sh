@@ -87,11 +87,11 @@ fi
 if [ "$ENABLE_HEADLESS" -eq 1 ]; then
     # Check for headless mode only if ENABLE_HEADLESS is set to 1
     if ! python${PYTHON_VER} -c "
-    import cv2
-    build_info = cv2.getBuildInformation()
-    if 'HAVE_OPENGL' not in build_info and 'HAVE_QT' not in build_info and 'HAVE_GTK' not in build_info:
-        print('Headless mode: GUI features are disabled.')
-    " ; then
+import cv2
+build_info = cv2.getBuildInformation()
+if 'HAVE_OPENGL' not in build_info and 'HAVE_QT' not in build_info and 'HAVE_GTK' not in build_info:
+    print('Headless mode: GUI features are disabled.')
+"; then
         echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Build_success_but_test_fails"
@@ -112,6 +112,6 @@ else
         echo "------------------$PACKAGE_NAME:both_build_and_test_success-------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | Both_Build_and_Test_Success"
-
+    fi
 fi
 
