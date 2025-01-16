@@ -24,13 +24,11 @@ PACKAGE_URL=https://github.com/apache/camel-quarkus
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
-
 #install java17
 yum -y update && yum install -y git wget java-17-openjdk-devel tar
 JDK_PATHS=$(compgen -G '/usr/lib/jvm/java-17-openjdk-*')
 export JAVA_HOME=${JDK_PATHS%$'\n'*}
 export PATH=$JAVA_HOME/bin:$PATH
-
 
 #install maven
 wget https://archive.apache.org/dist/maven/maven-3/3.9.7/binaries/apache-maven-3.9.7-bin.tar.gz
@@ -41,9 +39,6 @@ ln -s /usr/local/apache-maven-3.9.7/bin/mvn /usr/bin/mvn
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-
-
-
 
 # Build
 #at present only BUILD is supported as TEST is failing because mutiple came compoennets does not have ppc64l3 support
