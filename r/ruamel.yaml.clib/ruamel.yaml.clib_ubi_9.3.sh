@@ -3,12 +3,12 @@
 #
 # Package          : ruamel.yaml.clib
 # Version          : 0.2.6
-# Source repo      : https://pypi.io/packages/source/r/ruamel.yaml.clib/ruamel.yaml.clib-0.2.6.tar.gz
-# Tested on	: UBI:9.3
-# Language      : Python
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer    : ICH <ich@us.ibm.com>
+# Source repo      : https://github.com/ruamel/yaml.clib.git
+# Tested on	       : UBI:9.3
+# Language         : Python
+# Travis-Check     : True
+# Script License   : Apache License, Version 2 or later
+# Maintainer       : ICH <ich@us.ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -20,8 +20,8 @@
 
 PACKAGE_NAME=ruamel.yaml.clib
 PACKAGE_VERSION=${1:-0.2.6}
-PACKAGE_URL=https://pypi.io/packages/source/r/ruamel.yaml.clib/ruamel.yaml.clib-0.2.6.tar.gz
-PACKAGE_DIR="$(pwd)/$PACKAGE_NAME"
+PACKAGE_URL=https://github.com/ruamel/yaml.clib.git
+PACKAGE_DIR=yaml.clib
 
 yum install -y git  python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo cmake
 pip3 install pytest tox nox
@@ -43,44 +43,10 @@ then
     cd ../
 fi
 
-if [[ "$PACKAGE_URL" == *github.com* ]]; then
-    # Use git clone if it's a Git repository
-    if [ -d "$PACKAGE_NAME" ]; then
-        cd "$PACKAGE_NAME" || exit
-    else
-        if ! git clone "$PACKAGE_URL" "$PACKAGE_NAME"; then
-            echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-            echo "$PACKAGE_URL $PACKAGE_NAME"
-            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Clone_Fails"  
-            exit 1
-        fi
-        cd "$PACKAGE_NAME" || exit
-        git checkout "$PACKAGE_VERSION" || exit
-    fi
-else
-    # If it's not a Git repository, download and untar
-    if [ -d "$PACKAGE_NAME" ]; then
-        cd "$PACKAGE_NAME" || exit
-    else
-        # Use download and untar if it's not a Git repository
-        if ! curl -L "$PACKAGE_URL" -o "$PACKAGE_NAME.tar.gz"; then
-            echo "------------------$PACKAGE_NAME:download_fails---------------------------------------"
-            echo "$PACKAGE_URL $PACKAGE_NAME"
-            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Download_Fails"  
-            exit 1
-        fi
-        mkdir "$PACKAGE_NAME"
-        # Extract the downloaded tarball
-        if ! tar -xzf "$PACKAGE_NAME.tar.gz" -C "$PACKAGE_NAME" --strip-components=1; then
-            echo "------------------$PACKAGE_NAME:untar_fails---------------------------------------"
-            echo "$PACKAGE_URL $PACKAGE_NAME"
-            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Untar_Fails"  
-            exit 1
-        fi
-
-        cd "$PACKAGE_NAME" || exit
-    fi
-fi
+#Clone the repository 
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 
 # Install via pip3
 if !  python3 -m pip install ./; then
@@ -90,34 +56,15 @@ if !  python3 -m pip install ./; then
         exit 1
 fi
 
-# Run Tox
-python3 -m tox -e py39
-if [ $? -eq 0 ]; then
-    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
+#Run tests
+if !(python3 -m pytest); then
+    echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
-    exit 0
-fi
-
-# Run Pytest
-python3 -m pytest
-if [ $? -eq 0 ]; then
-    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
-    exit 0
-fi
-
-# Run Nox
-python3 -m nox
-if [ $? -eq 0 ]; then
-    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
-    exit 0
-else
-    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
     exit 2
+else
+    echo "------------------$PACKAGE_NAME:build_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    exit 0
 fi
