@@ -1,0 +1,15 @@
+{
+   "maintainer": "ramnathnayak-ibm",
+   "package_name": "toml",
+   "github_url": "https://github.com/BurntSushi/toml",
+   "version": "v1.4.0",
+   "default_branch": "master",
+   "build_script": "toml_ubi_9.3.sh",
+   "package_dir": "t/toml",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "v1.*.*" : {
+       "build_script": "toml_ubi_9.3.sh"
+    }
+}

@@ -23,29 +23,38 @@ PACKAGE_NAME=onnx
 PACKAGE_VERSION=${1:-v1.13.1}
 PACKAGE_URL=https://github.com/onnx/onnx
 
-# Install dependencies
+echo "Installing dependencies..."
 yum install -y git make libtool gcc-c++ libevent-devel zlib-devel openssl-devel python python-devel cmake gcc-gfortran openblas openblas-devel
 
-#Install protobuf-c
+echo "Downloading and installing protobuf-c"
 git clone https://github.com/protocolbuffers/protobuf.git
 cd protobuf
 git checkout v3.20.2
 git submodule update --init --recursive
 mkdir build_source && cd build_source
 cmake ../cmake -Dprotobuf_BUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_POSITION_INDEPENDENT_CODE=ON -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=Release
+echo "Building..."
 make -j$(nproc)
+echo "Installing..."
 make install
 cd ../..
 
-# Clone the repository
+echo "Cloning and installing..."
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
-pip install pytest nbval numpy==1.23.2 cython pythran scipy
+echo "installing python dependencies...."
+pip install pytest nbval pythran  
+echo "installing numpy.."
+pip install numpy==1.23.2
+echo "installing cython.."
+pip install cython
+echo "installing scipy.."
+pip install scipy
 
-#install
+echo "installing..."
 if ! pip install -e . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -53,7 +62,7 @@ if ! pip install -e . ; then
     exit 1
 fi
 
-#run tests  
+echo "Testing..."
 if ! pytest --ignore=onnx/test/reference_evaluator_backend_test.py ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"

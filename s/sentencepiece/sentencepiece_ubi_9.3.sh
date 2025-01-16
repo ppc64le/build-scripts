@@ -22,20 +22,20 @@
 PACKAGE_NAME=sentencepiece
 PACKAGE_VERSION=${1:-v0.1.97}
 PACKAGE_URL=https://github.com/google/sentencepiece.git
+PACKAGE_DIR=sentencepiece/python
 
 # Install dependencies
 yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel zlib-devel cmake pkg-config python3-devel python3-pip
 
 # Clone the repository
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME  
+cd $PACKAGE_DIR  
 git checkout $PACKAGE_VERSION  
 
 # install necessary Python packages
 pip install pytest
 
 #install
-cd python
 if ! (pip install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
