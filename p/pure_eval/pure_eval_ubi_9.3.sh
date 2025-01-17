@@ -23,7 +23,7 @@ PACKAGE_VERSION=${1:-0.2.2}
 PACKAGE_URL=https://github.com/alexmojaki/pure_eval.git
 
 # Install necessary system packages
-yum install -y git gcc gcc-c++ make wget python3-devel
+yum install -y git gcc gcc-c++ gzip tar make wget xz cmake yum-utils openssl-devel openblas-devel bzip2-devel bzip2 zip unzip libffi-devel zlib-devel autoconf automake libtool cargo sqlite-devel python-devel
 
 # Clone the repository
 git clone ${PACKAGE_URL} ${PACKAGE_NAME}
