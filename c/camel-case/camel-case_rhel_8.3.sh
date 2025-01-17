@@ -3,7 +3,7 @@
 # Package	: camel-case
 # Version	: 4.1.2
 # Source repo	: https://github.com/blakeembrey/change-case
-# Tested on	: RHEL 8.3
+# Tested on	: RHEL 8.3 
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
