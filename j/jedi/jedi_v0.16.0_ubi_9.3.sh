@@ -38,7 +38,7 @@ git submodule update --init --recursive
 pip3 install .
 
 # Install test dependencies
-pip3 install pytest tox
+pip3 install pytest tox chardet==4.0.0
 if ! tox ; then
     echo "------------------$PACKAGE_NAME: Tests_Fail------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
