@@ -39,6 +39,7 @@ pip3 install .
 
 # Install test dependencies
 pip3 install pytest tox
+yum remove -y python-chardet
 
 if ! (python3 setup.py install); then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
