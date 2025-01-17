@@ -1,0 +1,16 @@
+{
+    "maintainer": "pranithraoibm",
+    "package_name": "pathspec",
+    "github_url": "https://github.com/cpburnz/python-pathspec",
+    "version": "0.10.3",
+    "wheel_build": true,
+    "default_branch": "master",
+    "package_dir": "p/pathspec",
+    "build_script": "pathspec_ubi_9.3.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": false,
+    "*": {
+        "build_script": "pathspec_ubi_9.3.sh"
+    }
+}
