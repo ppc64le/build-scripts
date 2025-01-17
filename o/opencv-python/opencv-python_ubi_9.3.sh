@@ -26,7 +26,7 @@ PACKAGE_VERSION=${1:-84}
 PYTHON_VER=${PYTHON_VERSION:-3.11}
 
 # Set to 1 to build the headless version
-ENABLE_HEADLESS=${HEADLESS:-0}
+ENABLE_HEADLESS=${ENABLE_HEADLESS:-0}
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
@@ -59,6 +59,10 @@ fi
 
 git checkout ${PACKAGE_VERSION}
 git submodule update --init --recursive
+
+# Update `pyproject.toml` to ensure compatibility
+sed -i "/\"setuptools==59.2.0\"/c\  \"setuptools==59.2.0; python_version<'3.12'\",\n  \"setuptools<70.0.0; python_version>='3.12'\"" pyproject.toml
+
 
 # Install necessary Python build tools
 python${PYTHON_VER} -m pip install numpy scikit-build cmake
