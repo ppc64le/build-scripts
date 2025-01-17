@@ -38,16 +38,7 @@ git submodule update --init --recursive
 pip3 install .
 
 # Install test dependencies
-pip3 install pytest tox chardet==4.0.0
-
-if ! (python3 setup.py install); then
-    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
-    exit 1
-fi
-
-# Run tests (skipping the some testcase as it is failing on x_86 also.)
+pip3 install pytest tox
 if ! tox ; then
     echo "------------------$PACKAGE_NAME: Tests_Fail------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
