@@ -1,0 +1,16 @@
+{
+    "maintainer": "pranithraoibm",
+    "package_name": "requests-oauthlib",
+    "github_url": "https://github.com/requests/requests-oauthlib",
+    "version": "1.3.0",
+    "wheel_build": true,
+    "default_branch": "master",
+    "package_dir": "r/requests-oauthlib",
+    "build_script": "requests-oauthlib_1.3.0_ubi_9.3.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": false,
+    "*": {
+        "build_script": "requests-oauthlib_1.3.0_ubi_9.3.sh"
+    }
+}
