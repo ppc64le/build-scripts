@@ -29,9 +29,9 @@ echo "Core dependencies installed."
  
 echo "Installing scipy dependencies and build-setup dependencies..."
 # install scipy dependency (numpy wheel gets built and installed) and build-setup dependencies
-pip install meson meson-python ninja 'numpy<1.23' 'setuptools<60.0' Cython==0.29.37 'meson-python<0.15.0,>=0.12.1' pybind11 'patchelf>=0.11.0' 'pythran<0.15.0,>=0.12.0' pooch pytest build
+pip install meson 'wheel<0.39.0' beniget==0.4.0 pythran==0.12.1 pyproject_metadata==0.8.1 pybind11==2.10.1 gast==0.5.0 meson-python ninja numpy==1.21.6 'setuptools<60.0' Cython==0.29.37 'meson-python<0.13.0,>=0.11.0' 'patchelf>=0.11.0' pooch pytest build
 echo "Dependencies installed."
- 
+
 echo "Cloning source repository..."
 # clone source repository
 git clone $PACKAGE_URL
