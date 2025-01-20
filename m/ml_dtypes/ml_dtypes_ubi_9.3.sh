@@ -24,14 +24,16 @@ PACKAGE_VERSION=${1:-v0.2.0}
 PACKAGE_URL=https://github.com/jax-ml/ml_dtypes.git
 
 # Install necessary system dependencies
-yum install -y git gcc gcc-c++ make cmake wget openssl-devel bzip2 bzip2-devel libffi-devel zlib-devel python3-devel python3-pip
+yum install -y git gcc gcc-c++ make cmake wget openssl-devel bzip2 bzip2-devel libffi-devel zlib-devel
 
 # Clone the repository
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME  
-git checkout $PACKAGE_VERSION  
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
+git submodule init
+git submodule update
 
-#build eigen 
+#build eigen
 wget https://gitlab.com/libeigen/eigen/-/archive/master/eigen-master.tar.bz2
 tar -xvjf eigen-master.tar.bz2
 cd eigen-master
@@ -42,9 +44,9 @@ make install
 cd /ml_dtypes
 
 # Install additional dependencies
-pip install wheel build pytest absl-py pybind11 numpy==1.23.5 setuptools
+pip install wheel build pytest absl-py pybind11 'numpy<2' setuptools
 
-#set path and install 
+#install
 export CXXFLAGS="-I/usr/local/include/eigen3"
 export CFLAGS="-I/usr/local/include/eigen3"
 if ! pip install . --no-build-isolation ; then
