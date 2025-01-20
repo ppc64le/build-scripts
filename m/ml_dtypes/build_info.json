@@ -1,0 +1,16 @@
+{
+   "maintainer": "aastha-sharma2",
+   "package_name": "ml_dtypes",
+   "github_url": "https://github.com/jax-ml/ml_dtypes.git",
+   "version": "v0.2.0",
+   "default_branch": "main",
+   "build_script": "ml_dtypes_ubi_9.3.sh",
+   "wheel_build" : true,
+   "package_dir": "m/ml_dtypes",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*": {
+       "build_script": "ml_dtypes_ubi_9_3.sh"
+   }
+}
