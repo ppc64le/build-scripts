@@ -1,0 +1,15 @@
+{
+   "maintainer": "ramnathnayak-ibm",
+   "package_name": "prometheus__client_golang",
+   "github_url": "https://github.com/prometheus/client_golang",
+   "version": "v1.20.5",
+   "default_branch": "main",
+   "build_script": "prometheus__client_golang_ubi_9.3.sh",
+   "package_dir": "p/prometheus__client_golang",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "v1.*.*" : {
+       "build_script": "prometheus__client_golang_ubi_9.3.sh"
+   }
+}
