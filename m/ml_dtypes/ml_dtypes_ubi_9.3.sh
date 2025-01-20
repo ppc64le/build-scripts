@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-v0.2.0}
 PACKAGE_URL=https://github.com/jax-ml/ml_dtypes.git
 
 # Install necessary system dependencies
-yum install -y git gcc gcc-c++ make cmake wget openssl-devel bzip2 bzip2-devel libffi-devel zlib-devel
+yum install -y git gcc gcc-c++ make cmake wget openssl-devel bzip2 bzip2-devel libffi-devel zlib-devel python3-devel python3-pip
 
 # Clone the repository
 git clone $PACKAGE_URL
