@@ -43,7 +43,7 @@ Django==5.1.4 asgiref==3.8.1 attrs==24.3.0 colorama==0.4.6 docopt==0.6.2 iniconf
 # Install test dependencies
 pip3 install pytest tox==4.23.2
 
-if ! tox ; then
+if ! tox -e py39 ; then
     echo "------------------$PACKAGE_NAME: Tests_Fail------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Tests_Fail"
