@@ -42,7 +42,7 @@ make install
 cd /ml_dtypes
 
 # Install additional dependencies
-pip install wheel build pytest absl-py pybind11 'numpy<2' setuptools
+pip install wheel build pytest absl-py pybind11 numpy==1.23.5 setuptools
 
 #set path and install 
 export CXXFLAGS="-I/usr/local/include/eigen3"
