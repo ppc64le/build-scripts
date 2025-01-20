@@ -1,5 +1,5 @@
 {
-    "maintainer":"AbhiIBM",
+    "maintainer":"Vipul-Ajmera",
     "package_name" : "MACS",
     "github_url": "https://github.com/macs3-project/MACS",
     "version": "v3.0.1",
@@ -14,8 +14,8 @@
         "dir" : "ubi8.7",
         "build_script" : "MACS_ubi_8.7.sh"
     },
-    "3.0.*" : {
-        "dir" : "ubi8.7",
+    "v*.*.*" : {
+        "dir" : "v3.0.1_ubi9",
         "build_script" : "MACS_ubi_9.3.sh"
     }
 }

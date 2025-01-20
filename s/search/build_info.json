@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "search",
+    "github_url": "https://github.com/codemirror/search",
+    "version": "6.5.6",
+    "default_branch": "main",
+    "build_script": "search_ubi_9.3.sh",
+    "package_dir": "s/search",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "6.*.*": {
+        "build_script": "search_ubi_9.3.sh"
+    }
+}

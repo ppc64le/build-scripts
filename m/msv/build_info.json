@@ -1,0 +1,15 @@
+{
+    "maintainer": "santhoshkotla2929",
+    "package_name": "msv",
+    "github_url": "https://github.com/xmlark/msv",
+    "version": "msv-2022.7",
+    "default_branch": "master",
+    "build_script": "msv_ubi_9.3.sh",
+    "package_dir": "m/msv",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "msv-*.*": {
+      "build_script": "msv_ubi_9.3.sh"	   
+    }    
+}
