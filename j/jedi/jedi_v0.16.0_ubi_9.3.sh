@@ -41,7 +41,7 @@ pip3 install .
 Django==5.1.4 asgiref==3.8.1 attrs==24.3.0 colorama==0.4.6 docopt==0.6.2 iniconfig==2.0.0 packaging==24.2 parso==0.8.4 pluggy==1.5.0 pytest==8.3.4 sqlparse==0.5.3 jedi==0.16.0
 
 # Install test dependencies
-pip3 install pytest tox==4.23.2 chardet==4.0.0
+pip3 install pytest tox==4.23.2
 
 if ! tox ; then
     echo "------------------$PACKAGE_NAME: Tests_Fail------------------"
