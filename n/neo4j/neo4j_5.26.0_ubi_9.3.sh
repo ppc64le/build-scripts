@@ -82,7 +82,7 @@ if ! mvn  clean install -Dlog4j2.configurationFile="/tmp/log4j2" -Dlog4j.configu
 fi
 
 # rerun failing tests
-# if ! mvn clean install -Dlog4j2.configurationFile="/tmp/log4j2" -Dlog4j.configurationFile="/tmp/log4j" -pl -:neo4j-push-to-cloud,-:community-it,-:kernel-it,-:neo4j-kernel-test,-:neo4j-collections,-:bolt-it,-:neo4j-graphdb-api,-:test-utils,-:neo4j-values,-:neo4j-random-values,-:io-test-utils,-:neo4j-logging,-:log-test-utils,-:neo4j-configuration,-:neo4j-lock,-:neo4j-schema,-:neo4j-procedure-api,-:neo4j-cypher-compatibility-spec-suite,-:neo4j-cypher-planner,-:cypher-shell ; then
+# if ! mvn clean install -Dlog4j2.configurationFile="/tmp/log4j2" -Dlog4j.configurationFile="/tmp/log4j" -pl -:neo4j-push-to-cloud,-:community-it,-:kernel-it,-:neo4j-kernel-test,-:neo4j-collections,-:bolt-it,-:neo4j-graphdb-api,-:test-utils,-:neo4j-values,-:neo4j-random-values,-:io-test-utils,-:neo4j-logging,-:log-test-utils,-:neo4j-configuration,-:neo4j-lock,-:neo4j-schema,-:neo4j-procedure-api,-:neo4j-cypher-compatibility-spec-suite,-:neo4j-cypher-planner,-:cypher-shell -T 4 ; then
 #     echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
 #     echo "$PACKAGE_URL $PACKAGE_NAME"
 #     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
