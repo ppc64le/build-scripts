@@ -27,7 +27,7 @@ PACKAGE_URL=https://github.com/numpy/numpy
 
 # Install dependencies and tools.
 yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openssl-devel cmake
-pip3 install hypothesis==6.115.5 cython typing_extensions meson==1.6.0 ninja==1.11.1.1 pytest==7.4.2 'setuptools<60'
+pip3 install hypothesis==6.115.5 typing_extensions meson==1.6.0 ninja==1.11.1.1 pytest==7.4.2  'Cython<3.0,>=0.29.30' setuptools==59.2.0 wheel==0.37.0
 
 #clone repository
 git clone $PACKAGE_URL
