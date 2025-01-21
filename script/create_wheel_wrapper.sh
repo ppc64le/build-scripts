@@ -152,6 +152,7 @@ else
 fi
 
 #checking if wheel is generated through script itself
+cd $CURRENT_DIR
 if ls *.whl 1> /dev/null 2>&1; then
     echo "Wheel file already exist in the current directory:"
     ls *.whl
