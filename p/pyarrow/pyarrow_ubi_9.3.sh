@@ -30,7 +30,6 @@ yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip ope
 echo "Dependencies installed."
 
 mkdir dist
-cd dist
 export CXX=g++
 export CC=gcc
 export ARROW_HOME=$(pwd)/dist
@@ -63,7 +62,7 @@ pip install -r /dist/arrow/python/requirements-build.txt
 pip install cython  wheel
 
 echo "Preparing for build..."
-cd ..
+
 mkdir arrow/cpp/build
 cd arrow/cpp/build
 
@@ -88,18 +87,19 @@ cmake -DCMAKE_INSTALL_PREFIX=$ARROW_HOME \
       ..
 make -j4
 make install
+cd ../../python/
 
-cd /dist/arrow/python/
+
 export PYARROW_WITH_PARQUET=1
 export PYARROW_WITH_DATASET=1
 export PYARROW_PARALLEL=4
 export PYARROW_BUILD_TYPE="release"
 
-if ! python setup.py bdist_wheel ; then
+if ! python3 setup.py bdist_wheel ; then
         echo "------------------$PACKAGE_NAME:wheel_built_fails---------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  wheel_built_fails"
-	exit 2
+	exit 1
 else
         echo "------------------$PACKAGE_NAME:wheel_built_success-------------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
