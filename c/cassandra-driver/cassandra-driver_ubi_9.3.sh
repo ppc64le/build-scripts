@@ -55,7 +55,7 @@ if ! (python3 setup.py install) ; then
     exit 1
 fi
 
-pip install -r test-requirements.txt test-datastax-requirements.txt
+pip install -r test-requirements.txt -r test-datastax-requirements.txt
 
 # Run test cases
 if !(python3 -m tox -e py39); then
