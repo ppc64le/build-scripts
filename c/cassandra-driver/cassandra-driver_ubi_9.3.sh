@@ -24,7 +24,7 @@ PACKAGE_URL=http://github.com/datastax/python-driver
 PACKAGE_DIR=python-driver
 
 # Install dependencies
-yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel krb5-devel libev libev-devel libffi-devel zlib-devel python-devel python-pip
+yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel krb5-devel libffi-devel zlib-devel python-devel python-pip
 
 # Install rust
 if ! command -v rustc &> /dev/null
