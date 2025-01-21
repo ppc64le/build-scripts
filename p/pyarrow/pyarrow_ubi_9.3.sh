@@ -58,13 +58,13 @@ sed -i -E 's/\&\&/\&/g' python/pyarrow/lib.pxd
 sed -i -E 's/\&\&/\&/g' python/pyarrow/includes/libarrow_fs.pxd
 echo "Fixes applied."
 
-pip install -r /dist/arrow/python/requirements-build.txt
-pip install cython  wheel
+pip install -r python/requirements-build.txt
+pip install cython  wheel numpy==1.21.2
 
 echo "Preparing for build..."
 
-mkdir arrow/cpp/build
-cd arrow/cpp/build
+mkdir cpp/build
+cd cpp/build
 
 cmake -DCMAKE_INSTALL_PREFIX=$ARROW_HOME \
       -DCMAKE_INSTALL_LIBDIR=lib \
@@ -85,7 +85,7 @@ cmake -DCMAKE_INSTALL_PREFIX=$ARROW_HOME \
       -DARROW_WITH_ZSTD=ON \
       -DPARQUET_REQUIRE_ENCRYPTION=ON \
       ..
-make -j4
+make -j$(nproc)
 make install
 cd ../../python/
 
