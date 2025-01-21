@@ -27,7 +27,7 @@ PACKAGE_URL=https://github.com/numpy/numpy
 
 # Install dependencies and tools.
 yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openssl-devel cmake
-pip3 install hypothesis==6.115.5 cython typing_extensions meson==1.6.0 ninja==1.11.1.1 pytest==7.4.2
+pip3 install hypothesis==6.115.5 typing_extensions meson==1.6.0 ninja==1.11.1.1 pytest==7.4.2  'Cython<3.0,>=0.29.30' setuptools==59.2.0 wheel==0.37.0
 
 #clone repository
 git clone $PACKAGE_URL
@@ -44,8 +44,7 @@ if ! pip3 install -e . ; then
 fi
 #test
 sed -i 's/suppress_health_check=hypothesis\.HealthCheck\.all()/suppress_health_check=list(hypothesis.HealthCheck)/' numpy/conftest.py
-export PYTEST_ADDOPTS="-k 'not test_clip_property and not test_new_policy' --deselect=numpy/random/tests/test_extending.py --deselect=numpy/lib/tests/test_histograms.py --deselect=numpy/core/tests/test_mem_policy.py --deselect=typing/tests/test_generic_alias.py --deselect=random/tests/test_extending.py --deselect=core/tests/test_mem_policy.py --deselect=core/tests/test_numeric.py --deselect=array_api/tests/test_set_functions.py --deselect=typing/tests/test_typing.py "
-if ! (pytest); then
+if ! python3 runtests.py; then
     echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
