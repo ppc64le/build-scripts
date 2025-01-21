@@ -62,4 +62,4 @@ if !  mvn -B -U -T 2 clean install -Pquick,-formatting ; then
 fi 
 
 # Tests failures in parity with x86  
-
+exit 0
