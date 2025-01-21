@@ -38,7 +38,8 @@ pip3 install .[default]
 pip3 install pytest
 
 # Run tests(skipping some testcase as same testcase failing in x86)
-if ! pytest --pyargs networkx --ignore=networkx/classes/tests/test_graphviews.py --ignore=networkx/classes/tests/test_coreviews.py --ignore=networkx/algorithms/tree/tests/test_mst.py --ignore=networkx/algorithms/tests/test_structuralholes.py --ignore=networkx/algorithms/shortest_paths/tests/test_weighted.py --ignore=networkx/algorithms/isomorphism/tests/test_match_helpers.py --ignore=networkx/algorithms/flow/tests/test_maxflow.py --ignore=networkx/algorithms/community/tests/test_kclique.py --ignore=networkx/algorithms/bipartite/tests/test_matching.py; then
+cd networkx/tests
+if ! pytest -k "not(test_lazy_import_nonbuiltins)"; then
     echo "------------------$PACKAGE_NAME: Tests_Fail------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Tests_Fail"
