@@ -24,7 +24,20 @@ PACKAGE_URL=http://github.com/datastax/python-driver
 PACKAGE_DIR=python-driver
 
 # Install dependencies
-yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel krb5-devel libffi-devel zlib-devel python-devel python-pip
+yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel krb5-devel libev libev-devel libffi-devel zlib-devel python-devel python-pip
+
+# Install rust
+if ! command -v rustc &> /dev/null
+then
+    wget https://static.rust-lang.org/dist/rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
+    tar -xzf rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
+    cd rust-1.75.0-powerpc64le-unknown-linux-gnu
+    sudo ./install.sh
+    export PATH=$HOME/.cargo/bin:$PATH
+    rustc -V
+    cargo -V
+    cd ../
+fi
 
 # Clone the repository
 git clone $PACKAGE_URL
@@ -34,7 +47,6 @@ git checkout $PACKAGE_VERSION
 #install necessary Python packages
 pip install wheel pytest tox nox
 
-
 #Install
 if ! (python3 setup.py install) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
@@ -42,6 +54,8 @@ if ! (python3 setup.py install) ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
+
+pip install -r test-requirements.txt test-datastax-requirements.txt
 
 # Run test cases
 if !(python3 -m tox -e py39); then
