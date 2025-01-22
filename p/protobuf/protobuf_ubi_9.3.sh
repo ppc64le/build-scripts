@@ -39,7 +39,6 @@ make install
 
 # Install additional dependencies
 pip install wheel pytest==7.0.0
-pip uninstall setuptools -y
 
 #install
 cd python
