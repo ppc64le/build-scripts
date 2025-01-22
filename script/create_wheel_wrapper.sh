@@ -128,7 +128,7 @@ echo "=============== Running package build-script starts =================="
 
 if [ -n "$TEMP_BUILD_SCRIPT_PATH" ]; then
     echo "Installing required dependencies..."
-    python$PYTHON_VERSION -m pip install --upgrade pip setuptools wheel build pytest nox tox
+    python$PYTHON_VERSION -m pip install --upgrade pip wheel build pytest nox tox
     echo "Installing required dependencies completed..."
 
     package_dir=$(grep -oP '(?<=^PACKAGE_DIR=).*' "$TEMP_BUILD_SCRIPT_PATH" | tr -d '"')
@@ -151,6 +151,18 @@ else
     echo "No build script to run, skipping execution."
 fi
 
+#checking if wheel is generated through script itself
+cd $CURRENT_DIR
+if ls *.whl 1> /dev/null 2>&1; then
+    echo "Wheel file already exist in the current directory:"
+    ls *.whl
+    echo "Exiting."
+    cleanup "$VENV_DIR"
+    [ -n "$TEMP_BUILD_SCRIPT_PATH" ] && rm "$CURRENT_DIR/$TEMP_BUILD_SCRIPT_PATH"
+    exit 0
+fi
+
+#Navigating to the package directory to build wheel 
 if [ -d "$package_dir" ]; then
     echo "Navigating to the package directory: $package_dir"
     cd "$package_dir"
