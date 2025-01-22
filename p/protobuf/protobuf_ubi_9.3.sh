@@ -17,26 +17,25 @@
 #                    contact "Maintainer" of this script.
 #
 # ---------------------------------------------------------------------------
-
 # Variables
 PACKAGE_NAME=protobuf
 PACKAGE_VERSION=${1:-v3.21.12}
 PACKAGE_URL=https://github.com/protocolbuffers/protobuf.git
-PACKAGE_DIR=protobuf/python
+PACKAGE_DIR=protobuf/python/
 
 # Install necessary system dependencies
 yum install -y --allowerasing autoconf automake libtool curl make g++ unzip git gcc gcc-c++ wget openssl-devel bzip2-devel libffi-devel zlib-devel python-devel python-pip
 
 # Clone the repository
 git clone $PACKAGE_URL
-cd $PACKAGE_DIR  
-git checkout $PACKAGE_VERSION  
+cd $PACKAGE_DIR
+git checkout $PACKAGE_VERSION
 
 #build protoc
 ./autogen.sh
 ./configure
 make
-make install 
+make install
 
 # Install additional dependencies
 pip install wheel pytest==7.0.0
@@ -50,7 +49,7 @@ if ! pip install . ; then
     exit 1
 fi
 
-#tests
+#run tests
 if ! python3 setup.py test; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -61,4 +60,4 @@ else
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
-fi   
+fi
