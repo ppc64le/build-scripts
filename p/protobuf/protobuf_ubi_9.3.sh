@@ -28,7 +28,7 @@ yum install -y --allowerasing autoconf automake libtool curl make g++ unzip git 
 
 # Clone the repository
 git clone $PACKAGE_URL
-cd $PACKAGE_DIR
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #build protoc
@@ -42,6 +42,7 @@ pip install wheel pytest==7.0.0
 pip uninstall setuptools -y
 
 #install
+cd python
 if ! pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
