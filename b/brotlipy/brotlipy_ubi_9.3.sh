@@ -32,8 +32,8 @@ yum install -y wget gcc gcc-c++ gcc-gfortran git make  python-devel  openssl-dev
 
 #clone repository
 git clone $PACKAGE_URL
-cd  $PACKAGE_NAME
-git checkout $PACKAGE_DIR
+cd  $PACKAGE_DIR
+git checkout $PACKAGE_VERSION
 
 
 git submodule update --init --recursive
