@@ -87,9 +87,9 @@ cmake -DCMAKE_INSTALL_PREFIX=$ARROW_HOME \
       ..
 make -j$(nproc)
 make install
-cd ../../python/
+cd /
 
-
+cd $PACKAGE_DIR/python/
 export PYARROW_WITH_PARQUET=1
 export PYARROW_WITH_DATASET=1
 export PYARROW_PARALLEL=4
