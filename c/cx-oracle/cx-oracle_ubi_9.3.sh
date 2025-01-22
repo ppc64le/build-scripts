@@ -24,6 +24,8 @@ PACKAGE_NAME=python-cx_Oracle
 PACKAGE_VERSION=${1:-8.3.0}
 PACKAGE_URL=https://github.com/oracle/python-cx_Oracle.git
 PACKAGE_DIR=python-cx_Oracle
+CURRENT_DIR=$(pwd)
+export ORACLE_HOME=$(pwd)/opt/oracle
 
 yum install -y wget
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
@@ -45,14 +47,14 @@ curl https://sh.rustup.rs -sSf | sh -s -- -y
 source "$HOME/.cargo/env"  # Update environment variables to use Rust
 
 # Install Oracle Instantclient needed for tests
-mkdir -p /opt/oracle && cd /opt/oracle
+mkdir -p $ORACLE_HOME && cd $ORACLE_HOME
 wget https://download.oracle.com/otn_software/linux/instantclient/193/instantclient-basic-linux.leppc64.c64-19.3.0.0.0dbru.zip
 unzip instantclient-basic-linux.leppc64.c64-19.3.0.0.0dbru.zip
 rm -f instantclient-basic-linux.leppc64.c64-19.3.0.0.0dbru.zip
 wget https://download.oracle.com/otn_software/linux/instantclient/193/instantclient-sdk-linux.leppc64.c64-19.3.0.0.0dbru.zip
 unzip instantclient-sdk-linux.leppc64.c64-19.3.0.0.0dbru.zip
 rm -f instantclient-sdk-linux.leppc64.c64-19.3.0.0.0dbru.zip
-echo /opt/oracle/instantclient_19_3 > /etc/ld.so.conf.d/oracle-instantclient.conf
+echo $ORACLE_HOME/instantclient_19_3 > /etc/ld.so.conf.d/oracle-instantclient.conf
 ldconfig
 cd ../..
 
@@ -66,6 +68,7 @@ export LD_LIBRARY_PATH=/opt/oracle/instantclient_19_3:$LD_LIBRARY_PATH
 export PATH=/opt/oracle/instantclient_19_3:$PATH
 
 # Clone the repository
+cd $CURRENT_DIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
