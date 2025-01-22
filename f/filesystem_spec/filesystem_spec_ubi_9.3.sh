@@ -38,7 +38,7 @@ pip install pytest-mock
 pip install numpy
 pip install tqdm
 pip install requests
-pip install .[all, test]
+pip install .[all]
 
 # Build the package
 if ! python3 setup.py install; then
