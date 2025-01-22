@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : protobuf
-# Version          : v21.12
+# Version          : 3.21.12
 # Source repo      : https://github.com/protocolbuffers/protobuf.git
 # Tested on        : UBI:9.3
 # Language         : Python
@@ -20,7 +20,7 @@
 
 # Variables
 PACKAGE_NAME=protobuf
-PACKAGE_VERSION=${1:-v21.12}
+PACKAGE_VERSION=${1:-v3.21.12}
 PACKAGE_URL=https://github.com/protocolbuffers/protobuf.git
 PACKAGE_DIR=protobuf/python
 
