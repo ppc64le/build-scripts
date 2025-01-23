@@ -1,0 +1,94 @@
+diff --git a/cargo/private/cargo_build_script.bzl b/cargo/private/cargo_build_script.bzl
+index 675819d7..1dcbbf23 100644
+--- a/cargo/private/cargo_build_script.bzl
++++ b/cargo/private/cargo_build_script.bzl
+@@ -145,7 +145,7 @@ def _cargo_build_script_impl(ctx):
+         "NUM_JOBS": "1",
+         "OPT_LEVEL": compilation_mode_opt_level,
+         "RUSTC": toolchain.rustc.path,
+-        "TARGET": toolchain.target_flag_value,
++        "TARGET": toolchain.target_flag_value.replace("ppc64le", "powerpc64le"),
+         # OUT_DIR is set by the runner itself, rather than on the action.
+     })
+
+diff --git a/rust/platform/triple.bzl b/rust/platform/triple.bzl
+index 1d07ce2e..fb1967ff 100644
+--- a/rust/platform/triple.bzl
++++ b/rust/platform/triple.bzl
+@@ -114,7 +114,7 @@ def get_host_triple(repository_ctx, abi = None):
+     # Detect the host's cpu architecture
+
+     supported_architectures = {
+-        "linux": ["aarch64", "x86_64"],
++        "linux": ["aarch64", "x86_64" , "ppc64le"],
+         "macos": ["aarch64", "x86_64"],
+         "windows": ["aarch64", "x86_64"],
+     }
+diff --git a/rust/platform/triple_mappings.bzl b/rust/platform/triple_mappings.bzl
+index f8c59561..b19eed9e 100644
+--- a/rust/platform/triple_mappings.bzl
++++ b/rust/platform/triple_mappings.bzl
+@@ -69,8 +69,9 @@ _CPU_ARCH_TO_BUILTIN_PLAT_SUFFIX = {
+     "mips": None,
+     "mipsel": None,
+     "powerpc": "ppc",
+-    "powerpc64": None,
+-    "powerpc64le": None,
++    "ppc64le": "ppc",
++    "powerpc64": "ppc",
++    "powerpc64le": "ppc",
+     "riscv32": "riscv32",
+     "riscv32imc": "riscv32",
+     "riscv64": "riscv64",
+diff --git a/rust/private/repository_utils.bzl b/rust/private/repository_utils.bzl
+index 198385be..fedbc682 100644
+--- a/rust/private/repository_utils.bzl
++++ b/rust/private/repository_utils.bzl
+@@ -785,12 +785,16 @@ def load_arbitrary_tool(
+     for subdirectory in tool_subdirectories:
+         # As long as the sha256 value is consistent accross calls here the
+         # cost of downloading an artifact is negated as by Bazel's caching.
+-        result = ctx.download_and_extract(
+-            urls,
+-            sha256 = sha256,
+-            auth = _make_auth_dict(ctx, urls),
+-            stripPrefix = "{}/{}".format(tool_path, subdirectory),
+-        )
++        tool_path = tool_path.replace("ppc64le", "powerpc64le")
++        subdirectory = subdirectory.replace("ppc64le", "powerpc64le")
++        for url in urls:
++            url = url.replace("ppc64le", "powerpc64le")
++            result = ctx.download_and_extract(
++                url,
++                sha256 = sha256,
++                auth = _make_auth_dict(ctx, urls),
++                stripPrefix = "{}/{}".format(tool_path, subdirectory),
++            )
+
+         # In the event no sha256 was provided, set it to the value of the first
+         # downloaded item so subsequent downloads use a cached artifact.
+diff --git a/rust/private/rustc.bzl b/rust/private/rustc.bzl
+index 6fdc7b92..86269d74 100644
+--- a/rust/private/rustc.bzl
++++ b/rust/private/rustc.bzl
+@@ -977,7 +977,7 @@ def construct_arguments(
+     if error_format != "json":
+         # Color is not compatible with json output.
+         rustc_flags.add("--color=always")
+-    rustc_flags.add(toolchain.target_flag_value, format = "--target=%s")
++    rustc_flags.add(toolchain.target_flag_value.replace("ppc64le", "powerpc64le"), format = "--target=%s")
+     if hasattr(attr, "crate_features"):
+         rustc_flags.add_all(getattr(attr, "crate_features"), before_each = "--cfg", format_each = 'feature="%s"')
+     if linker_script:
+diff --git a/rust/repositories.bzl b/rust/repositories.bzl
+index 8b16a586..04763e02 100644
+--- a/rust/repositories.bzl
++++ b/rust/repositories.bzl
+@@ -43,6 +43,7 @@ DEFAULT_TOOLCHAIN_TRIPLES = {
+     "x86_64-pc-windows-msvc": "rust_windows_x86_64",
+     "x86_64-unknown-freebsd": "rust_freebsd_x86_64",
+     "x86_64-unknown-linux-gnu": "rust_linux_x86_64",
++    "ppc64le-unknown-linux-gnu": "rust_linux_ppc64le",
+ }
+
+ def rules_rust_dependencies():
