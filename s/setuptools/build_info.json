@@ -1,0 +1,13 @@
+{
+   "maintainer": "shubham-dayma-ibm",
+   "package_name": "setuptools",
+   "github_url": "https://github.com/pypa/setuptools",
+   "version": "v75.8.0",
+   "default_branch": "main",
+   "build_script": "setuptools_ubi_9.3.sh",
+   "package_dir": "s/setuptools",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
