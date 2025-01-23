@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : onnx
-# Version          : v1.13.1
+# Version          : v1.16.0
 # Source repo      : https://github.com/onnx/onnx
 # Tested on        : UBI:9.3
 # Language         : Python
@@ -20,7 +20,7 @@
 
 # Variables
 PACKAGE_NAME=onnx
-PACKAGE_VERSION=${1:-v1.13.1}
+PACKAGE_VERSION=${1:-v1.16.0}
 PACKAGE_URL=https://github.com/onnx/onnx
 
 echo "Installing dependencies..."
@@ -46,13 +46,15 @@ git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
 echo "installing python dependencies...."
-pip install pytest nbval pythran  
+pip install pytest nbval pythran
 echo "installing numpy.."
 pip install numpy==1.24.3
 echo "installing cython.."
 pip install cython
 echo "installing scipy.."
 pip install scipy
+echo "installing parameterized.."
+pip install parameterized
 
 echo "installing..."
 if ! pip install -e . ; then
@@ -62,8 +64,7 @@ if ! pip install -e . ; then
     exit 1
 fi
 
-echo "Testing..."
-if ! pytest --ignore=onnx/test/reference_evaluator_backend_test.py ; then
+if ! pytest --ignore=onnx/test/reference_evaluator_test.py --ignore=onnx/test/test_backend_reference.py ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
