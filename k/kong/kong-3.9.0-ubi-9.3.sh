@@ -19,7 +19,7 @@
 # --------------------------------------------------------------------------------
 
 #GITHUB_TOKEN=" "
-echo -n Enter GIHUB_TOKEN
+echo -n Enter GIHUB_TOKEN : 
 read -s githubtoken
 echo
 # Run Command
