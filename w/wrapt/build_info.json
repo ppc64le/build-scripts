@@ -1,16 +1,16 @@
 {
-    "maintainer": "abhijeetdandekaribm",
+    "maintainer": "Harithanagothu2",
     "package_name": "wrapt",
     "github_url": "https://github.com/GrahamDumpleton/wrapt.git",
     "version": "1.14.1",
     "wheel_build" : true,
     "package_dir": "w/wrapt",
-    "default_branch": "master",
+    "default_branch": "develop",
     "build_script": "wrapt_ubi_9.3.sh",
     "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": "false",
-    "*": {
+    "*.*.*": {
       "build_script": "wrapt_ubi_9.3.sh"
     }
   }
