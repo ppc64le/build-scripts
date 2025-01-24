@@ -1,0 +1,17 @@
+{
+	"maintainer": "vivek8123",
+	"package_name": "SQLAlchemy",
+	"github_url": "https://github.com/sqlalchemy/sqlalchemy.git",
+	"version": "1.4.39",
+	"default_branch": "master",
+	"build_script": "sqlalchemy_ubi_9.3.sh",
+	"package_dir": "s/sqlalchemy",
+	"docker_build": false,
+	"validate_build_script": true,
+	"wheel_build" : true,
+	"use_non_root_user": false,
+	"*.*.*": {
+	   "build_script": "sqlalchemy_ubi_9.3.sh"
+	}
+}
+
