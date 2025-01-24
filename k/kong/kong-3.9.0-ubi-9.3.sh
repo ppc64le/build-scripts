@@ -19,13 +19,12 @@
 # --------------------------------------------------------------------------------
 
 #GITHUB_TOKEN=" "
-echo "GITHUB_TOKN"
-echo -n Password: 
-read -s password
+echo -n Enter GIHUB_TOKEN
+read -s githubtoken
 echo
 # Run Command
-echo $password
-export GITHUB_TOKEN = $password
+echo $githubtoken
+export GITHUB_TOKEN=$githubtoken
 if [ -z "$GITHUB_TOKEN" ]; then
  echo "missing github_token. Please set Environment Variable <GITHUB_TOKEN>"
   exit 1
