@@ -18,14 +18,14 @@
 #
 # --------------------------------------------------------------------------------
 
-GITHUB_TOKEN=$1
+#GITHUB_TOKEN=" "
 echo "GITHUB_TOKN"
-echo "token: "  +  $GITHUB_TOKEN
-if [ -z "$GITHUB_TOKEN" ]; then
-  echo "missing github_token. Please set Environment Variable <GITHUB_TOKEN>"
-  exit 1
-fi
-export GITHUB_TOKEN=${{ secrets.MY_GITHUB_TOKEN }}
+echo "token: "  $GITHUB_TOKEN
+#if [ -z "$GITHUB_TOKEN" ]; then
+ # echo "missing github_token. Please set Environment Variable <GITHUB_TOKEN>"
+ # exit 1i
+#fi
+
 PACKAGE_NAME=kong
 PACKAGE_VERSION=${1:-3.9.0}
 PACKAGE_URL=https://github.com/kong/kong/
