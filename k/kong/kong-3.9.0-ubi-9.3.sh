@@ -20,8 +20,8 @@
 
 GITHUB_TOKEN=$1
 echo "GITHUB_TOKN"
-echo $GITHUB_TOKEN
-if [ -z "${{ secrets.MY_GITHUB_TOKEN }}" ]; then
+echo "token: "  +  $GITHUB_TOKEN
+if [ -z "$GITHUB_TOKEN" ]; then
   echo "missing github_token. Please set Environment Variable <GITHUB_TOKEN>"
   exit 1
 fi
