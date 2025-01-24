@@ -22,7 +22,7 @@ if [ -z "${{ secrets.MY_GITHUB_TOKEN }}" ]; then
   echo "missing github_token. Please set Environment Variable <GITHUB_TOKEN>"
   exit 1
 fi
-export GITHUB_TOKEN=$MY_GITHUB_TOKEN
+export GITHUB_TOKEN=${{ secrets.MY_GITHUB_TOKEN }}
 PACKAGE_NAME=kong
 PACKAGE_VERSION=${1:-3.9.0}
 PACKAGE_URL=https://github.com/kong/kong/
