@@ -1,5 +1,5 @@
 {
-  "mastertainer": "md.shafi.hussain",
+  "maintainer": "md.shafi.hussain",
   "package_name": "httptools",
   "github_url": "https://github.com/MagicStack/httptools.git",
   "version": "v0.6.4",
