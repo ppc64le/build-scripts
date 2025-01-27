@@ -21,6 +21,7 @@ echo "------------------------------------------------------------Cloning statsm
 PACKAGE_NAME=statsmodels
 PACKAGE_VERSION=${1:-v0.13.5}
 PACKAGE_URL=https://github.com/statsmodels/statsmodels.git
+PACKAGE_DIR=statsmodels
 
 echo "------------------------------------------------------------Installing requirements for statsmodels------------------------------------------------------"
 #dnf groupinstall -y "Development Tools" 
@@ -39,7 +40,7 @@ dnf install -y git g++ gcc gcc-c++ gcc-gfortran openssl-devel python3-devel pyth
 dnf install -y make cmake automake autoconf procps-ng 
 
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 echo "------------------------------------------------------------Installing statsmodels------------------------------------------------------"
