@@ -1,0 +1,16 @@
+{
+  "maintainer": "Harithanagothu2",
+  "package_name": "blinker",
+  "github_url": "https://github.com/pallets-eco/blinker",
+  "version": "rel-1.4",
+  "wheel_build" : true,
+  "package_dir": "b/blinker",
+  "default_branch": "main",
+  "build_script": "blinker_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "rel-*.*":{
+    "build_script":"blinker_ubi_9.3.sh"
+  }
+}
