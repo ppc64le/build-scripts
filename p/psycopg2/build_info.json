@@ -1,0 +1,16 @@
+{
+	"maintainer": "viveksharma20ibm",
+	"package_name": "psycopg2",
+	"github_url": "https://github.com/psycopg/psycopg2",
+	"version": "2.9.3",
+	"default_branch": "master",
+	"build_script": "psycopg2_ubi_9.3.sh",
+	"package_dir": "p/psycopg2",
+	"docker_build": false,
+	"validate_build_script": true,
+        "wheel_build" : true,
+	"use_non_root_user": false,
+	"*": {
+	   "build_script": "psycopg2_ubi_9.3.sh"
+	}
+}

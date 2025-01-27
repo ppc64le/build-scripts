@@ -17,7 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
 #variables
 PACKAGE_NAME=blinker
 PACKAGE_VERSION=${1:-rel-1.4}
@@ -43,7 +42,7 @@ if ! (pip install .) ; then
     exit 1
 fi
 
-#test
+#skipping the some testcase as it is failing on x_86 also.
 if ! pytest --ignore=tests/test_signals.py; then
     echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
