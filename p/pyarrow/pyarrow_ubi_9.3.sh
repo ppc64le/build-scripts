@@ -22,9 +22,9 @@
 PACKAGE_NAME=pyarrow
 PACKAGE_VERSION=${1:-apache-arrow-11.0.0}
 PACKAGE_URL=https://github.com/apache/arrow.git
-PACKAGE_DIR=arrow/python/
+PACKAGE_DIR=arrow
  
-
+echo "Installing dependencies..."
 yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openssl-devel cmake
 
 echo "Dependencies installed."
@@ -38,7 +38,7 @@ export CMAKE_PREFIX_PATH=$ARROW_HOME:$CMAKE_PREFIX_PATH
 
 echo "Cloning the repository..."
 git clone $PACKAGE_URL
-cd arrow
+cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 git submodule update --init
 echo "Repository cloned and checked out to version $PACKAGE_VERSION."
@@ -58,8 +58,10 @@ sed -i -E 's/\&\&/\&/g' python/pyarrow/lib.pxd
 sed -i -E 's/\&\&/\&/g' python/pyarrow/includes/libarrow_fs.pxd
 echo "Fixes applied."
 
+echo "Installing Python dependencies..."
 pip install -r python/requirements-build.txt
 pip install cython  wheel numpy==1.21.2
+echo "Python dependencies installed."
 
 echo "Preparing for build..."
 
@@ -85,11 +87,14 @@ cmake -DCMAKE_INSTALL_PREFIX=$ARROW_HOME \
       -DARROW_WITH_ZSTD=ON \
       -DPARQUET_REQUIRE_ENCRYPTION=ON \
       ..
+echo "Starting build..."
 make -j$(nproc)
 make install
-cd /
 
-cd $PACKAGE_DIR
+cd ../..
+cd python
+echo "Current directory: $(pwd)"
+
 export PYARROW_WITH_PARQUET=1
 export PYARROW_WITH_DATASET=1
 export PYARROW_PARALLEL=4
