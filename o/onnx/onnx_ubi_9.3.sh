@@ -56,6 +56,7 @@ pip install scipy
 echo "installing parameterized.."
 pip install parameterized
 
+
 echo "installing..."
 if ! pip install -e . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
