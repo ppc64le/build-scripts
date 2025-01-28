@@ -24,7 +24,7 @@ PACKAGE_DIR=python-ibmdb
 PACKAGE_URL=https://github.com/ibmdb/python-ibmdb.git
 
 # Install necessary system packages
-yum install -y git python-devel gcc gcc-c++ libxcrypt numactrl gzip tar make wget xz cmake yum-utils openssl-devel openblas-devel bzip2-devel bzip2 zip unzip libffi-devel zlib-devel autoconf automake libtool cargo pkgconf-pkg-config.ppc64le info.ppc64le fontconfig.ppc64le fontconfig-devel.ppc64le sqlite-devel
+yum install -y git python-devel gcc gcc-c++ libxcrypt gzip tar make wget xz cmake yum-utils openssl-devel openblas-devel bzip2-devel bzip2 zip unzip libffi-devel zlib-devel autoconf automake libtool cargo pkgconf-pkg-config.ppc64le info.ppc64le fontconfig.ppc64le fontconfig-devel.ppc64le sqlite-devel
 
 # Clone the repository
 git clone $PACKAGE_URL
