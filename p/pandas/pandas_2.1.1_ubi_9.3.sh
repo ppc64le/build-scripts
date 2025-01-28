@@ -51,17 +51,17 @@ pip install numpy==1.26.4
 
 # Install pandas package
 if ! (pip install .); then
-	echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
-	echo "$PACKAGE_URL $PACKAGE_NAME"
-	echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | Python $PYTHON_VERSION | GitHub | Fail | Install_Fails"
-    exit 1
+     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
+     echo "$PACKAGE_URL $PACKAGE_NAME"
+     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | Python $PYTHON_VERSION | GitHub | Fail | Install_Fails"
+     exit 1
 fi
     
 cd ..
 
 # Test pandas package
-if ! (python3.10 -c "import pandas; print(pandas.__version__)"); then
-	echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
+if ! (python3 -c "import pandas; print(pandas.__version__)"); then
+    echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | Python $PYTHON_VERSION | GitHub | Fail | Install_Success_But_Test_Fails"
     exit 2
