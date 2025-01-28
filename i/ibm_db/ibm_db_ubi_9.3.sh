@@ -35,7 +35,7 @@ git checkout $PACKAGE_VERSION
 pip install pytest config tox
 
 # Install the package
-if ! pip install .; then
+if ! python3 -m pip install .; then
     echo "------------------$PACKAGE_NAME: Installation successful ---------------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Installation_Success"
 else
@@ -45,7 +45,7 @@ else
 fi
 
 # Run tests
-if ! tox -e py3; then
+if ! python3 -m tox -e py3; then
     echo "------------------$PACKAGE_NAME: Tests failed ------------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Tests_Failure"
     exit 2
