@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-release-5.9.0}
 PACKAGE_URL=https://github.com/giampaolo/psutil.git
 
 # Install necessary system dependencies
-yum install -y make g++ git gcc gcc-c++ wget openssl-devel bzip2-devel libffi-devel zlib-devel procps-ng python-devel
+yum install -y make g++ git gcc gcc-c++ wget openssl-devel bzip2-devel libffi-devel zlib-devel procps-ng python3-devel python3-pip
 
 # Clone the repository
 git clone $PACKAGE_URL
@@ -46,8 +46,9 @@ fi
 export PYTHONWARNINGS=always
 export PYTHONUNBUFFERED=1
 export PSUTIL_DEBUG=1
+export PYTHONPATH=$(pwd):$PYTHONPATH
 
-#run tests skipping and deselecting few tests failing on both ppc64le and x86
+#run tests skipping and deselecting few tests failing on ppc64le and x86
 if ! pytest -v --deselect=psutil/tests/test_linux.py -k "not test_debug and not test_who and not test_terminal and not test_users and not test_cpu_freq and not test_leak_mem and not test_cpu_affinity and not test_cpu_times and not test_per_cpu_times" --disable-warnings ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"

@@ -1,3 +1,4 @@
+
 os: linux
 dist: focal
 arch: ppc64le
@@ -111,7 +112,6 @@ jobs:
           name: wheels_cache_311
           paths: ./*.whl
         use: build_cache
-      allow_failure: true
 
     - name: "Create Wheel for Python 3.12"
       if: env(WHEEL_BUILD) = true
@@ -127,7 +127,6 @@ jobs:
           paths:
             - ./*.whl
         use: build_cache
-      allow_failure: true
 
     - name: "Create Wheel for Python 3.13"
       if: env(WHEEL_BUILD) = true
