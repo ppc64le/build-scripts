@@ -36,9 +36,6 @@ pip install pytest config tox
 
 # Install the package
 if ! python3 -m pip install .; then
-    echo "------------------$PACKAGE_NAME: Installation successful ---------------------"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Installation_Success"
-else
     echo "------------------$PACKAGE_NAME: Installation failed ---------------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Installation_Failure"
     exit 1
