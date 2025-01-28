@@ -33,6 +33,7 @@ git checkout $PACKAGE_VERSION
 
 # Install test dependencies
 pip3 install pytest config tox
+pyhon3 setup.py build
 
 # Install the package
 if ! python3 setup.py install; then
