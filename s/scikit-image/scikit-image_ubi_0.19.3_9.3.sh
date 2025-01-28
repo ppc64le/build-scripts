@@ -34,7 +34,6 @@ git checkout $PACKAGE_VERSION
 python3 -m pip install -r requirements.txt
 python3  -m pip install -r requirements/build.txt
 python3 -m pip install --upgrade pip
-ln -s $(which python3) /usr/bin/python
 
 # build the project with pip and install
 if ! python3 -m pip install -e . ; then
