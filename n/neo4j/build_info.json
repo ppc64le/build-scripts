@@ -10,8 +10,7 @@
   "docker_build": "true",
   "validate_build_script": "true",
   "use_non_root_user": false,
-  "5.9.0": {
-    "dir": "5.9.0_ubi_8",
+  "release/5.2*.*": {
     "build_script": "neo4j_5.26.0_ubi_9.3.sh"
   }
 }
