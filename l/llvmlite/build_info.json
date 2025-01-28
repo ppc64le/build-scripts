@@ -1,10 +1,11 @@
 {
-   "maintainer": "npanpaliya",
+   "maintainer": "aastha-sharma2",
    "package_name": "llvmlite",
    "github_url": "https://github.com/numba/llvmlite",
-   "version": "*",
+   "version": "v0.42.0",
    "default_branch": "main",
-   "build_script": "llvmlite_v0.43.0_ubi_9_3.sh",
+   "build_script": "llvmlite_ubi_9.3.sh",
+   "wheel_build" : true,
    "package_dir": "l/llvmlite",
    "docker_build": false,
    "validate_build_script": true,
@@ -14,5 +15,8 @@
    },
    "v0.43.*": {
        "build_script": "llvmlite_v0.43.0_ubi_9_3.sh"
+   },
+   "*": {
+   "build_script": "llvmlite_ubi_9.3.sh"
    }
 }
