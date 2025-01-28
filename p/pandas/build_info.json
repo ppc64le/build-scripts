@@ -9,7 +9,10 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
+  "v2.1.1": {
+     "build_script": "pandas_2.1.1__ubi_9.3.sh"
+        },
   "v2.*.*": {
     "build_script": "pandas_ubi_9.3.sh"
-  }
+  }  
 }
