@@ -32,11 +32,10 @@ cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 # Install test dependencies
-pip3 install pytest config tox
-python3 setup.py build
+pip install pytest config tox
 
 # Install the package
-if ! python3 setup.py install; then
+if ! pip install .; then
     echo "------------------$PACKAGE_NAME: Installation successful ---------------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Installation_Success"
 else
