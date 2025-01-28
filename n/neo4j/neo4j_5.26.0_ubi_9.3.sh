@@ -79,17 +79,9 @@ if ! mvn  clean install -Dlog4j2.configurationFile="/tmp/log4j2" -Dlog4j.configu
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
     exit 2
+else
+    echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
+    exit 0
 fi
-
-# rerun failing tests
-# if ! mvn clean install -Dlog4j2.configurationFile="/tmp/log4j2" -Dlog4j.configurationFile="/tmp/log4j" -pl -:neo4j-push-to-cloud  ; then
-#     echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
-#     echo "$PACKAGE_URL $PACKAGE_NAME"
-#     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_and_Test_fails"
-#     exit 2
-# else
-#     echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
-#     echo "$PACKAGE_URL $PACKAGE_NAME"
-#     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
-#     exit 0
-# fi
