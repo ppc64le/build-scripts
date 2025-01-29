@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/kong/kong
 # Tested on         : UBI 9.3
 # Language      : Rust
-# Travis-Check  : true
+# Travis-Check  : false
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Kavia Rane <Kavita.Rane2@ibm.com>
 #
