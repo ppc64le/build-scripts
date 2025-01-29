@@ -20,7 +20,7 @@
 PACKAGE_NAME=jax
 PACKAGE_VERSION=${1:-jax-v0.4.7}
 PACKAGE_URL=https://github.com/jax-ml/jax 
-PACKAGE_DIR=/jax
+PACKAGE_DIR=./jax
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
