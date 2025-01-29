@@ -39,7 +39,7 @@ export EXTRA_BAZEL_ARGS="--host_javabase=@local_jdk//:jdk" bash
 ./compile.sh
 #export the path of bazel bin
 export PATH=/bazel-6.5.0/output/:$PATH
-cd /
+cd ..
 
 pip install numpy==1.26.4 scipy opt-einsum==3.3.0  ml-dtypes==0.5.0 absl-py wheel
 
