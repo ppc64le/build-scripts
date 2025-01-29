@@ -26,8 +26,9 @@ PACKAGE_NAME=ml_dtypes
 PACKAGE_VERSION=${1:-0.1.0}
 PACKAGE_URL=https://github.com/jax-ml/ml_dtypes.git
 
+echo "Installing dependencies..."
 yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openssl-devel cmake zip unzip
-pip3 install absl-py numpy pytest pybind11
+pip3 install absl-py 'numpy<2' pytest pybind11
 
 #Install eigen
 wget https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.zip
@@ -35,22 +36,25 @@ unzip eigen-3.4.0.zip
 cp -r eigen-3.4.0/Eigen/ /usr/local/include
 
 #Build ml_dtypes
-ML_DTYPES_VERSION=0.5.0
+ML_DTYPES_VERSION=0.1.0
 git clone -b v${ML_DTYPES_VERSION} https://github.com/jax-ml/ml_dtypes.git
-cd ml_dtypes
+cd $PACKAGE_NAME/
 git submodule init
 git submodule update
+echo "Cloned and checked out to version $PACKAGE_VERSION."
 
-#Install 
+echo "Building and installing $PACKAGE_NAME..."
+# python -m pip wheel -w dist -v .
 if ! (python3 setup.py install) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
     exit 1
 fi
-
-pip install ml_dtypes
-#Run tests
+pip install ml_dtypes==0.1.0
+echo "$PACKAGE_NAME installed successfully."
+ 
+echo "Running tests for $PACKAGE_NAME..."
 if !(pytest); then
     echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"

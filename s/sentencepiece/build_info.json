@@ -1,0 +1,16 @@
+{
+  "maintainer": "aastha-sharma2",
+  "package_name": "sentencepiece",
+  "github_url": "https://github.com/google/sentencepiece.git",
+  "version": "0.1.97",
+  "wheel_build" : true,
+  "package_dir": "s/sentencepiece",
+  "default_branch": "master",
+  "build_script": "sentencepiece_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "sentencepiece_ubi_9.3.sh"
+  }
+}
