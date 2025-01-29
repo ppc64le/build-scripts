@@ -34,7 +34,7 @@ git checkout $PACKAGE_VERSION
 #install pytest
 pip install pytest
 
-pip install numpy==1.21.6
+pip install numpy==1.26.3
 pip install -e .
 
 #install
