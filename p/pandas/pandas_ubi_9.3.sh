@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : pandas
-# Version       : v2.2.0
-# Source repo   : https://github.com/pandas-dev/pandas.git
-# Tested on     : UBI:9.3
-# Language      : Python, C, Cython, Html
+# Package          : pandas
+# Version          : v3.0.0.dev0
+# Source repo      : https://github.com/pandas-dev/pandas.git
+# Tested on	: UBI:9.3
+# Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Bhagyashri Gaikwad <Bhagyashri.Gaikwad2@ibm.com>
+# Maintainer    : ICH <ich@us.ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,55 +19,105 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=pandas
-PACKAGE_VERSION=${1:-v2.2.0}
-PYTHON_VERSION=${2:-3.11}
+PACKAGE_VERSION=${1:-v3.0.0.dev0}
 PACKAGE_URL=https://github.com/pandas-dev/pandas.git
+PACKAGE_DIR=pandas
 
-yum install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip git gcc gcc-c++ cmake ninja-build
+yum install -y git  python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo cmake
+pip3 install pytest tox nox
+PATH=$PATH:/usr/local/bin/
 
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME/
-git checkout $PACKAGE_VERSION
-git submodule update --init --recursive
+OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
+SOURCE=Github
 
-# Setup virtual environment for python
-python${PYTHON_VERSION} -m venv pandas-env
-source pandas-env/bin/activate
-pip install Cython pytest hypothesis build meson meson-python
-
-# Build the package and create whl file (This is dependent on cython)
-python${PYTHON_VERSION} -m build --wheel
-
-# Install wheel
-python${PYTHON_VERSION} -m pip install dist/pandas-2.2.0-cp311-cp311-linux_ppc64le.whl
-if [ $? == 0 ]; then
-     echo "------------------$PACKAGE_NAME::Build_Pass---------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Build_Success"
-else
-     echo "------------------$PACKAGE_NAME::Build_Fail-------------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Build_Fail"
-     exit 1
+# Install rust
+if ! command -v rustc &> /dev/null
+then
+    wget https://static.rust-lang.org/dist/rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
+    tar -xzf rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
+    cd rust-1.75.0-powerpc64le-unknown-linux-gnu
+    sudo ./install.sh
+    export PATH=$HOME/.cargo/bin:$PATH
+    rustc -V
+    cargo -V
+    cd ../
 fi
 
-# Test the package
-cd ..
-python${PYTHON_VERSION} -m pip show pandas
-python${PYTHON_VERSION} -c "import pandas; print(pandas.__file__)"
-
-if [ $? == 0 ]; then
-     echo "------------------$PACKAGE_NAME::Test_Pass---------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Test_Success"
-
-     # Deactivate python environment (pandas-env)
-         deactivate
-
-     exit 0
+if [[ "$PACKAGE_URL" == *github.com* ]]; then
+    # Use git clone if it's a Git repository
+    if [ -d "$PACKAGE_DIR" ]; then
+        cd "$PACKAGE_DIR" || exit
+    else
+        if ! git clone "$PACKAGE_URL" "$PACKAGE_DIR"; then
+            echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
+            echo "$PACKAGE_URL $PACKAGE_NAME"
+            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Clone_Fails"  
+            exit 1
+        fi
+        cd "$PACKAGE_DIR" || exit
+        git checkout "$PACKAGE_VERSION" || exit
+    fi
 else
-     echo "------------------$PACKAGE_NAME::Test_Fail-------------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Test_Fail"
-     exit 2
+    # If it's not a Git repository, download and untar
+    if [ -d "$PACKAGE_DIR" ]; then
+        cd "$PACKAGE_DIR" || exit
+    else
+        # Use download and untar if it's not a Git repository
+        if ! curl -L "$PACKAGE_URL" -o "$PACKAGE_DIR.tar.gz"; then
+            echo "------------------$PACKAGE_URL:download_fails---------------------------------------"
+            echo "$PACKAGE_URL $PACKAGE_NAME"
+            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Download_Fails"  
+            exit 1
+        fi
+        mkdir "$PACKAGE_DIR"
+
+        if ! tar -xzf "$PACKAGE_DIR.tar.gz" -C "$PACKAGE_DIR" --strip-components=1; then
+            echo "------------------$PACKAGE_NAME:untar_fails---------------------------------------"
+            echo "$PACKAGE_URL $PACKAGE_NAME"
+            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Untar_Fails"  
+            exit 1
+        fi
+
+        cd "$PACKAGE_DIR" || exit
+    fi
+fi
+
+# Install via pip3
+if !  python3 -m pip install ./; then
+        echo "------------------$PACKAGE_NAME:install_fails------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"  
+        exit 1
+fi
+
+# Run Tox
+python3 -m tox -e py39
+if [ $? -eq 0 ]; then
+    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
+    exit 0
+fi
+
+# Run Pytest
+python3 -m pytest
+if [ $? -eq 0 ]; then
+    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
+    exit 0
+fi
+
+# Run Nox
+python3 -m nox
+if [ $? -eq 0 ]; then
+    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
+    exit 0
+else
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"
+    exit 2
 fi
