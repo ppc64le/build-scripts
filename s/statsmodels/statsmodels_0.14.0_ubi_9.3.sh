@@ -38,7 +38,7 @@ dnf install -y git g++ gcc gcc-c++ gcc-gfortran openssl-devel \
     meson ninja-build openblas-devel libjpeg-devel bzip2-devel libffi-devel zlib-devel \
     libtiff-devel freetype-devel 
 dnf install -y make cmake automake autoconf procps-ng 
-
+yum install -y python python3-devel python3 python3-pip
 git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
