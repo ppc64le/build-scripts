@@ -59,7 +59,7 @@ pip install pytest
 pip install --upgrade pip setuptools wheel
 pip install packaging --no-binary :all:
 pip install pandas==1.5.3
-pip install numpy==1.23.0
+pip install numpy==1.26.3
 pip install cachey --no-binary :all:
 pip install distributed --no-binary :all:
 pip install graphviz --no-binary :all:
