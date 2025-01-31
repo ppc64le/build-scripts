@@ -14,5 +14,8 @@
   },
   "v*.*.*": {
     "build_script": "ipykernel_ubi_9.3.sh"
-  }
+  },
+  "v6.19.2": {
+    "build_script": "ipykernel_v6.19.2_ubi_9.3.sh"
+	}
 }
