@@ -1,14 +1,14 @@
 #!/bin/bash -e
-# ----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #
-# Package       : blinker
-# Version       : rel-1.4
-# Source repo   : https://github.com/pallets-eco/blinker
+# Package       : tzdata
+# Version       : 2023.3
+# Source repo   : https://github.com/python/tzdata
 # Tested on     : UBI:9.3
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Haritha Nagothu <haritha.nagothu2@ibm.com>
+# Maintainer    : Pranith Rao <Pranith.Rao@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -17,34 +17,28 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-#variables
-PACKAGE_NAME=blinker
-PACKAGE_VERSION=${1:-rel-1.4}
-PACKAGE_URL=https://github.com/pallets-eco/blinker
-PACKAGE_DIR=blinker
 
-# Install dependencies and tools.
-yum install -y wget gcc gcc-c++ gcc-gfortran git make  python-devel  openssl-devel
+PACKAGE_NAME=tzdata
+PACKAGE_VERSION=${1:-"2023.3"}
+PACKAGE_URL=https://github.com/python/tzdata.git
 
-#clone repository
-git clone $PACKAGE_URL
-cd  $PACKAGE_DIR
+yum install -y git python3 python3-devel.ppc64le
+PATH=$PATH:/usr/local/bin/
+pip3 install tox requests==2.32.3
+
+git clone $PACKAGE_URL $PACKAGE_NAME
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-pip install nose
-pip install pytest
-
-#install
-if ! (pip install .) ; then
+if ! pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-#skipping the some testcase as it is failing on x_86 also.
-if ! pytest --ignore=tests/test_signals.py; then
-    echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
+if ! tox -e py3 ; then
+    echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
     exit 2

@@ -1,7 +1,8 @@
 {
-  "maintainer": "rakshith.r5",
+  "maintainer": "vinodk99",
   "package_name": "dask",
   "github_url": "https://github.com/dask/dask.git",
+  "required_versions":{"Releases": ["*"], "Tags": ["2.20.0","2023.3.2","2023.6.0"]}, 
   "version": "2.20.0",
   "wheel_build" : true,
   "package_dir": "d/dask",
