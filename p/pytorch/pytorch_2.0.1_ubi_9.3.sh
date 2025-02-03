@@ -24,7 +24,10 @@ set -e
 PACKAGE_NAME=pytorch
 PACKAGE_VERSION=${1:-v2.0.1}
 PACKAGE_URL=https://github.com/pytorch/pytorch.git
- 
+export PYTORCH_BUILD_VERSION=$PACKAGE_VERSION
+export PYTORCH_BUILD_NUMBER=1
+CURRENT_DIR="${PWD}"
+
 # Install dependencies and tools.
 yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openblas-devel cmake gcc-gfortran
 pip install wheel scipy ninja build pytest
@@ -51,12 +54,13 @@ wget https://raw.githubusercontent.com/ppc64le/build-scripts/python-ecosystem/p/
 git apply ./pytorch_v2.0.1.patch
  
 # Build and install the package
-if ! (MAX_JOBS=$(nproc) python3 setup.py install); then
+if ! (MAX_JOBS=8 python3 setup.py install); then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Fails"
     exit 1
 fi
+python setup.py bdist_wheel --dist-dir="$CURRENT_DIR/"
 cd ..
  
 # Basic sanity test (subset)
