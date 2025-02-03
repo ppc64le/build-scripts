@@ -23,6 +23,8 @@ PACKAGE_NAME=flatbuffers
 PACKAGE_VERSION=${1:-v2.0.0}
 PACKAGE_URL=https://github.com/google/flatbuffers.git
 PACKAGE_DIR=flatbuffers/python
+CURRENT_DIR="${PWD}"
+export VERSION=$PACKAGE_VERSION
 
 # Install dependencies and tools.
 yum install -y wget gcc gcc-c++ gcc-gfortran git make  python-devel  openssl-devel  cmake
@@ -47,3 +49,7 @@ if ! (pip install .) ; then
     exit 1
 fi
 #skipping the testcases because some modules are not supported in all python verisons.
+
+#creating Wheel 
+pip install wheel
+python3 setup.py bdist_wheel --dist-dir="$CURRENT_DIR/"
