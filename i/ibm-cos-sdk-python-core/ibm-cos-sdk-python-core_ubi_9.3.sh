@@ -21,7 +21,7 @@
 PACKAGE_NAME=ibm-cos-sdk-core
 PACKAGE_VERSION=${1:-2.13.4}
 PACKAGE_URL=https://github.com/ibm/ibm-cos-sdk-python-core
-PACKAGE_DIR=ibm-cos-sdk-core
+PACKAGE_DIR=ibm-cos-sdk-python-core
 
 # Install dependencies
 yum install -y git gcc gcc-c++ make wget sudo openssl-devel bzip2-devel libffi-devel zlib-devel python-devel python-pip
