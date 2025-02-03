@@ -42,7 +42,7 @@ dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-lates
 
 # Install dependencies
 echo "------------------------Installing dependencies-------------------"
-yum install -y git gcc gcc-c++ make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng openblas-devel epel-release meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite libnsl
+yum install -y python-devel python-pip git gcc gcc-c++ make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng openblas-devel epel-release meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite libnsl
 
 echo "------------------------Installing dependencies-------------------"
 yum install -y libxcrypt-compat rsync
