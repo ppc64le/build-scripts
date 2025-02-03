@@ -1,8 +1,8 @@
 {
-  "maintainer": "kiranNukal",
+  "maintainer": "stutiibm",
   "package_name": "tensorflow",
   "github_url": "https://github.com/tensorflow/tensorflow",
-  "version": "v2.13.0",
+  "version": "v2.14.1",
   "wheel_build" : true,
   "package_dir": "t/tensorflow",
   "default_branch": "master",
@@ -10,7 +10,14 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
+  "v2.14.1": {
+    "patches": {
+      "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/t/tensorflow/tf_2.14.1_fix.patch"
+    },
+    "build_script": "tensorflow_2.14.1_ubi9.3.sh"
+  },
   "*.*.*": {
     "build_script": "tensorflow_ubi_9.3.sh"
   }
 }
+
