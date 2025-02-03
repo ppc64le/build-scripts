@@ -46,8 +46,8 @@ yum install -y python-devel python-pip git gcc gcc-c++ make cmake wget openssl-d
 
 echo "------------------------Installing dependencies-------------------"
 yum install -y libxcrypt-compat rsync
-python3 -m pip install --upgrade pip
-python3 -m pip install setuptools wheel
+#python3 -m pip install --upgrade pip
+#python3 -m pip install setuptools wheel
 
 echo "------------------------Installing dependencies-------------------"
 dnf groupinstall -y "Development Tools"
@@ -65,7 +65,7 @@ echo "------------------------Installing dependencies-------------------"
 yum install -y  autoconf automake libtool curl-devel swig hdf5-devel atlas-devel patch patchelf
 
 #Set Python3 as default
-ln -s $CURRENT_DIR/usr/bin/python3 $CURRENT_DIR/usr/bin/python
+#ln -s $CURRENT_DIR/usr/bin/python $CURRENT_DIR/usr/bin/python
 
 #Set JAVA_HOME
 echo "------------------------Installing java-------------------"
@@ -94,7 +94,7 @@ pip install --upgrade six==1.10.0
 pip install "numpy<2" "urllib3<1.27" wheel==0.29.0 werkzeug
 
 # Remove obsolete version of six, which can sometimes confuse virtualenv.
-rm -rf $CURRENT_DIR/usr/lib/python3/dist-packages/six*
+rm -rf $CURRENT_DIR/usr/lib/python/dist-packages/six*
 
 # Install numpy, scipy and scikit-learn required by the builds
 ln -s $CURRENT_DIR/usr/include/locale.h $CURRENT_DIR/usr/include/xlocale.h
