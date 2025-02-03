@@ -1,0 +1,16 @@
+{
+  "maintainer": "prasanna-marathe",
+  "package_name": "camel-quarkus",
+  "github_url": "https://github.com/apache/camel-quarkus",
+  "version": "main",
+  "package_dir": "c/camel-quarkus",
+  "default_branch": "main",
+  "build_script": "camel_quarkus_ubi_9.3.sh",
+  "docker_build": "false",
+  "use_non_root_user": false,
+  "validate_build_script": "true",
+  "main" : {
+  "build_script": "camel_quarkus_ubi_9.3.sh"
+  }
+}
+
