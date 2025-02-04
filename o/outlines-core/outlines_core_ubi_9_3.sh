@@ -61,7 +61,7 @@ export OPENSSL_INCLUDE_DIR=/usr/include
 
 # Build the project
 echo "Building Outlines Core..."
-python${PYTHON_VERSION} -m pip install --upgrade pip setuptools wheel pytest
+python${PYTHON_VERSION} -m pip install --upgrade pip setuptools wheel pytest pydantic
 
 if ! python${PYTHON_VERSION} -m pip install -e .; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
@@ -75,7 +75,7 @@ else
 fi
 
 # Run Python tests
-if ! python${PYTHON_VER} -m pytest tests/fsm/test_json_schema.py; then
+if ! python${PYTHON_VERSION} -m pytest tests/fsm/test_json_schema.py; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail |  Install_success_but_test_Fails"
