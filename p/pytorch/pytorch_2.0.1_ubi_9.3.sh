@@ -30,18 +30,13 @@ export PYTORCH_BUILD_VERSION="${PACKAGE_VERSION#v}"
 export PYTORCH_BUILD_NUMBER=1
 CURRENT_DIR="${PWD}"
  
-echo "Starting PyTorch build script..."
-echo "Package Name: $PACKAGE_NAME"
-echo "Package Version: $PACKAGE_VERSION"
-echo "Package URL: $PACKAGE_URL"
-echo "Current Directory: $CURRENT_DIR"
- 
 # Install dependencies and tools
 echo "Installing dependencies..."
 yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openblas-devel cmake gcc-gfortran
  
 echo "Installing required Python packages..."
 pip install wheel scipy ninja build pytest
+echo "Installing required numpy"
 pip install "numpy<2.0"
  
 # Check if Rust is installed
