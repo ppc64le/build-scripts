@@ -110,7 +110,7 @@ echo "------------------------Exporting variable-------------------"
 export CC_OPT_FLAGS="-mcpu=power9 -mtune=power9"
 export TF_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
 export HERMETIC_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
-export PYTHON_BIN_PATH=/usr/bin/python3.11
+export PYTHON_BIN_PATH=/usr/bin/python
 export GCC_HOST_COMPILER_PATH=/usr/bin/gcc
 export CC=$GCC_HOST_COMPILER_PATH
 export PYTHON=/root/tensorflow/tfenv/bin/python
