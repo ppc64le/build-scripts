@@ -20,6 +20,7 @@
 PACKAGE_NAME=pandas
 PACKAGE_VERSION=${1:-v2.1.1}
 PACKAGE_URL=https://github.com/pandas-dev/pandas.git
+PACKAGE_DIR=pandas
 
 # Install system dependencies including SQLite and LZMA libraries
 yum install -y git gcc gcc-c++ python-devel gzip tar make wget xz cmake yum-utils openssl-devel \
@@ -29,7 +30,7 @@ yum install -y git gcc gcc-c++ python-devel gzip tar make wget xz cmake yum-util
 
 # Clone the pandas repository and checkout the required version
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME/
+cd $PACKAGE_DIR/
 git checkout $PACKAGE_VERSION
 
 # Initialize and update submodules
