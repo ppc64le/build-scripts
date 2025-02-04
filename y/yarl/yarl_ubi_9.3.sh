@@ -1,9 +1,9 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
-# Package       : numexpr
-# Version       : v2.8.4
-# Source repo   : https://github.com/pydata/numexpr.git
+# Package       : yarl
+# Version       : v1.18.3
+# Source repo   : https://github.com/aio-libs/yarl
 # Tested on     : UBI:9.3
 # Language      : Python
 # Travis-Check  : True
@@ -19,31 +19,28 @@
 # ----------------------------------------------------------------------------
 
 #variables
-PACKAGE_NAME=numexpr
-PACKAGE_VERSION=${1:-v2.8.4}
-PACKAGE_URL=https://github.com/pydata/numexpr.git
+PACKAGE_NAME=yarl
+PACKAGE_VERSION=${1:-v1.18.3}
+PACKAGE_URL=https://github.com/aio-libs/yarl
+PACKAGE_DIR=yarl
 
 # Install dependencies and tools.
-yum install -y git gcc gcc-c++ make wget openssl-devel python-devel bzip2-devel libffi-devel wget xz zlib-devel cmake openblas-devel
+yum install -y git gcc gcc-c++  python-devel make wget openssl-devel bzip2-devel libffi-devel wget xz zlib-devel cmake openblas-devel gcc-gfortran openssl-devel sqlite-devel
 
 #clone repository
 git clone $PACKAGE_URL
-cd  $PACKAGE_NAME
+cd  $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
-#install pytest
-pip install pytest
-
-pip install numpy==1.26.3
-pip install -e .
-
 #install
-if ! (python3 setup.py install) ; then
+if ! (pip3 install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
+
+pip3 install pytest-cov covdefaults cython  pytest-xdist  pytest-codspeed  hypothesis
 
 #test
 if ! pytest; then
