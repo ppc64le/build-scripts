@@ -42,12 +42,12 @@ dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-lates
 
 # Install dependencies
 echo "------------------------Installing dependencies-------------------"
-yum install -y python-devel python-pip git gcc gcc-c++ make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng openblas-devel epel-release meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite libnsl
+yum install -y python3.11-devel python3.11-pip git gcc gcc-c++ make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng openblas-devel epel-release meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite libnsl
 
 echo "------------------------Installing dependencies-------------------"
 yum install -y libxcrypt-compat rsync
-#python3 -m pip install --upgrade pip
-#python3 -m pip install setuptools wheel
+python3.11 -m pip install --upgrade pip
+python3.11 -m pip install setuptools wheel
 
 echo "------------------------Installing dependencies-------------------"
 dnf groupinstall -y "Development Tools"
@@ -65,7 +65,7 @@ echo "------------------------Installing dependencies-------------------"
 yum install -y  autoconf automake libtool curl-devel swig hdf5-devel atlas-devel patch patchelf
 
 #Set Python3 as default
-#ln -s $CURRENT_DIR/usr/bin/python $CURRENT_DIR/usr/bin/python
+ln -s $CURRENT_DIR/usr/bin/python3.11 $CURRENT_DIR/usr/bin/python
 
 #Set JAVA_HOME
 echo "------------------------Installing java-------------------"
@@ -94,7 +94,7 @@ pip install --upgrade six==1.10.0
 pip install "numpy<2" "urllib3<1.27" wheel==0.29.0 werkzeug
 
 # Remove obsolete version of six, which can sometimes confuse virtualenv.
-rm -rf $CURRENT_DIR/usr/lib/python/dist-packages/six*
+rm -rf $CURRENT_DIR/usr/lib/python3.11/dist-packages/six*
 
 # Install numpy, scipy and scikit-learn required by the builds
 ln -s $CURRENT_DIR/usr/include/locale.h $CURRENT_DIR/usr/include/xlocale.h
@@ -110,7 +110,7 @@ echo "------------------------Exporting variable-------------------"
 export CC_OPT_FLAGS="-mcpu=power9 -mtune=power9"
 export TF_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
 export HERMETIC_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
-export PYTHON_BIN_PATH=/usr/bin/python3
+export PYTHON_BIN_PATH=/usr/bin/python3.11
 export GCC_HOST_COMPILER_PATH=/usr/bin/gcc
 export CC=$GCC_HOST_COMPILER_PATH
 export PYTHON=/root/tensorflow/tfenv/bin/python
