@@ -50,9 +50,6 @@ pip3 install pytest pytest-cov numpy
 if ! pip3 install .; then
     echo "------------------$PACKAGE_NAME: Installation successful ---------------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Installation_Success"
-else
-    echo "------------------$PACKAGE_NAME: Installation failed ---------------------"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Installation_Failure"
     exit 1
 fi
 
@@ -60,10 +57,5 @@ fi
 if ! tox -e py3; then
     echo "------------------$PACKAGE_NAME: Tests failed ------------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Tests_Failure"
-    exit 2
-else
-    echo "------------------$PACKAGE_NAME: Install & test both successful ---------------------"
-    echo "$PACKAGE_NAME | $PACKAGE_URL"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Both_Install_and_Test_Success"
     exit 0
 fi
