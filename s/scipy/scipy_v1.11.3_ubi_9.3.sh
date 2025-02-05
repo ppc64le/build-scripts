@@ -21,7 +21,8 @@
 PACKAGE_NAME=scipy
 PACKAGE_VERSION=${1:-v1.11.3}
 PACKAGE_URL=https://github.com/scipy/scipy
- 
+PACKAGE_DIR=scipy
+
 echo "Installing core dependencies..."
 # install core dependencies
 yum install -y gcc gcc-c++ gcc-fortran pkg-config openblas-devel python python3-pip python3 python3-devel git atlas
