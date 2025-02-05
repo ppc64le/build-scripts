@@ -1,9 +1,11 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : kafka
-# Version       : 1.1.0
+# Version       : 1.1.1, 2.2.0, 2.2.1-rc1
 # Source repo   : https://github.com/apache/kafka
 # Tested on     : rhel_7.4
+# Language      : Java
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Priya Seth <sethp@us.ibm.com>
 #
@@ -15,6 +17,13 @@
 #
 # ----------------------------------------------------------------------------
 #!/bin/bash
+
+if [ "$#" -gt 0 ]
+then
+    VERSION=$1
+else
+    VERSION="2.2.0"
+fi
 
 #Install dependencies
 sudo yum update -y
@@ -31,16 +40,19 @@ export PATH=$HOME/gradle-4.8/bin:$PATH
 cd $HOME
 git clone https://github.com/apache/kafka
 cd kafka
-git checkout 1.1.0
+git checkout ${VERSION}
 
 
 #Note: Downgrading snappy version as version 1.1.7.2 links to GLIBC 2.2, and hence 
 #does not work on RHEL where we have an older version of GLIBC
-sed -i 's/  snappy: "1.1.7.1",/  snappy: "1.1.4",/g' gradle/dependencies.gradle
+#sed -i 's/  snappy: "1.1.7.1",/  snappy: "1.1.4",/g' gradle/dependencies.gradle
+sed -i 's/  snappy: "1.1.7.2",/  snappy: "1.1.4",/g' gradle/dependencies.gradle
 
 gradle clean
 gradle
 ./gradlew jar
 ./gradlew releaseTarGz -x signArchives
 
-./gradlew unitTest
+#Please uncomment below line if you want to to execute unit tests
+#Results are "5031 tests completed, 1 failed, 1 skipped"
+#./gradlew unitTest

@@ -1,12 +1,16 @@
 {
-  "maintainer": "seth-priya",
-  "package_name": "kafka",
+  "maintainer": "vinodk99",
+  "package_name": "apache-kafka",
   "github_url": "https://github.com/apache/kafka",
-  "version": "3.3.1",
+  "version": "3.9.0",
   "default_branch": "trunk",
-  "build_script": "kafka_ubi_8.5.sh",
-  "package_dir": "k/kafka/",
-  "3.*.*, 2.8.*, 2.7.*, 2.6.*, 2.5.*, 2.4.*": {
+  "build_script": "apache-kafka_ubi_9.3.sh",
+  "package_dir": "a/apache-kafka/",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "docker_build": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "2.8.*, 2.7.*, 2.6.*, 2.5.*, 2.4.*": {
     "dir": "wurstmeister",
     "build_script": "kafka_ubi_8.5.sh",
     "args": {
@@ -35,5 +39,9 @@
       "kafka_version": "$PACKAGE_VERSION",
       "scala_version": "2.10"
     }
+  },
+  "*.*.*,*.*.*-*": {
+    "dir": "3.9.0_ubi9",
+    "build_script": "apache-kafka_ubi_9.3.sh"
   }
 }

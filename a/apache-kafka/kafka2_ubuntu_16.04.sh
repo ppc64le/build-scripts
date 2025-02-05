@@ -5,6 +5,8 @@
 # Source repo   : https://github.com/apache/kafka
 # Tested on     : Ubuntu_16.04
 # Script License: Apache License, Version 2 or later
+# Language      : Java
+# Travis-Check  : False
 # Maintainer    : Sarvesh Tamba <sarvesh.tamba@ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
