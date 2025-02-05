@@ -1,0 +1,12 @@
+{
+    "maintainer":"Prachi.Gaonkar@ibm.com",
+    "package_name" : "OpenSearch",
+    "github_url": "https://github.com/opensearch-project/OpenSearch.git",
+    "version": "2.18.0",
+    "default_branch": "main",
+    "package_dir": "o/opensearch-project-OpenSearch",
+    "build_script": "opensearch_2.18.0_ubi9.3",
+    "validate_build_script": true,
+    "use_non_root_user": true,
+    "docker_build": false
+}
