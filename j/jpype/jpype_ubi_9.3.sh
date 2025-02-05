@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package        : jpype
-# Version        : 1.5.0
+# Version        : v1.5.0
 # Source repo    : https://github.com/jpype-project/jpype.git
 # Tested on      : UBI 9.3
 # Language       : Python
@@ -19,7 +19,7 @@
 # -----------------------------------------------------------------------------
 
 PACKAGE_NAME=jpype
-PACKAGE_VERSION=${1:-1.5.0}
+PACKAGE_VERSION=${1:-v1.5.0}
 PACKAGE_DIR=jpype
 PACKAGE_URL=https://github.com/jpype-project/jpype.git
 
