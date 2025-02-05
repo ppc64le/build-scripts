@@ -26,6 +26,7 @@ set -e
 PACKAGE_NAME=pytorch
 PACKAGE_VERSION=${1:-v2.0.1}
 PACKAGE_URL=https://github.com/pytorch/pytorch.git
+PACKAGE_DIR=pytorch
 export PYTORCH_BUILD_VERSION="${PACKAGE_VERSION#v}"
 export PYTORCH_BUILD_NUMBER=1
 CURRENT_DIR="${PWD}"
