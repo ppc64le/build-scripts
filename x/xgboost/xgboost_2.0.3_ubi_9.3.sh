@@ -75,7 +75,7 @@ cd "$(pwd)/$PACKAGE_DIR"
 echo "Current directory: $(pwd)"
 
 #as there is no setup.py file included in python-package
-if ! (python3 -m build); then
+if ! (pip install .); then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
@@ -83,3 +83,4 @@ if ! (python3 -m build); then
 fi
  
 echo "Build and installation completed successfully."
+echo "There are no test cases available. skipping the test cases"
