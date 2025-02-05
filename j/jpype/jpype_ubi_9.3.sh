@@ -31,9 +31,9 @@ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
 # Clone the repository
-git clone PACKAGE_URL
-cd PACKAGE_DIR
-git checkout PACKAGE_VERSION
+git clone $PACKAGE_URL
+cd $PACKAGE_DIR
+git checkout $PACKAGE_VERSION
 
 # Download JDBC Drivers
 wget https://repo1.maven.org/maven2/org/xerial/sqlite-jdbc/3.42.0.0/sqlite-jdbc-3.42.0.0.jar -O sqlite-jdbc.jar
