@@ -44,7 +44,7 @@ wget https://repo1.maven.org/maven2/com/h2database/h2/2.2.224/h2-2.2.224.jar -O 
 export CLASSPATH=$CLASSPATH:$(pwd)/sqlite-jdbc.jar:$(pwd)/hsqldb.jar:$(pwd)/h2.jar
 
 # Install test dependencies
-pip3 install pytest pytest-cov numpy
+pip3 install pytest pytest-cov numpy tox
 
 # Install the package
 if ! pip3 install .; then
