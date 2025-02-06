@@ -14,12 +14,15 @@
     "build_script": "scikit-learn_ubi_8.5.sh"
   },
   "1.5.0": {
-   "build_script": "scikit-learn_ubi_8.10.sh"
+    "build_script": "scikit-learn_ubi_8.10.sh"
   },
-   "1.1.1,1.3.0":{
-   "build_script": "scikit-learn_1.1.1_ubi_9.3.sh"
+  "1.1.1":{
+    "build_script": "scikit-learn_1.1.1_ubi_9.3.sh"
+   },
+   "1.3.0":{
+     "build_script": "scikit-learn_1.1.1_ubi_9.3.sh"
    },
    "1.5.2": {
-    "build_script": "scikit-learn_ubi_9.3.sh"
+     "build_script": "scikit-learn_ubi_9.3.sh"
   }
 }
