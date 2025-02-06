@@ -95,7 +95,7 @@ export PYARROW_WITH_DATASET=1
 export PYARROW_PARALLEL=4
 export PYARROW_BUILD_TYPE="release"
 
-if ! python3 setup.py bdist_wheel ; then
+if ! python3 setup.py bdist_wheel --dist-dir="$CURRENT_DIR/ ; then
         echo "------------------$PACKAGE_NAME:wheel_built_fails---------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  wheel_built_fails"
@@ -107,5 +107,3 @@ else
         exit 0
 fi
 
-#skipping the tests as most of the tests are parity with x86 also
-cp -r $PACKAGE_DIR/dist/*.whl $CURRENT_DIR
