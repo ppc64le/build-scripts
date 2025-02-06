@@ -24,7 +24,7 @@ PACKAGE_DIR=jpype
 PACKAGE_URL=https://github.com/jpype-project/jpype.git
 
 # Install necessary system packages
-yum install -y git python-devel gcc gcc-c++ gzip tar make wget xz cmake yum-utils openssl-devel openblas-devel bzip2-devel bzip2 zip unzip libffi-devel zlib-devel autoconf automake libtool cargo pkgconf-pkg-config.ppc64le info.ppc64le fontconfig.ppc64le fontconfig-devel.ppc64le sqlite-devel
+yum install -y git python-devel java-11-openjdk java-11-openjdk-devel gcc gcc-c++ gzip tar make wget xz cmake yum-utils openssl-devel openblas-devel bzip2-devel bzip2 zip unzip libffi-devel zlib-devel autoconf automake libtool cargo pkgconf-pkg-config.ppc64le info.ppc64le fontconfig.ppc64le fontconfig-devel.ppc64le sqlite-devel
 
 # Set JAVA_HOME
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
