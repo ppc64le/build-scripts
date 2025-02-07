@@ -1,5 +1,5 @@
 {
-  "maintainer": "Simran-Sirsat",
+  "maintainer": "Harithanagothu2",
   "package_name": "pillow",
   "github_url": "https://github.com/python-pillow/Pillow",
   "version": "10.0.1",
@@ -10,7 +10,7 @@
   "validate_build_script": true,
   "use_non_root_user": false,
   "wheel_build" : true,
-  "10.0.1": {
+  "10.0.*": {
     "build_script": "pillow_v10.0.1_ubi_9.3.sh"
   },
   "10.4.0": {

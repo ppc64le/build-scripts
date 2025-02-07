@@ -6,15 +6,15 @@
   "wheel_build" : true,
   "default_branch": "main",
   "package_dir": "m/matplotlib",
-  "build_script": "matplotlib_3.7.1_ubi_9.3.sh",
+  "build_script": "matplotlib_ubi_9.3.sh",
   "validate_build_script": true,
   "use_non_root_user": false,
   "docker_build": false,
-  "v3.9.2": {
-    "build_script": "matplotlib_ubi_9.3.sh"
+  "v3.7.1,v3.8.0":{
+    "build_script":"matplotlib_3.8.0_ubi_9.3.sh"
   },
-  "*":{
-    "build_script":"matplotlib_3.7.1_ubi_9.3.sh"
+  "*": {
+    "build_script": "matplotlib_ubi_9.3.sh"
   }
 }
 
