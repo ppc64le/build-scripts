@@ -1,0 +1,16 @@
+{
+  "maintainer": "aastha-sharma2",
+  "package_name": "libclang",
+  "github_url": "https://github.com/sighingnow/libclang.git",
+  "version": "llvm-14.0.6",
+  "package_dir": "l/libclang",
+  "default_branch": "master",
+  "build_script": "libclang_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "wheel_build" : true,
+  "*": {
+    "build_script": "libclang_ubi_9.3.sh"
+  }
+}
