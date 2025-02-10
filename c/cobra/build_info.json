@@ -1,0 +1,15 @@
+{
+  "maintainer": "vinodk99",
+  "package_name": "cobra",
+  "github_url": "https://github.com/spf13/cobra",
+  "version": "v1.8.1",
+  "default_branch": "main",
+  "build_script": "cobra_ubi_9.3.sh",
+  "package_dir": "c/cobra",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v*.*.*" : {
+     "build_script": "cobra_ubi_9.3.sh"
+  }
+}
