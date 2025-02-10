@@ -1,5 +1,5 @@
 {
-  "maintainer": "IBM-Currency-Helper",
+  "maintainer": "abhijeetdandekaribm",
   "package_name": "mongodb",
   "github_url": "https://github.com/mongodb/mongo.git",
   "version": "r7.3.4",
