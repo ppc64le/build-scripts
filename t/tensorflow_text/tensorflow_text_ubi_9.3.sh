@@ -117,7 +117,7 @@ git checkout v0.37.1
 
 echo "------------------------Generating wheel-------------------"
 pip install --upgrade pip wheel
-python3 setup.py -q bdist_wheel --project tensorflow_io_gcs_filesystem
+python setup.py -q bdist_wheel --project tensorflow_io_gcs_filesystem
 cd dist
 pip install tensorflow_io_gcs_filesystem-*-linux_ppc64le.whl
 
