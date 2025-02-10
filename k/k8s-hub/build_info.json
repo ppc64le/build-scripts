@@ -1,0 +1,29 @@
+{
+  "maintainer": "IBM-Currency-Helper",
+  "package_name": "k8s-hub",
+  "github_url": "https://github.com/jupyterhub/zero-to-jupyterhub-k8s.git",
+  "version": "4.1.0",
+  "default_branch": "main",
+  "build_script": "",
+  "use_non_root_user": "false",
+  "docker_build": "true",
+  "package_dir": "k/k8s-hub/",
+  "docker_cmd": "docker build -t ${package_name}-ppc64le:$PACKAGE_VERSION ${dir}",
+  "validate_build_script": false,
+  "*": {
+    "dir": "7.x_ubi",
+    "base_docker_image": "registry.access.redhat.com/ubi9/ubi:9.3",
+    "base_docker_variant": "ubi"
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
