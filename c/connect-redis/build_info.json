@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "connect-redis",
+    "github_url": "https://github.com/tj/connect-redis",
+    "version": "v7.1.1",
+    "default_branch": "master",
+    "build_script": "connect-redis_ubi_9.3.sh",
+    "package_dir": "c/connect-redis",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v7.*.*": {
+        "build_script": "connect-redis_ubi_9.3.sh"
+    }
+}

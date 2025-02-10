@@ -1,3 +1,4 @@
+
 os: linux
 dist: focal
 arch: ppc64le
@@ -5,8 +6,8 @@ language: shell
 
 branches:
   only:
-  - master
-
+    - master
+    - python-ecosystem
 
 env:
   global:
@@ -14,11 +15,11 @@ env:
     - ENABLE_SYFT=true
     - ENABLE_GRYPE=true
 
-
 services:
-    - docker
+  - docker
 
 before_install:
+    - sudo apt update -y
     - sudo apt install -y jq; jq --version
    
 
@@ -37,26 +38,27 @@ jobs:
             - variable.sh
 
     - stage: Build
+      if: env(VALIDATE_BUILD_SCRIPT) = true
       name: Build script run
       script:
         - source variable.sh
         # creating a folder package-cache to store the variable.sh and cloned package folder
         - mkdir package-cache && sudo mv variable.sh package-cache
-        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/build_package.sh; bash ./script/build_package.sh; fi
+        - chmod +x ./script/build_package.sh; bash ./script/build_package.sh;
         # setting a variable cloned_package,the value of the variable is based on recently cloned package through build-script execution.
         - cloned_package=$(ls -td -- */ | head -n 1) && sudo mv "$cloned_package" package-cache
         - echo "export CLONED_PACKAGE=\"$cloned_package\"" >> package-cache/variable.sh
         - cd package-cache
-        # changing the ownership of package-cache and it's sub directories to travis, the reason for doing that is to facilitate creation of files 
+        # changing the ownership of package-cache and it's sub directories to travis, the reason for doing that is to facilitate creation of files
         # in the cloned package folder(note: currently cloned package folder is owned by the root)
         - sudo chown travis:travis -R .
         - ls -ltr
         # executing pre-process script which creates some files based on the package language.(python, javascript, typescript)
-        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ../script/pre_process.sh; bash ../script/pre_process.sh; fi
+        - chmod +x ../script/pre_process.sh; bash ../script/pre_process.sh;
         - echo $TRAVIS_BUILD_DIR
         - cd $TRAVIS_BUILD_DIR
         - gzip $TRAVIS_BUILD_DIR/build_log
-        - chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh build_log.gz
+        #- chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh build_log.gz
       workspaces:
         create:
           # package_cache contains both variable.sh file as well as cloned package directory.
@@ -65,13 +67,90 @@ jobs:
             - .
         use: build_cache
 
+    - stage: Wheel build
+      if: env(WHEEL_BUILD) = true
+      name: "Create Wheel for Python 3.9"
+      env: PYTHON_VERSION="3.9"
+      script:
+        - source variable.sh
+        - chmod +x ./script/build_wheels.sh; bash ./script/build_wheels.sh;
+        - WHEEL_FILE=*.whl
+        - chmod +x ./script/upload-scripts/upload_wheel.sh; bash ./script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+      workspaces:
+        create:
+          name: wheels_cache_39
+          paths:
+            - ./*.whl
+        use: build_cache
+      allow_failure: true
+
+    - name: "Create Wheel for Python 3.10"
+      if: env(WHEEL_BUILD) = true
+      env: PYTHON_VERSION="3.10"
+      script:
+        - source variable.sh
+        - chmod +x ./script/build_wheels.sh; bash ./script/build_wheels.sh;
+        - WHEEL_FILE=*.whl
+        - chmod +x ./script/upload-scripts/upload_wheel.sh; bash ./script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+      workspaces:
+        create:
+          name: wheels_cache_310
+          paths:
+            - ./*.whl
+        use: build_cache
+
+    - name: "Create Wheel for Python 3.11"
+      if: env(WHEEL_BUILD) = true
+      env: PYTHON_VERSION="3.11"
+      script:
+        - source variable.sh
+        - chmod +x ./script/build_wheels.sh; bash ./script/build_wheels.sh;
+        - WHEEL_FILE=*.whl
+        - chmod +x ./script/upload-scripts/upload_wheel.sh; bash ./script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+      workspaces:
+        create:
+          name: wheels_cache_311
+          paths: ./*.whl
+        use: build_cache
+
+    - name: "Create Wheel for Python 3.12"
+      if: env(WHEEL_BUILD) = true
+      env: PYTHON_VERSION="3.12"
+      script:
+        - source variable.sh
+        - chmod +x ./script/build_wheels.sh; bash ./script/build_wheels.sh;
+        - WHEEL_FILE=*.whl
+        - chmod +x ./script/upload-scripts/upload_wheel.sh; bash ./script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+      workspaces:
+        create:
+          name: wheels_cache_312
+          paths:
+            - ./*.whl
+        use: build_cache
+
+    - name: "Create Wheel for Python 3.13"
+      if: env(WHEEL_BUILD) = true
+      env: PYTHON_VERSION="3.13"
+      script:
+        - source variable.sh
+        - chmod +x ./script/build_wheels.sh; bash ./script/build_wheels.sh;
+        - WHEEL_FILE=*.whl
+        - chmod +x ./script/upload-scripts/upload_wheel.sh; bash ./script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+      workspaces:
+        create:
+          name: wheels_cache_313
+          paths:
+            - ./*.whl
+        use: build_cache
+      allow_failure: true
+
     - stage: Source code scanner
-      if: env(ENABLE_TRIVY) = true
+      if: env(ENABLE_TRIVY) = true AND env(VALIDATE_BUILD_SCRIPT) = true
       name: Run trivy scan
       script:
         - ls -ltr package-cache
         - source package-cache/variable.sh;
-        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/scanner-scripts/trivy_code_scan.sh;bash ./script/scanner-scripts/trivy_code_scan.sh; fi
+        - chmod +x ./script/scanner-scripts/trivy_code_scan.sh;bash ./script/scanner-scripts/trivy_code_scan.sh;
         - mkdir source_trivy
         - mv package-cache/trivy_source_vulnerabilities_results.json package-cache/trivy_source_sbom_results.cyclonedx source_trivy
       workspaces:
@@ -81,12 +160,12 @@ jobs:
             - source_trivy
         use:
           - package_cache
-          
+
     - name: Run syft scan
-      if: env(ENABLE_SYFT) = true
+      if: env(ENABLE_SYFT) = true AND env(VALIDATE_BUILD_SCRIPT) = true
       script:
         - source package-cache/variable.sh;
-        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/scanner-scripts/syft_code_scan.sh;bash ./script/scanner-scripts/syft_code_scan.sh; fi  
+        - chmod +x ./script/scanner-scripts/syft_code_scan.sh;bash ./script/scanner-scripts/syft_code_scan.sh;
         - mkdir source_syft
         - mv package-cache/syft_source_sbom_results.json source_syft
       workspaces:
@@ -96,12 +175,12 @@ jobs:
             - source_syft
         use:
           - package_cache
-          
+
     - name: Run grype scan
-      if: env(ENABLE_GRYPE) = true
+      if: env(ENABLE_GRYPE) = true AND env(VALIDATE_BUILD_SCRIPT) = true
       script:
         - source package-cache/variable.sh;
-        - if [ ${VALIDATE_BUILD_SCRIPT} == true ]; then chmod +x ./script/scanner-scripts/grype_code_scan.sh;bash ./script/scanner-scripts/grype_code_scan.sh; fi   
+        - chmod +x ./script/scanner-scripts/grype_code_scan.sh;bash ./script/scanner-scripts/grype_code_scan.sh;
         - mkdir source_grype
         - mv package-cache/grype_source_sbom_results.json package-cache/grype_source_vulnerabilities_results.json source_grype
       workspaces:
@@ -111,8 +190,9 @@ jobs:
             - source_grype
         use:
           - package_cache
-          
+
     - stage: Upload source scanner results
+      if: env(VALIDATE_BUILD_SCRIPT) = true
       name: source scanner results
       workspaces:
         use:
@@ -127,66 +207,65 @@ jobs:
         - find source_syft -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
         - find source_grype -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
         - tar cvzf source_scanner.tar.gz source
-        - chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh source_scanner.tar.gz
-      
+        #- chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh source_scanner.tar.gz
+
     - stage: Build docker image
       # the below condition checks if docker_build flag set to true or false, it it is true it will build this stage and if it is false it will exclude this stage.
       if: env(BUILD_DOCKER) = true
       name: Docker build
       script:
-        - source package-cache/variable.sh;
-        - if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/build_docker.sh; bash ./script/build_docker.sh;echo "printing docker images"; docker images; fi
+        - source variable.sh;
+        - chmod +x ./script/build_docker.sh; bash ./script/build_docker.sh;echo "printing docker images"; docker images;
         # the below command is used to upload docker image to ibm icr registry.
-        - if [ ${BUILD_DOCKER} == true ]; then chmod +x ./script/upload-scripts/upload_docker_image.sh; bash ./script/upload-scripts/upload_docker_image.sh; fi
+        - chmod +x ./script/upload-scripts/upload_docker_image.sh; bash ./script/upload-scripts/upload_docker_image.sh;
       workspaces:
         create:
           name: docker_image_tar
           paths:
             - image.tar
-        use: package_cache
-
+        use: build_cache
 
     - stage: Docker image Scanner
       if: env(BUILD_DOCKER) = true AND env(ENABLE_TRIVY) = true
       name: Run trivy scan
       script:
-        - source package-cache/variable.sh;
-        - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/scanner-scripts/trivy_image_scan.sh;bash ./script/scanner-scripts/trivy_image_scan.sh; mkdir image_trivy; mv package-cache/trivy_image_vulnerabilities_results.json package-cache/trivy_image_sbom_results.cyclonedx image_trivy; fi        
+        - source variable.sh;
+        - docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/scanner-scripts/trivy_image_scan.sh;bash ./script/scanner-scripts/trivy_image_scan.sh; mkdir image_trivy; mv trivy_image_vulnerabilities_results.json trivy_image_sbom_results.cyclonedx image_trivy;
       workspaces:
         create:
           name: image_trivy
           paths:
             - image_trivy
         use:
-          - package_cache
+          - build_cache
           - docker_image_tar
-          
+
     - name: Run syft scan
       if: env(BUILD_DOCKER) = true AND env(ENABLE_SYFT) = true
       script:
-        - source package-cache/variable.sh;
-        - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/scanner-scripts/syft_image_scan.sh;bash ./script/scanner-scripts/syft_image_scan.sh; mkdir image_syft; mv package-cache/syft_image_sbom_results.json image_syft; fi
+        - source variable.sh;
+        - docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/scanner-scripts/syft_image_scan.sh;bash ./script/scanner-scripts/syft_image_scan.sh; mkdir image_syft; mv syft_image_sbom_results.json image_syft;
       workspaces:
         create:
           name: image_syft
           paths:
             - image_syft
         use:
-          - package_cache
+          - build_cache
           - docker_image_tar
 
     - name: Run grype scan
       if: env(BUILD_DOCKER) = true AND env(ENABLE_GRYPE) = true
       script:
-        - source package-cache/variable.sh;
-        - if [ ${BUILD_DOCKER} == true ]; then docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/scanner-scripts/grype_image_scan.sh;bash ./script/scanner-scripts/grype_image_scan.sh; mkdir image_grype; mv package-cache/grype_image_sbom_results.json package-cache/grype_image_vulnerabilities_results.json image_grype; fi
+        - source variable.sh;
+        - docker load -i "$HOME/build/$TRAVIS_REPO_SLUG/image.tar"; chmod +x ./script/scanner-scripts/grype_image_scan.sh;bash ./script/scanner-scripts/grype_image_scan.sh; mkdir image_grype; mv grype_image_sbom_results.json grype_image_vulnerabilities_results.json image_grype;
       workspaces:
         create:
           name: image_grype
           paths:
             - image_grype
         use:
-          - package_cache
+          - build_cache
           - docker_image_tar
 
     - stage: Upload image scanner results
@@ -197,14 +276,13 @@ jobs:
           - image_trivy
           - image_syft
           - image_grype
-          - package_cache
+          - build_cache
       script:
-        - source package-cache/variable.sh;
+        - source variable.sh;
         # the below command will copy the files from all the scanner folders to image folder, later we tar that image folder and use the upload scanner script to push into cos bucket.
         - mkdir image
         - find image_trivy -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
         - find image_syft -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
         - find image_grype -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
         - tar cvzf image_scanner.tar.gz image
-        - chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh image_scanner.tar.gz
-          
+        #- chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh image_scanner.tar.gz

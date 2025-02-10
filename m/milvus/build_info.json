@@ -1,0 +1,21 @@
+{
+  "maintainer": "sumitd2",
+  "package_name": "milvus",
+  "github_url": "https://github.com/milvus-io/milvus",
+  "version": "v2.4.11",
+  "package_dir": "m/milvus",
+  "default_branch": "master",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "build_script": "milvus-v2.4.11-ubi9.3.sh",
+  "docker_build": "true",
+  "use_non_root_user": "false",
+  "validate_build_script": "true",
+  "v2.4.11": {
+    "dir": "2.4.11_ubi_9",
+    "build_script": "milvus-v2.4.11-ubi9.3.sh"
+  },
+  "v2.5.3": {
+    "dir": "2.5.3_ubi_9",
+    "build_script": "milvus-v2.5.3-ubi9.3.sh"
+  }
+}

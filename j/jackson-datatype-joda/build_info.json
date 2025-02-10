@@ -1,0 +1,15 @@
+{
+    "maintainer": "santhoshkotla2929",
+    "package_name": "jackson-datatype-joda",
+    "github_url": "https://github.com/FasterXML/jackson-datatype-joda",
+    "version": "jackson-datatype-joda-2.17.2",
+    "default_branch": "master",
+    "build_script": "jackson-datatype-joda_ubi_9.3.sh",
+    "package_dir": "j/jackson-datatype-joda",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "jackson-datatype-joda-2.*.*": {
+      "build_script": "jackson-datatype-joda_ubi_9.3.sh"	   
+    }    
+}
