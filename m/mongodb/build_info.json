@@ -2,7 +2,7 @@
   "maintainer": "IBM-Currency-Helper",
   "package_name": "mongodb",
   "github_url": "https://github.com/mongodb/mongo.git",
-  "version": "r6.1.0",
+  "version": "r7.3.4",
   "default_branch": "master",
   "build_script": "",
   "use_non_root_user": "false",
