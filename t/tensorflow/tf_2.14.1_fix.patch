@@ -1,0 +1,182 @@
+diff --git a/.bazelrc b/.bazelrc
+index 79be2f7eeee..48720960378 100644
+--- a/.bazelrc
++++ b/.bazelrc
+@@ -84,6 +84,28 @@
+ build --define framework_shared_object=true
+ build --define tsl_protobuf_header_only=true
+ 
++build --define framework_shared_object=true
++build --define tsl_protobuf_header_only=true
++build --define=tflite_with_xnnpack=false
++build --action_env PYTHON_BIN_PATH=/root/tensorflow/tfenv/bin/python
++build --action_env PYTHON_LIB_PATH="$SP_DIR"
++build --python_path=/root/tensorflow/tfenv/bin/python
++build --action_env GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true
++build --define=tflite_with_xnnpack=false
++build:linux --copt="-Wno-stringop-overflow"
++build:linux --copt="-Wno-stringop-overflow"
++build:opt --copt=-mvsx
++build:opt --define with_default_optimizations=true
++build:opt --copt="-mcpu=power9"
++build:opt --host_copt="-mcpu=power9"
++build:opt --copt="-mtune=power9"
++build:opt --host_copt="-mtune=power9"
++build:opt --host_copt=-fplt
++build:opt --host_cxxopt=-fplt
++build:opt --host_copt=-fplt
++build:opt --host_cxxopt=-fplt
++
++
+ build --define=use_fast_cpp_protos=true
+ build --define=allow_oversize_protos=true
+ 
+@@ -328,8 +350,8 @@ build:windows --host_copt=/d2ReducedOptimizeHugeFunctions
+ # the pip package on Windows without an intermediate data-file archive, as the
+ # build_pip_package script in its current form (as of Aug 2023) uses the
+ # runfiles symlink tree to decide what to put into the Python wheel.
+-startup:windows --windows_enable_symlinks
+-build:windows --enable_runfiles
++#startup:windows --windows_enable_symlinks
++#build:windows --enable_runfiles
+ 
+ # Default paths for TF_SYSTEM_LIBS
+ build:linux --define=PREFIX=/usr
+diff --git a/WORKSPACE b/WORKSPACE
+index fb3af8a2bea..9b71bda6354 100644
+--- a/WORKSPACE
++++ b/WORKSPACE
+@@ -12,13 +12,25 @@ http_archive(
+     ],
+ )
+ 
++#http_archive(
++#    name = "rules_python",
++#    sha256 = "84aec9e21cc56fbc7f1335035a71c850d1b9b5cc6ff497306f84cced9a769841",
++#    strip_prefix = "rules_python-0.23.1",
++#    url = "https://github.com/bazelbuild/rules_python/releases/download/0.23.1/rules_python-0.23.1.tar.gz",
++#)
++
+ http_archive(
+     name = "rules_python",
+-    sha256 = "84aec9e21cc56fbc7f1335035a71c850d1b9b5cc6ff497306f84cced9a769841",
+-    strip_prefix = "rules_python-0.23.1",
+-    url = "https://github.com/bazelbuild/rules_python/releases/download/0.23.1/rules_python-0.23.1.tar.gz",
++    sha256 = "9d04041ac92a0985e344235f5d946f71ac543f1b1565f2cdbc9a2aaee8adf55b",
++    strip_prefix = "rules_python-0.26.0",
++    url = "https://github.com/bazelbuild/rules_python/releases/download/0.26.0/rules_python-0.26.0.tar.gz",
+ )
+ 
++
++load("@rules_python//python:repositories.bzl", "py_repositories")
++
++py_repositories()
++
+ load("@rules_python//python:repositories.bzl", "python_register_toolchains")
+ load(
+     "//tensorflow/tools/toolchains/python:python_repo.bzl",
+
+
+diff --git a/tensorflow/workspace2.bzl b/tensorflow/workspace2.bzl
+index 3456b20b7e7..528b1e82c3f 100644
+--- a/tensorflow/workspace2.bzl
++++ b/tensorflow/workspace2.bzl
+@@ -169,9 +169,10 @@ def _tf_repositories():
+
+     tf_http_archive(
+         name = "cpuinfo",
+-        strip_prefix = "cpuinfo-87d8234510367db49a65535021af5e1838a65ac2",
+-        sha256 = "609fc42c47482c1fc125dccac65e843f640e792540162581c4b7eb6ff81c826a",
+-        urls = tf_mirror_urls("https://github.com/pytorch/cpuinfo/archive/87d8234510367db49a65535021af5e1838a65ac2.zip"),
++        sha256 = "e07512a11e1c71687359a133f49d60583d7465b737fe5dbe11f461c9aaa72a2b",
++        strip_prefix = "cpuinfo-ef634603954d88d2643d5809011288b890ac126e",
++        patch_file = ["//third_party:0001-Support-for-ppc64le.patch"],
++        urls = tf_mirror_urls("https://github.com/pytorch/cpuinfo/archive/ef634603954d88d2643d5809011288b890ac126e.zip"),
+     )
+
+     tf_http_archive(
+@@ -571,10 +572,11 @@ def _tf_repositories():
+
+     tf_http_archive(
+         name = "boringssl",
+-        sha256 = "9dc53f851107eaf87b391136d13b815df97ec8f76dadb487b58b2fc45e624d2c",
+-        strip_prefix = "boringssl-c00d7ca810e93780bd0c8ee4eea28f4f2ea4bcdc",
++        sha256 = "534fa658bd845fd974b50b10f444d392dfd0d93768c4a51b61263fd37d851c40",
++        strip_prefix = "boringssl-b9232f9e27e5668bc0414879dcdedb2a59ea75f2",
+         system_build_file = "//third_party/systemlibs:boringssl.BUILD",
+-        urls = tf_mirror_urls("https://github.com/google/boringssl/archive/c00d7ca810e93780bd0c8ee4eea28f4f2ea4bcdc.tar.gz"),
++       patch_file = ["//third_party/boringssl:boringssl-for-ppc64le.patch"],
++        urls = tf_mirror_urls("https://github.com/google/boringssl/archive/b9232f9e27e5668bc0414879dcdedb2a59ea75f2.tar.gz"),
+     )
+
+     # Note: if you update this, you have to update libpng too. See cl/437813808
+
+diff --git a/third_party/eigen3/workspace.bzl b/third_party/eigen3/workspace.bzl
+index 99b0096926e..db80ac81e8e 100644
+--- a/third_party/eigen3/workspace.bzl
++++ b/third_party/eigen3/workspace.bzl
+@@ -7,8 +7,8 @@ def repo():
+ 
+     # Attention: tools parse and update these lines.
+     # LINT.IfChange
+-    EIGEN_COMMIT = "0b51f763cbbd0ed08168f88972724329f0375498"
+-    EIGEN_SHA256 = "70a3b0e357fc037740002f5097a15dba1ea0dde28d37f5d9c86f76a06626f4fc"
++    EIGEN_COMMIT = "b0f877f8e01e90a5b0f3a79d46ea234899f8b499"
++    EIGEN_SHA256 = "bdb1353ba33a5a7a5caadf822057ac1f0254ba2c5e70512dd1ec20cbb64e2f6c"
+     # LINT.ThenChange(//tensorflow/lite/tools/cmake/modules/eigen.cmake)
+ 
+     tf_http_archive(
+
+
+diff --git a/third_party/0001-Support-for-ppc64le.patch b/third_party/0001-Support-for-ppc64le.patch
+new file mode 100644
+index 0000000..906726f
+--- /dev/null
++++ b/third_party/0001-Support-for-ppc64le.patch
+@@ -0,0 +1,25 @@
++diff --git a/BUILD.bazel b/BUILD.bazel
++index dc9634e..ae8bc5b 100644
++--- a/BUILD.bazel
+++++ b/BUILD.bazel
++@@ -124,6 +124,7 @@ cc_library(
++         ":linux_riscv32": COMMON_SRCS + RISCV_SRCS + LINUX_SRCS + LINUX_RISCV_SRCS,
++         ":linux_riscv64": COMMON_SRCS + RISCV_SRCS + LINUX_SRCS + LINUX_RISCV_SRCS,
++         ":linux_s390x": COMMON_SRCS + LINUX_SRCS,
+++        ":linux_ppc64le": COMMON_SRCS + LINUX_SRCS,
++         ":macos_x86_64": COMMON_SRCS + X86_SRCS + MACH_SRCS + MACH_X86_SRCS,
++         ":macos_x86_64_legacy": COMMON_SRCS + X86_SRCS + MACH_SRCS + MACH_X86_SRCS,
++         ":macos_arm64": COMMON_SRCS + MACH_SRCS + MACH_ARM_SRCS,
++@@ -260,6 +261,11 @@ config_setting(
++     values = {"cpu": "s390x"},
++ )
++
+++config_setting(
+++    name = "linux_ppc64le",
+++    values = {"cpu": "ppc"},
+++)
+++
++ config_setting(
++     name = "macos_x86_64_legacy",
++     values = {
++
+
+diff --git a/third_party/boringssl/boringssl-for-ppc64le.patch b/third_party/boringssl/boringssl-for-ppc64le.patch
+new file mode 100644
+index 00000000000..504a85e7787
+--- /dev/null
++++ b/third_party/boringssl/boringssl-for-ppc64le.patch
+@@ -0,0 +1,13 @@
++diff --git a/src/include/openssl/base.h b/src/include/openssl/base.h
+++index 983eadc5d..34747261c 100644
+++--- a/src/include/openssl/base.h
++++++ b/src/include/openssl/base.h
+++@@ -123,7 +123,7 @@ extern "C" {
+++ // little-endian architectures. Functions will not produce the correct answer
+++ // on other systems. Run the crypto_test binary, notably
+++ // crypto/compiler_test.cc, before adding a new architecture.
+++-#error "Unknown target CPU"
++++#define OPENSSL_64_BIT
+++ #endif
+++
+++ #if defined(__APPLE__)
+

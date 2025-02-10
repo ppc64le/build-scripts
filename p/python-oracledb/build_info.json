@@ -1,0 +1,13 @@
+{
+  "maintainer": "chandan-abhyankar",
+  "package_name": "python-oracledb",
+  "github_url": "https://github.com/oracle/python-oracledb.git",
+  "version": "v2.5.1",
+  "default_branch": "main",
+  "package_dir": "p/python-oracledb",
+  "build_script": "python_oracledb_ubi_9.3.sh",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false
+}
+
