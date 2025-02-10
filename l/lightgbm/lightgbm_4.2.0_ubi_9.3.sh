@@ -26,7 +26,7 @@ PACKAGE=LightGBM
 PACKAGE_DIR=LightGBM/lightgbm-python
 
 echo "Installing dependencies..."
-yum install -y git gcc gcc-c++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel gcc-gfortran openblas atlas openblas-devel
+yum install -y git gcc gcc-c++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel gcc-gfortran openblas atlas openblas-devel python-devel python-pip
 
 echo "Clone the repository..."
 git clone $PACKAGE_URL
@@ -172,7 +172,6 @@ echo "installing base package ..."
 ./build-python.sh
 echo "lightgbm dir ....."
 cd lightgbm-python
-#pip install numpy==1.23.5
 
 echo "installing package ..."
 if ! (pip install --no-deps .) ; then
