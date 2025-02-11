@@ -33,6 +33,7 @@ mkdir dist
 export CXX=g++
 export CC=gcc
 export ARROW_HOME=$(pwd)/dist
+export PYARROW_BUNDLE_ARROW_CPP=1
 export LD_LIBRARY_PATH=$ARROW_HOME/lib:$LD_LIBRARY_PATH
 export CMAKE_PREFIX_PATH=$ARROW_HOME:$CMAKE_PREFIX_PATH
 
@@ -94,6 +95,7 @@ export PYARROW_WITH_PARQUET=1
 export PYARROW_WITH_DATASET=1
 export PYARROW_PARALLEL=4
 export PYARROW_BUILD_TYPE="release"
+export PYARROW_BUNDLE_ARROW_CPP_HEADERS=1
 
 if ! python3 setup.py bdist_wheel --dist-dir="$CURRENT_DIR/" ; then
         echo "------------------$PACKAGE_NAME:wheel_built_fails---------------------"
