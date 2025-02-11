@@ -1,0 +1,16 @@
+{
+    "maintainer": "kiranNukal",
+    "package_name": "tensorboard_plugin_wit",
+    "github_url": "https://github.com/PAIR-code/what-if-tool.git",
+    "version": "v1.6.0",
+    "wheel_build" : true,
+    "default_branch": "main",
+    "package_dir": "t/tensorboard_plugin_wit",
+    "build_script": "tensorboard_plugin_wit_ubi_9.3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "*": {
+      "build_script": "tensorboard_plugin_wit_ubi_9.3.sh"
+    }
+  }
