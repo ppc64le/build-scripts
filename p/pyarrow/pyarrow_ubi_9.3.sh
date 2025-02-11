@@ -22,8 +22,8 @@
 PACKAGE_NAME=pyarrow
 PACKAGE_VERSION=${1:-apache-arrow-11.0.0}
 PACKAGE_URL=https://github.com/apache/arrow.git
-PACKAGE_DIR=arrow/python/
- 
+PACKAGE_DIR=./arrow/python
+CURRENT_DIR="${PWD}"
 
 yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openssl-devel cmake
 
@@ -33,6 +33,7 @@ mkdir dist
 export CXX=g++
 export CC=gcc
 export ARROW_HOME=$(pwd)/dist
+export PYARROW_BUNDLE_ARROW_CPP=1
 export LD_LIBRARY_PATH=$ARROW_HOME/lib:$LD_LIBRARY_PATH
 export CMAKE_PREFIX_PATH=$ARROW_HOME:$CMAKE_PREFIX_PATH
 
@@ -87,24 +88,24 @@ cmake -DCMAKE_INSTALL_PREFIX=$ARROW_HOME \
       ..
 make -j$(nproc)
 make install
-cd /
+cd ../../..
 
 cd $PACKAGE_DIR
 export PYARROW_WITH_PARQUET=1
 export PYARROW_WITH_DATASET=1
 export PYARROW_PARALLEL=4
 export PYARROW_BUILD_TYPE="release"
+export PYARROW_BUNDLE_ARROW_CPP_HEADERS=1
 
-if ! python3 setup.py bdist_wheel ; then
+if ! python3 setup.py bdist_wheel --dist-dir="$CURRENT_DIR/" ; then
         echo "------------------$PACKAGE_NAME:wheel_built_fails---------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  wheel_built_fails"
-	exit 1
+        exit 1
 else
         echo "------------------$PACKAGE_NAME:wheel_built_success-------------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Wheel_built_success"
-	exit 0
+        exit 0
 fi
 
-#skipping the tests as most of the tests are parity with x86 also 

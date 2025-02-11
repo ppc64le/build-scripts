@@ -20,7 +20,7 @@
 PACKAGE_NAME=jax
 PACKAGE_VERSION=${1:-jax-v0.4.7}
 PACKAGE_URL=https://github.com/jax-ml/jax 
-
+PACKAGE_DIR=./jax
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
@@ -39,10 +39,9 @@ export EXTRA_BAZEL_ARGS="--host_javabase=@local_jdk//:jdk" bash
 ./compile.sh
 #export the path of bazel bin
 export PATH=/bazel-6.5.0/output/:$PATH
-cd /
+cd ..
 
 pip install numpy==1.26.4 scipy opt-einsum==3.3.0  ml-dtypes==0.5.0 absl-py wheel
-
 
 git clone $PACKAGE_URL 
 cd $PACKAGE_NAME
@@ -52,19 +51,13 @@ if ! python setup.py install ; then
         echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
-	exit 1
+        exit 1
+else
+        echo "------------------$PACKAGE_NAME:Installsuccess-------------------------"
+        echo "$PACKAGE_VERSION $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Install_success"
+        exit 0
 fi
 
-if ! python setup.py bdist_wheel ; then
-        echo "------------------$PACKAGE_NAME:wheel_built_fails---------------------"
-        echo "$PACKAGE_VERSION $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  wheel_built_fails"
-	exit 2
-else
-        echo "------------------$PACKAGE_NAME:wheel_built_success-------------------------"
-        echo "$PACKAGE_VERSION $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Wheel_built_success"
-	exit 0
-fi
 
 #skipping tests as it requires tensorflow dependency.
