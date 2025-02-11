@@ -24,6 +24,7 @@ PACKAGE_NAME=opencv-python
 PACKAGE_URL=https://github.com/opencv/opencv-python.git
 PACKAGE_VERSION=${1:-84}
 PYTHON_VER=${PYTHON_VERSION:-3.11}
+OPENCV_PATCH_COMMIT=97f3f39
 
 # Set to 1 to build the headless version
 ENABLE_HEADLESS=${ENABLE_HEADLESS:-0}
@@ -60,12 +61,33 @@ fi
 git checkout ${PACKAGE_VERSION}
 git submodule update --init --recursive
 
+# Apply patch only if PACKAGE_VERSION is 86
+if [ "$PACKAGE_VERSION" == "86" ]; then
+
+    # Move into the opencv submodule
+    cd opencv
+
+    echo "Applying POWER patch: $OPENCV_PATCH_COMMIT"
+    git config --global user.email "Puneet.Sharma21@ibm.com"
+    git config --global user.name "puneetsharma21"
+
+    # Try cherry-picking the commit
+    git cherry-pick "$OPENCV_PATCH_COMMIT"
+    echo "cherry-pick applied."
+    cd ..
+    git add opencv
+    git commit -m "Applied POWER patch: $OPENCV_PATCH_COMMIT"
+else
+    echo "Skipping patch: Not applicable for PACKAGE_VERSION=$PACKAGE_VERSION"
+fi
+
+
 # Update `pyproject.toml` to ensure compatibility
 sed -i "/\"setuptools==59.2.0\"/c\  \"setuptools==59.2.0; python_version<'3.12'\",\n  \"setuptools<70.0.0; python_version>='3.12'\"" pyproject.toml
 
 
 # Install necessary Python build tools
-python${PYTHON_VER} -m pip install numpy scikit-build cmake
+python${PYTHON_VER} -m pip install --upgrade pip numpy scikit-build cmake
 
 # Get the NumPy include path
 NUMPY_INCLUDE_PATH=$(python${PYTHON_VER} -c "import numpy; print(numpy.get_include())")
