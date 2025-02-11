@@ -1,10 +1,10 @@
 {
   "maintainer": "stutiibm",
-  "package_name": "tensorflow_text",
+  "package_name": "tensorflow-text",
   "github_url": "https://github.com/pytorch/text.git",
   "version": "v0.16.2",
   "wheel_build" : true,
-  "package_dir": "t/tensorflow_text",
+  "package_dir": "t/tensorflow-text",
   "default_branch": "main",
   "build_script": "tensorflow_text_ubi_9.3.sh",
   "docker_build": false,
