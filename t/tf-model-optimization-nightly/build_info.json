@@ -8,6 +8,7 @@
 	"package_dir": "t/tf-model-optimization-nightly",
 	"docker_build": false,
 	"validate_build_script": true,
+	"Travis_check": true,
 	"wheel_build" : true,
 	"use_non_root_user": false,
 	"*": {
