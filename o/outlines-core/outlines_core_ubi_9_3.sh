@@ -31,13 +31,6 @@ dnf update -y
 dnf install -y git gcc gcc-c++ make python${PYTHON_VERSION} python${PYTHON_VERSION}-devel \
                python${PYTHON_VERSION}-pip openssl openssl-devel rust cargo
 
-dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
-https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
-https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os
-dnf config-manager --set-enabled crb
-
 # Clone the repository
 if [ -d "$PACKAGE_NAME" ]; then
     rm -rf $PACKAGE_NAME
