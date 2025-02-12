@@ -1,0 +1,19 @@
+{
+  "maintainer": "stutiibm",
+  "package_name": "tensorflow-io",
+  "github_url": " https://github.com/tensorflow/io.git",
+  "version": "v0.35.0",
+  "wheel_build" : true,
+  "package_dir": "t/tensorflow-io",
+  "default_branch": "master",
+  "build_script": "tensorflow-io_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*.*.*": {
+    "patches": {
+      "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/t/tensorflow-io-gcs-filesystem/tf-io-gcs-filesystem.patch"
+    },
+    "build_script": "tensorflow-io_ubi_9.3.sh"
+  }
+}
