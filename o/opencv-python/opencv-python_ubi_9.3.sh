@@ -77,6 +77,7 @@ if [ "$PACKAGE_VERSION" == "86" ]; then
     cd ..
     git add opencv
     git commit -m "Applied POWER patch: $OPENCV_PATCH_COMMIT"
+    git tag -f $PACKAGE_VERSION
 else
     echo "Skipping patch: Not applicable for PACKAGE_VERSION=$PACKAGE_VERSION"
 fi
