@@ -18,8 +18,9 @@ services:
   - docker
 
 before_install:
-  - sudo apt update -y
-  - sudo apt install -y jq; jq --version
+    - sudo apt update -y
+    - sudo apt install -y jq; jq --version
+   
 
 jobs:
   include:
@@ -98,7 +99,6 @@ jobs:
           paths:
             - ./*.whl
         use: build_cache
-      allow_failure: true
 
     - name: "Create Wheel for Python 3.11"
       if: env(WHEEL_BUILD) = true
@@ -114,7 +114,6 @@ jobs:
           name: wheels_cache_311
           paths: ./*.whl
         use: build_cache
-      allow_failure: true
 
     - name: "Create Wheel for Python 3.12"
       if: env(WHEEL_BUILD) = true
@@ -131,7 +130,6 @@ jobs:
           paths:
             - ./*.whl
         use: build_cache
-      allow_failure: true
 
     - name: "Create Wheel for Python 3.13"
       if: env(WHEEL_BUILD) = true
