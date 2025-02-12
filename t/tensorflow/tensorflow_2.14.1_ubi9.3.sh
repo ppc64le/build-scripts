@@ -109,7 +109,9 @@ cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 echo "------------------------Exporting variable-------------------"
-export CC_OPT_FLAGS="-mcpu=power9 -mtune=power9"
+cpu_model=$(lscpu | grep "Model name:" | awk -F: '{print $2}' | tr '[:upper:]' '[:lower:]' | cut -d '(' -f1 | cut -d ',' -f1)
+
+export CC_OPT_FLAGS="-mcpu=${cpu_model} -mtune=${cpu_model}"
 export TF_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
 export HERMETIC_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
 export PYTHON_BIN_PATH=/usr/bin/python
