@@ -153,6 +153,9 @@ cd python
 export PYARROW_WITH_PARQUET=1
 export PYARROW_WITH_DATASET=1
 export PYARROW_PARALLEL=4
+export PYARROW_BUNDLE_ARROW_CPP=1
+export LD_LIBRARY_PATH=${ARROW_HOME}/lib:${LD_LIBRARY_PATH}
+export PYARROW_BUNDLE_ARROW_CPP_HEADERS=1
 pip install pytest==6.2.5
 echo "installing numpy ..."
 pip install "numpy<2"
