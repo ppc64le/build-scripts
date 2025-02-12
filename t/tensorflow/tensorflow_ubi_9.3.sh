@@ -67,7 +67,9 @@ git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-export CC_OPT_FLAGS="-mcpu=power8 -mtune=power8"
+cpu_model=$(lscpu | grep "Model name:" | awk -F: '{print $2}' | tr '[:upper:]' '[:lower:]' | cut -d '(' -f1 | cut -d ',' -f1)
+
+export CC_OPT_FLAGS="-mcpu=${cpu_model} -mtune=${cpu_model}"
 export GCC_HOST_COMPILER_PATH=/usr/bin/gcc
 export PYTHON_BIN_PATH=/usr/bin/python
 export USE_DEFAULT_PYTHON_LIB_PATH=1
