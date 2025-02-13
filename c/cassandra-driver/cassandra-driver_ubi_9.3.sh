@@ -39,6 +39,16 @@ then
     cd ../
 fi
 
+#Install libev
+wget https://rpmfind.net/linux/centos-stream/9-stream/BaseOS/ppc64le/os/Packages/libev-4.33-6.el9.ppc64le.rpm
+rpm -i libev-4.33-6.el9.ppc64le.rpm
+rm -rf libev-4.33-6.el9.ppc64le.rpm
+
+#Install libev-devel
+wget https://rpmfind.net/linux/centos-stream/9-stream/CRB/ppc64le/os/Packages/libev-devel-4.33-6.el9.ppc64le.rpm
+rpm -i libev-devel-4.33-6.el9.ppc64le.rpm
+rm -rf libev-devel-4.33-6.el9.ppc64le.rpm
+
 # Clone the repository
 git clone $PACKAGE_URL
 cd $PACKAGE_DIR
