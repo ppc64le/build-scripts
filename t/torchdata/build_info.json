@@ -12,6 +12,6 @@
   "validate_build_script": true,
   "use_non_root_user": false,
   "*": {
-   "build_script": "scikit-learn_ubi_8.5.sh"
+   "build_script": "torchdata_ubi_9.3.sh"
  }
 }
