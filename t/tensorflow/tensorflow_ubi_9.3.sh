@@ -41,41 +41,50 @@ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.25.0.9-3.el9.ppc64le
 export PATH=$JAVA_HOME/bin:$PATH
 
 # Build Bazel dependency
-cd $wdir
-mkdir bazel
-cd bazel
-wget https://github.com/bazelbuild/bazel/releases/download/6.5.0/bazel-6.5.0-dist.zip
-unzip bazel-6.5.0-dist.zip
-env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
-cp output/bazel /usr/local/bin
-export PATH=/usr/local/bin:$PATH
+#cd $wdir
+#mkdir bazel
+#cd bazel
+#wget https://github.com/bazelbuild/bazel/releases/download/6.5.0/bazel-6.5.0-dist.zip
+#unzip bazel-6.5.0-dist.zip
+#env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
+#cp output/bazel /usr/local/bin
+#export PATH=/usr/local/bin:$PATH
 
 
 # Install six.
-pip3 install --upgrade absl-py
-pip3 install --upgrade six==1.10.0
-pip install "numpy<2" "urllib3<1.27" wheel==0.29.0 werkzeug packaging patchelf
+#pip3 install --upgrade absl-py
+#pip3 install --upgrade six==1.10.0
+#pip install "numpy<2" "urllib3<1.27" wheel==0.29.0 werkzeug packaging patchelf
 # Remove obsolete version of six, which can sometimes confuse virtualenv.
-rm -rf /usr/lib/python3/dist-packages/six*
+#rm -rf /usr/lib/python3/dist-packages/six*
 
 # Install numpy, scipy and scikit-learn required by the builds
-ln -s /usr/include/locale.h /usr/include/xlocale.h
+#ln -s /usr/include/locale.h /usr/include/xlocale.h
 
 echo "------------------------------------------------Cloning tensorflow------------------------------------------------"
 #Build tensorflow v2.13.0
-cd $wdir
-git clone $PACKAGE_URL
-cd  $PACKAGE_NAME
-git checkout $PACKAGE_VERSION
+#cd $wdir
+#git clone $PACKAGE_URL
+#cd  $PACKAGE_NAME
+#git checkout $PACKAGE_VERSION
 
 echo "-----------------------------------------------cpu-model------------------------------------------------"
 cpu_model=$(lscpu | grep "Model name:" | awk -F: '{print $2}' | tr '[:upper:]' '[:lower:]' | cut -d '(' -f1 | cut -d ',' -f1)
 echo "-----------------------------------------------post-cpu-model------------------------------------------------"
 echo ${cpu_model}
-echo "mcpu= ${cpu_model}"
+echo "mcpu=${cpu_model}"
 echo $mcpu
 
 export CC_OPT_FLAGS="-mcpu=${cpu_model} -mtune=${cpu_model}"
+echo "-----------value of CC_OPT_FLAGS------------"
+echo $CC_OPT_FLAGS
+echo "---------Value of -mcpu------------------"
+echo $mcpu
+echo $-mcpu
+echo "==============Valuse of mtune=============="
+echo $mtune
+echo $-mtune
+echo "^^^^^^^^^^^^^^^^^6"
 export GCC_HOST_COMPILER_PATH=/usr/bin/gcc
 export PYTHON_BIN_PATH=/usr/bin/python
 export USE_DEFAULT_PYTHON_LIB_PATH=1
