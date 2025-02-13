@@ -1,0 +1,16 @@
+{
+	"maintainer": "vivek8123",
+	"package_name": "pycparser",
+	"github_url": "https://github.com/eliben/pycparser.git",
+	"version": "release_v2.21",
+	"default_branch": "main",
+	"build_script": "pycparser_ubi_9.3.sh",
+	"package_dir": "p/pycparser",
+	"docker_build": false,
+	"validate_build_script": true,
+	"wheel_build" : true,
+	"use_non_root_user": false,
+	"*.*.*": {
+	   "build_script": "pycparser_ubi_9.3.sh"
+	}
+}
