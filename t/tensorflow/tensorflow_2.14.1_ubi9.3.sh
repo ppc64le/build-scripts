@@ -109,13 +109,15 @@ cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 echo "------------------------Exporting variable-------------------"
-cpu_model=$(lscpu | grep "Model name:" | awk -F: '{print $2}' | tr '[:upper:]' '[:lower:]' | cut -d '(' -f1 | cut -d ',' -f1)
+cpu_model=$(lscpu | grep "Model name:" | awk -F: '{print $2}' | tr '[:upper:]' '[:lower:]' | cut -d '(' -f1 | cut -d ',' -f1 | xargs)
+export CC_OPT_FLAGS="-mcpu=${cpu_model} -mtune=${cpu_model}"
+echo "CC_OPT_FLAGS set to: ${CC_OPT_FLAGS}"
 
 export CC_OPT_FLAGS="-mcpu=${cpu_model} -mtune=${cpu_model}"
 export TF_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
 export HERMETIC_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
-export PYTHON_BIN_PATH=/usr/bin/python
-export GCC_HOST_COMPILER_PATH=/usr/bin/gcc
+export PYTHON_BIN_PATH=$(which python${PYTHON_VER})
+export GCC_HOST_COMPILER_PATH=$(which gcc)
 export CC=$GCC_HOST_COMPILER_PATH
 export PYTHON=/root/tensorflow/tfenv/bin/python
 export SP_DIR=/root/tensorflow/tfenv/lib/python$(python --version | awk '{print $2}' | cut -d. -f1,2)/site-packages/
@@ -123,7 +125,7 @@ export USE_DEFAULT_PYTHON_LIB_PATH=1
 export TF_NEED_GCP=1
 export TF_NEED_HDFS=1
 export TF_NEED_JEMALLOC=1
-export TF_ENABLE_XLA=0
+export TF_ENABLE_XLA=1
 export TF_NEED_OPENCL=0
 export TF_NEED_CUDA=0
 export TF_NEED_MKL=0
@@ -142,8 +144,6 @@ yes n | ./configure
 
 echo "------------------------Bazel query-------------------"
 bazel query "//tensorflow/tools/pip_package:*"
-
-echo "Bazel query successful ---------------------------------------------------------------------------------------------"
 
 #Install
 if ! (bazel build -s //tensorflow/tools/pip_package:build_pip_package --local_ram_resources=8192 --local_cpu_resources=8 --jobs=8 --config=opt) ; then
