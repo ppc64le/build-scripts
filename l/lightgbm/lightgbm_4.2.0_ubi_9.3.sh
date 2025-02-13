@@ -26,7 +26,7 @@ PACKAGE=LightGBM
 PACKAGE_DIR=LightGBM/lightgbm-python
 
 echo "Installing dependencies..."
-yum install -y git gcc gcc-c++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel gcc-gfortran openblas atlas openblas-devel python-devel python-pip
+yum install -y git gcc gcc-c++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel gcc-gfortran openblas atlas openblas-devel python python-devel python-pip
 
 echo "Clone the repository..."
 git clone $PACKAGE_URL
