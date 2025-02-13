@@ -61,13 +61,19 @@ rm -rf /usr/lib/python3/dist-packages/six*
 # Install numpy, scipy and scikit-learn required by the builds
 ln -s /usr/include/locale.h /usr/include/xlocale.h
 
+echo "------------------------------------------------Cloning tensorflow------------------------------------------------"
 #Build tensorflow v2.13.0
 cd $wdir
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+echo "-----------------------------------------------cpu-model------------------------------------------------"
 cpu_model=$(lscpu | grep "Model name:" | awk -F: '{print $2}' | tr '[:upper:]' '[:lower:]' | cut -d '(' -f1 | cut -d ',' -f1)
+echo "-----------------------------------------------post-cpu-model------------------------------------------------"
+echo ${cpu_model}
+echo "mcpu= ${cpu_model}"
+echo $mcpu
 
 export CC_OPT_FLAGS="-mcpu=${cpu_model} -mtune=${cpu_model}"
 export GCC_HOST_COMPILER_PATH=/usr/bin/gcc
