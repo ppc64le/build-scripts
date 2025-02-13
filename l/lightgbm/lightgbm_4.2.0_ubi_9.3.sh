@@ -28,6 +28,20 @@ PACKAGE_DIR=LightGBM/lightgbm-python
 echo "Installing dependencies..."
 yum install -y git gcc gcc-c++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel gcc-gfortran openblas atlas openblas-devel python python-devel python-pip
 
+echo "Installing openmpi"
+yum install -y wget
+dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
+dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
+dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
+wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
+mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
+rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
+dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+yum install openmpi openmpi-devel -y
+
+echo "export openmpi path"
+export PATH=$PATH:/usr/lib64/openmpi/bin
+
 echo "Clone the repository..."
 git clone $PACKAGE_URL
 cd $PACKAGE
@@ -172,7 +186,7 @@ echo "PyArrow Python package installed."
 cd /LightGBM
 
 echo "installing base package ..."
-./build-python.sh
+./build-python.sh --mpi
 echo "lightgbm dir ....."
 cd lightgbm-python
 
