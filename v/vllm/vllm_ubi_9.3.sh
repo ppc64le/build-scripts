@@ -268,8 +268,6 @@ if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then
     cd $WORKDIR
     python use_existing_torch.py
 
-    # cleanup
-    rm -rf $DEPS_DIR
 else
     source /opt/rh/gcc-toolset-13/enable
 fi
