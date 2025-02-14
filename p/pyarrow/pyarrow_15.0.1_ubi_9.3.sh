@@ -26,7 +26,7 @@ PACKAGE_DIR=./arrow/python
 CURRENT_DIR="${PWD}"
  
 # Install necessary dependencies
-yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openssl-devel cmake unzip
+yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openssl-devel cmake
  
 echo "Dependencies installed."
  
@@ -112,8 +112,6 @@ else
         echo "------------------$PACKAGE_NAME:wheel_built_success-------------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Wheel_built_success"
-        echo "Checking contents of the generated wheel..."
-        unzip -l "$CURRENT_DIR/pyarrow-*.whl" | grep libarrow
         exit 0
 fi
  
