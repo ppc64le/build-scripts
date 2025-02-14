@@ -84,12 +84,17 @@ pip install -q setuptools wheel build
 if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then
 
     # setup
-    dnf install -y g++ rust cmake cargo tk-devel tcl-devel \
+    dnf install -y g++ cmake tk-devel tcl-devel \
         libatomic zlib-devel ninja-build gmock-devel xsimd-devel lcms2-devel \
         gtest-devel libpng-devel gflags-devel libraqm-devel libwebp-devel \
         libjpeg-devel fribidi-devel freetype-devel harfbuzz-devel \
         rapidjson-devel boost1.78-devel java-17-openjdk-devel \
         re2-devel utf8proc-devel
+
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+    source $HOME/.cargo/env
+    export PATH="$HOME/.cargo/bin:$PATH"
 
     DEPS_DIR=$WORKDIR/deps_from_src
     rm -rf $DEPS_DIR
@@ -114,8 +119,8 @@ if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then
 
     
     # Build numpy with gcc-11 & not gcc-13
-    pip install -U pip cython wheel build setuptools setuptools_scm setuptools_rust packaging \
-    numpy pandas pillow scikit_build_core scikit-build meson-python sentencepiece outlines-core pydantic
+    pip install -U pip cython wheel build setuptools setuptools_scm setuptools_rust packaging numpy psutil \
+    tiktoken pandas pillow scikit_build_core scikit-build meson-python sentencepiece outlines-core pydantic
     
     # Use gcc-13 for torch and other deps
     source /opt/rh/gcc-toolset-13/enable
