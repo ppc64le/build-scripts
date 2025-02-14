@@ -1,16 +1,18 @@
 {
-    "maintainer":"Vinod.K1@ibm.com",
+    "maintainer":"vinodk99",
     "package_name" : "wazuh",
     "github_url": "https://github.com/wazuh/wazuh",
-    "version": "v4.5.2",
+    "version": "v4.7.3",
     "default_branch": "master",
     "package_dir": "w/wazuh",
-    "build_script": "wazuh_ubi_8.7.sh",
+    "build_script": "wazuh_ubi_9.3.sh",
     "validate_build_script": "true",
     "use_non_root_user": "false",
     "docker_build": false,
-
-    "v4.*.*" : {
+     "v4.*.*,v*.*.*-*" : {
+       "build_script" : "wazuh_ubi_9.3.sh"
+    },
+    "v4.5.2" : {
        "build_script" : "wazuh_ubi_8.7.sh"
     }
 }

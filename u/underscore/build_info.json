@@ -1,0 +1,12 @@
+{
+   "maintainer": "shubham-garud",
+   "package_name": "underscore",
+   "github_url": "https://github.com/jashkenas/underscore",
+   "version": "1.13.6",
+   "default_branch": "master",
+   "build_script": "underscore_ubi_8.7.sh",
+   "package_dir": "u/underscore",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user":false
+}

@@ -1,5 +1,5 @@
 {
-  "maintainer": "Vishaka.Desai@ibm.com",
+  "maintainer": "IBM-Currency-Helper",
   "package_name": "geos",
   "github_url": "https://github.com/libgeos/geos",
   "version": "3.11.1",

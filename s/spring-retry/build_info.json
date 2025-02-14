@@ -1,16 +1,21 @@
 {
-    "maintainer": "mohit.pawar@ibm.com",
-    "package_name": "spring-retry",
-    "github_url": "https://github.com/spring-projects/spring-retry.git",
-    "version": "v2.0.5",
-    "default_branch": "main",
-    "package_dir": "s/spring-retry",
-    "build_script": "spring_retry_ubi_8.7.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build": "false",
-
-    "v2.0.5" : {
-       "build_script" : "spring_retry_ubi_8.7.sh"
-    }
+  "maintainer": "sid226",
+  "package_name": "spring-retry",
+  "github_url": "https://github.com/spring-projects/spring-retry.git",
+  "version": "v2.0.10",
+  "default_branch": "main",
+  "package_dir": "s/spring-retry",
+  "build_script": "spring_retry_v2_0_10_ubi_9.3.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "false",
+  "v1.3.4": {
+    "build_script": "spring_retry_ubi_9.3.sh"
+  },
+  "v2.0.5": {
+    "build_script": "spring_retry_ubi_8.7.sh"
+  },
+  "v2.*.*": {
+    "build_script": "spring_retry_v2_0_10_ubi_9.3.sh"
+  }
 }

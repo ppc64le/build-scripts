@@ -1,11 +1,11 @@
 {
-   "maintainer": "ich@us.ibm.com",
-   "package_name": "cli-cursor",
-   "github_url": "https://github.com/sindresorhus/cli-cursor",
-   "version": "v4.0.0",
-   "default_branch": "main",
-   "build_script": "cli-cursor_ubi_8.7.sh",
-   "package_dir": "c/cli-cursor",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "IBM-Currency-Helper",
+  "package_name": "cli-cursor",
+  "github_url": "https://github.com/sindresorhus/cli-cursor",
+  "version": "v4.0.0",
+  "default_branch": "main",
+  "build_script": "cli-cursor_ubi_8.7.sh",
+  "package_dir": "c/cli-cursor",
+  "docker_build": false,
+  "validate_build_script": true
 }

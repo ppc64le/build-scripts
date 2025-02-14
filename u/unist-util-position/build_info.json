@@ -1,0 +1,12 @@
+{
+   "maintainer": "shubham-garud",
+   "package_name": "unist-util-position",
+   "github_url": "https://github.com/syntax-tree/unist-util-position",
+   "version": "5.0.0",
+   "default_branch": "main",
+   "build_script": "unist-util-position_ubi_9.3.sh",
+   "package_dir": "u/unist-util-position",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user":false
+}

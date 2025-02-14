@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : analysis
-# Version          : v0.21.4
+# Version          : v0.23.0
 # Source repo      : https://github.com/go-openapi/analysis
 # Tested on	: UBI 8.7
 # Language      : GO
@@ -48,7 +48,7 @@ if ! go build ./...; then
 	exit 1
 fi
 
-if ! go test ./...; then
+if ! go test ./... -v; then
         echo "------------------$PACKAGE_NAME:test_fails---------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails"

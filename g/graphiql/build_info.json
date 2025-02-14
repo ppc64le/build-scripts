@@ -1,0 +1,15 @@
+{
+    "maintainer": "vinodk99",
+    "package_name": "graphiql",
+    "github_url": "https://github.com/graphql/graphiql",
+    "version": "@graphiql/react@0.22.0", 
+    "default_branch": "main",
+    "package_dir": "g/graphiql",
+    "build_script": "graphiql_ubi_9.3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "@graphiql/react@*.*.*": {
+        "build_script": "graphiql_ubi_9.3.sh"
+     } 
+}

@@ -1,0 +1,15 @@
+{
+  "maintainer": "vinodk99",
+  "package_name": "jdcal",
+  "github_url": "https://github.com/phn/jdcal",
+  "version": "master",
+  "default_branch": "master",
+  "build_script": "jdcal_ubi_8.7.sh",
+  "package_dir": "j/jdcal",
+  "docker_build": false,
+  "use_non_root_user": "false",
+  "validate_build_script": true,
+  "master": {
+    "build_script": "jdcal_ubi_8.7.sh"
+  }
+}

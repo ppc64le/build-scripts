@@ -1,0 +1,15 @@
+{
+    "maintainer": "stutiibm",
+    "package_name": "libzmq",
+    "github_url": "https://github.com/zeromq/libzmq",
+    "version": "v4.3.5",
+    "default_branch": "master",
+    "package_dir": "l/libzmq",
+    "build_script": "libzmq_ubi_9_3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "v4.3.*": {
+        "build_script": "libzmq_ubi_9_3.sh"
+     }
+}

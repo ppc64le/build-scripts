@@ -1,0 +1,15 @@
+{
+  "maintainer": "Vipul-Ajmera",
+  "package_name": "angus-mail",
+  "github_url": "https://github.com/eclipse-ee4j/angus-mail.git",
+  "version": "2.0.3",
+  "default_branch": "master",
+  "package_dir": "a/angus-mail",
+  "build_script": "angus-mail_ubi_9.3.sh",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "*.*.*": {
+    "build_script": "angus-mail_ubi_9.3.sh"
+  }
+}

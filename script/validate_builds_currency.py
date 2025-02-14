@@ -86,7 +86,7 @@ def trigger_script_validation_checks(file_name,version, image_name):
         command = [
             "bash",
             "-c",
-            f"cd /home/tester/ && ./{file_name} {version} && find / -type d -name .git -exec dirname {{}} \\; 2>/dev/null | awk -v package={package} -F'/' '{{if (index(package, $NF) != 0) system(\"mv \\\"\" $0 \"\\\" /home/tester/package-cache\")}}'"
+            f"cd /home/tester/ && ./{file_name} {version} "
         ]
         
         container = client.containers.run(

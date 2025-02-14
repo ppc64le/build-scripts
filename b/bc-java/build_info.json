@@ -1,11 +1,18 @@
 {
-  "maintainer": "Pooja.Shah4@ibm.com",
+  "maintainer": "pooja0805",
   "package_name": "bc-java",
   "github_url": "https://github.com/bcgit/bc-java.git",
-  "version": "r1rv73",
-  "default_branch": "master",
+  "version": "r1rv78",
   "package_dir": "b/bc-java/",
-  "build_script": "bc-java_ubi_8.7.sh",
+  "build_script": "bc-java_r1rv78_ubi_9.3.sh",
+  "validate_build_script": true,
+  "default_branch": "master",
   "docker_build": false,
-  "validate_build_script": true
+  "use_non_root_user": false,
+  "r1rv([0-6]\\d|7[0-7])": {
+    "build_script": "bc-java_ubi_9.3.sh"
+  },
+  "r1rv([7-9]\\d|\\d{3,})": {
+    "build_script": "bc-java_r1rv78_ubi_9.3.sh"
+  }
 }

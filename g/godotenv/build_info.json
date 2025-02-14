@@ -1,0 +1,12 @@
+{
+   "maintainer": "shubham-garud",
+   "package_name": "godotenv",
+   "github_url": "https://github.com/joho/godotenv",
+   "version": "v1.5.1",
+   "default_branch": "main",
+   "build_script": "godotenv_ubi_9.3.sh",
+   "package_dir": "g/godotenv",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}

@@ -1,19 +1,21 @@
 {
-    "maintainer": "Vinod.K1@ibm.com",
+    "maintainer": "vinodk99",
     "package_name" : "rules_rust",
     "github_url": "https://github.com/bazelbuild/rules_rust",
-    "version": "0.28.0",
+    "version": "0.42.1",
     "default_branch": "main",
     "package_dir": "r/rules_rust",
-    "build_script": "rules_rust_0.28.0_ubi8.7.sh",
+    "build_script": "rules_rust_ubi_9.3.sh",
     "validate_build_script": "true",
     "use_non_root_user": "false",
     "docker_build": false,
-
     "0.26.*" : {
        "build_script" : "rules_rust_ubi_8.7.sh"
     },
     "0.28.*" : {
         "build_script": "rules_rust_0.28.0_ubi8.7.sh"
+    },
+    "*.*.*" : {
+        "build_script": "rules_rust_ubi_9.3.sh"
     }
 }

@@ -1,15 +1,18 @@
 {
-  "maintainer": "Bhagat.singh1@ibm.com",
+  "maintainer": "vinodk99",
   "package_name": "nodelib",
   "github_url": "https://github.com/nodelib/nodelib",
-  "version": "@nodelib/fs.walk@1.2.8",
+  "version": "@nodelib/fs.walk@2.0.0",
   "default_branch": "master",
   "package_dir": "n/nodelib",
-  "build_script": "nodelib_1.2.8_ubi_8.7.sh",
+  "build_script": "nodelib_ubi_9.3.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
   "@nodelib/fs.walk@1.2.7": {
     "build_script": "nodelib_ubi_8.5.sh"
+  },
+  "@nodelib/fs.*@*.*.*": {
+    "build_script": "nodelib_ubi_9.3.sh"
   }
 }

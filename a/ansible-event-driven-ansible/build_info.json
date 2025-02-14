@@ -1,12 +1,15 @@
 {
-  "maintainer": "Ashwini.Kadam@ibm.com",
+  "maintainer": "vinodk99",
   "package_name": "ansible-event-driven-ansible",
   "github_url": "https://github.com/ansible/event-driven-ansible",
-  "version": "v1.3.8",
+  "version": "v2.0.0",
   "default_branch": "main",
   "package_dir": "a/ansible-event-driven-ansible",
-  "build_script": "event-driven-ansible_ubi_8_7.sh",
+  "build_script": "event-driven-ansible_ubi_9.3.sh",
   "docker_build": false,
   "validate_build_script": true,
-  "use_non_root_user": false
+  "use_non_root_user": false,
+  "v*.*.*": {
+    "build_script": "event-driven-ansible_ubi_9.3.sh"
+  }
 }

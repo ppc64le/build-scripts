@@ -1,11 +1,11 @@
 {
-    "maintainer": "Abhijeet.Dandekar1@ibm.com",
-    "package_name": "rake-nltk",
-    "github_url": "https://github.com/csurfer/rake-nltk",
-    "version": "a80f633",
-    "default_branch": "master",
-    "build_script": "rake-nltk_ubi_8.7.sh",
-    "package_dir": "r/rake-nltk",
-    "docker_build": false,
-    "validate_build_script": true
- }
+  "maintainer": "abhijeetdandekaribm",
+  "package_name": "rake-nltk",
+  "github_url": "https://github.com/csurfer/rake-nltk",
+  "version": "a80f633",
+  "default_branch": "master",
+  "build_script": "rake-nltk_ubi_8.7.sh",
+  "package_dir": "r/rake-nltk",
+  "docker_build": false,
+  "validate_build_script": true
+}

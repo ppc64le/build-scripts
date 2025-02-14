@@ -1,16 +1,20 @@
 {
-  "maintainer": "Vinod.K1@ibm.com",
+  "maintainer": "vinodk99",
   "package_name": "jaeger",
   "github_url": "https://github.com/jaegertracing/jaeger.git",
-  "version": "v1.39.0",
+  "version": "v1.56.0",
   "default_branch": "main",
   "package_dir": "j/jaeger/",
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-  "build_script": "jaeger_ubi8.sh",
+  "build_script": "jaeger_ubi_9.3.sh",
   "docker_build": true,
   "validate_build_script": true,
   "use_non_root_user": false,
   "v1.39.*": {
     "dir": "1.39.0-ubi8"
+  },
+  "v*.*.*": {
+    "dir": "1.56.0_ubi9",
+    "build_script": "jaeger_ubi_9.3.sh"
   }
 }

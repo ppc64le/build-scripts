@@ -22,7 +22,7 @@ PACKAGE_VERSION=${1:-v6.1.0}
 PACKAGE_URL=https://github.com/loopbackio/loopback-connector
 
 export NODE_VERSION=${NODE_VERSION:-16}
-yum install -y python38 python38-devel git gcc gcc-c++ libffi make
+yum install -y  git gcc gcc-c++ libffi make
 
 #Installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
@@ -37,7 +37,7 @@ git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if ! npm install && npm audit fix --force; then
+if ! npm install && ! npm audit fix --force; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"

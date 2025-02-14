@@ -1,11 +1,11 @@
 {
-   "maintainer": "Shubham.Garud@ibm.com",
-   "package_name": "persistent",
-   "github_url": "https://github.com/zopefoundation/persistent",
-   "version": "5.1",
-   "default_branch": "master",
-   "build_script": "persistent_ubi_8.7.sh",
-   "package_dir": "p/persistent",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "shubham-garud",
+  "package_name": "persistent",
+  "github_url": "https://github.com/zopefoundation/persistent",
+  "version": "5.1",
+  "default_branch": "master",
+  "build_script": "persistent_ubi_8.7.sh",
+  "package_dir": "p/persistent",
+  "docker_build": false,
+  "validate_build_script": true
 }

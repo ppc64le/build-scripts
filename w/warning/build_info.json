@@ -1,0 +1,15 @@
+{
+  "maintainer": "mohitp333",
+  "package_name": "warning",
+  "github_url": "https://github.com/BerkeleyTrue/warning.git",
+  "version": "master",
+  "default_branch": "master",
+  "package_dir": "w/warning",
+  "build_script": "warning_ubi_9.3.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "false",
+  "master": {
+    "build_script": "warning_ubi_9.3.sh"
+  }
+}

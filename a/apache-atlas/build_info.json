@@ -1,5 +1,5 @@
 {
-  "maintainer": "Ambuj.kumar3@ibm.com",
+  "maintainer": "IBM-Currency-Helper",
   "package_name": "apache-atlas",
   "github_url": "https://github.com/apache/atlas.git",
   "version": "release-2.3.0",

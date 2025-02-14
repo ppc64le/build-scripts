@@ -1,5 +1,5 @@
 {
-  "maintainer": "Sapana.Khemkar@ibm.com",
+  "maintainer": "Sapana-Khemkar",
   "package_name": "logstash",
   "github_url": "https://github.com/elastic/logstash.git",
   "version": "v8.11.3",

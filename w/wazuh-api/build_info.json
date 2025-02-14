@@ -1,16 +1,15 @@
 {
-    "maintainer":"Vinod.K1@ibm.com",
-    "package_name" : "wazuh-api",
-    "github_url": "https://github.com/wazuh/wazuh-api",
-    "version": "v3.13.6",
-    "default_branch": "master",
-    "package_dir": "w/wazuh-api",
-    "build_script": "wazuh-api_ubi_8.7.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build": false,
-
-    "v3.*.*" : {
-       "build_script" : "wazuh-api_ubi_8.7.sh"
-    }
+  "maintainer": "vinodk99",
+  "package_name": "wazuh-api",
+  "github_url": "https://github.com/wazuh/wazuh-api",
+  "version": "v3.13.6",
+  "default_branch": "master",
+  "package_dir": "w/wazuh-api",
+  "build_script": "wazuh-api_ubi_8.7.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": false,
+  "v3.*.*": {
+    "build_script": "wazuh-api_ubi_8.7.sh"
+  }
 }

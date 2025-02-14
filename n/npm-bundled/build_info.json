@@ -1,11 +1,11 @@
 {
-   "maintainer": "ich@us.ibm.com",
-   "package_name": "npm-bundled",
-   "github_url": "https://github.com/npm/npm-bundled",
-   "version": "v3.0.0",
-   "default_branch": "main",
-   "build_script": "npm-bundled_ubi_8.7.sh",
-   "package_dir": "n/npm-bundled",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "IBM-Currency-Helper",
+  "package_name": "npm-bundled",
+  "github_url": "https://github.com/npm/npm-bundled",
+  "version": "v3.0.0",
+  "default_branch": "main",
+  "build_script": "npm-bundled_ubi_8.7.sh",
+  "package_dir": "n/npm-bundled",
+  "docker_build": false,
+  "validate_build_script": true
 }

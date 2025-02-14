@@ -1,0 +1,15 @@
+{
+  "maintainer": "mohitp333",
+  "package_name": "sockjs-tornado",
+  "github_url": "https://github.com/mrjoes/sockjs-tornado.git",
+  "version": "master",
+  "default_branch": "master",
+  "package_dir": "s/sockjs-tornado",
+  "build_script": "sockjs-tornado_ubi_9.3.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "false",
+  "master": {
+    "build_script": "sockjs-tornado_ubi_9.3.sh"
+  }
+}

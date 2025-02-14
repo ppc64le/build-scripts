@@ -1,11 +1,11 @@
 {
-   "maintainer": "Shubham.Garud@ibm.com",
-   "package_name": "golang-set",
-   "github_url": "https://github.com/deckarep/golang-set",
-   "version": "v2.3.1",
-   "default_branch": "main",
-   "build_script": "golang-set_ubi_8.7.sh",
-   "package_dir": "g/golang-set",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "shubham-garud",
+  "package_name": "golang-set",
+  "github_url": "https://github.com/deckarep/golang-set",
+  "version": "v2.3.1",
+  "default_branch": "main",
+  "build_script": "golang-set_ubi_8.7.sh",
+  "package_dir": "g/golang-set",
+  "docker_build": false,
+  "validate_build_script": true
 }

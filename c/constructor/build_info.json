@@ -1,18 +1,16 @@
 {
-    "maintainer": "Stuti.Wali@ibm.com",
+    "maintainer": "stutiibm",
     "package_name": "constructor",
     "github_url": "https://github.com/conda/constructor",
-    "version": "3.6.0",
+    "version": "3.7.0",
     "default_branch": "main",
     "package_dir": "c/constructor",
-    "build_script": "constructor_ubi_8_7.sh",
+    "build_script": "constructor_ubi_9_3.sh",
     "docker_build": true,
     "validate_build_script": true,
     "use_non_root_user": false,
-
-    "3.6.0": {
-        "dir": "ubi8_7",
-        "build_script": "constructor_ubi_8_7.sh"
+    "3.*": {
+        "dir": "ubi9_3",
+        "build_script": "constructor_ubi_9_3.sh"
      }  
-
 }

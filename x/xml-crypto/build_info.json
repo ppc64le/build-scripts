@@ -1,11 +1,11 @@
 {
-   "maintainer": "ich@us.ibm.com",
-   "package_name": "xml-crypto",
-   "github_url": "https://github.com/node-saml/xml-crypto",
-   "version": "v4.1.0",
-   "default_branch": "master",
-   "build_script": "xml-crypto_ubi_8.7.sh",
-   "package_dir": "x/xml-crypto",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "IBM-Currency-Helper",
+  "package_name": "xml-crypto",
+  "github_url": "https://github.com/node-saml/xml-crypto",
+  "version": "v4.1.0",
+  "default_branch": "master",
+  "build_script": "xml-crypto_ubi_8.7.sh",
+  "package_dir": "x/xml-crypto",
+  "docker_build": false,
+  "validate_build_script": true
 }

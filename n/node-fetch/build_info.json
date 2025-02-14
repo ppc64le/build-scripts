@@ -1,0 +1,15 @@
+{
+  "maintainer": "mohitp333",
+  "package_name": "node-fetch",
+  "github_url": "https://github.com/node-fetch/node-fetch.git",
+  "version": "v3.3.2",
+  "default_branch": "main",
+  "package_dir": "n/node-fetch",
+  "build_script": "node-fetch_ubi_9.3.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "false",
+  "v3.*.*": {
+    "build_script": "node-fetch_ubi_9.3.sh"
+  }
+}

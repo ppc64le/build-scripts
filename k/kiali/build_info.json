@@ -1,11 +1,11 @@
 {
-  "maintainer": "Vinod.K1@ibm.com",
+  "maintainer": "vinodk99",
   "package_name": "kiali",
   "github_url": "https://github.com/kiali/kiali",
-  "version": "v1.62.0",
+  "version": "v1.85.0",
   "default_branch": "master",
   "package_dir": "k/kiali/",
-  "build_script": "kiali_ubi_8.5.sh",
+  "build_script": "kiali_ubi_9.3.sh",
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
   "docker_build": true,
   "validate_build_script": true,
@@ -22,5 +22,9 @@
   },
   "f72ddd308c155aa00bd492a423b5aebc88b5922f": {
     "build_script": "kiali_ubi_8.4.sh"
+  },
+  "v*.*.*": {
+    "dir": "1.85.0_ubi9",
+    "build_script": "kiali_ubi_9.3.sh"
   }
 }

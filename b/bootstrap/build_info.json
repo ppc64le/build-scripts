@@ -1,0 +1,17 @@
+{
+  "maintainer": "vinodk99",
+  "package_name": "bootstrap",
+  "github_url": "https://github.com/twbs/bootstrap",
+  "version": "v5.3.3",
+  "default_branch": "main",
+  "build_script": "bootstrap_ubi_8.7.sh",
+  "package_dir": "b/bootstrap",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "docker_build": true,
+  "use_non_root_user": "false",
+  "validate_build_script": true,
+  "v5.*.*": {
+    "dir": "5.3.3_ubi8",
+    "build_script": "bootstrap_ubi_8.7.sh"
+  }
+}

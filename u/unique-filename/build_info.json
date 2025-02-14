@@ -1,0 +1,13 @@
+{
+   "maintainer": "shubham-garud",
+   "package_name": "unique-filename",
+   "github_url": "https://github.com/npm/unique-filename",
+   "version": "v3.0.0",
+   "default_branch": "main",
+   "build_script": "unique-filename_ubi_8.7.sh",
+   "package_dir": "u/unique-filename",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user":false
+
+}

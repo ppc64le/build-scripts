@@ -1,11 +1,11 @@
 {
-   "maintainer": "ich@us.ibm.com",
-   "package_name": "npm-user-validate",
-   "github_url": "https://github.com/npm/npm-user-validate",
-   "version": "v2.0.0",
-   "default_branch": "main",
-   "build_script": "npm-user-validate_ubi_8.7.sh",
-   "package_dir": "n/npm-user-validate",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "IBM-Currency-Helper",
+  "package_name": "npm-user-validate",
+  "github_url": "https://github.com/npm/npm-user-validate",
+  "version": "v2.0.0",
+  "default_branch": "main",
+  "build_script": "npm-user-validate_ubi_8.7.sh",
+  "package_dir": "n/npm-user-validate",
+  "docker_build": false,
+  "validate_build_script": true
 }

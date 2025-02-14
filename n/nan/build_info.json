@@ -1,17 +1,17 @@
 {
-    "maintainer":"Vinod.K1@ibm.com",
-    "package_name" : "nan", 
+    "maintainer":"vinodk99",
+    "package_name" : "nan",
     "github_url": "https://github.com/nodejs/nan",
-    "version": "v2.18.0",
+    "version": "v2.19.0",
     "default_branch": "main",
     "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "package_dir": "n/nan",
-    "build_script": "nan_ubi_8.7.sh",
+    "build_script": "nan_ubi_9.3.sh",
     "validate_build_script": "true",
     "use_non_root_user": "false",
     "docker_build": "true",
     "v2.*.*" : {
-       "dir": "2.18.0_ubi8",
-       "build_script": "nan_ubi_8.7.sh"
+       "dir": "2.19.0_ubi9",
+       "build_script": "nan_ubi_9.3.sh"
     }
 }

@@ -1,0 +1,12 @@
+{
+   "maintainer": "shubham-garud",
+   "package_name": "js-tokens",
+   "github_url": "https://github.com/lydell/js-tokens",
+   "version": "v8.0.2",
+   "default_branch": "main",
+   "build_script": "js-tokens_ubi_8.7.sh",
+   "package_dir": "j/js-tokens",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user":false
+}

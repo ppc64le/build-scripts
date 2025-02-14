@@ -1,0 +1,15 @@
+{
+    "maintainer": "stutiibm",
+    "package_name": "parameterized",
+    "github_url": "https://github.com/wolever/parameterized",
+    "version": "v0.9.0",
+    "default_branch": "master",
+    "package_dir": "p/parameterized",
+    "build_script": "parameterized_ubi_9_3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "v0.*": {
+        "build_script": "parameterized_ubi_9_3.sh"
+     }
+}

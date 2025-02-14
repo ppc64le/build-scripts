@@ -1,0 +1,12 @@
+{
+   "maintainer": "shubham-garud",
+   "package_name": "godo",
+   "github_url": "https://github.com/digitalocean/godo",
+   "version": "v1.114.0",
+   "default_branch": "main",
+   "build_script": "godo_ubi_9.3.sh",
+   "package_dir": "g/godo",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}

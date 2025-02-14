@@ -1,12 +1,12 @@
 {
-    "maintainer":"Vinod.K1@ibm.com",
+    "maintainer":"vinodk99",
     "package_name" : "jaeger-operator", 
     "github_url": "https://github.com/jaegertracing/jaeger-operator",
-    "version": "v1.53.0",
+    "version": "v1.56.0",
     "default_branch": "main",
     "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "package_dir": "j/jaeger-operator",
-    "build_script": "jaeger-operator_ubi_8.7.sh",
+    "build_script": "jaeger-operator_ubi_9.3.sh",
     "validate_build_script": "true",
     "use_non_root_user": "false",
     "docker_build": "true",
@@ -16,5 +16,9 @@
     },
     "v1.16.0" : {
        "build_script": "jaeger_operator_rhel_7.6.sh"
-    }
+    },
+    "v*.*.*" : {
+	"dir" : "1.56.0_ubi9",
+	"build_script": "jaeger-operator_ubi_9.3.sh"
+     }
 }

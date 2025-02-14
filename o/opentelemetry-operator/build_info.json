@@ -1,11 +1,18 @@
 {
-  "maintainer": "Adilhusain.Shaikh@ibm.com",
+  "maintainer": "vinodk99",
   "package_name": "opentelemetry-operator",
   "github_url": "https://github.com/open-telemetry/opentelemetry-operator",
-  "package_dir": "o/opentelemetry-operator/",
-  "version": "v0.73.0",
+  "version": "v0.104.0",
   "default_branch": "main",
-  "build_script": "opentelemetry-operator_ubi_8.5.sh",
-  "use_non_root_user": false,
-  "docker_build": false
+  "package_dir": "o/opentelemetry-operator/",
+  "build_script": "opentelemetry-operator_ubi_9.3.sh",
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "docker_build": false,
+  "v0.73.0": {
+    "build_script": "opentelemetry-operator_ubi_8.5.sh"
+  },
+   "v*.*.*": {
+    "build_script": "opentelemetry-operator_ubi_9.3.sh"
+  }
 }

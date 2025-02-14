@@ -1,0 +1,16 @@
+{
+    "maintainer": "stutiibm",
+    "package_name": "json-smart",
+    "github_url": "https://github.com/netplex/json-smart-v2",
+    "version": "2.5.1",
+    "default_branch": "master",
+    "package_dir": "j/json-smart",
+    "build_script": "json-smart_ubi_9_3.sh",
+    "docker_build": true,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "2.*": {
+        "dir": "ubi9_3",
+        "build_script": "json-smart_ubi_9_3.sh"
+     }
+}

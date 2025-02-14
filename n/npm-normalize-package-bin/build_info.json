@@ -1,11 +1,11 @@
 {
-   "maintainer": "ich@us.ibm.com",
-   "package_name": "npm-normalize-package-bin",
-   "github_url": "https://github.com/npm/npm-normalize-package-bin",
-   "version": "v3.0.1",
-   "default_branch": "main",
-   "build_script": "npm-normalize-package-bin_ubi_8.7.sh",
-   "package_dir": "n/npm-normalize-package-bin",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "IBM-Currency-Helper",
+  "package_name": "npm-normalize-package-bin",
+  "github_url": "https://github.com/npm/npm-normalize-package-bin",
+  "version": "v3.0.1",
+  "default_branch": "main",
+  "build_script": "npm-normalize-package-bin_ubi_8.7.sh",
+  "package_dir": "n/npm-normalize-package-bin",
+  "docker_build": false,
+  "validate_build_script": true
 }

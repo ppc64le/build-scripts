@@ -1,17 +1,15 @@
 {
-    "maintainer": "Stuti.Wali@ibm.com",
-    "package_name": "imagesize_py",
-    "github_url": "https://github.com/shibukawa/imagesize_py",
-    "version": "1.4.1",
-    "default_branch": "master",
-    "package_dir": "i/imagesize_py",
-    "build_script": "imagesize_py_ubi_8_7.sh",
-    "docker_build": false,
-    "validate_build_script": true,
-    "use_non_root_user": false,
-
-    "1.4.*": {
-        "build_script": "imagesize_py_ubi_8_7.sh"
-     } 
-
+  "maintainer": "stutiibm",
+  "package_name": "imagesize_py",
+  "github_url": "https://github.com/shibukawa/imagesize_py",
+  "version": "1.4.1",
+  "default_branch": "master",
+  "package_dir": "i/imagesize_py",
+  "build_script": "imagesize_py_ubi_8_7.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "1.4.*": {
+    "build_script": "imagesize_py_ubi_8_7.sh"
+  }
 }

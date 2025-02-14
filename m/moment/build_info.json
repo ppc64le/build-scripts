@@ -1,0 +1,15 @@
+{
+    "maintainer": "stutiibm",
+    "package_name": "moment",
+    "github_url": "https://github.com/moment/moment.git",
+    "version": "2.30.1",
+    "default_branch": "develop",
+    "package_dir": "m/moment",
+    "build_script": "moment_ubi_9_3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "2.30.*": {
+        "build_script": "moment_ubi_9_3.sh"
+     }
+}

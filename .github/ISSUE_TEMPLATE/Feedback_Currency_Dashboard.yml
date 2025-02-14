@@ -1,0 +1,30 @@
+name: Feedback for Currency Dashboard
+title: "[Feedback]:"
+description: "Feedback for currency dashboard"
+labels: "dashboard feedback"
+projects: "ppc64le/1"
+assignees: "ICH"
+body:
+  - type: markdown
+    attributes:
+      value: >
+        Use this form to provide feedback or your suggstions for Currency Dashboard.
+  - type: dropdown
+    id: dashboard_version
+    attributes:
+      label: Currency Dashboard Version
+      options:
+        - v0.5
+        - v0.6
+        - v1.0
+      description: |
+        The version of Currency Dashboard on which you see behavior or registering your feedback for dashboard.
+    validations:
+      required: true
+  - type: textarea
+    id: feedback
+    attributes:
+      label: Feedback Details
+      description: Your feedback on current Currency Dashboard and any suggestions to make it better.
+    validations:
+      required: true

@@ -1,11 +1,11 @@
 {
-   "maintainer": "ich@us.ibm.com",
-   "package_name": "p-timeout",
-   "github_url": "https://github.com/sindresorhus/p-timeout",
-   "version": "v6.1.2",
-   "default_branch": "main",
-   "build_script": "p-timeout_ubi_8.7.sh",
-   "package_dir": "p/p-timeout",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "IBM-Currency-Helper",
+  "package_name": "p-timeout",
+  "github_url": "https://github.com/sindresorhus/p-timeout",
+  "version": "v6.1.2",
+  "default_branch": "main",
+  "build_script": "p-timeout_ubi_8.7.sh",
+  "package_dir": "p/p-timeout",
+  "docker_build": false,
+  "validate_build_script": true
 }

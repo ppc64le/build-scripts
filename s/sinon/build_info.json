@@ -1,0 +1,18 @@
+{
+    "maintainer": "stutiibm",
+    "package_name": "sinon",
+    "github_url": "https://github.com/sinonjs/sinon",
+    "version": "v18.0.0",
+    "default_branch": "main",
+    "package_dir": "s/sinon",
+    "build_script": "sinon_ubi_9_3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "v18.0.*": {
+        "build_script": "sinon_ubi_9_3.sh"
+    },
+    "v17.0.*, v16.*.*": {
+        "build_script": "sinon_ubi_9_3.sh"
+     }
+}

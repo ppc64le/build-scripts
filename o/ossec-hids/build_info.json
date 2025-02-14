@@ -1,0 +1,17 @@
+{
+  "maintainer": "AbhiIBM",
+  "package_name": "ossec-hids",
+  "github_url": "https://github.com/ossec/ossec-hids",
+  "version": "3.7.0",
+  "default_branch": "master",
+  "build_script": "ossec-hids_ubi_9.3.sh",
+  "package_dir": "o/ossec-hids",
+  "use_non_root_user": "false",
+  "docker_build": true,
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "validate_build_script": true,
+  "3.*.*": {
+    "dir": "ubi9.3",
+    "build_script": "ossec-hids_ubi_9.3.sh"
+  }
+}

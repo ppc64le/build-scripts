@@ -29,7 +29,7 @@ sudo yum install -y git curl
 #installing nvm
 cd $HOME_DIR
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-source "$HOME/.bashrc"
+source "$HOME_DIR/.bashrc"
 nvm install "$NODE_VERSION"
 
 cd $HOME_DIR

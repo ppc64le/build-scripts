@@ -1,5 +1,5 @@
 {
-  "maintainer": "Ashwini.Kadam@ibm.com",
+  "maintainer": "ashwinik30",
   "package_name": "ansible-builder",
   "github_url": "https://github.com/ansible/ansible-builder",
   "version": "3.0.0",

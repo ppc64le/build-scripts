@@ -1,0 +1,15 @@
+{
+    "maintainer": "shubham-bhagwat0",
+    "package_name" : "3scale_toolbox",
+    "github_url": "https://github.com/3scale/3scale_toolbox",
+    "version": "3scale-2.14.1-GA",
+    "package_dir": "3/3scale_toolbox/",
+    "default_branch": "main",
+    "build_script": "3scale_toolbox_ubi_9.3.sh",
+    "docker_build": "false",
+    "use_non_root_user": false,
+    "validate_build_script": "true",
+    "*-*.*.*-*": {
+        "build_script": "3scale_toolbox_ubi_9.3.sh"
+    }
+}

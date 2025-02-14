@@ -1,19 +1,25 @@
 {
-  "maintainer": "Abhishek.Dwivedi6@ibm.com",
+  "maintainer": "AbhiIBM",
   "package_name": "consul",
-  "github_url": "https://github.com/hashicorp/consul.git",
-  "version": "v1.8.3",
+  "github_url": "https://github.com/hashicorp/consul",
+  "version": "v1.18.1",
   "default_branch": "main",
-  "build_script": "consul_v1.12.0_ubi_8.5.sh",
+  "build_script": "consul_v1.18.1_ubi_9.3.sh",
   "package_dir": "c/consul/",
-  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "docker_build": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
   "v1.8.3": {
     "dir": "1.8.3-ubi8",
     "build_script": "consul_ubi_8.5.sh"
   },
   "v1.9.4": {
     "dir": "1.9.4-ubi8",
-    "build_script": "consul_ubi_8.5.sh"
+    "build_script": "consul_ubi_8.5.sh",
+    "args": {
+      "GO_VERSION": "1.18.2",
+      "DUMB_INIT_VERSION": "1.2.5"
+    }
   },
   "v1.12.0": {
     "dir": "1.9.4-ubi8"
@@ -22,15 +28,15 @@
     "dir": "1.14.4-ubi8",
     "build_script": "consul_v1.14.4_ubi_8.5.sh"
   },
-  "v1.16.*":{
+  "v1.16.*": {
     "dir": "1.9.4-ubi8",
     "build_script": "consul_v1.16.1_ubi_8.7.sh"
   },
-  "v1.1*.*": {
-    "dir": "1.9.4-ubi8",
+  "v1.1*.*":{
+    "dir": "1.18.1-ubi9",
+    "build_script": "consul_v1.18.1_ubi_9.3.sh",
     "args": {
-      "GO_VERSION": "1.18.2",
-      "DUMB_INIT_VERSION": "1.2.5"
+      "GO_VERSION": "go1.22.1"
     }
   },
   "v*.*.*": {

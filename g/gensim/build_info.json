@@ -1,0 +1,15 @@
+{
+    "maintainer": "stutiibm",
+    "package_name": "gensim",
+    "github_url": "https://github.com/RaRe-Technologies/gensim",
+    "version": "4.3.2",
+    "default_branch": "develop",
+    "package_dir": "g/gensim",
+    "build_script": "gensim_ubi_9_3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "4.3.*": {
+        "build_script": "gensim_ubi_9_3.sh"
+     } 
+}

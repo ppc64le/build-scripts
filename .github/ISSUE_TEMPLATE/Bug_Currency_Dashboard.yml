@@ -1,0 +1,41 @@
+name: Bug for Currency Dashboard
+title: "[BUG]: "
+description: "Bug reporting for currency dashboard"
+labels: "dashboard bug"
+projects: "ppc64le/1"
+assignees: "ICH"
+body:
+  - type: markdown
+    attributes:
+      value: >
+        Use this form to submit a bug for Currency Dashboard.
+        Please give us as much information, including screen shots when possible to help us reproduce your issue or better understand the problem.
+        However, remember that any submitted information is public so do NOT include secrets, passwords, keys, PI, SPI, etc.
+  - type: dropdown
+    id: dashboard_version
+    attributes:
+      label: Currency Dashboard Version
+      options:
+        - v0.5
+        - v0.6
+        - v1.0
+      description: |
+        Version of the currency dashboard that you are seeing the bug on or submitting feedback for.
+    validations:
+      required: true
+  - type: textarea
+    id: bug_details
+    attributes:
+      label: Bug Details
+      description: |
+        Please provide a description of the issue you are having with the Currency Dashboard, including as much detail as possible with screen shots if that helps to identify the issue. However, remember that any submitted information is public so do NOT include secrets, passwords, keys, PI, SPI, etc.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce the bug or issue
+      description: |
+        Please describe how to reproduce the issue you are encountering.
+    validations:
+      required: true

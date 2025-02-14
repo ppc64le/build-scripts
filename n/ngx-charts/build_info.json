@@ -1,15 +1,15 @@
 {
-    "maintainer":"Abhishek.Dwivedi6@ibm.com",
-    "package_name" : "ngx-charts",
-    "github_url": "https://github.com/swimlane/ngx-charts",
-    "version": "20.5.0",
-    "default_branch": "master",
-    "package_dir": "n/ngx-charts",
-    "build_script": "ngx-charts_ubi_8.7.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false" ,
-    "docker_build": "false",
-    "20.5.*": {
+  "maintainer": "AbhiIBM",
+  "package_name": "ngx-charts",
+  "github_url": "https://github.com/swimlane/ngx-charts",
+  "version": "20.5.0",
+  "default_branch": "master",
+  "package_dir": "n/ngx-charts",
+  "build_script": "ngx-charts_ubi_8.7.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "false",
+  "20.5.*": {
     "build_script": "ngx-charts_ubi_8.7.sh"
   }
 }

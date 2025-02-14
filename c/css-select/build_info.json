@@ -1,11 +1,11 @@
 {
-   "maintainer": "ich@us.ibm.com",
-   "package_name": "css-select",
-   "github_url": "https://github.com/fb55/css-select",
-   "version": "v5.1.0",
-   "default_branch": "master",
-   "build_script": "css-select_ubi_8.7.sh",
-   "package_dir": "c/css-select",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "IBM-Currency-Helper",
+  "package_name": "css-select",
+  "github_url": "https://github.com/fb55/css-select",
+  "version": "v5.1.0",
+  "default_branch": "master",
+  "build_script": "css-select_ubi_8.7.sh",
+  "package_dir": "c/css-select",
+  "docker_build": false,
+  "validate_build_script": true
 }

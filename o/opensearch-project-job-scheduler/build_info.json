@@ -1,12 +1,18 @@
 {
-    "maintainer":"Pratik.Tonage@ibm.com",
-    "package_name" : "opensearch-project-job-scheduler",
-    "github_url": "https://github.com/opensearch-project/job-scheduler",
-    "version": "2.10.0.0",
-    "default_branch": "main",
-    "package_dir": "o/opensearch-project-job-scheduler",
-    "build_script": "opensearch-project-job-scheduler_ubi_8.7.sh",
-    "validate_build_script": true,
-    "use_non_root_user": true,
-    "docker_build": false
+  "maintainer": "vinodk99",
+  "package_name": "opensearch-project-job-scheduler",
+  "github_url": "https://github.com/opensearch-project/job-scheduler",
+  "version": "2.15.0.0",
+  "default_branch": "main",
+  "package_dir": "o/opensearch-project-job-scheduler",
+  "build_script": "opensearch-project-job-scheduler_ubi_9.3.sh",
+  "validate_build_script": true,
+  "use_non_root_user": true,
+  "docker_build": false,
+  "2.7.0.0": {
+    "build_script": "opensearch-project-job-scheduler_ubi_8.7.sh"
+  },
+  "*.*.*.*": {
+    "build_script": "opensearch-project-job-scheduler_ubi_9.3.sh"
+  }
 }

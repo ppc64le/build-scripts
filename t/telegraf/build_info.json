@@ -1,12 +1,15 @@
 {
-  "maintainer": "Vinod.K1@ibm.com",
+  "maintainer": "vinodk99",
   "package_name": "telegraf",
   "github_url": "https://github.com/influxdata/telegraf.git",
   "version": "v1.24.4",
   "default_branch": "master",
   "package_dir": "t/telegraf/",
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-  "build_script": "telegraf_UBI_8.5.sh",
+  "docker_build": true,
+  "use_non_root_user": "false",
+  "validate_build_script": true,
+  "build_script": "telegraf_ubi_8.7.sh",
   "v1.24.*": {
     "dir": "1.24.3-ubi8",
     "GO_VERSION": "1.19"
@@ -15,11 +18,15 @@
     "dir": "1.24.3-ubi8",
     "GO_VERSION": "1.20.5"
   },
-   "v1.28.*": {
-     "dir": "1.24.3-ubi8",
-     "GO_VERSION": "1.20.6"
+  "v1.28.*": {
+    "dir": "1.24.3-ubi8",
+    "GO_VERSION": "1.20.6"
   },
   "1.10.*": {
     "dir": "1.10.4-ubi8"
+  },
+   "v1.*.*": {
+     "dir": "1.24.3-ubi8",
+     "GO_VERSION": "1.22.0"
   }
 }

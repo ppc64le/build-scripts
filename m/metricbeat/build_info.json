@@ -1,14 +1,17 @@
 {
-  "maintainer": "Stuti.Wali@ibm.com",
+  "maintainer": "stutiibm",
   "package_name": "metricbeat",
   "github_url": "https://github.com/elastic/beats",
-  "version": "v8.7.0",
+  "version": "v8.13.4",
   "default_branch": "main",
   "package_dir": "m/metricbeat",
-  "build_script": "metricbeat_ubi_8.5.sh",
+  "build_script": "metricbeat_ubi_9_3.sh",
   "docker_build": false,
   "validate_build_script": true,
-  "use_non_root_user": false,
+  "use_non_root_user": true,
+  "v8.13.*": {
+    "build_script": "metricbeat_ubi_9_3.sh"
+  },
   "v8.6.*": {
     "build_script": "metricbeat_ubi_8.5.sh"
   }

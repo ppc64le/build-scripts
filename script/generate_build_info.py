@@ -27,6 +27,7 @@ import glob
 
 
 GITHUB_PACKAGE_INFO_API = "https://api.github.com/repos/{}/{}"
+GITHUB_USER_API = "https://api.github.com/users/{}"
 
 class bcolors:
     HEADER = '\033[95m'
@@ -67,6 +68,12 @@ def get_default_branch(package_url):
     owner, repo = package_url.replace('.git','').split('/')[-2:]
     response = requests.get(GITHUB_PACKAGE_INFO_API.format(owner, repo)).json()
     return response["default_branch"]
+
+def validate_username(user_name):
+    response = requests.get(GITHUB_USER_API.format(user_name))
+    if response.status_code==200:
+        return True
+    return False
 
 def get_files_list(dirname:str, recursive:bool=True):
     file_list = []
@@ -131,19 +138,36 @@ def get_maintainer_from_dockerfile(dir_name):
                     return maintainer
     return "Unknown"
 
+def get_github_url(build_script):
+    with open(build_script,'r',encoding='utf-8') as f:
+        contents=f.readlines()
+        for line in contents:
+            line=line.strip()
+            if line.startswith('# Source repo'):
+                github_url=line.split(':', 1)[1].strip()
+                return github_url
+    return False
+
+
 def get_default_build_script(build_scripts_versions):
     result=[]
     for data in build_scripts_versions:
-        if 'ubi_8.7' in data['file']:
+        if 'ubi_9.3' in data['file']:
             return [data['version'],data['file']]
         else:
             result.append((data['version'],data['file']))
     return max(result,key=lambda x:x[0]) 
 
+maintainer=input("Enter GitHub username (github.com) :")
+user_result = validate_username(maintainer)
 
-maintainer=get_maintainer_for_package(dir_name)
-if maintainer=="Unknown":
-    maintainer= get_maintainer_from_dockerfile(dir_name)
+while (maintainer!='' and user_result!=True):
+    print("\n Invalid Github Username \n")
+    maintainer=input("Please Enter GitHub username (github.com) :")
+    user_result = validate_username(maintainer)
+    if user_result:
+        print("\n Valid Github Username \n")
+
 
 for file in file_list:
     if file.endswith(".sh") and "Dockerfiles" not in file:
@@ -193,6 +217,7 @@ for file in file_list:
 
 
 default_version,default_build_script=get_default_build_script(build_scripts_versions)
+github_url=get_github_url(f"{dir_name}/{default_build_script}")
 
 
 final_json = {
@@ -204,7 +229,8 @@ final_json = {
     "build_script": default_build_script,
     "package_dir": dir_name.replace(ROOT, '').strip(path_separator),
     "docker_build": True if dockerfile_versions else False,
-    "validate_build_script": True if build_scripts_versions else False
+    "validate_build_script": True if build_scripts_versions else False,
+    "use_non_root_user":False
 }
 
 for entry in dockerfile_versions:

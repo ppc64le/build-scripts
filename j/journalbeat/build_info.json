@@ -1,0 +1,15 @@
+{
+    "maintainer": "vinodk99",
+    "package_name": "journalbeat",
+    "github_url": "https://github.com/mheese/journalbeat",
+    "version": "master",
+    "default_branch": "master",
+    "package_dir": "j/journalbeat",
+    "build_script": "journalbeat_ubi_9.3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "master": {
+        "build_script": "journalbeat_ubi_9.3.sh"
+     } 
+}

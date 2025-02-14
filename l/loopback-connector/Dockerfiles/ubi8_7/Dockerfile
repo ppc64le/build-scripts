@@ -18,7 +18,7 @@ ENV PATH=$HOME_DIR/node-v${NODE_VERSION}-linux-ppc64le/bin:$PATH
 RUN cd $SOURCE_DIR && \
     git clone https://github.com/loopbackio/loopback-connector && \
     cd loopback-connector && \
-    git checkout v6.1.0 && \
+    git checkout $PACKAGE_VERSION && \
     npm install
 
 CMD ["bash"]

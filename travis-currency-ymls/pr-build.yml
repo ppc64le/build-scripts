@@ -8,11 +8,13 @@ services:
     - docker
 
 before_install:
-    - docker pull registry.access.redhat.com/ubi8/ubi:8.7
+    - docker pull registry.access.redhat.com/ubi9/ubi:9.3
 
 script:
     - sudo apt update -y && sudo apt-get install file -y
-    - pip3 install --upgrade requests
+    #- pip3 install --upgrade requests
+    - pip3 install --force-reinstall -v "requests==2.31.0"
     - pip3 install --upgrade docker
-    - python3 script/validate_builds.py $TRAVIS_PULL_REQUEST &
-    - SCRIPT_PID=$!;while ps -p $SCRIPT_PID > /dev/null;do echo "$SCRIPT_PID is running"; sleep 300; done; wait $SCRIPT_PID; my_pid_status=$?; travis_terminate $my_pid_status
+    - python3 script/validate_builds.py $TRAVIS_PULL_REQUEST > build_log &
+    - SCRIPT_PID=$!;while ps -p $SCRIPT_PID > /dev/null;do echo "$SCRIPT_PID is running"; sleep 300; done; wait $SCRIPT_PID; my_pid_status=$?;
+    - build_size=$(stat -c %s build_log);[ $build_size -lt 1800000 ] && cat build_log || { echo "xxxxxxxxxxxxxxx Build log size too large, so printing last 1.7MB xxxxxxxxxxxxxxx"; tail -c 1700000 build_log; }; travis_terminate $my_pid_status

@@ -1,5 +1,5 @@
 {
-  "maintainer": "Vinod.K1@ibm.com",
+  "maintainer": "vinodk99",
   "package_name": "htslib",
   "github_url": "https://github.com/samtools/htslib",
   "version": "1.17",

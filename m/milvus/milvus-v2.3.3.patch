@@ -450,7 +450,7 @@ index c667a858f..b743e401b 100644
  rsc.io/pdf v0.1.1/go.mod h1:n8OzWcQ6Sp37PL01nO98y4iUCRdTGarVfzxY20ICaU4=
  rsc.io/quote/v3 v3.1.0/go.mod h1:yEA65RcK8LyAZtP9Kv3t0HmxON59tX3rD+tICJqUlj0=
 diff --git a/internal/core/conanfile.py b/internal/core/conanfile.py
-index 69c6e535f..ad396b26b 100644
+index 69c6e535f..c56342063 100644
 --- a/internal/core/conanfile.py
 +++ b/internal/core/conanfile.py
 @@ -4,8 +4,9 @@ from conans import ConanFile
@@ -460,7 +460,7 @@ index 69c6e535f..ad396b26b 100644
 -        "rocksdb/6.29.5",
 -        "boost/1.82.0",
 +        "rocksdb/6.29.5@milvus/dev",
-+        "boost/1.75.0",
++        "boost/1.84.0",
 +        "libunwind/1.7.2",
          "onetbb/2021.7.0",
          "nlohmann_json/3.11.2",
@@ -498,6 +498,72 @@ index adc0b3459..a64fdc932 100644
 +ReadDataFromFD(int fd, void* buf, size_t size, size_t chunk_size = 0x7fff0000);
  
  }  // namespace milvus::index
+diff --git a/internal/core/src/storage/azure-blob-storage/AzureBlobChunkManager.cpp b/internal/core/src/storage/azure-blob-storage/AzureBlobChunkManager.cpp
+index 644461d0d..9db84eedc 100644
+--- a/internal/core/src/storage/azure-blob-storage/AzureBlobChunkManager.cpp
++++ b/internal/core/src/storage/azure-blob-storage/AzureBlobChunkManager.cpp
+@@ -21,18 +21,6 @@
+ 
+ namespace azure {
+ 
+-std::string
+-GetTenantId() {
+-    return std::getenv("AZURE_TENANT_ID");
+-}
+-std::string
+-GetClientId() {
+-    return std::getenv("AZURE_CLIENT_ID");
+-}
+-std::string
+-GetTokenFilePath() {
+-    return std::getenv("AZURE_FEDERATED_TOKEN_FILE");
+-}
+ std::string
+ GetConnectionString(const std::string& access_key_id,
+                     const std::string& access_key_value,
+@@ -78,9 +66,10 @@ AzureBlobChunkManager::AzureBlobChunkManager(
+     bool useIAM) {
+     requestTimeoutMs_ = requestTimeoutMs;
+     if (useIAM) {
++        Azure::Identity::WorkloadIdentityCredentialOptions options;
+         auto workloadIdentityCredential =
+             std::make_shared<Azure::Identity::WorkloadIdentityCredential>(
+-                GetTenantId(), GetClientId(), GetTokenFilePath());
++                options);
+         client_ = std::make_shared<Azure::Storage::Blobs::BlobServiceClient>(
+             "https://" + access_key_id + ".blob." + address + "/",
+             workloadIdentityCredential);
+@@ -90,6 +79,17 @@ AzureBlobChunkManager::AzureBlobChunkManager(
+                 CreateFromConnectionString(GetConnectionString(
+                     access_key_id, access_key_value, address)));
+     }
++    try {
++        Azure::Core::Context context;
++        client_->GetBlobContainerClient("justforconnectioncheck")
++            .GetBlockBlobClient("justforconnectioncheck")
++            .GetProperties(Azure::Storage::Blobs::GetBlobPropertiesOptions(),
++                           context);
++    } catch (const Azure::Storage::StorageException& e) {
++        if (e.StatusCode != Azure::Core::Http::HttpStatusCode::NotFound) {
++            throw;
++        }
++    }
+ }
+ 
+ AzureBlobChunkManager::~AzureBlobChunkManager() {
+diff --git a/internal/core/src/storage/azure-blob-storage/cmake-modules/AzureVcpkg.cmake b/internal/core/src/storage/azure-blob-storage/cmake-modules/AzureVcpkg.cmake
+index c49a433e5..1c6f989c5 100644
+--- a/internal/core/src/storage/azure-blob-storage/cmake-modules/AzureVcpkg.cmake
++++ b/internal/core/src/storage/azure-blob-storage/cmake-modules/AzureVcpkg.cmake
+@@ -17,7 +17,7 @@ macro(az_vcpkg_integrate)
+       message("AZURE_SDK_DISABLE_AUTO_VCPKG is not defined. Fetch a local copy of vcpkg.")
+       # GET VCPKG FROM SOURCE
+       #  User can set env var AZURE_SDK_VCPKG_COMMIT to pick the VCPKG commit to fetch
+-      set(VCPKG_COMMIT_STRING 71d875654e32ee216b0b7e0dc684e589dffa1b1c) # default SDK tested commit
++      set(VCPKG_COMMIT_STRING 061fe134942a36905e12c11477c8eba761bffc5f) # default SDK tested commit
+       if(DEFINED ENV{AZURE_SDK_VCPKG_COMMIT})
+         message("AZURE_SDK_VCPKG_COMMIT is defined. Using that instead of the default.")
+         set(VCPKG_COMMIT_STRING "$ENV{AZURE_SDK_VCPKG_COMMIT}") # default SDK tested commit
 diff --git a/internal/core/thirdparty/knowhere/CMakeLists.txt b/internal/core/thirdparty/knowhere/CMakeLists.txt
 index d8bb751ce..f5b603e28 100644
 --- a/internal/core/thirdparty/knowhere/CMakeLists.txt
@@ -991,13 +1057,39 @@ index 119d1a3a1..81787254a 100644
 -MILVUS_JEMALLOC_BUILD_VERSION=5.2.1
 +MILVUS_JEMALLOC_BUILD_VERSION=5.3.0
 diff --git a/internal/core/unittest/test_azure_chunk_manager.cpp b/internal/core/unittest/test_azure_chunk_manager.cpp
-index f1481dc8c..b342a914d 100644
+index f1481dc8c..fb4ba2b5e 100644
 --- a/internal/core/unittest/test_azure_chunk_manager.cpp
 +++ b/internal/core/unittest/test_azure_chunk_manager.cpp
-@@ -94,203 +94,3 @@ TEST_F(AzureChunkManagerTest, BasicFunctions) {
-     }
- }
+@@ -68,229 +68,4 @@ class AzureChunkManagerTest : public testing::Test {
+     StorageConfig configs_;
+ };
  
+-TEST_F(AzureChunkManagerTest, AzureLogger) {
+-    AzureLogger(Azure::Core::Diagnostics::Logger::Level::Error, "");
+-    AzureLogger(Azure::Core::Diagnostics::Logger::Level::Warning, "");
+-    AzureLogger(Azure::Core::Diagnostics::Logger::Level::Informational, "");
+-    AzureLogger(Azure::Core::Diagnostics::Logger::Level::Verbose, "");
+-}
+-
+-TEST_F(AzureChunkManagerTest, BasicFunctions) {
+-    EXPECT_TRUE(chunk_manager_->GetName() == "AzureChunkManager");
+-    EXPECT_TRUE(chunk_manager_ptr_->GetName() == "AzureChunkManager");
+-    EXPECT_TRUE(chunk_manager_->GetRootPath() == "files");
+-
+-    string path = "test";
+-    uint8_t readdata[20] = {0};
+-    try {
+-        chunk_manager_->Read(path, 0, readdata, sizeof(readdata));
+-    } catch (SegcoreError& e) {
+-        EXPECT_TRUE(string(e.what()).find("Read") != string::npos);
+-    }
+-    try {
+-        chunk_manager_->Write(path, 0, readdata, sizeof(readdata));
+-    } catch (SegcoreError& e) {
+-        EXPECT_TRUE(string(e.what()).find("Write") != string::npos);
+-    }
+-}
+-
 -TEST_F(AzureChunkManagerTest, BucketPositive) {
 -    string testBucketName = "test-bucket";
 -    bool exist = chunk_manager_->BucketExists(testBucketName);
@@ -1087,7 +1179,7 @@ index f1481dc8c..b342a914d 100644
 -    EXPECT_EQ(exist, true);
 -    auto size = chunk_manager_->Size(path);
 -    EXPECT_EQ(size, sizeof(data));
--
+ 
 -    uint8_t readdata[20] = {0};
 -    size = chunk_manager_->Read(path, readdata, sizeof(data));
 -    EXPECT_EQ(size, sizeof(data));

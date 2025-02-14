@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "resolve-uri",
+    "github_url": "https://github.com/jridgewell/resolve-uri",
+    "version": "v3.1.2",
+    "default_branch": "main",
+    "build_script": "resolve-uri_ubi_9.3.sh",
+    "package_dir": "r/resolve-uri",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v3.*.*": {
+        "build_script": "resolve-uri_ubi_9.3.sh"
+    }
+}

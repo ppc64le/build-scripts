@@ -1,0 +1,16 @@
+{
+    "maintainer": "stutiibm",
+    "package_name": "bottleneck",
+    "github_url": "https://github.com/pydata/bottleneck",
+    "version": "v1.3.8",
+    "default_branch": "master",
+    "package_dir": "b/bottleneck",
+    "build_script": "bottleneck_ubi_9_3.sh",
+    "docker_build": true,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "v1.3.*": {
+        "dir": "ubi9_3",
+        "build_script": "bottleneck_ubi_9_3.sh"
+     }
+}

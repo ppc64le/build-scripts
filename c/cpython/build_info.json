@@ -1,0 +1,17 @@
+{
+  "maintainer": "Vipul-Ajmera",
+  "package_name": "cpython",
+  "github_url": "https://github.com/python/cpython",
+  "package_dir": "c/cpython",
+  "version": "v3.12.3",
+  "default_branch": "main",
+  "build_script": "cpython_ubi_9.3.sh",
+  "use_non_root_user": false,
+  "docker_build": true,
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "validate_build_script": true,
+  "v*.*.*": {
+    "dir": "ubi9.3",
+    "build_script": "cpython_ubi_9.3.sh"
+  }
+}

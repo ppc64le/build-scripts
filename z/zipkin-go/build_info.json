@@ -1,11 +1,11 @@
 {
-   "maintainer": "Shubham.Garud@ibm.com",
-   "package_name": "zipkin-go",
-   "github_url": "https://github.com/openzipkin/zipkin-go",
-   "version": "v0.4.2",
-   "default_branch": "master",
-   "build_script": "zipkin-go_ubi_8.7.sh",
-   "package_dir": "z/zipkin-go",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "shubham-garud",
+  "package_name": "zipkin-go",
+  "github_url": "https://github.com/openzipkin/zipkin-go",
+  "version": "v0.4.2",
+  "default_branch": "master",
+  "build_script": "zipkin-go_ubi_8.7.sh",
+  "package_dir": "z/zipkin-go",
+  "docker_build": false,
+  "validate_build_script": true
 }

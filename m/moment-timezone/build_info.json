@@ -1,15 +1,15 @@
 {
-    "maintainer": "Stuti.Wali@ibm.com",
-    "package_name": "moment-timezone",
-    "github_url": "https://github.com/moment/moment-timezone",
-    "version": "0.5.45",
-    "default_branch": "develop",
-    "package_dir": "m/moment-timezone",
-    "build_script": "moment-timezone_ubi_8_7.sh",
-    "docker_build": false,
-    "validate_build_script": true,
-    "use_non_root_user": false,
-    "0.5.45": {
-        "build_script": "moment-timezone_ubi_8_7.sh"
-     }
+  "maintainer": "stutiibm",
+  "package_name": "moment-timezone",
+  "github_url": "https://github.com/moment/moment-timezone",
+  "version": "0.5.45",
+  "default_branch": "develop",
+  "package_dir": "m/moment-timezone",
+  "build_script": "moment-timezone_ubi_8_7.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "0.5.45": {
+    "build_script": "moment-timezone_ubi_8_7.sh"
+  }
 }

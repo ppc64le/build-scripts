@@ -1,12 +1,15 @@
 {
-  "maintainer": "Stuti.Wali@ibm.com",
+  "maintainer": "stutiibm",
   "package_name": "snakeyaml",
   "github_url": "https://github.com/snakeyaml/snakeyaml",
   "version": "master",
   "default_branch": "master",
   "package_dir": "s/snakeyaml",
-  "build_script": "snakeyaml_ubi_8_5.sh",
+  "build_script": "snakeyaml_ubi_9_3.sh",
   "docker_build": false,
   "validate_build_script": true,
-  "use_non_root_user": false
+  "use_non_root_user": false,
+  "master": {
+    "build_script": "snakeyaml_ubi_9_3.sh"
+  }
 }

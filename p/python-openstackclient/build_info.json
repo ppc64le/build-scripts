@@ -1,0 +1,12 @@
+{
+  "maintainer": "AbhiIBM",
+  "package_name": "python-openstackclient",
+  "github_url": "https://github.com/openstack/python-openstackclient",
+  "version": "6.5.0",
+  "default_branch": "master",
+  "build_script": "python-openstackclient_ubi_8.7.sh",
+  "package_dir": "p/python-openstackclient",
+  "docker_build": false,
+  "use_non_root_user": "false",
+  "validate_build_script": true
+}

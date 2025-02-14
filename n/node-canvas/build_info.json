@@ -1,18 +1,17 @@
 {
-    "maintainer":"Vinod.K1@ibm.com",
-    "package_name" : "node-canvas", 
-    "github_url": "https://github.com/Automattic/node-canvas",
-    "version": "v2.11.2",
-    "default_branch": "master",
-    "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-    "package_dir": "n/node-canvas",
-    "build_script": "node-canvas_ubi_8.7.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build": "true",
-
-    "v2.*.*" : {
-       "dir": "2.11.2_ubi8",
-       "build_script": "node-canvas_ubi_8.7.sh"
-    }
+  "maintainer": "vinodk99",
+  "package_name": "node-canvas",
+  "github_url": "https://github.com/Automattic/node-canvas",
+  "version": "v2.11.2",
+  "default_branch": "master",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "package_dir": "n/node-canvas",
+  "build_script": "node-canvas_ubi_8.7.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "true",
+  "v2.*.*": {
+    "dir": "2.11.2_ubi8",
+    "build_script": "node-canvas_ubi_8.7.sh"
+  }
 }

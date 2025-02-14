@@ -1,0 +1,12 @@
+{
+   "maintainer": "shubham-garud",
+   "package_name": "flatted",
+   "github_url": "https://github.com/WebReflection/flatted",
+   "version": "v3.2.9",
+   "default_branch": "main",
+   "build_script": "flatted_ubi_8.7.sh",
+   "package_dir": "f/flatted",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user":false
+}

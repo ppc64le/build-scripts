@@ -1,18 +1,20 @@
 {
-    "maintainer":"Abhishek.Dwivedi6@ibm.com",
-    "package_name" : "dill",
-    "github_url": "https://github.com/uqfoundation/dill",
-    "version": "dill-0.3.7",
-    "default_branch": "master",
-    "package_dir": "d/dill",
-    "docker_cmd" : "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-    "build_script": "dill_ubi_8.7.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build": "true",
-
-    "dill-0.3.*" : {
-        "dir" : "ubi8.7",
-        "build_script" : "dill_ubi_8.7.sh"
-    }
+  "maintainer": "AbhiIBM",
+  "package_name": "dill",
+  "github_url": "https://github.com/uqfoundation/dill",
+  "version": "0.3.8",
+  "default_branch": "master",
+  "package_dir": "d/dill",
+  "build_script": "dill_ubi_9.3.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "true",
+  "dill-0.3.*": {
+    "dir": "ubi8.7",
+    "build_script": "dill_ubi_8.7.sh"
+  },
+  "0.*.*": {
+    "dir": "ubi9.3",
+    "build_script": "dill_ubi_9.3.sh"
+  }
 }

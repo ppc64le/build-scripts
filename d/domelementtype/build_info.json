@@ -1,11 +1,11 @@
 {
-   "maintainer": "ich@us.ibm.com",
-   "package_name": "domelementtype",
-   "github_url": "https://github.com/fb55/domelementtype",
-   "version": "v2.3.0",
-   "default_branch": "master",
-   "build_script": "domelementtype_ubi_8.7.sh",
-   "package_dir": "d/domelementtype",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "IBM-Currency-Helper",
+  "package_name": "domelementtype",
+  "github_url": "https://github.com/fb55/domelementtype",
+  "version": "v2.3.0",
+  "default_branch": "master",
+  "build_script": "domelementtype_ubi_8.7.sh",
+  "package_dir": "d/domelementtype",
+  "docker_build": false,
+  "validate_build_script": true
 }

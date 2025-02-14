@@ -1,5 +1,5 @@
 {
-  "maintainer": "Vinod.K1@ibm.com",
+  "maintainer": "vinodk99",
   "package_name": "grafana",
   "github_url": "https://github.com/grafana/grafana.git",
   "version": "v10.1.1",
@@ -26,11 +26,11 @@
       "GO_VERSION": "1.19.6"
     }
   },
-    "v10.1.*": {
-      "dir": "9.1.5_ubi8.5",
+  "v10.1.*": {
+    "dir": "9.1.5_ubi8.5",
     "args": {
       "GRAFANA_VERSION": "$PACKAGE_VERSION",
       "GO_VERSION": "1.20.6"
-     }
-   }
-}  
+    }
+  }
+}

@@ -1,25 +1,33 @@
 {
-    "maintainer": "Sumit.Dubey2@ibm.com",
-    "package_name" : "envoy",
-    "github_url": "https://github.com/envoyproxy/envoy",
-    "version": "v1.25.3",
-    "package_dir": "e/envoy",
-    "default_branch": "main",
-    "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-    "build_script": "envoy_1.25.3_ubi8.4.sh",
-    "docker_build": "true",
-    "validate_build_script": "true",
-
-    "v1.25.3": {
-        "dir": "1.25.3_ubi_8",
-        "build_script": "envoy_1.25.3_ubi8.4.sh"
-    },
-    "v1.25.11": {
-        "dir": "1.25.11_ubi_8",
-        "build_script": "envoy_1.25.11_ubi8.4.sh"
-    },
-    "v1.29.0": {
-        "dir": "1.29.0_ubi_8",
-        "build_script": "envoy_1.29.0_ubi8.7.sh"
-    }
+  "maintainer": "sumitd2",
+  "package_name": "envoy",
+  "github_url": "https://github.com/envoyproxy/envoy",
+  "version": "v1.25.3",
+  "package_dir": "e/envoy",
+  "default_branch": "main",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "build_script": "envoy_1.25.3_ubi8.4.sh",
+  "docker_build": "true",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "v1.25.3": {
+    "dir": "1.25.3_ubi_8",
+    "build_script": "envoy_1.25.3_ubi8.4.sh"
+  },
+  "v1.25.11": {
+    "dir": "1.25.11_ubi_8",
+    "build_script": "envoy_1.25.11_ubi8.4.sh"
+  },
+  "v1.29.0": {
+    "dir": "1.29.0_ubi_8",
+    "build_script": "envoy_1.29.0_ubi8.7.sh"
+  },
+  "v1.31.0": {
+    "dir": "1.31.0_ubi_9",
+    "build_script": "envoy_1.31.0_ubi9.3.sh"
+  },
+  "v1.32.0": {
+    "dir": "1.32.0_ubi_9",
+    "build_script": "envoy_1.32.0_ubi9.3.sh"
+  }
 }

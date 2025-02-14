@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package	: github.com/hashicorp/vault
-# Version	: v1.11.2, v1.11.3, v1.12.3,v1.13.1,v1.14.0
-# Source repo	: https://github.com/hashicorp/vault
-# Tested on	: UBI: 8.5
+# Package       : vault
+# Version       : v1.11.2, v1.11.3, v1.12.3,v1.13.1,v1.14.0
+# Source repo   : https://github.com/hashicorp/vault
+# Tested on     : UBI 8.7
 # Language      : Go
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Vinod K <Vinod.K1@ibm.com>
+# Maintainer    : Vinod K <Vinod.K1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,8 +19,8 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=vault
-PACKAGE_VERSION=${1:-v1.14.1}
-GO_VERSION=${GO_VERSION:-1.20.6}
+PACKAGE_VERSION=${1:-v1.15.6}
+GO_VERSION=${GO_VERSION:-1.21.7}
 PACKAGE_URL=https://github.com/hashicorp/vault
 
 WORKDIR=`pwd`
@@ -37,16 +37,25 @@ export GOPATH=$HOME
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
 #Clone and build the source
-mkdir -p ${GOPATH}/src/github.com/hashicorp
-cd ${GOPATH}/src/github.com/hashicorp
-
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-go mod tidy
-make bootstrap
-go mod vendor
-make
+if ! make ; then
+    echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
+    exit 1
+fi
 
-make testrace TEST=./vault
+if ! make testrace TEST=./vault ; then
+    echo "------------------$PACKAGE_NAME:Build_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME:Build_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Build_and_Test_Success"
+    exit 0
+fi

@@ -1,5 +1,5 @@
 {
-  "maintainer": "Shubham.Garud@ibm.com",
+  "maintainer": "shubham-garud",
   "package_name": "node-sass",
   "github_url": "https://github.com/sass/node-sass",
   "package_dir": "n/node-sass/",

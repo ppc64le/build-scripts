@@ -1,16 +1,15 @@
 {
-    "maintainer": "mohit.pawar@ibm.com",
+    "maintainer": "mohitp333",
     "package_name": "pyramid_jinja2",
     "github_url": "https://github.com/Pylons/pyramid_jinja2.git",
-    "version": "2.10",
+    "version": "2.10.1",
     "default_branch": "main",
     "package_dir": "p/pyramid_jinja2",
-    "build_script": "pyramid_jinja2_ubi_8.7.sh",
+    "build_script": "pyramid_jinja2_ubi_9.3.sh",
     "validate_build_script": "true",
     "use_non_root_user": "false",
     "docker_build": "false",
-
-    "v2.10" : {
-       "build_script": "pyramid_jinja2_ubi_8.7.sh"
+    "2.*" : {
+       "build_script": "pyramid_jinja2_ubi_9.3.sh"
     }
 }

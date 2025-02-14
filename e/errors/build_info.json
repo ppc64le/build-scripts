@@ -1,11 +1,12 @@
 {
-   "maintainer": "Shubham.Garud@ibm.com",
+   "maintainer": "AbhiIBM",
    "package_name": "errors",
    "github_url": "https://github.com/go-openapi/errors",
-   "version": "v0.20.4",
+   "version": "v0.22.0",
    "default_branch": "master",
    "build_script": "errors_ubi_8.7.sh",
    "package_dir": "e/errors",
    "docker_build": false,
+   "use_non_root_user": false,
    "validate_build_script": true
 }

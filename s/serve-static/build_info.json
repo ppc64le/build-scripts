@@ -1,0 +1,17 @@
+{
+  "maintainer": "AbhiIBM",
+  "package_name": "serve-static",
+  "github_url": "https://github.com/expressjs/serve-static",
+  "version": "v1.15.0",
+  "default_branch": "master",
+  "build_script": "serve-static_ubi_8.7.sh",
+  "package_dir": "s/serve-static",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "docker_build": true,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "v1.*.*": {
+    "dir": "ubi8.7",
+    "build_script": "serve-static_ubi_8.7.sh"
+  }
+}
