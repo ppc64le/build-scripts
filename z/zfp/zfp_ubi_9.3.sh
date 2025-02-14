@@ -32,7 +32,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 echo "Installing cython and numpy.."
-pip install  cython==0.29.36 numpy==1.23.5
+pip install  cython==0.29.36 numpy==1.23.5 wheel
 
 mkdir build
 cmake -B /zfp/build -DCMAKE_BUILD_TYPE=Release -DBUILD_ZFPY=ON -DPYTHON_INCLUDE_DIR=$(python -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())")  -DPYTHON_LIBRARY=$(python -c "import distutils.sysconfig as sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
@@ -42,7 +42,7 @@ export LD_LIBRARY_PATH=/zfp/build/lib64:$LD_LIBRARY_PATH
 ldconfig
 
 echo "installing..."
-if ! python setup.py install ; then
+if ! pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
