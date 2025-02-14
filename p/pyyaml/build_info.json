@@ -16,7 +16,7 @@
     "6.*": {
        "build_script":"pyyaml_6.0_ubi_9.3.sh"
     },
-	"5.*":{
+    "5.*": {
          "build_script":"pyyaml_6.0_ubi_9.3.sh"
     },
     "*": {
