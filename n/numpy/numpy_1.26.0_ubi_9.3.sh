@@ -26,7 +26,7 @@ PACKAGE_VERSION=${1:-v1.26.0}
 PACKAGE_URL=https://github.com/numpy/numpy
 
 # Install dependencies and tools.
-yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openssl-devel cmake openblas-devel
+yum install -y git wget gcc gcc-c++ python python-devel python-pip openssl-devel cmake openblas-devel
 pip install tox Cython pytest==7.4.2 hypothesis wheel meson ninja
 
 

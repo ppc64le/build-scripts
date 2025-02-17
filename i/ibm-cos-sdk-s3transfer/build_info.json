@@ -5,7 +5,7 @@
    "version": "2.14.0",
    "default_branch": "master",
    "build_script": "ibm-cos-sdk-python-s3transfer_ubi_9.3.sh",
-   "package_dir": "i/ibm-cos-sdk-python-s3transfer",
+   "package_dir": "i/ibm-cos-sdk-s3transfer",
    "docker_build": false,
    "wheel_build": true,
    "validate_build_script": true,
