@@ -9,7 +9,10 @@
     "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": false,
-    "4.3.*": {
+    "4.3.3":{
         "build_script": "gensim_ubi_9_4_py312.sh"
+    },
+    "4.3.*": {
+        "build_script": "gensim_ubi_9_3.sh"
      } 
 }

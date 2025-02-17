@@ -1,4 +1,23 @@
 #!/bin/bash 
+# ----------------------------------------------------------------------------
+#
+# Package       : gensim
+# Version       : 4.3.3
+# Source repo   : https://github.com/RaRe-Technologies/gensim
+# Tested on     : UBI: 9.4
+# Language      : python
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Tejas Badjate <Tejas.Badjate@ibm.com>
+#
+#
+# Disclaimer: This script has been tested in root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
 
 set -e  # Exit immediately if a command fails
 
