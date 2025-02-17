@@ -15,6 +15,10 @@
     "dir": "ubi8.7",
     "build_script": "cytoolz_ubi_8.7.sh"
   },
+  "1.0.1": {
+    "dir": "ubi9.5",
+    "build_script": "cytoolz_ubi_8.7.sh"
+  },
   "*": {
     "dir": "ubi9.3",
     "build_script": "cytoolz_ubi_9.3.sh"
