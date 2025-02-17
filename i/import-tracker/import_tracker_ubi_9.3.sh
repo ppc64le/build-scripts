@@ -50,6 +50,10 @@ if ! (pip3 install .); then
     exit 1
 fi
 
+#creating Wheel through script because we need to Read version from the env.
+pip install build wheel
+python3 setup.py bdist_wheel --dist-dir="$CURRENT_DIR/"
+
 # Run tests(skipping some testcase as same testcase failing in x86)
 if !  pytest -k "not(test_track_module_with_package or test_track_module_recursive or test_track_module_with_limited_submodules or test_with_limited_submodules or test_detect_transitive_with_nested_module or test_detect_transitive_with_nested_module_full_depth or test_all_import_types or test_missing_parent_mod or test_without_package or test_with_package or test_with_logging or test_parse_requirements_happy_file or test_parse_requirements_happy_iterable[list] or test_parse_requirements_happy_iterable[tuple] or test_parse_requirements_happy_iterable[set] or test_parse_requirements_add_untracked_reqs or test_parse_requirements_add_subset_of_submodules or test_parse_requirements_unknown_extras or test_nested_deps or test_track_module_programmatic)"; then
     echo "------------------$PACKAGE_NAME: Tests_Fail------------------"
@@ -62,7 +66,3 @@ else
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Both_Install_and_Test_Success"
     exit 0
 fi
-
-#creating Wheel through script because we need to Read version from the env.
-pip install build wheel
-python3 setup.py bdist_wheel --dist-dir="$CURRENT_DIR/"
