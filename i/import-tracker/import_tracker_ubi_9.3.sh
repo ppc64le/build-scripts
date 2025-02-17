@@ -62,3 +62,7 @@ else
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Both_Install_and_Test_Success"
     exit 0
 fi
+
+#creating Wheel through script because we need to Read version from the env.
+pip install build wheel
+python3 setup.py bdist_wheel --dist-dir="$CURRENT_DIR/"
