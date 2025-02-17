@@ -67,8 +67,22 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_Success"
 fi
 
-# Run Python tests
-if ! python${PYTHON_VERSION} -m pytest tests/fsm/test_json_schema.py; then
+# Define possible test file paths
+OLD_TEST_PATH="tests/fsm/test_json_schema.py"
+NEW_TEST_PATH="tests/test_json_schema.py"
+
+# Determine which test file exists
+if [ -f "$OLD_TEST_PATH" ]; then
+    TEST_PATH="$OLD_TEST_PATH"
+elif [ -f "$NEW_TEST_PATH" ]; then
+    TEST_PATH="$NEW_TEST_PATH"
+else
+    echo "Error: Test file not found in expected locations."
+    exit 1
+fi
+
+# Run Python tests with the correct path
+if ! python${PYTHON_VERSION} -m pytest "$TEST_PATH"; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail |  Install_success_but_test_Fails"
@@ -79,4 +93,3 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
-
