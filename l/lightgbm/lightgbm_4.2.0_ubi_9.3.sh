@@ -202,12 +202,7 @@ echo "lightgbm dir ....."
 cd lightgbm-python
 
 echo "Running build with MPI condition..."
-if python3 -m build --wheel --config-setting=cmake.define.USE_MPI=ON --outdir="$CURRENT_DIR/"; then
-    echo "------------------$PACKAGE_NAME:Build_fails----------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_Fail"
-    exit 3
-fi
+python3 -m build --wheel --config-setting=cmake.define.USE_MPI=ON --outdir="$CURRENT_DIR"
 
 echo "installing package ..."
 if ! (pip install --no-deps .) ; then
