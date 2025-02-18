@@ -24,6 +24,7 @@ PACKAGE_VERSION=${1:-v4.2.0}
 PACKAGE_URL=https://github.com/microsoft/LightGBM.git
 PACKAGE=LightGBM
 PACKAGE_DIR=LightGBM/lightgbm-python
+CURRENT_DIR=$pwd
 
 echo "Installing dependencies..."
 yum install -y git gcc gcc-c++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel gcc-gfortran openblas atlas openblas-devel python3 python3-devel python3-pip
@@ -201,7 +202,7 @@ echo "lightgbm dir ....."
 cd lightgbm-python
 
 echo "Running build with MPI condition..."
-if python3 -m build --config-setting=cmake.define.USE_MPI=ON; then
+if python3 -m build --wheel --config-setting=cmake.define.USE_MPI=ON --outdir="$CURRENT_DIR/"; then
     echo "------------------$PACKAGE_NAME:Build_fails----------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_Fail"
