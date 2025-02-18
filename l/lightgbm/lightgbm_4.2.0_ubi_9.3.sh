@@ -76,7 +76,6 @@ echo "installing meson-python and ninja.."
 pip install meson-python ninja
 echo "installing setuptools.."
 pip install setuptools==59.8.0 wheel
-python setup.py build_ext --inplace
 echo "install other necessary dependency"
 pip install cloudpickle psutil
 echo "install matplotlib"
@@ -86,7 +85,8 @@ pip install pandas==1.5.3
 echo "install scikit_build_core"
 pip install scikit-build-core
 
-echo "installing..."
+echo "installing scikit-learn..."
+python3 setup.py build_ext --inplace
 pip install . --no-build-isolation
 echo "back to lightgbm dir"
 cd ..
