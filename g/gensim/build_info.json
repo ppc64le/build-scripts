@@ -5,14 +5,15 @@
     "version": "4.3.3",
     "default_branch": "develop",
     "package_dir": "g/gensim",
-    "build_script": "gensim_ubi_9_4_py312.sh",
+    "build_script": "gensim_4.3.3_ubi_9.4.sh",
     "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": false,
-    "4.3.3":{
-        "build_script": "gensim_ubi_9_4_py312.sh"
-    },
-    "4.3.*": {
+    "wheel_build" : true,
+    "4.3.2": {
         "build_script": "gensim_ubi_9_3.sh"
-     } 
+     },
+    "4.3.*":{
+        "build_script": "gensim_4.3.3_ubi_9.4.sh"
+    }
 }
