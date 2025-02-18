@@ -3,13 +3,13 @@
     "package_name": "gensim",
     "github_url": "https://github.com/RaRe-Technologies/gensim",
     "version": "4.3.3",
+    "wheel_build" : true,
     "default_branch": "develop",
     "package_dir": "g/gensim",
     "build_script": "gensim_4.3.3_ubi_9.4.sh",
     "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": false,
-    "wheel_build" : true,
     "4.3.2": {
         "build_script": "gensim_ubi_9_3.sh"
      },

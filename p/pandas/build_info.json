@@ -1,5 +1,5 @@
 {
-  "maintainer": "bhagyashrigai",
+  "maintainer": "vivek8123",
   "package_name": "pandas",
   "github_url": "https://github.com/pandas-dev/pandas.git",
   "version": "v2.2.0",
@@ -9,7 +9,11 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "v2.*.*": {
-    "build_script": "pandas_ubi_9.3.sh"
-  }
+  "wheel_build": true,
+  "v2.1.1": {
+     "build_script": "pandas_2.1.1_ubi_9.3.sh"
+        },
+  "v1.5.3": {
+    "build_script": "pandas_1.5.3_ubi_9.3.sh"
+  }  
 }

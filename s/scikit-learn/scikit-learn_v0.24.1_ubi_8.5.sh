@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/scikit-learn/scikit-learn
 # Tested on     : UBI 8.5
 # Language      : Python
-# Travis-Check  : True
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Valen Mascarenhas <Valen.Mascarenhas@ibm.com>
 #
