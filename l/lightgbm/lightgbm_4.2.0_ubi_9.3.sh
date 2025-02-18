@@ -169,7 +169,7 @@ echo "Installing PyArrow Python package..."
 # Install the generated Python package
 CMAKE_PREFIX_PATH=$ARROW_HOME python3 setup.py install
 echo "PyArrow Python package installed."
-cd /LightGBM
+cd ../..
 
 echo "installing base package ..."
 ./build-python.sh
