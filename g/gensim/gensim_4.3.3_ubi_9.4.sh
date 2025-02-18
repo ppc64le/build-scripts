@@ -23,6 +23,7 @@ set -e  # Exit immediately if a command fails
 
 export PACKAGE_VERSION=${1:-"4.3.3"}
 export PACKAGE_NAME=gensim
+export PACKAGE_DIR=$(pwd)/$PACKAGE_NAME
 export PACKAGE_URL=https://github.com/RaRe-Technologies/gensim
 
 # Install system dependencies
@@ -35,24 +36,20 @@ dnf install -y python3.12 python3.12-pip
 python3.12 --version
 pip3.12 --version
 
-# Create and activate Python 3.12 virtual environment
-python3.12 -m venv py312_env
-source py312_env/bin/activate
-
 # Upgrade pip and install required dependencies
-python -m pip install --upgrade pip setuptools wheel meson pytest
-python -m pip install requests ruamel-yaml nbformat testfixtures mock nbconvert
-python -m pip install numpy==1.26.4 scipy==1.13.1 Cython 
+python3.12 -m pip3.12 install --upgrade pip 
+python3.12 -m pip install setuptools wheel meson pytest requests ruamel-yaml nbformat testfixtures mock nbconvert
+python3.12 -m pip install numpy==1.26.4 scipy==1.13.1 Cython 
 
 # Clone the repository
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+git clone $PACKAGE_URL $PACKAGE_DIR
+cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 export TOXENV=py312
-python3 setup.py build_ext --inplace
+python3.12 setup.py build_ext --inplace
 
 # Build package
-if !(python3 setup.py install) ; then
+if !(python3.12 -m pip install .) ; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
