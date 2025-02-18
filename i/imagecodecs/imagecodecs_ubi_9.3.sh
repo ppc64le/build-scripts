@@ -24,7 +24,7 @@ PACKAGE_URL=https://github.com/cgohlke/imagecodecs.git
 PACKAGE_DIR=./imagecodecs
 CURRENT_DIR="${PWD}"
 
- 
+
 yum install -y wget
 
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
@@ -47,8 +47,11 @@ yum install -y gcc gcc-c++ gcc-gfortran git make cmake autoconf automake \
     libheif-tools libjpeg-turbo libjpeg-turbo-devel libjxl liblzf libpng libpng-devel \
     libtiff libtiff-devel libtiff-tools libwebp libwebp-devel lz4 lz4-devel \
     openjpeg2 openjpeg2-devel snappy snappy-devel xz xz-devel zlib zlib-devel \
-    zlib-ng zopfli zopfli-devel zstd libzstd-devel pkgconfig libtool
+    zlib-ng zopfli zopfli-devel zstd libzstd-devel pkgconfig libtool hdf5 hdf5-devel
 
+pip install numpy==1.23.5 cython==0.29.36 pylzma pytest
+
+# Installing below dependencies from source as those are not able to install from yum 
 # Install libtiff-4.5.1 from source
 wget http://download.osgeo.org/libtiff/tiff-4.5.1.tar.gz
 tar -xzf tiff-4.5.1.tar.gz
@@ -83,9 +86,33 @@ ldconfig
 x265 --version
 cd ../../
 
-pip install numpy==1.23.5 cython==0.29.36 pylzma pytest
+#install zfp
+git clone https://github.com/LLNL/zfp
+cd zfp
+mkdir build
+cmake -B /zfp/build/ -DCMAKE_BUILD_TYPE=Release -DBUILD_ZFPY=ON
+cmake --build /zfp/build --target all --config Release
+export LD_LIBRARY_PATH=/zfp/build/lib64:$LD_LIBRARY_PATH
+ldconfig
+cd ..
 
-git clone PACKAGE_URL
+#install brunsli
+git clone https://github.com/google/brunsli
+cd brunsli
+cmake ./
+make -j
+make -j install
+cd ..
+
+#install bitshuffle
+yum install hdf5 hdf5-devel
+git clone https://github.com/kiyo-masui/bitshuffle
+cd bitshuffle
+git submodule update --init
+python setup.py install --h5plugin --h5plugin-dir ~/hdf5/lib --zstd
+cd ..
+
+git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
