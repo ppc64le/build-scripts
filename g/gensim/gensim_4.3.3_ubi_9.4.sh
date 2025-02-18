@@ -4,7 +4,7 @@
 # Package       : gensim
 # Version       : 4.3.3
 # Source repo   : https://github.com/RaRe-Technologies/gensim
-# Tested on     : UBI: 9.4
+# Tested on     : UBI: 9.4 minimal
 # Language      : python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
