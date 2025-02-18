@@ -37,7 +37,7 @@ python3.12 --version
 pip3.12 --version
 
 # Upgrade pip and install required dependencies
-python3.12 -m pip3.12 install --upgrade pip 
+python3.12 -m pip install --upgrade pip 
 python3.12 -m pip install setuptools wheel meson pytest requests ruamel-yaml nbformat testfixtures mock nbconvert
 python3.12 -m pip install numpy==1.26.4 scipy==1.13.1 Cython 
 
