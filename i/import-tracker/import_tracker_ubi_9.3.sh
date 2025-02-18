@@ -22,6 +22,7 @@ PACKAGE_NAME=import-tracker
 PACKAGE_VERSION=${1:-3.2.1}
 PACKAGE_URL=https://github.com/IBM/import-tracker.git
 PACKAGE_DIR=import-tracker
+CURRENT_DIR="${PWD}"
 
 # Install necessary system packages
 yum install -y git gcc gcc-c++ python-devel gzip tar make wget xz cmake yum-utils openssl-devel \
