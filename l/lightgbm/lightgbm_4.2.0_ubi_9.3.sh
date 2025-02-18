@@ -202,10 +202,6 @@ cd lightgbm-python
 
 echo "Running build with MPI condition..."
 if python3 -m build --config-setting=cmake.define.USE_MPI=ON; then
-    echo "------------------$PACKAGE_NAME:Build_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass | Build_Success"
-else
     echo "------------------$PACKAGE_NAME:Build_fails----------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_Fail"
