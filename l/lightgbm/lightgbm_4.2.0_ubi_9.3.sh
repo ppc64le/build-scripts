@@ -26,7 +26,7 @@ PACKAGE=LightGBM
 PACKAGE_DIR=LightGBM/lightgbm-python
 
 echo "Installing dependencies..."
-yum install -y git gcc gcc-c++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel gcc-gfortran openblas atlas openblas-devel python python-devel python-pip
+yum install -y git gcc gcc-c++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel gcc-gfortran openblas atlas openblas-devel python3 python3-devel python3-pip
 
 echo "Installing openmpi"
 yum install -y wget
@@ -38,9 +38,6 @@ mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 yum install openmpi openmpi-devel -y
-
-echo "export openmpi path"
-export PATH=$PATH:/usr/lib64/openmpi/bin
 
 echo "Clone the repository..."
 git clone $PACKAGE_URL
@@ -78,6 +75,7 @@ echo "installing meson-python and ninja.."
 pip install meson-python ninja
 echo "installing setuptools.."
 pip install setuptools==59.8.0 wheel
+python setup.py build_ext --inplace
 echo "install other necessary dependency"
 pip install cloudpickle psutil
 echo "install matplotlib"
@@ -86,8 +84,7 @@ echo "install pandas"
 pip install pandas==1.5.3
 echo "install scikit_build_core"
 pip install scikit-build-core
-echo "build ..."
-python setup.py build_ext --inplace
+
 echo "installing..."
 pip install . --no-build-isolation
 echo "back to lightgbm dir"
@@ -172,7 +169,7 @@ export LD_LIBRARY_PATH=${ARROW_HOME}/lib:${LD_LIBRARY_PATH}
 export PYARROW_BUNDLE_ARROW_CPP_HEADERS=1
 pip install pytest==6.2.5
 echo "installing numpy ..."
-pip install "numpy<2"
+pip install numpy==1.23.5
 echo "installing other necessary dependency ..."
 pip install --upgrade setuptools wheel
 pip install wheel hypothesis pytest-lazy-fixture pytz
@@ -185,10 +182,35 @@ CMAKE_PREFIX_PATH=$ARROW_HOME python3 setup.py install
 echo "PyArrow Python package installed."
 cd /LightGBM
 
-echo "installing base package ..."
-./build-python.sh --mpi
+echo "installing base package and setting mpi flags ..."
+./build-python.sh
+echo "set mpi library paths"
+export LD_LIBRARY_PATH=/usr/lib64/openmpi/lib:${LD_LIBRARY_PATH}
+export PATH=/usr/lib64/openmpi/bin:${PATH}
+export CXXFLAGS="-g -L/usr/lib64/openmpi/lib -lmpi"
+echo "create dir .."
+mkdir build
+cd build
+echo "run make cmmand with mpi option eable"
+cmake .. -DUSE_MPI=ON
+make -j$(nproc)
+echo "install make.."
+make install
+cd ..
 echo "lightgbm dir ....."
 cd lightgbm-python
+
+echo "Running build with MPI condition..."
+if python3 -m build --config-setting=cmake.define.USE_MPI=ON; then
+    echo "------------------$PACKAGE_NAME:Build_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass | Build_Success"
+else
+    echo "------------------$PACKAGE_NAME:Build_fails----------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_Fail"
+    exit 3
+fi
 
 echo "installing package ..."
 if ! (pip install --no-deps .) ; then
