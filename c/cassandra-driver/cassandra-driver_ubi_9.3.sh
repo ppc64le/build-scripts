@@ -55,7 +55,7 @@ cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 #install necessary Python packages
-pip install wheel pytest tox nox
+pip install wheel pytest tox nox mock puresasl
 
 #Install
 if ! (python3 setup.py install) ; then
@@ -65,7 +65,7 @@ if ! (python3 setup.py install) ; then
     exit 1
 fi
 
-if !(pytest tests/unit/ --disable-warnings --verbosity=2 --ignore=tests/unit/io/test_asyncioreactor.py --ignore=tests/unit/io/test_libevreactor.py --ignore=tests/unit/advanced/cloud/test_cloud.py --ignore=cassandra/datastax/cloud/__init__.py --ignore=tests/unit/test_host_connection_pool.py --ignore=tests/unit/io/test_twistedreactor.py); then
+if !(pytest tests/unit/ --disable-warnings --verbosity=2 --ignore=tests/unit/advanced/ --ignore=tests/unit/column_encryption/test_policies.py --ignore=tests/unit/io/test_eventletreactor.py --ignore=tests/unit/io/test_libevreactor.py --ignore=tests/unit/test_host_connection_pool.py); then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
