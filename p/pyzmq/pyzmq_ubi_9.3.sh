@@ -54,7 +54,7 @@ if ! (pip install -v -e .) ; then
     exit 1
 fi
 # Run tests 
-if ! pytest -v --capture=no -p no:warnings; then
+if ! pytest -v --timeout=60 --capture=no -p no:warnings; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
