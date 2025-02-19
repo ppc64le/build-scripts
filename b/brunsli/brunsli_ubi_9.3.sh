@@ -36,6 +36,8 @@ cmake ./
 make -j
 make -j install
 
+pip install wheel setuptools
+
 #Install
 if !(python3 -m pip install .); then
     echo "------------------$PACKAGE_NAME:Install_success---------------------"
