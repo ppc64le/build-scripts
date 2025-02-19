@@ -1,0 +1,38 @@
+# Minimum requirements for the build system to execute.
+requires = [
+    "wheel",
+]
+
+# Set build backend to setuptools
+build-backend = "setuptools.build_meta"
+
+# Project name and version
+[project]
+name = "brunsli"
+version = "v0.1"
+
+# One line description
+description = "A lossless compression for JPEG images."
+
+authors = [{ name = "Python-Ecosystem" }]
+
+# Classifiers to improve package discoverability
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Programming Language :: C++",
+  "License :: Apache Software License",
+]
+
+# Project URLs
+[project.urls]
+homepage = "https://github.com/google/brunsli"
+upstream = "https://github.com/google/brunsli/releases/download/v0.1/brunsli-v0.1.tar.gz"
+
+# Find package files in the local folder
+[tool.setuptools.packages.find]
+namespaces = true
+where = ["."]
+
+# Package data for the libraries
+[tool.setuptools.package-data]
+brunsli = ["lib/*", "include/**/*", "*.a", "*.so"]
