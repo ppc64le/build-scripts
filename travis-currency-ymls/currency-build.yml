@@ -1,4 +1,3 @@
-
 os: linux
 dist: focal
 arch: ppc64le
@@ -72,6 +71,7 @@ jobs:
       name: "Create Wheel for Python 3.9"
       env: PYTHON_VERSION="3.9"
       script:
+        - echo "wheel build python 3.9"
         - source variable.sh
         - chmod +x ./script/build_wheels.sh; bash ./script/build_wheels.sh;
         - WHEEL_FILE=*.whl
@@ -88,6 +88,7 @@ jobs:
       if: env(WHEEL_BUILD) = true
       env: PYTHON_VERSION="3.10"
       script:
+        - echo "wheel build python 3.10"
         - source variable.sh
         - chmod +x ./script/build_wheels.sh; bash ./script/build_wheels.sh;
         - WHEEL_FILE=*.whl
@@ -103,6 +104,7 @@ jobs:
       if: env(WHEEL_BUILD) = true
       env: PYTHON_VERSION="3.11"
       script:
+        - echo "wheel build python 3.11"
         - source variable.sh
         - chmod +x ./script/build_wheels.sh; bash ./script/build_wheels.sh;
         - WHEEL_FILE=*.whl
@@ -117,6 +119,7 @@ jobs:
       if: env(WHEEL_BUILD) = true
       env: PYTHON_VERSION="3.12"
       script:
+        - echo "wheel build python 3.12"
         - source variable.sh
         - chmod +x ./script/build_wheels.sh; bash ./script/build_wheels.sh;
         - WHEEL_FILE=*.whl
@@ -132,6 +135,7 @@ jobs:
       if: env(WHEEL_BUILD) = true
       env: PYTHON_VERSION="3.13"
       script:
+        - echo "wheel build python 3.13"
         - source variable.sh
         - chmod +x ./script/build_wheels.sh; bash ./script/build_wheels.sh;
         - WHEEL_FILE=*.whl
