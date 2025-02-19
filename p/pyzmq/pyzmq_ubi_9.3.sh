@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : pyzmq
-# Version          : 26.2.0
+# Version          : 26.2.1
 # Source repo      : https://github.com/zeromq/pyzmq.git
 # Tested on        : UBI:9.3
 # Language         : Python
@@ -20,7 +20,7 @@
 
 # Variables
 PACKAGE_NAME=pyzmq
-PACKAGE_VERSION=${1:-v26.2.0}
+PACKAGE_VERSION=${1:-v26.2.1}
 PACKAGE_URL=https://github.com/zeromq/pyzmq.git
 
 # Install dependencies
