@@ -213,7 +213,7 @@ if ! (pip install --no-deps .) ; then
 fi
 
 echo "run tests  ..."
-if !(pytest /LightGBM/tests --cache-clear -p no:hypothesis); then
+if !(pytest ../tests --cache-clear -p no:hypothesis); then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
