@@ -44,7 +44,7 @@ git checkout $PACKAGE_VERSION
 
 # install necessary Python packages
 #pip install -r test-requirements.txt
-pip install cython cffi pytest tornado pytest-asyncio scikit_build_core
+pip install cython cffi pytest tornado pytest-asyncio pytest-timeout scikit_build_core
 
 #install
 if ! (pip install -v -e .) ; then
