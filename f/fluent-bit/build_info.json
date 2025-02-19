@@ -25,5 +25,9 @@
   "v3.1.3": {
     "dir": "3.1.3_ubi_9",
     "build_script": "fluent-bit_v3.1.3_ubi_9.3.sh"
+  },
+  "v3.2.3": {
+    "dir": "3.2.3_ubi_9",
+    "build_script": "fluent-bit_v3.2.3_ubi_9.3.sh"
   }
 }

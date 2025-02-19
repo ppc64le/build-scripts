@@ -1,0 +1,75 @@
+diff --git a/bom/pom.xml b/bom/pom.xml
+index 3c31ef526a..f5ef56999e 100644
+--- a/bom/pom.xml
++++ b/bom/pom.xml
+@@ -410,6 +410,12 @@
+ 				<classifier>natives-linux</classifier>
+ 				<version>${lwjgl.version}</version>
+ 			</dependency>
++                        <dependency>
++                                <groupId>org.lwjgl</groupId>
++                                <artifactId>lwjgl-lmdb</artifactId>
++                                <classifier>natives-linux-ppc64le</classifier>
++                                <version>${lwjgl.version}</version>
++                        </dependency>
+ 			<dependency>
+ 				<groupId>org.lwjgl</groupId>
+ 				<artifactId>lwjgl-lmdb</artifactId>
+@@ -434,6 +440,12 @@
+ 				<classifier>natives-linux</classifier>
+ 				<version>${lwjgl.version}</version>
+ 			</dependency>
++                        <dependency>
++                                <groupId>org.lwjgl</groupId>
++                                <artifactId>lwjgl</artifactId>
++                                <classifier>natives-linux-ppc64le</classifier>
++                                <version>${lwjgl.version}</version>
++                        </dependency>
+ 			<dependency>
+ 				<groupId>org.lwjgl</groupId>
+ 				<artifactId>lwjgl</artifactId>
+diff --git a/core/sail/lmdb/pom.xml b/core/sail/lmdb/pom.xml
+index a6040aec85..c47d1c90aa 100644
+--- a/core/sail/lmdb/pom.xml
++++ b/core/sail/lmdb/pom.xml
+@@ -22,6 +22,13 @@
+ 			<version>${lwjgl.version}</version>
+ 			<scope>runtime</scope>
+ 		</dependency>
++               <dependency>
++                        <groupId>org.lwjgl</groupId>
++                        <artifactId>lwjgl-lmdb</artifactId>
++                        <classifier>natives-linux-ppc64le</classifier>
++                        <version>${lwjgl.version}</version>
++                        <scope>runtime</scope>
++                </dependency>
+ 		<dependency>
+ 			<groupId>org.lwjgl</groupId>
+ 			<artifactId>lwjgl-lmdb</artifactId>
+@@ -64,6 +71,13 @@
+ 			<version>${lwjgl.version}</version>
+ 			<scope>runtime</scope>
+ 		</dependency>
++                <dependency>
++                        <groupId>org.lwjgl</groupId>
++                        <artifactId>lwjgl</artifactId>
++                        <classifier>natives-linux-ppc64le</classifier>
++                        <version>${lwjgl.version}</version>
++                        <scope>runtime</scope>
++                </dependency>
+ 		<dependency>
+ 			<groupId>org.lwjgl</groupId>
+ 			<artifactId>lwjgl</artifactId>
+diff --git a/pom.xml b/pom.xml
+index 8f342aab27..ca675d4e49 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -367,7 +367,7 @@
+ 		<jsonldjava.version>0.13.4</jsonldjava.version>
+ 		<last.japicmp.compare.version>5.0.0</last.japicmp.compare.version>
+ 		<jaxb.version>2.3.8</jaxb.version>
+-		<lwjgl.version>3.3.3</lwjgl.version>
++		<lwjgl.version>3.3.4</lwjgl.version>
+ 		<lucene.version>8.9.0</lucene.version>
+ 		<solr.version>8.9.0</solr.version>
+ 		<elasticsearch.version>7.15.2</elasticsearch.version>

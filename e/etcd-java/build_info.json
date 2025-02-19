@@ -1,0 +1,15 @@
+{
+    "maintainer": "vinodk99",
+    "package_name": "etcd-java",
+    "github_url": "https://github.com/IBM/etcd-java",
+    "version": "v0.0.24",
+    "default_branch": "main",
+    "package_dir": "e/etcd-java",
+    "build_script": "etcd-java_ubi_9.3.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v*.*.*": {
+      "build_script": "etcd-java_ubi_9.3.sh"
+    }
+  }
