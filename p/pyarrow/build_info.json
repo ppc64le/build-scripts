@@ -1,16 +1,19 @@
 {
-  "maintainer": "vinodk99",
+  "maintainer": "kiranNukal",
   "package_name": "pyarrow",
   "github_url": "https://github.com/apache/arrow.git",
-  "version": "apache-arrow-11.0.0",
+  "version": "apache-arrow-15.0.1",
   "wheel_build" : true,
   "default_branch": "main",
   "package_dir": "p/pyarrow",
-  "build_script": "pyarrow_ubi_9.3.sh",
+  "build_script": "pyarrow_15.0.1_ubi_9.3.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
+  "*11.0.0": {
+   "build_script": "pyarrow_ubi_9.3.sh"
+  },
   "*": {
-    "build_script": "pyarrow_ubi_9.3.sh"
+    "build_script": "pyarrow_15.0.1_ubi_9.3.sh"
   }
 }
