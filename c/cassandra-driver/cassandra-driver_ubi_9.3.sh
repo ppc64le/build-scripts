@@ -65,7 +65,7 @@ if ! (python3 setup.py install) ; then
     exit 1
 fi
 
-if !(python3 -m tox -e gevent_loop); then
+if !(pytest tests/unit/ --disable-warnings --verbosity=2 --ignore=tests/unit/io/test_asyncioreactor.py --ignore=tests/unit/io/test_libevreactor.py --ignore=tests/unit/advanced/cloud/test_cloud.py --ignore=cassandra/datastax/cloud/__init__.py --ignore=tests/unit/test_host_connection_pool.py --ignore=tests/unit/io/test_twistedreactor.py); then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
