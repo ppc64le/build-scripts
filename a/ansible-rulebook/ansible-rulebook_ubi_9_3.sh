@@ -2,9 +2,9 @@
 # ---------------------------------------------------------------------
 #
 # Package       : ansible-rulebook
-# Version       : v1.0.1
+# Version       : v1.1.2
 # Source repo   : https://github.com/ansible/ansible-rulebook.git
-# Tested on     : UBI 8.7
+# Tested on     : UBI 9.3
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -21,11 +21,11 @@ set -e
 
 PACKAGE_NAME=ansible-rulebook
 PACKAGE_URL=https://github.com/ansible/ansible-rulebook.git
-PACKAGE_VERSION=${1:-v1.0.1}
+PACKAGE_VERSION=${1:-v1.1.2}
 PACKAGE_MVN=${PACKAGE_MVN:-"3.8.8"}
 
 
-yum install java-17-openjdk-devel openssl-devel git wget tar python39-devel.ppc64le gcc rust cargo procps-ng gcc-c++ cmake.ppc64le -y
+yum install java-17-openjdk-devel openssl-devel git wget tar python-devel gcc rust cargo procps-ng gcc-c++ cmake.ppc64le -y
 
 #installing maven 3.8.6
 wget http://archive.apache.org/dist/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz
