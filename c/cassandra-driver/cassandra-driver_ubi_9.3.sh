@@ -55,7 +55,7 @@ cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 #install necessary Python packages
-pip install wheel pytest tox nox mock puresasl
+pip install wheel pytest tox nox mock
 
 #Install
 if ! (python3 setup.py install) ; then
