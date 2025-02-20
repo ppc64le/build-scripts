@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package        : cockroach
@@ -15,8 +16,6 @@
 #
 # ----------------------------------------------------------------------------
 
-#!/bin/bash
-
 # Install all dependencies
 yum makecache fast
 yum install -y git.ppc64le make.ppc64le gcc-c++.ppc64le autoconf.noarch ncurses-devel.ppc64le wget.ppc64le openssl-devel.ppc64le subscription-manager.ppc64le diffutils
@@ -24,6 +23,10 @@ subscription-manager repos --enable rhel-7-server-for-power-le-rhscl-rpms
 yum makecache fast
 
 CWD=`pwd`
+
+COCKROACH_MAKEFILE_PATCH=${COCKROACH_MAKEFILE:-'https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/Dockerfiles/v19.2.10-oss/patches/cockroach_makefile.patch'}
+JEMALLOC_PATCH=${JEMALLOC_PATCH:-'https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/Dockerfiles/v19.2.10-oss/patches/jemalloc_stats_test.patch'}
+ARROW_MEMORY_PATCH=${ARRAOW_MEMORY_PATCH:-'https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/Dockerfiles/v19.2.10-oss/patches/arrow_memory.patch'}
 
 # Install nodejs
 NODE_VERSION=v12.18.2
@@ -54,13 +57,16 @@ rm -rf go1.13.5.linux-ppc64le.tar.gz
 export PATH=$PATH:/usr/local/go/bin
 
 # Clone cockroach and build
-COCKROACH_VERSION=v19.2.10
+COCKROACH_VERSION=${1:-v19.2.10}
 cd $COCKROACH_HOME
 git clone https://github.com/cockroachdb/cockroach.git
 cd cockroach
-git checkout COCKROACH_VERSION 
-# This step assumes that you have already copied the patches directory as a sibbling of this script
-cp $CWD/patches/* .
+git checkout $COCKROACH_VERSION 
+
+# Download the patches
+wget ${COCKROACH_MAKEFILE_PATCH}
+wget ${ARRAOW_MEMORY_PATCH}
+wget ${JEMALLOC_PATCH}
 git apply cockroach_makefile.patch
 git apply jemalloc_stats_test.patch
 make buildoss | tee build_logs.txt
