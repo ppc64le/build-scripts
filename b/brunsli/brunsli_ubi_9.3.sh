@@ -28,6 +28,7 @@ yum install -y git gcc gcc-c++ make cmake wget sudo openssl-devel bzip2-devel li
 
 # Clone the repository
 git clone $PACKAGE_URL
+cp pyproject.toml brunsli
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
