@@ -1,12 +1,19 @@
 {
-  "maintainer": "AbhiIBM",
-  "package_name": "markdown",
-  "github_url": "https://github.com/Python-Markdown/markdown",
-  "version": "3.5.1",
-  "default_branch": "master",
-  "package_dir": "m/markdown",
-  "build_script": "markdown_ubi_8.7.sh",
-  "validate_build_script": "true",
-  "use_non_root_user": "false",
-  "docker_build": "false"
+    "maintainer": "pranithraoibm",
+    "package_name": "markdown",
+    "github_url": "https://github.com/Python-Markdown/markdown",
+    "version": "3.3.4",
+    "wheel_build": true,
+    "default_branch": "master",
+    "build_script": "markdown_3.3.4_ubi_9.3.sh",
+    "package_dir": "m/markdown",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "3.5.1": {
+        "build_script": "markdown_ubi_8.7.sh"
+    },
+    "*": {
+        "build_script": "markdown_3.3.4_ubi_9.3.sh"
+    }
 }
