@@ -1,0 +1,12 @@
+{
+   "maintainer": "shubham-garud",
+   "package_name": "shape",
+   "github_url": "https://github.com/cran/shape",
+   "version": "1.4.6.1",
+   "default_branch": "master",
+   "build_script": "shape_ubi_9.3.sh",
+   "package_dir": "s/shape",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
