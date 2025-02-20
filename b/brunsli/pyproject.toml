@@ -31,7 +31,7 @@ upstream = "https://github.com/google/brunsli/releases/download/v0.1/brunsli-v0.
 # Find package files in the local folder
 [tool.setuptools.packages.find]
 namespaces = true
-where = ["local"]
+where = ["brunsli"]
 
 # Package data for the libraries
 [tool.setuptools.package-data]
