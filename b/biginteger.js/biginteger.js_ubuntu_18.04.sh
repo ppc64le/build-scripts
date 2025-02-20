@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/peterolson/BigInteger.js/
 # Tested on     : ubuntu_18.04 (Docker)
 # Language      : Node
-# Travis-Check  : True
+# Travis-Check  : False
 # Script License: The Unlicense
 # Maintainer    : Manik Fulpagar <Manik_Fulpagar@ibm.com>
 #
