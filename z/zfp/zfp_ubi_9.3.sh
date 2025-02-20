@@ -24,22 +24,32 @@ PACKAGE_URL=https://github.com/LLNL/zfp
 PACKAGE_DIR="./zfp"
 
 echo "Installing dependencies..."
-yum install -y wget gcc gcc-c++ gcc-gfortran git make python python-devel openssl-devel cmake
+yum install -y wget gcc gcc-c++ gcc-gfortran git make python python-devel python-pip openssl-devel cmake
 
 echo "Cloning and installing..."
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-echo "Installing cython and numpy.."
-pip install  cython==0.29.36 numpy==1.23.5 wheel
+echo "Installing Python dependencies..."
+pip install cython==0.29.36 numpy==1.23.5 wheel
 
-mkdir build
-cmake -B /zfp/build -DCMAKE_BUILD_TYPE=Release -DBUILD_ZFPY=ON -DPYTHON_INCLUDE_DIR=$(python -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())")  -DPYTHON_LIBRARY=$(python -c "import distutils.sysconfig as sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
-cmake --build /zfp/build --target all --config Release
+echo "Creating build directory..."
+mkdir -p build
+cd build
 
-export LD_LIBRARY_PATH=/zfp/build/lib64:$LD_LIBRARY_PATH
+echo "Running CMake..."
+cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_ZFPY=ON \
+    -DPYTHON_EXECUTABLE=$(which python) \
+    -DPYTHON_INCLUDE_DIR=$(python -c "import sysconfig; print(sysconfig.get_path('include'))") \
+    -DPYTHON_LIBRARY=$(python -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
+
+echo "Building zfp..."
+make -j$(nproc)
+
+export LD_LIBRARY_PATH=$(pwd)/lib64:$LD_LIBRARY_PATH
 ldconfig
+cd ..
 
 echo "installing..."
 if ! pip install . ; then
