@@ -1,0 +1,16 @@
+{
+    "maintainer": "pranithraoibm",
+    "package_name": "prompt-toolkit",
+    "github_url": "https://github.com/prompt-toolkit/python-prompt-toolkit",
+    "version": "3.0.36",
+    "wheel_build": true,
+    "default_branch": "master",
+    "package_dir": "p/prompt-toolkit",
+    "build_script": "prompt-toolkit_ubi_9.3.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": false,
+    "*": {
+        "build_script": "prompt-toolkit_ubi_9.3.sh"
+    }
+}
