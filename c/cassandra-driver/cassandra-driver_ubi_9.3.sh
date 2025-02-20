@@ -56,16 +56,17 @@ git checkout $PACKAGE_VERSION
 
 #install necessary Python packages
 pip install wheel pytest tox nox mock
+pip install -r test-requirements.txt
 
 #Install
-if ! (python3 setup.py install) ; then
+if ! (python3 -m pip install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-if !(pytest tests/unit/ --disable-warnings --verbosity=2 --ignore=tests/unit/advanced/ --ignore=tests/unit/column_encryption/test_policies.py --ignore=tests/unit/io/test_eventletreactor.py --ignore=tests/unit/io/test_libevreactor.py --ignore=tests/unit/test_host_connection_pool.py); then
+if !(pytest /python-driver/tests/unit/ -k "not(CloudTests or TestTwistedConnection or _PoolTests)" --ignore=/python-driver/tests/unit/io/test_libevreactor.py --ignore=/python-driver/tests/unit/io/test_asyncioreactor.py); then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
