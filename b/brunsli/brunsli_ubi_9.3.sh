@@ -28,7 +28,6 @@ yum install -y git gcc gcc-c++ make cmake wget sudo openssl-devel bzip2-devel li
 
 # Clone the repository
 git clone $PACKAGE_URL
-cp pyproject.toml brunsli
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
@@ -37,6 +36,7 @@ cmake ./
 make -j
 make -j install
 
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/9fba881372d176d0432c4decd6cecb87c6294435/b/brunsli/pyproject.toml
 pip install wheel setuptools
 
 #Install
