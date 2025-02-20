@@ -35,7 +35,8 @@ rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 
 # Install dependencies
-yum install -y python-devel python-pip git gcc gcc-c++ make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng openblas-devel epel-release meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite 
+yum install -y python-devel python-pip git gcc gcc-c++ make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng openblas-devel epel-release meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite bzip2 libzip-devel bzip2-devel
+
 
 export LD_LIBRARY_PATH=/usr/lib64/:$LD_LIBRARY_PATH
 
@@ -53,7 +54,6 @@ git checkout $PACKAGE_VERSION
 #install necessary Python packages
 pip install wheel setuptools pytest build meson meson-python ninja cython pillow pytest-mock pytest-xdist pytest-timeout nose mock scikit-build-core
 pip install pandas==1.3.5 numpy==1.21.6 
-
 
 #Install
 if ! (pip install . --no-build-isolation) ; then
