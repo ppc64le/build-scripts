@@ -1,0 +1,16 @@
+{
+    "maintainer": "vivek8123",
+    "package_name": "packaging",
+    "github_url": "https://github.com/pypa/packaging.git",
+    "version": "23.0",
+    "wheel_build" : true,
+    "default_branch": "main",
+    "build_script": "packaging_ubi_9.3.sh",
+    "package_dir": "p/packaging",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "*.*.*": {
+      "build_script": "packaging_ubi_9.3.sh"
+    }
+}
