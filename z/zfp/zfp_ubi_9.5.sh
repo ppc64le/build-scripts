@@ -4,11 +4,11 @@
 # Package       : zfp
 # Version       : 1.0.0
 # Source repo   : https://github.com/LLNL/zfp
-# Tested on     : UBI:9.3
+# Tested on     : UBI:9.5
 # Language      : C,Python
 # Travis-Check  : True
 # Script License: Apache License 2.0
-# Maintainer    : Vinod K<Vinod.K1@ibm.com>
+# Maintainer    : Tejas Badjate <Tejas.Badjate@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -24,15 +24,23 @@ PACKAGE_URL=https://github.com/LLNL/zfp
 PACKAGE_DIR="./zfp"
 
 echo "Installing dependencies..."
-yum install -y wget gcc gcc-c++ gcc-gfortran git make python python-devel python-pip openssl-devel cmake
+yum install -y wget gcc gcc-c++ gcc-gfortran git make bc python python-devel python-pip openssl-devel cmake
 
 echo "Cloning and installing..."
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-echo "Installing Python dependencies..."
-pip install cython==0.29.36 numpy==1.23.5 wheel
+echo "Checking Python version..."
+PYTHON_VERSION=$(python -c "import sys; print('.'.join(map(str, sys.version_info[:2])))")
+
+if [[ $(echo "$PYTHON_VERSION >= 3.12" | bc -l) -eq 1 ]]; then
+    echo "Python version is >= 3.12, installing numpy 2.2.2..."
+    pip install cython numpy==2.2.2 wheel
+else
+    echo "Python version is < 3.12, installing numpy 1.23.5..."
+    pip install cython==0.29.36 numpy==1.23.5 wheel
+fi
 
 echo "Creating build directory..."
 mkdir -p build
@@ -46,7 +54,8 @@ cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_ZFPY=ON \
 
 echo "Building zfp..."
 make -j$(nproc)
-
+make install 
+# Note before importing zfp package update LD_LIBRARY_PATH with: /usr/local/lib64 else it will give libzfp.s0.1 file not found error
 export LD_LIBRARY_PATH=$(pwd)/lib64:$LD_LIBRARY_PATH
 ldconfig
 cd ..
