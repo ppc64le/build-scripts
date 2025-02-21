@@ -1,6 +1,6 @@
 FROM registry.access.redhat.com/ubi9/ubi:9.5
 
-MAINTAINER "Aastha Sharma <aastha.sharma4@ibm.com>"
+MAINTAINER "Meet Jani <meet.jani@ibm.com>"
 
 ENV HOME_DIR=${PWD}
 
