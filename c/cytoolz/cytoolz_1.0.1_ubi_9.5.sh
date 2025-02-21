@@ -8,7 +8,7 @@
 # Language         : Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Aastha Sharma <aastha.sharma4@ibm.com>
+# Maintainer       : Meet Jani <meet.jani@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -22,6 +22,7 @@
 PACKAGE_NAME=cytoolz
 PACKAGE_VERSION=${1:-1.0.1}
 PACKAGE_URL=https://github.com/pytoolz/cytoolz.git
+PACKAGE_DIR=./cytoolz
 
 # Install necessary system dependencies
 yum install -y git gcc gcc-c++ make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel python3-devel python3-pip
