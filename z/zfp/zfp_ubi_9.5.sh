@@ -32,10 +32,8 @@ git checkout $PACKAGE_VERSION
 
 echo "Checking Python version..."
 PYTHON_VERSION=$(python3 -c "import sys; print('.'.join(map(str, sys.version_info[:2])))")
-
-if [[ $(echo "$PYTHON_VERSION >= 3.12" | bc -l) -eq 1 ]]; then
-    python3 -m pip install --upgrade pip
-    pip --version
+IFS='.' read -r MAJOR MINOR <<< "$PYTHON_VERSION"
+if [[ "$MAJOR" -gt 3 ]] || { [[ "$MAJOR" -eq 3 ]] && [[ "$MINOR" -ge 12 ]]; }; then
     echo "Python version is >= 3.12, installing numpy 2.2.2..."
     pip install cython numpy==2.2.2 wheel
 else
