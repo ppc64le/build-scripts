@@ -25,7 +25,6 @@ PACKAGE_DIR="./zfp"
 
 echo "Installing dependencies..."
 yum install -y wget gcc gcc-c++ gcc-gfortran git make bc python python-devel python-pip openssl-devel cmake
-
 echo "Cloning and installing..."
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
@@ -35,6 +34,8 @@ echo "Checking Python version..."
 PYTHON_VERSION=$(python -c "import sys; print('.'.join(map(str, sys.version_info[:2])))")
 
 if [[ $(echo "$PYTHON_VERSION >= 3.12" | bc -l) -eq 1 ]]; then
+    python -m pip install --upgrade pip
+    pip --version
     echo "Python version is >= 3.12, installing numpy 2.2.2..."
     pip install cython numpy==2.2.2 wheel
 else
