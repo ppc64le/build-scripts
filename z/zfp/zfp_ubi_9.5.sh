@@ -31,10 +31,10 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 echo "Checking Python version..."
-PYTHON_VERSION=$(python -c "import sys; print('.'.join(map(str, sys.version_info[:2])))")
+PYTHON_VERSION=$(python3 -c "import sys; print('.'.join(map(str, sys.version_info[:2])))")
 
 if [[ $(echo "$PYTHON_VERSION >= 3.12" | bc -l) -eq 1 ]]; then
-    python -m pip install --upgrade pip
+    python3 -m pip install --upgrade pip
     pip --version
     echo "Python version is >= 3.12, installing numpy 2.2.2..."
     pip install cython numpy==2.2.2 wheel
@@ -49,9 +49,9 @@ cd build
 
 echo "Running CMake..."
 cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_ZFPY=ON \
-    -DPYTHON_EXECUTABLE=$(which python) \
-    -DPYTHON_INCLUDE_DIR=$(python -c "import sysconfig; print(sysconfig.get_path('include'))") \
-    -DPYTHON_LIBRARY=$(python -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
+    -DPYTHON_EXECUTABLE=$(which python3) \
+    -DPYTHON_INCLUDE_DIR=$(python3 -c "import sysconfig; print(sysconfig.get_path('include'))") \
+    -DPYTHON_LIBRARY=$(python3 -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
 
 echo "Building zfp..."
 make -j$(nproc)
