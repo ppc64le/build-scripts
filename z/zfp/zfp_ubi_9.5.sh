@@ -23,7 +23,7 @@ PACKAGE_VERSION=${1:-1.0.0}
 PACKAGE_URL=https://github.com/LLNL/zfp
 PACKAGE_DIR="./zfp"
 
-echo "Installing dependencies..."
+echo "Installing dependencies...."
 yum install -y wget gcc gcc-c++ gcc-gfortran git make bc python3 python3-devel python3-pip openssl-devel cmake
 echo "Cloning and installing..."
 git clone $PACKAGE_URL
