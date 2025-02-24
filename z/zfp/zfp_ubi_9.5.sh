@@ -24,7 +24,7 @@ PACKAGE_URL=https://github.com/LLNL/zfp
 PACKAGE_DIR="./zfp"
 
 echo "Installing dependencies...."
-yum install -y wget gcc gcc-c++ gcc-gfortran git make bc python3 python3-devel python3-pip openssl-devel cmake
+yum install -y wget gcc gcc-c++ gcc-gfortran git make python3 python3-devel python3-pip openssl-devel cmake
 echo "Cloning and installing..."
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
