@@ -47,7 +47,11 @@ git checkout $PACKAGE_VERSION
 git submodule update --init
 export SRC_DIR=$(pwd)
 echo "SRC_DIR: $SRC_DIR"
- 
+
+# Remove the nvidia-nccl-cu12 dependency in pyproject.toml (not required for Power)
+echo "Removing nvidia-nccl-cu12 dependency from pyproject.toml..."
+sed -i '/nvidia-nccl-cu12/d' pyproject.toml
+
 # Build xgboost cpp artifacts
 echo "Building xgboost cpp artifacts..."
 cd ${SRC_DIR}
