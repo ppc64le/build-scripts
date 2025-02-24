@@ -4,7 +4,7 @@
 # Package       : gensim
 # Version       : 4.3.3
 # Source repo   : https://github.com/RaRe-Technologies/gensim
-# Tested on     : UBI: 9.4 minimal
+# Tested on     : UBI: 9.5
 # Language      : python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -21,31 +21,29 @@
 
 set -e  # Exit immediately if a command fails
 
-export PACKAGE_VERSION=${1:-"4.3.3"}
-export PACKAGE_NAME=gensim
-export PACKAGE_DIR=$(pwd)/$PACKAGE_NAME
-export PACKAGE_URL=https://github.com/RaRe-Technologies/gensim
+PACKAGE_VERSION=${1:-"4.3.3"}
+PACKAGE_NAME=gensim
+PACKAGE_DIR=gensim
+PACKAGE_URL=https://github.com/RaRe-Technologies/gensim
 
 # Install system dependencies
-yum install -y git gcc gcc-c++ wget atlas pkg-config openblas-devel \
-               atlas-devel pkgconfig cmake python3.12-devel \
-               python3.12-setuptools python3.12-test gcc-gfortran make
+yum install -y git gcc gcc-c++ wget atlas pkg-config openblas-devel atlas-devel pkgconfig cmake gcc-gfortran make
 
 # Ensure Python 3.12 is installed
-dnf install -y python3.12 python3.12-pip
+dnf install -y python3.12 python3.12-pip python3.12-test python3.12-devel
 python3.12 --version
 pip3.12 --version
 
 # Upgrade pip and install required dependencies
 python3.12 -m pip install --upgrade pip 
-python3.12 -m pip install setuptools wheel meson pytest requests ruamel-yaml nbformat testfixtures mock nbconvert
+python3.12 -m pip install wheel meson pytest requests ruamel-yaml nbformat testfixtures mock nbconvert
 python3.12 -m pip install numpy==1.26.4 scipy==1.13.1 Cython 
 
 # Clone the repository
 git clone $PACKAGE_URL $PACKAGE_DIR
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
-export TOXENV=py312
+TOXENV=py312
 python3.12 setup.py build_ext --inplace
 
 # Build package
