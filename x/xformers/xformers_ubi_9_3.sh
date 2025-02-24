@@ -29,8 +29,15 @@ export _GLIBCXX_USE_CXX11_ABI=1
 
 # Install dependencies
 dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
-    git cmake ninja-build gcc gcc-c++ g++ rust cargo \
-    python${PYTHON_VER}-devel python${PYTHON_VER}-pip jq gcc-fortran pkg-config openblas-devel atlas
+    git gcc-toolset-13 cmake ninja-build rust cargo \
+    python${PYTHON_VER}-devel python${PYTHON_VER}-pip jq pkg-config atlas
+
+source /opt/rh/gcc-toolset-13/enable
+
+curl -sL https://ftp2.osuosl.org/pub/ppc64el/openblas/latest/Openblas_0.3.29_ppc64le.tar.gz | tar xvf - -C /usr \
+&& export PKG_CONFIG_PATH=/usr/lib/pkgconfig/
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib64:/usr/lib
 
 # Clone repository
 if [ -z $PACKAGE_SOURCE_DIR ]; then
