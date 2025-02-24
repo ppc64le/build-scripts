@@ -2,9 +2,9 @@
 # ---------------------------------------------------------------------
 #
 # Package       : ansible-runner
-# Version       : 2.3.3
+# Version       : 2.4.0
 # Source repo   : https://github.com/ansible/ansible-runner
-# Tested on     : UBI 8.7
+# Tested on     : UBI 9.3
 # Language      : Python,shell script
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -21,10 +21,10 @@ set -e
 
 PACKAGE_NAME=ansible-runner
 PACKAGE_URL=https://github.com/ansible/ansible-runner
-PACKAGE_VERSION=${1:-2.3.3}
+PACKAGE_VERSION=${1:-2.4.0}
 PACKAGE_MVN=${PACKAGE_MVN:-"3.8.8"}
 
-yum install java-17-openjdk-devel openssl-devel git wget tar python39-devel.ppc64le gcc rust cargo man gcc-c++ cmake.ppc64le -y
+yum install java-17-openjdk-devel openssl-devel git wget tar python-devel gcc rust cargo man gcc-c++ cmake.ppc64le -y
 
 wget https://dlcdn.apache.org/maven/maven-3/$PACKAGE_MVN/binaries/apache-maven-$PACKAGE_MVN-bin.tar.gz
 ls /usr/local
