@@ -6,6 +6,7 @@ language: shell
 branches:
   only:
   - master
+  - supporting_multiple_ubi_versions
 
 
 env:
