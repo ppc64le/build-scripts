@@ -39,6 +39,7 @@ mv /usr/local/apache-maven-3.9.6 /usr/local/maven
 export M2_HOME=/usr/local/maven
 export PATH=$PATH:$M2_HOME/bin
 
+#Excluded 26 components because ppc64le supported images are not available for them and excluded 5 components because they require a Docker environment.
 EXCLUDED_COMPONENTS="-pl !:camel-amqp-test,!:camel-activemq-test,!:camel-arangodb-test,!:camel-aws2-iam-test,!:camel-aws2-kinesis-test,!:camel-aws2-s3-test,!:camel-aws2-ses-test,!:camel-aws2-sns-test,!:camel-aws2-sqs-test,!:camel-aws2-sts-test,!:camel-azure-storage-blob-test,!:camel-azure-storage-blob-test,!:camel-consul-test,!:camel-chatscript-test,!:camel-couchdb-test,!:camel-debezium-mongodb-test,!:camel-debezium-mysql-test,!:camel-debezium-postgres-test,!:camel-docker-test,!:camel-drill-test,!:camel-elasticsearch-test,!:camel-google-pubsub-test,!:camel-http-test,!:camel-influxdb2-test,!:camel-jms-test,!:camel-kafka-test,!:camel-leveldb-test,!:camel-mail-test,!:camel-paho-mqtt5-test,!:camel-spring-rabbitmq-test"
 
 if ! mvn install $EXCLUDED_COMPONENTS; then
