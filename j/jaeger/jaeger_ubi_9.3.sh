@@ -4,7 +4,7 @@
 # Package          : jaeger
 # Version          : v1.56.0
 # Source repo      : https://github.com/jaegertracing/jaeger
-# Tested on        : UBI:9.3
+# Tested on        : UBI : 9.4
 # Language         : Go
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
