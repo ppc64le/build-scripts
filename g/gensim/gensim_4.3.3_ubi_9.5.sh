@@ -21,9 +21,9 @@
 
 set -e  # Exit immediately if a command fails
 
-PACKAGE_VERSION=${1:-"4.3.3"}
+PACKAGE_VERSION=${1:-4.3.3}
 PACKAGE_NAME=gensim
-PACKAGE_DIR=gensim
+PACKAGE_DIR=./gensim
 PACKAGE_URL=https://github.com/RaRe-Technologies/gensim
 
 # Install system dependencies

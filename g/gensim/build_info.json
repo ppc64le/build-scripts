@@ -6,14 +6,14 @@
     "wheel_build" : true,
     "default_branch": "develop",
     "package_dir": "g/gensim",
-    "build_script": "gensim_4.3.3_ubi_9.4.sh",
+    "build_script": "gensim_4.3.3_ubi_9.5.sh",
     "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": false,
-    "4.3.2": {
+    "4.3.3":{
+        "build_script": "gensim_4.3.3_ubi_9.5.sh"
+    },
+    "*": {
         "build_script": "gensim_ubi_9_3.sh"
-     },
-    "4.3.*":{
-        "build_script": "gensim_4.3.3_ubi_9.4.sh"
-    }
+     }
 }
