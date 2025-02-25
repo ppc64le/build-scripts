@@ -27,13 +27,20 @@ PACKAGE_VERSION=${1:-v0.5.0}
 PACKAGE_URL=https://github.com/jax-ml/ml_dtypes.git
 PACKAGE_DIR=ml_dtypes
 
-yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openssl-devel cmake zip unzip
+yum install -y git wget gcc-toolset-13 gcc-c++ openblas python python3-devel python3 python3-pip openssl-devel cmake zip unzip
 pip3 install absl-py numpy pytest pybind11
+
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 #Install eigen
 wget https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.zip
 unzip eigen-3.4.0.zip
 cp -r eigen-3.4.0/Eigen/ /usr/local/include
+
+export CFLAGS=-I/usr/include
+export CXXFLAGS=-I/usr/include
+export CC=/opt/rh/gcc-toolset-13/root/bin/gcc
+export CXX=/opt/rh/gcc-toolset-13/root/bin/g++
 
 # Clone the repository
 git clone $PACKAGE_URL
@@ -41,6 +48,7 @@ cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 git submodule init
 git submodule update
+
 
 #Install the package
 if ! (pip install .) ; then
