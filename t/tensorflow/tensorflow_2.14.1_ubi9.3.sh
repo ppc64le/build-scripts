@@ -22,7 +22,6 @@
 set -e
 
 # Variables
-# Variables
 PACKAGE_NAME=tensorflow
 PACKAGE_VERSION=${1:-v2.14.1}
 PACKAGE_URL=https://github.com/tensorflow/tensorflow
@@ -43,23 +42,18 @@ dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-lates
 
 # Install dependencies
 echo "------------------------Installing dependencies-------------------"
-yum install -y python${PYTHON_VER}-devel python${PYTHON_VER}-pip git gcc gcc-c++ make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng openblas-devel epel-release meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite libnsl
+yum install -y gcc-toolset-12-gcc.ppc64le gcc-toolset-12-gcc-c++
+source $CURRENT_DIR/opt/rh/gcc-toolset-12/enable
+
+yum install -y python3.11-devel python3.11-pip make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng openblas-devel epel-release meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite libnsl
 
 echo "------------------------Installing dependencies-------------------"
 yum install -y libxcrypt-compat rsync
-python${PYTHON_VER} -m pip install --upgrade pip
+python3.11 -m pip install --upgrade pip
 pip install setuptools wheel
 
 echo "------------------------Installing dependencies-------------------"
 dnf groupinstall -y "Development Tools"
-pip install --upgrade pip
-
-
-#install rust
-echo "------------------------Installing rust-------------------"
-curl https://sh.rustup.rs -sSf | sh -s -- -y
-source "$HOME/.cargo/env"  # Update environment variables to use Rust
-
 
 #Install the dependencies
 echo "------------------------Installing dependencies-------------------"
@@ -80,8 +74,8 @@ echo "------------------------Installing bazel-------------------"
 cd $CURRENT_DIR
 mkdir -p $CURRENT_DIR/bazel
 cd $CURRENT_DIR/bazel
-wget https://github.com/bazelbuild/bazel/releases/download/6.5.0/bazel-6.5.0-dist.zip
-unzip bazel-6.5.0-dist.zip
+wget https://github.com/bazelbuild/bazel/releases/download/6.1.0/bazel-6.1.0-dist.zip
+unzip bazel-6.1.0-dist.zip
 echo "------------------------Installing bazel-------------------"
 env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
 cp output/bazel $CURRENT_DIR/usr/local/bin
@@ -92,8 +86,8 @@ cd $CURRENT_DIR
 # Install six.
 echo "------------------------Installing dependencies-------------------"
 pip install --upgrade absl-py
-pip install --upgrade six==1.10.0
-pip install "numpy<2" "urllib3<1.27" wheel==0.29.0 werkzeug
+pip install --upgrade six==1.16.0
+pip install "numpy<2" "urllib3<1.27" wheel==0.38.4 werkzeug
 
 # Remove obsolete version of six, which can sometimes confuse virtualenv.
 rm -rf $CURRENT_DIR/usr/lib/python${PYTHON_VER}/dist-packages/six*
@@ -116,14 +110,12 @@ echo "CC_OPT_FLAGS set to: ${CC_OPT_FLAGS}"
 export CC_OPT_FLAGS="-mcpu=${cpu_model} -mtune=${cpu_model}"
 export TF_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
 export HERMETIC_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
-export PYTHON_BIN_PATH=$(which python${PYTHON_VER})
+export PYTHON_BIN_PATH=$(which python3.11)
 export GCC_HOST_COMPILER_PATH=$(which gcc)
 export CC=$GCC_HOST_COMPILER_PATH
 export PYTHON=/root/tensorflow/tfenv/bin/python
 export SP_DIR=/root/tensorflow/tfenv/lib/python$(python --version | awk '{print $2}' | cut -d. -f1,2)/site-packages/
 export USE_DEFAULT_PYTHON_LIB_PATH=1
-export TF_NEED_GCP=1
-export TF_NEED_HDFS=1
 export TF_NEED_JEMALLOC=1
 export TF_ENABLE_XLA=1
 export TF_NEED_OPENCL=0
@@ -133,12 +125,14 @@ export TF_NEED_VERBS=0
 export TF_NEED_MPI=0
 export TF_CUDA_CLANG=0
 export TFCI_WHL_NUMPY_VERSION=1
+export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/ -fno-plt//')"
+export CFLAGS="$(echo ${CFLAGS} | sed -e 's/ -fno-plt//')"
 
 # Apply the patch
 echo "------------------------Applying patch-------------------"
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/t/tensorflow/tf_2.14.1_fix.patch
 git apply tf_2.14.1_fix.patch
-echo "Applied patch successfully."
+echo "------------Applied patch successfully---------------------"
 
 yes n | ./configure
 
@@ -146,14 +140,14 @@ echo "------------------------Bazel query-------------------"
 bazel query "//tensorflow/tools/pip_package:*"
 
 #Install
-if ! (bazel build -s //tensorflow/tools/pip_package:build_pip_package --local_ram_resources=8192 --local_cpu_resources=8 --jobs=8 --config=opt) ; then
+if ! (bazel build -s //tensorflow/tools/pip_package:build_pip_package --config=opt) ; then  
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-#building the wheel 
+#building the wheel
 bazel-bin/tensorflow/tools/pip_package/build_pip_package $CURRENT_DIR
 
 # Run tests for the pip_package directory
@@ -177,3 +171,4 @@ else
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | Both_Install_and_Test_Success"
     exit 0
 fi
+
