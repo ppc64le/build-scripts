@@ -8,7 +8,7 @@
 # Language      : Python, Cython, C++
 # Travis-Check  : False
 # Script License: Apache License 2.0
-# Maintainer    : Salil Verlekar <Salil.Verlekar2@ibm.com>
+# Maintainer    : Haritha Nagothu <haritha.nagothu2@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -22,9 +22,9 @@ PACKAGE_NAME=scikit-learn
 PACKAGE_VERSION=${1:-1.5.2}
 PACKAGE_URL=https://github.com/scikit-learn/scikit-learn.git
 
-yum install -y python3.11 python3.11-pip python3.11-devel gcc gcc-c++ gcc-gfortran openblas-devel gcc-toolset-12 git
+yum install -y python python-pip python-devel openblas-devel gcc-toolset-13 git
 
-source /opt/rh/gcc-toolset-12/enable
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
@@ -35,15 +35,12 @@ git checkout $PACKAGE_VERSION
 git submodule update --init
 
 # install scikit-learn dependencies and build dependencies
-python3.11 -m pip install wheel numpy scipy cython meson-python ninja 'pytest==8.2.2'
+pip install wheel numpy scipy cython meson-python
+pip install ninja pytest>=7.1.2  joblib threadpoolctl
 
-export SKLEARN_SKIP_OPENMP_TEST=1
-
-ln -s /usr/bin/python3.11 python
-mv python /usr/bin
 
 # build the project with pip and install
-if ! python3.11 -m pip install --editable . --verbose --no-build-isolation --config-settings editable-verbose=true; then
+if ! pip install . --no-build-isolation; then
         echo "------------------$PACKAGE_NAME:build_fails---------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
@@ -52,20 +49,6 @@ else
         echo "------------------$PACKAGE_NAME:build_success-------------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_Success"
-fi
-
-python3.11 -m pip show scikit-learn
-python3.11 -c "import sklearn; sklearn.show_versions()"
-
-if [ $? == 0 ]; then
-     echo "------------------$PACKAGE_NAME::Install_Success---------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Install_Success"
-else
-     echo "------------------$PACKAGE_NAME::Install_Fail-------------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Install_Fail"
-     exit 2
 fi
 
 # test using pytest - set below flag as suggested in GitHub forums to resolve ImportPathMismatchError
