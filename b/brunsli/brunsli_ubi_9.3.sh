@@ -37,15 +37,15 @@ make -j
 
 #Install
 if !(make -j install); then
-    echo "------------------$PACKAGE_NAME:Install_success---------------------"
+    echo "------------------$PACKAGE_NAME:Install_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass |  Install_Success"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 2
 else
-    echo "------------------$PACKAGE_NAME:Install_fails-------------------------"
+    echo "------------------$PACKAGE_NAME:Install_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Fail |  Install_Fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Install_Success"
     exit 0
 fi
 
-# No tests are included in this package.
+# No tests are included for the version v0.1.
