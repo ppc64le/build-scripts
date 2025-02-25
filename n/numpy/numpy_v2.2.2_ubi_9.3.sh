@@ -21,7 +21,8 @@ PACKAGE_NAME=numpy
 PACKAGE_VERSION=${1:-v2.2.2}
 PACKAGE_URL=https://github.com/numpy/numpy.git
 PACKAGE_DIR=$PACKAGE_NAME
-yum install -y python3.12  python3.12-devel python3.12-pip git gcc-gfortran make g++ openblas
+yum install -y python3.12  python3.12-devel python3.12-pip git gcc-toolset-13 gcc-gfortran make g++ openblas
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 ln -sf /usr/bin/python3.12 /usr/bin/python3
 
