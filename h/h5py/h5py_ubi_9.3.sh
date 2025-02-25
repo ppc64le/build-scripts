@@ -33,7 +33,7 @@ git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-python3 -m pip install Cython==0.29.36 numpy==1.21.0 pkgconfig pytest-mpi 
+python3 -m pip install Cython==0.29.36 numpy==1.26.3 pkgconfig pytest-mpi 
 python3 -m pip install wheel oldest-supported-numpy
 
 #install

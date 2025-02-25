@@ -6,7 +6,7 @@
 # Source repo		: https://github.com/neo4j/neo4j.git
 # Tested on		: UBI 8.7 (docker)
 # Language		: Java
-# Travis-Check		: true
+# Travis-Check		: false
 # Script License	: Apache License, Version 2 or later
 # Maintainer		: Sumit Dubey <sumit.dubey2@ibm.com>
 #
