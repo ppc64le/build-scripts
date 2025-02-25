@@ -1,5 +1,5 @@
 {
-  "maintainer": "HarithaNagothu2",
+  "maintainer": "shubham-garud",
   "package_name": "numpy",
   "github_url": "https://github.com/numpy/numpy.git",
   "version": "v1.26.0",
@@ -16,7 +16,7 @@
   "v1.23.5":{
     "build_script": "numpy_1.23.5_ubi_9.3.sh"
   },
-  "v2.2.2":{
+  "v2.2.*":{
     "build_script": "numpy_v2.2.2_ubi_9.3.sh"
   },
   "*":{
