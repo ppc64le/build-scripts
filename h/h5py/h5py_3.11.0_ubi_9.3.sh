@@ -24,7 +24,12 @@ PACKAGE_VERSION=${1:-3.11.0}
 PACKAGE_URL=https://github.com/h5py/h5py.git
 
 # Install dependencies and tools.
-yum install -y wget gcc gcc-c++ gcc-gfortran git make openblas
+yum install -y wget
+
+yum install -y gcc-toolset-13
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+
+yum install -y gcc-c++ gcc-gfortran git make openblas
 yum install -y openssl-devel unzip libzip-devel.ppc64le gzip.ppc64le
 yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 yum install -y gcc-c++ cmake make pkgconfig gcc-gfortran hdf5 hdf5-devel
