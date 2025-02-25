@@ -17,14 +17,14 @@
 #                    contact "Maintainer" of this script.
 #
 # ---------------------------------------------------------------------------
- 
- 
+
+
 # Variables
 PACKAGE_NAME=jax
 PACKAGE_VERSION=${1:-jaxlib-v0.4.7}
 PACKAGE_URL=https://github.com/jax-ml/jax
 CURRENT_DIR=$pwd
- 
+
 echo "Additional repositories -------------------------------------------------------------"
 yum install -y wget
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
@@ -33,26 +33,26 @@ dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc6
 wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
 mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
- 
+
 dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
- 
+
 # Install dependencies
 echo "Installing dependencies -------------------------------------------------------------"
-yum install -y python-devel python-pip git gcc gcc-c++ make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel 
+yum install -y python-devel python-pip git gcc gcc-c++ make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel
 
 echo "Installing dependencies -------------------------------------------------------------"
-yum install -y zlib-devel freetype-devel procps-ng openblas-devel epel-release meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel  
+yum install -y zlib-devel freetype-devel procps-ng openblas-devel epel-release meson ninja-build gcc-gfortran libomp-devel zip unzip sqlite-devel
 
 echo "Installing dependencies -------------------------------------------------------------"
-yum install -y java-11-openjdk-devel  libtool xz  libevent-devel  clang java-11-openjdk java-11-openjdk-headless zip openblas
- 
+yum install -y java-11-openjdk-devel libtool xz libevent-devel clang java-11-openjdk java-11-openjdk-headless zip openblas
+
 export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-11)(?=.*ppc64le)')
 export PATH=$JAVA_HOME/bin:$PATH
 export LD_LIBRARY_PATH=/usr/lib64/:$LD_LIBRARY_PATH
- 
+
 dnf groupinstall -y "Development Tools"
- 
-#installing bazel from source
+
+# Installing bazel from source
 echo "Installing bazel -------------------------------------------------------------"
 mkdir bazel
 cd bazel
@@ -64,59 +64,65 @@ cp output/bazel /usr/local/bin
 export PATH=/usr/local/bin:$PATH
 bazel --version
 cd ..
- 
-echo "Installing dependencies via pip3-------------------------------------------------------------"
+
+echo "Installing dependencies via pip3 -------------------------------------------------------------"
 pip3 install numpy==1.26.4 scipy wheel pytest
-pip3 install numpy==1.26.4 opt-einsum==3.3.0  ml-dtypes==0.5.0 absl-py 
- 
+pip3 install numpy==1.26.4 opt-einsum==3.3.0 ml-dtypes==0.5.0 absl-py
+
 # Clone the repository
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
- 
- 
-#Add boringssl to build for jaxlib
+
+
+# Add boringssl to build for jaxlib
 BORINGSSL_SUPPORT_CONTENT=$(cat << EOF
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive") 
-http_archive( 
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+http_archive(
     name = "boringssl",
     sha256 = "534fa658bd845fd974b50b10f444d392dfd0d93768c4a51b61263fd37d851c40",
-    strip_prefix = "boringssl-b9232f9e27e5668bc0414879dcdedb2a59ea75f2", 
-    urls = [ 
-        "https://github.com/google/boringssl/archive/b9232f9e27e5668bc0414879dcdedb2a59ea75f2.tar.gz", 
-    ], 
+    strip_prefix = "boringssl-b9232f9e27e5668bc0414879dcdedb2a59ea75f2",
+    urls = [
+        "https://github.com/google/boringssl/archive/b9232f9e27e5668bc0414879dcdedb2a59ea75f2.tar.gz",
+    ],
 )
 EOF
 )
 echo "$BORINGSSL_SUPPORT_CONTENT" > WORKSPACE-TEMP
-cat WORKSPACE >> WORKSPACE-TEMP 
+cat WORKSPACE >> WORKSPACE-TEMP
 rm -rf WORKSPACE && mv WORKSPACE-TEMP WORKSPACE
- 
-cd build
- 
 
-#Install
-echo "Building package-------------------------------------------------------------"
+cd build
+
+# Install
+echo "Building package -------------------------------------------------------------"
 if ! (python3 build.py ) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
     exit 1
 fi
-echo "Package build successful-------------------------------------------------------------"
+echo "Package build successful -------------------------------------------------------------"
 
-cp dist/jaxlib-0.4.7-cp39-cp39-manylinux2014_ppc64le.whl $CURRENT_DIR/
- 
+# Dynamic Wheel File Search and Copying
+WHL_FILE=$(ls dist/jaxlib-*.whl | head -n 1)
+
+# Check if the file exists
+if [ -z "$WHL_FILE" ]; then
+    echo "Wheel file not found. Installation failed."
+    exit 1
+fi
+
+# Copy the wheel file to the current directory
+cp "$WHL_FILE" "$CURRENT_DIR/"
+
 # Run test cases
-#skipping test part as jaxlib don't have tests to execute
+# Skipping test part as jaxlib doesn't have tests to execute
 #if !(pytest); then
 #    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 #    echo "$PACKAGE_URL $PACKAGE_NAME"
-#    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+#    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_success_but_test_Fails"
 #    exit 2
 #else
 #    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-#    echo "$PACKAGE_URL $PACKAGE_NAME"
-#    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-#    exit 0
-#fi
+#    ech
