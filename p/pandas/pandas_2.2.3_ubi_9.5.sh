@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : pandas
-# Version       : v2.1.1
+# Version       : v2.2.3
 # Source repo   : https://github.com/pandas-dev/pandas.git
-# Tested on     : UBI:9.3
+# Tested on     : UBI:9.5
 # Language      : Python, C, Cython, HTML
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Vivek Sharma <vivek.sharma20@ibm.com>
+# Maintainer    : Shivansh Sharma <Shivansh.S1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
