@@ -180,3 +180,130 @@ index 00000000000..504a85e7787
 ++
 ++ #if defined(__APPLE__)
 
+
+diff --git a/tensorflow/cc/BUILD b/tensorflow/cc/BUILD
+index 82d1f2a7e4f..dd506d5f0bd 100644
+--- a/tensorflow/cc/BUILD
++++ b/tensorflow/cc/BUILD
+@@ -11,6 +11,7 @@ load(
+     "transitive_hdrs",
+ )
+ load("//tensorflow:tensorflow.default.bzl", "filegroup", "tf_gen_op_wrappers_cc")
++load("//tensorflow/cc:cc_ops.bzl", "tf_cc_ops_hdrs",)
+
+ package(
+     # copybara:uncomment default_applicable_licenses = ["//tensorflow:license"],
+@@ -989,3 +990,53 @@ transitive_hdrs(
+         "//tensorflow/cc/tools:freeze_saved_model",
+     ],
+ )
++
++
++tf_cc_ops_hdrs(
++    name = "cc_ops_hdrs",
++    op_lib_names = [
++        "array_ops",
++        "audio_ops",
++        "candidate_sampling_ops",
++        "control_flow_ops",
++        "data_flow_ops",
++        "image_ops",
++        "io_ops",
++        "linalg_ops",
++        "logging_ops",
++        "lookup_ops",
++        "manip_ops",
++        "math_ops",
++        "nn_ops",
++        "no_op",
++        "parsing_ops",
++        "random_ops",
++        "sparse_ops",
++        "state_ops",
++        "string_ops",
++        "training_ops",
++        "user_ops",
++    ],
++    visibility = ["//tensorflow:__subpackages__"],
++)
++
++filegroup(
++    name = "cc_ops_headers",
++    srcs = [
++        "ops/const_op.h",
++        "ops/standard_ops.h",
++    ],
++    visibility = ["//tensorflow:__subpackages__"],
++)
++
++filegroup(
++    name = "cc_gen_headers",
++    srcs = glob(["ops/*.h"]) + [":cc_ops_hdrs"],
++    visibility = ["//tensorflow:__subpackages__"],
++)
++
++filegroup(
++    name = "cc_framework_headers",
++    srcs = glob(["framework/*.h"], exclude=["testutil.h"]),
++    visibility = ["//tensorflow:__subpackages__"],
++)
+diff --git a/tensorflow/tools/pip_package/BUILD b/tensorflow/tools/pip_package/BUILD
+index d623a1bda29..f31cb4f73c1 100644
+--- a/tensorflow/tools/pip_package/BUILD
++++ b/tensorflow/tools/pip_package/BUILD
+@@ -115,6 +115,13 @@ COMMON_PIP_DEPS = [
+     "//tensorflow/dtensor/python/tests:test_util",
+     "//tensorflow/lite/python:tflite_convert",
+     "//tensorflow/lite/toco/python:toco_from_protos",
++    "//tensorflow/c:headers",
++    "//tensorflow/c/eager:headers",
++    "//tensorflow/cc:cc_ops_headers",
++    "//tensorflow/cc:cc_gen_headers",
++    "//tensorflow/cc:cc_framework_headers",
++    "//tensorflow:libtensorflow_cc.so",
++    "//tensorflow:libtensorflow.so",
+     "//tensorflow/lite/tools:visualize",
+     "//tensorflow/python/autograph/core:test_lib",
+     "//tensorflow/python/autograph/impl/testing:pybind_for_testing",
+diff --git a/tensorflow/tools/pip_package/setup.py b/tensorflow/tools/pip_package/setup.py
+index fdb718d1628..ce2c334b064 100644
+--- a/tensorflow/tools/pip_package/setup.py
++++ b/tensorflow/tools/pip_package/setup.py
+@@ -340,7 +340,9 @@ headers = (
+     list(find_files('*', 'third_party/gpus')) +
+     list(find_files('*.h', 'tensorflow/include/external/com_google_absl')) +
+     list(find_files('*.inc', 'tensorflow/include/external/com_google_absl')) +
+-    list(find_files('*', 'tensorflow/include/external/eigen_archive')))
++    list(find_files('*', 'tensorflow/include/external/eigen_archive')) +
++    list(find_files('*', 'tensorflow/c')) +
++    list(find_files('*', 'tensorflow/cc')))
+
+ # Quite a lot of setup() options are different if this is a collaborator package
+ # build. We explicitly list the differences here, then unpack the dict as
+
+
+
+diff --git a/tensorflow/cc/cc_ops.bzl b/tensorflow/cc/cc_ops.bzl
+new file mode 100644
+index 0000000..17fdd92
+--- /dev/null
++++ b/tensorflow/cc/cc_ops.bzl
+@@ -0,0 +1,15 @@
++def tf_cc_ops_hdrs(
++        name,
++        op_lib_names,
++        visibility):
++    subhdrs = []
++    internalhdrs = []
++    for n in op_lib_names:
++        subhdrs += ["ops/" + n + ".h"]
++        internalhdrs += ["ops/" + n + "_internal.h"]
++
++    native.filegroup(
++        name = name,
++        srcs = subhdrs + internalhdrs,
++        visibility = visibility,
++    )
+--
+1.8.3.1
+
