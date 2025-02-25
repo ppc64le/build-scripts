@@ -37,6 +37,7 @@ wget https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.zip
 unzip eigen-3.4.0.zip
 cp -r eigen-3.4.0/Eigen/ /usr/local/include
 
+#Setting the ENV variables
 export CFLAGS=-I/usr/include
 export CXXFLAGS=-I/usr/include
 export CC=/opt/rh/gcc-toolset-13/root/bin/gcc
@@ -49,6 +50,7 @@ git checkout $PACKAGE_VERSION
 git submodule init
 git submodule update
 
+pip install setuptools==73.0.1
 
 #Install the package
 if ! (pip install .) ; then
