@@ -45,7 +45,7 @@ WHEEL_FILE=$(ls dist/*.whl | head -n 1)
 if [ -z "$WHEEL_FILE" ]; then
     echo "------------------$PACKAGE_NAME::Build_Fail-------------------------"
     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Build_Fail"
+    echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail | Wheel_File_Not_Built"
     exit 1
 else
     # Install the wheel file
