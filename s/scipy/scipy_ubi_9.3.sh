@@ -37,11 +37,15 @@ dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packa
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/`arch`/os
 dnf config-manager --set-enabled crb
 dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
-    git g++ openblas-devel lapack-devel pkgconfig swig suitesparse-devel \
+    git gcc-toolset-13 lapack-devel pkgconfig swig suitesparse-devel \
     python$PYTHON_VERSION-devel \
     python$PYTHON_VERSION-wheel \
     python$PYTHON_VERSION-pip \
     python$PYTHON_VERSION-setuptools
+
+source /opt/rh/gcc-toolset-13/enable
+curl -sL https://ftp2.osuosl.org/pub/ppc64el/openblas/latest/Openblas_0.3.29_ppc64le.tar.gz | tar xvf - -C /usr/local \
+&& export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
 
 
 if [ -z $PACKAGE_SOURCE_DIR ]; then
