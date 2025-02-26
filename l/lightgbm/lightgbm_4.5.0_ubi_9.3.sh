@@ -55,7 +55,7 @@ git checkout $PACKAGE_VERSION
 echo "installing scipy.."
 python3.12 -m pip install scipy
 
-echo"installing numpy .."
+echo "installing numpy .."
 python3.12 -m pip install  numpy==2.2.2
 
 echo "installling pytz..."
