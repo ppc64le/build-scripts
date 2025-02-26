@@ -13,6 +13,9 @@
     "v0.13.5": {
       "build_script": "statsmodels_ubi_9.3.sh"
     },
+    "v0.14.4": {
+      "build_script": "statsmodels_0.14.4_ubi_9.3.sh"
+    },
     "*": {
       "build_script": "statsmodels_0.14.0_ubi_9.3.sh"
     }

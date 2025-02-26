@@ -1,0 +1,72 @@
+#!/bin/bash -e
+# ----------------------------------------------------------------------------
+#
+# Package       : h5py
+# Version       : 3.11.0
+# Source repo   : https://github.com/h5py/h5py.git
+# Tested on     : UBI:9.3
+# Language      : Python
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Shubham Garud <Shubham.Garud@ibm.com>
+#
+# Disclaimer: This script has been tested in root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
+
+#variables
+PACKAGE_NAME=h5py
+PACKAGE_VERSION=${1:-3.11.0}
+PACKAGE_URL=https://github.com/h5py/h5py.git
+
+# Install dependencies and tools.
+yum install -y wget
+
+yum install -y gcc-toolset-13
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+
+yum install -y gcc-c++ gcc-gfortran git make openblas
+yum install -y openssl-devel unzip libzip-devel.ppc64le gzip.ppc64le
+yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+yum install -y gcc-c++ cmake make pkgconfig gcc-gfortran hdf5 hdf5-devel
+yum install -y python3.12-devel python3.12-pip
+ln -sf /usr/bin/python3.12 /usr/bin/python3
+
+git clone $PACKAGE_URL
+cd  $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
+
+python3.12 -m pip install Cython==0.29.36 numpy==2.2.2 pkgconfig pytest-mpi setuptools
+python3.12 -m pip install wheel pytest  pytest-mpi tox
+
+export SITE_PACKAGE_PATH=/usr/local/lib/python3.12/site-packages
+if ! (python3.12 setup.py install);then
+    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    exit 1
+fi
+
+if ! (python3.12 setup.py build);then
+    echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
+    exit 1
+fi
+
+
+if ! (tox -e py3.12); then
+    echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    exit 0
+fi
