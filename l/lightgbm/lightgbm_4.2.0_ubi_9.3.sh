@@ -27,7 +27,7 @@ PACKAGE_DIR=LightGBM/lightgbm-python
 CURRENT_DIR=$pwd
 
 echo "Installing dependencies..."
-yum install -y git g++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel gcc-gfortran openblas atlas openblas-devel atlas atlas-devel pkg-config python3.12 python3.12-devel python3.12-pip3.12
+yum install -y git g++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel gcc-gfortran openblas atlas openblas-devel atlas atlas-devel pkg-config python3.12 python3.12-devel python3.12-pip
 
 echo "install gcc-toolset13, numpy and export path"
 yum install gcc-toolset-13 -y
