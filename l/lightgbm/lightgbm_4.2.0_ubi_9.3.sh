@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : LightGBM
-# Version          : 4.2.0
+# Version          : 4.5.0
 # Source repo      : https://github.com/microsoft/LightGBM.git
 # Tested on        : UBI:9.3
 # Language         : Python
@@ -20,19 +20,19 @@
 
 # Variables
 PACKAGE_NAME=LightGBM
-PACKAGE_VERSION=${1:-v4.2.0}
+PACKAGE_VERSION=${1:-v4.5.0}
 PACKAGE_URL=https://github.com/microsoft/LightGBM.git
 PACKAGE=LightGBM
 PACKAGE_DIR=LightGBM/lightgbm-python
 CURRENT_DIR=$pwd
 
 echo "Installing dependencies..."
-yum install -y git g++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel gcc-gfortran openblas atlas openblas-devel atlas atlas-devel pkg-config python3 python3-devel python3-pip
+yum install -y git g++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel gcc-gfortran openblas atlas openblas-devel atlas atlas-devel pkg-config python3.12 python3.12-devel python3.12-pip
 
 echo "install gcc-toolset13, numpy and export path"
 yum install gcc-toolset-13 -y
 export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-python3 -m pip install  numpy==2.2.2
+python3.12 -m pip install  numpy==2.2.2
 
 echo "Installing openmpi"
 yum install -y wget
@@ -69,7 +69,7 @@ pip install threadpoolctl
 echo "installing meson-python and ninja.."
 pip install meson-python ninja
 echo "installing setuptools.."
-pip install setuptools wheel
+pip install setuptools wheel cffi
 echo "install other necessary dependency"
 pip install cloudpickle psutil
 echo "install matplotlib"
@@ -166,11 +166,11 @@ echo "installing other necessary dependency ..."
 pip install --upgrade setuptools wheel
 pip install wheel hypothesis pytest-lazy-fixture pytz
 echo "building package ..."
-CMAKE_PREFIX_PATH=$ARROW_HOME python3 setup.py build_ext --inplace
+CMAKE_PREFIX_PATH=$ARROW_HOME python3.12 setup.py build_ext --inplace
 
 echo "Installing PyArrow Python package..."
 # Install the generated Python package
-CMAKE_PREFIX_PATH=$ARROW_HOME python3 setup.py install
+CMAKE_PREFIX_PATH=$ARROW_HOME python3.12 setup.py install
 echo "PyArrow Python package installed."
 cd ../..
 
@@ -193,7 +193,7 @@ echo "lightgbm dir ....."
 cd lightgbm-python
 
 echo "Running build with MPI condition..."
-python3 -m build --wheel --config-setting=cmake.define.USE_MPI=ON --outdir="$CURRENT_DIR"
+python3.12 -m build --wheel --config-setting=cmake.define.USE_MPI=ON --outdir="$CURRENT_DIR"
 
 echo "installing package ..."
 if ! (pip install --no-deps .) ; then
