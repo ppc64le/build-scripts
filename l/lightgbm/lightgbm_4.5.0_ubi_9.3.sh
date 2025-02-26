@@ -32,7 +32,6 @@ yum install -y git g++ cmake make wget openssl-devel bzip2-devel libffi-devel zl
 echo "install gcc-toolset13, numpy and export path"
 yum install gcc-toolset-13 -y
 export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-python3.12 -m pip install  numpy==2.2.2
 
 echo "Installing openmpi"
 yum install -y wget
@@ -53,6 +52,11 @@ echo "checking out package version "
 git checkout $PACKAGE_VERSION
 
 #installing dependencies
+echo "install matplotlib"
+python3.12 -m pip install matplotlib
+
+echo"installing numpy .."
+python3.12 -m pip install  numpy==2.2.2
 
 echo "installling pytz..."
 python3.12 -m pip install pytz
@@ -64,8 +68,6 @@ echo "installing scipy.."
 python3.12 -m pip install scipy
 echo "installing threadpoolctl and pillow.."
 python3.12 -m pip install threadpoolctl pillow
-echo "install matplotlib"
-python3.12 -m pip install matplotlib
 echo "installing joblib.."
 python3.12 -m pip install joblib
 echo "installing meson-python and ninja.."
