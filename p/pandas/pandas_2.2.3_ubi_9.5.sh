@@ -19,12 +19,11 @@
 # -----------------------------------------------------------------------------
 PACKAGE_NAME=pandas
 PACKAGE_VERSION=${1:-v2.2.3}
-PYTHON_VERSION=${2:-3.12}
 PACKAGE_URL=https://github.com/pandas-dev/pandas.git
 PACKAGE_DIR=pandas
 
 # Install system dependencies including SQLite and LZMA libraries
-yum install -y git gcc gcc-c++ python${PYTHON_VERSION} python${PYTHON_VERSION}-pip python${PYTHON_VERSION}-devel \
+yum install -y git gcc gcc-c++ python3.12 python3.12-pip python3.12-devel \
     gzip tar make wget xz cmake yum-utils openssl-devel \
     openblas-devel bzip2-devel bzip2 zip unzip libffi-devel zlib-devel autoconf \
     automake libtool cargo pkgconf-pkg-config.ppc64le info.ppc64le fontconfig.ppc64le \
@@ -39,21 +38,21 @@ git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
 # Install dependencies
-python${PYTHON_VERSION} -m pip install --upgrade pip
-python${PYTHON_VERSION} -m pip install pytest hypothesis build meson meson-python
-python${PYTHON_VERSION} -m pip install cython
-python${PYTHON_VERSION} -m pip install --upgrade --force-reinstall setuptools
-python${PYTHON_VERSION} -m pip install --upgrade six
-python${PYTHON_VERSION} -m pip install meson-python==0.13.1
-python${PYTHON_VERSION} -m pip install patchelf==0.11.0
-python${PYTHON_VERSION} -m pip install meson==1.2.1
-python${PYTHON_VERSION} -m pip install oldest-supported-numpy==2022.8.16
-python${PYTHON_VERSION} -m pip install ninja
-python${PYTHON_VERSION} -m pip install versioneer[toml]
-python${PYTHON_VERSION} -m pip install numpy
+python3.12 -m pip install --upgrade pip
+python3.12 -m pip install pytest hypothesis build meson meson-python
+python3.12 -m pip install cython
+python3.12 -m pip install --upgrade --force-reinstall setuptools
+python3.12 -m pip install --upgrade six
+python3.12 -m pip install meson-python==0.13.1
+python3.12 -m pip install patchelf==0.11.0
+python3.12 -m pip install meson==1.2.1
+python3.12 -m pip install oldest-supported-numpy==2022.8.16
+python3.12 -m pip install ninja
+python3.12 -m pip install versioneer[toml]
+python3.12 -m pip install numpy
 
 # Install pandas package
-if ! (python${PYTHON_VERSION} -m pip install .); then
+if ! (python3.12 -m pip install .); then
      echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
      echo "$PACKAGE_URL $PACKAGE_NAME"
      echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | Python $PYTHON_VERSION | GitHub | Fail | Install_Fails"
@@ -63,7 +62,7 @@ fi
 cd ..
 
 # Test pandas package
-if ! (python${PYTHON_VERSION} -c "import pandas; print(pandas.__version__)"); then
+if ! (python3.12 -c "import pandas; print(pandas.__version__)"); then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | Python $PYTHON_VERSION | GitHub | Fail | Install_Success_But_Test_Fails"
