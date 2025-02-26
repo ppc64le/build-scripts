@@ -32,6 +32,9 @@ yum install -y git g++ cmake make wget openssl-devel bzip2-devel libffi-devel zl
 echo "install gcc-toolset13, numpy and export path"
 yum install gcc-toolset-13 -y
 export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=${SITE_PACKAGE_PATH}/openblas/lib:${LD_LIBRARY_PATH}
+export PKG_CONFIG_PATH="${SITE_PACKAGE_PATH}/openblas/lib/pkgconfig"
+
 
 echo "Installing openmpi"
 yum install -y wget
@@ -75,7 +78,7 @@ python3.12 -m pip install setuptools setuptools_scm wheel cffi
 echo "install other necessary dependency"
 python3.12 -m pip install cloudpickle psutil pybind11
 echo "install matplotlib"
-python3.12 -m pip install matplotlib==3.9.0
+pip install --no-use-pep517 matplotlib
 echo "install pandas"
 python3.12 -m pip install pandas
 echo "install scikit_build_core"
