@@ -69,7 +69,7 @@ pip3.12 install threadpoolctl
 echo "installing meson-python and ninja.."
 pip3.12 install meson-python ninja
 echo "installing setuptools.."
-pip3.12 install setuptools wheel cffi
+pip3.12 install setuptools setuptools_scm wheel cffi
 echo "install other necessary dependency"
 pip3.12 install cloudpickle psutil
 echo "install matplotlib"
