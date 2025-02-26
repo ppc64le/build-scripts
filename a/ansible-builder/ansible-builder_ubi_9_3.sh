@@ -2,9 +2,9 @@
 # ---------------------------------------------------------------------
 #
 # Package       : ansible-builder
-# Version       : 3.0.0
+# Version       : 3.1.0
 # Source repo   : https://github.com/ansible/ansible-builder
-# Tested on     : UBI 8.7
+# Tested on     : UBI 9.3
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -21,9 +21,9 @@ set -e
 
 PACKAGE_NAME=ansible-builder
 PACKAGE_URL=https://github.com/ansible/ansible-builder
-PACKAGE_VERSION=${1:-3.0.0}
+PACKAGE_VERSION=${1:-3.1.0}
 
-yum install java-17-openjdk-devel openssl-devel git wget tar python39-devel.ppc64le gcc rust cargo  gcc-c++ cmake.ppc64le -y
+yum install java-17-openjdk-devel openssl-devel git wget tar python-devel gcc rust cargo  gcc-c++ cmake.ppc64le -y
 
 #Check if package exists
 if [ -d "$PACKAGE_NAME" ] ; then
