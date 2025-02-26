@@ -27,7 +27,7 @@ PACKAGE_DIR=LightGBM/lightgbm-python
 CURRENT_DIR=$pwd
 
 echo "Installing dependencies..."
-yum install -y git g++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel gcc-gfortran openblas atlas openblas-devel atlas atlas-devel pkg-config meson ninja-build python3.12 python3.12-devel python3.12-pip
+yum install -y git g++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel gcc-gfortran openblas atlas openblas-devel atlas pkg-config python3.12 python3.12-devel python3.12-pip
 
 echo "install gcc-toolset13, numpy and export path"
 yum install gcc-toolset-13 -y
@@ -52,8 +52,8 @@ echo "checking out package version "
 git checkout $PACKAGE_VERSION
 
 #installing dependencies
-echo "install matplotlib"
-python3.12 -m pip install matplotlib
+echo "installing scipy.."
+python3.12 -m pip install scipy
 
 echo"installing numpy .."
 python3.12 -m pip install  numpy==2.2.2
@@ -64,18 +64,18 @@ echo "installing pytest...."
 python3.12 -m pip install pytest hypothesis
 echo "installing cython.."
 python3.12 -m pip install cython
-echo "installing scipy.."
-python3.12 -m pip install scipy
 echo "installing threadpoolctl and pillow.."
 python3.12 -m pip install threadpoolctl pillow
 echo "installing joblib.."
 python3.12 -m pip install joblib
 echo "installing meson-python and ninja.."
-python3.12 -m pip install meson-python
+python3.12 -m pip install meson-python ninja
 echo "installing setuptools.."
 python3.12 -m pip install setuptools setuptools_scm wheel cffi
 echo "install other necessary dependency"
 python3.12 -m pip install cloudpickle psutil
+echo "install matplotlib"
+python3.12 -m pip install matplotlib --no-deps
 echo "install pandas"
 python3.12 -m pip install pandas
 echo "install scikit_build_core"
