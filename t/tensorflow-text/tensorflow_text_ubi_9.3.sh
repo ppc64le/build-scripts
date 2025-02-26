@@ -50,7 +50,6 @@ ln -s $CURRENT_DIR/usr/bin/python3.11 $CURRENT_DIR/usr/bin/python
 yum install -y libxcrypt libxcrypt-compat rsync
 python3.11 -m pip install --upgrade pip
 python3.11 -m pip install --upgrade setuptools wheel build
-pip install arrow
 
 
 echo "------------------------Installing dependencies-------------------"
