@@ -43,7 +43,9 @@ WHEEL_FILE=$(ls dist/*.whl | head -n 1)
 
 # Check if a wheel file exists and install it
 if [ -z "$WHEEL_FILE" ]; then
-    echo "No wheel file found in dist directory."
+    echo "------------------$PACKAGE_NAME::Build_Fail-------------------------"
+    echo "$PACKAGE_VERSION $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Build_Fail"
     exit 1
 else
     # Install the wheel file
@@ -62,16 +64,12 @@ fi
 
 # Test the package
 cd ..
-python${PYTHON_VERSION} -m pip show pandas
 python${PYTHON_VERSION} -c "import pandas; print(pandas.__file__)"
 
 if [ $? == 0 ]; then
      echo "------------------$PACKAGE_NAME::Test_Pass---------------------"
      echo "$PACKAGE_VERSION $PACKAGE_NAME"
      echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Test_Success"
-
-     # Deactivate python environment (pandas-env)
-         deactivate
 
      exit 0
 else
