@@ -54,22 +54,22 @@ git checkout $PACKAGE_VERSION
 
 #installing dependencies
 
-echo "installling meson..."
-python3.12 -m pip install meson
+echo "installling pytz..."
+python3.12 -m pip install pytz
 echo "installing pytest...."
 python3.12 -m pip install pytest hypothesis
 echo "installing cython.."
 python3.12 -m pip install cython
 echo "installing scipy.."
 python3.12 -m pip install scipy
-echo "installing joblib.."
-python3.12 -m pip install joblib
-echo "installing threadpoolctl.."
+echo "installing threadpoolctl and pillow.."
+python3.12 -m pip install threadpoolctl pillow
 echo "install matplotlib"
 python3.12 -m pip install matplotlib
-python3.12 -m pip install threadpoolctl
+echo "installing joblib.."
+python3.12 -m pip install joblib
 echo "installing meson-python and ninja.."
-python3.12 -m pip install meson-python ninja
+python3.12 -m pip install meson meson-python ninja
 echo "installing setuptools.."
 python3.12 -m pip install setuptools setuptools_scm wheel cffi
 echo "install other necessary dependency"
