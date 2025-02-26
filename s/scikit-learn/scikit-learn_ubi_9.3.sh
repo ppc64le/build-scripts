@@ -34,7 +34,7 @@ git checkout $PACKAGE_VERSION
 git submodule update --init
 
 # install scikit-learn dependencies and build dependencies
-pip install wheel numpy scipy cython meson-python
+pip install wheel numpy==2.0.2 scipy cython meson-python
 pip install ninja pytest>=7.1.2  joblib threadpoolctl patchelf>=0.11.0 setuptools
 
 
