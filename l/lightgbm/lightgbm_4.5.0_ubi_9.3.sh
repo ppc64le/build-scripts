@@ -32,7 +32,7 @@ yum install -y git g++ cmake make wget openssl-devel bzip2-devel libffi-devel zl
 echo "install gcc-toolset13, numpy and export path"
 yum install gcc-toolset-13 -y
 export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-python3.12 -m pip3.12 install  numpy==2.2.2
+pip3.12 install  numpy==2.2.2
 
 echo "Installing openmpi"
 yum install -y wget
@@ -55,7 +55,7 @@ git checkout $PACKAGE_VERSION
 #installing dependencies
 
 echo "installling tox and meson..."
-pip3.12.12 install tox meson
+pip3.12 install tox meson
 echo "installing pytest...."
 pip3.12 install pytest hypothesis
 echo "installing cython.."
