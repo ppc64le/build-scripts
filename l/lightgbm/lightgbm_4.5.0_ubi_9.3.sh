@@ -69,13 +69,13 @@ python3.12 -m pip install threadpoolctl pillow
 echo "installing joblib.."
 python3.12 -m pip install joblib
 echo "installing meson-python and ninja.."
-python3.12 -m pip install meson-python ninja
+python3.12 -m pip install meson meson-python ninja
 echo "installing setuptools.."
 python3.12 -m pip install setuptools setuptools_scm wheel cffi
 echo "install other necessary dependency"
 python3.12 -m pip install cloudpickle psutil pybind11
 echo "install matplotlib"
-python3.12 -m pip install matplotlib 
+python3.12 -m pip install matplotlib==3.9.0
 echo "install pandas"
 python3.12 -m pip install pandas
 echo "install scikit_build_core"
