@@ -28,8 +28,13 @@ OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 # Install dependencies
 echo "Installing dependencies..."
 dnf update -y
-dnf install -y git gcc gcc-c++ make python${PYTHON_VERSION} python${PYTHON_VERSION}-devel \
-               python${PYTHON_VERSION}-pip openssl openssl-devel rust cargo
+dnf install -y git gcc-toolset-13 make python${PYTHON_VERSION} python${PYTHON_VERSION}-devel \
+               python${PYTHON_VERSION}-pip openssl openssl-devel
+source /opt/rh/gcc-toolset-13/enable
+
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+source $HOME/.cargo/env
+
 
 # Clone the repository
 if [ -d "$PACKAGE_NAME" ]; then
