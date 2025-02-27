@@ -24,9 +24,10 @@ PACKAGE_URL=https://github.com/openai/tiktoken.git
 PYTHON_VERSION=${PYTHON_VERSION:-"3.11"}
 
 
-yum install -y git libffi-devel gcc python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip python${PYTHON_VERSION}-setuptools
+yum install -y git libffi-devel gcc-toolset-13 python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip python${PYTHON_VERSION}-setuptools
 python${PYTHON_VERSION} -m pip install pytest hypothesis
 
+source /opt/rh/gcc-toolset-13/enable
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 source $HOME/.cargo/env
