@@ -76,7 +76,7 @@ wget https://github.com/bazelbuild/bazel/releases/download/6.1.0/bazel-6.1.0-dis
 unzip bazel-6.1.0-dist.zip
 echo "------------------------Installing bazel-------------------"
 env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
-cp output/bazel $/usr/local/bin
+cp output/bazel /usr/local/bin
 export PATH=/usr/local/bin:$PATH
 bazel --version
 cd $CURRENT_DIR
