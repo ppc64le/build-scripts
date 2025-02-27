@@ -40,12 +40,12 @@ dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-lates
 
 # Install dependencies
 yum install -y gcc-toolset-12-gcc gcc-toolset-12-gcc-c++ gcc-toolset-12-libstdc++-devel
-source $CURRENT_DIR/opt/rh/gcc-toolset-12/enable
+export PATH=/opt/rh/gcc-toolset-12/root/usr/bin:$PATH
 
 yum install -y python3.11 python3.11-devel python3.11-pip git make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng openblas-devel epel-release meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite libnsl libarrow libarrow-python-devel
 
 #Set Python3 as default
-ln -s $CURRENT_DIR/usr/bin/python3.11 $CURRENT_DIR/usr/bin/python
+ln -s /usr/bin/python3.11 /usr/bin/python
 
 yum install -y libxcrypt libxcrypt-compat rsync
 python3.11 -m pip install --upgrade pip
@@ -69,14 +69,14 @@ export PATH=$JAVA_HOME/bin:$PATH
 # Build Bazel dependency
 echo "------------------------Installing bazel-------------------"
 cd $CURRENT_DIR
-mkdir -p $CURRENT_DIR/bazel
-cd $CURRENT_DIR/bazel
+mkdir -p /bazel
+cd /bazel
 wget https://github.com/bazelbuild/bazel/releases/download/6.1.0/bazel-6.1.0-dist.zip
 unzip bazel-6.1.0-dist.zip
 echo "------------------------Installing bazel-------------------"
 env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
-cp output/bazel $CURRENT_DIR/usr/local/bin
-export PATH=$CURRENT_DIR/usr/local/bin:$PATH
+cp output/bazel /usr/local/bin
+export PATH=/usr/local/bin:$PATH
 bazel --version
 cd $CURRENT_DIR
 
@@ -90,10 +90,10 @@ pip install "protobuf<=4.25.2"
 pip install tensorflow-datasets
 
 # Remove obsolete version of six, which can sometimes confuse virtualenv.
-rm -rf $CURRENT_DIR/usr/lib/python3.11/dist-packages/six*
+rm -rf /usr/lib/python3.11/dist-packages/six*
 
 # Install numpy, scipy and scikit-learn required by the builds
-ln -s $CURRENT_DIR/usr/include/locale.h $CURRENT_DIR/usr/include/xlocale.h
+ln -s /usr/include/locale.h /usr/include/xlocale.h
 
 export LD_LIBRARY_PATH=/usr/lib64/:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-12/root/usr/lib64:$LD_LIBRARY_PATH
@@ -182,8 +182,8 @@ export TF_SHARED_LIBRARY_NAME="libtensorflow_framework.so.2"
 
 export BAZEL_CXXOPTS="-std=c++17"
 export BAZEL_CXXFLAGS="-std=c++17"
-export CC=$CURRENT_DIR/opt/rh/gcc-toolset-12/root/usr/bin/gcc
-export CXX=$CURRENT_DIR/opt/rh/gcc-toolset-12/root/usr/bin/g++
+export CC=/opt/rh/gcc-toolset-12/root/usr/bin/gcc
+export CXX=/opt/rh/gcc-toolset-12/root/usr/bin/g++
 
 #Build tensorflow-text
 echo "------------------------Cloning tensorflow-text-------------------"
