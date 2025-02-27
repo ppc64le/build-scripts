@@ -23,7 +23,8 @@ PACKAGE_VERSION=${1:-"0.18.6"}
 PACKAGE_URL=https://github.com/jcrist/msgspec.git
 PYTHON_VERSION=${PYTHON_VERSION:-"3.11"}
 
-yum install -y git libffi-devel gcc python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip python${PYTHON_VERSION}-setuptools
+yum install -y git libffi-devel gcc-toolset-13 python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip python${PYTHON_VERSION}-setuptools
+source /opt/rh/gcc-toolset-13/enable
 
 python${PYTHON_VERSION} -m pip install pytest
 
