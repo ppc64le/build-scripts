@@ -2,7 +2,7 @@
   "maintainer": "vinodk99",
   "package_name": "pyzmq",
   "github_url": "https://github.com/zeromq/pyzmq.git",
-  "version": "26.2.1",
+  "version": "v26.2.1",
   "wheel_build" : true,
   "package_dir": "p/pyzmq",
   "default_branch": "main",
