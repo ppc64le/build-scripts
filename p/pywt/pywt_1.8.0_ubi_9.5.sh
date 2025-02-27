@@ -8,7 +8,7 @@
 # Language         : Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Vinod K<Vinod.K1@ibm.com>
+# Maintainer       : Meet Jani<meet.jani@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -22,7 +22,7 @@
 PACKAGE_NAME=pywt
 PACKAGE_VERSION=${1:-v1.8.0}
 PACKAGE_URL=https://github.com/PyWavelets/pywt
-PACKAGE_DIR=p/pywt
+PACKAGE_DIR=./pywt
 
 # Install dependencies
 yum install -y gcc gcc-c++ make libtool cmake git wget xz python3.12 python3.12-devel python3.12-pip zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel libjpeg-turbo-devel
