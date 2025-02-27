@@ -26,7 +26,6 @@ PACKAGE_NAME=tensorflow
 PACKAGE_VERSION=${1:-v2.14.1}
 PACKAGE_URL=https://github.com/tensorflow/tensorflow
 CURRENT_DIR=$(pwd)
-PYTHON_VER=${2:-3.11}
 PACKAGE_DIR=tensorflow
 
 echo "------------------------Installing dependencies-------------------"
@@ -43,7 +42,7 @@ dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-lates
 # Install dependencies
 echo "------------------------Installing dependencies-------------------"
 yum install -y gcc-toolset-12-gcc.ppc64le gcc-toolset-12-gcc-c++
-source $CURRENT_DIR/opt/rh/gcc-toolset-12/enable
+export PATH=/opt/rh/gcc-toolset-12/root/usr/bin:$PATH
 
 yum install -y python3.11-devel python3.11-pip make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng openblas-devel epel-release meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite libnsl
 
@@ -61,25 +60,25 @@ yum install -y  autoconf automake libtool curl-devel swig hdf5-devel atlas-devel
 
 #Set Python3 as default
 cd $CURRENT_DIR
-ln -s $CURRENT_DIR/usr/bin/python${PYTHON_VER} $CURRENT_DIR/usr/bin/python
+ln -s /usr/bin/python3.11 /usr/bin/python
 
 #Set JAVA_HOME
 echo "------------------------Installing java-------------------"
 yum install -y java-11-openjdk-devel
-export JAVA_HOME=$CURRENT_DIR/usr/lib/jvm/java-11-openjdk-11.0.25.0.9-3.el9.ppc64le
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.25.0.9-3.el9.ppc64le
 export PATH=$JAVA_HOME/bin:$PATH
 
 # Build Bazel dependency
 echo "------------------------Installing bazel-------------------"
 cd $CURRENT_DIR
-mkdir -p $CURRENT_DIR/bazel
-cd $CURRENT_DIR/bazel
+mkdir -p /bazel
+cd /bazel
 wget https://github.com/bazelbuild/bazel/releases/download/6.1.0/bazel-6.1.0-dist.zip
 unzip bazel-6.1.0-dist.zip
 echo "------------------------Installing bazel-------------------"
 env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
-cp output/bazel $CURRENT_DIR/usr/local/bin
-export PATH=$CURRENT_DIR/usr/local/bin:$PATH
+cp output/bazel /usr/local/bin
+export PATH=/usr/local/bin:$PATH
 bazel --version
 cd $CURRENT_DIR
 
@@ -90,10 +89,10 @@ pip install --upgrade six==1.16.0
 pip install "numpy<2" "urllib3<1.27" wheel==0.38.4 werkzeug
 
 # Remove obsolete version of six, which can sometimes confuse virtualenv.
-rm -rf $CURRENT_DIR/usr/lib/python${PYTHON_VER}/dist-packages/six*
+rm -rf /usr/lib/python3.11/dist-packages/six*
 
 # Install numpy, scipy and scikit-learn required by the builds
-ln -s $CURRENT_DIR/usr/include/locale.h $CURRENT_DIR/usr/include/xlocale.h
+ln -s /usr/include/locale.h /usr/include/xlocale.h
 
 #Build tensorflow
 echo "------------------------Cloning tensorflow-------------------"
