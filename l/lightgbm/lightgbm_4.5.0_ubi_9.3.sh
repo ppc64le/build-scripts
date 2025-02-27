@@ -59,7 +59,7 @@ echo "installing scipy.."
 python3.12 -m pip install scipy
 
 echo "installing numpy .."
-python3.12 -m pip install  numpy==2.2.2
+python3.12 -m pip install  numpy==2.0.2
 
 echo "installling pytz..."
 python3.12 -m pip install pytz
