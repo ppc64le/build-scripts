@@ -98,6 +98,10 @@ export LD_LIBRARY_PATH=/usr/lib64/:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-12/root/usr/lib64:$LD_LIBRARY_PATH
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true
 
+export LD_LIBRARY_PATH=/usr/lib64/:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-12/root/usr/lib64:$LD_LIBRARY_PATH
+export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true
+
 
 #Build tensorflow-io-gcs-filesystem
 echo "------------------------Cloning tensorflow-io-gcs-filesystem-------------------"
