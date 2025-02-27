@@ -13,8 +13,8 @@
     "use_non_root_user": "Boolean variable to run build-script as non root user. Optional argument. Default value is `false` (Eg: true/false)",
 
     "required_versions": {
-        "Releases": "Array of releases that are required for the package (Eg for fetching all versions: ['*'])",
-        "Tags": "Array of tags that are required for the package (Eg for fetching specific versions: ['v1.0.0', 'v1.1'])"
+        "Releases": "Array of releases that are required for the package (Eg for fetching all versions: ['*']). Optional argument.",
+        "Tags": "Array of tags that are required for the package (Eg for fetching specific versions: ['v1.0.0', 'v1.1']). Optional argument."
     },
 
     "version string(s)/version regex(es) (Eg: `v8.1.*, v8.2.0`)": {
