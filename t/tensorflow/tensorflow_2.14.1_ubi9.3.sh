@@ -26,7 +26,6 @@ PACKAGE_NAME=tensorflow
 PACKAGE_VERSION=${1:-v2.14.1}
 PACKAGE_URL=https://github.com/tensorflow/tensorflow
 CURRENT_DIR=$(pwd)
-PYTHON_VER=${2:-3.11}
 PACKAGE_DIR=tensorflow
 
 echo "------------------------Installing dependencies-------------------"
@@ -43,13 +42,13 @@ dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-lates
 # Install dependencies
 echo "------------------------Installing dependencies-------------------"
 yum install -y gcc-toolset-12-gcc.ppc64le gcc-toolset-12-gcc-c++
-source $CURRENT_DIR/opt/rh/gcc-toolset-12/enable
+export PATH=/opt/rh/gcc-toolset-12/root/usr/bin:$PATH
 
-yum install -y python3.11-devel python3.11-pip make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng openblas-devel epel-release meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite libnsl
+yum install -y python python-devel python-pip make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng openblas-devel epel-release meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite libnsl
 
 echo "------------------------Installing dependencies-------------------"
 yum install -y libxcrypt-compat rsync
-python3.11 -m pip install --upgrade pip
+python -m pip install --upgrade pip
 pip install setuptools wheel
 
 echo "------------------------Installing dependencies-------------------"
@@ -59,27 +58,24 @@ dnf groupinstall -y "Development Tools"
 echo "------------------------Installing dependencies-------------------"
 yum install -y  autoconf automake libtool curl-devel swig hdf5-devel atlas-devel patch patchelf
 
-#Set Python3 as default
-cd $CURRENT_DIR
-ln -s $CURRENT_DIR/usr/bin/python${PYTHON_VER} $CURRENT_DIR/usr/bin/python
 
 #Set JAVA_HOME
 echo "------------------------Installing java-------------------"
 yum install -y java-11-openjdk-devel
-export JAVA_HOME=$CURRENT_DIR/usr/lib/jvm/java-11-openjdk-11.0.25.0.9-3.el9.ppc64le
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.25.0.9-3.el9.ppc64le
 export PATH=$JAVA_HOME/bin:$PATH
 
 # Build Bazel dependency
 echo "------------------------Installing bazel-------------------"
 cd $CURRENT_DIR
-mkdir -p $CURRENT_DIR/bazel
-cd $CURRENT_DIR/bazel
+mkdir -p /bazel
+cd /bazel
 wget https://github.com/bazelbuild/bazel/releases/download/6.1.0/bazel-6.1.0-dist.zip
 unzip bazel-6.1.0-dist.zip
 echo "------------------------Installing bazel-------------------"
 env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
-cp output/bazel $CURRENT_DIR/usr/local/bin
-export PATH=$CURRENT_DIR/usr/local/bin:$PATH
+cp output/bazel /usr/local/bin
+export PATH=/usr/local/bin:$PATH
 bazel --version
 cd $CURRENT_DIR
 
@@ -89,11 +85,9 @@ pip install --upgrade absl-py
 pip install --upgrade six==1.16.0
 pip install "numpy<2" "urllib3<1.27" wheel==0.38.4 werkzeug
 
-# Remove obsolete version of six, which can sometimes confuse virtualenv.
-rm -rf $CURRENT_DIR/usr/lib/python${PYTHON_VER}/dist-packages/six*
 
 # Install numpy, scipy and scikit-learn required by the builds
-ln -s $CURRENT_DIR/usr/include/locale.h $CURRENT_DIR/usr/include/xlocale.h
+ln -s /usr/include/locale.h /usr/include/xlocale.h
 
 #Build tensorflow
 echo "------------------------Cloning tensorflow-------------------"
@@ -110,7 +104,7 @@ echo "CC_OPT_FLAGS set to: ${CC_OPT_FLAGS}"
 export CC_OPT_FLAGS="-mcpu=${cpu_model} -mtune=${cpu_model}"
 export TF_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
 export HERMETIC_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
-export PYTHON_BIN_PATH=$(which python3.11)
+export PYTHON_BIN_PATH=$(which python)
 export GCC_HOST_COMPILER_PATH=$(which gcc)
 export CC=$GCC_HOST_COMPILER_PATH
 export PYTHON=/root/tensorflow/tfenv/bin/python
