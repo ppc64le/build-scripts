@@ -43,7 +43,6 @@ python3.12 -m pip install numpy==1.26.4 scipy==1.13.1 Cython
 git clone $PACKAGE_URL $PACKAGE_DIR
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
-TOXENV=py312
 python3.12 setup.py build_ext --inplace
 
 # Build package
