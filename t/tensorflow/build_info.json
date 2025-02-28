@@ -16,7 +16,7 @@
     },
     "build_script": "tensorflow_2.14.1_ubi9.3.sh"
   },
-  "*.*.*": {
+  "*": {
     "build_script": "tensorflow_ubi_9.3.sh"
   }
 }
