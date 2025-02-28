@@ -10,7 +10,7 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
-  "*.*.*": {
+  "*": {
     "patches": {
       "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/t/tensorflow-io-gcs-filesystem/tf-io-gcs-filesystem.patch"
     },
