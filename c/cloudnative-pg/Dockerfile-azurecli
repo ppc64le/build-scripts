@@ -1,0 +1,43 @@
+# Use a PPC64LE-compatible base image
+FROM ubuntu:22.04
+
+# Install required packages
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    jq \
+    curl \
+    python3 \
+    python3-pip \
+    libssl-dev \
+    pkg-config \
+    && apt-get clean
+
+# Install Rust and Cargo non-interactively
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain stable -y
+
+# Set the PATH for Rust and Cargo
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+# Upgrade setuptools
+RUN pip3 install --upgrade pip setuptools
+# Install Maturin
+RUN cargo install maturin --version 0.13.4  # Use a stable version
+
+# Verify Rust, Cargo, and Maturin installation
+RUN rustc --version && cargo --version && maturin --version
+
+RUN pip3 install azure-mgmt-rdbms==10.1.0  # Replace with a known good version
+
+RUN pip3 uninstall azure-cli -y
+RUN pip3 install azure-cli
+
+
+# Clean up
+RUN apt-get remove --purge -y \
+    curl \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
+#Uninstall Rust	
+RUN rustup self uninstall -y	
+
