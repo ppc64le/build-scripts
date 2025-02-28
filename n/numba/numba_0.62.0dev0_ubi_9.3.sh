@@ -39,7 +39,7 @@ git clone $PACKAGE_URL
 cd  $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
-pip install numpy setuptools
+pip install numpy==2.0.2 setuptools
 
 #install
 if ! pip install . ; then
