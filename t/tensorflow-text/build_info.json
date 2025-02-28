@@ -1,0 +1,16 @@
+{
+  "maintainer": "stutiibm",
+  "package_name": "tensorflow-text",
+  "github_url": "https://github.com/tensorflow/text.git",
+  "version": "v0.16.2",
+  "wheel_build" : true,
+  "package_dir": "t/tensorflow-text",
+  "default_branch": "main",
+  "build_script": "tensorflow_text_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "tensorflow_text_ubi_9.3.sh"
+  }
+}
