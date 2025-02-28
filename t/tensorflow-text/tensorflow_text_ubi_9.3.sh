@@ -42,14 +42,12 @@ dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-lates
 yum install -y gcc-toolset-12-gcc gcc-toolset-12-gcc-c++ gcc-toolset-12-libstdc++-devel
 export PATH=/opt/rh/gcc-toolset-12/root/usr/bin:$PATH
 
-yum install -y python3.11 python3.11-devel python3.11-pip git make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng openblas-devel epel-release meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite libnsl libarrow libarrow-python-devel
+yum install -y python python-devel python-pip git make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng openblas-devel epel-release meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite libnsl libarrow libarrow-python-devel
 
-#Set Python3 as default
-ln -s /usr/bin/python3.11 /usr/bin/python
 
 yum install -y libxcrypt libxcrypt-compat rsync
-python3.11 -m pip install --upgrade pip
-python3.11 -m pip install --upgrade setuptools wheel build
+python -m pip install --upgrade pip
+python -m pip install --upgrade setuptools wheel build
 
 
 echo "------------------------Installing dependencies-------------------"
@@ -89,8 +87,6 @@ pip install "urllib3<1.27,>=1.21.1" requests
 pip install "protobuf<=4.25.2"
 pip install tensorflow-datasets
 
-# Remove obsolete version of six, which can sometimes confuse virtualenv.
-rm -rf /usr/lib/python3.11/dist-packages/six*
 
 # Install numpy, scipy and scikit-learn required by the builds
 ln -s /usr/include/locale.h /usr/include/xlocale.h
@@ -129,7 +125,7 @@ echo "CC_OPT_FLAGS set to: ${CC_OPT_FLAGS}"
 export CC_OPT_FLAGS="-mcpu=${cpu_model} -mtune=${cpu_model}"
 export TF_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
 export HERMETIC_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
-export PYTHON_BIN_PATH=$(which python3.11)
+export PYTHON_BIN_PATH=$(which python)
 export GCC_HOST_COMPILER_PATH=$(which gcc)
 export CC=$GCC_HOST_COMPILER_PATH
 export PYTHON=/root/tensorflow/tfenv/bin/python
@@ -205,7 +201,7 @@ if ! (bazel build --cxxopt='-std=c++17' --experimental_repo_remote_exec //oss_sc
 fi
 
 echo "-----------------------Building tf-text wheel ----------------------------"
-python3.11 -m pip install --upgrade wheel setuptools build
+python -m pip install --upgrade wheel setuptools build
 ./bazel-bin/oss_scripts/pip_package/build_pip_package $CURRENT_DIR
 
 echo "----------------Tensorflow-text wheel build successfully------------------------------------"
