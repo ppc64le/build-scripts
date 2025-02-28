@@ -1,0 +1,22 @@
+diff --git a/docker/iceberg-rest-fixture/Dockerfile b/docker/iceberg-rest-fixture/Dockerfile
+index 39d959cd8..da44e720e 100644
+--- a/docker/iceberg-rest-fixture/Dockerfile
++++ b/docker/iceberg-rest-fixture/Dockerfile
+@@ -17,14 +17,13 @@
+ # under the License.
+ #
+ 
+-FROM azul/zulu-openjdk:17-jre-headless
++FROM eclipse-temurin:17.0.14_7-jre-ubi9-minimal
+ 
+ # Set up the user and group
+ RUN  set -xeu && \
+      groupadd iceberg --gid 1000 && \
+-     useradd iceberg --uid 1000 --gid 1000 --create-home && \
+-     apt-get update && \
+-     apt-get install -y --no-install-recommends curl && \
++     useradd  iceberg --uid 1000 --gid 1000 --create-home && \
++     microdnf  update && \
+      rm -rf /var/lib/apt/lists/*
+ 
+ # Working directory for the application
