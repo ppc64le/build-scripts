@@ -1,7 +1,7 @@
 {
   "maintainer": "stutiibm",
   "package_name": "tensorflow-text",
-  "github_url": https://github.com/tensorflow/text.git",
+  "github_url": "https://github.com/tensorflow/text.git",
   "version": "v0.16.2",
   "wheel_build" : true,
   "package_dir": "t/tensorflow-text",
