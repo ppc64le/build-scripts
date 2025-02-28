@@ -44,11 +44,11 @@ echo "------------------------Installing dependencies-------------------"
 yum install -y gcc-toolset-12-gcc.ppc64le gcc-toolset-12-gcc-c++
 export PATH=/opt/rh/gcc-toolset-12/root/usr/bin:$PATH
 
-yum install -y python3.11-devel python3.11-pip make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng openblas-devel epel-release meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite libnsl
+yum install -y python python-devel python-pip make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng openblas-devel epel-release meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite libnsl
 
 echo "------------------------Installing dependencies-------------------"
 yum install -y libxcrypt-compat rsync
-python3.11 -m pip install --upgrade pip
+python -m pip install --upgrade pip
 pip install setuptools wheel
 
 echo "------------------------Installing dependencies-------------------"
@@ -58,9 +58,6 @@ dnf groupinstall -y "Development Tools"
 echo "------------------------Installing dependencies-------------------"
 yum install -y  autoconf automake libtool curl-devel swig hdf5-devel atlas-devel patch patchelf
 
-#Set Python3 as default
-cd $CURRENT_DIR
-ln -s /usr/bin/python3.11 /usr/bin/python
 
 #Set JAVA_HOME
 echo "------------------------Installing java-------------------"
@@ -88,8 +85,6 @@ pip install --upgrade absl-py
 pip install --upgrade six==1.16.0
 pip install "numpy<2" "urllib3<1.27" wheel==0.38.4 werkzeug
 
-# Remove obsolete version of six, which can sometimes confuse virtualenv.
-rm -rf /usr/lib/python3.11/dist-packages/six*
 
 # Install numpy, scipy and scikit-learn required by the builds
 ln -s /usr/include/locale.h /usr/include/xlocale.h
@@ -109,7 +104,7 @@ echo "CC_OPT_FLAGS set to: ${CC_OPT_FLAGS}"
 export CC_OPT_FLAGS="-mcpu=${cpu_model} -mtune=${cpu_model}"
 export TF_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
 export HERMETIC_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
-export PYTHON_BIN_PATH=$(which python3.11)
+export PYTHON_BIN_PATH=$(which python)
 export GCC_HOST_COMPILER_PATH=$(which gcc)
 export CC=$GCC_HOST_COMPILER_PATH
 export PYTHON=/root/tensorflow/tfenv/bin/python
