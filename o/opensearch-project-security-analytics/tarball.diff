@@ -1,0 +1,59 @@
+diff --git a/Pipfile b/Pipfile
+diff --git a/Pipfile b/Pipfile
+index 328cad76..f9a02ba3 100644
+--- a/Pipfile
++++ b/Pipfile
+@@ -4,7 +4,7 @@ verify_ssl = true
+ name = "pypi"
+
+ [packages]
+-pyyaml = "~=5.4"
++pyyaml = "=6.0.1"
+ types-PyYAML = "~=5.4"
+ # TODO: The 'requests' package stays on 2.28 until we deprecate CentOS7.
+ #       As newer version requires openssl1.1.1 where CentOS7 only provides openssl1.1.0.
+diff --git a/scripts/components/OpenSearch/build.sh b/scripts/components/OpenSearch/build.sh
+index 8ae7ae0d..e9e4bf81 100755
+--- a/scripts/components/OpenSearch/build.sh
++++ b/scripts/components/OpenSearch/build.sh
+@@ -107,6 +107,13 @@ case $PLATFORM-$DISTRIBUTION-$ARCHITECTURE in
+         TARGET="$PLATFORM-arm64-$PACKAGE"
+         SUFFIX="$PLATFORM-arm64"
+         ;;
++    linux-tar-ppc64le)
++        PACKAGE="tar"
++        EXT="tar.gz"
++        TYPE="archives"
++        TARGET="$PLATFORM-ppc64le-$PACKAGE"
++        SUFFIX="$PLATFORM-ppc64le"
++        ;;
+     linux-deb-x64)
+         PACKAGE="deb"
+         EXT="deb"
+diff --git a/src/system/os.py b/src/system/os.py
+index fbc6c3ec..7a73b890 100644
+--- a/src/system/os.py
++++ b/src/system/os.py
+@@ -15,6 +15,8 @@ def current_architecture() -> str:
+         return "x64"
+     elif architecture == "aarch64" or architecture == "arm64":
+         return "arm64"
++    elif architecture == "ppc64le":
++        return "ppc64le"
+     else:
+         raise ValueError(f"Unsupported architecture: {architecture}")
+
+diff --git a/run.sh b/run.sh
+index 0829d44d..92703de1 100755
+--- a/run.sh
++++ b/run.sh
+@@ -12,7 +12,7 @@ set -e
+ if [ -z "$1" ]; then (echo "syntax: run.sh [workflow.py]"; exit -1); fi
+ command -v python3 >/dev/null 2>&1 || (echo "missing python3"; exit -1)
+ command -v pip >/dev/null 2>&1 || (echo "missing python3-pip"; exit -1)
+-command -v pipenv >/dev/null 2>&1 || (echo "missing pipenv"; exit -1)
++command -v python3 -m pipenv >/dev/null 2>&1 || (echo "missing pipenv"; exit -1)
+
+ DIR="$(dirname "$0")"
+
+
