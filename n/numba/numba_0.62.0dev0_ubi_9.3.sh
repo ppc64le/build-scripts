@@ -28,7 +28,7 @@ SCRIPT_DIR=$(pwd)
 # Install dependencies and tools.
 
 dnf install -y --nodocs https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-yum install -y git  gcc-toolset-13 gcc gcc-c++  make wget python3.11 python3.11-devel python3.11-pip xz-devel bzip2-devel openssl-devel zlib-devel libffi-devel llvm15-devel.ppc64le
+yum install -y git  gcc-toolset-13 make wget python3.11 python3.11-devel python3.11-pip xz-devel bzip2-devel openssl-devel zlib-devel libffi-devel llvm15-devel.ppc64le
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 export LLVM_CONFIG=/usr/lib64/llvm15/bin/llvm-config
