@@ -13,6 +13,11 @@
     "use_non_root_user": "Boolean variable to run build-script as non root user. Optional argument. Default value is `false` (Eg: true/false)",
     "wheel_build": "Boolean variable to enable or disable building wheel for a package. Optional argument. Default value is `false` (Eg: true/false)",
 
+    "required_versions": {
+        "Releases": "Array of releases that are required for the package (Eg for fetching all versions: ['*']). Optional argument.",
+        "Tags": "Array of tags that are required for the package (Eg for fetching specific versions: ['v1.0.0', 'v1.1']). Optional argument."
+    },
+
     "version string(s)/version regex(es) (Eg: `v8.1.*, v8.2.0`)": {
         "dir": "Directory name on which `docker build` should run. Mention directory name under `Dockerfile` directory of a package. (Eg: 8.1.0_ubi_8 - Incase if elasticsearch)",
         "build_script": "Version specific build-script. If not mentioned, default build-script will be picked which is mentioned at outside of Tag details (Eg: elasticsearch_v8.1.1_ubi_8.5.sh).",
