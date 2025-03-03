@@ -2,6 +2,7 @@
     "maintainer": "tejasBadjateIBM",
     "package_name": "gensim",
     "github_url": "https://github.com/RaRe-Technologies/gensim",
+    "required_versions":{"Releases": ["*"], "Tags": ["4.3.3"]}, 
     "version": "4.3.3",
     "wheel_build" : true,
     "default_branch": "develop",
