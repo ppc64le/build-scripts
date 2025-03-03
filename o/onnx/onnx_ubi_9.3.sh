@@ -1,4 +1,3 @@
-
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
@@ -26,7 +25,7 @@ PACKAGE_URL=https://github.com/onnx/onnx
 PACKAGE_DIR=onnx
 
 echo "Installing dependencies..."
-yum install -y git make libtool gcc-toolset-13 libevent-devel zlib-devel openssl-devel python python-devel cmake gcc-gfortran openblas openblas-devel
+yum install -y git make libtool gcc-toolset-13  gcc-c++ libevent-devel zlib-devel openssl-devel python python-devel cmake gcc-gfortran openblas openblas-devel
 
 echo "Downloading and installing protobuf-c"
 git clone https://github.com/protocolbuffers/protobuf.git
