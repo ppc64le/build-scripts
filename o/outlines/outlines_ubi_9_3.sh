@@ -29,11 +29,15 @@ export _GLIBCXX_USE_CXX11_ABI=1
 
 # Install dependencies
 dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
-    git cmake ninja-build gcc-toolset-13 rust cargo \
+    git cmake ninja-build gcc-toolset-13 cargo \
     python${PYTHON_VER}-devel python${PYTHON_VER}-pip jq openssl openssl-devel \
     pkg-config atlas
 
 source /opt/rh/gcc-toolset-13/enable
+
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+source $HOME/.cargo/env
+
 curl -sL https://ftp2.osuosl.org/pub/ppc64el/openblas/latest/Openblas_0.3.29_ppc64le.tar.gz | tar xvf - -C /usr/local \
 && export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
 
