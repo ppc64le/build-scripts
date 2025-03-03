@@ -28,7 +28,7 @@ SCRIPT_DIR=$(pwd)
 # Install dependencies and tools.
 
 dnf install -y --nodocs https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-yum install -y git gcc gcc-c++  make wget python-devel xz-devel bzip2-devel openssl-devel zlib-devel libffi-devel llvm15-devel.ppc64le
+yum install -y git gcc gcc-c++  make wget python3.11 python3.11-devel python3.11-pip xz-devel bzip2-devel openssl-devel zlib-devel libffi-devel llvm15-devel.ppc64le
 
 export LLVM_CONFIG=/usr/lib64/llvm15/bin/llvm-config
 export CFLAGS=-I/usr/include
@@ -39,10 +39,10 @@ git clone $PACKAGE_URL
 cd  $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
-pip install numpy==1.26.3 setuptools
+python3.11 -m pip install numpy setuptools
 
 #install
-if ! pip install . ; then
+if ! python3.11 -m pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -52,7 +52,7 @@ fi
 #test
 cd ${SCRIPT_DIR}
 
-if ! python3 -c "import numba; import numba.core.annotations; import numba.core.datamodel; import numba.core.rewrites; import numba.core.runtime; import numba.core.typing; import numba.core.unsafe; import numba.experimental.jitclass; import numba.np.ufunc; import numba.pycc; import numba.scripts; import numba.testing; import numba.tests; import numba.tests.npyufunc;"; then
+if ! python3.11 -c "import numba; import numba.core.annotations; import numba.core.datamodel; import numba.core.rewrites; import numba.core.runtime; import numba.core.typing; import numba.core.unsafe; import numba.experimental.jitclass; import numba.np.ufunc; import numba.pycc; import numba.scripts; import numba.testing; import numba.tests; import numba.tests.npyufunc;"; then
     echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
