@@ -3,7 +3,7 @@
     "package_name": "numba",
     "github_url": "https://github.com/numba/numba",
     "version": "0.62.0dev0",
-	"required_versions":{"Releases": ["*"], "Tags": ["0.62.0dev0","0.57.0"]}
+    "required_versions":{"Releases": ["*"], "Tags": ["0.62.0dev0","0.57.0"]}
     "wheel_build" : true,
     "default_branch": "main",
     "build_script": "numba_0.62.0dev0_ubi_9.3.sh",
