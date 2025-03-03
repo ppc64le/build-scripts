@@ -49,7 +49,7 @@ yum install -y gcc gcc-c++ gcc-gfortran git make cmake autoconf automake \
     openjpeg2 openjpeg2-devel snappy snappy-devel xz xz-devel zlib zlib-devel \
     zlib-ng zopfli zopfli-devel zstd libzstd-devel pkgconfig libtool hdf5 hdf5-devel
 
-pip install numpy==1.23.5 cython==0.29.36 pylzma pytest
+pip install numpy==2.2.3 cython==0.29.36 pylzma pytest
 
 # Installing below dependencies from source as those are not able to install from yum 
 # Install libtiff-4.5.1 from source
