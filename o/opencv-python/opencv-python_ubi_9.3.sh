@@ -41,14 +41,14 @@ dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStrea
 dnf config-manager --set-enabled crb
 dnf install -y \
     cmake \
-    gcc \
+    gcc-toolset-13 \
     sudo \
-    gcc-c++ \
     git \
     python${PYTHON_VER} \
     python${PYTHON_VER}-devel \
     python${PYTHON_VER}-pip
 
+source /opt/rh/gcc-toolset-13/enable
 
 # Cloning the repository from remote to local
 if [ -z $PACKAGE_SOURCE_DIR ]; then
