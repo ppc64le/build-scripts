@@ -23,7 +23,7 @@ PACKAGE_VERSION=${1:-11.0.0}
 PACKAGE_URL=https://github.com/python-pillow/Pillow/
 
 # install core dependencies
-yum install -y python3 python3-pip python3-devel gcc git gcc gcc-c++ gcc-toolset-13 
+yum install -y python3 python3-pip python3-devel git  gcc-toolset-13 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 
@@ -31,7 +31,7 @@ export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 yum install -y zlib zlib-devel libjpeg-turbo libjpeg-turbo-devel openblas
 
 # install build tools for wheel generation
-pip install --upgrade pip setuptools wheel pytest numpy
+pip install --upgrade pip setuptools wheel pytest numpy==2.0.2
 
 # clone source repository
 git clone $PACKAGE_URL
