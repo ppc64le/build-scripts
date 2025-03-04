@@ -29,6 +29,7 @@ CURRENT_DIR=$pwd
 echo "Installing dependencies..."
 yum install -y git g++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel gcc-gfortran openblas atlas openblas-devel atlas pkg-config freetype-devel libpng-devel pkgconf-pkg-config cython python3.12 python3.12-devel python3.12-pip
 ln -sf /usr/bin/python3.12 /usr/bin/python3
+ln -sf /usr/bin/pip3.12 /usr/bin/pip
 
 echo "install gcc-toolset13, numpy and export path"
 yum install gcc-toolset-13 -y
