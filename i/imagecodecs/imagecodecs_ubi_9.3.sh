@@ -55,7 +55,7 @@ PYTHON_VERSION=$(python3 -c "import sys; print('.'.join(map(str, sys.version_inf
 IFS='.' read -r MAJOR MINOR <<< "$PYTHON_VERSION"
 if [[ "$MAJOR" -gt 3 ]] || { [[ "$MAJOR" -eq 3 ]] && [[ "$MINOR" -ge 12 ]]; }; then
     echo "Python version is >= 3.11, installing numpy 2.2.2..."
-    pip install cython==0.29.6 numpy==2.2.3 wheel pylzma pytest
+    pip install cython==0.29.36 numpy==2.2.3 wheel pylzma pytest
 else
     echo "Python version is < 3.11, installing numpy 1.23.5..."
     pip install cython==0.29.36 numpy==1.26.4 wheel pylzma pytest
