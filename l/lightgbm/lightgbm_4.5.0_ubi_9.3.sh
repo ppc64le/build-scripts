@@ -27,7 +27,8 @@ PACKAGE_DIR=LightGBM/lightgbm-python
 CURRENT_DIR=$pwd
 
 echo "Installing dependencies..."
-yum install -y git g++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel gcc-gfortran openblas atlas openblas-devel atlas pkg-config freetype-devel libpng-devel pkgconf-pkg-config cython python3.12 python3.12-devel python3.12-pip
+yum install -y git g++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel gcc-gfortran openblas atlas openblas-devel atlas pkg-config freetype-devel libpng-devel pkgconf-pkg-config cython python3 python3-devel python3-pip
+ln -sf /usr/bin/python3 /usr/bin/python3
 
 echo "install gcc-toolset13, numpy and export path"
 yum install gcc-toolset-13 -y
@@ -56,38 +57,38 @@ git checkout $PACKAGE_VERSION
 
 #installing dependencies
 echo "installing scipy.."
-python3.12 -m pip install scipy
+pip install scipy
 
 echo "installing numpy .."
-python3.12 -m pip install  numpy==2.0.2
+pip install  numpy==2.0.2
 
 echo "installling pytz..."
-python3.12 -m pip install pytz
+pip install pytz
 echo "installing pytest...."
-python3.12 -m pip install pytest hypothesis
+pip install pytest hypothesis
 echo "installing cython.."
-python3.12 -m pip install cython
+pip install cython
 echo "installing threadpoolctl and pillow.."
-python3.12 -m pip install threadpoolctl pillow
+pip install threadpoolctl pillow
 echo "installing joblib.."
-python3.12 -m pip install joblib
+pip install joblib
 echo "installing meson-python and ninja.."
-python3.12 -m pip install meson meson-python ninja
+pip install meson meson-python ninja
 echo "installing setuptools.."
-python3.12 -m pip install setuptools setuptools_scm wheel cffi
+pip install setuptools setuptools_scm wheel cffi
 echo "install other necessary dependency"
-python3.12 -m pip install cloudpickle psutil pybind11
+pip install cloudpickle psutil pybind11
 echo "install matplotlib"
-python3.12 -m pip install matplotlib
+pip install matplotlib
 echo "install pandas"
-python3.12 -m pip install pandas
+pip install pandas
 echo "install scikit_build_core"
-python3.12 -m pip install scikit-build-core
+pip install scikit-build-core
 echo "install scikit-learn"
-python3.12 -m pip install scikit-learn==1.5.2
+pip install scikit-learn==1.5.2
 
 #build pyarrow
-python3.12 -m pip install orc
+pip install orc
 echo "Cloning the repository..."
 # Clone the repository
 git clone https://github.com/apache/arrow.git
@@ -117,8 +118,8 @@ echo "Fixes applied."
 echo "Preparing for build..."
 # Prepare for build
 cd ..
-python3.12 -m pip install -r arrow/python/requirements-build.txt
-python3.12 -m pip install -r arrow/python/requirements-test.txt
+pip install -r arrow/python/requirements-build.txt
+pip install -r arrow/python/requirements-test.txt
 mkdir dist
 export ARROW_HOME=$(pwd)/dist
 export LD_LIBRARY_PATH=$ARROW_HOME/lib:$LD_LIBRARY_PATH
@@ -164,18 +165,18 @@ export PYARROW_PARALLEL=4
 export PYARROW_BUNDLE_ARROW_CPP=1
 export LD_LIBRARY_PATH=${ARROW_HOME}/lib:${LD_LIBRARY_PATH}
 export PYARROW_BUNDLE_ARROW_CPP_HEADERS=1
-python3.12 -m pip install pytest==6.2.5
+pip install pytest==6.2.5
 echo "installing numpy ..."
-#python3.12 -m pip install numpy==1.23.5
+#pip install numpy==1.23.5
 echo "installing other necessary dependency ..."
-python3.12 -m pip install --upgrade setuptools wheel
-python3.12 -m pip install wheel hypothesis pytest-lazy-fixture pytz
+pip install --upgrade setuptools wheel
+pip install wheel hypothesis pytest-lazy-fixture pytz
 echo "building package ..."
-CMAKE_PREFIX_PATH=$ARROW_HOME python3.12 setup.py build_ext --inplace
+CMAKE_PREFIX_PATH=$ARROW_HOME python3 setup.py build_ext --inplace
 
 echo "Installing PyArrow Python package..."
 # Install the generated Python package
-CMAKE_PREFIX_PATH=$ARROW_HOME python3.12 setup.py install
+CMAKE_PREFIX_PATH=$ARROW_HOME python3 setup.py install
 echo "PyArrow Python package installed."
 cd ../..
 
@@ -198,10 +199,10 @@ echo "lightgbm dir ....."
 cd lightgbm-python
 
 echo "Running build with MPI condition..."
-python3.12 -m build --wheel --config-setting=cmake.define.USE_MPI=ON --outdir="$CURRENT_DIR"
+python3 -m build --wheel --config-setting=cmake.define.USE_MPI=ON --outdir="$CURRENT_DIR"
 
 echo "installing package ..."
-if ! (python3.12 -m pip install --no-deps .) ; then
+if ! (pip install --no-deps .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
