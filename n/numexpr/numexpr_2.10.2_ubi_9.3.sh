@@ -22,6 +22,7 @@
 PACKAGE_NAME=numexpr
 PACKAGE_VERSION=${1:-v2.10.2}
 PACKAGE_URL=https://github.com/pydata/numexpr.git
+PACKAGE_DIR=./numexpr
 
 # Install dependencies and tools.
 yum install -y git gcc gcc-c++ make wget openssl-devel python-devel python-pip bzip2-devel libffi-devel wget xz zlib-devel cmake openblas-devel
