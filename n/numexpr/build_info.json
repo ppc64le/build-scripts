@@ -1,8 +1,8 @@
 {
-  "maintainer": "Harithanagothu2",
+  "maintainer": "vinodk99",
   "package_name": "numexpr",
   "github_url": "https://github.com/pydata/numexpr.git",
-  "version": "v2.8.4",
+  "version": "v2.10.2",
   "wheel_build" : true,
   "package_dir": "n/numexpr",
   "default_branch": "master",
@@ -10,7 +10,10 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
-  "v2.*.*":{
+  "v2.8.2": {
     "build_script":"numexpr_ubi_9.3.sh"
+  },
+  "*": {
+    "build_script":"numexpr_2.10.2_ubi_9.3.sh"
   }
 }
