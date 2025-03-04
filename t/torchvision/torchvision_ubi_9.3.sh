@@ -40,7 +40,7 @@ dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packa
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/`arch`/os
 dnf config-manager --set-enabled crb
-dnf install -y git cmake ninja-build gcc-toolset-13 rust cargo jq openblas-devel \
+dnf install -y git cmake ninja-build gcc-toolset-13 rust cargo jq \
             libjpeg-devel openjpeg2-devel libpng-devel \
             python$PYTHON_VERSION-devel \
             python$PYTHON_VERSION-pip \
@@ -48,6 +48,11 @@ dnf install -y git cmake ninja-build gcc-toolset-13 rust cargo jq openblas-devel
             python$PYTHON_VERSION-wheel
 
 source /opt/rh/gcc-toolset-13/enable
+
+curl -sL https://ftp2.osuosl.org/pub/ppc64el/openblas/latest/Openblas_0.3.29_ppc64le.tar.gz | tar xvf - -C /usr/local \
+&& export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64:/usr/local/lib:/usr/lib64:/usr/lib
 
 if [ -z $PACKAGE_SOURCE_DIR ]; then
     git clone $PACKAGE_URL -b $PACKAGE_VERSION
@@ -76,7 +81,7 @@ ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip$PYTHON_VERSION
 # Build Dependencies when BUILD_DEPS is unset or set to True
 if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then
     # dependencies for numpy
-    dnf install -y gfortran openblas-devel lapack-devel pkgconfig
+    dnf install -y gfortran lapack-devel pkgconfig
 
     # dependencies for pillow
     dnf install -y libtiff-devel libjpeg-devel openjpeg2-devel zlib-devel \
