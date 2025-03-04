@@ -40,7 +40,7 @@ rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 
 yum install -y gcc gcc-c++ gcc-gfortran git make cmake autoconf automake \
-    python python-devel openssl-devel perl nasm yasm \
+    python3.11 python3.11-devel python3.11-pip openssl-devel perl nasm yasm \
     brotli brotli-devel bzip2 bzip2-devel blosc blosc-devel cfitsio cfitsio-devel \
     CharLS giflib giflib-devel jxrlib jxrlib-devel liblerc lcms2 lcms2-devel \
     libaec libaec-devel libavif libdeflate libdeflate-devel libheif libheif-devel \
@@ -49,7 +49,7 @@ yum install -y gcc gcc-c++ gcc-gfortran git make cmake autoconf automake \
     openjpeg2 openjpeg2-devel snappy snappy-devel xz xz-devel zlib zlib-devel \
     zlib-ng zopfli zopfli-devel zstd libzstd-devel pkgconfig libtool hdf5 hdf5-devel
 
-pip install numpy==2.2.3 cython==0.29.36 pylzma pytest
+pip3.11 install numpy==2.2.3 cython==0.29.36 pylzma pytest
 
 # Installing below dependencies from source as those are not able to install from yum 
 # Install libtiff-4.5.1 from source
@@ -109,7 +109,7 @@ yum install hdf5 hdf5-devel
 git clone https://github.com/kiyo-masui/bitshuffle
 cd bitshuffle
 git submodule update --init
-python setup.py install --h5plugin --h5plugin-dir ~/hdf5/lib --zstd
+python3.11 setup.py install --h5plugin --h5plugin-dir ~/hdf5/lib --zstd
 cd ..
 
 git clone $PACKAGE_URL
@@ -119,7 +119,7 @@ git checkout $PACKAGE_VERSION
 export CFLAGS="-I/usr/include/cfitsio"
 export LDFLAGS="-L/usr/lib64"
 
-if ! pip install . ; then
+if ! pip3.11 install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
