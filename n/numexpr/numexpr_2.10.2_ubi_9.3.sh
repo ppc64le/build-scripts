@@ -38,7 +38,7 @@ pip install numpy==2.0.2
 pip install -e .
 
 #install
-if ! (python setup.py install) ; then
+if ! (python3 setup.py install) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
