@@ -8,7 +8,7 @@
 # Language      : Python, Shell
 # Travis-Check  : True
 # Script License: Apache License 2.0
-# Maintainer    : Salil Verlekar <Salil.Verlekar2@ibm.com>
+# Maintainer    : Stuti Wali <Stuti.Wali@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -18,72 +18,121 @@
 #
 # ----------------------------------------------------------------------------
 
+set -e 
+
 PACKAGE_NAME=opencv-python
 PACKAGE_VERSION=${1:-84}
 PACKAGE_URL=https://github.com/opencv/opencv-python
+CURRENT_DIR=$(pwd)
+PACKAGE_DIR=opencv-python
 
-PYTHON_VERSION=3.11
+
+echo "------------------------Installing dependencies-------------------"
+yum install -y wget
+dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
+dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
+dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
+wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
+mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
+rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
+
+dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 
 # install core dependencies
-yum install -y python$PYTHON_VERSION python$PYTHON_VERSION-pip python$PYTHON_VERSION-devel gcc gcc-c++ gcc-gfortran gcc-toolset-12 openblas-devel git
+yum install -y python python python-pip python-devel gcc-gfortran gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git ffmpeg-free ffmpeg-free-devel ninja-build make cmake
 
-source /opt/rh/gcc-toolset-12/enable
+yum install -y openblas openblas-devel abseil-cpp abseil-cpp-devel protobuf protobuf-devel protobuf-compiler
+
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+gcc --version
+
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+
+pkg-config --modversion libavcodec
+
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
 # clone source repository
+cd $CURRENT_DIR
 git clone --recursive $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init
 
-python$PYTHON_VERSION -m venv opencv-env
-source opencv-env/bin/activate
-
 export ENABLE_HEADLESS=1
+export CMAKE_ARGS="-DBUILD_TESTS=ON
+                   -DCMAKE_BUILD_TYPE=Release
+                   -DWITH_EIGEN=1
+                   -DBUILD_TESTS=1
+                   -DBUILD_ZLIB=0
+                   -DBUILD_TIFF=0
+                   -DBUILD_PNG=0
+                   -DBUILD_JASPER=0
+                   -DWITH_ITT=1
+                   -DBUILD_JPEG=0
+                   -DBUILD_LIBPROTOBUF_FROM_SOURCES=OFF
+                   -DWITH_OPENCL=0
+                   -DWITH_OPENCLAMDFFT=0
+                   -DWITH_OPENCLAMDBLAS=0
+                   -DWITH_OPENCL_D3D11_NV=0
+                   -DWITH_1394=0
+                   -DWITH_CARBON=0
+                   -DWITH_OPENNI=0
+                   -DWITH_FFMPEG=1
+                   -DHAVE_FFMPEG=0
+                   -DWITH_JASPER=0
+                   -DWITH_VA=0
+                   -DWITH_VA_INTEL=0
+                   -DWITH_GSTREAMER=0
+                   -DWITH_MATLAB=0
+                   -DWITH_TESSERACT=0
+                   -DWITH_VTK=0
+                   -DWITH_GTK=0
+                   -DWITH_GPHOTO2=0
+                   -DINSTALL_C_EXAMPLES=0
+                   -DBUILD_PROTOBUF=OFF
+                   -DPROTOBUF_UPDATE_FILES=ON"
 
 # install dependency
-python3 -m pip install numpy
-# fix header file related error as mentioned on https://github.com/opencv/opencv/issues/11709
-ln -s /usr/lib64/python$PYTHON_VERSION/site-packages/numpy/core/include/numpy/ /usr/include/numpy
+python -m pip install --upgrade pip
+pip install numpy pytest scikit-build setuptools build wheel
 
-# build wheel in opencv-python/wheels folder
-if ! python3 -m pip wheel . --verbose -w wheels; then
-        echo "------------------$PACKAGE_NAME:build_fails---------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
-        exit 1
-else
-        echo "------------------$PACKAGE_NAME:build_success-------------------------"
-        echo "$PACKAGE_VERSION $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_Success"
+
+export C_INCLUDE_PATH=$(python -c "import numpy; print(numpy.get_include())")
+export CPLUS_INCLUDE_PATH=$C_INCLUDE_PATH
+ln -sf $CURRENT_DIR/opencv-python/tests/SampleVideo_1280x720_1mb.mp4 SampleVideo_1280x720_1mb.mp4
+
+echo "-------------------------------------------------------Building the package-------------------------------------"
+
+#Build package
+if ! pip install -e . ; then
+    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    exit 1
 fi
 
-cd ..
+echo "---------------------------------------------------Print ffmpeg and cv2 version--------------------------------------------------"
+python -c "import cv2; print(cv2.__version__)"
+python -c "import cv2; print(cv2.getBuildInformation())" | grep -i ffmpeg
 
-# install wheel
-if ! python3 -m pip install opencv-python/wheels/opencv_python_headless*.whl; then
-     echo "------------------$PACKAGE_NAME::Install_Fail-------------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Install_Fail"
-     exit 2
+echo "---------------------------------------------------Building the wheel--------------------------------------------------"
+
+python setup.py bdist_wheel --dist-dir $CURRENT_DIR
+
+echo "----------------------------------------------Testing pkg-------------------------------------------------------"
+
+#Test package
+if ! (python -m unittest discover -s tests) ; then
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    exit 2
 else
-     echo "------------------$PACKAGE_NAME::Install_Success---------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Install_Success"
+    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    exit 0
 fi
 
-# test after installation
-python3 -c "import cv2 as cv; print(cv.__version__)"
-if [ $? == 0 ]; then
-     echo "------------------$PACKAGE_NAME::Test_Success---------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Test_Success"
-     deactivate
-     exit 0
-else
-     echo "------------------$PACKAGE_NAME::Test_Fail-------------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Test_Fail"
-     exit 2
-fi
