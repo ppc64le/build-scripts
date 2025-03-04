@@ -36,8 +36,16 @@ pip3.12 --version
 
 # Upgrade pip and install required dependencies
 python3.12 -m pip install --upgrade pip 
-python3.12 -m pip install wheel meson pytest requests ruamel-yaml nbformat testfixtures mock nbconvert
-python3.12 -m pip install numpy==1.26.4 scipy==1.13.1 Cython 
+echo "installing wheel meson pytest requests ruamel-yaml..."
+python3.12 -m pip install wheel meson pytest requests ruamel-yaml 
+echo "installing nbformat testfixtures mock nbconvert..."
+python3.12 -m pip install nbformat testfixtures mock nbconvert
+echo "installing numpy..."
+python3.12 -m pip install numpy==1.26.4 
+echo "installing scipy..."
+python3.12 -m pip install scipy==1.13.1
+echo "installing cython..."
+python3.12 -m pip install Cython
 
 # Clone the repository
 git clone $PACKAGE_URL $PACKAGE_DIR
