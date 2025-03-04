@@ -57,7 +57,7 @@ if [[ "$MAJOR" -gt 3 ]] || { [[ "$MAJOR" -eq 3 ]] && [[ "$MINOR" -ge 12 ]]; }; t
     echo "Python version is >= 3.11, installing numpy 2.2.2..."
     pip install cython==0.29.6 numpy==2.2.3 wheel pylzma pytest
 else
-    echo "Python version is < 3.12, installing numpy 1.23.5..."
+    echo "Python version is < 3.11, installing numpy 1.23.5..."
     pip install cython==0.29.36 numpy==1.26.4 wheel pylzma pytest
 fi
 # Installing below dependencies from source as those are not able to install from yum
