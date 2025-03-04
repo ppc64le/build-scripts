@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-v2.8.4}
 PACKAGE_URL=https://github.com/pydata/numexpr.git
 
 # Install dependencies and tools.
-yum install -y git gcc gcc-c++ make wget openssl-devel python-devel bzip2-devel libffi-devel wget xz zlib-devel cmake openblas-devel
+yum install -y git gcc gcc-c++ make wget openssl-devel python3.11-devel python3.11-pip bzip2-devel libffi-devel wget xz zlib-devel cmake openblas-devel
 
 #clone repository
 git clone $PACKAGE_URL
@@ -32,13 +32,13 @@ cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #install pytest
-pip install pytest
+pip3.11 install pytest
 
-pip install numpy==2.0.2
-pip install -e .
+pip3.11 install numpy==2.0.2
+pip3.11 install -e .
 
 #install
-if ! (python3 setup.py install) ; then
+if ! (python3.11 setup.py install) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
