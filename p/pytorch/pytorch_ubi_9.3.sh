@@ -33,7 +33,6 @@ export BLAS=${BLAS:-OpenBLAS}
 WORKDIR=$(pwd)
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
-
 dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
     https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
     https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
