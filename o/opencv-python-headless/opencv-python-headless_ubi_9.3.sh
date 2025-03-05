@@ -96,11 +96,10 @@ export CMAKE_ARGS="-DBUILD_TESTS=ON
 
 # install dependency
 python -m pip install --upgrade pip
-pip install numpy pytest scikit-build setuptools build wheel
-
+pip install numpy==2.0.2 pytest scikit-build setuptools build wheel
 
 export C_INCLUDE_PATH=$(python -c "import numpy; print(numpy.get_include())")
-export CPLUS_INCLUDE_PATH=$C_INCLUDE_PATH
+export CPLUS_INCLUDE_PATH=$C_INCLUDE_PATHch
 ln -sf $CURRENT_DIR/opencv-python/tests/SampleVideo_1280x720_1mb.mp4 SampleVideo_1280x720_1mb.mp4
 
 echo "-------------------------------------------------------Building the package-------------------------------------"
