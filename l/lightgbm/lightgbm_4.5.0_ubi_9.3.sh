@@ -34,6 +34,8 @@ ln -sf /usr/bin/pip3.12 /usr/bin/pip
 echo "install gcc-toolset13, numpy and export path"
 yum install gcc-toolset-13 -y
 export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+echo "enabling gcc13-toolset"
+source /opt/rh/gcc-toolset-13/enable
 export LD_LIBRARY_PATH=${SITE_PACKAGE_PATH}/openblas/lib:${LD_LIBRARY_PATH}
 export PKG_CONFIG_PATH="${SITE_PACKAGE_PATH}/openblas/lib/pkgconfig"
 
@@ -93,7 +95,7 @@ echo "Cloning the repository..."
 # Clone the repository
 git clone https://github.com/apache/arrow.git
 cd arrow
-git checkout apache-arrow-11.0.0
+git checkout apache-arrow-18.1.0
 git submodule update --init
 echo "Repository cloned and checked out to version"
 
