@@ -63,7 +63,6 @@ pip install scipy
 
 echo "installing numpy .."
 pip install  numpy==2.0.2
-
 echo "installling pytz..."
 pip install pytz
 echo "installing pytest...."
