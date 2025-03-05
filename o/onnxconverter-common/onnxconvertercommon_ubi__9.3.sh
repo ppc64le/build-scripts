@@ -41,12 +41,27 @@ echo "Installing protobuf-c..."
 make install
 cd ../..
 
+# Clone and install onnxconverter-common
+echo "Cloning and installing onnxconverter-common..."
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
+git submodule update --init --recursive
+
+pip install cmake setuptools ninja wheel pytest
+pip install numpy==1.24.3 onnx==1.17.0 nbval pythran scipy cython onnxmltools
+
+sed -i 's/\bprotobuf==[^ ]*\b/protobuf==4.25.3/g' pyproject.toml
+sed -i 's/\"onnx\"/\"onnx==1.17.0\"/' pyproject.toml
+sed -i "s/version=version_str/version=version_str+'+opence'/g" setup.py
+sed -i "/tool.setuptools.dynamic/d" pyproject.toml
+sed -i "/onnxconverter_common.__version__/d" pyproject.toml
+cd ..
 # Clone and install onnxruntime
 echo "Cloning and installing onnxruntime..."
 git clone https://github.com/microsoft/onnxruntime
 cd onnxruntime
 git checkout d1fb58b0f2be7a8541bfa73f8cbb6b9eba05fb6b
-
 # Build the onnxruntime package and create the wheel
 echo "Building onnxruntime..."
 ./build.sh \
@@ -70,22 +85,7 @@ pip3 install ./*.whl
 cd ..
 rm -rf onnxruntime
 
-# Clone and install onnxconverter-common
-echo "Cloning and installing onnxconverter-common..."
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME
-git checkout $PACKAGE_VERSION
-git submodule update --init --recursive
-
-pip install cmake setuptools ninja wheel pytest
-pip install numpy==1.24.3 onnx==1.17.0 nbval pythran scipy cython onnxmltools
-
-sed -i 's/\bprotobuf==[^ ]*\b/protobuf==4.25.3/g' pyproject.toml
-sed -i 's/\"onnx\"/\"onnx==1.17.0\"/' pyproject.toml
-sed -i "s/version=version_str/version=version_str+'+opence'/g" setup.py
-sed -i "/tool.setuptools.dynamic/d" pyproject.toml
-sed -i "/onnxconverter_common.__version__/d" pyproject.toml
-
+cd $PACKAGE_DIR
 if ! python3 setup.py install; then
         echo "------------------$PACKAGE_NAME:wheel_built_fails---------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
