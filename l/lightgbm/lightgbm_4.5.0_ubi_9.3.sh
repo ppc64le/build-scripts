@@ -58,7 +58,7 @@ git checkout $PACKAGE_VERSION
 
 #installing dependencies
 echo "installing scipy.."
-pip install scipy==1.15.1
+pip install scipy
 
 echo "installing numpy .."
 pip install  numpy==2.0.2
