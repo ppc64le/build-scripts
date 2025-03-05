@@ -39,7 +39,7 @@ rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 
 # install core dependencies
-yum install -y python python python-pip python-devel gcc-gfortran gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git ffmpeg-free ffmpeg-free-devel ninja-build make cmake
+yum install -y python python python-pip python-devel  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git ffmpeg-free ffmpeg-free-devel ninja-build make cmake
 
 yum install -y openblas openblas-devel abseil-cpp abseil-cpp-devel protobuf protobuf-devel protobuf-compiler
 
