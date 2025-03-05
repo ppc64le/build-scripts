@@ -27,7 +27,7 @@ PACKAGE_DIR=LightGBM/lightgbm-python
 CURRENT_DIR=$pwd
 
 echo "Installing dependencies..."
-yum install -y git cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel openblas atlas openblas-devel atlas pkg-config freetype-devel libpng-devel pkgconf-pkg-config cython python3.12 python3.12-devel python3.12-pip
+yum install -y git g++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel gcc-gfortran libjpeg-devel openblas atlas openblas-devel atlas pkg-config freetype-devel libpng-devel pkgconf-pkg-config cython python3.12 python3.12-devel python3.12-pip
 ln -sf /usr/bin/python3.12 /usr/bin/python3
 ln -sf /usr/bin/pip3.12 /usr/bin/pip
 
@@ -167,8 +167,6 @@ export PYARROW_BUNDLE_ARROW_CPP=1
 export LD_LIBRARY_PATH=${ARROW_HOME}/lib:${LD_LIBRARY_PATH}
 export PYARROW_BUNDLE_ARROW_CPP_HEADERS=1
 pip install pytest==6.2.5
-#echo "installing numpy ..."
-#pip install numpy==1.23.5
 echo "installing other necessary dependency ..."
 pip install --upgrade setuptools wheel
 pip install wheel hypothesis pytest-lazy-fixture pytz
