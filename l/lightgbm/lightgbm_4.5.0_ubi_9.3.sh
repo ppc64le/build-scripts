@@ -37,7 +37,6 @@ export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=${SITE_PACKAGE_PATH}/openblas/lib:${LD_LIBRARY_PATH}
 export PKG_CONFIG_PATH="${SITE_PACKAGE_PATH}/openblas/lib/pkgconfig"
 
-
 echo "Installing openmpi"
 yum install -y wget
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
