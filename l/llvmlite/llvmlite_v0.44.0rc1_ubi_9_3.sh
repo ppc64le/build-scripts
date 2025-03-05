@@ -42,13 +42,12 @@ pip install setuptools pip ninja wheel build
 export LLVM_CONFIG="/llvm-project/build/bin/llvm-config"
 
 # Build LLVM project
-PACKAGE_DIR
 cd ${PACKAGE_DIR}/llvmlite/conda-recipes/llvmlite
 chmod +x build.sh  # Make sure the script is executable
 ./build.sh 
 
 # Build llvmlite
-cd ../llvmlite
+cd ../..
 export CXXFLAGS="-I/llvm-project/llvm/include"
 export LLVM_CONFIG=/llvm-project/build/bin/llvm-config
 
