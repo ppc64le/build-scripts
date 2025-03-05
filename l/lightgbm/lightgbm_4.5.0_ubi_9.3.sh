@@ -27,7 +27,7 @@ PACKAGE_DIR=LightGBM/lightgbm-python
 CURRENT_DIR=$pwd
 
 echo "Installing dependencies..."
-yum install -y git g++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel gcc-gfortran openblas atlas openblas-devel atlas pkg-config freetype-devel libpng-devel pkgconf-pkg-config cython python3.12 python3.12-devel python3.12-pip
+yum install -y git cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel openblas atlas openblas-devel atlas pkg-config freetype-devel libpng-devel pkgconf-pkg-config cython python3.12 python3.12-devel python3.12-pip
 ln -sf /usr/bin/python3.12 /usr/bin/python3
 ln -sf /usr/bin/pip3.12 /usr/bin/pip
 
@@ -58,7 +58,7 @@ git checkout $PACKAGE_VERSION
 
 #installing dependencies
 echo "installing scipy.."
-pip install scipy
+pip install scipy==1.15.1
 
 echo "installing numpy .."
 pip install  numpy==2.0.2
