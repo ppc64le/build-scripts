@@ -27,12 +27,13 @@ LLVM_PROJECT_GIT_TAG="llvmorg-15.0.7"
 PACKAGE_DIR=/llvmlite
 
 # Install necessary system dependencies
-yum install -y git g++ make wget openssl-devel bzip2-devel libffi-devel zlib-devel cmake python3 python3-devel python3-pip
+yum install -y git g++ make wget openssl-devel bzip2-devel libffi-devel zlib-devel cmake clang libedit-devel ncurses-devel python3 python3-devel python3-pip
 yum install gcc-toolset-13 -y
 export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+source /opt/rh/gcc-toolset-13/enable
 
 # Clone the repositories
-git clone --depth 1 --branch ${LLVM_PROJECT_GIT_TAG} ${LLVM_PROJECT_GIT_URL}
+git clone -b ${LLVM_PROJECT_GIT_TAG} ${LLVM_PROJECT_GIT_URL}
 cd llvm-project
 git submodule update --init --recursive
 cd ..
