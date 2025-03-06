@@ -1,0 +1,19 @@
+{
+  "maintainer": "aastha-sharma2",
+  "package_name": "LightGBM",
+  "github_url": "https://github.com/microsoft/LightGBM.git",
+  "version": "v4.2.0",
+  "default_branch": "master",
+  "package_dir": "l/lightgbm",
+  "build_script": "lightgbm_4.2.0_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "wheel_build": true,
+  "v3.2.2": {
+    "build_script": "lightgbm_ubi_9.3.sh"
+  },
+  "*": {
+     "build_script": "lightgbm_4.2.0_ubi_9.3.sh"
+    }
+}

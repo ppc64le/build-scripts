@@ -1,4 +1,3 @@
-
 #!/bin/bash -e
 
 PYTHON_VERSION=$1
@@ -6,16 +5,17 @@ BUILD_SCRIPT_PATH=${2:-""}
 EXTRA_ARGS="${@:3}" # Capture all additional arguments passed to the script
 CURRENT_DIR="${PWD}"
 
+#install gcc 
+yum install gcc-toolset-13 -y
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+gcc --version
+
 # Temporary build script path
 if [ -n "$BUILD_SCRIPT_PATH" ]; then
     TEMP_BUILD_SCRIPT_PATH="temp_build_script.sh"
 else
     TEMP_BUILD_SCRIPT_PATH=""
 fi
-
-#install gcc
-yum install gcc-toolset-13 -y
-export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 # Function to install a specific Python version
 install_python_version() {
@@ -29,7 +29,7 @@ install_python_version() {
     "3.10")
         if ! python3.10 --version &>/dev/null; then
             echo "Installing dependencies required for python installation..."
-            yum install -y sudo zlib-devel wget ncurses git
+            yum install -y sudo zlib-devel wget ncurses git 
             echo "Installing..."
             yum install -y gcc-c++ make cmake openssl-devel 
             echo "Installing..."
@@ -50,7 +50,7 @@ install_python_version() {
     "3.13")
         if ! python3.13 --version &>/dev/null; then
             echo "Installing dependencies required for python installation..."
-            yum install -y sudo zlib-devel wget ncurses git
+            yum install -y sudo zlib-devel wget ncurses git 
             echo "Installing..."
             yum install -y gcc-c++ make cmake openssl-devel 
             echo "Installing..."
