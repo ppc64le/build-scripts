@@ -1,14 +1,14 @@
 #!/bin/bash -e
-# ----------------------------------------------------------------------------
-# 
-# Package       : h5py
-# Version       : 3.7.0
-# Source repo   : https://github.com/h5py/h5py.git
-# Tested on     : UBI:9.3
+# -----------------------------------------------------------------------------
+#
+# Package          : h5py
+# Version          : 3.13.0
+# Source repo      : https://github.com/h5py/h5py.git
+# Tested on	: UBI:9.3
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Haritha Nagothu <haritha.nagothu2@ibm.com>
+# Maintainer    : ICH <shubham-dayma-ibm>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -18,46 +18,106 @@
 #
 # ----------------------------------------------------------------------------
 
-#variables
 PACKAGE_NAME=h5py
-PACKAGE_VERSION=${1:-3.7.0}
+PACKAGE_VERSION=${1:-3.13.0}
 PACKAGE_URL=https://github.com/h5py/h5py.git
+PACKAGE_DIR=h5py
 
-# Install dependencies and tools.
-yum install -y wget gcc gcc-c++ gcc-gfortran git make  python-devel  openssl-devel unzip libzip-devel.ppc64le gzip.ppc64le
-yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-yum install -y gcc-c++ cmake make pkgconfig gcc-gfortran hdf5 hdf5-devel
+yum install -y git  python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo cmake
+pip3 install pytest tox nox
+PATH=$PATH:/usr/local/bin/
 
-#clone repository 
-git clone $PACKAGE_URL
-cd  $PACKAGE_NAME
-git checkout $PACKAGE_VERSION
+OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
+SOURCE=Github
 
-python3 -m pip install Cython==0.29.36 numpy==1.26.3 pkgconfig pytest-mpi 
-python3 -m pip install wheel oldest-supported-numpy
-
-#install
-if ! (python3 setup.py install) ; then
-    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
-    exit 1
+# Install rust
+if ! command -v rustc &> /dev/null
+then
+    wget https://static.rust-lang.org/dist/rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
+    tar -xzf rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
+    cd rust-1.75.0-powerpc64le-unknown-linux-gnu
+    sudo ./install.sh
+    export PATH=$HOME/.cargo/bin:$PATH
+    rustc -V
+    cargo -V
+    cd ../
 fi
 
-export PY_IGNORE_IMPORTMISMATCH=1
-cd h5py/tests
-
-#test
-#skipping the some testcase as it is failing on x_86 also.
-
-if ! ( pytest --ignore=test_dataset.py  --ignore=test_h5d_direct_chunk.py --ignore=test_h5t.py --ignore=test_vds/test_highlevel_vds.py --ignore=test_file.py); then
-    echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
-    exit 2
+if [[ "$PACKAGE_URL" == *github.com* ]]; then
+    # Use git clone if it's a Git repository
+    if [ -d "$PACKAGE_DIR" ]; then
+        cd "$PACKAGE_DIR" || exit
+    else
+        if ! git clone "$PACKAGE_URL" "$PACKAGE_DIR"; then
+            echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
+            echo "$PACKAGE_URL $PACKAGE_NAME"
+            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Clone_Fails"  
+            exit 1
+        fi
+        cd "$PACKAGE_DIR" || exit
+        git checkout "$PACKAGE_VERSION" || exit
+    fi
 else
-    echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
+    # If it's not a Git repository, download and untar
+    if [ -d "$PACKAGE_DIR" ]; then
+        cd "$PACKAGE_DIR" || exit
+    else
+        # Use download and untar if it's not a Git repository
+        if ! curl -L "$PACKAGE_URL" -o "$PACKAGE_DIR.tar.gz"; then
+            echo "------------------$PACKAGE_URL:download_fails---------------------------------------"
+            echo "$PACKAGE_URL $PACKAGE_NAME"
+            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Download_Fails"  
+            exit 1
+        fi
+        mkdir "$PACKAGE_DIR"
+
+        if ! tar -xzf "$PACKAGE_DIR.tar.gz" -C "$PACKAGE_DIR" --strip-components=1; then
+            echo "------------------$PACKAGE_NAME:untar_fails---------------------------------------"
+            echo "$PACKAGE_URL $PACKAGE_NAME"
+            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Untar_Fails"  
+            exit 1
+        fi
+
+        cd "$PACKAGE_DIR" || exit
+    fi
+fi
+
+# Install via pip3
+if !  python3 -m pip install ./; then
+        echo "------------------$PACKAGE_NAME:install_fails------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"  
+        exit 1
+fi
+
+# Run Tox
+python3 -m tox -e py39
+if [ $? -eq 0 ]; then
+    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
     exit 0
-fi	
+fi
+
+# Run Pytest
+python3 -m pytest
+if [ $? -eq 0 ]; then
+    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
+    exit 0
+fi
+
+# Run Nox
+python3 -m nox
+if [ $? -eq 0 ]; then
+    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
+    exit 0
+else
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"
+    exit 2
+fi
