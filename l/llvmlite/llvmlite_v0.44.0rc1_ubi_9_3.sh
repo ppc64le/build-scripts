@@ -49,7 +49,7 @@ cp /llvmlite/conda-recipes/llvmdev/build.sh .
 chmod 777 build.sh && ./build.sh
 
 # Build llvmlite
-cd ../..
+cd ..
 export CXXFLAGS="-I/llvm-project/llvm/include"
 export LLVM_CONFIG=/llvm-project/build/bin/llvm-config
 
