@@ -1,16 +1,13 @@
 {
-  "maintainer": "aastha-sharma2",
-  "package_name": "psutil",
-  "github_url": "https://github.com/giampaolo/psutil.git",
-  "version": "5.9.0",
-  "wheel_build" : true,
-  "package_dir": "p/psutil",
-  "default_branch": "master",
-  "build_script": "psutil_ubi_9.3.sh",
-  "docker_build": false,
-  "validate_build_script": true,
-  "use_non_root_user": "false",
-  "*": {
-    "build_script": "psutil_ubi_9.3.sh"
-  }
+   "maintainer": "shubham-dayma-ibm",
+   "package_name": "psutil",
+   "github_url": "https://github.com/giampaolo/psutil.git",
+   "version": "release-6.0.0",
+   "default_branch": "master",
+   "build_script": "psutil_ubi_9.3.sh",
+   "package_dir": "p/psutil",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
 }
