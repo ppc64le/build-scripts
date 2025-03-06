@@ -55,7 +55,8 @@ export LLVM_CONFIG="/llvm-project/build/bin/llvm-config"
 # Build LLVM project
 git apply /llvmlite/conda-recipes/llvm15-clear-gotoffsetmap.patch
 git apply /llvmlite/conda-recipes/llvm15-remove-use-of-clonefile.patch
-cd /llvmlite/conda-recipes/llvmlite
+cp /llvmlite/conda-recipes/llvmdev/build.sh .
+#cd /llvmlite/conda-recipes/llvmlite
 chmod +x build.sh
 ./build.sh
 
