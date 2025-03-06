@@ -1,0 +1,13 @@
+{
+   "maintainer": "shubham-dayma-ibm",
+   "package_name": "libtiff",
+   "github_url": "https://github.com/pearu/pylibtiff",
+   "version": "v0.6.1",
+   "default_branch": "master",
+   "build_script": "libtiff_ubi_9.3.sh",
+   "package_dir": "l/libtiff",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
