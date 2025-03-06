@@ -2,13 +2,13 @@
 # ----------------------------------------------------------------------------
 #
 # Package	    : 3scale-operator
-# Version	    : 3scale-2.14.1-GA
+# Version	    : 3scale-2.15.1-GA
 # Source repo	: https://github.com/3scale/3scale-operator
-# Tested on	    : UBI:9.3
+# Tested on	    : UBI:9.5
 # Language      : Go
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Shubham Bhagwat (shubham.bhagwat@ibm.com)
+# Maintainer	: Shubham Gupta (Shubham.Gupta43@ibm.com)
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,14 +19,15 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=3scale-operator
-PACKAGE_VERSION=${1:-3scale-2.14.1-GA}
+PACKAGE_VERSION=${1:-3scale-2.15.1-GA}
 PACKAGE_URL=https://github.com/3scale/3scale-operator
 
 #Install the required dependencies
 yum install git gcc make wget tar zip -y
 
 # Install Go and setup working directory
-GO_VERSION=1.19.1
+#with {Version : 3scale-2.15.1-GA}, go version 1.20+ is required
+GO_VERSION=1.20.1
 wget https://golang.org/dl/go$GO_VERSION.linux-ppc64le.tar.gz && \
 tar -C /usr/local -xzf go$GO_VERSION.linux-ppc64le.tar.gz && \
 rm -rf go$GO_VERSION.linux-ppc64le.tar.gz
