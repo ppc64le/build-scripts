@@ -37,6 +37,13 @@ git clone -b ${LLVM_PROJECT_GIT_TAG} ${LLVM_PROJECT_GIT_URL}
 cd llvm-project
 git submodule update --init --recursive
 cd ..
+# Check if the RuntimeDyldELF.cpp file exists at the expected path
+if [ ! -f /llvm-project/llvm/lib/ExecutionEngine/RuntimeDyld/RuntimeDyldELF.cpp ]; then
+  echo "Error: RuntimeDyldELF.cpp not found in the expected location!"
+  exit 1
+else
+  echo "RuntimeDyldELF.cpp found!"
+fi
 git clone -b ${PACKAGE_TAG} ${PACKAGE_GIT_URL}
 
 # Install additional dependencies
