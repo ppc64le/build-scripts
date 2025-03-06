@@ -2,57 +2,122 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : lxml
-# Version          : 4.9.2
+# Version          : lxml-5.3.1
 # Source repo      : https://github.com/lxml/lxml.git
-# Tested on        : UBI:9.3
-# Language         : Python
-# Travis-Check     : True
-# Script License   : Apache License, Version 2 or later
-# Maintainer       : Aastha Sharma <aastha.sharma4@ibm.com>
+# Tested on	: UBI:9.3
+# Language      : Python
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
+# Maintainer    : ICH <shubham-dayma-ibm>
 #
-# Disclaimer       : This script has been tested in root mode on given
-# ==========         platform using the mentioned version of the package.
-#                    It may not work as expected with newer versions of the
-#                    package and/or distribution. In such case, please
-#                    contact "Maintainer" of this script.
+# Disclaimer: This script has been tested in root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
 #
-# ---------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 
-# Variables
 PACKAGE_NAME=lxml
-PACKAGE_VERSION=${1:-lxml-4.9.2}
+PACKAGE_VERSION=${1:-lxml-5.3.1}
 PACKAGE_URL=https://github.com/lxml/lxml.git
+PACKAGE_DIR=lxml
 
-# Install necessary system dependencies
-yum install -y --allowerasing make g++ git gcc gcc-c++ wget openssl-devel bzip2-devel libffi-devel zlib-devel python-devel python-pip libxml2-devel libxslt-devel zlib-devel libffi-devel
+yum install -y git  python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo cmake
+pip3 install pytest tox nox
+PATH=$PATH:/usr/local/bin/
 
-# Clone the repository
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME
-git checkout $PACKAGE_VERSION
+OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
+SOURCE=Github
 
-
-# Install additional dependencies
-pip install wheel pytest cython==0.29.22
-python3 setup.py build_ext --inplace
-
-#install
-if ! pip install . ; then
-    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
-    exit 1
+# Install rust
+if ! command -v rustc &> /dev/null
+then
+    wget https://static.rust-lang.org/dist/rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
+    tar -xzf rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
+    cd rust-1.75.0-powerpc64le-unknown-linux-gnu
+    sudo ./install.sh
+    export PATH=$HOME/.cargo/bin:$PATH
+    rustc -V
+    cargo -V
+    cd ../
 fi
 
-#run tests skipping few tests failing on both ppc64le and x86
-if ! pytest -k "not test_incremental_xmlfile and not test_io and not test_elementtree and not test_autolink and not test_basic and not test_clean and not test_clean_embed and not test_feedparser_data and not test_formfill and not test_forms and not test_rewritelinks and not test_etree and not _XIncludeTestCase" -p no:warnings; then
-    echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
-    exit 2
+if [[ "$PACKAGE_URL" == *github.com* ]]; then
+    # Use git clone if it's a Git repository
+    if [ -d "$PACKAGE_DIR" ]; then
+        cd "$PACKAGE_DIR" || exit
+    else
+        if ! git clone "$PACKAGE_URL" "$PACKAGE_DIR"; then
+            echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
+            echo "$PACKAGE_URL $PACKAGE_NAME"
+            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Clone_Fails"  
+            exit 1
+        fi
+        cd "$PACKAGE_DIR" || exit
+        git checkout "$PACKAGE_VERSION" || exit
+    fi
 else
-    echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
+    # If it's not a Git repository, download and untar
+    if [ -d "$PACKAGE_DIR" ]; then
+        cd "$PACKAGE_DIR" || exit
+    else
+        # Use download and untar if it's not a Git repository
+        if ! curl -L "$PACKAGE_URL" -o "$PACKAGE_DIR.tar.gz"; then
+            echo "------------------$PACKAGE_URL:download_fails---------------------------------------"
+            echo "$PACKAGE_URL $PACKAGE_NAME"
+            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Download_Fails"  
+            exit 1
+        fi
+        mkdir "$PACKAGE_DIR"
+
+        if ! tar -xzf "$PACKAGE_DIR.tar.gz" -C "$PACKAGE_DIR" --strip-components=1; then
+            echo "------------------$PACKAGE_NAME:untar_fails---------------------------------------"
+            echo "$PACKAGE_URL $PACKAGE_NAME"
+            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Untar_Fails"  
+            exit 1
+        fi
+
+        cd "$PACKAGE_DIR" || exit
+    fi
+fi
+
+# Install via pip3
+if !  python3 -m pip install ./; then
+        echo "------------------$PACKAGE_NAME:install_fails------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"  
+        exit 1
+fi
+
+# Run Tox
+python3 -m tox -e py39
+if [ $? -eq 0 ]; then
+    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
     exit 0
+fi
+
+# Run Pytest
+python3 -m pytest
+if [ $? -eq 0 ]; then
+    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
+    exit 0
+fi
+
+# Run Nox
+python3 -m nox
+if [ $? -eq 0 ]; then
+    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
+    exit 0
+else
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"
+    exit 2
 fi
