@@ -32,7 +32,7 @@ yum install gcc-toolset-13 -y
 export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 # Clone the repositories
-git clone -b ${LLVM_PROJECT_GIT_TAG} ${LLVM_PROJECT_GIT_URL}
+git clone --recurse-submodules -b ${LLVM_PROJECT_GIT_TAG} ${LLVM_PROJECT_GIT_URL}
 git clone -b ${PACKAGE_TAG} ${PACKAGE_GIT_URL}
 
 # Install additional dependencies
