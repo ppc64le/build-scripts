@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : matplotlib
-# Version       : v3.9.2
-# Source repo   : https://github.com/matplotlib/matplotlib.git
-# Tested on     : UBI 9.3
-# Language      : Python, C++, Jupyter Notebook
+# Package          : matplotlib
+# Version          : v3.10.1
+# Source repo      : https://github.com/matplotlib/matplotlib.git
+# Tested on	: UBI:9.3
+# Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Chandan.Abhyankar@ibm.com
+# Maintainer    : ICH <shubham-dayma-ibm>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -18,65 +18,106 @@
 #
 # ----------------------------------------------------------------------------
 
-yum install -y python311 python3.11-devel python3.11-pip git gcc-c++ cmake wget
-yum install -y openblas-devel ninja-build
-yum install -y zlib zlib-devel libjpeg-turbo libjpeg-turbo-devel
-
-# Clone the matplotlib package.
 PACKAGE_NAME=matplotlib
-PACKAGE_VERSION=${1:-v3.9.2}
+PACKAGE_VERSION=${1:-v3.10.1}
 PACKAGE_URL=https://github.com/matplotlib/matplotlib.git
+PACKAGE_DIR=matplotlib
 
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME/
-git checkout $PACKAGE_VERSION
-git submodule update --init
+yum install -y git  python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo cmake
+pip3 install pytest tox nox
+PATH=$PATH:/usr/local/bin/
 
-# Download qhull
-mkdir -p build
-wget 'http://www.qhull.org/download/qhull-2020-src-8.0.2.tgz'
-gunzip qhull-2020-src-8.0.2.tgz
-tar -xvf qhull-2020-src-8.0.2.tar --no-same-owner
-mv qhull-2020.2 build/
-rm -f qhull-2020-src-8.0.2.tar
+OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
+SOURCE=Github
 
-# Setup virtual environment for python
-python3.11 -m venv matplotlib-env
-source matplotlib-env/bin/activate
-pip3.11 install pytest hypothesis build meson pybind11 meson-python
-
-# Build and Install the package (This is dependent on numpy,pillow)
-python3.11 -m build
-python3.11 -m pip install -e .
-
-if [ $? == 0 ]; then
-     echo "------------------$PACKAGE_NAME::Build_Pass---------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Build_Success"
-else
-     echo "------------------$PACKAGE_NAME::Build_Fail-------------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Build_Fail"
-     exit 1
+# Install rust
+if ! command -v rustc &> /dev/null
+then
+    wget https://static.rust-lang.org/dist/rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
+    tar -xzf rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
+    cd rust-1.75.0-powerpc64le-unknown-linux-gnu
+    sudo ./install.sh
+    export PATH=$HOME/.cargo/bin:$PATH
+    rustc -V
+    cargo -V
+    cd ../
 fi
 
-# Test the package
-python3.11 -c "import matplotlib; print(matplotlib.__file__)"
-
-pytest ./lib/matplotlib/tests/test_units.py
-
-if [ $? == 0 ]; then
-     echo "------------------$PACKAGE_NAME::Test_Pass---------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Test_Success"
-     exit 0
+if [[ "$PACKAGE_URL" == *github.com* ]]; then
+    # Use git clone if it's a Git repository
+    if [ -d "$PACKAGE_DIR" ]; then
+        cd "$PACKAGE_DIR" || exit
+    else
+        if ! git clone "$PACKAGE_URL" "$PACKAGE_DIR"; then
+            echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
+            echo "$PACKAGE_URL $PACKAGE_NAME"
+            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Clone_Fails"  
+            exit 1
+        fi
+        cd "$PACKAGE_DIR" || exit
+        git checkout "$PACKAGE_VERSION" || exit
+    fi
 else
-     echo "------------------$PACKAGE_NAME::Test_Fail-------------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Test_Fail"
-     exit 2
+    # If it's not a Git repository, download and untar
+    if [ -d "$PACKAGE_DIR" ]; then
+        cd "$PACKAGE_DIR" || exit
+    else
+        # Use download and untar if it's not a Git repository
+        if ! curl -L "$PACKAGE_URL" -o "$PACKAGE_DIR.tar.gz"; then
+            echo "------------------$PACKAGE_URL:download_fails---------------------------------------"
+            echo "$PACKAGE_URL $PACKAGE_NAME"
+            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Download_Fails"  
+            exit 1
+        fi
+        mkdir "$PACKAGE_DIR"
+
+        if ! tar -xzf "$PACKAGE_DIR.tar.gz" -C "$PACKAGE_DIR" --strip-components=1; then
+            echo "------------------$PACKAGE_NAME:untar_fails---------------------------------------"
+            echo "$PACKAGE_URL $PACKAGE_NAME"
+            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Untar_Fails"  
+            exit 1
+        fi
+
+        cd "$PACKAGE_DIR" || exit
+    fi
 fi
 
-# Deactivate python environment (matplotlib-env)
-deactivate
+# Install via pip3
+if !  python3 -m pip install ./; then
+        echo "------------------$PACKAGE_NAME:install_fails------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"  
+        exit 1
+fi
 
+# Run Tox
+python3 -m tox -e py39
+if [ $? -eq 0 ]; then
+    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
+    exit 0
+fi
+
+# Run Pytest
+python3 -m pytest
+if [ $? -eq 0 ]; then
+    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
+    exit 0
+fi
+
+# Run Nox
+python3 -m nox
+if [ $? -eq 0 ]; then
+    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
+    exit 0
+else
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"
+    exit 2
+fi
