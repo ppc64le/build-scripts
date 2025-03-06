@@ -42,7 +42,7 @@ pip install setuptools pip ninja wheel build
 export LLVM_CONFIG="/llvm-project/build/bin/llvm-config"
 
 # Build LLVM project
-cd llvmlite/llvm-project
+cd /llvm-project
 git apply /llvmlite/conda-recipes/llvm15-clear-gotoffsetmap.patch
 git apply /llvmlite/conda-recipes/llvm15-remove-use-of-clonefile.patch
 cp /llvmlite/conda-recipes/llvmdev/build.sh .
