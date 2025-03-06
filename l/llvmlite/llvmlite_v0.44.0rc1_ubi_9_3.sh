@@ -27,23 +27,12 @@ LLVM_PROJECT_GIT_TAG="llvmorg-15.0.7"
 PACKAGE_DIR=/llvmlite
 
 # Install necessary system dependencies
-yum install -y git g++ make wget openssl-devel bzip2-devel libffi-devel zlib-devel cmake clang libedit-devel ncurses-devel python3 python3-devel python3-pip
+yum install -y git g++ make wget openssl-devel bzip2-devel libffi-devel zlib-devel cmake python3 python3-devel python3-pip
 yum install gcc-toolset-13 -y
 export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-source /opt/rh/gcc-toolset-13/enable
 
 # Clone the repositories
 git clone -b ${LLVM_PROJECT_GIT_TAG} ${LLVM_PROJECT_GIT_URL}
-cd llvm-project
-git submodule update --init --recursive
-cd ..
-# Check if the RuntimeDyldELF.cpp file exists at the expected path
-if [ ! -f /llvm-project/llvm/lib/ExecutionEngine/RuntimeDyld/RuntimeDyldELF.cpp ]; then
-  echo "Error: RuntimeDyldELF.cpp not found in the expected location!"
-  exit 1
-else
-  echo "RuntimeDyldELF.cpp found!"
-fi
 git clone -b ${PACKAGE_TAG} ${PACKAGE_GIT_URL}
 
 # Install additional dependencies
@@ -53,12 +42,11 @@ pip install setuptools pip ninja wheel build
 export LLVM_CONFIG="/llvm-project/build/bin/llvm-config"
 
 # Build LLVM project
-#git apply /llvmlite/conda-recipes/llvm15-clear-gotoffsetmap.patch
-#git apply /llvmlite/conda-recipes/llvm15-remove-use-of-clonefile.patch
-#cp /llvmlite/conda-recipes/llvmdev/build.sh .
-cd /llvmlite/conda-recipes/llvmlite
-chmod +x build.sh
-./build.sh
+cd llvmlite/llvm-project
+git apply /llvmlite/conda-recipes/llvm15-clear-gotoffsetmap.patch
+git apply /llvmlite/conda-recipes/llvm15-remove-use-of-clonefile.patch
+cp /llvmlite/conda-recipes/llvmdev/build.sh .
+chmod 777 build.sh && ./build.sh
 
 # Build llvmlite
 cd ../..
