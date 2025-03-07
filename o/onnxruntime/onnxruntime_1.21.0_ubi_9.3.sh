@@ -4,7 +4,7 @@
 # Package          : onnxruntime
 # Version          : v1.21.0
 # Source repo      : https://github.com/microsoft/onnxruntime
-# Tested on		   : UBI:9.3
+# Tested on	   : UBI:9.3
 # Language         : Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
