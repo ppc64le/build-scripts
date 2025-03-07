@@ -4,7 +4,7 @@
 # Package               : 3scale-apisonator
 # Version               : 3scale-2.15.1-GA
 # Source repo           : https://github.com/3scale/apisonator
-# Tested on             : UBI:9.5
+# Tested on             : UBI:9.3
 # Language              : Ruby
 # Travis-Check          : True
 # Script License        : Apache License 2.0 or later
