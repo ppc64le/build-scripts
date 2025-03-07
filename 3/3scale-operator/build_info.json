@@ -6,11 +6,11 @@
     "default_branch": "master",
     "category": "rhp",
     "package_dir": "3scale/3scale-operator/",
-    "build_script": "3scale-operator_ubi_9.5.sh",
+    "build_script": "3scale-operator_ubi_9.3.sh",
     "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": false,
     "*-*.*.*-*": {
-        "build_script": "3scale-operator_ubi_9.5.sh"
+        "build_script": "3scale-operator_ubi_9.3.sh"
     }
 }
