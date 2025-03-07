@@ -20,7 +20,6 @@
 echo "------------------------------------------------------------Cloning statsmodels github repo--------------------------------------------------------------"
 PACKAGE_NAME=statsmodels
 PACKAGE_VERSION=${1:-v0.14.4}
-PYTHON_VERSION=${2:-3.12}
 PACKAGE_URL=https://github.com/statsmodels/statsmodels.git
 PACKAGE_DIR=statsmodels
 
@@ -38,14 +37,13 @@ dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-lates
 dnf install -y git g++ gcc gcc-c++ gcc-gfortran openssl-devel \
     meson ninja-build openblas-devel libjpeg-devel bzip2-devel libffi-devel zlib-devel \
     libtiff-devel freetype-devel 
-dnf install -y make cmake automake autoconf procps-ng 
-yum install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip
+dnf install -y make cmake automake autoconf procps-ng python3.12 python3.12-devel python3.12-pip
 git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 echo "------------------------------------------------------------Installing statsmodels------------------------------------------------------"
-if ! python${PYTHON_VERSION} -m pip install .; then
+if ! python3.12 -m pip install .; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -56,12 +54,12 @@ sed -i 's/atol=1e-6/atol=1e-1/g' statsmodels/stats/tests/test_mediation.py
 sed -i 's/QE/Q-DEC/g' statsmodels/tsa/tests/test_exponential_smoothing.py
 sed -i 's/1e-5/2/g' statsmodels/imputation/tests/test_mice.py
 sed -i 's/1e-2/1e-1/g' statsmodels/stats/tests/test_mediation.py
-python${PYTHON_VERSION} -m pip install pytest
-if  [ "$(python${PYTHON_VERSION} --version  | grep "3.12")" ]
+python3.12 -m pip install pytest
+if  [ "$(python3.12 --version  | grep "3.12")" ]
 then
-  python${PYTHON_VERSION} -m pip install numpy==2.2.2
-  python${PYTHON_VERSION} -m pip install pandas==2.2.3
-  python${PYTHON_VERSION} -m pip install scipy==1.15.2 --prefer-binary
+  python3.12 -m pip install numpy==2.2.2
+  python3.12 -m pip install pandas==2.2.3
+  python3.12 -m pip install scipy==1.15.2 --prefer-binary
 fi
 
 echo "------------------------------------------------------------Run tests for statsmodels------------------------------------------------------"
@@ -77,5 +75,9 @@ else
     echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-    exit 0
 fi
+
+cd ..
+start="$(awk '/python_requires/{ print NR; exit }' ./setup.py)"
+sed -i "$start a\    version=\"0.14.4\"," ./setup.py
+exit 0
