@@ -22,12 +22,11 @@ PACKAGE_NAME=dm-tree
 PACKAGE_VERSION=${1:-0.1.8}
 PACKAGE_URL=https://github.com/deepmind/tree
 PACKAGE_DIR="tree/"
-PYTHON_VERSION="3.12"
 
 yum install -y gcc-toolset-13 make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel libjpeg-turbo-devel python python-devel
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-export SITE_PACKAGE_PATH="/lib/python${PYTHON_VERSION}/site-packages"
+export SITE_PACKAGE_PATH="/lib/python3.12/site-packages"
 
 git clone $PACKAGE_URL
 cd $PACKAGE_DIR
