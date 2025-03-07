@@ -1,8 +1,8 @@
 {
-    "maintainer": "shubham-bhagwat0",
+    "maintainer": "Shubhamgupta1010",
     "package_name": "3scale-operator",
     "github_url": "https://github.com/3scale/3scale-operator",
-    "version": "3scale-2.14.1-GA",
+    "version": "3scale-2.15.1-GA",
     "default_branch": "master",
     "category": "rhp",
     "package_dir": "3scale/3scale-operator/",
