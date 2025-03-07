@@ -4,7 +4,7 @@
 # Package	    : 3scale-operator
 # Version	    : 3scale-2.15.1-GA
 # Source repo	: https://github.com/3scale/3scale-operator
-# Tested on	    : UBI:9.5
+# Tested on	    : UBI:9.3
 # Language      : Go
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
