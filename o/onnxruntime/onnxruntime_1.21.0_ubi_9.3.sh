@@ -74,16 +74,16 @@ export CFLAGS="-Wno-stringop-overflow"
 
 #Build and test
 if ! (./build.sh \
-			--cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" Protobuf_PROTOC_EXECUTABLE=$PROTO_PREFIX/bin/protoc Protobuf_INCLUDE_DIR=$PROTO_PREFIX/include onnxruntime_USE_COREML=OFF \
-			--cmake_generator Ninja \
-			--build_shared_lib \
-			--config Release \
-			--update \
-			--build \
-			--skip_submodule_sync \
-			--allow_running_as_root \
-			--compile_no_warning_as_error \
-			--build_wheel) ; then
+	--cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" Protobuf_PROTOC_EXECUTABLE=$PROTO_PREFIX/bin/protoc Protobuf_INCLUDE_DIR=$PROTO_PREFIX/include onnxruntime_USE_COREML=OFF \
+	--cmake_generator Ninja \
+	--build_shared_lib \
+	--config Release \
+	--update \
+	--build \
+	--skip_submodule_sync \
+	--allow_running_as_root \
+	--compile_no_warning_as_error \
+	--build_wheel) ; then
     echo "------------------$PACKAGE_NAME:install_&_test_both_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
