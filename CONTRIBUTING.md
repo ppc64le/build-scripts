@@ -35,5 +35,6 @@ Please follow the below rules while contributing your build script to this repo.
 6. Package name & Filenames must be in **lowercase**.
 7. Get Legal approvals incase of any code change/patch. 
 8. Build script templates can be found [here](https://github.com/ppc64le/build-scripts/tree/master/templates).
-9. Test the build script on clean UBI container before raising PR. Include test logs as part of PR.
-10. Try to create a branch on your forked repo for each PR.
+9. Make sure to include test step for package so build get validated with available test's in source.
+10. Test the build script on clean UBI container before raising PR. Include test logs as part of PR.
+11. Try to create a branch on your forked repo for each PR.
