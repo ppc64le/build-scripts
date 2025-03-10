@@ -27,7 +27,7 @@ PACKAGE_URL=https://github.com/microsoft/onnxruntime
 PACKAGE_DIR="onnxruntime"
 CURRENT_DIR=$(pwd)
 
-yum install -y gcc-c++ make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel gcc-gfortran patch python python-devel ninja-build
+yum install -y  make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel patch python python-devel ninja-build
 
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
