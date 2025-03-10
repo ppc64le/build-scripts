@@ -24,8 +24,9 @@ PYTHON_VERSION=${PYTHON_VERSION:-3.11}
 PACKAGE_URL=https://github.com/numpy/numpy.git
 
 # Install the specified Python version and development tools
-yum install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip git gcc-gfortran.ppc64le make g++
+yum install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip git gcc-toolset-13 make 
 
+source /opt/rh/gcc-toolset-13/enable
 # Install Python build dependencies
 python${PYTHON_VERSION} -m pip install --upgrade pip  # Ensure pip is up to date
 python${PYTHON_VERSION} -m pip install --ignore-installed "chardet<5" tox Cython pytest hypothesis wheel
