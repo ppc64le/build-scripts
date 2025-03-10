@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/pyca/cryptography.git
 PACKAGE_DIR=cryptography
 
 # Install dependencies
-yum install -y git gcc gcc-c++ make sudo wget openssl-devel bzip2-devel libffi-devel zlib-devel python-devel python-pip rust cargo
+yum install -y git gcc gcc-toolset-13 gcc-c++ make sudo wget openssl-devel bzip2-devel libffi-devel zlib-devel python-devel python-pip rust cargo
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
