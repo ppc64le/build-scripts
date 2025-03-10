@@ -1,0 +1,58 @@
+diff --git a/python/setup.py b/python/setup.py
+index f084e705..cea22035 100644
+--- a/python/setup.py
++++ b/python/setup.py
+@@ -59,6 +59,22 @@ else:
+     compile_flags = ['-std=c++11', '-Wno-unused-variable']
+     tbb_lib_name = 'tbb'
+
++lib_files=[
++        os.path.join(tbb_root, 'lib64','libtbb.so'),
++        os.path.join(tbb_root, 'lib64','libtbbbind_2_0.so'),
++        os.path.join(tbb_root, 'lib64','libtbbmalloc.so'),
++        os.path.join(tbb_root, 'lib64','libtbbmalloc_proxy.so'),
++        os.path.join(tbb_root, 'lib64','libirml.so'),
++        os.path.join(tbb_root, 'lib64','libtbb.so.12'),
++        os.path.join(tbb_root, 'lib64','libtbbbind_2_0.so.3'),
++        os.path.join(tbb_root, 'lib64','libtbbmalloc.so.2'),
++        os.path.join(tbb_root, 'lib64','libtbbmalloc_proxy.so.2'),
++        os.path.join(tbb_root, 'lib64','libirml.so.1'),
++        os.path.join(tbb_root, 'lib64','libtbb.so.12.8'),
++        os.path.join(tbb_root, 'lib64','libtbbbind_2_0.so.3.8'),
++        os.path.join(tbb_root, 'lib64','libtbbmalloc.so.2.8'),
++        os.path.join(tbb_root, 'lib64','libtbbmalloc_proxy.so.2.8'),
++        ]
+ _tbb = Extension("tbb._api", ["tbb/api.i"],
+         include_dirs=[os.path.join(tbb_root, 'include')] if not use_compiler_tbb else [],
+         swig_opts   =['-c++', '-O', '-threads'] + (  # add '-builtin' later
+@@ -71,6 +87,8 @@ _tbb = Extension("tbb._api", ["tbb/api.i"],
+                        os.path.join(tbb_root, 'lib', 'intel64', 'gcc4.8'),  # for Linux
+                        os.path.join(tbb_root, 'lib'),                       # for MacOS
+                        os.path.join(tbb_root, 'lib', 'intel64', 'vc_mt'),   # for Windows
++                       os.path.join(tbb_root, 'lib64'),
++
+                      ] if not use_compiler_tbb else [],
+         language    ='c++',
+         )
+@@ -91,7 +109,7 @@ setup(  name        ="TBB",
+         author      ="Intel Corporation",
+         author_email="inteltbbdevelopers@intel.com",
+         license     ="Dual license: Apache or Proprietary",
+-        version     ="0.2",
++        version     ="v2021.8.0",
+         classifiers =[
+             'Development Status :: 4 - Beta',
+             'Environment :: Console',
+@@ -112,6 +130,12 @@ setup(  name        ="TBB",
+           ],
+         keywords='TBB multiprocessing multithreading composable parallelism',
+         ext_modules=[_tbb],
++        package_data={
++            '':['/tmp/my_installed_onetbb/lib64/*.so'],
++            },
++        data_files=[
++            ('lib',lib_files),
++        ],
+         packages=['tbb'],
+         py_modules=['TBB'],
+         cmdclass={'build': TBBBuild}
