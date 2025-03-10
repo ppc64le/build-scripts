@@ -35,7 +35,7 @@ pip3 install numpy protobuf scipy scikit-learn pandas pytest onnx cmake flatbuff
 # Clone the package from the repository
 git clone $PACKAGE_URL $PACKAGE_NAME
 cd $PACKAGE_NAME
-git checkout v$PACKAGE_VERSION
+git checkout $PACKAGE_VERSION
 
 # Build skl2onnx
 echo "$PACKAGE_NAME build starts!!"
