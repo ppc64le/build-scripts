@@ -25,20 +25,7 @@ PACKAGE_URL=https://github.com/pyca/cryptography.git
 PACKAGE_DIR=cryptography
 
 # Install dependencies
-yum install -y git gcc gcc-c++ make sudo wget openssl-devel bzip2-devel libffi-devel zlib-devel python-devel python-pip
-
-# Install rust
-if ! command -v rustc &> /dev/null
-then
-    wget https://static.rust-lang.org/dist/rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
-    tar -xzf rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
-    cd rust-1.75.0-powerpc64le-unknown-linux-gnu
-    sudo ./install.sh
-    export PATH=$HOME/.cargo/bin:$PATH
-    rustc -V
-    cargo -V
-    cd ../
-fi
+yum install -y git gcc gcc-c++ make sudo wget openssl-devel bzip2-devel libffi-devel zlib-devel python-devel python-pip rust cargo
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
