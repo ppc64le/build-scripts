@@ -34,7 +34,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
-pip install tox wheel build argon2-cffi setuptools
+pip install tox wheel build argon2-cffi setuptools setuptools-scm
 
 python3 setup.py build
 
