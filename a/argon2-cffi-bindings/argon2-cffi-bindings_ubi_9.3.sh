@@ -36,8 +36,6 @@ git submodule update --init --recursive
 
 pip install tox wheel build argon2-cffi setuptools setuptools-scm
 
-python3 setup.py build
-
 if ! pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
