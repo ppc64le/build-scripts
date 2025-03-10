@@ -1,5 +1,5 @@
 diff --git a/setup.py b/setup.py
-index 9e4c391..d8bbbbb 100644
+index 9e4c391..49c6d52 100644
 --- a/setup.py
 +++ b/setup.py
 @@ -1,5 +1,13 @@
@@ -22,6 +22,6 @@ index 9e4c391..d8bbbbb 100644
                             include_dirs=["include", np.get_include()],
 -                           libraries=["zfp"], library_dirs=["build/lib64", "build/lib/Release"])]
 +                           libraries=["zfp"], library_dirs=["build/lib64", "build/lib/Release"])],
-+    data_files=[('lib', [libzfp_path])],  # Include the shared library in the wheel
++    data_files=[('lib', [libzfp_path])],
 +    install_requires=["numpy>=2.2.2"],
  )
