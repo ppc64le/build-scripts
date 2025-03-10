@@ -33,11 +33,9 @@ rm -rf go$GO_VERSION.linux-ppc64le.tar.gz
 export GOROOT=/usr/local/go && \
 export GOPATH=$HOME && \
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
-
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION\
-
 # Install the dependencies
 if ! make download; then
 	echo "------------------$PACKAGE_NAME:install_fails---------------------"
