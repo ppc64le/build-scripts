@@ -15,7 +15,6 @@
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
-#
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=3scale-operator
