@@ -33,8 +33,6 @@ export BLAS=${BLAS:-OpenBLAS}
 WORKDIR=$(pwd)
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
-
-
 dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
     https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
     https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
@@ -42,13 +40,18 @@ dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStrea
 dnf config-manager --set-enabled crb
 
 dnf install -y git cmake ninja-build gcc-toolset-13 rust cargo \
-    openblas-devel lapack-devel pkgconfig \
+    lapack-devel pkgconfig \
     python$PYTHON_VERSION-devel \
     python$PYTHON_VERSION-wheel \
     python$PYTHON_VERSION-pip \
     python$PYTHON_VERSION-setuptools
 
 source /opt/rh/gcc-toolset-13/enable
+
+curl -sL https://ftp2.osuosl.org/pub/ppc64el/openblas/latest/Openblas_0.3.29_ppc64le.tar.gz | tar xvf - -C /usr/local \
+&& export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64:/usr/local/lib:/usr/lib64:/usr/lib
 
 if [ -z $PACKAGE_SOURCE_DIR ]; then
     git clone $PACKAGE_URL -b $PACKAGE_VERSION
