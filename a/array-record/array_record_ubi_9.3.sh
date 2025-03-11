@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : array_record
-# Version       : v0.4.1
+# Version       : v0.5.0
 # Source repo   : https://github.com/google/array_record
 # Tested on     : UBI:9.3
 # Language      : Python
@@ -20,7 +20,7 @@
 
 # Variables
 PACKAGE_NAME="array_record"
-PACKAGE_VERSION="v0.4.1"
+PACKAGE_VERSION="v0.5.0"
 PACKAGE_URL="https://github.com/google/array_record"
 PACKAGE_DIR=array_record
 CURRENT_DIR="${PWD}"
@@ -37,7 +37,7 @@ git submodule update --init
 echo "Repository cloned and checked out to version $PACKAGE_VERSION."
 
 # Install required Python packages
-pip3 install array_record==0.4.1
+pip3 install array_record==0.5.0
 pip3 install --upgrade pip setuptools absl-py etils[epath]
 
 echo "Building and installing $PACKAGE_NAME..."
