@@ -27,6 +27,7 @@ PACKAGE_URL=https://github.com/numpy/numpy.git
 yum install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip git gcc-toolset-13 make 
 
 source /opt/rh/gcc-toolset-13/enable
+export LD_PRELOAD=/lib64/libstdc++.so.6
 # Install Python build dependencies
 python${PYTHON_VERSION} -m pip install --upgrade pip  # Ensure pip is up to date
 python${PYTHON_VERSION} -m pip install --ignore-installed "chardet<5" tox Cython pytest hypothesis wheel
