@@ -116,8 +116,8 @@ echo "---------------------------------------------------Print ffmpeg and cv2 ve
 python -c "import cv2; print(cv2.__version__)"
 python -c "import cv2; print(cv2.getBuildInformation())" | grep -i ffmpeg
 
+#During wheel creation for this package we need exported cmake-args. Once script get exit, and if we build wheel through wrapper script, then those are not applicable during wheel creation. So we are generating wheel for opencv-python-headless in script itself.
 echo "---------------------------------------------------Building the wheel--------------------------------------------------"
-
 python setup.py bdist_wheel --dist-dir $CURRENT_DIR
 
 echo "----------------------------------------------Testing pkg-------------------------------------------------------"
