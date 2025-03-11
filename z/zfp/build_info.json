@@ -11,6 +11,9 @@
   "validate_build_script": true,
   "use_non_root_user": false,
   "*": {
-   "build_script": "zfp_ubi_9.5.sh"
+   "build_script": "zfp_ubi_9.5.sh",
+   "patches": {
+      "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/z/zfp/zfp_1.0.0.patch"
+    }
  }
 }
