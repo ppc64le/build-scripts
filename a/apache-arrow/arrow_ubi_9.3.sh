@@ -35,9 +35,8 @@ source /opt/rh/gcc-toolset-13/enable
 gcc --version
 cd $BUILD_HOME
 
-# echo "alias python=python3" >> .bashrc
-# source ~/.bashrc
-
+echo "alias python=python3" >> .bashrc
+source ~/.bashrc
 
 # Download arrow
 git clone ${PACKAGE_URL}
