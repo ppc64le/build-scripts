@@ -19,17 +19,14 @@
 # ---------------------------------------------------------------------------
 # Variables
 PACKAGE_NAME=llvmlite
-PACKAGE_VERSION="0.44.0rc1"
-PACKAGE_TAG="v0.44.0rc1"
-PACKAGE_GIT_URL="https://github.com/numba/llvmlite"
+PACKAGE_VERSION=${1:-v0.44.0rc1}
+PACKAGE_URL="https://github.com/numba/llvmlite"
 LLVM_PROJECT_GIT_URL="https://github.com/llvm/llvm-project.git"
 LLVM_PROJECT_GIT_TAG="llvmorg-15.0.7"
 PACKAGE_DIR=/llvmlite
 
 # Install necessary system dependencies
 yum install -y git make wget openssl-devel bzip2-devel libffi-devel zlib-devel cmake python3.11 python3.11-devel python3.11-pip
-ln -sf /usr/bin/python3.11 /usr/bin/python3
-ln -sf /usr/bin/pip3.11 /usr/bin/pip
 yum install gcc-toolset-13 -y
 export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 echo "enabling gcc13-toolset"
@@ -37,7 +34,7 @@ source /opt/rh/gcc-toolset-13/enable
 
 # Clone the repositories
 git clone -b ${LLVM_PROJECT_GIT_TAG} ${LLVM_PROJECT_GIT_URL}
-git clone -b ${PACKAGE_TAG} ${PACKAGE_GIT_URL}
+git clone -b ${PACKAGE_VERSION} ${PACKAGE_URL}
 
 # Install additional dependencies
 pip install setuptools pip ninja wheel build
@@ -58,7 +55,7 @@ export CXXFLAGS="-I/llvm-project/llvm/include"
 export LLVM_CONFIG=/llvm-project/build/bin/llvm-config
 
 # Install
-if ! (pip install .) ; then
+if ! (pip3.11 install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -66,7 +63,7 @@ if ! (pip install .) ; then
 fi
 
 # Run tests
-if ! python3 -c "import llvmlite; import llvmlite.binding; import llvmlite.ir; import llvmlite.tests;"; then
+if ! python3.11 -c "import llvmlite; import llvmlite.binding; import llvmlite.ir; import llvmlite.tests;"; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
