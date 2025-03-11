@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # -----------------------------------------------------------------
 #
-# Package	     : arrow
+# Package	     : apache-arrow
 # Version	     : apache-arrow-19.0.1
 # Source repo	 : https://github.com/apache/arrow
 # Tested on	     : UBI 9.3
