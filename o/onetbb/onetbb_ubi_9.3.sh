@@ -61,9 +61,9 @@ echo "------------Applied patch successfully---------------------"
 
 
 echo "------------Export statements------------"
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/tmp/my_installed_onetbb/lib64
 export TBBROOT=/tmp/my_installed_onetbb/
 export CMAKE_PREFIX_PATH=$TBBROOT
+export LD_LIBRARY_PATH=/tmp/my_installed_onetbb/lib64:${LD_LIBRARY_PATH}
 export LDFLAGS="-L/tmp/my_installed_onetbb/lib64"
 
 mkdir build
