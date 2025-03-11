@@ -37,7 +37,7 @@ git clone -b ${LLVM_PROJECT_GIT_TAG} ${LLVM_PROJECT_GIT_URL}
 git clone -b ${PACKAGE_VERSION} ${PACKAGE_URL}
 
 # Install additional dependencies
-pip install setuptools pip ninja wheel build
+pip3.11 install setuptools pip ninja wheel build
 
 # Set LLVM_CONFIG environment variable
 export LLVM_CONFIG="/llvm-project/build/bin/llvm-config"
