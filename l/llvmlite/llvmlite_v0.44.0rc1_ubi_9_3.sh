@@ -36,6 +36,7 @@ source /opt/rh/gcc-toolset-13/enable
 git clone $LLVM_PROJECT_GIT_URL
 cd llvm-project
 git checkout $LLVM_PROJECT_GIT_TAG
+cd ..
 
 #clone the llvmlite repo
 git clone $PACKAGE_URL
