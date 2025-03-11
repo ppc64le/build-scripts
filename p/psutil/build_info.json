@@ -10,6 +10,9 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
+  "v7.0.0": {
+    "build_script": "psutil_7.0.0_ubi_9.3.sh"
+  },  
   "*": {
     "build_script": "psutil_ubi_9.3.sh"
   }
