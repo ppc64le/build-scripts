@@ -8,7 +8,7 @@
 # Language      : C,Python
 # Travis-Check  : True
 # Script License: Apache License 2.0
-# Maintainer    : Tejas Badjate <Tejas.Badjate@ibm.com>
+# Maintainer    : Vinod K <Vinod.K1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -24,7 +24,7 @@ PACKAGE_URL=https://github.com/LLNL/zfp
 PACKAGE_DIR="./zfp"
 
 echo "Installing dependencies...."
-yum install -y wget gcc gcc-c++ gcc-gfortran git make python python-devel python-pip openssl-devel cmake
+yum install -y wget gcc gcc-c++ gcc-gfortran git make python python-devel python-pip openssl-devel cmake patch
 echo "Cloning and installing..."
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
@@ -55,9 +55,15 @@ echo "Building zfp..."
 make -j$(nproc)
 make install 
 # Note before importing zfp package update LD_LIBRARY_PATH with: /usr/local/lib64 else it will give libzfp.s0.1 file not found error
-export LD_LIBRARY_PATH=$(pwd)/lib64:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
 ldconfig
+mkdir -p ../lib
+cp /usr/local/lib64/libzfp.so* ../lib/
 cd ..
+
+#Apply patch file
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/z/zfp/zfp_1.0.0.patch
+git apply zfp_1.0.0.patch
 
 echo "installing..."
 if ! pip install . ; then
