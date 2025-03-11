@@ -32,9 +32,15 @@ export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 echo "enabling gcc13-toolset"
 source /opt/rh/gcc-toolset-13/enable
 
-# Clone the repositories
-git clone -b ${LLVM_PROJECT_GIT_TAG} ${LLVM_PROJECT_GIT_URL}
-git clone -b ${PACKAGE_VERSION} ${PACKAGE_URL}
+# Clone the llvm-project repo
+git clone $LLVM_PROJECT_GIT_URL
+cd llvm-project
+git checkout $LLVM_PROJECT_GIT_TAG
+
+#clone the llvmlite repo
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 
 # Install additional dependencies
 pip3.11 install setuptools pip ninja wheel build
