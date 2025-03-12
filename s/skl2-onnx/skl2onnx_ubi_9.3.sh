@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/onnx/sklearn-onnx.git
 PACKAGE_DIR=sklearn-onnx
 
 # Install necessary system packages
-yum install -y git gcc-toolset-13 gcc-c++ gfortran make wget \
+yum install -y git gcc-c++ gfortran make wget \
     python3 python3-devel python3-pip \
     openblas-devel bzip2-devel libffi-devel zlib-devel cmake ninja-build patch
 
