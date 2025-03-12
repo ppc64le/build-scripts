@@ -25,8 +25,8 @@ PACKAGE_URL=https://github.com/onnx/onnx
 PACKAGE_DIR=onnx
 
 echo "Installing dependencies..."
-yum install -y git make libtool gcc-toolset-13  gcc-c++ libevent-devel zlib-devel openssl-devel python python-devel cmake gcc-gfortran openblas openblas-devel
-
+yum install -y git make libtool gcc-toolset-13  libevent-devel zlib-devel openssl-devel python python-devel cmake  openblas openblas-devel
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 echo "Downloading and installing protobuf-c"
 git clone https://github.com/protocolbuffers/protobuf.git
 cd protobuf
@@ -46,14 +46,14 @@ export PKG_CONFIG_PATH="/usr/lib/pkgconfig:$PKG_CONFIG_PATH"
 export CMAKE_PREFIX_PATH="/usr:/usr/local:$CMAKE_PREFIX_PATH"
 
 # Set GCC toolset paths (if needed)
-export gcc_home=/opt/rh/gcc-toolset-13/root/usr
-export AR=$gcc_home/bin/ar
-export LD=$gcc_home/bin/ld
-export NM=$gcc_home/bin/nm
-export OBJCOPY=$gcc_home/bin/objcopy
-export OBJDUMP=$gcc_home/bin/objdump
-export RANLIB=$gcc_home/bin/ranlib
-export STRIP=$gcc_home/bin/strip
+export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr
+export AR=$GCC_HOME/bin/ar
+export LD=$GCC_HOME/bin/ld
+export NM=$GCC_HOME/bin/nm
+export OBJCOPY=$GCC_HOME/bin/objcopy
+export OBJDUMP=$GCC_HOME/bin/objdump
+export RANLIB=$GCC_HOME/bin/ranlib
+export STRIP=$GCC_HOME/bin/strip
 
 echo "Cloning and installing..."
 git clone $PACKAGE_URL
