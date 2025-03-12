@@ -1,0 +1,13 @@
+{
+    "maintainer": "shubham-garud",
+    "package_name": "promise",
+    "github_url": "https://github.com/syrusakbary/promise",
+    "version": "v2.3.0",
+    "default_branch": "master",
+    "package_dir": "s/syrusakbary-promise",
+    "build_script": "syrusakbary-promise_ubi_9.3.sh",
+    "docker_build": false,
+    "wheel_build": true,
+    "validate_build_script": true,
+    "use_non_root_user": false
+ }
