@@ -1,11 +1,12 @@
 diff --git a/setup.py b/setup.py
-index 9e4c391..49c6d52 100644
+index 9e4c391..ee86b89 100644
 --- a/setup.py
 +++ b/setup.py
-@@ -1,5 +1,13 @@
+@@ -1,5 +1,19 @@
  from setuptools import setup, Extension
  import numpy as np
 +import os
++import sys
 +
 +# Path to the libzfp.so.1 library
 +libzfp_path = "/usr/local/lib64/libzfp.so.1"
@@ -13,15 +14,21 @@ index 9e4c391..49c6d52 100644
 +# Ensure the library exists
 +if not os.path.exists(libzfp_path):
 +    raise RuntimeError(f"Library {libzfp_path} not found!")
++
++if sys.version_info < (3, 12):
++    numpy_version = "numpy==1.23.5"
++else:
++    numpy_version = "numpy>=2.2.2"
 
  setup(
      name="zfpy",
-@@ -11,5 +19,7 @@ setup(
+@@ -11,5 +25,8 @@ setup(
      long_description="zfp is a compressed format for representing multidimensional floating-point and integer arrays. zfp provides compressed-array classes that support high throughput read and write random access to individual array elements. zfp also supports serial and parallel compression of whole arrays using both lossless and lossy compression with error tolerances. zfp is primarily written in C and C++ but also includes Python and Fortran bindings.",
      ext_modules=[Extension("zfpy", ["build/python/zfpy.c"],
                             include_dirs=["include", np.get_include()],
 -                           libraries=["zfp"], library_dirs=["build/lib64", "build/lib/Release"])]
-+                           libraries=["zfp"], library_dirs=["build/lib64", "build/lib/Release"])],
++                           libraries=["zfp"], library_dirs=["build/lib64", "build/lib/Release"])
++    ],
 +    data_files=[('lib', [libzfp_path])],
-+    install_requires=["numpy>=2.2.2"],
++    install_requires=[numpy_version],
  )
