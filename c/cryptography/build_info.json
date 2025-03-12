@@ -15,8 +15,5 @@
   },
   "43.0.1": {
     "build_script": "cryptography_43.0.1_ubi_9.3.sh"
-  },
-  "*": {
-    "build_script": "cryptography_ubi_9.3.sh"
   }
 }
