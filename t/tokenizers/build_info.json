@@ -1,0 +1,16 @@
+{
+  "maintainer": "vinodk99",
+  "package_name": "tokenizers",
+  "github_url": "https://github.com/huggingface/tokenizers",
+  "version": "v0.21.0",
+  "wheel_build" : true,
+  "default_branch": "main",
+  "build_script": "tokenizers_ubi_9.5.sh",
+  "package_dir": "t/tokenizers",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+   "build_script": "tokenizers_ubi_9.5.sh"
+ }
+}
