@@ -43,8 +43,12 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+#create virtual env
+python3.11 -m venv env
+source env/bin/activate
+
 # Install additional dependencies
-pip3.11 install setuptools pip ninja wheel build
+pip install setuptools pip ninja wheel build
 
 # Set LLVM_CONFIG environment variable
 export LLVM_CONFIG="/llvm-project/build/bin/llvm-config"
@@ -62,22 +66,25 @@ export CXXFLAGS="-I/llvm-project/llvm/include"
 export LLVM_CONFIG=/llvm-project/build/bin/llvm-config
 
 # Install
-if ! (pip3.11 install .) ; then
+if ! (pip install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
+    deactivate
 fi
 
 # Run tests
-if ! python3.11 -c "import llvmlite; import llvmlite.binding; import llvmlite.ir; import llvmlite.tests;"; then
+if ! python -c "import llvmlite; import llvmlite.binding; import llvmlite.ir; import llvmlite.tests;"; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
     exit 2
+    deactivate
 else
     echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
+    deactivate
 fi
