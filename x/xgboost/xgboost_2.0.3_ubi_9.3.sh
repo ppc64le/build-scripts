@@ -36,8 +36,9 @@ echo "OUTPUT_FOLDER: $OUTPUT_FOLDER"
 
 # Install dependencies
 echo "Installing dependencies..."
-yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openssl-devel cmake openblas-devel gcc-gfortran
-pip install numpy packaging pathspec pluggy scipy trove-classifiers pytest wheel build hatchling joblib threadpoolctl
+yum install -y git wget gcc-toolset-13  python python3-devel python3 python3-pip openssl-devel cmake openblas-devel gcc-gfortran
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+pip install numpy==2.0.2 packaging pathspec pluggy scipy trove-classifiers pytest wheel build hatchling joblib threadpoolctl
 
 # Clone the repository
 echo "Cloning the repository..."
