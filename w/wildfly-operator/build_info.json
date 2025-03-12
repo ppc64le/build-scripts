@@ -1,0 +1,18 @@
+{
+    "maintainer": "Mohit-sharma46",
+    "package_name": "wildfly-operator",
+    "github_url": "https://github.com/wildfly/wildfly-operator.git",
+    "version": "1.1.1",
+    "package_dir": "w/wildfly-operator",
+    "default_branch": "main",
+    "build_script": "wildfly_operator_ubi_9.sh",
+    "docker_build": "false",
+    "use_non_root_user": false,
+    "validate_build_script": "true",
+    "0.5.6": {
+      "build_script": "wildfly_operator_ubi_8.5.sh"
+    },
+    "*.*.*": {
+      "build_script": "wildfly_operator_ubi_9.sh"
+    }
+  }
