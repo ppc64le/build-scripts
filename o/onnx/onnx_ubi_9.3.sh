@@ -64,7 +64,7 @@ git submodule update --init --recursive
 echo "installing python dependencies...."
 pip install pytest nbval pythran
 echo "installing numpy.."
-pip install numpy==1.24.3
+pip install numpy==2.0.2
 echo "installing cython.."
 pip install cython
 echo "installing scipy.."
