@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : xgboost
-# Version       : 2.0.3
-# Source repo :  https://github.com/dmlc/xgboost
+# Version       : 2.1.4
+# Source repo   :  https://github.com/dmlc/xgboost
 # Tested on     : UBI:9.3
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
+# Maintainer    : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on the given
 # platform using the mentioned version of the package.
@@ -20,24 +20,25 @@
 
 # Exit immediately if a command exits with a non-zero status
 set -e
- 
+
 # Variables
 PACKAGE_NAME=xgboost
-PACKAGE_VERSION=${1:-v2.0.3}
+PACKAGE_VERSION=${1:-v2.1.4}
 PACKAGE_URL=https://github.com/dmlc/xgboost
 PACKAGE_DIR=xgboost/python-package
 OUTPUT_FOLDER="$(pwd)/output"
- 
+SCRIPT_DIR=$(pwd)
+
 echo "PACKAGE_NAME: $PACKAGE_NAME"
 echo "PACKAGE_VERSION: $PACKAGE_VERSION"
 echo "PACKAGE_URL: $PACKAGE_URL"
 echo "OUTPUT_FOLDER: $OUTPUT_FOLDER"
- 
+
 # Install dependencies
 echo "Installing dependencies..."
 yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openssl-devel cmake openblas-devel gcc-gfortran
-pip install numpy packaging pathspec pluggy scipy trove-classifiers pytest wheel build
- 
+pip install numpy packaging pathspec pluggy scipy trove-classifiers pytest wheel build hatchling joblib threadpoolctl
+
 # Clone the repository
 echo "Cloning the repository..."
 mkdir -p output
@@ -55,7 +56,7 @@ mkdir -p build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=${OUTPUT_FOLDER} ..
 make -j$(nproc)
- 
+
 LIBDIR=${OUTPUT_FOLDER}/lib
 INCDIR=${OUTPUT_FOLDER}/include
 BINDIR=${OUTPUT_FOLDER}/bin
@@ -68,22 +69,26 @@ cp -Rf ${SRC_DIR}/include/xgboost ${INCDIR}/
 cp -Rf ${SRC_DIR}/rabit/include/rabit ${INCDIR}/xgboost/
 cp -f ${SRC_DIR}/src/c_api/*.h ${INCDIR}/xgboost/
 cd ../../
- 
+
 # Build xgboost python artifacts and wheel
 echo "Building xgboost Python artifacts and wheel..."
 cd "$(pwd)/$PACKAGE_DIR"
 echo "Current directory: $(pwd)"
+
 # Remove the nvidia-nccl-cu12 dependency in pyproject.toml (not required for Power)
 echo "Removing nvidia-nccl-cu12 dependency from pyproject.toml..."
 sed -i '/nvidia-nccl-cu12/d' pyproject.toml
+# Change the name of the package in pyproject.toml from "xgboost" to "xgboost-cpu"
+echo "Changing package name in pyproject.toml from 'xgboost' to 'xgboost-cpu'..."
+sed -i 's/name = "xgboost"/name = "xgboost-cpu"/' pyproject.toml
+grep -q '\[tool.hatch.build.targets.wheel\]' pyproject.toml || echo '[tool.hatch.build.targets.wheel]' >> pyproject.toml && sed -i '/^\[tool.hatch.build.targets.wheel\]/a packages = ["xgboost/"]' pyproject.toml
 
-#as there is no setup.py file included in python-package
-if ! (pip install .); then
+# Ensure no build isolation and deps are used
+if ! (python3 -m build); then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
     exit 1
 fi
- 
 echo "Build and installation completed successfully."
 echo "There are no test cases available. skipping the test cases"
