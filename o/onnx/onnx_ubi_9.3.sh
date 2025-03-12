@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/onnx/onnx
 PACKAGE_DIR=onnx
 
 echo "Installing dependencies..."
-yum install -y git make libtool gcc-toolset-13  libevent-devel zlib-devel openssl-devel python python-devel cmake  openblas openblas-devel
+yum install -y git make libtool gcc-toolset-13  libevent-devel zlib-devel openssl-devel python python3-devel python3 python3-pip cmake  openblas openblas-devel
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 echo "Downloading and installing protobuf-c"
 git clone https://github.com/protocolbuffers/protobuf.git
