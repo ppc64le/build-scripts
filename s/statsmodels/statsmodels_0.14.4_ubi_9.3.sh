@@ -37,7 +37,7 @@ dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-lates
 dnf install -y git g++ gcc gcc-c++ gcc-gfortran openssl-devel \
     meson ninja-build openblas-devel libjpeg-devel bzip2-devel libffi-devel zlib-devel \
     libtiff-devel freetype-devel 
-dnf install -y make cmake automake autoconf procps-ng python3 python3-pip python3-devel
+dnf install -y make cmake automake autoconf procps-ng python3 python3-devel python3-pip
 git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
@@ -50,27 +50,23 @@ if ! python3 -m pip install .; then
     exit 1
 fi
 
-start="$(awk '/python_requires/{ print NR; exit }' ./setup.py)"
-sed -i "$start a\    version=\"0.14.4\"," ./setup.py
 sed -i 's/atol=1e-6/atol=1e-1/g' statsmodels/stats/tests/test_mediation.py
 sed -i 's/QE/Q-DEC/g' statsmodels/tsa/tests/test_exponential_smoothing.py
 sed -i 's/1e-5/2/g' statsmodels/imputation/tests/test_mice.py
 sed -i 's/1e-2/1e-1/g' statsmodels/stats/tests/test_mediation.py
-
-if  [ "$(python3 --version  | grep "3.12")" ]; then
-  python3 -m pip install pytest
-  python3 -m pip install numpy==2.0.2
-  python3 -m pip install pandas==2.2.3
-  python3 -m pip install scipy==1.15.2 --prefer-binary
-else 
-  python3 -m pip install pytest
-  python3 -m pip install numpy 
-  python3 -m pip install pandas 
-  python3 -m pip install scipy --prefer-binary
+pip install pytest
+if  [ "$(python3 --version  | grep "3.12")" ]
+then
+  pip install numpy==2.2.2
+  pip install pandas==2.2.3
+  pip install scipy==1.15.2 --prefer-binary
+else
+  pip install numpy==1.22.4
+  pip install pandas==1.3.0
+  pip install scipy==1.7.3 --prefer-binary
 fi
 
 echo "------------------------------------------------------------Run tests for statsmodels------------------------------------------------------"
-echo "Present Directory: $(pwd)"
 cd $PACKAGE_DIR
 #skipping the collections errors to avoid modifying multiple test functions manually
 export PYTEST_ADDOPTS="--continue-on-collection-errors --ignore=tsa/tests/test_stattools.py"
@@ -83,5 +79,9 @@ else
     echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-    exit 0
 fi
+
+cd ..
+start="$(awk '/python_requires/{ print NR; exit }' ./setup.py)"
+sed -i "$start a\    version=\"0.14.4\"," ./setup.py
+exit 0
