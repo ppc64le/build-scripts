@@ -65,8 +65,8 @@ cd ..
 #create pyproject.toml for abseil-cpp
 wget https://raw.githubusercontent.com/ramnathnayak-ibm/build-scripts/refs/heads/libprotobuf/l/libprotobuf/abseil-cpp/pyproject.toml
 
-python3 -m pip wheel -w abseil-cpp -vv --no-build-isolation --no-deps .
-pip install *.whl
+python3 -m pip wheel -w wheelf -vv --no-build-isolation --no-deps .
+pip install wheelf/*.whl
 
 echo "------------abseil-cpp installed--------------"
 cd ..
@@ -130,7 +130,7 @@ cd ..
 #create pyproject.toml for libprotobuf
 wget https://raw.githubusercontent.com/ramnathnayak-ibm/build-scripts/refs/heads/libprotobuf/l/libprotobuf/pyproject.toml
 
-python3 -m pip wheel -w protobuf -vv --no-build-isolation --no-deps .
+python3 -m pip wheel -w wheelf -vv --no-build-isolation --no-deps .
 
 
 
