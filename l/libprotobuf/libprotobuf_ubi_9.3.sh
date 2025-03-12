@@ -62,10 +62,9 @@ cmake --install .
 cp -r  $PREFIX/* $abseilcpp/
 cd ..
 
-#create pyproject.toml
+#create pyproject.toml for abseil-cpp
 wget https://raw.githubusercontent.com/ramnathnayak-ibm/build-scripts/refs/heads/libprotobuf/l/libprotobuf/abseil-cpp/pyproject.toml
 
-#if required create a new folder and build a wheel in that
 python3 -m pip wheel -w abseil-cpp -vv --no-build-isolation --no-deps .
 pip install *.whl
 
@@ -128,10 +127,10 @@ fi
 
 cd ..
 
-#create pyproject.toml
+#create pyproject.toml for libprotobuf
 wget https://raw.githubusercontent.com/ramnathnayak-ibm/build-scripts/refs/heads/libprotobuf/l/libprotobuf/pyproject.toml
 
-python3 -m pip wheel -w libprotobuf -vv --no-build-isolation --no-deps .
+python3 -m pip wheel -w protobuf -vv --no-build-isolation --no-deps .
 
 
 
