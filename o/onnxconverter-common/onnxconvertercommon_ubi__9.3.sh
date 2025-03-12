@@ -49,7 +49,7 @@ git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
 pip install cmake setuptools ninja wheel pytest
-pip install numpy==1.24.3 onnx==1.17.0 nbval pythran scipy cython onnxmltools
+pip install numpy==2.0.2 onnx==1.17.0 nbval pythran scipy cython onnxmltools
 
 sed -i 's/\bprotobuf==[^ ]*\b/protobuf==4.25.3/g' pyproject.toml
 sed -i 's/\"onnx\"/\"onnx==1.17.0\"/' pyproject.toml
