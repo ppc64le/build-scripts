@@ -19,6 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=pillow
+PACKAGE_DIR=Pillow
 PACKAGE_VERSION=${1:-10.4.0}
 PACKAGE_URL=https://github.com/python-pillow/Pillow/
 
@@ -34,9 +35,9 @@ yum install -y zlib zlib-devel libjpeg-turbo libjpeg-turbo-devel
 python3.11 -m pip install pytest
 
 # clone source repository
-git clone $PACKAGE_URL $PACKAGE_NAME
+git clone $PACKAGE_URL
 
-cd $PACKAGE_NAME
+cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 git submodule update --init
 
