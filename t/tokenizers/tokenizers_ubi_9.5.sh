@@ -23,7 +23,7 @@ PACKAGE_VERSION=${1:-v0.21.0}
 PACKAGE_URL=https://github.com/huggingface/tokenizers
 PACKAGE_DIR="./tokenizers/bindings/python"
 
-yum install -y wget gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran git make python python-devel python-pip  openssl-devel cmake unzip rust cargo
+yum install -y wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran git make python python-devel python-pip  openssl-devel cmake unzip rust cargo
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH 
