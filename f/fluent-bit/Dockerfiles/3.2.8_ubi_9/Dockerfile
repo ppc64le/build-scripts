@@ -2,8 +2,7 @@ FROM registry.access.redhat.com/ubi9/ubi:9.3 as build
 
 ENV FLUENTBIT_VERSION=v3.2.8
 ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/f/fluent-bit/fluent-bit_${FLUENTBIT_VERSION}.patch
-#ENV PATCH_FILE=https://raw.githubusercontent.com/sumitd2/build-scripts/fluent-bit_${FLUENTBIT_VERSION}/f/fluent-bit/fluent-bit_${FLUENTBIT_VERSION}.patch
-
+#ENV PATCH_FILE=https://github.com.mcas.ms/Amitkumar282/build-scripts/blob/Fluent_bit_${FLUENTBIT_VERSION}/f/fluent-bit/fluent-bit_${FLUENTBIT_VERSION}.patch
 #Install required repos
 RUN yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
 RUN yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream//ppc64le/os
