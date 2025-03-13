@@ -32,7 +32,7 @@ git checkout $PACKAGE_VERSION
 
 pip install build wheel setuptools
 
-if ! python3 setup.py install ; then
+if ! pip install . ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
