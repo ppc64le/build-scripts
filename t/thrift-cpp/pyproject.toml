@@ -15,8 +15,6 @@ version = "0.21.0"
 #One line description
 description = "Compiler and C++ libraries and headers for the Apache Thrift RPC system"
 
-maintainers = [ { name = "Python-ecosystem" } ]
-
 #Classifiers to improve pacakage discoverability
 classifiers = [
   "Development Status :: 5 - Production/Stable",
