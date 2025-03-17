@@ -66,7 +66,7 @@ make install
 
 # Create the necessary directory structure and copy OpenMPI files
 mkdir -p local/openmpi
-cp -r $PACKAGE_DIR/prefix/* local/openmpi/
+cp -r prefix/* local/openmpi/
 
 # Set path for mpi/ompi
 export PATH=$PWD/prefix/bin:$PATH
