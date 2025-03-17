@@ -35,6 +35,7 @@ source /opt/rh/gcc-toolset-13/enable
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 source $HOME/.cargo/env
 
+echo $HOME
 
 # Clone the repository
 if [ -d "$PACKAGE_NAME" ]; then
