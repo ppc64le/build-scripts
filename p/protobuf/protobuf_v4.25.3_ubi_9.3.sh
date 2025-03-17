@@ -139,7 +139,7 @@ if ! (pip install .) ; then
 fi
 
 #Build
-if ! (tox -e py3.12) ; then
+if ! (tox -e py3) ; then
     echo "------------------$PACKAGE_NAME:install_&_test_both_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
@@ -150,5 +150,5 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
 fi
 
-python3 -m setup.py bdist_wheel --cpp_implementation --dist-dir $WORK_DIR
+python3 setup.py bdist_wheel --cpp_implementation --dist-dir $WORK_DIR
 
