@@ -59,14 +59,8 @@ cmake -G Ninja \
 cmake --build .
 cmake --install .
 
+cd $WORK_DIR
 cp -r  $PREFIX/* $abseilcpp/
-cd ..
-
-#create pyproject.toml for abseil-cpp
-wget https://raw.githubusercontent.com/ramnathnayak-ibm/build-scripts/refs/heads/libprotobuf/l/libprotobuf/abseil-cpp/pyproject.toml
-
-python3 -m pip wheel -w wheelf -vv --no-build-isolation --no-deps .
-pip install wheelf/*.whl
 
 echo "------------abseil-cpp installed--------------"
 cd ..
@@ -125,12 +119,11 @@ else
     exit 0
 fi
 
-cd ..
+cd $WORK_DIR
 
 #create pyproject.toml for libprotobuf
 wget https://raw.githubusercontent.com/ramnathnayak-ibm/build-scripts/refs/heads/libprotobuf/l/libprotobuf/pyproject.toml
 
-python3 -m pip wheel -w wheelf -vv --no-build-isolation --no-deps .
 
 
 
