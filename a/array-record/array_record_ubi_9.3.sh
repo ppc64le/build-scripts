@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : array_record
-# Version       : v0.6.0
+# Version       : v0.5.0
 # Source repo   : https://github.com/google/array_record
 # Tested on     : UBI:9.3
 # Language      : Python
@@ -20,12 +20,10 @@
 
 # Variables
 PACKAGE_NAME="array_record"
-PACKAGE_VERSION="v0.6.0"
+PACKAGE_VERSION="v0.5.0"
 PACKAGE_URL="https://github.com/google/array_record"
 PACKAGE_DIR=array_record
 CURRENT_DIR="${PWD}"
-# array-record not tagged to use v0.6.0, used hard commit for v0.6.0
-PACKAGE_COMMIT="7e299eae0db0d7bfc20f7c1e1548bf86cdbfef5e"
 echo "Installing dependencies..."
 # Install system dependencies
 yum install -y python3-pip python3 python python3-devel git gcc-toolset-13 cmake wget
