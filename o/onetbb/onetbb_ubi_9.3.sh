@@ -40,7 +40,7 @@ yum install -y swig
 yum install -y hwloc.ppc64le hwloc-devel.ppc64le
 
 export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr
-export PATH=$GCC_HOME/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 export CC=$GCC_HOME/bin/gcc
 export CXX=$GCC_HOME/bin/g++
 ln -s /usr/lib64/libirml.so.1 /usr/lib64/libirml.so
@@ -51,20 +51,6 @@ echo "------------Cloning the Repository------------"
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-
-echo "------------Applying Patch------------"
-
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/o/onetbb/tbb.patch
-git apply tbb.patch
-
-echo "------------Applied patch successfully---------------------"
-
-
-echo "------------Export statements------------"
-export TBBROOT=/tmp/my_installed_onetbb/
-export CMAKE_PREFIX_PATH=$TBBROOT
-export LD_LIBRARY_PATH=/tmp/my_installed_onetbb/lib64:${LD_LIBRARY_PATH}
-export LDFLAGS="-L/tmp/my_installed_onetbb/lib64"
 
 mkdir build
 cd build/
@@ -84,12 +70,37 @@ if ! (make -j4 python_build);then
         exit 1
 fi
 
+echo "------------Export statements------------"
+export TBBROOT=/tmp/my_installed_onetbb/
+export CMAKE_PREFIX_PATH=$TBBROOT
+
 echo "------------Installing the package------------"
 
 if ! (make install);then
         echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+        exit 1
+fi
+
+echo "------------Applying Patch------------"
+
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/o/onetbb/tbb.patch
+git apply tbb.patch
+
+echo "------------Applied patch successfully---------------------"
+
+echo "------------Export statements------------"
+export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
+ldconfig
+export LD_LIBRARY_PATH=/tmp/my_installed_onetbb/lib64:${LD_LIBRARY_PATH}
+
+echo "-------------Testing--------------------"
+
+if !(python3 -m TBB test);then
+        echo "------------------$PACKAGE_NAME:Test_fails-------------------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Test_Fails"
         exit 2
 else
         echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
