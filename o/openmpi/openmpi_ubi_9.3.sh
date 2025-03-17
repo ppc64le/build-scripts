@@ -5,7 +5,7 @@
 # Version          : 5.0.6
 # Source repo      : https://github.com/open-mpi/ompi.git
 # Tested on        : UBI:9.3
-# Language         : Python
+# Language         : Python, C, C++
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Aastha Sharma <aastha.sharma4@ibm.com>
