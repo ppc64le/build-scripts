@@ -11,7 +11,7 @@ build-backend = "setuptools.build_meta"
 #Project name an version
 [project]
 name = "abseil-cpp"
-version = "20240116.2"
+version = $PACKAGE_VERSION
 
 #One line description
 description = "Provides abseil for cpp packaging"
