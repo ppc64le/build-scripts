@@ -68,6 +68,8 @@ cp -r  $PREFIX/* $abseilcpp/
 #create pyproject.toml file
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/18e1c2a67656b58cd10e924e4908f9cbb4f22ae4/a/abseil-cpp/pyproject.toml
 
+sed -i "s/^version = \".*\"/version = \"$PACKAGE_VERSION\"/" pyproject.toml
+
 if ! pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
