@@ -2,7 +2,7 @@
   "maintainer": "shivansh-ibm",
   "package_name": "psutil",
   "github_url": "https://github.com/giampaolo/psutil.git",
-  "version": "7.0.0",
+  "version": "release-7.0.0",
   "wheel_build" : true,
   "package_dir": "p/psutil",
   "default_branch": "master",
@@ -10,7 +10,7 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",  
-  "*": {
+  "release-5.9.0": {
     "build_script": "psutil_ubi_9.3.sh"
   }
 }
