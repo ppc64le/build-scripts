@@ -118,8 +118,8 @@ cd ..
 
 #Build protobuf
 export PROTOC=$SOURCE_DIR/build/protoc
-export LD_LIBRARY_PATH=$PREFIX/abseilcpp/lib:$PREFIX/libprotobuf/lib64:$LD_LIBRARY_PATH
-export LIBRARY_PATH=$PREFIX/libprotobuf/lib64:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$WORK_DIR/abseil-cpp/abseilcpp/lib:$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
+export LIBRARY_PATH=$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 
@@ -139,5 +139,5 @@ if ! (pip install .) ; then
 fi
 
 
-python3 setup.py bdist_wheel --cpp_implementation --dist-dir $WORK_DIR
+python -m build --wheel --outdir="$WORK_DIR"
 
