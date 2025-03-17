@@ -66,13 +66,13 @@ make install
 
 # Create the necessary directory structure and copy OpenMPI files
 mkdir -p local/openmpi
-cp -r $PACKAGE_DIR-$PACKAGE_VERSION/prefix/* local/openmpi/
+cp -r $PACKAGE_DIR/prefix/* local/openmpi/
 
 # Set path for mpi/ompi
 export PATH=$PWD/prefix/bin:$PATH
 export LD_LIBRARY_PATH=$PWD/prefix/lib:$LD_LIBRARY_PATH
 
-# Install Python bindings (if applicable)
+# Install Python bindings 
 pip install mpi4py setuptools build
 
 #create pyproject.toml
