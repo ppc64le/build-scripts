@@ -36,8 +36,9 @@ echo "OUTPUT_FOLDER: $OUTPUT_FOLDER"
 
 # Install dependencies
 echo "Installing dependencies..."
-yum install -y git wget gcc-toolset-13 gcc-toolset-13-gcc-gfortran  python python3-devel python3 python3-pip openssl-devel cmake openblas-devel
+yum install -y git wget gcc-toolset-13 gcc-toolset-13-gcc-gfortran python3.12 python3.12-devel python3.12-pip openssl-devel cmake openblas-devel
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 pip3.12 install numpy==2.0.2 packaging pathspec pluggy scipy==1.15.2 trove-classifiers pytest wheel build hatchling joblib threadpoolctl
 
 # Clone the repository
@@ -85,7 +86,7 @@ sed -i 's/name = "xgboost"/name = "xgboost-cpu"/' pyproject.toml
 grep -q '\[tool.hatch.build.targets.wheel\]' pyproject.toml || echo '[tool.hatch.build.targets.wheel]' >> pyproject.toml && sed -i '/^\[tool.hatch.build.targets.wheel\]/a packages = ["xgboost/"]' pyproject.toml
 
 # Ensure no build isolation and deps are used
-if ! (python3 -m build); then
+if ! (python3.12 -m build); then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
