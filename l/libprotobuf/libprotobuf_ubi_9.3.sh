@@ -24,7 +24,7 @@ PACKAGE_URL=https://github.com/protocolbuffers/protobuf
 PACKAGE_DIR="protobuf"
 WORK_DIR=$(pwd)
 
-yum install -y make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel gcc-gfortran patch python python-devel ninja-build gcc-toolset-13 
+yum install -y make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel patch python python-devel ninja-build gcc-toolset-13 
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export SITE_PACKAGE_PATH="/lib/python3.12/site-packages"
