@@ -83,6 +83,7 @@ if ! (make install);then
         exit 1
 fi
 
+cd ..
 echo "------------Applying Patch------------"
 
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/o/onetbb/tbb.patch
