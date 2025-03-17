@@ -36,7 +36,7 @@ upstream = "https://github.com/protocolbuffers/protobuf/tree/v4.25.3"
 # scanning for namespace packages is true by default in pyproject.toml, so
 # # you do NOT need to include the following line.
 namespaces = true
-#where = ["local"]
+where = ["local"]
 
 #Package data to add bazel in wheel, this is needed as its not a .py file
 [tool.setuptools.package-data]
