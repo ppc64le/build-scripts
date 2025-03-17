@@ -37,12 +37,16 @@ ABSEIL_VERSION=20240116.2
 ABSEIL_URL="https://github.com/abseil/abseil-cpp"
 mkdir $WORK_DIR/abseil-prefix
 PREFIX=$WORK_DIR/abseil-prefix
-mkdir -p $WORK_DIR/local/abseilcpp
-abseilcpp=$WORK_DIR/local/abseilcpp
 
 git clone $ABSEIL_URL -b $ABSEIL_VERSION
 echo "abseil-cpp build starts"
 cd abseil-cpp
+
+SOURCE_DIR=$(pwd)
+
+mkdir -p $SOURCE_DIR/local/abseilcpp
+abseilcpp=$SOURCE_DIR/local/abseilcpp
+
 mkdir build
 cd build
 
@@ -67,18 +71,20 @@ cd ..
 
 #Setting paths and versions
 PREFIX=$SITE_PACKAGE_PATH
-ABSEIL_PREFIX=$PREFIX/abseilcpp/
+ABSEIL_PREFIX=$SOURCE_DIR/local/abseilcpp
 
 export C_COMPILER=$(which gcc)
 export CXX_COMPILER=$(which g++)
-
-mkdir -p $(pwd)/local/libprotobuf
-LIBPROTO_INSTALL=$(pwd)/local/libprotobuf
 
 #Build libprotobuf
 git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
+
+SOURCE_DIR=$(pwd)
+mkdir -p $SOURCE_DIR/local/libprotobuf
+LIBPROTO_INSTALL=$SOURCE_DIR/local/libprotobuf
+
 git submodule update --init --recursive
 rm -rf ./third_party/googletest | true
 rm -rf ./third_party/abseil-cpp | true
@@ -119,7 +125,7 @@ else
     exit 0
 fi
 
-cd $WORK_DIR
+cd ..
 
 #create pyproject.toml for libprotobuf
 wget https://raw.githubusercontent.com/ramnathnayak-ibm/build-scripts/refs/heads/libprotobuf/l/libprotobuf/pyproject.toml
