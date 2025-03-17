@@ -125,7 +125,7 @@ export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 
 #Apply patch 
 wget https://raw.githubusercontent.com/ramnathnayak-ibm/build-scripts/refs/heads/protobuf/p/protobuf/set_cpp_to_17_v4.25.3.patch
-git apply set_cpp_to_17.patch
+git apply set_cpp_to_17_v4.25.3.patch
 
 cd python
 
@@ -139,7 +139,7 @@ if ! (pip install .) ; then
 fi
 
 #Build
-if ! (pytest) ; then
+if ! (tox -e py3.12) ; then
     echo "------------------$PACKAGE_NAME:install_&_test_both_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
