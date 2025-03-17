@@ -20,7 +20,7 @@
 
 # Variables
 PACKAGE_NAME="array_record"
-PACKAGE_VERSION="v0.5.0"
+PACKAGE_VERSION=${1:-v0.5.0}
 PACKAGE_URL="https://github.com/google/array_record"
 PACKAGE_DIR=array_record
 CURRENT_DIR="${PWD}"
@@ -31,7 +31,7 @@ yum install -y python3-pip python3 python python3-devel git gcc-toolset-13 cmake
 echo "Cloning the repository..."
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
-git checkout $PACKAGE_COMMIT
+git checkout $PACKAGE_VERSION
 git submodule update --init
 echo "Repository cloned and checked out to version $PACKAGE_VERSION."
 
