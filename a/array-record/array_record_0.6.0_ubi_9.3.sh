@@ -20,10 +20,11 @@
 
 # Variables
 PACKAGE_NAME="array_record"
-PACKAGE_VERSION="v0.6.0"
+PACKAGE_VERSION=${1:-v0.6.0}
 PACKAGE_URL="https://github.com/google/array_record"
 PACKAGE_DIR=array_record
 CURRENT_DIR="${PWD}"
+# array-record not tagged to use v0.6.0, used hard commit for v0.6.0 
 PACKAGE_COMMIT="7e299eae0db0d7bfc20f7c1e1548bf86cdbfef5e"
 echo "Installing dependencies..."
 # Install system dependencies
