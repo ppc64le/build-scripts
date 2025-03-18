@@ -1,0 +1,39 @@
+# Minimum requirements for the build system to execute.
+# Do not include sys,subprocess and os as they are default packages
+requires = [
+    "wheel",
+]
+
+#Set build backend to setuptools
+build-backend = "setuptools.build_meta"
+
+#Project name an version
+[project]
+name = "utf8proc"
+version = "2.6.1"
+
+#One line description
+description = "utf8proc is a small C library that provides Unicode utility functions"
+
+#Classifiers to improve pacakage discoverability
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Programming Language :: C++",
+  "License :: MIT",
+]
+
+#Project URLs
+[project.urls]
+homepage = "https://juliastrings.github.io/utf8proc/"
+upstream = "https://github.com/JuliaStrings/utf8proc/archive/v2.6.1.tar.gz"
+
+#Find packages files in local folder, this is needed as we are not following standar directory structure of setuptools
+[tool.setuptools.packages.find]
+# scanning for namespace packages is true by default in pyproject.toml, so
+# # you do NOT need to include the following line.
+namespaces = true
+where = ["."]
+
+#Package data to add bazel in wheel, this is needed as its not a .py file
+[tool.setuptools.package-data]
+utf8proc = ["lib/*", "include/*"]
