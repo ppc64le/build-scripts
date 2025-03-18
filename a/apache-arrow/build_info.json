@@ -1,15 +1,15 @@
 {
-  "maintainer": "vinodk99",
+  "maintainer": "onkar-kubal",
   "package_name": "apache-arrow",
   "github_url": "https://github.com/apache/arrow.git",
-  "version": "go/v12.0.1",
+  "version": "apache-arrow-19.0.1",
   "default_branch": "main",
   "package_dir": "a/apache-arrow",
-  "build_script": "arrow_ubi_8.7.sh",
+  "build_script": "arrow_ubi_9.3.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "go/v10.0.1,go/v12.0.*": {
-    "build_script": "arrow_ubi_8.7.sh"
+  "apache-arrow-19.0.*": {
+    "build_script": "arrow_ubi_9.3.sh"
   }
 }
