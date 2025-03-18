@@ -96,9 +96,18 @@ export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
 ldconfig
 export LD_LIBRARY_PATH=/tmp/my_installed_onetbb/lib64:${LD_LIBRARY_PATH}
 
-echo "-------------Testing--------------------"
+echo "-----------C
 
-if !(python3 -m TBB test);then
+echo "-------------Testing--------------------"
+cd /$PACKAGE_NAME/build
+
+if !( cmake -DCMAKE_INSTALL_PREFIX=/tmp/my_installed_onetbb -DTBB_TEST=ON ..);then
+        echo "------------------$PACKAGE_NAME:Test_fails-------------------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  CMAKE_Fails"
+        exit 1
+fi
+if !(ctest -R python_test --output-on-failure);then
         echo "------------------$PACKAGE_NAME:Test_fails-------------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Test_Fails"
