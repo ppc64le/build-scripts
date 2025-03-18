@@ -29,12 +29,12 @@ export PYTHON_VERSION=${PYTHON_VERSION:-"3.11"}
 
 # Install dependencies
 
-yum install -y cmake git libffi-devel gcc-toolset-12 ninja-build python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-wheel python${PYTHON_VERSION}-pip python${PYTHON_VERSION}-setuptools 
+yum install -y cmake git libffi-devel gcc-toolset-13 ninja-build python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-wheel python${PYTHON_VERSION}-pip python${PYTHON_VERSION}-setuptools 
 
 python${PYTHON_VERSION} --version
 python${PYTHON_VERSION} -m pip install -U pip
 
-source /opt/rh/gcc-toolset-12/enable
+source /opt/rh/gcc-toolset-13/enable
 python${PYTHON_VERSION} -m pip install setuptools build
 
 # Build llvmdev which is a pre-req for llvmlite
