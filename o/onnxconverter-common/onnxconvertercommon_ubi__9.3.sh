@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/microsoft/onnxconverter-common
 PACKAGE_DIR=onnxconverter-common
 
 echo "Installing dependencies..."
-yum install -y git make libtool  gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel python python-devel python3.12 python3.12-devel python3.12-pip cmake gcc-gfortran openblas openblas-devel patch
+yum install -y git make libtool  gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel python python-devel python3.12 python3.12-devel python3.12-pip cmake openblas openblas-devel patch
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 # Download and install protobuf-c
