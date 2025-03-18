@@ -25,8 +25,8 @@ classifiers = [
 
 #Project URLs
 [project.urls]
-homepage = "https://github.com/abseil/abseil-cpp/tree/20240116.2"
-upstream = "https://github.com/abseil/abseil-cpp/tree/20240116.2"
+homepage = "https://github.com/abseil/abseil-cpp"
+upstream = "https://github.com/abseil/abseil-cpp"
 
 #Find packages files in local folder, this is needed as we are not following standar directory structure of setuptools
 [tool.setuptools.packages.find]
