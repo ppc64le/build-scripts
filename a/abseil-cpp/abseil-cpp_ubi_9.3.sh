@@ -66,7 +66,7 @@ cd $Source_DIR
 cp -r  $PREFIX/* $abseilcpp/
 
 #create pyproject.toml file
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/8e92c089d13e35d31f507370c152930a08ad6879/a/abseil-cpp/pyproject.toml
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/a/abseil-cpp/pyproject.toml
 sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
 
 if ! pip install . ; then
