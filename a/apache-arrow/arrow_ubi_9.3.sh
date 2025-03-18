@@ -43,7 +43,8 @@ if ! command -v pip; then
 fi
 
 # Download arrow
-git clone ${PACKAGE_URL} -b ${PACKAGE_VERSION}
+git clone --single-branch --branch ${PACKAGE_VERSION} ${PACKAGE_URL}
+cd ${PACKAGE_NAME}
 git submodule update --init
 export PARQUET_TEST_DATA="${PWD}/cpp/submodules/parquet-testing/data"
 export ARROW_TEST_DATA="${PWD}/testing/data"
