@@ -36,7 +36,7 @@ dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStrea
 dnf config-manager --set-enabled crb
 dnf install -y g++ cmake libtiff-devel libjpeg-devel openjpeg2-devel zlib-devel \
     freetype-devel lcms2-devel libwebp-devel tcl-devel tk-devel \
-    harfbuzz-devel fribidi-devel libraqm-devel libimagequant-devel libxcb-devel
+    harfbuzz-devel fribidi-devel libraqm-devel libimagequant-devel libxcb-devel libjpeg-turbo-utils
 
 # install build tools for wheel generation
 python${PYTHON_VER} -m pip install --upgrade pip setuptools wheel pytest build
