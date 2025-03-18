@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 #Project name an version
 [project]
 name = "utf8proc"
-version = "2.6.1"
+version = "{PACKAGE_VERSION}"
 
 #One line description
 description = "utf8proc is a small C library that provides Unicode utility functions"
