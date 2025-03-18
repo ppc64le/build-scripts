@@ -26,7 +26,7 @@ PACKAGE_DIR=gensim
 
 # Install dependencies
 echo "Installing system dependencies..."
-yum install -y git gcc gcc-c++ gcc-fortran wget python3.12-devel python3.12 make openblas openblas-devel ninja-build
+yum install -y git gcc gcc-c++ gcc-fortran wget python3.12-devel python3.12 python3.12-pip make openblas openblas-devel ninja-build
 
 echo "Upgrading pip..."
 python3.12 -m pip install -U pip
