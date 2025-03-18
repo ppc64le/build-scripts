@@ -24,6 +24,7 @@ PACKAGE_URL="https://github.com/numba/llvmlite"
 LLVM_PROJECT_GIT_URL="https://github.com/llvm/llvm-project.git"
 LLVM_PROJECT_GIT_TAG="llvmorg-15.0.7"
 PACKAGE_DIR=/llvmlite
+WORKING_DIR="$(pwd)"
 
 # Install necessary system dependencies
 yum install -y git make wget openssl-devel bzip2-devel libffi-devel zlib-devel cmake python3.11 python3.11-devel python3.11-pip
@@ -34,9 +35,9 @@ source /opt/rh/gcc-toolset-13/enable
 
 # Clone the llvm-project repo
 git clone $LLVM_PROJECT_GIT_URL
-cd llvm-project
+cd "$WORKING_DIR/llvm-project"
 git checkout $LLVM_PROJECT_GIT_TAG
-cd ..
+cd "$WORKING_DIR"
 
 #clone the llvmlite repo
 git clone $PACKAGE_URL
@@ -54,11 +55,11 @@ pip install setuptools pip ninja wheel build
 export LLVM_CONFIG="/llvm-project/build/bin/llvm-config"
 
 # Build LLVM project
-cd /llvm-project
-git apply /llvmlite/conda-recipes/llvm15-clear-gotoffsetmap.patch
-git apply /llvmlite/conda-recipes/llvm15-remove-use-of-clonefile.patch
-cp /llvmlite/conda-recipes/llvmdev/build.sh .
-chmod 777 build.sh && ./build.sh
+cd "$WORKING_DIR/llvm-project"
+git apply "$WORKING_DIR/llvmlite/conda-recipes/llvm15-clear-gotoffsetmap.patch"
+git apply "$WORKING_DIR/llvmlite/conda-recipes/llvm15-remove-use-of-clonefile.patch"
+cp "$WORKING_DIR/llvmlite/conda-recipes/llvmdev/build.sh" .
+chmod 777 "$WORKING_DIR/llvm-project/build.sh" && "$WORKING_DIR/llvm-project/build.sh"
 
 # Build llvmlite
 cd $PACKAGE_DIR
@@ -72,9 +73,8 @@ if ! (pip install .) ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     deactivate
     exit 1
-    
-fi
 
+fi
 # Run tests
 if ! python -c "import llvmlite; import llvmlite.binding; import llvmlite.ir; import llvmlite.tests;"; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
@@ -82,11 +82,11 @@ if ! python -c "import llvmlite; import llvmlite.binding; import llvmlite.ir; im
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
     deactivate
     exit 2
-    
+
 else
     echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     deactivate
-    exit 0    
+    exit 0
 fi
