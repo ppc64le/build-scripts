@@ -30,7 +30,7 @@ export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export SITE_PACKAGE_PATH="/lib/python3.12/site-packages"
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
-pip install --upgrade cmake pip setuptools wheel ninja packaging tox pytest
+pip install --upgrade cmake pip setuptools wheel ninja packaging tox pytest build
 
 #Building abseil-cpp
 ABSEIL_VERSION=20240116.2
@@ -139,5 +139,5 @@ if ! (pip install .) ; then
 fi
 
 
-python3 -m build --wheel --no-isolation --outdir="$WORK_DIR/"
+python -m build --wheel --no-isolation --outdir="$WORK_DIR/"
 
