@@ -96,7 +96,6 @@ export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
 ldconfig
 export LD_LIBRARY_PATH=/tmp/my_installed_onetbb/lib64:${LD_LIBRARY_PATH}
 
-echo "-----------C
 
 echo "-------------Testing--------------------"
 cd /$PACKAGE_NAME/build
