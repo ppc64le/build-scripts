@@ -24,8 +24,8 @@ classifiers = [
 
 #Project URLs
 [project.urls]
-homepage = "https://juliastrings.github.io/utf8proc/"
-upstream = "https://github.com/JuliaStrings/utf8proc/archive/v2.6.1.tar.gz"
+homepage = "https://github.com/JuliaStrings/utf8proc/tree/v2.6.1"
+upstream = "https://github.com/JuliaStrings/utf8proc/tree/v2.6.1"
 
 #Find packages files in local folder, this is needed as we are not following standar directory structure of setuptools
 [tool.setuptools.packages.find]
