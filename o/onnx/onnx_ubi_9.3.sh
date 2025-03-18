@@ -25,56 +25,36 @@ PACKAGE_URL=https://github.com/onnx/onnx
 PACKAGE_DIR=onnx
 
 echo "Installing dependencies..."
-yum install -y git make libtool gcc-toolset-13  libevent-devel zlib-devel openssl-devel gcc python python3-devel python3 python3-pip cmake  openblas openblas-devel
+yum install -y git make libtool  gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3-devel python3.12 python3.12-devel python3.12-pip cmake openblas openblas-devel
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-echo "Downloading and installing protobuf-c"
-git clone https://github.com/protocolbuffers/protobuf.git
-cd protobuf
-git checkout v3.20.2
-git submodule update --init --recursive
-mkdir build_source && cd build_source
-cmake ../cmake -Dprotobuf_BUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_POSITION_INDEPENDENT_CODE=ON -Dprotobuf_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE=Release
-echo "Building..."
-make -j$(nproc)
-echo "Installing..."
-make install
-cd ../..
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+source /opt/rh/gcc-toolset-13/enable
 
 # Set library paths and package configuration paths
 export LD_LIBRARY_PATH="/usr/lib64:/usr/local/lib:$LD_LIBRARY_PATH"
 export PKG_CONFIG_PATH="/usr/lib/pkgconfig:$PKG_CONFIG_PATH"
 export CMAKE_PREFIX_PATH="/usr:/usr/local:$CMAKE_PREFIX_PATH"
 
-# Set GCC toolset paths (if needed)
-export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr
-export AR=$GCC_HOME/bin/ar
-export LD=$GCC_HOME/bin/ld
-export NM=$GCC_HOME/bin/nm
-export OBJCOPY=$GCC_HOME/bin/objcopy
-export OBJDUMP=$GCC_HOME/bin/objdump
-export RANLIB=$GCC_HOME/bin/ranlib
-export STRIP=$GCC_HOME/bin/strip
-
 echo "Cloning and installing..."
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
-
 echo "installing python dependencies...."
-pip install pytest nbval pythran
+pip3.12 install pytest nbval pythran
 echo "installing numpy.."
-pip install numpy==2.0.2
+pip3.12 install numpy==2.0.2
 echo "installing cython.."
-pip install cython
+pip3.12 install cython
 echo "installing scipy.."
-pip install scipy
+pip3.12 install scipy==1.15.2
 echo "installing parameterized.."
-pip install parameterized
-
+pip3.12 install parameterized
+echo "installing protobuf dependencies...."
+pip3.12 install protobuf==4.25.3
 
 echo "installing..."
-if ! pip install -e . ; then
+if ! pip3.12 install -e . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
