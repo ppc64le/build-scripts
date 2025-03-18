@@ -42,8 +42,6 @@ git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 echo "installing python dependencies...."
 pip3.12 install pytest nbval pythran
-echo "installing numpy.."
-pip3.12 install numpy==2.0.2
 echo "installing cython.."
 pip3.12 install cython
 echo "installing scipy.."
@@ -52,6 +50,7 @@ echo "installing parameterized.."
 pip3.12 install parameterized
 echo "installing protobuf dependencies...."
 pip3.12 install protobuf==4.25.3
+pip3.12 install numpy==2.0.2
 
 echo "installing..."
 if ! pip3.12 install -e . ; then
