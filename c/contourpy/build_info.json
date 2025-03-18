@@ -1,13 +1,16 @@
 {
-   "maintainer": "shubham-dayma-ibm",
+   "maintainer": "prathamesh-ibm",
    "package_name": "contourpy",
    "github_url": "https://github.com/contourpy/contourpy",
-   "version": "v1.0.5",
+   "version": "v1.3.1",
    "default_branch": "main",
-   "build_script": "contourpy_ubi_9.3.sh",
+   "build_script": "contourpy_1.3.1_ubi_9.5.sh",
    "package_dir": "c/contourpy",
    "docker_build": false,
    "wheel_build": true,
    "validate_build_script": true,
-   "use_non_root_user": false
+   "use_non_root_user": false,
+   "v1.0.5": {
+    "build_script": "contourpy_ubi_9.3.sh"
+   }
 }
