@@ -139,5 +139,5 @@ if ! (pip install .) ; then
 fi
 
 
-python -m build --wheel --outdir="$WORK_DIR"
+python3 -m build --wheel --no-isolation --outdir="$WORK_DIR/"
 
