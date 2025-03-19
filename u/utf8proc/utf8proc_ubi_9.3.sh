@@ -51,9 +51,11 @@ cmake -G "Unix Makefiles" \
   -DBUILD_SHARED_LIBS=1 \
   ..
 cmake --build . --target install
-cd ..
-
+cd $WORK_DIR
+mkdir -p local/$PACKAGE
+cp -r utf8proc/prefix/* local/$PACKAGE/
 echo "installing..."
+cd $PACKAGE_DIR
 if ! pip install -e . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
