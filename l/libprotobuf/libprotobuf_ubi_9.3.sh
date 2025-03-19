@@ -94,26 +94,22 @@ cp -r $WORK_DIR/abseil-cpp ./third_party/
 mkdir build
 cd build
 
-cmake -G "Ninja" \
+#Building and testing is performed through the same command
+if ! (cmake -G "Ninja" \
    ${CMAKE_ARGS} \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CXX_STANDARD=17 \
     -DCMAKE_C_COMPILER=$C_COMPILER \
     -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
     -DCMAKE_INSTALL_PREFIX=$LIBPROTO_INSTALL \
-    -Dprotobuf_BUILD_TESTS=OFF \
+    -Dprotobuf_BUILD_TESTS=ON \
     -Dprotobuf_BUILD_LIBUPB=OFF \
     -Dprotobuf_BUILD_SHARED_LIBS=ON \
     -Dprotobuf_ABSL_PROVIDER="module" \
     -DCMAKE_PREFIX_PATH=$ABSEIL_PREFIX \
     -Dprotobuf_JSONCPP_PROVIDER="package" \
     -Dprotobuf_USE_EXTERNAL_GTEST=OFF \
-    ..
-
-cmake --build . --verbose
-
-#Build
-if ! (cmake --install .) ; then
+    ..) ; then
     echo "------------------$PACKAGE_NAME:install_&_test_both_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
@@ -122,14 +118,16 @@ else
     echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-    exit 0
 fi
+
+cmake --build . --verbose
+cmake --install .
 
 cd ..
 
 #create pyproject.toml for libprotobuf
-wget https://raw.githubusercontent.com/ramnathnayak-ibm/build-scripts/refs/heads/libprotobuf/l/libprotobuf/pyproject.toml
-
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/l/libprotobuf/pyproject.toml
+sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
 
 
 
