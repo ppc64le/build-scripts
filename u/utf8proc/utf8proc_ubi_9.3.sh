@@ -28,8 +28,9 @@ PACKAGE_URL=https://github.com/JuliaStrings/utf8proc.git
 PACKAGE_DIR=utf8proc
 
 # Install dependencies and tools.
-yum install -y wget git gcc cmake python3-devel python3-pip
-
+yum install -y wget git gcc-toolset-13-gcc cmake python3-devel python3-pip
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 # Download the source package
 echo "Cloning and installing..."
 git clone $PACKAGE_URL
