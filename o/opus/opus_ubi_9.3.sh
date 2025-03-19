@@ -60,7 +60,8 @@ cp -r ${PREFIX}/* local/opus/
 pip install setuptools
 
 #pyproject.toml
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/329c1450220b2130d8a49e4cbe7ba9784d5303a4/o/opus/pyproject.toml
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/o/opus/pyproject.toml
+sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
 
 if ! pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
