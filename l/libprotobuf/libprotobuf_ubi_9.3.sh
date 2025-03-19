@@ -23,10 +23,10 @@ PACKAGE_VERSION=${1:-v4.25.3}
 PACKAGE_URL=https://github.com/protocolbuffers/protobuf
 PACKAGE_DIR="protobuf"
 WORK_DIR=$(pwd)
-PYTHON_VERSION="3.12"
 
 yum install -y make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel patch python python-devel ninja-build gcc-toolset-13 
 
+PYTHON_VERSION=$(python --version)
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export SITE_PACKAGE_PATH="/lib/python${PYTHON_VERSION}/site-packages"
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
