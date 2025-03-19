@@ -62,7 +62,7 @@ cp "$WORKING_DIR/llvmlite/conda-recipes/llvmdev/build.sh" .
 chmod 777 "$WORKING_DIR/llvm-project/build.sh" && "$WORKING_DIR/llvm-project/build.sh"
 
 # Build llvmlite
-cd $PACKAGE_DIR
+cd "$WORKING_DIR/llvmlite"
 export CXXFLAGS="-I/llvm-project/llvm/include"
 export LLVM_CONFIG=/llvm-project/build/bin/llvm-config
 
