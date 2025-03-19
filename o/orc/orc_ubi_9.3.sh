@@ -142,10 +142,10 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-wget https://raw.githubusercontent.com/stutiibm/build-scripts/refs/heads/sbm-re2-py-replica/o/orc/pyproject.toml
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/o/orc/pyproject.toml
 sed -i "s/{PACKAGE_VERSION}/$(echo $PACKAGE_VERSION | sed 's/^v//')/g" pyproject.toml
 echo "--------------------------replaced version in pyproject.toml--------------------------"
-wget https://raw.githubusercontent.com/stutiibm/build-scripts/refs/heads/sbm-re2-py-replica/o/orc/orc.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/o/orc/orc.patch
 git apply orc.patch
 
 mkdir prefix
