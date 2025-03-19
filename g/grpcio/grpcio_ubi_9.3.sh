@@ -23,7 +23,8 @@ PACKAGE_VERSION=${1:-v1.68.0}
 PACKAGE_URL=https://github.com/grpc/grpc.git
 PYTHON_VERSION=${PYTHON_VERSION:-3.11}
 # Install dependencies
-yum install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip openssl openssl-devel git gcc gcc-c++ cmake gcc-gfortran zlib-devel libuuid-devel
+yum install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip openssl openssl-devel git gcc-toolset-13 cmake zlib-devel libuuid-devel
+source /opt/rh/gcc-toolset-13/enable
 
 if [ -z $PACKAGE_SOURCE_DIR ]; then
     git clone $PACKAGE_URL -b $PACKAGE_VERSION
