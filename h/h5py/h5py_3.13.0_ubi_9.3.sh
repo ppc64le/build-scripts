@@ -20,6 +20,7 @@
 PACKAGE_NAME=h5py
 PACKAGE_VERSION=${1:-3.13.0}
 PACKAGE_URL=https://github.com/h5py/h5py.git
+PACKAGE_DIR=h5py
 
 yum install -y git make cmake wget python python-devel python-pip zlib zlib-devel openblas
 yum install gcc-toolset-13 -y 
