@@ -107,7 +107,7 @@ echo "Running tests for $PACKAGE_NAME..."
 cd tests
 # Test the onnxconverter-common package
 #skipping below test cases because of KeyError: 'schemas'
-if ! pytest --ignore=test_sklearn_power_transformer.py --ignore=test_sklearn_feature_hasher.py --ignore==test_sklearn_adaboost_converter.py --ignore=test_algebra_onnx_doc.py; then
+if ! pytest --ignore=test_sklearn_power_transformer.py --ignore=test_sklearn_feature_hasher.py --ignore=test_sklearn_adaboost_converter.py --ignore=test_algebra_onnx_doc.py; then
     echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_success_but_test_Fails"
