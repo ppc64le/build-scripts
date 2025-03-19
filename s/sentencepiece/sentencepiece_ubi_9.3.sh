@@ -30,7 +30,7 @@ WORKDIR=$(pwd)
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
 
-dnf install -yq git cmake gcc-toolset-13 libatomic \
+dnf install -yq git cmake gcc-toolset-13 \
     python$PYTHON_VERSION-devel \
     python$PYTHON_VERSION-pip \
     python$PYTHON_VERSION-wheel \
