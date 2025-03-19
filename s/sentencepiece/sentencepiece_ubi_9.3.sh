@@ -37,6 +37,8 @@ dnf install -yq git cmake gcc-toolset-13 \
     python$PYTHON_VERSION-setuptools
 
 source /opt/rh/gcc-toolset-13/enable
+ln -s /usr/lib64/libatomic.so.1 /usr/lib64/libatomic.so
+
 
 if [ -z $PACKAGE_SOURCE_DIR ]; then
     git clone $PACKAGE_URL -b $PACKAGE_VERSION
