@@ -3,7 +3,7 @@
 #
 # Package          : openmpi
 # Version          : 5.0.6
-# Source repo      : https://github.com/open-mpi/ompi.git
+# Source repo      : https://download.open-mpi.org/release/open-mpi/v$PACKAGE_VERSION/$PACKAGE_NAME-$PACKAGE_VERSION.tar.gz
 # Tested on        : UBI:9.3
 # Language         : Python, C, C++
 # Travis-Check     : True
@@ -20,18 +20,26 @@
 # Variables
 PACKAGE_NAME=openmpi
 PACKAGE_VERSION=${1:-v5.0.6}
-PACKAGE_URL=https://github.com/open-mpi/ompi.git
-PACKAGE_DIR=ompi
+PACKAGE_URL=https://download.open-mpi.org/release/open-mpi/v$PACKAGE_VERSION/$PACKAGE_NAME-$PACKAGE_VERSION.tar.gz
+PACKAGE_DIR=$PACKAGE_NAME-$PACKAGE_VERSION
 
 # Install dependencies
 yum install -y git g++ gcc-toolset-13 make wget openssl-devel bzip2-devel libffi-devel zlib-devel autoconf automake libtool python3 python3-devel python3-pip krb5-devel cmake
 
-echo "Clone the repository..."
-git clone $PACKAGE_URL
+# echo "Clone the repository..."
+# git clone $PACKAGE_URL
+# cd $PACKAGE_DIR
+# git submodule update --init --recursive
+# echo "checking out package version"
+# git checkout $PACKAGE_VERSION
+
+echo "Downloading the tarball..."
+wget $PACKAGE_URL -O $PACKAGE_NAME-$PACKAGE_VERSION.tar.gz
+
+echo "Extracting the tarball..."
+tar -xvzf $PACKAGE_NAME-$PACKAGE_VERSION.tar.gz
 cd $PACKAGE_DIR
-git submodule update --init --recursive
-echo "checking out package version"
-git checkout $PACKAGE_VERSION
+
 mkdir prefix
 export PREFIX=$(pwd)/prefix
 
@@ -66,7 +74,7 @@ make install
 
 # Create the necessary directory structure and copy OpenMPI files
 mkdir -p local/openmpi
-cp -r prefix/* local/openmpi/
+cp -r $PACKAGE-$PACKAGE_VERSION/prefix/* local/openmpi/
 
 # Set path for mpi/ompi
 export PATH=$PWD/prefix/bin:$PATH
