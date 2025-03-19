@@ -2,7 +2,7 @@
   "maintainer": "md.shafi.hussain",
   "package_name": "vllm",
   "github_url": "https://github.com/vllm-project/vllm.git",
-  "version": "v0.6.3",
+  "version": "v0.8.0",
   "default_branch": "main",
   "package_dir": "v/vllm",
   "build_script": "vllm_ubi_9.3.sh",

@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package           : vllm
-# Version           : v0.6.3
+# Version           : v0.8.0
 # Source repo       : https://github.com/vllm-project/vllm.git
 # Tested on         : UBI:9.3
 # Language          : Python
@@ -22,42 +22,57 @@
 PACKAGE_NAME=vllm
 PACKAGE_URL=https://github.com/vllm-project/vllm.git
 
-PACKAGE_VERSION=${1:-v0.6.3}
+PACKAGE_VERSION=${1:-v0.8.0}
 PYTHON_VERSION=${PYTHON_VERSION:-3.11}
 
 export MAX_JOBS=${MAX_JOBS:-$(nproc)}
-export _GLIBCXX_USE_CXX11_ABI=${_GLIBCXX_USE_CXX11_ABI:-1}
 export VLLM_TARGET_DEVICE=${VLLM_TARGET_DEVICE:-cpu} 
 
-export USE_FFMPEG=0
-export BUILD_SOX=0
-export BUILD_KALDI=0
-export BUILD_RNNT=0
-export USE_ROCM=0
-export USE_CUDA=0
+export TORCH_VERSION=${TORCH_VERSION:-2.5.1}
+export TORCHVISION_VERSION=${TORCHVISION_VERSION:-0.20.1}
+export TORCHAUDIO_VERSION=${TORCHAUDIO_VERSION:-2.5.1}
+export PYARROW_VERSION=${PYARROW_VERSION:-19.0.1}
+export OPENCV_PYTHON_VERSION=${OPENCV_PYTHON_VERSION:-84}
+
+export BUILD_SOX=${BUILD_SOX:-1}
+export BUILD_KALDI=${BUILD_KALDI:-1}
+export BUILD_RNNT=${BUILD_RNNT:-1}
+# skip ffmpeg features
+export USE_FFMPEG=${USE_FFMPEG:-0}
+export USE_ROCM=${USE_ROCM:-0}
+export USE_CUDA=${USE_CUDA:-0}
+export _GLIBCXX_USE_CXX11_ABI=${_GLIBCXX_USE_CXX11_ABI:-1}
+# opencv-python-headless 
+export ENABLE_HEADLESS=${ENABLE_HEADLESS:-1}
+
+# to skip tests if building in Dockerfiles (tests will pull ~10G models which will bloat images)
+SKIP_TESTS=${SKIP_TESTS:-False}
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
-dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
+dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
             https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
-                        https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+            https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/`arch`/os
 dnf config-manager --set-enabled crb
 
-dnf install -y git cmake ninja-build rust cargo \
-            kmod libatomic procps gcc-toolset-13 openblas-devel gfortran \
-            boost1.78-devel gflags-devel rapidjson-devel re2-devel \
-            utf8proc-devel gtest-devel gmock-devel xsimd-devel java-17-openjdk-devel \
-            libtiff-devel libjpeg-devel openjpeg2-devel zlib-devel numactl-devel \
-            libpng-devel freetype-devel lcms2-devel libwebp-devel tcl-devel tk-devel \
-            harfbuzz-devel fribidi-devel libraqm-devel libimagequant-devel libxcb-devel \
-            python$PYTHON_VERSION-devel \
-            python$PYTHON_VERSION-pip \
-            python$PYTHON_VERSION-setuptools \
-            python$PYTHON_VERSION-wheel
+dnf install -y git gcc-toolset-13 kmod jq \
+    numactl-devel libtiff-devel openjpeg2-devel openssl-devel \
+    libimagequant-devel libxcb-devel zeromq-devel \
+    python$PYTHON_VERSION-devel \
+    python$PYTHON_VERSION-pip \
+    python$PYTHON_VERSION-setuptools \
+    python$PYTHON_VERSION-wheel
 
 source /opt/rh/gcc-toolset-13/enable
+
+curl -sL https://ftp2.osuosl.org/pub/ppc64el/openblas/latest/Openblas_0.3.29_ppc64le.tar.gz | tar xvf - -C /usr/local
+export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64:/usr/local/lib:/usr/lib64:/usr/lib
+
+# need this for sentencepiece (gcc-13 does not create this symlink, gcc-11 does)
+ln -sf /usr/lib64/libatomic.so.1 /opt/rh/gcc-toolset-13/root/usr/lib/gcc/ppc64le-redhat-linux/13/libatomic.so 
 
 if [ -z $PACKAGE_SOURCE_DIR ]; then
     git clone $PACKAGE_URL -b $PACKAGE_VERSION
@@ -79,45 +94,46 @@ ln -sf $(command -v python$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/python$PYTHON_VE
 ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip
 ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip3
 ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip$PYTHON_VERSION
-pip install -q setuptools wheel build
+python -m pip install -q setuptools wheel build
 ##############################################
 
 
 # Build Dependencies when BUILD_DEPS is unset or set to True
 if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then
 
+# gmock-devel gtest-devel libpng-devel(comes from tk-devel) fribidi-devel(comes from libraqm-devel) 
+# freetype-devel(comes from tk-devel) harfbuzz-devel(comes from tk-devel)
     # setup
+    dnf install -y cmake tk-devel \
+        zlib-devel ninja-build xsimd-devel lcms2-devel \
+        gflags-devel libraqm-devel libwebp-devel \
+        libjpeg-devel rapidjson-devel boost1.78-devel \
+        java-17-openjdk-devel re2-devel utf8proc-devel
+
+    # need rustc 1.81+ for outlines-core (distro rust is 1.79)    
+    curl https://sh.rustup.rs -sSf | sh -s -- -y && source "$HOME/.cargo/env"
+
     DEPS_DIR=$WORKDIR/deps_from_src
     rm -rf $DEPS_DIR
     mkdir -p $DEPS_DIR
     cd $DEPS_DIR
-    
-    export PREFIX=/usr
-    export CC=$(command -v gcc)
-    export CXX=$(command -v g++)
-    export CMAKE_C_COMPILER=$CC
-    export CMAKE_CXX_COMPILER=$CXX
-    export CFLAGS="-w -O3 -DLOG_LEVEL=ERROR"
-    export CXXFLAGS="-w -O3 -DLOG_LEVEL=ERROR"
-    export CMAKE_C_FLAGS=$CFLAGS
-    export CMAKE_CXX_FLAGS=$CXXFLAGS
-    export ARROW_HOME=/repos/dist
-    export ARROW_BUILD_TYPE=release
-    export LD_LIBRARY_PATH=$ARROW_HOME/lib64:/usr/lib64:/usr/lib:$LD_LIBRARY_PATH
 
-    pip install -U pip cython wheel build setuptools setuptools_scm setuptools_rust packaging \
-    numpy pandas pillow scikit_build_core scikit-build meson-python sentencepiece
+    export PREFIX=/usr
+    export OPENSSL_DIR=/usr
+    export OPENSSL_LIB_DIR=/usr/lib64
+    export OPENSSL_INCLUDE_DIR=/usr/include
+
+    python -m pip install -U pip cython wheel build setuptools setuptools_scm setuptools_rust packaging \
+    pandas pillow scikit_build_core scikit-build meson-python sentencepiece outlines-core pydantic
     
-    # Dependencies needed from src: pytorch, torchvision, torchaudio, llvmlite, pyarrow
+    # Dependencies needed from src: pytorch, torchvision, torchaudio, llvmlite, pyarrow, opencv-python-headless
 
     # Clone all required dependencies
-    git clone --recursive https://github.com/llvm/llvm-project.git &
-    git clone --recursive https://github.com/numba/llvmlite.git &
-    git clone --recursive https://github.com/pytorch/pytorch.git &
-    git clone --recursive https://github.com/pytorch/vision.git &
-    git clone --recursive https://github.com/pytorch/audio.git &
-    git clone --recursive https://github.com/apache/arrow.git &
-    git clone --recursive https://github.com/vllm-project/vllm.git &
+    git clone --recursive https://github.com/pytorch/pytorch.git -b v${TORCH_VERSION} &
+    git clone --recursive https://github.com/pytorch/vision.git -b v${TORCHVISION_VERSION} &
+    git clone --recursive https://github.com/pytorch/audio.git -b v${TORCHAUDIO_VERSION} &
+    git clone --recursive https://github.com/apache/arrow.git -b apache-arrow-${PYARROW_VERSION} &
+    git clone --recursive https://github.com/opencv/opencv-python.git -b ${OPENCV_PYTHON_VERSION} &
     wait $(jobs -p)
 
     # Arrow, LLVM, Pytorch can be built independently
@@ -131,62 +147,14 @@ if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then
     cd cpp
     mkdir build
     cd build
-    cmake -DCMAKE_BUILD_TYPE=$ARROW_BUILD_TYPE \
-        -DCMAKE_INSTALL_PREFIX=$ARROW_HOME   \
-            -Dutf8proc_LIB=/usr/lib64/libutf8proc.so \
-            -Dutf8proc_INCLUDE_DIR=/usr/include \
-            -DARROW_PYTHON=ON \
-            -DARROW_BUILD_TESTS=OFF \
-            -DARROW_JEMALLOC=ON \
-            -DCMAKE_C_COMPILER=$CC \
-            -DCMAKE_CXX_COMPILER=$CXX \
-            -DARROW_BUILD_STATIC="OFF" \
-            -DARROW_PARQUET=ON \
-            ..
-
-    # Prepare LLVM
-    cd $DEPS_DIR/llvm-project
-    git checkout llvmorg-15.0.7
-    mkdir build && cd  build
-    CMAKE_ARGS="${CMAKE_ARGS} -DLLVM_ENABLE_PROJECTS=lld;libunwind;compiler-rt"
-    CFLAGS="$(echo $CFLAGS | sed 's/-fno-plt //g')"
-    CXXFLAGS="$(echo $CXXFLAGS | sed 's/-fno-plt //g')"
-    CMAKE_ARGS="${CMAKE_ARGS} -DFFI_INCLUDE_DIR=$PREFIX/include"
-    CMAKE_ARGS="${CMAKE_ARGS} -DFFI_LIBRARY_DIR=$PREFIX/lib"
-    cmake -DCMAKE_INSTALL_PREFIX="${PREFIX}"               \
-        -DCMAKE_BUILD_TYPE=Release                       \
-        -DCMAKE_LIBRARY_PATH="${PREFIX}"                 \
-        -DLLVM_ENABLE_LIBEDIT=OFF                        \
-        -DLLVM_ENABLE_LIBXML2=OFF                        \
-        -DLLVM_ENABLE_RTTI=ON                            \
-        -DLLVM_ENABLE_TERMINFO=OFF                       \
-        -DLLVM_INCLUDE_BENCHMARKS=OFF                    \
-        -DLLVM_INCLUDE_DOCS=OFF                          \
-        -DLLVM_INCLUDE_EXAMPLES=OFF                      \
-        -DLLVM_INCLUDE_GO_TESTS=OFF                      \
-        -DLLVM_INCLUDE_TESTS=OFF                         \
-        -DLLVM_INCLUDE_UTILS=ON                          \
-        -DLLVM_INSTALL_UTILS=ON                          \
-        -DLLVM_UTILS_INSTALL_DIR=libexec/llvm            \
-        -DLLVM_BUILD_LLVM_DYLIB=OFF                      \
-        -DLLVM_LINK_LLVM_DYLIB=OFF                       \
-        -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly \
-        -DLLVM_ENABLE_FFI=ON                             \
-        -DLLVM_ENABLE_Z3_SOLVER=OFF                      \
-        -DLLVM_OPTIMIZED_TABLEGEN=ON                     \
-        -DCMAKE_POLICY_DEFAULT_CMP0111=NEW               \
-        -DCOMPILER_RT_BUILD_BUILTINS=ON                  \
-        -DCOMPILER_RT_BUILTINS_HIDE_SYMBOLS=OFF          \
-        -DCOMPILER_RT_BUILD_LIBFUZZER=OFF                \
-        -DCOMPILER_RT_BUILD_CRT=OFF                      \
-        -DCOMPILER_RT_BUILD_MEMPROF=OFF                  \
-        -DCOMPILER_RT_BUILD_PROFILE=OFF                  \
-        -DCOMPILER_RT_BUILD_SANITIZERS=OFF               \
-        -DCOMPILER_RT_BUILD_XRAY=OFF                     \
-        -DCOMPILER_RT_BUILD_GWP_ASAN=OFF                 \
-        -DCOMPILER_RT_BUILD_ORC=OFF                      \
-        -DCOMPILER_RT_INCLUDE_TESTS=OFF                  \
-        ${CMAKE_ARGS} -GNinja ../llvm
+    cmake -DCMAKE_BUILD_TYPE=release \
+        -DCMAKE_INSTALL_PREFIX=/usr/local \
+        -DARROW_PYTHON=ON \
+        -DARROW_BUILD_TESTS=OFF \
+        -DARROW_JEMALLOC=ON \
+        -DARROW_BUILD_STATIC="OFF" \
+        -DARROW_PARQUET=ON \
+        ..
 
     # Prepare Pytorch
     cd $DEPS_DIR/pytorch
@@ -197,14 +165,14 @@ if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then
     ##########################################
     # Build Independent packages in parallel #
     ##########################################
-    cd $DEPS_DIR/llvm-project/build
-    ninja install -j $MAX_JOBS &
-
     cd $DEPS_DIR/arrow/cpp/build
     make install -j $MAX_JOBS &
 
     cd $DEPS_DIR/pytorch
-    python setup.py develop
+    python setup.py install &
+
+    cd $DEPS_DIR/opencv-python
+    python -m pip install -v . &
 
     wait $(jobs -p)
 
@@ -214,24 +182,19 @@ if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then
 
     # pyarrow
     cd $DEPS_DIR/arrow/python
-    CMAKE_PREFIX_PATH=$ARROW_HOME python -m pip install -v -e . --no-build-isolation &
-
-    # llvmlite
-    cd $DEPS_DIR/llvmlite
-    python -m pip install -v -e . --no-build-isolation &
+    python -m pip install -v . --no-build-isolation &
 
     # torchvision
     cd $DEPS_DIR/vision
-    python -m pip install -v -e . --no-build-isolation &
+    python -m pip install -v . --no-build-isolation &
 
     # torchaudio
     cd $DEPS_DIR/audio
-    python -m pip install -v -e . --no-build-isolation &
-
+    python -m pip install -v . --no-build-isolation &
+    
     wait $(jobs -p)
 
     #########################
-
     # modify vllm to use built pytorch vesion
     cd $WORKDIR
     python use_existing_torch.py
@@ -250,17 +213,30 @@ if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then
     BUILD_ISOLATION="--no-build-isolation"
 fi
 
-python -m pip install -r requirements-build.txt
+python -m pip install -v -r requirements/build.txt -r requirements/cpu.txt 
 
-if ! (python -m pip install -v -e . $BUILD_ISOLATION); then
+if ! (python -m pip install -v . $BUILD_ISOLATION); then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-python -m pip install pytest
-if ! python -m pytest tests/test_sequence.py tests/test_inputs.py; then
+if [[ $SKIP_TESTS == True ]]; then
+    echo "Skipping  testsas 'SKIP_TESTS' is set to True"
+    exit 0
+fi
+
+# test dependencies
+dnf install -y re2-devel utf8proc-devel
+python -m pip install -v pytest pytest-asyncio sentence-transformers 
+
+# rename vllm src dir or else pytorch tries to import vllm._C from src dir and fails
+# AttributeError: '_OpNamespace' '_C' object has no attribute 'silu_and_mul'
+# Explanation: https://github.com/vllm-project/vllm/issues/1814#issuecomment-1870790593
+mv vllm vllm_src
+
+if ! python -m pytest -v -s tests/test_sequence.py tests/test_inputs.py tests/models/embedding/language/test_cls_models.py; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
