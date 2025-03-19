@@ -18,6 +18,10 @@
 #
 # ---------------------------------------------------------------------------
 
+PACKAGE_NAME=sentencepiece
+PACKAGE_VERSION=${1:-v0.2.0}
+PACKAGE_URL=https://github.com/google/sentencepiece.git
+PACKAGE_DIR=sentencepiece/python
 
 yum install -y make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel patch python python-devel ninja-build gcc-toolset-13  pkg-config
 
@@ -28,14 +32,8 @@ export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 export SITE_PACKAGE_PATH="/lib/python3.12/site-packages"
 
 SCRIPT_DIR=$(pwd)
-PACKAGE_NAME=sentencepiece
-PACKAGE_VERSION=${1:-v0.2.0}
-PACKAGE_URL=https://github.com/google/sentencepiece.git
-PACKAGE_DIR=sentencepiece/python
-
 
 #building abesil-cpp and libprotobuf 
-
 
 pip install --upgrade cmake pip setuptools wheel ninja packaging pytest
 
@@ -74,10 +72,9 @@ cd $SCRIPT_DIR
 cp -r  $PREFIX/* $abseilcpp/
 
 echo "------------abseil-cpp installed--------------"
-cd ..
 
 #Setting paths and versions
-PREFIX=$SITE_PACKAGE_PATH
+#PREFIX=$SITE_PACKAGE_PATH
 ABSEIL_PREFIX=$SOURCE_DIR/local/abseilcpp
 
 export C_COMPILER=$(which gcc)
@@ -88,9 +85,9 @@ git clone https://github.com/protocolbuffers/protobuf
 cd protobuf
 git checkout v4.25.3
 
-SOURCE_DIR=$(pwd)
-mkdir -p $SOURCE_DIR/local/libprotobuf
-LIBPROTO_INSTALL=$SOURCE_DIR/local/libprotobuf
+LIBPROTO_DIR=$(pwd)
+mkdir -p $LIBPROTO_DIR/local/libprotobuf
+LIBPROTO_INSTALL=$LIBPROTO_DIR/local/libprotobuf
 
 git submodule update --init --recursive
 rm -rf ./third_party/googletest | true
@@ -118,9 +115,10 @@ cmake -G "Ninja" \
     ..
 
 cmake --build . --verbose
-
 cmake --install .
 
+cd $SCRIPT_DIR
+ 
 echo "------------ libprotobuf installed--------------"
 
 ####cloning sentencepiece
@@ -152,11 +150,10 @@ mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX="${HOME}" .. -DSPM_BUILD_TEST=ON -DSPM_ENABLE_TCMALLOC=OFF -DSPM_USE_BUILTIN_PROTOBUF=OFF -DCMAKE_AR=${GCC_AR}
 make -j $(nproc)
-export PKG_CONFIG_PATH=${VIRTUAL_ENV}/lib/pkgconfig:${VIRTUAL_ENV}/lib64/pkgconfig:${PKG_CONFIG_PATH}
-export LD_LIBRARY_PATH=${VIRTUAL_ENV}/lib:${VIRTUAL_ENV}/lib64:${LD_LIBRARY_PATH}
 make install
 
 cd ../python
+
 if ! pip install .  ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -173,5 +170,5 @@ else
         echo "------------------$PACKAGE_NAME:test_success-------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME "
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | Github | Pass |  Test_Success"
-	exit 0
+	    exit 0
 fi
