@@ -30,11 +30,13 @@ WORKDIR=$(pwd)
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
 
-dnf install -yq git cmake g++ libatomic \
+dnf install -yq git cmake gcc-toolset-13 libatomic \
     python$PYTHON_VERSION-devel \
     python$PYTHON_VERSION-pip \
     python$PYTHON_VERSION-wheel \
     python$PYTHON_VERSION-setuptools
+
+source /opt/rh/gcc-toolset-13/enable
 
 if [ -z $PACKAGE_SOURCE_DIR ]; then
     git clone $PACKAGE_URL -b $PACKAGE_VERSION
