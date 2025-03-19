@@ -32,7 +32,7 @@ export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
 # Install required Python packages
-pip3.12 install numpy==2.0.2 scikit-learn==1.6.1 scipy==1.15.2 pandas pybind11 pytest cmake flatbuffers wheel lightgbm 
+pip3.12 install numpy==2.0.2 scikit-learn==1.6.1 scipy==1.15.2 pandas pybind11 pytest cmake flatbuffers wheel lightgbm==4.6.0 
 
 echo "Cloning and installing onnxruntime..."
 git clone https://github.com/microsoft/onnxruntime
