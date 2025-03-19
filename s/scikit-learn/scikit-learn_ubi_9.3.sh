@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : scikit-learn
-# Version       : 1.5.2
+# Version       : 1.6.1
 # Source repo   : https://github.com/scikit-learn/scikit-learn.git
 # Tested on     : UBI 9.3
 # Language      : Python, Cython, C++
 # Travis-Check  : False
 # Script License: Apache License 2.0
-# Maintainer    : Haritha Nagothu <haritha.nagothu2@ibm.com>
+# Maintainer    : Vinod K <Vinod.K1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,13 +19,12 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=scikit-learn
-PACKAGE_VERSION=${1:-1.5.2}
+PACKAGE_VERSION=${1:-1.6.1}
 PACKAGE_URL=https://github.com/scikit-learn/scikit-learn.git
 
 yum install -y python python-pip python-devel openblas-devel gcc gcc-c++ gcc-toolset-13 git
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-
 
 # clone source repository
 git clone $PACKAGE_URL
@@ -37,9 +36,8 @@ git submodule update --init
 pip install wheel numpy==2.0.2 scipy cython meson-python
 pip install ninja pytest>=7.1.2  joblib threadpoolctl patchelf>=0.11.0 setuptools
 
-
 #install
-if ! pip install . --no-build-isolation  ; then
+if ! pip install --editable . --no-build-isolation ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
