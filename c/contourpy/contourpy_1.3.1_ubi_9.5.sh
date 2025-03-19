@@ -24,7 +24,13 @@ PACKAGE_URL=https://github.com/contourpy/contourpy
 PACKAGE_DIR="$(pwd)/$PACKAGE_NAME"
 
 echo "Installing dependencies...."
-yum install -y git  python3.11 python3.11-pip python3.11-devel.ppc64le gcc gcc-c++ make wget sudo cmake zlib zlib-devel libjpeg-turbo libjpeg-turbo-devel
+yum install -y python3.11 python3.11-pip python3.11-devel gcc gcc-c++ make cmake zlib libjpeg-turbo openssl-devel unzip
+echo "Installing dependencies...."
+yum install -y git zlib-devel libjpeg-turbo-devel wget sudo gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran 
+
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+
 ln -sf /usr/bin/python3.11 /usr/bin/python
 ln -sf /usr/bin/python3.11 /usr/bin/python3
 python -m pip install pytest wurlitzer matplotlib
