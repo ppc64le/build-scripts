@@ -98,7 +98,7 @@ export LD_LIBRARY_PATH=/tmp/my_installed_onetbb/lib64:${LD_LIBRARY_PATH}
 
 
 echo "-------------Testing--------------------"
-cd /$PACKAGE_NAME/build
+cd build
 
 if !( cmake -DCMAKE_INSTALL_PREFIX=/tmp/my_installed_onetbb -DTBB_TEST=ON ..);then
         echo "------------------$PACKAGE_NAME:Test_fails-------------------------------------"
