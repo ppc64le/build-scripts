@@ -26,6 +26,7 @@ PACKAGE_NAME=utf8proc
 PACKAGE_VERSION=${1:-v2.6.1}
 PACKAGE_URL=https://github.com/JuliaStrings/utf8proc.git
 PACKAGE_DIR=utf8proc
+WORK_DIR=$(pwd)
 
 # Install dependencies and tools.
 yum install -y wget git gcc-toolset-13-gcc cmake python3-devel python3-pip
@@ -38,12 +39,14 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/d958955bd1c9fa9633a2a2b194d4b2fd0ecfe5a6/u/utf8proc/pyproject.toml
 sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
+mkdir prefix
+export PREFIX=$(pwd)/prefix
 
 mkdir build
 cd build
 cmake -G "Unix Makefiles" \
   -DCMAKE_BUILD_TYPE="Release" \
-  -DCMAKE_INSTALL_PREFIX=/usr/local \
+  -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
   -DCMAKE_POSITION_INDEPENDENT_CODE=1 \
   -DBUILD_SHARED_LIBS=1 \
   ..
