@@ -1,0 +1,27 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 66241e4f8..783103ae9 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -152,6 +152,8 @@ elseif (MSVC)
+   set (WARN_FLAGS "${WARN_FLAGS} -wd4146") # unary minus operator applied to unsigned type, result still unsigned
+ endif ()
+
++set(WARN_FLAGS "")
++
+ if (BUILD_CPP_ENABLE_METRICS)
+   message(STATUS "Enable the metrics collection")
+   add_compile_definitions(ENABLE_METRICS=1)
+diff --git a/c++/src/CMakeLists.txt b/c++/src/CMakeLists.txt
+index 33ad58484..f5a806afe 100644
+--- a/c++/src/CMakeLists.txt
++++ b/c++/src/CMakeLists.txt
+@@ -206,7 +206,7 @@ if(BUILD_ENABLE_AVX512)
+     BpackingAvx512.cc)
+ endif(BUILD_ENABLE_AVX512)
+
+-add_library (orc STATIC ${SOURCE_FILES})
++add_library (orc ${SOURCE_FILES})
+
+ target_link_libraries (orc
+   orc::protobuf
+
