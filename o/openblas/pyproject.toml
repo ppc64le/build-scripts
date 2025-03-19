@@ -1,0 +1,34 @@
+[build-system]
+# Minimum requirements for the build system to execute.
+requires = [
+    "setuptools",
+    "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "openblas"
+version = "{PACKAGE_VERSION}"
+requires-python = ">=3.10"
+description = "Provides OpenBLAS for python packaging"
+readme = "README.md"
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Programming Language :: C++",
+  "License :: OSI Approved :: BSD License",
+]
+
+license = {file = "LICENSE.txt"}
+
+[project.urls]
+homepage = "https://github.com/OpenMathLib/OpenBLAS"
+upstream = "https://github.com/OpenMathLib/OpenBLAS"
+
+[tool.setuptools.packages.find]
+# scanning for namespace packages is true by default in pyproject.toml, so
+# # you do NOT need to include the following line.
+namespaces = true
+where = ["local"]
+
+[tool.setuptools.package-data]
+openblas = ["lib/*", "include/*", "lib/pkgconfig/*", "lib/cmake/openblas/*"]
