@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : markupsafe
-# Version       : 2.1.1
+# Version       : 3.0.2
 # Source repo   : https://github.com/pallets/markupsafe
 # Tested on     : UBI:9.3
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Simran Sirsat <Simran.Sirsat@ibm.com>
+# Maintainer    : Vinod K <Vinod.K1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,10 +19,13 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=markupsafe
-PACKAGE_VERSION=${1:-2.1.1}
+PACKAGE_VERSION=${1:-3.0.2}
 PACKAGE_URL=https://github.com/pallets/markupsafe
 
-yum install -y git python3 python3-pip python3-devel.ppc64le gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel xz cmake zlib-devel openblas-devel
+yum install -y git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran python3 python3-pip python3-devel.ppc64le gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel xz cmake zlib-devel openblas-devel
+
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH 
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
@@ -31,7 +34,7 @@ git checkout $PACKAGE_VERSION
 #Installing all the requirements
 pip install pytest setuptools
 
-if ! python3 setup.py install ; then
+if ! pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
