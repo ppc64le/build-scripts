@@ -48,7 +48,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
-pip3.12 install cmake setuptools ninja wheel pytest numpy==2.0.2 packaging scipy==1.15.2 onnx==1.17.0 flatbuffers nbval pythran scipy cython onnxmltools
+pip3.12 install cmake setuptools ninja wheel pytest numpy==2.0.2 packaging scipy==1.15.2 onnx==1.17.0 flatbuffers nbval pythran cython onnxmltools
 sed -i 's/\bprotobuf==[^ ]*\b/protobuf==4.25.3/g' pyproject.toml
 sed -i 's/\"onnx\"/\"onnx==1.17.0\"/' pyproject.toml
 sed -i "/tool.setuptools.dynamic/d" pyproject.toml
