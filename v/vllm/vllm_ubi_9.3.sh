@@ -207,7 +207,7 @@ fi
 cd $WORKDIR
 
 sed -i 's/torch==2.5.1; platform_machine == "ppc64le"/torch==2.6.0; platform_machine == "ppc64le"/g' requirements/cpu.txt
-sed -i 's/torchaudio==2.5.1; platform_machine == "ppc64le"/torchaudio==2.6.0; platform_machine == "ppc64le"' requirements/cpu.txt
+sed -i 's/torchaudio==2.5.1; platform_machine == "ppc64le"/torchaudio==2.6.0; platform_machine == "ppc64le"/g' requirements/cpu.txt
 
 # setup
 BUILD_ISOLATION=""
