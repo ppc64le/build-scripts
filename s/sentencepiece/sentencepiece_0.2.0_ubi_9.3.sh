@@ -18,10 +18,12 @@
 #
 # ---------------------------------------------------------------------------
 
+
 PACKAGE_NAME=sentencepiece
 PACKAGE_VERSION=${1:-v0.2.0}
 PACKAGE_URL=https://github.com/google/sentencepiece.git
 PACKAGE_DIR=sentencepiece/python
+
 
 yum install -y make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel patch python python-devel ninja-build gcc-toolset-13  pkg-config
 
@@ -30,10 +32,9 @@ dnf install -y gcc-toolset-13-libatomic-devel
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 export SITE_PACKAGE_PATH="/lib/python3.12/site-packages"
-
 SCRIPT_DIR=$(pwd)
 
-#building abesil-cpp and libprotobuf 
+#Building abesil-cpp,libprotobuf and protobuf 
 
 pip install --upgrade cmake pip setuptools wheel ninja packaging pytest
 
@@ -44,14 +45,14 @@ mkdir $SCRIPT_DIR/abseil-prefix
 PREFIX=$SCRIPT_DIR/abseil-prefix
 
 git clone $ABSEIL_URL -b $ABSEIL_VERSION
-echo "abseil-cpp build starts"
 cd abseil-cpp
 
 SOURCE_DIR=$(pwd)
 
 mkdir -p $SOURCE_DIR/local/abseilcpp
-abseilcpp=$SOURCE_DIR/local/abseilcpp
+ABSEIL_CPP=$SOURCE_DIR/local/abseilcpp
 
+echo "abseil-cpp build starts"
 mkdir build
 cd build
 
@@ -69,14 +70,9 @@ cmake --build .
 cmake --install .
 
 cd $SCRIPT_DIR
-cp -r  $PREFIX/* $abseilcpp/
+cp -r  $PREFIX/* $ABSEIL_CPP/
 
-echo "------------abseil-cpp installed--------------"
-
-#Setting paths and versions
-#PREFIX=$SITE_PACKAGE_PATH
-ABSEIL_PREFIX=$SOURCE_DIR/local/abseilcpp
-
+echo "--------------------------------abseil-cpp installed----------------------"
 export C_COMPILER=$(which gcc)
 export CXX_COMPILER=$(which g++)
 
@@ -109,7 +105,7 @@ cmake -G "Ninja" \
     -Dprotobuf_BUILD_LIBUPB=OFF \
     -Dprotobuf_BUILD_SHARED_LIBS=ON \
     -Dprotobuf_ABSL_PROVIDER="module" \
-    -DCMAKE_PREFIX_PATH=$ABSEIL_PREFIX \
+    -DCMAKE_PREFIX_PATH=$ABSEIL_CPP \
     -Dprotobuf_JSONCPP_PROVIDER="package" \
     -Dprotobuf_USE_EXTERNAL_GTEST=OFF \
     ..
@@ -117,11 +113,26 @@ cmake -G "Ninja" \
 cmake --build . --verbose
 cmake --install .
 
-cd $SCRIPT_DIR
- 
-echo "------------ libprotobuf installed--------------"
+cd ..
 
-####cloning sentencepiece
+#Build protobuf
+export PROTOC=$LIBPROTO_DIR/build/protoc
+export LD_LIBRARY_PATH=$SCRIPT_DIR/abseil-cpp/abseilcpp/lib:$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
+export LIBRARY_PATH=$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
+export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
+export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
+
+#Apply patch 
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/p/protobuf/set_cpp_to_17_v4.25.3.patch
+git apply set_cpp_to_17_v4.25.3.patch
+
+cd python
+pip install .
+
+echo "-------------------------- libprotobuf and  protobuf installed-----------------------"
+
+#Building sentencepiece
+cd  $SCRIPT_DIR
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
@@ -131,6 +142,7 @@ export PATH="${SITE_PACKAGE_PATH}/libprotobuf/bin/protoc:${PATH}"
 export LD_LIBRARY_PATH="${SITE_PACKAGE_PATH}/libprotobuf/lib64:${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH="${SITE_PACKAGE_PATH}/abseilcpp/lib:${LD_LIBRARY_PATH}"
 export CMAKE_PREFIX_PATH="${SITE_PACKAGE_PATH}"
+
 
 export GCC_AR="${GCC_HOME}/bin/ar"
 mkdir -p ${SCRIPT_DIR}/custom_libs
@@ -151,7 +163,6 @@ cd build
 cmake -DCMAKE_INSTALL_PREFIX="${HOME}" .. -DSPM_BUILD_TEST=ON -DSPM_ENABLE_TCMALLOC=OFF -DSPM_USE_BUILTIN_PROTOBUF=OFF -DCMAKE_AR=${GCC_AR}
 make -j $(nproc)
 make install
-
 cd ../python
 
 if ! pip install .  ; then
