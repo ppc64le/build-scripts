@@ -37,6 +37,7 @@ export XERCESCROOT=`pwd`
 ./reconf
 ./configure
 
+ret=0
 make -j $(nproc) || ret=$?
 if [ "$ret" -ne 0 ]
 then
@@ -51,7 +52,7 @@ fi
 
 #Test
 make check || ret=$?
-if [ -n "$ret" ] && [ "$ret" -ne 0 ]
+if [ "$ret" -ne 0 ]
 then
 	echo "FAIL: Tests failed."
 	exit 2
@@ -59,7 +60,6 @@ fi
 
 echo "SUCCESS: Build and test success!"
 
-
 #Smoke test
 export VERSION=$(grep -E '^Version:[[:space:]]*' /xerces-c/xerces-c.pc | awk '{print $2}')
-echo "xerces-c binary is available at [v$VERSION]."
+echo "xerces-c is available at [v$VERSION]."
