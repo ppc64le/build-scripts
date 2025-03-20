@@ -57,7 +57,7 @@ dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/`
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/`arch`/os
 dnf config-manager --set-enabled crb
 
-dnf install -y git gcc-toolset-13 kmod jq \
+dnf install -y git gcc-toolset-13 kmod jq ninja-build cmake \
     numactl-devel libtiff-devel openjpeg2-devel openssl-devel \
     libimagequant-devel libxcb-devel zeromq-devel \
     python$PYTHON_VERSION-devel \
