@@ -28,7 +28,7 @@ PYTHON_VERSION=${PYTHON_VERSION:-3.11}
 export MAX_JOBS=${MAX_JOBS:-$(nproc)}
 export VLLM_TARGET_DEVICE=${VLLM_TARGET_DEVICE:-cpu} 
 
-export TORCH_VERSION=${TORCH_VERSION:-2.5.1}
+export TORCH_VERSION=${TORCH_VERSION:-2.6.0}
 export TORCHVISION_VERSION=${TORCHVISION_VERSION:-0.20.1}
 export TORCHAUDIO_VERSION=${TORCHAUDIO_VERSION:-2.5.1}
 export PYARROW_VERSION=${PYARROW_VERSION:-19.0.1}
@@ -206,15 +206,8 @@ fi
 # Build vllm
 cd $WORKDIR
 
-# for < v0.8.0
-if [ ! -d "./requirements" ]; then
-    mkdir -p requirements && find . -maxdepth 1 -name 'requirements-*.txt' -type f -exec sh -c 'cp "$1" "requirements/${1:15}"' _ {} \;
-    rm -f requirements-*.txt
-    sed -i "s/requirements-//g" requirements/*.txt
-    sed -i 's#requirements-#requirements/#g; s#line.split()#"requirements/"+line.split()#g' setup.py
-    # for v0.7.3
-    sed -i -e "s/.+numba.+//g" requirements/common.txt
-fi
+sed -i 's/torch==2.5.1; platform_machine == "ppc64le"/torch==2.6.0; platform_machine == "ppc64le"/g' requirements/cpu.txt
+sed -i 's/torchaudio==2.5.1; platform_machine == "ppc64le"/torchaudio==2.6.0; platform_machine == "ppc64le"' requirements/cpu.txt
 
 # setup
 BUILD_ISOLATION=""
