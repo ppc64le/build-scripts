@@ -1,0 +1,40 @@
+diff --git a/Debian/16/bookworm/Dockerfile b/Debian/16/bookworm/Dockerfile
+index 26adc52..aac9d01 100644
+--- a/Debian/16/bookworm/Dockerfile
++++ b/Debian/16/bookworm/Dockerfile
+@@ -26,6 +26,11 @@ LABEL name="PostgreSQL Container Images" \
+ 
+ LABEL org.opencontainers.image.description="This Docker image contains PostgreSQL and Barman Cloud based on Postgres 16.4-bookworm."
+ 
++ENV \
++  RUSTUP_HOME="/usr/local/rustup" \
++  CARGO_HOME="/usr/local/cargo" \
++  PATH="/usr/local/cargo/bin:$PATH"
++
+ COPY requirements.txt /
+ 
+ # Install additional extensions
+@@ -39,6 +44,14 @@ RUN set -xe; \
+ 	rm -fr /tmp/* ; \
+ 	rm -rf /var/lib/apt/lists/*;
+ 
++#Install rust
++RUN apt-get update && apt-get install curl build-essential pkg-config libssl-dev -y && curl https://sh.rustup.rs -sSf | sh -s -- -y \
++    --no-modify-path \
++    --profile minimal \
++    && \
++  rustup target add powerpc64le-unknown-linux-gnu && \
++  cargo install cargo-c
++
+ # Install barman-cloud
+ RUN set -xe; \
+ 	apt-get update; \
+@@ -66,6 +79,8 @@ RUN set -xe; \
+ 	; \
+ 	rm -rf /var/lib/apt/lists/*;
+ 
++RUN rustup self uninstall -y
++
+ # Change the uid of postgres to 26
+ RUN usermod -u 26 postgres
+ USER 26
