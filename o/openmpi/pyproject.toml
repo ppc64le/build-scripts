@@ -37,4 +37,4 @@ where = ["local"]
 
 #Package data to add bazel in wheel, this is needed as its not a .py file
 [tool.setuptools.package-data]
-openmpi = ["lib/**/*","include/**/*"]
+openmpi = ["bin/*", "lib/**/*", "include/**/*", "share/**/*", "etc/*"]
