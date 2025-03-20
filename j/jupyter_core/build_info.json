@@ -11,5 +11,8 @@
   "docker_build": "false",
   "v5.5.*": {
     "build_script": "jupyter_core_ubi_8.7.sh"
-  }
+  },
+  "v5.3.*": {
+	   "build_script": "jupyter_core_ubi_9.3.sh"
+	}
 }
