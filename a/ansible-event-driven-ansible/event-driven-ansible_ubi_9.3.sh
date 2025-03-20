@@ -24,7 +24,6 @@ PACKAGE_VERSION=${1:-v2.6.0}
 yum install java-17-openjdk java-17-openjdk-devel java-17-openjdk-headless openssl-devel sudo git wget tar python3-devel python3-pip gcc gcc-c++ cmake.ppc64le systemd-devel zlib-devel krb5-devel rust cargo maven -y
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-17.0.14.0.7-2.el9.ppc64le
 export PATH=$PATH:$JAVA_HOME/bin:$HOME/.cargo/bin:$PATH
-ln -s /usr/local/apache-maven-3.8.7/bin/mvn /usr/bin/mvn
 
 mkdir -p ansible_collections/ansible
 git clone $PACKAGE_URL
