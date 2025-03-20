@@ -11,13 +11,19 @@ CURRENT_BRANCH="${TRAVIS_BRANCH:-master}"
 MODIFIED_SCRIPTS=$(git diff --name-only origin/$CURRENT_BRANCH...HEAD -- '*.sh')
 
 # Fetch modified build_info.json files
-MODIFIED_JSONS=$(git diff --name-only origin/$CURRENT_BRANCH...HEAD -- '*/build_info.json')
+MODIFIED_JSONS=$(git diff --name-only origin/$CURRENT_BRANCH...HEAD -- '*.json')
 
 # Exit if no build scripts are modified
 if [[ -z "$MODIFIED_SCRIPTS" ]]; then
   echo "No build script modifications detected. Exiting Travis job."
   exit 0
 fi
+
+# check for modified build_info.json.
+if [[ -z "$MODIFIED_JSONS" ]]; then
+  echo "No build_info.json modifications detected."
+fi
+
 
 for script in $MODIFIED_SCRIPTS; do
   echo "printing script path $script"
@@ -40,11 +46,14 @@ for script in $MODIFIED_SCRIPTS; do
 
 
   # Check if build_info.json is modified
-  if echo "$MODIFIED_JSONS" | grep -q "$BUILD_INFO_FILE"; then
+  if echo "$MODIFIED_JSONS" | grep -q "$(basename "$BUILD_INFO_FILE")"; then
     echo "Using modified build_info.json"
     VERSION=$(git show HEAD:"$BUILD_INFO_FILE" | jq -r '.version')
     WHEEL_BUILD=$(git show HEAD:"$BUILD_INFO_FILE" | jq -r '.wheel_build')
     nonRootBuild=$(git show HEAD:"$BUILD_INFO_FILE" | jq -r '.use_non_root_user')
+    echo "Extracted Version: $VERSION"
+    echo "Extracted Wheel Build: $WHEEL_BUILD"
+    echo "Extracted nonRootbuild: $nonRootBuild"
 
   elif [[ -f "$BUILD_INFO_FILE" ]]; then
     echo "Using existing build_info.json"
