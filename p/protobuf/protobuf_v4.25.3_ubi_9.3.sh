@@ -130,15 +130,32 @@ git apply set_cpp_to_17_v4.25.3.patch
 
 cd python
 
-
 #Build
 if ! (pip install .) ; then
-    echo "------------------$PACKAGE_NAME:install_fails---------------------"
+    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    exit 1
+fi
+
+#Faced error because of missing comma so adding comma
+sed -i 's/CC PYTHONPATH KOKORO_BUILD_ID KOKORO_BUILD_NUMBER/CC, PYTHONPATH, KOKORO_BUILD_ID, KOKORO_BUILD_NUMBER/' tox.ini
+## Commenting out because pkg_resources is deprecated (see https://setuptools.pypa.io/en/latest/pkg_resources.html)
+sed -i '/python setup.py -q build_py/ s/^/# /' tox.ini
+
+# Run test cases
+if !(tox -e py3); then
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
     exit 2
+else
+    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
 fi
 
+python3 -m build --wheel --no-isolation --outdir="$WORK_DIR/"
+exit 0
 
-python -m build --wheel --no-isolation --outdir="$WORK_DIR/"
 
