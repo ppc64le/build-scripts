@@ -58,7 +58,7 @@ dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-lates
 yum install epel-release flex -y
 
 # Configure to set the installation prefix and disable dependency tracking
-./configure --prefix=$PWD/prefix --disable-dependency-tracking
+./configure --prefix=$PREFIX --disable-dependency-tracking
 # Make to build Open MPI with parallel processing
 make -j 4
 # Install Open MPI to the specified prefix directory
@@ -66,11 +66,11 @@ make install
 
 # Create the necessary directory structure and copy OpenMPI files
 mkdir -p local/openmpi
-cp -r "$PWD/prefix/"* local/openmpi/
+cp -r $PREFIX/* local/openmpi/
 
 # Set path for mpi/ompi
-export PATH=$PWD/prefix/bin:$PATH
-export LD_LIBRARY_PATH=$PWD/prefix/lib:$LD_LIBRARY_PATH
+export PATH=$PREFIX/bin:$PATH
+export LD_LIBRARY_PATH=$PREFIX/lib:$LD_LIBRARY_PATH 
 
 # Install Python bindings
 pip install mpi4py setuptools build
@@ -85,4 +85,13 @@ if ! (pip install .) ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-#no test to run
+
+"Running the test program with mpirun..."
+# Run the compiled program with mpirun
+$OPENMPI_PREFIX/bin/mpirun --allow-run-as-root -n 2 ./helloworld_c
+# Check if the mpirun command succeeded, if not, exit
+if [ $? -ne 0 ]; then
+    echo "------------------$PACKAGE_NAME:Test_Fails-------------------------------------"
+    exit 1
+fi
+echo "OpenMPI install successful!"
