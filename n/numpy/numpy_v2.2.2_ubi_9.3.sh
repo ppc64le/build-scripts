@@ -21,7 +21,7 @@ PACKAGE_NAME=numpy
 PACKAGE_VERSION=${1:-v2.0.2}
 PACKAGE_URL=https://github.com/numpy/numpy.git
 PACKAGE_DIR=$PACKAGE_NAME
-yum install -y python3.12  python3.12-devel python3.12-pip git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran make
+yum install -y wget python3.12 python3.12-devel python3.12-pip git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran make
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 ln -sf /usr/bin/python3.12 /usr/bin/python3
 python3 -m pip install --upgrade pip
