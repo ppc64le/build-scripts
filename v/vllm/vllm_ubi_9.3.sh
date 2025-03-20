@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package           : vllm
-# Version           : v0.8.0
+# Version           : v0.8.1
 # Source repo       : https://github.com/vllm-project/vllm.git
 # Tested on         : UBI:9.3
 # Language          : Python
@@ -22,7 +22,7 @@
 PACKAGE_NAME=vllm
 PACKAGE_URL=https://github.com/vllm-project/vllm.git
 
-PACKAGE_VERSION=${1:-v0.8.0}
+PACKAGE_VERSION=${1:-v0.8.1}
 PYTHON_VERSION=${PYTHON_VERSION:-3.11}
 
 export MAX_JOBS=${MAX_JOBS:-$(nproc)}
@@ -205,6 +205,16 @@ fi
 
 # Build vllm
 cd $WORKDIR
+
+# for < v0.8.0
+if [ ! -d "./requirements" ]; then
+    mkdir -p requirements && find . -maxdepth 1 -name 'requirements-*.txt' -type f -exec sh -c 'cp "$1" "requirements/${1:15}"' _ {} \;
+    rm -f requirements-*.txt
+    sed -i "s/requirements-//g" requirements/*.txt
+    sed -i 's#requirements-#requirements/#g; s#line.split()#"requirements/"+line.split()#g' setup.py
+    # for v0.7.3
+    sed -i -e "s/.+numba.+//g" requirements/common.txt
+fi
 
 # setup
 BUILD_ISOLATION=""
