@@ -82,7 +82,7 @@ python -m pip install importlib_metadata
 # gevent is a coroutine lib which builds from src and pytests fail with python3.9 
 python -m pip uninstall -y gevent
 
-if ! python -E -m pytest -ra --cov zmq -m "not wheel and not new_console" -v; then
+if ! python -E -m pytest --basetemp=/tmp/pytest-temp -ra --cov zmq -m "not wheel and not new_console" -v; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
