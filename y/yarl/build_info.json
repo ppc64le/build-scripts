@@ -1,16 +1,13 @@
 {
-  "maintainer": "Harithanagothu2",
-  "package_name": "yarl",
-  "github_url": "https://github.com/aio-libs/yarl",
-  "version": "v1.18.3",
-  "wheel_build" : true,
-  "package_dir": "y/yarl",
-  "default_branch": "master",
-  "build_script": "yarl_ubi_9.3.sh",
-  "docker_build": false,
-  "validate_build_script": true,
-  "use_non_root_user": "false",
-  "v1.*.*":{
-    "build_script":"yarl_ubi_9.3.sh"
-  }
+   "maintainer": "shubham-dayma-ibm",
+   "package_name": "yarl",
+   "github_url": "https://github.com/aio-libs/yarl",
+   "version": "v1.18.3",
+   "default_branch": "master",
+   "build_script": "yarl_ubi_9.3.sh",
+   "package_dir": "y/yarl",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
 }
