@@ -25,7 +25,7 @@ PACKAGE_URL=https://download.open-mpi.org/release/open-mpi/v$PACKAGE_VERSION_DIR
 PACKAGE_DIR=$PACKAGE_NAME-$PACKAGE_VERSION
 
 # Install dependencies
-yum install -y git g++ gcc-toolset-13 make wget openssl-devel bzip2-devel libffi-devel zlib-devel autoconf automake libtool krb5-devel cmake
+yum install -y git g++ gcc-toolset-13 make wget openssl-devel bzip2-devel libffi-devel zlib-devel autoconf automake libtool krb5-devel cmake python3 python3-devel python3-pip
 
 echo "Downloading the tarball..."
 wget $PACKAGE_URL
