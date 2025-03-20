@@ -18,10 +18,9 @@
 #
 # ----------------------------------------------------------------------------
 
-SCRIPT_PACKAGE_VERSION=v3.2.5
 PACKAGE_NAME=xerces-c
-PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
-PACKAGE_URL=https://github.com/apache/xerces-c.git
+PACKAGE_VERSION=v3.2.5
+PACKAGE_URL=https://github.com/apache/$PACKAGE_NAME.git  
 
 #Install libs
 yum install  git gcc-c++ gcc glibc-devel libtool* autoconf automake make -y
@@ -32,7 +31,6 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #Configure and Build
-
 export XERCESCROOT=`pwd`
 ./reconf
 ./configure
@@ -59,7 +57,3 @@ then
 fi
 
 echo "SUCCESS: Build and test success!"
-
-#Smoke test
-export VERSION=$(grep -E '^Version:[[:space:]]*' /xerces-c/xerces-c.pc | awk '{print $2}')
-echo "xerces-c is available at [v$VERSION]."
