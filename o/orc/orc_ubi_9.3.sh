@@ -48,7 +48,7 @@ gcc --version
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
-yum install -y snappy-devel libzstd-devel lz4-devel abseil-cpp protobuf
+yum install -y snappy-devel libzstd-devel lz4-devel 
 python -m pip install --upgrade pip
 pip install ninja setuptools
 
