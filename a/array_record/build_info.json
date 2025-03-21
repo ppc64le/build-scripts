@@ -1,0 +1,19 @@
+{
+  "maintainer": "kiranNukal",
+  "package_name": "array_record",
+  "github_url": "https://github.com/google/array_record",
+  "version": "v0.5.0",
+  "wheel_build" : true,
+  "default_branch": "main",
+  "package_dir": "a/array-record",
+  "build_script": "array-record_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v0.6.0": {
+    "build_script":"array-record_0.6.0_ubi_9.3.sh"
+  },
+  "*": {
+    "build_script": "array-record_ubi_9.3.sh"
+  }
+}
