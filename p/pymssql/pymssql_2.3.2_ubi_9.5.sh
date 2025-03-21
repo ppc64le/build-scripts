@@ -22,6 +22,7 @@
 PACKAGE_NAME=pymssql
 PACKAGE_VERSION=${1:-v2.3.2}
 PACKAGE_URL=https://github.com/pymssql/pymssql.git
+CURRENT_DIR=`pwd`
 
 # Install dependencies and tools.
 yum install -y wget
@@ -32,7 +33,9 @@ wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
 mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-yum install -y git gcc gcc-c++ python3.12 python3.12-pip python3.12-devel openssl-devel krb5-devel
+yum install -y git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ python3.12 python3.12-pip python3.12-devel openssl-devel krb5-devel
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
 # Clone repository
 git clone $PACKAGE_URL
@@ -73,7 +76,7 @@ else
     echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-    # copying wheel to the root location 
-    cp ./dist/*.whl /
+    # copying wheel to the root location
+    cp ./dist/*.whl ${CURRENT_DIR}
     exit 0
 fi
