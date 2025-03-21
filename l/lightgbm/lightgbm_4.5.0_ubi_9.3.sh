@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : LightGBM
-# Version          : 4.2.0
+# Version          : 4.5.0
 # Source repo      : https://github.com/microsoft/LightGBM.git
 # Tested on        : UBI:9.3
 # Language         : Python
@@ -20,14 +20,24 @@
 
 # Variables
 PACKAGE_NAME=LightGBM
-PACKAGE_VERSION=${1:-v4.2.0}
+PACKAGE_VERSION=${1:-v4.5.0}
 PACKAGE_URL=https://github.com/microsoft/LightGBM.git
 PACKAGE=LightGBM
 PACKAGE_DIR=LightGBM/lightgbm-python
 CURRENT_DIR=$pwd
 
 echo "Installing dependencies..."
-yum install -y git gcc gcc-c++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel gcc-gfortran openblas atlas openblas-devel python3 python3-devel python3-pip
+yum install -y git cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel openblas atlas openblas-devel atlas pkg-config freetype-devel libpng-devel pkgconf-pkg-config cython python3.12 python3.12-devel python3.12-pip
+ln -sf /usr/bin/python3.12 /usr/bin/python3
+ln -sf /usr/bin/pip3.12 /usr/bin/pip
+
+echo "install gcc-toolset13, numpy and export path"
+yum install gcc-toolset-13 -y
+export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+echo "enabling gcc13-toolset"
+source /opt/rh/gcc-toolset-13/enable
+export LD_LIBRARY_PATH=${SITE_PACKAGE_PATH}/openblas/lib:${LD_LIBRARY_PATH}
+export PKG_CONFIG_PATH="${SITE_PACKAGE_PATH}/openblas/lib/pkgconfig"
 
 echo "Installing openmpi"
 yum install -y wget
@@ -47,56 +57,44 @@ git submodule update --init --recursive
 echo "checking out package version "
 git checkout $PACKAGE_VERSION
 
-echo "install necessary dependency"
-pip install scipy
-
-echo "install scikit-learn"
-echo "clone scikit repo"
-git clone https://github.com/scikit-learn/scikit-learn
-echo "cd package name"
-cd scikit-learn
-echo "checkout package version"
-git checkout 1.3.0
-echo "update submodule"
-git submodule update --init
-
-echo "installing pytest...."
-pip install pytest
-echo "installing cython.."
-pip install cython==0.29.36
-echo "installing numpy.."
-pip install numpy==1.23.5
+#installing dependencies
 echo "installing scipy.."
 pip install scipy
+
+echo "installing numpy .."
+pip install  numpy==2.0.2
+echo "installling pytz..."
+pip install pytz
+echo "installing pytest...."
+pip install pytest hypothesis
+echo "installing cython.."
+pip install cython
+echo "installing threadpoolctl and pillow.."
+pip install threadpoolctl pillow
 echo "installing joblib.."
 pip install joblib
-echo "installing threadpoolctl.."
-pip install threadpoolctl
 echo "installing meson-python and ninja.."
-pip install meson-python ninja
+pip install meson meson-python ninja
 echo "installing setuptools.."
-pip install setuptools==59.8.0 wheel
+pip install setuptools setuptools_scm wheel cffi
 echo "install other necessary dependency"
-pip install cloudpickle psutil
+pip install cloudpickle psutil pybind11
 echo "install matplotlib"
 pip install matplotlib
 echo "install pandas"
-pip install pandas==1.5.3
+pip install pandas
 echo "install scikit_build_core"
 pip install scikit-build-core
-
-echo "installing scikit-learn..."
-python3 setup.py build_ext --inplace
-pip install . --no-build-isolation
-echo "back to lightgbm dir"
-cd ..
+echo "install scikit-learn"
+pip install scikit-learn==1.5.2
 
 #build pyarrow
+pip install orc
 echo "Cloning the repository..."
 # Clone the repository
 git clone https://github.com/apache/arrow.git
 cd arrow
-git checkout apache-arrow-11.0.0
+git checkout apache-arrow-18.1.0
 git submodule update --init
 echo "Repository cloned and checked out to version"
 
@@ -169,8 +167,6 @@ export PYARROW_BUNDLE_ARROW_CPP=1
 export LD_LIBRARY_PATH=${ARROW_HOME}/lib:${LD_LIBRARY_PATH}
 export PYARROW_BUNDLE_ARROW_CPP_HEADERS=1
 pip install pytest==6.2.5
-echo "installing numpy ..."
-pip install numpy==1.23.5
 echo "installing other necessary dependency ..."
 pip install --upgrade setuptools wheel
 pip install wheel hypothesis pytest-lazy-fixture pytz
@@ -183,7 +179,7 @@ CMAKE_PREFIX_PATH=$ARROW_HOME python3 setup.py install
 echo "PyArrow Python package installed."
 cd ../..
 
-echo "installing base package and setting mpi flags ..."
+echo "installing base package ..."
 ./build-python.sh
 echo "set mpi library paths"
 export LD_LIBRARY_PATH=/usr/lib64/openmpi/lib:${LD_LIBRARY_PATH}
@@ -213,7 +209,7 @@ if ! (pip install --no-deps .) ; then
 fi
 
 echo "run tests  ..."
-if !(pytest ../tests --cache-clear -p no:hypothesis); then
+if !(pytest ../tests --capture=no -p no:warnings); then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
