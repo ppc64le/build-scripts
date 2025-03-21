@@ -1,23 +1,3 @@
-#!/bin/bash -e
-# -----------------------------------------------------------------------------
-#
-# Package       : tokenizers
-# Version       : v0.21.0
-# Source repo   : https://github.com/huggingface/tokenizers
-# Tested on     : UBI:9.5
-# Language      : C,Python
-# Travis-Check  : True
-# Script License: Apache License 2.0
-# Maintainer    : Vinod K <Vinod.K1@ibm.com>
-#
-# Disclaimer: This script has been tested in root mode on given
-# ==========  platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of the
-#             package and/or distribution. In such case, please
-#             contact "Maintainer" of this script.
-#
-# ----------------------------------------------------------------------------
-
 PACKAGE_NAME=tokenizers
 PACKAGE_VERSION=${1:-v0.21.0}
 PACKAGE_URL=https://github.com/huggingface/tokenizers
@@ -26,7 +6,7 @@ PACKAGE_DIR=tokenizers/bindings/python
 yum install -y wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran git make python python-devel python-pip  openssl-devel cmake unzip rust cargo
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH 
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
 #Install arrow as it required to build for tokenizers
 echo "Cloning and installing..."
@@ -102,7 +82,7 @@ export PYARROW_BUNDLE_ARROW_CPP_HEADERS=1
 
 echo "installing..."
 pip install .
-cd /
+cd ../..
 
 echo "Cloning and installing..."
 git clone $PACKAGE_URL
@@ -122,7 +102,7 @@ if ! pip install . ; then
     exit 1
 fi
 
-# Skipped these tests as these tests were parity with intel 
+# Skipped these tests as these tests were parity with intel
 if ! pytest -k "not(test_continuing_prefix_trainer_mistmatch or test_gzip or test_tiktoken)"; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
