@@ -70,7 +70,15 @@ build_opts+=(NO_AFFINITY=1)
 make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
 # Install OpenBLAS
 CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
-export OpenBLAS_HOME="$PREFIX/openblas/lib"
+OpenBLASInstallPATH=$(pwd)/$PREFIX
+OpenBLASConfigFile=$(find . -name OpenBLASConfig.cmake)
+OpenBLASPCFile=$(find . -name openblas.pc)
+sed -i "/OpenBLAS_INCLUDE_DIRS/c\SET(OpenBLAS_INCLUDE_DIRS ${OpenBLASInstallPATH}/include)" ${OpenBLASConfigFile}
+sed -i "/OpenBLAS_LIBRARIES/c\SET(OpenBLAS_INCLUDE_DIRS ${OpenBLASInstallPATH}/include)" ${OpenBLASConfigFile}
+sed -i "s|libdir=local/openblas/lib|libdir=${OpenBLASInstallPATH}/lib|" ${OpenBLASPCFile}
+sed -i "s|includedir=local/openblas/include|includedir=${OpenBLASInstallPATH}/include|" ${OpenBLASPCFile}
+export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
+export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
 cd ..
 
 
@@ -79,7 +87,6 @@ git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init
-
 EXTRA_OPTS=""
 export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr
 echo $GCC_HOME
@@ -115,7 +122,6 @@ if ! (python3 -m pip install . );then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-
 cd ..
 
 if ! (python3 -m pytest --pyargs numpy -m 'not slow'); then
