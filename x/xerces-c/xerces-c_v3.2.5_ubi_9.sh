@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=xerces-c
-PACKAGE_VERSION==${1:-v3.2.5}
+PACKAGE_VERSION=${1:-v3.2.5}
 PACKAGE_URL=https://github.com/apache/$PACKAGE_NAME.git  
 
 #Install libs
