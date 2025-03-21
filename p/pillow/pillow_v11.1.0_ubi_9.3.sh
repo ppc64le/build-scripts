@@ -43,7 +43,7 @@ yum update -y && yum install -y https://dl.fedoraproject.org/pub/epel/epel-relea
  libxml2-devel libxslt-devel zlib-devel python${PYTHON_VER}-tkinter.ppc64le libwebp.ppc64le libwebp-devel.ppc64le \
  libX11-xcb.ppc64le libxcb.ppc64le libxcb-devel.ppc64le openjpeg2.ppc64le glibc-langpack-en.ppc64le \
  ghostscript python3-pyqt5-sip.ppc64le \
- python3-devel redhat-rpm-config meson freetype.ppc64le netpbm.ppc64le
+ python3-devel redhat-rpm-config meson freetype.ppc64le
 
 cd $BUILD_HOME
 
