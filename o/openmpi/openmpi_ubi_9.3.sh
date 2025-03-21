@@ -81,9 +81,9 @@ wget https://raw.githubusercontent.com/aastha-sharma2/build-scripts/refs/heads/o
 #get testfile
 wget https://raw.githubusercontent.com/aastha-sharma2/build-scripts/refs/heads/openmpi/o/openmpi/helloworld.c
 
-"Running the test program with mpirun..."
-$PREFIX/bin/mpicc helloworld.c -o helloworld_c || true
-$PREFIX/bin/mpirun --allow-run-as-root -n 2 ./helloworld_c || true
+echo "Running the test program with mpirun..."
+$PREFIX/bin/mpicc helloworld.c -o helloworld_c 
+$PREFIX/bin/mpirun --allow-run-as-root -n 2 ./helloworld_c 
 
 #install
 if ! (pip install .) ; then
