@@ -69,8 +69,7 @@ mkdir -p local/openmpi
 cp -r $PREFIX/* local/openmpi/
 
 # Set path for mpi/ompi
-export PATH=$PREFIX/bin:$PATH
-export LD_LIBRARY_PATH=$PREFIX/lib:$LD_LIBRARY_PATH 
+export LD_LIBRARY_PATH=$PREFIX/lib:$LD_LIBRARY_PATH
 
 # Install Python bindings
 pip install mpi4py setuptools build
@@ -78,8 +77,16 @@ pip install mpi4py setuptools build
 #create pyproject.toml
 wget https://raw.githubusercontent.com/aastha-sharma2/build-scripts/refs/heads/openmpi/o/openmpi/pyproject.toml
 
+export PATH=$PREFIX/bin:$PATH
+export LD_LIBRARY_PATH=$PREFIX/lib:LD_$LIBRARY_PATH
+
 #get testfile
 wget https://raw.githubusercontent.com/aastha-sharma2/build-scripts/refs/heads/openmpi/o/openmpi/helloworld.c
+
+"Running the test program with mpirun..."
+$PREFIX/bin/mpicc helloworld.c -o helloworld_c
+$PREFIX/bin/mpirun --allow-run-as-root -n 2 ./helloworld_c
+
 #install
 if ! (pip install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
@@ -94,7 +101,3 @@ if ! (python3 -m build) ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
     exit 1
 fi
-
-"Running the test program with mpirun..."
-$PREFIX/bin/mpicc helloworld.c -o helloworld_c
-$PREFIX/bin/mpirun --allow-run-as-root -n 2 ./helloworld_c
