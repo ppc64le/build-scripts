@@ -29,9 +29,11 @@ yum install -y make libtool cmake git wget xz zlib-devel openssl-devel bzip2-dev
 
 dnf install -y gcc-toolset-13-libatomic-devel
 
+PYTHON_VERSION=python$(python --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)  
+
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
-export SITE_PACKAGE_PATH="/lib/python3.12/site-packages"
+export SITE_PACKAGE_PATH="/lib/${PYTHON_VERSION}/site-packages"
 SCRIPT_DIR=$(pwd)
 
 #Building abesil-cpp,libprotobuf and protobuf 
