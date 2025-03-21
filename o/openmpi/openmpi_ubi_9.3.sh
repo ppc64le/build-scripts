@@ -78,6 +78,8 @@ pip install mpi4py setuptools build
 #create pyproject.toml
 wget https://raw.githubusercontent.com/aastha-sharma2/build-scripts/refs/heads/openmpi/o/openmpi/pyproject.toml
 
+#get testfile
+wget https://raw.githubusercontent.com/aastha-sharma2/build-scripts/refs/heads/openmpi/o/openmpi/helloworld.c
 #install
 if ! (pip install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
@@ -85,13 +87,14 @@ if ! (pip install .) ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-
-"Running the test program with mpirun..."
-# Run the compiled program with mpirun
-$OPENMPI_PREFIX/bin/mpirun --allow-run-as-root -n 2 ./helloworld_c
-# Check if the mpirun command succeeded, if not, exit
-if [ $? -ne 0 ]; then
-    echo "------------------$PACKAGE_NAME:Test_Fails-------------------------------------"
+#build wheel
+if ! (python3 -m build) ; then
+    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
     exit 1
 fi
-echo "OpenMPI install successful!"
+
+"Running the test program with mpirun..."
+$PREFIX/bin/mpicc helloworld.c -o helloworld_c
+$PREFIX/bin/mpirun --allow-run-as-root -n 2 ./helloworld_c
