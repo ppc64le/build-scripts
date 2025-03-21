@@ -21,7 +21,7 @@
 PACKAGE_NAME=tokenizers
 PACKAGE_VERSION=${1:-v0.21.0}
 PACKAGE_URL=https://github.com/huggingface/tokenizers
-PACKAGE_DIR="./tokenizers/bindings/python"
+PACKAGE_DIR=./tokenizers/bindings/python
 
 yum install -y wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran git make python python-devel python-pip  openssl-devel cmake unzip rust cargo
 
