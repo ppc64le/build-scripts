@@ -3,7 +3,7 @@
 #
 # Package       : opus
 # Version       : 1.3.1
-# Source repo   : https://gitlab.xiph.org/xiph/opus
+# Source repo   : https://github.com/xiph/opus
 # Tested on     : UBI:9.3
 # Language      : Python, C
 # Travis-Check  : True
@@ -20,7 +20,7 @@
 PACKAGE_NAME=opus
 PACKAGE_DIR=opus
 PACKAGE_VERSION=${1:-v1.3.1}
-PACKAGE_URL=https://gitlab.xiph.org/xiph/opus
+PACKAGE_URL=https://github.com/xiph/opus
 
 # install core dependencies
 yum install -y python python-pip python-devel git cmake gcc-toolset-13 autoconf automake libtool wget

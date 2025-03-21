@@ -4,7 +4,7 @@
 # Package          : cassandra-driver
 # Version          : 3.29.0
 # Source repo      : http://github.com/datastax/python-driver
-# Tested on	   : UBI:9.3
+# Tested on        : UBI:9.3
 # Language         : Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
@@ -23,7 +23,7 @@ PACKAGE_URL=http://github.com/datastax/python-driver
 PACKAGE_DIR=python-driver
 
 # Install dependencies
-yum install -y git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran make wget sudo openssl-devel bzip2-devel krb5-devel libffi-devel zlib-devel python3.12-devel python3.12-pip cargo rust
+yum install -y git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran make wget sudo openssl-devel bzip2-devel krb5-devel libffi-devel zlib-devel python-devel python-pip cargo rust
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
@@ -32,11 +32,11 @@ curl -LO http://dist.schmorp.de/libev/Attic/libev-4.33.tar.gz
 tar -xzf libev-4.33.tar.gz
 cd libev-4.33
 export CFLAGS="-fPIC"
-export LDFLAGS="-fPIC" 
+export LDFLAGS="-fPIC"
 ./configure --disable-shared --enable-static
 make -j$(nproc)
 make install
-cd /
+cd ..
 
 # Clone the repository
 git clone $PACKAGE_URL
@@ -44,16 +44,16 @@ cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 #install necessary Python packages
-pip3.12 install wheel pytest tox nox mock build gevent eventlet pyopenssl
-pip3.12 install -r test-requirements.txt
+pip install wheel pytest tox nox mock build gevent eventlet pyopenssl
+pip install -r test-requirements.txt
 
 export CASS_DRIVER_LIBEV_INCLUDES="/usr/local/include"
 export CASS_DRIVER_LIBEV_LIBS="/usr/local/lib"
 export LDFLAGS="-Wl,-Bstatic -lev -Wl,-Bdynamic"
-python3.12 setup.py build_ext --inplace
+python3 setup.py build_ext --inplace
 
 #Install
-if ! pip3.12 install . ; then
+if ! pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -67,7 +67,7 @@ if !(pytest tests/unit/ \
     --ignore=tests/unit/io/test_asyncorereactor.py \
     --ignore=tests/unit/cython/test_bytesio.py \
     --ignore=tests/unit/cython/test_types.py \
-    --ignore=tests/unit/cython/test_utils.py); then
+    --ignore=tests/unit/cython/test_utils.py -p no:warnings) ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
