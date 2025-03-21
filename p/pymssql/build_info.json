@@ -14,6 +14,6 @@
     "build_script":"pymssql_ubi_9.3.sh"
   },
   "v2.3.2":{
-    "build_script":"pymssql_2.3.2_ubi_9.5.sh"
+    "build_script":"pymssql_2.3.2_ubi_9.3.sh"
   }
 }
