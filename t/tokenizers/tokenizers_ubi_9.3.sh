@@ -1,3 +1,23 @@
+#!/bin/bash -e
+# -----------------------------------------------------------------------------
+#
+# Package       : tokenizers
+# Version       : v0.21.0
+# Source repo   : https://github.com/huggingface/tokenizers
+# Tested on     : UBI:9.3
+# Language      : C,Python
+# Travis-Check  : True
+# Script License: Apache License 2.0
+# Maintainer    : Vinod K <Vinod.K1@ibm.com>
+#
+# Disclaimer: This script has been tested in root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
+
 PACKAGE_NAME=tokenizers
 PACKAGE_VERSION=${1:-v0.21.0}
 PACKAGE_URL=https://github.com/huggingface/tokenizers
