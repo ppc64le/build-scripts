@@ -69,6 +69,7 @@ mkdir -p local/openmpi
 cp -r $PREFIX/* local/openmpi/
 
 # Set path for mpi/ompi
+export PATH=$PREFIX/bin:$PATH
 export LD_LIBRARY_PATH=$PREFIX/lib:$LD_LIBRARY_PATH
 
 # Install Python bindings
@@ -76,9 +77,6 @@ pip install mpi4py setuptools build
 
 #create pyproject.toml
 wget https://raw.githubusercontent.com/aastha-sharma2/build-scripts/refs/heads/openmpi/o/openmpi/pyproject.toml
-
-export PATH=$PREFIX/bin:$PATH
-export LD_LIBRARY_PATH=$PREFIX/lib:LD_$LIBRARY_PATH
 
 #get testfile
 wget https://raw.githubusercontent.com/aastha-sharma2/build-scripts/refs/heads/openmpi/o/openmpi/helloworld.c
