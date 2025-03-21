@@ -41,7 +41,7 @@ pip install ninja setuptools
 
 git clone https://github.com/boostorg/boost
 cd boost
-git checkout 1.81.0
+git checkout boost-1.81.0
 git submodule update --init
 
 mkdir Boost_prefix
