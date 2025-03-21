@@ -17,6 +17,7 @@
 #
 # ----------------------------------------------------------------------------
 
+
 yum install -y wget
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
@@ -31,12 +32,75 @@ PACKAGE_DIR=thrift
 PACKAGE_VERSION=${1:-0.21.0}
 PACKAGE_URL=https://github.com/apache/thrift
 
-yum install -y python python-pip python-devel git make  python-devel  openssl-devel cmake zlib-devel libjpeg-devel gcc-toolset-13 cmake libevent libtool boost-devel.ppc64le flex bison
+yum install -y python python-pip python-devel git make  python-devel  openssl-devel cmake zlib-devel libjpeg-devel gcc-toolset-13 cmake libevent libtool flex bison
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-
 pip install ninja setuptools
 
+#installing boost
+
+git clone https://github.com/boostorg/boost
+cd boost
+git checkout 1.81.0
+git submodule update --init
+
+mkdir Boost_prefix
+export BOOST_PREFIX=$(pwd)/Boost_prefix
+
+INCLUDE_PATH="${BOOST_PREFIX}/include"
+LIBRARY_PATH="${BOOST_PREFIX}/lib"
+
+export CC=$(which gcc)
+export CXX=$(which g++)
+export target_platform=$(uname)-$(uname -m)
+CXXFLAGS="${CXXFLAGS} -fPIC"
+TOOLSET=gcc
+ 
+ # http://www.boost.org/build/doc/html/bbv2/tasks/crosscompile.html
+cat <<EOF > tools/build/example/site-config.jam
+using ${TOOLSET} : : ${CXX} ;
+EOF
+
+LINKFLAGS="${LINKFLAGS} -L${LIBRARY_PATH}"
+
+CXXFLAGS="$(echo ${CXXFLAGS} | sed 's/ -march=[^ ]*//g' | sed 's/ -mcpu=[^ ]*//g' |sed 's/ -mtune=[^ ]*//g')" \
+CFLAGS="$(echo ${CFLAGS} | sed 's/ -march=[^ ]*//g' | sed 's/ -mcpu=[^ ]*//g' |sed 's/ -mtune=[^ ]*//g')" \
+    CXX=${CXX_FOR_BUILD:-${CXX}} CC=${CC_FOR_BUILD:-${CC}} ./bootstrap.sh \
+    --prefix="${BOOST_PREFIX}" \
+    --without-libraries=python \
+    --with-toolset=${TOOLSET} \
+    --with-icu="${BOOST_PREFIX}" || (cat bootstrap.log; exit 1)
+	 ADDRESS_MODEL=64
+    ARCHITECTURE=power
+	ABI="sysv"
+	 BINARY_FORMAT="elf"
+	 
+	 export CPU_COUNT=$(nproc)
+
+./b2 -q \
+    variant=release \
+    address-model="${ADDRESS_MODEL}" \
+    architecture="${ARCHITECTURE}" \
+    binary-format="${BINARY_FORMAT}" \
+    abi="${ABI}" \
+    debug-symbols=off \
+    threading=multi \
+    runtime-link=shared \
+    link=shared \
+    toolset=${TOOLSET} \
+    include="${INCLUDE_PATH}" \
+    cxxflags="${CXXFLAGS} -Wno-deprecated-declarations" \
+    linkflags="${LINKFLAGS}" \
+    --layout=system \
+    -j"${CPU_COUNT}" \
+    install
+
+# Remove Python headers as we don't build Boost.Python.
+rm "${BOOST_PREFIX}/include/boost/python.hpp"
+rm -r "${BOOST_PREFIX}/include/boost/python"
+
+cd ..
+echo "------------------- boost installed-------------------"
 # clone source repository
 git clone $PACKAGE_URL
 cd $PACKAGE_DIR
@@ -46,7 +110,7 @@ Source_DIR=$(pwd)
 mkdir prefix
 export PREFIX=$Source_DIR/prefix
 
-export BOOST_ROOT=/usr
+export BOOST_ROOT=${BOOST_PREFIX}/boostcpp
 export ZLIB_ROOT=/usr
 export LIBEVENT_ROOT=/usr
 
@@ -80,10 +144,12 @@ make install
 cd $Source_DIR
 mkdir -p local/thriftcpp
 
-cp -r $PREFIX/* /thrift/local/thriftcpp/
+cp -r $PREFIX/* local/thriftcpp/
 
 #pyproject.toml
-wget https://raw.githubusercontent.com/Harithanagothu2/build-scripts/cb425f8b17c94301b8b9b457c2b85752241c1d0f/t/thrift-cpp/pyproject.toml
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/t/thrift-cpp/pyproject.toml
+sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
+
 
 #test
 make -k check
