@@ -70,8 +70,9 @@ build_opts+=(NO_AFFINITY=1)
 make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
 # Install OpenBLAS
 CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
-export OpenBLAS_HOME="$SITE_PACKAGE_PATH/openblas/lib"
-UNAME_M=$(uname -m)
+export OpenBLAS_HOME="$PREFIX/openblas/lib"
+cd ..
+
 
 #clone package
 git clone $PACKAGE_URL
@@ -96,7 +97,7 @@ export OBJDUMP=${GCC_HOME}/bin/objdump
 export RANLIB=${GCC_HOME}/bin/ranlib
 export STRIP=${GCC_HOME}/bin/strip
 export READELF=${GCC_HOME}/bin/readelf
-
+UNAME_M=$(uname -m)
 case "$UNAME_M" in
     ppc64*)
         # Optimizations trigger compiler bug.
