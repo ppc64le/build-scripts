@@ -50,6 +50,9 @@ SKIP_TESTS=${SKIP_TESTS:-False}
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
+# install openssl before adding mirrors to avoid conflicts
+dnf install -y openssl-devel
+
 dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
             https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
             https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
@@ -58,7 +61,7 @@ dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStrea
 dnf config-manager --set-enabled crb
 
 dnf install -y git gcc-toolset-13 kmod jq ninja-build cmake \
-    numactl-devel libtiff-devel openjpeg2-devel openssl-devel \
+    numactl-devel libtiff-devel openjpeg2-devel \
     libimagequant-devel libxcb-devel zeromq-devel \
     python$PYTHON_VERSION-devel \
     python$PYTHON_VERSION-pip \
