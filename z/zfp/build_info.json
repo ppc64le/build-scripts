@@ -2,18 +2,21 @@
   "maintainer": "vinodk99",
   "package_name": "zfp",
   "github_url": "https://github.com/LLNL/zfp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "wheel_build" : true,
   "default_branch": "develop",
-  "build_script": "zfp_ubi_9.5.sh",
+  "build_script": "zfp_1.0.1_ubi_9.5.sh",
   "package_dir": "z/zfp",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "*": {
+  "1.0.0": {
    "build_script": "zfp_ubi_9.5.sh",
    "patches": {
       "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/z/zfp/zfp_1.0.0.patch"
     }
+ },
+ "*" : {
+    "build_script": "zfp_1.0.1_ubi_9.5.sh"
  }
 }
