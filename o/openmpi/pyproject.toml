@@ -25,8 +25,8 @@ classifiers = [
 
 #Project URLs
 [project.urls]
-homepage = "https://github.com/open-mpi/ompi/tree/v5.0.6"
-upstream = "https://github.com/open-mpi/ompi/tree/v5.0.6"
+homepage = "https://www.open-mpi.org/"
+upstream = "https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.6.tar.gz"
 
 #Find packages files in local folder, this is needed as we are not following standar directory structure of setuptools
 [tool.setuptools.packages.find]
