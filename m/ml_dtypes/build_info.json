@@ -16,5 +16,4 @@
   "*":{
     "build_script": "ml_dtypes_v0.4.1_ubi_9.3.sh"
   }
-  
 }
