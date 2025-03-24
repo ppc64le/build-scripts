@@ -58,6 +58,7 @@ touch $LOCAL_DIR/$PACKAGE_NAME/__init__.py
 #Downloading Pyproject.toml file
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/1423375e65a9eb5ab3fb37fe8b8f3e18acafbc97/h/hdf5/pyproject.toml
 sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
+sed -i 's/version = "hdf5[._-]\([0-9]*\)[._-]\([0-9]*\)[._-]\([0-9]*\)\([._-]*[0-9]*\)"/version = "\1.\2.\3\4"/' pyproject.toml
 
 
 if ! pip install . ; then
