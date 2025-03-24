@@ -4,7 +4,7 @@
 # Package       : pymssql
 # Version       : v2.3.2
 # Source repo   : https://github.com/pymssql/pymssql.git
-# Tested on     : UBI:9.5
+# Tested on     : UBI:9.3
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -25,14 +25,6 @@ PACKAGE_URL=https://github.com/pymssql/pymssql.git
 CURRENT_DIR=`pwd`
 
 # Install dependencies and tools.
-yum install -y wget
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
-wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
-mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
-dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 yum install -y git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ python3.12 python3.12-pip python3.12-devel openssl-devel krb5-devel
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
