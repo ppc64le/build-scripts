@@ -26,7 +26,7 @@ WORK_DIR=$(pwd)
 
 yum install -y make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel patch python python-devel ninja-build gcc-toolset-13 
 
-PYTHON_VERSION=$(python --version)
+PYTHON_VERSION=python$(python --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2) 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export SITE_PACKAGE_PATH="/lib/python${PYTHON_VERSION}/site-packages"
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
@@ -121,6 +121,7 @@ cd ..
 export PROTOC=$SOURCE_DIR/build/protoc
 export LD_LIBRARY_PATH=$WORK_DIR/abseil-cpp/abseilcpp/lib:$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
 export LIBRARY_PATH=$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
+export LDFLAGS="-L$(pwd)/build"
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 
@@ -155,7 +156,7 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
 fi
 
-python3 -m build --wheel --no-isolation --outdir="$WORK_DIR/"
+python setup.py bdist_wheel --cpp_implementation --dist-dir $WORK_DIR
 exit 0
 
 
