@@ -50,6 +50,14 @@ else
     echo "------------------$PACKAGE_NAME: Install success ------------------"
 fi
 
+# Run the unit test case 
+if ! make -k check VERBOSE=1 TESTS='test/tbitmap'; then
+    echo "------------------$PACKAGE_NAME: Test tbitmap failed ------------------"
+    exit 1
+else
+    echo "------------------$PACKAGE_NAME: Test tbitmap passed ------------------"
+fi
+
 # Verify installation
 if ! numactl --version; then
     echo "------------------$PACKAGE_NAME: Version check failed ------------------"
