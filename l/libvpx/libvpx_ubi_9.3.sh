@@ -72,7 +72,7 @@ cp -r prefix/* local/libvpx/
 pip install setuptools
 
 #dDownloading pyproject.toml file
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/a777cc2e2118607512843435339ddf117ffaebe0/l/libvpx/pyproject.toml
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/l/libvpx/pyproject.toml
 sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
 
 if ! pip install . ; then
