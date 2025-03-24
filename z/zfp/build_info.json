@@ -5,7 +5,7 @@
   "version": "1.0.1",
   "wheel_build" : true,
   "default_branch": "develop",
-  "build_script": "zfp_ubi_1.0.1_9.5.sh",
+  "build_script": "zfp_1.0.1_ubi_9.5.sh",
   "package_dir": "z/zfp",
   "docker_build": false,
   "validate_build_script": true,
@@ -17,6 +17,6 @@
     }
  },
  "*" : {
-    "build_script": "zfp_ubi_1.0.1_9.5.sh"
+    "build_script": "zfp_1.0.1_ubi_9.5.sh"
  }
 }
