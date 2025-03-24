@@ -1,8 +1,8 @@
 {
-   "maintainer": "Harithanagothu2",
+   "maintainer": "vinodk99",
    "package_name": "scikit-learn",
    "github_url": "https://github.com/scikit-learn/scikit-learn.git",
-   "version": "1.5.2",
+   "version": "1.6.1",
    "wheel_build" : true,
    "default_branch": "main",
    "build_script": "scikit-learn_ubi_9.3.sh",
