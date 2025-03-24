@@ -21,6 +21,7 @@ PACKAGE_NAME=oneTBB
 PACKAGE_VERSION=${1:-v2021.8.0}
 PACKAGE_URL=https://github.com/uxlfoundation/oneTBB
 PACKAGE_DIR=$PACKAGE_NAME/python
+HOME_DIR=${PWD}
 
 yum install -y git make cmake wget python python-devel python-pip
 
@@ -47,6 +48,8 @@ ln -s /usr/lib64/libirml.so.1 /usr/lib64/libirml.so
 
 python -m pip install wheel build setuptools
 
+cd $HOME_DIR
+ls
 echo "------------Cloning the Repository------------"
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
@@ -54,7 +57,8 @@ git checkout $PACKAGE_VERSION
 
 mkdir build
 cd build/
-
+ls
+pwd
 if ! (cmake -DCMAKE_INSTALL_PREFIX=/tmp/my_installed_onetbb -DTBB_TEST=OFF -DBUILD_SHARED_LIBS=ON -DTBB_BUILD=ON -DTBB4PY_BUILD=ON ..);then
         echo "------------------$PACKAGE_NAME:cmake_fails-------------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -98,8 +102,8 @@ export LD_LIBRARY_PATH=/tmp/my_installed_onetbb/lib64:${LD_LIBRARY_PATH}
 
 
 echo "-------------Testing--------------------"
-cd build
-
+cd $HOME_DIR$PACKAGE_NAME/build
+pwd
 if !( cmake -DCMAKE_INSTALL_PREFIX=/tmp/my_installed_onetbb -DTBB_TEST=ON ..);then
         echo "------------------$PACKAGE_NAME:Test_fails-------------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
