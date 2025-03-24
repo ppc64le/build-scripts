@@ -1,7 +1,7 @@
 {
   "maintainer": "Harithanagothu2",
   "package_name": "opus",
-  "github_url": "https://gitlab.xiph.org/xiph/opus",
+  "github_url": "https://github.com/xiph/opus",
   "version": "v1.3.1",
   "wheel_build" : true,
   "package_dir": "o/opus",
