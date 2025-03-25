@@ -19,28 +19,24 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=commons-daemon
+PACKAGE_URL=https://github.com/apache/${PACKAGE_NAME}.git
 PACKAGE_VERSION=${1:-rel/commons-daemon-1.2.3}
-PACKAGE_URL=https://github.com/apache/$PACKAGE_NAME.git
 PACKAGE_BASENAME=${PACKAGE_VERSION#rel/}
+MAVEN_VERSION=3.9.9
+BUILD_HOME=$(pwd)
 
-# Install tools and dependent packages
+# install tools and dependent packages
 yum update -y
 yum install -y git wget tar java-1.8.0-openjdk-devel
 
-#install maven
-cd /opt/
-rm -rf apache-maven*
-rm -rf maven
-wget https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz
-tar xzf apache-maven-3.9.9-bin.tar.gz
-ln -s apache-maven-3.9.9 maven
-export MVN_HOME=/opt/maven
-export PATH=${MVN_HOME}/bin:${PATH}
-mvn -version
+#Install maven
+wget https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
+tar xvf apache-maven-${MAVEN_VERSION}-bin.tar.gz
+rm -rf apache-maven-${MAVEN_VERSION}-bin.tar.gz
+PATH=$BUILD_HOME/apache-maven-${MAVEN_VERSION}/bin:$PATH
 
 # Cloning the repository from remote to local
-cd /home
-rm -rf $PACKAGE_NAME
+cd ${BUILD_HOME}/home
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
@@ -60,7 +56,7 @@ then
 	exit 2
 fi
 
-export JAR_PATH="/home/${PACKAGE_NAME}/target/${PACKAGE_BASENAME}.jar"
+export JAR_PATH="$(find / -type f -name "$PACKAGE_BASENAME.jar")"
 echo "${PACKAGE_NAME} JAR file is located at: ${JAR_PATH}"
 
 echo "SUCCESS: Build and test success!"
