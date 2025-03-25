@@ -3,6 +3,7 @@
   "package_name": "openmpi",
   "github_url": "https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.6.tar.gz",
   "version": "5.0.6",
+  "default_branch": "NA",
   "wheel_build" : true,
   "package_dir": "o/openmpi",
   "build_script": "openmpi_ubi_9.3.sh",
