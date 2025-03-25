@@ -26,6 +26,7 @@ PACKAGE_DIR=statsmodels
 echo "------------------------------------------------------------Installing requirements for statsmodels------------------------------------------------------"
 #dnf groupinstall -y "Development Tools" 
 dnf install -y wget
+dnf install -y openssl-devel
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
@@ -34,7 +35,7 @@ mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 
-dnf install -y git g++ gcc gcc-c++ gcc-gfortran openssl-devel \
+dnf install -y git g++ gcc gcc-c++ gcc-gfortran \
     meson ninja-build openblas-devel libjpeg-devel bzip2-devel libffi-devel zlib-devel \
     libtiff-devel freetype-devel 
 dnf install -y make cmake automake autoconf procps-ng python3.12 python3.12-devel python3.12-pip
@@ -50,10 +51,6 @@ if ! python3.12 -m pip install .; then
     exit 1
 fi
 
-sed -i 's/atol=1e-6/atol=1e-1/g' statsmodels/stats/tests/test_mediation.py
-sed -i 's/QE/Q-DEC/g' statsmodels/tsa/tests/test_exponential_smoothing.py
-sed -i 's/1e-5/2/g' statsmodels/imputation/tests/test_mice.py
-sed -i 's/1e-2/1e-1/g' statsmodels/stats/tests/test_mediation.py
 python3.12 -m pip install pytest
 if  [ "$(python3.12 --version  | grep "3.12")" ]
 then
@@ -75,8 +72,5 @@ else
     echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-    cd ..
-    start="$(awk '/python_requires/{ print NR; exit }' ./setup.py)"
-    sed -i "$start a\    version=\"0.14.4\"," ./setup.py
     exit 0
 fi
