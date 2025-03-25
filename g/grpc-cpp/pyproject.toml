@@ -16,8 +16,6 @@ version = "{PACKAGE_VERSION}"
 #One line description
 description = "gRPC - A high-performance, open-source universal RPC framework"
 
-maintainers = [ { name = "Open-CE" } ]
-
 #Classifiers to improve pacakage discoverability
 classifiers = [
   "Development Status :: 5 - Production/Stable",
