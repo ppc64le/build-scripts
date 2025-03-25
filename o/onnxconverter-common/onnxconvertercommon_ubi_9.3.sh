@@ -137,7 +137,7 @@ cd ..
 rm -rf onnxruntime
 
 cd $PACKAGE_DIR
-if ! python3.12 setup.py install; then
+if ! pip3.12 install .; then
         echo "------------------$PACKAGE_NAME:wheel_built_fails---------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  wheel_built_fails"
