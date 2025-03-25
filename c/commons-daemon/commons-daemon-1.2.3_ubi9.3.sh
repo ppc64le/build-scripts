@@ -21,6 +21,7 @@
 PACKAGE_NAME=commons-daemon
 PACKAGE_VERSION=${1:-rel/commons-daemon-1.2.3}
 PACKAGE_URL=https://github.com/apache/$PACKAGE_NAME.git
+PACKAGE_BASENAME=${PACKAGE_VERSION#rel/}
 
 # Install tools and dependent packages
 yum update -y
@@ -51,11 +52,16 @@ if [ "$ret" -ne 0 ]
 then
 	exit 1
 fi
+
 # Test
 mvn test || ret=$?
 if [ "$ret" -ne 0 ]
 then
 	exit 2
 fi
+
+export JAR_PATH="/home/${PACKAGE_NAME}/target/${PACKAGE_BASENAME}.jar"
+echo "${PACKAGE_NAME} JAR file is located at: ${JAR_PATH}"
+
 echo "SUCCESS: Build and test success!"
 exit
