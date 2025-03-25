@@ -110,7 +110,7 @@ Source_DIR=$(pwd)
 mkdir prefix
 export PREFIX=$Source_DIR/prefix
 
-export BOOST_ROOT=${BOOST_PREFIX}/boostcpp
+export BOOST_ROOT=${BOOST_PREFIX}
 export ZLIB_ROOT=/usr
 export LIBEVENT_ROOT=/usr
 
