@@ -22,6 +22,8 @@ PACKAGE_VERSION=${1:-v1.15.2}
 PACKAGE_URL=https://github.com/scipy/scipy
 PACKAGE_DIR=scipy
 
+echo "Installation of basic dependencies"
+
 yum install -y git make cmake wget python3.12 python3.12-devel python3.12-pip openblas openblas-devel pkgconfig atlas
 
 yum install gcc-toolset-13 -y
@@ -32,6 +34,7 @@ ln -sf /usr/bin/python3.12 /usr/bin/python
 
 python -m pip install beniget==0.4.2.post1  Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis highspy  array_api_extra array_api_strict ninja patchelf>=0.11.0
 
+echo "Cloning the Repository"
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
@@ -39,6 +42,8 @@ git submodule update --init
 
 export OpenBLAS_HOME="/usr/include/openblas"
 export SITE_PACKAGE_PATH=/usr/local/lib/python3.12/site-packages
+
+echo "Dependency installations"
 
 if ! python -m pip install .; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
@@ -49,6 +54,7 @@ fi
 
 export PY_IGNORE_IMPORTMISMATCH=1
 cd ..
+echo "Testing"
 
 if ! (pytest $PACKAGE_NAME -k "not test_2d and not test_version"); then
     echo "------------------$PACKAGE_NAME::Install_success_but_test_Fails-------------------------"
