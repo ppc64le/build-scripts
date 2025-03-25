@@ -48,14 +48,14 @@ git checkout $PACKAGE_VERSION
 
 #Build
 ret=0
-yarn && yarn build || ret=$?
+yarn && yarn build && yarn install-g || ret=$?
 if [ "$ret" -ne 0 ]
 then
     exit 1
 fi
 
 #Test
-yarn test-ci || ret=$?
+yarn test || ret=$?
 if [ "$ret" -ne 0 ]
 then
     echo "FAIL: Tests failed."
