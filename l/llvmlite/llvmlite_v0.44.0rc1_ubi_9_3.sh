@@ -61,10 +61,26 @@ git apply "$WORKING_DIR/llvmlite/conda-recipes/llvm15-remove-use-of-clonefile.pa
 cp "$WORKING_DIR/llvmlite/conda-recipes/llvmdev/build.sh" .
 chmod 777 "$WORKING_DIR/llvm-project/build.sh" && "$WORKING_DIR/llvm-project/build.sh"
 
+# Check for llvm-config path
+LLVM_CONFIG_PATH=$(which llvm-config)
+
+# If llvm-config is not found in the system path, use the local path from the build
+if [ -z "$LLVM_CONFIG_PATH" ]; then
+    echo "llvm-config not found in PATH, using local path."
+    export LLVM_CONFIG="$WORKING_DIR/llvm-project/build/bin/llvm-config"
+else
+    echo "llvm-config found at: $LLVM_CONFIG_PATH"
+    export LLVM_CONFIG="$LLVM_CONFIG_PATH"
+fi
+
+# Check if llvm-config.h exists in the build include directory
+echo "Checking for llvm-config.h in: $WORKING_DIR/llvm-project/build/include/llvm/Config"
+ls "$WORKING_DIR/llvm-project/build/include/llvm/Config/llvm-config.h" || { echo "llvm-config.h not found. Exiting."; exit 1; }
+
 # Build llvmlite
 cd "$WORKING_DIR/llvmlite"
-export CXXFLAGS="-I/llvm-project/llvm/include"
-export LLVM_CONFIG=/llvm-project/build/bin/llvm-config
+export CXXFLAGS="-I$WORKING_DIR/llvm-project/build/include"
+export LLVM_CONFIG="$WORKING_DIR/llvm-project/build/bin/llvm-config"
 
 # Install
 if ! (pip install .) ; then
