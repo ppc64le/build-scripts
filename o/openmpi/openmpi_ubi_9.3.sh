@@ -19,13 +19,15 @@
 # ---------------------------------------------------------------------------------------------
 # Variables
 PACKAGE_NAME=openmpi
-PACKAGE_VERSION=5.0.6
+PACKAGE_VERSION=${1:-5.0.6}
 PACKAGE_VERSION_DIR=5.0
 PACKAGE_URL=https://download.open-mpi.org/release/open-mpi/v$PACKAGE_VERSION_DIR/$PACKAGE_NAME-$PACKAGE_VERSION.tar.gz
 PACKAGE_DIR=$PACKAGE_NAME-$PACKAGE_VERSION
+CURRENT_DIR=$(pwd)
 
 # Install dependencies
-yum install -y git g++ gcc-toolset-13 make wget openssl-devel bzip2-devel libffi-devel zlib-devel autoconf automake libtool krb5-devel cmake python3 python3-devel python3-pip
+yum install -y git gcc-toolset-13 make wget openssl-devel bzip2-devel libffi-devel zlib-devel autoconf automake libtool krb5-devel cmake python3 python3-devel python3-pip
+source /opt/rh/gcc-toolset-13/enable
 
 echo "Downloading the tarball..."
 wget $PACKAGE_URL
@@ -66,6 +68,7 @@ pip install setuptools build
 
 #create pyproject.toml
 wget https://raw.githubusercontent.com/aastha-sharma2/build-scripts/refs/heads/openmpi/o/openmpi/pyproject.toml
+sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
 
 #get testfile
 wget https://raw.githubusercontent.com/aastha-sharma2/build-scripts/refs/heads/openmpi/o/openmpi/helloworld.c
@@ -73,6 +76,14 @@ wget https://raw.githubusercontent.com/aastha-sharma2/build-scripts/refs/heads/o
 echo "Running the test program with mpirun..."
 $PREFIX/bin/mpicc helloworld.c -o helloworld_c 
 $PREFIX/bin/mpirun --allow-run-as-root -n 2 ./helloworld_c 
+
+# Handle test failure
+if [ $? -ne 0 ]; then
+    echo "------------------$PACKAGE_NAME:Test_Fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Test_Fails"
+    exit 1
+fi
 
 #install
 if ! (pip install .) ; then
@@ -82,7 +93,7 @@ if ! (pip install .) ; then
     exit 1
 fi
 #build wheel
-if ! (python3 -m build) ; then
+if ! (python3 -m build --wheel --outdir="$CURRENT_DIR") ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
