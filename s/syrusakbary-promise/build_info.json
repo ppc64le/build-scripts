@@ -1,6 +1,6 @@
 {
     "maintainer": "shubham-garud",
-    "package_name": "promise",
+    "package_name": "syrusakbary-promise",
     "github_url": "https://github.com/syrusakbary/promise",
     "version": "v2.3.0",
     "default_branch": "master",
