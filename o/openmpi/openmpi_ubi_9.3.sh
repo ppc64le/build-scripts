@@ -46,10 +46,6 @@ export CC=$(basename "$CC")
 export CXX=$(basename "$CXX")
 export LIBRARY_PATH="/usr/lib64"
 
-# Enabling and installing epel-repo
-dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-yum install epel-release flex -y
-
 # Configure to set the installation prefix and disable dependency tracking
 ./configure --prefix=$PREFIX --disable-dependency-tracking
 # Make to build Open MPI with parallel processing
