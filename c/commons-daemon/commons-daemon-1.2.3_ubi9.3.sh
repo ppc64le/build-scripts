@@ -56,7 +56,5 @@ then
 	exit 2
 fi
 
-export JAR_PATH="$(find ./ -type f -name "$PACKAGE_BASENAME.jar")"
-echo "${PACKAGE_NAME} JAR file is located at: ${JAR_PATH}"
-
+echo "${PACKAGE_NAME} JAR file is located at: ${BUILD_HOME}/${PACKAGE_NAME}/target/$PACKAGE_BASENAME.jar"
 echo "SUCCESS: Build and test success!"
