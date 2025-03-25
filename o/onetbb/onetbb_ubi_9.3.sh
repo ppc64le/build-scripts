@@ -104,7 +104,8 @@ export LD_LIBRARY_PATH=/tmp/my_installed_onetbb/lib64:${LD_LIBRARY_PATH}
 echo "-------------Testing--------------------"
 ls
 pwd
-cd $HOME_DIR$PACKAGE_NAME/build
+cd $HOME_DIR
+cd $PACKAGE_NAME/build
 pwd
 if !( cmake -DCMAKE_INSTALL_PREFIX=/tmp/my_installed_onetbb -DTBB_TEST=ON ..);then
         echo "------------------$PACKAGE_NAME:Test_fails-------------------------------------"
