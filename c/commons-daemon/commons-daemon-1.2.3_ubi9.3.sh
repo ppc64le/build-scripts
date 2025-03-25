@@ -36,7 +36,7 @@ rm -rf apache-maven-${MAVEN_VERSION}-bin.tar.gz
 PATH=$BUILD_HOME/apache-maven-${MAVEN_VERSION}/bin:$PATH
 
 # Cloning the repository from remote to local
-cd ${BUILD_HOME}/home
+cd ${BUILD_HOME}
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
@@ -56,8 +56,7 @@ then
 	exit 2
 fi
 
-export JAR_PATH="$(find / -type f -name "$PACKAGE_BASENAME.jar")"
+export JAR_PATH="$(find ./ -type f -name "$PACKAGE_BASENAME.jar")"
 echo "${PACKAGE_NAME} JAR file is located at: ${JAR_PATH}"
 
 echo "SUCCESS: Build and test success!"
-exit
