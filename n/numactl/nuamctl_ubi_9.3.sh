@@ -53,7 +53,7 @@ fi
 # Run the unit test case 
 if ! make -k check VERBOSE=1 TESTS='test/tbitmap'; then
     echo "------------------$PACKAGE_NAME: Test tbitmap failed ------------------"
-    exit 1
+    exit 2
 else
     echo "------------------$PACKAGE_NAME: Test tbitmap passed ------------------"
 fi
