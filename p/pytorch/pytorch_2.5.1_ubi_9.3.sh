@@ -25,6 +25,7 @@ PACKAGE_NAME=pytorch
 PACKAGE_URL=https://github.com/pytorch/pytorch.git
 PACKAGE_VERSION=${1:-v2.5.1}
 PACKAGE_DIR=$PACKAGE_NAME
+SCRIPT_DIR=$(pwd)
 
 yum install -y git wget
 yum install -y gcc-toolset-13
@@ -33,6 +34,7 @@ gcc --version
 
 yum install -y python3.12 python3.12-devel python3.12-pip
 ln -sf /usr/bin/python3.12 /usr/bin/python3
+ln -sf /usr/bin/python3.12 /usr/bin/python
 
 yum install -y cmake gcc-gfortran
 
@@ -104,7 +106,7 @@ echo "--------------------openblas installed-------------------------------"
 
 #Building abesil-cpp,libprotobuf and protobuf 
 
-pip install --upgrade cmake pip setuptools wheel ninja packaging pytest
+python -m pip install --upgrade cmake pip setuptools wheel ninja packaging pytest
 
 #Building abseil-cpp
 ABSEIL_VERSION=20240116.2
@@ -195,7 +197,7 @@ wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-e
 git apply set_cpp_to_17_v4.25.3.patch
 
 cd python
-pip install .
+python -m pip install .
 
 echo "-------------------------- libprotobuf and  protobuf installed-----------------------"
 
