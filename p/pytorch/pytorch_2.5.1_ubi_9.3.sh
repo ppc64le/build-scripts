@@ -34,20 +34,171 @@ gcc --version
 yum install -y python3.12 python3.12-devel python3.12-pip
 ln -sf /usr/bin/python3.12 /usr/bin/python3
 
-yum install -y openblas-devel cmake gcc-gfortran
+yum install -y cmake gcc-gfortran
 
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
+#install openblas
+#clone and install openblas from source
 
-wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
-mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
+git clone https://github.com/OpenMathLib/OpenBLAS
+cd OpenBLAS
+git checkout v0.3.29
+git submodule update --init
 
-dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/o/openblas/pyproject.toml
+sed -i "s/{PACKAGE_VERSION}/v0.3.29/g" pyproject.toml
+PREFIX=local/openblas
 
-yum install -y abseil-cpp abseil-cpp-devel
-yum install -y protobuf-c protobuf protobuf-devel.ppc64le
+# Set build options
+declare -a build_opts
+# Fix ctest not automatically discovering tests
+LDFLAGS=$(echo "${LDFLAGS}" | sed "s/-Wl,--gc-sections//g")
+export CF="${CFLAGS} -Wno-unused-parameter -Wno-old-style-declaration"
+unset CFLAGS
+export USE_OPENMP=1
+build_opts+=(USE_OPENMP=${USE_OPENMP})
+export PREFIX=${PREFIX}
+
+# Handle Fortran flags
+if [ ! -z "$FFLAGS" ]; then
+    export FFLAGS="${FFLAGS/-fopenmp/ }"
+    export FFLAGS="${FFLAGS} -frecursive"
+    export LAPACK_FFLAGS="${FFLAGS}"
+fi
+export PLATFORM=$(uname -m)
+build_opts+=(BINARY="64")
+build_opts+=(DYNAMIC_ARCH=1)
+build_opts+=(TARGET="POWER9")
+BUILD_BFLOAT16=1
+
+# Placeholder for future builds that may include ILP64 variants.
+build_opts+=(INTERFACE64=0)
+build_opts+=(SYMBOLSUFFIX="")
+
+# Build LAPACK
+build_opts+=(NO_LAPACK=0)
+
+# Enable threading and set the number of threads
+build_opts+=(USE_THREAD=1)
+build_opts+=(NUM_THREADS=8)
+
+# Disable CPU/memory affinity handling to avoid problems with NumPy and R
+build_opts+=(NO_AFFINITY=1)
+
+# Build OpenBLAS
+make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
+
+# Install OpenBLAS
+CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
+OpenBLASInstallPATH=$(pwd)/$PREFIX
+OpenBLASConfigFile=$(find . -name OpenBLASConfig.cmake)
+OpenBLASPCFile=$(find . -name openblas.pc)
+sed -i "/OpenBLAS_INCLUDE_DIRS/c\SET(OpenBLAS_INCLUDE_DIRS ${OpenBLASInstallPATH}/include)" ${OpenBLASConfigFile}
+sed -i "/OpenBLAS_LIBRARIES/c\SET(OpenBLAS_INCLUDE_DIRS ${OpenBLASInstallPATH}/include)" ${OpenBLASConfigFile}
+sed -i "s|libdir=local/openblas/lib|libdir=${OpenBLASInstallPATH}/lib|" ${OpenBLASPCFile}
+sed -i "s|includedir=local/openblas/include|includedir=${OpenBLASInstallPATH}/include|" ${OpenBLASPCFile}
+export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
+export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
+cd ..
+
+echo "--------------------openblas installed-------------------------------"
+
+#Building abesil-cpp,libprotobuf and protobuf 
+
+pip install --upgrade cmake pip setuptools wheel ninja packaging pytest
+
+#Building abseil-cpp
+ABSEIL_VERSION=20240116.2
+ABSEIL_URL="https://github.com/abseil/abseil-cpp"
+mkdir $SCRIPT_DIR/abseil-prefix
+PREFIX=$SCRIPT_DIR/abseil-prefix
+
+git clone $ABSEIL_URL -b $ABSEIL_VERSION
+cd abseil-cpp
+
+SOURCE_DIR=$(pwd)
+
+mkdir -p $SOURCE_DIR/local/abseilcpp
+ABSEIL_CPP=$SOURCE_DIR/local/abseilcpp
+
+echo "abseil-cpp build starts"
+mkdir build
+cd build
+
+cmake -G Ninja \
+    ${CMAKE_ARGS} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_CXX_STANDARD=17 \
+    -DCMAKE_INSTALL_LIBDIR=lib \
+    -DCMAKE_INSTALL_PREFIX=${PREFIX} \
+    -DBUILD_SHARED_LIBS=ON \
+    -DABSL_PROPAGATE_CXX_STD=ON \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+   ..
+cmake --build .
+cmake --install .
+
+cd $SCRIPT_DIR
+cp -r  $PREFIX/* $ABSEIL_CPP/
+
+echo "--------------------------------abseil-cpp installed----------------------"
+export C_COMPILER=$(which gcc)
+export CXX_COMPILER=$(which g++)
+
+#Build libprotobuf
+git clone https://github.com/protocolbuffers/protobuf
+cd protobuf
+git checkout v4.25.3
+
+LIBPROTO_DIR=$(pwd)
+mkdir -p $LIBPROTO_DIR/local/libprotobuf
+LIBPROTO_INSTALL=$LIBPROTO_DIR/local/libprotobuf
+
+git submodule update --init --recursive
+rm -rf ./third_party/googletest | true
+rm -rf ./third_party/abseil-cpp | true
+
+cp -r $SCRIPT_DIR/abseil-cpp ./third_party/
+
+mkdir build
+cd build
+
+cmake -G "Ninja" \
+   ${CMAKE_ARGS} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_CXX_STANDARD=17 \
+    -DCMAKE_C_COMPILER=$C_COMPILER \
+    -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
+    -DCMAKE_INSTALL_PREFIX=$LIBPROTO_INSTALL \
+    -Dprotobuf_BUILD_TESTS=OFF \
+    -Dprotobuf_BUILD_LIBUPB=OFF \
+    -Dprotobuf_BUILD_SHARED_LIBS=ON \
+    -Dprotobuf_ABSL_PROVIDER="module" \
+    -DCMAKE_PREFIX_PATH=$ABSEIL_CPP \
+    -Dprotobuf_JSONCPP_PROVIDER="package" \
+    -Dprotobuf_USE_EXTERNAL_GTEST=OFF \
+    ..
+
+cmake --build . --verbose
+cmake --install .
+
+cd ..
+
+#Build protobuf
+export PROTOC=$LIBPROTO_DIR/build/protoc
+export LD_LIBRARY_PATH=$SCRIPT_DIR/abseil-cpp/abseilcpp/lib:$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
+export LIBRARY_PATH=$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
+export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
+export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
+
+#Apply patch 
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/p/protobuf/set_cpp_to_17_v4.25.3.patch
+git apply set_cpp_to_17_v4.25.3.patch
+
+cd python
+pip install .
+
+echo "-------------------------- libprotobuf and  protobuf installed-----------------------"
+
 python3 -m pip install wheel scipy==1.15.2 ninja build pytest
 python3 -m pip install numpy==2.0.2
 
@@ -98,6 +249,8 @@ git checkout $PACKAGE_VERSION
 git submodule sync
 git submodule update --init --recursive
 
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/p/pytorch/pytorch_v2.5.1.patch
+git apply pytorch_v2.5.1.patch
 
 if ! (python3 -m pip install -r requirements.txt);then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
