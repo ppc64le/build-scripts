@@ -48,8 +48,8 @@ dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-lates
 
 yum install -y abseil-cpp abseil-cpp-devel
 yum install -y protobuf-c protobuf protobuf-devel.ppc64le
-python3 -m pip install wheel scipy ninja build pytest
-python3 -m pip install numpy==2.2.2
+python3 -m pip install wheel scipy==1.15.2 ninja build pytest
+python3 -m pip install numpy==2.0.2
 
 curl https://sh.rustup.rs -sSf | sh -s -- -y
 source "$HOME/.cargo/env"
@@ -59,8 +59,8 @@ export SITE_PACKAGE_PATH=/usr/local/lib/python3.12/site-packages
 export OpenBLAS_HOME="/usr/include/openblas"
 export ppc_arch="p9"
 export build_type="cpu"
-export cpu_opt_arch="power8"
-export cpu_opt_tune="power9"
+export cpu_opt_arch="power9"
+export cpu_opt_tune="power10"
 export CPU_COUNT=$(nproc --all)
 export CXXFLAGS="${CXXFLAGS} -D__STDC_FORMAT_MACROS"
 export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl\,--as-needed//')"
