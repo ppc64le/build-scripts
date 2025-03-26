@@ -1,0 +1,112 @@
+diff --git a/ml-algorithms/build.gradle b/ml-algorithms/build.gradle
+index 35614721..16a653f5 100644
+--- a/ml-algorithms/build.gradle
++++ b/ml-algorithms/build.gradle
+@@ -12,6 +12,7 @@ plugins {
+ }
+ 
+ repositories {
++    mavenLocal()
+     mavenCentral()
+ }
+ 
+@@ -39,26 +40,28 @@ dependencies {
+     testImplementation group: 'org.mockito', name: 'mockito-inline', version: '4.4.0'
+     implementation group: 'com.google.guava', name: 'guava', version: '32.0.1-jre'
+     implementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
+-    implementation platform("ai.djl:bom:0.21.0")
++    implementation platform("ai.djl:bom:0.21.0") {
++         exclude group: "com.microsoft.onnxruntime", module: "onnxruntime"
++    }
+     implementation group: 'ai.djl.pytorch', name: 'pytorch-model-zoo'
+     implementation group: 'ai.djl', name: 'api'
+     implementation group: 'ai.djl.huggingface', name: 'tokenizers'
+     implementation("ai.djl.onnxruntime:onnxruntime-engine:0.21.0") {
+-        exclude group: "com.microsoft.onnxruntime", module: "onnxruntime"
++         exclude group: "com.microsoft.onnxruntime", module: "onnxruntime"
+     }
+     def os = DefaultNativePlatform.currentOperatingSystem
+     //mac doesn't support GPU
+     if (os.macOsX) {
+         dependencies {
+-            implementation "com.microsoft.onnxruntime:onnxruntime:1.14.0"
++            implementation "com.microsoft.onnxruntime:onnxruntime:1.17.1"
+         }
+     } else {
+         dependencies {
+-            implementation "com.microsoft.onnxruntime:onnxruntime_gpu:1.14.0"
++            implementation "com.microsoft.onnxruntime:onnxruntime:1.17.1"
+         }
+     }
+ 
+-    implementation platform('software.amazon.awssdk:bom:2.20.19')
++    implementation platform('software.amazon.awssdk:bom:2.25.23')
+     implementation 'software.amazon.awssdk:auth'
+     implementation 'software.amazon.awssdk:apache-client'
+     implementation 'com.amazonaws:aws-encryption-sdk-java:2.4.1'
+diff --git a/ml-algorithms/src/main/java/org/opensearch/ml/engine/algorithms/DLModel.java b/ml-algorithms/src/main/java/org/opensearch/ml/engine/algorithms/DLModel.java
+index 2409c6e4..8d81c9fe 100644
+--- a/ml-algorithms/src/main/java/org/opensearch/ml/engine/algorithms/DLModel.java
++++ b/ml-algorithms/src/main/java/org/opensearch/ml/engine/algorithms/DLModel.java
+@@ -242,8 +242,9 @@ public abstract class DLModel implements Predictable {
+             AccessController.doPrivileged((PrivilegedExceptionAction<Void>) () -> {
+                 ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+                 try {
+-                    System.setProperty("PYTORCH_PRECXX11", "true");
++                    System.setProperty("PYTORCH_PRECXX11", "false");
+                     System.setProperty("DJL_CACHE_DIR", mlEngine.getMlCachePath().toAbsolutePath().toString());
++                    System.setProperty("ENGINE_CACHE_DIR", System.getProperty("user.home") + File.separator + ".djl.ai");
+                     // DJL will read "/usr/java/packages/lib" if don't set "java.library.path". That will throw
+                     // access denied exception
+                     System.setProperty("java.library.path", mlEngine.getMlCachePath().toAbsolutePath().toString());
+@@ -331,4 +332,4 @@ public abstract class DLModel implements Predictable {
+         return tensorOutput;
+     }
+ 
+-}
+\ No newline at end of file
++}
+diff --git a/ml-algorithms/src/main/java/org/opensearch/ml/engine/algorithms/DLModelExecute.java b/ml-algorithms/src/main/java/org/opensearch/ml/engine/algorithms/DLModelExecute.java
+index 4ae7e314..b80cb0a9 100644
+--- a/ml-algorithms/src/main/java/org/opensearch/ml/engine/algorithms/DLModelExecute.java
++++ b/ml-algorithms/src/main/java/org/opensearch/ml/engine/algorithms/DLModelExecute.java
+@@ -135,8 +135,9 @@ public abstract class DLModelExecute implements MLExecutable {
+             AccessController.doPrivileged((PrivilegedExceptionAction<Void>) () -> {
+                 ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+                 try {
+-                    System.setProperty("PYTORCH_PRECXX11", "true");
++                    System.setProperty("PYTORCH_PRECXX11", "false");
+                     System.setProperty("DJL_CACHE_DIR", mlEngine.getMlCachePath().toAbsolutePath().toString());
++                    System.setProperty("ENGINE_CACHE_DIR", System.getProperty("user.home") + File.separator + ".djl.ai"); 
+                     // DJL will read "/usr/java/packages/lib" if don't set "java.library.path". That will throw
+                     // access denied exception
+                     System.setProperty("java.library.path", mlEngine.getMlCachePath().toAbsolutePath().toString());
+diff --git a/ml-algorithms/src/test/java/org/opensearch/ml/engine/httpclient/MLHttpClientFactoryTests.java b/ml-algorithms/src/test/java/org/opensearch/ml/engine/httpclient/MLHttpClientFactoryTests.java
+index adb0b72a..52024136 100644
+--- a/ml-algorithms/src/test/java/org/opensearch/ml/engine/httpclient/MLHttpClientFactoryTests.java
++++ b/ml-algorithms/src/test/java/org/opensearch/ml/engine/httpclient/MLHttpClientFactoryTests.java
+@@ -34,7 +34,7 @@ public class MLHttpClientFactoryTests {
+     @Test
+     public void test_validateIp_invalidIp_throwException() throws UnknownHostException {
+         expectedException.expect(UnknownHostException.class);
+-        MLHttpClientFactory.validateIp("www.zaniu.com");
++        MLHttpClientFactory.validateIp("www.zaniu999999999.com");
+     }
+ 
+     @Test
+diff --git a/plugin/src/main/plugin-metadata/plugin-security.policy b/plugin/src/main/plugin-metadata/plugin-security.policy
+index 10b185f4..9fc78b3b 100644
+--- a/plugin/src/main/plugin-metadata/plugin-security.policy
++++ b/plugin/src/main/plugin-metadata/plugin-security.policy
+@@ -17,9 +17,11 @@ grant {
+     permission java.lang.RuntimePermission "setContextClassLoader";
+     permission java.util.PropertyPermission "PYTORCH_PRECXX11", "read,write";
+     permission java.util.PropertyPermission "DJL_CACHE_DIR", "read,write";
++    permission java.util.PropertyPermission "ENGINE_CACHE_DIR", "read,write";
+     permission java.util.PropertyPermission "java.library.path", "read,write";
+     permission java.util.PropertyPermission "*", "read,write";
+     permission java.lang.RuntimePermission "shutdownHooks";
++    permission java.io.FilePermission "${user.home}/.djl.ai/-", "read,write";
+ 
+     // Circuit Breaker
+     permission java.lang.RuntimePermission "getFileSystemAttributes";
