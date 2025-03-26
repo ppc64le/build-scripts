@@ -1,0 +1,12 @@
+{
+    "maintainer":"Sunidhi.Gaonkar@ibm.com",
+    "package_name" : "opensearch",
+    "github_url": "https://github.com/opensearch-project/opensearch",
+    "version": "2.12.0",
+    "default_branch": "main",
+    "package_dir": "o/opensearch",
+    "build_script": "opensearch_2.12.0_ubuntu.sh",
+    "validate_build_script": true,
+    "use_non_root_user": true,
+    "docker_build": false
+}
