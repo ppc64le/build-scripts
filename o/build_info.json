@@ -1,0 +1,16 @@
+{
+  "maintainer": "stutiibm",
+  "package_name": "openblas",
+  "github_url": "https://github.com/xianyi/OpenBLAS",
+  "version": "v0.3.23",
+  "wheel_build" : true,
+  "package_dir": "o/openblas",
+  "default_branch": "develop",
+  "build_script": "openblas_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "openblas_ubi_9.3.sh"
+  }
+}
