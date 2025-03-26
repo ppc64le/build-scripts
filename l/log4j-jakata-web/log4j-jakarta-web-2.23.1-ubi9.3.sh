@@ -5,7 +5,7 @@
 # Version       : rel/2.23.1
 # Source repo   : https://github.com/apache/logging-log4j2
 # Tested on     : UBI 9.3 (docker)
-# Language      : 
+# Language      : Java
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Prachi Gaonkar <Prachi.Gaonkar@ibm.com>
