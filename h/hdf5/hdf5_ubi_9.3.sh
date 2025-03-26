@@ -23,11 +23,11 @@ PACKAGE_VERSION=${1:-hdf5-1_12_1}
 PACKAGE_URL=https://github.com/HDFGroup/hdf5
 
 # install core dependencies
-yum install -y python3 python3-pip python3-devel git wget  gcc-toolset-13 
+yum install -y python3.12 python3.12-pip python3.12-devel git wget  gcc-toolset-13 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 LOCAL_DIR=local
-CPU_COUNT=`python3 -c 'import multiprocessing ; print (multiprocessing.cpu_count())'`
+CPU_COUNT=`python3.12 -c 'import multiprocessing ; print (multiprocessing.cpu_count())'`
 
 # clone source repository
 git clone $PACKAGE_URL
@@ -50,18 +50,16 @@ export PREFIX=$(pwd)/$LOCAL_DIR/$PACKAGE_NAME
             --with-ssl
 
 make -j "${CPU_COUNT}" V=1
-
 make install PREFIX="${PREFIX}"
-
 touch $LOCAL_DIR/$PACKAGE_NAME/__init__.py
 
 #Downloading Pyproject.toml file
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/h/hdf5/pyproject.toml
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/1423375e65a9eb5ab3fb37fe8b8f3e18acafbc97/h/hdf5/pyproject.toml
 sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
 sed -i 's/version = "hdf5[._-]\([0-9]*\)[._-]\([0-9]*\)[._-]\([0-9]*\)\([._-]*[0-9]*\)"/version = "\1.\2.\3\4"/' pyproject.toml
 
 #install
-if ! (pip install .) ; then
+if ! (pip3.12 install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -80,4 +78,3 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
-
