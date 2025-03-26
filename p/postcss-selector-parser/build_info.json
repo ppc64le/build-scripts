@@ -1,0 +1,15 @@
+{
+  "maintainer": "stutiibm",
+  "package_name": "postcss-selector-parser",
+  "github_url": "https://github.com/postcss/postcss-selector-parser",
+  "version": "v7.0.0",
+  "default_branch": "master",
+  "package_dir": "p/postcss-selector-parser",
+  "build_script": "postcss-selector-parser_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v*.*.*": {
+    "build_script": "postcss-selector-parser_ubi_9.3.sh"
+  }
+}
