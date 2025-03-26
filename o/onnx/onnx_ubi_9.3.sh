@@ -25,9 +25,10 @@ PACKAGE_URL=https://github.com/onnx/onnx
 PACKAGE_DIR=onnx
 
 echo "Installing dependencies..."
-yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3-devel python3.12 python3.12-devel python3.12-pip cmake
+yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3-devel python3.12 python3.12-devel python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+export SITE_PACKAGE_PATH=/usr/local/lib/python3.12/site-packages
 
 #clone and install openblas from source
 git clone https://github.com/OpenMathLib/OpenBLAS
@@ -37,6 +38,7 @@ git submodule update --init
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/o/openblas/pyproject.toml
 sed -i "s/{PACKAGE_VERSION}/v0.3.29/g" pyproject.toml
 PREFIX=local/openblas
+OPENBLAS_SOURCE=$(pwd)
 # Set build options
 declare -a build_opts
 # Fix ctest not automatically discovering tests
@@ -82,17 +84,132 @@ export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
 export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
 cd ..
 
+
+WORK_DIR=$(pwd)
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+pip3.12 install --upgrade cmake pip setuptools wheel ninja packaging tox pytest build mypy stubs
+# Set ABSEIL_VERSION and ABSEIL_URL
+ABSEIL_VERSION=20240116.2
+ABSEIL_URL="https://github.com/abseil/abseil-cpp"
+# Create and set up working directories
+echo "Creating abseil prefix directory at $WORK_DIR/abseil-prefix"
+mkdir $WORK_DIR/abseil-prefix
+PREFIX=$WORK_DIR/abseil-prefix
+# Clone abseil-cpp repository
+git clone $ABSEIL_URL -b $ABSEIL_VERSION
+cd abseil-cpp
+SOURCE_DIR=$(pwd)
+# Set up directories for local installation
+mkdir -p $SOURCE_DIR/local/abseilcpp
+abseilcpp=$SOURCE_DIR/local/abseilcpp
+# Create build directory and run cmake
+mkdir build
+cd build
+cmake -G Ninja \
+    ${CMAKE_ARGS} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_CXX_STANDARD=17 \
+    -DCMAKE_INSTALL_LIBDIR=lib \
+    -DCMAKE_INSTALL_PREFIX=${PREFIX} \
+    -DBUILD_SHARED_LIBS=ON \
+    -DABSL_PROPAGATE_CXX_STD=ON \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+   ..
+cmake --build .
+cmake --install .
+
+# Copy installation files
+cd $WORK_DIR
+cp -r  $PREFIX/* $abseilcpp/
+echo "abseil-cpp has been installed to $abseilcpp"
+
+# Setting paths and versions
+PREFIX=$SITE_PACKAGE_PATH
+ABSEIL_PREFIX=$SOURCE_DIR/local/abseilcpp
+echo "Setting PREFIX to $PREFIX and ABSEIL_PREFIX to $ABSEIL_PREFIX"
+
+export C_COMPILER=$(which gcc)
+export CXX_COMPILER=$(which g++)
+echo "C Compiler set to $C_COMPILER"
+echo "CXX Compiler set to $CXX_COMPILER"
+
+# Setting paths and versions
+WORK_DIR=$(pwd)
+export C_COMPILER=$(which gcc)
+export CXX_COMPILER=$(which g++)
+
+mkdir -p $(pwd)/local/libprotobuf
+LIBPROTO_INSTALL=$(pwd)/local/libprotobuf
+echo "LIBPROTO_INSTALL set to $LIBPROTO_INSTALL"
+
+# Clone Source-code
+PACKAGE_VERSION_LIB="v4.25.3"
+PACKAGE_GIT_URL="https://github.com/protocolbuffers/protobuf"
+git clone $PACKAGE_GIT_URL -b $PACKAGE_VERSION_LIB
+
+# Build libprotobuf
+echo "protobuf build starts!!"
+cd protobuf
+git submodule update --init --recursive
+rm -rf ./third_party/googletest | true
+rm -rf ./third_party/abseil-cpp | true
+cp -r $WORK_DIR/abseil-cpp ./third_party/
+mkdir build
+cd build
+cmake -G "Ninja" \
+   ${CMAKE_ARGS} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_CXX_STANDARD=17 \
+    -DCMAKE_C_COMPILER=$C_COMPILER \
+    -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
+    -DCMAKE_INSTALL_PREFIX=$LIBPROTO_INSTALL \
+    -Dprotobuf_BUILD_TESTS=OFF \
+    -Dprotobuf_BUILD_LIBUPB=OFF \
+    -Dprotobuf_BUILD_SHARED_LIBS=ON \
+    -Dprotobuf_ABSL_PROVIDER="module" \
+    -DCMAKE_PREFIX_PATH=$ABSEIL_PREFIX \
+    -Dprotobuf_JSONCPP_PROVIDER="package" \
+    -Dprotobuf_USE_EXTERNAL_GTEST=OFF \
+    ..
+cmake --build . --verbose
+cmake --install .
+cd ..
+
+export PROTOC="$LIBPROTO_INSTALL/bin/protoc"
+export LD_LIBRARY_PATH="$ABSEIL_PREFIX/lib:$LIBPROTO_INSTALL/lib64:$LD_LIBRARY_PATH"
+export LIBRARY_PATH="$LIBPROTO_INSTALL/lib64:$LD_LIBRARY_PATH"
+export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
+export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
+
+# Apply patch
+echo "Applying patch from https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/p/protobuf/set_cpp_to_17_v4.25.3.patch"
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/p/protobuf/set_cpp_to_17_v4.25.3.patch
+git apply set_cpp_to_17_v4.25.3.patch
+
+# Build Python package
+cd python
+python3.12 setup.py install --cpp_implementation
+cd ../..
+pip3.12 install pybind11==2.12.0
+PYBIND11_PREFIX=$SITE_PACKAGE_PATH/pybind11
+export CMAKE_PREFIX_PATH="$ABSEIL_PREFIX;$LIBPROTO_INSTALL;$PYBIND11_PREFIX"
+echo "Updated CMAKE_PREFIX_PATH after OpenBLAS: $CMAKE_PREFIX_PATH"
+export LD_LIBRARY_PATH="$LIBPROTO_INSTALL/lib64:$ABSEIL_PREFIX/lib:$LD_LIBRARY_PATH"
+echo "Updated LD_LIBRARY_PATH : $LD_LIBRARY_PATH"
 echo "Cloning and installing..."
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-# # Set library paths and package configuration paths
-export LD_LIBRARY_PATH="/usr/lib64:/usr/local/lib:$LD_LIBRARY_PATH"
-export PKG_CONFIG_PATH="/usr/lib/pkgconfig:$PKG_CONFIG_PATH"
-export CMAKE_PREFIX_PATH="/usr:/usr/local:$CMAKE_PREFIX_PATH"
+git submodule update --init --recursive
+sed -i 's|https://github.com/abseil/abseil-cpp/archive/refs/tags/20230125.3.tar.gz|https://github.com/abseil/abseil-cpp/archive/refs/tags/20240116.2.tar.gz|g' CMakeLists.txt && \
+sed -i 's|e21faa0de5afbbf8ee96398ef0ef812daf416ad8|bb8a766f3aef8e294a864104b8ff3fc37b393210|g' CMakeLists.txt && \
+sed -i 's|https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protobuf-22.3.tar.gz|https://github.com/protocolbuffers/protobuf/archive/refs/tags/v4.25.3.tar.gz|g' CMakeLists.txt && \
+sed -i 's|310938afea334b98d7cf915b099ec5de5ae3b5c5|4ba37c659f85c20abb0cc595bfac5e3a385e8e93|g' CMakeLists.txt && \
+sed -i 's|set(Protobuf_VERSION "4.22.3")|set(Protobuf_VERSION "v4.25.3")|g' CMakeLists.txt
+
 export ONNX_ML=1
 export ONNX_PREFIX=$(pwd)/../onnx-prefix
-export CONDA_PREFIX="$PREFIX"
 AR=$gcc_home/bin/ar
 LD=$gcc_home/bin/ld
 NM=$gcc_home/bin/nm
@@ -110,30 +227,27 @@ export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_OBJDUMP=${OBJDUMP}"
 export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_RANLIB=${RANLIB}"
 export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_STRIP=${STRIP}"
 export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_CXX_STANDARD=17"
+export CMAKE_ARGS="${CMAKE_ARGS} -DProtobuf_PROTOC_EXECUTABLE="$PROTOC" -DProtobuf_LIBRARY="$LIBPROTO_INSTALL/lib64/libprotobuf.so""
 export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH"
 
-git submodule update --init --recursive
-#Adding this source due to - (Unable to detect linker for compiler `cc -Wl,--version`)
+# Adding this source due to - (Unable to detect linker for compiler `cc -Wl,--version`)
 source /opt/rh/gcc-toolset-13/enable
 echo "installing cython.."
-pip3.12 install cython
+pip3.12 install cython meson
 pip3.12 install numpy==2.0.2
 echo "installing scipy.."
 echo "installing parameterized.."
 pip3.12 install parameterized
 echo "installing python dependencies...."
-pip3.12 install pytest nbval pythran
-pip3.12 install protobuf==4.25.3
+pip3.12 install pytest nbval pythran mypy-protobuf
 pip3.12 install scipy==1.15.2
-
-echo "installing..."
-if ! pip3.12 install . ; then
+if !(python3.12 setup.py install); then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-
+export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib:$LIBPROTO_INSTALL/lib64:$LD_LIBRARY_PATH"
 # Skipping test due to missing 're2/stringpiece.h' header file. Even after attempting to manually build RE2, the required header file could not be found.
 if ! pytest --ignore=onnx/test/reference_evaluator_backend_test.py --ignore=onnx/test/test_backend_reference.py --ignore=onnx/test/reference_evaluator_test.py; then    echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
