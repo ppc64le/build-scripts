@@ -232,13 +232,9 @@ export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH"
 
 # Adding this source due to - (Unable to detect linker for compiler `cc -Wl,--version`)
 source /opt/rh/gcc-toolset-13/enable
-echo "installing cython.."
 pip3.12 install cython meson
 pip3.12 install numpy==2.0.2
-echo "installing scipy.."
-echo "installing parameterized.."
 pip3.12 install parameterized
-echo "installing python dependencies...."
 pip3.12 install pytest nbval pythran mypy-protobuf
 pip3.12 install scipy==1.15.2
 if !(python3.12 setup.py install); then
