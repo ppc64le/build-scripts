@@ -1,6 +1,7 @@
 # Minimum requirements for the build system to execute.
 # Do not include sys,subprocess and os as they are default packages
 requires = [
+    "setuptools",
     "wheel",
 ]
 
@@ -9,23 +10,22 @@ build-backend = "setuptools.build_meta"
 
 #Project name an version
 [project]
-name = "utf8proc"
+name = "lame"
 version = "{PACKAGE_VERSION}"
 
 #One line description
-description = "utf8proc is a small C library that provides Unicode utility functions"
+description = "High quality MPEG Audio Layer III (MP3) encoder"
 
 #Classifiers to improve pacakage discoverability
 classifiers = [
   "Development Status :: 5 - Production/Stable",
-  "Programming Language :: C++",
-  "License :: MIT",
+  "License :: LGPL",
 ]
 
 #Project URLs
 [project.urls]
-homepage = "https://github.com/JuliaStrings/utf8proc/tree/v2.6.1"
-upstream = "https://github.com/JuliaStrings/utf8proc/tree/v2.6.1"
+homepage = "https://lame.sourceforge.io/"
+upstream = "https://downloads.sourceforge.net/sourceforge/lame/lame/3.100.tar.gz"
 
 #Find packages files in local folder, this is needed as we are not following standar directory structure of setuptools
 [tool.setuptools.packages.find]
@@ -36,4 +36,7 @@ where = ["local"]
 
 #Package data to add bazel in wheel, this is needed as its not a .py file
 [tool.setuptools.package-data]
-utf8proc = ["lib/*", "include/*"]
+lame = ["__init__.py", "bin/*", "lib/*", "include/lame/*", "share/doc/lame/html/*", "share/doc/man/man1/*" ]
+
+[project.scripts]
+lame = "lame:lameCLI"
