@@ -1,0 +1,15 @@
+{
+  "maintainer": "md.shafi.hussain",
+  "package_name": "vllm",
+  "github_url": "https://github.com/vllm-project/vllm.git",
+  "version": "v0.6.3",
+  "default_branch": "main",
+  "package_dir": "v/vllm",
+  "build_script": "vllm_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v0.6.3": {
+    "build_script": "vllm_ubi_9.3.sh"
+  }
+}
