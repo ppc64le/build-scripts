@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "bowser",
+    "github_url": "https://github.com/bowser-js/bowser",
+    "version": "v2.11.0",
+    "default_branch": "master",
+    "build_script": "bowser_ubi_9.3.sh",
+    "package_dir": "b/bowser",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v2.*.*": {
+        "build_script": "bowser_ubi_9.3.sh"
+    }
+}
