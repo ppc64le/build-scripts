@@ -42,8 +42,8 @@ export PREFIX=$(pwd)/prefix
 # Set environment variables
 export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr
 export PATH=$GCC_HOME/bin:$PATH
-export CC=$GCC_HOME/bin/gcc
-export CXX=$GCC_HOME/bin/g++
+export CC=$(which gcc)
+export CXX=$(which g++)
 export CC=$(basename "$CC")
 export CXX=$(basename "$CXX")
 export LIBRARY_PATH="/usr/lib64"
