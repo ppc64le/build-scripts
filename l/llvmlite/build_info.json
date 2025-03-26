@@ -2,7 +2,7 @@
    "maintainer": "aastha-sharma2",
    "package_name": "llvmlite",
    "github_url": "https://github.com/numba/llvmlite",
-   "required_versions":{"Releases": ["*"], "Tags": ["v.0.44.0rc1"]},
+   "required_versions":{"Releases": ["*"], "Tags": ["v0.44.0rc1"]},
    "version": "v0.44.0rc1",
    "default_branch": "main",
    "build_script": "llvmlite_v0.44.0rc1_ubi_9_3.sh",
