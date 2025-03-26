@@ -1,7 +1,7 @@
 # ---------------------------------------------------------------------
 # 
 # Package       : jaegertracing
-# Version       : v1.30.0
+# Version       : v1.30.0, v1.27.0
 # Source repo 	: https://github.com/jaegertracing/jaeger.git
 # Tested on     : UBI 8.3
 # Language      : GO
@@ -44,6 +44,5 @@ git submodule update --init --recursive
 yarn install
 go get -d -u github.com/golang/dep
 #Build and test the package.
-#Note: Observed that few test cases are failing on both Power and Intel VMs.
 go install
-go test -v ./...
+go test -v 
