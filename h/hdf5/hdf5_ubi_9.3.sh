@@ -23,11 +23,11 @@ PACKAGE_VERSION=${1:-hdf5-1_12_1}
 PACKAGE_URL=https://github.com/HDFGroup/hdf5
 
 # install core dependencies
-yum install -y python3 python3-pip python3-devel git wget  gcc-toolset-13 
+yum install -y python3.12 python3.12-pip python3.12-devel git wget  gcc-toolset-13 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 LOCAL_DIR=local
-CPU_COUNT=`python3 -c 'import multiprocessing ; print (multiprocessing.cpu_count())'`
+CPU_COUNT=`python3.12 -c 'import multiprocessing ; print (multiprocessing.cpu_count())'`
 
 # clone source repository
 git clone $PACKAGE_URL
@@ -50,7 +50,7 @@ export PREFIX=$(pwd)/$LOCAL_DIR/$PACKAGE_NAME
             --with-ssl
 
 make -j "${CPU_COUNT}" V=1
-make check
+
 make install PREFIX="${PREFIX}"
 
 touch $LOCAL_DIR/$PACKAGE_NAME/__init__.py
@@ -61,14 +61,24 @@ sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
 sed -i 's/version = "hdf5[._-]\([0-9]*\)[._-]\([0-9]*\)[._-]\([0-9]*\)\([._-]*[0-9]*\)"/version = "\1.\2.\3\4"/' pyproject.toml
 
 
-if ! pip install . ; then
+#install
+if ! (pip3.12 install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
-else
-    echo "------------------$PACKAGE_NAME:Install_success-------------------------"
+fi
+
+
+#test
+if ! make check; then
+    echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_Success"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
