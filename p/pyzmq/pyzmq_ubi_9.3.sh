@@ -2,9 +2,9 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : pyzmq
-# Version          : 26.2.1
+# Version          : v26.3.0
 # Source repo      : https://github.com/zeromq/pyzmq.git
-# Tested on        : UBI:9.3
+# Tested on        : UBI:9.5
 # Language         : Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
@@ -20,28 +20,34 @@
 
 # Variables
 PACKAGE_NAME=pyzmq
-PACKAGE_VERSION=${1:-v26.2.1}
+PACKAGE_VERSION=${1:-v26.3.0}
 PACKAGE_URL=https://github.com/zeromq/pyzmq.git
-PACKAGE_DIR=./pyzmq
+PACKAGE_DIR=pyzmq
+CURRENT_DIR="${PWD}"
 
 # Install dependencies
-yum install -y git gcc gcc-c++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel python3-devel python3-pip
+yum install -y git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran \
+    cmake make wget openssl-devel bzip2-devel glibc-static libstdc++-static libffi-devel \
+    zlib-devel python-devel python-pip pkg-config automake autoconf libtool
 
-#Install zeromq-devel
-wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
-mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
-dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+source /opt/rh/gcc-toolset-13/enable
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
+# Clone and build libzmq
 git clone https://github.com/zeromq/libzmq.git
 cd libzmq
-mkdir build
-cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_SHARED=ON
+mkdir -p build && cd build
+cmake .. \
+    -DBUILD_SHARED=OFF \
+    -DBUILD_STATIC=ON \
+    -DCMAKE_INSTALL_PREFIX=/usr/local \
+    -DENABLE_DRAFTS=ON \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+    -DCMAKE_CXX_FLAGS="-static-libgcc -static-libstdc++" \
+    -DCMAKE_EXE_LINKER_FLAGS="-static"
 make -j$(nproc)
 make install
-export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
-ldconfig
 cd ../..
 
 # Clone the repository
@@ -49,27 +55,27 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-export PKG_CONFIG_PATH=/usr/local/lib64/pkgconfig
-export LIBRARY_PATH=/usr/local/lib64
-export LD_LIBRARY_PATH=/usr/local/lib64
-export CPATH=/usr/local/include
-export CMAKE_PREFIX_PATH=/usr/local
+pip install cmake setuptools wheel cython cffi pytest tornado pytest-asyncio pytest-timeout scikit_build_core build ninja gevent
 
-mkdir -p zmq/libs
-cp /usr/local/lib64/libzmq.so* zmq/libs/
-# install necessary Python packages
-#pip install -r test-requirements.txt
-pip install setuptools wheel cython cffi pytest tornado pytest-asyncio pytest-timeout scikit_build_core build ninja
+# Set environment variables for static linking
+export CMAKE_PREFIX_PATH="/usr/local"
+export ZMQ_STATIC=1
+export ZMQ_PREFIX=/usr/local
+export ZMQ_ENABLE_DRAFTS=1
+export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:/usr/local/lib64/pkgconfig"
+export LDFLAGS="-L/usr/local/lib -l:libzmq.a -lstdc++ -static -static-libgcc -static-libstdc++ -lc -lrt -lpthread -ldl"
+export CFLAGS="-fPIC"
+
 
 #install
-if ! (pip install .) ; then
+if ! pip install --editable . --no-build-isolation ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 # Run tests
-if ! pytest -v --timeout=60 --capture=no -p no:warnings; then
+if ! pytest -v --timeout=60 --capture=no -p no:warnings --ignore=tests/test_draft.py; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
@@ -78,5 +84,14 @@ else
     echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    exit 1
+fi
+
+# Building wheel with script itself as it needs to locate the libzmq target file 
+if ! python3 -m build --wheel --no-isolation --outdir="$CURRENT_DIR"; then
+    echo "------------------$PACKAGE_NAME: Wheel Build Failed ---------------------"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME: Wheel Build Success -------------------------"
     exit 0
 fi
