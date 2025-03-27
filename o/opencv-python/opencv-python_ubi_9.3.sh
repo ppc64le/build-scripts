@@ -24,6 +24,10 @@ PACKAGE_NAME=opencv-python
 PACKAGE_URL=https://github.com/opencv/opencv-python.git
 PACKAGE_VERSION=${1:-84}
 PYTHON_VER=${PYTHON_VERSION:-3.11}
+
+# This specific commit resolves a known issue with OpenCV on the PowerPC (ppc64le) architecture for version 86.
+# The patch addresses build failures caused by unsupported compiler flags on this platform.
+# Only applied when PACKAGE_VERSION is 86.
 OPENCV_PATCH_COMMIT=97f3f39
 
 # Set to 1 to build the headless version
