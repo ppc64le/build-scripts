@@ -23,10 +23,6 @@ PACKAGE_VERSION=${1:-v17.05}
 PACKAGE_URL=https://github.com/${PACKAGE_NAME}-project/p7zip.git
 BUILD_HOME=$(pwd)
 
-#Install repos and dependencies
-rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official
-dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-
 # Install required libraries
 yum install -y git gcc gcc-c++ make diffutils cmake autoconf automake libtool binutils glibc-devel xz-devel zlib-devel  
 
