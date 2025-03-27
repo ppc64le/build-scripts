@@ -1,0 +1,15 @@
+{
+    "maintainer": "ramnathnayak-ibm",
+    "package_name": "onnxmltools",
+    "github_url": "https://github.com/onnx/onnxmltools",
+    "version": "v1.13",
+    "default_branch": "main",
+    "package_dir": "o/onnxmltools",
+    "build_script": "onnxmltools_ubi_9_3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "*": {
+        "build_script": "onnxmltools_ubi_9_3.sh"
+     }
+}
