@@ -5,7 +5,8 @@
 # Version        : 1.3.0  
 # Source repo    : https://github.com/apache/camel-k  
 # Tested on      : RHEL 8.2, UBI:9  
-# Language       : Go, Java  
+# Language       : Go, Java 
+# Travis-Check   : True
 # Script License : Apache License, Version 2 or later  
 # Maintainer     : Anushka Juli<anushka_juli1@ibm.com>  
 #  
