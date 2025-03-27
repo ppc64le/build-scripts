@@ -27,7 +27,7 @@ PYTHON_VER=${PYTHON_VERSION:-3.11}
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 #Dependencies
-yum install -y git sudo wget make gcc gcc-c++ cmake python${PYTHON_VER} python${PYTHON_VER}-pip python${PYTHON_VER}-devel
+yum install -y git sudo wget gcc-toolset-13 make cmake python${PYTHON_VER} python${PYTHON_VER}-pip python${PYTHON_VER}-devel
 yum install -y https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
 https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
 https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
@@ -35,7 +35,7 @@ yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/p
 yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os
 yum config-manager --set-enabled crb
 
-yum install -y boost-devel.ppc64le gflags-devel rapidjson-devel.ppc64le re2-devel.ppc64le \
+yum install -y boost1.78-devel.ppc64le gflags-devel rapidjson-devel.ppc64le re2-devel.ppc64le \
                utf8proc-devel.ppc64le gtest-devel gmock-devel snappy snappy-devel
 
 
@@ -47,13 +47,13 @@ fi
 # Cloning the repository from remote to local
 if [ -z $PACKAGE_SOURCE_DIR ]; then
   git clone $PACKAGE_URL
-  cd $PACKAGE_NAME  
-else  
+  cd $PACKAGE_NAME
+else
   cd $PACKAGE_SOURCE_DIR
 fi
 
 # Set the Arrow installation path for bundling
-export ARROW_HOME=/repos/dist
+export ARROW_HOME=/usr/local
 export LD_LIBRARY_PATH=$ARROW_HOME/lib64:$LD_LIBRARY_PATH
 
 git checkout $PACKAGE_VERSION
@@ -63,6 +63,7 @@ git submodule update --init --recursive
 export PARQUET_TEST_DATA="${PWD}/cpp/submodules/parquet-testing/data"
 export ARROW_TEST_DATA="${PWD}/testing/data"
 
+source /opt/rh/gcc-toolset-13/enable
 
 # Build Arrow C++ library
 mkdir cpp/build
@@ -85,7 +86,7 @@ pip${PYTHON_VER} install --upgrade pip setuptools wheel numpy setuptools_scm
 pip${PYTHON_VER} install Cython==3.0.8
 
 # Set the environment variable if needed
-export BUILD_TYPE=release 
+export BUILD_TYPE=release
 export BUNDLE_ARROW_CPP=1
 
 export CMAKE_PREFIX_PATH=$ARROW_HOME
