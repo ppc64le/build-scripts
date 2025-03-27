@@ -26,6 +26,7 @@ PACKAGE_URL=https://github.com/pytorch/pytorch.git
 PACKAGE_VERSION=${1:-v2.5.1}
 PACKAGE_DIR=pytorch
 SCRIPT_DIR=$(pwd)
+SCRIPT_DIR_M=$(pwd)
 
 yum install -y git wget
 yum install -y gcc-toolset-13
@@ -201,6 +202,7 @@ python -m pip install .
 
 echo "-------------------------- libprotobuf and  protobuf installed-----------------------"
 
+cd $SCRIPT_DIR_M
 python3 -m pip install numpy==2.0.2
 python3 -m pip install wheel scipy==1.15.2 ninja build pytest
 
