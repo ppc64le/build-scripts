@@ -87,8 +87,8 @@ else
     exit 1
 fi
 
-# Building wheel in script itself as it needs to locate the libzmq target file 
-if ! python -m build --wheel --no-isolation --outdir="$CURRENT_DIR"; then
+# Building wheel with script itself as it needs to locate the libzmq target file 
+if ! python3 -m build --wheel --no-isolation --outdir="$CURRENT_DIR"; then
     echo "------------------$PACKAGE_NAME: Wheel Build Failed ---------------------"
     exit 2
 else
