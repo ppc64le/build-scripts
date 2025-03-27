@@ -24,7 +24,7 @@ set -e
 PACKAGE_NAME=pytorch
 PACKAGE_URL=https://github.com/pytorch/pytorch.git
 PACKAGE_VERSION=${1:-v2.5.1}
-PACKAGE_DIR=$PACKAGE_NAME
+PACKAGE_DIR=pytorch
 SCRIPT_DIR=$(pwd)
 
 yum install -y git wget
@@ -201,8 +201,8 @@ python -m pip install .
 
 echo "-------------------------- libprotobuf and  protobuf installed-----------------------"
 
-python3 -m pip install wheel scipy==1.15.2 ninja build pytest
 python3 -m pip install numpy==2.0.2
+python3 -m pip install wheel scipy==1.15.2 ninja build pytest
 
 curl https://sh.rustup.rs -sSf | sh -s -- -y
 source "$HOME/.cargo/env"
