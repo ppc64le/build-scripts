@@ -1,0 +1,15 @@
+{
+    "maintainer": "anushka-juli1",
+    "package_name": "camel-k",
+    "github_url": "https://github.com/apache/camel-k.git",
+    "version": "main",
+    "package_dir": "c/camel-k",
+    "default_branch": "main",
+    "build_script": "camel-k_rhel8.2.sh",
+    "docker_build": "false",
+    "use_non_root_user": false,
+    "validate_build_script": "true",
+    "main" : {
+    "build_script": "camel-k_rhel8.2.sh"
+    }
+}
