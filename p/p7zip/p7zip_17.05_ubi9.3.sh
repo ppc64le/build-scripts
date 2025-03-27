@@ -48,7 +48,7 @@ fi
 P7ZIP_BIN="$BUILD_HOME/$PACKAGE_NAME/bin/7za"
 if [ ! -x "$P7ZIP_BIN" ]; then
 	echo "Build verification failed: $P7ZIP_BIN not found or not executable."
-    exit 2
+ 	exit 2
 fi
 
 #Run Test
