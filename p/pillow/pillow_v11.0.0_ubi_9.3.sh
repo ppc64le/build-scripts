@@ -21,7 +21,7 @@
 PACKAGE_NAME=pillow
 PACKAGE_VERSION=${1:-11.0.0}
 PACKAGE_URL=https://github.com/python-pillow/Pillow/
-PYTHON_VER=${2:-"3.11"}
+PYTHON_VER=${PYTHON_VERSION:-3.11}
 
 OS_NAME=$(grep '^PRETTY' /etc/os-release | awk -F '=' '{print $2}')
 
@@ -34,9 +34,11 @@ dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packa
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/`arch`/os
 dnf config-manager --set-enabled crb
-dnf install -y g++ cmake libtiff-devel libjpeg-devel openjpeg2-devel zlib-devel \
+dnf install -y gcc-toolset-13 cmake libtiff-devel libjpeg-devel openjpeg2-devel zlib-devel \
     freetype-devel lcms2-devel libwebp-devel tcl-devel tk-devel \
-    harfbuzz-devel fribidi-devel libraqm-devel libimagequant-devel libxcb-devel
+    harfbuzz-devel fribidi-devel libraqm-devel libimagequant-devel libxcb-devel libjpeg-turbo-utils
+
+source /opt/rh/gcc-toolset-13/enable
 
 # install build tools for wheel generation
 python${PYTHON_VER} -m pip install --upgrade pip setuptools wheel pytest build
@@ -79,7 +81,7 @@ fi
 
 
 # Run tests to verify installation
-if ! python${PYTHON_VER} -m pytest Tests/test_lib_image.py Tests/test_core_resources.py Tests/test_file_jpeg.py Tests/check_png_dos.py Tests/test_file_apng.py Tests/test_file_png.py ; then
+if ! python${PYTHON_VER} -m pytest --basetemp=/tmp/pytest-temp Tests/test_lib_image.py Tests/test_core_resources.py Tests/test_file_jpeg.py Tests/check_png_dos.py Tests/test_file_apng.py Tests/test_file_png.py ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
