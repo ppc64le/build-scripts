@@ -2,6 +2,7 @@
   "maintainer": "Harithanagothu2",
   "package_name": "hdf5",
   "github_url": "https://github.com/HDFGroup/hdf5",
+  "required_versions":{"Releases": ["*"], "Tags": ["hdf5-1_12_1"]}, 
   "version": "hdf5-1_12_1",
   "wheel_build" : true,
   "package_dir": "h/hdf5",
