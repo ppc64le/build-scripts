@@ -44,7 +44,7 @@ fi
 P7ZIP_BIN="$BUILD_HOME/$PACKAGE_NAME/bin/7za"
 if [ ! -x "$P7ZIP_BIN" ]; then
 	echo "Build verification failed: $P7ZIP_BIN not found or not executable."
- 	exit 2
+ 	exit 1
 fi
 
 #Run Test
@@ -52,7 +52,7 @@ make test || ret=$?
 if [ "$ret" -ne 0 ]
 then
 	echo "FAIL: Tests failed."
-	exit 3
+	exit 2
 fi
 
 # Smoke test
@@ -66,5 +66,5 @@ if [[ "$EXTRACTED_VERSION" == "$BASE_VERSION" ]]; then
     echo "$PACKAGE_NAME binary is available at [ $P7ZIP_BIN ] with version [$PACKAGE_VERSION]."
 else
     echo "FAIL: Expected version [$BASE_VERSION] but got [$EXTRACTED_VERSION]."
-    exit 4
+    exit 2
 fi
