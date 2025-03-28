@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package        : skl2-onnx
+# Package        : skl2onnx
 # Version        : 1.18.0
 # Source repo    : https://github.com/onnx/sklearn-onnx.git
 # Tested on      : UBI 9.3
@@ -19,7 +19,7 @@
 # -----------------------------------------------------------------------------
 
 # Variables
-PACKAGE_NAME=sklearn-onnx
+PACKAGE_NAME=skl2onnx
 PACKAGE_VERSION=${1:-v1.18}
 PACKAGE_URL=https://github.com/onnx/sklearn-onnx.git
 PACKAGE_DIR=sklearn-onnx
@@ -198,9 +198,9 @@ echo "Updated CMAKE_PREFIX_PATH after OpenBLAS: $CMAKE_PREFIX_PATH"
 export LD_LIBRARY_PATH="$LIBPROTO_INSTALL/lib64:$ABSEIL_PREFIX/lib:$LD_LIBRARY_PATH"
 echo "Updated LD_LIBRARY_PATH : $LD_LIBRARY_PATH"
 echo "Cloning and installing..."
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME
-git checkout $PACKAGE_VERSION
+git clone https://github.com/onnx/onnx
+cd onnx
+git checkout v1.17.0
 git submodule update --init --recursive
 export ONNX_ML=1
 export ONNX_PREFIX=$(pwd)/../onnx-prefix
@@ -272,8 +272,8 @@ cd onnxconverter-common
 python3.12 -m pip install . --no-build-isolation --no-deps
 
 # Clone the package from the repository
-git clone $PACKAGE_URL $PACKAGE_NAME
-cd $PACKAGE_NAME
+git clone $PACKAGE_URL
+cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 sed -i 's/onnx>=1.2.1//g' requirements.txt
 sed -i 's/onnxconverter-common>=1.7.0//g' requirements.txt
