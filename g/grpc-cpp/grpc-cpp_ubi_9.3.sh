@@ -220,6 +220,3 @@ fi
 echo "Build and installation completed successfully."
 echo "There are no test cases available. Skipping the test cases."
 
-#creating Wheel 
-pip install wheel
-python3 setup.py bdist_wheel --dist-dir="$CURRENT_DIR/"
