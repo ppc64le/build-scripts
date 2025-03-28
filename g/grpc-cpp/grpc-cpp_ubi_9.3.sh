@@ -220,3 +220,5 @@ fi
 echo "Build and installation completed successfully."
 echo "There are no test cases available. Skipping the test cases."
 
+#creating wheel
+python -m pip wheel -w $OUTPUT_DIR -vv --no-build-isolation --no-deps .
