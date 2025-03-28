@@ -215,11 +215,11 @@ if ! pip install . ; then
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
-else
-    echo "------------------$PACKAGE_NAME:Install_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_Success"
-    exit 0
 fi
 
-#There are no test cases found, so skiping testing part.
+echo "Build and installation completed successfully."
+echo "There are no test cases available. Skipping the test cases."
+
+#creating Wheel 
+pip install wheel
+python3 setup.py bdist_wheel --dist-dir="$CURRENT_DIR/"
