@@ -101,9 +101,9 @@ echo "------------Export statements------------"
 export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/tmp/my_installed_onetbb/lib64:${LD_LIBRARY_PATH}
 export LD_LIBRARY_PATH=/oneTBB/python/tmp/my_installed_onetbb/lib64:${LD_LIBRARY_PATH}
-sudo ldconfig
-echo "verifying libtbb.so"
-ldconfig -p | grep libtbb
+ldconfig
+export LD_LIBRARY_PATH=/tmp/my_installed_onetbb/lib64:${LD_LIBRARY_PATH}
+
 export LDFLAGS="-L/usr/local/lib"
 
 echo "-------------Testing--------------------"
