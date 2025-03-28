@@ -250,6 +250,11 @@ git checkout $PACKAGE_VERSION
 
 export CXXFLAGS="-Wno-stringop-overflow"
 export CFLAGS="-Wno-stringop-overflow"
+export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
+# Expands CMake version compatibility range to include newer versions (up to 4.0) for dlpack
+sed -i 's/cmake_minimum_required(VERSION 3\.2 FATAL_ERROR)/cmake_minimum_required(VERSION 3.2...4.0 FATAL_ERROR)/' /onnxruntime/build/Linux/Release/_deps/dlpack-src/CMakeLists.txt
+# Manually defines Python::NumPy for CMake versions with broken NumPy detection (Python 3.12+)
+sed -i '193i # Fix for Python::NumPy target not found\nif(NOT TARGET Python::NumPy)\n    find_package(Python3 COMPONENTS NumPy REQUIRED)\n    add_library(Python::NumPy INTERFACE IMPORTED)\n    target_include_directories(Python::NumPy INTERFACE ${Python3_NumPy_INCLUDE_DIR})\n    message(STATUS "Manually defined Python::NumPy with include dir: ${Python3_NumPy_INCLUDE_DIR}")\nendif()\n' /onnxruntime/cmake/onnxruntime_python.cmake
 
 #Build and test
 #Building and testing both is performed in build.sh
