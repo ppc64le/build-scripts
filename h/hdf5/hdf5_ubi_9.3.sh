@@ -59,7 +59,7 @@ sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
 sed -i 's/version = "hdf5[._-]\([0-9]*\)[._-]\([0-9]*\)[._-]\([0-9]*\)\([._-]*[0-9]*\)"/version = "\1.\2.\3\4"/' pyproject.toml
 
 #install
-if ! (pip3.12 install .) ; then
+if ! (python3.12 -m pip install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
