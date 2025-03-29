@@ -243,6 +243,7 @@ pip3.12 install scipy==1.15.2
 
 python3.12 setup.py install
 echo "--------------onnx installed------------------"
+cd ..
 
 # Clone and install onnxruntime
 echo "Cloning and installing onnxruntime..."
