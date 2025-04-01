@@ -23,6 +23,7 @@ PACKAGE_VERSION=${1:-v1.21.0}
 PACKAGE_URL=https://github.com/microsoft/onnxruntime
 PACKAGE_DIR="onnxruntime"
 WORK_DIR=$(pwd)
+CURRENT_DIR=$(pwd)
 
 echo "Installing dependencies..."
 yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3-devel python3.12 python3.12-devel python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
@@ -283,6 +284,6 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
 fi
 
-cp /onnxruntime/build/Linux/Release/dist/* "$CURRENT_DIR"
+cp /onnxruntime/build/Linux/Release/dist/*.whl "$CURRENT_DIR"
 exit 0
 
