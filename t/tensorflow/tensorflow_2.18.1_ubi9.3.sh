@@ -27,7 +27,10 @@ CURRENT_DIR=$(pwd)
 PACKAGE_DIR=tensorflow
 
 # install core dependencies
-yum install -y wget python python-pip python-devel  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils 
+yum install -y wget python12 python12-pip python12-devel  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils 
+
+ln -sf /usr/bin/python3.12 /usr/bin/python3
+ln -sf /usr/bin/python3.12 /usr/bin/python
 
 dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 yum install -y patchelf
