@@ -57,7 +57,7 @@ if ! pip install . ; then
     exit 1
 fi
 
-# Building wheel with script itself as it needs to locate the libzmq target file
+# Building wheel with script itself as the wheel need to create with ppc64le arch.
 if ! python3  setup.py bdist_wheel --plat-name manylinux2014_ppc64le --dist-dir="$CURRENT_DIR"; then
     echo "------------------$PACKAGE_NAME: Wheel Build Failed ---------------------"
     exit 2
