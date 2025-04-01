@@ -27,7 +27,7 @@ CURRENT_DIR=$(pwd)
 PACKAGE_DIR=tensorflow
 
 # install core dependencies
-yum install -y wget python12 python12-pip python12-devel  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils 
+yum install -y wget python3.12 python3.12-pip python3.12-devel  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils 
 
 ln -sf /usr/bin/python3.12 /usr/bin/python3
 ln -sf /usr/bin/python3.12 /usr/bin/python
