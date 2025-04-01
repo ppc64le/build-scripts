@@ -254,15 +254,13 @@ git checkout v1.21.0
 export CXXFLAGS="-Wno-stringop-overflow"
 export CFLAGS="-Wno-stringop-overflow"
 export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
-# Expands CMake version compatibility range to include newer versions (up to 4.0) for dlpack
-sed -i 's/cmake_minimum_required(VERSION 3\.2 FATAL_ERROR)/cmake_minimum_required(VERSION 3.2...4.0 FATAL_ERROR)/' /onnxruntime/build/Linux/Release/_deps/dlpack-src/CMakeLists.txt
 # Manually defines Python::NumPy for CMake versions with broken NumPy detection (Python 3.12+)
 sed -i '193i # Fix for Python::NumPy target not found\nif(NOT TARGET Python::NumPy)\n    find_package(Python3 COMPONENTS NumPy REQUIRED)\n    add_library(Python::NumPy INTERFACE IMPORTED)\n    target_include_directories(Python::NumPy INTERFACE ${Python3_NumPy_INCLUDE_DIR})\n    message(STATUS "Manually defined Python::NumPy with include dir: ${Python3_NumPy_INCLUDE_DIR}")\nendif()\n' /onnxruntime/cmake/onnxruntime_python.cmake
-
+export CXXFLAGS="-I/usr/local/lib64/python${PYTHON_VERSION}/site-packages/numpy/_core/include/numpy $CXXFLAGS"
 
 echo "Building onnxruntime..."
 ./build.sh \
-		--cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" Protobuf_PROTOC_EXECUTABLE=$PROTO_PREFIX/bin/protoc Protobuf_INCLUDE_DIR=$PROTO_PREFIX/include onnxruntime_USE_COREML=OFF \
+		--cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" Protobuf_PROTOC_EXECUTABLE=$PROTO_PREFIX/bin/protoc Protobuf_INCLUDE_DIR=$PROTO_PREFIX/include onnxruntime_USE_COREML=OFF "CMAKE_POLICY_DEFAULT_CMP0001=NEW" "CMAKE_POLICY_DEFAULT_CMP0002=NEW" "CMAKE_POLICY_VERSION_MINIMUM=3.5" \
 		--cmake_generator Ninja \
 		--build_shared_lib \
 		--config Release \
