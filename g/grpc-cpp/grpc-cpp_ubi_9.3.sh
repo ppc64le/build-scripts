@@ -31,6 +31,14 @@ yum install -y make libtool cmake git wget xz zlib-devel openssl-devel bzip2-dev
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 SCRIPT_DIR=$(pwd)
+
+PACKAGE_NAME=grpc-cpp
+PACKAGE_DIR=$SCRIPT_DIR
+PACKAGE_VERSION=${1:-v1.68.0}
+PACKAGE_URL=https://github.com/grpc/grpc
+
+
+#installing dependencies
 pip install --upgrade cmake pip setuptools wheel ninja packaging pytest
 
 #Building abseil-cpp
@@ -136,7 +144,6 @@ cmake ${CMAKE_ARGS} -GNinja \
   ..
   
   ninja -v install
-  
   popd
 
 make -j "${CPU_COUNT}" prefix=${RE2_PREFIX} shared-install
@@ -144,14 +151,9 @@ cd $SCRIPT_DIR
 
 echo "------------ re2 installed--------------"
 
-PACKAGE_NAME=grpc-cpp
-PACKAGE_DIR=grpc
-PACKAGE_VERSION=${1:-v1.68.0}
-
-PACKAGE_URL=https://github.com/grpc/grpc
 
 git clone $PACKAGE_URL
-cd $PACKAGE_DIR
+cd grpc
 git checkout $PACKAGE_VERSION
 
 git submodule update --init
@@ -219,5 +221,3 @@ fi
 
 echo "Build and installation completed successfully."
 echo "There are no test cases available. Skipping the test cases."
-
-
