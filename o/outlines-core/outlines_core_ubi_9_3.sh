@@ -55,6 +55,10 @@ fi
 
 git checkout $PACKAGE_VERSION
 
+# Patch pyproject.toml with fixing versioning
+echo "Updating pyproject.toml with version $PACKAGE_VERSION..."
+sed -i '/^name = /a version = "'"$PACKAGE_VERSION"'"' pyproject.toml
+
 # Configure OpenSSL environment variables
 export OPENSSL_DIR=/usr
 export OPENSSL_LIB_DIR=/usr/lib64
