@@ -57,6 +57,10 @@ git checkout $PACKAGE_VERSION
 
 # Patch pyproject.toml with fixing versioning
 echo "Updating pyproject.toml with version $PACKAGE_VERSION..."
+
+# Remove any existing 'dynamic = ["version"]' line
+sed -i '/dynamic = \["version"\]/d' pyproject.toml
+# Insert 'version = "<PACKAGE_VERSION>"'
 sed -i '/^name = /a version = "'"$PACKAGE_VERSION"'"' pyproject.toml
 
 # Configure OpenSSL environment variables
