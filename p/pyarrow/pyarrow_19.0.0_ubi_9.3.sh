@@ -367,6 +367,9 @@ cd orc
 git checkout v2.0.3
 yum install -y snappy-devel libzstd-devel lz4-devel 
 
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/o/orc/orc.patch
+git apply orc.patch
+
 mkdir orc_prefix
 export ORC_PREFIX=$(pwd)/orc_prefix
 
