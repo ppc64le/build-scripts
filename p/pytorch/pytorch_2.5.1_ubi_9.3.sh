@@ -106,7 +106,7 @@ echo "--------------------openblas installed-------------------------------"
 
 #Building abesil-cpp,libprotobuf and protobuf 
 
-python -m pip install --upgrade cmake pip setuptools wheel ninja packaging pytest
+python -m pip install --upgrade cmake pip setuptools wheel ninja packaging pytest numpy==2.0.2
 
 #Building abseil-cpp
 ABSEIL_VERSION=20240116.2
@@ -202,7 +202,6 @@ python -m pip install .
 echo "-------------------------- libprotobuf and  protobuf installed-----------------------"
 export LD_LIBRARY_PATH="$LIBPROTO_INSTALL:${LD_LIBRARY_PATH}"
 cd $SCRIPT_DIR
-python3 -m pip install numpy==2.0.2
 python3 -m pip install wheel scipy==1.15.2 ninja build pytest
 
 curl https://sh.rustup.rs -sSf | sh -s -- -y
