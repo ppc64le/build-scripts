@@ -1,0 +1,12 @@
+{
+   "maintainer": "rohanborkar1712",
+   "package_name": "docker-stacks",
+   "github_url": "https://github.com/jupyter/docker-stacks.git",
+   "version": "main",
+   "default_branch": "main",
+   "build_script": "docker-stacks_minimal-notebook_ubi_9.3.sh",
+   "package_dir": "d/docker-stcks",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
