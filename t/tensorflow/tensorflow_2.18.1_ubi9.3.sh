@@ -163,6 +163,22 @@ export LD_LIBRARY_PATH=${ABSEIL_PREFIX}/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=${ABSEIL_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
 echo "-----------------------------------------------------Installed abseil-cpp-----------------------------------------------------"
 
+#Build ml_dtypes from source
+cd $CURRENT_DIR
+git clone https://github.com/jax-ml/ml_dtypes.git
+cd ml_dtypes
+git checkout v0.4.1
+git submodule update --init
+
+export CFLAGS="-I${ML_DIR}/include"
+export CXXFLAGS="-I${ML_DIR}/include"
+export CC=/opt/rh/gcc-toolset-13/root/bin/gcc
+export CXX=/opt/rh/gcc-toolset-13/root/bin/g++
+
+pip install .
+cd $CURRENT_DIR
+python -c "import ml_dtypes; print(ml_dtypes.__version__)"
+echo "-----------------------------------------------------Installed ml_dtyapes-----------------------------------------------------"
 
 
 #Build bazel from source
