@@ -263,7 +263,7 @@ echo "check cxxflags:::::: $CXXFLAGS"
 #Build and test
 #Building and testing both is performed in build.sh
 if ! (./build.sh \
-		--cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" NUMPY_INCLUDE_DIR=/usr/local/lib64/python${PYTHON_VERSION}/site-packages/numpy/_core/include/numpy Protobuf_PROTOC_EXECUTABLE=$PROTO_PREFIX/bin/protoc Protobuf_INCLUDE_DIR=$PROTO_PREFIX/include onnxruntime_USE_COREML=OFF "CMAKE_POLICY_DEFAULT_CMP0001=NEW" "CMAKE_POLICY_DEFAULT_CMP0002=NEW" "CMAKE_POLICY_VERSION_MINIMUM=3.5" \
+		--cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" Protobuf_PROTOC_EXECUTABLE=$PROTO_PREFIX/bin/protoc Protobuf_INCLUDE_DIR=$PROTO_PREFIX/include onnxruntime_USE_COREML=OFF "CMAKE_POLICY_DEFAULT_CMP0001=NEW" "CMAKE_POLICY_DEFAULT_CMP0002=NEW" "CMAKE_POLICY_VERSION_MINIMUM=3.5" \
 		--cmake_generator Ninja \
 		--build_shared_lib \
 		--config Release \
