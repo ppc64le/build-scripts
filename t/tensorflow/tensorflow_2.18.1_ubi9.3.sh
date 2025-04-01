@@ -163,23 +163,6 @@ export LD_LIBRARY_PATH=${ABSEIL_PREFIX}/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=${ABSEIL_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
 echo "-----------------------------------------------------Installed abseil-cpp-----------------------------------------------------"
 
-#Build ml_dtypes from source
-cd $CURRENT_DIR
-git clone https://github.com/jax-ml/ml_dtypes.git
-cd ml_dtypes
-git checkout v0.4.1
-git submodule update --init
-
-export CFLAGS="-I${ML_DIR}/include"
-export CXXFLAGS="-I${ML_DIR}/include"
-export CC=/opt/rh/gcc-toolset-13/root/bin/gcc
-export CXX=/opt/rh/gcc-toolset-13/root/bin/g++
-
-pip install .
-cd $CURRENT_DIR
-python -c "import ml_dtypes; print(ml_dtypes.__version__)"
-echo "-----------------------------------------------------Installed ml_dtyapes-----------------------------------------------------"
-
 
 #Build bazel from source
 cd $CURRENT_DIR
@@ -193,6 +176,20 @@ export PATH=/usr/local/bin:$PATH
 bazel --version
 echo "-----------------------------------------------------Installed bazel-----------------------------------------------------"
 
+#Build ml_dtypes from source
+cd $CURRENT_DIR
+git clone https://github.com/jax-ml/ml_dtypes.git
+cd ml_dtypes
+git checkout v0.4.1
+git submodule update --init
+export CFLAGS="-I${ML_DIR}/include"
+export CXXFLAGS="-I${ML_DIR}/include"
+export CC=/opt/rh/gcc-toolset-13/root/bin/gcc
+export CXX=/opt/rh/gcc-toolset-13/root/bin/g++
+pip install .
+cd $CURRENT_DIR
+python -c "import ml_dtypes; print(ml_dtypes.__version__)"
+echo "-----------------------------------------------------Installed ml_dtyapes-----------------------------------------------------"
 
 # Set CPU optimization flags
 export cpu_opt_arch="power9"
@@ -207,6 +204,11 @@ SHLIB_EXT=".so"
 WORK_DIR=$(pwd)
 
 export TF_PYTHON_VERSION=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+export HERMETIC_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
+export GCC_HOST_COMPILER_PATH=$(which gcc)
+export CC=$GCC_HOST_COMPILER_PATH
+
+
 # set the variable, when grpcio fails to compile on the system. 
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true;  
 export LDFLAGS="${LDFLAGS} -lrt"
