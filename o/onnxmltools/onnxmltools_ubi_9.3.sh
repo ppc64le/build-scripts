@@ -284,6 +284,7 @@ sed -i 's/onnx>=1.2.1//g' requirements.txt
 sed -i 's/onnxconverter-common>=1.7.0//g' requirements.txt
 sed -i 's/scikit-learn>=1\.1/scikit-learn==1.6.1/' requirements.txt
 pip3.12 install -e . --no-build-isolation --no-deps
+cd ..
 echo "-------skl2onnx installed-----------"
 
 #Build onnxmltools
