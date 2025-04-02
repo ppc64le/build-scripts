@@ -108,6 +108,7 @@ mkdir build
 cd build
 cmake -G Ninja \
     ${CMAKE_ARGS} \
+    -DBUILD_SHARED_LIBS=OFF \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CXX_STANDARD=17 \
     -DCMAKE_INSTALL_LIBDIR=lib \
@@ -135,7 +136,6 @@ echo "C Compiler set to $C_COMPILER"
 echo "CXX Compiler set to $CXX_COMPILER"
 
 # Setting paths and versions
-WORK_DIR=$(pwd)
 export C_COMPILER=$(which gcc)
 export CXX_COMPILER=$(which g++)
 
@@ -159,6 +159,7 @@ mkdir build
 cd build
 cmake -G "Ninja" \
    ${CMAKE_ARGS} \
+    -DBUILD_SHARED_LIBS=OFF \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CXX_STANDARD=17 \
     -DCMAKE_C_COMPILER=$C_COMPILER \
