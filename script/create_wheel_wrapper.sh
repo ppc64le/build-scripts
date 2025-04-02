@@ -5,11 +5,10 @@ BUILD_SCRIPT_PATH=${2:-""}
 EXTRA_ARGS="${@:3}" # Capture all additional arguments passed to the script
 CURRENT_DIR="${PWD}"
 
-#install gcc 
+#install gcc
 yum install gcc-toolset-13 -y
 source /opt/rh/gcc-toolset-13/enable
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 gcc --version
 
 # Temporary build script path
@@ -31,9 +30,9 @@ install_python_version() {
     "3.10")
         if ! python3.10 --version &>/dev/null; then
             echo "Installing dependencies required for python installation..."
-            yum install -y sudo zlib-devel wget ncurses git 
+            yum install -y sudo zlib-devel wget ncurses git
             echo "Installing..."
-            yum install -y make cmake openssl-devel 
+            yum install -y make cmake openssl-devel
             echo "Installing..."
             yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
             echo "Starting python installing..."
@@ -52,9 +51,9 @@ install_python_version() {
     "3.13")
         if ! python3.13 --version &>/dev/null; then
             echo "Installing dependencies required for python installation..."
-            yum install -y sudo zlib-devel wget ncurses git 
+            yum install -y sudo zlib-devel wget ncurses git
             echo "Installing..."
-            yum install -y make cmake openssl-devel 
+            yum install -y make cmake openssl-devel
             echo "Installing..."
             yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
             echo "Starting python installing..."
@@ -97,7 +96,7 @@ format_build_script() {
         sed -i '/dnf install/{s/\b\(python\|python-devel\|python-pip\)\b[[:space:]]*//g}' "$TEMP_BUILD_SCRIPT_PATH"
         sed -i 's/\bpython3 -m pytest/pytest/g' "$TEMP_BUILD_SCRIPT_PATH"
         sed -i "s/tox -e py[0-9]\{2,3\}\([[:space:]]*.*\)\?/tox -e py${PYTHON_VERSION//./}\1/g" "$TEMP_BUILD_SCRIPT_PATH"
-        
+
     else
         echo "No build script specified, skipping copying."
     fi
@@ -134,13 +133,13 @@ modify_metadata_file() {
 
     # Extract wheel to temp directory
     unzip -q "$wheel_path" -d "$temp_dir"
-    
+
     # Find metadata file
     local metadata_file=$(find "$temp_dir" -name METADATA -path "*.dist-info/*")
-    
+
     # New classifier to add
     local new_classifier="Classifier: Environment :: MetaData :: IBM Python Ecosystem"
-    
+
     # Check if the classifier already exists and only add if it doesn't
     if ! grep -q "^$new_classifier$" "$metadata_file"; then
         # Read the METADATA file and insert the classifier after the last 'Classifier:' line
@@ -156,18 +155,18 @@ modify_metadata_file() {
                 in_classifiers = 0
             }
             {print}
-        ' "$metadata_file" > "$metadata_file.tmp" && mv "$metadata_file.tmp" "$metadata_file"
+        ' "$metadata_file" >"$metadata_file.tmp" && mv "$metadata_file.tmp" "$metadata_file"
     fi
-    
+
     # Get the original wheel file name to use it in the zip command
     wheel_file_name=$(basename "$wheel_path")
-    
+
     # Zip the files back to the original wheel file
     cd "$temp_dir" && zip -q -r "$CURRENT_DIR/$wheel_file_name" ./*
 
     # Clean up
     rm -rf "$CURRENT_DIR/$temp_dir"
-    
+
     echo "Added IBM classifier to $wheel_path"
 }
 
@@ -193,7 +192,6 @@ if [ -n "$TEMP_BUILD_SCRIPT_PATH" ]; then
     package_url=$(grep -oP '(?<=^PACKAGE_URL=).*' "$TEMP_BUILD_SCRIPT_PATH" | tr -d '"')
     package_name=$(basename "$package_url" .git)
 
-
     echo "Running the script..."
     sh "$TEMP_BUILD_SCRIPT_PATH" $EXTRA_ARGS
 
@@ -211,49 +209,40 @@ fi
 
 #checking if wheel is generated through script itself
 cd $CURRENT_DIR
-if ls *.whl 1> /dev/null 2>&1; then
+if ls *.whl 1>/dev/null 2>&1; then
     echo "Wheel file already exist in the current directory:"
     ls *.whl
-
-    #add modifying metadata file
-    wheel_file=$(ls *.whl 1> /dev/null 2>&1 && echo *.whl)
-    modify_metadata_file "$wheel_file"
-
-    echo "Exiting."
-    cleanup "$VENV_DIR"
-    [ -n "$TEMP_BUILD_SCRIPT_PATH" ] && rm "$CURRENT_DIR/$TEMP_BUILD_SCRIPT_PATH"
-    exit 0
-fi
-
-#Navigating to the package directory to build wheel 
-if [ -d "$package_dir" ]; then
-    echo "Navigating to the package directory: $package_dir"
-    cd "$package_dir"
 else
-    echo "package_dir not found, Navigating to package_name: $package_name"
-    cd "$package_name"
-fi
+    #Navigating to the package directory to build wheel
+    if [ -d "$package_dir" ]; then
+        echo "Navigating to the package directory: $package_dir"
+        cd "$package_dir"
+    else
+        echo "package_dir not found, Navigating to package_name: $package_name"
+        cd "$package_name"
+    fi
 
-echo "=============== Building wheel =================="
-
-# Attempt to build the wheel without isolation
-if ! python -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"; then
-    echo "============ Wheel Creation Failed for Python $PYTHON_VERSION (without isolation) ================="
-    echo "Attempting to build with isolation..."
+    echo "=============== Building wheel =================="
 
     # Attempt to build the wheel without isolation
-    if ! python -m build --wheel --outdir="$CURRENT_DIR/"; then
-        echo "============ Wheel Creation Failed for Python $PYTHON_VERSION ================="
-        cleanup "$VENV_DIR"
-        [ -n "$TEMP_BUILD_SCRIPT_PATH" ] && rm "$CURRENT_DIR/$TEMP_BUILD_SCRIPT_PATH"
-        exit 1
+    if ! python -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"; then
+        echo "============ Wheel Creation Failed for Python $PYTHON_VERSION (without isolation) ================="
+        echo "Attempting to build with isolation..."
+
+        # Attempt to build the wheel without isolation
+        if ! python -m build --wheel --outdir="$CURRENT_DIR/"; then
+            echo "============ Wheel Creation Failed for Python $PYTHON_VERSION ================="
+        fi
     fi
 fi
 
 cd $CURRENT_DIR
-#add modifying metadata file
-wheel_file=$(ls *.whl 1> /dev/null 2>&1 && echo *.whl)
-modify_metadata_file "$wheel_file"
+if ls *.whl 1>/dev/null 2>&1; then
+    echo "=============== Modifying Metadata file =================="
+    #add modifying metadata file
+    wheel_file=$(ls *.whl 1>/dev/null 2>&1 && echo *.whl)
+    modify_metadata_file "$wheel_file"
+fi
 
 # Clean up virtual environment
 cleanup "$VENV_DIR"
