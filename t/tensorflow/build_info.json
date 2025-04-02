@@ -2,7 +2,7 @@
   "maintainer": "stutiibm",
   "package_name": "tensorflow",
   "github_url": "https://github.com/tensorflow/tensorflow",
-  "version": "v2.14.1",
+  "version": "v2.18.1",
   "wheel_build" : true,
   "package_dir": "t/tensorflow",
   "default_branch": "master",
