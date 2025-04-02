@@ -20,7 +20,7 @@ description = "An open source Message Passing Interface implementation."
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Programming Language :: C, C++ ",
-  "License :: OSI Approved :: BSD 3-Clause",
+  "License :: Apache License 2.0",
 ]
 
 #Project URLs
