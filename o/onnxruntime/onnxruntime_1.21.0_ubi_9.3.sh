@@ -26,7 +26,7 @@ WORK_DIR=$(pwd)
 CURRENT_DIR=$(pwd)
 
 echo "Installing dependencies..."
-yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3-devel python3.12 python3.12-devel python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
+yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3.12 python3.12-devel python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
 PYTHON_VERSION=$(python3.12 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2) 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
@@ -86,10 +86,6 @@ export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
 export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
 cd ..
 
-
-WORK_DIR=$(pwd)
-export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 pip3.12 install --upgrade cmake pip setuptools wheel ninja packaging tox pytest build mypy stubs
 # Set ABSEIL_VERSION and ABSEIL_URL
 ABSEIL_VERSION=20240116.2
@@ -131,13 +127,7 @@ PREFIX=$SITE_PACKAGE_PATH
 ABSEIL_PREFIX=$SOURCE_DIR/local/abseilcpp
 echo "Setting PREFIX to $PREFIX and ABSEIL_PREFIX to $ABSEIL_PREFIX"
 
-export C_COMPILER=$(which gcc)
-export CXX_COMPILER=$(which g++)
-echo "C Compiler set to $C_COMPILER"
-echo "CXX Compiler set to $CXX_COMPILER"
-
 # Setting paths and versions
-WORK_DIR=$(pwd)
 export C_COMPILER=$(which gcc)
 export CXX_COMPILER=$(which g++)
 
