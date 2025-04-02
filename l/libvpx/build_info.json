@@ -3,7 +3,7 @@
   "package_name": "libvpx",
   "github_url": "https://github.com/webmproject/libvpx",
   "version": "v1.13.1",
-  "wheel_build" : true,
+  "wheel_build" : false,
   "package_dir": "l/libvpx",
   "default_branch": "main",
   "build_script": "libvpx_ubi_9.3.sh",
