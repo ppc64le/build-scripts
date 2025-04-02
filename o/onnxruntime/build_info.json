@@ -3,16 +3,17 @@
     "package_name": "onnxruntime",
     "github_url": "https://github.com/microsoft/onnxruntime",
     "version": "v1.21.0",
-    "default_branch": "master",
+    "default_branch": "main",
     "package_dir": "o/onnxruntime",
-    "build_script": "onnxruntime_ubi_9_3.sh",
+    "build_script": "onnxruntime_1.21.0_ubi_9_3.sh",
     "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": false,
-    "v1.21.0": {
-        "build_script": "onnxruntime_1.21.0_ubi_9_3.sh"
-     },
-    "v*.*.*": {
+    "wheel_build": true,
+    "v1.18.1": {
         "build_script": "onnxruntime_ubi_9_3.sh"
+     },
+    "*": {
+        "build_script": "onnxruntime_1.21.0_ubi_9_3.sh"
      }
 }
