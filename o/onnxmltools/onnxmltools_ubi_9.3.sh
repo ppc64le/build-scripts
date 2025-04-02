@@ -4,7 +4,7 @@
 # Package        : onnxmltools
 # Version        : v1.13
 # Source repo    : https://github.com/onnx/onnxmltools
-# Tested on      : UBI 9.3
+# Tested on      : UBI:9.3
 # Language       : Python
 # Travis-Check   : True
 # Script License : Apache License, Version 2 or later
@@ -25,7 +25,7 @@ PACKAGE_DIR=onnxmltools
 WORK_DIR=$(pwd)
 
 echo "Installing dependencies..."
-yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3-devel python3.12 python3.12-devel python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
+yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3.12 python3.12-devel python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
 PYTHON_VERSION=$(python3.12 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2) 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
@@ -85,10 +85,6 @@ export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
 export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
 cd ..
 
-
-WORK_DIR=$(pwd)
-export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 pip3.12 install --upgrade cmake pip setuptools wheel ninja packaging tox pytest build mypy stubs
 # Set ABSEIL_VERSION and ABSEIL_URL
 ABSEIL_VERSION=20240116.2
@@ -134,11 +130,6 @@ export C_COMPILER=$(which gcc)
 export CXX_COMPILER=$(which g++)
 echo "C Compiler set to $C_COMPILER"
 echo "CXX Compiler set to $CXX_COMPILER"
-
-# Setting paths and versions
-WORK_DIR=$(pwd)
-export C_COMPILER=$(which gcc)
-export CXX_COMPILER=$(which g++)
 
 mkdir -p $(pwd)/local/libprotobuf
 LIBPROTO_INSTALL=$(pwd)/local/libprotobuf
@@ -256,7 +247,7 @@ export CFLAGS="-Wno-stringop-overflow"
 export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
 export Python3_NumPy_INCLUDE_DIR=$(python3.12 -c "import numpy; print(numpy.get_include())")
 echo "Python3_NumPy_INCLUDE_DIR is set to $Python3_NumPy_INCLUDE_DIR"
-# Manually defines Python::NumPy for CMake versions with broken NumPy detection (Python 3.12+)
+# Manually defines Python::NumPy for CMake versions with broken NumPy detection
 sed -i '193i # Fix for Python::NumPy target not found\nif(NOT TARGET Python::NumPy)\n    find_package(Python3 COMPONENTS NumPy REQUIRED)\n    add_library(Python::NumPy INTERFACE IMPORTED)\n    target_include_directories(Python::NumPy INTERFACE ${Python3_NumPy_INCLUDE_DIR})\n    message(STATUS "Manually defined Python::NumPy with include dir: ${Python3_NumPy_INCLUDE_DIR}")\nendif()\n' /onnxruntime/cmake/onnxruntime_python.cmake
 export CXXFLAGS="-I/usr/local/lib64/python${PYTHON_VERSION}/site-packages/numpy/_core/include/numpy $CXXFLAGS"
 
@@ -297,7 +288,7 @@ git checkout $PACKAGE_VERSION
 sed -i 's/\bonnxconverter-common\b/onnxconverter-common==1.14.0/g' requirements.txt
 
 #Build
-if ! (pip3.12 install -e .) ; then
+if ! (pip3.12 install -e . --no-build-isolation --no-deps) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
