@@ -18,6 +18,7 @@ Once version is available, then parse and generate a json string with below deta
     'validate_build_script': <True if build-script is available for package otherwise False>,
     'use_non_root_user': <Run it as root or non-root>
     'build_script_raw_url': <Build-script raw URL>
+    'wheel_build': <True if wheel is available for the package else False>
 }
 
 This generated commands/parameter can be used in any CI/script to execute build-script or docker image.
@@ -44,6 +45,7 @@ DOCKER_FILE = 'docker_file'
 BASE_CONTAINER = 'base_docker_image'
 NON_ROOT_USER = 'use_non_root_user'
 BUILD_SCRIPT_RAW_URL = 'build_script_raw_url'
+WHEEL_BUILD = 'wheel_build'
 
 build_details = {
     DOCKER_DIR : '',
@@ -55,7 +57,8 @@ build_details = {
     DOCKER_BUILD: True,
     VALIDATE_BUILD_SCRIPT: True,
     NON_ROOT_USER : False,
-    BUILD_SCRIPT_RAW_URL : ""
+    BUILD_SCRIPT_RAW_URL : "",
+    WHEEL_BUILD: False
 }
 
 if len(sys.argv) == 3:
@@ -97,6 +100,7 @@ if config_json:
     build_details[DOCKER_BUILD] = config_json[DOCKER_BUILD] if DOCKER_BUILD in config_json else True
     build_details[VALIDATE_BUILD_SCRIPT] = config_json[VALIDATE_BUILD_SCRIPT] if VALIDATE_BUILD_SCRIPT in config_json else True
     build_details[NON_ROOT_USER] = config_json[NON_ROOT_USER] if NON_ROOT_USER in config_json else False
+    build_details[WHEEL_BUILD] = config_json[WHEEL_BUILD] if WHEEL_BUILD in config_json else False
 
     # Check for the version in Json file otherwise try to match regex.
     if version not in config_json:

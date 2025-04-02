@@ -1,0 +1,19 @@
+{
+  "maintainer": "meetj15",
+  "package_name": "pywt",
+  "github_url": "https://github.com/PyWavelets/pywt",
+  "version": "v1.4.1",
+  "wheel_build" : true,
+  "package_dir": "p/pywt",
+  "default_branch": "main",
+  "build_script": "pywt_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "1.4.*": {
+    "build_script": "pywt_ubi_9.3.sh"
+  },
+  "*": {
+    "build_script": "pywt_1.8.0_ubi_9.5.sh"
+  }
+}

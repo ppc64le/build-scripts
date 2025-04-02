@@ -1,0 +1,13 @@
+diff --git a/python/setup.py b/python/setup.py
+index 057414d8f..ff3859860 100755
+--- a/python/setup.py
++++ b/python/setup.py
+@@ -328,7 +328,7 @@ if __name__ == '__main__':
+       extra_compile_args.append('-Wno-invalid-offsetof')
+       extra_compile_args.append('-Wno-sign-compare')
+       extra_compile_args.append('-Wno-unused-variable')
+-      extra_compile_args.append('-std=c++14')
++      extra_compile_args.append('-std=c++17')
+
+     if sys.platform == 'darwin':
+       extra_compile_args.append('-Wno-shorten-64-to-32')

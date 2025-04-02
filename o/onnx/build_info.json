@@ -1,0 +1,19 @@
+{
+    "maintainer": "vinodk99",
+    "package_name": "onnx",
+    "github_url": "https://github.com/onnx/onnx",
+    "version": "v1.16.0",
+    "wheel_build" : true,
+    "package_dir": "o/onnx",
+    "default_branch": "main",
+    "build_script": "onnx_ubi_9.3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": "false",
+    "v1.16.0" : {
+      "build_script": "onnx_ubi_1.16.0_9.3.sh"
+    },
+    "*": {
+      "build_script": "onnx_ubi_9.3.sh"
+    }
+  }
