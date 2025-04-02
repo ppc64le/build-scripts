@@ -1,0 +1,51 @@
+diff --git a/Cargo.lock b/Cargo.lock
+index c3e659723..a7286fec4 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -7273,8 +7273,7 @@ checksum = "8c31b5c4033f8fdde8700e4657be2c497e7288f01515be52168c631e2e4d4086"
+ [[package]]
+ name = "ring"
+ version = "0.16.20"
+-source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "3053cf52e236a3ed746dfc745aa9cacf1b791d846bdaf412f60a8d7d6e17c8fc"
++source = "git+https://github.com/IBM/ring/?branch=ppc-0.16.20#3f8f04a1057e286f3b8c5b9e39c9f795b15743cc"
+ dependencies = [
+  "cc",
+  "libc",
+@@ -9731,6 +9730,7 @@ dependencies = [
+  "redis",
+  "regex",
+  "reqwest",
++ "ring 0.16.20",
+  "rmp-serde",
+  "rmpv",
+  "roaring",
+diff --git a/Cargo.toml b/Cargo.toml
+index 91dc7cc20..04f4c99eb 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -146,6 +146,7 @@ vector-config-macros = { path = "lib/vector-config-macros" }
+ vector-core = { path = "lib/vector-core", default-features = false, features = ["vrl"] }
+ vector-vrl-functions = { path = "lib/vector-vrl/functions" }
+ loki-logproto = { path = "lib/loki-logproto", optional = true }
++ring = { version = "0.16.20"}
+
+ # Tokio / Futures
+ async-stream = { version = "0.3.5", default-features = false }
+@@ -387,6 +388,7 @@ nix = { git = "https://github.com/vectordotdev/nix.git", branch = "memfd/gnu/mus
+ # The `heim` crates depend on `ntapi` 0.3.7 on Windows, but that version has an
+ # unaligned access bug fixed in the following revision.
+ ntapi = { git = "https://github.com/MSxDOS/ntapi.git", rev = "24fc1e47677fc9f6e38e5f154e6011dc9b270da6" }
++ring = { git = "https://github.com/IBM/ring/" , branch = "ppc-0.16.20"}
+
+ [features]
+ # Default features for *-unknown-linux-gnu and *-apple-darwin
+@@ -403,6 +405,7 @@ default-no-api-client = ["api", "enrichment-tables", "sinks", "sources", "source
+ default-no-vrl-cli = ["api", "sinks", "sources", "sources-dnstap", "transforms", "unix", "rdkafka?/gssapi-vendored", "enterprise"]
+ tokio-console = ["dep:console-subscriber", "tokio/tracing"]
+
++
+ all-logs = ["sinks-logs", "sources-logs", "sources-dnstap", "transforms-logs"]
+ all-metrics = ["sinks-metrics", "sources-metrics", "transforms-metrics", "enterprise"]
+
+

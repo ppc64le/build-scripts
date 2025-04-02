@@ -1,0 +1,15 @@
+{
+   "maintainer": "ramnathnayak-ibm",
+   "package_name": "object-hash",
+   "github_url": "https://github.com/puleos/object-hash",
+   "version": "v3.0.0",
+   "default_branch": "master",
+   "build_script": "object-hash_ubi_9.3.sh",
+   "package_dir": "o/object-hash",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "v*.*.*" : {
+       "build_script": "object-hash_ubi_9.3.sh"
+    }
+}

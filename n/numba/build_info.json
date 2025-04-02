@@ -1,0 +1,20 @@
+{
+    "maintainer": "Harithanagothu2",
+    "package_name": "numba",
+    "github_url": "https://github.com/numba/numba",
+    "version": "0.62.0dev0",
+    "required_versions":{"Releases": ["*"], "Tags": ["0.62.0dev0"]},
+    "wheel_build" : true,
+    "default_branch": "main",
+    "build_script": "numba_0.62.0dev0_ubi_9.3.sh",
+    "package_dir": "n/numba",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+	"0.57.0":{
+		"build_script": "numba_ubi_9.3.sh"
+	},
+	"*": {
+        "build_script": "numba_0.62.0dev0_ubi_9.3.sh"
+    }
+}

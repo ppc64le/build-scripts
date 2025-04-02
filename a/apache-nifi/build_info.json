@@ -26,7 +26,7 @@
     "build_script": "apache-nifi_1.22.0_ubi_8.5.sh"
   },
   "rel/nifi-*.*.*,rel/nifi-*.*.*-*": {
-    "dir": "1.22.0_ubi_8",
+    "dir": "2.0.0_ubi_9",
     "build_script": "apache-nifi_ubi_9.3.sh"
   }
 }

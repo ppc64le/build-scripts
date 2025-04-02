@@ -1,0 +1,12 @@
+{
+    "maintainer": "RadhikaAjabe7",
+    "package_name": "camel-karaf",
+    "github_url": "https://github.com/apache/camel-karaf.git",
+    "version": "camel-karaf-4.8.x",
+    "default_branch": "main",
+    "package_dir": "c/camel-karaf",
+    "build_script": "camel-karaf_rhel_9.1.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false
+}
