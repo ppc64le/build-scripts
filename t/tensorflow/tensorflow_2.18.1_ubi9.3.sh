@@ -27,7 +27,7 @@ CURRENT_DIR=$(pwd)
 PACKAGE_DIR=tensorflow
 
 # install core dependencies
-yum install -y wget python python-pip python-devel  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils 
+yum install -y wget python3.12 python3.12-pip python3.12-devel  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils 
 
 dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 yum install -y patchelf
@@ -44,7 +44,7 @@ export CXX=$GCC_HOME/bin/g++
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
-python -m pip install --upgrade pip
+python3.12 -m pip install --upgrade pip
 
 INSTALL_ROOT="/install-deps"
 mkdir -p $INSTALL_ROOT
@@ -56,7 +56,7 @@ for package in openblas hdf5 abseil tensorflow ; do
     echo "Exported ${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
 done
 
-python -m pip install numpy==2.0.2 cython setuptools wheel ninja
+python3.12 -m pip install numpy==2.0.2 cython setuptools wheel ninja
 
 yum install -y java-11-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.25.0.9-3.el9.ppc64le 
@@ -132,9 +132,9 @@ git clone https://github.com/h5py/h5py.git
 cd h5py/
 git checkout 3.13.0
 
-HDF5_DIR=/install-deps/hdf5 python -m pip install .
+HDF5_DIR=/install-deps/hdf5 python3.12 -m pip install .
 cd $CURRENT_DIR
-python -c "import h5py; print(h5py.__version__)"
+python3.12 -c "import h5py; print(h5py.__version__)"
 echo "-----------------------------------------------------Installed h5py-----------------------------------------------------"
 
 
@@ -191,9 +191,9 @@ export CXXFLAGS="-I${ML_DIR}/include"
 export CC=/opt/rh/gcc-toolset-13/root/bin/gcc
 export CXX=/opt/rh/gcc-toolset-13/root/bin/g++
 
-pip install .
+python3.12 -m pip install .
 cd $CURRENT_DIR
-python -c "import ml_dtypes; print(ml_dtypes.__version__)"
+python3.12 -c "import ml_dtypes; print(ml_dtypes.__version__)"
 echo "-----------------------------------------------------Installed ml_dtyapes-----------------------------------------------------"
 
 
@@ -210,8 +210,8 @@ echo "build_type=${build_type}"
 SHLIB_EXT=".so"
 WORK_DIR=$(pwd)
 
-export TF_PYTHON_VERSION=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
-export HERMETIC_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
+export TF_PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+export HERMETIC_PYTHON_VERSION=$(python3.12 --version | awk '{print $2}' | cut -d. -f1,2)
 export GCC_HOST_COMPILER_PATH=$(which gcc)
 export CC=$GCC_HOST_COMPILER_PATH
 
@@ -234,7 +234,7 @@ git apply tf_2.18.1_fix.patch
 rm -rf tensorflow/*.bazelrc
 
 # Pick up additional variables defined from the conda build environment
-export PYTHON_BIN_PATH=$(which python)
+export PYTHON_BIN_PATH=$(which python3.12)
 export USE_DEFAULT_PYTHON_LIB_PATH=1
 
 # Build the bazelrc
@@ -256,9 +256,9 @@ USE_MMA=0
 TENSORFLOW_PREFIX=/install-deps/tensorflow
 
 cat > $BAZEL_RC_DIR/python_configure.bazelrc << EOF
-build --action_env PYTHON_BIN_PATH="$(which python)"
+build --action_env PYTHON_BIN_PATH="$(which python3.12)"
 build --action_env PYTHON_LIB_PATH="/usr/lib/python3.12/site-packages"
-build --python_path="$(which python)"
+build --python_path="$(which python3.12)"
 EOF
 
 SYSTEM_LIBS_PREFIX=$TENSORFLOW_PREFIX
