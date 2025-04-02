@@ -60,6 +60,10 @@ echo "Updating pyproject.toml with version $PACKAGE_VERSION..."
 
 # Remove any existing 'dynamic = ["version"]' line
 sed -i '/dynamic = \["version"\]/d' pyproject.toml
+
+# Remove any existing 'version =' line to avoid duplicates
+sed -i '/^version = /d' pyproject.toml
+
 # Insert 'version = "<PACKAGE_VERSION>"'
 sed -i '/^name = /a version = "'"$PACKAGE_VERSION"'"' pyproject.toml
 
