@@ -85,7 +85,8 @@ cd ..
 WORK_DIR=$(pwd)
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
-pip3.12 install --upgrade cmake pip setuptools wheel ninja packaging tox pytest build mypy stubs
+pip3.12 install --upgrade pip setuptools wheel ninja packaging tox pytest build mypy stubs
+pip3.12 install 'cmake==3.31.6'
 # Set ABSEIL_VERSION and ABSEIL_URL
 ABSEIL_VERSION=20240116.2
 ABSEIL_URL="https://github.com/abseil/abseil-cpp"
@@ -195,9 +196,9 @@ echo "Updated CMAKE_PREFIX_PATH after OpenBLAS: $CMAKE_PREFIX_PATH"
 export LD_LIBRARY_PATH="$LIBPROTO_INSTALL/lib64:$ABSEIL_PREFIX/lib:$LD_LIBRARY_PATH"
 echo "Updated LD_LIBRARY_PATH : $LD_LIBRARY_PATH"
 echo "Cloning and installing..."
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME
-git checkout $PACKAGE_VERSION
+git clone https://github.com/onnx/onnx
+cd onnx
+git checkout v1.17.0
 git submodule update --init --recursive
 export ONNX_ML=1
 export ONNX_PREFIX=$(pwd)/../onnx-prefix
