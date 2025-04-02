@@ -1,0 +1,16 @@
+{
+  "maintainer": "aastha-sharma2",
+  "package_name": "lame",
+  "github_url": "https://downloads.sourceforge.net/sourceforge/lame/lame/3.100.tar.gz",
+  "version": "3.100",
+  "default_branch": "NA",
+  "wheel_build" : false,
+  "package_dir": "l/lame",
+  "build_script": "lame_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*":{
+    "build_script":"lame_ubi_9.3.sh"
+  }
+}
