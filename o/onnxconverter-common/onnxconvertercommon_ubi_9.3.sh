@@ -239,8 +239,12 @@ git submodule update --init --recursive
 pip3.12 install flatbuffers onnxmltools
 sed -i 's/\bprotobuf==[^ ]*\b/protobuf==4.25.3/g' pyproject.toml
 sed -i 's/\"onnx\"/\"onnx==1.17.0\"/' pyproject.toml
+sed -i 's/\"numpy\"/\"numpy==2.0.2\"/' pyproject.toml
 sed -i "/tool.setuptools.dynamic/d" pyproject.toml
 sed -i "/onnxconverter_common.__version__/d" pyproject.toml
+
+sed -i 's/\"numpy\"/\"numpy==2.0.2\"/' requirements.txt
+sed -i 's/\bprotobuf==[^ ]*\b/protobuf==4.25.3/g' requirements.txt
 cd ..
 # Clone and install onnxruntime
 echo "Cloning and installing onnxruntime..."
