@@ -1,16 +1,13 @@
 {
-  "maintainer": "aastha-sharma2",
-  "package_name": "lxml",
-  "github_url": "https://github.com/lxml/lxml.git",
-  "version": "4.9.2",
-  "wheel_build" : true,
-  "package_dir": "l/lxml",
-  "default_branch": "master",
-  "build_script": "lxml_ubi_9.3.sh",
-  "docker_build": false,
-  "validate_build_script": true,
-  "use_non_root_user": "false",
-  "*": {
-    "build_script": "lxml_ubi_9.3.sh"
-  }
+   "maintainer": "shubham-dayma-ibm",
+   "package_name": "lxml",
+   "github_url": "https://github.com/lxml/lxml.git",
+   "version": "lxml-5.3.1",
+   "default_branch": "master",
+   "build_script": "lxml_ubi_9.3.sh",
+   "package_dir": "l/lxml",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
 }
