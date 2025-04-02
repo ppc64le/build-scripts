@@ -80,8 +80,8 @@ export LIBVPX_PREFIX=$(pwd)/libvpx_prefix
 
 export target_platform=$(uname)-$(uname -m)
 export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr
-export CC=$GCC_HOME/bin/gcc
-export CXX=$GCC_HOME/bin/g++
+export CC=$(which gcc)
+export CXX=$(which g++)
 
 # Get an updated config.sub and config.guess
 #cp $BUILD_PREFIX/share/libtool/build-aux/config.* .
