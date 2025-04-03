@@ -98,12 +98,23 @@ sed -i "/OpenBLAS_INCLUDE_DIRS/c\SET(OpenBLAS_INCLUDE_DIRS ${OpenBLASInstallPATH
 sed -i "/OpenBLAS_LIBRARIES/c\SET(OpenBLAS_INCLUDE_DIRS ${OpenBLASInstallPATH}/include)" ${OpenBLASConfigFile}
 sed -i "s|libdir=local/openblas/lib|libdir=${OpenBLASInstallPATH}/lib|" ${OpenBLASPCFile}
 sed -i "s|includedir=local/openblas/include|includedir=${OpenBLASInstallPATH}/include|" ${OpenBLASPCFile}
-export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
+export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib":${LD_LIBRARY_PATH}
 export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
 cd ..
 
 echo "--------------------openblas installed-------------------------------"
 
+#Building scipy
+python -m pip install beniget==0.4.2.post1  Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis highspy  array_api_extra array_api_strict ninja patchelf>=0.11.0
+git clone https://github.com/scipy/scipy
+cd scipy/
+git checkout v1.15.2
+git submodule update --init
+export SITE_PACKAGE_PATH=/usr/local/lib/python3.12/site-packages
+echo "Dependency installations"
+python -m pip install .
+
+cd $SCRIPT_DIR
 #Building abesil-cpp,libprotobuf and protobuf 
 
 python -m pip install --upgrade cmake pip setuptools wheel ninja packaging pytest numpy==2.0.2
@@ -202,7 +213,7 @@ python -m pip install .
 echo "-------------------------- libprotobuf and  protobuf installed-----------------------"
 export LD_LIBRARY_PATH="$LIBPROTO_INSTALL:${LD_LIBRARY_PATH}"
 cd $SCRIPT_DIR
-python3 -m pip install wheel scipy==1.15.2 ninja build pytest
+#python3 -m pip install wheel scipy==1.15.2 ninja build pytest
 
 curl https://sh.rustup.rs -sSf | sh -s -- -y
 source "$HOME/.cargo/env"
@@ -260,7 +271,8 @@ if ! (python3 -m pip install -r requirements.txt);then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-
+echo "dependencies"
+python3 -m pip list 
 if ! (MAX_JOBS=$(nproc) python3 setup.py install);then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
