@@ -266,10 +266,6 @@ echo "Building onnxruntime..."
     --allow_running_as_root \
     --compile_no_warning_as_error \
     --build_wheel
-# Install the built onnxruntime wheel
-echo "Installing onnxruntime wheel..."
-cp ./build/Linux/Release/dist/* ./
-pip3.12 install ./*.whl
 # Clean up the onnxruntime repository
 cd ..
 
@@ -299,7 +295,7 @@ if ! (pip3.12 install -e . --no-build-isolation --no-deps) ; then
 fi
 
 # Run test cases
-if !(tox -e py3.12 --installpkg /onnx/wheelf/*.whl); then
+if ! (tox -e py3.12 --installpkg /onnx/wheelf/*.whl) ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
