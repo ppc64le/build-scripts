@@ -36,7 +36,7 @@ mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 
 echo "Installing dependencies..."
-yum install -y git make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel atlas atlas pkg-config freetype-devel libpng-devel pkgconf-pkg-config cython python3.12 python3.12-devel python3.12-pip gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran autoconf automake libtool krb5-devel bison flex ninja-build glibc-devel binutils c-ares-devel brotli-devel.ppc64le gflags-devel rapidjson-devel xsimd-devel bzip2-devel
+yum install -y git make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel atlas atlas pkg-config freetype-devel libpng-devel pkgconf-pkg-config cython python3.12 python3.12-devel python3.12-pip gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran autoconf automake libtool krb5-devel bison flex ninja-build glibc-devel binutils c-ares-devel brotli-devel.ppc64le gflags-devel rapidjson-devel xsimd-devel glibc-static libstdc++-static
 
 ln -sf /usr/bin/python3.12 /usr/bin/python3
 ln -sf /usr/bin/pip3.12 /usr/bin/pip
