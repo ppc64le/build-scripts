@@ -17,19 +17,9 @@
 #
 # ----------------------------------------------------------------------------
 
-yum install -y wget
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
-dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
-mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
-
-yum install -y make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel patch python python-devel ninja-build gcc-toolset-13  pkg-config c-ares-devel
+yum install -y make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel patch python python-devel ninja-build gcc-toolset-13  pkg-config 
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-
 SCRIPT_DIR=$(pwd)
 
 PACKAGE_NAME=grpc-cpp
@@ -37,9 +27,18 @@ PACKAGE_DIR=$SCRIPT_DIR
 PACKAGE_VERSION=${1:-v1.68.0}
 PACKAGE_URL=https://github.com/grpc/grpc
 
-
 #installing dependencies
 pip install --upgrade cmake pip setuptools wheel ninja packaging pytest
+
+#Building c-areas
+git clone https://github.com/c-ares/c-ares.git
+cd c-ares
+mkdir build && cd build
+cmake ..
+make -j$(nproc)
+make install
+cd $SCRIPT_DIR
+echo "----------c-areas installed-----------------------"
 
 #Building abseil-cpp
 ABSEIL_VERSION=20240116.2
