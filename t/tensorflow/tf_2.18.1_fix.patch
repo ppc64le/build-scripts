@@ -687,10 +687,9 @@ index 3ef493e11f5..7d7cc58b0a0 100644
      # via -r ci/official/requirements_updater/requirements.in
  
  # The following packages are considered to be unsafe in a requirements file:
--setuptools==70.0.0 \
+ setuptools==70.0.0 \
 -    --hash=sha256:54faa7f2e8d2d11bcd2c07bed282eef1046b5c080d1c32add737d7b5817b1ad4 \
 -    --hash=sha256:f211a66637b8fa059bb28183da127d4e86396c991a942b028c6650d4319c3fd0
-+setuptools==75.6.0 \
      # via
      #   -r ci/official/requirements_updater/requirements.in
      #   tensorboard
@@ -1383,10 +1382,9 @@ index 7e3a884f832..d5a28858572 100644
      # via -r ci/official/requirements_updater/requirements.in
  
  # The following packages are considered to be unsafe in a requirements file:
--setuptools==70.0.0 \
+ setuptools==70.0.0 \
 -    --hash=sha256:54faa7f2e8d2d11bcd2c07bed282eef1046b5c080d1c32add737d7b5817b1ad4 \
 -    --hash=sha256:f211a66637b8fa059bb28183da127d4e86396c991a942b028c6650d4319c3fd0
-+setuptools==75.6.0 \
      # via
      #   -r ci/official/requirements_updater/requirements.in
      #   tensorboard
@@ -2784,10 +2782,9 @@ index 115d6caa10d..0a0a24a0a6d 100644
      # via importlib-metadata
  
  # The following packages are considered to be unsafe in a requirements file:
--setuptools==70.0.0 \
+ setuptools==70.0.0 \
 -    --hash=sha256:54faa7f2e8d2d11bcd2c07bed282eef1046b5c080d1c32add737d7b5817b1ad4 \
 -    --hash=sha256:f211a66637b8fa059bb28183da127d4e86396c991a942b028c6650d4319c3fd0
-+setuptools==75.6.0 \
      # via
      #   -r ci/official/requirements_updater/requirements.in
      #   tensorboard
