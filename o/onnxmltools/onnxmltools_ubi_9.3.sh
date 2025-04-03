@@ -233,6 +233,8 @@ pip3.12 install pytest nbval pythran mypy-protobuf
 pip3.12 install scipy==1.15.2
 
 python3.12 setup.py install
+python3.12 -m build --wheel --no-isolation --outdir="wheelf"
+pip3.12 install wheelf/*.whl
 echo "--------------onnx installed------------------"
 cd ..
 
@@ -296,7 +298,7 @@ if ! (pip3.12 install -e . --no-build-isolation --no-deps) ; then
 fi
 
 # Run test cases
-if !(tox -e py3.12); then
+if !(tox -e py3.12 --installpkg /onnx/wheelf/*.whl); then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
