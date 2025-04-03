@@ -73,7 +73,12 @@ export PREFIX=$(pwd)/prefix
 export LIBRARY_PATH="/usr/lib64"
 
 #Configure and build OpenMPI
-./configure --prefix=$PREFIX --disable-dependency-tracking
+./configure --prefix=$PREFIX \
+    --disable-dependency-tracking \
+    --disable-shared \
+    --enable-static \
+    LDFLAGS="-static"
+echo "installing openmpi"
 make -j$(nproc)
 make install
 
@@ -701,7 +706,7 @@ popd
 
 cd $CURRENT_DIR
 
-#installing prerequisite
+echo "installing prerequisite" ...
 pip install setuptools-scm Cython
 
 
@@ -741,7 +746,7 @@ else
 fi
 
 cd python
-
+echo "install pyarrow"...
 pip install .
 cd ..
 cd $CURRENT_DIR
@@ -792,9 +797,6 @@ cd lightgbm-python
 
 echo "set mpi library and other paths"
 source /opt/rh/gcc-toolset-13/enable
-export PATH=/openmpi-5.0.6/prefix/bin:$PATH
-export LD_LIBRARY_PATH=/openmpi-5.0.6/prefix/lib:$LD_LIBRARY_PATH
-export CXXFLAGS="-g -L/openmpi-5.0.6/prefix/lib -lmpi"
 export LD_LIBRARY_PATH="${SITE_PACKAGE_PATH}/openblas/lib:${LD_LIBRARY_PATH}"
 export PKG_CONFIG_PATH="${SITE_PACKAGE_PATH}/openblas/lib/pkgconfig"
 
