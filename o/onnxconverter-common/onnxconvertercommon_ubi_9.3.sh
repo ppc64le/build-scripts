@@ -239,9 +239,9 @@ cd ..
 
 # Clone and install onnxconverter-common
 echo "Cloning and installing onnxconverter-common..."
-git clone https://github.com/microsoft/onnxconverter-common
-cd onnxconverter-common
-git checkout v1.14.0
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 sed -i 's/\bprotobuf==[^ ]*\b/protobuf==4.25.3/g' pyproject.toml
 sed -i 's/\"onnx\"/\"onnx==1.17.0\"/' pyproject.toml
