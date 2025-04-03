@@ -149,6 +149,9 @@ git clone $PACKAGE_URL
 cd  $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
+export CFLAGS=-I/usr/include
+export CXXFLAGS=-I/usr/include
+
 #install
 if ! python3.12 setup.py install  ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
