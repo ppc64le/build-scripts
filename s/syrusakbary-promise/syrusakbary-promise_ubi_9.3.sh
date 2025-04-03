@@ -55,13 +55,13 @@ if ! (pytest --ignore=tests/test_awaitable.py -k "not test_thrown_exceptions_hav
         echo "------------------$PACKAGE_NAME:Test_fails-------------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Test_Fails"
-        exit 1
+        exit 2
 fi
 
 # Building wheel with script itself as the wheel need to create with ppc64le arch.
 if ! python3 setup.py bdist_wheel --plat-name manylinux2014_ppc64le --dist-dir="$CURRENT_DIR"; then
     echo "------------------$PACKAGE_NAME: Wheel Build Failed ---------------------"
-    exit 2
+    exit 1
 else
     echo "------------------$PACKAGE_NAME: Wheel Build Success -------------------------"
     exit 0
