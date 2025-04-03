@@ -88,7 +88,8 @@ cd ..
 WORK_DIR=$(pwd)
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
-pip3.12 install --upgrade cmake pip setuptools wheel ninja packaging tox pytest build mypy stubs
+pip3.12 install --upgrade pip setuptools wheel ninja packaging tox pytest build mypy stubs
+pip3.12 install 'cmake==3.31.6'
 # Set ABSEIL_VERSION and ABSEIL_URL
 ABSEIL_VERSION=20240116.2
 ABSEIL_URL="https://github.com/abseil/abseil-cpp"
@@ -108,6 +109,7 @@ mkdir build
 cd build
 cmake -G Ninja \
     ${CMAKE_ARGS} \
+    -DBUILD_SHARED_LIBS=OFF \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CXX_STANDARD=17 \
     -DCMAKE_INSTALL_LIBDIR=lib \
@@ -159,6 +161,7 @@ mkdir build
 cd build
 cmake -G "Ninja" \
    ${CMAKE_ARGS} \
+    -DBUILD_SHARED_LIBS=OFF \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CXX_STANDARD=17 \
     -DCMAKE_C_COMPILER=$C_COMPILER \
