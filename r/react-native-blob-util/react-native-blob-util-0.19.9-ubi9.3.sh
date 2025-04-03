@@ -7,7 +7,7 @@
 # Tested on     : UBI 9.3 (docker)
 # Language      : Java,JavaScript,Objective-C++,C++,Objective-C,Ruby
 # Travis-Check  : True
-# Script License: MIT License
+# Script License: Apache License, Version 2 or later
 # Maintainer    : Prachi Gaonkar <Prachi.Gaonkar@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
