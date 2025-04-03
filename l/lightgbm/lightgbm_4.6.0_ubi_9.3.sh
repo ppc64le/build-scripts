@@ -36,15 +36,15 @@ mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 
 echo "Installing dependencies..."
-yum install -y git make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel atlas atlas pkg-config freetype-devel libpng-devel pkgconf-pkg-config cython python3.12 python3.12-devel python3.12-pip gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran autoconf automake libtool krb5-devel bison flex ninja-build glibc-devel binutils c-ares-devel brotli-devel.ppc64le gflags-devel rapidjson-devel xsimd-devel glibc-static libstdc++-static
+yum install -y git make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel atlas atlas pkg-config freetype-devel libpng-devel pkgconf-pkg-config cython python3.12 python3.12-devel python3.12-pip gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran autoconf automake libtool krb5-devel bison flex ninja-build glibc-devel binutils c-ares-devel brotli-devel.ppc64le gflags-devel rapidjson-devel xsimd-devel bzip2-devel glibc-static
 
 ln -sf /usr/bin/python3.12 /usr/bin/python3
 ln -sf /usr/bin/pip3.12 /usr/bin/pip
-# Enable gcc-toolset-13
-source /opt/rh/gcc-toolset-13/enable
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
+
 echo "install and export path"
+yum install gcc-toolset-13 -y
 export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr
 export PATH=$GCC_HOME/bin:$PATH
 export CC=$GCC_HOME/bin/gcc
@@ -52,7 +52,10 @@ export CXX=$GCC_HOME/bin/g++
 export CXX=/opt/rh/gcc-toolset-13/root/usr/bin/g++
 export CXXFLAGS="-g -std=c++11"
 
-#Build and install cmake 
+# Enable gcc-toolset-13
+source /opt/rh/gcc-toolset-13/enable
+
+#Build and install cmake
 wget https://cmake.org/files/v3.28/cmake-3.28.0.tar.gz
 tar -zxvf cmake-3.28.0.tar.gz
 cd cmake-3.28.0
@@ -120,7 +123,7 @@ cmake ${CMAKE_ARGS} -GNinja \
  ..
 
  ninja -v install
- 
+
  popd
 
 #Also do this installation to get .pc files. This duplicates the compilation
@@ -795,7 +798,7 @@ echo ------"installing base package ..."-------
 echo "getting into lightgbm dir ....."
 cd lightgbm-python
 
-echo "set mpi library and other paths"
+echo "set library and other paths and again enable gcc"
 source /opt/rh/gcc-toolset-13/enable
 export LD_LIBRARY_PATH="${SITE_PACKAGE_PATH}/openblas/lib:${LD_LIBRARY_PATH}"
 export PKG_CONFIG_PATH="${SITE_PACKAGE_PATH}/openblas/lib/pkgconfig"
@@ -805,11 +808,6 @@ export LD_LIBRARY_PATH=/thrift/thrit-prefix/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/re2/re2-prefix/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/utf8proc/utf8proc_prefix/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/protobuf/local/libprotobuf/lib64:$LD_LIBRARY_PATH
-
-# Ensure OpenMPI is picked up by the linker during Python testing and compilation
-echo "Adding OpenMPI library path to ldconfig"
-echo "/openmpi-5.0.6/prefix/lib" | tee /etc/ld.so.conf.d/openmpi-lightgbm.conf
-ldconfig
 
 echo "Running build with MPI condition..."
 python3 -m build --wheel --config-setting=cmake.define.USE_MPI=ON --outdir="$CURRENT_DIR"
@@ -821,6 +819,24 @@ if ! (pip install --no-deps .) ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
     exit 1
 fi
+
+# Detect Python version
+PYTHON_VERSION=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+
+# Detect if running in pyvenv environment
+if [[ -d "/pyvenv_${PYTHON_VERSION}" ]]; then
+    # Running in pyvenv environment
+    echo "Detected pyvenv environment"
+    export PYTHONPATH=/pyvenv_${PYTHON_VERSION}/lib64/python${PYTHON_VERSION}/site-packages:/pyvenv_${PYTHON_VERSION}/lib/python${PYTHON_VERSION}/site-packages:$PYTHONPATH
+
+else
+    # Running in non-pyvenv environment
+    echo "Detected non-pyvenv environment"
+    export PYTHONPATH=/usr/local/lib64/python${PYTHON_VERSION}/site-packages:/usr/local/lib/python${PYTHON_VERSION}/site-packages:$PYTHONPATH
+fi
+
+# Print PYTHONPATH for verification
+echo "PYTHONPATH: $PYTHONPATH"
 
 echo "run tests  ..."
 if !(pytest ../tests -p no:warnings); then
