@@ -247,24 +247,24 @@ git checkout v1.21.0
 export CXXFLAGS="-Wno-stringop-overflow"
 export CFLAGS="-Wno-stringop-overflow"
 export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
-export Python3_NumPy_INCLUDE_DIR=$(python3.12 -c "import numpy; print(numpy.get_include())")
-echo "Python3_NumPy_INCLUDE_DIR is set to $Python3_NumPy_INCLUDE_DIR"
+NUMPY_INCLUDE=$(python3.12 -c "import numpy; print(numpy.get_include())")
+echo "NumPy include path: $NUMPY_INCLUDE"
 # Manually defines Python::NumPy for CMake versions with broken NumPy detection
 sed -i '193i # Fix for Python::NumPy target not found\nif(NOT TARGET Python::NumPy)\n    find_package(Python3 COMPONENTS NumPy REQUIRED)\n    add_library(Python::NumPy INTERFACE IMPORTED)\n    target_include_directories(Python::NumPy INTERFACE ${Python3_NumPy_INCLUDE_DIR})\n    message(STATUS "Manually defined Python::NumPy with include dir: ${Python3_NumPy_INCLUDE_DIR}")\nendif()\n' /onnxruntime/cmake/onnxruntime_python.cmake
 export CXXFLAGS="-I/usr/local/lib64/python${PYTHON_VERSION}/site-packages/numpy/_core/include/numpy $CXXFLAGS"
 
 echo "Building onnxruntime..."
 ./build.sh \
-		--cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" Protobuf_PROTOC_EXECUTABLE=$PROTO_PREFIX/bin/protoc Protobuf_INCLUDE_DIR=$PROTO_PREFIX/include onnxruntime_USE_COREML=OFF "CMAKE_POLICY_DEFAULT_CMP0001=NEW" "CMAKE_POLICY_DEFAULT_CMP0002=NEW" "CMAKE_POLICY_VERSION_MINIMUM=3.5" \
-		--cmake_generator Ninja \
-		--build_shared_lib \
-		--config Release \
-		--update \
-		--build \
-		--skip_submodule_sync \
-		--allow_running_as_root \
-		--compile_no_warning_as_error \
-		--build_wheel
+    --cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" "Protobuf_PROTOC_EXECUTABLE=$PROTO_PREFIX/bin/protoc" "Protobuf_INCLUDE_DIR=$PROTO_PREFIX/include" "onnxruntime_USE_COREML=OFF" "Python3_NumPy_INCLUDE_DIR=$NUMPY_INCLUDE" "CMAKE_POLICY_DEFAULT_CMP0001=NEW" "CMAKE_POLICY_DEFAULT_CMP0002=NEW" "CMAKE_POLICY_VERSION_MINIMUM=3.5" \
+    --cmake_generator Ninja \
+    --build_shared_lib \
+    --config Release \
+    --update \
+    --build \
+    --skip_submodule_sync \
+    --allow_running_as_root \
+    --compile_no_warning_as_error \
+    --build_wheel
 # Install the built onnxruntime wheel
 echo "Installing onnxruntime wheel..."
 cp ./build/Linux/Release/dist/* ./
