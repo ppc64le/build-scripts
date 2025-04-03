@@ -1,5 +1,5 @@
 {
-    "maintainer": "shubham-garud",
+    "maintainer": "vinodk99",
     "package_name": "syrusakbary-promise",
     "github_url": "https://github.com/syrusakbary/promise",
     "version": "v2.3.0",
@@ -9,5 +9,8 @@
     "docker_build": false,
     "wheel_build": true,
     "validate_build_script": true,
-    "use_non_root_user": false
+    "use_non_root_user": false,
+    "*" :{
+        "build_script": "syrusakbary-promise_ubi_9.3.sh"
+    }
  }
