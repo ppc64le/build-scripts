@@ -1,29 +1,28 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : onnxruntime
-# Version          : v1.21.0
-# Source repo      : https://github.com/microsoft/onnxruntime
-# Tested on        : UBI:9.3
-# Language         : Python
-# Travis-Check     : True
-# Script License   : Apache License, Version 2 or later
-# Maintainer       : Ramnath Nayak <Ramnath.Nayak@ibm.com>
+# Package        : onnxmltools
+# Version        : v1.13
+# Source repo    : https://github.com/onnx/onnxmltools
+# Tested on      : UBI:9.3
+# Language       : Python
+# Travis-Check   : True
+# Script License : Apache License, Version 2 or later
+# Maintainer     : Ramnath Nayak <Ramnath.Nayak@ibm.com>
 #
-# Disclaimer: This script has been tested in root mode on given
+# Disclaimer: This script has been tested in root mode on the given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
-#             package and/or distribution. In such case, please
-#             contact "Maintainer" of this script.
+#             package and/or distribution. In such cases, please
+#             contact the "Maintainer" of this script.
 #
-# ----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
-PACKAGE_NAME=onnxruntime
-PACKAGE_VERSION=${1:-v1.21.0}
-PACKAGE_URL=https://github.com/microsoft/onnxruntime
-PACKAGE_DIR="onnxruntime"
+PACKAGE_NAME=onnxmltools
+PACKAGE_VERSION=${1:-v1.13}
+PACKAGE_URL=https://github.com/onnx/onnxmltools
+PACKAGE_DIR=onnxmltools
 WORK_DIR=$(pwd)
-CURRENT_DIR=$(pwd)
 
 echo "Installing dependencies..."
 yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3-devel python3.12 python3.12-devel python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
@@ -37,8 +36,6 @@ git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
 git checkout v0.3.29
 git submodule update --init
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/o/openblas/pyproject.toml
-sed -i "s/{PACKAGE_VERSION}/v0.3.29/g" pyproject.toml
 PREFIX=local/openblas
 OPENBLAS_SOURCE=$(pwd)
 # Set build options
@@ -127,9 +124,10 @@ PREFIX=$SITE_PACKAGE_PATH
 ABSEIL_PREFIX=$SOURCE_DIR/local/abseilcpp
 echo "Setting PREFIX to $PREFIX and ABSEIL_PREFIX to $ABSEIL_PREFIX"
 
-# Setting paths and versions
 export C_COMPILER=$(which gcc)
 export CXX_COMPILER=$(which g++)
+echo "C Compiler set to $C_COMPILER"
+echo "CXX Compiler set to $CXX_COMPILER"
 
 mkdir -p $(pwd)/local/libprotobuf
 LIBPROTO_INSTALL=$(pwd)/local/libprotobuf
@@ -183,6 +181,7 @@ git apply set_cpp_to_17_v4.25.3.patch
 cd python
 python3.12 setup.py install --cpp_implementation
 cd ../..
+pip3.12 install numpy==2.0.2 scikit-learn==1.6.1 scipy==1.15.2 pandas cmake flatbuffers wheel lightgbm==4.6.0 
 pip3.12 install pybind11==2.12.0
 PYBIND11_PREFIX=$SITE_PACKAGE_PATH/pybind11
 export CMAKE_PREFIX_PATH="$ABSEIL_PREFIX;$LIBPROTO_INSTALL;$PYBIND11_PREFIX"
@@ -232,14 +231,17 @@ pip3.12 install pytest nbval pythran mypy-protobuf
 pip3.12 install scipy==1.15.2
 
 python3.12 setup.py install
+python3.12 -m build --wheel --no-isolation --outdir="wheelf"
+pip3.12 install wheelf/*.whl
 echo "--------------onnx installed------------------"
 cd ..
 
-#Build
-git clone $PACKAGE_URL
-cd $PACKAGE_DIR
-git checkout $PACKAGE_VERSION
-
+# Clone and install onnxruntime
+echo "Cloning and installing onnxruntime..."
+git clone https://github.com/microsoft/onnxruntime
+cd onnxruntime
+git checkout v1.21.0
+# Build the onnxruntime package and create the wheel
 export CXXFLAGS="-Wno-stringop-overflow"
 export CFLAGS="-Wno-stringop-overflow"
 export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
@@ -250,9 +252,8 @@ echo "NumPy include path: $NUMPY_INCLUDE"
 sed -i '193i # Fix for Python::NumPy target not found\nif(NOT TARGET Python::NumPy)\n    find_package(Python3 COMPONENTS NumPy REQUIRED)\n    add_library(Python::NumPy INTERFACE IMPORTED)\n    target_include_directories(Python::NumPy INTERFACE ${Python3_NumPy_INCLUDE_DIR})\n    message(STATUS "Manually defined Python::NumPy with include dir: ${Python3_NumPy_INCLUDE_DIR}")\nendif()\n' /onnxruntime/cmake/onnxruntime_python.cmake
 export CXXFLAGS="-I/usr/local/lib64/python${PYTHON_VERSION}/site-packages/numpy/_core/include/numpy $CXXFLAGS"
 
-#Build and test
-#Building and testing both is performed in build.sh
-if ! (./build.sh \
+echo "Building onnxruntime..."
+./build.sh \
     --cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" "Protobuf_PROTOC_EXECUTABLE=$PROTO_PREFIX/bin/protoc" "Protobuf_INCLUDE_DIR=$PROTO_PREFIX/include" "onnxruntime_USE_COREML=OFF" "Python3_NumPy_INCLUDE_DIR=$NUMPY_INCLUDE" "CMAKE_POLICY_DEFAULT_CMP0001=NEW" "CMAKE_POLICY_DEFAULT_CMP0002=NEW" "CMAKE_POLICY_VERSION_MINIMUM=3.5" \
     --cmake_generator Ninja \
     --build_shared_lib \
@@ -262,8 +263,38 @@ if ! (./build.sh \
     --skip_submodule_sync \
     --allow_running_as_root \
     --compile_no_warning_as_error \
-    --build_wheel) ; then
-    echo "------------------$PACKAGE_NAME:install_&_test_both_fails---------------------"
+    --build_wheel
+# Clean up the onnxruntime repository
+cd ..
+
+git clone https://github.com/onnx/sklearn-onnx.git
+cd sklearn-onnx
+git checkout v1.18
+sed -i 's/onnx>=1.2.1//g' requirements.txt
+sed -i 's/onnxconverter-common>=1.7.0//g' requirements.txt
+sed -i 's/scikit-learn>=1\.1/scikit-learn==1.6.1/' requirements.txt
+pip3.12 install -e . --no-build-isolation --no-deps
+cd ..
+echo "-------skl2onnx installed-----------"
+
+#Build onnxmltools
+git clone $PACKAGE_URL
+cd $PACKAGE_DIR
+git checkout $PACKAGE_VERSION
+
+sed -i 's/\bonnxconverter-common\b/onnxconverter-common==1.14.0/g' requirements.txt
+
+#Build
+if ! (pip3.12 install -e . --no-build-isolation --no-deps) ; then
+    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    exit 1
+fi
+
+# Run test cases
+if ! (tox -e py3.12 --installpkg /onnx/wheelf/*.whl) ; then
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
     exit 2
@@ -271,8 +302,9 @@ else
     echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    exit 0
 fi
 
-cp /onnxruntime/build/Linux/Release/dist/*.whl "$CURRENT_DIR"
-exit 0
+
+
 
