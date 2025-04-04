@@ -722,7 +722,7 @@ fi
 
 #testing
 cd ..
-export LD_LIBRARY_PATH=${PYARROW_PREFIX}:${THRIFT_PREFIX}/lib:${UTF8PROC_PREFIX}/lib:${RE2_PREFIX}/lib:${LIBPROTO_INSTALL}/lib64:${GRPC_PREFIX}/lib:${ORC_PREFIX}/lib:${OpenBLASInstallPATH}/lib
+export LD_LIBRARY_PATH=${SNAPPY_PREFIX}/lib:${C_ARES_PREFIX}/lib:${THRIFT_PREFIX}/lib:${UTF8PROC_PREFIX}/lib:${RE2_PREFIX}/lib:${LIBPROTO_INSTALL}/lib64:${GRPC_PREFIX}/lib:${ORC_PREFIX}/lib:${OpenBLASInstallPATH}/lib
 
 pip install -r python/requirements-test.txt
 
