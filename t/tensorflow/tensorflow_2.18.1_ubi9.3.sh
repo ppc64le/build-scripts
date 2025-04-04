@@ -229,7 +229,6 @@ SRC_DIR=$(pwd)
 
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/t/tensorflow/tf_2.18.1_fix.patch
 git apply tf_2.18.1_fix.patch
-rm -rf tensorflow/*.bazelrc
 
 # Pick up additional variables defined from the conda build environment
 export PYTHON_BIN_PATH=$(which python3.12)
