@@ -29,7 +29,7 @@ yum install -y python python-pip python-devel wget git make python-devel xz-deve
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 SCRIPT_DIR=$(pwd)
-pip install ninja setuptools
+pip install ninja setuptools cmake==3.28.0
 
 
 # Installing lib like flex bison c-ares gflags rapidjson xsimd snappy libzstd
