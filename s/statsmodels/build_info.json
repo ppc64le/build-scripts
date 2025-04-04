@@ -1,0 +1,22 @@
+{
+    "maintainer": "kiranNukal",
+    "package_name": "statsmodels",
+    "github_url": "https://github.com/statsmodels/statsmodels.git",
+    "version": "v0.14.0",
+    "wheel_build" : true,
+    "default_branch": "main",
+    "package_dir": "s/statsmodels",
+    "build_script": "statsmodels_0.14.0_ubi_9.3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "v0.13.5": {
+      "build_script": "statsmodels_ubi_9.3.sh"
+    },
+    "v0.14.4": {
+      "build_script": "statsmodels_0.14.4_ubi_9.3.sh"
+    },
+    "*": {
+      "build_script": "statsmodels_0.14.0_ubi_9.3.sh"
+    }
+  }

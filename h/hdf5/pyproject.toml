@@ -1,0 +1,38 @@
+# Minimum requirements for the build system to execute.
+# Do not include sys,subprocess and os as they are default packages
+requires = [
+    "setuptools",
+    "wheel",
+]
+
+#Set build backend to setuptools
+build-backend = "setuptools.build_meta"
+
+#Project name an version
+[project]
+name = "hdf5"
+version = "{PACKAGE_VERSION}"
+requires-python = ">=3.10"
+
+#One line description
+description = "Provides hdf5"
+
+#Classifiers to improve pacakage discoverability
+classifiers = [
+  "Programming Language :: C++",
+]
+
+#Project URLs
+[project.urls]
+homepage = "https://github.com/HDFGroup/hdf5"
+upstream = "https://github.com/HDFGroup/hdf5/"
+
+#Find packages files in local folder, this is needed as we are not following standar directory structure of setuptools
+[tool.setuptools.packages.find]
+# scanning for namespace packages is true by default in pyproject.toml, so
+# # you do NOT need to include the following line.
+namespaces = true
+where = ["local"]
+
+[tool.setuptools.package-data]
+hdf5 = ["lib/*", "include/*", "bin/", "share/*"]

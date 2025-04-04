@@ -1,0 +1,16 @@
+{
+    "maintainer": "pranithraoibm",
+    "package_name": "tzdata",
+    "github_url": "https://github.com/python/tzdata",
+    "version": "2023.3",
+    "wheel_build": true,
+    "default_branch": "master",
+    "package_dir": "t/tzdata",
+    "build_script": "tzdata_ubi_9.3.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": false,
+    "*": {
+        "build_script": "tzdata_ubi_9.3.sh"
+    }
+}

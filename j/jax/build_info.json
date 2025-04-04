@@ -1,0 +1,16 @@
+{
+  "maintainer": "vinodk99",
+  "package_name": "jax",
+  "github_url": "https://github.com/jax-ml/jax",
+  "version": "jax-v0.4.7",
+  "wheel_build" : true,
+  "package_dir": "j/jax",
+  "default_branch": "main",
+  "build_script": "jax_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "jax_ubi_9.3.sh"
+  }
+}
