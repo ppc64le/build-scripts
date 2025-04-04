@@ -90,10 +90,10 @@ cd $SCRIPT_DIR
 
 
 echo "-----------------snappy installing----------------"
-git clone --recurse-submodules https://github.com/google/snappy.git
+git clone https://github.com/google/snappy.git
 cd snappy
-git submodule update --init --recursive
 git clone 1.2.2
+git submodule update --init --recursive
 
 mkdir -p local/snappy
 export SNAPPY_PREFIX=$(pwd)/local/snappy
