@@ -24,78 +24,105 @@ PACKAGE_VERSION=${1:-v4.6.0}
 PACKAGE_URL=https://github.com/microsoft/LightGBM.git
 PACKAGE=LightGBM
 PACKAGE_DIR=LightGBM/lightgbm-python
-CURRENT_DIR=$(pwd)
+yum install -y python python-pip python-devel wget git make python-devel xz-devel openssl-devel cmake zlib-devel libjpeg-devel gcc-toolset-13 cmake libevent libtool pkg-config  brotli-devel.ppc64le bzip2-devel lz4-devel glibc-devel glibc-static autoconf automake libtool krb5-devel atlas
 
-yum install -y wget
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
-dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
-mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
-
-echo "Installing dependencies..."
-yum install -y git make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel atlas atlas pkg-config freetype-devel libpng-devel pkgconf-pkg-config cython python3.12 python3.12-devel python3.12-pip gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran autoconf automake libtool krb5-devel bison flex ninja-build glibc-devel binutils c-ares-devel brotli-devel.ppc64le gflags-devel rapidjson-devel xsimd-devel bzip2-devel glibc-static
-
-ln -sf /usr/bin/python3.12 /usr/bin/python3
-ln -sf /usr/bin/pip3.12 /usr/bin/pip
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
+SCRIPT_DIR=$(pwd)
+pip install ninja setuptools
 
-echo "install and export path"
-yum install gcc-toolset-13 -y
-export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr
-export PATH=$GCC_HOME/bin:$PATH
-export CC=$GCC_HOME/bin/gcc
-export CXX=$GCC_HOME/bin/g++
-export CXX=/opt/rh/gcc-toolset-13/root/usr/bin/g++
-export CXXFLAGS="-g -std=c++11"
 
-# Enable gcc-toolset-13
-source /opt/rh/gcc-toolset-13/enable
-
-#Build and install cmake
-wget https://cmake.org/files/v3.28/cmake-3.28.0.tar.gz
-tar -zxvf cmake-3.28.0.tar.gz
-cd cmake-3.28.0
-./bootstrap
-make
-make install
-cd $CURRENT_DIR
-
-#Build OpenMPI from source
-echo ---------------"Downloading and building OpenMPI..."-----------------------------------------
-wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.6.tar.gz
-tar -xvf openmpi-5.0.6.tar.gz
-cd openmpi-5.0.6
-mkdir prefix
-export PREFIX=$(pwd)/prefix
-
-#Set environment variables for OpenMPI
-export LIBRARY_PATH="/usr/lib64"
-
-#Configure and build OpenMPI
-./configure --prefix=$PREFIX \
-    --disable-dependency-tracking \
-    --disable-shared \
-    --enable-static \
-    LDFLAGS="-static"
-echo "installing openmpi"
+# Installing lib like flex bison c-ares gflags rapidjson xsimd snappy libzstd
+echo "-----------flex installing------------------"
+wget https://github.com/westes/flex/releases/download/v2.6.4/flex-2.6.4.tar.gz
+tar -xvf flex-2.6.4.tar.gz
+cd flex-2.6.4
+./configure --prefix=/usr/local
 make -j$(nproc)
 make install
+cd $SCRIPT_DIR
 
-#Set OpenMPI paths
-export PATH=$PREFIX/bin:$PATH
-export LD_LIBRARY_PATH=$PREFIX/lib:$LD_LIBRARY_PATH
+echo "-------bison installing----------------------"
+wget https://ftp.gnu.org/gnu/bison/bison-3.8.2.tar.gz
+tar -xvf bison-3.8.2.tar.gz
+cd bison-3.8.2
+./configure --prefix=/usr/local
+make -j$(nproc)
+make install
+cd $SCRIPT_DIR
 
-#Navigate back to the root directory
-cd $CURRENT_DIR
+echo "------------ gflags installing-------------------"
+git clone https://github.com/gflags/gflags.git
+cd gflags
+mkdir build && cd build
+cmake ..
+make -j$(nproc)
+make install
+cd $SCRIPT_DIR
+
+echo "----------c-areas installing-----------------------"
+git clone https://github.com/c-ares/c-ares.git
+cd c-ares
+mkdir build && cd build
+cmake ..
+make -j$(nproc)
+make install
+cd $SCRIPT_DIR
+
+echo "----------------rapidjson installing------------------"
+git clone https://github.com/Tencent/rapidjson.git
+cd rapidjson
+mkdir build && cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
+make -j$(nproc)
+make install
+cd $SCRIPT_DIR
+
+echo "--------------xsimd installing-------------------------"
+git clone https://github.com/xtensor-stack/xsimd.git
+cd xsimd
+mkdir build && cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
+make -j$(nproc)
+make install
+cd $SCRIPT_DIR
+
+
+echo "-----------------snappy installing----------------"
+git clone https://github.com/google/snappy.git
+cd snappy
+git submodule update --init --recursive
+
+mkdir -p local/snappy
+export SNAPPY_PREFIX=$(pwd)/local/snappy
+mkdir build
+cd build
+
+cmake -DCMAKE_INSTALL_PREFIX=$SNAPPY_PREFIX \
+      -DBUILD_SHARED_LIBS=ON \
+      -DCMAKE_INSTALL_LIBDIR=lib \
+      ..
+make -j$(nproc)
+make install
+cd ..
+cd $SCRIPT_DIR
+
+
+echo "------------libzstd installing-------------------------"
+git clone https://github.com/facebook/zstd.git
+cd zstd
+make
+make install
+export ZSTD_HOME=/usr/local
+export CMAKE_PREFIX_PATH=$ZSTD_HOME
+export LD_LIBRARY_PATH=$ZSTD_HOME/lib64:$LD_LIBRARY_PATH
+cd $SCRIPT_DIR
+
+#Installing re2,orc utf8proc,boost_cpp,thrift_cpp,abseil_cpp,libprotobuf, grpc_cpp,openblas as dependencies
 
 
 #re2 install from sosurce
 echo "------------ re2 installing-------------------"
-
 
 git clone http://github.com/google/re2
 cd re2
@@ -112,7 +139,6 @@ export CPU_COUNT=`nproc`
 mkdir build-cmake
 pushd build-cmake
 
-
 cmake ${CMAKE_ARGS} -GNinja \
   -DCMAKE_PREFIX_PATH=$RE2_PREFIX \
   -DCMAKE_INSTALL_PREFIX="${RE2_PREFIX}" \
@@ -120,195 +146,48 @@ cmake ${CMAKE_ARGS} -GNinja \
   -DENABLE_TESTING=OFF \
   -DCMAKE_BUILD_TYPE=Release \
   -DBUILD_SHARED_LIBS=ON \
- ..
+  ..
 
- ninja -v install
-
- popd
-
-#Also do this installation to get .pc files. This duplicates the compilation
-#but gets us all necessary components without patching.
-
+  ninja -v install
+  popd
 make -j "${CPU_COUNT}" prefix=${RE2_PREFIX} shared-install
-cd $CURRENT_DIR
+cd $SCRIPT_DIR
+
+
 
 echo "------------ utf8proc installing-------------------"
 
 git clone https://github.com/JuliaStrings/utf8proc.git
-
 cd utf8proc
-
 git submodule update --init
-
 git checkout v2.6.1
 
 mkdir utf8proc_prefix
 export UTF8PROC_PREFIX=$(pwd)/utf8proc_prefix
 
-#Create build directory
+# Create build directory
 mkdir build
 cd build
 
-#Run cmake to configure the build
+# Run cmake to configure the build
 cmake -G "Unix Makefiles" \
   -DCMAKE_BUILD_TYPE="Release" \
   -DCMAKE_INSTALL_PREFIX="${UTF8PROC_PREFIX}" \
   -DCMAKE_POSITION_INDEPENDENT_CODE=1 \
- -DBUILD_SHARED_LIBS=1 \
- ..
-#Build and install
+  -DBUILD_SHARED_LIBS=1 \
+  ..
+# Build and install
 cmake --build .
 cmake --build . --target install
-cd $CURRENT_DIR
+cd $SCRIPT_DIR
 
-
-echo "-----------------boost_cpp installing-----------------------"
-
-
-git clone https://github.com/boostorg/boost
-cd boost
-git checkout boost-1.81.0
-git submodule update --init
-
-mkdir Boost_prefix
-export BOOST_PREFIX=$(pwd)/Boost_prefix
-
-INCLUDE_PATH="${BOOST_PREFIX}/include"
-LIBRARY_PATH="${BOOST_PREFIX}/lib"
-
-export CC=$(which gcc)
-export CXX=$(which g++)
-export target_platform=$(uname)-$(uname -m)
-CXXFLAGS="${CXXFLAGS} -fPIC"
-TOOLSET=gcc
-
-# http://www.boost.org/build/doc/html/bbv2/tasks/crosscompile.html
-cat <<EOF > tools/build/example/site-config.jam
-using ${TOOLSET} : : ${CXX} ;
-EOF
-
-LINKFLAGS="${LINKFLAGS} -L${LIBRARY_PATH}"
-
-CXXFLAGS="$(echo ${CXXFLAGS} | sed 's/ -march=[^ ]*//g' | sed 's/ -mcpu=[^ ]*//g' |sed 's/ -mtune=[^ ]*//g')" \
-CFLAGS="$(echo ${CFLAGS} | sed 's/ -march=[^ ]*//g' | sed 's/ -mcpu=[^ ]*//g' |sed 's/ -mtune=[^ ]*//g')" \
-   CXX=${CXX_FOR_BUILD:-${CXX}} CC=${CC_FOR_BUILD:-${CC}} ./bootstrap.sh \
-   --prefix="${BOOST_PREFIX}" \
-   --without-libraries=python \
-   --with-toolset=${TOOLSET} \
-   --with-icu="${BOOST_PREFIX}" || (cat bootstrap.log; exit 1)
-       ADDRESS_MODEL=64
-  ARCHITECTURE=power
-      ABI="sysv"
-       BINARY_FORMAT="elf"
-
-       export CPU_COUNT=$(nproc)
-
-./b2 -q \
-    variant=release \
-    address-model="${ADDRESS_MODEL}" \
-    architecture="${ARCHITECTURE}" \
-    binary-format="${BINARY_FORMAT}" \
-    abi="${ABI}" \
-    debug-symbols=off \
-    threading=multi \
-    runtime-link=shared \
-    link=shared \
-    toolset=${TOOLSET} \
-    include="${INCLUDE_PATH}" \
-    cxxflags="${CXXFLAGS} -Wno-deprecated-declarations" \
-   linkflags="${LINKFLAGS}" \
-   --layout=system \
-   -j"${CPU_COUNT}" \
-   install
-
-#Remove Python headers as we don't build Boost.Python.
-rm "${BOOST_PREFIX}/include/boost/python.hpp"
-rm -r "${BOOST_PREFIX}/include/boost/python"
-
-cd $CURRENT_DIR
-
-
-echo "------------thrift_cpp  installing-------------------"
-
-git clone https://github.com/apache/thrift
-cd thrift
-git checkout 0.21.0
-
-
-Source_DIR=$(pwd)
-
-
-mkdir thrit-prefix
-export THRIFT_PREFIX=$Source_DIR/thrit-prefix
-
-export BOOST_ROOT=${BOOST_PREFIX}
-export ZLIB_ROOT=/usr
-export LIBEVENT_ROOT=/usr
-
-export OPENSSL_ROOT=/usr
-export OPENSSL_ROOT_DIR=/usr
-
-./bootstrap.sh
-./configure --prefix=$THRIFT_PREFIX \
-   --with-python=no \
-   --with-py3=no \
-   --with-ruby=no \
-   --with-java=no \
-   --with-kotlin=no \
-   --with-erlang=no \
-   --with-nodejs=no \
-   --with-c_glib=no \
-   --with-haxe=no \
-   --with-rs=no \
-   --with-cpp=yes \
-   --with-PACKAGE=yes \
-   --with-zlib=$ZLIB_ROOT \
-   --with-libevent=$LIBEVENT_ROOT \
-   --with-boost=$BOOST_ROOT \
-   --with-openssl=$OPENSSL_ROOT \
-   --enable-tests=no \
-   --enable-tutorial=no
-
-make -j$(nproc)
-make install
-cd $CURRENT_DIR
-
-echo "------------ abseil_cpp installing-------------------"
-
+echo "------------ abseil_cpp cloning-------------------"
 
 ABSEIL_VERSION=20240116.2
 ABSEIL_URL="https://github.com/abseil/abseil-cpp"
-mkdir $SCRIPT_DIR/abseil-prefix
 
-ABSEIL_PREFIX=$SCRIPT_DIR/abseil-prefix
 
 git clone $ABSEIL_URL -b $ABSEIL_VERSION
-cd abseil-cpp
-
-SOURCE_DIR=$(pwd)
-
-mkdir -p $SOURCE_DIR/local/abseilcpp
-ABSEIL_CPP=$SOURCE_DIR/local/abseilcpp
-
-echo "abseil-cpp build starts"
-mkdir build
-cd build
-
-cmake -G Ninja \
-    ${CMAKE_ARGS} \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_CXX_STANDARD=17 \
-    -DCMAKE_INSTALL_LIBDIR=lib \
-    -DCMAKE_INSTALL_PREFIX=${ABSEIL_PREFIX} \
-    -DBUILD_SHARED_LIBS=ON \
-    -DABSL_PROPAGATE_CXX_STD=ON \
-    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-   ..
-cmake --build .
-cmake --install .
-
-cd $CURRENT_DIR
-cp -r  $ABSEIL_PREFIX/* $ABSEIL_CPP/
 
 
 echo "------------ libprotobuf installing-------------------"
@@ -345,90 +224,23 @@ cmake -G "Ninja" \
     -Dprotobuf_BUILD_LIBUPB=OFF \
     -Dprotobuf_BUILD_SHARED_LIBS=ON \
     -Dprotobuf_ABSL_PROVIDER="module" \
-    -DCMAKE_PREFIX_PATH=$ABSEIL_CPP \
     -Dprotobuf_JSONCPP_PROVIDER="package" \
     -Dprotobuf_USE_EXTERNAL_GTEST=OFF \
     ..
 
 cmake --build . --verbose
-
 cmake --install .
-
-cd $CURRENT_DIR
-
-
-echo "------------ grpc_cpp installing-------------------"
-
-
-git clone https://github.com/grpc/grpc
-
-cd grpc
-git checkout v1.68.0
-
-git submodule update --init
-
-mkdir grpc-prefix
-export GRPC_PREFIX=$(pwd)/grpc-prefix
-
-AR=`which ar`
-RANLIB=`which ranlib`
-
-
-PROTOC_BIN=$LIBPROTO_INSTALL/bin/protoc
-
-PROTOBUF_SRC=$LIBPROTO_INSTALL
-
-export CMAKE_PREFIX_PATH="$PREFIX;$RE2_PREFIX;$LIBPROTO_INSTALL"
-
-
-export LD_LIBRARY_PATH=$PREFIX/lib:${LD_LIBRARY_PATH}
-
-target_platform=$(uname)-$(uname -m)
-
-if [[ "${target_platform}" == osx* ]]; then
-  export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_CXX_STANDARD=14"
-else
-  export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_CXX_STANDARD=17"
-fi
-
-
-mkdir -p build-cpp
-pushd build-cpp
-
-
-cmake ${CMAKE_ARGS} ..  \
-      -GNinja \
-      -DBUILD_SHARED_LIBS=ON \
-      -DCMAKE_BUILD_TYPE=Release \
-      -DCMAKE_INSTALL_PREFIX=$GRPC_PREFIX \
-      -DgRPC_CARES_PROVIDER="package" \
-      -DgRPC_GFLAGS_PROVIDER="package" \
-      -DgRPC_PROTOBUF_PROVIDER="package" \
-      -DProtobuf_ROOT=$PROTOBUF_SRC \
-      -DgRPC_SSL_PROVIDER="package" \
-      -DgRPC_ZLIB_PROVIDER="package" \
-      -DgRPC_ABSL_PROVIDER="package" \
-      -DgRPC_RE2_PROVIDER="package" \
-      -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH \
-      -DCMAKE_AR=${AR} \
-      -DCMAKE_RANLIB=${RANLIB} \
-      -DCMAKE_VERBOSE_MAKEFILE=ON \
-      -DProtobuf_PROTOC_EXECUTABLE=$PROTOC_BIN
-
-
-ninja install -v
-
-popd
-
-cd $CURRENT_DIR
-
+cd $SCRIPT_DIR
 
 echo "------------ orc installing-------------------"
 
 git clone https://github.com/apache/orc
 cd orc
 git checkout v2.0.3
-yum install -y snappy-devel libzstd-devel lz4-devel
+
+
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/o/orc/orc.patch
+git apply orc.patch
 
 mkdir orc_prefix
 export ORC_PREFIX=$(pwd)/orc_prefix
@@ -437,8 +249,8 @@ mkdir -p build
 cd build
 
 export PROTOBUF_PREFIX=$LIBPROTO_INSTALL
-export CMAKE_PREFIX_PATH=$ABSEIL_PREFIX
-export LD_LIBRARY_PATH=$ABSEIL_PREFIX/lib
+export CMAKE_PREFIX_PATH=$LIBPROTO_INSTALL
+export LD_LIBRARY_PATH=$LIBPROTO_INSTALL/lib64
 
 export CC=$(which gcc)
 export CXX=$(which g++)
@@ -447,9 +259,12 @@ export GXX=$CXX
 
 export HOST=$(uname)-$(uname -m)
 
+
+
 export HOST=$(uname)-$(uname -m)
 
 CPPFLAGS="${CPPFLAGS} -Wl,-rpath,$VIRTUAL_ENV_PATH/**/lib"
+
 
 declare -a _CMAKE_EXTRA_CONFIG
 if [[ "$CONDA_BUILD_CROSS_COMPILATION" == 1 ]]; then
@@ -479,12 +294,12 @@ cmake ${CMAKE_ARGS} \
     -DBUILD_JAVA=False \
     -DLZ4_HOME=/usr \
     -DZLIB_HOME=/usr \
-    -DZSTD_HOME=/usr \
+    -DZSTD_HOME=/usr/local \
     -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
     -DProtobuf_ROOT=$PROTOBUF_PREFIX \
     -DPROTOBUF_HOME=$PROTOBUF_PREFIX \
     -DPROTOBUF_EXECUTABLE=$PROTOBUF_PREFIX/bin/protoc \
-    -DSNAPPY_HOME=/usr \
+    -DSNAPPY_HOME=$SNAPPY_PREFIX \
     -DBUILD_LIBHDFSPP=NO \
     -DBUILD_CPP_TESTS=OFF \
     -DCMAKE_INSTALL_PREFIX=$ORC_PREFIX \
@@ -498,7 +313,177 @@ cmake ${CMAKE_ARGS} \
 ninja
 ninja install
 
-cd $CURRENT_DIR
+cd $SCRIPT_DIR
+
+
+echo "-----------------boost_cpp installing-----------------------"
+
+git clone https://github.com/boostorg/boost
+cd boost
+git checkout boost-1.81.0
+git submodule update --init
+
+mkdir Boost_prefix
+export BOOST_PREFIX=$(pwd)/Boost_prefix
+
+INCLUDE_PATH="${BOOST_PREFIX}/include"
+LIBRARY_PATH="${BOOST_PREFIX}/lib"
+
+export CC=$(which gcc)
+export CXX=$(which g++)
+export target_platform=$(uname)-$(uname -m)
+CXXFLAGS="${CXXFLAGS} -fPIC"
+TOOLSET=gcc
+
+ # http://www.boost.org/build/doc/html/bbv2/tasks/crosscompile.html
+cat <<EOF > tools/build/example/site-config.jam
+using ${TOOLSET} : : ${CXX} ;
+EOF
+
+LINKFLAGS="${LINKFLAGS} -L${LIBRARY_PATH}"
+
+CXXFLAGS="$(echo ${CXXFLAGS} | sed 's/ -march=[^ ]*//g' | sed 's/ -mcpu=[^ ]*//g' |sed 's/ -mtune=[^ ]*//g')" \
+CFLAGS="$(echo ${CFLAGS} | sed 's/ -march=[^ ]*//g' | sed 's/ -mcpu=[^ ]*//g' |sed 's/ -mtune=[^ ]*//g')" \
+    CXX=${CXX_FOR_BUILD:-${CXX}} CC=${CC_FOR_BUILD:-${CC}} ./bootstrap.sh \
+    --prefix="${BOOST_PREFIX}" \
+    --without-libraries=python \
+    --with-toolset=${TOOLSET} \
+    --with-icu="${BOOST_PREFIX}" || (cat bootstrap.log; exit 1)
+         ADDRESS_MODEL=64
+    ARCHITECTURE=power
+        ABI="sysv"
+         BINARY_FORMAT="elf"
+
+         export CPU_COUNT=$(nproc)
+
+./b2 -q \
+    variant=release \
+    address-model="${ADDRESS_MODEL}" \
+    architecture="${ARCHITECTURE}" \
+    binary-format="${BINARY_FORMAT}" \
+    abi="${ABI}" \
+    debug-symbols=off \
+    threading=multi \
+    runtime-link=shared \
+    link=shared \
+    toolset=${TOOLSET} \
+    include="${INCLUDE_PATH}" \
+    cxxflags="${CXXFLAGS} -Wno-deprecated-declarations" \
+    linkflags="${LINKFLAGS}" \
+    --layout=system \
+    -j"${CPU_COUNT}" \
+    install
+
+# Remove Python headers as we don't build Boost.Python.
+rm "${BOOST_PREFIX}/include/boost/python.hpp"
+rm -r "${BOOST_PREFIX}/include/boost/python"
+cd $SCRIPT_DIR
+
+
+echo "------------thrift_cpp  installing-------------------"
+
+git clone https://github.com/apache/thrift
+cd thrift
+git checkout 0.21.0
+
+Source_DIR=$(pwd)
+
+mkdir thrit-prefix
+export THRIFT_PREFIX=$Source_DIR/thrit-prefix
+
+export BOOST_ROOT=${BOOST_PREFIX}
+export ZLIB_ROOT=/usr
+export LIBEVENT_ROOT=/usr
+
+export OPENSSL_ROOT=/usr
+export OPENSSL_ROOT_DIR=/usr
+
+./bootstrap.sh
+./configure --prefix=$THRIFT_PREFIX \
+    --with-python=no \
+    --with-py3=no \
+    --with-ruby=no \
+    --with-java=no \
+    --with-kotlin=no \
+    --with-erlang=no \
+    --with-nodejs=no \
+    --with-c_glib=no \
+    --with-haxe=no \
+    --with-rs=no \
+    --with-cpp=yes \
+    --with-PACKAGE=yes \
+    --with-zlib=$ZLIB_ROOT \
+    --with-libevent=$LIBEVENT_ROOT \
+    --with-boost=$BOOST_ROOT \
+    --with-openssl=$OPENSSL_ROOT \
+    --enable-tests=no \
+    --enable-tutorial=no
+
+make -j$(nproc)
+make install
+cd $SCRIPT_DIR
+
+
+
+
+echo "------------ grpc_cpp installing-------------------"
+
+git clone https://github.com/grpc/grpc
+cd grpc
+git checkout v1.68.0
+
+git submodule update --init
+
+mkdir grpc-prefix
+export GRPC_PREFIX=$(pwd)/grpc-prefix
+
+AR=`which ar`
+RANLIB=`which ranlib`
+
+PROTOC_BIN=$LIBPROTO_INSTALL/bin/protoc
+PROTOBUF_SRC=$LIBPROTO_INSTALL
+
+export CMAKE_PREFIX_PATH="$C_ARES_PREFIX;$RE2_PREFIX;$LIBPROTO_INSTALL"
+
+export LD_LIBRARY_PATH=$LIBPROTO_INSTALL/lib64:${LD_LIBRARY_PATH}
+
+target_platform=$(uname)-$(uname -m)
+
+if [[ "${target_platform}" == osx* ]]; then
+  export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_CXX_STANDARD=14"
+else
+  export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_CXX_STANDARD=17"
+fi
+
+
+mkdir -p build-cpp
+pushd build-cpp
+cmake ${CMAKE_ARGS} ..  \
+      -GNinja \
+      -DBUILD_SHARED_LIBS=ON \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_INSTALL_PREFIX=$GRPC_PREFIX \
+      -DgRPC_CARES_PROVIDER="package" \
+      -DgRPC_GFLAGS_PROVIDER="package" \
+      -DgRPC_PROTOBUF_PROVIDER="package" \
+      -DProtobuf_ROOT=$PROTOBUF_SRC \
+      -DgRPC_SSL_PROVIDER="package" \
+      -DgRPC_ZLIB_PROVIDER="package" \
+      -DgRPC_ABSL_PROVIDER="package" \
+      -DgRPC_RE2_PROVIDER="package" \
+      -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH \
+      -DCMAKE_AR=${AR} \
+      -DCMAKE_RANLIB=${RANLIB} \
+      -DCMAKE_VERBOSE_MAKEFILE=ON \
+      -DProtobuf_PROTOC_EXECUTABLE=$PROTOC_BIN
+
+ninja install -v
+popd
+
+cd $SCRIPT_DIR
+
+
+
 
 echo "---------------------openblas installing---------------------"
 
@@ -564,9 +549,9 @@ sed -i "s|includedir=local/openblas/include|includedir=${OpenBLASInstallPATH}/in
 export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
 export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
 
-cd $CURRENT_DIR
-
+cd $SCRIPT_DIR
 echo "------------openblas installed--------------------"
+
 
 echo "-----------------installing pyarrow----------------------"
 
@@ -585,13 +570,8 @@ export PYARROW_PREFIX=$(pwd)/pyarrow_prefix
 export ARROW_HOME=$PYARROW_PREFIX
 export target_platform=$(uname)-$(uname -m)
 export CXX=$(which g++)
-
-export CMAKE_PREFIX_PATH=$ABSEIL_PREFIX:$LIBPROTO_INSTALL:$RE2_PREFIX:$GRPC_PREFIX:$ORC_PREFIX:$BOOST_PREFIX:${UTF8PROC_PREFIX}:$THRIFT_PREFIX:/usr
-
-export LD_LIBRARY_PATH=$ABSEIL_PREFIX/lib:$GRPC_PREFIX/lib:$LIBPROTO_INSTALL/lib64
-
-
-
+export CMAKE_PREFIX_PATH=$C_ARES_PREFIX:$LIBPROTO_INSTALL:$RE2_PREFIX:$GRPC_PREFIX:$ORC_PREFIX:$BOOST_PREFIX:${UTF8PROC_PREFIX}:$THRIFT_PREFIX:$SNAPPY_PREFIX:/usr
+export LD_LIBRARY_PATH=$GRPC_PREFIX/lib:$LIBPROTO_INSTALL/lib64
 
 mkdir cpp/build
 pushd cpp/build
@@ -656,14 +636,12 @@ cmake \
     -DARROW_DATASET=ON \
     -DARROW_DEPENDENCY_SOURCE=SYSTEM \
     -DARROW_FLIGHT=ON \
-    -DARROW_FLIGHT_REQUIRE_TLSCREDENTIALSOPTIONS=ON \
     -DARROW_HDFS=ON \
     -DARROW_JEMALLOC=ON \
     -DARROW_MIMALLOC=ON \
     -DARROW_ORC=ON \
     -DARROW_PACKAGE_PREFIX=$PYARROW_PREFIX \
     -DARROW_PARQUET=ON \
-    -DARROW_PLASMA=ON \
     -DARROW_PYTHON=ON \
     -DARROW_S3=OFF \
     -DARROW_WITH_BROTLI=ON \
@@ -676,25 +654,13 @@ cmake \
     -DCMAKE_BUILD_TYPE=release \
     -DCMAKE_INSTALL_LIBDIR=lib \
     -DCMAKE_INSTALL_PREFIX=$ARROW_HOME \
-    -DLLVM_TOOLS_BINARY_DIR=/usr/bin \
     -DPYTHON_EXECUTABLE=python \
     -DPython3_EXECUTABLE=python \
-    -DProtobuf_DIR=${LIBPROTO_INSTALL} \
-    -DProtobuf_LIBRARIES=${LIBPROTO_INSTALL}/lib64 \
-    -DProtobuf_INCLUDE_DIR=${LIBPROTO_INSTALL}/include \
     -DProtobuf_PROTOC_EXECUTABLE=${LIBPROTO_INSTALL}/bin/protoc \
-    -DORC_LIBRARIES=${ORC_PREFIX}/lib \
     -DORC_INCLUDE_DIR=${ORC_PREFIX}/include \
     -DgRPC_DIR=${GRPC_PREFIX} \
-    -DGRPCPP_IMPORTED_LOCATION=${GRPC_PREFIX}/lib/ \
-    -DGRPC_CPP_PLUGIN=${GRPC_PREFIX}/bin/ \
     -DBoost_DIR=${BOOST_PREFIX} \
-    -DBoost_LIB=${BOOST_PREFIX}/lib/ \
     -DBoost_INCLUDE_DIR=${BOOST_PREFIX}/include/ \
-    -DTHRIFT_DIR=${THRIFT_PREFIX} \
-    -DTHRIFT_LIB=${THRIFT_PREFIX}/lib \
-    -DTHRIFT_INCLUDE_DIR=${THRIFT_PREFIX}/include \
-    -Dutf8proc_DIR=${UTF8PROC_PREFIX} \
     -Dutf8proc_LIB=${UTF8PROC_PREFIX}/lib/libutf8proc.so ${UTF8PROC_PREFIX}/lib/libutf8proc.so.2 ${UTF8PROC_PREFIX}/lib/libutf8proc.so.2.4.1 \
     -Dutf8proc_INCLUDE_DIR=${UTF8PROC_PREFIX}/include \
     -DCMAKE_AR=${AR} \
@@ -704,20 +670,16 @@ cmake \
     ..
 
 ninja install
-
 popd
 
-cd $CURRENT_DIR
+cd $SCRIPT_DIR
 
-echo "installing prerequisite" ...
+#installing prerequisite
 pip install setuptools-scm Cython
-
-
 pip install numpy==2.0.2
 
 export PYARROW_BUNDLE_ARROW_CPP=1
 export LD_LIBRARY_PATH=${ARROW_HOME}/lib:${LD_LIBRARY_PATH}
-
 
 export build_type=cpu
 cd arrow
@@ -749,11 +711,38 @@ else
 fi
 
 cd python
-echo "install pyarrow"...
+
 pip install .
 cd ..
-cd $CURRENT_DIR
-export LD_LIBRARY_PATH=${PYARROW_PREFIX}:${THRIFT_PREFIX}/lib:${UTF8PROC_PREFIX}/lib:${RE2_PREFIX}/lib:${LIBPROTO_INSTALL}/lib64:${GRPC_PREFIX}/lib:${ORC_PREFIX}/lib:${OpenBLASInstallPATH}/lib
+export LD_LIBRARY_PATH=${SNAPPY_PREFIX}/lib:${C_ARES_PREFIX}/lib:${THRIFT_PREFIX}/lib:${UTF8PROC_PREFIX}/lib:${RE2_PREFIX}/lib:${LIBPROTO_INSTALL}/lib64:${GRPC_PREFIX}/lib:${ORC_PREFIX}/lib:${OpenBLASInstallPATH}/lib
+
+#Build OpenMPI from source
+echo ---------------"Downloading and building OpenMPI..."-----------------------------------------
+wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.6.tar.gz
+tar -xvf openmpi-5.0.6.tar.gz
+cd openmpi-5.0.6
+mkdir prefix
+export PREFIX=$(pwd)/prefix
+
+#Set environment variables for OpenMPI
+export LIBRARY_PATH="/usr/lib64"
+
+#Configure and build OpenMPI
+./configure --prefix=$PREFIX \
+    --disable-dependency-tracking \
+    --disable-shared \
+    --enable-static \
+    LDFLAGS="-static"
+echo "installing openmpi"
+make -j$(nproc)
+make install
+
+#Set OpenMPI paths
+export PATH=$PREFIX/bin:$PATH
+export LD_LIBRARY_PATH=$PREFIX/lib:$LD_LIBRARY_PATH
+
+#Navigate back to the root directory
+cd $SCRIPT_DIR
 
 echo ----------"clone lightgbm repo"---------
 echo "Clone the repository..."
@@ -767,7 +756,6 @@ git checkout $PACKAGE_VERSION
 
 echo "installing scipy.."
 pip install scipy
-
 echo "installling pytz..."
 pip install pytz
 echo "installing pytest...."
@@ -810,7 +798,7 @@ export LD_LIBRARY_PATH=/utf8proc/utf8proc_prefix/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/protobuf/local/libprotobuf/lib64:$LD_LIBRARY_PATH
 
 echo "Running build with MPI condition..."
-python3 -m build --wheel --config-setting=cmake.define.USE_MPI=ON --outdir="$CURRENT_DIR"
+python3 -m build --wheel --config-setting=cmake.define.USE_MPI=ON --outdir="$SCRIPT_DIR"
 
 echo "installing package ..."
 if ! (pip install --no-deps .) ; then
