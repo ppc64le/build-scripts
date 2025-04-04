@@ -30,51 +30,71 @@ PACKAGE_URL=https://github.com/grpc/grpc
 #installing dependencies
 pip install --upgrade cmake pip setuptools wheel ninja packaging pytest
 
+
+echo "----------Installing c-ares----------------"
 #Building c-areas
 git clone https://github.com/c-ares/c-ares.git
 cd c-ares
+git checkout cares-1_19_1
+
+
+target_platform=$(uname)-$(uname -m)
+AR=$(which ar)
+PKG_NAME=c-ares
+
+mkdir -p c_ares_prefix
+export C_ARES_PREFIX=$(pwd)/c_ares_prefix
+
+echo "Building ${PKG_NAME}."
+
+# Isolate the build.
 mkdir build && cd build
-cmake ..
-make -j$(nproc)
-make install
+
+if [[ "$PKG_NAME" == *static ]]; then
+  CARES_STATIC=ON
+  CARES_SHARED=OFF
+else
+  CARES_STATIC=OFF
+  CARES_SHARED=ON
+fi
+
+if [[ "${target_platform}" == Linux-* ]]; then
+  CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_AR=${AR}"
+fi
+
+pip install cmake==3.30.2
+
+# Generate the build files.
+echo "Generating the build files..."
+cmake ${CMAKE_ARGS} .. \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_INSTALL_PREFIX="$C_ARES_PREFIX" \
+      -DCARES_STATIC=${CARES_STATIC} \
+      -DCARES_SHARED=${CARES_SHARED} \
+      -DCARES_INSTALL=ON \
+      -DCMAKE_INSTALL_LIBDIR=lib \
+      -GNinja
+      #${SRC_DIR}
+
+# Build.
+echo "Building..."
+ninja || exit 1
+
+# Installing
+echo "Installing..."
+ninja install || exit 1
+
 cd $SCRIPT_DIR
+
 echo "----------c-areas installed-----------------------"
 
-#Building abseil-cpp
-ABSEIL_VERSION=20240116.2
-ABSEIL_URL="https://github.com/abseil/abseil-cpp"
-mkdir $SCRIPT_DIR/abseil-prefix
-PREFIX=$SCRIPT_DIR/abseil-prefix
+#cloning abseil-cpp
+ ABSEIL_VERSION=20240116.2
+ ABSEIL_URL="https://github.com/abseil/abseil-cpp"
 
-git clone $ABSEIL_URL -b $ABSEIL_VERSION
-cd abseil-cpp
+ git clone $ABSEIL_URL -b $ABSEIL_VERSION
 
-SOURCE_DIR=$(pwd)
-
-mkdir -p $SOURCE_DIR/local/abseilcpp
-ABSEIL_CPP=$SOURCE_DIR/local/abseilcpp
-
-echo "abseil-cpp build starts"
-mkdir build
-cd build
-
-cmake -G Ninja \
-    ${CMAKE_ARGS} \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_CXX_STANDARD=17 \
-    -DCMAKE_INSTALL_LIBDIR=lib \
-    -DCMAKE_INSTALL_PREFIX=${PREFIX} \
-    -DBUILD_SHARED_LIBS=ON \
-    -DABSL_PROPAGATE_CXX_STD=ON \
-    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-   ..
-cmake --build .
-cmake --install .
-
-cd $SCRIPT_DIR
-cp -r  $PREFIX/* $ABSEIL_CPP/
-
-echo "------------abseil-cpp installed--------------"
+ echo "------------abseil-cpp cloned--------------"
 
 #building libprotobuf
 export C_COMPILER=$(which gcc)
@@ -108,7 +128,6 @@ cmake -G "Ninja" \
     -Dprotobuf_BUILD_LIBUPB=OFF \
     -Dprotobuf_BUILD_SHARED_LIBS=ON \
     -Dprotobuf_ABSL_PROVIDER="module" \
-    -DCMAKE_PREFIX_PATH=$ABSEIL_CPP \
     -Dprotobuf_JSONCPP_PROVIDER="package" \
     -Dprotobuf_USE_EXTERNAL_GTEST=OFF \
     ..
@@ -141,7 +160,7 @@ cmake ${CMAKE_ARGS} -GNinja \
   -DCMAKE_BUILD_TYPE=Release \
   -DBUILD_SHARED_LIBS=ON \
   ..
-  
+
   ninja -v install
   popd
 
@@ -166,9 +185,9 @@ RANLIB=`which ranlib`
 PROTOC_BIN=$LIBPROTO_INSTALL/bin/protoc
 PROTOBUF_SRC=$LIBPROTO_INSTALL
 
-export CMAKE_PREFIX_PATH="$PREFIX;$RE2_PREFIX;$LIBPROTO_INSTALL"
+export CMAKE_PREFIX_PATH="$C_ARES_PREFIX;$RE2_PREFIX;$LIBPROTO_INSTALL"
 
-export LD_LIBRARY_PATH=$PREFIX/lib:${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH=$LIBPROTO_INSTALL/lib64:${LD_LIBRARY_PATH}
 
 target_platform=$(uname)-$(uname -m)
 
