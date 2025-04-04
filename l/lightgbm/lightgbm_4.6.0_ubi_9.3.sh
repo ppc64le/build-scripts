@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-v4.6.0}
 PACKAGE_URL=https://github.com/microsoft/LightGBM.git
 PACKAGE=LightGBM
 PACKAGE_DIR=LightGBM/lightgbm-python
-yum install -y python python-pip python-devel wget git make python-devel xz-devel openssl-devel cmake zlib-devel libjpeg-devel gcc-toolset-13 cmake libevent libtool pkg-config  brotli-devel.ppc64le bzip2-devel lz4-devel glibc-devel glibc-static autoconf automake libtool krb5-devel atlas
+yum install -y python python-pip python-devel wget git make python-devel xz-devel openssl-devel zlib-devel libjpeg-devel gcc-toolset-13 cmake libevent libtool pkg-config  brotli-devel.ppc64le bzip2-devel lz4-devel glibc-devel glibc-static autoconf automake libtool krb5-devel atlas
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
