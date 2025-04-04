@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e 
+set -ex 
 
 PACKAGE_NAME=tensorflow
 PACKAGE_VERSION=${1:-v2.18.1}
@@ -249,7 +249,7 @@ CPU_TUNE_OPTION=${BUILD_COPT}${CPU_TUNE_FRAG}
 CPU_TUNE_HOST_OPTION=${BUILD_HOST_COPT}${CPU_TUNE_FRAG}
 
 USE_MMA=0
-
+echo "--------------------------------Bazelrc dir : ${BAZEL_RC_DIR}----------------------------------"
 TENSORFLOW_PREFIX=/install-deps/tensorflow
 
 cat > $BAZEL_RC_DIR/python_configure.bazelrc << EOF
@@ -285,16 +285,19 @@ build --verbose_failures
 build --spawn_strategy=standalone
 EOF
 
+echo "----------------------------------Created bazelrc-----------------------------------"
 
 export BUILD_TARGET="//tensorflow/tools/pip_package:wheel //tensorflow/tools/lib_package:libtensorflow //tensorflow:libtensorflow_cc${SHLIB_EXT}"
 
 #Install
-if ! (bazel --bazelrc=/tensorflow/tensorflow/tensorflow.bazelrc build --local_cpu_resources=HOST_CPUS*0.50 --local_ram_resources=HOST_RAM*0.50 --config=opt ${BUILD_TARGET}) ; then  
+if ! (bazel --bazelrc=$BAZEL_RC_DIR/tensorflow.bazelrc build --local_cpu_resources=HOST_CPUS*0.50 --local_ram_resources=HOST_RAM*0.50 --config=opt ${BUILD_TARGET}) ; then  
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
+
+echo "-------------------------------tensroflow installation successful-------------------------------------"
 
 #copying .so and .a files into local/tensorflow/lib
 mkdir -p $SRC_DIR/tensorflow_pkg
