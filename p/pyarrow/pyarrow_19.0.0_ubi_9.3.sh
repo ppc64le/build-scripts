@@ -18,16 +18,7 @@
 # ----------------------------------------------------------------------------
 
 
-yum install -y wget
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
-dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
-mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
-
-yum install -y python python-pip python-devel git make  python-devel  openssl-devel cmake zlib-devel libjpeg-devel gcc-toolset-13 cmake libevent libtool flex bison  pkg-config c-ares-devel brotli-devel.ppc64le gflags-devel rapidjson-devel xsimd-devel bzip2-devel
+yum install -y python python-pip python-devel wget git make  python-devel  openssl-devel cmake zlib-devel libjpeg-devel gcc-toolset-13 cmake libevent libtool pkg-config  brotli-devel.ppc64le bzip2-devel lz4-devel 
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
@@ -35,13 +26,91 @@ PACKAGE_NAME=pyarrow
 PACKAGE_DIR=arrow
 PACKAGE_VERSION=${1:-apache-arrow-19.0.0}
 PACKAGE_URL=https://github.com/apache/arrow
-
 version=19.0.0
 
 SCRIPT_DIR=$(pwd)
-PARAMETER_CONFIG_FILE=$1
-
 pip install ninja setuptools
+
+
+# Installing flex bison c-ares gflags rapidjson xsimd snappy libzstd
+echo "-----------flex installing------------------"
+wget https://github.com/westes/flex/releases/download/v2.6.4/flex-2.6.4.tar.gz
+tar -xvf flex-2.6.4.tar.gz
+cd flex-2.6.4
+./configure --prefix=/usr/local
+make -j$(nproc)
+make install
+cd $SCRIPT_DIR 
+
+echo "-------bison installing----------------------"
+wget https://ftp.gnu.org/gnu/bison/bison-3.8.2.tar.gz
+tar -xvf bison-3.8.2.tar.gz
+cd bison-3.8.2
+./configure --prefix=/usr/local
+make -j$(nproc)
+make install
+cd $SCRIPT_DIR
+ 
+echo "------------ gflags installing-------------------"
+git clone https://github.com/gflags/gflags.git
+cd gflags
+mkdir build && cd build
+cmake ..
+make -j$(nproc)
+make install
+cd $SCRIPT_DIR 
+
+echo "----------c-areas installing-----------------------"
+git clone https://github.com/c-ares/c-ares.git
+cd c-ares
+mkdir build && cd build
+cmake ..
+make -j$(nproc)
+make install
+cd $SCRIPT_DIR 
+
+echo "----------------rapidjson installing------------------"
+git clone https://github.com/Tencent/rapidjson.git
+cd rapidjson
+mkdir build && cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
+make -j$(nproc)
+make install
+cd $SCRIPT_DIR 
+
+echo "--------------xsimd installing-------------------------"
+git clone https://github.com/xtensor-stack/xsimd.git
+cd xsimd
+mkdir build && cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
+make -j$(nproc)
+make install
+cd $SCRIPT_DIR 
+
+
+echo "-----------------snappy installing----------------"
+git clone --recurse-submodules https://github.com/google/snappy.git
+cd snappy
+git submodule update --init --recursive
+mkdir build && cd build
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local ..
+make -j$(nproc)
+make install
+cd $SCRIPT_DIR
+export SNAPPY_HOME=/usr/local
+export CMAKE_PREFIX_PATH=$SNAPPY_HOME
+export LD_LIBRARY_PATH=$SNAPPY_HOME/lib64:$LD_LIBRARY_PATH
+
+echo "------------libzstd installing-------------------------"
+git clone https://github.com/facebook/zstd.git
+cd zstd
+make
+make install
+export ZSTD_HOME=/usr/local
+export CMAKE_PREFIX_PATH=$ZSTD_HOME
+export LD_LIBRARY_PATH=$ZSTD_HOME/lib64:$LD_LIBRARY_PATH
+cd $SCRIPT_DIR
+
 #Installing re2,orc utf8proc,boost_cpp,thrift_cpp,abseil_cpp,libprotobuf, grpc_cpp,openblas as dependencies
 
 
@@ -62,7 +131,6 @@ export CPU_COUNT=`nproc`
 
 mkdir build-cmake
 pushd build-cmake
-
 
 cmake ${CMAKE_ARGS} -GNinja \
   -DCMAKE_PREFIX_PATH=$RE2_PREFIX \
@@ -365,7 +433,7 @@ echo "------------ orc installing-------------------"
 git clone https://github.com/apache/orc
 cd orc
 git checkout v2.0.3
-yum install -y snappy-devel libzstd-devel lz4-devel 
+
 
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/o/orc/orc.patch
 git apply orc.patch
