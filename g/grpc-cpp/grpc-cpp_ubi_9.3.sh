@@ -17,15 +17,17 @@
 #
 # ----------------------------------------------------------------------------
 
-yum install -y make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel patch python python-devel ninja-build gcc-toolset-13  pkg-config 
-
-export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-SCRIPT_DIR=$(pwd)
+set -e
 
 PACKAGE_NAME=grpc-cpp
 PACKAGE_DIR=$SCRIPT_DIR
 PACKAGE_VERSION=${1:-v1.68.0}
 PACKAGE_URL=https://github.com/grpc/grpc
+
+yum install -y make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel patch python python-devel ninja-build gcc-toolset-13  pkg-config 
+
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+SCRIPT_DIR=$(pwd)
 
 #installing dependencies
 pip install --upgrade cmake pip setuptools wheel ninja packaging pytest
@@ -235,7 +237,13 @@ if ! pip install . ; then
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
+else
+    echo "------------------$PACKAGE_NAME:Install_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_Success"
+    exit 0
 fi
+
 
 echo "Build and installation completed successfully."
 echo "There are no test cases available. Skipping the test cases."
