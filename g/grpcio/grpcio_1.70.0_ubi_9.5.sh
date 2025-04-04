@@ -59,10 +59,6 @@ if [ $? == 0 ]; then
      echo "$PACKAGE_VERSION $PACKAGE_NAME"
      echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Test_Success"
 
-     # Deactivate python environment (grpcio-env)
-     deactivate
-
-     exit 0
 else
      echo "------------------$PACKAGE_NAME::Test_Fail-------------------------"
      echo "$PACKAGE_VERSION $PACKAGE_NAME"
