@@ -274,6 +274,6 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
 fi
 
-cp /onnxruntime/build/Linux/Release/dist/*.whl "$CURRENT_DIR"
+cp $CURRENT_DIR/onnxruntime/build/Linux/Release/dist/*.whl "$CURRENT_DIR"
 exit 0
 
