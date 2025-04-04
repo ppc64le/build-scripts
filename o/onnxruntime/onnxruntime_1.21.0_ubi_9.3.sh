@@ -26,7 +26,7 @@ WORK_DIR=$(pwd)
 CURRENT_DIR=$(pwd)
 
 echo "Installing dependencies..."
-yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3.12 python3.12-devel python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
+yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3-devel python3.12 python3.12-devel python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
 PYTHON_VERSION=$(python3.12 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2) 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
@@ -243,26 +243,26 @@ git checkout $PACKAGE_VERSION
 export CXXFLAGS="-Wno-stringop-overflow"
 export CFLAGS="-Wno-stringop-overflow"
 export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
-export Python3_NumPy_INCLUDE_DIR=$(python3.12 -c "import numpy; print(numpy.get_include())")
-echo "Python3_NumPy_INCLUDE_DIR is set to $Python3_NumPy_INCLUDE_DIR"
+/usr/bin/python3 -m pip install packaging wheel
+NUMPY_INCLUDE=$(python3.12 -c "import numpy; print(numpy.get_include())")
+echo "NumPy include path: $NUMPY_INCLUDE"
 # Manually defines Python::NumPy for CMake versions with broken NumPy detection
 sed -i '193i # Fix for Python::NumPy target not found\nif(NOT TARGET Python::NumPy)\n    find_package(Python3 COMPONENTS NumPy REQUIRED)\n    add_library(Python::NumPy INTERFACE IMPORTED)\n    target_include_directories(Python::NumPy INTERFACE ${Python3_NumPy_INCLUDE_DIR})\n    message(STATUS "Manually defined Python::NumPy with include dir: ${Python3_NumPy_INCLUDE_DIR}")\nendif()\n' /onnxruntime/cmake/onnxruntime_python.cmake
 export CXXFLAGS="-I/usr/local/lib64/python${PYTHON_VERSION}/site-packages/numpy/_core/include/numpy $CXXFLAGS"
 
-
 #Build and test
 #Building and testing both is performed in build.sh
 if ! (./build.sh \
-		--cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" Protobuf_PROTOC_EXECUTABLE=$PROTO_PREFIX/bin/protoc Protobuf_INCLUDE_DIR=$PROTO_PREFIX/include onnxruntime_USE_COREML=OFF "CMAKE_POLICY_DEFAULT_CMP0001=NEW" "CMAKE_POLICY_DEFAULT_CMP0002=NEW" "CMAKE_POLICY_VERSION_MINIMUM=3.5" \
-		--cmake_generator Ninja \
-		--build_shared_lib \
-		--config Release \
-		--update \
-		--build \
-		--skip_submodule_sync \
-		--allow_running_as_root \
-		--compile_no_warning_as_error \
-		--build_wheel) ; then
+    --cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" "Protobuf_PROTOC_EXECUTABLE=$PROTO_PREFIX/bin/protoc" "Protobuf_INCLUDE_DIR=$PROTO_PREFIX/include" "onnxruntime_USE_COREML=OFF" "Python3_NumPy_INCLUDE_DIR=$NUMPY_INCLUDE" "CMAKE_POLICY_DEFAULT_CMP0001=NEW" "CMAKE_POLICY_DEFAULT_CMP0002=NEW" "CMAKE_POLICY_VERSION_MINIMUM=3.5" \
+    --cmake_generator Ninja \
+    --build_shared_lib \
+    --config Release \
+    --update \
+    --build \
+    --skip_submodule_sync \
+    --allow_running_as_root \
+    --compile_no_warning_as_error \
+    --build_wheel) ; then
     echo "------------------$PACKAGE_NAME:install_&_test_both_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
