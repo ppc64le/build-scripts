@@ -723,6 +723,7 @@ cd python
 pip install .
 cd ..
 export LD_LIBRARY_PATH=${SNAPPY_PREFIX}/lib:${C_ARES_PREFIX}/lib:${THRIFT_PREFIX}/lib:${UTF8PROC_PREFIX}/lib:${RE2_PREFIX}/lib:${LIBPROTO_INSTALL}/lib64:${GRPC_PREFIX}/lib:${ORC_PREFIX}/lib:${OpenBLASInstallPATH}/lib
+cd $SCRIPT_DIR 
 
 #Build OpenMPI from source
 echo ---------------"Downloading and building OpenMPI..."-----------------------------------------
