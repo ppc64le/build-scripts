@@ -294,7 +294,8 @@ if ! (pip3.12 install -e . --no-build-isolation --no-deps) ; then
 fi
 
 # Run test cases
-if ! (tox -e py3.12 --installpkg /onnx/wheelf/*.whl) ; then
+#The test cases try to to install onnx again so to avoid that providing it the path of pre-built wheel for onnx.
+if ! (tox -e py3.12 --installpkg $WORK_DIR/onnx/wheelf/*.whl) ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
