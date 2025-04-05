@@ -29,8 +29,16 @@ yum install -y python python-pip python-devel wget git make python-devel xz-deve
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 SCRIPT_DIR=$(pwd)
-pip install ninja setuptools cmake==3.28.0
+pip install ninja setuptools 
 
+#install cmake
+wget https://cmake.org/files/v3.28/cmake-3.28.0.tar.gz
+tar -zxvf cmake-3.28.0.tar.gz
+cd cmake-3.28.0
+./bootstrap
+make
+make install
+cd $SCRIPT_DIR
 
 # Installing lib like flex bison c-ares gflags rapidjson xsimd snappy libzstd
 echo "-----------flex installing------------------"
