@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 # Install dependencies
-yum install -y python312 python3.12-devel python3.12-pip openssl openssl-devel git gcc-toolset-13
+yum install -y python312 python3.12-devel python3.12-pip openssl openssl-devel git gcc-toolset-13 gcc-toolset-13-gcc-c++
 
 # Clone the grpc package.
 PACKAGE_NAME=grpc
