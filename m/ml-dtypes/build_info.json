@@ -1,0 +1,16 @@
+{
+  "maintainer": "kiranNukal",
+  "package_name": "ml_dtypes",
+  "github_url": "https://github.com/jax-ml/ml_dtypes.git",
+  "version": "0.1.0",
+  "wheel_build" : true,
+  "package_dir": "m/ml_dtypes",
+  "default_branch": "main",
+  "build_script": "mldtypes_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "mldtypes_ubi_9.3.sh"
+  }
+}
