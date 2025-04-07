@@ -4,7 +4,7 @@
 # Package       : grpcio
 # Version       : v1.70.0
 # Source repo   : https://github.com/grpc/grpc.git (# For grpcio - https://github.com.mcas.ms/grpc/grpc/tree/master/src/python/grpcio)
-# Tested on     : UBI 9.3
+# Tested on     : UBI 9.5
 # Language      : C++, Python, C, Starlark, Shell, Ruby
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
