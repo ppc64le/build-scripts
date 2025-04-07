@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 # Install dependencies
-yum install -y python312 python3.12-devel python3.12-pip openssl openssl-devel git gcc-toolset-13 gcc-toolset-13-gcc-c++
+yum install -y python3 python3-devel python3-pip openssl openssl-devel git gcc-toolset-13 gcc-toolset-13-gcc-c++
 
 # Clone the grpc package.
 PACKAGE_NAME=grpc
@@ -31,14 +31,14 @@ cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
-pip3.12 install setuptools coverage cython protobuf==4.25.3 wheel cmake==3.*
+pip3 install setuptools coverage cython protobuf==4.25.3 wheel cmake==3.*
 
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true
 export GRPC_PYTHON_BUILD_WITH_CYTHON=1
 export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:${PATH}"
 
 # Install the package
-pip3.12 install -e .
+pip3 install -e .
 
 if [ $? == 0 ]; then
      echo "------------------$PACKAGE_NAME::Build_Pass---------------------"
@@ -53,7 +53,7 @@ fi
 
 # Test the package
 cd ..
-python -c "import grpc; import grpc._cython; import grpc._cython._cygrpc; import grpc.beta; import grpc.framework; import grpc.framework.common; import grpc.framework.foundation; import grpc.framework.interfaces; import grpc.framework.interfaces.base; import grpc.framework.interfaces.face; print('All modules imported successfully')"
+python3 -c "import grpc; import grpc._cython; import grpc._cython._cygrpc; import grpc.beta; import grpc.framework; import grpc.framework.common; import grpc.framework.foundation; import grpc.framework.interfaces; import grpc.framework.interfaces.base; import grpc.framework.interfaces.face; print('All modules imported successfully')"
 
 if [ $? == 0 ]; then
      echo "------------------$PACKAGE_NAME::Test_Pass---------------------"
