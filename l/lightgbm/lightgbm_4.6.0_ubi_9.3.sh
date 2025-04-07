@@ -570,7 +570,7 @@ git clone https://github.com/apache/arrow
 cd arrow
 git checkout apache-arrow-19.0.0
 git submodule update --init
-
+VERSION=19.0.0
 mkdir pyarrow_prefix
 export PYARROW_PREFIX=$(pwd)/pyarrow_prefix
 
@@ -696,7 +696,7 @@ export CMAKE_PREFIX_PATH=$ARROW_HOME
 
 # Build dependencies
 export PARQUET_HOME=$ARROW_HOME
-export SETUPTOOLS_SCM_PRETEND_VERSION=19.0.0
+export SETUPTOOLS_SCM_PRETEND_VERSION=$VERSION
 export PYARROW_BUILD_TYPE=release
 export PYARROW_BUNDLE_ARROW_CPP_HEADERS=1
 export PYARROW_WITH_DATASET=1
