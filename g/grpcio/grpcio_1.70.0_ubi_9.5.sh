@@ -35,6 +35,7 @@ pip3.12 install setuptools coverage cython protobuf==4.25.3 wheel cmake==3.*
 
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true
 export GRPC_PYTHON_BUILD_WITH_CYTHON=1
+export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:${PATH}"
 
 # Install the package
 pip3.12 install -e .
