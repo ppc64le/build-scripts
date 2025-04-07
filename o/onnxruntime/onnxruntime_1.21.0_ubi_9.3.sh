@@ -235,6 +235,7 @@ python3.12 setup.py install
 echo "--------------onnx installed------------------"
 cd ..
 
+cd $CURRENT_DIR
 #Build
 git clone $PACKAGE_URL
 cd $PACKAGE_DIR
@@ -247,7 +248,7 @@ export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
 NUMPY_INCLUDE=$(python3.12 -c "import numpy; print(numpy.get_include())")
 echo "NumPy include path: $NUMPY_INCLUDE"
 # Manually defines Python::NumPy for CMake versions with broken NumPy detection
-sed -i '193i # Fix for Python::NumPy target not found\nif(NOT TARGET Python::NumPy)\n    find_package(Python3 COMPONENTS NumPy REQUIRED)\n    add_library(Python::NumPy INTERFACE IMPORTED)\n    target_include_directories(Python::NumPy INTERFACE ${Python3_NumPy_INCLUDE_DIR})\n    message(STATUS "Manually defined Python::NumPy with include dir: ${Python3_NumPy_INCLUDE_DIR}")\nendif()\n' /onnxruntime/cmake/onnxruntime_python.cmake
+sed -i '193i # Fix for Python::NumPy target not found\nif(NOT TARGET Python::NumPy)\n    find_package(Python3 COMPONENTS NumPy REQUIRED)\n    add_library(Python::NumPy INTERFACE IMPORTED)\n    target_include_directories(Python::NumPy INTERFACE ${Python3_NumPy_INCLUDE_DIR})\n    message(STATUS "Manually defined Python::NumPy with include dir: ${Python3_NumPy_INCLUDE_DIR}")\nendif()\n' $CURRENT_DIR/onnxruntime/cmake/onnxruntime_python.cmake
 export CXXFLAGS="-I/usr/local/lib64/python${PYTHON_VERSION}/site-packages/numpy/_core/include/numpy $CXXFLAGS"
 
 #Build and test
@@ -273,6 +274,6 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
 fi
 
-cp /onnxruntime/build/Linux/Release/dist/*.whl "$CURRENT_DIR"
+cp $CURRENT_DIR/onnxruntime/build/Linux/Release/dist/*.whl "$CURRENT_DIR"
 exit 0
 
