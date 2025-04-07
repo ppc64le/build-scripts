@@ -21,7 +21,7 @@ set -x
 PACKAGE_NAME=milvus-lite
 PACKAGE_VERSION=v2.4.11
 PACKAGE_URL=https://github.com/milvus-io/milvus-lite
-PACKAGE_DIR="$PACKAGE_NAME"
+PACKAGE_DIR="$PACKAGE_NAME/python"
 
 yum install -y wget openblas-devel git python3-pip rust cargo gcc gcc-c++ libstdc++-static which libaio libuuid-devel ncurses-devel libtool m4 autoconf automake ninja-build zlib-devel libffi-devel openssl-devel scl-utils openblas-devel
 pip3 install wheel conan==1.64.1 setuptools==70.0.0
@@ -71,7 +71,7 @@ cd ..
 
 #Clone the package
 git clone ${PACKAGE_URL}
-cd ${PACKAGE_DIR}
+cd ${PACKAGE_NAME}
 git checkout  ${PACKAGE_VERSION}
 git submodule update --init --recursive
 
