@@ -8,7 +8,7 @@
 # Language      : c
 # Travis-Check  : True
 # Script License: Apache License 2.0
-# Maintainer    : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
+# Maintainer    : Stuti Wali <Stuti.Wali@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -374,7 +374,7 @@ SHLIB_EXT=".so"
 WORK_DIR=$(pwd)
 
 export TF_PYTHON_VERSION=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
-export HERMETIC_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
+export HERMETIC_PYTHON_VERSION=3.12
 export GCC_HOST_COMPILER_PATH=$(which gcc)
 export CC=$GCC_HOST_COMPILER_PATH
 
@@ -507,7 +507,7 @@ cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 sed -i "s/protobuf~=[.0-9]\+/protobuf==4.25.3/g" setup.py
 sed -i "s/numpy>=1.14.1/numpy==2.0.2/g" setup.py
-
+pip3.12 install timeout-decorator
 if ! python3.12 setup.py install; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
