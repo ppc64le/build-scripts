@@ -7,9 +7,9 @@ index f084e705..cea22035 100644
      tbb_lib_name = 'tbb'
 
 +lib_files=[
-+       os.path.join(tbb_root, 'lib64','libtbb.a'),
-+       os.path.join(tbb_root, 'lib64','libtbbmalloc.a'),
-+       os.path.join(tbb_root, 'lib64','libirml.a'),
++        os.path.join(tbb_root, 'lib64','libtbb.a'),
++        os.path.join(tbb_root, 'lib64','libtbbmalloc.a'),
++        os.path.join(tbb_root, 'lib64','libirml.a'),
 +        ]
  _tbb = Extension("tbb._api", ["tbb/api.i"],
          include_dirs=[os.path.join(tbb_root, 'include')] if not use_compiler_tbb else [],
