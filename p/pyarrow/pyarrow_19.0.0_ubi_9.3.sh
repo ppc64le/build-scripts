@@ -30,7 +30,16 @@ yum install -y python python-pip python-devel wget git make  python-devel xz-dev
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 SCRIPT_DIR=$(pwd)
-pip install ninja setuptools cmake==3.30.2
+pip install ninja setuptools 
+
+#install cmake
+wget https://cmake.org/files/v3.28/cmake-3.28.0.tar.gz
+tar -zxvf cmake-3.28.0.tar.gz
+cd cmake-3.28.0
+./bootstrap
+make
+make install
+cd ${SCRIPT_DIR}
 
 
 # Installing flex bison c-ares gflags rapidjson xsimd snappy libzstd
@@ -61,14 +70,61 @@ make -j$(nproc)
 make install
 cd $SCRIPT_DIR 
 
-echo "----------c-areas installing-----------------------"
+echo "----------Installing c-ares----------------"
+#Building c-areas
 git clone https://github.com/c-ares/c-ares.git
 cd c-ares
+git checkout cares-1_19_1
+
+
+target_platform=$(uname)-$(uname -m)
+AR=$(which ar)
+PKG_NAME=c-ares
+
+mkdir -p c_ares_prefix
+export C_ARES_PREFIX=$(pwd)/c_ares_prefix
+
+echo "Building ${PKG_NAME}."
+
+# Isolate the build.
 mkdir build && cd build
-cmake ..
-make -j$(nproc)
-make install
-cd $SCRIPT_DIR 
+
+if [[ "$PKG_NAME" == *static ]]; then
+  CARES_STATIC=ON
+  CARES_SHARED=OFF
+else
+  CARES_STATIC=OFF
+  CARES_SHARED=ON
+fi
+
+if [[ "${target_platform}" == Linux-* ]]; then
+  CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_AR=${AR}"
+fi
+
+
+# Generate the build files.
+echo "Generating the build files..."
+cmake ${CMAKE_ARGS} .. \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_INSTALL_PREFIX="$C_ARES_PREFIX" \
+      -DCARES_STATIC=${CARES_STATIC} \
+      -DCARES_SHARED=${CARES_SHARED} \
+      -DCARES_INSTALL=ON \
+      -DCMAKE_INSTALL_LIBDIR=lib \
+      -GNinja
+      #${SRC_DIR}
+
+# Build.
+echo "Building..."
+ninja || exit 1
+
+# Installing
+echo "Installing..."
+ninja install || exit 1
+
+cd $SCRIPT_DIR
+
+echo "----------c-areas installed-----------------------"
 
 echo "----------------rapidjson installing------------------"
 git clone https://github.com/Tencent/rapidjson.git
