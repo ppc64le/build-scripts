@@ -24,8 +24,8 @@ classifiers = [
 
 #Project URLs
 [project.urls]
-homepage = "https://gitlab.xiph.org/xiph/opus"
-upstream = "https://gitlab.xiph.org/xiph/opus"
+homepage = "https://github.com/xiph/opus"
+upstream = "https://github.com/xiph/opus"
 
 #Find packages files in local folder, this is needed as we are not following standar directory structure of setuptools
 [tool.setuptools.packages.find]
