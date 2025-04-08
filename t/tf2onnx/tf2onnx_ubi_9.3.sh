@@ -373,7 +373,7 @@ echo "build_type=${build_type}"
 SHLIB_EXT=".so"
 WORK_DIR=$(pwd)
 
-export TF_PYTHON_VERSION=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+export TF_PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
 export HERMETIC_PYTHON_VERSION=3.12
 export GCC_HOST_COMPILER_PATH=$(which gcc)
 export CC=$GCC_HOST_COMPILER_PATH
@@ -397,7 +397,7 @@ git apply tf_2.18.1_fix.patch
 rm -rf tensorflow/*.bazelrc
 
 # Pick up additional variables defined from the conda build environment
-export PYTHON_BIN_PATH=$(which python)
+export PYTHON_BIN_PATH="/usr/bin/python3.12"
 export USE_DEFAULT_PYTHON_LIB_PATH=1
 
 # Build the bazelrc
@@ -419,9 +419,9 @@ USE_MMA=0
 TENSORFLOW_PREFIX=/install-deps/tensorflow
 
 cat > $BAZEL_RC_DIR/python_configure.bazelrc << EOF
-build --action_env PYTHON_BIN_PATH="$(which python)"
+build --action_env PYTHON_BIN_PATH="/usr/bin/python3.12"
 build --action_env PYTHON_LIB_PATH="/usr/lib/python3.12/site-packages"
-build --python_path="$(which python)"
+build --python_path="/usr/bin/python3.12"
 EOF
 
 SYSTEM_LIBS_PREFIX=$TENSORFLOW_PREFIX
@@ -500,8 +500,8 @@ mkdir -p repackged_wheel
 # Pack the locally built TensorFlow files into a wheel
 wheel pack local/ -d repackged_wheel
 cp -a $SRC_DIR/repackged_wheel/*.whl $CURRENT_DIR
-
 cd $CURRENT_DIR
+pip3.12 install *.whl
 git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
