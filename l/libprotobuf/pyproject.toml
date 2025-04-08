@@ -20,7 +20,7 @@ description = "Provides protoc compiler and C++ files for protobuf"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Programming Language :: C++",
-  "License :: OSI Approved :: BSD License",
+  "License :: Apache License 2.0",
 ]
 
 dependencies = [
@@ -28,8 +28,8 @@ dependencies = [
 ]
 #Project URLs
 [project.urls]
-homepage = "https://github.com/protocolbuffers/protobuf/tree/v4.25.3"
-upstream = "https://github.com/protocolbuffers/protobuf/tree/v4.25.3"
+homepage = "https://github.com/protocolbuffers/protobuf"
+upstream = "https://github.com/protocolbuffers/protobuf"
 
 #Find packages files in local folder, this is needed as we are not following standar directory structure of setuptools
 [tool.setuptools.packages.find]
