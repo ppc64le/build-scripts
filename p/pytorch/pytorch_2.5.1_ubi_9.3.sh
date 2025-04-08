@@ -27,16 +27,18 @@ PACKAGE_VERSION=${1:-v2.5.1}
 PACKAGE_DIR=pytorch
 SCRIPT_DIR=$(pwd)
 
-yum install -y git wget
-yum install -y gcc-toolset-13
+yum install -y git make cmake wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas
+yum install gcc-toolset-13 -y
+yum install -y make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel python3.12 python3.12-devel python3.12-pip patch ninja-build gcc-toolset-13  pkg-config
+dnf install -y gcc-toolset-13-libatomic-devel
+PYTHON_VERSION=python$(python --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 gcc --version
 
-yum install -y python3.12 python3.12-devel python3.12-pip
 ln -sf /usr/bin/python3.12 /usr/bin/python3
 ln -sf /usr/bin/python3.12 /usr/bin/python
-
-yum install -y cmake gcc-gfortran
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+export SITE_PACKAGE_PATH="/lib/${PYTHON_VERSION}/site-packages"
 
 #install openblas
 #clone and install openblas from source
@@ -100,12 +102,11 @@ sed -i "s|libdir=local/openblas/lib|libdir=${OpenBLASInstallPATH}/lib|" ${OpenBL
 sed -i "s|includedir=local/openblas/include|includedir=${OpenBLASInstallPATH}/include|" ${OpenBLASPCFile}
 export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib":${LD_LIBRARY_PATH}
 export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
-cd ..
-
+cd $SCRIPT_DIR
 echo "--------------------openblas installed-------------------------------"
 
 #Building scipy
-python -m pip install beniget==0.4.2.post1  Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis highspy  array_api_extra array_api_strict ninja patchelf>=0.11.0
+python -m pip install beniget==0.4.2.post1  Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja patchelf>=0.11.0
 git clone https://github.com/scipy/scipy
 cd scipy/
 git checkout v1.15.2
@@ -117,7 +118,7 @@ python -m pip install .
 cd $SCRIPT_DIR
 #Building abesil-cpp,libprotobuf and protobuf 
 
-python -m pip install --upgrade cmake pip setuptools wheel ninja packaging pytest numpy==2.0.2
+python -m pip install --upgrade cmake pip setuptools wheel ninja packaging pytest
 
 #Building abseil-cpp
 ABSEIL_VERSION=20240116.2
@@ -157,6 +158,7 @@ echo "--------------------------------abseil-cpp installed----------------------
 export C_COMPILER=$(which gcc)
 export CXX_COMPILER=$(which g++)
 
+cd $SCRIPT_DIR
 #Build libprotobuf
 git clone https://github.com/protocolbuffers/protobuf
 cd protobuf
@@ -219,6 +221,8 @@ curl https://sh.rustup.rs -sSf | sh -s -- -y
 source "$HOME/.cargo/env"
 
 BUILD_NUM="1"
+export OPENBLAS_INCLUDE=/OpenBLAS/local/openblas/include/
+export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
 export SITE_PACKAGE_PATH=/usr/local/lib/python3.12/site-packages
 export OpenBLAS_HOME="/usr/include/openblas"
 export ppc_arch="p9"
@@ -253,6 +257,12 @@ export PYTORCH_BUILD_NUMBER=${BUILD_NUM}
 export USE_CUDA=0
 export USE_CUDNN=0
 export USE_TENSORRT=0
+export Protobuf_INCLUDE_DIR=/protobuf/protobuf/local/libprotobuf/include
+export Protobuf_LIBRARIES=/protobuf/protobuf/local/libprotobuf/lib64
+export Protobuf_LIBRARY=/protobuf/protobuf/local/libprotobuf/lib64/libprotobuf.so
+export Protobuf_LITE_LIBRARY=/protobuf/protobuf/local/libprotobuf/lib64/libprotobuf-lite.so
+export Protobuf_PROTOC_EXECUTABLE=/protobuf/protobuf/local/libprotobuf/bin/protoc
+export absl_DIR=/root/abseil-cpp/local/abseilcpp/lib/cmake
 
 ARCH=`uname -p`
 
