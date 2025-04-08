@@ -7,20 +7,9 @@ index f084e705..cea22035 100644
      tbb_lib_name = 'tbb'
 
 +lib_files=[
-+        os.path.join(tbb_root, 'lib64','libtbb.so'),
-+        os.path.join(tbb_root, 'lib64','libtbbbind_2_0.so'),
-+        os.path.join(tbb_root, 'lib64','libtbbmalloc.so'),
-+        os.path.join(tbb_root, 'lib64','libtbbmalloc_proxy.so'),
-+        os.path.join(tbb_root, 'lib64','libirml.so'),
-+        os.path.join(tbb_root, 'lib64','libtbb.so.12'),
-+        os.path.join(tbb_root, 'lib64','libtbbbind_2_0.so.3'),
-+        os.path.join(tbb_root, 'lib64','libtbbmalloc.so.2'),
-+        os.path.join(tbb_root, 'lib64','libtbbmalloc_proxy.so.2'),
-+        os.path.join(tbb_root, 'lib64','libirml.so.1'),
-+        os.path.join(tbb_root, 'lib64','libtbb.so.12.8'),
-+        os.path.join(tbb_root, 'lib64','libtbbbind_2_0.so.3.8'),
-+        os.path.join(tbb_root, 'lib64','libtbbmalloc.so.2.8'),
-+        os.path.join(tbb_root, 'lib64','libtbbmalloc_proxy.so.2.8'),
++        os.path.join(tbb_root, 'lib64','libtbb.a'),
++        os.path.join(tbb_root, 'lib64','libtbbmalloc.a'),
++        os.path.join(tbb_root, 'lib64','libirml.a'),
 +        ]
  _tbb = Extension("tbb._api", ["tbb/api.i"],
          include_dirs=[os.path.join(tbb_root, 'include')] if not use_compiler_tbb else [],
@@ -48,7 +37,7 @@ index f084e705..cea22035 100644
          keywords='TBB multiprocessing multithreading composable parallelism',
          ext_modules=[_tbb],
 +        package_data={
-+            '':['/tmp/my_installed_onetbb/lib64/*.so'],
++            '':['/tmp/my_installed_onetbb/lib64/*.a'],
 +            },
 +        data_files=[
 +            ('lib',lib_files),
