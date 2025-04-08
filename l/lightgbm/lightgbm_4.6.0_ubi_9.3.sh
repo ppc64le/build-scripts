@@ -68,14 +68,60 @@ make -j$(nproc)
 make install
 cd $SCRIPT_DIR
 
-echo "----------c-areas installing-----------------------"
+echo "----------Installing c-ares----------------"
+#Building c-areas
 git clone https://github.com/c-ares/c-ares.git
 cd c-ares
+git checkout cares-1_19_1
+
+
+target_platform=$(uname)-$(uname -m)
+AR=$(which ar)
+PKG_NAME=c-ares
+
+mkdir -p c_ares_prefix
+export C_ARES_PREFIX=$(pwd)/c_ares_prefix
+
+echo "Building ${PKG_NAME}."
+
+# Isolate the build.
 mkdir build && cd build
-cmake ..
-make -j$(nproc)
-make install
+
+if [[ "$PKG_NAME" == *static ]]; then
+  CARES_STATIC=ON
+  CARES_SHARED=OFF
+else
+  CARES_STATIC=OFF
+  CARES_SHARED=ON
+fi
+
+if [[ "${target_platform}" == Linux-* ]]; then
+  CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_AR=${AR}"
+fi
+
+# Generate the build files.
+echo "Generating the build files..."
+cmake ${CMAKE_ARGS} .. \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_INSTALL_PREFIX="$C_ARES_PREFIX" \
+      -DCARES_STATIC=${CARES_STATIC} \
+      -DCARES_SHARED=${CARES_SHARED} \
+      -DCARES_INSTALL=ON \
+      -DCMAKE_INSTALL_LIBDIR=lib \
+      -GNinja
+      #${SRC_DIR}
+
+# Build.
+echo "Building..."
+ninja || exit 1
+
+# Installing
+echo "Installing..."
+ninja install || exit 1
+
 cd $SCRIPT_DIR
+
+echo "----------c-areas installed-----------------------"
 
 echo "----------------rapidjson installing------------------"
 git clone https://github.com/Tencent/rapidjson.git
