@@ -1,0 +1,13 @@
+{
+   "maintainer": "shubham-dayma-ibm",
+   "package_name": "unicodedata2",
+   "github_url": "http://github.com/fonttools/unicodedata2",
+   "version": "15.1.0",
+   "default_branch": "master",
+   "build_script": "unicodedata2_ubi_9.3.sh",
+   "package_dir": "u/unicodedata2",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
