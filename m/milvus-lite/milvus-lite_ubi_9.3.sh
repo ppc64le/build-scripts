@@ -18,6 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 set -x
+WORKDIR=$(pwd)
 PACKAGE_NAME=milvus-lite
 PACKAGE_VERSION=v2.4.11
 PACKAGE_URL=https://github.com/milvus-io/milvus-lite
@@ -51,8 +52,8 @@ class CmakeConan(ConanFile):
 EOT
 }
 
-mkdir -p /workspace
-cd /workspace/
+mkdir -p "${WORKDIR}/workspace"
+cd "${WORKDIR}/workspace"
 
 # Build and install cmake 3.30.5
 if [ -z "$(ls -A $wdir/cmake-${CMAKE_VERSION})" ]; then
