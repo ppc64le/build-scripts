@@ -17,7 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
 set -e 
 
 PACKAGE_NAME=tf2onnx
@@ -341,8 +340,7 @@ export CFLAGS="-I${ML_DIR}/include"
 export CXXFLAGS="-I${ML_DIR}/include"
 export CC=/opt/rh/gcc-toolset-13/root/bin/gcc
 export CXX=/opt/rh/gcc-toolset-13/root/bin/g++
-
-python3.12 setup.py install
+python3.12 setup.py bdist_wheel
 cd $CURRENT_DIR
 
 
