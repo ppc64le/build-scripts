@@ -136,8 +136,6 @@ HDF5_DIR=/install-deps/hdf5 python3.12 -m pip install .
 # python -c "import h5py; print(h5py.__version__)"
 # echo "-----------------------------------------------------Installed h5py-----------------------------------------------------"
 
-
-
 #Build abseil-cpp from source
 cd $CURRENT_DIR
 git clone https://github.com/abseil/abseil-cpp
