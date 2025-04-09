@@ -20,7 +20,9 @@
 PACKAGE_NAME=numpy
 PACKAGE_VERSION=${1:-v2.0.2}
 PACKAGE_URL=https://github.com/numpy/numpy.git
-PACKAGE_DIR=$PACKAGE_NAME
+PACKAGE_DIR=numpy
+CURRENT_DIR="${PWD}"
+
 yum install -y wget python3.12 python3.12-devel python3.12-pip git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran make
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 ln -sf /usr/bin/python3.12 /usr/bin/python3
@@ -121,6 +123,17 @@ if ! (python3 -m pip install . );then
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
+fi
+
+python3 -m pip install build meson-python patchelf
+if ! python3 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"; then
+        echo "============ Wheel Creation Failed for Python $PYTHON_VERSION (without isolation) ================="
+        echo "Attempting to build with isolation..."
+
+        # Attempt to build the wheel without isolation
+        if ! python3 -m build --wheel --outdir="$CURRENT_DIR/"; then
+            echo "============ Wheel Creation Failed for Python $PYTHON_VERSION ================="
+        fi
 fi
 cd ..
 

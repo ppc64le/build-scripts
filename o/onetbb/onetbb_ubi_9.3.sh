@@ -25,7 +25,8 @@ HOME_DIR=${PWD}
 CURRENT_DIR="${PWD}"
 
 
-yum install -y git make cmake wget python python-devel python-pip python3.12 python3.12-devel python3.12-pip
+yum install -y git make cmake wget python3.12 python3.12-devel python3.12-pip
+yum install -y git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ cmake make wget openssl-devel bzip2-devel glibc-static libstdc++-static libffi-devel zlib-devel pkg-config automake autoconf libtool
 ln -sf /usr/bin/python3.12 /usr/bin/python3
 ln -sf /usr/bin/python3.12 /usr/bin/python
 
@@ -44,12 +45,15 @@ yum install gcc-toolset-13 sudo -y
 yum install -y swig
 yum install -y hwloc.ppc64le hwloc-devel.ppc64le
 
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 export CC=$GCC_HOME/bin/gcc
 export CXX=$GCC_HOME/bin/g++
-ln -s /usr/lib64/libirml.so.1 /usr/lib64/libirml.so
 
+echo "---python --version"
+python3 --version
 python -m pip install wheel build setuptools
 
 cd $HOME_DIR
@@ -63,7 +67,8 @@ mkdir build
 cd build/
 ls
 pwd
-if ! (cmake -DCMAKE_INSTALL_PREFIX=/tmp/my_installed_onetbb -DTBB_TEST=OFF -DBUILD_SHARED_LIBS=ON -DTBB_BUILD=ON -DTBB4PY_BUILD=ON ..);then
+if ! (cmake -DCMAKE_INSTALL_PREFIX=/tmp/my_installed_onetbb -DTBB_TEST=OFF -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC=ON -DCMAKE_CXX_FLAGS="-static-libgcc -static-libstdc++" -DCMAKE_EXE_LINKER_FLAGS="-static" -DTBB_BUILD=ON -DTBB4PY_BUILD=ON ..
+);then
         echo "------------------$PACKAGE_NAME:cmake_fails-------------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  CMAKE_Fails"
@@ -100,13 +105,11 @@ git apply tbb.patch
 echo "------------Applied patch successfully---------------------"
 
 echo "------------Export statements------------"
-export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/tmp/my_installed_onetbb/lib64:${LD_LIBRARY_PATH}
-export LD_LIBRARY_PATH=/oneTBB/python/tmp/my_installed_onetbb/lib64:${LD_LIBRARY_PATH}
-ldconfig
-export LD_LIBRARY_PATH=/tmp/my_installed_onetbb/lib64:${LD_LIBRARY_PATH}
-export LD_LIBRARY_PATH=/usr/local/lib/:$LD_LIBRARY_PATH
-export LDFLAGS="-L/usr/local/lib"
+export CMAKE_PREFIX_PATH=/tmp/my_installed_onetbb/lib64/
+export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:/usr/local/lib64/pkgconfig"
+export CXXFLAGS="-I/tmp/my_installed_onetbb/include"
+export LDFLAGS="-L/tmp/my_installed_onetbb/lib64"
+export LDFLAGS="-L/usr/local/lib -l:libtbb.a -lstdc++ -static -static-libgcc -static-libstdc++ -lc -lrt -lpthread -ldl"
 
 echo "-------------Testing--------------------"
 # Tests passing for python3.9 , failing for python3.12. Hence commenting out.
