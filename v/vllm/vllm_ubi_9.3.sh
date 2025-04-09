@@ -169,7 +169,7 @@ if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then
     # patch applicable only for opencv-python version 4.11.0.86
     OPENCV_PATCH=97f3f39
     cd $DEPS_DIR/opencv-python
-    # sed -i 's/"setuptools==59.2.0",/"setuptools<70.0",/g' pyproject.toml && \
+    sed -i -E -e 's/"setuptools.+",/"setuptools",/g'
     cd opencv && git cherry-pick --no-commit $OPENCV_PATCH
 
     ##########################################
@@ -226,7 +226,7 @@ if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then
     BUILD_ISOLATION="--no-build-isolation"
 fi
 
-python -m pip install -v -r requirements/build.txt -r requirements/cpu.txt
+python -m pip install -v -r requirements/build.txt -r requirements/cpu.txt $BUILD_ISOLATION
 
 if ! (python -m pip install -v . $BUILD_ISOLATION); then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
