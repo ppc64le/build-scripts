@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "stack-generator",
+    "github_url": "https://github.com/stacktracejs/stack-generator",
+    "version": "v2.0.10",
+    "default_branch": "master",
+    "build_script": "stack-generator_ubi_9.3.sh",
+    "package_dir": "s/stack-generator",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v2.*.*": {
+        "build_script": "stack-generator_ubi_9.3.sh"
+    }
+}

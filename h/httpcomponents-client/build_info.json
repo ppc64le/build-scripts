@@ -11,5 +11,11 @@
   "docker_build": false,
   "rel/v5.*.*": {
     "build_script": "httpcomponents-client_ubi_9.3.sh"
+  },
+  "rel/v4.5.5": {
+    "build_script": "httpcomponents-client_v4.5.5_ubi_9.3.sh"
+  },
+  "rel/v4.5.*": {
+    "build_script": "httpcomponents-client_v4.5.14_ubi_9.3.sh"
   }
 }

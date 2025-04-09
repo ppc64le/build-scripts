@@ -1,0 +1,15 @@
+{
+    "maintainer": "Vipul-Ajmera",
+    "package_name": "timeDate",
+    "github_url": "https://github.com/cran/timeDate.git",
+    "version": "4032.110",
+    "default_branch": "master",
+    "package_dir": "t/timedate",
+    "build_script": "timedate_ubi_9.3.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": "false",
+    "*.*" : {
+       "build_script": "timedate_ubi_9.3.sh"
+    }
+}

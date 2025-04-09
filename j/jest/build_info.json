@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "jest",
+    "github_url": "https://github.com/jestjs/jest",
+    "version": "v29.7.0",
+    "default_branch": "main",
+    "build_script": "jest_ubi_9.3.sh",
+    "package_dir": "j/jest",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v29.*.*": {
+        "build_script": "jest_ubi_9.3.sh"
+    }
+}

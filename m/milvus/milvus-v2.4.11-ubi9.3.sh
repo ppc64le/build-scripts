@@ -22,8 +22,8 @@ SCRIPT_PACKAGE_VERSION=v2.4.11
 PACKAGE_NAME=milvus
 PACKAGE_VERSION=${SCRIPT_PACKAGE_VERSION}
 PACKAGE_URL=https://github.com/milvus-io/${PACKAGE_NAME}
-CMAKE_VERSION=3.30.1
-CMAKE_REQUIRED_VERSION=3.30.1
+CMAKE_VERSION=3.30.5
+CMAKE_REQUIRED_VERSION=3.30.5
 PYTHON_VERSION=3.10.2
 GO_VERSION=1.22.6
 ARROW_VERSION=16.0.0
@@ -149,6 +149,9 @@ cd $wdir
 git clone -b ${PACKAGE_VERSION} ${PACKAGE_URL}
 cd ${PACKAGE_NAME}
 git apply ${SCRIPT_PATH}/${PACKAGE_NAME}-${SCRIPT_PACKAGE_VERSION}.patch
+pushd internal/core/thirdparty/tantivy/tantivy-binding
+cargo update
+popd
 if [ "$APPLYMCPU" -eq 1 ]; then
         sed -i "53d" ./internal/core/CMakeLists.txt
         sed -i '53i set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -mcpu=power10")' ./internal/core/CMakeLists.txt

@@ -1,0 +1,16 @@
+{
+  "maintainer": "kiranNukal",
+  "package_name": "onnxconverter-common",
+  "github_url": "https://github.com/microsoft/onnxconverter-common",
+  "version": "v1.14.0",
+  "wheel_build" : true,
+  "default_branch": "main",
+  "package_dir": "o/onnxconverter-common",
+  "build_script": "onnxconvertercommon_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+    "build_script": "onnxconvertercommon_ubi_9.3.sh"
+  }
+}

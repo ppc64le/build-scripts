@@ -1,0 +1,17 @@
+{
+  "maintainer": "Harithanagothu2",
+  "package_name": "hdf5",
+  "github_url": "https://github.com/HDFGroup/hdf5",
+  "required_versions":{"Releases": ["*"], "Tags": ["hdf5-1_12_1"]}, 
+  "version": "hdf5-1_12_1",
+  "wheel_build" : true,
+  "package_dir": "h/hdf5",
+  "default_branch": "develop",
+  "build_script": "hdf5_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*":{
+    "build_script":"hdf5_ubi_9.3.sh"
+  }
+}

@@ -48,7 +48,9 @@ git clone https://github.com/pact-foundation/pact-reference.git
 cd pact-reference/rust/pact_ffi
 
 cargo build --release
-cp /pact-reference/rust/target/release/libpact_ffi.so /usr/local/lib/
+cd ../..
+cd rust/target/release/
+cp libpact_ffi.so /usr/local/lib/
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 export CGO_LDFLAGS="-L/usr/local/lib -lpact_ffi"
 cd /
