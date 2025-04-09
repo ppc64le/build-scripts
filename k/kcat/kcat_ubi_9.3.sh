@@ -1,3 +1,23 @@
+#!/bin/bash -e
+# -----------------------------------------------------------------------------
+#
+# Package          : kcat
+# Version          : 1.7.0
+# Source repo      : https://github.com/edenhill/kcat.git
+# Tested on        : UBI:9.3
+# Language         : Shell
+# Travis-Check     : True
+# Script License   : Apache License, Version 2 or later
+# Maintainer       : Prasanna Marathe <prasanna.marathe@ibm.com>
+#
+# Disclaimer       : This script has been tested in root mode on given
+# ==========         platform using the mentioned version of the package.
+#                    It may not work as expected with newer versions of the
+#                    package and/or distribution. In such case, please
+#                    contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
+
 PACKAGE_NAME=kcat
 PACKAGE_VERSION=${1:-master}
 PACKAGE_URL=https://github.com/edenhill/kcat.git
