@@ -54,7 +54,7 @@ for package in openblas hdf5 abseil tensorflow ; do
     echo "Exported ${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
 done
 
-python3.12 -m pip install numpy==2.0.2 patchelf cython setuptools wheel ninja
+python3.12 -m pip install numpy==2.0.2 cython setuptools wheel ninja
 
 yum install -y java-11-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.25.0.9-3.el9.ppc64le 
@@ -62,6 +62,17 @@ export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-)(?=.*ppc
 export PATH=$JAVA_HOME/bin:$PATH
 
 
+#installing patchelf from source
+cd $CURRENT_DIR
+yum install -y git autoconf automake libtool make
+git clone https://github.com/NixOS/patchelf.git
+cd patchelf
+./bootstrap.sh
+./configure
+make 
+make install
+ln -s /usr/local/bin/patchelf /usr/bin/patchelf
+echo "-----------------------------------------------------Installed patchelf-----------------------------------------------------"
 
 #installing openblas
 cd $CURRENT_DIR
