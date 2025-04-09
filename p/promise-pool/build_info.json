@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "promise-pool",
+    "github_url": "https://github.com/supercharge/promise-pool",
+    "version": "v3.2.0",
+    "default_branch": "main",
+    "build_script": "promise-pool_ubi_9.3.sh",
+    "package_dir": "p/promise-pool",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v3.*.*": {
+        "build_script": "promise-pool_ubi_9.3.sh"
+    }
+}

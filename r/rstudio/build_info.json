@@ -1,0 +1,15 @@
+{
+    "maintainer":"gauravpbankar13",
+    "package_name" : "rstudio",
+    "github_url": "https://github.com/rstudio/rstudio.git",
+    "version": "v2024.09.0+375",
+    "default_branch": "main",
+    "package_dir": "r/rstudio",
+    "build_script": "rstudio_server_ubi_9.3.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v*.*.*": {
+     "build_script": "rstudio_server_ubi_9.3.sh"
+   }
+}

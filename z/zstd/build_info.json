@@ -1,0 +1,16 @@
+{
+  "maintainer": "Harithanagothu2",
+  "package_name": "zstd",
+  "github_url": "https://github.com/sergey-dryabzhinsky/python-zstd.git",
+  "version": "v1.5.6.1",
+  "wheel_build" : true,
+  "package_dir": "z/zstd",
+  "default_branch": "master",
+  "build_script": "zstd_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*":{
+    "build_script":"zstd_ubi_9.3.sh"
+  }
+}

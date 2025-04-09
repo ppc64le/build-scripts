@@ -1,0 +1,15 @@
+{
+  "maintainer": "mayurbhosure",
+  "package_name": "threetenbp",
+  "github_url": "https://github.com/ThreeTen/threetenbp",
+  "version": "v1.7.0",
+  "default_branch": "master",
+  "build_script": "threetenbp_ubi_9.3.sh",
+  "package_dir": "t/threetenbp",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "v1.7.*": {
+    "build_script": "threetenbp_ubi_9.3.sh"
+  }
+}

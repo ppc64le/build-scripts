@@ -1,0 +1,16 @@
+{
+  "maintainer": "vinodk99",
+  "package_name": "python-fastjsonschema",
+  "github_url": "https://github.com/horejsek/python-fastjsonschema",
+  "version": "v2.16.2",
+  "wheel_build" : true,
+  "package_dir": "p/python-fastjsonschema",
+  "default_branch": "master",
+  "build_script": "python-fastjsonschema_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "python-fastjsonschema_ubi_9.3.sh"
+  }
+}

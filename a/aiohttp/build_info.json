@@ -1,0 +1,19 @@
+{
+  "maintainer": "aastha-sharma2",
+  "package_name": "aiohttp",
+  "github_url": "https://github.com/aio-libs/aiohttp.git",
+  "version": "v3.8.6",
+  "wheel_build" : true,
+  "package_dir": "a/aiohttp",
+  "default_branch": "master",
+  "build_script": "aiohttp_v3.8.6_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "v3.8.6" : {
+            "build_script": "aiohttp_v3.8.6_ubi_9.3.sh"
+  },
+  "v*.*.*": {
+            "build_script": "aiohttp_ubi_9.3.sh"
+  }
+}

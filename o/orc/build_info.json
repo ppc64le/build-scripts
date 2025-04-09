@@ -1,0 +1,16 @@
+{
+  "maintainer": "stutiibm",
+  "package_name": "orc",
+  "github_url": "https://github.com/apache/orc",
+  "version": "v2.0.3",
+  "wheel_build" : true,
+  "package_dir": "o/orc",
+  "default_branch": "main",
+  "build_script": "orc_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "orc_ubi_9.3.sh"
+  }
+}

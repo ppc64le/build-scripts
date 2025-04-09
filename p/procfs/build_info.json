@@ -1,0 +1,15 @@
+{
+   "maintainer": "ramnathnayak-ibm",
+   "package_name": "procfs",
+   "github_url": "https://github.com/prometheus/procfs",
+   "version": "v0.15.1",
+   "default_branch": "master",
+   "build_script": "procfs_ubi_9.3.sh",
+   "package_dir": "p/procfs",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "v0.*.*" : {
+       "build_script": "procfs_ubi_9.3.sh"
+    }
+}
