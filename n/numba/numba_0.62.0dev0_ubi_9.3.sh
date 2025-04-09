@@ -152,13 +152,9 @@ cd  $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 
-export CFLAGS=-I/usr/include
-export CXXFLAGS=-I/usr/include
-echo "before CFLAGS............$CFLAGS........."
-echo "before CXXFLAGS............$CXXFLAGS........."
 
+echo "before CXXFLAGS............$CXXFLAGS........."
 export CXXFLAGS="$CXXFLAGS -include cstddef"
-echo "after CFLAGS............$CFLAGS........."
 echo "after CXXFLAGS............$CXXFLAGS........."
 
 
