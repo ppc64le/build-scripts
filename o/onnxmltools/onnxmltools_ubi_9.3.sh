@@ -278,38 +278,38 @@ pip3.12 install wheelf/*.whl
 cd $WORK_DIR
 echo "--------------onnx installed------------------"
 
-
-echo "-----------clone and install onnxruntime-----------"
+echo "------------Clone and install onnxruntime--------------------"
 
 echo "Cloning and installing onnxruntime..."
 git clone https://github.com/microsoft/onnxruntime
 cd onnxruntime
-git checkout d1fb58b0f2be7a8541bfa73f8cbb6b9eba05fb6b
+git checkout v1.21.0
 
 # Build the onnxruntime package and create the wheel
-sed -i 's/python3/python3.12/g' build.sh
+export CXXFLAGS="-Wno-stringop-overflow"
+export CFLAGS="-Wno-stringop-overflow"
+export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
+/usr/bin/python3 -m pip install packaging wheel
+NUMPY_INCLUDE=$(python3.12 -c "import numpy; print(numpy.get_include())")
+echo "NumPy include path: $NUMPY_INCLUDE"
+# Manually defines Python::NumPy for CMake versions with broken NumPy detection
+sed -i '193i # Fix for Python::NumPy target not found\nif(NOT TARGET Python::NumPy)\n    find_package(Python3 COMPONENTS NumPy REQUIRED)\n    add_library(Python::NumPy INTERFACE IMPORTED)\n    target_include_directories(Python::NumPy INTERFACE ${Python3_NumPy_INCLUDE_DIR})\n    message(STATUS "Manually defined Python::NumPy with include dir: ${Python3_NumPy_INCLUDE_DIR}")\nendif()\n' $WORK_DIR/onnxruntime/cmake/onnxruntime_python.cmake
+export CXXFLAGS="-I/usr/local/lib64/python${PYTHON_VERSION}/site-packages/numpy/_core/include/numpy $CXXFLAGS"
+
 echo "Building onnxruntime..."
-export LD_LIBRARY_PATH=/home/OpenBLAS/local/openblas/lib:$LD_LIBRARY_PATH
 ./build.sh \
-  --cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" \
-  --cmake_generator Ninja \
-  --build_shared_lib \
-  --config Release \
-  --update \
-  --build \
-  --skip_submodule_sync \
-  --allow_running_as_root \
-  --compile_no_warning_as_error \
-  --build_wheel
-
-# Install the built onnxruntime wheel
-echo "Installing onnxruntime wheel..."
-cp ./build/Linux/Release/dist/* ./
-
-pip3.12 install ./*.whl
+    --cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" "Protobuf_PROTOC_EXECUTABLE=$PROTO_PREFIX/bin/protoc" "Protobuf_INCLUDE_DIR=$PROTO_PREFIX/include" "onnxruntime_USE_COREML=OFF" "Python3_NumPy_INCLUDE_DIR=$NUMPY_INCLUDE" "CMAKE_POLICY_DEFAULT_CMP0001=NEW" "CMAKE_POLICY_DEFAULT_CMP0002=NEW" "CMAKE_POLICY_VERSION_MINIMUM=3.5" \
+    --cmake_generator Ninja \
+    --build_shared_lib \
+    --config Release \
+    --update \
+    --build \
+    --skip_submodule_sync \
+    --allow_running_as_root \
+    --compile_no_warning_as_error \
+    --build_wheel
 # Clean up the onnxruntime repository
 cd $WORK_DIR
-
 
 echo "-------build and install skl2onnx-----------"
 git clone https://github.com/onnx/sklearn-onnx.git
