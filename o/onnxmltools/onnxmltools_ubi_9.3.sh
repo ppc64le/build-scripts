@@ -270,7 +270,7 @@ export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH"
 source /opt/rh/gcc-toolset-13/enable
 pip3.12 install cython meson pytest
 pip3.12 install numpy==2.0.2
-pip3.12 install parameterized
+pip3.12 install parameterized cmake
 pip3.12 install pytest nbval pythran mypy-protobuf
 pip3.12 install scipy==1.15.2
 
