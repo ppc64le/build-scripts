@@ -8,7 +8,7 @@
 # Language      : c
 # Travis-Check  : True
 # Script License: Apache License 2.0
-# Maintainer    : Stuti Wali <Stuti.Wali@ibm.com>
+# Maintainer    : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -502,12 +502,37 @@ wheel pack local/ -d repackged_wheel
 cp -a $SRC_DIR/repackged_wheel/*.whl $CURRENT_DIR
 cd $CURRENT_DIR
 pip3.12 install *.whl
+
+# Clone and install onnxruntime
+echo "Cloning and installing onnxruntime..."
+git clone https://github.com/microsoft/onnxruntime
+cd onnxruntime
+git checkout d1fb58b0f2be7a8541bfa73f8cbb6b9eba05fb6b
+# Build the onnxruntime package and create the wheel
+sed -i 's/python3/python3.12/g' build.sh
+echo "Building onnxruntime..."
+./build.sh \
+  --cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" \
+  --cmake_generator Ninja \
+  --build_shared_lib \
+  --config Release \
+  --update \
+  --build \
+  --skip_submodule_sync \
+  --allow_running_as_root \
+  --compile_no_warning_as_error \
+  --build_wheel
+# Install the built onnxruntime wheel
+echo "Installing onnxruntime wheel..."
+pip3.12 install build/Linux/Release/dist/*.whl
+cd ..
+
 git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 sed -i "s/protobuf~=[.0-9]\+/protobuf==4.25.3/g" setup.py
 sed -i "s/numpy>=1.14.1/numpy==2.0.2/g" setup.py
-pip3.12 install timeout-decorator
+pip3.12 install timeout-decorator pytest-cov graphviz
 if ! python3.12 setup.py install; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
