@@ -20,7 +20,9 @@
 PACKAGE_NAME=numpy
 PACKAGE_VERSION=${1:-v2.0.2}
 PACKAGE_URL=https://github.com/numpy/numpy.git
-PACKAGE_DIR=$PACKAGE_NAME
+PACKAGE_DIR=numpy
+CURRENT_DIR="${PWD}"
+
 yum install -y wget python3.12 python3.12-devel python3.12-pip git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran make
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 ln -sf /usr/bin/python3.12 /usr/bin/python3
@@ -123,7 +125,7 @@ if ! (python3 -m pip install . );then
     exit 1
 fi
 
-python3 setup.py bdist_wheel 
+python3 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/" 
 cd ..
 
 if ! (python3 -m pytest --pyargs numpy -m 'not slow'); then
