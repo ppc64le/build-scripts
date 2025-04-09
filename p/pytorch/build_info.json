@@ -13,13 +13,13 @@
   "v2.4.0": {
     "build_script": "pytorch_ubi_9.3.sh"
   },
-  "v2.5.1":{
+  "*":{
     "patches":{
       "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/p/pytorch/pytorch_v2.5.1.patch"
     },
     "build_script":"pytorch_2.5.1_ubi_9.3.sh"
   },
-  "*":{
+  "v2.0.1":{
     "patches": {
       "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/p/pytorch/pytorch_v2.0.1.patch"
     },
