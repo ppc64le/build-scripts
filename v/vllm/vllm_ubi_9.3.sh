@@ -58,7 +58,7 @@ dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/`
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/`arch`/os
 dnf config-manager --set-enabled crb
 
-dnf install -y git gcc-toolset-13 kmod jq ninja-build \
+dnf install -y git gcc-toolset-13 kmod jq \
     numactl-devel libtiff-devel openjpeg2-devel \
     libimagequant-devel libxcb-devel zeromq-devel \
     python$PYTHON_VERSION-devel \
@@ -95,7 +95,7 @@ ln -sf $(command -v python$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/python$PYTHON_VE
 ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip
 ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip3
 ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip$PYTHON_VERSION
-python -m pip install -q setuptools wheel build 'cmake<4'
+python -m pip install -q setuptools wheel build
 ##############################################
 
 
@@ -226,7 +226,9 @@ if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then
     BUILD_ISOLATION="--no-build-isolation"
 fi
 
-python -m pip install -v -r requirements/build.txt -r requirements/cpu.txt $BUILD_ISOLATION
+python -m pip install -v -r requirements/build.txt -r requirements/cpu.txt
+# USE cmake<4
+sed -i 's/"cmake>=3.26",/"cmake>=3.26,<4",/g' pyproject.toml
 
 if ! (python -m pip install -v . $BUILD_ISOLATION); then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
