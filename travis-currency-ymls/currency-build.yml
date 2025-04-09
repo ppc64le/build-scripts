@@ -7,6 +7,7 @@ branches:
   only:
     - master
     - python-ecosystem
+    - update_scanner_versions
 
 env:
   global:
