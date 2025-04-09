@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package           : vllm
-# Version           : v0.8.1
+# Version           : v0.8.3
 # Source repo       : https://github.com/vllm-project/vllm.git
 # Tested on         : UBI:9.3
 # Language          : Python
@@ -22,7 +22,7 @@
 PACKAGE_NAME=vllm
 PACKAGE_URL=https://github.com/vllm-project/vllm.git
 
-PACKAGE_VERSION=${1:-v0.8.1}
+PACKAGE_VERSION=${1:-v0.8.3}
 PYTHON_VERSION=${PYTHON_VERSION:-3.11}
 
 export MAX_JOBS=${MAX_JOBS:-$(nproc)}
@@ -30,9 +30,9 @@ export VLLM_TARGET_DEVICE=${VLLM_TARGET_DEVICE:-cpu}
 
 export TORCH_VERSION=${TORCH_VERSION:-2.6.0}
 export TORCHVISION_VERSION=${TORCHVISION_VERSION:-0.20.1}
-export TORCHAUDIO_VERSION=${TORCHAUDIO_VERSION:-2.5.1}
+export TORCHAUDIO_VERSION=${TORCHAUDIO_VERSION:-2.6.0}
 export PYARROW_VERSION=${PYARROW_VERSION:-19.0.1}
-export OPENCV_PYTHON_VERSION=${OPENCV_PYTHON_VERSION:-84}
+export OPENCV_PYTHON_VERSION=${OPENCV_PYTHON_VERSION:-86}
 
 export BUILD_SOX=${BUILD_SOX:-1}
 export BUILD_KALDI=${BUILD_KALDI:-1}
@@ -50,6 +50,7 @@ SKIP_TESTS=${SKIP_TESTS:-False}
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
+dnf install -y openssl-devel
 dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
             https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
             https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
@@ -57,8 +58,8 @@ dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/`
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/`arch`/os
 dnf config-manager --set-enabled crb
 
-dnf install -y git gcc-toolset-13 kmod jq ninja-build cmake \
-    numactl-devel libtiff-devel openjpeg2-devel openssl-devel \
+dnf install -y git gcc-toolset-13 kmod jq \
+    numactl-devel libtiff-devel openjpeg2-devel \
     libimagequant-devel libxcb-devel zeromq-devel \
     python$PYTHON_VERSION-devel \
     python$PYTHON_VERSION-pip \
@@ -104,7 +105,7 @@ if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then
 # gmock-devel gtest-devel libpng-devel(comes from tk-devel) fribidi-devel(comes from libraqm-devel) 
 # freetype-devel(comes from tk-devel) harfbuzz-devel(comes from tk-devel)
     # setup
-    dnf install -y cmake tk-devel \
+    dnf install -y tk-devel \
         zlib-devel ninja-build xsimd-devel lcms2-devel \
         gflags-devel libraqm-devel libwebp-devel \
         libjpeg-devel rapidjson-devel boost1.78-devel \
@@ -123,8 +124,8 @@ if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then
     export OPENSSL_LIB_DIR=/usr/lib64
     export OPENSSL_INCLUDE_DIR=/usr/include
 
-    python -m pip install -U pip cython wheel build setuptools setuptools_scm setuptools_rust packaging \
-    pandas pillow scikit_build_core scikit-build meson-python sentencepiece outlines-core pydantic
+    python -m pip install -U pip 'cmake<4' cython wheel build setuptools setuptools_scm setuptools_rust packaging meson-python maturin
+    python -m pip install -U pip pandas pillow scikit_build_core scikit-build sentencepiece outlines-core pydantic pythran pybind11 
     
     # Dependencies needed from src: pytorch, torchvision, torchaudio, llvmlite, pyarrow, opencv-python-headless
 
@@ -134,6 +135,8 @@ if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then
     git clone --recursive https://github.com/pytorch/audio.git -b v${TORCHAUDIO_VERSION} &
     git clone --recursive https://github.com/apache/arrow.git -b apache-arrow-${PYARROW_VERSION} &
     git clone --recursive https://github.com/opencv/opencv-python.git -b ${OPENCV_PYTHON_VERSION} &
+    git clone --recursive https://github.com/opencv/opencv-python.git -b ${OPENCV_PYTHON_VERSION} &
+    git clone --recursive https://github.com/huggingface/xet-core.git &
     wait $(jobs -p)
 
     # Arrow, LLVM, Pytorch can be built independently
@@ -162,6 +165,13 @@ if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then
     git submodule update --init --recursive
     python -m pip install -r requirements.txt
 
+    # Prepare Opencv
+    # patch applicable only for opencv-python version 4.11.0.86
+    OPENCV_PATCH=97f3f39
+    cd $DEPS_DIR/opencv-python
+    sed -i 's/"setuptools==59.2.0",/"setuptools<70.0",/g' pyproject.toml && \
+    cd opencv && git cherry-pick --no-commit $OPENCV_PATCH
+
     ##########################################
     # Build Independent packages in parallel #
     ##########################################
@@ -172,6 +182,9 @@ if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then
     python setup.py install &
 
     cd $DEPS_DIR/opencv-python
+    python -m pip install -v . &
+
+    cd $DEPS_DIR/xet-core/hf_xet/
     python -m pip install -v . &
 
     wait $(jobs -p)
@@ -206,9 +219,6 @@ fi
 # Build vllm
 cd $WORKDIR
 
-sed -i 's/torch==2.5.1; platform_machine == "ppc64le"/torch==2.6.0; platform_machine == "ppc64le"/g' requirements/cpu.txt
-sed -i 's/torchaudio==2.5.1; platform_machine == "ppc64le"/torchaudio==2.6.0; platform_machine == "ppc64le"/g' requirements/cpu.txt
-
 # setup
 BUILD_ISOLATION=""
 # When BUILD_DEPS is unset or set to True
@@ -216,7 +226,7 @@ if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then
     BUILD_ISOLATION="--no-build-isolation"
 fi
 
-python -m pip install -v -r requirements/build.txt -r requirements/cpu.txt 
+python -m pip install -v -r requirements/build.txt -r requirements/cpu.txt
 
 if ! (python -m pip install -v . $BUILD_ISOLATION); then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
@@ -232,7 +242,8 @@ fi
 
 # test dependencies
 dnf install -y re2-devel utf8proc-devel
-python -m pip install -v pytest pytest-asyncio sentence-transformers 
+# transformers 4.51 has an import bug -> already fixed on main branch and will be fixed in next release
+python -m pip install -v pytest pytest-asyncio sentence-transformers 'transformers<4.51'
 
 # rename vllm src dir or else pytorch tries to import vllm._C from src dir and fails
 # AttributeError: '_OpNamespace' '_C' object has no attribute 'silu_and_mul'
