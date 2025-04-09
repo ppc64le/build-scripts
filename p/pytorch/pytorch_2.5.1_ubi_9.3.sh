@@ -90,12 +90,11 @@ CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@
 OpenBLASInstallPATH=$(pwd)/$PREFIX
 OpenBLASConfigFile=$(find . -name OpenBLASConfig.cmake)
 OpenBLASPCFile=$(find . -name openblas.pc)
-sed -i "/OpenBLAS_INCLUDE_DIRS/c\SET(OpenBLAS_INCLUDE_DIRS ${OpenBLASInstallPATH}/include)" ${OpenBLASConfigFile}
-sed -i "/OpenBLAS_LIBRARIES/c\SET(OpenBLAS_INCLUDE_DIRS ${OpenBLASInstallPATH}/include)" ${OpenBLASConfigFile}
-sed -i "s|libdir=local/openblas/lib|libdir=${OpenBLASInstallPATH}/lib|" ${OpenBLASPCFile}
-sed -i "s|includedir=local/openblas/include|includedir=${OpenBLASInstallPATH}/include|" ${OpenBLASPCFile}
 export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib":${LD_LIBRARY_PATH}
 export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
+export LD_LIBRARY_PATH=${PREFIX}/lib:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
+pkg-config --modversion openblas
 cd $SCRIPT_DIR
 echo "--------------------openblas installed-------------------------------"
 
