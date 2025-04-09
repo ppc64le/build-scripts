@@ -27,6 +27,7 @@ WORK_DIR=$(pwd)
 echo "Installing dependencies..."
 yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3-devel python3.12 python3.12-devel python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
 PYTHON_VERSION=$(python3.12 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2) 
+
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 export SITE_PACKAGE_PATH=/usr/local/lib/python${PYTHON_VERSION}/site-packages
@@ -298,6 +299,10 @@ cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 sed -i 's/\bonnxconverter-common\b/onnxconverter-common==1.14.0/g' requirements.txt
+
+#export other necessary path for onnmxtools
+export LD_LIBRARY_PATH=/OpenBLAS/local/openblas/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/local/libprotobuf/lib64:$LD_LIBRARY_PATH
 
 #Build
 if ! (pip3.12 install -e . --no-build-isolation --no-deps) ; then
