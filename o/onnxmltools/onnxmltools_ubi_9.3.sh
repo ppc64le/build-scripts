@@ -289,7 +289,7 @@ git checkout v1.21.0
 export CXXFLAGS="-Wno-stringop-overflow"
 export CFLAGS="-Wno-stringop-overflow"
 export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
-/usr/bin/python3 -m pip install packaging wheel
+/usr/bin/python3 -m pip3.12 install packaging wheel
 NUMPY_INCLUDE=$(python3.12 -c "import numpy; print(numpy.get_include())")
 echo "NumPy include path: $NUMPY_INCLUDE"
 # Manually defines Python::NumPy for CMake versions with broken NumPy detection
