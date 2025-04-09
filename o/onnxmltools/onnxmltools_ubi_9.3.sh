@@ -220,7 +220,7 @@ cd python
 python3.12 setup.py install --cpp_implementation
 cd ../..
 pip3.12 install numpy==2.0.2 scikit-learn==1.6.1 scipy==1.15.2 pandas flatbuffers wheel lightgbm==4.6.0 build
-pip3.12 install pybind11==2.12.0 cmake
+pip3.12 install pybind11==2.12.0 
 PYBIND11_PREFIX=$SITE_PACKAGE_PATH/pybind11
 export CMAKE_PREFIX_PATH="$ABSEIL_PREFIX;$LIBPROTO_INSTALL;$PYBIND11_PREFIX"
 echo "Updated CMAKE_PREFIX_PATH after OpenBLAS: $CMAKE_PREFIX_PATH"
