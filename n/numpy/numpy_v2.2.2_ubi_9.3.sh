@@ -125,7 +125,7 @@ if ! (python3 -m pip install . );then
     exit 1
 fi
 
-python3 -m pip install build
+python3 -m pip install build mesonpy
 python3 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/" 
 cd ..
 
