@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : 3scale/APIcast
-# Version       : v3.15.0
+# Version       : 2.15.1
 # Source repo   : https://github.com/3scale/APIcast.git
 # Tested on     : UBI 9.3
 # Language      : Lua,Perl
@@ -24,12 +24,37 @@ set -e
 set -x
 ARCH=$(uname -m)
 
-PACKAGE_VERSION=${1:-v3.15.0}
 PACKAGE="APIcast"
 REPO_URL="https://github.com/3scale/APIcast.git"
 CLONE_DIR="cloned_repo"
 DOCKER_IMAGE_NAME="apicastimg"
 
+#download required packages
+yum update -y && yum install -y \
+        git \
+        cpan \
+        dos2unix \
+        findutils \
+        gcc-c++ \
+        make \
+        ncurses-devel \
+        patch \
+        pcre-devel \
+        perl \
+        readline \
+        sudo \
+        tar \
+        tar \
+        unzip \
+        wget \
+        yum \
+        openssl \
+        openssl-devel \
+        zlib \
+        zlib-devel \
+        lua \
+        libpq \
+        libpq-devel
 
 # Clone the Git repository
 git clone $REPO_URL $CLONE_DIR
@@ -42,6 +67,7 @@ fi
 
 # Change to the cloned directory
 cd $CLONE_DIR || { echo "Failed to change directory to $CLONE_DIR"; exit 1; }
+
 
 # Get the absolute path of the cloned directory
 CLONE_DIR_PATH=$(pwd)
@@ -98,7 +124,7 @@ if [ ! -f docker-compose-devel.yml ]; then
 fi
 
 # Use sed to find and replace the image name under the development section in docker-compose-devel.yml
-sed -i '/development:/,/^$/s|\${IMAGE:-quay.io/3scale/apicast-ci:openresty-1.21.4-1}|\${IMAGE:-'${DOCKER_IMAGE_NAME}'}|' docker-compose-devel.yml
+sed -i 's|\${IMAGE:-quay.io/3scale/apicast-ci:openresty-1.21.4-2}|\${IMAGE:-'"${DOCKER_IMAGE_NAME}"'}|' docker-compose-devel.yml
 
 # Use sed to find and replace the platfrom from Linux/amd64 to ppc64le under the development section in docker-compose-devel.yml
 sed -i '/development:/,/^$/s|platform: "linux/amd64"|platform: "linux/ppc64le"|' docker-compose-devel.yml
@@ -111,27 +137,6 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "docker-compose-devel.yml updated successfully."
-
-#download required packages
-yum install -y \
-        cpan \
-        curl \
-        dos2unix \
-        findutils \
-        gcc-c++ \
-        make \
-        ncurses-devel \
-        patch \
-        pcre-devel \
-        perl \
-        postgresql-devel \
-        readline \
-        sudo \
-        tar \
-        tar \
-        unzip \
-        wget \
-        yum
 
 
 # installing openresty
@@ -148,38 +153,8 @@ tar -xvf v0.15.tar.gz
 
 
 cd $SOURCE_ROOT/openresty-${PACKAGE_VERSION}
-./configure --with-pcre-jit \
-        --with-ipv6 \
-        --without-http_redis2_module \
-        --with-http_iconv_module \
-        --with-http_postgres_module \
-        --with-http_realip_module \
-        --with-http_v2_module \
-        --without-mail_pop3_module \
-        --without-mail_imap_module \
-        --without-mail_smtp_module \
-        --with-http_stub_status_module \
-        --with-http_addition_module \
-        --with-http_auth_request_module \
-        --with-http_secure_link_module \
-        --with-http_random_index_module \
-        --with-http_gzip_static_module \
-        --with-http_sub_module \
-        --with-http_dav_module \
-        --with-http_flv_module \
-        --with-http_gunzip_module \
-        --with-threads \
-        --with-compat \
-        --add-module=../redis2-nginx-module-0.15
-make -j2
-sudo make install
-#Set Environment Variable
-export PATH=/usr/local/openresty/bin:$PATH
-sudo cp -r /usr/local/openresty/ /usr/local/bin
-# openresty installation finished
 
 # luajit2 installation begins --------------------------------------------------------------
-# Variables
 LUAJIT_REPO="https://github.com/openresty/luajit2.git"
 INSTALL_DIR="/usr/local"
 
@@ -218,52 +193,56 @@ rm -rf luajit2
 echo "LuaJIT installation completed."
 echo "luajit2 installation-------------------------Finished-----------------------------------"
 
-
-# Note - luarocks installation is removed becuase it was giving issue with openresty
-
-# installing openssl package (optional)
-yum install openssl openssl-devel
+#installation of openssl
 wget https://www.openssl.org/source/openssl-1.1.1w.tar.gz
 tar -zxvf openssl-1.1.1w.tar.gz
-./configure --with-openssl=./openssl-1.1.1w
 
-# install required packages
-yum install zlib zlib-devel
+./configure --with-pcre-jit \
+        --with-ipv6 \
+        --without-http_redis2_module \
+        --with-http_iconv_module \
+        --with-http_postgres_module \
+        --with-http_realip_module \
+        --with-http_v2_module \
+        --without-mail_pop3_module \
+        --without-mail_imap_module \
+        --without-mail_smtp_module \
+        --with-http_stub_status_module \
+        --with-http_addition_module \
+        --with-http_auth_request_module \
+        --with-http_secure_link_module \
+        --with-http_random_index_module \
+        --with-http_gzip_static_module \
+        --with-http_sub_module \
+        --with-http_dav_module \
+        --with-http_flv_module \
+        --with-http_gunzip_module \
+        --with-threads \
+        --with-compat \
+        --add-module=../redis2-nginx-module-0.15 \
+        --with-openssl=./openssl-1.1.1w
 ./configure
+make -j2
+sudo make install
+#Set Environment Variable
+export PATH=/usr/local/openresty/bin:$PATH
+sudo cp -r /usr/local/openresty/ /usr/local/bin
 
-yum install lua lua-devel
-
-if [ $? -ne 0 ]; then
-    echo "------------------$PACKAGE:build_fails---------------------------------------"
-    echo "$REPO_URL $PACKAGE"
-    exit 1
-fi
-
-# change dirct to the cloned repo
 cd ..
 
-# to make development container
-make development &
+make development &   # Run in background
+MAKE_PID=$!          # Capture the background process PID
 
-# Wait for the container to start up
-# Adjust this if needed for your container to fully initialize
-sleep 5  
+wait $MAKE_PID       # Wait for 'make development' to finish
 
-
-# Note - This script validates till unit test, integration tests are not working properly due to some dependencies
-# that are not supported on power.
-
-# Execute commands inside the running container
-if docker exec -it --user root apicast_build_0-development-1 bash -c "make dependencies && make busted"; then
-    echo "------------------$PACKAGE:Both_build_and_test_passed---------------------------------------"
+if [ $? -eq 0 ] && \
+   docker exec -it --user root apicast_build_0-development-1 bash -c "cd /opt/app-root/src && make dependencies && make busted"; then
+    echo "------------------$PACKAGE: Both build and unit tests passed ---------------------------------------"
     echo "$REPO_URL $PACKAGE"
     exit 0
-
 else
-    echo "------------------$PACKAGE:test_fails---------------------------------------"
+    echo "------------------$PACKAGE:unit test_fails---------------------------------------"
     echo "$REPO_URL $PACKAGE"
     exit 2
 
 fi
-
-
