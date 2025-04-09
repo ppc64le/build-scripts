@@ -28,6 +28,8 @@ WORKING_DIR=$(pwd)
 yum install -y git make wget python3.12 python3.12-devel python3.12-pip gcc-toolset-13 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+export LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib/gcc/ppc64le-redhat-linux/13:$LIBRARY_PATH
+export CPATH=/opt/rh/gcc-toolset-13/root/usr/include:$CPATH
 
 yum install -y git make wget openssl-devel bzip2-devel libffi-devel zlib-devel cmake
 
