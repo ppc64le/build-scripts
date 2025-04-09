@@ -89,8 +89,6 @@ cd OpenBLAS
 git checkout v0.3.29
 git submodule update --init
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/o/openblas/pyproject.toml
-sed -i "s/{PACKAGE_VERSION}/v0.3.29/g" pyproject.toml
 PREFIX=local/openblas
 
 # Set build options
@@ -153,8 +151,16 @@ git clone $PACKAGE_URL
 cd  $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
+
 export CFLAGS=-I/usr/include
 export CXXFLAGS=-I/usr/include
+echo "before CFLAGS............$CFLAGS........."
+echo "before CXXFLAGS............$CXXFLAGS........."
+
+export CXXFLAGS="$CXXFLAGS -include cstddef"
+echo "after CFLAGS............$CFLAGS........."
+echo "after CXXFLAGS............$CXXFLAGS........."
+
 
 #install
 if ! python3.12 setup.py install  ; then
