@@ -125,8 +125,16 @@ if ! (python3 -m pip install . );then
     exit 1
 fi
 
-python3 -m pip install build mesonpy
-python3 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/" 
+python3 -m pip install build meson-python patchelf
+if ! python -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"; then
+        echo "============ Wheel Creation Failed for Python $PYTHON_VERSION (without isolation) ================="
+        echo "Attempting to build with isolation..."
+
+        # Attempt to build the wheel without isolation
+        if ! python -m build --wheel --outdir="$CURRENT_DIR/"; then
+            echo "============ Wheel Creation Failed for Python $PYTHON_VERSION ================="
+        fi
+fi
 cd ..
 
 if ! (python3 -m pytest --pyargs numpy -m 'not slow'); then
