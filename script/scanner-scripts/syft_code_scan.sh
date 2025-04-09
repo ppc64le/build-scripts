@@ -5,8 +5,9 @@ cloned_package=$CLONED_PACKAGE
 cd package-cache
 
 if [ $validate_build_script == true ];then
-      wget https://github.com/anchore/syft/releases/download/v0.90.0/syft_0.90.0_linux_ppc64le.tar.gz
-      tar -xf syft_0.90.0_linux_ppc64le.tar.gz
+      SYFT_VERSION=$(curl -s https://api.github.com/repos/anchore/syft/releases/latest | grep -Po '"tag_name": "\K.*?(?=")')
+      wget https://github.com/anchore/syft/releases/download/$SYFT_VERSION/grype_${SYFT_VERSION#v}_linux_ppc64le.tar.gz
+      tar -xzf grype_${SYFT_VERSION#v}_linux_ppc64le.tar.gz
       chmod +x syft
       sudo mv syft /usr/bin                           
       echo "Executing syft scanner"
