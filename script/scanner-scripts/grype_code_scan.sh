@@ -14,7 +14,7 @@ if [ $validate_build_script == true ];then
      grype --version
      echo "Executing Grype scanner"
      sudo grype -q -o cyclonedx-json dir:${cloned_package} > grype_source_sbom_results.json    
-     #cat grype_source_sbom_results.json 
+     cat grype_source_sbom_results.json 
      sudo grype -q -o json dir:${cloned_package} > grype_source_vulnerabilities_results.json
-     #cat grype_source_vulnerabilities_results.json
+     cat grype_source_vulnerabilities_results.json
 fi
