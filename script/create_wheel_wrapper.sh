@@ -4,6 +4,7 @@ PYTHON_VERSION=$1
 BUILD_SCRIPT_PATH=${2:-""}
 EXTRA_ARGS="${@:3}" # Capture all additional arguments passed to the script
 CURRENT_DIR="${PWD}"
+EXIT_CODE=0
 
 #install gcc
 yum install gcc-toolset-13 -y
@@ -198,9 +199,7 @@ if [ -n "$TEMP_BUILD_SCRIPT_PATH" ]; then
     # Check if the build script execution was successful
     if [ $? -ne 0 ]; then
         echo "Build script execution failed. Skipping wheel creation."
-        cleanup "$VENV_DIR"
-        [ -n "$TEMP_BUILD_SCRIPT_PATH" ] && rm "$CURRENT_DIR/$TEMP_BUILD_SCRIPT_PATH"
-        exit 1
+        EXIT_CODE=1
     fi
 
 else
@@ -232,9 +231,7 @@ else
         # Attempt to build the wheel without isolation
         if ! python -m build --wheel --outdir="$CURRENT_DIR/"; then
             echo "============ Wheel Creation Failed for Python $PYTHON_VERSION ================="
-            cleanup "$VENV_DIR"
-            [ -n "$TEMP_BUILD_SCRIPT_PATH" ] && rm "$CURRENT_DIR/$TEMP_BUILD_SCRIPT_PATH"
-            exit 1
+            EXIT_CODE=1
         fi
     fi
 fi
@@ -253,4 +250,4 @@ cleanup "$VENV_DIR"
 # Remove temporary build script
 [ -n "$TEMP_BUILD_SCRIPT_PATH" ] && rm "$CURRENT_DIR/$TEMP_BUILD_SCRIPT_PATH"
 
-exit 0
+exit $EXIT_CODE
