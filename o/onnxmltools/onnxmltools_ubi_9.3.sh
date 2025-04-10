@@ -298,6 +298,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
+pip3.12 install coremltools onnxconverter_common
 sed -i 's/\bonnxconverter-common\b/onnxconverter-common==1.14.0/g' requirements.txt
 
 #export other necessary path for onnmxtools
