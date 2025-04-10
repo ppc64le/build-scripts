@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 #Project name an version
 [project]
 name = "c-ares"
-version = "1.19.1"
+version = "{PACKAGE_VERSION}"
 
 #One line description
 description = "This is c-ares, an asynchronous resolver library, c-ares is a C library for asynchronous DNS requests (including name resolves)."
