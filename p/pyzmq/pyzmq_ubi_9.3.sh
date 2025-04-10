@@ -78,6 +78,7 @@ if ! python -m pip install -v -e .; then
 fi
 
 python -m pip install -r test-requirements.txt
+python -m pip install --force-reinstall --no-binary=coverage coverage
 python -m pip install importlib_metadata
 # gevent is a coroutine lib which builds from src and pytests fail with python3.9 
 python -m pip uninstall -y gevent
