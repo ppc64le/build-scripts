@@ -25,6 +25,7 @@ PACKAGE_VERSION=${1:-apache-arrow-19.0.0}
 PACKAGE_URL=https://github.com/apache/arrow
 version=19.0.0
 
+echo "Install dependencies and tools."
 yum install -y python python-pip python-devel wget git make  python-devel xz-devel openssl-devel cmake zlib-devel libjpeg-devel gcc-toolset-13 cmake libevent libtool pkg-config  brotli-devel.ppc64le bzip2-devel lz4-devel 
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
@@ -39,6 +40,7 @@ cd cmake-3.28.0
 ./bootstrap
 echo "Compiling the source code..."
 make
+echo "Installing Cmake"
 make install
 cd ${SCRIPT_DIR}
 
@@ -144,6 +146,7 @@ echo "Running cmake to configure the build..."
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
 echo "Compiling the source code..."
 make -j$(nproc)
+echo "Installing rapidjson"
 make install
 cd $SCRIPT_DIR 
 
@@ -435,6 +438,7 @@ CFLAGS="$(echo ${CFLAGS} | sed 's/ -march=[^ ]*//g' | sed 's/ -mcpu=[^ ]*//g' |s
 
 	 export CPU_COUNT=$(nproc)
 
+echo " Building and installing Boost...."
 ./b2 -q \
     variant=release \
     address-model="${ADDRESS_MODEL}" \
