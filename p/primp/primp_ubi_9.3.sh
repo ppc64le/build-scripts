@@ -35,9 +35,9 @@ python3 -m pip install --upgrade pip
 pip3 install setuptools wheel tox
 
 # Clone the repository
-git clone ${PACKAGE_URL}
-git checkout PACKAGE_VERSION
-cd ${PACKAGE_DIR}
+git clone $PACKAGE_URL
+git checkout $PACKAGE_VERSION
+cd $PACKAGE_DIR
 
 # Install Rust using rustup
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
