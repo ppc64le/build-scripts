@@ -152,7 +152,6 @@ echo "--------------------------------abseil-cpp installed----------------------
 export C_COMPILER=$(which gcc)
 export CXX_COMPILER=$(which g++)
 
-python3.12 -m pip install cmake==3.25
 cd $SCRIPT_DIR
 #Build libprotobuf
 git clone https://github.com/protocolbuffers/protobuf
