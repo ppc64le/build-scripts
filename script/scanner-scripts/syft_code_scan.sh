@@ -12,6 +12,6 @@ if [ $validate_build_script == true ];then
       sudo mv syft /usr/bin                           
       echo "Executing syft scanner"
       sudo syft -q -o cyclonedx-json dir:${cloned_package} > syft_source_sbom_results.json
-      #cat syft_source_sbom_results.json
+      cat syft_source_sbom_results.json
 fi
 
