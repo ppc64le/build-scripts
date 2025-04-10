@@ -28,7 +28,8 @@ yum install -y git python-devel gcc gcc-c++ gzip tar make wget xz cmake yum-util
     openssl-devel openblas-devel bzip2-devel bzip2 zip unzip libffi-devel zlib-devel \
     autoconf automake libtool cargo pkgconf-pkg-config.ppc64le info.ppc64le \
     fontconfig.ppc64le fontconfig-devel.ppc64le sqlite-devel
-
+    
+yum remove -y python3-chardet
 # Upgrade pip and install required Python packages
 python3 -m pip install --upgrade pip
 pip3 install setuptools wheel tox
