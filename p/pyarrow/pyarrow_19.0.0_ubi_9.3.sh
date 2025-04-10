@@ -52,7 +52,7 @@ tar -xvf flex-2.6.4.tar.gz
 cd flex-2.6.4
 echo "Configuring flex installation..."
 ./configure --prefix=/usr/local
-echo "Compiling the source code..."
+echo "Compiling the source code for flex..."
 make -j$(nproc)
 echo "Installing flex..."
 make install
@@ -64,7 +64,7 @@ tar -xvf bison-3.8.2.tar.gz
 cd bison-3.8.2
 echo "Configuring bison installation..."
 ./configure --prefix=/usr/local
-echo "Compiling the source code..."
+echo "Compiling the source code bison..."
 make -j$(nproc)
 echo "Installing bison..."
 make install
@@ -76,7 +76,7 @@ cd gflags
 mkdir build && cd build
 echo "Running cmake to configure the build..."
 cmake ..
-echo "Compiling the source code..."
+echo "Compiling the source code gflags..."
 make -j$(nproc)
 echo "Installing gflags..."
 make install
@@ -127,11 +127,11 @@ cmake ${CMAKE_ARGS} .. \
       #${SRC_DIR}
 
 # Build.
-echo "Building..."
+echo "Building c-areas..."
 ninja || exit 1
 
 # Installing
-echo "Installing..."
+echo "Installing c-areas..."
 ninja install || exit 1
 
 cd $SCRIPT_DIR
@@ -144,7 +144,7 @@ cd rapidjson
 mkdir build && cd build
 echo "Running cmake to configure the build..."
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
-echo "Compiling the source code..."
+echo "Compiling the source code for rapidjson..."
 make -j$(nproc)
 echo "Installing rapidjson"
 make install
@@ -154,9 +154,9 @@ echo "--------------xsimd installing-------------------------"
 git clone https://github.com/xtensor-stack/xsimd.git
 cd xsimd
 mkdir build && cd build
-echo "Running cmake to configure the build..."
+echo "Running cmake to configure the build for xsimd.."
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
-echo "Compiling the source code..."
+echo "Compiling the source code for xsimd..."
 make -j$(nproc)
 echo "Installing xsimd..."
 make install
@@ -172,12 +172,12 @@ mkdir -p local/snappy
 export SNAPPY_PREFIX=$(pwd)/local/snappy
 mkdir build
 cd build
-echo "Running cmake to configure the build..."
+echo "Running cmake to configure the build for snappy..."
 cmake -DCMAKE_INSTALL_PREFIX=$SNAPPY_PREFIX \
       -DBUILD_SHARED_LIBS=ON \
       -DCMAKE_INSTALL_LIBDIR=lib \
       ..
-echo "Compiling the source code..."
+echo "Compiling the source code for snappy..."
 make -j$(nproc)
 echo "Installing snappy..."
 make install
@@ -189,8 +189,9 @@ echo "------------libzstd installing-------------------------"
 git clone https://github.com/facebook/zstd.git
 cd zstd
 
-echo "Compiling the source code..."
+echo "Compiling the source code for libzstd..."
 make
+echo "Installing libzstd..."
 make install
 export ZSTD_HOME=/usr/local
 export CMAKE_PREFIX_PATH=$ZSTD_HOME
@@ -218,7 +219,7 @@ export CPU_COUNT=`nproc`
 mkdir build-cmake
 pushd build-cmake
 
-echo "Running cmake to configure the build..."
+echo "Running cmake to configure the build for re2..."
 cmake ${CMAKE_ARGS} -GNinja \
   -DCMAKE_PREFIX_PATH=$RE2_PREFIX \
   -DCMAKE_INSTALL_PREFIX="${RE2_PREFIX}" \
@@ -230,7 +231,7 @@ cmake ${CMAKE_ARGS} -GNinja \
 echo "Installing re2..."
   ninja -v install
   popd
-echo "Compiling the source code..."
+echo "Running make shared-install......"
 make -j "${CPU_COUNT}" prefix=${RE2_PREFIX} shared-install
 cd $SCRIPT_DIR 
 
@@ -249,7 +250,7 @@ export UTF8PROC_PREFIX=$(pwd)/utf8proc_prefix
 # Create build directory
 mkdir build
 cd build
-echo "Running cmake to configure the build..."
+echo "Running cmake to configure the build for utf8proc..."
 # Run cmake to configure the build
 cmake -G "Unix Makefiles" \
   -DCMAKE_BUILD_TYPE="Release" \
@@ -295,7 +296,7 @@ cp -r $SCRIPT_DIR/abseil-cpp ./third_party/
 
 mkdir build
 cd build
-echo "Running cmake to configure the build..."
+echo "Running cmake to configure the build for libprotobuf..."
 cmake -G "Ninja" \
    ${CMAKE_ARGS} \
     -DCMAKE_BUILD_TYPE=Release \
@@ -367,7 +368,7 @@ if [[ ${HOST} =~ .*Linux.* ]]; then
 fi
 
 CPPFLAGS="${CPPFLAGS} -Wl,-rpath,$VIRTUAL_ENV_PATH/**/lib"
-echo "Running cmake to configure the build..."
+echo "Running cmake to configure the build for orc..."
 cmake ${CMAKE_ARGS} \
     -DCMAKE_PREFIX_PATH=$ORC_PREFIX \
     -DCMAKE_BUILD_TYPE=Release \
@@ -503,7 +504,7 @@ echo "Configuring thrift-cpp installation..."
     --enable-tests=no \
     --enable-tutorial=no 
 
-echo "Compiling the source code..."
+echo "Compiling the source code for thrift-cpp..."
 make -j$(nproc)
 echo  "Installing thrift_cpp..."
 make install
@@ -541,7 +542,7 @@ fi
 
 mkdir -p build-cpp
 pushd build-cpp
-echo "Running cmake to configure the build..."
+echo "Running cmake to configure the build for grpc-cpp...."
 cmake ${CMAKE_ARGS} ..  \
       -GNinja \
       -DBUILD_SHARED_LIBS=ON \
@@ -703,7 +704,7 @@ fi
 
 export AR=$(which ar)
 export RANLIB=$(which ranlib)
-echo "Running cmake to configure the build..."
+echo "Running cmake to configure the build for pyarrow..."
 cmake \
     -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH \
     -DARROW_BOOST_USE_SHARED=ON \
