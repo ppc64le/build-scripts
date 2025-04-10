@@ -1,4 +1,3 @@
-
 #!/bin/bash -e
 
 PYTHON_VERSION=$1
@@ -233,6 +232,9 @@ else
         # Attempt to build the wheel without isolation
         if ! python -m build --wheel --outdir="$CURRENT_DIR/"; then
             echo "============ Wheel Creation Failed for Python $PYTHON_VERSION ================="
+            cleanup "$VENV_DIR"
+            [ -n "$TEMP_BUILD_SCRIPT_PATH" ] && rm "$CURRENT_DIR/$TEMP_BUILD_SCRIPT_PATH"
+            exit 1
         fi
     fi
 fi

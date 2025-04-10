@@ -11,5 +11,9 @@
     "docker_build": false,
     "3.*.*": {
       "build_script": "validation_ubi_9.3.sh"
+    },
+    "1.1.0.Final": {
+      "build_script": "validation_v1.1.0.Final_ubi_9.3.sh"
     }
+
   }

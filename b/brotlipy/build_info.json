@@ -1,0 +1,16 @@
+{
+  "maintainer": "Harithanagothu2",
+  "package_name": "brotlipy",
+  "github_url": "https://github.com/python-hyper/brotlicffi.git",
+  "version": "v0.7.0",
+  "wheel_build" : true,
+  "package_dir": "b/brotlipy",
+  "default_branch": "main",
+  "build_script": "brotlipy_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "v0.*.*":{
+    "build_script":"brotlipy_ubi_9.3.sh"
+  }
+}

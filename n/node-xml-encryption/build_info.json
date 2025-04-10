@@ -1,0 +1,15 @@
+{
+    "maintainer": "vinodk99",
+    "package_name": "node-xml-encryption",
+    "github_url": "https://github.com/auth0/node-xml-encryption",
+    "version": "v2.0.0",
+    "package_dir": "n/node-xml-encryption",
+    "default_branch": "master",
+    "build_script": "node-xml-encryption_ubi_9.3.sh",
+    "docker_build": "false",
+    "use_non_root_user": false,
+    "validate_build_script": "true",
+    "v2.*.*": {
+      "build_script": "node-xml-encryption_ubi_9.3.sh"
+    }
+  }

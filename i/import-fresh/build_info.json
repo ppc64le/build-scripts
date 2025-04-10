@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "import-fresh",
+    "github_url": "https://github.com/sindresorhus/import-fresh",
+    "version": "v3.3.0",
+    "default_branch": "main",
+    "build_script": "import-fresh_ubi_9.3.sh",
+    "package_dir": "i/import-fresh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v3.*.*": {
+        "build_script": "import-fresh_ubi_9.3.sh"
+    }
+}

@@ -5,7 +5,7 @@ ARG APPLYMCPU=0
 ENV MILVUS_VERSION=v2.4.11
 ENV MILVUS_PACKAGE_NAME=milvus
 ENV MILVUS_PACKAGE_URL=https://github.com/milvus-io/${MILVUS_PACKAGE_NAME}.git
-ENV CMAKE_VERSION=3.30.1
+ENV CMAKE_VERSION=3.30.5
 ENV GO_VERSION=1.22.6
 
 ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/m/milvus/milvus-${MILVUS_VERSION}.patch
@@ -46,6 +46,9 @@ RUN wget ${PATCH_FILE} && \
     git clone -b ${MILVUS_VERSION} ${MILVUS_PACKAGE_URL} && \
     cd ${MILVUS_PACKAGE_NAME} && \
     git apply ../milvus-${MILVUS_VERSION}.patch && \
+    pushd internal/core/thirdparty/tantivy/tantivy-binding && \
+    cargo update && \
+    popd && \
     if [[ "${APPLYMCPU}" -eq 1 ]]; then sed -i "53d" ./internal/core/CMakeLists.txt; sed -i '53i set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -mcpu=power10")' ./internal/core/CMakeLists.txt; fi
 
 #Build
