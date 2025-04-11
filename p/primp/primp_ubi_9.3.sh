@@ -39,6 +39,13 @@ git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
+# Remove Rust-related maturin settings from pyproject.toml
+sed -i '/^\[tool\.maturin\]/,/^$/d' pyproject.toml
+sed -i '/^\[build-system\]/,/^\[/{/^\[build-system\]/!{/^\[/!d}}' pyproject.toml
+
+# Re-add minimal build-system section for setuptools
+sed -i '/^\[build-system\]/a requires = ["setuptools", "wheel"]\nbuild-backend = "setuptools.build_meta"' pyproject.toml
+
 # Install Rust using rustup
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 source $HOME/.cargo/env
