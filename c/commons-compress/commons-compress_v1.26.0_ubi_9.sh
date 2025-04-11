@@ -24,7 +24,7 @@ PACKAGE_URL=https://github.com/apache/${PACKAGE_NAME}.git
 BUILD_HOME=$(pwd)
 
 #install system dependencies
-sudo yum install -y git java-17-openjdk-devel maven glibc-langpack-en glibc-common
+sudo yum install -y git java-17-openjdk-devel maven glibc-langpack-en
 
 #set JAVA_HOME dynamically
 export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
@@ -33,9 +33,6 @@ export PATH="$JAVA_HOME/bin:$PATH"
 # Ensure UTF-8 locale is available and set
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
-
-# Enforce UTF-8 encoding for Java runtime
-export MAVEN_OPTS="-Dfile.encoding=UTF-8"
 
 # Clone the repository
 cd $BUILD_HOME
