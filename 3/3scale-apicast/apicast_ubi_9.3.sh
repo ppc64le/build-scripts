@@ -56,6 +56,11 @@ yum update -y && yum install -y \
         libpq \
         libpq-devel
 
+# installing docker
+yum install -y -q yum-utils
+yum-config-manager -q --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+yum install -y -q docker-ce docker-ce-cli containerd.io
+
 # Clone the Git repository
 git clone $REPO_URL $CLONE_DIR
 
