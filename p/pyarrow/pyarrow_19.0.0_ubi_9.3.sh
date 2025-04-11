@@ -20,11 +20,12 @@
 set -e
 
 PACKAGE_NAME=pyarrow
-PACKAGE_DIR=arrow
+PACKAGE_DIR=arrow/python
 PACKAGE_VERSION=${1:-apache-arrow-19.0.0}
 PACKAGE_URL=https://github.com/apache/arrow
 version=19.0.0
 
+echo "Install dependencies and tools."
 yum install -y python python-pip python-devel wget git make  python-devel xz-devel openssl-devel cmake zlib-devel libjpeg-devel gcc-toolset-13 cmake libevent libtool pkg-config  brotli-devel.ppc64le bzip2-devel lz4-devel 
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
@@ -37,7 +38,9 @@ wget https://cmake.org/files/v3.28/cmake-3.28.0.tar.gz
 tar -zxvf cmake-3.28.0.tar.gz
 cd cmake-3.28.0
 ./bootstrap
+echo "Compiling the source code..."
 make
+echo "Installing Cmake"
 make install
 cd ${SCRIPT_DIR}
 
@@ -47,8 +50,11 @@ echo "-----------flex installing------------------"
 wget https://github.com/westes/flex/releases/download/v2.6.4/flex-2.6.4.tar.gz
 tar -xvf flex-2.6.4.tar.gz
 cd flex-2.6.4
+echo "Configuring flex installation..."
 ./configure --prefix=/usr/local
+echo "Compiling the source code for flex..."
 make -j$(nproc)
+echo "Installing flex..."
 make install
 cd $SCRIPT_DIR 
 
@@ -56,8 +62,11 @@ echo "-------bison installing----------------------"
 wget https://ftp.gnu.org/gnu/bison/bison-3.8.2.tar.gz
 tar -xvf bison-3.8.2.tar.gz
 cd bison-3.8.2
+echo "Configuring bison installation..."
 ./configure --prefix=/usr/local
+echo "Compiling the source code bison..."
 make -j$(nproc)
+echo "Installing bison..."
 make install
 cd $SCRIPT_DIR
 
@@ -65,8 +74,11 @@ echo "------------ gflags installing-------------------"
 git clone https://github.com/gflags/gflags.git
 cd gflags
 mkdir build && cd build
+echo "Running cmake to configure the build..."
 cmake ..
+echo "Compiling the source code gflags..."
 make -j$(nproc)
+echo "Installing gflags..."
 make install
 cd $SCRIPT_DIR 
 
@@ -115,11 +127,11 @@ cmake ${CMAKE_ARGS} .. \
       #${SRC_DIR}
 
 # Build.
-echo "Building..."
+echo "Building c-areas..."
 ninja || exit 1
 
 # Installing
-echo "Installing..."
+echo "Installing c-areas..."
 ninja install || exit 1
 
 cd $SCRIPT_DIR
@@ -130,8 +142,11 @@ echo "----------------rapidjson installing------------------"
 git clone https://github.com/Tencent/rapidjson.git
 cd rapidjson
 mkdir build && cd build
+echo "Running cmake to configure the build..."
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
+echo "Compiling the source code for rapidjson..."
 make -j$(nproc)
+echo "Installing rapidjson"
 make install
 cd $SCRIPT_DIR 
 
@@ -139,8 +154,11 @@ echo "--------------xsimd installing-------------------------"
 git clone https://github.com/xtensor-stack/xsimd.git
 cd xsimd
 mkdir build && cd build
+echo "Running cmake to configure the build for xsimd.."
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
+echo "Compiling the source code for xsimd..."
 make -j$(nproc)
+echo "Installing xsimd..."
 make install
 cd $SCRIPT_DIR 
 
@@ -154,12 +172,14 @@ mkdir -p local/snappy
 export SNAPPY_PREFIX=$(pwd)/local/snappy
 mkdir build
 cd build
-
+echo "Running cmake to configure the build for snappy..."
 cmake -DCMAKE_INSTALL_PREFIX=$SNAPPY_PREFIX \
       -DBUILD_SHARED_LIBS=ON \
       -DCMAKE_INSTALL_LIBDIR=lib \
       ..
+echo "Compiling the source code for snappy..."
 make -j$(nproc)
+echo "Installing snappy..."
 make install
 cd ..
 cd $SCRIPT_DIR 
@@ -168,7 +188,10 @@ cd $SCRIPT_DIR
 echo "------------libzstd installing-------------------------"
 git clone https://github.com/facebook/zstd.git
 cd zstd
+
+echo "Compiling the source code for libzstd..."
 make
+echo "Installing libzstd..."
 make install
 export ZSTD_HOME=/usr/local
 export CMAKE_PREFIX_PATH=$ZSTD_HOME
@@ -196,6 +219,7 @@ export CPU_COUNT=`nproc`
 mkdir build-cmake
 pushd build-cmake
 
+echo "Running cmake to configure the build for re2..."
 cmake ${CMAKE_ARGS} -GNinja \
   -DCMAKE_PREFIX_PATH=$RE2_PREFIX \
   -DCMAKE_INSTALL_PREFIX="${RE2_PREFIX}" \
@@ -204,9 +228,10 @@ cmake ${CMAKE_ARGS} -GNinja \
   -DCMAKE_BUILD_TYPE=Release \
   -DBUILD_SHARED_LIBS=ON \
   ..
-
+echo "Installing re2..."
   ninja -v install
   popd
+echo "Running make shared-install......"
 make -j "${CPU_COUNT}" prefix=${RE2_PREFIX} shared-install
 cd $SCRIPT_DIR 
 
@@ -225,7 +250,7 @@ export UTF8PROC_PREFIX=$(pwd)/utf8proc_prefix
 # Create build directory
 mkdir build
 cd build
-
+echo "Running cmake to configure the build for utf8proc..."
 # Run cmake to configure the build
 cmake -G "Unix Makefiles" \
   -DCMAKE_BUILD_TYPE="Release" \
@@ -233,8 +258,10 @@ cmake -G "Unix Makefiles" \
   -DCMAKE_POSITION_INDEPENDENT_CODE=1 \
   -DBUILD_SHARED_LIBS=1 \
   ..
-# Build and install
+echo  "Build and install utf8proc"
 cmake --build .
+
+echo "Installing utf8proc ..."
 cmake --build . --target install
 cd $SCRIPT_DIR 
 
@@ -269,7 +296,7 @@ cp -r $SCRIPT_DIR/abseil-cpp ./third_party/
 
 mkdir build
 cd build
-
+echo "Running cmake to configure the build for libprotobuf..."
 cmake -G "Ninja" \
    ${CMAKE_ARGS} \
     -DCMAKE_BUILD_TYPE=Release \
@@ -284,8 +311,9 @@ cmake -G "Ninja" \
     -Dprotobuf_JSONCPP_PROVIDER="package" \
     -Dprotobuf_USE_EXTERNAL_GTEST=OFF \
     ..
-
+echo  "Building libprotobuf..."
 cmake --build . --verbose
+echo  "Installing libprotobuf..."
 cmake --install .
 cd $SCRIPT_DIR 
 
@@ -315,9 +343,6 @@ export GCC=$CC
 export GXX=$CXX
 
 export HOST=$(uname)-$(uname -m)
-
-
-
 export HOST=$(uname)-$(uname -m)
 
 CPPFLAGS="${CPPFLAGS} -Wl,-rpath,$VIRTUAL_ENV_PATH/**/lib"
@@ -343,7 +368,7 @@ if [[ ${HOST} =~ .*Linux.* ]]; then
 fi
 
 CPPFLAGS="${CPPFLAGS} -Wl,-rpath,$VIRTUAL_ENV_PATH/**/lib"
-
+echo "Running cmake to configure the build for orc..."
 cmake ${CMAKE_ARGS} \
     -DCMAKE_PREFIX_PATH=$ORC_PREFIX \
     -DCMAKE_BUILD_TYPE=Release \
@@ -368,6 +393,7 @@ cmake ${CMAKE_ARGS} \
     -GNinja ..
 
 ninja
+echo  "Installing orc..."
 ninja install
 
 cd $SCRIPT_DIR
@@ -413,6 +439,7 @@ CFLAGS="$(echo ${CFLAGS} | sed 's/ -march=[^ ]*//g' | sed 's/ -mcpu=[^ ]*//g' |s
 
 	 export CPU_COUNT=$(nproc)
 
+echo " Building and installing Boost...."
 ./b2 -q \
     variant=release \
     address-model="${ADDRESS_MODEL}" \
@@ -456,6 +483,7 @@ export OPENSSL_ROOT=/usr
 export OPENSSL_ROOT_DIR=/usr
 
 ./bootstrap.sh
+echo "Configuring thrift-cpp installation..."
 ./configure --prefix=$THRIFT_PREFIX \
     --with-python=no \
     --with-py3=no \
@@ -476,12 +504,11 @@ export OPENSSL_ROOT_DIR=/usr
     --enable-tests=no \
     --enable-tutorial=no 
 
+echo "Compiling the source code for thrift-cpp..."
 make -j$(nproc)
+echo  "Installing thrift_cpp..."
 make install
 cd $SCRIPT_DIR 
-
-
-
 
 echo "------------ grpc_cpp installing-------------------"
 
@@ -515,6 +542,7 @@ fi
 
 mkdir -p build-cpp
 pushd build-cpp
+echo "Running cmake to configure the build for grpc-cpp...."
 cmake ${CMAKE_ARGS} ..  \
       -GNinja \
       -DBUILD_SHARED_LIBS=ON \
@@ -533,14 +561,11 @@ cmake ${CMAKE_ARGS} ..  \
       -DCMAKE_RANLIB=${RANLIB} \
       -DCMAKE_VERBOSE_MAKEFILE=ON \
       -DProtobuf_PROTOC_EXECUTABLE=$PROTOC_BIN
-
+echo  "Installing grpc_cpp..."
 ninja install -v
 popd
 
 cd $SCRIPT_DIR
-
-
-
 
 echo "---------------------openblas installing---------------------"
 
@@ -589,10 +614,10 @@ build_opts+=(NUM_THREADS=8)
 # Disable CPU/memory affinity handling to avoid problems with NumPy and R
 build_opts+=(NO_AFFINITY=1)
 
-# Build OpenBLAS
+echo "Build OpenBLAS...."
 make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
 
-# Install OpenBLAS
+echo "Install OpenBLAS..."
 CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
 OpenBLASInstallPATH=$(pwd)/$PREFIX
 OpenBLASConfigFile=$(find . -name OpenBLASConfig.cmake)
@@ -614,7 +639,7 @@ echo "-----------------installing pyarrow----------------------"
 
 git clone  $PACKAGE_URL
 
-cd $PACKAGE_DIR
+cd arrow
 git checkout $PACKAGE_VERSION
 git submodule update --init
 
@@ -679,7 +704,7 @@ fi
 
 export AR=$(which ar)
 export RANLIB=$(which ranlib)
-
+echo "Running cmake to configure the build for pyarrow..."
 cmake \
     -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH \
     -DARROW_BOOST_USE_SHARED=ON \
@@ -724,12 +749,13 @@ cmake \
     ${EXTRA_CMAKE_ARGS} \
     ..
 
+echo "Installing pyarrow...."
 ninja install
 popd
 
 cd $SCRIPT_DIR
 
-#installing prerequisite
+echo "Installing prerequisite for arrow..."
 pip install setuptools-scm Cython
 pip install numpy==2.0.2
 
@@ -774,7 +800,7 @@ if ! pip install . ; then
     exit 1
 fi
 
-#testing
+echo "testing pyarrow...."
 cd ..
 export LD_LIBRARY_PATH=${SNAPPY_PREFIX}/lib:${C_ARES_PREFIX}/lib:${THRIFT_PREFIX}/lib:${UTF8PROC_PREFIX}/lib:${RE2_PREFIX}/lib:${LIBPROTO_INSTALL}/lib64:${GRPC_PREFIX}/lib:${ORC_PREFIX}/lib:${OpenBLASInstallPATH}/lib
 

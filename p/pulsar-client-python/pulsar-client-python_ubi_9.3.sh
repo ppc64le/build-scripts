@@ -28,7 +28,7 @@ yum install -y git python-devel gcc gcc-c++ gzip tar make wget xz cmake yum-util
     perl-CPAN llvm llvm-devel clang-tools-extra ninja-build
 
 PACKAGE_NAME=pulsar-client-python
-PACKAGE_VERSION=${1:-3.5.0}
+PACKAGE_VERSION=${1:-v3.5.0}
 PACKAGE_URL=https://github.com/apache/pulsar-client-python.git
 PACKAGE_DIR=pulsar-client-python
 
@@ -51,7 +51,7 @@ cd ../..
 # Clone the pulsar-client-python repository
 git clone ${PACKAGE_URL}
 cd ${PACKAGE_DIR}
-git checkout v${PACKAGE_VERSION}
+git checkout ${PACKAGE_VERSION}
 
 # Build pulsar-client-cpp
 git clone https://github.com/apache/pulsar-client-cpp.git
