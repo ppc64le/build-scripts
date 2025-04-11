@@ -3,6 +3,8 @@
 requires = [
     "setuptools",
     "wheel",
+    "auditwheel>=5.0.0",
+        
 ]
 build-backend = "setuptools.build_meta"
 
@@ -32,3 +34,7 @@ where = ["local"]
 
 [tool.setuptools.package-data]
 openblas = ["lib/*", "include/*", "lib/pkgconfig/*", "lib/cmake/openblas/*"]
+
+[tool.distutils.bdist_wheel]
+plat-name = "manylinux2014_ppc64le"  # Explicitly set the platform tag
+universal = false  # Disable universal wheel (forces platform-specific build)
