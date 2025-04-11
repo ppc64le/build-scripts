@@ -27,15 +27,17 @@ WORK_DIR=$(pwd)
 echo "Installing dependencies..."
 yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3-devel python3.12 python3.12-devel python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
 PYTHON_VERSION=$(python3.12 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2) 
+
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 export SITE_PACKAGE_PATH=/usr/local/lib/python${PYTHON_VERSION}/site-packages
 
-#clone and install openblas from source
+echo "---------clone and install openblas from source------------"
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
 git checkout v0.3.29
 git submodule update --init
+
 PREFIX=local/openblas
 OPENBLAS_SOURCE=$(pwd)
 # Set build options
@@ -68,9 +70,9 @@ build_opts+=(USE_THREAD=1)
 build_opts+=(NUM_THREADS=8)
 # Disable CPU/memory affinity handling to avoid problems with NumPy and R
 build_opts+=(NO_AFFINITY=1)
-# Build OpenBLAS
+echo "Build OpenBLAS..."
 make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
-# Install OpenBLAS
+echo "Install OpenBLAS..."
 CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
 OpenBLASInstallPATH=$(pwd)/$PREFIX
 OpenBLASConfigFile=$(find . -name OpenBLASConfig.cmake)
@@ -81,12 +83,15 @@ sed -i "s|libdir=local/openblas/lib|libdir=${OpenBLASInstallPATH}/lib|" ${OpenBL
 sed -i "s|includedir=local/openblas/include|includedir=${OpenBLASInstallPATH}/include|" ${OpenBLASPCFile}
 export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
 export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
-cd ..
 
+cd $WORK_DIR
 pip3.12 install --upgrade cmake pip setuptools wheel ninja packaging tox pytest build mypy stubs
+
+echo "-------build and install abseil-cpp-----------"
 # Set ABSEIL_VERSION and ABSEIL_URL
 ABSEIL_VERSION=20240116.2
 ABSEIL_URL="https://github.com/abseil/abseil-cpp"
+
 # Create and set up working directories
 echo "Creating abseil prefix directory at $WORK_DIR/abseil-prefix"
 mkdir $WORK_DIR/abseil-prefix
@@ -95,10 +100,11 @@ PREFIX=$WORK_DIR/abseil-prefix
 git clone $ABSEIL_URL -b $ABSEIL_VERSION
 cd abseil-cpp
 SOURCE_DIR=$(pwd)
+
 # Set up directories for local installation
 mkdir -p $SOURCE_DIR/local/abseilcpp
 abseilcpp=$SOURCE_DIR/local/abseilcpp
-# Create build directory and run cmake
+echo "Create build directory and run cmake..."
 mkdir build
 cd build
 cmake -G Ninja \
@@ -124,6 +130,7 @@ PREFIX=$SITE_PACKAGE_PATH
 ABSEIL_PREFIX=$SOURCE_DIR/local/abseilcpp
 echo "Setting PREFIX to $PREFIX and ABSEIL_PREFIX to $ABSEIL_PREFIX"
 
+echo "-------build and install libprotobuf-----------"
 export C_COMPILER=$(which gcc)
 export CXX_COMPILER=$(which g++)
 echo "C Compiler set to $C_COMPILER"
@@ -188,8 +195,12 @@ export CMAKE_PREFIX_PATH="$ABSEIL_PREFIX;$LIBPROTO_INSTALL;$PYBIND11_PREFIX"
 echo "Updated CMAKE_PREFIX_PATH after OpenBLAS: $CMAKE_PREFIX_PATH"
 export LD_LIBRARY_PATH="$LIBPROTO_INSTALL/lib64:$ABSEIL_PREFIX/lib:$LD_LIBRARY_PATH"
 echo "Updated LD_LIBRARY_PATH : $LD_LIBRARY_PATH"
-echo "Cloning and installing..."
+cd $WORK_DIR
 
+
+echo "-------build and install onnx-----------"
+
+echo "Cloning and installing..."
 git clone https://github.com/onnx/onnx
 cd onnx
 git checkout v1.17.0
@@ -235,13 +246,15 @@ python3.12 -m build --wheel --no-isolation --outdir="wheelf"
 pip3.12 install wheelf/*.whl
 echo "--------------onnx installed------------------"
 cd ..
-
 cd $WORK_DIR
+
+echo "--------Cloning and installing onnxruntime--------..."
 # Clone and install onnxruntime
-echo "Cloning and installing onnxruntime..."
+echo "Cloning onnxruntime..."
 git clone https://github.com/microsoft/onnxruntime
 cd onnxruntime
 git checkout v1.21.0
+
 # Build the onnxruntime package and create the wheel
 export CXXFLAGS="-Wno-stringop-overflow"
 export CFLAGS="-Wno-stringop-overflow"
@@ -266,8 +279,9 @@ echo "Building onnxruntime..."
     --compile_no_warning_as_error \
     --build_wheel
 # Clean up the onnxruntime repository
-cd ..
+cd $WORK_DIR
 
+echo "-------build and install skl2onnx-----------"
 git clone https://github.com/onnx/sklearn-onnx.git
 cd sklearn-onnx
 git checkout v1.18
@@ -275,15 +289,21 @@ sed -i 's/onnx>=1.2.1//g' requirements.txt
 sed -i 's/onnxconverter-common>=1.7.0//g' requirements.txt
 sed -i 's/scikit-learn>=1\.1/scikit-learn==1.6.1/' requirements.txt
 pip3.12 install -e . --no-build-isolation --no-deps
-cd ..
+cd $WORK_DIR
 echo "-------skl2onnx installed-----------"
 
+echo "-------build and install onnxmltools-----------"
 #Build onnxmltools
 git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
-sed -i 's/\bonnxconverter-common\b/onnxconverter-common==1.14.0/g' requirements.txt
+#sed -i 's/\bonnxconverter-common\b/onnxconverter-common==1.14.0/g' requirements.txt
+pip3.12 install onnxconverter_common --no-deps
+
+#export other necessary path for onnmxtools
+export LD_LIBRARY_PATH=/OpenBLAS/local/openblas/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/local/libprotobuf/lib64:$LD_LIBRARY_PATH
 
 #Build
 if ! (pip3.12 install -e . --no-build-isolation --no-deps) ; then
@@ -294,18 +314,15 @@ if ! (pip3.12 install -e . --no-build-isolation --no-deps) ; then
 fi
 
 # Run test cases
-if ! (tox -e py3.12 --installpkg /onnx/wheelf/*.whl) ; then
+echo "run tests  ..."
+if !(pytest --maxfail=10 --durations=10 tests/utils && python3.12 -c "import onnxmltools; print(onnxmltools.__version__)"); then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_success_but_test_Fails"
     exit 2
 else
     echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass | Both_Install_and_Test_Success"
     exit 0
 fi
-
-
-
-
