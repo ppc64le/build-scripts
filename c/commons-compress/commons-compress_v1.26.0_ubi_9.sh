@@ -24,7 +24,7 @@ PACKAGE_URL=https://github.com/apache/${PACKAGE_NAME}.git
 BUILD_HOME=$(pwd)
 
 #install system dependencies
-yum install -y git java-17-openjdk-devel maven
+sudo yum install -y git java-17-openjdk-devel maven
 
 #set JAVA_HOME dynamically
 export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
