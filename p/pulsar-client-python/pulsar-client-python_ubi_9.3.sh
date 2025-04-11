@@ -74,7 +74,7 @@ echo "Compiling the source code..."
 cmake -B build -DINTEGRATE_VCPKG=ON
 echo "Compiling the source code..."
 cmake --build build -j8
-eecho "Compiling the source code..."
+echo "Compiling the source code..."
 cmake -B build -DINTEGRATE_VCPKG=ON -DCMAKE_INSTALL_PREFIX=/tmp/pulsar
 echo "Installing pulsar-client-cpp"
 cmake --build build -j8 --target install
