@@ -46,6 +46,14 @@ sed -i '/^\[build-system\]/,/^\[/{/^\[build-system\]/!{/^\[/!d}}' pyproject.toml
 # Re-add minimal build-system section for setuptools
 sed -i '/^\[build-system\]/a requires = ["setuptools", "wheel"]\nbuild-backend = "setuptools.build_meta"' pyproject.toml
 
+# Remove dynamic versioning
+sed -i '/^dynamic *= *\["version"\]/d' pyproject.toml
+
+# Add version = "0.8.1" to the [project] section if not already present
+if ! grep -q "^version *= *" pyproject.toml; then
+  sed -i '/^\[project\]/a version = "0.8.1"' pyproject.toml
+fi
+
 # Install Rust using rustup
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 source $HOME/.cargo/env
