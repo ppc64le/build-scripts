@@ -35,7 +35,7 @@ git checkout $PACKAGE_VERSION
 #cryptography.exceptions.UnsupportedAlgorithm: sha1 is not supported by this backend for RSA signing. so setting this export
 export OPENSSL_ENABLE_SHA1_SIGNATURES=1
 #install necessary Python packages
-pip install wheel pytest tox nox cryptography_vectors==44.0.0 pytest-benchmark pretend certifi  pytest-cov pytest-xdist
+pip install wheel pytest tox nox cryptography_vectors==44.0.2 pytest-benchmark pretend certifi  pytest-cov pytest-xdist
 
 if ! python3 -m pip install .; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
