@@ -31,7 +31,8 @@ CURRENT_DIR="${PWD}"
 
 yum install -y git make cmake wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas
 yum install -y gcc-toolset-13-gcc gcc-toolset-13-gcc-c++
-
+yum install -y make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel python3.12 python3.12-devel python3.12-pip patch ninja-build gcc-toolset-13  pkg-config
+dnf install -y gcc-toolset-13-libatomic-devel
 yum install -y bzip2-devel glibc-static libstdc++-static libffi-devel zlib-devel pkg-config automake autoconf libtool
 
 
