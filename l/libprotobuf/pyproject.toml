@@ -1,8 +1,10 @@
 # Minimum requirements for the build system to execute.
 # Do not include sys,subprocess and os as they are default packages
+[build-system]
 requires = [
     "setuptools",
     "wheel",
+    "auditwheel>=5.0.0",
 ]
 
 #Set build backend to setuptools
@@ -33,6 +35,8 @@ upstream = "https://github.com/protocolbuffers/protobuf"
 
 #Find packages files in local folder, this is needed as we are not following standar directory structure of setuptools
 [tool.setuptools.packages.find]
+namespaces = true
+where = ["local"]
 # scanning for namespace packages is true by default in pyproject.toml, so
 # # you do NOT need to include the following line.
 namespaces = true
@@ -41,3 +45,7 @@ where = ["local"]
 #Package data to add bazel in wheel, this is needed as its not a .py file
 [tool.setuptools.package-data]
 libprotobuf = ["bin/**/*", "lib64/**/*", "include/**/*"]
+
+[tool.distutils.bdist_wheel]
+plat-name = "manylinux2014_ppc64le"  # Explicitly set the platform tag
+universal = false  # Disable universal wheel (forces platform-specific build)
