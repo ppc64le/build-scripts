@@ -59,7 +59,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 source $HOME/.cargo/env
 
 # Install the package
-if ! pip install .; then
+if ! pip3 install .; then
     echo "------------------$PACKAGE_NAME: Installation failed ---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Installation_Failure"
