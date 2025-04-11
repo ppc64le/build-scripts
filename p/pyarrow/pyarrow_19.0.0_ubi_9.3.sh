@@ -20,7 +20,7 @@
 set -e
 
 PACKAGE_NAME=pyarrow
-PACKAGE_DIR=arrow
+PACKAGE_DIR=arrow/python
 PACKAGE_VERSION=${1:-apache-arrow-19.0.0}
 PACKAGE_URL=https://github.com/apache/arrow
 version=19.0.0
@@ -639,7 +639,7 @@ echo "-----------------installing pyarrow----------------------"
 
 git clone  $PACKAGE_URL
 
-cd $PACKAGE_DIR
+cd arrow
 git checkout $PACKAGE_VERSION
 git submodule update --init
 
