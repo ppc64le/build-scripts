@@ -115,5 +115,3 @@ else
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Installation_Success"
     exit 0
 fi
-
-#Skipping the testcase because for we have to must ensure that Pulsar service is running which is taking time .Due to time limitation we have decided to skip tests for now. We will take this afterwards.

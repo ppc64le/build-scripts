@@ -45,7 +45,7 @@ rustup default ${RUST_VERSION}
 rustc --version | grep "${RUST_VERSION}"
 
 # Install go
-export GO_VERSION=${GO_VERSION:-1.22.1}
+export GO_VERSION=${GO_VERSION:-1.22.9}
 export GOROOT=${GOROOT:-"/usr/local/go"}
 export GOPATH=${GOPATH:-$HOME/go}
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:/usr/local/bin
