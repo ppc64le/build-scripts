@@ -1,0 +1,39 @@
+# Minimum requirements for the build system to execute.
+# Do not include sys,subprocess and os as they are default packages
+requires = [
+    "setuptools",
+    "wheel",
+]
+
+#Set build backend to setuptools
+build-backend = "setuptools.build_meta"
+
+#Project name an version
+[project]
+name = "libvpx"
+version = "{PACKAGE_VERSION}"
+
+#One line description
+description = "A high-quality, open video format for the web"
+
+#Classifiers to improve pacakage discoverability
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "License :: BSD 3-Clause",
+]
+
+#Project URLs
+[project.urls]
+homepage = "https://github.com/webmproject/libvpx"
+upstream = "https://github.com/webmproject/libvpx"
+
+#Find packages files in local folder, this is needed as we are not following standar directory structure of setuptools
+[tool.setuptools.packages.find]
+# scanning for namespace packages is true by default in pyproject.toml, so
+# # you do NOT need to include the following line.
+namespaces = true
+where = ["local"]
+
+#Package data to add bazel in wheel, this is needed as its not a .py file
+[tool.setuptools.package-data]
+libvpx = ["bin/*", "lib/*", "lib/pkgconfig/*", "include/vpx/*"]

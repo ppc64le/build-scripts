@@ -1,0 +1,16 @@
+{
+    "maintainer": "Abhinav Kumar",
+    "package_name": "graphviz",
+    "github_url": "https://github.com/xflr6/graphviz",
+    "version": "0.20.2",
+    "wheel_build" : true,
+    "default_branch": "master",
+    "build_script": "graphviz_ubi_9.3.sh",
+    "package_dir": "g/graphviz",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "*": {
+      "build_script": "graphviz_ubi_9.3.sh"
+    }
+}

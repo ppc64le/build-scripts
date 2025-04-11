@@ -1,0 +1,26 @@
+From 70803faa7a2aaf1be39acefb8616530aaa2dbfe1 Mon Sep 17 00:00:00 2001
+From: Anumala-Rajesh <Anumala.Rajesh@ibm.com>
+Date: Mon, 7 Apr 2025 13:42:02 +0000
+Subject: [PATCH] updated the abseil source URL
+
+---
+ tree/CMakeLists.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tree/CMakeLists.txt b/tree/CMakeLists.txt
+index 164e119..be68a02 100644
+--- a/tree/CMakeLists.txt
++++ b/tree/CMakeLists.txt
+@@ -89,8 +89,8 @@ endif()
+
+ FetchContent_Declare(
+   absl
+-  URL         ${ABSEIL_REPO}/archive/refs/tags/20220623.2.tar.gz
+-  URL_HASH    SHA256=773652c0fc276bcd5c461668dc112d0e3b6cde499600bfe3499c5fdda4ed4a5b
++  URL         ${ABSEIL_REPO}/archive/refs/tags/20240116.2.tar.gz
++  URL_HASH    SHA256=733726b8c3a6d39a4120d7e45ea8b41a434cdacde401cba500f14236c49b39dc
+   CMAKE_ARGS  ${ABSEIL_CMAKE_ARGS}
+   EXCLUDE_FROM_ALL
+   ${ABSEIL_FIND_PACKAGE_ARGS})
+--
+2.43.5

@@ -1,0 +1,92 @@
+diff --git a/aten/src/ATen/native/cpu/BinaryOpsKernel.cpp b/aten/src/ATen/native/cpu/BinaryOpsKernel.cpp
+index 51417d0e685..97a4ec67c0a 100644
+--- a/aten/src/ATen/native/cpu/BinaryOpsKernel.cpp
++++ b/aten/src/ATen/native/cpu/BinaryOpsKernel.cpp
+@@ -420,6 +420,14 @@ void bitwise_xor_kernel(TensorIteratorBase& iter) {
+ }
+
+ void lshift_kernel(TensorIteratorBase& iter) {
++#if defined(__VSX__)  || defined(CPU_CAPABILITY_VSX)
++  AT_DISPATCH_INTEGRAL_TYPES(iter.dtype(), "lshift_cpu", [&]() {
++    cpu_kernel(iter,
++      [](scalar_t a, scalar_t b) -> scalar_t {
++        return static_cast<std::make_unsigned_t<scalar_t>>(a) << b;
++    });
++  });
++#else
+   AT_DISPATCH_INTEGRAL_TYPES(iter.dtype(), "lshift_cpu", [&]() {
+     cpu_kernel_vec(
+         iter,
+@@ -433,6 +441,7 @@ void lshift_kernel(TensorIteratorBase& iter) {
+         },
+         [](Vectorized<scalar_t> a, Vectorized<scalar_t> b) { return a << b; });
+   });
++#endif
+ }
+
+ void logical_and_kernel(TensorIterator& iter) {
+@@ -491,6 +500,14 @@ void logical_xor_kernel(TensorIterator& iter) {
+ }
+
+ void rshift_kernel(TensorIteratorBase& iter) {
++#if defined(__VSX__)  || defined(CPU_CAPABILITY_VSX)
++  AT_DISPATCH_INTEGRAL_TYPES(iter.dtype(), "rshift_cpu", [&]() {
++    cpu_kernel(iter,
++      [](scalar_t a, scalar_t b) -> scalar_t {
++        return a >> b;
++      });
++  });
++#else
+   AT_DISPATCH_INTEGRAL_TYPES(iter.dtype(), "rshift_cpu", [&]() {
+     cpu_kernel_vec(
+         iter,
+@@ -507,6 +524,7 @@ void rshift_kernel(TensorIteratorBase& iter) {
+         },
+         [](Vectorized<scalar_t> a, Vectorized<scalar_t> b) { return a >> b; });
+   });
++#endif
+ }
+
+ void lt_kernel(TensorIteratorBase& iter) {
+diff --git a/cmake/Dependencies.cmake b/cmake/Dependencies.cmake
+index e78305e0a8e..57b6f42d2bd 100644
+--- a/cmake/Dependencies.cmake
++++ b/cmake/Dependencies.cmake
+@@ -1155,6 +1155,8 @@ if(USE_DISTRIBUTED AND USE_TENSORPIPE)
+       set(TP_ENABLE_CUDA_IPC ON CACHE BOOL "" FORCE)
+     endif()
+     set(TP_BUILD_LIBUV ON CACHE BOOL "" FORCE)
++    set(TP_ENABLE_SHM OFF CACHE BOOL "" FORCE)
++    set(TP_ENABLE_CMA OFF CACHE BOOL "" FORCE)
+     add_compile_options(-DTORCH_USE_LIBUV)
+     include_directories(BEFORE SYSTEM ${CMAKE_CURRENT_LIST_DIR}/../third_party/tensorpipe/third_party/libuv/include)
+     set(TP_STATIC_OR_SHARED STATIC CACHE STRING "" FORCE)
+diff --git a/test/cpp/api/CMakeLists.txt b/test/cpp/api/CMakeLists.txt
+index ceeb607d52a..620a7226673 100644
+--- a/test/cpp/api/CMakeLists.txt
++++ b/test/cpp/api/CMakeLists.txt
+@@ -65,6 +65,7 @@ if(NOT MSVC)
+   target_compile_options_if_supported(test_api "-Wno-maybe-uninitialized")
+   # gcc gives nonsensical warnings about variadic.h
+   target_compile_options_if_supported(test_api "-Wno-unused-but-set-parameter")
++  target_compile_options_if_supported(test_api "-Wno-error=nonnull")
+ endif()
+
+ if(INSTALL_TEST)
+diff --git a/tools/setup_helpers/cmake.py b/tools/setup_helpers/cmake.py
+index 4b605fe5975..977d02a8b9b 100644
+--- a/tools/setup_helpers/cmake.py
++++ b/tools/setup_helpers/cmake.py
+@@ -190,6 +190,12 @@ class CMake:
+             # Key: environment variable name. Value: Corresponding variable name to be passed to CMake. If you are
+             # adding a new build option to this block: Consider making these two names identical and adding this option
+             # in the block below.
++            "Protobuf_INCLUDE_DIR" : "Protobuf_INCLUDE_DIR",
++            "Protobuf_LIBRARIES" : "Protobuf_LIBRARIES",
++            "Protobuf_LIBRARY": "Protobuf_LIBRARY",
++            "Protobuf_LITE_LIBRARY" : "Protobuf_LITE_LIBRARY",
++            "Protobuf_PROTOC_EXECUTABLE": "Protobuf_PROTOC_EXECUTABLE",
++            "absl_DIR": "absl_DIR",
+             "_GLIBCXX_USE_CXX11_ABI": "GLIBCXX_USE_CXX11_ABI",
+             "CUDNN_LIB_DIR": "CUDNN_LIBRARY",
+             "USE_CUDA_STATIC_LINK": "CAFFE2_STATIC_LINK_CUDA",

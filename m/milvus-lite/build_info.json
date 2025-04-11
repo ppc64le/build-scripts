@@ -1,0 +1,16 @@
+{
+	"maintainer": "vivek8123",
+	"package_name": "milvus-lite",
+	"github_url": "https://github.com/milvus-io/milvus-lite",
+	"version": "v2.4.11",
+	"default_branch": "main",
+	"build_script": "milvus-lite_ubi_9.3.sh",
+	"package_dir": "m/milvus-lite",
+	"docker_build": false,
+	"validate_build_script": true,
+	"wheel_build" : true,
+	"use_non_root_user": false,
+	"*": {
+	   "build_script": "milvus-lite_ubi_9.3.sh"
+	}
+}

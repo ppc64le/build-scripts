@@ -1,0 +1,16 @@
+{
+  "maintainer": "kiranNukal",
+  "package_name": "utf8proc",
+  "github_url": "https://github.com/JuliaStrings/utf8proc",
+  "version": "v2.6.1",
+  "wheel_build" : true,
+  "default_branch": "main",
+  "package_dir": "u/utf8proc",
+  "build_script": "utf8proc_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+    "build_script": "utf8proc_ubi_9.3.sh"
+  }
+}

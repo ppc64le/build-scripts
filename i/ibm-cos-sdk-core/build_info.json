@@ -1,0 +1,13 @@
+{
+   "maintainer": "ramnathnayak-ibm",
+   "package_name": "ibm-cos-sdk-core",
+   "github_url": "https://github.com/ibm/ibm-cos-sdk-python-core",
+   "version": "2.13.4",
+   "default_branch": "master",
+   "build_script": "ibm-cos-sdk-python-core_ubi_9.3.sh",
+   "package_dir": "i/ibm-cos-sdk-core",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
