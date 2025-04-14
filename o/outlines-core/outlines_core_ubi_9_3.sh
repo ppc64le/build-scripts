@@ -29,12 +29,15 @@ OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 echo "Installing dependencies..."
 dnf update -y
 dnf install -y git gcc-toolset-13 make python${PYTHON_VERSION} python${PYTHON_VERSION}-devel \
-               python${PYTHON_VERSION}-pip openssl openssl-devel
+               python${PYTHON_VERSION}-pip openssl openssl-devel \
+               llvm llvm-devel clang clang-devel cmake
+
 source /opt/rh/gcc-toolset-13/enable
 
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 source $HOME/.cargo/env
 
+export LIBCLANG_PATH=/usr/lib64
 
 # Clone the repository
 if [ -d "$PACKAGE_NAME" ]; then
@@ -51,6 +54,18 @@ else
 fi
 
 git checkout $PACKAGE_VERSION
+
+# Patch pyproject.toml with fixing versioning
+echo "Updating pyproject.toml with version $PACKAGE_VERSION..."
+
+# Remove any existing 'dynamic = ["version"]' line
+sed -i '/dynamic = \["version"\]/d' pyproject.toml
+
+# Remove any existing 'version =' line to avoid duplicates
+sed -i '/^version = /d' pyproject.toml
+
+# Insert 'version = "<PACKAGE_VERSION>"'
+sed -i '/^name = /a version = "'"$PACKAGE_VERSION"'"' pyproject.toml
 
 # Configure OpenSSL environment variables
 export OPENSSL_DIR=/usr
