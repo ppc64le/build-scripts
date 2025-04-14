@@ -13,6 +13,9 @@
   "v2.2.3": {
      "build_script": "pandas_2.2.3_ubi_9.5.sh"
         },
+  "v2.1.4": {
+     "build_script": "pandas_2.1.4_ubi_9.3.sh"
+    },
   "v2.1.1": {
      "build_script": "pandas_2.1.1_ubi_9.3.sh"
         },
