@@ -17,16 +17,6 @@
 #
 # ----------------------------------------------------------------------------
 
-
-yum install -y wget
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
-dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
-mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
-
 PACKAGE_NAME=thrift-cpp
 PACKAGE_DIR=thrift
 PACKAGE_VERSION=${1:-0.21.0}
@@ -36,6 +26,33 @@ yum install -y python python-pip python-devel git make  python-devel  openssl-de
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 pip install ninja setuptools
+
+SCRIPT_DIR=$(pwd)
+# Installing flex bison 
+
+echo "-----------flex installing------------------"
+wget https://github.com/westes/flex/releases/download/v2.6.4/flex-2.6.4.tar.gz
+tar -xvf flex-2.6.4.tar.gz
+cd flex-2.6.4
+echo "Configuring flex installation..."
+./configure --prefix=/usr/local
+echo "Compiling the source code for flex..."
+make -j$(nproc)
+echo "Installing flex..."
+make install
+cd $SCRIPT_DIR 
+
+echo "-------bison installing----------------------"
+wget https://ftp.gnu.org/gnu/bison/bison-3.8.2.tar.gz
+tar -xvf bison-3.8.2.tar.gz
+cd bison-3.8.2
+echo "Configuring bison installation..."
+./configure --prefix=/usr/local
+echo "Compiling the source code bison..."
+make -j$(nproc)
+echo "Installing bison..."
+make install
+cd $SCRIPT_DIR
 
 #installing boost
 
@@ -99,7 +116,7 @@ CFLAGS="$(echo ${CFLAGS} | sed 's/ -march=[^ ]*//g' | sed 's/ -mcpu=[^ ]*//g' |s
 rm "${BOOST_PREFIX}/include/boost/python.hpp"
 rm -r "${BOOST_PREFIX}/include/boost/python"
 
-cd ..
+cd $SCRIPT_DIR
 echo "------------------- boost installed-------------------"
 # clone source repository
 git clone $PACKAGE_URL
@@ -149,7 +166,6 @@ cp -r $PREFIX/* local/thriftcpp/
 #pyproject.toml
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/t/thrift-cpp/pyproject.toml
 sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
-
 
 #install
 if ! (pip install .) ; then
