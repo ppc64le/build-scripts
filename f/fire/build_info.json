@@ -1,0 +1,13 @@
+{
+   "maintainer": "ramnathnayak-ibm",
+   "package_name": "fire",
+   "github_url": "https://github.com/google/python-fire",
+   "version": "v0.4.0",
+   "default_branch": "master",
+   "build_script": "fire_ubi_9.3.sh",
+   "package_dir": "f/fire",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}

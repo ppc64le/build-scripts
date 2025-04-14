@@ -1,8 +1,8 @@
 {
-  "maintainer": "vinodk99",
+  "maintainer": "Shubhamgupta1010",
   "package_name": "3scale-apisonator",
   "github_url": "https://github.com/3scale/apisonator.git",
-  "version": "3scale-2.14.1-GA",
+  "version": "3scale-2.15.1-GA",
   "default_branch": "master",
   "package_dir": "3/3scale-apisonator",
   "build_script": "3scale-apisonator_ubi_9.3.sh",
