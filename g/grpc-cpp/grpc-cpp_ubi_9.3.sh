@@ -20,7 +20,7 @@
 set -e
 
 PACKAGE_NAME=grpc-cpp
-PACKAGE_DIR=$SCRIPT_DIR
+PACKAGE_DIR=grpc
 PACKAGE_VERSION=${1:-v1.68.0}
 PACKAGE_URL=https://github.com/grpc/grpc
 
@@ -247,7 +247,7 @@ echo "There are no test cases available. Skipping the test cases."
 #Creating Wheel
 #During wheel creation for this package we need exported vars. Once script get exit, and if we build wheel through wrapper script, then those are not applicable during wheel creation. So we are generating wheel for this package in script itself.
 
-if ! (python -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"); then
+if ! (python -m build --wheel --no-isolation --outdir="$SCRIPT_DIR/"); then
     echo "--------------------$PACKAGE_NAME:Install_success_but_wheel_creation_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_wheel_creation_fails"
