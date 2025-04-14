@@ -145,7 +145,7 @@ def check_repo_activeness(package_url):
     return True
 
 
-def raise_pull_request(branch_pkg):
+def raise_pull_request(branch_pkg, base="master"):
 
     print("\n Creating Pull Request")
     if args.github_username_arg:
@@ -162,8 +162,6 @@ def raise_pull_request(branch_pkg):
     pr_repo = "build-scripts"
 
     pr_title = "Currency: Added build_script and build_info.json for "+package_name
-    
-    base = "master"
     
     head="{}:{}".format(user_name,branch_pkg)
     maintainer_can_modify = True
