@@ -1,0 +1,16 @@
+{
+  "maintainer": "stutiibm",
+  "package_name": "jaxlib",
+  "github_url": "https://github.com/jax-ml/jax",
+  "version": "jaxlib-v0.4.7",
+  "wheel_build" : true,
+  "package_dir": "j/jaxlib",
+  "default_branch": "main",
+  "build_script": "jaxlib_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "jaxlib_ubi_9.3.sh"
+  }
+}
