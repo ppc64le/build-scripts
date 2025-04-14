@@ -22,7 +22,7 @@ PACKAGE_DIR=thrift
 PACKAGE_VERSION=${1:-0.21.0}
 PACKAGE_URL=https://github.com/apache/thrift
 
-yum install -y python python-pip python-devel git make  python-devel  openssl-devel cmake zlib-devel libjpeg-devel gcc-toolset-13 cmake libevent libtool
+yum install -y python python-pip python-devel git make  python-devel  openssl-devel cmake zlib-devel libjpeg-devel gcc-toolset-13 cmake libevent libtool wget
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 pip install ninja setuptools
