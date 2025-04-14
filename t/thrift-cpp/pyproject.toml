@@ -1,7 +1,11 @@
 # Minimum requirements for the build system to execute.
 # Do not include sys,subprocess and os as they are default packages
+[build-system]
 requires = [
+    "setuptools",
     "wheel",
+    "auditwheel>=5.0.0",
+
 ]
 
 #Set build backend to setuptools
@@ -37,3 +41,7 @@ where = ["local"]
 #Package data to add bazel in wheel, this is needed as its not a .py file
 [tool.setuptools.package-data]
 thriftcpp = ["bin/*", "lib/*", "lib/**/*", "include/**/*"]
+
+[tool.distutils.bdist_wheel]
+plat-name = "manylinux2014_ppc64le"  # Explicitly set the platform tag
+universal = false  # Disable universal wheel (forces platform-specific build)
