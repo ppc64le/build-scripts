@@ -246,7 +246,7 @@ cp -r FFmpeg/ffmpeg_prefix/* local/ffmpeg/
 
 PACKAGE_VERSION=$(echo "$PACKAGE_VERSION" | sed 's/[^0-9.]//g')
 
-wget https://raw.githubusercontent.com/JeSh30/build-scripts/refs/heads/python-ecosystem/f/ffmpeg/pyproject.toml
+wget "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/f/ffmpeg/pyproject.toml"
 sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
 
 #install package
@@ -269,7 +269,14 @@ cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -loglevel panic -codecs
 
 cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -encoders
 cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -decoders
-cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -codecs >$HOME/ffmpeg-codecs.txt
+cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -codecs >$HOME/ffmpeg-codecs.txt 
+
+if grep '\(h264\|aac\|hevc\|mpeg4\).*coders:' $HOME/ffmpeg-codecs.txt ; then
+  echo >&2 -e "\nError: Forbidden codecs in ffmpeg, see lines above.\n"
+  problem=true
+else
+  echo -e "OK, ffmpeg has no forbidden codecs."
+fi
 
 ffmpeg_libs="avcodec
         avdevice
