@@ -238,8 +238,6 @@ USE_NONFREE=no   #the options below are set for NO
 make -j$CPU_COUNT
 make install -j$CPU_COUNT
 
-echo "--------------------------------- ffmpeg Installed successfully ---------------------------------"
-
 cd $WORK_DIR
 mkdir -p local/ffmpeg
 cp -r FFmpeg/ffmpeg_prefix/* local/ffmpeg/
@@ -247,7 +245,7 @@ cp -r FFmpeg/ffmpeg_prefix/* local/ffmpeg/
 PACKAGE_VERSION=$(echo "$PACKAGE_VERSION" | sed 's/[^0-9.]//g')
 
 wget "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/f/ffmpeg/pyproject.toml"
-sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
+sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g "pyproject.toml"
 
 #install package
 if ! (pip3.12 install .) ; then
@@ -256,6 +254,8 @@ if ! (pip3.12 install .) ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
+
+echo "--------------------------------- ffmpeg Installed successfully ---------------------------------"
 
 export LD_LIBRARY_PATH=${LAME_PREFIX}/lib:${LIBVPX_PREFIX}/lib:${OPUS_PREFIX}/lib:${FFMPEG_PREFIX}/lib:${LD_LIBRARY_PATH}
 
@@ -269,7 +269,7 @@ cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -loglevel panic -codecs
 
 cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -encoders
 cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -decoders
-cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -codecs >$HOME/ffmpeg-codecs.txt 
+cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -codecs >$WORK_DIR/ffmpeg-codecs.txt 
 
 if grep '\(h264\|aac\|hevc\|mpeg4\).*coders:' $HOME/ffmpeg-codecs.txt ; then
   echo >&2 -e "\nError: Forbidden codecs in ffmpeg, see lines above.\n"
@@ -293,10 +293,15 @@ if [ $? == 0 ]; then
     echo "--------------------$PACKAGE_NAME:Both_Install_and_Test_Success---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass |  Both_Install_and_Test_Success"
-    exit 0
 else
     echo "------------------$PACKAGE_NAME:Install_success_but_test_Fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Fail |  Install_success_but_test_Fails"
     exit 2
 fi
+
+cd $WORK_DIR
+# Build wheel 
+python3.12 -m pip wheel -w $WORK_DIR -vv --no-build-isolation --no-deps .
+
+exit 0
