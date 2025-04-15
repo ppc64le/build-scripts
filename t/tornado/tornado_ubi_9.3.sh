@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : tornado
-# Version          : v6.3.3
+# Version          : v6.4.2
 # Source repo      : https://github.com/tornadoweb/tornado
 # Tested on	: UBI:9.3
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : ICH <ich@us.ibm.com>
+# Maintainer    : Shubham Garud <Shubham.Garud@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=tornado
-PACKAGE_VERSION=${1:-v6.3.3}
+PACKAGE_VERSION=${1:-v6.4.2}
 PACKAGE_URL=https://github.com/tornadoweb/tornado
 PACKAGE_DIR="$(pwd)/$PACKAGE_NAME"
 
