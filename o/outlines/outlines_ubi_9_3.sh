@@ -83,6 +83,14 @@ echo "BUILD_DEPS: $BUILD_DEPS"
 # Install PyTorch only if not installed and BUILD_DEPS is not False
 if [ -z $BUILD_DEPS ] || [ "$BUILD_DEPS" == "true" ]; then
 
+    # dependencies for numpy
+    dnf install -y gfortran lapack-devel pkgconfig
+
+    # dependencies for pillow
+    dnf install -y libtiff-devel libjpeg-devel openjpeg2-devel zlib-devel \
+        libpng-devel freetype-devel lcms2-devel libwebp-devel tcl-devel tk-devel \
+        harfbuzz-devel fribidi-devel libraqm-devel libimagequant-devel libxcb-devel
+
     # Install dependency - pytorch
     PYTORCH_VERSION=v2.5.1
 
@@ -108,7 +116,7 @@ if [ -z $BUILD_DEPS ] || [ "$BUILD_DEPS" == "true" ]; then
     export CXXFLAGS="-Wno-unused-variable -Wno-unused-parameter"
 
     pip${PYTHON_VER} install -r requirements.txt
-    MAX_JOBS=$PARALLEL python${PYTHON_VER} setup.py develop
+    python${PYTHON_VER} setup.py develop
 
     cd ..
 else
