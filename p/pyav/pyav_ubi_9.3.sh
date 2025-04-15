@@ -179,6 +179,7 @@ git submodule update --init
 
 yum install -y gmp-devel freetype-devel openssl-devel
 
+export CPU_COUNT=$(nproc)
 
 USE_NONFREE=no   #the options below are set for NO
 ./configure \
@@ -217,9 +218,33 @@ USE_NONFREE=no   #the options below are set for NO
         --disable-decoder=aac_fixed \
         --disable-encoder=aac_latm \
         --disable-decoder=aac_latm \
+        --disable-encoder=mpeg \
+        --disable-encoder=mpeg1video \
+        --disable-encoder=mpeg2video \
+        --disable-encoder=mpeg4 \
+        --disable-encoder=msmpeg4 \
+        --disable-encoder=mpeg4_v4l2m2m \
+        --disable-encoder=msmpeg4v2 \
+        --disable-encoder=msmpeg4v3 \
+        --disable-decoder=mpeg \
+        --disable-decoder=mpegvideo \
+        --disable-decoder=mpeg1video \
+        --disable-decoder=mpeg1_v4l2m2m \
+        --disable-decoder=mpeg2video \
+        --disable-decoder=mpeg2_v4l2m2m \
+        --disable-decoder=mpeg4 \
+        --disable-decoder=msmpeg4 \
+        --disable-decoder=mpeg4_v4l2m2m \
+        --disable-decoder=msmpeg4v1 \
+        --disable-decoder=msmpeg4v2 \
+        --disable-decoder=msmpeg4v3 \
+        --disable-encoder=h264_v4l2m2m \
+        --disable-decoder=h264_v4l2m2m \
+        --disable-encoder=hevc_v4l2m2m \
+        --disable-decoder=hevc_v4l2m2m \
         --disable-nonfree --disable-gpl --disable-gnutls --enable-openssl --disable-libopenh264 --disable-libx264
 
-make 
+make -j$CPU_COUNT
 make install PREFIX="${FFMPEG_PREFIX}"
 export PKG_CONFIG_PATH=${FFMPEG_PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
 export LD_LIBRARY_PATH=${FFMPEG_PREFIX}/lib:${LD_LIBRARY_PATH}
