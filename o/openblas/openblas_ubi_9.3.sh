@@ -109,7 +109,7 @@ CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@
 
 #During wheel creation for this package we need exported vars. Once script get exit, and if we build wheel through wrapper script, then those are not applicable during wheel creation. So we are generating wheel for this package in script itself.
 echo "---------------------------------------------------Building the wheel--------------------------------------------------"
-pip install --upgrade pip build setuptools wheel auditwheel
+pip install --upgrade pip build setuptools wheel 
 python -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"
 
 # Run test cases
