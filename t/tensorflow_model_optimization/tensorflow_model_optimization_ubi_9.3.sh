@@ -313,13 +313,10 @@ cd grpc
 git checkout v1.70.0
 git submodule update --init --recursive
 
-pip3.12 install setuptools coverage cython protobuf==4.25.3 wheel cmake==3.*
+python3.12 -m pip install pytest hypothesis build six
+python3.12 -m pip install -r requirements.txt
 
-export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true
-export GRPC_PYTHON_BUILD_WITH_CYTHON=1
-
-# Install the package
-pip3.12 install -e .
+GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1 python3.12 -m pip install -e .
 
 echo " --------------------------------------------- grpcio Successfully Installed --------------------------------------------- "
 
@@ -379,7 +376,7 @@ CPU_TUNE_OPTION=${BUILD_COPT}${CPU_TUNE_FRAG}
 CPU_TUNE_HOST_OPTION=${BUILD_HOST_COPT}${CPU_TUNE_FRAG}
 
 USE_MMA=0
-echo "--------------------------------Bazelrc dir : ${BAZEL_RC_DIR}----------------------------------"
+echo " --------------------------------------------- Bazelrc dir : ${BAZEL_RC_DIR} --------------------------------------------- "
 TENSORFLOW_PREFIX=/install-deps/tensorflow
 
 cat > $BAZEL_RC_DIR/python_configure.bazelrc << EOF
@@ -415,19 +412,21 @@ build --verbose_failures
 build --spawn_strategy=standalone
 EOF
 
-echo "----------------------------------Created bazelrc-----------------------------------"
+echo " --------------------------------------------- Created bazelrc --------------------------------------------- "
 
 export BUILD_TARGET="//tensorflow/tools/pip_package:wheel //tensorflow/tools/lib_package:libtensorflow //tensorflow:libtensorflow_cc${SHLIB_EXT}"
 
+echo " --------------------------------------------- Tensorflow Test and Install --------------------------------------------- "
+
 #Install
 if ! (bazel --bazelrc=$BAZEL_RC_DIR/tensorflow.bazelrc build --local_cpu_resources=HOST_CPUS*0.50 --local_ram_resources=HOST_RAM*0.50 --config=opt ${BUILD_TARGET}) ; then
-    echo "------------------tensorflow:Install_fails-------------------------------------"
+    echo " ------------------------ Tensorflow:Install_fails ------------------------ "
     echo "https://github.com/tensorflow/tensorflow tensorflow"
     echo "tensorflow |  https://github.com/tensorflow/tensorflow | v2.18.1 | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-echo "-------------------------------tensorflow installation successful-------------------------------------"
+echo " --------------------------------------------- Tensorflow Successfully Installed --------------------------------------------- "
 
 cd $CURRENT_DIR
 
@@ -452,7 +451,7 @@ cd $PACKAGE_NAME
 sed -i "s/numpy~=1.23/numpy==2.0.2/g" setup.py
 sed -i "s/numpy~=1.23.0/numpy==2.0.2/g" requirements.txt
 
-echo "------------------------------- Wheel Build Started -------------------------------------"
+echo " --------------------------------------------- Wheel Build Started --------------------------------------------- "
 
 #Start building
 echo "$PACKAGE build starts!!"
@@ -462,13 +461,13 @@ python3.12 setup.py bdist_wheel --release --dist-dir $OUTPUT_DIR
 # update_platform_tag tensorflow_model_optimization    -----> getting error from here command not found error
 
 if ! python3.12 setup.py install; then
-    echo "------------------ $PACKAGE_NAME :wheel_built_fails---------------------"
+    echo " ------------------------ $PACKAGE_NAME :wheel_built_fails ------------------------ "
     echo "$PACKAGE_VERSION $PACKAGE_NAME"
     echo " $PACKAGE_NAME | $PACKAGE_VERSION | $PACKAGE_URL | GitHub | Fail |  wheel_built_fails"
     exit 1
 fi
 
-echo "------------------------------- Wheel Build Completed -------------------------------------"
+echo " --------------------------------------------- Wheel Build Completed --------------------------------------------- "
 
 
 ARCH=`uname -p`
@@ -493,12 +492,12 @@ fi
 # python3.12 -c "import tensorflow_model_optimization; print(tensorflow_model_optimization.__version__)"
 
 if [ $? == 0 ]; then
-    echo "--------------------$PACKAGE_NAME:Both_Install_and_Test_Success---------------------"
+    echo " ------------------------ $PACKAGE_NAME:Both_Install_and_Test_Success ------------------------ "
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass |  Both_Install_and_Test_Success"
     exit 0
 else
-    echo "------------------$PACKAGE_NAME:Install_success_but_test_Fails-------------------------"
+    echo " ------------------------ $PACKAGE_NAME:Install_success_but_test_Fails ------------------------ "
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Fail |  Install_success_but_test_Fails"
     exit 2
