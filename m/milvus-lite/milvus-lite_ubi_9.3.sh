@@ -18,13 +18,13 @@
 #
 # ----------------------------------------------------------------------------
 set -x
-WORKDIR=$(pwd)
+PACKAGE_DIR=milvus-lite/python
 PACKAGE_NAME=milvus-lite
 PACKAGE_VERSION=v2.4.11
 PACKAGE_URL=https://github.com/milvus-io/milvus-lite
-PACKAGE_DIR=milvus-lite/python
+WORKDIR=$(pwd)
 
-yum install -y wget openblas-devel git python3-pip rust cargo gcc gcc-c++ libstdc++-static which libaio libuuid-devel ncurses-devel libtool m4 autoconf automake ninja-build zlib-devel libffi-devel openssl-devel scl-utils openblas-devel
+yum install -y wget perl openblas-devel git python3-pip rust cargo gcc gcc-c++ libstdc++-static which libaio libuuid-devel ncurses-devel libtool m4 autoconf automake ninja-build zlib-devel libffi-devel openssl-devel scl-utils openblas-devel
 pip3 install wheel conan==1.64.1 setuptools==70.0.0
 
 # Install CMake
@@ -72,7 +72,7 @@ cd ..
 
 #Clone the package
 git clone ${PACKAGE_URL}
-cd ${PACKAGE_NAME}
+cd ${PACKAGE_DIR}
 git checkout  ${PACKAGE_VERSION}
 git submodule update --init --recursive
 
@@ -85,7 +85,6 @@ popd
 export VCPKG_FORCE_SYSTEM_BINARIES=1
 mkdir -p $HOME/.cargo/bin/
 
-cd python/
 pip install -r requirements.txt
 
 # Install the package
@@ -96,6 +95,7 @@ if ! python3 setup.py install; then
 else
     echo "------------------$PACKAGE_NAME: Installation successful ---------------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Installation_Success"
+    python3 -m build --wheel --no-isolation --outdir="$WORKDIR/"
     exit 0
 fi
 
