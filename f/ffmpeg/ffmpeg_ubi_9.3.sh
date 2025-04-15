@@ -27,9 +27,9 @@ PACKAGE_URL=https://github.com/FFmpeg/FFmpeg
 WORK_DIR=$(pwd)
 
 # Install dependencies
-yum install -y python3 python3-devel python3-pip gcc-toolset-13 make \
-  git wget tar pkgconfig autoconf automake libtool cmake zlib-devel freetype-devel \
-  gmp-devel openssl openssl-devel
+yum install -y python312 python3.12-devel python3.12-pip gcc-toolset-13 make cmake \
+  git wget tar pkgconfig autoconf automake libtool zlib-devel freetype-devel \
+  gmp-devel openssl openssl-devel 
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
@@ -73,7 +73,7 @@ echo "--------------------------------- Installing libvpx ----------------------
 
 git clone https://github.com/webmproject/libvpx
 cd libvpx
-git checkout v1.9.0
+git checkout v1.13.1
 
 mkdir libvpx_prefix
 export LIBVPX_PREFIX=$(pwd)/libvpx_prefix
@@ -229,6 +229,10 @@ USE_NONFREE=no   #the options below are set for NO
         --disable-decoder=msmpeg4v1 \
         --disable-decoder=msmpeg4v2 \
         --disable-decoder=msmpeg4v3 \
+        --disable-encoder=h264_v4l2m2m \
+        --disable-decoder=h264_v4l2m2m \
+        --disable-encoder=hevc_v4l2m2m \
+        --disable-decoder=hevc_v4l2m2m \
         --disable-nonfree --disable-gpl --disable-gnutls --enable-openssl --disable-libopenh264 --disable-libx264    #"${_CONFIG_OPTS[@]}"
 
 make -j$CPU_COUNT
@@ -246,7 +250,7 @@ wget https://raw.githubusercontent.com/JeSh30/build-scripts/refs/heads/python-ec
 sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
 
 #install package
-if ! (pip install .) ; then
+if ! (pip3.12 install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -265,6 +269,7 @@ cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -loglevel panic -codecs
 
 cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -encoders
 cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -decoders
+cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -codecs >$HOME/ffmpeg-codecs.txt
 
 ffmpeg_libs="avcodec
         avdevice
