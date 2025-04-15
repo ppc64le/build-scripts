@@ -94,8 +94,8 @@ if [ -z $BUILD_DEPS ] || [ "$BUILD_DEPS" == "true" ]; then
 
     if ! git log --pretty=format:"%H" | grep -q "$PPC64LE_PATCH"; then
         echo "Applying POWER patch."
-        git config user.email "Your.Email@example.com"
-        git config user.name "YourName"
+        git config user.email "puneet.sharma21@ibm.com"
+        git config user.name "puneetsharma21"
         git cherry-pick "$PPC64LE_PATCH"
     else
         echo "POWER patch not needed."
@@ -108,7 +108,7 @@ if [ -z $BUILD_DEPS ] || [ "$BUILD_DEPS" == "true" ]; then
     export CXXFLAGS="-Wno-unused-variable -Wno-unused-parameter"
 
     pip${PYTHON_VER} install -r requirements.txt
-    MAX_JOBS=$PARALLEL python${PYTHON_VER} setup.py install
+    MAX_JOBS=$PARALLEL python${PYTHON_VER} setup.py develop
 
     cd ..
 else
