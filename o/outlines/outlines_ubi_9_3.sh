@@ -27,6 +27,24 @@ PARALLEL=${PARALLEL:-$(nproc)}
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 export _GLIBCXX_USE_CXX11_ABI=1
 
+version_greater_equal() {
+    # Returns 0 (true) if $1 >= $2
+    [ "$(printf '%s\n' "$2" "$1" | sort -V | head -n1)" = "$2" ]
+}
+
+version_less_than() {
+    # Returns 0 (true) if $1 < $2
+    [ "$(printf '%s\n' "$1" "$2" | sort -V | head -n1)" = "$1" ] && [ "$1" != "$2" ]
+}
+
+PYTHON_ACTUAL_VERSION=$(python${PYTHON_VER} -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+
+if version_greater_equal "$PACKAGE_VERSION" "0.2.0" && version_less_than "$PYTHON_ACTUAL_VERSION" "3.10"; then
+    echo "Outlines version $PACKAGE_VERSION requires Python >= 3.10 due to match-case syntax."
+    echo "Skipping build on Python $PYTHON_ACTUAL_VERSION"
+    exit 0
+fi
+
 # Install dependencies
 dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
     git cmake ninja-build gcc-toolset-13 cargo \
