@@ -1,0 +1,11 @@
+{
+    "maintainer": "govind.jadhav3@ibm.com",
+    "package_name": "alembic",
+    "github_url": "https://github.com/zzzeek/alembic.git",
+    "version": "rel_1_13_1",
+    "default_branch": "master",
+    "build_script": "alembic_ubi_8.7.sh",
+    "package_dir": "a/alembic",
+    "docker_build": false,
+    "validate_build_script": true
+ }
