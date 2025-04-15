@@ -44,6 +44,12 @@ if version_greater_equal "$PACKAGE_VERSION" "0.2.0" && version_less_than "$PYTHO
 fi
 
 # Install dependencies
+dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
+            https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
+			https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os
+dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/`arch`/os
+dnf config-manager --set-enabled crb
 dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
     git cmake ninja-build gcc-toolset-13 cargo \
     python${PYTHON_VER}-devel python${PYTHON_VER}-pip jq openssl openssl-devel \
