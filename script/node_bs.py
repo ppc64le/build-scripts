@@ -145,7 +145,7 @@ def check_repo_activeness(package_url):
     return True
 
 
-def raise_pull_request(branch_pkg,base_branch="master"):
+def raise_pull_request(branch_pkg, base="master"):
 
     print("\n Creating Pull Request")
     if args.github_username_arg:
@@ -162,10 +162,6 @@ def raise_pull_request(branch_pkg,base_branch="master"):
     pr_repo = "build-scripts"
 
     pr_title = "Currency: Added build_script and build_info.json for "+package_name
-    if base_branch == "python-ecosystem":
-        base = "python-ecosystem"
-    else:
-        base = "master"
     
     head="{}:{}".format(user_name,branch_pkg)
     maintainer_can_modify = True
@@ -313,10 +309,7 @@ def create_new_script():
             user_pr_response=user_pr_response.lower()
 
         if user_pr_response=='y':
-            if args.generate_wheel_arg :
-                pull_request_response = raise_pull_request(branch_pkg,"python-ecosystem")
-            else:
-                pull_request_response = raise_pull_request(branch_pkg)
+            pull_request_response = raise_pull_request(branch_pkg)
             print(pull_request_response)
             if pull_request_response['message']=="success":
                 print("\n\n Pull Request Created Successfully")

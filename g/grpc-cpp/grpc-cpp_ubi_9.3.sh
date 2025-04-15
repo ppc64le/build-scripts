@@ -20,7 +20,7 @@
 set -e
 
 PACKAGE_NAME=grpc-cpp
-PACKAGE_DIR=$SCRIPT_DIR
+PACKAGE_DIR=grpc
 PACKAGE_VERSION=${1:-v1.68.0}
 PACKAGE_URL=https://github.com/grpc/grpc
 
@@ -232,18 +232,29 @@ cp -r grpc/grpc-prefix/* local/grpccpp/
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/g/grpc-cpp/pyproject.toml
 sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
 
+pip install --upgrade pip build setuptools wheel
+
 if ! pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
-else
-    echo "------------------$PACKAGE_NAME:Install_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_Success"
-    exit 0
 fi
-
 
 echo "Build and installation completed successfully."
 echo "There are no test cases available. Skipping the test cases."
+
+#Creating Wheel
+#During wheel creation for this package we need exported vars. Once script get exit, and if we build wheel through wrapper script, then those are not applicable during wheel creation. So we are generating wheel for this package in script itself.
+
+if ! (python -m build --wheel --no-isolation --outdir="$SCRIPT_DIR/"); then
+    echo "--------------------$PACKAGE_NAME:Install_success_but_wheel_creation_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_wheel_creation_fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME:Install_&_wheel_Creation_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Install_&_wheel_Creation_both_success"
+    exit 0
+fi
