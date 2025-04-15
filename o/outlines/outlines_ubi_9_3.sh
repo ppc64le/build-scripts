@@ -42,6 +42,7 @@ PYTHON_ACTUAL_VERSION=$(python${PYTHON_VER} -c "import sys; print(f'{sys.version
 if version_greater_equal "$PACKAGE_VERSION" "0.2.0" && version_less_than "$PYTHON_ACTUAL_VERSION" "3.10"; then
     echo "Outlines version $PACKAGE_VERSION requires Python >= 3.10 due to match-case syntax."
     echo "Skipping build on Python $PYTHON_ACTUAL_VERSION"
+    touch /tmp/outlines_build_skipped
     exit 0
 fi
 
