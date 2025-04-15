@@ -1,0 +1,15 @@
+{
+  "maintainer": "vinodk99 ",
+  "package_name": "mimalloc",
+  "github_url": "https://github.com/microsoft/mimalloc.git",
+  "version": "v2.1.4",
+  "default_branch": "dev",
+  "package_dir": "m/mimalloc",
+  "build_script": "mimalloc_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v*.*.*": {
+    "build_script": "mimalloc_ubi_9.3.sh"
+  }
+}
