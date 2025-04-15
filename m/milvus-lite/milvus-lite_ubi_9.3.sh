@@ -86,6 +86,7 @@ export VCPKG_FORCE_SYSTEM_BINARIES=1
 mkdir -p $HOME/.cargo/bin/
 
 pip install -r requirements.txt
+pip install build
 
 # Install the package
 if ! python3 setup.py install; then
