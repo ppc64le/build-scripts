@@ -5,8 +5,9 @@ cloned_package=$CLONED_PACKAGE
 cd package-cache
 
 if [ $validate_build_script == true ];then
-	wget https://github.com/aquasecurity/trivy/releases/download/v0.45.0/trivy_0.45.0_Linux-PPC64LE.tar.gz
-	tar -xf trivy_0.45.0_Linux-PPC64LE.tar.gz
+	TRIVY_VERSION=$(curl -s https://api.github.com/repos/aquasecurity/trivy/releases/latest | grep -Po '"tag_name": "\K.*?(?=")')
+	wget https://github.com/aquasecurity/trivy/releases/download/${TRIVY_VERSION}/trivy_${TRIVY_VERSION#v}_Linux-PPC64LE.tar.gz
+	tar -xzf trivy_${TRIVY_VERSION#v}_Linux-PPC64LE.tar.gz
         chmod +x trivy
         sudo mv trivy /usr/bin
 	echo "Executing trivy scanner"
@@ -15,4 +16,3 @@ if [ $validate_build_script == true ];then
 	sudo trivy -q fs --timeout 30m -f cyclonedx ${cloned_package} > trivy_source_sbom_results.cyclonedx
  	#cat trivy_source_sbom_results.cyclonedx
  fi
-
