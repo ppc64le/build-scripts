@@ -98,6 +98,7 @@ if ! python setup.py develop; then
 fi
 
 python -m pip install pytest-xdist
+export PYTORCH_TEST_WITH_HOOKS=1
 
 # basic sanity test (subset)
 if ! python -m pytest -n auto test/test_utils.py; then
