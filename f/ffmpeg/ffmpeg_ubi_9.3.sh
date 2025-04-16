@@ -301,8 +301,8 @@ else
 fi
 
 cd $WORK_DIR
-pip3.12 install setuptools wheel
+pip3.12 install setuptools wheel build 
 # Build wheel 
-python3.12 -m pip wheel -w $WORK_DIR -vv --no-build-isolation --no-deps .
+python3.12 -m build --wheel --no-isolation --outdir="$WORK_DIR"
 
 exit 0
