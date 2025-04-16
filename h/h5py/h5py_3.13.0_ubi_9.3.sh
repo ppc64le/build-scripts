@@ -36,6 +36,8 @@ gcc --version
 PYTHON_VERSION=python$(python3.12 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
 export SITE_PACKAGE_PATH="/usr/local/lib/${PYTHON_VERSION}/site-packages"
 
+python3.12 -m pip install numpy==2.0.2 setuptools==77.0.1
+
 #install openblas
 #clone and install openblas from source
 yum install -y pkgconfig atlas
@@ -91,6 +93,10 @@ OpenBLASInstallPATH=$(pwd)/$PREFIX
 OpenBLASConfigFile=$(find . -name OpenBLASConfig.cmake)
 OpenBLASPCFile=$(find . -name openblas.pc)
 export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib":${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH="/OpenBLAS/libopenblas.so":${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH="/usr/lib/libopenblas.so":${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH="/usr/lib/libopenblas.so.0":${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH="/OpenBLAS/libopenblas.so.0":${LD_LIBRARY_PATH}
 export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
 export LD_LIBRARY_PATH=${PREFIX}/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
@@ -104,15 +110,25 @@ git clone https://github.com/HDFGroup/hdf5
 cd hdf5/
 git checkout hdf5-1_12_1
 git submodule update --init
-mkdir -p $LOCAL_DIR/$PACKAGE_NAME
+
+mkdir -p $LOCAL_DIR/hdf5
 export PREFIX=$(pwd)/$LOCAL_DIR/hdf5
 
-./configure --prefix=${PREFIX}             --enable-cxx             --enable-fortran             --with-pthread=yes             --enable-threadsafe             --enable-build-mode=production             --enable-unsupported             --enable-using-memchecker             --enable-clear-file-buffers             --with-ssl
+./configure --prefix=${PREFIX} \
+            --enable-cxx \
+            --enable-fortran \
+            --with-pthread=yes \
+            --enable-threadsafe \
+            --enable-build-mode=production \
+            --enable-unsupported \
+            --enable-using-memchecker \
+            --enable-clear-file-buffers \
+            --with-ssl
 make -j "${CPU_COUNT}" V=1
 make install PREFIX="${PREFIX}"
-touch $LOCAL_DIR/$PACKAGE_NAME/__init__.py
+touch $LOCAL_DIR/hdf5/__init__.py
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/1423375e65a9eb5ab3fb37fe8b8f3e18acafbc97/h/hdf5/pyproject.toml
-sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
+sed -i s/{PACKAGE_VERSION}/hdf5-1_12_1/g pyproject.toml
 sed -i 's/version = "hdf5[._-]\([0-9]*\)[._-]\([0-9]*\)[._-]\([0-9]*\)\([._-]*[0-9]*\)"/version = "\1.\2.\3\4"/' pyproject.toml
 python3.12 -m pip install .
 cd ..
@@ -126,7 +142,6 @@ git checkout $PACKAGE_VERSION
 echo "Dependencies installation"
 
 python3.12 -m pip install Cython==0.29.36
-python3.12 -m pip install numpy==2.0.2
 python3.12 -m pip install pkgconfig pytest-mpi setuptools
 python3.12 -m pip install wheel pytest pytest-mpi tox
 
