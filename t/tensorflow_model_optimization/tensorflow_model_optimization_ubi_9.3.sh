@@ -427,7 +427,7 @@ if ! python3.12 setup.py install; then
 fi
 
 echo " --------------------------------------------- Wheel Build Completed --------------------------------------------- "
-
+echo "There are no test cases available. skipping the test cases"
 python3.12 -c "import tensorflow_model_optimization; print(tensorflow_model_optimization.__version__)" 
 
 if [ $? -eq 0 ]; then
