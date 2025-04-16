@@ -39,7 +39,6 @@ export SITE_PACKAGE_PATH="/usr/local/lib/${PYTHON_VERSION}/site-packages"
 
 #build hdf5
 git clone https://github.com/HDFGroup/hdf5
-git checkout hdf5-1_12_1
 cd hdf5/
 git checkout hdf5-1_12_1
 git submodule update --init
