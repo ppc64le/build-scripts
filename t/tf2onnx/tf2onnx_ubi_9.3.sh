@@ -34,11 +34,10 @@ yum install -y libffi-devel openssl-devel sqlite-devel zip rsync
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
-gcc --version
-
-export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr
-export CC=$GCC_HOME/bin/gcc
-export CXX=$GCC_HOME/bin/g++
+GCC_BIN_DIR=$(echo "$PATH" | cut -d':' -f1)
+export GCC_HOME=$(dirname "$GCC_BIN_DIR")
+export CC="$GCC_BIN_DIR/gcc"
+export CXX="$GCC_BIN_DIR/g++"
 
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
@@ -160,7 +159,6 @@ export PKG_CONFIG_PATH=${ABSEIL_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
 echo "-----------------------------------------------------Installed abseil-cpp-----------------------------------------------------"
 
 WORK_DIR=$(pwd)
-export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 pip3.12 install --upgrade pip setuptools wheel ninja packaging tox pytest build mypy stubs
 pip3.12 install 'cmake==3.31.6'
@@ -275,13 +273,13 @@ git checkout v1.17.0
 git submodule update --init --recursive
 export ONNX_ML=1
 export ONNX_PREFIX=$(pwd)/../onnx-prefix
-AR=$gcc_home/bin/ar
-LD=$gcc_home/bin/ld
-NM=$gcc_home/bin/nm
-OBJCOPY=$gcc_home/bin/objcopy
-OBJDUMP=$gcc_home/bin/objdump
-RANLIB=$gcc_home/bin/ranlib
-STRIP=$gcc_home/bin/strip
+AR=$GCC_HOME/bin/ar
+LD=$GCC_HOME/bin/ld
+NM=$GCC_HOME/bin/nm
+OBJCOPY=$GCC_HOME/bin/objcopy
+OBJDUMP=$GCC_HOME/bin/objdump
+RANLIB=$GCC_HOME/bin/ranlib
+STRIP=$GCC_HOME/bin/strip
 export CMAKE_ARGS=""
 export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$ONNX_PREFIX"
 export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_AR=${AR}"
@@ -327,8 +325,6 @@ git submodule update --init
 
 export CFLAGS="-I${ML_DIR}/include"
 export CXXFLAGS="-I${ML_DIR}/include"
-export CC=/opt/rh/gcc-toolset-13/root/bin/gcc
-export CXX=/opt/rh/gcc-toolset-13/root/bin/g++
 python3.12 setup.py bdist_wheel
 cd $CURRENT_DIR
 
@@ -362,8 +358,7 @@ WORK_DIR=$(pwd)
 PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
 export TF_PYTHON_VERSION=$PYTHON_VERSION
 export HERMETIC_PYTHON_VERSION=$PYTHON_VERSION
-export GCC_HOST_COMPILER_PATH=$(which gcc)
-export CC=$GCC_HOST_COMPILER_PATH
+export GCC_HOST_COMPILER_PATH=$CC
 
 # set the variable, when grpcio fails to compile on the system. 
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true;  
@@ -403,8 +398,6 @@ CPU_TUNE_HOST_OPTION=${BUILD_HOST_COPT}${CPU_TUNE_FRAG}
 USE_MMA=0
 
 TENSORFLOW_PREFIX=/install-deps/tensorflow
-
-PYTHON_BIN_PATH=$(which python3.12)
 PYTHON_LIB_PATH=$($PYTHON_BIN_PATH -c 'import site; print(site.getsitepackages()[0])')
 
 cat > "$BAZEL_RC_DIR/python_configure.bazelrc" << EOF
@@ -427,7 +420,7 @@ build:opt --define with_default_optimizations=true
 
 build --action_env TF_CONFIGURE_IOS="0"
 build --action_env TF_SYSTEM_LIBS="org_sqlite"
-build --action_env GCC_HOME="/opt/rh/gcc-toolset-13/root/usr"
+build --action_env GCC_HOME=$GCC_HOME
 build --action_env RULES_PYTHON_PIP_ISOLATED="0"
 build --define=PREFIX="$SYSTEM_LIBS_PREFIX"
 build --define=LIBDIR="$SYSTEM_LIBS_PREFIX/lib"
