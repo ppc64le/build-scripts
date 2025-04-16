@@ -274,6 +274,8 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init
 
+sed -i "s/^[[:space:]]*name=\"av\"/name=\"${PACKAGE_NAME}\"/" setup.py
+
 export CFLAGS="${CFLAGS} -I/install-deps/ffmpeg/include"
 export LDFLAGS="${LDFLAGS} -L/install-deps/ffmpeg/lib"
 
