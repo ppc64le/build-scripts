@@ -38,9 +38,10 @@ export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 gcc --version
 
-export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr
-export CC=$GCC_HOME/bin/gcc
-export CXX=$GCC_HOME/bin/g++
+GCC_BIN_DIR=$(echo "$PATH" | cut -d':' -f1)
+export GCC_HOME=$(dirname "$GCC_BIN_DIR")
+export CC="$GCC_BIN_DIR/gcc"
+export CXX="$GCC_BIN_DIR/g++"
 
 yum install -y git autoconf automake libtool make
 
@@ -202,7 +203,6 @@ export CXX=/opt/rh/gcc-toolset-13/root/bin/g++
 
 python3.12 -m pip install .
 cd $CURRENT_DIR
-python3.12 -c "import ml_dtypes; print(ml_dtypes.__version__)"
 echo " --------------------------------------------- ml_dtypes Successfully Installed --------------------------------------------- "
 
 echo " --------------------------------------------- Installing Patchelf --------------------------------------------- "
@@ -274,10 +274,10 @@ echo "build_type=${build_type}"
 SHLIB_EXT=".so"
 WORK_DIR=$(pwd)
 
-export TF_PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
-export HERMETIC_PYTHON_VERSION=3.12
-export GCC_HOST_COMPILER_PATH=$(which gcc)
-export CC=$GCC_HOST_COMPILER_PATH
+PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+export TF_PYTHON_VERSION=$PYTHON_VERSION
+export HERMETIC_PYTHON_VERSION=$PYTHON_VERSION
+export GCC_HOST_COMPILER_PATH=$CC
 
 # set the variable, when grpcio fails to compile on the system. 
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true;  
@@ -293,7 +293,7 @@ cd tensorflow
 git checkout v2.18.1
 SRC_DIR=$(pwd)
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/t/tensorflow/tf_2.18.1_fix.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/tensorflow/tf_2.18.1_fix.patch
 git apply tf_2.18.1_fix.patch
 rm -rf tensorflow/*.bazelrc
 
@@ -318,11 +318,12 @@ CPU_TUNE_HOST_OPTION=${BUILD_HOST_COPT}${CPU_TUNE_FRAG}
 USE_MMA=0
 
 TENSORFLOW_PREFIX=/install-deps/tensorflow
+PYTHON_LIB_PATH=$($PYTHON_BIN_PATH -c 'import site; print(site.getsitepackages()[0])')
 
-cat > $BAZEL_RC_DIR/python_configure.bazelrc << EOF
-build --action_env PYTHON_BIN_PATH="$(which python3.12)"
-build --action_env PYTHON_LIB_PATH="$(which python3.12)/../lib/python3.12/site-packages"
-build --python_path="$(which python3.12)"
+cat > "$BAZEL_RC_DIR/python_configure.bazelrc" << EOF
+build --action_env PYTHON_BIN_PATH="$PYTHON_BIN_PATH"
+build --action_env PYTHON_LIB_PATH="$PYTHON_LIB_PATH"
+build --python_path="$PYTHON_BIN_PATH"
 EOF
 
 SYSTEM_LIBS_PREFIX=$TENSORFLOW_PREFIX
@@ -339,7 +340,7 @@ build:opt --define with_default_optimizations=true
 
 build --action_env TF_CONFIGURE_IOS="0"
 build --action_env TF_SYSTEM_LIBS="org_sqlite"
-build --action_env GCC_HOME="/opt/rh/gcc-toolset-13/root/usr"
+build --action_env GCC_HOME=$GCC_HOME
 build --action_env RULES_PYTHON_PIP_ISOLATED="0"
 build --define=PREFIX="$SYSTEM_LIBS_PREFIX"
 build --define=LIBDIR="$SYSTEM_LIBS_PREFIX/lib"
