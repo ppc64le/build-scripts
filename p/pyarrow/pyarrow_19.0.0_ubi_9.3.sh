@@ -807,7 +807,8 @@ fi
 # python -m build --wheel --no-isolation --outdir="$SCRIPT_DIR/"
 # If we using 'python3 setup.py bdist_wheel --dist-dir="$SCRIPT_DIR/"' produces a wheel with the expected naming format.
 
-
+echo "Creating wheel....."
+python3 setup.py bdist_wheel --dist-dir="$SCRIPT_DIR/
 
 echo "testing pyarrow...."
 cd ..
