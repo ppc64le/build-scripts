@@ -32,6 +32,10 @@ export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 export LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib/gcc/ppc64le-redhat-linux/13:$LIBRARY_PATH
 export CPATH=/opt/rh/gcc-toolset-13/root/usr/include:$CPATH
+GCC_BIN_DIR=$(echo "$PATH" | cut -d':' -f1)
+export GCC_HOME=$(dirname "$GCC_BIN_DIR")
+export CC="$GCC_BIN_DIR/gcc"
+export CXX="$GCC_BIN_DIR/g++"
 
 CURRENT_DIR=$(pwd)
 mkdir -p builder/wheels
@@ -254,8 +258,8 @@ git clone $ABSEIL_URL -b $ABSEIL_VERSION
 
 echo "------------ libprotobuf installing-------------------"
 
-export C_COMPILER=$(which gcc)
-export CXX_COMPILER=$(which g++)
+export C_COMPILER=$CC
+export CXX_COMPILER=$CXX
 
 #Build libprotobuf
 git clone https://github.com/protocolbuffers/protobuf
@@ -318,14 +322,7 @@ export GCC=$CC
 export GXX=$CXX
 
 export HOST=$(uname)-$(uname -m)
-
-
-
-export HOST=$(uname)-$(uname -m)
-
 CPPFLAGS="${CPPFLAGS} -Wl,-rpath,$VIRTUAL_ENV_PATH/**/lib"
-
-
 declare -a _CMAKE_EXTRA_CONFIG
 if [[ "$CONDA_BUILD_CROSS_COMPILATION" == 1 ]]; then
     _CMAKE_EXTRA_CONFIG+=(-DHAS_PRE_1970_EXITCODE=0)
@@ -548,10 +545,7 @@ git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
 git checkout v0.3.29
 git submodule update --init
-
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/o/openblas/pyproject.toml
 PREFIX=local/openblas
-
 # Set build options
 declare -a build_opts
 # Fix ctest not automatically discovering tests
@@ -722,11 +716,6 @@ ninja install
 popd
 
 cd $CURRENT_DIR
-
-#installing prerequisite
-pip3.12 install setuptools-scm Cython
-pip3.12 install numpy==2.0.2
-
 export PYARROW_BUNDLE_ARROW_CPP=1
 export LD_LIBRARY_PATH=${ARROW_HOME}/lib:${LD_LIBRARY_PATH}
 
@@ -811,8 +800,6 @@ git submodule update --init
 
 export CFLAGS="-I${ML_DIR}/include"
 export CXXFLAGS="-I${ML_DIR}/include"
-export CC=/opt/rh/gcc-toolset-13/root/bin/gcc
-export CXX=/opt/rh/gcc-toolset-13/root/bin/g++
 
 python3.12 -m pip install .
 cd $CURRENT_DIR
@@ -835,10 +822,6 @@ yum install -y  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-d
 
 yum install -y libffi-devel openssl-devel sqlite-devel zip rsync
 
-export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr
-export CC=$GCC_HOME/bin/gcc
-export CXX=$GCC_HOME/bin/g++
-
 INSTALL_ROOT="/install-deps"
 mkdir -p $INSTALL_ROOT
 
@@ -855,8 +838,7 @@ WORK_DIR=$(pwd)
 
 export TF_PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
 export HERMETIC_PYTHON_VERSION=$(python3.12 --version | awk '{print $2}' | cut -d. -f1,2)
-export GCC_HOST_COMPILER_PATH=$(which gcc)
-export CC=$GCC_HOST_COMPILER_PATH
+export GCC_HOST_COMPILER_PATH=$CC
 
 # set the variable, when grpcio fails to compile on the system. 
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true;  
@@ -875,9 +857,10 @@ SRC_DIR=$(pwd)
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/tensorflow/tf_2.18.1_fix.patch
 git apply tf_2.18.1_fix.patch
 rm -rf tensorflow/*.bazelrc
-
+PYTHON_BIN_PATH=$(which python3.12)
+PYTHON_LIB_PATH=$($PYTHON_BIN_PATH -c 'import site; print(site.getsitepackages()[0])')
 # Pick up additional variables defined from the conda build environment
-export PYTHON_BIN_PATH="$(which python3.12)"
+export PYTHON_BIN_PATH="$PYTHON_BIN_PATH"
 export USE_DEFAULT_PYTHON_LIB_PATH=1
 
 # Build the bazelrc
@@ -898,10 +881,10 @@ USE_MMA=0
 
 TENSORFLOW_PREFIX=/install-deps/tensorflow
 
-cat > $BAZEL_RC_DIR/python_configure.bazelrc << EOF
-build --action_env PYTHON_BIN_PATH="$(which python3.12)"
-build --action_env PYTHON_LIB_PATH="$(which python3.12)/../lib/python3.12/site-packages"
-build --python_path="$(which python3.12)"
+cat > "$BAZEL_RC_DIR/python_configure.bazelrc" << EOF
+build --action_env PYTHON_BIN_PATH="$PYTHON_BIN_PATH"
+build --action_env PYTHON_LIB_PATH="$PYTHON_LIB_PATH"
+build --python_path="$PYTHON_BIN_PATH"
 EOF
 
 SYSTEM_LIBS_PREFIX=$TENSORFLOW_PREFIX
@@ -918,7 +901,7 @@ build:opt --define with_default_optimizations=true
 
 build --action_env TF_CONFIGURE_IOS="0"
 build --action_env TF_SYSTEM_LIBS="org_sqlite"
-build --action_env GCC_HOME="/opt/rh/gcc-toolset-13/root/usr"
+build --action_env GCC_HOME=$GCC_HOME
 build --action_env RULES_PYTHON_PIP_ISOLATED="0"
 build --define=PREFIX="$SYSTEM_LIBS_PREFIX"
 build --define=LIBDIR="$SYSTEM_LIBS_PREFIX/lib"
