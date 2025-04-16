@@ -249,14 +249,6 @@ PACKAGE_VERSION=$(echo "$PACKAGE_VERSION" | sed 's/[^0-9.]//g')
 wget "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/f/ffmpeg/pyproject.toml"
 sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g "pyproject.toml"
 
-# #install package
-# if ! (pip3.12 install .) ; then
-#     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
-#     echo "$PACKAGE_URL $PACKAGE_NAME"
-#     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
-#     exit 1
-# fi
-
 export LD_LIBRARY_PATH=${LAME_PREFIX}/lib:${LIBVPX_PREFIX}/lib:${OPUS_PREFIX}/lib:${FFMPEG_PREFIX}/lib:${LD_LIBRARY_PATH}
 
 echo " ------------------------------------------ Checking Test ------------------------------------------ "
