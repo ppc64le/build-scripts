@@ -3,11 +3,11 @@
 # -----------------------------------------------------------------------------
 #
 # Package           : pytorch
-# Version           : v2.4.0
+# Version           : v2.6.0
 # Source repo       : https://github.com/pytorch/pytorch.git
 # Tested on         : UBI:9.3
 # Language          : Python
-# Travis-Check      : False
+# Travis-Check      : True
 # Script License    : Apache License, Version 2.0
 # Maintainer        : Md. Shafi Hussain <Md.Shafi.Hussain@ibm.com>
 #
@@ -22,7 +22,7 @@
 PACKAGE_NAME=pytorch
 PACKAGE_URL=https://github.com/pytorch/pytorch.git
 
-PACKAGE_VERSION=${1:-v2.4.0}
+PACKAGE_VERSION=${1:-v2.6.0}
 PYTHON_VERSION=${PYTHON_VERSION:-3.11}
 
 export MAX_JOBS=${MAX_JOBS:-$(nproc)}
@@ -97,6 +97,7 @@ if ! python setup.py develop; then
 fi
 
 python -m pip install pytest-xdist
+export PYTORCH_TEST_WITH_HOOKS=1
 
 # basic sanity test (subset)
 if ! python -m pytest -n auto test/test_utils.py; then
