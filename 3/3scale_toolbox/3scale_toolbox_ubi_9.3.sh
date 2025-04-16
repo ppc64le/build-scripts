@@ -2,13 +2,13 @@
 # ---------------------------------------------------------------------
 #
 # Package       : 3scale_toolbox
-# Version       : 3scale-2.14.1-GA
+# Version       : 3scale-2.15.1-GA
 # Source repo   : https://github.com/3scale/3scale_toolbox
 # Tested on     : UBI:9.3
 # Language      : Ruby
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Shubham Bhagwat <Shubham.Bhagwat@ibm.com>
+# Maintainer    : Shubham Gupta <Shubham.Gupta43@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,7 +19,7 @@
 # ---------------------------------------------------------------------
 
 PACKAGE_NAME=3scale_toolbox
-PACKAGE_VERSION=${1:-3scale-2.14.1-GA}
+PACKAGE_VERSION=${1:-3scale-2.15.1-GA}
 PACKAGE_URL=https://github.com/3scale/3scale_toolbox
 
 #install git and wget
