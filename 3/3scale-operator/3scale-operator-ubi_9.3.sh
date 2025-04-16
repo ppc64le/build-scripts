@@ -27,7 +27,7 @@ yum install git gcc make wget tar zip -y
 
 # Install Go and setup working directory
 #with {Version : 3scale-2.15.1-GA}, go version 1.20+ is required
-GO_VERSION=1.20.1
+GO_VERSION=1.20
 wget https://golang.org/dl/go$GO_VERSION.linux-ppc64le.tar.gz && \
 tar -C /usr/local -xzf go$GO_VERSION.linux-ppc64le.tar.gz && \
 rm -rf go$GO_VERSION.linux-ppc64le.tar.gz
