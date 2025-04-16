@@ -198,8 +198,6 @@ git submodule update --init
 
 export CFLAGS="-I${ML_DIR}/include"
 export CXXFLAGS="-I${ML_DIR}/include"
-export CC=/opt/rh/gcc-toolset-13/root/bin/gcc
-export CXX=/opt/rh/gcc-toolset-13/root/bin/g++
 
 python3.12 -m pip install .
 cd $CURRENT_DIR
@@ -226,14 +224,12 @@ echo " --------------------------------------------- Installing dm-tree --------
 git clone https://github.com/google-deepmind/tree
 cd tree/
 git checkout 0.1.9
-
-pip3.12 install --upgrade pip setuptools
-
+pip3.12 install --upgrade pip
 # install scikit-learn dependencies and build dependencies
 pip3.12 install pytest absl-py attr wrapt attrs
 
 #Download and apply the patch file
-wget https://raw.githubusercontent.com/JeSh30/build-scripts/refs/heads/tfmo-dm-tree-patch/d/dm-tree/updated_abseil_version.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/d/dm-tree/updated_abseil_version.patch
 git apply updated_abseil_version.patch
 
 python3.12 setup.py build_ext --inplace
