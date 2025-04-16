@@ -36,7 +36,7 @@ yum install -y git make wget openssl-devel bzip2-devel libffi-devel zlib-devel c
 echo "-------------------Installing llvmlite----------------------"
 
 LLVMLITE_PACKAGE_NAME=llvmlite
-LLVMLITE_VERSION=${1:-v0.44.0rc1}
+LLVMLITE_VERSION="v0.44.0rc1"
 LLVMLITE_PACKAGE_URL="https://github.com/numba/llvmlite"
 LLVM_PROJECT_GIT_URL="https://github.com/llvm/llvm-project.git"
 LLVM_PROJECT_GIT_TAG="llvmorg-15.0.7"
