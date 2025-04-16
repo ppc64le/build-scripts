@@ -800,6 +800,15 @@ if ! pip install . ; then
     exit 1
 fi
 
+# Creating the wheel in the build script.Because When using the wrapper script, 
+# the wheel file is generated with an unexpected version, e.g., 
+# 'pyarrow-19.0.1.dev0+ga8a979a41.d20250414-cp312-cp312-linux_ppc64le.whl'
+# This is because when the wheel is built using the command:
+# python -m build --wheel --no-isolation --outdir="$SCRIPT_DIR/"
+# If we using 'python3 setup.py bdist_wheel --dist-dir="$SCRIPT_DIR/"' produces a wheel with the expected naming format.
+
+
+
 echo "testing pyarrow...."
 cd ..
 export LD_LIBRARY_PATH=${SNAPPY_PREFIX}/lib:${C_ARES_PREFIX}/lib:${THRIFT_PREFIX}/lib:${UTF8PROC_PREFIX}/lib:${RE2_PREFIX}/lib:${LIBPROTO_INSTALL}/lib64:${GRPC_PREFIX}/lib:${ORC_PREFIX}/lib:${OpenBLASInstallPATH}/lib
