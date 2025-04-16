@@ -7,7 +7,7 @@
 # Source repo       : https://github.com/pytorch/pytorch.git
 # Tested on         : UBI:9.3
 # Language          : Python
-# Travis-Check      : False
+# Travis-Check      : True
 # Script License    : Apache License, Version 2.0
 # Maintainer        : Md. Shafi Hussain <Md.Shafi.Hussain@ibm.com>
 #
@@ -39,7 +39,7 @@ dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packa
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/`arch`/os
 dnf config-manager --set-enabled crb
 
-dnf install -y git cmake ninja-build gcc-toolset-13 rust cargo \
+dnf install -y git ninja-build gcc-toolset-13 rust cargo \
     lapack-devel pkgconfig \
     python$PYTHON_VERSION-devel \
     python$PYTHON_VERSION-wheel \
