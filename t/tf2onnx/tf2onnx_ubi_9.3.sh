@@ -62,8 +62,6 @@ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.25.0.9-3.el9.ppc64le
 export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-)(?=.*ppc64le)')
 export PATH=$JAVA_HOME/bin:$PATH
 
-
-
 #installing openblas
 cd $CURRENT_DIR
 git clone https://github.com/OpenMathLib/OpenBLAS
@@ -107,7 +105,6 @@ export LD_LIBRARY_PATH=${OPENBLAS_PREFIX}/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=${OPENBLAS_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
 pkg-config --modversion openblas
 echo "-----------------------------------------------------Installed openblas-----------------------------------------------------"
-
 
 #Build hdf5 from source
 cd $CURRENT_DIR
@@ -257,7 +254,6 @@ export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 
 # Apply patch
-echo "Applying patch from https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/p/protobuf/set_cpp_to_17_v4.25.3.patch"
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
 git apply set_cpp_to_17_v4.25.3.patch
 
@@ -301,7 +297,7 @@ export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH"
 
 # Adding this source due to - (Unable to detect linker for compiler `cc -Wl,--version`)
 source /opt/rh/gcc-toolset-13/enable
-pip3.12 install cython meson
+pip3.12 install meson
 pip3.12 install parameterized
 pip3.12 install pytest nbval pythran mypy-protobuf
 pip3.12 install scipy==1.15.2 pandas scikit_learn==1.6.1
@@ -363,9 +359,9 @@ echo "build_type=${build_type}"
 
 SHLIB_EXT=".so"
 WORK_DIR=$(pwd)
-
-export TF_PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
-export HERMETIC_PYTHON_VERSION=3.12
+PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+export TF_PYTHON_VERSION=$PYTHON_VERSION
+export HERMETIC_PYTHON_VERSION=$PYTHON_VERSION
 export GCC_HOST_COMPILER_PATH=$(which gcc)
 export CC=$GCC_HOST_COMPILER_PATH
 
@@ -404,15 +400,17 @@ CPU_ARCH_HOST_OPTION=${BUILD_HOST_COPT}${CPU_ARCH_FRAG}
 CPU_TUNE_FRAG="-mtune=${cpu_opt_tune}";
 CPU_TUNE_OPTION=${BUILD_COPT}${CPU_TUNE_FRAG}
 CPU_TUNE_HOST_OPTION=${BUILD_HOST_COPT}${CPU_TUNE_FRAG}
-python_version="python3.12"
 USE_MMA=0
 
 TENSORFLOW_PREFIX=/install-deps/tensorflow
 
-cat > $BAZEL_RC_DIR/python_configure.bazelrc << EOF
-build --action_env PYTHON_BIN_PATH="$(which python3.12)"
-build --action_env PYTHON_LIB_PATH="$(which python3.12)/../lib/python3.12/site-packages"
-build --python_path="$(which python3.12)"
+PYTHON_BIN_PATH=$(which python3.12)
+PYTHON_LIB_PATH=$($PYTHON_BIN_PATH -c 'import site; print(site.getsitepackages()[0])')
+
+cat > "$BAZEL_RC_DIR/python_configure.bazelrc" << EOF
+build --action_env PYTHON_BIN_PATH="$PYTHON_BIN_PATH"
+build --action_env PYTHON_LIB_PATH="$PYTHON_LIB_PATH"
+build --python_path="$PYTHON_BIN_PATH"
 EOF
 
 SYSTEM_LIBS_PREFIX=$TENSORFLOW_PREFIX
@@ -500,7 +498,7 @@ git clone https://github.com/microsoft/onnxruntime
 cd onnxruntime
 git checkout d1fb58b0f2be7a8541bfa73f8cbb6b9eba05fb6b
 # Build the onnxruntime package and create the wheel
-sed -i "s/python3/$python_version/g" build.sh
+sed -i "s/python3/python${PYTHON_VERSION}/g" build.sh
 echo "Building onnxruntime..."
 ./build.sh \
   --cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" \
