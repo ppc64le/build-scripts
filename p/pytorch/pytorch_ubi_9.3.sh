@@ -22,7 +22,7 @@
 PACKAGE_NAME=pytorch
 PACKAGE_URL=https://github.com/pytorch/pytorch.git
 
-PACKAGE_VERSION=${1:-v2.4.0}
+PACKAGE_VERSION=${1:-v2.6.0}
 PYTHON_VERSION=${PYTHON_VERSION:-3.11}
 
 export MAX_JOBS=${MAX_JOBS:-$(nproc)}
@@ -89,6 +89,7 @@ ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip$PYTHON_VERSION
 ##############################################
 
 python -m pip install -r requirements.txt
+python -m pip install -U pip 'cmake<4'
 if ! python setup.py develop; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -99,7 +100,7 @@ fi
 python -m pip install pytest-xdist
 
 # basic sanity test (subset)
-if ! python -m pytest -n 4 -v test/test_utils.py; then
+if ! python -m pytest -n auto test/test_utils.py; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
