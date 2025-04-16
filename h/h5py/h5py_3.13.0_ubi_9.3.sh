@@ -47,7 +47,7 @@ git checkout v0.3.29
 git submodule update --init
 
 # Set build options
-declare -a build_optsopenssl-devel
+declare -a build_opts
 # Fix ctest not automatically discovering tests
 LDFLAGS=$(echo "${LDFLAGS}" | sed "s/-Wl,--gc-sections//g")
 export CF="${CFLAGS} -Wno-unused-parameter -Wno-old-style-declaration"
