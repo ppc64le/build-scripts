@@ -314,8 +314,6 @@ export PROTOBUF_PREFIX=$LIBPROTO_INSTALL
 export CMAKE_PREFIX_PATH=$LIBPROTO_INSTALL
 export LD_LIBRARY_PATH=$LIBPROTO_INSTALL/lib64
 
-export CC=$(which gcc)
-export CXX=$(which g++)
 export GCC=$CC
 export GXX=$CXX
 
@@ -391,7 +389,6 @@ export BOOST_PREFIX=$(pwd)/Boost_prefix
 INCLUDE_PATH="${BOOST_PREFIX}/include"
 LIBRARY_PATH="${BOOST_PREFIX}/lib"
 
-export CC=$(which gcc) CXX=$(which g++)
 export target_platform=$(uname)-$(uname -m)
 CXXFLAGS="${CXXFLAGS} -fPIC"
 TOOLSET=gcc
@@ -625,7 +622,6 @@ export PYARROW_PREFIX=$(pwd)/pyarrow_prefix
 
 export ARROW_HOME=$PYARROW_PREFIX
 export target_platform=$(uname)-$(uname -m)
-export CXX=$(which g++)
 export CMAKE_PREFIX_PATH=$C_ARES_PREFIX:$LIBPROTO_INSTALL:$RE2_PREFIX:$GRPC_PREFIX:$ORC_PREFIX:$BOOST_PREFIX:${UTF8PROC_PREFIX}:$THRIFT_PREFIX:$SNAPPY_PREFIX:/usr
 export LD_LIBRARY_PATH=$GRPC_PREFIX/lib:$LIBPROTO_INSTALL/lib64
 
@@ -677,9 +673,6 @@ fi
 if [[ "${target_platform}" != "Linux-s390x" ]]; then
   EXTRA_CMAKE_ARGS=" ${EXTRA_CMAKE_ARGS} -DARROW_USE_LD_GOLD=ON"
 fi
-
-export AR=$(which ar)
-export RANLIB=$(which ranlib)
 
 cmake \
     -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH \
@@ -908,7 +901,7 @@ TENSORFLOW_PREFIX=/install-deps/tensorflow
 cat > $BAZEL_RC_DIR/python_configure.bazelrc << EOF
 build --action_env PYTHON_BIN_PATH="$(which python3.12)"
 build --action_env PYTHON_LIB_PATH="$(which python3.12)/../lib/python3.12/site-packages"
-build --python_path="$(which python3.12)""
+build --python_path="$(which python3.12)"
 EOF
 
 SYSTEM_LIBS_PREFIX=$TENSORFLOW_PREFIX
