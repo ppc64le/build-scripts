@@ -125,10 +125,10 @@ git checkout $PACKAGE_VERSION
 
 echo "Dependencies installation"
 
-python3 -m pip install Cython==0.29.36
-python3 -m pip install numpy==2.0.2
-python3 -m pip install pkgconfig pytest-mpi setuptools
-python3 -m pip install wheel pytest pytest-mpi tox
+python3.12 -m pip install Cython==0.29.36
+python3.12 -m pip install numpy==2.0.2
+python3.12 -m pip install pkgconfig pytest-mpi setuptools
+python3.12 -m pip install wheel pytest pytest-mpi tox
 
 echo "export statmenents"
 export LD_LIBRARY_PATH=${PREFIX}/lib:$LD_LIBRARY_PATH
