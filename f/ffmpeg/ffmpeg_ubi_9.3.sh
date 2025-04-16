@@ -238,6 +238,8 @@ USE_NONFREE=no   #the options below are set for NO
 make -j$CPU_COUNT
 make install -j$CPU_COUNT
 
+echo "--------------------------------- ffmpeg Installed successfully ---------------------------------"
+
 cd $WORK_DIR
 mkdir -p local/ffmpeg
 cp -r FFmpeg/ffmpeg_prefix/* local/ffmpeg/
@@ -247,15 +249,13 @@ PACKAGE_VERSION=$(echo "$PACKAGE_VERSION" | sed 's/[^0-9.]//g')
 wget "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/f/ffmpeg/pyproject.toml"
 sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g "pyproject.toml"
 
-#install package
-if ! (pip3.12 install .) ; then
-    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
-    exit 1
-fi
-
-echo "--------------------------------- ffmpeg Installed successfully ---------------------------------"
+# #install package
+# if ! (pip3.12 install .) ; then
+#     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
+#     echo "$PACKAGE_URL $PACKAGE_NAME"
+#     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+#     exit 1
+# fi
 
 export LD_LIBRARY_PATH=${LAME_PREFIX}/lib:${LIBVPX_PREFIX}/lib:${OPUS_PREFIX}/lib:${FFMPEG_PREFIX}/lib:${LD_LIBRARY_PATH}
 
@@ -301,6 +301,7 @@ else
 fi
 
 cd $WORK_DIR
+pip3.12 install setuptools
 # Build wheel 
 python3.12 -m pip wheel -w $WORK_DIR -vv --no-build-isolation --no-deps .
 
