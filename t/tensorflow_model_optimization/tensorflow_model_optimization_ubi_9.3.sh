@@ -22,7 +22,7 @@ set -ex
 
 # Variables
 PACKAGE_NAME=tensorflow_model_optimization
-PACKAGE_VERSION=${1:-v0.8.0}
+PACKAGE_VERSION="v0.8.0"
 PACKAGE_URL="https://github.com/tensorflow/model-optimization"
 CURRENT_DIR=$(pwd)
 PACKAGE_DIR=model-optimization
@@ -118,32 +118,27 @@ cd $CURRENT_DIR
 echo " --------------------------------------------- Installing hdf5 --------------------------------------------- "
 
 #Installing hdf5 from source
+echo "------HDF5 installing-----------------------"
 git clone https://github.com/HDFGroup/hdf5
 cd hdf5/
 git checkout hdf5-1_12_1
 git submodule update --init
-
-yum install -y zlib zlib-devel
-
-./configure --prefix=$HDF5_PREFIX --enable-cxx --enable-fortran  --with-pthread=yes --enable-threadsafe  --enable-build-mode=production --enable-unsupported  --enable-using-memchecker  --enable-clear-file-buffers --with-ssl
-make
-make install PREFIX="${HDF5_PREFIX}"
+export HDF5_PREFIX=/install-deps/hdf5
+./configure --prefix=$HDF5_PREFIX --enable-cxx --enable-fortran --with-pthread=yes \
+            --enable-threadsafe --enable-build-mode=production --enable-unsupported \
+            --enable-using-memchecker --enable-clear-file-buffers --with-ssl
+make -j$(nproc)
+make install
 export LD_LIBRARY_PATH=${HDF5_PREFIX}/lib:$LD_LIBRARY_PATH
-
-echo " --------------------------------------------- hdf5 Successfully Installed --------------------------------------------- "
-
+export HDF5_DIR=${HDF5_PREFIX}
 cd $CURRENT_DIR
 
-echo " --------------------------------------------- Installing h5py --------------------------------------------- "
-
-#Installing h5py from source
+echo "----------h5py installing--------------------"
 git clone https://github.com/h5py/h5py.git
 cd h5py/
 git checkout 3.13.0
-
-HDF5_DIR=/install-deps/hdf5 python3.12 -m pip install .
+HDF5_DIR=${HDF5_PREFIX} python3.12 -m pip install .
 cd $CURRENT_DIR
-python3.12 -c "import h5py; print(h5py.__version__)"
 echo " --------------------------------------------- h5py Successfully Installed --------------------------------------------- "
 
 echo " --------------------------------------------- Installing abseil-cpp --------------------------------------------- "
@@ -303,7 +298,7 @@ git apply tf_2.18.1_fix.patch
 rm -rf tensorflow/*.bazelrc
 
 # Pick up additional variables defined from the conda build environment
-export PYTHON_BIN_PATH="/usr/bin/python3.12"
+export PYTHON_BIN_PATH="$(which python3.12)"
 export USE_DEFAULT_PYTHON_LIB_PATH=1
 
 # Build the bazelrc
@@ -325,9 +320,9 @@ USE_MMA=0
 TENSORFLOW_PREFIX=/install-deps/tensorflow
 
 cat > $BAZEL_RC_DIR/python_configure.bazelrc << EOF
-build --action_env PYTHON_BIN_PATH="/usr/bin/python3.12"
-build --action_env PYTHON_LIB_PATH="/usr/lib/python3.12/site-packages"
-build --python_path="/usr/bin/python3.12"
+build --action_env PYTHON_BIN_PATH="$(which python3.12)"
+build --action_env PYTHON_LIB_PATH="$(which python3.12)/../lib/python3.12/site-packages"
+build --python_path="$(which python3.12)"
 EOF
 
 SYSTEM_LIBS_PREFIX=$TENSORFLOW_PREFIX
