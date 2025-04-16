@@ -163,7 +163,7 @@ fi
 echo "Executing the Testcases"
 cd ..
 
-if ! (python -m pytest --pyargs h5py -k "not test_append_permissions"); then
+if ! (python3.12 -m pytest --pyargs h5py -k "not test_append_permissions"); then
     echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
