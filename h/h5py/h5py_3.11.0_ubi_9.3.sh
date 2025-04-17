@@ -35,7 +35,7 @@ yum install -y gcc-c++ cmake make pkgconfig gcc-gfortran
 yum install -y python3.12-devel python3.12-pip
 ln -sf /usr/bin/python3.12 /usr/bin/python3
 
-installing hdf5 from source
+#Installing hdf5 from source
 #Installing hdf5
 #Build hdf5 from source
 git clone https://github.com/HDFGroup/hdf5
