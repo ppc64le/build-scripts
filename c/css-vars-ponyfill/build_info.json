@@ -1,0 +1,15 @@
+{
+   "maintainer": "stutiibm",
+   "package_name": "css-vars-ponyfill",
+   "github_url": "https://github.com/jhildenbiddle/css-vars-ponyfill",
+   "version": "v2.4.9",
+   "default_branch": "master",
+   "build_script": "css-vars-ponyfill_ubi_9.3.sh",
+   "package_dir": "c/css-vars-ponyfill",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "v*.*.*": {
+     "build_script": "css-vars-ponyfill_ubi_9.3.sh"
+   }
+}
