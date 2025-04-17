@@ -21,13 +21,12 @@
 PACKAGE_NAME=uvtools
 PACKAGE_VERSION=${1:-v0.2.0}
 PACKAGE_URL=https://github.com/HERA-Team/uvtools
-
-PYTHON_VERSION=3.11
+PACKAGE_DIR=uvtools
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
 # install core dependencies
-yum install -y python$PYTHON_VERSION python$PYTHON_VERSION-pip python$PYTHON_VERSION-devel gcc-c++ gcc-gfortran gcc-toolset-12 openblas-devel git
+yum install -y python3.11 python3.11-pip python3.11-devel gcc-c++ gcc-gfortran gcc-toolset-12 openblas-devel git
 
 source /opt/rh/gcc-toolset-12/enable
 
@@ -41,7 +40,7 @@ git submodule update --init
 dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm -y
 yum install -y hdf5-devel
 
-python$PYTHON_VERSION -m venv /usr/local/uvtools-python
+python3.11 -m venv /usr/local/uvtools-python
 source /usr/local/uvtools-python/bin/activate
 
 python3 -m pip install h5py==3.11.0
