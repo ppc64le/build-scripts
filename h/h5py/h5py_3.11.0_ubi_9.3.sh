@@ -31,10 +31,29 @@ export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 yum install -y gcc-c++ gcc-gfortran git make openblas
 yum install -y openssl-devel unzip libzip-devel.ppc64le gzip.ppc64le
-yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-yum install -y gcc-c++ cmake make pkgconfig gcc-gfortran hdf5 hdf5-devel
+yum install -y gcc-c++ cmake make pkgconfig gcc-gfortran
 yum install -y python3.12-devel python3.12-pip
 ln -sf /usr/bin/python3.12 /usr/bin/python3
+
+installing hdf5 from source
+#Installing hdf5
+#Build hdf5 from source
+git clone https://github.com/HDFGroup/hdf5
+cd hdf5/
+git checkout hdf5_1.14.6
+
+ ./configure --prefix=/usr/local/hdf5 --enable-cxx --enable-fortran  --with-pthread=yes --enable-threadsafe  --enable-build-mode=production --enable-unsupported  --enable-using-memchecker  --enable-clear-file-buffers --with-ssl
+make -j1
+make install
+
+cd ..
+
+echo "export statmenents"
+export LD_LIBRARY_PATH=/usr/local/hdf5/:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/usr/local/hdf5/include:$LD_LIBRARY_PATH
+export HDF5_DIR=/usr/local/hdf5
+
 
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
