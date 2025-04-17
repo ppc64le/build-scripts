@@ -39,6 +39,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+#install python dependencies
 pip install cython==3.0.12 packaging==24.2 pathspec==0.12.1 scikit-build-core==0.11.1 cmake==3.27.9 ninja==1.11.1.4 build pytest pytest-asyncio pytest-timeout
 
 #install
