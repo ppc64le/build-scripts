@@ -293,7 +293,7 @@ cd orc
 git checkout v2.0.3
 
 
-wget https://raw.githubusercontent.com.mcas.ms/ppc64le/build-scripts/refs/heads/master/o/orc/pyproject.toml
+wget https://raw.githubusercontent.com.mcas.ms/ppc64le/build-scripts/refs/heads/master/o/orc/orc.patch
 git apply orc.patch
 
 mkdir orc_prefix
