@@ -50,7 +50,7 @@ make -j "${CPU_COUNT}"
 make install PREFIX="${PREFIX}"
 touch $LOCAL_DIR/hdf5/__init__.py
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/1423375e65a9eb5ab3fb37fe8b8f3e18acafbc97/h/hdf5/pyproject.toml
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/h/hdf5/pyproject.toml
 sed -i s/{PACKAGE_VERSION}/hdf5-1_12_1/g pyproject.toml
 sed -i 's/version = "hdf5[._-]\([0-9]*\)[._-]\([0-9]*\)[._-]\([0-9]*\)\([._-]*[0-9]*\)"/version = "\1.\2.\3\4"/' pyproject.toml
 python3.12 -m pip install .
@@ -131,13 +131,13 @@ echo "export statmenents"
 export LD_LIBRARY_PATH=${PREFIX}/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/hdf5/local/hdf5/include:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/hdf5/local/hdf5/lib/:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/usr/local/lib/python3.12/site-packages/hdf5/lib/:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/usr/local/lib/$PYTHON_VERSION/site-packages/hdf5/lib/:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/hdf5/src/.libs/:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/hdf5/build/lib/hdf5/lib/:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/hdf5/src/:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/hdf5/local/hdf5/include/:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/hdf5/build/lib/hdf5/include/:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/usr/local/lib/python3.12/site-packages/hdf5/include/:$LD_LIBRARY
+export LD_LIBRARY_PATH=/usr/local/lib/$PYTHON_VERSION/site-packages/hdf5/include/:$LD_LIBRARY
 export LD_LIBRARY_PATH=/usr/local/hdf5/:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/usr/local/hdf5/include:$LD_LIBRARY_PATH
