@@ -1,0 +1,401 @@
+diff --git a/integration-tests/grpc-exceptions/pom.xml b/integration-tests/grpc-exceptions/pom.xml
+index 67f044fbf6e..013373c92dd 100644
+--- a/integration-tests/grpc-exceptions/pom.xml
++++ b/integration-tests/grpc-exceptions/pom.xml
+@@ -14,6 +14,20 @@
+     <name>Quarkus - Integration Tests - gRPC - Exceptions</name>
+
+     <dependencies>
++        <dependency>
++            <groupId>com.google.protobuf</groupId>
++            <artifactId>protoc</artifactId>
++            <classifier>linux-ppcle_64</classifier>
++            <type>exe</type>
++            <version>${protoc.version}</version>
++        </dependency>
++        <dependency>
++            <groupId>io.grpc</groupId>
++            <artifactId>protoc-gen-grpc-java</artifactId>
++            <type>exe</type>
++            <classifier>linux-ppcle_64</classifier>
++            <version>${grpc.version}</version>
++        </dependency>
+         <dependency>
+             <groupId>io.quarkus</groupId>
+             <artifactId>quarkus-resteasy-reactive</artifactId>
+diff --git a/integration-tests/grpc-external-proto-test/pom.xml b/integration-tests/grpc-external-proto-test/pom.xml
+index 9866a3ad772..bdaf1ce8d3e 100644
+--- a/integration-tests/grpc-external-proto-test/pom.xml
++++ b/integration-tests/grpc-external-proto-test/pom.xml
+@@ -14,6 +14,20 @@
+     <name>Quarkus - Integration Tests - gRPC - External proto Test</name>
+
+     <dependencies>
++       <dependency>
++            <groupId>com.google.protobuf</groupId>
++            <artifactId>protoc</artifactId>
++            <classifier>linux-ppcle_64</classifier>
++            <type>exe</type>
++            <version>${protoc.version}</version>
++        </dependency>
++        <dependency>
++            <groupId>io.grpc</groupId>
++            <artifactId>protoc-gen-grpc-java</artifactId>
++            <type>exe</type>
++            <classifier>linux-ppcle_64</classifier>
++            <version>${grpc.version}</version>
++        </dependency>
+         <dependency>
+             <groupId>io.quarkus</groupId>
+             <artifactId>quarkus-grpc</artifactId>
+diff --git a/integration-tests/grpc-hibernate-reactive/pom.xml b/integration-tests/grpc-hibernate-reactive/pom.xml
+index f97ed731d16..be162cbec65 100644
+--- a/integration-tests/grpc-hibernate-reactive/pom.xml
++++ b/integration-tests/grpc-hibernate-reactive/pom.xml
+@@ -13,6 +13,20 @@
+     <name>Quarkus - Integration Tests - gRPC - Hibernate Reactive</name>
+
+     <dependencies>
++        <dependency>
++            <groupId>com.google.protobuf</groupId>
++            <artifactId>protoc</artifactId>
++            <classifier>linux-ppcle_64</classifier>
++            <type>exe</type>
++            <version>${protoc.version}</version>
++        </dependency>
++        <dependency>
++            <groupId>io.grpc</groupId>
++            <artifactId>protoc-gen-grpc-java</artifactId>
++            <type>exe</type>
++            <classifier>linux-ppcle_64</classifier>
++            <version>${grpc.version}</version>
++        </dependency>
+         <dependency>
+             <groupId>io.quarkus</groupId>
+             <artifactId>quarkus-grpc</artifactId>
+diff --git a/integration-tests/grpc-hibernate/pom.xml b/integration-tests/grpc-hibernate/pom.xml
+index d67ba6be549..c0758943dd1 100644
+--- a/integration-tests/grpc-hibernate/pom.xml
++++ b/integration-tests/grpc-hibernate/pom.xml
+@@ -13,6 +13,20 @@
+     <name>Quarkus - Integration Tests - gRPC - Hibernate</name>
+
+     <dependencies>
++        <dependency>
++            <groupId>com.google.protobuf</groupId>
++            <artifactId>protoc</artifactId>
++            <classifier>linux-ppcle_64</classifier>
++            <type>exe</type>
++            <version>${protoc.version}</version>
++        </dependency>
++        <dependency>
++            <groupId>io.grpc</groupId>
++            <artifactId>protoc-gen-grpc-java</artifactId>
++            <type>exe</type>
++            <classifier>linux-ppcle_64</classifier>
++            <version>${grpc.version}</version>
++        </dependency>
+         <dependency>
+             <groupId>io.quarkus</groupId>
+             <artifactId>quarkus-grpc</artifactId>
+diff --git a/integration-tests/grpc-inprocess/pom.xml b/integration-tests/grpc-inprocess/pom.xml
+index b68a81c58e4..9b7e287234e 100644
+--- a/integration-tests/grpc-inprocess/pom.xml
++++ b/integration-tests/grpc-inprocess/pom.xml
+@@ -14,6 +14,20 @@
+     <name>Quarkus - Integration Tests - gRPC - InProcess</name>
+
+     <dependencies>
++        <dependency>
++            <groupId>com.google.protobuf</groupId>
++            <artifactId>protoc</artifactId>
++            <classifier>linux-ppcle_64</classifier>
++            <type>exe</type>
++            <version>${protoc.version}</version>
++        </dependency>
++        <dependency>
++            <groupId>io.grpc</groupId>
++            <artifactId>protoc-gen-grpc-java</artifactId>
++            <type>exe</type>
++            <classifier>linux-ppcle_64</classifier>
++            <version>${grpc.version}</version>
++        </dependency>
+         <dependency>
+             <groupId>io.quarkus</groupId>
+             <artifactId>quarkus-grpc</artifactId>
+diff --git a/integration-tests/grpc-interceptors/pom.xml b/integration-tests/grpc-interceptors/pom.xml
+index ba0c57c9a51..2e7fd54cafa 100644
+--- a/integration-tests/grpc-interceptors/pom.xml
++++ b/integration-tests/grpc-interceptors/pom.xml
+@@ -14,6 +14,20 @@
+     <name>Quarkus - Integration Tests - gRPC - Interceptors</name>
+
+     <dependencies>
++        <dependency>
++            <groupId>com.google.protobuf</groupId>
++            <artifactId>protoc</artifactId>
++            <classifier>linux-ppcle_64</classifier>
++            <type>exe</type>
++            <version>${protoc.version}</version>
++        </dependency>
++        <dependency>
++            <groupId>io.grpc</groupId>
++            <artifactId>protoc-gen-grpc-java</artifactId>
++            <type>exe</type>
++            <classifier>linux-ppcle_64</classifier>
++            <version>${grpc.version}</version>
++        </dependency>
+         <dependency>
+             <groupId>io.quarkus</groupId>
+             <artifactId>quarkus-resteasy-reactive</artifactId>
+diff --git a/integration-tests/grpc-mutual-auth/pom.xml b/integration-tests/grpc-mutual-auth/pom.xml
+index 4ef590beb9e..77a9037a26a 100644
+--- a/integration-tests/grpc-mutual-auth/pom.xml
++++ b/integration-tests/grpc-mutual-auth/pom.xml
+@@ -14,6 +14,20 @@
+     <name>Quarkus - Integration Tests - gRPC - TLS with mutual auth</name>
+
+     <dependencies>
++        <dependency>
++            <groupId>com.google.protobuf</groupId>
++            <artifactId>protoc</artifactId>
++            <classifier>linux-ppcle_64</classifier>
++            <type>exe</type>
++            <version>${protoc.version}</version>
++        </dependency>
++        <dependency>
++            <groupId>io.grpc</groupId>
++            <artifactId>protoc-gen-grpc-java</artifactId>
++            <type>exe</type>
++            <classifier>linux-ppcle_64</classifier>
++            <version>${grpc.version}</version>
++        </dependency>
+         <dependency>
+             <groupId>io.quarkus</groupId>
+             <artifactId>quarkus-resteasy</artifactId>
+diff --git a/integration-tests/grpc-plain-text-gzip/pom.xml b/integration-tests/grpc-plain-text-gzip/pom.xml
+index e5e001aab15..134c48bb4db 100644
+--- a/integration-tests/grpc-plain-text-gzip/pom.xml
++++ b/integration-tests/grpc-plain-text-gzip/pom.xml
+@@ -14,6 +14,20 @@
+     <name>Quarkus - Integration Tests - gRPC - Plain Text with gzip compression</name>
+
+     <dependencies>
++       <dependency>
++            <groupId>com.google.protobuf</groupId>
++            <artifactId>protoc</artifactId>
++            <classifier>linux-ppcle_64</classifier>
++            <type>exe</type>
++            <version>${protoc.version}</version>
++        </dependency>
++        <dependency>
++            <groupId>io.grpc</groupId>
++            <artifactId>protoc-gen-grpc-java</artifactId>
++            <type>exe</type>
++            <classifier>linux-ppcle_64</classifier>
++            <version>${grpc.version}</version>
++        </dependency>
+         <dependency>
+             <groupId>io.quarkus</groupId>
+             <artifactId>quarkus-resteasy</artifactId>
+diff --git a/integration-tests/grpc-plain-text-mutiny/pom.xml b/integration-tests/grpc-plain-text-mutiny/pom.xml
+index 91c43c4642d..9ffe2b85819 100644
+--- a/integration-tests/grpc-plain-text-mutiny/pom.xml
++++ b/integration-tests/grpc-plain-text-mutiny/pom.xml
+@@ -14,6 +14,20 @@
+   <name>Quarkus - Integration Tests - gRPC - Plain Text with Mutiny</name>
+
+   <dependencies>
++    <dependency>
++        <groupId>com.google.protobuf</groupId>
++        <artifactId>protoc</artifactId>
++        <classifier>linux-ppcle_64</classifier>
++        <type>exe</type>
++        <version>${protoc.version}</version>
++    </dependency>
++    <dependency>
++        <groupId>io.grpc</groupId>
++        <artifactId>protoc-gen-grpc-java</artifactId>
++        <type>exe</type>
++        <classifier>linux-ppcle_64</classifier>
++        <version>${grpc.version}</version>
++    </dependency>
+     <dependency>
+       <groupId>io.quarkus</groupId>
+       <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
+diff --git a/integration-tests/grpc-proto-v2/pom.xml b/integration-tests/grpc-proto-v2/pom.xml
+index 2c229523321..91644885877 100644
+--- a/integration-tests/grpc-proto-v2/pom.xml
++++ b/integration-tests/grpc-proto-v2/pom.xml
+@@ -14,6 +14,20 @@
+     <name>Quarkus - Integration Tests - gRPC - Proto v2</name>
+
+     <dependencies>
++       <dependency>
++            <groupId>com.google.protobuf</groupId>
++            <artifactId>protoc</artifactId>
++            <classifier>linux-ppcle_64</classifier>
++            <type>exe</type>
++            <version>${protoc.version}</version>
++        </dependency>
++        <dependency>
++            <groupId>io.grpc</groupId>
++            <artifactId>protoc-gen-grpc-java</artifactId>
++            <type>exe</type>
++            <classifier>linux-ppcle_64</classifier>
++            <version>${grpc.version}</version>
++        </dependency>
+         <dependency>
+             <groupId>io.quarkus</groupId>
+             <artifactId>quarkus-resteasy</artifactId>
+diff --git a/integration-tests/grpc-stork-response-time/pom.xml b/integration-tests/grpc-stork-response-time/pom.xml
+index 7f5a5d71298..14fc5ca493c 100644
+--- a/integration-tests/grpc-stork-response-time/pom.xml
++++ b/integration-tests/grpc-stork-response-time/pom.xml
+@@ -14,6 +14,20 @@
+   <name>Quarkus - Integration Tests - gRPC with Stork - gathering response times</name>
+
+   <dependencies>
++    <dependency>
++        <groupId>com.google.protobuf</groupId>
++        <artifactId>protoc</artifactId>
++        <classifier>linux-ppcle_64</classifier>
++        <type>exe</type>
++        <version>${protoc.version}</version>
++    </dependency>
++    <dependency>
++        <groupId>io.grpc</groupId>
++        <artifactId>protoc-gen-grpc-java</artifactId>
++        <type>exe</type>
++        <classifier>linux-ppcle_64</classifier>
++        <version>${grpc.version}</version>
++    </dependency>
+     <dependency>
+       <groupId>io.quarkus</groupId>
+       <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
+diff --git a/integration-tests/grpc-stork-simple/pom.xml b/integration-tests/grpc-stork-simple/pom.xml
+index b0cb7b1a4fb..49275fa0d4d 100644
+--- a/integration-tests/grpc-stork-simple/pom.xml
++++ b/integration-tests/grpc-stork-simple/pom.xml
+@@ -14,6 +14,20 @@
+     <name>Quarkus - Integration Tests - gRPC - Stork - Simple</name>
+
+     <dependencies>
++        <dependency>
++            <groupId>com.google.protobuf</groupId>
++            <artifactId>protoc</artifactId>
++            <classifier>linux-ppcle_64</classifier>
++            <type>exe</type>
++            <version>${protoc.version}</version>
++        </dependency>
++        <dependency>
++            <groupId>io.grpc</groupId>
++            <artifactId>protoc-gen-grpc-java</artifactId>
++            <type>exe</type>
++            <classifier>linux-ppcle_64</classifier>
++            <version>${grpc.version}</version>
++        </dependency>
+         <dependency>
+             <groupId>io.quarkus</groupId>
+             <artifactId>quarkus-grpc</artifactId>
+diff --git a/integration-tests/grpc-streaming/pom.xml b/integration-tests/grpc-streaming/pom.xml
+index 08e34de1d2c..ecb44a61478 100644
+--- a/integration-tests/grpc-streaming/pom.xml
++++ b/integration-tests/grpc-streaming/pom.xml
+@@ -14,6 +14,20 @@
+     <name>Quarkus - Integration Tests - gRPC - Streaming</name>
+
+     <dependencies>
++       <dependency>
++            <groupId>com.google.protobuf</groupId>
++            <artifactId>protoc</artifactId>
++            <classifier>linux-ppcle_64</classifier>
++            <type>exe</type>
++            <version>${protoc.version}</version>
++        </dependency>
++        <dependency>
++            <groupId>io.grpc</groupId>
++            <artifactId>protoc-gen-grpc-java</artifactId>
++            <type>exe</type>
++            <classifier>linux-ppcle_64</classifier>
++            <version>${grpc.version}</version>
++        </dependency>
+         <dependency>
+             <groupId>io.quarkus</groupId>
+             <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
+diff --git a/integration-tests/grpc-tls/pom.xml b/integration-tests/grpc-tls/pom.xml
+index 359a755a0d7..4125494744e 100644
+--- a/integration-tests/grpc-tls/pom.xml
++++ b/integration-tests/grpc-tls/pom.xml
+@@ -14,6 +14,20 @@
+     <name>Quarkus - Integration Tests - gRPC - TLS</name>
+
+     <dependencies>
++       <dependency>
++            <groupId>com.google.protobuf</groupId>
++            <artifactId>protoc</artifactId>
++            <classifier>linux-ppcle_64</classifier>
++            <type>exe</type>
++            <version>${protoc.version}</version>
++        </dependency>
++        <dependency>
++            <groupId>io.grpc</groupId>
++            <artifactId>protoc-gen-grpc-java</artifactId>
++            <type>exe</type>
++            <classifier>linux-ppcle_64</classifier>
++            <version>${grpc.version}</version>
++        </dependency>
+         <dependency>
+             <groupId>io.quarkus</groupId>
+             <artifactId>quarkus-resteasy</artifactId>
+diff --git a/integration-tests/grpc-vertx/pom.xml b/integration-tests/grpc-vertx/pom.xml
+index bd83919694a..f07380f6d74 100644
+--- a/integration-tests/grpc-vertx/pom.xml
++++ b/integration-tests/grpc-vertx/pom.xml
+@@ -14,6 +14,20 @@
+     <name>Quarkus - Integration Tests - gRPC - Vertx</name>
+
+     <dependencies>
++        <dependency>
++            <groupId>com.google.protobuf</groupId>
++            <artifactId>protoc</artifactId>
++            <classifier>linux-ppcle_64</classifier>
++            <type>exe</type>
++            <version>${protoc.version}</version>
++        </dependency>
++        <dependency>
++            <groupId>io.grpc</groupId>
++            <artifactId>protoc-gen-grpc-java</artifactId>
++            <type>exe</type>
++            <classifier>linux-ppcle_64</classifier>
++            <version>${grpc.version}</version>
++        </dependency>
+         <dependency>
+             <groupId>io.quarkus</groupId>
+             <artifactId>quarkus-resteasy</artifactId>
+diff --git a/integration-tests/opentelemetry-grpc/pom.xml b/integration-tests/opentelemetry-grpc/pom.xml
+index 7c59f4aeb56..a67cf0d17b5 100644
+--- a/integration-tests/opentelemetry-grpc/pom.xml
++++ b/integration-tests/opentelemetry-grpc/pom.xml
+@@ -14,6 +14,21 @@
+     <name>Quarkus - Integration Tests - OpenTelemetry gRPC</name>
+
+     <dependencies>
++        <dependency>
++            <groupId>com.google.protobuf</groupId>
++            <artifactId>protoc</artifactId>
++            <classifier>linux-ppcle_64</classifier>
++            <type>exe</type>
++            <version>${protoc.version}</version>
++        </dependency>
++        <dependency>
++            <groupId>io.grpc</groupId>
++            <artifactId>protoc-gen-grpc-java</artifactId>
++            <type>exe</type>
++            <classifier>linux-ppcle_64</classifier>
++            <version>${grpc.version}</version>
++        </dependency>
++
+         <dependency>
+             <groupId>io.quarkus</groupId>
+             <artifactId>quarkus-opentelemetry</artifactId>
