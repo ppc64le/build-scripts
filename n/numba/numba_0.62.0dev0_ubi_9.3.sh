@@ -154,8 +154,12 @@ git checkout $PACKAGE_VERSION
 
 
 # echo "before CXXFLAGS............$CXXFLAGS........."
-export CXXFLAGS="$CXXFLAGS -include cstddef"
+export CXXFLAGS=-I/usr/include
 # echo "after CXXFLAGS............$CXXFLAGS........."
+
+PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+sed -i '/#include "dynamic_annotations.h".*\/\*/d' /usr/include/python${PYTHON_VERSION}/internal/pycore_atomic.h
+sed -i '1i#include "dynamic_annotations.h"   /* _Py_ANNOTATE_MEMORY_ORDER */' /usr/include/python${PYTHON_VERSION}/internal/pycore_atomic.h
 
 
 #install
