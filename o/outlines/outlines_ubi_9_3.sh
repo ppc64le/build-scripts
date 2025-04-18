@@ -27,7 +27,7 @@ PARALLEL=${PARALLEL:-$(nproc)}
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 export _GLIBCXX_USE_CXX11_ABI=1
 
-# Install dependencies
+# Install dependencies #################
 dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
     git cmake ninja-build gcc-toolset-13 cargo \
     python${PYTHON_VER}-devel python${PYTHON_VER}-pip jq openssl openssl-devel \
