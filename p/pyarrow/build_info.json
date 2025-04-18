@@ -16,7 +16,7 @@
   "apache-arrow-15.0.1": {
     "build_script": "pyarrow_15.0.1_ubi_9.3.sh"
   },
-  "apache-arrow-14.*": {
+  "apache-arrow-14.*.*": {
     "build_script": "pyarrow_15.0.1_ubi_9.3.sh"
   },
   "apache-arrow-18.*": {
