@@ -1,0 +1,13 @@
+{
+   "maintainer": "shubham-dayma-ibm",
+   "package_name": "tinycss2",
+   "github_url": "https://github.com/Kozea/tinycss2",
+   "version": "v1.4.0",
+   "default_branch": "main",
+   "build_script": "tinycss2_ubi_9.3.sh",
+   "package_dir": "t/tinycss2",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
