@@ -98,22 +98,8 @@ if ! python setup.py develop; then
 fi
 
 python -m pip install pytest-xdist
-cat <<EOF > register_privateuse1.py
-import torch
-from torch.library import PrivateUse1HooksInterface
 
-class DummyHooks(PrivateUse1HooksInterface):
-    def get_device_index(self, tensor): return 0
-    def get_device(self, tensor): return torch.device("privateuseone")
-    def get_device_name(self, device): return "DummyPrivateUse1"
-    def get_num_devices(self): return 1
-
-torch._C._dispatch._register_privateuse1_hooks(DummyHooks())
-EOF
-
-# Register it before running pytest
-python register_privateuse1.py
-# export PYTORCH_TEST_WITH_PRIVATEUSE1=1
+export PYTORCH_TEST_WITH_PRIVATEUSE1=0
 export OMP_NUM_THREADS=1
 export OPENBLAS_NUM_THREADS=1
 export MKL_NUM_THREADS=1
