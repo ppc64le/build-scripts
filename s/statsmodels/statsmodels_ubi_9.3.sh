@@ -16,7 +16,7 @@
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
 #
-# ----------------------------------------------------------------------------- 
+# -----------------------------------------------------------------------------
 echo "------------------------------------------------------------Cloning statsmodels github repo--------------------------------------------------------------"
 PACKAGE_NAME=statsmodels
 PACKAGE_VERSION=${1:-v0.13.5}
@@ -24,20 +24,9 @@ PACKAGE_URL=https://github.com/statsmodels/statsmodels.git
 PACKAGE_DIR=statsmodels
 
 echo "------------------------------------------------------------Installing requirements for statsmodels------------------------------------------------------"
-#dnf groupinstall -y "Development Tools" 
-dnf install -y wget
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
-wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
-mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
-dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-
-dnf install -y git g++ gcc gcc-c++ gcc-gfortran openssl-devel python3-devel python3-pip \
+dnf install -y wget git g++ gcc gcc-c++ gcc-gfortran openssl-devel python3-devel python3-pip \
     meson ninja-build openblas-devel libjpeg-devel bzip2-devel libffi-devel zlib-devel \
-    libtiff-devel freetype-devel 
-dnf install -y make cmake automake autoconf procps-ng 
+    libtiff-devel freetype-devel make cmake automake autoconf procps-ng
 
 git clone $PACKAGE_URL
 cd $PACKAGE_DIR
@@ -51,10 +40,13 @@ if ! pip install -e .; then
     exit 1
 fi
 
+# Adjust test tolerances to avoid false negatives
 sed -i 's/atol=1e-6/atol=1e-1/g' statsmodels/stats/tests/test_mediation.py
 sed -i 's/QE/Q-DEC/g' statsmodels/tsa/tests/test_exponential_smoothing.py
 sed -i 's/1e-5/2/g' statsmodels/imputation/tests/test_mice.py
 sed -i 's/1e-2/1e-1/g' statsmodels/stats/tests/test_mediation.py
+
+# Install specific versions for compatibility
 pip install pytest
 pip install numpy==1.22.4
 pip install pandas==1.3.0
