@@ -98,6 +98,7 @@ if ! python setup.py develop; then
 fi
 
 python -m pip install pytest-xdist
+export PYTORCH_TEST_WITH_PRIVATEUSE1=1
 export PYTORCH_TEST_WITH_HOOKS=1
 export OMP_NUM_THREADS=1
 export OPENBLAS_NUM_THREADS=1
