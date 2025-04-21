@@ -1,0 +1,13 @@
+{
+   "maintainer": "shubham-dayma-ibm",
+   "package_name": "prometheus-fastapi-instrumentator",
+   "github_url": "https://github.com/trallnag/prometheus-fastapi-instrumentator",
+   "version": "v7.1.0",
+   "default_branch": "master",
+   "build_script": "prometheus-fastapi-instrumentator_ubi_9.3.sh",
+   "package_dir": "p/prometheus-fastapi-instrumentator",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
