@@ -1,0 +1,13 @@
+{
+   "maintainer": "shubham-dayma-ibm",
+   "package_name": "cython",
+   "github_url": "https://github.com/cython/cython",
+   "version": "3.0.12",
+   "default_branch": "master",
+   "build_script": "cython_ubi_9.3.sh",
+   "package_dir": "c/cython",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
