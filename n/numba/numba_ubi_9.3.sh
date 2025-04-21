@@ -24,7 +24,7 @@ PACKAGE_NAME=numba
 PACKAGE_URL=https://github.com/numba/numba
 
 # Install dependencies and tools.
-yum install -y git gcc gcc-c++ make wget python-devel xz-devel bzip2-devel openssl-devel zlib-devel libffi-devel
+yum install -y git gcc gcc-c++ make wget python-devel xz-devel bzip2-devel openssl-devel zlib-devel libffi-devel cmake
 
 WORKING_DIR=$(pwd)
 #Installing llvmlite from source
