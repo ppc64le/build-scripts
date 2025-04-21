@@ -1,0 +1,13 @@
+{
+   "maintainer": "shubham-dayma-ibm",
+   "package_name": "importlib_metadata",
+   "github_url": "https://github.com/python/importlib_metadata",
+   "version": "v8.6.1",
+   "default_branch": "main",
+   "build_script": "importlib_metadata_ubi_9.3.sh",
+   "package_dir": "i/importlib_metadata",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
