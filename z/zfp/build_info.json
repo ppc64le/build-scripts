@@ -13,7 +13,7 @@
   "1.0.0": {
    "build_script": "zfp_ubi_9.5.sh",
    "patches": {
-      "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/z/zfp/zfp_1.0.0.patch"
+      "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/z/zfp/zfp_1.0.0.patch"
     }
  },
  "*" : {
