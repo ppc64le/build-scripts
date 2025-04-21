@@ -132,13 +132,13 @@ cd $HOME_DIR
 cd $PACKAGE_NAME/python
 
 # Attempt to build the wheel without isolation
-if ! python -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"; then
-    echo "============ Wheel Creation Failed for Python (without isolation) ================="
+if ! python3.12 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"; then
+    echo "============ Wheel Creation Failed for Python3.12 (without isolation) ================="
     echo "Attempting to build with isolation..."
 
     # Attempt to build the wheel without isolation
-    if ! python -m build --wheel --outdir="$CURRENT_DIR/"; then
-        echo "============ Wheel Creation Failed for Python ================="
+    if ! python3.12 -m build --wheel --outdir="$CURRENT_DIR/"; then
+        echo "============ Wheel Creation Failed for Python3.12 ================="
         exit 1
     fi
 else
