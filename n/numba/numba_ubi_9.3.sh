@@ -26,26 +26,59 @@ PACKAGE_URL=https://github.com/numba/numba
 # Install dependencies and tools.
 yum install -y git gcc gcc-c++ make wget python-devel xz-devel bzip2-devel openssl-devel zlib-devel libffi-devel
 
-# Add repositories and Import GPG key
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
-wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
-mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
+WORKING_DIR=$(pwd)
+#Installing llvmlite from source
+echo "-------------------Installing llvmlite----------------------"
 
-# Install EPEL repository
-dnf install -y --nodocs https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+LLVMLITE_PACKAGE_NAME=llvmlite
+LLVMLITE_VERSION="v0.44.0rc1"
+LLVMLITE_PACKAGE_URL="https://github.com/numba/llvmlite"
+LLVM_PROJECT_GIT_URL="https://github.com/llvm/llvm-project.git"
+LLVM_PROJECT_GIT_TAG="llvmorg-15.0.7"
 
-#install pytest
-pip install pytest
+git clone -b ${LLVM_PROJECT_GIT_TAG} ${LLVM_PROJECT_GIT_URL}
+git clone -b ${LLVMLITE_VERSION} ${LLVMLITE_PACKAGE_URL}
 
-# Install llvm14 and set llvm-config path
-yum install -y llvm14-devel.ppc64le
-export PATH=$PATH:/usr/lib64/llvm14/bin
+pip install ninja
+
+# Build LLVM project
+cd "$WORKING_DIR/llvm-project"
+git apply "$WORKING_DIR/llvmlite/conda-recipes/llvm15-clear-gotoffsetmap.patch"
+git apply "$WORKING_DIR/llvmlite/conda-recipes/llvm15-remove-use-of-clonefile.patch"
+cp "$WORKING_DIR/llvmlite/conda-recipes/llvmdev/build.sh" .
+chmod 777 "$WORKING_DIR/llvm-project/build.sh" && "$WORKING_DIR/llvm-project/build.sh"
+
+# Set LLVM_CONFIG environment variable
+export LLVM_CONFIG="/llvm-project/build/bin/llvm-config"
+
+# Check for llvm-config path
+LLVM_CONFIG_PATH=$(which llvm-config)
+
+# If llvm-config is not found in the system path, use the local path from the build
+if [ -z "$LLVM_CONFIG_PATH" ]; then
+    echo "llvm-config not found in PATH, using local path."
+    export LLVM_CONFIG="$WORKING_DIR/llvm-project/build/bin/llvm-config"
+else
+    echo "llvm-config found at: $LLVM_CONFIG_PATH"
+    export LLVM_CONFIG="$LLVM_CONFIG_PATH"
+fi
+
+# Check if llvm-config.h exists in the build include directory
+echo "Checking for llvm-config.h in: $WORKING_DIR/llvm-project/build/include/llvm/Config"
+ls "$WORKING_DIR/llvm-project/build/include/llvm/Config/llvm-config.h" || { echo "llvm-config.h not found. Exiting."; exit 1; }
+
+# Build llvmlite
+cd "$WORKING_DIR/llvmlite"
+export CXXFLAGS="-I$WORKING_DIR/llvm-project/build/include"
+export LLVM_CONFIG="$WORKING_DIR/llvm-project/build/bin/llvm-config"
+
+pip install .
+cd $WORKING_DIR
+
+echo "-------------------successfully Installed llvmlite----------------------"
 
 # Install numpy
-pip install numpy==1.21.1
+pip install pytest numpy==1.21.1
 
 # Clone repository
 git clone $PACKAGE_URL
