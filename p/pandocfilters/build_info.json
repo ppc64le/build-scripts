@@ -1,0 +1,13 @@
+{
+   "maintainer": "shubham-dayma-ibm",
+   "package_name": "pandocfilters",
+   "github_url": "http://github.com/jgm/pandocfilters",
+   "version": "1.5.1",
+   "default_branch": "master",
+   "build_script": "pandocfilters_ubi_9.3.sh",
+   "package_dir": "p/pandocfilters",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
