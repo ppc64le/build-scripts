@@ -1,5 +1,5 @@
 {
-   "maintainer": "ramnathnayak-ibm",
+   "maintainer": "shubham-dayma-ibm",
    "package_name": "cassandra-driver",
    "github_url": "http://github.com/datastax/python-driver",
    "version": "3.29.0",

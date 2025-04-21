@@ -4,11 +4,11 @@
 # Package          : cassandra-driver
 # Version          : 3.29.0
 # Source repo      : http://github.com/datastax/python-driver
-# Tested on        : UBI:9.3
-# Language         : Python
-# Travis-Check     : True
-# Script License   : Apache License, Version 2 or later
-# Maintainer       : Vinod K <Vinod.K1@ibm.com>
+# Tested on	: UBI:9.3
+# Language      : Python
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
+# Maintainer    : ICH <shubham-dayma-ibm>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -17,64 +17,107 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
+
 PACKAGE_NAME=cassandra-driver
 PACKAGE_VERSION=${1:-3.29.0}
 PACKAGE_URL=http://github.com/datastax/python-driver
-PACKAGE_DIR=python-driver
+PACKAGE_DIR=cassandra-driver
 
-# Install dependencies
-yum install -y git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran make wget sudo openssl-devel bzip2-devel krb5-devel libffi-devel zlib-devel python-devel python-pip cargo rust
-export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+yum install -y git  python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo cmake
+pip3 install pytest tox nox
+PATH=$PATH:/usr/local/bin/
 
-#Install libev
-curl -LO http://dist.schmorp.de/libev/Attic/libev-4.33.tar.gz
-tar -xzf libev-4.33.tar.gz
-cd libev-4.33
-export CFLAGS="-fPIC"
-export LDFLAGS="-fPIC"
-./configure --disable-shared --enable-static
-make -j$(nproc)
-make install
-cd ..
+OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
+SOURCE=Github
 
-# Clone the repository
-git clone $PACKAGE_URL
-cd $PACKAGE_DIR
-git checkout $PACKAGE_VERSION
-
-#install necessary Python packages
-pip install wheel pytest tox nox mock build gevent eventlet pyopenssl
-pip install -r test-requirements.txt
-
-export CASS_DRIVER_LIBEV_INCLUDES="/usr/local/include"
-export CASS_DRIVER_LIBEV_LIBS="/usr/local/lib"
-export LDFLAGS="-Wl,-Bstatic -lev -Wl,-Bdynamic"
-python3 setup.py build_ext --inplace
-
-#Install
-if ! pip install . ; then
-    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
-    exit 1
+# Install rust
+if ! command -v rustc &> /dev/null
+then
+    wget https://static.rust-lang.org/dist/rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
+    tar -xzf rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
+    cd rust-1.75.0-powerpc64le-unknown-linux-gnu
+    sudo ./install.sh
+    export PATH=$HOME/.cargo/bin:$PATH
+    rustc -V
+    cargo -V
+    cd ../
 fi
-#Skipping some tests as these are parity with intel and some test dependencies are deprecated with python3.11 and python3.12
-if !(pytest tests/unit/ \
-    -k "not (CloudTests or TestTwistedConnection or _PoolTests or test_timeout_does_not_release_stream_id)" \
-    --ignore=tests/unit/io/test_libevreactor.py \
-    --ignore=tests/unit/io/test_asyncioreactor.py \
-    --ignore=tests/unit/io/test_asyncorereactor.py \
-    --ignore=tests/unit/cython/test_bytesio.py \
-    --ignore=tests/unit/cython/test_types.py \
-    --ignore=tests/unit/cython/test_utils.py -p no:warnings) ; then
+
+if [[ "$PACKAGE_URL" == *github.com* ]]; then
+    # Use git clone if it's a Git repository
+    if [ -d "$PACKAGE_DIR" ]; then
+        cd "$PACKAGE_DIR" || exit
+    else
+        if ! git clone "$PACKAGE_URL" "$PACKAGE_DIR"; then
+            echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
+            echo "$PACKAGE_URL $PACKAGE_NAME"
+            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Clone_Fails"  
+            exit 1
+        fi
+        cd "$PACKAGE_DIR" || exit
+        git checkout "$PACKAGE_VERSION" || exit
+    fi
+else
+    # If it's not a Git repository, download and untar
+    if [ -d "$PACKAGE_DIR" ]; then
+        cd "$PACKAGE_DIR" || exit
+    else
+        # Use download and untar if it's not a Git repository
+        if ! curl -L "$PACKAGE_URL" -o "$PACKAGE_DIR.tar.gz"; then
+            echo "------------------$PACKAGE_URL:download_fails---------------------------------------"
+            echo "$PACKAGE_URL $PACKAGE_NAME"
+            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Download_Fails"  
+            exit 1
+        fi
+        mkdir "$PACKAGE_DIR"
+
+        if ! tar -xzf "$PACKAGE_DIR.tar.gz" -C "$PACKAGE_DIR" --strip-components=1; then
+            echo "------------------$PACKAGE_NAME:untar_fails---------------------------------------"
+            echo "$PACKAGE_URL $PACKAGE_NAME"
+            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Untar_Fails"  
+            exit 1
+        fi
+
+        cd "$PACKAGE_DIR" || exit
+    fi
+fi
+
+# Install via pip3
+if !  python3 -m pip install ./; then
+        echo "------------------$PACKAGE_NAME:install_fails------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"  
+        exit 1
+fi
+
+# Run Tox
+python3 -m tox -e py39
+if [ $? -eq 0 ]; then
+    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
+    exit 0
+fi
+
+# Run Pytest
+python3 -m pytest
+if [ $? -eq 0 ]; then
+    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
+    exit 0
+fi
+
+# Run Nox
+python3 -m nox
+if [ $? -eq 0 ]; then
+    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
+    exit 0
+else
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"
     exit 2
-else
-    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-    exit 0
 fi
