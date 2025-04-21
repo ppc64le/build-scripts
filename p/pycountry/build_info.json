@@ -1,0 +1,13 @@
+{
+   "maintainer": "shubham-dayma-ibm",
+   "package_name": "pycountry",
+   "github_url": "https://github.com/flyingcircusio/pycountry",
+   "version": "24.6.1",
+   "default_branch": "main",
+   "build_script": "pycountry_ubi_9.3.sh",
+   "package_dir": "p/pycountry",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
