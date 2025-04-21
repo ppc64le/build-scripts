@@ -69,6 +69,17 @@ cd patchelf
 make -j$(nproc)
 make install
 ln -s /usr/local/bin/patchelf /usr/bin/patchelf
+
+cd $CURRENT_DIR
+echo "-------Installing cmake---------"
+#install cmake
+wget https://cmake.org/files/v3.28/cmake-3.28.0.tar.gz
+tar -zxvf cmake-3.28.0.tar.gz
+cd cmake-3.28.0
+./bootstrap
+make
+make install
+
 #installing openblas
 cd $CURRENT_DIR
 git clone https://github.com/OpenMathLib/OpenBLAS
@@ -169,7 +180,6 @@ echo "-----------------------------------------------------Installed abseil-cpp-
 WORK_DIR=$(pwd)
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 pip3.12 install --upgrade pip setuptools wheel ninja packaging tox pytest build mypy stubs
-pip3.12 install 'cmake==3.31.6'
 # Set ABSEIL_VERSION and ABSEIL_URL
 ABSEIL_VERSION=20240116.2
 ABSEIL_URL="https://github.com/abseil/abseil-cpp"
