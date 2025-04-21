@@ -1,0 +1,13 @@
+{
+   "maintainer": "shubham-dayma-ibm",
+   "package_name": "pycparser",
+   "github_url": "https://github.com/eliben/pycparser",
+   "version": "release_2.01",
+   "default_branch": "main",
+   "build_script": "pycparser_ubi_9.3.sh",
+   "package_dir": "p/pycparser",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
