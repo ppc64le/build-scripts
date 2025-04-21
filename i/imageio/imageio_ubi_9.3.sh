@@ -8,7 +8,7 @@
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Haritha Nagothu <haritha.nagothu2@ibm.com>
+# Maintainer    : Ramnath Nayak <Ramnath.Nayak@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -20,20 +20,11 @@
 
 #variables
 PACKAGE_NAME=imageio
-PACKAGE_VERSION=${1:- v2.34.1}
+PACKAGE_VERSION=${1:-v2.34.1}
 PACKAGE_URL=https://github.com/imageio/imageio.git
 
-yum install -y wget
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
-wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
-mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
-dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-
 # Install dependencies and tools.
-yum install -y gcc gcc-c++ gcc-gfortran git make python-devel zlib-devel libjpeg-devel libtiff-devel freetype-devel  ffmpeg-free-devel.ppc64le freeimage.ppc64le libwebp-devel  pkg-config ffmpeg-free.ppc64le
+yum install -y wget gcc gcc-c++ gcc-gfortran git make python-devel zlib-devel libjpeg-devel libtiff-devel freetype-devel libwebp-devel pkg-config
 
 
 #clone repository 
@@ -53,7 +44,7 @@ if ! (pip install .) ; then
 fi
 
 #test
-#skipping the some testcase as it is failing on x_86 also.
+#Few testcases are skipped as they are failing on x_86 too.
 
 if ! (pytest --deselect tests/test_ffmpeg.py --deselect tests/test_pillow.py --deselect tests/test_pillow_legacy.py  --deselect tests/test_dicom.py --deselect tests/test_core.py  --deselect tests/test_ffmpeg_info.py  --deselect tests/test_freeimage.py --deselect tests/test_format.py); then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
