@@ -99,7 +99,7 @@ fi
 cd ..
 echo "------------Applying Patch------------"
 
-wget https://raw.githubusercontent.com.mcas.ms/ppc64le/build-scripts/refs/heads/master/o/onetbb/tbb.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/onetbb/tbb.patch
 git apply tbb.patch
 
 echo "------------Applied patch successfully---------------------"

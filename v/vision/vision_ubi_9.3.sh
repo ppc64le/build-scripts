@@ -70,7 +70,7 @@ echo "---------------------------------------------Installing requirements------
 pip install -r requirements.txt
 
 echo "---------------------------------------------Downloading patch-------------------------------------------------------"
-wget https://raw.githubusercontent.com.mcas.ms/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.0.1.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.0.1.patch
 git apply ./pytorch_v2.0.1.patch
 echo "---------------------------------------------Installing pytorch-------------------------------------------------------"
 python setup.py install
