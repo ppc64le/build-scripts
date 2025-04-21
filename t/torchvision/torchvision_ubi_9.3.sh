@@ -27,15 +27,10 @@ MAX_JOBS=${MAX_JOBS:-$(nproc)}
 export _GLIBCXX_USE_CXX11_ABI=${_GLIBCXX_USE_CXX11_ABI:-1}
 WORKDIR=$(pwd)
 
-dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
-            https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
-            https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/`arch`/os
-dnf config-manager --set-enabled crb
-dnf install -y git cmake ninja-build g++ rust cargo jq \
-            libtiff-devel libjpeg-devel openjpeg2-devel zlib-devel \
-            libpng-devel freetype-devel lcms2-devel libwebp-devel tcl-devel tk-devel \
-            harfbuzz-devel fribidi-devel libraqm-devel libimagequant-devel libxcb-devel \
+
+yum install -y git cmake ninja-build g++ rust cargo jq \
+            libtiff-devel libjpeg-devel zlib-devel \
+            harfbuzz-devel libxcb-devel \
             python-devel python-pip
 
 # install dependency - pytorch
@@ -58,6 +53,7 @@ fi
 git submodule sync
 git submodule update --init --recursive
 pip install -r requirements.txt
+pip install 'cmake==3.31.6'
 pip install -v -e . --no-build-isolation
 pip install setuptools wheel
 
