@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : tornado
-# Version          : v6.3.3
+# Version          : 6.4.1
 # Source repo      : https://github.com/tornadoweb/tornado
 # Tested on	: UBI:9.3
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : ICH <ich@us.ibm.com>
+# Maintainer    : ICH <shubham-dayma-ibm>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,9 +19,9 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=tornado
-PACKAGE_VERSION=${1:-v6.3.3}
+PACKAGE_VERSION=${1:-6.4.1}
 PACKAGE_URL=https://github.com/tornadoweb/tornado
-PACKAGE_DIR="$(pwd)/$PACKAGE_NAME"
+PACKAGE_DIR=tornado
 
 yum install -y git  python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo cmake
 pip3 install pytest tox nox
@@ -45,40 +45,40 @@ fi
 
 if [[ "$PACKAGE_URL" == *github.com* ]]; then
     # Use git clone if it's a Git repository
-    if [ -d "$PACKAGE_NAME" ]; then
-        cd "$PACKAGE_NAME" || exit
+    if [ -d "$PACKAGE_DIR" ]; then
+        cd "$PACKAGE_DIR" || exit
     else
-        if ! git clone "$PACKAGE_URL" "$PACKAGE_NAME"; then
+        if ! git clone "$PACKAGE_URL" "$PACKAGE_DIR"; then
             echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
             echo "$PACKAGE_URL $PACKAGE_NAME"
             echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Clone_Fails"  
             exit 1
         fi
-        cd "$PACKAGE_NAME" || exit
+        cd "$PACKAGE_DIR" || exit
         git checkout "$PACKAGE_VERSION" || exit
     fi
 else
     # If it's not a Git repository, download and untar
-    if [ -d "$PACKAGE_NAME" ]; then
-        cd "$PACKAGE_NAME" || exit
+    if [ -d "$PACKAGE_DIR" ]; then
+        cd "$PACKAGE_DIR" || exit
     else
         # Use download and untar if it's not a Git repository
-        if ! curl -L "$PACKAGE_URL" -o "$PACKAGE_NAME.tar.gz"; then
-            echo "------------------$PACKAGE_NAME:download_fails---------------------------------------"
+        if ! curl -L "$PACKAGE_URL" -o "$PACKAGE_DIR.tar.gz"; then
+            echo "------------------$PACKAGE_URL:download_fails---------------------------------------"
             echo "$PACKAGE_URL $PACKAGE_NAME"
             echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Download_Fails"  
             exit 1
         fi
-        mkdir "$PACKAGE_NAME"
-        # Extract the downloaded tarball
-        if ! tar -xzf "$PACKAGE_NAME.tar.gz" -C "$PACKAGE_NAME" --strip-components=1; then
+        mkdir "$PACKAGE_DIR"
+
+        if ! tar -xzf "$PACKAGE_DIR.tar.gz" -C "$PACKAGE_DIR" --strip-components=1; then
             echo "------------------$PACKAGE_NAME:untar_fails---------------------------------------"
             echo "$PACKAGE_URL $PACKAGE_NAME"
             echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Untar_Fails"  
             exit 1
         fi
 
-        cd "$PACKAGE_NAME" || exit
+        cd "$PACKAGE_DIR" || exit
     fi
 fi
 
