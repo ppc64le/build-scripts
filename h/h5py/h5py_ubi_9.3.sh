@@ -24,9 +24,25 @@ PACKAGE_VERSION=${1:-3.7.0}
 PACKAGE_URL=https://github.com/h5py/h5py.git
 
 # Install dependencies and tools.
-yum install -y wget gcc gcc-c++ gcc-gfortran git make  python-devel  openssl-devel unzip libzip-devel.ppc64le gzip.ppc64le
-yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-yum install -y gcc-c++ cmake make pkgconfig gcc-gfortran hdf5 hdf5-devel
+yum install -y wget gcc gcc-c++ gcc-gfortran git make  python-devel  openssl-devel unzip libzip-devel.ppc64le gzip.ppc64le cmake  pkgconfig 
+
+#installing hdf5 from source
+#Build hdf5 from source
+
+git clone https://github.com/HDFGroup/hdf5
+cd hdf5/
+git checkout hdf5-1_12_1
+
+ ./configure --prefix=/usr/local/hdf5 --enable-cxx --enable-fortran  --with-pthread=yes --enable-threadsafe  --enable-build-mode=production --enable-unsupported  --enable-using-memchecker  --enable-clear-file-buffers --with-ssl
+make -j1
+make install
+
+cd ..
+
+export LD_LIBRARY_PATH=/usr/local/hdf5/:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/usr/local/hdf5/include:$LD_LIBRARY_PATH
+export HDF5_DIR=/usr/local/hdf5
 
 #clone repository 
 git clone $PACKAGE_URL
@@ -60,4 +76,4 @@ else
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
-fi	
+fi
