@@ -27,8 +27,6 @@ PACKAGE_DIR=tensorflow-onnx
 
 # install core dependencies
 yum install -y wget gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils  openssl openssl-devel clang libevent-devel zlib-devel openssl-devel python3.12 python3.12-devel python3.12-pip cmake patch
-
-dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 yum install -y patchelf
 yum install -y libffi-devel openssl-devel sqlite-devel zip rsync
 
