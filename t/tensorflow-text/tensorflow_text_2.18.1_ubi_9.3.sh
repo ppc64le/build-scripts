@@ -1,14 +1,15 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : pyarrow
-# Version       : apache-arrow-19.0.0
-# Source repo   : https://github.com/apache/arrow
-# Tested on     : UBI:9.3
-# Language      : Python, C
+# Package       : tensorflow-text
+# Version       : v2.18.1
+# Source repo   : https://github.com/tensorflow/text.git
+# Tested on     : UBI 9.3
+# Language      : c
 # Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer    : Haritha Nagothu <haritha.nagothu2@ibm.com>
+# Script License: Apache License 2.0
+# Maintainer    : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
+#
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
@@ -17,70 +18,66 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e
+set -e 
 
-PACKAGE_NAME=pyarrow
-PACKAGE_DIR=arrow/python
-PACKAGE_VERSION=${1:-apache-arrow-19.0.0}
-PACKAGE_URL=https://github.com/apache/arrow
-version=19.0.0
+PACKAGE_NAME=tensorflow-text
+PACKAGE_VERSION=${1:-v2.18.1}
+PACKAGE_URL=https://github.com/tensorflow/text.git
+CURRENT_DIR=$(pwd)
+PACKAGE_DIR=text
 
-echo "Install dependencies and tools."
-yum install -y python python-pip python-devel wget git make  python-devel xz-devel openssl-devel cmake zlib-devel libjpeg-devel gcc-toolset-13 cmake libevent libtool pkg-config  brotli-devel.ppc64le bzip2-devel lz4-devel 
-
+yum install -y git make libtool wget tar openssl-devel cmake zlib-devel libjpeg-devel gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran cmake libevent-devel zlib-devel openssl-devel clang libtool  pkg-config  brotli-devel  bzip2-devel utf8proc xz bzip2-devel libffi-devel patch ninja-build
+yum install -y  wget git make  python-devel xz-devel openssl-devel cmake zlib-devel libjpeg-devel gcc-toolset-13 cmake libevent libtool pkg-config  brotli-devel.ppc64le bzip2-devel lz4-devel python3.12 python3.12-devel python3.12-pip 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+export LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib/gcc/ppc64le-redhat-linux/13:$LIBRARY_PATH
+export CPATH=/opt/rh/gcc-toolset-13/root/usr/include:$CPATH
+GCC_BIN_DIR=$(echo "$PATH" | cut -d':' -f1)
+export GCC_HOME=$(dirname "$GCC_BIN_DIR")
+export CC="$GCC_BIN_DIR/gcc"
+export CXX="$GCC_BIN_DIR/g++"
 
-SCRIPT_DIR=$(pwd)
-pip install ninja setuptools 
+CURRENT_DIR=$(pwd)
+mkdir -p builder/wheels
+pip3.12 install ninja setuptools setuptools-scm Cython numpy==2.0.2  wheel 
 
+echo "-------Installing cmake---------"
 #install cmake
 wget https://cmake.org/files/v3.28/cmake-3.28.0.tar.gz
 tar -zxvf cmake-3.28.0.tar.gz
 cd cmake-3.28.0
 ./bootstrap
-echo "Compiling the source code..."
 make
-echo "Installing Cmake"
 make install
-cd ${SCRIPT_DIR}
+cd $CURRENT_DIR
 
 
-# Installing flex bison c-ares gflags rapidjson xsimd snappy libzstd
 echo "-----------flex installing------------------"
 wget https://github.com/westes/flex/releases/download/v2.6.4/flex-2.6.4.tar.gz
 tar -xvf flex-2.6.4.tar.gz
 cd flex-2.6.4
-echo "Configuring flex installation..."
 ./configure --prefix=/usr/local
-echo "Compiling the source code for flex..."
 make -j$(nproc)
-echo "Installing flex..."
 make install
-cd $SCRIPT_DIR 
+cd $CURRENT_DIR
 
 echo "-------bison installing----------------------"
 wget https://ftp.gnu.org/gnu/bison/bison-3.8.2.tar.gz
 tar -xvf bison-3.8.2.tar.gz
 cd bison-3.8.2
-echo "Configuring bison installation..."
 ./configure --prefix=/usr/local
-echo "Compiling the source code bison..."
 make -j$(nproc)
-echo "Installing bison..."
 make install
-cd $SCRIPT_DIR
+cd $CURRENT_DIR
 
 echo "------------ gflags installing-------------------"
 git clone https://github.com/gflags/gflags.git
 cd gflags
 mkdir build && cd build
-echo "Running cmake to configure the build..."
 cmake ..
-echo "Compiling the source code gflags..."
 make -j$(nproc)
-echo "Installing gflags..."
 make install
-cd $SCRIPT_DIR 
+cd $CURRENT_DIR 
 
 echo "----------Installing c-ares----------------"
 #Building c-areas
@@ -127,14 +124,14 @@ cmake ${CMAKE_ARGS} .. \
       #${SRC_DIR}
 
 # Build.
-echo "Building c-areas..."
+echo "Building..."
 ninja || exit 1
 
 # Installing
-echo "Installing c-areas..."
+echo "Installing..."
 ninja install || exit 1
 
-cd $SCRIPT_DIR
+cd $CURRENT_DIR
 
 echo "----------c-areas installed-----------------------"
 
@@ -142,25 +139,19 @@ echo "----------------rapidjson installing------------------"
 git clone https://github.com/Tencent/rapidjson.git
 cd rapidjson
 mkdir build && cd build
-echo "Running cmake to configure the build..."
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
-echo "Compiling the source code for rapidjson..."
 make -j$(nproc)
-echo "Installing rapidjson"
 make install
-cd $SCRIPT_DIR 
+cd $CURRENT_DIR 
 
 echo "--------------xsimd installing-------------------------"
 git clone https://github.com/xtensor-stack/xsimd.git
 cd xsimd
 mkdir build && cd build
-echo "Running cmake to configure the build for xsimd.."
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
-echo "Compiling the source code for xsimd..."
 make -j$(nproc)
-echo "Installing xsimd..."
 make install
-cd $SCRIPT_DIR 
+cd $CURRENT_DIR 
 
 
 echo "-----------------snappy installing----------------"
@@ -172,31 +163,26 @@ mkdir -p local/snappy
 export SNAPPY_PREFIX=$(pwd)/local/snappy
 mkdir build
 cd build
-echo "Running cmake to configure the build for snappy..."
+
 cmake -DCMAKE_INSTALL_PREFIX=$SNAPPY_PREFIX \
       -DBUILD_SHARED_LIBS=ON \
       -DCMAKE_INSTALL_LIBDIR=lib \
       ..
-echo "Compiling the source code for snappy..."
 make -j$(nproc)
-echo "Installing snappy..."
 make install
 cd ..
-cd $SCRIPT_DIR 
+cd $CURRENT_DIR 
 
 
 echo "------------libzstd installing-------------------------"
 git clone https://github.com/facebook/zstd.git
 cd zstd
-
-echo "Compiling the source code for libzstd..."
 make
-echo "Installing libzstd..."
 make install
 export ZSTD_HOME=/usr/local
 export CMAKE_PREFIX_PATH=$ZSTD_HOME
 export LD_LIBRARY_PATH=$ZSTD_HOME/lib64:$LD_LIBRARY_PATH
-cd $SCRIPT_DIR
+cd $CURRENT_DIR
 
 #Installing re2,orc utf8proc,boost_cpp,thrift_cpp,abseil_cpp,libprotobuf, grpc_cpp,openblas as dependencies
 
@@ -219,7 +205,6 @@ export CPU_COUNT=`nproc`
 mkdir build-cmake
 pushd build-cmake
 
-echo "Running cmake to configure the build for re2..."
 cmake ${CMAKE_ARGS} -GNinja \
   -DCMAKE_PREFIX_PATH=$RE2_PREFIX \
   -DCMAKE_INSTALL_PREFIX="${RE2_PREFIX}" \
@@ -228,12 +213,11 @@ cmake ${CMAKE_ARGS} -GNinja \
   -DCMAKE_BUILD_TYPE=Release \
   -DBUILD_SHARED_LIBS=ON \
   ..
-echo "Installing re2..."
+
   ninja -v install
   popd
-echo "Running make shared-install......"
 make -j "${CPU_COUNT}" prefix=${RE2_PREFIX} shared-install
-cd $SCRIPT_DIR 
+cd $CURRENT_DIR 
 
 
 
@@ -250,7 +234,7 @@ export UTF8PROC_PREFIX=$(pwd)/utf8proc_prefix
 # Create build directory
 mkdir build
 cd build
-echo "Running cmake to configure the build for utf8proc..."
+
 # Run cmake to configure the build
 cmake -G "Unix Makefiles" \
   -DCMAKE_BUILD_TYPE="Release" \
@@ -258,12 +242,10 @@ cmake -G "Unix Makefiles" \
   -DCMAKE_POSITION_INDEPENDENT_CODE=1 \
   -DBUILD_SHARED_LIBS=1 \
   ..
-echo  "Build and install utf8proc"
+# Build and install
 cmake --build .
-
-echo "Installing utf8proc ..."
 cmake --build . --target install
-cd $SCRIPT_DIR 
+cd $CURRENT_DIR 
 
 echo "------------ abseil_cpp cloning-------------------"
 
@@ -276,8 +258,8 @@ git clone $ABSEIL_URL -b $ABSEIL_VERSION
 
 echo "------------ libprotobuf installing-------------------"
 
-export C_COMPILER=$(which gcc)
-export CXX_COMPILER=$(which g++)
+export C_COMPILER=$CC
+export CXX_COMPILER=$CXX
 
 #Build libprotobuf
 git clone https://github.com/protocolbuffers/protobuf
@@ -292,11 +274,11 @@ git submodule update --init --recursive
 rm -rf ./third_party/googletest | true
 rm -rf ./third_party/abseil-cpp | true
 
-cp -r $SCRIPT_DIR/abseil-cpp ./third_party/
+cp -r $CURRENT_DIR/abseil-cpp ./third_party/
 
 mkdir build
 cd build
-echo "Running cmake to configure the build for libprotobuf..."
+
 cmake -G "Ninja" \
    ${CMAKE_ARGS} \
     -DCMAKE_BUILD_TYPE=Release \
@@ -311,11 +293,10 @@ cmake -G "Ninja" \
     -Dprotobuf_JSONCPP_PROVIDER="package" \
     -Dprotobuf_USE_EXTERNAL_GTEST=OFF \
     ..
-echo  "Building libprotobuf..."
+
 cmake --build . --verbose
-echo  "Installing libprotobuf..."
 cmake --install .
-cd $SCRIPT_DIR 
+cd $CURRENT_DIR 
 
 echo "------------ orc installing-------------------"
 
@@ -324,7 +305,7 @@ cd orc
 git checkout v2.0.3
 
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/o/orc/orc.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/orc/orc.patch
 git apply orc.patch
 
 mkdir orc_prefix
@@ -337,17 +318,11 @@ export PROTOBUF_PREFIX=$LIBPROTO_INSTALL
 export CMAKE_PREFIX_PATH=$LIBPROTO_INSTALL
 export LD_LIBRARY_PATH=$LIBPROTO_INSTALL/lib64
 
-export CC=$(which gcc)
-export CXX=$(which g++)
 export GCC=$CC
 export GXX=$CXX
 
 export HOST=$(uname)-$(uname -m)
-export HOST=$(uname)-$(uname -m)
-
 CPPFLAGS="${CPPFLAGS} -Wl,-rpath,$VIRTUAL_ENV_PATH/**/lib"
-
-
 declare -a _CMAKE_EXTRA_CONFIG
 if [[ "$CONDA_BUILD_CROSS_COMPILATION" == 1 ]]; then
     _CMAKE_EXTRA_CONFIG+=(-DHAS_PRE_1970_EXITCODE=0)
@@ -368,7 +343,7 @@ if [[ ${HOST} =~ .*Linux.* ]]; then
 fi
 
 CPPFLAGS="${CPPFLAGS} -Wl,-rpath,$VIRTUAL_ENV_PATH/**/lib"
-echo "Running cmake to configure the build for orc..."
+
 cmake ${CMAKE_ARGS} \
     -DCMAKE_PREFIX_PATH=$ORC_PREFIX \
     -DCMAKE_BUILD_TYPE=Release \
@@ -393,10 +368,9 @@ cmake ${CMAKE_ARGS} \
     -GNinja ..
 
 ninja
-echo  "Installing orc..."
 ninja install
 
-cd $SCRIPT_DIR
+cd $CURRENT_DIR
 
 
 echo "-----------------boost_cpp installing-----------------------"
@@ -412,8 +386,6 @@ export BOOST_PREFIX=$(pwd)/Boost_prefix
 INCLUDE_PATH="${BOOST_PREFIX}/include"
 LIBRARY_PATH="${BOOST_PREFIX}/lib"
 
-export CC=$(which gcc)
-export CXX=$(which g++)
 export target_platform=$(uname)-$(uname -m)
 CXXFLAGS="${CXXFLAGS} -fPIC"
 TOOLSET=gcc
@@ -439,7 +411,6 @@ CFLAGS="$(echo ${CFLAGS} | sed 's/ -march=[^ ]*//g' | sed 's/ -mcpu=[^ ]*//g' |s
 
 	 export CPU_COUNT=$(nproc)
 
-echo " Building and installing Boost...."
 ./b2 -q \
     variant=release \
     address-model="${ADDRESS_MODEL}" \
@@ -459,9 +430,10 @@ echo " Building and installing Boost...."
     install
 
 # Remove Python headers as we don't build Boost.Python.
-rm "${BOOST_PREFIX}/include/boost/python.hpp"
-rm -r "${BOOST_PREFIX}/include/boost/python"
+rm -rf "${BOOST_PREFIX}/include/boost/python.hpp"
+rm -rf "${BOOST_PREFIX}/include/boost/python"
 cd $SCRIPT_DIR 
+
 
 
 echo "------------thrift_cpp  installing-------------------"
@@ -483,7 +455,6 @@ export OPENSSL_ROOT=/usr
 export OPENSSL_ROOT_DIR=/usr
 
 ./bootstrap.sh
-echo "Configuring thrift-cpp installation..."
 ./configure --prefix=$THRIFT_PREFIX \
     --with-python=no \
     --with-py3=no \
@@ -504,11 +475,12 @@ echo "Configuring thrift-cpp installation..."
     --enable-tests=no \
     --enable-tutorial=no 
 
-echo "Compiling the source code for thrift-cpp..."
 make -j$(nproc)
-echo  "Installing thrift_cpp..."
 make install
-cd $SCRIPT_DIR 
+cd $CURRENT_DIR 
+
+
+
 
 echo "------------ grpc_cpp installing-------------------"
 
@@ -542,7 +514,6 @@ fi
 
 mkdir -p build-cpp
 pushd build-cpp
-echo "Running cmake to configure the build for grpc-cpp...."
 cmake ${CMAKE_ARGS} ..  \
       -GNinja \
       -DBUILD_SHARED_LIBS=ON \
@@ -561,23 +532,20 @@ cmake ${CMAKE_ARGS} ..  \
       -DCMAKE_RANLIB=${RANLIB} \
       -DCMAKE_VERBOSE_MAKEFILE=ON \
       -DProtobuf_PROTOC_EXECUTABLE=$PROTOC_BIN
-echo  "Installing grpc_cpp..."
+
 ninja install -v
 popd
 
-cd $SCRIPT_DIR
+cd $CURRENT_DIR
+
 
 echo "---------------------openblas installing---------------------"
-
-#clone and install openblas from source
 
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
 git checkout v0.3.29
 git submodule update --init
-
 PREFIX=local/openblas
-
 # Set build options
 declare -a build_opts
 # Fix ctest not automatically discovering tests
@@ -614,10 +582,10 @@ build_opts+=(NUM_THREADS=8)
 # Disable CPU/memory affinity handling to avoid problems with NumPy and R
 build_opts+=(NO_AFFINITY=1)
 
-echo "Build OpenBLAS...."
+# Build OpenBLAS
 make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
 
-echo "Install OpenBLAS..."
+# Install OpenBLAS
 CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
 OpenBLASInstallPATH=$(pwd)/$PREFIX
 OpenBLASConfigFile=$(find . -name OpenBLASConfig.cmake)
@@ -629,7 +597,7 @@ sed -i "s|includedir=local/openblas/include|includedir=${OpenBLASInstallPATH}/in
 export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
 export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
 
-cd $SCRIPT_DIR
+cd $CURRENT_DIR
 echo "------------openblas installed--------------------"
 
 
@@ -637,10 +605,9 @@ echo "-----------------installing pyarrow----------------------"
 
 #cloning pyarrow
 
-git clone  $PACKAGE_URL
-
+git clone https://github.com/apache/arrow
 cd arrow
-git checkout $PACKAGE_VERSION
+git checkout apache-arrow-19.0.0
 git submodule update --init
 
 mkdir pyarrow_prefix
@@ -649,7 +616,6 @@ export PYARROW_PREFIX=$(pwd)/pyarrow_prefix
 
 export ARROW_HOME=$PYARROW_PREFIX
 export target_platform=$(uname)-$(uname -m)
-export CXX=$(which g++)
 export CMAKE_PREFIX_PATH=$C_ARES_PREFIX:$LIBPROTO_INSTALL:$RE2_PREFIX:$GRPC_PREFIX:$ORC_PREFIX:$BOOST_PREFIX:${UTF8PROC_PREFIX}:$THRIFT_PREFIX:$SNAPPY_PREFIX:/usr
 export LD_LIBRARY_PATH=$GRPC_PREFIX/lib:$LIBPROTO_INSTALL/lib64
 
@@ -702,9 +668,6 @@ if [[ "${target_platform}" != "Linux-s390x" ]]; then
   EXTRA_CMAKE_ARGS=" ${EXTRA_CMAKE_ARGS} -DARROW_USE_LD_GOLD=ON"
 fi
 
-export AR=$(which ar)
-export RANLIB=$(which ranlib)
-echo "Running cmake to configure the build for pyarrow..."
 cmake \
     -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH \
     -DARROW_BOOST_USE_SHARED=ON \
@@ -749,16 +712,10 @@ cmake \
     ${EXTRA_CMAKE_ARGS} \
     ..
 
-echo "Installing pyarrow...."
 ninja install
 popd
 
-cd $SCRIPT_DIR
-
-echo "Installing prerequisite for arrow..."
-pip install setuptools-scm Cython
-pip install numpy==2.0.2
-
+cd $CURRENT_DIR
 export PYARROW_BUNDLE_ARROW_CPP=1
 export LD_LIBRARY_PATH=${ARROW_HOME}/lib:${LD_LIBRARY_PATH}
 
@@ -769,7 +726,7 @@ export CMAKE_PREFIX_PATH=$ARROW_HOME
 
 # Build dependencies
 export PARQUET_HOME=$ARROW_HOME
-export SETUPTOOLS_SCM_PRETEND_VERSION=$version
+export SETUPTOOLS_SCM_PRETEND_VERSION=19.0.0
 export PYARROW_BUILD_TYPE=release
 export PYARROW_BUNDLE_ARROW_CPP_HEADERS=1
 export PYARROW_WITH_DATASET=1
@@ -793,43 +750,273 @@ fi
 
 cd python
 
-if ! pip install . ; then
+pip3.12 install .
+cd $CURRENT_DIR
+
+
+echo "------HDF5 installing-----------------------"
+git clone https://github.com/HDFGroup/hdf5
+cd hdf5/
+git checkout hdf5-1_12_1
+git submodule update --init
+export HDF5_PREFIX=/install-deps/hdf5
+./configure --prefix=$HDF5_PREFIX --enable-cxx --enable-fortran --with-pthread=yes \
+            --enable-threadsafe --enable-build-mode=production --enable-unsupported \
+            --enable-using-memchecker --enable-clear-file-buffers --with-ssl
+make -j$(nproc)
+make install
+export LD_LIBRARY_PATH=${HDF5_PREFIX}/lib:$LD_LIBRARY_PATH
+export HDF5_DIR=${HDF5_PREFIX}
+cd $CURRENT_DIR
+
+echo "----------h5py installing--------------------"
+git clone https://github.com/h5py/h5py.git
+cd h5py/
+git checkout 3.13.0
+HDF5_DIR=${HDF5_PREFIX} python3.12 -m pip install .
+cd $CURRENT_DIR
+
+echo "----------bazel installing--------------------"
+yum install -y  zip java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless unzip
+
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+export PATH=$PATH:$JAVA_HOME/bin
+
+wget https://github.com/bazelbuild/bazel/releases/download/6.5.0/bazel-6.5.0-dist.zip
+mkdir -p  bazel-6.5.0
+unzip bazel-6.5.0-dist.zip -d bazel-6.5.0/
+cd bazel-6.5.0/
+export EXTRA_BAZEL_ARGS="--host_javabase=@local_jdk//:jdk" bash
+./compile.sh
+#export the path of bazel bin
+export PATH=/bazel-6.5.0/output/:$PATH
+cd $CURRENT_DIR
+
+echo "--------------ml_dtypes installing---------------"
+git clone https://github.com/jax-ml/ml_dtypes.git
+cd ml_dtypes
+git checkout v0.4.1
+git submodule update --init
+
+export CFLAGS="-I${ML_DIR}/include"
+export CXXFLAGS="-I${ML_DIR}/include"
+
+python3.12 -m pip install .
+cd $CURRENT_DIR
+
+echo "----------Installing patchelf from source------------"
+yum install -y git autoconf automake libtool make
+ 
+git clone https://github.com/NixOS/patchelf.git
+cd patchelf
+./bootstrap.sh
+./configure
+make -j$(nproc)
+make install
+ln -s /usr/local/bin/patchelf /usr/bin/patchelf
+cd $CURRENT_DIR
+
+echo "--------------Tensorflow installing------------------"
+
+yum install -y  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils 
+
+yum install -y libffi-devel openssl-devel sqlite-devel zip rsync
+
+INSTALL_ROOT="/install-deps"
+mkdir -p $INSTALL_ROOT
+
+export cpu_opt_arch="power9"
+export cpu_opt_tune="power10"
+export build_type="cpu"
+echo "CPU Optimization Settings:"
+echo "cpu_opt_arch=${cpu_opt_arch}"
+echo "cpu_opt_tune=${cpu_opt_tune}"
+echo "build_type=${build_type}"
+
+SHLIB_EXT=".so"
+WORK_DIR=$(pwd)
+
+export TF_PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+export HERMETIC_PYTHON_VERSION=$(python3.12 --version | awk '{print $2}' | cut -d. -f1,2)
+export GCC_HOST_COMPILER_PATH=$CC
+
+# set the variable, when grpcio fails to compile on the system. 
+export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true;  
+export LDFLAGS="${LDFLAGS} -lrt"
+export HDF5_DIR=/install-deps/hdf5
+export CFLAGS="-I${HDF5_DIR}/include"
+export LDFLAGS="-L${HDF5_DIR}/lib"
+
+# clone source repository
+cd $CURRENT_DIR
+git clone https://github.com/tensorflow/tensorflow
+cd tensorflow
+git checkout v2.18.1
+SRC_DIR=$(pwd)
+
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/tensorflow/tf_2.18.1_fix.patch
+git apply tf_2.18.1_fix.patch
+rm -rf tensorflow/*.bazelrc
+PYTHON_BIN_PATH=$(which python3.12)
+PYTHON_LIB_PATH=$($PYTHON_BIN_PATH -c 'import site; print(site.getsitepackages()[0])')
+# Pick up additional variables defined from the conda build environment
+export PYTHON_BIN_PATH="$PYTHON_BIN_PATH"
+export USE_DEFAULT_PYTHON_LIB_PATH=1
+
+# Build the bazelrc
+BAZEL_RC_DIR=$(pwd)/tensorflow
+ARCH=`uname -p`
+XNNPACK_STATUS=false
+NL=$'\n'
+BUILD_COPT="build:opt --copt="
+BUILD_HOST_COPT="build:opt --host_copt="
+CPU_ARCH_FRAG="-mcpu=${cpu_opt_arch}"
+CPU_ARCH_OPTION=${BUILD_COPT}${CPU_ARCH_FRAG}
+CPU_ARCH_HOST_OPTION=${BUILD_HOST_COPT}${CPU_ARCH_FRAG}
+CPU_TUNE_FRAG="-mtune=${cpu_opt_tune}";
+CPU_TUNE_OPTION=${BUILD_COPT}${CPU_TUNE_FRAG}
+CPU_TUNE_HOST_OPTION=${BUILD_HOST_COPT}${CPU_TUNE_FRAG}
+
+USE_MMA=0
+
+TENSORFLOW_PREFIX=/install-deps/tensorflow
+
+cat > "$BAZEL_RC_DIR/python_configure.bazelrc" << EOF
+build --action_env PYTHON_BIN_PATH="$PYTHON_BIN_PATH"
+build --action_env PYTHON_LIB_PATH="$PYTHON_LIB_PATH"
+build --python_path="$PYTHON_BIN_PATH"
+EOF
+
+SYSTEM_LIBS_PREFIX=$TENSORFLOW_PREFIX
+cat >> $BAZEL_RC_DIR/tensorflow.bazelrc << EOF
+import %workspace%/tensorflow/python_configure.bazelrc
+build:xla --define with_xla_support=true
+build --config=xla
+${CPU_ARCH_OPTION}
+${CPU_ARCH_HOST_OPTION}
+${CPU_TUNE_OPTION}
+${CPU_TUNE_HOST_OPTION}
+${VEC_OPTIONS}
+build:opt --define with_default_optimizations=true
+
+build --action_env TF_CONFIGURE_IOS="0"
+build --action_env TF_SYSTEM_LIBS="org_sqlite"
+build --action_env GCC_HOME=$GCC_HOME
+build --action_env RULES_PYTHON_PIP_ISOLATED="0"
+build --define=PREFIX="$SYSTEM_LIBS_PREFIX"
+build --define=LIBDIR="$SYSTEM_LIBS_PREFIX/lib"
+build --define=INCLUDEDIR="$SYSTEM_LIBS_PREFIX/include"
+build --define=tflite_with_xnnpack="$XNNPACK_STATUS"
+build --copt="-DEIGEN_ALTIVEC_ENABLE_MMA_DYNAMIC_DISPATCH=$USE_MMA"
+build --strip=always
+build --color=yes
+build --verbose_failures
+build --spawn_strategy=standalone
+EOF
+
+
+export BUILD_TARGET="//tensorflow/tools/pip_package:wheel //tensorflow/tools/lib_package:libtensorflow //tensorflow:libtensorflow_cc${SHLIB_EXT}"
+
+#Install
+if ! (bazel --bazelrc=tensorflow/tensorflow.bazelrc build --local_cpu_resources=HOST_CPUS*0.50 --local_ram_resources=HOST_RAM*0.50 --config=opt ${BUILD_TARGET}) ; then  
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-# Creating the wheel in the build script.Because When using the wrapper script, 
-# the wheel file is generated with an unexpected version, e.g., 
-# 'pyarrow-19.0.1.dev0+ga8a979a41.d20250414-cp312-cp312-linux_ppc64le.whl'
-# This is because when the wheel is built using the command:
-# python -m build --wheel --no-isolation --outdir="$SCRIPT_DIR/"
-# If we using 'python3 setup.py bdist_wheel --dist-dir="$SCRIPT_DIR/"' produces a wheel with the expected naming format.
+#copying .so and .a files into local/tensorflow/lib
+mkdir -p $SRC_DIR/tensorflow_pkg
+mkdir -p $SRC_DIR/local
+find ./bazel-bin/tensorflow/tools/pip_package/wheel_house -iname "*.whl" -exec cp {} $SRC_DIR/tensorflow_pkg  \;
+unzip -n $SRC_DIR/tensorflow_pkg/*.whl -d ${SRC_DIR}/local
+mkdir -p ${SRC_DIR}/local/tensorflow/lib
+find  ${SRC_DIR}/local/tensorflow  -type f \( -name "*.so*" -o -name "*.a" \) -exec cp {} ${SRC_DIR}/local/tensorflow/lib \;
 
-echo "Creating wheel....."
-python3 setup.py bdist_wheel --dist-dir="$SCRIPT_DIR/"
+#Build libtensorflow and libtensorflow_cc artifacts
+mkdir -p $SRC_DIR/libtensorflow_extracted
+tar -xzf $SRC_DIR/bazel-bin/tensorflow/tools/lib_package/libtensorflow.tar.gz -C $SRC_DIR/libtensorflow_extracted
+mkdir -p ${SRC_DIR}/local/tensorflow/include
+rsync -a  $SRC_DIR/libtensorflow_extracted/lib/*.so*  ${SRC_DIR}/local/tensorflow/lib 
+cp -d -r $SRC_DIR/libtensorflow_extracted/include/* ${SRC_DIR}/local/tensorflow/include
 
-echo "testing pyarrow...."
-cd ..
-export LD_LIBRARY_PATH=${SNAPPY_PREFIX}/lib:${C_ARES_PREFIX}/lib:${THRIFT_PREFIX}/lib:${UTF8PROC_PREFIX}/lib:${RE2_PREFIX}/lib:${LIBPROTO_INSTALL}/lib64:${GRPC_PREFIX}/lib:${ORC_PREFIX}/lib:${OpenBLASInstallPATH}/lib
+mkdir -p $SRC_DIR/libtensorflow_cc_output/lib
+mkdir -p $SRC_DIR/libtensorflow_cc_output/include
+cp -d  bazel-bin/tensorflow/libtensorflow_cc.so* $SRC_DIR/libtensorflow_cc_output/lib/
+cp -d  bazel-bin/tensorflow/libtensorflow_framework.so* $SRC_DIR/libtensorflow_cc_output/lib/
+cp -d  $SRC_DIR/libtensorflow_cc_output/lib/libtensorflow_framework.so.2 ./libtensorflow_cc_output/lib/libtensorflow_framework.so
 
-pip install -r python/requirements-test.txt
+chmod u+w $SRC_DIR/libtensorflow_cc_output/lib/libtensorflow*
 
-PYARROW_LOCATION=$(python -c "import os; import pyarrow; print(os.path.dirname(pyarrow.__file__))")
-export PARQUET_TEST_DATA="$(pwd)/cpp/submodules/parquet-testing/data"
-pushd testing
-export ARROW_TEST_DATA=$(pwd)/data
-popd
 
-if ! python -m pytest -k "not test_foreign_buffer and not test_get_include" $PYARROW_LOCATION -vv ; then
-        echo "------------------$PACKAGE_NAME:test_fails---------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME "
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | Github | Fail |  Test_Fails"
-        exit 2
-else
-        echo "------------------$PACKAGE_NAME:test_success-------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME "
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | Github | Pass |  Test_Success"
-	exit 0
+mkdir -p $SRC_DIR/libtensorflow_cc_output/include/tensorflow
+rsync -r --chmod=D777,F666 --exclude '_solib*' --exclude '_virtual_includes/' --exclude 'pip_package/' --exclude 'lib_package/' --include '*/' --include '*.h' --include '*.inc' --exclude '*' bazel-bin/ $SRC_DIR/libtensorflow_cc_output/include
+rsync -r --chmod=D777,F666 --include '*/' --include '*.h' --include '*.inc' --exclude '*' tensorflow/cc $SRC_DIR/libtensorflow_cc_output/include/tensorflow/
+rsync -r --chmod=D777,F666 --include '*/' --include '*.h' --include '*.inc' --exclude '*' tensorflow/core $SRC_DIR/libtensorflow_cc_output/include/tensorflow/
+rsync -r --chmod=D777,F666 --include '*/' --include '*.h' --include '*.inc' --exclude '*' third_party/xla/third_party/tsl/ $SRC_DIR/libtensorflow_cc_output/include/
+rsync -r --chmod=D777,F666 --include '*/' --include '*' --exclude '*.cc' third_party/ $SRC_DIR/libtensorflow_cc_output/include/tensorflow/third_party/
+rsync -a $SRC_DIR/libtensorflow_cc_output/include/*  ${SRC_DIR}/local/tensorflow/include
+rsync -a $SRC_DIR/libtensorflow_cc_output/lib/*.so ${SRC_DIR}/local/tensorflow/lib
+
+mkdir -p repackged_wheel
+
+# Pack the locally built TensorFlow files into a wheel
+wheel pack local/ -d repackged_wheel
+pip3.12 install $SRC_DIR/repackged_wheel/*.whl
+cp -a $SRC_DIR/repackged_wheel/*.whl $CURRENT_DIR/builder/wheels
+cd $CURRENT_DIR
+
+
+echo "-------installing array-record--------------"
+cd $CURRENT_DIR
+git clone https://github.com/google/array_record
+cd array_record
+# array-record not tagged to use v0.6.0, used hard commit for v0.6.0
+git checkout 7e299eae0db0d7bfc20f7c1e1548bf86cdbfef5e
+sed -i "s/packages=find_packages()/packages=[\"array_record\", \"array_record.python\", \"array_record.beam\"]/g" setup.py
+cd $CURRENT_DIR
+mkdir -p build-dir/array_record
+cd $CURRENT_DIR/array_record
+cp -r python beam $CURRENT_DIR/build-dir/array_record
+cp setup.py $CURRENT_DIR/build-dir/
+cd $CURRENT_DIR/build-dir
+pip3.12 install .
+python3.12 setup.py bdist_wheel
+cp -a dist/*.whl $CURRENT_DIR/builder/wheels
+cd $CURRENT_DIR
+
+echo "------------------Tesorflow-dataset installing-----------------------"
+git clone https://github.com/tensorflow/datasets.git
+cd datasets
+git checkout v4.9.7
+python3.12 setup.py install
+cd $CURRENT_DIR
+
+echo "----------psutils installing-----------------"
+git clone https://github.com/giampaolo/psutil.git
+cd psutil
+git checkout release-7.0.0
+pip3.12 install .
+cd $CURRENT_DIR
+
+echo "------------Tensoflow-Text installing-----------------"
+PACKAGE_NAME=tensorflow-text
+PACKAGE_VERSION=${1:-v2.18.1}
+PACKAGE_URL=https://github.com/tensorflow/text.git
+PACKAGE_DIR=text
+git clone $PACKAGE_URL
+cd $PACKAGE_DIR
+git checkout $PACKAGE_VERSION
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/tensorflow-text/0001-update-pins-and-fix-build-failures.patch
+git apply 0001-update-pins-and-fix-build-failures.patch
+export PATH=/bazel-6.5.0/output/:$PATH
+export BAZEL_LINKLIBS=-l%:libstdc++.a
+if ! sh oss_scripts/run_build.sh; then
+    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    exit 1
 fi
+# Install pre-requisite wheels and dependencies
+echo "Build and installation completed successfully."
+echo "There are no test cases available. skipping the test cases"

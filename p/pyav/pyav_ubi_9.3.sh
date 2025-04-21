@@ -179,6 +179,7 @@ git submodule update --init
 
 yum install -y gmp-devel freetype-devel openssl-devel
 
+export CPU_COUNT=$(nproc)
 
 USE_NONFREE=no   #the options below are set for NO
 ./configure \
@@ -217,9 +218,33 @@ USE_NONFREE=no   #the options below are set for NO
         --disable-decoder=aac_fixed \
         --disable-encoder=aac_latm \
         --disable-decoder=aac_latm \
+        --disable-encoder=mpeg \
+        --disable-encoder=mpeg1video \
+        --disable-encoder=mpeg2video \
+        --disable-encoder=mpeg4 \
+        --disable-encoder=msmpeg4 \
+        --disable-encoder=mpeg4_v4l2m2m \
+        --disable-encoder=msmpeg4v2 \
+        --disable-encoder=msmpeg4v3 \
+        --disable-decoder=mpeg \
+        --disable-decoder=mpegvideo \
+        --disable-decoder=mpeg1video \
+        --disable-decoder=mpeg1_v4l2m2m \
+        --disable-decoder=mpeg2video \
+        --disable-decoder=mpeg2_v4l2m2m \
+        --disable-decoder=mpeg4 \
+        --disable-decoder=msmpeg4 \
+        --disable-decoder=mpeg4_v4l2m2m \
+        --disable-decoder=msmpeg4v1 \
+        --disable-decoder=msmpeg4v2 \
+        --disable-decoder=msmpeg4v3 \
+        --disable-encoder=h264_v4l2m2m \
+        --disable-decoder=h264_v4l2m2m \
+        --disable-encoder=hevc_v4l2m2m \
+        --disable-decoder=hevc_v4l2m2m \
         --disable-nonfree --disable-gpl --disable-gnutls --enable-openssl --disable-libopenh264 --disable-libx264
 
-make 
+make -j$CPU_COUNT
 make install PREFIX="${FFMPEG_PREFIX}"
 export PKG_CONFIG_PATH=${FFMPEG_PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
 export LD_LIBRARY_PATH=${FFMPEG_PREFIX}/lib:${LD_LIBRARY_PATH}
@@ -268,8 +293,7 @@ python -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"
 echo "----------------------------------------------Testing pkg-------------------------------------------------------"
 #Test package
 #Skipping few tests as they are failing because of disabling some codecs related to audio and video in ffmpeg. We disabled those codecs because of license associated with them.
-
-if ! (pytest -k "not test_encoding_dnxhd and not test_encoding_dvvideo and not test_encoding_h264 and not test_encoding_mjpeg and not test_encoding_mpeg1video and not test_encoding_mpeg4 and not test_encoding_png and not test_encoding_tiff and not test_encoding_xvid and not test_mov and not test_decode_video_corrupt and not test_decoded_motion_vectors and not test_decoded_motion_vectors_no_flag and not test_decoded_time_base and not test_decoded_video_frame_count and not test_flush_decoded_video_frame_count and not test_av_stream_Stream and not test_encoding_with_pts and not test_stream_audio_resample and not test_max_b_frames and not test_container_probing and not test_stream_probing and not test_stream_probing and not test_writing_to_custom_io_dash and not test_decode_half and not test_stream_seek and not test_side_data and not test_opaque and not test_reformat_pixel_format_align") ; then
+if ! (pytest -k "not test_encoding_dnxhd and not test_encoding_dvvideo and not test_encoding_h264 and not test_encoding_mjpeg and not test_encoding_mpeg1video and not test_encoding_mpeg4 and not test_encoding_png and not test_encoding_tiff and not test_encoding_xvid and not test_mov and not test_decode_video_corrupt and not test_decoded_motion_vectors and not test_decoded_motion_vectors_no_flag and not test_decoded_time_base and not test_decoded_video_frame_count and not test_flush_decoded_video_frame_count and not test_av_stream_Stream and not test_encoding_with_pts and not test_stream_audio_resample and not test_max_b_frames and not test_container_probing and not test_stream_probing and not test_writing_to_custom_io_dash and not test_decode_half and not test_stream_seek and not test_side_data and not test_opaque and not test_reformat_pixel_format_align and not test_filter_output_parameters and not test_codec_mpeg4_decoder and not test_codec_mpeg4_encoder and not test_codec_delay and not test_codec_tag and not test_decoder_extradata and not test_decoder_gop_size and not test_decoder_timebase and not test_encoder_extradata and not test_encoder_pix_fmt and not test_parse and not test_sky_timelapse and not test_av_codec_codec_Codec and not test_av_enum_EnumFlag and not test_av_enum_EnumItem and not test_default_options and not test_encoding and not test_encoding_with_unicode_filename and not test_stream_index and not test_writing_to_buffer and not test_writing_to_buffer_broken and not test_writing_to_buffer_broken_with_close and not test_writing_to_file and not test_writing_to_pipe_writeonly") ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
