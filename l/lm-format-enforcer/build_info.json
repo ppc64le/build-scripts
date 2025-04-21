@@ -1,0 +1,13 @@
+{
+   "maintainer": "shubham-dayma-ibm",
+   "package_name": "lm-format-enforcer",
+   "github_url": "https://github.com/noamgat/lm-format-enforcer",
+   "version": "v0.10.11",
+   "default_branch": "main",
+   "build_script": "lm-format-enforcer_ubi_9.3.sh",
+   "package_dir": "l/lm-format-enforcer",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
