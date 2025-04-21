@@ -1,0 +1,13 @@
+{
+   "maintainer": "shubham-dayma-ibm",
+   "package_name": "fastjsonschema",
+   "github_url": "https://github.com/horejsek/python-fastjsonschema",
+   "version": "v2.21.1",
+   "default_branch": "master",
+   "build_script": "fastjsonschema_ubi_9.3.sh",
+   "package_dir": "f/fastjsonschema",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
