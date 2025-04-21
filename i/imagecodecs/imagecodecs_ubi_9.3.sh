@@ -130,14 +130,8 @@ cd ..
 
 #install liblerc from source
 git clone https://github.com/Esri/lerc.git
-cd lerc && mkdir build && cd build
-cmake .. && make -j$(nproc)
-make install
-cd ../..
-
-#install libavif from source
-git clone https://github.com/AOMediaCodec/libavif.git
-cd libavif && mkdir build && cd build
+cd lerc
+mkdir cmake_build && cd cmake_build
 cmake .. && make -j$(nproc)
 make install
 cd ../..
@@ -155,13 +149,6 @@ cd libheif
 mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 make -j$(nproc) && make install
-cd ../..
-
-#install libjxl from source
-git clone https://github.com/libjxl/libjxl.git
-cd libjxl && mkdir build && cd build
-cmake .. && make -j$(nproc)
-make install
 cd ../..
 
 #install liblzf from source
