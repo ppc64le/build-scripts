@@ -238,7 +238,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 SRC_DIR=$(pwd)
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/t/tensorflow/tf_2.18.1_fix.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/tensorflow/tf_2.18.1_fix.patch
 git apply tf_2.18.1_fix.patch
 
 # Pick up additional variables defined from the conda build environment

@@ -324,7 +324,7 @@ cd orc
 git checkout v2.0.3
 
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/o/orc/orc.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/orc/orc.patch
 git apply orc.patch
 
 mkdir orc_prefix

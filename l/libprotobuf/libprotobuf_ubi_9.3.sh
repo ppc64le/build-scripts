@@ -127,7 +127,7 @@ cmake --install .
 cd ..
 
 #create pyproject.toml for libprotobuf
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/l/libprotobuf/pyproject.toml
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/l/libprotobuf/pyproject.toml
 sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
 
 python -m pip wheel -w $WORK_DIR -vv --no-build-isolation --no-deps .

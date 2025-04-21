@@ -150,7 +150,7 @@ export CFLAGS="$(echo ${CFLAGS} | sed -e 's/ -fno-plt//')"
 
 # Apply the patch
 echo "------------------------Applying patch-------------------"
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/t/tensorflow/tf_2.14.1_fix.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/tensorflow/tf_2.14.1_fix.patch
 git apply tf_2.14.1_fix.patch
 echo "-----------------------Applied patch successfully---------------------------------------"
 
@@ -246,7 +246,7 @@ EOL
 
 echo "tf_io.bazelrc file has been created successfully."
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/t/tensorflow-io-gcs-filesystem/tf-io-gcs-filesystem.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/tensorflow-io-gcs-filesystem/tf-io-gcs-filesystem.patch
 git apply tf-io-gcs-filesystem.patch
 
 echo "---------------------------------Building the package--------------------------------------------"

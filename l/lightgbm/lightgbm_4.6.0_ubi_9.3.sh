@@ -293,7 +293,7 @@ cd orc
 git checkout v2.0.3
 
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/o/orc/orc.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/orc/orc.patch
 git apply orc.patch
 
 mkdir orc_prefix
@@ -548,7 +548,7 @@ cd OpenBLAS
 git checkout v0.3.29
 git submodule update --init
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/o/openblas/pyproject.toml
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/openblas/pyproject.toml
 sed -i "s/{PACKAGE_VERSION}/v0.3.29/g" pyproject.toml
 PREFIX=local/openblas
 

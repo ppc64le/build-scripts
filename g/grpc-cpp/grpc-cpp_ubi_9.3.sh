@@ -229,7 +229,7 @@ mkdir -p local/grpccpp
 
 cp -r grpc/grpc-prefix/* local/grpccpp/
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/g/grpc-cpp/pyproject.toml
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/g/grpc-cpp/pyproject.toml
 sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
 
 pip install --upgrade pip build setuptools wheel

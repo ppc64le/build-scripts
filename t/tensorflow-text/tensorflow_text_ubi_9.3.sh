@@ -146,7 +146,7 @@ export CFLAGS="$(echo ${CFLAGS} | sed -e 's/ -fno-plt//')"
 
 # Apply the patch
 echo "------------------------Applying patch-------------------"
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/t/tensorflow/tf_2.14.1_fix.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/tensorflow/tf_2.14.1_fix.patch
 git apply tf_2.14.1_fix.patch
 echo "-----------------------Applied patch successfully---------------------------------------"
 

@@ -38,7 +38,7 @@ pip install --upgrade pip setuptools wheel
 pip install pytest absl-py attr numpy wrapt attrs
 
 #Download and apply the patch file
-wget https://raw.githubusercontent.com/ramnathnayak-ibm/build-scripts/refs/heads/dm-tree/d/dm-tree/update_abseil_version_and_linking_fix.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/d/dm-tree/update_abseil_version_and_linking_fix.patch
 git apply update_abseil_version_and_linking_fix.patch
 
 #Build

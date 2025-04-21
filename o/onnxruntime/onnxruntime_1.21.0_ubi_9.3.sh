@@ -37,7 +37,7 @@ git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
 git checkout v0.3.29
 git submodule update --init
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/o/openblas/pyproject.toml
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/openblas/pyproject.toml
 sed -i "s/{PACKAGE_VERSION}/v0.3.29/g" pyproject.toml
 PREFIX=local/openblas
 OPENBLAS_SOURCE=$(pwd)
@@ -175,8 +175,8 @@ export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 
 # Apply patch
-echo "Applying patch from https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/p/protobuf/set_cpp_to_17_v4.25.3.patch"
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/p/protobuf/set_cpp_to_17_v4.25.3.patch
+echo "Applying patch from https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch"
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
 git apply set_cpp_to_17_v4.25.3.patch
 
 # Build Python package
