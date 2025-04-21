@@ -1,0 +1,13 @@
+{
+   "maintainer": "shubham-dayma-ibm",
+   "package_name": "huggingface-hub",
+   "github_url": "https://github.com/huggingface/huggingface_hub",
+   "version": "v0.30.1",
+   "default_branch": "main",
+   "build_script": "huggingface-hub_ubi_9.3.sh",
+   "package_dir": "h/huggingface-hub",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
