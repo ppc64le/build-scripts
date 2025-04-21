@@ -1,0 +1,13 @@
+{
+   "maintainer": "shubham-dayma-ibm",
+   "package_name": "pydantic",
+   "github_url": "https://github.com/pydantic/pydantic",
+   "version": "v2.11.1",
+   "default_branch": "main",
+   "build_script": "pydantic_ubi_9.3.sh",
+   "package_dir": "p/pydantic",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
