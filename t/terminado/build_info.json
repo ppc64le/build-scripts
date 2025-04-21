@@ -1,15 +1,13 @@
 {
-  "maintainer": "stutiibm",
-  "package_name": "terminado",
-  "github_url": "https://github.com/takluyver/terminado.git",
-  "version": "v0.17.1",
-  "default_branch": "main",
-  "package_dir": "t/terminado",
-  "build_script": "terminado_ubi_8_7.sh",
-  "docker_build": false,
-  "validate_build_script": true,
-  "use_non_root_user": false,
-  "v0.17.*": {
-    "build_script": "terminado_ubi_8_7.sh"
-  }
+   "maintainer": "shubham-dayma-ibm",
+   "package_name": "terminado",
+   "github_url": "https://github.com/takluyver/terminado",
+   "version": "v0.18.1",
+   "default_branch": "main",
+   "build_script": "terminado_ubi_9.3.sh",
+   "package_dir": "t/terminado",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
 }
