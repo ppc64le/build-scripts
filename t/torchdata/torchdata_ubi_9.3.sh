@@ -64,7 +64,7 @@ git submodule sync
 git submodule update --init --recursive
 pip install -r requirements.txt
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/python-ecosystem/p/pytorch/pytorch_v2.0.1.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.0.1.patch
 git apply ./pytorch_v2.0.1.patch
 export MAX_JOBS=2
 python setup.py install

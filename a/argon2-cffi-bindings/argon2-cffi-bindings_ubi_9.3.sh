@@ -9,7 +9,7 @@
 # Language          : Python
 # Travis-Check      : True
 # Script License    : Apache License, Version 2.0
-# Maintainer        : Vinod K<Vinod.K1@ibm.com>
+# Maintainer        : Aastha Sharma <aastha.sharma4@ibm.com>
 #
 # Disclaimer        : This script has been tested in root mode on given
 # ==========          platform using the mentioned version of the package.
@@ -18,17 +18,24 @@
 #                     contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
+# Variables
 PACKAGE_NAME=argon2-cffi-bindings
 PACKAGE_VERSION=${1:-21.2.0}
 PACKAGE_URL=https://github.com/hynek/argon2-cffi-bindings
 PACKAGE_DIR=./argon2-cffi-bindings
 CURRENT_DIR="${PWD}"
 
+#install dependencies
+yum install -y wget gcc gcc-c++ gcc-gfortran git make python python-devel python-pip  openssl-devel cmake unzip
 
-dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+#build and install libargon2
+git clone https://github.com/P-H-C/phc-winner-argon2.git
+cd phc-winner-argon2
+make
+make install
+cd $CURRENT_DIR
 
-yum install -y wget gcc gcc-c++ gcc-gfortran git make python python-devel python-pip  openssl-devel cmake unzip libargon2-devel libargon2
-
+#clone and build argon2-cffi-bindings
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION

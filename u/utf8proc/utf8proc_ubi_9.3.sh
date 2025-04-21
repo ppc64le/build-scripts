@@ -65,7 +65,7 @@ cmake --build . --target install
 # cd $WORK_DIR
 cd ..
 pip3 install setuptools
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/u/utf8proc/pyproject.toml
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/u/utf8proc/pyproject.toml
 sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
 mkdir -p local/$PACKAGE_NAME
 # Copy the installation files to the local directory
