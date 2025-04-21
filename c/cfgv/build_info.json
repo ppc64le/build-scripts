@@ -1,0 +1,13 @@
+{
+   "maintainer": "shubham-dayma-ibm",
+   "package_name": "cfgv",
+   "github_url": "https://github.com/asottile/cfgv",
+   "version": "v3.4.0",
+   "default_branch": "main",
+   "build_script": "cfgv_ubi_9.3.sh",
+   "package_dir": "c/cfgv",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
