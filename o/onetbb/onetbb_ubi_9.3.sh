@@ -17,18 +17,20 @@
 #             contact "Maintainer" of this script.
 #
 # -----------------------------------------------------------------------------
+
+set -ex
+
 PACKAGE_NAME=oneTBB
 PACKAGE_VERSION=${1:-v2021.8.0}
 PACKAGE_URL=https://github.com/uxlfoundation/oneTBB
 PACKAGE_DIR=$PACKAGE_NAME/python
 HOME_DIR=${PWD}
-CURRENT_DIR="${PWD}"
 
 
 yum install -y git make cmake wget python3.12 python3.12-devel python3.12-pip
-yum install -y git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ cmake make wget openssl-devel bzip2-devel glibc-static libstdc++-static libffi-devel zlib-devel pkg-config automake autoconf libtool
-ln -sf /usr/bin/python3.12 /usr/bin/python3
-ln -sf /usr/bin/python3.12 /usr/bin/python
+yum install -y gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ cmake make wget \
+        openssl-devel bzip2-devel glibc-static libstdc++-static libffi-devel \
+        zlib-devel pkg-config automake autoconf libtool
 
 yum install gcc-toolset-13 sudo -y
 
@@ -40,8 +42,8 @@ export CC=$GCC_HOME/bin/gcc
 export CXX=$GCC_HOME/bin/g++
 
 echo "---python --version"
-python3 --version
-python -m pip install wheel build setuptools 
+python3.12 --version
+python3.12 -m pip install wheel build setuptools 
 
 
 # Installing Swing from source
@@ -50,7 +52,7 @@ echo " ------------------------------ Installing Swig --------------------------
 git clone https://github.com/nightlark/swig-pypi.git
 cd swig-pypi
 
-pip3.12 install .
+python3.12 -m pip install .
 
 echo " ------------------------------ Swig Installed Successfully ------------------------------ "
 
@@ -131,13 +133,13 @@ cd $HOME_DIR
 cd $PACKAGE_NAME/python
 
 # Attempt to build the wheel without isolation
-if ! python -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"; then
-    echo "============ Wheel Creation Failed for Python (without isolation) ================="
+if ! python3.12 -m build --wheel --no-isolation --outdir="$HOME_DIR/"; then
+    echo "============ Wheel Creation Failed for Python3.12 (without isolation) ================="
     echo "Attempting to build with isolation..."
 
     # Attempt to build the wheel without isolation
-    if ! python -m build --wheel --outdir="$CURRENT_DIR/"; then
-        echo "============ Wheel Creation Failed for Python ================="
+    if ! python3.12 -m build --wheel --outdir="$HOME_DIR/"; then
+        echo "============ Wheel Creation Failed for Python3.12 ================="
         exit 1
     fi
 else
