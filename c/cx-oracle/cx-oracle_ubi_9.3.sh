@@ -18,6 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
+
 # Variables
 PACKAGE_NAME=python-cx_Oracle
 PACKAGE_VERSION=${1:-8.3.0}
@@ -66,7 +67,6 @@ git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
 ln -sf /opt/rh/gcc-toolset-13/root/usr/lib64/libctf.so.0 /usr/lib64/libctf.so.0
-
 
 #Install
 if ! (pip install .) ; then
