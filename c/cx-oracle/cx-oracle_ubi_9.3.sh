@@ -18,7 +18,6 @@
 #
 # ----------------------------------------------------------------------------
 
-
 # Variables
 PACKAGE_NAME=python-cx_Oracle
 PACKAGE_VERSION=${1:-8.3.0}
@@ -27,8 +26,12 @@ PACKAGE_DIR=python-cx_Oracle
 CURRENT_DIR=$(pwd)
 export ORACLE_HOME=$(pwd)/opt/oracle
 
+
 # Install dependencies
-yum install -y python-devel python-pip git gcc gcc-c++ make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng openblas-devel meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite 
+
+yum install -y python-devel python-pip git gcc-toolset-13  make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng openblas-devel  meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite 
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+
 
 #install rust
 curl https://sh.rustup.rs -sSf | sh -s -- -y
@@ -61,6 +64,9 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
+
+ln -sf /opt/rh/gcc-toolset-13/root/usr/lib64/libctf.so.0 /usr/lib64/libctf.so.0
+
 
 #Install
 if ! (pip install .) ; then
