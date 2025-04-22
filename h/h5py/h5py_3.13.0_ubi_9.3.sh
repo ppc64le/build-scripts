@@ -35,7 +35,7 @@ gcc --version
 export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr
 export CC=$GCC_HOME/bin/gcc
 export CXX=$GCC_HOME/bin/g++
-
+LOCAL_DIR=local
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
