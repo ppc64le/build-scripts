@@ -24,7 +24,7 @@ PACKAGE_NAME=numba
 PACKAGE_URL=https://github.com/numba/numba
 
 # Install dependencies and tools.
-yum install -y git gcc gcc-c++ make wget python-devel xz-devel bzip2-devel openssl-devel zlib-devel libffi-devel cmake
+yum install -y git gcc gcc-c++ make wget python3.11-devel xz-devel bzip2-devel openssl-devel zlib-devel libffi-devel cmake
 
 WORKING_DIR=$(pwd)
 #Installing llvmlite from source
@@ -39,7 +39,7 @@ LLVM_PROJECT_GIT_TAG="llvmorg-15.0.7"
 git clone -b ${LLVM_PROJECT_GIT_TAG} ${LLVM_PROJECT_GIT_URL}
 git clone -b ${LLVMLITE_VERSION} ${LLVMLITE_PACKAGE_URL}
 
-pip install ninja
+python3.11 -m pip install ninja
 
 # Build LLVM project
 cd "$WORKING_DIR/llvm-project"
@@ -72,24 +72,24 @@ cd "$WORKING_DIR/llvmlite"
 export CXXFLAGS="-I$WORKING_DIR/llvm-project/build/include"
 export LLVM_CONFIG="$WORKING_DIR/llvm-project/build/bin/llvm-config"
 
-pip install .
+python3.11 -m pip install .
 cd $WORKING_DIR
 
 echo "-------------------successfully Installed llvmlite----------------------"
 
 # Install numpy
-pip install pytest numpy==1.21.1
+python3.11 -m pip install pytest numpy==1.21.1
 
 # Clone repository
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-pip install -r requirements.txt 
-python3 setup.py build_ext --inplace 
+python3.11 -m pip install -r requirements.txt 
+python3.11 setup.py build_ext --inplace 
 
 # Install
-if !(python3 setup.py install) ; then
+if !(python3.11 setup.py install) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
