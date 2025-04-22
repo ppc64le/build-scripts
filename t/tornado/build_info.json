@@ -2,7 +2,7 @@
    "maintainer": "shubham-dayma-ibm",
    "package_name": "tornado",
    "github_url": "https://github.com/tornadoweb/tornado",
-   "version": "v6.3.3",
+   "version": "v6.4.2",
    "default_branch": "master",
    "build_script": "tornado_ubi_9.3.sh",
    "package_dir": "t/tornado",
