@@ -50,7 +50,7 @@ cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 python3 -m pip install Cython==0.29.36 numpy==1.26.3 pkgconfig pytest-mpi 
-python3 -m pip install wheel oldest-supported-numpy
+python3 -m pip install wheel oldest-supported-numpy build
 
 #install
 if ! (python3 setup.py install) ; then
