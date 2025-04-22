@@ -22,7 +22,7 @@
 PACKAGE_NAME=h5py
 PACKAGE_VERSION=${1:-3.7.0}
 PACKAGE_URL=https://github.com/h5py/h5py.git
-
+CURRENT_DIR=${PWD}
 # Install dependencies and tools.
 yum install -y wget gcc gcc-c++ gcc-gfortran git make  python-devel  openssl-devel unzip libzip-devel.ppc64le gzip.ppc64le cmake  pkgconfig 
 
@@ -59,6 +59,9 @@ if ! (python3 setup.py install) ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
+
+#Creating Wheel
+ python3 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"
 
 export PY_IGNORE_IMPORTMISMATCH=1
 cd h5py/tests
