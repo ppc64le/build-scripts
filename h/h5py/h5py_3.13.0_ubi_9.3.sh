@@ -21,47 +21,40 @@ PACKAGE_NAME=h5py
 PACKAGE_VERSION=${1:-3.13.0}
 PACKAGE_URL=https://github.com/h5py/h5py.git
 PACKAGE_DIR=h5py
-SCRIPT_DIR=$(pwd)
 CURRENT_DIR="${PWD}"
 
-yum install -y python3.12 python3.12-pip python3.12-devel git wget  gcc-toolset-13
+# install core dependencies
+yum install -y wget python3.12 python3.12-pip python3.12-devel  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils pkgconfig 
+
+yum install -y libffi-devel openssl-devel sqlite-devel zip rsync
+
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-yum install -y make cmake zlib zlib-devel
-export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-gcc --version
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
-LOCAL_DIR=local
-CPU_COUNT=`python3.12 -c 'import multiprocessing ; print (multiprocessing.cpu_count())'`
-
-PYTHON_VERSION=python$(python3.12 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
-export SITE_PACKAGE_PATH="/usr/local/lib/${PYTHON_VERSION}/site-packages"
-
-#build hdf5
-git clone https://github.com/HDFGroup/hdf5
-cd hdf5/
-git checkout hdf5-1_12_1
-git submodule update --init
-
-mkdir -p $LOCAL_DIR/hdf5
-export PREFIX=$(pwd)/$LOCAL_DIR/hdf5
-./configure --prefix=${PREFIX} --enable-cxx --enable-fortran -with-pthread=yes --enable-threadsafe --enable-build-mode=production --enable-unsupported  --enable-using-memchecker --enable-clear-file-buffers  --with-ssl
-make -j "${CPU_COUNT}"
-make install PREFIX="${PREFIX}"
-touch $LOCAL_DIR/hdf5/__init__.py
-
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/h/hdf5/pyproject.toml
-sed -i s/{PACKAGE_VERSION}/hdf5-1_12_1/g pyproject.toml
-sed -i 's/version = "hdf5[._-]\([0-9]*\)[._-]\([0-9]*\)[._-]\([0-9]*\)\([._-]*[0-9]*\)"/version = "\1.\2.\3\4"/' pyproject.toml
-python3.12 -m pip install .
-
-yum install -y git make cmake wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas
-yum install gcc-toolset-13 -y
-yum install -y make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel python3.12 python3.12-devel python3.12-pip patch ninja-build gcc-toolset-13  pkg-config
-dnf install -y gcc-toolset-13-libatomic-devel
-
-#build openblas
 gcc --version
+
+export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr
+export CC=$GCC_HOME/bin/gcc
+export CXX=$GCC_HOME/bin/g++
+LOCAL_DIR=local
+
+OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
+
+python3.12 -m pip install --upgrade pip
+
+INSTALL_ROOT="/install-deps"
+mkdir -p $INSTALL_ROOT
+
+
+for package in openblas hdf5 ; do
+    mkdir -p ${INSTALL_ROOT}/${package}
+    export "${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
+    echo "Exported ${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
+done
+
+python3.12 -m pip install cython setuptools wheel ninja build pytest pytest-mpi
+
+#installing openblas
+cd $CURRENT_DIR
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
 git checkout v0.3.29
@@ -74,7 +67,6 @@ export CF="${CFLAGS} -Wno-unused-parameter -Wno-old-style-declaration"
 unset CFLAGS
 export USE_OPENMP=1
 build_opts+=(USE_OPENMP=${USE_OPENMP})
-export PREFIX=${PREFIX}
 # Handle Fortran flags
 if [ ! -z "$FFLAGS" ]; then
     export FFLAGS="${FFLAGS/-fopenmp/ }"
@@ -97,63 +89,58 @@ build_opts+=(NUM_THREADS=8)
 # Disable CPU/memory affinity handling to avoid problems with NumPy and R
 build_opts+=(NO_AFFINITY=1)
 # Build OpenBLAS
-make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
+make ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${OPENBLAS_PREFIX}
 # Install OpenBLAS
-CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
-OpenBLASInstallPATH=$(pwd)/$PREFIX
-OpenBLASConfigFile=$(find . -name OpenBLASConfig.cmake)
-OpenBLASPCFile=$(find . -name openblas.pc)
-export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib":${LD_LIBRARY_PATH}
-export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
-export LD_LIBRARY_PATH=${PREFIX}/lib:$LD_LIBRARY_PATH
-export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
+CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${OPENBLAS_PREFIX}" ${build_opts[@]}
+export LD_LIBRARY_PATH=${OPENBLAS_PREFIX}/lib:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=${OPENBLAS_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
 pkg-config --modversion openblas
-echo "--------------------openblas installed-------------------------------"
-echo $SCRIPT_DIR
-cd ..
+echo "-----------------------------------------------------Installed openblas-----------------------------------------------------"
+python3.12 -m pip install numpy==2.0.2 setuptools==77.0.1
 
-python3.12 -m pip install setuptools==77.0.1
 
-#build h5py
-cd $SCRIPT_DIR
-git clone $PACKAGE_URL
-cd  $PACKAGE_NAME
-git checkout $PACKAGE_VERSION
+#Build hdf5 from source
+cd $CURRENT_DIR
+git clone https://github.com/HDFGroup/hdf5
+cd hdf5/
+git checkout hdf5-1_12_1
+git submodule update --init
 
-echo "Dependencies installation"
+mkdir -p $LOCAL_DIR/$PACKAGE_NAME
+yum install -y zlib zlib-devel
+
+./configure --prefix=$HDF5_PREFIX --enable-cxx --enable-fortran  --with-pthread=yes --enable-threadsafe  --enable-build-mode=production --enable-unsupported  --enable-using-memchecker  --enable-clear-file-buffers --with-ssl
+make 
+make install PREFIX="${HDF5_PREFIX}"
+
+export LD_LIBRARY_PATH=${HDF5_PREFIX}/lib:$LD_LIBRARY_PATH
+# touch $LOCAL_DIR/hdf5/__init__.py
+
+echo "-----------------------------------------------------Installed hdf5-----------------------------------------------------"
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/h/hdf5/pyproject.toml
+sed -i s/{PACKAGE_VERSION}/hdf5-1_12_1/g pyproject.toml
+sed -i 's/version = "hdf5[._-]\([0-9]*\)[._-]\([0-9]*\)[._-]\([0-9]*\)\([._-]*[0-9]*\)"/version = "\1.\2.\3\4"/' pyproject.toml
+python3.12 -m pip install .
+
+
+#Build h5py from source
+cd $CURRENT_DIR
+git clone https://github.com/h5py/h5py.git
+cd h5py/
+git checkout 3.13.0
 
 python3.12 -m pip install Cython==0.29.36
 python3.12 -m pip install numpy==2.0.2
-python3.12 -m pip install pkgconfig pytest-mpi setuptools
+python3.12 -m pip install pkgconfig pytest-mpi setuptools==77.0.1
 python3.12 -m pip install wheel pytest pytest-mpi tox build
 
-echo "export statmenents"
-export LD_LIBRARY_PATH=${PREFIX}/lib:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/hdf5/local/hdf5/include:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/hdf5/local/hdf5/lib/:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/usr/local/lib/$PYTHON_VERSION/site-packages/hdf5/lib/:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/hdf5/src/.libs/:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/hdf5/build/lib/hdf5/lib/:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/hdf5/src/:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/hdf5/local/hdf5/include/:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/hdf5/build/lib/hdf5/include/:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/usr/local/lib/$PYTHON_VERSION/site-packages/hdf5/include/:$LD_LIBRARY
-export LD_LIBRARY_PATH=/usr/local/hdf5/:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/usr/local/hdf5/include:$LD_LIBRARY_PATH
-export HDF5_DIR=/usr/local/hdf5
-
-echo "Installation" 
-
-if ! (HDF5_DIR=/hdf5/local/hdf5 python3.12  -m pip install .);then
-    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
-    exit 1
-fi
-
+HDF5_DIR=/install-deps/hdf5 python3.12 -m pip install .
+cd $CURRENT_DIR
+python3.12 -c "import h5py; print(h5py.__version__)"
+echo "-----------------------------------------------------Installed h5py-----------------------------------------------------"
+cd h5py/
 #building wheel
-if ! (HDF5_DIR=/hdf5/local/hdf5 python3.12 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/");then
+if ! (HDF5_DIR=/install-deps/hdf5 python3.12 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/");then
     echo "------------------$PACKAGE_NAME:Wheel_build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Wheel_build_fails"
