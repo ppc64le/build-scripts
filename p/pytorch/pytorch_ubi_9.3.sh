@@ -99,14 +99,13 @@ fi
 
 python -m pip install pytest-xdist
 
-export PYTORCH_TEST_WITH_PRIVATEUSE1=1
-export OMP_NUM_THREADS=1
-export OPENBLAS_NUM_THREADS=1
-export MKL_NUM_THREADS=1
-export NUMEXPR_NUM_THREADS=1
+# export OMP_NUM_THREADS=1
+# export OPENBLAS_NUM_THREADS=1
+# export MKL_NUM_THREADS=1
+# export NUMEXPR_NUM_THREADS=1
 
 # basic sanity test (subset)
-if ! python -m pytest -v test/test_utils.py; then
+if ! PYTORCH_TEST_WITH_PRIVATEUSE1=1 python -m pytest -v test/test_utils.py; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
