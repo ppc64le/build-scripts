@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------
 #
 # Package       : event-driven-ansible
-# Version       : v2.6.0
+# Version       : v2.7.0
 # Source repo   : https://github.com/ansible/event-driven-ansible/
 # Tested on     : UBI:9.3
 # Language      : Python
