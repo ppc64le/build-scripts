@@ -114,7 +114,7 @@ make
 make install PREFIX="${HDF5_PREFIX}"
 
 export LD_LIBRARY_PATH=${HDF5_PREFIX}/lib:$LD_LIBRARY_PATH
-touch $LOCAL_DIR/hdf5/__init__.py
+# touch $LOCAL_DIR/hdf5/__init__.py
 
 echo "-----------------------------------------------------Installed hdf5-----------------------------------------------------"
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/h/hdf5/pyproject.toml
