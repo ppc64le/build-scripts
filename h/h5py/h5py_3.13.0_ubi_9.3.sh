@@ -138,7 +138,7 @@ HDF5_DIR=/install-deps/hdf5 python3.12 -m pip install .
 cd $CURRENT_DIR
 python3.12 -c "import h5py; print(h5py.__version__)"
 echo "-----------------------------------------------------Installed h5py-----------------------------------------------------"
-
+cd h5py/
 #building wheel
 if ! (HDF5_DIR=/install-deps/hdf5 python3.12 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/");then
     echo "------------------$PACKAGE_NAME:Wheel_build_fails-------------------------------------"
