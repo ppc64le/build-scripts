@@ -54,8 +54,7 @@ fi
 
 python3 -m build --wheel --no-isolation --outdir="$CURRENT_DIR"
 # Run tests
-python3 -m tox -e py39
-if [ $? -eq 0 ]; then
+if !(python3 -m tox -e py39); then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
