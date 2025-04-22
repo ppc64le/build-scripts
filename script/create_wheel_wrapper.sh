@@ -97,7 +97,7 @@ format_build_script() {
         sed -i '/dnf install/{s/\b\(python\|python-devel\|python-pip\)\b[[:space:]]*//g}' "$TEMP_BUILD_SCRIPT_PATH"
         sed -i 's/\bpython3 -m pytest/pytest/g' "$TEMP_BUILD_SCRIPT_PATH"
         sed -i "s/tox -e py[0-9]\{2,3\}\([[:space:]]*.*\)\?/tox -e py${PYTHON_VERSION//./}\1/g" "$TEMP_BUILD_SCRIPT_PATH"
-
+        sed -i 's/^[[:space:]]*exit[[:space:]]\+0[[:space:]]*$//' "$TEMP_BUILD_SCRIPT_PATH"
     else
         echo "No build script specified, skipping copying."
     fi
@@ -209,15 +209,9 @@ if [ -n "$TEMP_BUILD_SCRIPT_PATH" ]; then
     package_url=$(grep -oP '(?<=^PACKAGE_URL=).*' "$TEMP_BUILD_SCRIPT_PATH" | tr -d '"')
     package_name=$(basename "$package_url" .git)
 
-    echo "Running the script..."
-    sh "$TEMP_BUILD_SCRIPT_PATH" $EXTRA_ARGS
-
-    # Check if the build script execution was successful
-    if [ $? -ne 0 ]; then
-        echo "Build script execution failed. Skipping wheel creation."
-        EXIT_CODE=1
-    fi
-
+    echo "Running the build script..."
+    source "$TEMP_BUILD_SCRIPT_PATH" "$EXTRA_ARGS"
+    
 else
     echo "No build script to run, skipping execution."
 fi
