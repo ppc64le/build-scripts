@@ -25,9 +25,6 @@ classifiers = [
   "License :: Apache License 2.0",
 ]
 
-dependencies = [
-    "abseil_cpp==20240116.2",
-]
 #Project URLs
 [project.urls]
 homepage = "https://github.com/protocolbuffers/protobuf"
