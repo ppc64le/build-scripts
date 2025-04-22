@@ -18,106 +18,50 @@
 #
 # ----------------------------------------------------------------------------
 
+# Variables
 PACKAGE_NAME=tornado
-PACKAGE_VERSION=${1:-v6.3.3}
+PACKAGE_VERSION=${1:-v6.4.2}
 PACKAGE_URL=https://github.com/tornadoweb/tornado
-PACKAGE_DIR="$(pwd)/$PACKAGE_NAME"
+PACKAGE_DIR=tornado
+CURRENT_DIR="${PWD}"
 
-yum install -y git  python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo cmake
-pip3 install pytest tox nox
-PATH=$PATH:/usr/local/bin/
+# Install dependencies
+yum install python3 python3-devel python3-pip git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran -y
 
-OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
-SOURCE=Github
+source /opt/rh/gcc-toolset-13/enable
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
-# Install rust
-if ! command -v rustc &> /dev/null
-then
-    wget https://static.rust-lang.org/dist/rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
-    tar -xzf rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
-    cd rust-1.75.0-powerpc64le-unknown-linux-gnu
-    sudo ./install.sh
-    export PATH=$HOME/.cargo/bin:$PATH
-    rustc -V
-    cargo -V
-    cd ../
-fi
+# Clone the repository
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 
-if [[ "$PACKAGE_URL" == *github.com* ]]; then
-    # Use git clone if it's a Git repository
-    if [ -d "$PACKAGE_NAME" ]; then
-        cd "$PACKAGE_NAME" || exit
-    else
-        if ! git clone "$PACKAGE_URL" "$PACKAGE_NAME"; then
-            echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-            echo "$PACKAGE_URL $PACKAGE_NAME"
-            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Clone_Fails"  
-            exit 1
-        fi
-        cd "$PACKAGE_NAME" || exit
-        git checkout "$PACKAGE_VERSION" || exit
-    fi
-else
-    # If it's not a Git repository, download and untar
-    if [ -d "$PACKAGE_NAME" ]; then
-        cd "$PACKAGE_NAME" || exit
-    else
-        # Use download and untar if it's not a Git repository
-        if ! curl -L "$PACKAGE_URL" -o "$PACKAGE_NAME.tar.gz"; then
-            echo "------------------$PACKAGE_NAME:download_fails---------------------------------------"
-            echo "$PACKAGE_URL $PACKAGE_NAME"
-            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Download_Fails"  
-            exit 1
-        fi
-        mkdir "$PACKAGE_NAME"
-        # Extract the downloaded tarball
-        if ! tar -xzf "$PACKAGE_NAME.tar.gz" -C "$PACKAGE_NAME" --strip-components=1; then
-            echo "------------------$PACKAGE_NAME:untar_fails---------------------------------------"
-            echo "$PACKAGE_URL $PACKAGE_NAME"
-            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Untar_Fails"  
-            exit 1
-        fi
+pip install build tox wheel
 
-        cd "$PACKAGE_NAME" || exit
-    fi
-fi
+python3 setup.py sdist
 
-# Install via pip3
-if !  python3 -m pip install ./; then
-        echo "------------------$PACKAGE_NAME:install_fails------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"  
-        exit 1
-fi
-
-# Run Tox
-python3 -m tox -e py39
-if [ $? -eq 0 ]; then
-    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
+cd dist/
+tar -zxvf tornado-6.4.2.tar.gz
+cd tornado-6.4.2
+#install
+if ! pip install -e . ; then
+    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
-    exit 0
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    exit 1
 fi
 
-# Run Pytest
-python3 -m pytest
-if [ $? -eq 0 ]; then
-    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
+python3 -m build --wheel --no-isolation --outdir="$CURRENT_DIR"
+# Run tests
+if !(python3 -m tox -e py39); then
+    echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
-    exit 0
-fi
-
-# Run Nox
-python3 -m nox
-if [ $? -eq 0 ]; then
-    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
-    exit 0
-else
-    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
     exit 2
+else
+    echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    exit 0
 fi
