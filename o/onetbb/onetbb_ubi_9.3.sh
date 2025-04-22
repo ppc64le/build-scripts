@@ -25,7 +25,7 @@ HOME_DIR=${PWD}
 CURRENT_DIR="${PWD}"
 
 
-yum install -y git make cmake wget python312 python3.12-devel python3.12-pip
+yum install -y git make cmake wget python3.12 python3.12-devel python3.12-pip
 yum install -y git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ cmake make wget openssl-devel bzip2-devel glibc-static libstdc++-static libffi-devel zlib-devel pkg-config automake autoconf libtool
 ln -sf /usr/bin/python3.12 /usr/bin/python3
 ln -sf /usr/bin/python3.12 /usr/bin/python
@@ -40,8 +40,8 @@ export CC=$GCC_HOME/bin/gcc
 export CXX=$GCC_HOME/bin/g++
 
 echo "---python --version"
-python3.12 --version
-python3.12 -m pip install wheel build setuptools 
+python3 --version
+python -m pip install wheel build setuptools 
 
 
 # Installing Swing from source
@@ -55,7 +55,6 @@ pip3.12 install .
 echo " ------------------------------ Swig Installed Successfully ------------------------------ "
 
 cd $HOME_DIR
-ls
 
 # Installing hwloc from source
 echo " ------------------------------ Installing hwloc ------------------------------ "
@@ -72,7 +71,7 @@ make install
 echo " ------------------------------ hwloc Installed Successfully ------------------------------ "
 
 cd $HOME_DIR
-ls
+
 echo "------------Cloning the Repository------------"
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
@@ -80,7 +79,7 @@ git checkout $PACKAGE_VERSION
 
 mkdir build
 cd build/
-ls
+
 pwd
 if ! (cmake -DCMAKE_INSTALL_PREFIX=/tmp/my_installed_onetbb -DTBB_TEST=OFF -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC=ON -DCMAKE_CXX_FLAGS="-static-libgcc -static-libstdc++" -DCMAKE_EXE_LINKER_FLAGS="-static" -DTBB_BUILD=ON -DTBB4PY_BUILD=ON ..
 );then
@@ -114,7 +113,7 @@ fi
 cd ..
 echo "------------Applying Patch------------"
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/o/onetbb/tbb.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/onetbb/tbb.patch
 git apply tbb.patch
 
 echo "------------Applied patch successfully---------------------"
@@ -132,13 +131,13 @@ cd $HOME_DIR
 cd $PACKAGE_NAME/python
 
 # Attempt to build the wheel without isolation
-if ! python3.12 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"; then
-    echo "============ Wheel Creation Failed for Python3.12 (without isolation) ================="
+if ! python -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"; then
+    echo "============ Wheel Creation Failed for Python (without isolation) ================="
     echo "Attempting to build with isolation..."
 
     # Attempt to build the wheel without isolation
-    if ! python3.12 -m build --wheel --outdir="$CURRENT_DIR/"; then
-        echo "============ Wheel Creation Failed for Python3.12 ================="
+    if ! python -m build --wheel --outdir="$CURRENT_DIR/"; then
+        echo "============ Wheel Creation Failed for Python ================="
         exit 1
     fi
 else
