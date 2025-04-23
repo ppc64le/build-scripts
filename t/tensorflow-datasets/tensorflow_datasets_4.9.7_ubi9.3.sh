@@ -29,14 +29,11 @@ PACKAGE_DIR=datasets
 
 
 echo "Installing GCC 13..."
-yum install -y wget python3.12 python3.12-pip python3.12-devel git make cmake binutils
+yum install -y wget python python-pip python-devel git make cmake binutils
 yum install -y gcc-toolset-13-gcc-c++ gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel
 yum install -y xz-devel openssl-devel cmake zlib-devel libjpeg-devel libevent libtool pkg-config  brotli-devel bzip2-devel lz4-devel libtiff-devel
 
 
-# Create symbolic links for python
-ln -sf /usr/bin/python3.12 /usr/bin/python3
-ln -sf /usr/bin/python3.12 /usr/bin/python
 
 # Set up environment variables for GCC 13
 export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr
@@ -328,9 +325,9 @@ wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-e
 git apply set_cpp_to_17_v4.25.3.patch
 
 cd python
-python3.12 setup.py install --cpp_implementation
-python3.12 setup.py bdist_wheel --cpp_implementation
-python3.12 -m pip install dist/*.whl --force-reinstall
+python setup.py install --cpp_implementation
+python setup.py bdist_wheel --cpp_implementation
+python -m pip install dist/*.whl --force-reinstall
 protoc --version
 python -c "import google.protobuf; print(google.protobuf.__version__)"
 echo "-------------------------------------libprotobuf installed successfuly-------------------------------------"
@@ -1051,9 +1048,9 @@ export CXXFLAGS="-I${ML_DIR}/include"
 export CC=/opt/rh/gcc-toolset-13/root/bin/gcc
 export CXX=/opt/rh/gcc-toolset-13/root/bin/g++
 
-python3.12 -m pip install .
+python -m pip install .
 cd $CURRENT_DIR
-python3.12 -c "import ml_dtypes; print(ml_dtypes.__version__)"
+python -c "import ml_dtypes; print(ml_dtypes.__version__)"
 echo "-----------------------------------------------------Installed ml_dtyapes-----------------------------------------------------"
 
 # Set CPU optimization flags
@@ -1068,8 +1065,8 @@ echo "build_type=${build_type}"
 SHLIB_EXT=".so"
 WORK_DIR=$(pwd)
 
-export TF_PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
-export HERMETIC_PYTHON_VERSION=$(python3.12 --version | awk '{print $2}' | cut -d. -f1,2)
+export TF_PYTHON_VERSION=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+export HERMETIC_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
 export GCC_HOST_COMPILER_PATH=$(which gcc)
 export CC=$GCC_HOST_COMPILER_PATH
 
@@ -1091,7 +1088,7 @@ wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t
 git apply tf_2.18.1_fix.patch
 
 # Pick up additional variables defined from the conda build environment
-export PYTHON_BIN_PATH=$(which python3.12)
+export PYTHON_BIN_PATH=$(which python)
 export USE_DEFAULT_PYTHON_LIB_PATH=1
 
 # Build the bazelrc
@@ -1113,9 +1110,9 @@ echo "--------------------------------Bazelrc dir : ${BAZEL_RC_DIR}-------------
 TENSORFLOW_PREFIX=/install-deps/tensorflow
 
 cat > $BAZEL_RC_DIR/python_configure.bazelrc << EOF
-build --action_env PYTHON_BIN_PATH="$(which python3.12)"
-build --action_env PYTHON_LIB_PATH="/usr/lib/python3.12/site-packages"
-build --python_path="$(which python3.12)"
+build --action_env PYTHON_BIN_PATH="$(which python)"
+build --action_env PYTHON_LIB_PATH="/usr/lib/python/site-packages"
+build --python_path="$(which python)"
 EOF
 
 SYSTEM_LIBS_PREFIX=$TENSORFLOW_PREFIX
