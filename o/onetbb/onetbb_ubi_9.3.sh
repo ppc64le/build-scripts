@@ -41,13 +41,13 @@ export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 export CC=$GCC_HOME/bin/gcc
 export CXX=$GCC_HOME/bin/g++
 
-echo "---python --version"
-python3.12 --version
-python3.12 -m pip install wheel build setuptools 
-
 # Creating Virtual env
 python3.12 -m venv py312
 source py312/bin/activate
+
+echo "---python --version"
+python3.12 --version
+python3.12 -m pip install wheel build setuptools 
 
 # Installing Swing from source
 echo " ------------------------------ Installing Swig ------------------------------ "
