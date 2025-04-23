@@ -568,7 +568,7 @@ pkg-config --modversion openblas
 echo "-----------------------------------------------------Installed openblas-----------------------------------------------------"
 
 #installing few test dependencies here as they need openblas
-pip install mlcroissant==1.0.12 scikit-image
+python3.12 -m pip install mlcroissant==1.0.12 scikit-image
 
 #installing libvpx
 cd $CURRENT_DIR
