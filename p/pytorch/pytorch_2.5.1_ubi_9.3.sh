@@ -281,7 +281,7 @@ export LD_LIBRARY_PATH="/protobuf/local/libprotobuf/lib64:${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH="/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH="/protobuf/third_party/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
 export CMAKE_PREFIX_PATH="${SITE_PACKAGE_PATH}"
-cp -a `find ${ABSEIL_CPP} -type d -name absl` $Protobuf_INCLUDE_DIR
+#cp -a `find ${ABSEIL_CPP} -type d -name absl` $Protobuf_INCLUDE_DIR
 if ! (python3.12 -m pip install -r requirements.txt);then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
