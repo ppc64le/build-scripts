@@ -99,10 +99,10 @@ fi
 
 python -m pip install pytest-xdist
 
-# export OMP_NUM_THREADS=1
-# export OPENBLAS_NUM_THREADS=1
-# export MKL_NUM_THREADS=1
-# export NUMEXPR_NUM_THREADS=1
+export OMP_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+export NUMEXPR_NUM_THREADS=1
 
 # basic sanity test (subset)
 if ! PYTHONFAULTHANDLER=1 python -m pytest -v test/test_utils.py -k "not test_device_mode_ops_sparse_mm_reduce_cpu"; then
