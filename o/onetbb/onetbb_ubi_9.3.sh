@@ -56,9 +56,6 @@ echo " ------------------------------ Swig Installed Successfully --------------
 
 cd $CURRENT_DIR 
 
-# Set python_build for Make
-export python_build=$(which python3.12)
-
 # Installing hwloc from source
 echo " ------------------------------ Installing hwloc ------------------------------ "
 
