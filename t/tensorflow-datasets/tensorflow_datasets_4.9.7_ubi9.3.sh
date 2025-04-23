@@ -29,7 +29,7 @@ PACKAGE_DIR=datasets
 
 
 echo "Installing GCC 13..."
-yum install -y wget python python-pip python-devel git make cmake binutils
+yum install -y wget python3.12 python3.12-pip python3.12-devel git make cmake binutils
 yum install -y gcc-toolset-13-gcc-c++ gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel
 yum install -y xz-devel openssl-devel cmake zlib-devel libjpeg-devel libevent libtool pkg-config  brotli-devel bzip2-devel lz4-devel libtiff-devel
 
@@ -56,7 +56,7 @@ gcc --version
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
-python -m pip install --upgrade pip
+python3.12 -m pip install --upgrade pip
 
 INSTALL_ROOT="/install-deps"
 mkdir -p $INSTALL_ROOT
@@ -68,7 +68,7 @@ for package in abseil boost libprotobuf thrift orc re2 utf8proc grpc openblas ps
     echo "Exported ${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
 done
 
-python -m pip install build setuptools wheel ninja
+python3.12 -m pip install build setuptools wheel ninja
 
 #installing flex 
 cd $CURRENT_DIR
@@ -186,7 +186,7 @@ git clone https://github.com/zarr-developers/zarr-python.git
 cd zarr-python
 pip install -U pip setuptools wheel
 pip install -e .
-python3 -c "import zarr; print(zarr.__version__)"
+python3.12 -c "import zarr; print(zarr.__version__)"
 
 #installing test dependencies
 cd $CURRENT_DIR
@@ -325,11 +325,11 @@ wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-e
 git apply set_cpp_to_17_v4.25.3.patch
 
 cd python
-python setup.py install --cpp_implementation
-python setup.py bdist_wheel --cpp_implementation
-python -m pip install dist/*.whl --force-reinstall
+python3.12 setup.py install --cpp_implementation
+python3.12 setup.py bdist_wheel --cpp_implementation
+python3.12 -m pip install dist/*.whl --force-reinstall
 protoc --version
-python -c "import google.protobuf; print(google.protobuf.__version__)"
+python3.12 -c "import google.protobuf; print(google.protobuf.__version__)"
 echo "-------------------------------------libprotobuf installed successfuly-------------------------------------"
 
 #installing gcld3
@@ -703,7 +703,7 @@ export PATH="/install-deps/ffmpeg/bin:$PATH"
 ffmpeg -version
 echo "-----------------------------------------------------Installed ffmpeg------------------------------------------------"
 
-python -m pip install numpy==2.0.2
+python3.12 -m pip install numpy==2.0.2
 
 #installing pillow
 cd $CURRENT_DIR
@@ -712,7 +712,7 @@ cd Pillow
 git checkout 11.1.0
 yum install -y libjpeg-turbo-devel
 git submodule update --init
-python -m pip install . 
+python3.12 -m pip install . 
 
 echo "-----------------------------------------------------Installed pillow------------------------------------------------"
 
@@ -862,7 +862,7 @@ export build_type=cpu
 cd $CURRENT_DIR/arrow/python
 export CMAKE_PREFIX_PATH=$ARROW_HOME
 pip install .
-python -m pip wheel -w $OUTPUT_DIR -vv --no-build-isolation --no-deps .
+python3.12 -m pip wheel -w $OUTPUT_DIR -vv --no-build-isolation --no-deps .
 export Arrow_DIR=$PYARROW_PREFIX
 export ArrowDataset_DIR=$PYARROW_PREFIX
 export ArrowAcero_DIR=$PYARROW_PREFIX
@@ -923,9 +923,9 @@ git clone https://github.com/h5py/h5py.git
 cd h5py/
 git checkout 3.13.0
 
-HDF5_DIR=/install-deps/hdf5 python -m pip install .
+HDF5_DIR=/install-deps/hdf5 python3.12 -m pip install .
 cd $CURRENT_DIR
-python -c "import h5py; print(h5py.__version__)"
+python3.12 -c "import h5py; print(h5py.__version__)"
 echo "-----------------------------------------------------Installed h5py-----------------------------------------------------"
 
 #Build dm-tree from source
@@ -933,7 +933,7 @@ cd $CURRENT_DIR
 git clone https://github.com/google-deepmind/tree
 cd tree
 git checkout 0.1.9
-python setup.py install
+python3.12 setup.py install
 echo "-----------------------------------------------------Installed dm-tree-----------------------------------------------------"
 
 #Build opencv-python-headless from source
@@ -977,13 +977,13 @@ export CMAKE_ARGS="-DBUILD_TESTS=ON
                    -DPROTOBUF_UPDATE_FILES=ON"
 
 pip install numpy==2.0.2 pytest scikit-build setuptools build wheel
-export C_INCLUDE_PATH=$(python -c "import numpy; print(numpy.get_include())")
+export C_INCLUDE_PATH=$(python3.12 -c "import numpy; print(numpy.get_include())")
 export CPLUS_INCLUDE_PATH=$C_INCLUDE_PATH
 sed -i 's/"setuptools==59.2.0"/"setuptools==59.2.0; python_version<\x273.12\x27"/' pyproject.toml
 sed -i '/"setuptools==59.2.0; python_version<\x273.12\x27"/a \  "setuptools<70.0.0; python_version>=\x273.12\x27",' pyproject.toml
 pip install .
 cd $CURRENT_DIR
-python -c "import cv2; print(cv2.__version__)"
+python3.12 -c "import cv2; print(cv2.__version__)"
 echo "-----------------------------------------------------Installed opencv-python-headless-----------------------------------------------------"
 
 
@@ -992,9 +992,9 @@ cd $CURRENT_DIR
 dnf install -y libpng-devel pkgconfig mesa-libGL  tk fontconfig-devel freetype-devel gtk3
 git clone https://github.com/matplotlib/matplotlib.git
 cd matplotlib
-python -m pip install .
+python3.12 -m pip install .
 cd $CURRENT_DIR
-python -c "import matplotlib; print(matplotlib.__version__)"
+python3.12 -c "import matplotlib; print(matplotlib.__version__)"
 
 #installing pycocotools need for test
 cd $CURRENT_DIR
@@ -1002,7 +1002,7 @@ git clone https://github.com/cocodataset/cocoapi.git
 cd cocoapi/PythonAPI
 pip install .
 cd $CURRENT_DIR
-python3 -c "from pycocotools.coco import COCO; print('pycocotools installed successfully')"
+python3.12 -c "from pycocotools.coco import COCO; print('pycocotools installed successfully')"
 
 
 #installing tensorflow
@@ -1048,9 +1048,9 @@ export CXXFLAGS="-I${ML_DIR}/include"
 export CC=/opt/rh/gcc-toolset-13/root/bin/gcc
 export CXX=/opt/rh/gcc-toolset-13/root/bin/g++
 
-python -m pip install .
+python3.12 -m pip install .
 cd $CURRENT_DIR
-python -c "import ml_dtypes; print(ml_dtypes.__version__)"
+python3.12 -c "import ml_dtypes; print(ml_dtypes.__version__)"
 echo "-----------------------------------------------------Installed ml_dtyapes-----------------------------------------------------"
 
 # Set CPU optimization flags
@@ -1065,8 +1065,8 @@ echo "build_type=${build_type}"
 SHLIB_EXT=".so"
 WORK_DIR=$(pwd)
 
-export TF_PYTHON_VERSION=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
-export HERMETIC_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
+export TF_PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+export HERMETIC_PYTHON_VERSION=$(python3.12 --version | awk '{print $2}' | cut -d. -f1,2)
 export GCC_HOST_COMPILER_PATH=$(which gcc)
 export CC=$GCC_HOST_COMPILER_PATH
 
@@ -1088,7 +1088,7 @@ wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t
 git apply tf_2.18.1_fix.patch
 
 # Pick up additional variables defined from the conda build environment
-export PYTHON_BIN_PATH=$(which python)
+export PYTHON_BIN_PATH=$(which python3.12)
 export USE_DEFAULT_PYTHON_LIB_PATH=1
 
 # Build the bazelrc
@@ -1110,9 +1110,9 @@ echo "--------------------------------Bazelrc dir : ${BAZEL_RC_DIR}-------------
 TENSORFLOW_PREFIX=/install-deps/tensorflow
 
 cat > $BAZEL_RC_DIR/python_configure.bazelrc << EOF
-build --action_env PYTHON_BIN_PATH="$(which python)"
-build --action_env PYTHON_LIB_PATH="/usr/lib/python/site-packages"
-build --python_path="$(which python)"
+build --action_env PYTHON_BIN_PATH="$(which python3.12)"
+build --action_env PYTHON_LIB_PATH="/usr/lib/python3.12/site-packages"
+build --python_path="$(which python3.12)"
 EOF
 
 SYSTEM_LIBS_PREFIX=$TENSORFLOW_PREFIX
@@ -1207,7 +1207,7 @@ fi
 echo "-------------------------------TFDS installation successful-------------------------------------"
 
 cd tensorflow_datasets/proto
-python build_tf_proto.py
+python3.12 build_tf_proto.py
 
 
 cd /datasets
@@ -1218,7 +1218,7 @@ protoc --proto_path=tensorflow_datasets/datasets/smart_buildings --python_out=te
 sed -i "s|\(collect_ignore = \[.*\)\]|\1, 'core/dataset_builder_beam_test.py', 'core/dataset_builders/adhoc_builder_test.py', 'core/features/tensor_feature_test.py', 'core/split_builder_test.py',]|" tensorflow_datasets/conftest.py
 
 echo "---------------------------------------------------Building the wheel--------------------------------------------------"
-python setup.py bdist_wheel --dist-dir $CURRENT_DIR
+python3.12 setup.py bdist_wheel --dist-dir $CURRENT_DIR
 
 
 echo "----------------------------------------------Testing pkg-------------------------------------------------------"
