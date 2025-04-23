@@ -23,7 +23,7 @@ set -ex
 PACKAGE_NAME=oneTBB
 PACKAGE_VERSION=${1:-v2021.8.0}
 PACKAGE_URL=https://github.com/uxlfoundation/oneTBB
-PACKAGE_DIR=$PACKAGE_NAME/python
+PACKAGE_DIR=oneTBB/python
 HOME_DIR=${PWD}
 
 
