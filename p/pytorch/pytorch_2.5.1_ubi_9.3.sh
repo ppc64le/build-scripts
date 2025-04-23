@@ -1,5 +1,4 @@
 #!/bin/bash -e
- 
 # -----------------------------------------------------------------------------
 #
 # Package : pytorch
@@ -18,7 +17,7 @@
 # contact the "Maintainer" of this script.
 #
 # -----------------------------------------------------------------------------
- 
+
 # Exit immediately if a command exits with a non-zero status
 set -e
 PACKAGE_NAME=pytorch
@@ -39,6 +38,14 @@ gcc --version
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 export SITE_PACKAGE_PATH="/lib/${PYTHON_VERSION}/site-packages"
 
+echo "Installing cmake..."
+wget https://cmake.org/files/v3.28/cmake-3.28.0.tar.gz
+tar -zxvf cmake-3.28.0.tar.gz
+cd cmake-3.28.0
+./bootstrap
+make
+make install
+cd $SCRIPT_DIR
 #install openblas
 #clone and install openblas from source
 
@@ -274,7 +281,7 @@ export LD_LIBRARY_PATH="/protobuf/local/libprotobuf/lib64:${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH="/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH="/protobuf/third_party/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
 export CMAKE_PREFIX_PATH="${SITE_PACKAGE_PATH}"
-cp -r `find ${ABSEIL_CPP} -type d -name absl` $Protobuf_INCLUDE_DIR
+cp -a `find ${ABSEIL_CPP} -type d -name absl` $Protobuf_INCLUDE_DIR
 if ! (python3.12 -m pip install -r requirements.txt);then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
