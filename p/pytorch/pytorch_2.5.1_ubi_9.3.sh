@@ -207,7 +207,7 @@ export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 
 #Apply patch
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch 
 git apply set_cpp_to_17_v4.25.3.patch
 
 cd python
