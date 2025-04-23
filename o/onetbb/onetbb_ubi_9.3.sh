@@ -93,7 +93,7 @@ if ! (cmake -DCMAKE_INSTALL_PREFIX=/tmp/my_installed_onetbb -DTBB_TEST=OFF -DBUI
 fi
 
 echo "------------Building the package------------"
-if ! (make -j4 python_build PYTHON=$python_build);then
+if ! (make -j4 python_build);then
         echo "------------------$PACKAGE_NAME:make_fails-------------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  MAKE_Fails"
