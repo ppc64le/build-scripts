@@ -41,10 +41,7 @@ export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 export CC=$GCC_HOME/bin/gcc
 export CXX=$GCC_HOME/bin/g++
 
-# Creating Virtual env
-python3.12 -m venv py312
-source py312/bin/activate
-
+python3.12 -m pip install --upgrade pip
 python3.12 -m pip install wheel build setuptools 
 
 # Installing Swing from source
@@ -57,7 +54,10 @@ python3.12 -m pip install .
 
 echo " ------------------------------ Swig Installed Successfully ------------------------------ "
 
-cd $CURRENT_DIR
+cd $CURRENT_DIR 
+
+# Set python_build for Make
+export python_build=$(which python3.12)
 
 # Installing hwloc from source
 echo " ------------------------------ Installing hwloc ------------------------------ "
@@ -93,7 +93,7 @@ if ! (cmake -DCMAKE_INSTALL_PREFIX=/tmp/my_installed_onetbb -DTBB_TEST=OFF -DBUI
 fi
 
 echo "------------Building the package------------"
-if ! (make -j4 python_build);then
+if ! (make -j4 python_build PYTHON=$python_build);then
         echo "------------------$PACKAGE_NAME:make_fails-------------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  MAKE_Fails"
@@ -149,5 +149,4 @@ else
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  wheel_creation_success"
         exit 0
 fi
-
-deactivate 
+ 
