@@ -117,7 +117,7 @@ echo "Dependency installations"
 python3.12 -m pip install .
 
 cd $SCRIPT_DIR
-#Building abesil-cpp,libprotobuf and protobuf
+#Building abesil-cpp,libprotobuf and protobuf 
 
 python3.12 -m pip install --upgrade pip setuptools wheel ninja packaging pytest
 
@@ -206,8 +206,8 @@ export LIBRARY_PATH=$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 
-#Apply patch
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch 
+#Apply patch 
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
 git apply set_cpp_to_17_v4.25.3.patch
 
 cd python
