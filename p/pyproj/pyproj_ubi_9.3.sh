@@ -52,10 +52,10 @@ git submodule update --init
 python3.11 -m venv pyproj-env
 source pyproj-env/bin/activate
 
-export PROJ_DIR=../proj.4/build
-export PROJ_LIBDIR=../proj.4/build/lib
-export PROJ_INCDIR=../proj.4/src
-export PROJ_DATA=/proj.4/build/data
+export PROJ_DIR=$HOME_DIR/proj.4/build
+export PROJ_LIBDIR=$HOME_DIR/proj.4/build/lib
+export PROJ_INCDIR=$HOME_DIR/proj.4/src
+export PROJ_DATA=$HOME_DIR/proj.4/build/data
 
 # build and install
 if ! python3 -m pip install . ; then
