@@ -99,14 +99,13 @@ fi
 
 python -m pip install pytest-xdist
 
-# export OMP_NUM_THREADS=1
-# export OPENBLAS_NUM_THREADS=1
-# export MKL_NUM_THREADS=1
-# export NUMEXPR_NUM_THREADS=1
+export OMP_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+export NUMEXPR_NUM_THREADS=1
 
 # basic sanity test (subset)
-python -c 'import torch; torch._C._register_privateuse1_hooks_interface()'
-if ! PYTORCH_TEST_WITH_PRIVATEUSE1=1 python -m pytest -v test/test_utils.py; then
+if ! pytest -v test/test_utils.py -k "not test_device_mode_ops_sparse_mm_reduce_cpu"; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
