@@ -47,6 +47,9 @@ cd OpenBLAS
 git checkout v0.3.29
 git submodule update --init
 
+#Clean build
+rm -rf CMakeCache.txt CMakeFiles build
+
 # Set build options
 declare -a build_opts
 # Fix ctest not automatically discovering tests
@@ -123,6 +126,10 @@ PREFIX=$SCRIPT_DIR/abseil-prefix
 git clone $ABSEIL_URL -b $ABSEIL_VERSION
 cd abseil-cpp
 
+#Clean build
+rm -rf CMakeCache.txt CMakeFiles build
+
+
 SOURCE_DIR=$(pwd)
 
 mkdir -p $SOURCE_DIR/local/abseilcpp
@@ -161,6 +168,9 @@ git checkout v4.25.3
 LIBPROTO_DIR=$(pwd)
 mkdir -p $LIBPROTO_DIR/local/libprotobuf
 LIBPROTO_INSTALL=$LIBPROTO_DIR/local/libprotobuf
+
+#Clean build
+rm -rf CMakeCache.txt CMakeFiles build
 
 git submodule update --init --recursive
 rm -rf ./third_party/googletest | true
@@ -223,6 +233,9 @@ git submodule update --init --recursive
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.5.1.patch
 git apply pytorch_v2.5.1.patch
 
+#Clean build
+rm -rf CMakeCache.txt CMakeFiles build
+
 ARCH=`uname -p`
 BUILD_NUM="1"
 export OPENBLAS_INCLUDE=/OpenBLAS/local/openblas/include/
@@ -274,7 +287,7 @@ export LD_LIBRARY_PATH="/protobuf/local/libprotobuf/lib64:${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH="/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH="/protobuf/third_party/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
 export CMAKE_PREFIX_PATH="${SITE_PACKAGE_PATH}"
-cp -a `find ${ABSEIL_CPP} -type d -name absl` $Protobuf_INCLUDE_DIR
+#cp -a `find ${ABSEIL_CPP} -type d -name absl` $Protobuf_INCLUDE_DIR
 if ! (python3.12 -m pip install -r requirements.txt);then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
