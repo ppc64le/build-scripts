@@ -45,6 +45,9 @@ echo "---python --version"
 python3.12 --version
 python3.12 -m pip install wheel build setuptools 
 
+# Creating Virtual env
+python3.12 -m venv py312
+source py312/bin/activate
 
 # Installing Swing from source
 echo " ------------------------------ Installing Swig ------------------------------ "
@@ -148,3 +151,5 @@ else
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  wheel_creation_success"
         exit 0
 fi
+
+deactivate 
