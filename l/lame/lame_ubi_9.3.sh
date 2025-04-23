@@ -22,7 +22,7 @@
 PACKAGE=lame
 PACKAGE_VERSION=${1:-3.100}
 PACKAGE_URL=https://downloads.sourceforge.net/sourceforge/$PACKAGE/$PACKAGE-$PACKAGE_VERSION.tar.gz
-PACKAGE_DIR=/lame-3.100
+PACKAGE_DIR=$PACKAGE-$PACKAGE_VERSION
 CURRENT_DIR=$(pwd)
 
 # Install dependencies
