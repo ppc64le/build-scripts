@@ -1,5 +1,5 @@
 #!/bin/bash -e
- 
+
 # -----------------------------------------------------------------------------
 #
 # Package : pytorch
@@ -18,7 +18,7 @@
 # contact the "Maintainer" of this script.
 #
 # -----------------------------------------------------------------------------
- 
+
 # Exit immediately if a command exits with a non-zero status
 set -e
 PACKAGE_NAME=pytorch
@@ -39,6 +39,14 @@ gcc --version
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 export SITE_PACKAGE_PATH="/lib/${PYTHON_VERSION}/site-packages"
 
+echo "Installing cmake..."
+wget https://cmake.org/files/v3.28/cmake-3.28.0.tar.gz
+tar -zxvf cmake-3.28.0.tar.gz
+cd cmake-3.28.0
+./bootstrap
+make
+make install
+cd $SCRIPT_DIR
 #install openblas
 #clone and install openblas from source
 
@@ -46,9 +54,6 @@ git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
 git checkout v0.3.29
 git submodule update --init
-
-#Clean build
-rm -rf CMakeCache.txt CMakeFiles build
 
 # Set build options
 declare -a build_opts
@@ -113,7 +118,7 @@ echo "Dependency installations"
 python3.12 -m pip install .
 
 cd $SCRIPT_DIR
-#Building abesil-cpp,libprotobuf and protobuf 
+#Building abesil-cpp,libprotobuf and protobuf
 
 python3.12 -m pip install --upgrade pip setuptools wheel ninja packaging pytest
 
@@ -125,10 +130,6 @@ PREFIX=$SCRIPT_DIR/abseil-prefix
 
 git clone $ABSEIL_URL -b $ABSEIL_VERSION
 cd abseil-cpp
-
-#Clean build
-rm -rf CMakeCache.txt CMakeFiles build
-
 
 SOURCE_DIR=$(pwd)
 
@@ -169,9 +170,6 @@ LIBPROTO_DIR=$(pwd)
 mkdir -p $LIBPROTO_DIR/local/libprotobuf
 LIBPROTO_INSTALL=$LIBPROTO_DIR/local/libprotobuf
 
-#Clean build
-rm -rf CMakeCache.txt CMakeFiles build
-
 git submodule update --init --recursive
 rm -rf ./third_party/googletest | true
 rm -rf ./third_party/abseil-cpp | true
@@ -209,7 +207,7 @@ export LIBRARY_PATH=$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 
-#Apply patch 
+#Apply patch
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
 git apply set_cpp_to_17_v4.25.3.patch
 
@@ -232,9 +230,6 @@ git submodule update --init --recursive
 
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.5.1.patch
 git apply pytorch_v2.5.1.patch
-
-#Clean build
-rm -rf CMakeCache.txt CMakeFiles build
 
 ARCH=`uname -p`
 BUILD_NUM="1"
