@@ -24,7 +24,7 @@ PACKAGE_NAME=oneTBB
 PACKAGE_VERSION=${1:-v2021.8.0}
 PACKAGE_URL=https://github.com/uxlfoundation/oneTBB
 PACKAGE_DIR=oneTBB/python
-HOME_DIR=${PWD}
+CURRENT_DIR="${PWD}"
 
 
 yum install -y git make cmake wget python3.12 python3.12-devel python3.12-pip
@@ -45,8 +45,6 @@ export CXX=$GCC_HOME/bin/g++
 python3.12 -m venv py312
 source py312/bin/activate
 
-echo "---python --version"
-python3.12 --version
 python3.12 -m pip install wheel build setuptools 
 
 # Installing Swing from source
@@ -59,7 +57,7 @@ python3.12 -m pip install .
 
 echo " ------------------------------ Swig Installed Successfully ------------------------------ "
 
-cd $HOME_DIR
+cd $CURRENT_DIR
 
 # Installing hwloc from source
 echo " ------------------------------ Installing hwloc ------------------------------ "
@@ -75,7 +73,7 @@ make install
 
 echo " ------------------------------ hwloc Installed Successfully ------------------------------ "
 
-cd $HOME_DIR
+cd $CURRENT_DIR
 
 echo "------------Cloning the Repository------------"
 git clone $PACKAGE_URL
@@ -132,16 +130,16 @@ export LDFLAGS="-L/usr/local/lib -l:libtbb.a -lstdc++ -static -static-libgcc -st
 
 echo "=============== Building wheel =================="
 
-cd $HOME_DIR
+cd $CURRENT_DIR
 cd $PACKAGE_NAME/python
 
 # Attempt to build the wheel without isolation
-if ! python3.12 -m build --wheel --no-isolation --outdir="$HOME_DIR/"; then
+if ! python3.12 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"; then
     echo "============ Wheel Creation Failed for Python3.12 (without isolation) ================="
     echo "Attempting to build with isolation..."
 
     # Attempt to build the wheel without isolation
-    if ! python3.12 -m build --wheel --outdir="$HOME_DIR/"; then
+    if ! python3.12 -m build --wheel --outdir="$CURRENT_DIR/"; then
         echo "============ Wheel Creation Failed for Python3.12 ================="
         exit 1
     fi
