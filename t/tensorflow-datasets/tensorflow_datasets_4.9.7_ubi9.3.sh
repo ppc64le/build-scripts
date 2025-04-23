@@ -567,8 +567,6 @@ export PKG_CONFIG_PATH=${OPENBLAS_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
 pkg-config --modversion openblas
 echo "-----------------------------------------------------Installed openblas-----------------------------------------------------"
 
-#installing few test dependencies here as they need openblas
-python3.12 -m pip install mlcroissant==1.0.12 scikit-image
 
 #installing libvpx
 cd $CURRENT_DIR
@@ -1186,6 +1184,9 @@ cp -a $SRC_DIR/repackged_wheel/*.whl $CURRENT_DIR
 pip install $CURRENT_DIR/*.whl
 
 echo "--------------------------------------------------------tensorflow-installed successfully-----------------------------------------------"
+
+#installing few test dependencies here as they need openblas
+python3.12 -m pip install mlcroissant==1.0.12 scikit-image
 
 
 # clone source repository
