@@ -91,7 +91,7 @@ ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip$PYTHON_VERSION
 python -m pip install -r requirements.txt
 python -m pip install -U pip 'cmake<4'
 CMAKE_BIN_DIR=$(python -c "import os, cmake; print(os.path.dirname(cmake.__file__))")
-export PATH="$CMAKE_BIN_DIR:$PATH"
+export PATH="$CMAKE_BIN_DIR:/usr/local/bin:$PATH" 
 cmake --version
 
 if ! python setup.py develop; then
