@@ -181,8 +181,8 @@ git clone https://github.com/google/zopfli.git
 cd zopfli
 make 
 cd ..
-cp $CURRENT_DIR/zopfli/src/zopfli/zopfli.h $CURRENT_DIR/usr/local/include/zopfli.h
-cp $CURRENT_DIR/zopfli/libzopfli.a $CURRENT_DIR/usr/local/lib/libzopfli.a
+cp $CURRENT_DIR/zopfli/src/zopfli/zopfli.h /usr/local/include/zopfli.h
+cp $CURRENT_DIR/zopfli/libzopfli.a /usr/local/lib/libzopfli.a
 
 #install lcms2 from source
 #installing from source because yum version lacks required headers for build
