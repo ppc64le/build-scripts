@@ -27,20 +27,12 @@ PACKAGE_DIR=python-cx_Oracle
 CURRENT_DIR=$(pwd)
 export ORACLE_HOME=$(pwd)/opt/oracle
 
-yum install -y wget
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
-wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
-mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
-
-dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 
 # Install dependencies
-yum install -y python-devel python-pip git gcc gcc-c++ make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng openblas-devel epel-release meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite libnsl
 
-dnf groupinstall -y "Development Tools"
+yum install -y python-devel python-pip git gcc-toolset-13  make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng openblas-devel  meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite 
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+
 
 #install rust
 curl https://sh.rustup.rs -sSf | sh -s -- -y
@@ -73,6 +65,8 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
+
+ln -sf /opt/rh/gcc-toolset-13/root/usr/lib64/libctf.so.0 /usr/lib64/libctf.so.0
 
 #Install
 if ! (pip install .) ; then
