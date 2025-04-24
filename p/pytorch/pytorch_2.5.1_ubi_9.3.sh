@@ -26,9 +26,9 @@ PACKAGE_VERSION=${1:-v2.5.1}
 PACKAGE_DIR=pytorch
 SCRIPT_DIR=$(pwd)
 
-yum install -y git make cmake wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas
+yum install -y git make wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas
 yum install gcc-toolset-13 -y
-yum install -y make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel python3.12 python3.12-devel python3.12-pip patch ninja-build gcc-toolset-13  pkg-config
+yum install -y make libtool git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel python3.12 python3.12-devel python3.12-pip patch ninja-build gcc-toolset-13  pkg-config
 dnf install -y gcc-toolset-13-libatomic-devel
 PYTHON_VERSION=python$(python3.12 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
 echo $PYTHON_VERSION
@@ -46,6 +46,7 @@ cd cmake-3.28.0
 make
 make install
 cd $SCRIPT_DIR
+
 #install openblas
 #clone and install openblas from source
 
@@ -91,6 +92,7 @@ build_opts+=(NUM_THREADS=8)
 build_opts+=(NO_AFFINITY=1)
 
 # Build OpenBLAS
+echo "Building  OpenBLAS...."
 make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
 
 # Install OpenBLAS
@@ -149,7 +151,9 @@ cmake -G Ninja \
     -DABSL_PROPAGATE_CXX_STD=ON \
     -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
    ..
+echo "building abseil-cpp ...."
 cmake --build .
+echo "Installing abseil-cpp ...."
 cmake --install .
 
 cd $SCRIPT_DIR
@@ -193,8 +197,9 @@ cmake -G "Ninja" \
     -Dprotobuf_JSONCPP_PROVIDER="package" \
     -Dprotobuf_USE_EXTERNAL_GTEST=OFF \
     ..
-
+echo "building libprotobuf...."
 cmake --build . --verbose
+echo "Installing libprotobuf...."
 cmake --install .
 
 cd ..
@@ -210,6 +215,7 @@ export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
 git apply set_cpp_to_17_v4.25.3.patch
 
+echo "Installing protobuf...."
 cd python
 python3.12 -m pip install .
 
@@ -288,8 +294,8 @@ if ! (python3.12 -m pip install -r requirements.txt);then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-
-if ! (MAX_JOBS=$(nproc) python3.12 setup.py install);then
+echo "Installing pytorch...."
+if ! (python3.12 setup.py install);then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
