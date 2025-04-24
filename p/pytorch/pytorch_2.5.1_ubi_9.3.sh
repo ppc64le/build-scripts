@@ -28,7 +28,7 @@ SCRIPT_DIR=$(pwd)
 
 yum install -y git make wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas
 yum install gcc-toolset-13 -y
-yum install -y make libtool git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel python3.12 python3.12-devel python3.12-pip patch ninja-build gcc-toolset-13  pkg-config
+yum install -y libtool xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel patch ninja-build gcc-toolset-13  pkg-config
 dnf install -y gcc-toolset-13-libatomic-devel
 PYTHON_VERSION=python$(python3.12 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
 echo $PYTHON_VERSION
