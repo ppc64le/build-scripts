@@ -295,7 +295,7 @@ if ! (python3.12 -m pip install -r requirements.txt);then
     exit 1
 fi
 echo "Installing pytorch...."
-if ! (python3.12 setup.py install);then
+if ! (MAX_JOBS=$(nproc) python3.12 setup.py install);then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
