@@ -33,8 +33,6 @@ yum install -y wget python3.12 python3.12-pip python3.12-devel git make cmake bi
 yum install -y gcc-toolset-13-gcc-c++ gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel
 yum install -y xz-devel openssl-devel cmake zlib-devel libjpeg-devel libevent libtool pkg-config  brotli-devel bzip2-devel lz4-devel libtiff-devel
 
-
-
 # Set up environment variables for GCC 13
 export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr
 export CC=$GCC_HOME/bin/gcc
@@ -567,6 +565,8 @@ export PKG_CONFIG_PATH=${OPENBLAS_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
 pkg-config --modversion openblas
 echo "-----------------------------------------------------Installed openblas-----------------------------------------------------"
 
+#installing few test dependencies here as they need openblas
+pip install mlcroissant==1.0.12 scikit-image
 
 #installing libvpx
 cd $CURRENT_DIR
@@ -990,7 +990,9 @@ cd $CURRENT_DIR
 dnf install -y libpng-devel pkgconfig mesa-libGL  tk fontconfig-devel freetype-devel gtk3
 git clone https://github.com/matplotlib/matplotlib.git
 cd matplotlib
-python3.12 -m pip install .
+echo "[binaries]" > native.ini
+echo "python3 = '/usr/bin/python3.12'" >> native.ini
+python3.12 -m pip install . --config-settings=setup-args=--native-file=$(realpath native.ini) --verbose
 cd $CURRENT_DIR
 python3.12 -c "import matplotlib; print(matplotlib.__version__)"
 
@@ -1145,6 +1147,9 @@ export BUILD_TARGET="//tensorflow/tools/pip_package:wheel //tensorflow/tools/lib
 bazel --bazelrc=$BAZEL_RC_DIR/tensorflow.bazelrc build --local_cpu_resources=HOST_CPUS*0.50 --local_ram_resources=HOST_RAM*0.50 --config=opt ${BUILD_TARGET}
 echo "-------------------------------tensroflow installation successful-------------------------------------"
 
+#installing few test dependencies here as they need openblas
+pip install mlcroissant==1.0.12 scikit-image
+
 #copying .so and .a files into local/tensorflow/lib
 mkdir -p $SRC_DIR/tensorflow_pkg
 mkdir -p $SRC_DIR/local
@@ -1184,9 +1189,6 @@ cp -a $SRC_DIR/repackged_wheel/*.whl $CURRENT_DIR
 pip install $CURRENT_DIR/*.whl
 
 echo "--------------------------------------------------------tensorflow-installed successfully-----------------------------------------------"
-
-#installing few test dependencies here as they need openblas
-python3.12 -m pip install mlcroissant==1.0.12 scikit-image
 
 
 # clone source repository
