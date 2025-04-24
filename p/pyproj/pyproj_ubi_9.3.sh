@@ -49,16 +49,13 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init
 
-python3.11 -m venv pyproj-env
-source pyproj-env/bin/activate
-
 export PROJ_DIR=$HOME_DIR/proj.4/build
 export PROJ_LIBDIR=$HOME_DIR/proj.4/build/lib
 export PROJ_INCDIR=$HOME_DIR/proj.4/src
 export PROJ_DATA=$HOME_DIR/proj.4/build/data
 
 # build and install
-if ! python3 -m pip install . ; then
+if ! python3.11 -m pip install . ; then
      echo "------------------$PACKAGE_NAME::build_install_fail-------------------------"
      echo "$PACKAGE_VERSION $PACKAGE_NAME"
      echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Install_Fail"
@@ -67,17 +64,16 @@ else
      echo "------------------$PACKAGE_NAME::Build_Install_Success---------------------"
      echo "$PACKAGE_VERSION $PACKAGE_NAME"
      echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Build_Install_Success"
-     python3 -m pip show pyproj
+     python3.11 -m pip show pyproj
 fi
 
 # test using import and printing version
 cd ..
-python3 -c "import pyproj; pyproj.show_versions()"
+python3.11 -c "import pyproj; pyproj.show_versions()"
 if [ $? == 0 ]; then
         echo "------------------$PACKAGE_NAME:test_success-------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME "
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | Github | Pass |  Test_Success"
-        deactivate
         exit 0
 else
         echo "------------------$PACKAGE_NAME:test_fails---------------------"
