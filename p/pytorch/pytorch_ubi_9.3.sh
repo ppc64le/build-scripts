@@ -39,7 +39,7 @@ dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packa
 dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/`arch`/os
 dnf config-manager --set-enabled crb
 
-dnf install -y git cmake ninja-build gcc-toolset-13 rust cargo \
+dnf install -y git ninja-build gcc-toolset-13 rust cargo \
     lapack-devel pkgconfig \
     python$PYTHON_VERSION-devel \
     python$PYTHON_VERSION-wheel \
@@ -89,7 +89,7 @@ ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip$PYTHON_VERSION
 ##############################################
 
 python -m pip install -r requirements.txt
-# python -m pip install -U pip 'cmake<4'
+python -m pip install -U pip 'cmake<4'
 if ! python setup.py develop; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -99,13 +99,8 @@ fi
 
 python -m pip install pytest-xdist
 
-export OMP_NUM_THREADS=1
-export OPENBLAS_NUM_THREADS=1
-export MKL_NUM_THREADS=1
-export NUMEXPR_NUM_THREADS=1
-
 # basic sanity test (subset)
-if ! PYTHONFAULTHANDLER=1 python -m pytest -n auto test/test_utils.py -k "not test_device_mode_ops_sparse_mm_reduce_cpu"; then
+if ! python -m pytest -n auto test/test_utils.py -k "not test_device_mode_ops_sparse_mm_reduce_cpu"; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
