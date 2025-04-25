@@ -198,11 +198,12 @@ git submodule update --init --recursive
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.5.1.patch
 git apply pytorch_v2.5.1.patch
 
-export LD_LIBRARY_PATH="${OpenBLASInstallPATH}/lib:${LD_LIBRARY_PATH}"
-export PKG_CONFIG_PATH="${OpenBLASInstallPATH}/lib/pkgconfig:${PKG_CONFIG_PATH}"
-export PATH="${LIBPROTO_INSTALL}/bin/protoc:${PATH}"
-export LD_LIBRARY_PATH="${LIBPROTO_INSTALL}/lib64:${LD_LIBRARY_PATH}"
-export OpenBLAS_HOME="$OpenBLASInstallPATHs"
+ARCH=`uname -p`
+BUILD_NUM="1"
+export OPENBLAS_INCLUDE=/OpenBLAS/local/openblas/include/
+export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
+export OpenBLAS_HOME="/usr/include/openblas"
+export ppc_arch="p9"
 export build_type="cpu"
 export cpu_opt_arch="power9"
 export cpu_opt_tune="power10"
@@ -231,17 +232,21 @@ export BUILD_CUSTOM_PROTOBUF=OFF
 export BUILD_CAFFE2=1
 export PYTORCH_BUILD_VERSION=${PACKAGE_VERSION}
 export PYTORCH_BUILD_NUMBER=${BUILD_NUM}
-export CMAKE_PREFIX_PATH="$LIBPROTO_INSTALL"
-export Protobuf_LIBRARY="${LIBPROTO_INSTALL}/lib64/libprotobuf.so"
-export Protobuf_LITE_LIBRARY="${LIBPROTO_INSTALL}/lib64/libprotobuf-lite.so"
-export Protobuf_INCLUDE_DIR="${LIBPROTO_INSTALL}/include"
-export Protobuf_LIBRARIES="${LIBPROTO_INSTALL}/lib64"
-export Protobuf_PROTOC_EXECUTABLE="${LIBPROTO_INSTALL}/bin/protoc"
-export CXXFLAGS="${CXXFLAGS} -mcpu=${cpu_opt_arch} -mtune=${cpu_opt_tune}"
-export CFLAGS="${CFLAGS} -mcpu=${cpu_opt_arch} -mtune=${cpu_opt_tune}"
 export USE_CUDA=0
 export USE_CUDNN=0
 export USE_TENSORRT=0
+export Protobuf_INCLUDE_DIR=/protobuf/local/libprotobuf/include
+export Protobuf_LIBRARIES=/protobuf/local/libprotobuf/lib64
+export Protobuf_LIBRARY=/protobuf/local/libprotobuf/lib64/libprotobuf.so
+export Protobuf_LITE_LIBRARY=/protobuf/local/libprotobuf/lib64/libprotobuf-lite.so
+export Protobuf_PROTOC_EXECUTABLE=/protobuf/local/libprotobuf/bin/protoc
+export absl_DIR=/root/abseil-cpp/local/abseilcpp/lib/cmake
+export LD_LIBRARY_PATH=/pytorch/torch/lib64/libprotobuf.so.3.13.0.0:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/pytorch/build/lib/libprotobuf.so.3.13.0.0:$LD_LIBRARY_PATH
+export PATH="/protobuf/local/libprotobuf/bin/protoc:${PATH}"
+export LD_LIBRARY_PATH="/protobuf/local/libprotobuf/lib64:${LD_LIBRARY_PATH}"
+export LD_LIBRARY_PATH="/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
+export LD_LIBRARY_PATH="/protobuf/third_party/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
 
 python3.12 -m pip install -r requirements.txt
 
