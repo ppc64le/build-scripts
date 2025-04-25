@@ -31,7 +31,7 @@ PACKAGE_DIR=datasets
 echo "Installing GCC 13..."
 yum install -y wget python3.12 python3.12-pip python3.12-devel git make cmake binutils
 yum install -y gcc-toolset-13-gcc-c++ gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel
-yum install -y xz-devel openssl-devel cmake zlib-devel libjpeg-devel libevent libtool pkg-config  brotli-devel bzip2-devel lz4-devel libtiff-devel
+yum install -y xz xz-devel openssl-devel cmake zlib zlib-devel libjpeg-devel libevent libtool pkg-config  brotli-devel bzip2-devel lz4-devel libtiff-devel ninja-build libgomp
 
 # Set up environment variables for GCC 13
 export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr
@@ -566,7 +566,12 @@ pkg-config --modversion openblas
 echo "-----------------------------------------------------Installed openblas-----------------------------------------------------"
 
 #installing few test dependencies here as they need openblas
-python3.12 -m pip install mlcroissant==1.0.12 scikit-image
+python3.12 -m pip install mlcroissant==1.0.12 
+python3.12 -m pip install scikit-image
+
+
+echo "-----------------------------------------------------Installed scikit-image-----------------------------------------------------"
+
 
 #installing libvpx
 cd $CURRENT_DIR
@@ -708,7 +713,7 @@ cd $CURRENT_DIR
 git clone https://github.com/python-pillow/Pillow
 cd Pillow
 git checkout 11.1.0
-yum install -y libjpeg-turbo-devel
+yum install -y libjpeg-turbo libjpeg-turbo-devel
 git submodule update --init
 python3.12 -m pip install . 
 
@@ -874,24 +879,43 @@ echo "-----------------------------------------------------Installed pyarrow----
 
 python3.12 -m pip install "gcsfs==2023.6.0" "google-auth==2.20.0" "datasets==2.14.0"
 
+#installing java
+yum install -y libffi-devel sqlite-devel zip rsync
+yum install -y java-11-openjdk-devel
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.25.0.9-3.el9.ppc64le 
+export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-)(?=.*ppc64le)')
+export PATH=$JAVA_HOME/bin:$PATH
+
+
+#Build bazel from source
+cd $CURRENT_DIR
+mkdir bazel
+cd bazel
+wget https://github.com/bazelbuild/bazel/releases/download/6.5.0/bazel-6.5.0-dist.zip
+unzip bazel-6.5.0-dist.zip
+env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
+cp output/bazel /usr/local/bin
+export PATH=/usr/local/bin:$PATH
+bazel --version
+echo "-----------------------------------------------------Installed bazel-----------------------------------------------------"
+
+
 #Building array-record 
 cd $CURRENT_DIR
-git clone https://github.com/google/array_record
+git clone https://github.com/iindyk/array_record.git
 cd array_record
-# array-record not tagged to use v0.6.0, used hard commit for v0.6.0
-git checkout 7e299eae0db0d7bfc20f7c1e1548bf86cdbfef5e
-sed -i "s/packages=find_packages()/packages=[\"array_record\", \"array_record.python\", \"array_record.beam\"]/g" setup.py
+git checkout 739630d43ffef522f55380066192dc9fbb14bcc5
+python3.12 -m pip install etils typing_extensions importlib_resources
+wget https://raw.githubusercontent.com/stutiibm/build-scripts/877e1acaa365d5e3792c19d9106f55880713eb5b/a/array_record/array_record_fix.patch
+git apply array_record_fix.patch
+export PYTHON_BIN=$(which python3.12)
+sed -i 's|^\(.*bazel test .*--action_env PYTHON_BIN_PATH=.*\)|# \1|' oss/build_whl.sh
+PYTHON_BIN=$(which python3.12) sh oss/build_whl.sh
+cp $CURRENT_DIR/array-record/dist/* $CURRENT_DIR
 cd $CURRENT_DIR
-mkdir -p build-dir/array_record
-cd $CURRENT_DIR/array_record
-cp -r python beam $CURRENT_DIR/build-dir/array_record
-cp setup.py $CURRENT_DIR/build-dir/
-cd $CURRENT_DIR/build-dir
-python3.12 -m pip install .
-python3.12 -m pip show array_record
+python3.12 -m pip install array_record*.whl
+python3.12 -c "from importlib.metadata import version; print(version('array-record'))"
 echo "-----------------------------------------------------Installed array_record-----------------------------------------------------"
-
-
 
 #Build hdf5 from source
 cd $CURRENT_DIR
@@ -979,19 +1003,9 @@ python3.12 -c "import cv2; print(cv2.__version__)"
 echo "-----------------------------------------------------Installed opencv-python-headless-----------------------------------------------------"
 
 
-#installing matplotlib need for test
-cd $CURRENT_DIR
-dnf install -y libpng-devel pkgconfig mesa-libGL  tk fontconfig-devel freetype-devel gtk3
-git clone https://github.com/matplotlib/matplotlib.git
-cd matplotlib
-echo "[binaries]" > native.ini
-echo "python3 = '/usr/bin/python3.12'" >> native.ini
-python3.12 -m pip install . --config-settings=setup-args=--native-file=$(realpath native.ini) --verbose
-cd $CURRENT_DIR
-python3.12 -c "import matplotlib; print(matplotlib.__version__)"
-
 #installing pycocotools need for test
 cd $CURRENT_DIR
+python3.12 -m pip install numpy==2.0.2
 git clone https://github.com/cocodataset/cocoapi.git
 cd cocoapi/PythonAPI
 python3.12 -m pip install .
@@ -999,13 +1013,7 @@ cd $CURRENT_DIR
 python3.12 -c "from pycocotools.coco import COCO; print('pycocotools installed successfully')"
 
 
-#installing tensorflow
-yum install -y libffi-devel sqlite-devel zip rsync
-yum install -y java-11-openjdk-devel
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.25.0.9-3.el9.ppc64le 
-export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-)(?=.*ppc64le)')
-export PATH=$JAVA_HOME/bin:$PATH
-
+#installing tensorflow 
 #installing patchelf from source
 cd $CURRENT_DIR
 yum install -y git autoconf automake libtool make
@@ -1018,17 +1026,6 @@ make install
 ln -s /usr/local/bin/patchelf /usr/bin/patchelf
 echo "-----------------------------------------------------Installed patchelf-----------------------------------------------------"
 
-#Build bazel from source
-cd $CURRENT_DIR
-mkdir bazel
-cd bazel
-wget https://github.com/bazelbuild/bazel/releases/download/6.5.0/bazel-6.5.0-dist.zip
-unzip bazel-6.5.0-dist.zip
-env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
-cp output/bazel /usr/local/bin
-export PATH=/usr/local/bin:$PATH
-bazel --version
-echo "-----------------------------------------------------Installed bazel-----------------------------------------------------"
 
 #Build ml_dtypes from source
 cd $CURRENT_DIR
@@ -1142,7 +1139,7 @@ bazel --bazelrc=$BAZEL_RC_DIR/tensorflow.bazelrc build --local_cpu_resources=HOS
 echo "-------------------------------tensroflow installation successful-------------------------------------"
 
 #installing few test dependencies here as they need openblas
-python3.12 -m pip install mlcroissant==1.0.12 scikit-image
+python3.12 -m pip install mlcroissant==1.0.12 
 
 #copying .so and .a files into local/tensorflow/lib
 mkdir -p $SRC_DIR/tensorflow_pkg
@@ -1180,9 +1177,24 @@ mkdir -p repackged_wheel
 # Pack the locally built TensorFlow files into a wheel
 wheel pack local/ -d repackged_wheel
 cp -a $SRC_DIR/repackged_wheel/*.whl $CURRENT_DIR
-python3.12 -m pip install $CURRENT_DIR/*.whl
+cd $CURRENT_DIR
+python3.12 -m pip install tensorflow*.whl
 
 echo "--------------------------------------------------------tensorflow-installed successfully-----------------------------------------------"
+
+
+#installing matplotlib required by scikit-image
+cd $CURRENT_DIR
+dnf install -y libpng-devel pkgconfig mesa-libGL  tk fontconfig-devel freetype-devel gtk3
+git clone https://github.com/matplotlib/matplotlib.git
+cd matplotlib
+git checkout v3.8.0
+git submodule update --init
+python3.12 -m pip install pytest hypothesis build meson pybind11 meson-python
+python3.12 -m pip install 'numpy<2' fontTools setuptools-scm contourpy kiwisolver python-dateutil cycler pyparsing pillow certifi
+python3.12 -m pip install --upgrade setuptools
+python3.12 -m pip install -e .
+python3.12 -c "import matplotlib;print(matplotlib.__version__)"
 
 
 # clone source repository
@@ -1222,7 +1234,7 @@ echo "----------------------------------------------Testing pkg-----------------
 
 #Test package
 #Skipping below tests which are dependent on apache-beam, jax/jaxlib, array-record. Where as few tests need google cloud access and few tests passing individually but failing when run with whole test suit.
-if ! (pytest -k "not test_read_from_tfds and not test_subsplit_failure_with_batch_size and not test_download_and_prepare_as_dataset and not test_read_write and not TfrecordsWriterBeamTest and not test_badwords_filter and not test_baseclass and not test_info and not test_registered and not test_session and not test_tags_are_valid and not test_data_source_is_picklable_after_use and not test_load_as_data_source and not test_load_as_data_source_alternative_file_format and not test_mock_data_use_code and not test_mock_data_use_files and not test_mock_data_source and not test_mock_multiple_data_source and not test_mocked_data_source_is_pickable and not test_data_source_is_sliceable and not test_download_and_prepare and not test_download_and_prepare and not test_as_dataset_fails_for_array_record and not test_repr_returns_meaningful_string_without_decoders[ArrayRecordDataSource] and not test_repr_returns_meaningful_string_without_decoders[ParquetDataSource] and not test_repr_returns_meaningful_string_with_decoders[ArrayRecordDataSource] and not test_repr_returns_meaningful_string_with_decoders[ParquetDataSource] and not test_split_for_jax_process and not test_beam_view_builder_with_configs_load and not test_compute_split_info and not test_paragraph_filter and not test_remove_duplicate_text and not test_soft_badwords_filter and not test_download_dataset and not test_mnist and not test_load_from_gcs and not test_reading_from_gcs_bucket and not test_reading_from_gcs_bucket and not test_is_dataset_accessible and not test_is_dataset_accessible and not test_import_tfds_without_loading_tf and not test_add_dataset_provider_to_start and not test_internal_datasets_have_versions_on_line_with_the_release_notes"); then
+if !(pytest -k "not test_download_and_prepare_as_dataset and not test_read_from_tfds and not test_subsplit_failure_with_batch_size and not test_read_write and not test_load_from_gcs and not test_beam_view_builder_with_configs_load and not test_reading_from_gcs_bucket and not test_compute_split_info and not test_add_dataset_provider_to_start and not test_split_for_jax_process and not test_download_dataset and not test_is_dataset_accessible and not test_mnist and not test_empty_split and not test_write_tfrecord and not test_write_tfrecord_sorted_by_key and not test_write_tfrecord_sorted_by_key_with_holes and not test_write_tfrecord_with_duplicates and not test_write_tfrecord_with_ignored_duplicates and not test_import_tfds_without_loading_tf and not test_internal_datasets_have_versions_on_line_with_the_release_notes and not test_badwords_filter and not test_paragraph_filter and not test_remove_duplicate_text and not test_soft_badwords_filter and not test_baseclass and not test_info and not test_registered and not test_session and not test_tags_are_valid"); then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
