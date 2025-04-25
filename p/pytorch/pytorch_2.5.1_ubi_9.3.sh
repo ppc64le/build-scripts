@@ -111,7 +111,6 @@ git clone https://github.com/scipy/scipy
 cd scipy/
 git checkout v1.15.2
 git submodule update --init
-export SITE_PACKAGE_PATH=/usr/local/lib/python3.12/site-packages
 echo "instaling scipy......."
 python3.12 -m pip install .
 cd $SCRIPT_DIR
