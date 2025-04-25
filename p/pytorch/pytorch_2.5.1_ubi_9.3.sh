@@ -47,15 +47,13 @@ cd $SCRIPT_DIR
 #pip install openblas numpy scipy libprotobuf protobuf --no-index --find-links ${OUTPUT_DIR}
 
 echo "---------------------openblas installing---------------------"
-
+#install openblas
 #clone and install openblas from source
 
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
 git checkout v0.3.29
 git submodule update --init
-
-PREFIX=local/openblas
 
 # Set build options
 declare -a build_opts
@@ -93,20 +91,23 @@ build_opts+=(NUM_THREADS=8)
 # Disable CPU/memory affinity handling to avoid problems with NumPy and R
 build_opts+=(NO_AFFINITY=1)
 
-echo "Build OpenBLAS...."
+# Build OpenBLAS
+echo "Building  OpenBLAS...."
 make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
 
-echo "Install OpenBLAS..."
+# Install OpenBLAS
 CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
 OpenBLASInstallPATH=$(pwd)/$PREFIX
 OpenBLASConfigFile=$(find . -name OpenBLASConfig.cmake)
 OpenBLASPCFile=$(find . -name openblas.pc)
-sed -i "/OpenBLAS_INCLUDE_DIRS/c\SET(OpenBLAS_INCLUDE_DIRS ${OpenBLASInstallPATH}/include)" ${OpenBLASConfigFile}
-sed -i "/OpenBLAS_LIBRARIES/c\SET(OpenBLAS_INCLUDE_DIRS ${OpenBLASInstallPATH}/include)" ${OpenBLASConfigFile}
-sed -i "s|libdir=local/openblas/lib|libdir=${OpenBLASInstallPATH}/lib|" ${OpenBLASPCFile}
-sed -i "s|includedir=local/openblas/include|includedir=${OpenBLASInstallPATH}/include|" ${OpenBLASPCFile}
-export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
+export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib":${LD_LIBRARY_PATH}
 export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
+export LD_LIBRARY_PATH=${PREFIX}/lib:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
+pkg-config --modversion openblas
+cd $SCRIPT_DIR
+echo "--------------------openblas installed-------------------------------"
+
 
 cd $SCRIPT_DIR
 echo "------------openblas installed--------------------"
