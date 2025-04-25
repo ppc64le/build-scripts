@@ -18,6 +18,7 @@
 #
 # ---------------------------------------------------------------------------
 
+set -e
 # Variables
 PACKAGE_NAME=pytorch
 PACKAGE_URL=https://github.com/pytorch/pytorch.git
