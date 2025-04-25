@@ -184,6 +184,10 @@ cd $SCRIPT_DIR
 
 echo "------------ libprotobuf,protobuf installed--------------"
 
+echo "----Installing rust------"
+curl https://sh.rustup.rs -sSf | sh -s -- -y
+source "$HOME/.cargo/env"
+
 echo "------------cloning pytorch----------------"
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
