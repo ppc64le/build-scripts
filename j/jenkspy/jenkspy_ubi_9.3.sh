@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/mthh/jenkspy
 PACKAGE_DIR=jenkspy
 
 # Install dependencies
-yum install -y python python-devel python-pip gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ 
+yum install -y git wget python python-devel python-pip gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ 
 
 source /opt/rh/gcc-toolset-13/enable
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
