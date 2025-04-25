@@ -1,25 +1,24 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package : pytorch
-# Version : v2.5.1
-# Source repo : https://github.com/pytorch/pytorch.git
-# Tested on : UBI:9.3
-# Language : Python
-# Travis-Check : True
-# Script License: Apache License, Version 2 or later
-# Maintainer : Shubham Garud
+# Package          : pytorch
+# Version          : v2.5.1 
+# Source repo      : https://github.com/pytorch/pytorch.git
+# Tested on        : UBI:9.3
+# Language         : Python
+# Travis-Check     : True
+# Script License   : Apache License, Version 2 or later
+# Maintainer       : Haritha Nagothu <haritha.nagothu2@ibm.com>
 #
-# Disclaimer: This script has been tested in root mode on the given
-# platform using the mentioned version of the package.
-# It may not work as expected with newer versions of the
-# package and/or distribution. In such a case, please
-# contact the "Maintainer" of this script.
+# Disclaimer       : This script has been tested in root mode on given
+# ==========         platform using the mentioned version of the package.
+#                    It may not work as expected with newer versions of the
+#                    package and/or distribution. In such case, please
+#                    contact "Maintainer" of this script.
 #
-# -----------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 
-# Exit immediately if a command exits with a non-zero status
-set -e
+# Variables
 PACKAGE_NAME=pytorch
 PACKAGE_URL=https://github.com/pytorch/pytorch.git
 PACKAGE_VERSION=${1:-v2.5.1}
@@ -28,15 +27,12 @@ SCRIPT_DIR=$(pwd)
 
 yum install -y git make wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas
 yum install gcc-toolset-13 -y
-yum install -y libtool xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel patch ninja-build gcc-toolset-13  pkg-config
+yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build gcc-toolset-13  pkg-config
 dnf install -y gcc-toolset-13-libatomic-devel
-PYTHON_VERSION=python$(python3.12 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
-echo $PYTHON_VERSION
-export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-gcc --version
 
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
-export SITE_PACKAGE_PATH="/lib/${PYTHON_VERSION}/site-packages"
+
 
 echo "Installing cmake..."
 wget https://cmake.org/files/v3.28/cmake-3.28.0.tar.gz
@@ -47,13 +43,19 @@ make
 make install
 cd $SCRIPT_DIR
 
-#install openblas
+#Install pre requisites wheels
+#pip install openblas numpy scipy libprotobuf protobuf --no-index --find-links ${OUTPUT_DIR}
+
+echo "---------------------openblas installing---------------------"
+
 #clone and install openblas from source
 
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
 git checkout v0.3.29
 git submodule update --init
+
+PREFIX=local/openblas
 
 # Set build options
 declare -a build_opts
@@ -91,80 +93,40 @@ build_opts+=(NUM_THREADS=8)
 # Disable CPU/memory affinity handling to avoid problems with NumPy and R
 build_opts+=(NO_AFFINITY=1)
 
-# Build OpenBLAS
-echo "Building  OpenBLAS...."
+echo "Build OpenBLAS...."
 make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
 
-# Install OpenBLAS
+echo "Install OpenBLAS..."
 CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
 OpenBLASInstallPATH=$(pwd)/$PREFIX
 OpenBLASConfigFile=$(find . -name OpenBLASConfig.cmake)
 OpenBLASPCFile=$(find . -name openblas.pc)
-export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib":${LD_LIBRARY_PATH}
+sed -i "/OpenBLAS_INCLUDE_DIRS/c\SET(OpenBLAS_INCLUDE_DIRS ${OpenBLASInstallPATH}/include)" ${OpenBLASConfigFile}
+sed -i "/OpenBLAS_LIBRARIES/c\SET(OpenBLAS_INCLUDE_DIRS ${OpenBLASInstallPATH}/include)" ${OpenBLASConfigFile}
+sed -i "s|libdir=local/openblas/lib|libdir=${OpenBLASInstallPATH}/lib|" ${OpenBLASPCFile}
+sed -i "s|includedir=local/openblas/include|includedir=${OpenBLASInstallPATH}/include|" ${OpenBLASPCFile}
+export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
 export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
-export LD_LIBRARY_PATH=${PREFIX}/lib:$LD_LIBRARY_PATH
-export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
-pkg-config --modversion openblas
-cd $SCRIPT_DIR
-echo "--------------------openblas installed-------------------------------"
-
-#Building scipy
-python3.12 -m pip install beniget==0.4.2.post1  Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja patchelf>=0.11.0
-git clone https://github.com/scipy/scipy
-cd scipy/
-git checkout v1.15.2
-git submodule update --init
-export SITE_PACKAGE_PATH=/usr/local/lib/python3.12/site-packages
-echo "Dependency installations"
-python3.12 -m pip install .
 
 cd $SCRIPT_DIR
-#Building abesil-cpp,libprotobuf and protobuf 
+echo "------------openblas installed--------------------"
 
-python3.12 -m pip install --upgrade pip setuptools wheel ninja packaging pytest
+echo "--------installing numpy-------"
+python3.12 -m pip install numpy==2.0.2
 
-#Building abseil-cpp
-ABSEIL_VERSION=20240116.2
-ABSEIL_URL="https://github.com/abseil/abseil-cpp"
-mkdir $SCRIPT_DIR/abseil-prefix
-PREFIX=$SCRIPT_DIR/abseil-prefix
 
-git clone $ABSEIL_URL -b $ABSEIL_VERSION
-cd abseil-cpp
+#cloning abseil-cpp
+ ABSEIL_VERSION=20240116.2
+ ABSEIL_URL="https://github.com/abseil/abseil-cpp"
 
-SOURCE_DIR=$(pwd)
+ git clone $ABSEIL_URL -b $ABSEIL_VERSION
 
-mkdir -p $SOURCE_DIR/local/abseilcpp
-ABSEIL_CPP=$SOURCE_DIR/local/abseilcpp
+ echo "------------abseil-cpp cloned--------------"
 
-echo "abseil-cpp build starts"
-mkdir build
-cd build
-
-cmake -G Ninja \
-    ${CMAKE_ARGS} \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_CXX_STANDARD=17 \
-    -DCMAKE_INSTALL_LIBDIR=lib \
-    -DCMAKE_INSTALL_PREFIX=${PREFIX} \
-    -DBUILD_SHARED_LIBS=ON \
-    -DABSL_PROPAGATE_CXX_STD=ON \
-    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-   ..
-echo "building abseil-cpp ...."
-cmake --build .
-echo "Installing abseil-cpp ...."
-cmake --install .
-
-cd $SCRIPT_DIR
-cp -r  $PREFIX/* $ABSEIL_CPP/
-
-echo "--------------------------------abseil-cpp installed----------------------"
+#building libprotobuf
 export C_COMPILER=$(which gcc)
 export CXX_COMPILER=$(which g++)
 
-cd $SCRIPT_DIR
-#Build libprotobuf
 git clone https://github.com/protocolbuffers/protobuf
 cd protobuf
 git checkout v4.25.3
@@ -193,7 +155,6 @@ cmake -G "Ninja" \
     -Dprotobuf_BUILD_LIBUPB=OFF \
     -Dprotobuf_BUILD_SHARED_LIBS=ON \
     -Dprotobuf_ABSL_PROVIDER="module" \
-    -DCMAKE_PREFIX_PATH=$ABSEIL_CPP \
     -Dprotobuf_JSONCPP_PROVIDER="package" \
     -Dprotobuf_USE_EXTERNAL_GTEST=OFF \
     ..
@@ -218,15 +179,23 @@ git apply set_cpp_to_17_v4.25.3.patch
 echo "Installing protobuf...."
 cd python
 python3.12 -m pip install .
+cd $SCRIPT_DIR 
 
-echo "-------------------------- libprotobuf and  protobuf installed-----------------------"
-export LD_LIBRARY_PATH="$LIBPROTO_INSTALL:${LD_LIBRARY_PATH}"
+echo "------------ libprotobuf,protobuf installed--------------"
+
+echo "------------------scipy installing--------------"
+python3.12 -m pip install beniget==0.4.2.post1  Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1  packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja patchelf>=0.11.0
+git clone https://github.com/scipy/scipy
+cd scipy/
+git checkout v1.15.2
+git submodule update --init
+export SITE_PACKAGE_PATH=/usr/local/lib/python3.12/site-packages
+echo " instaling scipy...."
+python3.12 -m pip install .
+
 cd $SCRIPT_DIR
-#python3 -m pip install wheel scipy==1.15.2 ninja build pytest
 
-curl https://sh.rustup.rs -sSf | sh -s -- -y
-source "$HOME/.cargo/env"
-
+echo "------------cloning pytorch----------------"
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
@@ -236,13 +205,11 @@ git submodule update --init --recursive
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.5.1.patch
 git apply pytorch_v2.5.1.patch
 
-ARCH=`uname -p`
-BUILD_NUM="1"
-export OPENBLAS_INCLUDE=/OpenBLAS/local/openblas/include/
-export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
-export SITE_PACKAGE_PATH=/usr/local/lib/python3.12/site-packages
-export OpenBLAS_HOME="/usr/include/openblas"
-export ppc_arch="p9"
+export LD_LIBRARY_PATH="${OpenBLASInstallPATH}/lib:${LD_LIBRARY_PATH}"
+export PKG_CONFIG_PATH="${OpenBLASInstallPATH}/lib/pkgconfig:${PKG_CONFIG_PATH}"
+export PATH="${LIBPROTO_INSTALL}/bin/protoc:${PATH}"
+export LD_LIBRARY_PATH="${LIBPROTO_INSTALL}/lib64:${LD_LIBRARY_PATH}"
+export OpenBLAS_HOME="$OpenBLASInstallPATHs"
 export build_type="cpu"
 export cpu_opt_arch="power9"
 export cpu_opt_tune="power10"
@@ -271,29 +238,20 @@ export BUILD_CUSTOM_PROTOBUF=OFF
 export BUILD_CAFFE2=1
 export PYTORCH_BUILD_VERSION=${PACKAGE_VERSION}
 export PYTORCH_BUILD_NUMBER=${BUILD_NUM}
+export CMAKE_PREFIX_PATH="$LIBPROTO_INSTALL"
+export Protobuf_LIBRARY="${LIBPROTO_INSTALL}/lib64/libprotobuf.so"
+export Protobuf_LITE_LIBRARY="${LIBPROTO_INSTALL}/lib64/libprotobuf-lite.so"
+export Protobuf_INCLUDE_DIR="${LIBPROTO_INSTALL}/include"
+export Protobuf_LIBRARIES="${LIBPROTO_INSTALL}/lib64"
+export Protobuf_PROTOC_EXECUTABLE="${LIBPROTO_INSTALL}/bin/protoc"
+export CXXFLAGS="${CXXFLAGS} -mcpu=${cpu_opt_arch} -mtune=${cpu_opt_tune}"
+export CFLAGS="${CFLAGS} -mcpu=${cpu_opt_arch} -mtune=${cpu_opt_tune}"
 export USE_CUDA=0
 export USE_CUDNN=0
 export USE_TENSORRT=0
-export Protobuf_INCLUDE_DIR=/protobuf/local/libprotobuf/include
-export Protobuf_LIBRARIES=/protobuf/local/libprotobuf/lib64
-export Protobuf_LIBRARY=/protobuf/local/libprotobuf/lib64/libprotobuf.so
-export Protobuf_LITE_LIBRARY=/protobuf/local/libprotobuf/lib64/libprotobuf-lite.so
-export Protobuf_PROTOC_EXECUTABLE=/protobuf/local/libprotobuf/bin/protoc
-export absl_DIR=/root/abseil-cpp/local/abseilcpp/lib/cmake
-export LD_LIBRARY_PATH=/pytorch/torch/lib64/libprotobuf.so.3.13.0.0:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/pytorch/build/lib/libprotobuf.so.3.13.0.0:$LD_LIBRARY_PATH
-export PATH="/protobuf/local/libprotobuf/bin/protoc:${PATH}"
-export LD_LIBRARY_PATH="/protobuf/local/libprotobuf/lib64:${LD_LIBRARY_PATH}"
-export LD_LIBRARY_PATH="/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
-export LD_LIBRARY_PATH="/protobuf/third_party/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
-export CMAKE_PREFIX_PATH="${SITE_PACKAGE_PATH}"
-#cp -a `find ${ABSEIL_CPP} -type d -name absl` $Protobuf_INCLUDE_DIR
-if ! (python3.12 -m pip install -r requirements.txt);then
-    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
-    exit 1
-fi
+
+python3.12 -m pip install -r requirements.txt
+
 echo "Installing pytorch...."
 if ! (MAX_JOBS=$(nproc) python3.12 setup.py install);then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
