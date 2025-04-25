@@ -43,10 +43,8 @@ make
 make install
 cd $SCRIPT_DIR
 
-#Install pre requisites wheels
-#pip install openblas numpy scipy libprotobuf protobuf --no-index --find-links ${OUTPUT_DIR}
-
 echo "---------------------openblas installing---------------------"
+
 #install openblas
 #clone and install openblas from source
 
@@ -92,7 +90,6 @@ build_opts+=(NUM_THREADS=8)
 build_opts+=(NO_AFFINITY=1)
 
 # Build OpenBLAS
-echo "Building  OpenBLAS...."
 make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
 
 # Install OpenBLAS
@@ -108,13 +105,17 @@ pkg-config --modversion openblas
 cd $SCRIPT_DIR
 echo "--------------------openblas installed-------------------------------"
 
-
+#Building scipy
+python3.12 -m pip install beniget==0.4.2.post1  Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja patchelf>=0.11.0
+git clone https://github.com/scipy/scipy
+cd scipy/
+git checkout v1.15.2
+git submodule update --init
+export SITE_PACKAGE_PATH=/usr/local/lib/python3.12/site-packages
+echo "instaling scipy......."
+python3.12 -m pip install .
 cd $SCRIPT_DIR
-echo "------------openblas installed--------------------"
-
-echo "--------installing numpy-------"
-python3.12 -m pip install numpy==2.0.2
-
+echo "--------------------scipy installed-------------------------------"
 
 #cloning abseil-cpp
  ABSEIL_VERSION=20240116.2
@@ -183,17 +184,6 @@ python3.12 -m pip install .
 cd $SCRIPT_DIR 
 
 echo "------------ libprotobuf,protobuf installed--------------"
-
-echo "------------------scipy installing--------------"
-python3.12 -m pip install beniget==0.4.2.post1  Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1  packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja patchelf>=0.11.0
-git clone https://github.com/scipy/scipy
-cd scipy/
-git checkout v1.15.2
-git submodule update --init
-echo " instaling scipy...."
-python3.12 -m pip install .
-
-cd $SCRIPT_DIR
 
 echo "------------cloning pytorch----------------"
 git clone $PACKAGE_URL
