@@ -1,0 +1,16 @@
+{
+  "maintainer": "vinodk99",
+  "package_name": "jenkspy",
+  "github_url": "https://github.com/mthh/jenkspy",
+  "version": "0.4.1",
+  "wheel_build" : true,
+  "package_dir": "j/jenkspy",
+  "default_branch": "master",
+  "build_script": "jenkspy_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "jenkspy_ubi_9.3.sh"
+  }
+}
