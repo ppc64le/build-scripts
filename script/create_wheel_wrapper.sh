@@ -202,7 +202,7 @@ echo "=============== Running package build-script starts =================="
 
 if [ -n "$TEMP_BUILD_SCRIPT_PATH" ]; then
     echo "Installing required dependencies..."
-    python$PYTHON_VERSION -m pip install --upgrade pip wheel build pytest nox tox
+    python$PYTHON_VERSION -m pip install --upgrade pip wheel build pytest nox tox requests setuptools
     echo "Installing required dependencies completed..."
 
     package_dir=$(grep -oP '(?<=^PACKAGE_DIR=).*' "$TEMP_BUILD_SCRIPT_PATH" | tr -d '"')
