@@ -24,7 +24,7 @@ PACKAGE_NAME=numba
 PACKAGE_URL=https://github.com/numba/numba
 
 # Install dependencies and tools.
-yum install -y cmake git libffi-devel gcc-toolset-12 ninja-build python3.11-devel python3.11-pip
+yum install -y cmake git libffi-devel gcc-toolset-12 ninja-build python3-devel python3-pip
 yum install -y  xz-devel bzip2-devel openssl-devel zlib-devel libffi-devel make
 
 #Installing llvmlite from source
@@ -97,25 +97,25 @@ git clone --recursive https://github.com/numba/llvmlite
 cd llvmlite
 git checkout v0.42.0
 
-python3.11 -m pip install .
+pip install .
 
 cd ..
 
 echo "-------------------successfully Installed llvmlite----------------------"
 
 # Install numpy
-python3.11 -m pip install pytest numpy==1.21.1
+pip install pytest numpy==1.21.1
 
 # Clone repository
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-python3.11 -m pip install -r requirements.txt 
-python3.11 setup.py build_ext --inplace 
+pip install -r requirements.txt 
+python3 setup.py build_ext --inplace 
 
 # Install
-if !(python3.11 setup.py install) ; then
+if !(python3 setup.py install) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
