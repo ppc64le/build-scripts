@@ -31,9 +31,7 @@ export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 yum install -y gcc-c++ gcc-gfortran git make openblas
 yum install -y openssl-devel unzip libzip-devel.ppc64le gzip.ppc64le
-yum install -y gcc-c++ cmake make pkgconfig gcc-gfortran
-yum install -y python3.12-devel python3.12-pip
-ln -sf /usr/bin/python3.12 /usr/bin/python3
+yum install -y python3.12-devel python3.12-pip cmake pkgconfig gcc-gfortran 
 
 #Installing hdf5 from source
 #Installing hdf5
