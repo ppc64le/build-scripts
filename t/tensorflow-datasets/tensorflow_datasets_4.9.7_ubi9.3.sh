@@ -320,7 +320,7 @@ export PKG_CONFIG_PATH=${LIBPROTOBUF_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/p/protobuf/set_cpp_to_17_v4.25.3.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
 git apply set_cpp_to_17_v4.25.3.patch
 
 cd python
@@ -902,7 +902,7 @@ git clone https://github.com/iindyk/array_record.git
 cd array_record
 git checkout 739630d43ffef522f55380066192dc9fbb14bcc5
 python3.12 -m pip install etils typing_extensions importlib_resources
-wget https://raw.githubusercontent.com/stutiibm/build-scripts/877e1acaa365d5e3792c19d9106f55880713eb5b/a/array_record/array_record_fix.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/a/array_record/array_record_fix.patch
 git apply array_record_fix.patch
 export PYTHON_BIN=$(which python3.12)
 sed -i 's|^\(.*bazel test .*--action_env PYTHON_BIN_PATH=.*\)|# \1|' oss/build_whl.sh
