@@ -954,7 +954,7 @@ cd $CURRENT_DIR
 git clone https://github.com/google-deepmind/tree
 cd tree
 git checkout 0.1.9
-python3.12 setup.py install
+python3.12 -m pip install .
 echo "-----------------------------------------------------Installed dm-tree-----------------------------------------------------"
 
 #Build opencv-python-headless from source
