@@ -1,0 +1,13 @@
+{
+   "maintainer": "shubham-dayma-ibm",
+   "package_name": "msgspec",
+   "github_url": "https://github.com/jcrist/msgspec",
+   "version": "0.18.6",
+   "default_branch": "main",
+   "build_script": "msgspec_ubi_9.3.sh",
+   "package_dir": "m/msgspec",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
