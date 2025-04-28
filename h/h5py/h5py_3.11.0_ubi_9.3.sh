@@ -57,7 +57,7 @@ git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-python3.12 -m pip install Cython==0.29.36 numpy==2.2.2 pkgconfig pytest-mpi setuptools
+python3.12 -m pip install Cython==0.29.36 numpy==2.2.2 pkgconfig pytest-mpi setuptools==78.0.1
 python3.12 -m pip install wheel pytest  pytest-mpi tox
 
 export SITE_PACKAGE_PATH=/usr/local/lib/python3.12/site-packages
