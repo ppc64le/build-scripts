@@ -19,6 +19,7 @@
 # -----------------------------------------------------------------------------
 set -e
 PACKAGE_NAME=ormsgpack
+PACKAGE_DIR=ormsgpack
 PACKAGE_VERSION=${1:-1.9.1}
 PACKAGE_URL=https://github.com/aviramha/ormsgpack.git
 RUST_VERSION=1.81.0
@@ -46,7 +47,7 @@ pip3 install --upgrade --ignore-installed chardet tox pytz maturin pytest msgpac
 
 # Clone the repository
 git clone ${PACKAGE_URL}
-cd ${PACKAGE_NAME}
+cd ${PACKAGE_DIR}
 git checkout ${PACKAGE_VERSION}
 
 # Build and install the package
