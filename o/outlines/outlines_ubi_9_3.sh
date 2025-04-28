@@ -55,6 +55,8 @@ dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarc
     python${PYTHON_VER}-devel python${PYTHON_VER}-pip jq openssl openssl-devel \
     pkg-config atlas
 
+dnf list installed | grep openssl
+
 source /opt/rh/gcc-toolset-13/enable
 
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
