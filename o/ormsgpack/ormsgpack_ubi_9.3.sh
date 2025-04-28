@@ -43,7 +43,6 @@ rustc --version
 # Set up Python environment
 pip3 install --upgrade pip
 pip3 install --upgrade --ignore-installed chardet tox pytz maturin pytest msgpack pydantic numpy
-#yum remove -y python-chardet
 
 # Clone the repository
 git clone ${PACKAGE_URL}
