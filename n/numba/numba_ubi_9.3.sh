@@ -31,7 +31,7 @@ yum install -y  xz-devel bzip2-devel openssl-devel zlib-devel libffi-devel make
 echo "-------------------Installing llvmlite----------------------"
 
 source /opt/rh/gcc-toolset-12/enable
-python3.11 -m pip install setuptools build
+pip install setuptools build
 
 echo "Build llvmdev which is a pre-req for llvmlite ..."
 git clone --recursive https://github.com/llvm/llvm-project
