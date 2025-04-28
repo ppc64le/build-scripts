@@ -81,7 +81,7 @@ git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
 # Install Python dependencies
-python${PYTHON_VER} -m pip install --upgrade pip ninja cmake 'pytest==8.2.2' hydra-core setuptools wheel
+python${PYTHON_VER} -m pip install --upgrade pip ninja 'cmake<4' 'pytest==8.2.2' hydra-core setuptools wheel
 
 # Check BUILD_DEPS passed
 echo "BUILD_DEPS: $BUILD_DEPS"
