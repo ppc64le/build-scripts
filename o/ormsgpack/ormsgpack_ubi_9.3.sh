@@ -41,14 +41,13 @@ rustc --version
 
 # Set up Python environment
 pip3 install --upgrade pip
+pip3 install --force-reinstall --no-cache-dir chardet
 pip3 install tox pytz maturin pytest msgpack pydantic numpy
 
 # Clone the repository
 git clone ${PACKAGE_URL}
 cd ${PACKAGE_NAME}
 git checkout ${PACKAGE_VERSION}
-
-yum remove -y python-chardet
 
 # Build and install the package
 if ! maturin build --release .; then
