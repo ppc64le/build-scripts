@@ -26,9 +26,14 @@ RUST_VERSION=1.81.0
 yum install -y git gcc gcc-c++ python-devel gzip tar make wget xz cmake yum-utils openssl-devel     openblas-devel bzip2-devel bzip2 zip unzip libffi-devel zlib-devel autoconf     automake libtool cargo pkgconf-pkg-config.ppc64le info.ppc64le fontconfig.ppc64le     fontconfig-devel.ppc64le sqlite-devel
 
 # Install Rust
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain $RUST_VERSION
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain "$RUST_VERSION"
+if [ -f "$HOME/.cargo/env" ]; then
+    . "$HOME/.cargo/env"
+else
+    echo "[ERROR] Rust environment not found!"
+    exit 1
+fi
 rustup update stable
-source $HOME/.cargo/env
 rustup default $RUST_VERSION
 rustup install nightly
 rustup default nightly
