@@ -22,13 +22,13 @@ PACKAGE_NAME=ormsgpack
 PACKAGE_VERSION=${1:-1.9.1}
 PACKAGE_URL=https://github.com/aviramha/ormsgpack.git
 RUST_VERSION=1.81.0
-source $HOME/.cargo/env
 
 yum install -y git gcc gcc-c++ python-devel gzip tar make wget xz cmake yum-utils openssl-devel     openblas-devel bzip2-devel bzip2 zip unzip libffi-devel zlib-devel autoconf     automake libtool cargo pkgconf-pkg-config.ppc64le info.ppc64le fontconfig.ppc64le     fontconfig-devel.ppc64le sqlite-devel
 
 # Install Rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain $RUST_VERSION
 rustup update stable
+source $HOME/.cargo/env
 rustup default $RUST_VERSION
 rustup install nightly
 rustup default nightly
