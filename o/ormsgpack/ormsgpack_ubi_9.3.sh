@@ -50,7 +50,7 @@ cd ${PACKAGE_NAME}
 git checkout ${PACKAGE_VERSION}
 
 # Build and install the package
-if ! maturin build --release .; then
+if ! maturin build --release; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
