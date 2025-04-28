@@ -5,10 +5,12 @@
 # Version       : 3scale-2.15.1-GA
 # Source repo   : https://github.com/3scale/zync
 # Tested on     : UBI:9.3
+# Language      : Ruby, PLpgSQL
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Bharti Somra <Bharti.Somra@ibm.com>
 #
-# Disclaimer: This script has been tested in non-root mode on given platform using
+# Disclaimer: This script has been tested in root mode on given platform using
 #             the mentioned version of the package. It may not work as expected 
 #             with newer versions of the package and/or distribution.
 #             In such case, please contact "Maintainer" of this script.
