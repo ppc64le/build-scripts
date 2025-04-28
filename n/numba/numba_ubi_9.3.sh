@@ -24,56 +24,82 @@ PACKAGE_NAME=numba
 PACKAGE_URL=https://github.com/numba/numba
 
 # Install dependencies and tools.
-yum install -y git gcc gcc-c++ make wget python3.11-devel python3.11-pip xz-devel bzip2-devel openssl-devel zlib-devel libffi-devel cmake
+yum install -y cmake git libffi-devel gcc-toolset-12 ninja-build python3.11-devel python3.11-pip
+yum install -y  xz-devel bzip2-devel openssl-devel zlib-devel libffi-devel make
 
-WORKING_DIR=$(pwd)
 #Installing llvmlite from source
 echo "-------------------Installing llvmlite----------------------"
 
-LLVMLITE_PACKAGE_NAME=llvmlite
-LLVMLITE_VERSION="v0.44.0rc1"
-LLVMLITE_PACKAGE_URL="https://github.com/numba/llvmlite"
-LLVM_PROJECT_GIT_URL="https://github.com/llvm/llvm-project.git"
-LLVM_PROJECT_GIT_TAG="llvmorg-15.0.7"
+source /opt/rh/gcc-toolset-12/enable
+python3.11 -m pip install setuptools build
 
-git clone -b ${LLVM_PROJECT_GIT_TAG} ${LLVM_PROJECT_GIT_URL}
-git clone -b ${LLVMLITE_VERSION} ${LLVMLITE_PACKAGE_URL}
+echo "Build llvmdev which is a pre-req for llvmlite ..."
+git clone --recursive https://github.com/llvm/llvm-project
+cd llvm-project
+git checkout llvmorg-14.0.1
+export PREFIX=/usr
 
-python3.11 -m pip install ninja
+echo "build llvm ..."
+mkdir build && cd  build
+CMAKE_ARGS="${CMAKE_ARGS} -DLLVM_ENABLE_PROJECTS=lld;libunwind;compiler-rt"
+CFLAGS="$(echo $CFLAGS | sed 's/-fno-plt //g')"
+CXXFLAGS="$(echo $CXXFLAGS | sed 's/-fno-plt //g')"
+CMAKE_ARGS="${CMAKE_ARGS} -DFFI_INCLUDE_DIR=$PREFIX/include"
+CMAKE_ARGS="${CMAKE_ARGS} -DFFI_LIBRARY_DIR=$PREFIX/lib"
 
-# Build LLVM project
-cd "$WORKING_DIR/llvm-project"
-git apply "$WORKING_DIR/llvmlite/conda-recipes/llvm15-clear-gotoffsetmap.patch"
-git apply "$WORKING_DIR/llvmlite/conda-recipes/llvm15-remove-use-of-clonefile.patch"
-cp "$WORKING_DIR/llvmlite/conda-recipes/llvmdev/build.sh" .
-chmod 777 "$WORKING_DIR/llvm-project/build.sh" && "$WORKING_DIR/llvm-project/build.sh"
+echo "starting cmake ..."
+cmake -DCMAKE_INSTALL_PREFIX="${PREFIX}"   \
+      -DCMAKE_BUILD_TYPE=Release           \
+      -DCMAKE_LIBRARY_PATH="${PREFIX}"     \
+      -DLLVM_ENABLE_LIBEDIT=OFF            \
+      -DLLVM_ENABLE_LIBXML2=OFF            \
+      -DLLVM_ENABLE_RTTI=ON                \
+      -DLLVM_ENABLE_TERMINFO=OFF           \
+      -DLLVM_INCLUDE_BENCHMARKS=OFF        \
+      -DLLVM_INCLUDE_DOCS=OFF              \
+      -DLLVM_INCLUDE_EXAMPLES=OFF          \
+      -DLLVM_INCLUDE_GO_TESTS=OFF          \
+      -DLLVM_INCLUDE_TESTS=ON              \
+      -DLLVM_INCLUDE_UTILS=ON              \
+      -DLLVM_INSTALL_UTILS=ON              \
+      -DLLVM_UTILS_INSTALL_DIR=libexec/llvm            \
+      -DLLVM_BUILD_LLVM_DYLIB=OFF          \
+      -DLLVM_LINK_LLVM_DYLIB=OFF           \
+      -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly \
+      -DLLVM_ENABLE_FFI=ON                 \
+      -DLLVM_ENABLE_Z3_SOLVER=OFF          \
+      -DLLVM_OPTIMIZED_TABLEGEN=ON         \
+      -DCMAKE_POLICY_DEFAULT_CMP0111=NEW   \
+      -DCOMPILER_RT_BUILD_BUILTINS=ON      \
+      -DCOMPILER_RT_BUILTINS_HIDE_SYMBOLS=OFF          \
+      -DCOMPILER_RT_BUILD_LIBFUZZER=OFF    \
+      -DCOMPILER_RT_BUILD_CRT=OFF          \
+      -DCOMPILER_RT_BUILD_MEMPROF=OFF      \
+      -DCOMPILER_RT_BUILD_PROFILE=OFF      \
+      -DCOMPILER_RT_BUILD_SANITIZERS=OFF   \
+      -DCOMPILER_RT_BUILD_XRAY=OFF         \
+      -DCOMPILER_RT_BUILD_GWP_ASAN=OFF     \
+      -DCOMPILER_RT_BUILD_ORC=OFF          \
+      -DCOMPILER_RT_INCLUDE_TESTS=OFF      \
+      ${CMAKE_ARGS}       -GNinja       ../llvm
 
-# Set LLVM_CONFIG environment variable
-export LLVM_CONFIG="/llvm-project/build/bin/llvm-config"
+export CPU_COUNT=4
+ninja -j${CPU_COUNT}
+echo "Starting make install..."
+ninja install
 
-# Check for llvm-config path
-LLVM_CONFIG_PATH=$(which llvm-config)
+cd ../..
+rm -rf llvm-project
 
-# If llvm-config is not found in the system path, use the local path from the build
-if [ -z "$LLVM_CONFIG_PATH" ]; then
-    echo "llvm-config not found in PATH, using local path."
-    export LLVM_CONFIG="$WORKING_DIR/llvm-project/build/bin/llvm-config"
-else
-    echo "llvm-config found at: $LLVM_CONFIG_PATH"
-    export LLVM_CONFIG="$LLVM_CONFIG_PATH"
-fi
 
-# Check if llvm-config.h exists in the build include directory
-echo "Checking for llvm-config.h in: $WORKING_DIR/llvm-project/build/include/llvm/Config"
-ls "$WORKING_DIR/llvm-project/build/include/llvm/Config/llvm-config.h" || { echo "llvm-config.h not found. Exiting."; exit 1; }
-
-# Build llvmlite
-cd "$WORKING_DIR/llvmlite"
-export CXXFLAGS="-I$WORKING_DIR/llvm-project/build/include"
-export LLVM_CONFIG="$WORKING_DIR/llvm-project/build/bin/llvm-config"
+echo "Clone the repository ..."
+git clone --recursive https://github.com/numba/llvmlite
+cd llvmlite
+git checkout v0.42.0
 
 python3.11 -m pip install .
-cd $WORKING_DIR
+
+cd ..
 
 echo "-------------------successfully Installed llvmlite----------------------"
 
