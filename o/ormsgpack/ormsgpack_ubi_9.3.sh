@@ -48,6 +48,8 @@ git clone ${PACKAGE_URL}
 cd ${PACKAGE_NAME}
 git checkout ${PACKAGE_VERSION}
 
+yum remove -y python-chardet
+
 # Build and install the package
 if ! maturin build --release .; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
