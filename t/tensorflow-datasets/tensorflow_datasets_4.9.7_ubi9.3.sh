@@ -325,7 +325,8 @@ git apply set_cpp_to_17_v4.25.3.patch
 echo "----------------libprotobuf patch applied successfully---------------------"
 
 cd python
-python3.12 setup.py install --cpp_implementation
+export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
+python3.12 -m pip install . --no-build-isolation
 echo "------------------install --cpp_implementation done------------------------"
 
 python3.12 setup.py bdist_wheel --cpp_implementation
