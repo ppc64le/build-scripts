@@ -50,7 +50,7 @@ cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 python3 -m pip install Cython==0.29.36 numpy==1.26.3 pkgconfig pytest-mpi 
-python3 -m pip install wheel oldest-supported-numpy build
+python3 -m pip install wheel oldest-supported-numpy
 
 #install
 if ! (python3 setup.py install) ; then
@@ -59,9 +59,6 @@ if ! (python3 setup.py install) ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-
-#Creating Wheel
- python3 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"
 
 export PY_IGNORE_IMPORTMISMATCH=1
 cd h5py/tests
