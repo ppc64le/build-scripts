@@ -17,7 +17,7 @@
 #             contact the "Maintainer" of this script.
 #
 # -----------------------------------------------------------------------------
-set -x
+set -e
 PACKAGE_NAME=ormsgpack
 PACKAGE_VERSION=${1:-1.9.1}
 PACKAGE_URL=https://github.com/aviramha/ormsgpack.git
