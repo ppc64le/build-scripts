@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e
+set -ex
 
 
 PACKAGE_NAME=datasets
@@ -322,11 +322,19 @@ export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
 git apply set_cpp_to_17_v4.25.3.patch
+echo "----------------libprotobuf patch applied successfully---------------------"
 
 cd python
 python3.12 setup.py install --cpp_implementation
+echo "------------------install --cpp_implementation done------------------------"
+
 python3.12 setup.py bdist_wheel --cpp_implementation
+echo "------------------bdist_wheel --cpp_implementation ------------------------"
+
 python3.12 -m pip install dist/*.whl --force-reinstall
+echo "------------------whl installation ------------------------"
+
+
 protoc --version
 python3.12 -c "import google.protobuf; print(google.protobuf.__version__)"
 echo "-------------------------------------libprotobuf installed successfuly-------------------------------------"
