@@ -30,10 +30,7 @@ yum install -y gcc-toolset-13
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 yum install -y gcc-c++ gcc-gfortran git make openblas
-yum install -y openssl-devel unzip libzip-devel.ppc64le gzip.ppc64le
-yum install -y gcc-c++ cmake make pkgconfig gcc-gfortran
-yum install -y python3.12-devel python3.12-pip
-ln -sf /usr/bin/python3.12 /usr/bin/python3
+yum install -y openssl-devel unzip libzip-devel.ppc64le gzip.ppc64le python3.12-devel python3.12-pip cmake
 
 #Installing hdf5 from source
 #Installing hdf5
@@ -59,7 +56,7 @@ git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-python3.12 -m pip install Cython==0.29.36 numpy==2.2.2 pkgconfig pytest-mpi setuptools
+python3.12 -m pip install Cython==0.29.36 numpy==2.2.2 pkgconfig pytest-mpi setuptools==78.0.1
 python3.12 -m pip install wheel pytest  pytest-mpi tox
 
 export SITE_PACKAGE_PATH=/usr/local/lib/python3.12/site-packages
