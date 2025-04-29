@@ -1,0 +1,24 @@
+diff --git a/setup.py b/setup.py
+index b58a9a0d5..d8b81ead8 100644
+--- a/setup.py
++++ b/setup.py
+@@ -70,7 +70,7 @@ REQUIRED_PKGS = [
+     'immutabledict',
+     'numpy',
+     'promise',
+-    'protobuf>=3.20',
++    'protobuf>=4.25.3',
+     'psutil',
+     'pyarrow',
+     'requests>=2.19.0',
+diff --git a/tensorflow_datasets/version.py b/tensorflow_datasets/version.py
+index b719f01f2..6b09ca8c6 100644
+--- a/tensorflow_datasets/version.py
++++ b/tensorflow_datasets/version.py
+@@ -33,5 +33,5 @@ __version__ = (
+         _MINOR_VERSION,
+         _PATCH_VERSION,
+     ])
+-    + '+nightly'
++    + ''
+ )
