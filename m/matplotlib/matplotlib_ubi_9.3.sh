@@ -28,7 +28,7 @@ export MAX_JOBS=${MAX_JOBS:-$(nproc)}
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
-dnf install -y git gcc-toolset-13 ninja-build pybind11-devel \
+dnf install -y git gcc-toolset-13 ninja-build pybind11-devel libimagequant \
     python$PYTHON_VERSION-devel \
     python$PYTHON_VERSION-pip \
     python$PYTHON_VERSION-setuptools \
