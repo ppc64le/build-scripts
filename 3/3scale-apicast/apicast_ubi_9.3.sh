@@ -62,8 +62,8 @@ yum-config-manager -q --add-repo https://download.docker.com/linux/centos/docker
 yum install -y -q docker-ce docker-ce-cli containerd.io
 
 # check docker status
-systemctl restart docker || true
-systemctl status docker
+service docker start
+service docker status
 
 # Clone the Git repository
 git clone $REPO_URL $CLONE_DIR
