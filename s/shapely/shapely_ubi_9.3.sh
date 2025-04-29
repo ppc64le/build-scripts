@@ -61,8 +61,8 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init
 
-export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64:/geos/build/lib:/usr/lib:/usr/lib64:$LD_LIBRARY_PATH
-export GEOS_CONFIG=/geos/build/tools/geos-config
+export LD_LIBRARY_PATH=$HOME_DIR/usr/local/lib:$HOME_DIR/usr/local/lib64:$HOME_DIR/geos/build/lib:$HOME_DIR/usr/lib:$HOME_DIR/usr/lib64:$LD_LIBRARY_PATH
+export GEOS_CONFIG=$HOME_DIR/geos/build/tools/geos-config
 
 chmod +x $GEOS_CONFIG
 
