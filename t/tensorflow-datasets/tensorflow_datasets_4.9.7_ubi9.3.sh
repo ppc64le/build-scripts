@@ -1210,7 +1210,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 SRC_DIR=$(pwd)
-wget https://raw.githubusercontent.com/stutiibm/build-scripts/refs/heads/master/t/tensorflow-datasets/TFDS-fix.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/tensorflow-datasets/TFDS-fix.patch
 git apply TFDS-fix.patch
 
 #Install
