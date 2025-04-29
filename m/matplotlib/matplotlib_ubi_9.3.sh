@@ -28,7 +28,7 @@ export MAX_JOBS=${MAX_JOBS:-$(nproc)}
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
-dnf install -y git gcc-toolset-13 ninja-build pybind11-devel libimagequant \
+dnf install -y git gcc-toolset-13 ninja-build pybind11-devel \
     python$PYTHON_VERSION-devel \
     python$PYTHON_VERSION-pip \
     python$PYTHON_VERSION-setuptools \
@@ -72,7 +72,7 @@ if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then
     # dependencies for pillow
     dnf install -y libtiff-devel libjpeg-devel openjpeg2-devel zlib-devel \
         freetype-devel lcms2-devel libwebp-devel tcl-devel tk-devel \
-        harfbuzz-devel fribidi-devel libraqm-devel libimagequant-devel libxcb-devel
+        harfbuzz-devel fribidi-devel libraqm-devel libimagequant libimagequant-devel libxcb-devel
 
     python -m pip install numpy
 fi
