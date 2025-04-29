@@ -1,6 +1,6 @@
 {
   "maintainer": "stutiibm",
-  "package_name": "datasets",
+  "package_name": "tensorflow-datasets",
   "github_url": "https://github.com/tensorflow/datasets.git",
   "version": "v4.9.7",
   "wheel_build" : true,

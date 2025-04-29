@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : datasets
+# Package       : tensorflow-datasets
 # Version       : v4.9.7
 # Source repo   : https://github.com/tensorflow/datasets.git
 # Tested on     : UBI 9.3
@@ -21,7 +21,7 @@
 set -ex
 
 
-PACKAGE_NAME=datasets
+PACKAGE_NAME=tensorflow-datasets
 PACKAGE_VERSION=${1:-v4.9.7}
 PACKAGE_URL=https://github.com/tensorflow/datasets.git
 CURRENT_DIR=$(pwd)
@@ -1207,7 +1207,7 @@ echo "-----------------------------------------------------Installed scikit-imag
 # clone source repository
 cd $CURRENT_DIR
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 SRC_DIR=$(pwd)
 
