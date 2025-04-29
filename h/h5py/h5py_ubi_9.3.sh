@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-3.7.0}
 PACKAGE_URL=https://github.com/h5py/h5py.git
 
 # Install dependencies and tools.
-yum install -y wget gcc gcc-c++ gcc-gfortran git make  python-devel  openssl-devel unzip libzip-devel.ppc64le gzip.ppc64le cmake  pkgconfig 
+yum install -y wget gcc gcc-c++ gcc-gfortran git make  python-devel  openssl-devel unzip libzip-devel.ppc64le gzip.ppc64le cmake  
 
 #installing hdf5 from source
 #Build hdf5 from source
