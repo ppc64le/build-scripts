@@ -1,0 +1,16 @@
+{
+	"maintainer": "vivek8123",
+	"package_name": "pure_eval",
+	"github_url": "https://github.com/alexmojaki/pure_eval.git",
+	"version": "0.2.2",
+	"default_branch": "master",
+	"build_script": "pure_eval_ubi_9.3.sh",
+	"package_dir": "p/pure_eval",
+	"docker_build": false,
+	"validate_build_script": true,
+	"wheel_build" : true,
+	"use_non_root_user": false,
+	"v.*.*": {
+	   "build_script": "pure_eval_ubi_9.3.sh"
+	}
+}
