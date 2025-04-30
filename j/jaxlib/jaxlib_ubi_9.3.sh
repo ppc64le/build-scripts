@@ -28,8 +28,9 @@ CURRENT_DIR=$pwd
 
 # Install dependencies
 echo "Installing dependencies -------------------------------------------------------------"
-yum install -y wget python-devel python-pip git gcc gcc-c++ make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel
-
+yum install -y wget python-devel python-pip git gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 echo "Installing dependencies -------------------------------------------------------------"
 yum install -y zlib-devel freetype-devel procps-ng openblas-devel meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel
 
