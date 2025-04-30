@@ -28,7 +28,7 @@ CURRENT_DIR=$pwd
 
 # Install dependencies
 echo "Installing dependencies -------------------------------------------------------------"
-yum install -y wget python-devel python-pip git gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel
+yum install -y wget python-devel python-pip git gcc-toolset-13 gcc-toolset-13-gcc-c++ make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 echo "Installing dependencies -------------------------------------------------------------"
@@ -52,7 +52,7 @@ env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
 cp output/bazel /usr/local/bin
 export PATH=/usr/local/bin:$PATH
 bazel --version
-cd ..
+cd $CURRENT_DIR
 
 echo "Installing dependencies via pip3-------------------------------------------------------------"
 pip3 install numpy==1.26.4 scipy wheel pytest
