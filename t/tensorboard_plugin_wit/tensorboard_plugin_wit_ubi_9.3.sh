@@ -26,193 +26,368 @@ PACKAGE_NAME=tensorboard_plugin_wit
 PACKAGE_VERSION=${1:-v1.6.0}
 PACKAGE_URL=https://github.com/PAIR-code/what-if-tool.git
 CURRENT_DIR=$(pwd)
-PACKAGE_DIR=what-if-tool/tensorboard_plugin_wit/pip_package
-
-yum install -y wget
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
-wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
-mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
-
-dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-
-# Install dependencies
-yum install -y python3.11 python3.11-devel python3.11-pip git gcc gcc-c++ make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng openblas-devel epel-release meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite libnsl
-yum install -y python3-arrow libarrow libarrow-python-devel python3-pyarrow
-yum install -y libxcrypt libxcrypt-compat rsync
-python3.11 -m pip install --upgrade pip
-python3.11 -m pip install setuptools wheel build
-
-echo "------------------------Installing dependencies-------------------"
-dnf groupinstall -y "Development Tools"
-pip install --upgrade pip
+PACKAGE_DIR=what-if-tool
 
 
-#install rust
-echo "------------------------Installing rust-------------------"
-curl https://sh.rustup.rs -sSf | sh -s -- -y
-source "$HOME/.cargo/env"  # Update environment variables to use Rust
+# install core dependencies
+yum install -y wget python312 python3.12-devel python3.12-pip unzip cmake binutils openssl \
+    gcc  gcc-c++ gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ atlas \
+    libevent-devel libjpeg-turbo-devel bzip2-devel zlib-devel xz pkgconfig
+
+yum install -y libffi-devel openssl-devel sqlite-devel zip rsync
+
+yum install -y wget python3.12 python3.12-pip python3.12-devel  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils 
+
+yum install -y libffi-devel openssl-devel sqlite-devel zip rsync
+
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+gcc --version
+
+export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr
+export CC=$GCC_HOME/bin/gcc
+export CXX=$GCC_HOME/bin/g++
 
 
-#Install the dependencies
-echo "------------------------Installing dependencies-------------------"
-yum install -y  autoconf automake libtool curl-devel swig hdf5-devel atlas-devel patch patchelf
+OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
-#Set Python3 as default
-ln -s $CURRENT_DIR/usr/bin/python3.11 $CURRENT_DIR/usr/bin/python
+python3.12 -m pip install --upgrade pip
 
-#Set JAVA_HOME
-echo "------------------------Installing java-------------------"
+INSTALL_ROOT="/install-deps"
+mkdir -p $INSTALL_ROOT
+
+
+for package in openblas hdf5 abseil tensorflow ; do
+    mkdir -p ${INSTALL_ROOT}/${package}
+    export "${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
+    echo "Exported ${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
+done
+
+python3.12 -m pip install numpy==2.0.2 cython setuptools wheel ninja
+
 yum install -y java-11-openjdk-devel
-export JAVA_HOME=$CURRENT_DIR/usr/lib/jvm/java-11-openjdk-11.0.25.0.9-3.el9.ppc64le
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.25.0.9-3.el9.ppc64le 
+export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-)(?=.*ppc64le)')
 export PATH=$JAVA_HOME/bin:$PATH
 
-export LD_LIBRARY_PATH=/usr/lib64/:$LD_LIBRARY_PATH
-export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true
 
-
-# Build Bazel dependency
-echo "------------------------Installing bazel-------------------"
+#installing patchelf from source
 cd $CURRENT_DIR
-mkdir -p $CURRENT_DIR/bazel
-cd $CURRENT_DIR/bazel
-wget https://github.com/bazelbuild/bazel/releases/download/6.1.0/bazel-6.1.0-dist.zip
-unzip bazel-6.1.0-dist.zip
-echo "------------------------Installing bazel-------------------"
+yum install -y git autoconf automake libtool make
+git clone https://github.com/NixOS/patchelf.git
+cd patchelf
+./bootstrap.sh
+./configure
+make 
+make install
+ln -s /usr/local/bin/patchelf /usr/bin/patchelf
+echo "-----------------------------------------------------Installed patchelf-----------------------------------------------------"
+
+#installing openblas
+cd $CURRENT_DIR
+git clone https://github.com/OpenMathLib/OpenBLAS
+cd OpenBLAS
+git checkout v0.3.29
+git submodule update --init
+# Set build options
+declare -a build_opts
+# Fix ctest not automatically discovering tests
+LDFLAGS=$(echo "${LDFLAGS}" | sed "s/-Wl,--gc-sections//g")
+export CF="${CFLAGS} -Wno-unused-parameter -Wno-old-style-declaration"
+unset CFLAGS
+export USE_OPENMP=1
+build_opts+=(USE_OPENMP=${USE_OPENMP})
+# Handle Fortran flags
+if [ ! -z "$FFLAGS" ]; then
+    export FFLAGS="${FFLAGS/-fopenmp/ }"
+    export FFLAGS="${FFLAGS} -frecursive"
+    export LAPACK_FFLAGS="${FFLAGS}"
+fi
+export PLATFORM=$(uname -m)
+build_opts+=(BINARY="64")
+build_opts+=(DYNAMIC_ARCH=1)
+build_opts+=(TARGET="POWER9")
+BUILD_BFLOAT16=1
+# Placeholder for future builds that may include ILP64 variants.
+build_opts+=(INTERFACE64=0)
+build_opts+=(SYMBOLSUFFIX="")
+# Build LAPACK
+build_opts+=(NO_LAPACK=0)
+# Enable threading and set the number of threads
+build_opts+=(USE_THREAD=1)
+build_opts+=(NUM_THREADS=8)
+# Disable CPU/memory affinity handling to avoid problems with NumPy and R
+build_opts+=(NO_AFFINITY=1)
+# Build OpenBLAS
+make ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${OPENBLAS_PREFIX}
+# Install OpenBLAS
+CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${OPENBLAS_PREFIX}" ${build_opts[@]}
+export LD_LIBRARY_PATH=${OPENBLAS_PREFIX}/lib:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=${OPENBLAS_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
+pkg-config --modversion openblas
+echo "-----------------------------------------------------Installed openblas-----------------------------------------------------"
+
+
+#Build hdf5 from source
+cd $CURRENT_DIR
+git clone https://github.com/HDFGroup/hdf5
+cd hdf5/
+git checkout hdf5-1_12_1
+git submodule update --init
+
+yum install -y zlib zlib-devel
+
+./configure --prefix=$HDF5_PREFIX --enable-cxx --enable-fortran  --with-pthread=yes --enable-threadsafe  --enable-build-mode=production --enable-unsupported  --enable-using-memchecker  --enable-clear-file-buffers --with-ssl
+make 
+make install PREFIX="${HDF5_PREFIX}"
+export LD_LIBRARY_PATH=${HDF5_PREFIX}/lib:$LD_LIBRARY_PATH
+echo "-----------------------------------------------------Installed hdf5-----------------------------------------------------"
+
+
+#Build h5py from source
+cd $CURRENT_DIR
+git clone https://github.com/h5py/h5py.git
+cd h5py/
+git checkout 3.13.0
+
+HDF5_DIR=/install-deps/hdf5 python3.12 -m pip install .
+cd $CURRENT_DIR
+echo "-----------------------------------------------------Installed h5py-----------------------------------------------------"
+
+
+
+#Build abseil-cpp from source
+cd $CURRENT_DIR
+git clone https://github.com/abseil/abseil-cpp
+cd abseil-cpp
+git checkout 20240116.2
+
+mkdir build
+cd build
+
+cmake -G Ninja \
+    ${CMAKE_ARGS} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_CXX_STANDARD=17 \
+    -DCMAKE_INSTALL_LIBDIR=lib \
+    -DCMAKE_INSTALL_PREFIX=${ABSEIL_PREFIX} \
+    -DBUILD_SHARED_LIBS=ON \
+    -DABSL_PROPAGATE_CXX_STD=ON \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+   ..
+
+cmake --build .
+cmake --install .
+export LD_LIBRARY_PATH=${ABSEIL_PREFIX}/lib:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=${ABSEIL_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
+echo "-----------------------------------------------------Installed abseil-cpp-----------------------------------------------------"
+
+
+
+#Build bazel from source
+cd $CURRENT_DIR
+mkdir bazel
+cd bazel
+wget https://github.com/bazelbuild/bazel/releases/download/6.5.0/bazel-6.5.0-dist.zip
+unzip bazel-6.5.0-dist.zip
 env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
-cp output/bazel $CURRENT_DIR/usr/local/bin
-export PATH=$CURRENT_DIR/usr/local/bin:$PATH
+cp output/bazel /usr/local/bin
+export PATH=/usr/local/bin:$PATH
 bazel --version
+echo "-----------------------------------------------------Installed bazel-----------------------------------------------------"
+
+#Build ml_dtypes from source
 cd $CURRENT_DIR
+git clone https://github.com/jax-ml/ml_dtypes.git
+cd ml_dtypes
+git checkout v0.4.1
+git submodule update --init
 
-# Install six.
-echo "------------------------Installing dependencies-------------------"
-pip install --upgrade absl-py
-pip install --upgrade six==1.10.0
-pip install "numpy<2" wheel==0.29.0 werkzeug
-pip install "urllib3<1.27,>=1.21.1" requests
-pip install "protobuf<=4.25.2"
-pip install tensorflow-datasets
+export CFLAGS="-I${ML_DIR}/include"
+export CXXFLAGS="-I${ML_DIR}/include"
+export CC=/opt/rh/gcc-toolset-13/root/bin/gcc
+export CXX=/opt/rh/gcc-toolset-13/root/bin/g++
 
-
-
-# Remove obsolete version of six, which can sometimes confuse virtualenv.
-rm -rf $CURRENT_DIR/usr/lib/python3.11/dist-packages/six*
-
-# Install numpy, scipy and scikit-learn required by the builds
-ln -s $CURRENT_DIR/usr/include/locale.h $CURRENT_DIR/usr/include/xlocale.h
-
-
-#Build tensorflow-io-gcs-filesystem
-echo "------------------------Cloning tensorflow-io-------------------"
+python3.12 -m pip install .
 cd $CURRENT_DIR
-git clone https://github.com/tensorflow/io.git
-cd io
-git checkout v0.37.1
-
-echo "------------------------Generating wheel-------------------"
-pip install --upgrade pip wheel
-python setup.py -q bdist_wheel --project tensorflow_io_gcs_filesystem
-cd dist
-pip install tensorflow_io_gcs_filesystem-*-linux_ppc64le.whl
+echo "-----------------------------------------------------Installed ml_dtyapes-----------------------------------------------------"
 
 
-#Build tensorflow
-echo "------------------------Cloning tensorflow-------------------"
+
+# Set CPU optimization flags
+export cpu_opt_arch="power9"
+export cpu_opt_tune="power10"
+export build_type="cpu"
+echo "CPU Optimization Settings:"
+echo "cpu_opt_arch=${cpu_opt_arch}"
+echo "cpu_opt_tune=${cpu_opt_tune}"
+echo "build_type=${build_type}"
+
+SHLIB_EXT=".so"
+WORK_DIR=$(pwd)
+
+export TF_PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+export HERMETIC_PYTHON_VERSION=$(python3.12 --version | awk '{print $2}' | cut -d. -f1,2)
+export GCC_HOST_COMPILER_PATH=$(which gcc)
+export CC=$GCC_HOST_COMPILER_PATH
+
+# set the variable, when grpcio fails to compile on the system. 
+export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true;  
+export LDFLAGS="${LDFLAGS} -lrt"
+export HDF5_DIR=/install-deps/hdf5
+export CFLAGS="-I${HDF5_DIR}/include"
+export LDFLAGS="-L${HDF5_DIR}/lib"
+
+# clone source repository
 cd $CURRENT_DIR
 git clone https://github.com/tensorflow/tensorflow
-cd  tensorflow
-git checkout v2.14.1
+cd tensorflow
+git checkout v2.18.1
+SRC_DIR=$(pwd)
 
-echo "------------------------Exporting variable-------------------"
-export CC_OPT_FLAGS="-mcpu=power9 -mtune=power9"
-export TF_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
-export HERMETIC_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
-export PYTHON_BIN_PATH=/usr/bin/python
-export GCC_HOST_COMPILER_PATH=/usr/bin/gcc
-export CC=$GCC_HOST_COMPILER_PATH
-export PYTHON=/root/tensorflow/tfenv/bin/python
-export SP_DIR=/root/tensorflow/tfenv/lib/python$(python --version | awk '{print $2}' | cut -d. -f1,2)/site-packages/
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/tensorflow/tf_2.18.1_fix.patch
+git apply tf_2.18.1_fix.patch
+
+# Pick up additional variables defined from the conda build environment
+export PYTHON_BIN_PATH=$(which python3.12)
 export USE_DEFAULT_PYTHON_LIB_PATH=1
-export TF_NEED_GCP=1
-export TF_NEED_HDFS=1
-export TF_NEED_JEMALLOC=1
-export TF_ENABLE_XLA=0
-export TF_NEED_OPENCL=0
-export TF_NEED_CUDA=0
-export TF_NEED_MKL=0
-export TF_NEED_VERBS=0
-export TF_NEED_MPI=0
-export TF_CUDA_CLANG=0
-export TFCI_WHL_NUMPY_VERSION=1
 
-# Apply the patch
-echo "------------------------Applying patch-------------------"
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/t/tensorflow/tf_2.14.1_fix.patch
-git apply tf_2.14.1_fix.patch
-echo "Applied patch successfully."
+# Build the bazelrc
+BAZEL_RC_DIR=$(pwd)/tensorflow
+ARCH=`uname -p`
+XNNPACK_STATUS=false
+NL=$'\n'
+BUILD_COPT="build:opt --copt="
+BUILD_HOST_COPT="build:opt --host_copt="
+CPU_ARCH_FRAG="-mcpu=${cpu_opt_arch}"
+CPU_ARCH_OPTION=${BUILD_COPT}${CPU_ARCH_FRAG}
+CPU_ARCH_HOST_OPTION=${BUILD_HOST_COPT}${CPU_ARCH_FRAG}
+CPU_TUNE_FRAG="-mtune=${cpu_opt_tune}";
+CPU_TUNE_OPTION=${BUILD_COPT}${CPU_TUNE_FRAG}
+CPU_TUNE_HOST_OPTION=${BUILD_HOST_COPT}${CPU_TUNE_FRAG}
 
-yes n | ./configure
+USE_MMA=0
+echo "--------------------------------Bazelrc dir : ${BAZEL_RC_DIR}----------------------------------"
+TENSORFLOW_PREFIX=/install-deps/tensorflow
 
-echo "------------------------Bazel query-------------------"
-bazel query "//tensorflow/tools/pip_package:*"
+cat > $BAZEL_RC_DIR/python_configure.bazelrc << EOF
+build --action_env PYTHON_BIN_PATH="$(which python3.12)"
+build --action_env PYTHON_LIB_PATH="/usr/lib/python3.12/site-packages"
+build --python_path="$(which python3.12)"
+EOF
 
-echo "Bazel query successful ---------------------------------------------------------------------------------------------"
+SYSTEM_LIBS_PREFIX=$TENSORFLOW_PREFIX
+cat >> $BAZEL_RC_DIR/tensorflow.bazelrc << EOF
+import %workspace%/tensorflow/python_configure.bazelrc
+build:xla --define with_xla_support=true
+build --config=xla
+${CPU_ARCH_OPTION}
+${CPU_ARCH_HOST_OPTION}
+${CPU_TUNE_OPTION}
+${CPU_TUNE_HOST_OPTION}
+${VEC_OPTIONS}
+build:opt --define with_default_optimizations=true
 
-bazel build -s //tensorflow/tools/pip_package:build_pip_package --local_ram_resources=8192 --local_cpu_resources=8 --jobs=8 --config=opt
+build --action_env TF_CONFIGURE_IOS="0"
+build --action_env TF_SYSTEM_LIBS="org_sqlite"
+build --action_env GCC_HOME="/opt/rh/gcc-toolset-13/root/usr"
+build --action_env RULES_PYTHON_PIP_ISOLATED="0"
+build --define=PREFIX="$SYSTEM_LIBS_PREFIX"
+build --define=LIBDIR="$SYSTEM_LIBS_PREFIX/lib"
+build --define=INCLUDEDIR="$SYSTEM_LIBS_PREFIX/include"
+build --define=tflite_with_xnnpack="$XNNPACK_STATUS"
+build --copt="-DEIGEN_ALTIVEC_ENABLE_MMA_DYNAMIC_DISPATCH=$USE_MMA"
+build --strip=always
+build --color=yes
+build --verbose_failures
+build --spawn_strategy=standalone
+EOF
 
-echo "Bazel build successful ---------------------------------------------------------------------------------------------"
+echo "----------------------------------Created bazelrc-----------------------------------"
 
-#building the wheel 
-bazel-bin/tensorflow/tools/pip_package/build_pip_package $CURRENT_DIR
-
-echo "Build wheel ---------------------------------------------------------------------------------------------"
-
-cd $CURRENT_DIR
-
-pip install /tensorflow-2.14.1-cp311-cp311-linux_ppc64le.whl 
-
-echo "Wheel installed succesfuly ---------------------------------------------------------------------------------------------"
-
-python -c "import tensorflow as tf; print(tf.__version__)"
-export TF_HEADER_DIR=$(python -c "import tensorflow as tf; print(tf.sysconfig.get_include())")
-export TF_SHARED_LIBRARY_DIR=$(python -c "import tensorflow as tf; print(tf.sysconfig.get_lib())")
-export TF_SHARED_LIBRARY_NAME="libtensorflow_framework.so.2"
-
-
-#Build tensorflow-text
-echo "------------------------Cloning tensorboard_plugin_wit-------------------"
-cd $CURRENT_DIR
-git clone $PACKAGE_URL
-cd  $PACKAGE_DIR
-git checkout $PACKAGE_VERSION
-
-cd $CURRENT_DIR/$PACKAGE_DIR
-pip install . --no-build-isolation
+export BUILD_TARGET="//tensorflow/tools/pip_package:wheel //tensorflow/tools/lib_package:libtensorflow //tensorflow:libtensorflow_cc${SHLIB_EXT}"
 
 #Install
-if ! python3 setup.py bdist_wheel --dist-dir="$CURRENT_DIR/"; then
+if ! (bazel --bazelrc=$BAZEL_RC_DIR/tensorflow.bazelrc build --local_cpu_resources=HOST_CPUS*0.50 --local_ram_resources=HOST_RAM*0.50 --config=opt ${BUILD_TARGET}) ; then  
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-echo "-----------------------Building tf-text wheel ----------------------------"
-# ./bazel-bin/oss_scripts/pip_package/build_pip_package .
+echo "-------------------------------tensroflow installation successful-------------------------------------"
+
+#copying .so and .a files into local/tensorflow/lib
+mkdir -p $SRC_DIR/tensorflow_pkg
+mkdir -p $SRC_DIR/local
+find ./bazel-bin/tensorflow/tools/pip_package/wheel_house -iname "*.whl" -exec cp {} $SRC_DIR/tensorflow_pkg  \;
+unzip -n $SRC_DIR/tensorflow_pkg/*.whl -d ${SRC_DIR}/local
+mkdir -p ${SRC_DIR}/local/tensorflow/lib
+find  ${SRC_DIR}/local/tensorflow  -type f \( -name "*.so*" -o -name "*.a" \) -exec cp {} ${SRC_DIR}/local/tensorflow/lib \;
+
+#Build libtensorflow and libtensorflow_cc artifacts
+mkdir -p $SRC_DIR/libtensorflow_extracted
+tar -xzf $SRC_DIR/bazel-bin/tensorflow/tools/lib_package/libtensorflow.tar.gz -C $SRC_DIR/libtensorflow_extracted
+mkdir -p ${SRC_DIR}/local/tensorflow/include
+rsync -a  $SRC_DIR/libtensorflow_extracted/lib/*.so*  ${SRC_DIR}/local/tensorflow/lib 
+cp -d -r $SRC_DIR/libtensorflow_extracted/include/* ${SRC_DIR}/local/tensorflow/include
+
+mkdir -p $SRC_DIR/libtensorflow_cc_output/lib
+mkdir -p $SRC_DIR/libtensorflow_cc_output/include
+cp -d  bazel-bin/tensorflow/libtensorflow_cc.so* $SRC_DIR/libtensorflow_cc_output/lib/
+cp -d  bazel-bin/tensorflow/libtensorflow_framework.so* $SRC_DIR/libtensorflow_cc_output/lib/
+cp -d  $SRC_DIR/libtensorflow_cc_output/lib/libtensorflow_framework.so.2 ./libtensorflow_cc_output/lib/libtensorflow_framework.so
+
+chmod u+w $SRC_DIR/libtensorflow_cc_output/lib/libtensorflow*
 
 
-# Run test cases
-if ! (bazel test --test_output=errors --keep_going --jobs=1 tensorboard_plugin_wit/pip_package:all) ; then
-    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+mkdir -p $SRC_DIR/libtensorflow_cc_output/include/tensorflow
+rsync -r --chmod=D777,F666 --exclude '_solib*' --exclude '_virtual_includes/' --exclude 'pip_package/' --exclude 'lib_package/' --include '*/' --include '*.h' --include '*.inc' --exclude '*' bazel-bin/ $SRC_DIR/libtensorflow_cc_output/include
+rsync -r --chmod=D777,F666 --include '*/' --include '*.h' --include '*.inc' --exclude '*' tensorflow/cc $SRC_DIR/libtensorflow_cc_output/include/tensorflow/
+rsync -r --chmod=D777,F666 --include '*/' --include '*.h' --include '*.inc' --exclude '*' tensorflow/core $SRC_DIR/libtensorflow_cc_output/include/tensorflow/
+rsync -r --chmod=D777,F666 --include '*/' --include '*.h' --include '*.inc' --exclude '*' third_party/xla/third_party/tsl/ $SRC_DIR/libtensorflow_cc_output/include/
+rsync -r --chmod=D777,F666 --include '*/' --include '*' --exclude '*.cc' third_party/ $SRC_DIR/libtensorflow_cc_output/include/tensorflow/third_party/
+rsync -a $SRC_DIR/libtensorflow_cc_output/include/*  ${SRC_DIR}/local/tensorflow/include
+rsync -a $SRC_DIR/libtensorflow_cc_output/lib/*.so ${SRC_DIR}/local/tensorflow/lib
+
+mkdir -p repackged_wheel
+
+# Pack the locally built TensorFlow files into a wheel
+wheel pack local/ -d repackged_wheel
+cp -a $SRC_DIR/repackged_wheel/*.whl $CURRENT_DIR
+cd $CURRENT_DIR
+pip3.12 install *.whl
+
+echo " --------------------------------------------- Tensorflow Successfully Installed --------------------------------------------- "
+
+echo "------------------------Cloning tensorboard_plugin_wit-------------------"
+cd $CURRENT_DIR
+git clone $PACKAGE_URL
+cd  $PACKAGE_DIR
+git checkout $PACKAGE_VERSION
+# Move files related to pip building to pwd.
+mv -f "tensorboard_plugin_wit/pip_package/README.rst" .
+mv -f "tensorboard_plugin_wit/pip_package/setup.py" .
+
+# Copy over other built resources
+mkdir -p tensorboard_plugin_wit/static
+mv -f "tensorboard_plugin_wit/pip_package/index.js" tensorboard_plugin_wit/static
+rm -rf tensorboard_plugin_wit/pip_package
+
+# Copy interactive inference common utils over and ship it as part of the pip package.
+mkdir -p tensorboard_plugin_wit/_utils
+cp "utils/common_utils.py" tensorboard_plugin_wit/_utils
+cp "utils/inference_utils.py" tensorboard_plugin_wit/_utils
+cp "utils/platform_utils.py" tensorboard_plugin_wit/_utils
+touch tensorboard_plugin_wit/_utils/__init__.py
+
+mkdir -p tensorboard_plugin_wit/_vendor
+touch tensorboard_plugin_wit/_vendor/__init__.py
+
+#Install
+if ! python3.12 setup.py bdist_wheel --dist-dir="$CURRENT_DIR/"; then
+    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
-    exit 2
-else
-    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-    exit 0
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    exit 1
 fi
