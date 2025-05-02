@@ -22,6 +22,7 @@ PACKAGE_NAME=fullcalendar
 PACKAGE_VERSION=${1:-v6.1.17}
 PACKAGE_URL=https://github.com/fullcalendar/fullcalendar.git
 BUILD_DIR=$(pwd)
+SCRIPT_PATH=$(dirname $(realpath $0))
 
 # Install Repos and Dependencies
 yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
@@ -52,7 +53,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-git apply $BUILD_DIR/fullcalendar_v6.1.17_porting.patch
+git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${PACKAGE_VERSION}_porting.patch
 
 #Set Up Dependencies for FullCalendar Build
 pnpm install
