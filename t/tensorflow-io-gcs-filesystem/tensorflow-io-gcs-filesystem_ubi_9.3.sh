@@ -28,33 +28,156 @@ PACKAGE_URL=https://github.com/tensorflow/io.git
 CURRENT_DIR=$(pwd)
 PACKAGE_DIR=io
 
-yum install -y wget
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
-wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
-mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
 
-dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+echo "Installing GCC 12..."
+yum install -y wget python python-pip python-devel git make cmake binutils
+yum install -y gcc-toolset-12-gcc-c++ gcc-toolset-12 gcc-toolset-12-binutils gcc-toolset-12-binutils-devel
+yum install -y xz xz-devel openssl-devel cmake zlib zlib-devel libjpeg-devel libevent libtool pkg-config  brotli-devel bzip2-devel lz4-devel libtiff-devel ninja-build libgomp
+yum install -y libffi-devel freetype-devel procps-ng openblas-devel meson gcc-gfortran libomp-devel zip unzip sqlite sqlite-devel libxcrypt libxcrypt-compat rsync
 
-# Install dependencies
-yum install -y gcc-toolset-12-gcc gcc-toolset-12-gcc-c++ gcc-toolset-12-libstdc++-devel
-export PATH=/opt/rh/gcc-toolset-12/root/usr/bin:$PATH
+# Set up environment variables for GCC 12
+export GCC_HOME=/opt/rh/gcc-toolset-12/root/usr
+export CC=$GCC_HOME/bin/gcc
+export CXX=$GCC_HOME/bin/g++
+export GCC=$CC
+export GXX=$CXX
 
-yum install -y python python-devel python-pip git make cmake wget openssl-devel libtirpc-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng openblas-devel epel-release meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite libnsl libarrow libarrow-python-devel
+# Add GCC 12 to the PATH (removing previous gcc paths if any)
+export PATH=$(echo $PATH | tr ':' '\n' | grep -v -e '/gcc-toolset' -e '/usr/bin/gcc' | tr '\n' ':')
+export PATH=$GCC_HOME/bin:$PATH
 
+export LD_LIBRARY_PATH=$(echo $LD_LIBRARY_PATH | tr ':' '\n' | grep -v -e '/gcc-toolset' | tr '\n' ':')
+export LD_LIBRARY_PATH=$GCC_HOME/lib64:$LD_LIBRARY_PATH
 
-yum install -y libxcrypt libxcrypt-compat rsync
+ln -sf /opt/rh/gcc-toolset-12/root/usr/lib64/libctf.so.0 /usr/lib64/libctf.so.0
+
+# Verify GCC 12 installation
+gcc --version
+
+OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
+
 python -m pip install --upgrade pip
-python -m pip install --upgrade setuptools wheel build
+python -m pip install --upgrade setuptools wheel build ninja
 
-echo "------------------------Installing dependencies-------------------"
-dnf groupinstall -y "Development Tools"
+INSTALL_ROOT="/install-deps"
+mkdir -p $INSTALL_ROOT
+
+for package in openblas ; do
+    mkdir -p ${INSTALL_ROOT}/${package}
+    export "${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
+    echo "Exported ${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
+done
+
 
 #Install the dependencies
 echo "------------------------Installing dependencies-------------------"
-yum install -y  autoconf automake libtool curl-devel swig hdf5-devel atlas-devel patch patchelf
+yum install -y  autoconf automake libtool curl-devel  atlas-devel patch 
+
+
+#Build HDF5 from source 
+cd $CURRENT_DIR
+git clone https://github.com/HDFGroup/hdf5
+cd hdf5/
+git checkout hdf5-1_12_1
+git submodule update --init
+yum install -y zlib zlib-devel
+./configure --prefix=/usr/local/hdf5 --enable-cxx --enable-fortran  --with-pthread=yes --enable-threadsafe  --enable-build-mode=production --enable-unsupported  --enable-using-memchecker  --enable-clear-file-buffers --with-ssl
+make 
+make install
+
+export LD_LIBRARY_PATH=/usr/local/hdf5/:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/usr/local/hdf5/include:$LD_LIBRARY_PATH
+export HDF5_DIR=/usr/local/hdf5
+echo "-----------------------------------------------------Installed HDF5 to /usr/local-----------------------------------------------------"
+
+
+#Build and install h5py from source 
+cd $CURRENT_DIR
+git clone https://github.com/h5py/h5py.git
+cd h5py/
+git checkout 3.13.0
+python -m pip install .  
+
+cd $CURRENT_DIR
+python -c "import h5py; print(h5py.__version__)"
+echo "-----------------------------------------------------Installed h5py-----------------------------------------------------"
+
+
+#installing openblas
+cd $CURRENT_DIR
+git clone https://github.com/OpenMathLib/OpenBLAS
+cd OpenBLAS
+git checkout v0.3.29
+git submodule update --init
+# Set build options
+declare -a build_opts
+# Fix ctest not automatically discovering tests
+LDFLAGS=$(echo "${LDFLAGS}" | sed "s/-Wl,--gc-sections//g")
+export CF="${CFLAGS} -Wno-unused-parameter -Wno-old-style-declaration"
+unset CFLAGS
+export USE_OPENMP=1
+build_opts+=(USE_OPENMP=${USE_OPENMP})
+# Handle Fortran flags
+if [ ! -z "$FFLAGS" ]; then
+    export FFLAGS="${FFLAGS/-fopenmp/ }"
+    export FFLAGS="${FFLAGS} -frecursive"
+    export LAPACK_FFLAGS="${FFLAGS}"
+fi
+export PLATFORM=$(uname -m)
+build_opts+=(BINARY="64")
+build_opts+=(DYNAMIC_ARCH=1)
+build_opts+=(TARGET="POWER9")
+BUILD_BFLOAT16=1
+# Placeholder for future builds that may include ILP64 variants.
+build_opts+=(INTERFACE64=0)
+build_opts+=(SYMBOLSUFFIX="")
+# Build LAPACK
+build_opts+=(NO_LAPACK=0)
+# Enable threading and set the number of threads
+build_opts+=(USE_THREAD=1)
+build_opts+=(NUM_THREADS=8)
+# Disable CPU/memory affinity handling to avoid problems with NumPy and R
+build_opts+=(NO_AFFINITY=1)
+# Build OpenBLAS
+make ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${OPENBLAS_PREFIX}
+# Install OpenBLAS
+CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${OPENBLAS_PREFIX}" ${build_opts[@]}
+export LD_LIBRARY_PATH=${OPENBLAS_PREFIX}/lib:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=${OPENBLAS_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
+pkg-config --modversion openblas
+echo "-----------------------------------------------------Installed openblas-----------------------------------------------------"
+
+#installing patchelf from source
+cd $CURRENT_DIR
+yum install -y git autoconf automake libtool make
+git clone https://github.com/NixOS/patchelf.git
+cd patchelf
+./bootstrap.sh
+./configure
+make
+make install
+ln -s /usr/local/bin/patchelf /usr/bin/patchelf
+echo "-----------------------------------------------------Installed patchelf-----------------------------------------------------"
+
+
+#installing patchelf from source
+cd $CURRENT_DIR
+git clone https://github.com/alisw/libtirpc
+cd libtirpc
+yum install -y krb5-devel
+./bootstrap
+./configure --prefix=/usr/local
+make -j$(nproc)
+make install
+ldconfig
+export CPATH=/usr/local/include:$CPATH
+export LIBRARY_PATH=/usr/local/lib:$LIBRARY_PATH
+export CPATH=/usr/local/include:$CPATH
+export LIBRARY_PATH=/usr/local/lib:$LIBRARY_PATH
+ls /usr/local/include/tirpc/rpc/types.h
+
+
 
 #Set JAVA_HOME
 echo "------------------------Installing java-------------------"
@@ -132,7 +255,7 @@ export HERMETIC_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -
 export PYTHON_BIN_PATH=$(which python)
 export GCC_HOST_COMPILER_PATH=$(which gcc)
 export CC=$GCC_HOST_COMPILER_PATH
-export PYTHON=/root/tensorflow/tfenv/bin/python
+export PYTHON=$(which python)
 export SP_DIR=/root/tensorflow/tfenv/lib/python$(python --version | awk '{print $2}' | cut -d. -f1,2)/site-packages/
 export USE_DEFAULT_PYTHON_LIB_PATH=1
 export TF_NEED_JEMALLOC=1
@@ -154,6 +277,7 @@ wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t
 git apply tf_2.14.1_fix.patch
 echo "-----------------------Applied patch successfully---------------------------------------"
 
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 yes n | ./configure
 
 echo "------------------------Bazel query-------------------"
@@ -252,7 +376,7 @@ git apply tf-io-gcs-filesystem.patch
 echo "---------------------------------Building the package--------------------------------------------"
 
 #Install
-if ! (bazel build --experimental_repo_remote_exec --cxxopt="-std=c++17" --host_cxxopt="-std=c++17" --repo_env=CXX="g++ -std=c++17" //tensorflow_io/... //tensorflow_io_gcs_filesystem/...) ; then
+if ! (bazel build   --experimental_repo_remote_exec   --cxxopt="-std=c++17"   --cxxopt="-I/usr/local/include/tirpc"   --host_cxxopt="-std=c++17"   --host_cxxopt="-I/usr/local/include/tirpc"   --repo_env=CXX="g++ -std=c++17"   //tensorflow_io/... //tensorflow_io_gcs_filesystem/...) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -270,7 +394,7 @@ python setup.py bdist_wheel --data bazel-bin --project tensorflow-io-gcs-filesys
 
 
 # Run tests for the pip_package directory
-if ! (bazel test --cxxopt='-std=c++17' --experimental_repo_remote_exec //tensorflow_io/...); then
+if ! (bazel test --cxxopt='-std=c++17' --cxxopt='-I/usr/local/include/tirpc' --host_cxxopt='-std=c++17' --host_cxxopt='-I/usr/local/include/tirpc' --experimental_repo_remote_exec //tensorflow_io/...); then
     # Check if the failure is specifically due to "No test targets were found"
     if bazel test //tensorflow_io/... 2>&1 | grep -q "No test targets were found"; then
         echo "------------------$PACKAGE_NAME:no_test_targets_found---------------------"
@@ -290,11 +414,3 @@ else
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | Both_Install_and_Test_Success"
     exit 0
 fi
-
-
-
-
-
-
-
-
