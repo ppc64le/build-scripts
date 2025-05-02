@@ -29,7 +29,7 @@ export _GLIBCXX_USE_CXX11_ABI=1
 
 # Install dependencies
 dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
-    git gcc-toolset-13 cmake ninja-build rust cargo \
+    git gcc-toolset-13 ninja-build rust cargo \
     python${PYTHON_VER}-devel python${PYTHON_VER}-pip jq pkg-config atlas
 
 source /opt/rh/gcc-toolset-13/enable
@@ -51,7 +51,7 @@ git checkout $PACKAGE_VERSION
 git submodule update --init
 
 # Install Python dependencies
-python${PYTHON_VER} -m pip install ninja cmake 'pytest==8.2.2' hydra-core
+python${PYTHON_VER} -m pip install ninja 'cmake<4' 'pytest==8.2.2' hydra-core
 python${PYTHON_VER} -m pip install --upgrade pip setuptools wheel
 
 
