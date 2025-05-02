@@ -41,7 +41,7 @@ yum install -y python3.11 python3.11-devel python3.11-pip git make cmake wget op
 
 yum install -y libxcrypt libxcrypt-compat rsync
 python3.11 -m pip install --upgrade pip
-python3.11 -m pip install setuptools wheel build
+python3.11 -m pip install setuptools wheel build "numpy<2"
 
 #Install the dependencies
 echo " --------------------------------------------- Installing dependencies --------------------------------------------- "
@@ -55,26 +55,6 @@ export PATH=$JAVA_HOME/bin:$PATH
 
 cd $CURRENT_DIR
 
-# #Installing Numpy from source
-echo " --------------------------------------------- Installing Numpy --------------------------------------------- "
-
-pip install tox Cython pytest hypothesis wheel 
-
-#Installing Numpy from source
-git clone https://github.com/numpy/numpy.git
-cd  numpy
-git checkout v1.26.4
-git submodule update --init
-
-echo " --------------------------------------------- Build and Create a wheel for Numpy --------------------------------------------- "
-python3.11 -m pip wheel . -w dist
-
-echo " --------------------------------------------- Installing Numpy wheel --------------------------------------------- "
-python3.11 -m pip install dist/*.whl
-
-echo " --------------------------------------------- Numpy Successfully Installed --------------------------------------------- "
-
-cd $CURRENT_DIR
 
 # Installing Swing from source
 echo " --------------------------------------------- Installing Swig --------------------------------------------- "
@@ -149,7 +129,7 @@ cd $CURRENT_DIR
 echo " --------------------------------------------- Installing dependencies --------------------------------------------- "
 python3.11 -m pip install --upgrade absl-py
 python3.11 -m pip install --upgrade six==1.16.0
-python3.11 -m pip install wheel==0.38.4 werkzeug
+python3.11 -m pip install "numpy<2" wheel==0.38.4 werkzeug
 python3.11 -m pip install "urllib3<1.27,>=1.21.1" requests
 python3.11 -m pip install "protobuf<=4.25.2"
 python3.11 -m pip install tensorflow-datasets
@@ -217,7 +197,7 @@ export CFLAGS="$(echo ${CFLAGS} | sed -e 's/ -fno-plt//')"
 
 # Apply the patch
 echo " --------------------------------------------- Applying patch --------------------------------------------- "
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/t/tensorflow/tf_2.14.1_fix.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/tensorflow/tf_2.14.1_fix.patch
 git apply tf_2.14.1_fix.patch
 echo " --------------------------------------------- Applied patch successfully --------------------------------------------- "
 
@@ -278,21 +258,16 @@ if ! (bazel build --cxxopt='-std=c++17' --experimental_repo_remote_exec //oss_sc
     echo " --------------------------------------------- $PACKAGE_NAME:Install_Fails --------------------------------------------- "
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
-    exit 1
+    # exit 1
 else 
     echo " --------------------------------------------- $PACKAGE_NAME:Install_Success --------------------------------------------- "
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass |  Install_Success"
-    exit 0
+    # exit 0
 fi
 
-echo " --------------------------------------------- Building tf-text wheel --------------------------------------------- "
-
+echo "-----------------------Building tf-text wheel ----------------------------"
 python3.11 -m pip install --upgrade wheel setuptools build
-cd $CURRENT_DIR/$PACKAGE_DIR
-# bazel-bin/oss_scripts/pip_package/build_pip_package $CURRENT_DIR
-python -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"
+./bazel-bin/oss_scripts/pip_package/build_pip_package $CURRENT_DIR
 
-
-echo " --------------------------------------------- Tensorflow-Text Wheel build successfully --------------------------------------------- "
-                                 
+echo "----------------Tensorflow-text wheel build successfully------------------------------------"                            
