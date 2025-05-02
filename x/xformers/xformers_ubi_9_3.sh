@@ -98,7 +98,7 @@ else
 fi
 
 # Build and install xformers
-if ! python${PYTHON_VER} -m pip install --no-build-isolation -e . -vvv; then
+if ! python${PYTHON_VER} -m pip install --use-pep517 -e . --config-settings editable_mode=compat -vvv; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail |  Build_fails"
