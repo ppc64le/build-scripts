@@ -1,0 +1,15 @@
+{
+  "maintainer": "Amitkumar282",
+  "package_name": "fullcalendar",
+  "github_url": "https://github.com/fullcalendar/fullcalendar.git",
+  "version": "v6.1.17",
+  "package_dir": "f/fullcalendar",
+  "default_branch": "master",
+  "build_script": "fullcalendar_v6.1.17_ubi9.3.sh", 
+  "docker_build": "false",
+  "use_non_root_user": "false",
+  "validate_build_script": "true",
+  "*": {
+    "build_script": "fullcalendar_v6.1.17_ubi9.3.sh"
+  }
+}
