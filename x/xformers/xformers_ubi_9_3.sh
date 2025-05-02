@@ -54,6 +54,7 @@ git submodule update --init
 python${PYTHON_VER} -m pip install --upgrade pip setuptools wheel
 python${PYTHON_VER} -m pip install ninja 'cmake<4' 'pytest==8.2.2' hydra-core
 
+
 # Check BUILD_DEPS passed from Jenkins
 echo "BUILD_DEPS: $BUILD_DEPS"
 
@@ -97,7 +98,7 @@ else
 fi
 
 # Build and install xformers
-if ! python${PYTHON_VER} -m pip install --use-pep517 -e . --config-settings editable_mode=compat -vvv; then
+if ! python${PYTHON_VER} -m pip install --no-build-isolation -e . -vvv; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail |  Build_fails"
