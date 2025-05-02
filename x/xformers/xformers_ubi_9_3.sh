@@ -51,9 +51,8 @@ git checkout $PACKAGE_VERSION
 git submodule update --init
 
 # Install Python dependencies
-python${PYTHON_VER} -m pip install ninja 'cmake<4' 'pytest==8.2.2' hydra-core
 python${PYTHON_VER} -m pip install --upgrade pip setuptools wheel
-
+python${PYTHON_VER} -m pip install ninja 'cmake<4' 'pytest==8.2.2' hydra-core
 
 # Check BUILD_DEPS passed from Jenkins
 echo "BUILD_DEPS: $BUILD_DEPS"
