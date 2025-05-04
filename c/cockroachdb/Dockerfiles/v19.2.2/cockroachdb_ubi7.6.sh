@@ -1,9 +1,10 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package        : cockroach
-# Version        : v19.1.8
+# Version        : v19.2.2
 # Source repo    : https://github.com/cockroachdb/cockroach
-# Tested on      : UBI 7.6, UBI 7.8, RHEL 7.6
+# Tested on      : UBI 7.6, RHEL 7.6
 # Script License : Apache License, Version 2 or later
 # Maintainer     : Amit Sadaphule <amits2@us.ibm.com>
 #
@@ -15,14 +16,20 @@
 #
 # ----------------------------------------------------------------------------
 
-#!/bin/bash
-
 # Install all dependencies
+yum makecache fast
 yum install -y git.ppc64le make.ppc64le gcc-c++.ppc64le autoconf.noarch ncurses-devel.ppc64le wget.ppc64le openssl-devel.ppc64le subscription-manager.ppc64le
 subscription-manager repos --enable rhel-7-server-for-power-le-rhscl-rpms
-yum install -y rh-nodejs8-nodejs.ppc64le
-export PATH=$PATH:/opt/rh/rh-nodejs8/root/usr/bin/
+yum makecache fast
+yum install -y rh-nodejs12-nodejs.ppc64le
+
+export PATH=$PATH:/opt/rh/rh-nodejs12/root/usr/bin/
 npm install yarn --global
+
+COCKROACH_MAKEFILE_PATCH=${COCKROACH_MAKEFILE:-'https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/Dockerfiles/v19.2.2/patches/cockroach_makefile.patch'}
+JEMALLOC_PATCH=${JEMALLOC_PATCH:-'https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/Dockerfiles/v19.2.2/patches/jemalloc_stats_test.patch'}
+ARROW_MEMORY_PATCH=${ARRAOW_MEMORY_PATCH:-'https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/Dockerfiles/v19.2.2/patches/arrow_memory.patch'}
+ROCKSDB_CMAKELISTS=${ROCKSDB_CMAKELISTS:-'https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/Dockerfiles/v19.2.2/patches/rocksdb_cmakelists.patch'}
 
 CWD=`pwd`
 
@@ -35,34 +42,39 @@ make
 make install
 cd $CWD && rm -rf cmake-3.16.1.tar.gz cmake-3.16.1
 
-# Setup go environment and install go
+# Setup go environment ans install go
 GOPATH=/root/go
 COCKROACH_HOME=$GOPATH/src/github.com/cockroachdb
 mkdir -p $COCKROACH_HOME
 export GOPATH
 
-curl -O https://dl.google.com/go/go1.12.15.linux-ppc64le.tar.gz
-tar -C /usr/local -xzf go1.12.15.linux-ppc64le.tar.gz
-rm -rf go1.12.15.linux-ppc64le.tar.gz
+curl -O https://dl.google.com/go/go1.13.5.linux-ppc64le.tar.gz
+tar -C /usr/local -xzf go1.13.5.linux-ppc64le.tar.gz
+rm -rf go1.13.5.linux-ppc64le.tar.gz
 export PATH=$PATH:/usr/local/go/bin
 
 # Clone cockroach and build
 cd $COCKROACH_HOME
 git clone https://github.com/cockroachdb/cockroach.git
 cd cockroach
-git checkout -b v19.1.8 tags/v19.1.8
-# This step assumes that you have already copied the patches directory as a sibbling of this script
-cp $CWD/patches/* .
+COCKROACH_VERSION=${1:-v19.2.2}
+git checkout -b $COCKROACH_VERSION tags/$COCKROACH_VERSION
+
+# Download the patches
+wget ${COCKROACH_MAKEFILE_PATCH}
+wget ${ARRAOW_MEMORY_PATCH}
+wget ${JEMALLOC_PATCH}
+wget ${ROCKSDB_CMAKELISTS}
 git apply cockroach_makefile.patch
 git apply jemalloc_stats_test.patch
-make buildoss
+make build
 # Execute tests
-echo "The tests for the following packages consistently fail:
+echo "The tests for one or more of the following packages may fail:
+  pkg/ccl/xx
   pkg/cli
-  pkg/util/log
-and those for the following packages fail occassionally, but pass when executed independently:
-  pkg/server
+  pkg/storage/engine
   pkg/sql/logictest
+But those failing tests pass when we execute them independently.
 This result has been confirmed to be in parity with intel though."
 export GOMAXPROCS=4
 make test TESTFLAGS='-v -count=1' GOFLAGS='-p 1'

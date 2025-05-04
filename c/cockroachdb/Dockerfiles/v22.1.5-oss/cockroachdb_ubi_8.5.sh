@@ -27,6 +27,8 @@ yum install -y \
     http://rpmfind.net/linux/centos/8-stream/AppStream/ppc64le/os/Packages/bison-3.0.4-10.el8.ppc64le.rpm \
     http://rpmfind.net/linux/epel/8/Everything/ppc64le/Packages/c/ccache-3.7.7-1.el8.ppc64le.rpm
 
+WEBPACK_VENDOR_PATCH=${WEBPACK_VENDOR_PATCH:-"https://raw.githubusercontent.com/ppc64le/build-scripts/master/c/cockroachdb/v22.1.5-oss/patches/webpack_vendor.patch"}
+
 cd $HOME
 
 # Install nodejs
@@ -52,13 +54,13 @@ rm -rf go1.17.11.linux-ppc64le.tar.gz
 export PATH=$PATH:/usr/local/go/bin
 
 # Clone cockroach and build
-COCKROACH_VERSION=v22.1.5
+COCKROACH_VERSION=${1:-v22.1.5}
 cd $COCKROACH_HOME
 git clone https://github.com/cockroachdb/cockroach.git
 cd cockroach
 git checkout $COCKROACH_VERSION
 
-cp $CWD/patches/* .
+wget ${WEBPACK_VENDOR_PATCH}
 git apply webpack_vendor.patch
 make buildoss
 
