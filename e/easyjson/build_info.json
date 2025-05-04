@@ -1,0 +1,15 @@
+{
+   "maintainer": "stutiibm",
+   "package_name": "easyjson",
+   "github_url": "https://github.com/mailru/easyjson",
+   "version": "v0.9.0",
+   "default_branch": "main",
+   "build_script": "easyjson_ubi_9.3.sh",
+   "package_dir": "e/easyjson",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*" : {
+      "build_script": "easyjson_ubi_9.3.sh"
+   }
+}
