@@ -1,0 +1,15 @@
+{
+   "maintainer": "stutiibm",
+   "package_name": "term",
+   "github_url": "https://github.com/moby/term",
+   "version": "v0.5.2",
+   "default_branch": "main",
+   "build_script": "term_ubi_9.3.sh",
+   "package_dir": "t/term",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*" : {
+      "build_script": "term_ubi_9.3.sh"
+   }
+}
