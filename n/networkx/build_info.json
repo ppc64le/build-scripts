@@ -1,0 +1,16 @@
+{
+	"maintainer": "vivek8123",
+	"package_name": "networkx",
+	"github_url": "https://github.com/networkx/networkx.git",
+	"version": "2.8.4",
+	"default_branch": "main",
+	"build_script": "networkx_ubi_9.3.sh",
+	"package_dir": "n/networkx",
+	"docker_build": false,
+	"validate_build_script": true,
+	"wheel_build" : true,
+	"use_non_root_user": false,
+	"*.*.*": {
+	   "build_script": "networkx_ubi_9.3.sh"
+	}
+}
