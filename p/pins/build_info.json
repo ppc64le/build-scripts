@@ -1,0 +1,15 @@
+{
+   "maintainer": "stutiibm",
+   "package_name": "pins",
+   "github_url": "https://github.com/cran/pins",
+   "version": "1.3.0",
+   "default_branch": "master",
+   "build_script": "pins_ubi_9.3.sh",
+   "package_dir": "p/pins",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*.*.*": {
+     "build_script": "pins_ubi_9.3.sh"
+   }
+}
