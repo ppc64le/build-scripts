@@ -202,12 +202,12 @@ cd $CURRENT_DIR
 
 # Install six.
 echo "------------------------Installing dependencies-------------------"
-pip install --upgrade absl-py
-pip install --upgrade six==1.16.0
-pip install "numpy<2" wheel==0.38.4 werkzeug
-pip install "urllib3<1.27,>=1.21.1" requests
-pip install "protobuf<=4.25.2"
-pip install tensorflow-datasets
+python3.11 -m pip install --upgrade absl-py
+python3.11 -m pip install --upgrade six==1.16.0
+python3.11 -m pip install "numpy<2" wheel==0.38.4 werkzeug
+python3.11 -m pip install "urllib3<1.27,>=1.21.1" requests
+python3.11 -m pip install "protobuf<=4.25.2"
+python3.11 -m pip install tensorflow-datasets
 
 
 # Install numpy, scipy and scikit-learn required by the builds
@@ -230,7 +230,7 @@ cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 echo "------------------------Generating wheel-------------------"
-pip install --upgrade pip wheel
+python3.11 -m pip install --upgrade pip wheel
 python3.11 setup.py -q bdist_wheel --project tensorflow_io_gcs_filesystem
 cd dist
 python3.11 -m pip install tensorflow_io_gcs_filesystem-*-linux_ppc64le.whl
