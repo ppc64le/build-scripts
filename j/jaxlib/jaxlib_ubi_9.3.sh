@@ -27,35 +27,39 @@ CURRENT_DIR=$pwd
 
 # Install dependencies
 echo "Installing dependencies -------------------------------------------------------------"
-yum install -y wget python-devel python-pip git gcc-toolset-13 gcc-toolset-13-gcc-c++ make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel
-export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+yum install -y python-devel python-pip git gcc gcc-c++ make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel 
+
 echo "Installing dependencies -------------------------------------------------------------"
-yum install -y zlib-devel freetype-devel procps-ng openblas-devel meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel
+yum install -y zlib-devel freetype-devel procps-ng openblas-devel  meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel  
 
 echo "Installing dependencies -------------------------------------------------------------"
 yum install -y java-11-openjdk-devel  libtool xz  libevent-devel  clang java-11-openjdk java-11-openjdk-headless zip openblas
+ 
 
 export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-11)(?=.*ppc64le)')
 export PATH=$JAVA_HOME/bin:$PATH
 export LD_LIBRARY_PATH=/usr/lib64/:$LD_LIBRARY_PATH
 
 #installing bazel from source
-echo "Installing bazel -------------------------------------------------------------"
-mkdir bazel
-cd bazel
-wget https://github.com/bazelbuild/bazel/releases/download/5.1.1/bazel-5.1.1-dist.zip
-unzip bazel-5.1.1-dist.zip
-echo "Installing bazel -------------------------------------------------------------"
-env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
-cp output/bazel /usr/local/bin
-export PATH=/usr/local/bin:$PATH
-bazel --version
+yum install -y  zip java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless unzip
+
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+export PATH=$PATH:$JAVA_HOME/bin
+
+wget https://github.com/bazelbuild/bazel/releases/download/6.5.0/bazel-6.5.0-dist.zip
+mkdir -p  bazel-6.5.0
+unzip bazel-6.5.0-dist.zip -d bazel-6.5.0/
+cd bazel-6.5.0/
+export EXTRA_BAZEL_ARGS="--host_javabase=@local_jdk//:jdk" bash
+./compile.sh
+#export the path of bazel bin
+export PATH=/home/bazel-6.5.0/output/:$PATH
 cd $CURRENT_DIR
 
+ 
 echo "Installing dependencies via pip3-------------------------------------------------------------"
 pip3 install numpy==1.26.4 scipy wheel pytest
-pip3 install numpy==1.26.4 opt-einsum==3.3.0  ml-dtypes==0.5.0 absl-py
+pip3 install numpy==1.26.4 opt-einsum==3.3.0  ml-dtypes==0.5.0 absl-py 
 
 # Clone the repository
 git clone $PACKAGE_URL
