@@ -27,25 +27,24 @@ CURRENT_DIR=$pwd
 
 # Install dependencies
 echo "Installing dependencies -------------------------------------------------------------"
-yum install -y python-devel python-pip git gcc gcc-c++ make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel 
+yum install -y python-devel python-pip git make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel 
 
 echo "Installing dependencies -------------------------------------------------------------"
-yum install -y zlib-devel freetype-devel procps-ng openblas-devel  meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel  
+yum install -y zlib-devel freetype-devel procps-ng openblas-devel  meson ninja-build libomp-devel zip unzip sqlite-devel  
 
 echo "Installing dependencies -------------------------------------------------------------"
-yum install -y java-11-openjdk-devel  libtool xz  libevent-devel  clang java-11-openjdk java-11-openjdk-headless zip openblas
- 
+yum install -y java-11-openjdk-devel  libtool xz  libevent-devel  clang java-11-openjdk java-11-openjdk-headless  openblas rsync
+yum install -y  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils 
+
+export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr
+export CC=$GCC_HOME/bin/gcc
+export CXX=$GCC_HOME/bin/g++
 
 export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-11)(?=.*ppc64le)')
 export PATH=$JAVA_HOME/bin:$PATH
 export LD_LIBRARY_PATH=/usr/lib64/:$LD_LIBRARY_PATH
 
 #installing bazel from source
-yum install -y  zip java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless unzip
-
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
-export PATH=$PATH:$JAVA_HOME/bin
-
 echo "Installing bazel -------------------------------------------------------------"
 mkdir bazel
 cd bazel
