@@ -33,12 +33,12 @@ yum install -y wget
 yum install -y gcc-toolset-12-gcc.ppc64le gcc-toolset-12-gcc-c++
 export PATH=/opt/rh/gcc-toolset-12/root/usr/bin:$PATH
 
-yum install -y python python-devel python-pip make cmake wget git openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite 
+yum install -y python3.11-devel python3.11-pip make cmake wget git openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite 
 
 yum install -y gcc-toolset-12-gcc-c++ gcc-toolset-12 gcc-toolset-12-binutils gcc-toolset-12-binutils-devel
 yum install -y libxcrypt-compat rsync
-python -m pip install --upgrade pip
-pip install setuptools wheel
+python3.11 -m pip install --upgrade pip
+python3.11 -m pip install setuptools wheel
 
 yum install -y  autoconf automake libtool curl-devel  atlas-devel patch 
 
@@ -109,10 +109,10 @@ cd $CURRENT_DIR
 git clone https://github.com/h5py/h5py.git
 cd h5py/
 git checkout 3.13.0
-python -m pip install .  
+python3.11 -m pip install .  
 
 cd $CURRENT_DIR
-python -c "import h5py; print(h5py.__version__)"
+python3.11 -c "import h5py; print(h5py.__version__)"
 echo "-----------------------------------------------------Installed h5py-----------------------------------------------------"
 
 
@@ -168,9 +168,9 @@ cd $CURRENT_DIR
 
 # Install six.
 echo "------------------------Installing dependencies-------------------"
-pip install --upgrade absl-py
-pip install --upgrade six==1.16.0
-pip install "numpy<2" "urllib3<1.27" wheel==0.38.4 werkzeug
+python3.11 -m pip install --upgrade absl-py
+python3.11 -m pip install --upgrade six==1.16.0
+python3.11 -m pip install "numpy<2" "urllib3<1.27" wheel==0.38.4 werkzeug
 
 
 # Install numpy, scipy and scikit-learn required by the builds
