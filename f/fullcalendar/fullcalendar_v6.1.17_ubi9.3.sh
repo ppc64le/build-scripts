@@ -34,7 +34,7 @@ dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarc
 yum install -y git tar jq firefox
 
 export FIREFOX_BIN=$(which firefox)
-export TZ=America/New_York
+export TZ=Asia/Kolkata
 export TURBO_VERSION=1.4.4
 
 # Install Node.js manually (compatible version)
