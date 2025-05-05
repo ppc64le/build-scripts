@@ -25,7 +25,6 @@ PACKAGE_VERSION=${1:-jaxlib-v0.4.7}
 PACKAGE_URL=https://github.com/jax-ml/jax
 CURRENT_DIR=$pwd
 
-
 # Install dependencies
 echo "Installing dependencies -------------------------------------------------------------"
 yum install -y wget python-devel python-pip git gcc-toolset-13 gcc-toolset-13-gcc-c++ make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel
