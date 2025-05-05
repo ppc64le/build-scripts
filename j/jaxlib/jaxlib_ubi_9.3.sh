@@ -46,14 +46,16 @@ yum install -y  zip java-11-openjdk java-11-openjdk-devel java-11-openjdk-headle
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
 
-wget https://github.com/bazelbuild/bazel/releases/download/6.5.0/bazel-6.5.0-dist.zip
-mkdir -p  bazel-6.5.0
-unzip bazel-6.5.0-dist.zip -d bazel-6.5.0/
-cd bazel-6.5.0/
-export EXTRA_BAZEL_ARGS="--host_javabase=@local_jdk//:jdk" bash
-./compile.sh
-#export the path of bazel bin
-export PATH=/home/bazel-6.5.0/output/:$PATH
+echo "Installing bazel -------------------------------------------------------------"
+mkdir bazel
+cd bazel
+wget https://github.com/bazelbuild/bazel/releases/download/5.1.1/bazel-5.1.1-dist.zip
+unzip bazel-5.1.1-dist.zip
+echo "Installing bazel -------------------------------------------------------------"
+env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
+cp output/bazel /usr/local/bin
+export PATH=/usr/local/bin:$PATH
+bazel --version
 cd $CURRENT_DIR
 
  
