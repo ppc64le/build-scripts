@@ -4,6 +4,7 @@
 # Version       : v1.6.40
 # Source repo   : https://github.com/peterolson/BigInteger.js.git
 # Tested on     : rhel 7.6
+# Travis-Check  : False
 # Script License: Apache License Version 2.0
 # Maintainer    : Lysanne Fernandes <lysannef@us.ibm.com>
 #
