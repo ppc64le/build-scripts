@@ -38,7 +38,7 @@ yum install -y python3.11-devel python3.11-pip make cmake wget git openssl-devel
 yum install -y gcc-toolset-12-gcc-c++ gcc-toolset-12 gcc-toolset-12-binutils gcc-toolset-12-binutils-devel
 yum install -y libxcrypt-compat rsync
 python3.11 -m pip install --upgrade pip
-python3.11 -m pip install setuptools wheel
+python3.11 -m pip install setuptools==75.3.0 wheel
 
 yum install -y  autoconf automake libtool curl-devel  atlas-devel patch 
 
