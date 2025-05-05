@@ -30,7 +30,7 @@ PACKAGE_DIR=io
 
 
 echo "Installing GCC 12..."
-yum install -y wget python python-pip python-devel git make cmake binutils
+yum install -y wget python3.11 python3.11-pip python3.11-devel git make cmake binutils
 yum install -y gcc-toolset-12-gcc-c++ gcc-toolset-12 gcc-toolset-12-binutils gcc-toolset-12-binutils-devel
 yum install -y xz xz-devel openssl-devel cmake zlib zlib-devel libjpeg-devel libevent libtool pkg-config  brotli-devel bzip2-devel lz4-devel libtiff-devel ninja-build libgomp
 yum install -y libffi-devel freetype-devel procps-ng openblas-devel meson gcc-gfortran libomp-devel zip unzip sqlite sqlite-devel libxcrypt libxcrypt-compat rsync
@@ -56,8 +56,8 @@ gcc --version
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
-python -m pip install --upgrade pip
-python -m pip install --upgrade setuptools wheel build ninja
+python3.11 -m pip install --upgrade pip
+python3.11 -m pip install --upgrade setuptools wheel build ninja
 
 INSTALL_ROOT="/install-deps"
 mkdir -p $INSTALL_ROOT
@@ -97,10 +97,10 @@ cd $CURRENT_DIR
 git clone https://github.com/h5py/h5py.git
 cd h5py/
 git checkout 3.13.0
-python -m pip install .  
+python3.11 -m pip install .  
 
 cd $CURRENT_DIR
-python -c "import h5py; print(h5py.__version__)"
+python3.11 -c "import h5py; print(h5py.__version__)"
 echo "-----------------------------------------------------Installed h5py-----------------------------------------------------"
 
 
@@ -202,12 +202,12 @@ cd $CURRENT_DIR
 
 # Install six.
 echo "------------------------Installing dependencies-------------------"
-pip install --upgrade absl-py
-pip install --upgrade six==1.16.0
-pip install "numpy<2" wheel==0.38.4 werkzeug
-pip install "urllib3<1.27,>=1.21.1" requests
-pip install "protobuf<=4.25.2"
-pip install tensorflow-datasets
+python3.11 -m pip install --upgrade absl-py
+python3.11 -m pip install --upgrade six==1.16.0
+python3.11 -m pip install "numpy<2" wheel==0.38.4 werkzeug
+python3.11 -m pip install "urllib3<1.27,>=1.21.1" requests
+python3.11 -m pip install "protobuf<=4.25.2"
+python3.11 -m pip install tensorflow-datasets
 
 
 # Install numpy, scipy and scikit-learn required by the builds
@@ -225,10 +225,10 @@ cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 echo "------------------------Generating wheel-------------------"
-pip install --upgrade pip wheel
-python setup.py -q bdist_wheel --project tensorflow_io_gcs_filesystem
+python3.11 -m pip install --upgrade pip wheel
+python3.11 setup.py -q bdist_wheel --project tensorflow_io_gcs_filesystem
 cd dist
-pip install tensorflow_io_gcs_filesystem-*-linux_ppc64le.whl
+python3.11 -m pip install tensorflow_io_gcs_filesystem-*-linux_ppc64le.whl
 cd ..
 rm -rf dist
 
@@ -245,13 +245,13 @@ export CC_OPT_FLAGS="-mcpu=${cpu_model} -mtune=${cpu_model}"
 echo "CC_OPT_FLAGS set to: ${CC_OPT_FLAGS}"
 
 export CC_OPT_FLAGS="-mcpu=${cpu_model} -mtune=${cpu_model}"
-export TF_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
-export HERMETIC_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
-export PYTHON_BIN_PATH=$(which python)
+export TF_PYTHON_VERSION=$(python3.11 --version | awk '{print $2}' | cut -d. -f1,2)
+export HERMETIC_PYTHON_VERSION=$(python3.11 --version | awk '{print $2}' | cut -d. -f1,2)
+export PYTHON_BIN_PATH=$(which python3.11)
 export GCC_HOST_COMPILER_PATH=$(which gcc)
 export CC=$GCC_HOST_COMPILER_PATH
-export PYTHON=$(which python)
-export SP_DIR=/root/tensorflow/tfenv/lib/python$(python --version | awk '{print $2}' | cut -d. -f1,2)/site-packages/
+export PYTHON=$(which python3.11)
+export SP_DIR=/root/tensorflow/tfenv/lib/python$(python3.11 --version | awk '{print $2}' | cut -d. -f1,2)/site-packages/
 export USE_DEFAULT_PYTHON_LIB_PATH=1
 export TF_NEED_JEMALLOC=1
 export TF_ENABLE_XLA=1
@@ -290,13 +290,13 @@ echo "Build wheel --------------------------------------------------------------
 
 cd $CURRENT_DIR
 
-pip install tensorflow-2.14.1-*-linux_ppc64le.whl
+python3.11 -m pip install tensorflow-2.14.1-*-linux_ppc64le.whl
 
 echo "Wheel installed succesfuly ---------------------------------------------------------------------------------------------"
 
-python -c "import tensorflow as tf; print(tf.__version__)"
-export TF_HEADER_DIR=$(python -c "import tensorflow as tf; print(tf.sysconfig.get_include())")
-export TF_SHARED_LIBRARY_DIR=$(python -c "import tensorflow as tf; print(tf.sysconfig.get_lib())")
+python3.11 -c "import tensorflow as tf; print(tf.__version__)"
+export TF_HEADER_DIR=$(python3.11 -c "import tensorflow as tf; print(tf.sysconfig.get_include())")
+export TF_SHARED_LIBRARY_DIR=$(python3.11 -c "import tensorflow as tf; print(tf.sysconfig.get_lib())")
 export TF_SHARED_LIBRARY_NAME="libtensorflow_framework.so.2"
 
 export BAZEL_CXXOPTS="-std=c++17"
@@ -306,15 +306,15 @@ export CXX=/opt/rh/gcc-toolset-12/root/usr/bin/g++
 
 
 cd $CURRENT_DIR/io
-pip install grpcio-tools==1.56.2 --no-cache-dir
-pip install .
+python3.11 -m pip install grpcio-tools==1.56.2 --no-cache-dir
+python3.11 -m pip install .
 
 export PYTHON_BIN_PATH="$PYTHON"
 export PYTHON_LIB_PATH="$SP_DIR"
 export PYTHON_PATH="$PYTHON"
-export TF_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
-export TF_HEADER_DIR=$(python -c "import tensorflow as tf; print(tf.sysconfig.get_include())")
-export TF_SHARED_LIBRARY_DIR=$(python -c "import tensorflow as tf; print(tf.sysconfig.get_lib())")
+export TF_PYTHON_VERSION=$(python3.11 --version | awk '{print $2}' | cut -d. -f1,2)
+export TF_HEADER_DIR=$(python3.11 -c "import tensorflow as tf; print(tf.sysconfig.get_include())")
+export TF_SHARED_LIBRARY_DIR=$(python3.11 -c "import tensorflow as tf; print(tf.sysconfig.get_lib())")
 export TF_SHARED_LIBRARY_NAME="libtensorflow_framework.so.2"
 export PYTHON_BIN_PATH="$PYTHON"
 export PYTHON_LIB_PATH="$SP_DIR"
@@ -379,7 +379,7 @@ if ! (bazel build   --experimental_repo_remote_exec   --cxxopt="-std=c++17"   --
 fi
 
 echo "-----------------------Building tf-io wheel ----------------------------"
-python setup.py bdist_wheel --data bazel-bin --dist-dir $CURRENT_DIR
+python3.11 setup.py bdist_wheel --data bazel-bin --dist-dir $CURRENT_DIR
 
 echo "---------------------------------Running tests----------------------------------------------"
 
