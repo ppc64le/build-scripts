@@ -17,7 +17,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-set -e
 
 PACKAGE_NAME=orc
 PACKAGE_VERSION=${1:-v2.0.3}
@@ -35,7 +34,7 @@ yum install -y wget git make cmake binutils lz4-devel zlib-devel \
     ninja-build
 
 python -m pip install --upgrade pip
-pip install setuptools wheel
+pip install setuptools wheel ninja
 
 export CC=$(which gcc)
 export CXX=$(which g++)
