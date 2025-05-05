@@ -31,7 +31,6 @@ git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
 git checkout v0.3.29
 git submodule update --init
-sed -i "s/{PACKAGE_VERSION}/v0.3.29/g" pyproject.toml
 PREFIX=local/openblas
 # Set build options
 declare -a build_opts
