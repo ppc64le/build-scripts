@@ -381,24 +381,40 @@ fi
 echo "-----------------------Building tf-io wheel ----------------------------"
 python setup.py bdist_wheel --data bazel-bin --dist-dir $CURRENT_DIR
 
-# Run tests for the pip_package directory
-if ! (bazel test --cxxopt='-std=c++17' --cxxopt='-I/usr/local/include/tirpc' --host_cxxopt='-std=c++17' --host_cxxopt='-I/usr/local/include/tirpc' --experimental_repo_remote_exec //tensorflow_io/...); then
-    # Check if the failure is specifically due to "No test targets were found"
-    if bazel test //tensorflow_io/... 2>&1 | grep -q "No test targets were found"; then
-        echo "------------------$PACKAGE_NAME:no_test_targets_found---------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | No_Test_Targets_Found"
-        exit 0  # Graceful exit for no test targets
-    fi
-    # Handle actual test errors
+echo "---------------------------------Running tests----------------------------------------------"
+
+# Create a temporary log file to capture output
+TEST_LOG=$(mktemp)
+
+# Run bazel test with live output and log capture
+bazel test --cxxopt='-std=c++17' \
+           --cxxopt='-I/usr/local/include/tirpc' \
+           --host_cxxopt='-std=c++17' \
+           --host_cxxopt='-I/usr/local/include/tirpc' \
+           --experimental_repo_remote_exec //tensorflow_io/... 2>&1 | tee "$TEST_LOG"
+
+
+# Capture actual Bazel exit code
+TEST_EXIT_CODE=${PIPESTATUS[0]}
+
+# Read full test output (if needed)
+TEST_OUTPUT=$(cat "$TEST_LOG")
+
+# Analyze test results
+if echo "$TEST_OUTPUT" | grep -q "No test targets were found"; then
+    echo "------------------$PACKAGE_NAME:no_test_targets_found---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | No_Test_Targets_Found"
+    exit 0
+elif [ $TEST_EXIT_CODE -ne 0 ]; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Success_But_Test_Fails"
     exit 2
 else
-    # Tests ran successfully
     echo "------------------$PACKAGE_NAME:install_&_test_both_success------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | Both_Install_and_Test_Success"
     exit 0
 fi
+
