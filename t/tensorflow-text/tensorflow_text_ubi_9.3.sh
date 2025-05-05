@@ -155,7 +155,7 @@ echo "------------------------Generating wheel-------------------"
 python3.11 -m pip install --upgrade pip wheel
 python3.11 setup.py -q bdist_wheel --project tensorflow_io_gcs_filesystem
 cd dist
-pip3.11 install tensorflow_io_gcs_filesystem-*-linux_ppc64le.whl
+python3.11 -m pip install tensorflow_io_gcs_filesystem-*-linux_ppc64le.whl
 
 echo " --------------------------------------------- Tensorflow-io Successfully Installed --------------------------------------------- "
 
