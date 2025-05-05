@@ -226,7 +226,7 @@ echo " --------------------------------------------- Build Wheel ---------------
 
 cd $CURRENT_DIR
 
-pip3.11 install tensorflow-2.14.1-*-linux_ppc64le.whl
+python3.11 -m pip install tensorflow-2.14.1-*-linux_ppc64le.whl
 
 echo " --------------------------------------------- Wheel installed succesfuly --------------------------------------------- "
 
