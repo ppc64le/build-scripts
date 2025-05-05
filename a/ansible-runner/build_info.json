@@ -1,11 +1,11 @@
 {
-  "maintainer": "ashwinik30",
+  "maintainer": "ashwinik307",
   "package_name": "ansible-runner",
   "github_url": "https://github.com/ansible/ansible-runner",
-  "version": "2.3.3",
+  "version": "2.4.0",
   "default_branch": "devel",
   "package_dir": "a/ansible-runner",
-  "build_script": "ansible-runner_ubi_8_7.sh",
+  "build_script": "ansible-runner_ubi_9_3.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false
