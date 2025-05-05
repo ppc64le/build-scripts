@@ -30,35 +30,122 @@ PACKAGE_DIR=tensorflow
 
 echo "------------------------Installing dependencies-------------------"
 yum install -y wget
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
-wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
-mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
-
-dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-
-# Install dependencies
-echo "------------------------Installing dependencies-------------------"
 yum install -y gcc-toolset-12-gcc.ppc64le gcc-toolset-12-gcc-c++
 export PATH=/opt/rh/gcc-toolset-12/root/usr/bin:$PATH
 
-yum install -y python python-devel python-pip make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng openblas-devel epel-release meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite libnsl
+yum install -y python python-devel python-pip make cmake wget git openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite 
 
-echo "------------------------Installing dependencies-------------------"
+yum install -y gcc-toolset-12-gcc-c++ gcc-toolset-12 gcc-toolset-12-binutils gcc-toolset-12-binutils-devel
 yum install -y libxcrypt-compat rsync
 python -m pip install --upgrade pip
 pip install setuptools wheel
 
-echo "------------------------Installing dependencies-------------------"
-dnf groupinstall -y "Development Tools"
+yum install -y  autoconf automake libtool curl-devel  atlas-devel patch 
 
-#Install the dependencies
-echo "------------------------Installing dependencies-------------------"
-yum install -y  autoconf automake libtool curl-devel swig hdf5-devel atlas-devel patch patchelf
+echo "-----------installing openblas................"
+cd $CURRENT_DIR
+git clone https://github.com/OpenMathLib/OpenBLAS
+cd OpenBLAS
+git checkout v0.3.29
+git submodule update --init
+# Set build options
+declare -a build_opts
+# Fix ctest not automatically discovering tests
+LDFLAGS=$(echo "${LDFLAGS}" | sed "s/-Wl,--gc-sections//g")
+export CF="${CFLAGS} -Wno-unused-parameter -Wno-old-style-declaration"
+unset CFLAGS
+export USE_OPENMP=1
+build_opts+=(USE_OPENMP=${USE_OPENMP})
+# Handle Fortran flags
+if [ ! -z "$FFLAGS" ]; then
+    export FFLAGS="${FFLAGS/-fopenmp/ }"
+    export FFLAGS="${FFLAGS} -frecursive"
+    export LAPACK_FFLAGS="${FFLAGS}"
+fi
+export PLATFORM=$(uname -m)
+build_opts+=(BINARY="64")
+build_opts+=(DYNAMIC_ARCH=1)
+build_opts+=(TARGET="POWER9")
+BUILD_BFLOAT16=1
+# Placeholder for future builds that may include ILP64 variants.
+build_opts+=(INTERFACE64=0)
+build_opts+=(SYMBOLSUFFIX="")
+# Build LAPACK
+build_opts+=(NO_LAPACK=0)
+# Enable threading and set the number of threads
+build_opts+=(USE_THREAD=1)
+build_opts+=(NUM_THREADS=8)
+# Disable CPU/memory affinity handling to avoid problems with NumPy and R
+build_opts+=(NO_AFFINITY=1)
+# Build OpenBLAS
+make ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${OPENBLAS_PREFIX}
+# Install OpenBLAS
+CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${OPENBLAS_PREFIX}" ${build_opts[@]}
+export LD_LIBRARY_PATH=${OPENBLAS_PREFIX}/lib:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=${OPENBLAS_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
+pkg-config --modversion openblas
+echo "-----------------------------------------------------Installed openblas-----------------------------------------------------"
+
+echo "---------------------Build HDF5 from source---------------------"
+cd $CURRENT_DIR
+git clone https://github.com/HDFGroup/hdf5
+cd hdf5/
+git checkout hdf5-1_12_1
+git submodule update --init
+yum install -y zlib zlib-devel
+./configure --prefix=/usr/local/hdf5 --enable-cxx --enable-fortran  --with-pthread=yes --enable-threadsafe  --enable-build-mode=production --enable-unsupported  --enable-using-memchecker  --enable-clear-file-buffers --with-ssl
+make 
+make install
+
+export LD_LIBRARY_PATH=/usr/local/hdf5/:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/usr/local/hdf5/lib/:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/usr/local/hdf5/include:$LD_LIBRARY_PATH
+export HDF5_DIR=/usr/local/hdf5
+echo "-----------------------------------------------------Installed HDF5 to /usr/local-----------------------------------------------------"
 
 
+echo "--------------Build and install h5py from source-----------------------"
+cd $CURRENT_DIR
+git clone https://github.com/h5py/h5py.git
+cd h5py/
+git checkout 3.13.0
+python -m pip install .  
+
+cd $CURRENT_DIR
+python -c "import h5py; print(h5py.__version__)"
+echo "-----------------------------------------------------Installed h5py-----------------------------------------------------"
+
+
+#installing patchelf from source
+cd $CURRENT_DIR
+yum install -y git autoconf automake libtool make
+git clone https://github.com/NixOS/patchelf.git
+cd patchelf
+./bootstrap.sh
+./configure
+make
+make install
+ln -s /usr/local/bin/patchelf /usr/bin/patchelf
+echo "-----------------------------------------------------Installed patchelf-----------------------------------------------------"
+
+
+echo "------------installing patchelf from source-----------"
+cd $CURRENT_DIR
+git clone https://github.com/alisw/libtirpc
+cd libtirpc
+yum install -y krb5-devel
+./bootstrap
+./configure --prefix=/usr/local
+make -j$(nproc)
+make install
+ldconfig
+export CPATH=/usr/local/include:$CPATH
+export LIBRARY_PATH=/usr/local/lib:$LIBRARY_PATH
+export CPATH=/usr/local/include:$CPATH
+export LIBRARY_PATH=/usr/local/lib:$LIBRARY_PATH
+ls /usr/local/include/tirpc/rpc/types.h
+
+cd $CURRENT_DIR
 #Set JAVA_HOME
 echo "------------------------Installing java-------------------"
 yum install -y java-11-openjdk-devel
@@ -124,7 +211,7 @@ export CFLAGS="$(echo ${CFLAGS} | sed -e 's/ -fno-plt//')"
 
 # Apply the patch
 echo "------------------------Applying patch-------------------"
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/tensorflow/tf_2.14.1_fix.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/t/tensorflow/tf_2.14.1_fix.patch
 git apply tf_2.14.1_fix.patch
 echo "------------Applied patch successfully---------------------"
 
@@ -144,25 +231,23 @@ fi
 #building the wheel
 bazel-bin/tensorflow/tools/pip_package/build_pip_package $CURRENT_DIR
 
-# Run tests for the pip_package directory
-if ! (bazel test --config=opt -k --jobs=$(nproc) //tensorflow/tools/pip_package/...); then
-    # Check if the failure is specifically due to "No test targets were found"
-    if bazel test --config=opt -k --jobs=$(nproc) //tensorflow/tools/pip_package/... 2>&1 | grep -q "No test targets were found"; then
-        echo "------------------$PACKAGE_NAME:no_test_targets_found---------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | No_Test_Targets_Found"
-        exit 0  # Graceful exit for no test targets
-    fi
-    # Handle actual test errors
+# Run tests and capture both output and exit code
+TEST_OUTPUT=$(bazel test --config=opt -k --jobs=$(nproc) //tensorflow/tools/pip_package/... 2>&1)
+TEST_EXIT_CODE=$?
+
+if echo "$TEST_OUTPUT" | grep -q "No test targets were found"; then
+    echo "------------------$PACKAGE_NAME:no_test_targets_found---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | No_Test_Targets_Found"
+    exit 0
+elif [ $TEST_EXIT_CODE -ne 0 ]; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Success_But_Test_Fails"
     exit 2
 else
-    # Tests ran successfully
     echo "------------------$PACKAGE_NAME:install_&_test_both_success------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | Both_Install_and_Test_Success"
     exit 0
 fi
-
