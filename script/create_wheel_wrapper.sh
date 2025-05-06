@@ -9,7 +9,6 @@ EXIT_CODE=0
 #install gcc
 yum install gcc-toolset-13 -y
 source /opt/rh/gcc-toolset-13/enable
-export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 gcc --version
 
 # Temporary build script path
