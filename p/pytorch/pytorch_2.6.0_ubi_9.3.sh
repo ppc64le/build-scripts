@@ -28,7 +28,7 @@ SCRIPT_DIR=$(pwd)
 
 yum install -y git make wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas
 yum install gcc-toolset-13 -y
-yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build gcc-toolset-13 numactl-devel pkg-config
+yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build gcc-toolset-13 pkg-config
 dnf install -y gcc-toolset-13-libatomic-devel
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
