@@ -28,7 +28,7 @@ SCRIPT_DIR=$(pwd)
 
 yum install -y git make wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas
 yum install gcc-toolset-13 -y
-yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build gcc-toolset-13 pkg-config
+yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build gcc-toolset-13 numactl-devel pkg-config
 dnf install -y gcc-toolset-13-libatomic-devel
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
@@ -37,7 +37,7 @@ export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
 echo "Installing cmake..."
 wget https://cmake.org/files/v3.31/cmake-3.31.6.tar.gz
-tar -zxvf cmake-3.31.0.tar.gz
+tar -zxvf cmake-3.31.6.tar.gz
 cd cmake-3.31.6
 ./bootstrap
 make
@@ -107,7 +107,7 @@ cd $SCRIPT_DIR
 echo "--------------------openblas installed-------------------------------"
 
 #Building scipy
-python3.12 -m pip install beniget==0.4.2.post1  Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 cmake==3.* packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja patchelf>=0.11.0
+python3.12 -m pip install beniget==0.4.2.post1  Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja patchelf>=0.11.0
 git clone https://github.com/scipy/scipy
 cd scipy/
 git checkout v1.15.2
@@ -245,6 +245,8 @@ export LD_LIBRARY_PATH=/pytorch/build/lib/libprotobuf.so.3.13.0.0:$LD_LIBRARY_PA
 export PATH="/protobuf/local/libprotobuf/bin/protoc:${PATH}"
 export LD_LIBRARY_PATH="/protobuf/local/libprotobuf/lib64:${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH="/protobuf/third_party/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
+
+sed -i "s/cmake/cmake==3.*/g" requirements.txt
 
 python3.12 -m pip install -r requirements.txt
 
