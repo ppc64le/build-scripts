@@ -189,13 +189,13 @@ export CC_OPT_FLAGS="-mcpu=${cpu_model} -mtune=${cpu_model}"
 echo "CC_OPT_FLAGS set to: ${CC_OPT_FLAGS}"
 
 export CC_OPT_FLAGS="-mcpu=${cpu_model} -mtune=${cpu_model}"
-export TF_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
-export HERMETIC_PYTHON_VERSION=$(python --version | awk '{print $2}' | cut -d. -f1,2)
-export PYTHON_BIN_PATH=$(which python)
+export TF_PYTHON_VERSION=$(python3.11 --version | awk '{print $2}' | cut -d. -f1,2)
+export HERMETIC_PYTHON_VERSION=$(python3.11 --version | awk '{print $2}' | cut -d. -f1,2)
+export PYTHON_BIN_PATH=$(which python3.11)
 export GCC_HOST_COMPILER_PATH=$(which gcc)
 export CC=$GCC_HOST_COMPILER_PATH
-export PYTHON=/root/tensorflow/tfenv/bin/python
-export SP_DIR=/root/tensorflow/tfenv/lib/python$(python --version | awk '{print $2}' | cut -d. -f1,2)/site-packages/
+export PYTHON=$(which python3.11)
+export SP_DIR=/root/tensorflow/tfenv/lib/python$(python3.11 --version | awk '{print $2}' | cut -d. -f1,2)/site-packages/
 export USE_DEFAULT_PYTHON_LIB_PATH=1
 export TF_NEED_JEMALLOC=1
 export TF_ENABLE_XLA=1
