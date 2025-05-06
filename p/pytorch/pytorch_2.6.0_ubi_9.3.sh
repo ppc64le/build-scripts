@@ -28,7 +28,7 @@ SCRIPT_DIR=$(pwd)
 
 yum install -y git make wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas
 yum install gcc-toolset-13 -y
-yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build gcc-toolset-13 numactl-devel pkg-config
+yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build gcc-toolset-13 pkg-config
 dnf install -y gcc-toolset-13-libatomic-devel
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
@@ -36,9 +36,9 @@ export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
 
 echo "Installing cmake..."
-wget https://cmake.org/files/v4.0/cmake-4.0.0.tar.gz
-tar -zxvf cmake-4.0.0.tar.gz
-cd cmake-4.0.0
+wget https://cmake.org/files/v3.4/cmake-3.4.0.tar.gz
+tar -zxvf cmake-3.4.0.tar.gz
+cd cmake-3.4.0
 ./bootstrap
 make
 make install
