@@ -86,6 +86,7 @@ export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
 export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
 cd ..
 
+python3.12 -m pip install --upgrade pip
 python3.12 -m pip install --upgrade cmake pip setuptools wheel ninja packaging tox pytest build mypy stubs
 # Set ABSEIL_VERSION and ABSEIL_URL
 ABSEIL_VERSION=20240116.2
@@ -183,7 +184,7 @@ git apply set_cpp_to_17_v4.25.3.patch
 cd python
 python3.12 setup.py install --cpp_implementation
 cd ../..
-python3.12 -m pip install pybind11==2.12.0
+python3.12 -m pip install pybind11==2.12.0 numpy==2.0.2 scipy==1.15.2 parameterized cython meson mypy-protobuf pytest nbval pythran
 PYBIND11_PREFIX=$SITE_PACKAGE_PATH/pybind11
 export CMAKE_PREFIX_PATH="$ABSEIL_PREFIX;$LIBPROTO_INSTALL;$PYBIND11_PREFIX"
 echo "Updated CMAKE_PREFIX_PATH after OpenBLAS: $CMAKE_PREFIX_PATH"
