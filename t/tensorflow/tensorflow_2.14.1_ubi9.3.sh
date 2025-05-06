@@ -228,13 +228,24 @@ if ! (bazel build -s //tensorflow/tools/pip_package:build_pip_package --config=o
     exit 1
 fi
 
-#building the wheel
+echo "------------building the wheel----------"
 bazel-bin/tensorflow/tools/pip_package/build_pip_package $CURRENT_DIR
+echo "----------wheel created----------------"
 
-# Run tests and capture both output and exit code
-TEST_OUTPUT=$(bazel test --config=opt -k --jobs=$(nproc) //tensorflow/tools/pip_package/... 2>&1)
-TEST_EXIT_CODE=$?
+echo "---------------------------------Running tests----------------------------------------------"
 
+# Create a temporary log file to capture output
+TEST_LOG=$(mktemp)
+
+bazel test --config=opt -k --jobs=$(nproc) //tensorflow/tools/pip_package/... 2>&1 | tee "$TEST_LOG"
+
+# Capture actual Bazel exit code
+TEST_EXIT_CODE=${PIPESTATUS[0]}
+
+# Read full test output (if needed)
+TEST_OUTPUT=$(cat "$TEST_LOG")
+
+# Analyze test results
 if echo "$TEST_OUTPUT" | grep -q "No test targets were found"; then
     echo "------------------$PACKAGE_NAME:no_test_targets_found---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
