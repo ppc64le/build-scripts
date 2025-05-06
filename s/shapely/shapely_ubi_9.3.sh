@@ -18,6 +18,11 @@
 #
 # ----------------------------------------------------------------------------
 
+# Fix known issue with Shapely compilation using gcc-toolset-13(https://bugs.gentoo.org/915056 - found still occurs).
+# Note: Currently create_wheel_wrapper.sh pre-installs gcc-toolset-13 that fails Shapely wheel builds in python ecosystem.
+yum remove -y gcc-toolset-13
+export PATH=${PATH#/opt/rh/gcc-toolset-13/root/usr/bin:}
+
 yum install -y python3.11 python3.11-devel python3.11-pip git gcc-gfortran.ppc64le gcc-c++ cmake
 yum install -y openblas-devel openblas
 python3.11 -m pip install Cython pytest hypothesis build
