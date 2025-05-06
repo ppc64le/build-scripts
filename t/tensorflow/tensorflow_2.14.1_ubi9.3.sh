@@ -32,11 +32,11 @@ echo "------------------------Installing dependencies-------------------"
 yum install -y wget
 yum install -y gcc-toolset-12-gcc.ppc64le gcc-toolset-12-gcc-c++
 export PATH=/opt/rh/gcc-toolset-12/root/usr/bin:$PATH
-source /opt/rh/gcc-toolset-12/enable
 
 yum install -y python3.11-devel python3.11-pip make cmake wget git openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite 
 
 yum install -y gcc-toolset-12-gcc-c++ gcc-toolset-12 gcc-toolset-12-binutils gcc-toolset-12-binutils-devel
+source /opt/rh/gcc-toolset-12/enable
 yum install -y libxcrypt-compat rsync
 python3.11 -m pip install --upgrade pip
 python3.11 -m pip install setuptools==75.3.0 wheel
