@@ -9,7 +9,6 @@ EXIT_CODE=0
 #install gcc
 yum install gcc-toolset-13 -y
 source /opt/rh/gcc-toolset-13/enable
-export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 gcc --version
 
 # Temporary build script path
@@ -92,7 +91,7 @@ format_build_script() {
         sed -i 's/pip3 /pip /g' "$TEMP_BUILD_SCRIPT_PATH"
         sed -i '/-m venv/d' "$TEMP_BUILD_SCRIPT_PATH"
         sed -i '/bin\/activate/d' "$TEMP_BUILD_SCRIPT_PATH"
-        sed -i '/^deactivate$/d' "$TEMP_BUILD_SCRIPT_PATH"
+        sed -i '/^\s*deactivate\s*$/d' "$TEMP_BUILD_SCRIPT_PATH"
         sed -i '/yum install/{s/\b\(python\|python-devel\|python-pip\)\b[[:space:]]*//g}' "$TEMP_BUILD_SCRIPT_PATH"
         sed -i '/dnf install/{s/\b\(python\|python-devel\|python-pip\)\b[[:space:]]*//g}' "$TEMP_BUILD_SCRIPT_PATH"
         sed -i 's/\bpython3 -m pytest/pytest/g' "$TEMP_BUILD_SCRIPT_PATH"
