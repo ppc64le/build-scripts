@@ -86,7 +86,7 @@ export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
 export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
 cd ..
 
-pip3.12 install --upgrade cmake pip setuptools wheel ninja packaging tox pytest build mypy stubs
+python3.12 -m pip install --upgrade cmake pip setuptools wheel ninja packaging tox pytest build mypy stubs
 # Set ABSEIL_VERSION and ABSEIL_URL
 ABSEIL_VERSION=20240116.2
 ABSEIL_URL="https://github.com/abseil/abseil-cpp"
@@ -183,7 +183,7 @@ git apply set_cpp_to_17_v4.25.3.patch
 cd python
 python3.12 setup.py install --cpp_implementation
 cd ../..
-pip3.12 install pybind11==2.12.0
+python3.12 -m pip install pybind11==2.12.0
 PYBIND11_PREFIX=$SITE_PACKAGE_PATH/pybind11
 export CMAKE_PREFIX_PATH="$ABSEIL_PREFIX;$LIBPROTO_INSTALL;$PYBIND11_PREFIX"
 echo "Updated CMAKE_PREFIX_PATH after OpenBLAS: $CMAKE_PREFIX_PATH"
@@ -225,11 +225,11 @@ export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH"
 
 # Adding this source due to - (Unable to detect linker for compiler `cc -Wl,--version`)
 source /opt/rh/gcc-toolset-13/enable
-pip3.12 install cython meson
-pip3.12 install numpy==2.0.2
-pip3.12 install parameterized
-pip3.12 install pytest nbval pythran mypy-protobuf
-pip3.12 install scipy==1.15.2
+python3.12 -m pip install cython meson
+python3.12 -m pip install numpy==2.0.2
+python3.12 -m pip install parameterized
+python3.12 -m pip install pytest nbval pythran mypy-protobuf
+python3.12 -m pip install scipy==1.15.2
 
 python3.12 setup.py install
 echo "--------------onnx installed------------------"
@@ -244,7 +244,7 @@ git checkout $PACKAGE_VERSION
 export CXXFLAGS="-Wno-stringop-overflow"
 export CFLAGS="-Wno-stringop-overflow"
 export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
-/usr/bin/python3 -m pip install packaging wheel
+python3.12 -m pip install packaging wheel
 NUMPY_INCLUDE=$(python3.12 -c "import numpy; print(numpy.get_include())")
 echo "NumPy include path: $NUMPY_INCLUDE"
 # Manually defines Python::NumPy for CMake versions with broken NumPy detection
