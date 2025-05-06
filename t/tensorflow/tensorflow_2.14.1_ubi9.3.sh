@@ -149,7 +149,7 @@ cd $CURRENT_DIR
 #Set JAVA_HOME
 echo "------------------------Installing java-------------------"
 yum install -y java-11-openjdk-devel
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.25.0.9-3.el9.ppc64le
+export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-11)(?=.*ppc64le)')
 export PATH=$JAVA_HOME/bin:$PATH
 
 # Build Bazel dependency
