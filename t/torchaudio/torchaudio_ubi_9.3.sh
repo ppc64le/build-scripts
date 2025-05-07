@@ -32,7 +32,6 @@ dnf install -y gcc-toolset-13-libatomic-devel
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
-
 echo "Installing cmake..."
 wget https://cmake.org/files/v3.31/cmake-3.31.6.tar.gz
 tar -zxvf cmake-3.31.6.tar.gz
