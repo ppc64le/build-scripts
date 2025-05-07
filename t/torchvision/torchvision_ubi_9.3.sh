@@ -29,7 +29,8 @@ CURRENT_DIR=$(pwd)
 
 yum install -y git make wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas
 yum install gcc-toolset-13 -y
-yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build gcc-toolset-13  pkg-config
+yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build gcc-toolset-13  pkg-config gmp-devel freetype-devel
+
 dnf install -y gcc-toolset-13-libatomic-devel
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
@@ -236,7 +237,7 @@ export USE_OPENMP=1
 export USE_TBB=0
 export BUILD_CUSTOM_PROTOBUF=OFF
 export BUILD_CAFFE2=1
-export PYTORCH_BUILD_VERSION=${PACKAGE_VERSION}
+export PYTORCH_BUILD_VERSION=v2.6.0
 export PYTORCH_BUILD_NUMBER=${BUILD_NUM}
 export USE_CUDA=0
 export USE_CUDNN=0
