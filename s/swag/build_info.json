@@ -1,0 +1,15 @@
+{
+   "maintainer": "stutiibm",
+   "package_name": "swag",
+   "github_url": "https://github.com/go-openapi/swag",
+   "version": "v0.23.0",
+   "default_branch": "master",
+   "build_script": "swag_ubi_9.3.sh",
+   "package_dir": "s/swag",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*": {
+      "build_script": "swag_ubi_9.3.sh"
+   }
+}
