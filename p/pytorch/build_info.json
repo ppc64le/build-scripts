@@ -1,19 +1,25 @@
 {
-  "maintainer": "shubham-garud",
+  "maintainer": "saisrivatsa",
   "package_name": "pytorch",
   "github_url": "https://github.com/pytorch/pytorch.git",
-  "version": "v2.5.1",
+  "version": "v2.6.0",
   "wheel_build" : true,
   "default_branch": "main",
   "package_dir": "p/pytorch",
-  "build_script": "pytorch_2.5.1_ubi_9.3.sh",
+  "build_script": "pytorch_2.6.0_ubi_9.3.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
   "v2.4.0": {
     "build_script": "pytorch_ubi_9.3.sh"
   },
-  "*":{
+  "*": {
+    "patches":{
+      "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.6.0.patch"
+    },
+     "build_script":"pytorch_2.6.0_ubi_9.3.sh"
+  },
+  "v2.5.1":{
     "patches":{
       "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.5.1.patch"
     },
