@@ -31,6 +31,7 @@ else
 fi
 
 # install tools and dependent packages
+echo "-------------------------------------------------------Installing dependencies----------------------------------------------------------------"
 yum install -y git gcc-c++ make wget java-11-openjdk-devel  openssl-devel bzip2 zip unzip yum-utils clang clang-devel clang-libs python3 python3-devel
 export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-11)(?=.*ppc64le)')
 export PATH=$JAVA_HOME/bin:$PATH
@@ -48,22 +49,27 @@ wget https://github.com/Kitware/CMake/releases/download/v3.27.3/cmake-3.27.3.tar
 tar -zxvf cmake-3.27.3.tar.gz
 cd cmake-3.27.3
 ./bootstrap
+echo "-------------------------------------------------------make----------------------------------------------------------------"
 make
+echo "-------------------------------------------------------make install----------------------------------------------------------------"
 make install
 cd ..
 cmake --version
 
 #installing gcc
+echo "-------------------------------------------------------Installing gcc----------------------------------------------------------------"
 yum install -y gcc-toolset-13-gcc gcc-toolset-13-gcc-c++
 source /opt/rh/gcc-toolset-13/enable
 
 # Cloning the repository 
+echo "-------------------------------------------------------Cloning repo----------------------------------------------------------------"
 git clone $PACKAGE_URL
 cd ${PACKAGE_NAME}
 git checkout $PACKAGE_VERSION
 
 
 # Build and test package
+echo "-------------------------------------------------------build and test----------------------------------------------------------------"
 if !(./build.sh --allow_running_as_root --compile_no_warning_as_error) ; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
