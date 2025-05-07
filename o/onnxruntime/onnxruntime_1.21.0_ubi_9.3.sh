@@ -184,7 +184,7 @@ git apply set_cpp_to_17_v4.25.3.patch
 cd python
 python3.12 setup.py install --cpp_implementation
 cd ../..
-python3.12 -m pip install pybind11==2.12.0 numpy==2.0.2 scipy==1.15.2 parameterized cython meson mypy-protobuf pytest nbval pythran
+python3.12 -m pip install pybind11==2.12.0 
 PYBIND11_PREFIX=$SITE_PACKAGE_PATH/pybind11
 export CMAKE_PREFIX_PATH="$ABSEIL_PREFIX;$LIBPROTO_INSTALL;$PYBIND11_PREFIX"
 echo "Updated CMAKE_PREFIX_PATH after OpenBLAS: $CMAKE_PREFIX_PATH"
@@ -231,8 +231,6 @@ python3.12 -m pip install numpy==2.0.2
 python3.12 -m pip install parameterized
 python3.12 -m pip install pytest nbval pythran mypy-protobuf
 python3.12 -m pip install scipy==1.15.2
-python3.12 -m pip install packaging wheel
-pip install packaging
 
 python3.12 setup.py install
 echo "--------------onnx installed------------------"
@@ -247,7 +245,7 @@ git checkout $PACKAGE_VERSION
 export CXXFLAGS="-Wno-stringop-overflow"
 export CFLAGS="-Wno-stringop-overflow"
 export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
-python3.12 -m pip install packaging wheel
+/usr/bin/python3.12 -m pip install packaging wheel
 NUMPY_INCLUDE=$(python3.12 -c "import numpy; print(numpy.get_include())")
 echo "NumPy include path: $NUMPY_INCLUDE"
 # Manually defines Python::NumPy for CMake versions with broken NumPy detection
