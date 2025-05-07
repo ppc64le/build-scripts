@@ -22,7 +22,6 @@ set -e
 PACKAGE_NAME=commons-io
 PACKAGE_VERSION=${1:-rel/commons-io-2.16.1}
 PACKAGE_URL=https://github.com/apache/commons-io.git
-DIRECTORY=java
 
 # install tools and dependent packages
 yum install -y git wget unzip sudo make gcc gcc-c++ cmake
@@ -61,5 +60,11 @@ then
 fi
 
 #Skipping test as there are 11 test failures which are in parity with x86  
+#if ! mvn test ; then
+#       echo "------------------$PACKAGE_NAME::ITest_fails-------------------------"
+#       echo "$PACKAGE_URL $PACKAGE_NAME"
+#       echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Install _and_Test_fails"
+#       exit 2
+#fi
 
 exit 0
