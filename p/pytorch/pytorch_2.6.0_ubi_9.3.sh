@@ -261,6 +261,8 @@ fi
 #basic import test
 
 cd ..
+export LD_LIBRARY_PATH="/OpenBLAS/:${LD_LIBRARY_PATH}"
+
 if ! (python3.12 -c "import torch;"); then
      echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
      echo "$PACKAGE_URL $PACKAGE_NAME"
