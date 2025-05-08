@@ -27,10 +27,33 @@ PARALLEL=${PARALLEL:-$(nproc)}
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 export _GLIBCXX_USE_CXX11_ABI=1
 
+version_greater_equal() {
+    # Returns 0 (true) if $1 >= $2
+    [ "$(printf '%s\n' "$2" "$1" | sort -V | head -n1)" = "$2" ]
+}
+
+version_less_than() {
+    # Returns 0 (true) if $1 < $2
+    [ "$(printf '%s\n' "$1" "$2" | sort -V | head -n1)" = "$1" ] && [ "$1" != "$2" ]
+}
+
+if version_greater_equal "$PACKAGE_VERSION" "0.2.0" && version_less_than "$PYTHON_VER" "3.10"; then
+    echo "Outlines version $PACKAGE_VERSION requires Python >= 3.10 due to match-case syntax."
+    echo "Skipping build on Python $PYTHON_VER"
+    exit 0
+fi
+
 # Install dependencies
+dnf install -y openssl openssl-devel
+dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
+            https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
+			https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os
+dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/`arch`/os
+dnf config-manager --set-enabled crb
 dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
     git cmake ninja-build gcc-toolset-13 cargo \
-    python${PYTHON_VER}-devel python${PYTHON_VER}-pip jq openssl openssl-devel \
+    python${PYTHON_VER}-devel python${PYTHON_VER}-pip jq \
     pkg-config atlas
 
 source /opt/rh/gcc-toolset-13/enable
@@ -59,13 +82,21 @@ git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
 # Install Python dependencies
-python${PYTHON_VER} -m pip install --upgrade pip ninja cmake 'pytest==8.2.2' hydra-core setuptools wheel
+python${PYTHON_VER} -m pip install --upgrade pip ninja 'cmake<4' 'pytest==8.2.2' hydra-core setuptools wheel
 
 # Check BUILD_DEPS passed
 echo "BUILD_DEPS: $BUILD_DEPS"
 
 # Install PyTorch only if not installed and BUILD_DEPS is not False
 if [ -z $BUILD_DEPS ] || [ "$BUILD_DEPS" == "true" ]; then
+
+    # dependencies for numpy
+    dnf install -y gfortran lapack-devel pkgconfig
+
+    # dependencies for pillow
+    dnf install -y libtiff-devel libjpeg-devel openjpeg2-devel zlib-devel \
+        libpng-devel freetype-devel lcms2-devel libwebp-devel tcl-devel tk-devel \
+        harfbuzz-devel fribidi-devel libraqm-devel libimagequant-devel libxcb-devel
 
     # Install dependency - pytorch
     PYTORCH_VERSION=v2.5.1
@@ -78,8 +109,8 @@ if [ -z $BUILD_DEPS ] || [ "$BUILD_DEPS" == "true" ]; then
 
     if ! git log --pretty=format:"%H" | grep -q "$PPC64LE_PATCH"; then
         echo "Applying POWER patch."
-        git config user.email "Your.Email@example.com"
-        git config user.name "YourName"
+        git config user.email "puneet.sharma21@ibm.com"
+        git config user.name "puneetsharma21"
         git cherry-pick "$PPC64LE_PATCH"
     else
         echo "POWER patch not needed."
@@ -92,7 +123,7 @@ if [ -z $BUILD_DEPS ] || [ "$BUILD_DEPS" == "true" ]; then
     export CXXFLAGS="-Wno-unused-variable -Wno-unused-parameter"
 
     pip${PYTHON_VER} install -r requirements.txt
-    MAX_JOBS=$PARALLEL python${PYTHON_VER} setup.py install
+    python${PYTHON_VER} setup.py develop
 
     cd ..
 else
