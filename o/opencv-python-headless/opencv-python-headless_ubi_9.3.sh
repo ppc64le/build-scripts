@@ -554,7 +554,7 @@ python3.12 setup.py bdist_wheel --dist-dir $CURRENT_DIR
 echo "----------------------------------------------Testing pkg-------------------------------------------------------"
 
 #Test package
-if ! (python -m unittest discover -s tests) ; then
+if ! (python3.12 -m unittest discover -s tests) ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
