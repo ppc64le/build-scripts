@@ -18,6 +18,8 @@
 #
 # ----------------------------------------------------------------------------
 
+set -ex 
+
 PACKAGE_NAME=protobuf
 PACKAGE_VERSION=${1:-v4.25.3}
 PACKAGE_URL=https://github.com/protocolbuffers/protobuf
@@ -36,39 +38,10 @@ pip install --upgrade cmake pip setuptools wheel ninja packaging tox pytest buil
 #Building abseil-cpp
 ABSEIL_VERSION=20240116.2
 ABSEIL_URL="https://github.com/abseil/abseil-cpp"
-mkdir $WORK_DIR/abseil-prefix
-PREFIX=$WORK_DIR/abseil-prefix
-
 
 git clone $ABSEIL_URL -b $ABSEIL_VERSION
-echo "abseil-cpp build starts"
-cd abseil-cpp
 
-SOURCE_DIR=$(pwd)
-
-mkdir -p $SOURCE_DIR/local/abseilcpp
-abseilcpp=$SOURCE_DIR/local/abseilcpp
-
-mkdir build
-cd build
-
-cmake -G Ninja \
-    ${CMAKE_ARGS} \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_CXX_STANDARD=17 \
-    -DCMAKE_INSTALL_LIBDIR=lib \
-    -DCMAKE_INSTALL_PREFIX=${PREFIX} \
-    -DBUILD_SHARED_LIBS=ON \
-    -DABSL_PROPAGATE_CXX_STD=ON \
-    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-   ..
-cmake --build .
-cmake --install .
-
-cd $WORK_DIR
-cp -r  $PREFIX/* $abseilcpp/
-
-echo "------------abseil-cpp installed--------------"
+echo "------------abseil-cpp cloned--------------"
 cd ..
 
 #Setting paths and versions
@@ -158,5 +131,3 @@ fi
 
 python setup.py bdist_wheel --cpp_implementation --dist-dir $WORK_DIR
 exit 0
-
-
