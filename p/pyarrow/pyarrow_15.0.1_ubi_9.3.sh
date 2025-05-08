@@ -64,7 +64,7 @@ sed -i '/cdef object alloc_c_stream(ArrowArrayStream\*\* c_stream)/s/ noexcept//
 echo "Fixes applied."
  
 pip install -r python/requirements-build.txt
-pip install cython wheel numpy==2.0.2 setuptools-scm
+pip install cython wheel numpy==1.26.4 setuptools-scm
  
 echo "Preparing for build..."
  
