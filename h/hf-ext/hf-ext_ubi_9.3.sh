@@ -60,3 +60,4 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Install_Success"
     exit 0
 fi
+#Skipped the test part as there are no test files to run the tests.
