@@ -57,6 +57,7 @@ ln -sf $(command -v python$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/python$PYTHON_VE
 ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip
 ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip3
 ln -sf $(command -v pip$PYTHON_VERSION) $WORKDIR/PY_PRIORITY/pip$PYTHON_VERSION
+python -m pip install --upgrade pip setuptools
 python -m pip install meson-python pybind11 setuptools-scm patchelf pybind11
 ##############################################
 
@@ -72,7 +73,7 @@ if [ -z $BUILD_DEPS ] || [ $BUILD_DEPS == True ]; then
     # dependencies for pillow
     dnf install -y libtiff-devel libjpeg-devel openjpeg2-devel zlib-devel \
         freetype-devel lcms2-devel libwebp-devel tcl-devel tk-devel \
-        harfbuzz-devel fribidi-devel libraqm-devel libimagequant-devel libxcb-devel
+        harfbuzz-devel fribidi-devel libraqm-devel libimagequant libimagequant-devel libxcb-devel
 
     python -m pip install numpy
 fi
