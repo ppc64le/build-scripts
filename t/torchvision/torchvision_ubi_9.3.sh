@@ -29,7 +29,7 @@ CURRENT_DIR=$(pwd)
 
 yum install -y git make wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas
 yum install gcc-toolset-13 -y
-yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build gcc-toolset-13  pkg-config gmp-devel freetype-devel
+yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build gcc-toolset-13  pkg-config  gmp-devel  freetype-devel
 
 dnf install -y gcc-toolset-13-libatomic-devel
 
@@ -180,14 +180,14 @@ export LIBRARY_PATH=$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 
-#Apply patch 
+#Apply patch
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
 git apply set_cpp_to_17_v4.25.3.patch
 
 echo "Installing protobuf...."
 cd python
 python3.12 -m pip install .
-cd $CURRENT_DIR 
+cd $CURRENT_DIR
 
 echo "------------ libprotobuf,protobuf installed--------------"
 
@@ -258,7 +258,7 @@ python3.12 -m pip install -r requirements.txt
 
 echo "----------Installing pytorch------------"
 MAX_JOBS=$(nproc) python3.12 setup.py install
-cd $CURRENT_DIR 
+cd $CURRENT_DIR
 
 echo "--------------------------------- Installing Opus ---------------------------------"
 
@@ -377,11 +377,13 @@ sed -i "/^prefix=/c\prefix=${OPUS_PREFIX}" $OPUS_PREFIX/lib/pkgconfig/opus.pc
 
 cd $CURRENT_DIR
 
+echo "---------------------------Installing FFmpeg------------------"
 #Cloning Source Code
+PACKAGE_VERSION=${1:-n7.1}
 
 git clone https://github.com/FFmpeg/FFmpeg
 cd FFmpeg
-git checkout n7.1
+git checkout $PACKAGE_VERSION
 git submodule update --init
 
 mkdir ffmpeg_prefix
@@ -486,7 +488,7 @@ cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -loglevel panic -codecs
 
 cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -encoders
 cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -decoders
-cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -codecs >$CURRENT_DIR/ffmpeg-codecs.txt 
+cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -codecs >$CURRENT_DIR/ffmpeg-codecs.txt
 
 if grep '\(h264\|aac\|hevc\|mpeg4\).*coders:' $HOME/ffmpeg-codecs.txt ; then
   echo >&2 -e "\nError: Forbidden codecs in ffmpeg, see lines above.\n"
@@ -521,8 +523,8 @@ git checkout 11.1.0
 yum install -y libjpeg-turbo-devel
 git submodule update --init
 
-python3.12 -m pip install . 
-cd $CURRENT_DIR 
+python3.12 -m pip install .
+cd $CURRENT_DIR
 
 echo "--------------------Installing pyav----------------------------"
 git clone https://github.com/PyAV-Org/PyAV
@@ -534,9 +536,10 @@ export CFLAGS="${CFLAGS} -I/install-deps/ffmpeg/include"
 export LDFLAGS="${LDFLAGS} -L/install-deps/ffmpeg/lib"
 
 python3.12 setup.py build_ext --inplace
-cd $CURRENT_DIR 
+cd $CURRENT_DIR
 
 echo "------------------Building torchvision------------------------"
+PACKAGE_VERSION=${1:-v0.21.0}
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
