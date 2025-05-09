@@ -1,0 +1,48 @@
+name: PR build
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04-ppc64le
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Pull UBI9 Docker Image
+        run: |
+          docker pull registry.access.redhat.com/ubi9/ubi:9.3
+
+      - name: Install required packages
+        run: |
+          sudo apt update -y
+          sudo apt-get install -y file
+
+      - name: Install Python dependencies
+        run: |
+          pip3 install --force-reinstall -v "requests==2.31.0"
+          pip3 install --upgrade docker
+
+      - name: Run validate_builds.py script and monitor log size
+        run: |
+          python3 script/validate_builds.py ${{ github.event.pull_request.number || 'false' }} > build_log &
+          SCRIPT_PID=$!
+          while ps -p $SCRIPT_PID > /dev/null; do
+            echo "$SCRIPT_PID is running"
+            sleep 300
+          done
+          wait $SCRIPT_PID
+          my_pid_status=$?
+          build_size=$(stat -c %s build_log)
+          if [ "$build_size" -lt 1800000 ]; then
+            cat build_log
+          else
+            echo "xxxxxxxxxxxxxxx Build log size too large, so printing last 1.7MB xxxxxxxxxxxxxxx"
+            tail -c 1700000 build_log
+          fi
+          exit $my_pid_status
+
