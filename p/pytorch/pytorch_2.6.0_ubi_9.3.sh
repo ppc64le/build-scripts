@@ -28,8 +28,10 @@ SCRIPT_DIR=$(pwd)
 
 yum install -y git make wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas
 yum install gcc-toolset-13 -y
+echo "Installed gcc-toolset"
 yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build gcc-toolset-13 pkg-config
 dnf install -y gcc-toolset-13-libatomic-devel
+echo "Installed required deps from RH"
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
@@ -40,7 +42,9 @@ wget https://cmake.org/files/v3.31/cmake-3.31.6.tar.gz
 tar -zxvf cmake-3.31.6.tar.gz
 cd cmake-3.31.6
 ./bootstrap
+echo "Building Cmake"
 make
+echo "Installing Cmake"
 make install
 cd $SCRIPT_DIR
 
@@ -90,10 +94,10 @@ build_opts+=(NUM_THREADS=8)
 # Disable CPU/memory affinity handling to avoid problems with NumPy and R
 build_opts+=(NO_AFFINITY=1)
 
-# Build OpenBLAS
+echo "Building OpenBLAS"
 make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
 
-# Install OpenBLAS
+echo "Install OpenBLAS"
 CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
 OpenBLASInstallPATH=$(pwd)/$PREFIX
 OpenBLASConfigFile=$(find . -name OpenBLASConfig.cmake)
@@ -107,7 +111,10 @@ cd $SCRIPT_DIR
 echo "--------------------openblas installed-------------------------------"
 
 #Building scipy
-python3.12 -m pip install beniget==0.4.2.post1  Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja patchelf>=0.11.0
+python3.12 -m pip install beniget==0.4.2.post1  Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 packaging pybind11 pyproject-metadata
+echo "Installed required deps from pypi"
+python3.12 -m pip install pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja patchelf>=0.11.0
+echo "Installed required deps from pypi"
 git clone https://github.com/scipy/scipy
 cd scipy/
 git checkout v1.15.2
@@ -146,6 +153,7 @@ cp -r $SCRIPT_DIR/abseil-cpp ./third_party/
 mkdir build
 cd build
 
+echo "Building libprotobuf"
 cmake -G "Ninja" \
    ${CMAKE_ARGS} \
     -DCMAKE_BUILD_TYPE=Release \
@@ -167,7 +175,7 @@ cmake --install .
 
 cd ..
 
-#Build protobuf
+echo "Building protobuf"
 export PROTOC=$LIBPROTO_DIR/build/protoc
 export LD_LIBRARY_PATH=$SCRIPT_DIR/abseil-cpp/abseilcpp/lib:$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
 export LIBRARY_PATH=$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
@@ -246,9 +254,11 @@ export PATH="/protobuf/local/libprotobuf/bin/protoc:${PATH}"
 export LD_LIBRARY_PATH="/protobuf/local/libprotobuf/lib64:${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH="/protobuf/third_party/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
 
-sed -i "s/cmake/cmake==3.*/g" requirements.txt
+echo "required env variables got set"
 
+sed -i "s/cmake/cmake==3.*/g" requirements.txt
 python3.12 -m pip install -r requirements.txt
+echo "Installed requirement files from source"
 
 echo "Installing pytorch...."
 if ! (MAX_JOBS=$(nproc) python3.12 setup.py install);then
@@ -260,6 +270,7 @@ fi
 
 #basic import test
 
+echo " Basic Import test for torch"
 cd ..
 export LD_LIBRARY_PATH="/OpenBLAS/:${LD_LIBRARY_PATH}"
 
