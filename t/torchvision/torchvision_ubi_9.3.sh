@@ -473,9 +473,6 @@ cp -r FFmpeg/ffmpeg_prefix/* local/ffmpeg/
 
 PACKAGE_VERSION=$(echo "$PACKAGE_VERSION" | sed 's/[^0-9.]//g')
 
-wget "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/f/ffmpeg/pyproject.toml"
-sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g "pyproject.toml"
-
 export LD_LIBRARY_PATH=${LAME_PREFIX}/lib:${LIBVPX_PREFIX}/lib:${OPUS_PREFIX}/lib:${FFMPEG_PREFIX}/lib:${LD_LIBRARY_PATH}
 
 echo " ------------------------------------------ Checking Test ------------------------------------------ "
