@@ -113,7 +113,7 @@ echo "--------------------openblas installed-------------------------------"
 #Building scipy
 python3.12 -m pip install beniget==0.4.2.post1  Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 packaging pybind11 pyproject-metadata
 echo "Installed required deps from pypi"
-python3.12 -m pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja patchelf>=0.11.0
+python3.12 -m pip install pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja patchelf>=0.11.0
 echo "Installed required deps from pypi"
 git clone https://github.com/scipy/scipy
 cd scipy/
