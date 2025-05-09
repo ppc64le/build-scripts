@@ -46,7 +46,7 @@ git checkout $PACKAGE_VERSION
 
 
 # Install additional dependencies
-pip install setuptools pip ninja wheel build
+python3.11 -m pip install setuptools pip ninja wheel build
 
 # Set LLVM_CONFIG environment variable
 export LLVM_CONFIG="/llvm-project/build/bin/llvm-config"
@@ -80,11 +80,10 @@ export CXXFLAGS="-I$WORKING_DIR/llvm-project/build/include"
 export LLVM_CONFIG="$WORKING_DIR/llvm-project/build/bin/llvm-config"
 
 # Install
-if ! (pip install .) ; then
+if ! (python3.11 -m pip install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
-    deactivate
     exit 1
 
 fi
@@ -93,13 +92,11 @@ if ! python -c "import llvmlite; import llvmlite.binding; import llvmlite.ir; im
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
-    deactivate
     exit 2
 
 else
     echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-    deactivate
     exit 0
 fi
