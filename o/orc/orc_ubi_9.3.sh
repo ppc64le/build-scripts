@@ -18,6 +18,8 @@
 #
 # ----------------------------------------------------------------------------
 
+set -ex 
+
 PACKAGE_NAME=orc
 PACKAGE_VERSION=${1:-v2.0.3}
 PACKAGE_URL=https://github.com/apache/orc
@@ -27,24 +29,25 @@ CURRENT_DIR=$(pwd)
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
-echo "------------------------Installing dependencies-------------------"
+echo " --------------------------------------------------- Installing dependencies --------------------------------------------------- "
 yum install -y wget git make cmake binutils lz4-devel zlib-devel \
-    python python-pip python-devel \
+    python3 python3-pip python3-devel \
     gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-gcc-c++ \
     ninja-build
 
-python -m pip install --upgrade pip
-pip install setuptools wheel ninja
+python3 -m pip install --upgrade pip
+python3 -m pip install setuptools wheel ninja
 
 export CC=$(which gcc)
 export CXX=$(which g++)
 export GCC=$CC
 export GXX=$CXX
 
+cd $CURRENT_DIR
 
 # ZSTD
-echo "------------------------Installing zstd----------------------------"
-cd $CURRENT_DIR
+echo " --------------------------------------------------- Installing ZSTD --------------------------------------------------- "
+
 git clone https://github.com/facebook/zstd.git
 cd zstd
 make -j$(nproc)
@@ -53,10 +56,13 @@ make install
 export ZSTD_HOME=/usr/local
 export CMAKE_PREFIX_PATH=$ZSTD_HOME:$CMAKE_PREFIX_PATH
 export LD_LIBRARY_PATH=$ZSTD_HOME/lib:$LD_LIBRARY_PATH
+
+echo " --------------------------------------------------- ZSTD Successfully Installed --------------------------------------------------- "
+
 cd $CURRENT_DIR
 
 #SNAPPY
-echo "--------------------------Installing snappy-devel--------------------"
+echo " --------------------------------------------------- Installing snappy-devel --------------------------------------------------- "
 git clone -b 1.2.2 https://github.com/google/snappy
 cd snappy
 git submodule update --init
@@ -70,47 +76,30 @@ cmake .. \
   -DCMAKE_INSTALL_PREFIX=/usr \
   -DCMAKE_INSTALL_LIBDIR=lib64
 make -j$(nproc)
-make install
+make install 
+
+echo " --------------------------------------------------- Snappy-devel Successfully Installed --------------------------------------------------- "
+
 cd $CURRENT_DIR
 
 # Building abseil-cpp which is a dependency for libprotobuf
-echo "----------------------------------------------Cloning abseil-cpp--------------------------------------------------------"
-git clone https://github.com/abseil/abseil-cpp
-cd abseil-cpp
-git checkout 20240116.2
+echo " --------------------------------------------------- Cloning abseil-cpp --------------------------------------------------- "
 
-mkdir $CURRENT_DIR/abseil-prefix
-ABSEIL_PREFIX=$CURRENT_DIR/abseil-prefix
-mkdir -p $CURRENT_DIR/local/abseilcpp
-abseilcpp=$CURRENT_DIR/local/abseilcpp
+# Set ABSEIL_VERSION and ABSEIL_URL
+ABSEIL_VERSION=20240116.2
+ABSEIL_URL="https://github.com/abseil/abseil-cpp"
 
-mkdir build
-cd build
+git clone $ABSEIL_URL -b $ABSEIL_VERSION
 
-cmake -G Ninja \
-    ${CMAKE_ARGS} \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_CXX_STANDARD=17 \
-    -DCMAKE_INSTALL_LIBDIR=lib \
-    -DCMAKE_INSTALL_PREFIX=${ABSEIL_PREFIX} \
-    -DBUILD_SHARED_LIBS=ON \
-    -DABSL_PROPAGATE_CXX_STD=ON \
-    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-   ..
-
-cmake --build .
-cmake --install .
-
-cd $CURRENT_DIR
-cp -r  $ABSEIL_PREFIX/* $abseilcpp/
-echo "-------------------------------------Abseil-cpp installed successfully-------------------------------------"
+echo " --------------------------------------------------- Abseil-cpp installed successfully --------------------------------------------------- "
 
 # Building libprotobuf which is a dependency for orc
 cd $CURRENT_DIR
 mkdir -p $CURRENT_DIR/local/libprotobuf
 LIBPROTO_INSTALL=$CURRENT_DIR/local/libprotobuf
 
-echo "----------------------------------------------Cloning protobuf--------------------------------------------------------"
+echo " --------------------------------------------------- Cloning protobuf --------------------------------------------------- "
+
 git clone https://github.com/protocolbuffers/protobuf
 cd protobuf
 git checkout v4.25.3
@@ -145,7 +134,7 @@ cd $CURRENT_DIR
 export PATH=$LIBPROTO_INSTALL/bin:$PATH
 protoc --version
 
-echo "-------------------------------------libprotobuf installed successfully-------------------------------------"
+echo " --------------------------------------------------- libprotobuf installed successfully --------------------------------------------------- "
 
 export LD_LIBRARY_PATH=$CURRENT_DIR//local/abseilcpp/lib:$LD_LIBRARY_PATH
 export CMAKE_PREFIX_PATH=$CURRENT_DIR//local/abseilcpp:$CMAKE_PREFIX_PATH
@@ -209,8 +198,8 @@ cp -r prefix/* local/$PACKAGE_NAME
 
 # During wheel creation for this package we need exported cmake-args. Once script gets exit, and if we build wheel through wrapper script, then those are not applicable during wheel creation. So we are generating wheel for this package in script itself.
 echo "---------------------------------------------------Building the wheel--------------------------------------------------"
-pip install --upgrade build setuptools wheel
-python -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"
+python3 -m pip install --upgrade build setuptools wheel
+python3 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"
 
 echo "----------------------------------------------Testing pkg-------------------------------------------------------"
 cd build
