@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : pyiceberg
-# Version          : pyiceberg-0.8.1rc1
+# Version          : 0.8.1
 # Source repo      : https://github.com/apache/iceberg-python
 # Tested on	: UBI:9.3
 # Language      : Python
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=pyiceberg
-PACKAGE_VERSION=${1:-pyiceberg-0.8.1rc1}
+PACKAGE_VERSION=${1:-0.8.1}
 PACKAGE_URL=https://github.com/apache/iceberg-python
 PACKAGE_DIR=pyiceberg
 
