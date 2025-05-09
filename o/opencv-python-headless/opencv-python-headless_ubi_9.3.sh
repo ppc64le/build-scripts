@@ -4,7 +4,7 @@
 #
 # Package           : opencv-python-headless
 # Version           : 4.11.0.86
-# Source repo       : https://github.com/pytorch/vision.git
+# Source repo       : https://github.com/opencv/opencv-python
 # Tested on         : UBI:9.3
 # Language          : Python
 # Travis-Check      : True
@@ -45,9 +45,6 @@ make install
 cd $CURRENT_DIR
 
 echo "---------------------openblas installing---------------------"
-
-#install openblas
-#clone and install openblas from source
 
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
@@ -107,7 +104,6 @@ cd $CURRENT_DIR
 
 echo "--------------------scipy installing-------------------------------"
 
-#Building scipy
 python3.12 -m pip install beniget==0.4.2.post1 Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja patchelf
 git clone https://github.com/scipy/scipy
 cd scipy/
@@ -119,7 +115,6 @@ cd $CURRENT_DIR
 
 echo "--------------------abseil-cpp installing-------------------------------"
 
-#cloning abseil-cpp
 ABSEIL_VERSION=20240116.2
 ABSEIL_URL="https://github.com/abseil/abseil-cpp"
 
@@ -127,7 +122,6 @@ git clone $ABSEIL_URL -b $ABSEIL_VERSION
 
 echo "------------abseil-cpp cloned--------------"
 
-#building libprotobuf
 export C_COMPILER=$(which gcc)
 export CXX_COMPILER=$(which g++)
 
@@ -181,7 +175,7 @@ export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
 git apply set_cpp_to_17_v4.25.3.patch
 
-echo "Installing protobuf...."
+echo "--------------Installing protobuf--------------"
 cd python
 python3.12 -m pip install .
 cd $CURRENT_DIR
@@ -214,14 +208,10 @@ fi
 ./autogen.sh
 ./configure --prefix=$OPUS_PREFIX $HOST_BUILD && make -j$JOBS && make install
 
-#test
-make check
-
 echo "--------------------------------- Opus Installed Successfully ---------------------------------"
 
 cd $CURRENT_DIR
 
-# Clone the libvpx package
 echo "--------------------------------- Installing libvpx ---------------------------------"
 
 git clone https://github.com/webmproject/libvpx
@@ -266,7 +256,6 @@ echo "--------------------------------- libvpx Installed Successfully ----------
 
 cd $CURRENT_DIR
 
-# Clone the libvpx package
 echo "--------------------------------- Installing lame ---------------------------------"
 
 wget https://downloads.sourceforge.net/sourceforge/lame/lame-3.100.tar.gz
@@ -306,7 +295,6 @@ sed -i "/^prefix=/c\prefix=${OPUS_PREFIX}" $OPUS_PREFIX/lib/pkgconfig/opus.pc
 cd $CURRENT_DIR
 
 echo "--------------------Installing x264---------------------------------"
-#building x264
 git clone https://code.videolan.org/videolan/x264.git
 cd x264
 ./configure --prefix=/install-deps/x264 --enable-shared --enable-pic --disable-asm
@@ -321,12 +309,10 @@ cd $CURRENT_DIR
 
 
 echo "---------------------------Installing FFmpeg------------------"
-#Cloning Source Code
-PACKAGE_VERSION=${1:-n7.1}
 
 git clone https://github.com/FFmpeg/FFmpeg
 cd FFmpeg
-git checkout $PACKAGE_VERSION
+git checkout n7.1
 git submodule update --init
 
 mkdir ffmpeg_prefix
@@ -414,11 +400,7 @@ cd $CURRENT_DIR
 mkdir -p local/ffmpeg
 cp -r FFmpeg/ffmpeg_prefix/* local/ffmpeg/
 
-PACKAGE_VERSION=$(echo "$PACKAGE_VERSION" | sed 's/[^0-9.]//g')
-
 export LD_LIBRARY_PATH=${LAME_PREFIX}/lib:${LIBVPX_PREFIX}/lib:${OPUS_PREFIX}/lib:${FFMPEG_PREFIX}/lib:${LD_LIBRARY_PATH}
-
-echo " ------------------------------------------ Checking Test ------------------------------------------ "
 
 cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg --help
 cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -loglevel panic -protocols | grep "https"
@@ -454,10 +436,8 @@ export PATH="/install-deps/ffmpeg/bin:$PATH"
 
 cd $CURRENT_DIR
 
-cd $CURRENT_DIR
-
 echo "------------------Building opencv-python-headless-----------------------"
-PACKAGE_VERSION=${1:-86}
+cd $CURRENT_DIR
 
 git clone $PACKAGE_URL
 cd $PACKAGE_DIR
@@ -465,7 +445,6 @@ git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
 sed -i "s/^[[:space:]]*name=package_name/name=\"${PACKAGE_NAME}\"/" setup.py
-
 
 export PROTOBUF_PREFIX=/protobuf/local/libprotobuf
 export OPENBLAS_PREFIX=/OpenBLAS
