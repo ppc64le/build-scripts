@@ -18,14 +18,14 @@
 #
 # ---------------------------------------------------------------------------
 
+set -ex 
 
 PACKAGE_NAME=sentencepiece
 PACKAGE_VERSION=${1:-v0.2.0}
 PACKAGE_URL=https://github.com/google/sentencepiece.git
 PACKAGE_DIR=sentencepiece/python
 
-
-yum install -y make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel patch python python-devel ninja-build gcc-toolset-13  pkg-config
+yum install -y make libtool git wget tar xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel patch python python-devel ninja-build gcc-toolset-13  pkg-config
 
 dnf install -y gcc-toolset-13-libatomic-devel
 
@@ -38,47 +38,37 @@ SCRIPT_DIR=$(pwd)
 
 #Building abesil-cpp,libprotobuf and protobuf 
 
-pip install --upgrade cmake pip setuptools wheel ninja packaging pytest
+pip install --upgrade pip setuptools wheel ninja packaging pytest 
 
-#Building abseil-cpp
-ABSEIL_VERSION=20240116.2
-ABSEIL_URL="https://github.com/abseil/abseil-cpp"
-mkdir $SCRIPT_DIR/abseil-prefix
-PREFIX=$SCRIPT_DIR/abseil-prefix
+# cmake installing from source 
+echo " -------------------------- Cmake Installing -------------------------- " 
 
-git clone $ABSEIL_URL -b $ABSEIL_VERSION
-cd abseil-cpp
+wget https://cmake.org/files/v3.28/cmake-3.28.0.tar.gz
+tar -zxvf cmake-3.28.0.tar.gz
+cd cmake-3.28.0
+./bootstrap
+make
+make install
 
-SOURCE_DIR=$(pwd)
-
-mkdir -p $SOURCE_DIR/local/abseilcpp
-ABSEIL_CPP=$SOURCE_DIR/local/abseilcpp
-
-echo "abseil-cpp build starts"
-mkdir build
-cd build
-
-cmake -G Ninja \
-    ${CMAKE_ARGS} \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_CXX_STANDARD=17 \
-    -DCMAKE_INSTALL_LIBDIR=lib \
-    -DCMAKE_INSTALL_PREFIX=${PREFIX} \
-    -DBUILD_SHARED_LIBS=ON \
-    -DABSL_PROPAGATE_CXX_STD=ON \
-    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-   ..
-cmake --build .
-cmake --install .
+echo " -------------------------- Cmake Successfully Installed -------------------------- " 
 
 cd $SCRIPT_DIR
-cp -r  $PREFIX/* $ABSEIL_CPP/
 
-echo "--------------------------------abseil-cpp installed----------------------"
+#Building abseil-cpp
+echo " -------------------------- Abseil-cpp cloning -------------------------- "
+
+ABSEIL_VERSION=20240116.2
+ABSEIL_URL="https://github.com/abseil/abseil-cpp"
+git clone $ABSEIL_URL -b $ABSEIL_VERSION
+
+echo " -------------------------- Abseil-cpp cloned -------------------------- "
+
 export C_COMPILER=$(which gcc)
 export CXX_COMPILER=$(which g++)
 
 #Build libprotobuf
+echo " -------------------------- Libprotobuf Installing -------------------------- "
+
 git clone https://github.com/protocolbuffers/protobuf
 cd protobuf
 git checkout v4.25.3
@@ -131,10 +121,12 @@ git apply set_cpp_to_17_v4.25.3.patch
 cd python
 pip install .
 
-echo "-------------------------- libprotobuf and  protobuf installed-----------------------"
+echo " -------------------------- libprotobuf and  protobuf installed -------------------------- "
+
+cd  $SCRIPT_DIR
 
 #Building sentencepiece
-cd  $SCRIPT_DIR
+echo " -------------------------- Sentencepiece Installing -------------------------- "
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
@@ -162,12 +154,13 @@ fi
 PAGE_SIZE=`getconf PAGE_SIZE`
 mkdir build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX="${HOME}" .. -DSPM_BUILD_TEST=ON -DSPM_ENABLE_TCMALLOC=OFF -DSPM_USE_BUILTIN_PROTOBUF=OFF -DCMAKE_AR=${GCC_AR}
+cmake -DCMAKE_INSTALL_PREFIX="${HOME}" .. -DSPM_BUILD_TEST=ON -DSPM_ENABLE_TCMALLOC=OFF \
+    -DSPM_USE_BUILTIN_PROTOBUF=OFF -DCMAKE_AR=${GCC_AR}
 make -j $(nproc)
 make install
 cd ../python
 
-if ! pip install .  ; then
+if ! pip install .; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -175,13 +168,13 @@ if ! pip install .  ; then
 fi
 
 if ! pytest  ; then
-        echo "------------------$PACKAGE_NAME:test_fails---------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME "
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | Github | Fail |  Test_Fails"
-        exit 2
+    echo "------------------$PACKAGE_NAME:test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME "
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | Github | Fail |  Test_Fails"
+    exit 2
 else
-        echo "------------------$PACKAGE_NAME:test_success-------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME "
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | Github | Pass |  Test_Success"
-	    exit 0
+    echo "------------------$PACKAGE_NAME:test_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME "
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | Github | Pass |  Test_Success"
+	exit 0
 fi
