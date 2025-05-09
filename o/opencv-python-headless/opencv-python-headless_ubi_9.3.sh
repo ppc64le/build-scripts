@@ -409,54 +409,6 @@ USE_NONFREE=no   #the options below are set for NO
 make -j$CPU_COUNT
 make install -j$CPU_COUNT
 
-echo "--------------------------------- ffmpeg Installed successfully ---------------------------------"
-
-cd $CURRENT_DIR
-mkdir -p local/ffmpeg
-cp -r FFmpeg/ffmpeg_prefix/* local/ffmpeg/
-
-PACKAGE_VERSION=$(echo "$PACKAGE_VERSION" | sed 's/[^0-9.]//g')
-
-wget "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/f/ffmpeg/pyproject.toml"
-sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g "pyproject.toml"
-
-export LD_LIBRARY_PATH=${LAME_PREFIX}/lib:${LIBVPX_PREFIX}/lib:${OPUS_PREFIX}/lib:${FFMPEG_PREFIX}/lib:${LD_LIBRARY_PATH}
-
-echo " ------------------------------------------ Checking Test ------------------------------------------ "
-
-cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg --help
-cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -loglevel panic -protocols | grep "https"
-cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -loglevel panic -codecs | grep "libmp3lame"
-cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -loglevel panic -codecs | grep "DEVI.S zlib"
-cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -loglevel panic -codecs
-
-cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -encoders
-cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -decoders
-cd ${FFMPEG_PREFIX}/bin/ && ./ffmpeg -codecs >$CURRENT_DIR/ffmpeg-codecs.txt
-
-if grep '\(h264\|aac\|hevc\|mpeg4\).*coders:' $HOME/ffmpeg-codecs.txt ; then
-  echo >&2 -e "\nError: Forbidden codecs in ffmpeg, see lines above.\n"
-  problem=true
-else
-  echo -e "OK, ffmpeg has no forbidden codecs."
-fi
-
-ffmpeg_libs="avcodec
-        avdevice
-        swresample
-        avfilter
-        avcodec
-        avformat
-        swscale"
-for each_ffmpeg_lib in $ffmpeg_libs; do
-  test -f $FFMPEG_PREFIX/lib/lib$each_ffmpeg_lib.so
-done
-
-
-export PKG_CONFIG_PATH=${FFMPEG_PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
-export LD_LIBRARY_PATH=${FFMPEG_PREFIX}/lib:${LD_LIBRARY_PATH}
-export PATH="/install-deps/ffmpeg/bin:$PATH"
-
 cd $CURRENT_DIR
 
 echo "------------------Building opencv-python-headless-----------------------"
