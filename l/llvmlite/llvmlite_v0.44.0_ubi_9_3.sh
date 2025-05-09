@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : llvmlite
-# Version          : 0.44.0rc1
+# Version          : 0.44.0
 # Source repo      : https://github.com/numba/llvmlite
-# Tested on        : UBI:9.3
+# Tested on        : UBI:9.5
 # Language         : Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Aastha Sharma <aastha.sharma4@ibm.com>
+# Maintainer       : Shivansh Sharma <shivansh.sharma4@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -19,7 +19,7 @@
 # ---------------------------------------------------------------------------
 # Variables
 PACKAGE_NAME=llvmlite
-PACKAGE_VERSION=${1:-v0.44.0rc1}
+PACKAGE_VERSION=${1:-v0.44.0}
 PACKAGE_URL="https://github.com/numba/llvmlite"
 LLVM_PROJECT_GIT_URL="https://github.com/llvm/llvm-project.git"
 LLVM_PROJECT_GIT_TAG="llvmorg-15.0.7"
@@ -44,12 +44,9 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-#create virtual env
-python3.11 -m venv env
-source env/bin/activate
 
 # Install additional dependencies
-pip install setuptools pip ninja wheel build
+python3.11 -m pip install setuptools pip ninja wheel build
 
 # Set LLVM_CONFIG environment variable
 export LLVM_CONFIG="/llvm-project/build/bin/llvm-config"
@@ -83,26 +80,23 @@ export CXXFLAGS="-I$WORKING_DIR/llvm-project/build/include"
 export LLVM_CONFIG="$WORKING_DIR/llvm-project/build/bin/llvm-config"
 
 # Install
-if ! (pip install .) ; then
+if ! (python3.11 -m pip install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
-    deactivate
     exit 1
 
 fi
 # Run tests
-if ! python -c "import llvmlite; import llvmlite.binding; import llvmlite.ir; import llvmlite.tests;"; then
+if ! python3.11 -c "import llvmlite; import llvmlite.binding; import llvmlite.ir; import llvmlite.tests;"; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
-    deactivate
     exit 2
 
 else
     echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-    deactivate
     exit 0
 fi
