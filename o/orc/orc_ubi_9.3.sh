@@ -85,7 +85,11 @@ cd $CURRENT_DIR
 # Building abseil-cpp which is a dependency for libprotobuf
 echo " --------------------------------------------------- Cloning abseil-cpp --------------------------------------------------- "
 
-git clone https://github.com/abseil/abseil-cpp
+# Set ABSEIL_VERSION and ABSEIL_URL
+ABSEIL_VERSION=20240116.2
+ABSEIL_URL="https://github.com/abseil/abseil-cpp"
+
+git clone $ABSEIL_URL -b $ABSEIL_VERSION
 
 echo " --------------------------------------------------- Abseil-cpp installed successfully --------------------------------------------------- "
 
