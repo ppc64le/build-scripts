@@ -23,125 +23,114 @@ PACKAGE_NAME=onnxconverter-common
 PACKAGE_VERSION=${1:-v1.14.0}
 PACKAGE_URL=https://github.com/microsoft/onnxconverter-common
 PACKAGE_DIR=onnxconverter-common
+CURRENT_DIR=$(pwd)
 
 echo "Installing dependencies..."
-echo "Installing dependencies..."
+
 yum install -y git wget make libtool gcc-toolset-13 gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran clang libevent-devel zlib-devel openssl-devel python python-devel python3.12 python3.12-devel python3.12-pip cmake patch
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+
+echo " --------------------------------------------------- OpenBlas Installing --------------------------------------------------- "
 
 #clone and install openblas from source
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
 git checkout v0.3.29
 git submodule update --init
+
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/openblas/pyproject.toml
 sed -i "s/{PACKAGE_VERSION}/v0.3.29/g" pyproject.toml
+
 PREFIX=local/openblas
 OPENBLAS_SOURCE=$(pwd)
+
 # Set build options
 declare -a build_opts
 # Fix ctest not automatically discovering tests
 LDFLAGS=$(echo "${LDFLAGS}" | sed "s/-Wl,--gc-sections//g")
 export CF="${CFLAGS} -Wno-unused-parameter -Wno-old-style-declaration"
+
 unset CFLAGS
 export USE_OPENMP=1
 build_opts+=(USE_OPENMP=${USE_OPENMP})
 export PREFIX=${PREFIX}
+
 # Handle Fortran flags
 if [ ! -z "$FFLAGS" ]; then
     export FFLAGS="${FFLAGS/-fopenmp/ }"
     export FFLAGS="${FFLAGS} -frecursive"
     export LAPACK_FFLAGS="${FFLAGS}"
 fi
+
 export PLATFORM=$(uname -m)
 build_opts+=(BINARY="64")
 build_opts+=(DYNAMIC_ARCH=1)
 build_opts+=(TARGET="POWER9")
 BUILD_BFLOAT16=1
+
 # Placeholder for future builds that may include ILP64 variants.
 build_opts+=(INTERFACE64=0)
 build_opts+=(SYMBOLSUFFIX="")
+
 # Build LAPACK
 build_opts+=(NO_LAPACK=0)
+
 # Enable threading and set the number of threads
 build_opts+=(USE_THREAD=1)
 build_opts+=(NUM_THREADS=8)
+
 # Disable CPU/memory affinity handling to avoid problems with NumPy and R
 build_opts+=(NO_AFFINITY=1)
+
 # Build OpenBLAS
 make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
+
 # Install OpenBLAS
 CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
 OpenBLASInstallPATH=$(pwd)/$PREFIX
 OpenBLASConfigFile=$(find . -name OpenBLASConfig.cmake)
 OpenBLASPCFile=$(find . -name openblas.pc)
+
 sed -i "/OpenBLAS_INCLUDE_DIRS/c\SET(OpenBLAS_INCLUDE_DIRS ${OpenBLASInstallPATH}/include)" ${OpenBLASConfigFile}
 sed -i "/OpenBLAS_LIBRARIES/c\SET(OpenBLAS_INCLUDE_DIRS ${OpenBLASInstallPATH}/include)" ${OpenBLASConfigFile}
 sed -i "s|libdir=local/openblas/lib|libdir=${OpenBLASInstallPATH}/lib|" ${OpenBLASPCFile}
 sed -i "s|includedir=local/openblas/include|includedir=${OpenBLASInstallPATH}/include|" ${OpenBLASPCFile}
+
 export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
 export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
-cd ..
 
-WORK_DIR=$(pwd)
+echo " --------------------------------------------------- OpenBlas Successfully Installed --------------------------------------------------- "
+
+cd $CURRENT_DIR
+
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+
 pip3.12 install --upgrade pip setuptools wheel ninja packaging tox pytest build mypy stubs
 pip3.12 install 'cmake==3.31.6'
+
+echo " --------------------------------------------------- Abseil-cpp Cloning --------------------------------------------------- "
+
 # Set ABSEIL_VERSION and ABSEIL_URL
 ABSEIL_VERSION=20240116.2
 ABSEIL_URL="https://github.com/abseil/abseil-cpp"
-# Create and set up working directories
-echo "Creating abseil prefix directory at $WORK_DIR/abseil-prefix"
-mkdir $WORK_DIR/abseil-prefix
-PREFIX=$WORK_DIR/abseil-prefix
-# Clone abseil-cpp repository
-git clone $ABSEIL_URL -b $ABSEIL_VERSION
-cd abseil-cpp
-SOURCE_DIR=$(pwd)
-# Set up directories for local installation
-mkdir -p $SOURCE_DIR/local/abseilcpp
-abseilcpp=$SOURCE_DIR/local/abseilcpp
-# Create build directory and run cmake
-mkdir build
-cd build
-cmake -G Ninja \
-    ${CMAKE_ARGS} \
-    -DBUILD_SHARED_LIBS=OFF \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_CXX_STANDARD=17 \
-    -DCMAKE_INSTALL_LIBDIR=lib \
-    -DCMAKE_INSTALL_PREFIX=${PREFIX} \
-    -DBUILD_SHARED_LIBS=ON \
-    -DABSL_PROPAGATE_CXX_STD=ON \
-    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-   ..
-cmake --build .
-cmake --install .
 
-# Copy installation files
-cd $WORK_DIR
-cp -r  $PREFIX/* $abseilcpp/
-echo "abseil-cpp has been installed to $abseilcpp"
+git clone $ABSEIL_URL -b $ABSEIL_VERSION
+
+echo " --------------------------------------------------- Abseil-cpp Cloned --------------------------------------------------- "
 
 # Setting paths and versions
-PREFIX=$SITE_PACKAGE_PATH
-ABSEIL_PREFIX=$SOURCE_DIR/local/abseilcpp
-echo "Setting PREFIX to $PREFIX and ABSEIL_PREFIX to $ABSEIL_PREFIX"
-
 export C_COMPILER=$(which gcc)
 export CXX_COMPILER=$(which g++)
 echo "C Compiler set to $C_COMPILER"
 echo "CXX Compiler set to $CXX_COMPILER"
 
-# Setting paths and versions
-export C_COMPILER=$(which gcc)
-export CXX_COMPILER=$(which g++)
+LIBPROTO_DIR=$(pwd)
+mkdir -p $LIBPROTO_DIR/local/libprotobuf
+LIBPROTO_INSTALL=$LIBPROTO_DIR/local/libprotobuf
 
-mkdir -p $(pwd)/local/libprotobuf
-LIBPROTO_INSTALL=$(pwd)/local/libprotobuf
-echo "LIBPROTO_INSTALL set to $LIBPROTO_INSTALL"
+echo " --------------------------------------------------- Libprotobuf Installing --------------------------------------------------- "
 
 # Clone Source-code
 PACKAGE_VERSION_LIB="v4.25.3"
@@ -154,7 +143,7 @@ cd protobuf
 git submodule update --init --recursive
 rm -rf ./third_party/googletest | true
 rm -rf ./third_party/abseil-cpp | true
-cp -r $WORK_DIR/abseil-cpp ./third_party/
+cp -r $CURRENT_DIR/abseil-cpp ./third_party/
 mkdir build
 cd build
 cmake -G "Ninja" \
@@ -175,6 +164,9 @@ cmake -G "Ninja" \
     ..
 cmake --build . --verbose
 cmake --install .
+
+echo " --------------------------------------------------- Libprotobuf Successfully Installed --------------------------------------------------- "
+
 cd ..
 
 export PROTOC="$LIBPROTO_INSTALL/bin/protoc"
@@ -191,28 +183,36 @@ git apply set_cpp_to_17_v4.25.3.patch
 # Build Python package
 cd python
 python3.12 setup.py install --cpp_implementation
-cd ../..
+
+cd $CURRENT_DIR
 
 pip3.12 install pybind11==2.12.0
 PYBIND11_PREFIX=$SITE_PACKAGE_PATH/pybind11
+
 export CMAKE_PREFIX_PATH="$ABSEIL_PREFIX;$LIBPROTO_INSTALL;$PYBIND11_PREFIX"
 echo "Updated CMAKE_PREFIX_PATH after OpenBLAS: $CMAKE_PREFIX_PATH"
+
 export LD_LIBRARY_PATH="$LIBPROTO_INSTALL/lib64:$ABSEIL_PREFIX/lib:$LD_LIBRARY_PATH"
 echo "Updated LD_LIBRARY_PATH : $LD_LIBRARY_PATH"
-echo "Cloning and installing..."
+
+echo " --------------------------------------------------- Onnx Installing --------------------------------------------------- "
+
 git clone https://github.com/onnx/onnx
 cd onnx
 git checkout v1.17.0
-git submodule update --init --recursive
+git submodule update --init --recursive 
+
 export ONNX_ML=1
-export ONNX_PREFIX=$(pwd)/../onnx-prefix
+export ONNX_PREFIX=$(pwd)/../onnx-prefix 
+
 AR=$gcc_home/bin/ar
 LD=$gcc_home/bin/ld
 NM=$gcc_home/bin/nm
 OBJCOPY=$gcc_home/bin/objcopy
 OBJDUMP=$gcc_home/bin/objdump
 RANLIB=$gcc_home/bin/ranlib
-STRIP=$gcc_home/bin/strip
+STRIP=$gcc_home/bin/strip 
+
 export CMAKE_ARGS=""
 export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$ONNX_PREFIX"
 export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_AR=${AR}"
@@ -234,15 +234,19 @@ pip3.12 install parameterized
 pip3.12 install pytest nbval pythran mypy-protobuf
 pip3.12 install scipy==1.15.2 pandas scikit_learn==1.6.1
 sed -i 's/protobuf>=[^ ]*/protobuf==4.25.3/' requirements.txt
-python3.12 setup.py install
-cd ..
+python3.12 setup.py install 
+
+echo " --------------------------------------------------- Onnx Successfully Installed --------------------------------------------------- "
+
+cd $CURRENT_DIR
 
 # Clone and install onnxconverter-common
-echo "Cloning and installing onnxconverter-common..."
+echo " --------------------------------------------------- OnnxConverter-Common Cloning --------------------------------------------------- "
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-git submodule update --init --recursive
+git submodule update --init --recursive 
+
 sed -i 's/\bprotobuf==[^ ]*\b/protobuf==4.25.3/g' pyproject.toml
 sed -i 's/\"onnx\"/\"onnx==1.17.0\"/' pyproject.toml
 sed -i 's/\"numpy\"/\"numpy==2.0.2\"/' pyproject.toml
@@ -251,16 +255,21 @@ sed -i "/onnxconverter_common.__version__/d" pyproject.toml
 
 sed -i 's/\"numpy\"/\"numpy==2.0.2\"/' requirements.txt
 sed -i 's/\bprotobuf==[^ ]*\b/protobuf==4.25.3/g' requirements.txt
+
 pip3.12 install flatbuffers onnxmltools
-cd ..
+
+cd $CURRENT_DIR
+
 # Clone and install onnxruntime
-echo "Cloning and installing onnxruntime..."
+echo " --------------------------------------------------- Onnxruntime Installing --------------------------------------------------- "
+
 git clone https://github.com/microsoft/onnxruntime
 cd onnxruntime
 git checkout d1fb58b0f2be7a8541bfa73f8cbb6b9eba05fb6b
 # Build the onnxruntime package and create the wheel
 sed -i 's/python3/python3.12/g' build.sh
-echo "Building onnxruntime..."
+
+echo " --------------------------------------------------- Building Onnxruntime --------------------------------------------------- "
 ./build.sh \
   --cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" \
   --cmake_generator Ninja \
@@ -272,12 +281,13 @@ echo "Building onnxruntime..."
   --allow_running_as_root \
   --compile_no_warning_as_error \
   --build_wheel
+  
 # Install the built onnxruntime wheel
-echo "Installing onnxruntime wheel..."
+echo " --------------------------------------------------- Installing onnxruntime wheel --------------------------------------------------- "
 cp ./build/Linux/Release/dist/* ./
 pip3.12 install ./*.whl
 # Clean up the onnxruntime repository
-cd ..
+cd $CURRENT_DIR
 rm -rf onnxruntime
 
 cd $PACKAGE_DIR
