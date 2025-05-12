@@ -358,8 +358,6 @@ export CPLUS_INCLUDE_PATH=$C_INCLUDE_PATH
 export CPLUS_INCLUDE_PATH=${LIBPROTOBUF_PREFIX}/include:$CPLUS_INCLUDE_PATH
 ln -sf $CURRENT_DIR/opencv-python/tests/SampleVideo_1280x720_1mb.mp4 SampleVideo_1280x720_1mb.mp4
 
-wget 
-
 # Get the Python version
 PYTHON_VERSION=$(python -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
 
@@ -382,7 +380,6 @@ if ! pip install -e . ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-
 
 #Test package
 #Skipping one test case because some of the codecs are disabled while building ffmpeg and errors are faced because of that.
