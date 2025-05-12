@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package           : vision
-# Version           : v0.16.1
+# Version           : v0.21.0
 # Source repo       : https://github.com/pytorch/vision.git
 # Tested on         : UBI:9.3
 # Language          : Python
@@ -22,7 +22,7 @@
 PACKAGE_NAME=vision
 PACKAGE_URL=https://github.com/pytorch/vision.git
 
-PACKAGE_VERSION=${1:-v0.16.1}
+PACKAGE_VERSION=${1:-v0.21.0}
 PYTHON_VERSION=${PYTHON_VERSION:-3.11}
 
 export MAX_JOBS=${MAX_JOBS:-$(nproc)}
@@ -34,6 +34,7 @@ WORKDIR=$(pwd)
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
+dnf install -y python$PYTHON_VERSION-devel python$PYTHON_VERSION-pip python$PYTHON_VERSION-setuptools python$PYTHON_VERSION-wheel
 dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
             https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
 			https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
@@ -42,10 +43,6 @@ dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStrea
 dnf config-manager --set-enabled crb
 dnf install -y git cmake ninja-build gcc-toolset-13 rust cargo jq libimagequant\
             libjpeg-devel openjpeg2-devel libpng-devel \
-            python$PYTHON_VERSION-devel \
-            python$PYTHON_VERSION-pip \
-            python$PYTHON_VERSION-setuptools \
-            python$PYTHON_VERSION-wheel
 
 source /opt/rh/gcc-toolset-13/enable
 
