@@ -5,7 +5,7 @@
 # Version       : 4.10.0.84
 # Source repo   : https://github.com/opencv/opencv-python.git
 # Tested on     : UBI 9.3
-# Language      : Python, Shell
+# Language      : Python
 # Travis-Check  : True
 # Script License: Apache License 2.0
 # Maintainer    : Ramnath Nayak <Ramnath.Nayak@ibm.com>
