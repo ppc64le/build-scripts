@@ -1,13 +1,16 @@
 {
-   "maintainer": "shubham-dayma-ibm",
+   "maintainer": "vinodk99",
    "package_name": "pyiceberg",
    "github_url": "https://github.com/apache/iceberg-python",
-   "version": "pyiceberg-0.8.1rc1",
+   "version": "pyiceberg-0.8.1",
    "default_branch": "main",
    "build_script": "pyiceberg_ubi_9.3.sh",
    "package_dir": "p/pyiceberg",
    "docker_build": false,
    "wheel_build": true,
    "validate_build_script": true,
-   "use_non_root_user": false
+   "use_non_root_user": false,
+   "*" : {
+      "build_script": "pyiceberg_ubi_9.3.sh"
+   }
 }
