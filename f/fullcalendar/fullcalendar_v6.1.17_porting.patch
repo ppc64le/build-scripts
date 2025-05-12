@@ -1,0 +1,716 @@
+diff --git a/package.json b/package.json
+index 5fd4f3cf8..6ed744ced 100644
+--- a/package.json
++++ b/package.json
+@@ -23,7 +23,8 @@
+   },
+   "copyright": "2024 Adam Shaw",
+   "devDependencies": {
+-    "@fullcalendar-scripts/standard": "*"
++    "@fullcalendar-scripts/standard": "*",
++    "karma-firefox-launcher": "^2.1.3"
+   },
+   "type": "module",
+   "scripts": {
+diff --git a/pnpm-lock.yaml b/pnpm-lock.yaml
+index 6524682ff..c50bced3c 100644
+--- a/pnpm-lock.yaml
++++ b/pnpm-lock.yaml
+@@ -16,6 +16,9 @@ importers:
+       '@fullcalendar-scripts/standard':
+         specifier: '*'
+         version: link:scripts
++      karma-firefox-launcher:
++        specifier: ^2.1.3
++        version: 2.1.3
+
+   bundle:
+     dependencies:
+@@ -307,7 +310,7 @@ importers:
+         version: 5.3.0
+       chokidar:
+         specifier: ^2.1.5
+-        version: 2.1.8(supports-color@6.1.0)
++        version: 2.1.8
+       cleye:
+         specifier: ^1.2.1
+         version: 1.3.2
+@@ -389,9 +392,9 @@ importers:
+       terser:
+         specifier: ^4.8.0
+         version: 4.8.1
+-      turbo:
+-        specifier: ^1.5.6
+-        version: 1.13.4
++      turbo-linux-ppc64le:
++        specifier: 1.4.4
++        version: 1.4.4
+       typescript:
+         specifier: ^4.8.2
+         version: 4.9.5
+@@ -1923,6 +1926,11 @@ packages:
+     resolution: {integrity: sha512-JCNNGbwWZEVaSPtS45mdtrneRWJFp07LLmykxeFV5F6oBvNF8vHSfJuJgoT472pSfk+Mf8VnlrspaFBHWM8JAw==}
+     engines: {node: '>= 0.4'}
+
++  is-docker@2.2.1:
++    resolution: {integrity: sha512-F+i2BKsFrH66iaUFc0woD8sLy8getkwTwtOBjvs56Cx4CgJDeKQeqfz8wAYiSb8JOprWhHH5p77PbmYCvvUuXQ==}
++    engines: {node: '>=8'}
++    hasBin: true
++
+   is-extendable@0.1.1:
+     resolution: {integrity: sha512-5BMULNob1vgFX6EjQw5izWDxrecWK9AM72rugNr0TFldMOi0fj6Jk+zeKIt0xGj4cEfQIJth4w3OKWOJ4f+AFw==}
+     engines: {node: '>=0.10.0'}
+@@ -2031,6 +2039,10 @@ packages:
+     resolution: {integrity: sha512-eXK1UInq2bPmjyX6e3VHIzMLobc4J94i4AWn+Hpq3OU5KkrRC96OAcR3PRJ/pGu6m8TRnBHP9dkXQVsT/COVIA==}
+     engines: {node: '>=0.10.0'}
+
++  is-wsl@2.2.0:
++    resolution: {integrity: sha512-fKzAra0rGJUUBwGBgNkHZuToZcn+TtXHpeCgmkMJMMYx1sQDYaCSyjJBSCa2nH1DGm7s3n1oBnohoVTBaN7Lww==}
++    engines: {node: '>=8'}
++
+   isarray@1.0.0:
+     resolution: {integrity: sha512-VLghIWNM6ELQzo7zwmcg0NmTVyWKYjvIeM83yjp0wRDTmUnrM678fQbcKBo6n2CJEF0szoG//ytg+TKla89ALQ==}
+
+@@ -2104,6 +2116,9 @@ packages:
+   karma-chrome-launcher@3.2.0:
+     resolution: {integrity: sha512-rE9RkUPI7I9mAxByQWkGJFXfFD6lE4gC5nPuZdobf/QdTEJI6EU4yIay/cfU/xV4ZxlM5JiTv7zWYgA64NpS5Q==}
+
++  karma-firefox-launcher@2.1.3:
++    resolution: {integrity: sha512-LMM2bseebLbYjODBOVt7TCPP9OI2vZIXCavIXhkO9m+10Uj5l7u/SKoeRmYx8FYHTVGZSpk6peX+3BMHC1WwNw==}
++
+   karma-jasmine@4.0.2:
+     resolution: {integrity: sha512-ggi84RMNQffSDmWSyyt4zxzh2CQGwsxvYYsprgyR1j8ikzIduEdOlcLvXjZGwXG/0j41KUXOWsUCBfbEHPWP9g==}
+     engines: {node: '>= 10'}
+@@ -2172,6 +2187,7 @@ packages:
+
+   lodash.isequal@4.5.0:
+     resolution: {integrity: sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==}
++    deprecated: This package is deprecated. Use require('node:util').isDeepStrictEqual instead.
+
+   lodash.isplainobject@4.0.6:
+     resolution: {integrity: sha512-oSXzaWypCMHkPC3NvBEaPHf0KsA5mvPrOPgQWDsbg8n7orZ290M0BmC/jgRZ4vcJ6DTAhjrsSYgdsW/F+MFOBA==}
+@@ -3104,18 +3120,10 @@ packages:
+     resolution: {integrity: sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow==}
+     engines: {node: '>=4'}
+
+-  supports-color@6.1.0:
+-    resolution: {integrity: sha512-qe1jfm1Mg7Nq/NSh6XE24gPXROEVsWHxC1LIx//XNlD9iw7YZQGjZNjYN7xGaEG6iKdA8EtNFW6R0gjnVXp+wQ==}
+-    engines: {node: '>=6'}
+-
+   supports-color@7.2.0:
+     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
+     engines: {node: '>=8'}
+
+-  supports-color@9.4.0:
+-    resolution: {integrity: sha512-VL+lNrEoIXww1coLPOmiEmK/0sGigko5COxI09KzHc2VJXJsQ37UaQ+8quuxjDeA7+KnLGTWRyOXSLLR2Wb4jw==}
+-    engines: {node: '>=12'}
+-
+   supports-preserve-symlinks-flag@1.0.0:
+     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
+     engines: {node: '>= 0.4'}
+@@ -3182,40 +3190,11 @@ packages:
+     peerDependencies:
+       typescript: '>=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta'
+
+-  turbo-darwin-64@1.13.4:
+-    resolution: {integrity: sha512-A0eKd73R7CGnRinTiS7txkMElg+R5rKFp9HV7baDiEL4xTG1FIg/56Vm7A5RVgg8UNgG2qNnrfatJtb+dRmNdw==}
+-    cpu: [x64]
+-    os: [darwin]
+-
+-  turbo-darwin-arm64@1.13.4:
+-    resolution: {integrity: sha512-eG769Q0NF6/Vyjsr3mKCnkG/eW6dKMBZk6dxWOdrHfrg6QgfkBUk0WUUujzdtVPiUIvsh4l46vQrNVd9EOtbyA==}
+-    cpu: [arm64]
+-    os: [darwin]
+-
+-  turbo-linux-64@1.13.4:
+-    resolution: {integrity: sha512-Bq0JphDeNw3XEi+Xb/e4xoKhs1DHN7OoLVUbTIQz+gazYjigVZvtwCvgrZI7eW9Xo1eOXM2zw2u1DGLLUfmGkQ==}
+-    cpu: [x64]
+-    os: [linux]
+-
+-  turbo-linux-arm64@1.13.4:
+-    resolution: {integrity: sha512-BJcXw1DDiHO/okYbaNdcWN6szjXyHWx9d460v6fCHY65G8CyqGU3y2uUTPK89o8lq/b2C8NK0yZD+Vp0f9VoIg==}
+-    cpu: [arm64]
++  turbo-linux-ppc64le@1.4.4:
++    resolution: {integrity: sha512-Y5MXpCu/gKi2F+KRFvjx4zmFbscHLlDx4laWuzkSrrud+vU1sIm/Xkop3enTAVT10D0nMpCkbWcuqeNZB00fEg==}
++    cpu: [ppc64]
+     os: [linux]
+
+-  turbo-windows-64@1.13.4:
+-    resolution: {integrity: sha512-OFFhXHOFLN7A78vD/dlVuuSSVEB3s9ZBj18Tm1hk3aW1HTWTuAw0ReN6ZNlVObZUHvGy8d57OAGGxf2bT3etQw==}
+-    cpu: [x64]
+-    os: [win32]
+-
+-  turbo-windows-arm64@1.13.4:
+-    resolution: {integrity: sha512-u5A+VOKHswJJmJ8o8rcilBfU5U3Y1TTAfP9wX8bFh8teYF1ghP0EhtMRLjhtp6RPa+XCxHHVA2CiC3gbh5eg5g==}
+-    cpu: [arm64]
+-    os: [win32]
+-
+-  turbo@1.13.4:
+-    resolution: {integrity: sha512-1q7+9UJABuBAHrcC4Sxp5lOqYS5mvxRrwa33wpIyM18hlOCpRD/fTJNxZ0vhbMcJmz15o9kkVm743mPn7p6jpQ==}
+-    hasBin: true
+-
+   type-check@0.4.0:
+     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
+     engines: {node: '>= 0.8.0'}
+@@ -3360,6 +3339,11 @@ packages:
+     engines: {node: '>= 8'}
+     hasBin: true
+
++  which@3.0.1:
++    resolution: {integrity: sha512-XA1b62dzQzLfaEOSQFTCOd5KFf/1VSzZo7/7TUjnya6u0vGGKzU96UQBZTAThCb2j4/xjBAyii1OhRLJEivHvg==}
++    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
++    hasBin: true
++
+   word-wrap@1.2.5:
+     resolution: {integrity: sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==}
+     engines: {node: '>=0.10.0'}
+@@ -3444,7 +3428,7 @@ snapshots:
+       '@babel/traverse': 7.25.9
+       '@babel/types': 7.26.0
+       convert-source-map: 2.0.0
+-      debug: 4.3.7(supports-color@9.4.0)
++      debug: 4.3.7
+       gensync: 1.0.0-beta.2
+       json5: 2.2.3
+       semver: 6.3.1
+@@ -3515,7 +3499,7 @@ snapshots:
+       '@babel/parser': 7.26.2
+       '@babel/template': 7.25.9
+       '@babel/types': 7.26.0
+-      debug: 4.3.7(supports-color@9.4.0)
++      debug: 4.3.7
+       globals: 11.12.0
+     transitivePeerDependencies:
+       - supports-color
+@@ -3545,7 +3529,7 @@ snapshots:
+   '@eslint/eslintrc@2.1.4':
+     dependencies:
+       ajv: 6.12.6
+-      debug: 4.3.7(supports-color@9.4.0)
++      debug: 4.3.7
+       espree: 9.6.1
+       globals: 13.24.0
+       ignore: 5.3.2
+@@ -3561,7 +3545,7 @@ snapshots:
+   '@humanwhocodes/config-array@0.13.0':
+     dependencies:
+       '@humanwhocodes/object-schema': 2.0.3
+-      debug: 4.3.7(supports-color@9.4.0)
++      debug: 4.3.7
+       minimatch: 3.1.2
+     transitivePeerDependencies:
+       - supports-color
+@@ -3722,7 +3706,7 @@ snapshots:
+       '@typescript-eslint/scope-manager': 5.62.0
+       '@typescript-eslint/type-utils': 5.62.0(eslint@8.57.1)(typescript@4.9.5)
+       '@typescript-eslint/utils': 5.62.0(eslint@8.57.1)(typescript@4.9.5)
+-      debug: 4.3.7(supports-color@9.4.0)
++      debug: 4.3.7
+       eslint: 8.57.1
+       graphemer: 1.4.0
+       ignore: 5.3.2
+@@ -3739,7 +3723,7 @@ snapshots:
+       '@typescript-eslint/scope-manager': 5.62.0
+       '@typescript-eslint/types': 5.62.0
+       '@typescript-eslint/typescript-estree': 5.62.0(typescript@4.9.5)
+-      debug: 4.3.7(supports-color@9.4.0)
++      debug: 4.3.7
+       eslint: 8.57.1
+     optionalDependencies:
+       typescript: 4.9.5
+@@ -3755,7 +3739,7 @@ snapshots:
+     dependencies:
+       '@typescript-eslint/typescript-estree': 5.62.0(typescript@4.9.5)
+       '@typescript-eslint/utils': 5.62.0(eslint@8.57.1)(typescript@4.9.5)
+-      debug: 4.3.7(supports-color@9.4.0)
++      debug: 4.3.7
+       eslint: 8.57.1
+       tsutils: 3.21.0(typescript@4.9.5)
+     optionalDependencies:
+@@ -3769,7 +3753,7 @@ snapshots:
+     dependencies:
+       '@typescript-eslint/types': 5.62.0
+       '@typescript-eslint/visitor-keys': 5.62.0
+-      debug: 4.3.7(supports-color@9.4.0)
++      debug: 4.3.7
+       globby: 11.1.0
+       is-glob: 4.0.3
+       semver: 7.6.3
+@@ -3829,9 +3813,9 @@ snapshots:
+     dependencies:
+       color-convert: 2.0.1
+
+-  anymatch@2.0.0(supports-color@6.1.0):
++  anymatch@2.0.0:
+     dependencies:
+-      micromatch: 3.1.10(supports-color@6.1.0)
++      micromatch: 3.1.10
+       normalize-path: 2.1.1
+     transitivePeerDependencies:
+       - supports-color
+@@ -3998,11 +3982,11 @@ snapshots:
+       inherits: 2.0.4
+       readable-stream: 3.6.2
+
+-  body-parser@1.20.3(supports-color@6.1.0):
++  body-parser@1.20.3:
+     dependencies:
+       bytes: 3.1.2
+       content-type: 1.0.5
+-      debug: 2.6.9(supports-color@6.1.0)
++      debug: 2.6.9
+       depd: 2.0.0
+       destroy: 1.2.0
+       http-errors: 2.0.0
+@@ -4026,7 +4010,7 @@ snapshots:
+     dependencies:
+       balanced-match: 1.0.2
+
+-  braces@2.3.2(supports-color@6.1.0):
++  braces@2.3.2:
+     dependencies:
+       arr-flatten: 1.1.0
+       array-unique: 0.3.2
+@@ -4034,7 +4018,7 @@ snapshots:
+       fill-range: 4.0.0
+       isobject: 3.0.1
+       repeat-element: 1.1.4
+-      snapdragon: 0.8.2(supports-color@6.1.0)
++      snapdragon: 0.8.2
+       snapdragon-node: 2.1.1
+       split-string: 3.1.0
+       to-regex: 3.0.2
+@@ -4109,18 +4093,18 @@ snapshots:
+
+   chalk@5.3.0: {}
+
+-  chokidar@2.1.8(supports-color@6.1.0):
++  chokidar@2.1.8:
+     dependencies:
+-      anymatch: 2.0.0(supports-color@6.1.0)
++      anymatch: 2.0.0
+       async-each: 1.0.6
+-      braces: 2.3.2(supports-color@6.1.0)
++      braces: 2.3.2
+       glob-parent: 3.1.0
+       inherits: 2.0.4
+       is-binary-path: 1.0.1
+       is-glob: 4.0.3
+       normalize-path: 3.0.0
+       path-is-absolute: 1.0.1
+-      readdirp: 2.2.1(supports-color@6.1.0)
++      readdirp: 2.2.1
+       upath: 1.2.0
+     optionalDependencies:
+       fsevents: 1.2.13
+@@ -4203,7 +4187,7 @@ snapshots:
+
+   connect@3.7.0:
+     dependencies:
+-      debug: 2.6.9(supports-color@6.1.0)
++      debug: 2.6.9
+       finalhandler: 1.1.2
+       parseurl: 1.3.3
+       utils-merge: 1.0.1
+@@ -4331,17 +4315,13 @@ snapshots:
+
+   date-format@4.0.14: {}
+
+-  debug@2.6.9(supports-color@6.1.0):
++  debug@2.6.9:
+     dependencies:
+       ms: 2.0.0
+-    optionalDependencies:
+-      supports-color: 6.1.0
+
+-  debug@4.3.7(supports-color@9.4.0):
++  debug@4.3.7:
+     dependencies:
+       ms: 2.1.3
+-    optionalDependencies:
+-      supports-color: 9.4.0
+
+   decode-uri-component@0.2.2: {}
+
+@@ -4447,7 +4427,7 @@ snapshots:
+       base64id: 2.0.0
+       cookie: 0.7.2
+       cors: 2.8.5
+-      debug: 4.3.7(supports-color@9.4.0)
++      debug: 4.3.7
+       engine.io-parser: 5.2.3
+       ws: 8.17.1
+     transitivePeerDependencies:
+@@ -4694,7 +4674,7 @@ snapshots:
+       ajv: 6.12.6
+       chalk: 4.1.2
+       cross-spawn: 7.0.6
+-      debug: 4.3.7(supports-color@9.4.0)
++      debug: 4.3.7
+       doctrine: 3.0.0
+       escape-string-regexp: 4.0.0
+       eslint-scope: 7.2.2
+@@ -4752,14 +4732,14 @@ snapshots:
+
+   eventemitter3@4.0.7: {}
+
+-  expand-brackets@2.1.4(supports-color@6.1.0):
++  expand-brackets@2.1.4:
+     dependencies:
+-      debug: 2.6.9(supports-color@6.1.0)
++      debug: 2.6.9
+       define-property: 0.2.5
+       extend-shallow: 2.0.1
+       posix-character-classes: 0.1.1
+       regex-not: 1.0.2
+-      snapdragon: 0.8.2(supports-color@6.1.0)
++      snapdragon: 0.8.2
+       to-regex: 3.0.2
+     transitivePeerDependencies:
+       - supports-color
+@@ -4775,15 +4755,15 @@ snapshots:
+
+   extend@3.0.2: {}
+
+-  extglob@2.0.4(supports-color@6.1.0):
++  extglob@2.0.4:
+     dependencies:
+       array-unique: 0.3.2
+       define-property: 1.0.0
+-      expand-brackets: 2.1.4(supports-color@6.1.0)
++      expand-brackets: 2.1.4
+       extend-shallow: 2.0.1
+       fragment-cache: 0.2.1
+       regex-not: 1.0.2
+-      snapdragon: 0.8.2(supports-color@6.1.0)
++      snapdragon: 0.8.2
+       to-regex: 3.0.2
+     transitivePeerDependencies:
+       - supports-color
+@@ -4811,7 +4791,7 @@ snapshots:
+       '@babel/core': 7.26.0
+       '@babel/runtime': 7.26.0
+       core-js: 3.39.0
+-      debug: 4.3.7(supports-color@9.4.0)
++      debug: 4.3.7
+       glob-to-regexp: 0.4.1
+       is-subset: 0.1.1
+       lodash.isequal: 4.5.0
+@@ -4843,7 +4823,7 @@ snapshots:
+
+   finalhandler@1.1.2:
+     dependencies:
+-      debug: 2.6.9(supports-color@6.1.0)
++      debug: 2.6.9
+       encodeurl: 1.0.2
+       escape-html: 1.0.3
+       on-finished: 2.3.0
+@@ -4866,9 +4846,7 @@ snapshots:
+
+   flatted@3.3.2: {}
+
+-  follow-redirects@1.15.9(debug@4.3.7):
+-    optionalDependencies:
+-      debug: 4.3.7(supports-color@9.4.0)
++  follow-redirects@1.15.9: {}
+
+   for-each@0.3.3:
+     dependencies:
+@@ -5059,10 +5037,10 @@ snapshots:
+       statuses: 2.0.1
+       toidentifier: 1.0.1
+
+-  http-proxy@1.18.1(debug@4.3.7):
++  http-proxy@1.18.1:
+     dependencies:
+       eventemitter3: 4.0.7
+-      follow-redirects: 1.15.9(debug@4.3.7)
++      follow-redirects: 1.15.9
+       requires-port: 1.0.0
+     transitivePeerDependencies:
+       - debug
+@@ -5180,6 +5158,8 @@ snapshots:
+       is-accessor-descriptor: 1.0.1
+       is-data-descriptor: 1.0.1
+
++  is-docker@2.2.1: {}
++
+   is-extendable@0.1.1: {}
+
+   is-extendable@1.0.1:
+@@ -5276,6 +5256,10 @@ snapshots:
+
+   is-windows@1.0.2: {}
+
++  is-wsl@2.2.0:
++    dependencies:
++      is-docker: 2.2.1
++
+   isarray@1.0.0: {}
+
+   isarray@2.0.5: {}
+@@ -5337,6 +5321,11 @@ snapshots:
+     dependencies:
+       which: 1.3.1
+
++  karma-firefox-launcher@2.1.3:
++    dependencies:
++      is-wsl: 2.2.0
++      which: 3.0.1
++
+   karma-jasmine@4.0.2(karma@6.4.4):
+     dependencies:
+       jasmine-core: 3.8.0
+@@ -5354,7 +5343,7 @@ snapshots:
+   karma@6.4.4:
+     dependencies:
+       '@colors/colors': 1.5.0
+-      body-parser: 1.20.3(supports-color@6.1.0)
++      body-parser: 1.20.3
+       braces: 3.0.3
+       chokidar: 3.6.0
+       connect: 3.7.0
+@@ -5362,7 +5351,7 @@ snapshots:
+       dom-serialize: 2.2.1
+       glob: 7.2.3
+       graceful-fs: 4.2.11
+-      http-proxy: 1.18.1(debug@4.3.7)
++      http-proxy: 1.18.1
+       isbinaryfile: 4.0.10
+       lodash: 4.17.21
+       log4js: 6.9.1
+@@ -5441,7 +5430,7 @@ snapshots:
+   log4js@6.9.1:
+     dependencies:
+       date-format: 4.0.14
+-      debug: 4.3.7(supports-color@9.4.0)
++      debug: 4.3.7
+       flatted: 3.3.2
+       rfdc: 1.4.1
+       streamroller: 3.1.5
+@@ -5482,20 +5471,20 @@ snapshots:
+
+   merge2@1.4.1: {}
+
+-  micromatch@3.1.10(supports-color@6.1.0):
++  micromatch@3.1.10:
+     dependencies:
+       arr-diff: 4.0.0
+       array-unique: 0.3.2
+-      braces: 2.3.2(supports-color@6.1.0)
++      braces: 2.3.2
+       define-property: 2.0.2
+       extend-shallow: 3.0.2
+-      extglob: 2.0.4(supports-color@6.1.0)
++      extglob: 2.0.4
+       fragment-cache: 0.2.1
+       kind-of: 6.0.3
+-      nanomatch: 1.2.13(supports-color@6.1.0)
++      nanomatch: 1.2.13
+       object.pick: 1.3.0
+       regex-not: 1.0.2
+-      snapdragon: 0.8.2(supports-color@6.1.0)
++      snapdragon: 0.8.2
+       to-regex: 3.0.2
+     transitivePeerDependencies:
+       - supports-color
+@@ -5551,7 +5540,7 @@ snapshots:
+
+   nanoid@3.3.8: {}
+
+-  nanomatch@1.2.13(supports-color@6.1.0):
++  nanomatch@1.2.13:
+     dependencies:
+       arr-diff: 4.0.0
+       array-unique: 0.3.2
+@@ -5562,7 +5551,7 @@ snapshots:
+       kind-of: 6.0.3
+       object.pick: 1.3.0
+       regex-not: 1.0.2
+-      snapdragon: 0.8.2(supports-color@6.1.0)
++      snapdragon: 0.8.2
+       to-regex: 3.0.2
+     transitivePeerDependencies:
+       - supports-color
+@@ -6013,10 +6002,10 @@ snapshots:
+     dependencies:
+       minimatch: 5.1.6
+
+-  readdirp@2.2.1(supports-color@6.1.0):
++  readdirp@2.2.1:
+     dependencies:
+       graceful-fs: 4.2.11
+-      micromatch: 3.1.10(supports-color@6.1.0)
++      micromatch: 3.1.10
+       readable-stream: 2.3.8
+     transitivePeerDependencies:
+       - supports-color
+@@ -6219,10 +6208,10 @@ snapshots:
+     dependencies:
+       kind-of: 3.2.2
+
+-  snapdragon@0.8.2(supports-color@6.1.0):
++  snapdragon@0.8.2:
+     dependencies:
+       base: 0.11.2
+-      debug: 2.6.9(supports-color@6.1.0)
++      debug: 2.6.9
+       define-property: 0.2.5
+       extend-shallow: 2.0.1
+       map-cache: 0.2.2
+@@ -6234,7 +6223,7 @@ snapshots:
+
+   socket.io-adapter@2.5.5:
+     dependencies:
+-      debug: 4.3.7(supports-color@9.4.0)
++      debug: 4.3.7
+       ws: 8.17.1
+     transitivePeerDependencies:
+       - bufferutil
+@@ -6244,7 +6233,7 @@ snapshots:
+   socket.io-parser@4.2.4:
+     dependencies:
+       '@socket.io/component-emitter': 3.1.2
+-      debug: 4.3.7(supports-color@9.4.0)
++      debug: 4.3.7
+     transitivePeerDependencies:
+       - supports-color
+
+@@ -6253,7 +6242,7 @@ snapshots:
+       accepts: 1.3.8
+       base64id: 2.0.0
+       cors: 2.8.5
+-      debug: 4.3.7(supports-color@9.4.0)
++      debug: 4.3.7
+       engine.io: 6.6.2
+       socket.io-adapter: 2.5.5
+       socket.io-parser: 4.2.4
+@@ -6308,7 +6297,7 @@ snapshots:
+   streamroller@3.1.5:
+     dependencies:
+       date-format: 4.0.14
+-      debug: 4.3.7(supports-color@9.4.0)
++      debug: 4.3.7
+       fs-extra: 8.1.0
+     transitivePeerDependencies:
+       - supports-color
+@@ -6386,18 +6375,10 @@ snapshots:
+     dependencies:
+       has-flag: 3.0.0
+
+-  supports-color@6.1.0:
+-    dependencies:
+-      has-flag: 3.0.0
+-    optional: true
+-
+   supports-color@7.2.0:
+     dependencies:
+       has-flag: 4.0.0
+
+-  supports-color@9.4.0:
+-    optional: true
+-
+   supports-preserve-symlinks-flag@1.0.0: {}
+
+   svgo@2.8.0:
+@@ -6469,32 +6450,7 @@ snapshots:
+       tslib: 1.14.1
+       typescript: 4.9.5
+
+-  turbo-darwin-64@1.13.4:
+-    optional: true
+-
+-  turbo-darwin-arm64@1.13.4:
+-    optional: true
+-
+-  turbo-linux-64@1.13.4:
+-    optional: true
+-
+-  turbo-linux-arm64@1.13.4:
+-    optional: true
+-
+-  turbo-windows-64@1.13.4:
+-    optional: true
+-
+-  turbo-windows-arm64@1.13.4:
+-    optional: true
+-
+-  turbo@1.13.4:
+-    optionalDependencies:
+-      turbo-darwin-64: 1.13.4
+-      turbo-darwin-arm64: 1.13.4
+-      turbo-linux-64: 1.13.4
+-      turbo-linux-arm64: 1.13.4
+-      turbo-windows-64: 1.13.4
+-      turbo-windows-arm64: 1.13.4
++  turbo-linux-ppc64le@1.4.4: {}
+
+   type-check@0.4.0:
+     dependencies:
+@@ -6667,6 +6623,10 @@ snapshots:
+     dependencies:
+       isexe: 2.0.0
+
++  which@3.0.1:
++    dependencies:
++      isexe: 2.0.0
++
+   word-wrap@1.2.5: {}
+
+   wordwrap@1.0.0: {}
+diff --git a/scripts/config/karma.js b/scripts/config/karma.js
+index 2318e0840..615038459 100644
+--- a/scripts/config/karma.js
++++ b/scripts/config/karma.js
+@@ -30,14 +30,14 @@ export default function(filePaths, isDev, cliArgs) {
+   return {
+     singleRun: !isDev,
+     autoWatch: isDev,
+-    browsers: !isDev ? ['ChromeHeadless_custom'] : [],
++    browsers: !isDev ? ['FirefoxHeadlessCustom'] : [],
+     client: { cliArgs }, // access via `window.__karma__.config.cliArgs`
+
+     files,
+     preprocessors,
+
+     plugins: [
+-      require('karma-chrome-launcher'),
++      require('karma-firefox-launcher'),
+       require('karma-jasmine'),
+       require('karma-sourcemap-loader'),
+       require('karma-verbose-reporter'),
+@@ -61,15 +61,14 @@ export default function(filePaths, isDev, cliArgs) {
+     logLevel: karma.constants.LOG_INFO,
+
+     // If browser does not capture in given timeout [ms], kill it
+-    captureTimeout: 60000,
++   browserDisconnectTimeout: 60000,
++   browserNoActivityTimeout: 120000,
++   captureTimeout: 120000, // default 60000 ms
+
+     customLaunchers: {
+-      ChromeHeadless_custom: {
+-        base: 'ChromeHeadless',
+-        flags: [
+-          '--no-sandbox', // needed for TravisCI: https://docs.travis-ci.com/user/chrome#Sandboxing
+-          '--window-size=1280,1696', // some tests only work with larger window (w?, h?)
+-        ],
++      FirefoxHeadlessCustom: { // Define FirefoxHeadless launcher
++        base: 'Firefox',
++        flags: ['-headless','--width=2048', '--height=1024'], // Run Firefox in headless mode
+       },
+     },
+   }
+diff --git a/scripts/package.json b/scripts/package.json
+index 2d9f95642..2cf26f42d 100644
+--- a/scripts/package.json
++++ b/scripts/package.json
+@@ -47,7 +47,7 @@
+     "rollup-plugin-sourcemaps": "^0.6.3",
+     "semver": "^7.3.8",
+     "terser": "^4.8.0",
+-    "turbo": "^1.5.6",
++    "turbo-linux-ppc64le": "1.4.4",
+     "typescript": "^4.8.2"
+   },
+   "bin": {
