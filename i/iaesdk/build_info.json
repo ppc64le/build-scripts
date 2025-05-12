@@ -1,5 +1,5 @@
 {
-   "maintainer": "shubham-dayma-ibm",
+   "maintainer": "vinodk99",
    "package_name": "iaesdk",
    "github_url": "https://github.com/IBM/ibm-iae-python-sdk",
    "version": "v3.3.0",
@@ -9,5 +9,8 @@
    "docker_build": false,
    "wheel_build": true,
    "validate_build_script": true,
-   "use_non_root_user": false
+   "use_non_root_user": false,
+   "*": {
+      "build_script": "iaesdk_ubi_9.3.sh"
+    }
 }
