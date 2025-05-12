@@ -1,8 +1,8 @@
 {
-  "maintainer": "stutiibm",
+  "maintainer": "vinodk99",
   "package_name": "opencv-python-headless",
   "github_url": "https://github.com/opencv/opencv-python.git",
-  "version": "4.10.0.84",
+  "version": "4.11.0.86",
   "wheel_build" : true,
   "package_dir": "o/opencv-python-headless",
   "default_branch": "4.x",
