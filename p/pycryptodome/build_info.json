@@ -1,5 +1,5 @@
 {
-   "maintainer": "Balavva-Mirji",
+   "maintainer": "aastha-sharma2",
    "package_name": "pycryptodome",
    "github_url": "https://github.com/Legrandin/pycryptodome",
    "version": "v3.21.0",
@@ -8,5 +8,9 @@
    "package_dir": "p/pycryptodome",
    "docker_build": false,
    "validate_build_script": true,
-   "use_non_root_user": false
+   "use_non_root_user": false,
+   "wheel_build": true,
+   "*" : {
+      "build_script": "pycryptodome_ubi_9.3.sh"
+   }
 }
