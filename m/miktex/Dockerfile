@@ -78,7 +78,7 @@ RUN git clone ${PACKAGE_URL} && \
     git checkout ${SCRIPT_PACKAGE_VERSION}
 
 # apply patch file
-RUN cd miktex && git apply --reject --whitespace=fix --ignore-space-change --ignore-whitespace ../miktex.patch
+RUN cd miktex && git apply --reject --whitespace=fix --ignore-space-change --ignore-whitespace ../miktex_v25.4.patch
 
 # Build and test
 RUN cd miktex && \
