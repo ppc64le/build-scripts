@@ -107,7 +107,7 @@ make install
 cd $BUILD_HOME/$PACKAGE_NAME
 
 # Apply Patch 
-git apply  --reject --whitespace=fix --ignore-space-change --ignore-whitespace $SCRIPT_DIR/miktex.patch
+git apply  --reject --whitespace=fix --ignore-space-change --ignore-whitespace $SCRIPT_DIR/miktex_v25.4.patch
 
 # Generate cmake binaries
 if ! cmake ../$PACKAGE_NAME; then
