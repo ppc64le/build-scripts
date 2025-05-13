@@ -22,6 +22,7 @@ set -e
 PACKAGE_NAME=pycryptodome
 PACKAGE_VERSION=${1:-v3.21.0}
 PACKAGE_URL=https://github.com/Legrandin/pycryptodome
+PACKAGE_DIR=pycryptodome
 
 # Install required dependencies
 yum update -y
