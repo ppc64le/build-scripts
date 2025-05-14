@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : xformers
-# Version       : v0.0.28
+# Version       : v0.0.29
 # Source repo   : https://github.com/facebookresearch/xformers.git
 # Tested on     : UBI 9.3
 # Language      : Python, C++
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=xformers
-PACKAGE_VERSION=${1:-v0.0.28}
+PACKAGE_VERSION=${1:-v0.0.29}
 PACKAGE_URL=https://github.com/facebookresearch/xformers.git
 PYTHON_VER=${PYTHON_VERSION:-3.11}
 BUILD_DEPS=${BUILD_DEPS:-true}
@@ -29,7 +29,7 @@ export _GLIBCXX_USE_CXX11_ABI=1
 
 # Install dependencies
 dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
-    git gcc-toolset-13 cmake ninja-build rust cargo \
+    git gcc-toolset-13 ninja-build rust cargo \
     python${PYTHON_VER}-devel python${PYTHON_VER}-pip jq pkg-config atlas
 
 source /opt/rh/gcc-toolset-13/enable
@@ -51,8 +51,8 @@ git checkout $PACKAGE_VERSION
 git submodule update --init
 
 # Install Python dependencies
-python${PYTHON_VER} -m pip install ninja cmake 'pytest==8.2.2' hydra-core
 python${PYTHON_VER} -m pip install --upgrade pip setuptools wheel
+python${PYTHON_VER} -m pip install ninja 'cmake<4' 'pytest==8.2.2' hydra-core
 
 
 # Check BUILD_DEPS passed from Jenkins
@@ -98,7 +98,7 @@ else
 fi
 
 # Build and install xformers
-if ! python${PYTHON_VER} -m pip install -e . -vvv; then
+if ! python${PYTHON_VER} -m pip install . -vvv; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail |  Build_fails"
