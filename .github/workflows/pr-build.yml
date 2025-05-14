@@ -13,6 +13,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          sudo systemctl start docker
+          sudo systemctl enable docker
+  
+
       - name: Pull UBI9 Docker Image
         run: |
           docker pull registry.access.redhat.com/ubi9/ubi:9.3
