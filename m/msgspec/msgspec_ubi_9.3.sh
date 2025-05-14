@@ -45,7 +45,7 @@ if !  python3 -m pip install ./; then
 fi
 
 # Run Tox
-python3 -m tox
+ tox -e py39
 if [ $? -eq 0 ]; then
     echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
