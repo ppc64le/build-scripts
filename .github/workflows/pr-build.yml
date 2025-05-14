@@ -13,16 +13,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Docker
-        run: |
+     - name: Install Docker
+       run: |
          curl -fsSL https://get.docker.com -o get-docker.sh
          sudo sh get-docker.sh
-         sudo usermod -aG docker $USER
 
-      - name: Start Docker
-        run: |
-          sudo systemctl start docker
-          sudo systemctl enable docker
+     - name: Start Docker
+       run: |
+         sudo systemctl start docker || (sudo dockerd > /tmp/dockerd.log 2>&1 & sleep 10)
  
 
       - name: Pull UBI9 Docker Image
