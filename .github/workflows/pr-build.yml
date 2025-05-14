@@ -15,11 +15,15 @@ jobs:
 
       - name: Install Docker
         run: |
-          sudo apt-get update
-          sudo apt-get install -y docker.io
+         curl -fsSL https://get.docker.com -o get-docker.sh
+         sudo sh get-docker.sh
+         sudo usermod -aG docker $USER
+
+      - name: Start Docker
+        run: |
           sudo systemctl start docker
           sudo systemctl enable docker
-  
+ 
 
       - name: Pull UBI9 Docker Image
         run: |
