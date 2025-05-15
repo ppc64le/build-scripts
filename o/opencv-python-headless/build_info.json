@@ -10,7 +10,7 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
-  "4.10.0.84": {
+  "84": {
     "build_script": "opencv-python-headless_4.10.0.84_ubi_9.3.sh"
   },
   "*": {
