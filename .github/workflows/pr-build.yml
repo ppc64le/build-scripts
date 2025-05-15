@@ -18,6 +18,11 @@ jobs:
          curl -fsSL https://get.docker.com -o get-docker.sh
          sudo sh get-docker.sh
 
+     - name: Debug Docker failure
+       run: |
+         sudo journalctl -xeu docker.service || true
+         sudo systemctl status docker.service || true
+
      - name: Start Docker
        run: |
          echo '{"storage-driver":"vfs"}' | sudo tee /etc/docker/daemon.json > /dev/null
