@@ -1,0 +1,16 @@
+{
+   "maintainer": "aastha-sharma2",
+   "package_name": "pygments",
+   "github_url": "https://github.com/pygments/pygments.git",
+   "version": "2.15.1",
+   "default_branch": "master",
+   "build_script": "pygments_ubi_9.3.sh",
+   "wheel_build" : true,
+   "package_dir": "p/pygments",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*": {
+       "build_script": "pygments_ubi_9_3.sh"
+   }
+}
