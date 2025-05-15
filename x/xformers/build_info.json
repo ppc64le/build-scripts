@@ -1,0 +1,15 @@
+{
+  "maintainer": "puneetsharma21",
+  "package_name": "xformers",
+  "github_url": "https://github.com/facebookresearch/xformers.git",
+  "version": "v0.0.29",
+  "default_branch": "main",
+  "package_dir": "x/xformers",
+  "build_script": "xformers_ubi_9_3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v0.0.29": {
+    "build_script": "xformers_ubi_9_3.sh"
+  }
+}
