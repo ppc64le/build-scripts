@@ -20,6 +20,7 @@ jobs:
 
      - name: Start Docker
        run: |
+         echo '{"storage-driver":"vfs"}' | sudo tee /etc/docker/daemon.json > /dev/null
          sudo systemctl start docker || (sudo dockerd > /tmp/dockerd.log 2>&1 & sleep 10)
  
 
