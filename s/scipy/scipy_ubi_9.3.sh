@@ -43,6 +43,7 @@ if [ -z $PACKAGE_SOURCE_DIR ]; then
 else
   cd $PACKAGE_SOURCE_DIR
 fi
+git checkout $PACKAGE_VERSION
 git submodule sync
 git submodule update --init --recursive
 
