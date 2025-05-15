@@ -1,9 +1,9 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : iaesdk
-# Version          : v3.3.0
-# Source repo      : https://github.com/IBM/ibm-iae-python-sdk
+# Package          : ujson
+# Version          : 5.10.0
+# Source repo      : https://github.com/ultrajson/ultrajson
 # Tested on        : UBI:9.3
 # Language         : Python
 # Travis-Check     : True
@@ -19,10 +19,10 @@
 # ---------------------------------------------------------------------------
 
 # Variables
-PACKAGE_NAME=iaesdk
-PACKAGE_VERSION=${1:-v3.3.0}
-PACKAGE_URL=https://github.com/IBM/ibm-iae-python-sdk
-PACKAGE_DIR=ibm-iae-python-sdk
+PACKAGE_NAME=ujson
+PACKAGE_VERSION=${1:-5.10.0}
+PACKAGE_URL=https://github.com/ultrajson/ultrajson
+PACKAGE_DIR=ultrajson
 CURRENT_DIR=$(pwd)
 
 # Install dependencies
@@ -37,7 +37,7 @@ cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 #install python dependencies
-pip install pytest setuptools responses
+pip install pytest setuptools
 
 #install
 if ! pip3 install -e . ; then
