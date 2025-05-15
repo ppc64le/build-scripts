@@ -27,7 +27,7 @@ PACKAGE_DIR=onnxmltools
 WORK_DIR=$(pwd)
 
 echo "Installing dependencies..."
-yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3-devel python3.12 python3.12-devel python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
+yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3 python3-devel python3.12 python3.12-devel python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
 PYTHON_VERSION=$(python3.12 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2) 
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
@@ -105,7 +105,7 @@ echo " --------------------------------------------------- OpenBlas Successfully
 
 cd $WORK_DIR
 
-pip3.12 install --upgrade cmake pip setuptools wheel ninja packaging tox pytest build mypy stubs
+python3.12 -m pip install --upgrade cmake pip setuptools wheel ninja packaging tox pytest build mypy stubs
 
 echo " --------------------------------------------------- Abseil-Cpp Cloning --------------------------------------------------- "
 
@@ -182,8 +182,8 @@ python3.12 setup.py install --cpp_implementation
 
 cd $WORK_DIR
 
-pip3.12 install numpy==2.0.2 scikit-learn==1.6.1 scipy==1.15.2 pandas cmake flatbuffers wheel lightgbm==4.6.0 
-pip3.12 install pybind11==2.12.0
+python3.12 -m pip install numpy==2.0.2 scikit-learn==1.6.1 scipy==1.15.2 pandas cmake flatbuffers wheel lightgbm==4.6.0 
+python3.12 -m pip install pybind11==2.12.0
 
 PYBIND11_PREFIX=$SITE_PACKAGE_PATH/pybind11
 
@@ -234,15 +234,15 @@ export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH"
 
 # Adding this source due to - (Unable to detect linker for compiler `cc -Wl,--version`)
 source /opt/rh/gcc-toolset-13/enable
-pip3.12 install cython meson
-pip3.12 install numpy==2.0.2
-pip3.12 install parameterized
-pip3.12 install pytest nbval pythran mypy-protobuf
-pip3.12 install scipy==1.15.2
+python3.12 -m pip install cython meson
+python3.12 -m pip install numpy==2.0.2
+pip install parameterized packaging
+python3.12 -m pip install pytest nbval pythran mypy-protobuf
+python3.12 -m pip install scipy==1.15.2
 
 python3.12 setup.py install
 python3.12 -m build --wheel --no-isolation --outdir="wheelf"
-pip3.12 install wheelf/*.whl
+python3.12 -m pip install wheelf/*.whl
 
 echo " --------------------------------------------------- Onnx Successfully Installed --------------------------------------------------- "
 
@@ -260,7 +260,7 @@ git checkout v1.21.0
 export CXXFLAGS="-Wno-stringop-overflow"
 export CFLAGS="-Wno-stringop-overflow"
 export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
-/usr/bin/python3.12 -m pip install packaging wheel
+pip install --upgrade pip setuptools wheel packaging
 NUMPY_INCLUDE=$(python3.12 -c "import numpy; print(numpy.get_include())")
 echo "NumPy include path: $NUMPY_INCLUDE"
 
@@ -281,16 +281,21 @@ echo " --------------------------------------------------- Building onnxruntime 
     --compile_no_warning_as_error \
     --build_wheel
 # Clean up the onnxruntime repository
+
+echo " --------------------------------------------------- Onnxruntime Successfully Installed --------------------------------------------------- " 
+
 cd $WORK_DIR
 
+# Installing skl2onnx
 echo " --------------------------------------------------- build and install skl2onnx --------------------------------------------------- "
+
 git clone https://github.com/onnx/sklearn-onnx.git
 cd sklearn-onnx
 git checkout v1.18
 sed -i 's/onnx>=1.2.1//g' requirements.txt
 sed -i 's/onnxconverter-common>=1.7.0//g' requirements.txt
 sed -i 's/scikit-learn>=1\.1/scikit-learn==1.6.1/' requirements.txt
-pip3.12 install -e . --no-build-isolation --no-deps
+python3.12 -m pip install -e . --no-build-isolation --no-deps
 
 echo " --------------------------------------------------- skl2onnx installed --------------------------------------------------- "
 
@@ -304,14 +309,14 @@ cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 #sed -i 's/\bonnxconverter-common\b/onnxconverter-common==1.14.0/g' requirements.txt
-pip3.12 install onnxconverter_common --no-deps
+python3.12 -m pip install onnxconverter_common --no-deps
 
 #export other necessary path for onnmxtools
 export LD_LIBRARY_PATH=/OpenBLAS/local/openblas/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/local/libprotobuf/lib64:$LD_LIBRARY_PATH
 
 #Build
-if ! (pip3.12 install -e . --no-build-isolation --no-deps) ; then
+if ! (python3.12 -m pip install -e . --no-build-isolation --no-deps) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
