@@ -24,7 +24,7 @@ PACKAGE_URL=https://github.com/jcrist/msgspec
 PACKAGE_DIR=msgspec
 
 yum install -y git  python3 python3-devel gcc-toolset-13 make wget sudo cmake
-pip3 install tox 
+pip3 install pytest 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 PATH=$PATH:/usr/local/bin/
 
@@ -36,16 +36,15 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME  
 git checkout $PACKAGE_VERSION
 
-# Install via pip3
-if !  python3 -m pip install ./; then
+if ! pip install -e .; then
         echo "------------------$PACKAGE_NAME:install_fails------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"  
         exit 1
 fi
 
-# Run Tox
- tox -e py39
+# Run pytest
+pytest
 if [ $? -eq 0 ]; then
     echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
