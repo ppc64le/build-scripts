@@ -24,7 +24,6 @@ PACKAGE_URL=https://github.com/scipy/scipy
 PACKAGE_DIR=scipy
 
 OS_NAME=`cat /etc/os-release | grep "PRETTY" | awk -F '=' '{print $2}'`
-CURRENT_DIR=$(pwd)
 
 # install core dependencies
 yum install -y gcc gcc-c++ gcc-fortran pkg-config openblas-devel python3.11 python3.11-pip python3.11-devel git atlas
@@ -39,13 +38,10 @@ python3.11 -m pip install build
 
 # clone source repository
 if [ -z $PACKAGE_SOURCE_DIR ]; then
-    git clone $PACKAGE_URL -b $PACKAGE_VERSION
-    cd $PACKAGE_NAME
-    CURRENT_DIR=$(pwd)
+  git clone $PACKAGE_URL
+  cd $PACKAGE_NAME
 else
-    CURRENT_DIR=$PACKAGE_SOURCE_DIR
-    cd $CURRENT_DIR
-    git checkout $PACKAGE_VERSION
+  cd $PACKAGE_SOURCE_DIR
 fi
 git submodule sync
 git submodule update --init --recursive
