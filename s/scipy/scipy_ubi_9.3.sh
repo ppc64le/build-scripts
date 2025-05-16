@@ -37,15 +37,10 @@ python3.11 -m pip install 'pythran<0.15.0,>=0.12.0'
 python3.11 -m pip install build
 
 # clone source repository
-if [ -z $PACKAGE_SOURCE_DIR ]; then
-  git clone $PACKAGE_URL
-  cd $PACKAGE_NAME
-else
-  cd $PACKAGE_SOURCE_DIR
-fi
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-git submodule sync
-git submodule update --init --recursive
+git submodule update --init
 
 # build and install
 if ! python3.11 -m pip install -e . --no-build-isolation; then
