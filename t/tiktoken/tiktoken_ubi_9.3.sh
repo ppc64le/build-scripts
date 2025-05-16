@@ -18,12 +18,17 @@
 #
 # ----------------------------------------------------------------------------
 
+set -e 
+
 PACKAGE_NAME=tiktoken
 PACKAGE_VERSION=${1:-0.7.0}
 PACKAGE_URL=https://github.com/openai/tiktoken
 PACKAGE_DIR=tiktoken
 
-yum install -y git  python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo cmake
+yum install -y git  python3 python3-devel.ppc64le gcc-toolset-13 make wget sudo cmake
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+PATH=$PATH:/usr/local/bin/
+
 pip install pytest hypothesis
 
 # Install rust
