@@ -5,7 +5,7 @@
 # Version          : 1.2.2
 # Source repo      : https://github.com/google/snappy
 # Tested on        : UBI:9.3
-# Language         : C++,Python
+# Language         : Python,C++
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Ramnath Nayak <Ramnath.Nayak@ibm.com>
