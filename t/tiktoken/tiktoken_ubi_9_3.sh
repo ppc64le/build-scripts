@@ -4,11 +4,11 @@
 # Package          : tiktoken
 # Version          : 0.7.0
 # Source repo      : https://github.com/openai/tiktoken
-# Tested on            : UBI:9.3
+# Tested on        : UBI:9.3
 # Language         : Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : ICH <shubham-dayma-ibm>
+# Maintainer       : Aastha Sharma <aastha.sharma4@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
