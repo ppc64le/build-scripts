@@ -22,7 +22,6 @@ PACKAGE_NAME=xformers
 PACKAGE_VERSION=${1:-v0.0.29}
 PACKAGE_URL=https://github.com/facebookresearch/xformers.git
 PACKAGE_DIR=xformers
-BUILD_DEPS=${BUILD_DEPS:-true}
 PARALLEL=${PARALLEL:-$(nproc)}
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 export _GLIBCXX_USE_CXX11_ABI=1
@@ -49,48 +48,38 @@ git submodule update --init
 pip3 install --upgrade pip setuptools wheel
 pip3 install ninja 'cmake<4' 'pytest==8.2.2' hydra-core
 
-
-# Check BUILD_DEPS passed from Jenkins
-echo "BUILD_DEPS: $BUILD_DEPS"
-
 # Install PyTorch only if not installed and BUILD_DEPS is not False
-if [ -z $BUILD_DEPS ] || [ "$BUILD_DEPS" == "true" ]; then
 
-    # Install dependency - pytorch
-    PYTORCH_VERSION=v2.5.1
+# Install dependency - pytorch
+PYTORCH_VERSION=v2.5.1
 
-    git clone https://github.com/pytorch/pytorch.git
+git clone https://github.com/pytorch/pytorch.git
 
-    cd pytorch
+cd pytorch
 
-    git checkout tags/$PYTORCH_VERSION
+git checkout tags/$PYTORCH_VERSION
 
-    PPC64LE_PATCH="69cbf05"
+PPC64LE_PATCH="69cbf05"
 
-    if ! git log --pretty=format:"%H" | grep -q "$PPC64LE_PATCH"; then
-        echo "Applying POWER patch."
-        git config user.email "Puneet.Sharma21@ibm.com"
-        git config user.name "puneetsharma21"
-        git cherry-pick "$PPC64LE_PATCH"
-    else
-        echo "POWER patch not needed."
-    fi
+if ! git log --pretty=format:"%H" | grep -q "$PPC64LE_PATCH"; then
+    echo "Applying POWER patch."
+    git config user.email "Puneet.Sharma21@ibm.com"
+    git config user.name "puneetsharma21"
+    git cherry-pick "$PPC64LE_PATCH"
+else
+    echo "POWER patch not needed."
+fi
 
-    git submodule sync
-    git submodule update --init --recursive
+git submodule sync
+git submodule update --init --recursive
 
     # Set flags to suppress warnings
-    export CXXFLAGS="-Wno-unused-variable -Wno-unused-parameter"
+export CXXFLAGS="-Wno-unused-variable -Wno-unused-parameter"
 
-    pip3 install -r requirements.txt
-    MAX_JOBS=$PARALLEL python3 setup.py install
+pip3 install -r requirements.txt
+MAX_JOBS=$PARALLEL python3 setup.py install
 
-
-    cd ..
-else
-    echo "Skipping PyTorch installation because BUILD_DEPS is set to False or not provided."
-    python3 -m pip install -r requirements.txt
-fi
+cd ..
 
 # Build and install xformers
 if ! pip3 install . -vvv; then
