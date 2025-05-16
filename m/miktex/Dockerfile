@@ -1,4 +1,5 @@
-FROM registry.access.redhat.com/ubi9/ubi:9.3
+# Build Stage
+FROM registry.access.redhat.com/ubi9/ubi:9.3 as builder
 
 ENV SCRIPT_PACKAGE_VERSION=25.4 \
     PACKAGE_NAME=miktex \
@@ -10,44 +11,40 @@ ENV SCRIPT_PACKAGE_VERSION=25.4 \
 
 WORKDIR ${BUILD_HOME}
 
-# Install required tools and dependencies
+# Install build dependencies
 RUN yum install -y \
     git wget gcc gcc-c++ diffutils gettext libxslt make \
     openssl-devel bzip2-devel libffi-devel xz zlib-devel \
-    openblas-devel dnf-plugins-core && \
+    openblas-devel dnf-plugins-core gnupg rpm-build && \
     \
     # Import GPG keys
     wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official && \
     mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/ && \
     rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official && \
     \
-    # Add CentOS Repos
     dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/ && \
     dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/ && \
     dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
 
 # Install Python from source
 RUN wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz && \
-    tar xzf Python-${PYTHON_VERSION}.tgz && rm -f Python-${PYTHON_VERSION}.tgz && \
+    tar xzf Python-${PYTHON_VERSION}.tgz && \
     cd Python-${PYTHON_VERSION} && \
     ./configure --with-system-ffi --with-computed-gotos --enable-loadable-sqlite-extensions && \
-    make -j$(nproc) && \
-    make altinstall && \
-    ln -sf $(which python3.11) /usr/bin/python3 && \
-    ln -sf $(which pip3.11) /usr/bin/pip3
+    make -j$(nproc) && make altinstall && \
+    ln -sf $(which python3.11) /usr/bin/python3 && ln -sf $(which pip3.11) /usr/bin/pip3
 
 # Install CMake from source
-RUN wget -c https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz && \
-    tar -zxvf cmake-${CMAKE_VERSION}.tar.gz && rm -f cmake-${CMAKE_VERSION}.tar.gz && \
+RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz && \
+    tar -zxvf cmake-${CMAKE_VERSION}.tar.gz && \
     cd cmake-${CMAKE_VERSION} && \
     ./bootstrap --prefix=/usr/local/cmake --parallel=2 -- -DBUILD_TESTING=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_USE_OPENSSL=ON && \
     make install -j$(nproc)
 
-# Install dependencies
+# Install MiKTeX build dependencies
 RUN yum install -y \
     https://rpmfind.net/linux/centos-stream/9-stream/AppStream/ppc64le/os/Packages/bison-3.7.4-5.el9.ppc64le.rpm \
-    https://rpmfind.net/linux/centos-stream/9-stream/AppStream/ppc64le/os/Packages/flex-2.6.4-9.el9.ppc64le.rpm \
-    && \
+    https://rpmfind.net/linux/centos-stream/9-stream/AppStream/ppc64le/os/Packages/flex-2.6.4-9.el9.ppc64le.rpm && \
     dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
     yum install -y apr-devel apr-util-devel boost-devel bzip2-devel cairo-devel curl-devel \
     fribidi-devel gd-devel gmp-devel hunspell-devel log4cxx log4cxx-devel \
@@ -72,18 +69,36 @@ RUN \
     rm /usr/local/bin/gosu.asc; \
     chmod +x /usr/local/bin/gosu
 
-# Clone MiKTeX and checkout specific version
+COPY miktex_v25.4.patch ${BUILD_HOME}/miktex_v25.4.patch
+
+# Clone and patch MiKTeX
 RUN git clone ${PACKAGE_URL} && \
-    cd miktex && \
-    git checkout ${SCRIPT_PACKAGE_VERSION}
+    cd miktex && git checkout ${SCRIPT_PACKAGE_VERSION} && \
+    git apply --reject --whitespace=fix --ignore-space-change --ignore-whitespace ../miktex_v25.4.patch
 
-# apply patch file
-RUN cd miktex && git apply --reject --whitespace=fix --ignore-space-change --ignore-whitespace ../miktex_v25.4.patch
-
-# Build and test
+# Build MiKTeX
 RUN cd miktex && \
     cmake . && \
     make && \
+    make package && \
     make test
+
+RUN find /opt/build/miktex -type f | grep -Ei 'bin|lib|miktex'
+
+
+# Final Stage
+FROM registry.access.redhat.com/ubi9/ubi:9.3
+
+COPY --from=builder /usr/local /usr/local
+COPY --from=builder /usr/bin/python3 /usr/bin/python3
+COPY --from=builder /usr/bin/pip3 /usr/bin/pip3
+COPY --from=builder /usr/local/bin/gosu /usr/local/bin/gosu
+COPY --from=builder /opt/build/miktex /usr/local/miktex
+
+ENV PATH=/usr/local/cmake/bin:$PATH
+
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 CMD ["bash"]
