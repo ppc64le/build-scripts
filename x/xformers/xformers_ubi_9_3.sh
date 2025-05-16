@@ -40,13 +40,8 @@ curl -sL https://ftp2.osuosl.org/pub/ppc64el/openblas/latest/Openblas_0.3.29_ppc
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64:/usr/local/lib:/usr/lib64:/usr/lib
 
 # Clone repository
-if [ -z $PACKAGE_SOURCE_DIR ]; then
-  git clone $PACKAGE_URL
-  cd $PACKAGE_NAME
-else
-  cd $PACKAGE_SOURCE_DIR
-fi
-
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init
 
