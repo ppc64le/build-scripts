@@ -48,6 +48,7 @@ make install
 cd ..
 
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/s/snappy/pyproject.toml
+sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
 
 pip install setuptools wheel tox
 
