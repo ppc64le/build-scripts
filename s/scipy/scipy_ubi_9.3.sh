@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : scipy
-# Version       : v1.14.1
+# Version       : v1.15.2
 # Source repo   : https://github.com/scipy/scipy
 # Tested on     : UBI 9.3
 # Language      : Python, C, Fortran, C++, Cython, Meson
@@ -19,16 +19,14 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=scipy
-PACKAGE_VERSION=${1:-v1.14.1}
+PACKAGE_VERSION=${1:-v1.15.2}
 PACKAGE_URL=https://github.com/scipy/scipy
+PACKAGE_DIR=scipy
 
 OS_NAME=`cat /etc/os-release | grep "PRETTY" | awk -F '=' '{print $2}'`
 
 # install core dependencies
 yum install -y gcc gcc-c++ gcc-fortran pkg-config openblas-devel python3.11 python3.11-pip python3.11-devel git atlas
-
-# change symbolic links so that python can find them
-#ln -s /usr/lib64/atlas/libtatlas.so.3 /usr/lib64/atlas/libtatlas.so
 
 # install scipy dependency(numpy wheel gets built and installed) and build-setup dependencies
 python3.11 -m pip install meson ninja numpy 'setuptools<60.0' Cython
