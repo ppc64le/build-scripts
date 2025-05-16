@@ -446,8 +446,8 @@ git submodule update --init --recursive
 
 sed -i "s/^[[:space:]]*name=package_name/name=\"${PACKAGE_NAME}\"/" setup.py
 
-export PROTOBUF_PREFIX=/protobuf/local/libprotobuf
-export OPENBLAS_PREFIX=/OpenBLAS
+export PROTOBUF_PREFIX=$CURRENT_DIR/protobuf/local/libprotobuf
+export OPENBLAS_PREFIX=$CURRENT_DIR/OpenBLAS
 
 # Adjust these paths so CMake can find headers and libraries
 export CMAKE_PREFIX_PATH="$PROTOBUF_PREFIX:$OPENBLAS_PREFIX:$CMAKE_PREFIX_PATH"
