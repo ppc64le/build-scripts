@@ -20,6 +20,7 @@ description = "Provides hdf5"
 #Classifiers to improve pacakage discoverability
 classifiers = [
   "Programming Language :: C++",
+  "License :: Apache License 2.0",
 ]
 
 #Project URLs
