@@ -141,8 +141,7 @@ fi
 #Run tests (take several hours to execute, hence disabling by default)
 #Some tests might fail because of issues with the tests themselves rather than envoy
 sysctl -w net.mptcp.enabled=1
-#bazel test --config=clang --config=libc++ --test_timeout=1000 --cxxopt=-fpermissive --define=wasm=disabled //test/... --cache_test_results=no || true
-bazel test --config=clang --config=libc++ --test_timeout=1000 --cxxopt=-fpermissive --define=wasm=disabled //test/...
+#bazel test --config=clang --config=libc++ --test_timeout=1000 --cxxopt=-fpermissive --define=wasm=disabled //test/...
 
 #Conclude
 echo "Build successful!"
