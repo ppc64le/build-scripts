@@ -40,7 +40,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #install python dependencies
-pip install tox setuptools
+pip install tox setuptools maturin
 
 #install
 if ! pip3 install  . ; then
