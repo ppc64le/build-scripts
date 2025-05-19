@@ -4,7 +4,7 @@
   "github_url": "https://github.com/MiKTeX/miktex",
   "version": "25.4",
   "package_dir": "m/miktex",
-  "default_branch": "main",
+  "default_branch": "next",
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
   "build_script": "miktex_v25.4_ubi_9.3.sh",
   "docker_build": "true",
