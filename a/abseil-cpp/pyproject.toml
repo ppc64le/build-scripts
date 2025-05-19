@@ -20,7 +20,7 @@ description = "Provides abseil for cpp packaging"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Programming Language :: C++",
-  "License :: Apache License 2.0",
+  "License :: OSI Approved :: BSD License",
 ]
 
 #Project URLs
