@@ -16,6 +16,9 @@
   "v1.23.5":{
     "build_script": "numpy_1.23.5_ubi_9.3.sh"
   },
+  "v1.24.2":{
+    "build_script": "numpy_1.23.5_ubi_9.3.sh"
+  },
   "v2.2.*":{
     "build_script": "numpy_v2.2.2_ubi_9.3.sh"
   },
