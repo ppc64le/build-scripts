@@ -192,7 +192,12 @@ def raise_pull_request(branch_pkg, base="master"):
     print("\n PR status code",response.status_code)
     
     if response.status_code >=200 and response.status_code <=299 :
-        return {"message" : "success"}
+        pr_data = response.json()
+        return {
+            "message": "success",
+            "pr_url": pr_data.get("html_url")
+        }
+
     return {"message" : "fail"}
 
 def add_license_file():
