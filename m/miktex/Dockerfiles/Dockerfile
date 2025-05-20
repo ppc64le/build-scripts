@@ -74,7 +74,7 @@ COPY miktex_v25.4.patch ${BUILD_HOME}/miktex_v25.4.patch
 # Clone and patch MiKTeX
 RUN git clone ${PACKAGE_URL} && \
     cd miktex && git checkout ${SCRIPT_PACKAGE_VERSION} && \
-    git apply --reject --whitespace=fix --ignore-space-change --ignore-whitespace ../miktex_v25.4.patch
+    git apply --reject --whitespace=fix --ignore-space-change --ignore-whitespace ${BUILD_HOME}/miktex_v25.4.patch
 
 # Build MiKTeX
 RUN cd miktex && \
