@@ -19,8 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=htpasswd
-PACKAGE_VERSION=2.3
-PACKAGE_URL=
+PACKAGE_VERSION=${1:-2.3}
 PACKAGE_DIR=htpasswd
 
 yum install -y sudo zlib-devel pip wget python3 python3-devel.ppc64le ncurses git gcc gcc-c++ \
@@ -59,7 +58,7 @@ python3.11 -m venv venv
 source venv/bin/activate
 
 # build wheel
-if ! python3.11 -m pip wheel htpasswd; then
+if ! python3.11 -m pip wheel htpasswd==${PACKAGE_VERSION}; then
     echo "--------------------$PACKAGE_NAME:wheel_build_fails----------------------------------------"
 else
     echo "--------------------$PACKAGE_NAME:wheel_build_success----------------------------------------"
