@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=pyhive
-PACKAGE_VERSION=0.7.0
+PACKAGE_VERSION=${1:-0.7.0}
 PACKAGE_URL=
 PACKAGE_DIR=pyhive
 
