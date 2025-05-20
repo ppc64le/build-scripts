@@ -60,7 +60,7 @@ source venv/bin/activate
 pip install build
 
 # build wheel
-if ! python3.11 -m pip wheel PyHive==$PACKAGE_VERSION; then
+if ! python3.11 -m pip wheel --no-deps PyHive==$PACKAGE_VERSION; then
             echo "------------------$PACKAGE_NAME:wheel_build_fails---------------------------------------"
 else
             echo "------------------$PACKAGE_NAME:wheel_build_success---------------------------------------"
