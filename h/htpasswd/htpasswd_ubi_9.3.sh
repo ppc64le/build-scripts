@@ -56,6 +56,10 @@ fi
 # build wheel
 python3.11 -m pip install wheel
 
+if [ ${PACKAGE_VERSION} = "master" ]; then
+  PACKAGE_VERSION=2.3
+fi
+
 if ! python3.11 -m pip wheel --no-deps htpasswd==${PACKAGE_VERSION}; then
     echo "--------------------$PACKAGE_NAME:wheel_build_fails----------------------------------------"
     exit 2
