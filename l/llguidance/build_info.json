@@ -1,0 +1,16 @@
+{
+  "maintainer": "vinodk99",
+  "package_name": "llguidance",
+  "github_url": "https://github.com/microsoft/llguidance",
+  "version": "v0.7.19",
+  "wheel_build" : true,
+  "package_dir": "l/llguidance",
+  "default_branch": "main",
+  "build_script": "llguidance_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "llguidance_ubi_9.3.sh"
+  }
+}
