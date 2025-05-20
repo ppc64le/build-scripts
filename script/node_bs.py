@@ -172,9 +172,14 @@ def raise_pull_request(branch_pkg, base="master"):
             "Authorization": "Bearer {}".format(github_token)
     }
 
+    pr_body = "Adding build_script and build_info.json"
+
+    if package_language == "python" and args.generate_wheel_arg:
+        pr_body = "./templates/python_pr_checklist.md"
+
     pull_request_data={
             "title": pr_title,
-            "body" : "Adding build_script and build_info.json",
+            "body" : pr_body,
             "head" : head,
             "base" : base,
             "maintainer_can_modify" : maintainer_can_modify,
@@ -369,6 +374,5 @@ else:
     os.makedirs(dir_name, exist_ok = True)
     create_new_script()
     display_details()
-
 
 
