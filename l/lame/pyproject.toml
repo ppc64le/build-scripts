@@ -19,7 +19,7 @@ description = "High quality MPEG Audio Layer III (MP3) encoder"
 #Classifiers to improve pacakage discoverability
 classifiers = [
   "Development Status :: 5 - Production/Stable",
-  "License :: Apache License 2.0",
+  "License :: LGPL",
 ]
 
 #Project URLs

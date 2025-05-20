@@ -19,7 +19,7 @@ description = "RE2 is a fast, safe, thread-friendly alternative to backtracking 
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Programming Language :: C++",
-  "License :: Apache License 2.0",
+  "License :: BSD-3-Clause",
 ]
 
 #Project URLs

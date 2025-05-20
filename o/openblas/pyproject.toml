@@ -16,7 +16,7 @@ readme = "README.md"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Programming Language :: C++",
-  "License :: Apache License 2.0",
+  "License :: OSI Approved :: BSD License",
 ]
 
 license = {file = "LICENSE.txt"}

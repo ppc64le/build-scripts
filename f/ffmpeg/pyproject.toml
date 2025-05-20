@@ -20,7 +20,7 @@ description = "Cross-platform solution to record, convert and stream audio and v
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Programming Language :: C++",
-  "License :: Apache License 2.0",
+  "License :: GPL 3",
 ]
 
 dependencies = [
