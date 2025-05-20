@@ -58,7 +58,7 @@ python3.11 -m venv venv
 source venv/bin/activate
 
 # build wheel
-if ! python3.11 -m pip wheel htpasswd==${PACKAGE_VERSION}; then
+if ! python3.11 -m pip wheel --no-deps htpasswd==${PACKAGE_VERSION}; then
     echo "--------------------$PACKAGE_NAME:wheel_build_fails----------------------------------------"
 else
     echo "--------------------$PACKAGE_NAME:wheel_build_success----------------------------------------"
