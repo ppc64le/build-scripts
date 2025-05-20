@@ -20,19 +20,15 @@
 
 set -ex
 
-
 PACKAGE_NAME=tensorflow-datasets
 PACKAGE_VERSION=${1:-v4.9.7}
 PACKAGE_URL=https://github.com/tensorflow/datasets.git
 CURRENT_DIR=$(pwd)
 PACKAGE_DIR=datasets
 
-
-echo "Installing GCC 13..."
 yum install -y wget python3.12 python3.12-pip python3.12-devel git make cmake binutils
 yum install -y gcc-toolset-13-gcc-c++ gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel
 yum install -y xz xz-devel openssl-devel cmake zlib zlib-devel libjpeg-devel libevent libtool pkg-config  brotli-devel bzip2-devel lz4-devel libtiff-devel ninja-build libgomp
-
 
 # Set up environment variables for GCC 13
 export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr
@@ -61,7 +57,7 @@ INSTALL_ROOT="/install-deps"
 mkdir -p $INSTALL_ROOT
 
 
-for package in abseil boost libprotobuf thrift orc re2 utf8proc grpc openblas psutil pyarrow protobuf array hdf5 h5py dm lame opus libvpx x264 ffmpeg careas snappy pillow ; do
+for package in boost libprotobuf thrift orc re2 utf8proc grpc openblas psutil pyarrow protobuf array hdf5 h5py dm lame opus libvpx x264 ffmpeg careas snappy pillow ; do
     mkdir -p ${INSTALL_ROOT}/${package}
     export "${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
     echo "Exported ${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
@@ -69,48 +65,63 @@ done
 
 python3.12 -m pip install build setuptools wheel ninja
 
-#installing flex
 cd $CURRENT_DIR
+
+#installing flex
+echo " --------------------------------- Flex Installing --------------------------------- "
+
 wget https://github.com/westes/flex/releases/download/v2.6.4/flex-2.6.4.tar.gz
 tar -xvf flex-2.6.4.tar.gz
 cd flex-2.6.4
-echo "Configuring flex installation..."
+echo " --------------------------------- Configuring flex installation --------------------------------- "
 ./configure --prefix=/usr/local
-echo "Compiling the source code for flex..."
+echo " --------------------------------- Compiling the source code for flex --------------------------------- "
 make
-echo "Installing flex..."
 make install
 flex --version
 
-#installing bison
+echo " --------------------------------- Flex Successfully Installed --------------------------------- "
+
 cd $CURRENT_DIR
+
+#installing bison
+echo " --------------------------------- Bison Installing --------------------------------- "
+
 wget https://ftp.gnu.org/gnu/bison/bison-3.8.2.tar.gz
 tar -xvf bison-3.8.2.tar.gz
 cd bison-3.8.2
-echo "Configuring bison installation..."
+echo " --------------------------------- Configuring bison installation --------------------------------- "
 ./configure --prefix=/usr/local
-echo "Compiling the source code bison..."
+echo " --------------------------------- Compiling the source code bison --------------------------------- "
 make
-echo "Installing bison..."
 make install
 bison --version
 
-#installing gflags
+echo " --------------------------------- Bison Successfully Installed --------------------------------- "
+
 cd $CURRENT_DIR
+
+#installing gflags
+echo " --------------------------------- Gflags Installing --------------------------------- "
+
 git clone https://github.com/gflags/gflags.git
 cd gflags
 mkdir build && cd build
-echo "Running cmake to configure the build..."
+echo " --------------------------------- Running cmake to configure the build --------------------------------- "
 cmake ..
-echo "Compiling the source code gflags..."
+echo " --------------------------------- Compiling the source code gflags --------------------------------- "
 make
-echo "Installing gflags..."
 make install
 export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 pkg-config --modversion gflags
 
-#Building c-areas
+echo " --------------------------------- Gflags Successfully Installed --------------------------------- "
+
 cd $CURRENT_DIR
+
+#Building c-areas
+echo " --------------------------------- C-Areas Installing --------------------------------- "
+
 git clone https://github.com/c-ares/c-ares.git
 cd c-ares
 git checkout cares-1_19_1
@@ -136,10 +147,14 @@ ninja install
 export LD_LIBRARY_PATH=${CARES_PREFIX}/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=${CARES_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
 pkg-config --modversion libcares
-echo "----------c-areas installed-----------------------"
+
+echo " --------------------------------- C-areas Successfully Installed --------------------------------- "
+
+cd $CURRENT_DIR
 
 #installing rapidjson
-cd $CURRENT_DIR
+echo " --------------------------------- Rapidjson Installing --------------------------------- "
+
 git clone https://github.com/Tencent/rapidjson.git
 cd rapidjson
 mkdir build && cd build
@@ -147,11 +162,13 @@ echo "Running cmake to configure the build..."
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
 make
 make install
-echo "----------rapidjson installed-----------------------"
+echo " --------------------------------- Rapidjson Successfully Installed --------------------------------- "
 
+cd $CURRENT_DIR
 
 #installing snappy
-cd $CURRENT_DIR
+echo " --------------------------------- Snappy Installing --------------------------------- "
+
 git clone https://github.com/google/snappy.git
 cd snappy
 git submodule update --init --recursive
@@ -164,10 +181,13 @@ cmake -DCMAKE_INSTALL_PREFIX=$SNAPPY_PREFIX \
 make
 make install
 export LD_LIBRARY_PATH=$SNAPPY_PREFIX/lib:$LD_LIBRARY_PATH
-echo "----------snappy installed-----------------------"
+echo " --------------------------------- Snappy Successfully Installed --------------------------------- "
+
+cd $CURRENT_DIR
 
 #installing zstd
-cd $CURRENT_DIR
+echo " --------------------------------- ZSTD Installing --------------------------------- "
+
 git clone https://github.com/facebook/zstd.git
 cd zstd
 make
@@ -176,11 +196,13 @@ export ZSTD_HOME=/usr/local
 export CMAKE_PREFIX_PATH=$ZSTD_HOME
 export LD_LIBRARY_PATH=$ZSTD_HOME/lib64:$LD_LIBRARY_PATH
 zstd --version
-echo "----------zstd installed-----------------------"
+echo " --------------------------------- ZSTD Successfully Installed --------------------------------- "
 
+cd $CURRENT_DIR
 
 #installing zarr for tests
-cd $CURRENT_DIR
+echo " --------------------------------- Zarr-Python Installing --------------------------------- "
+
 git clone https://github.com/zarr-developers/zarr-python.git
 cd zarr-python
 python3.12 -m pip install -U pip setuptools wheel
@@ -191,35 +213,23 @@ python3.12 -c "import zarr; print(zarr.__version__)"
 cd $CURRENT_DIR
 python3.12 -m pip install pytest dill pyyaml cloudpickle pydub tensorflow_docs google-auth gcsfs conllu bs4 pretty_midi tifffile tldextract langdetect lxml mwparserfromhell nltk==3.8.1
 
-
-#Build abseil-cpp from source
 cd $CURRENT_DIR
-git clone https://github.com/abseil/abseil-cpp
-cd abseil-cpp
-git checkout 20240116.2
+#Build abseil-cpp from source
+echo " --------------------------------- Abseil-Cpp Cloning --------------------------------- "
 
-mkdir build
-cd build
+# Set ABSEIL_VERSION and ABSEIL_URL
+ABSEIL_VERSION=20240116.2
+ABSEIL_URL="https://github.com/abseil/abseil-cpp"
 
-cmake -G Ninja \
-    ${CMAKE_ARGS} \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_CXX_STANDARD=17 \
-    -DCMAKE_INSTALL_LIBDIR=lib \
-    -DCMAKE_INSTALL_PREFIX=${ABSEIL_PREFIX} \
-    -DBUILD_SHARED_LIBS=ON \
-    -DABSL_PROPAGATE_CXX_STD=ON \
-    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-   ..
+git clone $ABSEIL_URL -b $ABSEIL_VERSION
 
-cmake --build .
-cmake --install .
-export LD_LIBRARY_PATH=${ABSEIL_PREFIX}/lib:$LD_LIBRARY_PATH
-export PKG_CONFIG_PATH=${ABSEIL_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
-echo "-----------------------------------------------------Installed abseil-cpp-----------------------------------------------------"
+echo " --------------------------------- Abseil-Cpp Cloned --------------------------------- "
+
+cd $CURRENT_DIR
 
 #Build boost-cpp from source
-cd $CURRENT_DIR
+echo " --------------------------------- Boost Installing --------------------------------- "
+
 git clone https://github.com/boostorg/boost
 cd boost
 git checkout boost-1.81.0
@@ -237,7 +247,6 @@ using ${TOOLSET} : : ${CXX} ;
 EOF
 
 LINKFLAGS="${LINKFLAGS} -L${LIBRARY_PATH}"
-
 
 CXXFLAGS="$(echo ${CXXFLAGS} | sed 's/ -march=[^ ]*//g' | sed 's/ -mcpu=[^ ]*//g' |sed 's/ -mtune=[^ ]*//g')" \
 CFLAGS="$(echo ${CFLAGS} | sed 's/ -march=[^ ]*//g' | sed 's/ -mcpu=[^ ]*//g' |sed 's/ -mtune=[^ ]*//g')" \
@@ -272,12 +281,13 @@ BINARY_FORMAT="elf"
 
 export LD_LIBRARY_PATH=${BOOST_PREFIX}/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=${BOOST_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
-echo "-----------------------------------------------------Installed boost-cpp-----------------------------------------------------"
+echo " --------------------------------- Boost-Cpp Successfully Installed --------------------------------- "
 
-
+cd $CURRENT_DIR
 
 #Building libprotobuf
-cd $CURRENT_DIR
+echo " --------------------------------- Libprotobuf Installing --------------------------------- "
+
 git clone https://github.com/protocolbuffers/protobuf
 cd protobuf
 git checkout v4.25.3
@@ -309,7 +319,6 @@ cmake --build . --verbose
 cmake --install .
 cd ..
 
-
 export PATH=$LIBPROTOBUF_PREFIX/bin:$PATH
 export PROTOC="$LIBPROTOBUF_PREFIX/bin/protoc"
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
@@ -335,10 +344,9 @@ echo "------------------bdist_wheel --cpp_implementation -----------------------
 python3.12 -m pip install dist/*.whl --force-reinstall
 echo "------------------whl installation ------------------------"
 
-
 protoc --version
 python3.12 -c "import google.protobuf; print(google.protobuf.__version__)"
-echo "-------------------------------------libprotobuf installed successfuly-------------------------------------"
+echo " --------------------------------- Libprotobuf Successfully Installed --------------------------------- "
 
 #installing gcld3
 cd $CURRENT_DIR
@@ -346,9 +354,11 @@ export CXXFLAGS="-I/install-deps/libprotobuf/include"
 export C_INCLUDE_PATH="/install-deps/libprotobuf/include"
 python3.12 -m pip install gcld3 --no-cache-dir --use-pep517
 
+cd $CURRENT_DIR
 
 #Building thrift
-cd $CURRENT_DIR
+echo " --------------------------------- Thrift Installig --------------------------------- "
+
 git clone https://github.com/apache/thrift
 cd thrift
 git checkout 0.21.0
@@ -390,10 +400,13 @@ export LD_LIBRARY_PATH=${THRIFT_PREFIX}/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=${THRIFT_PREFIX}/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=${THRIFT_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
 pkg-config --modversion thrift
-echo "-----------------------------------------------------Installed thrift-cpp-----------------------------------------------------"
+echo " --------------------------------- Thrift-Cpp Successfully Installed --------------------------------- "
+
+cd $CURRENT_DIR
 
 #Building orc
-cd $CURRENT_DIR
+echo " --------------------------------- ORC Installing --------------------------------- "
+
 git clone https://github.com/apache/orc
 cd orc
 git checkout v2.0.3
@@ -429,11 +442,13 @@ ninja && ninja install
 
 export LD_LIBRARY_PATH=${ORC_PREFIX}/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=${ORC_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
-echo "-----------------------------------------------------Installed orc-----------------------------------------------------"
+echo " --------------------------------- ORC Successfully Installed --------------------------------- "
 
+cd $CURRENT_DIR
 
 #Building re2
-cd $CURRENT_DIR
+echo " --------------------------------- RE2 Installing --------------------------------- "
+
 git clone https://github.com/google/re2.git
 cd re2
 git checkout 2022-04-01
@@ -457,10 +472,13 @@ make prefix=${RE2_PREFIX} shared-install
 export LD_LIBRARY_PATH=${RE2_PREFIX}/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=${RE2_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
 pkg-config --modversion re2
-echo "-----------------------------------------------------Installed re2-----------------------------------------------------"
+echo " --------------------------------- RE2 Successfully Installed --------------------------------- "
+
+cd $CURRENT_DIR
 
 #Building utf8proc
-cd $CURRENT_DIR
+echo " --------------------------------- UTF8proc Installing --------------------------------- "
+
 git clone https://github.com/JuliaStrings/utf8proc.git
 cd utf8proc
 git checkout v2.6.1
@@ -480,10 +498,13 @@ cmake --build .
 cmake --build . --target install
 export LD_LIBRARY_PATH=${UTF8PROC_PREFIX}/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=${UTF8PROC_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
-echo "-----------------------------------------------------Installed utf8proc-----------------------------------------------------"
+echo " --------------------------------- UTF8proc Successfully Installed --------------------------------- "
+
+cd $CURRENT_DIR
 
 #Building grpc-cpp
-cd $CURRENT_DIR
+echo " --------------------------------- GRPC Installing --------------------------------- "
+
 git clone https://github.com/grpc/grpc
 cd grpc
 git checkout v1.68.0
@@ -494,7 +515,7 @@ RANLIB=`which ranlib`
 PROTOC_BIN=$LIBPROTOBUF_PREFIX/bin/protoc
 PROTOBUF_SRC=$LIBPROTOBUF_PREFIX
 export CMAKE_PREFIX_PATH="$GRPC_PREFIX;$RE2_PREFIX;$LIBPROTOBUF_PREFIX"
-export LD_LIBRARY_PATH=$GRPC_PREFIX/lib:${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH=$GRPC_PREFIX/lib:$LIBPROTOBUF_PREFIX/lib64:${LD_LIBRARY_PATH}
 target_platform=$(uname)-$(uname -m)
 export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_CXX_STANDARD=17"
 
@@ -523,63 +544,78 @@ cmake ${CMAKE_ARGS} ..  \
 ninja install -v
 
 
-export LD_LIBRARY_PATH=${GRPC_PREFIX}/lib:$LD_LIBRARY_PATH
-export PKG_CONFIG_PATH=${GRPC_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
+export LD_LIBRARY_PATH=${GRPC_PREFIX}/lib:$LIBPROTOBUF_PREFIX/lib64:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=${GRPC_PREFIX}/lib/pkgconfig:$LIBPROTOBUF_PREFIX/lib64/pkgconfig:$PKG_CONFIG_PATH
 export PATH=$PATH:/install-deps/grpc/bin
 pkg-config --modversion grpc++
 
-echo "-----------------------------------------------------Installed grpc-cpp-----------------------------------------------------"
+echo " --------------------------------- GRPC-Cpp Successfully Installed --------------------------------- "
 
+cd $CURRENT_DIR
 
 #installing openblas
-cd $CURRENT_DIR
+echo " --------------------------------- OpenBlas Installing --------------------------------- "
+
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
 git checkout v0.3.29
 git submodule update --init
+
 # Set build options
 declare -a build_opts
+
 # Fix ctest not automatically discovering tests
 LDFLAGS=$(echo "${LDFLAGS}" | sed "s/-Wl,--gc-sections//g")
 export CF="${CFLAGS} -Wno-unused-parameter -Wno-old-style-declaration"
 unset CFLAGS
 export USE_OPENMP=1
 build_opts+=(USE_OPENMP=${USE_OPENMP})
+
 # Handle Fortran flags
 if [ ! -z "$FFLAGS" ]; then
     export FFLAGS="${FFLAGS/-fopenmp/ }"
     export FFLAGS="${FFLAGS} -frecursive"
     export LAPACK_FFLAGS="${FFLAGS}"
 fi
+
 export PLATFORM=$(uname -m)
 build_opts+=(BINARY="64")
 build_opts+=(DYNAMIC_ARCH=1)
 build_opts+=(TARGET="POWER9")
 BUILD_BFLOAT16=1
+
 # Placeholder for future builds that may include ILP64 variants.
 build_opts+=(INTERFACE64=0)
 build_opts+=(SYMBOLSUFFIX="")
+
 # Build LAPACK
 build_opts+=(NO_LAPACK=0)
+
 # Enable threading and set the number of threads
 build_opts+=(USE_THREAD=1)
 build_opts+=(NUM_THREADS=8)
+
 # Disable CPU/memory affinity handling to avoid problems with NumPy and R
 build_opts+=(NO_AFFINITY=1)
+
 # Build OpenBLAS
 make ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${OPENBLAS_PREFIX}
+
 # Install OpenBLAS
 CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${OPENBLAS_PREFIX}" ${build_opts[@]}
 export LD_LIBRARY_PATH=${OPENBLAS_PREFIX}/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=${OPENBLAS_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
 pkg-config --modversion openblas
-echo "-----------------------------------------------------Installed openblas-----------------------------------------------------"
+echo " --------------------------------- OpenBlas Successfully Installed --------------------------------- "
 
 #installing few test dependencies here as they need openblas
 python3.12 -m pip install mlcroissant==1.0.12
 
-#installing libvpx
 cd $CURRENT_DIR
+
+#installing libvpx
+echo " --------------------------------- Libvpx Installing --------------------------------- "
+
 git clone https://github.com/webmproject/libvpx.git
 cd libvpx
 git checkout v1.13.1
@@ -589,30 +625,23 @@ if [[ ${target_platform} == Linux-* ]]; then
 fi
 CPU_DETECT="${CPU_DETECT} --enable-runtime-cpu-detect"
 
-./configure --prefix=$LIBVPX_PREFIX \
---as=yasm                    \
---enable-shared              \
---disable-static             \
---disable-install-docs       \
---disable-install-srcs       \
---enable-vp8                 \
---enable-postproc            \
---enable-vp9                 \
---enable-vp9-highbitdepth    \
---enable-pic                 \
-${CPU_DETECT}                \
---enable-experimental || { cat config.log; exit 1; }
+./configure --prefix=$LIBVPX_PREFIX --as=yasm --enable-shared --disable-static \
+    --disable-install-docs --disable-install-srcs --enable-vp8 --enable-postproc \
+    --enable-vp9 --enable-vp9-highbitdepth \
+    --enable-pic ${CPU_DETECT} --enable-experimental || { cat config.log; exit 1; }
 
 make
 make install PREFIX="${LIBVPX_PREFIX}"
 export LD_LIBRARY_PATH=${LIBVPX_PREFIX}/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=${LIBVPX_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
 pkg-config --modversion vpx
-echo "-----------------------------------------------------Installed libvpx------------------------------------------------"
+echo " --------------------------------- Libvpx Successfully Installed --------------------------------- "
 
+cd $CURRENT_DIR
 
 #installing lame
-cd $CURRENT_DIR
+echo " --------------------------------- Lame Installing --------------------------------- "
+
 wget https://downloads.sourceforge.net/sourceforge/lame/lame-3.100.tar.gz
 tar -xvf lame-3.100.tar.gz
 cd lame-3.100
@@ -631,11 +660,13 @@ make install PREFIX="${LAME_PREFIX}"
 export LD_LIBRARY_PATH=/install-deps/lame/lib:$LD_LIBRARY_PATH
 export PATH="/install-deps/lame/bin:$PATH"
 lame --version
-echo "-----------------------------------------------------Installed lame------------------------------------------------"
+echo " --------------------------------- Lame Successfully Installed --------------------------------- "
 
+cd $CURRENT_DIR
 
 #installing opus
-cd $CURRENT_DIR
+echo " --------------------------------- Opus Installing --------------------------------- "
+
 git clone https://github.com/xiph/opus
 cd opus
 git checkout v1.3.1
@@ -647,10 +678,13 @@ make install PREFIX="${OPUS_PREFIX}"
 export LD_LIBRARY_PATH=${OPUS_PREFIX}/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=${OPUS_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
 pkg-config --modversion opus
-echo "-----------------------------------------------------Installed opus------------------------------------------------"
+echo " --------------------------------- Opus Successfully Installed --------------------------------- "
+
+cd $CURRENT_DIR
 
 #building x264
-cd $CURRENT_DIR
+echo " --------------------------------- X264 Installing --------------------------------- "
+
 git clone https://code.videolan.org/videolan/x264.git
 cd x264
 ./configure --prefix=/install-deps/x264 --enable-shared --enable-pic --disable-asm
@@ -661,10 +695,13 @@ export LD_LIBRARY_PATH=/install-deps/x264/lib:$LD_LIBRARY_PATH
 export CFLAGS="-I/install-deps/x264/include $CFLAGS"
 export LDFLAGS="-L/install-deps/x264/lib $LDFLAGS"
 pkg-config --modversion x264
+echo " --------------------------------- X264 Successfully Installed --------------------------------- "
 
+cd $CURRENT_DIR
 
 #installing ffmpeg
-cd $CURRENT_DIR
+echo " --------------------------------- FFmpeg Installing --------------------------------- "
+
 git clone https://github.com/FFmpeg/FFmpeg
 cd FFmpeg
 git checkout n7.1
@@ -709,12 +746,15 @@ export PKG_CONFIG_PATH=${FFMPEG_PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
 export LD_LIBRARY_PATH=${FFMPEG_PREFIX}/lib:${LD_LIBRARY_PATH}
 export PATH="/install-deps/ffmpeg/bin:$PATH"
 ffmpeg -version
-echo "-----------------------------------------------------Installed ffmpeg------------------------------------------------"
+echo " --------------------------------- FFmpeg Successfully Installed --------------------------------- "
 
 python3.12 -m pip install numpy==2.0.2
 
-#installing pillow
 cd $CURRENT_DIR
+
+#installing pillow
+echo " --------------------------------- Pillow Installing --------------------------------- "
+
 git clone https://github.com/python-pillow/Pillow
 cd Pillow
 git checkout 11.1.0
@@ -722,7 +762,7 @@ yum install -y libjpeg-turbo libjpeg-turbo-devel
 git submodule update --init
 python3.12 -m pip install .
 
-echo "-----------------------------------------------------Installed pillow------------------------------------------------"
+echo " --------------------------------- Pillow Successfully Installed --------------------------------- "
 
 #Building psutil export PKG_CONFIG_PATH=${FFMPEG_PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
 export LD_LIBRARY_PATH=${FFMPEG_PREFIX}/lib:${LD_LIBRARY_PATH}
@@ -730,15 +770,21 @@ export PATH="/install-deps/ffmpeg/bin:$PATH"
 ffmpeg -version
 
 cd $CURRENT_DIR
+
+#installing psutil
+echo " --------------------------------- Psutil Installing --------------------------------- "
+
 git clone https://github.com/giampaolo/psutil.git
 cd psutil
 git checkout release-7.0.0
 python3.12 -m pip install .
-echo "-----------------------------------------------------Installed psutil-----------------------------------------------------"
+echo " --------------------------------- Psutil Successfully Installed --------------------------------- "
 
+cd $CURRENT_DIR
 
 #Building xsimd which is dependency of pyarrow
-cd $CURRENT_DIR
+echo " --------------------------------- Xsimd Installing --------------------------------- "
+
 git clone https://github.com/xtensor-stack/xsimd.git
 cd xsimd
 mkdir -p build
@@ -746,12 +792,13 @@ cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
 make
 make install
-echo "-----------------------------------------------------Installed xsimd-----------------------------------------------------"
+echo " --------------------------------- Xsimd Successfully Installed --------------------------------- "
 
-
+cd $CURRENT_DIR
 
 #Building pyarrow
-cd $CURRENT_DIR
+echo " --------------------------------- Parrow Installing --------------------------------- "
+
 git clone https://github.com/apache/arrow
 cd arrow
 git checkout apache-arrow-19.0.0
@@ -880,20 +927,25 @@ export ArrowFlight_DIR=$PYARROW_PREFIX
 
 pkg-config --modversion arrow
 python3.12 -m pip show pyarrow
-echo "-----------------------------------------------------Installed pyarrow-----------------------------------------------------"
+echo " --------------------------------- Parrow Successfully Installed --------------------------------- "
 
 python3.12 -m pip install "gcsfs==2023.6.0" "google-auth==2.20.0" "datasets==2.14.0"
 
 #installing java
+echo " --------------------------------- Java Devel Installing --------------------------------- "
+
 yum install -y libffi-devel sqlite-devel zip rsync
 yum install -y java-11-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.25.0.9-3.el9.ppc64le
 export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-)(?=.*ppc64le)')
 export PATH=$JAVA_HOME/bin:$PATH
+echo " --------------------------------- Java Devel Successfully Installed --------------------------------- "
 
+cd $CURRENT_DIR
 
 #Build bazel from source
-cd $CURRENT_DIR
+echo " --------------------------------- Bazel Installing --------------------------------- "
+
 mkdir bazel
 cd bazel
 wget https://github.com/bazelbuild/bazel/releases/download/6.5.0/bazel-6.5.0-dist.zip
@@ -902,11 +954,13 @@ env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
 cp output/bazel /usr/local/bin
 export PATH=/usr/local/bin:$PATH
 bazel --version
-echo "-----------------------------------------------------Installed bazel-----------------------------------------------------"
+echo " --------------------------------- Bazel Successfully Installed --------------------------------- "
 
+cd $CURRENT_DIR
 
 #Building array-record
-cd $CURRENT_DIR
+echo " --------------------------------- Array-Record Installing --------------------------------- "
+
 git clone https://github.com/iindyk/array_record.git
 cd array_record
 git checkout 739630d43ffef522f55380066192dc9fbb14bcc5
@@ -920,10 +974,13 @@ cp $CURRENT_DIR/array-record/dist/* $CURRENT_DIR
 cd $CURRENT_DIR
 python3.12 -m pip install array_record*.whl
 python3.12 -c "from importlib.metadata import version; print(version('array-record'))"
-echo "-----------------------------------------------------Installed array_record-----------------------------------------------------"
+echo " --------------------------------- Array-Record Successfully Installed --------------------------------- "
+
+cd $CURRENT_DIR
 
 #Build hdf5 from source
-cd $CURRENT_DIR
+echo " --------------------------------- Hdf5 Installing --------------------------------- "
+
 git clone https://github.com/HDFGroup/hdf5
 cd hdf5/
 git checkout hdf5-1_12_1
@@ -935,11 +992,13 @@ yum install -y zlib zlib-devel
 make
 make install PREFIX="${HDF5_PREFIX}"
 export LD_LIBRARY_PATH=${HDF5_PREFIX}/lib:$LD_LIBRARY_PATH
-echo "-----------------------------------------------------Installed hdf5-----------------------------------------------------"
+echo " --------------------------------- Hdf5 Successfully Installed --------------------------------- "
 
+cd $CURRENT_DIR
 
 #Build h5py from source
-cd $CURRENT_DIR
+echo " --------------------------------- H5py Installing --------------------------------- "
+
 git clone https://github.com/h5py/h5py.git
 cd h5py/
 git checkout 3.13.0
@@ -947,18 +1006,24 @@ git checkout 3.13.0
 HDF5_DIR=/install-deps/hdf5 python3.12 -m pip install .
 cd $CURRENT_DIR
 python3.12 -c "import h5py; print(h5py.__version__)"
-echo "-----------------------------------------------------Installed h5py-----------------------------------------------------"
+echo " --------------------------------- H5py Successfully Installed --------------------------------- "
+
+cd $CURRENT_DIR
 
 #Build dm-tree from source
-cd $CURRENT_DIR
+echo " --------------------------------- Tree Instaling --------------------------------- "
+
 git clone https://github.com/google-deepmind/tree
 cd tree
 git checkout 0.1.9
 python3.12 -m pip install .
-echo "-----------------------------------------------------Installed dm-tree-----------------------------------------------------"
+echo " --------------------------------- Tree Successfully Installed --------------------------------- "
+
+cd $CURRENT_DIR
 
 #Build opencv-python-headless from source
-cd $CURRENT_DIR
+echo " --------------------------------- Opencd-Python Installing --------------------------------- "
+
 git clone https://github.com/opencv/opencv-python
 cd opencv-python
 git checkout 84
@@ -1003,14 +1068,14 @@ export CPLUS_INCLUDE_PATH=$C_INCLUDE_PATH
 sed -i 's/"setuptools==59.2.0"/"setuptools==59.2.0; python_version<\x273.12\x27"/' pyproject.toml
 sed -i '/"setuptools==59.2.0; python_version<\x273.12\x27"/a \  "setuptools<70.0.0; python_version>=\x273.12\x27",' pyproject.toml
 python3.12 -m pip install .
+echo " --------------------------------- Opencv-Python-headless Successfully Installed --------------------------------- "
+
 cd $CURRENT_DIR
 python3.12 -c "import cv2; print(cv2.__version__)"
-echo "-----------------------------------------------------Installed opencv-python-headless-----------------------------------------------------"
 
-
-#installing tensorflow
 #installing patchelf from source
-cd $CURRENT_DIR
+echo " --------------------------------- Patchelf Installing --------------------------------- "
+
 yum install -y git autoconf automake libtool make
 git clone https://github.com/NixOS/patchelf.git
 cd patchelf
@@ -1019,11 +1084,13 @@ cd patchelf
 make
 make install
 ln -s /usr/local/bin/patchelf /usr/bin/patchelf
-echo "-----------------------------------------------------Installed patchelf-----------------------------------------------------"
+echo " --------------------------------- Patchelf Successfully Installed --------------------------------- "
 
+cd $CURRENT_DIR
 
 #Build ml_dtypes from source
-cd $CURRENT_DIR
+echo " --------------------------------- Ml-dtypes Installing --------------------------------- "
+
 git clone https://github.com/jax-ml/ml_dtypes.git
 cd ml_dtypes
 git checkout v0.4.1
@@ -1035,9 +1102,10 @@ export CC=/opt/rh/gcc-toolset-13/root/bin/gcc
 export CXX=/opt/rh/gcc-toolset-13/root/bin/g++
 
 python3.12 -m pip install .
+echo " --------------------------------- Ml-dtypes Successfully Installed --------------------------------- "
+
 cd $CURRENT_DIR
 python3.12 -c "import ml_dtypes; print(ml_dtypes.__version__)"
-echo "-----------------------------------------------------Installed ml_dtyapes-----------------------------------------------------"
 
 # Set CPU optimization flags
 export cpu_opt_arch="power9"
@@ -1063,8 +1131,11 @@ export HDF5_DIR=/install-deps/hdf5
 export CFLAGS="-I${HDF5_DIR}/include"
 export LDFLAGS="-L${HDF5_DIR}/lib"
 
-# clone source repository
 cd $CURRENT_DIR
+
+# Installing tensorflow
+echo " --------------------------------- Tensorflow Installing --------------------------------- "
+
 git clone https://github.com/tensorflow/tensorflow
 cd tensorflow
 git checkout v2.18.1
@@ -1092,7 +1163,7 @@ CPU_TUNE_OPTION=${BUILD_COPT}${CPU_TUNE_FRAG}
 CPU_TUNE_HOST_OPTION=${BUILD_HOST_COPT}${CPU_TUNE_FRAG}
 
 USE_MMA=0
-echo "--------------------------------Bazelrc dir : ${BAZEL_RC_DIR}----------------------------------"
+echo " --------------------------------- Bazelrc dir : ${BAZEL_RC_DIR} --------------------------------- "
 TENSORFLOW_PREFIX=/install-deps/tensorflow
 
 cat > $BAZEL_RC_DIR/python_configure.bazelrc << EOF
@@ -1127,11 +1198,11 @@ build --verbose_failures
 build --spawn_strategy=standalone
 EOF
 
-echo "----------------------------------Created bazelrc-----------------------------------"
+echo " --------------------------------- Created bazelrc --------------------------------- "
 
 export BUILD_TARGET="//tensorflow/tools/pip_package:wheel //tensorflow/tools/lib_package:libtensorflow //tensorflow:libtensorflow_cc${SHLIB_EXT}"
 bazel --bazelrc=$BAZEL_RC_DIR/tensorflow.bazelrc build --local_cpu_resources=HOST_CPUS*0.50 --local_ram_resources=HOST_RAM*0.50 --config=opt ${BUILD_TARGET}
-echo "-------------------------------tensroflow installation successful-------------------------------------"
+echo " --------------------------------- Tensorflow Successfully Installed --------------------------------- "
 
 #installing few test dependencies here as they need openblas
 python3.12 -m pip install mlcroissant==1.0.12
@@ -1175,11 +1246,13 @@ cp -a $SRC_DIR/repackged_wheel/*.whl $CURRENT_DIR
 cd $CURRENT_DIR
 python3.12 -m pip install tensorflow*.whl
 
-echo "--------------------------------------------------------tensorflow-installed successfully-----------------------------------------------"
+echo " --------------------------------- Tensorflow-Wheel Successfully Installed --------------------------------- "
 
+cd $CURRENT_DIR
 
 #installing matplotlib required by scikit-image
-cd $CURRENT_DIR
+echo " --------------------------------- Matplotlib Installing --------------------------------- "
+
 dnf install -y libpng-devel pkgconfig mesa-libGL  tk fontconfig-devel freetype-devel gtk3
 git clone https://github.com/matplotlib/matplotlib.git
 cd matplotlib
@@ -1201,7 +1274,7 @@ cd $CURRENT_DIR
 python3.12 -c "from pycocotools.coco import COCO; print('pycocotools installed successfully')"
 
 python3.12 -m pip install scikit-image
-echo "-----------------------------------------------------Installed scikit-image-----------------------------------------------------"
+echo " --------------------------------- Installed scikit-image --------------------------------- "
 
 
 # clone source repository
@@ -1221,7 +1294,7 @@ if ! (python3.12 -m pip install .) ; then
     exit 1
 fi
 
-echo "-------------------------------TFDS installation successful-------------------------------------"
+echo " --------------------------------- TFDS installation successful --------------------------------- "
 
 cd tensorflow_datasets/proto
 python3.12 build_tf_proto.py
@@ -1234,16 +1307,16 @@ protoc --proto_path=tensorflow_datasets/datasets/smart_buildings --python_out=te
 
 sed -i "s|\(collect_ignore = \[.*\)\]|\1, 'core/dataset_builder_beam_test.py', 'core/dataset_builders/adhoc_builder_test.py', 'core/features/tensor_feature_test.py', 'core/split_builder_test.py',]|" tensorflow_datasets/conftest.py
 
-echo "---------------------------------------------------Building the wheel--------------------------------------------------"
+echo " --------------------------------- Building the wheel --------------------------------- "
 python3.12 setup.py bdist_wheel --dist-dir $CURRENT_DIR
 
 
-echo "----------------------------------------------Testing pkg-------------------------------------------------------"
+echo " --------------------------------- Testing pkg --------------------------------- "
 
 python3.12 -m pip install --upgrade pytest pluggy py wrapt
 
 #Test package
-#Skipping below tests which are dependent on apache-beam, jax/jaxlib. Where as few tests need google cloud access and few tests passing individually but failing when run with whole test suit.
+#Skipping below tests which are dependent on apache-beam, jax/jaxlib. Where as few tests need google cloud access and few tests passing individually but failing when run with whole test suit. 
 if !(pytest -k "not test_download_and_prepare_as_dataset and not test_download_and_prepare and not test_read_from_tfds and not test_subsplit_failure_with_batch_size and not test_read_write and not test_load_from_gcs and not test_beam_view_builder_with_configs_load and not test_reading_from_gcs_bucket and not test_compute_split_info and not test_add_dataset_provider_to_start and not test_split_for_jax_process and not test_download_dataset and not test_is_dataset_accessible and not test_mnist and not test_empty_split and not test_write_tfrecord and not test_write_tfrecord_sorted_by_key and not test_write_tfrecord_sorted_by_key_with_holes and not test_write_tfrecord_with_duplicates and not test_write_tfrecord_with_ignored_duplicates and not test_import_tfds_without_loading_tf and not test_internal_datasets_have_versions_on_line_with_the_release_notes and not test_badwords_filter and not test_paragraph_filter and not test_remove_duplicate_text and not test_soft_badwords_filter and not test_baseclass and not test_info and not test_registered and not test_session and not test_tags_are_valid"); then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
