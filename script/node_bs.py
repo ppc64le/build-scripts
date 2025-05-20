@@ -175,7 +175,7 @@ def raise_pull_request(branch_pkg, base="master"):
     pr_body = "Adding build_script and build_info.json"
 
     if package_language == "python" and args.generate_wheel_arg:
-        pr_body = "./templates/python_pr_checklist.md"
+        pr_body = "https://raw.githubusercontent.com/vinodk99/build-scripts/refs/heads/master/templates/python_pr_checklist.md"
 
     pull_request_data={
             "title": pr_title,
