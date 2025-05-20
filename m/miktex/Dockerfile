@@ -83,22 +83,66 @@ RUN cd miktex && \
     make package && \
     make test
 
-RUN find /opt/build/miktex -type f | grep -Ei 'bin|lib|miktex'
-
-
 # Final Stage
 FROM registry.access.redhat.com/ubi9/ubi:9.3
+ARG user=miktex
+ARG group=miktex
+ARG uid=1000
+ARG gid=1000
+ARG miktex_home=/var/lib/miktex
+ARG miktex_work=/miktex/work
+RUN groupadd -g ${gid} ${group} \
+    && useradd -d "${miktex_home}" -u ${uid} -g ${gid} -m -s /bin/bash ${user}
 
-COPY --from=builder /usr/local /usr/local
-COPY --from=builder /usr/bin/python3 /usr/bin/python3
-COPY --from=builder /usr/bin/pip3 /usr/bin/pip3
-COPY --from=builder /usr/local/bin/gosu /usr/local/bin/gosu
-COPY --from=builder /opt/build/miktex /usr/local/miktex
+#Install centos and epel repos
+RUN yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
+RUN yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream//ppc64le/os
+RUN yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os
+RUN rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official
+RUN dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 
-ENV PATH=/usr/local/cmake/bin:$PATH
+# Install MiKTeX runtime dependencies
+RUN yum install -y \
+    gd log4cxx boost libmspack zziplib uriparser harfbuzz-icu hunspell \
+    https://rpmfind.net/linux/epel/9/Everything/ppc64le/Packages/q/qt6-qt3d-6.6.2-1.el9.ppc64le.rpm \
+    https://rpmfind.net/linux/epel/9/Everything/ppc64le/Packages/q/qt6-qt5compat-6.6.2-1.el9.ppc64le.rpm \
+    https://rpmfind.net/linux/epel/9/Everything/ppc64le/Packages/q/qt6-qt3d-6.6.2-1.el9.ppc64le.rpm \
+    https://rpmfind.net/linux/epel/9/Everything/ppc64le/Packages/q/qt6-qttools-6.6.2-2.el9.ppc64le.rpm
 
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+# Copy required binaries from builder
+COPY --from=builder /opt/build/miktex/miktex-25.4-1.ppc64le.rpm /tmp
+COPY --from=builder /usr/local/lib/libmpfi.so.0 /usr/lib/libmpfi.so.0
+COPY --from=builder /usr/local/lib/libmpfi.so /usr/lib/libmpfi.so
+RUN ldconfig
 
+# Install miktex from the newly built rpm
+RUN rpm -i --nodeps /tmp/miktex-25.4-1.ppc64le.rpm
+RUN rm -rf /tmp/miktex-25.4-1.ppc64le.rpm
+RUN initexmf --set-config-value=[MPM]AutoInstall=1 \
+    && miktex packages update \
+    && miktex packages install amsfonts
+
+# Install Gosu from source
+RUN \
+    export GNUPGHOME="$(mktemp -d)"; \
+    gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4; \
+    curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/1.14/gosu-ppc64el"; \
+    curl -o /usr/local/bin/gosu.asc -SL "https://github.com/tianon/gosu/releases/download/1.14/gosu-ppc64el.asc"; \
+    gpg --batch --verify /usr/local/bin/gosu.asc; \
+    rm /usr/local/bin/gosu.asc; \
+    chmod +x /usr/local/bin/gosu
+
+# Download entrypoint
+RUN curl -o /entrypoint.sh https://raw.githubusercontent.com/MiKTeX/docker-miktex/03813a57971014feba86885f939e9e69998fa9ac/entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Switch user
+USER ${user}
+VOLUME [ "${miktex_home}" ]
+WORKDIR ${miktex_work}
+USER root
+
+# Specify entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
+ENV PATH=/var/lib/miktex/bin:${PATH}
 CMD ["bash"]
