@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : milvus-lite
-# Version       : v2.4.11
+# Version       : v2.4.12
 # Source repo   : https://github.com/milvus-io/milvus-lite
 # Tested on     : UBI:9.3
 # Language      : Python
@@ -20,14 +20,14 @@
 set -x
 PACKAGE_DIR=milvus-lite/python
 PACKAGE_NAME=milvus-lite
-PACKAGE_VERSION=v2.4.11
+PACKAGE_VERSION=v2.4.12
 PACKAGE_URL=https://github.com/milvus-io/milvus-lite
 WORKDIR=$(pwd)
 
 yum remove -y gcc-toolset-13
 
 echo "installing dependencies"
-yum install -y wget perl openblas-devel git python3-pip rust cargo gcc gcc-c++ libstdc++-static which libaio libuuid-devel ncurses-devel libtool m4 autoconf automake ninja-build zlib-devel libffi-devel scl-utils openblas-devel ncurses-devel xz openssl-devel
+yum install -y wget perl openblas-devel git python3-pip cargo gcc gcc-c++ libstdc++-static which libaio libuuid-devel ncurses-devel libtool m4 autoconf automake ninja-build zlib-devel libffi-devel scl-utils openblas-devel ncurses-devel xz openssl-devel
 
 echo "installing dependencies"
 pip3 install wheel conan==1.64.1 setuptools==70.0.0
@@ -42,6 +42,11 @@ make -j$(nproc)
 echo "installing"
 make install
 cd ..
+
+echo "installing rust 1.73"
+curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain=1.73 -y
+source $HOME/.cargo/env
+rustc --version
 
 echo "installing cmake"
 # Install CMake
