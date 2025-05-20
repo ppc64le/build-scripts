@@ -5,13 +5,13 @@
   "version": "25.4",
   "package_dir": "m/miktex",
   "default_branch": "next",
-  "docker_cmd": "docker build -t ${package_name}-ppc64le:${version} .",
+  "docker_cmd": "docker build -t ${package_name}:${version} ${dir}",
   "build_script": "miktex_v25.4_ubi_9.3.sh",
   "docker_build": "true",
   "use_non_root_user": "false",
   "validate_build_script": "true",
   "25.4": {
     "dir": "25.4_ubi_9",
-    "build_script": "miktex_25.4_ubi9.3.sh"
+    "build_script": "miktex_v25.4_ubi9.3.sh"
   }
 }
