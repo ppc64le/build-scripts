@@ -2,7 +2,7 @@
 	"maintainer": "vivek8123",
 	"package_name": "milvus-lite",
 	"github_url": "https://github.com/milvus-io/milvus-lite",
-	"version": "v2.4.11",
+	"version": "v2.4.12",
 	"default_branch": "main",
 	"build_script": "milvus-lite_ubi_9.3.sh",
 	"package_dir": "m/milvus-lite",
