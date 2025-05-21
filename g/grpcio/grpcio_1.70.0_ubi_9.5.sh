@@ -38,7 +38,7 @@ export GRPC_PYTHON_BUILD_WITH_CYTHON=1
 export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:${PATH}"
 
 # Install the package
-pip3 install -e .
+pip3 install .
 
 if [ $? == 0 ]; then
      echo "------------------$PACKAGE_NAME::Build_Pass---------------------"
