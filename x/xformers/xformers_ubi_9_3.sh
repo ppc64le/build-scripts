@@ -54,6 +54,7 @@ pip3 install ninja 'cmake<4' 'pytest==8.2.2' hydra-core
 
 # Install dependency - pytorch
 PYTORCH_VERSION=v2.5.1
+cd $CURRENT_DIR
 
 git clone https://github.com/pytorch/pytorch.git
 
