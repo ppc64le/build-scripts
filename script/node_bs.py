@@ -175,7 +175,7 @@ def raise_pull_request(branch_pkg, base="master"):
     pr_body = "Adding build_script and build_info.json"
 
     if package_language == "python" and args.generate_wheel_arg:
-        with open('./templates/python_pr_checklist.md', 'r') as file:
+        with open('./templates/pyeco_pull_request_description.md', 'r') as file:
             pr_body = file.read()
 		
     pull_request_data={
