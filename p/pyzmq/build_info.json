@@ -2,6 +2,7 @@
   "maintainer": "vinodk99",
   "package_name": "pyzmq",
   "github_url": "https://github.com/zeromq/pyzmq.git",
+  "required_versions":{"Releases": ["*"], "Tags": ["v25.1.2"]}, 
   "version": "v26.4.0",
   "wheel_build" : true,
   "package_dir": "p/pyzmq",
@@ -10,6 +11,9 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
+  "v25.1.2": {
+   "build_script": "pyzmq_v25.1.2_ubi_9.3.sh"
+  },
   "*": {
     "build_script": "pyzmq_ubi_9.3.sh"
   }
