@@ -23,9 +23,13 @@ PACKAGE_VERSION=
 PACKAGE_URL=
 PACKAGE_DIR=
 
-yum install -y git  python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo cmake
+yum install -y git  python3 python3-devel.ppc64le gcc-toolset-13 make wget sudo cmake
 pip3 install pytest tox nox
 PATH=$PATH:/usr/local/bin/
+
+#export path for gcc-13
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 SOURCE=Github
@@ -90,34 +94,51 @@ if !  python3 -m pip install ./; then
         exit 1
 fi
 
-# Run Tox
-python3 -m tox -e py39
-if [ $? -eq 0 ]; then
-    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
-    exit 0
+# Run tests
+# Run Pytest if test files are found in any folder
+if ls */test_*.py 1> /dev/null 2>&1; then
+    python3 -m pytest
+    if [ $? -eq 0 ]; then
+        echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
+        exit 0
+    else
+        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"
+        exit 2
+    fi
 fi
 
-# Run Pytest
-python3 -m pytest
-if [ $? -eq 0 ]; then
-    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
-    exit 0
+# Check for tox.ini and run tests 
+if [ -f "tox.ini" ]; then
+    python3 -m tox -e py39
+    if [ $? -eq 0 ]; then
+        echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
+        exit 0
+    else
+        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"
+        exit 2
+    fi
 fi
 
-# Run Nox
-python3 -m nox
-if [ $? -eq 0 ]; then
-    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
-    exit 0
-else
-    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"
-    exit 2
+# Check for nox file and run tests 
+if [ -f "noxfile.py" ]; then
+    python3 -m nox
+    if [ $? -eq 0 ]; then
+        echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
+        exit 0
+    else
+        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"
+        exit 2
+    fi
 fi
