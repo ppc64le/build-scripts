@@ -20,7 +20,7 @@
 set -x
 PACKAGE_DIR=milvus-lite/python
 PACKAGE_NAME=milvus-lite
-PACKAGE_VERSION=v2.4.12
+PACKAGE_VERSION=${1:-v2.4.12}
 PACKAGE_URL=https://github.com/milvus-io/milvus-lite
 WORKDIR=$(pwd)
 
