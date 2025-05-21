@@ -38,7 +38,7 @@ tar -xf texinfo-7.1.tar.xz
 cd texinfo-7.1
 ./configure
 echo "compiling"
-make -j$(nproc)
+make -j2
 echo "installing"
 make install
 cd ..
@@ -88,7 +88,7 @@ else
     cd cmake-${CMAKE_VERSION}
 fi
 echo "installing"
-make install -j$(nproc)
+make install -j2
 export PATH=/usr/local/cmake/bin:$PATH
 cmake --version
 cd ..
