@@ -21,6 +21,7 @@
 PACKAGE_NAME=xformers
 PACKAGE_VERSION=${1:-v0.0.29}
 PACKAGE_URL=https://github.com/facebookresearch/xformers.git
+CURRENT_DIR=$(pwd)
 PACKAGE_DIR=xformers
 PARALLEL=${PARALLEL:-$(nproc)}
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
@@ -39,6 +40,7 @@ curl -sL https://ftp2.osuosl.org/pub/ppc64el/openblas/latest/Openblas_0.3.29_ppc
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64:/usr/local/lib:/usr/lib64:/usr/lib
 
 # Clone repository
+cd $CURRENT_DIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
