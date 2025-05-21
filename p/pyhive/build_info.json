@@ -1,6 +1,7 @@
 {
     "maintainer":"Jenkins-J",
     "package_name" : "pyhive",
+    "github_url" : "https://github.com/apache/kyuubi/tree/master/python/pyhive",
     "version": "0.7.0",
     "package_dir": "p/pyhive",
     "build_script": "pyhive_ubi_9.3.sh",
