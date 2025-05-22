@@ -82,7 +82,7 @@ export CXXFLAGS="-Wno-unused-variable -Wno-unused-parameter"
 pip3 install -r requirements.txt
 MAX_JOBS=$PARALLEL python3 setup.py install
 
-cd ..
+cd $CURRENT_DIR/$PACKAGE_NAME
 
 # Build and install xformers
 if ! pip3 install . -vvv; then
