@@ -35,8 +35,9 @@ export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 SOURCE=Github
 
-# Install Rust (if not already installed)
-if ! command -v rustc &> /dev/null; then
+# Install rust
+if ! command -v rustc &> /dev/null
+then
     wget https://static.rust-lang.org/dist/rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
     tar -xzf rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
     cd rust-1.75.0-powerpc64le-unknown-linux-gnu
@@ -44,7 +45,7 @@ if ! command -v rustc &> /dev/null; then
     export PATH=$HOME/.cargo/bin:$PATH
     rustc -V
     cargo -V
-    cd ..
+    cd ../
 fi
 
 # Clone or extract the package
