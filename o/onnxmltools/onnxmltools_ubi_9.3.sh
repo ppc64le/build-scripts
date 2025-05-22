@@ -18,7 +18,7 @@
 #
 # -----------------------------------------------------------------------------
 
-set -ex 
+set -ex
 
 PACKAGE_NAME=onnxmltools
 PACKAGE_VERSION=${1:-v1.13}
@@ -26,15 +26,16 @@ PACKAGE_URL=https://github.com/onnx/onnxmltools
 PACKAGE_DIR=onnxmltools
 WORK_DIR=$(pwd)
 
-echo "Installing dependencies..."
-yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3-devel python3.12 python3.12-devel python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
-PYTHON_VERSION=$(python3.12 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2) 
+echo " --------------------------------------------------- Installing dependencies --------------------------------------------------- "
+yum install -y python3-devel python3.12 python3.12-devel python3.12-pip git make libtool wget gcc-toolset-13-gcc
+yum install -y gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang
+yum install -y cmake xz bzip2-devel libffi-devel patch ninja-build
+PYTHON_VERSION=$(python3.12 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 export SITE_PACKAGE_PATH=/usr/local/lib/python${PYTHON_VERSION}/site-packages
 
-# OpenBlas installing from source 
 echo " --------------------------------------------------- OpenBlas Installing --------------------------------------------------- "
 
 git clone https://github.com/OpenMathLib/OpenBLAS
@@ -49,10 +50,10 @@ OPENBLAS_SOURCE=$(pwd)
 declare -a build_opts
 # Fix ctest not automatically discovering tests
 LDFLAGS=$(echo "${LDFLAGS}" | sed "s/-Wl,--gc-sections//g")
+
 export CF="${CFLAGS} -Wno-unused-parameter -Wno-old-style-declaration"
 unset CFLAGS
 export USE_OPENMP=1
-
 build_opts+=(USE_OPENMP=${USE_OPENMP})
 export PREFIX=${PREFIX}
 
@@ -81,12 +82,9 @@ build_opts+=(NUM_THREADS=8)
 
 # Disable CPU/memory affinity handling to avoid problems with NumPy and R
 build_opts+=(NO_AFFINITY=1)
-
-echo " --------------------------------------------------- Build OpenBLAS --------------------------------------------------- "
-
+echo " --------------------------------------------------- Build OpenBlas --------------------------------------------------- "
 make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
-
-echo "Install OpenBLAS..."
+echo " --------------------------------------------------- Install OpenBLAS --------------------------------------------------- "
 CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
 
 OpenBLASInstallPATH=$(pwd)/$PREFIX
@@ -97,15 +95,13 @@ sed -i "/OpenBLAS_INCLUDE_DIRS/c\SET(OpenBLAS_INCLUDE_DIRS ${OpenBLASInstallPATH
 sed -i "/OpenBLAS_LIBRARIES/c\SET(OpenBLAS_INCLUDE_DIRS ${OpenBLASInstallPATH}/include)" ${OpenBLASConfigFile}
 sed -i "s|libdir=local/openblas/lib|libdir=${OpenBLASInstallPATH}/lib|" ${OpenBLASPCFile}
 sed -i "s|includedir=local/openblas/include|includedir=${OpenBLASInstallPATH}/include|" ${OpenBLASPCFile}
-
 export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
 export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
 
 echo " --------------------------------------------------- OpenBlas Successfully Installed --------------------------------------------------- "
 
 cd $WORK_DIR
-
-pip3.12 install --upgrade cmake pip setuptools wheel ninja packaging tox pytest build mypy stubs
+python3.12 -m pip install --upgrade cmake pip setuptools wheel ninja packaging tox pytest build mypy stubs
 
 echo " --------------------------------------------------- Abseil-Cpp Cloning --------------------------------------------------- "
 
@@ -117,8 +113,6 @@ git clone $ABSEIL_URL -b $ABSEIL_VERSION
 
 echo " --------------------------------------------------- Abseil-Cpp Cloned --------------------------------------------------- "
 
-echo " --------------------------------------------------- Libprotobuf Installing --------------------------------------------------- "
-
 export C_COMPILER=$(which gcc)
 export CXX_COMPILER=$(which g++)
 echo "C Compiler set to $C_COMPILER"
@@ -127,6 +121,8 @@ echo "CXX Compiler set to $CXX_COMPILER"
 mkdir -p $(pwd)/local/libprotobuf
 LIBPROTO_INSTALL=$(pwd)/local/libprotobuf
 echo "LIBPROTO_INSTALL set to $LIBPROTO_INSTALL"
+
+echo " --------------------------------------------------- Libprotobuf Installing --------------------------------------------------- "
 
 # Clone Source-code
 PACKAGE_VERSION_LIB="v4.25.3"
@@ -171,6 +167,7 @@ export LIBRARY_PATH="$LIBPROTO_INSTALL/lib64:$LD_LIBRARY_PATH"
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 
+echo " --------------------------------------------------- Protobuf Patch Applying --------------------------------------------------- "
 # Apply patch
 echo "Applying patch from https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch"
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
@@ -178,24 +175,28 @@ git apply set_cpp_to_17_v4.25.3.patch
 
 # Build Python package
 cd python
-python3.12 setup.py install --cpp_implementation 
+python3.12 setup.py install --cpp_implementation
+
+echo " --------------------------------------------------- Protobuf Patch Applied Successfully --------------------------------------------------- "
 
 cd $WORK_DIR
 
-pip3.12 install numpy==2.0.2 scikit-learn==1.6.1 scipy==1.15.2 pandas cmake flatbuffers wheel lightgbm==4.6.0 
-pip3.12 install pybind11==2.12.0
+python3.12 -m pip install numpy==2.0.2
+python3.12 -m pip install scikit-learn==1.6.1
+python3.12 -m pip install scipy==1.15.2
+python3.12 -m pip install pandas cmake flatbuffers wheel
+python3.12 -m pip install lightgbm==4.6.0
+python3.12 -m pip install pybind11==2.12.0
 
 PYBIND11_PREFIX=$SITE_PACKAGE_PATH/pybind11
-
 export CMAKE_PREFIX_PATH="$ABSEIL_PREFIX;$LIBPROTO_INSTALL;$PYBIND11_PREFIX"
 echo "Updated CMAKE_PREFIX_PATH after OpenBLAS: $CMAKE_PREFIX_PATH"
-
 export LD_LIBRARY_PATH="$LIBPROTO_INSTALL/lib64:$ABSEIL_PREFIX/lib:$LD_LIBRARY_PATH"
 echo "Updated LD_LIBRARY_PATH : $LD_LIBRARY_PATH"
 
 cd $WORK_DIR
 
-echo " --------------------------------------------------- Onnx Build and Install --------------------------------------------------- "
+echo " --------------------------------------------------- Onnx Installing --------------------------------------------------- "
 
 git clone https://github.com/onnx/onnx
 cd onnx
@@ -234,24 +235,23 @@ export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH"
 
 # Adding this source due to - (Unable to detect linker for compiler `cc -Wl,--version`)
 source /opt/rh/gcc-toolset-13/enable
-pip3.12 install cython meson
-pip3.12 install numpy==2.0.2
-pip3.12 install parameterized
-pip3.12 install pytest nbval pythran mypy-protobuf
-pip3.12 install scipy==1.15.2
+python3.12 -m pip install cython meson
+python3.12 -m pip install numpy==2.0.2
+python3.12 -m pip install parameterized
+python3.12 -m pip install pytest nbval pythran mypy-protobuf
+python3.12 -m pip install scipy==1.15.2
 
 python3.12 setup.py install
 python3.12 -m build --wheel --no-isolation --outdir="wheelf"
-pip3.12 install wheelf/*.whl
+python3.12 -m pip install wheelf/*.whl
 
 echo " --------------------------------------------------- Onnx Successfully Installed --------------------------------------------------- "
 
 cd $WORK_DIR
 
-echo " --------------------------------------------------- Onnxruntime Installing --------------------------------------------------- "
+echo " --------------------------------------------------- Innxruntime Installing --------------------------------------------------- "
 
 # Clone and install onnxruntime
-echo "Cloning onnxruntime..."
 git clone https://github.com/microsoft/onnxruntime
 cd onnxruntime
 git checkout v1.21.0
@@ -260,7 +260,8 @@ git checkout v1.21.0
 export CXXFLAGS="-Wno-stringop-overflow"
 export CFLAGS="-Wno-stringop-overflow"
 export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
-/usr/bin/python3.12 -m pip install packaging wheel
+
+/usr/bin/python${PYTHON_VERSION} -m pip install packaging wheel
 NUMPY_INCLUDE=$(python3.12 -c "import numpy; print(numpy.get_include())")
 echo "NumPy include path: $NUMPY_INCLUDE"
 
@@ -280,23 +281,25 @@ echo " --------------------------------------------------- Building onnxruntime 
     --allow_running_as_root \
     --compile_no_warning_as_error \
     --build_wheel
-# Clean up the onnxruntime repository
+
+echo " --------------------------------------------------- Onnxruntime Successfully Installed --------------------------------------------------- "
+
 cd $WORK_DIR
 
-echo " --------------------------------------------------- build and install skl2onnx --------------------------------------------------- "
+echo " --------------------------------------------------- SKL2Onnx Installing --------------------------------------------------- "
 git clone https://github.com/onnx/sklearn-onnx.git
 cd sklearn-onnx
 git checkout v1.18
 sed -i 's/onnx>=1.2.1//g' requirements.txt
 sed -i 's/onnxconverter-common>=1.7.0//g' requirements.txt
 sed -i 's/scikit-learn>=1\.1/scikit-learn==1.6.1/' requirements.txt
-pip3.12 install -e . --no-build-isolation --no-deps
+python3.12 -m pip install -e . --no-build-isolation --no-deps
 
-echo " --------------------------------------------------- skl2onnx installed --------------------------------------------------- "
+echo " --------------------------------------------------- SKL2Onnx Successfully Installed --------------------------------------------------- "
 
 cd $WORK_DIR
 
-echo " --------------------------------------------------- build and install onnxmltools --------------------------------------------------- "
+echo " --------------------------------------------------- Onnxmltools Installing --------------------------------------------------- "
 
 #Build onnxmltools
 git clone $PACKAGE_URL
@@ -304,14 +307,14 @@ cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 #sed -i 's/\bonnxconverter-common\b/onnxconverter-common==1.14.0/g' requirements.txt
-pip3.12 install onnxconverter_common --no-deps
+python3.12 -m pip install onnxconverter_common --no-deps
 
 #export other necessary path for onnmxtools
 export LD_LIBRARY_PATH=/OpenBLAS/local/openblas/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/local/libprotobuf/lib64:$LD_LIBRARY_PATH
 
 #Build
-if ! (pip3.12 install -e . --no-build-isolation --no-deps) ; then
+if ! (python3.12 -m pip install -e . --no-build-isolation --no-deps) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -319,7 +322,8 @@ if ! (pip3.12 install -e . --no-build-isolation --no-deps) ; then
 fi
 
 # Run test cases
-echo "run tests  ..."
+echo " --------------------------------------------------- Testing Onnxmltools --------------------------------------------------- "
+
 if !(pytest --maxfail=10 --durations=10 tests/utils && python3.12 -c "import onnxmltools; print(onnxmltools.__version__)"); then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
