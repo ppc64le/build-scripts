@@ -26,6 +26,7 @@ PACKAGE_DIR=
 
 # Install dependencies
 yum install -y git python3 python3-devel.ppc64le gcc-toolset-13 make wget sudo cmake
+pip3 install pytest tox nox
 
 export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
