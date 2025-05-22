@@ -806,7 +806,7 @@ fi
 # This is because when the wheel is built using the command:
 # python -m build --wheel --no-isolation --outdir="$SCRIPT_DIR/"
 # If we using 'python3 setup.py bdist_wheel --dist-dir="$SCRIPT_DIR/"' produces a wheel with the expected naming format.
-
+pip install wheel
 echo "Creating wheel....."
 python3 setup.py bdist_wheel --dist-dir="$SCRIPT_DIR/"
 
