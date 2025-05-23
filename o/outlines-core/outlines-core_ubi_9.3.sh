@@ -23,7 +23,7 @@
 PACKAGE_NAME=outlines-core
 PACKAGE_VERSION=${1:-0.1.26}
 PACKAGE_URL=https://github.com/dottxt-ai/outlines-core
-PACKAGE_DIR=outlines_core
+PACKAGE_DIR=outlines-core
 CURRENT_DIR=$(pwd)
 
 # Install necessary system dependencies
@@ -736,7 +736,7 @@ echo "-------------------Installed Pyarrow-------------------------"
 
 cd $CURRENT_DIR
 git clone -b $PACKAGE_VERSION $PACKAGE_URL
-cd outlines-core
+cd $PACKAGE_NAME
 
 pip install setuptools pytest pydantic pytest-cov transformers sentencepiece datasets
 
