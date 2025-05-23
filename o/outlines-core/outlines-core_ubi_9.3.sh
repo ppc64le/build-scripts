@@ -747,6 +747,9 @@ if ! (pip3.12 install -e .) ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
+export LD_LIBRARY_PATH=$OPENBLAS_PREFIX/lib:$LD_LIBRARY_PATH
+echo "ld path---------------------------"
+echo $LD_LIBRARY_PATH
 
 #run tests
 if !(pytest --cov=outlines_core -vv); then
