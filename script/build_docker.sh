@@ -49,7 +49,7 @@ if [ $build_docker != false ];then
     echo "Building docker image"
     echo "sudo docker build $build_args -t $image_name $docker_builddir"
     echo "*************************************************************************************"
-    sudo docker build $build_args -t $image_name $docker_builddir > docker_build.log 2>&1
+    sudo docker build $build_args -t $image_name $docker_builddir > docker_build.log 2>&1 &
     SCRIPT_PID=$!
     while ps -p $SCRIPT_PID > /dev/null
     do 
