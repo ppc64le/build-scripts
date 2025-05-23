@@ -1,16 +1,15 @@
 {
-
-  "maintainer": "pratibh-ibm",
+  "maintainer": "Amitkumar282",
   "package_name": "jackson-core",
   "github_url": "https://github.com/FasterXML/jackson-core",
-  "version": "jackson-core-2.17.0",
-  "default_branch": "2.18",
-  "build_script": "jackson-core_ubi_9.3.sh",
+  "version": "jackson-core-2.17.2",
   "package_dir": "j/jackson-core",
-  "validate_build_script": true,
-  "use_non_root_user": false,
+  "default_branch": "master",
+  "build_script": "jackson-core_v2.17.2_ubi_9.3.sh", 
   "docker_build": false,
-  "jackson-core-2.*.*": {
-    "build_script": "jackson-core_ubi_9.3.sh"
+  "use_non_root_user": false,
+  "validate_build_script": true,
+  "*": {
+    "build_script": "jackson-core_v2.17.2_ubi_9.3.sh"
   }
 }
