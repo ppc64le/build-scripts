@@ -50,13 +50,33 @@ if [ $build_docker != false ];then
     echo "sudo docker build $build_args -t $image_name $docker_builddir"
     echo "*************************************************************************************"
     sudo docker build $build_args -t $image_name $docker_builddir > docker_build.log 2>&1
-    docker_build_size=$(stat -c %s build_log)
-    if [ $docker_build_size -lt 1800000 ];
+    SCRIPT_PID=$!
+    while ps -p $SCRIPT_PID > /dev/null
+    do 
+      echo "$SCRIPT_PID is running"
+      sleep 100
+    done
+    wait $SCRIPT_PID
+    my_pid_status=$?
+    docker_build_size=$(stat -c %s docker_build.log)
+    
+    if [ $my_pid_status != 0 ];
     then
-       cat docker_build.log
+        if [ $docker_build_size -lt 1800000 ];
+        then
+           cat docker_build.log
+        else
+           tail -300 docker_build.log
+        fi
+        exit 1
     else
-       tail -300 docker_build.log
-    fi    
+        if [ $build_size -lt 1800000 ];
+        then
+           cat docker_build.log
+        else
+           tail -300 docker_build.log
+        fi    
+    fi
     docker save -o "$HOME/build/$TRAVIS_REPO_SLUG/image.tar" $image_name
 else
     echo "Docker image is not supported"
