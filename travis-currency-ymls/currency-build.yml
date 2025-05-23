@@ -7,6 +7,7 @@ branches:
   only:
     - master
     - python-ecosystem
+    - limit_docker_build_output
 
 env:
   global:
