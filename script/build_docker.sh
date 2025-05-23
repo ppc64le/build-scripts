@@ -49,7 +49,14 @@ if [ $build_docker != false ];then
     echo "Building docker image"
     echo "sudo docker build $build_args -t $image_name $docker_builddir"
     echo "*************************************************************************************"
-    sudo docker build $build_args -t $image_name $docker_builddir
+    sudo docker build $build_args -t $image_name $docker_builddir > docker_build.log 2>&1
+    docker_build_size=$(stat -c %s build_log)
+    if [ $docker_build_size -lt 1800000 ];
+    then
+       cat docker_build.log
+    else
+       tail -300 docker_build.log
+    fi    
     docker save -o "$HOME/build/$TRAVIS_REPO_SLUG/image.tar" $image_name
 else
     echo "Docker image is not supported"
