@@ -70,7 +70,7 @@ if [ $build_docker != false ];then
         fi
         exit 1
     else
-        if [ $build_size -lt 1800000 ];
+        if [ $docker_build_size -lt 1800000 ];
         then
            cat docker_build.log
         else
