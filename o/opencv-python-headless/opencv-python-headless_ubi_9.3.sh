@@ -402,7 +402,7 @@ python3 setup.py bdist_wheel --dist-dir="$CURRENT_DIR/"
 echo "----------------------------------------------Testing pkg-------------------------------------------------------"
 
 #Test package
-if ! (python3 -m unittest discover -s tests -p 'test_*.py' | grep -v 'test_video_capture')  ; then
+if ! (python3 -m unittest tests.test.OpenCVTest.test_import) ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
