@@ -748,6 +748,7 @@ if ! (pip3.12 install -e .) ; then
     exit 1
 fi
 export LD_LIBRARY_PATH=$OPENBLAS_PREFIX/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH="${RE2_PREFIX}/lib:$LD_LIBRARY_PATH"
 
 #run tests
 if !(pytest --cov=outlines_core -vv); then
