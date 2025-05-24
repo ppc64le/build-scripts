@@ -1,0 +1,13 @@
+{
+   "maintainer": "ramnathnayak-ibm",
+   "package_name": "outlines-core",
+   "github_url": "https://github.com/dottxt-ai/outlines-core",
+   "version": "0.1.26",
+   "default_branch": "main",
+   "build_script": "outlines-core_ubi_9.3.sh",
+   "package_dir": "o/outlines-core",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
