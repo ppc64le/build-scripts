@@ -108,8 +108,9 @@ cd $CURRENT_DIR
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH 
 
-pip3.12 install --upgrade pip setuptools wheel ninja packaging tox pytest build mypy stubs
-pip3.12 install 'cmake==3.31.6'
+python3.12 -m pip install --upgrade pip setuptools wheel ninja 
+python3.12 -m pip install packaging tox pytest build mypy stubs
+python3.12 -m pip install 'cmake==3.31.6'
 
 echo " ------------------------------------------ Abseil-CPP Cloning ------------------------------------------ "
 
@@ -191,7 +192,7 @@ python3.12 setup.py install --cpp_implementation
 
 cd $CURRENT_DIR
 
-pip3.12 install pybind11==2.12.0
+python3.12 -m pip install pybind11==2.12.0
 PYBIND11_PREFIX=$SITE_PACKAGE_PATH/pybind11 
 
 export CMAKE_PREFIX_PATH="$ABSEIL_PREFIX;$LIBPROTO_INSTALL;$PYBIND11_PREFIX"
@@ -235,22 +236,27 @@ export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH"
 
 # Adding this source due to - (Unable to detect linker for compiler `cc -Wl,--version`)
 source /opt/rh/gcc-toolset-13/enable
-pip3.12 install cython meson
-pip3.12 install numpy==2.0.2
-pip3.12 install parameterized
-pip3.12 install pytest nbval pythran mypy-protobuf
-pip3.12 install scipy==1.15.2
+python3.12 -m pip install cython meson
+python3.12 -m pip install numpy==2.0.2
+python3.12 -m pip install parameterized
+python3.12 -m pip install pytest nbval pythran mypy-protobuf
+python3.12 -m pip install scipy==1.15.2
 
 if ! python3.12 setup.py install; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
-fi
+fi 
+
+echo " ------------------------------------------ Onnx Wheel Creating ------------------------------------------ "
+python3.12 setup.py bdist_wheel --dist-dir $CURRENT_DIR 
+echo " ------------------------------------------ Onnx Wheel Created Successfully ------------------------------------------ " 
 
 export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib:$LIBPROTO_INSTALL/lib64:$LD_LIBRARY_PATH"
 # Skipping test due to missing 're2/stringpiece.h' header file. Even after attempting to manually build RE2, the required header file could not be found.
 
+echo " ------------------------------------------ Onnx Testing ------------------------------------------ " 
 if ! pytest --ignore=onnx/test/reference_evaluator_backend_test.py --ignore=onnx/test/test_backend_reference.py --ignore=onnx/test/reference_evaluator_test.py; then    
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -261,4 +267,4 @@ else
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
-fi
+fi 
