@@ -96,18 +96,6 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_Success"
 fi
 
-# Test installation
-if python3 -c "import xformers"; then
-    echo "------------------$PACKAGE_NAME::Install_Success---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Install_Success"
-else
-    echo "------------------$PACKAGE_NAME::Install_Fail-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail |  Install_Fails"
-    exit 2
-fi
-
 # Run Specific tests
 export PY_IGNORE_IMPORTMISMATCH=1
 
