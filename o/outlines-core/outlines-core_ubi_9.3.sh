@@ -38,7 +38,7 @@ export GCC_TOOLSET_PATH=/opt/rh/gcc-toolset-13/root/usr
 export PATH=$GCC_TOOLSET_PATH/bin:$PATH
 export LD_LIBRARY_PATH=$GCC_TOOLSET_PATH/lib64:$LD_LIBRARY_PATH
 
-#echo "---------------Installing pytorch-----------------------"
+#echo "---------------Installing dependencies for pytorch-----------------------"
 # --------------------- Build CMake ---------------------
 wget https://cmake.org/files/v3.31/cmake-3.31.6.tar.gz
 tar -zxvf cmake-3.31.6.tar.gz
@@ -233,9 +233,8 @@ MAX_JOBS=$(nproc) python3.12 setup.py install
 
 # --------------------- Installed PyTorch ---------------------
 
-#---------------------- Installing pyarrow---------------------
+#---------------------- Installing dependencies for pyarrow---------------------
 
-# Installing flex bison c-ares gflags rapidjson xsimd snappy libzstd
 echo "-----------flex installing------------------"
 wget https://github.com/westes/flex/releases/download/v2.6.4/flex-2.6.4.tar.gz
 tar -xvf flex-2.6.4.tar.gz
@@ -387,9 +386,6 @@ export ZSTD_HOME=/usr/local
 export CMAKE_PREFIX_PATH=$ZSTD_HOME
 export LD_LIBRARY_PATH=$ZSTD_HOME/lib64:$LD_LIBRARY_PATH
 cd $CURRENT_DIR
-
-#Installing re2,orc utf8proc,boost_cpp,thrift_cpp,abseil_cpp,libprotobuf, grpc_cpp,openblas as dependencies
-
 
 #re2 install from sosurce
 echo "------------ re2 installing-------------------"
