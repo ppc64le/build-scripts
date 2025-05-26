@@ -8,7 +8,7 @@
 # Language         : Python
 # Travis-Check     : True
 # Script License   : GNU General Public License v3.0
-# Maintainer       : Mohit Pawar <mohit.pawar@ibm.com>
+# Maintainer       : Anumala Rajesh <Anumala.Rajesh@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -22,17 +22,17 @@ PACKAGE_NAME=param
 PACKAGE_VERSION=${1:-v2.1.0}
 PACKAGE_URL=https://github.com/holoviz/param.git
 
-yum install -y git python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo
+yum install -y git python3.12 python3.12-devel python3.12-pip gcc gcc-c++ make wget sudo
 yum install -y python3-numpy
-python3 -m pip install ez_setup nose pytest --ignore-installed
-pip3 install pytest tox
+python3.12 -m pip install ez_setup nose pytest --ignore-installed
+python3.12 -m pip install pytest tox
 PATH=$PATH:/usr/local/bin/
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if ! python3 -m pip install build ; then
+if ! python3.12 -m pip install build ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
