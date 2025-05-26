@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : tokenizers
-# Version       : v0.21.0
+# Version       : v0.21.1
 # Source repo   : https://github.com/huggingface/tokenizers
-# Tested on     : UBI:9.3
+# Tested on     : UBI:9.5
 # Language      : C,Python
 # Travis-Check  : True
 # Script License: Apache License 2.0
-# Maintainer    : Vinod K <Vinod.K1@ibm.com>
+# Maintainer    : Aaruni Aggarwal <aaragga1@in.ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=tokenizers
-PACKAGE_VERSION=${1:-v0.21.0}
+PACKAGE_VERSION=${1:-v0.21.1}
 PACKAGE_URL=https://github.com/huggingface/tokenizers
 PACKAGE_DIR=tokenizers/bindings/python
 
@@ -123,7 +123,7 @@ if ! pip install . ; then
 fi
 
 # Skipped these tests as these tests were parity with intel
-if ! pytest -k "not(test_continuing_prefix_trainer_mistmatch or test_gzip or test_tiktoken)"; then
+if ! pytest -k "not(test_continuing_prefix_trainer_mismatch or test_gzip or test_tiktoken)"; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
