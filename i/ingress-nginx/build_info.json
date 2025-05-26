@@ -1,0 +1,12 @@
+{
+    "maintainer":"Prachi.Gaonkar@ibm.com",
+    "package_name" : "ingress-nginx",
+    "github_url": "https://github.com/kubernetes/ingress-nginx.git",
+    "version": "controller-v1.2.0",
+    "default_branch": "main",
+    "package_dir": "i/ingress-nginx",
+    "build_script": "ingress-nginx-controller-v1.2.0-ubi9.3",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": true
+}
