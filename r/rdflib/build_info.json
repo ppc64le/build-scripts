@@ -1,9 +1,10 @@
 {
-    "maintainer": "stutiibm",
+    "maintainer": "vinodk99",
     "package_name": "rdflib",
     "github_url": "https://github.com/RDFLib/rdflib",
-    "version": "7.0.0",
+    "version": "7.1.4",
     "default_branch": "main",
+    "wheel_build" : true,
     "package_dir": "r/rdflib",
     "build_script": "rdflib_ubi_9_3.sh",
     "docker_build": false,
