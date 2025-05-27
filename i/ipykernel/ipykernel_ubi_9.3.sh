@@ -17,12 +17,14 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
+set -ex
 
 PACKAGE_NAME=ipykernel
 PACKAGE_VERSION=${1:-v6.29.4}
 PACKAGE_URL=https://github.com/ipython/ipykernel
 PACKAGE_DIR=ipykernel
 
+# Install dependencies
 yum install -y cmake make git python3  python3-devel python3-pip python3-pytest gcc-toolset-13
 
 #export path for gcc-13
