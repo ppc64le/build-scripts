@@ -47,7 +47,7 @@ if ! python3 -m pip install -e ".[test]"; then
 fi
 
 # Test
-if ! pytest -s ipykernel --cov-branch --cov-report term-missing:skip-covered --durations 10 --disable-warnings; then
+if ! pytest -vv -s --cov ipykernel --cov-branch --cov-report term-missing:skip-covered --durations 10 --disable-warnings; then
         echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
