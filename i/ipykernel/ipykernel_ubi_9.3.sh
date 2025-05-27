@@ -46,6 +46,7 @@ if ! python3 -m pip install -e ".[test]"; then
         exit 1
 fi
 
+cd /ipykernel
 # Test
 if ! pytest ipykernel --cov-branch --cov-report term-missing:skip-covered --durations 10 --disable-warnings; then
         echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
