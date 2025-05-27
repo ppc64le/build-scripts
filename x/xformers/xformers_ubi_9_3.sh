@@ -28,9 +28,7 @@ OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 export _GLIBCXX_USE_CXX11_ABI=1
 
 # Install dependencies
-dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
-    git gcc-toolset-13 ninja-build rust cargo \
-    python-devel python-pip jq pkg-config atlas
+yum install -y git gcc-toolset-13 ninja-build rust cargo python-devel python-pip jq pkg-config atlas
 
 source /opt/rh/gcc-toolset-13/enable
 
@@ -99,25 +97,7 @@ fi
 # Run Specific tests
 export PY_IGNORE_IMPORTMISMATCH=1
 
-# Define the test directory and test files
-TEST_DIR="tests"
-TEST_FILES=("test_unbind.py" "test_rotary_embeddings.py" "test_hydra_helper.py" "test_compositional_attention.py" "test_global_attention.py")
-
-# Initialize an empty array to hold available test files
-AVAILABLE_TESTS=()
-
-# Check for existence of each test file
-for TEST_FILE in "${TEST_FILES[@]}"; do
-    if [ -f "$TEST_DIR/$TEST_FILE" ]; then
-        AVAILABLE_TESTS+=("$TEST_DIR/$TEST_FILE")
-        echo "Available Tests: $AVAILABLE_TESTS"
-    else
-        echo "Warning: $TEST_DIR/$TEST_FILE is missing. Skipping."
-    fi
-done
-
-# Run pytest with available test files
-if ! pytest "${AVAILABLE_TESTS[@]}"; then
+if ! pytest tests/ --ignore=tests/test_custom_ops.py --ignore=tests/test_sparsecs.py --ignore=tests/test_mem_eff_attention.py --ignore=tests/test_core_attention.py --ignore=tests/test_sparse_tensors.py; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail |  Install_success_but_test_Fails"
