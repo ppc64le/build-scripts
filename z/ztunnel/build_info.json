@@ -6,7 +6,7 @@
     "package_dir": "z/ztunnel",
     "default_branch": "master",
     "docker_build": false,
-    "build_script": "ztunnel_ubi_9.4_v1.26.0.sh",
+    "build_script": "ztunnel_ubi_9.4_v1.25.3.sh",
     "validate_build_script": true,
     "use_non_root_user": false
   }
