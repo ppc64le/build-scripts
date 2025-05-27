@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/ipython/ipykernel
 PACKAGE_DIR=ipykernel
 
 # Install dependencies
-yum install -y cmake make git python3  python3-devel python3-pip python3-pytest gcc-toolset-13
+yum install -y cmake make git python3 python3-devel python3-pip python3-pytest gcc-toolset-13
 
 #export path for gcc-13
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
@@ -46,9 +46,8 @@ if ! python3 -m pip install -e ".[test]"; then
         exit 1
 fi
 
-cd /ipykernel
 # Test
-if ! pytest ipykernel --cov-branch --cov-report term-missing:skip-covered --durations 10 --disable-warnings; then
+if ! pytest -s ipykernel --cov-branch --cov-report term-missing:skip-covered --durations 10 --disable-warnings; then
         echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
