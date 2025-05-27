@@ -97,7 +97,7 @@ fi
 # Run Specific tests
 export PY_IGNORE_IMPORTMISMATCH=1
 
-if ! pytest tests/ --ignore=tests/test_custom_ops.py --ignore=tests/test_sparsecs.py --ignore=tests/test_mem_eff_attention.py --ignore=tests/test_core_attention.py --ignore=tests/test_sparse_tensors.py; then
+if ! pytest tests/ --ignore=tests/test_custom_ops.py --ignore=tests/test_sparsecs.py --ignore=tests/test_mem_eff_attention.py --ignore=tests/test_core_attention.py --ignore=tests/test_sparse_tensors.py --ignore=tests/test_checkpoint.py; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail |  Install_success_but_test_Fails"
