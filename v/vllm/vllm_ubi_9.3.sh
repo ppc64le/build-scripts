@@ -264,6 +264,7 @@ export Protobuf_INCLUDE_DIR=/protobuf/local/libprotobuf/include
 export Protobuf_LIBRARIES=/protobuf/local/libprotobuf/lib64
 export Protobuf_LIBRARY=/protobuf/local/libprotobuf/lib64/libprotobuf.so
 export Protobuf_PROTOC_EXECUTABLE=/protobuf/local/bin/protoc
+sed -i 's/2\.6\.0a0/2.6.0/' version.txt
 mv .git .git.bak
 echo "Installing torchaudio..."
 pip3.12 install --no-build-isolation . 
@@ -390,7 +391,7 @@ USE_NONFREE=no   #the options below are set for NO
         --disable-decoder=aac_fixed \
         --disable-encoder=aac_latm \
         --disable-decoder=aac_latm \
-        --disable-nonfree --disable-gpl --disable-gnutls --enable- --disable-libopenh264 --disable-libx264
+        --disable-nonfree --disable-gpl --disable-gnutls --disable-libopenh264 --disable-libx264
 
 make 
 make install PREFIX="${FFMPEG_PREFIX}"
