@@ -1,3 +1,7 @@
+#!/bin/bash -e
+#
+# -----------------------------------------------------------------------------
+#
 # Package       : vllm
 # Version       : v0.8.4
 # Source repo   : https://github.com/vllm-project/vllm.git
