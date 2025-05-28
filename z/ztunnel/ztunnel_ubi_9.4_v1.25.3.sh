@@ -25,7 +25,12 @@ RUST_VERSION=1.85.1
 TOOLCHAIN=powerpc64le-unknown-linux-gnu
 
 # Install dependencies
-yum install -y git wget curl unzip gcc pkg-config openssl-devel clang-devel cmake protobuf-compiler iproute procps-ng iptables
+yum install -y --allowerasing  git wget curl unzip gcc pkg-config openssl-devel clang-devel cmake iproute procps-ng iptables
+
+wget https://github.com/protocolbuffers/protobuf/releases/download/v30.2/protoc-30.2-linux-ppcle_64.zip
+unzip protoc-30.2-linux-ppcle_64.zip
+mv ./bin/protoc /usr/local/bin/
+protoc --version
 
 # Installing Rust
 curl -sSL "https://static.rust-lang.org/dist/rust-${RUST_VERSION}-${TOOLCHAIN}.tar.gz" -o rust.tar.gz
