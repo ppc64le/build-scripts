@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : ztunnel
-# Version       : v1.25.3
+# Version       : v1.26.0
 # Source repo   : https://github.com/istio/ztunnel
 # Tested on     : RHEL 9.4
 # Language      : Rust
@@ -12,7 +12,7 @@
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of theztunnel_ubi_9.4_v1.25.3.sh
+#             It may not work as expected with newer versions of the ztunnel_ubi_9.4_v1.25.3.sh
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
 #
@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=ztunnel
 PACKAGE_ORG=istio
-SCRIPT_PACKAGE_VERSION=release-1.25
+SCRIPT_PACKAGE_VERSION=release-1.26
 PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
 PACKAGE_URL=https://github.com/${PACKAGE_ORG}/${PACKAGE_NAME}
 RUST_VERSION=1.85.1
