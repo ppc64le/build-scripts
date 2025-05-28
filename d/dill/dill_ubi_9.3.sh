@@ -24,10 +24,9 @@ PACKAGE_URL=https://github.com/uqfoundation/dill
 
 wrkdir=`pwd`
 
-OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
-
-yum install -y python3-devel pip git gcc gcc-c++
-
+yum install -y python3-devel python3-pip git gcc-toolset-13
+source /opt/rh/gcc-toolset-13/enable
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
@@ -45,7 +44,7 @@ fi
 
 # python3 -m pip install tox
 
-if ! /usr/local/bin/tox -e py39 ; then
+if ! tox -e py39 ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
