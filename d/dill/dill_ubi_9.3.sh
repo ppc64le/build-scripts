@@ -8,7 +8,7 @@
 # Language         : Python
 # Travis-Check     : True
 # Script License   : GNU General Public License v3.0
-# Maintainer       : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
+# Maintainer       : Haritha Nagothu <haritha.nagothu2@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -18,6 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
+set -ex
 PACKAGE_NAME=dill
 PACKAGE_VERSION=${1:-0.3.8}
 PACKAGE_URL=https://github.com/uqfoundation/dill
