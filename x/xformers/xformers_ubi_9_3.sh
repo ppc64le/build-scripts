@@ -64,9 +64,7 @@ PPC64LE_PATCH="69cbf05"
 
 if ! git log --pretty=format:"%H" | grep -q "$PPC64LE_PATCH"; then
     echo "Applying POWER patch."
-    git config user.email "Puneet.Sharma21@ibm.com"
-    git config user.name "puneetsharma21"
-    git cherry-pick "$PPC64LE_PATCH"
+    git cherry-pick "$PPC64LE_PATCH" --no-commit
 else
     echo "POWER patch not needed."
 fi
