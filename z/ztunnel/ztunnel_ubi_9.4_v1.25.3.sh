@@ -12,7 +12,7 @@
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of the
+#             It may not work as expected with newer versions of theztunnel_ubi_9.4_v1.25.3.sh
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
 #
@@ -20,6 +20,8 @@
 
 PACKAGE_NAME=ztunnel
 PACKAGE_ORG=istio
+SCRIPT_PACKAGE_VERSION=release-1.26
+PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
 PACKAGE_URL=https://github.com/${PACKAGE_ORG}/${PACKAGE_NAME}
 RUST_VERSION=1.85.1
 TOOLCHAIN=powerpc64le-unknown-linux-gnu
@@ -41,7 +43,7 @@ mv rust-${RUST_VERSION}-${TOOLCHAIN} /opt/rust-${RUST_VERSION}
 
 # Download Ztunnel source code
 git clone ${PACKAGE_URL}
-cd ${PACKAGE_NAME}
+cd ${PACKAGE_NAME} && git checkout ${PACKAGE_VERSION}
 
 # Build ztunnel
 cargo build --no-default-features --features tls-openssl --release
