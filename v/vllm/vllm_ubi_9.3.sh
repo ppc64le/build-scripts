@@ -25,7 +25,7 @@ PACKAGE_DIR=vllm
 
 yum install -y openblas-devel git make libtool wget gcc-toolset-13   cmake python3.12 python3.12-devel python3.12-pip  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils 
 yum install -y git \
-    meson ninja-build ninja openblas-devel openssl-devel libjpeg-devel bzip2-devel libffi-devel zlib-devel \
+    meson ninja-build openblas-devel openssl-devel libjpeg-devel bzip2-devel libffi-devel zlib-devel \
     libtiff-devel freetype-devel make cmake automake autoconf procps-ng \
     python3.12 python3.12-devel python3.12-pip
 
@@ -49,7 +49,7 @@ done
 
 python3.12 -m pip install numpy==2.0.2 cython  bottleneck==1.4.2 brotli==1.1.0 pyyaml==6.0.2 aiohttp==3.9.0 argon2_cffi_bindings==21.2.0
 python3.12 -m pip install cassandra_driver==3.29.2 contourpy==1.3.1 cx_oracle==8.3.0 cytoolz==1.0.1 ibm_db==3.2.6 ijson==3.3.0 jenkspy==0.4.1 markupsafe==3.0.2
-python3.12 -m pip install zstd==1.5.6.1 yarl==1.18.3 unicodedata2==15.1.0 pandas==2.2.3
+python3.12 -m pip install zstd==1.5.6.1 yarl==1.18.3 unicodedata2==15.1.0 pandas==2.2.3 ninja
 
 echo "-------Installing cmake---------"
 wget https://cmake.org/files/v3.28/cmake-3.28.0.tar.gz
@@ -777,80 +777,6 @@ done
 python3.12 -m pip install --upgrade pip
 
 # clone source repository
-cd $CURRENT_DIR
-git clone --recursive https://github.com/opencv/opencv-python
-cd opencv-python
-git checkout 84
-git submodule update --init
-
-export CMAKE_PREFIX_PATH="$PREFIX/abseilcpp;$PREFIX/libprotobuf";
-
-export CMAKE_ARGS="-DCMAKE_BUILD_TYPE=Release
-                   -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH
-                   -DWITH_EIGEN=1
-                   -DBUILD_TESTS=0
-                   -DBUILD_DOCS=0
-                   -DBUILD_PERF_TESTS=0
-                   -DBUILD_ZLIB=0
-                   -DBUILD_TIFF=0
-                   -DBUILD_PNG=0
-                   -DBUILD_OPENEXR=1
-                   -DBUILD_JASPER=0
-                   -DWITH_ITT=1
-                   -DBUILD_JPEG=0
-                   -DBUILD_LIBPROTOBUF_FROM_SOURCES=OFF
-                   -DWITH_V4L=1
-                   -DWITH_OPENCL=0
-                   -DWITH_OPENCLAMDFFT=0
-                   -DWITH_OPENCLAMDBLAS=0
-                   -DWITH_OPENCL_D3D11_NV=0
-                   -DWITH_1394=0
-                   -DWITH_CARBON=0
-                   -DWITH_OPENNI=0
-                   -DWITH_FFMPEG=0
-                   -DHAVE_FFMPEG=0
-                   -DWITH_JASPER=0
-                   -DWITH_VA=0
-                   -DWITH_VA_INTEL=0
-                   -DWITH_GSTREAMER=0
-                   -DWITH_MATLAB=0
-                   -DWITH_TESSERACT=0
-                   -DWITH_VTK=0
-                   -DWITH_GTK=0
-                   -DWITH_QT=0
-                   -DWITH_GPHOTO2=0
-                   -DINSTALL_C_EXAMPLES=0
-                   -DBUILD_PROTOBUF=OFF
-                   -DPROTOBUF_UPDATE_FILES=ON
-                   -DProtobuf_LIBRARY=$LIPROTOBUF_PREFIX/lib64/libprotobuf.so
-                   -DProtobuf_INCLUDE_DIR=$PROTOBUF_PREFIX/include/google/protobuf
-                   -DWITH_LAPACK=0
-                   -DHAVE_LAPACK=0
-                   -DLAPACK_LAPACKE_H=$OPENBLAS_PREFIX/include/lapacke.h
-                   -DLAPACK_CBLAS_H=$OPENBLAS_PREFIX/include/cblas.h"
-
-# install dependency
-pip3.12 install scikit-build 
-pip3.12 install "setuptools==59.2.0" --upgrade
-
-export PATH=${LIBPROTOBUF_PREFIX}/bin:$PATH
-export C_INCLUDE_PATH=$(python3.12 -c "import numpy; print(numpy.get_include())")
-export CPLUS_INCLUDE_PATH=$C_INCLUDE_PATH
-export CPLUS_INCLUDE_PATH=${LIBPROTOBUF_PREFIX}/include:$CPLUS_INCLUDE_PATH
-ln -sf $CURRENT_DIR/opencv-python/tests/SampleVideo_1280x720_1mb.mp4 SampleVideo_1280x720_1mb.mp4
-PYTHON_VERSION=$(python3.12 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
-
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/opencv-python-headless/opencv_python_headless_4.10.0.84_1.patch
-if [[ "$(printf '%s\n' "$PYTHON_VERSION" "3.12" | sort -V | head -n1)" == "3.12" ]]; then
-    echo "Python version is 3.12 or newer.Applying the patch"
-	git apply opencv_python_headless_4.10.0.84_1.patch
-	pip3.12 install "setuptools<70.0.0" --upgrade
-else
-    echo "Python version is older than 3.12. No changes required."
-fi
-pip3.12 install -e .
-echo "------------------------installed opencv_python_headless-------------------------"
-
 
 cd $CURRENT_DIR
 echo "------------------------installing psycopg2-------------------------"
@@ -861,12 +787,6 @@ cd psycopg2
 git checkout 2.9.10
 python3.12 setup.py install
 echo "------------------------installed psycopg2-------------------------"
-
-
-
-
-
-
 
 cd $CURRENT_DIR
 echo "------------------------installing pyodbc-------------------------"
