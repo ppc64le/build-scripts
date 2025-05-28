@@ -21,6 +21,7 @@
 PACKAGE_NAME=softlayer-python
 PACKAGE_VERSION=${1:-v6.2.6}
 PACKAGE_URL=https://github.com/softlayer/softlayer-python
+PACKAGE_DIR=softlayer-python
 
 yum install -y git python3.12 python3.12-devel python3.12-pip python3.12-tkinter gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc
 
