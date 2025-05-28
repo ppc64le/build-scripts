@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/opencv/opencv-python
 CURRENT_DIR=$(pwd)
 PACKAGE_DIR=opencv-python
 
-yum install -y git make wget python3 python3-devel python3-pip pkgconfig atlas
+yum install -y git make wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas
 yum install gcc-toolset-13 -y
 yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build gcc-toolset-13  pkg-config  gmp-devel  freetype-devel
 
@@ -104,13 +104,13 @@ cd $CURRENT_DIR
 
 echo "--------------------scipy installing-------------------------------"
 
-python3 -m pip install beniget==0.4.2.post1 Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja patchelf
+python3.12 -m pip install beniget==0.4.2.post1 Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja patchelf
 git clone https://github.com/scipy/scipy
 cd scipy/
 git checkout v1.15.2
 git submodule update --init
 echo "instaling scipy......."
-python3 -m pip install .
+python3.12 -m pip install .
 cd $CURRENT_DIR
 
 echo "--------------------abseil-cpp installing-------------------------------"
@@ -177,7 +177,7 @@ git apply set_cpp_to_17_v4.25.3.patch
 
 echo "--------------Installing protobuf--------------"
 cd python
-python3 -m pip install .
+python3.12 -m pip install .
 cd $CURRENT_DIR
 
 echo "------------ libprotobuf,protobuf installed--------------"
@@ -381,13 +381,13 @@ export CMAKE_ARGS="-DCMAKE_BUILD_TYPE=Release
                    -DCPU_BASELINE_DISABLE=ON \
                    -DCPU_DISPATCH=OFF"
 
-export C_INCLUDE_PATH=$(python3 -c "import numpy; print(numpy.get_include())")
+export C_INCLUDE_PATH=$(python3.12 -c "import numpy; print(numpy.get_include())")
 export CPLUS_INCLUDE_PATH=$C_INCLUDE_PATH
 ln -sf $CURRENT_DIR/opencv-python/tests/SampleVideo_1280x720_1mb.mp4 SampleVideo_1280x720_1mb.mp4
 
-python3 -m pip install numpy==2.0.2 pytest scikit-build setuptools build wheel
+python3.12 -m pip install numpy==2.0.2 pytest scikit-build setuptools build wheel
 
-if ! python3 -m pip install -e . ; then
+if ! python3.12 -m pip install -e . ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -396,13 +396,13 @@ fi
 
 #During wheel creation for this package we need exported cmake-args. Once script get exit, and if we build wheel through wrapper script, then those are not applicable during wheel creation. So we are generating wheel for opencv-python-headless in script itself.
 echo "---------------------------------------------------Building the wheel--------------------------------------------------"
-python3 setup.py bdist_wheel --dist-dir="$CURRENT_DIR/"
+python3.12 setup.py bdist_wheel --dist-dir="$CURRENT_DIR/"
 
 
 echo "----------------------------------------------Testing pkg-------------------------------------------------------"
 
 #Test package
-if ! (python3 -m unittest tests.test.OpenCVTest.test_import) ; then
+if ! (python3.12 -m unittest tests.test.OpenCVTest.test_import) ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
