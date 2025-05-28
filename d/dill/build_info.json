@@ -1,8 +1,9 @@
 {
-  "maintainer": "AbhiIBM",
+  "maintainer": "Harithanagothu2",
   "package_name": "dill",
   "github_url": "https://github.com/uqfoundation/dill",
   "version": "0.3.8",
+  "wheel_build" : true,
   "default_branch": "master",
   "package_dir": "d/dill",
   "build_script": "dill_ubi_9.3.sh",
@@ -13,7 +14,7 @@
     "dir": "ubi8.7",
     "build_script": "dill_ubi_8.7.sh"
   },
-  "0.*.*": {
+  "*": {
     "dir": "ubi9.3",
     "build_script": "dill_ubi_9.3.sh"
   }
