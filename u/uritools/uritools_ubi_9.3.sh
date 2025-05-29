@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : uritools
-# Version       : v4.0.2
+# Version       : v5.0.0
 # Source repo   : https://github.com/tkem/uritools/
 # Tested on     : UBI:9.3
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Shubham Garud <Shubham.Garud@ibm.com>
+# Maintainer    : Ramnath Nayak <Ramnath.Nayak@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,32 +19,23 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=uritools
-PACKAGE_VERSION=${1:-v4.0.2}
+PACKAGE_VERSION=${1:-v5.0.0}
 PACKAGE_URL=https://github.com/tkem/uritools/
+PACKAGE_DIR=uritools
 
-yum install -y git gcc gcc-c++ make wget sudo sqlite-devel.ppc64le
+yum install -y git make wget python3 python3-pip python3-devel sqlite-devel gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc
 
-#installation of python3.10
-yum install -y openssl-devel bzip2-devel libffi-devel wget xz zlib-devel
-wget https://www.python.org/ftp/python/3.10.0/Python-3.10.0.tar.xz
-tar xf Python-3.10.0.tar.xz
-cd Python-3.10.0
-./configure --prefix=/usr/local --enable-optimizations
-make -j4
-make install
-python3.10 --version
-cd ..
+export GCC_TOOLSET_PATH=/opt/rh/gcc-toolset-13/root/usr
+export PATH=$GCC_TOOLSET_PATH/bin:$PATH
 
-pip3 install pytest tox coverage
-PATH=$PATH:/usr/local/bin/
-
+pip install tox coverage
 
 # Clone the repository
-git clone $PACKAGE_URL $PACKAGE_NAME
+git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if !(python3 setup.py install) ; then
+if !(pip install -e .) ; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
@@ -52,7 +43,7 @@ if !(python3 setup.py install) ; then
 fi
 
 # Run test cases
-if !(tox); then
+if !(tox -e py3); then
     echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
@@ -63,4 +54,3 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Build_and_Test_Success"
     exit 0
 fi
-
