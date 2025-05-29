@@ -8,7 +8,7 @@
 # Language      : Python,Typescript
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Vinod K <Vinod.K1@ibm.com>
+# Maintainer    : Aastha Sharma <aastha.sharma4@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -17,12 +17,19 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
+set -ex
+
 PACKAGE_NAME=ipywidgets
 PACKAGE_VERSION=${1:-8.1.2}
 PACKAGE_URL=https://github.com/jupyter-widgets/ipywidgets
+PACKAGE_DIR=ipywidgets/python/ipywidgets
 
 export NODE_VERSION=${NODE_VERSION:-16}
-yum install -y wget python3 python3-devel.ppc64le git gcc gcc-c++ libffi make
+yum install -y wget python3 python3-devel python3-pip git libffi make gcc-toolset-13
+
+#export path for gcc-13
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
 #Installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
@@ -31,27 +38,19 @@ echo "installing nodejs $NODE_VERSION"
 nvm install "$NODE_VERSION" >/dev/null
 nvm use $NODE_VERSION
 
-#Install miniconda
-wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-ppc64le.sh
-sh Miniconda3-latest-Linux-ppc64le.sh -u -b -p $HOME/conda
-$HOME/conda/bin/conda update -y -n base conda
-export PATH=$HOME/conda/bin/:$PATH
-conda --version
-
 git clone $PACKAGE_URL $PACKAGE_NAME
-cd  $PACKAGE_NAME
+cd  $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
-python -m pip install -U pip
-pip install "pytest<8"
+pip3 install "pytest<8" ipython_genutils pytz ipykernel pytest-cov jsonschema
 
-if ! pip install file://$PWD/python/ipywidgets#egg=ipywidgets[test] ;  then
+if ! pip3 install -e .;  then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-cd python/ipywidgets
-if ! pytest --cov=ipywidgets ipywidgets ; then
+
+if ! pytest --cov=ipywidgets ipywidgets -p no:warnigs; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
