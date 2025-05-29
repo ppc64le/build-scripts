@@ -34,7 +34,7 @@ rustc --version
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
-pip3.12 install pytest-cov
+pip3.12 install pytest-cov eventlet gevent
 
 # Install the package
 if ! python3.12 -m pip install -e .; then
