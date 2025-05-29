@@ -23,19 +23,19 @@ PACKAGE_VERSION=${1:-v5.0.0}
 PACKAGE_URL=https://github.com/tkem/uritools/
 PACKAGE_DIR=uritools
 
-yum install -y git make wget python3.12 python3.12-pip python3.12-devel sqlite-devel gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc
+yum install -y git make wget python3 python3-pip python3-devel sqlite-devel gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc
 
 export GCC_TOOLSET_PATH=/opt/rh/gcc-toolset-13/root/usr
 export PATH=$GCC_TOOLSET_PATH/bin:$PATH
 
-pip3.12 install tox coverage
+pip install tox coverage
 
 # Clone the repository
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if !(pip3.12 install -e .) ; then
+if !(pip install -e .) ; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
