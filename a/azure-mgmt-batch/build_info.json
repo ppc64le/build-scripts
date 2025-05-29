@@ -4,7 +4,7 @@
   "github_url": "https://github.com/Azure/azure-sdk-for-python",
   "version": "azure-mgmt-batch_18.0.0",
   "wheel_build" : true,
-  "package_dir": "a/zure-mgmt-batch",
+  "package_dir": "a/azure-mgmt-batch",
   "default_branch": "main",
   "build_script": "azure-mgmt-batch_ubi_9.3.sh",
   "docker_build": false,
