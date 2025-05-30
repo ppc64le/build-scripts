@@ -105,7 +105,7 @@ fi
 
 #Skipping these tests as per aesara's CI.
 
-if ! python3 -m pytest --ignore=tests/link/numba --ignore=tests/test_printing.py --ignore=tests/compile/test_mode.py --ignore=tests/link/test_vm.py --ignore=tests/link/c/test_op.py --ignore=tests/tensor/nnet --ignore=tests/tensor/rewriting/test_shape.py --ignore=tests/tensor/signal --ignore=tests/tensor/random --ignore=tests/scan/ ; then
+if ! python3.11 -m pytest --ignore=tests/link/numba --ignore=tests/test_printing.py --ignore=tests/compile/test_mode.py --ignore=tests/link/test_vm.py --ignore=tests/link/c/test_op.py --ignore=tests/tensor/nnet --ignore=tests/tensor/rewriting/test_shape.py --ignore=tests/tensor/signal --ignore=tests/tensor/random --ignore=tests/scan/ ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
