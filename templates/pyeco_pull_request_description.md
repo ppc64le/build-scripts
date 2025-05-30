@@ -1,21 +1,21 @@
 ## Distro Owner PR Review Checklist
+* [ ] Confirm that `PACKAGE_URL` points to the correct source — it should be a GitHub repository link. If not, identify the correct GitHub source and update the build script accordingly (follow the steps provided in the **PR Validation Process**).
+  **Note:** `PACKAGE_URL` should never be a `.tar` archive link.
+* [ ] Confirm that the `PACKAGE_VERSION` matches the version required by your project.
+* [ ] Check if any additional configuration is needed to install the package from source that is not present in the current PR.
+* [ ] Optionally, validate the script using the steps outlined below.
 
-- [ ] Confirm PACKAGE_URL points to the correct source.
-- [ ] If PACKAGE_URL is a .tar file, automation failed to parse the GitHub link from PyPI. Manually identify the GitHub URL and update the build script.
-- [ ] Verify that PACKAGE_VERSION is correctly set in both build-script and build_info.json.
-- [ ] Verify that the PACKAGE_URL is the official/canonical source for the package (not a fork/mirror repo).
-- [ ] If PACKAGE_URL is incorrect, check PyPI for the correct URL.
+## PR Validation Process
+* Use a **ppc64le** VM with at least **8 GB RAM** (more is recommended, as insufficient RAM may cause random build failures).
+* Run the `<package-name>.sh` script provided in this PR inside a fresh **UBI 9.3** container (i.e., `sh <package-name>.sh`).
+* Ensure that the build script execution ends with a message like:
+  **"Pass | Both\_Install\_and\_Test\_Success"**
+* If the build script fails and you identify a fix required in the `<package-name>.sh` script to achieve successful execution, follow these steps:
 
+  * Fork the [build-scripts repo](https://github.com/ppc64le/build-scripts)
+  * Create a new branch for your changes, starting from the version proposed in this PR
+  * Follow all the points mentioned in [CONTRIBUTING.MD](https://github.com/ppc64le/build-scripts/blob/master/CONTRIBUTING.md) before raising the PR
+  * Open a new PR from your fork with the fix
+  * Close this auto-generated PR and include a link to your updated PR in the closure comment
 
-## PR Validation Checklist(if required)
-- [ ] Remove unnecessary code, incase it happens to update the build-script (rust installation, tox/nox/pytest testing steps)
-- [ ] Close the PR if the changes are entirely incorrect
-- [ ] Post PR merge, validate the generated wheel
-- [ ] Have you checked and followed all the points mentioned in [CONTRIBUTING.MD](https://github.com/ppc64le/build-scripts/blob/master/CONTRIBUTING.md) before raising the PR?
-- [ ] Have you validated script on UBI 9 container?
-- [ ] Did you run the script(s) on fresh container with `set -e` option enabled and observe success?
-- [ ] Create PR to build script repo with required files like license and build_info.json
-
-
-
-**Disclaimer:** Auto-generated PRs will be marked as closed if no action is taken before running next weekly scan. Closing auto PRs is a manual activity performed by the Python ecosystem team.
+**Disclaimer:** Auto-generated PRs will be marked as **closed** if no action is taken before the next weekly scan. Closing auto PRs is a manual task performed by the Python ecosystem team.
