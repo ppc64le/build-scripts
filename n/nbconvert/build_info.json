@@ -1,8 +1,9 @@
 {
-  "maintainer": "stutiibm",
+  "maintainer": "Anumala Rajesh",
   "package_name": "nbconvert",
   "github_url": "https://github.com/jupyter/nbconvert",
   "version": "v7.16.4",
+  "wheel_build" : true, 
   "default_branch": "main",
   "package_dir": "n/nbconvert/",
   "build_script": "nbconvert_ubi_9_3.sh",

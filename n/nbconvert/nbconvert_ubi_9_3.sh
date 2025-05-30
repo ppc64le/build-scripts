@@ -8,7 +8,7 @@
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Stuti Wali <Stuti.Wali@ibm.com>
+# Maintainer    : Anumala Rajesh <Anumala.Rajesh@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -18,35 +18,35 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e
+set -ex
 
 PACKAGE_NAME=nbconvert
 PACKAGE_VERSION=${1:-v7.16.4}
 PACKAGE_URL=https://github.com/jupyter/nbconvert
-HOME_DIR=${PWD}
 
-yum install -y git python3 python3-devel gcc-c++ wget
+yum install -y git python3.12 python3.12-devel python3.12-pip wget gcc-toolset-13
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH 
 
 # Clone package repository
-cd $HOME_DIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-pip3 install pytest
+python3.12 -m pip install pytest
 
 # Install
-if ! pip3 install .; then
+if ! python3.12 -m pip install .; then
 	echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
 	echo "$PACKAGE_VERSION $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
 	exit 1
-fi
+fi 
 
 # Test
+python3.12 -m pip install ".[test]" 
 
-pip install ".[test]"
-
-if ! pytest; then
+# Skipping tests because dependencies (pandoc, texlive-xetex, inkscape, qt5-qtwebkit-devel, qt5-qtwebengine)
+# are not compatible with ppc64le architecture.
+if ! pytest -k "not test_asciidoc and not test_html and not test_rst and not test_slides and not test_templateexporter and not test_nbconvertapp and not test_markdown"; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
 	echo "$PACKAGE_URL $PACKAGE_NAME"
 	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
