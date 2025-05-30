@@ -1,0 +1,12 @@
+{
+    "maintainer": "anurag-chitrakar",
+    "package_name": "ztunnel",
+    "github_url": "https://github.com/istio/ztunnel",
+    "version": "v1.26.0",
+    "package_dir": "z/ztunnel",
+    "default_branch": "master",
+    "docker_build": false,
+    "build_script": "ztunnel_ubi_9.4_v1.26.0.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false
+  }
