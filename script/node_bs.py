@@ -172,7 +172,7 @@ def raise_pull_request(branch_pkg, base="master"):
             "Authorization": "Bearer {}".format(github_token)
     }
 
-    pr_body = "Adding build_script and build_info.json"
+    pr_body = "Python Ecosystem: Adding build_script and build_info.json"
 
     if package_language == "python" and args.generate_wheel_arg:
         with open('./templates/pyeco_pull_request_description.md', 'r') as file:
