@@ -41,24 +41,24 @@ cd ..
 
 echo "Installing dependencies..."
 echo "Installing dependencies..."
-pip install "numpy==1.26.3" "scikit-learn===1.3.2"
-pip install  setuptools wheel build packaging cython
+python3.11 -m pip install "numpy==1.26.3" "scikit-learn===1.3.2"
+python3.11 -m pip install  setuptools wheel build packaging cython
 
 echo "Cloning and installing..."
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-python3 -m pip install --upgrade pip
+python3.11 -m pip install --upgrade pip
 
 echo "Installing dependencies..."
-python3 -m pip install pytest pandas NetworkX matplotlib
+python3.11 -m pip install pytest pandas NetworkX matplotlib
 
 echo "Installing requirements.txt..."
-pip3 install -r requirements.txt
-python setup.py build_ext --inplace
+python3.11 -m pip install -r requirements.txt
+python3.11 setup.py build_ext --inplace
 
 echo "Installing..."
-if ! pip install . ; then
+if ! python3.11 -m pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
