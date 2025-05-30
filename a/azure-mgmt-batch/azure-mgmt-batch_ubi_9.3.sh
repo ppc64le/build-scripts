@@ -24,7 +24,7 @@ PACKAGE_URL=https://github.com/Azure/azure-sdk-for-python
 PACKAGE_DIR=azure-sdk-for-python/sdk/batch/azure-mgmt-batch
 CURRENT_DIR=$(pwd)
 
-yum install -y git make wget gcc-toolset-13 openssl-devel python3 python3-pip python3-devel
+yum install -y git make wget gcc-toolset-13 openssl-devel python3 python3-pip python3-devel make rust-toolset openssl openssl-devel libffi libffi-devel
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
@@ -34,7 +34,8 @@ git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
-pip install tox setuptools build wheel
+pip install tox setuptools build wheel  pytest-cov setuptools-rust pytest
+pip install -r dev_requirements.txt
 
 #install
 if ! pip install  . ; then
@@ -45,7 +46,7 @@ if ! pip install  . ; then
 fi
 
 # Run tests
-if ! tox ; then
+if ! pytest ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
