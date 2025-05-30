@@ -8,7 +8,7 @@
 # Language      : javascript
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Stuti Wali <Stuti.Wali@ibm.com>
+# Maintainer    : Haritha Nagothu <haritha.nagothu2@ibm.com>
 #
 #
 # Disclaimer: This script has been tested in root mode on given
@@ -24,41 +24,79 @@ set -ex
 PACKAGE_NAME=aesara
 PACKAGE_VERSION=${1:-rel-2.9.4}
 PACKAGE_URL=https://github.com/aesara-devs/aesara
+WORKING_DIR=$(pwd)
 
-wrkdir=`pwd`
+yum install -y wget yum-utils python3.11-devel python3.11-pip gcc-toolset-13
 
-OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
+yum install -y git make wget openssl-devel openblas-devel bzip2-devel libffi-devel zlib-devel cmake
+source /opt/rh/gcc-toolset-13/enable
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
-yum install -y wget yum-utils
+echo "-------------------Installing llvmlite----------------------"
 
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
-wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
-mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
-yum install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+LLVMLITE_PACKAGE_NAME=llvmlite
+LLVMLITE_VERSION="v0.44.0rc1"
+LLVMLITE_PACKAGE_URL="https://github.com/numba/llvmlite"
+LLVM_PROJECT_GIT_URL="https://github.com/llvm/llvm-project.git"
+LLVM_PROJECT_GIT_TAG="llvmorg-15.0.7"
 
+git clone -b ${LLVM_PROJECT_GIT_TAG} ${LLVM_PROJECT_GIT_URL}
+git clone -b ${LLVMLITE_VERSION} ${LLVMLITE_PACKAGE_URL}
 
-yum install -y wget git gcc gcc-c++ python3 python3-devel llvm14 llvm14-devel llvm14-static clang openblas openblas-devel gcc-gfortran blas blas-devel
-export PATH=$PATH:/usr/lib64/llvm14/bin
-export LLVM_CONFIG=$(which llvm-config)
-which llvm-config
-python3 -m pip install llvmlite requests==2.26.0 wheel tox pytest numpy typing_extensions scipy cons etuples llvmlite kanren numba
+python3.11 -m pip install ninja
+
+# Build LLVM project
+cd "$WORKING_DIR/llvm-project"
+git apply "$WORKING_DIR/llvmlite/conda-recipes/llvm15-clear-gotoffsetmap.patch"
+git apply "$WORKING_DIR/llvmlite/conda-recipes/llvm15-remove-use-of-clonefile.patch"
+cp "$WORKING_DIR/llvmlite/conda-recipes/llvmdev/build.sh" .
+chmod 777 "$WORKING_DIR/llvm-project/build.sh" && "$WORKING_DIR/llvm-project/build.sh"
+
+# Set LLVM_CONFIG environment variable
+export LLVM_CONFIG="/llvm-project/build/bin/llvm-config"
+
+# Check for llvm-config path
+LLVM_CONFIG_PATH=$(which llvm-config)
+
+# If llvm-config is not found in the system path, use the local path from the build
+if [ -z "$LLVM_CONFIG_PATH" ]; then
+    echo "llvm-config not found in PATH, using local path."
+    export LLVM_CONFIG="$WORKING_DIR/llvm-project/build/bin/llvm-config"
+else
+    echo "llvm-config found at: $LLVM_CONFIG_PATH"
+    export LLVM_CONFIG="$LLVM_CONFIG_PATH"
+fi
+
+# Check if llvm-config.h exists in the build include directory
+echo "Checking for llvm-config.h in: $WORKING_DIR/llvm-project/build/include/llvm/Config"
+ls "$WORKING_DIR/llvm-project/build/include/llvm/Config/llvm-config.h" || { echo "llvm-config.h not found. Exiting."; exit 1; }
+
+# Build llvmlite
+cd "$WORKING_DIR/llvmlite"
+export CXXFLAGS="-I$WORKING_DIR/llvm-project/build/include"
+export LLVM_CONFIG="$WORKING_DIR/llvm-project/build/bin/llvm-config"
+
+python3.11 -m pip install .
+cd $WORKING_DIR
+
+echo "-------------------successfully Installed llvmlite----------------------"
+
+python3.11 -m pip install  requests==2.26.0 wheel tox pytest numpy typing_extensions scipy cons etuples  kanren numba
 
 git clone https://github.com/pythological/unification.git
 cd unification
-pip install -e .
-export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python3.9/site-packages
-export PYTHONPATH=$PYTHONPATH:/unification
-pip show unification
-python3 -c "import unification; print(unification.__file__)"
+python3.11 -m pip install -e .
+cd $WORKING_DIR
+
+python3.11 -m pip show unification
+python3.11 -c "import unification; print(unification.__file__)"
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if ! pip3 install -e . ; then
+
+if ! python3.11 -m pip install -e . ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -78,4 +116,3 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
-
