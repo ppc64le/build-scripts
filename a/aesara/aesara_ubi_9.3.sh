@@ -81,7 +81,8 @@ cd $WORKING_DIR
 
 echo "-------------------successfully Installed llvmlite----------------------"
 
-python3.11 -m pip install  requests==2.26.0 wheel tox pytest numpy typing_extensions scipy cons etuples  kanren numba
+python3.11 -m pip install  requests==2.26.0 wheel tox pytest numpy typing_extensions scipy cons etuples kanren
+python3.11 -m pip install --no-build-isolation numba
 
 git clone https://github.com/pythological/unification.git
 cd unification
