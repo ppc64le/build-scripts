@@ -23,7 +23,7 @@ PACKAGE_VERSION=${1:-v6.2.6}
 PACKAGE_URL=https://github.com/softlayer/softlayer-python
 PACKAGE_DIR=softlayer-python
 
-yum install -y git python3 python3-devel python3-pip python3.12-tkinter gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc
+yum install -y git python3 python3-devel python3-pip python3-tkinter gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc
 
 export GCC_TOOLSET_PATH=/opt/rh/gcc-toolset-13/root/usr
 export PATH=$GCC_TOOLSET_PATH/bin:$PATH
