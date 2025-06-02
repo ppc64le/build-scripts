@@ -1,17 +1,21 @@
 #!/bin/bash -e
-# ----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+#
 # Package        : fancytree
 # Version        : v2.38.3
-# Source Repo    : https://github.com/mar10/fancytree
-# Tested On      : UBI 9.3 (ppc64le)
-# Travis-Check   : True
-# Language       : Node.js
+# Source repo    : https://github.com/mar10/fancytree.git
+# Tested on      : UBI 9.3 (ppc64le)
 # Maintainer     : Amit Kumar <amit.kumar282@ibm.com>
-# Script License : Apache License, Version 2.0 or later
+# Language       : Node.js
+# Travis-Check   : True
+# Script License: Apache License, Version 2 or later
 #
-# Disclaimer     : This script has been tested in root mode on the specified
-#                  platform and package version. Functionality with newer
-#                  versions of the package or OS is not guaranteed.
+# Disclaimer: This script has been tested in root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
+#
 # ----------------------------------------------------------------------------
 
 # ---------------------------

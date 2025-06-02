@@ -2,12 +2,12 @@
 # ----------------------------------------------------------------------------
 # Package        : fancytree
 # Version        : v2.38.3
-# Source Repo    : https://github.com/mar10/fancytree
-# Tested On      : Debian Trixie
+# Source repo    : https://github.com/mar10/fancytree.git
+# Tested on      : UBI 9.3 (ppc64le)
+# Maintainer     : Amit Kumar <amit.kumar282@ibm.com>
 # Language       : Node.js
-# Travis-Check  : True
-# Maintainer     : Sumit Dubey <Sumit.Dubey2@ibm.com>
-# Script License : Apache License, Version 2.0 or later
+# Travis-Check   : True
+# Script License: Apache License, Version 2 or later
 #
 # Disclaimer     : This script has been tested in root mode on the specified
 #                  platform and package version. Functionality with newer
