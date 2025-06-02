@@ -4,6 +4,7 @@
 # Version        : v2.38.3
 # Source Repo    : https://github.com/mar10/fancytree
 # Tested On      : UBI 9.3 (ppc64le)
+# Travis-Check   : True
 # Language       : Node.js
 # Maintainer     : Amit Kumar <amit.kumar282@ibm.com>
 # Script License : Apache License, Version 2.0 or later

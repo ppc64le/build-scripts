@@ -5,6 +5,7 @@
 # Source Repo    : https://github.com/mar10/fancytree
 # Tested On      : Debian Trixie
 # Language       : Node.js
+# Travis-Check  : True
 # Maintainer     : Sumit Dubey <Sumit.Dubey2@ibm.com>
 # Script License : Apache License, Version 2.0 or later
 #
@@ -81,4 +82,3 @@ else
     echo "FAIL: $PACKAGE_NAME version mismatch."
     exit 2
 fi
-
