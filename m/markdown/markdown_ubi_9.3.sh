@@ -4,7 +4,7 @@
 # Package       : markdown
 # Version       : 3.8
 # Source repo   : https://github.com/Python-Markdown/markdown
-# Tested on     : UBI: 8.7
+# Tested on     : UBI: 9.3
 # Language      : python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
