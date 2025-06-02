@@ -69,6 +69,7 @@ cd libev-4.33
 ./configure --prefix=/usr/local
 make
 make install
+export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 mkdir -p /usr/local/lib/pkgconfig
 cat <<EOF > /usr/local/lib/pkgconfig/libev.pc
 prefix=/usr/local
@@ -83,7 +84,6 @@ Libs: -L\${libdir} -lev
 Cflags: -I\${includedir}
 EOF
 
-export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 export C_INCLUDE_PATH=/usr/local/include:$C_INCLUDE_PATH
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
@@ -98,7 +98,7 @@ git submodule update --init --recursive
 pip install freezegun python-dateutil pytest-mock appdirs
 
 eval $(opam env)
-opam install . --assume-depexts
+opam install . --assume-depexts || true
 make install-deps-for-semgrep-core
 make install-deps
 make core
