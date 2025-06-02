@@ -85,7 +85,6 @@ EOF
 
 export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 export C_INCLUDE_PATH=/usr/local/include:$C_INCLUDE_PATH
-export LIBRARY_PATH=/usr/local/lib:$LIBRARY_PATH
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
 #Cloning semgrep repo
@@ -99,6 +98,7 @@ git submodule update --init --recursive
 pip install freezegun python-dateutil pytest-mock appdirs
 
 eval $(opam env)
+opam install . --assume-depexts
 make install-deps-for-semgrep-core
 make install-deps
 make core
