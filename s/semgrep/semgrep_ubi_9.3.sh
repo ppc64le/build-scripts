@@ -99,15 +99,10 @@ pip install freezegun python-dateutil pytest-mock appdirs
 
 eval $(opam env)
 opam install -y opam-depext
-echo "step1--------------------------------------------"
 opam depext profiling -y
-echo "step2--------------------------------------------"
 opam install . --assume-depexts -y || true
-echo "step3--------------------------------------------"
 make install-deps-for-semgrep-core
-echo "step4--------------------------------------------"
 make install-deps
-echo "step5--------------------------------------------"
 make core
 
 #Build package
@@ -119,7 +114,7 @@ if ! pip install -e . ; then
 fi
 
 #Test package
-if ! make test ; then
+if ! EIO_NO_URING=1 make test ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
