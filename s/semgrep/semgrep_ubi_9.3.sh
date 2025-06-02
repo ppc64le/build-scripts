@@ -98,6 +98,7 @@ git submodule update --init --recursive
 pip install freezegun python-dateutil pytest-mock appdirs
 
 eval $(opam env)
+opam install -y opam-depext
 echo "step1--------------------------------------------"
 opam depext profiling -y
 echo "step2--------------------------------------------"
