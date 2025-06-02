@@ -6,7 +6,7 @@
 # Tested on      : UBI 9.3 (ppc64le)
 # Maintainer     : Amit Kumar <amit.kumar282@ibm.com>
 # Language       : Node.js
-# Travis-Check   : True
+# Travis-Check   : False
 # Script License: Apache License, Version 2 or later
 #
 # Disclaimer     : This script has been tested in root mode on the specified
