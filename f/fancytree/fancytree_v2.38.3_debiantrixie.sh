@@ -3,9 +3,9 @@
 # Package        : fancytree
 # Version        : v2.38.3
 # Source Repo    : https://github.com/mar10/fancytree
-# Tested On      : UBI 9.3 (ppc64le)
+# Tested On      : Debian Trixie
 # Language       : Node.js
-# Maintainer     : Amit Kumar <amit.kumar282@ibm.com>
+# Maintainer     : Sumit Dubey <Sumit.Dubey2@ibm.com>
 # Script License : Apache License, Version 2.0 or later
 #
 # Disclaimer     : This script has been tested in root mode on the specified
@@ -22,18 +22,9 @@ PACKAGE_URL="https://github.com/mar10/${PACKAGE_NAME}.git"
 NODE_VERSION="${2:-20}"
 BUILD_HOME="$(pwd)"
 
-# ---------------------------
-# Dependency Installation
-# ---------------------------
-echo "Configuring package repositories..."
-yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
-yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os
-yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os
-rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official
-yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-
 echo "Installing required packages..."
-yum install -y git firefox
+apt update -y
+apt install -y git curl chromium
 
 # ---------------------------
 # Node.js Setup (via NVM)
@@ -56,12 +47,12 @@ cd "${PACKAGE_NAME}"
 git checkout "${PACKAGE_VERSION}"
 
 # ---------------------------
-# Puppeteer Setup (Firefox)
+# Puppeteer Setup (chrome)
 # ---------------------------
-export PUPPETEER_PRODUCT=firefox
-export PUPPETEER_EXECUTABLE_PATH=/usr/bin/firefox
+export PUPPETEER_PRODUCT=chrome
+export PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-npm install puppeteer@19.6.3
+export CHROMIUM_FLAGS='--no-sandbox'
 
 # ---------------------------
 # Install Dependencies and Run Tests
@@ -69,18 +60,15 @@ npm install puppeteer@19.6.3
 echo "Installing package dependencies..."
 npm install
 
-# ---------------------------
-# Test 
-# ---------------------------
-
-#ret=0
-#npm test || ret=$?
-#if [ $ret -ne 0 ]; then
-#   echo "------------------ ${PACKAGE_NAME}: Test Failed ------------------"
-#	exit 1
-#else
-#    echo "------------------ ${PACKAGE_NAME}: Test Passed ------------------"
-#fi
+ret=0
+npm test || ret=$?
+if [ $ret -ne 0 ]; then
+    echo "------------------ ${PACKAGE_NAME}: Test Failed ------------------"
+	exit 1
+else
+    echo "------------------ ${PACKAGE_NAME}: Test Passed ------------------"
+    exit 0
+fi
 
 # ---------------------------
 # Smoke test: Check version
@@ -88,11 +76,8 @@ npm install
 PACKAGE_BUILD_VERSION=$(node -e "console.log(require('./package.json').version)")
 if [[ "$PACKAGE_BUILD_VERSION" == "${PACKAGE_VERSION#v}" ]]; then
     echo "PASS: $PACKAGE_NAME version $PACKAGE_VERSION built successfully."
+    exit 0
 else
     echo "FAIL: $PACKAGE_NAME version mismatch."
     exit 2
 fi
-# Note: Automated tests have been commented out in this script due to limited support for Puppeteer with both Firefox and Chromium on the ppc64le 
-# architecture. However, the package has been successfully validated on Debian Trixie OS, where Puppeteer-based tests execute as expected. 
-# For users interested in running automated tests, a separate script is provided and can be used on compatible platforms such as Debian Trixie.
-# Path - \build-scripts\f\fancytree\fancytree_v2.38.3_debiantrixie.sh
