@@ -98,9 +98,15 @@ git submodule update --init --recursive
 pip install freezegun python-dateutil pytest-mock appdirs
 
 eval $(opam env)
-opam install . --assume-depexts || true
+echo "step1--------------------------------------------"
+opam depext profiling -y
+echo "step2--------------------------------------------"
+opam install . --assume-depexts -y || true
+echo "step3--------------------------------------------"
 make install-deps-for-semgrep-core
+echo "step4--------------------------------------------"
 make install-deps
+echo "step5--------------------------------------------"
 make core
 
 #Build package
