@@ -9,7 +9,7 @@
   "build_script": "markdown_ubi_9.3.sh",
   "validate_build_script": "true",
   "use_non_root_user": "false",
-  "docker_build": "false"
+  "docker_build": "false",
   "v3.5.1" : {
         "build_script" : "markdown_ubi_8.7.sh"
     },
