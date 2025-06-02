@@ -69,6 +69,20 @@ cd libev-4.33
 ./configure --prefix=/usr/local
 make
 make install
+mkdir -p /usr/local/lib/pkgconfig
+cat <<EOF > /usr/local/lib/pkgconfig/libev.pc
+prefix=/usr/local
+exec_prefix=\${prefix}
+libdir=\${exec_prefix}/lib
+includedir=\${prefix}/include
+
+Name: libev
+Description: A full-featured and high-performance event loop
+Version: 4.33
+Libs: -L\${libdir} -lev
+Cflags: -I\${includedir}
+EOF
+
 export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 export C_INCLUDE_PATH=/usr/local/include:$C_INCLUDE_PATH
 export LIBRARY_PATH=/usr/local/lib:$LIBRARY_PATH
