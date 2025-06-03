@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e 
+set -e
 
 PACKAGE_NAME=PyAV
 PACKAGE_VERSION=${1:-v14.4.0}
@@ -27,7 +27,7 @@ CURRENT_DIR=$(pwd)
 PACKAGE_DIR=PyAV
 
 # install core dependencies
-yum install -y wget python python-pip python-devel  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils 
+yum install -y wget python python-pip python-devel  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
@@ -123,7 +123,7 @@ CPU_DETECT="${CPU_DETECT} --enable-runtime-cpu-detect"
 ${CPU_DETECT}                \
 --enable-experimental || { cat config.log; exit 1; }
 
-make 
+make
 make install PREFIX="${LIBVPX_PREFIX}"
 export LD_LIBRARY_PATH=${LIBVPX_PREFIX}/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=${LIBVPX_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
@@ -146,11 +146,11 @@ find $LAME_PREFIX -name '*.la' -delete
             --enable-static \
             --enable-nasm
 
-make 
+make
 make install PREFIX="${LAME_PREFIX}"
 export LD_LIBRARY_PATH=/install-deps/lame/lib:$LD_LIBRARY_PATH
 export PATH="/install-deps/lame/bin:$PATH"
-lame --version 
+lame --version
 echo "-----------------------------------------------------Installed lame------------------------------------------------"
 
 
@@ -162,7 +162,7 @@ git checkout v1.3.1
 yum install -y autoconf automake libtool
 ./autogen.sh
 ./configure --prefix=$OPUS_PREFIX
-make 
+make
 make install PREFIX="${OPUS_PREFIX}"
 export LD_LIBRARY_PATH=${OPUS_PREFIX}/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=${OPUS_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
@@ -243,7 +243,7 @@ USE_NONFREE=no   #the options below are set for NO
         --disable-decoder=hevc_v4l2m2m \
         --disable-nonfree --disable-gpl --disable-gnutls --enable-openssl --disable-libopenh264 --disable-libx264    #"${_CONFIG_OPTS[@]}"
 
-make 
+make
 make install PREFIX="${FFMPEG_PREFIX}"
 export PKG_CONFIG_PATH=${FFMPEG_PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
 export LD_LIBRARY_PATH=${FFMPEG_PREFIX}/lib:${LD_LIBRARY_PATH}
@@ -261,7 +261,7 @@ git checkout 11.1.0
 yum install -y libjpeg-turbo-devel
 git submodule update --init
 
-python -m pip install . 
+python -m pip install .
 
 echo "-----------------------------------------------------Installed pillow------------------------------------------------"
 
@@ -277,7 +277,9 @@ export CFLAGS="${CFLAGS} -I/install-deps/ffmpeg/include"
 export LDFLAGS="${LDFLAGS} -L/install-deps/ffmpeg/lib"
 
 # Fix license field in pyproject.toml to comply with PEP 621
-sed -i 's/^license = "BSD-3-Clause"/license = { text = "BSD-3-Clause" }/' pyproject.toml 
+sed -i 's/^license = "BSD-3-Clause"/license = { text = "BSD-3-Clause" }/' pyproject.toml
+
+
 #Build package
 if ! (python setup.py build_ext --inplace) ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
@@ -295,7 +297,7 @@ echo "----------------------------------------------Testing pkg-----------------
 #Test package
 #Skipping few tests as they are failing because of disabling some codecs related to audio and video in ffmpeg. We disabled those codecs because of license associated with them.
 
-if ! (pytest -k "not test_codec_context.py and not test_doctests.py and not test_colorspace.py and not test_bitstream.py and not test_python_io.py and not test_codec.py and not test_decode and not test_encode and not test_streams and not test_videoframe and not test_printing_video_stream and not test_printing_video_stream2 and not test_encoding_dnxhd and not test_encoding_dvvideo and not test_encoding_h264 and not test_encoding_mjpeg and not test_encoding_mpeg1video and not test_encoding_mpeg4 and not test_encoding_png and not test_encoding_tiff and not test_encoding_xvid and not test_mov and not test_decode_video_corrupt and not test_decoded_motion_vectors and not test_decoded_motion_vectors_no_flag and not test_decoded_time_base and not test_decoded_video_frame_count and not test_flush_decoded_video_frame_count and not test_av_stream_Stream and not test_encoding_with_pts and not test_stream_audio_resample and not test_max_b_frames and not test_container_probing and not test_stream_probing and not test_stream_probing and not test_writing_to_custom_io_dash and not test_decode_half and not test_stream_seek and not test_side_data and not test_opaque and not test_reformat_pixel_format_align") ; then
+if ! (pytest -k "not test_decode and not test_encode and not test_streams and not test_videoframe and not test_printing_video_stream and not test_printing_video_stream2 and not test_encoding_dnxhd and not test_encoding_dvvideo and not test_encoding_h264 and not test_encoding_mjpeg and not test_encoding_mpeg1video and not test_encoding_mpeg4 and not test_encoding_png and not test_encoding_tiff and not test_encoding_xvid and not test_mov and not test_decode_video_corrupt and not test_decoded_motion_vectors and not test_decoded_motion_vectors_no_flag and not test_decoded_time_base and not test_decoded_video_frame_count and not test_flush_decoded_video_frame_count and not test_av_stream_Stream and not test_encoding_with_pts and not test_stream_audio_resample and not test_max_b_frames and not test_container_probing and not test_stream_probing and not test_stream_probing and not test_writing_to_custom_io_dash and not test_decode_half and not test_stream_seek and not test_side_data and not test_opaque and not test_reformat_pixel_format_align") ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
