@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=pyhive
 PACKAGE_VERSION=${1:-0.7.0}
-PACKAGE_URL=https://github.com/apache/kyuubi/
+PACKAGE_URL=https://files.pythonhosted.org/packages/f6/ec/5c658b3a4d99a6d9145030cc8e003c3f7efc668d866e88544812ab0af310/PyHive-0.7.0.tar.gz
 PACKAGE_DIR=pyhive
 
 yum install -y git  python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo cmake
