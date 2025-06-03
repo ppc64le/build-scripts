@@ -40,7 +40,7 @@ git checkout $PACKAGE_VERSION
 
 pip install --upgrade wheel pip setuptools
 pip install flake8 pytest pytest-cov coverage cython
-python .github/workflows/install_deps.py
+python3 .github/workflows/install_deps.py
 pip install -r requirements.txt
 pip install -r requirements.dev.txt
 
