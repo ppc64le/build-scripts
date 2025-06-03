@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-23.0.0}
 PACKAGE_URL=https://github.com/benoitc/gunicorn
 PACKAGE_DIR=gunicorn
 
-yum install -y git gcc-toolset-13 gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ make python3.12 python3.12-devel python3.12-pip openssl-devel 
+yum install -y git gcc-toolset-13 gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ make python3 python3-devel python3-pip openssl-devel 
 #install rustc
 curl https://sh.rustup.rs -sSf | sh -s -- -y
 source "$HOME/.cargo/env"
@@ -34,10 +34,10 @@ rustc --version
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
-pip3.12 install pytest-cov eventlet gevent
+pip3 install pytest-cov eventlet gevent
 
 # Install the package
-if ! python3.12 -m pip install -e .; then
+if ! python3 -m pip install -e .; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_VERSION $PACKAGE_NAME"
     echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
