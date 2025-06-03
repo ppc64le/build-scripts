@@ -25,6 +25,8 @@ PACKAGE_URL=https://github.com/benoitc/gunicorn
 PACKAGE_DIR=gunicorn
 
 yum install -y git gcc-toolset-13 gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ make python3 python3-devel python3-pip openssl-devel 
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 #install rustc
 curl https://sh.rustup.rs -sSf | sh -s -- -y
 source "$HOME/.cargo/env"
