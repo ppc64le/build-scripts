@@ -624,7 +624,7 @@ echo "------------------------installed dm_tree-------------------------"
 
 cd $CURRENT_DIR
 echo "------------------------installing gmpy2-------------------------"
-yum install -y t make  python-devel gmp-devel.ppc64le  mpfr-devel.ppc64le libmpc-devel.ppc64le 
+yum install -y make  python-devel gmp-devel.ppc64le  mpfr-devel.ppc64le libmpc-devel.ppc64le 
 git clone https://github.com/aleaxit/gmpy.git
 cd  gmpy
 git checkout v2.2.1
