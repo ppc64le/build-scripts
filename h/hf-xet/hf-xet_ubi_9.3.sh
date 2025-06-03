@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : hf-ext
+# Package          : hf-xet
 # Version          : v1.1.0
 # Source repo      : https://github.com/huggingface/xet-core
 # Tested on        : UBI:9.3
@@ -19,7 +19,7 @@
 # ---------------------------------------------------------------------------
 
 # Variables
-PACKAGE_NAME=hf-ext
+PACKAGE_NAME=hf-xet
 PACKAGE_VERSION=${1:-v1.1.0}
 PACKAGE_URL=https://github.com/huggingface/xet-core
 PACKAGE_DIR=xet-core/hf_xet
