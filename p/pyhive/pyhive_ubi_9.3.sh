@@ -3,7 +3,7 @@
 #
 # Package	: pyhive 
 # Version	: 0.7.0
-# Source repo	: https://github.com/apache/kyuubi/
+# Source repo	: https://github.com/apache/kyuubi
 # Tested on	: UBI:9.3
 # Language      : Python
 # Travis-Check  : True

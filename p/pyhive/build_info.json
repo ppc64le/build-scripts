@@ -1,7 +1,7 @@
 {
     "maintainer":"Jenkins-J",
     "package_name" : "pyhive",
-    "github_url" : "https://github.com/apache/kyuubi/",
+    "github_url" : "https://github.com/apache/kyuubi",
     "version": "0.7.0",
     "package_dir": "p/pyhive",
     "default_branch": "master",
