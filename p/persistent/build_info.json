@@ -9,5 +9,5 @@
   "docker_build": false,
   "validate_build_script": true,
   "wheel_build": true,
-  "use_non_root_user": false,
+  "use_non_root_user": false
 }
