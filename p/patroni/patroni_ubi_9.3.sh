@@ -1,4 +1,3 @@
-
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
@@ -55,7 +54,7 @@ if ! pip install -e . ; then
 fi
 
 #Test package
-#Deselecting tests that fail due to assertion errors from CLI input/output mismatch
+#Deselecting tests that fail due to assertion errors from CLI input/output mismatch; in parity with Intel
 if ! pytest -p no:warnings --deselect=tests/test_ctl.py::TestCtl::test_failover --deselect=tests/test_ctl.py::TestCtl::test_restart_reinit ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
