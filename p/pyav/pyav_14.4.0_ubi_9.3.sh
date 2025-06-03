@@ -199,8 +199,11 @@ USE_NONFREE=no   #the options below are set for NO
         --enable-libopus \
         --enable-libmp3lame \
         --enable-libvpx \
-        --extra-cflags="-I${LAME_PREFIX}/include -I${OPUS_PREFIX}/include -I${libvpx_PREFIX}/include" \
-        --extra-ldflags="-L${LAME_PREFIX}/lib -L${OPUS_PREFIX}/lib -L${libvpx_PREFIX}/lib" \
+        --extra-cflags="-I$LAME_PREFIX/include -I$OPUS_PREFIX/include -I$LIBVPX_PREFIX/include" \
+        --extra-ldflags="-L$LAME_PREFIX/lib -L$OPUS_PREFIX/lib -L$LIBVPX_PREFIX/lib" \
+        --disable-encoder=h264 \
+        --disable-decoder=h264 \
+        --disable-decoder=libh264 \
         --disable-decoder=libx264 \
         --disable-decoder=libopenh264 \
         --disable-encoder=libopenh264 \
@@ -209,10 +212,36 @@ USE_NONFREE=no   #the options below are set for NO
         --disable-encoder=libx264rgb \
         --disable-encoder=hevc \
         --disable-decoder=hevc \
+        --disable-encoder=aac \
+        --disable-decoder=aac \
         --disable-decoder=aac_fixed \
         --disable-encoder=aac_latm \
         --disable-decoder=aac_latm \
-        --disable-nonfree --disable-gpl --disable-gnutls --enable-openssl --disable-libopenh264 --disable-libx264
+        --disable-encoder=mpeg \
+        --disable-encoder=mpeg1video \
+        --disable-encoder=mpeg2video \
+        --disable-encoder=mpeg4 \
+        --disable-encoder=msmpeg4 \
+        --disable-encoder=mpeg4_v4l2m2m \
+        --disable-encoder=msmpeg4v2 \
+        --disable-encoder=msmpeg4v3 \
+        --disable-decoder=mpeg \
+        --disable-decoder=mpegvideo \
+        --disable-decoder=mpeg1video \
+        --disable-decoder=mpeg1_v4l2m2m \
+        --disable-decoder=mpeg2video \
+        --disable-decoder=mpeg2_v4l2m2m \
+        --disable-decoder=mpeg4 \
+        --disable-decoder=msmpeg4 \
+        --disable-decoder=mpeg4_v4l2m2m \
+        --disable-decoder=msmpeg4v1 \
+        --disable-decoder=msmpeg4v2 \
+        --disable-decoder=msmpeg4v3 \
+        --disable-encoder=h264_v4l2m2m \
+        --disable-decoder=h264_v4l2m2m \
+        --disable-encoder=hevc_v4l2m2m \
+        --disable-decoder=hevc_v4l2m2m \
+        --disable-nonfree --disable-gpl --disable-gnutls --enable-openssl --disable-libopenh264 --disable-libx264    #"${_CONFIG_OPTS[@]}"
 
 make
 make install PREFIX="${FFMPEG_PREFIX}"
