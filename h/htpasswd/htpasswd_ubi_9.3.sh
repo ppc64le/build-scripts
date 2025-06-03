@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=htpasswd
-PACKAGE_VERSION=2.3
+PACKAGE_VERSION=${1:-2.3}
 PACKAGE_URL=https://files.pythonhosted.org/packages/b9/2f/8b76f8b77125b75c3532966f3291f9e8787268be65fc4c9694887cba9375/htpasswd-2.3.tar.gz
 PACKAGE_DIR=htpasswd
 
