@@ -82,6 +82,7 @@ else
     fi
 fi
 
+echo $(pwd)
 cd python/pyhive
 
 # Install via pip3
