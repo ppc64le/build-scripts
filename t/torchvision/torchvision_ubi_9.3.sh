@@ -20,7 +20,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=vision
-PACKAGE_VERSION=${1:-v0.21.0}
+PACKAGE_VERSION=${1:-v0.22.0}
 PACKAGE_URL=https://github.com/pytorch/vision.git
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 MAX_JOBS=${MAX_JOBS:-$(nproc)}
@@ -526,7 +526,7 @@ cd $CURRENT_DIR
 echo "--------------------Installing pyav----------------------------"
 git clone https://github.com/PyAV-Org/PyAV
 cd PyAV
-git checkout v13.1.0
+git checkout v14.4.0
 git submodule update --init
 
 export CFLAGS="${CFLAGS} -I/install-deps/ffmpeg/include"
@@ -536,12 +536,12 @@ python3.12 setup.py build_ext --inplace
 cd $CURRENT_DIR
 
 echo "------------------Building torchvision------------------------"
-PACKAGE_VERSION=${1:-v0.21.0}
+PACKAGE_VERSION=${1:-v0.22.0}
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if ! (pip3.12 install -v -e . --no-build-isolation); then
+if ! python -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
