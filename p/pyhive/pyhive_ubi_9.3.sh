@@ -82,9 +82,6 @@ else
     fi
 fi
 
-echo $(pwd)
-cd python/pyhive
-
 # Install via pip3
 if !  python3 -m pip install ./; then
         echo "------------------$PACKAGE_NAME:install_fails------------------------"
