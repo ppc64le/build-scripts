@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package           : vision
-# Version           : v0.21.0
+# Version           : v0.22.0
 # Source repo       : https://github.com/pytorch/vision.git
 # Tested on         : UBI:9.3
 # Language          : Python
