@@ -19,7 +19,7 @@
 # ---------------------------------------------------------------------------
 
 PACKAGE_NAME=azure-mgmt-devtestlabs
-PACKAGE_VERSION=${1:-zure-mgmt-devtestlabs_10.0.0b2}
+PACKAGE_VERSION=${1:-azure-mgmt-devtestlabs_10.0.0b2}
 PACKAGE_URL=https://github.com/Azure/azure-sdk-for-python
 PACKAGE_DIR=azure-sdk-for-python/sdk/devtestlabs/azure-mgmt-devtestlabs
 
