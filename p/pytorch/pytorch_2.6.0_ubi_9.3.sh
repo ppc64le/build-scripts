@@ -207,52 +207,13 @@ git submodule update --init --recursive
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.6.0.patch
 git apply pytorch_v2.6.0.patch
 
-ARCH=`uname -p`
 BUILD_NUM="1"
-export OPENBLAS_INCLUDE=/OpenBLAS/local/openblas/include/
 export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
-export OpenBLAS_HOME="/usr/include/openblas"
-export build_type="cpu"
-export cpu_opt_arch="power9"
-export cpu_opt_tune="power10"
-export CPU_COUNT=$(nproc --all)
-export CXXFLAGS="${CXXFLAGS} -D__STDC_FORMAT_MACROS"
-export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl\,--as-needed//')"
-export LDFLAGS="${LDFLAGS} -Wl,-rpath-link,${VIRTUAL_ENV}/lib"
-export CXXFLAGS="${CXXFLAGS} -fplt"
-export CFLAGS="${CFLAGS} -fplt"
-export BLAS=OpenBLAS
-export USE_FBGEMM=0
-export USE_SYSTEM_NCCL=1
-export USE_MKLDNN=0
-export USE_NNPACK=0
-export USE_QNNPACK=0
-export USE_XNNPACK=0
-export USE_PYTORCH_QNNPACK=0
-export TH_BINARY_BUILD=1
-export USE_LMDB=1
-export USE_LEVELDB=1
-export USE_NINJA=0
-export USE_MPI=0
-export USE_OPENMP=1
-export USE_TBB=0
-export BUILD_CUSTOM_PROTOBUF=OFF
-export BUILD_CAFFE2=1
 export PYTORCH_BUILD_VERSION=${PACKAGE_VERSION}
 export PYTORCH_BUILD_NUMBER=${BUILD_NUM}
-export USE_CUDA=0
-export USE_CUDNN=0
-export USE_TENSORRT=0
-export Protobuf_INCLUDE_DIR=${LIBPROTO_INSTALL}/include
-export Protobuf_LIBRARIES=${LIBPROTO_INSTALL}/lib64
-export Protobuf_LIBRARY=${LIBPROTO_INSTALL}/lib64/libprotobuf.so
-export Protobuf_LITE_LIBRARY=${LIBPROTO_INSTALL}/lib64/libprotobuf-lite.so
-export Protobuf_PROTOC_EXECUTABLE=${LIBPROTO_INSTALL}/bin/protoc
 export LD_LIBRARY_PATH=/pytorch/torch/lib64/libprotobuf.so.3.13.0.0:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/pytorch/build/lib/libprotobuf.so.3.13.0.0:$LD_LIBRARY_PATH
-export PATH="/protobuf/local/libprotobuf/bin/protoc:${PATH}"
 export LD_LIBRARY_PATH="/protobuf/local/libprotobuf/lib64:${LD_LIBRARY_PATH}"
-export LD_LIBRARY_PATH="/protobuf/third_party/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
 
 echo "required env variables got set"
 
@@ -273,6 +234,7 @@ fi
 echo " Basic Import test for torch"
 cd ..
 export LD_LIBRARY_PATH=/lib:$LD_LIBRARY_PATH
+
 
 if ! (python3.12 -c "import torch;"); then
      echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
