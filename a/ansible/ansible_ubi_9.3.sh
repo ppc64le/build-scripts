@@ -87,3 +87,10 @@ fi
 
 ##Running integration tests
 #./bin/ansible-test integration --python 3.11
+##Dependency images for integration tests
+##quay.io/ansible/nios-test-container              5.0.0
+##quay.io/ansible/ansible-test-utility-container   3.1.0
+##quay.io/ansible/http-test-container              3.2.0
+##quay.io/ansible/cloudstack-test-container        1.7.0    
+##quay.io/pulp/galaxy                              4.7.1
+##quay.io/ansible/acme-test-container              2.1.0
