@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=numpy
-PACKAGE_VERSION=${1:-v2.0.2}
+PACKAGE_VERSION=${1:-v2.2.5}
 PACKAGE_URL=https://github.com/numpy/numpy.git
 PACKAGE_DIR=numpy
 CURRENT_DIR="${PWD}"
@@ -138,6 +138,8 @@ if ! python3 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"; then
         fi
 fi
 cd ..
+
+export CFLAGS="-DCYTHON_PEP489_MULTI_PHASE_INIT=0"
 
 if ! (python3 -m pytest --pyargs numpy -m 'not slow'); then
     echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
