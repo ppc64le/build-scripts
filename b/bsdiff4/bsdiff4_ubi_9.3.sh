@@ -36,7 +36,7 @@ python3 -m pip install --upgrade pip setuptools wheel
 export PATH=$PATH:/usr/local/bin
 
 # Install test dependencies
-python3 -m pip install pytest
+python3 -m pip install pytest "setuptools<68"
 
 # Clone the package
 git clone $PACKAGE_URL
