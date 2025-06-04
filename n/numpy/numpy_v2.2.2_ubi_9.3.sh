@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : numpy
-# Version       : v2.0.2
+# Version       : v2.2.5
 # Source repo   : https://github.com/numpy/numpy
 # Tested on     : UBI:9.3
 # Language      : Python
