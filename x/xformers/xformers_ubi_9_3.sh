@@ -44,11 +44,14 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init
 
+# Update version.txt based on PACKAGE_VERSION
+VERSION_NUM="${PACKAGE_VERSION#v}"  
+echo "Fixing version.txt to $VERSION_NUM"
+echo "$VERSION_NUM" > version.txt
+
 # Install Python dependencies
 pip3 install --upgrade pip setuptools wheel
 pip3 install ninja 'cmake<4' 'pytest==8.2.2' hydra-core
-
-# Install PyTorch only if not installed and BUILD_DEPS is not False
 
 # Install dependency - pytorch
 PYTORCH_VERSION=v2.5.1
