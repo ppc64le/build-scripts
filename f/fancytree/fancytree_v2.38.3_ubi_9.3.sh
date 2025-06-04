@@ -27,18 +27,8 @@ PACKAGE_URL="https://github.com/mar10/${PACKAGE_NAME}.git"
 NODE_VERSION="${2:-20}"
 BUILD_HOME="$(pwd)"
 
-# ---------------------------
-# Dependency Installation
-# ---------------------------
-echo "Configuring package repositories..."
-yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
-yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os
-yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os
-rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official
-yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-
 echo "Installing required packages..."
-yum install -y git firefox
+yum install -y git
 
 # ---------------------------
 # Node.js Setup (via NVM)
@@ -59,14 +49,6 @@ cd "${BUILD_HOME}"
 git clone "${PACKAGE_URL}"
 cd "${PACKAGE_NAME}"
 git checkout "${PACKAGE_VERSION}"
-
-# ---------------------------
-# Puppeteer Setup (Firefox)
-# ---------------------------
-export PUPPETEER_PRODUCT=firefox
-export PUPPETEER_EXECUTABLE_PATH=/usr/bin/firefox
-export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-npm install puppeteer@19.6.3
 
 # ---------------------------
 # Install Dependencies and Run Tests
