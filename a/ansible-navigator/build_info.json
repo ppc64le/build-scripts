@@ -1,0 +1,15 @@
+{
+  "maintainer": "bharti-0211",
+  "package_name": "ansible-navigator",
+  "github_url": "https://github.com/ansible/ansible-navigator.git",
+  "version": "v25.5.0",
+  "package_dir": "a/ansible-navigator",
+  "default_branch": "main",
+  "build_script": "ansible-navigator_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "ansible-navigator_ubi_9.3.sh"
+  }
+}
