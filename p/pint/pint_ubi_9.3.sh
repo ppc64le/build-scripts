@@ -39,7 +39,7 @@ pip install "numpy>=1.23,<2.0.0" babel
 
 
 #Build package
-if ! pip install -e . ; then
+if ! pip install . ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
