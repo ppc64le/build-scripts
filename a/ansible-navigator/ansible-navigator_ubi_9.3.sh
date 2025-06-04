@@ -57,6 +57,7 @@ pip install -e .[test]
 
 #To run whole tests
 #tox -e py311
+#Dependency image - ghcr.io/ansible/community-ansible-dev-tools:latest
 
 #Test: Code quality checks, Build package, verify metadata, install package and Bump all test dependencies
 if ! (tox -e lint && tox -e packaging && tox -e deps) ; then
