@@ -33,7 +33,7 @@ export PATH=$GCC_TOOLSET_PATH/bin:$PATH
 pip install -U pip
 pip install -U "setuptools <74" wheel twine
 pip install cffi
-pip install -U persistent
+pip install -U persistent tox
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
