@@ -44,7 +44,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init
 
-# Update version.txt based on PACKAGE_VERSION
+# Set version.txt to match the specified PACKAGE_VERSION
 VERSION_NUM="${PACKAGE_VERSION#v}"  
 echo "Fixing version.txt to $VERSION_NUM"
 echo "$VERSION_NUM" > version.txt
