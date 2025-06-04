@@ -47,15 +47,27 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-# Build and Test
+# -------------------------
+# Build
+# -------------------------
 ret=0
-./mvnw -B -ff -ntp verify || ret=$?
-
+./mvnw -B -ff -ntp clean install -DskipTests || ret=$?
 if [ "$ret" -ne 0 ]; then
-    echo "ERROR: $PACKAGE_NAME - Build and test phase failed."
+    echo "ERROR: $PACKAGE_NAME - Build failed."
     exit 1
 else
-    echo "SUCCESS: $PACKAGE_NAME - Build and test phase completed successfully."
+    echo "SUCCESS: $PACKAGE_NAME - Build completed successfully."
+fi
+
+# -------------------------
+# Test
+# -------------------------
+./mvnw -B -ff -ntp test || ret=$?
+if [ "$ret" -ne 0 ]; then
+    echo "ERROR: $PACKAGE_NAME - Tests failed."
+    exit 2
+else
+    echo "SUCCESS: $PACKAGE_NAME - All tests passed successfully."
 fi
 
 # Smoke Test
@@ -66,4 +78,5 @@ if [ -z "$BUILT_JAR" ]; then
     exit 2
 else 
     echo "SUCCESS: $PACKAGE_NAME - JAR built successfully for $PACKAGE_VERSION : $(basename "$BUILT_JAR")"
+	exit 0
 fi
