@@ -42,7 +42,7 @@ export MVN_HOME=/usr/local/maven
 # update the path env. variable - Java + Maven
 export PATH=$PATH:$JAVA_HOME/bin:$MVN_HOME/bin
 
-# Clone and checkout specified version
+# Clone and checkout the specified version
 cd $BUILD_HOME
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
@@ -53,11 +53,18 @@ cd $PACKAGE_DIR_NAME
 sed -i 's/<source>1\.6<\/source>/<source>1.8<\/source>/g' pom.xml
 sed -i 's/<target>1\.6<\/target>/<target>1.8<\/target>/g' pom.xml
 
-# Build and test
+# Build
 ret=0
-mvn -B -ntp verify -Dgpg.skip || ret=$?
+mvn -B -ntp clean compile -Dgpg.skip || ret=$?
 if [ "$ret" -ne 0 ]; then
-    echo "ERROR: $PACKAGE_NAME - Build and test phase failed."
+    echo "ERROR: $PACKAGE_NAME - Build  failed."
+    exit 1
+fi
+
+# Test
+mvn -B -ntp test -Dgpg.skip || ret=$?
+if [ "$ret" -ne 0 ]; then
+    echo "ERROR: $PACKAGE_NAME - Test phase failed."
     exit 1
 fi
 
