@@ -28,7 +28,7 @@ WORKING_DIR=$(pwd)
 
 yum install -y wget yum-utils python3.11-devel python3.11-pip gcc-toolset-13
 
-yum install -y git make wget openssl-devel openblas-devel bzip2-devel libffi-devel zlib-devel cmake
+yum install -y git make openssl-devel openblas-devel bzip2-devel libffi-devel zlib-devel cmake
 source /opt/rh/gcc-toolset-13/enable
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
@@ -86,18 +86,16 @@ python3.11 -m pip install --no-build-isolation numba
 
 git clone https://github.com/pythological/unification.git
 cd unification
-python3.11 -m pip install -e .
+python3.11 -m pip install .
 cd $WORKING_DIR
 
-python3.11 -m pip show unification
-python3.11 -c "import unification; print(unification.__file__)"
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 
-if ! python3.11 -m pip install -e . ; then
+if ! python3.11 -m pip install . ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
