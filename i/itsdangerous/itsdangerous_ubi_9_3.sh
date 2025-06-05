@@ -27,8 +27,8 @@ PACKAGE_URL=https://github.com/pallets/itsdangerous
 PACKAGE_DIR=itsdangerous
 
 # Install dependencies
-yum install -y git gcc-toolset-13 gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ make python3.12 python3.12-devel python3.12-pip openssl-devel 
-pip3.12 install setuptools mock ipython_genutils traitlets pytest freezegun
+yum install -y git gcc-toolset-13 gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ make python3 python3-devel python3-pip openssl-devel 
+pip3 install setuptools mock ipython_genutils traitlets pytest freezegun
 
 # Clone the repository
 git clone $PACKAGE_URL
@@ -36,7 +36,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Build package
-if ! python3.12 -m pip install -e . ; then
+if ! python3 -m pip install -e . ; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
