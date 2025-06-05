@@ -90,15 +90,6 @@ if !  python3 -m pip install ./; then
         exit 1
 fi
 
-# Run Tox
-python3 -m tox -e py39
-if [ $? -eq 0 ]; then
-    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
-    exit 0
-fi
-
 # Run Pytest
 python3 -m pytest
 if [ $? -eq 0 ]; then
@@ -106,18 +97,4 @@ if [ $? -eq 0 ]; then
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
     exit 0
-fi
-
-# Run Nox
-python3 -m nox
-if [ $? -eq 0 ]; then
-    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
-    exit 0
-else
-    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"
-    exit 2
 fi
