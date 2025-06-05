@@ -1,0 +1,16 @@
+{
+	"maintainer": "ramnathnayak-ibm",
+	"package_name": "patroni",
+	"github_url": "https://github.com/zalando/patroni",
+	"version": "v4.0.5",
+	"default_branch": "master",
+	"build_script": "patroni_ubi_9.3.sh",
+	"package_dir": "p/patroni",
+	"docker_build": false,
+	"wheel_build": true,
+	"validate_build_script": true,
+	"use_non_root_user": false,
+	"*": {
+	   "build_script": "patroni_ubi_9.3.sh"
+	}
+}
