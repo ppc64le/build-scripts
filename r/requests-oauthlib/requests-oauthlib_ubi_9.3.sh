@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : requests-oauthlib
-# Version       : v2.2.0
+# Version       : v2.0.0
 # Source repo   : https://github.com/requests/requests-oauthlib
 # Tested on     : UBI 9.3
 # Language      : c
@@ -20,7 +20,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=requests-oauthlib
-PACKAGE_VERSION=${1:-v2.2.0}
+PACKAGE_VERSION=${1:-v2.0.0}
 PACKAGE_URL=https://github.com/requests/requests-oauthlib
 PACKAGE_DIR=requests-oauthlib
 
