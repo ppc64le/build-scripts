@@ -1,14 +1,15 @@
 {
-  "maintainer": "pooja0805",
+  "maintainer": "ramnathnayak-ibm",
   "package_name": "semgrep",
   "github_url": "https://github.com/semgrep/semgrep",
-  "version": "v1.85.0",
+  "version": "v1.123.0",
   "default_branch": "develop",
   "package_dir": "s/semgrep",
   "build_script": "semgrep_ubi_9.3.sh",
   "validate_build_script": true,
-  "use_non_root_user": true,
+  "use_non_root_user": false,
   "docker_build": false,
+  "wheel_build": true,
   "v1.*.*": {
     "build_script": "semgrep_ubi_9.3.sh"
   }
