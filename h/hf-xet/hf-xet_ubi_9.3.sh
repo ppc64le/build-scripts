@@ -42,14 +42,14 @@ cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 #install python dependencies
-pip3.12 install numpy cython build pytest
+python3.12 -m pip install numpy cython build pytest
 
 sed -i "s/^version *= *.*/version = \"${PACKAGE_VERSION#v}\"/" Cargo.toml
 
-pip3.12 install maturin build wheel
+python3.12 -m pip install maturin build wheel
 
 #install
-if ! pip3.12 install -e . ; then
+if ! python3.12 -m pip install -e . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
