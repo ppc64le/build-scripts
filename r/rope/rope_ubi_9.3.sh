@@ -4,7 +4,7 @@
 # Package          : rope
 # Version          : 1.13.0
 # Source repo      : https://github.com/python-rope/rope.git
-# Tested on        : UBI 8.7
+# Tested on        : UBI 9.5
 # Language         : Python
 # Travis-Check     : True
 # Script License   : GNU General Public License v3.0
