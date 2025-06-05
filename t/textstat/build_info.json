@@ -1,15 +1,19 @@
 {
-    "maintainer": "stutiibm",
+    "maintainer": "Harithanagothu2",
     "package_name": "textstat",
     "github_url": "https://github.com/textstat/textstat",
-    "version": "0.7.4",
+    "version": "0.7.7",
+    "wheel_build" : true,
     "default_branch": "main",
     "package_dir": "t/textstat",
-    "build_script": "textstat_ubi_8_7.sh",
+    "build_script": "textstat_ubi_9.3.sh",
     "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": false,
     "0.7.4": {
         "build_script": "textstat_ubi_8_7.sh"
-     }
+     },
+    "*":{
+        "build_script": "textstat_ubi_9.3.sh"
+    }
 }
