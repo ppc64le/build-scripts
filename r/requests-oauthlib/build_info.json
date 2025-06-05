@@ -3,7 +3,7 @@
   "maintainer": "kiranNukal",
   "package_name": "requests-oauthlib",
   "github_url": "https://github.com/requests/requests-oauthlib",
-  "version": "v2.2.0",
+  "version": "v2.0.0",
   "wheel_build" : true,
   "default_branch": "main",
   "build_script": "requests-oauthlib_ubi_9.3.sh",
