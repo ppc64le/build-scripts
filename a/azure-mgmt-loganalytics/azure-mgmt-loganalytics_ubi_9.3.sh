@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : azure-mgmt-loganalytics
-# Version          : azure-mgmt-loganalytics_12.0.0
+# Version          : azure-mgmt-loganalytics_13.0.0b7
 # Source repo      : https://github.com/Azure/azure-sdk-for-python
 # Tested on        : UBI:9.3
 # Language         : Python
@@ -19,7 +19,7 @@
 # ---------------------------------------------------------------------------
 
 PACKAGE_NAME=azure-mgmt-loganalytics
-PACKAGE_VERSION=${1:-azure-mgmt-loganalytics_12.0.0}
+PACKAGE_VERSION=${1:-azure-mgmt-loganalytics_13.0.0b7}
 PACKAGE_URL=https://github.com/Azure/azure-sdk-for-python
 PACKAGE_DIR=azure-sdk-for-python/sdk/loganalytics/azure-mgmt-loganalytics
 
@@ -47,7 +47,6 @@ if ! pip install -e . ; then
 fi
 
 # Run tests
-#Skipping this test as it parity with x86.
 if ! pytest ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"

@@ -2,7 +2,7 @@
   "maintainer": "vinodk99",
   "package_name": "azure-mgmt-loganalytics",
   "github_url": "https://github.com/Azure/azure-sdk-for-python",
-  "version": "azure-mgmt-loganalytics_12.0.0",
+  "version": "azure-mgmt-loganalytics_13.0.0b7",
   "wheel_build" : true,
   "package_dir": "a/azure-mgmt-loganalytics",
   "default_branch": "main",
