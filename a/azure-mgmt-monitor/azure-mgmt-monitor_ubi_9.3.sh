@@ -47,7 +47,6 @@ if ! pip install -e . ; then
 fi
 
 # Run tests
-#Skipping this test as it parity with x86.
 if ! pytest ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
