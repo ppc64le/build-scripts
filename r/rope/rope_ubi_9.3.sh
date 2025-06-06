@@ -18,6 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
+set -e
 PACKAGE_NAME=rope
 PACKAGE_VERSION=${1:-1.13.0}
 PACKAGE_URL=https://github.com/python-rope/rope.git
