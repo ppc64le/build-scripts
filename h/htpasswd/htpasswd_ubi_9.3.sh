@@ -23,7 +23,7 @@ PACKAGE_VERSION=${1:-2.3}
 PACKAGE_URL=https://files.pythonhosted.org/packages/b9/2f/8b76f8b77125b75c3532966f3291f9e8787268be65fc4c9694887cba9375/htpasswd-2.3.tar.gz
 PACKAGE_DIR=htpasswd
 
-yum install -y git  python3 python3-devel.ppc64le gcc gcc-c++ make wget sudo cmake
+yum install -y git python3.11 python3.11-devel python3.11-pip gcc gcc-c++ make wget sudo cmake
 pip3 install pytest tox nox
 PATH=$PATH:/usr/local/bin/
 
@@ -83,7 +83,7 @@ else
 fi
 
 # Install via pip3
-if !  python3 -m pip install ./; then
+if !  python3.11 -m pip install ./; then
         echo "------------------$PACKAGE_NAME:install_fails------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"  
@@ -91,10 +91,26 @@ if !  python3 -m pip install ./; then
 fi
 
 # Run Pytest
-python3 -m pytest
+python3.11 -m pytest
 if [ $? -eq 0 ]; then
     echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
     exit 0
 fi
+
+# build wheel
+python3.11 -m venv venv
+source venv/bin/activate
+
+if ! python3.11 -m pip wheel --no-deps htpasswd==${PACKAGE_VERSION}; then
+    echo "--------------------$PACKAGE_NAME:wheel_build_fails----------------------------------------"
+else
+    echo "--------------------$PACKAGE_NAME:wheel_build_success----------------------------------------"
+fi
+
+# cleanup
+deactivate
+rm -rf venv
+
+exit 0
