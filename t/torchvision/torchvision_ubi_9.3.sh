@@ -19,6 +19,8 @@
 #
 # ----------------------------------------------------------------------------
 
+set -ex 
+
 PACKAGE_NAME=vision
 PACKAGE_VERSION=${1:-v0.21.0}
 PACKAGE_URL=https://github.com/pytorch/vision.git

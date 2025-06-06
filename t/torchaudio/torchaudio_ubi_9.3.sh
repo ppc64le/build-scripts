@@ -16,7 +16,10 @@
 #                    package and/or distribution. In such case, please
 #                    contact "Maintainer" of this script.
 #
-# ---------------------------------------------------------------------------
+# --------------------------------------------------------------------------- 
+
+set -ex 
+
 # Variables
 PACKAGE_NAME=audio
 PACKAGE_URL=https://github.com/pytorch/audio.git
