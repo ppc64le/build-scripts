@@ -34,25 +34,20 @@ git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
-pip install tox setuptools build wheel
+pip install tox setuptools build wheel  pytest-cov setuptools-rust pytest certifi
+pip install -r dev_requirements.txt
 
 #install
-if ! pip install  . ; then
+if ! pip install -e . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
-fi
-
-# Run tests
-if ! tox ; then
-    echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
-    exit 2
 else
-    echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
+    echo "------------------$PACKAGE_NAME:Install_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Install_Success"
     exit 0
 fi
+
+# Skiping test part as there is no test-proxy-standalone-linux-ppc64le.tar.gz file  which is not present for ppc64le architecture
