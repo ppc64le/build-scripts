@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : onnx
-# Version          : v1.17.0
+# Version          : v1.18.0
 # Source repo      : https://github.com/onnx/onnx
 # Tested on        : UBI:9.3
 # Language         : Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
+# Maintainer       : Shivansh Sharma <Shivansh.S1@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -20,10 +20,10 @@
 
 # Variables
 PACKAGE_NAME=onnx
-PACKAGE_VERSION=${1:-v1.17.0}
+PACKAGE_VERSION=${1:-v1.18.0}
 PACKAGE_URL=https://github.com/onnx/onnx
 PACKAGE_DIR=onnx
-CURRENT_DIR=$(pwd)
+CURRENT_DIR="${PWD}"
 
 echo "Installing dependencies..."
 yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3.12-devel python3.12 python3.12-devel python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
@@ -206,9 +206,9 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
-sed -i 's|https://github.com/abseil/abseil-cpp/archive/refs/tags/20230125.3.tar.gz|https://github.com/abseil/abseil-cpp/archive/refs/tags/20240116.2.tar.gz|g' CMakeLists.txt && \
+sed -i 's|https://github.com/abseil/abseil-cpp/archive/refs/tags/20230125.3.tar.gz%7Chttps://github.com/abseil/abseil-cpp/archive/refs/tags/20240116.2.tar.gz%7Cg' CMakeLists.txt && \
 sed -i 's|e21faa0de5afbbf8ee96398ef0ef812daf416ad8|bb8a766f3aef8e294a864104b8ff3fc37b393210|g' CMakeLists.txt && \
-sed -i 's|https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protobuf-22.3.tar.gz|https://github.com/protocolbuffers/protobuf/archive/refs/tags/v4.25.3.tar.gz|g' CMakeLists.txt && \
+sed -i 's|https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protobuf-22.3.tar.gz%7Chttps://github.com/protocolbuffers/protobuf/archive/refs/tags/v4.25.3.tar.gz%7Cg' CMakeLists.txt && \
 sed -i 's|310938afea334b98d7cf915b099ec5de5ae3b5c5|4ba37c659f85c20abb0cc595bfac5e3a385e8e93|g' CMakeLists.txt && \
 sed -i 's|set(Protobuf_VERSION "4.22.3")|set(Protobuf_VERSION "v4.25.3")|g' CMakeLists.txt
 
@@ -236,13 +236,33 @@ export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH"
 
 # Adding this source due to - (Unable to detect linker for compiler `cc -Wl,--version`)
 source /opt/rh/gcc-toolset-13/enable
-python3.12 -m pip install cython meson
-python3.12 -m pip install numpy==2.0.2
-python3.12 -m pip install parameterized
-python3.12 -m pip install pytest nbval pythran mypy-protobuf
-python3.12 -m pip install scipy==1.15.2
+pip3.12 install cython meson
+pip3.12 install numpy==2.0.2
+pip3.12 install parameterized
+pip3.12 install pytest nbval pythran mypy-protobuf
+pip3.12 install scipy==1.15.2
+pip3.12 install ml-dtypes  # required while running tests
+pip3.12 install wheel
+pip3.12 install build
 
-if ! python3.12 setup.py install; then
+# export CMAKE_ARGS="$CMAKE_ARGS -DPYTHON_EXECUTABLE=$(which python3.12)"
+# Reason: In ONNX v1.18.0, setup.py uses a custom get_python_executable() which may resolve to /usr/bin/python3 
+# even in a Python 3.12 venv, causing incorrect CMake behavior. To ensure the correct Python is used, we explicitly set it.
+# Also, since ONNX v1.18.0's install logic depends on this, we must build + install in the script directly.
+
+export PYTHON_EXECUTABLE=$(which python3.12)
+export PYTHON_BIN=$(which python3.12)
+export PYTHON_INCLUDE=$(python3.12 -c "from sysconfig import get_paths as gp; print(gp()['include'])")
+export PYTHON_LIB=$(python3.12 -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
+
+export CMAKE_ARGS="$CMAKE_ARGS \
+ -DPython3_EXECUTABLE=$PYTHON_BIN \
+ -DPython3_INCLUDE_DIR=$PYTHON_INCLUDE \
+ -DPython3_LIBRARY=$PYTHON_LIB/libpython3.12.so"
+
+
+
+if !(python3.12 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"); then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -254,10 +274,10 @@ python3.12 setup.py bdist_wheel --dist-dir $CURRENT_DIR
 echo " ------------------------------------------ Onnx Wheel Created Successfully ------------------------------------------ " 
 
 export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib:$LIBPROTO_INSTALL/lib64:$LD_LIBRARY_PATH"
+pip3.12 install "$CURRENT_DIR"/onnx-*.whl
 # Skipping test due to missing 're2/stringpiece.h' header file. Even after attempting to manually build RE2, the required header file could not be found.
-
-echo " ------------------------------------------ Onnx Testing ------------------------------------------ " 
-if ! pytest --ignore=onnx/test/reference_evaluator_backend_test.py --ignore=onnx/test/test_backend_reference.py --ignore=onnx/test/reference_evaluator_test.py; then    
+echo " ------------------------------------------ Onnx Testing ------------------------------------------ "
+if ! pytest --ignore=onnx/test/reference_evaluator_backend_test.py --ignore=onnx/test/test_backend_reference.py --ignore=onnx/test/reference_evaluator_test.py; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"

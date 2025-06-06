@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : xgboost
-# Version       : 2.1.4
+# Version       : 3.0.1
 # Source repo   :  https://github.com/dmlc/xgboost
 # Tested on     : UBI:9.3
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
+# Maintainer    : Shivansh Sharma <shivansh.s1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on the given
 # platform using the mentioned version of the package.
@@ -17,13 +17,11 @@
 # contact the "Maintainer" of this script.
 #
 # -----------------------------------------------------------------------------
-
 # Exit immediately if a command exits with a non-zero status
 set -e
-
 # Variables
 PACKAGE_NAME=xgboost
-PACKAGE_VERSION=${1:-v2.1.4}
+PACKAGE_VERSION=${1:-v3.0.1}
 PACKAGE_URL=https://github.com/dmlc/xgboost
 PACKAGE_DIR=xgboost/python-package
 OUTPUT_FOLDER="$(pwd)/output"
@@ -68,7 +66,14 @@ XGBOOSTDSO=libxgboost.so
 mkdir -p ${LIBDIR} ${INCDIR}/xgboost ${BINDIR} || true
 cp ${SRC_DIR}/lib/${XGBOOSTDSO} ${SODIR}
 cp -Rf ${SRC_DIR}/include/xgboost ${INCDIR}/
-cp -Rf ${SRC_DIR}/rabit/include/rabit ${INCDIR}/xgboost/
+# Copy rabit headers only if version < 3.0.0
+version_less_than_3=$(printf '%s\n3.0.0' "${PACKAGE_VERSION#v}" | sort -V | head -n1)
+if [[ "$version_less_than_3" != "3.0.0" ]]; then
+    echo "Copying rabit headers (only for xgboost < 3.0.0)..."
+    cp -Rf ${SRC_DIR}/rabit/include/rabit ${INCDIR}/xgboost/
+else
+    echo "Skipping rabit copy (xgboost >= 3.0.0)..."
+fi
 cp -f ${SRC_DIR}/src/c_api/*.h ${INCDIR}/xgboost/
 cd ../../
 
@@ -80,10 +85,10 @@ echo "Current directory: $(pwd)"
 # Remove the nvidia-nccl-cu12 dependency in pyproject.toml (not required for Power)
 echo "Removing nvidia-nccl-cu12 dependency from pyproject.toml..."
 sed -i '/nvidia-nccl-cu12/d' pyproject.toml
-# Change the name of the package in pyproject.toml from "xgboost" to "xgboost-cpu"
-echo "Changing package name in pyproject.toml from 'xgboost' to 'xgboost-cpu'..."
-sed -i 's/name = "xgboost"/name = "xgboost-cpu"/' pyproject.toml
-grep -q '\[tool.hatch.build.targets.wheel\]' pyproject.toml || echo '[tool.hatch.build.targets.wheel]' >> pyproject.toml && sed -i '/^\[tool.hatch.build.targets.wheel\]/a packages = ["xgboost/"]' pyproject.toml
+
+# Only add the section if it doesn't exist
+# This line checks whether "tool.hatch.build.targets.wheel" is present in pyproject.toml or not. If not then add this "tool.hatch.build.targets.wheel" and packages=["xgboost"] to pyproject.toml
+grep -q '^\[tool.hatch.build.targets.wheel\]' pyproject.toml || echo -e '\n[tool.hatch.build.targets.wheel]\npackages = ["xgboost/"]' >> pyproject.toml
 
 # Ensure no build isolation and deps are used
 if ! (python3.12 -m build); then
