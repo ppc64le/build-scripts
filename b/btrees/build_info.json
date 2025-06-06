@@ -2,13 +2,14 @@
   "maintainer": "ramnathnayak-ibm",
   "package_name": "btrees",
   "github_url": "https://github.com/zopefoundation/BTrees",
-  "version": "6.0",
+  "version": "6.1",
   "default_branch": "master",
   "package_dir": "b/btrees",
   "build_script": "btrees_ubi_9.3.sh",
   "validate_build_script": "true",
   "use_non_root_user": "false",
   "docker_build": "true",
+  "wheel_build": "true",
   "*.*": {
     "dir": "ubi_9",
     "build_script": "btrees_ubi_9.3.sh"

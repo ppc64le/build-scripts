@@ -1,15 +1,16 @@
 {
-  "maintainer": "stutiibm",
+  "maintainer": "kiranNukal",
   "package_name": "itsdangerous",
   "github_url": "https://github.com/pallets/itsdangerous",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "default_branch": "main",
   "package_dir": "i/itsdangerous",
-  "build_script": "itsdangerous_ubi_8_7.sh",
+  "build_script": "itsdangerous_ubi_9_3.sh",
+  "wheel_build" : true,
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "2.1.*": {
-    "build_script": "itsdangerous_ubi_8_7.sh"
+  "*": {
+    "build_script": "itsdangerous_ubi_9_3.sh"
   }
 }

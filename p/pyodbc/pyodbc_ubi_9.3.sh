@@ -2,13 +2,13 @@
 # ----------------------------------------------------------------------------
 # 
 # Package       : pyodbc
-# Version       : 4.0.34
+# Version       : 4.0.34, 5.2.0
 # Source repo   : https://github.com/mkleehammer/pyodbc
 # Tested on     : UBI:9.3
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Abhijeet Dandekar <Abhijeet.Dandekar1@ibm.com>
+# Maintainer    : Balavva Mirji <Balavva.Mirji@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=pyodbc
-PACKAGE_VERSION=${1:-4.0.34}
+PACKAGE_VERSION=${1:-5.2.0}
 PACKAGE_URL=https://github.com/mkleehammer/pyodbc
 
 yum install -y wget gcc gcc-c++ gcc-gfortran git make python-devel  openssl-devel unixODBC-devel

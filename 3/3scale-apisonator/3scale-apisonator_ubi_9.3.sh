@@ -2,13 +2,13 @@
 # ----------------------------------------------------------------------------
 #
 # Package               : 3scale-apisonator
-# Version               : 3scale-2.14.1-GA
+# Version               : 3scale-2.15.1-GA
 # Source repo           : https://github.com/3scale/apisonator
 # Tested on             : UBI:9.3
 # Language              : Ruby
 # Travis-Check          : True
 # Script License        : Apache License 2.0 or later
-# Maintainer            : Vinod K <Vinod.K1@ibm.com>
+# Maintainer            : Shubham Gupta <Shubham.Gupta43@ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_VERSION=${1:-3scale-2.14.1-GA}
+PACKAGE_VERSION=${1:-3scale-2.15.1-GA}
 PACKAGE_NAME=apisonator
 PACKAGE_URL=https://github.com/3scale/apisonator.git
 
@@ -64,6 +64,8 @@ redis-server /etc/redis/redis.conf --daemonize yes
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
+#File.exists Method is not supported with ruby-3.3+, required with this version of package
+sed -i 's/File.exists?/File.exist?/g' lib/3scale/dotenv.rb
 
 if ! bundle install ; then
       echo "------------------$PACKAGE_NAME::Install_fails-------------------------"

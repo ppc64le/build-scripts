@@ -1,6 +1,6 @@
 FROM registry.access.redhat.com/ubi9/ubi:9.3
 
-MAINTAINER "Vinod K <Vinod.K1@ibm.com>"
+MAINTAINER "Aastha Sharma <aastha.sharma4@ibm.com>"
 
 ARG PACKAGE_VERSION=8.1.2
 ARG NODE_VERSION=v16.20.2

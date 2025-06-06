@@ -1,8 +1,8 @@
 {
-    "maintainer": "Shubhamgupta1010",
+    "maintainer": "bharti-0211",
     "package_name": "activemq-artemis-operator",
-    "github_url": "https://github.com/artemiscloud/activemq-artemis-operator",
-    "version": "1.2.4",
+    "github_url": "https://github.com/rh-messaging/activemq-artemis-operator",
+    "version": "amq-broker-7.13.0.OPR.1.CR3",
     "default_branch": "main",
     "package_dir": "a/activemq-artemis-operator",
     "build_script": "activemq-artemis-operator_ubi_9_3.sh",

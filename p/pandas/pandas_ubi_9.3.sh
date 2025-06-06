@@ -39,7 +39,7 @@ pip install Cython pytest hypothesis build meson meson-python
 python${PYTHON_VERSION} -m build --wheel
 
 # Install wheel
-python${PYTHON_VERSION} -m pip install dist/pandas-2.2.0-cp311-cp311-linux_ppc64le.whl
+python${PYTHON_VERSION} -m pip install dist/pandas-${PACKAGE_VERSION:1}-cp311-cp311-linux_ppc64le.whl
 if [ $? == 0 ]; then
      echo "------------------$PACKAGE_NAME::Build_Pass---------------------"
      echo "$PACKAGE_VERSION $PACKAGE_NAME"

@@ -33,14 +33,14 @@
   "7.54.*": {
     "dir": "7.54.1_ubi_9",
     "patches": {
-      "PATCH": "https://raw.githubusercontent.com/ramnathnayak-ibm/build-scripts/datadog-agent/d/datadog-agent/datadog-agent_7.54.1.patch"
+      "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/d/datadog-agent/datadog-agent_7.54.1.patch"
     },
     "build_script": "datadog-agent_7.54.1_ubi_9.3.sh"
   },
   "*.*.*": {
     "dir": "7.54.1_ubi_9",
     "patches": {
-      "PATCH": "https://raw.githubusercontent.com/ramnathnayak-ibm/build-scripts/datadog-agent/d/datadog-agent/datadog-agent_7.54.1.patch"
+      "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/d/datadog-agent/datadog-agent_7.54.1.patch"
     },
     "build_script": "datadog-agent_7.54.1_ubi_9.3.sh"
   }

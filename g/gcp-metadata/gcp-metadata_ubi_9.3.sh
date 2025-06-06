@@ -35,7 +35,7 @@ git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-wget https://raw.githubusercontent.com/ramnathnayak-ibm/build-scripts/gcp-metadata/g/gcp-metadata/gcp-metadata_v6.1.0.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/g/gcp-metadata/gcp-metadata_v6.1.0.patch
 git apply gcp-metadata_v6.1.0.patch
 
 if ! npm install; then

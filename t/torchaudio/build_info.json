@@ -1,0 +1,16 @@
+{
+  "maintainer": "aastha-sharma2",
+  "package_name": "torchaudio",
+  "github_url": "https://github.com/pytorch/audio.git",
+  "version": "v2.6.0",
+  "wheel_build" : true,
+  "package_dir": "t/torchaudio",
+  "default_branch": "main",
+  "build_script": "torchaudio_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "torchaudio_ubi_9.3.sh"
+  }
+}

@@ -1,75 +1,70 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : httptools
-# Version       : v0.6.4
-# Source repo   : https://github.com/MagicStack/httptools.git
-# Tested on     : UBI 9.3
-# Language      : Python, Cython
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer    : Chandan.Abhyankar@ibm.com
+# Package          : httptools
+# Version          : 0.6.4
+# Source repo      : https://github.com/MagicStack/httptools.git
+# Tested on        : UBI:9.3
+# Language         : Python
+# Travis-Check     : True
+# Script License   : Apache License, Version 2 or later
+# Maintainer       : Aastha Sharma <aastha.sharma4@ibm.com>
 #
-# Disclaimer: This script has been tested in root mode on given
-# ==========  platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of the
-#             package and/or distribution. In such case, please
-#             contact "Maintainer" of this script.
+# Disclaimer       : This script has been tested in root mode on given
+# ==========         platform using the mentioned version of the package.
+#                    It may not work as expected with newer versions of the
+#                    package and/or distribution. In such case, please
+#                    contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
 
-PYTHON_VERSION=3.11
-
-# Install dependencies
-yum install -y python311 python$PYTHON_VERSION-devel python$PYTHON_VERSION-pip git gcc cmake 
-
-# Clone the httptools package.
 PACKAGE_NAME=httptools
 PACKAGE_VERSION=${1:-v0.6.4}
 PACKAGE_URL=https://github.com/MagicStack/httptools.git
+PACKAGE_DIR=httptools
 
+yum install -y git  python3 python3-devel.ppc64le gcc g++ gcc-c++ make wget sudo cmake
+pip3 install pytest cython hypothesis
+
+# # Install rust
+ if ! command -v rustc &> /dev/null
+ then
+     wget https://static.rust-lang.org/dist/rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
+     tar -xzf rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
+     cd rust-1.75.0-powerpc64le-unknown-linux-gnu
+     sudo ./install.sh
+     export PATH=$HOME/.cargo/bin:$PATH
+     rustc -V
+     cargo -V
+     cd ../
+ fi
+
+# Clone the repository
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME/
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+
+# Initialize and update submodules
 git submodule update --init --recursive
 
-# Setup virtual environment for python
-python$PYTHON_VERSION -m venv httptools-env
-source httptools-env/bin/activate
-python3 -m pip install pytest hypothesis build
-
-# Install the package
-python3 -m pip install -e .
-make
-
-if [ $? == 0 ]; then
-     echo "------------------$PACKAGE_NAME::Build_Pass---------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Build_Success"
-else
-     echo "------------------$PACKAGE_NAME::Build_Fail-------------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Build_Fail"
-     exit 1
+# Install via pip3
+if !  python3 -m pip install .; then
+        echo "------------------$PACKAGE_NAME:install_fails------------------------"
+        echo "$PACKAGE_URL $PACKAGE_NAME"
+        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Failed"
+        exit 1
 fi
 
-# Test the package
-cd ..
-pytest ./httptools/tests/test_parser.py
-
-if [ $? == 0 ]; then
-     echo "------------------$PACKAGE_NAME::Test_Pass---------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Test_Success"
-     
-     # Deactivate python environment (httptools-env)
-	 deactivate
-
-     exit 0
+# Run Pytest
+echo "run tests  ..."
+if !( pytest -v ); then
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    exit 2
 else
-     echo "------------------$PACKAGE_NAME::Test_Fail-------------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Test_Fail"
-     exit 2
+    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    exit 0
 fi
-

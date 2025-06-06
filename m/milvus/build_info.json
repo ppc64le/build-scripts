@@ -13,5 +13,9 @@
   "v2.4.11": {
     "dir": "2.4.11_ubi_9",
     "build_script": "milvus-v2.4.11-ubi9.3.sh"
+  },
+  "v2.5.3": {
+    "dir": "2.5.3_ubi_9",
+    "build_script": "milvus-v2.5.3-ubi9.3.sh"
   }
 }

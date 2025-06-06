@@ -2,31 +2,33 @@
 # -----------------------------------------------------------------------------
 #
 # Package           : activemq-artemis-operator
-# Version           : 1.2.4
-# Source repo       : https://github.com/artemiscloud/activemq-artemis-operator
+# Version           : amq-broker-7.13.0.OPR.1.CR3
+# Source repo       : https://github.com/rh-messaging/activemq-artemis-operator
 # Tested on         : UBI:9.3
 # Language          : Go
 # Travis-Check      : True
 # Script License    : Apache License, Version 2 or later
-# Maintainer        : Shubham Gupta(Shubham.Gupta43@ibm.com)
+# Maintainer        : Bharti Somra(Bharti.Somra@ibm.com)
 #
-# Disclaimer: This script has been tested in **root/non-root** mode on given
+# Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
-# run as root user
 # ----------------------------------------------------------------------------
 #
 
 PACKAGE_NAME=activemq-artemis-operator
-PACKAGE_URL=https://github.com/artemiscloud/activemq-artemis-operator
+PACKAGE_URL=https://github.com/rh-messaging/activemq-artemis-operator
+PACKAGE_VERSION=${1:-amq-broker-7.13.0.OPR.1.CR3}
+
 SDK_PACKAGE_NAME=operator-sdk
 SDK_PACKAGE_URL=https://github.com/operator-framework/operator-sdk
-PACKAGE_VERSION=${1:-1.2.4}
-GO_VERSION=1.20
+SDK_PACKAGE_VERSION=${1:-v1.28.0}
 
-dnf install -y git wget gcc-c++ gcc make
+GO_VERSION=1.22.7
+
+dnf update -y  && dnf install -y git wget gcc-c++ gcc make
 
 #Go installation
 wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz
@@ -40,6 +42,7 @@ go version
 #operator-sdk
 git clone $SDK_PACKAGE_URL
 cd $SDK_PACKAGE_NAME
+git checkout $SDK_PACKAGE_VERSION
 make install
 cd ../
 
@@ -69,6 +72,3 @@ else
     exit 0
 fi
 
-# As artemiscloud/activemq-artemis-operator testing requires clusters. Currently not supporting it.
-# We need to work on cluster testing (probably using minikube or something) and enable tests.
-# make test

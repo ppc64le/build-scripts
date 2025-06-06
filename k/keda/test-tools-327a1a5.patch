@@ -1,0 +1,180 @@
+diff --git a/Makefile b/Makefile
+index 8ca3e2e..8fc1900 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,4 +1,4 @@
+-KEDA_TOOLS_GO_VERSION = 1.23.8
++KEDA_TOOLS_GO_VERSION = 1.23.4
+ K6_VERSION = v0.47.0
+ 
+ IMAGE_REGISTRY ?= ghcr.io
+diff --git a/e2e/images/prometheus/Dockerfile b/e2e/images/prometheus/Dockerfile
+index db0c573..675e8fc 100644
+--- a/e2e/images/prometheus/Dockerfile
++++ b/e2e/images/prometheus/Dockerfile
+@@ -8,10 +8,10 @@ COPY main.go main.go
+ 
+ RUN go build -o prometheusapp main.go
+ 
+-FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
++FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
+ WORKDIR /
+ COPY --from=builder /workspace/prometheusapp .
+ # 65532 is numeric for nonroot
+ USER 65532:65532
+ 
+-ENTRYPOINT ["/prometheusapp"]
+\ No newline at end of file
++ENTRYPOINT ["/prometheusapp"]
+diff --git a/tools/Dockerfile b/tools/Dockerfile
+index ab66c32..8cca2e8 100644
+--- a/tools/Dockerfile
++++ b/tools/Dockerfile
+@@ -1,89 +1,80 @@
+-FROM ubuntu:22.04
++FROM registry.access.redhat.com/ubi9/ubi:9.3
+ 
+-# Install prerequisite
+-RUN apt update && \
+-    apt-get install software-properties-common wget curl build-essential git git-lfs unzip jq -y
++#Install prerequisite
++RUN yum update -y \
++        && yum install -y wget git git-lfs unzip make gcc g++
+ 
+ # Use Bash instead of Dash
+ RUN ln -sf bash /bin/sh
+ 
+-# Install python3
+-RUN apt install -y python3 python3-pip python3-yaml
++# Add CentOS Stream repositories
++RUN yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os && \
++    yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os && \
++    yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os
+ 
+-# Install azure-cli
+-RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
++# Import CentOS GPG key
++RUN rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official
++
++#Install azure-cli (using pip)
++RUN dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm -y
++
++RUN yum install -y azure-cli
+ 
+ # Install docker
+-RUN apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common lsb-release && \
+-    curl -fsSL https://download.docker.com/linux/$(lsb_release -is | tr '[:upper:]' '[:lower:]')/gpg | apt-key add - 2>/dev/null && \
+-    add-apt-repository "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/$(lsb_release -is | tr '[:upper:]' '[:lower:]') $(lsb_release -cs) stable" && \
+-    apt-get update &&\
+-    apt-get install -y docker-ce-cli
++RUN yum install -y python39 container-selinux iptables xz fuse-overlayfs slirp4netns *devmapper*
++
++RUN rpm -ivh https://download.docker.com/linux/centos/9/ppc64le/stable/Packages/containerd.io-1.7.27-3.1.el9.ppc64le.rpm \
++        https://download.docker.com/linux/centos/9/ppc64le/stable/Packages/docker-ce-28.0.4-1.el9.ppc64le.rpm \
++        https://download.docker.com/linux/centos/9/ppc64le/stable/Packages/docker-buildx-plugin-0.22.0-1.el9.ppc64le.rpm \
++        https://download.docker.com/linux/centos/9/ppc64le/stable/Packages/docker-ce-cli-28.0.4-1.el9.ppc64le.rpm  \
++        https://download.docker.com/linux/centos/9/ppc64le/stable/Packages/docker-ce-rootless-extras-28.0.4-1.el9.ppc64le.rpm \
++        https://download.docker.com/linux/centos/9/ppc64le/stable/Packages/docker-compose-plugin-2.35.0-1.el9.ppc64le.rpm
+ 
+ # Install golang
+ ARG GO_VERSION
+-RUN curl -LO https://golang.org/dl/go${GO_VERSION}.linux-$(dpkg --print-architecture).tar.gz && \
+-    tar -C /usr/local -xvzf go${GO_VERSION}.linux-$(dpkg --print-architecture).tar.gz && \
+-    rm -rf go${GO_VERSION}.linux-$(dpkg --print-architecture).tar.gz
+-
+-# Install kubectl
+-RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/$(dpkg --print-architecture)/kubectl" && \
+-    curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/$(dpkg --print-architecture)/kubectl.sha256" && \
+-    echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check && \
+-    chmod +x ./kubectl && mv ./kubectl /usr/bin/kubectl && \
+-    rm kubectl.sha256
+-
+-# Install operator-sdk
+-RUN apt-get update && \
+-    apt-get install -y jq && \
+-    ARCH="$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac)" && \
+-    OS=$(uname | awk '{print tolower($0)}') && \
+-    RELEASE_VERSION="$(curl -s https://api.github.com/repos/operator-framework/operator-sdk/releases/latest | jq -r .tag_name)" && \
+-    curl -LO https://github.com/operator-framework/operator-sdk/releases/download/${RELEASE_VERSION}/operator-sdk_${OS}_${ARCH} && \
+-    curl -LO https://github.com/operator-framework/operator-sdk/releases/download/${RELEASE_VERSION}/checksums.txt && \
+-    curl -LO https://github.com/operator-framework/operator-sdk/releases/download/${RELEASE_VERSION}/checksums.txt.asc && \
+-    gpg --keyserver keyserver.ubuntu.com --recv-key 052996E2A20B5C7E && \
+-    gpg --verify checksums.txt.asc && \
+-    sha256sum --ignore-missing --check checksums.txt && \
+-    chmod +x operator-sdk_${OS}_${ARCH} && \
+-    mkdir -p /usr/local/bin/ && \
+-    mv operator-sdk_${OS}_${ARCH} /usr/local/bin/operator-sdk
++RUN wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz \
++        && gunzip go${GO_VERSION}.linux-ppc64le.tar.gz \
++        && tar -C /usr/local -xvf go${GO_VERSION}.linux-ppc64le.tar \
++        && rm -rf go${GO_VERSION}.linux-ppc64le.tar;
++
++#Install kubectl
++RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/ppc64le/kubectl" \
++        && curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/ppc64le/kubectl.sha256" \
++        && echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check \
++        && chmod +x ./kubectl \
++        && mv ./kubectl /usr/bin/kubectl \
++        && rm kubectl.sha256 ;
++
++ARG ARCH="ppc64le" && \
++ARG OS="linux" && \
++RELEASE_VERSION=$(curl -s https://api.github.com/repos/operator-framework/operator-sdk/releases/latest | jq -r .tag_name) && \
++curl -LO https://github.com/operator-framework/operator-sdk/releases/download/${RELEASE_VERSION}/operator-sdk_${OS}_${ARCH} && \
++curl -LO https://github.com/operator-framework/operator-sdk/releases/download/${RELEASE_VERSION}/checksums.txt && \
++curl -LO https://github.com/operator-framework/operator-sdk/releases/download/${RELEASE_VERSION}/checksums.txt.asc && \
++gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-key 052996E2A20B5C7E && \
++gpg --verify checksums.txt.asc checksums.txt && \
++sha256sum --ignore-missing --check checksums.txt && \
++chmod +x operator-sdk_${OS}_${ARCH} && \
++mkdir -p /usr/local/bin && \
++mv operator-sdk_${OS}_${ARCH} /usr/local/bin/operator-sdk
++
+ 
+ ENV PATH=${PATH}:/usr/local/go/bin
+ ENV GOROOT=/usr/local/go
+ ENV GOPATH=/go
+ ENV PATH=${PATH}:${GOPATH}/bin
+ 
+-# Install GitHub CLI (gh)
+-RUN ARCH=$(dpkg --print-architecture) && \
+-    case "$ARCH" in \
+-        "amd64" | "arm64") \
+-            curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
+-            echo "deb [arch=$ARCH signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
+-            apt update && \
+-            apt install -y gh \
+-        ;; \
+-        "s390x") \
+-            echo "deb http://ports.ubuntu.com/ubuntu-ports jammy universe" | tee /etc/apt/sources.list.d/gh.list > /dev/null && \
+-            apt update && apt install -y gh \
+-        ;; \
+-        *) \
+-            echo "Unsupported architecture: $ARCH" && exit 1 \
+-        ;; \
+-    esac
++#Install gh
++RUN git clone https://github.com/cli/cli.git \
++        && cd /cli \
++        && make \
++        && make install ;
+ 
+ # Protocol Buffer Compiler
++RUN curl -LO  https://github.com/protocolbuffers/protobuf/releases/download/v27.1/protoc-27.1-linux-ppcle_64.zip \
++       && unzip protoc-27.1-linux-ppcle_64.zip -d $HOME/.local \
++       && mv $HOME/.local/bin/protoc /usr/local/bin/protoc \
++       && mv $HOME/.local/include/ /usr/local/bin/include/ ;
+ 
+-RUN PROTOC_VERSION=21.9 \
+-    && case $(dpkg --print-architecture) in \
+-        "amd64") PROTOC_ARCH="x86_64" ;; \
+-        "arm64") PROTOC_ARCH="aarch_64" ;; \
+-        "s390x") PROTOC_ARCH="s390_64" ;; \
+-        *) echo "Unsupported architecture"; exit 1 ;; \
+-    esac \
+-    && curl -LO "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-${PROTOC_ARCH}.zip" \
+-    && unzip "protoc-${PROTOC_VERSION}-linux-${PROTOC_ARCH}.zip" -d $HOME/.local \
+-    && mv $HOME/.local/bin/protoc /usr/local/bin/protoc \
+-    && mv $HOME/.local/include/ /usr/local/bin/include/
+ 
+ 

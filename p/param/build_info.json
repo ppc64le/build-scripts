@@ -1,8 +1,9 @@
 {
-  "maintainer": "mohitp333",
+  "maintainer": "Anumala Rajesh",
   "package_name": "param",
   "github_url": "https://github.com/holoviz/param.git",
   "version": "v2.1.0",
+  "wheel_build" : true,
   "default_branch": "main",
   "package_dir": "p/param",
   "build_script": "param_ubi_9.3.sh",
@@ -13,4 +14,4 @@
     "dir": "v2.1.0_ubi_9",
     "build_script": "param_ubi_9.3.sh"
   }
-}
+} 

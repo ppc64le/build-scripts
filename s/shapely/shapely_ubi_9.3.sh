@@ -18,9 +18,17 @@
 #
 # ----------------------------------------------------------------------------
 
-yum install -y python311 python3.11-devel python3.11-pip git gcc-gfortran.ppc64le gcc-c++ cmake
+# Fix known issue with Shapely compilation using gcc-toolset-13(https://bugs.gentoo.org/915056 - found still occurs).
+# Note: Currently create_wheel_wrapper.sh pre-installs gcc-toolset-13 that fails Shapely wheel builds in python ecosystem.
+yum remove -y gcc-toolset-13
+export PATH=${PATH#/opt/rh/gcc-toolset-13/root/usr/bin:}
+
+yum install -y python3.11 python3.11-devel python3.11-pip git gcc-gfortran.ppc64le gcc-c++ cmake
 yum install -y openblas-devel openblas
-pip3.11 install Cython pytest hypothesis build
+python3.11 -m pip install Cython pytest hypothesis build
+
+HOME_DIR=${PWD}
+cd $HOME_DIR
 
 # Install GEOS dependencies (Version 3.11.1)
 git clone https://github.com/libgeos/geos
@@ -45,19 +53,23 @@ fi
 
 make install
 
+cd $HOME_DIR
+
 # Clone the shapely package.
-cd ../../
 PACKAGE_NAME=shapely
 PACKAGE_VERSION=${1:-1.8.5}
 PACKAGE_URL=https://github.com/shapely/shapely.git
+PACKAGE_DIR=shapely
 
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME/
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init
 
-export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64:/geos/build/lib:/usr/lib:/usr/lib64:$LD_LIBRARY_PATH
-export GEOS_CONFIG=/geos/build/tools/geos-config
+export LD_LIBRARY_PATH=$HOME_DIR/usr/local/lib:$HOME_DIR/usr/local/lib64:$HOME_DIR/geos/build/lib:$HOME_DIR/usr/lib:$HOME_DIR/usr/lib64:$LD_LIBRARY_PATH
+export GEOS_CONFIG=$HOME_DIR/geos/build/tools/geos-config
+
+chmod +x $GEOS_CONFIG
 
 # Build the package (This is dependent on numpy)
 python3.11 -m pip install -e .
@@ -73,8 +85,17 @@ else
      exit 1
 fi
 
+# 'tests' folder hierarchy has changed for higher versions; hence first find the tests folder.
+match=$(find . -type d -name "tests" -print -quit)
+if [ -n "$match" ]; then
+     cd "$match"
+else
+     echo "------------------$PACKAGE_NAME::Test folder not found-------------------------"
+     exit 2
+fi
+
 # Test the package
-python3.11 -m pytest tests/test_geometry_base.py
+python3.11 -m pytest test_predicates.py
 
 if [ $? == 0 ]; then
      echo "------------------$PACKAGE_NAME::Test_Pass---------------------"
@@ -87,4 +108,3 @@ else
      echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Test_Fail"
      exit 2
 fi
-
