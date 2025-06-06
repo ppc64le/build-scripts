@@ -2,9 +2,9 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : opencv-python-headless
-# Version       : 4.10.0.86
+# Version       : 4.11.0.86
 # Source repo   : https://github.com/opencv/opencv-python.git
-# Tested on     : UBI 9.3
+# Tested on     : UBI:9.3
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License 2.0
