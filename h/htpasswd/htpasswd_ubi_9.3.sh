@@ -24,7 +24,6 @@ PACKAGE_URL=https://files.pythonhosted.org/packages/b9/2f/8b76f8b77125b75c353296
 PACKAGE_DIR=htpasswd
 
 yum install -y git python3.11 python3.11-devel python3.11-pip gcc gcc-c++ make wget sudo cmake
-python3.11 -m pip install unittest
 PATH=$PATH:/usr/local/bin/
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
@@ -91,7 +90,7 @@ if !  python3.11 -m pip install ./; then
 fi
 
 # Run unittest
-python3.11 -m unittest
+python3.11 -m unittest tests/test_basic.py tests/test_group.py
 if [ $? -eq 0 ]; then
     echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
