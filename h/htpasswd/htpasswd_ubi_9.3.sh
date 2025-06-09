@@ -24,6 +24,7 @@ PACKAGE_URL=https://files.pythonhosted.org/packages/b9/2f/8b76f8b77125b75c353296
 PACKAGE_DIR=htpasswd
 
 yum install -y git python3.11 python3.11-devel python3.11-pip gcc gcc-c++ make wget sudo cmake
+python3.11 -m pip install wheel
 PATH=$PATH:/usr/local/bin/
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
