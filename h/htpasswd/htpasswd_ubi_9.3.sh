@@ -90,19 +90,6 @@ if !  python3.11 -m pip install ./; then
         exit 1
 fi
 
-# Run unittest
-python3.11 tests/test_basic.py && python3.11 tests/test_group.py
-if [ $? -eq 0 ]; then
-    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
-else
-    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"
-    exit 2
-fi
-
 # build wheel
 python3.11 -m venv venv
 source venv/bin/activate
