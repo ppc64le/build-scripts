@@ -1,12 +1,13 @@
 {
-  "maintainer": "Vipul-Ajmera",
+  "maintainer": "ramnathnayak-ibm",
   "package_name": "python-semver",
-  "github_url": "https://github.com/python-semver/python-semver.git",
-  "version": "3.0.2",
+  "github_url": "https://github.com/python-semver/python-semver",
+  "version": "3.0.4",
   "default_branch": "master",
   "package_dir": "p/python-semver",
   "build_script": "python-semver_ubi_9.3.sh",
   "docker_build": true,
+  "wheel_build": true,
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
   "validate_build_script": true,
   "use_non_root_user": false,
@@ -14,8 +15,8 @@
     "dir": "3.0.1_ubi_8",
     "build_script": "python-semver_ubi_8.7.sh"
   },
-  "*.*.*": {
-    "dir": "3.0.2_ubi_9",
+  "*": {
+    "dir": "3.0.4_ubi_9",
     "build_script": "python-semver_ubi_9.3.sh"
   }
 }
