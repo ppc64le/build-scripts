@@ -85,39 +85,30 @@ export LD_LIBRARY_PATH=${OPENBLAS_PREFIX}/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=${OPENBLAS_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
 echo "-----------------------------------------------------Installed openblas-----------------------------------------------------"
 
-# Install Abseil
+echo "-----------------------------------------------------Installed openblas-----------------------------------------------------"
+
+
+#installing abseil-cpp
 cd $CURRENT_DIR
 git clone https://github.com/abseil/abseil-cpp -b 20240116.2
-cd abseil-cpp
-mkdir build && cd build
-cmake -G "Ninja" \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_CXX_STANDARD=17 \
-    -DCMAKE_C_COMPILER=$(which gcc) \
-    -DCMAKE_CXX_COMPILER=$(which g++) \
-    -DCMAKE_INSTALL_PREFIX=${ABSEILCPP_PREFIX} \
-    -DABSL_BUILD_TESTING=OFF \
-    -DABSL_PROPAGATE_CXX_STD=ON \
-    ..
-cmake --build . --verbose
-cmake --install .
-export LD_LIBRARY_PATH=${ABSEILCPP_PREFIX}/lib:$LD_LIBRARY_PATH
-echo "/install-deps/abseilcpp/lib" > /etc/ld.so.conf.d/abseil.conf
-ldconfig
-echo "-----------------------------------------------------Installed abseil-cpp-----------------------------------------------------"
 
-# Install libprotobuf
+export C_COMPILER=$(which gcc)
+export CXX_COMPILER=$(which g++)
+
+#installing libprotobuf
 cd $CURRENT_DIR
 git clone https://github.com/protocolbuffers/protobuf -b v4.25.3
 cd protobuf
 git submodule update --init --recursive
+#Create build directory
 mkdir build
 cd build
 cmake -G "Ninja" \
+   ${CMAKE_ARGS} \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CXX_STANDARD=17 \
-    -DCMAKE_C_COMPILER=$(which gcc) \
-    -DCMAKE_CXX_COMPILER=$(which g++) \
+    -DCMAKE_C_COMPILER=$C_COMPILER \
+    -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
     -DCMAKE_INSTALL_PREFIX=${LIBPROTOBUF_PREFIX} \
     -Dprotobuf_BUILD_TESTS=OFF \
     -Dprotobuf_BUILD_LIBUPB=OFF \
@@ -132,7 +123,7 @@ cmake --install .
 echo "-----------------------------------------------------Installed libprotobuf-----------------------------------------------------"
 cd ..
 
-# Set required paths
+#setting required paths
 export PROTOC="$LIBPROTOBUF_PREFIX/bin/protoc"
 export LD_LIBRARY_PATH="$ABSEILCPP_PREFIX/lib:$LIBPROTOBUF_PREFIX/lib64:$LD_LIBRARY_PATH"
 export LIBRARY_PATH="$LIBPROTOBUF_PREFIX/lib64:$LD_LIBRARY_PATH"
@@ -143,10 +134,11 @@ export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
 git apply set_cpp_to_17_v4.25.3.patch
 
-# Install protobuf Python package
+#installing protobuf
 cd python
 python setup.py install --cpp_implementation
 echo "-----------------------------------------------------Installed protobuf-----------------------------------------------------"
+
 
 # Install Python dependencies
 python -m pip install --upgrade pip
@@ -217,17 +209,27 @@ echo "-----------------------------------------------------Installed opus-------
 
 # Install ffmpeg
 cd $CURRENT_DIR
+
 git clone https://github.com/FFmpeg/FFmpeg
 cd FFmpeg
 git checkout n7.1
 git submodule update --init
 
+mkdir prefix
+
+export PREFIX=$(pwd)/prefix
+
+unset SUBDIR
+
 export CPU_COUNT=$(nproc)
 
-USE_NONFREE=no
+export CC=`which gcc`
+
+export PKG_CONFIG_PATH=$OPUS_PREFIX/lib/pkgconfig:$LAME_PREFIX/lib/pkgconfig:$LIBVPX_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH
+
 ./configure \
-        --prefix="$FFMPEG_PREFIX" \
-        --cc=$(which gcc) \
+        --prefix="$PREFIX" \
+        --cc=${CC} \
         --disable-doc \
         --enable-gmp \
         --enable-hardcoded-tables \
@@ -243,8 +245,8 @@ USE_NONFREE=no
         --enable-libopus \
         --enable-libmp3lame \
         --enable-libvpx \
-        --extra-cflags="-I${LAME_PREFIX}/include -I${OPUS_PREFIX}/include -I${LIBVPX_PREFIX}/include" \
-        --extra-ldflags="-L${LAME_PREFIX}/lib -L${OPUS_PREFIX}/lib -L${LIBVPX_PREFIX}/lib" \
+        --extra-cflags="-I$LAME_PREFIX/include -I$OPUS_PREFIX/include -I$LIBVPX_PREFIX/include" \
+        --extra-ldflags="-L$LAME_PREFIX/lib -L$OPUS_PREFIX/lib -L$LIBVPX_PREFIX/lib" \
         --disable-encoder=h264 \
         --disable-decoder=h264 \
         --disable-decoder=libh264 \
@@ -285,13 +287,16 @@ USE_NONFREE=no
         --disable-decoder=h264_v4l2m2m \
         --disable-encoder=hevc_v4l2m2m \
         --disable-decoder=hevc_v4l2m2m \
-        --disable-nonfree --disable-gpl --disable-gnutls --enable-openssl --disable-libopenh264 --disable-libx264
+        --disable-nonfree --disable-gpl --disable-gnutls --enable-openssl --disable-libopenh264 --disable-libx264    #"${_CONFIG_OPTS[@]}"
 
 make -j$CPU_COUNT
-make install PREFIX="${FFMPEG_PREFIX}"
+make install -j$CPU_COUNT
+echo "--------------------------------- ffmpeg Installed successfully ---------------------------------"
+
 export PKG_CONFIG_PATH=${FFMPEG_PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
 export LD_LIBRARY_PATH=${FFMPEG_PREFIX}/lib:${LD_LIBRARY_PATH}
 export PATH="/install-deps/ffmpeg/bin:$PATH"
+
 echo "-----------------------------------------------------Installed ffmpeg------------------------------------------------"
 
 # Clone source repository
@@ -380,6 +385,7 @@ echo "---------------------------------------------------Building the wheel-----
 python setup.py bdist_wheel --dist-dir $CURRENT_DIR
 
 # Test package
+#Skipping one test case because some of the coders and decoders are disabled while building ffmpeg and errors are faced because of that.
 if ! (pytest tests/test.py -k "not test_video_capture" -v) ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
