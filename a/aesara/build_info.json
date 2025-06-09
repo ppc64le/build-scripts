@@ -1,15 +1,16 @@
 {
-  "maintainer": "AbhiIBM",
+  "maintainer": "Harithanagothu2",
   "package_name": "aesara",
   "github_url": "https://github.com/aesara-devs/aesara",
   "version": "rel-2.9.4",
+  "wheel_build" : true,
   "default_branch": "main",
   "package_dir": "a/aesara",
   "build_script": "aesara_ubi_9.3.sh",
   "validate_build_script": "true",
   "use_non_root_user": "false",
   "docker_build": "false",
-  "rel-2.9.*": {
+  "*": {
     "build_script": "aesara_ubi_9.3.sh"
   }
 }
