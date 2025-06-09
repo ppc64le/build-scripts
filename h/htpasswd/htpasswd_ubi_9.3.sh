@@ -91,7 +91,7 @@ if !  python3.11 -m pip install ./; then
 fi
 
 # Run unittest
-python3.11 -m unittest tests/test_basic.py tests/test_group.py
+python3.11 tests/test_basic.py && python3.11 tests/test_group.py
 if [ $? -eq 0 ]; then
     echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
