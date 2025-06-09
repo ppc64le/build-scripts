@@ -24,7 +24,7 @@ PACKAGE_URL=https://files.pythonhosted.org/packages/b9/2f/8b76f8b77125b75c353296
 PACKAGE_DIR=htpasswd
 
 yum install -y git python3.11 python3.11-devel python3.11-pip gcc gcc-c++ make wget sudo cmake
-pip3 install pytest tox nox
+python3.11 -m pip install pytest tox nox
 PATH=$PATH:/usr/local/bin/
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
@@ -96,7 +96,11 @@ if [ $? -eq 0 ]; then
     echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
-    exit 0
+else
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"
+    exit 2
 fi
 
 # build wheel
@@ -105,6 +109,7 @@ source venv/bin/activate
 
 if ! python3.11 -m pip wheel --no-deps htpasswd==${PACKAGE_VERSION}; then
     echo "--------------------$PACKAGE_NAME:wheel_build_fails----------------------------------------"
+    exit 3
 else
     echo "--------------------$PACKAGE_NAME:wheel_build_success----------------------------------------"
 fi
