@@ -21,7 +21,7 @@
 PACKAGE_NAME=azure-mgmt-servicebus
 PACKAGE_VERSION=${1:-azure-mgmt-servicebus_9.0.0}
 PACKAGE_URL=https://github.com/Azure/azure-sdk-for-python
-PACKAGE_DIR=azure-sdk-for-python/sdk/sdk/servicebus/azure-mgmt-servicebus
+PACKAGE_DIR=azure-sdk-for-python/sdk/servicebus/azure-mgmt-servicebus
 CURRENT_DIR=$(pwd)
 
 yum install -y git make wget gcc-toolset-13 openssl-devel python3 python3-pip python3-devel make rust-toolset openssl openssl-devel libffi libffi-devel 
