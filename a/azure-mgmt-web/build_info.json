@@ -6,11 +6,11 @@
   "wheel_build" : true,
   "package_dir": "a/azure-mgmt-web",
   "default_branch": "main",
-  "build_script": "azure-mgmt-web_9.3.sh",
+  "build_script": "azure-mgmt-web_ubi_9.3.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
   "azure-mgmt-web_*": {
-    "build_script": "azure-mgmt-web_9.3.sh"
+    "build_script": "azure-mgmt-web_ubi_9.3.sh"
   }
 }
