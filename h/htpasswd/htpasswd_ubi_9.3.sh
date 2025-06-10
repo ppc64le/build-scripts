@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=htpasswd
 PACKAGE_VERSION=${1:-2.3}
-PACKAGE_URL=https://files.pythonhosted.org/packages/b9/2f/8b76f8b77125b75c3532966f3291f9e8787268be65fc4c9694887cba9375/htpasswd-2.3.tar.gz
+PACKAGE_URL=https://github.com/thesharp/htpasswd
 PACKAGE_DIR=htpasswd
 
 yum install -y git python3.11 python3.11-devel python3.11-pip gcc gcc-c++ make wget sudo cmake
@@ -54,7 +54,7 @@ if [[ "$PACKAGE_URL" == *github.com* ]]; then
             exit 1
         fi
         cd "$PACKAGE_DIR" || exit
-        git checkout "$PACKAGE_VERSION" || exit
+        git checkout master || exit
     fi
 else
     # If it's not a Git repository, download and untar
