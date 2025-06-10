@@ -1,22 +1,24 @@
+#!/bin/bash -e
+# -----------------------------------------------------------------------------
+#
+# Package          : Pyphen
+# Version          : 0.17.2
+# Source repo      : https://github.com/Kozea/Pyphen
+# Tested on        : UBI 9.5
+# Language         : Python
+# Travis-Check     : True
+# Script License   : Apache License, Version 2 or later
+# Maintainer       : Haritha Nagothu <haritha.nagothu2@ibm.com>
+#
+# Disclaimer       : This script has been tested in root mode on given
+# ==========         platform using the mentioned version of the package.
+#                    It may not work as expected with newer versions of the
+#                    package and/or distribution. In such case, please
+#                    contact "Maintainer" of this script.
+#
 # ----------------------------------------------------------------------------
-#
-# Package       : Pyphen
-# Version       : 0.17.2
-# Source repo   : https://github.com/Kozea/Pyphen
-# Tested on     : UBI 9.5
-# Language      : Python
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer    : Haritha Nagothu <haritha.nagothu2@ibm.com>
-#
-# Disclaimer: This script has been tested in root mode on given
-# ==========  platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of the
-#             package and/or distribution. In such case, please
-#             contact "Maintainer" of this script.
-#
-# ----------------------------------------------------------------------------
-#!/bin/bash
+
+set -e
 
 PACKAGE_NAME=Pyphen
 PACKAGE_VERSION=${1:-"0.17.2"}
