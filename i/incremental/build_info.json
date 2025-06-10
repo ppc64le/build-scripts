@@ -1,15 +1,16 @@
 {
-  "maintainer": "stutiibm",
+  "maintainer": "ramnathnayak-ibm",
   "package_name": "incremental",
   "github_url": "https://github.com/twisted/incremental",
-  "version": "incremental-22.10.0",
+  "version": "incremental-24.7.2",
   "default_branch": "trunk",
   "package_dir": "i/incremental",
-  "build_script": "incremental_ubi_8_7.sh",
+  "build_script": "incremental_ubi_9.3.sh",
   "docker_build": false,
+  "wheel_build": true,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "incremental-22.10.0": {
-    "build_script": "incremental_ubi_8_7.sh"
+  "*": {
+    "build_script": "incremental_ubi_9.3.sh"
   }
 }
