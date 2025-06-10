@@ -34,7 +34,10 @@ tar xzf redis-5.0.8.tar.gz
 cd redis-5.0.8
 make
 cd ..
-./redis-5.0.8/src/redis-server &
+# Start Redis and keep track of its PID
+./redis-5.0.8/src/redis-server > /dev/null 2>&1 &
+REDIS_PID=$!
+trap "kill $REDIS_PID" EXIT
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
@@ -48,10 +51,11 @@ if ! pip3 install .; then
     exit 1
 fi
 
+
 # skipping test: This test is timing-sensitive and may fail intermittently because the job does not always appear
 # in FinishedJobRegistry immediately after worker execution. Exclude it during pytest runs using:
 if ! pytest --deselect=tests/test_spawn_worker.py; then
-	  echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
     exit 2
