@@ -2,7 +2,7 @@
   "maintainer": "Harithanagothu2",
   "package_name": "sphinx_rtd_theme",
   "github_url": "https://github.com/readthedocs/sphinx_rtd_theme.git",
-  "version": "3.2.0",
+  "version": "3.0.2",
   "wheel_build" : true,
   "package_dir": "s/sphinx_rtd_theme",
   "default_branch": "master",
