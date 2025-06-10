@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : sphinx_rtd_theme
-# Version       : 3.2.0
+# Version       : 3.0.2
 # Source repo   : https://github.com/readthedocs/sphinx_rtd_theme
 # Tested on		: UBI 9.5
 # Language      : Python
@@ -20,7 +20,7 @@ set -e
 
 #Variables
 PACKAGE_NAME=sphinx_rtd_theme
-PACKAGE_VERSION="${1:-3.2.0}"
+PACKAGE_VERSION="${1:-3.0.2}"
 PACKAGE_URL=https://github.com/readthedocs/sphinx_rtd_theme.git
 
 #Install dependencies.
