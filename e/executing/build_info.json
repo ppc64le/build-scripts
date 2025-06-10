@@ -2,6 +2,7 @@
   "maintainer": "kiranNukal",
   "package_name": "executing",
   "github_url": "https://github.com/alexmojaki/executing",
+  "required_versions":{"Releases": ["*"], "Tags": ["v2.2.0"]}, 
   "version": "v2.2.0",
   "wheel_build" : true,
   "default_branch": "master",
