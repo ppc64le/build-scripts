@@ -4,6 +4,8 @@
 # Version       : 0.17.2
 # Source repo   : https://github.com/Kozea/Pyphen
 # Tested on     : UBI 9.5
+# Language      : Python
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Haritha Nagothu <haritha.nagothu2@ibm.com>
 #
@@ -39,7 +41,6 @@ fi
 python3.12 -m pip install pytest
 python3.12 -m pip install .[test]
 
-#Skipping ropetest/contrib/autoimporttest.py test as mulitple github issues are still open related to the same test.
 if ! pytest ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
