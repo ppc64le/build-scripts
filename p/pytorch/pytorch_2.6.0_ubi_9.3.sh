@@ -210,7 +210,6 @@ git apply pytorch_v2.6.0.patch
 ARCH=`uname -p`
 BUILD_NUM="1"
 export OPENBLAS_INCLUDE=/OpenBLAS/local/openblas/include/
-export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
 export OpenBLAS_HOME="/usr/include/openblas"
 export build_type="cpu"
 export cpu_opt_arch="power9"
@@ -273,6 +272,7 @@ fi
 echo " Basic Import test for torch"
 cd ..
 export LD_LIBRARY_PATH="/OpenBLAS/:${LD_LIBRARY_PATH}"
+export LD_LIBRARY_PATH=/lib:$LD_LIBRARY_PATH
 
 if ! (python3.12 -c "import torch;"); then
      echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"

@@ -1,8 +1,9 @@
 {
-  "maintainer": "AbhiIBM",
+  "maintainer": "Harithanagothu2",
   "package_name": "rope",
   "github_url": "https://github.com/python-rope/rope.git",
-  "version": "1.10.0",
+  "version": "1.13.0",
+  "wheel_build" : true,
   "default_branch": "master",
   "package_dir": "r/rope",
   "build_script": "rope_ubi_8.7.sh",
@@ -10,6 +11,9 @@
   "use_non_root_user": "false",
   "docker_build": "false",
   "1.10.*": {
-    "build_script": "rope_ubi_8.7.sh"
+    "build_script":"rope_ubi_8.7.sh"
+  },
+  "*":{
+    "build_script":"rope_ubi_9.3.sh"
   }
 }
