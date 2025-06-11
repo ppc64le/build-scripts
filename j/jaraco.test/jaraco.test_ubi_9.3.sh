@@ -1,14 +1,15 @@
 #!/bin/bash -e
+#
 # -----------------------------------------------------------------------------
 #
-# Package	: jaraco.test
-# Version	: v5.5.1
-# Source repo	: https://github.com/jaraco/jaraco.test
-# Tested on	: UBI: 8
+# Package       : jaraco.test
+# Version       : v5.5.1
+# Source repo   : https://github.com/jaraco/jaraco.test
+# Tested on     : UBI 9.3
 # Language      : Python
 # Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer	: Muskaan Sheik / Vedang Wartikar<Vedang.Wartikar@ibm.com>
+# Script License: Apache License 2.0
+# Maintainer    : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
