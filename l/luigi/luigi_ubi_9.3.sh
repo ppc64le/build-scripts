@@ -39,6 +39,7 @@ PATH="$HOME/.cargo/bin:$PATH"
 source $HOME/.cargo/env
 rustc --version
 
+#clone package
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
