@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : PyAV
-# Version       : v13.1.0
+# Version       : v14.4.0
 # Source repo   : https://github.com/PyAV-Org/PyAV
 # Tested on     : UBI 9.3
 # Language      : c
 # Travis-Check  : True
 # Script License: Apache License 2.0
-# Maintainer    : Stuti Wali <Stuti.Wali@ibm.com>
+# Maintainer    : Shivansh Sharma <Shivansh.s1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -18,10 +18,10 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e 
+set -e
 
 PACKAGE_NAME=PyAV
-PACKAGE_VERSION=${1:-v13.1.0}
+PACKAGE_VERSION=${1:-v14.4.0}
 PACKAGE_URL=https://github.com/PyAV-Org/PyAV
 CURRENT_DIR=$(pwd)
 PACKAGE_DIR=PyAV
@@ -48,7 +48,7 @@ mkdir -p $INSTALL_ROOT
 
 for package in openblas lame opus libvpx ffmpeg pillow numpy; do
     mkdir -p ${INSTALL_ROOT}/${package}
-    export "${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
+    export "${package^^}_PREFIX=${INSTALL_ROOT}/${package}" # convert package name to upper code ${package^^}
     echo "Exported ${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
 done
 
@@ -200,8 +200,8 @@ USE_NONFREE=no   #the options below are set for NO
         --enable-libopus \
         --enable-libmp3lame \
         --enable-libvpx \
-        --extra-cflags="-I${LAME_PREFIX}/include -I${OPUS_PREFIX}/include -I${libvpx_PREFIX}/include" \
-        --extra-ldflags="-L${LAME_PREFIX}/lib -L${OPUS_PREFIX}/lib -L${libvpx_PREFIX}/lib" \
+        --extra-cflags="-I$LAME_PREFIX/include -I$OPUS_PREFIX/include -I$LIBVPX_PREFIX/include" \
+        --extra-ldflags="-L$LAME_PREFIX/lib -L$OPUS_PREFIX/lib -L$LIBVPX_PREFIX/lib" \
         --disable-encoder=h264 \
         --disable-decoder=h264 \
         --disable-decoder=libh264 \
@@ -242,7 +242,7 @@ USE_NONFREE=no   #the options below are set for NO
         --disable-decoder=h264_v4l2m2m \
         --disable-encoder=hevc_v4l2m2m \
         --disable-decoder=hevc_v4l2m2m \
-        --disable-nonfree --disable-gpl --disable-gnutls --enable-openssl --disable-libopenh264 --disable-libx264
+        --disable-nonfree --disable-gpl --disable-gnutls --enable-openssl --disable-libopenh264 --disable-libx264    #"${_CONFIG_OPTS[@]}"
 
 make -j$CPU_COUNT
 make install PREFIX="${FFMPEG_PREFIX}"
@@ -276,6 +276,9 @@ git submodule update --init
 
 export CFLAGS="${CFLAGS} -I/install-deps/ffmpeg/include"
 export LDFLAGS="${LDFLAGS} -L/install-deps/ffmpeg/lib"
+
+# Fix license field in pyproject.toml to comply with PEP 621
+sed -i 's/^license = "BSD-3-Clause"/license = { text = "BSD-3-Clause" }/' pyproject.toml
 
 #Build package
 if ! (python setup.py build_ext --inplace) ; then
