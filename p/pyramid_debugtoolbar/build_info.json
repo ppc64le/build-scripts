@@ -1,16 +1,17 @@
 {
-  "maintainer": "stutiibm",
+  "maintainer": "ramnathnayak-ibm",
   "package_name": "pyramid_debugtoolbar",
   "github_url": "https://github.com/Pylons/pyramid_debugtoolbar",
   "version": "4.12.1",
   "default_branch": "develop",
   "package_dir": "p/pyramid_debugtoolbar",
-  "build_script": "pyramid_debugtoolbar_ubi_8_7.sh",
-  "docker_build": false,
+  "build_script": "pyramid_debugtoolbar_ubi_9.3.sh",
+  "docker_build": true,
+  "wheel_build": true,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "*.*.*": {
-    "dir": "ubi8_7",
-    "build_script": "pyramid_debugtoolbar_ubi_8_7.sh"
+  "*": {
+    "dir": "4.12.1_ubi9",
+    "build_script": "pyramid_debugtoolbar_ubi_9.3.sh"
   }
 }
