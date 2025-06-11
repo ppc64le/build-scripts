@@ -55,7 +55,7 @@ git checkout $PACKAGE_VERSION
 
 python3.12 -m pip install tomli pytest httpx
 
-if ! python3.12 -m pip install . ; then
+if ! python3.12 -m pip install . --no-build-isolation ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
