@@ -53,7 +53,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION 
 
-python3.12 -m pip install tomli pytest httpx sphinx-theme-builder
+python3.12 -m pip install tomli pytest httpx  wheel sphinx-theme-builder
 
 if ! python3.12 -m pip install . --no-build-isolation ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
