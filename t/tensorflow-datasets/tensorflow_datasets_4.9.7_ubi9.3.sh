@@ -711,34 +711,68 @@ yum install -y gmp-devel freetype-devel openssl-devel
 
 
 USE_NONFREE=no   #the options below are set for NO
+
 ./configure \
-    --prefix="$FFMPEG_PREFIX" \
-    --cc=${CC} \
-    --disable-doc \
-    --enable-gmp \
-    --enable-hardcoded-tables \
-    --enable-libfreetype \
-    --enable-pthreads \
-    --enable-postproc \
-    --enable-pic \
-    --enable-shared \
-    --enable-static \
-    --enable-version3 \
-    --enable-zlib \
-    --enable-libopus \
-    --enable-libmp3lame \
-    --enable-libvpx \
-    --enable-libx264 \
-    --enable-openssl \
-    --extra-cflags="-I/install-deps/x264/include -I${LAME_PREFIX}/include -I${OPUS_PREFIX}/include -I${LIBVPX_PREFIX}/include -I/usr/include" \
-    --extra-ldflags="-L/install-deps/x264/lib -L${LAME_PREFIX}/lib -L${OPUS_PREFIX}/lib -L${LIBVPX_PREFIX}/lib -L/usr/lib64" \
-    --disable-encoder=libopenh264 \
-    --disable-decoder=libopenh264 \
-    --disable-libopenh264 \
-    --disable-gnutls \
-    --disable-nonfree \
-    --enable-libx264 \
-    --enable-gpl
+        --prefix="$FFMPEG_PREFIX" \
+        --cc=${CC} \
+        --disable-doc \
+        --enable-gmp \
+        --enable-hardcoded-tables \
+        --enable-libfreetype \
+        --enable-pthreads \
+        --enable-postproc \
+        --enable-pic \
+        --enable-pthreads \
+        --enable-shared \
+        --enable-static \
+        --enable-version3 \
+        --enable-zlib \
+        --enable-libopus \
+        --enable-libmp3lame \
+        --enable-libvpx \
+        --extra-cflags="-I$LAME_PREFIX/include -I$OPUS_PREFIX/include -I$LIBVPX_PREFIX/include" \
+        --extra-ldflags="-L$LAME_PREFIX/lib -L$OPUS_PREFIX/lib -L$LIBVPX_PREFIX/lib" \
+        --disable-encoder=h264 \
+        --disable-decoder=h264 \
+        --disable-decoder=libh264 \
+        --disable-decoder=libx264 \
+        --disable-decoder=libopenh264 \
+        --disable-encoder=libopenh264 \
+        --disable-encoder=libx264 \
+        --disable-decoder=libx264rgb \
+        --disable-encoder=libx264rgb \
+        --disable-encoder=hevc \
+        --disable-decoder=hevc \
+        --disable-encoder=aac \
+        --disable-decoder=aac \
+        --disable-decoder=aac_fixed \
+        --disable-encoder=aac_latm \
+        --disable-decoder=aac_latm \
+        --disable-encoder=mpeg \
+        --disable-encoder=mpeg1video \
+        --disable-encoder=mpeg2video \
+        --disable-encoder=mpeg4 \
+        --disable-encoder=msmpeg4 \
+        --disable-encoder=mpeg4_v4l2m2m \
+        --disable-encoder=msmpeg4v2 \
+        --disable-encoder=msmpeg4v3 \
+        --disable-decoder=mpeg \
+        --disable-decoder=mpegvideo \
+        --disable-decoder=mpeg1video \
+        --disable-decoder=mpeg1_v4l2m2m \
+        --disable-decoder=mpeg2video \
+        --disable-decoder=mpeg2_v4l2m2m \
+        --disable-decoder=mpeg4 \
+        --disable-decoder=msmpeg4 \
+        --disable-decoder=mpeg4_v4l2m2m \
+        --disable-decoder=msmpeg4v1 \
+        --disable-decoder=msmpeg4v2 \
+        --disable-decoder=msmpeg4v3 \
+        --disable-encoder=h264_v4l2m2m \
+        --disable-decoder=h264_v4l2m2m \
+        --disable-encoder=hevc_v4l2m2m \
+        --disable-decoder=hevc_v4l2m2m \
+        --disable-nonfree --disable-gpl --disable-gnutls --enable-openssl --disable-libopenh264 --disable-libx264    #"${_CONFIG_OPTS[@]}"
 
 make
 make install PREFIX="${FFMPEG_PREFIX}"
@@ -1022,7 +1056,7 @@ echo " --------------------------------- Tree Successfully Installed -----------
 cd $CURRENT_DIR
 
 #Build opencv-python-headless from source
-echo " --------------------------------- Opencd-Python Installing --------------------------------- "
+echo " --------------------------------- Opencv-Python Installing --------------------------------- "
 
 git clone https://github.com/opencv/opencv-python
 cd opencv-python
@@ -1328,4 +1362,3 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
-

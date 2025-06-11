@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : python-semver
-# Version          : 3.0.4
-# Source repo      : https://github.com/python-semver/python-semver
-# Tested on        : UBI:9.3
+# Package          : sphinx_rtd_theme
+# Version          : 3.0.2
+# Source repo      : https://github.com/readthedocs/sphinx_rtd_theme
+# Tested on        : UBI 9.5
 # Language         : Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Ramnath Nayak <Ramnath.Nayak@ibm.com>
+# Maintainer       : Haritha Nagothu <haritha.nagothu2@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -16,30 +16,27 @@
 #                    package and/or distribution. In such case, please
 #                    contact "Maintainer" of this script.
 #
-# ---------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 
-#variables
-PACKAGE_NAME=python-semver
-PACKAGE_VERSION=${1:-3.0.4}
-PACKAGE_URL=https://github.com/python-semver/python-semver
-PACKAGE_DIR=python-semver
+set -e
 
-CURRENT_DIR=${PWD}
+#Variables
+PACKAGE_NAME=sphinx_rtd_theme
+PACKAGE_VERSION="${1:-3.0.2}"
+PACKAGE_URL=https://github.com/readthedocs/sphinx_rtd_theme.git
 
-yum install -y git make cmake zip tar wget python3 python3-devel python3-pip gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc zlib-devel libjpeg-devel 
+#Install dependencies.
+yum install -y python-devel git python-pip gcc-toolset-13 
+source /opt/rh/gcc-toolset-13/enable
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
-export GCC_TOOLSET_PATH=/opt/rh/gcc-toolset-13/root/usr
-export PATH=$GCC_TOOLSET_PATH/bin:$PATH
+pip install pytest 
 
-# clone repository
-git clone $PACKAGE_URL 
-cd $PACKAGE_NAME
+#clone the repo.
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 
-pip install --upgrade pip tox build
-pip install -r docs/requirements.txt
-
-#install
 if ! pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -47,7 +44,7 @@ if ! pip install . ; then
     exit 1
 fi
 
-if ! tox -e py3 ; then
+if ! pytest ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
