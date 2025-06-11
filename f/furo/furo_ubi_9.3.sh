@@ -35,18 +35,21 @@ make
 cp tree /usr/local/bin/
 cd ..
 
+# Fix DNS preference to IPv4
+echo "precedence ::ffff:0:0/96 100" >> /etc/gai.conf
+
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 source ~/.bashrc   
 nvm --version
 nvm install 18
 
-npm config set prefer-online true
+# Improve npm behavior for CI
 npm config set registry https://registry.npmjs.org/
+npm config set prefer-online true
 npm config set fetch-retries 5
 npm config set fetch-retry-factor 2
 npm config set fetch-retry-mintimeout 10000
 npm config set fetch-retry-maxtimeout 60000
-npm config set ipv6 false
 
 
 # NODE_VERSION=18.20.2
