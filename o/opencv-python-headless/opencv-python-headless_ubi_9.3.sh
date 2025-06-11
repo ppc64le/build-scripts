@@ -20,6 +20,7 @@
 
 set -e
 
+
 PACKAGE_NAME=opencv-python-headless
 PACKAGE_VERSION=${1:-86}
 PACKAGE_URL=https://github.com/opencv/opencv-python
@@ -40,7 +41,7 @@ OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 INSTALL_ROOT="/install-deps"
 mkdir -p $INSTALL_ROOT
 
-for package in openblas libprotobuf protobuf abseilcpp; do
+for package in openblas  libprotobuf protobuf abseilcpp; do
     mkdir -p ${INSTALL_ROOT}/${package}
     export "${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
     echo "Exported ${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
@@ -85,19 +86,36 @@ export PKG_CONFIG_PATH=${OPENBLAS_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
 echo "-----------------------------------------------------Installed openblas-----------------------------------------------------"
 
 
-#installing abseil-cpp
+echo "--------------------abseil-cpp installing-------------------------------"
 cd $CURRENT_DIR
-git clone https://github.com/abseil/abseil-cpp -b 20240116.2
 
+#cloning abseil-cpp
+ABSEIL_VERSION=20240116.2
+ABSEIL_URL="https://github.com/abseil/abseil-cpp"
+
+git clone $ABSEIL_URL -b $ABSEIL_VERSION
+
+echo "------------abseil-cpp cloned--------------"
+
+#building libprotobuf
 export C_COMPILER=$(which gcc)
 export CXX_COMPILER=$(which g++)
 
-#installing libprotobuf
-cd $CURRENT_DIR
-git clone https://github.com/protocolbuffers/protobuf -b v4.25.3
+echo "----------------protobuf installing-------------------"
+git clone https://github.com/protocolbuffers/protobuf
 cd protobuf
+git checkout v4.25.3
+
+LIBPROTO_DIR=$(pwd)
+mkdir -p $LIBPROTO_DIR/local/libprotobuf
+LIBPROTOBUF_PREFIX=$LIBPROTO_DIR/local/libprotobuf
+
 git submodule update --init --recursive
-#Create build directory
+rm -rf ./third_party/googletest | true
+rm -rf ./third_party/abseil-cpp | true
+
+cp -r $CURRENT_DIR/abseil-cpp ./third_party/
+
 mkdir build
 cd build
 cmake -G "Ninja" \
@@ -136,9 +154,11 @@ cd python
 python setup.py install --cpp_implementation
 echo "-----------------------------------------------------Installed protobuf-----------------------------------------------------"
 
+
 # Install Python dependencies
 python -m pip install --upgrade pip
 python -m pip install numpy==2.0.2 cython pytest
+
 
 # Clone source repository
 cd $CURRENT_DIR
