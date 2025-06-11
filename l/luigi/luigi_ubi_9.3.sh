@@ -25,8 +25,6 @@ PACKAGE_VERSION=${1:-v3.6.0}
 PACKAGE_URL=https://github.com/spotify/luigi.git
 PACKAGE_DIR=luigi
 
-HOME_DIR=${PWD}
-
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 yum install -y python3 python3-devel python3-pip git gcc-toolset-13 wget bzip2 bzip2-devel openssl openssl-devel make
@@ -41,11 +39,11 @@ PATH="$HOME/.cargo/bin:$PATH"
 source $HOME/.cargo/env
 rustc --version
 
-cd $HOME_DIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+#install dependencies
 pip install 'tox<4.0' pytest pytest-cov pyhive mypy codecov types-toml types-requests types-python-dateutil
 pip install psutil mock selenium hypothesis jsonschema boto3 avro "prometheus-client>=0.5,<0.15" azure-storage-blob==2.1.0 azure-mgmt-resource
 pip install azure-storage==0.36.0 "elasticsearch<7.14" "moto[all]==4.2.9" requests-unixsocket "sqlalchemy<2" datadog
