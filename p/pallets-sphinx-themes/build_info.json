@@ -1,0 +1,16 @@
+{
+	"maintainer": "ramnathnayak-ibm",
+	"package_name": "pallets-sphinx-themes",
+	"github_url": "https://github.com/pallets/pallets-sphinx-themes",
+	"version": "2.3.0",
+	"default_branch": "main",
+	"build_script": "pallets-sphinx-themes_ubi_9.3.sh",
+	"package_dir": "p/pallets-sphinx-themes",
+	"docker_build": false,
+	"wheel_build": true,
+	"validate_build_script": true,
+	"use_non_root_user": false,
+	"*": {
+	   "build_script": "pallets-sphinx-themes_ubi_9.3.sh"
+	}
+}
