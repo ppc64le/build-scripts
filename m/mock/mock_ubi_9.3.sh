@@ -30,6 +30,10 @@ yum install -y git make cmake zip tar wget python3 python3-devel python3-pip gcc
 export GCC_TOOLSET_PATH=/opt/rh/gcc-toolset-13/root/usr
 export PATH=$GCC_TOOLSET_PATH/bin:$PATH
 
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
+
 pip install --upgrade pip pytest
 
 #Build package
