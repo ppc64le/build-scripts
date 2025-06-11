@@ -36,7 +36,7 @@ cp tree /usr/local/bin/
 cd ..
 
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-ource ~/.bashrc   
+source ~/.bashrc   
 nvm --version
 nvm install 18
 
