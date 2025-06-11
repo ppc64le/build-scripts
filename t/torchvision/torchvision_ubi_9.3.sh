@@ -3,13 +3,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package           : vision
-# Version           : v0.21.0
+# Version           : v0.22.0
 # Source repo       : https://github.com/pytorch/vision.git
 # Tested on         : UBI:9.3
 # Language          : Python
 # Travis-Check      : True
 # Script License    : Apache License, Version 2.0
-# Maintainer        : Vinod K <Vinod.K1@ibm.com>
+# Maintainer        : Meet Jani <meet.jani@ibm.com>
 #
 # Disclaimer        : This script has been tested in root mode on given
 # ==========          platform using the mentioned version of the package.
@@ -22,7 +22,7 @@
 set -ex 
 
 PACKAGE_NAME=vision
-PACKAGE_VERSION=${1:-v0.21.0}
+PACKAGE_VERSION=${1:-v0.22.0}
 PACKAGE_URL=https://github.com/pytorch/vision.git
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 MAX_JOBS=${MAX_JOBS:-$(nproc)}
@@ -528,7 +528,12 @@ cd $CURRENT_DIR
 echo "--------------------Installing pyav----------------------------"
 git clone https://github.com/PyAV-Org/PyAV
 cd PyAV
-git checkout v13.1.0
+if [ "$(printf '%s\n' "$VERSION" "0.22.0" | sort -V | head -n1)" != "0.22.0" ]; then
+    git checkout v13.1.0
+else
+    git checkout v14.4.0
+fi
+
 git submodule update --init
 
 export CFLAGS="${CFLAGS} -I/install-deps/ffmpeg/include"
@@ -538,12 +543,12 @@ python3.12 setup.py build_ext --inplace
 cd $CURRENT_DIR
 
 echo "------------------Building torchvision------------------------"
-PACKAGE_VERSION=${1:-v0.21.0}
+PACKAGE_VERSION=${1:-v0.22.0}
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if ! (python3.12 -m pip install -v . --no-build-isolation); then
+if ! python setup.py bdist_wheel --dist-dir $CURRENT_DIR; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
@@ -551,6 +556,10 @@ if ! (python3.12 -m pip install -v . --no-build-isolation); then
 fi
 
 cd $CURRENT_DIR
+
+mv ./torchvision*.whl $(ls ./torchvision*.whl | sed 's/+[^-]*-/-/')
+pip install ./torchvision*.whl
+
 python3.12 -m pip install pytest pytest-xdist
 
 if ! pytest $PACKAGE_NAME/test/common_extended_utils.py $PACKAGE_NAME/test/common_utils.py $PACKAGE_NAME/test/smoke_test.py $PACKAGE_NAME/test/test_architecture_ops.py $PACKAGE_NAME/test/test_datasets_video_utils_opt.py ; then
