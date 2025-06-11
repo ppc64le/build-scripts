@@ -7,6 +7,7 @@ RUN set -eux; \
         useradd --uid 999 --system --gid mongodb --home-dir /data/db mongodb; \
         mkdir -p /data/db /data/configdb; \
         chown -R mongodb:mongodb /data/db /data/configdb
+
 RUN set -eux; \
         apt-get update; \
         apt-get install -y --no-install-recommends \
@@ -18,10 +19,12 @@ RUN set -eux; \
                 apt-get install -y --no-install-recommends procps; \
         fi; \
         rm -rf /var/lib/apt/lists/*
+
 # grab gosu for easy step-down from root (https://github.com/tianon/gosu/releases)
 ENV GOSU_VERSION 1.17
 # grab "js-yaml" for parsing mongod's YAML config files (https://github.com/nodeca/js-yaml/releases)
 ENV JSYAML_VERSION 3.13.1
+
 RUN set -ex; \
         \
         savedAptMark="$(apt-mark showmanual)"; \
@@ -62,22 +65,26 @@ RUN set -ex; \
         chmod +x /usr/local/bin/gosu; \
         gosu --version; \
         gosu nobody true
+
 RUN mkdir /docker-entrypoint-initdb.d
+
 RUN set -ex; \
         export GNUPGHOME="$(mktemp -d)"; \
         set -- '20691EEC35216C63CAF66CE1656408E390CFB1F5'; \
         for key; do \
                 gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys "$key"; \
-        done; \
-        gpg --batch --export "$@" > /etc/apt/trusted.gpg.d/mongodb.gpg; \
-        command -v gpgconf && gpgconf --kill all || :; \
-        rm -r "$GNUPGHOME"; \
-        apt-key list
+                done; \
+                gpg --batch --export "$@" > /etc/apt/trusted.gpg.d/mongodb.gpg; \
+                command -v gpgconf && gpgconf --kill all || :; \
+                rm -r "$GNUPGHOME"; \
+                apt-key list
+
 ARG MONGO_MAJOR=6.0
-ARG MONGO_VERSION=6.0.19
-ARG MONGOSH_VERSION=2.2.0
+ARG MONGO_VERSION=6.0.24
+ARG MONGOSH_VERSION=2.5.0
+
 # We install the necesary tools to compile mongo on ppc64le
-RUN echo "Updating and installing build dependencies..." \
+RUN echo "Installing dependencies and building mongodb from source..." \
         && apt-get update \
         && apt-get upgrade -y \
         && apt-get install -y --no-install-recommends \
@@ -95,15 +102,16 @@ RUN echo "Updating and installing build dependencies..." \
         && cd /tmp/mongodb-src-r${MONGO_VERSION} \
         && git clone https://github.com/mongodb/mongo.git && cd mongo \
         && git checkout r${MONGO_VERSION} \
-        && sed -i '/PyYAML/d' etc/pip/components/core.req && sed -i '4 a PyYAML >= 3.0.0' etc/pip/components/core.req \
+        && echo "Installing Python dependencies..." \
         && python3 -m pip install -r etc/pip/compile-requirements.txt \
-        && echo "Building and installing mongodb, the while loop below is added only to prevent Travis job failure due to inactivity..." \
+        && ln -s /usr/bin/python3 /usr/bin/python \
+        && echo "Building and installing mongodb, the while loop below is added only to prevent Travis job failure due to inactivity...." \
         && bash -c " \
                 (while true; do echo '[keepalive] Still building...'; sleep 60; done) & \
                 keepalive_pid=\$! && \
-                python3 buildscripts/scons.py -j8 install-mongod install-mongos --separate-debug=on --disable-warnings-as-errors DESTDIR=/usr/ --ssl=on --no-cache --release VERBOSE=1 && \
+                python3 buildscripts/scons.py install-mongod install-mongos -j$(nproc) --separate-debug=on --disable-warnings-as-errors DESTDIR=/usr/ --ssl=on --no-cache --release --dbg=off --opt=on VERBOSE=1 && \
                 kill \$keepalive_pid \
-            " \
+        " \
         && apt-get purge -y --auto-remove \
                 ca-certificates \
                 wget \
@@ -119,27 +127,35 @@ RUN echo "Updating and installing build dependencies..." \
         && rm -rf /var/lib/apt/lists/* \
         && rm -rf /tmp/mongodb-src-r${MONGO_VERSION} \
         && rm -f /tmp/mongodb.zip
-# ToDo: uninstall scons
+        # ToDo: uninstall scons
 RUN apt-get update && \
-    apt-get install -y wget && \
-    mkdir -p /tmp/mongosh-$MONGOSH_VERSION && \
-    cd /tmp/mongosh-$MONGOSH_VERSION && \
-    wget https://downloads.mongodb.com/compass/mongosh-$MONGOSH_VERSION-linux-ppc64le.tgz && \
-    tar -zxvf mongosh-$MONGOSH_VERSION-linux-ppc64le.tgz && \
-    cp /tmp/mongosh-$MONGOSH_VERSION/mongosh-$MONGOSH_VERSION-linux-ppc64le/bin/mongosh /usr/local/bin/ && \
-    cp /tmp/mongosh-$MONGOSH_VERSION/mongosh-$MONGOSH_VERSION-linux-ppc64le/bin/mongosh_crypt_v1.so /usr/local/lib/ && \
-    ln -s $(pwd)/bin/* /usr/local/bin/ && \
-    rm -f /tmp/mongosh-$MONGOSH_VERSION/mongosh-$MONGOSH_VERSION-linux-ppc64le.tgz && \
-    rm -rf /tmp/mongosh-$MONGOSH_VERSION/mongosh-$MONGOSH_VERSION-linux-ppc64le/
+        apt-get install -y wget && \
+        mkdir -p /tmp/mongosh-$MONGOSH_VERSION && \
+        cd /tmp/mongosh-$MONGOSH_VERSION && \
+        echo "Installing mongosh shell..." && \
+        wget https://downloads.mongodb.com/compass/mongosh-$MONGOSH_VERSION-linux-ppc64le.tgz && \
+        tar -zxvf mongosh-$MONGOSH_VERSION-linux-ppc64le.tgz && \
+        cp /tmp/mongosh-$MONGOSH_VERSION/mongosh-$MONGOSH_VERSION-linux-ppc64le/bin/mongosh /usr/local/bin/ && \
+        cp /tmp/mongosh-$MONGOSH_VERSION/mongosh-$MONGOSH_VERSION-linux-ppc64le/bin/mongosh_crypt_v1.so /usr/local/lib/ && \
+        ln -s $(pwd)/bin/* /usr/local/bin/ && \
+        rm -f /tmp/mongosh-$MONGOSH_VERSION/mongosh-$MONGOSH_VERSION-linux-ppc64le.tgz && \
+        rm -rf /tmp/mongosh-$MONGOSH_VERSION/mongosh-$MONGOSH_VERSION-linux-ppc64le/
+
 VOLUME /data/db /data/configdb
+
 ENV HOME /data/db
 COPY docker-entrypoint.sh /usr/local/bin/
+
 # backwards compat
 RUN ln -s /usr/local/bin/docker-entrypoint.sh /entrypoint.sh \
         && chmod +x /usr/local/bin/docker-entrypoint.sh \
         && chmod +x /entrypoint.sh
+
 ENTRYPOINT ["docker-entrypoint.sh"]
+
 EXPOSE 27017
+
 USER mongodb
+
 CMD ["mongod"]
 
