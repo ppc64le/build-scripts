@@ -20,7 +20,6 @@
 
 set -e
 
-
 PACKAGE_NAME=opencv-python-headless
 PACKAGE_VERSION=${1:-86}
 PACKAGE_URL=https://github.com/opencv/opencv-python
@@ -41,7 +40,7 @@ OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 INSTALL_ROOT="/install-deps"
 mkdir -p $INSTALL_ROOT
 
-for package in openblas lame opus libvpx ffmpeg libprotobuf protobuf abseilcpp; do
+for package in openblas libprotobuf protobuf abseilcpp; do
     mkdir -p ${INSTALL_ROOT}/${package}
     export "${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
     echo "Exported ${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
@@ -83,8 +82,6 @@ make ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${OPENBLAS_PREFIX
 CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${OPENBLAS_PREFIX}" ${build_opts[@]}
 export LD_LIBRARY_PATH=${OPENBLAS_PREFIX}/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=${OPENBLAS_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
-echo "-----------------------------------------------------Installed openblas-----------------------------------------------------"
-
 echo "-----------------------------------------------------Installed openblas-----------------------------------------------------"
 
 
@@ -139,165 +136,9 @@ cd python
 python setup.py install --cpp_implementation
 echo "-----------------------------------------------------Installed protobuf-----------------------------------------------------"
 
-
 # Install Python dependencies
 python -m pip install --upgrade pip
 python -m pip install numpy==2.0.2 cython pytest
-
-# Install libvpx
-cd $CURRENT_DIR
-git clone https://github.com/webmproject/libvpx.git
-cd libvpx
-git checkout v1.13.1
-export target_platform=$(uname)-$(uname -m)
-if [[ ${target_platform} == Linux-* ]]; then
-    LDFLAGS="$LDFLAGS -pthread"
-fi
-
-./configure --prefix=$LIBVPX_PREFIX \
-    --as=yasm \
-    --enable-shared \
-    --disable-static \
-    --disable-install-docs \
-    --disable-install-srcs \
-    --enable-vp8 \
-    --enable-postproc \
-    --enable-vp9 \
-    --enable-vp9-highbitdepth \
-    --enable-pic \
-    --enable-runtime-cpu-detect \
-    --enable-experimental || { cat config.log; exit 1; }
-
-make
-make install PREFIX="${LIBVPX_PREFIX}"
-export LD_LIBRARY_PATH=${LIBVPX_PREFIX}/lib:$LD_LIBRARY_PATH
-export PKG_CONFIG_PATH=${LIBVPX_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
-echo "-----------------------------------------------------Installed libvpx------------------------------------------------"
-
-# Install lame
-cd $CURRENT_DIR
-wget https://downloads.sourceforge.net/sourceforge/lame/lame-3.100.tar.gz
-tar -xvf lame-3.100.tar.gz
-cd lame-3.100
-find $LAME_PREFIX -name '*.la' -delete
-
-./configure --prefix=$LAME_PREFIX \
-            --disable-dependency-tracking \
-            --disable-debug \
-            --enable-shared \
-            --enable-static \
-            --enable-nasm
-
-make
-make install PREFIX="${LAME_PREFIX}"
-export LD_LIBRARY_PATH=/install-deps/lame/lib:$LD_LIBRARY_PATH
-export PATH="/install-deps/lame/bin:$PATH"
-echo "-----------------------------------------------------Installed lame------------------------------------------------"
-
-# Install opus
-cd $CURRENT_DIR
-git clone https://github.com/xiph/opus
-cd opus
-git checkout v1.3.1
-./autogen.sh
-./configure --prefix=$OPUS_PREFIX
-make
-make install PREFIX="${OPUS_PREFIX}"
-export LD_LIBRARY_PATH=${OPUS_PREFIX}/lib:$LD_LIBRARY_PATH
-export PKG_CONFIG_PATH=${OPUS_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
-echo "-----------------------------------------------------Installed opus------------------------------------------------"
-
-# Install ffmpeg
-cd $CURRENT_DIR
-
-git clone https://github.com/FFmpeg/FFmpeg
-cd FFmpeg
-git checkout n7.1
-git submodule update --init
-
-mkdir prefix
-
-export PREFIX=$(pwd)/prefix
-
-unset SUBDIR
-
-export CPU_COUNT=$(nproc)
-
-export CC=`which gcc`
-
-export PKG_CONFIG_PATH=$OPUS_PREFIX/lib/pkgconfig:$LAME_PREFIX/lib/pkgconfig:$LIBVPX_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH
-
-./configure \
-        --prefix="$PREFIX" \
-        --cc=${CC} \
-        --disable-doc \
-        --enable-gmp \
-        --enable-hardcoded-tables \
-        --enable-libfreetype \
-        --enable-pthreads \
-        --enable-postproc \
-        --enable-pic \
-        --enable-pthreads \
-        --enable-shared \
-        --enable-static \
-        --enable-version3 \
-        --enable-zlib \
-        --enable-libopus \
-        --enable-libmp3lame \
-        --enable-libvpx \
-        --extra-cflags="-I$LAME_PREFIX/include -I$OPUS_PREFIX/include -I$LIBVPX_PREFIX/include" \
-        --extra-ldflags="-L$LAME_PREFIX/lib -L$OPUS_PREFIX/lib -L$LIBVPX_PREFIX/lib" \
-        --disable-encoder=h264 \
-        --disable-decoder=h264 \
-        --disable-decoder=libh264 \
-        --disable-decoder=libx264 \
-        --disable-decoder=libopenh264 \
-        --disable-encoder=libopenh264 \
-        --disable-encoder=libx264 \
-        --disable-decoder=libx264rgb \
-        --disable-encoder=libx264rgb \
-        --disable-encoder=hevc \
-        --disable-decoder=hevc \
-        --disable-encoder=aac \
-        --disable-decoder=aac \
-        --disable-decoder=aac_fixed \
-        --disable-encoder=aac_latm \
-        --disable-decoder=aac_latm \
-        --disable-encoder=mpeg \
-        --disable-encoder=mpeg1video \
-        --disable-encoder=mpeg2video \
-        --disable-encoder=mpeg4 \
-        --disable-encoder=msmpeg4 \
-        --disable-encoder=mpeg4_v4l2m2m \
-        --disable-encoder=msmpeg4v2 \
-        --disable-encoder=msmpeg4v3 \
-        --disable-decoder=mpeg \
-        --disable-decoder=mpegvideo \
-        --disable-decoder=mpeg1video \
-        --disable-decoder=mpeg1_v4l2m2m \
-        --disable-decoder=mpeg2video \
-        --disable-decoder=mpeg2_v4l2m2m \
-        --disable-decoder=mpeg4 \
-        --disable-decoder=msmpeg4 \
-        --disable-decoder=mpeg4_v4l2m2m \
-        --disable-decoder=msmpeg4v1 \
-        --disable-decoder=msmpeg4v2 \
-        --disable-decoder=msmpeg4v3 \
-        --disable-encoder=h264_v4l2m2m \
-        --disable-decoder=h264_v4l2m2m \
-        --disable-encoder=hevc_v4l2m2m \
-        --disable-decoder=hevc_v4l2m2m \
-        --disable-nonfree --disable-gpl --disable-gnutls --enable-openssl --disable-libopenh264 --disable-libx264    #"${_CONFIG_OPTS[@]}"
-
-make -j$CPU_COUNT
-make install -j$CPU_COUNT
-echo "--------------------------------- ffmpeg Installed successfully ---------------------------------"
-
-export PKG_CONFIG_PATH=${FFMPEG_PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
-export LD_LIBRARY_PATH=${FFMPEG_PREFIX}/lib:${LD_LIBRARY_PATH}
-export PATH="/install-deps/ffmpeg/bin:$PATH"
-
-echo "-----------------------------------------------------Installed ffmpeg------------------------------------------------"
 
 # Clone source repository
 cd $CURRENT_DIR
