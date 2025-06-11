@@ -25,7 +25,7 @@ PACKAGE_DIR=jaraco.packaging
 
 CURRENT_DIR=${PWD}
 
-yum install -y git make cmake zip tar wget python3 python3-devel python3-pip gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc zlib-devel libjpeg-devel 
+yum install -y git make cmake zip tar wget python3.12 python3.12-devel python3.12-pip gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc zlib-devel libjpeg-devel 
 
 export GCC_TOOLSET_PATH=/opt/rh/gcc-toolset-13/root/usr
 export PATH=$GCC_TOOLSET_PATH/bin:$PATH
@@ -34,10 +34,10 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-pip install --upgrade pip tox
+python3.12 -m pip install --upgrade pip tox
 
 #Build package
-if ! pip install . ; then
+if ! python3.12 -m pip install . ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
