@@ -35,6 +35,15 @@ make
 cp tree /usr/local/bin/
 cd ..
 
+NODE_VERSION=18.20.2
+curl -O https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION.tar.gz
+tar -xzf node-v$NODE_VERSION.tar.gz
+cd node-v$NODE_VERSION
+./configure
+make -j$(nproc)
+make install
+cd .. 
+
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION 
