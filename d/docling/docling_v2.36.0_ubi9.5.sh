@@ -2,8 +2,8 @@
 # ----------------------------------------------------------------------------
 # Package        : docling
 # Version        : v2.36.0
-# Source Repo    : https://github.com/docling-project/docling
-# Tested On      : UBI 9.5
+# Source repo    : https://github.com/docling-project/docling
+# Tested on      : UBI 9.5
 # Language       : Python
 # Travis-Check   : false
 # Maintainer     : Sumit Dubey <sumit.dubey2@ibm.com>
