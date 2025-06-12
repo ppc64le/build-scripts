@@ -40,11 +40,10 @@ git apply $SCRIPT_DIR/${OPENSEARCH_PACKAGE}_${OPENSEARCH_VERSION}.patch
 
 cd $wdir
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME
-git checkout $PACKAGE_VERSION
+cd $PACKAGE_NAME && git checkout $PACKAGE_VERSION
+git apply $SCRIPT_DIR/${PACKAGE_NAME}_${PACKAGE_VERSION}.patch
 
-if ! ./gradlew build -x alerting:alertingBwcCluster#oldVersionClusterTask1 -x alerting:alertingBwcCluster#fullRestartClusterTask -x alerting:alertingBwcCluster#oldVersionClusterTask0 -x alerting:alertingBwcCluster#mixedClusterTask -x alerting:alertingBwcCluster#twoThirdsUpgradedClusterTask -x alerting:alertingBwcCluster#rollingUpgradeClusterTask 
--PcustomDistributionUrl="$wdir/OpenSearch/distribution/archives/linux-ppc64le-tar/build/distributions/opensearch-min-2.19.2-SNAPSHOT-linux-ppc64le.tar.gz"; then
+if ! ./gradlew build -x alerting:alertingBwcCluster#oldVersionClusterTask1 -x alerting:alertingBwcCluster#fullRestartClusterTask -x alerting:alertingBwcCluster#oldVersionClusterTask0 -x alerting:alertingBwcCluster#mixedClusterTask -x alerting:alertingBwcCluster#twoThirdsUpgradedClusterTask -x alerting:alertingBwcCluster#rollingUpgradeClusterTask -PcustomDistributionUrl="$wdir/OpenSearch/distribution/archives/linux-ppc64le-tar/build/distributions/opensearch-min-2.19.2-SNAPSHOT-linux-ppc64le.tar.gz"; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
