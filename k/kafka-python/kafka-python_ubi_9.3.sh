@@ -21,6 +21,7 @@
 PACKAGE_NAME=kafka-python
 PACKAGE_VERSION=${1:-2.2.10}
 PACKAGE_URL=https://github.com/dpkp/kafka-python
+PACKAGE_DIR=kafka-python
 
 yum install -y python3-devel python3-pip git gcc-toolset-13 cmake libzstd-devel
 source /opt/rh/gcc-toolset-13/enable
