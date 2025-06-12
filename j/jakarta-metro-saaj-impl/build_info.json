@@ -1,0 +1,22 @@
+{
+  "maintainer": "amitkumar282",
+  "package_name": "metro-saaj",
+  "github_url": "https://github.com/eclipse-ee4j/metro-saaj",
+  "default_branch": "master",
+  "version": "3.0.0",
+  "docker_build": "false",
+  "use_non_root_user": "false",
+  "package_dir": "j/jakarta-metro-saaj-impl",
+  "build_script": "jakarta-metro-saaj-impl_v3.0.0_ubi_9.3.sh",
+  "validate_build_script": "true",
+  "versions": [
+    {
+      "version": "3.0.0",
+      "build_script": "jakarta-metro-saaj-impl_v3.0.0_ubi_9.3.sh"
+    },
+    {
+      "version": "3.0.4",
+      "build_script": "jakarta-metro-saaj-impl_v3.0.4_ubi_9.3.sh"
+    }
+  ]
+}
