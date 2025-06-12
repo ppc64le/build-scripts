@@ -5,6 +5,7 @@
     "version": "3.27.1",
     "default_branch": "main",
     "package_dir": "t/treepoem",
+    "wheel_build" : true,
     "build_script": "treepoem_3.27.1_ubi_9.3.sh",
     "docker_build": false,
     "validate_build_script": true,
