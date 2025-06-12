@@ -22,6 +22,7 @@ PACKAGE_NAME=kafka-python
 PACKAGE_VERSION=${1:-2.2.10}
 PACKAGE_URL=https://github.com/dpkp/kafka-python
 PACKAGE_DIR=kafka-python
+SCRIPT_DIR=$(pwd)
 
 yum install -y python3-devel python3-pip git gcc-toolset-13 cmake libzstd-devel
 source /opt/rh/gcc-toolset-13/enable
@@ -35,7 +36,7 @@ mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local ..
 make -j$(nproc)
 make install
-cd ..
+cd $SCRIPT_DIR
 export SNAPPY_HOME=/usr/local
 export CMAKE_PREFIX_PATH=$SNAPPY_HOME
 export LD_LIBRARY_PATH=$SNAPPY_HOME/lib64:$LD_LIBRARY_PATH
