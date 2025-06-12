@@ -35,7 +35,7 @@ mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local ..
 make -j$(nproc)
 make install
-cd $SCRIPT_DIR
+cd ..
 export SNAPPY_HOME=/usr/local
 export CMAKE_PREFIX_PATH=$SNAPPY_HOME
 export LD_LIBRARY_PATH=$SNAPPY_HOME/lib64:$LD_LIBRARY_PATH
