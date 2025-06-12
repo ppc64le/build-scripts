@@ -127,7 +127,7 @@ python3.12 -m pip install .
 cd $CURRENT_DIR
 git clone https://github.com/h5py/h5py.git
 cd h5py/
-git checkout 3.13.0
+git checkout $PACKAGE_VERSION
 
 python3.12 -m pip install Cython==0.29.36
 python3.12 -m pip install numpy==2.0.2
