@@ -528,9 +528,16 @@ cd $CURRENT_DIR
 echo "--------------------Installing pyav----------------------------"
 git clone https://github.com/PyAV-Org/PyAV
 cd PyAV
+
+# This command prints both versions, one per line, then sorts them using version-aware sort (-V)
+# The smallest version will appear first
+# If the smallest version is not 0.22.0, then VERSION must be less than 0.22.0
+
 if [ "$(printf '%s\n' "$VERSION" "0.22.0" | sort -V | head -n1)" != "0.22.0" ]; then
+    # VERSION is less than 0.22.0
     git checkout v13.1.0
 else
+    # VERSION is greater than or equal to 0.22.0
     git checkout v14.4.0
 fi
 
@@ -548,6 +555,8 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+sed -i '/elif sha != "Unknown":/,+1d' setup.py
+
 if ! python setup.py bdist_wheel --dist-dir $CURRENT_DIR; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -557,7 +566,6 @@ fi
 
 cd $CURRENT_DIR
 
-mv ./torchvision*.whl $(ls ./torchvision*.whl | sed 's/+[^-]*-/-/')
 pip install ./torchvision*.whl
 
 python3.12 -m pip install pytest pytest-xdist
