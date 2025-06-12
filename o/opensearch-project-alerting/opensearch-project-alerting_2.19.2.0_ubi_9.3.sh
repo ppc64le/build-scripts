@@ -40,26 +40,24 @@ git apply $SCRIPT_DIR/${OPENSEARCH_PACKAGE}_${OPENSEARCH_VERSION}.patch
 
 cd $wdir
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME
-git checkout $PACKAGE_VERSION
+cd $PACKAGE_NAME && git checkout $PACKAGE_VERSION
 
-if ! ./gradlew build -x alerting:alertingBwcCluster#oldVersionClusterTask1 -x alerting:alertingBwcCluster#fullRestartClusterTask -x alerting:alertingBwcCluster#oldVersionClusterTask0 -x alerting:alertingBwcCluster#mixedClusterTask -x alerting:alertingBwcCluster#twoThirdsUpgradedClusterTask -x alerting:alertingBwcCluster#rollingUpgradeClusterTask 
--PcustomDistributionUrl="$wdir/OpenSearch/distribution/archives/linux-ppc64le-tar/build/distributions/opensearch-min-2.19.2-SNAPSHOT-linux-ppc64le.tar.gz"; then
+#skipping the licenseHeader task as failure is in parity with x86
+#skipping the tests related to backward compatibity (bwc) which needs old opensearch tarball (opensearch-min-1.1.0-linux-ppc64le.tar.gz)
+if ! ./gradlew build -x alerting-sample-remote-monitor-plugin:licenseHeaders -x alerting:alertingBwcCluster#oldVersionClusterTask1 -x alerting:alertingBwcCluster#fullRestartClusterTask -x alerting:alertingBwcCluster#oldVersionClusterTask0 -x alerting:alertingBwcCluster#mixedClusterTask -x alerting:alertingBwcCluster#twoThirdsUpgradedClusterTask -x alerting:alertingBwcCluster#rollingUpgradeClusterTask -PcustomDistributionUrl="$wdir/OpenSearch/distribution/archives/linux-ppc64le-tar/build/distributions/opensearch-min-2.19.2-SNAPSHOT-linux-ppc64le.tar.gz"; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
     exit 1
-fi
-
-if ! ./gradlew test; then
+elif ! ./gradlew test; then
     echo "------------------$PACKAGE_NAME::Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Test_fails"
     exit 2
+else
+    # If both the build and test are successful, print the success message
+    echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
+    exit 0
 fi
-
-# If both the build and test are successful, print the success message
-echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
-echo "$PACKAGE_URL $PACKAGE_NAME"
-echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
-exit 0
