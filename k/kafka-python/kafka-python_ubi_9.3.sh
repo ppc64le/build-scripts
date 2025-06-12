@@ -43,6 +43,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+pip install -r requirements-dev.txt
 pip install pytest pytest-timeout
 
 if ! pip install . ; then
