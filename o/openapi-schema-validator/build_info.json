@@ -2,7 +2,7 @@
   "maintainer": "Harithanagothu2",
   "package_name": "openapi-schema-validator",
   "github_url": "https://github.com/p1c2u/openapi-schema-validator",
-  "version": "0.6.3,
+  "version": "0.6.3",
   "wheel_build" : true,
   "package_dir": "o/openapi-schema-validator",
   "default_branch": "master",
