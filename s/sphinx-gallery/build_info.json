@@ -1,0 +1,16 @@
+{
+	"maintainer": "ramnathnayak-ibm",
+	"package_name": "sphinx-gallery",
+	"github_url": "https://github.com/sphinx-gallery/sphinx-gallery",
+	"version": "2.9.10",
+	"default_branch": "master",
+	"build_script": "sphinx-gallery_ubi_9.3.sh",
+	"package_dir": "s/sphinx-gallery",
+	"docker_build": false,
+	"wheel_build": true,
+	"validate_build_script": true,
+	"use_non_root_user": false,
+	"*": {
+	   "build_script": "sphinx-gallery_ubi_9.3.sh"
+	}
+}
