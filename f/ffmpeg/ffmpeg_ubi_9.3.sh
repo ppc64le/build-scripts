@@ -27,7 +27,7 @@ PACKAGE_URL=https://github.com/FFmpeg/FFmpeg
 WORK_DIR=$(pwd)
 
 # Install dependencies
-yum install -y python312 python3.12-devel python3.12-pip gcc-toolset-13 make cmake \
+yum install -y python3.12 python3.12-devel python3.12-pip gcc-toolset-13 make cmake \
   git wget tar pkgconfig autoconf automake libtool zlib-devel freetype-devel \
   gmp-devel openssl openssl-devel 
 
@@ -293,7 +293,7 @@ else
 fi
 
 cd $WORK_DIR
-pip3.12 install setuptools wheel build 
+python3.12 -m pip install setuptools wheel build
 # Build wheel 
 python3.12 -m build --wheel --no-isolation --outdir="$WORK_DIR"
 
