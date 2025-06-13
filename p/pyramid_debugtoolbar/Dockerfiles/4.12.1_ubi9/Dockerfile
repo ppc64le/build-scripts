@@ -9,9 +9,9 @@ ENV PATH="${GCC_TOOLSET_PATH}/bin:$PATH"
 
 RUN yum install -y git make cmake zip tar wget python3 python3-devel python3-pip gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc zlib-devel libjpeg-devel  && \ 
     git clone https://github.com/Pylons/pyramid_debugtoolbar && \
-    cd mock && \
+    cd pyramid_debugtoolbar && \
     git checkout $PACKAGE_VERSION && \
-	  pip install --upgrade pip && \
-	  pip install .
+    pip install --upgrade pip && \
+    pip install .
 	
 CMD ["/bin/bash"]
