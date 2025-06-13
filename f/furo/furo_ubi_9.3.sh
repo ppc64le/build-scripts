@@ -50,16 +50,7 @@ npm config set fetch-retries 5
 npm config set fetch-retry-factor 2
 npm config set fetch-retry-mintimeout 10000
 npm config set fetch-retry-maxtimeout 60000
-
-
-# NODE_VERSION=18.20.2
-# curl -O https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION.tar.gz
-# tar -xzf node-v$NODE_VERSION.tar.gz
-# cd node-v$NODE_VERSION
-# ./configure
-# make -j$(nproc)
-# make install
-# cd .. 
+ 
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
