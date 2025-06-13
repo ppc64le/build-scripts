@@ -1,0 +1,22 @@
+diff --git a/build.gradle b/build.gradle
+index db86e0ebf..a702ac246 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -28,7 +28,7 @@ buildscript {
+                 return "amd64"
+             }
+             else {
+-                return "arm64"
++                return "ppc64le"
+             }
+         }
+         getOSFamilyType = {
+diff --git a/gradle.properties b/gradle.properties
+index 5cf428415..b7c55287e 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -4,3 +4,4 @@
+ 
+ version=1.13.0
+ org.gradle.jvmargs=-Duser.language=en -Duser.country=US
++customDistributionUrl=file://o/opensearch-project-sql/OpenSearch/distribution/archives/linux-ppc64le-tar/build/distributions/opensearch-min-2.19.2-SNAPSHOT-linux-ppc64le.tar.gz
