@@ -18,6 +18,8 @@
 #
 # ----------------------------------------------------------------------------
 
+set -e
+
 PACKAGE_NAME=kafka-python
 PACKAGE_VERSION=${1:-2.2.10}
 PACKAGE_URL=https://github.com/dpkp/kafka-python
