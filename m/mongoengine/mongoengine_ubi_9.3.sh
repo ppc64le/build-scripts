@@ -33,7 +33,7 @@ git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION 
 
-pip3 install pytest pymongo blinker
+pip3 install tox pymongo blinker
 python3 -m pip install -r docs/requirements.txt
 
 if ! pip3 install . ;  then
