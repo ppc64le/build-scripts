@@ -26,7 +26,7 @@ PACKAGE_VERSION=${1:-3.2.3}
 PACKAGE_URL=https://github.com/pyparsing/pyparsing.git
 PACKAGE_DIR=pyparsing
 
-yum install -y git make wget openssl-devel bzip2-devel libffi-devel zlib-devel gcc-toolset-13 libjpeg-devel zlib-devel make
+yum install -y git make wget openssl-devel bzip2-devel libffi-devel zlib-devel gcc-toolset-13 libjpeg-devel zlib-devel make python3 python3-devel python3-pip
 
 #export gcc-toolset path
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
