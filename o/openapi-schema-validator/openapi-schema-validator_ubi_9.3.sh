@@ -18,6 +18,8 @@
 #
 # ----------------------------------------------------------------------------
 
+set -e
+
 PACKAGE_NAME=openapi-schema-validator
 PACKAGE_VERSION=${1:-0.6.3}
 PACKAGE_URL=https://github.com/p1c2u/openapi-schema-validator
