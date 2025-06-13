@@ -204,8 +204,8 @@ git checkout $PACKAGE_VERSION
 git submodule sync
 git submodule update --init --recursive
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.6.0.patch
-git apply pytorch_v2.6.0.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_${PACKAGE_VERSION}.patch
+git apply pytorch_${PACKAGE_VERSION}.patch
 
 ARCH=`uname -p`
 BUILD_NUM="1"
@@ -237,7 +237,7 @@ export USE_OPENMP=1
 export USE_TBB=0
 export BUILD_CUSTOM_PROTOBUF=OFF
 export BUILD_CAFFE2=1
-export PYTORCH_BUILD_VERSION=${PACKAGE_VERSION}
+export PYTORCH_BUILD_VERSION=${PACKAGE_VERSION#v}
 export PYTORCH_BUILD_NUMBER=${BUILD_NUM}
 export USE_CUDA=0
 export USE_CUDNN=0
@@ -247,8 +247,6 @@ export Protobuf_LIBRARIES=${LIBPROTO_INSTALL}/lib64
 export Protobuf_LIBRARY=${LIBPROTO_INSTALL}/lib64/libprotobuf.so
 export Protobuf_LITE_LIBRARY=${LIBPROTO_INSTALL}/lib64/libprotobuf-lite.so
 export Protobuf_PROTOC_EXECUTABLE=${LIBPROTO_INSTALL}/bin/protoc
-export LD_LIBRARY_PATH=/pytorch/torch/lib64/libprotobuf.so.3.13.0.0:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/pytorch/build/lib/libprotobuf.so.3.13.0.0:$LD_LIBRARY_PATH
 export PATH="/protobuf/local/libprotobuf/bin/protoc:${PATH}"
 export LD_LIBRARY_PATH="/protobuf/local/libprotobuf/lib64:${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH="/protobuf/third_party/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
