@@ -59,7 +59,7 @@ fi
 export AWS_REGION=us-east-1
 export AWS_DEFAULT_REGION=us-east-1
 
-#Skipping few tests due to failure parity on both x86 and Power platforms.
+#Skipping few tests due to failure parity on both x86 and Power platform
 if ! pytest -v --ignore=test/contrib --ignore=test/customized_run_test.py --ignore=test/server_test.py --ignore=test/cmdline_test.py --ignore=test/lock_test.py --ignore=test/mypy_test.py -k "not test_sending_same_task_twice_without_cooldown_leads_to_double_run and not test_dynamic_dependencies" -p no:warnings -W ignore ; then
    echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
    echo "$PACKAGE_URL $PACKAGE_NAME"
