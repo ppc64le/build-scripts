@@ -27,6 +27,7 @@ PACKAGE_DIR=luigi
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
+#install dependencies
 yum install -y python3 python3-devel python3-pip git gcc-toolset-13 wget bzip2 bzip2-devel openssl openssl-devel make
 
 #export path for gcc-13
