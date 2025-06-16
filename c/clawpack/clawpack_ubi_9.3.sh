@@ -39,7 +39,7 @@ export CXX=$GCC_HOME/bin/g++
 
 yum install -y libjpeg-turbo-devel freetype-devel libwebp-devel
 
-python3.11 -m pip install numpy pytest nose matplotlib coverage pytest-cov
+python3.11 -m pip install numpy pytest nose matplotlib coverage pytest-cov packaging 
 
 cd $CURRENT_DIR
 
@@ -96,7 +96,7 @@ export LDFLAGS="-L$HDF5_DIR/lib"
 export LD_LIBRARY_PATH=$HDF5_DIR/lib:$LD_LIBRARY_PATH
 
 # Install Python build tools
-python3.11 -m pip install --upgrade pip setuptools wheel cython
+python3.11 -m pip install --upgrade pip setuptools wheel cython packaging
 
 # Build wheel
 python3.11 setup.py bdist_wheel
