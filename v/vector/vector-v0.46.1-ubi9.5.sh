@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/vectordotdev/vector
 # Tested on     : UBI 9.5 (docker)
 # Language      : Rust
-# Travis-Check  : True
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sumit Dubey <Sumit.Dubey2@ibm.com>
 #
