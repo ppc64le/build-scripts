@@ -16,7 +16,7 @@
        "build_script": "luigi_ubi_8.7.sh"
     },
      "*" : {
-       "dir": "3.5.0_ubi9",
+       "dir": "3.6.0_ubi9",
        "build_script": "luigi_ubi_9.3.sh"
     }
 }
