@@ -175,7 +175,7 @@ def raise_pull_request(branch_pkg, base="master"):
     pr_body = "Adding build_script and build_info.json"
 
     if package_language == "python" and args.generate_wheel_arg:
-	pr_title = "Python Ecosystem: Added build_script and build_info.json for "+package_name
+        pr_title = "Python Ecosystem: Added build_script and build_info.json for "+package_name
         with open('./templates/pyeco_pull_request_description.md', 'r') as file:
             pr_body = file.read()
 		
