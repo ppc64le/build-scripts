@@ -17,7 +17,6 @@
 #                    contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
 set -ex
 
 PACKAGE_NAME=luigi
