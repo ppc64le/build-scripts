@@ -1,14 +1,14 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : pyramid_jinja2
-# Version          : 2.10.1
-# Source repo      : https://github.com/Pylons/pyramid_jinja2
+# Package          : ansible-runner
+# Version          : 2.4.1
+# Source repo      : https://github.com/ansible/ansible-runner
 # Tested on        : UBI:9.3
 # Language         : Python
 # Travis-Check     : True
-# Script License   : GNU General Public License v3.0
-# Maintainer       : Ramnath Nayak <Ramnath.Nayak@ibm.com>
+# Script License   : Apache License, Version 2 or later
+# Maintainer       : Vinod K<Vinod.K1@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -16,36 +16,35 @@
 #                    package and/or distribution. In such case, please
 #                    contact "Maintainer" of this script.
 #
-# ----------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 
-PACKAGE_NAME=pyramid_jinja2
-PACKAGE_VERSION=${1:-2.10.1}
-PACKAGE_URL=https://github.com/Pylons/pyramid_jinja2
-PACKAGE_DIR=pyramid_jinja2
+# Variables
+PACKAGE_NAME=ansible-runner
+PACKAGE_VERSION=${1:-2.4.1}
+PACKAGE_URL=https://github.com/ansible/ansible-runner
 
-CURRENT_DIR=${PWD}
+# Install dependencies
+yum install -y git make wget gcc-toolset-13 openssl-devel python3 python3-pip python3-devel openssl-devel 
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
-yum install -y git make cmake zip tar wget python3 python3-devel python3-pip gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc zlib-devel libjpeg-devel openssl openssl-devel
-
-export GCC_TOOLSET_PATH=/opt/rh/gcc-toolset-13/root/usr
-export PATH=$GCC_TOOLSET_PATH/bin:$PATH
-
-pip install -U pip
-pip install build tox webtest --ignore-installed
-
-# Clone and build source code.
+# Clone the repository
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if ! pip install . ; then
+pip install pytest cryptography pytest-timeout ansible-core pytest-mock pytest-timeout pytest-forked
+
+
+if ! pip install -e . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-if ! tox -e py3 ; then
+#run tests  
+if ! pytest --forked test/unit/ ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
