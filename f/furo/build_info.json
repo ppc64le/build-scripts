@@ -2,6 +2,7 @@
   "maintainer": "Harithanagothu2",
   "package_name": "furo",
   "github_url": "https://github.com/pradyunsg/furo",
+  "required_versions":{"Releases": ["*"], "Tags": ["2024.08.06"]}, 
   "version": "2024.08.06",
   "wheel_build" : true,
   "package_dir": "f/furo",
