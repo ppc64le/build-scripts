@@ -23,7 +23,7 @@ index 37bf6748c..1e1fe1c15 100644
 \ No newline at end of file
 +}
 diff --git a/build.gradle b/build.gradle
-index db86e0ebf..c6322dce4 100644
+index db86e0ebf..67c359b13 100644
 --- a/build.gradle
 +++ b/build.gradle
 @@ -28,7 +28,7 @@ buildscript {
@@ -43,20 +43,6 @@ index db86e0ebf..c6322dce4 100644
  plugins {
      id "com.netflix.nebula.ospackage-base" version "11.5.0"
      id 'java-library'
-@@ -71,6 +70,13 @@ plugins {
-     id 'jacoco'
-     id 'com.diffplug.spotless' version '6.22.0'
- }
-+if (!project.hasProperty('customDistributionUrl')) {
-+    def fromEnv = System.getenv("CUSTOM_OS_DIST")
-+    if (fromEnv != null) {
-+        project.ext.set("customDistributionUrl", fromEnv)
-+        println "INFO: customDistributionUrl set from \$CUSTOM_OS_DIST"
-+    }
-+}
- 
- // import versions defined in https://github.com/opensearch-project/OpenSearch/blob/main/buildSrc/src/main/java/org/opensearch/gradle/OpenSearchJavaPlugin.java#L94
- // versions https://github.com/opensearch-project/OpenSearch/blob/main/buildSrc/version.properties
 diff --git a/core/build.gradle b/core/build.gradle
 index edd16093b..3b9a91126 100644
 --- a/core/build.gradle
@@ -109,25 +95,44 @@ index 1d1127ad0..52ccf4254 100644
  jacocoTestReport {
      reports {
 diff --git a/doctest/build.gradle b/doctest/build.gradle
-index 4fe20ba21..bd77ab35c 100644
+index 4fe20ba21..5c9a31fc0 100644
 --- a/doctest/build.gradle
 +++ b/doctest/build.gradle
-@@ -148,7 +148,14 @@ testClusters {
-         */
-         plugin(getJobSchedulerPlugin(jsPlugin, bwcOpenSearchJSDownload))
-         plugin ':opensearch-sql-plugin'
--        testDistribution = 'archive'
-+        //testDistribution = 'archive'
-+        if (project.hasProperty('customDistributionUrl')) {
-+            println ">>> [DEBUG] Using custom OpenSearch distro: ${project.property('customDistributionUrl')}"
-+            testDistribution = 'archive'
-+            systemProperty 'testclusters.archive.path', project.property('customDistributionUrl')
-+        } else {
-+            testDistribution = 'archive'
-+        }
+@@ -65,12 +65,33 @@ task startPrometheus(type: SpawnProcessTask) {
+ 
+ //evaluationDependsOn(':')
+ task startOpenSearch(type: SpawnProcessTask) {
+-    if( getOSFamilyType() == "windows") {
++   /* if( getOSFamilyType() == "windows") {
+         command "${path}\\gradlew.bat -p ${plugin_path} runRestTestCluster"
      }
+     else {
+         command "${path}/gradlew -p ${plugin_path} runRestTestCluster"
+     }
++    ready 'started' */
++    // Adding logic for ppc64le
++    def customDistUrl = System.getenv('OPENSEARCH_DIST_PATH')
++    ?: (project.hasProperty('customDistributionUrl')
++        ? project.property('customDistributionUrl')
++        : null)
++
++    if (!customDistUrl) {
++        throw new GradleException("customDistributionUrl must be set via -PcustomDistributionUrl or OPENSEARCH_DIST_PATH")
++    }
++
++    def cmd
++    if (getOSFamilyType() == "windows") {
++        cmd = "${path}\\gradlew.bat -p ${plugin_path} -PcustomDistributionUrl=${customDistUrl} runRestTestCluster"
++    } 
++    else {
++       cmd = "${path}/gradlew -p ${plugin_path} -PcustomDistributionUrl=${customDistUrl} runRestTestCluster"
++    }
++
++    println "Running: $cmd"
++    command cmd
+     ready 'started'
  }
- tasks.register("runRestTestCluster", RunTask) {
+ 
 diff --git a/opensearch/build.gradle b/opensearch/build.gradle
 index 92cc92ac7..e229b0b5a 100644
 --- a/opensearch/build.gradle
