@@ -9,5 +9,5 @@
   "build_script": "quarkus_ubi_9.sh",
   "docker_build": false,
   "validate_build_script": true,
-  "use_non_root_user": false
+  "use_non_root_user": true
 }
