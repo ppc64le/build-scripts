@@ -35,7 +35,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 
-pip install pytest pytest-asyncio pytest-tornasync pytest-trio pytest-mock
+pip install pytest pytest-asyncio pytest-tornasync virtualenv pytest-trio pytest-mock
 
 if ! pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
