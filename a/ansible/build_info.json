@@ -1,15 +1,18 @@
 {
-  "maintainer": "bharti-0211",
-  "package_name": "ansible",
-  "github_url": "https://github.com/ansible/ansible.git",
-  "version": "v2.18.6",
-  "package_dir": "a/ansible",
-  "default_branch": "devel",
-  "build_script": "ansible_ubi_9.3.sh",
-  "docker_build": false,
-  "validate_build_script": true,
-  "use_non_root_user": "false",
-  "*": {
-    "build_script": "ansible_ubi_9.3.sh"
-  }
+   "maintainer": "atongse",
+   "package_name": "ansible",
+   "github_url": "https://github.com/ansible/ansible.git",
+   "version": "*",
+   "default_branch": "devel",
+   "build_script": "ansible_ubi_9.3.sh",
+   "package_dir": "a/ansible",
+   "docker_build": true,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*": {
+      "dir": "latest_ubuntu_16.04",
+      "base_docker_image": "ppc64le/ubuntu:16.04",
+      "base_docker_variant": "ubuntu"
+   }
 }
