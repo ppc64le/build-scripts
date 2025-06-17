@@ -26,6 +26,7 @@ PACKAGE_VERSION=${1:-v0.22.0}
 PACKAGE_URL=https://github.com/pytorch/vision.git
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 MAX_JOBS=${MAX_JOBS:-$(nproc)}
+VERSION=${PACKAGE_VERSION#v}
 
 CURRENT_DIR=$(pwd)
 
@@ -381,11 +382,11 @@ cd $CURRENT_DIR
 
 echo "---------------------------Installing FFmpeg------------------"
 #Cloning Source Code
-PACKAGE_VERSION=${1:-n7.1}
+FFMPEG_PACKAGE_VERSION=${1:-n7.1}
 
 git clone https://github.com/FFmpeg/FFmpeg
 cd FFmpeg
-git checkout $PACKAGE_VERSION
+git checkout $FFMPEG_PACKAGE_VERSION
 git submodule update --init
 
 mkdir ffmpeg_prefix
@@ -473,7 +474,7 @@ cd $CURRENT_DIR
 mkdir -p local/ffmpeg
 cp -r FFmpeg/ffmpeg_prefix/* local/ffmpeg/
 
-PACKAGE_VERSION=$(echo "$PACKAGE_VERSION" | sed 's/[^0-9.]//g')
+FFMPEG_PACKAGE_VERSION=$(echo "$FFMPEG_PACKAGE_VERSION" | sed 's/[^0-9.]//g')
 
 export LD_LIBRARY_PATH=${LAME_PREFIX}/lib:${LIBVPX_PREFIX}/lib:${OPUS_PREFIX}/lib:${FFMPEG_PREFIX}/lib:${LD_LIBRARY_PATH}
 
@@ -550,7 +551,6 @@ python3.12 setup.py build_ext --inplace
 cd $CURRENT_DIR
 
 echo "------------------Building torchvision------------------------"
-PACKAGE_VERSION=${1:-v0.22.0}
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
