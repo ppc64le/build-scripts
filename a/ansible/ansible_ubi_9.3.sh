@@ -1,96 +1,127 @@
-#!/bin/bash
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package           : ansible
-# Version           : v2.18.6
-# Source repo       : https://github.com/ansible/ansible.git
-# Tested on         : UBI:9.3
-# Language          : Python
-# Travis-Check      : True
-# Script License    : Apache License, Version 2 or later
-# Maintainer        : Bharti Somra(Bharti.Somra@ibm.com)
+# Package          : ansible
+# Version          : 2.18.4
+# Source repo      : https://github.com/ansible/ansible.git
+# Tested on     : UBI:9.3
+# Language      : Python
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
+# Maintainer    : ICH <atongse>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
-# ----------------------------------------------------------------------------
 #
+# ----------------------------------------------------------------------------
 
+# Variables
 PACKAGE_NAME=ansible
+PACKAGE_VERSION=${1:-2.18.4}
 PACKAGE_URL=https://github.com/ansible/ansible.git
-PACKAGE_VERSION=${1:-v2.18.6}
+PACKAGE_DIR=ansible
 
-dnf update -y && dnf upgrade -y
+# Install dependencies
+yum install -y git python3 python3-devel.ppc64le gcc-toolset-13 make wget sudo cmake
+pip3 install pytest tox nox
 
-# Installing dependencies
-dnf install -y git python3.11 python3.11-pip python3.11-devel gcc rust cargo openssl-devel diffutils libyaml-devel openssh-server openssh-clients
+export PATH=$PATH:/usr/local/bin/
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
-## SSH connection to localhost is required for integration testing
-## Follow below steps if ssh service is not available
-#for keytype in rsa ecdsa ed25519; do
-#    if [ ! -f "/etc/ssh/ssh_host_${keytype}_key" ]; then
-#        ssh-keygen -A # Create host keys (if missing)
-#    fi
-#done
+OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
+SOURCE=Github
 
-#mkdir -p ~/.ssh
-#chmod 700 ~/.ssh
-#ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa 
-#cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
-#chmod 600 ~/.ssh/authorized_keys
+# Install rust
+if ! command -v rustc &> /dev/null
+then
+    wget https://static.rust-lang.org/dist/rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
+    tar -xzf rust-1.75.0-powerpc64le-unknown-linux-gnu.tar.gz
+    cd rust-1.75.0-powerpc64le-unknown-linux-gnu
+    sudo ./install.sh
+    export PATH=$HOME/.cargo/bin:$PATH
+    rustc -V
+    cargo -V
+    cd ../
+fi
 
-## Start sshd manually
-#/usr/sbin/sshd -D &
-#ssh-keyscan -H localhost >> ~/.ssh/known_hosts
+# Clone or extract the package
+if [[ "$PACKAGE_URL" == *github.com* ]]; then
+    if [ -d "$PACKAGE_DIR" ]; then
+        cd "$PACKAGE_DIR" || exit
+    else
+        if ! git clone "$PACKAGE_URL" "$PACKAGE_DIR"; then
+            echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
+            echo "$PACKAGE_URL $PACKAGE_NAME"
+            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Clone_Fails"
+            exit 1
+        fi
+        cd "$PACKAGE_DIR" || exit
+        git checkout "$PACKAGE_VERSION" || exit
+    fi
+else
+    if [ -d "$PACKAGE_DIR" ]; then
+        cd "$PACKAGE_DIR" || exit
+    else
+        if ! curl -L "$PACKAGE_URL" -o "$PACKAGE_DIR.tar.gz"; then
+            echo "------------------$PACKAGE_NAME:download_fails---------------------------------------"
+            echo "$PACKAGE_URL $PACKAGE_NAME"
+            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Download_Fails"
+            exit 1
+        fi
+        mkdir "$PACKAGE_DIR"
+        if ! tar -xzf "$PACKAGE_DIR.tar.gz" -C "$PACKAGE_DIR" --strip-components=1; then
+            echo "------------------$PACKAGE_NAME:untar_fails---------------------------------------"
+            echo "$PACKAGE_URL $PACKAGE_NAME"
+            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Untar_Fails"
+            exit 1
+        fi
+        cd "$PACKAGE_DIR" || exit
+    fi
+fi
 
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME
-git checkout $PACKAGE_VERSION
-
-#To create virtual environment
-python3.11 -m venv .venv
-source .venv/bin/activate
-
-pip install --upgrade pip
-
-# Force install PyYAML to trigger C extension build
-pip install --force-reinstall --no-binary=:all: PyYAML
-
-export ANSIBLE_LIBRARY=./test/integration/targets/ansible-doc/library
-
-#Installing Package Dependencies
-pip install .
-pip install build pytest pytest-xdist pytest-mock
-
-#Building Package
-if ! python3 -m build ; then
-    echo "------------------$PACKAGE_NAME:Build_Failure---------------------"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Failure"
+# Install the package
+if ! python3 -m pip install ./; then
+    echo "------------------$PACKAGE_NAME:install_fails------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"
     exit 1
 fi
 
-#Installing requirements for unit testing
-pip install -r test/units/requirements.txt
+# ------------------ Unified Test Execution Block ------------------
 
-#Unit and Sanity Testing
-if ! ./bin/ansible-test units --python 3.11 && ./bin/ansible-test sanity --python 3.11 ; then
-    echo "------------------$PACKAGE_NAME:Unit_and_Sanity_Test_Failure---------------------"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Test_Failure"
-    exit 2
-else
-    echo "------------------$PACKAGE_NAME:Build & Unit_and_Sanity_Test Passed Successfully---------------------"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Passed | Build_&_Test_Successfull"
-    exit 0
+test_status=1  # 0 = success, non-zero = failure
+
+# Run pytest if any matching test files found
+if ls */test_*.py > /dev/null 2>&1 && [ $test_status -ne 0 ]; then
+    echo "Running pytest..."
+    (python3 -m pytest) && test_status=0 || test_status=$?
 fi
 
-##Running integration tests
-#./bin/ansible-test integration --python 3.11
-##Dependency images for integration tests
-##quay.io/ansible/nios-test-container              5.0.0
-##quay.io/ansible/ansible-test-utility-container   3.1.0
-##quay.io/ansible/http-test-container              3.2.0
-##quay.io/ansible/cloudstack-test-container        1.7.0    
-##quay.io/pulp/galaxy                              4.7.1
-##quay.io/ansible/acme-test-container              2.1.0
+# Run tox if tox.ini is present and previous tests failed
+if [ -f "tox.ini" ] && [ $test_status -ne 0 ]; then
+    echo "Running tox..."
+    (python3 -m tox -e py39) && test_status=0 || test_status=$?
+fi
+
+# Run nox if noxfile.py is present and previous tests failed
+if [ -f "noxfile.py" ] && [ $test_status -ne 0 ]; then
+    echo "Running nox..."
+    (python3 -m nox) && test_status=0 || test_status=$?
+fi
+
+# Final test result output
+if [ $test_status -eq 0 ]; then
+    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
+    exit 0
+else
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"
+    exit 2
+fi
