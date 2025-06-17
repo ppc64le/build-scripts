@@ -2,6 +2,7 @@
   "maintainer": "vinodk99",
   "package_name": "django",
   "github_url": "https://github.com/django/django",
+  "wheel_build" : true,
   "version": "5.0.7",
   "default_branch": "main",
   "package_dir": "d/django",
@@ -9,7 +10,7 @@
   "validate_build_script": true,
   "use_non_root_user": "false",
   "docker_build": false,
-  "*.*.*,*.1* ": {
+  "*": {
     "build_script": "django_ubi_9.3.sh"
   }
 }
