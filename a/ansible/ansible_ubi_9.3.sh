@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : ansible
-# Version          : 2.18.4
+# Version          : v2.18.4
 # Source repo      : https://github.com/ansible/ansible.git
 # Tested on     : UBI:9.3
 # Language      : Python
@@ -20,7 +20,7 @@
 
 # Variables
 PACKAGE_NAME=ansible
-PACKAGE_VERSION=${1:-2.18.4}
+PACKAGE_VERSION=${1:-v2.18.4}
 PACKAGE_URL=https://github.com/ansible/ansible.git
 PACKAGE_DIR=ansible
 
