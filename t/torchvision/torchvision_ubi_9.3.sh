@@ -114,7 +114,7 @@ cd $CURRENT_DIR
 echo "--------------------scipy installing-------------------------------"
 
 #Building scipy
-python3.12 -m pip install beniget==0.4.2.post1 Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja patchelf
+python3.12 -m pip install beniget==0.4.2.post1 Cython gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja patchelf
 git clone https://github.com/scipy/scipy
 cd scipy/
 git checkout v1.15.2
@@ -539,7 +539,9 @@ if [ "$(printf '%s\n' "$VERSION" "0.22.0" | sort -V | head -n1)" != "0.22.0" ]; 
     git checkout v13.1.0
 else
     # VERSION is greater than or equal to 0.22.0
+    # This PyAV version must match the runtime PyAV version.
     git checkout v14.4.0
+    sed -i 's/license = "BSD-3-Clause"/license = {text = "BSD-3-Clause"}/' pyproject.toml
 fi
 
 git submodule update --init
