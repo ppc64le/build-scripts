@@ -559,7 +559,7 @@ git checkout $PACKAGE_VERSION
 
 sed -i '/elif sha != "Unknown":/,+1d' setup.py
 
-if ! python setup.py bdist_wheel --dist-dir $CURRENT_DIR; then
+if ! python3.12 setup.py bdist_wheel --dist-dir $CURRENT_DIR; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
