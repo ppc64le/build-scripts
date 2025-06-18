@@ -1,0 +1,16 @@
+{
+  "maintainer": "kiranNukal",
+  "package_name": "cutadapt",
+  "github_url": "https://github.com/marcelm/cutadapt",
+  "version": "v5.1",
+  "wheel_build" : true,
+  "default_branch": "main",
+  "build_script": "cutadapt_ubi_9.3.sh",
+  "package_dir": "c/cutadapt",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+   "build_script": "cutadapt_ubi_9.3.sh"
+ }
+}
