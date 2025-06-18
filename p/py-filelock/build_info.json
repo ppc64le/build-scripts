@@ -1,0 +1,16 @@
+{
+  "maintainer": "Harithanagothu2",
+  "package_name": "py-filelock",
+  "github_url": "https://github.com/benediktschmitt/py-filelock",
+  "version": "3.18.0",
+  "wheel_build" : true,
+  "package_dir": "p/py-filelock",
+  "default_branch": "main",
+  "build_script": "py-filelock_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*":{
+    "build_script":"py-filelock_ubi_9.3.sh"
+  }
+}

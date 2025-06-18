@@ -172,6 +172,19 @@ def raise_pull_request(branch_pkg, base="master"):
             "Authorization": "Bearer {}".format(github_token)
     }
 
+    #Check if PR already exists
+    search_url = f"https://api.github.com/repos/{pr_owner}/{pr_repo}/pulls?head={head}&state=open"
+    existing_pr_response = requests.get(search_url, headers=headers)
+
+    if existing_pr_response.status_code == 200:
+        existing_prs = existing_pr_response.json()
+        if existing_prs:
+            print("\nPR already exists.")
+            return {
+                "message": "already_exists",
+                "pr_url": existing_prs[0].get("html_url")
+            }
+
     pr_body = "Adding build_script and build_info.json"
 
     if package_language == "python" and args.generate_wheel_arg:
@@ -216,8 +229,8 @@ def add_license_file():
 
 
 def create_new_script():       
-    branch_chout=f"git checkout -b {package_name}_automation"
-    branch_pkg=f"{package_name}_automation"
+    branch_chout=f"git checkout -b {package_name}_{latest_release}_automation"
+    branch_pkg=f"{package_name}_{latest_release}_automation"
     print("\n\n Creating Branch and Checking Out")
     subprocess.Popen(branch_chout,shell=True)
 
@@ -309,7 +322,7 @@ def create_new_script():
         git_commit_w.wait()
     
         #git push commands
-        cmd_push=f"git push origin {package_name}_automation"
+        cmd_push=f"git push origin {package_name}_{latest_release}_automation"
         print("\n\n pushing code")
         git_push_w=subprocess.Popen(cmd_push,shell=True)
         git_push_w.wait()
