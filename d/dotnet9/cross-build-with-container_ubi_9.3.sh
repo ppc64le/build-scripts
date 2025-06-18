@@ -1,14 +1,14 @@
 #!/bin/bash -ex
 # ----------------------------------------------------------------------------
 #
-# Package       : dotnet9
+# Package       : dotnet
 # Version       : 9.0.100
 # Source repo   : https://github.com/dotnet/dotnet
-# Tested on     : NA
+# Tested on     : Ubuntu
 # Language      : dotnet
 # Travis-Check  : False
 # Script License: MIT License (MIT)
-# Maintainer    : Ashwini Kadam
+# Maintainer    : Ashwini Kadam <Ashwini.Kadam@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
