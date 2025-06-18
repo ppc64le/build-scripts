@@ -1,5 +1,24 @@
-#!/bin/bash
-
+#!/bin/bash -ex
+# ----------------------------------------------------------------------------
+#
+# Package       : dotnet9
+# Version       : 9.0.100
+# Source repo   : https://github.com/dotnet/dotnet
+# Tested on     : NA
+# Language      : dotnet
+# Travis-Check  : False
+# Script License: MIT License (MIT)
+# Maintainer    : Ashwini Kadam
+#
+# Disclaimer: This script has been tested in root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
+# Performs a build and runs tests of https://github.com/dotnet/dotnet
+# to detect regressions early
 # Performs a build and runs tests of https://github.com/dotnet/dotnet
 # to detect regressions early
 
