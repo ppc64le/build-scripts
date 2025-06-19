@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "semantic-version",
+   "github_url": "https://github.com/rbarrois/python-semanticversion",
+   "version": "2.10.0",
+   "default_branch": "master",
+   "build_script": "semantic-version_ubi_9.3.sh",
+   "package_dir": "s/semantic-version",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
