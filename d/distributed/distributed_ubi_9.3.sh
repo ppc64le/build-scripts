@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-2025.5.1}
 PACKAGE_URL=https://github.com/dask/distributed
 PACKAGE_DIR=distributed
 
-yum install -y python3.12 python3.12-pip python3.12-devel git gcc-toolset-13 gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ openssl-devel xz-devel xz.ppc64le
+yum install -y python3.12 python3.12-pip python3.12-devel git gcc-toolset-13 gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ openssl-devel
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 pip3.12 install  versioneer pytest-cov flaky pytest-timeout
@@ -39,22 +39,15 @@ cd ..
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION 
-
+pip3.12 install tox
 if ! pip3.12 install -e . ;  then  
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-
-# ----------------------------------------------------------------------
-# The following test files are deselected due to:
-# - unstable assertions errors
-# - Missing runtime features (e.g. no IPv6 support, permission errors)
-# - Missing or broken dependencies (e.g. YAML.CSafeDumper)
-# - Some tests may require `--runslow` to be executed.
-# - Some tests are designed to be retried and need `--reruns N`.
-if ! pytest --deselect=distributed/tests/test_worker.py --deselect=distributed/comm/tests/test_comms.py --deselect=distributed/deploy/tests/test_local.py --deselect=distributed/tests/test_cluster_dump.py --deselect=distributed/tests/test_diskutils.py --deselect=distributed/tests/test_scheduler.py --deselect=distributed/tests/test_spill.py --deselect=distributed/comm/tests/test_ws.py --deselect=distributed/deploy/tests/test_slow_adaptive.py --deselect=distributed/diagnostics/tests/test_progress.py --deselect=distributed/tests/test_client.py; then
+export DISABLE_IPV6=1
+if ! tox -e py312 ; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
