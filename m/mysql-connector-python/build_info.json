@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "mysql-connector-python",
+   "github_url": "https://github.com/mysql/mysql-connector-python",
+   "version": "9.3.0",
+   "default_branch": "trunk",
+   "build_script": "mysql-connector-python_ubi_9.3.sh",
+   "package_dir": "m/mysql-connector-python",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
