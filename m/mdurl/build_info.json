@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "mdurl",
+   "github_url": "https://github.com/markdown-it/mdurl",
+   "version": "0.1.2",
+   "default_branch": "master",
+   "build_script": "mdurl_ubi_9.3.sh",
+   "package_dir": "m/mdurl",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
