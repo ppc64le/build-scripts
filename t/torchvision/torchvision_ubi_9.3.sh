@@ -568,7 +568,7 @@ fi
 
 cd $CURRENT_DIR
 
-pip install ./torchvision*.whl
+python3.12 -m pip install ./torchvision*.whl
 
 python3.12 -m pip install pytest pytest-xdist
 
