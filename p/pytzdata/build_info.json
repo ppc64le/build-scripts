@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "pytzdata",
+   "github_url": "https://github.com/sdispater/pytzdata",
+   "version": "2020.1",
+   "default_branch": "master",
+   "build_script": "pytzdata_ubi_9.3.sh",
+   "package_dir": "p/pytzdata",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
