@@ -28,7 +28,7 @@ CURRENT_DIR=$(pwd)
 
 # Install necessary system dependencies
 yum install -y git make wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas \
-gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc gcc-toolset-13-binutils libtool xz xz-devel zlib-devel openssl-devel bzip2-devel cmake\
+gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc gcc-toolset-13-binutils libtool xz xz-devel zlib-devel openssl-devel bzip2-devel cmake \
 libffi-devel libevent-devel patch ninja-build gcc-toolset-13-libatomic-devel libjpeg-devel brotli-devel lz4-devel
 
 
