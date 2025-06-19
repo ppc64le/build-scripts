@@ -4,9 +4,9 @@
 # Package       : graphql-engine 
 # Version       : 2.45.2
 # Source repo   : https://github.com/hasura/graphql-engine.git
-# Tested on     : UBI 9.3 (ppc64le)
+# Tested on     : Fedora 42 (ppc64le)
 # Language      : GHC (Haskell)
-# Travis-Check  : true
+# Travis-Check  : false
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sumit Dubey <sumit.dubey2@ibm.com>
 #
