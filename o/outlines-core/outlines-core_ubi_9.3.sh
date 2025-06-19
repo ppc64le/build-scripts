@@ -28,8 +28,8 @@ CURRENT_DIR=$(pwd)
 
 # Install necessary system dependencies
 yum install -y git make wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas \
-               gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc gcc-toolset-13-binutils libtool xz xz-devel zlib-devel openssl-devel bzip2-devel cmake\
-               libffi-devel libevent-devel patch ninja-build gcc-toolset-13-libatomic-devel libjpeg-devel brotli-devel lz4-devel
+gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc gcc-toolset-13-binutils libtool xz xz-devel zlib-devel openssl-devel bzip2-devel cmake\
+libffi-devel libevent-devel patch ninja-build gcc-toolset-13-libatomic-devel libjpeg-devel brotli-devel lz4-devel
 
 
 
@@ -734,10 +734,10 @@ cd $CURRENT_DIR
 git clone -b $PACKAGE_VERSION $PACKAGE_URL
 cd $PACKAGE_NAME
 
-pip install setuptools pytest pydantic pytest-cov transformers sentencepiece datasets
+python3.12 -m pip install setuptools pytest pydantic pytest-cov transformers sentencepiece datasets
 
 #install
-if ! (pip3.12 install -e .) ; then
+if ! (python3.12 -m pip install -e .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -747,7 +747,7 @@ export LD_LIBRARY_PATH=$OPENBLAS_PREFIX/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH="${RE2_PREFIX}/lib:$LD_LIBRARY_PATH"
 
 #run tests
-if !(pytest --cov=outlines_core -vv); then
+if !(pytest); then
     echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
