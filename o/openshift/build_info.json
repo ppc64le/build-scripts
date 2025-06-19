@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "openshift",
+   "github_url": "https://github.com/openshift/openshift-restclient-python",
+   "version": "v0.13.2",
+   "default_branch": "master",
+   "build_script": "openshift_ubi_9.3.sh",
+   "package_dir": "o/openshift",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
