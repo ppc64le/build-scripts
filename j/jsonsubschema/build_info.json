@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "jsonsubschema",
+   "github_url": "https://github.com/IBM/jsonsubschema",
+   "version": "v0.0.7",
+   "default_branch": "master",
+   "build_script": "jsonsubschema_ubi_9.3.sh",
+   "package_dir": "j/jsonsubschema",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
