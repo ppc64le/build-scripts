@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "autowrapt",
+   "github_url": "https://github.com/GrahamDumpleton/autowrapt",
+   "version": "1.0",
+   "default_branch": "master",
+   "build_script": "autowrapt_ubi_9.3.sh",
+   "package_dir": "a/autowrapt",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
