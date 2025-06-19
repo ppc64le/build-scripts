@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "sniffio",
+   "github_url": "https://github.com/python-trio/sniffio",
+   "version": "v1.3.1",
+   "default_branch": "master",
+   "build_script": "sniffio_ubi_9.3.sh",
+   "package_dir": "s/sniffio",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
