@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "jsonpatch",
+   "github_url": "https://github.com/mattbaird/jsonpatch.git",
+   "version": "v1.33",
+   "default_branch": "master",
+   "build_script": "jsonpatch_ubi_9.3.sh",
+   "package_dir": "j/jsonpatch",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
