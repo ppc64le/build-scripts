@@ -33,7 +33,7 @@ git clone $PACKAGE_URL $PACKAGE_NAME
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION 
 
-pip3 install pytest 'pymongo==3.11.4' blinker
+pip3 install tox 'pymongo==3.11.4' blinker
 python3 -m pip install -r docs/requirements.txt
 
 if ! pip3 install . ;  then
@@ -43,7 +43,7 @@ if ! pip3 install . ;  then
     exit 1
 fi
 
-if ! pytest ; then
+if ! tox -e $(echo py3.9-mg311 | tr -d . | sed -e 's/pypypy/pypy/') -- -k test_ci_placeholder ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
