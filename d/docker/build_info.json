@@ -1,0 +1,18 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "docker",
+   "github_url": "https://github.com/docker/docker-py",
+   "version": "*",
+   "default_branch": "main",
+   "build_script": "docker_ubi_9.3.sh",
+   "package_dir": "d/docker",
+   "docker_build": true,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*": {
+      "dir": "wurstmeister_ubuntu_16.04",
+      "base_docker_image": "ubuntu:xenial",
+      "base_docker_variant": "ubuntu"
+   }
+}
