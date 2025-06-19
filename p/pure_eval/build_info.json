@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "pure_eval",
+   "github_url": "http://github.com/alexmojaki/pure_eval",
+   "version": "v0.2.3",
+   "default_branch": "master",
+   "build_script": "pure_eval_ubi_9.3.sh",
+   "package_dir": "p/pure_eval",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
