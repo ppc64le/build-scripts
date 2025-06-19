@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "nbclient",
+   "github_url": "https://github.com/jupyter/nbclient",
+   "version": "v0.10.2",
+   "default_branch": "main",
+   "build_script": "nbclient_ubi_9.3.sh",
+   "package_dir": "n/nbclient",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
