@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "minio",
+   "github_url": "https://github.com/minio/minio-py",
+   "version": "7.2.15",
+   "default_branch": "master",
+   "build_script": "minio_ubi_9.3.sh",
+   "package_dir": "m/minio",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
