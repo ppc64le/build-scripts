@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "llama-index-core",
+   "github_url": "https://github.com/run-llama/llama_index",
+   "version": "v0.12.32",
+   "default_branch": "main",
+   "build_script": "llama-index-core_ubi_9.3.sh",
+   "package_dir": "l/llama-index-core",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
