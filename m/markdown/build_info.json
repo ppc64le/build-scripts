@@ -1,19 +1,13 @@
 {
-  "maintainer": "aastha-sharma2",
-  "package_name": "markdown",
-  "github_url": "https://github.com/Python-Markdown/markdown",
-  "version": "3.8",
-  "default_branch": "master",
-  "package_dir": "m/markdown",
-  "wheel_build" : true,
-  "build_script": "markdown_ubi_9.3.sh",
-  "validate_build_script": "true",
-  "use_non_root_user": "false",
-  "docker_build": "false",
-  "v3.5.1" : {
-        "build_script" : "markdown_ubi_8.7.sh"
-    },
-    "*" : {
-        "build_script" : "markdown_ubi_9.3.sh"
-    }
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "markdown",
+   "github_url": "https://github.com/Python-Markdown/markdown",
+   "version": "3.4.1",
+   "default_branch": "master",
+   "build_script": "markdown_ubi_9.3.sh",
+   "package_dir": "m/markdown",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
 }
