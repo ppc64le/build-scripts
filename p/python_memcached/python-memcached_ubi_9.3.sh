@@ -47,7 +47,7 @@ pip install -r test-requirements.txt
 pip install pytest setuptools
 
 
-if ! python setup.py install; then
+if ! pip install .; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
