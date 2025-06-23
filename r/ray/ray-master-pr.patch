@@ -1,0 +1,755 @@
+diff --git a/.bazelrc b/.bazelrc
+index cf0cb43562..17f2fceb01 100644
+--- a/.bazelrc
++++ b/.bazelrc
+@@ -9,7 +9,7 @@ build:strict --incompatible_strict_action_env
+ build --action_env=RAY_BUILD_ENV
+ 
+ ###############################################################################
+-# On       Windows, provide: BAZEL_SH, and BAZEL_LLVM (if using clang-cl)
++# On       Windows, provide: BAZEL_SH, and BAZEL_LLVM
+ # On all platforms, provide: PYTHON3_BIN_PATH=python
+ ###############################################################################
+ build:windows --action_env=PATH
+@@ -18,12 +18,12 @@ build --compilation_mode=opt
+ # Using C++ 17 on all platforms.
+ build:linux --host_cxxopt="-std=c++17"
+ build:macos --host_cxxopt="-std=c++17"
+-build:clang-cl --host_cxxopt="-std=c++17"
++build:clang-cl --host_cxxopt="-std:c++17"
+ build:msvc-cl --host_cxxopt="/std:c++17"
+ build:windows --host_cxxopt="/std:c++17"
+ build:linux --cxxopt="-std=c++17"
+ build:macos --cxxopt="-std=c++17"
+-build:clang-cl --cxxopt="-std=c++17"
++build:clang-cl --cxxopt="-std:c++17"
+ build:msvc-cl --cxxopt="/std:c++17"
+ build:windows --cxxopt="/std:c++17"
+ # This workaround is needed to prevent Bazel from compiling the same file twice (once PIC and once not).
+@@ -50,10 +50,10 @@ build:windows --enable_runfiles
+ # TODO(mehrdadn): Revert the "-\\.(asm|S)$" exclusion when this Bazel bug
+ #                 for compiling assembly files is fixed on Windows:
+ #                 https://github.com/bazelbuild/bazel/issues/8924
+-# Warnings should be errors
+-build:linux    --per_file_copt="-\\.(asm|S)$@-Werror"
+-build:macos    --per_file_copt="-\\.(asm|S)$@-Werror"
+-build:clang-cl --per_file_copt="-\\.(asm|S)$@-Werror"
++# Warnings should be errors, except for deprecated protobuf CreateMessage use
++build:linux    --per_file_copt="-\\.(asm|S)$@-Werror,-Wno-deprecated-declarations"
++build:macos    --per_file_copt="-\\.(asm|S)$@-Werror,-Wno-deprecated-declarations"
++build:clang-cl --per_file_copt="-\\.(asm|S)$@-Werror,-Wno-deprecated-declarations"
+ build:msvc-cl     --per_file_copt="-\\.(asm|S)$@-WX"
+ # Ignore warnings for protobuf generated files and external projects.
+ build --per_file_copt="\\.pb\\.cc$@-w"
+@@ -224,3 +224,5 @@ try-import %workspace%/.llvm-local.bazelrc
+ build:macos --sandbox_block_path=/usr/local/
+ # This option controls whether javac checks for missing direct dependencies.
+ build --experimental_strict_java_deps=off
++build:clang-cl --per_file_copt="-external/com_github_redis_hiredis/ssl.c$@-Wno-parenthesis,-Wno-int-conversion"
++build --local_cpu_resources=HOST_CPUS*0.75
+diff --git a/.buildkite/core.rayci.yml b/.buildkite/core.rayci.yml
+index 065c496b63..9b13a75911 100644
+--- a/.buildkite/core.rayci.yml
++++ b/.buildkite/core.rayci.yml
+@@ -203,7 +203,7 @@ steps:
+     tags:
+       - python
+       - skip-on-premerge
+-    instance_type: medium
++    instance_type: large
+     commands:
+       - bazel run //ci/ray_ci:test_in_docker -- //python/ray/tests/... core
+         --install-mask all-ray-libraries
+diff --git a/BUILD.bazel b/BUILD.bazel
+index f4d1f1dec7..420b137d85 100644
+--- a/BUILD.bazel
++++ b/BUILD.bazel
+@@ -1025,18 +1025,36 @@ filegroup(
+         "//src/ray/protobuf:autoscaler_py_proto",
+         "//src/ray/protobuf:common_py_proto",
+         "//src/ray/protobuf:core_worker_py_proto",
++        "//src/ray/protobuf:dependency_py_proto",
+         "//src/ray/protobuf:event_py_proto",
++        "//src/ray/protobuf:events_actor_task_definition_event_py_proto",
++        "//src/ray/protobuf:events_actor_task_execution_event_py_proto",
++        "//src/ray/protobuf:events_base_event_py_proto",
+         "//src/ray/protobuf:events_event_aggregator_service_py_proto",
++        "//src/ray/protobuf:events_task_definition_event_py_proto",
++        "//src/ray/protobuf:events_task_execution_event_py_proto",
++        "//src/ray/protobuf:export_actor_event_py_proto",
++        "//src/ray/protobuf:export_dataset_metadata_py_proto",
++        "//src/ray/protobuf:export_driver_job_event_py_proto",
+         "//src/ray/protobuf:export_event_py_proto",
++        "//src/ray/protobuf:export_node_event_py_proto",
++        "//src/ray/protobuf:export_runtime_env_py_proto",
++        "//src/ray/protobuf:export_submission_job_event_py_proto",
++        "//src/ray/protobuf:export_task_event_py_proto",
++        "//src/ray/protobuf:export_train_state_py_proto",
+         "//src/ray/protobuf:gcs_py_proto",
+         "//src/ray/protobuf:gcs_service_py_proto",
+         "//src/ray/protobuf:instance_manager_py_proto",
++        "//src/ray/protobuf:logging_py_proto",
+         "//src/ray/protobuf:metrics_service_py_proto",
++        "//src/ray/protobuf:pubsub_py_proto",
+         "//src/ray/protobuf:node_manager_py_proto",
+         "//src/ray/protobuf:ray_client_py_proto",
+         "//src/ray/protobuf:reporter_py_proto",
+         "//src/ray/protobuf:runtime_env_agent_py_proto",
+         "//src/ray/protobuf:runtime_env_common_py_proto",
++        "//src/ray/protobuf:serve_py_proto",
++        "//src/ray/protobuf:test_service_py_proto",
+         "//src/ray/protobuf:usage_py_proto",
+     ],
+ )
+diff --git a/WORKSPACE b/WORKSPACE
+index 6de1537626..912f1add9b 100644
+--- a/WORKSPACE
++++ b/WORKSPACE
+@@ -50,6 +50,7 @@ python_register_toolchains(
+     name = "python3_9",
+     python_version = "3.9",
+     register_toolchains = False,
++    ignore_root_user_error = True,
+ )
+ 
+ load("@python3_9//:defs.bzl", python39 = "interpreter")
+diff --git a/bazel/ray_deps_setup.bzl b/bazel/ray_deps_setup.bzl
+index b72b62bed5..4a6a938902 100644
+--- a/bazel/ray_deps_setup.bzl
++++ b/bazel/ray_deps_setup.bzl
+@@ -86,20 +86,16 @@ def auto_http_archive(
+ def ray_deps_setup():
+     # Explicitly bring in protobuf dependency to work around
+     # https://github.com/ray-project/ray/issues/14117
+-    # This is copied from grpc's bazel/grpc_deps.bzl
+-    #
+-    # Pinned grpc version: v23.4
+     http_archive(
+         name = "com_google_protobuf",
+-        sha256 = "76a33e2136f23971ce46c72fd697cd94dc9f73d56ab23b753c3e16854c90ddfd",
+-        strip_prefix = "protobuf-2c5fa078d8e86e5f4bd34e6f4c9ea9e8d7d4d44a",
++        sha256 = "b2340aa47faf7ef10a0328190319d3f3bee1b24f426d4ce8f4253b6f27ce16db",
++        strip_prefix = "protobuf-28.2",
+         urls = [
+-            "https://github.com/protocolbuffers/protobuf/archive/2c5fa078d8e86e5f4bd34e6f4c9ea9e8d7d4d44a.tar.gz",
++            "https://github.com/protocolbuffers/protobuf/archive/refs/tags/v28.2.tar.gz",
+         ],
+         patches = [
+-            "@com_github_grpc_grpc//third_party:protobuf.patch",
++            "@com_github_ray_project_ray//thirdparty/patches:protobuf-windows-const-nan.patch",
+         ],
+-        patch_args = ["-p1"],
+     )
+ 
+     # NOTE(lingxuan.zlx): 3rd party dependencies could be accessed, so it suggests
+@@ -236,11 +232,15 @@ def ray_deps_setup():
+     # TODO(owner): Upgrade abseil to latest version after protobuf updated, which requires to upgrade `rules_cc` first.
+     auto_http_archive(
+         name = "com_google_absl",
+-        sha256 = "987ce98f02eefbaf930d6e38ab16aa05737234d7afbab2d5c4ea7adbe50c28ed",
+-        strip_prefix = "abseil-cpp-20230802.1",
++        sha256 = "f50e5ac311a81382da7fa75b97310e4b9006474f9560ac46f54a9967f07d4ae3",
++        strip_prefix = "abseil-cpp-20240722.0",
+         urls = [
+-            "https://github.com/abseil/abseil-cpp/archive/refs/tags/20230802.1.tar.gz",
++            "https://github.com/abseil/abseil-cpp/archive/refs/tags/20240722.0.tar.gz",
++        ],
++        patches = [
++            "@com_github_ray_project_ray//thirdparty/patches:abseil-gcc-undefined-sanitizer-compilation-fix.patch",
+         ],
++        patch_args = ["-p1"],
+     )
+ 
+     # OpenCensus depends on jupp0r/prometheus-cpp
+@@ -260,11 +260,11 @@ def ray_deps_setup():
+     auto_http_archive(
+         name = "com_github_grpc_grpc",
+         # NOTE: If you update this, also update @boringssl's hash.
+-        url = "https://github.com/grpc/grpc/archive/refs/tags/v1.57.1.tar.gz",
+-        sha256 = "0762f809b9de845e6a7c809cabccad6aa4143479fd43b396611fe5a086c0aeeb",
++        url = "https://github.com/grpc/grpc/archive/refs/tags/v1.67.1.tar.gz",
++        sha256 = "d74f8e99a433982a12d7899f6773e285c9824e1d9a173ea1d1fb26c9bd089299",
+         patches = [
+             "@com_github_ray_project_ray//thirdparty/patches:grpc-cython-copts.patch",
+-            "@com_github_ray_project_ray//thirdparty/patches:grpc-zlib-fdopen.patch",
++            "@com_github_ray_project_ray//thirdparty/patches:grpc-avoid-goaway-messages.patch",
+         ],
+     )
+ 
+@@ -304,13 +304,13 @@ def ray_deps_setup():
+     http_archive(
+         # This rule is used by @com_github_grpc_grpc, and using a GitHub mirror
+         # provides a deterministic archive hash for caching. Explanation here:
+-        # https://github.com/grpc/grpc/blob/1ff1feaa83e071d87c07827b0a317ffac673794f/bazel/grpc_deps.bzl#L189
+         # Ensure this rule matches the rule used by grpc's bazel/grpc_deps.bzl
++        # https://github.com/grpc/grpc/blob/v1.67.1/bazel/grpc_deps.bzl#L33
+         name = "boringssl",
+-        sha256 = "0675a4f86ce5e959703425d6f9063eaadf6b61b7f3399e77a154c0e85bad46b1",
+-        strip_prefix = "boringssl-342e805bc1f5dfdd650e3f031686d6c939b095d9",
++        sha256 = "c70d519e4ee709b7a74410a5e3a937428b8198d793a3d771be3dd2086ae167c8",
++        strip_prefix = "boringssl-b8b3e6e11166719a8ebfa43c0cde9ad7d57a84f6",
+         urls = [
+-            "https://github.com/google/boringssl/archive/342e805bc1f5dfdd650e3f031686d6c939b095d9.tar.gz",
++            "https://github.com/google/boringssl/archive/b8b3e6e11166719a8ebfa43c0cde9ad7d57a84f6.tar.gz",
+         ],
+     )
+ 
+@@ -326,6 +326,7 @@ def ray_deps_setup():
+         urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.19.4.tar.gz"],
+         sha256 = "3bd7828aa5af4b13b99c191e8b1e884ebfa9ad371b0ce264605d347f135d2568",
+     )
++
+     auto_http_archive(
+         name = "rules_proto_grpc",
+         url = "https://github.com/rules-proto-grpc/rules_proto_grpc/archive/a74fef39c5fe636580083545f76d1eab74f6450d.tar.gz",
+diff --git a/src/ray/core_worker/test/task_event_buffer_export_event_test.cc b/src/ray/core_worker/test/task_event_buffer_export_event_test.cc
+index f3869be7ff..36873eda0f 100644
+--- a/src/ray/core_worker/test/task_event_buffer_export_event_test.cc
++++ b/src/ray/core_worker/test/task_event_buffer_export_event_test.cc
+@@ -139,7 +139,7 @@ TEST_F(TaskEventTestWriteExport, TestWriteTaskExportEvents) {
+   auto task_ids = GenTaskIDs(num_events);
+   google::protobuf::util::JsonPrintOptions options;
+   options.preserve_proto_field_names = true;
+-  options.always_print_primitive_fields = true;
++  options.always_print_fields_with_no_presence = true;
+ 
+   std::vector<SourceTypeVariant> source_types = {
+       rpc::ExportEvent_SourceType::ExportEvent_SourceType_EXPORT_TASK};
+diff --git a/src/ray/gcs/gcs_server/test/gcs_actor_manager_test.cc b/src/ray/gcs/gcs_server/test/gcs_actor_manager_test.cc
+index 557d83e23d..940d38b416 100644
+--- a/src/ray/gcs/gcs_server/test/gcs_actor_manager_test.cc
++++ b/src/ray/gcs/gcs_server/test/gcs_actor_manager_test.cc
+@@ -1330,8 +1330,7 @@ TEST_F(GcsActorManagerTest, TestGetAllActorInfoFilters) {
+     rpc::GetAllActorInfoRequest request;
+     request.mutable_filters()->set_actor_id(actor->GetActorID().Binary());
+ 
+-    auto &reply =
+-        *google::protobuf::Arena::CreateMessage<rpc::GetAllActorInfoReply>(&arena);
++    auto &reply = *google::protobuf::Arena::Create<rpc::GetAllActorInfoReply>(&arena);
+     gcs_actor_manager_->HandleGetAllActorInfo(request, &reply, callback);
+     ASSERT_EQ(reply.actor_table_data().size(), 1);
+     ASSERT_EQ(reply.total(), 1 + num_other_actors);
+@@ -1343,8 +1342,7 @@ TEST_F(GcsActorManagerTest, TestGetAllActorInfoFilters) {
+     rpc::GetAllActorInfoRequest request;
+     request.mutable_filters()->set_job_id(job_id.Binary());
+ 
+-    auto &reply =
+-        *google::protobuf::Arena::CreateMessage<rpc::GetAllActorInfoReply>(&arena);
++    auto &reply = *google::protobuf::Arena::Create<rpc::GetAllActorInfoReply>(&arena);
+     gcs_actor_manager_->HandleGetAllActorInfo(request, &reply, callback);
+     ASSERT_EQ(reply.actor_table_data().size(), 1);
+     ASSERT_EQ(reply.num_filtered(), num_other_actors);
+@@ -1355,8 +1353,7 @@ TEST_F(GcsActorManagerTest, TestGetAllActorInfoFilters) {
+     rpc::GetAllActorInfoRequest request;
+     request.mutable_filters()->set_state(rpc::ActorTableData::ALIVE);
+ 
+-    auto &reply =
+-        *google::protobuf::Arena::CreateMessage<rpc::GetAllActorInfoReply>(&arena);
++    auto &reply = *google::protobuf::Arena::Create<rpc::GetAllActorInfoReply>(&arena);
+     gcs_actor_manager_->HandleGetAllActorInfo(request, &reply, callback);
+     ASSERT_EQ(reply.actor_table_data().size(), 1);
+     ASSERT_EQ(reply.num_filtered(), num_other_actors);
+@@ -1368,8 +1365,7 @@ TEST_F(GcsActorManagerTest, TestGetAllActorInfoFilters) {
+     request.mutable_filters()->set_state(rpc::ActorTableData::ALIVE);
+     request.mutable_filters()->set_job_id(job_id.Binary());
+ 
+-    auto &reply =
+-        *google::protobuf::Arena::CreateMessage<rpc::GetAllActorInfoReply>(&arena);
++    auto &reply = *google::protobuf::Arena::Create<rpc::GetAllActorInfoReply>(&arena);
+     gcs_actor_manager_->HandleGetAllActorInfo(request, &reply, callback);
+     ASSERT_EQ(reply.actor_table_data().size(), 1);
+     ASSERT_EQ(reply.num_filtered(), num_other_actors);
+@@ -1379,8 +1375,7 @@ TEST_F(GcsActorManagerTest, TestGetAllActorInfoFilters) {
+     request.mutable_filters()->set_state(rpc::ActorTableData::DEAD);
+     request.mutable_filters()->set_job_id(job_id.Binary());
+ 
+-    auto &reply =
+-        *google::protobuf::Arena::CreateMessage<rpc::GetAllActorInfoReply>(&arena);
++    auto &reply = *google::protobuf::Arena::Create<rpc::GetAllActorInfoReply>(&arena);
+     gcs_actor_manager_->HandleGetAllActorInfo(request, &reply, callback);
+     ASSERT_EQ(reply.num_filtered(), num_other_actors + 1);
+     ASSERT_EQ(reply.actor_table_data().size(), 0);
+@@ -1404,8 +1399,7 @@ TEST_F(GcsActorManagerTest, TestGetAllActorInfoLimit) {
+ 
+   {
+     rpc::GetAllActorInfoRequest request;
+-    auto &reply =
+-        *google::protobuf::Arena::CreateMessage<rpc::GetAllActorInfoReply>(&arena);
++    auto &reply = *google::protobuf::Arena::Create<rpc::GetAllActorInfoReply>(&arena);
+     auto callback = [](Status status,
+                        std::function<void()> success,
+                        std::function<void()> failure) {};
+@@ -1413,8 +1407,7 @@ TEST_F(GcsActorManagerTest, TestGetAllActorInfoLimit) {
+     ASSERT_EQ(reply.actor_table_data().size(), 3);
+ 
+     request.set_limit(2);
+-    auto &reply_2 =
+-        *google::protobuf::Arena::CreateMessage<rpc::GetAllActorInfoReply>(&arena);
++    auto &reply_2 = *google::protobuf::Arena::Create<rpc::GetAllActorInfoReply>(&arena);
+     gcs_actor_manager_->HandleGetAllActorInfo(request, &reply_2, callback);
+     ASSERT_EQ(reply_2.actor_table_data().size(), 2);
+     ASSERT_EQ(reply_2.total(), 3);
+diff --git a/src/ray/protobuf/BUILD b/src/ray/protobuf/BUILD
+index 6adc0e8979..df22defa99 100644
+--- a/src/ray/protobuf/BUILD
++++ b/src/ray/protobuf/BUILD
+@@ -438,6 +438,11 @@ cc_proto_library(
+     deps = [":pubsub_proto"],
+ )
+ 
++python_grpc_compile(
++    name = "pubsub_py_proto",
++    deps = [":pubsub_proto"],
++)
++
+ # runtime env agent gRPC lib.
+ proto_library(
+     name = "runtime_env_agent_proto",
+diff --git a/src/ray/raylet_client/raylet_client.cc b/src/ray/raylet_client/raylet_client.cc
+index e811f9e21b..04fa55d7ec 100644
+--- a/src/ray/raylet_client/raylet_client.cc
++++ b/src/ray/raylet_client/raylet_client.cc
+@@ -245,8 +245,7 @@ void RayletClient::RequestWorkerLease(
+     const int64_t backlog_size,
+     const bool is_selected_based_on_locality) {
+   google::protobuf::Arena arena;
+-  auto request =
+-      google::protobuf::Arena::CreateMessage<rpc::RequestWorkerLeaseRequest>(&arena);
++  auto request = google::protobuf::Arena::Create<rpc::RequestWorkerLeaseRequest>(&arena);
+   // The unsafe allocating here is actually safe because the life-cycle of
+   // task_spec is longer than request.
+   // Request will be sent before the end of this call, and after that, it won't be
+diff --git a/src/ray/rpc/server_call.h b/src/ray/rpc/server_call.h
+index 5cc2e909f0..b35bc6c8c2 100644
+--- a/src/ray/rpc/server_call.h
++++ b/src/ray/rpc/server_call.h
+@@ -193,7 +193,7 @@ class ServerCallImpl : public ServerCall {
+         cluster_id_(cluster_id),
+         start_time_(0),
+         record_metrics_(record_metrics) {
+-    reply_ = google::protobuf::Arena::CreateMessage<Reply>(&arena_);
++    reply_ = google::protobuf::Arena::Create<Reply>(&arena_);
+     // TODO(Yi Cheng) call_name_ sometimes get corrunpted due to memory issues.
+     RAY_CHECK(!call_name_.empty()) << "Call name is empty";
+     if (record_metrics_) {
+diff --git a/src/ray/util/event.cc b/src/ray/util/event.cc
+index 16c723e27c..e99df202c9 100644
+--- a/src/ray/util/event.cc
++++ b/src/ray/util/event.cc
+@@ -140,7 +140,7 @@ std::string LogEventReporter::ExportEventToString(const rpc::ExportEvent &export
+   google::protobuf::util::JsonPrintOptions options;
+   options.preserve_proto_field_names = true;
+   // Required so enum with value 0 is not omitted
+-  options.always_print_primitive_fields = true;
++  options.always_print_fields_with_no_presence = true;
+   if (export_event.has_task_event_data()) {
+     RAY_CHECK(google::protobuf::util::MessageToJsonString(
+                   export_event.task_event_data(), &event_data_as_string, options)
+diff --git a/thirdparty/patches/grpc-zlib-fdopen.patch b/thirdparty/patches/grpc-zlib-fdopen.patch
+deleted file mode 100644
+index c48a35bc4e..0000000000
+--- a/thirdparty/patches/grpc-zlib-fdopen.patch
++++ /dev/null
+@@ -1,13 +0,0 @@
+-diff -u bazel/grpc_deps.bzl
+---- bazel/grpc_deps.bzl
+-+++ bazel/grpc_deps.bzl
+-@@ -238,6 +238,9 @@
+-                 "https://storage.googleapis.com/grpc-bazel-mirror/github.com/madler/zlib/archive/04f42ceca40f73e2978b50e93806c2a18c1281fc.tar.gz",
+-                 "https://github.com/madler/zlib/archive/04f42ceca40f73e2978b50e93806c2a18c1281fc.tar.gz",
+-             ],
+-+            patches = [
+-+                "@com_github_ray_project_ray//thirdparty/patches:zlib-fdopen.patch",
+-+            ]
+-         )
+- 
+-     if "com_google_protobuf" not in native.existing_rules():
+\ No newline at end of file
+diff --git a/thirdparty/patches/abseil-gcc-undefined-sanitizer-compilation-fix.patch b/thirdparty/patches/abseil-gcc-undefined-sanitizer-compilation-fix.patch
+new file mode 100644
+index 0000000000..28b77cb334
+--- /dev/null
++++ b/thirdparty/patches/abseil-gcc-undefined-sanitizer-compilation-fix.patch
+@@ -0,0 +1,305 @@
++From 8f23ddaab4c32bdd4e9cf91db25896f0cc58ca12 Mon Sep 17 00:00:00 2001
++From: Petr Matrix at Akamai Technologies
++Date: Sun, 30 Mar 2025 22:30:04 +0300
++Subject: [PATCH] abseil undefined sanitizer compilation fix
++See https://github.com/abseil/abseil-cpp/issues/1634. The project
++considers this a bug in gcc, maybe this patch can be dropped after
++updating gcc
++---
++ absl/container/flat_hash_map.h                      |  7 ++++---
++ absl/container/flat_hash_set.h                      |  5 +++--
++ absl/container/internal/hash_policy_traits.h        |  4 ++--
++ absl/container/internal/hash_policy_traits_test.cc  | 13 +++++++------
++ .../internal/raw_hash_set_allocator_test.cc         |  5 +++--
++ absl/container/internal/raw_hash_set_benchmark.cc   |  9 +++++----
++ .../internal/raw_hash_set_probe_benchmark.cc        |  3 ++-
++ absl/container/internal/raw_hash_set_test.cc        | 13 +++++++------
++ absl/container/node_hash_map.h                      |  7 ++++---
++ absl/container/node_hash_set.h                      |  5 +++--
++ 10 files changed, 40 insertions(+), 31 deletions(-)
++
++diff --git a/absl/container/flat_hash_map.h b/absl/container/flat_hash_map.h
++index ebd9ed6..3751ead 100644
++--- a/absl/container/flat_hash_map.h
+++++ b/absl/container/flat_hash_map.h
++@@ -34,6 +34,7 @@
++
++ #include <cstddef>
++ #include <memory>
+++#include <optional>
++ #include <type_traits>
++ #include <utility>
++
++@@ -642,10 +643,10 @@ struct FlatHashMapPolicy {
++   }
++
++   template <class Hash>
++-  static constexpr HashSlotFn get_hash_slot_fn() {
+++  static constexpr std::optional<HashSlotFn> get_hash_slot_fn() {
++     return memory_internal::IsLayoutCompatible<K, V>::value
++-               ? &TypeErasedApplyToSlotFn<Hash, K>
++-               : nullptr;
+++               ? std::optional<HashSlotFn>(&TypeErasedApplyToSlotFn<Hash, K>)
+++               : std::nullopt;
++   }
++
++   static size_t space_used(const slot_type*) { return 0; }
++diff --git a/absl/container/flat_hash_set.h b/absl/container/flat_hash_set.h
++index a3e36e0..905f01a 100644
++--- a/absl/container/flat_hash_set.h
+++++ b/absl/container/flat_hash_set.h
++@@ -34,6 +34,7 @@
++
++ #include <cstddef>
++ #include <memory>
+++#include <optional>
++ #include <type_traits>
++ #include <utility>
++
++@@ -540,8 +541,8 @@ struct FlatHashSetPolicy {
++   static size_t space_used(const T*) { return 0; }
++
++   template <class Hash>
++-  static constexpr HashSlotFn get_hash_slot_fn() {
++-    return &TypeErasedApplyToSlotFn<Hash, T>;
+++  static constexpr std::optional<HashSlotFn> get_hash_slot_fn() {
+++    return std::optional<HashSlotFn>(&TypeErasedApplyToSlotFn<Hash, T>);
++   }
++ };
++ }  // namespace container_internal
++diff --git a/absl/container/internal/hash_policy_traits.h b/absl/container/internal/hash_policy_traits.h
++index ad835d6..ee3f1ee 100644
++--- a/absl/container/internal/hash_policy_traits.h
+++++ b/absl/container/internal/hash_policy_traits.h
++@@ -160,9 +160,9 @@ struct hash_policy_traits : common_policy_traits<Policy> {
++ // silent error: the address of * will never be NULL [-Werror=address]
++ #pragma GCC diagnostic ignored "-Waddress"
++ #endif
++-    return Policy::template get_hash_slot_fn<Hash>() == nullptr
+++    return !Policy::template get_hash_slot_fn<Hash>().has_value()
++                ? &hash_slot_fn_non_type_erased<Hash>
++-               : Policy::template get_hash_slot_fn<Hash>();
+++               : Policy::template get_hash_slot_fn<Hash>().value();
++ #if defined(__GNUC__) && !defined(__clang__)
++ #pragma GCC diagnostic pop
++ #endif
++diff --git a/absl/container/internal/hash_policy_traits_test.cc b/absl/container/internal/hash_policy_traits_test.cc
++index 2d2c7c2..6655263 100644
++--- a/absl/container/internal/hash_policy_traits_test.cc
+++++ b/absl/container/internal/hash_policy_traits_test.cc
++@@ -18,6 +18,7 @@
++ #include <functional>
++ #include <memory>
++ #include <new>
+++#include <optional>
++
++ #include "gmock/gmock.h"
++ #include "gtest/gtest.h"
++@@ -46,8 +47,8 @@ struct PolicyWithoutOptionalOps {
++   static std::function<Slot&(Slot*)> value;
++
++   template <class Hash>
++-  static constexpr HashSlotFn get_hash_slot_fn() {
++-    return nullptr;
+++  static constexpr std::optional<HashSlotFn> get_hash_slot_fn() {
+++    return std::nullopt;
++   }
++ };
++
++@@ -100,8 +101,8 @@ struct PolicyNoHashFn {
++   }
++
++   template <class Hash>
++-  static constexpr HashSlotFn get_hash_slot_fn() {
++-    return nullptr;
+++  static constexpr std::optional<HashSlotFn> get_hash_slot_fn() {
+++    return std::nullopt;
++   }
++ };
++
++@@ -109,8 +110,8 @@ size_t* PolicyNoHashFn::apply_called_count;
++
++ struct PolicyCustomHashFn : PolicyNoHashFn {
++   template <class Hash>
++-  static constexpr HashSlotFn get_hash_slot_fn() {
++-    return &TypeErasedApplyToSlotFn<Hash, int>;
+++  static constexpr std::optional<HashSlotFn> get_hash_slot_fn() {
+++    return std::optional<HashSlotFn>(&TypeErasedApplyToSlotFn<Hash, int>);
++   }
++ };
++
++diff --git a/absl/container/internal/raw_hash_set_allocator_test.cc b/absl/container/internal/raw_hash_set_allocator_test.cc
++index 7e7a506..5990789 100644
++--- a/absl/container/internal/raw_hash_set_allocator_test.cc
+++++ b/absl/container/internal/raw_hash_set_allocator_test.cc
++@@ -17,6 +17,7 @@
++ #include <functional>
++ #include <limits>
++ #include <memory>
+++#include <optional>
++ #include <ostream>
++ #include <set>
++ #include <type_traits>
++@@ -181,8 +182,8 @@ struct Policy {
++   static slot_type& element(slot_type* slot) { return *slot; }
++
++   template <class Hash>
++-  static constexpr HashSlotFn get_hash_slot_fn() {
++-    return nullptr;
+++  static constexpr std::optional<HashSlotFn> get_hash_slot_fn() {
+++    return std::nullopt;
++   }
++ };
++
++diff --git a/absl/container/internal/raw_hash_set_benchmark.cc b/absl/container/internal/raw_hash_set_benchmark.cc
++index 424b72c..db052da 100644
++--- a/absl/container/internal/raw_hash_set_benchmark.cc
+++++ b/absl/container/internal/raw_hash_set_benchmark.cc
++@@ -19,6 +19,7 @@
++ #include <cstdint>
++ #include <limits>
++ #include <numeric>
+++#include <optional>
++ #include <random>
++ #include <string>
++ #include <tuple>
++@@ -65,8 +66,8 @@ struct IntPolicy {
++   }
++
++   template <class Hash>
++-  static constexpr HashSlotFn get_hash_slot_fn() {
++-    return nullptr;
+++  static constexpr std::optional<HashSlotFn> get_hash_slot_fn() {
+++    return std::nullopt;
++   }
++ };
++
++@@ -128,8 +129,8 @@ class StringPolicy {
++   }
++
++   template <class Hash>
++-  static constexpr HashSlotFn get_hash_slot_fn() {
++-    return nullptr;
+++  static constexpr std::optional<HashSlotFn> get_hash_slot_fn() {
+++    return std::nullopt;
++   }
++ };
++
++diff --git a/absl/container/internal/raw_hash_set_probe_benchmark.cc b/absl/container/internal/raw_hash_set_probe_benchmark.cc
++index 8f36305..bfd1976 100644
++--- a/absl/container/internal/raw_hash_set_probe_benchmark.cc
+++++ b/absl/container/internal/raw_hash_set_probe_benchmark.cc
++@@ -16,6 +16,7 @@
++ // distributions, all using the default hash function for swisstable.
++
++ #include <memory>
+++#include <optional>
++ #include <regex>  // NOLINT
++ #include <vector>
++
++@@ -73,7 +74,7 @@ struct Policy {
++
++   template <class Hash>
++   static constexpr auto get_hash_slot_fn() {
++-    return nullptr;
+++    return set::nullopt;
++   }
++ };
++
++diff --git a/absl/container/internal/raw_hash_set_test.cc b/absl/container/internal/raw_hash_set_test.cc
++index f1257d4..45d1692 100644
++--- a/absl/container/internal/raw_hash_set_test.cc
+++++ b/absl/container/internal/raw_hash_set_test.cc
++@@ -28,6 +28,7 @@
++ #include <map>
++ #include <memory>
++ #include <numeric>
+++#include <optional>
++ #include <ostream>
++ #include <random>
++ #include <string>
++@@ -523,8 +524,8 @@ struct ValuePolicy {
++   }
++
++   template <class Hash>
++-  static constexpr HashSlotFn get_hash_slot_fn() {
++-    return nullptr;
+++  static constexpr std::optional<HashSlotFn> get_hash_slot_fn() {
+++    return std::nullopt;
++   }
++
++   static constexpr bool soo_enabled() { return kSoo; }
++@@ -631,8 +632,8 @@ class StringPolicy {
++   }
++
++   template <class Hash>
++-  static constexpr HashSlotFn get_hash_slot_fn() {
++-    return nullptr;
+++  static constexpr std::optional<HashSlotFn> get_hash_slot_fn() {
+++    return std::nullopt;
++   }
++ };
++
++@@ -1114,8 +1115,8 @@ struct DecomposePolicy {
++   }
++
++   template <class Hash>
++-  static constexpr HashSlotFn get_hash_slot_fn() {
++-    return nullptr;
+++  static constexpr std::optional<HashSlotFn> get_hash_slot_fn() {
+++    return std::nullopt;
++   }
++ };
++
++diff --git a/absl/container/node_hash_map.h b/absl/container/node_hash_map.h
++index 5615e49..34b6a93 100644
++--- a/absl/container/node_hash_map.h
+++++ b/absl/container/node_hash_map.h
++@@ -40,6 +40,7 @@
++
++ #include <cstddef>
++ #include <memory>
+++#include <optional>
++ #include <type_traits>
++ #include <utility>
++
++@@ -640,10 +641,10 @@ class NodeHashMapPolicy
++   static const Value& value(const value_type* elem) { return elem->second; }
++
++   template <class Hash>
++-  static constexpr HashSlotFn get_hash_slot_fn() {
+++  static constexpr std::optional<HashSlotFn> get_hash_slot_fn() {
++     return memory_internal::IsLayoutCompatible<Key, Value>::value
++-               ? &TypeErasedDerefAndApplyToSlotFn<Hash, Key>
++-               : nullptr;
+++               ? std::optional<HashSlotFn>(&TypeErasedDerefAndApplyToSlotFn<Hash, Key>)
+++               : std::nullopt;
++   }
++ };
++ }  // namespace container_internal
++diff --git a/absl/container/node_hash_set.h b/absl/container/node_hash_set.h
++index 53435ae..40cd71c 100644
++--- a/absl/container/node_hash_set.h
+++++ b/absl/container/node_hash_set.h
++@@ -39,6 +39,7 @@
++
++ #include <cstddef>
++ #include <memory>
+++#include <optional>
++ #include <type_traits>
++
++ #include "absl/algorithm/container.h"
++@@ -534,8 +535,8 @@ struct NodeHashSetPolicy
++   static size_t element_space_used(const T*) { return sizeof(T); }
++
++   template <class Hash>
++-  static constexpr HashSlotFn get_hash_slot_fn() {
++-    return &TypeErasedDerefAndApplyToSlotFn<Hash, T>;
+++  static constexpr std::optional<HashSlotFn> get_hash_slot_fn() {
+++    return std::optional<HashSlotFn>(&TypeErasedDerefAndApplyToSlotFn<Hash, T>);
++   }
++ };
++ }  // namespace container_internal
++-- 
++2.43.0
++
+diff --git a/thirdparty/patches/grpc-avoid-goaway-messages.patch b/thirdparty/patches/grpc-avoid-goaway-messages.patch
+new file mode 100644
+index 0000000000..0cd558aa0a
+--- /dev/null
++++ b/thirdparty/patches/grpc-avoid-goaway-messages.patch
+@@ -0,0 +1,19 @@
++diff --git a/src/core/ext/transport/chttp2/transport/chttp2_transport.cc b/src/core/ext/transport/chttp2/transport/chttp2_transport.cc
++index d3c5d994c1..1edc7ae29d 100644
++--- src/core/ext/transport/chttp2/transport/chttp2_transport.cc
+++++ src/core/ext/transport/chttp2/transport/chttp2_transport.cc
++@@ -1176,13 +1176,6 @@ void grpc_chttp2_add_incoming_goaway(grpc_chttp2_transport* t,
++   GRPC_TRACE_LOG(http, INFO)
++       << "transport " << t << " got goaway with last stream id "
++       << last_stream_id;
++-  // We want to log this irrespective of whether http tracing is enabled if we
++-  // received a GOAWAY with a non NO_ERROR code.
++-  if (goaway_error != GRPC_HTTP2_NO_ERROR) {
++-    LOG(INFO) << t->peer_string.as_string_view() << ": Got goaway ["
++-              << goaway_error
++-              << "] err=" << grpc_core::StatusToString(t->goaway_error);
++-  }
++   if (t->is_client) {
++     cancel_unstarted_streams(t, t->goaway_error, false);
++     // Cancel all unseen streams
++
+diff --git a/thirdparty/patches/protobuf-windows-const-nan.patch b/thirdparty/patches/protobuf-windows-const-nan.patch
+new file mode 100644
+index 0000000000..89f723f285
+--- /dev/null
++++ b/thirdparty/patches/protobuf-windows-const-nan.patch
+@@ -0,0 +1,46 @@
++diff -u upb/message/internal/message.c /tmp/message.c 
++--- upb/message/internal/message.c
+++++ upb/message/internal/message.c
++@@ -19,6 +19,26 @@
++
++ const float kUpb_FltInfinity = INFINITY;
++ const double kUpb_Infinity = INFINITY;
++-const double kUpb_NaN = NAN;
+++
+++// The latest win32 SDKs have an invalid definition of NAN.
+++// https://developercommunity.visualstudio.com/t/NAN-is-no-longer-compile-time-constant-i/10688907
+++//
+++// Unfortunately, the `0.0 / 0.0` workaround doesn't work in Clang under C23, so
+++// try __builtin_nan first, if that exists.
+++#ifdef _WIN32
+++#ifdef __has_builtin
+++#if __has_builtin(__builtin_nan)
+++#define UPB_NAN __builtin_nan("0")
+++#endif
+++#endif
+++#ifndef UPB_NAN
+++#define UPB_NAN 0.0 / 0.0
+++#endif
+++#else
+++// For !_WIN32, assume math.h works.
+++#define UPB_NAN NAN
+++#endif
+++const double kUpb_NaN = UPB_NAN;
+++
++
++ bool UPB_PRIVATE(_upb_Message_Realloc)(struct upb_Message* msg, size_t need,
++
++diff --git .bazelrc .bazelrc
++--- .bazelrc
+++++ .bazelrc
++@@ -1,4 +1,9 @@
++-build --cxxopt=-std=c++17 --host_cxxopt=-std=c++17
+++build --enable_platform_specific_config
+++build:linux --cxxopt=-std=c++17 --host_cxxopt=-std=c++17
+++build:macos --cxxopt=-std=c++17 --host_cxxopt=-std=c++17
+++build:windows --compiler=clang-cl
+++build:windows --cxxopt=-Wno-invalid-offsetof
+++build:windows --cxxopt=-std:c++17 --host_cxxopt=-std:c++17
++
++ build:dbg --compilation_mode=dbg
++
