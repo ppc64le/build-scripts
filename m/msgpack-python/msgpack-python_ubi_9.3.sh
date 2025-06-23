@@ -36,7 +36,7 @@ git checkout v${PACKAGE_VERSION}
 
 # Install build requirements
 pip3 install -r requirements.txt
-pip3 install cython build
+pip3 install cython build pytest
 
 #Explicitly generating the C files with Cython:
 cython msgpack/_cmsgpack.pyx
