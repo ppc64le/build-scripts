@@ -1,3 +1,15 @@
+diff --git a/.bazelrc b/.bazelrc
+index 90b9b112b1..370ab44ef9 100644
+--- a/.bazelrc
++++ b/.bazelrc
+@@ -25,6 +25,7 @@ build --copt=-DABSL_MIN_LOG_LEVEL=4
+ build --define envoy_mobile_listener=enabled
+ build --experimental_repository_downloader_retries=2
+ build --enable_platform_specific_config
++build:ppc --//source/extensions/filters/common/lua:luajit2=1 --linkopt=-fuse-ld=lld
+
+ # Pass CC, CXX and LLVM_CONFIG variables from the environment.
+ # We assume they have stable values, so this won't cause action cache misses.
 diff --git a/bazel/boringssl_ppc64le.patch b/bazel/boringssl_ppc64le.patch
 new file mode 100755
 index 0000000000..66d0d92d90
@@ -18,127 +30,190 @@ index 0000000000..66d0d92d90
 + #else
 + // The list above enumerates the platforms that BoringSSL supports. For these
 + // platforms we keep a reasonable bar of not breaking them: automated test
-diff --git a/bazel/envoy_library.bzl b/bazel/envoy_library.bzl
-index c1266770d7..e55e2d1528 100644
---- a/bazel/envoy_library.bzl
-+++ b/bazel/envoy_library.bzl
-@@ -58,6 +58,7 @@ def envoy_cc_extension(
-         name,
-         tags = [],
-         extra_visibility = [],
-+        target_compatible_with = [],
-         visibility = EXTENSION_CONFIG_VISIBILITY,
-         alwayslink = 1,
-         **kwargs):
-@@ -68,6 +69,7 @@ def envoy_cc_extension(
-     envoy_cc_library(
-         name = name,
-         tags = tags,
-+        target_compatible_with = target_compatible_with,
-         visibility = visibility,
-         alwayslink = alwayslink,
-         **kwargs
-@@ -79,6 +81,7 @@ def envoy_cc_extension(
-             ":is_enabled": [":" + name],
-             "//conditions:default": [],
-         }),
-+        target_compatible_with = target_compatible_with,
-         visibility = visibility,
-     )
- 
-@@ -86,10 +89,11 @@ def envoy_cc_contrib_extension(
-         name,
-         tags = [],
-         extra_visibility = [],
-+        target_compatible_with = [],
-         visibility = CONTRIB_EXTENSION_PACKAGE_VISIBILITY,
-         alwayslink = 1,
-         **kwargs):
--    envoy_cc_extension(name, tags, extra_visibility, visibility, **kwargs)
-+    envoy_cc_extension(name, tags, extra_visibility, target_compatible_with, visibility, **kwargs)
- 
- # Envoy C++ library targets should be specified with this function.
- def envoy_cc_library(
-@@ -103,6 +107,7 @@ def envoy_cc_library(
-         repository = "",
-         tags = [],
-         deps = [],
-+        target_compatible_with = [],
-         strip_include_prefix = None,
-         include_prefix = None,
-         textual_hdrs = None,
-@@ -132,6 +137,7 @@ def envoy_cc_library(
-         textual_hdrs = textual_hdrs,
-         deps = deps + [envoy_external_dep_path(dep) for dep in external_deps] +
-                envoy_pch_deps(repository, "//source/common/common:common_pch"),
-+        target_compatible_with = target_compatible_with,
-         alwayslink = alwayslink,
-         linkstatic = envoy_linkstatic(),
-         strip_include_prefix = strip_include_prefix,
-@@ -149,6 +155,7 @@ def envoy_cc_library(
-         visibility = visibility,
-         tags = ["nocompdb"] + tags,
-         deps = [":" + name],
-+        target_compatible_with = target_compatible_with,
-         strip_include_prefix = strip_include_prefix,
-         include_prefix = include_prefix,
-     )
-diff --git a/bazel/envoy_test.bzl b/bazel/envoy_test.bzl
-index 0bdfc36c51..0f408c1f1c 100644
---- a/bazel/envoy_test.bzl
-+++ b/bazel/envoy_test.bzl
-@@ -151,6 +151,7 @@ def envoy_cc_test(
-         # List of pairs (Bazel shell script target, shell script args)
-         repository = "",
-         external_deps = [],
-+        target_compatible_with = [],
-         deps = [],
-         tags = [],
-         args = [],
-@@ -181,6 +182,7 @@ def envoy_cc_test(
-         ] + envoy_pch_deps(repository, "//test:test_pch"),
-         # from https://github.com/google/googletest/blob/6e1970e2376c14bf658eb88f655a054030353f9f/googlemock/src/gmock.cc#L51
-         # 2 - by default, mocks act as StrictMocks.
-+        target_compatible_with = target_compatible_with,
-         args = args + ["--gmock_default_mock_behavior=2"],
-         tags = coverage_tags,
-         local = local,
+diff --git a/bazel/foreign_cc/BUILD b/bazel/foreign_cc/BUILD
+index bf859db838..a2795fe22f 100644
+--- a/bazel/foreign_cc/BUILD
++++ b/bazel/foreign_cc/BUILD
+@@ -27,6 +27,24 @@ envoy_cc_library(
+     }),
+ )
+
++configure_make(
++    name = "luajit2",
++    configure_command = "build.py",
++    env = select({
++        # This shouldn't be needed! See
++        # https://github.com/envoyproxy/envoy/issues/6084
++        # TODO(htuch): Remove when #6084 is fixed
++        "//bazel:asan_build": {"ENVOY_CONFIG_ASAN": "1"},
++        "//bazel:msan_build": {"ENVOY_CONFIG_MSAN": "1"},
++        "//conditions:default": {},
++    }),
++    lib_source = "@com_github_luajit2_luajit2//:all",
++    out_include_dir = "include/luajit-2.1",
++    out_static_libs = ["libluajit-5.1.a"],
++    tags = ["skip_on_windows"],
++    targets = [],
++)
++
+ # autotools packages are unusable on Windows as-is
+ # TODO: Consider our own gperftools.BUILD file as we do with many other packages
+ configure_make(
+diff --git a/bazel/foreign_cc/luajit2.patch b/bazel/foreign_cc/luajit2.patch
+new file mode 100644
+index 0000000000..e1263febc6
+--- /dev/null
++++ b/bazel/foreign_cc/luajit2.patch
+@@ -0,0 +1,99 @@
++diff --git a/build.py b/build.py
++new file mode 100644
++index 00000000..dab3606c
++--- /dev/null
+++++ b/build.py
++@@ -0,0 +1,49 @@
+++#!/usr/bin/env python3
+++
+++import argparse
+++import os
+++import shutil
+++import subprocess
+++
+++def main():
+++    parser = argparse.ArgumentParser()
+++    parser.add_argument("--prefix")
+++    args = parser.parse_args()
+++    src_dir = os.path.dirname(os.path.realpath(__file__))
+++    shutil.copytree(src_dir, os.path.basename(src_dir))
+++    os.chdir(os.path.basename(src_dir))
+++
+++    os.environ["MACOSX_DEPLOYMENT_TARGET"] = "10.6"
+++    os.environ["DEFAULT_CC"] = os.environ.get("CC", "")
+++    os.environ["TARGET_CFLAGS"] = os.environ.get("CFLAGS", "") + " -fno-function-sections -fno-data-sections"
+++    os.environ["TARGET_LDFLAGS"] = os.environ.get("CFLAGS", "") + " -fno-function-sections -fno-data-sections"
+++    os.environ["CFLAGS"] = ""
+++    # LuaJIT compile process build a tool `buildvm` and use it, building `buildvm` with ASAN
+++    # will cause LSAN detect its leak and fail the build, set exitcode to 0 to make LSAN doesn't
+++    # fail on it.
+++    os.environ["LSAN_OPTIONS"] = "exitcode=0"
+++
+++    if "ENVOY_MSAN" in os.environ:
+++      os.environ["HOST_CFLAGS"] = "-fno-sanitize=memory"
+++      os.environ["HOST_LDFLAGS"] = "-fno-sanitize=memory"
+++
+++    arch = subprocess.check_output(["uname","-m"]).decode("utf-8").strip()
+++    compiler = os.environ.get("CC", "")
+++    if "clang" in compiler and arch in ["s390x","ppc64le"]:
+++        extra_clang_cflags = " -fgnuc-version=10 -fno-integrated-as -Wno-implicit-function-declaration -D_Float32=float -D_Float64=double -D_Float128=double -D_Float32x=double -D_Float64x=double"
+++        os.environ["TARGET_CFLAGS"] += extra_clang_cflags
+++        os.environ["TARGET_LDFLAGS"] += " -fgnuc-version=10"
+++        os.environ["HOST_CFLAGS"] = os.environ.get("HOST_CFLAGS", "") + extra_clang_cflags
+++        os.environ["HOST_LDFLAGS"] = os.environ.get("HOST_LDFLAGS", "") + " -fgnuc-version=10"
+++
+++    # Remove LuaJIT from ASAN for now.
+++    # TODO(htuch): Remove this when https://github.com/envoyproxy/envoy/issues/6084 is resolved.
+++    if "ENVOY_CONFIG_ASAN" in os.environ or "ENVOY_CONFIG_MSAN" in os.environ:
+++      os.environ["TARGET_CFLAGS"] += " -fsanitize-blacklist=%s/com_github_luajit_luajit/clang-asan-blocklist.txt" % os.environ["PWD"]
+++      with open("clang-asan-blocklist.txt", "w") as f:
+++        f.write("fun:*\n")
+++
+++    os.system('make -j{} V=1 PREFIX="{}" install'.format(os.cpu_count(), args.prefix))
+++
+++main()
+++
++diff --git a/src/Makefile b/src/Makefile
++index acbe0ca7..313a7e44 100644
++--- a/src/Makefile
+++++ b/src/Makefile
++@@ -27,7 +27,7 @@ NODOTABIVER= 51
++ DEFAULT_CC = gcc
++ #
++ # LuaJIT builds as a native 32 or 64 bit binary by default.
++-CC= $(DEFAULT_CC)
+++CC ?= $(DEFAULT_CC)
++ #
++ # Use this if you want to force a 32 bit build on a 64 bit multilib OS.
++ #CC= $(DEFAULT_CC) -m32
++@@ -71,10 +71,10 @@ CCWARN= -Wall
++ # as dynamic mode.
++ #
++ # Mixed mode creates a static + dynamic library and a statically linked luajit.
++-BUILDMODE= mixed
+++#BUILDMODE= mixed
++ #
++ # Static mode creates a static library and a statically linked luajit.
++-#BUILDMODE= static
+++BUILDMODE= static
++ #
++ # Dynamic mode creates a dynamic library and a dynamically linked luajit.
++ # Note: this executable will only run when the library is installed!
++@@ -99,7 +99,7 @@ XCFLAGS=
++ # enabled by default. Some other features that *might* break some existing
++ # code (e.g. __pairs or os.execute() return values) can be enabled here.
++ # Note: this does not provide full compatibility with Lua 5.2 at this time.
++-#XCFLAGS+= -DLUAJIT_ENABLE_LUA52COMPAT
+++XCFLAGS+= -DLUAJIT_ENABLE_LUA52COMPAT
++ #
++ # Disable the JIT compiler, i.e. turn LuaJIT into a pure interpreter.
++ #XCFLAGS+= -DLUAJIT_DISABLE_JIT
++@@ -617,7 +617,7 @@ endif
++
++ Q= @
++ E= @echo
++-#Q=
+++Q=
++ #E= @:
++
++ ##############################################################################
 diff --git a/bazel/repositories.bzl b/bazel/repositories.bzl
-index 02f7abd725..3a21605e98 100644
+index 02f7abd725..7cf093f884 100644
 --- a/bazel/repositories.bzl
 +++ b/bazel/repositories.bzl
 @@ -4,7 +4,7 @@ load("@envoy_api//bazel:external_deps.bzl", "load_repository_locations")
  load(":dev_binding.bzl", "envoy_dev_binding")
  load(":repository_locations.bzl", "PROTOC_VERSIONS", "REPOSITORY_LOCATIONS_SPEC")
- 
+
 -PPC_SKIP_TARGETS = ["envoy.filters.http.lua"]
-+PPC_SKIP_TARGETS = ["envoy.filters.http.lua", "envoy.router.cluster_specifier_plugin.lua"]
- 
++PPC_SKIP_TARGETS = []
+
  WINDOWS_SKIP_TARGETS = [
      "envoy.extensions.http.cache.file_system_http_cache",
-@@ -408,6 +408,7 @@ def _boringssl():
+@@ -318,6 +318,7 @@ def envoy_dependencies(skip_targets = []):
+     _com_github_jbeder_yaml_cpp()
+     _com_github_libevent_libevent()
+     _com_github_luajit_luajit()
++    _com_github_luajit2_luajit2()
+     _com_github_nghttp2_nghttp2()
+     _com_github_msgpack_cpp()
+     _com_github_skyapm_cpp2sky()
+@@ -408,6 +409,7 @@ def _boringssl():
          patch_args = ["-p1"],
          patches = [
              "@envoy//bazel:boringssl_static.patch",
-+            "@envoy//bazel:boringssl_ppc64le.patch",
++           "@envoy//bazel:boringssl_ppc64le.patch",
          ],
      )
- 
-@@ -1460,13 +1461,7 @@ def _rules_ruby():
-     external_http_archive("rules_ruby")
- 
- def _foreign_cc_dependencies():
--    external_http_archive(
--        name = "rules_foreign_cc",
--        # This patch is needed to fix build on macos with xcode 15.3.
--        # remove this when https://github.com/bazelbuild/rules_foreign_cc/issues/1186 fixed.
--        patch_args = ["-p1"],
--        patches = ["@envoy//bazel:rules_foreign_cc.patch"],
--    )
-+    external_http_archive("rules_foreign_cc")
- 
- def _com_github_maxmind_libmaxminddb():
+
+@@ -1310,6 +1312,20 @@ def _com_github_luajit_luajit():
+         actual = "@envoy//bazel/foreign_cc:luajit",
+     )
+
++def _com_github_luajit2_luajit2():
++    external_http_archive(
++        name = "com_github_luajit2_luajit2",
++        build_file_content = BUILD_ALL_CONTENT,
++        patches = ["@envoy//bazel/foreign_cc:luajit2.patch"],
++        patch_args = ["-p1"],
++        patch_cmds = ["chmod u+x build.py"],
++    )
++
++    native.bind(
++        name = "luajit2",
++        actual = "@envoy//bazel/foreign_cc:luajit2",
++    )
++
+ def _com_github_google_tcmalloc():
      external_http_archive(
+         name = "com_github_google_tcmalloc",
 diff --git a/bazel/repositories_extra.bzl b/bazel/repositories_extra.bzl
 index 7fd1dc4095..ff6a848832 100644
 --- a/bazel/repositories_extra.bzl
@@ -153,33 +228,59 @@ index 7fd1dc4095..ff6a848832 100644
      raze_fetch_remote_crates()
      wasmtime_fetch_remote_crates()
 diff --git a/bazel/repository_locations.bzl b/bazel/repository_locations.bzl
-index 7744b2da72..d9ce9d07f9 100644
+index 7744b2da72..a157cd6e85 100644
 --- a/bazel/repository_locations.bzl
 +++ b/bazel/repository_locations.bzl
-@@ -494,7 +494,7 @@ REPOSITORY_LOCATIONS_SPEC = dict(
-         extensions = [
-             "envoy.filters.http.lua",
-             "envoy.router.cluster_specifier_plugin.lua",
--            "envoy.string_matcher.lua",
-+        #    "envoy.string_matcher.lua",
-         ],
-         cpe = "cpe:2.3:a:luajit:luajit:*",
+@@ -500,6 +500,19 @@ REPOSITORY_LOCATIONS_SPEC = dict(
          license = "MIT",
-@@ -1024,11 +1024,11 @@ REPOSITORY_LOCATIONS_SPEC = dict(
-         project_name = "Rules for using foreign build systems in Bazel",
-         project_desc = "Rules for using foreign build systems in Bazel",
-         project_url = "https://github.com/bazelbuild/rules_foreign_cc",
--        version = "0.10.1",
--        sha256 = "476303bd0f1b04cc311fc258f1708a5f6ef82d3091e53fd1977fa20383425a6a",
-+        version = "0.9.0",
-+        sha256 = "2a4d07cd64b0719b39a7c12218a3e507672b82a97b98c6a89d38565894cf7c51",
-         strip_prefix = "rules_foreign_cc-{version}",
-         urls = ["https://github.com/bazelbuild/rules_foreign_cc/archive/{version}.tar.gz"],
--        release_date = "2023-10-25",
-+        release_date = "2022-08-02",
-         use_category = ["build", "dataplane_core", "controlplane"],
-         license = "Apache-2.0",
-         license_url = "https://github.com/bazelbuild/rules_foreign_cc/blob/{version}/LICENSE",
+         license_url = "https://github.com/LuaJIT/LuaJIT/blob/{version}/COPYRIGHT",
+     ),
++    com_github_luajit2_luajit2 = dict(
++        project_name = "Luajit2",
++        project_desc = "Openresty/luajit2 - OpenResty's maintained branch of LuaJIT",
++        project_url = "https://github.com/openresty/luajit2",
++        version = "1085a4d562b449e7be9e4508b52a19651bdf04a6",
++        sha256 = "2f6931ecac967e8fafffe934a8445593deff9f4c6ece1684fea1277edd0931ee",
++        strip_prefix = "luajit2-{version}",
++        urls = ["https://github.com/openresty/luajit2/archive/{version}.tar.gz"],
++        use_category = ["dataplane_ext"],
++        extensions = ["envoy.filters.http.lua"],
++        release_date = "2021-11-17",
++        cpe = "cpe:2.3:a:luajit2:luajit2:*",
++    ),
+     com_github_nghttp2_nghttp2 = dict(
+         project_name = "Nghttp2",
+         project_desc = "Implementation of HTTP/2 and its header compression algorithm HPACK in C",
+@@ -1207,7 +1220,7 @@ REPOSITORY_LOCATIONS_SPEC = dict(
+         project_url = "https://quiche.googlesource.com/googleurl",
+         # Static snapshot of https://quiche.googlesource.com/googleurl/+archive/dd4080fec0b443296c0ed0036e1e776df8813aa7.tar.gz
+         version = "dd4080fec0b443296c0ed0036e1e776df8813aa7",
+-        sha256 = "59f14d4fb373083b9dc8d389f16bbb817b5f936d1d436aa67e16eb6936028a51",
++        sha256 = "fc694942e8a7491dcc1dde1bddf48a31370a1f46fef862bc17acf07c34dc6325",
+         urls = ["https://storage.googleapis.com/quiche-envoy-integration/{version}.tar.gz"],
+         use_category = ["controlplane", "dataplane_core"],
+         extensions = [],
+diff --git a/bazel/rules_foreign_cc.patch b/bazel/rules_foreign_cc.patch
+index f3ebb1fb4b..3c5f8a646f 100644
+--- a/bazel/rules_foreign_cc.patch
++++ b/bazel/rules_foreign_cc.patch
+@@ -18,3 +18,16 @@ index 64cb677..9a8c62c 100644
+      additional_tools = depset(transitive = [make_data.target.files])
+
+      return built_tool_rule_impl(
++diff --git a/foreign_cc/built_tools/cmake_build.bzl b/foreign_cc/built_tools/cmake_build.bzl
++index 5022504..9b5e2cd 100644
++--- a/foreign_cc/built_tools/cmake_build.bzl
+++++ b/foreign_cc/built_tools/cmake_build.bzl
++@@ -8,7 +8,7 @@ def cmake_tool(name, srcs, **kwargs):
++     configure_make(
++         name = "{}.build".format(name),
++         configure_command = "bootstrap",
++-        configure_options = ["--", "-DCMAKE_MAKE_PROGRAM=$$MAKE$$"],
+++        #configure_options = ["--", "-DCMAKE_MAKE_PROGRAM=$$MAKE$$"],
++         # On macOS at least -DDEBUG gets set for a fastbuild
++         copts = ["-UDEBUG"],
++         lib_source = srcs,
 diff --git a/bazel/rules_go.patch b/bazel/rules_go.patch
 index b0b707b88e..78232e112f 100644
 --- a/bazel/rules_go.patch
@@ -240,238 +341,56 @@ index 63ff2bff15..cf2a6c4ed8 100644
 -  std::reference_wrapper<const T> value() const { return std::reference_wrapper<T>(*ptr_); }
 +  std::reference_wrapper<const T> value() const { return std::reference_wrapper<const T>(*ptr_); }
    std::reference_wrapper<T> value() { return std::reference_wrapper<T>(*ptr_); }
- 
+
    /**
-diff --git a/source/extensions/extensions_build_config.bzl b/source/extensions/extensions_build_config.bzl
-index cbaaab72ee..c83396a1b2 100644
---- a/source/extensions/extensions_build_config.bzl
-+++ b/source/extensions/extensions_build_config.bzl
-@@ -118,7 +118,7 @@ EXTENSIONS = {
-     #
-     # StringMatchers
-     #
--    "envoy.string_matcher.lua":                         "//source/extensions/string_matcher/lua:config",
-+    #"envoy.string_matcher.lua":                         "//source/extensions/string_matcher/lua:config",
- 
-     #
-     # HTTP filters
 diff --git a/source/extensions/filters/common/lua/BUILD b/source/extensions/filters/common/lua/BUILD
-index 12d7d0554a..b87564739b 100644
+index 12d7d0554a..8880d80238 100644
 --- a/source/extensions/filters/common/lua/BUILD
 +++ b/source/extensions/filters/common/lua/BUILD
-@@ -15,6 +15,10 @@ envoy_cc_library(
-     external_deps = [
-         "luajit",
-     ],
-+    target_compatible_with = select({
-+        "@platforms//cpu:ppc": ["@platforms//:incompatible"],
-+        "//conditions:default": [],
-+    }),
+@@ -3,18 +3,30 @@ load(
+     "envoy_cc_library",
+     "envoy_extension_package",
+ )
++load("//bazel:envoy_internal.bzl", "envoy_external_dep_path")
++load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
+
+ licenses(["notice"])  # Apache 2
+
+ envoy_extension_package()
+
++bool_flag(
++    name = "luajit2",
++    build_setting_default = True,
++    visibility = ["//visibility:public"],
++)
++
++config_setting(
++    name = "with_luajit2",
++    flag_values = {
++        ":luajit2": "True",
++    },
++)
++
+ envoy_cc_library(
+     name = "lua_lib",
+     srcs = ["lua.cc"],
+     hdrs = ["lua.h"],
+-    external_deps = [
+-        "luajit",
+-    ],
      deps = [
          "//envoy/thread_local:thread_local_interface",
          "//source/common/common:assert_lib",
-@@ -29,6 +33,10 @@ envoy_cc_library(
-     name = "wrappers_lib",
-     srcs = ["wrappers.cc"],
-     hdrs = ["wrappers.h"],
-+    target_compatible_with = select({
-+        "@platforms//cpu:ppc": ["@platforms//:incompatible"],
-+        "//conditions:default": [],
+@@ -22,7 +34,10 @@ envoy_cc_library(
+         "//source/common/common:lock_guard_lib",
+         "//source/common/common:thread_lib",
+         "//source/common/protobuf",
+-    ],
++    ] + select({
++        ":with_luajit2": [envoy_external_dep_path("luajit2")],
++        "//conditions:default": [envoy_external_dep_path("luajit")],
 +    }),
-     deps = [
-         ":lua_lib",
-         "//envoy/buffer:buffer_interface",
-diff --git a/source/extensions/filters/http/lua/BUILD b/source/extensions/filters/http/lua/BUILD
-index 37918273e5..4ae6278509 100644
---- a/source/extensions/filters/http/lua/BUILD
-+++ b/source/extensions/filters/http/lua/BUILD
-@@ -16,6 +16,10 @@ envoy_cc_library(
-     name = "lua_filter_lib",
-     srcs = ["lua_filter.cc"],
-     hdrs = ["lua_filter.h"],
-+    target_compatible_with = select({
-+        "@platforms//cpu:ppc": ["@platforms//:incompatible"],
-+        "//conditions:default": [],
-+    }),
-     deps = [
-         ":wrappers_lib",
-         "//envoy/http:codes_interface",
-@@ -38,6 +42,10 @@ envoy_cc_library(
-     name = "wrappers_lib",
-     srcs = ["wrappers.cc"],
-     hdrs = ["wrappers.h"],
-+    target_compatible_with = select({
-+        "@platforms//cpu:ppc": ["@platforms//:incompatible"],
-+        "//conditions:default": [],
-+    }),
-     deps = [
-         "//envoy/http:header_map_interface",
-         "//envoy/stream_info:stream_info_interface",
-@@ -54,6 +62,10 @@ envoy_cc_extension(
-     name = "config",
-     srcs = ["config.cc"],
-     hdrs = ["config.h"],
-+    target_compatible_with = select({
-+        "@platforms//cpu:ppc": ["@platforms//:incompatible"],
-+        "//conditions:default": [],
-+    }),
-     deps = [
-         "//envoy/registry",
-         "//source/extensions/filters/http/common:factory_base_lib",
-diff --git a/source/extensions/router/cluster_specifiers/lua/BUILD b/source/extensions/router/cluster_specifiers/lua/BUILD
-index 1f7801325c..e717072082 100644
---- a/source/extensions/router/cluster_specifiers/lua/BUILD
-+++ b/source/extensions/router/cluster_specifiers/lua/BUILD
-@@ -19,6 +19,10 @@ envoy_cc_library(
-     hdrs = [
-         "lua_cluster_specifier.h",
-     ],
-+    target_compatible_with = select({
-+        "@platforms//cpu:ppc": ["@platforms//:incompatible"],
-+        "//conditions:default": [],
-+    }),
-     deps = [
-         "//envoy/router:cluster_specifier_plugin_interface",
-         "//source/common/common:utility_lib",
-@@ -35,6 +39,10 @@ envoy_cc_extension(
-     name = "config",
-     srcs = ["config.cc"],
-     hdrs = ["config.h"],
-+    target_compatible_with = select({
-+        "@platforms//cpu:ppc": ["@platforms//:incompatible"],
-+        "//conditions:default": [],
-+    }),
-     deps = [
-         ":lua_cluster_specifier_lib",
-         "//envoy/registry",
-diff --git a/source/extensions/string_matcher/lua/BUILD b/source/extensions/string_matcher/lua/BUILD
-index 550c67b8b1..3235f91704 100644
---- a/source/extensions/string_matcher/lua/BUILD
-+++ b/source/extensions/string_matcher/lua/BUILD
-@@ -12,10 +12,14 @@ envoy_cc_extension(
-     name = "config",
-     srcs = ["match.cc"],
-     hdrs = ["match.h"],
-+    target_compatible_with = select({
-+        "@platforms//cpu:ppc": ["@platforms//:incompatible"],
-+        "//conditions:default": [],
-+    }),
-     deps = [
-         "//source/common/common:matchers_lib",
-         "//source/common/config:datasource_lib",
--        "//source/extensions/filters/common/lua:lua_lib",
-+#        "//source/extensions/filters/common/lua:lua_lib",
-         "@envoy_api//envoy/extensions/string_matcher/lua/v3:pkg_cc_proto",
-     ],
  )
-diff --git a/test/extensions/filters/common/lua/BUILD b/test/extensions/filters/common/lua/BUILD
-index 339e181ff7..1f97d349f9 100644
---- a/test/extensions/filters/common/lua/BUILD
-+++ b/test/extensions/filters/common/lua/BUILD
-@@ -12,6 +12,10 @@ envoy_package()
- envoy_cc_test(
-     name = "lua_test",
-     srcs = ["lua_test.cc"],
-+    target_compatible_with = select({
-+        "@platforms//cpu:ppc": ["@platforms//:incompatible"],
-+        "//conditions:default": [],
-+    }),
-     deps = [
-         "//source/common/thread_local:thread_local_lib",
-         "//source/extensions/filters/common/lua:lua_lib",
-@@ -24,6 +28,10 @@ envoy_cc_test(
- envoy_cc_test(
-     name = "wrappers_test",
-     srcs = ["wrappers_test.cc"],
-+    target_compatible_with = select({
-+        "@platforms//cpu:ppc": ["@platforms//:incompatible"],
-+        "//conditions:default": [],
-+    }),
-     deps = [
-         ":lua_wrappers_lib",
-         "//source/common/buffer:buffer_lib",
-@@ -38,6 +46,10 @@ envoy_cc_test(
- envoy_cc_test_library(
-     name = "lua_wrappers_lib",
-     hdrs = ["lua_wrappers.h"],
-+    target_compatible_with = select({
-+        "@platforms//cpu:ppc": ["@platforms//:incompatible"],
-+        "//conditions:default": [],
-+    }),
-     deps = [
-         "//source/extensions/filters/common/lua:lua_lib",
-         "//test/mocks/thread_local:thread_local_mocks",
-diff --git a/test/extensions/filters/http/lua/BUILD b/test/extensions/filters/http/lua/BUILD
-index a00710c01f..8df1ac58cb 100644
---- a/test/extensions/filters/http/lua/BUILD
-+++ b/test/extensions/filters/http/lua/BUILD
-@@ -15,6 +15,10 @@ envoy_extension_cc_test(
-     name = "lua_filter_test",
-     srcs = ["lua_filter_test.cc"],
-     extension_names = ["envoy.filters.http.lua"],
-+    target_compatible_with = select({
-+        "@platforms//cpu:ppc": ["@platforms//:incompatible"],
-+        "//conditions:default": [],
-+    }),
-     deps = [
-         "//source/common/stream_info:stream_info_lib",
-         "//source/extensions/filters/http/lua:lua_filter_lib",
-@@ -36,6 +40,10 @@ envoy_extension_cc_test(
-     name = "wrappers_test",
-     srcs = ["wrappers_test.cc"],
-     extension_names = ["envoy.filters.http.lua"],
-+    target_compatible_with = select({
-+        "@platforms//cpu:ppc": ["@platforms//:incompatible"],
-+        "//conditions:default": [],
-+    }),
-     deps = [
-         "//source/common/network:address_lib",
-         "//source/common/stream_info:stream_info_lib",
-@@ -52,6 +60,10 @@ envoy_extension_cc_test(
-     size = "large",
-     srcs = ["lua_integration_test.cc"],
-     extension_names = ["envoy.filters.http.lua"],
-+    target_compatible_with = select({
-+        "@platforms//cpu:ppc": ["@platforms//:incompatible"],
-+        "//conditions:default": [],
-+    }),
-     deps = [
-         "//source/extensions/filters/http/lua:config",
-         "//test/config:v2_link_hacks",
-@@ -66,6 +78,10 @@ envoy_extension_cc_test(
-     name = "config_test",
-     srcs = ["config_test.cc"],
-     extension_names = ["envoy.filters.http.lua"],
-+    target_compatible_with = select({
-+        "@platforms//cpu:ppc": ["@platforms//:incompatible"],
-+        "//conditions:default": [],
-+    }),
-     deps = [
-         "//source/extensions/filters/http/lua:config",
-         "//test/mocks/server:factory_context_mocks",
-diff --git a/test/extensions/router/cluster_specifiers/lua/BUILD b/test/extensions/router/cluster_specifiers/lua/BUILD
-index f2e3d0a15d..92ebf09214 100644
---- a/test/extensions/router/cluster_specifiers/lua/BUILD
-+++ b/test/extensions/router/cluster_specifiers/lua/BUILD
-@@ -15,6 +15,10 @@ envoy_extension_cc_test(
-     name = "lua_cluster_specifier_test",
-     srcs = ["lua_cluster_specifier_test.cc"],
-     extension_names = ["envoy.router.cluster_specifier_plugin.lua"],
-+    target_compatible_with = select({
-+        "@platforms//cpu:ppc": ["@platforms//:incompatible"],
-+        "//conditions:default": [],
-+    }),
-     deps = [
-         "//source/extensions/router/cluster_specifiers/lua:lua_cluster_specifier_lib",
-         "//test/mocks/router:router_mocks",
-@@ -28,6 +32,10 @@ envoy_extension_cc_test(
-     name = "config_test",
-     srcs = ["config_test.cc"],
-     extension_names = ["envoy.router.cluster_specifier_plugin.lua"],
-+    target_compatible_with = select({
-+        "@platforms//cpu:ppc": ["@platforms//:incompatible"],
-+        "//conditions:default": [],
-+    }),
-     deps = [
-         "//source/extensions/router/cluster_specifiers/lua:config",
-         "//test/mocks/server:factory_context_mocks",
+
+ envoy_cc_library(
+
