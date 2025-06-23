@@ -50,3 +50,5 @@ else
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | Build_Success"
     exit 0
 fi
+
+# Tests are not executed as it takes longer hours than are allowed
