@@ -16,7 +16,7 @@
        "build_script": "stripe-python_ubi_9.3.sh"
     },
     "*" : {
-        "dir": "v12.2.0_ubi9"
+        "dir": "v12.2.0_ubi9",
        "build_script": "stripe-python_ubi_12.2.0_9.3.sh"
     }
 }
