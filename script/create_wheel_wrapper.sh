@@ -7,7 +7,7 @@ CURRENT_DIR="${PWD}"
 EXIT_CODE=0
 
 #install gcc
-yum install gcc-toolset-13 -y
+yum install -y gcc-toolset-13 zip unzip 
 source /opt/rh/gcc-toolset-13/enable
 gcc --version
 
@@ -122,10 +122,7 @@ cleanup() {
 # Function to modify the metadata file after wheel creation
 modify_metadata_file() {
     local wheel_path="$1"
-
-    # Installing necessary dependencies
-    yum install -y zip unzip > /dev/null
-
+    
     # Create a temporary directory for unzipping the wheel file
     temp_dir="temp_directory"
     mkdir -p "$temp_dir"
