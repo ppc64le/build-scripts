@@ -35,7 +35,7 @@ cd ${PACKAGE_DIR}
 git checkout v${PACKAGE_VERSION}
 
 # Install build requirements
-pip3 install -r test-requirements.txt
+pip3 install -r requirements.txt
 pip3 install cython build
 
 #Explicitly generating the C files with Cython:
