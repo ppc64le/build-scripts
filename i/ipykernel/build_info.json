@@ -1,10 +1,11 @@
 {
-  "maintainer": "AbhiIBM",
+  "maintainer": "aastha-sharma2",
   "package_name": "ipykernel",
   "github_url": "https://github.com/ipython/ipykernel",
   "version": "v6.29.4",
   "default_branch": "main",
   "package_dir": "i/ipykernel/",
+  "wheel_build" : true,
   "build_script": "ipykernel_ubi_9.3.sh",
   "docker_build": false,
   "validate_build_script": true,

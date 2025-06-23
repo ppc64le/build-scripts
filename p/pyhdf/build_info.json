@@ -1,15 +1,16 @@
 {
-  "maintainer": "vinodk99",
+  "maintainer": "ramnathnayak-ibm",
   "package_name": "pyhdf",
   "github_url": "https://github.com/fhs/pyhdf",
-  "version": "v0.11.3",
+  "version": "v0.11.6",
   "default_branch": "master",
   "package_dir": "p/pyhdf",
-  "build_script": "pyhdf_ubi_8.7.sh",
+  "build_script": "pyhdf_ubi_9.3.sh",
   "validate_build_script": "true",
   "use_non_root_user": "false",
   "docker_build": false,
+  "wheel_build": true,
   "v0.11.*": {
-    "build_script": "pyhdf_ubi_8.7.sh"
+    "build_script": "pyhdf_ubi_9.3.sh"
   }
 }

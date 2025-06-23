@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : python-semver
-# Version          : 3.0.2
-# Source repo      : https://github.com/python-semver/python-semver.git
+# Version          : 3.0.4
+# Source repo      : https://github.com/python-semver/python-semver
 # Tested on        : UBI:9.3
 # Language         : Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Vipul Ajmera <Vipul.Ajmera@ibm.com>
+# Maintainer       : Ramnath Nayak <Ramnath.Nayak@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -20,34 +20,34 @@
 
 #variables
 PACKAGE_NAME=python-semver
-PACKAGE_VERSION=${1:-3.0.2}
-PACKAGE_URL=https://github.com/python-semver/python-semver.git
+PACKAGE_VERSION=${1:-3.0.4}
+PACKAGE_URL=https://github.com/python-semver/python-semver
+PACKAGE_DIR=python-semver
 
-#install dependencies
-yum install -y yum-utils git gcc gcc-c++ make python3.11 python3.11-pip python3.11-devel
+CURRENT_DIR=${PWD}
 
-python3.11 -m venv semver-venv
-source semver-venv/bin/activate
+yum install -y git make cmake zip tar wget python3 python3-devel python3-pip gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc zlib-devel libjpeg-devel 
+
+export GCC_TOOLSET_PATH=/opt/rh/gcc-toolset-13/root/usr
+export PATH=$GCC_TOOLSET_PATH/bin:$PATH
 
 # clone repository
 git clone $PACKAGE_URL 
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-python3.11 -m pip install --upgrade pip
-python3.11 -m pip install tox tox-gh-actions
-python3.11 -m pip install build
-python3.11 -m pip install -r docs/requirements.txt
+pip install --upgrade pip tox build
+pip install -r docs/requirements.txt
 
 #install
-if ! pyproject-build; then
+if ! pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-if ! tox -e py311; then
+if ! tox -e py3 ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"

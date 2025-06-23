@@ -1,5 +1,5 @@
 {
-  "maintainer": "stutiibm",
+  "maintainer": "ramnathnayak-ibm",
   "package_name": "torchtext",
   "github_url": "https://github.com/pytorch/text.git",
   "version": "v0.15.2",

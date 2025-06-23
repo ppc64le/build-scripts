@@ -1,15 +1,19 @@
 {
-  "maintainer": "mohitp333",
+  "maintainer": "aastha-sharma2",
   "package_name": "python-fire",
   "github_url": "https://github.com/google/python-fire.git",
-  "version": "v0.5.0",
+  "version": "v0.7.0",
   "default_branch": "master",
   "package_dir": "p/python-fire",
-  "build_script": "python_fire_ubi_8.7.sh",
+  "wheel_build" : true,
+  "build_script": "python_fire_ubi_9.3.sh",
   "validate_build_script": "true",
   "use_non_root_user": "false",
   "docker_build": "false",
   "v0.5.0": {
     "build_script": "python_fire_ubi_8.7.sh"
+  },
+  "*":  {
+    "build_script": "python_fire_ubi_9.3.sh"
   }
 }

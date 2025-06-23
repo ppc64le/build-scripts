@@ -1,17 +1,17 @@
 {
-    "maintainer":"vinodk99",
+    "maintainer":"aastha-sharma2",
     "package_name" : "ipywidgets", 
     "github_url": "https://github.com/jupyter-widgets/ipywidgets",
     "version": "8.1.2",
     "default_branch": "main",
     "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "package_dir": "i/ipywidgets",
+    "wheel_build" : true,
     "build_script": "ipywidgets_ubi_9.3.sh",
     "validate_build_script": "true",
     "use_non_root_user": "false",
     "docker_build": "true",
-    "*.*.*" : {
-        "dir": "8.1.2_ubi9",
+    "*" : {
        "build_script": "ipywidgets_ubi_9.3.sh"
     }
 }

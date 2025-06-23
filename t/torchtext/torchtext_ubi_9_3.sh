@@ -8,7 +8,7 @@
 # Language         : Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Stuti Wali <Stuti.Wali@ibm.com>
+# Maintainer       : Ramnath Nayak <Ramnath.Nayak@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -25,20 +25,8 @@ PACKAGE_VERSION=${1:-v0.15.2}
 PACKAGE_URL=https://github.com/pytorch/text.git
 PACKAGE_DIR=text
 
-yum install -y wget
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
-wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
-mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
-
-dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-
 # Install necessary system dependencies
-yum install -y git gcc gcc-c++ make cmake wget openssl-devel python-devel python-pip epel-release bzip2-devel libffi-devel zlib-devel meson ninja-build gcc-gfortran openblas-devel libjpeg-devel zlib-devel libtiff-devel freetype-devel libomp-devel zip unzip sqlite-devel
-
-dnf groupinstall -y "Development Tools"
+yum install -y git gcc gcc-c++ make cmake wget openssl-devel python-devel python-pip bzip2-devel libffi-devel zlib-devel meson ninja-build gcc-gfortran openblas-devel libjpeg-devel zlib-devel libtiff-devel freetype-devel libomp-devel zip unzip sqlite-devel
 
 #install rust
 curl https://sh.rustup.rs -sSf | sh -s -- -y
@@ -57,7 +45,9 @@ python3 setup.py install
 cd ..
 
 pip install torchdata==0.7.1
-pip install numpy pytest regex nltk spacy sacremoses parameterized portalocker expecttest pytest-timeout
+pip install numpy pytest regex nltk sacremoses parameterized portalocker expecttest pytest-timeout
+export BLIS_ARCH=generic
+pip install blis spacy
 
 python3 -c "import torch; print(torch.__version__)"
 python3 -c "import numpy; print(numpy.__version__)"
@@ -80,7 +70,7 @@ if ! (python3 setup.py install) ; then
 fi
 
 #run tests
-if !(pytest test/torchtext_unittest -k "not test_with_asset"); then
+if !(pytest test/torchtext_unittest -k "not test_with_asset" --disable-warnings); then
     echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"

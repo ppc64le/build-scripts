@@ -1,12 +1,13 @@
 {
-   "maintainer": "shubham-garud",
+   "maintainer": "ramnathnayak-ibm",
    "package_name": "uritools",
    "github_url": "https://github.com/tkem/uritools",
-   "version": "v4.0.2",
+   "version": "v5.0.0",
    "default_branch": "master",
    "build_script": "uritools_ubi_9.3.sh",
    "package_dir": "u/uritools",
    "docker_build": false,
+   "wheel_build": true,
    "validate_build_script": true,
    "use_non_root_user": false
 }

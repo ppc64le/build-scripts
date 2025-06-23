@@ -23,7 +23,7 @@ PACKAGE_NAME=pyarrow
 PACKAGE_DIR=arrow/python
 PACKAGE_VERSION=${1:-apache-arrow-19.0.0}
 PACKAGE_URL=https://github.com/apache/arrow
-version=19.0.0
+version=$(echo "$PACKAGE_VERSION" | sed 's/^apache-arrow-//')
 
 echo "Install dependencies and tools."
 yum install -y python python-pip python-devel wget git make  python-devel xz-devel openssl-devel cmake zlib-devel libjpeg-devel gcc-toolset-13 cmake libevent libtool pkg-config  brotli-devel.ppc64le bzip2-devel lz4-devel 
@@ -324,7 +324,7 @@ cd orc
 git checkout v2.0.3
 
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/o/orc/orc.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/orc/orc.patch
 git apply orc.patch
 
 mkdir orc_prefix
@@ -799,6 +799,16 @@ if ! pip install . ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
+
+# Creating the wheel in the build script.Because When using the wrapper script, 
+# the wheel file is generated with an unexpected version, e.g., 
+# 'pyarrow-19.0.1.dev0+ga8a979a41.d20250414-cp312-cp312-linux_ppc64le.whl'
+# This is because when the wheel is built using the command:
+# python -m build --wheel --no-isolation --outdir="$SCRIPT_DIR/"
+# If we using 'python3 setup.py bdist_wheel --dist-dir="$SCRIPT_DIR/"' produces a wheel with the expected naming format.
+pip install wheel
+echo "Creating wheel....."
+python3 setup.py bdist_wheel --dist-dir="$SCRIPT_DIR/"
 
 echo "testing pyarrow...."
 cd ..

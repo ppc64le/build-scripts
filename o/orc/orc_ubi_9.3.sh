@@ -8,7 +8,7 @@
 # Language      : c
 # Travis-Check  : True
 # Script License: Apache License 2.0
-# Maintainer    : Stuti Wali <Stuti.Wali@ibm.com>
+# Maintainer    : Aastha Sharma <aastha.sharma4@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -18,84 +18,88 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e 
+set -ex 
 
 PACKAGE_NAME=orc
 PACKAGE_VERSION=${1:-v2.0.3}
 PACKAGE_URL=https://github.com/apache/orc
 CURRENT_DIR=$(pwd)
-PACKAGE_DIR=orc
 
-echo "------------------------Installing dependencies-------------------"
-yum install -y wget
-echo "------------------------Installing dependencies-------------------"
-yum install -y wget
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
-wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
-mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
-
-dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-
-# install core dependencies
-yum install -y python python-pip python-devel  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils
-
+# Set environment variables
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
-gcc --version
 
-OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
+echo " --------------------------------------------------- Installing dependencies --------------------------------------------------- "
+yum install -y wget git make cmake binutils lz4-devel zlib-devel \
+    python3 python3-pip python3-devel \
+    gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-gcc-c++ \
+    ninja-build
 
-yum install -y snappy-devel libzstd-devel lz4-devel 
-python -m pip install --upgrade pip
-pip install ninja setuptools
+python3 -m pip install --upgrade pip
+python3 -m pip install setuptools wheel ninja
 
 export CC=$(which gcc)
 export CXX=$(which g++)
 export GCC=$CC
 export GXX=$CXX
 
-#Building abseil-cpp which is dependency for libprotobuf
-echo "----------------------------------------------Cloning abseil-cpp--------------------------------------------------------"
-git clone https://github.com/abseil/abseil-cpp
-cd abseil-cpp
-git checkout 20240116.2
+cd $CURRENT_DIR
 
-mkdir $CURRENT_DIR/abseil-prefix
-ABSEIL_PREFIX=$CURRENT_DIR/abseil-prefix
-mkdir -p $CURRENT_DIR/local/abseilcpp
-abseilcpp=$CURRENT_DIR/local/abseilcpp
+# ZSTD
+echo " --------------------------------------------------- Installing ZSTD --------------------------------------------------- "
 
-mkdir build
-cd build
+git clone https://github.com/facebook/zstd.git
+cd zstd
+make -j$(nproc)
+make install
 
-cmake -G Ninja \
-    ${CMAKE_ARGS} \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_CXX_STANDARD=17 \
-    -DCMAKE_INSTALL_LIBDIR=lib \
-    -DCMAKE_INSTALL_PREFIX=${ABSEIL_PREFIX} \
-    -DBUILD_SHARED_LIBS=ON \
-    -DABSL_PROPAGATE_CXX_STD=ON \
-    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-   ..
+export ZSTD_HOME=/usr/local
+export CMAKE_PREFIX_PATH=$ZSTD_HOME:$CMAKE_PREFIX_PATH
+export LD_LIBRARY_PATH=$ZSTD_HOME/lib:$LD_LIBRARY_PATH
 
-cmake --build .
-cmake --install .
+echo " --------------------------------------------------- ZSTD Successfully Installed --------------------------------------------------- "
 
 cd $CURRENT_DIR
-cp -r  $ABSEIL_PREFIX/* $abseilcpp/
-echo "-------------------------------------Abseil-cpp installed successfully-------------------------------------"
 
-#Building libprotobuf which is dependency for orc
+#SNAPPY
+echo " --------------------------------------------------- Installing snappy-devel --------------------------------------------------- "
+git clone -b 1.2.2 https://github.com/google/snappy
+cd snappy
+git submodule update --init
 
+mkdir -p local/snappy build
+cd build
+
+cmake .. \
+  -DBUILD_SHARED_LIBS=ON \
+  -DSNAPPY_BUILD_STATIC=OFF \
+  -DCMAKE_INSTALL_PREFIX=/usr \
+  -DCMAKE_INSTALL_LIBDIR=lib64
+make -j$(nproc)
+make install 
+
+echo " --------------------------------------------------- Snappy-devel Successfully Installed --------------------------------------------------- "
+
+cd $CURRENT_DIR
+
+# Building abseil-cpp which is a dependency for libprotobuf
+echo " --------------------------------------------------- Cloning abseil-cpp --------------------------------------------------- "
+
+# Set ABSEIL_VERSION and ABSEIL_URL
+ABSEIL_VERSION=20240116.2
+ABSEIL_URL="https://github.com/abseil/abseil-cpp"
+
+git clone $ABSEIL_URL -b $ABSEIL_VERSION
+
+echo " --------------------------------------------------- Abseil-cpp installed successfully --------------------------------------------------- "
+
+# Building libprotobuf which is a dependency for orc
 cd $CURRENT_DIR
 mkdir -p $CURRENT_DIR/local/libprotobuf
 LIBPROTO_INSTALL=$CURRENT_DIR/local/libprotobuf
 
-echo "----------------------------------------------Cloning protobuf--------------------------------------------------------"
+echo " --------------------------------------------------- Cloning protobuf --------------------------------------------------- "
+
 git clone https://github.com/protocolbuffers/protobuf
 cd protobuf
 git checkout v4.25.3
@@ -126,17 +130,15 @@ cmake -G "Ninja" \
 cmake --build . --verbose
 cmake --install .
 
-
 cd $CURRENT_DIR
 export PATH=$LIBPROTO_INSTALL/bin:$PATH
 protoc --version
 
-echo "-------------------------------------libprotobuf installed successfuly-------------------------------------"
+echo " --------------------------------------------------- libprotobuf installed successfully --------------------------------------------------- "
 
 export LD_LIBRARY_PATH=$CURRENT_DIR//local/abseilcpp/lib:$LD_LIBRARY_PATH
 export CMAKE_PREFIX_PATH=$CURRENT_DIR//local/abseilcpp:$CMAKE_PREFIX_PATH
 export PROTOBUF_PREFIX=$CURRENT_DIR//local/libprotobuf/:$PROTOBUF_PREFIX
-
 
 # clone source repository
 cd $CURRENT_DIR
@@ -144,10 +146,10 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/o/orc/pyproject.toml
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/orc/pyproject.toml
 sed -i "s/{PACKAGE_VERSION}/$(echo $PACKAGE_VERSION | sed 's/^v//')/g" pyproject.toml
 echo "--------------------------replaced version in pyproject.toml--------------------------"
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/o/orc/orc.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/orc/orc.patch
 git apply orc.patch
 
 mkdir prefix
@@ -182,7 +184,7 @@ cmake ${CMAKE_ARGS} \
     "${_CMAKE_EXTRA_CONFIG[@]}" \
     -GNinja ..
 
-#Build package
+# Build package
 if ! (ninja && ninja install) ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -194,14 +196,14 @@ cd ..
 mkdir -p local/$PACKAGE_NAME
 cp -r prefix/* local/$PACKAGE_NAME
 
-#During wheel creation for this package we need exported cmake-args. Once script get exit, and if we build wheel through wrapper script, then those are not applicable during wheel creation. So we are generating wheel for this package in script itself.
+# During wheel creation for this package we need exported cmake-args. Once script gets exit, and if we build wheel through wrapper script, then those are not applicable during wheel creation. So we are generating wheel for this package in script itself.
 echo "---------------------------------------------------Building the wheel--------------------------------------------------"
-pip install --upgrade build setuptools wheel
-python -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"
+python3 -m pip install --upgrade build setuptools wheel
+python3 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"
 
 echo "----------------------------------------------Testing pkg-------------------------------------------------------"
 cd build
-#Test package
+# Test package
 if ! (ninja test) ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"

@@ -8,7 +8,7 @@
 # Language      : Python, Cython, Plsql
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Chandan.Abhyankar@ibm.com
+# Maintainer    : Anumala Rajesh <Anumala.Rajesh@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -18,38 +18,29 @@
 #
 # ----------------------------------------------------------------------------
 
-PYTHON_VERSION=3.11
+set -ex
 
 # Install dependencies
-yum install -y python311 python$PYTHON_VERSION-devel python$PYTHON_VERSION-pip git openssl-devel gcc cmake wget
+yum install -y python3.12 python3.12-devel python3.12-pip git openssl-devel gcc-toolset-13 cmake wget
 
-# Install dependency rustc
-export RUST_VERSION="1.80.0"
-wget -q -O rustup-init.sh https://sh.rustup.rs
-bash rustup-init.sh -y
-export PATH=$PATH:$HOME/.cargo/bin
-rustup toolchain install ${RUST_VERSION}
-rustup default ${RUST_VERSION}
-rustc --version | grep "${RUST_VERSION}"
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 # Clone the python-oracledb package
 PACKAGE_NAME=python-oracledb
 PACKAGE_VERSION=${1:-v2.5.1}
 PACKAGE_URL=https://github.com/oracle/python-oracledb.git
+CURRENT_DIR=$(pwd) 
+
+echo " ----------------------------------- Installing Dependencies ----------------------------------- "
+python3.12 -m pip install setuptools wheel build pytest
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
-# Setup virtual environment for python
-python$PYTHON_VERSION -m venv oracledb-env
-source oracledb-env/bin/activate
-python3 -m pip install pytest hypothesis build
-
-# Install the package
-python3 -m build
-python3 -m pip install -e .
+echo " ----------------------------------- Installing Package ----------------------------------- "
+python3.12 -m pip install .
 
 if [ $? == 0 ]; then
      echo "------------------$PACKAGE_NAME::Build_Pass---------------------"
@@ -63,21 +54,17 @@ else
 fi
 
 # Test the package
-python3 -c "import oracledb; print(oracledb.__file__)"
+python3.12 -c "import oracledb; print(oracledb.__file__)"
+python3.12 -c "import oracledb; print(oracledb.__version__)" 
 
 if [ $? == 0 ]; then
      echo "------------------$PACKAGE_NAME::Test_Pass---------------------"
      echo "$PACKAGE_VERSION $PACKAGE_NAME"
      echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Test_Success"
-     
-     # Deactivate python environment (oracledb-env)
-	 deactivate
-
      exit 0
 else
      echo "------------------$PACKAGE_NAME::Test_Fail-------------------------"
      echo "$PACKAGE_VERSION $PACKAGE_NAME"
      echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Test_Fail"
      exit 2
-fi
-
+fi 

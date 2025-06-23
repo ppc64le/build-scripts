@@ -17,40 +17,30 @@
 #                    contact "Maintainer" of this script.
 #
 # ---------------------------------------------------------------------------
- 
- 
+
+
 # Variables
 PACKAGE_NAME=jax
 PACKAGE_VERSION=${1:-jaxlib-v0.4.7}
 PACKAGE_URL=https://github.com/jax-ml/jax
 CURRENT_DIR=$pwd
- 
-echo "Additional repositories -------------------------------------------------------------"
-yum install -y wget
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
-wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
-mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
- 
-dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
- 
+
 # Install dependencies
 echo "Installing dependencies -------------------------------------------------------------"
 yum install -y python-devel python-pip git gcc gcc-c++ make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel 
 
 echo "Installing dependencies -------------------------------------------------------------"
-yum install -y zlib-devel freetype-devel procps-ng openblas-devel epel-release meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel  
+yum install -y zlib-devel freetype-devel procps-ng openblas-devel meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel  
 
 echo "Installing dependencies -------------------------------------------------------------"
 yum install -y java-11-openjdk-devel  libtool xz  libevent-devel  clang java-11-openjdk java-11-openjdk-headless zip openblas
- 
+
+
 export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-11)(?=.*ppc64le)')
 export PATH=$JAVA_HOME/bin:$PATH
 export LD_LIBRARY_PATH=/usr/lib64/:$LD_LIBRARY_PATH
  
-dnf groupinstall -y "Development Tools"
+# dnf groupinstall -y "Development Tools"
  
 #installing bazel from source
 echo "Installing bazel -------------------------------------------------------------"
@@ -73,8 +63,7 @@ pip3 install numpy==1.26.4 opt-einsum==3.3.0  ml-dtypes==0.5.0 absl-py
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
- 
- 
+
 #Add boringssl to build for jaxlib
 BORINGSSL_SUPPORT_CONTENT=$(cat << EOF
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive") 
@@ -93,8 +82,6 @@ cat WORKSPACE >> WORKSPACE-TEMP
 rm -rf WORKSPACE && mv WORKSPACE-TEMP WORKSPACE
  
 cd build
- 
-
 #Install
 echo "Building package-------------------------------------------------------------"
 if ! (python3 build.py ) ; then
@@ -105,7 +92,7 @@ if ! (python3 build.py ) ; then
 fi
 echo "Package build successful-------------------------------------------------------------"
 
-cp dist/jaxlib-0.4.7-cp39-cp39-manylinux2014_ppc64le.whl $CURRENT_DIR/
+cp dist/*.whl $CURRENT_DIR/
  
 # Run test cases
 #skipping test part as jaxlib don't have tests to execute

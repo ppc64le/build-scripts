@@ -24,21 +24,45 @@ PACKAGE_VERSION=${1:-v4.2.0}
 PACKAGE_URL=https://github.com/microsoft/LightGBM.git
 PACKAGE=LightGBM
 PACKAGE_DIR=LightGBM/lightgbm-python
-CURRENT_DIR=$pwd
+CURRENT_DIR=$(pwd)
 
 echo "Installing dependencies..."
-yum install -y git gcc gcc-c++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel gcc-gfortran openblas atlas openblas-devel python3 python3-devel python3-pip
+yum install -y git gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ cmake make wget openssl-devel bzip2-devel libffi-devel zlib-devel libjpeg-devel gcc-gfortran openblas atlas openblas-devel python3 python3-devel python3-pip glibc-static
+
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+gcc --version
+
+export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr
+export CC=$GCC_HOME/bin/gcc
+export CXX=$GCC_HOME/bin/g++
 
 echo "Installing openmpi"
-yum install -y wget
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os/
-dnf config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os/
-wget http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
-mv RPM-GPG-KEY-CentOS-Official /etc/pki/rpm-gpg/.
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
-dnf install --nodocs -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-yum install openmpi openmpi-devel -y
+wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.6.tar.gz
+tar -xvf openmpi-5.0.6.tar.gz
+cd openmpi-5.0.6
+mkdir prefix
+export PREFIX=$(pwd)/prefix
+
+#Set environment variables for OpenMPI
+export LIBRARY_PATH="/usr/lib64"
+
+#Configure and build OpenMPI
+./configure --prefix=$PREFIX \
+    --disable-dependency-tracking \
+    --disable-shared \
+    --enable-static \
+    LDFLAGS="-static"
+echo "installing openmpi"
+make -j$(nproc)
+make install
+
+#Set OpenMPI paths
+export PATH=$PREFIX/bin:$PATH
+export LD_LIBRARY_PATH=$PREFIX/lib:$LD_LIBRARY_PATH
+
+#Navigate back to the root directory
+cd $CURRENT_DIR
 
 echo "Clone the repository..."
 git clone $PACKAGE_URL
@@ -92,51 +116,47 @@ echo "back to lightgbm dir"
 cd ..
 
 #build pyarrow
-echo "Cloning the repository..."
-# Clone the repository
+echo "Cloning Arrow repository..."
 git clone https://github.com/apache/arrow.git
 cd arrow
 git checkout apache-arrow-11.0.0
 git submodule update --init
-echo "Repository cloned and checked out to version"
 
 echo "Setting test data paths..."
-# Set test data paths
 export PARQUET_TEST_DATA="${PWD}/cpp/submodules/parquet-testing/data"
 export ARROW_TEST_DATA="${PWD}/testing/data"
-echo "Test data paths set."
 
 echo "Applying fixes for nogil placement and rvalue issues..."
-# Apply fixes for nogil placement and rvalue issues
 sed -i -E 's/(nogil)(.*)(except[^:]*)/\2\3 \1/' python/pyarrow/error.pxi
 sed -i -E 's/(nogil)(.*)(except[^:]*)/\2\3 \1/' python/pyarrow/includes/libarrow.pxd
 sed -i -E 's/(nogil)(.*)(except[^:]*)/\2\3 \1/' python/pyarrow/lib.pxd
-# Replace rvalue references '&&' with lvalue references '&'
 sed -i -E 's/\&\&/\&/g' python/pyarrow/error.pxi
 sed -i -E 's/\&\&/\&/g' python/pyarrow/includes/libarrow.pxd
 sed -i -E 's/\&\&/\&/g' python/pyarrow/lib.pxd
 sed -i -E 's/\&\&/\&/g' python/pyarrow/includes/libarrow_fs.pxd
-echo "Fixes applied."
 
-echo "Preparing for build..."
-# Prepare for build
+echo "Installing Python dependencies..."
 cd ..
 pip install -r arrow/python/requirements-build.txt
 pip install -r arrow/python/requirements-test.txt
-mkdir dist
+pip install pytest==6.2.5 numpy==1.23.5
+pip install --upgrade setuptools wheel
+pip install hypothesis pytest-lazy-fixture pytz
+
+echo "Setting build environment..."
+mkdir -p dist
 export ARROW_HOME=$(pwd)/dist
 export LD_LIBRARY_PATH=$ARROW_HOME/lib:$LD_LIBRARY_PATH
 export CMAKE_PREFIX_PATH=$ARROW_HOME:$CMAKE_PREFIX_PATH
-echo "Build preparation completed."
+export Arrow_DIR=$ARROW_HOME/lib/cmake/Arrow  # crucial fix
 
 echo "Building Arrow C++ libraries..."
-# Build Arrow C++ libraries
-mkdir arrow/cpp/build
+mkdir -p arrow/cpp/build
 cd arrow/cpp/build
 cmake -DCMAKE_INSTALL_PREFIX=$ARROW_HOME \
     -DCMAKE_INSTALL_LIBDIR=lib \
-    -DCMAKE_BUILD_TYPE=Debug \
-    -DARROW_BUILD_TESTS=ON \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DARROW_BUILD_TESTS=OFF \
     -DARROW_COMPUTE=ON \
     -DARROW_CSV=ON \
     -DARROW_DATASET=ON \
@@ -152,52 +172,38 @@ cmake -DCMAKE_INSTALL_PREFIX=$ARROW_HOME \
     -DARROW_WITH_ZSTD=ON \
     -DPARQUET_REQUIRE_ENCRYPTION=ON \
     ..
-echo "executing make command ..."
 make -j$(nproc)
-echo "make install ..."
 make install
+
 echo "Arrow C++ libraries built and installed."
 
 echo "Building PyArrow..."
-# Build PyArrow
-cd ../..
-cd python
+cd ../../python
+
 export PYARROW_WITH_PARQUET=1
 export PYARROW_WITH_DATASET=1
 export PYARROW_PARALLEL=4
 export PYARROW_BUNDLE_ARROW_CPP=1
-export LD_LIBRARY_PATH=${ARROW_HOME}/lib:${LD_LIBRARY_PATH}
 export PYARROW_BUNDLE_ARROW_CPP_HEADERS=1
-pip install pytest==6.2.5
-echo "installing numpy ..."
-pip install numpy==1.23.5
-echo "installing other necessary dependency ..."
-pip install --upgrade setuptools wheel
-pip install wheel hypothesis pytest-lazy-fixture pytz
-echo "building package ..."
-CMAKE_PREFIX_PATH=$ARROW_HOME python3 setup.py build_ext --inplace
+export CMAKE_PREFIX_PATH=$ARROW_HOME
+export Arrow_DIR=$ARROW_HOME/lib/cmake/Arrow
+export LD_LIBRARY_PATH=$ARROW_HOME/lib:$LD_LIBRARY_PATH
 
-echo "Installing PyArrow Python package..."
-# Install the generated Python package
-CMAKE_PREFIX_PATH=$ARROW_HOME python3 setup.py install
-echo "PyArrow Python package installed."
+python3 setup.py build_ext --inplace
+python3 setup.py install
+echo " PyArrow built and installed successfully."
+
 cd ../..
+cd $CURRENT_DIR
+cd $PACKAGE
 
 echo "installing base package and setting mpi flags ..."
 ./build-python.sh
 echo "set mpi library paths"
-export LD_LIBRARY_PATH=/usr/lib64/openmpi/lib:${LD_LIBRARY_PATH}
-export PATH=/usr/lib64/openmpi/bin:${PATH}
-export CXXFLAGS="-g -L/usr/lib64/openmpi/lib -lmpi"
-echo "create dir .."
-mkdir build
-cd build
-echo "run make cmmand with mpi option eable"
-cmake .. -DUSE_MPI=ON
-make -j$(nproc)
-echo "install make.."
-make install
-cd ..
+#Set OpenMPI paths
+export PATH=$PREFIX/bin:$PATH
+export LD_LIBRARY_PATH=$PREFIX/lib:$LD_LIBRARY_PATH
+
 echo "lightgbm dir ....."
 cd lightgbm-python
 

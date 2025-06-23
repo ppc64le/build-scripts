@@ -2,7 +2,7 @@
     "maintainer": "RadhikaAjabe7",
     "package_name": "hawtio",
     "github_url": "https://github.com/hawtio/hawtio",
-    "version": "4.0.0",
+    "version": "4.x",
     "default_branch": "main",
     "package_dir": "h/hawtio",
     "build_script": "hawtio_ubi_9.3.sh",

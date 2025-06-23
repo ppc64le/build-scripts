@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : onnx
-# Version          : v1.17.0
+# Version          : v1.18.0
 # Source repo      : https://github.com/onnx/onnx
 # Tested on        : UBI:9.3
 # Language         : Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
+# Maintainer       : Shivansh Sharma <Shivansh.S1@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -20,132 +20,124 @@
 
 # Variables
 PACKAGE_NAME=onnx
-PACKAGE_VERSION=${1:-v1.17.0}
+PACKAGE_VERSION=${1:-v1.18.0}
 PACKAGE_URL=https://github.com/onnx/onnx
 PACKAGE_DIR=onnx
+CURRENT_DIR="${PWD}"
 
 echo "Installing dependencies..."
-yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3-devel python3.12 python3.12-devel python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
+yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3.12-devel python3.12 python3.12-devel python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 export SITE_PACKAGE_PATH=/usr/local/lib/python3.12/site-packages
+
+echo " ------------------------------------------ Openblas Installing ------------------------------------------ "
 
 #clone and install openblas from source
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
 git checkout v0.3.29
 git submodule update --init
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/o/openblas/pyproject.toml
+
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/openblas/pyproject.toml
 sed -i "s/{PACKAGE_VERSION}/v0.3.29/g" pyproject.toml
+
 PREFIX=local/openblas
 OPENBLAS_SOURCE=$(pwd)
+
 # Set build options
 declare -a build_opts
 # Fix ctest not automatically discovering tests
 LDFLAGS=$(echo "${LDFLAGS}" | sed "s/-Wl,--gc-sections//g")
 export CF="${CFLAGS} -Wno-unused-parameter -Wno-old-style-declaration"
+
 unset CFLAGS
 export USE_OPENMP=1
 build_opts+=(USE_OPENMP=${USE_OPENMP})
 export PREFIX=${PREFIX}
+
 # Handle Fortran flags
 if [ ! -z "$FFLAGS" ]; then
     export FFLAGS="${FFLAGS/-fopenmp/ }"
     export FFLAGS="${FFLAGS} -frecursive"
     export LAPACK_FFLAGS="${FFLAGS}"
 fi
+
 export PLATFORM=$(uname -m)
 build_opts+=(BINARY="64")
 build_opts+=(DYNAMIC_ARCH=1)
 build_opts+=(TARGET="POWER9")
 BUILD_BFLOAT16=1
+
 # Placeholder for future builds that may include ILP64 variants.
 build_opts+=(INTERFACE64=0)
 build_opts+=(SYMBOLSUFFIX="")
+
 # Build LAPACK
 build_opts+=(NO_LAPACK=0)
+
 # Enable threading and set the number of threads
 build_opts+=(USE_THREAD=1)
 build_opts+=(NUM_THREADS=8)
+
 # Disable CPU/memory affinity handling to avoid problems with NumPy and R
 build_opts+=(NO_AFFINITY=1)
+
 # Build OpenBLAS
 make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
+
 # Install OpenBLAS
 CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
 OpenBLASInstallPATH=$(pwd)/$PREFIX
 OpenBLASConfigFile=$(find . -name OpenBLASConfig.cmake)
 OpenBLASPCFile=$(find . -name openblas.pc)
+
 sed -i "/OpenBLAS_INCLUDE_DIRS/c\SET(OpenBLAS_INCLUDE_DIRS ${OpenBLASInstallPATH}/include)" ${OpenBLASConfigFile}
 sed -i "/OpenBLAS_LIBRARIES/c\SET(OpenBLAS_INCLUDE_DIRS ${OpenBLASInstallPATH}/include)" ${OpenBLASConfigFile}
 sed -i "s|libdir=local/openblas/lib|libdir=${OpenBLASInstallPATH}/lib|" ${OpenBLASPCFile}
 sed -i "s|includedir=local/openblas/include|includedir=${OpenBLASInstallPATH}/include|" ${OpenBLASPCFile}
+
 export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
-export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
-cd ..
+export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}" 
+
+echo " ------------------------------------------ Openblas Successfully Installed ------------------------------------------ "
 
 
-WORK_DIR=$(pwd)
+cd $CURRENT_DIR
+
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
-pip3.12 install --upgrade pip setuptools wheel ninja packaging tox pytest build mypy stubs
-pip3.12 install 'cmake==3.31.6'
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH 
+
+python3.12 -m pip install --upgrade pip setuptools wheel ninja 
+python3.12 -m pip install packaging tox pytest build mypy stubs
+python3.12 -m pip install 'cmake==3.31.6'
+
+echo " ------------------------------------------ Abseil-CPP Cloning ------------------------------------------ "
+
 # Set ABSEIL_VERSION and ABSEIL_URL
 ABSEIL_VERSION=20240116.2
 ABSEIL_URL="https://github.com/abseil/abseil-cpp"
-# Create and set up working directories
-echo "Creating abseil prefix directory at $WORK_DIR/abseil-prefix"
-mkdir $WORK_DIR/abseil-prefix
-PREFIX=$WORK_DIR/abseil-prefix
-# Clone abseil-cpp repository
-git clone $ABSEIL_URL -b $ABSEIL_VERSION
-cd abseil-cpp
-SOURCE_DIR=$(pwd)
-# Set up directories for local installation
-mkdir -p $SOURCE_DIR/local/abseilcpp
-abseilcpp=$SOURCE_DIR/local/abseilcpp
-# Create build directory and run cmake
-mkdir build
-cd build
-cmake -G Ninja \
-    ${CMAKE_ARGS} \
-    -DBUILD_SHARED_LIBS=OFF \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_CXX_STANDARD=17 \
-    -DCMAKE_INSTALL_LIBDIR=lib \
-    -DCMAKE_INSTALL_PREFIX=${PREFIX} \
-    -DBUILD_SHARED_LIBS=ON \
-    -DABSL_PROPAGATE_CXX_STD=ON \
-    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-   ..
-cmake --build .
-cmake --install .
 
-# Copy installation files
-cd $WORK_DIR
-cp -r  $PREFIX/* $abseilcpp/
-echo "abseil-cpp has been installed to $abseilcpp"
+git clone $ABSEIL_URL -b $ABSEIL_VERSION
+
+echo " ------------------------------------------ Abseil-CPP Cloned ------------------------------------------ "
+
+cd $CURRENT_DIR
 
 # Setting paths and versions
-PREFIX=$SITE_PACKAGE_PATH
-ABSEIL_PREFIX=$SOURCE_DIR/local/abseilcpp
-echo "Setting PREFIX to $PREFIX and ABSEIL_PREFIX to $ABSEIL_PREFIX"
-
 export C_COMPILER=$(which gcc)
 export CXX_COMPILER=$(which g++)
 echo "C Compiler set to $C_COMPILER"
 echo "CXX Compiler set to $CXX_COMPILER"
 
-# Setting paths and versions
-WORK_DIR=$(pwd)
-export C_COMPILER=$(which gcc)
-export CXX_COMPILER=$(which g++)
 
-mkdir -p $(pwd)/local/libprotobuf
-LIBPROTO_INSTALL=$(pwd)/local/libprotobuf
-echo "LIBPROTO_INSTALL set to $LIBPROTO_INSTALL"
+LIBPROTO_DIR=$(pwd)
+mkdir -p $LIBPROTO_DIR/local/libprotobuf
+LIBPROTO_INSTALL=$LIBPROTO_DIR/local/libprotobuf
 
 # Clone Source-code
+echo " ------------------------------------------ Libprotobuf Installing ------------------------------------------ "
+
 PACKAGE_VERSION_LIB="v4.25.3"
 PACKAGE_GIT_URL="https://github.com/protocolbuffers/protobuf"
 git clone $PACKAGE_GIT_URL -b $PACKAGE_VERSION_LIB
@@ -156,7 +148,8 @@ cd protobuf
 git submodule update --init --recursive
 rm -rf ./third_party/googletest | true
 rm -rf ./third_party/abseil-cpp | true
-cp -r $WORK_DIR/abseil-cpp ./third_party/
+
+cp -r $CURRENT_DIR/abseil-cpp ./third_party/
 mkdir build
 cd build
 cmake -G "Ninja" \
@@ -176,7 +169,10 @@ cmake -G "Ninja" \
     -Dprotobuf_USE_EXTERNAL_GTEST=OFF \
     ..
 cmake --build . --verbose
-cmake --install .
+cmake --install . 
+
+echo " ------------------------------------------ Libprotobuf Successfully Installed ------------------------------------------ "
+
 cd ..
 
 export PROTOC="$LIBPROTO_INSTALL/bin/protoc"
@@ -186,28 +182,33 @@ export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 
 # Apply patch
-echo "Applying patch from https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/p/protobuf/set_cpp_to_17_v4.25.3.patch"
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/p/protobuf/set_cpp_to_17_v4.25.3.patch
+echo "Applying patch from https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch"
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
 git apply set_cpp_to_17_v4.25.3.patch
 
 # Build Python package
 cd python
-python3.12 setup.py install --cpp_implementation
-cd ../..
-pip3.12 install pybind11==2.12.0
-PYBIND11_PREFIX=$SITE_PACKAGE_PATH/pybind11
+python3.12 setup.py install --cpp_implementation 
+
+cd $CURRENT_DIR
+
+python3.12 -m pip install pybind11==2.12.0
+PYBIND11_PREFIX=$SITE_PACKAGE_PATH/pybind11 
+
 export CMAKE_PREFIX_PATH="$ABSEIL_PREFIX;$LIBPROTO_INSTALL;$PYBIND11_PREFIX"
 echo "Updated CMAKE_PREFIX_PATH after OpenBLAS: $CMAKE_PREFIX_PATH"
 export LD_LIBRARY_PATH="$LIBPROTO_INSTALL/lib64:$ABSEIL_PREFIX/lib:$LD_LIBRARY_PATH"
 echo "Updated LD_LIBRARY_PATH : $LD_LIBRARY_PATH"
-echo "Cloning and installing..."
+
+echo " ------------------------------------------ Onnx Installing ------------------------------------------ "
+
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
-sed -i 's|https://github.com/abseil/abseil-cpp/archive/refs/tags/20230125.3.tar.gz|https://github.com/abseil/abseil-cpp/archive/refs/tags/20240116.2.tar.gz|g' CMakeLists.txt && \
+sed -i 's|https://github.com/abseil/abseil-cpp/archive/refs/tags/20230125.3.tar.gz%7Chttps://github.com/abseil/abseil-cpp/archive/refs/tags/20240116.2.tar.gz%7Cg' CMakeLists.txt && \
 sed -i 's|e21faa0de5afbbf8ee96398ef0ef812daf416ad8|bb8a766f3aef8e294a864104b8ff3fc37b393210|g' CMakeLists.txt && \
-sed -i 's|https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protobuf-22.3.tar.gz|https://github.com/protocolbuffers/protobuf/archive/refs/tags/v4.25.3.tar.gz|g' CMakeLists.txt && \
+sed -i 's|https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protobuf-22.3.tar.gz%7Chttps://github.com/protocolbuffers/protobuf/archive/refs/tags/v4.25.3.tar.gz%7Cg' CMakeLists.txt && \
 sed -i 's|310938afea334b98d7cf915b099ec5de5ae3b5c5|4ba37c659f85c20abb0cc595bfac5e3a385e8e93|g' CMakeLists.txt && \
 sed -i 's|set(Protobuf_VERSION "4.22.3")|set(Protobuf_VERSION "v4.25.3")|g' CMakeLists.txt
 
@@ -240,15 +241,44 @@ pip3.12 install numpy==2.0.2
 pip3.12 install parameterized
 pip3.12 install pytest nbval pythran mypy-protobuf
 pip3.12 install scipy==1.15.2
-if !(python3.12 setup.py install); then
+pip3.12 install ml-dtypes  # required while running tests
+pip3.12 install wheel
+pip3.12 install build
+
+# export CMAKE_ARGS="$CMAKE_ARGS -DPYTHON_EXECUTABLE=$(which python3.12)"
+# Reason: In ONNX v1.18.0, setup.py uses a custom get_python_executable() which may resolve to /usr/bin/python3 
+# even in a Python 3.12 venv, causing incorrect CMake behavior. To ensure the correct Python is used, we explicitly set it.
+# Also, since ONNX v1.18.0's install logic depends on this, we must build + install in the script directly.
+
+export PYTHON_EXECUTABLE=$(which python3.12)
+export PYTHON_BIN=$(which python3.12)
+export PYTHON_INCLUDE=$(python3.12 -c "from sysconfig import get_paths as gp; print(gp()['include'])")
+export PYTHON_LIB=$(python3.12 -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
+
+export CMAKE_ARGS="$CMAKE_ARGS \
+ -DPython3_EXECUTABLE=$PYTHON_BIN \
+ -DPython3_INCLUDE_DIR=$PYTHON_INCLUDE \
+ -DPython3_LIBRARY=$PYTHON_LIB/libpython3.12.so"
+
+
+
+if !(python3.12 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"); then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
-fi
+fi 
+
+echo " ------------------------------------------ Onnx Wheel Creating ------------------------------------------ "
+python3.12 setup.py bdist_wheel --dist-dir $CURRENT_DIR 
+echo " ------------------------------------------ Onnx Wheel Created Successfully ------------------------------------------ " 
+
 export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib:$LIBPROTO_INSTALL/lib64:$LD_LIBRARY_PATH"
+pip3.12 install "$CURRENT_DIR"/onnx-*.whl
 # Skipping test due to missing 're2/stringpiece.h' header file. Even after attempting to manually build RE2, the required header file could not be found.
-if ! pytest --ignore=onnx/test/reference_evaluator_backend_test.py --ignore=onnx/test/test_backend_reference.py --ignore=onnx/test/reference_evaluator_test.py; then    echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
+echo " ------------------------------------------ Onnx Testing ------------------------------------------ "
+if ! pytest --ignore=onnx/test/reference_evaluator_backend_test.py --ignore=onnx/test/test_backend_reference.py --ignore=onnx/test/reference_evaluator_test.py; then
+    echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
     exit 2
@@ -257,4 +287,4 @@ else
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
-fi
+fi 

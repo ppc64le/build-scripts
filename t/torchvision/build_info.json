@@ -1,8 +1,8 @@
 {
-  "maintainer": "md.shafi.hussain",
+  "maintainer": "vinodk99",
   "package_name": "torchvision",
   "github_url": "https://github.com/pytorch/vision",
-  "version": "v0.16.1",
+  "version": "v0.21.0",
   "default_branch": "main",
   "package_dir": "t/torchvision",
   "build_script": "torchvision_ubi_9.3.sh",

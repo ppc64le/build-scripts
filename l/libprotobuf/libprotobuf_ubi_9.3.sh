@@ -4,7 +4,7 @@
 # Package          : libprotobuf
 # Version          : v4.25.3
 # Source repo      : https://github.com/protocolbuffers/protobuf
-# Tested on   	   : UBI:9.3
+# Tested on        : UBI:9.3
 # Language         : Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
@@ -24,9 +24,9 @@ PACKAGE_URL=https://github.com/protocolbuffers/protobuf
 PACKAGE_DIR="protobuf"
 WORK_DIR=$(pwd)
 
-yum install -y make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel patch python python-devel ninja-build gcc-toolset-13 
+yum install -y make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel patch python python-devel ninja-build gcc-toolset-13
 
-PYTHON_VERSION=$(python --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)  
+PYTHON_VERSION=$(python --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export SITE_PACKAGE_PATH="/lib/python${PYTHON_VERSION}/site-packages"
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
@@ -36,43 +36,12 @@ pip install --upgrade cmake pip setuptools wheel ninja packaging
 #Building abseil-cpp
 ABSEIL_VERSION=20240116.2
 ABSEIL_URL="https://github.com/abseil/abseil-cpp"
-mkdir $WORK_DIR/abseil-prefix
-PREFIX=$WORK_DIR/abseil-prefix
+
 
 git clone $ABSEIL_URL -b $ABSEIL_VERSION
-echo "abseil-cpp build starts"
-cd abseil-cpp
 
-SOURCE_DIR=$(pwd)
 
-mkdir -p $SOURCE_DIR/local/abseilcpp
-abseilcpp=$SOURCE_DIR/local/abseilcpp
-
-mkdir build
-cd build
-
-cmake -G Ninja \
-    ${CMAKE_ARGS} \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_CXX_STANDARD=17 \
-    -DCMAKE_INSTALL_LIBDIR=lib \
-    -DCMAKE_INSTALL_PREFIX=${PREFIX} \
-    -DBUILD_SHARED_LIBS=ON \
-    -DABSL_PROPAGATE_CXX_STD=ON \
-    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-   ..
-cmake --build .
-cmake --install .
-
-cd $WORK_DIR
-cp -r  $PREFIX/* $abseilcpp/
-
-echo "------------abseil-cpp installed--------------"
-cd ..
-
-#Setting paths and versions
-PREFIX=$SITE_PACKAGE_PATH
-ABSEIL_PREFIX=$SOURCE_DIR/local/abseilcpp
+echo "------------ libprotobuf installing-------------------"
 
 export C_COMPILER=$(which gcc)
 export CXX_COMPILER=$(which g++)
@@ -82,9 +51,9 @@ git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
-SOURCE_DIR=$(pwd)
-mkdir -p $SOURCE_DIR/local/libprotobuf
-LIBPROTO_INSTALL=$SOURCE_DIR/local/libprotobuf
+LIBPROTO_DIR=$(pwd)
+mkdir -p $LIBPROTO_DIR/local/libprotobuf
+LIBPROTO_INSTALL=$LIBPROTO_DIR/local/libprotobuf
 
 git submodule update --init --recursive
 rm -rf ./third_party/googletest | true
@@ -127,7 +96,7 @@ cmake --install .
 cd ..
 
 #create pyproject.toml for libprotobuf
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/l/libprotobuf/pyproject.toml
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/l/libprotobuf/pyproject.toml
 sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
 
 python -m pip wheel -w $WORK_DIR -vv --no-build-isolation --no-deps .

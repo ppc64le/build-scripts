@@ -2,11 +2,11 @@
   "maintainer": "kiranNukal",
   "package_name": "xgboost",
   "github_url": "https://github.com/dmlc/xgboost",
-  "version": "v2.0.3",
+  "version": "v3.0.1",
   "wheel_build" : true,
   "default_branch": "master",
   "package_dir": "x/xgboost",
-  "build_script": "xgboost_2.0.3_ubi_9.3.sh",
+  "build_script": "xgboost_3.0.1_ubi_9.3.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
@@ -14,6 +14,6 @@
     "build_script": "xgboost_ubi_9.3.sh"
   },
   "*": {
-    "build_script": "xgboost_2.0.3_ubi_9.3.sh"
+    "build_script": "xgboost_3.0.1_ubi_9.3.sh"
   }
 }

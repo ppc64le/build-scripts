@@ -8,7 +8,7 @@
 # Language         : Python
 # Travis-Check     : True
 # Script License   : GNU General Public License v3.0
-# Maintainer       : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
+# Maintainer       : Haritha Nagothu <haritha.nagothu2@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -18,16 +18,16 @@
 #
 # ----------------------------------------------------------------------------
 
+set -ex
 PACKAGE_NAME=dill
 PACKAGE_VERSION=${1:-0.3.8}
 PACKAGE_URL=https://github.com/uqfoundation/dill
 
 wrkdir=`pwd`
 
-OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
-
-yum install -y python3-devel pip git gcc gcc-c++
-
+yum install -y python3-devel python3-pip git gcc-toolset-13
+source /opt/rh/gcc-toolset-13/enable
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
@@ -36,7 +36,7 @@ git checkout $PACKAGE_VERSION
 python3 -m pip install coverage numpy tox
 # python3 -m pip install numpy
 
-if ! python3 setup.py install ; then
+if ! pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -45,7 +45,7 @@ fi
 
 # python3 -m pip install tox
 
-if ! /usr/local/bin/tox -e py39 ; then
+if ! tox -e py39 ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"

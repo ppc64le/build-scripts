@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : BTrees
-# Version          : 6.0
+# Version          : 6.1
 # Source repo      : https://github.com/zopefoundation/BTrees
 # Tested on        : UBI:9.3
 # Language         : Python
@@ -18,39 +18,48 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=BTrees
-PACKAGE_VERSION=${1:-6.0}
-PACKAGE_URL=https://github.com/zopefoundation/BTrees.git
+PACKAGE_NAME=Btrees
+PACKAGE_VERSION=${1:-6.1}
+PACKAGE_URL=https://github.com/zopefoundation/Btrees
+PACKAGE_DIR=Btrees
 
-yum install -y --allowerasing git gcc gcc-c++ yum-utils make automake autoconf libtool gdb* binutils rpm-build gettext wget libffi-devel libpq-devel
+CURRENT_DIR=${PWD}
 
-export PKG_CONFIG_PATH="/usr/bin/pg_config"
+yum install -y git make cmake zip tar wget python3 python3-devel python3-pip gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc zlib-devel libjpeg-devel
+yum remove -y python3-chardet
 
-yum install -y python3 python3-devel python3-setuptools
-python3 -m ensurepip --upgrade
-#pip3 install tox
-python3 -m pip install tox --ignore-installed
-PATH=$PATH:/usr/local/bin/
+export GCC_TOOLSET_PATH=/opt/rh/gcc-toolset-13/root/usr
+export PATH=$GCC_TOOLSET_PATH/bin:$PATH
+
+pip install -U pip
+pip install -U "setuptools <74" wheel twine
+pip install cffi
+pip install -U persistent tox
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if ! python3 setup.py build ; then
-    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
+
+#Build package
+if ! pip install . ; then
+    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
+pip install .[test]
+#Test package
 if ! tox -e py3 ; then
-    echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
     exit 2
 else
-    echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
+    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
+

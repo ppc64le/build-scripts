@@ -67,7 +67,7 @@ cp /usr/local/lib64/libzfp.so* ../lib/
 cd ..
 
 #Apply patch file
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/z/zfp/zfp_1.0.0.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/z/zfp/zfp_1.0.0.patch
 git apply zfp_1.0.0.patch
 
 echo "installing..."

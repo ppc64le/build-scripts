@@ -91,7 +91,7 @@ cp -r prefix/* local/cares
 echo "---------------------------------------------------Building the wheel--------------------------------------------------"
 
 WHL_VERSION=$(echo "$PACKAGE_VERSION" | grep -oE '[0-9_]+$' | tr '_' '.')
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/c/c-ares/pyproject.toml
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/c/c-ares/pyproject.toml
 sed -i "s/{PACKAGE_VERSION}/$WHL_VERSION/g" pyproject.toml
 
 python -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"

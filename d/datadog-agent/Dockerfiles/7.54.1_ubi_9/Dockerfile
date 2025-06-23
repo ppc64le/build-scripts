@@ -3,7 +3,7 @@ FROM registry.access.redhat.com/ubi9/ubi:9.3
 MAINTAINER "Ramnath Nayak <Ramnath Nayak@ibm.com>"
 
 ARG PACKAGE_VERSION=7.54.1
-ARG PATCH=https://raw.githubusercontent.com/ramnathnayak-ibm/build-scripts/datadog-agent/d/datadog-agent/datadog-agent_7.54.1.patch
+ARG PATCH=https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/d/datadog-agent/datadog-agent_7.54.1.patch
 
 ENV GOROOT=${GOROOT:-"/usr/local/go"}
 ENV GOPATH=${GOPATH:-$HOME/go}

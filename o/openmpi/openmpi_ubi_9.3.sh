@@ -67,11 +67,11 @@ export LD_LIBRARY_PATH=$PREFIX/lib:$LD_LIBRARY_PATH
 pip install setuptools build
 
 #create pyproject.toml
-wget https://raw.githubusercontent.com/aastha-sharma2/build-scripts/refs/heads/openmpi/o/openmpi/pyproject.toml
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/openmpi/pyproject.toml
 sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
 
 #get testfile
-wget https://raw.githubusercontent.com/aastha-sharma2/build-scripts/refs/heads/openmpi/o/openmpi/helloworld.c
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/openmpi/helloworld.c
 
 echo "Running the test program with mpirun..."
 $PREFIX/bin/mpicc helloworld.c -o helloworld_c 

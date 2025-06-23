@@ -1,12 +1,16 @@
 {
-   "maintainer": "shubham-garud",
+   "maintainer": "Anumala Rajesh",
    "package_name": "pytest-aiohttp",
    "github_url": "https://github.com/aio-libs/pytest-aiohttp",
    "version": "v1.0.5",
+   "wheel_build" : true,
    "default_branch": "master",
    "build_script": "pytest-aiohttp_ubi_9.3.sh",
    "package_dir": "p/pytest-aiohttp",
    "docker_build": false,
    "validate_build_script": true,
-   "use_non_root_user": false
+   "use_non_root_user": false, 
+   "*": {
+      "build_script": "pytest-aiohttp_ubi_9.3.sh"
+    }
 }

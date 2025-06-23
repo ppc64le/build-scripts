@@ -22,12 +22,9 @@ description = "Provides protoc compiler and C++ files for protobuf"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Programming Language :: C++",
-  "License :: Apache License 2.0",
+  "License :: OSI Approved :: BSD License",
 ]
 
-dependencies = [
-    "abseil_cpp==20240116.2",
-]
 #Project URLs
 [project.urls]
 homepage = "https://github.com/protocolbuffers/protobuf"

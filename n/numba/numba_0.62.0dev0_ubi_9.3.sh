@@ -36,7 +36,7 @@ yum install -y git make wget openssl-devel bzip2-devel libffi-devel zlib-devel c
 echo "-------------------Installing llvmlite----------------------"
 
 LLVMLITE_PACKAGE_NAME=llvmlite
-LLVMLITE_VERSION=${1:-v0.44.0rc1}
+LLVMLITE_VERSION="v0.44.0rc1"
 LLVMLITE_PACKAGE_URL="https://github.com/numba/llvmlite"
 LLVM_PROJECT_GIT_URL="https://github.com/llvm/llvm-project.git"
 LLVM_PROJECT_GIT_TAG="llvmorg-15.0.7"
@@ -154,8 +154,12 @@ git checkout $PACKAGE_VERSION
 
 
 # echo "before CXXFLAGS............$CXXFLAGS........."
-export CXXFLAGS="$CXXFLAGS -include cstddef"
+export CXXFLAGS=-I/usr/include
 # echo "after CXXFLAGS............$CXXFLAGS........."
+
+PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+sed -i '/#include "dynamic_annotations.h".*\/\*/d' /usr/include/python${PYTHON_VERSION}/internal/pycore_atomic.h
+sed -i '1i#include "dynamic_annotations.h"   /* _Py_ANNOTATE_MEMORY_ORDER */' /usr/include/python${PYTHON_VERSION}/internal/pycore_atomic.h
 
 
 #install

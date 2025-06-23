@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : milvus-lite
-# Version       : v2.4.11
+# Version       : v2.4.12
 # Source repo   : https://github.com/milvus-io/milvus-lite
 # Tested on     : UBI:9.3
 # Language      : Python
@@ -18,15 +18,37 @@
 #
 # ----------------------------------------------------------------------------
 set -x
-WORKDIR=$(pwd)
-PACKAGE_NAME=milvus-lite
-PACKAGE_VERSION=v2.4.11
-PACKAGE_URL=https://github.com/milvus-io/milvus-lite
 PACKAGE_DIR=milvus-lite/python
+PACKAGE_NAME=milvus-lite
+PACKAGE_VERSION=${1:-v2.4.12}
+PACKAGE_URL=https://github.com/milvus-io/milvus-lite
+WORKDIR=$(pwd)
 
-yum install -y wget openblas-devel git python3-pip rust cargo gcc gcc-c++ libstdc++-static which libaio libuuid-devel ncurses-devel libtool m4 autoconf automake ninja-build zlib-devel libffi-devel openssl-devel scl-utils openblas-devel
+yum remove -y gcc-toolset-13
+
+echo "installing dependencies"
+yum install -y wget perl openblas-devel git python3-pip cargo gcc gcc-c++ libstdc++-static which libaio libuuid-devel ncurses-devel libtool m4 autoconf automake ninja-build zlib-devel libffi-devel scl-utils openblas-devel ncurses-devel xz openssl-devel
+
+echo "installing dependencies"
 pip3 install wheel conan==1.64.1 setuptools==70.0.0
 
+echo "installing texinfo"
+wget https://ftp.gnu.org/gnu/texinfo/texinfo-7.1.tar.xz
+tar -xf texinfo-7.1.tar.xz
+cd texinfo-7.1
+./configure
+echo "compiling"
+make -j2
+echo "installing"
+make install
+cd ..
+
+echo "installing rust 1.73"
+curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain=1.73 -y
+source $HOME/.cargo/env
+rustc --version
+
+echo "installing cmake"
 # Install CMake
 CMAKE_VERSION=3.30.5
 CMAKE_REQUIRED_VERSION=3.30.5
@@ -65,14 +87,17 @@ if [ -z "$(ls -A $wdir/cmake-${CMAKE_VERSION})" ]; then
 else
     cd cmake-${CMAKE_VERSION}
 fi
-make install -j$(nproc)
+echo "installing"
+make install -j2
 export PATH=/usr/local/cmake/bin:$PATH
 cmake --version
 cd ..
 
+cd $WORKDIR
+echo "cloning"
 #Clone the package
 git clone ${PACKAGE_URL}
-cd ${PACKAGE_NAME}
+cd ${PACKAGE_DIR}
 git checkout  ${PACKAGE_VERSION}
 git submodule update --init --recursive
 
@@ -85,17 +110,27 @@ popd
 export VCPKG_FORCE_SYSTEM_BINARIES=1
 mkdir -p $HOME/.cargo/bin/
 
-cd python/
+echo "installing dependencies"
 pip install -r requirements.txt
+pip install build
 
+echo "installing package"
 # Install the package
 if ! python3 setup.py install; then
     echo "------------------$PACKAGE_NAME: Installation failed ---------------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Installation_Failure"
     exit 1
+fi
+
+echo "building wheel"
+#build wheel
+if ! python3 -m build --wheel --no-isolation --outdir="$WORKDIR/"; then
+    echo "------------------$PACKAGE_NAME: Wheel_build failed ---------------------"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Wheel_build_Failure"
+    exit 1
 else
-    echo "------------------$PACKAGE_NAME: Installation successful ---------------------"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Installation_Success"
+    echo "------------------$PACKAGE_NAME: Installation and build_wheel successful ---------------------"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Installation_and_build_wheel_Success"
     exit 0
 fi
 

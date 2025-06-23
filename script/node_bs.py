@@ -172,9 +172,29 @@ def raise_pull_request(branch_pkg, base="master"):
             "Authorization": "Bearer {}".format(github_token)
     }
 
+    #Check if PR already exists
+    search_url = f"https://api.github.com/repos/{pr_owner}/{pr_repo}/pulls?head={head}&state=open"
+    existing_pr_response = requests.get(search_url, headers=headers)
+
+    if existing_pr_response.status_code == 200:
+        existing_prs = existing_pr_response.json()
+        if existing_prs:
+            print("\nPR already exists.")
+            return {
+                "message": "already_exists",
+                "pr_url": existing_prs[0].get("html_url")
+            }
+
+    pr_body = "Adding build_script and build_info.json"
+
+    if package_language == "python" and args.generate_wheel_arg:
+        pr_title = "Python Ecosystem: Added build_script and build_info.json for "+package_name
+        with open('./templates/pyeco_pull_request_description.md', 'r') as file:
+            pr_body = file.read()
+		
     pull_request_data={
             "title": pr_title,
-            "body" : "Adding build_script and build_info.json",
+            "body" : pr_body,
             "head" : head,
             "base" : base,
             "maintainer_can_modify" : maintainer_can_modify,
@@ -192,7 +212,12 @@ def raise_pull_request(branch_pkg, base="master"):
     print("\n PR status code",response.status_code)
     
     if response.status_code >=200 and response.status_code <=299 :
-        return {"message" : "success"}
+        pr_data = response.json()
+        return {
+            "message": "success",
+            "pr_url": pr_data.get("html_url")
+        }
+
     return {"message" : "fail"}
 
 def add_license_file():
@@ -204,8 +229,8 @@ def add_license_file():
 
 
 def create_new_script():       
-    branch_chout=f"git checkout -b {package_name}_automation"
-    branch_pkg=f"{package_name}_automation"
+    branch_chout=f"git checkout -b {package_name}_{latest_release}_automation"
+    branch_pkg=f"{package_name}_{latest_release}_automation"
     print("\n\n Creating Branch and Checking Out")
     subprocess.Popen(branch_chout,shell=True)
 
@@ -297,7 +322,7 @@ def create_new_script():
         git_commit_w.wait()
     
         #git push commands
-        cmd_push=f"git push origin {package_name}_automation"
+        cmd_push=f"git push origin {package_name}_{latest_release}_automation"
         print("\n\n pushing code")
         git_push_w=subprocess.Popen(cmd_push,shell=True)
         git_push_w.wait()
@@ -364,6 +389,3 @@ else:
     os.makedirs(dir_name, exist_ok = True)
     create_new_script()
     display_details()
-
-
-

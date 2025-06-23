@@ -9,7 +9,6 @@ EXIT_CODE=0
 #install gcc
 yum install gcc-toolset-13 -y
 source /opt/rh/gcc-toolset-13/enable
-export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 gcc --version
 
 # Temporary build script path
@@ -92,12 +91,12 @@ format_build_script() {
         sed -i 's/pip3 /pip /g' "$TEMP_BUILD_SCRIPT_PATH"
         sed -i '/-m venv/d' "$TEMP_BUILD_SCRIPT_PATH"
         sed -i '/bin\/activate/d' "$TEMP_BUILD_SCRIPT_PATH"
-        sed -i '/^deactivate$/d' "$TEMP_BUILD_SCRIPT_PATH"
-        sed -i '/yum install/{s/\b\(python\|python-devel\|python-pip\)\b[[:space:]]*//g}' "$TEMP_BUILD_SCRIPT_PATH"
-        sed -i '/dnf install/{s/\b\(python\|python-devel\|python-pip\)\b[[:space:]]*//g}' "$TEMP_BUILD_SCRIPT_PATH"
+        sed -i '/^\s*deactivate\s*$/d' "$TEMP_BUILD_SCRIPT_PATH"
+        sed -i '/yum install/{s/\(python\|python-devel\|python-pip\)\([[:space:]]\|$\)//g; s/[[:space:]]\+/ /g}' "$TEMP_BUILD_SCRIPT_PATH"
+        sed -i '/dnf install/{s/\(python\|python-devel\|python-pip\)\([[:space:]]\|$\)//g; s/[[:space:]]\+/ /g}' "$TEMP_BUILD_SCRIPT_PATH"
         sed -i 's/\bpython3 -m pytest/pytest/g' "$TEMP_BUILD_SCRIPT_PATH"
         sed -i "s/tox -e py[0-9]\{2,3\}\([[:space:]]*.*\)\?/tox -e py${PYTHON_VERSION//./}\1/g" "$TEMP_BUILD_SCRIPT_PATH"
-
+        sed -i 's/^[[:space:]]*exit[[:space:]]\+0[[:space:]]*$//' "$TEMP_BUILD_SCRIPT_PATH"
     else
         echo "No build script specified, skipping copying."
     fi
@@ -123,10 +122,9 @@ cleanup() {
 # Function to modify the metadata file after wheel creation
 modify_metadata_file() {
     local wheel_path="$1"
-    cd "$CURRENT_DIR"
 
-    #installing necessary dependencies
-    yum install -y zip unzip
+    # Installing necessary dependencies
+    yum install -y zip unzip > /dev/null
 
     # Create a temporary directory for unzipping the wheel file
     temp_dir="temp_directory"
@@ -136,39 +134,56 @@ modify_metadata_file() {
     unzip -q "$wheel_path" -d "$temp_dir"
 
     # Find metadata file
-    local metadata_file=$(find "$temp_dir" -name METADATA -path "*.dist-info/*")
+    local metadata_file
+    metadata_file=$(find "$temp_dir" -name METADATA -path "*.dist-info/*")
 
     # New classifier to add
     local new_classifier="Classifier: Environment :: MetaData :: IBM Python Ecosystem"
 
-    # Check if the classifier already exists and only add if it doesn't
-    if ! grep -q "^$new_classifier$" "$metadata_file"; then
-        # Read the METADATA file and insert the classifier after the last 'Classifier:' line
+    # Only proceed if the classifier is not already present
+    if grep -q "^$new_classifier$" "$metadata_file"; then
+        echo "Classifier already exists in $wheel_path — no changes made."
+    else
         awk -v new_classifier="$new_classifier" '
-            BEGIN {in_classifiers = 0}
+            BEGIN {
+                found_classifier = 0
+                output = ""
+            }
             /^Classifier:/ {
-                in_classifiers = 1
-                print $0
-                next
+                found_classifier = 1
+                last_classifier_line = NR
             }
-            in_classifiers && !/^Classifier:/ {
-                print new_classifier
-                in_classifiers = 0
+            {
+                lines[NR] = $0
             }
-            {print}
-        ' "$metadata_file" >"$metadata_file.tmp" && mv "$metadata_file.tmp" "$metadata_file"
+            END {
+                if (found_classifier) {
+                    for (i = 1; i <= NR; i++) {
+                        print lines[i]
+                        if (i == last_classifier_line) {
+                            print new_classifier
+                        }
+                    }
+                } else {
+                    print new_classifier
+                    for (i = 1; i <= NR; i++) {
+                        print lines[i]
+                    }
+                }
+            }
+        ' "$metadata_file" > "$metadata_file.tmp" && mv "$metadata_file.tmp" "$metadata_file"
+
+        # Get the original wheel file name
+        wheel_file_name=$(basename "$wheel_path")
+
+        # Repack wheel
+        cd "$temp_dir" && zip -q -r "$CURRENT_DIR/$wheel_file_name" ./*
+
+        echo "Added IBM classifier to $wheel_path"
     fi
-
-    # Get the original wheel file name to use it in the zip command
-    wheel_file_name=$(basename "$wheel_path")
-
-    # Zip the files back to the original wheel file
-    cd "$temp_dir" && zip -q -r "$CURRENT_DIR/$wheel_file_name" ./*
 
     # Clean up
     rm -rf "$CURRENT_DIR/$temp_dir"
-
-    echo "Added IBM classifier to $wheel_path"
 }
 
 # Format the build script if it's non-empty
@@ -186,22 +201,16 @@ echo "=============== Running package build-script starts =================="
 
 if [ -n "$TEMP_BUILD_SCRIPT_PATH" ]; then
     echo "Installing required dependencies..."
-    python$PYTHON_VERSION -m pip install --upgrade pip wheel build pytest nox tox
+    python$PYTHON_VERSION -m pip install --upgrade pip wheel build pytest nox tox requests setuptools
     echo "Installing required dependencies completed..."
 
     package_dir=$(grep -oP '(?<=^PACKAGE_DIR=).*' "$TEMP_BUILD_SCRIPT_PATH" | tr -d '"')
     package_url=$(grep -oP '(?<=^PACKAGE_URL=).*' "$TEMP_BUILD_SCRIPT_PATH" | tr -d '"')
     package_name=$(basename "$package_url" .git)
 
-    echo "Running the script..."
-    sh "$TEMP_BUILD_SCRIPT_PATH" $EXTRA_ARGS
-
-    # Check if the build script execution was successful
-    if [ $? -ne 0 ]; then
-        echo "Build script execution failed. Skipping wheel creation."
-        EXIT_CODE=1
-    fi
-
+    echo "Running the build script..."
+    source "$TEMP_BUILD_SCRIPT_PATH" "$EXTRA_ARGS"
+    
 else
     echo "No build script to run, skipping execution."
 fi

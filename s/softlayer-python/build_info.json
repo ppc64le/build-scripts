@@ -1,14 +1,15 @@
 {
-	"maintainer": "pranithraoibm",
+	"maintainer": "ramnathnayak-ibm",
 	"package_name": "softlayer-python",
 	"github_url": "https://github.com/softlayer/softlayer-python",
-	"version": "v6.2.3",
+	"version": "v6.2.6",
 	"default_branch": "master",
 	"build_script": "softlayer-python_ubi_9.3.sh",
 	"package_dir": "s/softlayer-python",
 	"docker_build": false,
 	"validate_build_script": true,
 	"use_non_root_user": false,
+	"wheel_build": true,
 	"v6.*.*": {
 	   "build_script": "softlayer-python_ubi_9.3.sh"
 	}

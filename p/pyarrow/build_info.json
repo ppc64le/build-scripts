@@ -13,7 +13,25 @@
   "11.0.0": {
    "build_script": "pyarrow_ubi_9.3.sh"
   },
+  "14.0.1": {
+    "build_script": "pyarrow_15.0.1_ubi_9.3.sh"
+  },
+  "16.1.0": {
+    "build_script": "pyarrow_15.0.1_ubi_9.3.sh"
+  },
+  "18.0.0":{
+    "build_script": "pyarrow_15.0.1_ubi_9.3.sh"
+  },
+  "apache-arrow-14.0.1": {
+    "build_script": "pyarrow_15.0.1_ubi_9.3.sh"
+  },
   "apache-arrow-15.0.1": {
+    "build_script": "pyarrow_15.0.1_ubi_9.3.sh"
+  },
+  "apache-arrow-16.1.0": {
+    "build_script": "pyarrow_15.0.1_ubi_9.3.sh"
+  },
+  "apache-arrow-18.0.0":{
     "build_script": "pyarrow_15.0.1_ubi_9.3.sh"
   },
   "*": {

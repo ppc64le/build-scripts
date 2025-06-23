@@ -8,7 +8,7 @@
 # Language         : Jupyter Notebook,Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Vinod K <Vinod.K1@ibm.com>
+# Maintainer       : Haritha Nagothu <haritha.nagothu2@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -22,10 +22,10 @@ PACKAGE_NAME=hdbscan
 PACKAGE_VERSION=${1:-0.8.33}
 PACKAGE_URL=https://github.com/scikit-learn-contrib/hdbscan
 
-OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
-
 echo "Installing dependencies..."
-yum install -y git python3.11 python3.11-devel python3.11-pip wget gcc-c++ cmake pkgconfig gcc-gfortran libjpeg-devel libjpeg zlib-devel
+yum install -y git python3.11 python3.11-devel python3.11-pip wget  gcc-toolset-13 bzip2 cmake pkgconfig gcc-gfortran libjpeg-devel libjpeg zlib-devel
+source /opt/rh/gcc-toolset-13/enable
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 #install openblas
 echo "Downloading and installing openblas..."
@@ -39,34 +39,26 @@ echo "Completed make install..."
 export PKG_CONFIG_PATH=/usr/local/OpenBLAS/lib/pkgconfig
 cd ..
 
-#install conda and activate env
-echo "Downloading and installing miniconda..."
-wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-ppc64le.sh
-sh Miniconda3-latest-Linux-ppc64le.sh -u -b -p $HOME/conda
-$HOME/conda/bin/conda update -y -n base conda
-ln -s $HOME/conda/bin/conda /bin/conda
-conda create -n hdbscan -y
-conda init bash
-eval "$(conda shell.bash hook)"
-conda activate hdbscan
-
 echo "Installing dependencies..."
-conda install -q -y setuptools pip wheel build packaging numpy cython bzip2 hdf5 lzo
+echo "Installing dependencies..."
+python3.11 -m pip install "numpy==1.26.3" "scikit-learn===1.3.2"
+python3.11 -m pip install  setuptools wheel build packaging cython
 
 echo "Cloning and installing..."
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-python3 -m pip install --upgrade pip
+python3.11 -m pip install --upgrade pip
 
 echo "Installing dependencies..."
-python3 -m pip install pytest pandas NetworkX matplotlib cython setuptools wheel
+python3.11 -m pip install pytest pandas NetworkX matplotlib
 
 echo "Installing requirements.txt..."
-pip3 install -r requirements.txt
+python3.11 -m pip install -r requirements.txt
+python3.11 setup.py build_ext --inplace
 
 echo "Installing..."
-if ! python3 setup.py develop ; then
+if ! python3.11 -m pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"

@@ -49,10 +49,12 @@ sed -i '/^\[build-system\]/a requires = ["setuptools", "wheel"]\nbuild-backend =
 # Remove dynamic versioning
 sed -i '/^dynamic *= *\["version"\]/d' pyproject.toml
 
-# Add version = "0.8.1" to the [project] section if not already present
-if ! grep -q "^version *= *" pyproject.toml; then
-  sed -i '/^\[project\]/a version = "0.8.1"' pyproject.toml
-fi
+# Strip leading "v" from PACKAGE_VERSION if present
+VERSION="${PACKAGE_VERSION#v}"
+
+# Update pyproject.toml with actual version
+sed -i '/^version *=/d' pyproject.toml
+sed -i "/^\[project\]/a version = \"$VERSION\"" pyproject.toml
 
 # Install Rust using rustup
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y

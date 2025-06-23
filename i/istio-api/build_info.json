@@ -1,15 +1,15 @@
 {
-  "maintainer": "stutiibm",
-  "package_name": "istio-api",
+  "maintainer": "anurag-chitrakar",
+  "package_name": "api",
   "github_url": "https://github.com/istio/api",
-  "version": "v1.22.1",
+  "version": "v1.26.1",
   "default_branch": "master",
   "package_dir": "i/istio-api",
-  "build_script": "istio-api_ubi_9_3.sh",
+  "build_script": "istio_api_ubi_9.4_v1.26.1.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
   "*": {
-      "build_script": "istio-api_ubi_9_3.sh"
+      "build_script": "istio_api_ubi_9.4_v1.26.1.sh"
    }
 }

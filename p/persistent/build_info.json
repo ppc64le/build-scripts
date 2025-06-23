@@ -1,11 +1,13 @@
 {
-  "maintainer": "shubham-garud",
+  "maintainer": "ramnathnayak-ibm",
   "package_name": "persistent",
   "github_url": "https://github.com/zopefoundation/persistent",
-  "version": "5.1",
+  "version": "6.1.1",
   "default_branch": "master",
-  "build_script": "persistent_ubi_8.7.sh",
+  "build_script": "persistent_ubi_9.3.sh",
   "package_dir": "p/persistent",
   "docker_build": false,
-  "validate_build_script": true
+  "validate_build_script": true,
+  "wheel_build": true,
+  "use_non_root_user": false
 }

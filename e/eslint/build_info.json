@@ -1,15 +1,14 @@
 {
-  "maintainer": "vinodk99",
+  "maintainer": "amitkumar282",
   "package_name": "eslint",
   "github_url": "https://github.com/eslint/eslint.git",
-  "version": "v9.2.0",
-  "default_branch": "main",
-  "build_script": "eslint_ubi_9.3.sh",
-  "package_dir": "e/eslint/",
-  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "version": "v8.57.0",
+  "default_branch": "master",
+  "build_script": "eslint_v8.57.0_ubi_9.3.sh",
+  "package_dir": "e/eslint",
   "validate_build_script": "true",
+  "docker_build": "false",
   "use_non_root_user": "false",
-  "docker_build": "true",
   "v8.30.*": {
     "dir": "8.30.0_ubi8",
     "build_script": "eslint_ubi_8.5.sh"
@@ -17,5 +16,8 @@
   "v*.*.*" : {
     "dir": "9.2.0_ubi9",
     "build_script": "eslint_ubi_9.3.sh"
+  },
+  "*": {
+    "build_script": "eslint_v8.57.0_ubi_9.3.sh"
   }
 }

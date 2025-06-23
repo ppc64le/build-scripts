@@ -22,6 +22,7 @@
 PACKAGE=lame
 PACKAGE_VERSION=${1:-3.100}
 PACKAGE_URL=https://downloads.sourceforge.net/sourceforge/$PACKAGE/$PACKAGE-$PACKAGE_VERSION.tar.gz
+PACKAGE_DIR=$PACKAGE-$PACKAGE_VERSION
 CURRENT_DIR=$(pwd)
 
 # Install dependencies
@@ -68,6 +69,32 @@ if ! cd $PREFIX/bin/ && ./lame --genre-list testcase.mp3; then
     echo "------------------$PACKAGE:Test_Fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE"
     echo "$PACKAGE | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Test_Fails"
+    exit 1
+fi
+
+# Remove libtool files
+echo "Cleaning up..."
+find $PREFIX -name '*.la' -delete
+cd $CURRENT_DIR
+
+echo "back to lame dir"
+cd $CURRENT_DIR/lame-$PACKAGE_VERSION
+mkdir -p local/lame
+cp -r $PREFIX/* local/lame/
+
+# Install setuptools and build the package
+echo "Installing setuptools and build tools..."
+pip install setuptools build
+
+#get pyproject.toml
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/l/lame/pyproject.toml
+sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
+
+#install
+if ! (pip install .) ; then
+    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 

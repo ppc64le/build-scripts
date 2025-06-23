@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------
 #
 # Package       : event-driven-ansible
-# Version       : v2.6.0
+# Version       : v2.7.0
 # Source repo   : https://github.com/ansible/event-driven-ansible/
 # Tested on     : UBI:9.3
 # Language      : Python
@@ -20,10 +20,10 @@
 
 PACKAGE_NAME=event-driven-ansible
 PACKAGE_URL=https://github.com/ansible/event-driven-ansible/
-PACKAGE_VERSION=${1:-v2.6.0}
+PACKAGE_VERSION=${1:-v2.7.0}
 
 yum install java-17-openjdk java-17-openjdk-devel java-17-openjdk-headless openssl-devel sudo git wget tar python3-devel python3-pip gcc gcc-c++ cmake.ppc64le systemd-devel zlib-devel krb5-devel rust cargo maven -y
-export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-17.0.14.0.7-2.el9.ppc64le
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export PATH=$PATH:$JAVA_HOME/bin:$HOME/.cargo/bin:$PATH
 
 mkdir -p ansible_collections/ansible
@@ -34,7 +34,7 @@ cd ansible_collections/ansible/eda
 git checkout $PACKAGE_VERSION
 
 # Update tox.ini to add JAVA_HOME
-sed -i '/passenv =/ i\    JAVA_HOME=/usr/lib/jvm/java-17-openjdk-17.0.14.0.7-2.el9.ppc64le' tox.ini
+sed -i '/passenv =/ i\    JAVA_HOME=/usr/lib/jvm/java-17-openjdk' tox.ini
 # To assume no changes in files/folders
 git update-index --assume-unchanged tox.ini
 git update-index --assume-unchanged ansible_collections/
