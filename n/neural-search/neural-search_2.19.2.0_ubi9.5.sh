@@ -2,10 +2,10 @@
 # --------------------------------------------------------------------------------
 # Package        : neural-search
 # Version        : 2.19.2.0
-# Source Repo    : https://github.com/opensearch-project/neural-search
-# Tested On      : UBI 9.5
+# Source repo    : https://github.com/opensearch-project/neural-search
+# Tested on      : UBI 9.5
 # Language       : Java
-# Travis Check   : false
+# Travis-check   : false
 # Maintainer     : Sumit Dubey <sumit.dubey2@ibm.com>
 # Script License : Apache License, Version 2.0 or later
 #
