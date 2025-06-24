@@ -5,7 +5,7 @@
 # Source repo    : https://github.com/opensearch-project/ml-commons
 # Tested on      : UBI 9.5
 # Language       : Java
-# Travis-check   : false
+# Travis-Check   : false
 # Maintainer     : Sumit Dubey <sumit.dubey2@ibm.com>
 # Script License : Apache License, Version 2.0 or later
 #
