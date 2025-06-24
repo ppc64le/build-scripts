@@ -1,0 +1,16 @@
+{
+  "maintainer": "Harithanagothu2",
+  "package_name": "iminuit",
+  "github_url": "https://github.com/iminuit/iminuit.git",
+  "version": "v2.31.1",
+  "wheel_build" : true,
+  "package_dir": "i/iminuit",
+  "default_branch": "develop",
+  "build_script": "iminuit_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*":{
+    "build_script":"iminuit_ubi_9.3.sh"
+  }
+}
