@@ -61,9 +61,7 @@ cd opensearch-build
 git checkout $OPENSEARCH_BUILD_VERSION
 curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
 export PYENV_ROOT="$HOME/.pyenv"
-sudo ln -s /usr/bin/pip3 /usr/bin/pip
 python3 -m pip install pipenv
-#python3 -m pipenv --python python3
 ./build.sh legacy-manifests/2.11.1/opensearch-2.11.1.yml -s -c OpenSearch
 
 # Clone DJL repository
