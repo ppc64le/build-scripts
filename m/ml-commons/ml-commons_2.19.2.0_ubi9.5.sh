@@ -77,6 +77,7 @@ cd $BUILD_HOME
 git clone https://github.com/microsoft/onnxruntime.git
 cd onnxruntime
 git checkout $ONNX_VERSION
+git apply ${SCRIPT_PATH}/onnxruntime_$ONNX_VERSION.patch
 ./build.sh --build_java --compile_no_warning_as_error --parallel --config=Release --build_shared_lib --skip_tests --allow_running_as_root
 sudo cp $BUILD_HOME/onnxruntime/build/Linux/Release/libonnxruntime.so $BUILD_HOME/onnxruntime/build/Linux/Release/libonnxruntime4j_jni.so /usr/lib64/
 
