@@ -117,10 +117,24 @@ echo " ----------------------------------- Clawpack Cloning --------------------
 
 git clone $PACKAGE_URL -b $PACKAGE_VERSION
 cd $PACKAGE_NAME
-git submodule update --init
+git submodule init
+git submodule update
+
+# Set Clawpack environment variables
+export CLAW=$(pwd)
+export GEOCLAW=$CLAW/geoclaw
+export RIEMANN=$CLAW/riemann
+export CLAWUTIL=$CLAW/clawutil
+export AMRCLAW=$CLAW/amrclaw
+
+export PYTHONPATH=$CLAW:$PYTHONPATH
+export PATH=$CLAW/clawutil/src:$PATH
+
+export FC=gfortran
 
 # Instaling Dependencies
-python3.11 -m pip install -r requirements-dev.txt
+python3.11 -m pip install -r requirements-dev.txt 
+python3.11 -m pip install pynose nose 
 python3.11 setup.py git-dev
 if python3.11 -m pip install . ; then
     echo "  ----------------------------------- $PACKAGE_NAME : Install_Success ----------------------------------- "
@@ -131,7 +145,6 @@ else
     echo "$PACKAGE_NAME $PACKAGE_URL"
     echo "  $PACKAGE_NAME  |  $PACKAGE_URL  |  $PACKAGE_VERSION  |  GitHub  |  Fail  |  Install Failed  "
     exit 1
-fi
+fi 
 
-# Skipping tests block because they contain broken doctests in docstrings, causing pytest failures even if the code works.
-# Fix by correcting the docstrings or adding proper unit tests; this is a temporary workaround for clean test runs and coverage.
+# Skipping test block No proper test folder found for running tests.
