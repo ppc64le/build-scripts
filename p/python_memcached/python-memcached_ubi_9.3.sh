@@ -20,9 +20,10 @@
 set -e
 
 #Variables
-PACKAGE_NAME=python-memcached
+PACKAGE_NAME=python_memcached
 PACKAGE_VERSION="${1:-1.62}"
 PACKAGE_URL=https://github.com/linsomniac/python-memcached
+PACKAGE_DIR=python-memcached
 
 #Install dependencies.
 yum install -y python-devel git python-pip  memcached gcc-toolset-13 
