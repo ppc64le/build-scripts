@@ -33,7 +33,7 @@ export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 #clone the repo.
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME/
+cd $PACKAGE_DIR/
 git checkout $PACKAGE_VERSION
 
 # The community has not updated the version string in memcache.py for the latest release.
