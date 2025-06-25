@@ -308,7 +308,7 @@ echo "----------------------------------Created bazelrc-------------------------
 export BUILD_TARGET="//tensorflow/tools/pip_package:wheel //tensorflow/tools/lib_package:libtensorflow //tensorflow:libtensorflow_cc${SHLIB_EXT}"
 
 #Install
-bazel --bazelrc=$BAZEL_RC_DIR/tensorflow.bazelrc build --local_cpu_resources=HOST_CPUS*0.50 --local_ram_resources=HOST_RAM*0.50 --config=opt ${BUILD_TARGET}) ; then  
+bazel --bazelrc=$BAZEL_RC_DIR/tensorflow.bazelrc build --local_cpu_resources=HOST_CPUS*0.50 --local_ram_resources=HOST_RAM*0.50 --config=opt ${BUILD_TARGET} ; then  
 
 python3.12 -m pip install /tensorflow/bazel-bin/tensorflow/tools/pip_package/wheel_house/tensorflow-2.18.1-cp312-cp312-linux_ppc64le.whl
 
