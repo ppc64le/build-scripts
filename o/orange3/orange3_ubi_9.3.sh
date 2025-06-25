@@ -148,7 +148,7 @@ if ! pip3.12 install -e .;  then
     exit 1
 fi
 
-cd orange/tests
+cd Orange/tests
 # Skip due to deprecated APIs / missing Qt / Assertions errors(np.float64(0.094))/AttributeError: 'TestTree' object has no attribute 'TreeLearner'
 if ! pytest -k "not test_filename and not remove_deprecation and not supports_weights_property and not test_random and not get_entry_point and not xlsx_xls" \
     --ignore=/orange3/Orange/tests/test_discretize.py \
