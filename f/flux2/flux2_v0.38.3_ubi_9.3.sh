@@ -5,7 +5,7 @@
 # Source repo   : https://github.com/fluxcd/flux2.git
 # Tested on     : UBI 9.3
 # Language      : Go
-# Travis-Check  : True
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Amit Kumar <amit.kumar282@ibm.com>
 #
@@ -30,7 +30,7 @@ ARCH="ppc64le"
 SCRIPT_PATH=$(dirname $(realpath $0))
 
 # Install dependencies
-yum install -y git gcc wget tar make rsync which unzip jq sudo procps-ng iptables-nft
+yum install -y yum-utils git gcc wget tar make rsync which unzip jq sudo procps-ng iptables-nft
 
 # Install Go
 GO_TAR="go${GO_VERSION}.linux-ppc64le.tar.gz"
@@ -45,11 +45,20 @@ export PATH="$GOROOT/bin:$GOPATH/bin:$PATH"
 # Install Docker
 yum config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 yum install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-dockerd > /dev/null 2>&1 &
+# Start Docker daemon safely
+(dockerd > /tmp/dockerd.log 2>&1) &
+# Wait for Docker to be ready, or exit with error if not
+timeout 30 bash -c 'until docker info >/dev/null 2>&1; do sleep 1; done' || {
+    echo "ERROR: Docker failed to start"
+    cat /tmp/dockerd.log
+    exit 1
+}
+echo "Docker is up and running"
 
 # Install kubectl
 curl -LO "https://dl.k8s.io/release/${KINDEST_NODE_VERSION}/bin/linux/ppc64le/kubectl"
 chmod +x kubectl && mv kubectl /usr/local/bin/
+kubectl version
 
 # Install kind
 curl -Lo kind https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-ppc64le
