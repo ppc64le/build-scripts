@@ -1,11 +1,32 @@
+#!/bin/bash -e
+# ----------------------------------------------------------------------------
+#
+# Package       : numexpr
+# Version       : v2.11.0
+# Source repo   : https://github.com/pydata/numexpr.git
+# Tested on     : UBI:9.3
+# Language      : Python
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Sai Vikram Kuppala <sai.vikram.kuppala@ibm.com>
+#
+# Disclaimer: This script has been tested in root mode on given
+# ==========  platform using the mentioned version of the package.
+#             It may not work as expected with newer versions of the
+#             package and/or distribution. In such case, please
+#             contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
+
+#variables
+
 PACKAGE_NAME=numexpr
 PACKAGE_VERSION=${1:-v2.11.0}
 PACKAGE_URL=https://github.com/pydata/numexpr.git
 PACKAGE_DIR=./numexpr
 
 # Install dependencies and tools.
-#yum install -y git gcc gcc-c++ make wget openssl-devel python-devel python-pip bzip2-devel libffi-devel wget xz zlib-devel cmake openblas-devel
-yum install -y \
+ yum install -y \
     git gcc gcc-c++ make \
     openssl-devel bzip2-devel libffi-devel xz zlib-devel \
     python3.11 python3.11-devel python3.11-pip \
@@ -23,7 +44,6 @@ git checkout $PACKAGE_VERSION
 #install pytest
 pip install pytest
 pip install --upgrade pip setuptools wheel pytest numpy==2.0.2
-#pip install numpy==2.0.2
 pip install -e .
 
 #install
