@@ -5,7 +5,7 @@
 # Source repo   : https://github.com/fluxcd/flux2.git
 # Tested on     : UBI 9.3
 # Language      : Go
-# Travis-Check  : False
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Amit Kumar <amit.kumar282@ibm.com>
 #
