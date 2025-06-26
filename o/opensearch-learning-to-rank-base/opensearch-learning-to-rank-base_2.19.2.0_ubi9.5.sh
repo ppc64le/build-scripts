@@ -5,7 +5,7 @@
 # Source repo    : https://github.com/opensearch-project/opensearch-learning-to-rank-base
 # Tested on      : UBI 9.5
 # Language       : Java
-# Travis-Check   : true
+# Travis-Check   : false
 # Maintainer     : Sumit Dubey <sumit.dubey2@ibm.com>
 # Script License : Apache License, Version 2.0 or later
 #
@@ -13,6 +13,15 @@
 #                  platform and package version. Functionality with newer
 #                  versions of the package or OS is not guaranteed.
 # -----------------------------------------------------------------------------------------
+
+# ---------------------------
+# Check for root user
+# ---------------------------
+if ! ((${EUID:-0} || "$(id -u)")); then
+	set +ex
+        echo "FAIL: This script must be run as a non-root user with sudo permissions"
+        exit 3
+fi
 
 # ---------------------------
 # Configuration
