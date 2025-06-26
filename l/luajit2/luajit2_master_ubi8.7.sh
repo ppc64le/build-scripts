@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : luajit2
-# Version       : v2.1-20230911
+# Version       : master
 # Source repo   : https://github.com/openresty/luajit2
 # Tested on     : UBI 8.7
 # Language      : C
@@ -19,11 +19,9 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=luajit2
-PACKAGE_VERSION=${1:-v2.1-20230911}
 PACKAGE_URL=https://github.com/openresty/${PACKAGE_NAME}.git
 TEST_SUITE_VERSION=1fa1f10
 wdir=`pwd`
-SCRIPT_PATH=$(dirname $(realpath $0))
 
 #Install repos
 yum install -y dnf && \
@@ -54,8 +52,7 @@ yum install -y \
 #Download source code
 cd $wdir
 git clone ${PACKAGE_URL}
-cd ${PACKAGE_NAME} && git checkout ${PACKAGE_VERSION}
-git apply $SCRIPT_PATH/${PACKAGE_NAME}_${PACKAGE_VERSION}.patch
+cd ${PACKAGE_NAME}
 
 #Build
 ret=0
@@ -78,8 +75,7 @@ fi
 cd $wdir
 git clone https://github.com/openresty/luajit2-test-suite.git
 cd luajit2-test-suite
-git checkout ${TEST_SUITE_VERSION}
-git apply $SCRIPT_PATH/luajit2-test-suite_${TEST_SUITE_VERSION}.patch
+git apply ../luajit2-test-suite-${TEST_SUITE_VERSION}.patch
 ./run-tests -v  /usr/local || ret=$?
 if [ "$ret" -ne 0 ]
 then
