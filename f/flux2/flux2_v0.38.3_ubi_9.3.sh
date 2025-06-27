@@ -5,7 +5,7 @@
 # Source repo   : https://github.com/fluxcd/flux2.git
 # Tested on     : UBI 9.3 (docker)
 # Language      : Go
-# Travis-Check  : True
+# Travis-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Amit Kumar <amit.kumar282@ibm.com>
 #
@@ -15,7 +15,6 @@
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
 # -----------------------------------------------------------------------------
-set -euo pipefail
 
 PACKAGE_NAME="flux2"
 PACKAGE_VERSION="${1:-v0.38.3}"
@@ -28,10 +27,9 @@ KIND_VERSION="v0.17.0"
 KINDEST_NODE_VERSION="v1.25.3"
 KUBERNETES_VERSION="v1.31.0"
 ARCH="ppc64le"
-SCRIPT_PATH=$(dirname $(realpath $0))
 
 # Install dependencies
-yum install -y yum-utils git gcc wget tar make rsync which unzip jq sudo procps-ng iptables-nft
+yum install -y yum-utils git gcc wget make rsync unzip jq sudo procps-ng iptables-nft
 
 # Install Go
 GO_TAR="go${GO_VERSION}.linux-ppc64le.tar.gz"
@@ -61,18 +59,15 @@ docker run hello-world
 # Install kubectl
 curl -LO "https://dl.k8s.io/release/${KINDEST_NODE_VERSION}/bin/linux/ppc64le/kubectl"
 chmod +x kubectl && mv kubectl /usr/local/bin/
-kubectl version
 
 # Install kind
 curl -Lo kind https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-ppc64le
 chmod +x kind && mv kind /usr/local/bin/
-kind version
 
 # Install kustomize
 curl -sLO "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_ppc64le.tar.gz"
 tar -xzf "kustomize_${KUSTOMIZE_VERSION}_linux_ppc64le.tar.gz"
 chmod +x kustomize && mv kustomize /usr/local/bin/
-kustomize version
 
 # Clone flux2
 cd "${BUILD_HOME}"
@@ -83,8 +78,8 @@ git checkout "${PACKAGE_VERSION}"
 # Build flux2 repo
 ret=0
 make build VERSION="${VERSION}" || ret=$?
-if [ "$ret" -ne 0 ] ; then
-    echo "ERROR: $PACKAGE_NAME-$PACKAGE_VERSION - Build failed"
+if [ "$ret" -ne 0 ] || [ ! -f ./bin/flux ]; then
+    echo "ERROR: $PACKAGE_NAME-$PACKAGE_VERSION - Build failed or binary missing."
     exit 1
 fi
 echo "SUCCESS: $PACKAGE_NAME-$PACKAGE_VERSION build successful"
@@ -157,7 +152,14 @@ make docker-build
 cd "${FLUX2_DIR}"
 git clone --depth 1 --branch "v0.33.0" https://github.com/fluxcd/source-controller.git
 cd source-controller
-git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${PACKAGE_VERSION}_source-controller.patch
+git apply "$(realpath /flux2_v0.38.3_source-controller.patch)"
+make docker-build BUILD_ARGS="--build-arg CGO_LDFLAGS='-fuse-ld=lld' --build-arg GO_BUILD_TAGS='netgo,osusergo'"
+
+# Build Image Automation Controller
+cd "${FLUX2_DIR}"
+git clone --depth 1 --branch "v0.28.0" https://github.com/fluxcd/image-automation-controller.git
+cd image-automation-controller
+git apply "$(realpath /flux2_v0.38.3_image-automation-controller.patch)"
 make docker-build BUILD_ARGS="--build-arg CGO_LDFLAGS='-fuse-ld=lld' --build-arg GO_BUILD_TAGS='netgo,osusergo'"
 
 # Build Kustomize Controller
@@ -183,12 +185,12 @@ sed -i 's|BUILD_PLATFORMS ?= linux/amd64|BUILD_PLATFORMS ?= linux/ppc64le|' Make
 sed -i 's|ENVTEST_ARCH ?= amd64|ENVTEST_ARCH ?= ppc64le|' Makefile
 make docker-build
 
-# Build Image Automation Controller
+# Build podinfo
 cd "${FLUX2_DIR}"
-git clone --depth 1 --branch "v0.28.0" https://github.com/fluxcd/image-automation-controller.git
-cd image-automation-controller
-git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${PACKAGE_VERSION}_image-automation-controller.patch
-make docker-build BUILD_ARGS="--build-arg CGO_LDFLAGS='-fuse-ld=lld' --build-arg GO_BUILD_TAGS='netgo,osusergo'"
+git clone https://github.com/stefanprodan/podinfo.git
+cd podinfo
+git checkout 6.0.0
+docker build -t podinfo:6.0.0-ppc64le .
 
 # Tag and load all controller images to kind
 docker tag fluxcd/source-controller:latest ghcr.io/fluxcd/source-controller:v0.33.0
@@ -197,6 +199,7 @@ docker tag fluxcd/image-reflector-controller:latest ghcr.io/fluxcd/image-reflect
 docker tag fluxcd/notification-controller:latest ghcr.io/fluxcd/notification-controller:v0.30.2
 docker tag fluxcd/helm-controller:latest ghcr.io/fluxcd/helm-controller:v0.28.1
 docker tag fluxcd/kustomize-controller:latest ghcr.io/fluxcd/kustomize-controller:v0.32.0
+docker tag podinfo:6.0.0-ppc64le ghcr.io/stefanprodan/podinfo:6.0.0
 
 kind load docker-image ghcr.io/fluxcd/helm-controller:v0.28.1 --name flux-e2e
 kind load docker-image ghcr.io/fluxcd/image-automation-controller:v0.28.0 --name flux-e2e
@@ -204,6 +207,7 @@ kind load docker-image ghcr.io/fluxcd/image-reflector-controller:v0.23.1 --name 
 kind load docker-image ghcr.io/fluxcd/kustomize-controller:v0.32.0 --name flux-e2e
 kind load docker-image ghcr.io/fluxcd/notification-controller:v0.30.2 --name flux-e2e
 kind load docker-image ghcr.io/fluxcd/source-controller:v0.33.0 --name flux-e2e
+kind load docker-image ghcr.io/stefanprodan/podinfo:6.0.0 --name flux-e2e
 
 # Install Flux
 kind export kubeconfig --name flux-e2e

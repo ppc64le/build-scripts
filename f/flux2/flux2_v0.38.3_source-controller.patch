@@ -1,7 +1,14 @@
 diff --git a/Dockerfile b/Dockerfile
-index 9cd650f..28428b9 100644
+index 9cd650f..ec38132 100644
 --- a/Dockerfile
 +++ b/Dockerfile
+@@ -1,5 +1,5 @@
+ ARG BASE_VARIANT=alpine
+-ARG GO_VERSION=1.19
++ARG GO_VERSION=1.24.4
+ ARG XX_VERSION=1.1.2
+
+ FROM --platform=$BUILDPLATFORM tonistiigi/xx:${XX_VERSION} AS xx
 @@ -52,14 +52,19 @@ ARG TARGETARCH
  #   performance reasons. See: https://github.com/pjbgf/sha1cd/issues/15
  ENV CGO_ENABLED=1
@@ -23,38 +30,7 @@ index 9cd650f..28428b9 100644
 
  # Ensure that the binary was cross-compiled correctly to the target platform.
 -RUN xx-verify --static /source-controller
-+#RUN xx-verify --static /source-controller #building dynamically - no need to verify
-
- FROM alpine:3.16
-
-[root@devfirst-amit-kumar source-controller]# git diff > flux2_v0.38.3_source-controller.patch
-[root@devfirst-amit-kumar source-controller]# cat flux2_v0.38.3_source-controller.patch
-diff --git a/Dockerfile b/Dockerfile
-index 9cd650f..28428b9 100644
---- a/Dockerfile
-+++ b/Dockerfile
-@@ -52,14 +52,19 @@ ARG TARGETARCH
- #   performance reasons. See: https://github.com/pjbgf/sha1cd/issues/15
- ENV CGO_ENABLED=1
-
--RUN export CGO_LDFLAGS="-static -fuse-ld=lld" && \
--  xx-go build \
-+ARG CGO_LDFLAGS="-fuse-ld=lld"
-+ARG GO_BUILD_TAGS="netgo,osusergo"
-+
-+ENV CGO_LDFLAGS=${CGO_LDFLAGS}
-+ENV GO_BUILD_TAGS=${GO_BUILD_TAGS}
-+
-+RUN xx-go build \
-   -ldflags "-s -w" \
--  -tags 'netgo,osusergo,static_build' \
--  -o /source-controller -trimpath main.go;
-+  -tags "${GO_BUILD_TAGS}" \
-+  -o /source-controller -trimpath main.go
-
- # Ensure that the binary was cross-compiled correctly to the target platform.
--RUN xx-verify --static /source-controller
-+#RUN xx-verify --static /source-controller #building dynamically - no need to verify
++#RUN xx-verify --static /source-controller
 
  FROM alpine:3.16
 
