@@ -3,7 +3,7 @@
 # Package       : flux2
 # Version       : v0.38.3
 # Source repo   : https://github.com/fluxcd/flux2.git
-# Tested on     : UBI 9.3
+# Tested on     : UBI 9.3 (docker)
 # Language      : Go
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -15,6 +15,7 @@
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
 # -----------------------------------------------------------------------------
+set -euo pipefail
 
 PACKAGE_NAME="flux2"
 PACKAGE_VERSION="${1:-v0.38.3}"
@@ -45,15 +46,17 @@ export PATH="$GOROOT/bin:$GOPATH/bin:$PATH"
 # Install Docker
 yum config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 yum install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-# Start Docker daemon safely
-(dockerd > /tmp/dockerd.log 2>&1) &
-# Wait for Docker to be ready, or exit with error if not
-timeout 30 bash -c 'until docker info >/dev/null 2>&1; do sleep 1; done' || {
-    echo "ERROR: Docker failed to start"
-    cat /tmp/dockerd.log
-    exit 1
+mkdir -p /etc/docker
+cat <<EOF > /etc/docker/daemon.json
+{
+  "ipv6": true,
+  "fixed-cidr-v6": "2001:db8:1::/64",
+  "mtu": 1450
 }
-echo "Docker is up and running"
+EOF
+dockerd > /dev/null 2>&1 &
+sleep 10
+docker run hello-world
 
 # Install kubectl
 curl -LO "https://dl.k8s.io/release/${KINDEST_NODE_VERSION}/bin/linux/ppc64le/kubectl"
@@ -184,7 +187,7 @@ make docker-build
 cd "${FLUX2_DIR}"
 git clone --depth 1 --branch "v0.28.0" https://github.com/fluxcd/image-automation-controller.git
 cd image-automation-controller
-git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${PACKAGE_VERSION}_source-controller.patch
+git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${PACKAGE_VERSION}_image-automation-controller.patch
 make docker-build BUILD_ARGS="--build-arg CGO_LDFLAGS='-fuse-ld=lld' --build-arg GO_BUILD_TAGS='netgo,osusergo'"
 
 # Tag and load all controller images to kind
