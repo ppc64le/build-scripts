@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=msgpack-python
 PACKAGE_DIR=msgpack-python
-PACKAGE_VERSION=${1:-1.1.1}
+PACKAGE_VERSION=${1:-v1.1.1}
 PACKAGE_URL=https://github.com/msgpack/msgpack-python.git
 
 # Install necessary system packages
@@ -32,7 +32,7 @@ pip3 install --upgrade pip setuptools wheel
 # Clone the repository
 git clone ${PACKAGE_URL}
 cd ${PACKAGE_DIR}
-git checkout v${PACKAGE_VERSION}
+git checkout ${PACKAGE_VERSION}
 
 # Install build requirements
 pip3 install -r requirements.txt
