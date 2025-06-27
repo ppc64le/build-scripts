@@ -1,14 +1,29 @@
-From 300e89cd76746d11dd66c6b6f49c600b942ebb01 Mon Sep 17 00:00:00 2001
-From: Srighakollapu-Sai-Srivatsa <Srighakollapu.Sai.Srivatsa@ibm.com>
-Date: Mon, 5 May 2025 05:49:58 +0000
-Subject: [PATCH] changes
+From 333cb42e9a1546dd2d59c7162416af1b45e7dfa3 Mon Sep 17 00:00:00 2001
+From: Rushikesh Sathe <Rushikesh.Sathe@ibm.com>
+Date: Thu, 26 Jun 2025 06:46:41 +0000
+Subject: [PATCH] fix for CVE-2025-3730
 
 ---
+ aten/src/ATen/native/LossCTC.cpp             |  1 +
  aten/src/ATen/native/cpu/BinaryOpsKernel.cpp | 18 ++++++++++++++++++
+ aten/src/ATen/native/cuda/LossCTC.cu         |  1 +
  cmake/Dependencies.cmake                     |  2 ++
+ test/test_nn.py                              |  8 ++++++++
  tools/setup_helpers/cmake.py                 |  5 +++++
- 3 files changed, 25 insertions(+)
+ 6 files changed, 35 insertions(+)
 
+diff --git a/aten/src/ATen/native/LossCTC.cpp b/aten/src/ATen/native/LossCTC.cpp
+index 530f3cf066e..96c2cf86cd2 100644
+--- a/aten/src/ATen/native/LossCTC.cpp
++++ b/aten/src/ATen/native/LossCTC.cpp
+@@ -127,6 +127,7 @@ std::tuple<Tensor, Tensor, size_t, std::vector<int64_t>> ctc_loss_allocate_outpu
+ // the alphas from the user by only returning the loss.
+ template<typename scalar_t, ScalarType target_scalar_type>
+ std::tuple<Tensor, Tensor> ctc_loss_cpu_template(const Tensor& log_probs, const Tensor& targets, IntArrayRef input_lengths, IntArrayRef target_lengths, int64_t BLANK) {
++  TORCH_CHECK(log_probs.numel() > 0, "log_probs tensor must not be empty");
+   // log_probs: input_len x batch_size x num_labels
+   // targets [int64]: batch_size x target_length OR sum(target_lengths)
+   constexpr scalar_t neginf = -std::numeric_limits<scalar_t>::infinity();
 diff --git a/aten/src/ATen/native/cpu/BinaryOpsKernel.cpp b/aten/src/ATen/native/cpu/BinaryOpsKernel.cpp
 index 42a4d0b564b..009f77809f8 100644
 --- a/aten/src/ATen/native/cpu/BinaryOpsKernel.cpp
@@ -59,6 +74,18 @@ index 42a4d0b564b..009f77809f8 100644
  }
 
  void lt_kernel(TensorIteratorBase& iter) {
+diff --git a/aten/src/ATen/native/cuda/LossCTC.cu b/aten/src/ATen/native/cuda/LossCTC.cu
+index 759955dc62f..5ec51970683 100644
+--- a/aten/src/ATen/native/cuda/LossCTC.cu
++++ b/aten/src/ATen/native/cuda/LossCTC.cu
+@@ -219,6 +219,7 @@ ctc_loss_log_alpha_gpu_kernel(scalar_t* __restrict__ log_alpha_data,
+ // backward. The dispatch function will only return the loss.
+ template<typename scalar_t, ScalarType target_scalar_type>
+ std::tuple<Tensor, Tensor> ctc_loss_gpu_template(const Tensor& log_probs, const Tensor& targets, IntArrayRef input_lengths, IntArrayRef target_lengths, int64_t BLANK) {
++  TORCH_CHECK(log_probs.numel() > 0, "log_probs tensor must not be empty");
+   // log_probs: input_len x batch_size x num_labels
+   // targets [int64]: batch_size x target_length OR sum(target_lengths)
+   CheckedFrom c = "ctc_loss_gpu";
 diff --git a/cmake/Dependencies.cmake b/cmake/Dependencies.cmake
 index 1813f4418a2..7b9a555cee3 100644
 --- a/cmake/Dependencies.cmake
@@ -72,6 +99,25 @@ index 1813f4418a2..7b9a555cee3 100644
      add_compile_options(-DTORCH_USE_LIBUV)
      include_directories(BEFORE SYSTEM ${CMAKE_CURRENT_LIST_DIR}/../third_party/tensorpipe/third_party/libuv/include)
      set(TP_STATIC_OR_SHARED STATIC CACHE STRING "" FORCE)
+diff --git a/test/test_nn.py b/test/test_nn.py
+index 0af76d427e2..7b6d327be51 100644
+--- a/test/test_nn.py
++++ b/test/test_nn.py
+@@ -11333,6 +11333,14 @@ class TestNNDeviceType(NNTestCase):
+         self.assertTrue("Cudnn" in str(loss_cudnn.grad_fn))
+         grad_cudnn, = torch.autograd.grad(loss_cudnn, log_probs, grad_out)
+         self.assertEqual(grad_cudnn, grad_native, atol=1e-4, rtol=0)
++    @expectedFailureMPS
++    def test_ctc_loss_error(self, device):
++        log_probs = torch.rand(0, 0, 4, device=device)
++        targets = torch.tensor([], device=device, dtype=torch.long)Add commentMore actions
++        input_lengths = torch.tensor([], device=device, dtype=torch.long)
++        target_lengths = torch.tensor([], device=device, dtype=torch.long)
++        with self.assertRaisesRegex(RuntimeError, "log_probs tensor must not be empty"):
++            F.ctc_loss(log_probs, targets, input_lengths, target_lengths, reduction='none')
+
+     @expectedFailureMPS  # RuntimeError: LSTM with projections is not currently supported with MPS.
+     @dtypesIfCUDA(torch.half, torch.float, torch.double)
 diff --git a/tools/setup_helpers/cmake.py b/tools/setup_helpers/cmake.py
 index 84e4dad32d3..5768fa92cd5 100644
 --- a/tools/setup_helpers/cmake.py
@@ -89,5 +135,4 @@ index 84e4dad32d3..5768fa92cd5 100644
              "CUDNN_LIB_DIR": "CUDNN_LIBRARY",
              "USE_CUDA_STATIC_LINK": "CAFFE2_STATIC_LINK_CUDA",
 --
-2.43.5
-
+2.47.1
