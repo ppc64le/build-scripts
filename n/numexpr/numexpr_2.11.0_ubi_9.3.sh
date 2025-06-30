@@ -32,10 +32,6 @@ PACKAGE_DIR=./numexpr
     python3.11 python3.11-devel python3.11-pip \
     cmake openblas-devel
 
-python3.11 -m venv venv311
-# shellcheck disable=SC1091
-source venv311/bin/activate
-
 #clone repository
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
