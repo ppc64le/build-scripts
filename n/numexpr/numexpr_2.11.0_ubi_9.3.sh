@@ -29,8 +29,11 @@ PACKAGE_DIR=./numexpr
  yum install -y \
     git gcc gcc-c++ make \
     openssl-devel bzip2-devel libffi-devel xz zlib-devel \
-    python3.11 python3.11-devel python3.11-pip3.11 \
+    python3.11 python3.11-devel \
     cmake openblas-devel
+python3.11 -m ensurepip --upgrade
+python3.11 -m pip install --upgrade pip setuptools wheel
+python3.11 -m pip --version
 
 #clone repository
 git clone $PACKAGE_URL
