@@ -1,15 +1,22 @@
 {
-  "maintainer": "ramnathnayak-ibm",
+  "maintainer": "Prachi.Gaonkar@ibm.com",
   "package_name": "opensearch-project-sql",
   "github_url": "https://github.com/opensearch-project/sql",
-  "version": "2.14.0.0",
-  "default_branch": "main",
+  "version": "2.19.2.0",
+  "required_versions":{"Releases": ["*"], "Tags": ["2.19.2.0"]},
+  "default_branch": "main", 
   "package_dir": "o/opensearch-project-sql",
-  "build_script": "opensearch-project-sql_ubi_9.3.sh",
+  "build_script": "opensearch-project-sql_2.19.2.0_ubi_9.3.sh",
   "validate_build_script": "true",
-  "use_non_root_user": "false",
+  "use_non_root_user": "true",
   "docker_build": "false",
-  "*.*.*.*" : {
-       "build_script": "opensearch-project-sql_ubi_9.3.sh"
+  "2.14.0.0" : {
+      "build_script": "opensearch-project-sql_ubi_9.3.sh"
+    },
+  "2.19.2.0" : {
+      "build_script": "opensearch-project-sql_2.19.2.0_ubi_9.3.sh"
+    },
+  "2.11.0.0" : {
+      "build_script": "opensearch-project-sql_ubi_8.7.sh"
     }
 }
