@@ -29,7 +29,7 @@ PACKAGE_DIR=./numexpr
  yum install -y \
     git gcc gcc-c++ make \
     openssl-devel bzip2-devel libffi-devel xz zlib-devel \
-    python3.11 python3.11-devel python3.11-pip \
+    python3.11 python3.11-devel python3.11-pip3.11 \
     cmake openblas-devel
 
 #clone repository
@@ -38,12 +38,12 @@ cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #install pytest
-pip install pytest
-pip install --upgrade pip setuptools wheel pytest numpy==2.0.2
-pip install -e .
+pip3.11 install pytest
+pip3.11 install --upgrade pip setuptools wheel pytest numpy==2.0.2
+pip3.11 install -e .
 
 #install
-if ! (python3 setup.py install) ; then
+if ! (python3.11 setup.py install) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
