@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-amq-broker-7.13.0.OPR.1.CR3}
 
 SDK_PACKAGE_NAME=operator-sdk
 SDK_PACKAGE_URL=https://github.com/operator-framework/operator-sdk
-SDK_PACKAGE_VERSION=${1:-v1.40.0}
+SDK_PACKAGE_VERSION=v1.40.0
 OS=linux
 ARCH=ppc64le
 GO_VERSION=1.22.7
@@ -44,7 +44,7 @@ echo "Installed GO"
 #install operator-sdk
 export OPERATOR_SDK_DL_URL=https://github.com/operator-framework/operator-sdk/releases/download/$SDK_PACKAGE_VERSION
 curl -LO ${OPERATOR_SDK_DL_URL}/operator-sdk_${OS}_${ARCH}
-chmod +x operator-sdk_${OS}_${ARCH} && sudo mv operator-sdk_${OS}_${ARCH} /usr/local/bin/operator-sdk
+chmod +x operator-sdk_${OS}_${ARCH} && mv operator-sdk_${OS}_${ARCH} /usr/local/bin/operator-sdk
 echo "Installed Operator SDK"
 
 
