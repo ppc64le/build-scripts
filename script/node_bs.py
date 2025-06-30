@@ -8,6 +8,7 @@ import subprocess
 from subprocess import call
 import glob
 import stat
+import re
 import docker
 import shutil
 import sys
@@ -34,6 +35,14 @@ parser.add_argument('--github_token_arg',help="GitHub Token")
 args=parser.parse_args()
 
 path_separator = os.path.sep
+
+github_url=args.github_url_arg
+latest_release = args.package_version_arg
+package_language = args.language_arg
+
+active_repo=False
+new_build_script=''
+branch_pkg=""
 #ROOT = os.path.dirname(os.path.dirname(__file__))
 ROOT = os.getcwd()
 if args.package_name_arg:
@@ -41,8 +50,12 @@ if args.package_name_arg:
 else:
     package_name = input("Enter Package name (Package name should match with the directory name): ")
     #package_name = 'elasticsearch'
-package_name = package_name.lower()
-dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_name}"
+package_name_original = package_name.lower()
+if package_name_original.lower() in ['go','java']:
+    package_name_original = re.sub(r'[/.]','_',package_name_original)
+    dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_name_original}"
+else:
+    dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_name}"
 
 try:
     user_name_command ="git config user.name"
@@ -385,7 +398,12 @@ else:
         package_dir = args.package_dir_arg
 
     package_name = package_name.lower()
-    dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_name}"
+    package_name_original = package_name.lower()
+    if package_name_original.lower() in ['go','java']:
+        package_name_original = re.sub(r'[/.]','_',package_name_original)
+        dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_name_original}"
+    else:
+        dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_name}"
     os.makedirs(dir_name, exist_ok = True)
     create_new_script()
     display_details()
