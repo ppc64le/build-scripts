@@ -11,9 +11,11 @@ RUN yum install -y git make cmake zip tar wget python3 python3-devel python3-pip
     git clone https://github.com/mcfletch/pyopengl && \
     cd pyopengl && \
     git checkout $PACKAGE_VERSION && \
-	  pip install --upgrade pip && \
-	  pip install . && \
-	  cd accelerate && \
-	  pip install .
+    pip install --upgrade pip && \
+    pip install . && \
+    cd accelerate && \
+    wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pyopengl-accelerate/pyopengl-accelerate_release-3.1.8_1.patch && \
+    git apply pyopengl-accelerate_release-3.1.8_1.patch && \
+    pip install .
 	
 CMD ["/bin/bash"]
