@@ -44,7 +44,7 @@ source venv311/bin/activate
 # Upgrade pip & tools
 pip install --upgrade pip setuptools wheel
 
-# Clone OpenBLAS & build
+# Clone OpenBLAS & build for v0.3.29
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
 git checkout v0.3.29
