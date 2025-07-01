@@ -83,14 +83,6 @@ except subprocess.CalledProcessError as e:
 except Exception as e:
     print("Error")
 
-github_url=args.github_url_arg
-latest_release = args.package_version_arg
-package_language = args.language_arg
-
-active_repo=False
-new_build_script=''
-branch_pkg=""
-
 def select_template_script(package_language):
     package_language=package_language.lower()
     if package_language == 'node' or package_language == 'javascript':
