@@ -282,7 +282,8 @@ def create_new_script():
         elif template_lines[i].startswith("PACKAGE_DIR"):
             template_lines[i]=f"PACKAGE_DIR={package_name}\n"
         
-    with open (f"{dir_name}/{package_name}_ubi_9.3.sh",'w') as newfile:
+    sanitised_name = re.sub(r'[/.]','_',package_name)    
+    with open (f"{dir_name}/{sanitised_name}_ubi_9.3.sh",'w') as newfile:
         newfile.writelines(template_lines)
 
     if args.spawn_container_arg:
