@@ -64,7 +64,7 @@ if ! pip install . ; then
 fi
 
 yum install -y libX11-devel
-#Test package
+#Test package 
 if ! tox -e py3 ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
