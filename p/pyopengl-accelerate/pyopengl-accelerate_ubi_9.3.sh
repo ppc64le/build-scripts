@@ -46,7 +46,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 pip install --upgrade pip
-pip install cython numpy setuptools
+pip install cython numpy setuptools tox
 
 pip install .
 cd accelerate
