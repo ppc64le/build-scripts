@@ -24,7 +24,6 @@ PACKAGE_NAME=sphinx-prompt
 PACKAGE_VERSION=${1:-1.9.0}
 PACKAGE_URL=https://github.com/sbrunner/sphinx-prompt.git
 PACKAGE_DIR=sphinx-prompt
-CURRENT_DIR=$(pwd)
 
 #install dependencies
 yum install -y git gcc-toolset-13 wget openssl-devel bzip2-devel libffi-devel zlib-devel ncurses libffi sqlite sqlite-devel sqlite-libs python3.11  python3.11-devel python3.11-pip make cmake
