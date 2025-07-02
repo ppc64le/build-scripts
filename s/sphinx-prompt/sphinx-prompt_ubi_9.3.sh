@@ -43,9 +43,9 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-pip3 install -r requirements.txt
-pip3 install sphinx==8.0.2
-pip3 install poetry
+pip install -r requirements.txt
+pip install sphinx==8.0.2
+pip install poetry
 pip install --upgrade pytest
 
 #Ensure Poetry explicitly includes the 'sphinx_prompt' package by adding a packages section after [tool.poetry] in pyproject.toml to avoid missing module errors.
