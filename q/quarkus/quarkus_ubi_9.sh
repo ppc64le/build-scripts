@@ -51,4 +51,4 @@ else
     exit 0
 fi
 
-# Tests are not executed as it takes longer hours than are allowed
+# Tests are skipped as it takes longer hours than are allowed
