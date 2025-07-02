@@ -174,7 +174,7 @@ modify_metadata_file() {
         wheel_file_name=$(basename "$wheel_path")
 
         # Repack wheel
-        cd "$temp_dir" && zip -q -r "$CURRENT_DIR/$wheel_file_name" ./*
+        cd "$temp_dir" && zip -q -6 -r "$CURRENT_DIR/$wheel_file_name" ./*
 
         echo "Added IBM classifier to $wheel_path"
     fi
