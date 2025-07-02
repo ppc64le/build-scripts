@@ -29,6 +29,7 @@ OS=linux
 ARCH=ppc64le
 GO_VERSION=1.22.7
 
+echo "Installing dependencies"
 dnf install -y git wget gcc-c++ gcc make
 
 #Go installation
