@@ -1,0 +1,13 @@
+{
+  "maintainer": "Chandranana",
+  "package_name": "proxy",
+  "github_url": "https://github.com/istio/proxy",
+  "version": "1.23.0",
+  "package_dir": "i/istio-proxy",
+  "default_branch": "master",
+  "docker_build": false,
+  "build_script": "istio-proxy_1.23.0_ubi9.3.sh",
+  "validate_build_script": true,
+  "use_non_root_user": true
+}
+
