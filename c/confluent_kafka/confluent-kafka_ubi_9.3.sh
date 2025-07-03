@@ -53,7 +53,7 @@ if ! pip install . ; then
     exit 1
 fi
 
-# Run test cases skip test_kafkaError_unknonw_error due to typo in name
+# Run test cases 
 if ! pytest -s -v -k 'not test_kafkaError_unknonw_error' tests/test_*.py ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
