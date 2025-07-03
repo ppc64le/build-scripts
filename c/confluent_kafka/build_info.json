@@ -10,7 +10,7 @@
     "validate_build_script": "true",
     "use_non_root_user": "false",
     "docker_build": "false",
-    "1.*.*": {
+    "1.7.0": {
       "build_script": "confluent_kafka_ubi8_3.sh"
     },
     "*" : {
