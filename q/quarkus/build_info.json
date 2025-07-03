@@ -1,0 +1,13 @@
+{
+  "maintainer": "Shreya.Kajbaje@ibm.com",
+  "package_name": "quarkus",
+  "github_url": "https://github.com/quarkusio/quarkus.git",
+  "version": "main",
+  "default_branch": "main",
+  "category": "default",
+  "package_dir": "q/quarkus/",
+  "build_script": "quarkus_ubi_9.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false
+}
