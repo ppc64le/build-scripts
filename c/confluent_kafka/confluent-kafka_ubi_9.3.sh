@@ -18,6 +18,9 @@
 #                     contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
+
+set -ex
+
 PACKAGE_NAME=confluent-kafka-python
 PACKAGE_VERSION=${1:-v2.10.0}
 PACKAGE_URL=https://github.com/confluentinc/confluent-kafka-python.git
