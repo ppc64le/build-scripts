@@ -22,7 +22,7 @@ PACKAGE_NAME=job-scheduler
 PACKAGE_URL=https://github.com/opensearch-project/job-scheduler
 PACKAGE_VERSION=${1:-2.19.2.0}
 OPENSEARCH_URL=https://github.com/opensearch-project/OpenSearch.git
-OPENSEARCH_VERSION=2.19.2
+OPENSEARCH_VERSION=${PACKAGE_VERSION::-2}
 OPENSEARCH_PACKAGE=OpenSearch
 wdir=`pwd`
 SCRIPT=$(readlink -f $0)
@@ -44,7 +44,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if ! ./gradlew build -PcustomDistributionUrl="$wdir/OpenSearch/distribution/archives/linux-ppc64le-tar/build/distributions/opensearch-min-2.19.2-SNAPSHOT-linux-ppc64le.tar.gz"; then
+if ! ./gradlew build -PcustomDistributionUrl="$wdir/OpenSearch/distribution/archives/linux-ppc64le-tar/build/distributions/opensearch-min-${OPENSEARCH_VERSION}-SNAPSHOT-linux-ppc64le.tar.gz"; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
