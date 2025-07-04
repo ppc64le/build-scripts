@@ -31,6 +31,7 @@ GOPATH=$SOURCE_ROOT/go
 GOBIN=/usr/local/go/bin 
 	
 sudo yum install -y \
+    sudo \
     cmake \
     patch \
     gcc-toolset-12-libatomic-devel \
