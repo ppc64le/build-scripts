@@ -1,0 +1,166 @@
+diff --git a/build.py b/build.py
+index 48f7f56c..699f105a 100755
+--- a/build.py
++++ b/build.py
+@@ -335,6 +335,9 @@ class BuildScript:
+                 f"  git clone --recursive --single-branch --depth=1 -b {tag} {org}/{repo}.git {subdir}; git --git-dir {subdir}/.git log --oneline -1",
+                 check_exitcode=True,
+             )
++            self.cwd(subdir)
++            if subdir == "onnxruntime":
++                self.cmd(f"git apply /workspace/onnxruntime_backend.patch", check_exitcode=True)
+             self.cmd("}" if target_platform() == "windows" else "fi")
+ 
+ 
+@@ -458,6 +461,8 @@ def core_cmake_args(components, backends, cmake_dir, install_dir):
+         ),
+     ]
+ 
++    if target_platform() == "rhel":
++        cargs.append(cmake_core_arg("CMAKE_PREFIX_PATH", "PATH", FLAGS.tmp_dir + "/tritonbuild/tritonserver/build/third-party/protobuf/lib64/cmake/protobuf"))
+     cargs.append(cmake_core_enable("TRITON_ENABLE_LOGGING", FLAGS.enable_logging))
+     cargs.append(cmake_core_enable("TRITON_ENABLE_STATS", FLAGS.enable_stats))
+     cargs.append(cmake_core_enable("TRITON_ENABLE_METRICS", FLAGS.enable_metrics))
+@@ -921,11 +926,19 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1
+ """
+     df += """
+ # Install docker docker buildx
+-RUN yum install -y ca-certificates curl gnupg yum-utils \\
+-      && yum-config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo \\
++RUN yum install -y ca-certificates  gnupg yum-utils \\
++      && yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo \\
+       && yum install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+ #   && yum install -y docker.io docker-buildx-plugin
+ 
++RUN yum install -y wget && \
++   dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
++        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
++        https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
++        dnf config-manager --set-enabled crb &&\
++        dnf install gperf libarchive-devel numactl-devel readline-devel -y && \
++        dnf remove -y centos-gpg-keys-9.0-24.el9.noarch centos-stream-repos-9.0-24.el9.noarch
++
+ # libcurl4-openSSL-dev is needed for GCS
+ # python3-dev is needed by Torchvision
+ # python3-pip and libarchive-dev is needed by python backend
+@@ -948,16 +961,22 @@ RUN yum install -y \\
+             numactl-devel \\
+             openssl-devel \\
+             pkg-config \\
+-            python3-pip \\
+-            python3-scons \\
+-            python3-setuptools \\
++            python3.12 \\
++            python3.12-pip \\
++            python3.12-devel \\
+             rapidjson-devel \\
+             re2-devel \\
+             readline-devel \\
+             unzip \\
+             wget \\
+             xz-devel \\
+-            zlib-devel
++            zlib-devel \\
++            sqlite-devel\\
++            libffi-devel\\
++            cmake \\
++            g++
++RUN ln -sf $(which python3.12) /usr/bin/python3 && ln -sf $(which pip3.12) /usr/bin/pip3 && ln -sf $(which pip3.12) /usr/bin/pip
++
+ """
+     if os.getenv("CCACHE_REMOTE_ONLY") and os.getenv("CCACHE_REMOTE_STORAGE"):
+         df += """
+@@ -988,7 +1007,8 @@ RUN pip3 install --upgrade pip \\
+           setuptools \\
+           docker \\
+           virtualenv \\
+-          patchelf==0.17.2
++          patchelf==0.17.2 \\
++          requests==2.25.1
+ 
+ # Install boost version >= 1.78 for boost::span
+ # Current libboost-dev apt packages are < 1.78, so install from tar.gz
+@@ -1247,13 +1267,21 @@ COPY --chown=1000:1000 build/install tritonserver
+ 
+ WORKDIR /opt/tritonserver
+ COPY --chown=1000:1000 NVIDIA_Deep_Learning_Container_License.pdf .
+-RUN find /opt/tritonserver/python -maxdepth 1 -type f -name \\
+-    "tritonserver-*.whl" | xargs -I {} pip install --upgrade {}[all] && \\
+-    find /opt/tritonserver/python -maxdepth 1 -type f -name \\
+-    "tritonfrontend-*.whl" | xargs -I {} pip install --upgrade {}[all]
++
++RUN if [ "$(uname -m)" = "ppc64le" ]; then \
++        VARIANT="cpu"; \
++    else \
++        VARIANT="all"; \
++    fi &&\
++    find /opt/tritonserver/python -maxdepth 1 -type f -name \
++    "tritonserver-*.whl" | xargs -I {} pip install --upgrade {}[$VARIANT] && \
++    find /opt/tritonserver/python -maxdepth 1 -type f -name \
++    "tritonfrontend-*.whl" | xargs -I {} pip install --upgrade {}[$VARIANT];
+ 
+ RUN pip3 install -r python/openai/requirements.txt
+ 
++ENV LD_LIBRARY_PATH=/opt/tritonserver/lib64:$LD_LIBRARY_PATH
++
+ """
+     if not FLAGS.no_core_build:
+         # Add feature labels for SageMaker endpoint
+@@ -1356,10 +1384,20 @@ RUN userdel tensorrt-server > /dev/null 2>&1 || true \\
+ 
+     if target_platform() == "rhel":
+         df += """
++
++RUN yum install -y wget && \
++   dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
++        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
++        https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
++        dnf config-manager --set-enabled crb &&\
++        dnf install gperf libarchive-devel numactl-devel readline-devel -y && \
++        dnf remove -y centos-gpg-keys-9.0-24.el9.noarch centos-stream-repos-9.0-24.el9.noarch
++
+ # Common dependencies.
+ RUN yum install -y \\
+         git \\
+         gperf \\
++        g++ \\
+         re2-devel \\
+         openssl-devel \\
+         libtool \\
+@@ -1367,9 +1405,13 @@ RUN yum install -y \\
+         libb64-devel \\
+         gperftools-devel \\
+         wget \\
+-        python3-pip \\
+-        numactl-devel
++        python3.12 \\
++        python3.12-pip \\
++        numactl-devel \\
++        python3.12-devel \\
++        cmake
+ 
++RUN ln -sf $(which python3.12) /usr/bin/python3 && ln -sf $(which pip3.12) /usr/bin/pip3 && ln -sf $(which pip3.12) /usr/bin/pip
+ RUN pip3 install patchelf==0.17.2
+ 
+ """
+@@ -1614,20 +1656,6 @@ def change_default_python_version_rhel(version):
+ # match the version of python inside the RHEL base container. This means that python packages
+ # installed within the container will not be picked up by the python backend stub process pybind
+ # bindings. It must instead must be installed via pyenv.
+-ENV PYENV_ROOT=/opt/pyenv_build
+-RUN curl https://pyenv.run | bash
+-ENV PATH="${{PYENV_ROOT}}/bin:$PATH"
+-RUN eval "$(pyenv init -)"
+-RUN CONFIGURE_OPTS=\"--with-openssl=/usr/lib64\" && pyenv install {version} \\
+-    && cp ${{PYENV_ROOT}}/versions/{version}/lib/libpython3* /usr/lib64/
+-
+-# RHEL image has several python versions. It's important
+-# to set the correct version, otherwise, packages that are
+-# pip installed will not be found during testing.
+-ENV PYVER={version} PYTHONPATH=/opt/python/v
+-RUN ln -sf ${{PYENV_ROOT}}/versions/${{PYVER}}* ${{PYTHONPATH}}
+-ENV PYBIN=${{PYTHONPATH}}/bin
+-ENV PYTHON_BIN_PATH=${{PYBIN}}/python${{PYVER}} PATH=${{PYBIN}}:${{PATH}}
+ """
+     return df
+ 
