@@ -4,7 +4,7 @@
     "github_url": "https://github.com/confluentinc/confluent-kafka-python.git",
     "version": "v2.10.0",
     "default_branch": "master",
-    "package_dir": "c/confluent-kafka",
+    "package_dir": "c/confluent_kafka",
     "wheel_build" : true,
     "build_script": "confluent-kafka_ubi_9.3.sh",
     "validate_build_script": "true",
