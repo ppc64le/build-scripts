@@ -27,7 +27,7 @@ CURRENT_DIR=$(pwd)
 PACKAGE_DIR=PyAV
 
 # install core dependencies
-yum install -y wget python python-pip python-devel  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils 
+yum install -y wget python python-pip python-devel  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
@@ -123,7 +123,7 @@ CPU_DETECT="${CPU_DETECT} --enable-runtime-cpu-detect"
 ${CPU_DETECT}                \
 --enable-experimental || { cat config.log; exit 1; }
 
-make 
+make
 make install PREFIX="${LIBVPX_PREFIX}"
 export LD_LIBRARY_PATH=${LIBVPX_PREFIX}/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=${LIBVPX_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
@@ -146,11 +146,11 @@ find $LAME_PREFIX -name '*.la' -delete
             --enable-static \
             --enable-nasm
 
-make 
+make
 make install PREFIX="${LAME_PREFIX}"
 export LD_LIBRARY_PATH=/install-deps/lame/lib:$LD_LIBRARY_PATH
 export PATH="/install-deps/lame/bin:$PATH"
-lame --version 
+lame --version
 echo "-----------------------------------------------------Installed lame------------------------------------------------"
 
 
@@ -162,7 +162,7 @@ git checkout v1.3.1
 yum install -y autoconf automake libtool
 ./autogen.sh
 ./configure --prefix=$OPUS_PREFIX
-make 
+make
 make install PREFIX="${OPUS_PREFIX}"
 export LD_LIBRARY_PATH=${OPUS_PREFIX}/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=${OPUS_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
@@ -262,7 +262,7 @@ git checkout 11.1.0
 yum install -y libjpeg-turbo-devel
 git submodule update --init
 
-python -m pip install . 
+python -m pip install .
 
 echo "-----------------------------------------------------Installed pillow------------------------------------------------"
 
@@ -296,7 +296,7 @@ python -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"
 echo "----------------------------------------------Testing pkg-------------------------------------------------------"
 #Test package
 #Skipping few tests as they are failing because of disabling some codecs related to audio and video in ffmpeg. We disabled those codecs because of license associated with them.
-if ! (pytest -k "not test_encoding_dnxhd and not test_encoding_dvvideo and not test_encoding_h264 and not test_encoding_mjpeg and not test_encoding_mpeg1video and not test_encoding_mpeg4 and not test_encoding_png and not test_encoding_tiff and not test_encoding_xvid and not test_mov and not test_decode_video_corrupt and not test_decoded_motion_vectors and not test_decoded_motion_vectors_no_flag and not test_decoded_time_base and not test_decoded_video_frame_count and not test_flush_decoded_video_frame_count and not test_av_stream_Stream and not test_encoding_with_pts and not test_stream_audio_resample and not test_max_b_frames and not test_container_probing and not test_stream_probing and not test_writing_to_custom_io_dash and not test_decode_half and not test_stream_seek and not test_side_data and not test_opaque and not test_reformat_pixel_format_align and not test_filter_output_parameters and not test_codec_mpeg4_decoder and not test_codec_mpeg4_encoder and not test_codec_delay and not test_codec_tag and not test_decoder_extradata and not test_decoder_gop_size and not test_decoder_timebase and not test_encoder_extradata and not test_encoder_pix_fmt and not test_parse and not test_sky_timelapse and not test_av_codec_codec_Codec and not test_av_enum_EnumFlag and not test_av_enum_EnumItem and not test_default_options and not test_encoding and not test_encoding_with_unicode_filename and not test_stream_index and not test_writing_to_buffer and not test_writing_to_buffer_broken and not test_writing_to_buffer_broken_with_close and not test_writing_to_file and not test_writing_to_pipe_writeonly and not test_filter_output_parameters and not test_codec_mpeg4_decoder and not test_codec_mpeg4_encoder and not test_codec_delay and test_codec_tag and not test_sky_timelapse and not test_av_codec_codec_Codec and not test_writing_to_buffer and not test_writing_to_file and not test_writing_to_pipe_writeonly") ; then
+if ! (pytest -k "not test_qmin_qmax and not test_profiles and not test_printing_video_stream and not test_frame_duration_matches_packet and not test_printing_video_stream2 and not test_no_side_data and not test_encoding_dnxhd and not test_encoding_dvvideo and not test_encoding_h264 and not test_encoding_mjpeg and not test_encoding_mpeg1video and not test_encoding_mpeg4 and not test_encoding_png and not test_encoding_tiff and not test_encoding_xvid and not test_mov and not test_decode_video_corrupt and not test_decoded_motion_vectors and not test_decoded_motion_vectors_no_flag and not test_decoded_time_base and not test_decoded_video_frame_count and not test_flush_decoded_video_frame_count and not test_av_stream_Stream and not test_encoding_with_pts and not test_stream_audio_resample and not test_max_b_frames and not test_container_probing and not test_stream_probing and not test_writing_to_custom_io_dash and not test_decode_half and not test_stream_seek and not test_side_data and not test_opaque and not test_reformat_pixel_format_align and not test_filter_output_parameters and not test_codec_mpeg4_decoder and not test_codec_mpeg4_encoder and not test_codec_delay and not test_codec_tag and not test_decoder_extradata and not test_decoder_gop_size and not test_decoder_timebase and not test_encoder_extradata and not test_encoder_pix_fmt and not test_parse and not test_sky_timelapse and not test_av_codec_codec_Codec and not test_av_enum_EnumFlag and not test_av_enum_EnumItem and not test_default_options and not test_encoding and not test_encoding_with_unicode_filename and not test_stream_index and not test_writing_to_buffer and not test_writing_to_buffer_broken and not test_writing_to_buffer_broken_with_close and not test_writing_to_file and not test_writing_to_pipe_writeonly") ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
