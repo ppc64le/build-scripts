@@ -125,7 +125,7 @@ if ! pip install . ; then
     exit 1
 fi
 
-cd $CURRENT_DIR/ray
+cd $CURRENT_DIR/$PACKAGE_NAME
 #Test package
 # Skipping cgroup_v2_setup_test because it requires write access to /sys/fs/cgroup, which is restricted in sandboxed or containerized environments.
 if ! bazel test $(bazel query 'kind(cc_test, ...) except //src/ray/common/cgroup/test:cgroup_v2_setup_test')   --cxxopt='-Wno-error=maybe-uninitialized' --define=USE_OPENSSL=1 ; then
