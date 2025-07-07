@@ -1,0 +1,13 @@
+{
+   "maintainer": "James-Jenkins",
+   "package_name": "aiohappyeyeballs",
+   "github_url": "https://github.com/aio-libs/aiohappyeyeballs",
+   "version": "v2.4.6",
+   "default_branch": "main",
+   "build_script": "aiohappyeyeballs_ubi_9.3.sh",
+   "package_dir": "a/aiohappyeyeballs",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
