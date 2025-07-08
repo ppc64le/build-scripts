@@ -61,7 +61,7 @@ index 3ab776e..9a526bb 100755
    bazel test --verbose_failures --test_output=errors ... --action_env PYTHON_BIN_PATH="${PYTHON_BIN}"
 
 -  DEST="/tmp/array_record/all_dist"
-+  DEST="$ARRAY_DIR/array-record/dist"
++  DEST="$CURRENT_DIR/array_record/dist"
    # Create the directory, then do dirname on a non-existent file inside it to
    # give us an absolute paths with tilde characters resolved to the destination
    # directory.
