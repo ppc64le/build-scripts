@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-1.8.5}
 PACKAGE_URL=https://github.com/python-poetry/poetry.git
 
 #install dependencies
-yum install -y --allowerasing python-pip python-devel git gcc gcc-c++ make curl openssl openssl-devel wget openssl-devel bzip2-devel libffi-devel zlib-devel
+yum install -y --allowerasing python-pip python-devel git gcc gcc-c++ make curl openssl openssl-devel wget openssl-devel bzip2-devel libffi-devel zlib-devel tox
 
 # Create a symbolic link for python3
 ln -s /usr/bin/python3 /usr/bin/python
