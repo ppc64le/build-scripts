@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : poetry
-# Version          : 1.8.3
+# Version          : 1.8.5
 # Source repo      : https://github.com/python-poetry/poetry.git
 # Tested on        : UBI:9.3
 # Language         : Python
@@ -20,7 +20,7 @@
 
 #variables
 PACKAGE_NAME=poetry
-PACKAGE_VERSION=${1:-1.8.3}
+PACKAGE_VERSION=${1:-1.8.5}
 PACKAGE_URL=https://github.com/python-poetry/poetry.git
 
 #install dependencies
