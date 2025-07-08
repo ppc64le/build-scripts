@@ -1,0 +1,15 @@
+{
+  "maintainer": "Amitkumar282",
+  "package_name": "zlib",
+  "github_url": "https://github.com/madler/zlib.git",
+  "version": "v1.3.1",
+  "package_dir": "z/zlib",
+  "default_branch": "master",
+  "build_script": "zlib_v1.3.1_ubi_9.3.sh", 
+  "docker_build": "false",
+  "use_non_root_user": "false",
+  "validate_build_script": "true",
+  "*": {
+    "build_script": "zlib_v1.3.1_ubi_9.3.sh"
+  }
+}
