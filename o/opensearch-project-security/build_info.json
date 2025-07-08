@@ -7,7 +7,7 @@
   "package_dir": "o/opensearch-project-security",
   "build_script": "security_2.19.2.0_ubi9.5.sh",
   "validate_build_script": true,
-  "use_non_root_user": true,
+  "use_non_root_user": false,
   "docker_build": false,
   "2.19.2.0": {
     "build_script": "security_2.19.2.0_ubi9.5.sh"
