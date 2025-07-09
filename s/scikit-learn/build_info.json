@@ -22,7 +22,7 @@
    "1.3.0":{
      "build_script": "scikit-learn_1.1.1_ubi_9.3.sh"
    },
-   "1.7.*":{
+   "1.7.0":{
      "build_script": "scikit-learn_1.7.0_ubi_9.3.sh"
    },
    "*": {
