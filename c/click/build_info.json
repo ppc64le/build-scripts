@@ -1,0 +1,13 @@
+{
+   "maintainer": "James-Jenkins",
+   "package_name": "click",
+   "github_url": "https://github.com/pallets/click",
+   "version": "8.1.8",
+   "default_branch": "main",
+   "build_script": "click_ubi_9.3.sh",
+   "package_dir": "c/click",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
