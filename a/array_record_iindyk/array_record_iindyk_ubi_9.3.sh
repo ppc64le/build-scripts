@@ -61,6 +61,8 @@ git checkout $commit_id
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/a/array_record_iindyk/array_record_iindyk_0.7.1_1.patch
 git apply array_record_iindyk_0.7.1_1.patch
 
+python3 -m pip install setuptools wheel etils typing_extensions importlib_resources
+
 #Build package
 if ! python3.12 -m pip install . ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
