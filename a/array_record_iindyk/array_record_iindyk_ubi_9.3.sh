@@ -26,7 +26,7 @@ BAZEL_VERSION=6.5.0
 
 CURRENT_DIR=${PWD}
 
-yum install -y git make cmake zip tar wget python3 python3-devel python3-pip java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc zlib-devel libjpeg-devel openssl openssl-devel freetype-devel pkgconfig rsync
+yum install -y git make cmake zip tar wget python3.12 python3.12-devel python3.12-pip java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc zlib-devel libjpeg-devel openssl openssl-devel freetype-devel pkgconfig rsync
 
 export GCC_TOOLSET_PATH=/opt/rh/gcc-toolset-13/root/usr
 export PATH=$GCC_TOOLSET_PATH/bin:$PATH
@@ -44,8 +44,8 @@ cp output/bazel /usr/local/bin
 export PATH=/usr/local/bin:$PATH
 cd $CURRENT_DIR
 
-pip cache purge
-pip install setuptools wheel etils typing_extensions importlib_resources
+python3.12 -m pip cache purge
+python3.12 -m pip install setuptools wheel etils typing_extensions importlib_resources
 
 declare -A version_commit_mapping=(
     ["0.7.1"]="739630d43ffef522f55380066192dc9fbb14bcc5"
@@ -62,7 +62,7 @@ wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/a
 git apply array_record_iindyk_0.7.1_1.patch
 
 #Build package
-if ! pip install . ; then
+if ! python3.12 -m pip install . ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
