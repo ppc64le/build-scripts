@@ -965,3 +965,17 @@ index 0000000000..9d0da787d6
 + )
 +
 +
+diff --git a/python/setup.py b/python/setup.py
+index 55476a0691..ccc1c29e1f 100644
+--- a/python/setup.py
++++ b/python/setup.py
+@@ -549,7 +549,8 @@ def build(build_python, build_java, build_cpp):
+         )
+         raise OSError(msg)
+
+-    bazel_env = dict(os.environ, PYTHON3_BIN_PATH=sys.executable)
++    PYTHON_BIN = shutil.which("python")
++    bazel_env = dict(os.environ, PYTHON3_BIN_PATH=PYTHON_BIN)
+
+     if is_native_windows_or_msys():
+         SHELL = bazel_env.get("SHELL")
