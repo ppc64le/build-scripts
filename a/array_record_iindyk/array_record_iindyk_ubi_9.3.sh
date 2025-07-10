@@ -26,7 +26,7 @@ BAZEL_VERSION=6.5.0
 
 CURRENT_DIR=${PWD}
 
-yum install -y git make cmake zip tar wget python3.12 python3.12-devel python3.12-pip java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc zlib-devel libjpeg-devel openssl openssl-devel freetype-devel pkgconfig rsync
+yum install -y git make cmake zip tar wget python3.12 python3.12-devel python3.12-pip python3-devel java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc zlib-devel libjpeg-devel openssl openssl-devel freetype-devel pkgconfig rsync
 
 export GCC_TOOLSET_PATH=/opt/rh/gcc-toolset-13/root/usr
 export PATH=$GCC_TOOLSET_PATH/bin:$PATH
