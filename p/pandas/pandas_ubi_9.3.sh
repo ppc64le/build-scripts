@@ -23,7 +23,7 @@ PACKAGE_VERSION=${1:-v2.2.0}
 PYTHON_VERSION=${2:-3.11}
 PACKAGE_URL=https://github.com/pandas-dev/pandas.git
 
-yum install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip git gcc gcc-c++ cmake ninja-build
+yum install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip git gcc gcc-c++ cmake ninja-build openblas-devel  gcc-gfortran
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
@@ -33,23 +33,18 @@ git submodule update --init --recursive
 # Setup virtual environment for python
 python${PYTHON_VERSION} -m venv pandas-env
 source pandas-env/bin/activate
-pip install Cython pytest hypothesis build meson meson-python
+
+pip install --upgrade pip setuptools wheel
+pip install "numpy==2.0.2" "scipy>=1.8.0,<1.16.0"
+pip install cython meson-python ninja joblib threadpoolctl patchelf pytest build
+
+
+# Optional install via setup (dev install)
+python${PYTHON_VERSION} -m pip install .
 
 # Build the package and create whl file (This is dependent on cython)
 python${PYTHON_VERSION} -m build --wheel
 
-# Install wheel
-python${PYTHON_VERSION} -m pip install dist/pandas-${PACKAGE_VERSION:1}-cp311-cp311-linux_ppc64le.whl
-if [ $? == 0 ]; then
-     echo "------------------$PACKAGE_NAME::Build_Pass---------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Build_Success"
-else
-     echo "------------------$PACKAGE_NAME::Build_Fail-------------------------"
-     echo "$PACKAGE_VERSION $PACKAGE_NAME"
-     echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Build_Fail"
-     exit 1
-fi
 
 # Test the package
 cd ..

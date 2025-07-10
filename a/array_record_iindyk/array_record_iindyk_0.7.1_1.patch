@@ -1,0 +1,67 @@
+diff --git a/Add-hh_vsx-deps-for-highwayhash_dynamic.patch b/Add-hh_vsx-deps-for-highwayhash_dynamic.patch
+new file mode 100644
+index 0000000..a5c14f8
+--- /dev/null
++++ b/Add-hh_vsx-deps-for-highwayhash_dynamic.patch
+@@ -0,0 +1,14 @@
++diff --git a/third_party/highwayhash.BUILD b/third_party/highwayhash.BUILD
++index 634f8bf3..e0260abc 100644
++--- a/third_party/highwayhash.BUILD
+++++ b/third_party/highwayhash.BUILD
++@@ -289,6 +289,7 @@ cc_library(
++         ":hh_portable",
++         ":hh_types",
++     ] + select({
+++        ":cpu_ppc": [":hh_vsx"],
++         ":cpu_aarch64": [":hh_neon"],
++         ":cpu_darwin_arm64": [":hh_neon"],
++         "//conditions:default": [
++--
++2.43.5
+
+diff --git a/WORKSPACE b/WORKSPACE
+index 8146800..29959f8 100644
+--- a/WORKSPACE
++++ b/WORKSPACE
+@@ -91,6 +91,8 @@ http_archive(
+     urls = [
+         "https://github.com/google/riegeli/archive/904c0c263b8632265103f0066c168a92c7713b07.zip",
+     ],
++    patches = ["//:Add-hh_vsx-deps-for-highwayhash_dynamic.patch"],
++    patch_args = ["-p1"],
+ )
+ # Riegeli's dependencies
+ http_archive(
+diff --git a/oss/build_whl.sh b/oss/build_whl.sh
+index 3ab776e..9a526bb 100755
+--- a/oss/build_whl.sh
++++ b/oss/build_whl.sh
+@@ -7,6 +7,7 @@ set -e -x
+
+ OUTPUT_DIR="${OUTPUT_DIR:-/tmp/array_record}"
+
++PYTHON_BIN=$(which python3)
+
+ function write_to_bazelrc() {
+   echo "$1" >> .bazelrc
+@@ -16,6 +17,7 @@ function main() {
+   # Remove .bazelrc if it already exists
+   [ -e .bazelrc ] && rm .bazelrc
+
++  write_to_bazelrc "build --jobs=32"
+   write_to_bazelrc "build -c opt"
+   write_to_bazelrc "build --cxxopt=-std=c++17"
+   write_to_bazelrc "build --host_cxxopt=-std=c++17"
+@@ -35,10 +37,10 @@ function main() {
+   export USE_BAZEL_VERSION="${BAZEL_VERSION}"
+   bazel clean
+   #bazel run //:requirements.update
+-  bazel build ... --action_env MACOSX_DEPLOYMENT_TARGET='11.0' --action_env PYTHON_BIN_PATH="${PYTHON_BIN}"
++  bazel build ... --action_env PYTHON_BIN_PATH="${PYTHON_BIN}"
+   bazel test --verbose_failures --test_output=errors ... --action_env PYTHON_BIN_PATH="${PYTHON_BIN}"
+
+-  DEST="/tmp/array_record/all_dist"
++  DEST="$CURRENT_DIR/array_record/dist"
+   # Create the directory, then do dirname on a non-existent file inside it to
+   # give us an absolute paths with tilde characters resolved to the destination
+   # directory.
