@@ -59,7 +59,7 @@ make install
 cd $SCRIPT_DIR 
 
 echo "-------bison installing----------------------"
-wget https://ftp.gnu.org/gnu/bison/bison-3.8.2.tar.gz
+wget https://mirrors.cloud.tencent.com/gnu/bison/bison-3.8.2.tar.gz
 tar -xvf bison-3.8.2.tar.gz
 cd bison-3.8.2
 echo "Configuring bison installation..."
