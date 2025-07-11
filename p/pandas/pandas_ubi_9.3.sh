@@ -53,7 +53,6 @@ if [ $? == 0 ]; then
      echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Pass |  Test_Success"
 
      # Deactivate python environment (pandas-env)
-     deactivate
      exit 0
 else
      echo "------------------$PACKAGE_NAME::Test_Fail-------------------------"
