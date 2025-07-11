@@ -30,14 +30,15 @@ GO_VERSION=${1:-1.23.2}
 GOPATH=$SOURCE_ROOT/go
 GOBIN=/usr/local/go/bin 
 	
-sudo yum install -y \
+sudo yum install -y --exclude=openssl-libs-1:3.2.2-7.el9.ppc64le \
+    --exclude=openssl-libs-1:3.5.0-1.el9.ppc64le --skip-broken --nobest \
     sudo \
+    wget \
     cmake \
     patch \
     gcc-toolset-12-libatomic-devel \
     unzip \
     python3.11-devel \
-    wget \
     zip \
     java-11-openjdk-devel \
     git \
