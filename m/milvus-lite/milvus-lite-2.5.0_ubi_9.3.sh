@@ -55,6 +55,7 @@ install_system_deps() {
  #yum install -y wget perl openblas-devel git python3-pip cargo gcc gcc-c++ libstdc++-static which libaio libuuid-devel ncurses-devel libtool m4 autoconf automake ninja-build zlib-devel libffi-devel scl-utils openblas-devel ncurses-devel xz openssl-devel
 yum install -y \
     sudo \
+    xz \
     wget \
     perl \
     git \
@@ -64,7 +65,7 @@ yum install -y \
     autoconf \
     libtool \
     ninja-build \
-    pkgconfig \
+    pkgconfig   \
     gcc \
     gcc-c++ \
     gcc-gfortran \
@@ -76,11 +77,12 @@ yum install -y \
     libuuid-devel \
     ncurses-devel \
     zlib-devel \
-    xz-devel \
+    xz-devel   \       
     openssl-devel \
     libffi-devel \
     openblas-devel \
     scl-utils
+
  echo "installing dependencies"
 pip3 install wheel conan==1.64.1 setuptools==70.0.0
 
