@@ -26,7 +26,7 @@ PACKAGE_DIR=uvloop
 
 # Install dependencies
 yum install -y git python3.12 python3.12-devel python3.12-pip \
-    gcc gcc-c++ gzip tar make wget xz cmake yum-utils \
+    gcc gcc-c++ gcc-gfortran gzip tar make wget xz cmake yum-utils \
     openssl-devel openblas-devel bzip2-devel bzip2 zip unzip libffi-devel \
     zlib-devel autoconf automake libtool cargo \
     pkgconf-pkg-config fontconfig fontconfig-devel sqlite-devel
