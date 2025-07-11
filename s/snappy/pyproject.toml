@@ -20,7 +20,7 @@ description = "A fast compressor/decompressor"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Programming Language :: C++",
-  "License :: BSD",
+  "License :: BSD 3-Clause",
 ]
 
 #Project URLs

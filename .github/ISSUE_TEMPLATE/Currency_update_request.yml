@@ -1,7 +1,7 @@
-name: Currency Update Request
-title: "[Currency_Update]: "
-description: "Request to fix, or update a package in the Currency Portal"
-labels: "update currency"
+name: OSE Update Request
+title: "[OSE_Update]: "
+description: "Request to fix, or update a package in the OSE Portal"
+labels: "update OSE"
 projects: "ppc64le/1"
 assignees: "ICH"
 body:
