@@ -38,7 +38,7 @@ cd ${PACKAGE_DIR}
 git checkout dulwich-${PACKAGE_VERSION}
 
 # Install build requirements
-pip install geventhttpclient==2.2.0 merge3
+pip3 install geventhttpclient==2.2.0 merge3
 
 #Build and install the package
 if ! pip3 install . ; then
@@ -49,7 +49,7 @@ if ! pip3 install . ; then
 fi
 
 # Run tests
-if ! python -m pytest dulwich -k "not test_file_win and not test_swift_smoke" --import-mode=append; then
+if ! python3.12 -m pytest dulwich -k "not test_file_win and not test_swift_smoke" --import-mode=append; then
     echo "------------------$PACKAGE_NAME: Tests_Fail------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Tests_Fail"
