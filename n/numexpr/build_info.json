@@ -19,5 +19,4 @@
   "*": {
     "build_script":"numexpr_2.11.0_ubi_9.3.sh"
   }
-  
 }
