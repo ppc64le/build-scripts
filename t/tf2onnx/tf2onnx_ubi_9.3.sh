@@ -279,6 +279,12 @@ cd onnx
 git checkout v1.17.0
 git submodule update --init --recursive
 
+sed -i 's|https://github.com/abseil/abseil-cpp/archive/refs/tags/20230125.3.tar.gz%7Chttps://github.com/abseil/abseil-cpp/archive/refs/tags/20240116.2.tar.gz%7Cg' CMakeLists.txt && \
+sed -i 's|e21faa0de5afbbf8ee96398ef0ef812daf416ad8|bb8a766f3aef8e294a864104b8ff3fc37b393210|g' CMakeLists.txt && \
+sed -i 's|https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protobuf-22.3.tar.gz%7Chttps://github.com/protocolbuffers/protobuf/archive/refs/tags/v4.25.8.tar.gz%7Cg' CMakeLists.txt && \
+sed -i 's|310938afea334b98d7cf915b099ec5de5ae3b5c5|ffa977b9a7fb7e6ae537528eeae58c1c4d661071|g' CMakeLists.txt && \
+sed -i 's|set(Protobuf_VERSION "4.22.3")|set(Protobuf_VERSION "v4.25.8")|g' CMakeLists.txt
+
 export ONNX_ML=1
 export ONNX_PREFIX=$(pwd)/../onnx-prefix
 
