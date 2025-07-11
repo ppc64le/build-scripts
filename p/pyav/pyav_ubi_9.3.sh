@@ -52,7 +52,7 @@ for package in openblas lame opus libvpx ffmpeg pillow numpy; do
     echo "Exported ${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
 done
 
-python -m pip install numpy==2.0.2 cython pytest
+python -m pip install cython pytest
 
 #installing openblas
 cd $CURRENT_DIR
@@ -97,6 +97,9 @@ export LD_LIBRARY_PATH=${OPENBLAS_PREFIX}/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=${OPENBLAS_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
 pkg-config --modversion openblas
 echo "-----------------------------------------------------Installed openblas-----------------------------------------------------"
+
+echo "Installing NumPy"
+python -m pip install numpy==2.0.2
 
 #installing libvpx
 cd $CURRENT_DIR
