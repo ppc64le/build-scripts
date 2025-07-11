@@ -1,0 +1,12 @@
+diff --git a/.bazelrc b/.bazelrc
+index 9639cf44..437a34e3 100644
+--- a/.bazelrc
++++ b/.bazelrc
+@@ -16,6 +16,7 @@ build:remote --remote_timeout=7200
+ # Enable libc++ and C++20 by default.
+ build:linux --config=libc++20
+
++build:ppc --linkopt=-fuse-ld=lld --@envoy//source/extensions/filters/common/lua:luajit2=1
+ # Need for CI image to pickup docker-credential-gcloud, PATH is fixed in rbe-toolchain-* configs.
+ build:remote-ci --action_env=PATH=/usr/local/google-cloud-sdk/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/llvm/bin
+
