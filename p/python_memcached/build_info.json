@@ -1,6 +1,6 @@
 {
   "maintainer": "Harithanagothu2",
-  "package_name": "python-memcached",
+  "package_name": "python_memcached",
   "github_url": "https://github.com/linsomniac/python-memcached",
   "version": "1.62",
   "wheel_build" : true,
