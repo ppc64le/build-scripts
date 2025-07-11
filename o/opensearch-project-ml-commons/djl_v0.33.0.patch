@@ -1,0 +1,89 @@
+diff --git a/engines/pytorch/pytorch-jni/build.gradle.kts b/engines/pytorch/pytorch-jni/build.gradle.kts
+index c2c0c0c84..500e0ef0c 100644
+--- a/engines/pytorch/pytorch-jni/build.gradle.kts
++++ b/engines/pytorch/pytorch-jni/build.gradle.kts
+@@ -31,25 +31,29 @@ tasks {
+         doFirst {
+             val url = "https://publish.djl.ai/pytorch/$ptVersion/jnilib/${libs.versions.djl.get()}"
+             val files = listOf(
++                "linux-ppc64le/cpu/libdjl_torch.so",
+                 "linux-x86_64/cpu/libdjl_torch.so",
+                 "linux-x86_64/cpu-precxx11/libdjl_torch.so",
+                 "linux-aarch64/cpu-precxx11/libdjl_torch.so",
+                 "osx-aarch64/cpu/libdjl_torch.dylib",
+                 "win-x86_64/cpu/djl_torch.dll"
+             ) + when {
+-                ptVersion.matches(Regex("2.[4-5].\\d")) -> listOf(
++                ptVersion.matches(Regex("2.[4-7].\\d")) -> listOf(
++                    "linux-ppc64le/cpu/libdjl_torch.so",
+                     "linux-x86_64/cu124/libdjl_torch.so",
+                     "linux-x86_64/cu124-precxx11/libdjl_torch.so",
+                     "win-x86_64/cu124/djl_torch.dll"
+                 )
+ 
+                 ptVersion.matches(Regex("2.[1-3].\\d")) -> listOf(
++                    "linux-ppc64le/cpu/libdjl_torch.so",
+                     "linux-x86_64/cu121/libdjl_torch.so",
+                     "linux-x86_64/cu121-precxx11/libdjl_torch.so",
+                     "win-x86_64/cu121/djl_torch.dll",
+                 )
+ 
+                 ptVersion.startsWith("1.13.") -> listOf(
++                    "linux-ppc64le/cpu/libdjl_torch.so",
+                     "linux-x86_64/cu117/libdjl_torch.so",
+                     "win-x86_64/cu117/djl_torch.dll",
+                 )
+diff --git a/engines/pytorch/pytorch-native/build.gradle.kts b/engines/pytorch/pytorch-native/build.gradle.kts
+index e5f002961..7d877e93a 100644
+--- a/engines/pytorch/pytorch-native/build.gradle.kts
++++ b/engines/pytorch/pytorch-native/build.gradle.kts
+@@ -33,7 +33,7 @@ fun downloadBuild(
+     isPrecxx11: Boolean = false,
+     isAarch64: Boolean = false
+ ) {
+-    val arch = if (isAarch64) "aarch64" else "x86_64"
++    val arch = if (isAarch64) "aarch64" else "ppc64le"
+     execOperations.exec {
+         workingDir = project.projectDir
+         if (os == "win")
+@@ -92,6 +92,7 @@ fun prepareNativeLib(execOperations: ExecOperations, binaryRoot: String, ver: St
+     } else {
+         // @formatter:off
+         val files = mapOf(
++            "cpu/libtorch-cxx11-abi-shared-with-deps-$ver%2Bcpu.zip"     to "cpu/linux-ppc64le",
+             "cpu/libtorch-cxx11-abi-shared-with-deps-$ver%2Bcpu.zip"     to "cpu/linux-x86_64",
+             "cpu/libtorch-macos-arm64-$ver.zip"                          to "cpu/osx-aarch64",
+             "cpu/libtorch-win-shared-with-deps-$ver%2Bcpu.zip"           to "cpu/win-x86_64",
+@@ -256,6 +257,7 @@ tasks {
+ 
+             (binaryRoot / "files.txt").text = buildString {
+                 val uploadDirs = listOf(
++                    binaryRoot / "cpu/linux-ppc64le/native/lib/",
+                     binaryRoot / "cpu/linux-x86_64/native/lib/",
+                     binaryRoot / "cpu/osx-aarch64/native/lib/",
+                     binaryRoot / "cpu/win-x86_64/native/lib/",
+diff --git a/extensions/tokenizers/build.gradle.kts b/extensions/tokenizers/build.gradle.kts
+index 8108d174d..05adfb973 100644
+--- a/extensions/tokenizers/build.gradle.kts
++++ b/extensions/tokenizers/build.gradle.kts
+@@ -52,6 +52,7 @@ tasks {
+                 "win-x86_64/cpu/libgcc_s_seh-1.dll" to "extra/win-x86_64/libgcc_s_seh-1.dll",
+                 "win-x86_64/cpu/libstdc%2B%2B-6.dll" to "extra/win-x86_64/libstdc%2B%2B-6.dll",
+                 "win-x86_64/cpu/tokenizers.dll" to "$tokenizers/jnilib/$djl",
++                "linux-ppc64le/cpu/libtokenizers.so" to "$tokenizers/jnilib/$djl",
+                 "linux-x86_64/cpu/libtokenizers.so" to "$tokenizers/jnilib/$djl",
+                 "linux-aarch64/cpu/libtokenizers.so" to "$tokenizers/jnilib/$djl",
+                 "osx-aarch64/cpu/libtokenizers.dylib" to "$tokenizers/jnilib/$djl"
+diff --git a/gradle/libs.versions.toml b/gradle/libs.versions.toml
+index fcb16e641..8df67a195 100644
+--- a/gradle/libs.versions.toml
++++ b/gradle/libs.versions.toml
+@@ -3,7 +3,7 @@ format.version = "1.1"
+ 
+ [versions]
+ djl = "0.33.0"
+-pytorch = "2.5.1"
++pytorch = "1.13.1"
+ tensorflow = "2.16.1"
+ tensorflowCore = "1.0.0-rc.1"
+ mxnet = "1.9.1"
