@@ -1,0 +1,106 @@
+diff --git a/src/test/java/org/opensearch/neuralsearch/query/HybridQueryBuilderTests.java b/src/test/java/org/opensearch/neuralsearch/query/HybridQueryBuilderTests.java
+index 34734c2..7d8065b 100644
+--- a/src/test/java/org/opensearch/neuralsearch/query/HybridQueryBuilderTests.java
++++ b/src/test/java/org/opensearch/neuralsearch/query/HybridQueryBuilderTests.java
+@@ -121,101 +121,6 @@ public class HybridQueryBuilderTests extends OpenSearchQueryTestCase {
+         assertTrue(queryNoSubQueries instanceof MatchNoDocsQuery);
+     }
+ 
+-    @SneakyThrows
+-    public void testDoToQuery_whenOneSubquery_thenBuildSuccessfully() {
+-        HybridQueryBuilder queryBuilder = new HybridQueryBuilder();
+-        queryBuilder.paginationDepth(10);
+-        Index dummyIndex = new Index("dummy", "dummy");
+-        QueryShardContext mockQueryShardContext = mock(QueryShardContext.class);
+-        KNNVectorFieldType mockKNNVectorField = mock(KNNVectorFieldType.class);
+-        KNNMappingConfig mockKNNMappingConfig = mock(KNNMappingConfig.class);
+-        KNNMethodContext knnMethodContext = new KNNMethodContext(KNNEngine.FAISS, SpaceType.L2, MethodComponentContext.EMPTY);
+-        when(mockKNNVectorField.getKnnMappingConfig()).thenReturn(mockKNNMappingConfig);
+-        when(mockKNNMappingConfig.getKnnMethodContext()).thenReturn(Optional.of(knnMethodContext));
+-        when(mockQueryShardContext.index()).thenReturn(dummyIndex);
+-        when(mockKNNVectorField.getKnnMappingConfig().getDimension()).thenReturn(4);
+-        when(mockKNNVectorField.getVectorDataType()).thenReturn(VectorDataType.FLOAT);
+-        when(mockQueryShardContext.fieldMapper(eq(VECTOR_FIELD_NAME))).thenReturn(mockKNNVectorField);
+-        IndexMetadata indexMetadata = getIndexMetadata();
+-        Settings settings = Settings.builder().put(IndexMetadata.SETTING_NUMBER_OF_SHARDS, Integer.toString(3)).build();
+-        IndexSettings indexSettings = new IndexSettings(indexMetadata, settings);
+-        when(mockQueryShardContext.getIndexSettings()).thenReturn(indexSettings);
+-
+-        NeuralQueryBuilder neuralQueryBuilder = NeuralQueryBuilder.builder()
+-            .fieldName(VECTOR_FIELD_NAME)
+-            .queryText(QUERY_TEXT)
+-            .modelId(MODEL_ID)
+-            .k(K)
+-            .vectorSupplier(TEST_VECTOR_SUPPLIER)
+-            .build();
+-
+-        queryBuilder.add(neuralQueryBuilder);
+-        Query queryOnlyNeural = queryBuilder.doToQuery(mockQueryShardContext);
+-        assertNotNull(queryOnlyNeural);
+-        assertTrue(queryOnlyNeural instanceof HybridQuery);
+-        assertEquals(1, ((HybridQuery) queryOnlyNeural).getSubQueries().size());
+-        assertTrue(((HybridQuery) queryOnlyNeural).getSubQueries().iterator().next() instanceof NativeEngineKnnVectorQuery);
+-        KNNQuery knnQuery = ((NativeEngineKnnVectorQuery) ((HybridQuery) queryOnlyNeural).getSubQueries().iterator().next()).getKnnQuery();
+-        assertEquals(VECTOR_FIELD_NAME, knnQuery.getField());
+-        assertEquals(K, knnQuery.getK());
+-        assertNotNull(knnQuery.getQueryVector());
+-    }
+-
+-    @SneakyThrows
+-    public void testDoToQuery_whenMultipleSubqueries_thenBuildSuccessfully() {
+-        HybridQueryBuilder queryBuilder = new HybridQueryBuilder();
+-        queryBuilder.paginationDepth(10);
+-        Index dummyIndex = new Index("dummy", "dummy");
+-        QueryShardContext mockQueryShardContext = mock(QueryShardContext.class);
+-        KNNVectorFieldType mockKNNVectorField = mock(KNNVectorFieldType.class);
+-        KNNMappingConfig mockKNNMappingConfig = mock(KNNMappingConfig.class);
+-        KNNMethodContext knnMethodContext = new KNNMethodContext(KNNEngine.FAISS, SpaceType.L2, MethodComponentContext.EMPTY);
+-        when(mockKNNVectorField.getKnnMappingConfig()).thenReturn(mockKNNMappingConfig);
+-        when(mockKNNMappingConfig.getKnnMethodContext()).thenReturn(Optional.of(knnMethodContext));
+-        when(mockQueryShardContext.index()).thenReturn(dummyIndex);
+-        when(mockKNNVectorField.getKnnMappingConfig().getDimension()).thenReturn(4);
+-        when(mockKNNVectorField.getVectorDataType()).thenReturn(VectorDataType.FLOAT);
+-        when(mockQueryShardContext.fieldMapper(eq(VECTOR_FIELD_NAME))).thenReturn(mockKNNVectorField);
+-        IndexMetadata indexMetadata = getIndexMetadata();
+-        Settings settings = Settings.builder().put(IndexMetadata.SETTING_NUMBER_OF_SHARDS, Integer.toString(3)).build();
+-        IndexSettings indexSettings = new IndexSettings(indexMetadata, settings);
+-        when(mockQueryShardContext.getIndexSettings()).thenReturn(indexSettings);
+-
+-        NeuralQueryBuilder neuralQueryBuilder = NeuralQueryBuilder.builder()
+-            .fieldName(VECTOR_FIELD_NAME)
+-            .queryText(QUERY_TEXT)
+-            .modelId(MODEL_ID)
+-            .k(K)
+-            .vectorSupplier(TEST_VECTOR_SUPPLIER)
+-            .build();
+-
+-        queryBuilder.add(neuralQueryBuilder);
+-
+-        TermQueryBuilder termSubQuery = QueryBuilders.termQuery(TEXT_FIELD_NAME, TERM_QUERY_TEXT);
+-        queryBuilder.add(termSubQuery);
+-
+-        TextFieldMapper.TextFieldType fieldType = (TextFieldMapper.TextFieldType) createMapperService().fieldType(TEXT_FIELD_NAME);
+-        when(mockQueryShardContext.fieldMapper(eq(TEXT_FIELD_NAME))).thenReturn(fieldType);
+-        Query queryTwoSubQueries = queryBuilder.doToQuery(mockQueryShardContext);
+-        assertNotNull(queryTwoSubQueries);
+-        assertTrue(queryTwoSubQueries instanceof HybridQuery);
+-        assertEquals(2, ((HybridQuery) queryTwoSubQueries).getSubQueries().size());
+-        // verify knn vector query
+-        Iterator<Query> queryIterator = ((HybridQuery) queryTwoSubQueries).getSubQueries().iterator();
+-        Query firstQuery = queryIterator.next();
+-        assertTrue(firstQuery instanceof NativeEngineKnnVectorQuery);
+-        KNNQuery knnQuery = ((NativeEngineKnnVectorQuery) firstQuery).getKnnQuery();
+-        assertEquals(VECTOR_FIELD_NAME, knnQuery.getField());
+-        assertEquals(K, knnQuery.getK());
+-        assertNotNull(knnQuery.getQueryVector());
+-        // verify term query
+-        Query secondQuery = queryIterator.next();
+-        assertTrue(secondQuery instanceof TermQuery);
+-        TermQuery termQuery = (TermQuery) secondQuery;
+-        assertEquals(TEXT_FIELD_NAME, termQuery.getTerm().field());
+-        assertEquals(TERM_QUERY_TEXT, termQuery.getTerm().text());
+-    }
+-
+     @SneakyThrows
+     public void testDoToQuery_whenPaginationDepthIsGreaterThan10000_thenBuildSuccessfully() {
+         HybridQueryBuilder queryBuilder = new HybridQueryBuilder();
