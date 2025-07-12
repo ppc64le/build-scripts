@@ -1,0 +1,17 @@
+{
+  "maintainer": "ramnathnayak-ibm",
+  "package_name": "array_record_iindyk",
+  "github_url": "https://github.com/iindyk/array_record",
+  "version": "0.7.1",
+  "default_branch": "main",
+  "wheel_build" : true,
+  "package_dir": "a/array_record_iindyk",
+  "docker_build": false,
+  "build_script": "array_record_iindyk_ubi_9.3.sh",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "required_versions": {"Tags": ["0.7.1"]},
+  "*": {
+    "build_script": "array_record_iindyk_ubi_9.3.sh"
+  }
+}
