@@ -110,9 +110,6 @@ git apply pip-ray_ray-2.47.1_1.patch
 
 sed -i '/^build --compilation_mode=opt$/a\\n\nbuild:linux --action_env PYTHON_BIN_PATH="'"$(which python3)"'"\n' .bazelrc
 
-export PYTHON_BIN_PATH=$(which python3)
-export PYTHON3_BIN_PATH=$(which python3)
-
 cd python/
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
 export GRPC_PYTHON_BUILD_SYSTEM_ZLIB=1
