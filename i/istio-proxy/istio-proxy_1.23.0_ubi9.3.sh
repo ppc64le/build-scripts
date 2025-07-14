@@ -30,8 +30,7 @@ GO_VERSION=${1:-1.23.2}
 GOPATH=$SOURCE_ROOT/go
 GOBIN=/usr/local/go/bin 
 	
-sudo yum install -y --exclude=openssl-libs-1:3.2.2-7.el9.ppc64le \
-    --exclude=openssl-libs-1:3.5.0-1.el9.ppc64le --skip-broken --nobest \
+sudo yum install -y \
     sudo \
     wget \
     cmake \
@@ -75,6 +74,7 @@ export PATH=$SOURCE_ROOT/clang+llvm-14.0.6-powerpc64le-linux-rhel-8.4/bin:$PATH
 cd $SOURCE_ROOT
 git clone https://github.com/ppc64le/build-scripts.git
 cd build-scripts/e/envoy
+sed -i 's#yum install -y#yum install -y --exclude=openssl-libs-1:3.2.2-7.el9.ppc64le --exclude=openssl-libs-1:3.5.0-1.el9.ppc64le --skip-broken --nobest#g' envoy_1.31.0_ubi9.3.sh
 sudo chmod +x $SOURCE_ROOT/build-scripts/e/envoy/envoy_1.31.0_ubi9.3.sh
 sudo ./envoy_1.31.0_ubi9.3.sh
 
