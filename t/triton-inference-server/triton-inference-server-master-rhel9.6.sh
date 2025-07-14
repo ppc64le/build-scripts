@@ -28,7 +28,7 @@ yum install git python3.12-devel python3.12-pip cmake -y
 
 ln /usr/bin/pip3.12 /usr/bin/pip3 -f && ln /usr/bin/python3.12 /usr/bin/python3 -f &&  ln /usr/bin/pip3.12 /usr/bin/pip -f
 
-pip install distro requests
+python3.12 -m pip install distro requests
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
@@ -40,6 +40,7 @@ git apply $wdir/rhelppc.patch
 if ! ./build.py --enable-logging --endpoint http --backend onnxruntime --backend python --image base,registry.access.redhat.com/ubi9/ubi:9.6 ; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     exit 2
+    cd .. && rm -rf $PACKAGE_NAME
 else
     echo "------------------$PACKAGE_NAME:Build_success-------------------"
     exit 0
