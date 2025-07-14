@@ -830,7 +830,7 @@ cd $CURRENT_DIR
 git clone https://github.com/duckdb/duckdb.git
 cd duckdb
 make 
-cd duckdb/tools/pythonpkg
+cd tools/pythonpkg
 pip install .
 cd $CURRENT_DIR
 
