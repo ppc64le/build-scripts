@@ -1,14 +1,14 @@
-name: New Currency Request
-title: "[Currency_Req]: "
-description: "Request to add currency for any new package with specific version for Linux on Power"
-labels: "new currency"
+name: New OSE Request
+title: "[OSE_Req]: "
+description: "Request to add OSE for any new package with specific version for Linux on Power"
+labels: "new OSE"
 projects: "ppc64le/1"
 assignees: "ICH"
 body:
   - type: markdown
     attributes:
       value: >
-        Please complete the following fields to request currency for new package.
+        Please complete the following fields to request OSE for new package.
   - type: input
     id: pkg_name
     attributes:
