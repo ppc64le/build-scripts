@@ -226,7 +226,7 @@ git clone ${PACKAGE_URL}
 cd ${PACKAGE_DIR}
 #git apply ${SCRIPT_PATH}/${PACKAGE_NAME}--${PACKAGE_VERSION}.patch
 #git apply 
-PATCH_FILE="${SCRIPT_PATH}/${PACKAGE_NAME}--${PACKAGE_VERSION}.patch"
+PATCH_FILE="${SCRIPT_PATH}/${PACKAGE_NAME}-${PACKAGE_VERSION}.patch"
 if [[ -f "${PATCH_FILE}" ]]; then
     log "Applying patch ${PATCH_FILE}…"
     git apply "${PATCH_FILE}"
