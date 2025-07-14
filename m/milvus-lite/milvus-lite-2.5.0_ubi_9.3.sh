@@ -241,12 +241,13 @@ git submodule update --init --recursive
 pushd /usr/local/cmake
 create_cmake_conanfile
 log "Installing Conan dependencies…"
-if ! conan remote list | grep -q '^conan-center '; then
-  conan remote add conan-center https://center.conan.io
-  log "Added conan-center remote"
-else
-  log "conan-center remote already exists, skipping"
-fi
+# if ! conan remote list | grep -q '^conancenter '; then
+#   conan remote add conancenter https://center.conan.io
+#   log "Added conancenter remote"
+# else
+#   log "conancenter remote already exists, skipping"
+# fi
+
 #conan remote list | grep -q conan-center || \
 # conan remote add conan-center https://center.conan.io
 conan install "${WORKDIR}/milvus-lite" \
