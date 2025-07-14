@@ -63,7 +63,7 @@ python3.12 -m pip install --upgrade pip setuptools wheel pandas
 python3.12 -m pip install poetry==1.7.1
 poetry export -f requirements.txt --without-hashes --dev -o requirements.txt
 
-python3.12 -m pip install .
+python3.12 -m pip install -e .
 
 cd $CURRENT_DIR
 
@@ -79,7 +79,7 @@ chmod +x $CURRENT_DIR/httpstan/httpstan/stanc
 python3.12 -m pip install -r $CURRENT_DIR/httpstan/requirements.txt
 poetry build -v
 
-if ! python3.12 -m pip install . ; then
+if ! python3.12 -m pip install -e . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
