@@ -63,7 +63,7 @@ python3.12 -m pip install --upgrade pip setuptools wheel pandas
 python3.12 -m pip install poetry==1.7.1
 poetry export -f requirements.txt --without-hashes --dev -o requirements.txt
 
-python3.12 -m pip install -e .
+python3.12 -m pip install .
 
 cd $CURRENT_DIR
 
