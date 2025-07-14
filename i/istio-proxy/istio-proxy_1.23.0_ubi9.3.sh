@@ -75,7 +75,7 @@ cd $SOURCE_ROOT
 git clone https://github.com/ppc64le/build-scripts.git
 cd build-scripts/e/envoy
 #sed -i 's#yum install -y#yum install -y --exclude=openssl-libs-1:3.2.2-7.el9.ppc64le --exclude=openssl-libs-1:3.5.0-1.el9.ppc64le --skip-broken --nobest#g' envoy_1.31.0_ubi9.3.sh
-sed -i '62s#sudo#sudo --exclude=openssl-libs-1:3.2.2-7.el9.ppc64le --exclude=openssl-libs-1:3.5.0-1.el9.ppc64le --skip-broken --nobest#g' ../../e/envoy/envoy_1.31.0_ubi9.3.sh
+sed -i '62s#sudo#sudo --exclude=openssl-libs* --skip-broken --nobest#g' ../../e/envoy/envoy_1.31.0_ubi9.3.sh
 sudo chmod +x $SOURCE_ROOT/build-scripts/e/envoy/envoy_1.31.0_ubi9.3.sh
 sudo ./envoy_1.31.0_ubi9.3.sh
 
