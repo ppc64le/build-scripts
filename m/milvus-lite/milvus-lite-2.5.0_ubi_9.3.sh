@@ -52,42 +52,11 @@ install_system_deps() {
   yum update -y
   yum remove -y gcc-toolset-13
  echo "installing dependencies"
- yum install -y sudo
-sudo subscription-manager repos \
-  --enable codeready-builder-for-rhel-9-$(uname -m)-rpms
- #yum install -y wget perl openblas-devel git python3-pip cargo gcc gcc-c++ libstdc++-static which libaio libuuid-devel ncurses-devel libtool m4 autoconf automake ninja-build zlib-devel libffi-devel scl-utils openblas-devel ncurses-devel xz openssl-devel
-yum install -y \
-    xz \
-    wget \
-    perl \
-    git \
-    which \
-    m4 \
-    automake \
-    autoconf \
-    libtool \
-    ninja-build \
-    pkgconfig   \
-    gcc \
-    gcc-c++ \
-    gcc-gfortran \
-    libstdc++-static \
-    python3-pip \
-    python-devel \
-    cargo \
-    libaio \
-    libuuid-devel \
-    ncurses-devel \
-    zlib-devel \
-    xz-devel   \       
-    openssl-devel \
-    libffi-devel \
-    openblas-devel \
-    scl-utils
-
- echo "installing dependencies"
+ yum install -y sudo xz wget perl git which m4 automake autoconf libtool \
+    ninja-build pkgconfig gcc gcc-c++ gcc-gfortran openssl openssl-devel \
+    libstdc++-static python3-pip python-devel cargo libaio libuuid-devel \
+    ncurses-devel zlib-devel xz-devel libffi-devel openblas-devel scl-utils
 pip3 install wheel conan==1.64.1 setuptools==70.0.0
-
   # texinfo
   if ! command -v makeinfo &>/dev/null; then
     log "Building & installing texinfo from source…"
