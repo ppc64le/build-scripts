@@ -52,9 +52,11 @@ install_system_deps() {
   yum update -y
   yum remove -y gcc-toolset-13
  echo "installing dependencies"
+ yum install -y sudo
+sudo subscription-manager repos \
+  --enable codeready-builder-for-rhel-9-$(uname -m)-rpms
  #yum install -y wget perl openblas-devel git python3-pip cargo gcc gcc-c++ libstdc++-static which libaio libuuid-devel ncurses-devel libtool m4 autoconf automake ninja-build zlib-devel libffi-devel scl-utils openblas-devel ncurses-devel xz openssl-devel
 yum install -y \
-    sudo \
     xz \
     wget \
     perl \
