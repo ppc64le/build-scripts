@@ -826,14 +826,6 @@ make
 make install
 cd $CURRENT_DIR
 
-#Install duckdb
-git clone https://github.com/duckdb/duckdb.git
-cd duckdb
-make 
-cd tools/pythonpkg
-pip install .
-cd $CURRENT_DIR
-
 #Install libtool
 wget https://ftp.gnu.org/gnu/libtool/libtool-2.4.7.tar.gz
 tar xzf libtool-2.4.7.tar.gz
