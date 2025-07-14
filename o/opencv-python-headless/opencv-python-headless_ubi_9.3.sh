@@ -104,7 +104,7 @@ export CXX_COMPILER=$(which g++)
 echo "----------------protobuf installing-------------------"
 git clone https://github.com/protocolbuffers/protobuf
 cd protobuf
-git checkout v4.25.3
+git checkout v4.25.8
 
 LIBPROTO_DIR=$(pwd)
 mkdir -p $LIBPROTO_DIR/local/libprotobuf
