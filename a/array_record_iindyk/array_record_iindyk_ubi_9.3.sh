@@ -15,6 +15,9 @@
 #                    It may not work as expected with newer versions of the
 #                    package and/or distribution. In such case, please
 #                    contact "Maintainer" of this script.
+#                    This repository contains two directories: array_record and array_record_iindyk
+#                    ->The array_record directory contains the original build script and source files for the official array_record package.
+#                    ->The array_record_iindyk directory exists to facilitate maintenance of patch versions that are released on PyPI under this forked repository. This was necessary to support specific use cases or bug fixes not yet available in the mainline package.
 #
 # ----------------------------------------------------------------------------
 
