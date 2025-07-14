@@ -4,7 +4,7 @@
 # Package       : uvloop
 # Version       : v0.21.0
 # Source repo   : https://github.com/MagicStack/uvloop
-# Tested on     : UBI 9
+# Tested on     : UBI 9.3
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License 2.0
