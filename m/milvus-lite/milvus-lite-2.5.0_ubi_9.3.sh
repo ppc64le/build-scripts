@@ -240,7 +240,8 @@ log "Installing Conan dependencies…"
 
 #conan remote list | grep -q conan-center || \
 # conan remote add conan-center https://center.conan.io
-log "echo working dir ..., $WORKDIR"
+ cd /milvus-lite || { echo "Directory /milvus-lite does not exist! Exiting."; exit 1; }
+ log "echo working dir ..., $WORKDIR"
 if [[ -f "${PATCH_FILE}" ]]; then
     log "Applying patch for canon file.py ${PATCH_FILE}…"
     patch -p1 < "${PATCH_FILE}"
