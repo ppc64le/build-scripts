@@ -223,9 +223,9 @@ echo "cloning"
 log "Cloning milvus-lite (${PACKAGE_VERSION})…"
 rm -rf milvus-lite
 git clone ${PACKAGE_URL}
+cd ${PACKAGE_NAME}
 git checkout  ${PACKAGE_VERSION}
 git submodule update --init --recursive
-cd ${PACKAGE_NAME}
 PATCH_FILE="${SCRIPT_PATH}/${PACKAGE_NAME}-${PACKAGE_VERSION}.patch"
 #build the package
 pushd /usr/local/cmake
