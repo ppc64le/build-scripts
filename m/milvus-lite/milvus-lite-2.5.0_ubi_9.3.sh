@@ -52,7 +52,7 @@ install_system_deps() {
   yum update -y
   yum remove -y gcc-toolset-13
  echo "installing dependencies"
- yum install -y sudo xz wget perl git which m4 automake autoconf libtool \
+ yum install -y sudo xz wget perl git which m4 automake autoconf libtool patch \
     ninja-build pkgconfig gcc gcc-c++ gcc-gfortran openssl openssl-devel \
     libstdc++-static python3-pip python-devel cargo libaio libuuid-devel \
     ncurses-devel zlib-devel xz-devel libffi-devel openblas-devel scl-utils
