@@ -858,8 +858,6 @@ uv tool install -e ./dev/breeze
 uv tool install hatch
 uv tool install flit
 uv tool install cherry-picker
-uv tool install pre-commit --with pre-commit-uv
-pre-commit install
 
 
 #Build package
