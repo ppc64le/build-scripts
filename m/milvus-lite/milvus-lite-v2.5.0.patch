@@ -11,7 +11,7 @@ index 50bbaed..7122563 100644
          # antlr
          "antlr4-cppruntime/4.13.1",
          # sqlite
-cd thirdparty/milvus
+#cd thirdparty/milvus
 diff --git a/internal/core/thirdparty/tantivy/tokenizer.h b/internal/core/thirdparty/tantivy/tokenizer.h
 index 2870b01e2e..75a4d390e0 100644
 --- a/internal/core/thirdparty/tantivy/tokenizer.h

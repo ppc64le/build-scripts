@@ -22,7 +22,7 @@ set -x
 # Configuration
 ################################################################################
  PACKAGE_NAME="milvus-lite"
- PACKAGE_DIR="milvus-lite/python"
+ PACKAGE_DIR="thirdparty/milvus"
  DEFAULT_VERSION="v2.5.0"
  PACKAGE_VERSION="${1:-$DEFAULT_VERSION}"
  PACKAGE_URL="https://github.com/milvus-io/milvus-lite"
@@ -223,20 +223,10 @@ echo "cloning"
 log "Cloning milvus-lite (${PACKAGE_VERSION})…"
 rm -rf milvus-lite
 git clone ${PACKAGE_URL}
-cd ${PACKAGE_DIR}
-#git apply ${SCRIPT_PATH}/${PACKAGE_NAME}--${PACKAGE_VERSION}.patch
-#git apply 
-PATCH_FILE="${SCRIPT_PATH}/${PACKAGE_NAME}-${PACKAGE_VERSION}.patch"
-if [[ -f "${PATCH_FILE}" ]]; then
-    log "Applying patch ${PATCH_FILE}…"
-    git apply "${PATCH_FILE}"
-  else
-    warn "Patch file not found: ${PATCH_FILE}, continuing without it."
-  fi
-
 git checkout  ${PACKAGE_VERSION}
 git submodule update --init --recursive
-
+cd ${PACKAGE_NAME}
+PATCH_FILE="${SCRIPT_PATH}/${PACKAGE_NAME}-${PACKAGE_VERSION}.patch"
 #build the package
 pushd /usr/local/cmake
 create_cmake_conanfile
@@ -250,6 +240,28 @@ log "Installing Conan dependencies…"
 
 #conan remote list | grep -q conan-center || \
 # conan remote add conan-center https://center.conan.io
+log "echo working dir ..., $WORKDIR"
+if [[ -f "${PATCH_FILE}" ]]; then
+    log "Applying patch for canon file.py ${PATCH_FILE}…"
+    git apply "${PATCH_FILE}"
+else
+    warn "Patch file not found: ${PATCH_FILE}, continuing without it."
+fi
+  log "canon file patch was successfully applied..."
+
+log "echo working dir22222 ..., $WORKDIR"
+
+cd ${PACKAGE_DIR}
+if [[ -f "${PATCH_FILE}" ]]; then
+  log "Applying patch for tokenzier.h ${PATCH_FILE}…"
+    git apply "${PATCH_FILE}"
+else
+    warn "Patch file not found: ${PATCH_FILE}, continuing without it."
+fi
+  log "tokenzier file patch was successfully applied..."
+
+log "echo working dir 3333 ..., $WORKDIR"
+
 conan install "${WORKDIR}/milvus-lite" \
     --build=missing \
     -s build_type=Release \
