@@ -12,10 +12,10 @@ index 50bbaed..7122563 100644
          "antlr4-cppruntime/4.13.1",
          # sqlite
 #cd thirdparty/milvus
-diff --git a/internal/core/thirdparty/tantivy/tokenizer.h b/internal/core/thirdparty/tantivy/tokenizer.h
+diff --git a/thirdparty/milvus/internal/core/thirdparty/tantivy/tokenizer.h b/thirdparty/milvus/internal/core/thirdparty/tantivy/tokenizer.h
 index 2870b01e2e..75a4d390e0 100644
---- a/internal/core/thirdparty/tantivy/tokenizer.h
-+++ b/internal/core/thirdparty/tantivy/tokenizer.h
+--- a/thirdparty/milvus/internal/core/thirdparty/tantivy/tokenizer.h
++++ b/thirdparty/milvus/internal/core/thirdparty/tantivy/tokenizer.h
 @@ -1,5 +1,15 @@
  #pragma once
 -

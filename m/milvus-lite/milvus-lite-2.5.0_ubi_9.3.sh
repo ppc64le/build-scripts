@@ -22,7 +22,7 @@ set -x
 # Configuration
 ################################################################################
  PACKAGE_NAME="milvus-lite"
- PACKAGE_DIR="thirdparty/milvus"
+ #PACKAGE_DIR="thirdparty/milvus"
  DEFAULT_VERSION="v2.5.0"
  PACKAGE_VERSION="${1:-$DEFAULT_VERSION}"
  PACKAGE_URL="https://github.com/milvus-io/milvus-lite"
@@ -243,24 +243,23 @@ log "Installing Conan dependencies…"
 log "echo working dir ..., $WORKDIR"
 if [[ -f "${PATCH_FILE}" ]]; then
     log "Applying patch for canon file.py ${PATCH_FILE}…"
-    git apply "${PATCH_FILE}"
+    patch -p1 < "${PATCH_FILE}"
 else
     warn "Patch file not found: ${PATCH_FILE}, continuing without it."
 fi
   log "canon file patch was successfully applied..."
 
-log "echo working dir22222 ..., $WORKDIR"
 
-cd ${PACKAGE_DIR}
-if [[ -f "${PATCH_FILE}" ]]; then
-  log "Applying patch for tokenzier.h ${PATCH_FILE}…"
-    git apply "${PATCH_FILE}"
-else
-    warn "Patch file not found: ${PATCH_FILE}, continuing without it."
-fi
-  log "tokenzier file patch was successfully applied..."
+# cd ${PACKAGE_DIR}
+# if [[ -f "${PATCH_FILE}" ]]; then
+#   log "Applying patch for tokenzier.h ${PATCH_FILE}…"
+#     git apply "${PATCH_FILE}"
+# else
+#     warn "Patch file not found: ${PATCH_FILE}, continuing without it."
+# fi
+#   log "tokenzier file patch was successfully applied..."
 
-log "echo working dir 3333 ..., $WORKDIR"
+# log "echo working dir 3333 ..., $WORKDIR"
 
 conan install "${WORKDIR}/milvus-lite" \
     --build=missing \
