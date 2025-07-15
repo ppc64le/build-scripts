@@ -1,0 +1,16 @@
+{
+  "maintainer": "ramnathnayak-ibm",
+  "package_name": "pystan",
+  "github_url": "https://github.com/stan-dev/pystan",
+  "version": "3.10.0",
+  "wheel_build" : true,
+  "package_dir": "p/pystan",
+  "default_branch": "main",
+  "build_script": "pystan_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "pystan_ubi_9.3.sh"
+  }
+}
