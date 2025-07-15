@@ -1,0 +1,13 @@
+{
+   "maintainer": "James-Jenkins",
+   "package_name": "minio-python",
+   "github_url": "https://github.com/minio/minio-py",
+   "version": "7.2.15",
+   "default_branch": "master",
+   "build_script": "minio-python_ubi_9.3.sh",
+   "package_dir": "m/minio-python",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
