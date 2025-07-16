@@ -22,7 +22,7 @@ set -x
 # Configuration
 ################################################################################
  PACKAGE_NAME="milvus-lite"
- #PACKAGE_DIR="thirdparty/milvus"
+ PACKAGE_DIR="python"
  DEFAULT_VERSION="v2.5.0"
  PACKAGE_VERSION="${1:-$DEFAULT_VERSION}"
  PACKAGE_URL="https://github.com/milvus-io/milvus-lite"
@@ -253,8 +253,6 @@ else
 fi
   log "canon file patch was successfully applied..."
 
-
-# cd ${PACKAGE_DIR}
 # if [[ -f "${PATCH_FILE}" ]]; then
 #   log "Applying patch for tokenzier.h ${PATCH_FILE}…"
 #     git apply "${PATCH_FILE}"
@@ -265,7 +263,7 @@ fi
 
 # log "echo working dir 3333 ..., $WORKDIR"
 
-conan install "${WORKDIR}/milvus-lite" \
+conan install . \
     --build=missing \
     -s build_type=Release \
     -s compiler.libcxx=libstdc++11 \
@@ -276,6 +274,7 @@ popd
 export VCPKG_FORCE_SYSTEM_BINARIES=1
 mkdir -p $HOME/.cargo/bin/
 echo "installing dependencies"
+cd ${PACKAGE_DIR}
 pip install -r requirements.txt
 pip install build
 
