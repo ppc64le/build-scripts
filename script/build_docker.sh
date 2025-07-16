@@ -18,8 +18,8 @@ if [ $build_docker != false ];then
         args=$(jq -r --arg ver "$match_version" '.[$ver].args' $config_file)
         patches=$(jq -r --arg ver "$match_version" '.[$ver].patches' $config_file)
         # By default send PACKAGE_VERSION argument.
-        build_args ="--build-arg PACKAGE_VERSION=$version"
-        if [ $args != null ]; then
+        build_args="--build-arg PACKAGE_VERSION=$version"
+        if [ $args != "null" ]; then
             for row in $(echo "$args" | jq -r 'to_entries[] | @base64'); do
             key=$(echo "$row" | base64 -d | jq -r '.key')
             value=$(echo "$row" | base64 -d | jq -r '.value')
@@ -49,15 +49,18 @@ if [ $build_docker != false ];then
     echo "Building docker image"
     echo "sudo docker build $build_args -t $image_name $docker_builddir"
     echo "*************************************************************************************"
-    sudo docker build $build_args -t $image_name $docker_builddir > docker_build.log 2>&1 &
-    SCRIPT_PID=$!
-    while ps -p $SCRIPT_PID > /dev/null
-    do 
-      echo "$SCRIPT_PID is running"
-      sleep 100
-    done
-    wait $SCRIPT_PID
-    my_pid_status=$?
+    # sudo docker build $build_args -t $image_name $docker_builddir > docker_build.log 2>&1 &
+    # SCRIPT_PID=$!
+    # while ps -p $SCRIPT_PID > /dev/null
+    # do 
+    #   echo "$SCRIPT_PID is running"
+    #   sleep 100
+    # done
+    # wait $SCRIPT_PID
+    # my_pid_status=$?
+
+    sudo docker build $build_args -t $image_name $docker_builddir 2>&1 | tee docker_build.log
+    my_pid_status=${PIPESTATUS[0]}
     docker_build_size=$(stat -c %s docker_build.log)
     
     if [ $my_pid_status != 0 ];
