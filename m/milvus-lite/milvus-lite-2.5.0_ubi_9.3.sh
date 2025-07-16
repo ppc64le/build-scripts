@@ -199,8 +199,11 @@ class CmakeConan(ConanFile):
 EOT
 }
 
-mkdir -p "${WORKDIR}/workspace"
-cd "${WORKDIR}/workspace"
+# mkdir -p "${WORKDIR}/workspace"
+# cd "${WORKDIR}/workspace"
+
+#Install cmake
+cd $wdir
 
 # Build and install cmake 3.30.5
 if [ -z "$(ls -A $wdir/cmake-${CMAKE_VERSION})" ]; then
@@ -262,11 +265,11 @@ fi
 
 # log "echo working dir 3333 ..., $WORKDIR"
 
-conan install "${WORKDIR}/milvus-lite" \
-    --build=missing \
-    -s build_type=Release \
-    -s compiler.libcxx=libstdc++11 \
-    --update
+# conan install "${WORKDIR}/milvus-lite" \
+#     --build=missing \
+#     -s build_type=Release \
+#     -s compiler.libcxx=libstdc++11 \
+#     --update
 conan export-pkg . cmake/${CMAKE_REQUIRED_VERSION}@ -s os="Linux" -s arch="ppc64le" -f
 conan profile update settings.compiler.libcxx=libstdc++11 default
 popd
