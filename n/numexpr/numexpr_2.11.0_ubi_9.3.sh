@@ -41,9 +41,9 @@ cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 #install pytest
-pip3.11 install pytest
-pip3.11 install --upgrade pip setuptools wheel pytest numpy==2.0.2
-pip3.11 install -e .
+python3.11 -m pip install pytest
+python3.11 -m pip  install --upgrade pip setuptools wheel pytest numpy==2.0.2
+python3.11 -m pip install -e .
 
 #install
 if ! (python3.11 setup.py install) ; then
