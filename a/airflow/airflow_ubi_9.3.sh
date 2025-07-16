@@ -29,6 +29,8 @@ yum install -y git make cmake zip tar wget python3 python3-devel python3-pip gcc
 
 export GCC_TOOLSET_PATH=/opt/rh/gcc-toolset-13/root/usr
 export PATH=$GCC_TOOLSET_PATH/bin:$PATH
+export CFLAGS="-mcpu=power9 -mtune=power10 ${CFLAGS}"
+export CXXFLAGS="-mcpu=power9 -mtune=power10 ${CXXFLAGS}"
 
 #Install rustc
 curl https://sh.rustup.rs -sSf | sh -s -- -y
@@ -269,7 +271,7 @@ export CXX_COMPILER=$(which g++)
 #Build libprotobuf
 git clone https://github.com/protocolbuffers/protobuf
 cd protobuf
-git checkout v4.25.3
+git checkout v4.25.8
 
 LIBPROTO_DIR=$(pwd)
 mkdir -p $LIBPROTO_DIR/local/libprotobuf
