@@ -265,13 +265,13 @@ fi
 
 # log "echo working dir 3333 ..., $WORKDIR"
 
-# conan install "${WORKDIR}/milvus-lite" \
-#     --build=missing \
-#     -s build_type=Release \
-#     -s compiler.libcxx=libstdc++11 \
-#     --update
-conan export-pkg . cmake/${CMAKE_REQUIRED_VERSION}@ -s os="Linux" -s arch="ppc64le" -f
+conan install "${WORKDIR}/milvus-lite" \
+    --build=missing \
+    -s build_type=Release \
+    -s compiler.libcxx=libstdc++11 \
+    --update
 conan profile update settings.compiler.libcxx=libstdc++11 default
+conan export-pkg . cmake/${CMAKE_REQUIRED_VERSION}@ -s os="Linux" -s arch="ppc64le" -f
 popd
 export VCPKG_FORCE_SYSTEM_BINARIES=1
 mkdir -p $HOME/.cargo/bin/
