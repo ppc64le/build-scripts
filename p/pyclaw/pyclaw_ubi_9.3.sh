@@ -53,7 +53,7 @@ echo "--- Creating necessary directories ---"
 mkdir pyclaw
 mkdir -p pyclaw/examples
 cd pyclaw/examples
-touch examples/__init__.py
+touch __init__.py
 cd ../.. 
 #ensures that the version is correctly recognized during the build process
 sed -i "s/setup(\*\*configuration(top_path='').todict())/setup(version='5.12.0', **configuration(top_path='').todict())/" setup.py
