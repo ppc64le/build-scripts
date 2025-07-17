@@ -1,0 +1,15 @@
+{
+  "maintainer": "SanketPatil11",
+  "package_name": "jquery",
+  "github_url": "https://github.com/jquery/jquery.git",
+  "version": "v3.7.1",
+  "package_dir": "j/jquery",
+  "default_branch": "main",
+  "build_script": "jquery_v3.7.1_ubi_9.5.sh", 
+  "docker_build": "false",
+  "use_non_root_user": "false",
+  "validate_build_script": "true",
+  "*": {
+    "build_script": "jquery_v3.7.1_ubi_9.5.sh"
+  }
+}
