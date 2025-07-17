@@ -8,7 +8,7 @@
    "package_dir": "q/quarkus",
    "docker_build": false,
    "validate_build_script": true,
-   "use_non_root_user": true,
+   "use_non_root_user": false,
    "*": {
      "build_script": "quarkus_ubi_9.3.sh"
   }
