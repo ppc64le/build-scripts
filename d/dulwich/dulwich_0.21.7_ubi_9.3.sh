@@ -52,7 +52,7 @@ if ! pip3 install . ; then
     exit 1
 fi
 
-# Run tests
+# Run tests (skipping some testcase becauses same are failing in x86)
 if ! python3.12 -m pytest dulwich -k "not test_walk and not test_file_win and not test_swift_smoke" --import-mode=append; then
     echo "------------------$PACKAGE_NAME: Tests_Fail------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
