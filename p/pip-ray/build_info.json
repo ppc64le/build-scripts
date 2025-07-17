@@ -1,0 +1,16 @@
+{
+  "maintainer": "ramnathnayak-ibm",
+  "package_name": "ray",
+  "github_url": "https://github.com/ray-project/ray",
+  "version": "ray-2.47.1",
+  "default_branch": "master",
+  "build_script": "pip-ray_ubi_9.3.sh",
+  "package_dir": "p/pip-ray",
+  "docker_build": false,
+  "wheel_build": true,
+  "use_non_root_user": false,
+  "validate_build_script": true,
+  "*": {
+    "build_script": "pip-ray_ubi_9.3.sh"
+  }
+}
