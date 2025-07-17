@@ -1,0 +1,16 @@
+{
+  "maintainer": "ramnathnayak-ibm",
+  "package_name": "airflow",
+  "github_url": "https://github.com/apache/airflow",
+  "version": "3.0.2",
+  "default_branch": "main",
+  "build_script": "airflow_ubi_9.3.sh",
+  "package_dir": "a/airflow",
+  "docker_build": false,
+  "wheel_build": true,
+  "use_non_root_user": false,
+  "validate_build_script": true,
+  "*": {
+    "build_script": "airflow_ubi_9.3.sh"
+  }
+}
