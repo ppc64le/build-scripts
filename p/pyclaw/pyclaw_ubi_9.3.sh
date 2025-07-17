@@ -35,7 +35,7 @@ echo "--- Enabling GCC toolset 13 ---"
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
-# --- Step 3: Install Python Dependencies ---
+# --- Install Python Dependencies ---
 echo "--- Installing Python dependencies ---"
 python3.11 -m pip install --upgrade pip
 python3.11 -m pip install numpy flake8 meson-python ninja pytest coveralls \
