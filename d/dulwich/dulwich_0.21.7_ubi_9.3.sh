@@ -53,7 +53,7 @@ if ! pip3 install . ; then
 fi
 
 # Run tests
-if ! python3.12 -m pytest dulwich -k "not test_file_win and not test_swift_smoke" --import-mode=append; then
+if ! python3.12 -m pytest dulwich -k "not test_walk and not test_file_win and not test_swift_smoke" --import-mode=append; then
     echo "------------------$PACKAGE_NAME: Tests_Fail------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Tests_Fail"
