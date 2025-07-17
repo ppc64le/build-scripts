@@ -20,7 +20,7 @@
 
 PACKAGE_NAME=dulwich
 PACKAGE_DIR=dulwich
-PACKAGE_VERSION=${1:-0.21.7}
+PACKAGE_VERSION=${1:-dulwich-0.21.7}
 PACKAGE_URL=https://github.com/jelmer/dulwich.git
 
 # Install necessary system packages
@@ -39,7 +39,7 @@ python3.12 -m pip install --upgrade pip setuptools wheel setuptools_rust
 # Clone the repository
 git clone ${PACKAGE_URL}
 cd ${PACKAGE_DIR}
-git checkout dulwich-${PACKAGE_VERSION}
+git checkout ${PACKAGE_VERSION}
 
 # Install build requirements
 pip install geventhttpclient==2.2.0 merge3 pytest
