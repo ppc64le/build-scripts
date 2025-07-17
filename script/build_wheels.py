@@ -38,23 +38,28 @@ def trigger_build_wheel(wrapper_file, python_version, image_name, file_name, ver
             network='host',
             detach=True,
             volumes={current_dir: {'bind': '/home/tester/', 'mode': 'rw'}},  # Mount current directory with both files
-            stderr=True
+            stderr=True,
+            stdout=True
         )
         
-        # Wait for container completion
+        #  STREAM logs in real-time
+        for log in container.logs(stream=True, stdout=True, stderr=True, follow=True):
+            print(log.decode("utf-8").rstrip())
+
+        # Wait until it's done
         result = container.wait()
-        
+
     except Exception as e:
         print(f"Failed to create container: {e}")
-    
-    # Print logs from the container
-    try:
-        print(container.logs().decode("utf-8"))
-    except Exception:
-        print(container.logs())
-    
-    # Clean up container
-    container.remove()
+        raise
+
+    finally:
+        # Clean up container
+        try:
+            container.remove()
+        except:
+            pass
+
  
     # Check exit status
     if int(result["StatusCode"]) != 0:
