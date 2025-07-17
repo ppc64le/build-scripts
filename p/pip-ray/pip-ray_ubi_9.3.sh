@@ -113,10 +113,14 @@ sed -i '/^build --compilation_mode=opt$/a\\n\nbuild:linux --action_env PYTHON_BI
 cd python/
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
 export GRPC_PYTHON_BUILD_SYSTEM_ZLIB=1
+export RAY_INSTALL_CPP=1
 export BAZEL_ARGS="--define=USE_OPENSSL=1"
 export RAY_INSTALL_JAVA=1
 pip install --upgrade setproctitle
+#Installing ray-cpp
+pip install . 
 
+unset RAY_INSTALL_CPP
 #Build package
 if ! pip install . ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
