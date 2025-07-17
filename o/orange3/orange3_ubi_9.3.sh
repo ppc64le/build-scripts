@@ -152,8 +152,8 @@ cd Orange/tests
 # Skip due to deprecated APIs / missing Qt / Assertions errors(np.float64(0.094))/AttributeError: 'TestTree' object has no attribute 'TreeLearner'
 if ! pytest \
   -k "not test_filename and not remove_deprecation and not supports_weights_property and not test_random and not get_entry_point and not xlsx_xls" \
-  --deselect=Orange/tests/test_discretize.py \
-  --deselect=Orange/tests/test_orangetree.py \
+  --deselect=test_discretize.py \
+  --deselect=tests/test_orangetree.py \
   -p no:warnings; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
