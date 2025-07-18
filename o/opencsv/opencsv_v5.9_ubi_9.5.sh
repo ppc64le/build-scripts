@@ -72,7 +72,7 @@ echo "[INFO] Switching to Java 11 for testing..."
 export JAVA_HOME="${JAVA_11_HOME}"
 export PATH="$JAVA_HOME/bin:$PATH"
 
-mvn test -Denforcer.skip=true || ret=$?
+mvn surefire:test -Denforcer.skip=true || ret=$?
 if [ "$ret" -ne 0 ]; then
     echo "[ERROR] $PACKAGE_NAME - Tests failed."
     exit 2
