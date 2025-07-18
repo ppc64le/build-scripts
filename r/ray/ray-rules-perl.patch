@@ -1,0 +1,229 @@
+diff --git a/bazel/ray_deps_build_all.bzl b/bazel/ray_deps_build_all.bzl
+index a8597dd184..00899db55a 100644
+--- a/bazel/ray_deps_build_all.bzl
++++ b/bazel/ray_deps_build_all.bzl
+@@ -7,7 +7,6 @@ load("@com_github_grpc_grpc//bazel:grpc_deps.bzl", "grpc_deps")
+ load("@rules_proto_grpc//:repositories.bzl", "rules_proto_grpc_toolchains")
+ load("@com_github_johnynek_bazel_jar_jar//:jar_jar.bzl", "jar_jar_repositories")
+ load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
+-load("@rules_foreign_cc_thirdparty//openssl:openssl_setup.bzl", "openssl_setup")
+
+
+
+@@ -21,4 +20,3 @@ def ray_deps_build_all():
+   rules_proto_grpc_toolchains()
+   jar_jar_repositories()
+   rules_foreign_cc_dependencies()
+-  openssl_setup()
+diff --git a/bazel/ray_deps_setup.bzl b/bazel/ray_deps_setup.bzl
+index e98895248d..7107949d58 100644
+--- a/bazel/ray_deps_setup.bzl
++++ b/bazel/ray_deps_setup.bzl
+@@ -282,22 +283,20 @@ def ray_deps_setup():
+     http_archive(
+         name = "rules_foreign_cc",
+         sha256 = "2a4d07cd64b0719b39a7c12218a3e507672b82a97b98c6a89d38565894cf7c51",
++        patches = [
++            "@com_github_ray_project_ray//thirdparty/patches:rules_foreign_cc.patch",],
+         strip_prefix = "rules_foreign_cc-0.9.0",
+         url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.9.0.tar.gz",
+     )
+
+     # Using shallow_since allows the rule to clone down fewer commits.
+     # Reference:  https://bazel.build/rules/lib/repo/git
+-    git_repository(
+-        name = "rules_perl",
+-        remote = "https://github.com/bazelbuild/rules_perl.git",
+-        commit = "022b8daf2bb4836ac7a50e4a1d8ea056a3e1e403",
+-        shallow_since = "1663780239 -0700",
+-    )
+
+     http_archive(
+         name = "rules_foreign_cc_thirdparty",
+         sha256 = "2a4d07cd64b0719b39a7c12218a3e507672b82a97b98c6a89d38565894cf7c51",
++        patches = [
++            "@com_github_ray_project_ray//thirdparty/patches:rules_foreign_cc_thirdparty.patch",],
+         strip_prefix = "rules_foreign_cc-0.9.0/examples/third_party",
+         url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.9.0.tar.gz",
+     )
+diff --git a/thirdparty/patches/rules_foreign_cc.patch b/thirdparty/patches/rules_foreign_cc.patch
+new file mode 100644
+index 0000000000..9563302e67
+--- /dev/null
++++ b/thirdparty/patches/rules_foreign_cc.patch
+@@ -0,0 +1,84 @@
++diff --git examples/third_party/autotools/BUILD.automake.bazel examples/third_party/autotools/BUILD.automake.bazel
++index d3c7c35..5be9167 100644
++--- examples/third_party/autotools/BUILD.automake.bazel
+++++ examples/third_party/autotools/BUILD.automake.bazel
++@@ -27,5 +27,4 @@ configure_make(
++     out_binaries = [
++         "automake",
++     ],
++-    toolchains = ["@rules_perl//:current_toolchain"],
++ )
++diff --git examples/third_party/openssl/BUILD.openssl.bazel examples/third_party/openssl/BUILD.openssl.bazel
++index c133768..90e8986 100644
++--- examples/third_party/openssl/BUILD.openssl.bazel
+++++ examples/third_party/openssl/BUILD.openssl.bazel
++@@ -61,12 +61,10 @@ configure_make_variant(
++         # as NASM is unsed to build OpenSSL rather than MASM
++         "ASFLAGS=\" \"",
++     ],
++-    configure_prefix = "$$PERL",
++     env = {
++         # The Zi flag must be set otherwise OpenSSL fails to build due to missing .pdb files
++         "CFLAGS": "-Zi",
++         "PATH": "$$(dirname $(execpath @nasm//:nasm)):$$PATH",
++-        "PERL": "$$EXT_BUILD_ROOT$$/$(PERL)",
++     },
++     lib_name = LIB_NAME,
++     lib_source = ":all_srcs",
++@@ -76,7 +74,6 @@ configure_make_variant(
++     ],
++     targets = MAKE_TARGETS,
++     toolchain = "@rules_foreign_cc//toolchains:preinstalled_nmake_toolchain",
++-    toolchains = ["@rules_perl//:current_toolchain"],
++ )
++
++ configure_make(
++@@ -87,10 +84,8 @@ configure_make(
++     env = select({
++         "@platforms//os:macos": {
++             "AR": "",
++-            "PERL": "$$EXT_BUILD_ROOT$$/$(PERL)",
++         },
++         "//conditions:default": {
++-            "PERL": "$$EXT_BUILD_ROOT$$/$(PERL)",
++         },
++     }),
++     lib_name = LIB_NAME,
++@@ -102,7 +97,6 @@ configure_make(
++         "libcrypto.a",
++     ],
++     targets = MAKE_TARGETS,
++-    toolchains = ["@rules_perl//:current_toolchain"],
++ )
++
++ filegroup(
++diff --git examples/third_party/openssl/openssl_repositories.bzl examples/third_party/openssl/openssl_repositories.bzl
++index 36e7249..b7d0a56 100644
++--- examples/third_party/openssl/openssl_repositories.bzl
+++++ examples/third_party/openssl/openssl_repositories.bzl
++@@ -29,12 +29,3 @@ def openssl_repositories():
++         ],
++     )
++
++-    maybe(
++-        http_archive,
++-        name = "rules_perl",
++-        sha256 = "765e6a282cc38b197a6408c625bd3fc28f3f2d44353fb4615490a6eb0b8f420c",
++-        strip_prefix = "rules_perl-e3ed0f1727d15db6c5ff84f64454b9a4926cc591",
++-        urls = [
++-            "https://github.com/bazelbuild/rules_perl/archive/e3ed0f1727d15db6c5ff84f64454b9a4926cc591.tar.gz",
++-        ],
++-    )
++diff --git examples/third_party/openssl/openssl_setup.bzl examples/third_party/openssl/openssl_setup.bzl
++deleted file mode 100644
++index 9217480..0000000
++--- examples/third_party/openssl/openssl_setup.bzl
+++++ /dev/null
++@@ -1,7 +0,0 @@
++-"""A module initialising the third party dependencies OpenSSL"""
++-
++-load("@rules_perl//perl:deps.bzl", "perl_register_toolchains", "perl_rules_dependencies")
++-
++-def openssl_setup():
++-    perl_rules_dependencies()
++-    perl_register_toolchains()
+diff --git a/thirdparty/patches/rules_foreign_cc_thirdparty.patch b/thirdparty/patches/rules_foreign_cc_thirdparty.patch
+new file mode 100644
+index 0000000000..5a92fe426e
+--- /dev/null
++++ b/thirdparty/patches/rules_foreign_cc_thirdparty.patch
+@@ -0,0 +1,85 @@
++diff --git autotools/BUILD.automake.bazel autotools/BUILD.automake.bazel
++index d3c7c35..5be9167 100644
++--- autotools/BUILD.automake.bazel
+++++ autotools/BUILD.automake.bazel
++@@ -27,5 +27,4 @@ configure_make(
++     out_binaries = [
++         "automake",
++     ],
++-    toolchains = ["@rules_perl//:current_toolchain"],
++ )
++diff --git openssl/BUILD.openssl.bazel openssl/BUILD.openssl.bazel
++index c133768..90e8986 100644
++--- openssl/BUILD.openssl.bazel
+++++ openssl/BUILD.openssl.bazel
++@@ -61,12 +61,10 @@ configure_make_variant(
++         # as NASM is unsed to build OpenSSL rather than MASM
++         "ASFLAGS=\" \"",
++     ],
++-    configure_prefix = "$$PERL",
++     env = {
++         # The Zi flag must be set otherwise OpenSSL fails to build due to missing .pdb files
++         "CFLAGS": "-Zi",
++         "PATH": "$$(dirname $(execpath @nasm//:nasm)):$$PATH",
++-        "PERL": "$$EXT_BUILD_ROOT$$/$(PERL)",
++     },
++     lib_name = LIB_NAME,
++     lib_source = ":all_srcs",
++@@ -76,7 +74,6 @@ configure_make_variant(
++     ],
++     targets = MAKE_TARGETS,
++     toolchain = "@rules_foreign_cc//toolchains:preinstalled_nmake_toolchain",
++-    toolchains = ["@rules_perl//:current_toolchain"],
++ )
++
++ configure_make(
++@@ -87,10 +84,8 @@ configure_make(
++     env = select({
++         "@platforms//os:macos": {
++             "AR": "",
++-            "PERL": "$$EXT_BUILD_ROOT$$/$(PERL)",
++         },
++         "//conditions:default": {
++-            "PERL": "$$EXT_BUILD_ROOT$$/$(PERL)",
++         },
++     }),
++     lib_name = LIB_NAME,
++@@ -102,7 +97,6 @@ configure_make(
++         "libcrypto.a",
++     ],
++     targets = MAKE_TARGETS,
++-    toolchains = ["@rules_perl//:current_toolchain"],
++ )
++
++ filegroup(
++diff --git openssl/openssl_repositories.bzl openssl/openssl_repositories.bzl
++index 36e7249..b7d0a56 100644
++--- openssl/openssl_repositories.bzl
+++++ openssl/openssl_repositories.bzl
++@@ -29,12 +29,3 @@ def openssl_repositories():
++         ],
++     )
++
++-    maybe(
++-        http_archive,
++-        name = "rules_perl",
++-        sha256 = "765e6a282cc38b197a6408c625bd3fc28f3f2d44353fb4615490a6eb0b8f420c",
++-        strip_prefix = "rules_perl-e3ed0f1727d15db6c5ff84f64454b9a4926cc591",
++-        urls = [
++-            "https://github.com/bazelbuild/rules_perl/archive/e3ed0f1727d15db6c5ff84f64454b9a4926cc591.tar.gz",
++-        ],
++-    )
++diff --git openssl/openssl_setup.bzl openssl/openssl_setup.bzl
++deleted file mode 100644
++index 9217480..0000000
++--- openssl/openssl_setup.bzl
+++++ /dev/null
++@@ -1,7 +0,0 @@
++-"""A module initialising the third party dependencies OpenSSL"""
++-
++-load("@rules_perl//perl:deps.bzl", "perl_register_toolchains", "perl_rules_dependencies")
++-
++-def openssl_setup():
++-    perl_rules_dependencies()
++-    perl_register_toolchains()
++
