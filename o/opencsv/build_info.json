@@ -1,0 +1,16 @@
+
+{
+  "maintainer": "Amitkumar282",
+  "package_name": "opencsv",
+  "github_url": "https://git.code.sf.net/p/opencsv/source.git",
+  "version": "5.9Release",
+  "default_branch": "master",
+  "build_script": "opencsv_v5.9_ubi_9.5.sh",
+  "package_dir": "o/opencsv",
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "docker_build": false,
+  "*" : {
+       "build_script" : "opencsv_v5.9_ubi_9.5.sh"
+    }
+}
