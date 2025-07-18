@@ -1,5 +1,21 @@
+From e6791cb2278b2ea9ca9386d793ab4b1d814971f5 Mon Sep 17 00:00:00 2001
+From: Srighakollapu-Sai-Srivatsa <Srighakollapu.Sai.Srivatsa@ibm.com>
+Date: Fri, 11 Jul 2025 10:21:45 +0000
+Subject: [PATCH] patch-2.18,1
+
+---
+ requirements_lock_3_10.txt                  | 576 +------------------
+ requirements_lock_3_11.txt                  | 576 +------------------
+ requirements_lock_3_12.txt                  | 577 +-------------------
+ requirements_lock_3_9.txt                   | 577 +-------------------
+ tensorflow/core/kernels/constant_op_test.cc |   4 +
+ tensorflow/workspace2.bzl                   |   7 +-
+ third_party/0001-support-for-ppc.patch      |  25 +
+ 7 files changed, 71 insertions(+), 2271 deletions(-)
+ create mode 100644 third_party/0001-support-for-ppc.patch
+
 diff --git a/requirements_lock_3_10.txt b/requirements_lock_3_10.txt
-index 3ef493e11f5..7d7cc58b0a0 100644
+index 3ef493e11f5..4a51f51b8bd 100644
 --- a/requirements_lock_3_10.txt
 +++ b/requirements_lock_3_10.txt
 @@ -5,379 +5,59 @@
@@ -477,7 +493,7 @@ index 3ef493e11f5..7d7cc58b0a0 100644
 -    --hash=sha256:b2787a41404cf7edbe29b07b9e0ed863b09f2665dcc01c1eb0c2261c1e7d0755 \
 -    --hash=sha256:bd507fd6f96f65ee02781f2e674e9dc6c99bbfa6e3c39992e3916204c9d431fa
      # via -r ci/official/requirements_updater/requirements.in
- protobuf==4.25.3 \
+-protobuf==4.25.3 \
 -    --hash=sha256:19b270aeaa0099f16d3ca02628546b8baefe2955bbe23224aaf856134eccf1e4 \
 -    --hash=sha256:209ba4cc916bab46f64e56b85b090607a676f66b473e6b762e6f1d9d591eb2e8 \
 -    --hash=sha256:25b5d0b42fd000320bd7830b349e3b696435f3b329810427a6bcce6a5492cc5c \
@@ -489,6 +505,7 @@ index 3ef493e11f5..7d7cc58b0a0 100644
 -    --hash=sha256:f0700d54bcf45424477e46a9f0944155b46fb0639d69728739c0e47bab83f2b9 \
 -    --hash=sha256:f1279ab38ecbfae7e456a108c5c0681e4956d5b1090027c1de0f934dfdb4b35c \
 -    --hash=sha256:f4f118245c4a087776e0a8408be33cf09f6c547442c00395fbfb116fac2f8ac2
++protobuf==4.25.8 \
      # via tensorboard
  psutil==5.9.8 \
 -    --hash=sha256:02615ed8c5ea222323408ceba16c60e99c3f91639b07da6373fb7e6539abc56d \
@@ -694,7 +711,7 @@ index 3ef493e11f5..7d7cc58b0a0 100644
      #   -r ci/official/requirements_updater/requirements.in
      #   tensorboard
 diff --git a/requirements_lock_3_11.txt b/requirements_lock_3_11.txt
-index 7e3a884f832..d5a28858572 100644
+index 7e3a884f832..6b849b42527 100644
 --- a/requirements_lock_3_11.txt
 +++ b/requirements_lock_3_11.txt
 @@ -5,379 +5,59 @@
@@ -1172,7 +1189,7 @@ index 7e3a884f832..d5a28858572 100644
 -    --hash=sha256:b2787a41404cf7edbe29b07b9e0ed863b09f2665dcc01c1eb0c2261c1e7d0755 \
 -    --hash=sha256:bd507fd6f96f65ee02781f2e674e9dc6c99bbfa6e3c39992e3916204c9d431fa
      # via -r ci/official/requirements_updater/requirements.in
- protobuf==4.25.3 \
+-protobuf==4.25.3 \
 -    --hash=sha256:19b270aeaa0099f16d3ca02628546b8baefe2955bbe23224aaf856134eccf1e4 \
 -    --hash=sha256:209ba4cc916bab46f64e56b85b090607a676f66b473e6b762e6f1d9d591eb2e8 \
 -    --hash=sha256:25b5d0b42fd000320bd7830b349e3b696435f3b329810427a6bcce6a5492cc5c \
@@ -1184,6 +1201,7 @@ index 7e3a884f832..d5a28858572 100644
 -    --hash=sha256:f0700d54bcf45424477e46a9f0944155b46fb0639d69728739c0e47bab83f2b9 \
 -    --hash=sha256:f1279ab38ecbfae7e456a108c5c0681e4956d5b1090027c1de0f934dfdb4b35c \
 -    --hash=sha256:f4f118245c4a087776e0a8408be33cf09f6c547442c00395fbfb116fac2f8ac2
++protobuf==4.25.8 \
      # via tensorboard
  psutil==5.9.8 \
 -    --hash=sha256:02615ed8c5ea222323408ceba16c60e99c3f91639b07da6373fb7e6539abc56d \
@@ -1389,7 +1407,7 @@ index 7e3a884f832..d5a28858572 100644
      #   -r ci/official/requirements_updater/requirements.in
      #   tensorboard
 diff --git a/requirements_lock_3_12.txt b/requirements_lock_3_12.txt
-index 19b72598651..ac27d8bc44e 100644
+index 19b72598651..06c44355207 100644
 --- a/requirements_lock_3_12.txt
 +++ b/requirements_lock_3_12.txt
 @@ -5,379 +5,60 @@
@@ -1868,7 +1886,7 @@ index 19b72598651..ac27d8bc44e 100644
 -    --hash=sha256:b2787a41404cf7edbe29b07b9e0ed863b09f2665dcc01c1eb0c2261c1e7d0755 \
 -    --hash=sha256:bd507fd6f96f65ee02781f2e674e9dc6c99bbfa6e3c39992e3916204c9d431fa
      # via -r ci/official/requirements_updater/requirements.in
- protobuf==4.25.3 \
+-protobuf==4.25.3 \
 -    --hash=sha256:19b270aeaa0099f16d3ca02628546b8baefe2955bbe23224aaf856134eccf1e4 \
 -    --hash=sha256:209ba4cc916bab46f64e56b85b090607a676f66b473e6b762e6f1d9d591eb2e8 \
 -    --hash=sha256:25b5d0b42fd000320bd7830b349e3b696435f3b329810427a6bcce6a5492cc5c \
@@ -1880,6 +1898,7 @@ index 19b72598651..ac27d8bc44e 100644
 -    --hash=sha256:f0700d54bcf45424477e46a9f0944155b46fb0639d69728739c0e47bab83f2b9 \
 -    --hash=sha256:f1279ab38ecbfae7e456a108c5c0681e4956d5b1090027c1de0f934dfdb4b35c \
 -    --hash=sha256:f4f118245c4a087776e0a8408be33cf09f6c547442c00395fbfb116fac2f8ac2
++protobuf==4.25.8 \
      # via tensorboard
  psutil==5.9.8 \
 -    --hash=sha256:02615ed8c5ea222323408ceba16c60e99c3f91639b07da6373fb7e6539abc56d \
@@ -2085,7 +2104,7 @@ index 19b72598651..ac27d8bc44e 100644
      #   -r ci/official/requirements_updater/requirements.in
      #   tensorboard
 diff --git a/requirements_lock_3_9.txt b/requirements_lock_3_9.txt
-index 115d6caa10d..0a0a24a0a6d 100644
+index 115d6caa10d..af982aba5f5 100644
 --- a/requirements_lock_3_9.txt
 +++ b/requirements_lock_3_9.txt
 @@ -5,383 +5,64 @@
@@ -2568,7 +2587,7 @@ index 115d6caa10d..0a0a24a0a6d 100644
 -    --hash=sha256:b2787a41404cf7edbe29b07b9e0ed863b09f2665dcc01c1eb0c2261c1e7d0755 \
 -    --hash=sha256:bd507fd6f96f65ee02781f2e674e9dc6c99bbfa6e3c39992e3916204c9d431fa
      # via -r ci/official/requirements_updater/requirements.in
- protobuf==4.25.3 \
+-protobuf==4.25.3 \
 -    --hash=sha256:19b270aeaa0099f16d3ca02628546b8baefe2955bbe23224aaf856134eccf1e4 \
 -    --hash=sha256:209ba4cc916bab46f64e56b85b090607a676f66b473e6b762e6f1d9d591eb2e8 \
 -    --hash=sha256:25b5d0b42fd000320bd7830b349e3b696435f3b329810427a6bcce6a5492cc5c \
@@ -2580,6 +2599,7 @@ index 115d6caa10d..0a0a24a0a6d 100644
 -    --hash=sha256:f0700d54bcf45424477e46a9f0944155b46fb0639d69728739c0e47bab83f2b9 \
 -    --hash=sha256:f1279ab38ecbfae7e456a108c5c0681e4956d5b1090027c1de0f934dfdb4b35c \
 -    --hash=sha256:f4f118245c4a087776e0a8408be33cf09f6c547442c00395fbfb116fac2f8ac2
++protobuf==4.25.8 \
      # via tensorboard
  psutil==5.9.8 \
 -    --hash=sha256:02615ed8c5ea222323408ceba16c60e99c3f91639b07da6373fb7e6539abc56d \
@@ -2778,8 +2798,7 @@ index 115d6caa10d..0a0a24a0a6d 100644
      # via -r ci/official/requirements_updater/requirements.in
  zipp==3.19.2 \
      --hash=sha256:bf1dcf6450f873a13e952a29504887c89e6de7506209e5b1bcc3460135d4de19 \
-@@ -689,9 +134,7 @@ zipp==3.19.2 \
-     # via importlib-metadata
+@@ -690,8 +135,6 @@ zipp==3.19.2 \
  
  # The following packages are considered to be unsafe in a requirements file:
  setuptools==70.0.0 \
@@ -2865,3 +2884,6 @@ index 00000000000..3570d01cfae
 + config_setting(
 +     name = "macos_x86_64_legacy",
 +     values = {
+-- 
+2.47.1
+

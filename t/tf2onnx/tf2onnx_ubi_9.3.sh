@@ -17,7 +17,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-set -ex 
+set -ex
 
 PACKAGE_NAME=tf2onnx
 PACKAGE_VERSION=${1:-v1.16.1}
@@ -50,10 +50,10 @@ for package in openblas hdf5 tensorflow ; do
     echo "Exported ${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
 done
 
-python3.12 -m pip install numpy==2.0.2 cython setuptools wheel ninja
+python3.12 -m pip install cython setuptools wheel ninja
 
 yum install -y java-11-openjdk-devel
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.25.0.9-3.el9.ppc64le 
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.25.0.9-3.el9.ppc64le
 export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-)(?=.*ppc64le)')
 export PATH=$JAVA_HOME/bin:$PATH
 
@@ -62,7 +62,7 @@ cd $CURRENT_DIR
 # Patchelf Installing from source
 echo " --------------------------------- Installing patchelf from source --------------------------------- "
 yum install -y git autoconf automake libtool make
- 
+
 git clone https://github.com/NixOS/patchelf.git
 cd patchelf
 ./bootstrap.sh
@@ -95,7 +95,7 @@ echo " --------------------------------- OpenBlas Installing -------------------
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
 git checkout v0.3.29
-git submodule update --init 
+git submodule update --init
 
 # Set build options
 declare -a build_opts
@@ -145,7 +145,9 @@ pkg-config --modversion openblas
 
 echo " --------------------------------- OpenBlas Successfully Installed  --------------------------------- "
 
-cd $CURRENT_DIR 
+python3.12 -m pip install numpy==2.0.2
+
+cd $CURRENT_DIR
 
 # Installing Hdf5 from source
 echo " --------------------------------- Hdf5 Installing --------------------------------- "
@@ -158,7 +160,7 @@ git submodule update --init
 yum install -y zlib zlib-devel
 
 ./configure --prefix=$HDF5_PREFIX --enable-cxx --enable-fortran  --with-pthread=yes --enable-threadsafe  --enable-build-mode=production --enable-unsupported  --enable-using-memchecker  --enable-clear-file-buffers --with-ssl
-make 
+make
 make install PREFIX="${HDF5_PREFIX}"
 export LD_LIBRARY_PATH=${HDF5_PREFIX}/lib:$LD_LIBRARY_PATH
 
@@ -190,7 +192,7 @@ echo " --------------------------------- Abseil-Cpp Cloning --------------------
 ABSEIL_VERSION=20240116.2
 ABSEIL_URL="https://github.com/abseil/abseil-cpp"
 
-git clone $ABSEIL_URL -b $ABSEIL_VERSION 
+git clone $ABSEIL_URL -b $ABSEIL_VERSION
 
 echo " --------------------------------- Abseil-Cpp Cloned --------------------------------- "
 
@@ -204,10 +206,10 @@ mkdir -p $(pwd)/local/libprotobuf
 LIBPROTO_INSTALL=$(pwd)/local/libprotobuf
 echo "LIBPROTO_INSTALL set to $LIBPROTO_INSTALL"
 
-# Clone Source-code 
+# Clone Source-code
 echo " --------------------------------- Libprotobuf Installing --------------------------------- "
 
-PACKAGE_VERSION_LIB="v4.25.3"
+PACKAGE_VERSION_LIB="v4.25.8"
 PACKAGE_GIT_URL="https://github.com/protocolbuffers/protobuf"
 git clone $PACKAGE_GIT_URL -b $PACKAGE_VERSION_LIB
 
@@ -277,8 +279,14 @@ cd onnx
 git checkout v1.17.0
 git submodule update --init --recursive
 
+sed -i 's|https://github.com/abseil/abseil-cpp/archive/refs/tags/20230125.3.tar.gz%7Chttps://github.com/abseil/abseil-cpp/archive/refs/tags/20240116.2.tar.gz%7Cg' CMakeLists.txt && \
+sed -i 's|e21faa0de5afbbf8ee96398ef0ef812daf416ad8|bb8a766f3aef8e294a864104b8ff3fc37b393210|g' CMakeLists.txt && \
+sed -i 's|https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protobuf-22.3.tar.gz%7Chttps://github.com/protocolbuffers/protobuf/archive/refs/tags/v4.25.8.tar.gz%7Cg' CMakeLists.txt && \
+sed -i 's|310938afea334b98d7cf915b099ec5de5ae3b5c5|ffa977b9a7fb7e6ae537528eeae58c1c4d661071|g' CMakeLists.txt && \
+sed -i 's|set(Protobuf_VERSION "4.22.3")|set(Protobuf_VERSION "v4.25.8")|g' CMakeLists.txt
+
 export ONNX_ML=1
-export ONNX_PREFIX=$(pwd)/../onnx-prefix 
+export ONNX_PREFIX=$(pwd)/../onnx-prefix
 
 AR=$GCC_HOME/bin/ar
 LD=$GCC_HOME/bin/ld
@@ -286,7 +294,7 @@ NM=$GCC_HOME/bin/nm
 OBJCOPY=$GCC_HOME/bin/objcopy
 OBJDUMP=$GCC_HOME/bin/objdump
 RANLIB=$GCC_HOME/bin/ranlib
-STRIP=$GCC_HOME/bin/strip 
+STRIP=$GCC_HOME/bin/strip
 
 export CMAKE_ARGS=""
 export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$ONNX_PREFIX"
@@ -307,7 +315,7 @@ python3.12 -m pip install meson
 python3.12 -m pip install parameterized
 python3.12 -m pip install pytest nbval pythran mypy-protobuf
 python3.12 -m pip install scipy==1.15.2 pandas scikit_learn==1.6.1
-sed -i 's/protobuf>=[^ ]*/protobuf==4.25.3/' requirements.txt
+sed -i 's/protobuf>=[^ ]*/protobuf==4.25.8/' requirements.txt
 python3.12 setup.py install
 
 echo " --------------------------------- Onnx Successfully Installed --------------------------------- "
@@ -381,8 +389,8 @@ export TF_PYTHON_VERSION=$PYTHON_VERSION
 export HERMETIC_PYTHON_VERSION=$PYTHON_VERSION
 export GCC_HOST_COMPILER_PATH=$CC
 
-# set the variable, when grpcio fails to compile on the system. 
-export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true;  
+# set the variable, when grpcio fails to compile on the system.
+export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true;
 export LDFLAGS="${LDFLAGS} -lrt"
 export HDF5_DIR=/install-deps/hdf5
 export CFLAGS="-I${HDF5_DIR}/include"
@@ -458,12 +466,12 @@ EOF
 export BUILD_TARGET="//tensorflow/tools/pip_package:wheel //tensorflow/tools/lib_package:libtensorflow //tensorflow:libtensorflow_cc${SHLIB_EXT}"
 
 #Install
-if ! (bazel --bazelrc=tensorflow/tensorflow.bazelrc build --local_cpu_resources=HOST_CPUS*0.50 --local_ram_resources=HOST_RAM*0.50 --config=opt ${BUILD_TARGET}) ; then  
+if ! (bazel --bazelrc=tensorflow/tensorflow.bazelrc build --local_cpu_resources=HOST_CPUS*0.50 --local_ram_resources=HOST_RAM*0.50 --config=opt ${BUILD_TARGET}) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
-fi 
+fi
 
 echo " --------------------------------- Tensorflow Successfully Installed --------------------------------- "
 
@@ -479,7 +487,7 @@ find  ${SRC_DIR}/local/tensorflow  -type f \( -name "*.so*" -o -name "*.a" \) -e
 mkdir -p $SRC_DIR/libtensorflow_extracted
 tar -xzf $SRC_DIR/bazel-bin/tensorflow/tools/lib_package/libtensorflow.tar.gz -C $SRC_DIR/libtensorflow_extracted
 mkdir -p ${SRC_DIR}/local/tensorflow/include
-rsync -a  $SRC_DIR/libtensorflow_extracted/lib/*.so*  ${SRC_DIR}/local/tensorflow/lib 
+rsync -a  $SRC_DIR/libtensorflow_extracted/lib/*.so*  ${SRC_DIR}/local/tensorflow/lib
 cp -d -r $SRC_DIR/libtensorflow_extracted/include/* ${SRC_DIR}/local/tensorflow/include
 
 mkdir -p $SRC_DIR/libtensorflow_cc_output/lib
@@ -515,23 +523,35 @@ echo " --------------------------------- Onnxruntime Installing ----------------
 
 git clone https://github.com/microsoft/onnxruntime
 cd onnxruntime
-git checkout d1fb58b0f2be7a8541bfa73f8cbb6b9eba05fb6b
+git checkout v1.21.0
 
-# Build the onnxruntime package and create the wheel
-sed -i "s/python3/python${PYTHON_VERSION}/g" build.sh
+export CXXFLAGS="-Wno-stringop-overflow"
+export CFLAGS="-Wno-stringop-overflow"
+export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
 
-echo "Building onnxruntime..."
+python3 -m pip install packaging wheel
+NUMPY_INCLUDE=$(python3 -c "import numpy; print(numpy.get_include())")
+echo "NumPy include path: $NUMPY_INCLUDE"
+
+# Manually defines Python::NumPy for CMake versions with broken NumPy detection
+sed -i '193i # Fix for Python::NumPy target not found\nif(NOT TARGET Python::NumPy)\n    find_package(Python3 COMPONENTS NumPy REQUIRED)\n    add_library(Python::NumPy INTERFACE IMPORTED)\n    target_include_directories(Python::NumPy INTERFACE ${Python3_NumPy_INCLUDE_DIR})\n    message(STATUS "Manually defined Python::NumPy with include dir: ${Python3_NumPy_INCLUDE_DIR}")\nendif()\n' $CURRENT_DIR/onnxruntime/cmake/onnxruntime_python.cmake
+export CXXFLAGS="-I/usr/local/lib64/python${PYTHON_VERSION}/site-packages/numpy/_core/include/numpy $CXXFLAGS"
+
+sed -i 's|5ea4d05e62d7f954a46b3213f9b2535bdd866803|51982be81bbe52572b54180454df11a3ece9a934|' cmake/deps.txt
+
+#Build and test
+#Building and testing both is performed in build.sh
 ./build.sh \
-  --cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" \
-  --cmake_generator Ninja \
-  --build_shared_lib \
-  --config Release \
-  --update \
-  --build \
-  --skip_submodule_sync \
-  --allow_running_as_root \
-  --compile_no_warning_as_error \
-  --build_wheel
+    --cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" "Protobuf_PROTOC_EXECUTABLE=$PROTO_PREFIX/bin/protoc" "Protobuf_INCLUDE_DIR=$PROTO_PREFIX/include" "onnxruntime_USE_COREML=OFF" "Python3_NumPy_INCLUDE_DIR=$NUMPY_INCLUDE" "CMAKE_POLICY_DEFAULT_CMP0001=NEW" "CMAKE_POLICY_DEFAULT_CMP0002=NEW" "CMAKE_POLICY_VERSION_MINIMUM=3.5" \
+    --cmake_generator Ninja \
+    --build_shared_lib \
+    --config Release \
+    --update \
+    --build \
+    --skip_submodule_sync \
+    --allow_running_as_root \
+    --compile_no_warning_as_error \
+    --build_wheel
 
 # Install the built onnxruntime wheel
 echo "Installing onnxruntime wheel..."
@@ -539,15 +559,15 @@ python3.12 -m pip install build/Linux/Release/dist/*.whl
 
 echo " --------------------------------- Onnxruntime Successfully Installed --------------------------------- "
 
-cd $CURRENT_DIR 
+cd $CURRENT_DIR
 
 echo " --------------------------------- Tf2Onnx Installing --------------------------------- "
 
 git clone $PACKAGE_URL
 cd $PACKAGE_DIR
-git checkout $PACKAGE_VERSION 
+git checkout $PACKAGE_VERSION
 
-sed -i "s/protobuf~=[.0-9]\+/protobuf==4.25.3/g" setup.py
+sed -i "s/protobuf~=[.0-9]\+/protobuf==4.25.8/g" setup.py
 sed -i "s/numpy>=1.14.1/numpy==2.0.2/g" setup.py
 
 python3.12 -m pip install setuptools wheel build pytest parameterized timeout-decorator pytest-cov graphviz pytest-runner
@@ -561,7 +581,7 @@ fi
 
 echo " --------------------------------- Tf2Onnx Wheel Build --------------------------------- "
 
-# Build wheel 
+# Build wheel
 python3.12 -m build --wheel --no-isolation --outdir="$CURRENT_DIR"
 
 echo " --------------------------------- Tf2Onnx Wheel Built Success --------------------------------- "
@@ -569,7 +589,7 @@ echo " --------------------------------- Tf2Onnx Wheel Built Success -----------
 echo " --------------------------------- Running Tests --------------------------------- "
 
 cd tests
-if ! pytest -k "not test_cudnn_compatible_gru and not test_custom_rnncell and not test_gru and not test_grublock and not test_lstm and not test_lstmblock and not test_seq2seq and not test_stacked_lstm"; then    
+if ! pytest -k "not test_cudnn_compatible_gru and not test_custom_rnncell and not test_gru and not test_grublock and not test_lstm and not test_lstmblock and not test_seq2seq and not test_stacked_lstm"; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
