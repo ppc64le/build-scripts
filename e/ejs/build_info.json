@@ -1,0 +1,15 @@
+{
+  "maintainer": "Amitkumar282",
+  "package_name": "ejs",
+  "github_url": "https://github.com/mde/ejs.git",
+  "version": "v3.1.10",
+  "default_branch": "master",
+  "build_script": "ejs_v3.1.10_ubi_9.3.sh",
+  "package_dir": "e/ejs",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "*": {
+    "build_script": "ejs_v3.1.10_ubi_9.3.sh"
+  }
+}
