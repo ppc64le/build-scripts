@@ -31,7 +31,7 @@ cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
-pip3 install setuptools coverage cython protobuf==4.25.3 wheel cmake==3.*
+pip3 install setuptools coverage cython protobuf==4.25.8 wheel cmake==3.*
 
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true
 export GRPC_PYTHON_BUILD_WITH_CYTHON=1
