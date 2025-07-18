@@ -566,6 +566,13 @@ if ! python3.12 setup.py bdist_wheel --dist-dir $CURRENT_DIR; then
     exit 1
 fi
 
+echo "---------------Building libtorchvision.so---------------------"
+cd build
+export CMAKE_PREFIX_PATH=/usr/local/lib64/python3.12/site-packages/torch/share/cmake/Torch/:$LIBPROTO_INSTALL
+cmake ..
+make install
+cp libtorchvision.so /usr/local/lib64/python3.12/site-packages/torch/share/cmake/Torch
+
 cd $CURRENT_DIR
 
 python3.12 -m pip install ./torchvision*.whl
