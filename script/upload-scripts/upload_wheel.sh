@@ -1,4 +1,5 @@
 #!/bin/bash -e
+export IS_SETUP=${IS_SETUP:-"prod"}
 
 if [ "$IS_SETUP" = "dev" ] || [ "$IS_SETUP" = "staging" ];
 then 
