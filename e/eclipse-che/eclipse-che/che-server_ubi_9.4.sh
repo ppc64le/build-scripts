@@ -35,7 +35,7 @@ export PATH=$JAVA_HOME/bin:$PATH
 echo "Installed JAVA 11"
 
 #install maven
-echo "Installing maven"
+echo "Installing maven 3.9.9"
 MAVEN_VERSION=${MAVEN_VERSION:-3.9.9}
 wget https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
 tar -zxf apache-maven-$MAVEN_VERSION-bin.tar.gz
