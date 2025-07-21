@@ -38,6 +38,4 @@ else
 	echo "------------------$PACKAGE_NAME:Build_Success-------------------"
 fi
 
-# Uncomment following command to run the tests.
-
-#mvn test
+mvn test
