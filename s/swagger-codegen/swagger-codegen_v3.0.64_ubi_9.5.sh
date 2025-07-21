@@ -35,7 +35,11 @@ git checkout $PACKAGE_VERSION
 if ! mvn clean install -DskipTests; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
 else
-	echo "------------------$PACKAGE_NAME:Build_Success-------------------"
+    echo "------------------$PACKAGE_NAME:Build_Success---------------------"
 fi
 
-mvn test
+if ! mvn test; then
+    echo "------------------$PACKAGE_NAME:Test_fail---------------------"
+else
+    echo "------------------$PACKAGE_NAME:Test_Success---------------------"
+fi
