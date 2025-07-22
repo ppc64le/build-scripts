@@ -16,10 +16,8 @@ readme = "README.md"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Programming Language :: C++",
-  "License :: OSI Approved :: BSD License",
+  "License :: BSD 3-Clause",
 ]
-
-license = {file = "LICENSE.txt"}
 
 [project.urls]
 homepage = "https://github.com/OpenMathLib/OpenBLAS"
