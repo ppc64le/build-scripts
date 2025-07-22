@@ -45,9 +45,6 @@ cd OpenBLAS
 git checkout v0.3.29
 git submodule update --init
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/openblas/pyproject.toml
-sed -i "s/{PACKAGE_VERSION}/v0.3.29/g" pyproject.toml
-
 PREFIX=local/openblas
 OPENBLAS_SOURCE=$(pwd)
 
