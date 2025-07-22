@@ -80,3 +80,4 @@ else
         echo "Error: Token request failed. Response: $token_request"
         exit 1
     fi
+fi
