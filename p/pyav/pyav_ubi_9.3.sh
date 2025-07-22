@@ -99,7 +99,7 @@ pkg-config --modversion openblas
 echo "-----------------------------------------------------Installed openblas-----------------------------------------------------"
 
 echo "Installing NumPy"
-python3.12 -m pip install numpy==2.0.2
+python-m pip install numpy==2.0.2
 
 #installing libvpx
 cd $CURRENT_DIR
