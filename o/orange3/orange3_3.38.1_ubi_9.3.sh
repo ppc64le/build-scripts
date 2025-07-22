@@ -26,7 +26,7 @@ PACKAGE_URL=https://github.com/biolab/orange3
 PACKAGE_DIR=orange3
 CURRENT_DIR=$(pwd)
 
-yum install -y wget git python3.12 make unzip python3.12-pip python3.12-devel git gcc-toolset-13 gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ openssl-devel xz-devel xz.ppc64le openblas rust cargo zlib-devel libjpeg-devel ninja-build gcc-toolset-13-gcc-gfortran gcc-toolset-13-gcc-c++ lld bzip2 zip libstdc++-devel ninja-build sqlite-devel perl-core gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++
+yum install -y wget git python3.12 make unzip python3.12-pip python3.12-devel git gcc-toolset-13 gcc-toolset-13-gcc-c++ openssl-devel xz-devel xz.ppc64le rust cargo zlib-devel libjpeg-devel ninja-build gcc-toolset-13-gcc-gfortran lld bzip2 zip libstdc++-devel ninja-build sqlite-devel perl-core gcc-toolset-13-binutils-devel 
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
@@ -89,15 +89,15 @@ export LD_LIBRARY_PATH=${PREFIX}/lib:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
 pkg-config --modversion openblas
 cd $CURRENT_DIR
-pip3.12 install sip pytest
+python3.12 -m pip install sip pytest
 OUTPUT_FOLDER="$(pwd)/output"
 
 
 echo "---------------------xgboost installing---------------------"
 # Install Xgboost from source
 echo "Installing dependencies..."
-yum install -y openssl-devel cmake openblas-devel
-pip3.12 install numpy packaging pathspec pluggy scipy trove-classifiers wheel build
+yum install -y openssl-devel cmake
+python3.12 -m pip install numpy==2.0.2 packaging pathspec pluggy scipy==1.15.2 trove-classifiers wheel build
 
 echo "Cloning the repository..."
 mkdir -p output
@@ -173,8 +173,8 @@ git clone https://github.com/catboost/catboost.git
 cd catboost
 git checkout v1.2.5
 
-pip3.12 install "conan<2"
-pip3.12 install six setuptools wheel jupyterlab Pillow pandas plotly scipy testpath pytest ipywidgets 'numpy<2.0' build wheel
+python3.12 -m pip install "conan<2"
+python3.12 -m pip install six setuptools wheel jupyterlab Pillow pandas plotly scipy testpath pytest ipywidgets 'numpy<2.0' build wheel
 export PATH=$CURRENT_DIR/clang-17.0.6/bin:$PATH
 export CC=$CURRENT_DIR/clang-17.0.6/bin/clang
 export CXX=$CURRENT_DIR/clang-17.0.6/bin/clang++
@@ -227,7 +227,7 @@ echo "Updated CFLAGS: $CFLAGS"
 echo "Updated CXXFLAGS: $CXXFLAGS"
 
 
-pip3.12 install /catboost/catboost/python-package/dist/catboost-*_ppc64le.whl
+python3.12 -m pip install /catboost/catboost/python-package/dist/catboost-*_ppc64le.whl
 # python3.12 setup.py bdist_wheel --no-widget
 cd $CURRENT_DIR
 
@@ -236,9 +236,9 @@ git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-pip3.12 install --upgrade pip  wheel
-pip3.12 install "setuptools<69"
-pip3.12 install beautifulsoup4 docutils numpydoc recommonmark Sphinx 'cmake==3.31.*'
+python3.12 -m pip install --upgrade pip  wheel
+python3.12 -m pip install "setuptools<69"
+python3.12 -m pip install beautifulsoup4 docutils numpydoc recommonmark Sphinx 'cmake==3.31.*'
 
 source scl_source enable gcc-toolset-13
 
@@ -294,20 +294,17 @@ export CXX="/opt/rh/gcc-toolset-13/root/usr/bin/g++"
 export ASM="/opt/rh/gcc-toolset-13/root/usr/bin/gcc" 
 # Use GCC's linker explicitly
 export LDFLAGS="-L/opt/rh/gcc-toolset-13/root/usr/lib64 -Wl,-rpath=/opt/rh/gcc-toolset-13/root/usr/lib64"
-echo "CC set to: $CC"
-echo "CXX set to: $CXX"
-echo "LDFLAGS set to: $LDFLAGS"
 
 
 # Install core build tools and NumPy *before* Orange3's main install
-pip3.12 install cython=="3.0.10" trubar ninja versioneer meson-python
-pip3.12 install --no-build-isolation "numpy==1.26.4"
+python3.12 -m pip install cython=="3.0.10" trubar ninja versioneer meson-python
+python3.12 -m pip install --no-build-isolation "numpy==1.26.4"
 # After NumPy is installed, set NUMPY_INCLUDE_DIR
 export NUMPY_INCLUDE_DIR=$(python3.12 -c "import numpy; print(numpy.get_include())")
 echo "NUMPY_INCLUDE_DIR set to: $NUMPY_INCLUDE_DIR"
 
-pip3.12 install -r requirements-gui.txt
-pip3.12 install pandas
+python3.12 -m pip install -r requirements-gui.txt
+python3.12 -m pip install pandas
 
 # Re-export CFLAGS, CXXFLAGS, CPPFLAGS right before requirements-core.txt
 echo "Re-exporting CFLAGS, CXXFLAGS, CPPFLAGS before requirements-core.txt installation..."
@@ -318,7 +315,7 @@ echo "Updated CFLAGS: $CFLAGS"
 echo "Updated CXXFLAGS: $CXXFLAGS"
 echo "Updated CPPFLAGS: $CPPFLAGS"
 
-pip3.12 install -r requirements-core.txt  # For Orange Python library
+python3.12 -m pip install -r requirements-core.txt  # For Orange Python library
 
 #installing xgboost and catboost from source
 sed -i '/^xgboost>=1\.7\.4,<2\.1$/d' requirements-core.txt
