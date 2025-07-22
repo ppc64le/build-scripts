@@ -5,8 +5,8 @@ MAINTAINER Aastha Sharma <aastha.sharma4@ibm.com>
 ARG PACKAGE_VERSION=v3.0.1
 
 # Install system dependencies including ninja-build
-RUN yum install -y --allowerasing wget python3 python3-devel python3-pip git gcc-toolset-13 cmake make gfortran procps-ng diffutils bc zlib-devel curl tar ninja-build && \
-    python3 -m pip install -U pip wheel
+RUN yum install -y --allowerasing wget python3.11 python3.11-devel python3.11-pip git gcc-toolset-13 cmake make gfortran procps-ng diffutils bc zlib-devel curl tar ninja-build && \
+    python3.11 -m pip install -U pip wheel
 
 # Set environment variables for gcc-toolset and OpenBLAS
 ENV PATH="/opt/rh/gcc-toolset-13/root/usr/bin:$PATH"
@@ -26,10 +26,10 @@ RUN git clone https://github.com/macs3-project/MACS.git && \
     cd MACS && \
     git checkout $PACKAGE_VERSION && \
     git submodule update --init --recursive && \
-    python3 -m pip install cython numpy==2.0.2 scipy==1.15.2 && \
-    python3 -m pip install meson meson-python && \
-    python3 -m pip install pybind11 pythran && \
-    python3 -m pip install --upgrade --progress-bar off pytest && \
-    python3 -m pip install --upgrade-strategy only-if-needed --no-build-isolation --progress-bar off .
+    python3.11 -m pip install cython numpy==2.0.2 scipy==1.15.2 && \
+    python3.11 -m pip install meson meson-python && \
+    python3.11 -m pip install pybind11 pythran && \
+    python3.11 -m pip install --upgrade --progress-bar off pytest && \
+    python3.11 -m pip install --upgrade-strategy only-if-needed --no-build-isolation --progress-bar off .
 
 CMD ["/bin/bash"]
