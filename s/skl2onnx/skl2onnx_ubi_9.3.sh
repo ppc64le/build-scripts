@@ -267,7 +267,8 @@ sed -i 's/\bprotobuf==[^ ]*\b/protobuf==4.25.8/g' requirements.txt
 python3.12 -m pip install flatbuffers onnxmltools
 
 cd $CURRENT_DIR
-
+NUMPY_INCLUDE=$(python3 -c "import numpy; print(numpy.get_include())")
+echo "NumPy include path: $NUMPY_INCLUDE"
 # Clone and install onnxruntime
 echo " ----------------------------------------- Onnxruntime Installing ----------------------------------------- "
 
@@ -284,8 +285,6 @@ export CFLAGS="-Wno-stringop-overflow"
 export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
 
 python3 -m pip install packaging wheel
-NUMPY_INCLUDE=$(python3 -c "import numpy; print(numpy.get_include())")
-echo "NumPy include path: $NUMPY_INCLUDE"
 
 # Manually defines Python::NumPy for CMake versions with broken NumPy detection
 sed -i '193i # Fix for Python::NumPy target not found\nif(NOT TARGET Python::NumPy)\n    find_package(Python3 COMPONENTS NumPy REQUIRED)\n    add_library(Python::NumPy INTERFACE IMPORTED)\n    target_include_directories(Python::NumPy INTERFACE ${Python3_NumPy_INCLUDE_DIR})\n    message(STATUS "Manually defined Python::NumPy with include dir: ${Python3_NumPy_INCLUDE_DIR}")\nendif()\n' $CURRENT_DIR/onnxruntime/cmake/onnxruntime_python.cmake
