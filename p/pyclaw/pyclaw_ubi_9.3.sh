@@ -23,7 +23,7 @@ set -ex
 PACKAGE_NAME=pyclaw
 PACKAGE_VERSION=${1:-v5.12.0}
 PACKAGE_URL=https://github.com/clawpack/pyclaw.git
-PACKAGE_DIR=pyclaw/src/pyclaw   
+PACKAGE_DIR=/pyclaw/src/pyclaw   
 CURRENT_DIR=$(pwd)
 
 # --- Install System Dependencies ---
