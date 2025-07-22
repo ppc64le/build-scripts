@@ -1,49 +1,42 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : pyarrow
-# Version       : apache-arrow-19.0.0
-# Source repo   : https://github.com/apache/arrow
-# Tested on     : UBI:9.3
-# Language      : Python, C
-# Travis-Check  : True
-# Script License: Apache License, Version 2 or later
-# Maintainer    : Haritha Nagothu <haritha.nagothu2@ibm.com>
-# Disclaimer: This script has been tested in root mode on given
-# ==========  platform using the mentioned version of the package.
-#             It may not work as expected with newer versions of the
-#             package and/or distribution. In such case, please
-#             contact "Maintainer" of this script.
+# Package          : airflow
+# Version          : 3.0.2
+# Source repo      : https://github.com/apache/airflow
+# Tested on        : UBI:9.3
+# Language         : Python
+# Travis-Check     : True
+# Script License   : Apache License, Version 2 or later
+# Maintainer       : Ramnath Nayak <Ramnath.Nayak@ibm.com>
+#
+# Disclaimer       : This script has been tested in root mode on given
+# ==========         platform using the mentioned version of the package.
+#                    It may not work as expected with newer versions of the
+#                    package and/or distribution. In such case, please
+#                    contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
 
-set -e
+PACKAGE_NAME=airflow
+PACKAGE_VERSION=${1:-3.0.2}
+PACKAGE_URL=https://github.com/apache/airflow
+PACKAGE_DIR=airflow
 
-PACKAGE_NAME=pyarrow
-PACKAGE_DIR=arrow/python
-PACKAGE_VERSION=${1:-apache-arrow-19.0.0}
-PACKAGE_URL=https://github.com/apache/arrow
-version=$(echo "$PACKAGE_VERSION" | sed 's/^apache-arrow-//')
+CURRENT_DIR=${PWD}
 
-echo "Install dependencies and tools."
-yum install -y python python-pip python-devel wget git make  python-devel xz-devel openssl-devel cmake zlib-devel libjpeg-devel gcc-toolset-13 cmake libevent libtool pkg-config  brotli-devel.ppc64le bzip2-devel lz4-devel 
+yum install -y git make cmake zip tar wget python3 python3-devel python3-pip gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc zlib-devel bzip2-devel libffi-devel openldap-devel unixODBC-devel libpq-devel sqlite-devel mysql openssl openssl-devel lz4 lz4-devel xz-devel libjpeg-devel libevent libtool pkg-config brotli-devel krb5-devel krb5-workstation pkgconf-pkg-config mariadb-connector-c-devel librdkafka-devel libxml2 libxslt libxml2-devel libxslt-devel 
 
-export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export GCC_TOOLSET_PATH=/opt/rh/gcc-toolset-13/root/usr
+export PATH=$GCC_TOOLSET_PATH/bin:$PATH
+export CFLAGS="-mcpu=power9 -mtune=power10 ${CFLAGS}"
+export CXXFLAGS="-mcpu=power9 -mtune=power10 ${CXXFLAGS}"
 
-SCRIPT_DIR=$(pwd)
-pip install ninja setuptools 
+#Install rustc
+curl https://sh.rustup.rs -sSf | sh -s -- -y
+source ~/.cargo/env
 
-#install cmake
-wget https://cmake.org/files/v3.28/cmake-3.28.0.tar.gz
-tar -zxvf cmake-3.28.0.tar.gz
-cd cmake-3.28.0
-./bootstrap
-echo "Compiling the source code..."
-make
-echo "Installing Cmake"
-make install
-cd ${SCRIPT_DIR}
-
+pip install ninja setuptools mysqlclient
 
 # Installing flex bison c-ares gflags rapidjson xsimd snappy libzstd
 echo "-----------flex installing------------------"
@@ -56,10 +49,10 @@ echo "Compiling the source code for flex..."
 make -j$(nproc)
 echo "Installing flex..."
 make install
-cd $SCRIPT_DIR 
+cd $CURRENT_DIR 
 
 echo "-------bison installing----------------------"
-wget https://mirrors.cloud.tencent.com/gnu/bison/bison-3.8.2.tar.gz
+wget https://ftp.gnu.org/gnu/bison/bison-3.8.2.tar.gz
 tar -xvf bison-3.8.2.tar.gz
 cd bison-3.8.2
 echo "Configuring bison installation..."
@@ -68,7 +61,7 @@ echo "Compiling the source code bison..."
 make -j$(nproc)
 echo "Installing bison..."
 make install
-cd $SCRIPT_DIR
+cd $CURRENT_DIR
 
 echo "------------ gflags installing-------------------"
 git clone https://github.com/gflags/gflags.git
@@ -80,7 +73,7 @@ echo "Compiling the source code gflags..."
 make -j$(nproc)
 echo "Installing gflags..."
 make install
-cd $SCRIPT_DIR 
+cd $CURRENT_DIR 
 
 echo "----------Installing c-ares----------------"
 #Building c-areas
@@ -113,7 +106,6 @@ if [[ "${target_platform}" == Linux-* ]]; then
   CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_AR=${AR}"
 fi
 
-
 # Generate the build files.
 echo "Generating the build files..."
 cmake ${CMAKE_ARGS} .. \
@@ -134,7 +126,7 @@ ninja || exit 1
 echo "Installing c-areas..."
 ninja install || exit 1
 
-cd $SCRIPT_DIR
+cd $CURRENT_DIR
 
 echo "----------c-areas installed-----------------------"
 
@@ -148,7 +140,7 @@ echo "Compiling the source code for rapidjson..."
 make -j$(nproc)
 echo "Installing rapidjson"
 make install
-cd $SCRIPT_DIR 
+cd $CURRENT_DIR 
 
 echo "--------------xsimd installing-------------------------"
 git clone https://github.com/xtensor-stack/xsimd.git
@@ -160,7 +152,7 @@ echo "Compiling the source code for xsimd..."
 make -j$(nproc)
 echo "Installing xsimd..."
 make install
-cd $SCRIPT_DIR 
+cd $CURRENT_DIR 
 
 
 echo "-----------------snappy installing----------------"
@@ -182,7 +174,7 @@ make -j$(nproc)
 echo "Installing snappy..."
 make install
 cd ..
-cd $SCRIPT_DIR 
+cd $CURRENT_DIR 
 
 
 echo "------------libzstd installing-------------------------"
@@ -196,12 +188,9 @@ make install
 export ZSTD_HOME=/usr/local
 export CMAKE_PREFIX_PATH=$ZSTD_HOME
 export LD_LIBRARY_PATH=$ZSTD_HOME/lib64:$LD_LIBRARY_PATH
-cd $SCRIPT_DIR
+cd $CURRENT_DIR
 
-#Installing re2,orc utf8proc,boost_cpp,thrift_cpp,abseil_cpp,libprotobuf, grpc_cpp,openblas as dependencies
-
-
-#re2 install from sosurce
+#re2 install from source
 echo "------------ re2 installing-------------------"
 
 git clone http://github.com/google/re2
@@ -233,7 +222,7 @@ echo "Installing re2..."
   popd
 echo "Running make shared-install......"
 make -j "${CPU_COUNT}" prefix=${RE2_PREFIX} shared-install
-cd $SCRIPT_DIR 
+cd $CURRENT_DIR 
 
 
 
@@ -263,7 +252,7 @@ cmake --build .
 
 echo "Installing utf8proc ..."
 cmake --build . --target install
-cd $SCRIPT_DIR 
+cd $CURRENT_DIR 
 
 echo "------------ abseil_cpp cloning-------------------"
 
@@ -292,7 +281,7 @@ git submodule update --init --recursive
 rm -rf ./third_party/googletest | true
 rm -rf ./third_party/abseil-cpp | true
 
-cp -r $SCRIPT_DIR/abseil-cpp ./third_party/
+cp -r $CURRENT_DIR/abseil-cpp ./third_party/
 
 mkdir build
 cd build
@@ -315,7 +304,7 @@ echo  "Building libprotobuf..."
 cmake --build . --verbose
 echo  "Installing libprotobuf..."
 cmake --install .
-cd $SCRIPT_DIR 
+cd $CURRENT_DIR 
 
 echo "------------ orc installing-------------------"
 
@@ -396,7 +385,7 @@ ninja
 echo  "Installing orc..."
 ninja install
 
-cd $SCRIPT_DIR
+cd $CURRENT_DIR
 
 
 echo "-----------------boost_cpp installing-----------------------"
@@ -418,7 +407,7 @@ export target_platform=$(uname)-$(uname -m)
 CXXFLAGS="${CXXFLAGS} -fPIC"
 TOOLSET=gcc
 
- # http://www.boost.org/build/doc/html/bbv2/tasks/crosscompile.html
+# http://www.boost.org/build/doc/html/bbv2/tasks/crosscompile.html
 cat <<EOF > tools/build/example/site-config.jam
 using ${TOOLSET} : : ${CXX} ;
 EOF
@@ -459,9 +448,9 @@ echo " Building and installing Boost...."
     install
 
 # Remove Python headers as we don't build Boost.Python.
-rm "${BOOST_PREFIX}/include/boost/python.hpp"
-rm -r "${BOOST_PREFIX}/include/boost/python"
-cd $SCRIPT_DIR 
+rm -rf "${BOOST_PREFIX}/include/boost/python.hpp"
+rm -rf "${BOOST_PREFIX}/include/boost/python"
+cd $CURRENT_DIR 
 
 
 echo "------------thrift_cpp  installing-------------------"
@@ -508,9 +497,10 @@ echo "Compiling the source code for thrift-cpp..."
 make -j$(nproc)
 echo  "Installing thrift_cpp..."
 make install
-cd $SCRIPT_DIR 
+cd $CURRENT_DIR 
 
-echo "------------ grpc_cpp installing-------------------"
+
+echo "------------ grpc_cpp 1.68.0 installing-------------------"
 
 git clone https://github.com/grpc/grpc
 cd grpc
@@ -545,7 +535,7 @@ pushd build-cpp
 echo "Running cmake to configure the build for grpc-cpp...."
 cmake ${CMAKE_ARGS} ..  \
       -GNinja \
-      -DBUILD_SHARED_LIBS=ON \
+     -DBUILD_SHARED_LIBS=ON \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_INSTALL_PREFIX=$GRPC_PREFIX \
       -DgRPC_CARES_PROVIDER="package" \
@@ -564,8 +554,24 @@ cmake ${CMAKE_ARGS} ..  \
 echo  "Installing grpc_cpp..."
 ninja install -v
 popd
+cd $CURRENT_DIR
 
-cd $SCRIPT_DIR
+#echo "---------------Installing grpc 1.70.0---------------------"
+
+cd grpc
+git checkout v1.70.0
+git submodule update --init --recursive
+
+python3 -m pip install pytest hypothesis build six
+
+# Install requirements
+python3 -m pip install "coverage>=4.0" "cython>=0.29.8,<3.0.0" "wheel>=0.29"
+
+# Install the package
+GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1 python3 -m pip install -e .
+cd $CURRENT_DIR
+
+#echo "-------------grpc 1.70.0 installed-----------------------------------"
 
 echo "---------------------openblas installing---------------------"
 
@@ -629,7 +635,7 @@ sed -i "s|includedir=local/openblas/include|includedir=${OpenBLASInstallPATH}/in
 export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
 export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
 
-cd $SCRIPT_DIR
+cd $CURRENT_DIR
 echo "------------openblas installed--------------------"
 
 
@@ -637,10 +643,10 @@ echo "-----------------installing pyarrow----------------------"
 
 #cloning pyarrow
 
-git clone  $PACKAGE_URL
+git clone https://github.com/apache/arrow
 
 cd arrow
-git checkout $PACKAGE_VERSION
+git checkout apache-arrow-20.0.0
 git submodule update --init
 
 mkdir pyarrow_prefix
@@ -753,7 +759,7 @@ echo "Installing pyarrow...."
 ninja install
 popd
 
-cd $SCRIPT_DIR
+cd $CURRENT_DIR
 
 echo "Installing prerequisite for arrow..."
 pip install setuptools-scm Cython
@@ -791,45 +797,79 @@ else
     export PYARROW_WITH_CUDA=0
 fi
 
+yum reinstall cmake -y
 cd python
+pip install -e .
+cd $CURRENT_DIR
 
+#Install redoc
+git clone https://github.com/sphinx-contrib/redoc
+cd redoc
+SETUPTOOLS_SCM_PRETEND_VERSION=1.6.0 pip install .
+cd $CURRENT_DIR
+
+#Install FreeTDS
+curl -LO https://www.freetds.org/files/stable/freetds-1.3.18.tar.gz
+tar -xzf freetds-1.3.18.tar.gz
+cd freetds-1.3.18
+# Configure and build
+./configure --prefix=/usr/local --with-tdsver=7.3
+make
+make install
+cd $CURRENT_DIR
+
+#Install librdkafka
+git clone https://github.com/confluentinc/librdkafka.git
+cd librdkafka
+# You can pin to a specific recent version if needed, e.g.:
+# git checkout v2.3.0
+./configure
+make
+make install
+cd $CURRENT_DIR
+
+#Install libtool
+wget https://ftp.gnu.org/gnu/libtool/libtool-2.4.7.tar.gz
+tar xzf libtool-2.4.7.tar.gz
+cd libtool-2.4.7
+./configure --prefix=/usr/local
+make -j$(nproc)
+make install
+ldconfig
+cd $CURRENT_DIR
+
+#Install xmlsec1
+wget https://www.aleksey.com/xmlsec/download/xmlsec1-1.3.7.tar.gz
+tar xzf xmlsec1-1.3.7.tar.gz
+cd xmlsec1-1.3.7
+
+./configure --with-openssl --disable-dl --prefix=/usr/local
+make
+make install
+ldconfig
+
+cd $CURRENT_DIR
+
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
+
+pip install uv maturin hatchling
+
+uv tool install -e ./dev/breeze
+uv tool install hatch
+uv tool install flit
+uv tool install cherry-picker
+
+
+#Build package
 if ! pip install . ; then
-    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
+    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-# Creating the wheel in the build script.Because When using the wrapper script, 
-# the wheel file is generated with an unexpected version, e.g., 
-# 'pyarrow-19.0.1.dev0+ga8a979a41.d20250414-cp312-cp312-linux_ppc64le.whl'
-# This is because when the wheel is built using the command:
-# python -m build --wheel --no-isolation --outdir="$SCRIPT_DIR/"
-# If we using 'python3 setup.py bdist_wheel --dist-dir="$SCRIPT_DIR/"' produces a wheel with the expected naming format.
-pip install wheel
-echo "Creating wheel....."
-python3 setup.py bdist_wheel --dist-dir="$SCRIPT_DIR/"
+# Skipping tests since they require a fully initialized metadata DB and environment, which are not supported in this context.
 
-echo "testing pyarrow...."
-cd ..
-export LD_LIBRARY_PATH=${SNAPPY_PREFIX}/lib:${C_ARES_PREFIX}/lib:${THRIFT_PREFIX}/lib:${UTF8PROC_PREFIX}/lib:${RE2_PREFIX}/lib:${LIBPROTO_INSTALL}/lib64:${GRPC_PREFIX}/lib:${ORC_PREFIX}/lib:${OpenBLASInstallPATH}/lib
 
-pip install -r python/requirements-test.txt
-
-PYARROW_LOCATION=$(python -c "import os; import pyarrow; print(os.path.dirname(pyarrow.__file__))")
-export PARQUET_TEST_DATA="$(pwd)/cpp/submodules/parquet-testing/data"
-pushd testing
-export ARROW_TEST_DATA=$(pwd)/data
-popd
-
-if ! python -m pytest -k "not test_foreign_buffer and not test_get_include" $PYARROW_LOCATION -vv ; then
-        echo "------------------$PACKAGE_NAME:test_fails---------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME "
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | Github | Fail |  Test_Fails"
-        exit 2
-else
-        echo "------------------$PACKAGE_NAME:test_success-------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME "
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | Github | Pass |  Test_Success"
-	exit 0
-fi
