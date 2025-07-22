@@ -267,6 +267,10 @@ sed -i 's/\bprotobuf==[^ ]*\b/protobuf==4.25.8/g' requirements.txt
 python3.12 -m pip install flatbuffers onnxmltools
 
 cd $CURRENT_DIR
+
+export CXXFLAGS="-Wno-stringop-overflow"
+export CFLAGS="-Wno-stringop-overflow"
+export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
 NUMPY_INCLUDE=$(python3 -c "import numpy; print(numpy.get_include())")
 echo "NumPy include path: $NUMPY_INCLUDE"
 # Clone and install onnxruntime
