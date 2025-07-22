@@ -109,7 +109,7 @@ export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
 python3.12 -m pip install --upgrade pip setuptools wheel ninja packaging tox pytest build mypy stubs
-python3.12 -m pip install 'cmake==3.31.6'
+python3.12 -m pip install cmake==3.31.6 numpy==2.0.2
 
 echo " ----------------------------------------- Abseil-Cpp Cloning ----------------------------------------- "
 
