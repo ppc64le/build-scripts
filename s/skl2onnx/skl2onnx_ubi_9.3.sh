@@ -268,11 +268,6 @@ python3.12 -m pip install flatbuffers onnxmltools
 
 cd $CURRENT_DIR
 
-export CXXFLAGS="-Wno-stringop-overflow"
-export CFLAGS="-Wno-stringop-overflow"
-export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
-NUMPY_INCLUDE=$(python3 -c "import numpy; print(numpy.get_include())")
-echo "NumPy include path: $NUMPY_INCLUDE"
 # Clone and install onnxruntime
 echo " ----------------------------------------- Onnxruntime Installing ----------------------------------------- "
 
@@ -287,7 +282,8 @@ echo " ----------------------------------------- Building onnxruntime ----------
 export CXXFLAGS="-Wno-stringop-overflow"
 export CFLAGS="-Wno-stringop-overflow"
 export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
-
+NUMPY_INCLUDE=$(python3.12 -c "import numpy; print(numpy.get_include())")
+echo "NumPy include path: $NUMPY_INCLUDE"
 python3 -m pip install packaging wheel
 
 # Manually defines Python::NumPy for CMake versions with broken NumPy detection
