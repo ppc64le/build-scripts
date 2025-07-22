@@ -412,7 +412,8 @@ git clone $PACKAGE_URL -b $PACKAGE_VERSION
 cd $PACKAGE_DIR
 sed -i "s/numpy~=1.23/numpy==2.0.2/g" setup.py
 sed -i "s/numpy~=1.23.0/numpy==2.0.2/g" requirements.txt
-
+sed -i "s/absl-py~=1.2/absl-py~=2.3/g" setup.py
+sed -i "s/absl-py~=1.2/absl-py~=2.3/g" requirements.txt
 echo " --------------------------------------------- Wheel Build Started --------------------------------------------- "
 
 #Start building
