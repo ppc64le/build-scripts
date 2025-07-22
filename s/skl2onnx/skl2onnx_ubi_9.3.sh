@@ -128,7 +128,7 @@ export CXX_COMPILER=$(which g++)
 # Clone Source-code
 echo " ----------------------------------------- Libprotobuf Installing ----------------------------------------- "
 
-PACKAGE_VERSION_LIB="v4.25.3"
+PACKAGE_VERSION_LIB="v4.25.8"
 PACKAGE_GIT_URL="https://github.com/protocolbuffers/protobuf"
 
 git clone $PACKAGE_GIT_URL -b $PACKAGE_VERSION_LIB
@@ -202,6 +202,12 @@ cd onnx
 git checkout v1.17.0
 git submodule update --init --recursive
 
+sed -i 's|https://github.com/abseil/abseil-cpp/archive/refs/tags/20230125.3.tar.gz%7Chttps://github.com/abseil/abseil-cpp/archive/refs/tags/20240116.2.tar.gz%7Cg' CMakeLists.txt && \
+sed -i 's|e21faa0de5afbbf8ee96398ef0ef812daf416ad8|bb8a766f3aef8e294a864104b8ff3fc37b393210|g' CMakeLists.txt && \
+sed -i 's|https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protobuf-22.3.tar.gz%7Chttps://github.com/protocolbuffers/protobuf/archive/refs/tags/v4.25.8.tar.gz%7Cg' CMakeLists.txt && \
+sed -i 's|310938afea334b98d7cf915b099ec5de5ae3b5c5|ffa977b9a7fb7e6ae537528eeae58c1c4d661071|g' CMakeLists.txt && \
+sed -i 's|set(Protobuf_VERSION "4.22.3")|set(Protobuf_VERSION "v4.25.8")|g' CMakeLists.txt
+
 export ONNX_ML=1
 export ONNX_PREFIX=$(pwd)/../onnx-prefix
 
@@ -234,7 +240,7 @@ python3.12 -m pip install parameterized
 python3.12 -m pip install pytest nbval pythran mypy-protobuf
 python3.12 -m pip install scipy==1.15.2 pandas scikit_learn==1.6.1
 
-sed -i 's/protobuf>=[^ ]*/protobuf==4.25.3/' requirements.txt
+sed -i 's/protobuf>=[^ ]*/protobuf==4.25.8/' requirements.txt
 python3.12 setup.py install
 
 echo " ----------------------------------------- Onnx Successfully Installed ----------------------------------------- "
@@ -249,14 +255,14 @@ cd onnxconverter-common
 git checkout v1.14.0
 git submodule update --init --recursive
 
-sed -i 's/\bprotobuf==[^ ]*\b/protobuf==4.25.3/g' pyproject.toml
+sed -i 's/\bprotobuf==[^ ]*\b/protobuf==4.25.8/g' pyproject.toml
 sed -i 's/\"onnx\"/\"onnx==1.17.0\"/' pyproject.toml
 sed -i 's/\"numpy\"/\"numpy==2.0.2\"/' pyproject.toml
 sed -i "/tool.setuptools.dynamic/d" pyproject.toml
 sed -i "/onnxconverter_common.__version__/d" pyproject.toml
 
 sed -i 's/\"numpy\"/\"numpy==2.0.2\"/' requirements.txt
-sed -i 's/\bprotobuf==[^ ]*\b/protobuf==4.25.3/g' requirements.txt
+sed -i 's/\bprotobuf==[^ ]*\b/protobuf==4.25.8/g' requirements.txt
 
 python3.12 -m pip install flatbuffers onnxmltools
 
@@ -267,14 +273,28 @@ echo " ----------------------------------------- Onnxruntime Installing --------
 
 git clone https://github.com/microsoft/onnxruntime
 cd onnxruntime
-git checkout d1fb58b0f2be7a8541bfa73f8cbb6b9eba05fb6b
+git checkout v1.21.0
 
 # Build the onnxruntime package and create the wheel
 sed -i 's/python3/python3.12/g' build.sh
 echo " ----------------------------------------- Building onnxruntime ----------------------------------------- "
 
+export CXXFLAGS="-Wno-stringop-overflow"
+export CFLAGS="-Wno-stringop-overflow"
+export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
+
+python3 -m pip install packaging wheel
+NUMPY_INCLUDE=$(python3 -c "import numpy; print(numpy.get_include())")
+echo "NumPy include path: $NUMPY_INCLUDE"
+
+# Manually defines Python::NumPy for CMake versions with broken NumPy detection
+sed -i '193i # Fix for Python::NumPy target not found\nif(NOT TARGET Python::NumPy)\n    find_package(Python3 COMPONENTS NumPy REQUIRED)\n    add_library(Python::NumPy INTERFACE IMPORTED)\n    target_include_directories(Python::NumPy INTERFACE ${Python3_NumPy_INCLUDE_DIR})\n    message(STATUS "Manually defined Python::NumPy with include dir: ${Python3_NumPy_INCLUDE_DIR}")\nendif()\n' $CURRENT_DIR/onnxruntime/cmake/onnxruntime_python.cmake
+export CXXFLAGS="-I/usr/local/lib64/python${PYTHON_VERSION}/site-packages/numpy/_core/include/numpy $CXXFLAGS"
+
+sed -i 's|5ea4d05e62d7f954a46b3213f9b2535bdd866803|51982be81bbe52572b54180454df11a3ece9a934|' cmake/deps.txt
+
 ./build.sh \
-  --cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" \
+   --cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" "Protobuf_PROTOC_EXECUTABLE=$PROTO_PREFIX/bin/protoc" "Protobuf_INCLUDE_DIR=$PROTO_PREFIX/include" "onnxruntime_USE_COREML=OFF" "Python3_NumPy_INCLUDE_DIR=$NUMPY_INCLUDE" "CMAKE_POLICY_DEFAULT_CMP0001=NEW" "CMAKE_POLICY_DEFAULT_CMP0002=NEW" "CMAKE_POLICY_VERSION_MINIMUM=3.5" \
   --cmake_generator Ninja \
   --build_shared_lib \
   --config Release \
