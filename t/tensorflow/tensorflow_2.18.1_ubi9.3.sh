@@ -54,7 +54,7 @@ for package in openblas hdf5 abseil tensorflow ; do
     echo "Exported ${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
 done
 
-python3.12 -m pip install numpy==2.0.2 cython setuptools wheel ninja
+python3.12 -m pip install cython setuptools wheel ninja
 
 yum install -y java-11-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.25.0.9-3.el9.ppc64le 
@@ -118,6 +118,8 @@ export PKG_CONFIG_PATH=${OPENBLAS_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
 pkg-config --modversion openblas
 echo "-----------------------------------------------------Installed openblas-----------------------------------------------------"
 
+echo "Installing Numpy"
+python3.12 -m pip install numpy==2.0.2
 
 #Build hdf5 from source
 cd $CURRENT_DIR
