@@ -28,7 +28,7 @@ export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 
 # install pillow's minimum dependencies
-yum install -y zlib zlib-devel libjpeg-turbo libjpeg-turbo-devel openblas
+yum install -y zlib zlib-devel libjpeg-turbo libjpeg-turbo-devel wget
 
 
 echo " ------------------------------------------ Openblas Installing ------------------------------------------ "
