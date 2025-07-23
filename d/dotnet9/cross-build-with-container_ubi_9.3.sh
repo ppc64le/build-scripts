@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash
 # ----------------------------------------------------------------------------
 #
 # Package       : dotnet
@@ -73,9 +73,6 @@ container_build_arguments=()
 if [[ $CROSS_ARCH == ppc64le ]]; then
     container_build_arguments+=(--build-arg=TARGET_DEBIAN_ARCH=ppc64el)
     container_build_arguments+=(--build-arg=TARGET_GNU_ARCH=powerpc64le)
-elif [[ $CROSS_ARCH == s390x ]]; then
-    container_build_arguments+=(--build-arg=TARGET_DEBIAN_ARCH=s390x)
-    container_build_arguments+=(--build-arg=TARGET_GNU_ARCH=s390x)
 fi
 
 if [ "$DISABLE_CONTAINER" != "true" ]; then
@@ -142,7 +139,7 @@ if [ "${ONLINE:-true}" == "true" ]; then
     build_arguments+=(--online)
 fi
 
-if [[ "$CROSS_ARCH" == "s390x" ||  "$CROSS_ARCH" == "ppc64le" ]]; then
+if [[ "$CROSS_ARCH" == "ppc64le" ]]; then
     build_arguments+=(--use-mono-runtime)
 fi
 
