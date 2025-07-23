@@ -1,0 +1,16 @@
+{
+  "maintainer": "Harithanagothu2",
+  "package_name": "openapi-schema-validator",
+  "github_url": "https://github.com/p1c2u/openapi-schema-validator",
+  "version": "0.6.3",
+  "wheel_build" : true,
+  "package_dir": "o/openapi-schema-validator",
+  "default_branch": "master",
+  "build_script": "openapi-schema-validator_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*":{
+    "build_script":"openapi-schema-validator_ubi_9.3.sh"
+  }
+}

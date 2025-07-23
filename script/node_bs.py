@@ -8,6 +8,7 @@ import subprocess
 from subprocess import call
 import glob
 import stat
+import re
 import docker
 import shutil
 import sys
@@ -34,6 +35,14 @@ parser.add_argument('--github_token_arg',help="GitHub Token")
 args=parser.parse_args()
 
 path_separator = os.path.sep
+
+github_url=args.github_url_arg
+latest_release = args.package_version_arg
+package_language = args.language_arg
+
+active_repo=False
+new_build_script=''
+branch_pkg=""
 #ROOT = os.path.dirname(os.path.dirname(__file__))
 ROOT = os.getcwd()
 if args.package_name_arg:
@@ -41,8 +50,12 @@ if args.package_name_arg:
 else:
     package_name = input("Enter Package name (Package name should match with the directory name): ")
     #package_name = 'elasticsearch'
-package_name = package_name.lower()
-dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_name}"
+package_language = package_language.lower()
+if package_language.lower() in ['go','java']:
+    package_name_original = re.sub(r'[/.]','_',package_name)
+    dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_name_original}"
+else:
+    dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_name}"
 
 try:
     user_name_command ="git config user.name"
@@ -69,14 +82,6 @@ except subprocess.CalledProcessError as e:
     user_email_response = 'ich@us.ibm.com'
 except Exception as e:
     print("Error")
-
-github_url=args.github_url_arg
-latest_release = args.package_version_arg
-package_language = args.language_arg
-
-active_repo=False
-new_build_script=''
-branch_pkg=""
 
 def select_template_script(package_language):
     package_language=package_language.lower()
@@ -172,10 +177,23 @@ def raise_pull_request(branch_pkg, base="master"):
             "Authorization": "Bearer {}".format(github_token)
     }
 
+    #Check if PR already exists
+    search_url = f"https://api.github.com/repos/{pr_owner}/{pr_repo}/pulls?head={head}&state=open"
+    existing_pr_response = requests.get(search_url, headers=headers)
+
+    if existing_pr_response.status_code == 200:
+        existing_prs = existing_pr_response.json()
+        if existing_prs:
+            print("\nPR already exists.")
+            return {
+                "message": "already_exists",
+                "pr_url": existing_prs[0].get("html_url")
+            }
+
     pr_body = "Adding build_script and build_info.json"
 
     if package_language == "python" and args.generate_wheel_arg:
-	pr_title = "Python Ecosystem: Added build_script and build_info.json for "+package_name
+        pr_title = "Python Ecosystem: Added build_script and build_info.json for "+package_name
         with open('./templates/pyeco_pull_request_description.md', 'r') as file:
             pr_body = file.read()
 		
@@ -216,14 +234,14 @@ def add_license_file():
 
 
 def create_new_script():       
-    branch_chout=f"git checkout -b {package_name}_automation"
-    branch_pkg=f"{package_name}_automation"
+    branch_chout=f"git checkout -b {package_name}_{latest_release}_automation"
+    branch_pkg=f"{package_name}_{latest_release}_automation"
     print("\n\n Creating Branch and Checking Out")
-    subprocess.Popen(branch_chout,shell=True)
+    subprocess.run(branch_chout,shell=True)
 
     branch_cmd=f"git branch"
     print("\n\n Printing Current Branch")
-    subprocess.Popen(branch_cmd,shell=True)
+    subprocess.run(branch_cmd,shell=True)
     
     current_directory = os.getcwd()
 
@@ -256,7 +274,8 @@ def create_new_script():
         elif template_lines[i].startswith("PACKAGE_DIR"):
             template_lines[i]=f"PACKAGE_DIR={package_name}\n"
         
-    with open (f"{dir_name}/{package_name}_ubi_9.3.sh",'w') as newfile:
+    sanitised_name = re.sub(r'[/.]','_',package_name)    
+    with open (f"{dir_name}/{sanitised_name}_ubi_9.3.sh",'w') as newfile:
         newfile.writelines(template_lines)
 
     if args.spawn_container_arg:
@@ -265,7 +284,7 @@ def create_new_script():
         stdout, stderr=container_result.communicate()
         exit_code=container_result.wait()   
    
-    cmd_2=f"python3 script/generate_build_info.py --package_name_arg {package_name} --github_username_arg {args.github_username_arg} --generate_wheel_arg"
+    cmd_2=f"python3 script/generate_build_info.py --package_name_arg {sanitised_name} --github_username_arg {args.github_username_arg} --generate_wheel_arg"
     print("\n\n Generating build_info.json")
     build_info_w=subprocess.Popen(cmd_2,shell=True)
     build_info_w.wait()
@@ -283,22 +302,36 @@ def create_new_script():
         user_push_response=user_push_response.lower()
 
     if user_push_response=='y':
+        sanitised_name = re.sub(r'[/.]','_',package_name)  
+        file_path = f"{dir_name}/{sanitised_name}_ubi_9.3.sh"
+        print("\n\nGit Adding build_script...")
 
-        cmd_add=f"git add {dir_name}/{package_name}_ubi_9.3.sh"
-        print("\n\n Git Adding build_script")
-        git_add_w=subprocess.Popen(cmd_add,shell=True)
-        git_add_w.wait()
+        try:
+            subprocess.run(['git', 'add', file_path], check=True)
+            print(" Git add successful.")
 
-        cmd_add=f"git add {dir_name}/build_info.json"
-        print("\n\n Git Adding build_info.json")
-        git_add_w=subprocess.Popen(cmd_add,shell=True)
-        git_add_w.wait()
+        except subprocess.CalledProcessError as e:
+            print(f" Git command failed:\n{e.stderr}")
+
+        build_info_path = f"{dir_name}/build_info.json"
+        print("\n\nGit Adding build_info.json...")
+
+        try:
+            subprocess.run(['git', 'add', build_info_path], check=True)
+            print(" build_info.json successfully added to git staging.")
+
+        except subprocess.CalledProcessError as e:
+            print(f" Git command failed:\n{e.stderr}")
 
         if license_added:
-            cmd_add=f"git add {dir_name}/LICENSE"
-            print("\n\n Git Adding LICENSE")
-            git_add_w=subprocess.Popen(cmd_add,shell=True)
-            git_add_w.wait()
+            license_path = f"{dir_name}/LICENSE"
+            print("\n\nGit Adding LICENSE...")
+
+            try:
+                subprocess.run(['git', 'add', license_path], check=True)
+                print(" LICENSE successfully added to git staging.")
+            except subprocess.CalledProcessError as e:
+                print(f" Git command failed:\n{e.stderr}")
 
 
         #git commit command
@@ -309,7 +342,7 @@ def create_new_script():
         git_commit_w.wait()
     
         #git push commands
-        cmd_push=f"git push origin {package_name}_automation"
+        cmd_push=f"git push origin {package_name}_{latest_release}_automation"
         print("\n\n pushing code")
         git_push_w=subprocess.Popen(cmd_push,shell=True)
         git_push_w.wait()
@@ -371,8 +404,12 @@ else:
     if args.package_dir_arg:
         package_dir = args.package_dir_arg
 
-    package_name = package_name.lower()
-    dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_name}"
+    package_language = package_language.lower()
+    if package_language.lower() in ['go','java']:
+        package_name_original = re.sub(r'[/.]','_',package_name_original)
+        dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_name_original}"
+    else:
+        dir_name = f"{ROOT}{path_separator}{package_name[0]}{path_separator}{package_name}"
     os.makedirs(dir_name, exist_ok = True)
     create_new_script()
     display_details()

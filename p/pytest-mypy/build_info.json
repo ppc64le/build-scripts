@@ -1,0 +1,16 @@
+{
+  "maintainer": "vinodk99",
+  "package_name": "pytest-mypy",
+  "github_url": "https://github.com/realpython/pytest-mypy",
+  "version": "v1.0.1",
+  "wheel_build" : true,
+  "package_dir": "p/pytest-mypy",
+  "default_branch": "main",
+  "build_script": "pytest-mypy_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "pytest-mypy_ubi_9.3.sh"
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "maintainer": "vinodk99",
+  "maintainer": "ramnathnayak-ibm",
   "package_name": "azure-mgmt-rdbms",
   "github_url": "https://github.com/Azure/azure-sdk-for-python",
   "version": "azure-mgmt-rdbms_10.1.0",

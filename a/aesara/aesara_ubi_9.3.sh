@@ -5,7 +5,7 @@
 # Version       : rel-2.9.4
 # Source repo   : https://github.com/aesara-devs/aesara
 # Tested on     : UBI: 9.3
-# Language      : javascript
+# Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Haritha Nagothu <haritha.nagothu2@ibm.com>
@@ -81,7 +81,9 @@ cd $WORKING_DIR
 
 echo "-------------------successfully Installed llvmlite----------------------"
 
-python3.11 -m pip install  requests==2.26.0 wheel tox pytest numpy typing_extensions scipy cons etuples kanren
+python3.11 -m pip install  requests==2.26.0 wheel tox pytest 
+python3.11 -m pip install numpy==1.26.4 setuptools==68.2.2 
+python3.11 -m pip install typing_extensions scipy cons etuples kanren
 python3.11 -m pip install --no-build-isolation numba
 
 git clone https://github.com/pythological/unification.git
@@ -89,11 +91,9 @@ cd unification
 python3.11 -m pip install .
 cd $WORKING_DIR
 
-
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-
 
 if ! python3.11 -m pip install . ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
@@ -104,7 +104,19 @@ fi
 
 #Skipping these tests as per aesara's CI.
 
-if ! python3.11 -m pytest --ignore=tests/link/numba --ignore=tests/test_printing.py --ignore=tests/compile/test_mode.py --ignore=tests/link/test_vm.py --ignore=tests/link/c/test_op.py --ignore=tests/tensor/nnet --ignore=tests/tensor/rewriting/test_shape.py --ignore=tests/tensor/signal --ignore=tests/tensor/random --ignore=tests/scan/ ; then
+if ! pytest \
+    --ignore=tests/link/numba \
+    --ignore=tests/test_printing.py \
+    --ignore=tests/compile/test_mode.py \
+    --ignore=tests/link/test_vm.py \
+    --ignore=tests/link/c/test_op.py \
+    --ignore=tests/tensor/nnet \
+    --ignore=tests/tensor/rewriting/test_shape.py \
+    --ignore=tests/tensor/signal \
+    --ignore=tests/tensor/random \
+    --ignore=tests/scan/ \
+    -p no:warnings \
+    -p no:xfail ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"

@@ -1,15 +1,16 @@
 {
-  "maintainer": "mohitp333",
+  "maintainer": "ramnathnayak-ibm",
   "package_name": "cloudpickle",
-  "github_url": "https://github.com/cloudpipe/cloudpickle.git",
-  "version": "v3.0.0",
+  "github_url": "https://github.com/cloudpipe/cloudpickle",
+  "version": "v3.1.1",
   "default_branch": "master",
   "package_dir": "c/cloudpickle",
-  "build_script": "cloudpickle_ubi_8.7.sh",
+  "build_script": "cloudpickle_ubi_9.3.sh",
   "validate_build_script": "true",
   "use_non_root_user": "false",
   "docker_build": "false",
-  "v3.0.*": {
-    "build_script": "cloudpickle_ubi_8.7.sh"
+  "wheel_build": "true",
+  "v3.*.*": {
+    "build_script": "cloudpickle_ubi_9.3.sh"
   }
 }

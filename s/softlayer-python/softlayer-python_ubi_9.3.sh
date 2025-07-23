@@ -23,10 +23,13 @@ PACKAGE_VERSION=${1:-v6.2.6}
 PACKAGE_URL=https://github.com/softlayer/softlayer-python
 PACKAGE_DIR=softlayer-python
 
-yum install -y git python3 python3-devel python3-pip python3-tkinter gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc
+yum install -y git python3 python3-devel python3-pip gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc
 
 export GCC_TOOLSET_PATH=/opt/rh/gcc-toolset-13/root/usr
 export PATH=$GCC_TOOLSET_PATH/bin:$PATH
+
+PYTHON_VER=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
+yum install -y python${PYTHON_VER}-tkinter
 
 pip install tox
 
@@ -34,7 +37,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if ! pip install -e . ; then
+if ! pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"

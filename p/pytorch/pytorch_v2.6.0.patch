@@ -1,30 +1,47 @@
-From 300e89cd76746d11dd66c6b6f49c600b942ebb01 Mon Sep 17 00:00:00 2001
-From: Srighakollapu-Sai-Srivatsa <Srighakollapu.Sai.Srivatsa@ibm.com>
-Date: Mon, 5 May 2025 05:49:58 +0000
-Subject: [PATCH] changes
+From 9c11857530538d63b3cb863d873de9d237fc359b Mon Sep 17 00:00:00 2001
+From: Rushikesh Sathe <Rushikesh.Sathe@ibm.com>
+Date: Mon, 14 Jul 2025 11:09:58 +0000
+Subject: [PATCH] Fix for CVE-2025-2953
 
 ---
- aten/src/ATen/native/cpu/BinaryOpsKernel.cpp | 18 ++++++++++++++++++
+ aten/src/ATen/native/LossCTC.cpp             |  1 +
+ aten/src/ATen/native/cpu/BinaryOpsKernel.cpp | 22 ++++++++++++++++++--
+ aten/src/ATen/native/cuda/LossCTC.cu         |  1 +
+ aten/src/ATen/native/mkldnn/Utils.cpp        |  1 +
  cmake/Dependencies.cmake                     |  2 ++
- tools/setup_helpers/cmake.py                 |  5 +++++
- 3 files changed, 25 insertions(+)
+ test/test_mkldnn.py                          |  5 +++++
+ test/test_nn.py                              |  8 +++++++
+ tools/setup_helpers/cmake.py                 |  7 ++++++-
+ 8 files changed, 44 insertions(+), 3 deletions(-)
 
+diff --git a/aten/src/ATen/native/LossCTC.cpp b/aten/src/ATen/native/LossCTC.cpp
+index 530f3cf066e..96c2cf86cd2 100644
+--- a/aten/src/ATen/native/LossCTC.cpp
++++ b/aten/src/ATen/native/LossCTC.cpp
+@@ -127,6 +127,7 @@ std::tuple<Tensor, Tensor, size_t, std::vector<int64_t>> ctc_loss_allocate_outpu
+ // the alphas from the user by only returning the loss.
+ template<typename scalar_t, ScalarType target_scalar_type>
+ std::tuple<Tensor, Tensor> ctc_loss_cpu_template(const Tensor& log_probs, const Tensor& targets, IntArrayRef input_lengths, IntArrayRef target_lengths, int64_t BLANK) {
++  TORCH_CHECK(log_probs.numel() > 0, "log_probs tensor must not be empty");
+   // log_probs: input_len x batch_size x num_labels
+   // targets [int64]: batch_size x target_length OR sum(target_lengths)
+   constexpr scalar_t neginf = -std::numeric_limits<scalar_t>::infinity();
 diff --git a/aten/src/ATen/native/cpu/BinaryOpsKernel.cpp b/aten/src/ATen/native/cpu/BinaryOpsKernel.cpp
-index 42a4d0b564b..009f77809f8 100644
+index 42a4d0b564b..c653d724503 100644
 --- a/aten/src/ATen/native/cpu/BinaryOpsKernel.cpp
 +++ b/aten/src/ATen/native/cpu/BinaryOpsKernel.cpp
 @@ -428,6 +428,14 @@ void bitwise_xor_kernel(TensorIteratorBase& iter) {
  }
 
  void lshift_kernel(TensorIteratorBase& iter) {
-+#if defined(__VSX__)  || defined(CPU_CAPABILITY_VSX)
-+  AT_DISPATCH_INTEGRAL_TYPES(iter.dtype(), "lshift_cpu", [&]() {
-+    cpu_kernel(iter,
-+      [](scalar_t a, scalar_t b) -> scalar_t {
-+        return static_cast<std::make_unsigned_t<scalar_t>>(a) << b;
-+    });
-+ });
-+#else
++ #if defined(__VSX__)  || defined(CPU_CAPABILITY_VSX)
++   AT_DISPATCH_INTEGRAL_TYPES(iter.dtype(), "lshift_cpu", [&]() {
++     cpu_kernel(iter,
++       [](scalar_t a, scalar_t b) -> scalar_t {
++         return static_cast<std::make_unsigned_t<scalar_t>>(a) << b;
++     });
++  });
++ #else
    AT_DISPATCH_INTEGRAL_TYPES(iter.dtype(), "lshift_cpu", [&]() {
      cpu_kernel_vec(
          iter,
@@ -32,33 +49,61 @@ index 42a4d0b564b..009f77809f8 100644
          },
          [](Vectorized<scalar_t> a, Vectorized<scalar_t> b) { return a << b; });
    });
-+#endif
++  #endif
  }
 
  void logical_and_kernel(TensorIterator& iter) {
-@@ -499,6 +508,14 @@ void logical_xor_kernel(TensorIterator& iter) {
+@@ -499,8 +508,16 @@ void logical_xor_kernel(TensorIterator& iter) {
  }
 
  void rshift_kernel(TensorIteratorBase& iter) {
-+#if defined(__VSX__)  || defined(CPU_CAPABILITY_VSX)
-+  AT_DISPATCH_INTEGRAL_TYPES(iter.dtype(), "rshift_cpu", [&]() {
-+    cpu_kernel(iter,
-+      [](scalar_t a, scalar_t b) -> scalar_t {
-+        return a >> b;
-+      });
-+  });
-+#else
-   AT_DISPATCH_INTEGRAL_TYPES(iter.dtype(), "rshift_cpu", [&]() {
-     cpu_kernel_vec(
+-  AT_DISPATCH_INTEGRAL_TYPES(iter.dtype(), "rshift_cpu", [&]() {
+-    cpu_kernel_vec(
++ #if defined(__VSX__)  || defined(CPU_CAPABILITY_VSX)
++   AT_DISPATCH_INTEGRAL_TYPES(iter.dtype(), "rshift_cpu", [&]() {
++     cpu_kernel(iter,
++       [](scalar_t a, scalar_t b) -> scalar_t {
++         return a >> b;
++       });
++   });
++ #else
++   AT_DISPATCH_INTEGRAL_TYPES(iter.dtype(), "rshift_cpu", [&]() {
++     cpu_kernel_vec(
          iter,
+         [](scalar_t a, scalar_t b) -> scalar_t {
+           // right shift value to retain sign bit for signed and no bits for
 @@ -515,6 +532,7 @@ void rshift_kernel(TensorIteratorBase& iter) {
          },
          [](Vectorized<scalar_t> a, Vectorized<scalar_t> b) { return a >> b; });
    });
-+#endif
++ #endif
  }
 
  void lt_kernel(TensorIteratorBase& iter) {
+diff --git a/aten/src/ATen/native/cuda/LossCTC.cu b/aten/src/ATen/native/cuda/LossCTC.cu
+index 759955dc62f..5ec51970683 100644
+--- a/aten/src/ATen/native/cuda/LossCTC.cu
++++ b/aten/src/ATen/native/cuda/LossCTC.cu
+@@ -219,6 +219,7 @@ ctc_loss_log_alpha_gpu_kernel(scalar_t* __restrict__ log_alpha_data,
+ // backward. The dispatch function will only return the loss.
+ template<typename scalar_t, ScalarType target_scalar_type>
+ std::tuple<Tensor, Tensor> ctc_loss_gpu_template(const Tensor& log_probs, const Tensor& targets, IntArrayRef input_lengths, IntArrayRef target_lengths, int64_t BLANK) {
++  TORCH_CHECK(log_probs.numel() > 0, "log_probs tensor must not be empty");
+   // log_probs: input_len x batch_size x num_labels
+   // targets [int64]: batch_size x target_length OR sum(target_lengths)
+   CheckedFrom c = "ctc_loss_gpu";
+diff --git a/aten/src/ATen/native/mkldnn/Utils.cpp b/aten/src/ATen/native/mkldnn/Utils.cpp
+index 8c74d23e936..561193a959a 100644
+--- a/aten/src/ATen/native/mkldnn/Utils.cpp
++++ b/aten/src/ATen/native/mkldnn/Utils.cpp
+@@ -19,6 +19,7 @@ std::vector<int64_t> pool_output_sizes(
+   output_size[1] = input_size[1];
+
+   for (const auto i : c10::irange(2, input_size.size())) {
++    TORCH_CHECK_VALUE(stride[i -2] > 0, "Strides must be positive!");
+     output_size[i] = pooling_output_shape_pad_lr<int64_t>(
+       input_size[i],
+       kernel_size[i - 2],
 diff --git a/cmake/Dependencies.cmake b/cmake/Dependencies.cmake
 index 1813f4418a2..7b9a555cee3 100644
 --- a/cmake/Dependencies.cmake
@@ -72,22 +117,60 @@ index 1813f4418a2..7b9a555cee3 100644
      add_compile_options(-DTORCH_USE_LIBUV)
      include_directories(BEFORE SYSTEM ${CMAKE_CURRENT_LIST_DIR}/../third_party/tensorpipe/third_party/libuv/include)
      set(TP_STATIC_OR_SHARED STATIC CACHE STRING "" FORCE)
+diff --git a/test/test_mkldnn.py b/test/test_mkldnn.py
+index 5f192d7c349..94f0f3e9e43 100644
+--- a/test/test_mkldnn.py
++++ b/test/test_mkldnn.py
+@@ -1612,6 +1612,11 @@ class TestMkldnn(TestCase):
+             ]:
+                 common(self, shape1, shape2, op, dtype)
+
++    def test_mkldnn_error_on_zero_stride(self, device):
++       # Regression test for https://github.com/pytorch/pytorch/issues/149274
++       x = torch.rand(1, 2, 3, 3).to_mkldnn()
++       with self.assertRaises(ValueError):
++           torch.mkldnn_max_pool2d(x, kernel_size=3, stride=0)
+
+ instantiate_device_type_tests(TestMkldnn, globals(), only_for=('cpu',))
+
+diff --git a/test/test_nn.py b/test/test_nn.py
+index 0af76d427e2..47ccf6f3cca 100644
+--- a/test/test_nn.py
++++ b/test/test_nn.py
+@@ -11334,6 +11334,14 @@ class TestNNDeviceType(NNTestCase):
+         grad_cudnn, = torch.autograd.grad(loss_cudnn, log_probs, grad_out)
+         self.assertEqual(grad_cudnn, grad_native, atol=1e-4, rtol=0)
+
++    @expectedFailureMPS
++    def test_ctc_loss_error(self, device):
++        log_probs = torch.rand(0, 0, 4, device=device)
++        targets = torch.tensor([], device=device, dtype=torch.long)Add commentMore actions
++        input_lengths = torch.tensor([], device=device, dtype=torch.long)
++        target_lengths = torch.tensor([], device=device, dtype=torch.long)
++        with self.assertRaisesRegex(RuntimeError, "log_probs tensor must not be empty"):
++            F.ctc_loss(log_probs, targets, input_lengths, target_lengths, reduction='none')
+     @expectedFailureMPS  # RuntimeError: LSTM with projections is not currently supported with MPS.
+     @dtypesIfCUDA(torch.half, torch.float, torch.double)
+     @dtypes(torch.float)
 diff --git a/tools/setup_helpers/cmake.py b/tools/setup_helpers/cmake.py
-index 84e4dad32d3..5768fa92cd5 100644
+index 84e4dad32d3..6109aee8810 100644
 --- a/tools/setup_helpers/cmake.py
 +++ b/tools/setup_helpers/cmake.py
-@@ -190,6 +190,11 @@ class CMake:
+@@ -190,7 +190,12 @@ class CMake:
              # Key: environment variable name. Value: Corresponding variable name to be passed to CMake. If you are
              # adding a new build option to this block: Consider making these two names identical and adding this option
              # in the block below.
+-            "_GLIBCXX_USE_CXX11_ABI": "GLIBCXX_USE_CXX11_ABI",
 +            "Protobuf_INCLUDE_DIR" : "Protobuf_INCLUDE_DIR",
 +            "Protobuf_LIBRARIES" : "Protobuf_LIBRARIES",
 +            "Protobuf_LIBRARY": "Protobuf_LIBRARY",
 +            "Protobuf_LITE_LIBRARY" : "Protobuf_LITE_LIBRARY",
 +            "Protobuf_PROTOC_EXECUTABLE": "Protobuf_PROTOC_EXECUTABLE",
-             "_GLIBCXX_USE_CXX11_ABI": "GLIBCXX_USE_CXX11_ABI",
++           "_GLIBCXX_USE_CXX11_ABI": "GLIBCXX_USE_CXX11_ABI",
              "CUDNN_LIB_DIR": "CUDNN_LIBRARY",
              "USE_CUDA_STATIC_LINK": "CAFFE2_STATIC_LINK_CUDA",
+         }
 --
 2.43.5
+
 

@@ -3,13 +3,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package           : vision
-# Version           : v0.21.0
+# Version           : v0.22.0
 # Source repo       : https://github.com/pytorch/vision.git
 # Tested on         : UBI:9.3
 # Language          : Python
 # Travis-Check      : True
 # Script License    : Apache License, Version 2.0
-# Maintainer        : Vinod K <Vinod.K1@ibm.com>
+# Maintainer        : Meet Jani <meet.jani@ibm.com>
 #
 # Disclaimer        : This script has been tested in root mode on given
 # ==========          platform using the mentioned version of the package.
@@ -22,10 +22,11 @@
 set -ex 
 
 PACKAGE_NAME=vision
-PACKAGE_VERSION=${1:-v0.21.0}
+PACKAGE_VERSION=${1:-v0.22.0}
 PACKAGE_URL=https://github.com/pytorch/vision.git
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 MAX_JOBS=${MAX_JOBS:-$(nproc)}
+VERSION=${PACKAGE_VERSION#v}
 
 CURRENT_DIR=$(pwd)
 
@@ -113,7 +114,7 @@ cd $CURRENT_DIR
 echo "--------------------scipy installing-------------------------------"
 
 #Building scipy
-python3.12 -m pip install beniget==0.4.2.post1 Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja patchelf
+python3.12 -m pip install beniget==0.4.2.post1 Cython gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja patchelf
 git clone https://github.com/scipy/scipy
 cd scipy/
 git checkout v1.15.2
@@ -139,7 +140,7 @@ export CXX_COMPILER=$(which g++)
 echo "----------------protobuf installing-------------------"
 git clone https://github.com/protocolbuffers/protobuf
 cd protobuf
-git checkout v4.25.3
+git checkout v4.25.8
 
 LIBPROTO_DIR=$(pwd)
 mkdir -p $LIBPROTO_DIR/local/libprotobuf
@@ -381,11 +382,11 @@ cd $CURRENT_DIR
 
 echo "---------------------------Installing FFmpeg------------------"
 #Cloning Source Code
-PACKAGE_VERSION=${1:-n7.1}
+FFMPEG_PACKAGE_VERSION=${1:-n7.1}
 
 git clone https://github.com/FFmpeg/FFmpeg
 cd FFmpeg
-git checkout $PACKAGE_VERSION
+git checkout $FFMPEG_PACKAGE_VERSION
 git submodule update --init
 
 mkdir ffmpeg_prefix
@@ -473,7 +474,7 @@ cd $CURRENT_DIR
 mkdir -p local/ffmpeg
 cp -r FFmpeg/ffmpeg_prefix/* local/ffmpeg/
 
-PACKAGE_VERSION=$(echo "$PACKAGE_VERSION" | sed 's/[^0-9.]//g')
+FFMPEG_PACKAGE_VERSION=$(echo "$FFMPEG_PACKAGE_VERSION" | sed 's/[^0-9.]//g')
 
 export LD_LIBRARY_PATH=${LAME_PREFIX}/lib:${LIBVPX_PREFIX}/lib:${OPUS_PREFIX}/lib:${FFMPEG_PREFIX}/lib:${LD_LIBRARY_PATH}
 
@@ -528,7 +529,21 @@ cd $CURRENT_DIR
 echo "--------------------Installing pyav----------------------------"
 git clone https://github.com/PyAV-Org/PyAV
 cd PyAV
-git checkout v13.1.0
+
+# This command prints both versions, one per line, then sorts them using version-aware sort (-V)
+# The smallest version will appear first
+# If the smallest version is not 0.22.0, then VERSION must be less than 0.22.0
+
+if [ "$(printf '%s\n' "$VERSION" "0.22.0" | sort -V | head -n1)" != "0.22.0" ]; then
+    # VERSION is less than 0.22.0
+    git checkout v13.1.0
+else
+    # VERSION is greater than or equal to 0.22.0
+    # This PyAV version must match the runtime PyAV version.
+    git checkout v14.4.0
+    sed -i 's/license = "BSD-3-Clause"/license = {text = "BSD-3-Clause"}/' pyproject.toml
+fi
+
 git submodule update --init
 
 export CFLAGS="${CFLAGS} -I/install-deps/ffmpeg/include"
@@ -538,12 +553,13 @@ python3.12 setup.py build_ext --inplace
 cd $CURRENT_DIR
 
 echo "------------------Building torchvision------------------------"
-PACKAGE_VERSION=${1:-v0.21.0}
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-if ! (python3.12 -m pip install -v . --no-build-isolation); then
+sed -i '/elif sha != "Unknown":/,+1d' setup.py
+
+if ! python3.12 setup.py bdist_wheel --dist-dir $CURRENT_DIR; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
@@ -551,6 +567,9 @@ if ! (python3.12 -m pip install -v . --no-build-isolation); then
 fi
 
 cd $CURRENT_DIR
+
+python3.12 -m pip install ./torchvision*.whl
+
 python3.12 -m pip install pytest pytest-xdist
 
 if ! pytest $PACKAGE_NAME/test/common_extended_utils.py $PACKAGE_NAME/test/common_utils.py $PACKAGE_NAME/test/smoke_test.py $PACKAGE_NAME/test/test_architecture_ops.py $PACKAGE_NAME/test/test_datasets_video_utils_opt.py ; then

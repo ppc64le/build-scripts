@@ -75,8 +75,10 @@ RUN set -ex; \
         apt-key list
 ARG MONGO_MAJOR=6.0
 ARG MONGO_VERSION=6.0.19
+ARG MONGOSH_VERSION=2.2.0
 # We install the necesary tools to compile mongo on ppc64le
-RUN apt-get update \
+RUN echo "Updating and installing build dependencies..." \
+        && apt-get update \
         && apt-get upgrade -y \
         && apt-get install -y --no-install-recommends \
                 unzip \
@@ -88,7 +90,6 @@ RUN apt-get update \
                 libssl-dev python3-dev python3-pip \
                 scons \
                 liblzma-dev \
-#        && apt-get install -y python3-pip \
         && rm -rf /var/lib/apt/lists/* \
         && mkdir -p /tmp/mongodb-src-r${MONGO_VERSION} \
         && cd /tmp/mongodb-src-r${MONGO_VERSION} \
@@ -96,7 +97,13 @@ RUN apt-get update \
         && git checkout r${MONGO_VERSION} \
         && sed -i '/PyYAML/d' etc/pip/components/core.req && sed -i '4 a PyYAML >= 3.0.0' etc/pip/components/core.req \
         && python3 -m pip install -r etc/pip/compile-requirements.txt \
-        && python3 buildscripts/scons.py -j8 install-mongod install-mongos --separate-debug=on --disable-warnings-as-errors DESTDIR=/usr/ --ssl=on --no-cache --release \
+        && echo "Building and installing mongodb, the while loop below is added only to prevent Travis job failure due to inactivity..." \
+        && bash -c " \
+                (while true; do echo '[keepalive] Still building...'; sleep 60; done) & \
+                keepalive_pid=\$! && \
+                python3 buildscripts/scons.py -j8 install-mongod install-mongos --separate-debug=on --disable-warnings-as-errors DESTDIR=/usr/ --ssl=on --no-cache --release VERBOSE=1 && \
+                kill \$keepalive_pid \
+            " \
         && apt-get purge -y --auto-remove \
                 ca-certificates \
                 wget \
@@ -115,15 +122,15 @@ RUN apt-get update \
 # ToDo: uninstall scons
 RUN apt-get update && \
     apt-get install -y wget && \
-    mkdir -p /tmp/mongosh-2.2.0 && \
-    cd /tmp/mongosh-2.2.0 && \
-    wget https://downloads.mongodb.com/compass/mongosh-2.2.0-linux-ppc64le.tgz && \
-    tar -zxvf mongosh-2.2.0-linux-ppc64le.tgz && \
-    cp /tmp/mongosh-2.2.0/mongosh-2.2.0-linux-ppc64le/bin/mongosh /usr/local/bin/ && \
-    cp /tmp/mongosh-2.2.0/mongosh-2.2.0-linux-ppc64le/bin/mongosh_crypt_v1.so /usr/local/lib/ && \
+    mkdir -p /tmp/mongosh-$MONGOSH_VERSION && \
+    cd /tmp/mongosh-$MONGOSH_VERSION && \
+    wget https://downloads.mongodb.com/compass/mongosh-$MONGOSH_VERSION-linux-ppc64le.tgz && \
+    tar -zxvf mongosh-$MONGOSH_VERSION-linux-ppc64le.tgz && \
+    cp /tmp/mongosh-$MONGOSH_VERSION/mongosh-$MONGOSH_VERSION-linux-ppc64le/bin/mongosh /usr/local/bin/ && \
+    cp /tmp/mongosh-$MONGOSH_VERSION/mongosh-$MONGOSH_VERSION-linux-ppc64le/bin/mongosh_crypt_v1.so /usr/local/lib/ && \
     ln -s $(pwd)/bin/* /usr/local/bin/ && \
-    rm -f /tmp/mongosh-2.2.0/mongosh-2.2.0-linux-ppc64le.tgz && \
-    rm -rf /tmp/mongosh-2.2.0/mongosh-2.2.0-linux-ppc64le/
+    rm -f /tmp/mongosh-$MONGOSH_VERSION/mongosh-$MONGOSH_VERSION-linux-ppc64le.tgz && \
+    rm -rf /tmp/mongosh-$MONGOSH_VERSION/mongosh-$MONGOSH_VERSION-linux-ppc64le/
 VOLUME /data/db /data/configdb
 ENV HOME /data/db
 COPY docker-entrypoint.sh /usr/local/bin/

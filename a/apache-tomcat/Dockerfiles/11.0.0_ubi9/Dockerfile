@@ -2,12 +2,12 @@ FROM registry.access.redhat.com/ubi9/ubi:9.3 as build-tomcat
 
 WORKDIR /tmp
 
-ARG PACKAGE_VERSION=11.0.0-M26
+ARG PACKAGE_VERSION=11.0.9
 
 RUN yum install -y git wget gcc-c++ gcc java-21-openjdk java-21-openjdk-devel java-21-openjdk-headless unzip && \
     export JAVA_HOME=/usr/lib/jvm/java-21-openjdk && \
     export PATH=$PATH:$JAVA_HOME/bin && \
-    wget -c https://mirrors.advancedhosters.com/apache/ant/binaries/apache-ant-1.10.14-bin.zip && \
+    wget -c https://downloads.apache.org/ant/binaries/apache-ant-1.10.14-bin.zip && \
     unzip apache-ant-*.zip && \
     mv apache-ant-*/ /usr/local/ant && \
     export ANT_HOME="/usr/local/ant" && \

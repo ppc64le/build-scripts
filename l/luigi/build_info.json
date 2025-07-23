@@ -1,10 +1,11 @@
 {
-    "maintainer":"vinodk99",
+    "maintainer":"aastha-sharma2",
     "package_name" : "luigi",
     "github_url": "https://github.com/spotify/luigi.git",
-    "version": "3.5.0",
+    "version": "3.6.0",
     "default_branch": "master",
     "package_dir": "l/luigi",
+    "wheel_build" : true,
     "build_script": "luigi_ubi_9.3.sh",
     "validate_build_script": "true",
     "use_non_root_user": "false",
@@ -14,8 +15,8 @@
        "dir": "3.4.0_ubi8",
        "build_script": "luigi_ubi_8.7.sh"
     },
-     "*.*.*" : {
-       "dir": "3.5.0_ubi9",
+     "*" : {
+       "dir": "3.6.0_ubi9",
        "build_script": "luigi_ubi_9.3.sh"
     }
 }
