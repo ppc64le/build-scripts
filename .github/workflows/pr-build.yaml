@@ -27,21 +27,28 @@ jobs:
       - name: Set PR number
         run: echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
 
-      - name: Run validate_builds.py script and monitor log size
+      - name: Run validate_builds.py script with live logs
         run: |
-          python3 gha-script/validate_builds.py ${PR_NUMBER:-false} > build_log &
-          SCRIPT_PID=$!
-          while ps -p $SCRIPT_PID > /dev/null; do
-            echo "$SCRIPT_PID is running"
-            sleep 300
-          done
-          wait $SCRIPT_PID
-          my_pid_status=$?
+          python3 -u gha-script/validate_builds.py ${PR_NUMBER:-false} 2>&1 | tee build_log
+          my_pid_status=${PIPESTATUS[0]}
+
           build_size=$(stat -c %s build_log)
-          if [ "$build_size" -lt 1800000 ]; then
-            cat build_log
+
+          if [ "$my_pid_status" -ne 0 ]; then
+            echo "Script failed for PR #${PR_NUMBER}"
+            if [ "$build_size" -lt 1800000 ]; then
+              cat build_log
+            else
+              echo "Build log too large, showing last 100 lines"
+              tail -100 build_log
+            fi
+            exit 1
           else
-            echo "xxxxxxxxxxxxxxx Build log size too large, so printing last 1.7MB xxxxxxxxxxxxxxx"
-            tail -c 1700000 build_log
+            echo "Script completed successfully for PR #${PR_NUMBER}"
+            if [ "$build_size" -lt 1800000 ]; then
+              cat build_log
+            else
+              echo "Build log too large, showing last 100 lines"
+              tail -100 build_log
+            fi
           fi
-          exit $my_pid_status
