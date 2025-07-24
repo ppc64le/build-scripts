@@ -1,0 +1,170 @@
+diff --git a/BUILD.bazel b/BUILD.bazel
+index 2236d689c7..ed98508dde 100644
+--- a/BUILD.bazel
++++ b/BUILD.bazel
+@@ -218,6 +218,22 @@ ray_cc_library(
+     ],
+ )
+ 
++config_setting(
++    name = "use_openssl",
++    values = {"define": "USE_OPENSSL=1"},
++)
++
++ray_cc_library(
++    name = "openssl",
++    #srcs = glob(["/usr/include/openssl/**/*.h"]),
++    includes = ["/usr/include"],
++    linkopts = ["-L/usr/lib", "-lssl", "-lcrypto"],
++    copts = select({
++        ":use_openssl": ["-DUSE_OPENSSL=1"],
++        "//conditions:default": [],
++    }),
++)
++
+ ray_cc_library(
+     name = "grpc_common_lib",
+     # TODO(core): Both two header files are not needed, keep them there because of circular dependency between raylet and node rpc.
+diff --git a/WORKSPACE b/WORKSPACE
+index 8e54bbd551..1cf5612d68 100644
+--- a/WORKSPACE
++++ b/WORKSPACE
+@@ -2,6 +2,18 @@ workspace(name = "com_github_ray_project_ray")
+ 
+ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+ 
++http_archive(
++    name = "rules_python",
++    sha256 = "c68bdc4fbec25de5b5493b8819cfc877c4ea299c0dcb15c244c5a00208cde311",
++    strip_prefix = "rules_python-0.31.0",
++    url = "https://github.com/bazelbuild/rules_python/releases/download/0.31.0/rules_python-0.31.0.tar.gz",
++)
++
++
++load("@rules_python//python:repositories.bzl", "py_repositories")
++
++py_repositories()
++
+ http_archive(
+     name = "platforms",
+     sha256 = "5eda539c841265031c2f82d8ae7a3a6490bd62176e0c038fc469eabf91f6149b",
+@@ -37,12 +49,6 @@ load("@hedron_compile_commands//:workspace_setup.bzl", "hedron_compile_commands_
+ 
+ hedron_compile_commands_setup()
+ 
+-http_archive(
+-    name = "rules_python",
+-    sha256 = "c68bdc4fbec25de5b5493b8819cfc877c4ea299c0dcb15c244c5a00208cde311",
+-    strip_prefix = "rules_python-0.31.0",
+-    url = "https://github.com/bazelbuild/rules_python/releases/download/0.31.0/rules_python-0.31.0.tar.gz",
+-)
+ 
+ load("@rules_python//python:repositories.bzl", "python_register_toolchains")
+ 
+diff --git a/bazel/hiredis.BUILD b/bazel/hiredis.BUILD
+index 83c07e5bf4..6e80f8bc8f 100644
+--- a/bazel/hiredis.BUILD
++++ b/bazel/hiredis.BUILD
+@@ -56,10 +56,11 @@ cc_library(
+     copts = COPTS,
+     linkopts = LOPTS,
+     include_prefix = "hiredis",
+-    deps = [
+-        ":_hiredis",
++    deps =     select({
++            "@com_github_ray_project_ray//:use_openssl":["@com_github_ray_project_ray//:openssl",":_hiredis", ] ,
++            "//conditions:default": [":_hiredis",
+         "@boringssl//:ssl",
+         "@boringssl//:crypto"
+-    ],
++    ],}),
+     visibility = ["//visibility:public"],
+ )
+diff --git a/bazel/ray_deps_setup.bzl b/bazel/ray_deps_setup.bzl
+index e98895248d..6208f4523a 100644
+--- a/bazel/ray_deps_setup.bzl
++++ b/bazel/ray_deps_setup.bzl
+@@ -266,6 +266,7 @@ def ray_deps_setup():
+         patches = [
+             "@com_github_ray_project_ray//thirdparty/patches:grpc-cython-copts.patch",
+             "@com_github_ray_project_ray//thirdparty/patches:grpc-avoid-goaway-messages.patch",
++            "@com_github_ray_project_ray//thirdparty/patches:power_boringssl.patch",
+         ],
+     )
+
+diff --git a/thirdparty/patches/power_boringssl.patch b/thirdparty/patches/power_boringssl.patch
+new file mode 100644
+index 0000000000..9d0da787d6
+--- /dev/null
++++ b/thirdparty/patches/power_boringssl.patch
+@@ -0,0 +1,70 @@
++diff --git a/BUILD b/BUILD
++index d3fce3b015..a847a95af0 100644
++--- BUILD
+++++ BUILD
++@@ -2384,6 +2384,22 @@ grpc_cc_library(
++     ],
++ )
++
+++config_setting(
+++    name = "use_openssl",
+++    values = {"define": "USE_OPENSSL=1"},
+++)
+++
+++cc_library(
+++    name = "openssl",
+++    #srcs = glob(["/usr/include/openssl/**/*.h"]),
+++    includes = ["/usr/include"],
+++    linkopts = ["-L/usr/lib", "-lssl", "-lcrypto"],
+++    copts = select({
+++        ":use_openssl": ["-DUSE_OPENSSL=1"],
+++        "//conditions:default": [],
+++    }),
+++)
+++
++ grpc_cc_library(
++     name = "tsi",
++     external_deps = [
++@@ -2925,10 +2941,11 @@ grpc_cc_library(
++     ],
++     language = "c++",
++     tags = ["nofixdeps"],
++-    deps = [
++-        ":grpcpp_otel_plugin",
++-        "//src/cpp/ext/csm:csm_observability",
++-    ],
+++    deps = select({
+++            "//:use_openssl":[] ,
+++            "//conditions:default": ["grpcpp_otel_plugin",
+++         "//src/cpp/ext/csm:csm_observability",
+++    ],}),
++ )
++
++ # This is an EXPERIMENTAL target subject to change.
++diff --git a/third_party/BUILD b/third_party/BUILD
++index 77cb52d0fc..ee4bb2e397 100644
++--- third_party/BUILD
+++++ third_party/BUILD
++@@ -18,13 +18,19 @@ package(default_visibility = ["//:__subpackages__"])
++
++ alias(
++     name = "libssl",
++-    actual = "@boringssl//:ssl",
+++    actual = select({
+++        "//:use_openssl": "//:openssl",
+++        "//conditions:default": "@boringssl//:ssl",  # Default target
+++    }),
++     tags = ["manual"],
++ )
++
++ alias(
++     name = "libcrypto",
++-    actual = "@boringssl//:crypto",
+++    actual = select({
+++        "//:use_openssl": "//:openssl",
+++        "//conditions:default": "@boringssl//:crypto",  # Default target
+++    }),
++     tags = ["manual"],
++ )
++
++ 
