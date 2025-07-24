@@ -83,7 +83,7 @@ cd $wdir
 git clone https://github.com/ray-project/ray
 cd ray/
 
-git apply $wdir/ray-master-pr.patch
+git apply $wdir/upstream_pr_51673.patch
 git apply $wdir/ray-master-openssl.patch
 git apply $wdir/ray-rules-perl.patch
 
