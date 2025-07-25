@@ -1,0 +1,8 @@
+#FROM registry.access.redhat.com/ubi8/ubi:8.7
+ARG BASE_IMAGE
+FROM $BASE_IMAGE
+RUN yum install -y sudo
+RUN echo 'test_user ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/test_user
+RUN useradd -d /home/tester -m -s /bin/bash test_user
+USER test_user
+WORKDIR /home/tester
