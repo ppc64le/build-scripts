@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : ijson
-# Version          : 3.3.0
+# Version          : 3.4.0
 # Source repo      : https://github.com/ICRAR/ijson.git
 # Tested on        : UBI:9.3
 # Language         : Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Vinod.K1 <Vinod.K1@ibm.com>
+# Maintainer       : Shivansh.S1 <Shivansh.S1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,9 +19,10 @@
 # -----------------------------------------------------------------------------
 
 PACKAGE_NAME=ijson
-PACKAGE_VERSION=${1:-v3.3.0}
+PACKAGE_VERSION=${1:-v3.4.0}
 PACKAGE_URL=https://github.com/ICRAR/ijson.git
 PACKAGE_DIR=ijson
+CURRENT_DIR=${PWD}
 
 # Update system and install dependencies
 yum install -y gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran git make automake autoconf python3 python3-devel python3-pip cmake
@@ -38,7 +39,8 @@ cd build
 cmake ..
 make -j$(nproc)
 make install
-cd ../..
+export LD_LIBRARY_PATH=$(find "$(pwd)" -maxdepth 1 -type d -name "yajl-*" -exec realpath {}/lib \;):$LD_LIBRARY_PATH
+cd $CURRENT_DIR
 
 pip install build wheel pytest
 # Clone the repository
