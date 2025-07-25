@@ -80,7 +80,7 @@ if [ $build_docker != false ];then
            tail -300 docker_build.log
         fi    
     fi
-    docker save -o "$HOME/build/$TRAVIS_REPO_SLUG/image.tar" $image_name
+    docker save -o image.tar $image_name
 else
     echo "Docker image is not supported"
 fi
