@@ -287,8 +287,8 @@ CLANG_LDFLAGS_SAVE="$LDFLAGS" # Save LDFLAGS as well
 # Temporarily switch to GCC/G++ for scikit-learn and related builds
 echo "Temporarily switching CC/CXX/LDFLAGS to gcc-toolset-13 for scikit-learn build..."
 export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:$PATH" 
-export CC="/opt/rh/gcc-toolset-13/root/usr/bin/gcc"
-export CXX="/opt/rh/gcc-toolset-13/root/usr/bin/g++"
+export CC=$(which gcc)
+export CXX=$(which g++)
 export ASM="/opt/rh/gcc-toolset-13/root/usr/bin/gcc" 
 # Use GCC's linker explicitly
 export LDFLAGS="-L/opt/rh/gcc-toolset-13/root/usr/lib64 -Wl,-rpath=/opt/rh/gcc-toolset-13/root/usr/lib64"
