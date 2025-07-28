@@ -26,7 +26,7 @@ PACKAGE_URL=https://github.com/biolab/orange3
 PACKAGE_DIR=orange3
 CURRENT_DIR=$(pwd)
 
-yum install -y wget git python3.12 make unzip python3.12-pip python3.12-devel git gcc-toolset-13 gcc-toolset-13-gcc-c++ openssl-devel xz-devel xz.ppc64le rust cargo zlib-devel libjpeg-devel ninja-build gcc-toolset-13-gcc-gfortran lld bzip2 zip libstdc++-devel ninja-build sqlite-devel perl-core gcc-toolset-13-binutils-devel 
+yum install -y wget git python3.12 make unzip python3.12-pip python3.12-devel gcc-toolset-13 gcc-toolset-13-gcc-c++ openssl-devel cmake xz-devel xz.ppc64le rust cargo zlib-devel libjpeg-devel ninja-build gcc-toolset-13-gcc-gfortran lld bzip2 zip libstdc++-devel ninja-build sqlite-devel perl-core gcc-toolset-13-binutils-devel 
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
@@ -96,7 +96,6 @@ OUTPUT_FOLDER="$(pwd)/output"
 echo "---------------------xgboost installing---------------------"
 # Install Xgboost from source
 echo "Installing dependencies..."
-yum install -y openssl-devel cmake
 python3.12 -m pip install numpy==2.0.2 packaging pathspec pluggy scipy==1.15.2 trove-classifiers wheel build
 
 echo "Cloning the repository..."
