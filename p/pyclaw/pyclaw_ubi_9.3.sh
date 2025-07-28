@@ -23,7 +23,7 @@ set -ex
 PACKAGE_NAME=pyclaw
 PACKAGE_VERSION=${1:-v5.12.0}
 PACKAGE_URL=https://github.com/clawpack/pyclaw.git
-PACKAGE_DIR=./pyclaw/src/pyclaw
+PACKAGE_DIR=pyclaw/src/pyclaw
 CURRENT_DIR=$(pwd)
 
 # --- Install System Dependencies ---
@@ -74,6 +74,4 @@ if ! python3.11 setup.py install ; then
     exit 1
 fi
 
-#build wheel
-python3.11 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"
 #no tests to be run
