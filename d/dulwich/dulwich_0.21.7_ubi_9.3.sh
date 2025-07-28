@@ -27,14 +27,6 @@ PACKAGE_URL=https://github.com/jelmer/dulwich.git
 yum install git python3.12 python3-devel python3.12-pip make cmake gcc -y
 
 # Upgrade pip and install build dependencies
-
-# cd to installation directory
-cd /root
-
-#creating symbolic link for python and pip
-# ln -sf /usr/bin/pip3.12 /usr/bin/pip3
-# ln -sf /usr/bin/python3.12 /usr/bin/python
-
 python3.12 -m pip install --upgrade pip setuptools wheel setuptools_rust
 # Clone the repository
 git clone ${PACKAGE_URL}
