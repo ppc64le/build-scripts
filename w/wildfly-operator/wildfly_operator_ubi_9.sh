@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : wildfly-operator
-# Version       : 1.1.1
+# Version       : 1.1.3
 # Source repo   : https://github.com/wildfly/wildfly-operator/
 # Tested on     : UBI 9
 # Language      : GO
@@ -17,34 +17,30 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
 PACKAGE_NAME=wildfly-operator
-PACKAGE_VERSION=${1:-1.1.1}
+PACKAGE_VERSION=${1:-1.1.3}
 PACKAGE_URL=https://github.com/wildfly/wildfly-operator.git
+export GO_VERSION=${GO_VERSION:-1.21.0}
 
 yum install -y git gcc wget make
 
-GO_VERSION=${GO_VERSION:-1.21.0}
 
 wget https://golang.org/dl/go$GO_VERSION.linux-ppc64le.tar.gz
-tar -C /bin -xf go$GO_VERSION.linux-ppc64le.tar.gz
-
+tar -C /usr/local -xvzf go$GO_VERSION.linux-ppc64le.tar.gz
 rm -f go$GO_VERSION.linux-ppc64le.tar.gz
+mkdir -p $HOME/go
+mkdir -p $HOME/go/src
+mkdir -p $HOME/go/bin
+mkdir -p $HOME/go/pkg
+export GOROOT=/usr/local/go
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 
-export PATH=$PATH:/bin/go/bin
-export GOPATH=/home/go
-
-mkdir -p $GOPATH/src && cd $GOPATH/src
-
-if ! git clone $PACKAGE_URL $GOPATH/src/github.com/wildfly/wildfly-operator; then
-    echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    exit 1
-fi
-
-cd $GOPATH/src/github.com/wildfly/wildfly-operator
-
+echo "clone wildfly operator package"
+git clone $PACKAGE_URL $PACKAGE_NAME
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+
 
 if ! make build; then
     echo "------------------$PACKAGE_NAME:build_fails---------------------------------------"
@@ -57,6 +53,11 @@ if ! make unit-test; then
     echo "------------------$PACKAGE_NAME:unit_test_fails-----------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     exit 1
+else
+    echo "------------------$PACKAGE_NAME:unit_test_pass-----------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+	echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Install_and_Test_Success"
+    exit 0
 fi
 
 #e2e tests has dependency on below images which are not available for Power -
