@@ -21,7 +21,7 @@
 PACKAGE_NAME=pyopengl
 PACKAGE_VERSION=${1:-release-3.1.8}
 PACKAGE_URL=https://github.com/mcfletch/pyopengl
-PACKAGE_DIR=pyopengl
+PACKAGE_DIR=pyopengl/accelerate
 
 CURRENT_DIR=${PWD}
 
