@@ -1,8 +1,8 @@
 {
-   "maintainer": "shubham-dayma-ibm",
+   "maintainer": "shivansh-ibm",
    "package_name": "unicodedata2",
    "github_url": "http://github.com/fonttools/unicodedata2",
-   "version": "15.1.0",
+   "version": "16.0.0",
    "default_branch": "master",
    "build_script": "unicodedata2_ubi_9.3.sh",
    "package_dir": "u/unicodedata2",
