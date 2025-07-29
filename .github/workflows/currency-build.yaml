@@ -45,7 +45,7 @@ run-name: Currency Build ${{ inputs.package_name }} && Unique ID ${{ inputs.uniq
 
 jobs:
   build_info:
-    runs-on: ubuntu-24.04-ppc64le-2xlarge
+    runs-on: ubuntu-24.04-ppc64le-p10
     env:
       PACKAGE_NAME: ${{ inputs.package_name }}
       VERSION: ${{ inputs.version }}
@@ -107,7 +107,7 @@ jobs:
   build:
     needs: build_info
     if: ${{ inputs.validate_build_script == 'true' }}
-    runs-on: ubuntu-24.04-ppc64le-2xlarge
+    runs-on: ubuntu-24.04-ppc64le-p10
     steps:
       - uses: actions/checkout@v4
 
@@ -170,7 +170,7 @@ jobs:
     needs: build_info
     name: Create Wheel for Python ${{ matrix.python-version }}
     if: ${{ inputs.wheel_build == 'true' }}
-    runs-on: ubuntu-24.04-ppc64le-2xlarge
+    runs-on: ubuntu-24.04-ppc64le-p10
     strategy:
       fail-fast: false
       matrix:
@@ -235,7 +235,7 @@ jobs:
   source_scanner:
     needs: build
     if: ${{ inputs.validate_build_script == 'true' }}
-    runs-on: ubuntu-24.04-ppc64le-2xlarge
+    runs-on: ubuntu-24.04-ppc64le-p10
     steps:
       - uses: actions/checkout@v4
 
@@ -310,7 +310,7 @@ jobs:
   build_docker:
     needs: build_info 
     if: ${{ inputs.build_docker == 'true' }}
-    runs-on: ubuntu-24.04-ppc64le-2xlarge
+    runs-on: ubuntu-24.04-ppc64le-p10
     steps:
       - uses: actions/checkout@v4
 
@@ -345,7 +345,7 @@ jobs:
   image_scanner:
     needs: build_docker
     if: ${{ inputs.build_docker == 'true' }}
-    runs-on: ubuntu-24.04-ppc64le-2xlarge
+    runs-on: ubuntu-24.04-ppc64le-p10
     steps:
       - uses: actions/checkout@v4
 
