@@ -38,19 +38,19 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-pip3.12 install --upgrade requests tox
-pip3.12 install -r requirements-testing.txt
+python3.12 -m pip install --upgrade requests tox
+python3.12 -m pip install -r requirements-testing.txt
 
 #Build package
-if ! pip3.12 install . ; then
+if ! python3.12 -m pip install . ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-pip3.12 install -r scripts/populate_tox/requirements.txt
-pip3.12 install -r scripts/split_tox_gh_actions/requirements.txt
+python3.12 -m pip install -r scripts/populate_tox/requirements.txt
+python3.12 -m pip install -r scripts/split_tox_gh_actions/requirements.txt
 
 #Test package
 #Few tests are skipped which are also failing on x86.
