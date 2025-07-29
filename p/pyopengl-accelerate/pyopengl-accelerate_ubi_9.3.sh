@@ -41,10 +41,20 @@ make install
 ldconfig
 export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 
+declare -A VERSION_BRANCH_MAPPING=(
+    ["release-3.1.9"]="master"
+)
+
+if [[ -v VERSION_BRANCH_MAPPING[$PACKAGE_VERSION] ]]; then
+    branch="${VERSION_BRANCH_MAPPING[$PACKAGE_VERSION]}"
+else
+    branch="$PACKAGE_VERSION"
+fi
+
 cd $CURRENT_DIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
-git checkout $PACKAGE_VERSION
+git checkout $branch
 
 pip install --upgrade pip
 pip install cython numpy setuptools tox
