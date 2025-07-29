@@ -8,7 +8,7 @@ on:
 
 jobs:
   validate:
-    runs-on: ubuntu-24.04-ppc64le-4xlarge  # Ensure this self-hosted runner exists
+    runs-on: ubuntu-24.04-ppc64le-p10  # Ensure this self-hosted runner exists
 
     steps:
       - name: Checkout code
