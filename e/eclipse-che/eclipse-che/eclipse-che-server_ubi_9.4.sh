@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : che-server
+# Package          : eclipse-che-server
 # Version          : 7.106.0
 # Source repo      : https://github.com/eclipse-che/che-server
 # Tested on        : UBI:9.4
