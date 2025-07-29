@@ -9,6 +9,7 @@
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
   "docker_build": true,
   "wheel_build": true,
+  "required_versions":{"Releases": ["release-3.1.9"], "Tags": ["*"]},
   "use_non_root_user": "false",
   "validate_build_script": true,
   "*": {
