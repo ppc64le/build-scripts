@@ -25,6 +25,7 @@ MODULE_NAME="react"
 MODULE_NAME2="react-test-renderer"
 VERSION="${1:-v18.2.0}"
 NODE_VERSION="v14.17.6"
+SCRIPT_PATH=$(dirname $(realpath $0))
 
 # Install Dependencies
 dnf install -y git curl zlib-devel autoconf automake libtool gcc gcc-c++ make python3 python3-devel glibc-devel libpng-devel --allowerasing
@@ -47,8 +48,8 @@ git clone "$REPO_URL"
 cd "$PACKAGE_NAME"
 git checkout "$VERSION"
 
-#Skipping 'electron' to build on ppc64le
-sed -i '/"electron":/d' packages/react-devtools/package.json
+# Applying patch file to skip 'electron' to build on ppc64le
+git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${VERSION}_porting.patch
 
 npm install yarn -g
 
