@@ -41,9 +41,6 @@ export CXX=$GCC_HOME/bin/g++
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
 python -m pip install --upgrade pip
-python -m venv pyav-env
-source pyav-env/bin/activate
-
 INSTALL_ROOT="/install-deps"
 mkdir -p $INSTALL_ROOT
 
