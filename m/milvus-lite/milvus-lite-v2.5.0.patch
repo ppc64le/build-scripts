@@ -1,0 +1,36 @@
+diff --git a/conanfile.py b/conanfile.py
+index 50bbaed..ebfda1b 100644
+--- a/conanfile.py
++++ b/conanfile.py
+@@ -41,8 +41,8 @@ class MilvusLiteConan(ConanFile):
+         "libevent/2.1.12#4fd19d10d3bed63b3a8952c923454bc0",
+     )
+
+-    generators = {"cmake", "cmake_find_package"}
+-
++    #generators = {"cmake", "cmake_find_package"}
++    generators = {"cmake", "cmake_find_package","CMakeDeps", "CMakeToolchain", "txt"}
+     default_options = {
+         "glog:with_gflags": True,
+         "glog:shared": True,
+diff --git a/internal/core/thirdparty/tantivy/tokenizer.h b/internal/core/thirdparty/tantivy/tokenizer.h
+index 2870b01e2e..75a4d390e0 100644
+--- a/internal/core/thirdparty/tantivy/tokenizer.h
++++ b/internal/core/thirdparty/tantivy/tokenizer.h
+@@ -1,5 +1,15 @@
+ #pragma once
+-
++#ifndef AssertInfo
++#  include <stdexcept>
++#  define AssertInfo(cond, fmt_str, ...)               \
++     do {                                              \
++       if (!(cond))                                     \
++         throw std::runtime_error(                      \
++            /* simple formatting */                     \
++            fmt_str                                     \
++         );                                             \
++     } while (0)
++#endif
+ #include "tantivy-binding.h"
+ #include "rust-binding.h"
+ #include "rust-hashmap.h"
