@@ -13,10 +13,10 @@ index 50bbaed..ebfda1b 100644
      default_options = {
          "glog:with_gflags": True,
          "glog:shared": True,
-diff --git a/internal/core/thirdparty/tantivy/tokenizer.h b/internal/core/thirdparty/tantivy/tokenizer.h
+diff --git a/thirdparty/milvus/internal/core/thirdparty/tantivy/tokenizer.h b/thirdparty/milvus/internal/core/thirdparty/tantivy/tokenizer.h
 index 2870b01e2e..75a4d390e0 100644
---- a/internal/core/thirdparty/tantivy/tokenizer.h
-+++ b/internal/core/thirdparty/tantivy/tokenizer.h
+--- a/thirdparty/milvus/internal/core/thirdparty/tantivy/tokenizer.h
++++ b/thirdparty/milvus/internal/core/thirdparty/tantivy/tokenizer.h
 @@ -1,5 +1,15 @@
  #pragma once
 -
