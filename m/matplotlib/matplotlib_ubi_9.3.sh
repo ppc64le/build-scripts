@@ -41,8 +41,6 @@ mv qhull-2020.2 build/
 rm -f qhull-2020-src-8.0.2.tar
 
 # Setup virtual environment for python
-python3.12 -m venv matplotlib-env
-source matplotlib-env/bin/activate
 python3.12 -m pip install pytest hypothesis build meson pybind11 meson-python
 
 # Build and Install the package (This is dependent on numpy,pillow)
@@ -76,7 +74,3 @@ else
      echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Test_Fail"
      exit 2
 fi
-
-# Deactivate python environment (matplotlib-env)
-deactivate
-
