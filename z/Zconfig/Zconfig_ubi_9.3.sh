@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : ZConfig
+# Package          : Zconfig
 # Version          : 4.2
 # Source repo      : https://github.com/zopefoundation/ZConfig
 # Tested on        : UBI:9.3

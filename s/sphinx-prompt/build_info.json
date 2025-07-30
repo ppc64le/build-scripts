@@ -1,7 +1,7 @@
 {
     "maintainer":"aastha-sharma2",
     "package_name" : "sphinx-prompt", 
-    "github_url": "https://github.com/jupyter-widgets/ipywidgets",
+    "github_url": "https://github.com/sbrunner/sphinx-prompt.git",
     "version": "1.9.0",
     "default_branch": "master",
     "package_dir": "s/sphinx-prompt",

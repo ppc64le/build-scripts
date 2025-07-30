@@ -59,7 +59,7 @@ for package in openblas hdf5 abseil tensorflow ; do
     echo "Exported ${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
 done
 
-python3.12 -m pip install numpy==2.0.2 cython setuptools wheel ninja
+python3.12 -m pip install cython setuptools wheel ninja
 
 yum install -y java-11-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.25.0.9-3.el9.ppc64le
@@ -115,6 +115,9 @@ pkg-config --modversion openblas
 echo " --------------------------------------------- openblas Successfully Installed --------------------------------------------- "
 
 cd $CURRENT_DIR
+
+echo "Installing NumPy"
+python3.12 -m pip install numpy==2.0.2
 
 echo " --------------------------------------------- Installing hdf5 --------------------------------------------- "
 
@@ -412,7 +415,8 @@ git clone $PACKAGE_URL -b $PACKAGE_VERSION
 cd $PACKAGE_DIR
 sed -i "s/numpy~=1.23/numpy==2.0.2/g" setup.py
 sed -i "s/numpy~=1.23.0/numpy==2.0.2/g" requirements.txt
-
+sed -i "s/absl-py~=1.2/absl-py~=2.3/g" setup.py
+sed -i "s/absl-py~=1.2/absl-py~=2.3/g" requirements.txt
 echo " --------------------------------------------- Wheel Build Started --------------------------------------------- "
 
 #Start building
@@ -428,6 +432,7 @@ fi
 
 echo " --------------------------------------------- Wheel Build Completed --------------------------------------------- "
 echo "There are no test cases available. skipping the test cases"
+python3.12 -m pip install tf_keras
 python3.12 -c "import tensorflow_model_optimization; print(tensorflow_model_optimization.__version__)" 
 
 if [ $? -eq 0 ]; then

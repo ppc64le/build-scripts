@@ -39,7 +39,7 @@ export CXX="$GCC_BIN_DIR/g++"
 
 CURRENT_DIR=$(pwd)
 mkdir -p builder/wheels
-pip3.12 install ninja setuptools setuptools-scm Cython numpy==2.0.2  wheel 
+pip3.12 install ninja setuptools setuptools-scm Cython wheel 
 
 echo "-------Installing cmake---------"
 #install cmake
@@ -264,7 +264,7 @@ export CXX_COMPILER=$CXX
 #Build libprotobuf
 git clone https://github.com/protocolbuffers/protobuf
 cd protobuf
-git checkout v4.25.3
+git checkout v4.25.8
 
 LIBPROTO_DIR=$(pwd)
 mkdir -p $LIBPROTO_DIR/local/libprotobuf
@@ -600,6 +600,8 @@ export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
 cd $CURRENT_DIR
 echo "------------openblas installed--------------------"
 
+echo "Installing NumPy"
+python3.12 -m pip install numpy==2.0.2
 
 echo "-----------------installing pyarrow----------------------"
 
