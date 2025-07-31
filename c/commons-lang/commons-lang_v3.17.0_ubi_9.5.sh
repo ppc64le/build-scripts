@@ -24,6 +24,7 @@ PACKAGE_VERSION="${1:-3.17.0}"
 GIT_TAG="rel/commons-lang-${PACKAGE_VERSION}"
 PACKAGE_URL="https://github.com/apache/commons-lang.git"
 BUILD_HOME="$(pwd)"
+SCRIPT_PATH=$(dirname $(realpath $0))
 
 # -------------------------------
 # Install Dependencies
