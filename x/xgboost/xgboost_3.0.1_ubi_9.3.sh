@@ -107,7 +107,7 @@ echo " ------------------------------------------ Openblas Successfully Installe
 
 cd ${SCRIPT_DIR}
 
-pip3.12 install numpy==2.0.2 packaging pathspec pluggy scipy==1.15.2 trove-classifiers pytest wheel build hatchling joblib threadpoolctl
+python3.12 -m pip install numpy==2.0.2 packaging pathspec pluggy scipy==1.15.2 trove-classifiers pytest wheel build hatchling joblib threadpoolctl
 
 # Clone the repository
 echo "Cloning the repository..."
