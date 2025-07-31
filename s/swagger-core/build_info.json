@@ -1,25 +1,15 @@
 {
-  "maintainer": "sid226",
+  "maintainer": "Amitkumar282",
   "package_name": "swagger-core",
   "github_url": "https://github.com/swagger-api/swagger-core",
-  "version": "v2.2.24",
+  "version": "v2.2.25",
   "default_branch": "master",
   "package_dir": "s/swagger-core",
-  "build_script": "swagger-core_ubi_9.3.sh",
+  "build_script": "swagger-core_v_2.2.25_ubi_9.5.sh",
   "validate_build_script": "true",
   "use_non_root_user": "false",
-  "docker_build": "true",
-  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}", 
-  "v1.6.2": {
-    "dir": "2.2.16_ubi8",
-    "build_script": "swagger-core_v1_6_2_ubi_9.3.sh"
-  },
-  "v2.2.16": {
-    "dir": "2.2.16_ubi8",
-    "build_script": "swagger-core_ubi_8.7.sh"
-  },
-  "v*.*.*": {
-    "dir": "2.2.16_ubi8",
-    "build_script": "swagger-core_ubi_9.3.sh"
+  "docker_build": "false",
+  "*": {
+    "build_script": "swagger-core_v_2.2.25_ubi_9.5.sh"
   }
 }
