@@ -114,7 +114,7 @@ EOT
 }
 pushd /usr/local/cmake
     create_cmake_conanfile
-    conan export-pkg . cmake/3.30.5@ -s os=Linux -s arch=$(uname -m) -o grpc:otel_plugin=False -f
+    conan export-pkg . cmake/3.30.5@ -s os=Linux -s arch=$(uname -m) -f
 popd
 conan profile update settings.compiler.libcxx=libstdc++11 default
 
