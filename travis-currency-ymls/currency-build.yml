@@ -5,7 +5,7 @@ language: shell
 
 branches:
   only:
-    - stripe-python
+    - master
 
 env:
   global:
