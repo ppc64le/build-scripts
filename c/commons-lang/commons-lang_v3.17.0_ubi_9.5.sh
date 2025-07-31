@@ -53,7 +53,7 @@ git checkout "${GIT_TAG}"
 #Error on power: ArchUtilsTest.testGetProcessor:130 NullPointer
 
 ARCHUTILS_FILE="src/main/java/org/apache/commons/lang3/ArchUtils.java"
-git apply "$(realpath /commons-lang_v3.17.0.patch)"
+git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_v${PACKAGE_VERSION}.patch
 
 # -------------------------------
 # Build & Install
