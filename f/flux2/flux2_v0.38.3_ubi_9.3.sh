@@ -144,8 +144,7 @@ export TEST_KUBECONFIG="${TEST_KUBECONFIG}"
 cd "${FLUX2_DIR}"
 git clone --depth 1 --branch "v0.28.1" https://github.com/fluxcd/helm-controller.git
 cd helm-controller
-sed -i 's|BUILD_PLATFORMS ?= linux/amd64|BUILD_PLATFORMS ?= linux/ppc64le|' Makefile
-sed -i 's|ENVTEST_ARCH ?= amd64|ENVTEST_ARCH ?= ppc64le|' Makefile
+git apply "$(realpath /flux2_v0.38.3_helm-controller.patch)"
 make docker-build
 
 # Build Source Controller
@@ -166,23 +165,21 @@ make docker-build BUILD_ARGS="--build-arg CGO_LDFLAGS='-fuse-ld=lld' --build-arg
 cd "${FLUX2_DIR}"
 git clone --depth 1 --branch "v0.32.0" https://github.com/fluxcd/kustomize-controller.git
 cd kustomize-controller
-sed -i 's|^BUILD_PLATFORMS ?= linux/amd64|BUILD_PLATFORMS ?= linux/ppc64le|' Makefile
+git apply "$(realpath /flux2_v0.38.3_kustomize-controller.patch)"
 make docker-build
 
 # Build Notification Controller
 cd "${FLUX2_DIR}"
 git clone --depth 1 --branch "v0.30.2" https://github.com/fluxcd/notification-controller.git
 cd notification-controller
-sed -i 's|BUILD_PLATFORMS ?= linux/amd64|BUILD_PLATFORMS ?= linux/ppc64le|' Makefile
-sed -i 's|ENVTEST_ARCH ?= amd64|ENVTEST_ARCH ?= ppc64le|' Makefile
+git apply "$(realpath /flux2_v0.38.3_notification-controller.patch)"
 make docker-build
 
 # Build Image Reflector Controller
 cd "${FLUX2_DIR}"
 git clone --depth 1 --branch "v0.23.1" https://github.com/fluxcd/image-reflector-controller.git
 cd image-reflector-controller
-sed -i 's|BUILD_PLATFORMS ?= linux/amd64|BUILD_PLATFORMS ?= linux/ppc64le|' Makefile
-sed -i 's|ENVTEST_ARCH ?= amd64|ENVTEST_ARCH ?= ppc64le|' Makefile
+git apply "$(realpath /flux2_v0.38.3_image-reflector-controller.patch)"
 make docker-build
 
 # Build podinfo
