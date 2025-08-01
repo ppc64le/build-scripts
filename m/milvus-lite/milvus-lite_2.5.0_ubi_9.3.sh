@@ -126,16 +126,16 @@ echo "<<<<<<<<<<<<<<<< clonning package directory >>>>>>>"
 pushd ${PACKAGE_NAME}
     git checkout "${PACKAGE_VERSION}"
     git submodule update --init --recursive
-
    PATCH_FILE=${SCRIPT_PATH}/${PACKAGE_NAME}-${SCRIPT_PACKAGE_VERSION}.patch
+   git apply $PATCH_FILE
     #PATCH_FILE="/milvus-lite-v2.5.0.patch"
-    if [[ -f "${PATCH_FILE}" ]]; then
-       echo "patch file path is $PATCH_FILE"
-       patch -p1 --forward < "${PATCH_FILE}"
-       echo "<<<<<<<<<<<<<<<< patch applied properly >>>>>>>"
-    else
-       echo "Error: Patch file '${PATCH_FILE}' not found!"
-    fi
+    #if [[ -f "${PATCH_FILE}" ]]; then
+       #echo "patch file path is $PATCH_FILE"
+       #patch -p1 --forward < "${PATCH_FILE}"
+       #echo "<<<<<<<<<<<<<<<< patch applied properly >>>>>>>"
+    #else
+       #echo "Error: Patch file '${PATCH_FILE}' not found!"
+    #fi
     #git clone https://github.com/conan-io/conan-center-index.git
     #cd conan-center-index/recipes/opentelemetry-proto/all
     #conan export . opentelemetry-proto/1.3.2@
