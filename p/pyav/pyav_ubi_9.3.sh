@@ -272,6 +272,24 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init
 
+# Patch virtualenv enforcement if version >= 15.0.0
+VERSION_STR="${PACKAGE_VERSION#v}"
+version_ge() {
+    [ "$(printf '%s\n' "$2" "$1" | sort -V | head -n1)" = "$2" ]
+}
+
+if version_ge "$VERSION_STR" "15.0.0"; then
+    echo "Patching virtualenv check in setup.py for version $VERSION_STR..."
+    FILE="setup.py"
+    sed -i '
+        /if not (os.getenv("GITHUB_ACTIONS") == "true" or is_virtualenv()) *:/ {
+            N
+            s/raise ValueError(.*/print("\\033[1;91mWarning!\\033[0m You are not using a virtual environment")/
+        }
+    ' "$FILE"
+    echo "Patched $FILE"
+fi
+
 export CFLAGS="${CFLAGS} -I/install-deps/ffmpeg/include"
 export LDFLAGS="${LDFLAGS} -L/install-deps/ffmpeg/lib"
 
