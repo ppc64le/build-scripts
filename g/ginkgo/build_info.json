@@ -1,0 +1,13 @@
+{
+    "maintainer": "Pooja-Dalai",
+    "package_name": "ginkgo",
+    "github_url": "https://github.com/onsi/ginkgo",
+    "version": "v2.23.4",
+    "package_dir": "g/ginkgo",
+    "default_branch": "master",
+    "docker_build": false,
+    "build_script": "ginkgo_ubi_9.6_v2.23.4.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false
+  }
+
