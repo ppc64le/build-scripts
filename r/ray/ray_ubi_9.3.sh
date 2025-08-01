@@ -105,8 +105,8 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Apply patch
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pip-ray/patches/pip-ray_ray-2.47.1_1.patch
-git apply pip-ray_ray-2.47.1_1.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/r/ray/ray_ray-2.47.1_1.patch
+git apply ray_ray-2.47.1_1.patch
 
 sed -i '/^build --compilation_mode=opt$/a\\n\nbuild:linux --action_env PYTHON_BIN_PATH="'"$(which python3)"'"\n' .bazelrc
 
