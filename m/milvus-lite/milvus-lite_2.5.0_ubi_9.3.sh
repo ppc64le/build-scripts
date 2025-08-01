@@ -127,8 +127,8 @@ pushd ${PACKAGE_NAME}
     git checkout "${PACKAGE_VERSION}"
     git submodule update --init --recursive
 
-   #PATCH_FILE=${SCRIPT_PATH}/${PACKAGE_NAME}-${SCRIPT_PACKAGE_VERSION}.patch
-    PATCH_FILE="/milvus-lite-v2.5.0.patch"
+   PATCH_FILE=${SCRIPT_PATH}/${PACKAGE_NAME}-${SCRIPT_PACKAGE_VERSION}.patch
+    #PATCH_FILE="/milvus-lite-v2.5.0.patch"
     if [[ -f "${PATCH_FILE}" ]]; then
        echo "patch file path is $PATCH_FILE"
        patch -p1 --forward < "${PATCH_FILE}"
