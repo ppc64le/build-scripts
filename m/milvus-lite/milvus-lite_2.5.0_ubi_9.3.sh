@@ -1,12 +1,22 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
-# Combined build script for:
-#   1) opentelemetry-cpp v1.15.0
-#   2) milvus-lite v2.5.0
 #
-# Maintainer : Sai Vikram Kuppala <sai.vikram.kuppala@ibm.com>
-# -----------------------------------------------------------------------------
-
+# Package       : milvus-lite
+# Version       : 2.5.0
+# Source repo   : https://github.com/milvus-io/milvus-lite
+# Tested on     : UBI:9.3
+# Language      : Python
+# Travis-Check  : True
+# Script License: Apache License, Version 2 or later
+# Maintainer    : Sai Vikram Kuppala <sai.vikram.kuppala@ibm.com>
+#
+# Disclaimer: This script has been tested in root mode on given
+# ========== platform using the mentioned version of the package.
+# It may not work as expected with newer versions of the
+# package and/or distribution. In such case, please
+# contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
 PACKAGE_URL_OTEL=https://github.com/open-telemetry/opentelemetry-cpp
 OTEL_VERSION=${1:-v1.15.0}
 
