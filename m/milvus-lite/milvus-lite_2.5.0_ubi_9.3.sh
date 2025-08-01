@@ -112,6 +112,31 @@ class CmakeConan(ConanFile):
     self.cpp_info.libs = tools.collect_libs(self)
 EOT
 }
+git clone "${PACKAGE_URL}"
+echo "<<<<<<<<<<<<<<<< clonning package directory >>>>>>>"
+pushd ${PACKAGE_NAME}
+    git checkout "${PACKAGE_VERSION}"
+    git submodule update --init --recursive
+   PATCH_FILE=${SCRIPT_PATH}/${PACKAGE_NAME}-${SCRIPT_PACKAGE_VERSION}.patch
+   #mv "$PATCH_FILE" /milvus-lite/thirdparty/
+   #cd thirdparty
+   #git apply -p1 $PATCH_FILE
+    #PATCH_FILE="/milvus-lite-v2.5.0.patch"
+    if [[ -f "${PATCH_FILE}" ]]; then
+       echo "patch file path is $PATCH_FILE"
+       #patch -p1 --forward < "${PATCH_FILE}"
+       patch -d thirdparty/milvus -p1 --forward < "$PATCH_FILE"
+       echo "<<<<<<<<<<<<<<<< patch applied properly >>>>>>>"
+    else
+       echo "Error: Patch file '${PATCH_FILE}' not found!"
+    fi
+    #git clone https://github.com/conan-io/conan-center-index.git
+    #cd conan-center-index/recipes/opentelemetry-proto/all
+    #conan export . opentelemetry-proto/1.3.2@
+    #cd ../../opentelemetry-cpp/all
+    #conan create . opentelemetry-cpp/1.14.2@ --build=missing
+popd
+export VCPKG_FORCE_SYSTEM_BINARIES=1
 pushd /usr/local/cmake
     create_cmake_conanfile
     conan export-pkg . cmake/3.30.5@ -s os=Linux -s arch=$(uname -m) -f
@@ -121,30 +146,6 @@ conan profile update settings.compiler.libcxx=libstdc++11 default
 ###############################################################################
 # 5. Clone & build Milvus-Lite Python package
 ###############################################################################
-git clone "${PACKAGE_URL}"
-echo "<<<<<<<<<<<<<<<< clonning package directory >>>>>>>"
-pushd ${PACKAGE_NAME}
-    git checkout "${PACKAGE_VERSION}"
-    git submodule update --init --recursive
-   PATCH_FILE=${SCRIPT_PATH}/${PACKAGE_NAME}-${SCRIPT_PACKAGE_VERSION}.patch
-   mv "$PATCH_FILE" /milvus-lite/thirdparty/
-   cd thirdparty
-   git apply -p1 $PATCH_FILE
-    #PATCH_FILE="/milvus-lite-v2.5.0.patch"
-    #if [[ -f "${PATCH_FILE}" ]]; then
-       #echo "patch file path is $PATCH_FILE"
-       #patch -p1 --forward < "${PATCH_FILE}"
-       #echo "<<<<<<<<<<<<<<<< patch applied properly >>>>>>>"
-    #else
-       #echo "Error: Patch file '${PATCH_FILE}' not found!"
-    #fi
-    #git clone https://github.com/conan-io/conan-center-index.git
-    #cd conan-center-index/recipes/opentelemetry-proto/all
-    #conan export . opentelemetry-proto/1.3.2@
-    #cd ../../opentelemetry-cpp/all
-    #conan create . opentelemetry-cpp/1.14.2@ --build=missing
-popd
-export VCPKG_FORCE_SYSTEM_BINARIES=1
 cd /milvus-lite
 # Build Python wheels for py 3.12
 pushd python
