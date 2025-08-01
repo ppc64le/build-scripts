@@ -34,7 +34,7 @@ yum install -y \
         libaio libuuid-devel ncurses-devel libtool m4 autoconf automake \
         ninja-build zlib-devel libffi-devel scl-utils \
         openblas-devel ncurses-devel xz openssl-devel patch \
-        python3.12 python3.12-devel python3.12-pip
+        python3.12 python3.12-devel python3.12-pip opentelemetry-cpp-devel
 
 # Ensure python3 and pip3 refer to python3.12 explicitly
 ln -sf /usr/bin/python3.12 /usr/bin/python3
