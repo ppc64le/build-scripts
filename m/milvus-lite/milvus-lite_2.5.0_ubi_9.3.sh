@@ -27,16 +27,16 @@ PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
 PWDIR=$(pwd)
 
 # 0. Install system tools
-yum install -y git gcc-c++ gcc wget make python3 yum-utils \
+yum install -y git gcc-c++ gcc wget make python3.12 yum-utils \
                apr-devel perl openssl-devel automake autoconf libtool cmake \
                cargo libstdc++-static libaio libuuid-devel ncurses-devel \
                libtool m4 autoconf automake ninja-build zlib-devel \
                libffi-devel scl-utils openblas-devel xz patch \
-               python3-devel python3-pip
+               python3.12-devel python3.12-pip
 
 # Ensure python3 refers to the distro’s default (if needed)
-ln -sf /usr/bin/python3.12 /usr/bin/python3 || true
-ln -sf /usr/bin/pip3.12    /usr/bin/pip3   || true
+#ln -sf /usr/bin/python3.12 /usr/bin/python3 || true
+#ln -sf /usr/bin/pip3.12    /usr/bin/pip3   || true
 
 # -----------------------------------------------------------------------------
 # 1. Build & install googletest (gtest)
@@ -81,7 +81,7 @@ popd
 # -----------------------------------------------------------------------------
 # 4. Set up Conan (for Milvus-Lite’s C++ deps)
 # -----------------------------------------------------------------------------
-python3 -m pip install --upgrade pip wheel setuptools conan==1.64.1
+python3.12 -m pip install --upgrade pip wheel setuptools conan==1.64.1
 
 # -----------------------------------------------------------------------------
 # 5. Build & install Texinfo (required by milvus-lite)
@@ -166,9 +166,9 @@ pushd milvus-lite
 
   # Build Python wheel and install
   pushd python
-    python3 -m pip install -r requirements.txt build
-    python3 setup.py install
-    python3 -m build --wheel --no-isolation --outdir "${PWD}/"
+    python3.12 -m pip install -r requirements.txt build
+    python3.12 setup.py install
+    python3.12 -m build --wheel --no-isolation --outdir "${PWD}/"
   popd
 popd
 
