@@ -1,0 +1,21 @@
+diff --git a/internal/core/thirdparty/tantivy/tokenizer.h b/internal/core/thirdparty/tantivy/tokenizer.h
+index 2870b01e2e..75a4d390e0 100644
+--- a/internal/core/thirdparty/tantivy/tokenizer.h
++++ b/internal/core/thirdparty/tantivy/tokenizer.h
+@@ -1,5 +1,15 @@
+ #pragma once
+-
++#ifndef AssertInfo
++#  include <stdexcept>
++#  define AssertInfo(cond, fmt_str, ...)               \
++     do {                                              \
++       if (!(cond))                                     \
++         throw std::runtime_error(                      \
++            /* simple formatting */                     \
++            fmt_str                                     \
++         );                                             \
++     } while (0)
++#endif
+ #include "tantivy-binding.h"
+ #include "rust-binding.h"
+ #include "rust-hashmap.h"
