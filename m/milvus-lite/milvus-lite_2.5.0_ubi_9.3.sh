@@ -166,6 +166,7 @@ pushd milvus-lite
 
   # Build Python wheel and install
   pushd python
+    export CMAKE_ARGS="-DWITH_OTLP_HTTP=OFF -DWITH_OTLP_GRPC=OFF -DENABLE_AWS_STORAGE=OFF"
     python3.12 -m pip install -r requirements.txt build
     python3.12 setup.py install
     python3.12 -m build --wheel --no-isolation --outdir "${PWD}/"
