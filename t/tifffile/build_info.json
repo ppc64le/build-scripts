@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "tifffile",
+   "github_url": "https://github.com/cgohlke/tifffile",
+   "version": "v2025.3.30",
+   "default_branch": "master",
+   "build_script": "tifffile_ubi_9.3.sh",
+   "package_dir": "t/tifffile",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
