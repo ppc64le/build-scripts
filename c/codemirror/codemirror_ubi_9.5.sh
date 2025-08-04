@@ -1,6 +1,7 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
+#
 # Package       : codemirror
 # Version       : 5.65.9
 # Source repo   : https://github.com/codemirror/codemirror
