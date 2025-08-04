@@ -1,0 +1,165 @@
+diff --git a/Makefile b/Makefile
+index 935035e27..583035c06 100644
+--- a/Makefile
++++ b/Makefile
+@@ -55,8 +55,8 @@ endif
+ 
+ REGISTRY ?= gcr.io/k8s-staging-ingress-nginx
+ 
+-BASE_IMAGE ?= k8s.gcr.io/ingress-nginx/nginx:81c2afd975a6f9a9847184472286044d7d5296f6@sha256:a71ac64dd8cfd68341ba47dbdc4d8c2cb91325fce669875193ea0319118201b5
+-
++#BASE_IMAGE ?= k8s.gcr.io/ingress-nginx/nginx:81c2afd975a6f9a9847184472286044d7d5296f6@sha256:a71ac64dd8cfd68341ba47dbdc4d8c2cb91325fce669875193ea0319118201b5
++BASE_IMAGE ?= local/ingress-nginx/nginx:base
+ GOARCH=$(ARCH)
+ 
+ help:  ## Display this help
+diff --git a/build/dev-env.sh b/build/dev-env.sh
+index d98f0bfbd..934de96b7 100755
+--- a/build/dev-env.sh
++++ b/build/dev-env.sh
+@@ -61,7 +61,8 @@ echo "[dev-env] building image"
+ make build image
+ docker tag "${REGISTRY}/controller:${TAG}" "${DEV_IMAGE}"
+ 
+-export K8S_VERSION=${K8S_VERSION:-v1.21.1@sha256:69860bda5563ac81e3c0057d654b5253219618a22ec3a346306239bba8cfa1a6}
++#export K8S_VERSION=${K8S_VERSION:-v1.21.1@sha256:69860bda5563ac81e3c0057d654b5253219618a22ec3a346306239bba8cfa1a6}
++export K8S_VERSION=${K8S_VERSION:-v1.23.17}
+ 
+ KIND_CLUSTER_NAME="ingress-nginx-dev"
+ 
+@@ -93,6 +94,7 @@ fi
+ 
+ echo "[dev-env] copying docker images to cluster..."
+ kind load docker-image --name="${KIND_CLUSTER_NAME}" "${DEV_IMAGE}"
++kind load docker-image --name="${KIND_CLUSTER_NAME}" "local/ingress-nginx/nginx:base"
+ 
+ echo "[dev-env] deploying NGINX Ingress controller..."
+ kubectl create namespace ingress-nginx &> /dev/null || true
+diff --git a/build/run-in-docker.sh b/build/run-in-docker.sh
+index 315756269..c7a145522 100755
+--- a/build/run-in-docker.sh
++++ b/build/run-in-docker.sh
+@@ -37,7 +37,8 @@ function cleanup {
+ }
+ trap cleanup EXIT
+ 
+-E2E_IMAGE=${E2E_IMAGE:-k8s.gcr.io/ingress-nginx/e2e-test-runner:v20220331-controller-v1.1.2-31-gf1cb2b73c@sha256:baa326f5c726d65be828852943a259c1f0572883590b9081b7e8fa982d64d96e}
++#E2E_IMAGE=${E2E_IMAGE:-k8s.gcr.io/ingress-nginx/e2e-test-runner:v20220331-controller-v1.1.2-31-gf1cb2b73c@sha256:baa326f5c726d65be828852943a259c1f0572883590b9081b7e8fa982d64d96e}
++E2E_IMAGE=${E2E_IMAGE:-local/e2e-test-runner:v1.0}
+ 
+ DOCKER_OPTS=${DOCKER_OPTS:-}
+ DOCKER_IN_DOCKER_ENABLED=${DOCKER_IN_DOCKER_ENABLED:-}
+diff --git a/images/nginx/Makefile b/images/nginx/Makefile
+index 438d0cfe1..e6da74e33 100644
+--- a/images/nginx/Makefile
++++ b/images/nginx/Makefile
+@@ -30,11 +30,11 @@ IMAGE = $(REGISTRY)/nginx
+ export DOCKER_CLI_EXPERIMENTAL=enabled
+ 
+ # build with buildx
+-PLATFORMS?=linux/amd64,linux/arm,linux/arm64,linux/s390x
++PLATFORMS?=linux/ppc64le
+ OUTPUT=
+ PROGRESS=plain
+-build: ensure-buildx
+-	docker buildx build \
++build:
++	docker build \
+ 		--platform=${PLATFORMS} $(OUTPUT) \
+ 		--progress=$(PROGRESS) \
+ 		--pull \
+diff --git a/images/nginx/rootfs/build.sh b/images/nginx/rootfs/build.sh
+index 2ee308d68..e9e662271 100755
+--- a/images/nginx/rootfs/build.sh
++++ b/images/nginx/rootfs/build.sh
+@@ -334,7 +334,8 @@ export LUA_LIB_DIR="$LUAJIT_LIB/lua"
+ export LUAJIT_INC=/usr/local/include/luajit-2.1
+ 
+ cd "$BUILD_PATH/luajit2-$LUAJIT_VERSION"
+-make CCDEBUG=-g
++#make CCDEBUG=-g
++make CCDEBUG=-g XCFLAGS=-DLUA_USE_ASSERT
+ make install
+ 
+ ln -s /usr/local/bin/luajit /usr/local/bin/lua
+diff --git a/images/test-runner/Makefile b/images/test-runner/Makefile
+index e6e047e6c..28228b4f7 100644
+--- a/images/test-runner/Makefile
++++ b/images/test-runner/Makefile
+@@ -18,26 +18,26 @@ SHELL=/bin/bash -o pipefail -o errexit
+ DIR:=$(strip $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST)))))
+ INIT_BUILDX=$(DIR)/../../hack/init-buildx.sh
+ 
+-TAG ?=v$(shell date +%m%d%Y)-$(shell git rev-parse --short HEAD)
++#TAG ?=v$(shell date +%m%d%Y)-$(shell git rev-parse --short HEAD)
++TAG ?=v1.0
+ REGISTRY ?= local
+ 
+ IMAGE = $(REGISTRY)/e2e-test-runner
+ 
+-NGINX_BASE_IMAGE ?= k8s.gcr.io/ingress-nginx/nginx:81c2afd975a6f9a9847184472286044d7d5296f6@sha256:a71ac64dd8cfd68341ba47dbdc4d8c2cb91325fce669875193ea0319118201b5
+-
++#NGINX_BASE_IMAGE ?= k8s.gcr.io/ingress-nginx/nginx:81c2afd975a6f9a9847184472286044d7d5296f6@sha256:a71ac64dd8cfd68341ba47dbdc4d8c2cb91325fce669875193ea0319118201b5
++NGINX_BASE_IMAGE ?= local/ingress-nginx/nginx:base
+ # required to enable buildx
+ export DOCKER_CLI_EXPERIMENTAL=enabled
+ 
+ # build with buildx
+-PLATFORMS?=linux/amd64,linux/arm64
++PLATFORMS?=linux/ppc64le
+ OUTPUT=
+ PROGRESS=plain
+ 
+-build: ensure-buildx
+-	docker buildx build \
++build:
++	docker build \
+ 		--platform=${PLATFORMS} $(OUTPUT) \
+ 		--progress=$(PROGRESS) \
+-		--pull \
+ 		--build-arg BASE_IMAGE=$(NGINX_BASE_IMAGE) \
+ 		--build-arg GOLANG_VERSION=1.17.6 \
+ 		--build-arg ETCD_VERSION=3.4.3-0 \
+@@ -50,7 +50,7 @@ build: ensure-buildx
+ 		--build-arg YAML_LINT_VERSION=1.13.0 \
+ 		--build-arg YAMALE_VERSION=1.8.0 \
+ 		--build-arg HELM_VERSION=v3.4.2 \
+-		-t $(IMAGE):$(TAG) rootfs
++		--load -t $(IMAGE):$(TAG) rootfs
+ 
+ # push the cross built image
+ push: OUTPUT=--push
+diff --git a/images/test-runner/rootfs/Dockerfile b/images/test-runner/rootfs/Dockerfile
+index e58cf47ad..4cec91d9a 100644
+--- a/images/test-runner/rootfs/Dockerfile
++++ b/images/test-runner/rootfs/Dockerfile
+@@ -42,6 +42,8 @@ RUN apk add --no-cache \
+   py-pip \
+   unzip \
+   openssl \
++  lua5.3 \
++  lua5.3-dev \
+   cfssl@testing
+ 
+ ENV GOPATH /go
+@@ -70,7 +72,7 @@ RUN wget -O /tmp/luarocks.tgz \
+   && echo "${LUAROCKS_SHA} */tmp/luarocks.tgz" | sha256sum -c - \
+   && tar -C /tmp -xzf /tmp/luarocks.tgz \
+   && cd /tmp/luarocks* \
+-  && ./configure \
++  && ./configure  --with-lua=/usr --with-lua-bin=/usr/bin --lua-version=5.3  \
+   && make install
+ 
+ RUN  luarocks install busted \
+diff --git a/test/e2e-image/Dockerfile b/test/e2e-image/Dockerfile
+index 15f8392a7..5eaac3baf 100644
+--- a/test/e2e-image/Dockerfile
++++ b/test/e2e-image/Dockerfile
+@@ -1,5 +1,5 @@
+-FROM k8s.gcr.io/ingress-nginx/e2e-test-runner:v20220416-controller-v1.2.0-beta.0-4-g2e1a4790b@sha256:4468eb8cc9aa0ec3971ddf3811efe363e6f8e9082e95b567a5c27d91f89fb1e3   AS BASE
+-
++#FROM k8s.gcr.io/ingress-nginx/e2e-test-runner:v20220416-controller-v1.2.0-beta.0-4-g2e1a4790b@sha256:4468eb8cc9aa0ec3971ddf3811efe363e6f8e9082e95b567a5c27d91f89fb1e3   AS BASE
++FROM local/e2e-test-runner:v1.0   AS BASE
+ FROM alpine:3.14.6
+ 
+ RUN apk add -U --no-cache \
