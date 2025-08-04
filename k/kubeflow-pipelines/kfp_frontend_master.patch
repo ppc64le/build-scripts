@@ -1,0 +1,10 @@
+diff --git a/frontend/Dockerfile b/frontend/Dockerfile
+index cbcf17a6b..3e20101a9 100644
+--- a/frontend/Dockerfile
++++ b/frontend/Dockerfile
+@@ -1,4 +1,4 @@
+-FROM node:18.18.2 as build
++FROM node:18.18.2-bullseye as build
+
+ ARG COMMIT_HASH
+ ENV COMMIT_HASH=${COMMIT_HASH}

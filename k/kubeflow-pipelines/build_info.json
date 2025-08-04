@@ -1,0 +1,19 @@
+{
+    "maintainer": "Sunidhi-Gaonkar1",
+    "package_name": "pipelines",
+    "github_url": "https://github.com/kubeflow/pipelines",
+    "version": "master",
+    "default_branch": "master",
+    "package_dir": "k/kubeflow-pipelines",
+    "build_script": "kubeflow-pipelines_rhel_9.3.sh",
+    "validate_build_script": true,
+    "use_non_root_user": true,
+    "docker_build": false,
+    "master": {
+      "dir": "k/kubeflow-pipelines",
+      "patches": {
+        "kfp_frontend_master": "kfp_frontend_master.patch",
+        "kfp_metadata_writer": "kfp_metadata_writer_master.patch"
+      }
+    }
+  }
