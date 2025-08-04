@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "ibm-db-sa",
+   "github_url": "https://github.com/ibmdb/python-ibmdbsa",
+   "version": "0.3.9",
+   "default_branch": "master",
+   "build_script": "ibm-db-sa_ubi_9.3.sh",
+   "package_dir": "i/ibm-db-sa",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
