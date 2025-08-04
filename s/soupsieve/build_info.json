@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "soupsieve",
+   "github_url": "https://github.com/facelessuser/soupsieve",
+   "version": "2.4",
+   "default_branch": "main",
+   "build_script": "soupsieve_ubi_9.3.sh",
+   "package_dir": "s/soupsieve",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
