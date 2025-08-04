@@ -1,0 +1,16 @@
+{
+    "maintainer": "pranithraoibm",
+    "package_name": "joblib",
+    "github_url": "https://github.com/joblib/joblib",
+    "version": "1.1.1",
+    "wheel_build": true,
+    "default_branch": "main",
+    "build_script": "joblib_ubi_9.3.sh",
+    "package_dir": "j/joblib",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "*": {
+        "build_script": "joblib_ubi_9.3.sh"
+    }
+}
