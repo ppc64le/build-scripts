@@ -24,42 +24,57 @@ PACKAGE_VERSION=${1:-2.19.2.0}
 OPENSEARCH_URL=https://github.com/opensearch-project/OpenSearch.git
 OPENSEARCH_VERSION=${PACKAGE_VERSION::-2}
 OPENSEARCH_PACKAGE=OpenSearch
-wdir=`pwd`
-SCRIPT=$(readlink -f $0)
-SCRIPT_DIR=$(dirname $SCRIPT)
+BUILD_HOME=`pwd`
 
 
 sudo yum install -y git java-17-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
 
-cd $wdir
+cd $BUILD_HOME
 git clone ${OPENSEARCH_URL}
 cd ${OPENSEARCH_PACKAGE} && git checkout ${OPENSEARCH_VERSION}
-git apply $SCRIPT_DIR/${OPENSEARCH_PACKAGE}_${OPENSEARCH_VERSION}.patch
 ./gradlew -p distribution/archives/linux-ppc64le-tar assemble
 
-cd $wdir
+cd $BUILD_HOME
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME
-git checkout $PACKAGE_VERSION
+cd $PACKAGE_NAME && git checkout $PACKAGE_VERSION
 
-if ! ./gradlew build -PcustomDistributionUrl="$wdir/OpenSearch/distribution/archives/linux-ppc64le-tar/build/distributions/opensearch-min-${OPENSEARCH_VERSION}-SNAPSHOT-linux-ppc64le.tar.gz"; then
-    echo "------------------$PACKAGE_NAME:Build_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
-    exit 1
+# --------
+# Build
+# --------
+ret=0
+./gradlew build -x test -x integTest  || ret=$?
+if [ $ret -ne 0 ]; then
+        set +ex
+	echo "------------------ ${PACKAGE_NAME}: Build Failed ------------------"
+	exit 1
+fi
+export OPENSEARCH_JOB_ZIP=${BUILD_HOME}/${PACKAGE_NAME}/build/distributions/opensearch-${PACKAGE_NAME}-${PACKAGE_VERSION}-SNAPSHOT.zip
+
+# ----------
+# Unit Test
+# ----------
+ret=0
+./gradlew test || ret=$?
+if [ $ret -ne 0 ]; then
+        ret=0
+	set +ex
+	echo "------------------ ${PACKAGE_NAME}: Unit Test Failed ------------------"
+	exit 2
 fi
 
-if ! ./gradlew test; then
-    echo "------------------$PACKAGE_NAME::Test_fails-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Test_fails"
-    exit 2
+# -----------------
+# Integration Test
+# -----------------
+ret=0
+./gradlew integTest -PcustomDistributionUrl="${BUILD_HOME}/OpenSearch/distribution/archives/linux-ppc64le-tar/build/distributions/opensearch-min-${OPENSEARCH_VERSION}-SNAPSHOT-linux-ppc64le.tar.gz" || ret=$?
+if [ $ret -ne 0 ]; then
+	set +ex
+	echo "------------------ ${PACKAGE_NAME}: Integration Test Failed ------------------"
+	exit 2
 fi
 
-# If both the build and test are successful, print the success message
-echo "------------------$PACKAGE_NAME::Build_and_Test_success-------------------------"
-echo "$PACKAGE_URL $PACKAGE_NAME"
-echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
-exit 0
+set +ex
+echo "------------------ Complete: Build and Tests successful! ------------------"
+echo "Plugin zip available at [${OPENSEARCH_JOB_ZIP}]"
