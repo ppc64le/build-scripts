@@ -1,10 +1,11 @@
 name: PR build
 
-on:
-  pull_request:
-    branches:
-      - master
-      - replica-master
+# Temporarily disabling PR workflow
+# on:
+#   pull_request:
+#     branches:
+#       - master
+#       - replica-master
 
 jobs:
   validate:
