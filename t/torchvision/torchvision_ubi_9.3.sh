@@ -261,6 +261,8 @@ python3.12 -m pip install -r requirements.txt
 
 echo "----------Installing pytorch------------"
 MAX_JOBS=$(nproc) python3.12 setup.py install
+python3.12 setup.py bdist_wheel
+cp dist/*.whl /
 cd $CURRENT_DIR
 
 echo "--------------------------------- Installing Opus ---------------------------------"
@@ -565,6 +567,16 @@ if ! python3.12 setup.py bdist_wheel --dist-dir $CURRENT_DIR; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
     exit 1
 fi
+
+cd $CURRENT_DIR
+
+cd vision
+cd build
+export CMAKE_PREFIX_PATH=/usr/local/lib64/python3.12/site-packages/torch/share/cmake/Torch:$LIBPROTO_INSTALL
+cmake ..
+make install
+cp libtorchvision.so /usr/local/lib64/python3.12/site-packages/torch/share/cmake/Torch
+cp libtorchvision.so /usr/local/lib64
 
 cd $CURRENT_DIR
 
