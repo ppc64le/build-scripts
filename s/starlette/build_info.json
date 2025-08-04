@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "starlette",
+   "github_url": "https://github.com/encode/starlette",
+   "version": "0.46.1",
+   "default_branch": "master",
+   "build_script": "starlette_ubi_9.3.sh",
+   "package_dir": "s/starlette",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
