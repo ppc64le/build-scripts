@@ -2,7 +2,7 @@
   "maintainer": "stutiibm",
   "package_name": "PyAV",
   "github_url": "https://github.com/PyAV-Org/PyAV",
-  "version": "v14.4.0",
+  "version": "v15.0.0",
   "wheel_build" : true,
   "package_dir": "p/pyav",
   "default_branch": "main",

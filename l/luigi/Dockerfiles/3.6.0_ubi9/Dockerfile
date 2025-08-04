@@ -4,7 +4,7 @@ MAINTAINER "Aastha Sharma <aastha.sharma4@ibm.com>"
 
 ARG PACKAGE_VERSION=v3.6.0
 
-RUN yum install -y python3 python3-devel python3-pip git wget curl make bzip2 bzip2-devel openssl openssl-devel gcc-toolset-13 && \
+RUN yum install -y  --allowerasing python3 python3-devel python3-pip git wget curl make bzip2 bzip2-devel openssl openssl-devel gcc-toolset-13 && \
     curl https://sh.rustup.rs -sSf | sh -s -- -y && \
     PATH="$HOME/.cargo/bin:$PATH" && \
     source $HOME/.cargo/env && \

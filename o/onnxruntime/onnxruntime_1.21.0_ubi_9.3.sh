@@ -134,7 +134,7 @@ LIBPROTO_INSTALL=$(pwd)/local/libprotobuf
 echo "LIBPROTO_INSTALL set to $LIBPROTO_INSTALL"
 
 # Clone Source-code
-PACKAGE_VERSION_LIB="v4.25.3"
+PACKAGE_VERSION_LIB="v4.25.8"
 PACKAGE_GIT_URL="https://github.com/protocolbuffers/protobuf"
 git clone $PACKAGE_GIT_URL -b $PACKAGE_VERSION_LIB
 
@@ -205,9 +205,9 @@ git submodule update --init --recursive
 
 sed -i 's|https://github.com/abseil/abseil-cpp/archive/refs/tags/20230125.3.tar.gz|https://github.com/abseil/abseil-cpp/archive/refs/tags/20240116.2.tar.gz|g' CMakeLists.txt && \
 sed -i 's|e21faa0de5afbbf8ee96398ef0ef812daf416ad8|bb8a766f3aef8e294a864104b8ff3fc37b393210|g' CMakeLists.txt && \
-sed -i 's|https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protobuf-22.3.tar.gz|https://github.com/protocolbuffers/protobuf/archive/refs/tags/v4.25.3.tar.gz|g' CMakeLists.txt && \
-sed -i 's|310938afea334b98d7cf915b099ec5de5ae3b5c5|4ba37c659f85c20abb0cc595bfac5e3a385e8e93|g' CMakeLists.txt && \
-sed -i 's|set(Protobuf_VERSION "4.22.3")|set(Protobuf_VERSION "v4.25.3")|g' CMakeLists.txt
+sed -i 's|https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protobuf-22.3.tar.gz|https://github.com/protocolbuffers/protobuf/archive/refs/tags/v4.25.8.tar.gz|g' CMakeLists.txt && \
+sed -i 's|310938afea334b98d7cf915b099ec5de5ae3b5c5|ffa977b9a7fb7e6ae537528eeae58c1c4d661071|g' CMakeLists.txt && \
+sed -i 's|set(Protobuf_VERSION "4.22.3")|set(Protobuf_VERSION "v4.25.8")|g' CMakeLists.txt
 
 export ONNX_ML=1
 export ONNX_PREFIX=$(pwd)/../onnx-prefix
@@ -238,7 +238,7 @@ python3 -m pip install cython meson
 python3 -m pip install numpy==2.0.2
 python3 -m pip install parameterized
 python3 -m pip install pytest nbval pythran mypy-protobuf
-python3 -m pip install scipy==1.13.1
+python3 -m pip install scipy==1.15.2
 
 python3 setup.py install
 
@@ -263,7 +263,7 @@ echo "NumPy include path: $NUMPY_INCLUDE"
 # Manually defines Python::NumPy for CMake versions with broken NumPy detection
 sed -i '193i # Fix for Python::NumPy target not found\nif(NOT TARGET Python::NumPy)\n    find_package(Python3 COMPONENTS NumPy REQUIRED)\n    add_library(Python::NumPy INTERFACE IMPORTED)\n    target_include_directories(Python::NumPy INTERFACE ${Python3_NumPy_INCLUDE_DIR})\n    message(STATUS "Manually defined Python::NumPy with include dir: ${Python3_NumPy_INCLUDE_DIR}")\nendif()\n' $CURRENT_DIR/onnxruntime/cmake/onnxruntime_python.cmake
 export CXXFLAGS="-I/usr/local/lib64/python${PYTHON_VERSION}/site-packages/numpy/_core/include/numpy $CXXFLAGS"
-
+sed -i 's|5ea4d05e62d7f954a46b3213f9b2535bdd866803|51982be81bbe52572b54180454df11a3ece9a934|' cmake/deps.txt
 #Build and test
 #Building and testing both is performed in build.sh
 if ! (./build.sh \

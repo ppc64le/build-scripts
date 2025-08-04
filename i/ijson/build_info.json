@@ -1,8 +1,8 @@
 {
-    "maintainer": "vinodk99",
+    "maintainer": "shivansh-ibm",
     "package_name": "ijson",
     "github_url": "https://github.com/ICRAR/ijson.git",
-    "version": "v3.3.0",
+    "version": "v3.4.0",
     "wheel_build" : true,
     "package_dir": "i/ijson",
     "default_branch": "master",

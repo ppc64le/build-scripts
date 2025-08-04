@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : matplotlib
-# Version       : v3.9.2
+# Version       : v3.10.3
 # Source repo   : https://github.com/matplotlib/matplotlib.git
 # Tested on     : UBI 9.3
 # Language      : Python, C++, Jupyter Notebook
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Chandan.Abhyankar@ibm.com
+# Maintainer    : shivansh.s1@ibm.com
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -18,13 +18,13 @@
 #
 # ----------------------------------------------------------------------------
 
-yum install -y python311 python3.11-devel python3.11-pip git gcc-c++ cmake wget
+yum install -y python3.12 python3.12-devel python3.12-pip git gcc-c++ cmake wget
 yum install -y openblas-devel ninja-build
 yum install -y zlib zlib-devel libjpeg-turbo libjpeg-turbo-devel
 
 # Clone the matplotlib package.
 PACKAGE_NAME=matplotlib
-PACKAGE_VERSION=${1:-v3.9.2}
+PACKAGE_VERSION=${1:-v3.10.3}
 PACKAGE_URL=https://github.com/matplotlib/matplotlib.git
 
 git clone $PACKAGE_URL
@@ -41,13 +41,11 @@ mv qhull-2020.2 build/
 rm -f qhull-2020-src-8.0.2.tar
 
 # Setup virtual environment for python
-python3.11 -m venv matplotlib-env
-source matplotlib-env/bin/activate
-pip3.11 install pytest hypothesis build meson pybind11 meson-python
+python3.12 -m pip install pytest hypothesis build meson pybind11 meson-python
 
 # Build and Install the package (This is dependent on numpy,pillow)
-python3.11 -m build
-python3.11 -m pip install -e .
+python3.12 -m build
+python3.12 -m pip install -e .
 
 if [ $? == 0 ]; then
      echo "------------------$PACKAGE_NAME::Build_Pass---------------------"
@@ -61,7 +59,7 @@ else
 fi
 
 # Test the package
-python3.11 -c "import matplotlib; print(matplotlib.__file__)"
+python3.12 -c "import matplotlib; print(matplotlib.__file__)"
 
 pytest ./lib/matplotlib/tests/test_units.py
 
@@ -76,7 +74,3 @@ else
      echo "$PACKAGE_NAME  | $PACKAGE_URL | $PACKAGE_VERSION  | Fail |  Test_Fail"
      exit 2
 fi
-
-# Deactivate python environment (matplotlib-env)
-deactivate
-

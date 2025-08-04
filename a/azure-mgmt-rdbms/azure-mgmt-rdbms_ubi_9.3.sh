@@ -8,7 +8,7 @@
 # Language         : Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Vinod.K1 <Vinod.K1@ibm.com>
+# Maintainer       : Ramnath Nayak <Ramnath.Nayak@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -36,9 +36,10 @@ git checkout $PACKAGE_VERSION
 
 pip install tox setuptools build wheel  pytest-cov setuptools-rust pytest certifi
 pip install -r dev_requirements.txt
+pip install 'urllib3<2.0'
 
 #install
-if ! pip install -e . ; then
+if ! pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"

@@ -1,0 +1,407 @@
+name: Currency Build
+
+on:
+  workflow_dispatch:
+    branches:
+      - master
+      - replica-master
+    inputs:
+      package_name:
+        description: 'Name of the package to build'
+        required: true
+      version:
+        description: 'Version of the package'
+        required: true
+      validate_build_script:
+        description: 'Run build validation script'
+        required: true
+        default: 'false'
+      wheel_build:
+        description: 'Create wheel for different Python versions'
+        required: true
+        default: 'false'
+      build_docker:
+        description: 'Build docker image'
+        required: true
+        default: 'false'
+      enable_trivy:
+        description: 'Enable Trivy scan'
+        required: true
+        default: 'true'
+      enable_syft:
+        description: 'Enable Syft scan'
+        required: true
+        default: 'true'
+      enable_grype:
+        description: 'Enable Grype scan'
+        required: true
+        default: 'true'
+      unique_id:
+        description: 'Unique ID for the build'
+        required: false
+        default: 'None'
+
+run-name: Currency Build ${{ inputs.package_name }} && Unique ID ${{ inputs.unique_id }}
+
+jobs:
+  build_info:
+    runs-on: ubuntu-24.04-ppc64le-p10
+    env:
+      PACKAGE_NAME: ${{ inputs.package_name }}
+      VERSION: ${{ inputs.version }}
+      VALIDATE_BUILD_SCRIPT: ${{ inputs.validate_build_script }}
+      WHEEL_BUILD: ${{ inputs.wheel_build }}
+      build_docker: ${{ inputs.build_docker }}
+      ENABLE_TRIVY: ${{ inputs.enable_trivy }}
+      ENABLE_SYFT: ${{ inputs.enable_syft }}
+      ENABLE_GRYPE: ${{ inputs.enable_grype }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install system packages
+        run: |
+          sudo apt update -y
+          sudo apt install -y jq file
+          
+      - name: Install Python dependencies
+        run: |
+          pip3 install --force-reinstall -v "requests==2.31.0"
+          pip3 install --upgrade docker
+
+      - name: Get Build Info and Save Variables
+        run: |
+          chmod +x ./gha-script/read_buildinfo.sh
+          bash ./gha-script/read_buildinfo.sh
+
+      - name: Show contents of variable.sh
+        run: |
+          echo "===== variable.sh ====="
+          cat variable.sh
+          echo "======================="
+
+      - name: Create scanner-env.sh
+        run: |
+          echo "Creating package-cache........."
+          mkdir package-cache
+          echo "Creating scanner-env.sh ......."
+          echo "export VALIDATE_BUILD_SCRIPT='${{ inputs.validate_build_script }}'" > scanner-env.sh
+          echo "export BUILD_DOCKER='${{ inputs.build_docker }}'" >> scanner-env.sh
+          echo "export PACKAGE_NAME='${{ inputs.package_name }}'" >> scanner-env.sh         
+          echo "===== scanner-env.sh ====="
+          cat scanner-env.sh
+          echo "=========================="
+          echo "Moving scanner-env.sh and variable.sh into package-cache............"
+          sudo mv variable.sh package-cache
+          sudo mv scanner-env.sh package-cache
+          echo "Moved scanner-env.sh and variable.sh into package-cache............"
+          
+
+      - name: Upload variable.sh and scanner-env.sh via package-cache
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-cache
+          path: package-cache
+                
+
+  build:
+    needs: build_info
+    if: ${{ inputs.validate_build_script == 'true' }}
+    runs-on: ubuntu-24.04-ppc64le-p10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: package-cache
+          path: package-cache
+
+     
+       
+      - name: Build Package
+        #env:
+          #CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.CURRENCY_SERVICE_ID_API_KEY }}
+        run: |
+          echo "Sourcing variable.sh and scanner-env.sh..........................................."
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          echo "===== variable.sh ====="
+          cat package-cache/variable.sh
+          echo "===== scanner-env.sh ====="
+          cat package-cache/scanner-env.sh
+          echo "==============LSCPU================"
+          lscpu
+          echo "==================================="
+          chmod +x ./gha-script/build_package.sh
+          bash ./gha-script/build_package.sh
+          cloned_package=$(ls -td -- */ | head -n 1)
+          sudo mv "$cloned_package" package-cache
+          echo "export CLONED_PACKAGE=\"$cloned_package\"" >> package-cache/scanner-env.sh
+          echo "-------------updated scanner-env.sh-----------------------"
+          cat  package-cache/scanner-env.sh
+          echo "---------------------------------------------"
+          cd package-cache
+          sudo chown $USER:$USER -R .
+          chmod +x ../gha-script/pre_process.sh
+          bash ../gha-script/pre_process.sh
+          cd $GITHUB_WORKSPACE
+          gzip build_log
+          #chmod +x ./gha-script/upload-scripts/upload_file.sh
+          #bash ./gha-script/upload-scripts/upload_file.sh build_log.gz
+
+
+
+      - name: Fix permissions on package-cache
+        run: |
+          USER=$(whoami)
+          echo "Current user: $USER"
+          echo "Fixing ownership and permissions for package-cache"
+          sudo chown -R $USER:$USER package-cache
+          sudo chmod -R u+rwX,go+rX,go-w package-cache
+         
+      - name: Upload updated package-cache
+        uses: actions/upload-artifact@v4
+        with:
+          name: updated-package-cache
+          path: package-cache
+
+  wheel_build:
+    needs: build_info
+    name: Create Wheel for Python ${{ matrix.python-version }}
+    if: ${{ inputs.wheel_build == 'true' }}
+    runs-on: ubuntu-24.04-ppc64le-p10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - python-version: "3.9"
+            allow-failure: true
+          - python-version: "3.10"
+            allow-failure: false
+          - python-version: "3.11"
+            allow-failure: false
+          - python-version: "3.12"
+            allow-failure: false
+          - python-version: "3.13"
+            allow-failure: true
+    env:
+      PYTHON_VERSION: ${{ matrix.python-version }}
+      PACKAGE_NAME: ${{ inputs.package_name }}
+      VERSION: ${{ inputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt update -y
+          #sudo apt install -y jq file python${{ matrix.python-version }}-dev python${{ matrix.python-version }}-pip
+
+      - name: Download package-cache from previous step
+        uses: actions/download-artifact@v4
+        with:
+          name: package-cache
+          path: package-cache
+
+      - name: Run build_wheels.sh
+        run: |
+          ls
+          echo "---------------------updated cache-----------------------"
+          ls package-cache
+          chmod +x package-cache/variable.sh
+          chmod +x package-cache/scanner-env.sh
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          
+          #python${{ matrix.python-version }} -m pip install --upgrade pip setuptools wheel
+
+          chmod +x ./gha-script/build_wheels.sh
+          bash ./gha-script/build_wheels.sh
+          sudo apt update -y
+          sudo lsb_release -a 2>/dev/null || echo "lsb_release not available"
+          sudo uname -a
+          
+        continue-on-error: ${{ matrix.allow-failure }}
+
+      # - name: Upload wheel artifact using custom script
+      #   run: |
+      #     WHEEL_FILE=*.whl
+      #     chmod +x ./gha-script/upload-scripts/upload_wheel.sh
+      #     bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+      #   continue-on-error: ${{ matrix.allow-failure }}
+
+      
+  source_scanner:
+    needs: build
+    if: ${{ inputs.validate_build_script == 'true' }}
+    runs-on: ubuntu-24.04-ppc64le-p10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: updated-package-cache
+          path: package-cache
+
+      - name: Prepare scanner environment
+        run: |
+          echo "Sourcing variable.sh..."
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          echo "---------updated scanner-env.sh cat----------------"
+          cat package-cache/scanner-env.sh
+
+          # # Write exports to a file that can be sourced in every scan step
+          # echo "export VALIDATE_BUILD_SCRIPT='${{ inputs.validate_build_script }}'" > scanner-env.sh
+          # echo "export CLONED_PACKAGE='$CLONED_PACKAGE'" >> scanner-env.sh
+
+          echo "scanner-env.sh created with:"
+          cat package-cache/scanner-env.sh
+
+
+      - name: Run Trivy Scan
+        if: ${{ inputs.enable_trivy == 'true' }}
+        run: |
+
+          echo ".................Sourcing variable.sh and scanner-env.sh...................."
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          cat package-cache/scanner-env.sh
+                         
+          chmod +x ./gha-script/scanner-scripts/trivy_code_scan.sh
+          bash ./gha-script/scanner-scripts/trivy_code_scan.sh;
+          mkdir source_trivy
+          mv package-cache/trivy_source_vulnerabilities_results.json package-cache/trivy_source_sbom_results.cyclonedx source_trivy
+
+      - name: Run Syft Scan
+        if: ${{ inputs.enable_syft == 'true' }}
+        run: |
+          echo ".................Sourcing variable.sh and scanner-env.sh...................."
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          chmod +x ./gha-script/scanner-scripts/syft_code_scan.sh
+          bash ./gha-script/scanner-scripts/syft_code_scan.sh
+          mkdir source_syft
+          mv package-cache/syft_source_sbom_results.json source_syft
+
+      - name: Run Grype Scan
+        if: ${{ inputs.enable_grype == 'true' }}
+        run: |
+          echo ".................Sourcing variable.sh and scanner-env.sh...................."
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          chmod +x ./gha-script/scanner-scripts/grype_code_scan.sh
+          bash ./gha-script/scanner-scripts/grype_code_scan.sh
+          mkdir source_grype
+          mv package-cache/grype_source_sbom_results.json package-cache/grype_source_vulnerabilities_results.json source_grype
+
+      - name: Upload Scanner Results
+        run: |
+          mkdir source
+          find source_trivy -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
+          find source_syft -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
+          find source_grype -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
+          tar cvzf source_scanner.tar.gz source
+          #chmod +x ./gha-script/upload-scripts/upload_file.sh
+          #bash ./gha-script/upload-scripts/upload_file.sh source_scanner.tar.gz
+
+  build_docker:
+    needs: build_info 
+    if: ${{ inputs.build_docker == 'true' }}
+    runs-on: ubuntu-24.04-ppc64le-p10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: package-cache
+          path: package-cache
+
+      - name: Build Docker Image
+        run: |
+          echo "................................Sourcing scanner-env.sh............................."
+          ls package-cache
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          chmod +x ./gha-script/build_docker.sh
+          bash ./gha-script/build_docker.sh
+          docker save -o package-cache/image.tar "$IMAGE_NAME"
+          docker images
+          
+      - name: Upload Docker Image
+        run: |
+          #chmod +x ./gha-script/upload-scripts/upload_docker_image.sh
+          #bash ./gha-script/upload-scripts/upload_docker_image.sh
+
+      - name: Upload package-cache with image.tar
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-cache-with-image
+          path: package-cache
+
+  image_scanner:
+    needs: build_docker
+    if: ${{ inputs.build_docker == 'true' }}
+    runs-on: ubuntu-24.04-ppc64le-p10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download package-cache
+        uses: actions/download-artifact@v4
+        with:
+          name: package-cache-with-image
+          path: package-cache
+
+      - name: Load Docker Image
+        run: |
+          echo "Sourcing variable.sh ..........................................."
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          echo ".......................Loading iamge.tar ............................"
+          docker load -i "package-cache/image.tar"
+
+      - name: Run Trivy Image Scan
+        if: ${{ inputs.enable_trivy == 'true' }}
+        run: |
+          echo ".................Sourcing variable.sh and scanner-env.sh...................."
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          chmod +x ./gha-script/scanner-scripts/trivy_image_scan.sh
+          bash ./gha-script/scanner-scripts/trivy_image_scan.sh
+          mkdir image_trivy
+          mv trivy_image_vulnerabilities_results.json trivy_image_sbom_results.cyclonedx image_trivy
+
+      - name: Run Syft Image Scan
+        if: ${{ inputs.enable_syft == 'true' }}
+        run: |
+          echo ".................Sourcing variable.sh and scanner-env.sh...................."
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          chmod +x ./script/scanner-scripts/syft_image_scan.sh
+          bash ./script/scanner-scripts/syft_image_scan.sh
+          mkdir image_syft
+          mv syft_image_sbom_results.json image_syft
+
+      - name: Run Grype Image Scan
+        if: ${{ inputs.enable_grype == 'true' }}
+        run: |
+          echo ".................Sourcing variable.sh and scanner-env.sh...................."
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          chmod +x ./gha-script/scanner-scripts/grype_image_scan.sh
+          bash ./gha-script/scanner-scripts/grype_image_scan.sh
+          mkdir image_grype
+          mv grype_image_sbom_results.json grype_image_vulnerabilities_results.json image_grype
+
+      - name: Upload Image Scanner Results
+        run: |
+          mkdir image
+          find image_trivy -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
+          find image_syft -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
+          find image_grype -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
+          tar cvzf image_scanner.tar.gz image
+          #chmod +x ./gha-script/upload-scripts/upload_file.sh
+          #bash ./gha-script/upload-scripts/upload_file.sh image_scanner.tar.gz
