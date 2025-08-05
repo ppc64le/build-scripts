@@ -16,6 +16,10 @@ env:
 services:
   - docker
 
+before_script:
+  - sudo rm -f /etc/apt/sources.list.d/pgdg.list || true
+  - sudo rm -f /etc/apt/sources.list.d/pgdg.list.save || true 
+  
 before_install:
     - sudo apt update -y
     - sudo apt install -y jq; jq --version
