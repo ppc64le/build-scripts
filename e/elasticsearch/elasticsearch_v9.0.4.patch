@@ -25,7 +25,7 @@ index 6462e249d6b..6f7b964c91d 100644
      }
 
 diff --git a/build-tools-internal/version.properties b/build-tools-internal/version.properties
-index d9ba5a93d66..7a94c4d391a 100644
+index d9ba5a93d66..6f456e04cc1 100644
 --- a/build-tools-internal/version.properties
 +++ b/build-tools-internal/version.properties
 @@ -1,8 +1,10 @@
@@ -62,10 +62,10 @@ index c7e6546e66b..fcc1792ad46 100644
              default -> throw new IllegalArgumentException("can not determine architecture from [" + architecture + "]");
          };
 diff --git a/distribution/archives/build.gradle b/distribution/archives/build.gradle
-index ddfdaa69bb3..bb4352dcfeb 100644
+index ddfdaa69bb3..41287577738 100644
 --- a/distribution/archives/build.gradle
 +++ b/distribution/archives/build.gradle
-@@ -104,12 +104,27 @@ distribution_archives {
+@@ -104,6 +104,13 @@ distribution_archives {
      }
    }
 
@@ -79,10 +79,10 @@ index ddfdaa69bb3..bb4352dcfeb 100644
    darwinAarch64Tar {
      archiveClassifier = 'darwin-aarch64'
      content {
-       archiveFiles('tar', 'darwin', 'aarch64', false)
+@@ -111,6 +118,14 @@ distribution_archives {
      }
    }
-+
+
 +    noJdkDarwinPpc64leTar {
 +    archiveClassifier = 'no-jdk-darwin-ppc64le'
 +    content {
@@ -90,9 +90,10 @@ index ddfdaa69bb3..bb4352dcfeb 100644
 +    }
 +  }
 +
-
++
    linuxAarch64Tar {
      archiveClassifier = 'linux-aarch64'
+     content {
 @@ -118,6 +133,14 @@ distribution_archives {
      }
    }
@@ -131,7 +132,7 @@ index 1f7e9ae3e0d..486155deac4 100644
            String platform = os + '-' + architecture
            if (architecture == 'x64') {
 diff --git a/distribution/docker/build.gradle b/distribution/docker/build.gradle
-index 120015b9480..e8e2b25ea60 100644
+index 120015b9480..115cb74e05c 100644
 --- a/distribution/docker/build.gradle
 +++ b/distribution/docker/build.gradle
 @@ -91,6 +91,7 @@ configurations {
@@ -204,13 +205,11 @@ index 120015b9480..e8e2b25ea60 100644
    String contextDir = "${project.buildDir}/docker-context/elasticsearch${dockerBase.suffix}-${VersionProperties.elasticsearch}-docker-build-context${arch}"
 
    final TaskProvider<Sync> buildContextTask =
-@@ -590,8 +592,8 @@ for (final Architecture architecture : Architecture.values()) {
- subprojects { Project subProject ->
+@@ -591,7 +593,7 @@ subprojects { Project subProject ->
    if (subProject.name.endsWith('-export')) {
      apply plugin: 'distribution'
--
+
 -    final Architecture architecture = subProject.name.contains('aarch64-') ? Architecture.AARCH64 : Architecture.X64
-+
 +    final Architecture architecture = subProject.name.contains('aarch64-') ? Architecture.AARCH64 : (subProject.name.contains('ppc64le-') ? Architecture.PPC64LE : Architecture.X64)
      DockerBase base = DockerBase.DEFAULT
      if (subProject.name.contains('ironbank-')) {
@@ -320,7 +319,7 @@ index 9129c9a12fc..c2bf7401de0 100644
  }
 +
 diff --git a/gradle/verification-metadata.xml b/gradle/verification-metadata.xml
-index d8c2e5e5b8b..579175c70ce 100644
+index d8c2e5e5b8b..1d29b52fcfc 100644
 --- a/gradle/verification-metadata.xml
 +++ b/gradle/verification-metadata.xml
 @@ -31,6 +31,11 @@
@@ -448,15 +447,13 @@ index c4a852da571..0208a86524b 100644
  validateDistributionUrl=true
  zipStoreBase=GRADLE_USER_HOME
 diff --git a/settings.gradle b/settings.gradle
-index 4d26960cf93..584bdd2adfa 100644
+index 4d26960cf93..711540fc023 100644
 --- a/settings.gradle
 +++ b/settings.gradle
-@@ -89,7 +89,15 @@ List projects = [
-   'distribution:tools:plugin-cli',
+@@ -90,6 +90,14 @@ List projects = [
    'distribution:tools:keystore-cli',
    'distribution:tools:geoip-cli',
--  'distribution:tools:ansi-console',
-+  'distribution:tools:ansi-console',
+   'distribution:tools:ansi-console',
 +  'distribution:archives:darwin-ppc64le-tar',
 +  'distribution:archives:no-jdk-darwin-ppc64le-tar',
 +  'distribution:archives:linux-ppc64le-tar',
