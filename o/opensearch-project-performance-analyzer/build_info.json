@@ -15,5 +15,8 @@
   },
   "2.7.0.0": {
     "build_script": "opensearch-project-performance-analyzer_ubi_8.7.sh"
+  },
+  "2.15.0.0": {
+    "build_script": "opensearch-project-performance-analyzer_ubi_9.3"
   }
 }

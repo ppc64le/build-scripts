@@ -9,7 +9,13 @@
   "validate_build_script": true,
   "use_non_root_user": true,
   "docker_build": false,
-  "*": {
+  "2.19.2.0": {
     "build_script": "opensearch-project-job-scheduler_2.19.2.0_ubi_9.3.sh"
+  },
+  "2.10.0.0": {
+    "build_script": "opensearch-project-job-scheduler_ubi_8.7.sh"
+  },
+  "2.15.0.0": {
+    "build_script": "opensearch-project-job-scheduler_ubi_9.3.sh"
   }
 }
