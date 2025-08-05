@@ -37,8 +37,6 @@ tar -xf OpenJDK21U-jdk_ppc64le_linux_hotspot_21.0.2_13.tar.gz -C /opt
 export JAVA_HOME=/opt/jdk-21.0.2+13
 export PATH=$JAVA_HOME/bin:$PATH
 java -version
-export JAVA_HOME=/opt/jdk-21.0.2+13
-export PATH=$JAVA_HOME/bin:$PATH
 # ./gradlew --version
 
 
