@@ -2,7 +2,7 @@
 # --------------------------------------------------------------------
 #
 # Package         : kestrel
-# Branch          : openmp
+# Version         : openmp
 # Source repo     : https://github.com/jakelangham/kestrel.git
 # Tested on       : Ubuntu 22.04 (Power 10)
 # Language        : C++ / GDAL / GEOS / Boost
