@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/jakartaee/${PACKAGE_NAME}.git
 PACKAGE_VERSION=${1:- 2.1.3-RELEASE}
 
 #Install deps.
-yum install -y git gcc gcc-c++ openssl-devel java-21-openjdk java-21-openjdk-devel java-21-openjdk-headless
+yum install -y git wget gcc gcc-c++ openssl-devel java-21-openjdk java-21-openjdk-devel java-21-openjdk-headless
 
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
