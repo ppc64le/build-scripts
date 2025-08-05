@@ -2,7 +2,7 @@
 # --------------------------------------------------------------------
 #
 # Package         : kestrel
-# Version         : v1.1.2
+# Branch          : openmp
 # Source repo     : https://github.com/jakelangham/kestrel.git
 # Tested on       : Ubuntu 22.04 (Power 10)
 # Language        : C++ / GDAL / GEOS / Boost
@@ -21,7 +21,7 @@
 # Environment Setup
 # --------------------------------------------------------------------
 PACKAGE_NAME="kestrel"
-PACKAGE_VERSION="${1:-v1.1.2}"
+PACKAGE_VERSION="${1:-openmp}"
 PACKAGE_URL="https://github.com/jakelangham/${PACKAGE_NAME}.git"
 BUILD_HOME="$(pwd)"
 
@@ -73,20 +73,21 @@ echo "[INFO] Julia Version: $(julia --version)"
 cd "$BUILD_HOME"
 git clone --branch openmp "$PACKAGE_URL"
 cd "$PACKAGE_NAME"
-git checkout "$PACKAGE_VERSION"
+
+# --------------------------------------------------------------------
+# Apply patch to modify test settings and update architecture-specific flags
+# --------------------------------------------------------------------
+if [ -f "$BUILD_HOME/kestrel_openmp.patch" ]; then
+    git apply "$BUILD_HOME/kestrel_openmp.patch"
+    echo "[INFO] Patch file kestrel_openmp.patch applied; continuing."
+else
+    echo "[WARN] Patch file kestrel_openmp.patch not found; skipping."
+fi
 
 # --------------------------------------------------------------------
 # Run autoreconf (bootstrapping)
 # --------------------------------------------------------------------
 autoreconf -fi
-
-# --------------------------------------------------------------------
-# Modify Makefile.am to update architecture-specific flags (if needed)
-# --------------------------------------------------------------------
-if grep -q -- "-march=native" src/Makefile.am; then
-    echo "[INFO] Replacing -march=native with -mcpu=native for Power architecture"
-    sed -i 's/-march=native/-mcpu=native/g' src/Makefile.am
-fi
 
 # --------------------------------------------------------------------
 # Configure with OpenMP support
@@ -97,7 +98,7 @@ fi
 # Build the Kestrel binary
 # --------------------------------------------------------------------
 ret=0
-make || ret=$?
+make PARAL=1 || ret=$?
 if [ "$ret" -ne 0 ]; then
     echo "------------------${PACKAGE_NAME}:build_fails-------------------------------------"
     exit 1
@@ -106,7 +107,7 @@ fi
 # --------------------------------------------------------------------
 # Install the compiled binary system-wide
 # --------------------------------------------------------------------
-make install || ret=$?
+make PARAL=1 install || ret=$?
 if [ "$ret" -ne 0 ]; then
     echo "------------------${PACKAGE_NAME}:install_fails-------------------------------------"
     exit 1
@@ -119,6 +120,16 @@ make check || ret=$?
 if [ "$ret" -ne 0 ]; then
     echo "------------------${PACKAGE_NAME}:tests_fails-------------------------------------"
     exit 2
+fi
+
+# --------------------------------------------------------------------
+# Verify if the built Kestrel binary is linked with OpenMP support
+# --------------------------------------------------------------------
+echo "[INFO] Checking if Kestrel binary is linked with OpenMP (libgomp)..."
+if ldd src/kestrel | grep -i libgomp; then
+    echo "[PASS] libgomp (OpenMP support) is linked correctly."
+else
+    echo "[FAIL] libgomp not found. OpenMP support may be missing."
 fi
 
 # --------------------------------------------------------------------
