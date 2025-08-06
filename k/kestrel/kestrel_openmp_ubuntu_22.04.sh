@@ -26,12 +26,12 @@ PACKAGE_URL="https://github.com/jakelangham/${PACKAGE_NAME}.git"
 BUILD_HOME="$(pwd)"
 
 # --------------------------------------------------------------------
-# Update system and install tools
+# Update system
 # --------------------------------------------------------------------
-apt-get update -y && apt install -y build-essential
+apt-get update
 
 # --------------------------------------------------------------------
-# Install Basic Tools and Build Essentials
+# Install Basic Tools
 # --------------------------------------------------------------------
 apt-get install -y wget curl git tar automake autoconf libtool cmake patch \
     libexpat1-dev zlib1g-dev libsqlite3-dev libtiff-dev libcurl4-openssl-dev
@@ -55,6 +55,32 @@ apt-get install -y \
 # --------------------------------------------------------------------
 apt-get install -y gdal-bin libgdal-dev
 echo "[INFO] GDAL Version: $(gdal-config --version)"
+
+# --------------------------------------------------------------------
+# Install IBM Advance Toolchain 16.0.5 (Ubuntu tarball)
+# --------------------------------------------------------------------
+wget -qO- https://public.dhe.ibm.com/software/server/POWER/Linux/toolchain/at/ubuntu/dists/jammy/615d762f.gpg.key | tee -a /etc/apt/trusted.gpg.d/615d762f.asc > /dev/null
+
+APT_LINE="deb [signed-by=/etc/apt/trusted.gpg.d/615d762f.asc] https://public.dhe.ibm.com/software/server/POWER/Linux/toolchain/at/ubuntu jammy at16.0"
+
+echo "${APT_LINE}" | tee -a /etc/apt/sources.list
+
+apt-get update
+apt-get install -y advance-toolchain-at16.0-runtime \
+                 advance-toolchain-at16.0-devel \
+                 advance-toolchain-at16.0-perf \
+                 advance-toolchain-at16.0-mcore-libs
+				 
+# Validate the IBM Advance Toolchain Version
+if [[ -x /opt/at16.0/bin/gcc && -x /opt/at16.0/bin/g++ ]]; then
+    GCC_VERSION=$(/opt/at16.0/bin/gcc --version | head -n 1)
+    GPP_VERSION=$(/opt/at16.0/bin/g++ --version | head -n 1)
+
+    echo "[INFO] GCC Version:  $GCC_VERSION"
+    echo "[INFO] G++ Version:  $GPP_VERSION"
+fi
+
+echo "[INFO] IBM Advance Toolchain (AT16.0) installed successfully"
 
 # --------------------------------------------------------------------
 # Download and install Julia v1.11.6 for ppc64le
@@ -90,9 +116,9 @@ fi
 autoreconf -fi
 
 # --------------------------------------------------------------------
-# Configure with OpenMP support
+# Configure with OpenMP support along with architecture-specific flags
 # --------------------------------------------------------------------
-./configure CXXFLAGS="-O2 -fopenmp -mcpu=native" FCFLAGS="-O2 -fopenmp -mcpu=native"
+CC=/opt/at16.0/bin/gcc CXX=/opt/at16.0/bin/g++ CXXFLAGS="-O2 -fopenmp -mcpu=native -std=c++17" FCFLAGS="-O2 -fopenmp -mcpu=native" ./configure
 
 # --------------------------------------------------------------------
 # Build the Kestrel binary
