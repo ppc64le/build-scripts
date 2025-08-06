@@ -1,6 +1,8 @@
 # Travis builds are triggered for pull requests and api events only.
 if: type IN (api, pull_request)
-
+before_script:
+  - sudo rm -f /etc/apt/sources.list.d/pgdg.list || true
+  - sudo rm -f /etc/apt/sources.list.d/pgdg.list.save || true 
 # will import the desired travis config file based on the request type.
 import:
 - source: travis-currency-ymls/pr-build.yml
