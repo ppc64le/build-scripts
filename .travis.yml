@@ -1,6 +1,9 @@
 # Travis builds are triggered for pull requests and api events only.
 if: type IN (api, pull_request)
-
+before_script:
+  # Remove any PostgreSQL repo references (in case some scripts run apt again)
+  - sudo sed -i.bak '/apt\.postgresql\.org/d' /etc/apt/sources.list || true
+  - sudo find /etc/apt/sources.list.d -type f -exec sudo sed -i.bak '/apt\.postgresql\.org/d' {} + || true 
 # will import the desired travis config file based on the request type.
 import:
 - source: travis-currency-ymls/pr-build.yml
