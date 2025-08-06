@@ -5,7 +5,7 @@ language: shell
 
 branches:
   only:
-    - travis-change
+    - master
 
 env:
   global:
