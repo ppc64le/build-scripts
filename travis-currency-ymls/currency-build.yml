@@ -15,12 +15,14 @@ env:
 
 services:
   - docker
-
+  
 before_script:
-  - sudo rm -f /etc/apt/sources.list.d/pgdg.list || true
-  - sudo rm -f /etc/apt/sources.list.d/pgdg.list.save || true 
+  - sudo find /etc/apt/sources.list.d/ -type f -name '*pgdg*' -exec rm -f {} + || true
   
 before_install:
+    - sudo sed -i.bak '/apt\.postgresql\.org/d' /etc/apt/sources.list || true
+    - sudo find /etc/apt/sources.list.d/ -type f -name '*pgdg*' -exec rm -f {} + || true
+    - sudo apt clean
     - sudo apt update -y
     - sudo apt install -y jq; jq --version
    
