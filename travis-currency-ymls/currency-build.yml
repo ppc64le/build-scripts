@@ -20,6 +20,8 @@ before_script:
   - sudo find /etc/apt/sources.list.d/ -type f -name '*pgdg*' -exec rm -f {} + || true
   
 before_install:
+    - sudo sed -i.bak '/apt\.postgresql\.org/d' /etc/apt/sources.list || true
+    - sudo find /etc/apt/sources.list.d/ -type f -name '*pgdg*' -exec rm -f {} + || true
     - sudo apt clean
     - sudo apt update -y
     - sudo apt install -y jq; jq --version
