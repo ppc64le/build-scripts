@@ -20,7 +20,7 @@ index 9114503..e535443 100644
 
  tests_noflow = [
 -   ("lake_at_rest_hydro", 1)
-+#   ("lake_at_rest_hydro", 1) # Skipped due to known failure or platform-specific issue
++#   ("lake_at_rest_hydro", 1) # Disabling test "lake_at_rest_hydro" in parity with x86 due to possible platform-dependent variations.
     ("lake_at_rest_morpho", 1)
     ("lake_at_rest_hydro_2d", 2)
     ("lake_at_rest_morpho_2d", 2)
