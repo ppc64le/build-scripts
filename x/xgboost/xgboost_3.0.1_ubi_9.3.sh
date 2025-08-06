@@ -119,8 +119,9 @@ git submodule update --init
 export SRC_DIR=$(pwd)
 echo "SRC_DIR: $SRC_DIR"
 
-# Add sysconfig import 
+# Import sysconfig for platform tag  
 sed -i '/^from hatchling\.builders\.hooks\.plugin\.interface import BuildHookInterface/a import sysconfig' python-package/hatch_build.py
+# Use sysconfig to set platfrom tag instead of packaging.tags
 sed -i 's/next(platform_tags())/sysconfig.get_platform().replace("-", "_").replace(".", "_")/g' python-package/hatch_build.py
 
 # Build xgboost cpp artifacts
