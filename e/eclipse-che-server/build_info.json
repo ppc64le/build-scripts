@@ -3,7 +3,7 @@
     "package_name": "eclipse-che-server",
     "github_url": "https://github.com/eclipse-che/che-server",
     "version": "main",
-    "package_dir": "e/eclipse-che/eclipse-che",
+    "package_dir": "e/eclipse-che-server",
     "default_branch": "main",
     "build_script": "eclipse-che-server_ubi_9.4.sh",
     "docker_build": "false",

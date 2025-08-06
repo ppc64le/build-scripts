@@ -1,22 +1,22 @@
 {
     "maintainer": "aastha-sharma2",
-    "package_name": "stripe-python",
+    "package_name": "Stripe-python",
     "github_url": "https://github.com/stripe/stripe-python.git",
     "version": "v12.2.0",
     "default_branch": "master",
-    "package_dir": "s/stripe-python",
+    "package_dir": "s/Stripe-python",
     "wheel_build" : true,
-    "build_script": "stripe-python_ubi_12.2.0_9.3.sh",
+    "build_script": "Stripe-python_ubi_12.2.0_9.3.sh",
     "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
     "validate_build_script": "true",
     "use_non_root_user": "false",
     "docker_build": "true",
     "v10.5.0" : {
        "dir": "v10.5.0_ubi9",
-       "build_script": "stripe-python_ubi_9.3.sh"
+       "build_script": "Stripe-python_ubi_9.3.sh"
     },
     "*" : {
         "dir": "v12.2.0_ubi9",
-       "build_script": "stripe-python_ubi_12.2.0_9.3.sh"
+       "build_script": "Stripe-python_ubi_12.2.0_9.3.sh"
     }
 }

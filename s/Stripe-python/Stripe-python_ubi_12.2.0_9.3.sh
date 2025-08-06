@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : stripe-python
+# Package          : Stripe-python
 # Version          : v12.2.0
 # Source repo      : https://github.com/stripe/stripe-python.git
 # Tested on        : UBI:9.3
