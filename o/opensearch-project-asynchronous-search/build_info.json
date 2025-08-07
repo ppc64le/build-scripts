@@ -3,6 +3,7 @@
   "package_name": "opensearch-project-asynchronous-search",
   "github_url": "https://github.com/opensearch-project/asynchronous-search",
   "version": "2.19.2.0",
+  "required_versions":{"Releases": ["*"], "Tags": ["2.19.2.0"]},
   "default_branch": "main",
   "package_dir": "o/opensearch-project-asynchronous-search",
   "build_script": "opensearch-project-asynchronous-search_2.19.2.0_ubi_9.3.sh",

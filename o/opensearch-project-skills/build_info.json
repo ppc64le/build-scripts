@@ -3,6 +3,7 @@
   "package_name": "opensearch-project-skills",
   "github_url": "https://github.com/opensearch-project/skills",
   "version": "2.19.2.0",
+  "required_versions":{"Releases": ["*"], "Tags": ["2.19.2.0"]},
   "default_branch": "main",
   "package_dir": "o/opensearch-project-skills",
   "build_script": "opensearch-project-skills_2.19.2.0_ubi_9.3.sh",

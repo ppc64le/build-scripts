@@ -3,6 +3,7 @@
   "package_name": "opensearch-project-index-management",
   "github_url": "https://github.com/opensearch-project/index-management",
   "version": "2.19.2.0",
+  "required_versions":{"Releases": ["*"], "Tags": ["2.19.2.0"]},
   "default_branch": "main",
   "package_dir": "o/opensearch-project-index-management",
   "build_script": "opensearch-project-index-management_2.19.2.0_ubi_9.3.sh",
