@@ -27,7 +27,7 @@ TAG="v2.6.0"
 yum module enable nodejs:20 -y
 yum install git  -y
 yum install -y nodejs
-npm install
+
 
 # Clone the repository
 if [[ -d "$PACKAGE_NAME" ]]; then
@@ -42,6 +42,7 @@ git checkout "$TAG"
 
 # Build the project
 ret=0
+npm install
 npm install --save react-native-status-bar-height || ret=$?
 if [ "$ret" -ne 0 ]
 then
