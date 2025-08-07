@@ -1,0 +1,15 @@
+{
+   "maintainer": "Amitkumar282",
+   "package_name": "i18n",
+   "github_url": "https://github.com/fnando/i18n.git",
+   "version": "v4.4.3",
+   "default_branch": "master",
+   "build_script": "i18n_v4.4.3_ubi_9.5.sh",
+   "package_dir": "i/i18n",
+   "docker_build": false,
+   "use_non_root_user": false,
+   "validate_build_script": "true",
+   "*": {
+    "build_script": "i18n_v4.4.3_ubi_9.5.sh"
+  }
+}
