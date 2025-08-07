@@ -27,12 +27,15 @@ PACKAGE_URL=https://github.com/pytorch/vision.git
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 MAX_JOBS=${MAX_JOBS:-$(nproc)}
 VERSION=${PACKAGE_VERSION#v}
+PYTHON_VERSION=${2:-3.12}
 
 CURRENT_DIR=$(pwd)
 
-yum install -y git make wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas
+yum install -y git make wget python$PYTHON_VERSION python$PYTHON_VERSION-devel python$PYTHON_VERSION-pip pkgconfig atlas
 yum install gcc-toolset-13 -y
 yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build gcc-toolset-13  pkg-config  gmp-devel  freetype-devel
+
+ln /usr/bin/pip$PYTHON_VERSION /usr/bin/pip3 -f && ln /usr/bin/python$PYTHON_VERSION /usr/bin/python3 -f &&  ln /usr/bin/pip$PYTHON_VERSION /usr/bin/pip -f && ln /usr/bin/python$PYTHON_VERSION /usr/bin/python
 
 dnf install -y gcc-toolset-13-libatomic-devel
 
@@ -114,13 +117,13 @@ cd $CURRENT_DIR
 echo "--------------------scipy installing-------------------------------"
 
 #Building scipy
-python3.12 -m pip install beniget==0.4.2.post1 Cython gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja patchelf
+python3 -m pip install beniget==0.4.2.post1 Cython gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja patchelf
 git clone https://github.com/scipy/scipy
 cd scipy/
 git checkout v1.15.2
 git submodule update --init
 echo "instaling scipy......."
-python3.12 -m pip install .
+python3 -m pip install .
 cd $CURRENT_DIR
 
 echo "--------------------abseil-cpp installing-------------------------------"
@@ -189,7 +192,7 @@ git apply set_cpp_to_17_v4.25.3.patch
 
 echo "Installing protobuf...."
 cd python
-python3.12 -m pip install .
+python3 -m pip install .
 cd $CURRENT_DIR
 
 echo "------------ libprotobuf,protobuf installed--------------"
@@ -257,10 +260,12 @@ export LD_LIBRARY_PATH="/protobuf/local/libprotobuf/lib64:${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH="/protobuf/third_party/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
 
 sed -i "s/cmake/cmake==3.*/g" requirements.txt
-python3.12 -m pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 
 echo "----------Installing pytorch------------"
-MAX_JOBS=$(nproc) python3.12 setup.py install
+MAX_JOBS=$(nproc) python3 setup.py install
+MAX_JOBS=$(nproc) python3 setup.py bdist_wheel
+cp dist/*.whl /
 cd $CURRENT_DIR
 
 echo "--------------------------------- Installing Opus ---------------------------------"
@@ -523,7 +528,7 @@ git checkout 11.1.0
 yum install -y libjpeg-turbo-devel
 git submodule update --init
 
-python3.12 -m pip install .
+python3 -m pip install .
 cd $CURRENT_DIR
 
 echo "--------------------Installing pyav----------------------------"
@@ -549,7 +554,7 @@ git submodule update --init
 export CFLAGS="${CFLAGS} -I/install-deps/ffmpeg/include"
 export LDFLAGS="${LDFLAGS} -L/install-deps/ffmpeg/lib"
 
-python3.12 setup.py build_ext --inplace
+python3 setup.py build_ext --inplace
 cd $CURRENT_DIR
 
 echo "------------------Building torchvision------------------------"
@@ -559,7 +564,7 @@ git checkout $PACKAGE_VERSION
 
 sed -i '/elif sha != "Unknown":/,+1d' setup.py
 
-if ! python3.12 setup.py bdist_wheel --dist-dir $CURRENT_DIR; then
+if ! python3 setup.py bdist_wheel --dist-dir $CURRENT_DIR; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
@@ -568,9 +573,19 @@ fi
 
 cd $CURRENT_DIR
 
-python3.12 -m pip install ./torchvision*.whl
+cd vision
+cd build
+export CMAKE_PREFIX_PATH=/usr/local/lib64/python$PYTHON_VERSION/site-packages/torch/share/cmake/Torch:$LIBPROTO_INSTALL
+cmake ..
+make install
+cp libtorchvision.so /usr/local/lib64/python$PYTHON_VERSION/site-packages/torch/share/cmake/Torch
+cp libtorchvision.so /usr/local/lib64
 
-python3.12 -m pip install pytest pytest-xdist
+cd $CURRENT_DIR
+
+python3 -m pip install ./torchvision*.whl
+
+python3 -m pip install pytest pytest-xdist
 
 if ! pytest $PACKAGE_NAME/test/common_extended_utils.py $PACKAGE_NAME/test/common_utils.py $PACKAGE_NAME/test/smoke_test.py $PACKAGE_NAME/test/test_architecture_ops.py $PACKAGE_NAME/test/test_datasets_video_utils_opt.py ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
