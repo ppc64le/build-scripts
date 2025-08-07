@@ -1,6 +1,6 @@
 {
   "maintainer": "sumit.dubey2@ibm.com",
-  "package_name": "opensearch-remote-metadata-sdk",
+  "package_name": "opensearch-project-opensearch-remote-metadata-sdk",
   "github_url": "https://github.com/opensearch-project/opensearch-remote-metadata-sdk",
   "version": "2.19.2.0",
   "default_branch": "main",

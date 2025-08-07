@@ -1,16 +1,19 @@
 {
-  "maintainer": "kiranNukal",
+  "maintainer": "aastha-sharma2",
   "package_name": "orange3",
   "github_url": "https://github.com/biolab/orange3",
   "version": "3.39.0",
   "wheel_build" : true,
+  "package_dir": "o/orange3",
   "default_branch": "master",
   "build_script": "orange3_ubi_9.3.sh",
-  "package_dir": "o/orange3",
   "docker_build": false,
   "validate_build_script": true,
-  "use_non_root_user": false,
+  "use_non_root_user": "false",
+  "3.38.1" : {
+            "build_script": "orange3_3.38.1_ubi_9.3.sh"
+  },
   "*": {
-   "build_script": "orange3_ubi_9.3.sh"
- }
+            "build_script": "orange3_ubi_9.3.sh"
+  }
 }

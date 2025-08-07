@@ -7,6 +7,10 @@ language: shell
 services:
     - docker
 
+before_script:
+  - sudo rm -f /etc/apt/sources.list.d/pgdg.list || true
+  - sudo rm -f /etc/apt/sources.list.d/pgdg.list.save || true 
+  
 before_install:
     - docker pull registry.access.redhat.com/ubi9/ubi:9.3
 

@@ -23,7 +23,7 @@ set -ex
 PACKAGE_NAME=pyclaw
 PACKAGE_VERSION=${1:-v5.12.0}
 PACKAGE_URL=https://github.com/clawpack/pyclaw.git
-PACKAGE_DIR=/pyclaw/src/pyclaw   
+PACKAGE_DIR=pyclaw/src/pyclaw
 CURRENT_DIR=$(pwd)
 
 # --- Install System Dependencies ---
@@ -45,8 +45,8 @@ python3.11 -m pip install numpy flake8 meson-python ninja pytest coveralls \
 # Clone the pyclaw repository.
 echo "--- Cloning PyClaw repository ---"
 git clone $PACKAGE_URL
-cd $PACKAGE_DIR 
-git checkout $PACKAGE_VERSION 
+cd $PACKAGE_DIR
+git checkout $PACKAGE_VERSION
 
 # directories expected by the setup.py script.
 #cd /pyclaw/src/pyclaw/
@@ -55,6 +55,7 @@ mkdir pyclaw
 mkdir -p pyclaw/examples
 cd pyclaw/examples
 touch __init__.py
+cd $CURRENT_DIR
 cd $PACKAGE_DIR
 #ensures that the version is correctly recognized during the build process
 sed -i "s/setup(\*\*configuration(top_path='').todict())/setup(version='5.12.0', **configuration(top_path='').todict())/" setup.py
@@ -72,4 +73,5 @@ if ! python3.11 setup.py install ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Install_Fails"
     exit 1
 fi
-#no tests to be run 
+
+#no tests to be run
