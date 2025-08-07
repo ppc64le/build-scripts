@@ -1,0 +1,21 @@
+{
+  "maintainer": "Amitkumar282",
+  "package_name": "swagger-parser",
+  "github_url": "https://github.com/swagger-api/swagger-parser.git",
+  "version": "v2.1.24",
+  "default_branch": "master",
+  "build_script": "swagger-parser_v2.1.24_ubi_9.3.sh",
+  "package_dir": "s/swagger-parser",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "*": {
+    "build_script": "swagger-parser_v2.1.22_ubi_9.5.sh"
+  },
+  "v1.0.71": {
+    "build_script": "swagger-parser_v1.0.71_ubi_9.3.sh"
+  },
+  "v2.1.24": {
+    "build_script": "swagger-parser_v2.1.24_ubi_9.3.sh"
+  }
+}
