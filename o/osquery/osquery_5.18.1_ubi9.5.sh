@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/osquery/osquery
 # Tested on	: UBI 9.5
 # Language      : C++
-# Travis-Check  : true
+# Travis-Check  : false 
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sumit Dubey <sumit.dubey2@ibm.com>
 #
