@@ -29,7 +29,7 @@ yum install git  -y
 yum install -y nodejs
 # Install and configure yarn + gitpkg
 npm install -g yarn
-npm install -g gitpkg-cli
+npm install -g gitpkg
 yarn global add gitpkg
 
 # Clone the repository
