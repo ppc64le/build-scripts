@@ -1,0 +1,15 @@
+{
+  "maintainer": "Amitkumar282",
+  "package_name": "swagger-core",
+  "github_url": "https://github.com/swagger-api/swagger-core.git",
+  "version": "v1.6.14",
+  "default_branch": "master",
+  "build_script": "swagger_models_v1.6.14_ubi_9.3.sh",
+  "package_dir": "s/swagger-models",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "*": {
+    "build_script": "swagger_models_v1.6.14_ubi_9.3.sh"
+  }
+}
