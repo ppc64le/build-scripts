@@ -67,6 +67,7 @@ else
 fi
 
 # Run tests
+ret=0
 grunt test || ret=$?
 grunt karma:main || ret=$?
 if [ "$ret" -ne 0 ]; then
@@ -75,6 +76,5 @@ if [ "$ret" -ne 0 ]; then
 else
     echo "INFO: $PACKAGE_NAME - All tests passed."
 fi
-
 echo "PASS: $PACKAGE_NAME version $PACKAGE_VERSION built and tested successfully."
 exit 0
