@@ -1,0 +1,28 @@
+From 4d6d2ab88f46dfac2529c65e7bd41b1fe54180ec Mon Sep 17 00:00:00 2001
+From: root <shivansh.s1@ibm.com>
+Date: Mon, 21 Jul 2025 11:33:52 +0000
+Subject: [PATCH] patch for v2.7.1 torchaudio
+
+---
+ tools/setup_helpers/extension.py | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/tools/setup_helpers/extension.py b/tools/setup_helpers/extension.py
+index 2415bbae..bf4e657a 100644
+--- a/tools/setup_helpers/extension.py
++++ b/tools/setup_helpers/extension.py
+@@ -140,6 +140,11 @@ class CMakeBuild(build_ext):
+             f"-DUSE_CUDA:BOOL={'ON' if _USE_CUDA else 'OFF'}",
+             f"-DUSE_OPENMP:BOOL={'ON' if _USE_OPENMP else 'OFF'}",
+             f"-DUSE_FFMPEG:BOOL={'ON' if _USE_FFMPEG else 'OFF'}",
++            f"-DProtobuf_INCLUDE_DIR={os.getenv('Protobuf_INCLUDE_DIR')}",
++            f"-DProtobuf_LIBRARIES={os.getenv('Protobuf_LIBRARIES')}",
++            f"-DProtobuf_LIBRARY={os.getenv('Protobuf_LIBRARY')}",
++            f"-DProtobuf_LITE_LIBRARY={os.getenv('Protobuf_LITE_LIBRARY')}",
++            f"-DProtobuf_PROTOC_EXECUTABLE={os.getenv('Protobuf_PROTOC_EXECUTABLE')}",
+         ]
+         build_args = ["--target", "install"]
+         # Pass CUDA architecture to cmake
+-- 
+2.47.1
+
