@@ -44,12 +44,12 @@ export PATH="$NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH"
 
 # Clone Repository
 cd "$WORK_DIR"
-git clone "$REPO_URL"
+git clone "$PACKAGE_URL"
 cd "$PACKAGE_NAME"
-git checkout "$VERSION"
+git checkout "$PACKAGE_VERSION"
 
 # Applying patch file to skip 'electron' to build on ppc64le
-git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${VERSION}_porting.patch
+git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${PACKAGE_VERSION}_porting.patch
 
 npm install yarn -g
 
@@ -83,5 +83,5 @@ else
   echo "----${MODULE_NAME2}: Test Success----"
 fi
 
-echo "PASS: ${MODULE_NAME} and ${MODULE_NAME2} version ${VERSION} built and tested successfully."
+echo "PASS: ${MODULE_NAME} and ${MODULE_NAME2} version ${PACKAGE_VERSION} built and tested successfully."
 exit 0
