@@ -139,7 +139,7 @@ export CXX_COMPILER=$(which g++)
 
 git clone https://github.com/protocolbuffers/protobuf
 cd protobuf
-git checkout v4.25.3
+git checkout v4.25.8
 
 LIBPROTO_DIR=$(pwd)
 mkdir -p $LIBPROTO_DIR/local/libprotobuf
@@ -314,7 +314,7 @@ export PATH="${SCRIPT_DIR}/protobuf/local/libprotobuf/bin/protoc:${PATH}"
 export LD_LIBRARY_PATH="${SCRIPT_DIR}/OpenBLAS:/protobuf/local/libprotobuf/lib64:${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH="${SCRIPT_DIR}/protobuf/third_party/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
 echo "LD_LIBRARY_PATH= $LD_LIBRARY_PATH"
-echo "Installing torchaudio..."
+echo "Installing torchaudio..." 
 if ! (python3.12 -m pip install -v . --no-build-isolation --no-deps);then
    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
    echo "$PACKAGE_URL $PACKAGE_NAME"
