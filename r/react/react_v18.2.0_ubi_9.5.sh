@@ -19,11 +19,11 @@
 # ----------------------------------------------------------------------------
 
 WORK_DIR=$(pwd)
-REPO_URL="https://github.com/facebook/react"
+PACKAGE_URL="https://github.com/facebook/react"
 PACKAGE_NAME="react"
 MODULE_NAME="react"
 MODULE_NAME2="react-test-renderer"
-VERSION="${1:-v18.2.0}"
+PACKAGE_VERSION="${1:-v18.2.0}"
 NODE_VERSION="v14.17.6"
 SCRIPT_PATH=$(dirname $(realpath $0))
 
