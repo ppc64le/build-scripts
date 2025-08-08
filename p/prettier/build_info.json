@@ -1,0 +1,15 @@
+{
+   "maintainer": "Pratikt2312",
+   "package_name": "prettier",
+   "github_url": "https://github.com/prettier/prettier",
+   "version": "2.8.8",
+   "default_branch": "main",
+   "build_script": "prettier_2.8.8_ubi_9.5.sh",
+   "package_dir": "p/prettier",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "2.*.*": {
+        "build_script": "prettier_2.8.8_ubi_9.5.sh"
+   }
+}
