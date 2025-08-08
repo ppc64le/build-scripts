@@ -20,7 +20,7 @@
 
 # Variables
 WORK_DIR=$(pwd)
-REPO_URL="https://github.com/jquery/jquery.git"
+PACKAGE_URL="https://github.com/jquery/jquery.git"
 PACKAGE_NAME="jquery"
 PACKAGE_VERSION="${1:-3.7.1}"
 NODE_VERSION="${NODE_VERSION:-20}"
@@ -45,7 +45,7 @@ nvm use "${NODE_VERSION}"
 
 # Clone Repository
 cd "$WORK_DIR"
-git clone "$REPO_URL"
+git clone "$PACKAGE_URL"
 cd "$PACKAGE_NAME"
 git checkout "$PACKAGE_VERSION"
 
