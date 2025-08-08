@@ -3,13 +3,13 @@
   "package_name": "react",
   "github_url": "https://github.com/DefinitelyTyped/DefinitelyTyped",
   "package_dir": "d/definitelytyped/react/",
-  "version": "v18.3.99",
+  "version": "v18.2.60",
   "default_branch": "master",
-  "build_script": "react_ubi_9.5.sh",
+  "build_script": "react_v18.2.60_ubi_9.5.sh",
   "use_non_root_user": false,
   "docker_build": false,
   "validate_build_script": true,
   "*": {
-    "build-script": "react_ubi_9.5.sh"
+    "build-script": "react_v18.2.60_ubi_9.5.sh"
   }
 }

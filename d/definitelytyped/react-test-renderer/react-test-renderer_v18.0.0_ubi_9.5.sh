@@ -1,13 +1,13 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : react
-# Version          : v18.0.0
+# Package          : react-test-renderer
+# Version          : v18
 # Source repo      : https://github.com/DefinitelyTyped/DefinitelyTyped
 # Tested on        : UBI:9.5
 # Language         : JavaScript,TypeScript 
 # Travis-Check     : True
-# Script License   : MIT License (standard permissive open‑source license)
+# Script License   : Apache License, Version 2 or later
 # Maintainer       : Sai Vikram Kuppala <sai.vikram.kuppala@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
@@ -19,8 +19,12 @@
 # ----------------------------------------------------------------------------
 
 #variables
+SCRIPT_PACKAGE_VERSION=18.0.0
+PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
+DEFAULT_COMMIT_HASH="1e0850cea1973225d2fde4c388f01e16009cc255"
+COMMIT_HASH="${2:-${DEFAULT_COMMIT_HASH}}"
 PACKAGE_NAME=DefinitelyTyped
-PACKAGE_SUBDIR="types/react/v18"
+PACKAGE_SUBDIR="types/react-test-renderer/v18"
 PACKAGE_URL=https://github.com/DefinitelyTyped/DefinitelyTyped
 
 # Enable Node.js stream and install system dependencies
@@ -28,7 +32,7 @@ yum module enable nodejs:20 -y
 yum install -y git nodejs
 
 # Install pnpm
-npm install --global pnpm
+#npm install --global pnpm
 
 # Clone the repository
 if [[ -d "$PACKAGE_NAME" ]]; then
@@ -38,12 +42,12 @@ else
   git clone "$PACKAGE_URL"
   cd "$PACKAGE_NAME"
 fi
-
+git checkout "$COMMIT_HASH"
 # Install only our target package
-if ! pnpm install -w --filter "./${PACKAGE_SUBDIR}..."; then
+if ! (npm i @types/react-test-renderer@$PACKAGE_VERSION && npm fund); then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_SUBDIR | GitHub | Fail |  Install_Fails"
+        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
         exit 1
 fi
 

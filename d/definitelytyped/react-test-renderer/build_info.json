@@ -3,13 +3,13 @@
   "package_name": "react-test-renderer",
   "github_url": "https://github.com/DefinitelyTyped/DefinitelyTyped",
   "package_dir": "d/definitelytyped/react-test-renderer/",
-  "version": "v18.0.0",
+  "version": "v18",
   "default_branch": "master",
-  "build_script": "react-test-renderer_ubi_9.5.sh",
+  "build_script": "react-test-renderer_v18_ubi_9.5.sh",
   "use_non_root_user": false,
   "docker_build": false,
   "validate_build_script": true,
   "*": {
-    "build-script": "react-test-renderer_ubi_9.5.sh"
+    "build-script": "react-test-renderer_v18_ubi_9.5.sh"
   }
 }

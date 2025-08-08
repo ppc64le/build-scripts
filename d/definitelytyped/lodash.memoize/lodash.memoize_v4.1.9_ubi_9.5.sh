@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : lodash.memoize
-# Version          : v4.1.2
+# Version          : v4.1.9
 # Source repo      : https://github.com/DefinitelyTyped/DefinitelyTyped
 # Tested on        : UBI:9.5
 # Language         : JavaScript,TypeScript 
@@ -19,6 +19,10 @@
 # ----------------------------------------------------------------------------
 
 #variables
+SCRIPT_PACKAGE_VERSION=4.1.9
+PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
+DEFAULT_COMMIT_HASH="05766ab10a4987e93fdee7627f9fe9e7bc6d1a65"
+COMMIT_HASH="${2:-${DEFAULT_COMMIT_HASH}}"
 PACKAGE_NAME=DefinitelyTyped
 PACKAGE_SUBDIR="types/lodash.memoize"
 PACKAGE_URL=https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -28,7 +32,7 @@ yum module enable nodejs:20 -y
 yum install -y git nodejs
 
 # Install pnpm
-npm install --global pnpm
+#npm install --global pnpm
 
 # Clone the repository
 if [[ -d "$PACKAGE_NAME" ]]; then
@@ -38,9 +42,9 @@ else
   git clone "$PACKAGE_URL"
   cd "$PACKAGE_NAME"
 fi
-
+git checkout "$COMMIT_HASH"
 # Install only our target package
-if ! pnpm install -w --filter "./${PACKAGE_SUBDIR}..."; then
+if ! (npm i @types/lodash.memoize && npm fund); then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_SUBDIR | GitHub | Fail |  Install_Fails"
