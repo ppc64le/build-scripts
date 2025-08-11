@@ -42,8 +42,9 @@ dnf install -y --allowerasing \
     libmodbus-devel mariadb-connector-c-devel net-snmp-libs
 
 # Extra dependency for ppc64le
-wget -q https://repo.almalinux.org/almalinux/9/AppStream/ppc64le/os/Packages/libxml2-devel-2.9.13-11.el9_6.ppc64le.rpm
-dnf install -y --allowerasing libxml2-devel-2.9.13-11.el9_6.ppc64le.rpm
+#wget -q https://repo.almalinux.org/almalinux/9/AppStream/ppc64le/os/Packages/libxml2-devel-2.9.13-11.el9_6.ppc64le.rpm
+#dnf install -y --allowerasing libxml2-devel-2.9.13-11.el9_6.ppc64le.rpm
+dnf install -y libxml2-devel
 
 
 # Build and install cmocka (only if not installed)
