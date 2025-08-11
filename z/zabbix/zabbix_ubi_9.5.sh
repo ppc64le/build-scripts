@@ -7,7 +7,7 @@
 # Tested on     : RHEL 9 / UBI 9
 # Language      : PHP, C
 # Script License: Apache License, Version 2 or later
-# Maintainer    : vivek.sharma20@ibm.com
+# Maintainer    : Vivek Sharma <vivek.sharma20@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on the given
 # ==========  platform using the mentioned version of the package.
