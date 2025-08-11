@@ -60,7 +60,7 @@ cd /home/tester
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 
-# Clone Zabbix source code
+# Clone Zabbix
 if ! git clone "$PACKAGE_URL"; then
     echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME" > "$OUTPUT_DIR/clone_fails"
