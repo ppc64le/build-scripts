@@ -6,6 +6,7 @@
 # Source repo   : https://github.com/zabbix/zabbix.git
 # Tested on     : RHEL 9 / UBI 9
 # Language      : PHP, C
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Vivek Sharma <vivek.sharma20@ibm.com>
 #
