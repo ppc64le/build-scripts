@@ -8,6 +8,9 @@
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
   "build_script": "zabbix_ubi_9.5.sh",
   "docker_build": false,
+  "validate_build_script": true,
+  "wheel_build" : true,
+  "use_non_root_user": false,
   "6.*.*": {
     "dir": "6.2.3-ubi8"
   },
