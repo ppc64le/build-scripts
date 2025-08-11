@@ -39,13 +39,7 @@ dnf install -y --allowerasing \
     libcurl-devel libxml2-devel libevent-devel pcre-devel \
     policycoreutils procps dnf-utils libyaml-devel openssl-devel sqlite-devel \
     libssh2-devel unixODBC-devel openldap-devel libxslt-devel pcre2-devel \
-    libmodbus-devel mariadb-connector-c-devel net-snmp-libs
-
-# Extra dependency for ppc64le
-#wget -q https://repo.almalinux.org/almalinux/9/AppStream/ppc64le/os/Packages/libxml2-devel-2.9.13-11.el9_6.ppc64le.rpm
-#dnf install -y --allowerasing libxml2-devel-2.9.13-11.el9_6.ppc64le.rpm
-dnf install -y libxml2-devel
-
+    libmodbus-devel mariadb-connector-c-devel net-snmp-libs libxml2-devel
 
 # Build and install cmocka (only if not installed)
 if ! ldconfig -p | grep -q libcmocka; then
