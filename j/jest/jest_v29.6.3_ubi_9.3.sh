@@ -85,7 +85,7 @@ fi
 # ------------------------------------------------------------------
 # Run full test suite including babel-jest
 # ------------------------------------------------------------------
-npx jest --runInBand -u || ret=$?
+COLUMNS=80 npx jest --runInBand -u || ret=$?
 if [ "$ret" -ne 0 ]; then
   echo "----${PACKAGE_NAME}: tests Failed----"
   exit 2
