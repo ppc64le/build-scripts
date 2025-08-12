@@ -26,7 +26,15 @@ OUTPUT_DIR="/home/tester/output"
 
 # Update system and enable EPEL
 dnf update -y --allowerasing
-dnf install -y --allowerasing https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+
+# Detect RHEL version and install matching EPEL release
+OS_VER=$(rpm -E %{rhel} 2>/dev/null || echo "")
+if [ -n "$OS_VER" ]; then
+    dnf install -y --allowerasing --nobest \
+        "https://dl.fedoraproject.org/pub/epel/epel-release-latest-${OS_VER}.noarch.rpm"
+else
+    echo "Skipping EPEL install — not a RHEL-like system."
+fi
 dnf install -y --allowerasing dnf-plugins-core
 
 # Install essential tools first
@@ -96,7 +104,7 @@ if ! make tests; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME" > "$OUTPUT_DIR/test_fails"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" > "$OUTPUT_DIR/version_tracker"
-    exit 1
+    exit 2
 else
     echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
     echo "$PACKAGE_VERSION $PACKAGE_NAME" > "$OUTPUT_DIR/test_success"
