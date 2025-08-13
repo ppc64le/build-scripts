@@ -37,7 +37,8 @@ nvm use $NODE_VERSION
 node -v
 
 #Install yarn
-npm install -g yarn 
+corepack enable
+corepack prepare yarn@stable --activate
 yarn -v
 
 # Clone the repository
