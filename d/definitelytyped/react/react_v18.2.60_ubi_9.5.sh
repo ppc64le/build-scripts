@@ -25,7 +25,9 @@ DEFAULT_COMMIT_HASH="bda68a6d19efbc1cf3465e75f68e31355be5ac39"
 COMMIT_HASH="${2:-${DEFAULT_COMMIT_HASH}}"
 PACKAGE_NAME=DefinitelyTyped
 PACKAGE_SUBDIR="types/react/v18"
+MODULE_NAME="react"
 PACKAGE_URL=https://github.com/DefinitelyTyped/DefinitelyTyped
+WORK_DIR=$(pwd)
 
 
 # Enable Node.js stream and install system dependencies
@@ -36,6 +38,7 @@ yum install -y git nodejs
 npm install --global pnpm
 
 # Clone the repository
+cd "$WORK_DIR"
 if [[ -d "$PACKAGE_NAME" ]]; then
   echo "Directory $PACKAGE_NAME already exists; pulling latest"
   cd "$PACKAGE_NAME"
@@ -44,23 +47,34 @@ else
   cd "$PACKAGE_NAME"
 fi
 git checkout "$COMMIT_HASH"
-# Install only our target package
-if ! (npm i @types/react@$PACKAGE_VERSION && npm fund); then
-    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_SUBDIR | GitHub | Fail |  Install_Fails"
-        exit 1
+# --- Build the Package ---
+ret=0
+echo "----Building the package: $PACKAGE_SUBDIR----"
+if ! pnpm install -w --filter "./${PACKAGE_SUBDIR}..."; then
+  echo "----${PACKAGE_NAME}: Build Fail----"
+  ret=1
 fi
-#Run test cases
 
-if ! pnpm --filter ".$PACKAGE_SUBDIR..." test ; then
-        echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_SUBDIR | GitHub | Fail |  Install_success_but_test_Fails"
-        exit 2
+if [ "$ret" -ne 0 ]; then
+  echo "----${PACKAGE_NAME}: Build Fail----"
+  exit 1
 else
-        echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_SUBDIR | GitHub  | Pass |  Both_Install_and_Test_Success"
-        exit 0
+  echo "----${PACKAGE_NAME}: Build Success----"
 fi
+
+# --- Run Tests ---
+echo "----Running tests for ${MODULE_NAME}----"
+if ! pnpm test react/v18; then
+  echo "----${MODULE_NAME}: Test Fail----"
+  ret=2
+fi
+
+if [ "$ret" -ne 0 ]; then
+  echo "----${MODULE_NAME}: Test Fail----"
+  exit 2
+else
+  echo "----${MODULE_NAME}: Test Success----"
+fi
+
+echo "PASS: ${MODULE_NAME} version ${PACKAGE_VERSION} built and tested successfully."
+exit 0
