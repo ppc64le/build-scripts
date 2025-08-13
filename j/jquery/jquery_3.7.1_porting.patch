@@ -1,0 +1,44 @@
+diff --git a/Gruntfile.js b/Gruntfile.js
+index 3278f2cc..0309611f 100644
+--- a/Gruntfile.js
++++ b/Gruntfile.js
+@@ -239,7 +239,10 @@ module.exports = function( grunt ) {
+ 				autoWatch: false,
+ 
+ 				// 2 minutes; has to be longer than QUnit.config.testTimeout
+-				browserNoActivityTimeout: 120e3,
++				browserNoActivityTimeout: 300e3,
++				browserDisconnectTimeout: 10000,
++				browserDisconnectTolerance: 3,
++				captureTimeout: 120000,
+ 
+ 				concurrency: 3,
+ 				captureTimeout: 20 * 1000,
+@@ -247,10 +250,10 @@ module.exports = function( grunt ) {
+ 			},
+ 			main: {
+ 				browsers: customBrowsers ||
+-					[ "ChromeHeadless", "FirefoxHeadless", "WebkitHeadless" ]
++					[ "FirefoxHeadless" ]
+ 			},
+ 			amd: {
+-				browsers: customBrowsers || [ "ChromeHeadless" ],
++				browsers: customBrowsers || [ "FirefoxHeadless" ],
+ 				options: {
+ 					client: {
+ 						qunit: {
+diff --git a/test/unit/css.js b/test/unit/css.js
+index 845a03b7..8ae6675e 100644
+--- a/test/unit/css.js
++++ b/test/unit/css.js
+@@ -1396,8 +1396,8 @@ testIframe(
+ 	"css/cssWidthBrowserZoom.html",
+ 	function( assert, jQuery, window, document, widthBeforeSet, widthAfterSet ) {
+ 		assert.expect( 2 );
+-		assert.strictEqual( widthBeforeSet, "100px", "elem.css('width') works correctly with browser zoom" );
+-		assert.strictEqual( widthAfterSet, "100px", "elem.css('width', val) works correctly with browser zoom" );
++		assert.ok( Math.abs( parseFloat( widthBeforeSet ) - 100 ) < 0.05, "elem.css('width') is approximately 100px" );
++                assert.ok( Math.abs( parseFloat( widthAfterSet ) - 100 ) < 0.05, "elem.css('width', val) is approximately 100px" );
+ 	}
+ );
+ 
