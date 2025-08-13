@@ -3,6 +3,7 @@
   "package_name": "opensearch-project-query-insights",
   "github_url": "https://github.com/opensearch-project/query-insights",
   "version": "2.19.2.0",
+  "required_versions":{"Releases": ["*"], "Tags": ["2.19.2.0"]},
   "default_branch": "main",
   "package_dir": "o/opensearch-project-query-insights",
   "build_script": "opensearch-project-query-insights_2.19.2.0_ubi_9.3.sh",

@@ -1,0 +1,16 @@
+diff --git a/Makefile b/Makefile
+index ef1703c..a411604 100644
+--- a/Makefile
++++ b/Makefile
+@@ -22,10 +22,10 @@ export PATH:=$(GOBIN):${PATH}
+ # Allows for defining additional Docker buildx arguments, e.g. '--push'.
+ BUILD_ARGS ?= --load
+ # Architectures to build images for.
+-BUILD_PLATFORMS ?= linux/amd64
++BUILD_PLATFORMS ?= linux/ppc64le
+
+ # Architecture to use envtest with
+-ENVTEST_ARCH ?= amd64
++ENVTEST_ARCH ?= ppc64le
+
+ all: manager

@@ -1,16 +1,15 @@
 {
-  "maintainer": "stutiibm",
+  "maintainer": "SanketPatil11",
   "package_name": "jquery-ui",
   "github_url": "https://github.com/jquery/jquery-ui",
-  "version": "1.13.2",
-  "default_branch": "main",
+  "version": "1.14.1",
   "package_dir": "j/jquery-ui",
-  "build_script": "jquery-ui_ubi_8_7.sh",
-  "docker_build": true,
-  "validate_build_script": true,
-  "use_non_root_user": true,
-  "1.13.2": {
-    "dir": "ubi8_7",
-    "build_script": "jquery-ui_ubi_8_7.sh"
+  "default_branch": "main",
+  "build_script": "jquery-ui_v1.14.1_ubi_9.5.sh", 
+  "docker_build": "false",
+  "use_non_root_user": "false",
+  "validate_build_script": "true",
+  "*": {
+    "build_script": "jquery-ui_v1.14.1_ubi_9.5.sh"
   }
 }

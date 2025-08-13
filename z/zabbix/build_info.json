@@ -2,13 +2,18 @@
   "maintainer": "vaishnavipatil3",
   "package_name": "zabbix",
   "github_url": "https://github.com/zabbix/zabbix.git",
-  "version": "6.2.3",
+  "version": "7.4.1",
   "default_branch": "master",
   "package_dir": "z/zabbix/",
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-  "build_script": "zabbix_ubi_8.sh",
+  "build_script": "zabbix_ubi_9.5.sh",
   "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
   "6.*.*": {
     "dir": "6.2.3-ubi8"
+  },
+  "7.*.*": {
+    "build_script": "zabbix_ubi_9.5.sh"
   }
 }
