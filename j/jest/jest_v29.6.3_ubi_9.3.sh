@@ -15,18 +15,6 @@
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
-# Known Issue:
-# ============
-# The test suite `packages/jest-snapshot/src/__tests__/printSnapshot.test.ts`
-# contains tests named `MAX_DIFF_STRING_LENGTH` which may fail when running
-# the entire suite together due to shared state mutations between tests in
-# other files (e.g., global constants not being reset).
-#
-# Known Error - printDiffOrStringify › MAX_DIFF_STRING_LENGTH › both are less
-#
-# To avoid test failure during porting on ppc64le, the test run is split:
-#   1. Run all tests except `MAX_DIFF_STRING_LENGTH` in one batch.
-#   2. Run `MAX_DIFF_STRING_LENGTH` tests in isolation.
 #
 ###############################################################################
 
@@ -95,22 +83,11 @@ if [ "$ret" -ne 0 ]; then
 fi
 
 # ------------------------------------------------------------------
-# Run tests (excluding MAX_DIFF_STRING_LENGTH)
+# Run tests
 # ------------------------------------------------------------------
-echo "Running all tests except MAX_DIFF_STRING_LENGTH..."
-npx jest --runInBand --no-cache -u --testNamePattern='^(?!.*(MAX_DIFF_STRING_LENGTH|matcherHint))' || ret=$?
+npx jest --runInBand --no-cache -u || ret=$?
 if [ "$ret" -ne 0 ]; then
-  echo "----${PACKAGE_NAME}: Main test suite Failed----"
-  exit 2
-fi
-
-# ------------------------------------------------------------------
-# Run MAX_DIFF_STRING_LENGTH tests in isolation
-# ------------------------------------------------------------------
-echo "Running MAX_DIFF_STRING_LENGTH tests in isolation..."
-npx jest --runInBand --no-cache -u --testNamePattern='MAX_DIFF_STRING_LENGTH' || ret=$?
-if [ "$ret" -ne 0 ]; then
-  echo "----${PACKAGE_NAME}: MAX_DIFF_STRING_LENGTH tests Failed----"
+  echo "----${PACKAGE_NAME}: Test Failed----"
   exit 2
 fi
 
