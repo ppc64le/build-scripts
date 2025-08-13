@@ -25,7 +25,7 @@ OS_NAME=$(grep '^PRETTY_NAME' /etc/os-release | cut -d= -f2 | tr -d '"')
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
-git checkout tags/$PACKAGE_VERSION -b build_branch
+git checkout $PACKAGE_VERSION 
 ACTUAL_VERSION=$(jq -r ".version" package.json)
 echo "Building $PACKAGE_NAME version $ACTUAL_VERSION on $OS_NAME"
 
