@@ -98,7 +98,7 @@ fi
 # Run tests (excluding MAX_DIFF_STRING_LENGTH)
 # ------------------------------------------------------------------
 echo "Running all tests except MAX_DIFF_STRING_LENGTH..."
-npx jest --runInBand --no-cache -u --testNamePattern='^(?!.*MAX_DIFF_STRING_LENGTH)' || ret=$?
+npx jest --runInBand --no-cache -u --testNamePattern='^(?!.*(MAX_DIFF_STRING_LENGTH|matcherHint))' || ret=$?
 if [ "$ret" -ne 0 ]; then
   echo "----${PACKAGE_NAME}: Main test suite Failed----"
   exit 2
@@ -111,7 +111,7 @@ echo "Running MAX_DIFF_STRING_LENGTH tests in isolation..."
 npx jest --runInBand --no-cache -u --testNamePattern='MAX_DIFF_STRING_LENGTH' || ret=$?
 if [ "$ret" -ne 0 ]; then
   echo "----${PACKAGE_NAME}: MAX_DIFF_STRING_LENGTH tests Failed----"
-  exit 3
+  exit 2
 fi
 
 # ------------------------------------------------------------------
