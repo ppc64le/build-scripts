@@ -32,7 +32,6 @@ PATH=$JAVA_HOME/bin:$PATH
 EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk"
 ENVOY_STDLIB=libstdc+
 
-yum update -y
 yum install -y git wget xz python3.12 libtool automake gcc vim cmake openssl-devel java-21-openjdk-devel openssl libstdc++-static perl lld patch java-11-openjdk-devel python3 ninja-build
 ln -s /usr/bin/python3.12 /usr/bin/python
 
