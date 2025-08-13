@@ -24,7 +24,7 @@ PACKAGE_NAME=prettier
 PACKAGE_URL=https://github.com/prettier/${PACKAGE_NAME}.git
 PACKAGE_VERSION=${1:- 2.8.8}
 NODE_VERSION=v18.20.8
-YARN_VERSION=1.22.19
+YARN_VERSION=1.22.22
 
 #Install deps.
 yum install -y git
