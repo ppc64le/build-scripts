@@ -1,0 +1,15 @@
+{
+  "maintainer": "SanketPatil11",
+  "package_name": "rest-assured",
+  "github_url": "https://github.com/rest-assured/rest-assured",
+  "version": "5.5.0",
+  "package_dir": "r/rest-assured",
+  "default_branch": "main",
+  "build_script": "rest-assured_v5.5.0_ubi_9.5.sh",
+  "docker_build": "false",
+  "use_non_root_user": "false",
+  "validate_build_script": "true",
+  "*": {
+    "build_script": "rest-assured_v5.5.0_ubi_9.5.sh"
+  }
+}
