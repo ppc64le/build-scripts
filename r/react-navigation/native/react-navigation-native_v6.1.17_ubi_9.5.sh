@@ -7,7 +7,7 @@
 # Tested on     : UBI 9.5 (ppc64le)
 # Language      : JavaScript,TypeScript
 # Travis-Check  : true
-# Script License: MIT License (standard permissive open‑source license)
+# Script License: Apache License, Version 2 or later
 # Maintainer    : Sai vikram kuppala <Sai.vikram.kuppala@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
