@@ -33,7 +33,6 @@ yum install -y git maven
 
 # Clone Repository
 cd "$WORK_DIR"
-rm -rf "$PACKAGE_NAME"
 git clone "$PACKAGE_URL"
 cd "$PACKAGE_NAME"
 git checkout "$PACKAGE_NAME-$PACKAGE_VERSION"
