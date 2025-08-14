@@ -3020,30 +3020,6 @@ index 434bf869a4e..1ada760aeba 100644
 
  namespace tensorflow {
  namespace dtensor {
-diff --git a/tensorflow/tf_version.bzl b/tensorflow/tf_version.bzl
-index e92c2d2ce2a..a9dc16ca272 100644
---- a/tensorflow/tf_version.bzl
-+++ b/tensorflow/tf_version.bzl
-@@ -10,5 +10,5 @@ load(
- # //third_party/tensorflow:tensorflow_bzl and //third_party/tensorflow/tools/pip_package:setup_py.
- TF_VERSION = "2.20.0"
- MAJOR_VERSION, MINOR_VERSION, PATCH_VERSION = TF_VERSION.split(".")
--TF_WHEEL_VERSION_SUFFIX = VERSION_SUFFIX
--TF_SEMANTIC_VERSION_SUFFIX = SEMANTIC_VERSION_SUFFIX
-+TF_WHEEL_VERSION_SUFFIX = ""
-+TF_SEMANTIC_VERSION_SUFFIX = ""
-diff --git a/tensorflow/tf_version.default.bzl b/tensorflow/tf_version.default.bzl
-index 6b2374cc96c..3b050a3d0fa 100644
---- a/tensorflow/tf_version.default.bzl
-+++ b/tensorflow/tf_version.default.bzl
-@@ -6,5 +6,5 @@ load(
-     "WHEEL_VERSION_SUFFIX",
- )
-
--VERSION_SUFFIX = WHEEL_VERSION_SUFFIX
--SEMANTIC_VERSION_SUFFIX = SEMANTIC_WHEEL_VERSION_SUFFIX
-+VERSION_SUFFIX = ""
-+SEMANTIC_VERSION_SUFFIX = ""
 diff --git a/tensorflow/workspace2.bzl b/tensorflow/workspace2.bzl
 index 9e49ab40b25..341b5332875 100644
 --- a/tensorflow/workspace2.bzl
