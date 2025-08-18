@@ -95,8 +95,7 @@ fi
 # ------------------------------------------------------------------
 # Run tests
 # ------------------------------------------------------------------
-npx jest --runInBand -u \
-  --testPathPattern='^(?!.*(jest-matcher-utils|MAX_DIFF_STRING_LENGTH)).*$' || ret=$?
+npx jest --runInBand -u --testNamePattern='^(?!.*MAX_DIFF_STRING_LENGTH).*' --bail=false || ret=$?
 if [ "$ret" -ne 0 ]; then
   echo "----${PACKAGE_NAME}: Test Failed----"
   exit 2
