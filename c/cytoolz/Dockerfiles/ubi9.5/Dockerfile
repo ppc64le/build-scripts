@@ -5,7 +5,7 @@ MAINTAINER "Meet Jani <meet.jani@ibm.com>"
 ENV HOME_DIR=${PWD}
 
 RUN yum update -y && \
-        yum install -y python312-devel.ppc64le gcc git && \
+        yum install -y python3.12-devel.ppc64le gcc git && \
         python3 -m pip install --upgrade pip setuptools wheel && \
         python3 -m pip install cython pytest git+https://github.com/pytoolz/toolz.git && \
         git clone https://github.com/pytoolz/cytoolz && \
