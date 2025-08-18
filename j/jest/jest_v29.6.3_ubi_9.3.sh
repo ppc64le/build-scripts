@@ -95,9 +95,7 @@ fi
 # ------------------------------------------------------------------
 # Run tests
 # ------------------------------------------------------------------
-npx jest --runInBand --no-cache -u \
-  --testPathIgnorePatterns='packages/jest-matcher-utils/src/__tests__/index.test.ts|packages/jest-snapshot/src/__tests__/printSnapshot.test.ts' \
-  --testNamePattern='^(?!.*MAX_DIFF_STRING_LENGTH)' || ret=$?
+npx jest --runInBand -u --testNamePattern='^(?!.*MAX_DIFF_STRING_LENGTH)' || ret=$?
 if [ "$ret" -ne 0 ]; then
   echo "----${PACKAGE_NAME}: Test Failed----"
   exit 2
