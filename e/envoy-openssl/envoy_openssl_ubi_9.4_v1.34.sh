@@ -112,9 +112,9 @@ if [ -z "$(ls -A $wdir/rules_rust)" ]; then
 	cd rules_rust
 	git checkout 0.56.0
 	cd crate_universe
-	cross build --release --locked --bin cargo-bazel --target=powerpc64le-unknown-linux-gnu
-	#rustup target add powerpc64le-unknown-linux-gnu
-	#cargo build --release --locked --bin cargo-bazel
+	#cross build --release --locked --bin cargo-bazel --target=powerpc64le-unknown-linux-gnu
+	rustup target add powerpc64le-unknown-linux-gnu
+	cargo build --release --locked --bin cargo-bazel
 	echo "cargo-bazel build successful!"
 fi
 export CARGO_BAZEL_GENERATOR_URL=file://$wdir/rules_rust/crate_universe/target/release/cargo-bazel
