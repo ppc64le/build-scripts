@@ -91,11 +91,6 @@ if [ -z "$(ls -A $wdir/bazel)" ]; then
 fi
 export PATH=$PATH:$wdir/bazel/output
 
-#installing cargo and cross
-curl https://sh.rustup.rs -sSf | sh -s -- -y && source ~/.cargo/env
-cargo install cross --version 0.2.5
-export PATH=$PATH:$wdir/.cargo/bin
-
 #Setup clang
 cd $wdir
 if [ -z "$(ls -A $wdir/clang+llvm-17.0.6-powerpc64le-linux-rhel-8.8)" ]; then
@@ -104,6 +99,11 @@ if [ -z "$(ls -A $wdir/clang+llvm-17.0.6-powerpc64le-linux-rhel-8.8)" ]; then
     rm -rf clang+llvm-14.0.6-powerpc64le-linux-rhel-8.8.tar.xz
 fi
 export PATH=/home/envoy/clang+llvm-17.0.6-powerpc64le-linux-rhel-8.8/bin:$PATH
+
+#installing cargo and cross
+curl https://sh.rustup.rs -sSf | sh -s -- -y && source ~/.cargo/env
+cargo install cross --version 0.2.5
+export PATH=$PATH:$wdir/.cargo/bin
 
 # Building cargo-bazel targeting Powerpc64le
 cd $wdir
