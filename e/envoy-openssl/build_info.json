@@ -4,7 +4,7 @@
     "github_url": "https://github.com/envoyproxy/envoy-openssl",
     "version": "release/v1.34",
     "package_dir": "e/envoy-openssl",
-    "default_branch": "release/v1.34",
+    "default_branch": "release/v1.32",
     "docker_build": false,
     "build_script": "envoy_openssl_ubi_9.4_v1.34.sh",
     "validate_build_script": true,
