@@ -59,8 +59,8 @@ yum install -y \
 export JAVA_HOME=$(compgen -G '/usr/lib/jvm/java-21-openjdk-*')  
 export JRE_HOME=${JAVA_HOME}/jre
 export PATH=${JAVA_HOME}/bin:$PATH
-export scriptdir=$(dirname $(realpath $0))
-export wdir=/home/envoy
+scriptdir=$(dirname $(realpath $0))
+wdir=/home/envoy
 export ENVOY_BIN=$wdir/envoy-openssl/envoy-static
 export ENVOY_ZIP=$wdir/envoy-openssl/envoy-static_1.28_UBI9.2.zip
 
