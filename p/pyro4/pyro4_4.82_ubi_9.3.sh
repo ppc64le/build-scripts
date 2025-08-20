@@ -24,7 +24,7 @@ PACKAGE_URL="https://github.com/irmen/Pyro4"
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 echo "Installing dependencies from system repos..."
-dnf install -qy git gcc-c++ python3.12 python3.12-devel make
+dnf install -qy python3.9-devel git gcc-c++ python3.12 python3.12-devel make 
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
