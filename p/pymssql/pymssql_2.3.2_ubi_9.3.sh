@@ -40,6 +40,12 @@ python3.12 -m pip install cython
 python3.12 -m pip install setuptools_scm>=5.0
 python3.12 -m pip install wheel>=0.36.2
 
+# Root Cause:
+# - Python 2 had a separate `long` type, but Python 3 unified it into `int`.
+# - Older pymssql versions (<=2.3.4) still reference `long`, which no longer exists.
+# - From pymssql 2.3.5 onwards, the maintainers fixed this by replacing
+#   all `long` references with `int`, making those versions compatible.
+
 if [[ "$(printf '%s\n' "2.3.4" "${PACKAGE_VERSION#v}" | sort -V | head -n1)" == "${PACKAGE_VERSION#v}" ]]; then
     echo "Applying sed fixes for <=2.3.4..."
         sed -i 's/return long(/return int(/' src/pymssql/_mssql.pyx
