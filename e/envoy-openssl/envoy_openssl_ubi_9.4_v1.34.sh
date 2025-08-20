@@ -64,7 +64,7 @@ wdir=/home/envoy
 export ENVOY_BIN=$wdir/envoy-openssl/envoy-static
 export ENVOY_ZIP=$wdir/envoy-openssl/envoy-static_1.28_UBI9.2.zip
 
-#Find bazel version
+# Find bazel version
 wget https://raw.githubusercontent.com/${PACKAGE_ORG}/${PACKAGE_NAME}/${PACKAGE_VERSION}/.bazelversion
 export BAZEL_VERSION=$(cat .bazelversion)
 rm -rf .bazelversion
