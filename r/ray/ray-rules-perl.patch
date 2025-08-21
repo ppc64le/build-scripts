@@ -1,5 +1,5 @@
 diff --git a/bazel/ray_deps_build_all.bzl b/bazel/ray_deps_build_all.bzl
-index a8597dd184..00899db55a 100644
+index 8d59beab32..b92f9f9f57 100644
 --- a/bazel/ray_deps_build_all.bzl
 +++ b/bazel/ray_deps_build_all.bzl
 @@ -7,7 +7,6 @@ load("@com_github_grpc_grpc//bazel:grpc_deps.bzl", "grpc_deps")
@@ -16,15 +16,15 @@ index a8597dd184..00899db55a 100644
    rules_foreign_cc_dependencies()
 -  openssl_setup()
 diff --git a/bazel/ray_deps_setup.bzl b/bazel/ray_deps_setup.bzl
-index e98895248d..7107949d58 100644
+index 5ece022cdb..434063dc96 100644
 --- a/bazel/ray_deps_setup.bzl
 +++ b/bazel/ray_deps_setup.bzl
-@@ -282,22 +283,20 @@ def ray_deps_setup():
+@@ -296,22 +296,20 @@ def ray_deps_setup():
      http_archive(
          name = "rules_foreign_cc",
          sha256 = "2a4d07cd64b0719b39a7c12218a3e507672b82a97b98c6a89d38565894cf7c51",
-+        patches = [
-+            "@com_github_ray_project_ray//thirdparty/patches:rules_foreign_cc.patch",],
++         patches = [
++            "@io_ray//thirdparty/patches:rules_foreign_cc.patch",],
          strip_prefix = "rules_foreign_cc-0.9.0",
          url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.9.0.tar.gz",
      )
@@ -42,7 +42,7 @@ index e98895248d..7107949d58 100644
          name = "rules_foreign_cc_thirdparty",
          sha256 = "2a4d07cd64b0719b39a7c12218a3e507672b82a97b98c6a89d38565894cf7c51",
 +        patches = [
-+            "@com_github_ray_project_ray//thirdparty/patches:rules_foreign_cc_thirdparty.patch",],
++            "@io_ray//thirdparty/patches:rules_foreign_cc_thirdparty.patch",],
          strip_prefix = "rules_foreign_cc-0.9.0/examples/third_party",
          url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.9.0.tar.gz",
      )
