@@ -4,6 +4,8 @@
 # Version	: 3.14.1
 # Source repo	: https://github.com/pytest-dev/pytest-mock
 # Tested on	: ubi_9.3
+# Language      : python
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Rosman Cariño <rcarino@ibm.com>
 #
