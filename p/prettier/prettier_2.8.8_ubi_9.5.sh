@@ -23,45 +23,33 @@ BUILD_HOME=$(pwd)
 PACKAGE_NAME=prettier
 PACKAGE_URL=https://github.com/prettier/${PACKAGE_NAME}.git
 PACKAGE_VERSION=${1:- 2.8.8}
-NODE_VERSION=v18.20.8
+NODE_VERSION=v18.17.1
 #YARN_VERSION=1.22.22
 
 #Install deps.
 yum install -y git
 
 #Installing nvm
-#curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-#source "$HOME"/.bashrc
-#echo "installing nodejs $NODE_VERSION"
-#nvm install "$NODE_VERSION" >/dev/null
-#nvm use $NODE_VERSION
-#node -v
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+source "$HOME"/.bashrc
+echo "installing nodejs $NODE_VERSION"
+nvm install "$NODE_VERSION" >/dev/null
+nvm use $NODE_VERSION
+node -v
+
+npm install yarn -g
+yarn -v
 
 #Install yarn
 #curl -L -o yarn.tar.gz "https://github.com/yarnpkg/yarn/releases/download/v${YARN_VERSION}/yarn-v${YARN_VERSION}.tar.gz"
 #tar -xzf yarn.tar.gz
 #export PATH="$(pwd)/yarn-v${YARN_VERSION}/bin:$PATH"
 
-export NVM_DIR="$HOME/.nvm"
-if [ ! -d "$NVM_DIR" ]; then
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-fi
-source "$NVM_DIR/nvm.sh"
-
-nvm install "$NODE_VERSION"
-nvm use "$NODE_VERSION"
-nvm alias default "$NODE_VERSION"
-
-export PATH="$NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH"
-
 # Clone the repository
 cd $BUILD_HOME
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-
-npm install yarn -g
-yarn -v
 
 #Install dependencies and run build
 ret=0
