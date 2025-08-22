@@ -24,7 +24,7 @@ PACKAGE_NAME=prettier
 PACKAGE_URL=https://github.com/prettier/${PACKAGE_NAME}.git
 PACKAGE_VERSION=${1:- 2.8.8}
 NODE_VERSION=v18.20.8
-YARN_VERSION=1.22.22
+#YARN_VERSION=1.22.22
 
 #Install deps.
 yum install -y git
@@ -38,9 +38,10 @@ nvm use $NODE_VERSION
 node -v
 
 #Install yarn
-curl -L -o yarn.tar.gz "https://github.com/yarnpkg/yarn/releases/download/v${YARN_VERSION}/yarn-v${YARN_VERSION}.tar.gz"
-tar -xzf yarn.tar.gz
-export PATH="$(pwd)/yarn-v${YARN_VERSION}/bin:$PATH"
+#curl -L -o yarn.tar.gz "https://github.com/yarnpkg/yarn/releases/download/v${YARN_VERSION}/yarn-v${YARN_VERSION}.tar.gz"
+#tar -xzf yarn.tar.gz
+#export PATH="$(pwd)/yarn-v${YARN_VERSION}/bin:$PATH"
+npm install -g yarn
 yarn -v
 
 # Clone the repository
