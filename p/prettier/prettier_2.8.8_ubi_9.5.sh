@@ -41,14 +41,15 @@ node -v
 #curl -L -o yarn.tar.gz "https://github.com/yarnpkg/yarn/releases/download/v${YARN_VERSION}/yarn-v${YARN_VERSION}.tar.gz"
 #tar -xzf yarn.tar.gz
 #export PATH="$(pwd)/yarn-v${YARN_VERSION}/bin:$PATH"
-npm install -g yarn
-yarn -v
 
 # Clone the repository
 cd $BUILD_HOME
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+
+npm install -g yarn
+yarn -v
 
 #Install dependencies and run build
 ret=0
