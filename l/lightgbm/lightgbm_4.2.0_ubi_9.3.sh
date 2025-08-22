@@ -89,9 +89,9 @@ pip install pytest
 echo "installing cython.."
 pip install cython==0.29.36
 echo "installing numpy.."
-pip install numpy==1.23.5
+pip install numpy==1.23.2
 echo "installing scipy.."
-pip install scipy
+pip install scipy==1.13.1
 echo "installing joblib.."
 pip install joblib
 echo "installing threadpoolctl.."
@@ -139,7 +139,7 @@ echo "Installing Python dependencies..."
 cd ..
 pip install -r arrow/python/requirements-build.txt
 pip install -r arrow/python/requirements-test.txt
-pip install pytest==6.2.5 numpy==1.23.5
+pip install pytest==6.2.5 numpy==1.23.2
 pip install --upgrade setuptools wheel
 pip install hypothesis pytest-lazy-fixture pytz
 
