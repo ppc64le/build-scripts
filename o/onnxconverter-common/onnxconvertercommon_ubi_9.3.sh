@@ -21,13 +21,14 @@
 # Variables
 PACKAGE_NAME=onnxconverter-common
 PACKAGE_VERSION=${1:-v1.14.0}
+PYTHON_VERSION=${2:-3.11}
 PACKAGE_URL=https://github.com/microsoft/onnxconverter-common
 PACKAGE_DIR=onnxconverter-common
 CURRENT_DIR=$(pwd)
 
 echo "Installing dependencies..."
 
-yum install -y git wget make libtool gcc-toolset-13 gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran clang libevent-devel zlib-devel openssl-devel python python-devel python3.12 python3.12-devel python3.12-pip cmake patch
+yum install -y git wget make libtool gcc-toolset-13 gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran clang libevent-devel zlib-devel openssl-devel python python-devel python${PYTHON_VERSION} python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip cmake patch
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
@@ -107,8 +108,8 @@ cd $CURRENT_DIR
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
-pip3.12 install --upgrade pip setuptools wheel ninja packaging tox pytest build mypy stubs
-pip3.12 install 'cmake==3.31.6'
+pip${PYTHON_VERSION} install --upgrade pip setuptools wheel ninja packaging tox pytest build mypy stubs
+pip${PYTHON_VERSION} install 'cmake==3.31.6'
 
 echo " --------------------------------------------------- Abseil-cpp Cloning --------------------------------------------------- "
 
@@ -182,11 +183,11 @@ git apply set_cpp_to_17_v4.25.3.patch
 
 # Build Python package
 cd python
-python3.12 setup.py install --cpp_implementation
+python${PYTHON_VERSION} setup.py install --cpp_implementation
 
 cd $CURRENT_DIR
 
-pip3.12 install pybind11==2.12.0
+pip${PYTHON_VERSION} install pybind11==2.12.0
 PYBIND11_PREFIX=$SITE_PACKAGE_PATH/pybind11
 
 export CMAKE_PREFIX_PATH="$ABSEIL_PREFIX;$LIBPROTO_INSTALL;$PYBIND11_PREFIX"
@@ -228,13 +229,13 @@ export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH"
 
 # Adding this source due to - (Unable to detect linker for compiler `cc -Wl,--version`)
 source /opt/rh/gcc-toolset-13/enable
-pip3.12 install cython meson
-pip3.12 install numpy==2.0.2 
-pip3.12 install parameterized
-pip3.12 install pytest nbval pythran mypy-protobuf
-pip3.12 install scipy==1.15.2 pandas scikit_learn==1.6.1
+pip${PYTHON_VERSION} install cython meson
+pip${PYTHON_VERSION} install numpy==2.0.2 
+pip${PYTHON_VERSION} install parameterized
+pip${PYTHON_VERSION} install pytest nbval pythran mypy-protobuf
+pip${PYTHON_VERSION} install scipy==1.15.2 pandas scikit_learn==1.6.1
 sed -i 's/protobuf>=[^ ]*/protobuf==4.25.8/' requirements.txt
-python3.12 setup.py install 
+python${PYTHON_VERSION} setup.py install 
 
 echo " --------------------------------------------------- Onnx Successfully Installed --------------------------------------------------- "
 
@@ -256,7 +257,7 @@ sed -i "/onnxconverter_common.__version__/d" pyproject.toml
 sed -i 's/\"numpy\"/\"numpy==2.0.2\"/' requirements.txt
 sed -i 's/\bprotobuf==[^ ]*\b/protobuf==4.25.8/g' requirements.txt
 
-pip3.12 install flatbuffers onnxmltools
+pip${PYTHON_VERSION} install flatbuffers onnxmltools
 
 cd $CURRENT_DIR
 
@@ -267,7 +268,7 @@ git clone https://github.com/microsoft/onnxruntime
 cd onnxruntime
 git checkout v1.21.0
 # Build the onnxruntime package and create the wheel
-sed -i 's/python3/python3.12/g' build.sh
+sed -i 's/python3/python${PYTHON_VERSION}/g' build.sh
 
 echo " --------------------------------------------------- Building Onnxruntime --------------------------------------------------- "
 export CXXFLAGS="-Wno-stringop-overflow"
@@ -300,13 +301,13 @@ sed -i 's|5ea4d05e62d7f954a46b3213f9b2535bdd866803|51982be81bbe52572b54180454df1
 # Install the built onnxruntime wheel
 echo " --------------------------------------------------- Installing onnxruntime wheel --------------------------------------------------- "
 cp ./build/Linux/Release/dist/* ./
-pip3.12 install ./*.whl
+pip${PYTHON_VERSION} install ./*.whl
 # Clean up the onnxruntime repository
 cd $CURRENT_DIR
 rm -rf onnxruntime
 
 cd $PACKAGE_DIR
-if ! python3.12 setup.py install; then
+if ! python${PYTHON_VERSION} setup.py install; then
     echo "------------------$PACKAGE_NAME:wheel_built_fails---------------------"
     echo "$PACKAGE_VERSION $PACKAGE_NAME"
     echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  wheel_built_fails"
