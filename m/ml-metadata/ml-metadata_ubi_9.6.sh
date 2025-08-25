@@ -22,7 +22,7 @@
 PACKAGE_URL=https://github.com/google/ml-metadata
 PACKAGE_NAME=ml-metadata
 
-export wdir=`pwd`
+wdir=`pwd`
 yum update -y
 yum install -y autoconf cmake wget automake libtool  zlib zlib-devel libjpeg libjpeg-devel gcc gcc-c++ gcc-gfortran curl git unzip zip python3 python3-devel python3-wheel patch python3-devel openssl-devel re2 utf8proc cmake tzdata diffutils --skip-broken
 yum install -y libffi-devel diffutils
@@ -57,7 +57,7 @@ unzip bazel-6.1.0-dist.zip
 env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
 cp output/bazel /usr/local/bin
 export PATH=/usr/local/bin:$PATH
-cd /
+cd $wdir
 
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
 pip3 install numpy wheel pytest
