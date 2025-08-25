@@ -17,7 +17,7 @@
   },
   "rel/v4.5.*": {
     "build_script": "httpcomponents-client_v4.5.14_ubi_9.3.sh"
-  }
+  },
   "rel/v5.4": {
     "build_script": "httpcomponents-client_v5.4_ubi_9.5.sh"
   }
