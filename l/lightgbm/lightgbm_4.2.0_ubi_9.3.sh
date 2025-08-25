@@ -8,7 +8,7 @@
 # Language         : Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Aastha Sharma <aastha.sharma4@ibm.com>
+# Maintainer       : Vaibhav Bhadade <vaibhav.bhadade@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -109,10 +109,6 @@ pip install pandas==1.5.3
 echo "install scikit_build_core"
 pip install scikit-build-core
 
-echo "installing scikit-learn..."
-python3 setup.py build_ext --inplace
-pip install . --no-build-isolation
-echo "back to lightgbm dir"
 cd ..
 
 #build pyarrow
@@ -195,7 +191,13 @@ echo " PyArrow built and installed successfully."
 
 cd ../..
 cd $CURRENT_DIR
-cd $PACKAGE
+#installing scikit-learn
+cd $PACKAGE/scikit-learn
+echo "installing scikit-learn..."
+python3 setup.py build_ext --inplace
+pip install . --no-build-isolation
+echo "back to lightgbm dir"
+cd ../
 
 echo "installing base package and setting mpi flags ..."
 ./build-python.sh
