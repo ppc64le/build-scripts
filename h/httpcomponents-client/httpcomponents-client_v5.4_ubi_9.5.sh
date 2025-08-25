@@ -19,22 +19,18 @@
 # -----------------------------------------------------------------------------
 
 PACKAGE_NAME="httpcomponents-client"
-PACKAGE_VERSION="${1:-5.4}"
+PACKAGE_VERSION="${1:-rel/v5.4}"
 PACKAGE_URL="https://github.com/apache/httpcomponents-client"
 WORK_DIR=$(pwd)
 
-yum update -y
-yum -y remove java-1.8.0-openjdk* java-11-openjdk* java-17-openjdk* || true
-yum install -y java-17-openjdk java-17-openjdk-devel java-17-openjdk-headless
+yum install -y java-17-openjdk java-17-openjdk-devel java-17-openjdk-headless git maven
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
-
-yum install -y git maven
 
 cd "$WORK_DIR"
 git clone "$PACKAGE_URL"
 cd "$PACKAGE_NAME"
-git checkout "rel/v$PACKAGE_VERSION"
+git checkout "$PACKAGE_VERSION"
 
 # Build the package
 ret=0
@@ -52,6 +48,12 @@ if [ "$ret" -ne 0 ]; then
     echo "ERROR: $PACKAGE_NAME - Test phase failed."
     exit 2
 else
+    echo "INFO: $PACKAGE_NAME - All tests passed."
+fi
+
+echo "SUCCESS: $PACKAGE_NAME version $PACKAGE_VERSION built and tested successfully."
+exit 0
+
     echo "INFO: $PACKAGE_NAME - All tests passed."
 fi
 
