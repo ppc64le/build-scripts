@@ -2,14 +2,23 @@
   "maintainer": "SanketPatil11",
   "package_name": "httpcomponents-client",
   "github_url": "https://github.com/apache/httpcomponents-client",
-  "version": "5.4",
+  "version": "rel/v5.4",
   "package_dir": "h/httpcomponents-client",
   "default_branch": "main",
   "build_script": "httpcomponents-client_v5.4_ubi_9.5.sh",
   "docker_build": "false",
   "use_non_root_user": "false",
   "validate_build_script": "true",
-  "5.*": {
+  "rel/v5.2.*": {
+    "build_script": "httpcomponents-client_ubi_9.3.sh"
+  },
+  "rel/v4.5.5": {
+    "build_script": "httpcomponents-client_v4.5.5_ubi_9.3.sh"
+  },
+  "rel/v4.5.*": {
+    "build_script": "httpcomponents-client_v4.5.14_ubi_9.3.sh"
+  }
+  "rel/v5.4": {
     "build_script": "httpcomponents-client_v5.4_ubi_9.5.sh"
   }
 }
