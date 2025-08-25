@@ -326,7 +326,8 @@ echo " ----------------------------------------- skl2onnx Installing -----------
 git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
-cp $CURRENT_DIR/sparse_changes.patch ./
+echo "Applying patch..."
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/s/skl2onnx/sparse_changes.patch
 git apply sparse_changes.patch
 
 sed -i 's/onnx>=1.2.1//g' requirements.txt
