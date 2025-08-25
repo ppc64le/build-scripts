@@ -1,14 +1,15 @@
+
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package       : grpcio
-# Version       : v1.53.0
+# Version       : v1.54.3
 # Source repo   : https://github.com/grpc/grpc.git (# For grpcio - https://github.com.mcas.ms/grpc/grpc/tree/master/src/python/grpcio)
 # Tested on     : UBI 9.3
 # Language      : C++, Python, C, Starlark, Shell, Ruby
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Abhijeet.Dandekar1@ibm.com
+# Maintainer    : vaibhav.bhadade@ibm.com
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -23,7 +24,7 @@ yum install -y python3 python3-devel python3-pip openssl openssl-devel git gcc g
 
 # Clone the grpc package.
 PACKAGE_NAME=grpc
-PACKAGE_VERSION=${1:-v1.53.0}
+PACKAGE_VERSION=${1:-v1.54.3}
 PACKAGE_URL=https://github.com/grpc/grpc.git
 
 git clone $PACKAGE_URL
@@ -32,6 +33,8 @@ git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
 python3 -m pip install pytest hypothesis build six
+export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true
+export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:${PATH}"
 
 # Install requirements
 python3 -m pip install "coverage>=4.0" "cython>=0.29.8,<3.0.0" "protobuf>=4.21.3,<5.0dev" "wheel>=0.29"

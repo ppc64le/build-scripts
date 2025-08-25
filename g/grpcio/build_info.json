@@ -12,5 +12,8 @@
     "use_non_root_user": "false",
     "v1.*.*": {
       "build_script": "grpcio_1.70.0_ubi_9.5.sh"
+    },
+    "v1.53.*": {
+      "build_script": "grpcio_1.53.0_ubi_9.5.sh"
     }
   }
