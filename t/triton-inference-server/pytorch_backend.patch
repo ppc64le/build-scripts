@@ -1,0 +1,103 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 3afe90b..f9a6824 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -89,13 +89,15 @@ find_package(Python3 REQUIRED COMPONENTS Development.Module)
+ 
+ set(RHEL_BUILD OFF)
+ set(LIB_DIR "lib")
+-set(LIBTORCH_LIBS_PATH "/usr/local/lib")
+-set(PY_INSTALL_PATH "/usr/local/lib/python3.12/dist-packages")
++set(LIBTORCH_LIBS_PATH "/usr/local/lib64")
++set(PY_INSTALL_PATH "/usr/local/lib64/python3.12/site-packages")
++message(WARNING "USING UBUNTU INSTEAD OF RHEL")
+ if(LINUX)
+   file(STRINGS "/etc/os-release" DISTRO_ID_LIKE REGEX "ID_LIKE")
+   if(${DISTRO_ID_LIKE} MATCHES "rhel|centos")
+     set(RHEL_BUILD ON)
+     set(LIB_DIR "lib64")
++    message(WARNING "USING RHEL INSTEAD OF UBUNTU")
+     set(PY_INSTALL_PATH "/opt/_internal/cpython-3.12.1/lib/python3.12/site-packages")
+     if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "x86_64")
+       set(LIBTORCH_LIBS_PATH "/opt/_internal/cpython-3.12.1/lib")
+@@ -153,11 +155,8 @@ configure_file(src/libtriton_pytorch.ldscript libtriton_pytorch.ldscript COPYONL
+ 
+ set(PT_LIBS
+     "libc10.so"
+-    "libc10_cuda.so"
+     "libtorch.so"
+     "libtorch_cpu.so"
+-    "libtorch_cuda.so"
+-    "libtorch_cuda_linalg.so"
+     "libtorch_global_deps.so"
+     "libjpeg.so.62"
+ )
+@@ -191,19 +190,6 @@ if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "aarch64")
+       "libnvpl_lapack_lp64_seq.so.0"
+   )
+ else()
+-  set(LIBS_ARCH "x86_64")
+-  set(LIBTORCH_LIBS
+-    "libmkl_avx2.so.1"
+-    "libmkl_avx512.so.1"
+-    "libmkl_core.so.1"
+-    "libmkl_def.so.1"
+-    "libmkl_gnu_thread.so.1"
+-    "libmkl_intel_lp64.so.1"
+-    "libmkl_intel_thread.so.1"
+-    "libmkl_rt.so.1"
+-    "libmkl_sequential.so.1"
+-    "libmkl_vml_def.so.1"
+-  )
+ endif()
+ set(TORCHVISION_LIBS
+     $<IF:$<BOOL:${RHEL_BUILD}>,libjpeg.so.62,libjpeg.so>
+@@ -231,35 +217,11 @@ if (${TRITON_PYTORCH_DOCKER_BUILD})
+     COMMAND docker create --name pytorch_backend_ptlib ${TRITON_PYTORCH_DOCKER_IMAGE}
+     COMMAND /bin/sh -c "for i in ${LIBTORCH_LIBS_STR} ; do echo copying $i && docker cp -L pytorch_backend_ptlib:${LIBTORCH_LIBS_PATH}/$i $i ; done"
+     COMMAND docker cp pytorch_backend_ptlib:${PY_INSTALL_PATH}/torch/lib/libc10.so libc10.so
+-    COMMAND docker cp pytorch_backend_ptlib:${PY_INSTALL_PATH}/torch/lib/libc10_cuda.so libc10_cuda.so
+     COMMAND docker cp pytorch_backend_ptlib:${PY_INSTALL_PATH}/torch/lib/libtorch.so libtorch.so
+     COMMAND docker cp pytorch_backend_ptlib:${PY_INSTALL_PATH}/torch/lib/libtorch_cpu.so libtorch_cpu.so
+-    COMMAND docker cp pytorch_backend_ptlib:${PY_INSTALL_PATH}/torch/lib/libtorch_cuda.so libtorch_cuda.so
+-    COMMAND docker cp pytorch_backend_ptlib:${PY_INSTALL_PATH}/torch/lib/libtorch_cuda_linalg.so libtorch_cuda_linalg.so
+     COMMAND docker cp pytorch_backend_ptlib:${PY_INSTALL_PATH}/torch/lib/libtorch_global_deps.so libtorch_global_deps.so
+-    COMMAND docker cp pytorch_backend_ptlib:${PY_INSTALL_PATH}/torch/lib/libcaffe2_nvrtc.so libcaffe2_nvrtc.so
+-    COMMAND /bin/sh -c "if [ ${TRITON_PYTORCH_ENABLE_TORCHVISION} = 'ON' ]; then if [ ${RHEL_BUILD} = 'ON' ]; then docker cp -a -L pytorch_backend_ptlib:/usr/local/lib64/libtorchvision.so libtorchvision.so; else docker cp -a -L pytorch_backend_ptlib:/usr/local/${LIB_DIR}/libtorchvision.so.1 libtorchvision.so.1; fi; fi"
++    COMMAND /bin/sh -c "if [ ${TRITON_PYTORCH_ENABLE_TORCHVISION} = 'ON' ]; then if [ ${RHEL_BUILD} = 'ON' ]; then docker cp -a -L pytorch_backend_ptlib:/usr/local/lib64/libtorchvision.so libtorchvision.so; else docker cp -a -L pytorch_backend_ptlib:/usr/local/lib64/libtorchvision.so.1 libtorchvision.so.1; fi; fi"
+     COMMAND /bin/sh -c "if [ ${TRITON_PYTORCH_ENABLE_TORCHVISION} = 'ON' ]; then docker cp pytorch_backend_ptlib:/opt/pytorch/vision/torchvision/csrc include/torchvision/torchvision; fi"
+-    COMMAND /bin/sh -c "if [ ${TRITON_PYTORCH_ENABLE_TORCHTRT} = 'ON' ]; then docker cp pytorch_backend_ptlib:/usr/local/lib/python3.12/dist-packages/torch_tensorrt/lib/libtorchtrt_runtime.so libtorchtrt_runtime.so; fi"
+-    COMMAND docker cp pytorch_backend_ptlib:${PY_INSTALL_PATH}/torch_tensorrt/bin/torchtrtc torchtrtc || echo "error ignored..." || true
+-    COMMAND docker cp pytorch_backend_ptlib:/opt/pytorch/pytorch/LICENSE LICENSE.pytorch
+-    COMMAND docker cp pytorch_backend_ptlib:${PY_INSTALL_PATH}/torch/include include/torch
+-    COMMAND docker cp pytorch_backend_ptlib:/opt/pytorch/pytorch/torch/csrc/jit/codegen include/torch/torch/csrc/jit/.
+-
+-    COMMAND /bin/sh -c "if [ ${RHEL_BUILD} = 'ON' ]; then docker cp -L pytorch_backend_ptlib:/usr/lib64/libjpeg.so.62 libjpeg.so.62; else docker cp -L pytorch_backend_ptlib:/usr/local/lib/libjpeg.so.62 libjpeg.so.62 && docker cp pytorch_backend_ptlib:/usr/lib/${LIBS_ARCH}-linux-gnu/libjpeg.so.8.2.2 libjpeg.so; fi;"
+-    COMMAND /bin/sh -c "if [ ${RHEL_BUILD} = 'ON' ]; then docker cp -L pytorch_backend_ptlib:/usr/lib64/libpng16.so.16 libpng16.so.16; else docker cp -L pytorch_backend_ptlib:/usr/lib/${LIBS_ARCH}-linux-gnu/libpng16.so libpng16.so; fi;"
+-    COMMAND /bin/sh -c "if [ -f libmkl_def.so.1 ]; then patchelf --add-needed libmkl_gnu_thread.so.1 libmkl_def.so.1; fi"
+-    COMMAND /bin/sh -c "if [ -f libmkl_def.so.1 ]; then patchelf --add-needed libmkl_core.so.1 libmkl_def.so.1; fi"
+-    COMMAND /bin/sh -c "if [ -f libmkl_avx2.so.1 ]; then patchelf --add-needed libmkl_gnu_thread.so.1 libmkl_avx2.so.1; fi"
+-    COMMAND /bin/sh -c "if [ -f libmkl_avx2.so.1 ]; then patchelf --add-needed libmkl_core.so.1 libmkl_avx2.so.1; fi"
+-    COMMAND /bin/sh -c "if [ -f libmkl_avx512.so.1 ]; then patchelf --add-needed libmkl_gnu_thread.so.1 libmkl_avx512.so.1; fi"
+-    COMMAND /bin/sh -c "if [ -f libmkl_avx512.so.1 ]; then patchelf --add-needed libmkl_core.so.1 libmkl_avx512.so.1; fi"
+-    COMMAND /bin/sh -c "if [ -f libmkl_vml_def.so.1 ]; then patchelf --add-needed libmkl_gnu_thread.so.1 libmkl_vml_def.so.1; fi"
+-    COMMAND /bin/sh -c "if [ -f libmkl_vml_def.so.1 ]; then patchelf --add-needed libmkl_intel_thread.so.1 libmkl_vml_def.so.1; fi"
+-    COMMAND /bin/sh -c "if [ -f libmkl_vml_def.so.1 ]; then patchelf --add-needed libmkl_core.so.1 libmkl_vml_def.so.1; fi"
+-    COMMAND /bin/sh -c "if [ -f libmkl_intel_thread.so.1 ]; then patchelf --add-needed libmkl_intel_lp64.so.1 libmkl_intel_thread.so.1; fi"
+-    COMMAND /bin/sh -c "if [ ${TRITON_PYTORCH_ENABLE_TORCHVISION} = 'ON' ]; then if [ ${RHEL_BUILD} = 'OFF' ]; then ln -s libtorchvision.so.1 libtorchvision.so; fi; fi;"
+-    COMMAND docker rm pytorch_backend_ptlib
+     COMMENT "Extracting pytorch and torchvision libraries and includes from ${TRITON_PYTORCH_DOCKER_IMAGE}"
+     VERBATIM
+   )
+diff --git a/src/libtorch_utils.h b/src/libtorch_utils.h
+index 6ec325b..0ac84bc 100644
+--- a/src/libtorch_utils.h
++++ b/src/libtorch_utils.h
+@@ -34,7 +34,6 @@
+ #pragma GCC diagnostic ignored "-Wsign-compare"
+ #pragma warning(push, 0)
+ #include <torch/csrc/jit/codegen/cuda/interface.h>
+-#include <torch/csrc/jit/codegen/fuser/interface.h>
+ #include <torch/csrc/jit/passes/tensorexpr_fuser.h>
+ #include <torch/csrc/jit/runtime/graph_executor.h>
+ #include <torch/script.h>  // One-stop header for TorchScript
