@@ -1,0 +1,16 @@
+{
+  "maintainer": "Prachi.Gaonkar@ibm.com",
+  "package_name": "teleport",
+  "github_url": "https://github.com/gravitational/teleport.git",
+  "version": "v18.1.1",
+  "required_versions":{"Releases": ["*"], "Tags": ["v18.1.1"]},
+  "default_branch": "master",
+  "package_dir": "t/teleport",
+  "build_script": "teleport_v18.1.1_ubi9.6.sh",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "v18.1.1": {
+    "build_script": "teleport_v18.1.1_ubi9.6.sh"
+}
+}
