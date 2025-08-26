@@ -3,6 +3,7 @@
   "package_name": "opensearch-project-observability",
   "github_url": "https://github.com/opensearch-project/observability",
   "version": "2.19.2.0",
+  "required_versions":{"Releases": ["*"], "Tags": ["2.19.2.0"]},
   "default_branch": "main",
   "package_dir": "o/opensearch-project-observability",
   "build_script": "opensearch-project-observability_2.19.2.0_ubi_9.3.sh",
@@ -11,5 +12,11 @@
   "docker_build": false,
   "2.19.2.0": {
     "build_script": "opensearch-project-observability_2.19.2.0_ubi_9.3.sh"
+  },
+  "2.15.0.0": {
+    "build_script": "opensearch-project-observability_ubi_9.3.sh"
+  },
+  "2.7.0.0": {
+    "build_script": "opensearch-project-observability_ubi_8.7.sh"
   }
 }

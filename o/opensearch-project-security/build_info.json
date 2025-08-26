@@ -1,8 +1,9 @@
 {
   "maintainer": "sumit.dubey2@ibm.com",
-  "package_name": "security",
+  "package_name": "opensearch-project-security",
   "github_url": "https://github.com/opensearch-project/security",
   "version": "2.19.2.0",
+  "required_versions":{"Releases": ["*"], "Tags": ["2.19.2.0"]},
   "default_branch": "main",
   "package_dir": "o/opensearch-project-security",
   "build_script": "security_2.19.2.0_ubi9.5.sh",

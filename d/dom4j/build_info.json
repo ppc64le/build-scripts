@@ -1,0 +1,15 @@
+{
+  "maintainer": "Amitkumar282",
+  "package_name": "dom4j",
+  "github_url": "https://github.com/dom4j/dom4j.git",
+  "version": "version-2.1.4",
+  "default_branch": "master",
+  "build_script": "dom4j_version-2.1.4_ubi_9.5.sh",
+  "package_dir": "d/dom4j",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "*": {
+    "build_script": "dom4j_version-2.1.4_ubi_9.5.sh"
+  }
+}

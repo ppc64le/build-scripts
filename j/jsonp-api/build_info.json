@@ -2,14 +2,17 @@
   "maintainer": "mayurbhosure",
   "package_name": "jsonp-api",
   "github_url": "https://github.com/jakartaee/jsonp-api",
-  "version": "2.0.1-RELEASE",
+  "version": "2.1.3-RELEASE",
   "default_branch": "master",
-  "build_script": "jsonp-api_ubi_9.3.sh",
+  "build_script": "jsonp-api_2.1.3-RELEASE_ubi_9.5.sh",
   "package_dir": "j/jsonp-api",
   "validate_build_script": true,
   "use_non_root_user": false,
   "docker_build": false,
   "2.0.*-RELEASE": {
     "build_script": "jsonp-api_ubi_9.3.sh"
+  },
+  "2.1.*-RELEASE": {
+    "build_script": "jsonp-api_2.1.3-RELEASE_ubi_9.5.sh"
   }
 }

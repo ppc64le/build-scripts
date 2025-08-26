@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : ray
-# Version       : master(0e484d33586d18cc0b205)
+# Version       : master(decdb4bfc5497d2eb5a77f)
 # Source repo   : https://github.com/ray-project/ray
 # Tested on     : UBI 9.6
 # Language      : C++, Python
@@ -112,3 +112,4 @@ pip install ray-*-linux_ppc64le.whl
 #bazel test --jobs=10 //cpp:simple_kv_store --cxxopt='-Wno-error=maybe-uninitialized' --define=USE_OPENSSL=1|| true
 #bazel test --jobs=10 //cpp:cluster_mode_xlang_test --cxxopt='-Wno-error=maybe-uninitialized' --define=USE_OPENSSL=1|| true
 #bazel test --jobs=10 //cpp:metric_example  --cxxopt='-Wno-error=maybe-uninitialized' --define=USE_OPENSSL=1|| true
+#bazel test --jobs=10 //src/ray/object_manager/plasma/tests:mutable_object_test --cxxopt='-Wno-error=maybe-uninitialized' --define=USE_OPENSSL=1|| true

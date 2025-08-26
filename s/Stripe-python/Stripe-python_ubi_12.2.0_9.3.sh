@@ -44,11 +44,12 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-cd /stripe-python/deps
+cd deps
 pip install pytest tox pip wheel
 pip install -r build-requirements.txt
 pip install -r test-requirements.txt
-cd ..
+cd $CURRENT_DIR
+cd $PACKAGE_NAME
 
 #install
 if ! pip install . ; then

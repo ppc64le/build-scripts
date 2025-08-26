@@ -7,6 +7,6 @@ the build machine.
 Enable execute permissions for the build script and run it as:
 
 ```
-# chmod +x openshift-service-mesh-proxy_rhel9.3.sh
-# ./openshift-service-mesh-proxy_rhel9.3.sh
+# chmod +x openshift-service-mesh-proxy_1.26_ubi9.4.sh
+# ./openshift-service-mesh-proxy_1.26_ubi9.4.sh
 ```

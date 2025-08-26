@@ -1,0 +1,15 @@
+{
+  "maintainer": "SanketPatil11",
+  "package_name": "react",
+  "github_url": "https://github.com/facebook/react",
+  "version": "v18.2.0",
+  "package_dir": "r/react",
+  "default_branch": "main",
+  "build_script": "react_v18.2.0_ubi_9.5.sh", 
+  "docker_build": "false",
+  "use_non_root_user": "false",
+  "validate_build_script": "true",
+  "*": {
+    "build_script": "react_v18.2.0_ubi_9.5.sh"
+  }
+}

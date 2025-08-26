@@ -3,6 +3,7 @@
   "package_name": "opensearch-project-cross-cluster-replication",
   "github_url": "https://github.com/opensearch-project/cross-cluster-replication",
   "version": "2.19.2.0",
+  "required_versions":{"Releases": ["*"], "Tags": ["2.19.2.0"]},
   "default_branch": "main",
   "package_dir": "o/opensearch-project-cross-cluster-replication",
   "build_script": "opensearch-project-cross-cluster-replication_2.19.2.0_ubi_9.3.sh",
@@ -12,7 +13,10 @@
   "2.7.0.0": {
     "build_script": "opensearch-project-cross-cluster-replication_ubi_8.7.sh"
   },
-  "*.*.*.*": {
+  "2.19.2.0": {
     "build_script": "opensearch-project-cross-cluster-replication_2.19.2.0_ubi_9.3.sh"
-  }
+  },
+  "2.15.0.0": {
+    "build_script": "opensearch-project-cross-cluster-replication_ubi_9.3.sh"
+  }  
 }

@@ -35,7 +35,7 @@ yum install -y wget
 # install core dependencies
 yum install -y python python-pip python-devel  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils wget
 
-python -m pip install --upgrade pip
+python -m pip install --upgrade pip wheel
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
@@ -91,7 +91,7 @@ build_opts+=(NO_LAPACK=0)
 
 # Enable threading and set the number of threads
 build_opts+=(USE_THREAD=1)
-build_opts+=(NUM_THREADS=8)
+build_opts+=(NUM_THREADS=120)
 
 # Disable CPU/memory affinity handling to avoid problems with NumPy and R
 build_opts+=(NO_AFFINITY=1)
@@ -107,10 +107,13 @@ fi
 # Install OpenBLAS
 CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
 
-#During wheel creation for this package we need exported vars. Once script get exit, and if we build wheel through wrapper script, then those are not applicable during wheel creation. So we are generating wheel for this package in script itself.
-echo "---------------------------------------------------Building the wheel--------------------------------------------------"
-pip install --upgrade pip build setuptools wheel
-python -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"
+#install
+if ! (pip install . --no-build-isolation) ; then
+    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    exit 1
+fi
 
 # Run test cases
 if !(make -C utest all); then

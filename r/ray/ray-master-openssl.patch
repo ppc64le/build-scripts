@@ -1,11 +1,11 @@
 diff --git a/BUILD.bazel b/BUILD.bazel
-index 2236d689c7..ed98508dde 100644
+index 1c77a53d4e..dc3782a95b 100644
 --- a/BUILD.bazel
 +++ b/BUILD.bazel
-@@ -218,6 +218,22 @@ ray_cc_library(
-     ],
+@@ -142,6 +142,23 @@ ray_cc_library(
+     hdrs = ["src/mock/ray/common/ray_syncer/ray_syncer.h"],
  )
- 
+
 +config_setting(
 +    name = "use_openssl",
 +    values = {"define": "USE_OPENSSL=1"},
@@ -22,17 +22,18 @@ index 2236d689c7..ed98508dde 100644
 +    }),
 +)
 +
- ray_cc_library(
-     name = "grpc_common_lib",
-     # TODO(core): Both two header files are not needed, keep them there because of circular dependency between raylet and node rpc.
++
+ cc_grpc_library(
+     name = "ray_syncer_cc_grpc",
+     srcs = ["//src/ray/protobuf:ray_syncer_proto"],
 diff --git a/WORKSPACE b/WORKSPACE
-index 8e54bbd551..1cf5612d68 100644
+index 037d68fac7..526f11431d 100644
 --- a/WORKSPACE
 +++ b/WORKSPACE
-@@ -2,6 +2,18 @@ workspace(name = "com_github_ray_project_ray")
- 
+@@ -2,6 +2,19 @@ workspace(name = "io_ray")
+
  load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
- 
+
 +http_archive(
 +    name = "rules_python",
 +    sha256 = "c68bdc4fbec25de5b5493b8819cfc877c4ea299c0dcb15c244c5a00208cde311",
@@ -45,24 +46,26 @@ index 8e54bbd551..1cf5612d68 100644
 +
 +py_repositories()
 +
++
  http_archive(
      name = "platforms",
      sha256 = "5eda539c841265031c2f82d8ae7a3a6490bd62176e0c038fc469eabf91f6149b",
-@@ -37,12 +49,6 @@ load("@hedron_compile_commands//:workspace_setup.bzl", "hedron_compile_commands_
- 
+@@ -51,13 +64,6 @@ load("@hedron_compile_commands//:workspace_setup.bzl", "hedron_compile_commands_
+
  hedron_compile_commands_setup()
- 
+
 -http_archive(
 -    name = "rules_python",
 -    sha256 = "c68bdc4fbec25de5b5493b8819cfc877c4ea299c0dcb15c244c5a00208cde311",
 -    strip_prefix = "rules_python-0.31.0",
 -    url = "https://github.com/bazelbuild/rules_python/releases/download/0.31.0/rules_python-0.31.0.tar.gz",
 -)
- 
+-
  load("@rules_python//python:repositories.bzl", "python_register_toolchains")
- 
+
+ python_register_toolchains(
 diff --git a/bazel/hiredis.BUILD b/bazel/hiredis.BUILD
-index 83c07e5bf4..6e80f8bc8f 100644
+index 83c07e5bf4..b26c503ab2 100644
 --- a/bazel/hiredis.BUILD
 +++ b/bazel/hiredis.BUILD
 @@ -56,10 +56,11 @@ cc_library(
@@ -72,7 +75,7 @@ index 83c07e5bf4..6e80f8bc8f 100644
 -    deps = [
 -        ":_hiredis",
 +    deps =     select({
-+            "@com_github_ray_project_ray//:use_openssl":["@com_github_ray_project_ray//:openssl",":_hiredis", ] ,
++            "@io_ray//:use_openssl":["@io_ray//:openssl",":_hiredis", ] ,
 +            "//conditions:default": [":_hiredis",
          "@boringssl//:ssl",
          "@boringssl//:crypto"
@@ -81,14 +84,14 @@ index 83c07e5bf4..6e80f8bc8f 100644
      visibility = ["//visibility:public"],
  )
 diff --git a/bazel/ray_deps_setup.bzl b/bazel/ray_deps_setup.bzl
-index e98895248d..6208f4523a 100644
+index 76321f64a1..b51ae01498 100644
 --- a/bazel/ray_deps_setup.bzl
 +++ b/bazel/ray_deps_setup.bzl
-@@ -266,6 +266,7 @@ def ray_deps_setup():
-         patches = [
-             "@com_github_ray_project_ray//thirdparty/patches:grpc-cython-copts.patch",
-             "@com_github_ray_project_ray//thirdparty/patches:grpc-avoid-goaway-messages.patch",
-+            "@com_github_ray_project_ray//thirdparty/patches:power_boringssl.patch",
+@@ -281,6 +281,7 @@ def ray_deps_setup():
+             "@io_ray//thirdparty/patches:grpc-avoid-goaway-messages.patch",
+             "@io_ray//thirdparty/patches:grpc-zlib-fdopen.patch",
+             "@io_ray//thirdparty/patches:grpc-configurable-thread-count.patch",
++            "@io_ray//thirdparty/patches:power_boringssl.patch",
          ],
      )
 
