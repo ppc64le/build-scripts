@@ -22,7 +22,7 @@ RUN git clone https://github.com/stripe/stripe-python.git && \
     cd deps && \
     pip install pip wheel && \
     pip install pytest tox && \
-    pip install -r requirements.txt && \
+    pip install -r build-requirements.txt && \
     pip install -r test-requirements.txt && \
     cd .. && \
     pip install . 
