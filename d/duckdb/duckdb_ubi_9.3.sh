@@ -25,6 +25,16 @@ PACKAGE_URL=https://github.com/duckdb/duckdb.git
 # Install necessary system packages
 dnf install -y make cmake ninja-build libomp-devel git clang python3 python3-pip python3-devel
 
+# Set up GCC toolset
+export PATH=/opt/rh/gcc-toolset-14/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-14/root/usr/lib64:$LD_LIBRARY_PATH
+export CC=/opt/rh/gcc-toolset-14/root/usr/bin/gcc
+export CXX=/opt/rh/gcc-toolset-14/root/usr/bin/g++
+
+# Reduce memory usage by limiting parallel jobs
+export MAKEFLAGS="-j2"
+export CMAKE_BUILD_PARALLEL_LEVEL=2
+
 # Upgrade pip & setuptools
 python3 -m pip install --upgrade pip setuptools wheel
 
@@ -38,8 +48,12 @@ git checkout ${PACKAGE_VERSION}
 
 cd tools/pythonpkg
 
+# Set environment variables to reduce memory usage
+export CFLAGS="-O1 -pipe"
+export CXXFLAGS="-O1 -pipe"
+
 # Build Package 
-if ! python3 -m build --wheel; then
+if ! python3 -m build --wheel --no-isolation; then
     echo "------------------$PACKAGE_NAME: Build_Fail------------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_Fail"
     exit 1
