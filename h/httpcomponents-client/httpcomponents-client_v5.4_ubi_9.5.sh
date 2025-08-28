@@ -53,9 +53,3 @@ fi
 
 echo "SUCCESS: $PACKAGE_NAME version $PACKAGE_VERSION built and tested successfully."
 exit 0
-
-    echo "INFO: $PACKAGE_NAME - All tests passed."
-fi
-
-echo "SUCCESS: $PACKAGE_NAME version $PACKAGE_VERSION built and tested successfully."
-exit 0
