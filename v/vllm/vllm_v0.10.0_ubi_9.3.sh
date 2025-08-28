@@ -726,7 +726,6 @@ yum install -y unixODBC-devel
 git clone https://github.com/mkleehammer/pyodbc pyodbc
 cd pyodbc
 git checkout 5.2.0
-python3.11 -m pip install 
 python3.11 -m pip install "chardet<5,>=3.0.2" --force-reinstall
 python3.11 -m pip install psutil
 python3.11 setup.py install
@@ -788,7 +787,6 @@ export TBBROOT=/tmp/my_installed_onetbb/
 export CMAKE_PREFIX_PATH=$TBBROOT
 make install
 
-####################do thi again
 echo " -------------------------- Installed onetbb -------------------------- "
 
 cd $CURRENT_DIR
