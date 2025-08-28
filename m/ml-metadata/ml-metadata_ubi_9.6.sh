@@ -23,8 +23,11 @@ PACKAGE_URL=https://github.com/google/ml-metadata
 PACKAGE_NAME=ml-metadata
 
 wdir=`pwd`
+SCRIPT=$(readlink -f $0)
+SCRIPT_DIR=$(dirname $SCRIPT)
+
 yum update -y
-yum install -y autoconf cmake wget automake libtool  zlib zlib-devel libjpeg libjpeg-devel gcc gcc-c++ gcc-gfortran curl git unzip zip python3 python3-devel python3-wheel patch python3-devel openssl-devel re2 utf8proc cmake tzdata diffutils --skip-broken
+yum install -y autoconf cmake wget automake libtool  zlib zlib-devel libjpeg libjpeg-devel gcc gcc-c++ gcc-gfortran curl git unzip zip python3 python3-devel python3-wheel patch openssl-devel re2 utf8proc cmake tzdata diffutils --skip-broken
 yum install -y libffi-devel diffutils
 
 yum install -y java-11-openjdk-devel
@@ -48,6 +51,7 @@ cd $wdir
 	ln -sf $(which pip3.10) /usr/bin/pip3
 	python3 -V && pip3 -V
 
+cd $wdir
 ln -s /usr/bin/python3 /usr/bin/python
 
 mkdir bazel
@@ -64,7 +68,7 @@ pip3 install numpy wheel pytest
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
-git apply $wdir/ml_metadata_ubi9.6.patch
+git apply $SCRIPT_DIR/ml_metadata_ubi9.6.patch
 
 if ! (python3 setup.py bdist_wheel && pip3 install dist/*.whl); then 
      echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
