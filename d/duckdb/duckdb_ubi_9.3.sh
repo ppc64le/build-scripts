@@ -39,7 +39,7 @@ export CMAKE_BUILD_PARALLEL_LEVEL=2
 python3 -m pip install --upgrade pip setuptools wheel
 
 # Install build dependencies
-python3 -m pip install build pybind11
+python3 -m pip install build pybind11 setuptools_scm>=6.4
 
 # Clone the repository
 git clone ${PACKAGE_URL}
