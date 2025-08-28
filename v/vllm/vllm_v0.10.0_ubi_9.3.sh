@@ -705,7 +705,6 @@ echo "------------------------installing numexpr-------------------------"
 git clone https://github.com/pydata/numexpr.git
 cd  numexpr
 git checkout v2.8.4
-python3.11 -m pip install 
 python3.11 -m pip install numpy==1.26.3
 python3.11 -m pip install -e .
 python3.11 setup.py install
@@ -814,7 +813,7 @@ python3.11 -m pip install 'numpy<2' fontTools setuptools-scm contourpy kiwisolve
 ln -sf /usr/bin/python3.11 /usr/bin/python3
 
 # Build and Install the package (This is dependent on numpy, pillow)
-python3.12 -m pip install -e .
+python3.11 -m pip install -e .
 echo "----------------------------- Installed matplotlib ----------------------------"
 
 
@@ -828,13 +827,13 @@ yum install -y gcc-toolset-13-libatomic-devel
 cd $CURRENT_DIR
 echo "--------------------scipy installing-------------------------------"
 #Building scipy
-python3.12 -m pip install beniget==0.4.2.post1 Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch  build hypothesis patchelf
+python3.11 -m pip install beniget==0.4.2.post1 Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch  build hypothesis patchelf
 git clone https://github.com/scipy/scipy
 cd scipy/
 git checkout v1.15.2
 git submodule update --init
 echo "instaling scipy......."
-python3.12 -m pip install .
+python3.11 -m pip install .
 cd $CURRENT_DIR
 export C_COMPILER=$(which gcc)
 export CXX_COMPILER=$(which g++)
@@ -843,7 +842,7 @@ git clone https://github.com/pytorch/vision.git
 cd vision
 git checkout v0.22.0
 export LD_LIBRARY_PATH=/home/protobuf/local/libprotobuf/lib64:$LD_LIBRARY_PATH
-python3.12 -m pip install -v -e . --no-build-isolation
+python3.11 -m pip install -v -e . --no-build-isolation
 echo "----------------------------- Installed torchvision ----------------------------"
 
 
@@ -1302,12 +1301,12 @@ cmake ${CMAKE_ARGS} ..  \
 echo  "Installing grpc_cpp..."
 ninja install -v
 popd
-python3.12 -m pip install coverage  
+python3.11 -m pip install coverage  
 export GRPC_PYTHON_BUILD_SYSTEM_=true
 export GRPC_PYTHON_BUILD_WITH_CYTHON=1
 export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:${PATH}"
-python3.12 -m pip install -r requirements.txt
-GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1 python3.12 -m pip install -e .
+python3.11 -m pip install -r requirements.txt
+GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1 python3.11 -m pip install -e .
 export LD_LIBRARY_PATH=$GRPC_PREFIX/lib:$LD_LIBRARY_PATH
 echo "Installed grpcio"
 
@@ -1405,8 +1404,8 @@ cmake \
     -DCMAKE_BUILD_TYPE=release \
     -DCMAKE_INSTALL_LIBDIR=lib \
     -DCMAKE_INSTALL_PREFIX=$ARROW_HOME \
-    -DPYTHON_EXECUTABLE=$(which python3.12) \
-    -DPython3_EXECUTABLE=$(which python3.12) \
+    -DPYTHON_EXECUTABLE=$(which python3.11) \
+    -DPython3_EXECUTABLE=$(which python3.11) \
     -DProtobuf_PROTOC_EXECUTABLE=${LIBPROTO_INSTALL}/bin/protoc \
     -DORC_INCLUDE_DIR=${ORC_PREFIX}/include \
     -DgRPC_DIR=${GRPC_PREFIX} \
@@ -1426,7 +1425,7 @@ popd
 
 cd $CURRENT_DIR
 echo "Installing prerequisite for arrow..."
-python3.12 -m pip install setuptools-scm 
+python3.11 -m pip install setuptools-scm 
 
 export PYARROW_BUNDLE_ARROW_CPP=1
 export LD_LIBRARY_PATH=${ARROW_HOME}/lib:${LD_LIBRARY_PATH}
@@ -1458,7 +1457,7 @@ else
 fi
 cd python
 #export PATH=/usr/bin:$PATH
-python3.12 -m pip install .
+python3.11 -m pip install .
 
 
 cd $CURRENT_DIR
@@ -1471,13 +1470,13 @@ git checkout v2.0.19
 make
 make install
 
-pip3.12 install soxr
+pip3.11 install soxr
 
 cd $CURRENT_DIR
 git clone https://github.com/openai/tiktoken
 cd tiktoken
 git checkout 0.7.0
-python3.12 -m pip install -e .
+python3.11 -m pip install -e .
 
 cd $CURRENT_DIR
 git clone https://github.com/dottxt-ai/outlines-core
@@ -1485,14 +1484,14 @@ cd outlines-core
 git checkout 0.1.26
 rustup update stable
 export PATH=$HOME/.cargo/bin:$PATH
-python3.12 -m pip install -e .
+python3.11 -m pip install -e .
 
 cd $CURRENT_DIR
 git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
-python3.12 -m pip install setuptools-rust maturin setuptools_scm pytest pytest-asyncio
+python3.11 -m pip install setuptools-rust maturin setuptools_scm pytest pytest-asyncio
 
 export LD_LIBRARY_PATH=/protobuf/local/libprotobuf/lib64:$LD_LIBRARY_PATH
 export CMAKE_PREFIX_PATH=/protobuf/local/libprotobuf
@@ -1509,14 +1508,14 @@ sed -i '/^license = "Apache-2.0"/d; /^license-files = \["LICENSE"\]/d; /name = "
 
 
 
-if ! (python3.12 -m pip install -v . --no-build-isolation); then
+if ! (python3.11 -m pip install -v . --no-build-isolation); then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-python3.12 -m pip install "numpy<2"
+python3.11 -m pip install "numpy<2"
 
 if ! pytest; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
