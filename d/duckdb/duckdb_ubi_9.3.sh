@@ -59,6 +59,12 @@ if ! python3 -m build --wheel --no-isolation; then
     exit 1
 fi
 
+# Install the built wheel
+WHEEL_FILE=$(find dist -name "*.whl" | head -n1)
+if [ -n "$WHEEL_FILE" ]; then
+    python3 -m pip install "$WHEEL_FILE"
+fi
+
 cd /tmp
 
 # Run tests
