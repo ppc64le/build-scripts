@@ -19,7 +19,8 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=data
-PACKAGE_VERSION=${1:-v0.7.0}
+PACKAGE_VERSION=${1:-v0.7.1}
+PYTHON_VERSION=${2:-3.11}
 PACKAGE_URL=https://github.com/pytorch/data.git
 PACKAGE_DIR=./data
 CURRENT_DIR="${PWD}"
@@ -62,12 +63,12 @@ export MAX_JOBS=2
 python setup.py install
 cd ..
 
-# ========== ✅ Install sentencepiece for Python 3.11 ==========
-echo "Installing sentencepiece for Python 3.11..."
-python3.11 -m pip install --no-build-isolation sentencepiece
+# ========== ✅ Install sentencepiece  ==========
+echo "Installing sentencepiece "
+python -m pip install --no-build-isolation sentencepiece
 # Optional: Verify it's usable
-python3.11 -c "import sentencepiece as spm; sp = spm.SentencePieceProcessor(); print('✅ sentencepiece is usable')"
-export PKG_CONFIG_PATH=/pyvenv_3.11/lib/python3.11/site-packages/sentencepiece/:$PKG_CONFIG_PATH
+python -c "import sentencepiece as spm; sp = spm.SentencePieceProcessor(); print('✅ sentencepiece is usable')"
+export PKG_CONFIG_PATH=/usr/lib/python${PYTHON_VERSION}/site-packages/sentencepiece/:$PKG_CONFIG_PATH
 
 
 git clone $PACKAGE_URL
