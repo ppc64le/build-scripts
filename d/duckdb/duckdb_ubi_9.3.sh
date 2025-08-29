@@ -32,8 +32,9 @@ export CC=/opt/rh/gcc-toolset-14/root/usr/bin/gcc
 export CXX=/opt/rh/gcc-toolset-14/root/usr/bin/g++
 
 # Reduce memory usage by limiting parallel jobs
-export MAKEFLAGS="-j2"
-export CMAKE_BUILD_PARALLEL_LEVEL=2
+export MAKEFLAGS="-j1"
+export CXXFLAGS="-O0 -pipe -fno-optimize-sibling-calls -fno-omit-frame-pointer"
+export LDFLAGS="-Wl,--no-keep-memory"
 
 # Upgrade pip & setuptools
 python3 -m pip install --upgrade pip setuptools wheel
@@ -51,6 +52,8 @@ cd tools/pythonpkg
 # Set environment variables to reduce memory usage
 export CFLAGS="-O1 -pipe"
 export CXXFLAGS="-O1 -pipe"
+
+python3 setup.py build_ext --inplace --parallel=1
 
 # Build Package 
 if ! python3 -m build --wheel --no-isolation; then
