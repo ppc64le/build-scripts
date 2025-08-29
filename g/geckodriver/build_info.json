@@ -1,0 +1,15 @@
+{
+  "maintainer": "SanketPatil11",
+  "package_name": "geckodriver",
+  "github_url": "https://github.com/mozilla/geckodriver",
+  "version": "v0.28.0",
+  "package_dir": "g/geckodriver",
+  "default_branch": "main",
+  "build_script": "geckodriver_v0.28.0_ubi_9.5.sh",
+  "docker_build": "false",
+  "use_non_root_user": "false",
+  "validate_build_script": "true",
+  "v0.28.*": {
+    "build_script": "geckodriver_v0.28.0_ubi_9.5.sh"
+  }
+}
