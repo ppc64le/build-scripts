@@ -23,11 +23,10 @@ BUILD_HOME=$(pwd)
 PACKAGE_NAME=prettier
 PACKAGE_URL=https://github.com/prettier/${PACKAGE_NAME}.git
 PACKAGE_VERSION=${1:- 2.8.8}
-NODE_VERSION=v18.17.1
-#YARN_VERSION=1.22.22
+NODE_VERSION=v16.20.2
 
 #Install deps.
-yum install -y git
+yum install -y git gcc gcc-c++ openssl-devel 
 
 #Installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
