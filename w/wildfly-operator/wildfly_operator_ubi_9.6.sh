@@ -4,7 +4,7 @@
 # Package       : wildfly-operator
 # Version       : 1.1.3
 # Source repo   : https://github.com/wildfly/wildfly-operator/
-# Tested on     : UBI 9
+# Tested on     : UBI 9.6
 # Language      : GO
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
