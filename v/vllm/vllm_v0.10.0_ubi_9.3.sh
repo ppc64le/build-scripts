@@ -8,7 +8,7 @@
 # Language      : C
 # Travis-Check  : True
 # Script License: Apache License 2.0
-# Maintainer    : 
+# Maintainer    : Ramnath Nayak
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -18,14 +18,13 @@
 #
 # ----------------------------------------------------------------------------
 
-
 PACKAGE_NAME=vllm
 PACKAGE_VERSION=${1:-v0.10.0}
 PACKAGE_URL=https://github.com/vllm-project/vllm.git
 CURRENT_DIR=$(pwd)
 PACKAGE_DIR=vllm
 
-yum install -y openblas-devel git make libtool wget gcc-toolset-13 cmake python3.11 python3.11-devel python3.11-pip gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ binutils meson ninja-build openssl-devel libjpeg-devel bzip2-devel libffi-devel zlib-devel libtiff-devel freetype-devel  autoconf procps-ng glibc-static libstdc++-static kmod automake gmp-devel gmp-devel.ppc64le libjpeg-turbo-devel mpfr-devel.ppc64le libmpc-devel.ppc64le java-11-openjdk java-11-openjdk-devel gzip tar xz yum-utils bzip2 zip unzip cargo pkgconf-pkg-config.ppc64le info.ppc64le fontconfig.ppc64le fontconfig-devel.ppc64le sqlite-devel gcc-toolset-13-gcc-gfortran pkgconfig atlas libevent-devel patch pkg-config llvm-devel clang clang-devel
+yum install -y openblas-devel git make libtool wget gcc-toolset-13 cmake python3.12 python3.12-devel python3.12-pip gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ binutils meson ninja-build openssl-devel libjpeg-devel bzip2-devel libffi-devel zlib-devel libtiff-devel freetype-devel  autoconf procps-ng glibc-static libstdc++-static kmod automake gmp-devel gmp-devel.ppc64le libjpeg-turbo-devel mpfr-devel.ppc64le libmpc-devel.ppc64le java-11-openjdk java-11-openjdk-devel gzip tar xz yum-utils bzip2 zip unzip cargo pkgconf-pkg-config.ppc64le info.ppc64le fontconfig.ppc64le fontconfig-devel.ppc64le sqlite-devel gcc-toolset-13-gcc-gfortran pkgconfig atlas libevent-devel patch pkg-config llvm-devel clang clang-devel
 
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
@@ -37,7 +36,7 @@ export CC=$GCC_HOME/bin/gcc
 export CXX=$GCC_HOME/bin/g++
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
-python3.11 -m pip install --upgrade pip build
+python3.12 -m pip install --upgrade pip build
 
 INSTALL_ROOT="/install-deps"
 mkdir -p $INSTALL_ROOT
@@ -47,9 +46,9 @@ for package in openblas lame opus libvpx ffmpeg hdf5 x264; do
     echo "Exported ${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
 done
 
-python3.11 -m pip install numpy==2.0.2 cython  bottleneck==1.4.2 brotli==1.1.0 pyyaml==6.0.2 aiohttp==3.9.0 argon2_cffi_bindings==21.2.0
-python3.11 -m pip install cassandra_driver==3.29.2 contourpy==1.3.1 cx_oracle==8.3.0 cytoolz==1.0.1 ibm_db==3.2.6 ijson==3.3.0 jenkspy==0.4.1 markupsafe==3.0.2
-python3.11 -m pip install zstd==1.5.6.1 yarl==1.18.3 unicodedata2==15.1.0 pandas==2.2.3 ninja
+python3.12 -m pip install numpy==2.0.2 cython  bottleneck==1.4.2 brotli==1.1.0 pyyaml==6.0.2 aiohttp==3.9.0 argon2_cffi_bindings==21.2.0
+python3.12 -m pip install cassandra_driver==3.29.2 contourpy==1.3.1 cx_oracle==8.3.0 cytoolz==1.0.1 ibm_db==3.2.6 ijson==3.3.0 jenkspy==0.4.1 markupsafe==3.0.2
+python3.12 -m pip install zstd==1.5.6.1 yarl==1.18.3 unicodedata2==15.1.0 pandas==2.2.3 ninja
 
 #installing openblas  
 cd $CURRENT_DIR
@@ -361,8 +360,8 @@ export CFLAGS="${CFLAGS} -mcpu=${cpu_opt_arch} -mtune=${cpu_opt_tune}"
 export SETUPTOOLS_SCM_PRETEND_VERSION=2.7.0
 sed -i "s/cmake/cmake==3.*/g" requirements.txt
 
-python3.11 -m pip install -r requirements.txt
-MAX_JOBS=$(nproc) python3.11 setup.py install
+python3.12 -m pip install -r requirements.txt
+MAX_JOBS=$(nproc) python3.12 setup.py install
 cd $CURRENT_DIR
 
 echo "------------------------clone and build torchaudio-------------------"
@@ -386,7 +385,7 @@ export LD_LIBRARY_PATH=/pytorch/build/lib/libprotobuf.so.3.13.0.0:$LD_LIBRARY_PA
 sed -i 's/2\.7\.0a0/2.7.0/' version.txt
 mv .git .git.bak
 echo "Installing torchaudio..."
-python3.11 -m pip install --no-build-isolation . 
+python3.12 -m pip install --no-build-isolation . 
 
 echo "--------------------Installing x264---------------------------------"
 cd $CURRENT_DIR
@@ -410,7 +409,9 @@ cd opencv-python
 git checkout 86
 git submodule update --init --recursive
 
-sed -i "s/^[[:space:]]*name=package_name/name=\"${PACKAGE_NAME}\"/" setup.py
+sed -i -E -e 's/"setuptools.+",/"setuptools",/g' pyproject.toml
+sed -i -E -e 's/"numpy.+",/"numpy",/g' pyproject.toml
+
 
 export PROTOBUF_PREFIX=$CURRENT_DIR/protobuf/local/libprotobuf
 export OPENBLAS_PREFIX=$CURRENT_DIR/OpenBLAS
@@ -476,11 +477,13 @@ export CMAKE_ARGS="-DCMAKE_BUILD_TYPE=Release
                    -DCPU_BASELINE_DISABLE=ON \
                    -DCPU_DISPATCH=OFF"
 
-export C_INCLUDE_PATH=$(python3.11 -c "import numpy; print(numpy.get_include())")
+export C_INCLUDE_PATH=$(python3.12 -c "import numpy; print(numpy.get_include())")
 export CPLUS_INCLUDE_PATH=$C_INCLUDE_PATH
 ln -sf $CURRENT_DIR/opencv-python/tests/SampleVideo_1280x720_1mb.mp4 SampleVideo_1280x720_1mb.mp4
-python3.11 -m pip install scikit-build setuptools wheel
-python3.11 -m pip install -e . 
+python3.12 -m pip install scikit-build setuptools wheel
+python3.12 -m pip install -e . 
+python3.12 -m build --wheel --no-isolation --outdir="$(pwd)"
+pop3.12 install *.whl
 
 #installing pillow
 cd $CURRENT_DIR
@@ -488,7 +491,7 @@ git clone https://github.com/python-pillow/Pillow
 cd Pillow
 git checkout 11.1.0
 git submodule update --init
-python3.11 -m pip install . 
+python3.12 -m pip install . 
 echo "-----------------------------------------------------Installed pillow------------------------------------------------"
 
 echo "-----------------------------------------------------Installing pyav------------------------------------------------"
@@ -501,23 +504,23 @@ git submodule update --init
 export CFLAGS="${CFLAGS} -I/install-deps/ffmpeg/include"
 export LDFLAGS="${LDFLAGS} -L/install-deps/ffmpeg/lib"
 #Build package
-python3.11 setup.py build_ext --inplace
+python3.12 setup.py build_ext --inplace
 echo "-----------------------------------------------------Installed Pyav------------------------------------------------"
 
 echo "-----------------------------------------------------Installing gensim ------------------------------------------------"
 cd $CURRENT_DIR
 echo "Installing required Python packages..."
-python3.11 -m pip install requests ruamel-yaml 'meson-python<0.13.0,>=0.11.0'  setuptools==76.0.0 scipy==1.15.2 Cython==3.0.12 nbformat  testfixtures mock nbconvert
+#python3.12 -m pip install requests ruamel-yaml 'meson-python<0.13.0,>=0.11.0'  setuptools==76.0.0 scipy==1.15.2 Cython==3.0.12 nbformat  testfixtures mock nbconvert
 # Clone the repository
 git clone https://github.com/RaRe-Technologies/gensim
 cd gensim
 git checkout 4.3.3
 echo "Building the package using setup.py..."
 #Compiled extensions are unavailable.
-python3.11 -m pip install scipy
-python3.11 setup.py build_ext --inplace
+python3.12 -m pip install scipy
+python3.12 setup.py build_ext --inplace
 # Build package
-python3.11 -m pip install .
+python3.12 -m pip install .
 echo "-----------------------------------------------------Installed gensim ------------------------------------------------"
 
 
@@ -541,7 +544,7 @@ echo "----------h5py installing--------------------"
 git clone https://github.com/h5py/h5py.git
 cd h5py/
 git checkout 3.13.0
-HDF5_DIR=${HDF5_PREFIX} python3.11 -m pip install .
+HDF5_DIR=${HDF5_PREFIX} python3.12 -m pip install .
 cd $CURRENT_DIR
 
 echo "--------------ml_dtypes installing---------------"
@@ -553,27 +556,27 @@ export CFLAGS="-I${ML_DIR}/include"
 export CXXFLAGS="-I${ML_DIR}/include"
 export CC=/opt/rh/gcc-toolset-13/root/bin/gcc
 export CXX=/opt/rh/gcc-toolset-13/root/bin/g++
-python3.11 -m pip install .
+python3.12 -m pip install .
 echo "--------------ml_dtypes installed---------------"
 
 cd $CURRENT_DIR
 git clone https://github.com/statsmodels/statsmodels.git
 cd statsmodels
 git checkout v0.14.4
-python3.11 -m pip install .
+python3.12 -m pip install .
 echo "--------------statsmodels installed---------------"
 
 cd $CURRENT_DIR
 echo "------------------------installing dm_tree-------------------------"
-export SITE_PACKAGE_PATH="/lib/python3.11/site-packages"
+export SITE_PACKAGE_PATH="/lib/python3.12/site-packages"
 git clone https://github.com/deepmind/tree
 cd tree/
 git checkout 0.1.8
-python3.11 -m pip install --upgrade pip 
-python3.11 -m pip install  absl-py attr numpy wrapt attrs
+python3.12 -m pip install --upgrade pip 
+python3.12 -m pip install  absl-py attr numpy wrapt attrs
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/d/dm-tree/update_abseil_version_and_linking_fix.patch
 git apply update_abseil_version_and_linking_fix.patch
-python3.11 setup.py build_ext --inplace
+python3.12 setup.py build_ext --inplace
 echo "------------------------installed dm_tree-------------------------"
 
 cd $CURRENT_DIR
@@ -581,8 +584,8 @@ echo "------------------------installing gmpy2-------------------------"
 git clone https://github.com/aleaxit/gmpy.git
 cd  gmpy
 git checkout v2.2.1
-python3.11 -m pip --verbose install --editable .[docs,tests]
-python3.11 -m pip install .
+python3.12 -m pip --verbose install --editable .[docs,tests]
+python3.12 -m pip install .
 echo "------------------------installed gmpy2-------------------------"
 
 cd $CURRENT_DIR
@@ -596,8 +599,8 @@ wget https://repo1.maven.org/maven2/org/xerial/sqlite-jdbc/3.42.0.0/sqlite-jdbc-
 wget https://repo1.maven.org/maven2/org/hsqldb/hsqldb/2.7.2/hsqldb-2.7.2.jar -O hsqldb.jar
 wget https://repo1.maven.org/maven2/com/h2database/h2/2.2.224/h2-2.2.224.jar -O h2.jar
 export CLASSPATH=$CLASSPATH:$(pwd)/sqlite-jdbc.jar:$(pwd)/hsqldb.jar:$(pwd)/h2.jar
-python3.11 -m pip install numpy tox
-python3.11 -m pip install .
+python3.12 -m pip install numpy tox
+python3.12 -m pip install .
 echo "------------------------installed jpype-------------------------"
 
 
@@ -634,7 +637,7 @@ ls "$WORKING_DIR/llvm-project/build/include/llvm/Config/llvm-config.h" || { echo
 cd "$WORKING_DIR/llvmlite"
 export CXXFLAGS="-I$WORKING_DIR/llvm-project/build/include"
 export LLVM_CONFIG="$WORKING_DIR/llvm-project/build/bin/llvm-config"
-python3.11 -m pip install .
+python3.12 -m pip install .
 echo "------------------------installed llvmlite-------------------------"
 
 
@@ -647,17 +650,17 @@ git clone https://github.com/LLNL/zfp
 cd zfp
 git checkout 1.0.1
 echo "Checking Python version..."
-PYTHON_VERSION=$(python3.11 -c "import sys; print('.'.join(map(str, sys.version_info[:2])))")
+PYTHON_VERSION=$(python3.12 -c "import sys; print('.'.join(map(str, sys.version_info[:2])))")
 IFS='.' read -r MAJOR MINOR <<< "$PYTHON_VERSION"
 if [[ "$MAJOR" -gt 3 ]] || { [[ "$MAJOR" -eq 3 ]] && [[ "$MINOR" -ge 12 ]]; }; then
-    echo "Python version is >= 3.11, installing numpy 2.2.2..."
-    python3.11 -m pip install numpy==2.2.2 
+    echo "Python version is >= 3.12, installing numpy 2.2.2..."
+    python3.12 -m pip install numpy==2.2.2 
 else
     echo "Python version is < 3.12, installing numpy 1.23.5..."
-    python3.11 -m pip install cython==0.29.36 numpy==1.23.5 
+    python3.12 -m pip install cython==0.29.36 numpy==1.23.5 
 fi
 
-NUMPY_INCLUDE_DIR=$(python3.11 -c "import numpy; print(numpy.get_include())")
+NUMPY_INCLUDE_DIR=$(python3.12 -c "import numpy; print(numpy.get_include())")
 
 echo "Creating build directory..."
 mkdir -p build
@@ -668,9 +671,9 @@ echo "Running CMake..."
 echo "Running CMake with static linking..."
 cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_ZFPY=ON -DBUILD_SHARED_LIBS=OFF \
     -DCMAKE_INSTALL_PREFIX=$(pwd)/install \
-    -DPYTHON_EXECUTABLE=$(which python3.11) \
-    -DPYTHON_INCLUDE_DIR=$(python3.11 -c "import sysconfig; print(sysconfig.get_path('include'))") \
-    -DPYTHON_LIBRARY=$(python3.11 -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))") \
+    -DPYTHON_EXECUTABLE=$(which python3.12) \
+    -DPYTHON_INCLUDE_DIR=$(python3.12 -c "import sysconfig; print(sysconfig.get_path('include'))") \
+    -DPYTHON_LIBRARY=$(python3.12 -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))") \
     -DNUMPY_INCLUDE_DIR=$NUMPY_INCLUDE_DIR \
     -DCMAKE_C_FLAGS="-fopenmp" \
     -DCMAKE_CXX_FLAGS="-fopenmp" \
@@ -682,7 +685,7 @@ make install
 export CMAKE_PREFIX_PATH=$(pwd)/install
 cd ..
 sed -i 's/), language_level = "3"]/)]/' setup.py
-python3.11 -m pip install .
+python3.12 -m pip install .
 echo "------------------------installed zfp-------------------------"
 
 
@@ -693,10 +696,10 @@ git clone https://github.com/numba/numba
 cd numba
 git checkout 0.62.0dev0
 export CXXFLAGS=-I/usr/include
-PYTHON_VERSION=$(python3.11 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
 sed -i '/#include "dynamic_annotations.h".*\/\*/d' /usr/include/python${PYTHON_VERSION}/internal/pycore_atomic.h
 sed -i '1i#include "dynamic_annotations.h"   /* _Py_ANNOTATE_MEMORY_ORDER */' /usr/include/python${PYTHON_VERSION}/internal/pycore_atomic.h
-python3.11 -m pip install .
+python3.12 -m pip install .
 echo "------------------------installed numba-------------------------"
 
 cd $CURRENT_DIR
@@ -705,9 +708,9 @@ echo "------------------------installing numexpr-------------------------"
 git clone https://github.com/pydata/numexpr.git
 cd  numexpr
 git checkout v2.8.4
-python3.11 -m pip install numpy==1.26.3
-python3.11 -m pip install -e .
-python3.11 setup.py install
+python3.12 -m pip install numpy==1.26.3
+python3.12 -m pip install -e .
+python3.12 setup.py install
 echo "------------------------installed numexpr-------------------------"
 
 cd $CURRENT_DIR
@@ -717,7 +720,7 @@ yum install -y  sqlite sqlite-devel xz xz-devel postgresql-devel --nobest
 git clone https://github.com/psycopg/psycopg2 
 cd psycopg2
 git checkout 2.9.10
-python3.11 setup.py install
+python3.12 setup.py install
 echo "------------------------installed psycopg2-------------------------"
 
 cd $CURRENT_DIR
@@ -726,9 +729,10 @@ yum install -y unixODBC-devel
 git clone https://github.com/mkleehammer/pyodbc pyodbc
 cd pyodbc
 git checkout 5.2.0
-python3.11 -m pip install "chardet<5,>=3.0.2" --force-reinstall
-python3.11 -m pip install psutil
-python3.11 setup.py install
+python3.12 -m pip install 
+python3.12 -m pip install "chardet<5,>=3.0.2" --force-reinstall
+python3.12 -m pip install psutil
+python3.12 setup.py install
 echo "------------------------installed pyodbc-------------------------"
 
 cd $CURRENT_DIR
@@ -736,8 +740,8 @@ echo "------------------------installing pyzmq-------------------------"
 git clone https://github.com/zeromq/pyzmq.git
 cd pyzmq
 git checkout v26.4.0
-python3.11 -m pip install cython==3.0.12 packaging==24.2 pathspec==0.12.1 scikit-build-core==0.11.1 ninja==1.11.1.4 build
-python3.11 -m pip install -e .
+python3.12 -m pip install cython==3.0.12 packaging==24.2 pathspec==0.12.1 scikit-build-core==0.11.1 ninja==1.11.1.4 build
+python3.12 -m pip install -e .
 echo "------------------------installed pyzmq-------------------------"
 
 cd $CURRENT_DIR
@@ -746,18 +750,18 @@ echo "------------------------installing scikit_image-------------------------"
 git clone https://github.com/scikit-image/scikit-image
 cd scikit-image
 git checkout v0.25.2
-python3.11 -m pip install -r requirements.txt
-python3.11  -m pip install -r requirements/build.txt
-python3.11 -m pip install --upgrade pip
-ln -s $(which python3.11) /usr/bin/python
-python3.11 -m pip install -e .
+python3.12 -m pip install -r requirements.txt
+python3.12  -m pip install -r requirements/build.txt
+python3.12 -m pip install --upgrade pip
+ln -s $(which python3.12) /usr/bin/python
+python3.12 -m pip install -e .
 echo "------------------------installed scikit_image-------------------------"
 
 echo " ------------------------------ Installing Swig ------------------------------ "
 cd $CURRENT_DIR
 git clone https://github.com/nightlark/swig-pypi.git
 cd swig-pypi
-python3.11 -m pip install .
+python3.12 -m pip install .
 echo " ------------------------------ Swig Installed Successfully ------------------------------ "
 
 cd $CURRENT_DIR
@@ -787,6 +791,7 @@ export TBBROOT=/tmp/my_installed_onetbb/
 export CMAKE_PREFIX_PATH=$TBBROOT
 make install
 
+####################do thi again
 echo " -------------------------- Installed onetbb -------------------------- "
 
 cd $CURRENT_DIR
@@ -806,12 +811,12 @@ tar -xvf qhull-2020-src-8.0.2.tar --no-same-owner
 mv qhull-2020.2 build/
 rm -f qhull-2020-src-8.0.2.tar
 echo "qhull downloaded and prepared."
-python3.11 -m pip install  hypothesis build meson pybind11 meson-python
-python3.11 -m pip install 'numpy<2' fontTools setuptools-scm contourpy kiwisolver python-dateutil cycler pyparsing pillow certifi
-ln -sf /usr/bin/python3.11 /usr/bin/python3
+python3.12 -m pip install  hypothesis build meson pybind11 meson-python
+python3.12 -m pip install 'numpy<2' fontTools setuptools-scm contourpy kiwisolver python-dateutil cycler pyparsing pillow certifi
+ln -sf /usr/bin/python3.12 /usr/bin/python3
 
 # Build and Install the package (This is dependent on numpy, pillow)
-python3.11 -m pip install -e .
+python3.12 -m pip install -e .
 echo "----------------------------- Installed matplotlib ----------------------------"
 
 
@@ -825,13 +830,13 @@ yum install -y gcc-toolset-13-libatomic-devel
 cd $CURRENT_DIR
 echo "--------------------scipy installing-------------------------------"
 #Building scipy
-python3.11 -m pip install beniget==0.4.2.post1 Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch  build hypothesis patchelf
+python3.12 -m pip install beniget==0.4.2.post1 Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 packaging pybind11 pyproject-metadata pythran==0.17.0 setuptools==75.3.0 pooch  build hypothesis patchelf
 git clone https://github.com/scipy/scipy
 cd scipy/
 git checkout v1.15.2
 git submodule update --init
 echo "instaling scipy......."
-python3.11 -m pip install .
+python3.12 -m pip install .
 cd $CURRENT_DIR
 export C_COMPILER=$(which gcc)
 export CXX_COMPILER=$(which g++)
@@ -840,7 +845,7 @@ git clone https://github.com/pytorch/vision.git
 cd vision
 git checkout v0.22.0
 export LD_LIBRARY_PATH=/home/protobuf/local/libprotobuf/lib64:$LD_LIBRARY_PATH
-python3.11 -m pip install -v -e . --no-build-isolation
+python3.12 -m pip install -v -e . --no-build-isolation
 echo "----------------------------- Installed torchvision ----------------------------"
 
 
@@ -1299,12 +1304,12 @@ cmake ${CMAKE_ARGS} ..  \
 echo  "Installing grpc_cpp..."
 ninja install -v
 popd
-python3.11 -m pip install coverage  
+python3.12 -m pip install coverage  
 export GRPC_PYTHON_BUILD_SYSTEM_=true
 export GRPC_PYTHON_BUILD_WITH_CYTHON=1
 export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:${PATH}"
-python3.11 -m pip install -r requirements.txt
-GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1 python3.11 -m pip install -e .
+python3.12 -m pip install -r requirements.txt
+GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1 python3.12 -m pip install -e .
 export LD_LIBRARY_PATH=$GRPC_PREFIX/lib:$LD_LIBRARY_PATH
 echo "Installed grpcio"
 
@@ -1402,8 +1407,8 @@ cmake \
     -DCMAKE_BUILD_TYPE=release \
     -DCMAKE_INSTALL_LIBDIR=lib \
     -DCMAKE_INSTALL_PREFIX=$ARROW_HOME \
-    -DPYTHON_EXECUTABLE=$(which python3.11) \
-    -DPython3_EXECUTABLE=$(which python3.11) \
+    -DPYTHON_EXECUTABLE=$(which python3.12) \
+    -DPython3_EXECUTABLE=$(which python3.12) \
     -DProtobuf_PROTOC_EXECUTABLE=${LIBPROTO_INSTALL}/bin/protoc \
     -DORC_INCLUDE_DIR=${ORC_PREFIX}/include \
     -DgRPC_DIR=${GRPC_PREFIX} \
@@ -1423,7 +1428,7 @@ popd
 
 cd $CURRENT_DIR
 echo "Installing prerequisite for arrow..."
-python3.11 -m pip install setuptools-scm 
+python3.12 -m pip install setuptools-scm 
 
 export PYARROW_BUNDLE_ARROW_CPP=1
 export LD_LIBRARY_PATH=${ARROW_HOME}/lib:${LD_LIBRARY_PATH}
@@ -1454,8 +1459,8 @@ else
     export PYARROW_WITH_CUDA=0
 fi
 cd python
-#export PATH=/usr/bin:$PATH
-python3.11 -m pip install .
+export PATH=/usr/bin:$PATH
+python3.12 -m pip install .
 
 
 cd $CURRENT_DIR
@@ -1468,13 +1473,13 @@ git checkout v2.0.19
 make
 make install
 
-pip3.11 install soxr
+pip3.12 install soxr
 
 cd $CURRENT_DIR
 git clone https://github.com/openai/tiktoken
 cd tiktoken
 git checkout 0.7.0
-python3.11 -m pip install -e .
+python3.12 -m pip install -e .
 
 cd $CURRENT_DIR
 git clone https://github.com/dottxt-ai/outlines-core
@@ -1482,14 +1487,36 @@ cd outlines-core
 git checkout 0.1.26
 rustup update stable
 export PATH=$HOME/.cargo/bin:$PATH
-python3.11 -m pip install -e .
+python3.12 -m pip install -e .
+
+cd $CURRENT_DIR
+git clone https://github.com/chirlu/soxr.git
+cd soxr
+mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+make -j$(nproc)
+make install
+ldconfig
+export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
+
+cd $CURRENT_DIR
+git clone https://github.com/wjakob/nanobind.git
+cd nanobind
+git submodule update --init --recursive
+mkdir build && cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
+make -j
+make install
+export CMAKE_PREFIX_PATH=/usr/local:$CMAKE_PREFIX_PATH
+
+
 
 cd $CURRENT_DIR
 git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
-python3.11 -m pip install setuptools-rust maturin setuptools_scm pytest pytest-asyncio
+python3.12 -m pip install setuptools-rust maturin setuptools_scm pytest pytest-asyncio uv
 
 export LD_LIBRARY_PATH=/protobuf/local/libprotobuf/lib64:$LD_LIBRARY_PATH
 export CMAKE_PREFIX_PATH=/protobuf/local/libprotobuf
@@ -1499,21 +1526,29 @@ export WORLD_SIZE=1
 #sed -i 's/"cmake>=3.26",/"cmake>=3.26,<4",/g' pyproject.toml
 
 export SETUPTOOLS_SCM_PRETEND_VERSION=0.10.0
-#requirements/cpu.txt pins torch==2.7.0 for ppc64le to match tested compatible versions for that architecture, preventing install errors.
-sed -i 's/"torch == 2\.7\.1"/"torch == 2.7.0"/' pyproject.toml
 sed -i '/^license = "Apache-2.0"/d; /^license-files = \["LICENSE"\]/d; /name = "vLLM Team"/a license = { "file" = "LICENSE" }' pyproject.toml
+export LD_LIBRARY_PATH="/usr/local/lib64:/usr/local/lib:/usr/lib64:/usr/lib:$LD_LIBRARY_PATH"
+export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig"
+export UV_LINK_MODE=copy
+export _GLIBCXX_USE_CXX11_ABI=1
+export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
+export VLLM_TARGET_DEVICE=cpu
+export MAX_JOBS=$(nproc)
+
+sed -i -e 's/.*torch.*//g' pyproject.toml requirements/*.txt
+
+uv pip install -r requirements/common.txt -r requirements/cpu.txt -r requirements/build.txt --system
+uv pip install pandas pythran pybind11 --system
 
 
-
-
-if ! (python3.11 -m pip install -v . --no-build-isolation); then
+if ! (uv pip install -v . --no-build-isolation); then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-python3.11 -m pip install "numpy<2"
+uv build --wheel --out-dir $CURRENT_DIR --no-build-isolation
 
 if ! pytest; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
@@ -1526,4 +1561,3 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
-
