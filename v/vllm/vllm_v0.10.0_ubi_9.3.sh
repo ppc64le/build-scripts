@@ -5,7 +5,7 @@
 # Version       : v0.10.0
 # Source repo   : https://github.com/vllm-project/vllm
 # Tested on     : UBI:9.3
-# Language      : C
+# Language      : Python
 # Travis-Check  : True
 # Script License: Apache License 2.0
 # Maintainer    : Ramnath Nayak
