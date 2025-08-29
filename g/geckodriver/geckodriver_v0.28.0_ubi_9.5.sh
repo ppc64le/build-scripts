@@ -34,6 +34,9 @@ for arg in "$@"; do
       echo "Unknown option: $arg"
       exit 3
       ;;
+    *)
+      PACKAGE_VERSION=$arg
+      ;;
   esac
 done
 
@@ -52,26 +55,26 @@ git checkout "$PACKAGE_VERSION"
 ret=0
 cargo build --release || ret=$?
 if [ "$ret" -ne 0 ]; then
-    echo "ERROR: $PACKAGE_NAME - Build failed."
+    echo "ERROR: $PACKAGE_NAME $PACKAGE_VERSION - Build failed."
     exit 1
 else
-    echo "INFO: $PACKAGE_NAME - Build successful."
+    echo "INFO: $PACKAGE_NAME $PACKAGE_VERSION - Build successful."
 fi
 
 # Skip Tests?
 if [ "$RUNTESTS" -eq 0 ]; then
     set +ex
-    echo "Complete: Build and install successful! Tests skipped."
+    echo "Complete: $PACKAGE_NAME $PACKAGE_VERSION Build and install successful! Tests skipped."
     exit 0
 fi
 
 # Run tests
 cargo test || ret=$?
 if [ "$ret" -ne 0 ]; then
-    echo "ERROR: $PACKAGE_NAME - Test phase failed."
+    echo "ERROR: $PACKAGE_NAME $PACKAGE_VERSION - Test phase failed."
     exit 2
 else
-    echo "INFO: $PACKAGE_NAME - All tests passed."
+    echo "INFO: $PACKAGE_NAME $PACKAGE_VERSION - All tests passed."
 fi
 
 echo "SUCCESS: $PACKAGE_NAME version $PACKAGE_VERSION built and tested successfully."
