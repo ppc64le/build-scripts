@@ -154,7 +154,8 @@ git apply orc.patch
 
 if [ $PACKAGE_VERSION == v1.9.0 ]; then
   echo "package version is 1.9.0 so applying patch for test case failuer"
-  wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/orc/orc-test-case-failed-ppc64le.patch
+  #wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/orc/orc-test-case-failed-ppc64le.patch
+  wget https://raw.githubusercontent.com/vaibhav-bhadade/build-scripts/refs/heads/prc/o/orc/orc-test-case-failed-ppc64le.patch
   git apply orc-test-case-failed-ppc64le.patch
 fi
 
