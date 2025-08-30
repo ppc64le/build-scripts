@@ -23,10 +23,10 @@ BUILD_HOME=$(pwd)
 PACKAGE_NAME=prettier
 PACKAGE_URL=https://github.com/prettier/${PACKAGE_NAME}.git
 PACKAGE_VERSION=${1:- 2.8.8}
-NODE_VERSION=v16.20.2
+NODE_VERSION=v18.20.8
 
 #Install deps.
-yum install -y git gcc gcc-c++ openssl-devel 
+yum install -y git gcc gcc-c++ openssl-devel make
 
 #Installing nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
@@ -38,11 +38,6 @@ node -v
 
 npm install yarn -g
 yarn -v
-
-#Install yarn
-#curl -L -o yarn.tar.gz "https://github.com/yarnpkg/yarn/releases/download/v${YARN_VERSION}/yarn-v${YARN_VERSION}.tar.gz"
-#tar -xzf yarn.tar.gz
-#export PATH="$(pwd)/yarn-v${YARN_VERSION}/bin:$PATH"
 
 # Clone the repository
 cd $BUILD_HOME
