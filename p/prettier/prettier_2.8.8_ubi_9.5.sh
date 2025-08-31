@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/prettier/${PACKAGE_NAME}.git
 PACKAGE_VERSION=${1:- 2.8.8}
 NODE_VERSION=v18.20.8
 YARN_VERSION=1.22.22
-
+export NODE_OPTIONS="--dns-result-order=ipv4first"
 #Install deps.
 yum install -y git gcc gcc-c++ openssl-devel make
 
