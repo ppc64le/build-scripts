@@ -36,14 +36,13 @@ nvm install "$NODE_VERSION" >/dev/null
 nvm use $NODE_VERSION
 node -v
 
-npm install yarn
-
 # Clone the repository
 cd $BUILD_HOME
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+npm install yarn
 #Install dependencies and run build
 ret=0
 #yarn install --immutable && yarn build || ret=$?
