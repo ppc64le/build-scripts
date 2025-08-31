@@ -24,6 +24,7 @@ PACKAGE_NAME=prettier
 PACKAGE_URL=https://github.com/prettier/${PACKAGE_NAME}.git
 PACKAGE_VERSION=${1:- 2.8.8}
 NODE_VERSION=v18.20.8
+YARN_VERSION=1.22.22
 
 #Install deps.
 yum install -y git gcc gcc-c++ openssl-devel make
@@ -36,8 +37,12 @@ nvm install "$NODE_VERSION" >/dev/null
 nvm use $NODE_VERSION
 node -v
 
-npm install yarn -g
-yarn -v
+#npm install yarn -g
+#yarn -v
+curl -LO https://github.com/yarnpkg/yarn/releases/download/v1.22.22/yarn-v1.22.22.tar.gz
+tar -xzf yarn-v1.22.22.tar.gz -C /opt
+ln -s /opt/yarn-v1.22.22/bin/yarn /usr/local/bin/yarn
+ln -s /opt/yarn-v1.22.22/bin/yarnpkg /usr/local/bin/yarnpkg
 
 # Clone the repository
 cd $BUILD_HOME
