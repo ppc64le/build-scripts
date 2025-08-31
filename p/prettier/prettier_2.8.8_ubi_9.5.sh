@@ -36,8 +36,7 @@ nvm install "$NODE_VERSION" >/dev/null
 nvm use $NODE_VERSION
 node -v
 
-npm install yarn -g
-yarn -v
+npm install yarn
 
 # Clone the repository
 cd $BUILD_HOME
@@ -47,7 +46,8 @@ git checkout $PACKAGE_VERSION
 
 #Install dependencies and run build
 ret=0
-yarn install --immutable && yarn build || ret=$?
+#yarn install --immutable && yarn build || ret=$?
+npx yarn install --immutable && npx yarn build || ret=$?
 if [ "$ret" -ne 0 ]
 then
     echo "FAIL: Build failed."
@@ -55,7 +55,7 @@ then
 fi
 
 #Test
-yarn test || ret=$?
+npx yarn test || ret=$?
 if [ "$ret" -ne 0 ]
 then
     echo "FAIL: Tests failed."
