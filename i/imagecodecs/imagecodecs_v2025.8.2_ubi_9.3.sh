@@ -20,7 +20,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=imagecodecs
-PACKAGE_VERSION=${1:-v2024.1.1}
+PACKAGE_VERSION=${1:-v2025.8.2}
 PACKAGE_URL=https://github.com/cgohlke/imagecodecs.git
 CURRENT_DIR="${PWD}"
 
