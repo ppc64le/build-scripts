@@ -482,9 +482,8 @@ export C_INCLUDE_PATH=$(python3.12 -c "import numpy; print(numpy.get_include())"
 export CPLUS_INCLUDE_PATH=$C_INCLUDE_PATH
 ln -sf $CURRENT_DIR/opencv-python/tests/SampleVideo_1280x720_1mb.mp4 SampleVideo_1280x720_1mb.mp4
 python3.12 -m pip install scikit-build setuptools wheel
-python3.12 -m pip install -e . 
 python3.12 -m build --wheel --no-isolation --outdir="$(pwd)"
-pop3.12 install *.whl
+pip3.12 install *.whl
 
 #installing pillow
 cd $CURRENT_DIR
