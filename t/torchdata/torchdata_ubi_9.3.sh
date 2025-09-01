@@ -18,7 +18,7 @@
 #                     contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-set -ex 
+#set -ex 
 
 PACKAGE_NAME=data
 PACKAGE_VERSION=${1:-v0.7.1}
