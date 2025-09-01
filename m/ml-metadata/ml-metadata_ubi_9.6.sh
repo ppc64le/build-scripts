@@ -21,38 +21,18 @@
 
 PACKAGE_URL=https://github.com/google/ml-metadata
 PACKAGE_NAME=ml-metadata
+PACKAGE_VERSION=master
 
 wdir=`pwd`
 SCRIPT=$(readlink -f $0)
 SCRIPT_DIR=$(dirname $SCRIPT)
 
 yum update -y
-yum install -y autoconf cmake wget automake libtool  zlib zlib-devel libjpeg libjpeg-devel gcc gcc-c++ gcc-gfortran curl git unzip zip python3 python3-devel python3-wheel patch openssl-devel re2 utf8proc cmake tzdata diffutils --skip-broken
-yum install -y libffi-devel diffutils
+yum install -y autoconf cmake wget automake libtool zlib zlib-devel libjpeg libjpeg-devel gcc gcc-c++ gcc-gfortran git unzip zip python3.9 python3.9-devel python3.9-pip patch openssl-devel utf8proc tzdata diffutils libffi-devel
 
 yum install -y java-11-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
-
-PYTHON_VERSION=3.10.12
-cd $wdir
-	if [ -z "$(ls -A $wdir/Python-${PYTHON_VERSION})" ]; then
-		wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz
-		tar xzf Python-${PYTHON_VERSION}.tgz
-		rm -rf Python-${PYTHON_VERSION}.tgz 
-		cd Python-${PYTHON_VERSION}
-		./configure --with-system-ffi --with-computed-gotos --enable-loadable-sqlite-extensions
-		make -j ${nproc} 
-	else
-		cd Python-${PYTHON_VERSION}
-	fi
-	make altinstall
-	ln -sf $(which python3.10) /usr/bin/python3
-	ln -sf $(which pip3.10) /usr/bin/pip3
-	python3 -V && pip3 -V
-
-cd $wdir
-ln -s /usr/bin/python3 /usr/bin/python
 
 mkdir bazel
 cd bazel
@@ -64,13 +44,14 @@ export PATH=/usr/local/bin:$PATH
 cd $wdir
 
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
-pip3 install numpy wheel pytest
+python3.9 -m pip install numpy pytest
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git apply $SCRIPT_DIR/ml_metadata_ubi9.6.patch
+export PYTHON_BIN_PATH=$(which python3)
 
-if ! (python3 setup.py bdist_wheel && pip3 install dist/*.whl); then 
+if ! (python3.9 -m pip install .); then 
      echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
      echo "$PACKAGE_URL $PACKAGE_NAME"
      echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $PACKAGE_VERSION | GitHub | Fail |  Build_fails"
