@@ -275,7 +275,7 @@ export CXXFLAGS="-Wno-stringop-overflow"
 export CFLAGS="-Wno-stringop-overflow"
 export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
 
-python${PYTHON_VERSION} -m pip install packaging wheel
+#python${PYTHON_VERSION} -m pip install packaging wheel
 NUMPY_INCLUDE=$(python${PYTHON_VERSION} -c "import numpy; print(numpy.get_include())")
 echo "NumPy include path: $NUMPY_INCLUDE"
 
