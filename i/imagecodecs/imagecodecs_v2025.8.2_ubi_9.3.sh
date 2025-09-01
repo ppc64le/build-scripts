@@ -20,12 +20,12 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=imagecodecs
-PACKAGE_VERSION=${1:-v2025.8.2}
+PACKAGE_VERSION=${1:-v2024.1.1}
 PACKAGE_URL=https://github.com/cgohlke/imagecodecs.git
 CURRENT_DIR="${PWD}"
 
 yum install -y wget gcc gcc-c++ gcc-gfortran git make cmake autoconf automake \
-    python3 python3-devel openssl-devel perl \
+    python3.12 python3.12-devel python3.12-pip openssl-devel perl \
     brotli brotli-devel bzip2 bzip2-devel \
     giflib libpng libpng-devel \
     libwebp libjpeg-turbo libjpeg-turbo-devel  libwebp-devel lz4 lz4-devel xz xz-devel zlib zlib-devel \
@@ -34,8 +34,8 @@ yum install -y wget gcc gcc-c++ gcc-gfortran git make cmake autoconf automake \
 # -------------------------------------------------------------------------
 # Python deps (Cython >= 3.1.2, NumPy 2.3.2, Meson/Ninja)
 # -------------------------------------------------------------------------
-pip3 install -U pip setuptools wheel
-pip3 install "cython>=3.1.2" "numpy==2.3.2" wheel pytest meson ninja
+python3.12 -m pip install -U pip setuptools wheel
+python3.12 -m pip install "cython>=3.1.2" "numpy==2.3.2" wheel pytest meson ninja
 
 # -------------------------------------------------------------------------
 # Install dependencies from source with correct versions
@@ -207,7 +207,7 @@ cd ..
 git clone https://github.com/kiyo-masui/bitshuffle.git
 cd bitshuffle
 git submodule update --init
-python3 setup.py install --h5plugin --zstd
+python3.12 setup.py install --h5plugin --zstd
 cd ..
 
 
@@ -233,17 +233,17 @@ export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
 # Build
-python3 setup.py build_ext --inplace
+python3.12 setup.py build_ext --inplace
 
-if ! pip3 install . ; then
+if ! python3.12 -m pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-python3 -m pip install build wheel
-python3 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"
+python3.12 -m pip install build wheel
+python3.12 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"
 
 # -------------------------------------------------------------------------
 # Run tests
