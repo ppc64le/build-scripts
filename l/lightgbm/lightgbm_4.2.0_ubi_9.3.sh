@@ -18,6 +18,7 @@
 #
 # ---------------------------------------------------------------------------
 
+set -ex 
 # Variables
 PACKAGE_NAME=LightGBM
 PACKAGE_VERSION=${1:-v4.2.0}
