@@ -729,7 +729,6 @@ yum install -y unixODBC-devel
 git clone https://github.com/mkleehammer/pyodbc pyodbc
 cd pyodbc
 git checkout 5.2.0
-python3.12 -m pip install 
 python3.12 -m pip install "chardet<5,>=3.0.2" --force-reinstall
 python3.12 -m pip install psutil
 python3.12 setup.py install
@@ -790,8 +789,6 @@ echo "------------Export statements------------"
 export TBBROOT=/tmp/my_installed_onetbb/
 export CMAKE_PREFIX_PATH=$TBBROOT
 make install
-
-####################do thi again
 echo " -------------------------- Installed onetbb -------------------------- "
 
 cd $CURRENT_DIR
@@ -854,8 +851,6 @@ cd $CURRENT_DIR
 echo "--------------------pyarrow installing-------------------------------"
 echo "Install dependencies and tools."
 yum install -y brotli-devel.ppc64le bzip2-devel lz4-devel 
-# export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-# CURRENT_DIR=$(pwd)
 # Installing flex bison c-ares gflags rapidjson xsimd snappy libzstd
 echo "-----------flex installing------------------"
 wget https://github.com/westes/flex/releases/download/v2.6.4/flex-2.6.4.tar.gz
