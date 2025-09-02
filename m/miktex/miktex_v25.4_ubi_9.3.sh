@@ -91,7 +91,7 @@ yum install -y apr-devel apr-util-devel boost-devel bzip2-devel cairo-devel curl
 yum install -y https://rpmfind.net/linux/epel/9/Everything/ppc64le/Packages/q/qt6-qt3d-6.6.2-1.el9.ppc64le.rpm
 yum install -y https://rpmfind.net/linux/epel/9/Everything/ppc64le/Packages/q/qt6-qt5compat-devel-6.6.2-1.el9.ppc64le.rpm
 yum install -y https://rpmfind.net/linux/epel/9/Everything/ppc64le/Packages/q/qt6-qt3d-devel-6.6.2-1.el9.ppc64le.rpm
-yum install -y https://rpmfind.net/linux/epel/9/Everything/ppc64le/Packages/q/qt6-qttools-devel-6.6.2-2.el9.ppc64le.rpm
+yum install -y https://rpmfind.net/linux/epel/9/Everything/ppc64le/Packages/q/qt6-qttools-devel-6.6.2-3.el9.ppc64le.rpm
 
 # Build MPFI from source
 cd $BUILD_HOME
