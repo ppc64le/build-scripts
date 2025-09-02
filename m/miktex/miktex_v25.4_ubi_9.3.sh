@@ -28,6 +28,7 @@ CMAKE_VERSION=3.28.1
 
 SCRIPT=$(readlink -f $0)
 SCRIPT_DIR=$(dirname $SCRIPT)
+SCRIPT_PATH=$(dirname $(realpath $0))
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 # Install required dependencies
@@ -107,7 +108,7 @@ make install
 cd $BUILD_HOME/$PACKAGE_NAME
 
 # Apply Patch 
-git apply  --reject --whitespace=fix --ignore-space-change --ignore-whitespace ${SCRIPT_DIR}/${PACKAGE_NAME}_v${SCRIPT_PACKAGE_VERSION}.patch
+git apply  --reject --whitespace=fix --ignore-space-change --ignore-whitespace ${SCRIPT_PATH}/${PACKAGE_NAME}_v${SCRIPT_PACKAGE_VERSION}.patch
 
 # Generate cmake binaries
 if ! cmake ../$PACKAGE_NAME; then
