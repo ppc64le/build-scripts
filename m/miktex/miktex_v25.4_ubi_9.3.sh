@@ -91,7 +91,7 @@ yum install -y apr-devel apr-util-devel boost-devel bzip2-devel cairo-devel curl
 yum install -y https://rpmfind.net/linux/epel/9/Everything/ppc64le/Packages/q/qt6-qt3d-6.6.2-1.el9.ppc64le.rpm
 yum install -y https://rpmfind.net/linux/epel/9/Everything/ppc64le/Packages/q/qt6-qt5compat-devel-6.6.2-1.el9.ppc64le.rpm
 yum install -y https://rpmfind.net/linux/epel/9/Everything/ppc64le/Packages/q/qt6-qt3d-devel-6.6.2-1.el9.ppc64le.rpm
-yum install -y https://rpmfind.net/linux/epel/9/Everything/ppc64le/Packages/q/qt6-qttools-devel-6.6.2-2.el9.ppc64le.rpm
+yum install -y https://rpmfind.net/linux/epel/9/Everything/ppc64le/Packages/q/qt6-qttools-devel-6.6.2-3.el9.ppc64le.rpm
 
 # Build MPFI from source
 cd $BUILD_HOME
@@ -107,7 +107,7 @@ make install
 cd $BUILD_HOME/$PACKAGE_NAME
 
 # Apply Patch 
-git apply  --reject --whitespace=fix --ignore-space-change --ignore-whitespace https://raw.githubusercontent.com/ppc64le/build-scripts/80d2e5e745c5b19ad745430e609891a97e7ed7b5/m/miktex/miktex_v25.4.patch
+git apply  --reject --whitespace=fix --ignore-space-change --ignore-whitespace ${SCRIPT_DIR}/${PACKAGE_NAME}_${SCRIPT_PACKAGE_VERSION}.patch
 
 # Generate cmake binaries
 if ! cmake ../$PACKAGE_NAME; then
