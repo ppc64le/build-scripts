@@ -1468,8 +1468,6 @@ git checkout v2.0.19
 make
 make install
 
-python3.12 -m pip install soxr
-
 cd $CURRENT_DIR
 git clone https://github.com/openai/tiktoken
 cd tiktoken
