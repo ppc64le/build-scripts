@@ -308,7 +308,7 @@ sed -i 's|5ea4d05e62d7f954a46b3213f9b2535bdd866803|51982be81bbe52572b54180454df1
 # Install the built onnxruntime wheel
 echo " ----------------------------------------- Installing onnxruntime wheel ----------------------------------------- "
 cp ./build/Linux/Release/dist/* ./
-python${PYTHON_VERSION} -m pip install ./*.whl
+python${PYTHON_VERSION} -m pip${PYTHON_VERSION} install ./*.whl
 
 # Clean up the onnxruntime repository
 cd $CURRENT_DIR
