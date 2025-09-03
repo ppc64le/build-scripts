@@ -9,8 +9,8 @@ ENV SCRIPT_PACKAGE_VERSION=25.4 \
     BUILD_HOME=/opt/build \
     PATH=/usr/local/cmake/bin:$PATH
 
-#ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/m/miktex/miktex_v${SCRIPT_PACKAGE_VERSION}.patch
-ENV PATCH_FILE=https://raw.githubusercontent.com/Simran-Sirsat/build-scripts/miktex/m/miktex/miktex_v${SCRIPT_PACKAGE_VERSION}.patch
+ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/m/miktex/miktex_v${SCRIPT_PACKAGE_VERSION}.patch
+#ENV PATCH_FILE=https://raw.githubusercontent.com/Simran-Sirsat/build-scripts/miktex/m/miktex/miktex_v${SCRIPT_PACKAGE_VERSION}.patch
 
 WORKDIR ${BUILD_HOME}
 
