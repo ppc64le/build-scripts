@@ -1,0 +1,17 @@
+name: Hello and Secret Length
+
+on:
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  say-hello:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Hello World
+        run: echo "Hello World"
+
+      - name: Print length of GHA_PAT_SEC (safely)
+        run: |
+          echo "Length of GHA_PAT_SEC: ${#GHA_PAT_SEC}"
+        env:
+          GHA_PAT_SEC: ${{ secrets.GHA_PAT_SEC }}
