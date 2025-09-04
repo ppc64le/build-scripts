@@ -28,8 +28,7 @@ PACKAGE_DIR=vllm
 yum install -y openblas-devel git make libtool wget gcc-toolset-13 cmake python3.12 python3.12-devel python3.12-pip gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ binutils meson ninja-build openssl-devel libjpeg-devel bzip2-devel libffi-devel zlib-devel libtiff-devel freetype-devel  autoconf procps-ng glibc-static libstdc++-static kmod automake gmp-devel gmp-devel.ppc64le libjpeg-turbo-devel mpfr-devel.ppc64le libmpc-devel.ppc64le java-11-openjdk java-11-openjdk-devel gzip tar xz yum-utils bzip2 zip unzip cargo pkgconf-pkg-config.ppc64le info.ppc64le fontconfig.ppc64le fontconfig-devel.ppc64le sqlite-devel gcc-toolset-13-gcc-gfortran pkgconfig atlas libevent-devel patch pkg-config llvm-devel clang clang-devel
 
 
-export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+source /opt/rh/gcc-toolset-13/enable
 gcc --version
 
 export GCC_HOME=/opt/rh/gcc-toolset-13/root/usr
