@@ -49,6 +49,8 @@ python3.9 -m pip install numpy pytest
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git apply $SCRIPT_DIR/ml_metadata_ubi9.6.patch
+
+export BAZEL_ARGS="--jobs=8"
 export PYTHON_BIN_PATH=$(which python3)
 
 if ! (python3.9 -m pip install .); then 
