@@ -268,9 +268,6 @@ git clone https://github.com/microsoft/onnxruntime
 cd onnxruntime
 git checkout v1.20.0
 
-# Build the onnxruntime package and create the wheel
-sed -i 's/python3/python3.11/g' build.sh
-
 
 echo " --------------------------------------------------- Building Onnxruntime --------------------------------------------------- "
 export CXXFLAGS="-Wno-stringop-overflow"
@@ -307,7 +304,7 @@ export C_INCLUDE_PATH=$PYTHON_INCLUDE:$C_INCLUDE_PATH
 # Install the built onnxruntime wheel
 echo " --------------------------------------------------- Installing onnxruntime wheel --------------------------------------------------- "
 cp ./build/Linux/Release/dist/* ./
-pip${PYTHON_VERSION} install ./*.whl
+pip  install ./*.whl
 # Clean up the onnxruntime repository
 cd $CURRENT_DIR
 rm -rf onnxruntime
