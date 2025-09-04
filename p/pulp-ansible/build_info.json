@@ -8,7 +8,7 @@
     "build_script": "pulp_ansible_ubi_9.6.sh",
     "docker_build": "false",
     "validate_build_script": "true",
-    "use_non_root_user": "true",
+    "use_non_root_user": "false",
     "*": {
 	"build-script":"pulp_ansible_ubi_9.6.sh"
     }
