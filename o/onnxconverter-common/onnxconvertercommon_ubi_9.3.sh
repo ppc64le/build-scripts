@@ -266,7 +266,8 @@ echo " --------------------------------------------------- Onnxruntime Installin
 
 git clone https://github.com/microsoft/onnxruntime
 cd onnxruntime
-git checkout v1.22.1
+git checkout v1.20.0
+ln -s /usr/bin/python /usr/bin/python${PYTHON_VERSION}
 # Build the onnxruntime package and create the wheel
 sed -i 's/python3/python${PYTHON_VERSION}/g' build.sh
 
