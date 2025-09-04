@@ -267,8 +267,7 @@ echo " --------------------------------------------------- Onnxruntime Installin
 git clone https://github.com/microsoft/onnxruntime
 cd onnxruntime
 git checkout v1.20.0
-rm -f /usr/bin/python 
-ln -s /usr/bin/python${PYTHON_VERSION} /usr/bin/python
+
 # Build the onnxruntime package and create the wheel
 sed -i 's/python3/python${PYTHON_VERSION}/g' build.sh
 
@@ -287,6 +286,10 @@ export CXXFLAGS="-I/usr/local/lib64/python${PYTHON_VERSION}/site-packages/numpy/
 
 sed -i 's|5ea4d05e62d7f954a46b3213f9b2535bdd866803|51982be81bbe52572b54180454df11a3ece9a934|' cmake/deps.txt
 
+# Add Python include path to build environment
+PYTHON_INCLUDE=$(python${PYTHON_VERSION} -c "from sysconfig import get_paths; print(get_paths()['include'])")
+export CPLUS_INCLUDE_PATH=$PYTHON_INCLUDE:$CPLUS_INCLUDE_PATH
+export C_INCLUDE_PATH=$PYTHON_INCLUDE:$C_INCLUDE_PATH
 
 ./build.sh \
   --cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" "Protobuf_PROTOC_EXECUTABLE=$PROTO_PREFIX/bin/protoc" "Protobuf_INCLUDE_DIR=$PROTO_PREFIX/include" "onnxruntime_USE_COREML=OFF" "Python3_NumPy_INCLUDE_DIR=$NUMPY_INCLUDE" "CMAKE_POLICY_DEFAULT_CMP0001=NEW" "CMAKE_POLICY_DEFAULT_CMP0002=NEW" "CMAKE_POLICY_VERSION_MINIMUM=3.5" \
