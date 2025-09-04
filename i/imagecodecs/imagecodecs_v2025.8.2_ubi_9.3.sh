@@ -96,12 +96,17 @@ cd build
 cmake .. && make -j$(nproc) && make install
 cd ../..
 
-# giflib 5.2.2
-wget https://downloads.sourceforge.net/project/giflib/giflib-5.2.2.tar.gz
-tar -xf giflib-5.2.2.tar.gz
-cd giflib-5.2.2
-make -j$(nproc) && make install
+# giflib 5.2.1
+wget https://downloads.sourceforge.net/project/giflib/giflib-5.2.1.tar.gz
+tar -xf giflib-5.2.1.tar.gz && cd giflib-5.2.1
+make -j$(nproc)
+make install
 cd ..
+
+# Link python → python3 if missing
+if ! command -v python >/dev/null 2>&1; then
+    ln -s /usr/bin/python3 /usr/bin/python
+fi
 
 # jxrlib
 git clone https://github.com/MoonchildProductions/jxrlib.git
