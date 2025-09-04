@@ -1,7 +1,11 @@
 name: Hello and Secret Length
 
 on:
-  workflow_dispatch:  # Allows manual trigger
+  workflow_dispatch:
+    inputs:
+      package_name:
+        description: 'Name of the package to build'
+        required: true
 
 jobs:
   say-hello:
