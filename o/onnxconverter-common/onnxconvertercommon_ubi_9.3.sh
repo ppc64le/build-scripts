@@ -267,7 +267,7 @@ git clone https://github.com/microsoft/onnxruntime
 cd onnxruntime
 git checkout v1.21.0
 # Build the onnxruntime package and create the wheel
-sed -i 's/python3/python3.11/g' build.sh
+sed -i 's/python3/python3.12/g' build.sh
 
 echo " --------------------------------------------------- Building Onnxruntime --------------------------------------------------- "
 export CXXFLAGS="-Wno-stringop-overflow"
