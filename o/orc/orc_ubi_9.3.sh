@@ -21,7 +21,7 @@
 set -ex 
 
 PACKAGE_NAME=orc
-PACKAGE_VERSION=${1:-v1.9.0}
+PACKAGE_VERSION=${1:-v2.0.3}
 PACKAGE_URL=https://github.com/apache/orc
 CURRENT_DIR=$(pwd)
 
