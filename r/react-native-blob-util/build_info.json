@@ -1,12 +1,15 @@
 {
-    "maintainer":"Prachi.Gaonkar@ibm.com",
+    "maintainer": "Prachi.Gaonkar@ibm.com",
     "package_name" : "react-native-blob-util",
     "github_url": "https://github.com/RonRadtke/react-native-blob-util.git",
     "version": "0.19.9",
-    "default_branch": "main",
+    "default_branch": "master",
     "package_dir": "r/react-native-blob-util",
-    "build_script": "react-native-blob-util-0.19.9-ubi9.3",
+    "build_script": "react-native-blob-util-0.19.9-ubi9.3.sh",
     "validate_build_script": true,
     "use_non_root_user": false,
-    "docker_build": false
+    "docker_build": false,
+    "0.19.9": {
+    "build_script": "react-native-blob-util-0.19.9-ubi9.3.sh"
+  }
 }
