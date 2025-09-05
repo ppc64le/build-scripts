@@ -482,7 +482,7 @@ export CPLUS_INCLUDE_PATH=$C_INCLUDE_PATH
 ln -sf $CURRENT_DIR/opencv-python/tests/SampleVideo_1280x720_1mb.mp4 SampleVideo_1280x720_1mb.mp4
 python3.12 -m pip install scikit-build setuptools wheel
 python3.12 -m build --wheel --no-isolation --outdir="$(pwd)"
-pip3.12 install *.whl
+python3.12 -m pip install *.whl
 
 #installing pillow
 cd $CURRENT_DIR
@@ -1482,16 +1482,6 @@ export PATH=$HOME/.cargo/bin:$PATH
 python3.12 -m pip install -e .
 
 cd $CURRENT_DIR
-git clone https://github.com/chirlu/soxr.git
-cd soxr
-mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-make -j$(nproc)
-make install
-ldconfig
-export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
-
-cd $CURRENT_DIR
 git clone https://github.com/wjakob/nanobind.git
 cd nanobind
 git submodule update --init --recursive
@@ -1501,7 +1491,7 @@ make -j
 make install
 export CMAKE_PREFIX_PATH=/usr/local:$CMAKE_PREFIX_PATH
 
-
+python3.12 -m pip install --prefer-binary  soxr --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
 
 cd $CURRENT_DIR
 git clone $PACKAGE_URL
@@ -1516,10 +1506,6 @@ export RANK=0
 export WORLD_SIZE=1
 
 export SETUPTOOLS_SCM_PRETEND_VERSION=0.10.0
-sed -i '/^license = "Apache-2.0"/d; /^license-files = \["LICENSE"\]/d; /name = "vLLM Team"/a license = { "file" = "LICENSE" }' pyproject.toml
-export LD_LIBRARY_PATH="/usr/local/lib64:/usr/local/lib:/usr/lib64:/usr/lib:$LD_LIBRARY_PATH"
-export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig"
-export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 export UV_LINK_MODE=copy
 export _GLIBCXX_USE_CXX11_ABI=1
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
@@ -1529,7 +1515,6 @@ sed -i -e 's/.*torch.*//g' pyproject.toml requirements/*.txt
 
 uv pip install -r requirements/common.txt -r requirements/cpu.txt -r requirements/build.txt --system
 uv pip install pandas pythran pybind11 --system
-
 
 if ! (uv pip install -v . --no-build-isolation --system); then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
