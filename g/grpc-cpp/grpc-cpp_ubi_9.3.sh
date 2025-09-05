@@ -177,12 +177,8 @@ git clone $PACKAGE_URL
 cd grpc
 git checkout $PACKAGE_VERSION
 git submodule update --init
-
-if [ $PACKAGE_VERSION == v1.54.3 ]; then
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/g/grpc-cpp/grpc-cpp-compatibility.patch
 git apply grpc-cpp-compatibility.patch
-fi
-
 mkdir grpc-prefix
 export GRPC_PREFIX=$(pwd)/grpc-prefix
 
