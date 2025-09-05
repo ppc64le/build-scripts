@@ -1,14 +1,15 @@
+
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package       : grpc-cpp 
-# Version       : v1.68.0
+# Version       : v1.54.3
 # Source repo   : https://github.com/grpc/grpc
 # Tested on     : UBI:9.3
 # Language      : Python, C++
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Haritha Nagothu <haritha.nagothu2@ibm.com>
+# Maintainer    : Vaibhav Bhadade <vaibhav.bhadade@ibm.com>
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
@@ -17,11 +18,11 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e
+set -ex
 
 PACKAGE_NAME=grpc-cpp
 PACKAGE_DIR=grpc
-PACKAGE_VERSION=${1:-v1.68.0}
+PACKAGE_VERSION=${1:-v1.54.3}
 PACKAGE_URL=https://github.com/grpc/grpc
 
 yum install -y make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel patch python python-devel ninja-build gcc-toolset-13  pkg-config 
@@ -76,7 +77,7 @@ cmake ${CMAKE_ARGS} .. \
       -DCARES_INSTALL=ON \
       -DCMAKE_INSTALL_LIBDIR=lib \
       -GNinja
-      #${SRC_DIR}
+     #${SRC_DIR}
 
 # Build.
 echo "Building..."
@@ -120,7 +121,7 @@ mkdir build
 cd build
 
 cmake -G "Ninja" \
-   ${CMAKE_ARGS} \
+    ${CMAKE_ARGS} \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CXX_STANDARD=17 \
     -DCMAKE_C_COMPILER=$C_COMPILER \
@@ -175,8 +176,12 @@ echo "------------ re2 installed--------------"
 git clone $PACKAGE_URL
 cd grpc
 git checkout $PACKAGE_VERSION
-
 git submodule update --init
+
+if [ $PACKAGE_VERSION == v1.54.3 ]; then
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/g/grpc-cpp/grpc-cpp-compatibility.patch
+git apply grpc-cpp-compatibility.patch
+fi
 
 mkdir grpc-prefix
 export GRPC_PREFIX=$(pwd)/grpc-prefix
@@ -204,12 +209,13 @@ mkdir -p build-cpp
 pushd build-cpp
 cmake ${CMAKE_ARGS} ..  \
       -GNinja \
-      -DBUILD_SHARED_LIBS=ON \
+      -DBUILD_SHARED_LIBS=OFF \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_INSTALL_PREFIX=$GRPC_PREFIX \
       -DgRPC_CARES_PROVIDER="package" \
       -DgRPC_GFLAGS_PROVIDER="package" \
       -DgRPC_PROTOBUF_PROVIDER="package" \
+      -DgRPC_PROTOBUF_PACKAGE_TYPE=CONFIG \
       -DProtobuf_ROOT=$PROTOBUF_SRC \
       -DgRPC_SSL_PROVIDER="package" \
       -DgRPC_ZLIB_PROVIDER="package" \
@@ -219,7 +225,16 @@ cmake ${CMAKE_ARGS} ..  \
       -DCMAKE_AR=${AR} \
       -DCMAKE_RANLIB=${RANLIB} \
       -DCMAKE_VERBOSE_MAKEFILE=ON \
-      -DProtobuf_PROTOC_EXECUTABLE=$PROTOC_BIN
+      -DProtobuf_PROTOC_EXECUTABLE=$PROTOC_BIN \
+      -DgRPC_BUILD_CODEGEN=ON \
+      -DgRPC_BUILD_CSHARP_EXT=OFF \
+      -DgRPC_BUILD_GRPC_CSHARP_PLUGIN=OFF \
+      -DgRPC_BUILD_GRPC_NODE_PLUGIN=OFF \
+      -DgRPC_BUILD_GRPC_OBJECTIVE_C_PLUGIN=OFF \
+      -DgRPC_BUILD_GRPC_PHP_PLUGIN=OFF \
+      -DgRPC_BUILD_GRPC_PYTHON_PLUGIN=OFF \
+      -DgRPC_BUILD_GRPC_RUBY_PLUGIN=OFF
+ 
 
 ninja install -v
 popd
@@ -258,3 +273,4 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Install_&_wheel_Creation_both_success"
     exit 0
 fi
+
