@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : PyAV
-# Version       : v15.0.0
+# Version       : v10.0.0
 # Source repo   : https://github.com/PyAV-Org/PyAV
 # Tested on     : UBI 9.3
 # Language      : c
 # Travis-Check  : True
 # Script License: Apache License 2.0
-# Maintainer    : Shivansh Sharma <Shivansh.s1@ibm.com>
+# Maintainer    : Vaibhav Bhadade <vaibhav.bhadade@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
