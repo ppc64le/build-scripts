@@ -562,6 +562,8 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/0c615f50b4346a8c8b5caddd453f9a45f4a8876e/t/torchvision/0001-Exclude-source-that-has-commercial-license.patch
+
 # Below patch is needed to exclude the models that come under SWAG license (CC-BY-NC-4.0)
 git apply ./0001-Exclude-source-that-has-commercial-license.patch
 
