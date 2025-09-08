@@ -30,7 +30,7 @@ SCRIPT_DIR=$(pwd)
 yum install -y git make wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas
 yum install gcc-toolset-13 -y
 echo "Installed gcc-toolset"
-yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build gcc-toolset-13 pkg-config
+yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build pkg-config
 dnf install -y gcc-toolset-13-libatomic-devel
 echo "Installed required deps from RH"
 
@@ -90,7 +90,7 @@ build_opts+=(NO_LAPACK=0)
 
 # Enable threading and set the number of threads
 build_opts+=(USE_THREAD=1)
-build_opts+=(NUM_THREADS=8)
+build_opts+=(NUM_THREADS=120)
 
 # Disable CPU/memory affinity handling to avoid problems with NumPy and R
 build_opts+=(NO_AFFINITY=1)
