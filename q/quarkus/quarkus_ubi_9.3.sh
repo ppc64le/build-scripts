@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package	    : quarkus
-# Version	    : main
+# Version	    : 3.26.3
 # Source repo	: https://github.com/quarkusio/quarkus
 # Tested on	    : UBI 9
 # Language      : java
