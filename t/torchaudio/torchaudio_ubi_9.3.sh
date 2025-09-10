@@ -263,6 +263,12 @@ git checkout $PACKAGE_VERSION
 echo "------------------------Applying patch-------------------"
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchaudio/torchaudio_v2.6.0.patch
 git apply torchaudio_v2.6.0.patch
+
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchaudio/0001-Excluded-source-that-has-commercial-license.patch
+
+# Below patch excludes the source files that has commercial license
+git apply 0001-Excluded-source-that-has-commercial-license.patch
+
 echo "-----------------------Applied patch successfully---------------------------------------"
 
 SRC_DIR=$(pwd)
