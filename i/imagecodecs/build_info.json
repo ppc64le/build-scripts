@@ -10,10 +10,10 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "*" : {
-    "build_script": "imagecodecs_ubi_9.3.sh"
-  },
   "v2025.*" : {
     "build_script": "imagecodecs_v2025.8.2_ubi_9.3.sh"
+  },
+  "*" : {
+    "build_script": "imagecodecs_ubi_9.3.sh"
   }
 }
