@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/cgohlke/imagecodecs.git
 CURRENT_DIR="${PWD}"
 
 yum install -y wget gcc gcc-c++ gcc-gfortran git make cmake autoconf automake \
-    python3.12 python3.12-devel python3.12-pip openssl-devel perl \
+    python python3.12 python3.12-devel python3.12-pip openssl-devel perl \
     brotli brotli-devel bzip2 bzip2-devel \
     giflib libpng libpng-devel \
     libwebp libjpeg-turbo libjpeg-turbo-devel  libwebp-devel lz4 lz4-devel xz xz-devel zlib zlib-devel \
@@ -102,11 +102,6 @@ tar -xf giflib-5.2.1.tar.gz && cd giflib-5.2.1
 make -j$(nproc)
 make install
 cd ..
-
-# Link python → python3 if missing
-if ! command -v python >/dev/null 2>&1; then
-    ln -s /usr/bin/python3 /usr/bin/python
-fi
 
 # jxrlib
 git clone https://github.com/MoonchildProductions/jxrlib.git
