@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -ex
 # -----------------------------------------------------------------------------
 #
 # Package       : commons-io
@@ -17,39 +17,30 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-set -e
-
 PACKAGE_NAME=commons-io
 PACKAGE_VERSION=${1:-rel/commons-io-2.16.1}
-PACKAGE_URL=https://github.com/apache/commons-io.git
+PACKAGE_URL=https://github.com/apache/${PACKAGE_NAME}.git
+MAVEN_VERSION=${MAVEN_VERSION:-3.8.8}
 
 # install tools and dependent packages
-yum install -y git wget unzip sudo make gcc gcc-c++ cmake
-
-# setup java environment
-yum install -y java java-devel
-
-export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-)(?=.*ppc64le)') 
-# update the path env. variable
+yum install -y git wget java-17-openjdk-devel
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
 
 
-# install maven
-MAVEN_VERSION=${MAVEN_VERSION:-3.8.8}
-wget https://downloads.apache.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
-tar -C /usr/local/ -xzf apache-maven-$MAVEN_VERSION-bin.tar.gz
-mv /usr/local/apache-maven-$MAVEN_VERSION /usr/local/maven
-
-export M2_HOME=/usr/local/maven
-
-# update the path env. variable
-export PATH=$PATH:$M2_HOME/bin
+#Install maven
+wget https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
+tar -xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz
+mv apache-maven-${MAVEN_VERSION} /opt/maven-${MAVEN_VERSION}
+rm apache-maven-${MAVEN_VERSION}-bin.tar.gz
+ln -sf /opt/maven-${MAVEN_VERSION}/bin/mvn /usr/bin/mvn
+export MAVEN_HOME=/opt/maven-${MAVEN_VERSION}
+export PATH=$MAVEN_HOME/bin:$PATH
 
 # clone and checkout specified version
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-
 
 #Build
 mvn install -DskipTests=true

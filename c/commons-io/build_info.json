@@ -1,15 +1,27 @@
 {
-    "maintainer": "pratibh-ibm",
+    "maintainer": "Prachi.Gaonkar@ibm.com",
     "package_name": "commons-io",
     "github_url": "https://github.com/apache/commons-io.git",
-    "version": "rel/commons-io-2.17.0",
+    "version": "rel/commons-io-2.16.1",
     "default_branch": "master",
     "package_dir": "c/commons-io",
-    "build_script": "commons-io_ubi_9.3.sh",
+    "build_script": "commons-io_2.16.1_ubi_9.3.sh",
     "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": false,
-    "rel/commons-io-2.*.*": {
+    "rel/commons-io-2.16.1": {
+      "build_script": "commons-io_2.16.1_ubi_9.3.sh"
+    },
+    "1.4": {
+      "build_script": "commons-io_1.4_ubi_8.3.sh"
+    },
+    "2.4": {
+      "build_script": "commons-io_2.4_2.5_ubi_8.3.sh"
+    },
+    "rel/commons-io-2.17.0": {
       "build_script": "commons-io_ubi_9.3.sh"
+    },
+    "commons-io-2.6": {
+      "build_script": "commons-io_ubi8.4.sh"
     }
   }
