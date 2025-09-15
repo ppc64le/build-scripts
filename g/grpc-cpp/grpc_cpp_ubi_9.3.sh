@@ -176,6 +176,11 @@ git clone $PACKAGE_URL
 cd grpc
 git checkout $PACKAGE_VERSION
 
+if [ $PACKAGE_VERSION == v1.54.3 ]; then
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/g/grpc-cpp/grpc-cpp-compatibility.patch
+git apply grpc-cpp-compatibility.patch
+fi
+
 git submodule update --init
 
 mkdir grpc-prefix
@@ -204,12 +209,13 @@ mkdir -p build-cpp
 pushd build-cpp
 cmake ${CMAKE_ARGS} ..  \
       -GNinja \
-      -DBUILD_SHARED_LIBS=ON \
+      -DBUILD_SHARED_LIBS=OFF \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_INSTALL_PREFIX=$GRPC_PREFIX \
       -DgRPC_CARES_PROVIDER="package" \
       -DgRPC_GFLAGS_PROVIDER="package" \
       -DgRPC_PROTOBUF_PROVIDER="package" \
+      -DgRPC_PROTOBUF_PACKAGE_TYPE=CONFIG \
       -DProtobuf_ROOT=$PROTOBUF_SRC \
       -DgRPC_SSL_PROVIDER="package" \
       -DgRPC_ZLIB_PROVIDER="package" \
@@ -219,7 +225,15 @@ cmake ${CMAKE_ARGS} ..  \
       -DCMAKE_AR=${AR} \
       -DCMAKE_RANLIB=${RANLIB} \
       -DCMAKE_VERBOSE_MAKEFILE=ON \
-      -DProtobuf_PROTOC_EXECUTABLE=$PROTOC_BIN
+      -DProtobuf_PROTOC_EXECUTABLE=$PROTOC_BIN \
+      -DgRPC_BUILD_CODEGEN=ON \
+      -DgRPC_BUILD_CSHARP_EXT=OFF \
+      -DgRPC_BUILD_GRPC_CSHARP_PLUGIN=OFF \
+      -DgRPC_BUILD_GRPC_NODE_PLUGIN=OFF \
+      -DgRPC_BUILD_GRPC_OBJECTIVE_C_PLUGIN=OFF \
+      -DgRPC_BUILD_GRPC_PHP_PLUGIN=OFF \
+      -DgRPC_BUILD_GRPC_PYTHON_PLUGIN=OFF \
+      -DgRPC_BUILD_GRPC_RUBY_PLUGIN=OFF
 
 ninja install -v
 popd
