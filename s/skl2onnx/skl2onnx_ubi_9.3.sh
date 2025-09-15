@@ -22,7 +22,7 @@
 
 # Variables
 PACKAGE_NAME=skl2onnx
-PACKAGE_VERSION=${1:-1.16.0}
+PACKAGE_VERSION=${1:-1.18.0}
 PYTHON_VERSION=${2:-3.11}
 PACKAGE_URL=https://github.com/onnx/sklearn-onnx.git
 PACKAGE_DIR=sklearn-onnx
@@ -277,7 +277,7 @@ cd onnxruntime
 git checkout v1.21.0
 
 # Build the onnxruntime package and create the wheel
-sed -i 's/python3/python3.11/g' build.sh
+sed -i "s/python3/python${PYTHON_VERSION}/g" build.sh
 echo " ----------------------------------------- Building onnxruntime ----------------------------------------- "
 
 export CXXFLAGS="-Wno-stringop-overflow"
@@ -285,7 +285,7 @@ export CFLAGS="-Wno-stringop-overflow"
 export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
 NUMPY_INCLUDE=$(python${PYTHON_VERSION} -c "import numpy; print(numpy.get_include())")
 echo "NumPy include path: $NUMPY_INCLUDE"
-python -m pip install packaging wheel
+python${PYTHON_VERSION} -m pip install packaging wheel
 
 # Manually defines Python::NumPy for CMake versions with broken NumPy detection
 sed -i '193i # Fix for Python::NumPy target not found\nif(NOT TARGET Python::NumPy)\n    find_package(Python3 COMPONENTS NumPy REQUIRED)\n    add_library(Python::NumPy INTERFACE IMPORTED)\n    target_include_directories(Python::NumPy INTERFACE ${Python3_NumPy_INCLUDE_DIR})\n    message(STATUS "Manually defined Python::NumPy with include dir: ${Python3_NumPy_INCLUDE_DIR}")\nendif()\n' $CURRENT_DIR/onnxruntime/cmake/onnxruntime_python.cmake
@@ -295,7 +295,7 @@ sed -i 's|5ea4d05e62d7f954a46b3213f9b2535bdd866803|51982be81bbe52572b54180454df1
 
 # Add Python include path to build environment
 # Get Python include path
-PYTHON_INCLUDE=$(python3.11 -c "from sysconfig import get_paths; print(get_paths()['include'])")
+PYTHON_INCLUDE=$(python${PYTHON_VERSION} -c "from sysconfig import get_paths; print(get_paths()['include'])")
 export CPLUS_INCLUDE_PATH=$PYTHON_INCLUDE:$CPLUS_INCLUDE_PATH
 export C_INCLUDE_PATH=$PYTHON_INCLUDE:$C_INCLUDE_PATH
 
@@ -331,10 +331,11 @@ echo " ----------------------------------------- skl2onnx Installing -----------
 git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
+if [ $PACKAGE_VERSION == 1.16.0 ]; then
 echo "Applying patch..."
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/s/skl2onnx/sparse_changes.patch
 git apply sparse_changes.patch
-
+fi
 sed -i 's/onnx>=1.2.1//g' requirements.txt
 sed -i 's/onnxconverter-common>=1.7.0//g' requirements.txt
 sed -i 's/scikit-learn>=1\.1/scikit-learn==1.6.1/' requirements.txt
