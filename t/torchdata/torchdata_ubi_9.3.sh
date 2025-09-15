@@ -18,6 +18,8 @@
 #                     contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
+#set -ex 
+
 PACKAGE_NAME=data
 PACKAGE_VERSION=${1:-v0.7.1}
 PACKAGE_URL=https://github.com/pytorch/data.git
@@ -35,6 +37,11 @@ yum install -y python python-devel python-pip git gcc gcc-c++ gcc-gfortran make 
 
 # Ensure LZMA support for Python
 export LD_LIBRARY_PATH=/usr/lib64/libopenblas.so.0:/usr/lib64:$LD_LIBRARY_PATH
+
+#extra 
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:/usr/lib64:$LD_LIBRARY_PATH
+export LIBRARY_PATH=/usr/lib64:$LIBRARY_PATH
 
 # Install Rust for building PyTorch components
 curl https://sh.rustup.rs -sSf | sh -s -- -y
@@ -57,6 +64,14 @@ export MAX_JOBS=2
 python setup.py install
 cd ..
 
+# ========== ✅ Install sentencepiece  ==========
+echo "Installing sentencepiece "
+python -m pip install --no-build-isolation sentencepiece
+# Optional: Verify it's usable
+python -c "import sentencepiece as spm; sp = spm.SentencePieceProcessor(); print('✅ sentencepiece is usable')"
+export PKG_CONFIG_PATH=/usr/lib/python/site-packages/sentencepiece/:$PKG_CONFIG_PATH
+
+
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
@@ -64,7 +79,7 @@ git checkout $PACKAGE_VERSION
 # Install additional Python dependencies
 pip install setuptools meson meson-python
 pip install cython 'cmake==3.31.6'
-pip install pytest-mock pytest-xdist pytest-timeout torchtext
+pip install pytest-mock pytest-xdist pytest-timeout torchtext pyyaml
 
 # Install the package
 if ! python setup.py install ; then
