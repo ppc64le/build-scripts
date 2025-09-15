@@ -288,7 +288,7 @@ bazel build -s //tensorflow/tools/pip_package:build_pip_package --config=opt --j
 
 echo "Bazel build successful ---------------------------------------------------------------------------------------------"
 
-#bu#ilding the wheel
+#building the wheel
 bazel-bin/tensorflow/tools/pip_package/build_pip_package $CURRENT_DIR
 
 echo "Build wheel ---------------------------------------------------------------------------------------------"
