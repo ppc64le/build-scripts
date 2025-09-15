@@ -21,7 +21,7 @@ set -e
 
 PACKAGE_NAME=grpc-cpp
 PACKAGE_DIR=grpc
-PACKAGE_VERSION=${1:-v1.54.3}
+PACKAGE_VERSION=${1:-v1.68.0}
 PACKAGE_URL=https://github.com/grpc/grpc
 
 yum install -y make libtool cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel patch python python-devel ninja-build gcc-toolset-13  pkg-config 
