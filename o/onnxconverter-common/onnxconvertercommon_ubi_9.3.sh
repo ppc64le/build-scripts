@@ -267,25 +267,34 @@ git clone https://github.com/microsoft/onnxruntime
 cd onnxruntime
 git checkout v1.21.0
 # Build the onnxruntime package and create the wheel
-sed -i 's/python3/python3.12/g' build.sh
+
 
 echo " --------------------------------------------------- Building Onnxruntime --------------------------------------------------- "
 export CXXFLAGS="-Wno-stringop-overflow"
 export CFLAGS="-Wno-stringop-overflow"
 export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
 
-python3 -m pip install packaging wheel
-NUMPY_INCLUDE=$(python3 -c "import numpy; print(numpy.get_include())")
+# Detect python from the active virtual environment
+export PYTHON_EXECUTABLE=$(which python)
+export PATH=$(dirname $PYTHON_EXECUTABLE):$PATH
+
+# Install required Python packages in the venv
+$PYTHON_EXECUTABLE -m pip install packaging wheel numpy==2.0.2
+
+# Confirm NumPy installation and get include path
+$PYTHON_EXECUTABLE -c "import numpy; print('NumPy version:', numpy.__version__)"
+NUMPY_INCLUDE=$($PYTHON_EXECUTABLE -c "import numpy; print(numpy.get_include())")
 echo "NumPy include path: $NUMPY_INCLUDE"
 
 # Manually defines Python::NumPy for CMake versions with broken NumPy detection
 sed -i '193i # Fix for Python::NumPy target not found\nif(NOT TARGET Python::NumPy)\n    find_package(Python3 COMPONENTS NumPy REQUIRED)\n    add_library(Python::NumPy INTERFACE IMPORTED)\n    target_include_directories(Python::NumPy INTERFACE ${Python3_NumPy_INCLUDE_DIR})\n    message(STATUS "Manually defined Python::NumPy with include dir: ${Python3_NumPy_INCLUDE_DIR}")\nendif()\n' $CURRENT_DIR/onnxruntime/cmake/onnxruntime_python.cmake
-export CXXFLAGS="-I/usr/local/lib64/python${PYTHON_VERSION}/site-packages/numpy/_core/include/numpy $CXXFLAGS"
+
 
 sed -i 's|5ea4d05e62d7f954a46b3213f9b2535bdd866803|51982be81bbe52572b54180454df11a3ece9a934|' cmake/deps.txt
 
 
 ./build.sh \
+  --python_path=$PYTHON_EXECUTABLE \
   --cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" "Protobuf_PROTOC_EXECUTABLE=$PROTO_PREFIX/bin/protoc" "Protobuf_INCLUDE_DIR=$PROTO_PREFIX/include" "onnxruntime_USE_COREML=OFF" "Python3_NumPy_INCLUDE_DIR=$NUMPY_INCLUDE" "CMAKE_POLICY_DEFAULT_CMP0001=NEW" "CMAKE_POLICY_DEFAULT_CMP0002=NEW" "CMAKE_POLICY_VERSION_MINIMUM=3.5" \
   --cmake_generator Ninja \
   --build_shared_lib \
