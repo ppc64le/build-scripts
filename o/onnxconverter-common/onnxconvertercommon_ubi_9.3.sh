@@ -278,7 +278,7 @@ export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
 export PYTHON_EXECUTABLE=$(which python)
 export PATH=$(dirname $PYTHON_EXECUTABLE):$PATH
 
-# Install required Python packages in the venv
+# Install required Python packages
 $PYTHON_EXECUTABLE -m pip install packaging wheel numpy==2.0.2
 
 # Confirm NumPy installation and get include path
