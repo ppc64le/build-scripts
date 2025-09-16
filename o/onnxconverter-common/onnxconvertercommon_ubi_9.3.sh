@@ -267,19 +267,19 @@ git clone https://github.com/microsoft/onnxruntime
 cd onnxruntime
 git checkout v1.21.0
 # Build the onnxruntime package and create the wheel
-
+sed -i 's/python3/python3.12/g' build.sh
 
 echo " --------------------------------------------------- Building Onnxruntime --------------------------------------------------- "
 export CXXFLAGS="-Wno-stringop-overflow"
 export CFLAGS="-Wno-stringop-overflow"
 export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
 
-# Detect python from the active virtual environment
-export PYTHON_EXECUTABLE=$(which python)
+# Detect python
+export PYTHON_EXECUTABLE=$(which python3.12)
 export PATH=$(dirname $PYTHON_EXECUTABLE):$PATH
 
 # Install required Python packages
-$PYTHON_EXECUTABLE -m pip install packaging wheel numpy==2.0.2
+$PYTHON_EXECUTABLE -m pip install packaging wheel numpy==2.0.2 'cmake==3.31.6'
 
 # Confirm NumPy installation and get include path
 $PYTHON_EXECUTABLE -c "import numpy; print('NumPy version:', numpy.__version__)"
