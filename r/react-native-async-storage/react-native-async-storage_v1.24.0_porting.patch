@@ -1,0 +1,13 @@
+diff --git a/package.json b/package.json
+index aaf1fce..3372083 100644
+--- a/package.json
++++ b/package.json
+@@ -24,7 +24,7 @@
+     "concurrently": "^8.2.2",
+     "eslint": "^8.54.0",
+     "prettier": "^2.8.8",
+-    "turbo": "^1.12.5",
++    "turbo-linux-ppc64le": "1.4.4",
+     "typescript": "^5.3.0"
+   },
+   "resolutions": {
