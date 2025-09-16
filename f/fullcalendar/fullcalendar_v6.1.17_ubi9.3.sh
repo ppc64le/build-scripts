@@ -19,10 +19,25 @@
 # -----------------------------------------------------------------------------
 
 PACKAGE_NAME=fullcalendar
-PACKAGE_VERSION=${1:-v6.1.17}
+PACKAGE_VERSION="v6.1.17"
 PACKAGE_URL=https://github.com/fullcalendar/fullcalendar.git
 BUILD_DIR=$(pwd)
 SCRIPT_PATH=$(dirname $(realpath $0))
+RUNTESTS=1
+
+for arg in "$@"; do
+  case "$arg" in
+    --skip-tests)
+      RUNTESTS=0
+      echo "INFO: Tests will be skipped."
+      shift
+      ;;
+    -*|--*)
+      echo "Unknown option: $arg"
+      exit 3
+      ;;
+  esac
+done
 
 # Install Repos and Dependencies
 yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
@@ -69,8 +84,34 @@ then
 	exit 1
 fi
 
+# Install the Package
+export PNPM_HOME=/usr/local/pnpm-global
+mkdir -p "$PNPM_HOME"
+export PATH="$PNPM_HOME:$PATH"
+echo "Installing ${PACKAGE_NAME}"
+
+PACKAGE_DIR="bundle"
+PACKAGE_TGZ_NAME="${PACKAGE_NAME}-${PACKAGE_VERSION#v}.tgz"
+cd $PACKAGE_DIR
+pnpm pack
+pnpm install -g file:"$(realpath ./dist/"$PACKAGE_TGZ_NAME")" || ret=$?
+
+if [ $? -eq 0 ]; then
+  echo "Package installed successfully."
+else
+  echo "Installation failed."
+  exit 3
+fi
+
+#Skip tests
+if [ "$RUNTESTS" -eq 0 ]; then
+    set +ex
+    echo "Complete: Build and install successful! Tests skipped."
+    exit 0
+fi
+
 # Run tests
-pnpm run test || ret=$?
+pnpm -w run test || ret=$?
 if [ "$ret" -ne 0 ]
 then
 	exit 2
