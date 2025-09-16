@@ -1,0 +1,16 @@
+{
+  "maintainer": "Prachi.Gaonkar@ibm.com",
+  "package_name": "opensearch-prometheus-exporter",
+  "github_url": "https://github.com/opensearch-project/opensearch-prometheus-exporter.git",
+  "version": "3.2.0.0",
+  "required_versions":{"Releases": ["*"], "Tags": ["3.2.0.0"]},
+  "default_branch": "main",
+  "package_dir": "o/opensearch-prometheus-exporter",
+  "build_script": "opensearch-prometheus-exporter_3.2.0.0_ubi_9.6.sh", 
+  "validate_build_script": true,
+  "use_non_root_user": true,
+  "docker_build": false,
+  "3.2.0.0": {
+    "build_script": "opensearch-prometheus-exporter_3.2.0.0_ubi_9.6.sh" 
+  }
+}
