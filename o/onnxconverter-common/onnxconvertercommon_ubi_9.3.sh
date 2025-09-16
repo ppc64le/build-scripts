@@ -37,9 +37,9 @@ CMAKE_VERSION=3.29.2
 wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz
 tar -xzf cmake-${CMAKE_VERSION}.tar.gz
 cd cmake-${CMAKE_VERSION}
-./bootstrap --prefix=/usr/local --parallel=$(nproc)
+./bootstrap --prefix=/usr/local --parallel=2
 echo "Installing cmake..."
-make -j$(nproc)
+make -j2
 echo "Installing cmake..."
 make install
 cmake --version
@@ -98,7 +98,7 @@ build_opts+=(NUM_THREADS=8)
 build_opts+=(NO_AFFINITY=1)
 
 # Build OpenBLAS
-make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
+make -j2 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
 
 # Install OpenBLAS
 CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
