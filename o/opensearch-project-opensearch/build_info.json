@@ -1,0 +1,31 @@
+{
+    "maintainer":"Prachi.Gaonkar@ibm.com",
+    "package_name" : "OpenSearch",
+    "github_url": "https://github.com/opensearch-project/OpenSearch.git",
+    "version": "2.19.2",
+    "required_versions":{"Releases": ["*"], "Tags": ["2.19.2"]},
+    "default_branch": "main",
+    "package_dir": "o/opensearch-project-opensearch",
+    "docker_cmd":"docker build --build-arg VERSION=${version} --build-arg BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ) -t ${package_name}:${version} ${dir} ",
+    "build_script": "opensearch-project-OpenSearch_2.19.2_ubi9.3.sh",
+    "docker_build": true,
+    "validate_build_script": true,
+    "use_non_root_user": true,
+    "2.19.2": {
+      "dir": "2.19.2_ubi9",
+      "build_script": "opensearch-project-OpenSearch_2.19.2_ubi9.3.sh",
+      "base_docker_image": "registry.access.redhat.com/ubi9/ubi:latest",
+      "base_docker_variant": "redhat",
+      "args": {
+          "VERSION": "2.19.2",
+          "ARCH": "ppc64le",
+          "BUILD_DATE": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+          "KNN_COMMITID": "1b57a2a9a4e0f6993dedcb545a97c710065631eb",
+          "PERFORMANCE_ANALYZER_COMMITID": "f743c9c08a7b383d86d9f99abe2094885e3872ee"      
+         },
+      "patches": {
+          "OPENSEARCH-BUILD-PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/opensearch-project-opensearch/Dockerfiles/2.19.2_ubi9/opensearch-build_2.19.2.patch",
+          "OPENSEARCH-SKILLS-PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/opensearch-project-opensearch/Dockerfiles/2.19.2_ubi9/opensearch-skills_2.19.2.0.patch"      
+          } 
+  }
+}
