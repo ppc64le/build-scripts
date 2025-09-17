@@ -22,7 +22,7 @@ PACKAGE_URL=https://github.com/apache/camel-k
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)  
  
 # Install dependencies  
-yum install -y make git wget java-21-openjdk gcc
+yum install -y make git wget java-21-openjdk gcc unzip
  
 # Set up Java environment  
 yum install java-21-openjdk java-21-openjdk-devel -y
@@ -33,7 +33,7 @@ export PATH=$JAVA_HOME/bin:$PATH
 wget  https://dlcdn.apache.org/maven/maven-3/3.9.11/binaries/apache-maven-3.9.11-bin.tar.gz
 tar -C /usr/local/  -xvzf apache-maven-3.9.11-bin.tar.gz
 rm -rf tar xzvf apache-maven-3.9.11-bin.tar.gz
-mv /usr/local/apache-maven-3.9.11 /usr/local/maven
+imv /usr/local/apache-maven-3.9.11 /usr/local/maven
 export M2_HOME=/usr/local/maven
 export PATH=$PATH:$M2_HOME/bin
  
