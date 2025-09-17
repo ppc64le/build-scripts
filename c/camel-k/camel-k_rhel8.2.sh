@@ -33,7 +33,7 @@ export PATH=$JAVA_HOME/bin:$PATH
 wget  https://dlcdn.apache.org/maven/maven-3/3.9.11/binaries/apache-maven-3.9.11-bin.tar.gz
 tar -C /usr/local/  -xvzf apache-maven-3.9.11-bin.tar.gz
 rm -rf tar xzvf apache-maven-3.9.11-bin.tar.gz
-imv /usr/local/apache-maven-3.9.11 /usr/local/maven
+mv /usr/local/apache-maven-3.9.11 /usr/local/maven
 export M2_HOME=/usr/local/maven
 export PATH=$PATH:$M2_HOME/bin
  
