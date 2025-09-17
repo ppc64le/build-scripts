@@ -2,15 +2,15 @@
   "maintainer": "ramnathnayak-ibm",
   "package_name": "protobuf",
   "github_url": "https://github.com/protocolbuffers/protobuf",
-  "version": "v4.25.3",
+  "version": "v6.31.0",
   "default_branch": "main",
   "wheel_build" : true,
   "package_dir": "p/protobuf/",
   "docker_build": false,
-  "build_script": "protobuf_v4.25.3_ubi_9.3.sh",
+  "build_script": "protobuf_v6.31.0_ubi_9.3.sh",
   "validate_build_script": true,
   "use_non_root_user": false,
-  "required_versions": {"Releases": ["*"], "Tags": ["v4.25.3"]},
+  "required_versions": {"Releases": ["*"], "Tags": ["v6.31.0"]},
   "v21.*": {
     "build_script": "protobuf_v21.12_ubi_8.5.sh"
   },
@@ -24,7 +24,7 @@
     "build_script": "protobuf_v6.31.0_ubi_9.3.sh"
   },
   "*": {
-  "build_script": "protobuf_v4.25.3_ubi_9.3.sh"
+  "build_script": "protobuf_v6.31.0_ubi_9.3.sh"
   }
 }
 
