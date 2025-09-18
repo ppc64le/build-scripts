@@ -15,5 +15,5 @@
   },
   "*": {
     "build_script": "ansible_ubi_9.6.sh"
-  },
+  }
 }
