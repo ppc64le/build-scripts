@@ -66,21 +66,32 @@ bazel clean --expunge
 bazel build //python/dist:binary_wheel \
     --//python:python_version=system \
     --//python:limited_api=True \
-    --copt="-I/usr/include/python3.12"
+    --copt="-I/usr/include/python${PYTHON_VERSION}"
 
 WHEEL_DIR="bazel-bin/python/dist"
 WHEEL_PATH=$(find "$WHEEL_DIR" -type f -name "*.whl" | head -n 1)
 
-if [[ -f "$WHEEL_PATH" ]]; then
-    echo "------------------$PACKAGE_NAME:build_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Build_Success"
-    echo "Wheel Output: $WHEEL_PATH"
-else
-    echo "------------------$PACKAGE_NAME:build_failed-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Failed"
-    exit 1
-fi
+cp "$WHEEL_PATH" $CURRENT_DIR
+# wheel install
+python3.12 -m pip install $WHEEL_PATH
+python3.12 -c "import google.protobuf; print(google.protobuf.__version__)"
 
+#bazel test
+
+if !(bazel test //python/... \
+  --define=use_fast_cpp_protos=true \
+  --test_env=KOKORO_PYTHON_VERSION=3.12 \
+  --enable_bzlmod \
+  --copt="-I/usr/include/python${PYTHON_VERSION}" \
+  --host_copt="-I/usr/include/python${PYTHON_VERSION}"); then
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+fi
 exit 0
+
