@@ -1,5 +1,5 @@
 {
-  "maintainer": "ramnathnayak-ibm",
+  "maintainer": "rushi-sathe",
   "package_name": "protobuf",
   "github_url": "https://github.com/protocolbuffers/protobuf",
   "version": "v6.31.0",
