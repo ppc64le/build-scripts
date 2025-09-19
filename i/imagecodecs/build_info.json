@@ -1,16 +1,22 @@
 {
-  "maintainer": "ramnathnayak-ibm",
+  "maintainer": "SakshiJain0302",
   "package_name": "imagecodecs",
   "github_url": "https://github.com/cgohlke/imagecodecs",
-  "version": "v2023.1.23",
+  "version": "v2025.8.2",
   "wheel_build" : true,
   "default_branch": "master",
-  "build_script": "imagecodecs_ubi_9.3.sh",
+  "build_script": "imagecodecs_v2025.8.2_ubi_9.3.sh",
   "package_dir": "i/imagecodecs",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
+  "v2023.1.23" : {
+    "build_script": "imagecodecs_ubi_9.3.sh"
+  },
+  "v2025.*" : {
+    "build_script": "imagecodecs_v2025.8.2_ubi_9.3.sh"
+  },
   "*" : {
-     "build_script": "imagecodecs_ubi_9.3.sh"
+    "build_script": "imagecodecs_v2025.8.2_ubi_9.3.sh"
   }
 }

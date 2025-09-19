@@ -118,6 +118,10 @@ git checkout $PACKAGE_VERSION
 git submodule update --init
 export SRC_DIR=$(pwd)
 echo "SRC_DIR: $SRC_DIR"
+ 
+sed -i '/^from hatchling\.builders\.hooks\.plugin\.interface import BuildHookInterface/a import sysconfig' python-package/hatch_build.py
+# set platform tag to linux_ppc64le instead of the default manylinux_2_34_ppc64le tag.
+sed -i 's/next(platform_tags())/sysconfig.get_platform().replace("-", "_").replace(".", "_")/g' python-package/hatch_build.py
 
 # Build xgboost cpp artifacts
 echo "Building xgboost cpp artifacts..."

@@ -1,8 +1,9 @@
 {
   "maintainer": "sumit.dubey2@ibm.com",
-  "package_name": "opensearch-learning-to-rank-base",
+  "package_name": "opensearch-project-opensearch-learning-to-rank-base",
   "github_url": "https://github.com/opensearch-project/opensearch-learning-to-rank-base",
   "version": "2.19.2.0",
+  "required_versions":{"Releases": ["*"], "Tags": ["2.19.2.0"]},
   "default_branch": "main",
   "package_dir": "o/opensearch-project-opensearch-learning-to-rank-base",
   "build_script": "opensearch-learning-to-rank-base_2.19.2.0_ubi9.5.sh",

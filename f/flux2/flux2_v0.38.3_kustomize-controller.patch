@@ -1,0 +1,13 @@
+diff --git a/Makefile b/Makefile
+index 5e96db7..6a69cc1 100644
+--- a/Makefile
++++ b/Makefile
+@@ -29,7 +29,7 @@ GO_TEST_ARGS ?=
+ # Allows for defining additional Docker buildx arguments, e.g. '--push'.
+ BUILD_ARGS ?= --load
+ # Architectures to build images for.
+-BUILD_PLATFORMS ?= linux/amd64
++BUILD_PLATFORMS ?= linux/ppc64le
+
+ # Architecture to use envtest with
+ ENVTEST_ARCH ?= amd64

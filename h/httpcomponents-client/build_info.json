@@ -1,15 +1,15 @@
 {
-  "maintainer": "mayurbhosure",
+  "maintainer": "SanketPatil11",
   "package_name": "httpcomponents-client",
   "github_url": "https://github.com/apache/httpcomponents-client",
-  "version": "rel/v5.2.1",
-  "default_branch": "master",
-  "build_script": "httpcomponents-client_ubi_9.3.sh",
+  "version": "rel/v5.4",
   "package_dir": "h/httpcomponents-client",
-  "validate_build_script": true,
-  "use_non_root_user": false,
-  "docker_build": false,
-  "rel/v5.*.*": {
+  "default_branch": "main",
+  "build_script": "httpcomponents-client_v5.4_ubi_9.5.sh",
+  "docker_build": "false",
+  "use_non_root_user": "false",
+  "validate_build_script": "true",
+  "rel/v5.2.*": {
     "build_script": "httpcomponents-client_ubi_9.3.sh"
   },
   "rel/v4.5.5": {
@@ -17,5 +17,8 @@
   },
   "rel/v4.5.*": {
     "build_script": "httpcomponents-client_v4.5.14_ubi_9.3.sh"
+  },
+  "rel/v5.4": {
+    "build_script": "httpcomponents-client_v5.4_ubi_9.5.sh"
   }
 }

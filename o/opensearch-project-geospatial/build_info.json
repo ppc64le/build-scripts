@@ -1,18 +1,22 @@
 {
-  "maintainer": "vinodk99",
+  "maintainer": "Prachi.Gaonkar@ibm.com",
   "package_name": "opensearch-project-geospatial",
   "github_url": "https://github.com/opensearch-project/geospatial",
-  "version": "2.15.0.0",
+  "version": "2.19.2.0",
+  "required_versions":{"Releases": ["*"], "Tags": ["2.19.2.0"]},
   "default_branch": "main",
   "package_dir": "o/opensearch-project-geospatial",
-  "build_script": "opensearch-project-geospatial_ubi_9.3.sh",
+  "build_script": "opensearch-project-geospatial_2.19.2.0_ubi_9.3.sh",
   "validate_build_script": true,
   "use_non_root_user": true,
   "docker_build": false,
   "2.7.0.0": {
     "build_script": "opensearch-project-geospatial_ubi_8.7.sh"
   },
-  "*.*.*.*": {
+  "2.15.0.0": {
     "build_script": "opensearch-project-geospatial_ubi_9.3.sh"
+  },
+  "2.19.2.0": {
+    "build_script": "opensearch-project-geospatial_2.19.2.0_ubi_9.3.sh"
   }
 }

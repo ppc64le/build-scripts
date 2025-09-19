@@ -1,15 +1,15 @@
 {
-    "maintainer": "vinodk99",
-    "package_name": "jaxb-ri",
-    "github_url": "https://github.com/eclipse-ee4j/jaxb-ri",
-    "version": "4.0.5-RI",
-    "default_branch": "master",
-    "package_dir": "j/jaxb-ri/",
-    "build_script": "jaxb-ri_ubi_9.3.sh",
-    "docker_build": false,
-    "validate_build_script": true,
-    "use_non_root_user": false,
-    "*.*.*-*": {
-      "build_script": "jaxb-ri_ubi_9.3.sh"
-    } 
+  "maintainer": "Amitkumar282",
+  "package_name": "jaxb-ri",
+  "github_url": "https://github.com/eclipse-ee4j/jaxb-ri",
+  "version": "4.0.5-RI",
+  "package_dir": "j/jaxb-ri",
+  "default_branch": "main",
+  "build_script": "jaxb-core_4.0.5-RI_ubi_9.3.sh", 
+  "docker_build": "false",
+  "use_non_root_user": "false",
+  "validate_build_script": "true",
+  "*": {
+    "build_script": "jaxb-core_4.0.5-RI_ubi_9.3.sh"
   }
+}

@@ -1,0 +1,17 @@
+diff --git a/src/testFixtures/java/org/opensearch/knn/ODFERestTestCase.java b/src/testFixtures/java/org/opensearch/knn/ODFERestTestCase.java
+index 7f45556..9b60480 100644
+--- a/src/testFixtures/java/org/opensearch/knn/ODFERestTestCase.java
++++ b/src/testFixtures/java/org/opensearch/knn/ODFERestTestCase.java
+@@ -65,7 +65,11 @@ public abstract class ODFERestTestCase extends OpenSearchRestTestCase {
+         } else {
+             configureClient(builder, settings);
+         }
+-
++        // Increase client-side timeouts (default is too low for heavy tests)
++        builder.setRequestConfigCallback(
++            requestConfigBuilder -> requestConfigBuilder.setConnectTimeout(Timeout.ofMilliseconds(5000))     // 5s connect timeout
++                .setResponseTimeout(Timeout.ofMinutes(10))    // 10m socket timeout
++        );
+         builder.setStrictDeprecationMode(false);
+         return builder.build();
+     }

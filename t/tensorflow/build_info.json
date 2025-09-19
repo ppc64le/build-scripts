@@ -1,15 +1,21 @@
 {
-  "maintainer": "stutiibm",
+  "maintainer": "ramnathnayak-ibm",
   "package_name": "tensorflow",
   "github_url": "https://github.com/tensorflow/tensorflow",
-  "version": "v2.18.1",
+  "version": "v2.20.0",
   "wheel_build" : true,
   "package_dir": "t/tensorflow",
   "default_branch": "master",
-  "build_script": "tensorflow_2.18.1_ubi9.3.sh",
+  "build_script": "tensorflow_2.20.0_ubi_9.3.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
+  "v2.20.0": {
+    "patches": {
+      "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/tensorflow/tf_2.20.0_fix.patch"
+    },
+    "build_script": "tensorflow_2.20.0_ubi_9.3.sh"
+  },
   "v2.18.1": {
     "patches": {
       "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/tensorflow/tf_2.18.1_fix.patch"

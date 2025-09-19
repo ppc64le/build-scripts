@@ -1,0 +1,15 @@
+{
+    "maintainer":"prasanna-marathe",
+    "package_name" : "pulp-ansible",
+    "github_url":"https://github.com/pulp/pulp_ansible.git",
+    "version": "0.28.0",
+    "default_branch": "main",
+    "package_dir": "p/pulp-ansible",
+    "build_script": "pulp_ansible_ubi_9.6.sh",
+    "docker_build": "false",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "*": {
+	"build-script":"pulp_ansible_ubi_9.6.sh"
+    }
+}

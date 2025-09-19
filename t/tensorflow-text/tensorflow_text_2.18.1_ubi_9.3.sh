@@ -791,7 +791,8 @@ cd bazel-6.5.0/
 export EXTRA_BAZEL_ARGS="--host_javabase=@local_jdk//:jdk" bash
 ./compile.sh
 #export the path of bazel bin
-export PATH=/bazel-6.5.0/output/:$PATH
+cp output/bazel /usr/local/bin
+export PATH=/usr/local/bin:$PATH
 cd $CURRENT_DIR
 
 echo "--------------ml_dtypes installing---------------"

@@ -1,0 +1,22 @@
+diff --git a/Makefile b/Makefile
+index cf56d0d..a51b243 100644
+--- a/Makefile
++++ b/Makefile
+@@ -6,7 +6,7 @@ CRD_OPTIONS ?= crd:crdVersions=v1
+ # Allows for defining additional Docker buildx arguments, e.g. '--push'.
+ BUILD_ARGS ?=
+ # Architectures to build images for.
+-BUILD_PLATFORMS ?= linux/amd64
++BUILD_PLATFORMS ?= linux/ppc64le
+
+ # FUZZ_TIME defines the max amount of time, in Go Duration,
+ # each fuzzer should run for.
+@@ -20,7 +20,7 @@ GOBIN=$(shell go env GOBIN)
+ endif
+
+ # Architecture to use envtest with
+-ENVTEST_ARCH ?= amd64
++ENVTEST_ARCH ?= ppc64le
+
+ all: manager
+

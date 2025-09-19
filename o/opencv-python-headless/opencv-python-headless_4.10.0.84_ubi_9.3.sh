@@ -302,6 +302,8 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init
 
+export ENABLE_HEADLESS=1
+
 export CMAKE_PREFIX_PATH="$PREFIX/abseilcpp;$PREFIX/libprotobuf";
 
 export CMAKE_ARGS="-DCMAKE_BUILD_TYPE=Release
