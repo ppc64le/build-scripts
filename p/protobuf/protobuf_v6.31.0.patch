@@ -1,0 +1,253 @@
+From 46f1e1e644ac8abda80de53a61b63d2c1ec3d4dd Mon Sep 17 00:00:00 2001
+From: Rushikesh Sathe <Rushikesh.Sathe@ibm.com>
+Date: Thu, 18 Sep 2025 10:13:50 +0000
+Subject: [PATCH] added fix
+
+---
+ MODULE.bazel             |  6 +++++-
+ WORKSPACE                |  1 -
+ python/BUILD.bazel       |  2 --
+ python/build_targets.bzl |  6 ------
+ python/dist/BUILD.bazel  | 28 +++++++++++++++++++++-------
+ python/dist/dist.bzl     |  5 +++--
+ python/internal.bzl      |  1 -
+ python/py_extension.bzl  |  2 +-
+ 8 files changed, 30 insertions(+), 21 deletions(-)
+
+diff --git a/MODULE.bazel b/MODULE.bazel
+index 44fcddd9e..039beb5aa 100644
+--- a/MODULE.bazel
++++ b/MODULE.bazel
+@@ -214,7 +214,11 @@ protobuf_maven_dev.install(
+ use_repo(protobuf_maven_dev, "protobuf_maven_dev")
+
+ bazel_dep(name = "googletest", version = "1.15.2", dev_dependency = True)
+-bazel_dep(name = "rules_buf", version = "0.3.0", dev_dependency = True)
++bazel_dep(name = "rules_buf", version = "0.5.2", dev_dependency = True)
++buf = use_extension("@rules_buf//buf:extensions.bzl", "buf")
++buf.toolchains(version = "v1.57.0")
++use_repo(buf, "rules_buf_toolchains")
++
+ bazel_dep(name = "rules_testing", version = "0.8.0", dev_dependency = True)
+ bazel_dep(
+     name = "abseil-py",
+diff --git a/WORKSPACE b/WORKSPACE
+index b47b2d0c0..10d7114a2 100644
+--- a/WORKSPACE
++++ b/WORKSPACE
+@@ -210,7 +210,6 @@ switched_rules_by_language(
+     cc = True,
+ )
+
+-load("@system_python//:pip.bzl", "pip_parse")
+
+ pip_parse(
+     name = "protobuf_pip_deps",
+diff --git a/python/BUILD.bazel b/python/BUILD.bazel
+index f1c384a8f..f7309a391 100644
+--- a/python/BUILD.bazel
++++ b/python/BUILD.bazel
+@@ -104,8 +104,6 @@ selects.config_setting_group(
+
+ _message_target_compatible_with = {
+     "@platforms//os:windows": ["@platforms//:incompatible"],
+-    "@system_python//:none": ["@platforms//:incompatible"],
+-    "@system_python//:unsupported": ["@platforms//:incompatible"],
+     "//conditions:default": [],
+ }
+
+diff --git a/python/build_targets.bzl b/python/build_targets.bzl
+index b62d5f05d..4d97b4709 100644
+--- a/python/build_targets.bzl
++++ b/python/build_targets.bzl
+@@ -97,7 +97,6 @@ def build_targets(name):
+         ],
+         deps = select({
+             "//conditions:default": [],
+-            ":use_fast_cpp_protos": ["@system_python//:python_headers"],
+         }),
+     )
+
+@@ -154,7 +153,6 @@ def build_targets(name):
+             "@abseil-cpp//absl/strings",
+         ] + select({
+             "//conditions:default": [],
+-            ":use_fast_cpp_protos": ["@system_python//:python_headers"],
+         }),
+     )
+
+@@ -460,7 +458,6 @@ def build_targets(name):
+             "//src/google/protobuf/io",
+             "@abseil-cpp//absl/log:absl_check",
+             "@abseil-cpp//absl/status",
+-            "@system_python//:python_headers",
+         ],
+     )
+
+@@ -474,7 +471,6 @@ def build_targets(name):
+         env = {"PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION": "python"},
+         failure_list = "//conformance:failure_list_python.txt",
+         target_compatible_with = select({
+-            "@system_python//:none": ["@platforms//:incompatible"],
+             ":use_fast_cpp_protos": ["@platforms//:incompatible"],
+             "//conditions:default": [],
+         }),
+@@ -489,7 +485,6 @@ def build_targets(name):
+         env = {"PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION": "cpp"},
+         failure_list = "//conformance:failure_list_python_cpp.txt",
+         target_compatible_with = select({
+-            "@system_python//:none": ["@platforms//:incompatible"],
+             ":use_fast_cpp_protos": [],
+             "//conditions:default": ["@platforms//:incompatible"],
+         }),
+@@ -503,7 +498,6 @@ def build_targets(name):
+         env = {"PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION": "upb"},
+         failure_list = "//conformance:failure_list_python_upb.txt",
+         target_compatible_with = select({
+-            "@system_python//:none": ["@platforms//:incompatible"],
+             ":use_fast_cpp_protos": ["@platforms//:incompatible"],
+             "//conditions:default": [],
+         }),
+diff --git a/python/dist/BUILD.bazel b/python/dist/BUILD.bazel
+index e7d32cb1f..b27d30476 100644
+--- a/python/dist/BUILD.bazel
++++ b/python/dist/BUILD.bazel
+@@ -11,13 +11,12 @@ load("@protobuf_pip_deps//:requirements.bzl", "requirement")
+ load("@rules_pkg//pkg:mappings.bzl", "pkg_files", "strip_prefix")
+ load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
+ load("@rules_python//python:packaging.bzl", "py_wheel")
+-load("@system_python//:version.bzl", "SYSTEM_PYTHON_VERSION")
+ load("//:protobuf_version.bzl", "PROTOBUF_PYTHON_VERSION")
+ load(":dist.bzl", "py_dist", "py_dist_module")
+ load(":py_proto_library.bzl", "py_proto_library")
+
+ licenses(["notice"])
+-
++SYSTEM_PYTHON_VERSION = "312"
+ py_dist_module(
+     name = "message_mod",
+     extension = "//python:_message_binary",
+@@ -105,6 +104,24 @@ config_setting(
+     },
+ )
+
++
++config_setting(
++    name = "linux_ppc64le_release",
++    flag_values = {
++        "//toolchain:release": "True",
++    },
++    values = {"cpu": "linux-ppc64le"},
++)
++config_setting(
++    name = "linux_ppc64le_local",
++    constraint_values = [
++        "@platforms//os:linux",
++        "@platforms//cpu:ppc",
++    ],
++    flag_values = {
++        "//toolchain:release": "False",
++    },
++)
+ config_setting(
+     name = "osx_x86_64_release",
+     flag_values = {
+@@ -294,7 +311,6 @@ pkg_tar(
+     package_file_name = "protobuf.tar.gz",
+     strip_prefix = ".",
+     target_compatible_with = select({
+-        "@system_python//:none": ["@platforms//:incompatible"],
+         "//conditions:default": [],
+     }),
+ )
+@@ -313,7 +329,6 @@ genrule(
+         mv protobuf/dist/*.tar.gz $@
+     """,
+     target_compatible_with = select({
+-        "@system_python//:none": ["@platforms//:incompatible"],
+         "//conditions:default": [],
+     }),
+     tools = [requirement("setuptools")],
+@@ -349,6 +364,8 @@ py_wheel(
+         ":linux_aarch64_release": "manylinux2014_aarch64",
+         ":linux_s390x_local_unused": "linux_s390x",
+         ":linux_s390x_release_unused": "manylinux2014_s390x",
++        ":linux_ppc64le_local": "linux_ppc64le",
++        ":linux_ppc64le_release": "manylinux2014_ppc64le",
+         ":osx_universal2": "macosx_10_9_universal2",
+         ":osx_aarch64": "macosx_11_0_arm64",
+         ":windows_x86_32": "win32",
+@@ -372,7 +389,6 @@ py_wheel(
+         "src/",
+     ],
+     target_compatible_with = select({
+-        "@system_python//:none": ["@platforms//:incompatible"],
+         "//conditions:default": [],
+     }),
+     version = PROTOBUF_PYTHON_VERSION,
+@@ -412,7 +428,6 @@ py_wheel(
+         "src/",
+     ],
+     target_compatible_with = select({
+-        "@system_python//:none": ["@platforms//:incompatible"],
+         "//conditions:default": [],
+     }),
+     version = PROTOBUF_PYTHON_VERSION,
+@@ -438,7 +453,6 @@ py_wheel(
+         "src/",
+     ],
+     target_compatible_with = select({
+-        "@system_python//:none": ["@platforms//:incompatible"],
+         "//conditions:default": [],
+     }),
+     version = PROTOBUF_PYTHON_VERSION,
+diff --git a/python/dist/dist.bzl b/python/dist/dist.bzl
+index 7c9095e26..f57182665 100644
+--- a/python/dist/dist.bzl
++++ b/python/dist/dist.bzl
+@@ -1,8 +1,7 @@
+ """Rules to create python distribution files and properly name them"""
+
+ load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
+-load("@system_python//:version.bzl", "SYSTEM_PYTHON_VERSION")
+-
++SYSTEM_PYTHON_VERSION = "312"
+ def _get_suffix(limited_api, python_version, cpu):
+     """Computes an ABI version tag for an extension module per PEP 3149."""
+     if "win32" in cpu or "win64" in cpu:
+@@ -30,6 +29,8 @@ def _get_suffix(limited_api, python_version, cpu):
+             "linux-x86_64": "x86_64-linux-gnu",
+             "k8": "x86_64-linux-gnu",
+             "s390x": "s390x-linux-gnu",
++            "ppc64le": "cp39-cp39-manylinux2014_ppc64le",
++            "ppc": "cp39-cp39-manylinux2014_ppc64le",
+         }
+
+         return ".cpython-{}-{}.{}".format(
+diff --git a/python/internal.bzl b/python/internal.bzl
+index c9be66e10..45711a214 100644
+--- a/python/internal.bzl
++++ b/python/internal.bzl
+@@ -134,7 +134,6 @@ def internal_py_test(deps = [], **kwargs):
+             "@com_google_absl_py//absl/testing:parameterized",
+         ],
+         target_compatible_with = select({
+-            "@system_python//:supported": [],
+             "//conditions:default": ["@platforms//:incompatible"],
+         }),
+         **kwargs
+diff --git a/python/py_extension.bzl b/python/py_extension.bzl
+index 2afae61df..e7ea08a30 100644
+--- a/python/py_extension.bzl
++++ b/python/py_extension.bzl
+@@ -33,7 +33,7 @@ def py_extension(name, srcs, copts, deps = [], **kwargs):
+             "//python:full_api_3.9_win64": ["@nuget_python_x86-64_3.9.0//:python_full_api"],
+             "//python:limited_api_3.10_win32": ["@nuget_python_i686_3.10.0//:python_limited_api"],
+             "//python:limited_api_3.10_win64": ["@nuget_python_x86-64_3.10.0//:python_limited_api"],
+-            "//conditions:default": ["@system_python//:python_headers"],
++            "//conditions:default": [],
+         }),
+         **kwargs
+     )
+--
+2.47.3
