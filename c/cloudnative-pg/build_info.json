@@ -1,0 +1,18 @@
+{
+  "maintainer": "Soham.Badjate@ibm.com",
+  "package_name": "cloudnative-pg",
+  "github_url": "https://github.com/apache/commons-io.git",
+  "version": "release-1.25",
+  "default_branch": "master",
+  "package_dir": "c/cloudnative-pg",
+  "build_script": "cloudnative-pg_release-1.25_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v1.23.2": {
+    "build_script": "cloudnative-pg-v1.23.2-ubuntu22.04.sh"
+  },
+  "release-1.25": {
+    "build_script": "cloudnative-pg_release-1.25_ubi_9.3.sh"
+  }
+}
