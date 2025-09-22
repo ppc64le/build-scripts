@@ -1,7 +1,7 @@
 {
   "maintainer": "Soham.Badjate@ibm.com",
   "package_name": "cloudnative-pg",
-  "github_url": "https://github.com/apache/commons-io.git",
+  "github_url": "https://github.com/cloudnative-pg/release-1.25.git",
   "version": "release-1.25",
   "default_branch": "master",
   "package_dir": "c/cloudnative-pg",
