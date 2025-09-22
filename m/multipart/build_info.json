@@ -2,7 +2,7 @@
   "maintainer": "ramnathnayak-ibm",
   "package_name": "multipart",
   "github_url": "https://github.com/defnull/multipart",
-  "version": "v1.3.0",
+  "version": "v1.2.1",
   "default_branch": "master",
   "build_script": "multipart_ubi_9.6.sh",
   "package_dir": "m/multipart",
