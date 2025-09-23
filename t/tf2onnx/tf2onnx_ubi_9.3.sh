@@ -583,7 +583,7 @@ fi
 echo " --------------------------------- Tf2Onnx Wheel Build --------------------------------- "
 
 # Build wheel
-python${PYTHON_VERSION} -m build --wheel --no-isolation --outdir="$CURRENT_DIR"
+python${PYTHON_VERSION} setup.py bdist_wheel --plat-name=linux_$(uname -m) --dist-dir $CURRENT_DIR
 
 echo " --------------------------------- Tf2Onnx Wheel Built Success --------------------------------- "
 
