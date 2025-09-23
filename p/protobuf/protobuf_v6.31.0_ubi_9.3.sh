@@ -42,7 +42,7 @@ cd bazel-7.1.2-dist
 
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
-
+export PYTHON_VERSION=3.12
 EXTRA_BAZEL_ARGS="--jobs=16 --host_javabase=@local_jdk//:jdk" bash ./compile.sh
 chmod +x output/bazel
 mv output/bazel /usr/local/bin/bazel
