@@ -30,7 +30,7 @@ BUILD_DIR="protobuf"
 
 yum install -y git wget gcc-toolset-13 zip unzip \
     python3 python3-devel \
-    python3.12 python3.12-devel \
+    python3.12 python3.12-devel python3.12-pip \
     java-21-openjdk-devel
 
 source /opt/rh/gcc-toolset-13/enable
