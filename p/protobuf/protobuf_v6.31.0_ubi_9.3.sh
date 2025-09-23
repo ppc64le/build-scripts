@@ -72,7 +72,7 @@ echo "------------Protobuf Built Successfully--------------"
 WHEEL_DIR="bazel-bin/python/dist"
 WHEEL_PATH=$(find "$WHEEL_DIR" -type f -name "*.whl" | head -n 1)
 
-cp "$WHEEL_PATH" $CURRENT_DIR
+cp "$WHEEL_PATH" $WORK_DIR
 # wheel install
 python3.12 -m pip install $WHEEL_PATH
 python3.12 -c "import google.protobuf; print(google.protobuf.__version__)"
