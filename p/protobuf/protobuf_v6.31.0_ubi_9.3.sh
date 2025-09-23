@@ -67,7 +67,8 @@ bazel build //python/dist:binary_wheel \
     --//python:python_version=system \
     --//python:limited_api=True \
     --copt="-I/usr/include/python${PYTHON_VERSION}"
-
+    
+echo "------------Protobuf Built Successfully--------------"
 WHEEL_DIR="bazel-bin/python/dist"
 WHEEL_PATH=$(find "$WHEEL_DIR" -type f -name "*.whl" | head -n 1)
 
