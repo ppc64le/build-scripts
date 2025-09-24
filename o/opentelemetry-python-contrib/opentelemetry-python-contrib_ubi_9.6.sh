@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : opentelemetry-python
+# Package          : opentelemetry-python-contrib
 # Version          : v1.16.0
 # Source repo      : https://github.com/open-telemetry/opentelemetry-python-contrib
 # Tested on        : UBI:9.6
