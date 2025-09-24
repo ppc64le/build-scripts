@@ -1,12 +1,12 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
-# package          : pyephem
+# Package          : pyephem
 # Version          : 4.2
 # Source repo      : https://github.com/brandon-rhodes/pyephem.git
 # Tested on        : UBI 9.3
 # Language         : Python
 # Travis-Check     : True
-# Script License   : GNU General Public License v3.0
+# Script License   : Apache License, Version 2 or later
 # Maintainer       : Aastha Sharma <aastha.sharma4@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
@@ -16,6 +16,8 @@
 #                    contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
+
+set -ex
 
 PACKAGE_NAME=pyephem
 PACKAGE_VERSION=${1:-4.2}
