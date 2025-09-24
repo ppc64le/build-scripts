@@ -312,6 +312,10 @@ if ! python3.12 setup.py install; then
     echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  wheel_built_fails"
     exit 1
 fi
+#build wheel
+cd $CURRENT_DIR/$PACKAGE_DIR
+python3.12 setup.py bdist_wheel --plat-name=linux_$(uname -m)
+mv dist/*.whl "$CURRENT_DIR/"
 
 echo "Running tests for $PACKAGE_NAME..."
 # Test the onnxconverter-common package
