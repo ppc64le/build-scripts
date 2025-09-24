@@ -1,0 +1,16 @@
+{
+  "maintainer": "ramnathnayak-ibm",
+  "package_name": "opentelemetry-python-contrib",
+  "github_url": "https://github.com/open-telemetry/opentelemetry-python-contrib",
+  "version": "v1.16.0",
+  "wheel_build" : true,
+  "default_branch": "main",
+  "package_dir": "o/opentelemetry-python-contrib",
+  "build_script": "opentelemetry-python-contrib_ubi_9.6.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+     "build_script":"opentelemetry-python-contrib_ubi_9.6.sh"
+  }
+}
