@@ -9,7 +9,7 @@ import re
 
 
 GITHUB_BUILD_SCRIPT_BASE_REPO = "build-scripts"
-GITHUB_BUILD_SCRIPT_BASE_OWNER = "ppc64le"
+GITHUB_BUILD_SCRIPT_BASE_OWNER = "stutiibm"
 HOME = os.getcwd()
 
 package_data = {}
