@@ -5,6 +5,8 @@
 # Version       : 8.0
 # Source repo   : https://github.com/zopefoundation/zope.interface.git
 # Tested on     : UBI:9.6
+# Language      : Python
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Aastha Sharma <aastha.sharma4@ibm.com>
 #
