@@ -5,7 +5,7 @@
   "version": "4.2",
   "default_branch": "master",
   "package_dir": "p/pyephem",
-  "wheel_build" : true,
+  "wheel_build" : "true",
   "build_script": "pyephem_ubi_9.3.sh",
   "validate_build_script": "true",
   "use_non_root_user": "false",
