@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "pydantic_core",
+   "github_url": "https://github.com/pydantic/pydantic-core",
+   "version": "v2.33.2",
+   "default_branch": "main",
+   "build_script": "pydantic_core_ubi_9.3.sh",
+   "package_dir": "p/pydantic_core",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
