@@ -173,11 +173,17 @@ fi
 
 # Run Unit Test
 if ! make test ; then
-    echo "------------------$PACKAGE_NAME: Tests_Fail------------------"
+    echo "------------------$PACKAGE_NAME: Unit Tests_Fail------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Tests_Fail"
     exit 2
-
+# Run e2e test (will fail)
+elif ! make e2e-test-kind ; then
+    echo "------------------$PACKAGE_NAME: E2E Tests_Fail------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Tests_Fail"
+    exit 2
+    
 else
     echo "------------------$PACKAGE_NAME: Install & test both success ---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -185,7 +191,4 @@ else
     exit 0
 fi
 
-# Test End-to-End 
-cd $PACKAGE_NAME
-make e2e-test-kind
 set +ex
