@@ -64,4 +64,3 @@ begin=`expr $lineNum + 1` && end=`expr $lineNum + 3` &&
 sed -i -e ''$begin,$end'd' Makefile
 # End
 make dev && ulimit -n 65536 && eval $(luarocks path --bin) && make test
-
