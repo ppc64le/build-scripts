@@ -37,9 +37,9 @@ CMAKE_VERSION=3.29.2
 wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz
 tar -xzf cmake-${CMAKE_VERSION}.tar.gz
 cd cmake-${CMAKE_VERSION}
-./bootstrap --prefix=/usr/local --parallel=2
+./bootstrap --prefix=/usr/local
 echo "Installing cmake..."
-make -j2
+make
 echo "Installing cmake..."
 make install
 cmake --version
