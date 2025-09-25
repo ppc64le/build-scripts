@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "iniparse",
+   "github_url": "https://github.com/candlepin/python-iniparse",
+   "version": "0.5",
+   "default_branch": "main",
+   "build_script": "iniparse_ubi_9.3.sh",
+   "package_dir": "i/iniparse",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
