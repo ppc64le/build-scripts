@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "comm",
+   "github_url": "https://github.com/ipython/comm",
+   "version": "v0.2.1",
+   "default_branch": "main",
+   "build_script": "comm_ubi_9.3.sh",
+   "package_dir": "c/comm",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
