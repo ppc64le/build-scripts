@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "distro",
+   "github_url": "https://github.com/python-distro/distro",
+   "version": "v1.9.0",
+   "default_branch": "master",
+   "build_script": "distro_ubi_9.3.sh",
+   "package_dir": "d/distro",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
