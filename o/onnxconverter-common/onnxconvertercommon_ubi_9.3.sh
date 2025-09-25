@@ -98,7 +98,7 @@ build_opts+=(NUM_THREADS=8)
 build_opts+=(NO_AFFINITY=1)
 
 # Build OpenBLAS
-make -j2 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
+make ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
 
 # Install OpenBLAS
 CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
@@ -339,8 +339,7 @@ if ! python3.12 setup.py install; then
 fi
 #build wheel
 cd $CURRENT_DIR/$PACKAGE_DIR
-python3.12 setup.py bdist_wheel --plat-name=linux_$(uname -m)
-mv dist/*.whl "$CURRENT_DIR/"
+python3.12 setup.py bdist_wheel --dist-dir $CURRENT_DIR --plat-name=linux_$(uname -m) 
 
 echo "Running tests for $PACKAGE_NAME..."
 # Test the onnxconverter-common package
