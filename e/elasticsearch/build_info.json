@@ -105,6 +105,13 @@
     },
     "build_script": "elasticsearch_v8.3.2_ubi_8.5.sh"
   },
+    "v9.0.4": {
+    "dir": "9.0.4_ubi_9",
+    "patches": {
+      "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_v9.0.4.patch"
+    },
+    "build_script": "elasticsearch_v9.0.4_ubi_9.3.sh"
+  },  
   "v*.*.*": {
     "dir": "template",
     "patches": {
