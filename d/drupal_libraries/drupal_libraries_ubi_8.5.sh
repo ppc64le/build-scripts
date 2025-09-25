@@ -1,13 +1,13 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 # Package          : drupal-libraries
-# Version          : 8.x-3.0-beta1
+# Version          : 8.x-3.0-beta1,8.x-3.0-beta2
 # Source repo      : https://git.drupalcode.org/project/libraries
 # Tested on        : UBI 8.5
 # Language         : PHP
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Vathsala . <vaths367@in.ibm.com>
+# Maintainer       : Vathsala . <vaths367@in.ibm.com>, Amit Mukati <amit.mukati3@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
