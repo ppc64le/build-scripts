@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "lazy_loader",
+   "github_url": "https://github.com/scientific-python/lazy_loader",
+   "version": "v0.4",
+   "default_branch": "main",
+   "build_script": "lazy_loader_ubi_9.3.sh",
+   "package_dir": "l/lazy_loader",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
