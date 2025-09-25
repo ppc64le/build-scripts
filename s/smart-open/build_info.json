@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "smart-open",
+   "github_url": "https://github.com/piskvorky/smart_open",
+   "version": "v6.1.0",
+   "default_branch": "develop",
+   "build_script": "smart-open_ubi_9.3.sh",
+   "package_dir": "s/smart-open",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
