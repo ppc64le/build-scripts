@@ -36,6 +36,15 @@ export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 export SITE_PACKAGE_PATH=/usr/local/lib/python${PYTHON_VERSION}/site-packages
 
+echo "------------------------------------------------------Installing cmake-----------------------------------------------------"
+wget https://cmake.org/files/v3.28/cmake-3.28.0.tar.gz
+tar -zxvf cmake-3.28.0.tar.gz
+cd cmake-3.28.0
+./bootstrap
+make
+make install
+cd $WORK_DIR
+
 echo " --------------------------------------------------- OpenBlas Installing --------------------------------------------------- "
 
 git clone https://github.com/OpenMathLib/OpenBLAS
