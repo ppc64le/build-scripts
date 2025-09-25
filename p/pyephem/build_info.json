@@ -1,15 +1,16 @@
 {
-  "maintainer": "AbhiIBM",
+  "maintainer": "aastha-sharma2",
   "package_name": "pyephem",
   "github_url": "https://github.com/brandon-rhodes/pyephem.git",
-  "version": "4.1.5",
+  "version": "4.2",
   "default_branch": "master",
   "package_dir": "p/pyephem",
-  "build_script": "pyephem_ubi_8.7.sh",
+  "wheel_build" : "true",
+  "build_script": "pyephem_ubi_9.6.sh",
   "validate_build_script": "true",
   "use_non_root_user": "false",
   "docker_build": "false",
-  "4.1.*": {
-    "build_script": "pyephem_ubi_8.7.sh"
+   "*": {
+    "build_script": "pyephem_ubi_9.6.sh"
   }
 }
