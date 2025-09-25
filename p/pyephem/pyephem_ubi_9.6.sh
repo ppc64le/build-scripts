@@ -3,7 +3,7 @@
 # Package          : pyephem
 # Version          : 4.2
 # Source repo      : https://github.com/brandon-rhodes/pyephem.git
-# Tested on        : UBI 9.3
+# Tested on        : UBI:9.6
 # Language         : Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
