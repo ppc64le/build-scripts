@@ -1,0 +1,14 @@
+diff --git a/src/build_workflow/build_args.py b/src/build_workflow/build_args.py
+index 1ad26503..6caed5cb 100644
+--- a/src/build_workflow/build_args.py
++++ b/src/build_workflow/build_args.py
+@@ -14,8 +14,7 @@ from typing import IO, List
+ class BuildArgs:
+     SUPPORTED_PLATFORMS = ["linux", "darwin", "windows"]
+     SUPPORTED_ARCHITECTURES = [
+-        "x64",
+-        "arm64",
++        "ppc64le"
+     ]
+     SUPPORTED_DISTRIBUTIONS = ["tar", "zip", "rpm", "deb"]
+ 
