@@ -27,7 +27,7 @@ PACKAGE_DIR=onnxmltools
 WORK_DIR=$(pwd)
 
 echo " --------------------------------------------------- Installing dependencies --------------------------------------------------- "
-yum install -y python3-devel python3.12 python3.12-devel python3.12-pip git make libtool wget gcc-toolset-13-gcc
+yum install -y python3.12 python3.12-devel python3.12-pip git make libtool wget gcc-toolset-13-gcc
 yum install -y gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang
 yum install -y cmake xz bzip2-devel libffi-devel patch ninja-build
 PYTHON_VERSION=$(python3.12 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
@@ -83,7 +83,7 @@ build_opts+=(NUM_THREADS=8)
 # Disable CPU/memory affinity handling to avoid problems with NumPy and R
 build_opts+=(NO_AFFINITY=1)
 echo " --------------------------------------------------- Build OpenBlas --------------------------------------------------- "
-make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
+make ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
 echo " --------------------------------------------------- Install OpenBLAS --------------------------------------------------- "
 CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
 
@@ -261,13 +261,24 @@ export CXXFLAGS="-Wno-stringop-overflow"
 export CFLAGS="-Wno-stringop-overflow"
 export LD_LIBRARY_PATH=/OpenBLAS:/OpenBLAS/libopenblas.so.0:$LD_LIBRARY_PATH
 
-/usr/bin/python3 -m pip install packaging wheel
-NUMPY_INCLUDE=$(python3.12 -c "import numpy; print(numpy.get_include())")
+#get python version
+PYTHON_VERSION=$(compgen -c | grep -E '^python3\.[0-9]+$' | sort -Vr | head -n 1)
+PYTHON_PATH=$(command -v $PYTHON_VERSION)
+export PYTHON_EXECUTABLE=$PYTHON_PATH
+export PATH=$(dirname "$PYTHON_EXECUTABLE"):$PATH
+sed -i "s/python3/$PYTHON_VERSION/g" build.sh
+
+# Install required Python packages
+$PYTHON_EXECUTABLE -m pip install packaging wheel numpy==2.0.2
+
+# Confirm NumPy installation and get include path
+$PYTHON_EXECUTABLE -c "import numpy; print('NumPy version:', numpy.__version__)"
+NUMPY_INCLUDE=$($PYTHON_EXECUTABLE -c "import numpy; print(numpy.get_include())")
 echo "NumPy include path: $NUMPY_INCLUDE"
 
 # Manually defines Python::NumPy for CMake versions with broken NumPy detection
-sed -i '193i # Fix for Python::NumPy target not found\nif(NOT TARGET Python::NumPy)\n    find_package(Python3 COMPONENTS NumPy REQUIRED)\n    add_library(Python::NumPy INTERFACE IMPORTED)\n    target_include_directories(Python::NumPy INTERFACE ${Python3_NumPy_INCLUDE_DIR})\n    message(STATUS "Manually defined Python::NumPy with include dir: ${Python3_NumPy_INCLUDE_DIR}")\nendif()\n' $WORK_DIR/onnxruntime/cmake/onnxruntime_python.cmake
-export CXXFLAGS="-I/usr/local/lib64/python${PYTHON_VERSION}/site-packages/numpy/_core/include/numpy $CXXFLAGS"
+sed -i '193i # Fix for Python::NumPy target not found\nif(NOT TARGET Python::NumPy)\n    find_package(Python3 COMPONENTS NumPy REQUIRED)\n    add_library(Python::NumPy INTERFACE IMPORTED)\n    target_include_directories(Python::NumPy INTERFACE ${Python3_NumPy_INCLUDE_DIR})\n    message(STATUS "Manually defined Python::NumPy with include dir: ${Python3_NumPy_INCLUDE_DIR}")\nendif()\n' $CURRENT_DIR/onnxruntime/cmake/onnxruntime_python.cmake
+
 sed -i 's|5ea4d05e62d7f954a46b3213f9b2535bdd866803|51982be81bbe52572b54180454df11a3ece9a934|' cmake/deps.txt
 
 echo " --------------------------------------------------- Building onnxruntime --------------------------------------------------- "
