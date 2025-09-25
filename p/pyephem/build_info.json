@@ -6,11 +6,11 @@
   "default_branch": "master",
   "package_dir": "p/pyephem",
   "wheel_build" : "true",
-  "build_script": "pyephem_ubi_9.3.sh",
+  "build_script": "pyephem_ubi_9.6.sh",
   "validate_build_script": "true",
   "use_non_root_user": "false",
   "docker_build": "false",
    "*": {
-    "build_script": "pyephem_ubi_9.3.sh"
+    "build_script": "pyephem_ubi_9.6.sh"
   }
 }
