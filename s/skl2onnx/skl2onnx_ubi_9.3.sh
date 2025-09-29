@@ -22,7 +22,7 @@
 
 # Variables
 PACKAGE_NAME=skl2onnx
-PACKAGE_VERSION=${1:-1.18.0}
+PACKAGE_VERSION=${1:-v1.18}
 PYTHON_VERSION=${2:-3.11}
 PACKAGE_URL=https://github.com/onnx/sklearn-onnx.git
 PACKAGE_DIR=sklearn-onnx
@@ -348,6 +348,9 @@ if ! python${PYTHON_VERSION} -m pip install -e . --no-build-isolation --no-deps;
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
+
+echo "******Building Wheel With Platform Tag******"
+python${PYTHON_VERSION} setup.py bdist_wheel --plat-name=linux_$(uname -m) --dist-dir $CURRENT_DIR
 
 # # Run tests
 echo "Running tests for $PACKAGE_NAME..."
