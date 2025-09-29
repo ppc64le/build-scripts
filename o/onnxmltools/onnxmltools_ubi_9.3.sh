@@ -43,6 +43,8 @@ cd cmake-3.28.0
 ./bootstrap
 make
 make install
+export PATH=/usr/local/bin:$PATH
+ln -sf /usr/local/bin/cmake /usr/bin/cmake
 cd $WORK_DIR
 
 echo " --------------------------------------------------- OpenBlas Installing --------------------------------------------------- "
@@ -285,9 +287,6 @@ $PYTHON_EXECUTABLE -c "import numpy; print('NumPy version:', numpy.__version__)"
 NUMPY_INCLUDE=$($PYTHON_EXECUTABLE -c "import numpy; print(numpy.get_include())")
 echo "NumPy include path: $NUMPY_INCLUDE"
 
-# Manually defines Python::NumPy for CMake versions with broken NumPy detection
-sed -i '193i # Fix for Python::NumPy target not found\nif(NOT TARGET Python::NumPy)\n    find_package(Python3 COMPONENTS NumPy REQUIRED)\n    add_library(Python::NumPy INTERFACE IMPORTED)\n    target_include_directories(Python::NumPy INTERFACE ${Python3_NumPy_INCLUDE_DIR})\n    message(STATUS "Manually defined Python::NumPy with include dir: ${Python3_NumPy_INCLUDE_DIR}")\nendif()\n' $CURRENT_DIR/onnxruntime/cmake/onnxruntime_python.cmake
-
 sed -i 's|5ea4d05e62d7f954a46b3213f9b2535bdd866803|51982be81bbe52572b54180454df11a3ece9a934|' cmake/deps.txt
 
 echo " --------------------------------------------------- Building onnxruntime --------------------------------------------------- "
@@ -336,7 +335,7 @@ export LD_LIBRARY_PATH=/OpenBLAS/local/openblas/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/local/libprotobuf/lib64:$LD_LIBRARY_PATH
 
 echo "-----------------Build Wheel onnxmltools-------------------------"
-python${PYTHON_VERSION} setup.py bdist_wheel --plat-name=linux_$(uname -m) --dist-dir $WORK_DIR
+python3.12 setup.py bdist_wheel --plat-name=linux_$(uname -m) --dist-dir $WORK_DIR
 
 #Build
 if ! (python3.12 -m pip install -e . --no-build-isolation --no-deps) ; then
