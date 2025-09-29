@@ -1,0 +1,16 @@
+{
+  "maintainer": "ramnathnayak-ibm",
+  "package_name": "flask-security",
+  "github_url": "https://github.com/pallets-eco/flask-security",
+  "version": "5.6.2",
+  "wheel_build" : true,
+  "default_branch": "main",
+  "package_dir": "f/flask-security",
+  "build_script": "flask-security_ubi_9.6.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+     "build_script":"flask-security_ubi_9.6.sh"
+  }
+}
