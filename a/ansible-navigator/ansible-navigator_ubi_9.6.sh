@@ -46,7 +46,7 @@ git checkout $PACKAGE_VERSION
 python3.11 -m pip install --upgrade pip setuptools build tox wheel pycparser
 export LD_LIBRARY_PATH=$(find / -name 'libonig.so.5*' 2>/dev/null | grep '/usr/local/lib' | head -n 1 | xargs dirname):$LD_LIBRARY_PATH
 
-if ! pip3 install . ; then
+if ! python3.11 -m pip install . ; then
     echo "------------------$PACKAGE_NAME:Build_Failure---------------------"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Failure"
     exit 1
