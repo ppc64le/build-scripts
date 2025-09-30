@@ -1,0 +1,16 @@
+{
+  "maintainer": "ramnathnayak-ibm",
+  "package_name": "python-rake",
+  "github_url": "https://github.com/csurfer/rake-nltk",
+  "version": "master",
+  "wheel_build" : true,
+  "default_branch": "master",
+  "package_dir": "p/python-rake",
+  "build_script": "python-rake_ubi_9.6.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+     "build_script":"python-rake_ubi_9.6.sh"
+  }
+}
