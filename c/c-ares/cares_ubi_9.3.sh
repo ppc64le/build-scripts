@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : c-ares
+# Package       : c-ares  
 # Version       : cares-1_19_1
 # Source repo   : https://github.com/c-ares/c-ares.git
 # Tested on     : UBI 9.3
