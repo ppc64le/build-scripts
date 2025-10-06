@@ -60,7 +60,7 @@ sed -i -E 's/\&\&/\&/g' python/pyarrow/includes/libarrow_fs.pxd
 echo "Fixes applied."
 
 pip install -r python/requirements-build.txt
-pip install cython  wheel numpy==1.21.2
+pip install "cython<3.0" wheel 
 
 echo "Preparing for build..."
 
@@ -97,6 +97,10 @@ export PYARROW_PARALLEL=4
 export PYARROW_BUILD_TYPE="release"
 export PYARROW_BUNDLE_ARROW_CPP_HEADERS=1
 
+#To get proper wheel naming
+version=$(echo "$PACKAGE_VERSION" | sed 's/^apache-arrow-//')
+export SETUPTOOLS_SCM_PRETEND_VERSION=$version
+
 if ! python3 setup.py bdist_wheel --dist-dir="$CURRENT_DIR/" ; then
         echo "------------------$PACKAGE_NAME:wheel_built_fails---------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
@@ -108,4 +112,3 @@ else
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Wheel_built_success"
         exit 0
 fi
-
