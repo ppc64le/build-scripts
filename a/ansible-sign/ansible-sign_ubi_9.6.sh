@@ -26,7 +26,7 @@ PACKAGE_URL=https://github.com/ansible/ansible-sign.git
 PACKAGE_DIR=ansible-sign
 CURRENT_DIR=$(pwd)
 
-yum install openssl-devel git wget tar rust cargo python3-devel python3-pip gcc-toolset-13 libevent-devel ncurses-devel pinentry-curses pinentry
+yum install -y openssl-devel git wget tar rust cargo python3-devel python3-pip gcc-toolset-13 libevent-devel ncurses-devel pinentry-curses pinentry
 
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
