@@ -34,6 +34,9 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+#To get proper wheel naming 
+export SETUPTOOLS_SCM_PRETEND_VERSION=${PACKAGE_VERSION#v}
+
 pip install --upgrade pip tox ruff
 
 #Run Ruff to auto-fix formatting issues that caused test failures
