@@ -75,16 +75,20 @@ def trigger_basic_validation_checks(file_name):
 def trigger_script_validation_checks(file_name):
     global image_name
     print(f"Image used for the creating container: {image_name}")
+    print(f"Spawn a container and pass the build script")
     # Spawn a container and pass the build script
     client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+    print(f"Setting docker client:")
     st = os.stat(file_name)
     current_dir = os.getcwd()
     os.chmod("{}/{}".format(current_dir, file_name), st.st_mode | stat.S_IEXEC)
+    print(f"Let the container run in non detach mode, as we need to delete the container on operation completion")
     # Let the container run in non detach mode, as we need to delete the container on operation completion
     container = client.containers.run(
         image_name,
         "/home/tester/{}".format(file_name),
         #"cat /home/tester/{}".format(file_name),
+        "cat /home/tester/{}".format(file_name),
         network = 'host',
         detach = True,
         volumes = {
@@ -92,8 +96,10 @@ def trigger_script_validation_checks(file_name):
         },
         stderr = True, # Return logs from STDERR
     )
+    print(f"Lets wait for container")
     result = container.wait()
     try:
+        print(f"Lets print container logs with utf-8")
         print(container.logs().decode("utf-8"))
     except Exception:
         print(container.logs())
