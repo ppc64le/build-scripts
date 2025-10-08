@@ -53,7 +53,6 @@ yum install -y \
     cargo \
     diffutils \
     ninja-build \
-    libxcrypt-compat \
     sudo
 
 export JAVA_HOME=$(compgen -G '/usr/lib/jvm/java-21-openjdk-*')  
@@ -101,7 +100,8 @@ fi
 export PATH=/home/envoy/clang+llvm-17.0.6-powerpc64le-linux-rhel-8.8/bin:$PATH
 
 #installing cargo and cross
-curl https://sh.rustup.rs -sSf | sh -s -- -y && source ~/.cargo/env
+#curl https://sh.rustup.rs -sSf | sh -s -- -y && source ~/.cargo/env
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && source ~/.cargo/env
 cargo install cross --version 0.2.5
 export PATH=$PATH:$wdir/.cargo/bin
 
@@ -114,6 +114,7 @@ if [ -z "$(ls -A $wdir/rules_rust)" ]; then
 	cd crate_universe
 	#cross build --release --locked --bin cargo-bazel --target=powerpc64le-unknown-linux-gnu
 	rustup target add powerpc64le-unknown-linux-gnu
+	cargo update
 	cargo build --release --locked --bin cargo-bazel
 	echo "cargo-bazel build successful!"
 fi
