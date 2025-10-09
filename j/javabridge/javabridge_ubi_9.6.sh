@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package          : python-javabridge
+# Package          : javabridge
 # Version          : master
 # Source repo      : https://github.com/LeeKamentsky/python-javabridge
 # Tested on        : UBI:9.6
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=python-javabridge
+PACKAGE_NAME=javabridge
 PACKAGE_VERSION=${1:-master}
 PACKAGE_URL=https://github.com/LeeKamentsky/python-javabridge
 PACKAGE_DIR=python-javabridge
@@ -34,7 +34,7 @@ export PATH=$PATH:$JAVA_HOME/bin
 
 cd $CURRENT_DIR
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME
+cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 
