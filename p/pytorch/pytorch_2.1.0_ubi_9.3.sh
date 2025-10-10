@@ -51,7 +51,7 @@ else
 fi
 
 # Clone repository
-echo "Cloning PyTorch repository..."
+echo "Cloning PyTorch repository...."
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 
