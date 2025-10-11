@@ -121,7 +121,7 @@ fi
 export CARGO_BAZEL_GENERATOR_URL=file://$wdir/rules_rust/crate_universe/target/release/cargo-bazel
 export CARGO_BAZEL_REPIN=true
 
-#Build Envoy-openssl
+# Build Envoy-openssl
 ret=0
 cd $wdir/${PACKAGE_NAME}
 export PATH=$PATH:$wdir/bazel/output
