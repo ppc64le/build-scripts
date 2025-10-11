@@ -103,7 +103,7 @@ export PATH=/home/envoy/clang+llvm-17.0.6-powerpc64le-linux-rhel-8.8/bin:$PATH
 #curl https://sh.rustup.rs -sSf | sh -s -- -y && source ~/.cargo/env
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && source ~/.cargo/env
 cargo install cross --version 0.2.5
-export PATH=$PATH:$wdir/.cargo/bin
+export PATH="$wdir/.cargo/bin:$PATH"
 
 # Building cargo-bazel targeting Powerpc64le
 cd $wdir
