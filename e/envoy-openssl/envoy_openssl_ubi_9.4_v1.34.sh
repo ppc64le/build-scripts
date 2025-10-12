@@ -72,12 +72,12 @@ useradd envoy
 sudo -u envoy -- bash <<EOF
 set -ex
 
-#Download Envoy source code
+# Download Envoy source code
 cd $wdir
 git clone ${PACKAGE_URL}
 cd ${PACKAGE_NAME} && git checkout ${PACKAGE_VERSION}
 
-#Build and setup bazel
+# Build and setup bazel
 cd $wdir
 if [ -z "$(ls -A $wdir/bazel)" ]; then
     mkdir bazel
