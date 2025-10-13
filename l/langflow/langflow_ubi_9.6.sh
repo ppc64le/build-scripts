@@ -30,7 +30,7 @@ CURRENT_DIR=$(pwd)
 # Install required system packages (YUM)
 # -----------------------------------------------------------------------------
 
-yum install -y git make wget openssl-devel bzip2-devel libffi-devel zlib-devel python3.12-devel python3.12-pip cmake openblas-devel gcc-toolset-13 m4 automake libtool libjpeg-devel zlib-devel libpng-devel freetype-devel gcc-toolset-13-binutils
+yum install -y git make wget openssl-devel bzip2-devel libffi-devel zlib-devel python3.12-devel python3.12-pip cmake openblas-devel gcc-toolset-13 m4 automake libtool libjpeg-devel zlib-devel libpng-devel freetype-devel gcc-toolset-13-binutils llvm llvm-devel clang clang-devel perl libffi-devel pkgconfig zlib-devel libjpeg-turbo-devel libpng-devel freetype-devel bzip2
 
 # -----------------------------------------------------------------------------
 # Enable GCC 13 (from gcc-toolset-13)
@@ -127,12 +127,38 @@ cd faiss/python
 python3.12 setup.py install
 cd $CURRENT_DIR
 
+#echo "-------------------------------installing geos--------------------------------------"
+curl -LO https://download.osgeo.org/geos/geos-3.12.1.tar.bz2
+tar -xjf geos-3.12.1.tar.bz2
+cd geos-3.12.1
+./configure --prefix=/usr/local
+make -j$(nproc)
+make install
+cd $CURRENT_DIR
+
 # -----------------------------------------------------------------------------
 #clone and install package
 # -----------------------------------------------------------------------------
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+
+#install onnxruntime, grpcio and other dependency
+pip3.12 install --prefer-binary onnxruntime==1.21.0 --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux 
+pip3.12 install --prefer-binary grpcio==1.71.0 --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
+RUSTFLAGS="--cfg reqwest_unstable" pip3.12 install impit
+pip3.12 install apify-client
+pip3.12 install --prefer-binary thrift_cpp==0.21.0 --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
+pip3.12 install --prefer-binary utf8proc --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
+pip3.12 install --prefer-binary orc --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
+pip3.12 install --prefer-binary pyarrow==19.0.0 --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux 
+pip3.12 install --prefer-binary torch==2.6.0 --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
+pip3.12 install --prefer-binary opencv-python==4.12.0.88 --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/Linux
+pip3.12 install --prefer-binary fastavro==1.12.1 --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
+pip3.12 install --prefer-binary shapely==2.1.2 --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
+pip3.12 install --prefer-binary primp==0.15.0 --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
+
+sed -i '/onnxruntime/d;/grpcio/d;/impit/d;/apify-client/d;/pyarrow/d;/torch/d;/opencv-python/d;/fastavro/d;/faiss-cpu/d;/pypdfium2/d;/litellm/d;/astra-assistants/d' pyproject.toml
 
 # -----------------------------------------------------------------------------
 # install langflow
