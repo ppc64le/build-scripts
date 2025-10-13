@@ -68,7 +68,7 @@ pip install -r requirements.txt
 
 # Build and install the package
 echo "Starting PyTorch build and installation..."
-if ! (MAX_JOBS=$(nproc) python3 setup.py install); then
+if ! python3 setup.py install; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Fails"
