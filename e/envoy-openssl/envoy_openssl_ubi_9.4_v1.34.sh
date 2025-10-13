@@ -25,7 +25,7 @@ PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
 PACKAGE_URL=https://github.com/${PACKAGE_ORG}/${PACKAGE_NAME}
 SCRIPT_PACKAGE_VERSION_WO_LEADING_V="${SCRIPT_PACKAGE_VERSION:1}"
 
-#Install dependencies
+# Install dependencies
 yum install -y \
     cmake \
     libatomic \
