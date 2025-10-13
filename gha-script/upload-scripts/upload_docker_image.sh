@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-echo "$travis_currency_service_id_api_key" | docker login -u iamapikey --password-stdin icr.io
+echo "$gha_currency_service_id_api_key" | docker login -u iamapikey --password-stdin icr.io
 if [ $? -ne 0 ]; then
     echo "Docker login failed. Exiting script."
     exit 1

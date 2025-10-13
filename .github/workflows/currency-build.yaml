@@ -120,8 +120,8 @@ jobs:
      
        
       - name: Build Package
-        #env:
-          #CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.CURRENCY_SERVICE_ID_API_KEY }}
+        env:
+          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
         run: |
           echo "Sourcing variable.sh and scanner-env.sh..........................................."
           source package-cache/variable.sh
@@ -186,6 +186,7 @@ jobs:
           - python-version: "3.13"
             allow-failure: true
     env:
+      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
       PYTHON_VERSION: ${{ matrix.python-version }}
       PACKAGE_NAME: ${{ inputs.package_name }}
       VERSION: ${{ inputs.version }}
@@ -298,6 +299,8 @@ jobs:
           mv package-cache/grype_source_sbom_results.json package-cache/grype_source_vulnerabilities_results.json source_grype
 
       - name: Upload Scanner Results
+        env:
+           GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
         run: |
           mkdir source
           find source_trivy -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
