@@ -350,5 +350,3 @@ fi
 #kubectl apply -k config/samples
 
 #make integration-test
-#
-#
