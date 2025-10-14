@@ -336,7 +336,11 @@ jobs:
           docker images
           
       - name: Upload Docker Image
+        env:
+          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
         run: |
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
           chmod +x ./gha-script/upload-scripts/upload_docker_image.sh
           bash ./gha-script/upload-scripts/upload_docker_image.sh
 
