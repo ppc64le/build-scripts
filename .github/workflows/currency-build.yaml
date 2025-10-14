@@ -227,6 +227,7 @@ jobs:
 
       - name: Upload wheel artifact using custom script
         run: |
+          sudo chmod a+r *.whl
           WHEEL_FILE=*.whl
           chmod +x ./gha-script/upload-scripts/upload_wheel.sh
           bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE
@@ -303,6 +304,8 @@ jobs:
            GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
         run: |
           mkdir source
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
           find source_trivy -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
           find source_syft -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
           find source_grype -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
@@ -335,7 +338,11 @@ jobs:
           docker images
           
       - name: Upload Docker Image
+        env:
+          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
         run: |
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
           chmod +x ./gha-script/upload-scripts/upload_docker_image.sh
           bash ./gha-script/upload-scripts/upload_docker_image.sh
 
@@ -400,8 +407,12 @@ jobs:
           mv grype_image_sbom_results.json grype_image_vulnerabilities_results.json image_grype
 
       - name: Upload Image Scanner Results
+        env:
+          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
         run: |
           mkdir image
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
           find image_trivy -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
           find image_syft -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
           find image_grype -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
