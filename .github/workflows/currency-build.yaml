@@ -227,6 +227,7 @@ jobs:
 
       - name: Upload wheel artifact using custom script
         run: |
+          sudo chmod a+r *.whl
           WHEEL_FILE=*.whl
           chmod +x ./gha-script/upload-scripts/upload_wheel.sh
           bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE
