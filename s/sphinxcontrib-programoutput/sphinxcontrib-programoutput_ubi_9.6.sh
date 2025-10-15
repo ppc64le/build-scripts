@@ -1,6 +1,6 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
-# package          : sphinxcontrib-programoutput
+# Package          : sphinxcontrib-programoutput
 # Version          : 0.18
 # Source repo      : https://github.com/NextThought/sphinxcontrib-programoutput.git
 # Tested on        : UBI:9.6
