@@ -466,7 +466,6 @@ jobs:
                 python - <<'EOF'
                 import os
                 package_name = os.getenv("PACKAGE_NAME")
-                version=os.getenv(version)
                 from process_bom.CurrencyProcessor import CurrencyProcessor
                 cp = CurrencyProcessor()
                 result = cp.update_local_build_details_in_database(package_name, version)
