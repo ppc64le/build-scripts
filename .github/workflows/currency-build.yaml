@@ -460,12 +460,12 @@ jobs:
                 echo "===== scanner-env.sh ====="
                 cat package-cache/scanner-env.sh
                 echo "-------------package name : ${PACKAGE_NAME}--------------------"
-                #echo "-------------version : ${version}--------------------"
+                echo "-------------version : ${version}--------------------"
                 chmod +x process_bom/*.py || true
                 python - <<'EOF'
                 import os
                 package_name = os.getenv("PACKAGE_NAME")
-                version=os.getenv(VERSION)
+                version=os.getenv(version)
                 from process_bom.CurrencyProcessor import CurrencyProcessor
                 cp = CurrencyProcessor()
                 result = cp.update_local_build_details_in_database(package_name, version)
