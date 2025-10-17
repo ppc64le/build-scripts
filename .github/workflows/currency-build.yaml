@@ -422,7 +422,8 @@ jobs:
 
   final_summary:
       name: Final Summary Stage
-      needs: [build, wheel_build, source_scanner, image_scanner, build_docker]
+      #needs: [build, wheel_build, source_scanner, image_scanner, build_docker]
+      needs: [build_info]
       runs-on: ubuntu-24.04-ppc64le-p10
       if: always()
       steps:
@@ -459,9 +460,11 @@ jobs:
                 cat package-cache/variable.sh
                 echo "===== scanner-env.sh ====="
                 cat package-cache/scanner-env.sh
+                echo "-------------package name : ${PACKAGE_NAME}--------------------"
+                echo "-------------version : ${version}--------------------"
                 chmod +x process_bom/*.py || true
-                version = VERSION
                 python - <<'EOF'
+                version=os.getenviron(VERSION)
                 from process_bom.CurrencyProcessor import CurrencyProcessor
                 cp = CurrencyProcessor()
                 result = cp.update_local_build_details_in_database(package_name, version)
