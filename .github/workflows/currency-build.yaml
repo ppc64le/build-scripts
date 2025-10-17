@@ -447,6 +447,8 @@ jobs:
             export SEND_SLACK_NOTIFICATION=False
 
         - name: Summarize build results
+          env : 
+            PACKAGE_NAME: ${{ inputs.package_name }}
           run: |
                 echo "Sourcing variable.sh and scanner-env.sh..........................................."
                 chmod +x package-cache/variable.sh
@@ -458,7 +460,6 @@ jobs:
                 echo "===== scanner-env.sh ====="
                 cat package-cache/scanner-env.sh
                 chmod +x process_bom/*.py || true
-                package_name = ${{ inputs.package_name }}
                 version = VERSION
                 python - <<'EOF'
                 from process_bom.CurrencyProcessor import CurrencyProcessor
