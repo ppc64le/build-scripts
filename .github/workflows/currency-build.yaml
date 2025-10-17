@@ -434,18 +434,13 @@ jobs:
             name: package-cache-with-image
             path: package-cache
         
-        - name: Set up Python
-          uses: actions/setup-python@v5
-          with:
-            python-version: "3.12"
-
         - name: Create and activate venv
           run: |
             python -m venv venv
             source venv/bin/activate
             python -m pip install --upgrade pip
-            pip install -r requirements.txt
-
+            pip install requests
+            
             # Export environment variables
             export PYTHONPATH=$(pwd):$(pwd)/process_bom/
             export IS_SETUP=dev
