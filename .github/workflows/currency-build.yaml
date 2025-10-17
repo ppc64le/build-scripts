@@ -464,6 +464,7 @@ jobs:
                 chmod +x process_bom/*.py || true
                 python - <<'EOF'
                 import os
+                package_name = os.getenv("PACKAGE_NAME")
                 version=os.getenviron(VERSION)
                 from process_bom.CurrencyProcessor import CurrencyProcessor
                 cp = CurrencyProcessor()
