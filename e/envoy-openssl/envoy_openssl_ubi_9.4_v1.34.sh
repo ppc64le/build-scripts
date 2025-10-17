@@ -90,7 +90,7 @@ if [ -z "$(ls -A $wdir/bazel)" ]; then
 fi
 export PATH=$PATH:$wdir/bazel/output
 
-#Setup clang
+# Setup clang
 cd $wdir
 if [ -z "$(ls -A $wdir/clang+llvm-17.0.6-powerpc64le-linux-rhel-8.8)" ]; then
     wget https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/clang+llvm-17.0.6-powerpc64le-linux-rhel-8.8.tar.xz
