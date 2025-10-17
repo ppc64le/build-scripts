@@ -460,7 +460,7 @@ jobs:
                 echo "===== scanner-env.sh ====="
                 cat package-cache/scanner-env.sh
                 echo "-------------package name : ${PACKAGE_NAME}--------------------"
-                echo "-------------version : ${version}--------------------"
+                #echo "-------------version : ${version}--------------------"
                 chmod +x process_bom/*.py || true
                 python - <<'EOF'
                 version=os.getenviron(VERSION)
