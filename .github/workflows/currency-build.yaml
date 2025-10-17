@@ -422,8 +422,7 @@ jobs:
 
   final_summary:
       name: Final Summary Stage
-      #needs: [build, wheel_build, source_scanner, image_scanner, build_docker]
-      needs: [build_info]
+      needs: [build, wheel_build, source_scanner, image_scanner, build_docker]
       runs-on: ubuntu-24.04-ppc64le-p10
       if: always()
       steps:
