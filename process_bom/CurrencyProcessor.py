@@ -103,7 +103,8 @@ class CurrencyProcessor:
             with open(f"{package_name}_{version}.json", 'w') as outfile:
                 json.dump(final_result, outfile, indent=4)
             cos = COSWrapper(CLOUD_OBJECT_CVE_SBOM_BUCKET)
-            response = cos.push_artifacts_sbomcve(cos, artifact_name=f"{package_name}_{version}.json", artifact_path=".")
+            artifact_name=f"{package_name}_{version}.json"
+            response = cos.push_artifacts_sbomcve(artifact_name=artifact_name)
             if response:
                 print(f"Successfully pushed {package_name}_{version}.json to Cloud Object Storage.")
         except FileExistsError as e:

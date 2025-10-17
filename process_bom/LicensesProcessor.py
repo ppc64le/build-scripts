@@ -100,6 +100,38 @@ class LicensesProcessor:
                 temp_list.append(truth_value)
         temp_list = list(map(lambda item: str(item), temp_list))
         return " ".join(temp_list)
+    
+    def get_list(self, info):
+        """
+        Returns a list of strings based on the input string.
+
+        Args:
+            info (str): The input string.
+
+        Returns:
+            list: A list of strings.
+        """
+        temp_list = []
+        license_name = ""
+        this_word = ""
+        for letter in info:
+            if letter.isspace():
+                if is_operator(this_word):
+                    if license_name.strip():
+                        temp_list.append(license_name)
+                        license_name = ""
+
+                    temp_list.append(this_word)
+                    this_word = ""
+                else:
+                    this_word = this_word + letter
+                    license_name = license_name + this_word
+                    this_word = ""
+            else:
+                this_word = this_word + letter
+        license_name = license_name + this_word
+        temp_list.append(license_name)
+        return temp_list
 
     def get_exp(self, info):
         """

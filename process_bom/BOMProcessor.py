@@ -15,6 +15,15 @@ from datetime import datetime, timezone
 
 class BOMProcessor:
 
+    def __init__(self) -> None:
+        self.bom_tools = {
+            tool: {
+                "obj": eval(f"{tool}Processor()"),
+                "status": False
+            }
+            for tool in BOM_TOOLS
+        }
+
     def generate_combined_cves(self , temp_combined_cves):
         """
         Generate final combined CVEs of the form { "name": <name>, "InstalledVersion": <InstalledVersion>, ...<tools>: ...<tools that found CVE> }

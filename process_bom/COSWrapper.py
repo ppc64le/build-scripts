@@ -209,7 +209,7 @@ class COSWrapper:
         )
         return response
 
-    def push_artifacts_sbomcve(self, artifact_path, artifact_name, content_type = "application/json"):
+    def push_artifacts_sbomcve(self, artifact_name, content_type = "application/json"):
         """
         Store artifacts to the Cloud Object storage service.
         :param artifact_path: locally cahched artifact path.
@@ -224,10 +224,10 @@ class COSWrapper:
         object_url = f"{CLOUD_OBJECT_STORAGE_URL}/{self.module_bucket}/{artifact_name}"
         response = requests.put(
             object_url,
-            data = open(f"{artifact_path}/{artifact_name}",'rb').read(),
+            data = open(f"{artifact_name}",'rb').read(),
             headers = {
                 'Content-Type': content_type,
-                'Content-Length': str(os.stat(f"{artifact_path}/{artifact_name}").st_size),
+                'Content-Length': str(os.stat(f"{artifact_name}").st_size),
                 "Authorization": f"Bearer {self.get_auth_token()}"
             }
         )
