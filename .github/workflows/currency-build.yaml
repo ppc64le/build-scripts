@@ -463,6 +463,7 @@ jobs:
                 #echo "-------------version : ${version}--------------------"
                 chmod +x process_bom/*.py || true
                 python - <<'EOF'
+                import os
                 version=os.getenviron(VERSION)
                 from process_bom.CurrencyProcessor import CurrencyProcessor
                 cp = CurrencyProcessor()
