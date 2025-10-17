@@ -449,6 +449,7 @@ jobs:
         - name: Summarize build results
           env : 
             PACKAGE_NAME: ${{ inputs.package_name }}
+            VERSION: ${{ inputs.version }}
           run: |
                 echo "Sourcing variable.sh and scanner-env.sh..........................................."
                 chmod +x package-cache/variable.sh
@@ -460,7 +461,7 @@ jobs:
                 echo "===== scanner-env.sh ====="
                 cat package-cache/scanner-env.sh
                 echo "-------------package name : ${PACKAGE_NAME}--------------------"
-                echo "-------------version : ${version}--------------------"
+                echo "-------------version : ${VERSION}--------------------"
                 chmod +x process_bom/*.py || true
                 python - <<'EOF'
                 import os
