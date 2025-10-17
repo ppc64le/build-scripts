@@ -1,11 +1,6 @@
 from pathlib import Path
-import socket
 import os
 from os.path import exists
-import logging
-import json
-from cryptography.fernet import Fernet
-from cryptography.hazmat.primitives import serialization
 
 # Using ppc64le secret for Common DB and OIDC (Not maintained per arch)
 
@@ -70,7 +65,6 @@ SLACK_TRAVIS_BUILD_URL = None
 BULK_SEARCH_API = None
 
 # Cloud Object Storage
-CLOUD_OBJECT_STORAGE_URL = None
 IAM_WRITER_API_KEY = os.environ.get("IAM_WRITER_API_KEY")
 SERVICE_INSTANCE_ID = os.environ.get("SERVICE_INSTANCE_ID")
 

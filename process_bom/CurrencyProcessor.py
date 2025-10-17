@@ -2,9 +2,6 @@ import json
 import os
 import datetime
 from deprecated import deprecated
-import jenkins
-import shlex
-import subprocess
 from packaging.version import parse
 
 from .ca_config import SBOM_CVE_DIR, SCAN_TYPES
