@@ -28,39 +28,9 @@ TARGET_BRANCH = "master"
 # Cloud Object Storage Configuration:
 IAM_AUTH_URL = "https://iam.cloud.ibm.com/identity/token"
 
-# ... other class variables ...
-
-# Indicates whether the current operation is user-specific or not. This helps in pointing to the correct database while using existing database Wrapper implementation.
-# Set to "True" when the configuration or logic should depend on Common Database
-# Set to "False" for generic operations where user-specific context is not required and operation would involve arch specific database.
-user_operation= "True"
-
-# Database credential variables
-DB_CONNECTION_STRING = None
-DB_USERNAME = None
-DB_PASSWORD = None
-
-# OIDC variables
-OIDC_CLIENT_ID = None
-OIDC_CLIENT_SECRET = None
-client_id = None
-client_secret = None
-redirect_uri = None
-non_auth_uri = None
-oidc_settings = {}
-
-# Slack variables
-SLACK_URL = None
-SLACK_CURRENCY_PACKAGE_REQUEST_URL = None
-SLACK_CI_STATUS_URL = None
-SLACK_TRAVIS_BUILD_URL = None
-
-# Bulk Search API
-BULK_SEARCH_API = None
-
 # Cloud Object Storage
-IAM_WRITER_API_KEY = f"J5CZMcrEWD4UEOPwwMG3b7H9NJmxUkfvvM3wni91ROjX"
-SERVICE_INSTANCE_ID = f"6ea6b3fc-f381-4dfc-9ad1-04343f698641"
+IAM_WRITER_API_KEY = os.environ.get("IAM_WRITER_API_KEY")
+SERVICE_INSTANCE_ID = os.environ.get("SERVICE_INSTANCE_ID")
 
 # Github Token
 GITHUB_TOKEN = None
@@ -77,25 +47,6 @@ CURRENCY_METADATA_DB = "currency_metadata"
 
 INPUT_FILES = []
 MAX_DB_RECORDS = 5000
-
-
-DISTROS_SUPPORTED = (
-"rhel-7server", "rhel-7server_alt", "rhel-8.0server",
-"rhel-8server", "rhel-8.1server", "rhel-8.2server",
-"rhel-8.3server")
-
-
-DISTRO_LIST = ['Ubuntu', 'RHEL', 'UBI', 'Alpine', 'SLES']
-
-TRAVIS_DB = "travis-ci-index"
-MANAGED_CURRENCY_PACKAGES_FILE = "managed_currency_packages.json"
-JENKINS_RELEASE_CONFIG_FILE = "currency_release_jenkins_job_template.xml"
-JENKINS_NIGHTLY_CONFIG_FILE = "currency_nightly_jenkins_job_template.xml"
-DOCKER_CLOUD_ROOT_NODE = "DockerCloud_Docker_UBI_8.6"
-DOCKER_CLOUD_NON_ROOT_NODE = "DockerCloud_Docker_Jenkins_UBI_8.6"
-
-CLAIR_CONTAINER_HOST = "http://localhost:6060"
-CLAIR_CONFIG_FILE = CONFIG_DIR + "config.yaml"
 
 CONTAINER_REPO_LIST = ['icr', 'quay']
 
@@ -158,5 +109,6 @@ DISTRO_MAPPINGS = {
     "SLES": "SLES"
 }
 # Load key used for decryption of creds in dev environment
+
 
 
