@@ -1,4 +1,4 @@
-from .BaseProcessor import BaseProcessor
+from process_bom.BaseProcessor import BaseProcessor
 import subprocess
 import json
 from io import StringIO
@@ -119,3 +119,4 @@ class SyftProcessor(BaseProcessor):
             sbom = self.parse_cyclonedx(sbom_details)
 
         return cves, sbom
+
