@@ -462,6 +462,8 @@ jobs:
                 cat package-cache/scanner-env.sh
                 echo "-------------package name : ${PACKAGE_NAME}--------------------"
                 echo "-------------version : ${VERSION}--------------------"
+                pwd
+                cd build-scripts
                 chmod +x process_bom/*.py || true
                 python -m venv venv
                 source venv/bin/activate
