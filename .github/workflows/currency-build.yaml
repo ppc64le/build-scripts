@@ -436,10 +436,10 @@ jobs:
         
         - name: Create and activate venv
           run: |
-            python -m pip install --upgrade pip
-            pip install requests deprecated xlsxwriter
             python -m venv venv
             source venv/bin/activate
+            python -m pip install --upgrade pip
+            pip install requests deprecated xlsxwriter
             
             # Export environment variables
             export PYTHONPATH=$(pwd):$(pwd)/process_bom/
