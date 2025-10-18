@@ -1,8 +1,6 @@
 import json
 import os
 import datetime
-from deprecated import deprecated
-from packaging.version import parse
 
 from .ca_config import SBOM_CVE_DIR, SCAN_TYPES
 from .BOMProcessor import BOMProcessor
@@ -179,3 +177,4 @@ class CurrencyProcessor:
         if os.path.exists(filepath):
             os.remove(filepath)
             
+
