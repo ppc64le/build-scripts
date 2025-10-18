@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from ..COSWrapper import COSWrapper
+from process_bom.COSWrapper import COSWrapper
 
-from ca_config import *
+from process_bom.ca_config import *
 
 # Abstract 'BaseProcessor' class to be inherited by all Scanning Processors
 class BaseProcessor(ABC):
