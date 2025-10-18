@@ -2,10 +2,10 @@ import json
 import os
 import datetime
 
-from .ca_config import SBOM_CVE_DIR, SCAN_TYPES
-from .BOMProcessor import BOMProcessor
-from .COSWrapper import COSWrapper
-from .LicensesProcessor import LicensesProcessor
+from process_bom.ca_config import SBOM_CVE_DIR, SCAN_TYPES
+from process_bom.BOMProcessor import BOMProcessor
+from process_bom.COSWrapper import COSWrapper
+from process_bom.LicensesProcessor import LicensesProcessor
 
 CLOUD_OBJECT_CVE_SBOM_BUCKET = "cloud-object-cve-sbom-bucket"
 
@@ -177,4 +177,5 @@ class CurrencyProcessor:
         if os.path.exists(filepath):
             os.remove(filepath)
             
+
 
