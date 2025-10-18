@@ -469,6 +469,6 @@ jobs:
                 echo "PYTHONPATH = $PYTHONPATH"
                 export IS_SETUP=dev
                 export SEND_SLACK_NOTIFICATION=False
-                python process_bom/run_currency_processor.py
+                python -m process_bom/run_currency_processor.py
 
           
