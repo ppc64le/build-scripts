@@ -463,15 +463,13 @@ jobs:
                 echo "-------------package name : ${PACKAGE_NAME}--------------------"
                 echo "-------------version : ${VERSION}--------------------"
                 pwd
-                cd build-scripts
                 chmod +x process_bom/*.py || true
-                python -m venv venv
-                source venv/bin/activate
-            
                 # Export environment variables
-                export PYTHONPATH=$(pwd):$(pwd)/process_bom/
+                export PYTHONPATH=$(pwd):$(pwd)
                 export IS_SETUP=dev
                 export SEND_SLACK_NOTIFICATION=False
+                # python -m venv venv
+                # source venv/bin/activate
                 python - <<'EOF'
                 import os
                 package_name = os.getenv("PACKAGE_NAME")
