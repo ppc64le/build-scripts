@@ -1,11 +1,11 @@
 
 
 # Import Scanning Processors for initialization
-from .ScanProcessors.TrivyProcessor import TrivyProcessor
-from .ScanProcessors.SyftProcessor import SyftProcessor
-from .ScanProcessors.GrypeProcessor import GrypeProcessor
-from .ScanProcessors.ClairProcessor import ClairProcessor
-from ca_config import *
+from process_bom.ScanProcessors.TrivyProcessor import TrivyProcessor
+from process_bom.ScanProcessors.SyftProcessor import SyftProcessor
+from process_bom.ScanProcessors.GrypeProcessor import GrypeProcessor
+from process_bom.ScanProcessors.ClairProcessor import ClairProcessor
+from process_bom.ca_config import *
 
 import tarfile
 import csv
@@ -260,3 +260,4 @@ class BOMProcessor:
             writer.writerow(row)
 
         return output.getvalue()
+
