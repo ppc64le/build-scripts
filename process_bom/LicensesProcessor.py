@@ -3,7 +3,7 @@ from xlsxwriter import Workbook
 import typing
 import re
 from io import BytesIO
-from .ca_config import BOM_TOOLS
+from process_bom.ca_config import BOM_TOOLS
 
 is_operator = lambda token: token.lower().strip() == "and" or token.lower().strip() == "or"
 is_not_space_or_empty = lambda test_string: test_string and not test_string.isspace()
@@ -241,3 +241,4 @@ class LicensesProcessor:
             info = self.process_brackets(info)
 
             return self.process_expression(info)
+
