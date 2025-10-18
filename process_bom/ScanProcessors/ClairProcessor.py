@@ -4,7 +4,7 @@ import json
 from io import StringIO
 import csv
 
-from ca_config import *
+from process_bom.ca_config import *
 
 class ClairProcessor(BaseProcessor):
     def __init__(self) -> None:
@@ -141,4 +141,5 @@ class ClairProcessor(BaseProcessor):
             cves = self.parse_json(cve_details)
 
         return cves, sbom
+
 
