@@ -109,7 +109,7 @@ class BOMProcessor:
         """
         temp_combined_cves = {}
 
-        for tool, tool_details in BOM_TOOLS.items():
+        for tool, tool_details in self.bom_tools.items():
             cves, _ = tool_details["obj"].get_bom_details_from_cos(package_name, version, scan_type)
             bom_details["Tools"][scan_type][tool] = {"CVE": False, "SBOM": False}
 
@@ -260,4 +260,5 @@ class BOMProcessor:
             writer.writerow(row)
 
         return output.getvalue()
+
 
