@@ -100,7 +100,7 @@ class COSWrapper:
         data = None
         try: 
             if response.status_code == 200:
-                file_path = f"{OUTPUT_DIR}{package_name}_{version}_{scan_type}_scanner.tar.gz"
+                file_path = f"{package_name}_{version}_{scan_type}_scanner.tar.gz"
                 with open(file_path, 'wb') as fh:
                     fh.write(response.content)
                 data = self.unzip_and_get_json(zip_file_path = file_path, tool = tool, scan_type = scan_type, result_type = result_type, file_format = file_format)
@@ -263,3 +263,4 @@ class COSWrapper:
                 return None
         except Exception as e:
            print(e)
+
