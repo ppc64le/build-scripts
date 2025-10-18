@@ -1,4 +1,4 @@
-from .BaseProcessor import BaseProcessor
+from process_bom.BaseProcessor import BaseProcessor
 import subprocess
 import json
 from io import StringIO
@@ -186,3 +186,4 @@ class GrypeProcessor(BaseProcessor):
             sbom = self.parse_cyclonedx(sbom_details)
         
         return cves, sbom
+
