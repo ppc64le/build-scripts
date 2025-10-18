@@ -1,5 +1,4 @@
-# Using 'xlsxwriter' for creating excel sheet, since the module is lightweight
-from xlsxwriter import Workbook
+
 import typing
 import re
 from io import BytesIO
@@ -241,4 +240,5 @@ class LicensesProcessor:
             info = self.process_brackets(info)
 
             return self.process_expression(info)
+
 
