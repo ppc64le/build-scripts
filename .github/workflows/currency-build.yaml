@@ -472,6 +472,7 @@ jobs:
                 # source venv/bin/activate
                 python - <<'EOF'
                 import os
+                import sys; print(sys.path)
                 package_name = os.getenv("PACKAGE_NAME")
                 version = os.getenv("VERSION")
                 from process_bom.CurrencyProcessor import CurrencyProcessor
