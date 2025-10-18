@@ -31,10 +31,6 @@ TARGET_BRANCH = "master"
 IAM_AUTH_URL = "https://iam.cloud.ibm.com/identity/token"
 
 # ... other class variables ...
-COMMON_DB_CONNECTION_STRING = None
-COMMON_DB_USERNAME = None
-COMMON_DB_PASSWORD = None
-SHARED_DB_CONNECTION_STRING = "http://129.40.81.56:5984"
 
 # Indicates whether the current operation is user-specific or not. This helps in pointing to the correct database while using existing database Wrapper implementation.
 # Set to "True" when the configuration or logic should depend on Common Database
@@ -100,17 +96,6 @@ JENKINS_NIGHTLY_CONFIG_FILE = "currency_nightly_jenkins_job_template.xml"
 DOCKER_CLOUD_ROOT_NODE = "DockerCloud_Docker_UBI_8.6"
 DOCKER_CLOUD_NON_ROOT_NODE = "DockerCloud_Docker_Jenkins_UBI_8.6"
 
-CURRENCY_PACKAGES_DISTRO = "UBI"
-CURRENCY_PACKAGES_DISTRO_VERSION = "8.5"
-CURRENCY_PACKAGE_RELEASE_JOB_FORMAT = "PSL_Currency_Pipeline_{{}}_{}-{}".format(CURRENCY_PACKAGES_DISTRO, CURRENCY_PACKAGES_DISTRO_VERSION)
-CURRENCY_PACKAGE_NIGHTLY_JOB_FORMAT = "PSL_Currency_Nightly_{{}}_{}-{}".format(CURRENCY_PACKAGES_DISTRO, CURRENCY_PACKAGES_DISTRO_VERSION)
-
-NEXUS_URL = 'https://163.69.91.4:8443'
-NEXUS_DOCKER_ARTIFACTS_REPO = '/repository/currency-artifacts/docker-details'
-NEXUS_CURRENCY_CURRENCY_JOBS_LOG_REPO = '/repository/currency-jobs-logs'
-NEXUS_USER = 'currencyuser'
-NEXUS_PWD = ''
-
 CLAIR_CONTAINER_HOST = "http://localhost:6060"
 CLAIR_CONFIG_FILE = CONFIG_DIR + "config.yaml"
 
@@ -175,3 +160,4 @@ DISTRO_MAPPINGS = {
     "SLES": "SLES"
 }
 # Load key used for decryption of creds in dev environment
+
