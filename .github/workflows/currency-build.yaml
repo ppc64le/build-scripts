@@ -476,9 +476,6 @@ jobs:
                 import sys; print(sys.path)
                 package_name = os.getenv("PACKAGE_NAME")
                 version = os.getenv("VERSION")
-                from process_bom.CurrencyProcessor import CurrencyProcessor
-                cp = CurrencyProcessor()
-                result = cp.update_local_build_details_in_database(package_name, version)
-                EOF
+                python process_bom/run_currency_processor.py
 
           
