@@ -4,7 +4,7 @@ import json
 from io import StringIO
 import csv
 
-from ca_config import *
+from process_bom.ca_config import *
 
 class SyftProcessor(BaseProcessor):
     def __init__(self) -> None:
@@ -119,4 +119,5 @@ class SyftProcessor(BaseProcessor):
             sbom = self.parse_cyclonedx(sbom_details)
 
         return cves, sbom
+
 
