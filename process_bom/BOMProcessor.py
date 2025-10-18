@@ -84,6 +84,7 @@ class BOMProcessor:
         }
 
         for scan_type in SCAN_TYPES:
+            print(scan_type)
             bom_details["Tools"][scan_type] = {}
             combined_cves = self._get_combined_cves(scan_type, package_name, version, bom_details)
             combined_sbom = self._get_combined_sbom(scan_type, package_name, version, bom_details)
@@ -260,5 +261,6 @@ class BOMProcessor:
             writer.writerow(row)
 
         return output.getvalue()
+
 
 
