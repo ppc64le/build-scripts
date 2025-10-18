@@ -439,7 +439,7 @@ jobs:
             python -m venv venv
             source venv/bin/activate
             python -m pip install --upgrade pip
-            pip install requests deprecated xlsxwriter
+            pip install requests deprecated xlsxwriter packaging
             
             # Export environment variables
             export PYTHONPATH=$(pwd):$(pwd)/process_bom/
