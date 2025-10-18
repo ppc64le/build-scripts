@@ -93,6 +93,7 @@ class COSWrapper:
                 "Authorization": f"Bearer {self.get_auth_token()}"
             }
         )
+        print(response)
         # Dump the file in temp output dir of the tool.
         # Create a sweeper job to periodically clean temp files in INPUT/OUTPUT folders.
         
@@ -101,6 +102,7 @@ class COSWrapper:
         try: 
             if response.status_code == 200:
                 file_path = f"{package_name}_{version}_{scan_type}_scanner.tar.gz"
+                print(file_path)
                 with open(file_path, 'wb') as fh:
                     fh.write(response.content)
                 data = self.unzip_and_get_json(zip_file_path = file_path, tool = tool, scan_type = scan_type, result_type = result_type, file_format = file_format)
@@ -263,5 +265,6 @@ class COSWrapper:
                 return None
         except Exception as e:
            print(e)
+
 
 
