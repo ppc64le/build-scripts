@@ -1,10 +1,10 @@
-from .BaseProcessor import BaseProcessor
+from process_bom.ScanProcessor.BaseProcessor import BaseProcessor
 import subprocess
 import json
 from io import StringIO
 import csv
 
-from ca_config import *
+from process_bom.ca_config import *
 
 class TrivyProcessor(BaseProcessor):
     def __init__(self) -> None:
@@ -181,3 +181,4 @@ class TrivyProcessor(BaseProcessor):
             sbom = self.parse_cyclonedx(sbom_details)
 
         return cves, sbom
+
