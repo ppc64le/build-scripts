@@ -7,7 +7,7 @@ import zipfile
 import re
 import xml.etree.ElementTree as ET
 
-from ca_config import *
+from process_bom.ca_config import *
 class COSWrapper:
     """
     This class is a wrapper for Cloud Object Storage operations.
@@ -263,4 +263,5 @@ class COSWrapper:
                 return None
         except Exception as e:
            print(e)
+
 
