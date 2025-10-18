@@ -5,9 +5,7 @@ from os.path import exists
 # Using ppc64le secret for Common DB and OIDC (Not maintained per arch)
 
 
-IS_SETUP=os.getenv("IS_SETUP")
-IS_SETUP=IS_SETUP.lower()
-SEND_SLACK_NOTIFICATION = os.getenv("SEND_SLACK_NOTIFICATION")
+
 # The hardware architecture for which the tool is running irrespective of the HW_ARCH of the host machine.
 HW_ARCH = os.getenv("HW_ARCH", "power")  # Default to Power
 HOME = str(Path(__file__).resolve().parent.parent)
@@ -61,8 +59,8 @@ SLACK_TRAVIS_BUILD_URL = None
 BULK_SEARCH_API = None
 
 # Cloud Object Storage
-IAM_WRITER_API_KEY = os.environ.get("IAM_WRITER_API_KEY")
-SERVICE_INSTANCE_ID = os.environ.get("SERVICE_INSTANCE_ID")
+IAM_WRITER_API_KEY = f"J5CZMcrEWD4UEOPwwMG3b7H9NJmxUkfvvM3wni91ROjX"
+SERVICE_INSTANCE_ID = f"6ea6b3fc-f381-4dfc-9ad1-04343f698641"
 
 # Github Token
 GITHUB_TOKEN = None
@@ -111,8 +109,8 @@ BOM_TOOLS = [
 "Syft",
 "Clair",
 ]
-CLOUD_OBJECT_BUCKET_NAME = "ose-power-toolci-bucket-production"
-CLOUD_OBJECT_CVE_SBOM_BUCKET = "ose-power-sbom-cve-details-production"
+CLOUD_OBJECT_BUCKET_NAME = "ose-power-toolci-bucket-stag"
+CLOUD_OBJECT_CVE_SBOM_BUCKET = "ose-power-sbom-cve-details-stag"
 CLOUD_OBJECT_STORAGE_URL = "https://s3.us.cloud-object-storage.appdomain.cloud"
 CLOUD_OBJECT_AUTH_ENDPOINT = "https://iam.cloud.ibm.com/identity/token"
 
@@ -160,4 +158,5 @@ DISTRO_MAPPINGS = {
     "SLES": "SLES"
 }
 # Load key used for decryption of creds in dev environment
+
 
