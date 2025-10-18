@@ -4,7 +4,7 @@ import json
 from io import StringIO
 import csv
 
-from ca_config import *
+from process_bom.ca_config import *
 class GrypeProcessor(BaseProcessor):
     def __init__(self) -> None:
         super().__init__()
@@ -186,4 +186,5 @@ class GrypeProcessor(BaseProcessor):
             sbom = self.parse_cyclonedx(sbom_details)
         
         return cves, sbom
+
 
