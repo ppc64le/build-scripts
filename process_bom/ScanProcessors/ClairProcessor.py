@@ -1,4 +1,4 @@
-from process_bom.ScanProcessors.BaseProcessor import BaseProcessor
+from process_bom.ScanProcessors.BaseProcessors import BaseProcessor
 import subprocess
 import json
 from io import StringIO
@@ -141,6 +141,7 @@ class ClairProcessor(BaseProcessor):
             cves = self.parse_json(cve_details)
 
         return cves, sbom
+
 
 
 
