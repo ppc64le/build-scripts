@@ -93,10 +93,6 @@ class COSWrapper:
                 "Authorization": f"Bearer {self.get_auth_token()}"
             }
         )
-        # Dump the file in temp output dir of the tool.
-        # Create a sweeper job to periodically clean temp files in INPUT/OUTPUT folders.
-        
-        #store the file in the output directory
         data = None
         try: 
             if response.status_code == 200:
@@ -263,6 +259,7 @@ class COSWrapper:
                 return None
         except Exception as e:
            print(e)
+
 
 
 
