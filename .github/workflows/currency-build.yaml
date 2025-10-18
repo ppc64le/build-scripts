@@ -450,6 +450,8 @@ jobs:
           env : 
             PACKAGE_NAME: ${{ inputs.package_name }}
             VERSION: ${{ inputs.version }}
+            IAM_WRITER_API_KEY: ${{ secrets.IAM_WRITER_API_KEY }}
+            SERVICE_INSTANCE_ID: ${{ secrets.SERVICE_INSTANCE_ID }}
           run: |
                 echo "Sourcing variable.sh and scanner-env.sh..........................................."
                 chmod +x package-cache/variable.sh
