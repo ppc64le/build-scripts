@@ -465,7 +465,8 @@ jobs:
                 pwd
                 chmod +x process_bom/*.py || true
                 # Export environment variables
-                export PYTHONPATH=$(pwd):$(pwd)
+                export PYTHONPATH="/tmp/_actions-runner-working-dir/build-scripts/build-scripts:/tmp/_actions-runner-working-dir/build-scripts/build-scripts/process_bom"
+                echo "PYTHONPATH = $PYTHONPATH"
                 export IS_SETUP=dev
                 export SEND_SLACK_NOTIFICATION=False
                 # python -m venv venv
