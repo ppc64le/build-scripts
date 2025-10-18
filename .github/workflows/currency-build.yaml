@@ -469,8 +469,6 @@ jobs:
                 echo "PYTHONPATH = $PYTHONPATH"
                 export IS_SETUP=dev
                 export SEND_SLACK_NOTIFICATION=False
-                package_name = os.getenv("PACKAGE_NAME")
-                version = os.getenv("VERSION")
                 python process_bom/run_currency_processor.py
 
           
