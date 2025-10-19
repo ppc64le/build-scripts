@@ -304,7 +304,6 @@ jobs:
 
     - stage: final_summary
       name: "Final Summary Stage"
-      if: always()
 
       before_script:
         - echo "=== Setting up Python environment ==="
@@ -312,17 +311,14 @@ jobs:
         - source venv/bin/activate
         - python -m pip install --upgrade pip
         - pip install requests deprecated xlsxwriter packaging
-
-        - echo "=== Setting up environment variables ==="
-        - export PYTHONPATH=$(pwd):$(pwd)/process_bom/
-        - export IS_SETUP=dev
-        - export SEND_SLACK_NOTIFICATION=False
+     
+      workspaces:
+        use:
+          - build_cache
+          - package_cache
 
       script:
-        - pwd
         - chmod +x process_bom/*.py || true
         - export PYTHONPATH="/tmp/_actions-runner-working-dir/build-scripts/build-scripts:/tmp/_actions-runner-working-dir/build-scripts/build-scripts/process_bom"
-        - export IS_SETUP=dev
-        - export SEND_SLACK_NOTIFICATION=False
         - echo "=== Running currency processor ==="
         - python -m process_bom.run_currency_processor
