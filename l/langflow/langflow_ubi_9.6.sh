@@ -936,7 +936,7 @@ echo "-----------------installed pytorch----------------------"
 
 echo "-----------------installing pypdfium2----------------------"
 git clone https://github.com/pypdfium2-team/pypdfium2.git
-yum install libatomic gcc-toolset-13-libatomic-devel
+yum install -y libatomic gcc-toolset-13-libatomic-devel
 cd pypdfium2
 git checkout 35a88d21450eb395e023ca280c9f4c855ec9684d
 python3.12 ./setupsrc/pypdfium2_setup/build_native.py --compiler gcc
@@ -1020,6 +1020,7 @@ echo "-----------------installed qdrant-client----------------------"
 echo "-----------------installing sqlite3----------------------"
 wget https://sqlite.org/2023/sqlite-autoconf-3430100.tar.gz
 tar -xvf sqlite-autoconf-3430100.tar.gz
+cd sqlite-autoconf-3430100
 ./configure --prefix=/usr/local
 make
 make install
