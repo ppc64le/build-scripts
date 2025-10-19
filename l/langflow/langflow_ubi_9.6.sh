@@ -85,8 +85,8 @@ echo " ------------------------------ gfags Installed Successfully -------------
 echo "--------------------- faiss installing --------------------------"
 git clone https://github.com/facebookresearch/faiss.git
 cd faiss
-git checkout 1.9.0
-rm -rf build && mkdir build && cd build
+git checkout v1.9.0
+mkdir build && cd build
 
 # Setup compiler
 export LD_LIBRARY_PATH=/usr/lib64:$LD_LIBRARY_PATH
@@ -1032,6 +1032,8 @@ echo "-----------------installed sqlite3----------------------"
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+
+sed -i -E 's/[[:space:]]*"faiss-cpu==1\.9\.0\.post1",?\s*//g' pyproject.toml
 
 pip3.12 install beautifulsoup4==4.12.3 google-api-python-client==2.154.0 "google-search-results>=2.4.1,<3.0.0" certifi==2024.8.30 "filelock>=3.18.0" "structlog>=25.4.0" fake-useragent==1.5.1 MarkupSafe==3.0.2 wikipedia==1.4.0 json_repair==0.30.3
 pip3.12 install langflow-base~=0.6.0 --no-deps
