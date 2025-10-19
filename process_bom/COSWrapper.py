@@ -8,6 +8,7 @@ import re
 import xml.etree.ElementTree as ET
 
 from process_bom.ca_config import *
+
 class COSWrapper:
     """
     This class is a wrapper for Cloud Object Storage operations.
