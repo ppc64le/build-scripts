@@ -422,7 +422,7 @@ jobs:
 
   final_summary:
       name: Final Summary Stage
-      needs: [build, wheel_build, source_scanner, image_scanner, build_docker]
+      needs: [build, source_scanner]
       runs-on: ubuntu-24.04-ppc64le-p10
       if: always()
       steps:
@@ -431,7 +431,7 @@ jobs:
         - name: Download package-cache
           uses: actions/download-artifact@v4
           with:
-            name: package-cache-with-image
+            name: package-cache
             path: package-cache
         
         - name: Create and activate venv
@@ -443,8 +443,6 @@ jobs:
             
             # Export environment variables
             export PYTHONPATH=$(pwd):$(pwd)/process_bom/
-            export IS_SETUP=dev
-            export SEND_SLACK_NOTIFICATION=False
 
         - name: Summarize build results
           env : 
@@ -466,8 +464,6 @@ jobs:
                 chmod +x process_bom/*.py || true
                 # Export environment variables
                 export PYTHONPATH="/tmp/_actions-runner-working-dir/build-scripts/build-scripts:/tmp/_actions-runner-working-dir/build-scripts/build-scripts/process_bom"
-                export IS_SETUP=dev
-                export SEND_SLACK_NOTIFICATION=False
                 python -m process_bom.run_currency_processor
 
           
