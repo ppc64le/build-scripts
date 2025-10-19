@@ -136,11 +136,13 @@ class ClairProcessor(BaseProcessor):
             file_format="json"
         )
         if not cve_details:
-            print(f"ⓘ No CVE data available for {scan_type}-scan using {self.tool_name} ⓘ")
+            
+            print(f"Skipping Clair !!")
         else:
             cves = self.parse_json(cve_details)
 
         return cves, sbom
+
 
 
 
