@@ -226,32 +226,13 @@ jobs:
         continue-on-error: ${{ matrix.allow-failure }}
 
 
-      - name: Move wheel into package-cache
-        run: |
-          mkdir -p package-cache/wheels
-          # Ensure permissions are correct
-          sudo chown -R $USER:$USER .
-          chmod -R u+rw .
-          find . -name "*.whl" -exec cp {} package-cache/wheels/ \;
-          echo "Wheels moved to package-cache/wheels"
-          echo "========= ls package-cache ========="
-          ls package-cache
-          echo "+++++++++++++++++++++++++++++++++++"
-          ls package-cache/wheels
-          echo "==================================" 
-          ls -lh package-cache/wheels
-
-       
-
-      - name: Upload wheel package-cache
-        uses: actions/upload-artifact@v4
-        with:
-          name: wheel-${{ matrix.python-version }}
-          path: package-cache/wheels/*.whl
-
 
       - name: Upload wheel artifact using custom script
+        env:
+           GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
         run: |
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
           sudo chmod a+r *.whl
           WHEEL_FILE=*.whl
           chmod +x ./gha-script/upload-scripts/upload_wheel.sh
@@ -259,99 +240,6 @@ jobs:
         continue-on-error: ${{ matrix.allow-failure }}
 
 
-  collect_wheels:
-    name: Collect All Wheels
-    needs: wheel_build
-    runs-on: ubuntu-24.04-ppc64le-p10
-    steps:
-      - name: Download all wheel artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: all-wheels
-
-      - name: Download package-cache from previous step
-        uses: actions/download-artifact@v4
-        with:
-          name: package-cache
-          path: package-cache
-
-      
-      - name: Move only main package wheels into package-cache/wheels
-        run: |
-          chmod +x package-cache/variable.sh
-          chmod +x package-cache/scanner-env.sh
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-          mkdir -p package-cache/wheels
-          echo "Copying wheels starting with package name: $PACKAGE_NAME"
-          PACKAGE_NAME_LC=$(echo "$PACKAGE_NAME" | tr '[:upper:]' '[:lower:]')
-          find all-wheels -type f -name "${PACKAGE_NAME_LC}*.whl" -exec cp {} package-cache/wheels/ \;
-
-          echo "Final wheel contents for package: $PACKAGE_NAME"
-          ls -lh package-cache/wheels
-
-      - name: Upload consolidated package-cache
-        uses: actions/upload-artifact@v4
-        with:
-          name: package-cache-consolidated
-          path: package-cache
-
-  wheel_scanner:
-    needs: collect_wheels
-    runs-on: ubuntu-24.04-ppc64le-p10
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download consolidated package-cache
-        uses: actions/download-artifact@v4
-        with:
-          name: package-cache-consolidated
-          path: package-cache
-
-      - name: List wheels in package-cache
-        run: |
-          echo "Verifying contents of package-cache/wheels/"
-          ls -lh package-cache/wheels
-          echo "Done listing all wheels."
-
-      - name: Run ScanCode Toolkit on Wheels
-        run: |
-            source package-cache/variable.sh
-            source package-cache/scanner-env.sh
-            chmod +x ./gha-script/scanner-scripts/scancode_wheel_scan.sh
-            bash ./gha-script/scanner-scripts/scancode_wheel_scan.sh
-            echo "-------------------------Wheels inside package-cache/wheels-----------------------------------------"
-            ls package-cache/wheels
-            echo "------------------------------------------------------------------"
-
-      - name: Collect wheel scan outputs
-        run: |
-          mkdir -p wheel_scancode
-          echo "Looking for *_output.json files in package-cache/wheels/"
-          find package-cache/wheels -type f -name "*_output.json" -exec mv {} wheel_scancode/ \;
-
-          echo "Contents to be zipped:"
-          ls -lh wheel_scancode
-
-          echo "Creating wheel_scanner.tar.gz"
-          tar -czf wheel_scanner.tar.gz wheel_scancode
-          echo "-------------------------------------"
-          ls
-          echo "-------------------------------------"
-
-      - name: Upload Wheel Scanner Results
-        env:
-            GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
-        run: |
-            source package-cache/variable.sh
-            source package-cache/scanner-env.sh
-            tar cvzf wheel_scanner.tar.gz wheel_scancode
-            chmod +x ./gha-script/upload-scripts/upload_file.sh
-            bash ./gha-script/upload-scripts/upload_file.sh wheel_scanner.tar.gz
-
-
-
-      
   source_scanner:
     needs: build
     if: ${{ inputs.validate_build_script == 'true' }}
@@ -464,11 +352,7 @@ jobs:
           chmod +x ./gha-script/upload-scripts/upload_docker_image.sh
           bash ./gha-script/upload-scripts/upload_docker_image.sh
 
-      - name: Upload package-cache with image.tar
-        uses: actions/upload-artifact@v4
-        with:
-          name: package-cache-with-image
-          path: package-cache
+
 
   image_scanner:
     needs: build_docker
@@ -477,66 +361,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download package-cache
-        uses: actions/download-artifact@v4
-        with:
-          name: package-cache-with-image
-          path: package-cache
-
-      - name: Load Docker Image
-        run: |
-          echo "Sourcing variable.sh ..........................................."
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-          echo ".......................Loading iamge.tar ............................"
-          docker load -i "package-cache/image.tar"
-
-      - name: Run Trivy Image Scan
-        if: ${{ inputs.enable_trivy == 'true' }}
-        run: |
-          echo ".................Sourcing variable.sh and scanner-env.sh...................."
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-          chmod +x ./gha-script/scanner-scripts/trivy_image_scan.sh
-          bash ./gha-script/scanner-scripts/trivy_image_scan.sh
-          mkdir image_trivy
-          mv trivy_image_vulnerabilities_results.json trivy_image_sbom_results.cyclonedx image_trivy
-
-      - name: Run Syft Image Scan
-        if: ${{ inputs.enable_syft == 'true' }}
-        run: |
-          echo ".................Sourcing variable.sh and scanner-env.sh...................."
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-          chmod +x ./script/scanner-scripts/syft_image_scan.sh
-          bash ./script/scanner-scripts/syft_image_scan.sh
-          mkdir image_syft
-          mv syft_image_sbom_results.json image_syft
-
-      - name: Run Grype Image Scan
-        if: ${{ inputs.enable_grype == 'true' }}
-        run: |
-          echo ".................Sourcing variable.sh and scanner-env.sh...................."
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-          chmod +x ./gha-script/scanner-scripts/grype_image_scan.sh
-          bash ./gha-script/scanner-scripts/grype_image_scan.sh
-          mkdir image_grype
-          mv grype_image_sbom_results.json grype_image_vulnerabilities_results.json image_grype
-
-      - name: Upload Image Scanner Results
-        env:
-          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
-        run: |
-          mkdir image
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-          find image_trivy -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
-          find image_syft -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
-          find image_grype -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
-          tar cvzf image_scanner.tar.gz image
-          chmod +x ./gha-script/upload-scripts/upload_file.sh
-          bash ./gha-script/upload-scripts/upload_file.sh image_scanner.tar.gz
 
   final_summary:
       name: Final Summary Stage
