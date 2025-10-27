@@ -3,7 +3,7 @@
 # Package           : faiss
 # Version           : 1.12.0
 # Source repo       : https://github.com/facebookresearch/faiss.git
-# Tested on         : RHEL 9.3
+# Tested on         : RHEL 9.6
 # Script License    : Apache License Version 2.0
 # Maintainer        : Madhur Gupta <madhur.gupta2@ibm.com>
 #
@@ -16,44 +16,57 @@
 # ----------------------------------------------------------------------------
 
 #!/bin/bash
-
-# Example container setup (for reference):
-# podman create --name faiss-build -it registry.access.redhat.com/ubi9/ubi:latest bash
-# podman start faiss-build
-# podman exec -it faiss-build bash
-
 # ----------------------------------------------------------------------------
-# Install dependencies
+# Install system dependencies
 # ----------------------------------------------------------------------------
-dnf groupinstall -y "Development Tools"
-dnf install -y \
+dnf -y groupinstall "Development Tools"
+dnf -y install \
     python3 python3-devel python3-pip \
     openblas-devel pcre2-devel cmake git \
-    autoconf automake libtool bison
+    autoconf automake libtool bison flex \
+    make gcc gcc-c++ m4 patch \
+    wget tar unzip which file
 
+# ----------------------------------------------------------------------------
+# Upgrade Python packaging tools
+# ----------------------------------------------------------------------------
 python3 -m pip install --upgrade pip setuptools wheel build numpy
 
 # ----------------------------------------------------------------------------
-# Repository Setup
+# Create build directory
 # ----------------------------------------------------------------------------
 mkdir -p /home/faiss_build && cd /home/faiss_build
 
-# Clone FAISS and SWIG repositories
-git clone https://github.com/facebookresearch/faiss.git
-git clone https://github.com/swig/swig.git
+# ----------------------------------------------------------------------------
+# Check if SWIG is installed, otherwise build it
+# ----------------------------------------------------------------------------
+if ! command -v swig &> /dev/null; then
+    echo "SWIG not found. Building SWIG from source..."
+    if [ ! -d "swig" ]; then
+        git clone https://github.com/swig/swig.git
+    fi
+    cd swig
+    ./autogen.sh
+    ./configure
+    make -j"$(nproc)"
+    make install
+    cd ..
+else
+    echo "SWIG already installed: $(swig -version | grep 'SWIG Version' | awk '{print $3}')"
+fi
+
+# Verify SWIG
+swig -version || { echo "SWIG installation failed"; exit 1; }
 
 # ----------------------------------------------------------------------------
-# Build and Install SWIG (required for FAISS Python bindings)
+# Clone FAISS repository
 # ----------------------------------------------------------------------------
-cd swig
-./autogen.sh
-./configure
-make -j$(nproc)
-make install
-cd ..
+if [ ! -d "faiss" ]; then
+    git clone https://github.com/facebookresearch/faiss.git
+fi
 
 # ----------------------------------------------------------------------------
-# Build FAISS
+# Build FAISS from source
 # ----------------------------------------------------------------------------
 cd faiss
 mkdir -p build && cd build
@@ -62,16 +75,16 @@ cmake .. \
     -DFAISS_ENABLE_PYTHON=ON \
     -DFAISS_ENABLE_GPU=OFF \
     -DBUILD_TESTING=OFF \
-    -DPython_EXECUTABLE=$(which python3) \
-    -DBLAS_LIBRARIES=/usr/lib64/libopenblas.so \
+    -DPython_EXECUTABLE="$(which python3)" \
+    -DBLAS_LIBRARIES="/usr/lib64/libopenblas.so" \
     -DCMAKE_BUILD_TYPE=Release
 
-make -j$(nproc)
+make -j"$(nproc)"
 
 # ----------------------------------------------------------------------------
 # Build Python Wheel
 # ----------------------------------------------------------------------------
-cd ./faiss/python
+cd ../faiss/python
 
 python3 -m build --wheel
 
@@ -81,6 +94,6 @@ python3 -m build --wheel
 echo "Wheel built successfully. Listing wheel files:"
 ls -lh dist/
 
-# Optional: test installation
-pip install dist/faiss-1.12.0-py3-none-any.whl
-python3 -c "import faiss; print(faiss.__version__)"
+# Optional: test installation (uncomment to enable and change the wheel file name if necessary)
+# pip install dist/faiss-1.12.0-py3-none-any.whl
+# python3 -c "import faiss; print('FAISS version:', faiss.__version__)"
