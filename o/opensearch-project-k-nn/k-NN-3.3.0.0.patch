@@ -1,0 +1,27 @@
+diff --git a/jni/cmake/init-faiss.cmake b/jni/cmake/init-faiss.cmake
+index 7e9622a9..d223b4c4 100644
+--- a/jni/cmake/init-faiss.cmake
++++ b/jni/cmake/init-faiss.cmake
+@@ -130,7 +130,7 @@ elseif(${CMAKE_SYSTEM_NAME} STREQUAL Linux AND AVX512_SPR_ENABLED)
+ elseif(${CMAKE_SYSTEM_NAME} STREQUAL Linux AND AVX512_ENABLED)
+     set(FAISS_OPT_LEVEL avx512)       # Keep optimization level as avx512 to improve performance on Linux. This is not present on mac systems, and presently not supported on Windows OS.
+     set(TARGET_LINK_FAISS_LIB faiss_avx512)
+-    string(PREPEND LIB_EXT "_avx512") # Prepend "_avx512" to lib extension to create the library as "libopensearchknn_faiss_avx512.so" on linux
++    string(PREPEND LIB_EXT "") # Prepend "" to lib extension to create the library as "libopensearchknn_faiss.so" on linux
+ else()
+     set(FAISS_OPT_LEVEL avx2)       # Keep optimization level as avx2 to improve performance on Linux and Mac.
+     set(TARGET_LINK_FAISS_LIB faiss_avx2)
+diff --git a/jni/external/faiss b/jni/external/faiss
+index 5616caad..a8f96003 160000
+--- a/jni/external/faiss
++++ b/jni/external/faiss
+@@ -1 +1 @@
+-Subproject commit 5616caad4cea4e8326cdef90aa177bd618af8531
++Subproject commit a8f96003042c9d6a193f1fe62a251a4adb1d133e-dirty
+diff --git a/jni/external/nmslib b/jni/external/nmslib
+index a2d6624e..c1b614c5 160000
+--- a/jni/external/nmslib
++++ b/jni/external/nmslib
+@@ -1 +1 @@
+-Subproject commit a2d6624e1315402662025debfdd614b505d9c3ef
++Subproject commit c1b614c5ccaf54dd25c9ec218bc112c23b3da315-dirty
