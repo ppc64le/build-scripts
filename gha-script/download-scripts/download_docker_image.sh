@@ -12,7 +12,7 @@ fi
 package_name=$(echo $PACKAGE_NAME | tr '[:upper:]' '[:lower:]')
 
 # Define full image path
-image_path="icr.io/ose4power-packages-stag/$package_name-ppc64le:$VERSION"
+image_path="icr.io/ose4power-packages-production/$package_name-ppc64le:$VERSION"
 
 echo "Pulling image: $image_path"
 docker pull "$image_path"
