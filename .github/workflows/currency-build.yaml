@@ -363,16 +363,21 @@ jobs:
       - name: Download package-cache
         uses: actions/download-artifact@v4
         with:
-          name: package-cache-with-image
+          name: package-cache
           path: package-cache
 
       - name: Load Docker Image
+        env:
+            GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
         run: |
           echo "Sourcing variable.sh ..........................................."
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
-          echo ".......................Loading iamge.tar ............................"
-          docker load -i "package-cache/image.tar"
+          echo "Downloading docker image artifact ............................"
+          chmod +x ./gha-script/download-scripts/download_docker_image.sh
+          bash ./gha-script/download-scripts/download_docker_image.sh
+          echo ".......................Loading image.tar ............................"
+
       - name: Run Trivy Image Scan
         if: ${{ inputs.enable_trivy == 'true' }}
         run: |
