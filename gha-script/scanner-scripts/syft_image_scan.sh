@@ -6,7 +6,7 @@ echo "Image Name: $image_name"
 build_docker=$BUILD_DOCKER
 
 echo "$GHA_CURRENCY_SERVICE_ID_API_KEY" | docker login -u iamapikey --password-stdin icr.io
-docker pull "$image_path"
+docker pull "$image_name"
 if [ $build_docker == true ];then
         SYFT_VERSION=$(curl -s https://api.github.com/repos/anchore/syft/releases/latest | grep -Po '"tag_name": "\K.*?(?=")')
         wget https://github.com/anchore/syft/releases/download/$SYFT_VERSION/syft_${SYFT_VERSION#v}_linux_ppc64le.tar.gz
