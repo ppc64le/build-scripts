@@ -16,6 +16,8 @@ image_path="icr.io/ose4power-packages-production/$package_name-ppc64le:$VERSION"
 
 echo "Pulling image: $image_path"
 docker pull "$image_path"
+export IMAGE_NAME=image_path
+echo $IMAGE_NAME
 
 if [ $? -ne 0 ]; then
     echo "Docker pull failed. Exiting script."
