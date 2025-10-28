@@ -6,7 +6,7 @@
 # Source repo    : https://github.com/opensearch-project/k-NN.git
 # Tested on      : UBI 9.6
 # Language       : Java and C++
-# Travis-Check   : True
+# Ci-Check       : True
 # Script License : Apache License, Version 2 or later
 # Maintainer	   : Prachi Gaonkar <Prachi.Gaonkar@ibm.com>
 #
@@ -27,11 +27,12 @@ if ! ((${EUID:-0} || "$(id -u)")); then
         exit 3
 fi
 
-# ---------------------------
+# ----------------------------
 # Configuration
-# ---------------------------
+# ----------------------------
 PACKAGE_NAME=k-NN
-PACKAGE_VERSION="3.3.0.0"
+SCRIPT_PACKAGE_VERSION="3.3.0.0"
+PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
 PACKAGE_URL=https://github.com/opensearch-project/${PACKAGE_NAME}.git
 OPENSEARCH_VERSION=${PACKAGE_VERSION::-2}
 OPENSEARCH_PACKAGE=OpenSearch
@@ -64,14 +65,10 @@ done
 # ---------------------------
 # Dependency Installation
 # ---------------------------
-sudo yum install -y git wget python3-pip gcc gcc-c++ make cmake gcc-gfortran zlib zlib-devel openblas openblas-devel libomp
-#install temurin java21
-sudo wget https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.2%2B13/OpenJDK21U-jdk_ppc64le_linux_hotspot_21.0.2_13.tar.gz
-sudo tar -C /usr/local -zxf OpenJDK21U-jdk_ppc64le_linux_hotspot_21.0.2_13.tar.gz
-export JAVA_HOME=/usr/local/jdk-21.0.2+13/
-export PATH=$PATH:/usr/local/jdk-21.0.2+13/bin/
-sudo ln -sf /usr/local/jdk-21.0.2+13/bin/java /usr/bin/
-sudo rm -rf OpenJDK21U-jdk_ppc64le_linux_hotspot_21.0.2_13.tar.gz
+sudo yum install -y git wget python3-pip gcc gcc-c++ make cmake gcc-gfortran zlib zlib-devel openblas openblas-devel libomp java-21-openjdk-devel
+export JAVA_HOME=$(ls -d /usr/lib/jvm/java-21-openjdk-* | head -n1)
+export JRE_HOME=${JAVA_HOME}/jre
+export PATH=${JAVA_HOME}/bin:$PATH
 
 sudo ln -sf /usr/bin/python3 /usr/bin/python
 pip install cmake==3.24.0
@@ -107,7 +104,7 @@ make install
 cd $BUILD_HOME
 git clone ${PACKAGE_URL}
 cd ${PACKAGE_NAME} && git checkout ${PACKAGE_VERSION}
-git apply ${SCRIPT_PATH}/$PACKAGE_NAME-$PACKAGE_VERSION.patch
+git apply ${SCRIPT_PATH}/$PACKAGE_NAME-$SCRIPT_PACKAGE_VERSION.patch
 cd jni
 cmake -DBLAS_INCLUDE_DIR=$BUILD_HOME/local/include \
       -DLAPACK_LIBRARIES=$BUILD_HOME/local/lib64/liblapack.so \
@@ -118,9 +115,9 @@ cmake -DBLAS_INCLUDE_DIR=$BUILD_HOME/local/include \
 # Apply patches to NMSLIB and FAISS
 # ----------------------------------------------
 cd external/nmslib
-git apply ${SCRIPT_PATH}/$PACKAGE_NAME-nmslib-$PACKAGE_VERSION.patch
+git apply ${SCRIPT_PATH}/$PACKAGE_NAME-nmslib-$SCRIPT_PACKAGE_VERSION.patch
 cd ../faiss/faiss
-git apply ${SCRIPT_PATH}/$PACKAGE_NAME-faiss-$PACKAGE_VERSION.patch
+git apply ${SCRIPT_PATH}/$PACKAGE_NAME-faiss-$SCRIPT_PACKAGE_VERSION.patch
 cd $BUILD_HOME/$PACKAGE_NAME/jni
 rm -rf build CMakeFiles CMakeCache.txt
 make
