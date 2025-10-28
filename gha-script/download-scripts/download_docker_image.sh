@@ -17,6 +17,7 @@ image_path="icr.io/ose4power-packages-production/$package_name-ppc64le:$VERSION"
 echo "Pulling image: $image_path"
 docker pull "$image_path"
 export DOWNLOAD_IMAGE_NAME="$image_path"
+echo "DOWNLOAD_IMAGE_NAME=$DOWNLOAD_IMAGE_NAME" >> $GITHUB_ENV
 echo "----------------------"
 echo $DOWNLOAD_IMAGE_NAME
 
