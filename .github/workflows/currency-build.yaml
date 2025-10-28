@@ -379,8 +379,7 @@ jobs:
           echo $GHA_CURRENCY_SERVICE_ID_API_KEY
           echo "Downloading docker image artifact ............................"
           chmod +x ./gha-script/download-scripts/download_docker_image.sh
-          bash ./gha-script/download-scripts/download_docker_image.sh "$GITHUB_ENV"
-          echo "DOWNLOAD_IMAGE_NAME=$DOWNLOAD_IMAGE_NAME" >> $GITHUB_ENV
+          bash ./gha-script/download-scripts/download_docker_image.sh
           echo ".......................Loading image.tar ............................"
 
       - name: Run Trivy Image Scan
@@ -389,9 +388,6 @@ jobs:
           echo ".................Sourcing variable.sh and scanner-env.sh...................."
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
-          echo "----------------------"
-          echo "Image name is: $DOWNLOAD_IMAGE_NAME"
-          echo "----------------------"
           chmod +x ./gha-script/scanner-scripts/trivy_image_scan.sh
           bash ./gha-script/scanner-scripts/trivy_image_scan.sh
           mkdir image_trivy
