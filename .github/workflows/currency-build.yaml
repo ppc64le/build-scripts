@@ -381,7 +381,20 @@ jobs:
       #     chmod +x ./gha-script/download-scripts/download_docker_image.sh
       #     bash ./gha-script/download-scripts/download_docker_image.sh
       #     echo ".......................Loading image.tar ............................"
-
+      - name: Run Syft Image Scan
+        if: ${{ inputs.enable_syft == 'true' }}
+        env:
+          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+          PACKAGE_NAME: ${{ inputs.package_name }}
+        run: |
+          echo ".................Sourcing variable.sh and scanner-env.sh...................."
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          chmod +x ./script/scanner-scripts/syft_image_scan.sh
+          bash ./script/scanner-scripts/syft_image_scan.sh
+          mkdir image_syft
+          mv syft_image_sbom_results.json image_syft
+          
       - name: Run Trivy Image Scan
         if: ${{ inputs.enable_trivy == 'true' }}
         env:
@@ -396,20 +409,7 @@ jobs:
           bash ./gha-script/scanner-scripts/trivy_image_scan.sh
           mkdir image_trivy
           mv trivy_image_vulnerabilities_results.json trivy_image_sbom_results.cyclonedx image_trivy
-      - name: Run Syft Image Scan
-        if: ${{ inputs.enable_syft == 'true' }}
-        env:
-          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
-          PACKAGE_NAME: ${{ inputs.package_name }}
-        run: |
-          echo ".................Sourcing variable.sh and scanner-env.sh...................."
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-          chmod +x ./script/scanner-scripts/syft_image_scan.sh
-          export GHA_CURRENCY_SERVICE_ID_API_KEY="THSELjPkQ_di_bVuunAn4OIWOyPPaOZBdtjadlICX4t3"
-          bash ./script/scanner-scripts/syft_image_scan.sh
-          mkdir image_syft
-          mv syft_image_sbom_results.json image_syft
+      
       - name: Run Grype Image Scan
         env:
           GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
