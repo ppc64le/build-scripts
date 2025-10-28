@@ -368,19 +368,19 @@ jobs:
           name: package-cache
           path: package-cache
 
-      - name: Load Docker Image
-        env:
-            GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
-        run: |
-          echo "Sourcing variable.sh ..........................................."
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-          export GHA_CURRENCY_SERVICE_ID_API_KEY="THSELjPkQ_di_bVuunAn4OIWOyPPaOZBdtjadlICX4t3"
-          echo $GHA_CURRENCY_SERVICE_ID_API_KEY
-          echo "Downloading docker image artifact ............................"
-          chmod +x ./gha-script/download-scripts/download_docker_image.sh
-          bash ./gha-script/download-scripts/download_docker_image.sh
-          echo ".......................Loading image.tar ............................"
+      # - name: Load Docker Image
+      #   env:
+      #       GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+      #   run: |
+      #     echo "Sourcing variable.sh ..........................................."
+      #     source package-cache/variable.sh
+      #     source package-cache/scanner-env.sh
+      #     export GHA_CURRENCY_SERVICE_ID_API_KEY="THSELjPkQ_di_bVuunAn4OIWOyPPaOZBdtjadlICX4t3"
+      #     echo $GHA_CURRENCY_SERVICE_ID_API_KEY
+      #     echo "Downloading docker image artifact ............................"
+      #     chmod +x ./gha-script/download-scripts/download_docker_image.sh
+      #     bash ./gha-script/download-scripts/download_docker_image.sh
+      #     echo ".......................Loading image.tar ............................"
 
       - name: Run Trivy Image Scan
         if: ${{ inputs.enable_trivy == 'true' }}
