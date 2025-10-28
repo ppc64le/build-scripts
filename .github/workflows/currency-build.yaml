@@ -379,7 +379,7 @@ jobs:
           echo $GHA_CURRENCY_SERVICE_ID_API_KEY
           echo "Downloading docker image artifact ............................"
           chmod +x ./gha-script/download-scripts/download_docker_image.sh
-          bash ./gha-script/download-scripts/download_docker_image.sh
+          bash ./gha-script/download-scripts/download_docker_image.sh "$GITHUB_ENV"
           echo "DOWNLOAD_IMAGE_NAME=$DOWNLOAD_IMAGE_NAME" >> $GITHUB_ENV
           echo ".......................Loading image.tar ............................"
 

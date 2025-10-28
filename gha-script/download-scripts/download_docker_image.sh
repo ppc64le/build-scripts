@@ -1,5 +1,6 @@
 #!/bin/bash -e
 
+GITHUB_ENV_FILE="$1"  
 # Log in to IBM Cloud Container Registry
 echo "$GHA_CURRENCY_SERVICE_ID_API_KEY" | docker login -u iamapikey --password-stdin icr.io
 
@@ -17,7 +18,7 @@ image_path="icr.io/ose4power-packages-production/$package_name-ppc64le:$VERSION"
 echo "Pulling image: $image_path"
 docker pull "$image_path"
 export DOWNLOAD_IMAGE_NAME="$image_path"
-echo "DOWNLOAD_IMAGE_NAME=$DOWNLOAD_IMAGE_NAME" >> $GITHUB_ENV
+echo "DOWNLOAD_IMAGE_NAME=$DOWNLOAD_IMAGE_NAME" >> "$GITHUB_ENV_FILE"
 echo "----------------------"
 echo $DOWNLOAD_IMAGE_NAME
 
