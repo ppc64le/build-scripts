@@ -1,6 +1,7 @@
 #!/bin/bash -e
-
+echo $IMAGE_NAME
 image_name=$IMAGE_NAME
+echo $image_name 
 build_docker=$BUILD_DOCKER
 
 if [ $build_docker == true ];then
