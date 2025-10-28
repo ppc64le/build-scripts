@@ -14,7 +14,7 @@ HOME = os.getcwd()
 package_data = {}
 use_non_root = ""
 
-# ✅ Updated image version to UBI 9.6
+# Updated image version to UBI 9.6
 UBI_BASE_IMAGE = "registry.access.redhat.com/ubi9/ubi:9.6"
 image_name = UBI_BASE_IMAGE
 
@@ -64,10 +64,10 @@ def trigger_basic_validation_checks(file_name):
                 raise IndexError(str(ie))
 
         if set(matched_keys) == set(list(key_checks.keys())):
-            print("✅ Basic Checks passed")
+            print("Basic Checks passed")
             return True
         else:
-            print("❌ Basic Validation Checks Failed!!!")
+            print("Basic Validation Checks Failed!!!")
             print(f"Required keys: {','.join(key_checks.keys())}")
             print(f"Found keys: {','.join(matched_keys)}")
             print(f"Missing required keys: {','.join(set(key_checks.keys()) - set(matched_keys))}")
@@ -146,11 +146,11 @@ def validate_build_info_file(file_name):
         if use_non_root == "true":
             build_non_root_custom_docker_image()
 
-        print("✅ Validated build_info.json file successfully")
+        print("Validated build_info.json file successfully")
         return True
     except Exception as e:
         print(str(e))
-        print(f"❌ Failed to load build_info file at {file_name}!")
+        print(f"Failed to load build_info file at {file_name}!")
         raise e
 
 
@@ -189,7 +189,7 @@ def trigger_build_validation_travis(pr_number):
     if not validated_file_list:
         print("No scripts available for validation.")
     else:
-        print("✅ Validated the following scripts:")
+        print("Validated the following scripts:")
         print(*validated_file_list, sep="\n")
 
 
