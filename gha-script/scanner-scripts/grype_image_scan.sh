@@ -4,6 +4,8 @@ echo "-------------------------------------------------"
 echo "Image Name: $image_name"
 build_docker=$BUILD_DOCKER
 
+echo "$GHA_CURRENCY_SERVICE_ID_API_KEY" | docker login -u iamapikey --password-stdin icr.io
+
 if [ $build_docker == true ];then
 	 GRYPE_VERSION=$(curl -s https://api.github.com/repos/anchore/grype/releases/latest | grep -Po '"tag_name": "\K.*?(?=")')
 	 wget https://github.com/anchore/grype/releases/download/$GRYPE_VERSION/grype_${GRYPE_VERSION#v}_linux_ppc64le.tar.gz
