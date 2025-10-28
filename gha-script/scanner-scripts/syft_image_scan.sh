@@ -5,6 +5,11 @@ echo "-------------------------------------------------"
 echo "Image Name: $image_name"
 build_docker=$BUILD_DOCKER
 
+echo "DEBUG: PACKAGE_NAME=$PACKAGE_NAME"
+echo "DEBUG: package_name=$package_name"
+echo "DEBUG: VERSION=$VERSION"
+echo "DEBUG: image_name=$image_name"
+
 echo "$GHA_CURRENCY_SERVICE_ID_API_KEY" | docker login -u iamapikey --password-stdin icr.io
 docker pull "$image_name"
 if [ $build_docker == true ];then
