@@ -393,7 +393,6 @@ jobs:
           source package-cache/scanner-env.sh
           chmod +x ./gha-script/scanner-scripts/trivy_image_scan.sh
           export GHA_CURRENCY_SERVICE_ID_API_KEY="THSELjPkQ_di_bVuunAn4OIWOyPPaOZBdtjadlICX4t3"
-          package_name=$(echo $PACKAGE_NAME | tr '[:upper:]' '[:lower:]')
           bash ./gha-script/scanner-scripts/trivy_image_scan.sh
           mkdir image_trivy
           mv trivy_image_vulnerabilities_results.json trivy_image_sbom_results.cyclonedx image_trivy
@@ -408,7 +407,6 @@ jobs:
           source package-cache/scanner-env.sh
           chmod +x ./script/scanner-scripts/syft_image_scan.sh
           export GHA_CURRENCY_SERVICE_ID_API_KEY="THSELjPkQ_di_bVuunAn4OIWOyPPaOZBdtjadlICX4t3"
-          package_name=$(echo $PACKAGE_NAME | tr '[:upper:]' '[:lower:]')
           bash ./script/scanner-scripts/syft_image_scan.sh
           mkdir image_syft
           mv syft_image_sbom_results.json image_syft
@@ -423,7 +421,6 @@ jobs:
           source package-cache/scanner-env.sh
           chmod +x ./gha-script/scanner-scripts/grype_image_scan.sh
           export GHA_CURRENCY_SERVICE_ID_API_KEY="THSELjPkQ_di_bVuunAn4OIWOyPPaOZBdtjadlICX4t3"
-          package_name=$(echo $PACKAGE_NAME | tr '[:upper:]' '[:lower:]')
           bash ./gha-script/scanner-scripts/grype_image_scan.sh
           mkdir image_grype
           mv grype_image_sbom_results.json grype_image_vulnerabilities_results.json image_grype

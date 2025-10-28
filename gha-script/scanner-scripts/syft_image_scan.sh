@@ -1,4 +1,5 @@
 #!/bin/bash -e
+package_name=$(echo $PACKAGE_NAME | tr '[:upper:]' '[:lower:]')
 image_name="icr.io/ose4power-packages-production/$package_name-ppc64le:$VERSION"
 echo "-------------------------------------------------"
 echo "Image Name: $image_name"
