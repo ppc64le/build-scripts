@@ -1,8 +1,8 @@
 diff --git a/build.py b/build.py
-index 5ab53168..aa99d4df 100755
+index 68c48a2a..aa9a7338 100755
 --- a/build.py
 +++ b/build.py
-@@ -335,6 +335,11 @@ class BuildScript:
+@@ -335,6 +335,13 @@ class BuildScript:
                  f"  git clone --recursive --single-branch --depth=1 -b {tag} {org}/{repo}.git {subdir}; git --git-dir {subdir}/.git log --oneline -1",
                  check_exitcode=True,
              )
@@ -11,10 +11,12 @@ index 5ab53168..aa99d4df 100755
 +                self.cmd(f"git apply /workspace/onnxruntime_backend.patch", check_exitcode=True)
 +            if subdir == "pytorch":
 +                self.cmd(f"git apply /workspace/pytorch_backend.patch", check_exitcode=True)
++            if subdir == "fil":
++                self.cmd(f"git apply /workspace/fil_backend.patch", check_exitcode=True)
              self.cmd("}" if target_platform() == "windows" else "fi")
  
  
-@@ -457,7 +462,8 @@ def core_cmake_args(components, backends, cmake_dir, install_dir):
+@@ -457,7 +464,8 @@ def core_cmake_args(components, backends, cmake_dir, install_dir):
              "TRITON_THIRD_PARTY_REPO_TAG", "STRING", components["thirdparty"]
          ),
      ]
@@ -24,7 +26,7 @@ index 5ab53168..aa99d4df 100755
      cargs.append(cmake_core_enable("TRITON_ENABLE_LOGGING", FLAGS.enable_logging))
      cargs.append(cmake_core_enable("TRITON_ENABLE_STATS", FLAGS.enable_stats))
      cargs.append(cmake_core_enable("TRITON_ENABLE_METRICS", FLAGS.enable_metrics))
-@@ -649,6 +655,9 @@ def pytorch_cmake_args(images):
+@@ -649,6 +657,9 @@ def pytorch_cmake_args(images):
      cargs = [
          cmake_backend_arg("pytorch", "TRITON_PYTORCH_DOCKER_IMAGE", None, image),
      ]
@@ -34,7 +36,7 @@ index 5ab53168..aa99d4df 100755
  
      # TODO: TPRD-372 TorchTRT extension is not currently supported by our manylinux build
      # TODO: TPRD-373 NVTX extension is not currently supported by our manylinux build
-@@ -929,11 +938,19 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1 CMAKE_POLICY_VERSION_MINIMUM=3.5
+@@ -929,11 +940,19 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1 CMAKE_POLICY_VERSION_MINIMUM=3.5
  """
      df += """
  # Install docker docker buildx
@@ -56,7 +58,7 @@ index 5ab53168..aa99d4df 100755
  # libcurl4-openSSL-dev is needed for GCS
  # python3-dev is needed by Torchvision
  # python3-pip and libarchive-dev is needed by python backend
-@@ -942,6 +959,7 @@ RUN yum install -y ca-certificates curl gnupg yum-utils \\
+@@ -942,6 +961,7 @@ RUN yum install -y ca-certificates curl gnupg yum-utils \\
  RUN yum install -y \\
              autoconf \\
              automake \\
@@ -64,7 +66,7 @@ index 5ab53168..aa99d4df 100755
              bzip2-devel \\
              ca-certificates \\
              git \\
-@@ -956,16 +974,31 @@ RUN yum install -y \\
+@@ -956,16 +976,32 @@ RUN yum install -y \\
              numactl-devel \\
              openssl-devel \\
              pkg-config \\
@@ -86,7 +88,8 @@ index 5ab53168..aa99d4df 100755
 +            sqlite-devel\\
 +            libffi-devel\\
 +            openblas-devel \\
-+            g++
++            g++ \\
++            ccache
 +RUN ln -sf $(which python3.12) /usr/bin/python3 && ln -sf $(which pip3.12) /usr/bin/pip3 && ln -sf $(which pip3.12) /usr/bin/pip
 +RUN ln -sf $(which python3.12) /usr/bin/python3 && ln -sf $(which pip3.12) /usr/bin/pip3 && ln -sf $(which pip3.12) /usr/bin/pip
 +
@@ -100,7 +103,7 @@ index 5ab53168..aa99d4df 100755
  """
      if os.getenv("CCACHE_REMOTE_ONLY") and os.getenv("CCACHE_REMOTE_STORAGE"):
          df += """
-@@ -997,7 +1030,7 @@ RUN pip3 install --upgrade pip \\
+@@ -997,7 +1033,7 @@ RUN pip3 install --upgrade pip \\
            docker \\
            virtualenv \\
            patchelf==0.17.2 \\
@@ -109,7 +112,7 @@ index 5ab53168..aa99d4df 100755
  
  # Install boost version >= 1.78 for boost::span
  # Current libboost-dev apt packages are < 1.78, so install from tar.gz
-@@ -1107,8 +1140,7 @@ RUN pip3 install --upgrade \\
+@@ -1107,8 +1143,7 @@ RUN pip3 install --upgrade \\
            build \\
            docker \\
            virtualenv \\
@@ -119,7 +122,7 @@ index 5ab53168..aa99d4df 100755
  
  # Install boost version >= 1.78 for boost::span
  # Current libboost-dev apt packages are < 1.78, so install from tar.gz
-@@ -1209,17 +1241,9 @@ ARG BASE_IMAGE={}
+@@ -1209,17 +1244,9 @@ ARG BASE_IMAGE={}
      # PyTorch backends need extra CUDA and other
      # dependencies during runtime that are missing in the CPU-only base container.
      # These dependencies must be copied from the Triton Min image.
@@ -137,7 +140,7 @@ index 5ab53168..aa99d4df 100755
      df += """
  ############################################################################
  ##  Production stage: Create container with just inference server executable
-@@ -1237,15 +1261,34 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1
+@@ -1237,15 +1264,34 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1
  WORKDIR /opt
  COPY --chown=1000:1000 build/install tritonserver
  
@@ -176,7 +179,7 @@ index 5ab53168..aa99d4df 100755
  """
      if not FLAGS.no_core_build:
          # Add feature labels for SageMaker endpoint
-@@ -1259,7 +1302,6 @@ COPY --chown=1000:1000 docker/sagemaker/serve /usr/bin/.
+@@ -1259,7 +1305,6 @@ COPY --chown=1000:1000 docker/sagemaker/serve /usr/bin/.
      # stage of the PyTorch backend
      if not FLAGS.enable_gpu and ("pytorch" in backends):
          df += """
@@ -184,7 +187,7 @@ index 5ab53168..aa99d4df 100755
  """
      if "tensorrtllm" in backends:
          df += """
-@@ -1348,10 +1390,20 @@ RUN userdel tensorrt-server > /dev/null 2>&1 || true \\
+@@ -1348,10 +1393,20 @@ RUN userdel tensorrt-server > /dev/null 2>&1 || true \\
  
      if target_platform() == "rhel":
          df += """
@@ -205,7 +208,7 @@ index 5ab53168..aa99d4df 100755
          re2-devel \\
          openssl-devel \\
          libtool \\
-@@ -1359,10 +1411,17 @@ RUN yum install -y \\
+@@ -1359,10 +1414,18 @@ RUN yum install -y \\
          libb64-devel \\
          gperftools-devel \\
          wget \\
@@ -221,13 +224,14 @@ index 5ab53168..aa99d4df 100755
 +        libjpeg-devel \\
 +        zlib-devel \\
 +        openblas-devel \\
-+        libarchive
++        libarchive \\
++        ccache
 +RUN ln -sf $(which python3.12) /usr/bin/python3 && ln -sf $(which pip3.12) /usr/bin/pip3 && ln -sf $(which pip3.12) /usr/bin/pip
 +RUN pip3 install patchelf==0.17.2 pillow 
  
  """
      else:
-@@ -1432,7 +1491,6 @@ RUN ln -sf ${_CUDA_COMPAT_PATH}/lib.real ${_CUDA_COMPAT_PATH}/lib \\
+@@ -1431,7 +1494,6 @@ RUN ln -sf ${_CUDA_COMPAT_PATH}/lib.real ${_CUDA_COMPAT_PATH}/lib \\
              df += """
  # python3, python3-pip and some pip installs required for the python backend
  RUN yum install -y \\
@@ -235,7 +239,7 @@ index 5ab53168..aa99d4df 100755
          openssl-devel \\
          readline-devel
  """
-@@ -1552,37 +1610,9 @@ def add_cpu_libs_to_linux_dockerfile(backends, target_machine):
+@@ -1551,37 +1613,9 @@ def add_cpu_libs_to_linux_dockerfile(backends, target_machine):
          # we must copy these from the Triton min container ourselves.
          cuda_arch = "sbsa" if target_machine == "aarch64" else "x86_64"
          df += """
@@ -274,7 +278,7 @@ index 5ab53168..aa99d4df 100755
  """.format(
              cuda_arch=cuda_arch, libs_arch=libs_arch
          )
-@@ -1594,7 +1624,6 @@ ENV LD_LIBRARY_PATH /usr/local/cuda/targets/{cuda_arch}-linux/lib:/usr/local/cud
+@@ -1593,7 +1627,6 @@ ENV LD_LIBRARY_PATH /usr/local/cuda/targets/{cuda_arch}-linux/lib:/usr/local/cud
          # Since this dependency is not present in the ubuntu base image,
          # we must copy it from the Triton min container ourselves.
          df += """
@@ -282,7 +286,7 @@ index 5ab53168..aa99d4df 100755
  """.format(
              libs_arch=libs_arch
          )
-@@ -1608,20 +1637,6 @@ def change_default_python_version_rhel(version):
+@@ -1607,20 +1640,6 @@ def change_default_python_version_rhel(version):
  # match the version of python inside the RHEL base container. This means that python packages
  # installed within the container will not be picked up by the python backend stub process pybind
  # bindings. It must instead must be installed via pyenv.
@@ -303,7 +307,7 @@ index 5ab53168..aa99d4df 100755
  """
      return df
  
-@@ -1878,6 +1893,42 @@ def create_docker_build_script(script_name, container_install_dir, container_ci_
+@@ -1877,6 +1896,42 @@ def create_docker_build_script(script_name, container_install_dir, container_ci_
              ],
              check_exitcode=True,
          )
@@ -346,3 +350,4 @@ index 5ab53168..aa99d4df 100755
  
          #
          # Final image... tritonserver
+
