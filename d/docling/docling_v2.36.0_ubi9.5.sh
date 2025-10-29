@@ -58,14 +58,13 @@ done
 # ---------------------------
 # Dependency Installation
 # ---------------------------
-echo "Configuring package repositories..."
-yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
-yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream/ppc64le/os
-yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os
-rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official
-yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 echo "Installing required packages..."
-yum install -y git wget gcc gcc-c++ python3-devel pip python3-numpy zlib-devel libjpeg-devel ninja-build gn libicu-devel lcms2-devel glib2-devel freetype-devel gfortran openblas-devel libxml2-devel libxslt-devel geos-devel tesseract-devel spatialindex-devel
+yum install -y git wget gcc gcc-c++ python3-devel pip python3-numpy zlib-devel libjpeg-devel ninja-build libicu-devel lcms2-devel glib2-devel freetype-devel gfortran openblas-devel libxml2-devel libxslt-devel
+
+echo "Configuring package repositories..."
+yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
+dnf config-manager --set-enabled codeready-builder-for-rhel-9-$(arch)-rpms && \
+yum install -y gn geos-devel tesseract-devel spatialindex-devel
 pip3 install build pytest numpy
 
 # ---------------------------
@@ -173,6 +172,11 @@ cd $BUILD_HOME
 git clone https://github.com/pytorch/vision.git
 cd vision
 git checkout $TORCHVISION_VERSION
+
+# Below patch is needed to exclude the models that come under SWAG license (CC-BY-NC-4.0)
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchvision/0001-Exclude-source-that-has-commercial-license.patch
+git apply ./0001-Exclude-source-that-has-commercial-license.patch
+
 python3 setup.py bdist_wheel
 pip3 install dist/*.whl
 
