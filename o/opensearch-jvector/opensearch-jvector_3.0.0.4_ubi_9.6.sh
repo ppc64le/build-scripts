@@ -20,9 +20,10 @@
 
 PACKAGE_NAME=opensearch-jvector
 PACKAGE_URL=https://github.com/opensearch-project/opensearch-jvector.git
-PACKAGE_VERSION=${1:-3.0.0.4}
+SCRIPT_PACKAGE_VERSION=3.0.0.4
+PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
 OPENSEARCH_URL=https://github.com/opensearch-project/OpenSearch.git
-OPENSEARCH_VERSION=${2:-3.0.0}
+OPENSEARCH_VERSION=${PACKAGE_VERSION::-2}
 OPENSEARCH_PACKAGE=OpenSearch
 BUILD_HOME=`pwd`
 SCRIPT=$(readlink -f $0)
@@ -61,7 +62,7 @@ fi
 cd "${BUILD_HOME}"
 git clone "${PACKAGE_URL}"
 cd "${PACKAGE_NAME}" && git checkout "${PACKAGE_VERSION}"
-git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${PACKAGE_VERSION}.patch
+git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${SCRIPT_PACKAGE_VERSION}.patch
 
 # --------
 # Build
