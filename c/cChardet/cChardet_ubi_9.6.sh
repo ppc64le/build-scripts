@@ -38,7 +38,7 @@ git submodule sync --recursive
 git submodule update --init --force --recursive --depth=1
 
 python3.12 -m pip install -r requirements-dev.txt
-python3.12 -m pip install tox
+python3.12 -m pip install pytest
 
 #Build package
 if ! python3.12 -m pip install . ; then
@@ -49,7 +49,7 @@ if ! python3.12 -m pip install . ; then
 fi
 
 #Tests
-if ! tox -e py3 ; then
+if ! pytest -vs tests ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
