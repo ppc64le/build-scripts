@@ -6,7 +6,7 @@
   "required_versions":{"Releases": ["*"], "Tags": ["3.0.0.4"]},
   "default_branch": "main",
   "package_dir": "o/opensearch-jvector",
-  "build_script": "opensearch-jvector_3.0.0.4_ubi_9.6.sh", 
+  "build_script": "opensearch-jvector_3.0.0.4_ubi_9.6.sh",
   "validate_build_script": true,
   "use_non_root_user": true,
   "docker_build": false,
