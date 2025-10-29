@@ -1,5 +1,5 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index e457656..0ad9258 100644
+index 9aff54c..6ea6a77 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -78,6 +78,10 @@ else()
@@ -13,86 +13,4 @@ index e457656..0ad9258 100644
  
  
    ##############################################################################
-diff --git a/ops/Dockerfile b/ops/Dockerfile
-index e71fbca..eb2fefb 100644
---- a/ops/Dockerfile
-+++ b/ops/Dockerfile
-@@ -46,14 +46,22 @@ RUN gpuci_mamba_retry create -n triton_test \
-     && rm /environment.yml
- 
- FROM base-test-install as wheel-install-0
--RUN apt-get update \
--    && apt-get install --no-install-recommends -y \
--      build-essential \
--      ca-certificates \
--      git \
--    && apt-get clean \
--    && rm -rf /var/lib/apt/lists/* \
--    && conda run --no-capture-output -n triton_test pip install tritonclient[all]
-+#RUN apt-get update \
-+#    && apt-get install --no-install-recommends -y \
-+#      build-essential \
-+#      ca-certificates \
-+#      git \
-+#    && apt-get clean \
-+#    && rm -rf /var/lib/apt/lists/* \
-+#    && conda run --no-capture-output -n triton_test pip install tritonclient[all]
-+
-+RUN yum install -y \
-+    gcc \
-+    gcc-c++ \
-+    make \
-+    patch \
-+    ca-certificates \
-+    git
- 
- FROM ${SDK_IMAGE} as sdk-image
- 
-@@ -80,22 +88,30 @@ ENV PATH="/root/miniconda3/bin:${PATH}"
- 
- # In CI, CPU base image may not have curl, but it also does not need to update
- # the cuda keys
--RUN  if command -v curl; \
-- then [ $(uname -m) = 'x86_64' ] \
-- && curl -L -o /tmp/cuda-keyring.deb \
--      https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.0-1_all.deb \
-- || curl -L -o /tmp/cuda-keyring.deb \
--      https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/sbsa/cuda-keyring_1.0-1_all.deb; \
-- dpkg -i /tmp/cuda-keyring.deb \
-- && rm /tmp/cuda-keyring.deb; fi
--
--RUN apt-get update \
--    && apt-get install --no-install-recommends -y \
--      build-essential \
--      ca-certificates \
--      git \
--    && apt-get clean \
--    && rm -rf /var/lib/apt/lists/*
-+#RUN  if command -v curl; \
-+# then [ $(uname -m) = 'x86_64' ] \
-+# && curl -L -o /tmp/cuda-keyring.deb \
-+#      https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.0-1_all.deb \
-+# || curl -L -o /tmp/cuda-keyring.deb \
-+#      https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/sbsa/cuda-keyring_1.0-1_all.deb; \
-+# dpkg -i /tmp/cuda-keyring.deb \
-+# && rm /tmp/cuda-keyring.deb; fi
-+
-+#RUN apt-get update \
-+#    && apt-get install --no-install-recommends -y \
-+#      build-essential \
-+#      ca-certificates \
-+#      git \
-+#    && apt-get clean \
-+#    && rm -rf /var/lib/apt/lists/*
-+
-+RUN yum install -y \
-+    gcc \
-+    gcc-c++ \
-+    make \
-+    patch \
-+    ca-certificates \
-+    git
- 
- # Stage immediately before building; useful for build iteration
- FROM base as build-prep
 
