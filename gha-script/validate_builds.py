@@ -17,7 +17,7 @@ use_non_root = ""
 # Updated image version to UBI 9.6
 UBI_BASE_IMAGE = "registry.access.redhat.com/ubi9/ubi:9.6"
 image_name = UBI_BASE_IMAGE
-
+echo "Base image is UBI_BASE_IMAGE = "registry.access.redhat.com/ubi9/ubi:9.6""
 
 def trigger_basic_validation_checks(file_name):
     key_checks = {
