@@ -49,7 +49,7 @@ if ! python3.12 -m pip install . ; then
 fi
 
 #Tests
-if ! pytest tests ; then
+if ! make test ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
