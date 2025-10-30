@@ -10,6 +10,6 @@
   "use_non_root_user": false,
   "docker_build": false,
   "*": {
-    "build_script": "vault-secrets-operator"
+    "build_script": "vault-secrets-operator_v1.0.1_ubi_9.6.sh"
   }
 }
