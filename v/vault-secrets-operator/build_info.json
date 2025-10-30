@@ -1,0 +1,15 @@
+{
+  "maintainer": "Amitkumar282",
+  "package_name": "vault-secrets-operator",
+  "github_url": "https://github.com/hashicorp/vault-secrets-operator.git",
+  "version": "v1.0.1",
+  "default_branch": "master",
+  "build_script": "vault-secrets-operator_v1.0.1_ubi_9.6.sh",
+  "package_dir": "v/vault-secrets-operator",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "*": {
+    "build_script": "vault-secrets-operator_v1.0.1_ubi_9.6.sh"
+  }
+}
