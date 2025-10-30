@@ -27,7 +27,7 @@ VERSION=${1:-1.12.0}
 # Install system dependencies
 # -----------------------------------------------------------------------------
 echo "Installing dependencies..."
-dnf -y groupinstall "Development Tools"
+
 dnf -y install \
     python3 python3-devel python3-pip \
     openblas-devel pcre2-devel cmake git \
