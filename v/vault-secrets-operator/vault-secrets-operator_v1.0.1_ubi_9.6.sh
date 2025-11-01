@@ -4,7 +4,7 @@
 # Package       : vault-secrets-operator
 # Version       : v1.0.1
 # Source repo   : https://github.com/hashicorp/vault-secrets-operator.git
-# Tested on     : UBI 9.6 (ppc64le)
+# Tested on     : UBI 9.6
 # Language      : Go
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
