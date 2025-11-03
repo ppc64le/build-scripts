@@ -48,8 +48,6 @@ if ! python3.12 -m pip install -e . ; then
     exit 1
 fi
 
-ln -sf $(which python3.12) /usr/bin/python
-
 #Tests
 if ! make test ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
