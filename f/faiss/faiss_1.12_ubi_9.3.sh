@@ -28,18 +28,16 @@ VERSION=${1:-1.12.0}
 # -----------------------------------------------------------------------------
 echo "Installing dependencies..."
 
-dnf -y install \
+dnf install -y \
     python3 python3-devel python3-pip \
     openblas-devel pcre2-devel cmake git \
-    autoconf automake libtool bison flex \
-    make gcc gcc-c++ m4 patch \
-    wget tar unzip which file
+    autoconf automake libtool g++ make wget bison
 
 # -----------------------------------------------------------------------------
 # Upgrade Python packaging tools
 # -----------------------------------------------------------------------------
 echo "Upgrading Python tools..."
-python3 -m pip install --upgrade pip setuptools wheel build numpy
+python3 -m pip install --upgrade setuptools wheel build numpy
 
 # -----------------------------------------------------------------------------
 # Create build workspace
@@ -78,17 +76,9 @@ fi
 
 cd faiss || exit 1
 
-# Checkout the given version if tag exists
-if git rev-parse "v${VERSION}" >/dev/null 2>&1; then
-    git checkout "v${VERSION}"
-else
-    echo "Version v${VERSION} not found, using default branch."
-fi
-
 # -----------------------------------------------------------------------------
 # Build FAISS (CPU only)
 # -----------------------------------------------------------------------------
-echo "Building FAISS ${VERSION}..."
 mkdir -p build && cd build || exit 1
 
 cmake .. \
