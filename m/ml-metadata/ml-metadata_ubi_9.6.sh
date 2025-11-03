@@ -3,7 +3,7 @@
 #
 # Package       : ml-metadata
 # Version       : master
-# Source repo   : https://github.com/google/ml-metadata
+# Source repo   : https://github.com/google/ml-metadata.git
 # Tested on     : UBI 9.6
 # Language      : C++
 # Travis-Check  : True
@@ -19,7 +19,9 @@
 # ----------------------------------------------------------------------------
 # Commit ID for master is: d3a70e909463a231d367270c9f3ef89cf39a1df4
 
-PACKAGE_URL=https://github.com/google/ml-metadata
+set -ex
+
+PACKAGE_URL=https://github.com/google/ml-metadata.git
 PACKAGE_NAME=ml-metadata
 PACKAGE_VERSION=master
 
@@ -50,7 +52,6 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git apply $SCRIPT_DIR/ml_metadata_ubi9.6.patch
 
-export BAZEL_ARGS="--jobs=2 --local_cpu_resources=2"
 export PYTHON_BIN_PATH=$(which python3)
 
 if ! (python3.9 -m pip install .); then 
