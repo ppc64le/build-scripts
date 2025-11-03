@@ -41,7 +41,7 @@ python3.12 -m pip install -r requirements-dev.txt
 python3.12 -m pip install pytest
 
 #Build package
-if ! python3.12 -m pip install . ; then
+if ! python3.12 -m pip install -e . ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
