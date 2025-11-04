@@ -52,6 +52,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git apply $SCRIPT_DIR/ml_metadata_ubi9.6.patch
 
+export BAZEL_ARGS="--jobs=2 --local_cpu_resources=2"
 export PYTHON_BIN_PATH=$(which python3)
 
 if ! (python3.9 -m pip install .); then 
