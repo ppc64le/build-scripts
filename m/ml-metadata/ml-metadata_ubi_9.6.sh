@@ -46,14 +46,13 @@ export PATH=/usr/local/bin:$PATH
 cd $wdir
 
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
+export BAZEL_ARGS="--jobs=8 --local_cpu_resources=4"
 python3.9 -m pip install numpy pytest
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git apply $SCRIPT_DIR/ml_metadata_ubi9.6.patch
 
-export BAZEL_CXXOPTS="-std=c++17"
-export BAZEL_ARGS="--jobs=1 --local_cpu_resources=2 --local_ram_resources=2048"
 export PYTHON_BIN_PATH=$(which python3)
 
 if ! (python3.9 -m pip install .); then 
