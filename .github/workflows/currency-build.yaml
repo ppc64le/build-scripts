@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - replica-master
+      - UBI1
     inputs:
       package_name:
         description: 'Name of the package to build'
