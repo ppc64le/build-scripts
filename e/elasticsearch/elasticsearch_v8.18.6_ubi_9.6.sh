@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-v8.18.6}
 BUILD_DIR=$(pwd)
 
 # Install system dependencies (except Java)
-yum install -y git gzip tar wget patch make gcc gcc-c++ libcurl-devel
+yum install -y git gzip tar wget patch make gcc gcc-c++ libcurl-devel --allowerasing
 
 wget https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.8%2B9/OpenJDK21U-jdk_ppc64le_linux_hotspot_21.0.8_9.tar.gz
 tar -xf OpenJDK21U-jdk_ppc64le_linux_hotspot_21.0.8_9.tar.gz -C /opt
@@ -109,13 +109,48 @@ mkdir -p distribution/docker/cloud-docker-ppc64le-export
 # Build
 ./gradlew :distribution:archives:linux-tar:assemble --parallel --stacktrace
 
-# Test
-# create below directories before running tests
+# Test (create non-root user for testing)
 
-#mkdir -p libs/native/libraries/build/platform/linux-ppc64le
-#cp /usr/lib64/libzstd.so.1 libs/native/libraries/build/platform/linux-ppc64le/libzstd.so
-#ls -l libs/native/libraries/build/platform/linux-ppc64le/
-#mkdir -p lib/platform/linux-ppc64le
-#cp /usr/lib64/libzstd.so.1 lib/platform/linux-ppc64le/libzstd.so
+useradd -m -s /bin/bash tester || true
+groupadd podman || true
+usermod -aG podman tester || true
 
-#./gradlew test -x :x-pack:plugin:ml:test -x :x-pack:plugin:esql:test -Dtests.haltonfailure=false
+# Give ownership of Elasticsearch source to tester
+chown -R tester:tester $BUILD_DIR/$PACKAGE_NAME || true
+
+# Create required native lib directories (if not already present)
+mkdir -p $BUILD_DIR/$PACKAGE_NAME/libs/native/libraries/build/platform/linux-ppc64le
+mkdir -p $BUILD_DIR/$PACKAGE_NAME/lib/platform/linux-ppc64le
+
+if [ -f /usr/lib64/libzstd.so.1 ]; then
+    cp /usr/lib64/libzstd.so.1 $BUILD_DIR/$PACKAGE_NAME/libs/native/libraries/build/platform/linux-ppc64le/libzstd.so
+    cp /usr/lib64/libzstd.so.1 $BUILD_DIR/$PACKAGE_NAME/lib/platform/linux-ppc64le/libzstd.so
+fi
+
+# Switch to tester user and run tests
+su - tester -c "
+set -e
+set -x
+cd $BUILD_DIR/$PACKAGE_NAME
+
+# Ensure Java and Gradle paths are available for tester
+export JAVA_HOME=$JAVA_HOME
+export PATH=\$JAVA_HOME/bin:\$PATH
+export LANG=en_US.UTF-8
+
+echo 'Running Elasticsearch unit tests as non-root user...'
+
+# Run tests but skip modules known to fail on ppc64le or unsupported as root
+./gradlew test \
+    -x :x-pack:plugin:ml:test \
+    -x :x-pack:plugin:esql:test \
+    --stacktrace -Dtests.haltonfailure=false
+
+ret=\$?
+if [ \$ret -ne 0 ]; then
+  echo 'ERROR: Elasticsearch tests failed.'
+  exit 2
+else
+  echo 'Elasticsearch tests passed successfully.'
+fi
+"
