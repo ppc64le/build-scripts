@@ -2,30 +2,16 @@
     "maintainer": "Madhur-iiitd",
     "package_name": "faiss",
     "github_url": "https://github.com/facebookresearch/faiss.git",
-    "version": "v1.12.0",
+    "version": "1.12.0",
     "default_branch": "main",
-    "category": "default",
-    "package_dir": "f/faiss/",
-    "docker_cmd": "docker build -t faiss:$PACKAGE_VERSION ${dir}",
     "build_script": "faiss_1.12_ubi.sh",
+    "package_dir": "f/faiss",
     "docker_build": true,
     "validate_build_script": true,
     "use_non_root_user": false,
     "wheel_build": true,
 
-    "required_versions": {
-        "Releases": ["v1.12.0"],
-        "Tags": ["v1.12.0"]
-    },
-
-    "v1.12.*": {
-        "dir": "1.12.0_rhel_9.6",
-        "build_script": "faiss_rhel_9.6.sh",
-        "base_docker_image": "registry.access.redhat.com/ubi9/ubi:latest",
-        "base_docker_variant": "redhat",
-        "args": {
-            "FAISS_VERSION": "1.12.0",
-            "PYTHON_VERSION": "3.9"
-        }
+    "*": {
+        "build_script": "faiss_1.12_ubi.sh"
     }
 }
