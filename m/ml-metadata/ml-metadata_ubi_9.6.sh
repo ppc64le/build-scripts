@@ -23,13 +23,13 @@ set -ex
 
 PACKAGE_URL=https://github.com/google/ml-metadata.git
 PACKAGE_NAME=ml-metadata
-PACKAGE_VERSION=master
+PACKAGE_VERSION=${1:-master}
+PACKAGE_DIR=ml-metadata
 
 wdir=`pwd`
 SCRIPT=$(readlink -f $0)
 SCRIPT_DIR=$(dirname $SCRIPT)
 
-yum update -y
 yum install -y autoconf cmake wget automake libtool zlib zlib-devel libjpeg libjpeg-devel gcc gcc-c++ gcc-gfortran git unzip zip python3.9 python3.9-devel python3.9-pip patch openssl-devel utf8proc tzdata diffutils libffi-devel
 
 yum install -y java-11-openjdk-devel
@@ -46,7 +46,6 @@ export PATH=/usr/local/bin:$PATH
 cd $wdir
 
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
-export BAZEL_ARGS="--jobs=8 --local_cpu_resources=4"
 python3.9 -m pip install numpy pytest
 
 git clone $PACKAGE_URL
