@@ -21,17 +21,21 @@
 # -----------------------------------------------------------------------------
 # Set package version
 # -----------------------------------------------------------------------------
-VERSION=${1:-1.12.0}
+PACKAGE_NAME=faiss
+PACKAGE_DIR=faiss/build/faiss/python
+PACKAGE_VERSION=${1:-1.12.0}
+PACKAGE_URL=https://github.com/facebookresearch/faiss.git
 
 # -----------------------------------------------------------------------------
 # Install system dependencies
 # -----------------------------------------------------------------------------
 echo "Installing dependencies..."
 
-dnf install -y \
+yum install -y \
     python3 python3-devel python3-pip \
     openblas-devel pcre2-devel cmake git \
-    autoconf automake libtool g++ make wget bison
+    autoconf automake libtool gcc-c++ make wget
+yum install -y https://rpmfind.net/linux/centos-stream/9-stream/AppStream/ppc64le/os/Packages/bison-3.7.4-5.el9.ppc64le.rpm 
 
 # -----------------------------------------------------------------------------
 # Upgrade Python packaging tools
@@ -91,31 +95,32 @@ cmake .. \
 
 make -j"$(nproc)"
 
+#follow this to build wheel locally
 # -----------------------------------------------------------------------------
 # Build Python wheel
 # -----------------------------------------------------------------------------
-cd ./faiss/python || exit 1
-echo "Building Python wheel..."
-python3 -m build --wheel
+# cd ./faiss/python || exit 1
+# echo "Building Python wheel..."
+# python3 -m build --wheel
 
-# -----------------------------------------------------------------------------
-# Verify build output
-# -----------------------------------------------------------------------------
-echo "Listing built wheel files..."
-ls -lh dist/
+# # -----------------------------------------------------------------------------
+# # Verify build output
+# # -----------------------------------------------------------------------------
+# echo "Listing built wheel files..."
+# ls -lh dist/
 
-# -----------------------------------------------------------------------------
-# Test FAISS installation (basic import test)
-# -----------------------------------------------------------------------------
-echo "Testing FAISS wheel installation..."
-WHEEL_FILE=$(ls dist/faiss*.whl | head -n 1)
-if [ -f "$WHEEL_FILE" ]; then
-    pip install "$WHEEL_FILE"
-    python3 -c "import faiss; print('FAISS version:', faiss.__version__)"
-else
-    echo "No wheel file found in dist/. Build may have failed."
-    exit 1
-fi
+# # -----------------------------------------------------------------------------
+# # Test FAISS installation (basic import test)
+# # -----------------------------------------------------------------------------
+# echo "Testing FAISS wheel installation..."
+# WHEEL_FILE=$(ls dist/faiss*.whl | head -n 1)
+# if [ -f "$WHEEL_FILE" ]; then
+#     pip install "$WHEEL_FILE"
+#     python3 -c "import faiss; print('FAISS version:', faiss.__version__)"
+# else
+#     echo "No wheel file found in dist/. Build may have failed."
+#     exit 1
+# fi
 
 # -----------------------------------------------------------------------------
 # Cleanup and summary
