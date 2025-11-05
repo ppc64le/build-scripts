@@ -13,7 +13,7 @@ HOME = os.getcwd()
 
 package_data = {}
 use_non_root = ""
-image_name = "registry.access.redhat.com/ubi9/ubi:9.6"
+image_name = "registry.access.redhat.com/ubi9/ubi:9.6"    # default image used is 9.6
 
 def trigger_basic_validation_checks(file_name):
     key_checks = {
@@ -40,6 +40,7 @@ def trigger_basic_validation_checks(file_name):
     if 'crlf' in eof.lower():
         raise EOFError("Build script {} contains windows line endings(CRLF), Please update build script with Linux based line endings.".format(file_name))
 
+    global image_name
     if os.path.exists(script_path):
         all_lines = []
         with open(script_path) as script_file_handler:
@@ -50,10 +51,19 @@ def trigger_basic_validation_checks(file_name):
                 for key in key_checks:
                     if key == '# Tested on' and key in line:
                         matched_keys.append(key)
-                        distro_data = line.split(':')[-1].strip()
-                        distro_data = distro_data.split(' ')
-                        package_data["distro_name"] = distro_data[0]
-                        package_data["distro_version"] = distro_data[-1]
+                        try:
+                            distro_data = line.split(':')[-1].strip().split()
+                            package_data["distro_name"] = distro_data[0]
+                            package_data["distro_version"] = distro_data[-1]
+
+                            # Construct UBI image dynamically
+                            major_version = package_data["distro_version"].split('.')[0]
+                            image_name = f"registry.access.redhat.com/ubi{major_version}/ubi:{package_data['distro_version']}"
+                            print(f"[INFO] Image used for the creating container: {image_name}")
+                        except Exception as e:
+                            print(f"Using default UBI 9.6 image.")
+                            image_name = "registry.access.redhat.com/ubi9/ubi:9.6"
+                            
                     elif key in line:
                         matched_keys.append(key)
                         package_data[key_checks[key]] = line.split(':',1)[-1].strip()
@@ -106,7 +116,7 @@ def trigger_script_validation_checks(file_name):
 def build_non_root_custom_docker_image():
     global image_name
     print("Building custom docker image for non root user build")
-    os.system('docker build --build-arg BASE_IMAGE="registry.access.redhat.com/ubi9/ubi:9.6" -t docker_non_root_image -f gha-script/dockerfile_non_root .')
+    os.system(f'docker build --build-arg BASE_IMAGE="{image_name}" -t docker_non_root_image -f gha-script/dockerfile_non_root .')
     image_name = "docker_non_root_image"
     return True
 
