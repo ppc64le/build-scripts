@@ -87,9 +87,9 @@ wget -q -O ../build_power.patch https://github.com/ollama/ollama/pull/12070/comm
 wget -q -O ../set_threads_env.patch https://github.com/ollama/ollama/pull/11413/commits/1364a887a1d7c25522e9c921d55e50a6aea44964.patch
 wget -q -O ../enable_mma.patch https://github.com/ollama/ollama/pull/12085/commits/fe924304809ae8e6bd6957b0ce5759eb2a796d42.patch
 
-patch -Np1 < ../build_power.patch || true
-patch -Np1 < ../set_threads_env.patch || true
-patch -Np1 < ../enable_mma.patch || true
+patch -p1 < ../build_power.patch
+patch -p1 < ../set_threads_env.patch
+patch -p1 < ../enable_mma.patch
 
 # -----------------------------------------------------------------------------
 # Build Ollama
