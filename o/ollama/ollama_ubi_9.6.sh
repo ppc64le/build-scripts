@@ -26,7 +26,7 @@ PKG_DIR="ollama_wheel"
 echo "------------------------Installing dependencies-------------------"
 
 # install core dependencies
-yum install -y python python-pip python-devel  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils wget
+yum install -y python python-pip python-devel  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils wget patch
 
 python -m pip install --upgrade pip wheel
 
