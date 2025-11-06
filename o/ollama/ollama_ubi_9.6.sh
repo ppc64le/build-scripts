@@ -165,7 +165,7 @@ EOF
 # -----------------------------------------------------------------------------
 echo "**** Building Python wheel..."
 cd ${PKG_DIR}
-python3 -m build --wheel
+python -m build --wheel
 
 echo "**** Wheel generated at: $(pwd)/dist/"
 ls -lh dist/
