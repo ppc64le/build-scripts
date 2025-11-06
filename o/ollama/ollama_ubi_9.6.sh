@@ -4,32 +4,14 @@
 # Package         : Ollama (Power10 optimized)
 # Version         : 0.1.0
 # Source repo     : https://github.com/ollama/ollama
-# Tested on       : RHEL/UBI 9.3 (ppc64le)
+# Tested on       : RHEL/UBI 9.6 (ppc64le)
 # Language        : Go, C, Python
 # Travis-Check    : True
 # Script License  : Apache License, Version 2 or later
 # Maintainer      : Shalini Salomi Bodapati <Shalini-Salomi-Bodapati@ibm.com>
 #!/bin/bash
 # -----------------------------------------------------------------------------
-#
-# Package         : Ollama (Power10 optimized)
-# Version         : 0.1.0
-# Source repo     : https://github.com/ollama/ollama
-# Tested on       : RHEL/UBI 9.3 (ppc64le)
-# Language        : Go, C, Python
-# Travis-Check    : True
-# Script License  : Apache License, Version 2 or later
-# Maintainer      : Shalini Salomi Bodapati <Shalini-Salomi-Bodapati@ibm.com>
-#
-# Disclaimer: This script has been tested in root mode on the given
-# ==========  platform using the mentioned version of the package.
-#             It builds Ollama with Power10-optimized libraries and
-#             packages it as a Python wheel for simplified deployment.
-#             It may not work as expected with newer versions of
-#             Ollama and/or the underlying dependencies. In such a case,
-#             please contact the "Maintainer" of this script.
-#
-# -----------------------------------------------------------------------------
+
 
 set -e
 
