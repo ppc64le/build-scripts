@@ -1,5 +1,5 @@
 diff --git a/WORKSPACE b/WORKSPACE
-index 2465151..175805b 100644
+index 2465151..94eb6fd 100644
 --- a/WORKSPACE
 +++ b/WORKSPACE
 @@ -9,6 +9,7 @@ http_archive(
@@ -10,7 +10,17 @@ index 2465151..175805b 100644
      urls = [
          "https://ftp.postgresql.org/pub/source/v12.1/postgresql-12.1.tar.gz",
      ],
-@@ -50,10 +51,10 @@ http_archive(
+@@ -43,17 +44,17 @@ rules_foreign_cc_dependencies()
+
+ http_archive(
+     name = "com_google_absl",
+-    urls = ["https://github.com/abseil/abseil-cpp/archive/940c06c25d2953f44310b68eb8aab6114dba11fb.zip"],
+-    strip_prefix = "abseil-cpp-940c06c25d2953f44310b68eb8aab6114dba11fb",
+-    sha256 = "0e800799aa64d0b4d354f3ff317bbd5fbf42f3a522ab0456bb749fc8d3b67415",
++    urls = ["https://github.com/abseil/abseil-cpp/archive/refs/tags/20230125.2.zip"],
++    strip_prefix = "abseil-cpp-20230125.2",
++    sha256 = "2d40102022a01c6f3dddd23ec9ddafff49697a2e4bd09af68bccb74d26ecf64a",
+ )
 
  http_archive(
      name = "boringssl",

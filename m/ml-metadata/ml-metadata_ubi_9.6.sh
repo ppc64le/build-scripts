@@ -30,7 +30,8 @@ wdir=`pwd`
 SCRIPT=$(readlink -f $0)
 SCRIPT_DIR=$(dirname $SCRIPT)
 
-yum install -y autoconf cmake wget automake libtool zlib zlib-devel libjpeg libjpeg-devel gcc gcc-c++ gcc-gfortran git unzip zip python3.9 python3.9-devel python3.9-pip patch openssl-devel utf8proc tzdata diffutils libffi-devel
+yum install -y autoconf cmake wget automake libtool zlib zlib-devel libjpeg libjpeg-devel gcc-toolset-13 python3.11 python3.11-pip python3.11-devel git unzip zip patch openssl-devel utf8proc tzdata diffutils libffi-devel
+source /opt/rh/gcc-toolset-13/enable
 
 yum install -y java-11-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
@@ -38,23 +39,24 @@ export PATH=$JAVA_HOME/bin:$PATH
 
 mkdir bazel
 cd bazel
-wget https://github.com/bazelbuild/bazel/releases/download/6.1.0/bazel-6.1.0-dist.zip
-unzip bazel-6.1.0-dist.zip
+wget https://github.com/bazelbuild/bazel/releases/download/6.5.0/bazel-6.5.0-dist.zip
+unzip bazel-6.5.0-dist.zip
 env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
 cp output/bazel /usr/local/bin
 export PATH=/usr/local/bin:$PATH
+bazel --version
 cd $wdir
 
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
-python3.9 -m pip install numpy pytest
+python3.11 -m pip install numpy pytest
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git apply $SCRIPT_DIR/ml_metadata_ubi9.6.patch
 
-export PYTHON_BIN_PATH=$(which python3)
+export PYTHON_BIN_PATH=$(which python3.11)
 
-if ! (python3.9 -m pip install .); then 
+if ! (python3.11 -m pip install .); then 
      echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
      echo "$PACKAGE_URL $PACKAGE_NAME"
      echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $PACKAGE_VERSION | GitHub | Fail |  Build_fails"
