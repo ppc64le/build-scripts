@@ -42,10 +42,9 @@ PKG_DIR="ollama_wheel"
 
 
 echo "------------------------Installing dependencies-------------------"
-yum install -y wget
 
 # install core dependencies
-yum install -y python python-pip python-devel  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils wget patch
+yum install -y python python-pip python-devel  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils curl
 
 python -m pip install --upgrade pip wheel
 
@@ -83,15 +82,10 @@ git clone https://github.com/ollama/ollama.git
 cd ollama
 
 echo "**** Applying Power10 patches..."
-wget -q -O ../build_power.patch https://github.com/ollama/ollama/pull/12070/commits/67b8d3c817fbdc57fedad9b032d0efc10285220a.patch
-wget -q -O ../set_threads_env.patch https://github.com/ollama/ollama/pull/11413/commits/1364a887a1d7c25522e9c921d55e50a6aea44964.patch
-wget -q -O ../enable_mma.patch https://github.com/ollama/ollama/pull/12085/commits/fe924304809ae8e6bd6957b0ce5759eb2a796d42.patch
+curl "https://github.com/ollama/ollama/pull/12070/commits/67b8d3c817fbdc57fedad9b032d0efc10285220a.patch" | patch -p1
+curl "https://github.com/ollama/ollama/pull/11413/commits/1364a887a1d7c25522e9c921d55e50a6aea44964.patch" | patch -p1
+curl "https://github.com/ollama/ollama/pull/12085/commits/fe924304809ae8e6bd6957b0ce5759eb2a796d42.patch" | patch -p1
 
-echo "** Downloaded Patches..."
-
-patch -p1 < ../build_power.patch
-patch -p1 < ../set_threads_env.patch
-patch -p1 < ../enable_mma.patch
 
 # -----------------------------------------------------------------------------
 # Build Ollama
@@ -193,6 +187,6 @@ ls -lh dist/
 # -----------------------------------------------------------------------------
 cd ../..
 echo "**** Cleaning temporary files..."
-rm -f go1.24.1.linux-ppc64le.tar.gz build_power.patch set_threads_env.patch enable_mma.patch
+rm -f go1.24.1.linux-ppc64le.tar.gz
 echo "**** Done! Ollama Power10 wheel ready."
 
