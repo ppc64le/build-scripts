@@ -138,18 +138,13 @@ export JAVA_HOME=$JAVA_HOME
 export PATH=\$JAVA_HOME/bin:\$PATH
 export LANG=en_US.UTF-8
 
-export GRADLE_OPTS='-Xmx2g -Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2'
-export JAVA_TOOL_OPTIONS='-Xmx2g -Xms512m'
-export ES_JAVA_OPTS='-XX:ActiveProcessorCount=4'
-
 echo 'Running Elasticsearch unit tests as non-root user...'
 
 # Run tests but skip modules known to fail on ppc64le or unsupported as root
 ./gradlew test \
-    --no-parallel \
     -x :x-pack:plugin:ml:test \
     -x :x-pack:plugin:esql:test \
-    -Dtests.method='!org.elasticsearch.index.MergeSchedulerSettingsTests.testMaxThreadAndMergeCount' \
+	-x :server:test \
     --stacktrace -Dtests.haltonfailure=false
 
 ret=\$?
