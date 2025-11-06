@@ -109,6 +109,7 @@ mkdir -p distribution/docker/cloud-docker-ppc64le-export
 # Build
 ./gradlew :distribution:archives:linux-tar:assemble --parallel --stacktrace
 
+# Commenting out test part as tests are passing locally but not on Travis/GHA.
 # Test (create non-root user for testing)
 
 # useradd -m -s /bin/bash tester || true
