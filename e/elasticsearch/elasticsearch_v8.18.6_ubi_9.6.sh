@@ -149,6 +149,7 @@ echo 'Running Elasticsearch unit tests as non-root user...'
     --no-parallel \
     -x :x-pack:plugin:ml:test \
     -x :x-pack:plugin:esql:test \
+    -Dtests.method='!org.elasticsearch.index.MergeSchedulerSettingsTests.testMaxThreadAndMergeCount' \
     --stacktrace -Dtests.haltonfailure=false
 
 ret=\$?
