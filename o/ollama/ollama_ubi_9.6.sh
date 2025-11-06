@@ -65,9 +65,9 @@ git clone https://github.com/ollama/ollama.git
 cd ollama
 
 echo "**** Downloading Power10 patches..."
-wget -q -O build_power.patch https://github.com/ollama/ollama/pull/12070/commits/67b8d3c817fbdc57fedad9b032d0efc10285220a.patch
-wget -q -O set_threads_env.patch https://github.com/ollama/ollama/pull/11413/commits/1364a887a1d7c25522e9c921d55e50a6aea44964.patch
-wget -q -O enable_mma.patch https://github.com/ollama/ollama/pull/12085/commits/fe924304809ae8e6bd6957b0ce5759eb2a796d42.patch
+wget -q -O build_power.patch https://github.com/ollama/ollama/commit/67b8d3c817fbdc57fedad9b032d0efc10285220a.patch
+wget -q -O set_threads_env.patch https://github.com/ollama/ollama/commit/1364a887a1d7c25522e9c921d55e50a6aea44964.patch
+wget -q -O enable_mma.patch https://github.com/ollama/ollama/commit/fe924304809ae8e6bd6957b0ce5759eb2a796d42.patch
 
 echo "** Applying Patches..."
 
