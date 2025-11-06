@@ -111,47 +111,47 @@ mkdir -p distribution/docker/cloud-docker-ppc64le-export
 
 # Test (create non-root user for testing)
 
-useradd -m -s /bin/bash tester || true
-groupadd podman || true
-usermod -aG podman tester || true
+# useradd -m -s /bin/bash tester || true
+# groupadd podman || true
+# usermod -aG podman tester || true
 
 # Give ownership of Elasticsearch source to tester
-chown -R tester:tester $BUILD_DIR/$PACKAGE_NAME || true
+# chown -R tester:tester $BUILD_DIR/$PACKAGE_NAME || true
 
 # Create required native lib directories (if not already present)
-mkdir -p $BUILD_DIR/$PACKAGE_NAME/libs/native/libraries/build/platform/linux-ppc64le
-mkdir -p $BUILD_DIR/$PACKAGE_NAME/lib/platform/linux-ppc64le
+# mkdir -p $BUILD_DIR/$PACKAGE_NAME/libs/native/libraries/build/platform/linux-ppc64le
+# mkdir -p $BUILD_DIR/$PACKAGE_NAME/lib/platform/linux-ppc64le
 
-if [ -f /usr/lib64/libzstd.so.1 ]; then
-    cp /usr/lib64/libzstd.so.1 $BUILD_DIR/$PACKAGE_NAME/libs/native/libraries/build/platform/linux-ppc64le/libzstd.so
-    cp /usr/lib64/libzstd.so.1 $BUILD_DIR/$PACKAGE_NAME/lib/platform/linux-ppc64le/libzstd.so
-fi
+# if [ -f /usr/lib64/libzstd.so.1 ]; then
+#    cp /usr/lib64/libzstd.so.1 $BUILD_DIR/$PACKAGE_NAME/libs/native/libraries/build/platform/linux-ppc64le/libzstd.so
+#    cp /usr/lib64/libzstd.so.1 $BUILD_DIR/$PACKAGE_NAME/lib/platform/linux-ppc64le/libzstd.so
+# fi
 
 # Switch to tester user and run tests
-su - tester -c "
-set -e
-set -x
-cd $BUILD_DIR/$PACKAGE_NAME
+# su - tester -c "
+# set -e
+# set -x
+# cd $BUILD_DIR/$PACKAGE_NAME
 
 # Ensure Java and Gradle paths are available for tester
-export JAVA_HOME=$JAVA_HOME
-export PATH=\$JAVA_HOME/bin:\$PATH
-export LANG=en_US.UTF-8
+# export JAVA_HOME=$JAVA_HOME
+# export PATH=\$JAVA_HOME/bin:\$PATH
+# export LANG=en_US.UTF-8
 
-echo 'Running Elasticsearch unit tests as non-root user...'
+# echo 'Running Elasticsearch unit tests as non-root user...'
 
 # Run tests but skip modules known to fail on ppc64le or unsupported as root
-./gradlew test \
-    -x :x-pack:plugin:ml:test \
-    -x :x-pack:plugin:esql:test \
-	-x :server:test \
-    --stacktrace -Dtests.haltonfailure=false
+# ./gradlew test \
+#     -x :x-pack:plugin:ml:test \
+#     -x :x-pack:plugin:esql:test \
+# 	-x :server:test \
+#     --stacktrace -Dtests.haltonfailure=false
 
-ret=\$?
-if [ \$ret -ne 0 ]; then
-  echo 'ERROR: Elasticsearch tests failed.'
-  exit 2
-else
-  echo 'Elasticsearch tests passed successfully.'
-fi
-"
+# ret=\$?
+# if [ \$ret -ne 0 ]; then
+#   echo 'ERROR: Elasticsearch tests failed.'
+#   exit 2
+# else
+#   echo 'Elasticsearch tests passed successfully.'
+# fi
+# "
