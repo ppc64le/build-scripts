@@ -44,7 +44,7 @@ export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 # -----------------------------------------------------------------------------
 python3.12 -m pip install pytest anyio orjson asgi_lifespan blockbuster dotenv fastapi httpx
 python3.12 -m pip install cython setuptools wheel pytest plotly
-python3.12 -m pip install six numpy pandas scipy matplotlib  scikit-learn graphviz ninja
+python3.12 -m pip install six numpy pandas scipy matplotlib  scikit-learn graphviz ninja cython
 
 # Install rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > sh.rustup.rs && \
