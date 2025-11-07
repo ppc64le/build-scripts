@@ -191,7 +191,7 @@ fi
 echo "Processing Package with Python $PYTHON_VERSION"
 
 # Create and activate virtual environment
-VENV_DIR="$CURRENT_DIR/pyvenv_$PYTHON_VERSION"
+VENV_DIR="$(realpath -m "${CURRENT_DIR}/pyvenv_${PYTHON_VERSION}")"
 create_venv "$VENV_DIR" "$PYTHON_VERSION"
 
 echo "=============== Running package build-script starts =================="

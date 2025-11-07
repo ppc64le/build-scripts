@@ -1,16 +1,19 @@
 {
-	"maintainer": "vivek8123",
+	"maintainer": "vikram9491",
 	"package_name": "milvus-lite",
 	"github_url": "https://github.com/milvus-io/milvus-lite",
-	"version": "v2.4.12",
+	"version": "v2.5.0",
 	"default_branch": "main",
-	"build_script": "milvus-lite_ubi_9.3.sh",
+	"build_script": "milvus-lite_2.5.0_ubi_9.6.sh",
 	"package_dir": "m/milvus-lite",
 	"docker_build": false,
 	"validate_build_script": true,
 	"wheel_build" : true,
 	"use_non_root_user": false,
-	"*": {
-	   "build_script": "milvus-lite_ubi_9.3.sh"
-	}
+	"v2.4.12": {
+     	"build_script": "milvus-lite_ubi_9.3.sh"
+      	},
+  	"*": {
+    	"build_script":"milvus-lite_2.5.0_ubi_9.6.sh"
+ 	 }
 }
