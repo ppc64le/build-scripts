@@ -226,15 +226,6 @@ jobs:
         continue-on-error: ${{ matrix.allow-failure }}
 
 
-       
-
-      - name: Upload wheel package-cache
-        uses: actions/upload-artifact@v4
-        with:
-          name: wheel-${{ matrix.python-version }}
-          path: package-cache/wheels/*.whl
-
-
       - name: Upload wheel artifact using custom script
         run: |
           sudo chmod a+r *.whl
