@@ -10,7 +10,7 @@ if [[ $(echo "$token_request" | jq -r '.errorCode') == "null" ]]; then
     echo "Downloading docker image tarball..."
     curl -X GET -H "Authorization: bearer $token" \
       -o "$PACKAGE_NAME-$VERSION.tar.gz" \
-      "https://s3.us.cloud-object-storage.appdomain.cloud/ose-power-toolci-bucket-stag/$PACKAGE_NAME/$VERSION/$PACKAGE_NAME-$VERSION.tar.gz"
+      "https://s3.us.cloud-object-storage.appdomain.cloud/ose-power-toolci-bucket-production/$PACKAGE_NAME/$VERSION/$PACKAGE_NAME-$VERSION.tar.gz"
     echo "Download complete. You can load it using: docker load -i $PACKAGE_NAME-$VERSION.tar.gz"
 else
     echo "Error: Token request failed. Response: $token_request"
