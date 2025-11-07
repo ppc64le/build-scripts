@@ -4,6 +4,7 @@ on:
     branches:
       - master
       - replica-master
+      - SBOM1
 
     inputs:
       package_name:
