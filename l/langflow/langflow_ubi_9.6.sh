@@ -169,7 +169,7 @@ build_opts+=(SYMBOLSUFFIX="")
 build_opts+=(NO_LAPACK=0)
 # Enable threading and set the number of threads
 build_opts+=(USE_THREAD=1)
-build_opts+=(NUM_THREADS=8)
+build_opts+=(NUM_THREADS=120)
 # Disable CPU/memory affinity handling to avoid problems with NumPy and R
 build_opts+=(NO_AFFINITY=1)
 # Build OpenBLAS
