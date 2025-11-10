@@ -1055,7 +1055,7 @@ pip3.12 install setuptools coverage cython protobuf==4.25.8 wheel cmake==3.*
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true
 export GRPC_PYTHON_BUILD_WITH_CYTHON=1
 export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:${PATH}"
-pip3.12 install .
+pip3.12 install . --no-build-isolation
 cd $CURRENT_DIR
 pip3.12 install grpcio_status==1.75.0 grpcio_tools==1.75.0 grpcio_health_checking==1.75.0
 echo "-----------------installed grpcio----------------------"
