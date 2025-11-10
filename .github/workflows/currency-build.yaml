@@ -237,7 +237,7 @@ jobs:
 
   
 
-  wheel_scanner:
+  wheel_licenses:
     needs: wheel_build
     runs-on: ubuntu-24.04-ppc64le-p10
     steps:
