@@ -31,7 +31,8 @@ fi
 # Configuration
 # ---------------------------
 PACKAGE_NAME=k-NN
-PACKAGE_VERSION="3.3.0.0"
+SCRIPT_PACKAGE_VERSION="3.3.0.0"
+PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
 PACKAGE_URL=https://github.com/opensearch-project/${PACKAGE_NAME}.git
 OPENSEARCH_VERSION=${PACKAGE_VERSION::-2}
 OPENSEARCH_PACKAGE=OpenSearch
@@ -107,7 +108,7 @@ make install
 cd $BUILD_HOME
 git clone ${PACKAGE_URL}
 cd ${PACKAGE_NAME} && git checkout ${PACKAGE_VERSION}
-git apply ${SCRIPT_PATH}/$PACKAGE_NAME-$PACKAGE_VERSION.patch
+git apply ${SCRIPT_PATH}/$PACKAGE_NAME-$SCRIPT_PACKAGE_VERSION.patch
 cd jni
 cmake -DBLAS_INCLUDE_DIR=$BUILD_HOME/local/include \
       -DLAPACK_LIBRARIES=$BUILD_HOME/local/lib64/liblapack.so \
@@ -118,9 +119,9 @@ cmake -DBLAS_INCLUDE_DIR=$BUILD_HOME/local/include \
 # Apply patches to NMSLIB and FAISS
 # ----------------------------------------------
 cd external/nmslib
-git apply ${SCRIPT_PATH}/$PACKAGE_NAME-nmslib-$PACKAGE_VERSION.patch
+git apply ${SCRIPT_PATH}/$PACKAGE_NAME-nmslib-$SCRIPT_PACKAGE_VERSION.patch
 cd ../faiss/faiss
-git apply ${SCRIPT_PATH}/$PACKAGE_NAME-faiss-$PACKAGE_VERSION.patch
+git apply ${SCRIPT_PATH}/$PACKAGE_NAME-faiss-$SCRIPT_PACKAGE_VERSION.patch
 cd $BUILD_HOME/$PACKAGE_NAME/jni
 rm -rf build CMakeFiles CMakeCache.txt
 make
