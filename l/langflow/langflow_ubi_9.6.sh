@@ -44,7 +44,7 @@ export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 # -----------------------------------------------------------------------------
 python3.12 -m pip install pytest anyio orjson asgi_lifespan blockbuster dotenv fastapi httpx
 python3.12 -m pip install cython setuptools wheel pytest plotly
-python3.12 -m pip install six numpy pandas scipy matplotlib  scikit-learn graphviz ninja cython
+python3.12 -m pip install six numpy pandas scipy matplotlib  scikit-learn graphviz ninja 
 
 # Install rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > sh.rustup.rs && \
@@ -1046,15 +1046,16 @@ echo "-----------------installed fastavro----------------------"
 
 echo "-----------------installing grpcio----------------------"
 rm -rf grpc
-
 git clone https://github.com/grpc/grpc.git
 cd grpc/
 git checkout v1.75.0
 git submodule update --init --recursive
-pip3.12 install setuptools coverage cython protobuf==4.25.8 wheel cmake==3.*
+python3.12 -m pip install --upgrade setuptools coverage cython protobuf==4.25.8 wheel cmake==3.*
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true
 export GRPC_PYTHON_BUILD_WITH_CYTHON=1
 export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:${PATH}"
+export CC=$(which gcc)
+export CXX=$(which g++)
 pip3.12 install . --no-build-isolation
 cd $CURRENT_DIR
 pip3.12 install grpcio_status==1.75.0 grpcio_tools==1.75.0 grpcio_health_checking==1.75.0
