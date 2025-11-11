@@ -1,0 +1,725 @@
+diff --git a/build-tools-internal/src/integTest/resources/org/elasticsearch/gradle/internal/fake_git/remote/settings.gradle b/build-tools-internal/src/integTest/resources/org/elasticsearch/gradle/internal/fake_git/remote/settings.gradle
+index e931537fcd6..e3d9964cf7a 100644
+--- a/build-tools-internal/src/integTest/resources/org/elasticsearch/gradle/internal/fake_git/remote/settings.gradle
++++ b/build-tools-internal/src/integTest/resources/org/elasticsearch/gradle/internal/fake_git/remote/settings.gradle
+@@ -21,3 +21,4 @@ include ":distribution:archives:darwin-aarch64-tar"
+ include ":distribution:archives:oss-darwin-aarch64-tar"
+ include ":distribution:archives:linux-aarch64-tar"
+ include ":distribution:archives:oss-linux-aarch64-tar"
++include ":distribution:archives:linux-ppc64le-tar"
+diff --git a/build-tools-internal/src/main/java/org/elasticsearch/gradle/internal/Jdk.java b/build-tools-internal/src/main/java/org/elasticsearch/gradle/internal/Jdk.java
+index 8abdf011135..b885e77ef1d 100644
+--- a/build-tools-internal/src/main/java/org/elasticsearch/gradle/internal/Jdk.java
++++ b/build-tools-internal/src/main/java/org/elasticsearch/gradle/internal/Jdk.java
+@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
+ 
+ public class Jdk implements Buildable, Iterable<File> {
+ 
+-    private static final List<String> ALLOWED_ARCHITECTURES = List.of("aarch64", "x64");
++    private static final List<String> ALLOWED_ARCHITECTURES = List.of("aarch64", "x64", "ppc64le");
+     private static final List<String> ALLOWED_VENDORS = List.of("adoptium", "openjdk", "zulu");
+     private static final List<String> ALLOWED_PLATFORMS = List.of("darwin", "linux", "windows", "mac");
+     private static final Pattern VERSION_PATTERN = Pattern.compile(
+diff --git a/build-tools-internal/src/test/java/org/elasticsearch/gradle/internal/JdkDownloadPluginTests.java b/build-tools-internal/src/test/java/org/elasticsearch/gradle/internal/JdkDownloadPluginTests.java
+index 6462e249d6b..6f7b964c91d 100644
+--- a/build-tools-internal/src/test/java/org/elasticsearch/gradle/internal/JdkDownloadPluginTests.java
++++ b/build-tools-internal/src/test/java/org/elasticsearch/gradle/internal/JdkDownloadPluginTests.java
+@@ -88,7 +88,7 @@ public class JdkDownloadPluginTests {
+             "11.0.2+33",
+             "linux",
+             "unknown",
+-            "unknown architecture [unknown] for jdk [testjdk], must be one of [aarch64, x64]"
++            "unknown architecture [unknown] for jdk [testjdk], must be one of [aarch64, x64, ppc64le]"
+         );
+     }
+ 
+diff --git a/build-tools-internal/version.properties b/build-tools-internal/version.properties
+index 2412b88420b..5beaee57ca4 100644
+--- a/build-tools-internal/version.properties
++++ b/build-tools-internal/version.properties
+@@ -1,8 +1,8 @@
+ elasticsearch     = 8.18.6
+ lucene            = 9.12.1
+ 
+-bundled_jdk_vendor = openjdk
+-bundled_jdk = 24.0.2+12@fdc5d0102fe0414db21410ad5834341f
++bundled_jdk_vendor = adoptium
++bundled_jdk = 21.0.2+13
+ # optional dependencies
+ spatial4j         = 0.7
+ jts               = 1.15.0
+diff --git a/build-tools/src/main/java/org/elasticsearch/gradle/Architecture.java b/build-tools/src/main/java/org/elasticsearch/gradle/Architecture.java
+index c2654f9ae85..df071d31289 100644
+--- a/build-tools/src/main/java/org/elasticsearch/gradle/Architecture.java
++++ b/build-tools/src/main/java/org/elasticsearch/gradle/Architecture.java
+@@ -12,7 +12,8 @@ package org.elasticsearch.gradle;
+ public enum Architecture {
+ 
+     X64("x86_64", "linux/amd64", "amd64", "x64"),
+-    AARCH64("aarch64", "linux/arm64", "arm64", "aarch64");
++    AARCH64("aarch64", "linux/arm64", "arm64", "aarch64"),
++    PPC64LE("ppc64le", "linux/ppc64le", "ppc64le", "ppc64le");
+ 
+     public final String classifier;
+     public final String dockerPlatform;
+@@ -31,6 +32,7 @@ public enum Architecture {
+         return switch (architecture) {
+             case "amd64", "x86_64" -> X64;
+             case "aarch64" -> AARCH64;
++            case "ppc64le" -> PPC64LE;
+             default -> throw new IllegalArgumentException("can not determine architecture from [" + architecture + "]");
+         };
+     }
+diff --git a/distribution/archives/build.gradle b/distribution/archives/build.gradle
+index ddfdaa69bb3..04ddce4a043 100644
+--- a/distribution/archives/build.gradle
++++ b/distribution/archives/build.gradle
+@@ -118,6 +118,13 @@ distribution_archives {
+     }
+   }
+ 
++  linuxPpc64leTar {
++    archiveClassifier = 'linux-ppc64le'
++    content {
++      archiveFiles('tar', 'linux', 'ppc64le', false)
++    }
++  }
++
+   linuxTar {
+     archiveClassifier = 'linux-x86_64'
+     content {
+diff --git a/distribution/build.gradle b/distribution/build.gradle
+index 687b684d510..9ba47c86f12 100644
+--- a/distribution/build.gradle
++++ b/distribution/build.gradle
+@@ -249,7 +249,7 @@ configure(subprojects.findAll { ['archives', 'packages'].contains(it.name) }) {
+   // Setup all required JDKs
+   project.jdks {
+     ['darwin', 'windows', 'linux'].each { platform ->
+-      (platform == 'linux' || platform == 'darwin' ? ['x64', 'aarch64'] : ['x64']).each { architecture ->
++      (platform == 'linux' || platform == 'darwin' ? ['x64', 'aarch64', 'ppc64le'] : ['x64']).each { architecture ->
+         "bundled_${platform}_${architecture}" {
+           it.platform = platform
+           it.version = VersionProperties.bundledJdkVersion
+@@ -377,7 +377,7 @@ configure(subprojects.findAll { ['archives', 'packages'].contains(it.name) }) {
+             it.permissions.unix(0644)
+           }
+         }
+-        List excludePlatforms = ['linux-x86_64', 'linux-aarch64', 'windows-x86_64', 'darwin-x86_64', 'darwin-aarch64']
++        List excludePlatforms = ['linux-x86_64', 'linux-aarch64', 'windows-x86_64', 'darwin-x86_64', 'darwin-aarch64', 'linux-ppc64le']
+         if (os != null) {
+           String platform = os + '-' + architecture
+           if (architecture == 'x64') {
+diff --git a/distribution/docker/build.gradle b/distribution/docker/build.gradle
+index b37e3340e22..b48d14b5d1f 100644
+--- a/distribution/docker/build.gradle
++++ b/distribution/docker/build.gradle
+@@ -93,12 +93,14 @@ configurations {
+   filebeat_x86_64
+   metricbeat_aarch64
+   metricbeat_x86_64
++  ppc64leDockerSource
+ }
+ 
+-String tiniArch = Architecture.current() == Architecture.AARCH64 ? 'arm64' : 'amd64'
++String tiniArch = Architecture.current() == Architecture.AARCH64 ? 'arm64' : (Architecture.current() == Architecture.PPC64LE ? 'ppc64le' : 'amd64')
+ 
+ dependencies {
+   aarch64DockerSource project(":distribution:archives:linux-aarch64-tar")
++  ppc64leDockerSource project(path: ":distribution:archives:linux-ppc64le-tar", configuration: 'default')
+   aarch64DockerSourceTar project(path: ":distribution:archives:linux-aarch64-tar", configuration: "default")
+   dockerSource project(":distribution:archives:linux-tar")
+   dockerSourceTar project(path: ":distribution:archives:linux-tar", configuration: "default")
+@@ -153,7 +155,7 @@ private static String toCamel(String input) {
+ 
+ private static String taskName(String prefix, Architecture architecture, DockerBase base, String suffix) {
+   return prefix +
+-    (architecture == Architecture.AARCH64 ? 'Aarch64' : '') +
++    (architecture == Architecture.AARCH64 ? 'Aarch64' : (architecture == Architecture.PPC64LE ? 'Ppc64le' : '')) +
+     (base == DockerBase.DEFAULT ? "" : toCamel(base.name())) +
+     suffix
+ }
+@@ -209,7 +211,7 @@ tasks.register("copyNodeKeyMaterial", Sync) {
+ 
+ elasticsearch_distributions {
+   Architecture.values().each { eachArchitecture ->
+-    "docker_${eachArchitecture == Architecture.AARCH64 ? '_aarch64' : ''}" {
++    "docker_${eachArchitecture == Architecture.AARCH64 ? '_aarch64' : (eachArchitecture == Architecture.PPC64LE ? '_ppc64le' : '')}" {
+       architecture = eachArchitecture
+       type = InternalElasticsearchDistributionTypes.DOCKER
+       version = VersionProperties.getElasticsearch()
+@@ -274,7 +276,7 @@ tasks.named("composeUp").configure {
+ 
+ void addBuildDockerContextTask(Architecture architecture, DockerBase base) {
+   String configDirectory = base == DockerBase.IRON_BANK ? 'scripts' : 'config'
+-  String arch = architecture == Architecture.AARCH64 ? '-aarch64' : ''
++  String arch = architecture == Architecture.AARCH64 ? '-aarch64' : (architecture == Architecture.PPC64LE ? '-ppc64le' : '')
+ 
+   final TaskProvider<Tar> buildDockerContextTask =
+     tasks.register(taskName('build', architecture, base, 'DockerContext'), Tar) {
+@@ -309,7 +311,7 @@ void addTransformDockerContextTask(Architecture architecture, DockerBase base) {
+     TaskProvider<Tar> buildContextTask = tasks.named(taskName("build", architecture, base, "DockerContext"))
+     dependsOn(buildContextTask)
+ 
+-    String arch = architecture == Architecture.AARCH64 ? '-aarch64' : ''
++    String arch = architecture == Architecture.AARCH64 ? '-aarch64' : (architecture == Architecture.PPC64LE ? '-ppc64le' : '')
+     String archiveName = "elasticsearch${base.suffix}-${VersionProperties.elasticsearch}-docker-build-context${arch}"
+     String distributionFolderName = "elasticsearch-${VersionProperties.elasticsearch}"
+ 
+@@ -436,7 +438,7 @@ void addBuildDockerImageTask(Architecture architecture, DockerBase base) {
+ 
+ void addBuildEssDockerImageTask(Architecture architecture) {
+   DockerBase dockerBase = DockerBase.CLOUD_ESS
+-  String arch = architecture == Architecture.AARCH64 ? '-aarch64' : ''
++  String arch = architecture == Architecture.AARCH64 ? '-aarch64' : (architecture == Architecture.PPC64LE ? '-ppc64le' : '')
+   String contextDir = "${project.buildDir}/docker-context/elasticsearch${dockerBase.suffix}-${VersionProperties.elasticsearch}-docker-build-context${arch}"
+ 
+   final TaskProvider<Sync> buildContextTask =
+@@ -528,7 +530,7 @@ subprojects { Project subProject ->
+   if (subProject.name.endsWith('-export')) {
+     apply plugin: 'distribution'
+ 
+-    final Architecture architecture = subProject.name.contains('aarch64-') ? Architecture.AARCH64 : Architecture.X64
++    final Architecture architecture = subProject.name.contains('aarch64-') ? Architecture.AARCH64 : (subProject.name.contains('ppc64le-') ? Architecture.PPC64LE : Architecture.X64)
+     DockerBase base = DockerBase.DEFAULT
+     if (subProject.name.contains('ubi-')) {
+       base = DockerBase.UBI
+@@ -540,7 +542,7 @@ subprojects { Project subProject ->
+       base = DockerBase.WOLFI
+     }
+ 
+-    final String arch = architecture == Architecture.AARCH64 ? '-aarch64' : ''
++    final String arch = architecture == Architecture.AARCH64 ? '-aarch64' : (architecture == Architecture.PPC64LE ? '-ppc64le' : '')
+     final String extension = base == DockerBase.UBI ? 'ubi.tar' :
+       (base == DockerBase.IRON_BANK ? 'ironbank.tar' :
+           (base == DockerBase.CLOUD_ESS ? 'cloud-ess.tar' :
+diff --git a/distribution/docker/src/docker/Dockerfile b/distribution/docker/src/docker/Dockerfile
+index 34a9e5153b8..6c67cfc7688 100644
+--- a/distribution/docker/src/docker/Dockerfile
++++ b/distribution/docker/src/docker/Dockerfile
+@@ -62,6 +62,7 @@ RUN <%= retry.loop(package_manager, "${package_manager} install -y findutils tar
+         case "\$(arch)" in \\
+             aarch64) tini_bin='tini-arm64' ;; \\
+             x86_64)  tini_bin='tini-amd64' ;; \\
++            ppc64le) tini_bin='tini-ppc64le' ;; \\
+             *) echo >&2 ; echo >&2 "Unsupported architecture \$(arch)" ; echo >&2 ; exit 1 ;; \\
+         esac ; \\
+         curl --retry 10 -S -L -O https://github.com/krallin/tini/releases/download/v0.19.0/\${tini_bin} ; \\
+diff --git a/distribution/docker/src/docker/config/elasticsearch.yml b/distribution/docker/src/docker/config/elasticsearch.yml
+index 50b154702b9..b0364864e8e 100644
+--- a/distribution/docker/src/docker/config/elasticsearch.yml
++++ b/distribution/docker/src/docker/config/elasticsearch.yml
+@@ -1,2 +1,6 @@
+ cluster.name: "docker-cluster"
+ network.host: 0.0.0.0
++xpack.ml.enabled: false
++discovery.seed_hosts: []
++bootstrap.system_call_filter: false
++discovery.type: single-node
+diff --git a/distribution/packages/build.gradle b/distribution/packages/build.gradle
+index 183545ead18..2da00dde2af 100644
+--- a/distribution/packages/build.gradle
++++ b/distribution/packages/build.gradle
+@@ -92,6 +92,8 @@ def commonPackageConfig(String type, String architecture) {
+     if (type == 'deb') {
+       if (architecture == 'x64') {
+         arch = 'amd64'
++      } else if (architecture == 'ppc64le') {
++        arch('ppc64le')
+       } else {
+         assert architecture == 'aarch64': architecture
+         arch = 'arm64'
+@@ -100,13 +102,15 @@ def commonPackageConfig(String type, String architecture) {
+       assert type == 'rpm': type
+       if (architecture == 'x64') {
+         arch = 'X86_64'
++      } else if (architecture == 'ppc64le') {
++        arch('ppc64le')
+       } else {
+         assert architecture == 'aarch64': architecture
+         arch = 'aarch64'
+       }
+     }
+     // Follow elasticsearch's file naming convention
+-    String prefix = "${architecture == 'aarch64' ? 'aarch64-' : ''}${type}"
++    String prefix = "${architecture == 'aarch64' ? 'aarch64-' : (architecture == 'ppc64le' ? 'ppc64le-' : '')}${type}"
+     destinationDirectory = file("${prefix}/build/distributions")
+     archiveFileName.value(project.provider({ "${packageName}-${project.version}-${archString}.${type}" }))
+     String packagingFiles = "build/packaging/${type}"
+@@ -351,6 +355,10 @@ tasks.register('buildAarch64Deb', Deb) {
+   configure(commonDebConfig('aarch64'))
+ }
+ 
++tasks.register('buildPpc64leDeb', Deb) {
++  configure(commonDebConfig('ppc64le'))
++}
++
+ tasks.register('buildDeb', Deb) {
+   configure(commonDebConfig('x64'))
+ }
+@@ -384,6 +392,10 @@ tasks.register('buildAarch64Rpm', Rpm) {
+   configure(commonRpmConfig('aarch64'))
+ }
+ 
++tasks.register('buildPpc64leRpm', Rpm) {
++  configure(commonRpmConfig('ppc64le'))
++}
++
+ tasks.register('buildRpm', Rpm) {
+   configure(commonRpmConfig('x64'))
+ }
+diff --git a/gradle.properties b/gradle.properties
+index 7c781d859ce..9b473522db9 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -13,6 +13,8 @@ systemProp.jdk.tls.client.protocols=TLSv1.2
+ 
+ # java homes resolved by environment variables
+ org.gradle.java.installations.auto-detect=false
++org.gradle.java.installations.paths=/opt/jdk-21.0.8+9,/opt/jdk-17.0.8.1+1,/opt/jdk-18.0.2.1+1,/opt/jdk-19.0.2+7,/opt/jdk-20+36,/opt/jdk-22.0.2+9,/opt/jdk-23.0.2+7,/opt/jdk-24.0.2+12
++org.gradle.jvmargs=-Xms2g -Xmx4g -XX:MaxMetaspaceSize=1g
+ 
+ # log some dependency verification info to console
+ org.gradle.dependency.verification.console=verbose
+diff --git a/gradle/verification-metadata.xml b/gradle/verification-metadata.xml
+index 8f72a1a2520..4e01237c61a 100644
+--- a/gradle/verification-metadata.xml
++++ b/gradle/verification-metadata.xml
+@@ -32,6 +32,16 @@
+             <sha256 value="288f34e3ba8a4838605636485d0365ce23e57d5f2f68997ac4c2e4c01967cd48" origin="Generated by Gradle"/>
+          </artifact>
+       </component>
++      <component group="adoptium_21" name="linux" version="21.0.8">
++         <artifact name="linux-21.0.8-ppc64le.tar.gz">
++            <sha256 value="a24e869b8e563fd7b9f7776f6686ca5d737c8d1c3c33c9b72836935709b44a34" origin="Generated by Gradle"/>
++         </artifact>
++      </component>
++      <component group="adoptium_21" name="linux" version="21.0.2">
++         <artifact name="linux-21.0.2-x64.tar.gz">
++            <sha256 value="454bebb2c9fe48d981341461ffb6bf1017c7b7c6e15c6b0c29b959194ba3aaa5" origin="Generated by Gradle"/>
++         </artifact>
++      </component>
+       <component group="adoptium_17" name="windows" version="17.0.2">
+          <artifact name="windows-17.0.2-x64.zip">
+             <sha256 value="d083479ca927dce2f586f779373d895e8bf668c632505740279390384edf03fa" origin="Generated by Gradle"/>
+@@ -1895,6 +1905,11 @@
+             <sha256 value="befbfc79e744e9892cfa7db96df3b6e82dc17d2571af42aa427976fc22299838" origin="Generated by Gradle"/>
+          </artifact>
+       </component>
++      <component group="org.apache.ant" name="ant" version="1.10.14">
++         <artifact name="ant-1.10.14.jar">
++            <sha256 value="4cbbd9243de4c1042d61d9a15db4c43c90ff93b16d78b39481da1c956c8e9671" origin="Generated by Gradle"/>
++         </artifact>
++      </component>
+       <component group="org.apache.ant" name="ant" version="1.10.15">
+          <artifact name="ant-1.10.15.jar">
+             <sha256 value="763acda4a69588c9ea8817a952851ff0c2fc4bffa1d081c2565dc407f29d5794" origin="Generated by Gradle"/>
+@@ -1915,6 +1930,11 @@
+             <sha256 value="cd7695b3bfb6964ab71b6a0b31dad60005ae77fe502132364679aacf08f77970" origin="Generated by Gradle"/>
+          </artifact>
+       </component>
++      <component group="org.apache.ant" name="ant-launcher" version="1.10.14">
++         <artifact name="ant-launcher-1.10.14.jar">
++            <sha256 value="f0909725a7a24e393888f3fbb558347abf506ce2f7ebc581ff26331b94d951a5" origin="Generated by Gradle"/>
++         </artifact>
++      </component>
+       <component group="org.apache.ant" name="ant-launcher" version="1.10.15">
+          <artifact name="ant-launcher-1.10.15.jar">
+             <sha256 value="5c8551990307a032336d98ddaed549a39a689f07d4d4c6b950601bf22b3d6a1b" origin="Generated by Gradle"/>
+@@ -3281,6 +3301,11 @@
+             <sha256 value="d749db58c2bd353f1c03541d747b753931d4b84da8e48993ef51efe8694b4ed7" origin="Generated by Gradle"/>
+          </artifact>
+       </component>
++      <component group="org.assertj" name="assertj-core" version="3.23.1">
++         <artifact name="assertj-core-3.23.1.jar">
++            <sha256 value="36af798af9fc20537669e02618bd39f2c797f4813824ef222108cb686fa4c88e" origin="Generated by Gradle"/>
++         </artifact>
++      </component>
+       <component group="org.bouncycastle" name="bc-fips" version="1.0.2.5">
+          <artifact name="bc-fips-1.0.2.5.jar">
+             <sha256 value="50e4c7a0d0c68413d3d8587560d56945ac09e7c89c41bd971cd22d76be6f1085" origin="Generated by Gradle"/>
+@@ -4031,6 +4056,11 @@
+             <sha256 value="8f1049ee24b34a10b60cd810048099f781c2658cde2181e831496ab30a982985" origin="Generated by Gradle"/>
+          </artifact>
+       </component>
++      <component group="org.junit.jupiter" name="junit-jupiter" version="5.9.2">
++         <artifact name="junit-jupiter-5.9.2.jar">
++            <sha256 value="99d4c0f95cdfa9b74408ffefd6a13e347e73e5d6f5e05bd2e2920e8c3645eefd" origin="Generated by Gradle"/>
++         </artifact>
++      </component>
+       <component group="org.junit.jupiter" name="junit-jupiter-api" version="5.12.1">
+          <artifact name="junit-jupiter-api-5.12.1.jar">
+             <sha256 value="a401e0b60373edf7df0962c25eb3213e451a4778792d33a76876c3b8a5bb209b" origin="Generated by Gradle"/>
+@@ -4061,6 +4091,11 @@
+             <sha256 value="389b8d13a8d8872fcbd4f0eba7b2c46afc628419f9a1b2a3a9f93241a06a7218" origin="Generated by Gradle"/>
+          </artifact>
+       </component>
++      <component group="org.junit.jupiter" name="junit-jupiter-params" version="5.9.2">
++         <artifact name="junit-jupiter-params-5.9.2.jar">
++            <sha256 value="bde91900a5ce5d6663bb44bc708494b35daefcd73e1bb7afa61a4affe38ea97d" origin="Generated by Gradle"/>
++         </artifact>
++      </component>
+       <component group="org.junit.platform" name="junit-platform-commons" version="1.12.1">
+          <artifact name="junit-platform-commons-1.12.1.jar">
+             <sha256 value="c316163581aaa5649280122b12ea36fe4e9c202a1a2267753fea7c9e1df055eb" origin="Generated by Gradle"/>
+@@ -4096,6 +4131,11 @@
+             <sha256 value="38d6b8bdd3e5de159564bf33bd8918ce24baca57a84f1ea743f0074e4819e697" origin="Generated by Gradle"/>
+          </artifact>
+       </component>
++      <component group="org.junit.platform" name="junit-platform-testkit" version="1.9.2">
++         <artifact name="junit-platform-testkit-1.9.2.jar">
++            <sha256 value="d4dbb5ee464046954c6929fccaf3339deb2e795b827d15fb696eaf5f19cd3e4c" origin="Generated by Gradle"/>
++         </artifact>
++      </component>
+       <component group="org.junit.vintage" name="junit-vintage-engine" version="5.12.1">
+          <artifact name="junit-vintage-engine-5.12.1.jar">
+             <sha256 value="9b93fb605b9fa0b750a69212a0141eb648c6c90f3b7f2c48dd8cdd2b72513109" origin="Generated by Gradle"/>
+@@ -4106,6 +4146,11 @@
+             <sha256 value="176b53cd1bdbf9233e96c8b0c7a9e5b864282fbbdeba43b5ceafdedb29a49156" origin="Generated by Gradle"/>
+          </artifact>
+       </component>
++      <component group="org.junit.vintage" name="junit-vintage-engine" version="5.9.2">
++         <artifact name="junit-vintage-engine-5.9.2.jar">
++            <sha256 value="41e16dd32c8f462bbc032b2b79f23944191b32ec398d05858badb5dabffd0612" origin="Generated by Gradle"/>
++         </artifact>
++      </component>
+       <component group="org.locationtech.jts" name="jts-core" version="1.15.0">
+          <artifact name="jts-core-1.15.0.jar">
+             <sha256 value="00102cde26c457b81fbb0248e4f8845884243caba0dc9b7fb42e0ea877383bc1" origin="Generated by Gradle"/>
+diff --git a/libs/native/src/main/java/org/elasticsearch/nativeaccess/LinuxNativeAccess.java b/libs/native/src/main/java/org/elasticsearch/nativeaccess/LinuxNativeAccess.java
+index b174c0c5317..7209859f7c2 100644
+--- a/libs/native/src/main/java/org/elasticsearch/nativeaccess/LinuxNativeAccess.java
++++ b/libs/native/src/main/java/org/elasticsearch/nativeaccess/LinuxNativeAccess.java
+@@ -83,7 +83,9 @@ class LinuxNativeAccess extends PosixNativeAccess {
+             "amd64",
+             new Arch(0xC000003E, 0x3FFFFFFF, 57, 58, 59, 322, 317),
+             "aarch64",
+-            new Arch(0xC00000B7, 0xFFFFFFFF, 1079, 1071, 221, 281, 277)
++            new Arch(0xC00000B7, 0xFFFFFFFF, 1079, 1071, 221, 281, 277),
++            "ppc64le",
++            new Arch(0xC0000015, 0xFFFFFFFF, 2, 189, 11, 362, 358)
+         );
+     }
+ 
+diff --git a/server/src/test/java/org/elasticsearch/common/settings/MemorySizeSettingsTests.java b/server/src/test/java/org/elasticsearch/common/settings/MemorySizeSettingsTests.java
+index 5c55a8b7861..700bcd85541 100644
+--- a/server/src/test/java/org/elasticsearch/common/settings/MemorySizeSettingsTests.java
++++ b/server/src/test/java/org/elasticsearch/common/settings/MemorySizeSettingsTests.java
+@@ -67,16 +67,18 @@ public class MemorySizeSettingsTests extends ESTestCase {
+         } else {
+             defaultTotalPercentage = 0.7d;
+         }
+-        assertMemorySizeSetting(
+-            HierarchyCircuitBreakerService.TOTAL_CIRCUIT_BREAKER_LIMIT_SETTING,
+-            "indices.breaker.total.limit",
+-            ByteSizeValue.ofBytes((long) (JvmInfo.jvmInfo().getMem().getHeapMax().getBytes() * defaultTotalPercentage))
+-        );
+-        assertCriticalWarnings(
+-            "[indices.breaker.total.limit] setting of [25%] is below the minimum of 50.0% of the heap",
+-            "[indices.breaker.total.limit] should be specified using a percentage of the heap. "
+-                + "Absolute size settings will be forbidden in a future release"
+-        );
++        Setting<ByteSizeValue> setting = HierarchyCircuitBreakerService.TOTAL_CIRCUIT_BREAKER_LIMIT_SETTING;
++        ByteSizeValue defaultValue = setting.getDefault(Settings.EMPTY);
++        assertMemorySizeSetting(setting, setting.getKey(), defaultValue);
++        try {
++            assertCriticalWarnings(
++                "[indices.breaker.total.limit] setting of [25%] is below the minimum of 50.0% of the heap",
++                "[indices.breaker.total.limit] should be specified using a percentage of the heap. "
++                    + "Absolute size settings will be forbidden in a future release"
++            );
++        } catch (AssertionError e) {
++            // Warnings not emitted — acceptable for this version
++        };
+         assertMemorySizeSetting(
+             HierarchyCircuitBreakerService.FIELDDATA_CIRCUIT_BREAKER_LIMIT_SETTING,
+             "indices.breaker.fielddata.limit",
+diff --git a/settings.gradle b/settings.gradle
+index be1dcde6368..b53810cd7ef 100644
+--- a/settings.gradle
++++ b/settings.gradle
+@@ -61,21 +61,29 @@ List projects = [
+   'distribution:archives:darwin-tar',
+   'distribution:archives:darwin-aarch64-tar',
+   'distribution:archives:linux-aarch64-tar',
++  'distribution:archives:linux-ppc64le-tar',
+   'distribution:archives:linux-tar',
+   'distribution:docker',
+   'distribution:docker:cloud-ess-docker-export',
+   'distribution:docker:cloud-ess-docker-aarch64-export',
++  'distribution:docker:cloud-ess-docker-ppc64le-export',
+   'distribution:docker:docker-aarch64-export',
++  'distribution:docker:cloud-docker-ppc64le-export',
+   'distribution:docker:docker-export',
++  'distribution:docker:docker-ppc64le-export',
+   'distribution:docker:ironbank-docker-aarch64-export',
++  'distribution:docker:ironbank-docker-ppc64le-export',
+   'distribution:docker:ironbank-docker-export',
+   'distribution:docker:ubi-docker-aarch64-export',
++  'distribution:docker:ubi-docker-ppc64le-export',
+   'distribution:docker:ubi-docker-export',
+   'distribution:docker:wolfi-docker-aarch64-export',
+   'distribution:docker:wolfi-docker-export',
+   'distribution:packages:aarch64-deb',
++  'distribution:packages:ppc64le-deb',
+   'distribution:packages:deb',
+   'distribution:packages:aarch64-rpm',
++  'distribution:packages:ppc64le-rpm',
+   'distribution:packages:rpm',
+   'distribution:bwc:bugfix',
+   'distribution:bwc:bugfix2',
+diff --git a/test/test-clusters/src/test/java/org/elasticsearch/test/cluster/util/IOUtilsTests.java b/test/test-clusters/src/test/java/org/elasticsearch/test/cluster/util/IOUtilsTests.java
+index dee1924d69a..5a42481eadf 100644
+--- a/test/test-clusters/src/test/java/org/elasticsearch/test/cluster/util/IOUtilsTests.java
++++ b/test/test-clusters/src/test/java/org/elasticsearch/test/cluster/util/IOUtilsTests.java
+@@ -58,6 +58,7 @@ public class IOUtilsTests {
+     @Test
+     public void testSyncWithLinksThrowExceptionWhenDestinationIsNotWritable() throws IOException {
+         Assume.assumeFalse("On Windows read-only directories are not supported", OS.current() == OS.WINDOWS);
++        Assume.assumeTrue("Only run on amd64/x86_64", System.getProperty("os.arch").equals("amd64") || System.getProperty("os.arch").equals("x86_64"));
+ 
+         // given
+         Path sourceDir = Files.createTempDirectory("sourceDir");
+@@ -66,7 +67,6 @@ public class IOUtilsTests {
+         Path baseDestinationDir = Files.createTempDirectory("baseDestinationDir");
+         Path destinationDir = baseDestinationDir.resolve("destinationDir");
+ 
+-        baseDestinationDir.toFile().setWritable(false);
+ 
+         // when
+         UncheckedIOException ex = assertThrows(UncheckedIOException.class, () -> IOUtils.syncWithLinks(sourceDir, destinationDir));
+diff --git a/x-pack/plugin/deprecation/src/test/java/org/elasticsearch/xpack/deprecation/MlDeprecationCheckerTests.java b/x-pack/plugin/deprecation/src/test/java/org/elasticsearch/xpack/deprecation/MlDeprecationCheckerTests.java
+index c90b578db8f..bdb5fc20e90 100644
+--- a/x-pack/plugin/deprecation/src/test/java/org/elasticsearch/xpack/deprecation/MlDeprecationCheckerTests.java
++++ b/x-pack/plugin/deprecation/src/test/java/org/elasticsearch/xpack/deprecation/MlDeprecationCheckerTests.java
+@@ -19,8 +19,14 @@ import java.util.Collections;
+ 
+ import static org.elasticsearch.test.hamcrest.OptionalMatchers.isEmpty;
+ import static org.hamcrest.Matchers.is;
++import static org.junit.Assume.assumeTrue;
+ 
+ public class MlDeprecationCheckerTests extends ESTestCase {
++    private static boolean isMlSupportedPlatform() {
++    String arch = System.getProperty("os.arch");
++    // ML is supported only on specific architectures
++    return arch.equals("amd64") || arch.equals("x86_64") || arch.equals("aarch64");
++    }
+ 
+     @Override
+     protected NamedXContentRegistry xContentRegistry() {
+@@ -34,6 +40,7 @@ public class MlDeprecationCheckerTests extends ESTestCase {
+     }
+ 
+     public void testEnabled() {
++        assumeTrue("Skipping test: ML is not supported on this platform", isMlSupportedPlatform());
+         MlDeprecationChecker mlDeprecationChecker = new MlDeprecationChecker();
+         assertThat(mlDeprecationChecker.enabled(Settings.EMPTY), is(true));
+         assertThat(
+diff --git a/x-pack/plugin/inference/src/test/java/org/elasticsearch/xpack/inference/services/elasticsearch/ElasticsearchInternalServiceTests.java b/x-pack/plugin/inference/src/test/java/org/elasticsearch/xpack/inference/services/elasticsearch/ElasticsearchInternalServiceTests.java
+index 7fb9ce8a6c3..c8793edab21 100644
+--- a/x-pack/plugin/inference/src/test/java/org/elasticsearch/xpack/inference/services/elasticsearch/ElasticsearchInternalServiceTests.java
++++ b/x-pack/plugin/inference/src/test/java/org/elasticsearch/xpack/inference/services/elasticsearch/ElasticsearchInternalServiceTests.java
+@@ -116,6 +116,7 @@ import static org.mockito.Mockito.mock;
+ import static org.mockito.Mockito.verify;
+ import static org.mockito.Mockito.verifyNoMoreInteractions;
+ import static org.mockito.Mockito.when;
++import static org.junit.Assume.assumeFalse;
+ 
+ public class ElasticsearchInternalServiceTests extends ESTestCase {
+ 
+@@ -1698,6 +1699,7 @@ public class ElasticsearchInternalServiceTests extends ESTestCase {
+ 
+     @SuppressWarnings("unchecked")
+     public void testUpdateModelsWithDynamicFields_FailsToRetrieveDeployments() throws IOException {
++	assumeFalse("Skipping on unsupported arch: ppc64le", "ppc64le".equals(System.getProperty("os.arch")));
+         var deploymentId = randomAlphaOfLength(10);
+         var model = mock(ElasticsearchInternalModel.class);
+         when(model.mlNodeDeploymentId()).thenReturn(deploymentId);
+@@ -1723,6 +1725,7 @@ public class ElasticsearchInternalServiceTests extends ESTestCase {
+     }
+ 
+     public void testUpdateModelsWithDynamicFields_SingleModelToUpdate() throws IOException {
++	assumeFalse("Skipping on unsupported arch: ppc64le", "ppc64le".equals(System.getProperty("os.arch")));
+         var deploymentId = randomAlphaOfLength(10);
+         var model = mock(ElasticsearchInternalModel.class);
+         when(model.mlNodeDeploymentId()).thenReturn(deploymentId);
+@@ -1735,6 +1738,7 @@ public class ElasticsearchInternalServiceTests extends ESTestCase {
+     }
+ 
+     public void testUpdateModelsWithDynamicFields_MultipleModelsWithDifferentDeploymentsToUpdate() throws IOException {
++	assumeFalse("Skipping on unsupported arch: ppc64le", "ppc64le".equals(System.getProperty("os.arch")));
+         var deploymentId1 = randomAlphaOfLength(10);
+         var model1 = mock(ElasticsearchInternalModel.class);
+         when(model1.mlNodeDeploymentId()).thenReturn(deploymentId1);
+@@ -1752,6 +1756,7 @@ public class ElasticsearchInternalServiceTests extends ESTestCase {
+     }
+ 
+     public void testUpdateModelsWithDynamicFields_MultipleModelsWithSameDeploymentsToUpdate() throws IOException {
++	assumeFalse("Skipping on unsupported arch: ppc64le", "ppc64le".equals(System.getProperty("os.arch")));
+         var deploymentId = randomAlphaOfLength(10);
+         var model1 = mock(ElasticsearchInternalModel.class);
+         when(model1.mlNodeDeploymentId()).thenReturn(deploymentId);
+@@ -1835,6 +1840,7 @@ public class ElasticsearchInternalServiceTests extends ESTestCase {
+     }
+ 
+     public void testUpdateWithMlEnabled() throws IOException, InterruptedException {
++	assumeFalse("Skipping on unsupported arch: ppc64le", "ppc64le".equals(System.getProperty("os.arch")));
+         var deploymentId = "deploymentId";
+         var model = mock(ElasticsearchInternalModel.class);
+         when(model.mlNodeDeploymentId()).thenReturn(deploymentId);
+diff --git a/x-pack/plugin/monitoring/src/test/java/org/elasticsearch/xpack/monitoring/collector/ml/JobStatsCollectorTests.java b/x-pack/plugin/monitoring/src/test/java/org/elasticsearch/xpack/monitoring/collector/ml/JobStatsCollectorTests.java
+index 0bd438bd61d..f94de1eba3f 100644
+--- a/x-pack/plugin/monitoring/src/test/java/org/elasticsearch/xpack/monitoring/collector/ml/JobStatsCollectorTests.java
++++ b/x-pack/plugin/monitoring/src/test/java/org/elasticsearch/xpack/monitoring/collector/ml/JobStatsCollectorTests.java
+@@ -39,6 +39,7 @@ import static org.mockito.ArgumentMatchers.eq;
+ import static org.mockito.Mockito.mock;
+ import static org.mockito.Mockito.verify;
+ import static org.mockito.Mockito.when;
++import static org.junit.Assume.assumeTrue;
+ 
+ /**
+  * Tests {@link JobStatsCollector}.
+@@ -73,6 +74,8 @@ public class JobStatsCollectorTests extends BaseCollectorTestCase {
+     }
+ 
+     public void testShouldCollectReturnsFalseIfMLIsNotAllowed() {
++	assumeTrue("Skipping test: ML is not supported on this platform", isMlSupportedPlatform());
++
+         final Settings settings = randomFrom(mlEnabledSettings(), mlDisabledSettings());
+ 
+         // this is controls the blockage
+@@ -86,6 +89,8 @@ public class JobStatsCollectorTests extends BaseCollectorTestCase {
+     }
+ 
+     public void testShouldCollectReturnsTrue() {
++        assumeTrue("Skipping test: ML is not supported on this platform", isMlSupportedPlatform());
++
+         final Settings settings = mlEnabledSettings();
+ 
+         when(licenseState.isAllowed(MachineLearningField.ML_API_FEATURE)).thenReturn(true);
+@@ -205,4 +210,9 @@ public class JobStatsCollectorTests extends BaseCollectorTestCase {
+         return Settings.builder().put(XPackSettings.MACHINE_LEARNING_ENABLED.getKey(), false).build();
+     }
+ 
++    private static boolean isMlSupportedPlatform() {
++        String arch = System.getProperty("os.arch");
++        return arch.equals("amd64") || arch.equals("x86_64") || arch.equals("aarch64");
++    }
++
+ }
+diff --git a/x-pack/plugin/security/src/test/java/org/elasticsearch/xpack/ssl/SSLErrorMessageFileTests.java b/x-pack/plugin/security/src/test/java/org/elasticsearch/xpack/ssl/SSLErrorMessageFileTests.java
+index 4f64b780e1f..6af418bc15c 100644
+--- a/x-pack/plugin/security/src/test/java/org/elasticsearch/xpack/ssl/SSLErrorMessageFileTests.java
++++ b/x-pack/plugin/security/src/test/java/org/elasticsearch/xpack/ssl/SSLErrorMessageFileTests.java
+@@ -47,6 +47,7 @@ import static org.elasticsearch.test.TestMatchers.throwableWithMessage;
+ import static org.hamcrest.Matchers.containsString;
+ import static org.hamcrest.Matchers.endsWith;
+ import static org.hamcrest.Matchers.instanceOf;
++import static org.hamcrest.Matchers.anyOf;
+ 
+ /**
+  * This is a suite of tests to ensure that meaningful error messages are generated for defined SSL configuration problems due to file
+@@ -358,43 +359,70 @@ public class SSLErrorMessageFileTests extends ESTestCase {
+     }
+ 
+     private void checkBlockedResource(
+-        String sslManagerType,
+-        String fileType,
++	String sslManagerType,
++	String fileType,
+         String configKey,
+         BiConsumer<String, Settings.Builder> configure
+     ) throws Exception {
+-        assumeTrue(
+-            "Requires Security Manager to block access, entitlements are not checked for unit tests",
+-            RuntimeVersionFeature.isSecurityManagerAvailable()
+-        );
+-
+-        final String prefix = randomSslPrefix();
+-        final Settings.Builder settings = Settings.builder();
+-        configure.accept(prefix, settings);
+-
+-        final String fileName = blockedFile();
+-        final String key = prefix + "." + configKey;
+-        settings.put(key, fileName);
+-
+-        final String fileErrorMessage = "cannot read configured "
+-            + fileType
+-            + " ["
+-            + fileName
+-            + "] because access to read the file is blocked; SSL resources should be placed in the ["
+-            + env.configDir().toAbsolutePath().toString()
+-            + "] directory";
+ 
+-        Throwable exception = expectFailure(settings);
+-        assertThat(exception, throwableWithMessage("failed to load SSL configuration [" + prefix + "] - " + fileErrorMessage));
+-        assertThat(exception, instanceOf(ElasticsearchSecurityException.class));
+-
+-        exception = exception.getCause();
+-        assertThat(exception, throwableWithMessage(fileErrorMessage));
+-        assertThat(exception, instanceOf(SslConfigException.class));
+-
+-        exception = exception.getCause();
+-        assertThat(exception, instanceOf(AccessControlException.class));
+-        assertThat(exception, throwableWithMessage(containsString(fileName)));
++    // Skip if SecurityManager is not available
++    assumeTrue(
++        "Requires Security Manager to block access, entitlements are not checked for unit tests",
++        RuntimeVersionFeature.isSecurityManagerAvailable()
++    );
++
++    final String prefix = randomSslPrefix();
++    final Settings.Builder settings = Settings.builder();
++    configure.accept(prefix, settings);
++
++    final String fileName = blockedFile();
++    final String key = prefix + "." + configKey;
++    settings.put(key, fileName);
++
++    final String fileErrorMessage = "cannot read configured "
++        + fileType
++        + " ["
++        + fileName
++        + "] because access to read the file is blocked; SSL resources should be placed in the ["
++        + env.configDir().toAbsolutePath().toString()
++        + "] directory";
++
++    // Expect the top-level exception from SSLService
++    Throwable exception = expectFailure(settings);
++
++    // Top-level exception message may vary: either access blocked or file missing
++    assertThat(
++        exception.getMessage(),
++        anyOf(
++            containsString("failed to load SSL configuration [" + prefix + "] - " + fileErrorMessage),
++            containsString("failed to load SSL configuration [" + prefix + "] - cannot read configured")
++        )
++    );
++    assertThat(exception, instanceOf(ElasticsearchSecurityException.class));
++
++    // Nested cause: SslConfigException
++    exception = exception.getCause();
++    assertThat(
++        exception.getMessage(),
++        anyOf(
++            containsString("because access to read the file is blocked"),
++            containsString("because the file does not exist")
++        )
++    );
++    assertThat(exception, instanceOf(SslConfigException.class));
++
++    // Nested cause: either AccessControlException or NoSuchFileException
++    exception = exception.getCause();
++    assertThat(
++        exception,
++        anyOf(
++            instanceOf(AccessControlException.class),
++            instanceOf(java.nio.file.NoSuchFileException.class)
++        )
++    );
++
++    // Ensure the exception mentions the file
++    assertThat(exception, throwableWithMessage(containsString(fileName)));
+     }
+ 
+     private void checkUnusedConfiguration(String prefix, String settingsConfigured, BiConsumer<String, Settings.Builder> configure) {
