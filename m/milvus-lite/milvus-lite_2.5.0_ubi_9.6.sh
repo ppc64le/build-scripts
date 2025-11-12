@@ -17,7 +17,6 @@
 # contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-SCRIPT_PATH=$(dirname "$(realpath "$0")")
 PACKAGE_URL="https://github.com/milvus-io/milvus-lite"
 SCRIPT_PACKAGE_VERSION=v2.5.0
 PACKAGE_NAME=milvus-lite
@@ -112,20 +111,14 @@ git clone "$PACKAGE_URL"
 pushd milvus-lite
   git checkout "${SCRIPT_PACKAGE_VERSION}"
   git submodule update --init --recursive
-
-  PATCH_FILE="${SCRIPT_PATH}/milvus-lite-${SCRIPT_PACKAGE_VERSION}.patch"
-  if [[ -f "$PATCH_FILE" ]]; then
-    echo "Applying patch: $PATCH_FILE"
-    patch -d thirdparty/milvus -p1 --forward < "$PATCH_FILE"
-  else
-    echo "Warning: patch not found at $PATCH_FILE"
-  fi
-
+  wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/m/milvus-lite/milvus-lite-v2.5.0.patch -O /tmp/milvus-lite-v2.5.0.patch
+  echo "Applying patch..."
+  patch -d thirdparty/milvus -p1 --forward < /tmp/milvus-lite-v2.5.0.patch
+  echo "Patch applied successfully...."
   # Build Python wheel and install
   pushd python
     python3.12 -m pip install -r requirements.txt build
     python3.12 setup.py install
-    python3.12 -m build --wheel --no-isolation --outdir "${PWD}/"
   popd
 popd
 
