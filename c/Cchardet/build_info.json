@@ -4,13 +4,13 @@
   "github_url": "https://github.com/PyYoshi/cChardet",
   "version": "master",
   "default_branch": "master",
-  "build_script": "cChardet_ubi_9.6.sh",
-  "package_dir": "c/cChardet",
+  "build_script": "Cchardet_ubi_9.6.sh",
+  "package_dir": "c/Cchardet",
   "use_non_root_user": "false",
   "docker_build": false,
   "wheel_build": true,
   "validate_build_script": true,
   "*": {
-    "build_script": "cChardet_ubi_9.6.sh"
+    "build_script": "Cchardet_ubi_9.6.sh"
   }
 }
