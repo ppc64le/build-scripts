@@ -1051,14 +1051,14 @@ cd grpc/
 git checkout v1.75.0
 git submodule update --init --recursive
 python3.12 -m pip install --upgrade setuptools coverage cython protobuf==4.25.8 wheel cmake==3.*
-export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true
+export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
 export GRPC_PYTHON_BUILD_WITH_CYTHON=1
 export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:${PATH}"
 export CC=$(which gcc)
 export CXX=$(which g++)
 pip3.12 install . --no-build-isolation
 cd $CURRENT_DIR
-pip3.12 install grpcio_status==1.75.0 grpcio_tools==1.75.0 grpcio_health_checking==1.75.0
+pip3.12 install grpcio_status==1.75.0 grpcio_tools==1.75.0 grpcio_health_checking==1.75.0 --no-build-isolation
 echo "-----------------installed grpcio----------------------"
 
 #install pckg
