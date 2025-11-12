@@ -23,12 +23,12 @@ PACKAGE_DIR=pymupdf
 
 # Install dependencies
 echo "Installing required packages..."
-yum install -y git wget gcc-toolset-13 gcc gcc-c++ python3.12 python3.12-devel python3.12-pip clang-libs
+yum install -y git wget gcc-toolset-13 gcc gcc-c++ python3.12 python3.12-devel python3.12-pip clang-libs zlib-devel libjpeg-devel glib2-devel libxml2-devel libxslt-devel
 
 
 [ ! -L /usr/lib64/libclang.so ] && ln -s /usr/lib64/libclang.so.20.1 /usr/lib64/libclang.so
 python3.12 -m pip install --upgrade pip setuptools wheel build
-pip3.12 install pytest tox nox pylint psutil pymupdf-fonts
+pip3.12 install pytest tox nox pylint psutil pymupdf-fonts flake8
 
 export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
