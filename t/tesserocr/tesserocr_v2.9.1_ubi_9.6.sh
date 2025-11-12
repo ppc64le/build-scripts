@@ -42,6 +42,7 @@ dnf config-manager --set-enabled codeready-builder-for-rhel-9-$(arch)-rpms && \
 yum install -y tesseract-devel 
 
 python3.12 -m pip install --upgrade pip setuptools wheel build
+pip3.12 install pillow --index-url https://wheels.developerfirst.ibm.com/ppc64le/linux 
 
 # Clone or extract the package
 if [[ "$PACKAGE_URL" == *github.com* ]]; then
@@ -79,7 +80,7 @@ else
 fi
 
 # Install the package
-if ! python3 -m pip install ./; then
+if ! python3.12 -m pip install ./; then
     echo "------------------$PACKAGE_NAME:install_fails------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"
@@ -96,19 +97,19 @@ test_status=1  # 0 = success, non-zero = failure
 # Run pytest if any matching test files found
 if ls */test_*.py > /dev/null 2>&1 && [ $test_status -ne 0 ]; then
     echo "Running pytest..."
-    (python3 -m pytest) && test_status=0 || test_status=$?
+    (python3.12 -m pytest) && test_status=0 || test_status=$?
 fi
 
 # Run tox if tox.ini is present and previous tests failed
 if [ -f "tox.ini" ] && [ $test_status -ne 0 ]; then
     echo "Running tox..."
-    (python3 -m tox -e py39) && test_status=0 || test_status=$?
+    (python3.12 -m tox -e py39) && test_status=0 || test_status=$?
 fi
 
 # Run nox if noxfile.py is present and previous tests failed
 if [ -f "noxfile.py" ] && [ $test_status -ne 0 ]; then
     echo "Running nox..."
-    (python3 -m nox) && test_status=0 || test_status=$?
+    (python3.12 -m nox) && test_status=0 || test_status=$?
 fi
 
 # Final test result output
