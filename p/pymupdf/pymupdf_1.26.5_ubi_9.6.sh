@@ -28,7 +28,8 @@ yum install -y git wget gcc-toolset-13 gcc gcc-c++ python3.12 python3.12-devel p
 
 [ ! -L /usr/lib64/libclang.so ] && ln -s /usr/lib64/libclang.so.20.1 /usr/lib64/libclang.so
 python3.12 -m pip install --upgrade pip setuptools wheel build
-pip3.12 install pytest tox nox pylint psutil pymupdf-fonts flake8
+pip3.12 install pytest tox nox pylint psutil pymupdf-fonts flake8 codespell
+pip3.12 install pillow --index-url https://wheels.developerfirst.ibm.com/ppc64le/linux 
 
 export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
