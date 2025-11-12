@@ -2,9 +2,9 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : grpcio
-# Version       : v1.70.0
+# Version       : v1.76.0
 # Source repo   : https://github.com/grpc/grpc.git (# For grpcio - https://github.com.mcas.ms/grpc/grpc/tree/master/src/python/grpcio)
-# Tested on     : UBI 9.5
+# Tested on     : UBI 9.6
 # Language      : C++, Python, C, Starlark, Shell, Ruby
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -23,22 +23,23 @@ yum install -y python3 python3-devel python3-pip openssl openssl-devel git gcc-t
 
 # Clone the grpc package.
 PACKAGE_NAME=grpc
-PACKAGE_VERSION=${1:-v1.70.0}
+PACKAGE_VERSION=${1:-v1.76.0}
 PACKAGE_URL=https://github.com/grpc/grpc.git
+PACKAGE_DIR=grpc
 
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME/
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
 pip3 install setuptools coverage cython protobuf==4.25.8 wheel cmake==3.*
 
-export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true
+export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
 export GRPC_PYTHON_BUILD_WITH_CYTHON=1
 export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:${PATH}"
 
 # Install the package
-pip3 install .
+pip3 install . --no-build-isolation
 
 if [ $? == 0 ]; then
      echo "------------------$PACKAGE_NAME::Build_Pass---------------------"
