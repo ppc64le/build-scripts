@@ -3,7 +3,7 @@
   "package_name": "ollama_power",
   "github_url": "https://github.com/ollama/ollama",
   "version": "0.1.0",
-  "wheel_build": true,
+  "wheel_build": false,
   "package_dir": "o/ollama_power",
   "default_branch": "main",
   "build_script": "ollama_ubi_9.6.sh",
