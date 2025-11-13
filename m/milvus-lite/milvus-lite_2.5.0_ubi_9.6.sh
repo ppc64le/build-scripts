@@ -20,6 +20,7 @@
 PACKAGE_URL="https://github.com/milvus-io/milvus-lite"
 SCRIPT_PACKAGE_VERSION=v2.5.0
 PACKAGE_NAME=milvus-lite
+PACKAGE_DIR=milvus-lite/python
 PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
 PWDIR=$(pwd)
 
