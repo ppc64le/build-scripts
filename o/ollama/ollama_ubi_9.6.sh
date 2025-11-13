@@ -156,7 +156,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     cmdclass={'build_py': CustomBuild},
-    package_data={PACKAGE_NAME: ["bin/*", "lib/*.so"]},
+    package_data={PYTHON_PACKAGE_NAME: ["bin/*", "lib/*.so"]},
     python_requires=">=3.8",
 )
 EOF
