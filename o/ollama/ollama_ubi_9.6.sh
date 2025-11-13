@@ -86,6 +86,99 @@ export CGO_LDFLAGS="-L$(pwd)/build/lib/ollama/ -lggml-cpu-power10"
 echo "**** Building Ollama binary with Go..."
 ../go/bin/go build --tags ppc64le.power10 -o ollama .
 
+if ls ollama 1>/dev/null 2>&1; then
+    echo "Ollama Binary built successfully:"
+    ls ollama
+else
+    echo "Ollama Build failed"
+    EXIT_CODE=1
+fi
+
+# -----------------------------------------------------------------------------
+# Auto-generate setup.py and minimal package structure for wheel build
+# -----------------------------------------------------------------------------
+echo "**** Creating setup.py and package files ****"
+
+PKG_NAME="ollama_python_package"
+mkdir -p ${PKG_NAME} ${PKG_NAME}/bin ${PKG_NAME}/lib
+
+# Generate setup.py
+cat <<'EOF' > setup.py
+from setuptools import setup, find_packages
+from setuptools.command.build_py import build_py
+import os, shutil, stat
+
+PYTHON_PACKAGE_NAME = "ollama_python_package"
+VERSION = "0.12.10"
+
+BIN_SRC = os.path.join(os.getcwd(), "ollama")
+LIB_SRC = os.path.join(os.getcwd(), "build", "lib", "ollama")
+PKG_BIN_DIR = os.path.join(PYTHON_PACKAGE_NAME, "bin")
+PKG_LIB_DIR = os.path.join(PYTHON_PACKAGE_NAME, "lib")
+
+def make_executable(path):
+    st = os.stat(path)
+    os.chmod(path, st.st_mode | stat.S_IEXEC)
+
+class CustomBuild(build_py):
+    def run(self):
+        os.makedirs(PKG_BIN_DIR, exist_ok=True)
+        os.makedirs(PKG_LIB_DIR, exist_ok=True)
+
+        # Copy ollama binary
+        if os.path.exists(BIN_SRC):
+            print(f"Copying binary to {PKG_BIN_DIR}")
+            shutil.copy2(BIN_SRC, PKG_BIN_DIR)
+            make_executable(os.path.join(PKG_BIN_DIR, "ollama"))
+        else:
+            print("Warning: ollama binary not found")
+
+        # Copy .so libraries
+        if os.path.exists(LIB_SRC):
+            for f in os.listdir(LIB_SRC):
+                if f.endswith(".so"):
+                    src = os.path.join(LIB_SRC, f)
+                    dst = os.path.join(PKG_LIB_DIR, f)
+                    print(f"Copying shared lib: {src}")
+                    shutil.copy2(src, dst)
+        else:
+            print(f"Warning: {LIB_SRC} not found")
+
+        super().run()
+
+setup(
+    name=PYTHON_PACKAGE_NAME,
+    version=VERSION,
+    author="Shalini Salomi Bodapati",
+    author_email="Shalini-Salomi-Bodapati@ibm.com",
+    description="Power10 optimized Ollama binary + shared libs as Python package",
+    license="Apache-2.0",
+    packages=find_packages(),
+    include_package_data=True,
+    cmdclass={'build_py': CustomBuild},
+    package_data={PACKAGE_NAME: ["bin/*", "lib/*.so"]},
+    python_requires=">=3.8",
+)
+EOF
+
+# Create __init__.py (wrapper)
+cat <<'EOF' > ${PKG_NAME}/__init__.py
+import subprocess
+from pathlib import Path
+
+def run(args=None):
+    """Run embedded Ollama binary packaged with this wheel."""
+    bin_path = Path(__file__).parent / "bin" / "ollama"
+    if not bin_path.exists():
+        raise FileNotFoundError("Embedded ollama binary not found.")
+    subprocess.run([str(bin_path)] + (args or []))
+EOF
+
+echo "=============== Building wheel =================="
+if ! python -m build --wheel --outdir="$CURRENT_DIR/"; then
+            echo "============ Wheel Creation Failed for Python $PYTHON_VERSION ================="
+            EXIT_CODE=1
+fi
 
 # -----------------------------------------------------------------------------
 # Cleanup
@@ -94,33 +187,3 @@ cd ../..
 echo "**** Cleaning temporary files..."
 rm -f go1.24.1.linux-ppc64le.tar.gz
 echo "**** Done! Ollama Power10 wheel ready."
-
-cd ${CURRENT_DIR}
-if ls *.whl 1>/dev/null 2>&1; then
-    echo "Wheel file already exist in the current directory:"
-    ls *.whl
-else
-    #Navigating to the package directory to build wheel
-    if [ -d "${PACKAGE_DIR}" ]; then
-        echo "Navigating to the package directory: ${PACKAGE_DIR}"
-        cd "$PACKAGE_DIR"
-    else
-        echo "package_dir not found, Navigating to package_name: $package_name"
-        cd "$package_name"
-    fi
-
-    echo "=============== Building wheel =================="
-
-    # Attempt to build the wheel without isolation
-    if ! python -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"; then
-        echo "============ Wheel Creation Failed for Python $PYTHON_VERSION (without isolation) ================="
-        echo "Attempting to build with isolation..."
-
-        # Attempt to build the wheel without isolation
-        if ! python -m build --wheel --outdir="$CURRENT_DIR/"; then
-            echo "============ Wheel Creation Failed for Python $PYTHON_VERSION ================="
-            EXIT_CODE=1
-        fi
-    fi
-fi
-
