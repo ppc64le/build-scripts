@@ -27,7 +27,7 @@ echo "------------------------Installing dependencies-------------------"
 # install core dependencies
 yum install -y python python-pip python-devel  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils wget patch
 
-python -m pip install --upgrade pip wheel
+python -m pip install --upgrade pip setuptools wheel build
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
@@ -175,9 +175,13 @@ def run(args=None):
 EOF
 
 echo "=============== Building wheel =================="
-if ! python -m build --wheel --outdir="$CURRENT_DIR/"; then
-            echo "============ Wheel Creation Failed for Python $PYTHON_VERSION ================="
-            EXIT_CODE=1
+python -m pip install --upgrade pip setuptools wheel build
+
+if ! python -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"; then
+    echo "============ Wheel Creation Failed ================="
+    EXIT_CODE=1
+else
+    echo "============ Wheel successfully built ================="
 fi
 
 # -----------------------------------------------------------------------------
