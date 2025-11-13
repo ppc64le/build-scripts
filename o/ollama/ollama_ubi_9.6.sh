@@ -2,26 +2,25 @@
 # -----------------------------------------------------------------------------
 #
 # Package         : Ollama (Power10 optimized)
-# Version         : 0.1.0
+# Version         : v0.12.10
 # Source repo     : https://github.com/ollama/ollama
 # Tested on       : UBI:9.6
 # Language        : Go, C, Python
 # Travis-Check    : True
 # Script License  : Apache License, Version 2 or later
 # Maintainer      : Shalini Salomi Bodapati <Shalini-Salomi-Bodapati@ibm.com>
-#!/bin/bash
 # -----------------------------------------------------------------------------
 
 
 set -e
 
-# -----------------------------------------------------------------------------
-# Configuration
-# -----------------------------------------------------------------------------
-PKG_NAME="ollama_power"
-PKG_VERSION="0.1.0"
-PKG_DIR="ollama_wheel"
-
+# Variables
+PACKAGE_NAME=ollama
+PACKAGE_VERSION=${1:-v0.12.10}
+PACKAGE_URL=https://github.com/ollama/ollama
+OLLAMA_VERSION=${PACKAGE_VERSION}
+CURRENT_DIR=$(pwd)
+PACKAGE_DIR=ollama
 
 echo "------------------------Installing dependencies-------------------"
 
@@ -60,9 +59,9 @@ export PATH="$(pwd)/go/bin:$PATH"
 # -----------------------------------------------------------------------------
 
 echo "**** Cloning Ollama repository..."
-git clone https://github.com/ollama/ollama.git
-
-cd ollama
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 
 echo "**** Downloading Power10 patches..."
 wget -q -O build_power.patch https://github.com/ollama/ollama/commit/67b8d3c817fbdc57fedad9b032d0efc10285220a.patch
@@ -95,4 +94,33 @@ cd ../..
 echo "**** Cleaning temporary files..."
 rm -f go1.24.1.linux-ppc64le.tar.gz
 echo "**** Done! Ollama Power10 wheel ready."
+
+cd ${CURRENT_DIR}
+if ls *.whl 1>/dev/null 2>&1; then
+    echo "Wheel file already exist in the current directory:"
+    ls *.whl
+else
+    #Navigating to the package directory to build wheel
+    if [ -d "${PACKAGE_DIR}" ]; then
+        echo "Navigating to the package directory: ${PACKAGE_DIR}"
+        cd "$PACKAGE_DIR"
+    else
+        echo "package_dir not found, Navigating to package_name: $package_name"
+        cd "$package_name"
+    fi
+
+    echo "=============== Building wheel =================="
+
+    # Attempt to build the wheel without isolation
+    if ! python -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"; then
+        echo "============ Wheel Creation Failed for Python $PYTHON_VERSION (without isolation) ================="
+        echo "Attempting to build with isolation..."
+
+        # Attempt to build the wheel without isolation
+        if ! python -m build --wheel --outdir="$CURRENT_DIR/"; then
+            echo "============ Wheel Creation Failed for Python $PYTHON_VERSION ================="
+            EXIT_CODE=1
+        fi
+    fi
+fi
 
