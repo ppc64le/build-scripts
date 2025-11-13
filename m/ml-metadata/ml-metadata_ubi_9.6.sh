@@ -30,7 +30,6 @@ wdir=`pwd`
 SCRIPT=$(readlink -f $0)
 SCRIPT_DIR=$(dirname $SCRIPT)
 
-# install core dependencies
 yum install -y autoconf cmake wget automake libtool zlib zlib-devel libjpeg libjpeg-devel gcc-toolset-13 python3.11 python3.11-pip python3.11-devel git unzip zip patch openssl-devel utf8proc tzdata diffutils libffi-devel
 source /opt/rh/gcc-toolset-13/enable
 
