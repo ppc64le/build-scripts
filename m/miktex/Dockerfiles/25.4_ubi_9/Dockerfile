@@ -1,5 +1,5 @@
 # Build Stage
-FROM registry.access.redhat.com/ubi9/ubi:9.3 as builder
+FROM registry.access.redhat.com/ubi9/ubi:9.6 as builder
 
 ENV SCRIPT_PACKAGE_VERSION=25.4 \
     PACKAGE_NAME=miktex \
@@ -88,7 +88,7 @@ RUN cd miktex && \
     make test
 
 # Final Stage
-FROM registry.access.redhat.com/ubi9/ubi:9.3
+FROM registry.access.redhat.com/ubi9/ubi:9.6
 ARG user=miktex
 ARG group=miktex
 ARG uid=1000
