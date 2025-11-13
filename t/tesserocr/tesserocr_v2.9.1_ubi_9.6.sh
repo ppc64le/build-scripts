@@ -25,12 +25,16 @@ PACKAGE_DIR="tesserocr"
 # ---------------------------
 # Dependency Installation
 # ---------------------------
-yum install -y git python3.12 python3.12-devel python3.12-pip gcc-toolset-13 make wget sudo cmake
-pip3 install pytest tox nox
+yum install -y git python3.12 python3.12-devel python3.12-pip gcc-toolset-13 make wget sudo cmake 
+
+pip3.12 install pytest tox nox
+python3.12 -m pip install --upgrade pip setuptools wheel build
+pip3.12 install pillow --index-url https://wheels.developerfirst.ibm.com/ppc64le/linux 
 
 export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:/usr/local/lib:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 SOURCE=Github
@@ -39,10 +43,8 @@ SOURCE=Github
 echo "Configuring package repositories..."
 yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
 dnf config-manager --set-enabled codeready-builder-for-rhel-9-$(arch)-rpms && \
-yum install -y tesseract-devel 
 
-python3.12 -m pip install --upgrade pip setuptools wheel build
-pip3.12 install pillow --index-url https://wheels.developerfirst.ibm.com/ppc64le/linux 
+yum install -y tesseract-devel
 
 # Clone or extract the package
 if [[ "$PACKAGE_URL" == *github.com* ]]; then
@@ -88,6 +90,7 @@ if ! python3.12 -m pip install ./; then
 fi
 
 # Build the wheel
+python3.12 setup.py build_ext --inplace
 python3.12 -m build --wheel
 
 # ------------------ Unified Test Execution Block ------------------
@@ -98,12 +101,6 @@ test_status=1  # 0 = success, non-zero = failure
 if ls */test_*.py > /dev/null 2>&1 && [ $test_status -ne 0 ]; then
     echo "Running pytest..."
     (python3.12 -m pytest) && test_status=0 || test_status=$?
-fi
-
-# Run tox if tox.ini is present and previous tests failed
-if [ -f "tox.ini" ] && [ $test_status -ne 0 ]; then
-    echo "Running tox..."
-    (python3.12 -m tox -e py39) && test_status=0 || test_status=$?
 fi
 
 # Run nox if noxfile.py is present and previous tests failed
