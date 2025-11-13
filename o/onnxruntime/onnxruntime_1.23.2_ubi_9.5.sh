@@ -190,7 +190,6 @@ python3.12 -m pip install cython meson
 python3.12 -m pip install numpy==2.0.2
 python3.12 -m pip install parameterized
 python3.12 -m pip install pytest nbval pythran mypy-protobuf
-python3.12 -m pip install scipy==1.13.1
 
 python3.12 setup.py install
 echo "--------------onnx installed------------------"
