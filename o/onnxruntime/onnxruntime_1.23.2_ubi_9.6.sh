@@ -34,8 +34,6 @@ export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 export SITE_PACKAGE_PATH=/usr/local/lib/python${PYTHON_VERSION}/site-packages
 yum remove -y python3-chardet
 
-ln -sf $(ls -1 /usr/bin/python3.[0-9]* | grep -E '^/usr/bin/python3\.[0-9]+$' | sort -V | tail -n 1) /usr/bin/python3
-
 # Get Python include path
 PYTHON_INCLUDE=$(python3.12 -c "from sysconfig import get_paths; print(get_paths()['include'])")
 export CPLUS_INCLUDE_PATH=$PYTHON_INCLUDE:$CPLUS_INCLUDE_PATH
@@ -44,6 +42,7 @@ export C_INCLUDE_PATH=$PYTHON_INCLUDE:$C_INCLUDE_PATH
 python3.12 -m pip install --upgrade pip
 python3.12 -m pip install --upgrade cmake pip setuptools wheel ninja packaging tox pytest build mypy stubs
 
+cd $CURRENT_DIR
 # Set ABSEIL_VERSION and ABSEIL_URL
 ABSEIL_VERSION=20240116.2
 ABSEIL_URL="https://github.com/abseil/abseil-cpp"
@@ -55,38 +54,8 @@ PREFIX=$WORK_DIR/abseil-prefix
 
 # Clone abseil-cpp repository
 git clone $ABSEIL_URL -b $ABSEIL_VERSION
-cd abseil-cpp
-SOURCE_DIR=$(pwd)
 
-# Set up directories for local installation
-mkdir -p $SOURCE_DIR/local/abseilcpp
-abseilcpp=$SOURCE_DIR/local/abseilcpp
-
-# Create build directory and run cmake
-mkdir build
-cd build
-cmake -G Ninja \
-${CMAKE_ARGS} \
--DCMAKE_BUILD_TYPE=Release \
--DCMAKE_CXX_STANDARD=17 \
--DCMAKE_INSTALL_LIBDIR=lib \
--DCMAKE_INSTALL_PREFIX=${PREFIX} \
--DBUILD_SHARED_LIBS=ON \
--DABSL_PROPAGATE_CXX_STD=ON \
--DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-..
-cmake --build .
-cmake --install .
-
-# Copy installation files
-cd $WORK_DIR
-cp -r  $PREFIX/* $abseilcpp/
-echo "abseil-cpp has been installed to $abseilcpp"
-
-# Setting paths and versions
-PREFIX=$SITE_PACKAGE_PATH
-ABSEIL_PREFIX=$SOURCE_DIR/local/abseilcpp
-echo "Setting PREFIX to $PREFIX and ABSEIL_PREFIX to $ABSEIL_PREFIX"
+echo " ------------------------------------------ Abseil-CPP Cloned ------------------------------------------ "
 
 # Setting paths and versions
 export C_COMPILER=$(which gcc)
@@ -107,7 +76,7 @@ cd protobuf
 git submodule update --init --recursive
 rm -rf ./third_party/googletest | true
 rm -rf ./third_party/abseil-cpp | true
-cp -r $WORK_DIR/abseil-cpp ./third_party/
+cp -r $CURRENT_DIR/abseil-cpp ./third_party/
 mkdir build
 cd build
 cmake -G "Ninja" \
