@@ -5,7 +5,7 @@
 # Package          : onnxruntime
 # Version          : v1.23.2
 # Source repo      : https://github.com/microsoft/onnxruntime
-# Tested on        : UBI:9.5
+# Tested on        : UBI:9.6
 # Language         : Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
@@ -34,6 +34,9 @@ export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 export SITE_PACKAGE_PATH=/usr/local/lib/python${PYTHON_VERSION}/site-packages
 yum remove -y python3-chardet
 
+
+"python$PYTHON_VERSION" -m venv --system-site-packages VENV_DIR
+source VENV_DIR/bin/activate
 # Get Python include path
 PYTHON_INCLUDE=$(python3.12 -c "from sysconfig import get_paths; print(get_paths()['include'])")
 export CPLUS_INCLUDE_PATH=$PYTHON_INCLUDE:$CPLUS_INCLUDE_PATH
@@ -46,16 +49,9 @@ cd $CURRENT_DIR
 # Set ABSEIL_VERSION and ABSEIL_URL
 ABSEIL_VERSION=20240116.2
 ABSEIL_URL="https://github.com/abseil/abseil-cpp"
-
-# Create and set up working directories
-echo "Creating abseil prefix directory at $WORK_DIR/abseil-prefix"
-mkdir $WORK_DIR/abseil-prefix
-PREFIX=$WORK_DIR/abseil-prefix
-
-# Clone abseil-cpp repository
 git clone $ABSEIL_URL -b $ABSEIL_VERSION
 
-echo " ------------------------------------------ Abseil-CPP Cloned ------------------------------------------ "
+echo " --------------------------------------------------- Abseil-Cpp Cloned --------------------------------------------------- "
 
 # Setting paths and versions
 export C_COMPILER=$(which gcc)
@@ -66,9 +62,11 @@ LIBPROTO_INSTALL=$(pwd)/local/libprotobuf
 echo "LIBPROTO_INSTALL set to $LIBPROTO_INSTALL"
 
 # Clone Source-code
-PACKAGE_VERSION_LIB="v4.25.3"
+PACKAGE_VERSION_LIB="v4.25.8"
 PACKAGE_GIT_URL="https://github.com/protocolbuffers/protobuf"
 git clone $PACKAGE_GIT_URL -b $PACKAGE_VERSION_LIB
+
+echo " --------------------------------------------------- Libprotobuf Installing --------------------------------------------------- "
 
 # Build libprotobuf
 echo "protobuf build starts!!"
@@ -80,23 +78,25 @@ cp -r $CURRENT_DIR/abseil-cpp ./third_party/
 mkdir build
 cd build
 cmake -G "Ninja" \
-${CMAKE_ARGS} \
--DCMAKE_BUILD_TYPE=Release \
--DCMAKE_CXX_STANDARD=17 \
--DCMAKE_C_COMPILER=$C_COMPILER \
--DCMAKE_CXX_COMPILER=$CXX_COMPILER \
--DCMAKE_INSTALL_PREFIX=$LIBPROTO_INSTALL \
--Dprotobuf_BUILD_TESTS=OFF \
--Dprotobuf_BUILD_LIBUPB=OFF \
--Dprotobuf_BUILD_SHARED_LIBS=ON \
--Dprotobuf_ABSL_PROVIDER="module" \
--DCMAKE_PREFIX_PATH=$ABSEIL_PREFIX \
--Dprotobuf_JSONCPP_PROVIDER="package" \
--Dprotobuf_USE_EXTERNAL_GTEST=OFF \
-..
+   ${CMAKE_ARGS} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_CXX_STANDARD=17 \
+    -DCMAKE_C_COMPILER=$C_COMPILER \
+    -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
+    -DCMAKE_INSTALL_PREFIX=$LIBPROTO_INSTALL \
+    -Dprotobuf_BUILD_TESTS=OFF \
+    -Dprotobuf_BUILD_LIBUPB=OFF \
+    -Dprotobuf_BUILD_SHARED_LIBS=ON \
+    -Dprotobuf_ABSL_PROVIDER="module" \
+    -DCMAKE_PREFIX_PATH=$ABSEIL_PREFIX \
+    -Dprotobuf_JSONCPP_PROVIDER="package" \
+    -Dprotobuf_USE_EXTERNAL_GTEST=OFF \
+    ..
 cmake --build . --verbose
 cmake --install .
 cd ..
+
+echo " --------------------------------------------------- Libprotobuf Successfully Installed --------------------------------------------------- "
 
 export PROTOC="$LIBPROTO_INSTALL/bin/protoc"
 export LD_LIBRARY_PATH="$ABSEIL_PREFIX/lib:$LIBPROTO_INSTALL/lib64:$LD_LIBRARY_PATH"
@@ -112,14 +112,19 @@ git apply set_cpp_to_17_v4.25.3.patch
 # Build Python package
 cd python
 python3.12 setup.py install --cpp_implementation
-cd ../..
+
+echo " --------------------------------------------------- Protobuf Patch Applied Successfully --------------------------------------------------- "
+
+cd $CURRENT_DIR
+
 python3.12 -m pip install pybind11==2.12.0
 PYBIND11_PREFIX=$SITE_PACKAGE_PATH/pybind11
 export CMAKE_PREFIX_PATH="$ABSEIL_PREFIX;$LIBPROTO_INSTALL;$PYBIND11_PREFIX"
 echo "Updated CMAKE_PREFIX_PATH after OpenBLAS: $CMAKE_PREFIX_PATH"
 export LD_LIBRARY_PATH="$LIBPROTO_INSTALL/lib64:$ABSEIL_PREFIX/lib:$LD_LIBRARY_PATH"
 echo "Updated LD_LIBRARY_PATH : $LD_LIBRARY_PATH"
-echo "Cloning and installing..."
+
+echo " --------------------------------------------------- Onnx Installing --------------------------------------------------- "
 
 git clone https://github.com/onnx/onnx
 cd onnx
