@@ -1,8 +1,8 @@
 diff --git a/build.py b/build.py
-index f848ff05..03d4a8c5 100755
+index 68c48a2a..aa9a7338 100755
 --- a/build.py
 +++ b/build.py
-@@ -335,6 +335,11 @@ class BuildScript:
+@@ -335,6 +335,13 @@ class BuildScript:
                  f"  git clone --recursive --single-branch --depth=1 -b {tag} {org}/{repo}.git {subdir}; git --git-dir {subdir}/.git log --oneline -1",
                  check_exitcode=True,
              )
@@ -11,10 +11,12 @@ index f848ff05..03d4a8c5 100755
 +                self.cmd(f"git apply /workspace/onnxruntime_backend.patch", check_exitcode=True)
 +            if subdir == "pytorch":
 +                self.cmd(f"git apply /workspace/pytorch_backend.patch", check_exitcode=True)
++            if subdir == "fil":
++                self.cmd(f"git apply /workspace/fil_backend.patch", check_exitcode=True)
              self.cmd("}" if target_platform() == "windows" else "fi")
  
  
-@@ -457,7 +462,8 @@ def core_cmake_args(components, backends, cmake_dir, install_dir):
+@@ -457,7 +464,8 @@ def core_cmake_args(components, backends, cmake_dir, install_dir):
              "TRITON_THIRD_PARTY_REPO_TAG", "STRING", components["thirdparty"]
          ),
      ]
@@ -24,7 +26,7 @@ index f848ff05..03d4a8c5 100755
      cargs.append(cmake_core_enable("TRITON_ENABLE_LOGGING", FLAGS.enable_logging))
      cargs.append(cmake_core_enable("TRITON_ENABLE_STATS", FLAGS.enable_stats))
      cargs.append(cmake_core_enable("TRITON_ENABLE_METRICS", FLAGS.enable_metrics))
-@@ -649,6 +655,9 @@ def pytorch_cmake_args(images):
+@@ -649,6 +657,9 @@ def pytorch_cmake_args(images):
      cargs = [
          cmake_backend_arg("pytorch", "TRITON_PYTORCH_DOCKER_IMAGE", None, image),
      ]
@@ -34,7 +36,7 @@ index f848ff05..03d4a8c5 100755
  
      # TODO: TPRD-372 TorchTRT extension is not currently supported by our manylinux build
      # TODO: TPRD-373 NVTX extension is not currently supported by our manylinux build
-@@ -921,11 +930,19 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1
+@@ -929,11 +940,19 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1 CMAKE_POLICY_VERSION_MINIMUM=3.5
  """
      df += """
  # Install docker docker buildx
@@ -56,7 +58,7 @@ index f848ff05..03d4a8c5 100755
  # libcurl4-openSSL-dev is needed for GCS
  # python3-dev is needed by Torchvision
  # python3-pip and libarchive-dev is needed by python backend
-@@ -934,6 +951,7 @@ RUN yum install -y ca-certificates curl gnupg yum-utils \\
+@@ -942,6 +961,7 @@ RUN yum install -y ca-certificates curl gnupg yum-utils \\
  RUN yum install -y \\
              autoconf \\
              automake \\
@@ -64,7 +66,7 @@ index f848ff05..03d4a8c5 100755
              bzip2-devel \\
              ca-certificates \\
              git \\
-@@ -948,16 +966,31 @@ RUN yum install -y \\
+@@ -956,16 +976,32 @@ RUN yum install -y \\
              numactl-devel \\
              openssl-devel \\
              pkg-config \\
@@ -86,7 +88,8 @@ index f848ff05..03d4a8c5 100755
 +            sqlite-devel\\
 +            libffi-devel\\
 +            openblas-devel \\
-+            g++
++            g++ \\
++            ccache
 +RUN ln -sf $(which python3.12) /usr/bin/python3 && ln -sf $(which pip3.12) /usr/bin/pip3 && ln -sf $(which pip3.12) /usr/bin/pip
 +RUN ln -sf $(which python3.12) /usr/bin/python3 && ln -sf $(which pip3.12) /usr/bin/pip3 && ln -sf $(which pip3.12) /usr/bin/pip
 +
@@ -100,17 +103,26 @@ index f848ff05..03d4a8c5 100755
  """
      if os.getenv("CCACHE_REMOTE_ONLY") and os.getenv("CCACHE_REMOTE_STORAGE"):
          df += """
-@@ -988,7 +1021,8 @@ RUN pip3 install --upgrade pip \\
-           setuptools \\
+@@ -997,7 +1033,7 @@ RUN pip3 install --upgrade pip \\
            docker \\
            virtualenv \\
--          patchelf==0.17.2
-+          patchelf==0.17.2 \\
+           patchelf==0.17.2 \\
+-          cmake==4.0.3
 +          requests==2.25.1
  
  # Install boost version >= 1.78 for boost::span
  # Current libboost-dev apt packages are < 1.78, so install from tar.gz
-@@ -1217,17 +1251,9 @@ ARG BASE_IMAGE={}
+@@ -1107,8 +1143,7 @@ RUN pip3 install --upgrade \\
+           build \\
+           docker \\
+           virtualenv \\
+-          patchelf==0.17.2 \\
+-          cmake==4.0.3
++          patchelf==0.17.2
+ 
+ # Install boost version >= 1.78 for boost::span
+ # Current libboost-dev apt packages are < 1.78, so install from tar.gz
+@@ -1209,17 +1244,9 @@ ARG BASE_IMAGE={}
      # PyTorch backends need extra CUDA and other
      # dependencies during runtime that are missing in the CPU-only base container.
      # These dependencies must be copied from the Triton Min image.
@@ -128,7 +140,7 @@ index f848ff05..03d4a8c5 100755
      df += """
  ############################################################################
  ##  Production stage: Create container with just inference server executable
-@@ -1245,15 +1271,35 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1
+@@ -1237,15 +1264,34 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1
  WORKDIR /opt
  COPY --chown=1000:1000 build/install tritonserver
  
@@ -143,14 +155,13 @@ index f848ff05..03d4a8c5 100755
 +COPY build/libtorchvision.so /usr/local/lib64/python3.12/site-packages/torch/share/cmake/Torch
 +COPY build/libtorchvision.so /usr/local/lib64/python3.12/site-packages/torch/lib
 +RUN ln -s /usr/local/lib64/python3.12/site-packages/torch/lib/libtorchvision.so /usr/local/lib64/python3.12/site-packages/torch/lib/libtorchvision.so.1
-+
++ 
  WORKDIR /opt/tritonserver
  COPY --chown=1000:1000 NVIDIA_Deep_Learning_Container_License.pdf .
 -RUN find /opt/tritonserver/python -maxdepth 1 -type f -name \\
 -    "tritonserver-*.whl" | xargs -I {} pip install --upgrade {}[all] && \\
 -    find /opt/tritonserver/python -maxdepth 1 -type f -name \\
 -    "tritonfrontend-*.whl" | xargs -I {} pip install --upgrade {}[all]
- 
 +RUN if [ "$(uname -m)" = "ppc64le" ]; then \
 +        VARIANT="cpu"; \
 +    else \
@@ -160,7 +171,7 @@ index f848ff05..03d4a8c5 100755
 +    "tritonserver-*.whl" | xargs -I {} pip install --upgrade {}[$VARIANT] && \
 +    find /opt/tritonserver/python -maxdepth 1 -type f -name \
 +    "tritonfrontend-*.whl" | xargs -I {} pip install --upgrade {}[$VARIANT];
-+ 
+ 
  RUN pip3 install -r python/openai/requirements.txt
  
 +ENV LD_LIBRARY_PATH=/opt/tritonserver/lib64:$LD_LIBRARY_PATH
@@ -168,18 +179,19 @@ index f848ff05..03d4a8c5 100755
  """
      if not FLAGS.no_core_build:
          # Add feature labels for SageMaker endpoint
-@@ -1267,7 +1313,6 @@ COPY --chown=1000:1000 docker/sagemaker/serve /usr/bin/.
+@@ -1259,7 +1305,6 @@ COPY --chown=1000:1000 docker/sagemaker/serve /usr/bin/.
      # stage of the PyTorch backend
      if not FLAGS.enable_gpu and ("pytorch" in backends):
          df += """
--RUN patchelf --add-needed /usr/local/cuda/lib64/stubs/libcublasLt.so.12 backends/pytorch/libtorch_cuda.so
+-RUN patchelf --add-needed /usr/local/cuda/lib64/stubs/libcublasLt.so.13 backends/pytorch/libtorch_cuda.so
  """
      if "tensorrtllm" in backends:
          df += """
-@@ -1356,10 +1401,19 @@ RUN userdel tensorrt-server > /dev/null 2>&1 || true \\
+@@ -1348,10 +1393,20 @@ RUN userdel tensorrt-server > /dev/null 2>&1 || true \\
  
      if target_platform() == "rhel":
          df += """
++
 +RUN yum install -y wget && \
 +   dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
 +        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
@@ -196,7 +208,7 @@ index f848ff05..03d4a8c5 100755
          re2-devel \\
          openssl-devel \\
          libtool \\
-@@ -1367,10 +1421,17 @@ RUN yum install -y \\
+@@ -1359,10 +1414,18 @@ RUN yum install -y \\
          libb64-devel \\
          gperftools-devel \\
          wget \\
@@ -212,13 +224,14 @@ index f848ff05..03d4a8c5 100755
 +        libjpeg-devel \\
 +        zlib-devel \\
 +        openblas-devel \\
-+        libarchive
++        libarchive \\
++        ccache
 +RUN ln -sf $(which python3.12) /usr/bin/python3 && ln -sf $(which pip3.12) /usr/bin/pip3 && ln -sf $(which pip3.12) /usr/bin/pip
 +RUN pip3 install patchelf==0.17.2 pillow 
  
  """
      else:
-@@ -1440,7 +1501,6 @@ RUN ln -sf ${_CUDA_COMPAT_PATH}/lib.real ${_CUDA_COMPAT_PATH}/lib \\
+@@ -1431,7 +1494,6 @@ RUN ln -sf ${_CUDA_COMPAT_PATH}/lib.real ${_CUDA_COMPAT_PATH}/lib \\
              df += """
  # python3, python3-pip and some pip installs required for the python backend
  RUN yum install -y \\
@@ -226,23 +239,25 @@ index f848ff05..03d4a8c5 100755
          openssl-devel \\
          readline-devel
  """
-@@ -1560,35 +1620,10 @@ def add_cpu_libs_to_linux_dockerfile(backends, target_machine):
+@@ -1551,37 +1613,9 @@ def add_cpu_libs_to_linux_dockerfile(backends, target_machine):
          # we must copy these from the Triton min container ourselves.
          cuda_arch = "sbsa" if target_machine == "aarch64" else "x86_64"
          df += """
 -RUN mkdir -p /usr/local/cuda/lib64/stubs
 -COPY --from=min_container /usr/local/cuda/lib64/stubs/libcusparse.so /usr/local/cuda/lib64/stubs/libcusparse.so.12
--COPY --from=min_container /usr/local/cuda/lib64/stubs/libcusolver.so /usr/local/cuda/lib64/stubs/libcusolver.so.11
+-COPY --from=min_container /usr/local/cuda/lib64/stubs/libcusolver.so /usr/local/cuda/lib64/stubs/libcusolver.so.12
 -COPY --from=min_container /usr/local/cuda/lib64/stubs/libcurand.so /usr/local/cuda/lib64/stubs/libcurand.so.10
--COPY --from=min_container /usr/local/cuda/lib64/stubs/libcufft.so /usr/local/cuda/lib64/stubs/libcufft.so.11
--COPY --from=min_container /usr/local/cuda/lib64/stubs/libcublas.so /usr/local/cuda/lib64/stubs/libcublas.so.12
--COPY --from=min_container /usr/local/cuda/lib64/stubs/libcublasLt.so /usr/local/cuda/lib64/stubs/libcublasLt.so.12
--COPY --from=min_container /usr/local/cuda/lib64/stubs/libcublasLt.so /usr/local/cuda/lib64/stubs/libcublasLt.so.11
+-COPY --from=min_container /usr/local/cuda/lib64/stubs/libcufft.so /usr/local/cuda/lib64/stubs/libcufft.so.12
+-COPY --from=min_container /usr/local/cuda/lib64/stubs/libcublas.so /usr/local/cuda/lib64/stubs/libcublas.so.13
+-COPY --from=min_container /usr/local/cuda/lib64/stubs/libcublasLt.so /usr/local/cuda/lib64/stubs/libcublasLt.so.13
 -
 -RUN mkdir -p /usr/local/cuda/targets/{cuda_arch}-linux/lib
--COPY --from=min_container /usr/local/cuda/lib64/libcudart.so.12 /usr/local/cuda/targets/{cuda_arch}-linux/lib/.
--COPY --from=min_container /usr/local/cuda/lib64/libcupti.so.12 /usr/local/cuda/targets/{cuda_arch}-linux/lib/.
--COPY --from=min_container /usr/local/cuda/lib64/libnvJitLink.so.12 /usr/local/cuda/targets/{cuda_arch}-linux/lib/.
+-COPY --from=min_container /usr/local/cuda/lib64/libcudart.so.13 /usr/local/cuda/targets/{cuda_arch}-linux/lib/.
+-COPY --from=min_container /usr/local/cuda/lib64/libcupti.so.13 /usr/local/cuda/targets/{cuda_arch}-linux/lib/.
+-COPY --from=min_container /usr/local/cuda/lib64/libnvJitLink.so.13 /usr/local/cuda/targets/{cuda_arch}-linux/lib/.
+-COPY --from=min_container /usr/local/cuda/lib64/libcufile.so.0 /usr/local/cuda/targets/{cuda_arch}-linux/lib/.
+-COPY --from=min_container /usr/local/cuda/lib64/libnvrtc.so.13 /usr/local/cuda/targets/{cuda_arch}-linux/lib/.
+-COPY --from=min_container /usr/local/cuda/lib64/libcusparseLt.so.0 /usr/local/cuda/targets/{cuda_arch}-linux/lib/.
 -
 -RUN mkdir -p /opt/hpcx/ucc/lib/ /opt/hpcx/ucx/lib/
 -COPY --from=min_container /opt/hpcx/ucc/lib/libucc.so.1 /opt/hpcx/ucc/lib/libucc.so.1
@@ -252,17 +267,18 @@ index f848ff05..03d4a8c5 100755
 -COPY --from=min_container /opt/hpcx/ucx/lib/libuct.so.0 /opt/hpcx/ucx/lib/libuct.so.0
 -
 -COPY --from=min_container /usr/lib/{libs_arch}-linux-gnu/libcudnn.so.9 /usr/lib/{libs_arch}-linux-gnu/libcudnn.so.9
- 
- # patchelf is needed to add deps of libcublasLt.so.12 to libtorch_cuda.so
+-
+-# patchelf is needed to add deps of libcublasLt.so.12 to libtorch_cuda.so
 -RUN apt-get update \\
 -      && apt-get install -y --no-install-recommends openmpi-bin
++ # patchelf is needed to add deps of libcublasLt.so.12 to libtorch_cuda.so
  RUN pip3 install patchelf==0.17.2
  
 -ENV LD_LIBRARY_PATH /usr/local/cuda/targets/{cuda_arch}-linux/lib:/usr/local/cuda/lib64/stubs:${{LD_LIBRARY_PATH}}
  """.format(
              cuda_arch=cuda_arch, libs_arch=libs_arch
          )
-@@ -1600,7 +1635,6 @@ ENV LD_LIBRARY_PATH /usr/local/cuda/targets/{cuda_arch}-linux/lib:/usr/local/cud
+@@ -1593,7 +1627,6 @@ ENV LD_LIBRARY_PATH /usr/local/cuda/targets/{cuda_arch}-linux/lib:/usr/local/cud
          # Since this dependency is not present in the ubuntu base image,
          # we must copy it from the Triton min container ourselves.
          df += """
@@ -270,7 +286,7 @@ index f848ff05..03d4a8c5 100755
  """.format(
              libs_arch=libs_arch
          )
-@@ -1614,20 +1648,6 @@ def change_default_python_version_rhel(version):
+@@ -1607,20 +1640,6 @@ def change_default_python_version_rhel(version):
  # match the version of python inside the RHEL base container. This means that python packages
  # installed within the container will not be picked up by the python backend stub process pybind
  # bindings. It must instead must be installed via pyenv.
@@ -291,11 +307,10 @@ index f848ff05..03d4a8c5 100755
  """
      return df
  
-@@ -1884,7 +1904,42 @@ def create_docker_build_script(script_name, container_install_dir, container_ci_
+@@ -1877,6 +1896,42 @@ def create_docker_build_script(script_name, container_install_dir, container_ci_
              ],
              check_exitcode=True,
          )
--
 +        docker_script.cmd(
 +            [
 +                "docker",
@@ -332,6 +347,25 @@ index f848ff05..03d4a8c5 100755
 +            ],
 +            check_exitcode=True,
 +        )
+ 
          #
          # Final image... tritonserver
-         #
+diff --git a/python/openai/requirements.txt b/python/openai/requirements.txt
+index 608f3b5a..6f46af2b 100644
+--- a/python/openai/requirements.txt
++++ b/python/openai/requirements.txt
+@@ -25,7 +25,7 @@
+ # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ 
+ # FastAPI Application
+-fastapi==0.115.6
++fastapi==0.121.0
+ # Fix httpx version to avoid bug in openai library:
+ # https://community.openai.com/t/error-with-openai-1-56-0-client-init-got-an-unexpected-keyword-argument-proxies/1040332/3
+ httpx==0.27.2
+@@ -33,4 +33,4 @@ openai==1.107.3
+ partial-json-parser # used for parsing partial JSON outputs
+ # Minimum starlette version needed to address CVE:
+ # https://github.com/advisories/GHSA-f96h-pmfr-66vw
+-starlette>=0.40.0
++starlette==0.49.1

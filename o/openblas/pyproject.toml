@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "openblas"
 version = "{PACKAGE_VERSION}"
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 description = "Provides OpenBLAS for python packaging"
 readme = "README.md"
 classifiers = [

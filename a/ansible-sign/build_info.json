@@ -1,12 +1,16 @@
 {
-  "maintainer": "shubhamgupta1010",
+  "maintainer": "aastha-sharma2",
   "package_name": "ansible-sign",
   "github_url": "https://github.com/ansible/ansible-sign.git",
-  "version": "0.1.1",
+  "version": "v0.1.2",
   "default_branch": "main",
-  "package_dir": "a/ansible-sign/",
-  "build_script": "ansible-sign_ubi_9.3.sh",
+  "package_dir": "a/ansible-sign",
+  "wheel_build" : "true",
+  "build_script": "ansible-sign_ubi_9.6.sh",
   "docker_build": false,
   "validate_build_script": true,
-  "use_non_root_user": false
+  "use_non_root_user": false,
+   "*": {
+    "build_script": "ansible-sign_ubi_9.6.sh"
+  }
 }

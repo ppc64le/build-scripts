@@ -1,0 +1,16 @@
+{
+    "maintainer": "ramnathnayak-ibm",
+    "package_name": "javabridge",
+    "github_url": "https://github.com/LeeKamentsky/python-javabridge",
+    "version": "master",
+    "wheel_build" : true,
+    "package_dir": "j/javabridge",
+    "default_branch": "master",
+    "build_script": "javabridge_ubi_9.6.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": "false",
+    "*" : {
+      "build_script": "javabridge_ubi_9.6.sh"
+    }
+  }

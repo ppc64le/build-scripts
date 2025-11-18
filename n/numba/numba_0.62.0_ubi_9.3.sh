@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : numba
-# Version       : 0.62.0dev0
+# Version       : 0.62.0
 # Source repo   : https://github.com/numba/numba
 # Tested on     : UBI:9.3
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Haritha Nagothu <haritha.nagothu2@ibm.com>
+# Maintainer    : Sakshi Jain <sakshi.jain16@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on the given
 # platform using the mentioned version of the package.
@@ -19,10 +19,12 @@
 # -----------------------------------------------------------------------------
 
 PACKAGE_NAME=numba
-PACKAGE_VERSION=${1:-0.62.0dev0}
+PACKAGE_VERSION=${1:-0.62.0}
 PACKAGE_URL=https://github.com/numba/numba
 PACKAGE_DIR=numba
 WORKING_DIR=$(pwd)
+NUMERIC_VERSION=$(echo "$PACKAGE_VERSION" | grep -oP '^\d+(\.\d+){0,2}')
+
 # Install necessary  dependencies
 
 yum install -y git make wget python3.12 python3.12-devel python3.12-pip gcc-toolset-13 
@@ -36,7 +38,17 @@ yum install -y git make wget openssl-devel bzip2-devel libffi-devel zlib-devel c
 echo "-------------------Installing llvmlite----------------------"
 
 LLVMLITE_PACKAGE_NAME=llvmlite
-LLVMLITE_VERSION="v0.44.0rc1"
+# Determine the llvmlite version based on the Numba package version:
+# - If Numba is 0.62.0 with dev/rc suffix → use llvmlite v0.44.0rc1
+# - If Numba version >= 0.62.0 → use llvmlite v0.45.0dev0
+# - If Numba version < 0.62.0 → use llvmlite v0.44.0rc1
+if [[ "$NUMERIC_VERSION" ==  0.62.0 && "$PACKAGE_VERSION" =~ dev|rc ]]; then
+    LLVMLITE_VERSION="v0.44.0rc1"
+elif [[ "$(printf '%s\n' "$PACKAGE_VERSION" "0.62.0" | sort -V | head -n1)" == "0.62.0" ]]; then
+    LLVMLITE_VERSION="v0.45.0dev0"
+else
+    LLVMLITE_VERSION="v0.44.0rc1"
+fi
 LLVMLITE_PACKAGE_URL="https://github.com/numba/llvmlite"
 LLVM_PROJECT_GIT_URL="https://github.com/llvm/llvm-project.git"
 LLVM_PROJECT_GIT_TAG="llvmorg-15.0.7"

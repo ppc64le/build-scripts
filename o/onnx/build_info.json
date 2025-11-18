@@ -1,8 +1,8 @@
 {
-    "maintainer": "vinodk99",
+    "maintainer": "SakshiJain0302",
     "package_name": "onnx",
     "github_url": "https://github.com/onnx/onnx",
-    "version": "v1.18.0",
+    "version": "v1.19.0",
     "wheel_build" : true,
     "package_dir": "o/onnx",
     "default_branch": "main",

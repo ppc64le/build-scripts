@@ -209,7 +209,7 @@ mkdir -p build-cpp
 pushd build-cpp
 cmake ${CMAKE_ARGS} ..  \
       -GNinja \
-      -DBUILD_SHARED_LIBS=OFF \
+      -DBUILD_SHARED_LIBS=ON \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_INSTALL_PREFIX=$GRPC_PREFIX \
       -DgRPC_CARES_PROVIDER="package" \

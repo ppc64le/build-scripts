@@ -120,8 +120,8 @@ jobs:
      
        
       - name: Build Package
-        #env:
-          #CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.CURRENCY_SERVICE_ID_API_KEY }}
+        env:
+          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
         run: |
           echo "Sourcing variable.sh and scanner-env.sh..........................................."
           source package-cache/variable.sh
@@ -147,8 +147,8 @@ jobs:
           bash ../gha-script/pre_process.sh
           cd $GITHUB_WORKSPACE
           gzip build_log
-          #chmod +x ./gha-script/upload-scripts/upload_file.sh
-          #bash ./gha-script/upload-scripts/upload_file.sh build_log.gz
+          chmod +x ./gha-script/upload-scripts/upload_file.sh
+          bash ./gha-script/upload-scripts/upload_file.sh build_log.gz
 
 
 
@@ -186,6 +186,7 @@ jobs:
           - python-version: "3.13"
             allow-failure: true
     env:
+      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
       PYTHON_VERSION: ${{ matrix.python-version }}
       PACKAGE_NAME: ${{ inputs.package_name }}
       VERSION: ${{ inputs.version }}
@@ -224,12 +225,13 @@ jobs:
           
         continue-on-error: ${{ matrix.allow-failure }}
 
-      # - name: Upload wheel artifact using custom script
-      #   run: |
-      #     WHEEL_FILE=*.whl
-      #     chmod +x ./gha-script/upload-scripts/upload_wheel.sh
-      #     bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE
-      #   continue-on-error: ${{ matrix.allow-failure }}
+      - name: Upload wheel artifact using custom script
+        run: |
+          sudo chmod a+r *.whl
+          WHEEL_FILE=*.whl
+          chmod +x ./gha-script/upload-scripts/upload_wheel.sh
+          bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+        continue-on-error: ${{ matrix.allow-failure }}
 
       
   source_scanner:
@@ -298,14 +300,18 @@ jobs:
           mv package-cache/grype_source_sbom_results.json package-cache/grype_source_vulnerabilities_results.json source_grype
 
       - name: Upload Scanner Results
+        env:
+           GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
         run: |
           mkdir source
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
           find source_trivy -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
           find source_syft -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
           find source_grype -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
           tar cvzf source_scanner.tar.gz source
-          #chmod +x ./gha-script/upload-scripts/upload_file.sh
-          #bash ./gha-script/upload-scripts/upload_file.sh source_scanner.tar.gz
+          chmod +x ./gha-script/upload-scripts/upload_file.sh
+          bash ./gha-script/upload-scripts/upload_file.sh source_scanner.tar.gz
 
   build_docker:
     needs: build_info 
@@ -332,9 +338,13 @@ jobs:
           docker images
           
       - name: Upload Docker Image
+        env:
+          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
         run: |
-          #chmod +x ./gha-script/upload-scripts/upload_docker_image.sh
-          #bash ./gha-script/upload-scripts/upload_docker_image.sh
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+          chmod +x ./gha-script/upload-scripts/upload_docker_image.sh
+          bash ./gha-script/upload-scripts/upload_docker_image.sh
 
       - name: Upload package-cache with image.tar
         uses: actions/upload-artifact@v4
@@ -397,11 +407,64 @@ jobs:
           mv grype_image_sbom_results.json grype_image_vulnerabilities_results.json image_grype
 
       - name: Upload Image Scanner Results
+        env:
+          GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
         run: |
           mkdir image
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
           find image_trivy -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
           find image_syft -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
           find image_grype -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
           tar cvzf image_scanner.tar.gz image
-          #chmod +x ./gha-script/upload-scripts/upload_file.sh
-          #bash ./gha-script/upload-scripts/upload_file.sh image_scanner.tar.gz
+          chmod +x ./gha-script/upload-scripts/upload_file.sh
+          bash ./gha-script/upload-scripts/upload_file.sh image_scanner.tar.gz
+
+  final_summary:
+      name: Final Summary Stage
+      needs: [build, source_scanner]
+      runs-on: ubuntu-24.04-ppc64le-p10
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+        - name: Download package-cache
+          uses: actions/download-artifact@v4
+          with:
+            name: package-cache
+            path: package-cache
+        
+        - name: Create and activate venv
+          run: |
+            python -m venv venv
+            source venv/bin/activate
+            python -m pip install --upgrade pip
+            pip install requests deprecated xlsxwriter packaging
+            
+            # Export environment variables
+            export PYTHONPATH=$(pwd):$(pwd)/process_bom/
+
+        - name: Summarize build results
+          env : 
+            PACKAGE_NAME: ${{ inputs.package_name }}
+            VERSION: ${{ inputs.version }}
+            IAM_WRITER_API_KEY: ${{ secrets.IAM_WRITER_API_KEY }}
+            SERVICE_INSTANCE_ID: ${{ secrets.SERVICE_INSTANCE_ID }}
+          run: |
+                echo "Sourcing variable.sh and scanner-env.sh..........................................."
+                chmod +x package-cache/variable.sh
+                chmod +x package-cache/scanner-env.sh
+                source package-cache/variable.sh
+                source package-cache/scanner-env.sh
+                echo "===== variable.sh ====="
+                cat package-cache/variable.sh
+                echo "===== scanner-env.sh ====="
+                cat package-cache/scanner-env.sh
+                echo "-------------package name : ${PACKAGE_NAME}--------------------"
+                echo "-------------version : ${VERSION}--------------------"
+                pwd
+                chmod +x process_bom/*.py || true
+                # Export environment variables
+                export PYTHONPATH="/tmp/_actions-runner-working-dir/build-scripts/build-scripts:/tmp/_actions-runner-working-dir/build-scripts/build-scripts/process_bom"
+                python -m process_bom.run_currency_processor
+
+          

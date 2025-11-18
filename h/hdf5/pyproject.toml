@@ -12,7 +12,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "hdf5"
 version = "{PACKAGE_VERSION}"
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 
 #One line description
 description = "Provides hdf5"

@@ -1,0 +1,16 @@
+{
+  "maintainer": "aastha-sharma2",
+  "package_name": "zope-interface",
+  "github_url": "https://github.com/zopefoundation/zope.interface.git",
+  "version": "8.0",
+  "default_branch": "master",
+  "package_dir": "z/zope-interface",
+  "wheel_build" : "true",
+  "build_script": "zope-interface_ubi_9.6.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "false",
+   "*": {
+    "build_script": "zope-interface_ubi_9.6.sh"
+  }
+}

@@ -1,5 +1,5 @@
 {
-   "maintainer": "vinodk99",
+   "maintainer": "SakshiJain0302",
    "package_name": "scikit-learn",
    "github_url": "https://github.com/scikit-learn/scikit-learn.git",
    "version": "1.6.1",
@@ -22,7 +22,7 @@
    "1.3.0":{
      "build_script": "scikit-learn_1.1.1_ubi_9.3.sh"
    },
-   "1.7.0":{
+   "1.7.*":{
      "build_script": "scikit-learn_1.7.0_ubi_9.3.sh"
    },
    "*": {

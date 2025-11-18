@@ -25,7 +25,7 @@ PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
 PACKAGE_URL=https://github.com/${PACKAGE_ORG}/${PACKAGE_NAME}
 SCRIPT_PACKAGE_VERSION_WO_LEADING_V="${SCRIPT_PACKAGE_VERSION:1}"
 
-#Install dependencies
+# Install dependencies
 yum install -y \
     cmake \
     libatomic \
@@ -53,7 +53,6 @@ yum install -y \
     cargo \
     diffutils \
     ninja-build \
-    libxcrypt-compat \
     sudo
 
 export JAVA_HOME=$(compgen -G '/usr/lib/jvm/java-21-openjdk-*')  
@@ -73,12 +72,12 @@ useradd envoy
 sudo -u envoy -- bash <<EOF
 set -ex
 
-#Download Envoy source code
+# Download Envoy source code
 cd $wdir
 git clone ${PACKAGE_URL}
 cd ${PACKAGE_NAME} && git checkout ${PACKAGE_VERSION}
 
-#Build and setup bazel
+# Build and setup bazel
 cd $wdir
 if [ -z "$(ls -A $wdir/bazel)" ]; then
     mkdir bazel
@@ -91,7 +90,7 @@ if [ -z "$(ls -A $wdir/bazel)" ]; then
 fi
 export PATH=$PATH:$wdir/bazel/output
 
-#Setup clang
+# Setup clang
 cd $wdir
 if [ -z "$(ls -A $wdir/clang+llvm-17.0.6-powerpc64le-linux-rhel-8.8)" ]; then
     wget https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/clang+llvm-17.0.6-powerpc64le-linux-rhel-8.8.tar.xz
@@ -100,10 +99,11 @@ if [ -z "$(ls -A $wdir/clang+llvm-17.0.6-powerpc64le-linux-rhel-8.8)" ]; then
 fi
 export PATH=/home/envoy/clang+llvm-17.0.6-powerpc64le-linux-rhel-8.8/bin:$PATH
 
-#installing cargo and cross
-curl https://sh.rustup.rs -sSf | sh -s -- -y && source ~/.cargo/env
+# installing cargo and cross
+#curl https://sh.rustup.rs -sSf | sh -s -- -y && source ~/.cargo/env
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && source ~/.cargo/env
 cargo install cross --version 0.2.5
-export PATH=$PATH:$wdir/.cargo/bin
+export PATH="$wdir/.cargo/bin:$PATH"
 
 # Building cargo-bazel targeting Powerpc64le
 cd $wdir
@@ -114,13 +114,14 @@ if [ -z "$(ls -A $wdir/rules_rust)" ]; then
 	cd crate_universe
 	#cross build --release --locked --bin cargo-bazel --target=powerpc64le-unknown-linux-gnu
 	rustup target add powerpc64le-unknown-linux-gnu
+	cargo update
 	cargo build --release --locked --bin cargo-bazel
 	echo "cargo-bazel build successful!"
 fi
 export CARGO_BAZEL_GENERATOR_URL=file://$wdir/rules_rust/crate_universe/target/release/cargo-bazel
 export CARGO_BAZEL_REPIN=true
 
-#Build Envoy-openssl
+# Build Envoy-openssl
 ret=0
 cd $wdir/${PACKAGE_NAME}
 export PATH=$PATH:$wdir/bazel/output

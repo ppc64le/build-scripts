@@ -97,7 +97,7 @@ export CXX_COMPILER=$(which g++)
 
 #installing libprotobuf
 cd $CURRENT_DIR
-git clone https://github.com/protocolbuffers/protobuf -b v4.25.3
+git clone https://github.com/protocolbuffers/protobuf -b v4.25.8
 cd protobuf
 git submodule update --init --recursive
 #Create build directory

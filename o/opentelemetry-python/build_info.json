@@ -1,13 +1,16 @@
 {
-  "maintainer": "vinodk99",
+  "maintainer": "ramnathnayak-ibm",
   "package_name": "opentelemetry-python",
   "github_url": "https://github.com/open-telemetry/opentelemetry-python",
-  "version": "v1.15.0",
+  "version": "v1.37.0",
   "default_branch": "main",
-  "build_script": "opentelemetry-python_ubi_8.5.sh",
+  "build_script": "opentelemetry-python_ubi_9.6.sh",
   "package_dir": "o/opentelemetry-python",
   "docker_build": false,
-  "v1.15.0": {
-    "build_script": "opentelemetry-python_ubi_8.5.sh"
+  "wheel_build": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+    "build_script": "opentelemetry-python_ubi_9.6.sh"
   }
 }

@@ -1,4 +1,4 @@
-#!bin/bash -e
+#!/bin/bash -e
 #
 # -----------------------------------------------------------------------------
 #
@@ -210,14 +210,20 @@ git submodule update --init
 python3.12 setup.py install --h5plugin --zstd
 cd ..
 
-
 # libjpeg-turbo 3.1.1
 git clone https://github.com/libjpeg-turbo/libjpeg-turbo.git
 cd libjpeg-turbo 
 git checkout 3.1.1
-cmake -B build -DCMAKE_INSTALL_PREFIX=/usr/local
-cmake --build build --target install
-cd ..
+
+# Build 12-bit version
+mkdir build12 && cd build12
+cmake .. -DWITH_12BIT=1 -DCMAKE_INSTALL_PREFIX=/usr/local
+make -j$(nproc)
+make install
+cd ../..
+
+echo "/usr/local/lib64" > /etc/ld.so.conf.d/libjpeg-turbo.conf
+ldconfig
 
 # -------------------------------------------------------------------------
 # Build imagecodecs
