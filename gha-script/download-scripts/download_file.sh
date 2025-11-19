@@ -9,7 +9,7 @@ if [[ $(echo "$token_request" | jq -r '.errorCode') == "null" ]]; then
     token=$(echo "$token_request" | jq -r '.access_token')
     echo "Downloading $1 from COS..."
     curl -X GET -H "Authorization: bearer $token" \
-      -o $1 "https://s3.us.cloud-object-storage.appdomain.cloud/ose-power-toolci-bucket-production/$PACKAGE_NAME/$VERSION/$1"
+      -o $1 "https://s3.us.cloud-object-storage.appdomain.cloud/ose-power-toolci-bucket-stag/$PACKAGE_NAME/$VERSION/$1"
     echo "Download completed: $1"
 else
     echo "Error: Token request failed. Response: $token_request"
