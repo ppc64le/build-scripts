@@ -14,7 +14,7 @@ if [[ $(echo "$token_request" | jq -r '.errorCode') == "null" ]]; then
     
     # curl command for uploading the file
     #response=$(curl -X PUT -H "Authorization: bearer $token" -H "Content-Type: application/gzip" -T $1 "https://s3.us.cloud-object-storage.appdomain.cloud/ose-power-toolci-bucket-prod/$PACKAGE_NAME/$VERSION/$1")
-    response=$(curl -X PUT -H "Authorization: bearer $token" -H "Content-Type: application/gzip" -T $1 "https://s3.us.cloud-object-storage.appdomain.cloud/ose-power-toolci-bucket-production/$PACKAGE_NAME/$VERSION/$1")
+    response=$(curl -X PUT -H "Authorization: bearer $token" -H "Content-Type: application/gzip" -T $1 "https://s3.us.cloud-object-storage.appdomain.cloud/ose-power-toolci-bucket-stag/$PACKAGE_NAME/$VERSION/$1")
 
     # Check if the PUT request was successful based on the absence of an <Error> block
     if ! echo "$response" | grep -q "<Error>"; then
