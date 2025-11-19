@@ -29,7 +29,7 @@ MAX_JOBS=${MAX_JOBS:-$(nproc)}
 VERSION=${PACKAGE_VERSION#v}
 PYTHON_VERSION=${2:-3.11}
 PYTORCH_VERSION=${3:-v2.8.0}
-
+SCRIPT_DIR=$(pwd)
 CURRENT_DIR=/opt
 
 yum install -y git make gcc gcc-c++ gcc-gfortran wget python$PYTHON_VERSION python$PYTHON_VERSION-devel python$PYTHON_VERSION-pip pkgconfig atlas libjpeg-devel openblas-devel
@@ -556,9 +556,10 @@ echo "------------------Building torchvision------------------------"
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchvision/0001-Exclude-source-that-has-commercial-license.patch
+
+#wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchvision/0001-Exclude-source-that-has-commercial-license-code.patch
 # Below patch is needed to exclude the models that come under SWAG license (CC-BY-NC-4.0)
-git apply 0001-Exclude-source-that-has-commercial-license.patch
+git apply $SCRIPT_DIR/0001-Exclude-source-that-has-commercial-license-code.patch
 
 sed -i '/elif sha != "Unknown":/,+1d' setup.py
 
