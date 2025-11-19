@@ -11,7 +11,7 @@ token_request=$(curl -s -X POST https://iam.cloud.ibm.com/identity/token \
  
 if [[ $(echo "$token_request" | jq -r '.errorCode') == "null" ]]; then
     token=$(echo "$token_request" | jq -r '.access_token')
-    bucket_url="https://s3.us.cloud-object-storage.appdomain.cloud/ose-power-artifacts-stag"
+    bucket_url="https://s3.us.cloud-object-storage.appdomain.cloud/ose-power-artifacts-production"
  
     echo "Fetching wheel list from COS..."
     echo "Checking prefix: $PACKAGE_NAME/$VERSION/"
