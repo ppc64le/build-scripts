@@ -30,6 +30,8 @@ OPENCV_PYTHON_VERSION=86 #4.11.0.86
 PYPDFIUM2_VERSION=35a88d21450eb395e023ca280c9f4c855ec9684d
 TORCH7_VERSION=814ea4a
 TORCHVISION_VERSION=v0.16.0
+TREE_SITTER_VERSION=v0.23.2
+ABSEIL_VERSION=20230802.2
 SCRIPT_PATH=$(dirname $(realpath $0))
 RUNTESTS=1
 BUILD_HOME="$(pwd)"
@@ -199,6 +201,29 @@ git apply ./0001-Exclude-source-that-has-commercial-license.patch
 python3 setup.py bdist_wheel
 pip3 install dist/*.whl
 
+# -------------------------------------
+# Build and Install tree-sitter headers
+# -------------------------------------
+cd $BUILD_HOME
+git clone https://github.com/tree-sitter/tree-sitter-c
+cd tree-sitter-c
+git checkout $TREE_SITTER_VERSION
+mkdir -p /usr/include/tree_sitter/
+cp src/tree_sitter/*.h /usr/include/tree_sitter/
+
+# ------------------------
+# Build and Install abseil
+# ------------------------
+cd $BUILD_HOME
+git clone https://github.com/abseil/abseil-cpp
+cd abseil-cpp
+git checkout $ABSEIL_VERSION
+mkdir build
+cd build
+cmake -DBUILD_SHARED_LIBS=ON -DABSL_BUILD_TESTING=OFF ..
+make install
+ldconfig
+
 # ---------------------------
 # Clone and Prepare Repository
 # ---------------------------
@@ -219,8 +244,12 @@ if [ $ret -ne 0 ]; then
 	exit 1
 fi
 export DOCLING_WHEEL=${BUILD_HOME}/${PACKAGE_NAME}/dist/${PACKAGE_NAME}-${PACKAGE_VERSION_WO_LEADING_V}-py3-none-any.whl
-pip3 install scikit-image==0.19.3 "numpy<2.0" tesserocr openai-whisper==20230117
-pip3 install ${DOCLING_WHEEL}
+#Install docling wheel and its dependencies
+pip install wheel==0.45.1 hf_xet==1.2.0 huggingface_hub==1.1.4
+pip install --prefer-binary --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux/ \
+        tree-sitter-python==0.23.2 tree_sitter_c==0.23.2 "numpy<2.0" tesserocr==2.9.1 openai-whisper==20230117 ${DOCLING_WHEEL}
+#pip3 install scikit-image==0.19.3 "numpy<2.0" tesserocr openai-whisper==20230117
+#pip3 install ${DOCLING_WHEEL}
 
 # ---------------------------
 # Skip Tests?
