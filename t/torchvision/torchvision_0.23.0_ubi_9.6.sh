@@ -27,7 +27,7 @@ PACKAGE_URL=https://github.com/pytorch/vision.git
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 MAX_JOBS=${MAX_JOBS:-$(nproc)}
 VERSION=${PACKAGE_VERSION#v}
-PYTHON_VERSION=${2:-3.11}
+PYTHON_VERSION=${2:-3.12}
 PYTORCH_VERSION=${3:-v2.8.0}
 SCRIPT=$(readlink -f $0)
 SCRIPT_DIR=$(dirname $SCRIPT)
