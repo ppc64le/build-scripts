@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : torchaudio
-# Version          : v2.7.1
+# Version          : v2.8.0
 # Source repo      : https://github.com/pytorch/audio.git
 # Tested on        : UBI:9.3
 # Language         : Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Shivansh Sharma <shivansh.s1@ibm.com>
+# Maintainer       : Simran Sirsat <Simran.Sirsat@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -23,7 +23,7 @@ set -ex
 # Variables
 PACKAGE_NAME=audio
 PACKAGE_URL=https://github.com/pytorch/audio.git
-PACKAGE_VERSION=${1:-v2.7.1}
+PACKAGE_VERSION=${1:-v2.8.0}
 PACKAGE_DIR=./audio
 SCRIPT_DIR=$(pwd)
 
@@ -293,7 +293,7 @@ git apply torchaudio_${PACKAGE_VERSION}.patch
 
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchaudio/0001-Excluded-source-that-has-commercial-license.patch
 # Below patch excludes the source files that has commercial license
-git apply 0001-Excluded-source-that-has-commercial-license.patch
+git apply $SCRIPT_DIR/0001-Exclude-source-that-has-commercial-license-code.patch
 echo "-----------------------Applied patch successfully---------------------------------------"
 
 SRC_DIR=$(pwd)
