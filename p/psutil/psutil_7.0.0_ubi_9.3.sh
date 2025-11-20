@@ -32,7 +32,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Install additional dependencies
-python3 -m pip install setuptools wheel pytest overlay
+python3 -m pip install setuptools wheel pytest overlay pytest-instafail
 
 #install
 if ! python3 -m pip install -e . ; then
