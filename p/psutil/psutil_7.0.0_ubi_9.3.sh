@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : psutil
-# Version          : 7.0.0
+# Version          : 7.1.3
 # Source repo      : https://github.com/giampaolo/psutil.git
 # Tested on        : UBI:9.3
 # Language         : Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Shivansh Sharma <shivansh.s1@ibm.com>
+# Maintainer       : Lenzie Camilo <Lenzie.Camilo3@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -20,7 +20,7 @@
 
 # Variables
 PACKAGE_NAME=psutil
-PACKAGE_VERSION=${1:-release-7.0.0}
+PACKAGE_VERSION=${1:-release-7.1.3}
 PACKAGE_URL=https://github.com/giampaolo/psutil.git
 
 # Install necessary system dependencies
@@ -32,7 +32,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Install additional dependencies
-python3 -m pip install setuptools wheel pytest overlay
+python3 -m pip install setuptools wheel pytest overlay pytest-instafail
 
 #install
 if ! python3 -m pip install -e . ; then

@@ -1,8 +1,8 @@
 {
-  "maintainer": "shivansh-ibm",
+  "maintainer": "LenzieCamiloIBM",
   "package_name": "psutil",
   "github_url": "https://github.com/giampaolo/psutil.git",
-  "version": "release-7.0.0",
+  "version": "release-7.1.3",
   "wheel_build" : true,
   "package_dir": "p/psutil",
   "default_branch": "master",
