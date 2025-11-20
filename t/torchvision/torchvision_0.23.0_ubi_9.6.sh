@@ -29,7 +29,8 @@ MAX_JOBS=${MAX_JOBS:-$(nproc)}
 VERSION=${PACKAGE_VERSION#v}
 PYTHON_VERSION=${2:-3.11}
 PYTORCH_VERSION=${3:-v2.8.0}
-SCRIPT_DIR=$(pwd)
+SCRIPT=$(readlink -f $0)
+SCRIPT_DIR=$(dirname $SCRIPT)
 CURRENT_DIR=/opt
 
 yum install -y git make gcc gcc-c++ gcc-gfortran wget python$PYTHON_VERSION python$PYTHON_VERSION-devel python$PYTHON_VERSION-pip pkgconfig atlas libjpeg-devel openblas-devel
