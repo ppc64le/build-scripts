@@ -987,6 +987,18 @@ export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 echo "-----------------installed scikit-image----------------------"
 
+echo "-----------------installing tree-sitter-java----------------------"
+git clone https://github.com/tree-sitter/tree-sitter-java.git
+cd tree-sitter-java/
+pip3.12 install .
+cd $CURRENT_DIR
+
+echo "-----------------installing tree-sitter-typescript----------------------"
+git clone https://github.com/tree-sitter/tree-sitter-typescript.git
+cd tree-sitter-typescript/
+pip3.12 install .
+cd $CURRENT_DIR
+
 echo "-----------------installing docling----------------------"
 git clone https://github.com/docling-project/docling
 cd docling
