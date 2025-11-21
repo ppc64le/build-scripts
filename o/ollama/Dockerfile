@@ -1,5 +1,5 @@
 # Use UBI 9.5 as base image
-FROM registry.access.redhat.com/ubi9/ubi:9.5
+FROM registry.access.redhat.com/ubi9/ubi:9.6
 
 # Set working directory
 WORKDIR /opt/ollama
