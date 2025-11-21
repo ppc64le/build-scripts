@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : SearXNG
-# Version       : Master / 576c8ca99cde1a31e442ef61965e77c82349079b (commitID)
+# Version       : 576c8ca99cde1a31e442ef61965e77c82349079b
 # Source repo   : https://github.com/searxng/searxng.git
 # Tested on     : UBI:9.5
 # Language      : Python
@@ -21,7 +21,7 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 PACKAGE_NAME=searxng
-PACKAGE_VERSION=${1:-master}
+PACKAGE_VERSION=${1:-576c8ca99cde1a31e442ef61965e77c82349079b}
 PACKAGE_URL=https://github.com/searxng/searxng.git
 
 # Set environment variables
@@ -69,9 +69,9 @@ cd /tmp && \
 
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
-# Clone SearXNG repository
+# Clone SearXNG repository and checkout sha256
 git clone $PACKAGE_URL  && cd $PACKAGE_NAME
-
+git checkout 576c8ca99cde1a31e442ef61965e77c82349079b
 if ! (python3 -m pip install --upgrade pip setuptools wheel && python3 -m pip install msgspec uvloop orjson pyyaml requests uwsgi pybind11 httpx && python3 -m pip install -e . --use-pep517 --no-build-isolation) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
