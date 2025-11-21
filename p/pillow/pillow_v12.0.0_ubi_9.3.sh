@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : pillow
-# Version       : 11.0.0
+# Version       : 12.0.0
 # Source repo   : https://github.com/python-pillow/Pillow
 # Tested on     : UBI:9.3
 # Language      : Python, C
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Haritha Nagothu <haritha.nagothu2@ibm.com>
+# Maintainer    : Shivansh Sharma <Shivansh.S1@ibm.com>
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
@@ -19,7 +19,7 @@
 
 PACKAGE_NAME=pillow
 PACKAGE_DIR=Pillow
-PACKAGE_VERSION=${1:-11.0.0}
+PACKAGE_VERSION=${1:-12.0.0}
 PACKAGE_URL=https://github.com/python-pillow/Pillow/
 
 # install core dependencies
@@ -28,7 +28,7 @@ export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 
 # install pillow's minimum dependencies
-yum install -y zlib zlib-devel libjpeg-turbo libjpeg-turbo-devel wget
+yum install -y zlib zlib-devel libjpeg-turbo libjpeg-turbo-devel wget freetype-devel
 
 
 echo " ------------------------------------------ Openblas Installing ------------------------------------------ "
