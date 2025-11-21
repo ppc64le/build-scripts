@@ -23,7 +23,7 @@ PACKAGE_VERSION=${1:-12.0.0}
 PACKAGE_URL=https://github.com/python-pillow/Pillow/
 
 # install core dependencies
-yum install -y python3 python3-pip python3-devel git  gcc-toolset-13 
+yum install -y python3.12 python3.12-pip python3.12-devel git  gcc-toolset-13 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 
@@ -102,7 +102,7 @@ echo " ------------------------------------------ Openblas Successfully Installe
 cd ..
 
 # install build tools for wheel generation
-pip install --upgrade pip setuptools wheel pytest numpy==2.0.2
+python3.12 -m pip install --upgrade pip setuptools wheel pytest numpy==2.0.2
 
 # clone source repository
 git clone $PACKAGE_URL
@@ -110,7 +110,7 @@ cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 git submodule update --init
 
-if ! pip install . ; then
+if ! python3.12 -m pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
