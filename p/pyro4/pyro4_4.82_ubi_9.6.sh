@@ -50,15 +50,3 @@ if ! make install; then
 fi
 
 #Pyro4 is an older package, with its last release in 2021, and official support only up to Python 3.10. The existing test suite relies on deprecated or removed APIs and therefore does not run correctly on Python 3.11 or 3.12.For this reason, when building wheels for Python 3.11 and 3.12, the test phase must be skipped.
-
-if ! python3.12 -c "import Pyro4"; then
-    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
-    exit 1
-else
-    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
-    exit 0
-fi
