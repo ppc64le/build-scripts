@@ -242,7 +242,7 @@ jobs:
     runs-on: ubuntu-24.04-ppc64le-p10
     steps:
       - uses: actions/checkout@v4
-      - name: Download consolidated package-cache
+      - name: Download package-cache
         uses: actions/download-artifact@v4
         with:
           name: package-cache
@@ -478,7 +478,6 @@ jobs:
       name: Final Summary Stage
       needs: [build, source_scanner]
       runs-on: ubuntu-24.04-ppc64le-p10
-      if: always()
       steps:
         - name: Checkout code
           uses: actions/checkout@v4
