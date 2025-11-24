@@ -1,14 +1,14 @@
 #!/bin/bash 
 # -----------------------------------------------------------------------------
 #
-# Package	: Pyro4
-# Version	: 4.82
+# Package	    : Pyro4
+# Version	    : 4.82
 # Source repo	: https://github.com/irmen/Pyro4
-# Tested on	: UBI:9.6
+# Tested on	    : UBI:9.6
 # Language      : python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Rosman Cariño <rcarino@ibm.com>
+# Maintainer	: Aastha Sharma <aastha.sharma4@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
