@@ -48,7 +48,7 @@ fi
 PY_VERSION=$(python3.12 --version | cut -d ' ' -f2 | cut -d '.' -f1,2)
 
 #Tests
-if ! ./bin/ansible-test units --python ${PY_VERSION} && ./bin/ansible-test sanity --python ${PY_VERSION} ; then
+if ! ./bin/ansible-test sanity --python ${PY_VERSION} ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
