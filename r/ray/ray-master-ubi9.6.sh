@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : ray
-# Version       : master(decdb4bfc5497d2eb5a77f)
+# Version       : master(f2a7a94a75b007a801ee5a2cf)
 # Source repo   : https://github.com/ray-project/ray
 # Tested on     : UBI 9.6
 # Language      : C++, Python
@@ -91,7 +91,7 @@ cd python/
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
 export GRPC_PYTHON_BUILD_SYSTEM_ZLIB=1
 export RAY_INSTALL_CPP=1
-export BAZEL_ARGS="--define=USE_OPENSSL=1 --jobs=10"
+export BAZEL_ARGS="--define=USE_OPENSSL=1 --jobs=10 --define=SKIP_RULES_PERL=1 --strategy=CppCompile=standalone"
 export RAY_INSTALL_JAVA=1
 python3 setup.py build
 python3 setup.py bdist_wheel
@@ -112,4 +112,4 @@ pip install ray-*-linux_ppc64le.whl
 #bazel test --jobs=10 //cpp:simple_kv_store --cxxopt='-Wno-error=maybe-uninitialized' --define=USE_OPENSSL=1|| true
 #bazel test --jobs=10 //cpp:cluster_mode_xlang_test --cxxopt='-Wno-error=maybe-uninitialized' --define=USE_OPENSSL=1|| true
 #bazel test --jobs=10 //cpp:metric_example  --cxxopt='-Wno-error=maybe-uninitialized' --define=USE_OPENSSL=1|| true
-#bazel test --jobs=10 //src/ray/object_manager/plasma/tests:mutable_object_test --cxxopt='-Wno-error=maybe-uninitialized' --define=USE_OPENSSL=1|| true
+#bazel test --jobs=10 //src/ray/gcs_rpc_client/tests:gcs_client_reconnection_test --cxxopt='-Wno-error=maybe-uninitialized' --define=USE_OPENSSL=1|| true
