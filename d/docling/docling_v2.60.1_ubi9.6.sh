@@ -57,20 +57,26 @@ for i in "$@"; do
   esac
 done
 
+# ----------------------
+# Install required repos
+# ----------------------
+echo "Configuring package repositories..."
+yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+ret=0
+dnf config-manager --set-enabled codeready-builder-for-rhel-9-$(arch)-rpms || ret=$?
+if [ $ret -ne 0 ]; then
+        yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
+        yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream//ppc64le/os
+        yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os
+        rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official-SHA256
+	rpm -e --nodeps openssl-fips-provider-so-3.0.7-6.el9_5.ppc64le
+fi
+
 # ---------------------------
 # Dependency Installation
 # ---------------------------
 echo "Installing required packages..."
-yum install -y git wget gcc gcc-c++ python3-devel pip python3-numpy zlib-devel libjpeg-devel ninja-build libicu-devel lcms2-devel glib2-devel freetype-devel gfortran openblas-devel libxml2-devel libxslt-devel ncurses-devel
-
-echo "Configuring package repositories..."
-yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
-yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream//ppc64le/os
-yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os
-rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official-SHA256
-yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
-#dnf config-manager --set-enabled codeready-builder-for-rhel-9-$(arch)-rpms && \
-yum install -y gn libtiff-devel geos-devel tesseract-devel spatialindex-devel rust cargo llvm16-devel ffmpeg-free ffmpeg-free-devel
+yum install -y git wget gcc gcc-c++ python3-devel pip python3-numpy zlib-devel libjpeg-devel ninja-build libicu-devel lcms2-devel glib2-devel freetype-devel gfortran openblas-devel libxml2-devel libxslt-devel ncurses-devel gn libtiff-devel spatialindex-devel rust cargo llvm16-devel geos-devel tesseract-devel ffmpeg-free ffmpeg-free-devel
 export LLVM_CONFIG=/usr/lib64/llvm16/bin/llvm-config
 pip3 install build pytest numpy
 
@@ -248,8 +254,6 @@ export DOCLING_WHEEL=${BUILD_HOME}/${PACKAGE_NAME}/dist/${PACKAGE_NAME}-${PACKAG
 pip install wheel==0.45.1 hf_xet==1.2.0 huggingface_hub==1.1.4
 pip install --prefer-binary --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux/ \
         tree-sitter-python==0.23.2 tree_sitter_c==0.23.2 "numpy<2.0" tesserocr==2.9.1 openai-whisper==20230117 ${DOCLING_WHEEL}
-#pip3 install scikit-image==0.19.3 "numpy<2.0" tesserocr openai-whisper==20230117
-#pip3 install ${DOCLING_WHEEL}
 
 # ---------------------------
 # Skip Tests?

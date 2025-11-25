@@ -147,12 +147,7 @@ COPY --from=build /tmp/abseil-cpp /tmp/abseil-cpp/
 COPY --from=build /usr/local/cmake /usr/local/cmake/
 
 #Install required repos
-RUN yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os && \
-    yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream//ppc64le/os && \
-    yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os && \
-    rpm --import https://centos.org/keys/RPM-GPG-KEY-CentOS-Official && \
-    dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
-    rpm -e --nodeps openssl-fips-provider-so-3.0.7-6.el9_5.ppc64le
+RUN dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 
 #Install dependecies
 RUN yum install -y --allowerasing python3.11 python3.11-pip python3.11-devel mesa-libGL glib2 curl wget git procps freetype libicu && \
