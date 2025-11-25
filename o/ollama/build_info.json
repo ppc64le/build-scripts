@@ -1,6 +1,6 @@
 {
   "maintainer": "shalinib-ibm",
-  "package_name": "ollama_python_package",
+  "package_name": "ollama",
   "github_url": "https://github.com/ollama/ollama",
   "version": "0.12.10",
   "wheel_build": true,
