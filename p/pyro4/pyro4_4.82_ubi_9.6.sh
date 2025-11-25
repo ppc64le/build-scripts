@@ -38,9 +38,9 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 
-pip3.12 install wheel
-pip3.12 install -r requirements.txt
-pip3.12 install -r test_requirements.txt
+python3.12 -m pip install wheel
+python3.12 -m pip install -r requirements.txt
+python3.12 -m pip install -r test_requirements.txt
 
 if ! make install; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
