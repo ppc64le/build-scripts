@@ -46,6 +46,8 @@ fi
 export PYTHONWARNINGS=always
 export PYTHONUNBUFFERED=1
 export PSUTIL_DEBUG=1
+export PSUTIL_TESTING=1
+export PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
 export PYTHONPATH=$(pwd):$PYTHONPATH
 
 #run tests skipping and deselecting few tests failing on ppc64le and x86
