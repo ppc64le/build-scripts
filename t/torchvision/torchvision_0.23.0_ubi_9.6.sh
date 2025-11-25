@@ -27,17 +27,16 @@ PACKAGE_URL=https://github.com/pytorch/vision.git
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 MAX_JOBS=${MAX_JOBS:-$(nproc)}
 VERSION=${PACKAGE_VERSION#v}
-PYTHON_VERSION=${2:-3.12}
 PYTORCH_VERSION=${3:-v2.8.0}
 SCRIPT=$(readlink -f $0)
 SCRIPT_DIR=$(dirname $SCRIPT)
 CURRENT_DIR=/opt
 
-yum install -y git make gcc gcc-c++ gcc-gfortran wget python$PYTHON_VERSION python$PYTHON_VERSION-devel python$PYTHON_VERSION-pip pkgconfig atlas libjpeg-devel openblas-devel
+yum install -y git make gcc gcc-c++ gcc-gfortran wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas libjpeg-devel openblas-devel
 yum install gcc-toolset-13 -y
 yum install -y make libtool  xz xz-devel zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build gcc-toolset-13  pkg-config  gmp-devel  freetype-devel
 
-ln -sf /usr/bin/pip$PYTHON_VERSION /usr/bin/pip3 && ln -sf /usr/bin/python$PYTHON_VERSION /usr/bin/python3 && ln -sf /usr/bin/pip$PYTHON_VERSION /usr/bin/pip && ln -sf /usr/bin/python$PYTHON_VERSION /usr/bin/python
+ln -sf /usr/bin/pip3.12 /usr/bin/pip3 && ln -sf /usr/bin/python3.12 /usr/bin/python3 && ln -sf /usr/bin/pip3.12 /usr/bin/pip && ln -sf /usr/bin/python3.12 /usr/bin/python
 
 dnf install -y gcc-toolset-13-libatomic-devel
 
@@ -577,7 +576,7 @@ cmake ..
 make install
 
 cp libtorchvision.so $CURRENT_DIR/vision/torchvision/libtorchvision.so
-cp libtorchvision.so /usr/local/lib/python$PYTHON_VERSION/site-packages/torch/share/cmake/Torch
+cp libtorchvision.so /usr/local/lib64/python3.12/site-packages/torch/share/cmake/Torch
 cp libtorchvision.so /usr/local/lib64
 cd $CURRENT_DIR/vision
 python3 setup.py bdist_wheel --dist-dir $CURRENT_DIR
