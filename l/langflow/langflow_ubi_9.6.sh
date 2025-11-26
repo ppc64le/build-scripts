@@ -8,7 +8,7 @@
 # Travis-Check  : True
 # Language      : Python
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Aastha Sharma <aastha.sharma4@ibm.com>
+# Maintainer    : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on the given
 # ==========  platform using the mentioned version of the package.
@@ -57,6 +57,7 @@ pip3.12 install .
 cd $CURRENT_DIR
 echo " ------------------------------ Swig Installed Successfully ------------------------------ "
 
+
 echo "----------------------bison installing---------------------------------"
 wget https://ftp.gnu.org/gnu/bison/bison-3.8.2.tar.gz
 tar -xvf bison-3.8.2.tar.gz
@@ -82,13 +83,16 @@ make install
 cd $CURRENT_DIR
 echo " ------------------------------ gfags Installed Successfully ------------------------------ "
 
-echo "--------------------- faiss installing --------------------------"
+echo "--------------------- FAISS installing --------------------------"
+cd $CURRENT_DIR
 git clone https://github.com/facebookresearch/faiss.git
 cd faiss
 git checkout v1.9.0
+
+# Prepare build directory
 rm -rf build && mkdir build && cd build
 
-# Setup compiler
+# Setup compiler and environment variables
 export LD_LIBRARY_PATH=/usr/lib64:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 export CC=$(which gcc)
@@ -99,26 +103,27 @@ export Python3_EXECUTABLE=$(which python3.12)
 export Python3_INCLUDE_DIR=$(python3.12 -c "from sysconfig import get_path; print(get_path('include'))")
 export Python3_LIBRARY=/usr/lib64/libpython3.12.so
 export Python3_NumPy_INCLUDE_DIR=$(python3.12 -c "import numpy; print(numpy.get_include())")
-source /opt/rh/gcc-toolset-13/enable
-cmake \
-  -DFAISS_ENABLE_PYTHON=ON \
-  -DFAISS_ENABLE_GPU=OFF \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DPython3_EXECUTABLE=$(which python3.12) \
-  -DPython3_INCLUDE_DIR=$(python3.12 -c "from sysconfig import get_path; print(get_path('include'))") \
-  -DPython3_LIBRARY=/usr/lib64/libpython3.12.so \
-  -DPython3_NumPy_INCLUDE_DIR=$(python3.12 -c "import numpy; print(numpy.get_include())") \
-  ..
 
+# Enable GCC toolset
+source /opt/rh/gcc-toolset-13/enable
+
+# Run CMake configuration
+cmake   -DFAISS_ENABLE_PYTHON=ON   -DFAISS_ENABLE_GPU=OFF   -DCMAKE_BUILD_TYPE=Release   -DPython3_EXECUTABLE=$(which python3.12)   -DPython3_INCLUDE_DIR=$(python3.12 -c "from sysconfig import get_path; print(get_path('include'))")   -DPython3_LIBRARY=/usr/lib64/libpython3.12.so   -DPython3_NumPy_INCLUDE_DIR=$(python3.12 -c "import numpy; print(numpy.get_include())")   ..
+
+# Build FAISS Python bindings
 make -j$(nproc) swigfaiss
 
-# Install the Python bindings
+# Build Python wheel instead of setup.py install
 cd faiss/python
-python3.12 setup.py install
-cd $CURRENT_DIR
+echo "Building Python wheel..."
+python3.12 setup.py bdist_wheel
+cd dist
+pip3.12 install *.whl
+echo "FAISS 1.9.0 build and installation completed successfully!"
 
 
 #echo "-------------------------------installing geos--------------------------------------"
+cd $CURRENT_DIR
 curl -LO https://download.osgeo.org/geos/geos-3.12.1.tar.bz2
 tar -xjf geos-3.12.1.tar.bz2
 cd geos-3.12.1
@@ -987,6 +992,45 @@ export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 echo "-----------------installed scikit-image----------------------"
 
+# Install tree-sitter dependencies (Java and TypeScript)
+# -----------------------------------------------------------------------------
+echo "--- Installing tree-sitter dependencies ---"
+git clone https://github.com/tree-sitter/tree-sitter-java.git
+cd tree-sitter-java && make && make install
+pip3.12 install .
+cd ..
+
+git clone https://github.com/tree-sitter/tree-sitter-typescript.git
+cd tree-sitter-typescript && make && make install
+pip3.12 install .
+cd ..
+
+export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
+echo "--- tree-sitter installed successfully ---"
+
+# -----------------------------------------------------------------------------
+# Install grpcio from source with proper environment setup
+# -----------------------------------------------------------------------------
+echo "--- Installing grpcio ---"
+rm -rf grpc
+yum install -y python3.12 python3.12-devel python3.12-pip openssl openssl-devel git gcc-toolset-13 gcc-toolset-13-gcc-c++
+
+git clone https://github.com/grpc/grpc.git
+cd grpc
+git checkout v1.76.0
+git submodule update --init --recursive
+
+pip3.12 install setuptools coverage cython protobuf==4.25.8 wheel cmake==3.*
+
+export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
+export GRPC_PYTHON_BUILD_WITH_CYTHON=1
+export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:${PATH}"
+
+# Install the package
+pip3.12 install . --no-build-isolation
+pip3.12 install grpcio_status==1.76.0 grpcio_tools==1.76.0 grpcio_health_checking==1.76.0 --no-build-isolation
+echo "--- grpcio installed successfully ---"
+
 echo "-----------------installing docling----------------------"
 git clone https://github.com/docling-project/docling
 cd docling
@@ -1044,23 +1088,6 @@ pip3.12 install dist/*.whl
 cd $CURRENT_DIR
 echo "-----------------installed fastavro----------------------"
 
-echo "-----------------installing grpcio----------------------"
-rm -rf grpc
-git clone https://github.com/grpc/grpc.git
-cd grpc/
-git checkout v1.75.0
-git submodule update --init --recursive
-python3.12 -m pip install --upgrade setuptools coverage cython protobuf==4.25.8 wheel cmake==3.*
-export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
-export GRPC_PYTHON_BUILD_WITH_CYTHON=1
-export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:${PATH}"
-export CC=$(which gcc)
-export CXX=$(which g++)
-pip3.12 install . --no-build-isolation
-cd $CURRENT_DIR
-pip3.12 install grpcio_status==1.75.0 grpcio_tools==1.75.0 grpcio_health_checking==1.75.0 --no-build-isolation
-echo "-----------------installed grpcio----------------------"
-
 #install pckg
 # -----------------------------------------------------------------------------
 git clone $PACKAGE_URL
@@ -1098,10 +1125,13 @@ pip3.12 install langwatch
 pip3.12 install "aiofile>=3.9.0,<4.0.0" "needle-python>=0.4.0" sseclient-py==1.8.0 jq==1.8.0 lark==1.2.2 composio==0.8.5 composio-langchain==0.8.5 atlassian-python-api==3.41.16 jigsawstack==0.2.7 spider-client==0.1.24 "scrapegraph-py>=1.12.0"
 pip3.12 install google-cloud-bigquery --no-deps
 pip3.12 install google-cloud respx faker youtube-transcript-api baidubce gitpython markdown pytube metaphor_python pytest-asyncio
-
+pip3.12 install hatchling
 # -----------------------------------------------------------------------------
 # install langflow
 # -----------------------------------------------------------------------------
+# Updating faiss-cpu version to match custom build (GitHub tag v1.9.0)
+# Reason: PyPI uses .post suffix, but we built from official source tag v1.9.0
+sed -i '/faiss-cpu==1.9.0.post1/s/^/#/' pyproject.toml
 if ! pip3.12 install . --no-deps ; then
     echo "------------------$PACKAGE_NAME:Build_Fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
