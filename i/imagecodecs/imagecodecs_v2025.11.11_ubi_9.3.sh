@@ -99,6 +99,7 @@ cd ../..
 # giflib 5.2.2
 wget https://downloads.sourceforge.net/project/giflib/giflib-5.2.2.tar.gz
 tar -xf giflib-5.2.2.tar.gz && cd giflib-5.2.2
+touch doc/giflib-logo.gif
 make -j$(nproc)
 make install
 cd ..
