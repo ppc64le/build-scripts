@@ -26,6 +26,7 @@ PACKAGE_DIR=xformers
 PARALLEL=${PARALLEL:-$(nproc)}
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 export _GLIBCXX_USE_CXX11_ABI=1
+export BUILD_VERSION=${PACKAGE_VERSION#v}
 
 # Install dependencies
 yum install -y git gcc-toolset-13 ninja-build rust cargo python-devel python-pip jq pkg-config atlas

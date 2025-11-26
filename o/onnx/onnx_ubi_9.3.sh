@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : onnx
-# Version          : v1.18.0
+# Version          : v1.19.0
 # Source repo      : https://github.com/onnx/onnx
 # Tested on        : UBI:9.3
 # Language         : Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Shivansh Sharma <Shivansh.S1@ibm.com>
+# Maintainer       : Sakshi Jain <sakshi.jain16@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -20,16 +20,17 @@
 
 # Variables
 PACKAGE_NAME=onnx
-PACKAGE_VERSION=${1:-v1.18.0}
+PACKAGE_VERSION=${1:-v1.19.0}
 PACKAGE_URL=https://github.com/onnx/onnx
 PACKAGE_DIR=onnx
 CURRENT_DIR="${PWD}"
 
 echo "Installing dependencies..."
-yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3.12-devel python3.12 python3.12-devel python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
+yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3.12-devel python3.12 python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
+export PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
-export SITE_PACKAGE_PATH=/usr/local/lib/python3.12/site-packages
+export SITE_PACKAGE_PATH=/usr/local/lib/python${PYTHON_VERSION}/site-packages
 
 echo " ------------------------------------------ Openblas Installing ------------------------------------------ "
 
@@ -98,7 +99,7 @@ sed -i "s|libdir=local/openblas/lib|libdir=${OpenBLASInstallPATH}/lib|" ${OpenBL
 sed -i "s|includedir=local/openblas/include|includedir=${OpenBLASInstallPATH}/include|" ${OpenBLASPCFile}
 
 export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
-export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}" 
+export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
 
 echo " ------------------------------------------ Openblas Successfully Installed ------------------------------------------ "
 
@@ -106,11 +107,11 @@ echo " ------------------------------------------ Openblas Successfully Installe
 cd $CURRENT_DIR
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH 
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
-python3.12 -m pip install --upgrade pip setuptools wheel ninja 
-python3.12 -m pip install packaging tox pytest build mypy stubs
-python3.12 -m pip install 'cmake==3.31.6'
+python${PYTHON_VERSION} -m pip install --upgrade pip setuptools wheel ninja
+python${PYTHON_VERSION} -m pip install packaging tox pytest build mypy stubs
+python${PYTHON_VERSION} -m pip install 'cmake==3.31.6'
 
 echo " ------------------------------------------ Abseil-CPP Cloning ------------------------------------------ "
 
@@ -169,7 +170,7 @@ cmake -G "Ninja" \
     -Dprotobuf_USE_EXTERNAL_GTEST=OFF \
     ..
 cmake --build . --verbose
-cmake --install . 
+cmake --install .
 
 echo " ------------------------------------------ Libprotobuf Successfully Installed ------------------------------------------ "
 
@@ -188,12 +189,12 @@ git apply set_cpp_to_17_v4.25.3.patch
 
 # Build Python package
 cd python
-python3.12 setup.py install --cpp_implementation 
+python${PYTHON_VERSION} setup.py install --cpp_implementation
 
 cd $CURRENT_DIR
 
-python3.12 -m pip install pybind11==2.12.0
-PYBIND11_PREFIX=$SITE_PACKAGE_PATH/pybind11 
+python${PYTHON_VERSION} -m pip install pybind11==2.12.0
+PYBIND11_PREFIX=$SITE_PACKAGE_PATH/pybind11
 
 export CMAKE_PREFIX_PATH="$ABSEIL_PREFIX;$LIBPROTO_INSTALL;$PYBIND11_PREFIX"
 echo "Updated CMAKE_PREFIX_PATH after OpenBLAS: $CMAKE_PREFIX_PATH"
@@ -236,45 +237,45 @@ export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH"
 
 # Adding this source due to - (Unable to detect linker for compiler `cc -Wl,--version`)
 source /opt/rh/gcc-toolset-13/enable
-pip3.12 install cython meson
-pip3.12 install numpy==2.0.2
-pip3.12 install parameterized
-pip3.12 install pytest nbval pythran mypy-protobuf
-pip3.12 install scipy==1.15.2
-pip3.12 install ml-dtypes  # required while running tests
-pip3.12 install wheel
-pip3.12 install build
+python${PYTHON_VERSION} -m pip install cython meson
+python${PYTHON_VERSION} -m pip install numpy==2.0.2
+python${PYTHON_VERSION} -m pip install parameterized
+python${PYTHON_VERSION} -m pip install pytest nbval pythran mypy-protobuf
+python${PYTHON_VERSION} -m pip install scipy==1.15.2
+python${PYTHON_VERSION} -m pip install ml-dtypes  # required while running tests
+python${PYTHON_VERSION} -m pip install wheel
+python${PYTHON_VERSION} -m pip install build
 
 # export CMAKE_ARGS="$CMAKE_ARGS -DPYTHON_EXECUTABLE=$(which python3.12)"
-# Reason: In ONNX v1.18.0, setup.py uses a custom get_python_executable() which may resolve to /usr/bin/python3 
+# Reason: In ONNX v1.18.0, setup.py uses a custom get_python_executable() which may resolve to /usr/bin/python3
 # even in a Python 3.12 venv, causing incorrect CMake behavior. To ensure the correct Python is used, we explicitly set it.
 # Also, since ONNX v1.18.0's install logic depends on this, we must build + install in the script directly.
 
-export PYTHON_EXECUTABLE=$(which python3.12)
-export PYTHON_BIN=$(which python3.12)
-export PYTHON_INCLUDE=$(python3.12 -c "from sysconfig import get_paths as gp; print(gp()['include'])")
-export PYTHON_LIB=$(python3.12 -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
+export PYTHON_EXECUTABLE=$(which python)
+export PYTHON_BIN=$(which python)
+export PYTHON_INCLUDE=$(python -c "from sysconfig import get_paths as gp; print(gp()['include'])")
+export PYTHON_LIB=$(python -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
 
 export CMAKE_ARGS="$CMAKE_ARGS \
  -DPython3_EXECUTABLE=$PYTHON_BIN \
  -DPython3_INCLUDE_DIR=$PYTHON_INCLUDE \
- -DPython3_LIBRARY=$PYTHON_LIB/libpython3.12.so"
+ -DPython3_LIBRARY=$PYTHON_LIB/libpython${PYTHON_VERSION}.so"
 
 
 
-if !(python3.12 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"); then
+if !(python${PYTHON_VERSION} -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"); then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
-fi 
+fi
 
 echo " ------------------------------------------ Onnx Wheel Creating ------------------------------------------ "
-python3.12 setup.py bdist_wheel --dist-dir $CURRENT_DIR 
-echo " ------------------------------------------ Onnx Wheel Created Successfully ------------------------------------------ " 
+python${PYTHON_VERSION} setup.py bdist_wheel --dist-dir $CURRENT_DIR
+echo " ------------------------------------------ Onnx Wheel Created Successfully ------------------------------------------ "
 
 export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib:$LIBPROTO_INSTALL/lib64:$LD_LIBRARY_PATH"
-pip3.12 install "$CURRENT_DIR"/onnx-*.whl
+python${PYTHON_VERSION} -m pip install "$CURRENT_DIR"/onnx-*.whl
 # Skipping test due to missing 're2/stringpiece.h' header file. Even after attempting to manually build RE2, the required header file could not be found.
 echo " ------------------------------------------ Onnx Testing ------------------------------------------ "
 if ! pytest --ignore=onnx/test/reference_evaluator_backend_test.py --ignore=onnx/test/test_backend_reference.py --ignore=onnx/test/reference_evaluator_test.py; then
@@ -287,4 +288,4 @@ else
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
-fi 
+fi

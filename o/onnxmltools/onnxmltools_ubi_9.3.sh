@@ -327,6 +327,9 @@ python3.12 -m pip install onnxconverter_common --no-deps
 export LD_LIBRARY_PATH=/OpenBLAS/local/openblas/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/local/libprotobuf/lib64:$LD_LIBRARY_PATH
 
+echo "-----------------Build Wheel onnxmltools-------------------------"
+python setup.py bdist_wheel --plat-name=linux_$(uname -m)
+mv dist/*.whl "$WORK_DIR/"
 #Build
 if ! (python3.12 -m pip install -e . --no-build-isolation --no-deps) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"

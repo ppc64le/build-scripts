@@ -1,0 +1,66 @@
+diff --git a/tests/test_onnx_helper.py b/tests/test_onnx_helper.py
+index 243fc75..bf37ed3 100644
+--- a/tests/test_onnx_helper.py
++++ b/tests/test_onnx_helper.py
+@@ -76,7 +76,7 @@ class TestOnnxHelper(unittest.TestCase):
+     def test_onnx_helper_load_save_init(self):
+         model = make_pipeline(
+             Binarizer(),
+-            OneHotEncoder(sparse=False, handle_unknown="ignore"),
++            OneHotEncoder(sparse_output=False, handle_unknown="ignore"),
+             StandardScaler(),
+         )
+         X = numpy.array([[0.1, 1.1], [0.2, 2.2], [0.4, 2.2], [0.2, 2.4]])
+@@ -107,7 +107,7 @@ class TestOnnxHelper(unittest.TestCase):
+     )
+     def test_onnx_helper_load_save_init_meta(self):
+         model = make_pipeline(
+-            Binarizer(), OneHotEncoder(sparse=False), StandardScaler()
++            Binarizer(), OneHotEncoder(sparse_output=False), StandardScaler()
+         )
+         X = numpy.array([[0.1, 1.1], [0.2, 2.2], [0.4, 2.2], [0.2, 2.4]])
+         model.fit(X)
+diff --git a/tests/test_sklearn_array_feature_extractor.py b/tests/test_sklearn_array_feature_extractor.py
+index 9c918cb..f0b838e 100644
+--- a/tests/test_sklearn_array_feature_extractor.py
++++ b/tests/test_sklearn_array_feature_extractor.py
+@@ -34,7 +34,7 @@ class TestSklearnArrayFeatureExtractor(unittest.TestCase):
+         num_attributes_clustering = [3, 4]  # this is of length 12 in reality
+         gmm = GaussianMixture(n_components=2, random_state=1)
+         ohe_cat = [
+-            OneHotEncoder(categories="auto", sparse=False, drop=None)
++            OneHotEncoder(categories="auto", sparse_output=False, drop=None)
+             for i in cat_attributes_clustering
+         ]
+         ct_cat = ColumnTransformer(
+diff --git a/tests/test_sklearn_one_hot_encoder_converter.py b/tests/test_sklearn_one_hot_encoder_converter.py
+index 6465a60..57247e9 100644
+--- a/tests/test_sklearn_one_hot_encoder_converter.py
++++ b/tests/test_sklearn_one_hot_encoder_converter.py
+@@ -110,7 +110,7 @@ class TestSklearnOneHotEncoderConverter(unittest.TestCase):
+     @ignore_warnings(category=FutureWarning)
+     def test_model_one_hot_encoder_int32_scaler(self):
+         model = make_pipeline(
+-            OneHotEncoder(categories="auto", sparse=False), RobustScaler()
++            OneHotEncoder(categories="auto", sparse_output=False), RobustScaler()
+         )
+         data = numpy.array(
+             [[1, 2, 3], [4, 3, 0], [0, 1, 4], [0, 5, 6]], dtype=numpy.int32
+@@ -238,7 +238,7 @@ class TestSklearnOneHotEncoderConverter(unittest.TestCase):
+     @ignore_warnings(category=FutureWarning)
+     def test_model_one_hot_encoder_list_sparse(self):
+         model = OneHotEncoder(
+-            categories=[[0, 1, 4, 5], [1, 2, 3, 5], [0, 3, 4, 6]], sparse=True
++            categories=[[0, 1, 4, 5], [1, 2, 3, 5], [0, 3, 4, 6]], sparse_output=True
+         )
+         data = numpy.array(
+             [[1, 2, 3], [4, 3, 0], [0, 1, 4], [0, 5, 6]], dtype=numpy.int64
+@@ -265,7 +265,7 @@ class TestSklearnOneHotEncoderConverter(unittest.TestCase):
+     @ignore_warnings(category=FutureWarning)
+     def test_model_one_hot_encoder_list_dense(self):
+         model = OneHotEncoder(
+-            categories=[[0, 1, 4, 5], [1, 2, 3, 5], [0, 3, 4, 6]], sparse=False
++            categories=[[0, 1, 4, 5], [1, 2, 3, 5], [0, 3, 4, 6]], sparse_output=False
+         )
+         data = numpy.array(
+             [[1, 2, 3], [4, 3, 0], [0, 1, 4], [0, 5, 6]], dtype=numpy.int64

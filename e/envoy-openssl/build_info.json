@@ -2,11 +2,11 @@
     "maintainer": "anurag-chitrakar",
     "package_name": "envoy-openssl",
     "github_url": "https://github.com/envoyproxy/envoy-openssl",
-    "version": "release/v1.32",
+    "version": "release/v1.34",
     "package_dir": "e/envoy-openssl",
-    "default_branch": "release/v1.32",
+    "default_branch": "release/v1.34",
     "docker_build": false,
-    "build_script": "envoy_openssl_ubi_9.4_v1.32.sh",
+    "build_script": "envoy_openssl_ubi_9.4_v1.34.sh",
     "validate_build_script": true,
     "use_non_root_user": false
   }

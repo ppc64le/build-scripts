@@ -36,6 +36,9 @@ git checkout $PACKAGE_VERSION
 
 pip install codacy-coverage tox
 
+#To get proper wheel naming
+export SETUPTOOLS_SCM_PRETEND_VERSION=${PACKAGE_VERSION#v}
+
 #Build package
 if ! pip install . ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
@@ -44,14 +47,11 @@ if ! pip install . ; then
     exit 1
 fi
 
-#Commented out coverage upload commands because they require authentication tokens to run successfully, which are not available in local.
-sed -i '/- coveralls/s/^/    # /' tox.ini
-sed -i '/codecov -X pycov -e TOXENV/s/^/    # /' tox.ini
-sed -i '/- codacy report -l Python -r coverage.xml --partial/s/^/    # /' tox.ini
-
+pip install pytest pytest-timeout
+sed -i 's/\bpython\b/python3/' examples/Makefile
 
 #Test package
-if ! tox -e py3 ; then
+if ! pytest ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"

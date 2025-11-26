@@ -22,8 +22,26 @@ PACKAGE_NAME=async-storage
 PACKAGE_VERSION=${1:-@react-native-async-storage/async-storage@1.24.0}
 PACKAGE_URL=https://github.com/react-native-async-storage/async-storage.git
 BUILD_DIR=$(pwd)
+SCRIPT_PATH=$(dirname $(realpath $0))
 export TURBO_VERSION=1.4.4
 
+# Default: run tests
+RUNTESTS=1
+
+# Parse arguments
+for arg in "$@"; do
+  case $arg in
+    --skip-tests)
+      RUNTESTS=0
+      echo "Skipping tests"
+      ;;
+    -*|--*)
+      echo "Unknown option: $arg"
+      exit 3
+      ;;
+  esac
+done
+			   
 # Install Dependencies
 yum install -y git tar gcc gcc-c++ make pkgconfig jq glib2-devel expat-devel diffutils gettext libjpeg-turbo-devel libpng-devel
 
@@ -53,12 +71,11 @@ ldconfig
 # Clone the async-storage repo
 cd $BUILD_DIR
 git clone $PACKAGE_URL
-cd async-storage
-git fetch --all --tags
+cd $PACKAGE_NAME
 git checkout "$PACKAGE_VERSION"
 
-# Set Up Dependencies
-sed -i 's/"turbo": *"[^"]*"/"turbo-linux-ppc64le": "1.4.4"/' package.json
+# Apply Patch
+git apply "${SCRIPT_PATH}/react-native-${PACKAGE_NAME}_v1.24.0_porting.patch"
 
 # Install project dependencies
 yarn install
@@ -66,19 +83,41 @@ yarn install
 # Link turbo manually if required
 ln -sf /async-storage/node_modules/turbo-linux-ppc64le/bin/turbo \
  /usr/local/share/.config/yarn/global/node_modules/.bin/turbo
- 
+
 # Build the package
 ret=0
 yarn run build || ret=$?
 if [ "$ret" -ne 0 ]; then
-    exit 1
+  echo "Build failed."
+  exit 1
 fi
 
-# Run tests (if any)
+# Pack and install the package
+echo "Installing ${PACKAGE_NAME}"
+cd /async-storage
+PACKAGE_TGZ_NAME="${PACKAGE_NAME}.tgz"
+yarn --cwd packages/default-storage pack --filename "$PACKAGE_TGZ_NAME"
+npm install -g "$(realpath packages/default-storage/$PACKAGE_TGZ_NAME)" || ret=$?
+
+if [ $? -eq 0 ]; then
+  echo "Package installed successfully."
+else
+  echo "Installation failed."
+  exit 3
+fi
+
+# Skip tests if flag is set
+if [ "$RUNTESTS" -eq 0 ]; then
+  echo "Complete: Build and install successful! Tests skipped."
+  exit 0
+fi
+
+# Run tests
 yarn run test:ts || ret=$?
 if [ "$ret" -ne 0 ]; then
-    exit 2
+  echo "Tests failed."
+  exit 2
 fi
 
-BUILD_VERSION=$(jq -r .version /${PACKAGE_NAME}/packages/default-storage/package.json)
+BUILD_VERSION=$(jq -r .version packages/default-storage/package.json)
 echo "SUCCESS: ${PACKAGE_NAME}_$BUILD_VERSION built and tested successfully!"

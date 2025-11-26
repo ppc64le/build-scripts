@@ -1,0 +1,16 @@
+{
+  "maintainer": "ramnathnayak-ibm",
+  "package_name": "langchain",
+  "github_url": "https://github.com/langchain-ai/langchain",
+  "version": "langchain==0.3.27",
+  "wheel_build" : true,
+  "default_branch": "master",
+  "package_dir": "l/langchain",
+  "build_script": "langchain_ubi_9.6.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+     "build_script":"langchain_ubi_9.6.sh"
+  }
+}

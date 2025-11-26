@@ -167,7 +167,7 @@ cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
-sed -i "s/^[[:space:]]*name=package_name/name=\"${PACKAGE_NAME}\"/" setup.py
+export ENABLE_HEADLESS=1
 
 export CMAKE_PREFIX_PATH="$ABSEILCPP_PREFIX;$LIBPROTOBUF_PREFIX"
 export CMAKE_ARGS="-DCMAKE_BUILD_TYPE=Release

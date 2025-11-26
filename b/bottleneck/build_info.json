@@ -1,8 +1,8 @@
 {
-    "maintainer": "Harithanagothu2",
+    "maintainer": "Shivansh-ibm",
     "package_name": "bottleneck",
     "github_url": "https://github.com/pydata/bottleneck",
-    "version": "v1.3.5",
+    "version": "v1.6.0",
     "default_branch": "master",
     "package_dir": "b/bottleneck",
     "build_script": "bottleneck_1.3.5_ubi_9.3.sh",

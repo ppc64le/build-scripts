@@ -4,8 +4,8 @@
 # Package       : react-native-blob-util
 # Version       : 0.19.9
 # Source repo   : https://github.com/RonRadtke/react-native-blob-util.git
-# Tested on     : UBI 9.3 (docker)
-# Language      : Java,JavaScript,Objective-C++,C++,Objective-C,Ruby
+# Tested on     : UBI 9.3
+# Language      : Java, Others
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Prachi Gaonkar <Prachi.Gaonkar@ibm.com>
@@ -25,7 +25,7 @@ yum install -y git
 WDIR=$(pwd)
 PACKAGE_NAME=react-native-blob-util
 PACKAGE_URL=https://github.com/RonRadtke/${PACKAGE_NAME}.git
-PACKAGE_VERSION=${1:- 0.19.9}
+PACKAGE_VERSION=${1:-0.19.9}
 
 export NODE_VERSION=${NODE_VERSION:-16}
 

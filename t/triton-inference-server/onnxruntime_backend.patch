@@ -42,7 +42,7 @@ index 47035ce..6124a31 100755
 +        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
 +        https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
 +        dnf config-manager --set-enabled crb &&\
-+        dnf install gperf libarchive-devel numactl-devel readline-devel libusb -y && \
++        dnf install gperf libarchive-devel numactl-devel readline-devel libusb patch -y && \
 +        dnf remove -y centos-gpg-keys-9.0-24.el9.noarch centos-stream-repos-9.0-24.el9.noarch
  
  RUN yum install -y \

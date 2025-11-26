@@ -3,7 +3,7 @@
     "package_name" : "log4j-api",
     "github_url": "https://github.com/apache/logging-log4j2.git",
     "version": "rel/2.23.1",
-    "default_branch": "master",
+    "default_branch": "2.x",
     "package_dir": "l/log4j-api",
     "build_script": "log4j-api-2.23.1-ubi9.3.sh",
     "validate_build_script": true,
@@ -11,5 +11,8 @@
     "docker_build": false,
     "rel/2.23.1": {
     "build_script": "log4j-api-2.23.1-ubi9.3.sh"
-  }
+    },
+    "2.8.2": {
+    "build_script": "log4j-api_2.8.2_ubi_8.4.sh"
+    }    
 }

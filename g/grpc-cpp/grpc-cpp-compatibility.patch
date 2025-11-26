@@ -1,0 +1,213 @@
+diff --git a/include/grpcpp/impl/codegen/config_protobuf.h b/include/grpcpp/impl/codegen/config_protobuf.h
+index e1f3d40ac9..df84b87432 100644
+--- a/include/grpcpp/impl/codegen/config_protobuf.h
++++ b/include/grpcpp/impl/codegen/config_protobuf.h
+@@ -68,8 +68,9 @@
+ #ifndef GRPC_CUSTOM_JSONUTIL
+ #include <google/protobuf/util/json_util.h>
+ #include <google/protobuf/util/type_resolver_util.h>
++#include <google/protobuf/stubs/status_macros.h>
+ #define GRPC_CUSTOM_JSONUTIL ::google::protobuf::util
+-#define GRPC_CUSTOM_UTIL_STATUS ::google::protobuf::util::Status
++#define GRPC_CUSTOM_UTIL_STATUS ::absl::Status
+ #endif
+ 
+ namespace grpc {
+diff --git a/src/compiler/config_protobuf.h b/src/compiler/config_protobuf.h
+index 4b27c8e2b6..6564a65a38 100644
+--- a/src/compiler/config_protobuf.h
++++ b/src/compiler/config_protobuf.h
+@@ -50,7 +50,7 @@
+ #endif
+ 
+ #ifndef GRPC_CUSTOM_CSHARP_GETCLASSNAME
+-#include <google/protobuf/compiler/csharp/csharp_names.h>
++#include <google/protobuf/compiler/csharp/names.h>
+ #define GRPC_CUSTOM_CSHARP_GETCLASSNAME \
+   ::google::protobuf::compiler::csharp::GetClassName
+ #define GRPC_CUSTOM_CSHARP_GETFILENAMESPACE \
+diff --git a/src/compiler/objective_c_generator.cc b/src/compiler/objective_c_generator.cc
+index fa8db719d5..96dcc400a1 100644
+--- a/src/compiler/objective_c_generator.cc
++++ b/src/compiler/objective_c_generator.cc
+@@ -22,7 +22,7 @@
+ #include <set>
+ #include <sstream>
+ 
+-#include <google/protobuf/compiler/objectivec/objectivec_helpers.h>
++/* #include <google/protobuf/compiler/objectivec/objectivec_helpers.h> */
+ 
+ #include "src/compiler/config.h"
+ #include "src/compiler/objective_c_generator_helpers.h"
+diff --git a/src/compiler/objective_c_generator_helpers.h b/src/compiler/objective_c_generator_helpers.h
+index 326e420c53..1ec555caf1 100644
+--- a/src/compiler/objective_c_generator_helpers.h
++++ b/src/compiler/objective_c_generator_helpers.h
+@@ -20,8 +20,9 @@
+ #define GRPC_INTERNAL_COMPILER_OBJECTIVE_C_GENERATOR_HELPERS_H
+ 
+ #include <map>
+-
+-#include <google/protobuf/compiler/objectivec/objectivec_helpers.h>
++#include <google/protobuf/compiler/objectivec/helpers.h>
++#include <google/protobuf/compiler/objectivec/names.h>
++/* #include <google/protobuf/compiler/objectivec/objectivec_helpers.h> */
+ 
+ #include "src/compiler/config.h"
+ #include "src/compiler/generator_helpers.h"
+diff --git a/src/compiler/objective_c_plugin.cc b/src/compiler/objective_c_plugin.cc
+index 65807dc98d..687ef46047 100644
+--- a/src/compiler/objective_c_plugin.cc
++++ b/src/compiler/objective_c_plugin.cc
+@@ -20,7 +20,8 @@
+ 
+ #include <memory>
+ 
+-#include <google/protobuf/compiler/objectivec/objectivec_helpers.h>
++//#include <google/protobuf/compiler/objectivec/objectivec_helpers.h>
++#include <google/protobuf/compiler/objectivec/helpers.h>
+ 
+ #include "src/compiler/config.h"
+ #include "src/compiler/objective_c_generator.h"
+diff --git a/src/core/lib/iomgr/event_engine_shims/tcp_client.cc b/src/core/lib/iomgr/event_engine_shims/tcp_client.cc
+index 5f9fe7bb27..904e1a21a4 100644
+--- a/src/core/lib/iomgr/event_engine_shims/tcp_client.cc
++++ b/src/core/lib/iomgr/event_engine_shims/tcp_client.cc
+@@ -17,6 +17,7 @@
+ 
+ #include "absl/status/status.h"
+ #include "absl/strings/string_view.h"
++#include "absl/strings/str_cat.h"
+ 
+ #include <grpc/event_engine/event_engine.h>
+ #include <grpc/support/time.h>
+diff --git a/src/core/lib/iomgr/tcp_posix.cc b/src/core/lib/iomgr/tcp_posix.cc
+index 3b73212252..1817fbca4e 100644
+--- a/src/core/lib/iomgr/tcp_posix.cc
++++ b/src/core/lib/iomgr/tcp_posix.cc
+@@ -19,6 +19,11 @@
+ #include <grpc/support/port_platform.h>
+ 
+ #include <grpc/impl/grpc_types.h>
++#include "absl/base/thread_annotations.h"
++#include "absl/status/status.h"
++#include "absl/strings/str_cat.h"
++#include "absl/strings/string_view.h"
++#include "absl/types/optional.h"
+ 
+ #include "src/core/lib/iomgr/exec_ctx.h"
+ #include "src/core/lib/iomgr/port.h"
+diff --git a/src/python/grpcio/grpc/_cython/_cygrpc/aio/callback_common.pxd.pxi b/src/python/grpcio/grpc/_cython/_cygrpc/aio/callback_common.pxd.pxi
+index e54e510754..26edbdb917 100644
+--- a/src/python/grpcio/grpc/_cython/_cygrpc/aio/callback_common.pxd.pxi
++++ b/src/python/grpcio/grpc/_cython/_cygrpc/aio/callback_common.pxd.pxi
+@@ -48,7 +48,7 @@ cdef class CallbackWrapper:
+     @staticmethod
+     cdef void functor_run(
+             grpc_completion_queue_functor* functor,
+-            int succeed)
++            int succeed) noexcept
+ 
+     cdef grpc_completion_queue_functor *c_functor(self)
+ 
+diff --git a/src/python/grpcio/grpc/_cython/_cygrpc/aio/callback_common.pyx.pxi b/src/python/grpcio/grpc/_cython/_cygrpc/aio/callback_common.pyx.pxi
+index 14a0098fc2..2b0df0e5ce 100644
+--- a/src/python/grpcio/grpc/_cython/_cygrpc/aio/callback_common.pyx.pxi
++++ b/src/python/grpcio/grpc/_cython/_cygrpc/aio/callback_common.pyx.pxi
+@@ -50,7 +50,7 @@ cdef class CallbackWrapper:
+     @staticmethod
+     cdef void functor_run(
+             grpc_completion_queue_functor* functor,
+-            int success):
++            int success) noexcept:
+         cdef CallbackContext *context = <CallbackContext *>functor
+         cdef object waiter = <object>context.waiter
+         if not waiter.cancelled():
+diff --git a/src/python/grpcio/grpc/_cython/_cygrpc/credentials.pyx.pxi b/src/python/grpcio/grpc/_cython/_cygrpc/credentials.pyx.pxi
+index 27b56aa378..6daed8858f 100644
+--- a/src/python/grpcio/grpc/_cython/_cygrpc/credentials.pyx.pxi
++++ b/src/python/grpcio/grpc/_cython/_cygrpc/credentials.pyx.pxi
+@@ -313,8 +313,8 @@ def server_credentials_ssl_dynamic_cert_config(initial_cert_config,
+   credentials.c_credentials = grpc_ssl_server_credentials_create_with_options(c_options)
+   return credentials
+ 
+-cdef grpc_ssl_certificate_config_reload_status _server_cert_config_fetcher_wrapper(
+-        void* user_data, grpc_ssl_server_certificate_config **config) with gil:
++cdef grpc_ssl_certificate_config_reload_status _server_cert_config_fetcher_wrapper( 
++        void* user_data, grpc_ssl_server_certificate_config **config) noexcept with gil:
+   # This is a credentials.ServerCertificateConfig
+   cdef ServerCertificateConfig cert_config = None
+   if not user_data:
+diff --git a/src/python/grpcio/grpc/_cython/_cygrpc/fork_posix.pxd.pxi b/src/python/grpcio/grpc/_cython/_cygrpc/fork_posix.pxd.pxi
+index a925bdd2e6..73d21dab8f 100644
+--- a/src/python/grpcio/grpc/_cython/_cygrpc/fork_posix.pxd.pxi
++++ b/src/python/grpcio/grpc/_cython/_cygrpc/fork_posix.pxd.pxi
+@@ -20,10 +20,10 @@ cdef extern from "pthread.h" nogil:
+         void (*child)() nogil)
+ 
+ 
+-cdef void __prefork() nogil
++cdef void __prefork() noexcept nogil
+ 
+ 
+-cdef void __postfork_parent() nogil
++cdef void __postfork_parent() noexcept nogil
+ 
+ 
+-cdef void __postfork_child() nogil
+\ No newline at end of file
++cdef void __postfork_child() noexcept nogil
+diff --git a/src/python/grpcio/grpc/_cython/_cygrpc/fork_posix.pyx.pxi b/src/python/grpcio/grpc/_cython/_cygrpc/fork_posix.pyx.pxi
+index 53657e8b1a..d4d1cff5c2 100644
+--- a/src/python/grpcio/grpc/_cython/_cygrpc/fork_posix.pyx.pxi
++++ b/src/python/grpcio/grpc/_cython/_cygrpc/fork_posix.pyx.pxi
+@@ -34,7 +34,7 @@ _GRPC_ENABLE_FORK_SUPPORT = (
+ 
+ _fork_handler_failed = False
+ 
+-cdef void __prefork() nogil:
++cdef void __prefork() noexcept nogil:
+     with gil:
+         global _fork_handler_failed
+         _fork_handler_failed = False
+@@ -48,14 +48,14 @@ cdef void __prefork() nogil:
+             _fork_handler_failed = True
+ 
+ 
+-cdef void __postfork_parent() nogil:
++cdef void __postfork_parent() noexcept nogil:
+     with gil:
+         with _fork_state.fork_in_progress_condition:
+             _fork_state.fork_in_progress = False
+             _fork_state.fork_in_progress_condition.notify_all()
+ 
+ 
+-cdef void __postfork_child() nogil:
++cdef void __postfork_child() noexcept nogil:
+     with gil:
+         try:
+             if _fork_handler_failed:
+diff --git a/src/python/grpcio/grpc/_cython/_cygrpc/vtable.pyx.pxi b/src/python/grpcio/grpc/_cython/_cygrpc/vtable.pyx.pxi
+index da4b81bd97..f59410073b 100644
+--- a/src/python/grpcio/grpc/_cython/_cygrpc/vtable.pyx.pxi
++++ b/src/python/grpcio/grpc/_cython/_cygrpc/vtable.pyx.pxi
+@@ -13,16 +13,16 @@
+ # limitations under the License.
+ 
+ # TODO(https://github.com/grpc/grpc/issues/15662): Reform this.
+-cdef void* _copy_pointer(void* pointer):
++cdef void* _copy_pointer(void* pointer) noexcept:
+   return pointer
+ 
+ 
+ # TODO(https://github.com/grpc/grpc/issues/15662): Reform this.
+-cdef void _destroy_pointer(void* pointer):
++cdef void _destroy_pointer(void* pointer) noexcept:
+   pass
+ 
+ 
+-cdef int _compare_pointer(void* first_pointer, void* second_pointer):
++cdef int _compare_pointer(void* first_pointer, void* second_pointer) noexcept:
+   if first_pointer < second_pointer:
+     return -1
+   elif first_pointer > second_pointer:

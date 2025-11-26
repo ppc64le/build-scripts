@@ -31,11 +31,11 @@ git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
+#To get proper wheel naming
+sed -i "s/_VERSION_SUFFIX = 'dev'/_VERSION_SUFFIX = ''/" tensorflow_model_optimization/python/core/version.py
+
 # Install test dependencies
 pip3 install pytest tox
-
-# Removing chardet becuase it is giving issue while build the Package.
-yum remove -y python-chardet
 
 # Install the package
 if ! (pip3 install .); then

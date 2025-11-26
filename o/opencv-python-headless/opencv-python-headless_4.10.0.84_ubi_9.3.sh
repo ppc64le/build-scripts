@@ -97,7 +97,7 @@ export CXX_COMPILER=$(which g++)
 
 #installing libprotobuf
 cd $CURRENT_DIR
-git clone https://github.com/protocolbuffers/protobuf -b v4.25.3
+git clone https://github.com/protocolbuffers/protobuf -b v4.25.8
 cd protobuf
 git submodule update --init --recursive
 #Create build directory
@@ -301,6 +301,8 @@ git clone --recursive $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init
+
+export ENABLE_HEADLESS=1
 
 export CMAKE_PREFIX_PATH="$PREFIX/abseilcpp;$PREFIX/libprotobuf";
 

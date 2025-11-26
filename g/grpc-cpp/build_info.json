@@ -11,6 +11,6 @@
   "validate_build_script": true,
   "use_non_root_user": "false",
   "*":{
-    "build_script":"grpc-cpp_ubi_9.3.sh"
+    "build_script":"grpc_cpp_ubi_9.3.sh"
   }
 }

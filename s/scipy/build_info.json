@@ -1,11 +1,11 @@
 {
-  "maintainer": "shubham-garud",
+  "maintainer": "SakshiJain0302",
   "package_name": "scipy",
   "github_url": "https://github.com/scipy/scipy",
-  "version": "v1.15.3",
+  "version": "v1.16.1",
   "wheel_build" : true,
   "default_branch": "main",
-  "build_script": "scipy_v1.15.2_ubi_9.3.sh",
+  "build_script": "scipy_v1.16.1_ubi_9.3.sh",
   "package_dir": "s/scipy",
   "docker_build": false,
   "validate_build_script": true,
@@ -16,7 +16,7 @@
   "v1.11.3": {
     "build_script": "scipy_v1.11.3_ubi_9.3.sh"
   },
-  "v1.15.*": {
-    "build_script": "scipy_v1.15.2_ubi_9.3.sh"
+  "v1.15.*, v1.16.*": {
+    "build_script": "scipy_v1.16.1_ubi_9.3.sh"
   }
 }

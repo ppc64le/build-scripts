@@ -284,7 +284,7 @@ echo "------------------------Bazel query-------------------"
 bazel query "//tensorflow/tools/pip_package:*"
 
 echo "Bazel query successful ---------------------------------------------------------------------------------------------"
-bazel build -s //tensorflow/tools/pip_package:build_pip_package --config=opt
+bazel build -s //tensorflow/tools/pip_package:build_pip_package --config=opt --jobs=8
 
 echo "Bazel build successful ---------------------------------------------------------------------------------------------"
 
@@ -376,16 +376,12 @@ git apply tf-io-gcs-filesystem.patch
 echo "---------------------------------Building the package--------------------------------------------"
 
 #Install
-if ! (bazel build   --experimental_repo_remote_exec   --cxxopt="-std=c++17"   --cxxopt="-I/usr/local/include/tirpc"   --host_cxxopt="-std=c++17"   --host_cxxopt="-I/usr/local/include/tirpc"   --repo_env=CXX="g++ -std=c++17"   //tensorflow_io/... //tensorflow_io_gcs_filesystem/...) ; then
+if ! (bazel build --jobs=6  --local_cpu_resources=HOST_CPUS*0.50 --local_ram_resources=HOST_RAM*0.50 --experimental_repo_remote_exec   --cxxopt="-std=c++17"   --cxxopt="-I/usr/local/include/tirpc"   --host_cxxopt="-std=c++17"   --host_cxxopt="-I/usr/local/include/tirpc"   --repo_env=CXX="g++ -std=c++17"   //tensorflow_io/... //tensorflow_io_gcs_filesystem/...) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-
-mkdir -p /usr/local/lib64/python/site-packages/tensorflow_io_gcs_filesystem/core/python/ops/
-cp /root/.cache/bazel/_bazel_root/7e563aa8f1493c3ba33faa85b32d7a3c/execroot/org_tensorflow_io/bazel-out/ppc-fastbuild/bin/tensorflow_io_gcs_filesystem/core/python/ops/libtensorflow_io_gcs_filesystem.so \
-   /usr/local/lib64/python/site-packages/tensorflow_io_gcs_filesystem/core/python/ops/
 
 
 echo "---------------------------------Building wheels--------------------------------------------"
@@ -428,4 +424,3 @@ else
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | Both_Install_and_Test_Success"
     exit 0
 fi
-

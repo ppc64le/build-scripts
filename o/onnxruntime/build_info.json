@@ -14,7 +14,7 @@
         "build_script": "onnxruntime_ubi_9_3.sh"
      },
     "v1.20.1": {
-        "build_script": "onnxruntime_1.20.1_ubi_9_3.sh"
+        "build_script": "onnxruntime_1.20.1_ubi_9.3.sh"
      },
     "v1.21.0": {
         "build_script": "onnxruntime_1.21.0_ubi_9.3.sh"

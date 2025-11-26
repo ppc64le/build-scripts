@@ -32,7 +32,7 @@ install_python_version() {
             echo "Installing dependencies required for python installation..."
             yum install -y sudo zlib-devel wget ncurses git
             echo "Installing..."
-            yum install -y make cmake openssl-devel
+            yum install -y make cmake openssl-devel xz xz-devel
             echo "Installing..."
             yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
             echo "Starting python installing..."
@@ -53,7 +53,7 @@ install_python_version() {
             echo "Installing dependencies required for python installation..."
             yum install -y sudo zlib-devel wget ncurses git
             echo "Installing..."
-            yum install -y make cmake openssl-devel
+            yum install -y make cmake openssl-devel xz xz-devel
             echo "Installing..."
             yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
             echo "Starting python installing..."
@@ -191,7 +191,7 @@ fi
 echo "Processing Package with Python $PYTHON_VERSION"
 
 # Create and activate virtual environment
-VENV_DIR="$CURRENT_DIR/pyvenv_$PYTHON_VERSION"
+VENV_DIR="$(realpath -m "${CURRENT_DIR}/pyvenv_${PYTHON_VERSION}")"
 create_venv "$VENV_DIR" "$PYTHON_VERSION"
 
 echo "=============== Running package build-script starts =================="
