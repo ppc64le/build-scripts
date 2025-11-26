@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : psutil
-# Version          : 7.0.0
+# Version          : 7.1.0
 # Source repo      : https://github.com/giampaolo/psutil.git
 # Tested on        : UBI:9.3
 # Language         : Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Shivansh Sharma <shivansh.s1@ibm.com>
+# Maintainer       : Sakshi Jain <sakshi.jain16@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -20,7 +20,7 @@
 
 # Variables
 PACKAGE_NAME=psutil
-PACKAGE_VERSION=${1:-release-7.0.0}
+PACKAGE_VERSION=${1:-release-7.1.0}
 PACKAGE_URL=https://github.com/giampaolo/psutil.git
 
 # Install necessary system dependencies
@@ -47,6 +47,9 @@ export PYTHONWARNINGS=always
 export PYTHONUNBUFFERED=1
 export PSUTIL_DEBUG=1
 export PYTHONPATH=$(pwd):$PYTHONPATH
+
+# Install pytest plugins required to run psutil test suite successfully
+python3 -m pip install pytest-instafail pytest-subtests pytest-xdist
 
 #run tests skipping and deselecting few tests failing on ppc64le and x86
 if ! pytest -v --deselect=psutil/tests/test_linux.py --deselect=psutil/tests/test_system.py -k "not test_disk_partitions and not test_debug and not test_who and not test_terminal and not test_users and not test_cpu_freq and not test_leak_mem and not test_cpu_affinity and not test_cpu_times and not test_per_cpu_times and not test_import_all" --disable-warnings ; then
