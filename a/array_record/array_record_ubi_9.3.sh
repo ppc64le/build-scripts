@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : array_record
-# Version       : v0.5.0
+# Version       : v0.8.1
 # Source repo   : https://github.com/google/array_record
 # Tested on     : UBI:9.3
 # Language      : Python
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
+# Maintainer    : Shivansh Sharma <shivansh.s1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on the given
 # platform using the mentioned version of the package.
@@ -20,19 +20,19 @@
 
 # Variables
 PACKAGE_NAME="array_record"
-PACKAGE_VERSION=${1:-v0.5.0}
+PACKAGE_VERSION=${1:-v0.8.1}
 PACKAGE_URL="https://github.com/google/array_record"
 WORK_DIR=$(pwd)
 PACKAGE_DIR=array_record/build-dir
 
 echo "Installing dependencies..."
-yum install -y python3-pip python3 python python3-devel git gcc-toolset-13 cmake wget
+yum install -y python3.12-pip python3.12 python python3.12-devel git gcc-toolset-13 cmake wget
 
 # Ensure pip is up-to-date
-pip3 install --upgrade pip
+python3.12 -m pip install --upgrade pip
 
 # Install setuptools and wheel for building
-pip3 install setuptools wheel
+python3.12 -m pip install setuptools wheel
 
 WORK_DIR=$(pwd)
 
@@ -42,7 +42,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Install required Python packages
-pip3 install setuptools wheel absl-py etils[epath]
+python3.12 -m pip install setuptools wheel absl-py etils[epath]
 
 # Modify setup.py to ensure 'python' and 'beam' are included
 sed -i "s/packages=find_packages()/packages=[\"array_record\", \"array_record.python\"]/g" setup.py
@@ -57,8 +57,8 @@ cd $WORK_DIR/$PACKAGE_NAME/build-dir
 
 # Build the package and create a wheel file
 echo "Building the package..."
-pip3 install .
-if ! python3 setup.py install; then
+python3.12 -m pip install .
+if ! python3.12 setup.py install; then
     echo "------------------$PACKAGE_NAME:wheel_built_fails---------------------"
     echo "$PACKAGE_VERSION $PACKAGE_NAME"
     echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail | wheel_built_fails"
@@ -68,7 +68,7 @@ fi
 echo "$PACKAGE_NAME $PACKAGE_VERSION: Wheel built successfully"
 
 echo "tests"
-if ! python3 -c "import array_record; import array_record.python;"; then
+if ! python3.12 -c "import array_record; import array_record.python;"; then
     echo "------------------$PACKAGE_NAME:TEST__fails---------------------"
     echo "$PACKAGE_VERSION $PACKAGE_NAME"
     echo "$PACKAGE_NAME  | $PACKAGE_VERSION | GitHub | Fail | TEST_fails"
