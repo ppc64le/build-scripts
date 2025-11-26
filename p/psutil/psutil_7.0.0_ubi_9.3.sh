@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-release-7.1.3}
 PACKAGE_URL=https://github.com/giampaolo/psutil.git
 
 # Install necessary system dependencies
-yum install -y make g++ git gcc gcc-c++ wget openssl-devel bzip2-devel libffi-devel zlib-devel procps-ng python3 python3-devel python3-pip
+yum install -y make g++ git gcc gcc-c++ wget openssl-devel bzip2-devel libffi-devel zlib-devel procps-ng python3.12 python3.12-devel python3.12-pip
 
 # Clone the repository
 git clone $PACKAGE_URL
@@ -32,10 +32,10 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Install additional dependencies
-python3 -m pip install setuptools wheel pytest overlay pytest-instafail pytest-xdist
+python3.12 -m pip install setuptools wheel pytest overlay pytest-instafail pytest-xdist
 
 #install
-if ! python3 -m pip install -e . ; then
+if ! python3.12 -m pip install -e . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
