@@ -152,7 +152,7 @@ setup(
     author="Shalini Salomi Bodapati",
     author_email="Shalini-Salomi-Bodapati@ibm.com",
     description="Power10 optimized Ollama binary + shared libs as Python package",
-    license="Apache-2.0",
+    license="MIT",
     packages=[PYTHON_PACKAGE_NAME],
     include_package_data=False,
     cmdclass={'build_py': CustomBuild},
