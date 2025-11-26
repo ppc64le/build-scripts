@@ -3,13 +3,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package           : imagecodecs
-# Version           : v2025.8.2
+# Version           : v2025.11.11
 # Source repo       : https://github.com/cgohlke/imagecodecs.git
 # Tested on         : UBI:9.3
 # Language          : C,Python
 # Travis-Check      : True
 # Script License    : Apache License, Version 2.0
-# Maintainer        : Sakshi Jain <sakshi.jain16@ibm.com>
+# Maintainer        : Lenzie Camilo <Lenzie.Camilo3@ibm.com>
 #
 # Disclaimer        : This script has been tested in root mode on given
 # ==========          platform using the mentioned version of the package.
@@ -20,7 +20,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=imagecodecs
-PACKAGE_VERSION=${1:-v2025.8.2}
+PACKAGE_VERSION=${1:-v2025.11.11}
 PACKAGE_URL=https://github.com/cgohlke/imagecodecs.git
 CURRENT_DIR="${PWD}"
 
@@ -32,19 +32,19 @@ yum install -y wget gcc gcc-c++ gcc-gfortran git make cmake autoconf automake \
     pkgconfig libtool openjpeg2 lcms2
 
 # -------------------------------------------------------------------------
-# Python deps (Cython >= 3.1.2, NumPy 2.3.2, Meson/Ninja)
+# Python deps (Cython >= 3.2.0, NumPy 2.3.4, Meson/Ninja)
 # -------------------------------------------------------------------------
 python3.12 -m pip install -U pip setuptools wheel
-python3.12 -m pip install "cython>=3.1.2" "numpy==2.3.2" wheel pytest meson ninja
+python3.12 -m pip install "cython>=3.2.0" "numpy==2.3.4" wheel pytest meson ninja
 
 # -------------------------------------------------------------------------
 # Install dependencies from source with correct versions
 # -------------------------------------------------------------------------
 
-# libtiff 4.7.0
-wget https://download.osgeo.org/libtiff/tiff-4.7.0.tar.gz
-tar -xzf tiff-4.7.0.tar.gz
-cd tiff-4.7.0
+# libtiff 4.7.1
+wget https://download.osgeo.org/libtiff/tiff-4.7.1.tar.gz
+tar -xzf tiff-4.7.1.tar.gz
+cd tiff-4.7.1
 ./configure --prefix=/usr/local && make -j$(nproc) && make install
 cd ..
 
@@ -80,10 +80,10 @@ cd build
 cmake .. && make -j$(nproc) && make install
 cd ../..
 
-# cfitsio 4.2.0
-wget https://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/cfitsio-4.2.0.tar.gz
-tar -xf cfitsio-4.2.0.tar.gz &&
-cd cfitsio-4.2.0
+# cfitsio 4.6.3
+wget https://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/cfitsio-4.6.3.tar.gz
+tar -xf cfitsio-4.6.3.tar.gz &&
+cd cfitsio-4.6.3
 ./configure --prefix=/usr/local && make -j$(nproc) && make install
 cd ..
 
@@ -96,9 +96,10 @@ cd build
 cmake .. && make -j$(nproc) && make install
 cd ../..
 
-# giflib 5.2.1
-wget https://downloads.sourceforge.net/project/giflib/giflib-5.2.1.tar.gz
-tar -xf giflib-5.2.1.tar.gz && cd giflib-5.2.1
+# giflib 5.2.2
+wget https://downloads.sourceforge.net/project/giflib/giflib-5.2.2.tar.gz
+tar -xf giflib-5.2.2.tar.gz && cd giflib-5.2.2
+touch doc/giflib-logo.gif
 make -j$(nproc)
 make install
 cd ..
@@ -127,16 +128,16 @@ cd cmake_build
 cmake .. && make -j$(nproc) && make install
 cd ../..
 
-# libdeflate 1.24
-git clone --branch v1.24 https://github.com/ebiggers/libdeflate.git
+# libdeflate 1.25
+git clone --branch v1.25 https://github.com/ebiggers/libdeflate.git
 cd libdeflate
 mkdir build
 cd build
 cmake .. && make -j$(nproc) && make install
 cd ../..
 
-# libheif 1.20.1
-git clone --branch v1.20.1 https://github.com/strukturag/libheif.git
+# libheif 1.20.2
+git clone --branch v1.20.2 https://github.com/strukturag/libheif.git
 cd libheif
 mkdir build
 cd build
@@ -151,8 +152,8 @@ cd liblzf-3.6
 ./configure && make -j$(nproc) && make install
 cd ..
 
-# openjpeg 2.5.3
-git clone --branch v2.5.3 https://github.com/uclouvain/openjpeg.git
+# openjpeg 2.5.4
+git clone --branch v2.5.4 https://github.com/uclouvain/openjpeg.git
 cd openjpeg
 mkdir build
 cd build
@@ -210,10 +211,10 @@ git submodule update --init
 python3.12 setup.py install --h5plugin --zstd
 cd ..
 
-# libjpeg-turbo 3.1.1
+# libjpeg-turbo 3.1.2
 git clone https://github.com/libjpeg-turbo/libjpeg-turbo.git
 cd libjpeg-turbo 
-git checkout 3.1.1
+git checkout 3.1.2
 
 # Build 12-bit version
 mkdir build12 && cd build12
