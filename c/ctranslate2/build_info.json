@@ -1,0 +1,17 @@
+{
+  "maintainer": "Salil4IBM",
+  "package_name": "ctranslate2",
+  "github_url": "https://github.com/OpenNMT/CTranslate2.git",
+  "version": "v4.5.0",
+  "wheel_build" : true,
+  "package_dir": "c/ctranslate2",
+  "default_branch": "master",
+  "build_script": "ctranslate2_ubi_9.6.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "wheel_build" : true,
+  "*": {
+    "build_script": "ctranslate2_ubi_9.6.sh"
+  }
+}
