@@ -69,6 +69,12 @@ git checkout $PACKAGE_VERSION
 export CXXFLAGS="-Wno-stringop-overflow"
 export CFLAGS="-Wno-stringop-overflow"
 
+# Fix eigen download issue as per https://github.com/microsoft/onnxruntime/issues/24861
+sed 's/be8be39fdbc6e60e94fa7870b280707069b5b81a/51982be81bbe52572b54180454df11a3ece9a934/g' cmake/deps.txt > cmake/deps.txt.new
+mv cmake/deps.txt.new cmake/deps.txt
+sed 's/e7248b26a1ed53fa030c5c459f7ea095dfd276ac/1d8b82b0740839c0de7f1242a3585e3390ff5f33/g' cmake/deps.txt > cmake/deps.txt.new
+mv cmake/deps.txt.new cmake/deps.txt
+
 #Build and test
 if ! (./build.sh \
 	--cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" Protobuf_PROTOC_EXECUTABLE=$PROTO_PREFIX/bin/protoc Protobuf_INCLUDE_DIR=$PROTO_PREFIX/include onnxruntime_USE_COREML=OFF CMAKE_POLICY_VERSION_MINIMUM=3.5 \
