@@ -288,7 +288,23 @@ git checkout $PACKAGE_VERSION
 
 # Apply the patch
 echo "------------------------Applying patch-------------------"
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchaudio/torchaudio_${PACKAGE_VERSION}.patch
+# wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchaudio/torchaudio_${PACKAGE_VERSION}.patch
+# Temporary change to validate the patch file, will be reverted
+echo "diff --git a/tools/setup_helpers/extension.py b/tools/setup_helpers/extension.py
+index 58f50878..955dbacd 100644
+--- a/tools/setup_helpers/extension.py
++++ b/tools/setup_helpers/extension.py
+@@ -110,6 +110,11 @@ class CMakeBuild(build_ext):
+             f"-DUSE_CUDA:BOOL={'ON' if _USE_CUDA else 'OFF'}",
+             f"-DUSE_OPENMP:BOOL={'ON' if _USE_OPENMP else 'OFF'}",
++            f"-DProtobuf_INCLUDE_DIR={os.getenv('Protobuf_INCLUDE_DIR')}",
++            f"-DProtobuf_LIBRARIES={os.getenv('Protobuf_LIBRARIES')}",
++            f"-DProtobuf_LIBRARY={os.getenv('Protobuf_LIBRARY')}",
++            f"-DProtobuf_LITE_LIBRARY={os.getenv('Protobuf_LITE_LIBRARY')}",
++            f"-DProtobuf_PROTOC_EXECUTABLE={os.getenv('Protobuf_PROTOC_EXECUTABLE')}",
+         ]
+         build_args = ["--target", "install"]
+         # Pass CUDA architecture to cmake" > torchaudio_${PACKAGE_VERSION}.patch
 git apply torchaudio_${PACKAGE_VERSION}.patch
 
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchaudio/0001-Excluded-source-that-has-commercial-license.patch
