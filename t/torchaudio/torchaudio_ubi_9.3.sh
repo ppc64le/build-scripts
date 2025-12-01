@@ -290,7 +290,8 @@ git checkout $PACKAGE_VERSION
 echo "------------------------Applying patch-------------------"
 # wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchaudio/torchaudio_${PACKAGE_VERSION}.patch
 # Temporary change to validate the patch file, will be reverted
-echo "diff --git a/tools/setup_helpers/extension.py b/tools/setup_helpers/extension.py
+cat << 'EOT' > torchaudio_${PACKAGE_VERSION}.patch
+diff --git a/tools/setup_helpers/extension.py b/tools/setup_helpers/extension.py
 index 58f50878..955dbacd 100644
 --- a/tools/setup_helpers/extension.py
 +++ b/tools/setup_helpers/extension.py
@@ -304,7 +305,8 @@ index 58f50878..955dbacd 100644
 +            f"-DProtobuf_PROTOC_EXECUTABLE={os.getenv('Protobuf_PROTOC_EXECUTABLE')}",
          ]
          build_args = ["--target", "install"]
-         # Pass CUDA architecture to cmake" > torchaudio_${PACKAGE_VERSION}.patch
+         # Pass CUDA architecture to cmake
+EOT
 git apply torchaudio_${PACKAGE_VERSION}.patch
 
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchaudio/0001-Excluded-source-that-has-commercial-license.patch
