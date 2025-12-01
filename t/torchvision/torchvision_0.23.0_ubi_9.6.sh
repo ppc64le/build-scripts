@@ -581,10 +581,6 @@ cp libtorchvision.so /usr/local/lib64
 cd $CURRENT_DIR/vision
 python3 setup.py bdist_wheel --dist-dir $CURRENT_DIR
 
-----------------------------------------------------------------------------------------------------------
-
-
-
 cd $CURRENT_DIR
 
 python3 -m pip install ./torchvision*.whl
