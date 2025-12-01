@@ -26,6 +26,8 @@ PACKAGE_URL=https://github.com/pytorch/audio.git
 PACKAGE_VERSION=${1:-v2.8.0}
 PACKAGE_DIR=./audio
 SCRIPT_DIR=$(pwd)
+SCRIPT=$(readlink -f $0)
+PATCH_DIR=$(dirname $SCRIPT)
 
 yum install -y git make wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas
 yum install gcc-toolset-13 -y
@@ -293,7 +295,7 @@ git apply torchaudio_${PACKAGE_VERSION}.patch
 
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchaudio/0001-Excluded-source-that-has-commercial-license.patch
 # Below patch excludes the source files that has commercial license
-git apply $SCRIPT_DIR/0001-Exclude-source-that-has-commercial-license-code.patch
+git apply $PATCH_DIR/0001-Exclude-source-that-has-commercial-license-code.patch
 echo "-----------------------Applied patch successfully---------------------------------------"
 
 SRC_DIR=$(pwd)
