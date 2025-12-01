@@ -58,6 +58,7 @@ if ! pip install -e .; then
 fi
 
 # Run tests
+export HYPOTHESIS_DERANDOMIZE=1
 if ! pytest ./tests -v; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
