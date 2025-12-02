@@ -2,7 +2,7 @@
 
 Please follow the below rules while contributing your build script to this repo.
 
-1. Always start your build-script with shabang statement (#!/bin/bash or #!/bin/sh or #!/bin/ksh). Shabang statement should be at **first line** of your build-script, otherwise, travis check will fail with `exec user process caused "exec format error"` error.
+1. Always start your build-script with shabang statement (#!/bin/bash or #!/bin/sh or #!/bin/ksh). Shabang statement should be at **first line** of your build-script, otherwise, ci check will fail with `exec user process caused "exec format error"` error.
 2. Below header is mandatory for the build-script:
 	```
 	# -----------------------------------------------------------------------------
@@ -12,7 +12,7 @@ Please follow the below rules while contributing your build script to this repo.
 	# Source repo	: <Package source repo URL>
 	# Tested on	: <Linux OS distribution details on which build-script implemented/validated>
 	# Language      : <Programming language in which Package is implemented>
-	# Travis-Check  : <True: If build-script can be validated via travis build on docker container.>
+	# Ci-Check  : <True: If build-script can be validated via ci build on docker container.>
 	# Script License: Apache License, Version 2 or later
 	# Maintainer	: <Maintainer name along with official email-id>
 	#
@@ -24,7 +24,7 @@ Please follow the below rules while contributing your build script to this repo.
 	#
 	# ----------------------------------------------------------------------------
 	```
-   **If the build-script doesn't contain any of the field in above header, that leads to  `ValueError` in travis check.**
+   **If the build-script doesn't contain any of the field in above header, that leads to  `ValueError` in ci check.**
 3. Please mention in notes that, whether the script is made for root user or non-root user.
 4. Always keep the package version/commitID in variable. Try to take version as parameter otherwise take a default version number you are working on. Below is the example:
 	``` shell
