@@ -16,42 +16,32 @@
 #             package and/or distribution. In such cases, please
 #             contact the "Maintainer" of this script.
 #
-# -----------------------------------------------------------------------------
+
 # set -e
-# -----------------------------------------------------------------------------
-# Set package version
-# -----------------------------------------------------------------------------
+
 PACKAGE_NAME=faiss
-PACKAGE_DIR=faiss/build/faiss/python
+PACKAGE_DIR=faiss_build/faiss/build/faiss/python
 PACKAGE_VERSION=${1:-1.12.0}
 PACKAGE_URL=https://github.com/facebookresearch/faiss.git
 
-# -----------------------------------------------------------------------------
-# Install system dependencies
-# -----------------------------------------------------------------------------
+
 echo "Installing dependencies..."
 
 yum install -y \
     python3 python3-devel python3-pip \
     openblas-devel pcre2-devel cmake git \
-    autoconf automake libtool gcc-c++ make wget
+    autoconf automake libtool gcc-c++ make wget gcc-fortran
 yum install -y https://rpmfind.net/linux/centos-stream/9-stream/AppStream/ppc64le/os/Packages/bison-3.7.4-5.el9.ppc64le.rpm 
 
-# -----------------------------------------------------------------------------
-# Upgrade Python packaging tools
-# -----------------------------------------------------------------------------
+
 echo "Upgrading Python tools..."
 python3 -m pip install --upgrade setuptools wheel build numpy
 
-# -----------------------------------------------------------------------------
-# Create build workspace
-# -----------------------------------------------------------------------------
-BUILD_DIR=/home/faiss_build
+
+BUILD_DIR=faiss_build
 mkdir -p "${BUILD_DIR}" && cd "${BUILD_DIR}" || exit 1
 
-# -----------------------------------------------------------------------------
-# Check and install SWIG if not found
-# -----------------------------------------------------------------------------
+
 if ! command -v swig &> /dev/null; then
     echo "SWIG not found. Building SWIG from source..."
     if [ ! -d "swig" ]; then
@@ -67,12 +57,9 @@ else
     echo "SWIG already installed: $(swig -version | grep 'SWIG Version' | awk '{print $3}')"
 fi
 
-# Verify SWIG installation
 swig -version || { echo "SWIG installation failed"; exit 1; }
 
-# -----------------------------------------------------------------------------
-# Clone FAISS repository
-# -----------------------------------------------------------------------------
+
 if [ ! -d "faiss" ]; then
     echo "Cloning FAISS repository..."
     git clone https://github.com/facebookresearch/faiss.git
@@ -80,9 +67,6 @@ fi
 
 cd faiss || exit 1
 
-# -----------------------------------------------------------------------------
-# Build FAISS (CPU only)
-# -----------------------------------------------------------------------------
 mkdir -p build && cd build || exit 1
 
 cmake .. \
@@ -95,34 +79,25 @@ cmake .. \
 
 make -j"$(nproc)"
 
-#follow this to build wheel locally
-# -----------------------------------------------------------------------------
-# Build Python wheel
-# -----------------------------------------------------------------------------
-# cd ./faiss/python || exit 1
-# echo "Building Python wheel..."
-# python3 -m build --wheel
+cd faiss/python
 
-# # -----------------------------------------------------------------------------
-# # Verify build output
-# # -----------------------------------------------------------------------------
-# echo "Listing built wheel files..."
-# ls -lh dist/
-
-# # -----------------------------------------------------------------------------
-# # Test FAISS installation (basic import test)
-# # -----------------------------------------------------------------------------
-# echo "Testing FAISS wheel installation..."
-# WHEEL_FILE=$(ls dist/faiss*.whl | head -n 1)
-# if [ -f "$WHEEL_FILE" ]; then
-#     pip install "$WHEEL_FILE"
-#     python3 -c "import faiss; print('FAISS version:', faiss.__version__)"
-# else
-#     echo "No wheel file found in dist/. Build may have failed."
-#     exit 1
-# fi
-
-# -----------------------------------------------------------------------------
-# Cleanup and summary
-# -----------------------------------------------------------------------------
-echo "FAISS ${VERSION} build and installation completed successfully!"
+if ! (pip install .); then 
+   echo "------------------$PACKAGE_NAME:Failed to build wheel-------------------------------------"
+   echo "$PACKAGE_URL $PACKAGE_NAME"
+   echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+fi
+# Run tests
+cd ../../../tests/
+pip install pytest scipy
+cd ../tests
+if ! (pytest); then
+     echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails--------------------"
+     echo "$PACKAGE_URL $PACKAGE_NAME"
+     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+     exit 2
+else
+     echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
+     echo "$PACKAGE_URL $PACKAGE_NAME"
+     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Import_Success"
+     exit 0
+fi
