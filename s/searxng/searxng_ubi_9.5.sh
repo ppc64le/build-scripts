@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/searxng/searxng.git
 # Tested on     : UBI:9.5
 # Language      : Python
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Soham Badjate <soham.badjate@ibm.com>
 #
@@ -80,7 +80,7 @@ if ! (python3 -m pip install --upgrade pip setuptools wheel && python3 -m pip in
 fi
 
 # install test dependencies
- pip install pytest aiounittest mock parameterized
+ pip install pytest aiounittest mock parameterized sniffio
 
 # Run tests
 if ! pytest -k "not robot" ; then
