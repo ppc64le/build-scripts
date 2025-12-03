@@ -82,7 +82,8 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Apply patch
-git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${PACKAGE_VERSION}.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/e/elasticsearch/elasticsearch_v8.18.6.patch
+git apply elasticsearch_v8.18.6.patch
 
 # Create required stub directories for ppc64le
 mkdir -p distribution/archives/linux-ppc64le-tar
