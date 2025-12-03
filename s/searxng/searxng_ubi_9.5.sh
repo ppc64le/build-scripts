@@ -80,7 +80,7 @@ if ! (python3 -m pip install --upgrade pip setuptools wheel && python3 -m pip in
 fi
 
 # install test dependencies
- pip install pytest aiounittest mock parameterized
+ pip install pytest aiounittest mock parameterized sniffio
 
 # Run tests
 if ! pytest -k "not robot" ; then
