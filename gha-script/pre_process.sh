@@ -13,9 +13,9 @@ for language in "${langs[@]}"; do
  	ls -ltr
     elif [ "$language" == "javascript" ] || [ "$language" == "typescript" ]; then
     	echo "executing javascript code in pre-process"
-    	nvm_path='/home/travis/.nvm/nvm.sh'
+		nvm_path="$HOME/.nvm/nvm.sh"
         if [ -f "package-lock.json" ] || [ -f "yarn.lock" ]; then
-	    sudo chown travis:travis -R .
+		sudo chown -R $USER:$USER .
      	    if [ -f ${nvm_path} ]; then
 	  	source ${nvm_path}
     	    else

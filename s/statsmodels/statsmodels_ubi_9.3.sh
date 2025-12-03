@@ -32,8 +32,19 @@ git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
+export SETUPTOOLS_SCM_PRETEND_VERSION=${PACKAGE_VERSION#v}
+
+# Install specific versions for compatibility
+pip install pytest
+pip install numpy==1.19.3
+pip install pandas==1.3.0
+pip install scipy==1.7.3 --prefer-binary
+pip install "cython<3.0"
+pip install oldest-supported-numpy "setuptools_scm[toml]<8,>=7.0" wheel
+
+
 echo "------------------------------------------------------------Installing statsmodels------------------------------------------------------"
-if ! pip install -e .; then
+if ! pip install -e . --no-build-isolation; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -45,12 +56,6 @@ sed -i 's/atol=1e-6/atol=1e-1/g' statsmodels/stats/tests/test_mediation.py
 sed -i 's/QE/Q-DEC/g' statsmodels/tsa/tests/test_exponential_smoothing.py
 sed -i 's/1e-5/2/g' statsmodels/imputation/tests/test_mice.py
 sed -i 's/1e-2/1e-1/g' statsmodels/stats/tests/test_mediation.py
-
-# Install specific versions for compatibility
-pip install pytest
-pip install numpy==1.22.4
-pip install pandas==1.3.0
-pip install scipy==1.7.3 --prefer-binary
 
 echo "------------------------------------------------------------Run tests for statsmodels------------------------------------------------------"
 cd statsmodels

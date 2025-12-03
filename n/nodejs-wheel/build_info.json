@@ -1,0 +1,13 @@
+{
+  "maintainer": "SohamBadjateIBM",
+  "package_name": "nodejs-wheel",
+  "github_url": "https://github.com/njzjz/nodejs-wheel.git",
+  "version": "v22.20.0",
+  "default_branch": "main",
+  "build_script": "nodejs-wheel-binaries_22.20.0_ubi_9.5.sh",
+  "package_dir": "n/nodejs-wheel",
+  "use_non_root_user": "false",
+  "docker_build": false,
+  "wheel_build": true,
+  "validate_build_script": true
+}

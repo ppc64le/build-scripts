@@ -3,9 +3,9 @@
 #
 # Package       : log4j-api
 # Version       : rel/2.23.1
-# Source repo   : https://github.com/apache/logging-log4j2
-# Tested on     : UBI 9.3 (docker)
-# Language      : 
+# Source repo   : https://github.com/apache/logging-log4j2.git
+# Tested on     : UBI 9.3
+# Language      : Java, Others
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Prachi Gaonkar <Prachi.Gaonkar@ibm.com>
@@ -18,15 +18,14 @@
 #
 # --------------------------------------------------------------------------------------------
 
-PACKAGE_NAME=logging-log4j2/log4j-api
+PACKAGE_NAME=log4j-api
+PACKAGE_VERSION=${1:-rel/2.23.1}
+PACKAGE_URL=https://github.com/apache/logging-log4j2.git
 SCRIPT=$(readlink -f $0)
 SCRIPT_DIR=$(dirname $SCRIPT)
-ARTIFACT_VERSION=${1:-2.23.1}
-ARTIFACT_NAME=log4j-api-${ARTIFACT_VERSION}
-PACKAGE_VERSION=${2:-rel/${ARTIFACT_VERSION}}
-PACKAGE_URL=https://github.com/apache/logging-log4j2
 WDIR=$(pwd)
-ARTIFACT_PATH=${WDIR}${PACKAGE_NAME}/target/${ARTIFACT_NAME}.jar
+MAVEN_VERSION=${MAVEN_VERSION:-3.9.11}
+ARTIFACT_PATH=${WDIR}/logging-log4j2/${PACKAGE_NAME}/target/${PACKAGE_NAME}-${PACKAGE_VERSION#rel/}.jar
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
@@ -36,15 +35,26 @@ export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
 
 #Install maven
-wget https://archive.apache.org/dist/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz
-tar -zxf apache-maven-3.9.9-bin.tar.gz
-cp -R apache-maven-3.9.9 /usr/local
-ln -s /usr/local/apache-maven-3.9.9/bin/mvn /usr/bin/mvn
+wget https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
+tar -xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz
+mv apache-maven-${MAVEN_VERSION} /opt/maven-${MAVEN_VERSION}
+rm apache-maven-${MAVEN_VERSION}-bin.tar.gz
+ln -sf /opt/maven-${MAVEN_VERSION}/bin/mvn /usr/bin/mvn
+export MAVEN_HOME=/opt/maven-${MAVEN_VERSION}
+export PATH=$MAVEN_HOME/bin:$PATH
 
 git clone $PACKAGE_URL
-cd $PACKAGE_NAME
-git checkout $PACKAGE_VERSION
-git apply $SCRIPT_DIR/${ARTIFACT_NAME}.patch
+cd logging-log4j2 && git checkout $PACKAGE_VERSION
+
+# Build log4j-api-java9 module first to resolve dependencies
+echo "Building module: log4j-api-java9"
+cd log4j-api-java9
+if ! mvn clean install -DskipTests; then
+  echo "log4j-api-java9 build failed"
+  exit 1
+fi
+
+cd ../$PACKAGE_NAME
 
 if ! mvn clean install -DskipTests; then
        echo "------------------$PACKAGE_NAME:Install_fails---------------------------------"

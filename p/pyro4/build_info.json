@@ -1,0 +1,16 @@
+{
+  "maintainer": "aastha-sharma2",
+  "package_name": "pyro4",
+  "github_url": "https://github.com/irmen/Pyro4.git",
+  "version": "v4.82",
+  "wheel_build" : true,
+  "package_dir": "p/pyro4",
+  "default_branch": "master",
+  "build_script": "pyro4_4.82_ubi_9.6.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "pyro4_4.82_ubi_9.6.sh"
+  }
+}

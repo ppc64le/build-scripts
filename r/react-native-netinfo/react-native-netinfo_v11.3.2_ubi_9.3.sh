@@ -18,12 +18,30 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=react-native-netinfo
-PACKAGE_VERSION=${1:-v11.3.2}
-PACKAGE_URL=https://github.com/$PACKAGE_NAME/$PACKAGE_NAME.git
-BUILD_HOME=$(pwd)
+PACKAGE_NAME="react-native-netinfo"
+PACKAGE_VERSION="v11.3.2"
+PACKAGE_URL="https://github.com/react-native-netinfo/react-native-netinfo.git"
+WORK_DIR=$(pwd)
+RUNTESTS=1
 
-# Install required dependencies
+for arg in "$@"; do
+  case "$arg" in
+    --skip-tests)
+      RUNTESTS=0
+      echo "INFO: Tests will be skipped."
+      shift
+      ;;
+    -*|--*)
+      echo "Unknown option: $arg"
+      exit 3
+      ;;
+    *)
+      PACKAGE_VERSION="$arg"
+      echo "INFO: Using version: $PACKAGE_VERSION"
+      ;;
+  esac
+done
+
 yum install -y git
 
 # Install NVM + Node.js
@@ -39,31 +57,60 @@ nvm use 20
 npm install -g yarn
 
 # Clone the repo
-cd $BUILD_HOME
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME
-git checkout $PACKAGE_VERSION
+cd "$WORK_DIR"
+git clone "$PACKAGE_URL"
+cd "$PACKAGE_NAME"
+git checkout "$PACKAGE_VERSION"
 
 # Install dependencies
 yarn install
 
 # Build the project
-if ! yarn prepare; then
-    echo "------------------$PACKAGE_NAME:build_failed-------------------------------------------"
+ret=0
+yarn prepare || ret=$?
+if [ "$ret" -ne 0 ]; then
+    echo "ERROR: $PACKAGE_NAME - Build failed."
     exit 1
+else
+    echo "INFO: $PACKAGE_NAME - Build successful."
 fi
 
-# Run Tests
-if  ! yarn test; then
-    echo "------------------$PACKAGE_NAME:build_and_test_success---------------------------"
+# Install the package
+echo "Installing $PACKAGE_NAME"
+PACKAGE_TGZ_NAME="${PACKAGE_NAME}.tgz"
+yarn pack --filename "$PACKAGE_TGZ_NAME"
+npm install -g "$(realpath "$PACKAGE_TGZ_NAME")" || ret=$?
+
+if [ $? -eq 0 ]; then
+  echo "$PACKAGE_NAME $PACKAGE_VERSION installed successfully."
+else
+  echo "Installation failed."
+  exit 3
+fi
+
+# Skip tests
+if [ "$RUNTESTS" -eq 0 ]; then
+    echo "INFO: $PACKAGE_NAME build and install successful. Tests were skipped."
+    exit 0
+fi
+
+# Run tests
+yarn test || ret=$?
+if [ "$ret" -ne 0 ]; then
+    echo "ERROR: $PACKAGE_NAME - Test phase failed."
     exit 2
+else
+    echo "INFO: $PACKAGE_NAME - All tests passed."
 fi
 
-# Smoke Test: Check version
+# Final Success
 PACKAGE_BUILD_VERSION=$(node -e "console.log(require('./package.json').version)")
 if [[ "$PACKAGE_BUILD_VERSION" == "${PACKAGE_VERSION#v}" ]]; then
-    echo "PASS: $PACKAGE_NAME version v$PACKAGE_BUILD_VERSION built and tested successfully."
+    echo "SUCCESS: $PACKAGE_NAME version $PACKAGE_BUILD_VERSION built and tested successfully."
+    exit 0
 else
-    echo "FAIL: $PACKAGE_NAME version mismatch."
+    echo "WARNING: Version mismatch. Expected ${PACKAGE_VERSION#v}, got $PACKAGE_BUILD_VERSION."
+    exit 2
+fi
     exit 2
 fi

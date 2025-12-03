@@ -22,6 +22,7 @@
 PACKAGE_NAME=dask
 PACKAGE_VERSION=${1:-2.20.0}  # Default version set to 2.20.0
 PACKAGE_URL=https://github.com/dask/dask.git
+CURRENT_DIR="${PWD}"
 
 # Install necessary system dependencies
 
@@ -38,6 +39,8 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME  
 git checkout $PACKAGE_VERSION  
 
+export SETUPTOOLS_SCM_PRETEND_VERSION=$PACKAGE_VERSION
+
 # Install Dask
 if ! pip install .; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
@@ -48,14 +51,18 @@ fi
 
 #Install pytest
 pip install pytest
-pip install --upgrade pip setuptools wheel
 pip install packaging --no-binary :all:
 pip install pandas==1.5.3
 pip install numpy==1.23.0
 pip install cachey --no-binary :all:
-pip install distributed --no-binary :all:
+pip install distributed==2.20.0 --no-binary :all:
 pip install graphviz --no-binary :all:
 pip install psutil --no-binary :all:
+pip install 'fsspec>=0.3.3'
+
+#Creating wheel in the script to get proper naming.
+python3 setup.py bdist_wheel
+cp dist/*.whl $CURRENT_DIR
 
 sed -i '84s/if (cloudpickle.__version__) < Version("1.3.0")/if (cloudpickle.__version__) < str(Version("1.3.0"))/' dask/tests/test_multiprocessing.py
 sed -i '107s/for name, col in df.iteritems()/for name, col in df.items()/g' dask/sizeof.py

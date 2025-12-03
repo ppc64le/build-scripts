@@ -24,12 +24,11 @@ PACKAGE_URL="https://github.com/react-navigation/$PACKAGE_NAME.git"
 TAG="@react-navigation/native@6.1.17"
 
 # Install required system dependencies
-yum module enable nodejs:20 -y
-yum install git  -y
-yum install -y nodejs
-# Install and configure yarn + gitpkg
-npm install -g yarn
-npm install -g gitpkg
+yum module enable nodejs:18 -y
+yum install nodejs git sudo  -y
+export NODE_OPTIONS="--dns-result-order=ipv4first"
+curl -sL https://dl.yarnpkg.com/rpm/yarn.repo | sudo tee /etc/yum.repos.d/yarn.repo
+yum install yarn -y
 yarn global add gitpkg
 
 # Clone the repository

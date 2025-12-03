@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : triton-inference-server
-# Version       : master(41844940e1601f223c33f)
+# Version       : v2.61.0
 # Source repo   : https://github.com/triton-inference-server/server
 # Tested on     : RHEL 9.6
 # Language      : Python , Shell
@@ -23,6 +23,7 @@
 wdir=`pwd`
 PACKAGE_NAME=server
 PACKAGE_URL=https://github.com/triton-inference-server/server
+PACKAGE_VERSION=${1:-v2.61.0}
 
 yum install git python3.12-devel python3.12-pip cmake -y
 
@@ -32,12 +33,14 @@ pip install distro requests
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
 
 cp $wdir/onnxruntime_backend.patch .
 cp $wdir/pytorch_backend.patch .
+cp $wdir/fil_backend.patch .
 git apply $wdir/rhelppc.patch
 
-if ! ./build.py --enable-logging --endpoint http --backend onnxruntime --backend python --backend pytorch --image base,registry.access.redhat.com/ubi9/ubi:9.6 ; then
+if ! ./build.py --enable-logging --endpoint http --backend onnxruntime --backend python --backend pytorch --backend fil --override-backend-cmake-arg=fil:TRITON_FIL_DOCKER_BUILD=OFF  --image base,registry.access.redhat.com/ubi9/ubi:9.6 ; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     exit 2
 else
@@ -48,3 +51,4 @@ fi
 # Notes about patches:
 # onnxruntime_backend.patch: We are patching https://github.com/triton-inference-server/onnxruntime_backend/blob/main/tools/gen_ort_dockerfile.py, these changes are required to build onnxruntime_backend on RHEL.To remove this patch we will have to upstream changes.
 # rhelppc.patch: This patch is required to build triton server image on RHEL.We will have to upstream changes to remove this patch.
+# pytorch_backend.patch : This patch is required to build pytorch_backend on RHEL, we will have to upstream changes to remove this patch.

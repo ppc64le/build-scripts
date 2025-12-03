@@ -1342,7 +1342,7 @@ protoc --proto_path=tensorflow_datasets/datasets/smart_buildings --python_out=te
 sed -i "s|\(collect_ignore = \[.*\)\]|\1, 'core/dataset_builder_beam_test.py', 'core/dataset_builders/adhoc_builder_test.py', 'core/features/tensor_feature_test.py', 'core/split_builder_test.py',]|" tensorflow_datasets/conftest.py
 
 echo " --------------------------------- Building the wheel --------------------------------- "
-python3.12 setup.py bdist_wheel --dist-dir $CURRENT_DIR
+python3.12 setup.py bdist_wheel --dist-dir $CURRENT_DIR --plat-name=linux_$(uname -m)
 
 
 echo " --------------------------------- Testing pkg --------------------------------- "

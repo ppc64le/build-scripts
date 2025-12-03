@@ -1,0 +1,58 @@
+diff --git a/api/bazel/repositories.bzl b/api/bazel/repositories.bzl
+index 8669544cdf..4e3624f9dd 100644
+--- a/api/bazel/repositories.bzl
++++ b/api/bazel/repositories.bzl
+@@ -36,6 +36,8 @@ def api_dependencies():
+     )
+     external_http_archive(
+         name = "rules_buf",
++        patch_args = ["-p1"],
++        patches = ["@envoy//bazel:rules_buf.patch"],
+     )
+     external_http_archive(
+         name = "rules_proto",
+diff --git a/bssl-compat/prefixer/prefixer.cpp b/bssl-compat/prefixer/prefixer.cpp
+index 621fc08d89..abcc1bdbce 100644
+--- a/bssl-compat/prefixer/prefixer.cpp
++++ b/bssl-compat/prefixer/prefixer.cpp
+@@ -402,6 +402,7 @@ class CompilationDatabase : public clang::tooling::CompilationDatabase
+     std::vector<clang::tooling::CompileCommand> getCompileCommands(llvm::StringRef file) const override {
+       std::vector<std::string> cmdline = {
+           "dummy",
++          "-I/home/envoy/clang+llvm-17.0.6-powerpc64le-linux-rhel-8.8/include/",
+           std::string("-I") + opt::incdir().string(),
+           // Some versions of clang ship with the full version string in the include path, others only with the major version number.
+           "-I" LLVM_LIBRARY_DIR "/clang/" LLVM_VERSION_STRING "/include/",
+diff --git a/source/extensions/filters/common/lua/BUILD b/source/extensions/filters/common/lua/BUILD
+index afe2b5149a..faaeffb345 100644
+--- a/source/extensions/filters/common/lua/BUILD
++++ b/source/extensions/filters/common/lua/BUILD
+@@ -13,7 +13,8 @@ envoy_extension_package()
+ 
+ bool_flag(
+     name = "luajit2",
+-    build_setting_default = False,
++    build_setting_default = True,
++    visibility = ["//visibility:public"],
+ )
+ 
+ config_setting(
+diff --git a/bazel/rules_buf.patch b/bazel/rules_buf.patch
+new file mode 100644
+index 0000000000..f1d3f6ad1c
+--- /dev/null
++++ b/bazel/rules_buf.patch
+@@ -0,0 +1,13 @@
++diff --git a/buf/internal/toolchain.bzl b/buf/internal/toolchain.bzl
++index 1cc60ff..5736cd4 100644
++--- a/buf/internal/toolchain.bzl
+++++ b/buf/internal/toolchain.bzl
++@@ -115,7 +115,7 @@ def _buf_download_releases_impl(ctx):
++         version = versions[0]["name"]
++
++     os, cpu = _detect_host_platform(ctx)
++-    if os not in ["linux", "darwin", "windows"] or cpu not in ["arm64", "amd64"]:
+++    if os not in ["linux", "darwin", "windows"] or cpu not in ["arm64", "amd64", "ppc64le"]:
++         fail("Unsupported operating system or cpu architecture ")
++     if os == "linux" and cpu == "arm64":
++         cpu = "aarch64"

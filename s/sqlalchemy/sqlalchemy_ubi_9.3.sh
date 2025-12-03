@@ -45,6 +45,9 @@ pip install --upgrade pip setuptools wheel
 # Enable legacy editable mode for setuptools
 export SETUPTOOLS_ENABLE_FEATURES="legacy-editable"
 
+#commenting out the tag_build so it creates wheel without .dev0
+sed -i '/^\[egg_info\]/,/\[/{s/^\(tag_build = dev\)/# \1/}' setup.cfg
+
 # Install the package in editable mode with testing dependencies
 pip install -e .[testing]
 
