@@ -1,0 +1,17 @@
+{
+  "maintainer": "shalinib-ibm",
+  "package_name": "ollama",
+  "github_url": "https://github.com/ollama/ollama",
+  "version": "0.12.10",
+  "wheel_build": true,
+  "package_dir": "o/ollama",
+  "default_branch": "main",
+  "build_script": "ollama_ubi_9.6.sh",
+  "docker_build": true,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "ollama_ubi_9.6.sh"
+  }
+}
+
