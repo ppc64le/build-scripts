@@ -5,7 +5,7 @@
 # Source repo     : https://github.com/json-schema-faker/json-schema-faker
 # Tested on       : ubi:8.3
 # Language        : Javascript
-# Travis-Check    : True
+# Ci-Check    : True
 # Script License  : Apache License, Version 2 or later
 # Maintainer      : Balavva Mirji <Balavva.Mirji@ibm.com>
 #

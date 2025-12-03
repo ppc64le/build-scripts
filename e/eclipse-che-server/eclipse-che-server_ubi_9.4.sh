@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/eclipse-che/che-server
 # Tested on        : UBI:9.4
 # Language         : Java
-# Travis-Check     : True 
+# Ci-Check     : True 
 # Script License   : Apache License, Version 2
 # Maintainer       : Prasanna Marathe<prasanna.marathe@ibm.com>
 #

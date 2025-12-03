@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/logstash-plugins/logstash-output-elasticsearch
 # Tested on	: UBI_8.9
 # Language      : JAVA/Ruby
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Ashutosh Jadhav <Ashutosh.Jadhav2@ibm.com>
 #

@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/node-browser-compat/atob.git
 # Tested on     : UBI: 8.3
 # Language      : JavaScript
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License 2.0
 # Maintainer's  : Balavva Mirji <Balavva.Mirji@ibm.com>
 #

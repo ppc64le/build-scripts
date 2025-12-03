@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/carbon-design-system/carbon-charts
 # Tested on     : ubuntu_18.04 (Docker)
 # Language      : Node
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Manik Fulpagar <manik.fulpagar@ibm.com>
 #

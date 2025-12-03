@@ -7,7 +7,7 @@
 # Language      : Julia
 # Tested on     : UBI 8.5
 # Script License: Apache License Version 2.0
-# Travis-Check  : True
+# Ci-Check  : True
 # Maintainer    : Pranav Pandit <pranav.pandit1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given

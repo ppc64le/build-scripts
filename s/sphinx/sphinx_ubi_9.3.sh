@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/sphinx-doc/sphinx
 # Tested on        : UBI 9.3
 # Language         : Python
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Anumala Rajesh <Anumala.Rajesh@ibm.com>
 #

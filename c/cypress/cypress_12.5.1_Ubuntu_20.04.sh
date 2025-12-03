@@ -6,7 +6,7 @@
 # Source repo     : https://github.com/cypress-io/cypress
 # Tested on       : Ubuntu 20.04
 # Language        : C++
-# Travis-Check    : false
+# Ci-Check    : false
 # Script License  : Apache License, Version 2 or later
 # Maintainer      : Sumit Dubey <sumit.dubey2@ibm.com>
 #

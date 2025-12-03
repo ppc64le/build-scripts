@@ -5,7 +5,7 @@
 # Source repo	: https://github.com/googleapis/google-cloud-go
 # Tested on	: ubi8.5
 # Language      : GO
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sapna Shukla <Sapna.Shukla@ibm.com>
 #

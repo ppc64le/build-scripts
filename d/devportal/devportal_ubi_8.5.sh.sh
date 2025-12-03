@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/ibm-apiconnect/devportal.git
 # Tested on	: UBI 8.5
 # Language      : PHP
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: saraswati patra <saraswati.patra@ibm.com>
 #

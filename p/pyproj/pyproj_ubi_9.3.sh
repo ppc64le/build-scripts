@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/pyproj4/pyproj
 # Tested on     : UBI 9.3
 # Language      : Python, Cython
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License 2.0
 # Maintainer    : Salil Verlekar <Salil.Verlekar2@ibm.com>
 #

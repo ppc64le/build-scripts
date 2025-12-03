@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/zabbix/zabbix.git
 # Tested on     : UBI 8.5
 # Language      : PHP, C
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Vaishnavi Patil <Vaishnavi.Patil3@ibm.com>,Vinod K <Vinod.K1@ibm.com>
 #

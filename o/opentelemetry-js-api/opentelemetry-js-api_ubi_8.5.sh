@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/open-telemetry/opentelemetry-js-api
 # Tested on	: ubi 8.5
 # Language      : node
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Pratik Tonage <Pratik.Tonage@ibm.com>
 #

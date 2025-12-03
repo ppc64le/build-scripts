@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/openshift/oc.git
 # Tested on     : UBI 9.3
 # Language      : Go
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Shubham Gupta <Shubham.Gupta43@ibm.com>
 #

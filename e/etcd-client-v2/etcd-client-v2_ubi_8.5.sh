@@ -7,7 +7,7 @@
 # Source repo      : https://github.com/etcd-io/etcd
 # Tested on        : RHEL 8.5,UBI 8.5
 # Language         : GO
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Bhagat Singh <Bhagat.singh1@ibm.com>
 #

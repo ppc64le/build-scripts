@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/nats-io/nats-server
 # Tested on	: RHEL 8.3
 # Language      : Go
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #

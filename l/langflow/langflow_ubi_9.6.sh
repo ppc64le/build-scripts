@@ -5,7 +5,7 @@
 # Version       : 1.6.0
 # Source repo   : https://github.com/langflow-ai/langflow.git
 # Tested on     : UBI:9.6
-# Travis-Check  : True
+# Ci-Check  : True
 # Language      : Python
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>

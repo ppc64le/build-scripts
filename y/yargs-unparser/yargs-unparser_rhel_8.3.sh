@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/yargs/yargs-unparser
 # Tested on	: RHEL 8.3
 # Language      : JavaScript
-# Travis-Check  : true
+# Ci-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #

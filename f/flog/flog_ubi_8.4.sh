@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/seattlerb/flog
 # Tested on	: UBI 8.4
 # Language      : Ruby
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sapana Khemkar {Sapana.khemkar@ibm.com}
 #

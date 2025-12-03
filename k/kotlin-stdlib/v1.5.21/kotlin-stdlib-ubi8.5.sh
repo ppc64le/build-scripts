@@ -6,7 +6,7 @@
 #                  kotlin-stdlib-1.5.255-SNAPSHOT.jar
 # Version       : 1.5.21
 # Language      : Java
-# Travis-Check  : true
+# Ci-Check  : true
 # Source repo   : https://github.com/JetBrains/kotlin.git
 # Tested on     : ubi_8.5
 # Script License: Apache License, Version 2 or later

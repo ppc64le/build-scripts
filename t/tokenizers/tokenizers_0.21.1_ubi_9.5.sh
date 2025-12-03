@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/huggingface/tokenizers
 # Tested on     : UBI:9.5
 # Language      : C,Python
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License 2.0
 # Maintainer    : Aaruni Aggarwal <aaragga1@in.ibm.com>
 #

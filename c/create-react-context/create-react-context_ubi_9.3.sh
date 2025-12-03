@@ -6,7 +6,7 @@
 # Source repo	    : https://github.com/codemayonnaise/create-react-context
 # Tested on	    : UBI 9.3
 # Language          : Node
-# Travis-Check      : True
+# Ci-Check      : True
 # Script License    : MIT License
 # Maintainer	    : Prachi Kurade <prachi.kurade1@ibm.com>
 #

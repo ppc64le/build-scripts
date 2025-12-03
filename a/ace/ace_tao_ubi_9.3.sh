@@ -6,7 +6,7 @@
 # Source repo           : https://github.com/DOCGroup/ACE_TAO
 # Tested on             : UBI:9.3
 # Language              : C++,Perl
-# Travis-Check          : True
+# Ci-Check          : True
 # Script License        : Apache License 2.0 or later
 # Maintainer            : Vinod K <Vinod.K1@ibm.com>
 #

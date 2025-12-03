@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/open-telemetry/opentelemetry-php.git
 # Tested on	: ubi 8.5
 # Language      : php
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Pratik Tonage <Pratik.Tonage@ibm.com>, Stuti Wali <Stuti.Wali@ibm.com>
 #

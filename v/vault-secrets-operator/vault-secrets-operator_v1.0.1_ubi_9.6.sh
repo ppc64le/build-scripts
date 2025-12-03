@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/hashicorp/vault-secrets-operator.git
 # Tested on     : UBI 9.6
 # Language      : Go
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Amit Kumar <amit.kumar282@ibm.com>
 #

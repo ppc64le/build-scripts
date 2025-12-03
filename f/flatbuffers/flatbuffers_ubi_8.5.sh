@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/google/flatbuffers.git
 # Tested on     : UBI 8.5
 # Language      : C++
-# Travis-Check  : true
+# Ci-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Ankit.Paraskar@ibm.com, Pratik Tonage <Pratik.Tonage@ibm.com>
 #

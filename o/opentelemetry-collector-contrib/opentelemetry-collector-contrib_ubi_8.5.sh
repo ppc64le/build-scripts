@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/open-telemetry/opentelemetry-collector-contrib
 # Tested on  	: ubi 8.5
 # Language      : GO
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License 2.0
 # Maintainer	: Pratik Tonage <Pratik.Tonage@ibm.com>
 #

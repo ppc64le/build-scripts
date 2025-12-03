@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/kedacore/keda.git
 # Tested on     : UBI 9.3 (docker)
 # Language      : Go
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Prachi Gaonkar<Prachi.Gaonkar@ibm.com>
 #

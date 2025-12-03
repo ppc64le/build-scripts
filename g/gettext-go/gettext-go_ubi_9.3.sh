@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/chai2010/gettext-go
 # Tested on	: UBI:9.3 
 # Language      : GO
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: BSD-3-Clause license
 # Maintainer	: Ramnath Nayak <Ramnath.Nayak@ibm.com>
 #

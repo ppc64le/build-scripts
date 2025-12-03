@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/redhat-developer/odo.git
 # Tested on	: ubi 8.7
 # Language      : Go
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
 #

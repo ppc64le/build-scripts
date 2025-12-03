@@ -5,7 +5,7 @@
 # Source repo      : https://git.drupalcode.org/project/better_exposed_filters.git
 # Tested on        : UBI 8.5
 # Language         : PHP
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Saraswati Patra <saraswati.patra@ibm.com>
 #
@@ -89,4 +89,4 @@ else
         exit 0
 fi
 #better_exposed_filters has 4 types of test Unit/Kernel/Functional/FunctionalJavascript . Unit test dont need drupal framework and DB etc. So can be executed by given script.
-# Please follow README file for more information to run /Functional test cases.and make the script travis-check false for Functional/FunctionalJavascript test.
+# Please follow README file for more information to run /Functional test cases.and make the script Ci-Check false for Functional/FunctionalJavascript test.

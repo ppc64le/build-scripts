@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/react-grid-layout/react-draggable
 # Tested on     : ubuntu_18.04 (Docker)
 # Language      : Java
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Jotirling Swami <Jotirling.Swami1@ibm.com>
 #

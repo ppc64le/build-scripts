@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/hasura/graphql-engine.git
 # Tested on     : Fedora 42 (ppc64le)
 # Language      : GHC (Haskell)
-# Travis-Check  : false
+# Ci-Check  : false
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sumit Dubey <sumit.dubey2@ibm.com>
 #

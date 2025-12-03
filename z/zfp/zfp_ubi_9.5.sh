@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/LLNL/zfp
 # Tested on     : UBI:9.5
 # Language      : C,Python
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License 2.0
 # Maintainer    : Vinod K <Vinod.K1@ibm.com>
 #

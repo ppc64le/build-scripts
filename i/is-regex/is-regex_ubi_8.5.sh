@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/inspect-js/is-regex.git
 # Tested on     : RHEL 8.5,UBI8.5
 # Language      : Node
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Saraswati Patra <saraswati.patra@ibm.com>
 #

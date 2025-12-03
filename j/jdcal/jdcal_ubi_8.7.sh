@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/phn/jdcal
 # Tested on	       : UBI 8.7
 # Language         : Python
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : BSD-2-Clause license
 # Maintainer       : vinodk99 <Vinod.K1@ibm.com>
 #

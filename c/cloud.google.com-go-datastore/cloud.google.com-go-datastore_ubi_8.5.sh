@@ -4,7 +4,7 @@
 # Version	: datastore/v1.0.0, datastore/v1.1.0
 # Source repo	: https://github.com/googleapis/google-cloud-go
 # Language	: GO
-# Travis-Check	: True
+# Ci-Check	: True
 # Tested on	: UBI 8.5
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sapna Shukla <Sapna.Shukla@ibm.com>

@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/onsi/ginkgo
 # Tested on     : UBI:9.6
 # Language      : Go
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: MIT License
 # Maintainer    : Pooja Dalai <Pooja.Dalai@ibm.com>
 #

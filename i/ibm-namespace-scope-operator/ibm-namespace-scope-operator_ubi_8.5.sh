@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/IBM/ibm-namespace-scope-operator
 # Tested on     : ubi 8.5
 # Language      : GO
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Ambuj kumar <Ambuj.Kumar3@ibm.com>
 #

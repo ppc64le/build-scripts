@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/cloudflare/cfssl
 # Tested on     : RHEL ubi 8.4
 # Language      : GO
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Apurva Agrawal <Apurva.Agrawal3@ibm.com>
 #

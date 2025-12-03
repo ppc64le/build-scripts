@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/spring-projects/spring-retry
 # Tested on     : UBI 8.7
 # Language      : Java
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Mohit Pawar <mohit.pawar@ibm.com>
 #

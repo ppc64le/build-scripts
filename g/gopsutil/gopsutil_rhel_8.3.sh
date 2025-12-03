@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/shirou/gopsutil
 # Tested on	: RHEL 8.3
 # Language      : GO
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>, Raju Sah <Raju.Sah@ibm.com>
 # Environment	: Needs to be run on a VM, tests fail inside docker container

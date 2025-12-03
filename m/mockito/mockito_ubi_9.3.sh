@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/mockito/mockito.git
 # Tested on        : UBI 9.3
 # Language         : Java
-# Travis-Check     : True 
+# Ci-Check     : True 
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Pooja Shah <Pooja.Shah4@ibm.com>
 #

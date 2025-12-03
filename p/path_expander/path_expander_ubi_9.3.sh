@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/seattlerb/path_expander
 # Tested on		: UBI 9.3
 # Language      : Ruby
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
 #

@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/pages-themes/modernist
 # Tested on     : UBI 8.5
 # Language      : Ruby
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Valen Mascarenhas <Valen.Mascarenhas@ibm.com> 
 #

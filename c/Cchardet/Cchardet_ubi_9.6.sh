@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/PyYoshi/cChardet
 # Tested on        : UBI:9.6
 # Language         : Python
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Ramnath Nayak <Ramnath.Nayak@ibm.com>
 #

@@ -5,7 +5,7 @@
 # Source repo   : https://github.com/101arrowz/fflate
 # Tested on     : UBI: 8.3
 # Language      : Typescript, Rust
-# Travis-Check  : True-needs to verify
+# Ci-Check  : True-needs to verify
 # Script License: Apache License 2.0
 # Maintainer's  : Balavva Mirji <Balavva.Mirji@ibm.com>
 #
