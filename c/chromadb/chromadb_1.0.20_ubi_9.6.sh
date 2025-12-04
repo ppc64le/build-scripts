@@ -50,22 +50,13 @@ git clone --recursive ${PACKAGE_URL}
 cd ${PACKAGE_DIR}
 git checkout ${PACKAGE_VERSION}
 git submodule update --init --recursive
+git apply chromadb_1.0.20_ubi_9.6.patch
 
 # Install the chromadb requirements.
 python3.11 -m pip install -r requirements.txt --prefer-binary --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux
 
-# Fix related build issue
-echo -e "\n[patch.crates-io]\ngenerator = { git = \"https://github.com/Xudong-Huang/generator-rs.git\", branch = \"master\" }" >> Cargo.toml
 cargo update generator@0.8.1
 cargo update generator@0.7.5
-
-# Fix wheel name to be built from chromadb-0.1.0-cp39-abi3-linux_ppc64le.whl to chromadb-1.0.20-cp311-cp311-linux_ppc64le.whl
-sed 's/dynamic = \["version"\]/version = "1.0.20"/' pyproject.toml > pyproject.toml.new
-rm -f pyproject.toml
-mv pyproject.toml.new pyproject.toml
-sed 's/pyo3 = { version = "0.24.1", features = \["abi3-py39"\] }/pyo3 = { version = "0.24.1" }/g' Cargo.toml > Cargo.toml.new
-rm -f Cargo.toml
-mv Cargo.toml.new Cargo.toml
 
 # Build and install chromadb
 if ! python3.11 -m pip install .; then
