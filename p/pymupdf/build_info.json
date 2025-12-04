@@ -1,0 +1,16 @@
+{
+  "maintainer": "adarsh-agrawal1",
+  "package_name": "pymupdf",
+  "github_url": "https://github.com/pymupdf/PyMuPDF.git",
+  "version": "1.26.5",
+  "wheel_build" : true,
+  "package_dir": "p/pymupdf",
+  "default_branch": "main",
+  "build_script": "pymupdf_1.26.5_ubi_9.6.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "v1.26.5":{
+    "build_script":"pymupdf_1.26.5_ubi_9.6.sh"
+  }
+}
