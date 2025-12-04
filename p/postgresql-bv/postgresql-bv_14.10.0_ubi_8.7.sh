@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/bitnami/containers
 # Tested on     : Red Hat Enterprise Linux 8.5 (Ootpa)
 # Language      : C
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Pratik Tonage <Pratik.Tonage@ibm.com>
 #

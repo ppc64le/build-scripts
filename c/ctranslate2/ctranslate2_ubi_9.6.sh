@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/OpenNMT/CTranslate2
 # Tested on     : UBI:9.6
 # Language      : Python
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License 2.0
 # Maintainer    : Salil Verlakar <Salil.Verlekar2@ibm.com>
 #

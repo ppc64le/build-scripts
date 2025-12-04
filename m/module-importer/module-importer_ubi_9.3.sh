@@ -6,7 +6,7 @@
 # Source repo	    : https://github.com/humanwhocodes/module-importer
 # Tested on	    : UBI 9.3
 # Language          : Node
-# Travis-Check      : True
+# Ci-Check      : True
 # Script License    : Apache 2.0 License
 # Maintainer	    : Prachi Kurade <prachi.kurade1@ibm.com>
 #

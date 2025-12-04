@@ -6,7 +6,7 @@
 # Source repo     : https://github.com/ollama/ollama
 # Tested on       : UBI:9.6
 # Language        : Go, C, Python
-# Travis-Check    : True
+# Ci-Check    : True
 # Script License  : Apache License, Version 2 or later
 # Maintainer      : Shalini Salomi Bodapati <Shalini-Salomi-Bodapati@ibm.com>
 # -----------------------------------------------------------------------------

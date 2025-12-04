@@ -5,7 +5,7 @@
 # Version        : 27.0.0.Alpha5, 27.0.0.Final
 # Source repo    : https://github.com/wildfly/wildfly.git
 # Language       : Java
-# Travis-Check   : True
+# Ci-Check   : True
 # Tested on      : UBI 8.5
 # Script License : GNU Lesser General Public License Version 2.1
 # Maintainer     : Vindo K <Vinod.K1@ibm.com>, Shreya Kajbaje <Shreya.Kajbaje@ibm.com>

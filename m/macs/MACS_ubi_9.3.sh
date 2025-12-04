@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/macs3-project/MACS/
 # Tested on        : UBI: 9.3
 # Language         : Cython, Python
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : GNU General Public License v3.0
 # Maintainer       : Aastha Sharma <aastha.sharma4@ibm.com>
 #

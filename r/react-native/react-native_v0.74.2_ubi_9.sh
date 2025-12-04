@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/facebook/react-native.git
 # Tested on     : UBI 9.3 (ppc64le)
 # Language      : JavaScript, C, C++
-# Travis-Check  : true
+# Ci-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Amit Kumar <amit.kumar282@ibm.com>
 #

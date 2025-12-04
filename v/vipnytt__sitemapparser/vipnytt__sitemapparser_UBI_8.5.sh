@@ -5,7 +5,7 @@
 # Source repo      : https://github.com/VIPnytt/SitemapParser
 # Tested on        : UBI 8.5
 # Language         : PHP
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Shalmon Titre <Shalmon.Titre1@ibm.com>
 #

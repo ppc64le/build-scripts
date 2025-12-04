@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/aesara-devs/aesara
 # Tested on        : UBI 8.7
 # Language         : Python
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : GNU General Public License v3.0
 # Maintainer       : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
 #

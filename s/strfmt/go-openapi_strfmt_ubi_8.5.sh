@@ -6,7 +6,7 @@
 # Source repo	 : https://github.com/go-openapi/strfmt
 # Tested on	 : UBI 8.5
 # Language       : GO
-# Travis-Check   : False 
+# Ci-Check   : False 
 # Script License : Apache License, Version 2 or later
 # Maintainer	 : Balavva Mirji <Balavva.Mirji@ibm.com>
 #

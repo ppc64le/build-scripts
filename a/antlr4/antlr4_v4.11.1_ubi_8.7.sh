@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/antlr/antlr4
 # Tested on	: UBI 8.5
 # Language      : Java, Python, C#, C++, Go, Swift
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Muskaan Sheik <Muskaan.Sheik@ibm.com>
 #

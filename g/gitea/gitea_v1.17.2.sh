@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/go-gitea/gitea
 # Tested on     : Red Hat Enterprise Linux 8.2 (Ootpa)
 # Language      : GO
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Reynold Vaz <Reynold.Vaz@ibm.com>
 #

@@ -5,7 +5,7 @@
 # Source repo      : https://git.drupalcode.org/project/ckeditor_media_embed.git
 # Tested on        : UBI 8.5
 # Language         : PHP
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Saraswati Patra <saraswati.patra@ibm.com>
 #

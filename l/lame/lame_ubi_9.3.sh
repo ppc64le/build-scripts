@@ -6,7 +6,7 @@
 # Source repo      : https://downloads.sourceforge.net/sourceforge/lame/lame/3.100.tar.gz
 # Tested on        : UBI:9.3
 # Language         : Python, C, C++
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Aastha Sharma <aastha.sharma4@ibm.com>
 #

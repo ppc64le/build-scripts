@@ -4,7 +4,7 @@
 # Version               : v0.1.0
 # Source repo           : https://github.com/go-logr/zapr
 # Language              : GO
-# Travis-Check	        : False
+# Ci-Check	        : False
 # Tested on	        : UBI 8.5
 # Script License        : Apache License, Version 2 or later
 # Maintainer            : Vathsala . <vaths367@in.ibm.com>

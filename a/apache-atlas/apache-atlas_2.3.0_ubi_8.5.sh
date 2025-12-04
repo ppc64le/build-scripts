@@ -5,7 +5,7 @@
 # Source repo    : https://github.com/apache/atlas.git
 # Tested on      : UBI 8.5
 # Language       : JAVA
-# Travis-Check   : True
+# Ci-Check   : True
 # Script License : Apache License, Version 2 or later
 # Maintainer     : Ambuj Kumar <Ambuj.kumar3@ibm.com>
 #

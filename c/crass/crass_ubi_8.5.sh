@@ -5,7 +5,7 @@
 # Source repo   : https://github.com/rgrove/crass
 # Tested on     : UBI: 8.5
 # Language      : Ruby
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License 2.0
 # Maintainer's  : Balavva Mirji <Balavva.Mirji@ibm.com>
 #

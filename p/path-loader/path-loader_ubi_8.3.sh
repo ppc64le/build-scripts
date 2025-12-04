@@ -5,7 +5,7 @@
 # Source repo	: https://github.com/whitlockjc/path-loader.git
 # Tested on	    : UBI 8.3
 # Language      : Node
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Srividya Chittiboina <Srividya.Chittiboina@ibm.com>
 #

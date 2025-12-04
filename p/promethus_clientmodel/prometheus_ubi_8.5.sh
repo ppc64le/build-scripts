@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/prometheus/client_model
 # Tested on     : UBI: 8.5
 # Language      : Go
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Shreya Kajbaje <shreya.kajbaje@ibm.com>
 #

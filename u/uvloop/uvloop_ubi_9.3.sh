@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/MagicStack/uvloop
 # Tested on     : UBI 9.3
 # Language      : Python
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License 2.0
 # Maintainer    : Manya Rusiya <Manya.Rusiya@ibm.com>
 #

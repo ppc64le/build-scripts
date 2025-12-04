@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/pachterlab/kallisto
 # Tested on     : UBI 8.5
 # Language      : C,C++
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: BSD-2-Clause license
 # Maintainer    : Vinod K <Vinod.K1@ibm.com>
 #

@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/jslicense/spdx-expression-parse.js
 # Tested on     : UBI: 9.3
 # Language      : TypeScript
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Stuti Wali <Stuti.Wali@ibm.com>
 #

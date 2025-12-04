@@ -6,7 +6,7 @@
 # Source repo	    : https://github.com/d3/d3-hierarchy
 # Tested on	    : ubi 8.5
 # Language          : javaScript
-# Travis-Check      : true
+# Ci-Check      : true
 # Script License    : Apache License, Version 2 or later
 # Maintainer	    : Pratik Tonage <Pratik.Tonage@ibm.com>
 #

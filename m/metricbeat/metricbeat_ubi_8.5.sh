@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/elastic/beats
 # Tested on	: UBI: 8.5
 # Language      : GO
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Stuti Wali <Stuti.Wali@ibm.com>
 #

@@ -5,7 +5,7 @@
 # Version	 : 2.0.1
 # Source repo	 : https://git.drupalcode.org/project/clipboardjs.git
 # Tested on	 : RHEL 8.5 
-# Travis-Check   : True
+# Ci-Check   : True
 # Language       : PHP
 # Script License : Apache License, Version 2 or later
 # Maintainer	 : Saraswati Patra <saraswati.patra@ibm.com>

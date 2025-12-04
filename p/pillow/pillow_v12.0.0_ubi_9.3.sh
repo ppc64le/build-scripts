@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/python-pillow/Pillow
 # Tested on     : UBI:9.3
 # Language      : Python, C
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sakshi Jain <sakshi.jain16@ibm.com>
 # Disclaimer: This script has been tested in root mode on given

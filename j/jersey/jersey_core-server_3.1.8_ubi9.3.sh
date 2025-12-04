@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/eclipse-ee4j/jersey.git
 # Tested on     : UBI 9.3
 # Language      : Java, Others
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Prachi Gaonkar<Prachi.Gaonkar@ibm.com>
 #

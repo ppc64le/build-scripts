@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/csurfer/rake-nltk
 # Tested on     : UBI 8.7
 # Language      : python
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Abhijeet Dandekar <Abhijeet.Dandekar1@ibm.com>
 #

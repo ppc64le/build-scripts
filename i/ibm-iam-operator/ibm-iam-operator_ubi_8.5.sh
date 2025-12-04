@@ -5,7 +5,7 @@
 # Source repo   : https://github.com/IBM/ibm-iam-operator
 # Tested on     : UBI 8.5
 # Language      : GO
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sapna Shukla <Sapna.Shukla@ibm.com>
 #

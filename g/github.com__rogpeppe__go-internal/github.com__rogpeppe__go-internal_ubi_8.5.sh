@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/rogpeppe/go-internal
 # Tested on     : UBI 8.5
 # Language      : GO
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Vathasala . <vaths367@in.ibm.com>
 #

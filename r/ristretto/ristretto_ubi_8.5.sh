@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/dgraph-io/ristretto
 # Tested on	: ubi 8.5
 # Language      : go
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Haritha Patchari <haritha.patchari@ibm.com>
 #

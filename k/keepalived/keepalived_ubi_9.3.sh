@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/acassen/keepalived
 # Tested on     : UBI 9.3
 # Language      : C
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: GNU GENERAL PUBLIC LICENSE
 # Maintainer    : Vinod K <Vinod.K1@ibm.com>
 #

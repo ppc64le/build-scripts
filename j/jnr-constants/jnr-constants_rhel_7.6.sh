@@ -6,7 +6,7 @@
 # Source repo		: https://github.com/jnr/jnr-constants
 # Tested on			: RHEL 7.6
 # Language      : java
-# Travis-Check  : true
+# Ci-Check  : true
 # Script License: Apache License Version 2.0
 # Maintainer		: Pratham Murkute <prathamm@us.ibm.com>
 #

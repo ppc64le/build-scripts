@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/uber-go/zap
 # Tested on	: ubi 8.5
 # Language      : go
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>, Vaishnavi Patil <Vaishnavi.Patil3@ibm.com>
 #

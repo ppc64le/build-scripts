@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/google/ml-metadata.git
 # Tested on     : UBI:9.6
 # Language      : C++
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2.0
 # Maintainer    : Pankhudi Jain <Pankhudi.Jain@ibm.com>
 #

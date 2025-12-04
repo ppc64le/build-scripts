@@ -5,7 +5,7 @@
 # Source repo    : https://github.com/opensearch-project/flow-framework
 # Tested on      : UBI 9.3
 # Language       : Java
-# Travis-Check   : false
+# Ci-Check   : false
 # Maintainer     : Prachi Gaonkar <Prachi.Gaonkar@ibm.com>
 # Script License : Apache License, Version 2.0 or later
 #

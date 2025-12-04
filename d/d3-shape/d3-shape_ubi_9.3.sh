@@ -6,7 +6,7 @@
 # Source repo	    : https://github.com/d3/d3-shape
 # Tested on	    : UBI 9.3
 # Language          : Node
-# Travis-Check      : True
+# Ci-Check      : True
 # Script License    : ISC License
 # Maintainer	    : Prachi Kurade <prachi.kurade1@ibm.com>
 #

@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/gregjones/httpcache
 # Tested on     : UBI 8.5
 # Language      : GO
-# Travis-Check  : True
+# Ci-Check  : True
 # Maintainer    : Sunidhi Gaonkar<Sunidhi.Gaonkar@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given

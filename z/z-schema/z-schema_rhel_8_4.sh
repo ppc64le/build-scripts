@@ -5,7 +5,7 @@
 # Source repo   : https://github.com/zaggino/z-schema
 # Tested on     : RHEL 8.4
 # Language      : Node
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License Version 2.0
 # Maintainer    : sachin.kakatkar@ibm.com
 #

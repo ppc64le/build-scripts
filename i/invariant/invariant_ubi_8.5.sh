@@ -4,7 +4,7 @@
 # url       	: https://github.com/zertosh/invariant
 # Tested on		: "Red Hat Enterprise Linux 8.5" (Docker)
 # Language      : Node
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Saurabh Gore <Saurabh.Gore@ibm.com> / <smohite@us.ibm.com> 
 #

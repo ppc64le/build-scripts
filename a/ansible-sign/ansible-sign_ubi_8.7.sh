@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/ansible/ansible-sign.git
 # Tested on     : UBI 8.7
 # Language      : Python
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Shreya Kajbaje <Shreya.Kajbaje@ibm.com>
 #

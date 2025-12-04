@@ -5,7 +5,7 @@
 # Source repo	: https://github.com/nats-io/nats.go
 # Tested on	: UBI 8.5
 # Language      : GO
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Saurabh Ghumnar / Siddhesh Ghadi <Siddhesh.Ghadi@ibm.com>
 #

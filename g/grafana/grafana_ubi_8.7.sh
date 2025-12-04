@@ -5,7 +5,7 @@
 # Version       : v10.1.1
 # Source repo   : https://github.com/grafana/grafana.git
 # Tested on     : UBI-8.7
-# Travis-Check  : True
+# Ci-Check  : True
 # Language      : Typescript,Go
 # Script License: Apache License Version 2.0
 # Maintainer    : Vinod K <Vinod.K1@ibm.com>

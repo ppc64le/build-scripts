@@ -7,7 +7,7 @@
 # Source repo       : https://github.com/pytorch/pytorch.git
 # Tested on         : UBI:9.3
 # Language          : Python
-# Travis-Check      : True
+# Ci-Check      : True
 # Script License    : Apache License, Version 2.0
 # Maintainer        : Md. Shafi Hussain <Md.Shafi.Hussain@ibm.com>
 #

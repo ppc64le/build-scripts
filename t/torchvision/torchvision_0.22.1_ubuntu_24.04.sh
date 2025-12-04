@@ -7,7 +7,7 @@
 # Source repo       : https://github.com/pytorch/vision.git
 # Tested on         : ubuntu:24.04
 # Language          : Python
-# Travis-Check      : False
+# Ci-Check      : False
 # Script License    : Apache License, Version 2.0
 # Maintainer        : Prerna Kumbhar <Prerna.Kumbhar@ibm.com>
 #

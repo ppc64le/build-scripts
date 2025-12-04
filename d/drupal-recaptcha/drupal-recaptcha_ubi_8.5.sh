@@ -6,7 +6,7 @@
 # Source repo      : https://git.drupalcode.org/project/recaptcha
 # Tested on        : UBI 8.5
 # Language         : PHP
-# Travis-Check     : False
+# Ci-Check     : False
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Bhagat Singh <Bhagat.singh1@ibm.com>
 #

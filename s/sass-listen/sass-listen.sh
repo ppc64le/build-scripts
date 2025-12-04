@@ -5,7 +5,7 @@
 # Source repo	: https://github.com/sass/listen
 # Tested on	: UBI 8.5
 # Language      : Ruby
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>
 #

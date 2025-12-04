@@ -6,7 +6,7 @@
 # Source repo   : https://gitlab.com/cznic/mathutil
 # Tested on     : ubi 8.5
 # Language      : GO
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License 2.0 ot later
 # Maintainer    : Amit Mukati <amit.mukati3@ibm.com>
 #

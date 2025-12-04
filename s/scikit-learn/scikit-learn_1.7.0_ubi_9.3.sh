@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/scikit-learn/scikit-learn.git
 # Tested on     : UBI 9.3
 # Language      : Python, Cython, C++
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License 2.0
 # Maintainer    : Manya Rusiya <Manya.Rusiya@ibm.com>
 #

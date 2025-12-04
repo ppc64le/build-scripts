@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/traefik/traefik
 # Tested on	: UBI 8.7
 # Language   	: Go
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License 2.0 or later
 # Maintainer	: Vinod K <Vinod.K1@ibm.com>
 #

@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/MorphiaOrg/morphia
 # Tested on     : ubuntu_18.04 (Docker)
 # Language      : Java
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Manik Fulpagar <Manik_Fulpagar@ibm.com>
 #

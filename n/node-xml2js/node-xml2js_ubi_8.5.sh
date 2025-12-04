@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/Leonidas-from-XIV/node-xml2js
 # Tested on        : RHEL 8.5,UBI 8.5
 # Language         : Node
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Vathsala . <vaths367@in.ibm.com>
 #

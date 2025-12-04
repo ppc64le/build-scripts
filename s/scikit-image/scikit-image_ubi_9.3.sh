@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/scikit-image/scikit-image
 # Tested on     : UBI 9.3
 # Language      : Python, Cython, C, C++
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Salil Verlekar <Salil.Verlekar2@ibm.com>
 #

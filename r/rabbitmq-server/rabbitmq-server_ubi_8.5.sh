@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/rabbitmq/rabbitmq-server
 # Tested on	: ubi 8.5
 # Language      : erlang 
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>
 #

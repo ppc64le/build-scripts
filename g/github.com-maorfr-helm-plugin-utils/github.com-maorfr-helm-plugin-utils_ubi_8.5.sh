@@ -5,7 +5,7 @@
 # Version	: v0.0.0-20200216074820-36d2fcf6ae86
 # Source repo	: https://github.com/maorfr/helm-plugin-utils
 # Language	: GO
-# Travis-Check	: True
+# Ci-Check	: True
 # Tested on	: UBI 8.5
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sapna Shukla <Sapna.Shukla@ibm.com>
