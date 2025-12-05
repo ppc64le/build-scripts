@@ -23,6 +23,7 @@ PACKAGE_NAME=chromadb
 PACKAGE_VERSION=${1:-1.0.20}
 PACKAGE_URL=https://github.com/chroma-core/chroma.git
 WORKDIR=$(pwd)
+SCRIPT_PATH=$(dirname $(realpath $0))
 
 PROTOC_VERSION=31.1
 
@@ -50,7 +51,8 @@ git clone --recursive ${PACKAGE_URL}
 cd ${PACKAGE_DIR}
 git checkout ${PACKAGE_VERSION}
 git submodule update --init --recursive
-git apply $WORKDIR/chromadb_1.0.20_ubi_9.6.patch
+# Apply patch
+git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${PACKAGE_VERSION}_ubi_9.6.patch
 
 # Install the chromadb requirements.
 python3.11 -m pip install -r requirements.txt --prefer-binary --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux
