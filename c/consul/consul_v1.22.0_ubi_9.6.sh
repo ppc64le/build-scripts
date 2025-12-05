@@ -4,9 +4,9 @@
 # Package   	: consul
 # Version	    : v1.22.0
 # Source repo	: https://github.com/hashicorp/consul
-# Tested on	  : UBI 9.6
-# Language    : Go
-# Ci-Check    : True
+# Tested on	    : UBI 9.6
+# Language      : Go
+# Ci-Check      : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sanket Patil <Sanket.Patil11@ibm.com>
 #
@@ -32,7 +32,6 @@ export PATH=$PATH:/usr/local/go/bin
 export GOPATH=$(go env GOPATH)
 export PATH=$PATH:$GOPATH/bin
 rm -f go1.25.3.linux-ppc64le.tar.gz
-
 
 go install gotest.tools/gotestsum@latest
 go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
@@ -84,7 +83,6 @@ fi
 
 #useradd -m -s /bin/bash tester || true
 #chown -R tester:tester $CWD/$PACKAGE_NAME
-
 
 #mkdir -p /etc/sudoers.d
 #echo "tester ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/tester
