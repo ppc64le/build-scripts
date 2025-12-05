@@ -26,9 +26,9 @@ PACKAGE_URL=https://github.com/huggingface/safetensors.git
 PACKAGE_DIR=safetensors
 
 # Install dependencies
-yum install -y git python3.12 python3.12-devel gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran make wget sudo cmake
-pip install --upgrade pip
-pip install build maturin
+yum install -y git python3.12 python3.12-devel python3.12-pip gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran make wget sudo cmake
+python3.12 -m pip install --upgrade pip
+python3.12 -m pip install build maturin
 
 # Install Rust
 echo "Installing Rust"
