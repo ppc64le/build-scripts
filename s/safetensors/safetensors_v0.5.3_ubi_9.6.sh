@@ -82,7 +82,7 @@ fi
 cd bindings/python
 
 # Install package
-if ! python3 -m pip install ./; then
+if ! python3.12 -m pip install ./; then
     echo "------------------$PACKAGE_NAME:install_fails------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"
@@ -90,7 +90,7 @@ if ! python3 -m pip install ./; then
 fi
 
 #build wheel
-if ! python3 -m build --wheel --no-isolation --outdir="$WORKDIR/"; then
+if ! python3.12 -m build --wheel --no-isolation --outdir="$WORKDIR/"; then
     echo "------------------$PACKAGE_NAME: Wheel_build failed ---------------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Wheel_build_Failure"
     exit 1
