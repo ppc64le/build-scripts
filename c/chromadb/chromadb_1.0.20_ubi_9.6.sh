@@ -50,7 +50,7 @@ git clone --recursive ${PACKAGE_URL}
 cd ${PACKAGE_DIR}
 git checkout ${PACKAGE_VERSION}
 git submodule update --init --recursive
-git apply $WORKDIR/chromadb_ubi_9.6.patch
+git apply ../chromadb_ubi_9.6.patch
 
 # Install the chromadb requirements.
 python3.11 -m pip install -r requirements.txt --prefer-binary --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux
