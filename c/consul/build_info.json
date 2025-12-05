@@ -44,7 +44,7 @@
     }
   },
   "v*.*.*": {
-    "dir": "template"
+    "dir": "template",
 	"build_script": "consul_v1.22.0_ubi_9.6.sh"
   }
 }
