@@ -23,6 +23,7 @@ set -e
 PACKAGE_NAME=searxng
 PACKAGE_VERSION=${1:-576c8ca99cde1a31e442ef61965e77c82349079b}
 PACKAGE_URL=https://github.com/searxng/searxng.git
+cwd=$(pwd)
 
 # Set environment variables
 export SEARXNG_PORT=8888
@@ -64,11 +65,11 @@ cd /tmp && \
     make -j$(nproc) && make install && \
     ln -sf /usr/local/bin/sqlite3 /usr/bin/sqlite3 && \
     ldconfig && \
-    sqlite3 --version && cd
-
+    sqlite3 --version
 
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
+cd $cwd
 # Clone SearXNG repository and checkout sha256
 git clone $PACKAGE_URL  && cd $PACKAGE_NAME
 git checkout 576c8ca99cde1a31e442ef61965e77c82349079b
@@ -96,10 +97,3 @@ else
 fi
 
 
-
-
-# Run SearXNG
-# python3 searx/webapp.py
-
-# for docker 
-#docker run -p 8888:8888 -it --network=bridge <img-name> bash
