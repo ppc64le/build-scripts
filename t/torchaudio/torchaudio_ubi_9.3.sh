@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : torchaudio
-# Version          : v2.7.1
+# Version          : v2.9.0
 # Source repo      : https://github.com/pytorch/audio.git
 # Tested on        : UBI:9.3
 # Language         : Python
 # Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Shivansh Sharma <shivansh.s1@ibm.com>
+# Maintainer       : Lenzie Camilo <Lenzie.Camilo3@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -23,7 +23,7 @@ set -ex
 # Variables
 PACKAGE_NAME=audio
 PACKAGE_URL=https://github.com/pytorch/audio.git
-PACKAGE_VERSION=${1:-v2.7.1}
+PACKAGE_VERSION=${1:-v2.9.0}
 PACKAGE_DIR=./audio
 SCRIPT_DIR=$(pwd)
 
@@ -288,7 +288,25 @@ git checkout $PACKAGE_VERSION
 
 # Apply the patch
 echo "------------------------Applying patch-------------------"
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchaudio/torchaudio_${PACKAGE_VERSION}.patch
+# wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchaudio/torchaudio_${PACKAGE_VERSION}.patch
+# Temporary change to validate the patch file, will be reverted
+cat << 'EOT' > torchaudio_${PACKAGE_VERSION}.patch
+diff --git a/tools/setup_helpers/extension.py b/tools/setup_helpers/extension.py
+index 58f50878..955dbacd 100644
+--- a/tools/setup_helpers/extension.py
++++ b/tools/setup_helpers/extension.py
+@@ -110,6 +110,11 @@ class CMakeBuild(build_ext):
+             f"-DUSE_CUDA:BOOL={'ON' if _USE_CUDA else 'OFF'}",
+             f"-DUSE_OPENMP:BOOL={'ON' if _USE_OPENMP else 'OFF'}",
++            f"-DProtobuf_INCLUDE_DIR={os.getenv('Protobuf_INCLUDE_DIR')}",
++            f"-DProtobuf_LIBRARIES={os.getenv('Protobuf_LIBRARIES')}",
++            f"-DProtobuf_LIBRARY={os.getenv('Protobuf_LIBRARY')}",
++            f"-DProtobuf_LITE_LIBRARY={os.getenv('Protobuf_LITE_LIBRARY')}",
++            f"-DProtobuf_PROTOC_EXECUTABLE={os.getenv('Protobuf_PROTOC_EXECUTABLE')}",
+         ]
+         build_args = ["--target", "install"]
+         # Pass CUDA architecture to cmake
+EOT
 git apply torchaudio_${PACKAGE_VERSION}.patch
 
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchaudio/0001-Excluded-source-that-has-commercial-license.patch
