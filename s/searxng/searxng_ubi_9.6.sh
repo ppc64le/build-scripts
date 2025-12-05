@@ -65,7 +65,9 @@ cd /tmp && \
     make -j$(nproc) && make install && \
     ln -sf /usr/local/bin/sqlite3 /usr/bin/sqlite3 && \
     ldconfig && \
-    sqlite3 --version
+    sqlite3 --version && cd .. && \
+    rm -rf /tmp/sqlite-autoconf-3510000 && \
+    rm -f /tmp/sqlite-autoconf-3510000.tar.gz
 
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
