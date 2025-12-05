@@ -1,0 +1,32 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index 3c03208b6..caa3d501c 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -54,7 +54,7 @@ utoipa = { version = "5.0.0", features = ["macros", "axum_extras", "debug", "uui
+ sqlx = { version = "0.8.3", features = ["runtime-tokio", "sqlite", "postgres", "chrono"] }
+ sha2 = "0.10.8"
+ md5 = "0.7.0"
+-pyo3 = { version = "0.24.1", features = ["abi3-py39"] }
++pyo3 = { version = "0.24.1" }
+ http = "1.1.0"
+ tower-http = { version = "0.6.2", features = ["trace", "cors"] }
+ bytemuck = "1.21.0"
+@@ -122,3 +122,6 @@ opt-level = 3
+
+ [profile.test.package.rand_chacha]
+ opt-level = 3
++
++[patch.crates-io]
++generator = { git = "https://github.com/Xudong-Huang/generator-rs.git", branch = "master" }
+diff --git a/pyproject.toml b/pyproject.toml
+index 6cb42955d..b07b50f2f 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -1,6 +1,6 @@
+ [project]
+ name = "chromadb"
+-dynamic = ["version"]
++version = "1.0.20"
+
+ authors = [{ name = "Jeff Huber", email = "jeff@trychroma.com" }, { name = "Anton Troynikov", email = "anton@trychroma.com" }]
+ description = "Chroma."
