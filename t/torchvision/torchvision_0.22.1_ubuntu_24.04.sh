@@ -28,7 +28,7 @@ PACKAGE_URL=https://github.com/pytorch/vision.git
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 MAX_JOBS=${MAX_JOBS:-$(nproc)}
 VERSION=${PACKAGE_VERSION#v}
-PYTORCH_VERSION=${3:-v2.9.0}
+PYTORCH_VERSION=${2:-v2.9.0}
 CURRENT_DIR=/opt
 
 apt update -y && apt install -y curl git wget python3-dev python3-pip pkg-config gfortran ninja-build build-essential libblas-dev liblapack-dev patchelf  libopenblas-dev autoconf  autoconf automake libtool libgmp-dev libssl-dev libjpeg-dev libfreetype6-dev protobuf-compiler libprotobuf-dev libmp3lame-dev libjpeg62
@@ -309,10 +309,11 @@ cd "$CURRENT_DIR"
 
 echo "---------------------------Installing FFmpeg------------------"
 #Cloning Source Code
-FFMPEG_PACKAGE_VERSION=${1:-n7.1}
+FFMPEG_PACKAGE_VERSION=${3:-n7.1}
+
 git clone https://github.com/FFmpeg/FFmpeg
 cd FFmpeg
-git checkout "$FFMPEG_PACKAGE_VERSION"
+git checkout $FFMPEG_PACKAGE_VERSION
 git submodule update --init
 mkdir ffmpeg_prefix
 export FFMPEG_PREFIX=$(pwd)/ffmpeg_prefix
@@ -457,9 +458,9 @@ cd $PYTORCH_DIR
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchvision/0001-Exclude-source-that-has-commercial-license.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchvision/0001-Exclude-source-that-has-commercial-license_${PACKAGE_VERSION}.patch
 # Below patch is needed to exclude the models that come under SWAG license (CC-BY-NC-4.0)
-git apply ./0001-Exclude-source-that-has-commercial-license.patch
+git apply ./0001-Exclude-source-that-has-commercial-license_${PACKAGE_VERSION}.patch
 sed -i '/elif sha != "Unknown":/,+1d' setup.py
 
 if ! python3 setup.py bdist_wheel --dist-dir $CURRENT_DIR; then
