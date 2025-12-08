@@ -70,9 +70,9 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 echo "**** Downloading Power10 patches..."
-wget -q https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/ollama/build_power_v0.13.1.patch
-wget -q https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/ollama/set_threads_env_v0.13.1.patch
-wget -q https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/ollama/enable_mma_v0.13.1.patch
+wget -q https://github.com/ppc64le/build-scripts/blob/3f72a7836251bb0c053a32880b9c93381e7fb9e2/o/ollama/build_power_v0.13.1.patch
+wget -q https://github.com/ppc64le/build-scripts/blob/3f72a7836251bb0c053a32880b9c93381e7fb9e2/o/ollama/set_threads_env_v0.13.1.patch
+wget -q https://github.com/ppc64le/build-scripts/blob/3f72a7836251bb0c053a32880b9c93381e7fb9e2/o/ollama/enable_mma_v0.13.1.patch
 
 echo "** Applying Patches..."
 patch -p1 < build_power_v0.13.1.patch
