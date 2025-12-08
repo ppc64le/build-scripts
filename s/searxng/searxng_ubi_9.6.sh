@@ -23,6 +23,7 @@ set -e
 PACKAGE_NAME=searxng
 PACKAGE_VERSION=${1:-576c8ca99cde1a31e442ef61965e77c82349079b}
 PACKAGE_URL=https://github.com/searxng/searxng.git
+cwd=$(pwd)
 
 # Set environment variables
 export SEARXNG_PORT=8888
@@ -35,22 +36,12 @@ EOF
 
 dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 dnf -y update && \
-dnf -y install \
-        git \
-        python \
-        python3.12 \
-        python3.12-pip \
-        pip \
-        python3.12-devel \
-        gcc \
-        nginx \
-        openssl \
-        hostname \
-        shadow-utils \
-        sudo \
-        gcc-c++ \
-        make \
-        wget
+dnf -y install git \
+        python3.12 python3.12-pip python3.12-devel \
+        gcc nginx openssl hostname \
+        shadow-utils sudo gcc-c++ \
+        make wget \
+        libxml2 libxml2-devel libxslt libxslt-devel
 
 # Set python3 to point to python3.12
 alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 10 && alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 20 && alternatives --set python3 /usr/bin/python3.12
@@ -64,12 +55,15 @@ cd /tmp && \
     make -j$(nproc) && make install && \
     ln -sf /usr/local/bin/sqlite3 /usr/bin/sqlite3 && \
     ldconfig && \
-    sqlite3 --version && cd
+    sqlite3 --version && cd .. && \
+    rm -rf /tmp/sqlite-autoconf-3510000 && \
+    rm -f /tmp/sqlite-autoconf-3510000.tar.gz
 
-
+# Return to original directory
+cd $cwd
+# Clone SearXNG repository and checkout sha256
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
-# Clone SearXNG repository and checkout sha256
 git clone $PACKAGE_URL  && cd $PACKAGE_NAME
 git checkout 576c8ca99cde1a31e442ef61965e77c82349079b
 if ! (python3 -m pip install --upgrade pip setuptools wheel && python3 -m pip install msgspec uvloop orjson pyyaml requests uwsgi pybind11 httpx && python3 -m pip install -e . --use-pep517 --no-build-isolation) ; then
@@ -80,7 +74,7 @@ if ! (python3 -m pip install --upgrade pip setuptools wheel && python3 -m pip in
 fi
 
 # install test dependencies
- pip install pytest aiounittest mock parameterized sniffio
+pip install pytest aiounittest mock parameterized sniffio
 
 # Run tests
 if ! pytest -k "not robot" ; then
@@ -96,10 +90,3 @@ else
 fi
 
 
-
-
-# Run SearXNG
-# python3 searx/webapp.py
-
-# for docker 
-#docker run -p 8888:8888 -it --network=bridge <img-name> bash
