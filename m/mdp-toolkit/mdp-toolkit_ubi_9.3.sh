@@ -5,7 +5,7 @@
 # Version          : master
 # Source repo      : https://github.com/mdp-toolkit/mdp-toolkit
 # Tested on        : UBI:9.3
-# Travis-Check     : True
+# Ci-Check     : True
 # Language         : Python
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Ramnath Nayak <Ramnath.Nayak@ibm.com>

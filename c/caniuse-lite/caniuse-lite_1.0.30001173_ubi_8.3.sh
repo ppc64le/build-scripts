@@ -5,7 +5,7 @@
 # Source repo   : https://github.com/browserslist/caniuse-lite
 # Tested on     : UBI 8
 # Language      : Java Script
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Hari Pithani <Hari.Pithani@ibm.com>
 #

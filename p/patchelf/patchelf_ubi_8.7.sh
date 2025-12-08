@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/NixOS/patchelf
 # Tested on        : UBI 8.7
 # Language         : C,C++
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : GNU General Public License v3.0
 # Maintainer       : Vinod K <Vinod.K1@ibm.com>
 #

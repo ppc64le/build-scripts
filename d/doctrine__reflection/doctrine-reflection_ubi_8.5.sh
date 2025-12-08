@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/doctrine/reflection
 # Tested on	: ubi 8.5
 # Language      : PHP
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Nailusha Potnuru <pnailush@in.ibm.com>,Vathsala . <vaths367@in.ibm.com>, Shalmon Titre <Shalmon.Titre@ibm.com>
 #

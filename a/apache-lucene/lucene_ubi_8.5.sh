@@ -6,7 +6,7 @@
 # Source repo       : https://github.com/apache/lucene.git
 # Tested on	    : ubi 8.5
 # Language          : java
-# Travis-Check      : true
+# Ci-Check      : true
 # Script License    : Apache License, Version 2 or later
 # Maintainer	    : Pratik Tonage <Pratik.Tonage@ibm.com>
 #

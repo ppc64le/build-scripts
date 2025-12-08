@@ -5,7 +5,7 @@
 # Source repo      : https://github.com/hashicorp/nomad
 # Tested on        : UBI 8.5
 # Language         : Java
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Stuti Wali <Stuti.Wali@ibm.com>
 #

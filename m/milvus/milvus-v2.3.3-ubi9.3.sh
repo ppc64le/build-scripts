@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/milvus-io/milvus
 # Tested on     : UBI 9.3 (docker)
 # Language      : C++, Go
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sumit Dubey <Sumit.Dubey2@ibm.com>
 #

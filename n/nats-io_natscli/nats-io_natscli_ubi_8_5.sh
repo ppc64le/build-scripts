@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/nats-io/natscli
 # Tested on     : UBI: 8.5
 # Language      : Go
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Shantanu Kadam <Shantanu.Kadam@ibm.com>
 #

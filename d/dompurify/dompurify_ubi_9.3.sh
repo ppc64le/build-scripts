@@ -7,7 +7,7 @@
 # Source repo       : https://github.com/cure53/DOMPurify
 # Tested on         : UBI:9.3
 # Language          : Node
-# Travis-Check      : True
+# Ci-Check      : True
 # Script License    : Apache License, Version 2.0
 # Maintainer        : Vinod K <Vinod.K1@ibm.com>
 #

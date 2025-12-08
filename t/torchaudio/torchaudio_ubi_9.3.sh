@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/pytorch/audio.git
 # Tested on        : UBI:9.3
 # Language         : Python
-# Ci-Check         : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Lenzie Camilo <Lenzie.Camilo3@ibm.com>
 #

@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/broccolini/swiss.git
 # Tested on	: UBI: 8.5
 # Language      : Ruby
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Muskaan Sheik <Muskaan.Sheik@ibm.com>
 #

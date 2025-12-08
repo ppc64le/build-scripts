@@ -7,7 +7,7 @@
 # Source repo   : https://github.com/jackc/pgx.git
 # Tested on     : UBI 8.5
 # Language      : go
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Ambuj Kumar <Ambuj.Kumar3@in.ibm.com>
 #

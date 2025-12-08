@@ -5,7 +5,7 @@
 # Source repo   : https://github.com/jslicense/spdx-expression-parse.js.git
 # Tested on     : ubuntu_18.04
 # Language      : TypeScript
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Snehlata Mohite <smohite@us.ibm.com>
 #

@@ -7,7 +7,7 @@
 # Source repo   : https://github.com/gonum/netlib.git
 # Tested on     : UBI 8.3
 # Language      : GO
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Raju Sah <Raju.Sah@ibm.com>
 #

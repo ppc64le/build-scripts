@@ -6,7 +6,7 @@
 # Source repo		: https://github.com/jquery/jquery-mousewheel.git
 # Tested on		: UBI 8.4
 # Language     		: Node
-# Travis-Check	 	: True
+# Ci-Check	 	: True
 # Script License	: Apache License, Version 2 or later
 # Maintainer		: Vaishnavi Patil <Vaishnavi.Patil3@ibm.com>
 #

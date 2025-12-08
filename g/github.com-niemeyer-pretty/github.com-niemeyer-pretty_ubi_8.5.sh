@@ -7,7 +7,7 @@
 # Source repo	: https://github.com/niemeyer/pretty
 # Tested on	: UBI 8.5
 # Language	: GO
-# Travis-Check	: True
+# Ci-Check	: True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sapna Shukla <Sapna.Shukla@ibm.com>, Shantanu Kadam <Shantanu.Kadam@ibm.com>
 #

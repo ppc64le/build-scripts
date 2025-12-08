@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/rclone/rclone.git
 # Tested on	: UBI 8.10
 # Language      : Go
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Balavva Mirji <Balavva.Mirji@ibm.com>
 #

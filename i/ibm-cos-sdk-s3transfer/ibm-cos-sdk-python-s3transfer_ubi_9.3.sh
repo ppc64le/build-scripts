@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/IBM/ibm-cos-sdk-python-s3transfer
 # Tested on	: UBI:9.3
 # Language      : Python
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Ramnath Nayak <Ramnath.Nayak@ibm.com>
 #

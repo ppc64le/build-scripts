@@ -5,7 +5,7 @@
 # Version       : v0.30.0
 # Source repo   : https://github.com/open-policy-agent/conftest
 # Language      : GO
-# Travis-Check  : True
+# Ci-Check  : True
 # Tested on     : UBI 8.5
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Priya Seth <sethp@us.ibm.com>

@@ -7,7 +7,7 @@
 # Source repo	    : https://github.com/immutable-js/immutable-js
 # Tested on	    : UBI 9.3
 # Language          : Node
-# Travis-Check      : True
+# Ci-Check      : True
 # Script License    : MIT License
 # Maintainer	    : Prachi Kurade <prachi.kurade1@ibm.com>
 #

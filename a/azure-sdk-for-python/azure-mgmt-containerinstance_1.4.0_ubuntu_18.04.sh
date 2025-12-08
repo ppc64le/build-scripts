@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/Azure/azure-sdk-for-python.git
 # Tested on     : Ubuntu 18.04
 # Language      : Python
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sumit Dubey <sumit.dubey2@ibm.com>
 #

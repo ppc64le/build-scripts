@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/codehaus-plexus/plexus-utils 
 # Tested on     : UBI: 9.3
 # Language      : Java,Other
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : kotla santhosh<kotla.santhosh@ibm.com>
 #

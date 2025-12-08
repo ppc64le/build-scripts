@@ -5,7 +5,7 @@
 # Source repo	: https://github.com/googleapis/google-api-java-client.git
 # Tested on	: UBI 8.5
 # Language	: JAVA
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sapna Shukla <Sapna.Shukla@ibm.com>
 #

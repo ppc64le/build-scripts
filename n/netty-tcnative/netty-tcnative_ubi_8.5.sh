@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/netty/netty-tcnative.git
 # Tested on     : UBI:8.5
 # Language      : C, Java
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License Version 2.0
 # Maintainer    : Pratik Tonage <Pratik.Tonage@ibm.com>
 #

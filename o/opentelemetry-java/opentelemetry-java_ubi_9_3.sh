@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/open-telemetry/opentelemetry-java
 # Tested on     : ubi: 9.3
 # Language      : java
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Stuti Wali <Stuti.Wali@ibm.com>
 #

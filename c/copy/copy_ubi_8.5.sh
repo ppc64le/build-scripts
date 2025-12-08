@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/otiai10/copy
 # Tested on     : UBI: 8.5
 # Language      : GO
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License 2.0
 # Maintainer's  : Balavva Mirji <Balavva.Mirji@ibm.com> , Haritha Patchari<haritha.patchari@ibm.com>
 #

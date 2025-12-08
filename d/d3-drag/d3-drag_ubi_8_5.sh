@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/d3/d3-drag
 # Tested on	: ubi 8.5
 # Language      : JavaScript
-# Travis-Check  : true
+# Ci-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Stuti Wali <Stuti.Wali@ibm.com>
 #

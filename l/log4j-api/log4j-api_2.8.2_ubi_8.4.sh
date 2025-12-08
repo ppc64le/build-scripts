@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/apache/logging-log4j2
 # Tested on     : UBI: 8.4
 # Language      : JAVA
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer's  : Apurva Agrawal<Apurva.Agrawal3@ibm.com>
 #

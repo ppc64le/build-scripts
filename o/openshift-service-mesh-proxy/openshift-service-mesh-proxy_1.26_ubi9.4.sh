@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/openshift-service-mesh/proxy
 # Tested on     : UBI 9.4
 # Language      : C++
-# Travis-Check  : FALSE
+# Ci-Check  : FALSE
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Chandranana
 #

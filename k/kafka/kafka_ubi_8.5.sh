@@ -4,7 +4,7 @@
 # Source repo   : https://github.com/apache/kafka
 # Tested on     : UBI 8.5
 # Language      : Java
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Kandarpa Malipeddi <kandarpa.malipeddi@ibm.com>, Amol Patil <amol.patil2@ibm.com>, Priya Seth <sethp@us.ibm.com>
 #
@@ -35,6 +35,6 @@ git checkout $PACKAGE_VERSION
 
 ./gradlew unitTest integrationTest --continue -PtestLoggingEvents=started,passed,skipped,failed -PignoreFailures=true -PmaxParallelForks=2
 
-# Unit test will take more than 2 hrs, hence Travis-check disabled.
+# Unit test will take more than 2 hrs, hence Ci-Check disabled.
 # There are known failures, hence -PigonreFailures=true been provided.
 

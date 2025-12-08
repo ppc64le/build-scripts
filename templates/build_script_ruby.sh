@@ -6,7 +6,7 @@
 # Source repo	: {package_url}
 # Tested on	: {distro_name} {distro_version}
 # Language      : Ruby
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation {maintainer}
 #

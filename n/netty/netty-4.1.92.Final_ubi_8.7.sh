@@ -6,7 +6,7 @@
 # Language      : Java
 # Source repo   : https://github.com/netty/netty
 # Tested on     : UBI 8.7
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache-2.0 License
 # Maintainer    : Vinod K <Vinod.K1@ibm.com>
 #

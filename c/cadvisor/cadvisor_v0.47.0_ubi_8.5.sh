@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/google/cadvisor
 # Tested on     : UBI 8.5
 # Language      : GO
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Shubham Garud <Shubham.Garud@ibm.com>
 #

@@ -5,7 +5,7 @@
 # Source repo      : https://git.drupalcode.org/project/avatars
 # Tested on        : UBI 8.5
 # Language         : PHP
-# Travis-Check     : False
+# Ci-Check     : False
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Saraswati Patra <saraswati.patra@ibm.com>
 #
@@ -88,7 +88,7 @@ else
         exit 0
 fi
 #avatars has 2 types of test cases Functional/Kernel.
-# Please follow README file for more information to run Functional/Kernel test cases.and make the script travis-check false for Functional/Kernel test.
+# Please follow README file for more information to run Functional/Kernel test cases.and make the script Ci-Check false for Functional/Kernel test.
 #bash-4.4# ../vendor/bin/phpunit ../modules/avatars/tests
 #PHPUnit 7.5.20 by Sebastian Bergmann and contributors.
 

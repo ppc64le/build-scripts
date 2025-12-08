@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/kong/kong
 # Tested on	    : UBI 8.7
 # Language      : Rust
-# Travis-Check  : true
+# Ci-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sumit Dubey <sumit.dubey2@ibm.com>
 #

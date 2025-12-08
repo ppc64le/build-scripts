@@ -4,7 +4,7 @@
 # Version               : v0.0.0-20190203023257-5858425f7550
 # Source repo           : https://github.com/evanphx/json-patch
 # Language              : GO
-# Travis-Check	        : True
+# Ci-Check	        : True
 # Tested on	        : UBI 8.5
 # Script License        : Apache License, Version 2 or later
 # Maintainer            : Vathsala . <vaths367@in.ibm.com>

@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/facebook/react
 # Tested on     : UBI 9.5 (ppc64le)
 # Language      : Javascript
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sanket Patil <Sanket.Patil11@ibm.com>
 #

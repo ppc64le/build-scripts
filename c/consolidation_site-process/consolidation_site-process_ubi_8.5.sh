@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/consolidation/site-process.git
 # Tested on     : UBI 8.5
 # Language      : PHP
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : vathsala . <vaths367@in.ibm.com>
 #

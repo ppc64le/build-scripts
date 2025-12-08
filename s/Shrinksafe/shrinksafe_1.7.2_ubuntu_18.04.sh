@@ -6,7 +6,7 @@
 # Source repo     : https://github.com/zazl/shrinksafe.git
 # Tested on       : Ubuntu 18.04 (Docker)
 # Language        : Java
-# Travis-Check    : True
+# Ci-Check    : True
 # Script License  : Apache License, Version 2 or later
 # Maintainer      : Sumit Dubey <Sumit Dubey@ibm.com>
 #

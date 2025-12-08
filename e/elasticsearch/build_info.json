@@ -8,7 +8,7 @@
   "build_script": "elasticsearch_v8.18.6_ubi_9.6.sh",
   "package_dir": "e/elasticsearch/",
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-  "docker_build": "true",
+  "docker_build": "false",
   "use_non_root_user": false,
   "validate_build_script": "true",
   "v7.6.0": {

@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/Cyan4973/xxHash
 # Tested on     : UBI:9.3
 # Language      : C
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Vinod K <Vinod.K1@ibm.com>
 #

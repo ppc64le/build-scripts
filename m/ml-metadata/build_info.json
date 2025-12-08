@@ -1,0 +1,16 @@
+{
+    "maintainer":"PankhudiJ17",
+    "package_name" : "ml-metadata",
+    "github_url": "https://github.com/google/ml-metadata.git",
+    "version": "master",
+    "wheel_build" : true,
+    "default_branch": "master",
+    "package_dir": "m/ml-metadata",
+    "build_script": "ml-metadata_ubi_9.6.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "*": {
+     "build_script": "ml-metadata_ubi_9.6.sh"
+    }
+}

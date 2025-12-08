@@ -1,0 +1,17 @@
+{
+    "maintainer": "Madhur-iiitd",
+    "package_name": "faiss",
+    "github_url": "https://github.com/facebookresearch/faiss.git",
+    "version": "1.12.0",
+    "default_branch": "main",
+    "build_script": "faiss_1.12_ubi.sh",
+    "package_dir": "f/faiss",
+    "docker_build": true,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "wheel_build": true,
+
+    "*": {
+        "build_script": "faiss_1.12_ubi.sh"
+    }
+}

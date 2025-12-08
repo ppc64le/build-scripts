@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/cloudnative-pg/cloudnative-pg
 # Tested on     : Ubuntu 22.04 (docker)
 # Language      : Go
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sumit Dubey <Sumit.Dubey2@ibm.com>
 #

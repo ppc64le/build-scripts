@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/ansible/ansible-runner
 # Tested on     : UBI 8.7
 # Language      : Python,shell script
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Ashwini Kadam <Ashwini.Kadam@ibm.com>
 #

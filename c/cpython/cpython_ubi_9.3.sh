@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/python/cpython
 # Tested on        : UBI: 9.3
 # Language         : Python, C
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : GNU General Public License v3.0
 # Maintainer       : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
 #

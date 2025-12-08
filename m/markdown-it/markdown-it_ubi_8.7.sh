@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/markdown-it/markdown-it
 # Tested on	       : UBI 8.7
 # Language         : Javascript
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache license
 # Maintainer       : vinodk99 <Vinod.K1@ibm.com>
 #
