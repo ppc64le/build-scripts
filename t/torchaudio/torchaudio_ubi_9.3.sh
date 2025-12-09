@@ -286,16 +286,16 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-# Apply the patch
-echo "------------------------Applying patch-------------------"
 # Temporary change to skip the patch file, will be reverted
+# Apply the patch
+# echo "------------------------Applying patch-------------------"
 # wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchaudio/torchaudio_${PACKAGE_VERSION}.patch
 # git apply torchaudio_${PACKAGE_VERSION}.patch
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchaudio/0001-Excluded-source-that-has-commercial-license.patch
+# wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchaudio/0001-Excluded-source-that-has-commercial-license.patch
 # Below patch excludes the source files that has commercial license
-git apply 0001-Excluded-source-that-has-commercial-license.patch
-echo "-----------------------Applied patch successfully---------------------------------------"
+# git apply 0001-Excluded-source-that-has-commercial-license.patch
+# echo "-----------------------Applied patch successfully---------------------------------------"
 
 SRC_DIR=$(pwd)
 
