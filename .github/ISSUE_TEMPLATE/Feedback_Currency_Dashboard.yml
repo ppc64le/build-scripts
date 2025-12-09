@@ -9,18 +9,12 @@ body:
     attributes:
       value: >
         Use this form to provide feedback or your suggstions for OSE Dashboard.
-  - type: dropdown
-    id: dashboard_version
+  - type: markdown
     attributes:
-      label: OSE Dashboard Version
-      options:
-        - v0.5
-        - v0.6
-        - v1.0
-      description: |
-        The version of OSE Dashboard on which you see behavior or registering your feedback for dashboard.
-    validations:
-      required: true
+      value: |
+        **OSE Dashboard Version:** 1.2.2
+
+        Version of the OSE dashboard that you are seeing the bug on or submitting feedback for.
   - type: textarea
     id: feedback
     attributes:
