@@ -1,30 +1,16 @@
-From 70ebe2084057eeaf427493ce5a35a33f525efcb1 Mon Sep 17 00:00:00 2001
-From: Nishidha Panpaliya <nishidha.panpaliya@partner.ibm.com>
-Date: Thu, 4 Sep 2025 08:56:34 -0400
-Subject: [PATCH] Excluded source that has commercial license
-
-Signed-off-by: Nishidha Panpaliya <nishidha.panpaliya@partner.ibm.com>
----
- README.md                                   |   2 -
- setup.py                                    |   2 +-
- src/torchaudio/pipelines/__init__.py        |  37 +----
- src/torchaudio/pipelines/_squim_pipeline.py | 156 --------------------
- 4 files changed, 2 insertions(+), 195 deletions(-)
- delete mode 100644 src/torchaudio/pipelines/_squim_pipeline.py
-
 diff --git a/README.md b/README.md
-index 6494094e..66213813 100644
+index af2b0216..34cf6999 100644
 --- a/README.md
 +++ b/README.md
-@@ -80,6 +80,4 @@ Pre-trained Model License
- 
+@@ -88,6 +88,4 @@ Pre-trained Model License
+
  The pre-trained models provided in this library may have their own licenses or terms and conditions derived from the dataset used for training. It is your responsibility to determine whether you have permission to use the models for your use case.
- 
+
 -For instance, SquimSubjective model is released under the Creative Commons Attribution Non Commercial 4.0 International (CC-BY-NC 4.0) license. See [the link](https://zenodo.org/record/4660670#.ZBtWPOxuerN) for additional details.
 -
  Other pre-trained models that have different license are noted in documentation. Please checkout the [documentation page](https://pytorch.org/audio/main/).
 diff --git a/setup.py b/setup.py
-index 7eb94528..e3823429 100644
+index 7a2fc746..9904ad2d 100644
 --- a/setup.py
 +++ b/setup.py
 @@ -128,7 +128,7 @@ def _main():
@@ -89,11 +75,11 @@ index efec1f35..4d26b274 100644
 -    WAVLM_LARGE,
 -)
  from .rnnt_pipeline import EMFORMER_RNNT_BASE_LIBRISPEECH, RNNTBundle
- 
- 
+
+
 diff --git a/src/torchaudio/pipelines/_squim_pipeline.py b/src/torchaudio/pipelines/_squim_pipeline.py
 deleted file mode 100644
-index 0c70db4a..00000000
+index f7e7c1d9..00000000
 --- a/src/torchaudio/pipelines/_squim_pipeline.py
 +++ /dev/null
 @@ -1,156 +0,0 @@
@@ -149,7 +135,7 @@ index 0c70db4a..00000000
 -            Variation of :py:class:`~torchaudio.models.SquimObjective`.
 -        """
 -        model = squim_objective_base()
--        path = torchaudio.utils.download_asset(f"models/{self._path}")
+-        path = torchaudio.utils._download_asset(f"models/{self._path}")
 -        state_dict = torch.load(path, weights_only=True)
 -        model.load_state_dict(state_dict)
 -        model.eval()
@@ -224,7 +210,7 @@ index 0c70db4a..00000000
 -            Variation of :py:class:`~torchaudio.models.SquimObjective`.
 -        """
 -        model = squim_subjective_base()
--        path = torchaudio.utils.download_asset(f"models/{self._path}")
+-        path = torchaudio.utils._download_asset(f"models/{self._path}")
 -        state_dict = torch.load(path, weights_only=True)
 -        model.load_state_dict(state_dict)
 -        model.eval()
@@ -253,6 +239,3 @@ index 0c70db4a..00000000
 -
 -    Please refer to :py:class:`SquimSubjectiveBundle` for usage instructions.
 -    """
--- 
-2.47.3
-

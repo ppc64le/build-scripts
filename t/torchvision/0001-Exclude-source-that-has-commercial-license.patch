@@ -1,22 +1,8 @@
-From 5ff67e8a522484241854bf4b05f9e1788c4812f0 Mon Sep 17 00:00:00 2001
-From: Nishidha Panpaliya <nishidha.panpaliya@partner.ibm.com>
-Date: Thu, 4 Sep 2025 07:54:52 -0400
-Subject: [PATCH] Exclude source that has commercial license
-
----
- README.md                                |    3 -
- torchvision/models/__init__.py           |    4 +-
- torchvision/models/regnet.py             | 1571 ----------------------
- torchvision/models/vision_transformer.py |  864 ------------
- 4 files changed, 2 insertions(+), 2440 deletions(-)
- delete mode 100644 torchvision/models/regnet.py
- delete mode 100644 torchvision/models/vision_transformer.py
-
 diff --git a/README.md b/README.md
-index 1076a7a186..ac74d6cf33 100644
+index ae9858e9e9..486a737d65 100644
 --- a/README.md
 +++ b/README.md
-@@ -109,9 +109,6 @@ The pre-trained models provided in this library may have their own licenses or t
+@@ -100,9 +100,6 @@ The pre-trained models provided in this library may have their own licenses or t
  dataset used for training. It is your responsibility to determine whether you have permission to use the models for your
  use case.
  
@@ -47,14 +33,14 @@ index 6ea0a1f717..190bbe2b4d 100644
  from . import detection, optical_flow, quantization, segmentation, video
 diff --git a/torchvision/models/regnet.py b/torchvision/models/regnet.py
 deleted file mode 100644
-index f37b2994e4..0000000000
+index 915ef22bf3..0000000000
 --- a/torchvision/models/regnet.py
 +++ /dev/null
 @@ -1,1571 +0,0 @@
 -import math
 -from collections import OrderedDict
 -from functools import partial
--from typing import Any, Callable, Dict, List, Optional, Tuple
+-from typing import Any, Callable, Optional
 -
 -import torch
 -from torch import nn, Tensor
@@ -238,11 +224,11 @@ index f37b2994e4..0000000000
 -class BlockParams:
 -    def __init__(
 -        self,
--        depths: List[int],
--        widths: List[int],
--        group_widths: List[int],
--        bottleneck_multipliers: List[float],
--        strides: List[int],
+-        depths: list[int],
+-        widths: list[int],
+-        group_widths: list[int],
+-        bottleneck_multipliers: list[float],
+-        strides: list[int],
 -        se_ratio: Optional[float] = None,
 -    ) -> None:
 -        self.depths = depths
@@ -330,8 +316,8 @@ index f37b2994e4..0000000000
 -
 -    @staticmethod
 -    def _adjust_widths_groups_compatibilty(
--        stage_widths: List[int], bottleneck_ratios: List[float], group_widths: List[int]
--    ) -> Tuple[List[int], List[int]]:
+-        stage_widths: list[int], bottleneck_ratios: list[float], group_widths: list[int]
+-    ) -> tuple[list[int], list[int]]:
 -        """
 -        Adjusts the compatibility of widths and groups,
 -        depending on the bottleneck ratio.
@@ -455,7 +441,7 @@ index f37b2994e4..0000000000
 -    return model
 -
 -
--_COMMON_META: Dict[str, Any] = {
+-_COMMON_META: dict[str, Any] = {
 -    "min_size": (1, 1),
 -    "categories": _IMAGENET_CATEGORIES,
 -}
@@ -1624,14 +1610,14 @@ index f37b2994e4..0000000000
 -    return _regnet(params, weights, progress, **kwargs)
 diff --git a/torchvision/models/vision_transformer.py b/torchvision/models/vision_transformer.py
 deleted file mode 100644
-index f2983ef9db..0000000000
+index 4ec3a5c59f..0000000000
 --- a/torchvision/models/vision_transformer.py
 +++ /dev/null
 @@ -1,864 +0,0 @@
 -import math
 -from collections import OrderedDict
 -from functools import partial
--from typing import Any, Callable, Dict, List, NamedTuple, Optional
+-from typing import Any, Callable, NamedTuple, Optional
 -
 -import torch
 -import torch.nn as nn
@@ -1803,7 +1789,7 @@ index f2983ef9db..0000000000
 -        num_classes: int = 1000,
 -        representation_size: Optional[int] = None,
 -        norm_layer: Callable[..., torch.nn.Module] = partial(nn.LayerNorm, eps=1e-6),
--        conv_stem_configs: Optional[List[ConvStemConfig]] = None,
+-        conv_stem_configs: Optional[list[ConvStemConfig]] = None,
 -    ):
 -        super().__init__()
 -        _log_api_usage_once(self)
@@ -1967,7 +1953,7 @@ index f2983ef9db..0000000000
 -    return model
 -
 -
--_COMMON_META: Dict[str, Any] = {
+-_COMMON_META: dict[str, Any] = {
 -    "categories": _IMAGENET_CATEGORIES,
 -}
 -
@@ -2492,6 +2478,3 @@ index f2983ef9db..0000000000
 -            model_state = model_state_copy
 -
 -    return model_state
--- 
-2.47.3
-
