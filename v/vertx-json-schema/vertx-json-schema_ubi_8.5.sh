@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/eclipse-vertx/vertx-json-schema
 # Tested on	: ubi 8.5
 # Language      : java
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>
 #

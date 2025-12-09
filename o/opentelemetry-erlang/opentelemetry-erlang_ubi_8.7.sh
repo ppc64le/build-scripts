@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/open-telemetry/opentelemetry-erlang
 # Tested on        : ubi:8.7
 # Language         : Erlang
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Pratik Tonage <Pratik.Tonage@ibm.com>
 #

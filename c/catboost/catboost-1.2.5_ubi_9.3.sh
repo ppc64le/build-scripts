@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/catboost/catboost.git
 # Tested on     : UBI:9.3
 # Language      : Python,c,c++
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License Version 2.0
 # Maintainer    : Pratik Tonage <Pratik.Tonage@ibm.com>
 #

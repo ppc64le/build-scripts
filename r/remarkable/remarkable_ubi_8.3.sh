@@ -5,7 +5,7 @@
 # Source repo   : https://github.com/jonschlinkert/remarkable.git
 # Tested on     : UBI 8.3
 # Language      : NPM
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Raju.Sah@ibm.com
 #

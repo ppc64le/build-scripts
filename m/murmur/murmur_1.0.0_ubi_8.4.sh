@@ -5,7 +5,7 @@
 # Source repo           : https://github.com/sangupta/murmur/
 # Tested on             : UBI 8.4
 # Language              : Java
-# Travis-Check          : False
+# Ci-Check          : False
 # Script License        : Apache License, Version 2 or later
 # Maintainer            : Vikas <kumar.vikas@in.ibm.com>
 #

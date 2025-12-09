@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/chef/chef
 # Tested on	: Ubuntu 20.04
 # Language      : Ruby
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Siddhesh Ghadi <Siddhesh.Ghadi@ibm.com>
 #

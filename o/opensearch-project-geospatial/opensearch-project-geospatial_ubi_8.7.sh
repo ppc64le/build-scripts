@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/opensearch-project/geospatial
 # Tested on        : UBI 8.7
 # Language         : Java
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Sunidhi Gaonkar<Sunidhi.Gaonkar@ibm.com>
 #

@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/ansible/awx
 # Tested on	: UBI: 8.5
 # Language      : Python
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sunidhi Gaonkar<Sunidhi.Gaonkar@ibm.com>
 #

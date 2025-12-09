@@ -5,7 +5,7 @@
 # Source repo      : https://git.drupalcode.org/project/video_embed_field.git
 # Tested on        : UBI 8.5
 # Language         : PHP
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Saraswati Patra <saraswati.patra@ibm.com>
 #
@@ -89,7 +89,7 @@ else
         exit 0
 fi
 #video_embed_field has 4 types of test cases Unit/Functional/FunctionalJavascript/Kernel.Unit test don't need drupal framework and DB etc. So can be executed by given script.
-# Please follow README file for more information to run FunctionalJavascript/Functional/Kernel test cases.and make the script travis-check false for Functional/FunctionalJavascript/Kernel test.
+# Please follow README file for more information to run FunctionalJavascript/Functional/Kernel test cases.and make the script Ci-Check false for Functional/FunctionalJavascript/Kernel test.
 #bash-4.4# ../vendor/bin/phpunit ../modules/video_embed_field/tests/src/Unit
 #PHPUnit 7.5.20 by Sebastian Bergmann and contributors.
 

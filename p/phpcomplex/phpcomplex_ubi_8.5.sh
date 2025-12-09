@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/MarkBaker/PHPComplex
 # Tested on	: ubi 8.5
 # Language      : PHP
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Nailusha Potnuru <pnailush@in.ibm.com>,vathsala .<vaths367@in.ibm.com>
 #

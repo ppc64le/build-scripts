@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/moxystudio/node-cross-spawn.git
 # Tested on     : ubi 8.5
 # Language      : node
-# Travis-Check  : true
+# Ci-Check  : true
 # Script License: Apache License Version 2.0
 # Maintainer    : sachin.kakatkar@ibm.com
 #

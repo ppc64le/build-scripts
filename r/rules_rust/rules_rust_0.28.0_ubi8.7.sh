@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/bazelbuild/rules_rust
 # Tested on     : UBI 8.7
 # Language      : Rust
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sumit Dubey <Sumit.Dubey2@ibm.com>
 #

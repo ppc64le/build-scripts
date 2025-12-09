@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/gotestyourself/gotest.tools
 # Tested on     : UBI 8.5
 # Language      : GO
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Gururaj R Katti <Gururaj.Katti@ibm.com>, Vaishnavi Patil <Vaishnavi.Patil3@ibm.com>
 #

@@ -4,7 +4,7 @@
 # Version	: d24ebc2075bad502fac3a8ae27aa6dd58e1952dc
 # Source repo	: https://github.com/go-openapi/errors
 # Language      : GO
-# Travis-Check  : False
+# Ci-Check  : False
 # Tested on	: RHEL 8.3
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>

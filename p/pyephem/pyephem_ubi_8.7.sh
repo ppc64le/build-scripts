@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/brandon-rhodes/pyephem.git
 # Tested on        : UBI 8.7
 # Language         : C, Python
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : GNU General Public License v3.0
 # Maintainer       : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
 #

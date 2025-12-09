@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/kiegroup/kie-cloud-operator.git
 # Tested on     : UBI:9.3
 # Language      : Go
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Vinod K <Vinod.K1@ibm.com>,Shubham Gupta <Shubham.Gupta43@ibm.com>
 #

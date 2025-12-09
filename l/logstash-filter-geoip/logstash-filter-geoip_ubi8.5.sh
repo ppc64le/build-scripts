@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/logstash-plugins/logstash-filter-geoip.git
 # Language		: Ruby
 # Tested on     : UBI: 8.5
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License Version 2.0
 # Maintainer    : saraswati patra <saraswati.patra@ibm.com>
 #

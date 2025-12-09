@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/dotnet/runtime
 # Tested on : Ubuntu-1804
 # Language      : C, C#
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sapana.Khemkar@ibm.com
 #

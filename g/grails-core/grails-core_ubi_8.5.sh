@@ -5,7 +5,7 @@
 # Source repo	: https://github.com/grails/grails-core.git
 # Tested on	: ubi 8.5
 # Language	: Java
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sapna Shukla <Sapna.Shukla@ibm.com>,Pratik Tonage <Pratik.Tonage@ibm.com>
 #

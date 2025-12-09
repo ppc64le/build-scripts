@@ -7,7 +7,7 @@
 # Source repo       : https://github.com/pytorch/vision.git
 # Tested on         : UBI:9.3
 # Language          : Python
-# Travis-Check      : True
+# Ci-Check      : True
 # Script License    : Apache License, Version 2.0
 # Maintainer        : Meet Jani <meet.jani@ibm.com>
 #

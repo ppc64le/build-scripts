@@ -6,7 +6,7 @@
 # Source repo      : https://git.drupalcode.org/project/simple_sitemap
 # Tested on        : UBI 8.5
 # Language         : PHP
-# Travis-Check     : False
+# Ci-Check     : False
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Vikas Kumar <kumar.vikas@in.ibm.com>
 #

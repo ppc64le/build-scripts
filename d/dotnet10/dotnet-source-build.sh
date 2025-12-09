@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/dotnet/dotnet
 # Tested on     : Ubuntu
 # Language      : dotnet
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: MIT License (MIT)
 # Maintainer    : Ashwini Kadam <Ashwini.Kadam@ibm.com>
 #

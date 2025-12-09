@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/google/re2.git
 # Tested on     : UBI 9.3
 # Language      : c
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License 2.0
 # Maintainer    : Stuti Wali <Stuti.Wali@ibm.com>
 #

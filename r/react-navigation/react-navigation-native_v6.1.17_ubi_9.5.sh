@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/react-navigation/react-navigation.git
 # Tested on     : UBI 9.5 (ppc64le)
 # Language      : JavaScript,TypeScript
-# Travis-Check  : true
+# Ci-Check  : true
 # Script License: MIT License (standard permissive open‑source license)
 # Maintainer    : Sai vikram kuppala <Sai.vikram.kuppala@ibm.com>
 #

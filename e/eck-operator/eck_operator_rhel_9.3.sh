@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/elastic/cloud-on-k8s
 # Tested on     : Red Hat Enterprise Linux 9.3
 # Language      : GO
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2.0
 # Maintainer    : Sunidhi Gaonkar<Sunidhi.Gaonkar@ibm.com>
 #

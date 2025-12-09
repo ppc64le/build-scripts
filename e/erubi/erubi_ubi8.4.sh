@@ -5,7 +5,7 @@
 # Source repo	: https://github.com/jeremyevans/erubi
 # Tested on	: UBI 8.4
 # Language      : Ruby
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sapana Khemkar {Sapana.khemkar@ibm.com}
 #

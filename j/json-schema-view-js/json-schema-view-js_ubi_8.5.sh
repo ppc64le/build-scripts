@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/mohsen1/json-schema-view-js
 # Tested on	: UBI: 8.5
 # Language      : Node
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Vishaka Desai <Vishaka.Desai@ibm.com>
 #

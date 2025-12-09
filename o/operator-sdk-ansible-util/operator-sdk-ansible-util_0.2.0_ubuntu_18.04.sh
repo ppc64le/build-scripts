@@ -6,7 +6,7 @@
 # Source repo     : https://github.com/operator-framework/operator-sdk-ansible-util.git
 # Tested on       : Ubuntu 18.04 (docker)
 # Language        : Python
-# Travis-Check    : True
+# Ci-Check    : True
 # Script License  : Apache License 2.0
 # Maintainer's    : Sumit Dubey <sumit.dubey2@ibm.com>
 #

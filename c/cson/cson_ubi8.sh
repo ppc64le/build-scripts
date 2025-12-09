@@ -6,7 +6,7 @@
 # Source repo           : https://github.com/bevry/cson
 # Tested on             : UBI 8
 # Language              : Node
-# Travis-Check          : True
+# Ci-Check          : True
 # Script License        : Apache License, Version 2 or later
 # Maintainer            : Swati Singhal<swati.singhal@ibm.com>,Saraswati Patra <saraswati.patra@ibm.com>
 #

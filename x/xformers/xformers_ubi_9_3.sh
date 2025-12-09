@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/facebookresearch/xformers.git
 # Tested on     : UBI 9.3
 # Language      : Python, C++
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2.0
 # Maintainer    : Bhagyashri Gaikwad <Bhagyashri.Gaikwad2@ibm.com> 
 #

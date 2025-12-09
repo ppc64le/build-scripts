@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/DataTables/FixedHeader
 # Tested on     : UBI: 8.7
 # Language      : JavaScript
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Stuti Wali <Stuti.Wali@ibm.com>
 #

@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/DataDog/datadog-go
 # Tested on	: ubi 8.5
 # Language      : Go
-# Travis-Check  : true
+# Ci-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>
 #

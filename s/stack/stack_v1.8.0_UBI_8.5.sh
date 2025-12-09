@@ -5,7 +5,7 @@
 # Source repo   : https://github.com/go-stack/stack.git
 # Tested on     : RHEL 8.4
 # Language      : GO
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Amit Baheti (aramswar@in.ibm.com)
 #

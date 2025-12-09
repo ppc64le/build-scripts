@@ -7,7 +7,7 @@
 # Source repo   : https://github.com/isaacs/node-graceful-fs.git
 # Tested on     : UBI 8.5
 # Language      : Node
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Vikas Kumar <kumar.vikas@in.ibm.com>, Bhagat Singh <Bhagat.singh1@ibm.com>, Vishaka Desai <Vishaka.Desai@ibm.com>
 #

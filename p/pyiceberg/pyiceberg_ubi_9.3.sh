@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/apache/iceberg-python
 # Tested on        : UBI:9.3
 # Language         : Python
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Vinod.K1 <Vinod.K1@ibm.com>
 #

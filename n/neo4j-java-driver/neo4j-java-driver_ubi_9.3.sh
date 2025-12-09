@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/neo4j/neo4j-java-driver
 # Tested on     : UBI:9.3
 # Language      : Java
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Ramnath Nayak <Ramnath.Nayak@ibm.com>
 #

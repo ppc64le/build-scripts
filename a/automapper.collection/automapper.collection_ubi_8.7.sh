@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/AutoMapper/AutoMapper.Collection.git
 # Tested on     : UBI 8.7
 # Language      : C#
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Ashutosh Jadhav <Ashutosh.Jadhav2@ibm.com>
 #

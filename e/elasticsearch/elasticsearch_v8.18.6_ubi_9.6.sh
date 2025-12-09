@@ -5,7 +5,7 @@
 # Version       : 8.18.6
 # Source repo   : https://github.com/elastic/elasticsearch.git
 # Tested on     : UBI: 9.6
-# Travis-Check  : True
+# Ci-Check      : True
 # Language      : Java
 # Script License: Apache License Version 2.0
 # Maintainer    : Sanket Patil <Sanket.Patil11@ibm.com>
@@ -18,9 +18,10 @@
 #
 # ----------------------------------------------------------------------------
 
+SCRIPT_PACKAGE_VERSION=v8.18.6
 PACKAGE_NAME=elasticsearch
 PACKAGE_URL=https://github.com/elastic/elasticsearch.git
-PACKAGE_VERSION=${1:-v8.18.6}
+PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
 BUILD_DIR=$(pwd)
 SCRIPT_PATH=$(dirname $(realpath $0))
 
@@ -82,7 +83,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Apply patch
-git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${PACKAGE_VERSION}.patch
+git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${SCRIPT_PACKAGE_VERSION}.patch
 
 # Create required stub directories for ppc64le
 mkdir -p distribution/archives/linux-ppc64le-tar

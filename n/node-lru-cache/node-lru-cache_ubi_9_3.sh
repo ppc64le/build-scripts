@@ -6,7 +6,7 @@
 # Source repo	    : https://github.com/isaacs/node-lru-cache
 # Tested on	        : ubi 9.3
 # Language          : TypeScript,JavaScript
-# Travis-Check      : true
+# Ci-Check      : true
 # Script License    : Apache License, Version 2 or later
 # Maintainer	    : Stuti Wali <Stuti.Wali@ibm.com>
 #

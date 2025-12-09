@@ -6,7 +6,7 @@
 # Source repo      : https://git.drupalcode.org/project/restui
 # Tested on        : UBI 8.5
 # Language         : PHP
-# Travis-Check     : False
+# Ci-Check     : False
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Vaishnavi Patil <Vaishnavi.Patil3@ibm.com>
 #

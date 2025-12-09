@@ -1,0 +1,13 @@
+{
+  "maintainer": "SohamBadjateIBM",
+  "package_name": "searxng",
+  "github_url": "https://github.com/searxng/searxng.git",
+  "version": "576c8ca99cde1a31e442ef61965e77c82349079b",
+  "default_branch": "master",
+  "build_script": "searxng_ubi_9.6.sh",
+  "package_dir": "s/searxng",
+  "use_non_root_user": "false",
+  "docker_build": false,
+  "wheel_build": true,
+  "validate_build_script": true
+}

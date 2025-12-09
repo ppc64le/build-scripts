@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/jupyter/jupyter_core.git
 # Tested on        : UBI 9.3
 # Language         : Python, javascript
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : GNU General Public License v3.0
 # Maintainer       : Anumala Rajesh <Anumala.Rajesh@ibm.com>
 #

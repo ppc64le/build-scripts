@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/node-red/node-red.git
 # Tested on	    : UBI 8.5
 # Language      : NodeJs
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Pratik Tonage <Pratik.Tonage@ibm.com>
 #

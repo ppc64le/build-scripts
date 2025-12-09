@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/kiali/kiali
 # Tested on	: UBI 8.5
 # Language   	: go
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License 2.0 or later
 # Maintainer	: Shantanu Kadam <shantanu.kadam@ibm.com>
 #

@@ -6,7 +6,7 @@
 # Source repo     : https://github.com/psycopg/psycopg2.git
 # Tested on       : Ubuntu 18.04 (Docker)
 # Language        : Python
-# Travis-Check    : True
+# Ci-Check    : True
 # Script License  : Apache License, Version 2 or later
 # Maintainer      : Sumit Dubey <Sumit.Dubey2@ibm.com>
 # Instructions	  : 1. Run the docker conatiner as: 

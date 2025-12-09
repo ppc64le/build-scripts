@@ -5,7 +5,7 @@
 # Version       : v1.1.0
 # Source repo   : https://github.com/jung-kurt/gofpdf.git
 # Tested on     : UBI 8.5
-# Travis-Check  : True
+# Ci-Check  : True
 # Language      : Go
 # Script License: Apache License, Version 2 or later
 # Maintainer    : saraswati patra <saraswati.patra@ibm.com>

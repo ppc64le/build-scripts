@@ -5,7 +5,7 @@
 # Version       : 7.8.1
 # Source repo   : https://github.com/elastic/elasticsearch.git
 # Tested on     : rhel 8.3
-# Travis-Check  : True
+# Ci-Check  : True
 # Language      : Java
 # Script License: Apache License Version 2.0
 # Maintainer    : Sachin Kakatkar <sachin.kakatkar@ibm.com>

@@ -6,7 +6,7 @@
 # Source repo	  : https://github.com/mongodb/mongo-java-driver
 # Tested on	      : Ubuntu 18.04 (Docker)
 # Language        : Java
-# Travis-Check    : True
+# Ci-Check    : True
 # Script License  : Apache License, Version 2 or later
 # Maintainer	  : Sumit Dubey <sumit.dubey2@ibm.com>
 #

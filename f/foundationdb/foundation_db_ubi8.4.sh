@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/apple/foundationdb
 # Tested on     : UBI 8.4
 # Language      : C, C++
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer's  : Vikas Gupta <vikas.gupta8@ibm.com>
 #

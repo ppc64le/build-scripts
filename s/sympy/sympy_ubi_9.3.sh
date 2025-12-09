@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/sympy/sympy.git
 # Tested on        : UBI:9.3
 # Language         : Python
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : SymPy Development Team
 # Maintainer       : Rakshith R <rakshith.r5@ibm.com>
 #

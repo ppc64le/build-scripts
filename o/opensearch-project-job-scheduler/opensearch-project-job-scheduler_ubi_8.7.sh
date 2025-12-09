@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/opensearch-project/job-scheduler
 # Tested on        : UBI 8.7
 # Language         : Java
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Pratik Tonage<Pratik.Tonage@ibm.com>
 #
