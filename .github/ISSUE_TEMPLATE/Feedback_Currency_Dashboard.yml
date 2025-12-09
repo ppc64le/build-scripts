@@ -12,7 +12,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        **OSE Dashboard Version:** 1.2.2
+        **OSE Dashboard Version:** 1.1.2
 
         Version of the OSE dashboard that you are seeing the bug on or submitting feedback for.
   - type: textarea
