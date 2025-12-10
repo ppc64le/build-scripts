@@ -12,13 +12,18 @@ body:
         Please give us as much information, including screen shots when possible to help us reproduce your issue or better understand the problem.
         However, remember that any submitted information is public so do NOT include secrets, passwords, keys, PI, SPI, etc.
 
-  - type: markdown
+  - type: input
+    id: ose_version
     attributes:
-      value: |
-        **OSE Dashboard Version:** 1.1.2
+      label: OSE Dashboard Version
+      description: |
+        Enter the version of the OSE Dashboard where you are seeing the issue.
 
-        Version of the OSE dashboard that you are seeing the bug on or submitting feedback for.
-
+        > Please verify the portal version here:  
+        > [Click to check portal version](https://ose.developerfirst.ibm.com)
+    validations:
+      required: true
+      
   - type: textarea
     id: bug_details
     attributes:
