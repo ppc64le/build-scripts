@@ -9,12 +9,17 @@ body:
     attributes:
       value: >
         Use this form to provide feedback or your suggstions for OSE Dashboard.
-  - type: markdown
+  - type: input
+    id: ose_version
     attributes:
-      value: |
-        **OSE Dashboard Version:** 1.1.2
+      label: OSE Dashboard Version
+      description: |
+        Enter the version of the OSE Dashboard where the issue occurs.
 
-        Version of the OSE dashboard that you are seeing the bug on or submitting feedback for.
+        > Log in and check the portal version at the bottom-right of the home page.  
+        > [Click to check portal version](https://ose.developerfirst.ibm.com)
+    validations:
+      required: true
   - type: textarea
     id: feedback
     attributes:
