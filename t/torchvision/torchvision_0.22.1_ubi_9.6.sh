@@ -3,13 +3,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package           : vision
-# Version           : v0.22.1
+# Version           : v0.24.0
 # Source repo       : https://github.com/pytorch/vision.git
 # Tested on         : UBI:9.6
 # Language          : Python
 # Ci-Check      : True
 # Script License    : Apache License, Version 2.0
-# Maintainer        : Prerna Kumbhar <Prerna.Kumbhar@ibm.com>
+# Maintainer        : Lenzie Camilo <Lenzie.Camilo3@ibm.com>
 #
 # Disclaimer        : This script has been tested in root mode on given
 # ==========          platform using the mentioned version of the package.
@@ -22,7 +22,7 @@
 set -ex 
 
 PACKAGE_NAME=vision
-PACKAGE_VERSION=${1:-v0.22.1}
+PACKAGE_VERSION=${1:-v0.24.0}
 PACKAGE_URL=https://github.com/pytorch/vision.git
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 MAX_JOBS=${MAX_JOBS:-$(nproc)}
