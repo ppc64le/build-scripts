@@ -9,7 +9,7 @@
 # Language          : Python
 # Ci-Check      : True
 # Script License    : Apache License, Version 2.0
-# Maintainer        : Prerna Kumbhar <Prerna.Kumbhar@ibm.com>
+# Maintainer        : Lenzie Camilo <Lenzie.Camilo3@ibm.com>
 #
 # Disclaimer        : This script has been tested in root mode on given
 # ==========          platform using the mentioned version of the package.
