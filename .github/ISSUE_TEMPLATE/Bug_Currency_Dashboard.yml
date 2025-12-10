@@ -19,7 +19,7 @@ body:
       description: |
         Enter the version of the OSE Dashboard where you are seeing the issue.
 
-        > Please verify the portal version here:  
+        > Log in and check the portal version at the bottom-right of the home page.  
         > [Click to check portal version](https://ose.developerfirst.ibm.com)
     validations:
       required: true
