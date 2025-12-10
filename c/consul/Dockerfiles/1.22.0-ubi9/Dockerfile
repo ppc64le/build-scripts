@@ -1,20 +1,14 @@
-FROM registry.access.redhat.com/ubi9:9.6
+FROM registry.access.redhat.com/ubi9:9.6 as builder
 
 # This is the release of Consul to pull in.
 ARG CONSUL_VERSION=v1.22.0
 
-# Create a consul user and group first so the IDs get set the same way, even as
-# the rest of this may change over time.
-RUN groupadd consul && \
-    adduser  -g  consul consul
-
-# Set up certificates, base tools, and Consul.
 RUN set -eux && \
-    yum install -y libcap iputils glibc 
+    yum install -y curl libcap iputils glibc --allowerasing
 
-ENV GOPATH /go
-ENV PATH $PATH:$GOPATH/bin
-	
+ENV GOPATH=/go
+ENV PATH=$PATH:$GOPATH/bin
+
 RUN set -eux; \
     yum install -y git gcc make wget && \
     wget https://golang.org/dl/go1.25.3.linux-ppc64le.tar.gz && \
@@ -23,13 +17,10 @@ RUN set -eux; \
     export PATH=/usr/local/go/bin:$PATH && \
     go install gotest.tools/gotestsum@latest && \
     go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest && \
-    ulimit -n 2048 && \
-    umask 0022 && \
     wget https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_ppc64le && \
-    chmod a+x dumb-init_1.2.2_ppc64le && mv ./dumb-init_1.2.2_ppc64le ./dumb-init && \
-    cp ./dumb-init /usr/bin && \
-    cp ./dumb-init /usr/local/bin && \
-    git clone https://github.com/ncopa/su-exec && cd su-exec && make && chmod a+x su-exec && cp ./su-exec /usr/bin && cd - && \
+    chmod a+x dumb-init_1.2.2_ppc64le && mv dumb-init_1.2.2_ppc64le dumb-init && \
+    cp dumb-init /usr/bin && \
+    git clone https://github.com/ncopa/su-exec && cd su-exec && make && chmod a+x su-exec && cp su-exec /usr/bin && cd - && \
     mkdir -p /go/src/github.com/hashicorp && cd /go/src/github.com/hashicorp && \
     git clone https://github.com/hashicorp/consul && cd consul && \
     git checkout $CONSUL_VERSION && \
@@ -38,14 +29,26 @@ RUN set -eux; \
     chmod +x /bin/consul && \
     yum remove -y git make gcc wget && \
     rm -rf $GOPATH/src $GOPATH/pkg && \
-    rm -rf  /usr/local/go
-    
-# tiny smoke test to ensure the binary we downloaded runs
-RUN consul version
+    rm -rf /usr/local/go
 
-# The /consul/data dir is used by Consul to store state. The agent will be started
-# with /consul/config as the configuration directory so you can add additional
-# config files in that location.
+# Debug spot-check
+RUN find / -name "consul"
+
+##
+FROM registry.access.redhat.com/ubi9:9.6
+
+# Copy compiled binaries from builder
+COPY --from=builder /bin/consul /usr/local/bin/consul
+COPY --from=builder /usr/bin/dumb-init /usr/bin/dumb-init
+COPY --from=builder /usr/bin/su-exec /usr/bin/su-exec
+
+# Verify consul runs
+RUN export PATH=$PATH:/usr/local/bin && consul version
+
+# Setup consul user
+RUN groupadd consul && adduser -g consul consul
+
+# Consul directories
 RUN mkdir -p /consul/data && \
     mkdir -p /consul/config && \
     chown -R consul:consul /consul
