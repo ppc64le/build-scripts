@@ -1,11 +1,11 @@
 diff --git a/tools/setup_helpers/extension.py b/tools/setup_helpers/extension.py
-index 58f50878..955dbacd 100644
+index 635b4ae4..0b0400b0 100644
 --- a/tools/setup_helpers/extension.py
 +++ b/tools/setup_helpers/extension.py
-@@ -140,6 +140,11 @@ class CMakeBuild(build_ext):
+@@ -109,6 +109,11 @@ class CMakeBuild(build_ext):
+             f"-DUSE_ROCM:BOOL={'ON' if _USE_ROCM else 'OFF'}",
              f"-DUSE_CUDA:BOOL={'ON' if _USE_CUDA else 'OFF'}",
              f"-DUSE_OPENMP:BOOL={'ON' if _USE_OPENMP else 'OFF'}",
-             f"-DUSE_FFMPEG:BOOL={'ON' if _USE_FFMPEG else 'OFF'}",
 +            f"-DProtobuf_INCLUDE_DIR={os.getenv('Protobuf_INCLUDE_DIR')}",
 +            f"-DProtobuf_LIBRARIES={os.getenv('Protobuf_LIBRARIES')}",
 +            f"-DProtobuf_LIBRARY={os.getenv('Protobuf_LIBRARY')}",
