@@ -382,7 +382,7 @@ cd $CURRENT_DIR
 
 echo "---------------------------Installing FFmpeg------------------"
 #Cloning Source Code
-FFMPEG_PACKAGE_VERSION=${1:-n7.1}
+FFMPEG_PACKAGE_VERSION=${4:-n7.1}
 
 git clone https://github.com/FFmpeg/FFmpeg
 cd FFmpeg
@@ -556,9 +556,9 @@ echo "------------------Building torchvision------------------------"
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchvision/0001-Exclude-source-that-has-commercial-license.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchvision/0001-Exclude-source-that-has-commercial-license_${PACKAGE_VERSION}.patch
 # Below patch is needed to exclude the models that come under SWAG license (CC-BY-NC-4.0)
-git apply 0001-Exclude-source-that-has-commercial-license.patch
+git apply 0001-Exclude-source-that-has-commercial-license_${PACKAGE_VERSION}.patch
 
 sed -i '/elif sha != "Unknown":/,+1d' setup.py
 
@@ -596,3 +596,4 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
+

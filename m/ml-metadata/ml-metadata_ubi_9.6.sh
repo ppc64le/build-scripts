@@ -53,7 +53,8 @@ python3.11 -m pip install numpy pytest
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
-git apply $SCRIPT_DIR/ml_metadata_ubi9.6.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/m/ml-metadata/ml_metadata_ubi9.6.patch
+git apply ml_metadata_ubi9.6.patch
 
 export PYTHON_BIN_PATH=$(which python3.11)
 
