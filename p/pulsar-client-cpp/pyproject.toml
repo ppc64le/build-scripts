@@ -1,0 +1,41 @@
+# Minimum requirements for the build system to execute.
+requires = [
+    "setuptools",
+    "wheel",
+]
+
+# Set build backend to setuptools
+build-backend = "setuptools.build_meta"
+
+# Project name and version
+[project]
+name = "pulsar-client-cpp"
+version = "{PACKAGE_VERSION}"
+
+# One line description
+description = "Apache Pulsar C++ client library for messaging and streaming"
+
+# Classifiers to improve package discoverability
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Programming Language :: C++",
+  "License :: Apache License 2.0",
+]
+
+# Project URLs
+[project.urls]
+homepage = "https://github.com/apache/pulsar-client-cpp.git"
+upstream = "https://github.com/apache/pulsar-client-cpp.git"
+
+# Find packages files in local folder
+[tool.setuptools.packages.find]
+namespaces = true
+where = ["local"]
+
+# Package data to add bazel in wheel
+[tool.setuptools.package-data]
+pulsar_client_cpp = ["lib/**/*", "include/**/*"]
+
+[tool.distutils.bdist_wheel]
+plat-name = "linux_ppc64le"
+universal = false
