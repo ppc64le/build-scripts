@@ -64,6 +64,9 @@ cd $cwd
 # Clone SearXNG repository and checkout sha256
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 
+# fix for dubious ownership issue for git
+git config --global --add safe.directory /home/tester
+
 git clone $PACKAGE_URL  && cd $PACKAGE_NAME
 git checkout 576c8ca99cde1a31e442ef61965e77c82349079b
 if ! (python3 -m pip install --upgrade pip setuptools wheel && python3 -m pip install msgspec uvloop orjson pyyaml requests uwsgi pybind11 httpx && python3 -m pip install -e . --use-pep517 --no-build-isolation) ; then
