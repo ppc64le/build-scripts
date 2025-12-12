@@ -5,7 +5,7 @@
 # Version       : 3.7.0
 # Source repo   : https://github.com/apache/pulsar-client-cpp.git
 # Tested on     : UBI:9.6
-# Ci-Check  : True
+# Ci-Check      : True
 # Language      : Python
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
