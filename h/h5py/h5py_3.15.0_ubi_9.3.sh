@@ -2,13 +2,13 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : h5py
-# Version       : 3.13.0
+# Version       : 3.15.0
 # Source repo   : https://github.com/h5py/h5py.git
 # Tested on     : UBI:9.3
 # Language      : Python
 # Ci-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Shubham Garud <Shubham.Garud@ibm.com>
+# Maintainer    : Shivansh sharma <Shivansh.s1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -18,7 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 PACKAGE_NAME=h5py
-PACKAGE_VERSION=${1:-3.13.0}
+PACKAGE_VERSION=${1:-3.15.0}
 PACKAGE_URL=https://github.com/h5py/h5py.git
 PACKAGE_DIR=h5py
 CURRENT_DIR="${PWD}"
@@ -129,7 +129,6 @@ git clone https://github.com/h5py/h5py.git
 cd h5py/
 git checkout $PACKAGE_VERSION
 
-python3.12 -m pip install Cython==0.29.36
 python3.12 -m pip install numpy==2.0.2
 python3.12 -m pip install pkgconfig pytest-mpi setuptools==77.0.1
 python3.12 -m pip install wheel pytest pytest-mpi tox build
