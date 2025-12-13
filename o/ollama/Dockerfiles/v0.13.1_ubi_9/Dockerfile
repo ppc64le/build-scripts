@@ -6,7 +6,9 @@ FROM registry.access.redhat.com/ubi9/ubi:9.6 AS build
 ARG PACKAGE_NAME=ollama
 ARG PACKAGE_VERSION=v0.13.1
 ARG PACKAGE_URL=https://github.com/ollama/ollama
-
+ENV PATCH_BUILD_POWER=https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/ollama/build_power_${PACKAGE_VERSION}.patch
+ENV PATCH_SET_THREADS=https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/ollama/set_threads_env_${PACKAGE_VERSION}.patch
+ENV PATCH_ENABLE_MMA=https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/ollama/enable_mma_${PACKAGE_VERSION}.patch
 ENV CMAKE_VERSION=3.30.5
 ENV GO_VERSION=1.24.1
 ENV PATH="/usr/local/go/bin:/usr/local/cmake/bin:${PATH}"
@@ -50,20 +52,23 @@ RUN wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz && \
 ###############################################################################
 WORKDIR /src
 
+COPY *_${PACKAGE_VERSION}.patch .
+
+#RUN wget -q ${PATCH_BUILD_POWER} && \
+#    wget -q ${PATCH_SET_THREADS} && \
+#    wget -q ${PATCH_ENABLE_MMA}
+
+# Clone Ollama source and apply patches    
 RUN git clone ${PACKAGE_URL} && \
     cd ${PACKAGE_NAME} && \
-    git checkout ${PACKAGE_VERSION}
+    git checkout ${PACKAGE_VERSION} 
 
 WORKDIR /src/${PACKAGE_NAME}
-
-# Download and apply patches
-RUN wget -q https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/ollama/build_power_v0.13.1.patch && \
-    wget -q https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/ollama/set_threads_env_v0.13.1.patch && \
-    wget -q https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/ollama/enable_mma_v0.13.1.patch && \
-    patch -Np1 < build_power_v0.13.1.patch && \
-    patch -Np1 < set_threads_env_v0.13.1.patch && \
-    patch -Np1 < enable_mma_v0.13.1.patch && \
-    rm -f *.patch
+    
+RUN patch -Np1 < ../build_power_${PACKAGE_VERSION}.patch && \
+    patch -Np1 < ../set_threads_env_${PACKAGE_VERSION}.patch && \
+    patch -Np1 < ../enable_mma_${PACKAGE_VERSION}.patch && \
+    rm -f ../*${PACKAGE_VERSION}.patch
     
 ###############################################################################
 # Build Ollama (CMake + Go)
