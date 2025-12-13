@@ -1,0 +1,199 @@
+diff --git a/build.gradle b/build.gradle
+index a0a253fc00b..dea892aa6d8 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -231,9 +231,9 @@ tasks.register("verifyVersions") {
+  * after the backport of the backcompat code is complete.
+  */
+ 
+-boolean bwc_tests_enabled = true
++boolean bwc_tests_enabled = false
+ /* place an issue link here when committing bwc changes */
+-final String bwc_tests_disabled_issue = ""
++final String bwc_tests_disabled_issue = "https://github.com/opensearch-project/opensearch-build/issues/3122"
+ if (bwc_tests_enabled == false) {
+   if (bwc_tests_disabled_issue.isEmpty()) {
+     throw new GradleException("bwc_tests_disabled_issue must be set when bwc_tests_enabled == false")
+diff --git a/buildSrc/src/main/java/org/opensearch/gradle/Version.java b/buildSrc/src/main/java/org/opensearch/gradle/Version.java
+index 30124883817..5efbc6fa571 100644
+--- a/buildSrc/src/main/java/org/opensearch/gradle/Version.java
++++ b/buildSrc/src/main/java/org/opensearch/gradle/Version.java
+@@ -64,7 +64,9 @@ public final class Version implements Comparable<Version> {
+ 
+     private static final Pattern pattern = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)(-alpha\\d+|-beta\\d+|-rc\\d+)?(-SNAPSHOT)?");
+ 
+-    private static final Pattern relaxedPattern = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)(-[a-zA-Z0-9_]+|\\+[a-zA-Z0-9_]+)*?");
++    private static final Pattern relaxedPattern = Pattern.compile(
++        "v?(\\d+)\\.(\\d+)\\.(\\d+)(?:[\\-+]+([a-zA-Z0-9_]+(?:-[a-zA-Z0-9]+)*))?"
++    );
+ 
+     public Version(int major, int minor, int revision) {
+         Objects.requireNonNull(major, "major version can't be null");
+diff --git a/buildSrc/src/test/java/org/opensearch/gradle/VersionTests.java b/buildSrc/src/test/java/org/opensearch/gradle/VersionTests.java
+index a9f32886f79..63b925948dc 100644
+--- a/buildSrc/src/test/java/org/opensearch/gradle/VersionTests.java
++++ b/buildSrc/src/test/java/org/opensearch/gradle/VersionTests.java
+@@ -60,7 +60,7 @@ public class VersionTests extends GradleUnitTestCase {
+         assertVersionEquals("6.1.2-beta1-SNAPSHOT", 6, 1, 2, Version.Mode.RELAXED);
+         assertVersionEquals("6.1.2-foo", 6, 1, 2, Version.Mode.RELAXED);
+         assertVersionEquals("6.1.2-foo-bar", 6, 1, 2, Version.Mode.RELAXED);
+-        assertVersionEquals("16.01.22", 16, 1, 22, Version.Mode.RELAXED);
++        assertVersionEquals("v27.1.2", 27, 1, 2, Version.Mode.RELAXED);
+     }
+ 
+     public void testCompareWithStringVersions() {
+diff --git a/distribution/docker/docker-compose.yml b/distribution/docker/docker-compose.yml
+index 5ed2b159ffe..a380a3c2453 100644
+--- a/distribution/docker/docker-compose.yml
++++ b/distribution/docker/docker-compose.yml
+@@ -8,7 +8,7 @@ services:
+        - cluster.initial_cluster_manager_nodes=opensearch-1,opensearch-2
+        - discovery.seed_hosts=opensearch-2:9300
+        - cluster.name=opensearch
+-       - bootstrap.memory_lock=true
++       - bootstrap.memory_lock=false
+        - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+        - path.repo=/tmp/opensearch-repo
+        - node.attr.testattr=test
+@@ -32,7 +32,7 @@ services:
+        - cluster.initial_cluster_manager_nodes=opensearch-1,opensearch-2
+        - discovery.seed_hosts=opensearch-1:9300
+        - cluster.name=opensearch
+-       - bootstrap.memory_lock=true
++       - bootstrap.memory_lock=false
+        - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+        - path.repo=/tmp/opensearch-repo
+        - node.attr.testattr=test
+diff --git a/distribution/docker/src/docker/Dockerfile b/distribution/docker/src/docker/Dockerfile
+index c980217b0b8..1c6bc3940e8 100644
+--- a/distribution/docker/src/docker/Dockerfile
++++ b/distribution/docker/src/docker/Dockerfile
+@@ -29,7 +29,7 @@ FROM ${base_image} AS builder
+ RUN set -eux ; \\
+     tini_bin="" ; \\
+     case "\$(arch)" in \\
+-        aarch64) tini_bin='tini-arm64' ;; \\
++        ppc64le) tini_bin='tini-ppc64le' ;; \\
+         x86_64)  tini_bin='tini-amd64' ;; \\
+         *) echo >&2 ; echo >&2 "Unsupported architecture \$(arch)" ; echo >&2 ; exit 1 ;; \\
+     esac ; \\
+diff --git a/qa/remote-clusters/docker-compose.yml b/qa/remote-clusters/docker-compose.yml
+index 2112da17efe..e4236beaaf1 100644
+--- a/qa/remote-clusters/docker-compose.yml
++++ b/qa/remote-clusters/docker-compose.yml
+@@ -7,7 +7,7 @@ services:
+        - node.name=opensearch-1
+        - cluster.initial_cluster_manager_nodes=opensearch-1
+        - cluster.name=opensearch-1
+-       - bootstrap.memory_lock=true
++       - bootstrap.memory_lock=false
+        - network.publish_host=127.0.0.1
+        - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+        - path.repo=/tmp/opensearch-repo
+@@ -41,7 +41,7 @@ services:
+        - node.name=opensearch-2
+        - cluster.initial_cluster_manager_nodes=opensearch-2
+        - cluster.name=opensearch-2
+-       - bootstrap.memory_lock=true
++       - bootstrap.memory_lock=false
+        - network.publish_host=127.0.0.1
+        - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+        - path.repo=/tmp/opensearch-repo
+diff --git a/qa/wildfly/docker-compose.yml b/qa/wildfly/docker-compose.yml
+index b0f1609f01e..e6d42174087 100644
+--- a/qa/wildfly/docker-compose.yml
++++ b/qa/wildfly/docker-compose.yml
+@@ -2,7 +2,7 @@ version: '3.7'
+ services:
+ 
+   wildfly:
+-    image: quay.io/wildfly/wildfly:28.0.1.Final-jdk11
++    image: quay.io/wildfly/wildfly:latest-jdk17
+     environment:
+       JAVA_OPTS: -Dopensearch.uri=opensearch:9200 -Djboss.http.port=8080 -Djava.net.preferIPv4Stack=true
+     volumes:
+diff --git a/test/fixtures/azure-fixture/build.gradle b/test/fixtures/azure-fixture/build.gradle
+index e2b1d475fba..e0ffa74f573 100644
+--- a/test/fixtures/azure-fixture/build.gradle
++++ b/test/fixtures/azure-fixture/build.gradle
+@@ -38,6 +38,10 @@ dependencies {
+   api project(':server')
+ }
+ 
++dockerCompose {
++    nestedName = "fixture"
++}
++
+ preProcessFixture {
+   dependsOn jar, configurations.runtimeClasspath
+   // always run the task, otherwise the folders won't be created
+diff --git a/test/fixtures/gcs-fixture/build.gradle b/test/fixtures/gcs-fixture/build.gradle
+index 564cf336874..bfd9d921a70 100644
+--- a/test/fixtures/gcs-fixture/build.gradle
++++ b/test/fixtures/gcs-fixture/build.gradle
+@@ -37,6 +37,10 @@ dependencies {
+   api project(':server')
+ }
+ 
++dockerCompose {
++    nestedName = "fixture"
++}
++
+ group = 'fixture.gcs'
+ preProcessFixture {
+   dependsOn jar, configurations.runtimeClasspath
+diff --git a/test/fixtures/krb5kdc-fixture/Dockerfile b/test/fixtures/krb5kdc-fixture/Dockerfile
+index 55ffacbdedb..c194f2637a2 100644
+--- a/test/fixtures/krb5kdc-fixture/Dockerfile
++++ b/test/fixtures/krb5kdc-fixture/Dockerfile
+@@ -2,7 +2,7 @@ FROM ubuntu:14.04
+ RUN apt update -y
+ RUN apt upgrade -y
+ ADD . /fixture
+-RUN echo kerberos.build.opensearch.org > /etc/hostname && echo "127.0.0.1 kerberos.build.opensearch.org" >> /etc/hosts
++RUN echo kerberos.build.opensearch.org > /etc/hostname
+ RUN bash /fixture/src/main/resources/provision/installkdc.sh
+ 
+ EXPOSE 88
+diff --git a/test/fixtures/krb5kdc-fixture/build.gradle b/test/fixtures/krb5kdc-fixture/build.gradle
+index 1dc548da472..db343a9d34c 100644
+--- a/test/fixtures/krb5kdc-fixture/build.gradle
++++ b/test/fixtures/krb5kdc-fixture/build.gradle
+@@ -37,6 +37,9 @@ preProcessFixture.doLast {
+   services.each { file("${testFixturesDir}/shared/${it}").mkdirs() }
+ }
+ 
++dockerCompose {
++    nestedName = "fixture"
++}
+ postProcessFixture {
+   // always run the task, otherwise the folders won't be created
+   outputs.upToDateWhen { 
+diff --git a/test/fixtures/minio-fixture/build.gradle b/test/fixtures/minio-fixture/build.gradle
+index 61f417690b2..5d52f5e0344 100644
+--- a/test/fixtures/minio-fixture/build.gradle
++++ b/test/fixtures/minio-fixture/build.gradle
+@@ -28,5 +28,7 @@
+  * under the License.
+  */
+ apply plugin: 'opensearch.test.fixtures'
+-
++dockerCompose {
++    nestedName = "fixture"
++}
+ description = 'Fixture for MinIO Storage service'
+diff --git a/test/fixtures/s3-fixture/build.gradle b/test/fixtures/s3-fixture/build.gradle
+index 86456b3364c..59c22c8873f 100644
+--- a/test/fixtures/s3-fixture/build.gradle
++++ b/test/fixtures/s3-fixture/build.gradle
+@@ -37,7 +37,9 @@ group = 'fixture.s3'
+ dependencies {
+   api project(':server')
+ }
+-
++dockerCompose {
++    nestedName = "fixture"
++}
+ preProcessFixture {
+   dependsOn jar, configurations.runtimeClasspath
+   // always run the task, otherwise the folders won't be created
