@@ -27,6 +27,7 @@ PACKAGE_URL=https://github.com/ollama/ollama
 OLLAMA_VERSION=${PACKAGE_VERSION}
 CURRENT_DIR=$(pwd)
 PACKAGE_DIR=ollama
+SCRIPT_PATH=$(dirname $(realpath $0))
 
 echo "------------------------Installing dependencies-------------------"
 
@@ -69,15 +70,10 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-echo "**** Downloading Power10 patches..."
-wget -q https://github.com/ppc64le/build-scripts/blob/3f72a7836251bb0c053a32880b9c93381e7fb9e2/o/ollama/build_power_v0.13.1.patch
-wget -q https://github.com/ppc64le/build-scripts/blob/3f72a7836251bb0c053a32880b9c93381e7fb9e2/o/ollama/set_threads_env_v0.13.1.patch
-wget -q https://github.com/ppc64le/build-scripts/blob/3f72a7836251bb0c053a32880b9c93381e7fb9e2/o/ollama/enable_mma_v0.13.1.patch
-
-echo "** Applying Patches..."
-patch -p1 < build_power_v0.13.1.patch
-patch -p1 < set_threads_env_v0.13.1.patch
-patch -p1 < enable_mma_v0.13.1.patch
+echo "** Applying Power10 Patches..."
+patch -p1 < ${SCRIPT_PATH}/build_power_${PACKAGE_VERSION}.patch
+patch -p1 < ${SCRIPT_PATH}/set_threads_env_${PACKAGE_VERSION}.patch
+patch -p1 < ${SCRIPT_PATH}/enable_mma_${PACKAGE_VERSION}.patch
 
 # -----------------------------------------------------------------------------
 # Build Ollama
