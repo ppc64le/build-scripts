@@ -32,11 +32,11 @@ SCRIPT=$(readlink -f $0)
 SCRIPT_DIR=$(dirname $SCRIPT)
 CURRENT_DIR=/opt
 
-yum install -y git make gcc gcc-c++ gcc-gfortran wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas libjpeg-devel openblas-devel
+yum install -y git make gcc gcc-c++ gcc-gfortran wget python3.11 python3.11-devel python3.11-pip pkgconfig atlas libjpeg-devel openblas-devel
 yum install gcc-toolset-13 -y
 yum install -y make libtool  xz xz-devel zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build gcc-toolset-13  pkg-config  gmp-devel  freetype-devel
 
-ln -sf /usr/bin/pip3.12 /usr/bin/pip3 && ln -sf /usr/bin/python3.12 /usr/bin/python3 && ln -sf /usr/bin/pip3.12 /usr/bin/pip && ln -sf /usr/bin/python3.12 /usr/bin/python
+ln -sf /usr/bin/pip3.11 /usr/bin/pip3 && ln -sf /usr/bin/python3.11 /usr/bin/python3 && ln -sf /usr/bin/pip3.11 /usr/bin/pip && ln -sf /usr/bin/python3.11 /usr/bin/python
 
 dnf install -y gcc-toolset-13-libatomic-devel
 
@@ -559,7 +559,7 @@ git checkout $PACKAGE_VERSION
 
 #wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchvision/0001-Exclude-source-that-has-commercial-license-code.patch
 # Below patch is needed to exclude the models that come under SWAG license (CC-BY-NC-4.0)
-git apply $SCRIPT_DIR/0001-Exclude-source-that-has-commercial-license-code.patch
+git apply $SCRIPT/0001-Exclude-source-that-has-commercial-license-code.patch
 
 sed -i '/elif sha != "Unknown":/,+1d' setup.py
 
@@ -576,7 +576,7 @@ cmake ..
 make install
 
 cp libtorchvision.so $CURRENT_DIR/vision/torchvision/libtorchvision.so
-cp libtorchvision.so /usr/local/lib64/python3.12/site-packages/torch/share/cmake/Torch
+cp libtorchvision.so /usr/local/lib64/python3.11/site-packages/torch/share/cmake/Torch
 cp libtorchvision.so /usr/local/lib64
 cd $CURRENT_DIR/vision
 python3 setup.py bdist_wheel --dist-dir $CURRENT_DIR
