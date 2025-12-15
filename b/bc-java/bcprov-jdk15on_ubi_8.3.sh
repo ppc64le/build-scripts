@@ -6,7 +6,7 @@
 # Source repo     : https://github.com/bcgit/bc-java
 # Tested on       : UBI: 8.3
 # Language        : Java
-# Travis-Check    : True
+# Ci-Check    : True
 # Script License  : Apache License 2.0
 # Maintainer's    : Srividya Chittiboina <Srividya.Chittiboina@ibm.com>
 #

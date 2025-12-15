@@ -4,7 +4,7 @@
 # Version	: 13c6e3589ad90f49bd3e3bbe2c2cb3d7a4142272
 # Source repo	: https://github.com/go-openapi/jsonreference
 # Language      : GO
-# Travis-Check  : False
+# Ci-Check  : False
 # Tested on	: RHEL 8.3
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>

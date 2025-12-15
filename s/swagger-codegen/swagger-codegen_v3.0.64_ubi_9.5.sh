@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/swagger-api/swagger-codegen
 # Tested on     : UBI 9.5
 # Language      : Java
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sanket Patil <Sanket.Patil11@ibm.com>
 #

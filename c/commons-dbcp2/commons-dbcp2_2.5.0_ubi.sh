@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/apache/commons-dbcp
 # Tested on     : UBI: 8.4
 # Language      : Java
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License 2.0
 # Maintainer's  : Mohit Pawar <mohit.pawar@ibm.com>
 #

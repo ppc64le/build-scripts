@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/unicode-org/icu
 # Tested on        : UBI:9.3
 # Language         : C++,Java
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Vinod K <Vinod.K1@ibm.com>
 #

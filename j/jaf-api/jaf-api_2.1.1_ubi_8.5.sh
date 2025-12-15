@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/jakartaee/jaf-api
 # Tested on	: UBI 8.5
 # Language      : Java, Html, Ruby
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Muskaan Sheik <Muskaan.Sheik@ibm.com>
 #

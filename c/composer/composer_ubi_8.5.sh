@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/composer/composer
 # Tested on	: UBI 8.5
 # Language      : PHP
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Nailusha Potnuru <pnailush@in.ibm.com>, Atharv Phadnis <Atharv.Phadnis@ibm.com>
 #

@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/apache/commons-lang.git
 # Tested on     : UBI: 8.4
 # Language      : JAVA
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer's  : Jotirling Swami <Jotirling.Swami1@ibm.com>, Apurva Agrawal<Apurva.Agrawal3@ibm.com>
 #

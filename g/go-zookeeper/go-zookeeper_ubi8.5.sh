@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/samuel/go-zookeeper
 # Tested on	: UBI 8.5
 # Language      : GO
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Anup Kodlekere <Anup.Kodlekere@ibm.com>
 #

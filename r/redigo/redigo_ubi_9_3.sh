@@ -5,7 +5,7 @@
 # Source repo      : https://github.com/gomodule/redigo
 # Tested on        : UBI 9.3
 # Language         : GO
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Stuti Wali <Stuti.Wali@ibm.com>
 #

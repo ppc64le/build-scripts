@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/nginx/nginx
 # Tested on        : UBI 8.7
 # Language         : C
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : GNU General Public License v3.0
 # Maintainer       : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
 #

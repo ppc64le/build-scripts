@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/leizongmin/js-xss
 # Tested on     : UBI 8
 # Language      : HTML, Javascript
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache-2.0 License
 # Maintainer    : Vaibhav Nazare <vaibhav_nazare@persistent.com>
 #

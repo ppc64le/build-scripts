@@ -7,7 +7,7 @@
 # Source repo      : https://github.com/apache/arrow
 # Tested on        : UBI 9.3
 # Language         : C++,Go
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Puneet Sharma <Puneet.Sharma21@ibm.com>
 #

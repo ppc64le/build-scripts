@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/libopenstorage/openstorage
 # Tested on	: ubi 8.5
 # Language      : GO
-# Travis-Check  : false
+# Ci-Check  : false
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>
 #

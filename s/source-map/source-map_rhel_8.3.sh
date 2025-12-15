@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/mozilla/source-map
 # Tested on	: RHEL 8.3
 # Language      : JavaScript,Rust
-# Travis-Check  : true
+# Ci-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #

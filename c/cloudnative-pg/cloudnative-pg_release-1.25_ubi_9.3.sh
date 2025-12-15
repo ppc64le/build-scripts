@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/cloudnative-pg/cloudnative-pg
 # Tested on     : RHEL 9.3
 # Language      : Go
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Soham Badjate <soham.badjate@ibm.com>
 #

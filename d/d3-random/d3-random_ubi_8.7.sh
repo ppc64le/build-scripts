@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/d3/d3-random
 # Tested on        : UBI 8.7
 # Language         : Javascript
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Vinod K <Vinod.K1@ibm.com>
 #

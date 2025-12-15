@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/RediSearch/RediSearch.git
 # Tested on     : UBI 8.5
 # Language      : C,Python
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Vinod.K <Vinod.K1@ibm.com>
 #

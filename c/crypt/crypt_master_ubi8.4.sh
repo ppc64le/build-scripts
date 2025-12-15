@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/xordataexchange/crypt
 # Tested on     : RHEL ubi 8.4
 # Language      : GO
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Prashant Khoje <prashant.khoje@ibm.com>
 #

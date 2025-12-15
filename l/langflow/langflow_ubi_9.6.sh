@@ -5,7 +5,7 @@
 # Version       : 1.6.0
 # Source repo   : https://github.com/langflow-ai/langflow.git
 # Tested on     : UBI:9.6
-# Travis-Check  : True
+# Ci-Check  : True
 # Language      : Python
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
@@ -44,7 +44,7 @@ export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 # -----------------------------------------------------------------------------
 python3.12 -m pip install pytest anyio orjson asgi_lifespan blockbuster dotenv fastapi httpx
 python3.12 -m pip install cython setuptools wheel pytest plotly
-python3.12 -m pip install six numpy pandas scipy matplotlib scikit-learn graphviz ninja 
+python3.12 -m pip install six numpy pandas scipy matplotlib scikit-learn graphviz ninja
 
 # Install rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > sh.rustup.rs && \
@@ -53,7 +53,7 @@ sh ./sh.rustup.rs -y && export PATH=$PATH:$HOME/.cargo/bin && . "$HOME/.cargo/en
 echo " ------------------------------ Installing Swig ------------------------------ "
 git clone https://github.com/nightlark/swig-pypi.git
 cd swig-pypi
-pip3.12 install .
+python3.12 -m pip install .
 cd $CURRENT_DIR
 echo " ------------------------------ Swig Installed Successfully ------------------------------ "
 
@@ -118,7 +118,7 @@ cd faiss/python
 echo "Building Python wheel..."
 python3.12 setup.py bdist_wheel
 cd dist
-pip3.12 install *.whl
+python3.12 -m pip install *.whl
 echo "FAISS 1.9.0 build and installation completed successfully!"
 
 
@@ -137,9 +137,9 @@ wget https://files.pythonhosted.org/packages/source/c/chroma-hnswlib/chroma_hnsw
 tar -xvzf chroma_hnswlib-0.7.6.tar.gz
 cd chroma_hnswlib-0.7.6
 grep -rl -- '-march=native' . | xargs sed -i 's/-march=native/-mcpu=native/g'
-#pip3.12 install .
-pip3.12 wheel . --verbose
-pip3.12 install *.whl
+#python3.12 -m pip install .
+python3.12 -m pip wheel . --verbose
+python3.12 -m pip install *.whl
 cd $CURRENT_DIR
 
 #installing openblas
@@ -801,7 +801,7 @@ popd
 
 cd $CURRENT_DIR
 echo "Installing prerequisite for arrow..."
-pip3.12 install setuptools-scm
+python3.12 -m pip install setuptools-scm
 
 export PYARROW_BUNDLE_ARROW_CPP=1
 export LD_LIBRARY_PATH=${ARROW_HOME}/lib:${LD_LIBRARY_PATH}
@@ -832,7 +832,7 @@ else
     export PYARROW_WITH_CUDA=0
 fi
 cd python
-pip3.12 install .
+python3.12 -m pip install .
 
 cd $CURRENT_DIR
 
@@ -903,8 +903,8 @@ echo "-----------------installing pillow----------------------"
 git clone https://github.com/python-pillow/Pillow
 cd Pillow
 git checkout 11.2.1
-pip3.12 wheel . --verbose
-pip3.12 install *.whl
+python3.12 -m pip wheel . --verbose
+python3.12 -m pip install *.whl
 cd $CURRENT_DIR
 echo "-----------------installed pillow----------------------"
 
@@ -920,8 +920,8 @@ wget https://raw.githubusercontent.com/ppc64le/build-scripts/55c9df7b61288771960
 git apply opencv_docling_v2.36.0.patch
 cd ..
 export ENABLE_HEADLESS=1
-pip3.12 wheel . --verbose
-pip3.12 install *.whl
+python3.12 -m pip wheel . --verbose
+python3.12 -m pip install *.whl
 cd $CURRENT_DIR
 echo "-----------------installed opencv----------------------"
 
@@ -931,12 +931,12 @@ export PYTORCH_BUILD_VERSION=2.3.0
 git clone https://github.com/pytorch/pytorch
 cd pytorch
 git checkout v2.3.0
-pip3.12 install -r requirements.txt
+python3.12 -m pip install -r requirements.txt
 git submodule sync
 git submodule update --init --recursive
 export PYTORCH_BUILD_NUMBER=1
 python3.12 setup.py bdist_wheel
-pip3.12 install dist/*.whl
+python3.12 -m pip install dist/*.whl
 cd $CURRENT_DIR
 echo "-----------------installed pytorch----------------------"
 
@@ -949,8 +949,8 @@ git checkout 35a88d21450eb395e023ca280c9f4c855ec9684d
 python3.12 ./setupsrc/pypdfium2_setup/build_native.py --compiler gcc
 sed -i 's#7191#6996#g' ./setupsrc/pypdfium2_setup/build_native.py
 python3.12 ./setupsrc/pypdfium2_setup/build_native.py --compiler gcc
-PDFIUM_PLATFORM="sourcebuild" pip3.12 wheel . --verbose
-pip3.12 install *.whl
+PDFIUM_PLATFORM="sourcebuild" python3.12 -m pip wheel . --verbose
+python3.12 -m pip install *.whl
 cd $CURRENT_DIR
 echo "-----------------installed pypdfium2----------------------"
 
@@ -973,7 +973,7 @@ git clone https://github.com/pytorch/vision.git
 cd vision
 git checkout v0.16.0
 python3.12 setup.py bdist_wheel
-pip3.12 install dist/*.whl
+python3.12 -m pip install dist/*.whl
 cd $CURRENT_DIR
 echo "-----------------installed vision----------------------"
 
@@ -997,12 +997,12 @@ echo "-----------------installed scikit-image----------------------"
 echo "--- Installing tree-sitter dependencies ---"
 git clone https://github.com/tree-sitter/tree-sitter-java.git
 cd tree-sitter-java && make && make install
-pip3.12 install .
+python3.12 -m pip install .
 cd ..
 
 git clone https://github.com/tree-sitter/tree-sitter-typescript.git
 cd tree-sitter-typescript && make && make install
-pip3.12 install .
+python3.12 -m pip install .
 cd ..
 
 export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
@@ -1020,15 +1020,15 @@ cd grpc
 git checkout v1.76.0
 git submodule update --init --recursive
 
-pip3.12 install setuptools coverage cython protobuf==4.25.8 wheel cmake==3.*
+python3.12 -m pip install setuptools coverage cython protobuf==4.25.8 wheel cmake==3.*
 
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
 export GRPC_PYTHON_BUILD_WITH_CYTHON=1
 export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:${PATH}"
 
 # Install the package
-pip3.12 install . --no-build-isolation
-pip3.12 install grpcio_status==1.76.0 grpcio_tools==1.76.0 grpcio_health_checking==1.76.0 --no-build-isolation
+python3.12 -m pip install . --no-build-isolation
+python3.12 -m pip install grpcio_status==1.76.0 grpcio_tools==1.76.0 grpcio_health_checking==1.76.0 --no-build-isolation
 echo "--- grpcio installed successfully ---"
 
 echo "-----------------installing docling----------------------"
@@ -1038,7 +1038,7 @@ git checkout v2.36.1
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/55c9df7b6128877196079f99eb13e0f0b9b621c9/d/docling/docling_v2.36.0.patch
 git apply docling_v2.36.0.patch
 python3.12 -m build --wheel
-pip3.12 install dist/*.whl
+python3.12 -m pip install dist/*.whl
 cd $CURRENT_DIR
 echo "-----------------installed docling----------------------"
 
@@ -1047,7 +1047,7 @@ echo "-----------------installing duckdb----------------------"
 git clone https://github.com/duckdb/duckdb-python.git
 cd duckdb-python
 git submodule update --init --recursive
-pip3.12 install .
+python3.12 -m pip install .
 cd $CURRENT_DIR
 echo "-----------------installed duckdb----------------------"
 
@@ -1055,10 +1055,10 @@ echo "-----------------installed duckdb----------------------"
 echo "-----------------installing qdrant-client----------------------"
 git clone https://github.com/qdrant/qdrant-client.git
 cd qdrant-client
-pip3.12 install --prefer-binary grpcio==1.71.0 --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
-pip3.12 install --prefer-binary onnxruntime==1.21.0 --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
+python3.12 -m pip install --prefer-binary grpcio==1.71.0 --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
+python3.12 -m pip install --prefer-binary onnxruntime==1.21.0 --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
 python3.12 -m build
-pip3.12 install dist/qdrant_client-*.whl
+python3.12 -m pip install dist/qdrant_client-*.whl
 cd $CURRENT_DIR
 echo "-----------------installed qdrant-client----------------------"
 
@@ -1084,7 +1084,7 @@ cdef extern from "Python.h":\
 sed -i 's/PyLong_AS_LONG(/PyLong_AsLong(/g' fastavro/_logical_writers.pyx
 python3.12 -m pip install --upgrade pip setuptools wheel cython
 python3.12 -m build
-pip3.12 install dist/*.whl
+python3.12 -m pip install dist/*.whl
 cd $CURRENT_DIR
 echo "-----------------installed fastavro----------------------"
 
@@ -1096,43 +1096,43 @@ git checkout $PACKAGE_VERSION
 
 sh ./sh.rustup.rs -y && export PATH=$PATH:$HOME/.cargo/bin && . "$HOME/.cargo/env"
 
-pip3.12 install maturin
-pip3.12 install beautifulsoup4==4.12.3 google-api-python-client==2.154.0 "google-search-results>=2.4.1,<3.0.0" certifi==2024.8.30 "filelock>=3.18.0" "structlog>=25.4.0" fake-useragent==1.5.1 MarkupSafe==3.0.2 wikipedia==1.4.0 json_repair==0.30.3 kubernetes==31.0.0 networkx==3.4.2
-pip3.12 install chromadb==0.5.23 --no-deps
-pip3.12 install langflow-base~=0.6.0 --no-deps
-pip3.12 install "langchain-chroma>=0.1.4,<0.2.0" --no-deps
-pip3.12 install langchain==0.3.23 langchain-community~=0.3.21 langchain-cohere==0.3.3 langchain-anthropic==0.3.14 langchain-astradb~=0.6.0 langchain-groq==0.2.1 langchain-mistralai==0.2.3  langchain-aws==0.2.7 langchain-unstructured==0.1.5 langchain-mongodb==0.2.0 langchain-nvidia-ai-endpoints==0.3.8 langchain-google-calendar-tools==0.0.1 langchain-elasticsearch==0.3.0 langchain-ollama==0.2.1 langchain-sambanova==0.1.0 "langchain-ibm>=0.3.8"
-pip3.12 install langchain-google-genai==2.0.6 --no-deps
-pip3.12 install "langchain-openai>=0.2.12" langchain-aws==0.2.7 langchain-nvidia-ai-endpoints==0.3.8 langchain-unstructured==0.1.5 langchain-google-calendar-tools==0.0.1 langchain-graph-retriever==0.6.1
+python3.12 -m pip install maturin
+python3.12 -m pip install beautifulsoup4==4.12.3 google-api-python-client==2.154.0 "google-search-results>=2.4.1,<3.0.0" certifi==2024.8.30 "filelock>=3.18.0" "structlog>=25.4.0" fake-useragent==1.5.1 MarkupSafe==3.0.2 wikipedia==1.4.0 json_repair==0.30.3 kubernetes==31.0.0 networkx==3.4.2
+python3.12 -m pip install chromadb==0.5.23 --no-deps
+python3.12 -m pip install langflow-base~=0.6.0 --no-deps
+python3.12 -m pip install "langchain-chroma>=0.1.4,<0.2.0" --no-deps
+python3.12 -m pip install langchain==0.3.23 langchain-community~=0.3.21 langchain-cohere==0.3.3 langchain-anthropic==0.3.14 langchain-astradb~=0.6.0 langchain-groq==0.2.1 langchain-mistralai==0.2.3  langchain-aws==0.2.7 langchain-unstructured==0.1.5 langchain-mongodb==0.2.0 langchain-nvidia-ai-endpoints==0.3.8 langchain-google-calendar-tools==0.0.1 langchain-elasticsearch==0.3.0 langchain-ollama==0.2.1 langchain-sambanova==0.1.0 "langchain-ibm>=0.3.8"
+python3.12 -m pip install langchain-google-genai==2.0.6 --no-deps
+python3.12 -m pip install "langchain-openai>=0.2.12" langchain-aws==0.2.7 langchain-nvidia-ai-endpoints==0.3.8 langchain-unstructured==0.1.5 langchain-google-calendar-tools==0.0.1 langchain-graph-retriever==0.6.1
 
-pip3.12 install "langchain-google-vertexai>=2.0.7,<3.0.0" --no-deps
-pip3.12 install langchain-google-community==2.0.3 --no-deps
-pip3.12 install "langchain-openai>=0.2.12" --no-deps
-pip3.12 install weaviate-client==4.10.2 --no-deps
-pip3.12 install langchain-pinecone>=0.2.8 --no-deps
-pip3.12 install smolagents==1.8.0 --no-deps
-pip3.12 install fastavro --no-deps
-pip3.12 install datasets --no-deps
-pip3.12 install qianfan==0.3.5 --no-deps
-pip3.12 install "astra-assistants[tools]>=2.2.13" --no-deps
-pip3.12 install  pgvector==0.3.6 elasticsearch==8.16.0 opensearch-py==2.8.0 "supabase>=2.6.0,<3.0.0" pymongo==4.10.1 "redis>=5.2.1" "sqlalchemy[aiosqlite]>=2.0.38,<3.0.0" duckduckgo_search==7.2.1 yfinance==0.2.50 --prefer-binary --extra-index-url="https://wheels.developerfirst.ibm.com/ppc64le/linux"
-pip3.12 install "pydantic-ai>=0.0.19" --no-deps
-pip3.12 install transformers~=4.56.1 numexpr==2.10.2 "fastparquet>=2024.11.0" "openai>=1.68.2" "cleanlab-tlm>=1.1.2" dspy-ai==2.5.41 --prefer-binary --extra-index-url="https://wheels.developerfirst.ibm.com/ppc64le/linux"
-pip3.12 install boto3==1.34.162 assemblyai==0.35.1 "twelvelabs>=0.4.7" "ibm-watsonx-ai>=1.3.1" "arize-phoenix-otel>=0.6.1" "litellm>=1.60.2,<2.0.0" "mcp>=1.10.1"
-pip3.12 install "huggingface-hub[inference]>=0.23.2,<1.0.0" --no-deps
-pip3.12 install langfuse==2.53.9 "langsmith>=0.3.42,<1.0.0" "openinference-instrumentation-langchain>=0.1.29" "opik>=1.6.3" mem0ai==0.1.34 "traceloop-sdk>=0.43.1"
-pip3.12 install langwatch
-pip3.12 install "aiofile>=3.9.0,<4.0.0" "needle-python>=0.4.0" sseclient-py==1.8.0 jq==1.8.0 lark==1.2.2 composio==0.8.5 composio-langchain==0.8.5 atlassian-python-api==3.41.16 jigsawstack==0.2.7 spider-client==0.1.24 "scrapegraph-py>=1.12.0"
-pip3.12 install google-cloud-bigquery --no-deps
-pip3.12 install google-cloud respx faker youtube-transcript-api baidubce gitpython markdown pytube metaphor_python pytest-asyncio
-pip3.12 install hatchling
+python3.12 -m pip install "langchain-google-vertexai>=2.0.7,<3.0.0" --no-deps
+python3.12 -m pip install langchain-google-community==2.0.3 --no-deps
+python3.12 -m pip install "langchain-openai>=0.2.12" --no-deps
+python3.12 -m pip install weaviate-client==4.10.2 --no-deps
+python3.12 -m pip install langchain-pinecone>=0.2.8 --no-deps
+python3.12 -m pip install smolagents==1.8.0 --no-deps
+python3.12 -m pip install fastavro --no-deps
+python3.12 -m pip install datasets --no-deps
+python3.12 -m pip install qianfan==0.3.5 --no-deps
+python3.12 -m pip install "astra-assistants[tools]>=2.2.13" --no-deps
+python3.12 -m pip install  pgvector==0.3.6 elasticsearch==8.16.0 opensearch-py==2.8.0 "supabase>=2.6.0,<3.0.0" pymongo==4.10.1 "redis>=5.2.1" "sqlalchemy[aiosqlite]>=2.0.38,<3.0.0" duckduckgo_search==7.2.1 yfinance==0.2.50 --prefer-binary --extra-index-url="https://wheels.developerfirst.ibm.com/ppc64le/linux"
+python3.12 -m pip install "pydantic-ai>=0.0.19" --no-deps
+python3.12 -m pip install transformers~=4.56.1 numexpr==2.10.2 "fastparquet>=2024.11.0" "openai>=1.68.2" "cleanlab-tlm>=1.1.2" dspy-ai==2.5.41 --prefer-binary --extra-index-url="https://wheels.developerfirst.ibm.com/ppc64le/linux"
+python3.12 -m pip install boto3==1.34.162 assemblyai==0.35.1 "twelvelabs>=0.4.7" "ibm-watsonx-ai>=1.3.1" "arize-phoenix-otel>=0.6.1" "litellm>=1.60.2,<2.0.0" "mcp>=1.10.1"
+python3.12 -m pip install "huggingface-hub[inference]>=0.23.2,<1.0.0" --no-deps
+python3.12 -m pip install langfuse==2.53.9 "langsmith>=0.3.42,<1.0.0" "openinference-instrumentation-langchain>=0.1.29" "opik>=1.6.3" mem0ai==0.1.34 "traceloop-sdk>=0.43.1"
+python3.12 -m pip install langwatch
+python3.12 -m pip install "aiofile>=3.9.0,<4.0.0" "needle-python>=0.4.0" sseclient-py==1.8.0 jq==1.8.0 lark==1.2.2 composio==0.8.5 composio-langchain==0.8.5 atlassian-python-api==3.41.16 jigsawstack==0.2.7 spider-client==0.1.24 "scrapegraph-py>=1.12.0"
+python3.12 -m pip install google-cloud-bigquery --no-deps
+python3.12 -m pip install google-cloud respx faker youtube-transcript-api baidubce gitpython markdown pytube metaphor_python pytest-asyncio
+python3.12 -m pip install hatchling
 # -----------------------------------------------------------------------------
 # install langflow
 # -----------------------------------------------------------------------------
 # Updating faiss-cpu version to match custom build (GitHub tag v1.9.0)
 # Reason: PyPI uses .post suffix, but we built from official source tag v1.9.0
 sed -i '/faiss-cpu==1.9.0.post1/s/^/#/' pyproject.toml
-if ! pip3.12 install . --no-deps ; then
+if ! python3.12 -m pip install . --no-deps ; then
     echo "------------------$PACKAGE_NAME:Build_Fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"

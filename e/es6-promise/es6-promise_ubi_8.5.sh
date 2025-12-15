@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/stefanpenner/es6-promise.git
 # Tested on	: ubi 8.5
 # Language      : Node
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: sachin.kakatkar@ibm.com
 #

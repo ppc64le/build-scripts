@@ -6,7 +6,7 @@
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Abhijit Mane <abhijman@in.ibm.com>
 # Language 		: Go
-# Travis-Check  : False
+# Ci-Check  : False
 # Disclaimer: This script has been tested in non-root mode on given platform using
 #             the mentioned version of the package. It may not work as expected 
 #             with newer versions of the package and/or distribution.

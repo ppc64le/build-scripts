@@ -5,7 +5,7 @@
 # Source repo     : https://github.com/DisyInformationssysteme/Cordova-spatialite-storage.git
 # Tested on       : Ubuntu 18.04 (Docker)
 # Language        : Node
-# Travis-Check    : True
+# Ci-Check    : True
 # Script License  : MIT or Apache 2.0 License
 # Maintainer      : Sumit Dubey <sumit.dubey2@ibm.com>
 #

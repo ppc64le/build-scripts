@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/keycloak/keycloak.git
 # Tested on	: ubi 8.7
 # Language      : Java
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Chandranana Naik <Naik.Chandranana@ibm.com>
 #

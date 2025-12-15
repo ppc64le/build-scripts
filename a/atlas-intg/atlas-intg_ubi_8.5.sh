@@ -4,7 +4,7 @@
 # Version       : branch-2.0
 # Source repo   : https://github.com/apache/atlas
 # Language      : Java
-# Travis-Check  : True
+# Ci-Check  : True
 # Tested on     : UBI 8.5
 # Script License: Apache-2.0 License
 # Maintainer    : Priya Seth <sethp@usibm.com>

@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/zaproxy/zaproxy.git
 # Tested on        : UBI 8.7
 # Language         : Java, HTML
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Pooja Shah <Pooja.Shah4@ibm.com>
 #

@@ -4,7 +4,7 @@
 # Version	: v0.0.0-20200227202807-02e2044944cc
 # Source repo	: https://github.com/shopspring/decimal
 # Language      : GO
-# Travis-Check  : False
+# Ci-Check  : False
 # Tested on	: RHEL 8.3
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>

@@ -5,7 +5,7 @@
 # Source repo	: https://github.com/mjibson/esc.git
 # Tested on	: ubi 8.5
 # Language      : go
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: saraswati patra <saraswati.patra@ibm.com>
 #

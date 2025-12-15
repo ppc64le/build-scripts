@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/langchain-ai/langchain
 # Tested on        : UBI:9.6
 # Language         : Python
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : MIT License
 # Maintainer       : Ramnath Nayak <Ramnath.Nayak@ibm.com>
 #

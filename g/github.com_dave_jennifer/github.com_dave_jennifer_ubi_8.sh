@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/dave/jennifer.git
 # Tested on     : UBI 8.5
 # Language      : GO
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: MIT License
 # Maintainer    : Vaishnavi Patil <Vaishnavi.Patil3@ibm.com>
 #

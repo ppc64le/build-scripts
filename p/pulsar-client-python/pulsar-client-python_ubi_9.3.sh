@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/apache/pulsar-client-python.git
 # Tested on     : UBI 9.3
 # Language      : Python
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2.0 or later
 # Maintainer    : Vivek Sharma <vivek.sharma20@ibm.com>
 #

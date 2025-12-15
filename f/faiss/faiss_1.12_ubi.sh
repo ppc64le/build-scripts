@@ -6,7 +6,7 @@
 # Source repo       : https://github.com/facebookresearch/faiss.git
 # Tested on         : RHEL 9.6
 # Language          : C++, Python
-# Travis-Check      : True
+# Ci-Check      : True
 # Script License    : Apache License Version 2.0
 # Maintainer        : Madhur Gupta <madhur.gupta2@ibm.com>
 #

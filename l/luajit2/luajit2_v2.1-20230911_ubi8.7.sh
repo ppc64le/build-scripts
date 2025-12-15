@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/openresty/luajit2
 # Tested on     : UBI 8.7
 # Language      : C
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sumit Dubey <Sumit.Dubey2@ibm.com>
 #

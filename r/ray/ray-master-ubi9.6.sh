@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/ray-project/ray
 # Tested on     : UBI 9.6
 # Language      : C++, Python
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sunidhi Gaonkar<Sunidhi.Gaonkar@ibm.com>
 #

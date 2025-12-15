@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/vt-middleware/cryptacular.git
 # Tested on        : UBI 8.7
 # Language         : Java
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : GNU General Public License v3.0
 # Maintainer       : Mohit Pawar <mohit.pawar@ibm.com>
 #

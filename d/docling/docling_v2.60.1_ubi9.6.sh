@@ -5,7 +5,7 @@
 # Source repo    : https://github.com/docling-project/docling
 # Tested on      : UBI 9.6
 # Language       : Python
-# Travis-Check   : false
+# Ci-Check   : false
 # Maintainer     : Sumit Dubey <sumit.dubey2@ibm.com>
 # Script License : Apache License, Version 2.0 or later
 #

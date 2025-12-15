@@ -6,7 +6,7 @@
 # Source repo    : https://github.com/apache/camel-karaf.git
 # Tested on      : RHEL 9.1
 # Language       : Java
-# Travis-Check   : True
+# Ci-Check   : True
 # Script License : Apache License Version 2
 # Maintainer     : Radhika Ajabe <Radhika.Ajabe@ibm.com>
 # Disclaimer: This script has been tested in root mode on given

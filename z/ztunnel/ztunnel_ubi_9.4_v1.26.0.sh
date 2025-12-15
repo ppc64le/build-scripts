@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/istio/ztunnel
 # Tested on     : RHEL 9.4
 # Language      : Rust
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Anurag Chitrakar <Anurag.Chitrakar@ibm.com>
 #

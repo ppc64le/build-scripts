@@ -5,7 +5,7 @@
 # Source repo	: https://github.com/liquibase/liquibase-hibernate.git
 # Tested on	: UBI 8.4
 # Language      : Java
-# Travis-Check	: True
+# Ci-Check	: True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sapna Shukla <Sapna.Shukla@ibm.com>
 #

@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/RocketChat/Rocket.Chat
 # Tested on     : ubi:9.3
 # Language      : TypeScript,JavaScript
-# Travis-Check  : false
+# Ci-Check  : false
 # Script License: MIT
 # Maintainer    : Pratik Tonage <Pratik.Tonage@ibm.com>
 #

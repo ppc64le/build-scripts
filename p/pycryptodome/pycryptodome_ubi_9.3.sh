@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/Legrandin/pycryptodome
 # Tested on     : UBI 9.3
 # Language      : C, Python
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Aastha Sharma <aastha.sharma4@ibm.com>
 #

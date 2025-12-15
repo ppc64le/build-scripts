@@ -5,7 +5,7 @@
 # Version       : jackson-core-2.14.1
 # Source repo   : https://github.com/FasterXML/jackson-core
 # Tested on     : ubi: 8.5
-# Travis-Check  : True
+# Ci-Check  : True
 # Language      : java
 # Script License: Apache License 2.0
 # Maintainer    : Pratik Tonage <Pratik.Tonage@ibm.com>

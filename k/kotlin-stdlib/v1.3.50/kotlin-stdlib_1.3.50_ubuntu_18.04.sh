@@ -6,7 +6,7 @@
 # Source repo     : https://github.com/JetBrains/kotlin.git
 # Tested on       : Ubuntu 18.04 (Docker)
 # Language        : Java
-# Travis-Check    : False
+# Ci-Check    : False
 # Script License  : Apache License, Version 2 or later
 # Maintainer      : Sumit Dubey <sumit.dubey2@ibm.com>
 #

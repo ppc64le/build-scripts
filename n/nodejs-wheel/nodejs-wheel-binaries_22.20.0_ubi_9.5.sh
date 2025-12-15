@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/njzjz/nodejs-wheel.git
 # Tested on     : UBI:9.5
 # Language      : Python
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Soham Badjate <soham.badjate@ibm.com>
 #

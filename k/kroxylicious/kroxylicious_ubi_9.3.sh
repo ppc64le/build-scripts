@@ -5,7 +5,7 @@
 # Source repo   : https://github.com/kroxylicious/kroxylicious
 # Tested on     : UBI 9.3
 # Language      : Java
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Vaibhav Nazare <Vaibhav.Nazare@ibm.com>
 #

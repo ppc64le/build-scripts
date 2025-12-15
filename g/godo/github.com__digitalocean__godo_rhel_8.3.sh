@@ -6,7 +6,7 @@
 # Tested on	: RHEL 8.3
 # Script License: Apache License, Version 2 or later
 # Language      : GO
-# Travis-Check  : False
+# Ci-Check  : False
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
