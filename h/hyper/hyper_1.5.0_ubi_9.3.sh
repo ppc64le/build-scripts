@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/hyperium/hyper
 # Tested on	: UBI 9.3
 # Language      : Rust
-# Travis-Check  : true
+# Ci-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Onkar Kubal <onkar.kubal@ibm.com>
 #

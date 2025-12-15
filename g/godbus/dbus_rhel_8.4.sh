@@ -6,7 +6,7 @@
 # Source repo	 : https://github.com/godbus/dbus
 # Tested on	 : RHEL-8.4
 # Language       : GO
-# Travis-Check   : False
+# Ci-Check   : False
 # Script License : Apache License, Version 2 or later
 # Maintainer	 : Balavva Mirji <Balavva.Mirji@ibm.com>
 #

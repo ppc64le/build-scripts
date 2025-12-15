@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/frenic/csstype
 # Tested on     : RHEL 7.6, RHEL 8.5
 # Language      : Node
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Vedang Wartikar <vedang.wartikar@ibm.com>,Saraswati Patra <Saraswati.Patra@ibm.com>
 #

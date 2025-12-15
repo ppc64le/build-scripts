@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/istanbuljs/istanbuljs.git
 # Tested on     : UBI: 8.3
 # Language      : NPM
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License 2.0
 # Maintainer's  : Raju Sah <Raju.Sah@ibm.com>
 #

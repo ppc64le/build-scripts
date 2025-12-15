@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/SchedMD/slurm
 # Tested on     : UBI:9.3
 # Language      : C
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: GNU General Public License v2.0
 # Maintainer    : Vinod K <Vinod.K1@ibm.com>
 #

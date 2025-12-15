@@ -192,7 +192,7 @@ index 68c48a2a..aa9a7338 100755
      if target_platform() == "rhel":
          df += """
 +
-+RUN yum install -y wget && \
++RUN yum update -y && yum install -y wget && \
 +   dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
 +        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
 +        https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \

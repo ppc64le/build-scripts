@@ -3,13 +3,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package           : vision
-# Version           : v0.22.1
+# Version           : v0.24.0
 # Source repo       : https://github.com/pytorch/vision.git
 # Tested on         : UBI:9.6
 # Language          : Python
-# Travis-Check      : True
+# Ci-Check      : True
 # Script License    : Apache License, Version 2.0
-# Maintainer        : Prerna Kumbhar <Prerna.Kumbhar@ibm.com>
+# Maintainer        : Lenzie Camilo <Lenzie.Camilo3@ibm.com>
 #
 # Disclaimer        : This script has been tested in root mode on given
 # ==========          platform using the mentioned version of the package.
@@ -22,13 +22,13 @@
 set -ex 
 
 PACKAGE_NAME=vision
-PACKAGE_VERSION=${1:-v0.22.1}
+PACKAGE_VERSION=${1:-v0.24.0}
 PACKAGE_URL=https://github.com/pytorch/vision.git
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 MAX_JOBS=${MAX_JOBS:-$(nproc)}
 VERSION=${PACKAGE_VERSION#v}
 PYTHON_VERSION=${2:-3.12}
-PYTORCH_VERSION=${3:-v2.8.0}
+PYTORCH_VERSION=${3:-v2.9.0}
 
 CURRENT_DIR=/opt
 
@@ -204,8 +204,8 @@ git checkout $PYTORCH_VERSION
 git submodule sync
 git submodule update --init --recursive
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.8.0.patch
-git apply pytorch_v2.8.0.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.9.0.patch
+git apply pytorch_v2.9.0.patch
 
 ARCH=`uname -p`
 BUILD_NUM="1"
@@ -382,7 +382,7 @@ cd $CURRENT_DIR
 
 echo "---------------------------Installing FFmpeg------------------"
 #Cloning Source Code
-FFMPEG_PACKAGE_VERSION=${1:-n7.1}
+FFMPEG_PACKAGE_VERSION=${4:-n7.1}
 
 git clone https://github.com/FFmpeg/FFmpeg
 cd FFmpeg
@@ -556,9 +556,9 @@ echo "------------------Building torchvision------------------------"
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchvision/0001-Exclude-source-that-has-commercial-license.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchvision/0001-Exclude-source-that-has-commercial-license_${PACKAGE_VERSION}.patch
 # Below patch is needed to exclude the models that come under SWAG license (CC-BY-NC-4.0)
-git apply 0001-Exclude-source-that-has-commercial-license.patch
+git apply 0001-Exclude-source-that-has-commercial-license_${PACKAGE_VERSION}.patch
 
 sed -i '/elif sha != "Unknown":/,+1d' setup.py
 
@@ -596,3 +596,4 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
+

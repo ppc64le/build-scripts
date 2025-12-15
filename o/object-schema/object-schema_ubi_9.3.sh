@@ -6,7 +6,7 @@
 # Source repo	    : https://github.com/humanwhocodes/object-schema
 # Tested on	    : UBI 9.3
 # Language          : Node
-# Travis-Check      : True
+# Ci-Check      : True
 # Script License    : BSD 3-Clause License
 # Maintainer	    : Prachi Kurade <prachi.kurade1@ibm.com>
 #

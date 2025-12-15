@@ -6,7 +6,7 @@
 # Source repo   : https://pypi.io/packages/source/u/uritools/uritools-3.0.0.tar.gz
 # Tested on     : UBI 8.5
 # Language      : Python
-# Travis-Check  : False 
+# Ci-Check  : False 
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Valen Mascarenhas / Vedang Wartikar <Vedang.Wartikar@ibm.com>
 #

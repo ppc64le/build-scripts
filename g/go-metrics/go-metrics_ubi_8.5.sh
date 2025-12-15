@@ -5,7 +5,7 @@
 # Source repo	: https://github.com/rcrowley/go-metrics
 # Tested on	: UBI 8.5
 # Language      : GO
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>
 #

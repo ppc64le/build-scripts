@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/grpc/grpc.git (# For grpcio - https://github.com.mcas.ms/grpc/grpc/tree/master/src/python/grpcio)
 # Tested on     : UBI 8.10
 # Language      : C++, Python, C, Starlark, Shell, Ruby
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Chandan.Abhyankar@ibm.com
 #

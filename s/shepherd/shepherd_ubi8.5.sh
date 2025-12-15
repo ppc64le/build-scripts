@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/shipshapecode/shepherd.git
 # Tested on     : UBI 8.5
 # Language      : Node
-# Travis-Check  : true
+# Ci-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Ankit.Paraskar@ibm.com
 #

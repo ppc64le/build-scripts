@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/openstack/horizon.git
 # Tested on     : UBI 8.7
 # Language      : Python
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Vinod K <Vinod.K1@ibm.com>
 #

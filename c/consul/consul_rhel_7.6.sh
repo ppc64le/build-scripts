@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/hashicorp/consul
 # Tested on	: RHEL 7.6
 # Language      : Go
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Amit Ghatwal <ghatwala@us.ibm.com>
 #

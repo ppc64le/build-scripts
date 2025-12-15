@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/edenhill/librdkafka.git
 # Tested on	: UBI: 8.5
 # Language      : C
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sumit Dubey <Sumit.Dubey2@ibm.com>
 #

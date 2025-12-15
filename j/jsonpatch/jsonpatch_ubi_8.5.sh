@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/mattbaird/jsonpatch.git
 # Tested on	: UBI: 8.5
 # Language      : GO
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Reynold Vaz <Reynold.Vaz@ibm.com>/ Balavva Mirji <Balavva.Mirji@ibm.com>
 #

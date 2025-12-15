@@ -7,7 +7,7 @@
 # Script License: Apache License, Version 2 or later
 # Maintainer's  : Vikas Gupta <vikas.gupta8@ibm.com>
 # Language	: GO
-# Travis-Check  : True
+# Ci-Check  : True
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the

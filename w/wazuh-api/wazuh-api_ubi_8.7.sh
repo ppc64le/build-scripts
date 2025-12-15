@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/wazuh/wazuh-api
 # Tested on        : UBI 8.7
 # Language         : Javascript
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : GNU General Public License v2.0
 # Maintainer       : Vinod K <Vinod.K1@ibm.com>
 #

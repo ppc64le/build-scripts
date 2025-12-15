@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/matplotlib/matplotlib.git
 # Tested on     : UBI 8.10
 # Language      : Python, C++, Jupyter Notebook
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Chandan.Abhyankar@ibm.com
 #

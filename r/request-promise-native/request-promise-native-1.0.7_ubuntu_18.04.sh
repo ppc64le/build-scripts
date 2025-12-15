@@ -6,7 +6,7 @@
 # Source repo     : https://github.com/request/request-promise-native
 # Tested on    	  : Ubuntu 18.04 (Docker)
 # Language        : Node
-# Travis-Check    : True
+# Ci-Check    : True
 # Script License  : Apache License, Version 2 or later
 # Maintainer	  : Sumit Dubey <sumit.dubey2@ibm.com> 
 #

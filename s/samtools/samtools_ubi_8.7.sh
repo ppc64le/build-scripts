@@ -6,7 +6,7 @@
 # Source repo	    : https://github.com/samtools/samtools
 # Tested on	    : ubi 8.7
 # Language          : C
-# Travis-Check      : true
+# Ci-Check      : true
 # Script License    : Apache License, Version 2 or later
 # Maintainer	    : Pratik Tonage <Pratik.Tonage@ibm.com>
 #

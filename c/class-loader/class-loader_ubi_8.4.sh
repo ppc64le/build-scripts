@@ -5,7 +5,7 @@
 # Source repo   : https://github.com/symfony/class-loader.git
 # Tested on     : ubi 8.4
 # Language      : PHP
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Siddhesh Ghadi<Siddhesh.Ghadi@ibm.com>
 #

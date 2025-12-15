@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/p7zip-project/p7zip
 # Tested on     : UBI 9.3 (ppc64le)
 # Language      : ASM, C, C++
-# Travis-Check  : true
+# Ci-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Amit Kumar <amit.kumar282@ibm.com>
 #

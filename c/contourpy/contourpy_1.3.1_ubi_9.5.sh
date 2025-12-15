@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/contourpy/contourpy
 # Tested on     : UBI:9.5
 # Language      : Python
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Prathamesh Korgaonkar <Prathamesh.Korgaonkar@ibm.com>
 #

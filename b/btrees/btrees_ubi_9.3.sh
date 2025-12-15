@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/zopefoundation/BTrees
 # Tested on        : UBI:9.3
 # Language         : Python
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : GNU General Public License v3.0
 # Maintainer       : Ramnath Nayak <Ramnath.Nayak@ibm.com>
 #

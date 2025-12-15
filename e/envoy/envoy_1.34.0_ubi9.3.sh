@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/envoyproxy/envoy/
 # Tested on     : UBI 9.3
 # Language      : C++
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sumit Dubey <Sumit.Dubey2@ibm.com>
 #

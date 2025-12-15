@@ -6,7 +6,7 @@
 # Source repo   : http://hg.code.sf.net/p/ruamel-yaml-jinja2/code
 # Tested on	: UBI 8.4
 # Language      : Python
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Apurva Agrawal <Apurva.Agrawal3@ibm.com>
 #

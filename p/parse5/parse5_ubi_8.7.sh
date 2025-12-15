@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/inikulin/parse5
 # Tested on	: UBI 8.7
 # Language      : Node
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
 #

@@ -5,7 +5,7 @@
 # Source repo   : https://github.com/mojohaus/animal-sniffer
 # Tested on		: UBI 8.5
 # Language      : Java
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Saurabh Gore <Saurabh.Gore@ibm.com> 
 #

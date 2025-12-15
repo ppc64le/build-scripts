@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/prestodb/presto.git
 # Tested on	: RHEL 8.3
 # Language      : Java
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Amit Sadaphule <amits2@us.ibm.com>
 #

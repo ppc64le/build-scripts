@@ -7,7 +7,7 @@
 # Source repo   : https://github.com/jaraco/jaraco.test
 # Tested on     : UBI 9.3
 # Language      : Python
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License 2.0
 # Maintainer    : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
 #

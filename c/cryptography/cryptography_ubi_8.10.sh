@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/pyca/cryptography/
 # Tested on        : UBI 8.10
 # Language         : Python
-# Travis-Check     : False
+# Ci-Check     : False
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Balavva Mirji <Balavva.Mirji@ibm.com>
 #

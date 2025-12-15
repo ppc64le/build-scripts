@@ -8,7 +8,7 @@
 # Script License: MIT License
 # Maintainer	: Amit Singh <amit.singh41@ibm.com>
 # Language      : Node
-# Travis-Check  : True
+# Ci-Check  : True
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.

@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/tensorflow/tensorflow
 # Tested on     : UBI 9.3
 # Language      : C
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License 2.0
 # Maintainer    : Ramnath Nayak <Ramnath.Nayak@ibm.com>
 #

@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/bazelbuild/rules_python
 # Tested on        : UBI 8.7
 # Language         : Starlark,Python
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Vinod K <Vinod.K1@ibm.com>
 #

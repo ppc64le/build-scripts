@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/fnando/i18n.git
 # Tested on     : UBI 9.5 (ppc64le)
 # Language      : TypeScript / JavaScript
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Amit Kumar <amit.kumar282@ibm.com>
 #

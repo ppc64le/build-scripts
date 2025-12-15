@@ -5,7 +5,7 @@
 # Source repo           : https://github.com/apache/shiro
 # Tested on             : UBI 8.4
 # Language              : Java
-# Travis-Check          : True
+# Ci-Check          : True
 # Script License        : Apache License, Version 2 or later
 # Maintainer            : Vikas <kumar.vikas@in.ibm.com>
 #

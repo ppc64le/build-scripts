@@ -7,7 +7,7 @@
 # Tested on       : Ubuntu 18.04 (Docker)
 # Script License  : MIT or Apache 2.0 License
 # Language        : Node
-# Travis-Check    : True
+# Ci-Check    : True
 # Maintainer      : Sumit Dubey <sumit.dubey2@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given

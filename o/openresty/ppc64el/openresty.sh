@@ -6,7 +6,7 @@
 # Source repo   :  https://openresty.org/download/openresty
 # Tested on	: UBI 8.5
 # Language      : c/c++
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Vaibhav Bhadade <vaibhav.bhadade@ibm.com> 
 #

@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/A11yance/aria-query
 # Tested on	: ubi 8.5
 # Language      : node
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>
 #

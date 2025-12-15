@@ -6,7 +6,7 @@
 # Source repo           : https://github.com/pry/pry.git
 # Tested on             : UBI:9.3
 # Language              : Ruby
-# Travis-Check          : True
+# Ci-Check          : True
 # Script License        : Apache License, Version 2.0
 # Maintainer            : Vinod K <Vinod.K1@ibm.com>
 #

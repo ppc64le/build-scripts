@@ -6,7 +6,7 @@
 # Source repo     : https://github.com/trentrichardson/jQuery-Timepicker-Addon
 # Language        : Javascript
 # Tested on       : UBI 9.3 (ppc64le)
-# Travis-Check    : True
+# Ci-Check    : True
 # Maintainer      : Amit Kumar <amit.kumar282@ibm.com>
 # Script License  : Apache License, Version 2 or later
 #

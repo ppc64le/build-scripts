@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/istanbuljs/istanbuljs
 # Tested on     : UBI: 8.5
 # Language      : GO
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License 2.0
 # Maintainer's  : Ambuj Kumar <Ambuj.Kumar3@ibm.com>
 #

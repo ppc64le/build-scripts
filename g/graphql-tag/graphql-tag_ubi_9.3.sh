@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/apollographql/graphql-tag
 # Tested on        : UBI:9.3
 # Language         : Typescript,Javascript
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : MIT license
 # Maintainer       : Vinod K <Vinod.K1@ibm.com>
 #

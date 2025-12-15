@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/Apicurio/apicurio-registry
 # Tested on     : UBI 8.5
 # Language      : Java
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Stuti Wali <Stuti.wali@ibm.com>
 #

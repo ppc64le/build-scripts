@@ -5,7 +5,7 @@
 # Source repo   : https://github.com/AsyncHttpClient/async-http-client
 # Tested on     : UBI: 8.5
 # Language      : Java
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License 2.0
 # Maintainer's  : Balavva Mirji <Balavva.Mirji@ibm.com>
 #

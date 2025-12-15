@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/shapely/shapely.git
 # Tested on     : UBI 8.10
 # Language      : Python, C, Cython
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Chandan.Abhyankar@ibm.com
 #

@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/websockets/ws
 # Tested on     : UBI8.5
 # Language      : Node
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Nailusha Potnuru <pnailush@in.ibm.com>
 #

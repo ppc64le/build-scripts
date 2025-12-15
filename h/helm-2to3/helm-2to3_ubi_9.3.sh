@@ -7,7 +7,7 @@
 # Source repo       : https://github.com/helm/helm-2to3.git
 # Tested on         : UBI:9.3
 # Language          : Go
-# Travis-Check      : True
+# Ci-Check      : True
 # Script License    : Apache License, Version 2.0
 # Maintainer        : Vinod K <Vinod.K1@ibm.com>
 #

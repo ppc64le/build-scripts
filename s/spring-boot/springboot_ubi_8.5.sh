@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/spring-projects/spring-boot
 # Tested on     : ubi8.5
 # Language      : Java
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Chandranana Naik <Chandranana.Naik@ibm.com>, Vinod K <Vinod.K1@ibm.com>
 #

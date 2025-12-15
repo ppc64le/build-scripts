@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/mozilla/geckodriver
 # Tested on     : UBI 9.5 (ppc64le)
 # Language      : Rust
-# Travis-Check  : true
+# Ci-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sanket Patil <Sanket.Patil11@ibm.com>
 #

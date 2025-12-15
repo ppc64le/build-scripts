@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/elastic/logstash
 # Tested on	: UBI8.7, UBI_8.9
 # Language      : JAVA/Ruby
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation {maintainer}
 #

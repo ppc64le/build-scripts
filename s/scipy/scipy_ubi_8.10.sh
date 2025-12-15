@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/scipy/scipy
 # Tested on     : UBI 8.10
 # Language      : Python, C, Fortran, C++, Cython, Meson 
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Salil Verlekar <Salil.Verlekar2@ibm.com>
 #

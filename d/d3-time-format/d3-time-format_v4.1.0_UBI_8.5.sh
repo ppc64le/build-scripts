@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/d3/d3-time-format
 # Tested on        : UBI 8.5
 # Language         : Node
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Shubham Garud <Shubham.Garud@ibm.com>
 #

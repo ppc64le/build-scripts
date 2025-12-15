@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/php/pecl-file_formats-yaml.git
 # Tested on     : UBI 8.5
 # Language      : PHP
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Raju.Sah@ibm.com
 #

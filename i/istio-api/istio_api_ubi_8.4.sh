@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/istio/api.git
 # Tested on     : ubi: 8.4
 # Language      : go, c++
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License 2.0
 # Maintainer's  : Nishikant Thorat <Nishikant.Thorat@ibm.com>
 #

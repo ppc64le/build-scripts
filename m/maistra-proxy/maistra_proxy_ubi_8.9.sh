@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/maistra/proxy
 # Tested on     : UBI 8.9
 # Language      : C++
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Chandranana
 #
