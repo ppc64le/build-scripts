@@ -7,7 +7,7 @@
 # Source repo       : https://github.com/pytorch/vision.git
 # Tested on         : UBI:9.6
 # Language          : Python
-# Ci-Check      : True
+# Ci-Check          : True
 # Script License    : Apache License, Version 2.0
 # Maintainer        : Simran Sirsat <Simran.Sirsat@ibm.com>
 #
@@ -557,9 +557,9 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-#wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchvision/0001-Exclude-source-that-has-commercial-license-code.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchvision/0001-Exclude-source-that-has-commercial-license_v0.24.0.patch
 # Below patch is needed to exclude the models that come under SWAG license (CC-BY-NC-4.0)
-git apply $SCRIPT/0001-Exclude-source-that-has-commercial-license-code.patch
+git apply 0001-Exclude-source-that-has-commercial-license_v0.24.0.patch
 
 sed -i '/elif sha != "Unknown":/,+1d' setup.py
 
