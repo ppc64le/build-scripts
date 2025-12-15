@@ -6,7 +6,7 @@
 # Source repo	: https://proxy.golang.org/github.com/matryer/try/@v/v0.0.0-20161228173917-9ac251b645a2.zip
 # Tested on	: ubi 8.5
 # Language      : GO 
-# Travis-Check  : true 
+# Ci-Check  : true 
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>
 #

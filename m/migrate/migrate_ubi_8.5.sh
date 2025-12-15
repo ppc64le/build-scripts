@@ -8,7 +8,7 @@
 # Tested on             : UBI 8.5
 # Language              : GO
 # Script License        : Apache License, Version 2 or later
-# Travis-Check          : True
+# Ci-Check          : True
 # Maintainer            : Bhagat Singh <Bhagat.singh1@ibm.com>
 #
 # Disclaimer            : This script has been tested in root mode on given

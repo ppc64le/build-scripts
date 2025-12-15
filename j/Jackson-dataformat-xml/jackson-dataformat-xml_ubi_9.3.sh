@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/FasterXML/jackson-dataformat-xml
 # Tested on        : UBI: 9.3
 # Language         : Java
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : GNU General Public License v3.0
 # Maintainer       : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
 #

@@ -5,7 +5,7 @@
 # Source repo      : https://git.drupalcode.org/project/file_upload_secure_validator.git
 # Tested on        : UBI 8.5
 # Language         : PHP
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Saraswati Patra <saraswati.patra@ibm.com>
 #
@@ -90,5 +90,5 @@ else
         exit 0
 fi
 #file_upload_secure_validator has 2 types of test Unit/Functional . Unit test dont need drupal framework and DB etc. So can be executed by given script.
-# Please follow README file for more information to run /Functional test cases.and make the script travis-check false for Functional/FunctionalJavascript test.
+# Please follow README file for more information to run /Functional test cases.and make the script Ci-Check false for Functional/FunctionalJavascript test.
 

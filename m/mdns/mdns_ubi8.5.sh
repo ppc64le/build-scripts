@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/hashicorp/mdns
 # Tested on     : ubi 8.5
 # Language      : GO
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License 2.0
 # Maintainer    : Amit Mukati <amit.mukati3@ibm.com>
 #

@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/cznic/internal.git
 # Tested on     : UBI 8.4
 # Language      : go
-# Travis-Check  : true
+# Ci-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sachin K {sachin.kakatkar@ibm.com}, Reynold Vaz <Reynold.Vaz@ibm.com>
 #

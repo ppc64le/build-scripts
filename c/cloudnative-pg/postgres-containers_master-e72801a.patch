@@ -1,0 +1,52 @@
+From 041a2f779e5ae9b00448a2b041be1163eac8b07d Mon Sep 17 00:00:00 2001
+From: root <root@sapana-khemkar-p11.pokprv.stglabs.ibm.com>
+Date: Thu, 18 Sep 2025 07:35:17 +0000
+Subject: [PATCH] ppc64le changes
+
+---
+ Debian/17/bookworm/Dockerfile | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
+
+diff --git a/Debian/17/bookworm/Dockerfile b/Debian/17/bookworm/Dockerfile
+index f998dbe7..7656ba79 100644
+--- a/Debian/17/bookworm/Dockerfile
++++ b/Debian/17/bookworm/Dockerfile
+@@ -25,6 +25,11 @@ LABEL name="PostgreSQL Container Images" \
+
+ LABEL org.opencontainers.image.description="This Docker image contains PostgreSQL and Barman Cloud based on Postgres 17.6-bookworm."
+
++ENV \
++  RUSTUP_HOME="/usr/local/rustup" \
++  CARGO_HOME="/usr/local/cargo" \
++  PATH="/usr/local/cargo/bin:$PATH"
++
+ COPY requirements.txt /
+
+ # Install additional extensions
+@@ -44,6 +49,16 @@ RUN set -xe; \
+ 	rm -fr /tmp/* ; \
+ 	rm -rf /var/lib/apt/lists/*;
+
++#Install rust
++RUN apt-get update && apt-get install curl build-essential pkg-config libssl-dev -y && curl https://sh.rustup.rs -sSf | sh -s -- -y \
++    --no-modify-path \
++    --profile minimal \
++    && \
++  rustup target add powerpc64le-unknown-linux-gnu && \
++  cargo install cargo-c
++
++
++
+ # Install barman-cloud
+ RUN set -xe; \
+ 	apt-get update; \
+@@ -60,6 +75,6 @@ RUN set -xe; \
+ 	apt-get remove -y --purge --autoremove build-essential python3-dev; \
+ 	rm -rf /var/lib/apt/lists/*;
+
+-# Change the uid of postgres to 26
++ # Change the uid of postgres to 26
+ RUN usermod -u 26 postgres
+ USER 26
+-- 
+2.47.3

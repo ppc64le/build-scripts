@@ -8,7 +8,7 @@
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>/ Balavva Mirji <Balavva.Mirji@ibm.com>
 # Language      : GO
-# Travis-Check  : True
+# Ci-Check  : True
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.

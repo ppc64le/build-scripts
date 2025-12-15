@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/mariadb-corporation/mariadb-connector-j
 # Tested on     : UBI 9.3
 # Language      : Java
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Siddesh Sangodkar <siddesh.sangodkar1@ibm.com>
 #

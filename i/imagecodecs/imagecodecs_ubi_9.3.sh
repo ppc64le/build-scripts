@@ -7,7 +7,7 @@
 # Source repo       : https://github.com/cgohlke/imagecodecs.git
 # Tested on         : UBI:9.3
 # Language          : C,Python
-# Travis-Check      : True
+# Ci-Check      : True
 # Script License    : Apache License, Version 2.0
 # Maintainer        : Ramnath Nayak <Ramnath.Nayak@ibm.com>
 #

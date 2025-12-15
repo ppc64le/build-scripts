@@ -4,7 +4,7 @@
 # Version	: v0.0.0-20190828154514-0e0f228740de
 # Source repo	: https://github.com/containerd/ttrpc
 # Language      : GO
-# Travis-Check  : False
+# Ci-Check  : False
 # Tested on	: RHEL 8.3
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>

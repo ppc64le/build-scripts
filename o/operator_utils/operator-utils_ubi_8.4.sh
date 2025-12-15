@@ -5,7 +5,7 @@
 # Source repo    : https://github.com/redhat-cop/operator-utils
 # Tested on      : UBI 8.4
 # Language       : GO
-# Travis-Check   : True
+# Ci-Check   : True
 # Script License : Apache License, Version 2 or later
 # Maintainer     : Sapna Shukla <Sapna.Shukla@ibm.com>
 #

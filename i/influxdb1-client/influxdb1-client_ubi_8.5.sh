@@ -6,7 +6,7 @@
 # Source repo	: https://proxy.golang.org/github.com/influxdata/influxdb1-client/@v/v0.0.0-20191209144304-8bf82d3c094d.zip
 # Tested on	: ubi 8.5
 # Language      : GO
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>
 #

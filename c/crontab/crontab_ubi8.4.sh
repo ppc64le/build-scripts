@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/josiahcarlson/parse-crontab
 # Tested on     : UBI 8.4
 # Language      : Python
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sapana Khemkar
 #

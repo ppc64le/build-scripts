@@ -7,7 +7,7 @@
 # Source repo      : https://github.com/moment/moment.git
 # Tested on        : UBI 9.3
 # Language         : Javascript
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Stuti Wali <Stuti.Wali@ibm.com>
 #

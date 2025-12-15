@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/python-rope/rope.git
 # Tested on        : UBI 8.7
 # Language         : Python
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : GNU General Public License v3.0
 # Maintainer       : Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
 #

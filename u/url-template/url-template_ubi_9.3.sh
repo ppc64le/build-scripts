@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/bramstein/url-template
 # Tested on	   : UBI:9.3
 # Language         : Javascript
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : vinodk99 <Vinod.K1@ibm.com>
 #

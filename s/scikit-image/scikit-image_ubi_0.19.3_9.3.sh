@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/scikit-image/scikit-image
 # Tested on     : UBI:9.3
 # Language      : Python
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License 2.0
 # Maintainer    : Vinod K <Vinod.K1@ibm.com>
 #

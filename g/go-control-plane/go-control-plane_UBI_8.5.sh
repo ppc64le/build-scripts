@@ -5,7 +5,7 @@
 # Source repo   : https://github.com/envoyproxy/go-control-plane.git
 # Tested on     : UBI 8.5
 # Language      : GO
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Amit Baheti (aramswar@in.ibm.com)
 #

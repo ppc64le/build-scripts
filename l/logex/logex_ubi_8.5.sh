@@ -6,7 +6,7 @@
 # Source repo    : https://github.com/chzyer/logex
 # Tested on      : UBI 8.5
 # Language       : GO
-# Travis-Check   : True
+# Ci-Check   : True
 # Script License : Apache License, Version 2 or later
 # Maintainer     : Sapana Khemkar <spana.khemkar@ibm.com>/ Balavva Mirji <Balavva.Mirji@ibm.com>
 #

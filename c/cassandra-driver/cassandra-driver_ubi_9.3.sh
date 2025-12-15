@@ -6,7 +6,7 @@
 # Source repo      : http://github.com/datastax/python-driver
 # Tested on        : UBI:9.3
 # Language         : Python
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Vinod K <Vinod.K1@ibm.com>
 #

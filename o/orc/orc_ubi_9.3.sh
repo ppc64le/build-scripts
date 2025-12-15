@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/apache/orc
 # Tested on     : UBI 9.3
 # Language      : c
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License 2.0
 # Maintainer    : Aastha Sharma <aastha.sharma4@ibm.com>
 #

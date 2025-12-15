@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/michael-simons/neo4j-migrations
 # Tested on	   : UBI:9.3
 # Language         : Java
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : vinodk99 <Vinod.K1@ibm.com>
 #

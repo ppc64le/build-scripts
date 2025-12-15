@@ -6,7 +6,7 @@
 # Source repo	    : https://github.com/python-semver/python-semver
 # Tested on	    : ubi 8.7
 # Language          : Python
-# Travis-Check      : flase
+# Ci-Check      : flase
 # Script License    : Apache License, Version 2 or later
 # Maintainer	    : Pratik Tonage <Pratik.Tonage@ibm.com>
 #

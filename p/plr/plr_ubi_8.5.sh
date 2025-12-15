@@ -7,7 +7,7 @@
 # Source repo   : https://github.com/postgres-plr/plr.git
 # Tested on     : UBI 8.5
 # Language      : C
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Vikas Kumar <kumar.vikas@in.ibm.com>
 #

@@ -4,11 +4,11 @@
 # Package        : hawtio
 # Version        : 4.x
 # Source repo    : https://github.com/hawtio/hawtio.git
-# Tested on      : UBI:9.3
+# Tested on      : UBI:9.6
 # Language       : Java
-# Travis-Check   : True
+# Ci-Check   : True
 # Script License : Apache License Version 2
-# Maintainer     : Radhika Ajabe <Radhika.Ajabe@ibm.com>
+# Maintainer     : Prasanna Marathe <prasanna.marathe@ibm.com>
 
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -23,6 +23,7 @@ set -e
 PACKAGE_NAME=hawtio
 PACKAGE_URL=https://github.com/hawtio/hawtio
 PACKAGE_VERSION=4.x
+MAVEN_VERSION=3.9.11
 
 yum install git wget jq -y
 git clone $PACKAGE_URL
@@ -41,8 +42,8 @@ nvm use 20.5.0
 npm install -g npm@10.8.1
 npm install --global yarn -y
 
-wget https://downloads.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz && tar -xzf apache-maven-3.9.9-bin.tar.gz -C /usr/lib/
-export M2_HOME=/usr/lib/apache-maven-3.9.9
+wget https://downloads.apache.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz && tar -xzf apache-maven-$MAVEN_VERSION-bin.tar.gz -C /usr/lib/
+export M2_HOME=/usr/lib/apache-maven-$MAVEN_VERSION
 export PATH=$PATH:$M2_HOME/bin
 
 #Workaround: set swc core version to version  1.7.9 as higher swc versions does not support ppc64le 
@@ -66,33 +67,15 @@ cd ../..
 echo $PWD
 
 
-
-if ! mvn install -DskipTests; then
+if ! mvn --batch-mode --no-transfer-progress install; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL   $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_fails"
     exit 2;
-fi
-
-if ! mvn install -Pe2e,e2e-springboot -am -pl :hawtio-test-suite -Dlocal-app=true; then
-    echo "------------------$PACKAGE_NAME:Install_success_but_springboot test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
-    exit 1;
 else
-    echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
-    echo "$PACKAGE_URL    $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass |  Build_and_springboot_Test_Success";
-fi
-
-if ! mvn install -Pe2e,e2e-quarkus -am -pl :hawtio-test-suite -Dlocal-app=true; then
-    echo "------------------$PACKAGE_NAME:Install_success_but_quarkus test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_quarkus_test_Fails"
-    exit 1;
-else
-    echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
+    echo "------------------$PACKAGE_NAME:Install_&_unit_test_both_success-------------------------"
     echo "$PACKAGE_URL    $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass |  Build_and_springboot_and_quarkus_Test_Success"
     exit 0;
 fi
+

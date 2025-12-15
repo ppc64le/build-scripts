@@ -4,7 +4,7 @@
 # Version	: v0.1.0
 # Source repo	: https://github.com/jonboulle/clockwork
 # Language      : GO
-# Travis-Check  : False
+# Ci-Check  : False
 # Tested on	: RHEL 8.3
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>

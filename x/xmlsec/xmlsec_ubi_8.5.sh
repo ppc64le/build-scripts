@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/lsh123/xmlsec.git
 # Tested on	: UBI: 8.5
 # Language      : C
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Pooja Shah <Pooja.Shah4@ibm.com>
 #

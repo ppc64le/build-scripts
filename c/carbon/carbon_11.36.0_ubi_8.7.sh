@@ -5,7 +5,7 @@
 # Version       : 11.36.0
 # Source repo   : https://github.com/carbon-design-system/carbon
 # Tested on     : UBI: 8.7
-# Travis-Check  : True
+# Ci-Check  : True
 # Language      : Javascript
 # Script License: Apache License Version 2.0
 # Maintainer    : Vishaka Desai <Vishaka.Desai@ibm.com>

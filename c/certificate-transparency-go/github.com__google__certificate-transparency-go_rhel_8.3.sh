@@ -4,7 +4,7 @@
 # Version	: v1.0.21
 # Source repo	: https://github.com/google/certificate-transparency-go
 # Language      : GO
-# Travis-Check  : False
+# Ci-Check  : False
 # Tested on	: RHEL 8.3
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>

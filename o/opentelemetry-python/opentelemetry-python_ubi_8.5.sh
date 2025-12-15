@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/open-telemetry/opentelemetry-python
 # Tested on	: ubi 8.5
 # Language      : python
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>,Vinod K <Vinod.K1@ibm.com>
 #

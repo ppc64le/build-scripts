@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/rstudio/shiny-server
 # Tested on     : UBI:9.3
 # Language      : Java/C++
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Guarav.Bankar@ibm.com
 #

@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/oras-project/oras
 # Tested on     : ubi8.5
 # Language      : go
-# Travis-Check  : true
+# Ci-Check  : true
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Vathsala . <vaths367@in.ibm.com>
 #

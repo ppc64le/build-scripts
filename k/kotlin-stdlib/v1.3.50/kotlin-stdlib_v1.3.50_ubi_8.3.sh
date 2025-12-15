@@ -4,7 +4,7 @@
 # Package       : Kotlin (stdlib & stdlib-common)
 # Version       : 1.3.50
 # Language      : Java
-# Travis-Check  : true
+# Ci-Check  : true
 # Source repo   : https://github.com/JetBrains/kotlin.git
 # Tested on     : UBI:8.3
 # Script License: Apache License, Version 2 or later

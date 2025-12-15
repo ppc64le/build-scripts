@@ -6,7 +6,7 @@
 # Source repo           : https://github.com/apache/tomcat
 # Tested on             : UBI:9.3
 # Language              : Java
-# Travis-Check          : True
+# Ci-Check          : True
 # Script License        : Apache License 2.0 or later
 # Maintainer            : Vinod K <Vinod.K1@ibm.com>
 #

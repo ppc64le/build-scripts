@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/psycopg/psycopg2
 # Tested on     : UBI:9.3
 # Language      : Python
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Aastha Sharma <aastha.sharma4@ibm.com>
 #

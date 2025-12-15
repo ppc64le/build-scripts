@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/triton-inference-server/server
 # Tested on     : RHEL 9.6
 # Language      : Python , Shell
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sunidhi Gaonkar<Sunidhi.Gaonkar@ibm.com>
 #

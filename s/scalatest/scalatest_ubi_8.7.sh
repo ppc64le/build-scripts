@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/scalatest/scalatest
 # Tested on        : UBI 8.7
 # Language         : Scala
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Shubham Garud <Shubham.Garud@ibm.com>
 #

@@ -4,7 +4,7 @@
 # Version	: v0.0.0-20190402132108-0e1d5de854df
 # Source repo	: https://github.com/gocql/gocql
 # Language      : GO
-# Travis-Check  : False
+# Ci-Check  : False
 # Tested on	: RHEL 8.3
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>

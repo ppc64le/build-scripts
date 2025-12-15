@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/d3/d3-ease
 # Tested on	: UBI 8.5
 # Language      : Javascript
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Vathsala . <vaths367@in.ibm.com>,Vinod K<Vinod.K1@ibm.com>
 #

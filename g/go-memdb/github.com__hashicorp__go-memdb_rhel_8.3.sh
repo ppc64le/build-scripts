@@ -5,7 +5,7 @@
 # Source repo	: https://github.com/hashicorp/go-memdb
 # Tested on	: RHEL 8.3
 # Language      : GO
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
 #

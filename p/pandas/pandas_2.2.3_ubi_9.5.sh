@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/pandas-dev/pandas.git
 # Tested on     : UBI:9.5
 # Language      : Python, C, Cython, HTML
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Shivansh Sharma <Shivansh.S1@ibm.com>
 #

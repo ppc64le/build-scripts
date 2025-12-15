@@ -6,7 +6,7 @@
 # Source repo :  https://github.com/jax-ml/ml_dtypes.git
 # Tested on     : UBI:9.3
 # Language      : Python
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
 #

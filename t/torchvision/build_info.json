@@ -2,7 +2,7 @@
   "maintainer": "PrernaKumbhar20",
   "package_name": "torchvision",
   "github_url": "https://github.com/pytorch/vision",
-  "version": "v0.22.1",
+  "version": "v0.24.0",
   "default_branch": "main",
   "package_dir": "t/torchvision",
   "build_script": "torchvision_0.22.1_ubi_9.6.sh",

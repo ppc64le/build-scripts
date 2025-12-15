@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/apache/camel-quarkus
 # Tested on        : UBI:9.3
 # Language         : Java
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Prasanna Marathe<prasanna.marathe@ibm.com>
 #

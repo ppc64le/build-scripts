@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : psutil
-# Version          : 7.0.0
+# Version          : 7.1.3
 # Source repo      : https://github.com/giampaolo/psutil.git
 # Tested on        : UBI:9.3
 # Language         : Python
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Shivansh Sharma <shivansh.s1@ibm.com>
+# Maintainer       : Lenzie Camilo <Lenzie.Camilo3@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -20,11 +20,11 @@
 
 # Variables
 PACKAGE_NAME=psutil
-PACKAGE_VERSION=${1:-release-7.0.0}
+PACKAGE_VERSION=${1:-release-7.1.3}
 PACKAGE_URL=https://github.com/giampaolo/psutil.git
 
 # Install necessary system dependencies
-yum install -y make g++ git gcc gcc-c++ wget openssl-devel bzip2-devel libffi-devel zlib-devel procps-ng python3 python3-devel python3-pip
+yum install -y make g++ git gcc gcc-c++ wget openssl-devel bzip2-devel libffi-devel zlib-devel procps-ng python3.12 python3.12-devel python3.12-pip
 
 # Clone the repository
 git clone $PACKAGE_URL
@@ -32,10 +32,10 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Install additional dependencies
-python3 -m pip install setuptools wheel pytest overlay
+python3.12 -m pip install setuptools wheel pytest overlay pytest-instafail pytest-xdist
 
 #install
-if ! python3 -m pip install -e . ; then
+if ! python3.12 -m pip install -e . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -46,6 +46,8 @@ fi
 export PYTHONWARNINGS=always
 export PYTHONUNBUFFERED=1
 export PSUTIL_DEBUG=1
+export PSUTIL_TESTING=1
+export PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
 export PYTHONPATH=$(pwd):$PYTHONPATH
 
 #run tests skipping and deselecting few tests failing on ppc64le and x86
@@ -60,3 +62,4 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
+

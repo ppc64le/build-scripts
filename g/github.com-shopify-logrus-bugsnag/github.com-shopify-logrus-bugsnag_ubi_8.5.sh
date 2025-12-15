@@ -4,7 +4,7 @@
 # Version	: v0.0.0-20171204204709-577dee27f20d
 # Source repo	: https://github.com/Shopify/logrus-bugsnag
 # Language	: GO
-# Travis-Check	: True
+# Ci-Check	: True
 # Tested on	: UBI 8.5
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Sapna Shukla <Sapna.Shukla@ibm.com>

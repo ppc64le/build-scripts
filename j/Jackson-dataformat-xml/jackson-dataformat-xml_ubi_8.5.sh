@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/FasterXML/jackson-dataformat-xml
 # Tested on     : ubi 8.5
 # Language      : java
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License 2.0
 # Maintainer    : Pratik Tonage <Pratik.Tonage@ibm.com>
 #

@@ -5,7 +5,7 @@
 # Version       : 5.5.3
 # Source repo   : https://github.com/elastic/elasticsearch.git
 # Tested on     : rhel_7.4
-# Travis-Check  : True
+# Ci-Check  : True
 # Language      : Java
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Yugandha Deshpande <yugandha@us.ibm.com>

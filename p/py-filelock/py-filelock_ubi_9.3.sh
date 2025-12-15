@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/benediktschmitt/py-filelock
 # Tested on		: UBI 9.5
 # Language      : Python
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Haritha Nagothu <haritha.nagothu2@ibm.com>
 # Disclaimer: This script has been tested in root mode on given

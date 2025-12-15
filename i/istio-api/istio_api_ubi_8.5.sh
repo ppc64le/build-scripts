@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/istio/api
 # Tested on     : UBI 8.5
 # Language      : go
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License 2.0 or later
 # Maintainer's  : Haritha Patchari <haritha.patchari@ibm.com>,Pratik Tonage <Pratik.Tonage@ibm.com>
 #
