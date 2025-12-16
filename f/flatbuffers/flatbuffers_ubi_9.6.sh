@@ -60,6 +60,3 @@ if ! (pip3 install .) ; then
 fi
 #skipping the testcases because some modules are not supported in all python verisons.
 
-#creating Wheel
-pip3 install wheel
-#python3 setup.py bdist_wheel --dist-dir="$CURRENT_DIR/"
