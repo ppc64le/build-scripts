@@ -1,12 +1,12 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
-# 
+#
 # Package       : flatbuffers
 # Version       : v2.0.0
 # Source repo   : https://github.com/google/flatbuffers.git
-# Tested on     : UBI:9.3
+# Tested on     : UBI:9.6
 # Language      : Python
-# Ci-Check  : True
+# Ci-Check      : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Haritha Nagothu <haritha.nagothu2@ibm.com>
 #
@@ -27,9 +27,10 @@ CURRENT_DIR="${PWD}"
 export VERSION=$PACKAGE_VERSION
 
 # Install dependencies and tools.
-yum install -y wget gcc gcc-c++ gcc-gfortran git make  python-devel  openssl-devel  cmake
+yum install -y wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran git make python3-devel python3-pip openssl-devel cmake
+source /opt/rh/gcc-toolset-13/enable
 
-#clone repository 
+#clone repository
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
@@ -41,8 +42,17 @@ make install
 #checkout to Python folder
 cd python
 
+# Ensure setuptools-compatible license handling by localizing LICENSE (if present) and rewriting invalid '../LICENSE' reference in setup.py for newer setuptools/Python versions
+LICENSE_FILE=$(ls ../LICENSE ../LICENSE.txt ../license 2>/dev/null | head -n 1)
+
+if [ -n "$LICENSE_FILE" ]; then
+    [ ! -f LICENSE ] && cp "$LICENSE_FILE" LICENSE
+fi
+# Fix setup.py only if bad pattern exists
+sed -i -E "s|license_files\s*=\s*'../LICENSE'\s*,?|license_files=['LICENSE'],|" setup.py
+
 #install
-if ! (pip install .) ; then
+if ! (pip3 install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -50,6 +60,6 @@ if ! (pip install .) ; then
 fi
 #skipping the testcases because some modules are not supported in all python verisons.
 
-#creating Wheel 
-pip install wheel
-python3 setup.py bdist_wheel --dist-dir="$CURRENT_DIR/"
+#creating Wheel
+pip3 install wheel
+#python3 setup.py bdist_wheel --dist-dir="$CURRENT_DIR/"
