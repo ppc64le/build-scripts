@@ -6,6 +6,7 @@
   "wheel_build" : true,
   "default_branch": "master",
   "package_dir": "f/flatbuffers",
+  "build_script": "flatbuffers_ubi_9.6.sh",
   "validate_build_script": true,
   "use_non_root_user": false,
   "docker_build": false,
