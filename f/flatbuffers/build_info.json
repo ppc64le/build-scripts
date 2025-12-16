@@ -8,7 +8,7 @@
   "package_dir": "f/flatbuffers",
   "validate_build_script": true,
   "use_non_root_user": false,
-  "docker_build": false
+  "docker_build": false,
    "*": {
     "build_script": "flatbuffers_ubi_9.6.sh"
   }
