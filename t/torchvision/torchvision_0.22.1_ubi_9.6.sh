@@ -574,7 +574,7 @@ export CMAKE_PREFIX_PATH=$CURRENT_DIR/pytorch/torch/share/cmake/Torch:$LIBPROTO_
 cmake ..
 make install
 cp libtorchvision.so $CURRENT_DIR/vision/torchvision/libtorchvision.so
-cp libtorchvision.so /usr/local/lib64/python$PYTHON_VERSION/site-packages/torch/share/cmake/Torch
+#cp libtorchvision.so /usr/local/lib64/python$PYTHON_VERSION/site-packages/torch/share/cmake/Torch
 cp libtorchvision.so /usr/local/lib64
 cd $CURRENT_DIR/vision
 python3 setup.py bdist_wheel --dist-dir $CURRENT_DIR
