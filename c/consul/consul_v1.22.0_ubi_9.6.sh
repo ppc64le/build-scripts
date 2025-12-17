@@ -34,7 +34,6 @@ export PATH=$PATH:$GOPATH/bin
 rm -f go1.25.3.linux-ppc64le.tar.gz
 
 go install gotest.tools/gotestsum@latest
-go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
 ulimit -n 2048
 umask 0022
 
