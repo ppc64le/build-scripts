@@ -579,7 +579,14 @@ cp libtorchvision.so $CURRENT_DIR/vision/torchvision/libtorchvision.so
 cp libtorchvision.so /usr/local/lib64/python3.11/site-packages/torch/share/cmake/Torch
 cp libtorchvision.so /usr/local/lib64
 cd $CURRENT_DIR/vision
-python3 setup.py bdist_wheel --dist-dir $CURRENT_DIR
+
+ret=0
+python3 setup.py bdist_wheel --dist-dir $CURRENT_DIR || ret=$?
+if [ $ret -ne 0 ]; then
+        set +ex
+  echo "------------------ ${PACKAGE_NAME}: Wheel Build Failed ------------------"
+  exit 1
+fi
 
 cd $CURRENT_DIR
 
