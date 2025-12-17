@@ -18,12 +18,12 @@
 #
 # ----------------------------------------------------------------------------
 
-
-yum install -y wget tar zip gcc-c++ make git procps diffutils --allowerasing
-
+PACKAGE_NAME=consul
 PACKAGE_VERSION=${1:-v1.22.0}
 PACKAGE_URL=https://github.com/hashicorp/consul
-PACKAGE_NAME=consul
+SCRIPT_PATH=$(dirname $(realpath $0))
+
+yum install -y wget tar zip gcc-c++ make git procps diffutils --allowerasing
 
 rm -rf /usr/local/go
 wget https://golang.org/dl/go1.25.3.linux-ppc64le.tar.gz
@@ -81,6 +81,9 @@ fi
 # Commenting out test part as some tests are flaky
 # -------------------------------------------------------------------
 
+# Apply patch to skip/fix flaky tests
+#git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${PACKAGE_VERSION}.patch
+
 #useradd -m -s /bin/bash tester || true
 #chown -R tester:tester $CWD/$PACKAGE_NAME
 
@@ -102,6 +105,11 @@ fi
 #export PATH=\$PATH:\$GOPATH/bin
 
 #echo 'Running Consul tests as non-root user...'
+
+#unset GOFLAGS
+#export GOFLAGS='-p=1 -count=1'
+#export GOMAXPROCS=2
+#sleep 5
 
 #cd sdk
 #gotestsum --format=short-verbose ./...
