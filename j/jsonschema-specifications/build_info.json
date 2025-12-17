@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "jsonschema-specifications",
+   "github_url": "https://github.com/python-jsonschema/jsonschema-specifications",
+   "version": "v2024.10.1",
+   "default_branch": "main",
+   "build_script": "jsonschema-specifications_ubi_9.3.sh",
+   "package_dir": "j/jsonschema-specifications",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}
