@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package           : vision
-# Version           : v0.24.0
+# Version           : v0.24.1
 # Source repo       : https://github.com/pytorch/vision.git
 # Tested on         : UBI:9.6
 # Language          : Python
@@ -22,7 +22,7 @@
 set -ex 
 
 PACKAGE_NAME=vision
-PACKAGE_VERSION=${1:-v0.24.0}
+PACKAGE_VERSION=${1:-v0.24.1}
 PACKAGE_URL=https://github.com/pytorch/vision.git
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 MAX_JOBS=${MAX_JOBS:-$(nproc)}
@@ -574,7 +574,6 @@ export CMAKE_PREFIX_PATH=$CURRENT_DIR/pytorch/torch/share/cmake/Torch:$LIBPROTO_
 cmake ..
 make install
 cp libtorchvision.so $CURRENT_DIR/vision/torchvision/libtorchvision.so
-cp libtorchvision.so /usr/local/lib64/python$PYTHON_VERSION/site-packages/torch/share/cmake/Torch
 cp libtorchvision.so /usr/local/lib64
 cd $CURRENT_DIR/vision
 python3 setup.py bdist_wheel --dist-dir $CURRENT_DIR
