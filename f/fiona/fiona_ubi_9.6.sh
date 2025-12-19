@@ -4,9 +4,9 @@
 # Package          : fiona
 # Version          : 1.10.1
 # Source repo      : https://github.com/Toblerity/Fiona
-# Tested on        : UBI 9.3
+# Tested on        : UBI:9.6
 # Language         : Python,Cython
-# Ci-Check     : True
+# Ci-Check         : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Anumala Rajesh <Anumala.Rajesh@ibm.com>
 #
@@ -42,9 +42,9 @@ export CFLAGS="-I$(python3.12 -c 'import numpy; print(numpy.get_include())') $CF
 
 echo " ------------------------------------------- Installing PROJ ------------------------------------------- "
 cd /usr/local/src
-wget https://download.osgeo.org/proj/proj-9.2.1.tar.gz
-tar -xzf proj-9.2.1.tar.gz
-cd proj-9.2.1 
+wget https://download.osgeo.org/proj/proj-9.4.0.tar.gz
+tar -xzf proj-9.4.0.tar.gz
+cd proj-9.4.0 
 
 mkdir proj_prefix 
 export PROJ_PREFIX=$(pwd)/proj_prefix 

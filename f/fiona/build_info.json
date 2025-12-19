@@ -6,7 +6,7 @@
     "wheel_build" : true,
     "default_branch": "master",
     "package_dir": "f/fiona",
-    "build_script": "fiona_ubi_9.3.sh",
+    "build_script": "fiona_ubi_9.6.sh",
     "validate_build_script": "true",
     "use_non_root_user": "false",
     "docker_build": false,
@@ -14,6 +14,6 @@
       "build_script": "fiona_ubi_8.7.sh"
     },
     "*": {
-      "build_script": "fiona_ubi_9.3.sh"
+      "build_script": "fiona_ubi_9.6.sh"
     }
 }
