@@ -34,14 +34,15 @@ export JAVA_HOME=/usr/lib/jvm/java-25-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
 
-
-if ! ./gradlew build -x :documentation:spring-boot-docs:checkArchitectureMain; then
+# skipping the architecture check in spring-boot-docs.
+if ! ./gradlew build -x :documentation:spring-boot-docs:checkArchitectureMain ; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
     exit 1
 fi
 
+# skipping the architecture check in spring-boot-docs.
 if ! ./gradlew test -x :documentation:spring-boot-docs:checkArchitectureMain  ; then
     echo "------------------$PACKAGE_NAME::Build_and_Test_fails-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
