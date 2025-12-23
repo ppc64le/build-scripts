@@ -2,10 +2,10 @@
   "maintainer": "Simran-Sirsat",
   "package_name": "torchvision",
   "github_url": "https://github.com/pytorch/vision",
-  "version": "v0.24.0",
+  "version": "v0.24.1",
   "default_branch": "main",
   "package_dir": "t/torchvision",
-  "build_script": "torchvision_0.23.0_ubi_9.6.sh",
+  "build_script": "torchvision_0.24.1_ubi_9.6.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
@@ -16,7 +16,9 @@
   "v0.22.1": {
     "build_script": "torchvision_0.22.1_ubi_9.6.sh"
   },
-  "v*.*.*": {
+  "v0.23.0": {
     "build_script": "torchvision_0.23.0_ubi_9.6.sh"
+  "v*.*.*": {
+    "build_script": "torchvision_0.24.1_ubi_9.6.sh"
   }
 }

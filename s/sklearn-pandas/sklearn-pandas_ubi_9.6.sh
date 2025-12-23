@@ -4,9 +4,9 @@
 # Package       : sklearn-pandas
 # Version       : v2.2.0
 # Source repo   : https://github.com/scikit-learn-contrib/sklearn-pandas.git
-# Tested on     : UBI:9.3
+# Tested on     : UBI:9.6
 # Language      : Python
-# Ci-Check  : True
+# Ci-Check      : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Haritha Nagothu <haritha.nagothu2@ibm.com>
 #
@@ -22,9 +22,11 @@
 PACKAGE_NAME=sklearn-pandas
 PACKAGE_VERSION=${1:-v2.2.0}
 PACKAGE_URL=https://github.com/scikit-learn-contrib/sklearn-pandas.git
+PACKAGE_DIR=sklearn-pandas
 
 # Install basic build tools and Python environment (from UBI default repos only)
-yum install -y gcc gcc-c++ gcc-gfortran git make python3 gcc gcc-c++ gcc-gfortran git make python3-pip python3-devel openssl-devel cmake zlib-devel libjpeg-devel wget
+yum install -y gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran git make python3 python3-pip python3-devel openssl-devel cmake zlib-devel libjpeg-devel wget
+source /opt/rh/gcc-toolset-13/enable
 
 #clone and install openblas from source
 git clone https://github.com/OpenMathLib/OpenBLAS
@@ -82,6 +84,19 @@ pip3 install setuptools==70.* wheel
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
+
+# Patch:sklearn.utils.tosequence was dropped in recent scikit-learn releases, and older scikit-learn cannot support Python 3.9–3.12, so a local fallback is required.
+
+sed -i '/from sklearn.utils import tosequence/c\
+try:\
+    from sklearn.utils import tosequence\
+except ImportError:\
+    def tosequence(x):\
+        if x is None:\
+            return []\
+        if isinstance(x, (list, tuple)):\
+            return x\
+        return [x]' sklearn_pandas/pipeline.py
 
 # Install Python dependencies
 pip3 install scipy scikit-learn pandas pytest
