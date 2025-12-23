@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : ray
-# Version       : master(f2a7a94a75b007a801ee5a2cf)
+# Version       : master(efb34a676b05da643cf6)
 # Source repo   : https://github.com/ray-project/ray
 # Tested on     : UBI 9.6
 # Language      : C++, Python
@@ -19,6 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=ray
+MASTER_COMMIT_ID=${1:-efb34a676b05da643cf6}
 PYSPY_VERSION=v0.3.14
 ARROW_VERSION=16.1.0
 BAZEL_VERSION=6.5.0
@@ -82,10 +83,12 @@ export PATH=/usr/local/bin:$PATH
 cd $wdir
 git clone https://github.com/ray-project/ray
 cd ray/
+git checkout $MASTER_COMMIT_ID
 
 git apply $wdir/upstream_pr_51673.patch
 git apply $wdir/ray-master-openssl.patch
 git apply $wdir/ray-rules-perl.patch
+git apply $wdir/ray-boost.patch
 
 cd python/
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
@@ -106,10 +109,10 @@ pip install ray-*-linux_ppc64le.whl
 
 #Test (CPP)
 #cd $wdir/${PACKAGE_NAME}
-#bazel test --jobs=10 $(bazel query 'kind(cc_test, ...)') --cxxopt='-Wno-error=maybe-uninitialized' --define=USE_OPENSSL=1|| true
+#bazel test --jobs=10 $(bazel query 'kind(cc_test, ...)') --cxxopt='-Wno-error=maybe-uninitialized' --define=USE_OPENSSL=1 --jobs=10 --define=SKIP_RULES_PERL=1 --strategy=CppCompile=standalone|| true
 
 #These test cases pass successfully when run separately.
-#bazel test --jobs=10 //cpp:simple_kv_store --cxxopt='-Wno-error=maybe-uninitialized' --define=USE_OPENSSL=1|| true
-#bazel test --jobs=10 //cpp:cluster_mode_xlang_test --cxxopt='-Wno-error=maybe-uninitialized' --define=USE_OPENSSL=1|| true
-#bazel test --jobs=10 //cpp:metric_example  --cxxopt='-Wno-error=maybe-uninitialized' --define=USE_OPENSSL=1|| true
-#bazel test --jobs=10 //src/ray/gcs_rpc_client/tests:gcs_client_reconnection_test --cxxopt='-Wno-error=maybe-uninitialized' --define=USE_OPENSSL=1|| true
+#bazel test --jobs=10 //cpp:simple_kv_store --cxxopt='-Wno-error=maybe-uninitialized' --define=USE_OPENSSL=1 --jobs=10 --define=SKIP_RULES_PERL=1 --strategy=CppCompile=standalone|| true
+#bazel test --jobs=10 //cpp:cluster_mode_xlang_test --cxxopt='-Wno-error=maybe-uninitialized' --define=USE_OPENSSL=1 --jobs=10 --define=SKIP_RULES_PERL=1 --strategy=CppCompile=standalone|| true
+#bazel test --jobs=10 //cpp:metric_example  --cxxopt='-Wno-error=maybe-uninitialized' --define=USE_OPENSSL=1 --jobs=10 --define=SKIP_RULES_PERL=1 --strategy=CppCompile=standalone|| true
+#bazel test --jobs=10 //src/ray/gcs_rpc_client/tests:gcs_client_reconnection_test --cxxopt='-Wno-error=maybe-uninitialized' --define=USE_OPENSSL=1 --jobs=10 --define=SKIP_RULES_PERL=1 --strategy=CppCompile=standalone|| true

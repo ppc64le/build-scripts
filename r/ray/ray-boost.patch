@@ -1,0 +1,72 @@
+diff --git a/thirdparty/patches/boost-headers.patch b/thirdparty/patches/boost-headers.patch
+index 95e1d89fbb..f73a5baa91 100644
+--- a/thirdparty/patches/boost-headers.patch
++++ b/thirdparty/patches/boost-headers.patch
+@@ -1,16 +1,59 @@
+-diff --git BUILD.boost BUILD.boost
++diff --git a/BUILD.boost b/BUILD.boost
++index 1c8d785..4ffd1c2 100644
+ --- a/BUILD.boost
+ +++ b/BUILD.boost
+-@@ -457,7 +457,7 @@ cc_library(
++@@ -12,6 +12,11 @@ _w_no_deprecated = selects.with_or({
++
++ # Hopefully, the need for these OSxCPU config_setting()s will be obviated by a fix to https://github.com/bazelbuild/platforms/issues/36
++
+++config_setting(
+++    name = "use_openssl",
+++    values = {"define": "USE_OPENSSL=1"},
+++)
+++
++ config_setting(
++     name = "linux_arm",
++     constraint_values = [
++@@ -178,6 +183,17 @@ boost_library(
++     ],
++ )
++
+++boost_library(
+++    name = "openssl",
+++    #srcs = glob(["/usr/include/openssl/**/*.h"]),
+++    includes = ["/usr/include"],
+++    linkopts = ["-L/usr/lib", "-lssl", "-lcrypto"],
+++    copts = select({
+++        ":use_openssl": ["-DUSE_OPENSSL=1"],
+++        "//conditions:default": [],
+++    }),
+++)
+++
++ BOOST_FIBER_NUMA_SRCS = select({
++     ":linux_arm": [
++     ],
++@@ -455,10 +471,16 @@ cc_library(
++         "@com_github_nelhage_rules_boost//src:build_asio_ssl.cpp",
++     ],
+      visibility = ["//visibility:public"],
+-     deps = [
+-         ":asio",
++-    deps = [
++-        ":asio",
+ -        "@openssl//:ssl",
+-+        "@boringssl//:ssl",
+-     ],
++-    ],
+++    deps = select ({
+++        ":use_openssl":[
+++         ":asio",
+++         ":openssl",
+++],
+++        "//conditions:default": [":asio",
+++         "@boringssl//:ssl",
+++],
+++})
+++
+  )
+-
+-@@ -2736,3 +2736,38 @@ boost_library(
++
++ boost_library(
++@@ -2736,3 +2758,38 @@ boost_library(
+          ":variant2",
+      ],
+  )
