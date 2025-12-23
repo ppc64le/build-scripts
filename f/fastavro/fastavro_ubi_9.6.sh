@@ -27,13 +27,14 @@ PACKAGE_DIR=fastavro
 
 # Install dependencies
 yum install -y git python3 python3-devel gcc-toolset-13 make wget sudo cmake
+
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+
 pip3 install pytest zlib-ng zstandard lz4 cramjam cython setuptools
 python3 -m pip install --upgrade pip setuptools wheel
 # Preinstall NumPy and pandas with wheels
 python3 -m pip install "numpy>=1.21,<2", "pandas>=1.5,<3"
-
-export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
 # Install Rust (required for some dependencies)
 curl https://sh.rustup.rs -sSf | sh -s -- -y
