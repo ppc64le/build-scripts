@@ -1,0 +1,16 @@
+{
+   "maintainer": "kiranNukal",
+   "package_name": "cython",
+   "github_url": "https://github.com/cython/cython",
+   "version": "0.29.36",
+   "default_branch": "master",
+   "build_script": "cython_ubi_9.6.sh",
+   "package_dir": "c/cython",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*": {
+     "build_script":"cython_ubi_9.6.sh"
+  }
+}
