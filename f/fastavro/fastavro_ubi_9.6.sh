@@ -26,10 +26,9 @@ PACKAGE_URL=https://github.com/fastavro/fastavro
 PACKAGE_DIR=fastavro
 
 # Install dependencies
-yum install -y git python3 python3-devel.ppc64le gcc-toolset-13 make wget sudo cmake
+yum install -y git python3 python3-devel gcc-toolset-13 make wget sudo cmake
 pip3 install pytest numpy  zlib-ng pandas zstandard lz4 cramjam cython setuptools
 
-export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
