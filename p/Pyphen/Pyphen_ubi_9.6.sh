@@ -4,9 +4,9 @@
 # Package       : Pyphen
 # Version       : 0.14.0
 # Source repo   : https://github.com/Kozea/Pyphen
-# Tested on     : UBI: 8.7
+# Tested on     : UBI:9.6
 # Language      : Python
-# Ci-Check  : True
+# Ci-Check      : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Stuti Wali <Stuti.Wali@ibm.com>
 #
@@ -19,27 +19,27 @@
 #
 # ----------------------------------------------------------------------------
 
-set -e
+set -ex
 
-# Variables
-export PACKAGE_VERSION=${1:-"0.14.0"}
-export PACKAGE_NAME=Pyphen
-export PACKAGE_URL=https://github.com/Kozea/Pyphen
-
+#variables
+PACKAGE_NAME=Pyphen
+PACKAGE_VERSION=${1:-0.14.0}
+PACKAGE_URL=https://github.com/Kozea/Pyphen
+PACKAGE_DIR=Pyphen
+CURRENT_DIR=`pwd`
 
 # Install dependencies
-yum install -y python39 git gcc-c++ python39-devel.ppc64le python3-setuptools
-pip3 install --upgrade setuptools virtualenv mock ipython_genutils pytest traitlets flit
+yum install -y python3 git python3-devel.ppc64le python3-setuptools gcc-toolset-13-gcc
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+
+pip3 install --upgrade setuptools mock ipython_genutils pytest traitlets flit
 
 # Clone the repository
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-export TOXENV=py39
-virtualenv -p python3 --system-site-packages env2 
-/bin/bash -c "source env2/bin/activate"
-pip3 install tox 
-PATH=$PATH:/usr/local/bin/
+pip3 install tox
 
 # Build package
 if !(flit build) ; then
