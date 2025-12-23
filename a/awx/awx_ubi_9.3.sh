@@ -4,9 +4,9 @@
 # Package          : awx
 # Version          : 24.6.1
 # Source repo      : https://github.com/ansible/awx.git
-# Tested on        : UBI 9.5
+# Tested on        : UBI 9.3
 # Language         : Python
-# Travis-Check     : True
+# Ci-Check         : True
 # Script License   : GNU General Public License v3.0
 # Maintainer       : Haritha Nagothu <haritha.nagothu2@ibm.com>
 #
