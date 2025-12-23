@@ -30,13 +30,28 @@ VERSION=${PACKAGE_VERSION#v}
 PYTHON_VERSION=${2:-3.12}
 PYTORCH_VERSION=${3:-v2.9.0}
 
-CURRENT_DIR=/opt
+CURRENT_DIR=$(pwd)
 
 yum install -y git make wget python$PYTHON_VERSION python$PYTHON_VERSION-devel python$PYTHON_VERSION-pip pkgconfig atlas libjpeg-devel openblas-devel
 yum install gcc-toolset-13 -y
 yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build gcc-toolset-13  pkg-config  gmp-devel  freetype-devel
 
 ln -sf /usr/bin/pip$PYTHON_VERSION /usr/bin/pip3 && ln -sf /usr/bin/python$PYTHON_VERSION /usr/bin/python3 && ln -sf /usr/bin/pip$PYTHON_VERSION /usr/bin/pip && ln -sf /usr/bin/python$PYTHON_VERSION /usr/bin/python
+
+export PYTHON_SITE_PACKAGES=$(python - <<'EOF'
+import sysconfig, os
+
+venv = os.environ.get("VIRTUAL_ENV")
+paths = sysconfig.get_paths()
+
+if venv:
+    # Prefer venv path
+    print(paths["platlib"])
+else:
+    # System python
+    print(paths["platlib"])
+EOF
+)
 
 dnf install -y gcc-toolset-13-libatomic-devel
 
@@ -260,7 +275,6 @@ python3 -m pip install -r requirements.txt
 echo "----------Installing pytorch------------"
 MAX_JOBS=$(nproc) python3 setup.py install
 MAX_JOBS=$(nproc) python3 setup.py bdist_wheel
-cp dist/*.whl $CURRENT_DIR
 cd $CURRENT_DIR
 
 echo "--------------------------------- Installing Opus ---------------------------------"
@@ -574,6 +588,7 @@ export CMAKE_PREFIX_PATH=$CURRENT_DIR/pytorch/torch/share/cmake/Torch:$LIBPROTO_
 cmake ..
 make install
 cp libtorchvision.so $CURRENT_DIR/vision/torchvision/libtorchvision.so
+cp libtorchvision.so $PYTHON_SITE_PACKAGES/torch/share/cmake/Torch
 cp libtorchvision.so /usr/local/lib64
 cd $CURRENT_DIR/vision
 python3 setup.py bdist_wheel --dist-dir $CURRENT_DIR
