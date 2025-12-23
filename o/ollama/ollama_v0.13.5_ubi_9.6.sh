@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package         : Ollama (Power10 optimized)
-# Version         : v0.13.1
+# Version         : v0.13.5
 # Source repo     : https://github.com/ollama/ollama
 # Tested on       : UBI:9.6
 # Language        : Go, C, Python
 # Ci-Check        : True
 # Script License  : Apache License, Version 2 or later
-# Maintainer      : Pratik Tonage <Pratik.Tonage@ibm.com>
+# Maintainer      : Shalini Salomi Bodapati <Shalini.Salomi.Bodapati@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -22,7 +22,7 @@ set -e
 
 # Variables
 PACKAGE_NAME=ollama
-PACKAGE_VERSION=${1:-v0.13.1}
+PACKAGE_VERSION=${1:-v0.13.5}
 PACKAGE_URL=https://github.com/ollama/ollama
 OLLAMA_VERSION=${PACKAGE_VERSION}
 CURRENT_DIR=$(pwd)
@@ -114,7 +114,7 @@ from setuptools.command.build_py import build_py
 import os, shutil, stat
 
 PYTHON_PACKAGE_NAME = "ollama_python_package"
-VERSION = "0.13.1"
+VERSION = "0.13.5"
 
 BIN_SRC = os.path.join(os.getcwd(), "ollama")
 LIB_SRC = os.path.join(os.getcwd(), "build", "lib", "ollama")
@@ -154,8 +154,8 @@ class CustomBuild(build_py):
 setup(
     name=PYTHON_PACKAGE_NAME,
     version=VERSION,
-    author="Pratik Tonage",
-    author_email="Pratik.Tonage@ibm.com",
+    author="Shalini Salomi Bodapati",
+    author_email="Shalini.Salomi.Bodapati@ibm.com",
     description="Power10 optimized Ollama binary + shared libs as Python package",
     license="MIT",
     packages=[PYTHON_PACKAGE_NAME],
