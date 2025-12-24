@@ -170,13 +170,7 @@ git checkout ${PACKAGE_VERSION} -b ${PACKAGE_VERSION}
 # -----------------------------------------------------------------------------
 # STEP 10: Apply Patch
 # -----------------------------------------------------------------------------
-PATCH_FILE="/milvus_v2.6.5.patch"
-if [ -f "${PATCH_FILE}" ]; then
-    git apply "${PATCH_FILE}"
-else
-    echo "Patch file not found, skipping: ${PATCH_FILE}"
-    exit 1
-fi
+git apply "$(realpath /milvus_v2.6.5.patch)"
 
 # -----------------------------------------------------------------------------
 # STEP 11: Power10 Optimization
