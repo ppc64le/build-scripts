@@ -28,6 +28,7 @@ CMAKE_REQUIRED_VERSION=3.30.5
 PYTHON_VERSION=3.10.2
 GO_VERSION=1.24.11
 WDIR=$(pwd)
+SCRIPT_PATH=$(dirname $(realpath $0))
 APPLYMCPU=0
 
 # -----------------------------------------------------------------------------
@@ -170,7 +171,7 @@ git checkout ${PACKAGE_VERSION} -b ${PACKAGE_VERSION}
 # -----------------------------------------------------------------------------
 # STEP 10: Apply Patch
 # -----------------------------------------------------------------------------
-git apply "$(realpath /milvus_v2.6.5.patch)"
+git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${SCRIPT_PACKAGE_VERSION}.patch
 
 # -----------------------------------------------------------------------------
 # STEP 11: Power10 Optimization
