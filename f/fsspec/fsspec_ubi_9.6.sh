@@ -33,7 +33,7 @@ export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
-python3.12 -m pip install pytest numpy aiohttp pytest-asyncio requests
+python3.12 -m pip install pytest numpy aiohttp pytest-asyncio requests pytest-mock
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 SOURCE=GitHub
