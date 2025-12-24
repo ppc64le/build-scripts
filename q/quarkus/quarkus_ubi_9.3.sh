@@ -1,14 +1,14 @@
 # !/bin/bash -e
 # ----------------------------------------------------------------------------
 #
-# Package	      : quarkus
-# Version	      : 3.26.3
-# Source repo	  : https://github.com/quarkusio/quarkus
-# Tested on	    : UBI 9
+# Package	: quarkus
+# Version	: 3.26.3
+# Source repo	: https://github.com/quarkusio/quarkus
+# Tested on	: UBI 9
 # Language      : java
 # Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	   : Shreya Kajbaje <Shreya.Kajbaje@ibm.com>
+# Maintainer	: Shreya Kajbaje <Shreya.Kajbaje@ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
