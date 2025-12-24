@@ -49,7 +49,7 @@ if ! python3 -m pip install -e .; then
     exit 1
 fi
 
-pip3 install pytest-benchmark jsonschema pytest_examples dirty_equals pytz rich faker pytest-mock
+pip3 install pytest-benchmark jsonschema pytest_examples dirty_equals pytz rich faker pytest-mock eval_type_backport
 
 if ! (pytest); then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
