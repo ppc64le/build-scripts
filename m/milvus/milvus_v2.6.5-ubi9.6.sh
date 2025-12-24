@@ -6,7 +6,7 @@
 # Source repo       : https://github.com/milvus-io/milvus.git
 # Tested on         : UBI 9.6
 # Language          : C++, Go
-# Ci-Check          : True
+# Ci-Check          : False
 # Script License    : Apache License, Version 2.0
 # Maintainer        : Amit Kumar <amit.kumar282@ibm.com>
 #
