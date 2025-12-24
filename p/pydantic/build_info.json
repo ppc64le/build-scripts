@@ -1,0 +1,16 @@
+{
+   "maintainer": "kiranNukal",
+   "package_name": "pydantic",
+   "github_url": "https://github.com/pydantic/pydantic",
+   "version": "v2.10.3",
+   "default_branch": "main",
+   "build_script": "pydantic_ubi_9.6.sh",
+   "package_dir": "p/pydantic",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*": {
+     "build_script":"pydantic_ubi_9.6.sh"
+  }
+}
