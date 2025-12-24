@@ -1,0 +1,16 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "alabaster",
+   "github_url": "https://github.com/sphinx-doc/alabaster",
+   "version": "1.0.0",
+   "default_branch": "master",
+   "build_script": "alabaster_ubi_9.6.sh",
+   "package_dir": "a/alabaster",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+  "*": {
+    "build_script": "alabaster_ubi_9.6.sh"
+  }
+}
