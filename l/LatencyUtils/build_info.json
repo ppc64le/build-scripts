@@ -1,0 +1,15 @@
+{
+    "maintainer": "santhoshkotla2929",
+    "package_name": "LatencyUtils",
+    "github_url": "https://github.com/LatencyUtils/LatencyUtils",
+    "version": "LatencyUtils-2.0.3",
+    "default_branch": "master",
+    "build_script": "LatencyUtils_ubi_9.3.sh",
+    "package_dir": "l/LatencyUtils",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "LatencyUtils-.*.*.*": {
+      "build_script": "LatencyUtils_ubi_9.3.sh"
+    }
+  }
