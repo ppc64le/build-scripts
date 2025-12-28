@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : statsmodels
-# Version          : 0.14.4
+# Version          : 0.14.6
 # Source repo      : https://github.com/statsmodels/statsmodels.git
 # Tested on        : UBI:9.3
 # Language         : Python
 # Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
+# Maintainer       : Shivansh sharma <shivansh.s1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,7 +19,7 @@
 # -----------------------------------------------------------------------------
 echo "------------------------------------------------------------Cloning statsmodels github repo--------------------------------------------------------------"
 PACKAGE_NAME=statsmodels
-PACKAGE_VERSION=${1:-v0.14.4}
+PACKAGE_VERSION=${1:-v0.14.6}
 PACKAGE_URL=https://github.com/statsmodels/statsmodels.git
 PACKAGE_DIR=statsmodels
 
@@ -43,7 +43,7 @@ fi
 
 python3.12 -m pip install pytest
 if [ "$(python3.12 --version | grep "3.12")" ]; then
-  python3.12 -m pip install numpy==2.2.2
+  python3.12 -m pip install numpy==2.0.2
   python3.12 -m pip install pandas==2.2.3
   python3.12 -m pip install scipy==1.15.2 --prefer-binary
 fi
