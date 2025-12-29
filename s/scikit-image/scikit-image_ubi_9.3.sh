@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/scikit-image/scikit-image
 OS_NAME=`cat /etc/os-release | grep "PRETTY" | awk -F '=' '{print $2}'`
 
 # install core dependencies
-yum install -y gcc gcc-c++ gcc-gfortran pkg-config openblas-devel git python3.11 python3.11-pip python3.11-devel gcc-toolset-12 zlib-devel libjpeg-turbo-devel
+yum install -y gcc gcc-c++ gcc-gfortran pkg-config openblas-devel git python3.12 python3.12-pip python3.12-devel gcc-toolset-12 zlib-devel libjpeg-turbo-devel
 
 source /opt/rh/gcc-toolset-12/enable
 
@@ -37,18 +37,18 @@ git submodule update --init
 
 # Create a virtualenv named ``skimage-dev`` that lives outside of the repository.
 mkdir ~/envs
-python3.11 -m venv ~/envs/skimage-dev
+python3.12 -m venv ~/envs/skimage-dev
 # Activate it
 source ~/envs/skimage-dev/bin/activate
 
 # Install main development and runtime dependencies
-python3.11 -m pip install -r requirements.txt
+python3.12 -m pip install -r requirements.txt
 
 # Install build dependencies of scikit-image
-python3.11 -m pip install -r requirements/build.txt
+python3.12 -m pip install -r requirements/build.txt
 
 # build and install
-if ! python3.11 -m pip install -e . --no-build-isolation; then
+if ! python3.12 -m pip install -e . --no-build-isolation; then
         echo "------------------$PACKAGE_NAME:build_fails---------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
@@ -58,8 +58,8 @@ else
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Build_Success"
 
-        python3.11 -m pip show scikit-image
-        python3.11 -c "import skimage; print(skimage.__version__)"
+        python3.12 -m pip show scikit-image
+        python3.12 -c "import skimage; print(skimage.__version__)"
         if [ $? == 0 ]; then
                 echo "------------------$PACKAGE_NAME:install_success-------------------------"
                 echo "$PACKAGE_VERSION $PACKAGE_NAME"
