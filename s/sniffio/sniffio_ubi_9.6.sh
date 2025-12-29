@@ -26,7 +26,7 @@ PACKAGE_URL=https://github.com/python-trio/sniffio
 PACKAGE_DIR=sniffio
 
 # Install dependencies
-yum install -y git python3 python3-devel.ppc64le gcc-toolset-13 make wget sudo cmake
+yum install -y git python3 python3-devel.ppc64le gcc-toolset-13
 pip3 install pytest 
 
 export PATH=$PATH:/usr/local/bin/
