@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/quarkusio/quarkus
 # Tested on	: UBI 9
 # Language      : java
-# Travis-Check  : True
+# Ci-Check     : True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Shreya Kajbaje <Shreya.Kajbaje@ibm.com>
 #
