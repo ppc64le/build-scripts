@@ -5,7 +5,7 @@
     "github_url": "https://github.com/arogozhnikov/einops",
     "version": "v0.8.1",
     "default_branch": "main",
-    "package_dir": "e/einops,
+    "package_dir": "e/einops",
     "build_script": "einops_ubi_9.6.sh",
     "validate_build_script": "true",
     "use_non_root_user": "false",
