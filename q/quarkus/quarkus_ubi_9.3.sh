@@ -17,6 +17,7 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
+set -ex
 
 PACKAGE_NAME=quarkus
 PACKAGE_URL=https://github.com/quarkusio/quarkus.git
