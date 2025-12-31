@@ -1,0 +1,16 @@
+{
+   "maintainer": "kiranNukal",
+   "package_name": "rpds",
+   "github_url": "https://github.com/crate-py/rpds",
+   "version": "v0.22.3",
+   "default_branch": "main",
+   "build_script": "rpds_ubi_9.6.sh",
+   "package_dir": "r/rpds",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*": {
+     "build_script":"rpds_ubi_9.6.sh"
+  }
+}
