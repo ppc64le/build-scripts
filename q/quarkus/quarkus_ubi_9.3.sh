@@ -8,7 +8,7 @@
 # Language      : java
 # Ci-Check     : True
 # Script License: Apache License, Version 2 or later
-# Maintainer	: Shreya Kajbaje <Shreya.Kajbaje@ibm.com>
+# Maintainer	: Karanam Santhosh <karanam.santhosh@ibm.com>
 #
 # Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
