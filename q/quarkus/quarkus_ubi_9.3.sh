@@ -1,4 +1,4 @@
-# !/bin/bash -e
+#!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
 # Package	: quarkus
@@ -25,7 +25,7 @@ PACKAGE_VERSION=${1:-main}
  
 # Install dependencies
 echo "Installing dependencies..."
-sudo yum install -y git wget unzip maven java-21-openjdk java-21-openjdk-devel
+yum install -y git wget unzip maven java-21-openjdk java-21-openjdk-devel
 
 # Set up Java environment
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
