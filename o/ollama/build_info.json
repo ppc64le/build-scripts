@@ -2,15 +2,21 @@
   "maintainer": "shalinib-ibm",
   "package_name": "ollama",
   "github_url": "https://github.com/ollama/ollama",
-  "version": "v0.13.1",
+  "version": "v0.13.5",
   "wheel_build": true,
   "package_dir": "o/ollama",
   "default_branch": "main",
-  "build_script": "ollama_v0.13.1_ubi_9.6.sh",
+  "build_script": "ollama_v0.13.5_ubi_9.6.sh",
   "docker_build": true,
   "validate_build_script": true,
   "docker_cmd": "docker build -t ${package_name}-ppc64le:$PACKAGE_VERSION ${dir}",
   "use_non_root_user": false,
+  "v0.13.5": {
+    "dir": "v0.13.5_ubi_9",
+    "build_script": "ollama_v0.13.5_ubi_9.6.sh",
+    "base_docker_image": "registry.access.redhat.com/ubi9/ubi:9.6",
+    "base_docker_variant": "redhat"
+  },
   "v0.13.1": {
     "dir": "v0.13.1_ubi_9",
     "build_script": "ollama_v0.13.1_ubi_9.6.sh",
