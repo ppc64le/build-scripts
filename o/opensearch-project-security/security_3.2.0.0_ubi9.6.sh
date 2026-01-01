@@ -5,7 +5,7 @@
 # Source repo    : https://github.com/opensearch-project/security
 # Tested on      : UBI 9.6
 # Language       : Java
-# Travis-Check   : true
+# Ci-Check       : true
 # Maintainer     : Pratik Tonage <Pratik.Tonage@ibm.com>
 # Script License : Apache License, Version 2.0 or later
 #
