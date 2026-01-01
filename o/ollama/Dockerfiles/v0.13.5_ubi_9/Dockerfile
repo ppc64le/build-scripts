@@ -6,9 +6,6 @@ FROM registry.access.redhat.com/ubi9/ubi:9.6 AS build
 ARG PACKAGE_NAME=ollama
 ARG PACKAGE_VERSION=v0.13.5
 ARG PACKAGE_URL=https://github.com/ollama/ollama
-ENV PATCH_BUILD_POWER=https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/ollama/build_power_${PACKAGE_VERSION}.patch
-ENV PATCH_SET_THREADS=https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/ollama/set_threads_env_${PACKAGE_VERSION}.patch
-ENV PATCH_ENABLE_MMA=https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/ollama/enable_mma_${PACKAGE_VERSION}.patch
 ENV CMAKE_VERSION=3.30.5
 ENV GO_VERSION=1.24.1
 ENV PATH="/usr/local/go/bin:/usr/local/cmake/bin:${PATH}"
@@ -52,9 +49,12 @@ RUN wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz && \
 ###############################################################################
 WORKDIR /src
 
-COPY *_${PACKAGE_VERSION}.patch .
+# Clone Ollama source and apply patches    
+RUN git clone ${PACKAGE_URL} && \
+    cd ${PACKAGE_NAME} && \
+    git checkout ${PACKAGE_VERSION} 
 
-
+WORKDIR /src/${PACKAGE_NAME}
 # Download patches
 RUN wget -q -O build_power.patch \
       https://github.com/ollama/ollama/commit/176e9097cf39ea78be4b384940a0e72bd32f3376.patch && \
@@ -62,13 +62,6 @@ RUN wget -q -O build_power.patch \
       https://github.com/ollama/ollama/commit/a86b8152e0f37c0c117ba7acd2a940e3ba5f07d9 && \
     wget -q -O enable_mma.patch \
       https://github.com/ollama/ollama/commit/7689aded24f76cb02e7bb1c34ad5110a135a9e4b.patch
-
-# Clone Ollama source and apply patches    
-RUN git clone ${PACKAGE_URL} && \
-    cd ${PACKAGE_NAME} && \
-    git checkout ${PACKAGE_VERSION} 
-
-WORKDIR /src/${PACKAGE_NAME}
     
 # Apply patches
 RUN patch -Np1 < build_power.patch && \
