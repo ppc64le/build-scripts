@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/prettier/prettier
 # Tested on     : UBI:9.5
 # Language      : JavaScript
-# Travis-Check  : True
+# Ci-Check      : True
 # Script License: Apache License Version 2.0
 # Maintainer    : Pratik Tonage <Pratik.Tonage@ibm.com>
 #
