@@ -1,5 +1,5 @@
 {
-  "maintainer": "PrernaKumbhar20",
+  "maintainer": "Simran-Sirsat",
   "package_name": "torchvision",
   "github_url": "https://github.com/pytorch/vision",
   "version": "v0.24.1",
@@ -12,6 +12,12 @@
   "wheel_build": true,
   "v0.22.0": {
     "build_script": "torchvision_ubi_9.3.sh"
+  },
+  "v0.22.1": {
+    "build_script": "torchvision_0.22.1_ubi_9.6.sh"
+  },
+  "v0.23.0": {
+    "build_script": "torchvision_0.23.0_ubi_9.6.sh"
   },
   "v*.*.*": {
     "build_script": "torchvision_0.24.1_ubi_9.6.sh"
