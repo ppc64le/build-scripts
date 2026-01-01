@@ -6,7 +6,7 @@
 # Version       : 7.17.20
 # Source repo   : https://github.com/elastic/elasticsearch.git
 # Tested on     : UBI:9.3
-# Travis-Check  : True
+# Ci-Check      : True
 # Language      : Java
 # Script License: Apache License Version 2.0
 # Maintainer    : Pratik Tonage <Pratik.Tonage@ibm.com>
