@@ -1,0 +1,16 @@
+{
+	"maintainer": "Simran-Sirsat",
+	"package_name": "google-pasta",
+	"github_url": "https://github.com/google/pasta.git",
+	"version": "0.2.0",
+	"default_branch": "master",
+	"build_script": "google-pasta_v0.2.0_ubi_9.3.sh",
+	"package_dir": "g/google-pasta",
+	"docker_build": false,
+	"validate_build_script": true,
+	"use_non_root_user": false,
+	"wheel_build" : true,
+	"*.*.*": {
+		"build_script": "google-pasta_v0.2.0_ubi_9.3.sh"
+	}
+}
