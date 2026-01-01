@@ -59,7 +59,7 @@ WORKDIR /src/${PACKAGE_NAME}
 RUN wget -q -O build_power.patch \
       https://github.com/ollama/ollama/commit/176e9097cf39ea78be4b384940a0e72bd32f3376.patch && \
     wget -q -O set_threads_env.patch \
-      https://github.com/ollama/ollama/commit/a86b8152e0f37c0c117ba7acd2a940e3ba5f07d9 && \
+      https://github.com/ollama/ollama/commit/a86b8152e0f37c0c117ba7acd2a940e3ba5f07d9.patch && \
     wget -q -O enable_mma.patch \
       https://github.com/ollama/ollama/commit/7689aded24f76cb02e7bb1c34ad5110a135a9e4b.patch
     
