@@ -48,12 +48,12 @@ index 66a1855d..4c33c0db 100755
  #   && yum install -y docker.io docker-buildx-plugin
  
 +RUN yum install -y wget && \
-+   dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
-+        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
++   dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-26.el9.noarch.rpm \
++        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-26.el9.noarch.rpm \
 +        https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
 +        dnf config-manager --set-enabled crb &&\
 +        dnf install gperf libarchive-devel numactl-devel readline-devel -y && \
-+        dnf remove -y centos-gpg-keys-9.0-24.el9.noarch centos-stream-repos-9.0-24.el9.noarch
++        dnf remove -y centos-gpg-keys-9.0-26.el9.noarch centos-stream-repos-9.0-26.el9.noarch
 +
  # libcurl4-openSSL-dev is needed for GCS
  # python3-dev is needed by Torchvision
@@ -194,12 +194,12 @@ index 66a1855d..4c33c0db 100755
      if target_platform() == "rhel":
          df += """
 +RUN yum update -y && yum install -y wget && \
-+   dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
-+        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
++   dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-26.el9.noarch.rpm \
++        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-26.el9.noarch.rpm \
 +        https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
 +        dnf config-manager --set-enabled crb &&\
 +        dnf install gperf numactl-devel readline-devel -y && \
-+        dnf remove -y centos-gpg-keys-9.0-24.el9.noarch centos-stream-repos-9.0-24.el9.noarch
++        dnf remove -y centos-gpg-keys-9.0-26.el9.noarch centos-stream-repos-9.0-26.el9.noarch
 +
 +
  # Common dependencies.
