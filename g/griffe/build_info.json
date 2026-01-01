@@ -1,0 +1,16 @@
+{
+   "maintainer": "kiranNukal",
+   "package_name": "griffe",
+   "github_url": "https://github.com/mkdocstrings/griffe",
+   "version": "1.7.2",
+   "default_branch": "main",
+   "build_script": "griffe_ubi_9.6.sh",
+   "package_dir": "g/griffe",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*": {
+     "build_script":"griffe_ubi_9.6.sh"
+  }
+}
