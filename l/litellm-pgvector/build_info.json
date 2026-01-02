@@ -10,7 +10,7 @@
     "validate_build_script": false,
     "wheel_build": false,
     "*": {
-        "dir": "python312",
+        "dir": "pgvector-litellm_python312_main",
         "base_docker_image":"registry.access.redhat.com/ubi9/python-312:latest",
         "base_docker_variant": "redhat"
     }
