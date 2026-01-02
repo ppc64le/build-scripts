@@ -1,0 +1,17 @@
+{
+    "maintainer": "purvanaik1",
+    "package_name": "litellm-pgvector",
+    "github_url": "https://github.com/BerriAI/litellm-pgvector",
+    "version": "0.0.1",
+    "default_branch": "main",
+    "build_script": "",
+    "package_dir": "l/litellm-pgvector",
+    "docker_cmd": "docker build -t ${package_name}:${PACKAGE_VERSION} ${dir}",
+    "validate_build_script": false,
+    "wheel_build": false,
+    "*": {
+        "dir": "python312",
+        "base_docker_image":"registry.access.redhat.com/ubi9/python-312:latest",
+        "base_docker_variant": "redhat"
+    }
+}

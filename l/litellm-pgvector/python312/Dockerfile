@@ -1,6 +1,9 @@
 # --- STAGE 1: Rust Builder (Prisma Engines) ---
 FROM registry.access.redhat.com/ubi9/python-312:latest AS prisma-builder
 
+###Required Labels
+LABEL name="litellm" maintainer="purva.naik1@ibm.com" 
+
 USER root
 
 RUN dnf install -y \
