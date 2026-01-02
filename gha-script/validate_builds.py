@@ -62,7 +62,7 @@ def trigger_basic_validation_checks(file_name):
 
         "# Maintainer": "maintainer",
         "# Language": "package_type",
-        "# Travis-Check": "travis_check"
+        "# Ci-Check": "ci_check"
     }
     matched_keys = []
 
@@ -223,8 +223,7 @@ def validate_build_info_file(file_name):
         print(f"Failed to load build_info file at {file_name} !")
         raise e
 
-
-def trigger_build_validation_travis(pr_number):
+def trigger_build_validation_ci(pr_number):
     pull_request_file_url = "https://api.github.com/repos/{}/{}/pulls/{}/files".format(
         GITHUB_BUILD_SCRIPT_BASE_OWNER,
         GITHUB_BUILD_SCRIPT_BASE_REPO,
@@ -252,14 +251,14 @@ def trigger_build_validation_travis(pr_number):
             # perform basic validation check
             trigger_basic_validation_checks(file_name)
 
-            # check Travis-check from package header  
-            travis_check = package_data['travis_check'].lower()
-            if travis_check == "true":
+            #check ci-check from package header  
+            ci_check=package_data['ci_check'].lower()
+            if ci_check=="true":
 
                 # Build/test script files
                 trigger_script_validation_checks(file_name)
             else:
-                print("Skipping Build script validation for {} as Travis-Check flag is set to False".format(file_name))
+                print("Skipping Build script validation for {} as CI-Check flag is set to False".format(file_name))
             # Keep track of validated files.
             validated_file_list.append(file_name)
         elif file_name.lower().endswith('build_info.json') and status != "removed":
@@ -279,4 +278,4 @@ def trigger_build_validation_travis(pr_number):
 
 if __name__ == "__main__":
 
-    trigger_build_validation_travis(sys.argv[1])
+    trigger_build_validation_ci(sys.argv[1])
