@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : vert.x
-# Version       : 4.3.7
+# Version       : 4.3.8
 # Source repo   : https://github.com/eclipse-vertx/vert.x
 # Tested on     : UBI 8.6
 # Language      : JAVA
@@ -19,12 +19,12 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=vert.x
-PACKAGE_VERSION=${1:-4.3.7}
+PACKAGE_VERSION=${1:-4.3.8}
 PACKAGE_URL=https://github.com/eclipse-vertx/vert.x.git
 
 yum update -y
 yum install git wget  gcc gcc-c++ openssl  -y
-dnf install java-1.8.0-openjdk-devel -y
+dnf install java-17-openjdk-devel -y
 
 dnf -y install maven
 
@@ -38,13 +38,13 @@ cd $PACKAGE_NAME
 
 git checkout $PACKAGE_VERSION
 
-if ! mvn package; then
+if ! mvn package | tee build-quarkus.log; then
     echo "------------------$PACKAGE_NAME:build_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     exit 1
 fi
 
-if ! mvn test; then
+if ! mvn test | tee -a build-quarkus.log; then
     echo "------------------$PACKAGE_NAME:build_fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     exit 2
