@@ -1,76 +1,75 @@
 # --- STAGE 1: Rust Builder (Prisma Engines) ---
-FROM rust:1.81-slim AS prisma-builder
+FROM registry.access.redhat.com/ubi9/python-312:latest AS prisma-builder
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    pkg-config protobuf-compiler \
-    libssl-dev \
+USER root
+
+RUN dnf install -y \
+    gcc gcc-c++ \
+    make \
+    pkg-config \
+    openssl-devel \
     clang \
-    git && rm -rf /var/lib/apt/lists/*
+    git \
+    unzip && \
+    dnf clean all
+
+RUN curl -LO https://github.com/protocolbuffers/protobuf/releases/download/v25.1/protoc-25.1-linux-ppcle_64.zip && \
+    unzip protoc-25.1-linux-ppcle_64.zip -d /usr/local && \
+    chmod +x /usr/local/bin/protoc && \
+    rm protoc-25.1-linux-ppcle_64.zip
+
+ENV PROTOC=/usr/local/bin/protoc
+
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
 
 WORKDIR /app
 RUN git clone --depth 1 --branch 5.17.0 https://github.com/prisma/prisma-engines.git .
 
-RUN echo '\
-[patch.crates-io]\n\
-ring = { git = "https://github.com/ibm/ring.git", branch = "ppc-0.16.20" }\n\
-' >> Cargo.toml
+RUN echo -e '\n[patch.crates-io]\nring = { git = "https://github.com/ibm/ring.git", branch = "ppc-0.16.20" }' >> Cargo.toml
 
 ENV CC=clang
-RUN cargo build --release
-
+RUN . "$HOME/.cargo/env" && cargo build --release
 
 # --- STAGE 2: Python Builder (Dependencies) ---
-FROM python:3.12-slim AS python-builder
+FROM registry.access.redhat.com/ubi9/python-312:latest AS python-builder
 
 WORKDIR /app
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+USER root
+#ENV PYTHONDONTWRITEBYTECODE=1
+#ENV PYTHONUNBUFFERED=1
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential git curl libpq-dev && rm -rf /var/lib/apt/lists/*
-
-# Clone app and install dependencies to a local folder
+RUN dnf install -y gcc git  postgresql-devel libatomic && dnf clean all
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 RUN git clone https://github.com/BerriAI/litellm-pgvector.git .
 RUN sed -i 's/vector(1536)/vector/g' prisma/schema.prisma
-
-# Install python packages to a prefix to easily copy them later
-RUN pip install --no-cache-dir --prefix=/install \
-    -r requirements.txt \
+RUN pip install --no-cache-dir -r requirements.txt \
     --prefer-binary \
     --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux
-RUN pip install --no-cache-dir --prefix=/install --upgrade prisma
-
+RUN pip install --no-cache-dir --upgrade prisma
 
 # --- STAGE 3: Runtime ---
-FROM python:3.12-slim
-
+FROM registry.access.redhat.com/ubi9/python-312:latest
+USER root
 WORKDIR /app
 
-# Install only runtime system libraries
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libpq5 \
-    postgresql-client libatomic1 \
-    curl && rm -rf /var/lib/apt/lists/*
+RUN dnf install -y postgresql-libs libatomic && dnf clean all
 
-# Copy Python packages from builder
-COPY --from=python-builder /install /usr/local
-# Copy Application code
+COPY --from=python-builder /opt/venv /opt/venv
 COPY --from=python-builder /app /app
 
-# Copy Prisma engines from Rust builder
 RUN mkdir -p /usr/local/lib/prisma
-COPY --from=prisma-builder /app/target/release/*-engine /usr/local/lib/prisma/
+COPY --from=prisma-builder /app/target/release/query-engine /usr/local/lib/prisma/
+COPY --from=prisma-builder /app/target/release/schema-engine /usr/local/lib/prisma/
 RUN chmod +x /usr/local/lib/prisma/*
 
-# Environment Variables
-ENV PYTHONPATH=/app
 ENV PRISMA_QUERY_ENGINE_BINARY=/usr/local/lib/prisma/query-engine
 ENV PRISMA_CLI_QUERY_ENGINE_TYPE=binary
-
-# Generate Prisma client in the final runtime
-RUN prisma generate
 ENV PRISMA_SCHEMA_ENGINE_BINARY=/usr/local/lib/prisma/schema-engine
+ENV PYTHONPATH=/app
+ENV PATH="/opt/venv/bin:${PATH}"
+RUN prisma generate
+
 EXPOSE 8000
-
 CMD sh -c "prisma db push && uvicorn main:app --host 0.0.0.0 --port 8000"
-
