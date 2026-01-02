@@ -2,7 +2,7 @@
 FROM registry.access.redhat.com/ubi9/python-312:latest AS prisma-builder
 
 ###Required Labels
-LABEL name="litellm" maintainer="purva.naik1@ibm.com" 
+LABEL name="litellm-pgvector" maintainer="purva.naik1@ibm.com" 
 
 USER root
 
