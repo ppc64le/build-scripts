@@ -1,0 +1,32 @@
+diff --git a/build.gradle b/build.gradle
+index e5650cc..7ea8ab4 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -259,9 +259,11 @@ def knnJarDirectory = "$buildDir/dependencies/opensearch-knn"
+ dependencies {
+     api "org.opensearch:opensearch:${opensearch_version}"
+     implementation group: 'org.opensearch.plugin', name:'mapper-extras-client', version: "${opensearch_version}"
+-    zipArchive group: 'org.opensearch.plugin', name:'opensearch-job-scheduler', version: "${opensearch_build}"
++    //zipArchive group: 'org.opensearch.plugin', name:'opensearch-job-scheduler', version: "${opensearch_build}"
++    zipArchive fileTree(dir: "$buildDir/dependencies/opensearch-job-scheduler", include: ["*.zip"])
+     zipArchive group: 'org.opensearch.plugin', name:'opensearch-knn', version: "${opensearch_build}"
+-    zipArchive group: 'org.opensearch.plugin', name:'opensearch-ml-plugin', version: "${opensearch_build}"
++    //zipArchive group: 'org.opensearch.plugin', name:'opensearch-ml-plugin', version: "${opensearch_build}"
++    zipArchive fileTree(dir: "$buildDir/dependencies/opensearch-ml-plugin", include: ["*.zip"])
+     secureIntegTestPluginArchive group: 'org.opensearch.plugin', name:'opensearch-security', version: "${opensearch_build}"
+     compileOnly fileTree(dir: knnJarDirectory, include: ["opensearch-knn-${opensearch_build}.jar", "remote-index-build-client-${opensearch_build}.jar"])
+     compileOnly (group: 'com.google.guava', name: 'guava', version:'32.1.3-jre') {
+@@ -430,6 +432,12 @@ testClusters.integTest {
+     // to ml-commons memory circuit breaker exception
+     jvmArgs("-Xms1g", "-Xmx2g")
+ }
++testClusters.all {
++    environment "LD_LIBRARY_PATH", System.getProperty("org.opensearch.djl.pytorch.path")
++}
++tasks.withType(Test).configureEach {
++    environment "LD_LIBRARY_PATH", System.getProperty("org.opensearch.djl.pytorch.path")
++}
+ 
+ // Remote Integration Tests
+ task integTestRemote(type: RestIntegTestTask) {
+
