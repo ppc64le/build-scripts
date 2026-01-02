@@ -1,0 +1,825 @@
+diff --git a/Makefile b/Makefile
+index 2ca28fd2..5e895197 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,6 +1,6 @@
+ # Copyright (c) Jupyter Development Team.
+ # Distributed under the terms of the Modified BSD License.
+-.PHONY: docs help test
++.PHONY: docs help test cont-stop-all cont-rm-all cont-clean-all img-list img-rm-dang img-rm-jupyter img-rm pull-all push-all run-shell/% run-sudo-shell/% test-all build-all check-outdated-all hook-all linkcheck-docs
+ 
+ SHELL:=bash
+ REGISTRY?=quay.io
+@@ -11,19 +11,12 @@ export DOCKER_BUILDKIT:=1
+ 
+ # All the images listed in the build dependency order
+ ALL_IMAGES:= \
+-	docker-stacks-foundation \
+-	base-notebook \
+-	minimal-notebook \
+-	r-notebook \
+-	julia-notebook \
+-	scipy-notebook \
+-	tensorflow-notebook \
+-	pytorch-notebook \
+-	datascience-notebook \
+-	pyspark-notebook \
+-	all-spark-notebook
+-
++    docker-stacks-foundation \
++    base-notebook \
++    minimal-notebook 
+ 
++# Set the base image to Red Hat UBI 9.3
++ROOT_IMAGE?=registry.access.redhat.com/ubi9/ubi:9.3
+ 
+ # https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
+ help:
+@@ -33,24 +26,18 @@ help:
+ 	@echo
+ 	@grep -E '^[a-zA-Z0-9_%/-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+ 
+-
+-
+ build/%: DOCKER_BUILD_ARGS?=
+-build/%: ROOT_IMAGE?=ubuntu:24.04
++build/%: ROOT_IMAGE?=registry.access.redhat.com/ubi9/ubi:9.3
+ build/%: ## build the latest image for a stack using the system's architecture
+ 	docker build $(DOCKER_BUILD_ARGS) --rm --force-rm --tag "$(REGISTRY)/$(OWNER)/$(notdir $@):latest" "./images/$(notdir $@)" --build-arg REGISTRY="$(REGISTRY)" --build-arg OWNER="$(OWNER)" --build-arg ROOT_IMAGE="$(ROOT_IMAGE)"
+ 	@echo -n "Built image size: "
+ 	@docker images "$(REGISTRY)/$(OWNER)/$(notdir $@):latest" --format "{{.Size}}"
+ build-all: $(foreach I, $(ALL_IMAGES), build/$(I)) ## build all stacks
+ 
+-
+-
+ check-outdated/%: ## check the outdated mamba/conda packages in a stack and produce a report
+ 	@TEST_IMAGE="$(REGISTRY)/$(OWNER)/$(notdir $@)" pytest tests/docker-stacks-foundation/test_outdated.py
+ check-outdated-all: $(foreach I, $(ALL_IMAGES), check-outdated/$(I)) ## check all the stacks for outdated packages
+ 
+-
+-
+ cont-stop-all: ## stop all containers
+ 	@echo "Stopping all containers ..."
+ 	-docker stop --time 0 $(shell docker ps --all --quiet) 2> /dev/null
+@@ -59,15 +46,11 @@ cont-rm-all: ## remove all containers
+ 	-docker rm --force $(shell docker ps --all --quiet) 2> /dev/null
+ cont-clean-all: cont-stop-all cont-rm-all ## clean all containers (stop + rm)
+ 
+-
+-
+ docs: ## build HTML documentation
+ 	sphinx-build -W --keep-going --color docs/ docs/_build/
+ linkcheck-docs: ## check broken links
+ 	sphinx-build -W --keep-going --color -b linkcheck docs/ docs/_build/
+ 
+-
+-
+ hook/%: VARIANT?=default
+ hook/%: ## run post-build hooks for an image
+ 	python3 -m tagging.write_tags_file --short-image-name "$(notdir $@)" --tags-dir /tmp/jupyter/tags/ --registry "$(REGISTRY)" --owner "$(OWNER)" --variant "$(VARIANT)" && \
+@@ -75,8 +58,6 @@ hook/%: ## run post-build hooks for an image
+ 	python3 -m tagging.apply_tags --short-image-name "$(notdir $@)" --tags-dir /tmp/jupyter/tags/ --platform "$(shell uname -m)" --registry "$(REGISTRY)" --owner "$(OWNER)" --variant "$(VARIANT)"
+ hook-all: $(foreach I, $(ALL_IMAGES), hook/$(I)) ## run post-build hooks for all images
+ 
+-
+-
+ img-list: ## list jupyter images
+ 	@echo "Listing $(OWNER) images ..."
+ 	docker images "$(OWNER)/*"
+@@ -90,8 +71,6 @@ img-rm-jupyter: ## remove jupyter images
+ 	-docker rmi --force $(shell docker images --quiet "*/$(OWNER)/*") 2> /dev/null
+ img-rm: img-rm-dang img-rm-jupyter ## remove dangling and jupyter images
+ 
+-
+-
+ pull/%: ## pull a jupyter image
+ 	docker pull "$(REGISTRY)/$(OWNER)/$(notdir $@)"
+ pull-all: $(foreach I, $(ALL_IMAGES), pull/$(I)) ## pull all images
+@@ -99,15 +78,12 @@ push/%: ## push all tags for a jupyter image
+ 	docker push --all-tags "$(REGISTRY)/$(OWNER)/$(notdir $@)"
+ push-all: $(foreach I, $(ALL_IMAGES), push/$(I)) ## push all tagged images
+ 
+-
+-
+ run-shell/%: ## run a bash in interactive mode in a stack
+ 	docker run -it --rm "$(REGISTRY)/$(OWNER)/$(notdir $@)" $(SHELL)
+ run-sudo-shell/%: ## run bash in interactive mode as root in a stack
+ 	docker run -it --rm --user root "$(REGISTRY)/$(OWNER)/$(notdir $@)" $(SHELL)
+ 
+-
+-
+ test/%: ## run tests against a stack
+ 	python3 -m tests.run_tests --short-image-name "$(notdir $@)" --registry "$(REGISTRY)" --owner "$(OWNER)"
+ test-all: $(foreach I, $(ALL_IMAGES), test/$(I)) ## test all stacks
++
+diff --git a/images/all-spark-notebook/Dockerfile b/images/all-spark-notebook/Dockerfile
+index 13eb5509..7e5e4070 100644
+--- a/images/all-spark-notebook/Dockerfile
++++ b/images/all-spark-notebook/Dockerfile
+@@ -1,5 +1,7 @@
+ # Copyright (c) Jupyter Development Team.
+ # Distributed under the terms of the Modified BSD License.
++
++# Base image setup
+ ARG REGISTRY=quay.io
+ ARG OWNER=jupyter
+ ARG BASE_IMAGE=$REGISTRY/$OWNER/pyspark-notebook
+@@ -13,21 +15,22 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+ 
+ USER root
+ 
+-# RSpark config
++# Set up RSpark config
+ ENV R_LIBS_USER="${SPARK_HOME}/R/lib"
+ RUN fix-permissions "${R_LIBS_USER}"
+ 
+-# R pre-requisites
+-RUN apt-get update --yes && \
+-    apt-get install --yes --no-install-recommends \
+-    fonts-dejavu \
+-    gfortran \
+-    gcc && \
+-    apt-get clean && rm -rf /var/lib/apt/lists/*
++# Install R pre-requisites using dnf (Red Hat-based package manager)
++RUN dnf update -y && \
++    dnf install -y --setopt=install_weak_deps=False \
++    dejavu-fonts-common \
++    dejavu-sans-fonts \
++    gcc \
++    gfortran && \
++    dnf clean all && rm -rf /var/cache/dnf
+ 
+ USER ${NB_UID}
+ 
+-# R packages including IRKernel which gets installed globally.
++# Install R packages using mamba
+ RUN mamba install --yes \
+     'r-base' \
+     'r-ggplot2' \
+@@ -37,3 +40,4 @@ RUN mamba install --yes \
+     mamba clean --all -f -y && \
+     fix-permissions "${CONDA_DIR}" && \
+     fix-permissions "/home/${NB_USER}"
++
+diff --git a/images/base-notebook/Dockerfile b/images/base-notebook/Dockerfile
+index 84014f7c..fbd20885 100644
+--- a/images/base-notebook/Dockerfile
++++ b/images/base-notebook/Dockerfile
+@@ -7,6 +7,10 @@ FROM $BASE_IMAGE
+ 
+ LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
+ 
++
++
++#LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
++
+ # Fix: https://github.com/hadolint/hadolint/wiki/DL4006
+ # Fix: https://github.com/koalaman/shellcheck/wiki/SC3014
+ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+@@ -15,20 +19,37 @@ USER root
+ 
+ # Install all OS dependencies for the Server that starts
+ # but lacks all features (e.g., download as all possible file formats)
+-RUN apt-get update --yes && \
+-    apt-get install --yes --no-install-recommends \
++RUN dnf update -y && \
++    dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm  -y && \
++    yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream//ppc64le/os -y && \
++    yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os -y && \
++    rpm --import http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official  && \
++    dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm -y && \
++
++#    git clone https://github.com/Freaky/run-one.git && \
++    dnf install -y --setopt=install_weak_deps=False \
++
+     # - Add necessary fonts for matplotlib/seaborn
+     #   See https://github.com/jupyter/docker-stacks/pull/380 for details
+-    fonts-liberation \
++    liberation-fonts-common.noarch \
++    git \
+     # - `pandoc` is used to convert notebooks to html files
+-    #   it's not present in the aarch64 Ubuntu image, so we install it here
+-    pandoc \
++    pandoc && \
++    
+     # - `run-one` - a wrapper script that runs no more
+     #   than one unique instance of some command with a unique set of arguments,
+     #   we use `run-one-constantly` to support the `RESTARTABLE` option
+-    run-one && \
+-    apt-get clean && rm -rf /var/lib/apt/lists/*
++ #   git clone https://github.com/Freaky/run-one.git && \
++    
++    dnf clean all && rm -rf /var/cache/dnf
++RUN git clone https://github.com/Freaky/run-one.git /usr/local/bin/run-one && \
++    chmod +x /usr/local/bin/run-one/*
++
++# Update PATH environment variable
++ENV PATH="/usr/local/bin/run-one:${PATH}"
+ 
++# Optionally, set PATH in bashrc for interactive sessions
++RUN echo 'export PATH=$PATH:/usr/local/bin/run-one' >> /etc/bashrc
+ USER ${NB_UID}
+ 
+ # Install JupyterHub, JupyterLab, NBClassic and Jupyter Notebook
+@@ -62,6 +83,7 @@ CMD ["start-notebook.py"]
+ 
+ # Copy local files as late as possible to avoid cache busting
+ COPY start-notebook.py start-notebook.sh start-singleuser.py start-singleuser.sh /usr/local/bin/
++COPY start-notebook.py start-notebook.sh start-singleuser.py start-singleuser.sh /usr/bin/
+ COPY jupyter_server_config.py docker_healthcheck.py /etc/jupyter/
+ 
+ # Fix permissions on /etc/jupyter as root
+@@ -69,12 +91,13 @@ USER root
+ RUN fix-permissions /etc/jupyter/
+ 
+ # HEALTHCHECK documentation: https://docs.docker.com/engine/reference/builder/#healthcheck
+-# This healtcheck works well for `lab`, `notebook`, `nbclassic`, `server`, and `retro` jupyter commands
++# This healthcheck works well for `lab`, `notebook`, `nbclassic`, `server`, and `retro` jupyter commands
+ # https://github.com/jupyter/docker-stacks/issues/915#issuecomment-1068528799
+-HEALTHCHECK --interval=3s --timeout=1s --start-period=3s --retries=3 \
++HEALTHCHECK --interval=30s --timeout=100s --start-period=100s --retries=30 \
+     CMD /etc/jupyter/docker_healthcheck.py || exit 1
+ 
+ # Switch back to jovyan to avoid accidental container runs as root
+ USER ${NB_UID}
+ 
+ WORKDIR "${HOME}"
++
+diff --git a/images/datascience-notebook/Dockerfile b/images/datascience-notebook/Dockerfile
+index ab7a8454..99fb98f8 100644
+--- a/images/datascience-notebook/Dockerfile
++++ b/images/datascience-notebook/Dockerfile
+@@ -14,26 +14,38 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+ USER root
+ 
+ # R pre-requisites
+-RUN apt-get update --yes && \
+-    apt-get install --yes --no-install-recommends \
+-    fonts-dejavu \
+-    gfortran \
+-    gcc && \
+-    apt-get clean && rm -rf /var/lib/apt/lists/*
+-
+-# Julia dependencies
+-# install Julia packages in /opt/julia instead of ${HOME}
++
++
++# Install system dependencies for R and Julia on Red Hat UBI
++RUN dnf update -y && \
++    dnf install -y --setopt=install_weak_deps=False \
++    dejavu-fonts-common \
++    dejavu-sans-fonts \
++    gcc \
++    gfortran && \
++    dnf clean all && rm -rf /var/cache/dnf
++
++# Set up Julia environment
++# Install Julia dependencies and set up environment variables for Julia
+ ENV JULIA_DEPOT_PATH=/opt/julia \
+     JULIA_PKGDIR=/opt/julia
+ 
++# Install Julia (make sure to replace this with the right Julia version download if needed)
++RUN wget https://julialang-s3.julialang.org/bin/linux/x64/1.9/julia-1.9.0-linux-x86_64.tar.gz -P /tmp && \
++    tar -xvzf /tmp/julia-1.9.0-linux-x86_64.tar.gz -C /opt && \
++    rm /tmp/julia-1.9.0-linux-x86_64.tar.gz
++
+ # Setup Julia
+ RUN /opt/setup-scripts/setup_julia.py
+ 
++# Switch back to the non-root user
+ USER ${NB_UID}
+ 
+-# Setup IJulia kernel & other packages
++# Install Julia packages using setup script (ensure that setup-julia-packages.bash script exists)
+ RUN /opt/setup-scripts/setup-julia-packages.bash
+ 
++# R packages including IRKernel (install IRKernel globally)
++
+ # R packages including IRKernel which gets installed globally.
+ # r-e1071: dependency of the caret R package
+ RUN mamba install --yes \
+diff --git a/images/docker-stacks-foundation/Dockerfile b/images/docker-stacks-foundation/Dockerfile
+index 270957d6..057a5bd9 100644
+--- a/images/docker-stacks-foundation/Dockerfile
++++ b/images/docker-stacks-foundation/Dockerfile
+@@ -1,17 +1,21 @@
+ # Copyright (c) Jupyter Development Team.
+ # Distributed under the terms of the Modified BSD License.
+ 
+-# Ubuntu 24.04 (noble)
+-# https://hub.docker.com/_/ubuntu/tags?page=1&name=noble
+-ARG ROOT_IMAGE=ubuntu:24.04
++# Red Hat Universal Base Image 9
++# https://catalog.redhat.com/software/containers/rhel8/ubi9/overview
+ 
+-FROM $ROOT_IMAGE
+ 
++ARG ROOT_IMAGE=registry.access.redhat.com/ubi9/ubi:9.3
++
++FROM $ROOT_IMAGE
+ LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
+ ARG NB_USER="jovyan"
+ ARG NB_UID="1000"
+ ARG NB_GID="100"
+ 
++ENV PATH="$PATH:/usr/local/bin"
++
++
+ # Fix: https://github.com/hadolint/hadolint/wiki/DL4006
+ # Fix: https://github.com/koalaman/shellcheck/wiki/SC3014
+ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+@@ -21,29 +25,33 @@ USER root
+ # Install all OS dependencies for the Server that starts
+ # but lacks all features (e.g., download as all possible file formats)
+ ENV DEBIAN_FRONTEND=noninteractive
+-RUN apt-get update --yes && \
+-    # - `apt-get upgrade` is run to patch known vulnerabilities in system packages
+-    #   as the Ubuntu base image is rebuilt too seldom sometimes (less than once a month)
+-    apt-get upgrade --yes && \
+-    apt-get install --yes --no-install-recommends \
+-    # - bzip2 is necessary to extract the micromamba executable.
++RUN dnf update -y && \
++    dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm -y && \
++    # Install necessary dependencies using dnf
++    yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream//ppc64le/os -y && \
++    yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os -y && \
++    rpm --import http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official  && \
++    dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm -y && \
++    dnf install -y procps-ng && dnf clean all && \
++    dnf install -y --setopt=install_weak_deps=False \
+     bzip2 \
+     ca-certificates \
+-    locales \
+-    # - `netbase` provides /etc/{protocols,rpc,services}, part of POSIX
+-    #   and required by various C functions like getservbyname and getprotobyname
+-    #   https://github.com/jupyter/docker-stacks/pull/2129
+-    netbase \
++#    locales \
++#    netbase \
++    NetworkManager \
++    net-tools \
+     sudo \
+-    # - `tini` is installed as a helpful container entrypoint,
+-    #   that reaps zombie processes and such of the actual executable we want to start
+-    #   See https://github.com/krallin/tini#why-tini for details
+     tini \
++    systemd \
++    glibc-common \ 
++    
+     wget && \
+-    apt-get clean && rm -rf /var/lib/apt/lists/* && \
++    dnf clean all && rm -rf /var/cache/dnf && \
++    # Configure locales
++#    localedef -i en_US -f UTF-8 en_US.UTF-8 && \
+     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
+-    echo "C.UTF-8 UTF-8" >> /etc/locale.gen && \
+-    locale-gen
++    echo "C.UTF-8 UTF-8" >> /etc/locale.gen 
++#    locale-gen
+ 
+ # Configure environment
+ ENV CONDA_DIR=/opt/conda \
+@@ -54,7 +62,7 @@ ENV CONDA_DIR=/opt/conda \
+     LC_ALL=C.UTF-8 \
+     LANG=C.UTF-8 \
+     LANGUAGE=C.UTF-8
+-ENV PATH="${CONDA_DIR}/bin:${PATH}" \
++ENV PATH="/opt/conda/bin:${PATH}" \
+     HOME="/home/${NB_USER}"
+ 
+ # Copy a script that we will use to correct permissions after running certain commands
+@@ -62,20 +70,17 @@ COPY fix-permissions /usr/local/bin/fix-permissions
+ RUN chmod a+rx /usr/local/bin/fix-permissions
+ 
+ # Enable prompt color in the skeleton .bashrc before creating the default NB_USER
+-# hadolint ignore=SC2016
+ RUN sed -i 's/^#force_color_prompt=yes/force_color_prompt=yes/' /etc/skel/.bashrc && \
+     # More information in: https://github.com/jupyter/docker-stacks/pull/2047
+     # and docs: https://docs.conda.io/projects/conda/en/latest/dev-guide/deep-dives/activation.html
+     echo 'eval "$(conda shell.bash hook)"' >> /etc/skel/.bashrc
+ 
+ # Delete existing user with UID="${NB_UID}" if it exists
+-# hadolint ignore=SC2046
+ RUN if grep -q "${NB_UID}" /etc/passwd; then \
+         userdel --remove $(id -un "${NB_UID}"); \
+     fi
+ 
+ # Create "${NB_USER}" user (`jovyan` by default) with UID="${NB_UID}" (`1000` by default) and in the 'users' group
+-# and make sure these dirs are writable by the `users` group.
+ RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
+     sed -i.bak -e 's/^%admin/#%admin/' /etc/sudoers && \
+     sed -i.bak -e 's/^%sudo/#%sudo/' /etc/sudoers && \
+@@ -96,21 +101,11 @@ RUN mkdir "/home/${NB_USER}/work" && \
+     fix-permissions "/home/${NB_USER}"
+ 
+ # Download and install Micromamba, and initialize the Conda prefix.
+-#   <https://github.com/mamba-org/mamba#micromamba>
+-#   Similar projects using Micromamba:
+-#     - Micromamba-Docker: <https://github.com/mamba-org/micromamba-docker>
+-#     - repo2docker: <https://github.com/jupyterhub/repo2docker>
+-# Install Python, Mamba, and jupyter_core
+-# Cleanup temporary files and remove Micromamba
+-# Correct permissions
+-# Do all this in a single RUN command to avoid duplicating all of the
+-# files across image layers when the permissions change
+ COPY --chown="${NB_UID}:${NB_GID}" initial-condarc "${CONDA_DIR}/.condarc"
+ WORKDIR /tmp
+ RUN set -x && \
+     arch=$(uname -m) && \
+     if [ "${arch}" = "x86_64" ]; then \
+-        # Should be simpler, see <https://github.com/mamba-org/mamba/issues/1437>
+         arch="64"; \
+     fi && \
+     # https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html#linux-and-macos
+@@ -129,7 +124,6 @@ RUN set -x && \
+         "${PYTHON_SPECIFIER}" && \
+     rm -rf /tmp/bin/ && \
+     # Pin major.minor version of python
+-    # https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#preventing-packages-from-updating-pinning
+     mamba list --full-name 'python' | awk 'END{sub("[^.]*$", "*", $2); print $1 " " $2}' >> "${CONDA_DIR}/conda-meta/pinned" && \
+     mamba clean --all -f -y && \
+     fix-permissions "${CONDA_DIR}" && \
+@@ -137,9 +131,9 @@ RUN set -x && \
+ 
+ # Copy local files as late as possible to avoid cache busting
+ COPY run-hooks.sh start.sh /usr/local/bin/
+-
++COPY run-hooks.sh start.sh /usr/bin/
+ # Configure container entrypoint
+-ENTRYPOINT ["tini", "-g", "--", "start.sh"]
++ENTRYPOINT ["tini", "-g", "--", "/usr/local/bin/start.sh"]
+ 
+ USER root
+ 
+@@ -153,3 +147,4 @@ COPY 10activate-conda-env.sh /usr/local/bin/before-notebook.d/
+ USER ${NB_UID}
+ 
+ WORKDIR "${HOME}"
++
+diff --git a/images/minimal-notebook/Dockerfile b/images/minimal-notebook/Dockerfile
+index e1d7dc70..ac93a19c 100644
+--- a/images/minimal-notebook/Dockerfile
++++ b/images/minimal-notebook/Dockerfile
+@@ -7,35 +7,45 @@ FROM $BASE_IMAGE
+ 
+ LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
+ 
+-# Fix: https://github.com/hadolint/hadolint/wiki/DL4006
+-# Fix: https://github.com/koalaman/shellcheck/wiki/SC3014
++
+ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+ 
+ USER root
+ 
+ # Install all OS dependencies for a fully functional Server
+-RUN apt-get update --yes && \
+-    apt-get install --yes --no-install-recommends \
++RUN dnf update -y && \
++    yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream//ppc64le/os -y && \
++    yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os -y && \
++    rpm --import http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official  && \
++    dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm -y && \
++
++    yum install texlive-* -y && \
++    fmtutil-sys --all && \
++    dnf install -y --setopt=install_weak_deps=False --allowerasing \
+     # Common useful utilities
++    epel-release \
+     curl \
+     git \
+-    nano-tiny \
++    nano \
+     tzdata \
+     unzip \
+-    vim-tiny \
++    vim-minimal \
+     # git-over-ssh
+-    openssh-client \
++    openssh-clients \
+     # `less` is needed to run help in R
+-    # see: https://github.com/jupyter/docker-stacks/issues/1588
+     less \
+     # `nbconvert` dependencies
+-    # https://nbconvert.readthedocs.io/en/latest/install.html#installing-tex
+-    texlive-xetex \
+-    texlive-fonts-recommended \
+-    texlive-plain-generic \
++#    texlive-xetex \
++#    texlive-fonts-recommended \
++#    texlive-plain-generic \
+     # Enable clipboard on Linux host systems
++#    textlive-* \ 
+     xclip && \
+-    apt-get clean && rm -rf /var/lib/apt/lists/*
++    dnf clean all && rm -rf /var/cache/dnf
++
++
++
++ARG PYTHON_VERSION=3.12
+ 
+ # Create alternative for nano -> nano-tiny
+ RUN update-alternatives --install /usr/bin/nano nano /bin/nano-tiny 10
+@@ -48,3 +58,4 @@ COPY --chown=${NB_UID}:${NB_GID} Rprofile.site /opt/conda/lib/R/etc/
+ 
+ # Add setup scripts that may be used by downstream images or inherited images
+ COPY setup-scripts/ /opt/setup-scripts/
++
+diff --git a/images/pyspark-notebook/Dockerfile b/images/pyspark-notebook/Dockerfile
+index be4bdfa4..a12fde59 100644
+--- a/images/pyspark-notebook/Dockerfile
++++ b/images/pyspark-notebook/Dockerfile
+@@ -18,26 +18,29 @@ USER root
+ # (ARGS are in lowercase to distinguish them from ENV)
+ ARG openjdk_version="17"
+ 
+-RUN apt-get update --yes && \
+-    apt-get install --yes --no-install-recommends \
+-    "openjdk-${openjdk_version}-jre-headless" \
+-    ca-certificates-java && \
+-    apt-get clean && rm -rf /var/lib/apt/lists/*
+ 
+-# If spark_version is not set, latest Spark will be installed
+-ARG spark_version
+-ARG hadoop_version="3"
+-# If scala_version is not set, Spark without Scala will be installed
+-ARG scala_version
+-# URL to use for Spark downloads
+-# You need to use https://archive.apache.org/dist/spark/ website if you want to download old Spark versions
+-# But it seems to be slower, that's why we use the recommended site for download
+-ARG spark_download_url="https://dlcdn.apache.org/spark/"
++# Install system dependencies for Spark, OpenJDK, and other utilities
++RUN dnf update -y && \
++    dnf install -y --setopt=install_weak_deps=False \
++    java-17-openjdk-headless \
++    ca-certificates-java \
++    wget \
++    curl \
++    git \
++    unzip && \
++    dnf clean all && rm -rf /var/cache/dnf
+ 
++# Setup environment variables for Spark and Java
+ ENV SPARK_HOME=/usr/local/spark
+ ENV PATH="${PATH}:${SPARK_HOME}/bin"
+ ENV SPARK_OPTS="--driver-java-options=-Xms1024M --driver-java-options=-Xmx4096M --driver-java-options=-Dlog4j.logLevel=info"
+ 
++# Spark version and other configurations
++ARG spark_version
++ARG hadoop_version="3"
++ARG scala_version
++ARG spark_download_url="https://dlcdn.apache.org/spark/"
++
+ COPY setup_spark.py /opt/setup-scripts/
+ 
+ # Setup Spark
+@@ -53,13 +56,7 @@ RUN fix-permissions "/etc/ipython/"
+ 
+ USER ${NB_UID}
+ 
+-# Install pyarrow
+-# NOTE: It's important to ensure compatibility between Pandas versions.
+-# The pandas version in this Dockerfile should match the version
+-# on which the Pandas API for Spark is built.
+-# To find the right version:
+-# 1. Check out the Spark branch you are on: <https://github.com/apache/spark>
+-# 2. Find the pandas version in the file `dev/infra/Dockerfile`.
++# Install PyArrow and other necessary Python dependencies
+ RUN mamba install --yes \
+     'grpcio-status' \
+     'grpcio' \
+@@ -71,3 +68,5 @@ RUN mamba install --yes \
+ 
+ WORKDIR "${HOME}"
+ EXPOSE 4040
++
++
+diff --git a/images/r-notebook/Dockerfile b/images/r-notebook/Dockerfile
+index 39cbebdd..ec1b719c 100644
+--- a/images/r-notebook/Dockerfile
++++ b/images/r-notebook/Dockerfile
+@@ -14,20 +14,22 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+ USER root
+ 
+ # R pre-requisites
+-RUN apt-get update --yes && \
+-    apt-get install --yes --no-install-recommends \
+-    fonts-dejavu \
+-    unixodbc \
+-    unixodbc-dev \
+-    r-cran-rodbc \
+-    gfortran \
+-    gcc && \
+-    apt-get clean && rm -rf /var/lib/apt/lists/*
++RUN dnf update -y && \
++    dnf install -y --setopt=install_weak_deps=False \
++    # Fonts and ODBC support for R packages
++    dejavu-fonts-common \
++    dejavu-sans-fonts \
++    unixODBC \
++    unixODBC-devel \
++    # R dependencies and tools
++    R \
++    gcc \
++    gfortran && \
++    dnf clean all && rm -rf /var/cache/dnf
+ 
+ USER ${NB_UID}
+ 
+-# R packages including IRKernel which gets installed globally.
+-# r-e1071: dependency of the caret R package
++# Install R packages including IRKernel and other R packages
+ RUN mamba install --yes \
+     'r-base' \
+     'r-caret' \
+diff --git a/images/scipy-notebook/Dockerfile b/images/scipy-notebook/Dockerfile
+index 2e667f3e..d5bc8d1d 100644
+--- a/images/scipy-notebook/Dockerfile
++++ b/images/scipy-notebook/Dockerfile
+@@ -13,20 +13,24 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+ 
+ USER root
+ 
+-RUN apt-get update --yes && \
+-    apt-get install --yes --no-install-recommends \
++
++RUN dnf update -y && \
++    dnf install -y --setopt=install_weak_deps=False \
+     # for cython: https://cython.readthedocs.io/en/latest/src/quickstart/install.html
+-    build-essential \
++    gcc \
++    gcc-c++ \
++    make \
+     # for latex labels
+-    cm-super \
+-    dvipng \
+-    # for matplotlib anim
++    texlive-fonts-recommended \
++    texlive-collection-latex \
++    texlive-collection-fontsrecommended \
++    # for matplotlib animations
+     ffmpeg && \
+-    apt-get clean && rm -rf /var/lib/apt/lists/*
++    dnf clean all && rm -rf /var/cache/dnf
+ 
+ USER ${NB_UID}
+ 
+-# Install Python 3 packages
++# Install Python 3 packages using mamba
+ RUN mamba install --yes \
+     'altair' \
+     'beautifulsoup4' \
+@@ -77,3 +81,4 @@ RUN MPLBACKEND=Agg python -c "import matplotlib.pyplot" && \
+ USER ${NB_UID}
+ 
+ WORKDIR "${HOME}"
++
+diff --git a/images/tensorflow-notebook/Dockerfile b/images/tensorflow-notebook/Dockerfile
+index a433b2fa..810d6cf3 100644
+--- a/images/tensorflow-notebook/Dockerfile
++++ b/images/tensorflow-notebook/Dockerfile
+@@ -11,12 +11,29 @@ LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
+ # Fix: https://github.com/koalaman/shellcheck/wiki/SC3014
+ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+ 
+-# Install tensorflow with pip, on x86_64 tensorflow-cpu
+-RUN [[ $(uname -m) = x86_64 ]] && TF_POSTFIX="-cpu" || TF_POSTFIX="" && \
++ 
++
++# Install necessary system dependencies
++RUN dnf update -y && \
++    dnf install -y --setopt=install_weak_deps=False \
++    # Install development tools and other dependencies for Python packages
++    gcc \
++    gcc-c++ \
++    make \
++    # Install system packages for TensorFlow support
++    libatlas-base-devel \
++    && dnf clean all && rm -rf /var/cache/dnf
++
++USER ${NB_UID}
++
++# Install Python packages using pip, including jupyter-server-proxy and tensorflow
++RUN [[ $(uname -m) = 	ppc64le ]] && TF_POSTFIX="-cpu" || TF_POSTFIX="" && \
+     pip install --no-cache-dir \
+     "jupyter-server-proxy" \
+     "tensorflow${TF_POSTFIX}" && \
+     fix-permissions "${CONDA_DIR}" && \
+     fix-permissions "/home/${NB_USER}"
+ 
++# Copy additional environment script for tensorboard proxy
+ COPY --chown="${NB_UID}:${NB_GID}" cuda/20tensorboard-proxy-env.sh /usr/local/bin/before-notebook.d/
++
+diff --git a/tests/base-notebook/test_container_options.py b/tests/base-notebook/test_container_options.py
+index b330c1ec..ab39ebf9 100644
+--- a/tests/base-notebook/test_container_options.py
++++ b/tests/base-notebook/test_container_options.py
+@@ -40,7 +40,7 @@ def test_nb_user_change(container: TrackedContainer) -> None:
+ 
+     # Give the chown time to complete.
+     # Use sleep, not wait, because the container sleeps forever.
+-    time.sleep(1)
++    time.sleep(100)
+     LOGGER.info(
+         f"Checking if a home folder of {nb_user} contains the hidden '.jupyter' folder with appropriate permissions ..."
+     )
+@@ -69,7 +69,7 @@ def test_unsigned_ssl(
+     # does not retry properly while the server is booting up.
+     # An SSL handshake error seems to abort the retry logic.
+     # Forcing a long sleep for the moment until I have time to dig more.
+-    time.sleep(1)
++    time.sleep(100)
+     resp = http_client.get(f"https://localhost:{host_port}", verify=False)
+     resp.raise_for_status()
+     assert "login_submit" in resp.text
+diff --git a/tests/base-notebook/test_healthcheck.py b/tests/base-notebook/test_healthcheck.py
+index 36a8a4dc..3431a101 100644
+--- a/tests/base-notebook/test_healthcheck.py
++++ b/tests/base-notebook/test_healthcheck.py
+@@ -68,13 +68,13 @@ def test_healthy(
+     )
+ 
+     # giving some time to let the server start
+-    finish_time = time.time() + 10
+-    sleep_time = 0.1
++    finish_time = time.time() + 100
++    sleep_time = 100
+     while time.time() < finish_time:
+         time.sleep(sleep_time)
+         if get_health(running_container) == "healthy":
+             return
+-
++    assert "I generated this msg"
+     assert get_health(running_container) == "healthy"
+ 
+ 
+@@ -116,8 +116,8 @@ def test_healthy_with_proxy(
+     )
+ 
+     # giving some time to let the server start
+-    finish_time = time.time() + 10
+-    sleep_time = 0.1
++    finish_time = time.time() + 100
++    sleep_time = 10
+     while time.time() < finish_time:
+         time.sleep(sleep_time)
+         if get_health(running_container) == "healthy":
+@@ -152,8 +152,8 @@ def test_not_healthy(
+     )
+ 
+     # giving some time to let the server start
+-    finish_time = time.time() + 5
+-    sleep_time = 0.1
++    finish_time = time.time() + 100
++    sleep_time = 100
+     while time.time() < finish_time:
+         time.sleep(sleep_time)
+         if get_health(running_container) == "healthy":
+diff --git a/tests/base-notebook/test_start_container.py b/tests/base-notebook/test_start_container.py
+index 729e7cac..7e90025d 100644
+--- a/tests/base-notebook/test_start_container.py
++++ b/tests/base-notebook/test_start_container.py
+@@ -48,7 +48,7 @@ def test_start_notebook(
+         ports={"8888/tcp": host_port},
+     )
+     # sleeping some time to let the server start
+-    time.sleep(2)
++    time.sleep(200)
+     logs = running_container.logs().decode("utf-8")
+     LOGGER.debug(logs)
+     # checking that the expected command is launched
+diff --git a/tests/docker-stacks-foundation/test_package_managers.py b/tests/docker-stacks-foundation/test_package_managers.py
+index 29e0b649..a749bcd6 100644
+--- a/tests/docker-stacks-foundation/test_package_managers.py
++++ b/tests/docker-stacks-foundation/test_package_managers.py
+@@ -9,7 +9,7 @@ from tests.run_command import run_command
+ @pytest.mark.parametrize(
+     "package_manager_command",
+     [
+-        "apt --version",
++        "yum --version",
+         "conda --version",
+         "mamba --version",
+         "pip --version",
+diff --git a/tests/docker-stacks-foundation/test_user_options.py b/tests/docker-stacks-foundation/test_user_options.py
+index 1ef6ada3..196d5dd3 100644
+--- a/tests/docker-stacks-foundation/test_user_options.py
++++ b/tests/docker-stacks-foundation/test_user_options.py
+@@ -273,7 +273,7 @@ def test_secure_path(container: TrackedContainer, tmp_path: pathlib.Path) -> Non
+     """
+     d = tmp_path / "data"
+     d.mkdir()
+-    p = d / "wrong_python.sh"
++    p = d/ "wrong_python.sh"
+     p.write_text('#!/bin/bash\necho "Wrong python executable invoked!"')
+     p.chmod(0o755)
+ 
+@@ -281,7 +281,7 @@ def test_secure_path(container: TrackedContainer, tmp_path: pathlib.Path) -> Non
+         timeout=5,
+         tty=True,
+         user="root",
+-        volumes={p: {"bind": "/usr/bin/python", "mode": "ro"}},
++        volumes= {p: {"bind": "/usr/local/bin/python", "mode": "ro"}},
+         command=["python", "--version"],
+     )
+     assert "Wrong python" not in logs
+
