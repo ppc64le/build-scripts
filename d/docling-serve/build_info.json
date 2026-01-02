@@ -1,0 +1,16 @@
+{
+  "maintainer": "Harithanagothu2",
+  "package_name": "docling-serve",
+  "github_url": "https://github.com/docling-project/docling-serve.git",
+  "version": "v1.9.0",
+  "wheel_build" : true,
+  "package_dir": "d/docling-serve",
+  "default_branch": "main",
+  "build_script": "docling-serve_ubi_9.6.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*":{
+    "build_script":"docling-serve_ubi_9.6.sh"
+  }
+}
