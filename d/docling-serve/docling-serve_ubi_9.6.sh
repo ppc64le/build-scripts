@@ -6,8 +6,8 @@
 # Source repo      : https://github.com/docling-project/docling-serve.git
 # Tested on        : UBI 9.6
 # Language         : Python
-# Travis-Check     : True
-# Script License   : GNU General Public License v3.0
+# Ci-Check         : True
+# Script License   : MIT License
 # Maintainer       : Haritha Nagothu <haritha.nagothu2@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
