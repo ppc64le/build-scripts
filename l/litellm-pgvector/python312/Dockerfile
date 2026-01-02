@@ -1,4 +1,4 @@
-# --- STAGE 1: Rust Builder (Prisma Engines) ---
+# --- STAGE 1: Prisma Engine Builder ---
 FROM registry.access.redhat.com/ubi9/python-312:latest AS prisma-builder
 
 ###Required Labels
@@ -34,13 +34,11 @@ RUN echo -e '\n[patch.crates-io]\nring = { git = "https://github.com/ibm/ring.gi
 ENV CC=clang
 RUN . "$HOME/.cargo/env" && cargo build --release
 
-# --- STAGE 2: Python Builder (Dependencies) ---
+# --- STAGE 2: Litellm-Pgvector Python Builder (Dependencies) ---
 FROM registry.access.redhat.com/ubi9/python-312:latest AS python-builder
 
 WORKDIR /app
 USER root
-#ENV PYTHONDONTWRITEBYTECODE=1
-#ENV PYTHONUNBUFFERED=1
 
 RUN dnf install -y gcc git  postgresql-devel libatomic && dnf clean all
 RUN python -m venv /opt/venv
