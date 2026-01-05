@@ -1,0 +1,15 @@
+{
+    "maintainer":"Prachi.Gaonkar@ibm.com",
+    "package_name" : "keda",
+    "github_url": "https://github.com/kedacore/keda.git",
+    "version": "v2.16.1",
+    "default_branch": "master",
+    "package_dir": "k/keda",
+    "build_script": "keda-v2.16.1-ubi9.3.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v2.16.1": {
+    "build_script": "keda-v2.16.1-ubi9.3.sh"
+  }
+}

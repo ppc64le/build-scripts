@@ -1,14 +1,17 @@
 {
-  "maintainer": "Muskaan.Sheik@ibm.com",
+  "maintainer": "vinodk99",
   "package_name": "influxdb",
-  "github_url": "https://github.com/influxdata/influxdb.git",
-  "version": "v2.5.1",
-  "default_branch": "master",
-  "build_script": "influxdb_ubi_8.5.sh",
-  "package_dir": "i/influxdb/Dockerfiles/",
+  "github_url": "https://github.com/influxdata/influxdb",
+  "version": "v2.7.6",
+  "default_branch": "main",
+  "package_dir": "i/influxdb",
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-  "v2.*.*": {
-    "dir": "v2.5.1_ubi_8.5",
-    "build_script": "influxdb_ubi_8.5.sh"
+  "build_script": "influxdb_ubi_9.3.sh",
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "docker_build": true,
+  "v*.*.*": {
+    "dir": "v2.7.6_ubi9",
+    "build_script": "influxdb_ubi_9.3.sh"
   }
 }

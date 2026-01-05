@@ -1,0 +1,16 @@
+{
+  "maintainer": "vinodk99",
+  "package_name": "ujson",
+  "github_url": "https://github.com/ultrajson/ultrajson",
+  "version": "5.10.0",
+  "wheel_build" : true,
+  "package_dir": "u/ujson",
+  "default_branch": "master",
+  "build_script": "ujson_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "ujson_ubi_9.3.sh"
+  }
+}

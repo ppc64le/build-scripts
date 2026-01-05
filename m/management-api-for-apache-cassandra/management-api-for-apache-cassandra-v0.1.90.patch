@@ -1,0 +1,169 @@
+diff --git a/cassandra/Dockerfile-4.1 b/cassandra/Dockerfile-4.1
+index 832bbbd..6e3034e 100644
+--- a/cassandra/Dockerfile-4.1
++++ b/cassandra/Dockerfile-4.1
+@@ -60,6 +60,43 @@ RUN mkdir -m 775 ${CDC_AGENT_PATH} && \
+   ln -s ${CDC_AGENT_EDITION}-${CDC_AGENT_VERSION}-all.jar cdc-agent.jar && \
+   chmod -R g+w ${CDC_AGENT_PATH}
+ 
++
++FROM ubuntu:18.04 as netty-builder
++
++RUN apt-get update -y && DEBIAN_FRONTEND=noninteractive apt-get install -y git autoconf automake cmake build-essential openjdk-11-jdk wget python3-dev libtool-bin libapr1-dev libaprutil1-dev libssl-dev cmake ninja-build golang-go pkg-config && \
++    export JAVA_HOME='/usr/lib/jvm/java-11-openjdk-ppc64el' && export JRE_HOME=${JAVA_HOME}/jre && export PATH=${JAVA_HOME}/bin:$PATH && \
++    wget https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz && \
++    tar -xvf apache-maven-3.6.3-bin.tar.gz && \
++    mv apache-maven-3.6.3 /opt/ && M2_HOME='/opt/apache-maven-3.6.3' && export PATH="$M2_HOME/bin:$PATH" && \
++    cd /opt && git clone https://github.com/netty/netty-tcnative.git && cd netty-tcnative && git checkout netty-tcnative-parent-2.0.69.Final && \
++    sed -i "s#<module>boringssl-static</module>##g" pom.xml && mvn install -DskipTests
++RUN apt-get update -y && DEBIAN_FRONTEND=noninteractive apt-get install -y git autoconf automake build-essential openjdk-11-jdk && \
++    export JAVA_HOME='/usr/lib/jvm/java-11-openjdk-ppc64el' && export JRE_HOME=${JAVA_HOME}/jre && export PATH=${JAVA_HOME}/bin:$PATH && \
++    M2_HOME='/opt/apache-maven-3.6.3' && export PATH="$M2_HOME/bin:$PATH" && \
++    cd /opt && git clone https://github.com/netty/netty.git && cd netty && git checkout netty-4.1.116.Final && \
++    cd transport-native-unix-common && mvn install -DskipTests && \
++    cd ../transport-native-epoll && mvn install -DskipTests && \
++    cd ../common && mvn install -DskipTests && \
++    cd ../all && mvn install -DskipTests
++
++FROM ubuntu:18.04 as netty58-builder
++
++RUN apt-get update -y && DEBIAN_FRONTEND=noninteractive apt-get install -y git autoconf automake cmake build-essential openjdk-11-jdk wget python3-dev libtool-bin libapr1-dev libaprutil1-dev libssl-dev cmake ninja-build golang-go pkg-config && \
++    export JAVA_HOME='/usr/lib/jvm/java-11-openjdk-ppc64el' && export JRE_HOME=${JAVA_HOME}/jre && export PATH=${JAVA_HOME}/bin:$PATH && \
++    wget https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz && \
++    tar -xvf apache-maven-3.6.3-bin.tar.gz && \
++    mv apache-maven-3.6.3 /opt/ && M2_HOME='/opt/apache-maven-3.6.3' && export PATH="$M2_HOME/bin:$PATH" && \
++    cd /opt && git clone https://github.com/netty/netty-tcnative.git && cd netty-tcnative && git checkout netty-tcnative-parent-2.0.63.Final && \
++    sed -i "s#<module>boringssl-static</module>##g" pom.xml && mvn install -DskipTests
++RUN apt-get update -y && DEBIAN_FRONTEND=noninteractive apt-get install -y git autoconf automake build-essential openjdk-11-jdk && \
++    export JAVA_HOME='/usr/lib/jvm/java-11-openjdk-ppc64el' && export JRE_HOME=${JAVA_HOME}/jre && export PATH=${JAVA_HOME}/bin:$PATH && \
++    M2_HOME='/opt/apache-maven-3.6.3' && export PATH="$M2_HOME/bin:$PATH" && \
++    cd /opt && git clone https://github.com/netty/netty.git && cd netty && git checkout netty-4.1.58.Final && \
++    cd transport-native-unix-common && mvn install -DskipTests && \
++    cd ../transport-native-epoll && mvn install -DskipTests && \
++    cd ../common && mvn install -DskipTests && \
++    cd ../all && mvn install -DskipTests
++
+ FROM --platform=linux/amd64 cassandra:${CASSANDRA_VERSION} AS cassandra-amd64
+ # MCAC isn't supported on ARM achitectures
+ ENV MCAC_PATH=/opt/metrics-collector
+@@ -70,7 +107,7 @@ RUN if ! grep -qxF "JVM_OPTS=\"\$JVM_OPTS -javaagent:${MCAC_PATH}/lib/datastax-m
+     echo "fi"  >> ${CASSANDRA_CONF}/cassandra-env.sh ; \
+   fi
+ 
+-FROM --platform=linux/arm64 cassandra:${CASSANDRA_VERSION} AS cassandra-arm64
++FROM --platform=linux/ppc64le cassandra:${CASSANDRA_VERSION} AS cassandra-ppc64le
+ 
+ FROM cassandra-${TARGETARCH} AS cassandra
+ 
+@@ -103,6 +140,13 @@ COPY --from=builder --chown=cassandra:root ${MCAC_PATH} ${MCAC_PATH}
+ COPY --from=builder --chown=cassandra:root ${USER_HOME_PATH} ${USER_HOME_PATH}
+ COPY --from=builder --chown=cassandra:root ${CDC_AGENT_PATH} ${CDC_AGENT_PATH}
+ 
++#Copy power specific stuff
++COPY --from=netty-builder --chown=cassandra:root /opt/netty/transport-native-epoll/target/native-build/target/lib/libnetty_transport_native_epoll_ppcle_64.so /usr/lib/
++RUN rm -rf /opt/cassandra/lib/netty-all-4.1.58.Final.jar /opt/cassandra/lib/netty-tcnative-boringssl-static-2.0.36.Final.jar
++COPY --from=netty58-builder --chown=cassandra:root /opt/netty-tcnative/openssl-static/target/netty-tcnative-openssl-static-2.0.63.Final.jar /opt/cassandra/lib/netty-tcnative-boringssl-static-2.0.36.Final.jar
++COPY --from=netty58-builder --chown=cassandra:root /opt/netty-tcnative/openssl-static/target/netty-tcnative-openssl-static-2.0.63.Final-linux-ppcle_64.jar /opt/cassandra/lib/netty-tcnative-boringssl-static-2.0.36.Final-linux-ppcle_64.jar
++COPY --from=netty58-builder --chown=cassandra:root /opt/netty/all/target/netty-all-4.1.58.Final.jar /opt/cassandra/lib/netty-all-4.1.58.Final.jar
++
+ # Setup user and fixup permissions
+ RUN chown -R cassandra:root ${CASSANDRA_PATH} && chmod -R g+w ${CASSANDRA_PATH} && \
+     # we don't need recursive chnages here because the files in the directories already have group write
+diff --git a/cassandra/scripts/docker-entrypoint.sh b/cassandra/scripts/docker-entrypoint.sh
+index 8bb2b61..aa3a939 100755
+--- a/cassandra/scripts/docker-entrypoint.sh
++++ b/cassandra/scripts/docker-entrypoint.sh
+@@ -42,7 +42,7 @@ _sed-in-place() {
+ 
+ _metrics_collector_supported() {
+     # currently, metrics collector does not work on arm64
+-    [ "$(uname -m)" != "aarch64" ] && [ -z "$MGMT_API_DISABLE_MCAC" ] && [ -e ${MCAC_PATH}/lib/datastax-mcac-agent.jar ]
++    [ "$(uname -m)" != "ppc64le" ] && [ -z "$MGMT_API_DISABLE_MCAC" ] && [ -e ${MCAC_PATH}/lib/datastax-mcac-agent.jar ]
+ }
+ 
+ if [ "$1" = 'mgmtapi' ]; then
+@@ -194,7 +194,7 @@ if [ "$1" = 'mgmtapi' ]; then
+     MGMT_API_JAR="${MAAC_PATH}/datastax-mgmtapi-server.jar"
+ 
+     # use default of 128m heap if env variable not set
+-    : "${MGMT_API_HEAP_SIZE:=128m}"
++    : "${MGMT_API_HEAP_SIZE:=12g}"
+ 
+     # locate Java 11 for running the server
+     if [ "$JAVA11_JAVA" = "" ]; then
+diff --git a/management-api-agent-common/pom.xml b/management-api-agent-common/pom.xml
+index cede989..4504c7b 100644
+--- a/management-api-agent-common/pom.xml
++++ b/management-api-agent-common/pom.xml
+@@ -99,6 +99,16 @@
+           <version>${netty.version}</version>
+           <scope>provided</scope>
+         </dependency>
++        <dependency>
++          <groupId>io.netty</groupId>
++          <artifactId>netty-common</artifactId>
++          <version>${netty.version}</version>
++        </dependency>
++        <dependency>
++          <groupId>io.netty</groupId>
++          <artifactId>netty-transport-native-epoll</artifactId>
++          <version>${netty.version}</version>
++        </dependency>
+         <dependency>
+           <groupId>io.prometheus</groupId>
+           <artifactId>simpleclient_hotspot</artifactId>
+diff --git a/management-api-common/pom.xml b/management-api-common/pom.xml
+index ea7d018..b100662 100644
+--- a/management-api-common/pom.xml
++++ b/management-api-common/pom.xml
+@@ -37,6 +37,16 @@
+       <version>${netty.version}</version>
+       <scope>provided</scope>
+     </dependency>
++    <dependency>
++      <groupId>io.netty</groupId>
++      <artifactId>netty-common</artifactId>
++      <version>${netty.version}</version>
++    </dependency>
++    <dependency>
++      <groupId>io.netty</groupId>
++      <artifactId>netty-transport-native-epoll</artifactId>
++      <version>${netty.version}</version>
++    </dependency>
+     <dependency>
+       <groupId>org.apache.cassandra</groupId>
+       <artifactId>cassandra-all</artifactId>
+diff --git a/management-api-server/pom.xml b/management-api-server/pom.xml
+index 3065580..c79badc 100644
+--- a/management-api-server/pom.xml
++++ b/management-api-server/pom.xml
+@@ -81,6 +81,16 @@
+       <artifactId>netty-all</artifactId>
+       <version>${netty.version}</version>
+     </dependency>
++    <dependency>
++      <groupId>io.netty</groupId>
++      <artifactId>netty-common</artifactId>
++      <version>${netty.version}</version>
++    </dependency>
++    <dependency>
++      <groupId>io.netty</groupId>
++      <artifactId>netty-transport-native-epoll</artifactId>
++      <version>${netty.version}</version>
++    </dependency>
+     <dependency>
+       <groupId>com.datastax.oss</groupId>
+       <artifactId>java-driver-core</artifactId>
+diff --git a/pom.xml b/pom.xml
+index b8ac3c3..6c03f9d 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -25,7 +25,7 @@
+     <build.version.file>build_version.sh</build.version.file>
+     <slf4j.version>1.7.25</slf4j.version>
+     <logback.version>1.2.9</logback.version>
+-    <netty.version>4.1.112.Final</netty.version>
++    <netty.version>4.1.116.Final</netty.version>
+     <mockito.version>3.5.13</mockito.version>
+     <prometheus.version>0.16.0</prometheus.version>
+     <!-- This old version is used by Cassandra 4.x -->

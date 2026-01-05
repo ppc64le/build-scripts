@@ -1,0 +1,15 @@
+{
+  "maintainer": "Amitkumar282",
+  "package_name": "react-native-localize",
+  "github_url": "https://github.com/zoontek/react-native-localize.git",
+  "version": "2.2.4",
+  "package_dir": "r/react-native-localize",
+  "default_branch": "master",
+  "build_script": "react-native-localize_v2.2.4_ubi_9.3.sh", 
+  "docker_build": "false",
+  "use_non_root_user": "false",
+  "validate_build_script": "true",
+  "*": {
+    "build_script": "react-native-localize_v2.2.4_ubi_9.3.sh"
+  }
+}

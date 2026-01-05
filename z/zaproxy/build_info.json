@@ -1,16 +1,15 @@
 {
-    "maintainer" : "Pooja.Shah4@ibm.com",
-    "package_name" : "zaproxy",
-    "github_url" : "https://github.com/zaproxy/zaproxy",
-    "version" : "v2.14.0",
-    "default_branch": "main",
-    "package_dir": "z/zaproxy",
-    "build_script": "zaproxy_ubi_8.7.sh",
-    "use_non_root_user": true,
-    "validate_build_script": true,
-    "docker_build": false,
-
-    "v2.*.*" : {
-       "build_script" : "zaproxy_ubi_8.7.sh"
-    }
+  "maintainer": "pooja0805",
+  "package_name": "zaproxy",
+  "github_url": "https://github.com/zaproxy/zaproxy",
+  "version": "v2.14.0",
+  "default_branch": "main",
+  "package_dir": "z/zaproxy",
+  "build_script": "zaproxy_ubi_8.7.sh",
+  "use_non_root_user": true,
+  "validate_build_script": true,
+  "docker_build": false,
+  "v2.*.*": {
+    "build_script": "zaproxy_ubi_8.7.sh"
+  }
 }

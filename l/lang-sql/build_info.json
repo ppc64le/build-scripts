@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "lang-sql",
+    "github_url": "https://github.com/codemirror/lang-sql",
+    "version": "6.7.0",
+    "default_branch": "main",
+    "build_script": "lang-sql_ubi_9.3.sh",
+    "package_dir": "l/lang-sql",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "6.*.*": {
+        "build_script": "lang-sql_ubi_9.3.sh"
+    }
+}

@@ -1,5 +1,5 @@
 {
-   "maintainer": "Stuti.Wali@ibm.com",
+   "maintainer": "stutiibm",
    "package_name": "loopback-connector",
    "github_url": "https://github.com/strongloop/loopback-connector.git",
    "version": "v6.1.3",

@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/osixia/docker-light-baseimage
 # Tested on	: CentOS 8
 # Language      : Shell, Python
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Atharv Phadnis <Atharv.Phadnis@ibm.com>
 #

@@ -1,0 +1,15 @@
+{
+  "maintainer": "vinodk99",
+  "package_name": "tempo-operator",
+  "github_url": "https://github.com/grafana/tempo-operator",
+  "version": "v0.13.0",
+  "default_branch": "main",
+  "package_dir": "t/tempo-operator",
+  "build_script": "tempo-operator_ubi_9.3.sh",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "v*.*.*": {
+    "build_script": "tempo-operator_ubi_9.3.sh"
+  }
+}

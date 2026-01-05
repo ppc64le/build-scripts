@@ -1,0 +1,15 @@
+diff --git a/src/index.ts b/src/index.ts
+index 4177db1..0333987 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -181,7 +181,9 @@ async function fastFailMetadataRequest<T>(
+ ): Promise<GaxiosResponse> {
+   const secondaryOptions = {
+     ...options,
+-    url: options.url!.replace(getBaseUrl(), getBaseUrl(SECONDARY_HOST_ADDRESS)),
++    url: options.url
++      ?.toString()
++      .replace(getBaseUrl(), getBaseUrl(SECONDARY_HOST_ADDRESS)),
+   };
+   // We race a connection between DNS/IP to metadata server. There are a couple
+   // reasons for this:

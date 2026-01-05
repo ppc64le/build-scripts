@@ -1,0 +1,155 @@
+diff --git a/.goreleaser.yml b/.goreleaser.yml
+index 0ae062c0..8d124f67 100644
+--- a/.goreleaser.yml
++++ b/.goreleaser.yml
+@@ -32,6 +32,7 @@ builds:
+   goarch:
+     - amd64
+     - arm64
++    - ppc64le
+ 
+ - id: kubectl-cnpg
+   binary: kubectl-cnpg
+diff --git a/hack/e2e/run-e2e.sh b/hack/e2e/run-e2e.sh
+index e5e83987..1cd3cf21 100755
+--- a/hack/e2e/run-e2e.sh
++++ b/hack/e2e/run-e2e.sh
+@@ -143,7 +143,7 @@ mkdir -p "${ROOT_DIR}/tests/e2e/out"
+ # would create CPUs-1 nodes and saturate the testing server
+ RC_GINKGO2=0
+ export TEST_SKIP_UPGRADE=true
+-ginkgo --nodes=4 --timeout 3h --poll-progress-after=1200s --poll-progress-interval=150s \
++ginkgo --nodes=1 --timeout 3h --poll-progress-after=1200s --poll-progress-interval=150s \
+        ${LABEL_FILTERS:+--label-filter "${LABEL_FILTERS}"} \
+        --github-output --force-newlines \
+        --output-dir "${ROOT_DIR}/tests/e2e/out/" \
+diff --git a/hack/setup-cluster.sh b/hack/setup-cluster.sh
+index af92167b..1679495f 100755
+--- a/hack/setup-cluster.sh
++++ b/hack/setup-cluster.sh
+@@ -84,8 +84,14 @@ E2E_PRE_ROLLING_UPDATE_IMG=${E2E_PRE_ROLLING_UPDATE_IMG:-${POSTGRES_IMG%.*}}
+ PGBOUNCER_IMG=${PGBOUNCER_IMG:-$(grep 'DefaultPgbouncerImage.*=' "${ROOT_DIR}/pkg/specs/pgbouncer/deployments.go" | cut -f 2 -d \")}
+ MINIO_IMG=${MINIO_IMG:-$(grep 'minioImage.*=' "${ROOT_DIR}/tests/utils/minio.go"  | cut -f 2 -d \")}
+ APACHE_IMG=${APACHE_IMG:-"httpd"}
+-
+-HELPER_IMGS=("$POSTGRES_IMG" "$E2E_PRE_ROLLING_UPDATE_IMG" "$PGBOUNCER_IMG" "$MINIO_IMG" "$APACHE_IMG")
++MINIOMC_IMG=minio/mc:RELEASE.2022-06-11T21-10-36Z
++AZURE_IMG="mcr.microsoft.com/azure-storage/azurite:1.1"
++AZURECLI_IMG="mcr.microsoft.com/azure-cli:1.1"
++CURL_IMG="curlimages/curl:7.82.0"
++HTTPD24_IMG="httpd:2.4"
++HELPER_IMGS=("$MINIO_IMG" "$MINIOMC_IMG" "$APACHE_IMG" "$HTTPD24_IMG" "$CURL_IMG")
++
++#HELPER_IMGS=("$MINIO_IMG" "$APACHE_IMG")
+ # #########################################################################
+ 
+ # Colors (only if using a terminal)
+@@ -326,10 +332,11 @@ check_registry() {
+ }
+ 
+ deploy_fluentd() {
+-  local FLUENTD_IMAGE=fluent/fluentd-kubernetes-daemonset:v1.14.3-debian-forward-1.0
++#  local FLUENTD_IMAGE=fluent/fluentd-kubernetes-daemonset:v1.14.3-debian-forward-1.0
++  local FLUENTD_IMAGE="fluent/fluentd-kubernetes-daemonset:v1.14.3-debian-forward-1.0"
+   local FLUENTD_LOCAL_IMAGE="${registry_name}:5000/fluentd-kubernetes-daemonset:local"
+ 
+-  docker pull "${FLUENTD_IMAGE}"
++#  docker pull "${FLUENTD_IMAGE}"
+   docker tag "${FLUENTD_IMAGE}" "${FLUENTD_LOCAL_IMAGE}"
+   load_image "${CLUSTER_NAME}" "${FLUENTD_LOCAL_IMAGE}"
+ 
+@@ -560,6 +567,14 @@ load_helper_images() {
+     docker pull "${IMG}"
+     "load_image_${ENGINE}" "${CLUSTER_NAME}" "${IMG}"
+   done
++  "load_image_${ENGINE}" "${CLUSTER_NAME}" "$POSTGRES_IMG"
++  "load_image_${ENGINE}" "${CLUSTER_NAME}" "$E2E_PRE_ROLLING_UPDATE_IMG"
++  "load_image_${ENGINE}" "${CLUSTER_NAME}" "$PGBOUNCER_IMG"
++  "load_image_${ENGINE}" "${CLUSTER_NAME}" "$AZURE_IMG"
++  "load_image_${ENGINE}" "${CLUSTER_NAME}" "$AZURECLI_IMG"
++  "load_image_${ENGINE}" "${CLUSTER_NAME}" "$CURL_IMG"
++  "load_image_${ENGINE}" "${CLUSTER_NAME}" "$HTTPD24_IMG"
++  "load_image_${ENGINE}" "${CLUSTER_NAME}" "$APACHE_IMG"
+ 
+   echo "${bright}Done loading helper images on cluster ${CLUSTER_NAME}${reset}"
+ }
+diff --git a/pkg/specs/pgbouncer/deployments.go b/pkg/specs/pgbouncer/deployments.go
+index 7895ea74..e5df2ea5 100644
+--- a/pkg/specs/pgbouncer/deployments.go
++++ b/pkg/specs/pgbouncer/deployments.go
+@@ -37,7 +37,7 @@ import (
+ 
+ const (
+ 	// DefaultPgbouncerImage is the name of the pgbouncer image used by default
+-	DefaultPgbouncerImage = "ghcr.io/cloudnative-pg/pgbouncer:1.22.1"
++	DefaultPgbouncerImage = "cloudnative-pg/pgbouncer-ppc64le:1.23.0"
+ )
+ 
+ // Deployment create the deployment of pgbouncer, given
+diff --git a/pkg/versions/versions.go b/pkg/versions/versions.go
+index 1d07474b..19823c3d 100644
+--- a/pkg/versions/versions.go
++++ b/pkg/versions/versions.go
+@@ -23,10 +23,10 @@ const (
+ 	Version = "1.23.2"
+ 
+ 	// DefaultImageName is the default image used by the operator to create pods
+-	DefaultImageName = "ghcr.io/cloudnative-pg/postgresql:16.3"
++	DefaultImageName = "cloudnative-pg/postgresql:16.3"
+ 
+ 	// DefaultOperatorImageName is the default operator image used by the controller in the pods running PostgreSQL
+-	DefaultOperatorImageName = "ghcr.io/cloudnative-pg/cloudnative-pg:1.23.2"
++	DefaultOperatorImageName = "cloudnative-pg:1.23.2"
+ )
+ 
+ // BuildInfo is a struct containing all the info about the build
+diff --git a/tests/e2e/fixtures/fastfailover/apache-benchmark-webtest.yaml b/tests/e2e/fixtures/fastfailover/apache-benchmark-webtest.yaml
+index 8af0fe34..70100477 100644
+--- a/tests/e2e/fixtures/fastfailover/apache-benchmark-webtest.yaml
++++ b/tests/e2e/fixtures/fastfailover/apache-benchmark-webtest.yaml
+@@ -7,7 +7,7 @@ spec:
+     spec:
+       containers:
+       - name: apache-benchmark
+-        image: httpd
++        image: httpd:2.4
+         command:
+          - "/usr/local/apache2/bin/ab"
+          - "-t"
+diff --git a/tests/e2e/fixtures/fastswitchover/apache-benchmark-webtest.yaml b/tests/e2e/fixtures/fastswitchover/apache-benchmark-webtest.yaml
+index 8af0fe34..70100477 100644
+--- a/tests/e2e/fixtures/fastswitchover/apache-benchmark-webtest.yaml
++++ b/tests/e2e/fixtures/fastswitchover/apache-benchmark-webtest.yaml
+@@ -7,7 +7,7 @@ spec:
+     spec:
+       containers:
+       - name: apache-benchmark
+-        image: httpd
++        image: httpd:2.4
+         command:
+          - "/usr/local/apache2/bin/ab"
+          - "-t"
+diff --git a/tests/utils/azurite.go b/tests/utils/azurite.go
+index 2537b8ce..29137c79 100644
+--- a/tests/utils/azurite.go
++++ b/tests/utils/azurite.go
+@@ -31,8 +31,8 @@ import (
+ )
+ 
+ const (
+-	azuriteImage       = "mcr.microsoft.com/azure-storage/azurite"
+-	azuriteClientImage = "mcr.microsoft.com/azure-cli"
++	azuriteImage       = "mcr.microsoft.com/azure-storage/azurite:1.1"
++	azuriteClientImage = "mcr.microsoft.com/azure-cli:1.1"
+ )
+ 
+ // AzureConfiguration contains the variables needed to run the azure test environment correctly
+@@ -266,7 +266,7 @@ func getAzuriteDeployment(namespace string) apiv1.Deployment {
+ 							Args: []string{
+ 								"-l", "/data", "--cert", "/etc/ssl/certs/azurite.pem",
+ 								"--key", "/etc/ssl/certs/azurite-key.pem",
+-								"--oauth", "basic", "--blobHost", "0.0.0.0",
++								"--oauth", "basic", "--blobHost", "0.0.0.0", "--skipApiVersionCheck",
+ 							},
+ 							Env: []corev1.EnvVar{
+ 								{

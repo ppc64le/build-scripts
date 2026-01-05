@@ -1,0 +1,16 @@
+{
+  "maintainer": "Harithanagothu2",
+  "package_name": "libvpx",
+  "github_url": "https://github.com/webmproject/libvpx",
+  "version": "v1.13.1",
+  "wheel_build" : true,
+  "package_dir": "l/libvpx",
+  "default_branch": "main",
+  "build_script": "libvpx_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*":{
+    "build_script":"libvpx_ubi_9.3.sh"
+  }
+}

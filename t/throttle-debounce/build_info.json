@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "throttle-debounce",
+    "github_url": "https://github.com/niksy/throttle-debounce",
+    "version": "v5.0.2",
+    "default_branch": "master",
+    "build_script": "throttle-debounce_ubi_9.3.sh",
+    "package_dir": "t/throttle-debounce",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v5.*.*": {
+        "build_script": "throttle-debounce_ubi_9.3.sh"
+    }
+}

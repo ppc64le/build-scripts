@@ -1,0 +1,15 @@
+{
+    "maintainer": "stutiibm",
+    "package_name": "springdoc-openapi",
+    "github_url": "https://github.com/springdoc/springdoc-openapi",
+    "version": "v2.6.0",
+    "default_branch": "main",
+    "package_dir": "s/springdoc-openapi/",
+    "build_script": "springdoc-openapi_ubi_9_3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "*": {
+        "build_script": "springdoc-openapi_ubi_9_3.sh"
+     }
+  }

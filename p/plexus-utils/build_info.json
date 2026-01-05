@@ -1,0 +1,15 @@
+{
+    "maintainer": "santhoshkotla2929",
+    "package_name": "plexus-utils",
+    "github_url": "https://github.com/codehaus-plexus/plexus-utils",
+    "version": "plexus-utils-4.0.1",
+    "default_branch": "master",
+    "build_script": "plexus-utils_ubi_9.3.sh",
+    "package_dir": "p/plexus-utils",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "plexus-utils-4.*.*": {
+      "build_script": "plexus-utils_ubi_9.3.sh"	   
+    }    
+}

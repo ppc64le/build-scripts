@@ -1,13 +1,15 @@
 {
-  "maintainer": "kumar.vikas@in.ibm.com",
+  "maintainer": "vinodk99",
   "package_name": "caniuse-lite",
-  "github_url": "https://github.com/browserslist/caniuse-lite.git",
-  "version": "v1.0.30001451",
+  "github_url": "https://github.com/browserslist/caniuse-lite",
+  "version": "1.0.30001636",
   "default_branch": "main",
-  "build_script": "caniuse-lite_ubi_8.5.sh",
-  "package_dir": "c/caniuse-lite/",
+  "package_dir": "c/caniuse-lite",
+  "build_script": "caniuse-lite_ubi_9.3.sh",
+  "validate_build_script": true,
+  "use_non_root_user": "false",
   "docker_build": false,
-  "*.*.*": {
-    "build_script": "caniuse-lite_ubi_8.5.sh"
+  "*.*.*,v*.*.*": {
+    "build_script": "caniuse-lite_ubi_9.3.sh"
   }
 }

@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "clsx",
+    "github_url": "https://github.com/lukeed/clsx",
+    "version": "v2.1.1",
+    "default_branch": "master",
+    "build_script": "clsx_ubi_9.3.sh",
+    "package_dir": "c/clsx",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v2.*.*": {
+        "build_script": "clsx_ubi_9.3.sh"
+    }
+}

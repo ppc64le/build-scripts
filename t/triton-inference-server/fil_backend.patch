@@ -1,0 +1,16 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 9aff54c..6ea6a77 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -78,6 +78,10 @@ else()
+   # - Target names -------------------------------------------------------------
+   set(BACKEND_NAME "fil")
+   set(BACKEND_TARGET "triton_${BACKEND_NAME}")
++  install(
++    FILES ${CMAKE_CURRENT_BINARY_DIR}/libtriton_fil.so
++    DESTINATION ${CMAKE_INSTALL_PREFIX}/backends/fil
++  )
+ 
+ 
+   ##############################################################################
+

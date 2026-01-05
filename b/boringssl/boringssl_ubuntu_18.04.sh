@@ -7,7 +7,7 @@
 # Tested on     : ubuntu_18.04
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Nishikant Thorat <Nishikant.Thorat@ibm.com>
-# Travis-Check  : True
+# Ci-Check  : True
 # Language	: go
 #
 # Disclaimer: This script has been tested in non-root mode on given

@@ -1,0 +1,15 @@
+{
+    "maintainer": "vinodk99",
+    "package_name": "url-template",
+    "github_url": "https://github.com/bramstein/url-template",
+    "version": "v3.1.1",
+    "package_dir": "u/url-template",
+    "default_branch": "main",
+    "build_script": "url-template_ubi_9.3.sh",
+    "docker_build": "false",
+    "use_non_root_user": false,
+    "validate_build_script": "true",
+    "v*.*.*": {
+      "build_script": "url-template_ubi_9.3.sh"
+    }
+  }

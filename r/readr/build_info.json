@@ -1,0 +1,15 @@
+{
+  "maintainer": "Vipul-Ajmera",
+  "package_name": "readr",
+  "github_url": "https://github.com/cran/readr.git",
+  "version": "2.1.5",
+  "default_branch": "master",
+  "package_dir": "r/readr",
+  "build_script": "readr_ubi_9.3.sh",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "*.*.*": {
+    "build_script": "readr_ubi_9.3.sh"
+  }
+}

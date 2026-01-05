@@ -1,0 +1,15 @@
+{
+  "maintainer": "vinodk99",
+  "package_name": "node-assert-plus",
+  "github_url": "https://github.com/TritonDataCenter/node-assert-plus",
+  "version": "master",
+  "default_branch": "master",
+  "package_dir": "n/node-assert-plus",
+  "build_script": "node-assert-plus_ubi_9.3.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": false,
+  "master": {
+    "build_script": "node-assert-plus_ubi_9.3.sh"
+  }
+}

@@ -1,21 +1,21 @@
 {
-    "maintainer":"Vinod.K1@ibm.com",
-    "package_name" : "glance", 
-    "github_url": "https://github.com/openstack/glance",
-    "version": "yoga-eom",
-    "default_branch": "master",
-    "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-    "package_dir": "g/glance",
-    "build_script": "glance_ubi_8.7.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build": "true",
-    "yoga-eom" : {
-       "dir": "yogaeom_ubi8",
-       "build_script": "glance_ubi_8.7.sh"
-    },
-     "*.*.*" : {
-       "dir": "yogaeom_ubi8",
-       "build_script": "glance_ubi_8.7.sh"
-    }
+  "maintainer": "vinodk99",
+  "package_name": "glance",
+  "github_url": "https://github.com/openstack/glance",
+  "version": "zed-eom",
+  "default_branch": "master",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "package_dir": "g/glance",
+  "build_script": "glance_ubi_9.3.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "true",
+  "*-eom": {
+    "dir": "zedeom_ubi9",
+    "build_script": "glance_ubi_9.3.sh"
+  },
+  "*.*.*,*.*.*.*": {
+    "dir": "zedeom_ubi9",
+    "build_script": "glance_ubi_9.3.sh"
+  }
 }

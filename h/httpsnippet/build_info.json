@@ -1,14 +1,14 @@
 {
-   "maintainer": "Vinod.K1@ibm.com",
-   "package_name": "httpsnippet",
-   "github_url": "https://github.com/Mashape/httpsnippet",
-   "version": "3.0.1",
-   "default_branch": "master",
-   "build_script": "httpsnippet_ubi_8.7.sh",
-   "package_dir": "h/httpsnippet",
-   "docker_build": false,
-   "validate_build_script": true,
-   "3.*.*": {
+  "maintainer": "vinodk99",
+  "package_name": "httpsnippet",
+  "github_url": "https://github.com/Mashape/httpsnippet",
+  "version": "3.0.1",
+  "default_branch": "master",
+  "build_script": "httpsnippet_ubi_8.7.sh",
+  "package_dir": "h/httpsnippet",
+  "docker_build": false,
+  "validate_build_script": true,
+  "3.*.*": {
     "build_script": "httpsnippet_ubi_8.7.sh"
   },
   " 1.25.0": {

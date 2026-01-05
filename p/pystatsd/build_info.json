@@ -1,16 +1,16 @@
 {
-    "maintainer": "Abhishek.Dwivedi6@ibm.com",
-    "package_name": "pystatsd",
-    "github_url": "https://github.com/jsocol/pystatsd.git",
-    "version": "v4.0.1",
-    "default_branch": "main",
-    "build_script": "pystatsd_ubi_8.7.sh",
-    "package_dir": "p/pystatsd",
-    "docker_cmd" : "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-    "docker_build": true,
-    "validate_build_script": true,
-    "v4.*.*": {
-       "dir": "ubi8.7",
-       "build_script" : "pystatsd_ubi_8.7.sh"
-    }
- }
+  "maintainer": "AbhiIBM",
+  "package_name": "pystatsd",
+  "github_url": "https://github.com/jsocol/pystatsd.git",
+  "version": "v4.0.1",
+  "default_branch": "main",
+  "build_script": "pystatsd_ubi_8.7.sh",
+  "package_dir": "p/pystatsd",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "docker_build": true,
+  "validate_build_script": true,
+  "v4.*.*": {
+    "dir": "ubi8.7",
+    "build_script": "pystatsd_ubi_8.7.sh"
+  }
+}

@@ -1,0 +1,15 @@
+{
+    "maintainer":"vinodk99",
+    "package_name" : "xnio",
+    "github_url": "https://github.com/xnio/xnio",
+    "version": "3.8.15.Final",
+    "default_branch": "3.x",
+    "package_dir": "x/xnio",
+    "build_script": "xnio_ubi_9.3.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": false,
+    "*.*.*.*" : {
+       "build_script" : "xnio_ubi_9.3.sh"
+    }
+}

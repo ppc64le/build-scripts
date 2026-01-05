@@ -1,16 +1,18 @@
 {
-  "maintainer": "Pratik.Tonage@ibm.com",
+  "maintainer": "stutiibm",
   "package_name": "opentelemetry-collector-contrib",
   "github_url": "https://github.com/open-telemetry/opentelemetry-collector-contrib",
-  "version": "v0.67.0",
+  "version": "v0.102.0",
   "default_branch": "main",
   "package_dir": "o/opentelemetry-collector-contrib",
+  "build_script": "opentelemetry-collector-contrib_ubi_9_3.sh",
   "docker_build": false,
-  "build_script": "opentelemetry-collector-contrib_ubi_8.5.sh",
+  "validate_build_script": true,
+  "use_non_root_user": "false",
   "v0.*.*": {
-    "build_script": "opentelemetry-collector-contrib_ubi_8.5.sh",
+    "build_script": "opentelemetry-collector-contrib_ubi_9_3.sh",
     "args": {
-      "GO_VERSION": "1.19.3"
+      "GO_VERSION": "1.22.1"
     }
   }
 }

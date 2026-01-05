@@ -1,0 +1,18 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "form-data-encoder",
+    "github_url": "https://github.com/octet-stream/form-data-encoder",
+    "version": "v4.0.2",
+    "default_branch": "main",
+    "build_script": "form-data-encoder_ubi_9.3.sh",
+    "package_dir": "f/form-data-encoder",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v4.*.*": {
+        "build_script": "form-data-encoder_ubi_9.3.sh"
+    },
+    "v2.1.14": {
+        "build_script": "form-data-encoder_v2.1.14_ubi_9.3.sh"
+    }
+}

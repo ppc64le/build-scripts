@@ -1,11 +1,11 @@
 {
-   "maintainer": "ich@us.ibm.com",
-   "package_name": "untildify",
-   "github_url": "https://github.com/sindresorhus/untildify",
-   "version": "v5.0.0",
-   "default_branch": "main",
-   "build_script": "untildify_ubi_8.7.sh",
-   "package_dir": "u/untildify",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "IBM-Currency-Helper",
+  "package_name": "untildify",
+  "github_url": "https://github.com/sindresorhus/untildify",
+  "version": "v5.0.0",
+  "default_branch": "main",
+  "build_script": "untildify_ubi_8.7.sh",
+  "package_dir": "u/untildify",
+  "docker_build": false,
+  "validate_build_script": true
 }

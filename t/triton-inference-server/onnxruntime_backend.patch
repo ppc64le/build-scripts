@@ -1,0 +1,73 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index bf374cd..c53c6b9 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -355,7 +355,7 @@ if(TRITON_ONNXRUNTIME_DOCKER_BUILD)
+     add_custom_command(
+       OUTPUT
+         onnxruntime/lib/${ONNXRUNTIME_LIBRARY}
+-      COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/tools/gen_ort_dockerfile.py --triton-container="${TRITON_BUILD_CONTAINER}" --ort-version="${TRITON_BUILD_ONNXRUNTIME_VERSION}" --trt-version="${TRT_VERSION}" --onnx-tensorrt-tag="${TRITON_ONNX_TENSORRT_REPO_TAG}" ${_GEN_FLAGS} --output=Dockerfile.ort ${ENABLE_GPU_EXTRA_ARGS}
++      COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/tools/gen_ort_dockerfile.py --triton-container="${TRITON_BUILD_CONTAINER}" --target-platform=rhel --ort-version="${TRITON_BUILD_ONNXRUNTIME_VERSION}" --trt-version="${TRT_VERSION}" --onnx-tensorrt-tag="${TRITON_ONNX_TENSORRT_REPO_TAG}" ${_GEN_FLAGS} --output=Dockerfile.ort ${ENABLE_GPU_EXTRA_ARGS}
+       COMMAND docker build --memory ${TRITON_ONNXRUNTIME_DOCKER_MEMORY} --cache-from=${TRITON_ONNXRUNTIME_DOCKER_IMAGE} --cache-from=${TRITON_ONNXRUNTIME_DOCKER_IMAGE}_cache0 --cache-from=${TRITON_ONNXRUNTIME_DOCKER_IMAGE}_cache1 -t ${TRITON_ONNXRUNTIME_DOCKER_IMAGE} -f ./Dockerfile.ort ${CMAKE_CURRENT_SOURCE_DIR}
+       COMMAND powershell.exe -noprofile -c "docker rm onnxruntime_backend_ort > $null 2>&1; if ($LASTEXITCODE) { 'error ignored...' }; exit 0"
+       COMMAND docker create --name onnxruntime_backend_ort ${TRITON_ONNXRUNTIME_DOCKER_IMAGE}
+@@ -368,8 +368,8 @@ if(TRITON_ONNXRUNTIME_DOCKER_BUILD)
+     add_custom_command(
+       OUTPUT
+         onnxruntime/lib/${ONNXRUNTIME_LIBRARY}
+-      COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/tools/gen_ort_dockerfile.py  --ort-build-config="${CMAKE_BUILD_TYPE}" --triton-container="${TRITON_BUILD_CONTAINER}" --ort-version="${TRITON_BUILD_ONNXRUNTIME_VERSION}" --trt-version="${TRT_VERSION}" --onnx-tensorrt-tag="${TRITON_ONNX_TENSORRT_REPO_TAG}" ${_GEN_FLAGS} --output=Dockerfile.ort ${ENABLE_GPU_EXTRA_ARGS}
+-      COMMAND docker build --cache-from=${TRITON_ONNXRUNTIME_DOCKER_IMAGE} --cache-from=${TRITON_ONNXRUNTIME_DOCKER_IMAGE}_cache0 --cache-from=${TRITON_ONNXRUNTIME_DOCKER_IMAGE}_cache1 -t ${TRITON_ONNXRUNTIME_DOCKER_IMAGE} -f ./Dockerfile.ort ${CMAKE_CURRENT_SOURCE_DIR}
++      COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/tools/gen_ort_dockerfile.py  --ort-build-config="${CMAKE_BUILD_TYPE}" --target-platform=rhel --triton-container="${TRITON_BUILD_CONTAINER}" --ort-version="${TRITON_BUILD_ONNXRUNTIME_VERSION}" --trt-version="${TRT_VERSION}" --onnx-tensorrt-tag="${TRITON_ONNX_TENSORRT_REPO_TAG}" ${_GEN_FLAGS} --output=Dockerfile.ort ${ENABLE_GPU_EXTRA_ARGS}
++      COMMAND docker build --load --cache-from=${TRITON_ONNXRUNTIME_DOCKER_IMAGE} --cache-from=${TRITON_ONNXRUNTIME_DOCKER_IMAGE}_cache0 --cache-from=${TRITON_ONNXRUNTIME_DOCKER_IMAGE}_cache1 -t ${TRITON_ONNXRUNTIME_DOCKER_IMAGE} -f ./Dockerfile.ort ${CMAKE_CURRENT_SOURCE_DIR}
+       COMMAND docker rm onnxruntime_backend_ort || echo 'error ignored...' || true
+       COMMAND docker create --name onnxruntime_backend_ort ${TRITON_ONNXRUNTIME_DOCKER_IMAGE}
+       COMMAND rm -fr onnxruntime
+diff --git a/tools/gen_ort_dockerfile.py b/tools/gen_ort_dockerfile.py
+index 13f38ac..7f8447d 100755
+--- a/tools/gen_ort_dockerfile.py
++++ b/tools/gen_ort_dockerfile.py
+@@ -126,26 +126,33 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1
+         df += """
+ # The manylinux container defaults to Python 3.7, but some feature installation
+ # requires a higher version.
+-ARG PYVER=3.12
+-ENV PYTHONPATH=/opt/python/v
+-RUN ln -sf /opt/python/cp${PYVER/./}* ${PYTHONPATH}
+
+-ENV PYBIN=${PYTHONPATH}/bin
+-ENV PYTHON_BIN_PATH=${PYBIN}/python${PYVER} \
+-    PATH=${PYBIN}:${PATH}
++RUN yum install -y wget && \
++   dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
++        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
++        https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
++        dnf config-manager --set-enabled crb &&\
++        dnf install gperf libarchive-devel numactl-devel readline-devel libusb patch -y && \
++        dnf remove -y centos-gpg-keys-9.0-24.el9.noarch centos-stream-repos-9.0-24.el9.noarch
+
+ RUN yum install -y \\
+         ca-certificates \\
+-        curl \\
+         git \\
+         gnupg \\
+-        gnupg1 \
++        gnupg1 \\
+         openssl-devel \\
+-        python3-pip \
++        python3.12 \\
++        python3.12-pip \\
++        python3.12-devel \\
++        python3.12-numpy \\
+         wget \\
++        cmake \\
++        g++ \\
+         zip
+
+-RUN pip3 install patchelf==0.17.2
++RUN ln -sf $(which python3.12) /usr/bin/python3 && ln -sf $(which pip3.12) /usr/bin/pip3 && ln -sf $(which pip3.12) /usr/bin/pip
++RUN pip3 install patchelf==0.17.2 cmake packaging wheel
++
+ """
+     else:
+         if os.getenv("CCACHE_REMOTE_ONLY") and os.getenv("CCACHE_REMOTE_STORAGE"):
+

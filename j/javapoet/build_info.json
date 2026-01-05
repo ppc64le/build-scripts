@@ -1,0 +1,15 @@
+{
+    "maintainer": "santhoshkotla2929",
+    "package_name": "javapoet",
+    "github_url": "https://github.com/square/javapoet",
+    "version": "javapoet-1.13.0",
+    "default_branch": "master",
+    "build_script": "javapoet_ubi_9.3.sh",
+    "package_dir": "j/javapoet",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "javapoet-1.*.*": {
+      "build_script": "javapoet_ubi_9.3.sh"	   
+    }    
+}

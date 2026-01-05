@@ -1,0 +1,17 @@
+{
+    "maintainer": "vinodk99",
+    "package_name": "pact-go",
+    "github_url": "https://github.com/pact-foundation/pact-go",
+    "version": "v2.0.8",
+    "default_branch": "master",
+    "package_dir": "p/pact-go/",
+    "build_script": "pact-go_ubi_9.3.sh",
+    "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "docker_build": true,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "v*.*.*": {
+      "dir": "2.0.8_ubi9",
+      "build_script": "pact-go_ubi_9.3.sh"
+    }
+  }

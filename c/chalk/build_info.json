@@ -1,14 +1,15 @@
 {
-  "maintainer": "Pooja.Shah4@ibm.com",
+  "maintainer": "pooja0805",
   "package_name": "chalk",
   "github_url": "https://github.com/chalk/chalk.git",
-  "version": "v5.2.0",
+  "version": "v5.3.0",
   "package_dir": "c/chalk/",
-  "build_script": "chalk_ubi_8.7.sh",
+  "build_script": "chalk_ubi_9.3.sh",
   "validate_build_script": true,
   "default_branch": "main",
   "docker_build": false,
+  "use_non_root_user": false,
   "v5.*.*": {
-    "build_script": "chalk_ubi_8.7.sh"
+    "build_script": "chalk_ubi_9.3.sh"
   }
 }

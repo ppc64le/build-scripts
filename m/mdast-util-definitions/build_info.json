@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "mdast-util-definitions",
+    "github_url": "https://github.com/syntax-tree/mdast-util-definitions",
+    "version": "6.0.0",
+    "default_branch": "main",
+    "build_script": "mdast-util-definitions_ubi_9.3.sh",
+    "package_dir": "m/mdast-util-definitions",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "6.*.*": {
+        "build_script": "mdast-util-definitions_ubi_9.3.sh"
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "maintainer": "santhoshkotla2929",
+    "package_name": "httpcomponents-core",
+    "github_url": "https://github.com/apache/httpcomponents-core",
+    "version": "rel/v5.3.1",
+    "default_branch": "master",
+    "build_script": "httpcomponents-core_ubi_9.3.sh",
+    "package_dir": "h/httpcomponents-core",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "rel/v5.3.*": {
+      "build_script": "httpcomponents-core_ubi_9.3.sh"	   
+    }    
+}

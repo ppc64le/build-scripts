@@ -6,7 +6,7 @@
 # Source repo	: https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2-sources.jar
 # Tested on     : ubuntu_18.04 (Docker)
 # Language      : Java
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Manik Fulpagar <Manik_Fulpagar@ibm.com>
 #

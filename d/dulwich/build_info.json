@@ -1,0 +1,16 @@
+{
+	"maintainer": "sohambadjateibm",
+	"package_name": "dulwich",
+	"github_url": "https://github.com/jelmer/dulwich.git",
+	"version": "dulwich-0.21.7",
+	"default_branch": "master",
+	"build_script": "dulwich_0.21.7_ubi_9.3.sh",
+	"package_dir": "d/dulwich",
+	"docker_build": false,
+	"validate_build_script": true,
+	"wheel_build" : true,
+	"use_non_root_user": false,
+	"*": {
+	   "build_script": "dulwich_0.21.7_ubi_9.3.sh"
+	}
+}

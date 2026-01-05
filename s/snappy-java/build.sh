@@ -5,7 +5,7 @@
 # Source repo   : https://github.com/xerial/snappy-java
 # Tested on     : RHEL_7.9
 # Language      : Java, C++
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Krishna Harsha Voora <krishvoor@in.ibm.com>
 #

@@ -6,7 +6,7 @@
 # Source repo           : https://github.com/npm/libcipm
 # Tested on             : UBI 8
 # Language              : Node
-# Travis-Check          : True
+# Ci-Check          : True
 # Script License        : Apache License, Version 2 or later
 # Maintainer            : Swati Singhal <swati.singhal@ibm.com>,Saraswati patra<saraswati.patra@ibm.com>
 #

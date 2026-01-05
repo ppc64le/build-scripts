@@ -1,0 +1,15 @@
+{
+  "maintainer": "Amitkumar282",
+  "package_name": "flux2",
+  "github_url": "https://github.com/fluxcd/flux2.git",
+  "version": "v0.38.3",
+  "package_dir": "f/flux2",
+  "default_branch": "master",
+  "build_script": "flux2_v0.38.3_ubi_9.3.sh", 
+  "docker_build": "false",
+  "use_non_root_user": "false",
+  "validate_build_script": "true",
+  "*": {
+    "build_script": "flux2_v0.38.3_ubi_9.3.sh"
+  }
+}

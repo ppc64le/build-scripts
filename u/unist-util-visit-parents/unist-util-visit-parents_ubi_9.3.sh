@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/syntax-tree/unist-util-visit-parents
 # Tested on	: UBI 9.3
 # Language      : Node
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Shubham Garud <Shubham.Garud@ibm.com>
 #

@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "pygments",
+   "github_url": "https://github.com/pygments/pygments",
+   "version": "2.19.1",
+   "default_branch": "master",
+   "build_script": "pygments_ubi_9.3.sh",
+   "package_dir": "p/pygments",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}

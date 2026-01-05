@@ -1,0 +1,15 @@
+{
+    "maintainer": "pratibh-ibm",
+    "package_name": "stax2-api",
+    "github_url": "https://github.com/FasterXML/stax2-api.git",
+    "version": "stax2-api-4.2.2",
+    "default_branch": "master",
+    "package_dir": "s/stax2-api",
+    "build_script": "stax2-api_ubi_9.3.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "stax2-api-4.*.*": {
+      "build_script": "stax2-api_ubi_9.3.sh"
+    }
+  }

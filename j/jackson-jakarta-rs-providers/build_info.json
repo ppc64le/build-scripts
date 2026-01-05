@@ -1,0 +1,15 @@
+{
+  "maintainer": "Vipul-Ajmera",
+  "package_name": "jackson-jakarta-rs-providers",
+  "github_url": "https://github.com/FasterXML/jackson-jakarta-rs-providers.git",
+  "version": "jackson-jakarta-rs-providers-2.17.2",
+  "default_branch": "2.18",
+  "package_dir": "j/jackson-jakarta-rs-providers",
+  "build_script": "jackson-jakarta-rs-providers_ubi_9.3.sh",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "jackson-jakarta-rs-providers-*.*.*": {
+    "build_script": "jackson-jakarta-rs-providers_ubi_9.3.sh"
+  }
+}

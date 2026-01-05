@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "which-typed-array",
+    "github_url": "https://github.com/inspect-js/which-typed-array",
+    "version": "v1.1.15",
+    "default_branch": "main",
+    "build_script": "which-typed-array_ubi_9.3.sh",
+    "package_dir": "w/which-typed-array",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v1.*.*": {
+        "build_script": "which-typed-array_ubi_9.3.sh"
+    }
+}

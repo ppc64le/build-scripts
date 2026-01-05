@@ -1,0 +1,15 @@
+{
+  "maintainer": "mayurbhosure",
+  "package_name": "spatial4j",
+  "github_url": "https://github.com/locationtech/spatial4j",
+  "version": "v0.8",
+  "default_branch": "master",
+  "build_script": "spatial4j_ubi_9.3.sh",
+  "package_dir": "s/spatial4j",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "v0.*": {
+    "build_script": "spatial4j_ubi_9.3.sh"
+  }
+}

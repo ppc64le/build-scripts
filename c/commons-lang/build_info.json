@@ -1,0 +1,15 @@
+{
+  "maintainer": "Amitkumar282",
+  "package_name": "commons-lang",
+  "github_url": "https://github.com/apache/commons-lang.git",
+  "version": "rel/commons-lang-3.17.0",
+  "default_branch": "master",
+  "build_script": "commons-lang_v3.17.0_ubi_9.5.sh",
+  "package_dir": "c/commons-lang",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "*": {
+    "build_script": "commons-lang_v3.17.0_ubi_9.5.sh"
+  }
+}

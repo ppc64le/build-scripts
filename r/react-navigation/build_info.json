@@ -1,0 +1,15 @@
+{
+  "maintainer": "vikram9491",
+  "package_name": "react-navigation",
+  "github_url": "https://github.com/react-navigation/react-navigation.git",
+  "version": "v6.1.17",
+  "package_dir": "r/react-native",
+  "default_branch": "master",
+  "build_script": "react-navigation-native_v6.1.17_ubi_9.5.sh", 
+  "docker_build": "false",
+  "use_non_root_user": "false",
+  "validate_build_script": "true",
+  "*": {
+    "build_script": "react-navigation-native_v6.1.17_ubi_9.5.sh"
+  }
+}

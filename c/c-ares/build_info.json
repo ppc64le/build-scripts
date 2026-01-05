@@ -1,0 +1,16 @@
+{
+  "maintainer": "stutiibm",
+  "package_name": "c-ares",
+  "github_url": "https://github.com/c-ares/c-ares.git",
+  "version": "cares-1_19_1",
+  "wheel_build" : true,
+  "package_dir": "c/c-ares",
+  "default_branch": "main",
+  "build_script": "cares_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script": "cares_ubi_9.3.sh"
+  }
+}

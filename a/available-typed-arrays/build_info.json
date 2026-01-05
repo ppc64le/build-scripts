@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "available-typed-arrays",
+    "github_url": "https://github.com/inspect-js/available-typed-arrays",
+    "version": "v1.0.7",
+    "default_branch": "main",
+    "build_script": "available-typed-arrays_ubi_9.3.sh",
+    "package_dir": "a/available-typed-arrays",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v1.*.*": {
+        "build_script": "available-typed-arrays_ubi_9.3.sh"
+    }
+}

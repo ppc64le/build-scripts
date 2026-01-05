@@ -1,0 +1,355 @@
+diff --git a/build.py b/build.py
+index 66a1855d..4c33c0db 100755
+--- a/build.py
++++ b/build.py
+@@ -335,6 +335,13 @@ class BuildScript:
+                 f"  git clone --recursive --single-branch --depth=1 -b {tag} {org}/{repo}.git {subdir}; git --git-dir {subdir}/.git log --oneline -1",
+                 check_exitcode=True,
+             )
++            self.cwd(subdir)
++            if subdir == "onnxruntime":
++                self.cmd(f"git apply /workspace/onnxruntime_backend.patch", check_exitcode=True)
++            if subdir == "pytorch":
++                self.cmd(f"git apply /workspace/pytorch_backend.patch", check_exitcode=True)
++            if subdir == "fil":
++                self.cmd(f"git apply /workspace/fil_backend.patch", check_exitcode=True)
+             self.cmd("}" if target_platform() == "windows" else "fi")
+ 
+ 
+@@ -457,7 +464,8 @@ def core_cmake_args(components, backends, cmake_dir, install_dir):
+             "TRITON_THIRD_PARTY_REPO_TAG", "STRING", components["thirdparty"]
+         ),
+     ]
+-
++    if target_platform() == "rhel":
++        cargs.append(cmake_core_arg("CMAKE_PREFIX_PATH", "PATH", FLAGS.tmp_dir + "/tritonbuild/tritonserver/build/third-party/protobuf/lib64/cmake/protobuf"))
+     cargs.append(cmake_core_enable("TRITON_ENABLE_LOGGING", FLAGS.enable_logging))
+     cargs.append(cmake_core_enable("TRITON_ENABLE_STATS", FLAGS.enable_stats))
+     cargs.append(cmake_core_enable("TRITON_ENABLE_METRICS", FLAGS.enable_metrics))
+@@ -649,6 +657,9 @@ def pytorch_cmake_args(images):
+     cargs = [
+         cmake_backend_arg("pytorch", "TRITON_PYTORCH_DOCKER_IMAGE", None, image),
+     ]
++    if target_platform() == "rhel":
++        cargs.append(cmake_core_arg("TRITON_PYTORCH_INCLUDE_PATHS", "PATH", "/usr/local/lib64/python3.12/site-packages/torch/include"))
++        cargs.append(cmake_core_arg("TRITON_PYTORCH_LIB_PATHS", "PATH", "/usr/local/lib64/python3.12/site-packages/torch/lib"))
+ 
+     # TODO: TPRD-372 TorchTRT extension is not currently supported by our manylinux build
+     # TODO: TPRD-373 NVTX extension is not currently supported by our manylinux build
+@@ -933,11 +944,19 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1 CMAKE_POLICY_VERSION_MINIMUM=3.5
+ """
+     df += """
+ # Install docker docker buildx
+-RUN yum install -y ca-certificates curl gnupg yum-utils \\
+-      && yum-config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo \\
++RUN yum install -y ca-certificates  gnupg yum-utils \\
++      && yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo \\
+       && yum install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+ #   && yum install -y docker.io docker-buildx-plugin
+ 
++RUN yum install -y wget && \
++   dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-26.el9.noarch.rpm \
++        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-26.el9.noarch.rpm \
++        https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
++        dnf config-manager --set-enabled crb &&\
++        dnf install gperf libarchive-devel numactl-devel readline-devel -y && \
++        dnf remove -y centos-gpg-keys-9.0-26.el9.noarch centos-stream-repos-9.0-26.el9.noarch
++
+ # libcurl4-openSSL-dev is needed for GCS
+ # python3-dev is needed by Torchvision
+ # python3-pip and libarchive-dev is needed by python backend
+@@ -946,6 +965,7 @@ RUN yum install -y ca-certificates curl gnupg yum-utils \\
+ RUN yum install -y \\
+             autoconf \\
+             automake \\
++            cmake \\
+             bzip2-devel \\
+             ca-certificates \\
+             git \\
+@@ -960,16 +980,32 @@ RUN yum install -y \\
+             numactl-devel \\
+             openssl-devel \\
+             pkg-config \\
+-            python3-pip \\
+-            python3-scons \\
+-            python3-setuptools \\
++            python3.12 \\
++            python3.12-pip \\
++            python3.12-devel \\
+             rapidjson-devel \\
+             re2-devel \\
+             readline-devel \\
+             unzip \\
+             wget \\
+             xz-devel \\
+-            zlib-devel
++            zlib-devel \\
++            libjpeg-devel \\
++            sqlite-devel\\
++            libffi-devel\\
++            openblas-devel \\
++            g++ \\
++            ccache
++RUN ln -sf $(which python3.12) /usr/bin/python3 && ln -sf $(which pip3.12) /usr/bin/pip3 && ln -sf $(which pip3.12) /usr/bin/pip
++RUN ln -sf $(which python3.12) /usr/bin/python3 && ln -sf $(which pip3.12) /usr/bin/pip3 && ln -sf $(which pip3.12) /usr/bin/pip
++
++RUN wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchvision/torchvision_ubi_9.3.sh && bash torchvision_ubi_9.3.sh
++
++RUN cp /vision/build/libtorchvision.so /usr/local/lib64/python3.12/site-packages/torch/lib/ 
++
++RUN ln -s /usr/local/lib64/python3.12/site-packages/torch/lib/libtorchvision.so /usr/local/lib64/python3.12/site-packages/torch/lib/libtorchvision.so.1
++RUN cp /usr/lib64/libjpeg.so.62 /usr/local/lib64/python3.12/site-packages/torch/lib/
++RUN wget https://cmake.org/files/v3.31/cmake-3.31.8.tar.gz && tar -zxvf cmake-3.31.8.tar.gz && cd cmake-3.31.8 && ./bootstrap && make && make install && cd ..
+ """
+     if os.getenv("CCACHE_REMOTE_ONLY") and os.getenv("CCACHE_REMOTE_STORAGE"):
+         df += """
+@@ -1001,7 +1037,7 @@ RUN pip3 install --upgrade pip \\
+           docker \\
+           virtualenv \\
+           patchelf==0.17.2 \\
+-          cmake==4.0.3
++          requests==2.25.1
+ """
+     df += f"""
+ # Install boost version >= 1.78 for boost::span
+@@ -1113,8 +1149,7 @@ RUN pip3 install --upgrade \\
+           build \\
+           docker \\
+           virtualenv \\
+-          patchelf==0.17.2 \\
+-          cmake==4.0.3
++          patchelf==0.17.2
+ """
+ 
+         df += f"""
+@@ -1216,17 +1251,9 @@ ARG BASE_IMAGE={}
+     # PyTorch backends need extra CUDA and other
+     # dependencies during runtime that are missing in the CPU-only base container.
+     # These dependencies must be copied from the Triton Min image.
+-    if not FLAGS.enable_gpu and ("pytorch" in backends):
+-        df += """
+ ############################################################################
+ ##  Triton Min image
+ ############################################################################
+-FROM {} AS min_container
+-
+-""".format(
+-            argmap["GPU_BASE_IMAGE"]
+-        )
+-
+     df += """
+ ############################################################################
+ ##  Production stage: Create container with just inference server executable
+@@ -1244,15 +1271,36 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1
+ WORKDIR /opt
+ COPY --chown=1000:1000 build/install tritonserver
+ 
++COPY build/torch-2.6.0-cp312-cp312-linux_ppc64le.whl /opt
++COPY build/torchvision-0.22.0-cp312-cp312-linux_ppc64le.whl /opt
++RUN mkdir protobuf
++COPY build/protobuf /opt/protobuf
++
++RUN cp /opt/protobuf/build/* /usr/lib64 -r && cp /opt/protobuf/local/libprotobuf/lib64/* /usr/lib64 -r && rm -rf /opt/protobuf
++RUN pip3 install /opt/torch-2.6.0-cp312-cp312-linux_ppc64le.whl /opt/torchvision-0.22.0-cp312-cp312-linux_ppc64le.whl
++RUN rm -rf /opt/torch-2.6.0-cp312-cp312-linux_ppc64le.whl /opt/torchvision-0.22.0-cp312-cp312-linux_ppc64le.wh
++COPY build/libtorchvision.so /usr/local/lib64/python3.12/site-packages/torch/share/cmake/Torch
++COPY build/libtorchvision.so /usr/local/lib64/python3.12/site-packages/torch/lib
++RUN ln -s /usr/local/lib64/python3.12/site-packages/torch/lib/libtorchvision.so /usr/local/lib64/python3.12/site-packages/torch/lib/libtorchvision.so.1
++ 
+ WORKDIR /opt/tritonserver
+ COPY --chown=1000:1000 NVIDIA_Deep_Learning_Container_License.pdf .
+-RUN find /opt/tritonserver/python -maxdepth 1 -type f -name \\
+-    "tritonserver-*.whl" | xargs -I {} pip install --upgrade {}[all] && \\
+-    find /opt/tritonserver/python -maxdepth 1 -type f -name \\
+-    "tritonfrontend-*.whl" | xargs -I {} pip install --upgrade {}[all]
++
++RUN if [ "$(uname -m)" = "ppc64le" ]; then \
++        VARIANT="cpu"; \
++    else \
++        VARIANT="all"; \
++    fi &&\
++    find /opt/tritonserver/python -maxdepth 1 -type f -name \
++    "tritonserver-*.whl" | xargs -I {} pip install --upgrade {}[$VARIANT] && \
++    find /opt/tritonserver/python -maxdepth 1 -type f -name \
++    "tritonfrontend-*.whl" | xargs -I {} pip install --upgrade {}[$VARIANT];
++
+ 
+ RUN pip3 install -r python/openai/requirements.txt
+ 
++ENV LD_LIBRARY_PATH=/opt/tritonserver/lib64:$LD_LIBRARY_PATH
++
+ """
+     if not FLAGS.no_core_build:
+         # Add feature labels for SageMaker endpoint
+@@ -1266,7 +1314,6 @@ COPY --chown=1000:1000 docker/sagemaker/serve /usr/bin/.
+     # stage of the PyTorch backend
+     if not FLAGS.enable_gpu and ("pytorch" in backends):
+         df += """
+-RUN patchelf --add-needed /usr/local/cuda/lib64/stubs/libcublasLt.so.13 backends/pytorch/libtorch_cuda.so
+ """
+     if "tensorrtllm" in backends:
+         df += """
+@@ -1350,10 +1397,20 @@ RUN userdel tensorrt-server > /dev/null 2>&1 || true \\
+ 
+     if target_platform() == "rhel":
+         df += """
++RUN yum update -y && yum install -y wget && \
++   dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-26.el9.noarch.rpm \
++        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-26.el9.noarch.rpm \
++        https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
++        dnf config-manager --set-enabled crb &&\
++        dnf install gperf numactl-devel readline-devel -y && \
++        dnf remove -y centos-gpg-keys-9.0-26.el9.noarch centos-stream-repos-9.0-26.el9.noarch
++
++
+ # Common dependencies.
+ RUN yum install -y \\
+         git \\
+         gperf \\
++        g++ \\
+         re2-devel \\
+         openssl-devel \\
+         libtool \\
+@@ -1361,10 +1418,18 @@ RUN yum install -y \\
+         libb64-devel \\
+         gperftools-devel \\
+         wget \\
+-        python3-pip \\
+-        numactl-devel
+-
+-RUN pip3 install patchelf==0.17.2
++        cmake \\
++        python3.12 \\
++        python3.12-pip \\
++        python3.12-devel \\
++        numactl-devel \\
++        libjpeg-devel \\
++        zlib-devel \\
++        openblas-devel \\
++        libarchive \\
++        ccache
++RUN ln -sf $(which python3.12) /usr/bin/python3 && ln -sf $(which pip3.12) /usr/bin/pip3 && ln -sf $(which pip3.12) /usr/bin/pip
++RUN pip3 install patchelf==0.17.2 pillow 
+ 
+ """
+     else:
+@@ -1433,7 +1498,6 @@ RUN ln -sf ${_CUDA_COMPAT_PATH}/lib.real ${_CUDA_COMPAT_PATH}/lib \\
+             df += """
+ # python3, python3-pip and some pip installs required for the python backend
+ RUN yum install -y \\
+-        libarchive-devel \\
+         openssl-devel \\
+         readline-devel
+ """
+@@ -1570,37 +1634,9 @@ def add_cpu_libs_to_linux_dockerfile(backends, target_machine):
+         # we must copy these from the Triton min container ourselves.
+         cuda_arch = "sbsa" if target_machine == "aarch64" else "x86_64"
+         df += """
+-RUN mkdir -p /usr/local/cuda/lib64/stubs
+-COPY --from=min_container /usr/local/cuda/lib64/stubs/libcusparse.so /usr/local/cuda/lib64/stubs/libcusparse.so.12
+-COPY --from=min_container /usr/local/cuda/lib64/stubs/libcusolver.so /usr/local/cuda/lib64/stubs/libcusolver.so.12
+-COPY --from=min_container /usr/local/cuda/lib64/stubs/libcurand.so /usr/local/cuda/lib64/stubs/libcurand.so.10
+-COPY --from=min_container /usr/local/cuda/lib64/stubs/libcufft.so /usr/local/cuda/lib64/stubs/libcufft.so.12
+-COPY --from=min_container /usr/local/cuda/lib64/stubs/libcublas.so /usr/local/cuda/lib64/stubs/libcublas.so.13
+-COPY --from=min_container /usr/local/cuda/lib64/stubs/libcublasLt.so /usr/local/cuda/lib64/stubs/libcublasLt.so.13
+-
+-RUN mkdir -p /usr/local/cuda/targets/{cuda_arch}-linux/lib
+-COPY --from=min_container /usr/local/cuda/lib64/libcudart.so.13 /usr/local/cuda/targets/{cuda_arch}-linux/lib/.
+-COPY --from=min_container /usr/local/cuda/lib64/libcupti.so.13 /usr/local/cuda/targets/{cuda_arch}-linux/lib/.
+-COPY --from=min_container /usr/local/cuda/lib64/libnvJitLink.so.13 /usr/local/cuda/targets/{cuda_arch}-linux/lib/.
+-COPY --from=min_container /usr/local/cuda/lib64/libcufile.so.0 /usr/local/cuda/targets/{cuda_arch}-linux/lib/.
+-COPY --from=min_container /usr/local/cuda/lib64/libnvrtc.so.13 /usr/local/cuda/targets/{cuda_arch}-linux/lib/.
+-COPY --from=min_container /usr/local/cuda/lib64/libcusparseLt.so.0 /usr/local/cuda/targets/{cuda_arch}-linux/lib/.
+-
+-RUN mkdir -p /opt/hpcx/ucc/lib/ /opt/hpcx/ucx/lib/
+-COPY --from=min_container /opt/hpcx/ucc/lib/libucc.so.1 /opt/hpcx/ucc/lib/libucc.so.1
+-COPY --from=min_container /opt/hpcx/ucx/lib/libucm.so.0 /opt/hpcx/ucx/lib/libucm.so.0
+-COPY --from=min_container /opt/hpcx/ucx/lib/libucp.so.0 /opt/hpcx/ucx/lib/libucp.so.0
+-COPY --from=min_container /opt/hpcx/ucx/lib/libucs.so.0 /opt/hpcx/ucx/lib/libucs.so.0
+-COPY --from=min_container /opt/hpcx/ucx/lib/libuct.so.0 /opt/hpcx/ucx/lib/libuct.so.0
+-
+-COPY --from=min_container /usr/lib/{libs_arch}-linux-gnu/libcudnn.so.9 /usr/lib/{libs_arch}-linux-gnu/libcudnn.so.9
+-
+ # patchelf is needed to add deps of libcublasLt.so.12 to libtorch_cuda.so
+-RUN apt-get update \\
+-      && apt-get install -y --no-install-recommends openmpi-bin
+ RUN pip3 install patchelf==0.17.2
+ 
+-ENV LD_LIBRARY_PATH /usr/local/cuda/targets/{cuda_arch}-linux/lib:/usr/local/cuda/lib64/stubs:${{LD_LIBRARY_PATH}}
+ """.format(
+             cuda_arch=cuda_arch, libs_arch=libs_arch
+         )
+@@ -1612,7 +1648,6 @@ ENV LD_LIBRARY_PATH /usr/local/cuda/targets/{cuda_arch}-linux/lib:/usr/local/cud
+         # Since this dependency is not present in the ubuntu base image,
+         # we must copy it from the Triton min container ourselves.
+         df += """
+-COPY --from=min_container /usr/lib/{libs_arch}-linux-gnu/libnccl.so.2 /usr/lib/{libs_arch}-linux-gnu/libnccl.so.2
+ """.format(
+             libs_arch=libs_arch
+         )
+@@ -1626,20 +1661,6 @@ def change_default_python_version_rhel(version):
+ # match the version of python inside the RHEL base container. This means that python packages
+ # installed within the container will not be picked up by the python backend stub process pybind
+ # bindings. It must instead must be installed via pyenv.
+-ENV PYENV_ROOT=/opt/pyenv_build
+-RUN curl https://pyenv.run | bash
+-ENV PATH="${{PYENV_ROOT}}/bin:$PATH"
+-RUN eval "$(pyenv init -)"
+-RUN CONFIGURE_OPTS=\"--with-openssl=/usr/lib64\" && pyenv install {version} \\
+-    && cp ${{PYENV_ROOT}}/versions/{version}/lib/libpython3* /usr/lib64/
+-
+-# RHEL image has several python versions. It's important
+-# to set the correct version, otherwise, packages that are
+-# pip installed will not be found during testing.
+-ENV PYVER={version} PYTHONPATH=/opt/python/v
+-RUN ln -sf ${{PYENV_ROOT}}/versions/${{PYVER}}* ${{PYTHONPATH}}
+-ENV PYBIN=${{PYTHONPATH}}/bin
+-ENV PYTHON_BIN_PATH=${{PYBIN}}/python${{PYVER}} PATH=${{PYBIN}}:${{PATH}}
+ """
+     return df
+ 
+@@ -1897,6 +1918,44 @@ def create_docker_build_script(script_name, container_install_dir, container_ci_
+             check_exitcode=True,
+         )
+ 
++        docker_script.cmd(
++            [
++                "docker",
++                "cp",
++                "tritonserver_builder:/torch-2.6.0-cp312-cp312-linux_ppc64le.whl",
++                FLAGS.build_dir,
++            ],
++            check_exitcode=True,
++        )
++        docker_script.cmd(
++            [
++                "docker",
++                "cp",
++                "tritonserver_builder:/torchvision-0.22.0-cp312-cp312-linux_ppc64le.whl",
++                FLAGS.build_dir,
++            ],
++            check_exitcode=True,
++        )
++        docker_script.cmd(
++            [
++                "docker",
++                "cp",
++                "tritonserver_builder:/vision/build/libtorchvision.so",
++                FLAGS.build_dir,
++            ],
++            check_exitcode=True,
++        )
++        docker_script.cmd(
++            [
++                "docker",
++                "cp",
++                "tritonserver_builder:/protobuf",
++                FLAGS.build_dir,
++            ],
++            check_exitcode=True,
++        )
++ 
++
+         #
+         # Final image... tritonserver
+         #

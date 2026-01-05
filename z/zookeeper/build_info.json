@@ -1,28 +1,31 @@
 {
     "package_name" : "zookeeper",
+    "maintainer": "vinodk99",
     "github_url":"https://github.com/apache/zookeeper.git",
-    "version": "release-3.7.1",
+    "version": "release-3.9.2",
     "default_branch": "master",
     "package_dir": "z/zookeeper/",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": "true",
     "docker_cmd" : "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-    "build_script": "zookeeper_ubi_8.5.sh",
-
+    "build_script": "zookeeper_ubi_9.3.sh",
     "release-3.4.14" : {
         "dir":"3.4.14_ubi7"
     },
-    
     "release-3.6.2" : {
         "dir":"3.6.2_ubi7"
     },
-
     "release-3.6.3" : {
         "dir":"3.6.3_ubi8"
     },
-
     "release-3.7.0" : {
         "dir":"3.7.0_ubi8"
     },
-
+    "release-3.*.*,relsease-3.*.*-*" : {
+        "dir":"3.9.2_ubi9",
+        "build_script": "zookeeper_ubi_9.3.sh"
+    },
     "release-*.*.*" : {
         "dir":"template",
         "gitcommit" : "26d526845db22ff2dd8d2449276a3f265eea1f67",

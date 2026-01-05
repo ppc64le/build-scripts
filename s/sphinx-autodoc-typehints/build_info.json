@@ -1,0 +1,16 @@
+{
+  "maintainer": "Harithanagothu2",
+  "package_name": "sphinx-autodoc-typehints",
+  "github_url": "https://github.com/tox-dev/sphinx-autodoc-typehints",
+  "version": "3.2.0",
+  "wheel_build" : true,
+  "package_dir": "s/sphinx-autodoc-typehints",
+  "default_branch": "main",
+  "build_script": "sphinx-autodoc-typehints_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*":{
+    "build_script":"sphinx-autodoc-typehints_ubi_9.3.sh"
+  }
+}

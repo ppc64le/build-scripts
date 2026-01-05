@@ -1,0 +1,262 @@
+diff --git a/.bazelrc b/.bazelrc
+index 3652a96fdf..e632ab18bc 100644
+--- a/.bazelrc
++++ b/.bazelrc
+@@ -19,12 +19,12 @@ build --compilation_mode=opt
+ # Using C++ 17 on all platforms.
+ build:linux --host_cxxopt="-std=c++17"
+ build:macos --host_cxxopt="-std=c++17"
+-build:clang-cl --host_cxxopt="-std=c++17"
++build:clang-cl --host_cxxopt="-std:c++17"
+ build:msvc-cl --host_cxxopt="/std:c++17"
+ build:windows --host_cxxopt="/std:c++17"
+ build:linux --cxxopt="-std=c++17"
+ build:macos --cxxopt="-std=c++17"
+-build:clang-cl --cxxopt="-std=c++17"
++build:clang-cl --cxxopt="-std:c++17"
+ build:msvc-cl --cxxopt="/std:c++17"
+ build:windows --cxxopt="/std:c++17"
+ build:windows --cxxopt="/utf-8"
+@@ -53,9 +53,10 @@ build:windows --enable_runfiles
+ #                 for compiling assembly files is fixed on Windows:
+ #                 https://github.com/bazelbuild/bazel/issues/8924
+ # Warnings should be errors
+-build:linux    --per_file_copt="-\\.(asm|S)$@-Werror"
+-build:macos    --per_file_copt="-\\.(asm|S)$@-Werror"
+-build:clang-cl --per_file_copt="-\\.(asm|S)$@-Werror"
++# Warnings should be errors, except for deprecated protobuf CreateMessage use
++build:linux    --per_file_copt="-\\.(asm|S)$@-Werror,-Wno-deprecated-declarations"
++build:macos    --per_file_copt="-\\.(asm|S)$@-Werror,-Wno-deprecated-declarations"
++build:clang-cl --per_file_copt="-\\.(asm|S)$@-Werror,-Wno-deprecated-declarations"
+ build:msvc-cl     --per_file_copt="-\\.(asm|S)$@-WX"
+ # Ignore warnings for protobuf generated files and external projects.
+ build --per_file_copt="\\.pb\\.cc$@-w"
+@@ -240,3 +241,5 @@ build:macos --sandbox_block_path=/usr/local/
+ build:macos --copt="-Wno-error=deprecated-declarations"
+ # This option controls whether javac checks for missing direct dependencies.
+ build --experimental_strict_java_deps=off
++build:clang-cl --per_file_copt="-external/com_github_redis_hiredis/ssl.c$@-Wno-parenthesis,-Wno-int-conversion"
++build --local_cpu_resources=HOST_CPUS*0.75
+diff --git a/bazel/ray_deps_setup.bzl b/bazel/ray_deps_setup.bzl
+index b10370d052..27dd053fdb 100644
+--- a/bazel/ray_deps_setup.bzl
++++ b/bazel/ray_deps_setup.bzl
+@@ -1,6 +1,5 @@
+ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository", "new_git_repository")
+ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
+-
+ def urlsplit(url):
+     """ Splits a URL like "https://example.com/a/b?c=d&e#f" into a tuple:
+         ("https", ["example", "com"], ["a", "b"], ["c=d", "e"], "f")
+@@ -82,7 +81,6 @@ def auto_http_archive(
+         strip_prefix = strip_prefix,
+         **kwargs
+     )
+-
+ def ray_deps_setup():
+     # Explicitly bring in protobuf dependency to work around
+     # https://github.com/ray-project/ray/issues/14117
+@@ -91,15 +89,14 @@ def ray_deps_setup():
+     # Pinned grpc version: v23.4
+     http_archive(
+         name = "com_google_protobuf",
+-        sha256 = "76a33e2136f23971ce46c72fd697cd94dc9f73d56ab23b753c3e16854c90ddfd",
+-        strip_prefix = "protobuf-2c5fa078d8e86e5f4bd34e6f4c9ea9e8d7d4d44a",
++        sha256 = "b2340aa47faf7ef10a0328190319d3f3bee1b24f426d4ce8f4253b6f27ce16db",
++        strip_prefix = "protobuf-28.2",
+         urls = [
+-            "https://github.com/protocolbuffers/protobuf/archive/2c5fa078d8e86e5f4bd34e6f4c9ea9e8d7d4d44a.tar.gz",
++            "https://github.com/protocolbuffers/protobuf/archive/refs/tags/v28.2.tar.gz",
+         ],
+         patches = [
+-            "@com_github_grpc_grpc//third_party:protobuf.patch",
++            "@io_ray//thirdparty/patches:protobuf-windows-const-nan.patch",
+         ],
+-        patch_args = ["-p1"],
+     )
+ 
+     # NOTE(lingxuan.zlx): 3rd party dependencies could be accessed, so it suggests
+@@ -250,10 +247,10 @@ def ray_deps_setup():
+     # TODO(owner): Upgrade abseil to latest version after protobuf updated, which requires to upgrade `rules_cc` first.
+     auto_http_archive(
+         name = "com_google_absl",
+-        sha256 = "987ce98f02eefbaf930d6e38ab16aa05737234d7afbab2d5c4ea7adbe50c28ed",
+-        strip_prefix = "abseil-cpp-20230802.1",
++        sha256 = "f50e5ac311a81382da7fa75b97310e4b9006474f9560ac46f54a9967f07d4ae3",
++        strip_prefix = "abseil-cpp-20240722.0",
+         urls = [
+-            "https://github.com/abseil/abseil-cpp/archive/refs/tags/20230802.1.tar.gz",
++            "https://github.com/abseil/abseil-cpp/archive/refs/tags/20240722.0.tar.gz",
+         ],
+         patches = [
+             # TODO (israbbani): #55430 Separate the compiler flags and remove this patch
+@@ -278,11 +275,11 @@ def ray_deps_setup():
+     auto_http_archive(
+         name = "com_github_grpc_grpc",
+         # NOTE: If you update this, also update @boringssl's hash.
+-        url = "https://github.com/grpc/grpc/archive/refs/tags/v1.57.1.tar.gz",
+-        sha256 = "0762f809b9de845e6a7c809cabccad6aa4143479fd43b396611fe5a086c0aeeb",
++        url = "https://github.com/grpc/grpc/archive/refs/tags/v1.67.1.tar.gz",
++        sha256 = "d74f8e99a433982a12d7899f6773e285c9824e1d9a173ea1d1fb26c9bd089299",
+         patches = [
+             "@io_ray//thirdparty/patches:grpc-cython-copts.patch",
+-            "@io_ray//thirdparty/patches:grpc-zlib-fdopen.patch",
++            "@io_ray//thirdparty/patches:grpc-avoid-goaway-messages.patch",
+             "@io_ray//thirdparty/patches:grpc-configurable-thread-count.patch",
+         ],
+     )
+@@ -326,10 +323,10 @@ def ray_deps_setup():
+         # https://github.com/grpc/grpc/blob/1ff1feaa83e071d87c07827b0a317ffac673794f/bazel/grpc_deps.bzl#L189
+         # Ensure this rule matches the rule used by grpc's bazel/grpc_deps.bzl
+         name = "boringssl",
+-        sha256 = "0675a4f86ce5e959703425d6f9063eaadf6b61b7f3399e77a154c0e85bad46b1",
+-        strip_prefix = "boringssl-342e805bc1f5dfdd650e3f031686d6c939b095d9",
++        sha256 = "c70d519e4ee709b7a74410a5e3a937428b8198d793a3d771be3dd2086ae167c8",
++        strip_prefix = "boringssl-b8b3e6e11166719a8ebfa43c0cde9ad7d57a84f6",
+         urls = [
+-            "https://github.com/google/boringssl/archive/342e805bc1f5dfdd650e3f031686d6c939b095d9.tar.gz",
++            "https://github.com/google/boringssl/archive/b8b3e6e11166719a8ebfa43c0cde9ad7d57a84f6.tar.gz",
+         ],
+     )
+ 
+diff --git a/src/ray/core_worker/tests/task_event_buffer_export_event_test.cc b/src/ray/core_worker/tests/task_event_buffer_export_event_test.cc
+index cf2e6e7203..aa1c53e9f0 100644
+--- a/src/ray/core_worker/tests/task_event_buffer_export_event_test.cc
++++ b/src/ray/core_worker/tests/task_event_buffer_export_event_test.cc
+@@ -150,7 +150,7 @@ TEST_F(TaskEventTestWriteExport, TestWriteTaskExportEvents) {
+   auto task_ids = GenTaskIDs(num_events);
+   google::protobuf::util::JsonPrintOptions options;
+   options.preserve_proto_field_names = true;
+-  options.always_print_primitive_fields = true;
++  options.always_print_fields_with_no_presence = true;
+ 
+   std::vector<SourceTypeVariant> source_types = {
+       rpc::ExportEvent_SourceType::ExportEvent_SourceType_EXPORT_TASK};
+diff --git a/src/ray/util/event.cc b/src/ray/util/event.cc
+index efdd53ff8d..8dd4c30fb5 100644
+--- a/src/ray/util/event.cc
++++ b/src/ray/util/event.cc
+@@ -138,7 +138,7 @@ std::string LogEventReporter::ExportEventToString(const rpc::ExportEvent &export
+   google::protobuf::util::JsonPrintOptions options;
+   options.preserve_proto_field_names = true;
+   // Required so enum with value 0 is not omitted
+-  options.always_print_primitive_fields = true;
++  options.always_print_fields_with_no_presence = true;
+   if (export_event.has_task_event_data()) {
+     RAY_CHECK(google::protobuf::util::MessageToJsonString(
+                   export_event.task_event_data(), &event_data_as_string, options)
+diff --git a/thirdparty/patches/grpc-configurable-thread-count.patch b/thirdparty/patches/grpc-configurable-thread-count.patch
+index e17e111f85..f1ae73ec4a 100644
+--- a/thirdparty/patches/grpc-configurable-thread-count.patch
++++ b/thirdparty/patches/grpc-configurable-thread-count.patch
+@@ -1,7 +1,6 @@
+-diff --git src/core/lib/gpr/linux/cpu.cc b/src/core/lib/gpr/linux/cpu.cc
+-index 670ca6551c..043021dc4a 100644
+---- src/core/lib/gpr/linux/cpu.cc
+-+++ src/core/lib/gpr/linux/cpu.cc
++diff --git src/core/util/linux/cpu.cc src/core/util/linux/cpu.cc
++--- src/core/util/linux/cpu.cc
+++++ src/core/util/linux/cpu.cc
+ @@ -24,6 +24,7 @@
+  
+  #ifdef GPR_CPU_LINUX
+@@ -10,12 +9,12 @@ index 670ca6551c..043021dc4a 100644
+  #include <errno.h>
+  #include <sched.h>
+  #include <string.h>
+-@@ -49,7 +50,17 @@ static void init_num_cpus() {
++@@ -50,7 +51,17 @@ static void init_num_cpus() {
+  #endif
+    // This must be signed. sysconf returns -1 when the number cannot be
+    // determined
+ -  ncpus = static_cast<int>(sysconf(_SC_NPROCESSORS_CONF));
+-+  static constexpr const char* grpc_pooling_env_var_name = "RAY_num_grpc_internal_threads";
+++  static const char* grpc_pooling_env_var_name = "RAY_num_grpc_internal_threads";
+ +  const char* env_var_value = std::getenv(grpc_pooling_env_var_name);
+ +  if (env_var_value != nullptr) {
+ +    const char* end = env_var_value + std::strlen(env_var_value);
+@@ -27,5 +26,5 @@ index 670ca6551c..043021dc4a 100644
+ +      ncpus = static_cast<int>(sysconf(_SC_NPROCESSORS_CONF));
+ +  }
+    if (ncpus < 1) {
+-     gpr_log(GPR_ERROR, "Cannot determine number of CPUs: assuming 1");
++     LOG(ERROR) << "Cannot determine number of CPUs: assuming 1";
+      ncpus = 1;
+diff --git a/thirdparty/patches/grpc-avoid-goaway-messages.patch b/thirdparty/patches/grpc-avoid-goaway-messages.patch
+new file mode 100644
+index 0000000000..0cd558aa0a
+--- /dev/null
++++ b/thirdparty/patches/grpc-avoid-goaway-messages.patch
+@@ -0,0 +1,19 @@
++diff --git a/src/core/ext/transport/chttp2/transport/chttp2_transport.cc b/src/core/ext/transport/chttp2/transport/chttp2_transport.cc
++index d3c5d994c1..1edc7ae29d 100644
++--- src/core/ext/transport/chttp2/transport/chttp2_transport.cc
+++++ src/core/ext/transport/chttp2/transport/chttp2_transport.cc
++@@ -1176,13 +1176,6 @@ void grpc_chttp2_add_incoming_goaway(grpc_chttp2_transport* t,
++   GRPC_TRACE_LOG(http, INFO)
++       << "transport " << t << " got goaway with last stream id "
++       << last_stream_id;
++-  // We want to log this irrespective of whether http tracing is enabled if we
++-  // received a GOAWAY with a non NO_ERROR code.
++-  if (goaway_error != GRPC_HTTP2_NO_ERROR) {
++-    LOG(INFO) << t->peer_string.as_string_view() << ": Got goaway ["
++-              << goaway_error
++-              << "] err=" << grpc_core::StatusToString(t->goaway_error);
++-  }
++   if (t->is_client) {
++     cancel_unstarted_streams(t, t->goaway_error, false);
++     // Cancel all unseen streams
++
+
+diff --git a/thirdparty/patches/protobuf-windows-const-nan.patch b/thirdparty/patches/protobuf-windows-const-nan.patch
+new file mode 100644
+index 0000000000..99b548f49f
+--- /dev/null
++++ b/thirdparty/patches/protobuf-windows-const-nan.patch
+@@ -0,0 +1,46 @@
++diff -u upb/message/internal/message.c /tmp/message.c
++--- upb/message/internal/message.c
+++++ upb/message/internal/message.c
++@@ -19,6 +19,26 @@
++
++ const float kUpb_FltInfinity = INFINITY;
++ const double kUpb_Infinity = INFINITY;
++-const double kUpb_NaN = NAN;
+++
+++// The latest win32 SDKs have an invalid definition of NAN.
+++// https://developercommunity.visualstudio.com/t/NAN-is-no-longer-compile-time-constant-i/10688907
+++//
+++// Unfortunately, the `0.0 / 0.0` workaround doesn't work in Clang under C23, so
+++// try __builtin_nan first, if that exists.
+++#ifdef _WIN32
+++#ifdef __has_builtin
+++#if __has_builtin(__builtin_nan)
+++#define UPB_NAN __builtin_nan("0")
+++#endif
+++#endif
+++#ifndef UPB_NAN
+++#define UPB_NAN 0.0 / 0.0
+++#endif
+++#else
+++// For !_WIN32, assume math.h works.
+++#define UPB_NAN NAN
+++#endif
+++const double kUpb_NaN = UPB_NAN;
+++
++
++ bool UPB_PRIVATE(_upb_Message_Realloc)(struct upb_Message* msg, size_t need,
++
++diff --git .bazelrc .bazelrc
++--- .bazelrc
+++++ .bazelrc
++@@ -1,4 +1,9 @@
++-build --cxxopt=-std=c++17 --host_cxxopt=-std=c++17
+++build --enable_platform_specific_config
+++build:linux --cxxopt=-std=c++17 --host_cxxopt=-std=c++17
+++build:macos --cxxopt=-std=c++17 --host_cxxopt=-std=c++17
+++build:windows --compiler=clang-cl
+++build:windows --cxxopt=-Wno-invalid-offsetof
+++build:windows --cxxopt=-std:c++17 --host_cxxopt=-std:c++17
++
++ build:dbg --compilation_mode=dbg
++

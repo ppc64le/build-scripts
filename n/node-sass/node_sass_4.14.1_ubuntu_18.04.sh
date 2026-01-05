@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/sass/node-sass.git
 # Tested on     : ubuntu_18.04 (Docker)
 # Language      : Node
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: MIT License
 # Maintainer    : Manik Fulpagar <Manik_Fulpagar@ibm.com>
 #

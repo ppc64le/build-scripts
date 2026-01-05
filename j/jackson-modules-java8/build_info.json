@@ -1,5 +1,5 @@
 {
-  "maintainer": "Stuti.Wali@ibm.com",
+  "maintainer": "stutiibm",
   "package_name": "jackson-modules-java8",
   "github_url": "https://github.com/FasterXML/jackson-modules-java8",
   "version": "jackson-modules-java8-2.14.1",

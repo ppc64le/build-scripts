@@ -91,7 +91,7 @@ if [ -f $stripped_build_script ]; then
       # Check if the line starts with '# Tested on'
       if [[ "$line" == "# Tested on"* ]]; then
           # Extract the value after the first colon
-          tested_on=$(echo "$line" | cut -d ':' -f 2- | tr -d '[:space:]')
+          tested_on=$(echo "$line" | cut -d ':' -f 2- | tr -d '[:space:]' | tr '[:lower:]' '[:upper:]')
           break
       fi
   done < "$stripped_build_script"  # Use input redirection from the file
@@ -104,7 +104,7 @@ echo "export BUILD_SCRIPT=$build_script" >> $CUR_DIR/variable.sh
 echo "export PKG_DIR_PATH=$package_dirpath" >> $CUR_DIR/variable.sh
 echo "export IMAGE_NAME=$image_name" >> $CUR_DIR/variable.sh
 #echo "export BUILD_DOCKER=$build_docker" >> $CUR_DIR/variable.sh
-echo "export VALIDATE_BUILD_SCRIPT=$validate_build_script" >> $CUR_DIR/variable.sh
+#echo "export VALIDATE_BUILD_SCRIPT=$validate_build_script" >> $CUR_DIR/variable.sh
 echo "export VARIANT=$variant" >> $CUR_DIR/variable.sh
 echo "export BASENAME=$basename" >> $CUR_DIR/variable.sh
 echo "export NON_ROOT_BUILD=$nonRootBuild" >> $CUR_DIR/variable.sh

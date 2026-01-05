@@ -1,0 +1,12 @@
+{
+   "maintainer": "Pratikt2312",
+   "package_name": "catboost",
+   "github_url": "https://github.com/catboost/catboost.git",
+   "version": "v1.2.5",
+   "default_branch": "master",
+   "build_script": "catboost-1.2.5_ubi_9.3.sh",
+   "package_dir": "c/catboost",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}

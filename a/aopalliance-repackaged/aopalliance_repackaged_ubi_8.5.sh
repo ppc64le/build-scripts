@@ -6,7 +6,7 @@
 # Source repo	: https://repo1.maven.org/maven2/org/glassfish/hk2/external/aopalliance-repackaged/2.6.1/aopalliance-repackaged-2.6.1-sources.jar
 # Tested on     : UBI 8.5
 # Language      : Java
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Valen Mascarenhas /Vedang Wartikar <Vedang.Wartikar@ibm.com> 
 #

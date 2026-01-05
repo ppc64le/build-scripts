@@ -1,0 +1,15 @@
+{
+  "maintainer": "mayurbhosure",
+  "package_name": "microprofile-health",
+  "github_url": "https://github.com/eclipse/microprofile-health",
+  "version": "4.0.1",
+  "default_branch": "master",
+  "build_script": "microprofile-health_ubi_9.3.sh",
+  "package_dir": "m/microprofile-health",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "4.*.*": {
+    "build_script": "microprofile-health_ubi_9.3.sh"
+  }
+}

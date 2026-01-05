@@ -1,0 +1,14 @@
+diff --git a/lib/libaudit.h b/lib/libaudit.h
+index 05ee91e8..ba868c2c 100644
+--- a/lib/libaudit.h
++++ b/lib/libaudit.h
+@@ -260,7 +260,9 @@ extern "C" {
+ #define AUDIT_KEY_SEPARATOR 0x01
+ 
+ /* These are used in filter control */
++#ifndef AUDIT_FILTER_EXCLUDE
+ #define AUDIT_FILTER_EXCLUDE	AUDIT_FILTER_TYPE
++#endif
+ #define AUDIT_FILTER_MASK	0x07	/* Mask to get actual filter */
+ #define AUDIT_FILTER_UNSET	0x80	/* This value means filter is unset */
+ 

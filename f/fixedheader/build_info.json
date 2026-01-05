@@ -1,15 +1,18 @@
 {
-    "maintainer": "Stuti.Wali@ibm.com",
-    "package_name": "fixedheader",
-    "github_url": "https://github.com/DataTables/FixedHeader",
-    "version": "3.4.0",
-    "default_branch": "master",
-    "package_dir": "f/fixedheader",
-    "build_script": "fixedheader_ubi_8_7.sh",
-    "docker_build": false,
-    "validate_build_script": true,
-    "use_non_root_user": false,
-    "3.4.0": {
-        "build_script": "fixedheader_ubi_8_7.sh"
-     }
+  "maintainer": "stutiibm",
+  "package_name": "fixedheader",
+  "github_url": "https://github.com/DataTables/FixedHeader",
+  "version": "4.0.1",
+  "default_branch": "master",
+  "package_dir": "f/fixedheader",
+  "build_script": "fixedheader_ubi_9_3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "4.0.*": {
+    "build_script": "fixedheader_ubi_9_3.sh"
+  },
+  "3.4.0": {
+    "build_script": "fixedheader_ubi_8_7.sh"
+  }
 }

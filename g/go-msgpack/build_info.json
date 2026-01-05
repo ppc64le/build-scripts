@@ -1,11 +1,11 @@
 {
-   "maintainer": "Vinod.K1@ibm.com",
-   "package_name": "go-msgpack",
-   "github_url": "https://github.com/hashicorp/go-msgpack",
-   "version": "v2.1.1",
-   "default_branch": "main",
-   "build_script": "go-msgpack_ubi_8.7.sh",
-   "package_dir": "g/go-msgpack",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "vinodk99",
+  "package_name": "go-msgpack",
+  "github_url": "https://github.com/hashicorp/go-msgpack",
+  "version": "v2.1.1",
+  "default_branch": "main",
+  "build_script": "go-msgpack_ubi_8.7.sh",
+  "package_dir": "g/go-msgpack",
+  "docker_build": false,
+  "validate_build_script": true
 }

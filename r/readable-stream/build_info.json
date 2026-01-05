@@ -1,11 +1,11 @@
 {
-   "maintainer": "ich@us.ibm.com",
-   "package_name": "readable-stream",
-   "github_url": "https://github.com/nodejs/readable-stream",
-   "version": "v4.4.2",
-   "default_branch": "main",
-   "build_script": "readable-stream_ubi_8.7.sh",
-   "package_dir": "r/readable-stream",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "IBM-Currency-Helper",
+  "package_name": "readable-stream",
+  "github_url": "https://github.com/nodejs/readable-stream",
+  "version": "v4.4.2",
+  "default_branch": "main",
+  "build_script": "readable-stream_ubi_8.7.sh",
+  "package_dir": "r/readable-stream",
+  "docker_build": false,
+  "validate_build_script": true
 }

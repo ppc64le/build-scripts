@@ -5,7 +5,7 @@
 # Version	    : 9.4.48
 # Source repo	: https://github.com/eclipse/jetty.project.git
 # Tested on	    : UBI: 8.5
-# Travis-Check  : True
+# Ci-Check  : True
 # Language      : Java
 # Script License: Apache License Version 2.0
 # Maintainer    : Vishaka Desai <Vishaka.Desai@ibm.com>

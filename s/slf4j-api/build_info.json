@@ -1,0 +1,15 @@
+{
+  "maintainer": "Amitkumar282",
+  "package_name": "slf4j",
+  "github_url": "https://github.com/qos-ch/slf4j.git",
+  "version": "v_2.0.16",
+  "default_branch": "master",
+  "package_dir": "s/slf4j-api",
+  "build_script": "slf4j-api_v_2.0.16_ubi_9.5.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "false",
+  "*": {
+    "build_script": "slf4j-api_v_2.0.16_ubi_9.5.sh"
+  }
+}

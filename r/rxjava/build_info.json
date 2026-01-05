@@ -1,0 +1,20 @@
+{
+    "maintainer": "Vipul-Ajmera",
+    "package_name": "rxjava",
+    "github_url": "https://github.com/ReactiveX/RxJava",
+    "version": "v3.1.8",
+    "default_branch": "3.x",
+    "package_dir": "r/rxjava",
+    "build_script": "rxjava_ubi_9.3.sh",
+    "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "docker_build": "true",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",  
+    "v3.*.*" : {
+       "dir": "v3.1.8_ubi9",
+       "build_script": "rxjava_ubi_9.3.sh"
+  },
+    "v2.*.*" : {
+       "build_script": "rxjava_ubi_9.3_v2.sh"
+  }
+}

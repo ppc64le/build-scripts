@@ -1,0 +1,15 @@
+{
+  "maintainer": "stutiibm",
+  "package_name": "caffeine",
+  "github_url": "https://github.com/ben-manes/caffeine.git",
+  "version": "v3.1.8",
+  "default_branch": "master",
+  "package_dir": "c/caffeine",
+  "build_script": "caffeine_ubi_9_3.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "false",
+  "v*.*.*": {
+    "build_script": "caffeine_ubi_9_3.sh"
+  }
+}

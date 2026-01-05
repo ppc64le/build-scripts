@@ -1,16 +1,15 @@
 {
-    "maintainer":"mohit.pawar@ibm.com",
-    "package_name" : "cryptacular",
-    "github_url": "https://github.com/vt-middleware/cryptacular.git",
-    "version": "v1.2.6",
-    "default_branch": "main",
-    "package_dir": "c/cryptacular",
-    "build_script": "cryptacular_ubi_8.7.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build": "false",
-
-    "v1.2.*" : {
-       "build_script" : "cryptacular_ubi_8.7.sh"
-    }
+  "maintainer": "mohitp333",
+  "package_name": "cryptacular",
+  "github_url": "https://github.com/vt-middleware/cryptacular.git",
+  "version": "v1.2.6",
+  "default_branch": "main",
+  "package_dir": "c/cryptacular",
+  "build_script": "cryptacular_ubi_8.7.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "false",
+  "v1.2.*": {
+    "build_script": "cryptacular_ubi_8.7.sh"
+  }
 }

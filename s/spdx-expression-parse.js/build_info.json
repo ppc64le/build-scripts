@@ -1,0 +1,16 @@
+
+{
+    "maintainer": "stutiibm",
+    "package_name": "spdx-expression-parse.js",
+    "github_url": "https://github.com/jslicense/spdx-expression-parse.js",
+    "version": "v4.0.0",
+    "default_branch": "main",
+    "package_dir": "s/spdx-expression-parse-js",
+    "build_script": "spdx-expression-parse-js_ubi_9_3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "v*": {
+      "build_script": "spdx-expression-parse-js_ubi_9_3.sh"
+    }
+  }

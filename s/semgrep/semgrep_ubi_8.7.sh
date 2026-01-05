@@ -6,7 +6,7 @@
 # Source repo      : https://github.com/semgrep/semgrep.git
 # Tested on        : UBI 8.7
 # Language         : OCaml, Python
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : GNU Lesser General Public License v2.1
 # Maintainer       : Pooja Shah <Pooja.Shah4@ibm.com>
 #

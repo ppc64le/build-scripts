@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "word-wrap",
+    "github_url": "https://github.com/aashutoshrathi/word-wrap",
+    "version": "v1.2.7",
+    "default_branch": "master",
+    "build_script": "word-wrap_ubi_9.3.sh",
+    "package_dir": "w/word-wrap",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v1.*.*": {
+        "build_script": "word-wrap_ubi_9.3.sh"
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "maintainer": "AbhiIBM",
+    "package_name": "fbjs",
+    "github_url": "https://github.com/facebook/fbjs",
+    "version": "fbjs-v3.0.5",
+    "default_branch": "main",
+    "package_dir": "f/fbjs",
+    "build_script": "fbjs_ubi_9.3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "fbjs-v3.*.*": {
+        "build_script": "fbjs_ubi_9.3.sh"
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "maintainer": "stutiibm",
+    "package_name": "bandersnatch",
+    "github_url": "https://github.com/pypa/bandersnatch",
+    "version": "6.5.0",
+    "default_branch": "main",
+    "package_dir": "b/bandersnatch",
+    "build_script": "bandersnatch_ubi_9_3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "6.*": {
+        "build_script": "bandersnatch_ubi_9_3.sh"
+     }
+}

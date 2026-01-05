@@ -1,0 +1,15 @@
+{
+    "maintainer": "stutiibm",
+    "package_name": "etcd",
+    "github_url": "https://github.com/etcd-io/etcd",
+    "version": "v3.5.14",
+    "default_branch": "main",
+    "package_dir": "e/etcd",
+    "build_script": "etcd_ubi_9_3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+     "*": {
+         "build_script": "etcd_ubi_9_3.sh"
+     }
+}

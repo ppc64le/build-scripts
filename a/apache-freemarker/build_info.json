@@ -1,17 +1,17 @@
 {
-  "maintainer": "Muskaan.Sheik@ibm.com",
+  "maintainer": "Vipul-Ajmera",
   "package_name": "apache-freemarker",
   "github_url": "https://github.com/apache/freemarker",
-  "version": "v2.3.32",
+  "version": "v2.3.33",
   "default_branch": "2.3-gae",
   "package_dir": "a/apache-freemarker/",
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-  "build_script": "apache-freemarker_v2.3.31_ubi_8.5.sh",
+  "build_script": "apache-freemarker_ubi_9.3.sh",
   "docker_build": true,
   "validate_build_script": true,
   "use_non_root_user": false,
-  "v2.3.*": {
-    "dir": "ubi_8.5",
-    "build_script": "apache-freemarker_v2.3.31_ubi_8.5.sh"
+  "v*.*.*": {
+    "dir": "ubi9.3",
+    "build_script": "apache-freemarker_ubi_9.3.sh"
   }
 }

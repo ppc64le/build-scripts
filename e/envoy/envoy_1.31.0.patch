@@ -1,0 +1,396 @@
+diff --git a/.bazelrc b/.bazelrc
+index 90b9b112b1..370ab44ef9 100644
+--- a/.bazelrc
++++ b/.bazelrc
+@@ -25,6 +25,7 @@ build --copt=-DABSL_MIN_LOG_LEVEL=4
+ build --define envoy_mobile_listener=enabled
+ build --experimental_repository_downloader_retries=2
+ build --enable_platform_specific_config
++build:ppc --//source/extensions/filters/common/lua:luajit2=1 --linkopt=-fuse-ld=lld
+
+ # Pass CC, CXX and LLVM_CONFIG variables from the environment.
+ # We assume they have stable values, so this won't cause action cache misses.
+diff --git a/bazel/boringssl_ppc64le.patch b/bazel/boringssl_ppc64le.patch
+new file mode 100755
+index 0000000000..66d0d92d90
+--- /dev/null
++++ b/bazel/boringssl_ppc64le.patch
+@@ -0,0 +1,14 @@
++diff --git a/include/openssl/target.h b/include/openssl/target.h
++index 2760f52ce..4290dcd58 100644
++--- a/include/openssl/target.h
+++++ b/include/openssl/target.h
++@@ -54,6 +54,9 @@
++ #define OPENSSL_32_BIT
++ #elif defined(__myriad2__)
++ #define OPENSSL_32_BIT
+++#elif defined(_ARCH_PPC64)
+++#define OPENSSL_64_BIT
+++#define OPENSSL_PPC64
++ #else
++ // The list above enumerates the platforms that BoringSSL supports. For these
++ // platforms we keep a reasonable bar of not breaking them: automated test
+diff --git a/bazel/foreign_cc/BUILD b/bazel/foreign_cc/BUILD
+index bf859db838..a2795fe22f 100644
+--- a/bazel/foreign_cc/BUILD
++++ b/bazel/foreign_cc/BUILD
+@@ -27,6 +27,24 @@ envoy_cc_library(
+     }),
+ )
+
++configure_make(
++    name = "luajit2",
++    configure_command = "build.py",
++    env = select({
++        # This shouldn't be needed! See
++        # https://github.com/envoyproxy/envoy/issues/6084
++        # TODO(htuch): Remove when #6084 is fixed
++        "//bazel:asan_build": {"ENVOY_CONFIG_ASAN": "1"},
++        "//bazel:msan_build": {"ENVOY_CONFIG_MSAN": "1"},
++        "//conditions:default": {},
++    }),
++    lib_source = "@com_github_luajit2_luajit2//:all",
++    out_include_dir = "include/luajit-2.1",
++    out_static_libs = ["libluajit-5.1.a"],
++    tags = ["skip_on_windows"],
++    targets = [],
++)
++
+ # autotools packages are unusable on Windows as-is
+ # TODO: Consider our own gperftools.BUILD file as we do with many other packages
+ configure_make(
+diff --git a/bazel/foreign_cc/luajit2.patch b/bazel/foreign_cc/luajit2.patch
+new file mode 100644
+index 0000000000..e1263febc6
+--- /dev/null
++++ b/bazel/foreign_cc/luajit2.patch
+@@ -0,0 +1,99 @@
++diff --git a/build.py b/build.py
++new file mode 100644
++index 00000000..dab3606c
++--- /dev/null
+++++ b/build.py
++@@ -0,0 +1,49 @@
+++#!/usr/bin/env python3
+++
+++import argparse
+++import os
+++import shutil
+++import subprocess
+++
+++def main():
+++    parser = argparse.ArgumentParser()
+++    parser.add_argument("--prefix")
+++    args = parser.parse_args()
+++    src_dir = os.path.dirname(os.path.realpath(__file__))
+++    shutil.copytree(src_dir, os.path.basename(src_dir))
+++    os.chdir(os.path.basename(src_dir))
+++
+++    os.environ["MACOSX_DEPLOYMENT_TARGET"] = "10.6"
+++    os.environ["DEFAULT_CC"] = os.environ.get("CC", "")
+++    os.environ["TARGET_CFLAGS"] = os.environ.get("CFLAGS", "") + " -fno-function-sections -fno-data-sections"
+++    os.environ["TARGET_LDFLAGS"] = os.environ.get("CFLAGS", "") + " -fno-function-sections -fno-data-sections"
+++    os.environ["CFLAGS"] = ""
+++    # LuaJIT compile process build a tool `buildvm` and use it, building `buildvm` with ASAN
+++    # will cause LSAN detect its leak and fail the build, set exitcode to 0 to make LSAN doesn't
+++    # fail on it.
+++    os.environ["LSAN_OPTIONS"] = "exitcode=0"
+++
+++    if "ENVOY_MSAN" in os.environ:
+++      os.environ["HOST_CFLAGS"] = "-fno-sanitize=memory"
+++      os.environ["HOST_LDFLAGS"] = "-fno-sanitize=memory"
+++
+++    arch = subprocess.check_output(["uname","-m"]).decode("utf-8").strip()
+++    compiler = os.environ.get("CC", "")
+++    if "clang" in compiler and arch in ["s390x","ppc64le"]:
+++        extra_clang_cflags = " -fgnuc-version=10 -fno-integrated-as -Wno-implicit-function-declaration -D_Float32=float -D_Float64=double -D_Float128=double -D_Float32x=double -D_Float64x=double"
+++        os.environ["TARGET_CFLAGS"] += extra_clang_cflags
+++        os.environ["TARGET_LDFLAGS"] += " -fgnuc-version=10"
+++        os.environ["HOST_CFLAGS"] = os.environ.get("HOST_CFLAGS", "") + extra_clang_cflags
+++        os.environ["HOST_LDFLAGS"] = os.environ.get("HOST_LDFLAGS", "") + " -fgnuc-version=10"
+++
+++    # Remove LuaJIT from ASAN for now.
+++    # TODO(htuch): Remove this when https://github.com/envoyproxy/envoy/issues/6084 is resolved.
+++    if "ENVOY_CONFIG_ASAN" in os.environ or "ENVOY_CONFIG_MSAN" in os.environ:
+++      os.environ["TARGET_CFLAGS"] += " -fsanitize-blacklist=%s/com_github_luajit_luajit/clang-asan-blocklist.txt" % os.environ["PWD"]
+++      with open("clang-asan-blocklist.txt", "w") as f:
+++        f.write("fun:*\n")
+++
+++    os.system('make -j{} V=1 PREFIX="{}" install'.format(os.cpu_count(), args.prefix))
+++
+++main()
+++
++diff --git a/src/Makefile b/src/Makefile
++index acbe0ca7..313a7e44 100644
++--- a/src/Makefile
+++++ b/src/Makefile
++@@ -27,7 +27,7 @@ NODOTABIVER= 51
++ DEFAULT_CC = gcc
++ #
++ # LuaJIT builds as a native 32 or 64 bit binary by default.
++-CC= $(DEFAULT_CC)
+++CC ?= $(DEFAULT_CC)
++ #
++ # Use this if you want to force a 32 bit build on a 64 bit multilib OS.
++ #CC= $(DEFAULT_CC) -m32
++@@ -71,10 +71,10 @@ CCWARN= -Wall
++ # as dynamic mode.
++ #
++ # Mixed mode creates a static + dynamic library and a statically linked luajit.
++-BUILDMODE= mixed
+++#BUILDMODE= mixed
++ #
++ # Static mode creates a static library and a statically linked luajit.
++-#BUILDMODE= static
+++BUILDMODE= static
++ #
++ # Dynamic mode creates a dynamic library and a dynamically linked luajit.
++ # Note: this executable will only run when the library is installed!
++@@ -99,7 +99,7 @@ XCFLAGS=
++ # enabled by default. Some other features that *might* break some existing
++ # code (e.g. __pairs or os.execute() return values) can be enabled here.
++ # Note: this does not provide full compatibility with Lua 5.2 at this time.
++-#XCFLAGS+= -DLUAJIT_ENABLE_LUA52COMPAT
+++XCFLAGS+= -DLUAJIT_ENABLE_LUA52COMPAT
++ #
++ # Disable the JIT compiler, i.e. turn LuaJIT into a pure interpreter.
++ #XCFLAGS+= -DLUAJIT_DISABLE_JIT
++@@ -617,7 +617,7 @@ endif
++
++ Q= @
++ E= @echo
++-#Q=
+++Q=
++ #E= @:
++
++ ##############################################################################
+diff --git a/bazel/repositories.bzl b/bazel/repositories.bzl
+index 02f7abd725..7cf093f884 100644
+--- a/bazel/repositories.bzl
++++ b/bazel/repositories.bzl
+@@ -4,7 +4,7 @@ load("@envoy_api//bazel:external_deps.bzl", "load_repository_locations")
+ load(":dev_binding.bzl", "envoy_dev_binding")
+ load(":repository_locations.bzl", "PROTOC_VERSIONS", "REPOSITORY_LOCATIONS_SPEC")
+
+-PPC_SKIP_TARGETS = ["envoy.filters.http.lua"]
++PPC_SKIP_TARGETS = []
+
+ WINDOWS_SKIP_TARGETS = [
+     "envoy.extensions.http.cache.file_system_http_cache",
+@@ -318,6 +318,7 @@ def envoy_dependencies(skip_targets = []):
+     _com_github_jbeder_yaml_cpp()
+     _com_github_libevent_libevent()
+     _com_github_luajit_luajit()
++    _com_github_luajit2_luajit2()
+     _com_github_nghttp2_nghttp2()
+     _com_github_msgpack_cpp()
+     _com_github_skyapm_cpp2sky()
+@@ -408,6 +409,7 @@ def _boringssl():
+         patch_args = ["-p1"],
+         patches = [
+             "@envoy//bazel:boringssl_static.patch",
++           "@envoy//bazel:boringssl_ppc64le.patch",
+         ],
+     )
+
+@@ -1310,6 +1312,20 @@ def _com_github_luajit_luajit():
+         actual = "@envoy//bazel/foreign_cc:luajit",
+     )
+
++def _com_github_luajit2_luajit2():
++    external_http_archive(
++        name = "com_github_luajit2_luajit2",
++        build_file_content = BUILD_ALL_CONTENT,
++        patches = ["@envoy//bazel/foreign_cc:luajit2.patch"],
++        patch_args = ["-p1"],
++        patch_cmds = ["chmod u+x build.py"],
++    )
++
++    native.bind(
++        name = "luajit2",
++        actual = "@envoy//bazel/foreign_cc:luajit2",
++    )
++
+ def _com_github_google_tcmalloc():
+     external_http_archive(
+         name = "com_github_google_tcmalloc",
+diff --git a/bazel/repositories_extra.bzl b/bazel/repositories_extra.bzl
+index 7fd1dc4095..ff6a848832 100644
+--- a/bazel/repositories_extra.bzl
++++ b/bazel/repositories_extra.bzl
+@@ -15,7 +15,7 @@ PYTHON_MINOR_VERSION = _python_minor_version(PYTHON_VERSION)
+ # Envoy deps that rely on a first stage of dependency loading in envoy_dependencies().
+ def envoy_dependencies_extra(
+         python_version = PYTHON_VERSION,
+-        ignore_root_user_error = False):
++        ignore_root_user_error = True):
+     emsdk_deps()
+     raze_fetch_remote_crates()
+     wasmtime_fetch_remote_crates()
+diff --git a/bazel/repository_locations.bzl b/bazel/repository_locations.bzl
+index 7744b2da72..a157cd6e85 100644
+--- a/bazel/repository_locations.bzl
++++ b/bazel/repository_locations.bzl
+@@ -500,6 +500,19 @@ REPOSITORY_LOCATIONS_SPEC = dict(
+         license = "MIT",
+         license_url = "https://github.com/LuaJIT/LuaJIT/blob/{version}/COPYRIGHT",
+     ),
++    com_github_luajit2_luajit2 = dict(
++        project_name = "Luajit2",
++        project_desc = "Openresty/luajit2 - OpenResty's maintained branch of LuaJIT",
++        project_url = "https://github.com/openresty/luajit2",
++        version = "1085a4d562b449e7be9e4508b52a19651bdf04a6",
++        sha256 = "2f6931ecac967e8fafffe934a8445593deff9f4c6ece1684fea1277edd0931ee",
++        strip_prefix = "luajit2-{version}",
++        urls = ["https://github.com/openresty/luajit2/archive/{version}.tar.gz"],
++        use_category = ["dataplane_ext"],
++        extensions = ["envoy.filters.http.lua"],
++        release_date = "2021-11-17",
++        cpe = "cpe:2.3:a:luajit2:luajit2:*",
++    ),
+     com_github_nghttp2_nghttp2 = dict(
+         project_name = "Nghttp2",
+         project_desc = "Implementation of HTTP/2 and its header compression algorithm HPACK in C",
+@@ -1207,7 +1220,7 @@ REPOSITORY_LOCATIONS_SPEC = dict(
+         project_url = "https://quiche.googlesource.com/googleurl",
+         # Static snapshot of https://quiche.googlesource.com/googleurl/+archive/dd4080fec0b443296c0ed0036e1e776df8813aa7.tar.gz
+         version = "dd4080fec0b443296c0ed0036e1e776df8813aa7",
+-        sha256 = "59f14d4fb373083b9dc8d389f16bbb817b5f936d1d436aa67e16eb6936028a51",
++        sha256 = "fc694942e8a7491dcc1dde1bddf48a31370a1f46fef862bc17acf07c34dc6325",
+         urls = ["https://storage.googleapis.com/quiche-envoy-integration/{version}.tar.gz"],
+         use_category = ["controlplane", "dataplane_core"],
+         extensions = [],
+diff --git a/bazel/rules_foreign_cc.patch b/bazel/rules_foreign_cc.patch
+index f3ebb1fb4b..3c5f8a646f 100644
+--- a/bazel/rules_foreign_cc.patch
++++ b/bazel/rules_foreign_cc.patch
+@@ -18,3 +18,16 @@ index 64cb677..9a8c62c 100644
+      additional_tools = depset(transitive = [make_data.target.files])
+
+      return built_tool_rule_impl(
++diff --git a/foreign_cc/built_tools/cmake_build.bzl b/foreign_cc/built_tools/cmake_build.bzl
++index 5022504..9b5e2cd 100644
++--- a/foreign_cc/built_tools/cmake_build.bzl
+++++ b/foreign_cc/built_tools/cmake_build.bzl
++@@ -8,7 +8,7 @@ def cmake_tool(name, srcs, **kwargs):
++     configure_make(
++         name = "{}.build".format(name),
++         configure_command = "bootstrap",
++-        configure_options = ["--", "-DCMAKE_MAKE_PROGRAM=$$MAKE$$"],
+++        #configure_options = ["--", "-DCMAKE_MAKE_PROGRAM=$$MAKE$$"],
++         # On macOS at least -DDEBUG gets set for a fastbuild
++         copts = ["-UDEBUG"],
++         lib_source = srcs,
+diff --git a/bazel/rules_go.patch b/bazel/rules_go.patch
+index b0b707b88e..78232e112f 100644
+--- a/bazel/rules_go.patch
++++ b/bazel/rules_go.patch
+@@ -1,22 +1,28 @@
+-#
+-# Bazel RBE on Windows GCP workers currently will not invoke cmd.exe batch files correctly
+-#
+-# Symptom is program not found 'bazel-out', because of the way that the CreateProcess command
+-# is constructed by bazel with actions.run with forward slashes, e.g. the command
+-#   cmd.exe /c "bazel-out/host/bin/external/go_sdk/builder.exe.bat"
+-# where cmd.exe on GCP is treating 'bazel-out' as the target, and /host as a command line switch.
+-# This problem was not observed on Azure CI pipelines or locally by the developers. The eventual
+-# fix is not specific to rules_go; this patch simply addresses immediate breakage and can be removed
+-# once the underlying issue within Bazel/RBE is fixed.
+-# See:
+-# - https://github.com/bazelbuild/rules_go/pull/2542
+-# - https://github.com/envoyproxy/envoy/issues/11657
+-#
++diff --git a/go/private/platforms.bzl b/go/private/platforms.bzl
++index 664f7aed..e7938e00 100644
++--- a/go/private/platforms.bzl
+++++ b/go/private/platforms.bzl
++@@ -30,7 +30,6 @@ BAZEL_GOARCH_CONSTRAINTS = {
++     "amd64": "@platforms//cpu:x86_64",
++     "arm": "@platforms//cpu:armv7",
++     "arm64": "@platforms//cpu:aarch64",
++-    "ppc64": "@platforms//cpu:ppc",
++     "ppc64le": "@platforms//cpu:ppc",
++     "s390x": "@platforms//cpu:s390x",
++ }
++@@ -62,7 +61,6 @@ GOOS_GOARCH = (
++     ("linux", "mips64"),
++     ("linux", "mips64le"),
++     ("linux", "mipsle"),
++-    ("linux", "ppc64"),
++     ("linux", "ppc64le"),
++     ("linux", "riscv64"),
++     ("linux", "s390x"),
+ diff --git a/go/private/rules/binary.bzl b/go/private/rules/binary.bzl
+-index 91748eda..c1aeb91e 100644
++index 96db3ce1..f826a042 100644
+ --- a/go/private/rules/binary.bzl
+ +++ b/go/private/rules/binary.bzl
+-@@ -443,8 +443,9 @@ def _go_tool_binary_impl(ctx):
++@@ -452,8 +452,9 @@ def _go_tool_binary_impl(ctx):
+              content = cmd,
+          )
+          ctx.actions.run(
+diff --git a/envoy/common/optref.h b/envoy/common/optref.h
+index 63ff2bff15..cf2a6c4ed8 100644
+--- a/envoy/common/optref.h
++++ b/envoy/common/optref.h
+@@ -112,7 +112,7 @@ template <class T> struct OptRef {
+    *
+    * @return a reference_wrapper around the value.
+    */
+-  std::reference_wrapper<const T> value() const { return std::reference_wrapper<T>(*ptr_); }
++  std::reference_wrapper<const T> value() const { return std::reference_wrapper<const T>(*ptr_); }
+   std::reference_wrapper<T> value() { return std::reference_wrapper<T>(*ptr_); }
+
+   /**
+diff --git a/source/extensions/filters/common/lua/BUILD b/source/extensions/filters/common/lua/BUILD
+index 12d7d0554a..8880d80238 100644
+--- a/source/extensions/filters/common/lua/BUILD
++++ b/source/extensions/filters/common/lua/BUILD
+@@ -3,18 +3,30 @@ load(
+     "envoy_cc_library",
+     "envoy_extension_package",
+ )
++load("//bazel:envoy_internal.bzl", "envoy_external_dep_path")
++load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
+
+ licenses(["notice"])  # Apache 2
+
+ envoy_extension_package()
+
++bool_flag(
++    name = "luajit2",
++    build_setting_default = True,
++    visibility = ["//visibility:public"],
++)
++
++config_setting(
++    name = "with_luajit2",
++    flag_values = {
++        ":luajit2": "True",
++    },
++)
++
+ envoy_cc_library(
+     name = "lua_lib",
+     srcs = ["lua.cc"],
+     hdrs = ["lua.h"],
+-    external_deps = [
+-        "luajit",
+-    ],
+     deps = [
+         "//envoy/thread_local:thread_local_interface",
+         "//source/common/common:assert_lib",
+@@ -22,7 +34,10 @@ envoy_cc_library(
+         "//source/common/common:lock_guard_lib",
+         "//source/common/common:thread_lib",
+         "//source/common/protobuf",
+-    ],
++    ] + select({
++        ":with_luajit2": [envoy_external_dep_path("luajit2")],
++        "//conditions:default": [envoy_external_dep_path("luajit")],
++    }),
+ )
+
+ envoy_cc_library(
+

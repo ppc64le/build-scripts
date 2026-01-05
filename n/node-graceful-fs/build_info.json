@@ -1,18 +1,15 @@
 {
-    "maintainer": "Vishaka.Desai@ibm.com",
-    "package_name": "node-graceful-fs",
-    "github_url": "https://github.com/isaacs/node-graceful-fs",
-    "version": "v4.2.11",
-    "default_branch": "main",
-    "build_script" : "node-graceful-fs_ubi_8.5.sh",
-    "package_dir": "n/node-graceful-fs/",
-    "docker_build": false,
-    
-    "v4.2.11": {
-      "build_script" : "node-graceful-fs_ubi_8.5.sh"
-    },
-  
-    "v*.*.*": {
-      "build_script" : "node-graceful-fs_ubi_8.5.sh"
-    }
+  "maintainer": "stutiibm",
+  "package_name": "node-graceful-fs",
+  "github_url": "https://github.com/isaacs/node-graceful-fs",
+  "version": "v4.2.11",
+  "default_branch": "main",
+  "build_script": "node-graceful-fs_ubi_9.3.sh",
+  "package_dir": "n/node-graceful-fs/",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "v*.*.*": {
+    "build_script": "node-graceful-fs_ubi_9.3.sh"
   }
+}

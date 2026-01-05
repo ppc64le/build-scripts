@@ -1,11 +1,11 @@
 {
-   "maintainer": "ich@us.ibm.com",
-   "package_name": "find-my-way",
-   "github_url": "https://github.com/delvedor/find-my-way",
-   "version": "v7.7.0",
-   "default_branch": "main",
-   "build_script": "find-my-way_ubi_8.7.sh",
-   "package_dir": "f/find-my-way",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "IBM-Currency-Helper",
+  "package_name": "find-my-way",
+  "github_url": "https://github.com/delvedor/find-my-way",
+  "version": "v7.7.0",
+  "default_branch": "main",
+  "build_script": "find-my-way_ubi_8.7.sh",
+  "package_dir": "f/find-my-way",
+  "docker_build": false,
+  "validate_build_script": true
 }

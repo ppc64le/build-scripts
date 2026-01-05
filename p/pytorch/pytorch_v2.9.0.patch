@@ -1,0 +1,29 @@
+diff --git a/cmake/Dependencies.cmake b/cmake/Dependencies.cmake
+index ef5c2fd4e97..ed8ba1ef32f 100644
+--- a/cmake/Dependencies.cmake
++++ b/cmake/Dependencies.cmake
+@@ -1135,6 +1135,8 @@ if(USE_DISTRIBUTED AND USE_TENSORPIPE)
+       set(TP_ENABLE_CUDA_IPC ON CACHE BOOL "" FORCE)
+     endif()
+     set(TP_BUILD_LIBUV ON CACHE BOOL "" FORCE)
++    set(TP_ENABLE_SHM OFF CACHE BOOL "" FORCE)
++    set(TP_ENABLE_CMA OFF CACHE BOOL "" FORCE)
+     add_compile_options(-DTORCH_USE_LIBUV)
+     include_directories(BEFORE SYSTEM ${CMAKE_CURRENT_LIST_DIR}/../third_party/tensorpipe/third_party/libuv/include)
+     set(TP_STATIC_OR_SHARED STATIC CACHE STRING "" FORCE)
+diff --git a/tools/setup_helpers/cmake.py b/tools/setup_helpers/cmake.py
+index 02ab011dd48..63c6a5bfe32 100644
+--- a/tools/setup_helpers/cmake.py
++++ b/tools/setup_helpers/cmake.py
+@@ -252,6 +252,11 @@ class CMake:
+             # Key: environment variable name. Value: Corresponding variable name to be passed to CMake. If you are
+             # adding a new build option to this block: Consider making these two names identical and adding this option
+             # in the block below.
++            "Protobuf_INCLUDE_DIR" : "Protobuf_INCLUDE_DIR",
++            "Protobuf_LIBRARIES" : "Protobuf_LIBRARIES",
++            "Protobuf_LIBRARY": "Protobuf_LIBRARY",
++            "Protobuf_LITE_LIBRARY" : "Protobuf_LITE_LIBRARY",
++            "Protobuf_PROTOC_EXECUTABLE": "Protobuf_PROTOC_EXECUTABLE",
+             "CUDNN_LIB_DIR": "CUDNN_LIBRARY",
+             "USE_CUDA_STATIC_LINK": "CAFFE2_STATIC_LINK_CUDA",
+         }

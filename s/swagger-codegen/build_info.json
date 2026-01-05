@@ -1,0 +1,15 @@
+{
+  "maintainer": "SanketPatil11",
+  "package_name": "swagger-codegen",
+  "github_url": "https://github.com/swagger-api/swagger-codegen",
+  "version": "v3.0.64",
+  "package_dir": "s/swagger-codegen",
+  "default_branch": "main",
+  "build_script": "swagger-codegen_v3.0.64_ubi_9.5.sh", 
+  "docker_build": "false",
+  "use_non_root_user": "false",
+  "validate_build_script": "true",
+  "3.0.*": {
+    "build_script": "swagger-codegen_v3.0.64_ubi_9.5.sh"
+  }
+}

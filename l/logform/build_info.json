@@ -1,12 +1,12 @@
 {
-   "maintainer": "Shubham.Garud@ibm.com",
-   "package_name": "logform",
-   "github_url": "https://github.com/winstonjs/logform",
-   "version": "v2.6.0",
-   "default_branch": "master",
-   "build_script": "logform_ubi_8.7.sh",
-   "package_dir": "l/logform",
-   "docker_build": false,
-   "use_non_root_user":false,
-   "validate_build_script": true
+  "maintainer": "shubham-garud",
+  "package_name": "logform",
+  "github_url": "https://github.com/winstonjs/logform",
+  "version": "v2.6.0",
+  "default_branch": "master",
+  "build_script": "logform_ubi_8.7.sh",
+  "package_dir": "l/logform",
+  "docker_build": false,
+  "use_non_root_user": false,
+  "validate_build_script": true
 }

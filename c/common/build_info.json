@@ -1,0 +1,15 @@
+{
+   "maintainer": "vinodk99",
+   "package_name": "common",
+   "github_url": "https://github.com/prometheus/common",
+   "version": "v0.61.0",
+   "default_branch": "main",
+   "build_script": "common_ubi_9.3.sh",
+   "package_dir": "c/common",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "v0.*.*" : {
+      "build_script": "common_ubi_9.3.sh"
+   }
+}

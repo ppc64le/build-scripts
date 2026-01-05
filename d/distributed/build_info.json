@@ -1,0 +1,16 @@
+{
+  "maintainer": "kiranNukal",
+  "package_name": "distributed",
+  "github_url": "https://github.com/dask/distributed",
+  "version": "2025.5.1",
+  "wheel_build" : true,
+  "default_branch": "main",
+  "build_script": "distributed_ubi_9.3.sh",
+  "package_dir": "d/distributed",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+   "build_script": "distributed_ubi_9.3.sh"
+ }
+}

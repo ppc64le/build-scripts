@@ -1,0 +1,15 @@
+{
+    "maintainer": "santhoshkotla2929",
+    "package_name": "apiguardian",
+    "github_url": "https://github.com/apiguardian-team/apiguardian",
+    "version": "r1.1.2",
+    "default_branch": "master",
+    "build_script": "apiguardian_ubi_9.3.sh",
+    "package_dir": "a/apiguardian",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "r1.1.*": {
+      "build_script": "apiguardian_ubi_9.3.sh"	   
+    }    
+}

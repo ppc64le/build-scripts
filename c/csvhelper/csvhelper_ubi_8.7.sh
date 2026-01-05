@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/JoshClose/CsvHelper.git
 # Tested on     : UBI 8.7
 # Language      : C#
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Sapana Khemkar <Sapana.Khemkar@ibm.com>
 #

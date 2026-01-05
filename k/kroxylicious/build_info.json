@@ -1,0 +1,15 @@
+{
+    "maintainer": "Vaibhav-Nazare",
+    "package_name": "Kroxylicious",
+    "github_url": "https://github.com/kroxylicious/kroxylicious",
+    "version": "v.0.11.0",
+    "package_dir": "k/kroxylicious",
+    "default_branch": "main",
+    "build_script": "kroxylicious_ubi_9.3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": "false",
+    "*": {
+      "build_script": "kroxylicious_ubi_9.3.sh"
+    }
+}

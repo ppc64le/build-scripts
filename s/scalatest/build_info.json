@@ -1,12 +1,12 @@
 {
-    "maintainer":"Shubham.Garud@ibm.com",
-    "package_name":"scalatest",
-    "github_url":"https://github.com/scalatest/scalatest",
-    "package_dir":"s/scalatest/",
-    "version":"release-3.2.16", 
-    "default_branch":"main",
-    "build_script":"scalatest_ubi_8.7.sh",
-    "use_non_root_user":false,
-    "docker_build":false,
-    "validate_build_script":true
+  "maintainer": "shubham-garud",
+  "package_name": "scalatest",
+  "github_url": "https://github.com/scalatest/scalatest",
+  "package_dir": "s/scalatest/",
+  "version": "release-3.2.16",
+  "default_branch": "main",
+  "build_script": "scalatest_ubi_8.7.sh",
+  "use_non_root_user": false,
+  "docker_build": false,
+  "validate_build_script": true
 }

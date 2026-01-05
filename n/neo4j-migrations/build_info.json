@@ -1,0 +1,15 @@
+{
+    "maintainer": "vinodk99",
+    "package_name": "neo4j-migrations",
+    "github_url": "https://github.com/michael-simons/neo4j-migrations",
+    "version": "2.13.3",
+    "package_dir": "n/neo4j-migrations",
+    "default_branch": "main",
+    "build_script": "neo4j-migrations_ubi_9.3.sh",
+    "docker_build": "false",
+    "use_non_root_user": false,
+    "validate_build_script": "true",
+    "*.*.*": {
+      "build_script": "neo4j-migrations_ubi_9.3.sh"
+    }
+  }

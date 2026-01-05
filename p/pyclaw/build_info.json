@@ -1,0 +1,16 @@
+{
+    "maintainer":"aastha-sharma2",
+    "package_name" : "pyclaw", 
+    "github_url": "https://github.com/clawpack/pyclaw.git",
+    "version": "v5.12.0",
+    "default_branch": "master",
+    "package_dir": "p/pyclaw",
+    "wheel_build" : true,
+    "build_script": "pyclaw_ubi_9.3.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": "false",
+    "*" : {
+       "build_script": "pyclaw_ubi_9.3.sh"
+    }
+}

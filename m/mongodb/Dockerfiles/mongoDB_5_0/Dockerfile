@@ -17,7 +17,7 @@ RUN set -eux; \
         rm -rf /var/lib/apt/lists/*
 
 # grab gosu for easy step-down from root (https://github.com/tianon/gosu/releases)
-ENV GOSU_VERSION 1.12
+ENV GOSU_VERSION 1.17
 # grab "js-yaml" for parsing mongod's YAML config files (https://github.com/nodeca/js-yaml/releases)
 ENV JSYAML_VERSION 3.13.1
 
@@ -72,7 +72,7 @@ RUN set -ex; \
         apt-key list
 
 ARG MONGO_MAJOR=5.0
-ARG MONGO_VERSION=5.0.18
+ARG MONGO_VERSION=5.0.30
 
 # We install the necesary tools to compile mongo on ppc64le
 RUN apt-get update \
@@ -92,6 +92,7 @@ RUN apt-get update \
         && cd /tmp/mongodb-src-r${MONGO_VERSION} \
         && git clone https://github.com/mongodb/mongo.git && cd mongo \
         && git checkout r${MONGO_VERSION} \
+        && sed -i '/PyYAML/d' etc/pip/components/core.req && sed -i '4 a PyYAML >= 3.0.0' etc/pip/components/core.req \
         && python3 -m pip install -r etc/pip/compile-requirements.txt \
         && python3 buildscripts/scons.py install-mongod install-mongo --separate-debug=on --disable-warnings-as-errors DESTDIR=/usr/ --ssl=on --no-cache --release \
         && apt-get purge -y --auto-remove \
@@ -128,4 +129,5 @@ EXPOSE 27017
 USER mongodb
 
 CMD ["mongod"]
+
 

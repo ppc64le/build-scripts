@@ -1,0 +1,18 @@
+{
+  "maintainer": "ramnathnayak-ibm",
+  "package_name": "multipart",
+  "github_url": "https://github.com/defnull/multipart",
+  "version": "v1.2.1",
+  "default_branch": "master",
+  "build_script": "multipart_ubi_9.3.sh",
+  "package_dir": "m/multipart",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "docker_build": true,
+  "use_non_root_user": "false",
+  "wheel_build": "true",
+  "validate_build_script": true,
+  "*": {
+    "dir": "v1.2.1_ubi9",
+    "build_script": "multipart_ubi_9.3.sh"
+  }
+}

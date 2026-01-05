@@ -1,0 +1,17 @@
+{
+    "maintainer":"vinodk99",
+    "package_name" : "rocksdb", 
+    "github_url": "https://github.com/facebook/rocksdb",
+    "version": "v9.4.0",
+    "default_branch": "main",
+    "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "package_dir": "r/rocksdb",
+    "build_script": "rocksdb_ubi_9.3.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": "true",
+    "v*.*.*" : {
+	      "dir" : "9.4.0_ubi9",
+	      "build_script": "rocksdb_ubi_9.3.sh"
+      }
+}

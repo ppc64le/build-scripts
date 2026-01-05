@@ -1,0 +1,16 @@
+{
+    "maintainer": "stutiibm",
+    "package_name": "passport-local",
+    "github_url": "https://github.com/jaredhanson/passport-local",
+    "version": "v1.0.0",
+    "default_branch": "master",
+    "package_dir": "p/passport-local",
+    "build_script": "passport-local_ubi_9_3.sh",
+    "docker_build": true,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "v*": {
+       "dir": "ubi9_3",
+       "build_script": "passport-local_ubi_9_3.sh"
+    }
+  }

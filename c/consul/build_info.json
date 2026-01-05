@@ -1,5 +1,5 @@
 {
-  "maintainer": "Abhishek.Dwivedi6@ibm.com",
+  "maintainer": "AbhiIBM",
   "package_name": "consul",
   "github_url": "https://github.com/hashicorp/consul",
   "version": "v1.18.1",
@@ -28,7 +28,7 @@
     "dir": "1.14.4-ubi8",
     "build_script": "consul_v1.14.4_ubi_8.5.sh"
   },
-  "v1.16.*":{
+  "v1.16.*": {
     "dir": "1.9.4-ubi8",
     "build_script": "consul_v1.16.1_ubi_8.7.sh"
   },

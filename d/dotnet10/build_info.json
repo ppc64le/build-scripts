@@ -1,0 +1,12 @@
+{
+    "maintainer": "ashwinik307",
+    "package_name": "dotnet",
+    "github_url": "https://github.com/dotnet/dotnet",
+    "version": "10.0.100",
+    "package_dir": "d/dotnet10",
+    "default_branch": "v10.0.0",
+    "docker_build": false,
+    "build_script": "cross-build-with-container.sh",
+    "validate_build_script": false,
+    "use_non_root_user": false
+  }

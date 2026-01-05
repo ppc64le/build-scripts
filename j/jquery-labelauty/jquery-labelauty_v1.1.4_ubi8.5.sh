@@ -6,7 +6,7 @@
 # Source repo: https://github.com/fntneves/jquery-labelauty 
 # Tested on: UBI 8.5
 # Language: Node
-# Travis-Check: True
+# Ci-Check: True
 # Script License: Apache License, Version 2 or later
 # Maintainer: Prashant Khoje <prashant.khoje@us.ibm.com>
 #

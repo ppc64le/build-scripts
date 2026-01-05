@@ -1,0 +1,15 @@
+{
+  "maintainer": "AbhiIBM",
+  "package_name": "go-oidc",
+  "github_url": "https://github.com/coreos/go-oidc.git",
+  "package_dir": "g/go-oidc",
+  "version": "v3.10.0",
+  "default_branch": "master",
+  "build_script": "go-oidc_ubi_9.3.sh",
+  "use_non_root_user": false,
+  "validate_build_script": true,
+  "docker_build": false,
+  "v*.*.*": {
+    "build_script": "go-oidc_ubi_9.3.sh"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "maintainer": "mayurbhosure",
+  "package_name": "microprofile-jwt-auth",
+  "github_url": "https://github.com/eclipse/microprofile-jwt-auth",
+  "version": "2.1",
+  "default_branch": "master",
+  "build_script": "microprofile-jwt-auth_ubi_9.3.sh",
+  "package_dir": "m/microprofile-jwt-auth",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "2.*": {
+    "build_script": "microprofile-jwt-auth_ubi_9.3.sh"
+  }
+}

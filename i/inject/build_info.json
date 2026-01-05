@@ -1,0 +1,15 @@
+{
+    "maintainer": "pratibh-ibm",
+    "package_name": "inject",
+    "github_url": "https://github.com/jakartaee/inject.git",
+    "version": "2.0.1",
+    "default_branch": "master",
+    "build_script": "inject_ubi_9.3.sh",
+    "package_dir": "i/inject",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "2.*.*": {
+      "build_script": "inject_ubi_9.3.sh"
+    }
+  }

@@ -1,14 +1,18 @@
 {
-    "maintainer": "Vishaka.Desai@ibm.com",
-    "package_name": "glassfish",
-    "github_url": "https://github.com/eclipse-ee4j/glassfish",
-    "version": "7.0.7",
-    "default_branch": "master",
-    "build_script" : "glassfish_ubi_8.7.sh",
-    "package_dir": "g/glassfish/",
-    "docker_build": false,
-    
-    "*.*.*": {
-        "build_script" : "glassfish_ubi_8.7.sh"
-    }
+  "maintainer": "ramnathnayak-ibm",
+  "package_name": "glassfish",
+  "github_url": "https://github.com/eclipse-ee4j/glassfish",
+  "version": "7.0.15",
+  "default_branch": "master",
+  "build_script": "glassfish_ubi_9.3.sh",
+  "package_dir": "g/glassfish",
+  "docker_build": "true",
+  "docker_cmd" : "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "docker_build": "true",
+  "use_non_root_user": "false",
+  "validate_build_script": "true",
+  "*.*.*": {
+    "dir": "7.0.15_ubi9",
+    "build_script": "glassfish_ubi_9.3.sh"
   }
+}

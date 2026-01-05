@@ -1,0 +1,12 @@
+{
+  "maintainer": "Chandranana",
+  "package_name": "maistra-proxy",
+  "github_url": "https://github.com/maistra/proxy",
+  "version": "maistra-2.6",
+  "package_dir": "m/maistra-proxy",
+  "default_branch": "master",
+  "docker_build": false,
+  "build_script": "maistra_proxy_ubi_9.3.sh",
+  "validate_build_script": true,
+  "use_non_root_user": false
+}

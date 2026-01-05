@@ -1,0 +1,15 @@
+{
+  "maintainer": "Vipul-Ajmera",
+  "package_name": "h2database",
+  "github_url": "https://github.com/h2database/h2database.git",
+  "version": "version-2.3.232",
+  "default_branch": "master",
+  "package_dir": "h/h2database",
+  "build_script": "h2database_ubi_9.3.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "false",
+  "version-*.*.*": {
+    "build_script": "h2database_ubi_9.3.sh"
+  }
+}

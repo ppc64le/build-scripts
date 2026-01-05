@@ -1,19 +1,17 @@
 {
-    "maintainer": "Stuti.Wali@ibm.com",
-    "package_name": "bazel",
-    "github_url": "https://github.com/bazelbuild/bazel",
-    "version": "6.3.2",
-    "default_branch": "master",
-    "package_dir": "b/bazel",
-    "build_script": "bazel_ubi_8_7.sh",
-    "docker_build": false,
-    "validate_build_script": true,
-    "use_non_root_user": false,
- 
-    "6.3.*": {
-       "build_script": "bazel_ubi_8_7.sh"
-    }
-
+   "maintainer": "Vipul-Ajmera",
+   "package_name": "bazel",
+   "github_url": "https://github.com/bazelbuild/bazel.git",
+   "version": "7.3.1",
+   "default_branch": "master",
+   "package_dir": "b/bazel",
+   "build_script": "bazel_ubi_9.3.sh",
+   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+   "docker_build": "true",
+   "validate_build_script": "true",
+   "use_non_root_user": "false",
+   "*.*.*": {
+      "dir": "7.3.1_ubi9",
+      "build_script": "bazel_ubi_9.3.sh"
+   }
 }
-
-

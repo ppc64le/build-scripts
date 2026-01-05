@@ -1,5 +1,5 @@
 {
-  "maintainer": "Vinod.K1@ibm.com",
+  "maintainer": "vinodk99",
   "package_name": "telegraf",
   "github_url": "https://github.com/influxdata/telegraf.git",
   "version": "v1.24.4",
@@ -18,9 +18,9 @@
     "dir": "1.24.3-ubi8",
     "GO_VERSION": "1.20.5"
   },
-   "v1.28.*": {
-     "dir": "1.24.3-ubi8",
-     "GO_VERSION": "1.20.6"
+  "v1.28.*": {
+    "dir": "1.24.3-ubi8",
+    "GO_VERSION": "1.20.6"
   },
   "1.10.*": {
     "dir": "1.10.4-ubi8"

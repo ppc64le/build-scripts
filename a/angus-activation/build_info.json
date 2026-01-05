@@ -1,0 +1,15 @@
+{
+  "maintainer": "Vipul-Ajmera",
+  "package_name": "angus-activation",
+  "github_url": "https://github.com/eclipse-ee4j/angus-activation.git",
+  "version": "2.0.2",
+  "default_branch": "master",
+  "package_dir": "a/angus-activation",
+  "build_script": "angus-activation_ubi_9.3.sh",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "*.*.*": {
+    "build_script": "angus-activation_ubi_9.3.sh"
+  }
+}

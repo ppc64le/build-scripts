@@ -1,0 +1,15 @@
+{
+    "maintainer": "santhoshkotla2929",
+    "package_name": "websocket-java",
+    "github_url": "https://github.com/jakartaee/websocket",
+    "version": "2.2.0-RELEASE",
+    "default_branch": "master",
+    "build_script": "websocket-java_ubi_9.3.sh",
+    "package_dir": "w/websocket-java",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "2.*.*-RELEASE": {
+      "build_script": "websocket-java_ubi_9.3.sh"   
+    }    
+}

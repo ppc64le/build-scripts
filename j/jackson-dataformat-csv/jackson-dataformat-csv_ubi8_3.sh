@@ -7,7 +7,7 @@
 # Source repo     : https://github.com/FasterXML/jackson-dataformats-text
 # Tested on       : UBI 8.3
 # Language        : Java
-# Travis-Check    : True
+# Ci-Check    : True
 # Script License  : Apache-2.0 License    
 # Maintainer      : Varsha Aaynure <Varsha.Aaynure@ibm.com>
 #

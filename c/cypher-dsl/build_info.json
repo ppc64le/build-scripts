@@ -1,0 +1,15 @@
+{
+    "maintainer": "ramnathnayak-ibm",
+    "package_name": "cypher-dsl",
+    "github_url": "https://github.com/neo4j/cypher-dsl",
+    "version": "2024.0.3",
+    "default_branch": "main",
+    "package_dir": "c/cypher-dsl",
+    "build_script": "cypher-dsl_ubi_9.3.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "docker_build": "false",
+    "*.*.*" : {
+       "build_script": "cypher-dsl_ubi_9.3.sh"
+    }
+}

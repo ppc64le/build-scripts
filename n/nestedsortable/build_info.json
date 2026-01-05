@@ -1,0 +1,17 @@
+{
+    "maintainer": "vinodk99",
+    "package_name": "nestedSortable",
+    "github_url": "https://github.com/ilikenwf/nestedSortable",
+    "version": "master",
+    "default_branch": "master",
+    "build_script": "nestedsortable_ubi_9.3.sh",
+    "package_dir": "n/nestedsortable",
+    "docker_cmd" : "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+    "docker_build": true,
+    "use_non_root_user": "false",
+    "validate_build_script": true,
+    "master": {
+       "dir": "master_ubi9",
+       "build_script" : "nestedsortable_ubi_9.3.sh"
+    }
+ }

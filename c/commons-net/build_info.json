@@ -1,0 +1,15 @@
+{
+  "maintainer": "mayurbhosure",
+  "package_name": "commons-net",
+  "github_url": "https://github.com/apache/commons-net",
+  "version": "rel/commons-net-3.9.0",
+  "default_branch": "master",
+  "build_script": "commons-net_ubi_9.3.sh",
+  "package_dir": "c/commons-net",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "rel/commons-net-3.*.*": {
+    "build_script": "commons-net_ubi_9.3.sh"
+  }
+}

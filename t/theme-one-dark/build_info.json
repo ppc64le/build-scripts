@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "theme-one-dark",
+    "github_url": "https://github.com/codemirror/theme-one-dark",
+    "version": "6.1.2",
+    "default_branch": "main",
+    "build_script": "theme-one-dark_ubi_9.3.sh",
+    "package_dir": "t/theme-one-dark",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "6.*.*": {
+        "build_script": "theme-one-dark_ubi_9.3.sh"
+    }
+}

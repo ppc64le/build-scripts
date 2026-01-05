@@ -1,0 +1,16 @@
+{
+	"maintainer": "vivek8123",
+	"package_name": "ibm_db",
+	"github_url": "https://github.com/ibmdb/python-ibmdb.git",
+	"version": "v3.2.3",
+	"default_branch": "master",
+	"build_script": "ibm_db_ubi_9.3.sh",
+	"package_dir": "i/ibm_db",
+	"docker_build": false,
+	"validate_build_script": true,
+	"wheel_build" : true,
+	"use_non_root_user": false,
+	"v3.*.*": {
+	   "build_script": "ibm_db_ubi_9.3.sh"
+	}
+}

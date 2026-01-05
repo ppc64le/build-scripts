@@ -5,7 +5,7 @@
 # Source repo   : https://github.com/jpmml/jpmml-model
 # Tested on     : Ubuntu 16.04
 # Language      : Java
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Meghali Dhoble <dhoblem@us.ibm.com>
 #

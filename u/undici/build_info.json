@@ -1,0 +1,24 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "undici",
+    "github_url": "https://github.com/nodejs/undici",
+    "version": "v6.20.1",
+    "default_branch": "main",
+    "build_script": "undici_ubi_9.3.sh",
+    "package_dir": "u/undici",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v6.20.*": {
+        "build_script": "undici_ubi_9.3.sh"
+    },
+    "v6.19.*": {
+        "build_script": "undici_ubi_9.3.sh"
+    },
+    "v6.18.*": {
+        "build_script": "undici_ubi_9.3.sh"
+    },
+    "v5.*.*": {
+        "build_script": "undici_v5.28.4_ubi_9.3.sh"
+    }
+}

@@ -1,0 +1,14 @@
+diff --git a/similarity_search/CMakeLists.txt b/similarity_search/CMakeLists.txt
+index bc6ef3c..9311284 100644
+--- a/similarity_search/CMakeLists.txt
++++ b/similarity_search/CMakeLists.txt
+@@ -35,7 +35,7 @@ if(NOT WIN32)
+ endif()
+ #message(FATAL_ERROR "stopping... compiler version is: ${CMAKE_CXX_COMPILER_ID} ${CXX_COMPILER_VERSION}")
+ 
+-set(SIMD_FLAGS " -march=native")
++set(SIMD_FLAGS " -mcpu=native")
+ #set(SIMD_FLAGS "-march=x86-64")
+ #set(SIMD_FLAGS "-march=core2")
+ #set(SIMD_FLAGS "-fpic -msse4.2")
+

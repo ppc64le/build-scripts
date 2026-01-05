@@ -1,11 +1,11 @@
 {
-   "maintainer": "Shubham.Garud@ibm.com",
-   "package_name": "nopt",
-   "github_url": "https://github.com/npm/nopt",
-   "version": "v7.2.0",
-   "default_branch": "main",
-   "build_script": "nopt_ubi_8.7.sh",
-   "package_dir": "n/nopt",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "shubham-garud",
+  "package_name": "nopt",
+  "github_url": "https://github.com/npm/nopt",
+  "version": "v7.2.0",
+  "default_branch": "main",
+  "build_script": "nopt_ubi_8.7.sh",
+  "package_dir": "n/nopt",
+  "docker_build": false,
+  "validate_build_script": true
 }

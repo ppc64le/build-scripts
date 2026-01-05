@@ -1,0 +1,15 @@
+{
+  "maintainer": "stutiibm",
+  "package_name": "ci.ant",
+  "github_url": "https://github.com/OpenLiberty/ci.ant",
+  "version": "liberty-ant-tasks-1.9.15",
+  "default_branch": "main",
+  "package_dir": "c/ci.ant",
+  "build_script": "ci.ant_ubi_9_3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "liberty-ant-tasks-*": {
+    "build_script": "ci.ant_ubi_9_3.sh"
+  }
+}

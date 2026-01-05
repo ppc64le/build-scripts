@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/apache/commons-compress.git
 # Tested on     : ubuntu_18.04 (Docker)
 # Language      : Java
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Manik Fulpagar <manik.fulpagar@ibm.com>
 # Disclaimer: This script has been tested in root mode on given

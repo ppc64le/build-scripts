@@ -1,0 +1,15 @@
+{
+   "maintainer": "stutiibm",
+   "package_name": "pkgconfig",
+   "github_url": "https://github.com/cran/pkgconfig",
+   "version": "2.0.3",
+   "default_branch": "master",
+   "build_script": "pkgconfig_ubi_9.3.sh",
+   "package_dir": "p/pkgconfig",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*" : {
+       "build_script": "pkgconfig_ubi_9.3.sh"
+   }
+}

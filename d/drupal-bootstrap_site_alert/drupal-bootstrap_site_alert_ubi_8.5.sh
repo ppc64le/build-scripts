@@ -6,7 +6,7 @@
 # Source repo      : https://git.drupalcode.org/project/bootstrap_site_alert
 # Tested on        : UBI 8.5
 # Language         : PHP
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Sunidhi Gaonkar<Sunidhi.Gaonkar@ibm.com>
 #

@@ -1,0 +1,15 @@
+{
+    "maintainer": "vinodk99",
+    "package_name": "node-newrelic",
+    "github_url": "https://github.com/newrelic/node-newrelic",
+    "version": "v12.5.0",
+    "default_branch": "main",
+    "package_dir": "n/node-newrelic",
+    "build_script": "node-newrelic_ubi_9.3.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v*.*.*": {
+      "build_script": "node-newrelic_ubi_9.3.sh"
+    }
+  }

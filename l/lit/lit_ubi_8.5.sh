@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/llvm/llvm-project/
 # Tested on     : UBI 8.5
 # Language      : Python
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Alston Dias <Alston.Dias@ibm.com>
 #

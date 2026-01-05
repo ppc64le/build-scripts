@@ -6,7 +6,7 @@
 # Source repo	: https://github.com/CrunchyData/pgnodemx
 # Tested on	: ubi 8.5
 # Language      : c
-# Travis-Check  : false
+# Ci-Check  : false
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Adilhusain Shaikh <Adilhusain.Shaikh@ibm.com>
 #

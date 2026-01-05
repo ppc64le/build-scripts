@@ -1,0 +1,49 @@
+diff --git a/Dockerfile b/Dockerfile
+index 2c0cf95..460e7a8 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -1,5 +1,5 @@
+ ARG BASE_VARIANT=alpine
+-ARG GO_VERSION=1.19
++ARG GO_VERSION=1.24.4
+ ARG XX_VERSION=1.1.2
+
+ FROM --platform=$BUILDPLATFORM tonistiigi/xx:${XX_VERSION} AS xx
+@@ -52,14 +52,19 @@ ARG TARGETARCH
+ #   performance reasons. See: https://github.com/pjbgf/sha1cd/issues/15
+ ENV CGO_ENABLED=1
+
+-RUN export CGO_LDFLAGS="-static -fuse-ld=lld" && \
+-  xx-go build  \
++ARG CGO_LDFLAGS="-fuse-ld=lld"
++ARG GO_BUILD_TAGS="netgo,osusergo"
++
++ENV CGO_LDFLAGS=${CGO_LDFLAGS}
++ENV GO_BUILD_TAGS=${GO_BUILD_TAGS}
++
++RUN xx-go build \
+   -ldflags "-s -w" \
+-  -tags 'netgo,osusergo,static_build' \
+-  -o /image-automation-controller -trimpath main.go;
++  -tags "${GO_BUILD_TAGS}" \
++  -o /image-automation-controller -trimpath main.go
+
+ # Ensure that the binary was cross-compiled correctly to the target platform.
+-RUN xx-verify --static /image-automation-controller
++#RUN xx-verify --static /image-automation-controller
+
+ FROM alpine:3.16
+
+diff --git a/Makefile b/Makefile
+index 77d6c91..ac9d710 100644
+--- a/Makefile
++++ b/Makefile
+@@ -10,7 +10,7 @@ CRD_OPTIONS ?= crd:crdVersions=v1
+ # e.g. '--push'.
+ BUILD_ARGS ?=
+ # Architectures to build images for
+-BUILD_PLATFORMS ?= linux/amd64,linux/arm64,linux/arm/v7
++BUILD_PLATFORMS ?= linux/ppc64le
+
+ # Allows for defining additional Go test args, e.g. '-tags integration'.
+ GO_TEST_ARGS ?= -race

@@ -1,0 +1,42 @@
+name: Bug for OSE Dashboard
+title: "[BUG]: "
+description: "Bug reporting for OSE dashboard"
+labels: "dashboard bug"
+projects: "ppc64le/1"
+assignees: "ICH"
+body:
+  - type: markdown
+    attributes:
+      value: >
+        Use this form to submit a bug for OSE Dashboard.
+        Please give us as much information, including screen shots when possible to help us reproduce your issue or better understand the problem.
+        However, remember that any submitted information is public so do NOT include secrets, passwords, keys, PI, SPI, etc.
+
+  - type: input
+    id: ose_version
+    attributes:
+      label: OSE Dashboard Version
+      description: |
+        Enter the version of the OSE Dashboard where the issue occurs e.g. 1.1.2
+
+        > Log in and check the portal version at the bottom-right of the home page.  
+        > [Click to check portal version](https://ose.developerfirst.ibm.com)
+    validations:
+      required: true
+      
+  - type: textarea
+    id: bug_details
+    attributes:
+      label: Bug Details
+      description: |
+        Please provide a description of the issue you are having with the OSE Dashboard, including as much detail as possible with screen shots if that helps to identify the issue. However, remember that any submitted information is public so do NOT include secrets, passwords, keys, PI, SPI, etc.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce the bug or issue
+      description: |
+        Please describe how to reproduce the issue you are encountering.
+    validations:
+      required: true

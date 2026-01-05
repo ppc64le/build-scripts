@@ -1,16 +1,15 @@
 {
-    "maintainer":"Vinod.K1@ibm.com",
+    "maintainer":"vinodk99",
     "package_name" : "MathJax",
     "github_url": "https://github.com/mathjax/MathJax",
     "version": "3.2.2",
     "default_branch": "master",
     "package_dir": "m/mathjax",
-    "build_script": "mathjax_ubi_8.7.sh",
+    "build_script": "mathjax_ubi_9.3.sh",
     "validate_build_script": "true",
     "use_non_root_user": "false",
     "docker_build": false,
-
-    "3.*.*" : {
-       "build_script" : "mathjax_ubi_8.7.sh"
+    "*.*.*" : {
+       "build_script" : "mathjax_ubi_9.3.sh"
     }
 }

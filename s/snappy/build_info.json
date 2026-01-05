@@ -1,0 +1,13 @@
+{
+   "maintainer": "ramnathnayak-ibm",
+   "package_name": "snappy",
+   "github_url": "https://github.com/google/snappy",
+   "version": "1.2.2",
+   "default_branch": "main",
+   "build_script": "snappy_ubi_9.3.sh",
+   "package_dir": "s/snappy",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}

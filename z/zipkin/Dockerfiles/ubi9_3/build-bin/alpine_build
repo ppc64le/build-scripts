@@ -1,0 +1,10 @@
+#!/bin/sh -ue
+
+# This script builds all the Docker images. It is used by `test`, only extracted here for end user
+# convenience. For example, [../README.md] mentions this file.
+version=${1:-master}
+if [ "${version}" != "master" ]; then
+  export ALPINE_VERSION=${version}
+fi
+
+DOCKER_FILE=Dockerfile build-bin/docker/alpine_docker_build openzipkin/alpine:test ${version}

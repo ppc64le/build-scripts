@@ -1,0 +1,119 @@
+diff --git a/bazel/ray_deps_setup.bzl b/bazel/ray_deps_setup.bzl
+index 27dd053fdb..a7763de364 100644
+--- a/bazel/ray_deps_setup.bzl
++++ b/bazel/ray_deps_setup.bzl
+@@ -314,6 +314,8 @@ def ray_deps_setup():
+         name = "rules_foreign_cc_thirdparty",
+         sha256 = "2a4d07cd64b0719b39a7c12218a3e507672b82a97b98c6a89d38565894cf7c51",
+         strip_prefix = "rules_foreign_cc-0.9.0/examples/third_party",
++        patches = [
++            "@io_ray//thirdparty/patches:rules_foreign_thirdparty.patch",],
+         url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.9.0.tar.gz",
+     )
+
+
+diff --git a/thirdparty/patches/rules_foreign_thirdparty.patch b/thirdparty/patches/rules_foreign_thirdparty.patch
+new file mode 100644
+index 0000000000..e48e328ce9
+--- /dev/null
++++ b/thirdparty/patches/rules_foreign_thirdparty.patch
+@@ -0,0 +1,98 @@
++diff --git autotools/BUILD.automake.bazel autotools/BUILD.automake.bazel
++index d3c7c35..55e73be 100644
++--- autotools/BUILD.automake.bazel
+++++ autotools/BUILD.automake.bazel
++@@ -10,6 +10,11 @@ filegroup(
++     ),
++ )
++
+++config_setting(
+++    name = "skip_rules_perl",
+++    values = {"define": "SKIP_RULES_PERL=1"},
+++)
+++
++ configure_make(
++     name = "automake",
++     build_data = [
++@@ -27,5 +32,8 @@ configure_make(
++     out_binaries = [
++         "automake",
++     ],
++-    toolchains = ["@rules_perl//:current_toolchain"],
+++    toolchains = select({
+++    ":skip_rules_perl": [],
+++    "//conditions:default": ["@rules_perl//:current_toolchain"],
+++})
++ )
++diff --git openssl/BUILD.openssl.bazel openssl/BUILD.openssl.bazel
++index c133768..32fcb2a 100644
++--- openssl/BUILD.openssl.bazel
+++++ openssl/BUILD.openssl.bazel
++@@ -39,6 +39,12 @@ config_setting(
++     visibility = ["//visibility:public"],
++ )
++
+++config_setting(
+++    name = "skip_rules_perl",
+++    values = {"define": "SKIP_RULES_PERL=1"},
+++)
+++
+++
++ alias(
++     name = "openssl",
++     actual = select({
++@@ -62,12 +68,15 @@ configure_make_variant(
++         "ASFLAGS=\" \"",
++     ],
++     configure_prefix = "$$PERL",
++-    env = {
++-        # The Zi flag must be set otherwise OpenSSL fails to build due to missing .pdb files
++-        "CFLAGS": "-Zi",
++-        "PATH": "$$(dirname $(execpath @nasm//:nasm)):$$PATH",
++-        "PERL": "$$EXT_BUILD_ROOT$$/$(PERL)",
++-    },
+++    env = select({
+++        ":skip_rules_perl": {},
+++        "//conditions:default": {
+++            # The Zi flag must be set otherwise OpenSSL fails to build due to missing .pdb files
+++            "CFLAGS": "-Zi",
+++            "PATH": "$$(dirname $(execpath @nasm//:nasm))",
+++            "PERL": "$$EXT_BUILD_ROOT$$/$(PERL)",
+++        },
+++    }),
++     lib_name = LIB_NAME,
++     lib_source = ":all_srcs",
++     out_static_libs = [
++@@ -76,7 +86,10 @@ configure_make_variant(
++     ],
++     targets = MAKE_TARGETS,
++     toolchain = "@rules_foreign_cc//toolchains:preinstalled_nmake_toolchain",
++-    toolchains = ["@rules_perl//:current_toolchain"],
+++    toolchains = select({
+++    ":skip_rules_perl": [],
+++    "//conditions:default": ["@rules_perl//:current_toolchain"],
+++}),
++ )
++
++ configure_make(
++@@ -89,6 +102,7 @@ configure_make(
++             "AR": "",
++             "PERL": "$$EXT_BUILD_ROOT$$/$(PERL)",
++         },
+++        ":skip_rules_perl":{},
++         "//conditions:default": {
++             "PERL": "$$EXT_BUILD_ROOT$$/$(PERL)",
++         },
++@@ -102,7 +116,11 @@ configure_make(
++         "libcrypto.a",
++     ],
++     targets = MAKE_TARGETS,
++-    toolchains = ["@rules_perl//:current_toolchain"],
+++    toolchains = select({
+++    ":skip_rules_perl": [],
+++    "//conditions:default": ["@rules_perl//:current_toolchain"],
+++}),
+++
++ )
++
++ filegroup(
+

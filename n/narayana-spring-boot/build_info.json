@@ -1,5 +1,5 @@
 {
-  "maintainer": "Shubham.Garud@ibm.com",
+  "maintainer": "shubham-garud",
   "package_name": "narayana-spring-boot",
   "github_url": "https://github.com/snowdrop/narayana-spring-boot",
   "package_dir": "n/narayana-spring-boot/",

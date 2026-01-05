@@ -5,7 +5,7 @@
 # Version       : v2.2.1,v2.2.2,v2.2.8
 # Source repo   : https://github.com/go-yaml/yaml.git
 # Tested on     : UBI 8.5
-# Travis-Check  : True
+# Ci-Check  : True
 # Language      : Go
 # Script License: Apache License, Version 2 or later
 # Maintainer    : saraswati patra <saraswati.patra@ibm.com>

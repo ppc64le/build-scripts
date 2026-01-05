@@ -1,0 +1,15 @@
+{
+  "maintainer": "sid226",
+  "package_name": "mariadb-connector-j",
+  "github_url": "https://github.com/mariadb-corporation/mariadb-connector-j.git",
+  "version": "3.4.1",
+  "default_branch": "master",
+  "build_script": "mariadb-connector-j_ubi_9.3.sh",
+  "package_dir": "m/mariadb-connector-j/",
+  "docker_build": false,
+  "use_non_root_user": "false", 
+  "validate_build_script": true,
+    "3.*.*" : {
+       "build_script": "mariadb-connector-j_ubi_9.3.sh"
+  }
+}

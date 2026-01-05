@@ -1,0 +1,16 @@
+{
+  "maintainer": "Harithanagothu2",
+  "package_name": "imbalanced-learn",
+  "github_url": "https://github.com/scikit-learn-contrib/imbalanced-learn.git",
+  "version": "0.12.2",
+  "package_dir": "i/imbalanced-learn",
+  "default_branch": "master",
+  "build_script": "imbalanced-learn_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "wheel_build": true,
+  "*.*.*": {
+    "build_script": "imbalanced-learn_ubi_9.3.sh"
+  }
+}

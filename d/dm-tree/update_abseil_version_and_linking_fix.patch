@@ -1,0 +1,27 @@
+diff --git a/tree/CMakeLists.txt b/tree/CMakeLists.txt
+index 4fd1b1a..9d7b54e 100644
+--- a/tree/CMakeLists.txt
++++ b/tree/CMakeLists.txt
+@@ -68,7 +68,7 @@ endif()
+ set (BUILD_TESTING OFF)
+ 
+ # Include abseil-cpp.
+-set(ABSEIL_VER 20210324.2)
++set(ABSEIL_VER 20240116.2)
+ include(ExternalProject)
+ set(ABSEIL_CMAKE_ARGS
+     "-DCMAKE_INSTALL_PREFIX=${CMAKE_SOURCE_DIR}/abseil-cpp"
+@@ -108,10 +108,10 @@ endif()
+ 
+ # Link abseil static libs.
+ # We don't use find_library here to force cmake to build abseil before linking.
+-set(ABSEIL_LIBS int128 raw_hash_set raw_logging_internal strings throw_delegate)
++set(ABSEIL_LIBS int128 raw_hash_set raw_logging_internal strings strings_internal string_view hash low_level_hash city throw_delegate)
+ foreach(ABSEIL_LIB IN LISTS ABSEIL_LIBS)
+-  target_link_libraries(_tree PRIVATE
+-      "${abseil_install_dir}/lib/${ABSEIL_LIB_PREF}_${ABSEIL_LIB}.${LIB_SUFF}")
++  target_link_libraries(_tree PRIVATE -Wl,--whole-archive
++      "${abseil_install_dir}/lib/${ABSEIL_LIB_PREF}_${ABSEIL_LIB}.${LIB_SUFF}" -Wl,--no-whole-archive)
+ endforeach()
+ 
+ # Make the module private to tree package.

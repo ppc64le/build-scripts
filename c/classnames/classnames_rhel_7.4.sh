@@ -5,7 +5,7 @@
 # Source repo	 : https://github.com/JedWatson/classnames.git
 # Tested on	     : rhel_7.4
 # Language      : Node
-# Travis-Check  : False
+# Ci-Check  : False
 # Script License : Apache License, Version 2 or later
 # Maintainer	 : Spurti Chopra <spurti@us.ibm.com>
 #

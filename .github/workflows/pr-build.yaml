@@ -1,0 +1,54 @@
+name: PR build
+
+on:
+  pull_request:
+    branches:
+      - master
+      - replica-master
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04-ppc64le-p10  # Ensure this self-hosted runner exists
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install required packages
+        run: |
+          sudo apt update -y
+          sudo apt-get install -y file
+
+      - name: Install Python dependencies
+        run: |
+          pip3 install --force-reinstall -v "requests==2.31.0"
+          pip3 install --upgrade docker
+
+      - name: Set PR number
+        run: echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+
+      - name: Run validate_builds.py script with live logs
+        run: |
+          python3 -u gha-script/validate_builds.py ${PR_NUMBER:-false} 2>&1 | tee build_log
+          my_pid_status=${PIPESTATUS[0]}
+
+          build_size=$(stat -c %s build_log)
+
+          if [ "$my_pid_status" -ne 0 ]; then
+            echo "Script failed for PR #${PR_NUMBER}"
+            if [ "$build_size" -lt 1800000 ]; then
+              cat build_log
+            else
+              echo "Build log too large, showing last 100 lines"
+              tail -100 build_log
+            fi
+            exit 1
+          else
+            echo "Script completed successfully for PR #${PR_NUMBER}"
+            if [ "$build_size" -lt 1800000 ]; then
+              cat build_log
+            else
+              echo "Build log too large, showing last 100 lines"
+              tail -100 build_log
+            fi
+          fi

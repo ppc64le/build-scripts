@@ -1,0 +1,16 @@
+{
+  "maintainer": "vinodk99",
+  "package_name": "azure-mgmt-monitor",
+  "github_url": "https://github.com/Azure/azure-sdk-for-python",
+  "version": "azure-mgmt-monitor_7.0.0b1",
+  "wheel_build" : true,
+  "package_dir": "a/azure-mgmt-monitor",
+  "default_branch": "main",
+  "build_script": "azure-mgmt-monitor_ubi_9.3.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "azure-mgmt-monitor_*": {
+    "build_script": "azure-mgmt-monitor_ubi_9.3.sh"
+  }
+}

@@ -1,0 +1,12 @@
+{
+    "maintainer": "pooja0805",
+    "package_name": "hibernate-commons-annotations",
+    "github_url": "https://github.com/hibernate/hibernate-commons-annotations.git",
+    "package_dir": "h/hibernate-commons-annotations/",
+    "version": "7.0.0.Final",
+    "default_branch": "main",
+    "build_script": "hibernate-commons-annotations_ubi_9.3.sh",
+    "validate_build_script": true,
+    "docker_build": false,
+    "use_non_root_user": false
+}

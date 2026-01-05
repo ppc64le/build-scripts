@@ -1,11 +1,11 @@
 {
-   "maintainer": "ich@us.ibm.com",
-   "package_name": "npm-registry-fetch",
-   "github_url": "https://github.com/npm/npm-registry-fetch",
-   "version": "v16.1.0",
-   "default_branch": "main",
-   "build_script": "npm-registry-fetch_ubi_8.7.sh",
-   "package_dir": "n/npm-registry-fetch",
-   "docker_build": false,
-   "validate_build_script": true
+  "maintainer": "IBM-Currency-Helper",
+  "package_name": "npm-registry-fetch",
+  "github_url": "https://github.com/npm/npm-registry-fetch",
+  "version": "v16.1.0",
+  "default_branch": "main",
+  "build_script": "npm-registry-fetch_ubi_8.7.sh",
+  "package_dir": "n/npm-registry-fetch",
+  "docker_build": false,
+  "validate_build_script": true
 }

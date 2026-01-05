@@ -1,0 +1,15 @@
+{
+  "maintainer": "Vipul-Ajmera",
+  "package_name": "jandex",
+  "github_url": "https://github.com/smallrye/jandex.git",
+  "version": "3.2.0",
+  "default_branch": "main",
+  "package_dir": "j/jandex",
+  "build_script": "jandex_ubi_9.3.sh",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "*.*.*": {
+    "build_script": "jandex_ubi_9.3.sh"
+  }
+}

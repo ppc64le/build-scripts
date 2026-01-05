@@ -1,0 +1,16 @@
+{
+    "maintainer": "Vipul-Ajmera",
+    "package_name": "cyrus-sasl",
+    "github_url": "https://github.com/cyrusimap/cyrus-sasl",
+    "version": "cyrus-sasl-2.1.28",
+    "default_branch": "master",
+    "package_dir": "c/cyrus-sasl/",
+    "build_script": "cyrus-sasl_ubi_9.3.sh",
+    "docker_build": true,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "cyrus-sasl-2.*.*": {
+        "dir": "ubi9.3",
+        "build_script": "cyrus-sasl_ubi_9.3.sh"
+    }
+}

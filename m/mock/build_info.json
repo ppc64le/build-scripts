@@ -1,0 +1,18 @@
+{
+  "maintainer": "ramnathnayak-ibm",
+  "package_name": "mock",
+  "github_url": "https://github.com/testing-cabal/mock",
+  "version": "5.2.0",
+  "default_branch": "master",
+  "build_script": "mock_ubi_9.3.sh",
+  "package_dir": "m/mock",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "docker_build": true,
+  "use_non_root_user": false,
+  "wheel_build": true,
+  "validate_build_script": true,
+  "*": {
+    "dir": "5.2.0_ubi9",
+    "build_script": "mock_ubi_9.3.sh"
+  }
+}

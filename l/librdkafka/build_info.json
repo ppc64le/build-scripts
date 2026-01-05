@@ -1,0 +1,15 @@
+{
+   "maintainer": "Balavva-Mirji",
+   "package_name": "librdkafka",
+   "github_url": "https://github.com/confluentinc/librdkafka",
+   "version": "v2.6.3",
+   "default_branch": "master",
+   "build_script": "lidbrdkafka_ubi_9.3.sh",
+   "package_dir": "l/librdkafka",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "v2.6.*": {
+      "build_script": "librdkafka_ubi_9.3.sh"
+   }
+}

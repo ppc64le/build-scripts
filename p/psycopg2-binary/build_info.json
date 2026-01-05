@@ -1,0 +1,16 @@
+{
+	"maintainer": "ramnathnayak-ibm",
+	"package_name": "psycopg2-binary",
+	"github_url": "https://github.com/psycopg/psycopg2",
+	"version": "2.9.10",
+	"default_branch": "master",
+	"build_script": "psycopg2_ubi_9.3.sh",
+	"package_dir": "p/psycopg2-binary",
+	"docker_build": false,
+	"wheel_build": true,
+	"validate_build_script": true,
+	"use_non_root_user": false,
+	"*": {
+	   "build_script": "psycopg2_ubi_9.3.sh"
+	}
+}

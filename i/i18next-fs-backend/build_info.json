@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "i18next-fs-backend",
+    "github_url": "https://github.com/i18next/i18next-fs-backend",
+    "version": "v2.3.2",
+    "default_branch": "master",
+    "build_script": "i18next-fs-backend_ubi_9.3.sh",
+    "package_dir": "i/i18next-fs-backend",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v2.*.*": {
+        "build_script": "i18next-fs-backend_ubi_9.3.sh"
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "structured-clone",
+    "github_url": "https://github.com/ungap/structured-clone",
+    "version": "v1.2.0",
+    "default_branch": "main",
+    "build_script": "structured-clone_ubi_9.3.sh",
+    "package_dir": "s/structured-clone",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v1.*.*": {
+        "build_script": "structured-clone_ubi_9.3.sh"
+    }
+}

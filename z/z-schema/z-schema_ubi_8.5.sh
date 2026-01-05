@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/zaggino/z-schema
 # Tested on     : ubi 8.5
 # Language      : Node
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License Version 2.0
 # Maintainer    : sachin.kakatkar@ibm.com, Stuti.Wali@ibm.com
 #

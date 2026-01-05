@@ -1,0 +1,15 @@
+{
+  "maintainer": "mayurbhosure",
+  "package_name": "microprofile-metrics",
+  "github_url": "https://github.com/eclipse/microprofile-metrics",
+  "version": "5.1.1",
+  "default_branch": "master",
+  "build_script": "microprofile-metrics_ubi_9.3.sh",
+  "package_dir": "m/microprofile-metrics",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "5.*.*": {
+    "build_script": "microprofile-metrics_ubi_9.3.sh"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "maintainer": "vinodk99",
+  "package_name": "apache-tinkerpop",
+  "github_url": "https://github.com/apache/tinkerpop",
+  "version": "3.7.2",
+  "default_branch": "master",
+  "package_dir": "a/apache-tinkerpop/",
+  "build_script": "apache-tinkerpop_ubi_9.3.sh",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "docker_build": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "3.6.*": {
+    "dir": "3.6_ubi8",
+    "build_script": "apache-tinkerpop_ubi_9.3.sh"
+  },
+  "*.*.*,gremlin-go/v*.*.*" : {
+   "dir": "3.7.2_ubi9",
+    "build_script": "apache-tinkerpop_ubi_9.3.sh"
+  }
+}

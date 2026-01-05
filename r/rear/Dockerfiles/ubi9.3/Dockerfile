@@ -4,7 +4,7 @@ MAINTAINER Abhishek Dwivedi <Abhishek.Dwivedi6@ibm.com>
 ARG PACKAGE_VERSION=rear-2.7
 
 RUN yum update -y && \
-    yum install git -y && \
+    yum install git make -y && \
     git clone https://github.com/rear/rear.git && \
     cd rear/ && \
     git checkout $PACKAGE_VERSION && \

@@ -1,0 +1,16 @@
+{
+	"maintainer": "ramnathnayak-ibm",
+	"package_name": "pint",
+	"github_url": "https://github.com/hgrecco/pint",
+	"version": "0.24.4",
+	"default_branch": "master",
+	"build_script": "pint_ubi_9.3.sh",
+	"package_dir": "p/pint",
+	"docker_build": false,
+	"wheel_build": true,
+	"validate_build_script": true,
+	"use_non_root_user": false,
+	"*": {
+	   "build_script": "pint_ubi_9.3.sh"
+	}
+}

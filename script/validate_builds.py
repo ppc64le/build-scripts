@@ -23,7 +23,7 @@ def trigger_basic_validation_checks(file_name):
         "# Tested on": "",
         "# Maintainer": "maintainer",
         "# Language": "package_type",
-        "# Travis-Check": "travis_check"
+        "# Ci-Check": "travis_check"
     }
     matched_keys = []
     # Check if apache license file exists
@@ -178,13 +178,13 @@ def trigger_build_validation_travis(pr_number):
             # perform basic validation check
             trigger_basic_validation_checks(file_name)
             
-            #check Travis-check from package header  
+            #check Ci-Check from package header  
             travis_check=package_data['travis_check'].lower()
             if travis_check=="true":
                 # Build/test script files
                 trigger_script_validation_checks(file_name)
             else:
-                print("Skipping Build script validation for {} as Travis-Check flag is set to False".format(file_name))
+                print("Skipping Build script validation for {} as Ci-Check flag is set to False".format(file_name))
             # Keep track of validated files.
             validated_file_list.append(file_name)
         elif file_name.lower().endswith('build_info.json') and status != "removed":

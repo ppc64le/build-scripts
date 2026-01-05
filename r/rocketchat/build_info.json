@@ -1,0 +1,15 @@
+{
+   "maintainer": "Pratikt2312",
+   "package_name": "rocketchat",
+   "github_url": "https://github.com/RocketChat/Docker.Official.Image",
+   "version": "6.11.1",
+   "default_branch": "main",
+   "build_script": "rocketchat_6.11.1_ubi_9.3.sh",
+   "package_dir": "r/rocketchat",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "6.*.*": {
+     "build_script": "rocketchat_6.11.1_ubi_9.3.sh"
+   }
+}

@@ -1,0 +1,15 @@
+{
+  "maintainer": "stutiibm",
+  "package_name": "offheap-store",
+  "github_url": "https://github.com/Terracotta-OSS/offheap-store",
+  "version": "v2.5.6",
+  "default_branch": "master",
+  "package_dir": "o/offheap-store",
+  "build_script": "offheap-store_ubi_9_3.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "false",
+  "v*.*.*": {
+    "build_script": "offheap-store_ubi_9_3.sh"
+  }
+}

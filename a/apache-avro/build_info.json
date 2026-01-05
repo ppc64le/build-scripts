@@ -1,12 +1,15 @@
 {
-  "maintainer": "Stuti.Wali@ibm.com",
+  "maintainer": "stutiibm",
   "package_name": "apache-avro",
   "github_url": "https://github.com/apache/avro",
   "version": "release-1.11.1",
   "default_branch": "master",
   "package_dir": "a/apache-avro",
-  "build_script": "avro_ubi_8_5.sh",
+  "build_script": "avro_ubi_9_3.sh",
   "docker_build": false,
   "validate_build_script": true,
-  "use_non_root_user": false
+  "use_non_root_user": false,
+  "release-1.11.*": {
+    "build_script": "avro_ubi_9_3.sh"
+  }
 }

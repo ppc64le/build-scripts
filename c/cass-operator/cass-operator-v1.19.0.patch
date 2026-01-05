@@ -1,0 +1,649 @@
+diff --git a/Dockerfile b/Dockerfile
+index 4cadec5..486eac6 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -1,5 +1,5 @@
+ # Build the manager binary
+-FROM golang:1.20 as builder
++FROM golang:1.22 as builder
+ ARG TARGETOS
+ ARG TARGETARCH
+ 
+@@ -21,7 +21,7 @@ COPY internal/ internal/
+ RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -a -o manager cmd/main.go
+ 
+ # Build the UBI image
+-FROM redhat/ubi8-micro:latest
++FROM redhat/ubi9-micro:latest
+ 
+ ARG VERSION
+ 
+diff --git a/config/manager/image_config.yaml b/config/manager/image_config.yaml
+index 417cc8b..60406de 100644
+--- a/config/manager/image_config.yaml
++++ b/config/manager/image_config.yaml
+@@ -3,7 +3,7 @@ kind: ImageConfig
+ metadata:
+   name: image-config
+ images:
+-  system-logger: "cr.k8ssandra.io/k8ssandra/system-logger:v1.19.0"
++  system-logger: "k8ssandra/system-logger:v1.19.0-dev.12b7611-20240430"
+   config-builder: "cr.dtsx.io/datastax/cass-config-builder:1.0-ubi8"
+   k8ssandra-client: "cr.k8ssandra.io/k8ssandra/k8ssandra-client:v0.2.2"
+   # cassandra:
+diff --git a/config/manager/kustomization.yaml b/config/manager/kustomization.yaml
+index 0bcb8de..2dbd511 100644
+--- a/config/manager/kustomization.yaml
++++ b/config/manager/kustomization.yaml
+@@ -13,5 +13,5 @@ apiVersion: kustomize.config.k8s.io/v1beta1
+ kind: Kustomization
+ images:
+ - name: controller
+-  newName: cr.k8ssandra.io/k8ssandra/cass-operator
+-  newTag: v1.19.0
++  newName: k8ssandra/cass-operator
++  newTag: v1.19.0-dev.12b7611-20240430
+diff --git a/go.mod b/go.mod
+index 00d8276..48d8534 100644
+--- a/go.mod
++++ b/go.mod
+@@ -1,6 +1,6 @@
+ module github.com/k8ssandra/cass-operator
+ 
+-go 1.20
++go 1.22.0
+ 
+ require (
+ 	github.com/davecgh/go-spew v1.1.1
+@@ -11,7 +11,7 @@ require (
+ 	github.com/pkg/errors v0.9.1
+ 	github.com/stretchr/testify v1.8.2
+ 	golang.org/x/oauth2 v0.7.0 // indirect
+-	golang.org/x/term v0.7.0
++	golang.org/x/term v0.13.0
+ 	gopkg.in/yaml.v2 v2.4.0
+ 	k8s.io/api v0.26.4
+ 	k8s.io/apimachinery v0.26.4
+@@ -64,9 +64,9 @@ require (
+ 	github.com/stretchr/objx v0.5.0 // indirect
+ 	go.uber.org/atomic v1.11.0 // indirect
+ 	go.uber.org/multierr v1.11.0 // indirect
+-	golang.org/x/net v0.9.0 // indirect
+-	golang.org/x/sys v0.7.0 // indirect
+-	golang.org/x/text v0.9.0 // indirect
++	golang.org/x/net v0.17.0 // indirect
++	golang.org/x/sys v0.13.0 // indirect
++	golang.org/x/text v0.13.0 // indirect
+ 	golang.org/x/time v0.3.0 // indirect
+ 	golang.org/x/tools v0.8.0 // indirect
+ 	gomodules.xyz/jsonpatch/v2 v2.2.0 // indirect
+diff --git a/go.sum b/go.sum
+index 182e584..16857e7 100644
+--- a/go.sum
++++ b/go.sum
+@@ -108,6 +108,7 @@ github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORN
+ github.com/kr/pretty v0.2.0/go.mod h1:ipq/a2n7PKx3OHsz4KJII5eveXtPO4qwEXGdVfWzfnI=
+ github.com/kr/pretty v0.2.1/go.mod h1:ipq/a2n7PKx3OHsz4KJII5eveXtPO4qwEXGdVfWzfnI=
+ github.com/kr/pretty v0.3.1 h1:flRD4NNwYAUpkphVc1HcthR4KEIFJ65n8Mw5qdRn3LE=
++github.com/kr/pretty v0.3.1/go.mod h1:hoEshYVHaxMs3cyo3Yncou5ZscifuDolrwPKZanG3xk=
+ github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
+ github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=
+ github.com/kr/text v0.2.0 h1:5Nx0Ya0ZqY2ygV366QzturHI13Jq95ApcVaJBhpS+AY=
+@@ -175,6 +176,7 @@ go.uber.org/atomic v1.11.0 h1:ZvwS0R+56ePWxUNi+Atn9dWONBPp/AUETXlHW0DxSjE=
+ go.uber.org/atomic v1.11.0/go.mod h1:LUxbIzbOniOlMKjJjyPfpl4v+PKK2cNJn91OQbhoJI0=
+ go.uber.org/goleak v1.1.10/go.mod h1:8a7PlsEVH3e/a/GLqe5IIrQx6GzcnRmZEufDUTk4A7A=
+ go.uber.org/goleak v1.2.0 h1:xqgm/S+aQvhWFTtR0XK3Jvg7z8kGV8P4X14IzwN3Eqk=
++go.uber.org/goleak v1.2.0/go.mod h1:XJYK+MuIchqpmGmUSAzotztawfKvYLUIgg7guXrwVUo=
+ go.uber.org/multierr v1.6.0/go.mod h1:cdWPpRnG4AhwMwsgIHip0KRBQjJy5kYEpYjJxpXp9iU=
+ go.uber.org/multierr v1.11.0 h1:blXXJkSxSSfBVBlC76pxqeO+LN3aDfLQo+309xJstO0=
+ go.uber.org/multierr v1.11.0/go.mod h1:20+QtiLqy0Nd6FdQB9TLXag12DsQkrbs3htMFfDN80Y=
+@@ -206,8 +208,8 @@ golang.org/x/net v0.0.0-20200822124328-c89045814202/go.mod h1:/O7V0waA8r7cgGh81R
+ golang.org/x/net v0.0.0-20201021035429-f5854403a974/go.mod h1:sp8m0HH+o8qH0wwXwYZr8TS3Oi6o0r6Gce1SSxlDquU=
+ golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4/go.mod h1:p54w0d4576C0XHj96bSt6lcn1PtDYWL6XObtHCRCNQM=
+ golang.org/x/net v0.0.0-20210805182204-aaa1db679c0d/go.mod h1:9nx3DQGgdP8bBQD5qxJ1jj9UTztislL4KSBs9R2vV5Y=
+-golang.org/x/net v0.9.0 h1:aWJ/m6xSmxWBx+V0XRHTlrYrPG56jKsLdTFmsSsCzOM=
+-golang.org/x/net v0.9.0/go.mod h1:d48xBJpPfHeWQsugry2m+kC02ZBRGRgulfHnEXEuWns=
++golang.org/x/net v0.17.0 h1:pVaXccu2ozPjCXewfr1S7xza/zcXTity9cCdXQYSjIM=
++golang.org/x/net v0.17.0/go.mod h1:NxSsAGuq816PNPmqtQdLE42eU2Fs7NoRIZrHJAlaCOE=
+ golang.org/x/oauth2 v0.0.0-20180821212333-d2e6202438be/go.mod h1:N/0e6XlmueqKjAGxoOufVs8QHGRruUQn6yWY3a++T0U=
+ golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d/go.mod h1:gOpvHmFTYa4IltrdGE7lF6nIHvwfUNPOp7c8zoXwtLw=
+ golang.org/x/oauth2 v0.7.0 h1:qe6s0zUXlPX80/dITx3440hWZ7GwMwgDDyrSGTPJG/g=
+@@ -228,18 +230,18 @@ golang.org/x/sys v0.0.0-20210330210617-4fbd30eecc44/go.mod h1:h1NjWce9XRLGQEsW7w
+ golang.org/x/sys v0.0.0-20210423082822-04245dca01da/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+ golang.org/x/sys v0.0.0-20210510120138-977fb7262007/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+ golang.org/x/sys v0.0.0-20220908164124-27713097b956/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+-golang.org/x/sys v0.7.0 h1:3jlCCIQZPdOYu1h8BkNvLz8Kgwtae2cagcG/VamtZRU=
+-golang.org/x/sys v0.7.0/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
++golang.org/x/sys v0.13.0 h1:Af8nKPmuFypiUBjVoU9V20FiaFXOcuZI21p0ycVYYGE=
++golang.org/x/sys v0.13.0/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+ golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1/go.mod h1:bj7SfCRtBDWHUb9snDiAeCFNEtKQo2Wmx5Cou7ajbmo=
+-golang.org/x/term v0.7.0 h1:BEvjmm5fURWqcfbSKTdpkDXYBrUS1c0m8agp14W48vQ=
+-golang.org/x/term v0.7.0/go.mod h1:P32HKFT3hSsZrRxla30E9HqToFYAQPCMs/zFMBUFqPY=
++golang.org/x/term v0.13.0 h1:bb+I9cTfFazGW51MZqBVmZy7+JEJMouUHTUSKVQLBek=
++golang.org/x/term v0.13.0/go.mod h1:LTmsnFJwVN6bCy1rVCoS+qHT1HhALEFxKncY3WNNh4U=
+ golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
+ golang.org/x/text v0.3.2/go.mod h1:bEr9sfX3Q8Zfm5fL9x+3itogRgK3+ptLWKqgva+5dAk=
+ golang.org/x/text v0.3.3/go.mod h1:5Zoc/QRtKVWzQhOtBMvqHzDpF6irO9z98xDceosuGiQ=
+ golang.org/x/text v0.3.5/go.mod h1:5Zoc/QRtKVWzQhOtBMvqHzDpF6irO9z98xDceosuGiQ=
+ golang.org/x/text v0.3.6/go.mod h1:5Zoc/QRtKVWzQhOtBMvqHzDpF6irO9z98xDceosuGiQ=
+-golang.org/x/text v0.9.0 h1:2sjJmO8cDvYveuX97RDLsxlyUxLl+GHoLxBiRdHllBE=
+-golang.org/x/text v0.9.0/go.mod h1:e1OnstbJyHTd6l/uOt8jFFHp6TRDWZR/bV3emEE/zU8=
++golang.org/x/text v0.13.0 h1:ablQoSUd0tRdKxZewP80B+BaqeKJuVhuRxj/dkrun3k=
++golang.org/x/text v0.13.0/go.mod h1:TvPlkZtksWOMsz7fbANvkp4WM8x/WCo/om8BMLbz+aE=
+ golang.org/x/time v0.3.0 h1:rg5rLMjNzMS1RkNLzCG38eapWhnYLFYXDXj2gOlr8j4=
+ golang.org/x/time v0.3.0/go.mod h1:tRJNPiyCQ0inRvYxbN9jk5I+vvW/OXSQhTDSoE431IQ=
+ golang.org/x/tools v0.0.0-20180917221912-90fa682c2a6e/go.mod h1:n7NCudcB/nEzxVGmLbDWY5pfWTLqBcC2KZ6jyYvM4mQ=
+diff --git a/logger.Dockerfile b/logger.Dockerfile
+index b9ba39b..ba6f4bd 100644
+--- a/logger.Dockerfile
++++ b/logger.Dockerfile
+@@ -2,15 +2,29 @@ FROM redhat/ubi8:latest as builder
+ ARG VERSION
+ ARG TARGETPLATFORM
+ 
+-# Install Vector
+-ENV VECTOR_VERSION 0.33.1
+-RUN case ${TARGETPLATFORM} in \
+-         "linux/amd64")  VECTOR_ARCH=x86_64  ;; \
+-         "linux/arm64")  VECTOR_ARCH=aarch64  ;; \
+-    esac \
+- && rpm -i https://packages.timber.io/vector/${VECTOR_VERSION}/vector-${VECTOR_VERSION}-1.${VECTOR_ARCH}.rpm
++ENV VECTOR_VERSION=v0.33.1
++ENV PROTOBUF_VERSION=3.15.0
++ENV PATH=$HOME/.cargo/bin:$PATH
+ 
+-FROM redhat/ubi8-micro:latest
++#Build vector
++RUN yum install -y gcc gcc-c++ make cmake wget unzip git python38 openssl-devel golang cyrus-sasl-devel perl-IPC-Cmd
++RUN wget https://github.com/protocolbuffers/protobuf/releases/download/v$PROTOBUF_VERSION/protoc-$PROTOBUF_VERSION-linux-ppcle_64.zip
++RUN unzip protoc-$PROTOBUF_VERSION-linux-ppcle_64.zip
++RUN cp -r include/* /usr/local/include
++RUN cp bin/protoc /usr/local/bin
++RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
++COPY vector-${VECTOR_VERSION}.patch .
++RUN source $HOME/.cargo/env \
++    && git clone https://github.com/vectordotdev/vector \
++    && cd vector \
++    && git checkout ${VECTOR_VERSION} \
++    && git apply ../vector-${VECTOR_VERSION}.patch \
++    && make build
++RUN cp ./vector/target/release/vector /usr/bin/vector
++
++
++
++FROM redhat/ubi9-micro:latest
+ 
+ ARG VERSION
+ ARG TARGETPLATFORM
+@@ -26,6 +40,7 @@ LABEL description="Sidecar to output Cassandra system logs to stdout"
+ # Copy our configuration
+ COPY ./config/logger/vector_config.toml /etc/vector/vector.toml
+ COPY --from=builder /usr/lib64/libstdc++.so.6 /usr/lib64/libstdc++.so.6
++COPY --from=builder /usr/lib64/libz.so.1 /usr/lib64/libz.so.1
+ COPY --from=builder /usr/bin/vector /usr/bin/vector
+ 
+ ADD https://raw.githubusercontent.com/vectordotdev/vector/master/LICENSE /licences/LICENSE
+diff --git a/tests/canary_upgrade/canary_upgrade_test.go b/tests/canary_upgrade/canary_upgrade_test.go
+index 5758ac0..2b9acca 100644
+--- a/tests/canary_upgrade/canary_upgrade_test.go
++++ b/tests/canary_upgrade/canary_upgrade_test.go
+@@ -78,7 +78,7 @@ var _ = Describe(testName, func() {
+ 			ns.ExecAndLog(step, k)
+ 
+ 			step = "perform canary upgrade"
+-			json = "{\"spec\": {\"serverVersion\": \"4.0.7\"}}"
++			json = "{\"spec\": {\"serverVersion\": \"4.1.7\"}}"
+ 			k = kubectl.PatchMerge(dcResource, json)
+ 			ns.ExecAndLog(step, k)
+ 
+@@ -89,8 +89,8 @@ var _ = Describe(testName, func() {
+ 			err = images.ParseImageConfig(imageConfigFile)
+ 			Expect(err).ToNot(HaveOccurred())
+ 
+-			old, _ := images.GetCassandraImage("cassandra", "4.0.1")
+-			updated, _ := images.GetCassandraImage("cassandra", "4.0.7")
++			old, _ := images.GetCassandraImage("cassandra", "4.1.2")
++			updated, _ := images.GetCassandraImage("cassandra", "4.1.7")
+ 
+ 			images := []string{
+ 				old,
+diff --git a/tests/kustomization.yaml b/tests/kustomization.yaml
+new file mode 100644
+index 0000000..66ef316
+--- /dev/null
++++ b/tests/kustomization.yaml
+@@ -0,0 +1,7 @@
++# This is the default kustomize template for tests.
++namespace: fql-config
++
++apiVersion: kustomize.config.k8s.io/v1beta1
++kind: Kustomization
++resources:
++- ../../config/deployments/default
+diff --git a/tests/kustomize/kustomization.yaml b/tests/kustomize/kustomization.yaml
+index 2b5ee66..928bba8 100644
+--- a/tests/kustomize/kustomization.yaml
++++ b/tests/kustomize/kustomization.yaml
+@@ -1,5 +1,5 @@
+ # This is the default kustomize template for tests.
+-namespace: kustomize
++namespace: test-canary-upgrade
+ 
+ apiVersion: kustomize.config.k8s.io/v1beta1
+ kind: Kustomization
+diff --git a/tests/testdata/additional-service-annotations-and-labels.yaml b/tests/testdata/additional-service-annotations-and-labels.yaml
+index c3342af..548a446 100644
+--- a/tests/testdata/additional-service-annotations-and-labels.yaml
++++ b/tests/testdata/additional-service-annotations-and-labels.yaml
+@@ -5,7 +5,7 @@ metadata:
+ spec:
+   clusterName: cluster2
+   serverType: cassandra
+-  serverVersion: "3.11.10"
++  serverVersion: "4.1.2"
+   managementApiAuth:
+     insecure: {}
+   size: 1
+@@ -26,6 +26,6 @@ spec:
+   racks:
+     - name: r1
+   config:
+-    jvm-options:
++    jvm-server-options:
+       initial_heap_size: "512m"
+       max_heap_size: "512m"
+diff --git a/tests/testdata/cluster-wide-install-dc1.yaml b/tests/testdata/cluster-wide-install-dc1.yaml
+index a2d9eb1..5c94337 100644
+--- a/tests/testdata/cluster-wide-install-dc1.yaml
++++ b/tests/testdata/cluster-wide-install-dc1.yaml
+@@ -5,7 +5,7 @@ metadata:
+ spec:
+   clusterName: cluster1
+   serverType: cassandra
+-  serverVersion: "3.11.10"
++  serverVersion: "4.1.2"
+   managementApiAuth:
+     insecure: {}
+   size: 1
+@@ -20,6 +20,6 @@ spec:
+   racks:
+     - name: r1
+   config:
+-    jvm-options:
++    jvm-server-options:
+       initial_heap_size: "512m"
+       max_heap_size: "512m"
+diff --git a/tests/testdata/cluster-wide-install-dc2.yaml b/tests/testdata/cluster-wide-install-dc2.yaml
+index 743e4f3..fabda7a 100644
+--- a/tests/testdata/cluster-wide-install-dc2.yaml
++++ b/tests/testdata/cluster-wide-install-dc2.yaml
+@@ -5,7 +5,7 @@ metadata:
+ spec:
+   clusterName: cluster2
+   serverType: cassandra
+-  serverVersion: "3.11.10"
++  serverVersion: "4.1.2"
+   managementApiAuth:
+     insecure: {}
+   size: 1
+@@ -20,6 +20,6 @@ spec:
+   racks:
+     - name: r1
+   config:
+-    jvm-options:
++    jvm-server-options:
+       initial_heap_size: "512m"
+       max_heap_size: "512m"
+diff --git a/tests/testdata/cluster-with-config-secret.yaml b/tests/testdata/cluster-with-config-secret.yaml
+index f1a0481..0f7cfd0 100644
+--- a/tests/testdata/cluster-with-config-secret.yaml
++++ b/tests/testdata/cluster-with-config-secret.yaml
+@@ -5,7 +5,7 @@ metadata:
+ spec:
+   clusterName: cluster1
+   serverType: cassandra
+-  serverVersion: "3.11.10"
++  serverVersion: "4.1.2"
+   managementApiAuth:
+     insecure: {}
+   size: 3
+diff --git a/tests/testdata/config_fql_4x_test.yaml b/tests/testdata/config_fql_4x_test.yaml
+index dbc010b..0b999b0 100644
+--- a/tests/testdata/config_fql_4x_test.yaml
++++ b/tests/testdata/config_fql_4x_test.yaml
+@@ -5,7 +5,7 @@ metadata:
+ spec:
+   clusterName: cluster1
+   serverType: cassandra
+-  serverVersion: 4.0.0
++  serverVersion: 4.1.2
+   managementApiAuth:
+     insecure: {}
+   size: 1
+@@ -21,4 +21,4 @@ spec:
+     cassandra-yaml: 
+       full_query_logging_options:
+         log_dir: /var/log/cassandra/fql
+-    
+\ No newline at end of file
++    
+diff --git a/tests/testdata/default-single-rack-2-node-dc.yaml b/tests/testdata/default-single-rack-2-node-dc.yaml
+index 365e65d..492392f 100644
+--- a/tests/testdata/default-single-rack-2-node-dc.yaml
++++ b/tests/testdata/default-single-rack-2-node-dc.yaml
+@@ -5,7 +5,7 @@ metadata:
+ spec:
+   clusterName: cluster2
+   serverType: cassandra
+-  serverVersion: "4.0.4"
++  serverVersion: "4.1.2"
+   managementApiAuth:
+     insecure: {}
+   size: 2
+diff --git a/tests/testdata/default-single-rack-single-node-addtional-volumes-dc.yaml b/tests/testdata/default-single-rack-single-node-addtional-volumes-dc.yaml
+index 07cefa4..0e7a6a6 100644
+--- a/tests/testdata/default-single-rack-single-node-addtional-volumes-dc.yaml
++++ b/tests/testdata/default-single-rack-single-node-addtional-volumes-dc.yaml
+@@ -5,7 +5,7 @@ metadata:
+ spec:
+   clusterName: cluster2
+   serverType: cassandra
+-  serverVersion: "3.11.10"
++  serverVersion: "4.1.2"
+   managementApiAuth:
+     insecure: {}
+   size: 1
+@@ -42,6 +42,6 @@ spec:
+             - mountPath: "/var/log/cassandra"
+               name: "server-logs"
+   config:
+-    jvm-options:
++    jvm-server-options:
+       initial_heap_size: "512m"
+       max_heap_size: "512m"
+diff --git a/tests/testdata/default-single-rack-single-node-dc.yaml b/tests/testdata/default-single-rack-single-node-dc.yaml
+index 691af42..fabda7a 100644
+--- a/tests/testdata/default-single-rack-single-node-dc.yaml
++++ b/tests/testdata/default-single-rack-single-node-dc.yaml
+@@ -5,7 +5,7 @@ metadata:
+ spec:
+   clusterName: cluster2
+   serverType: cassandra
+-  serverVersion: "4.1.1"
++  serverVersion: "4.1.2"
+   managementApiAuth:
+     insecure: {}
+   size: 1
+diff --git a/tests/testdata/default-single-rack-single-node-extra-container-dc.yaml b/tests/testdata/default-single-rack-single-node-extra-container-dc.yaml
+index bb50ddc..7f3ed49 100644
+--- a/tests/testdata/default-single-rack-single-node-extra-container-dc.yaml
++++ b/tests/testdata/default-single-rack-single-node-extra-container-dc.yaml
+@@ -5,7 +5,7 @@ metadata:
+ spec:
+   clusterName: cluster2
+   serverType: cassandra
+-  serverVersion: "3.11.10"
++  serverVersion: "4.1.2"
+   managementApiAuth:
+     insecure: {}
+   size: 1
+@@ -32,6 +32,6 @@ spec:
+             - mountPath: "/var/log/cassandra"
+               name: "server-logs"
+   config:
+-    jvm-options:
++    jvm-server-options:
+       initial_heap_size: "512m"
+       max_heap_size: "512m"
+diff --git a/tests/testdata/default-three-rack-four-node-dc.yaml b/tests/testdata/default-three-rack-four-node-dc.yaml
+index 321c9b1..fd8c767 100644
+--- a/tests/testdata/default-three-rack-four-node-dc.yaml
++++ b/tests/testdata/default-three-rack-four-node-dc.yaml
+@@ -5,7 +5,7 @@ metadata:
+ spec:
+   clusterName: cluster1
+   serverType: cassandra
+-  serverVersion: "3.11.10"
++  serverVersion: "4.1.2"
+   managementApiAuth:
+     insecure: {}
+   size: 4
+@@ -22,6 +22,6 @@ spec:
+     - name: r2
+     - name: r3
+   config:
+-    jvm-options:
++    jvm-server-options:
+       initial_heap_size: "512m"
+       max_heap_size: "512m"
+diff --git a/tests/testdata/default-three-rack-three-node-dc-4x.yaml b/tests/testdata/default-three-rack-three-node-dc-4x.yaml
+index 1eb8892..7e60138 100644
+--- a/tests/testdata/default-three-rack-three-node-dc-4x.yaml
++++ b/tests/testdata/default-three-rack-three-node-dc-4x.yaml
+@@ -5,7 +5,7 @@ metadata:
+ spec:
+   clusterName: cluster1
+   serverType: cassandra
+-  serverVersion: 4.0.3
++  serverVersion: "4.1.2"
+   managementApiAuth:
+     insecure: {}
+   size: 3
+diff --git a/tests/testdata/default-three-rack-three-node-dc.yaml b/tests/testdata/default-three-rack-three-node-dc.yaml
+index 030a94a..7e60138 100644
+--- a/tests/testdata/default-three-rack-three-node-dc.yaml
++++ b/tests/testdata/default-three-rack-three-node-dc.yaml
+@@ -5,7 +5,7 @@ metadata:
+ spec:
+   clusterName: cluster1
+   serverType: cassandra
+-  serverVersion: "3.11.10"
++  serverVersion: "4.1.2"
+   managementApiAuth:
+     insecure: {}
+   size: 3
+@@ -22,6 +22,6 @@ spec:
+     - name: r2
+     - name: r3
+   config:
+-    jvm-options:
++    jvm-server-options:
+       initial_heap_size: "512m"
+       max_heap_size: "512m"
+diff --git a/tests/testdata/default-two-rack-two-node-dc.yaml b/tests/testdata/default-two-rack-two-node-dc.yaml
+index 97817e4..a3863ee 100644
+--- a/tests/testdata/default-two-rack-two-node-dc.yaml
++++ b/tests/testdata/default-two-rack-two-node-dc.yaml
+@@ -6,7 +6,7 @@ spec:
+   clusterName: cluster1
+   datacenterName: My_Super_Dc
+   serverType: cassandra
+-  serverVersion: "4.0.10"
++  serverVersion: "4.1.2"
+   managementApiAuth:
+     insecure: {}
+   size: 2
+diff --git a/tests/testdata/encrypted-single-rack-2-node-dc.yaml b/tests/testdata/encrypted-single-rack-2-node-dc.yaml
+index 44de20f..c289732 100644
+--- a/tests/testdata/encrypted-single-rack-2-node-dc.yaml
++++ b/tests/testdata/encrypted-single-rack-2-node-dc.yaml
+@@ -5,7 +5,7 @@ metadata:
+ spec:
+   clusterName: cluster2
+   serverType: cassandra
+-  serverVersion: "3.11.10"
++  serverVersion: "4.1.2"
+   managementApiAuth:
+     insecure: {}
+   size: 2
+@@ -20,7 +20,7 @@ spec:
+   racks:
+     - name: r1
+   config:
+-    jvm-options:
++    jvm-server-options:
+       initial_heap_size: "512m"
+       max_heap_size: "512m"
+     cassandra-yaml:
+diff --git a/tests/testdata/host-network-dc.yaml b/tests/testdata/host-network-dc.yaml
+index 0b873b4..ce62806 100644
+--- a/tests/testdata/host-network-dc.yaml
++++ b/tests/testdata/host-network-dc.yaml
+@@ -5,7 +5,7 @@ metadata:
+ spec:
+   clusterName: cluster1
+   serverType: cassandra
+-  serverVersion: "3.11.10"
++  serverVersion: "4.1.2"
+   managementApiAuth:
+     insecure: {}
+   size: 3
+@@ -24,6 +24,6 @@ spec:
+     - name: r2
+     - name: r3
+   config:
+-    jvm-options:
++    jvm-server-options:
+       initial_heap_size: "512m"
+       max_heap_size: "512m"
+diff --git a/tests/testdata/nodeport-service-dc.yaml b/tests/testdata/nodeport-service-dc.yaml
+index 8ce15dc..061c8cf 100644
+--- a/tests/testdata/nodeport-service-dc.yaml
++++ b/tests/testdata/nodeport-service-dc.yaml
+@@ -5,7 +5,7 @@ metadata:
+ spec:
+   clusterName: cluster1
+   serverType: cassandra
+-  serverVersion: "3.11.10"
++  serverVersion: "4.1.2"
+   managementApiAuth:
+     insecure: {}
+   networking:
+@@ -27,6 +27,7 @@ spec:
+   config:
+     cassandra-yaml:
+       allocate_tokens_for_local_replication_factor: 2
+-    jvm-options:
++    jvm-server-options:
+       initial_heap_size: "512m"
+       max_heap_size: "512m"
++
+diff --git a/tests/testdata/oss-one-node-dc-with-mtls.yaml b/tests/testdata/oss-one-node-dc-with-mtls.yaml
+index 144c760..7615927 100644
+--- a/tests/testdata/oss-one-node-dc-with-mtls.yaml
++++ b/tests/testdata/oss-one-node-dc-with-mtls.yaml
+@@ -5,7 +5,7 @@ metadata:
+ spec:
+   clusterName: cluster1
+   serverType: cassandra
+-  serverVersion: "3.11.7"
++  serverVersion: "4.1.2"
+   managementApiAuth:
+     manual:
+       clientSecretName: mgmt-api-client-credentials
+@@ -22,6 +22,6 @@ spec:
+   racks:
+     - name: r1
+   config:
+-    jvm-options:
++    jvm-server-options:
+       initial_heap_size: "512m"
+       max_heap_size: "512m"
+diff --git a/tests/testdata/oss-three-rack-three-node-dc.yaml b/tests/testdata/oss-three-rack-three-node-dc.yaml
+index 3cef281..0a7a336 100644
+--- a/tests/testdata/oss-three-rack-three-node-dc.yaml
++++ b/tests/testdata/oss-three-rack-three-node-dc.yaml
+@@ -5,7 +5,7 @@ metadata:
+ spec:
+   clusterName: cluster1
+   serverType: cassandra
+-  serverVersion: "3.11.14"
++  serverVersion: "4.1.2"
+   managementApiAuth:
+     insecure: {}
+   size: 3
+@@ -22,6 +22,6 @@ spec:
+     - name: r2
+     - name: r3
+   config:
+-    jvm-options:
++    jvm-server-options:
+       initial_heap_size: "512m"
+       max_heap_size: "512m"
+diff --git a/tests/testdata/oss-upgrade-dc.yaml b/tests/testdata/oss-upgrade-dc.yaml
+index 007215e..6e849df 100644
+--- a/tests/testdata/oss-upgrade-dc.yaml
++++ b/tests/testdata/oss-upgrade-dc.yaml
+@@ -7,7 +7,7 @@ spec:
+   serverType: cassandra
+   # Do not change serverVersion. This cassdc is intended for testing a canary
+   # upgrade specifically from this version.
+-  serverVersion: "4.0.1"
++  serverVersion: "4.1.2"
+   managementApiAuth:
+     insecure: {}
+   size: 3
+@@ -24,4 +24,4 @@ spec:
+   config:
+     jvm-server-options:
+       initial_heap_size: "512m"
+-      max_heap_size: "512m"
+\ No newline at end of file
++      max_heap_size: "512m"
+diff --git a/vector-v0.33.1.patch b/vector-v0.33.1.patch
+new file mode 100644
+index 0000000..af0e18d
+--- /dev/null
++++ b/vector-v0.33.1.patch
+@@ -0,0 +1,51 @@
++diff --git a/Cargo.lock b/Cargo.lock
++index c3e659723..a7286fec4 100644
++--- a/Cargo.lock
+++++ b/Cargo.lock
++@@ -7273,8 +7273,7 @@ checksum = "8c31b5c4033f8fdde8700e4657be2c497e7288f01515be52168c631e2e4d4086"
++ [[package]]
++ name = "ring"
++ version = "0.16.20"
++-source = "registry+https://github.com/rust-lang/crates.io-index"
++-checksum = "3053cf52e236a3ed746dfc745aa9cacf1b791d846bdaf412f60a8d7d6e17c8fc"
+++source = "git+https://github.com/IBM/ring/?branch=ppc-0.16.20#3f8f04a1057e286f3b8c5b9e39c9f795b15743cc"
++ dependencies = [
++  "cc",
++  "libc",
++@@ -9731,6 +9730,7 @@ dependencies = [
++  "redis",
++  "regex",
++  "reqwest",
+++ "ring 0.16.20",
++  "rmp-serde",
++  "rmpv",
++  "roaring",
++diff --git a/Cargo.toml b/Cargo.toml
++index 91dc7cc20..04f4c99eb 100644
++--- a/Cargo.toml
+++++ b/Cargo.toml
++@@ -146,6 +146,7 @@ vector-config-macros = { path = "lib/vector-config-macros" }
++ vector-core = { path = "lib/vector-core", default-features = false, features = ["vrl"] }
++ vector-vrl-functions = { path = "lib/vector-vrl/functions" }
++ loki-logproto = { path = "lib/loki-logproto", optional = true }
+++ring = { version = "0.16.20"}
++
++ # Tokio / Futures
++ async-stream = { version = "0.3.5", default-features = false }
++@@ -387,6 +388,7 @@ nix = { git = "https://github.com/vectordotdev/nix.git", branch = "memfd/gnu/mus
++ # The `heim` crates depend on `ntapi` 0.3.7 on Windows, but that version has an
++ # unaligned access bug fixed in the following revision.
++ ntapi = { git = "https://github.com/MSxDOS/ntapi.git", rev = "24fc1e47677fc9f6e38e5f154e6011dc9b270da6" }
+++ring = { git = "https://github.com/IBM/ring/" , branch = "ppc-0.16.20"}
++
++ [features]
++ # Default features for *-unknown-linux-gnu and *-apple-darwin
++@@ -403,6 +405,7 @@ default-no-api-client = ["api", "enrichment-tables", "sinks", "sources", "source
++ default-no-vrl-cli = ["api", "sinks", "sources", "sources-dnstap", "transforms", "unix", "rdkafka?/gssapi-vendored", "enterprise"]
++ tokio-console = ["dep:console-subscriber", "tokio/tracing"]
++
+++
++ all-logs = ["sinks-logs", "sources-logs", "sources-dnstap", "transforms-logs"]
++ all-metrics = ["sinks-metrics", "sources-metrics", "transforms-metrics", "enterprise"]
++
++

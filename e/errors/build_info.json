@@ -1,5 +1,5 @@
 {
-   "maintainer": "Abhishek.Dwivedi6@ibm.com",
+   "maintainer": "AbhiIBM",
    "package_name": "errors",
    "github_url": "https://github.com/go-openapi/errors",
    "version": "v0.22.0",

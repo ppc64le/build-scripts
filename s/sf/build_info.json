@@ -1,0 +1,15 @@
+{
+   "maintainer": "stutiibm",
+   "package_name": "sf",
+   "github_url": "https://github.com/cran/sf",
+   "version": "1.0-16",
+   "default_branch": "master",
+   "build_script": "sf_ubi_9.3.sh",
+   "package_dir": "s/sf",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*": {
+     "build_script": "sf_ubi_9.3.sh"
+   }
+}

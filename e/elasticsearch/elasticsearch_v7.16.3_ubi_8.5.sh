@@ -5,7 +5,7 @@
 # Version       : 7.16.3
 # Source repo   : https://github.com/elastic/elasticsearch.git
 # Tested on     : UBI-8.5
-# Travis-Check  : True
+# Ci-Check  : True
 # Language      : Java
 # Script License: Apache License Version 2.0
 # Maintainer    : Vinod K <Vinod.K1@ibm.com>

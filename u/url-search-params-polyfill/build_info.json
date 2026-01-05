@@ -1,0 +1,15 @@
+{
+    "maintainer": "stutiibm",
+    "package_name": "url-search-params-polyfill",
+    "github_url": "https://github.com/jerrybendy/url-search-params-polyfill",
+    "version": "v8.2.4",
+    "default_branch": "master",
+    "package_dir": "u/url-search-params-polyfill",
+    "build_script": "url-search-params-polyfill_ubi_9_3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "v8.2.*": {
+        "build_script": "url-search-params-polyfill_ubi_9_3.sh"
+     }
+}

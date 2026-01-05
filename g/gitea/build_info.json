@@ -1,13 +1,18 @@
 {
-  "maintainer": "Reynold.Vaz@ibm.com",
+  "maintainer": "vinodk99",
   "package_name": "gitea",
   "github_url": "https://github.com/go-gitea/gitea.git",
-  "version": "v1.17.3",
+  "version": "v1.22.0",
   "default_branch": "main",
   "package_dir": "g/gitea",
-  "build_script": "gitea_v1.17.2.sh",
+  "build_script": "gitea_ubi_9.3.sh",
+  "validate_build_script": true,
+  "use_non_root_user": "false",
   "docker_build": false,
   "v1.17.*, v1.18.*": {
     "build_script": "gitea_v1.17.2.sh"
+  },
+  "v*.*.*" : {
+    "build_script": "gitea_ubi_9.3.sh"
   }
 }

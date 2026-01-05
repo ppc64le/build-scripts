@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "immutable-js",
+    "github_url": "https://github.com/immutable-js/immutable-js",
+    "version": "v4.1.0",
+    "default_branch": "main",
+    "build_script": "immutable-js_ubi_9.3.sh",
+    "package_dir": "i/immutable-js",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v4.*.*": {
+      "build_script": "immutable-js_ubi_9.3.sh"
+    }
+  }

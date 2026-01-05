@@ -1,0 +1,15 @@
+{
+  "maintainer": "Vipul-Ajmera",
+  "package_name": "jackson-modules-base",
+  "github_url": "https://github.com/FasterXML/jackson-modules-base.git",
+  "version": "jackson-modules-base-2.17.2",
+  "default_branch": "2.18",
+  "package_dir": "j/jackson-modules-base",
+  "build_script": "jackson-modules-base_ubi_9.3.sh",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "jackson-modules-base-*.*.*": {
+    "build_script": "jackson-modules-base_ubi_9.3.sh"
+  }
+}

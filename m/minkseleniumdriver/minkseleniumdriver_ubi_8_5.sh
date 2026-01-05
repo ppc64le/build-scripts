@@ -5,7 +5,7 @@
 # Source repo      : https://github.com/minkphp/MinkSelenium2Driver.git
 # Tested on        : UBI 8.5
 # Language         : PHP
-# Travis-Check     : True
+# Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Ankit Paraskar <Ankit.Paraskar@ibm.com>, Bhimrao Patil <Bhimrao.Patil@ibm.com>
 #

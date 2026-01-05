@@ -1,0 +1,18 @@
+{
+    "maintainer": "pratibh-ibm",
+    "package_name": "cdi",
+    "github_url": "https://github.com/jakartaee/cdi.git",
+    "version": "4.1.0",
+    "default_branch": "master",
+    "package_dir": "c/cdi",
+    "build_script": "cdi_ubi_9_3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "4.*.*": {
+      "build_script": "cdi_ubi_9.3.sh"
+    },
+    "2.*.*": {
+        "build_script": "cdi-v2_ubi_9.3.sh"
+      }
+  }

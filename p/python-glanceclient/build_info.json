@@ -1,21 +1,21 @@
 {
-    "maintainer":"Vinod.K1@ibm.com",
-    "package_name" : "python-glanceclient", 
-    "github_url": "https://github.com/openstack/python-glanceclient",
-    "version": "yoga-eom",
-    "default_branch": "master",
-    "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-    "package_dir": "p/python-glanceclient",
-    "build_script": "python_glanceclient_ubi_8.7.sh",
-    "validate_build_script": "true",
-    "use_non_root_user": "false",
-    "docker_build": "true",
-    "yoga-eom" : {
-       "dir": "yogaeom_ubi8",
-       "build_script": "python_glanceclient_ubi_8.7.sh"
-    },
-    "*.*.*" : {
-       "dir": "yogaeom_ubi8",
-       "build_script": "python_glanceclient_ubi_8.7.sh"
-    }
+  "maintainer": "vinodk99",
+  "package_name": "python-glanceclient",
+  "github_url": "https://github.com/openstack/python-glanceclient",
+  "version": "yoga-eom",
+  "default_branch": "master",
+  "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+  "package_dir": "p/python-glanceclient",
+  "build_script": "python_glanceclient_ubi_8.7.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": "true",
+  "yoga-eom": {
+    "dir": "yogaeom_ubi8",
+    "build_script": "python_glanceclient_ubi_8.7.sh"
+  },
+  "*.*.*": {
+    "dir": "yogaeom_ubi8",
+    "build_script": "python_glanceclient_ubi_8.7.sh"
+  }
 }

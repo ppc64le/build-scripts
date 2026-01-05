@@ -1,0 +1,12 @@
+{
+   "maintainer": "vinodk99",
+   "package_name": "node-asn1",
+   "github_url": "https://github.com/TritonDataCenter/node-asn1",
+   "version": "master",
+   "default_branch": "master",
+   "build_script": "node-asn1_ubi_9.3.sh",
+   "package_dir": "n/node-asn1",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}

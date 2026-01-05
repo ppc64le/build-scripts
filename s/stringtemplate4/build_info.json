@@ -1,0 +1,15 @@
+{
+    "maintainer": "vinodk99",
+    "package_name": "stringtemplate4",
+    "github_url": "https://github.com/antlr/stringtemplate4",
+    "version": "4.3.3",
+    "default_branch": "master",
+    "package_dir": "s/stringtemplate4",
+    "build_script": "stringtemplate4_ubi_9.3.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "*.*.*": {
+        "build_script": "stringtemplate4_ubi_9.3.sh"
+     } 
+}

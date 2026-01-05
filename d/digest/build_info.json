@@ -1,0 +1,17 @@
+{
+   "maintainer": "Vipul-Ajmera",
+   "package_name": "digest",
+   "github_url": "https://github.com/cran/digest.git",
+   "version": "0.6.37",
+   "default_branch": "master",
+   "package_dir": "d/digest",
+   "build_script": "digest_ubi_9.3.sh",
+   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
+   "docker_build": "true",
+   "validate_build_script": "true",
+   "use_non_root_user": "false",
+   "*.*.*": {
+      "dir": "0.6.37_ubi9",
+      "build_script": "digest_ubi_9.3.sh"
+   }
+}

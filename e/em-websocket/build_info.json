@@ -1,0 +1,15 @@
+{
+  "maintainer": "AbhiIBM",
+  "package_name": "em-websocket",
+  "github_url": "https://github.com/igrigorik/em-websocket",
+  "package_dir": "e/em-websocket",
+  "version": "v0.5.3",
+  "default_branch": "master",
+  "build_script": "em-websocket_ubi_9.3.sh",
+  "use_non_root_user": false,
+  "validate_build_script": true,
+  "docker_build": false,
+  "v*.*.*": {
+    "build_script": "em-websocket_ubi_9.3.sh"
+  }
+}

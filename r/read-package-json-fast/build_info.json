@@ -1,0 +1,15 @@
+{
+  "maintainer": "shubham-garud",
+  "package_name": "read-package-json-fast",
+  "github_url": "https://github.com/npm/read-package-json-fast",
+  "package_dir": "r/read-package-json-fast",
+  "version": "v3.0.2",
+  "default_branch": "main",
+  "build_script": "read-package-json-fast_ubi_9.3.sh",
+  "use_non_root_user": false,
+  "docker_build": false,
+  "v3.0.*": {
+    "build_script": "read-package-json-fast_ubi_9.3.sh"
+  }
+}
+
