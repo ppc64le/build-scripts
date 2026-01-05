@@ -6,7 +6,7 @@
 # Source repo     : https://github.com/OpenAPITools/openapi-generator.git
 # Language        : Java
 # Tested on       : UBI 9.3 (ppc64le)
-# Travis-Check    : True
+# Ci-Check    : True
 # Maintainer      : Simran Sirsat <Simran.Sirsat@ibm.com>
 # License         : Apache License, Version 2.0 or later
 #
