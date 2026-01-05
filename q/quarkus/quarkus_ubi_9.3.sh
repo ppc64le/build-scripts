@@ -4,7 +4,7 @@
 # Package	: quarkus
 # Version	: 3.26.3
 # Source repo	: https://github.com/quarkusio/quarkus
-# Tested on	: UBI:9.6
+# Tested on	: UBI:9.3
 # Language      : java
 # Ci-Check     : True
 # Script License: Apache License, Version 2 or later
