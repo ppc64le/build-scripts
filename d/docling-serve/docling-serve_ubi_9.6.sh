@@ -217,12 +217,16 @@ git clone $PACKAGE_URL
 cd  $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
-#install
 if ! (python3.12 -m pip install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
+    echo "$PACKAGE_URL $PACKAGE_DIR"
+    echo "$PACKAGE_DIR  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
+else
+    echo "------------------$PACKAGE_NAME:Install_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_DIR"
+    echo "$PACKAGE_DIR  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_Success"
+    exit 0
 fi
 
 # Skipping tests that fetch external URLs (fail with httpx.ConnectError due to no network access).
