@@ -225,7 +225,7 @@ if ! (python3.12 -m pip install .) ; then
 else
     echo "------------------$PACKAGE_NAME:Install_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_DIR"
-    echo "$PACKAGE_DIR  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_Success"
+    echo "$PACKAGE_DIR  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Install_Success"
     exit 0
 fi
 
