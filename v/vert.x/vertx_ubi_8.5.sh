@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : vert.x
-# Version       : 4.3.8
+# Version       : 5.0.0
 # Source repo   : https://github.com/eclipse-vertx/vert.x
 # Tested on     : UBI 8.6
 # Language      : JAVA
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=vert.x
-PACKAGE_VERSION=${1:-4.3.8}
+PACKAGE_VERSION=${1:-5.0.0}
 PACKAGE_URL=https://github.com/eclipse-vertx/vert.x.git
 
 yum update -y
