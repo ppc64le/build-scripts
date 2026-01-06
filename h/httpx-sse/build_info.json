@@ -1,0 +1,17 @@
+{
+
+    "maintainer": "aastha-sharma2",
+    "package_name": "httpx-sse",
+    "github_url": "https://github.com/florimondmanca/httpx-sse",
+    "version": "0.4.0",
+    "default_branch": "master",
+    "package_dir": "h/httpx-sse",
+    "build_script": "httpx-sse_ubi_9.6.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "wheel_build" : true,
+    "docker_build": "false",
+    "*" : {
+       "build_script": "httpx-sse_ubi_9.6.sh"
+    }
+}

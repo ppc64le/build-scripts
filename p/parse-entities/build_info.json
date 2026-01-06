@@ -1,0 +1,15 @@
+{
+    "maintainer": "prachikurade1",
+    "package_name": "parse-entities",
+    "github_url": "https://github.com/wooorm/parse-entities",
+    "version": "4.0.1",
+    "default_branch": "main",
+    "build_script": "parse-entities_ubi_9.3.sh",
+    "package_dir": "p/parse-entities",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "4.*.*": {
+        "build_script": "parse-entities_ubi_9.3.sh"
+    }
+}

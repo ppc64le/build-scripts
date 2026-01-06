@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : triton-inference-server
-# Version       : v2.61.0
+# Version       : v2.63.0
 # Source repo   : https://github.com/triton-inference-server/server
 # Tested on     : RHEL 9.6
 # Language      : Python , Shell
@@ -23,7 +23,7 @@
 wdir=`pwd`
 PACKAGE_NAME=server
 PACKAGE_URL=https://github.com/triton-inference-server/server
-PACKAGE_VERSION=${1:-v2.61.0}
+PACKAGE_VERSION=${1:-v2.63.0}
 
 yum install git python3.12-devel python3.12-pip cmake -y
 

@@ -1,5 +1,5 @@
 diff --git a/build.py b/build.py
-index 68c48a2a..aa9a7338 100755
+index 66a1855d..4c33c0db 100755
 --- a/build.py
 +++ b/build.py
 @@ -335,6 +335,13 @@ class BuildScript:
@@ -36,7 +36,7 @@ index 68c48a2a..aa9a7338 100755
  
      # TODO: TPRD-372 TorchTRT extension is not currently supported by our manylinux build
      # TODO: TPRD-373 NVTX extension is not currently supported by our manylinux build
-@@ -929,11 +940,19 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1 CMAKE_POLICY_VERSION_MINIMUM=3.5
+@@ -933,11 +944,19 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1 CMAKE_POLICY_VERSION_MINIMUM=3.5
  """
      df += """
  # Install docker docker buildx
@@ -48,17 +48,17 @@ index 68c48a2a..aa9a7338 100755
  #   && yum install -y docker.io docker-buildx-plugin
  
 +RUN yum install -y wget && \
-+   dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
-+        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
++   dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-26.el9.noarch.rpm \
++        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-26.el9.noarch.rpm \
 +        https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
 +        dnf config-manager --set-enabled crb &&\
 +        dnf install gperf libarchive-devel numactl-devel readline-devel -y && \
-+        dnf remove -y centos-gpg-keys-9.0-24.el9.noarch centos-stream-repos-9.0-24.el9.noarch
++        dnf remove -y centos-gpg-keys-9.0-26.el9.noarch centos-stream-repos-9.0-26.el9.noarch
 +
  # libcurl4-openSSL-dev is needed for GCS
  # python3-dev is needed by Torchvision
  # python3-pip and libarchive-dev is needed by python backend
-@@ -942,6 +961,7 @@ RUN yum install -y ca-certificates curl gnupg yum-utils \\
+@@ -946,6 +965,7 @@ RUN yum install -y ca-certificates curl gnupg yum-utils \\
  RUN yum install -y \\
              autoconf \\
              automake \\
@@ -66,7 +66,7 @@ index 68c48a2a..aa9a7338 100755
              bzip2-devel \\
              ca-certificates \\
              git \\
-@@ -956,16 +976,32 @@ RUN yum install -y \\
+@@ -960,16 +980,32 @@ RUN yum install -y \\
              numactl-devel \\
              openssl-devel \\
              pkg-config \\
@@ -103,26 +103,26 @@ index 68c48a2a..aa9a7338 100755
  """
      if os.getenv("CCACHE_REMOTE_ONLY") and os.getenv("CCACHE_REMOTE_STORAGE"):
          df += """
-@@ -997,7 +1033,7 @@ RUN pip3 install --upgrade pip \\
+@@ -1001,7 +1037,7 @@ RUN pip3 install --upgrade pip \\
            docker \\
            virtualenv \\
            patchelf==0.17.2 \\
 -          cmake==4.0.3
 +          requests==2.25.1
- 
+ """
+     df += f"""
  # Install boost version >= 1.78 for boost::span
- # Current libboost-dev apt packages are < 1.78, so install from tar.gz
-@@ -1107,8 +1143,7 @@ RUN pip3 install --upgrade \\
+@@ -1113,8 +1149,7 @@ RUN pip3 install --upgrade \\
            build \\
            docker \\
            virtualenv \\
 -          patchelf==0.17.2 \\
 -          cmake==4.0.3
 +          patchelf==0.17.2
+ """
  
- # Install boost version >= 1.78 for boost::span
- # Current libboost-dev apt packages are < 1.78, so install from tar.gz
-@@ -1209,17 +1244,9 @@ ARG BASE_IMAGE={}
+         df += f"""
+@@ -1216,17 +1251,9 @@ ARG BASE_IMAGE={}
      # PyTorch backends need extra CUDA and other
      # dependencies during runtime that are missing in the CPU-only base container.
      # These dependencies must be copied from the Triton Min image.
@@ -140,7 +140,7 @@ index 68c48a2a..aa9a7338 100755
      df += """
  ############################################################################
  ##  Production stage: Create container with just inference server executable
-@@ -1237,15 +1264,34 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1
+@@ -1244,15 +1271,36 @@ ENV PIP_BREAK_SYSTEM_PACKAGES=1
  WORKDIR /opt
  COPY --chown=1000:1000 build/install tritonserver
  
@@ -162,6 +162,7 @@ index 68c48a2a..aa9a7338 100755
 -    "tritonserver-*.whl" | xargs -I {} pip install --upgrade {}[all] && \\
 -    find /opt/tritonserver/python -maxdepth 1 -type f -name \\
 -    "tritonfrontend-*.whl" | xargs -I {} pip install --upgrade {}[all]
++
 +RUN if [ "$(uname -m)" = "ppc64le" ]; then \
 +        VARIANT="cpu"; \
 +    else \
@@ -171,6 +172,7 @@ index 68c48a2a..aa9a7338 100755
 +    "tritonserver-*.whl" | xargs -I {} pip install --upgrade {}[$VARIANT] && \
 +    find /opt/tritonserver/python -maxdepth 1 -type f -name \
 +    "tritonfrontend-*.whl" | xargs -I {} pip install --upgrade {}[$VARIANT];
++
  
  RUN pip3 install -r python/openai/requirements.txt
  
@@ -179,7 +181,7 @@ index 68c48a2a..aa9a7338 100755
  """
      if not FLAGS.no_core_build:
          # Add feature labels for SageMaker endpoint
-@@ -1259,7 +1305,6 @@ COPY --chown=1000:1000 docker/sagemaker/serve /usr/bin/.
+@@ -1266,7 +1314,6 @@ COPY --chown=1000:1000 docker/sagemaker/serve /usr/bin/.
      # stage of the PyTorch backend
      if not FLAGS.enable_gpu and ("pytorch" in backends):
          df += """
@@ -187,18 +189,18 @@ index 68c48a2a..aa9a7338 100755
  """
      if "tensorrtllm" in backends:
          df += """
-@@ -1348,10 +1393,20 @@ RUN userdel tensorrt-server > /dev/null 2>&1 || true \\
+@@ -1350,10 +1397,20 @@ RUN userdel tensorrt-server > /dev/null 2>&1 || true \\
  
      if target_platform() == "rhel":
          df += """
-+
 +RUN yum update -y && yum install -y wget && \
-+   dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-24.el9.noarch.rpm \
-+        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-24.el9.noarch.rpm \
++   dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-26.el9.noarch.rpm \
++        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-26.el9.noarch.rpm \
 +        https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
 +        dnf config-manager --set-enabled crb &&\
 +        dnf install gperf numactl-devel readline-devel -y && \
-+        dnf remove -y centos-gpg-keys-9.0-24.el9.noarch centos-stream-repos-9.0-24.el9.noarch
++        dnf remove -y centos-gpg-keys-9.0-26.el9.noarch centos-stream-repos-9.0-26.el9.noarch
++
 +
  # Common dependencies.
  RUN yum install -y \\
@@ -208,7 +210,7 @@ index 68c48a2a..aa9a7338 100755
          re2-devel \\
          openssl-devel \\
          libtool \\
-@@ -1359,10 +1414,18 @@ RUN yum install -y \\
+@@ -1361,10 +1418,18 @@ RUN yum install -y \\
          libb64-devel \\
          gperftools-devel \\
          wget \\
@@ -231,7 +233,7 @@ index 68c48a2a..aa9a7338 100755
  
  """
      else:
-@@ -1431,7 +1494,6 @@ RUN ln -sf ${_CUDA_COMPAT_PATH}/lib.real ${_CUDA_COMPAT_PATH}/lib \\
+@@ -1433,7 +1498,6 @@ RUN ln -sf ${_CUDA_COMPAT_PATH}/lib.real ${_CUDA_COMPAT_PATH}/lib \\
              df += """
  # python3, python3-pip and some pip installs required for the python backend
  RUN yum install -y \\
@@ -239,7 +241,7 @@ index 68c48a2a..aa9a7338 100755
          openssl-devel \\
          readline-devel
  """
-@@ -1551,37 +1613,9 @@ def add_cpu_libs_to_linux_dockerfile(backends, target_machine):
+@@ -1570,37 +1634,9 @@ def add_cpu_libs_to_linux_dockerfile(backends, target_machine):
          # we must copy these from the Triton min container ourselves.
          cuda_arch = "sbsa" if target_machine == "aarch64" else "x86_64"
          df += """
@@ -268,17 +270,16 @@ index 68c48a2a..aa9a7338 100755
 -
 -COPY --from=min_container /usr/lib/{libs_arch}-linux-gnu/libcudnn.so.9 /usr/lib/{libs_arch}-linux-gnu/libcudnn.so.9
 -
--# patchelf is needed to add deps of libcublasLt.so.12 to libtorch_cuda.so
+ # patchelf is needed to add deps of libcublasLt.so.12 to libtorch_cuda.so
 -RUN apt-get update \\
 -      && apt-get install -y --no-install-recommends openmpi-bin
-+ # patchelf is needed to add deps of libcublasLt.so.12 to libtorch_cuda.so
  RUN pip3 install patchelf==0.17.2
  
 -ENV LD_LIBRARY_PATH /usr/local/cuda/targets/{cuda_arch}-linux/lib:/usr/local/cuda/lib64/stubs:${{LD_LIBRARY_PATH}}
  """.format(
              cuda_arch=cuda_arch, libs_arch=libs_arch
          )
-@@ -1593,7 +1627,6 @@ ENV LD_LIBRARY_PATH /usr/local/cuda/targets/{cuda_arch}-linux/lib:/usr/local/cud
+@@ -1612,7 +1648,6 @@ ENV LD_LIBRARY_PATH /usr/local/cuda/targets/{cuda_arch}-linux/lib:/usr/local/cud
          # Since this dependency is not present in the ubuntu base image,
          # we must copy it from the Triton min container ourselves.
          df += """
@@ -286,7 +287,7 @@ index 68c48a2a..aa9a7338 100755
  """.format(
              libs_arch=libs_arch
          )
-@@ -1607,20 +1640,6 @@ def change_default_python_version_rhel(version):
+@@ -1626,20 +1661,6 @@ def change_default_python_version_rhel(version):
  # match the version of python inside the RHEL base container. This means that python packages
  # installed within the container will not be picked up by the python backend stub process pybind
  # bindings. It must instead must be installed via pyenv.
@@ -307,10 +308,10 @@ index 68c48a2a..aa9a7338 100755
  """
      return df
  
-@@ -1877,6 +1896,42 @@ def create_docker_build_script(script_name, container_install_dir, container_ci_
-             ],
+@@ -1897,6 +1918,44 @@ def create_docker_build_script(script_name, container_install_dir, container_ci_
              check_exitcode=True,
          )
+ 
 +        docker_script.cmd(
 +            [
 +                "docker",
@@ -347,25 +348,8 @@ index 68c48a2a..aa9a7338 100755
 +            ],
 +            check_exitcode=True,
 +        )
- 
++ 
++
          #
          # Final image... tritonserver
-diff --git a/python/openai/requirements.txt b/python/openai/requirements.txt
-index 608f3b5a..6f46af2b 100644
---- a/python/openai/requirements.txt
-+++ b/python/openai/requirements.txt
-@@ -25,7 +25,7 @@
- # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- 
- # FastAPI Application
--fastapi==0.115.6
-+fastapi==0.121.0
- # Fix httpx version to avoid bug in openai library:
- # https://community.openai.com/t/error-with-openai-1-56-0-client-init-got-an-unexpected-keyword-argument-proxies/1040332/3
- httpx==0.27.2
-@@ -33,4 +33,4 @@ openai==1.107.3
- partial-json-parser # used for parsing partial JSON outputs
- # Minimum starlette version needed to address CVE:
- # https://github.com/advisories/GHSA-f96h-pmfr-66vw
--starlette>=0.40.0
-+starlette==0.49.1
+         #

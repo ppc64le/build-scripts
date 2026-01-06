@@ -1,0 +1,16 @@
+{
+   "maintainer": "kiranNukal",
+   "package_name": "selinux",
+   "github_url": "https://github.com/pycontribs/selinux",
+   "version": "v0.3.0",
+   "default_branch": "main",
+   "build_script": "selinux_ubi_9.6.sh",
+   "package_dir": "s/selinux",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*": {
+     "build_script":"selinux_ubi_9.6.sh"
+  }
+}
