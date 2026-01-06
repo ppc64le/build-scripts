@@ -51,6 +51,10 @@ if ! command -v uv >/dev/null 2>&1; then
     export PATH="$HOME/.cargo/bin:$PATH"
 fi
 
+# Increase uv network timeout for ppc64le runners
+export UV_HTTP_TIMEOUT=300
+export UV_HTTP_RETRIES=5
+
 # Remove any existing venv to avoid conflicts
 rm -rf /root/.venv/mcpgateway
 
