@@ -40,3 +40,7 @@ lame = ["__init__.py", "bin/*", "lib/*", "include/lame/*", "share/doc/lame/html/
 
 [project.scripts]
 lame = "lame:lameCLI"
+
+[tool.distutils.bdist_wheel]
+plat-name = "linux_ppc64le"  # Explicitly set the platform tag
+universal = false  # Disable universal wheel (forces platform-specific build)
