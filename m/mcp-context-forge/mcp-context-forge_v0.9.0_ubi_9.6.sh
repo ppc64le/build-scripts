@@ -4,9 +4,9 @@
 # Package         : mcp-context-forge
 # Version         : v0.9.0
 # Source repo     : https://github.com/IBM/mcp-context-forge
-# Tested on       : UBI:9.6 (ppc64le)
+# Tested on       : UBI:9.6
+# Ci-Check        : True
 # Language        : Python
-# CI-Check        : True
 # Script License  : Apache License 2.0
 # Maintainer      : Sanket Patil <Sanket.Patil11@ibm.com>
 #
