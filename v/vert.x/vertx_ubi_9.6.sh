@@ -23,10 +23,10 @@ PACKAGE_VERSION=${1:-5.0.0}
 PACKAGE_URL=https://github.com/eclipse-vertx/vert.x.git
 
 yum update -y
-yum install git wget  gcc gcc-c++  -y
+yum install git wget  gcc gcc-c++ -y
 yum install openssl-devel -y
-yum install java-21-openjdk java-21-openjdk-devel -y
-export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
+yum install java-17-openjdk java-17-openjdk-devel -y
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
 dnf -y install maven
