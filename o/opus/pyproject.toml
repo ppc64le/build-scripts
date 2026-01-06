@@ -37,3 +37,7 @@ where = ["local"]
 #Package data to add bazel in wheel, this is needed as its not a .py file
 [tool.setuptools.package-data]
 opus = ["lib/*", "lib/pkgconfig/*", "include/opus/*", "share/aclocal/*"]
+
+[tool.distutils.bdist_wheel]
+plat-name = "linux_ppc64le"  # Explicitly set the platform tag
+universal = false  # Disable universal wheel (forces platform-specific build)
