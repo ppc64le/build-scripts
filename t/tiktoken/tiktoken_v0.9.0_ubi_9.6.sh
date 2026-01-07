@@ -80,7 +80,7 @@ else
 fi
 
 # Install the package
-if ! python3 -m pip install ./; then
+if ! python3.12 -m pip install ./; then
     echo "------------------$PACKAGE_NAME:install_fails------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"
