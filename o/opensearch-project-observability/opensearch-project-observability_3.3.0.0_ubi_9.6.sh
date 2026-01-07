@@ -18,6 +18,17 @@
 #
 # ---------------------------------------------------------------------------
 
+# Install sudo for non-root user execution
+yum install sudo -y
+# ---------------------------
+# Check for root user
+# ---------------------------
+#if ! ((${EUID:-0} || "$(id -u)")); then
+#	set +ex
+#        echo "FAIL: This script must be run as a non-root user with sudo permissions"
+#        exit 3
+#fi
+
 PACKAGE_NAME=observability
 PACKAGE_URL=https://github.com/opensearch-project/observability
 PACKAGE_VERSION=${1:-3.3.0.0}
