@@ -27,7 +27,7 @@ PACKAGE_DIR=tiktoken
 # Install dependencies
 yum install -y git python3.12 python3.12-devel python3.12-pip gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran make wget sudo cmake
 python3.12 -m pip install --upgrade pip
-pip install pytest tox nox hypothesis
+python3.12 -m pip install pytest tox nox hypothesis
 
 # Install Rust
 echo "Installing Rust"
@@ -95,19 +95,19 @@ test_status=1  # 0 = success, non-zero = failure
 if ls */test_*.py > /dev/null 2>&1 && [ $test_status -ne 0 ]; then
     echo "Running pytest..."
     # Creating temporary directory because of circular import error
-    (cp -r tests /tmp/tiktoken_tests && cd /tmp && python3 -m pytest tiktoken_tests/) && test_status=0 || test_status=$?
+    (cp -r tests /tmp/tiktoken_tests && cd /tmp && python3.12 -m pytest tiktoken_tests/) && test_status=0 || test_status=$?
 fi
 
 # Run tox if tox.ini is present and previous tests failed
 if [ -f "tox.ini" ] && [ $test_status -ne 0 ]; then
     echo "Running tox..."
-    (python3 -m tox -e py39) && test_status=0 || test_status=$?
+    (python3.12 -m tox -e py39) && test_status=0 || test_status=$?
 fi
 
 # Run nox if noxfile.py is present and previous tests failed
 if [ -f "noxfile.py" ] && [ $test_status -ne 0 ]; then
     echo "Running nox..."
-    (python3 -m nox) && test_status=0 || test_status=$?
+    (python3.12 -m nox) && test_status=0 || test_status=$?
 fi
 
 # Final test result output
