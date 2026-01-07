@@ -44,14 +44,14 @@ export PATH=$PATH:$JAVA_HOME/bin
 # Build Opensearch common-utils
 # ------------------------------
 cd $BUILD_HOME
-git clone https://github.com/opensearch-project/common-utils.git
+sudo git clone https://github.com/opensearch-project/common-utils.git
 cd common-utils
 git checkout $PACKAGE_VERSION
 ./gradlew assemble
 ./gradlew -Prelease=true publishToMavenLocal
 
 cd $BUILD_HOME
-git clone $PACKAGE_URL
+sudo git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git apply $SCRIPT_DIR/observability_3.3.0.0.patch
