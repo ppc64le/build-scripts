@@ -19,7 +19,7 @@
 # ---------------------------------------------------------------------------
 
 # Install sudo for non-root user execution
-#yum install sudo -y
+yum install sudo -y
 # ---------------------------
 # Check for root user
 # ---------------------------
@@ -44,7 +44,7 @@ export PATH=$PATH:$JAVA_HOME/bin
 # Build Opensearch common-utils
 # ------------------------------
 cd $BUILD_HOME
-sudo git clone https://github.com/opensearch-project/common-utils.git
+git clone https://github.com/opensearch-project/common-utils.git
 cd common-utils
 git checkout $PACKAGE_VERSION
 ./gradlew assemble
