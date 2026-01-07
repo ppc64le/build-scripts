@@ -1,0 +1,16 @@
+{
+    "maintainer": "Harithanagothu2",
+    "package_name": "ansible-hub-ui",
+    "github_url": "https://github.com/ansible/ansible-hub-ui.git",
+    "version": "4.9.2",
+    "wheel_build": true,
+    "default_branch": "master",
+    "build_script": "ansible-hub-ui_ubi_9.6.sh",
+    "package_dir": "a/ansible-hub-ui",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "*": {
+        "build_script":"ansible-hub-ui_ubi_9.6.sh"
+    }
+}
