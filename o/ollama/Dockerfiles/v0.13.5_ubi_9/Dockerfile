@@ -77,7 +77,7 @@ RUN cmake -B build -DCMAKE_BUILD_TYPE=Release && \
 # Link GGML Power10 libs
 ENV CGO_LDFLAGS="-L/src/ollama/build/lib/ollama -lggml-cpu-power10"
 
-RUN go build --tags ppc64le.power10 -o /src/ollama/ollama .
+RUN go build "-X github.com/ollama/ollama/version.Version=$PACKAGE_VERSION" --tags ppc64le.power10 -o /src/ollama/ollama .
 
 ###############################################################################
 # Stage 2: Small runtime image
