@@ -2,9 +2,9 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : lxml
-# Version          : 4.9.2
+# Version          : 6.0.2
 # Source repo      : https://github.com/lxml/lxml.git
-# Tested on        : UBI:9.3
+# Tested on        : UBI:9.6
 # Language         : Python
 # Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
@@ -20,7 +20,7 @@
 
 # Variables
 PACKAGE_NAME=lxml
-PACKAGE_VERSION=${1:-lxml-4.9.2}
+PACKAGE_VERSION=${1:-lxml-6.0.2}
 PACKAGE_URL=https://github.com/lxml/lxml.git
 
 # Install necessary system dependencies
@@ -33,7 +33,8 @@ git checkout $PACKAGE_VERSION
 
 
 # Install additional dependencies
-pip install wheel pytest cython==0.29.22
+pip install wheel pytest
+pip install -r requirements.txt
 python3 setup.py build_ext --inplace
 
 #install
