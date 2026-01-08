@@ -1,15 +1,18 @@
 {
-  "maintainer": "sumit.dubey2@ibm.com",
+  "maintainer": "Pratik.Tonage@ibm.com",
   "package_name": "opensearch-project-security",
   "github_url": "https://github.com/opensearch-project/security",
-  "version": "2.19.2.0",
-  "required_versions":{"Releases": ["*"], "Tags": ["2.19.2.0"]},
+  "version": "3.3.0.0",
+  "required_versions":{"Releases": ["*"], "Tags": ["3.3.0.0"]},
   "default_branch": "main",
   "package_dir": "o/opensearch-project-security",
-  "build_script": "security_2.19.2.0_ubi9.5.sh",
+  "build_script": "security_3.3.0.0_ubi9.6.sh",
   "validate_build_script": true,
   "use_non_root_user": false,
   "docker_build": false,
+  "3.3.0.0": {
+    "build_script": "security_3.3.0.0_ubi9.6.sh"
+  },
   "2.19.2.0": {
     "build_script": "security_2.19.2.0_ubi9.5.sh"
   }
