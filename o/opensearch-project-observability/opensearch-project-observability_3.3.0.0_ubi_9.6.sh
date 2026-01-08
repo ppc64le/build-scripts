@@ -19,7 +19,7 @@
 # ---------------------------------------------------------------------------
 
 # Install sudo for non-root user execution
-yum install sudo -y
+# yum install sudo -y
 # ---------------------------
 # Check for root user
 # ---------------------------
