@@ -56,7 +56,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git apply $SCRIPT_DIR/observability_3.3.0.0.patch
 
-if ! ./gradlew assemble ; then
+if ! ./gradlew build ; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
