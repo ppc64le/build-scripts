@@ -1,7 +1,7 @@
 #!/bin/bash -ex
 # --------------------------------------------------------------------------------
 # Package        : security (opensearch)
-# Version        : 3.2.0.0
+# Version        : 3.3.0.0
 # Source repo    : https://github.com/opensearch-project/security
 # Tested on      : UBI 9.6
 # Language       : Java
@@ -19,7 +19,8 @@
 # ---------------------------
 PACKAGE_NAME="security"
 PACKAGE_ORG="opensearch-project"
-PACKAGE_VERSION="3.2.0.0"
+PACKAGE_VERSION="3.3.0.0"
+COMMON_UTILS_VERSION="3.2.0.0"
 PACKAGE_URL="https://github.com/${PACKAGE_ORG}/${PACKAGE_NAME}.git"
 SCRIPT_PATH=$(dirname $(realpath $0))
 RUNTESTS=1
@@ -57,6 +58,16 @@ export JAVA21_HOME=/usr/local/jdk-21.0.9+10/
 export PATH=$PATH:/usr/local/jdk-21.0.9+10/bin/
 ln -sf /usr/local/jdk-21.0.9+10/bin/java /usr/bin/
 rm -rf OpenJDK21U-jdk_ppc64le_linux_hotspot_21.0.9_10.tar.gz
+
+# ------------------------------
+# Build Opensearch common-utils
+# ------------------------------
+cd ${BUILD_HOME}
+git clone https://github.com/opensearch-project/common-utils.git
+cd common-utils
+git checkout "${COMMON_UTILS_VERSION}"
+./gradlew assemble
+./gradlew -Prelease=true publishToMavenLocal
 
 # ---------------------------
 # Clone and Prepare Repository
