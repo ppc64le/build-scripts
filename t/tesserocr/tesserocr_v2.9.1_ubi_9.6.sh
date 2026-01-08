@@ -5,7 +5,7 @@
 # Source repo    : https://github.com/sirfz/tesserocr
 # Tested on      : UBI 9.6
 # Language       : Python
-# Travis-Check   : false
+# Ci-Check       : True
 # Maintainer     : Adarsh Agrawal <adarsh.agrawal1@ibm.com>
 # Script License : Apache License, Version 2 or later
 #
@@ -25,9 +25,17 @@ PACKAGE_DIR="tesserocr"
 # ---------------------------
 # Dependency Installation
 # ---------------------------
-yum install -y git python3.12 python3.12-devel python3.12-pip gcc-toolset-13 make wget sudo cmake 
 
-pip3.12 install pytest tox nox
+echo "Configuring package repositories..."
+yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
+yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream//ppc64le/os
+yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os
+rpm --import https://centos.org/keys/RPM-GPG-KEY-CentOS-Official
+
+yum install -y git python3.12 python3.12-devel python3.12-pip gcc-toolset-13 make wget sudo cmake g++
+
+pip3.12 install pytest
 python3.12 -m pip install --upgrade pip setuptools wheel build
 pip3.12 install pillow --index-url https://wheels.developerfirst.ibm.com/ppc64le/linux 
 
@@ -39,10 +47,6 @@ export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 SOURCE=Github
 
-
-echo "Configuring package repositories..."
-yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
-dnf config-manager --set-enabled codeready-builder-for-rhel-9-$(arch)-rpms && \
 
 yum install -y tesseract-devel
 
@@ -89,10 +93,6 @@ if ! python3.12 -m pip install ./; then
     exit 1
 fi
 
-# Build the wheel
-python3.12 setup.py build_ext --inplace
-python3.12 -m build --wheel
-
 # ------------------ Unified Test Execution Block ------------------
 
 test_status=1  # 0 = success, non-zero = failure
@@ -101,12 +101,6 @@ test_status=1  # 0 = success, non-zero = failure
 if ls */test_*.py > /dev/null 2>&1 && [ $test_status -ne 0 ]; then
     echo "Running pytest..."
     (python3.12 -m pytest) && test_status=0 || test_status=$?
-fi
-
-# Run nox if noxfile.py is present and previous tests failed
-if [ -f "noxfile.py" ] && [ $test_status -ne 0 ]; then
-    echo "Running nox..."
-    (python3.12 -m nox) && test_status=0 || test_status=$?
 fi
 
 # Final test result output
