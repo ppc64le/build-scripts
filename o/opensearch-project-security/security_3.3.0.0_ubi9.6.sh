@@ -26,6 +26,7 @@ SCRIPT_PATH=$(dirname $(realpath $0))
 RUNTESTS=1
 BUILD_HOME="$(pwd)"
 
+
 # -------------------
 # Parse CLI Arguments
 # -------------------
