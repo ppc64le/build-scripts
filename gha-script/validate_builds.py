@@ -1,3 +1,4 @@
+
 import os
 import stat
 import requests
@@ -6,6 +7,9 @@ import subprocess
 import docker
 import json
 
+import re
+
+
 
 GITHUB_BUILD_SCRIPT_BASE_REPO = "build-scripts"
 GITHUB_BUILD_SCRIPT_BASE_OWNER = "ppc64le"
@@ -13,20 +17,57 @@ HOME = os.getcwd()
 
 package_data = {}
 use_non_root = ""
-image_name = "registry.access.redhat.com/ubi9/ubi:9.6"    # default image used is 9.6
+
+image_name = None  # changed from hardcoded to None
+
+
+def determine_docker_image(tested_on_raw, use_non_root_user):
+    tested_on_raw = tested_on_raw.strip().upper()
+    docker_image = ""
+
+    # Match:
+    # UBI:9.6 | UBI9.6 | UBI 9.6 | UBI:9 | UBI9 | UBI 9
+    match = re.search(r'\bUBI\s*[: ]?\s*(\d+)(?:\.(\d+))?\b', tested_on_raw)
+
+    if match:
+        major = match.group(1)
+        minor = match.group(2) or "3"  # default minor if missing
+
+        if major == "9":
+            docker_image = f"registry.access.redhat.com/ubi9/ubi:{major}.{minor}"
+        else:
+            docker_image = "registry.access.redhat.com/ubi8/ubi:8.7"
+    else:
+        # fallback if format is completely unknown
+        docker_image = "registry.access.redhat.com/ubi8/ubi:8.7"
+
+    # Non-root handling (unchanged)
+    if use_non_root_user.lower() == "true":
+        build_non_root_custom_docker_image(base_image=docker_image)
+        docker_image = "docker_non_root_image"
+
+    return docker_image
+
+
 
 def trigger_basic_validation_checks(file_name):
+    global image_name  # modify image_name here
+
     key_checks = {
         "# Package": "package_name",
         "# Version": "package_version",
         "# Source repo": "package_url",
-        "# Tested on": "",
+
+        "# Tested on": "tested_on_raw_value",
+
         "# Maintainer": "maintainer",
         "# Language": "package_type",
         "# Ci-Check": "ci_check"
     }
     matched_keys = []
-    # Check if apache license file exists
+
+    # Check if license file exists
+
     file_parts = file_name.split('/')
     licence_file = "{}/{}/LICENSE".format(HOME, "/".join(file_parts[:-1]))
     if not os.path.exists(licence_file):
@@ -34,13 +75,14 @@ def trigger_basic_validation_checks(file_name):
 
     # Check if components of Doc string are available.
     script_path = "{}/{}".format(HOME, file_name)
-    
-    #Check build script line endings 
-    eof=os.popen('file '+script_path).read()
+
+
+    # Check build script line endings
+    eof = os.popen('file ' + script_path).read()
+
     if 'crlf' in eof.lower():
         raise EOFError("Build script {} contains windows line endings(CRLF), Please update build script with Linux based line endings.".format(file_name))
 
-    global image_name
     if os.path.exists(script_path):
         all_lines = []
         with open(script_path) as script_file_handler:
@@ -49,41 +91,51 @@ def trigger_basic_validation_checks(file_name):
         for line in all_lines:
             try:
                 for key in key_checks:
-                    if key == '# Tested on' and key in line:
-                        matched_keys.append(key)
-                        try:
-                            distro_data = line.split(':')[-1].strip().split()
-                            package_data["distro_name"] = distro_data[0]
-                            package_data["distro_version"] = distro_data[-1]
 
-                            # Construct UBI image dynamically
-                            major_version = package_data["distro_version"].split('.')[0]
-                            image_name = f"registry.access.redhat.com/ubi{major_version}/ubi:{package_data['distro_version']}"
-                            print(f"[INFO] Image used for the creating container: {image_name}")
-                        except Exception as e:
-                            print(f"Using default UBI 9.6 image.")
-                            image_name = "registry.access.redhat.com/ubi9/ubi:9.6"
-                            
-                    elif key in line:
+                    if key in line:
                         matched_keys.append(key)
-                        package_data[key_checks[key]] = line.split(':',1)[-1].strip()
+                        val = line.split(':', 1)[-1].strip()
+                        # Special handling for Tested on to keep raw value (for docker image selection)
+                        if key == "# Tested on":
+                            package_data[key_checks[key]] = val
+                            print("*******************************************************************************************")
+                            print("DEBUG Tested on raw value:", val)
+                        else:
+                            package_data[key_checks[key]] = val
             except IndexError as ie:
                 raise IndexError(str(ie))
-        # check if all required keys are available
+
+        # Check if all required keys are available
         if set(matched_keys) == set(list(key_checks.keys())):
             print("Basic Checks passed")
+
+            # Determine docker image dynamically
+            tested_on_val = package_data.get("tested_on_raw_value", "UBI:9.3")
+            # Use global use_non_root flag parsed from build_info.json
+            global use_non_root
+            image_name = determine_docker_image(tested_on_val, use_non_root)
+
+            print(f"Using image: {image_name}")
+
             return True
         else:
             print("Basic Validation Checks Failed!!!")
             print("Requried keys: {}".format(",".join(key_checks.keys())))
             print("Found keys: {}".format(",".join(matched_keys)))
-            print("Missing required keys: {}".format(",".join(set(key_checks.keys())-set(matched_keys))))
+
+            print("Missing required keys: {}".format(",".join(set(key_checks.keys()) - set(matched_keys))))
+
             raise ValueError(f"Basic Validation Checks Failed for {file_name} !!!")
     else:
         raise ValueError("Build script not found.")
 
+
 def trigger_script_validation_checks(file_name):
     global image_name
+    if not image_name:
+        # fallback if image_name is still None
+        image_name = "registry.access.redhat.com/ubi9/ubi:9.3"
+
     print(f"Image used for the creating container: {image_name}")
     # Spawn a container and pass the build script
     client = docker.DockerClient(base_url='unix://var/run/docker.sock')
@@ -94,13 +146,14 @@ def trigger_script_validation_checks(file_name):
     container = client.containers.run(
         image_name,
         "/home/tester/{}".format(file_name),
-        #"cat /home/tester/{}".format(file_name),
-        network = 'host',
-        detach = True,
-        volumes = {
-            current_dir : {'bind': '/home/tester/', 'mode': 'rw'}
+
+        network='host',
+        detach=True,
+        volumes={
+            current_dir: {'bind': '/home/tester/', 'mode': 'rw'}
         },
-        stderr = True, # Return logs from STDERR
+        stderr=True,  # Return logs from STDERR
+
     )
     result = container.wait()
     try:
@@ -113,12 +166,18 @@ def trigger_script_validation_checks(file_name):
     else:
         return True
 
-def build_non_root_custom_docker_image():
+
+
+def build_non_root_custom_docker_image(base_image=None):
     global image_name
+    if base_image is None:
+        base_image = image_name or "registry.access.redhat.com/ubi9/ubi:9.3"
     print("Building custom docker image for non root user build")
-    os.system(f'docker build --build-arg BASE_IMAGE="{image_name}" -t docker_non_root_image -f gha-script/dockerfile_non_root .')
+    # Use the provided base image as base image
+    os.system(f'docker build --build-arg BASE_IMAGE="{base_image}" -t docker_non_root_image -f gha-script/dockerfile_non_root .')
     image_name = "docker_non_root_image"
     return True
+
 
 
 
@@ -134,24 +193,28 @@ def validate_build_info_file(file_name):
         for field in mandatory_fields:
             if field not in data:
                 raise ValueError(error_message.format(field))
-            
+
         # Check for valid Github url
         print(str(data['github_url']))
         if str(data['github_url']).endswith('/'):
             raise Exception(f"Build info validation failed for {file_name} due to \"/\" present at the end of github url !")
-        
+
+
         # Check for empty lines
         lines = open(script_path, 'r').read().splitlines()
-        for line in lines :
-            if line.isspace() == True:
+        for line in lines:
+            if line.isspace():
                 raise Exception(f"Build info validation failed for {file_name} due to empty line present !")
 
         # check for container user mode
         global use_non_root
-        print("Non root user: " + str(data['use_non_root_user']).lower())
+
         use_non_root = str(data['use_non_root_user']).lower()
-        if use_non_root == "true":
-            build_non_root_custom_docker_image()
+        print("Non root user: " + use_non_root)
+
+        # Only build non-root image here once, actual image selection happens in determine_docker_image
+        # so remove build_non_root_custom_docker_image() call here to avoid duplicate build
+
 
         print("Validated build_info.json file successfully")
         return True
@@ -177,7 +240,7 @@ def trigger_build_validation_ci(pr_number):
     for file in ordered_files:
         filename = file.get('filename', "")
         print(f"{filename}")
-        
+
     # Trigger validation for all shell scripts
     for i in ordered_files:
         file_name = i.get('filename', "")
@@ -187,29 +250,32 @@ def trigger_build_validation_ci(pr_number):
         if file_name.endswith('.sh') and "dockerfile" not in file_name.lower() and status != "removed":
             # perform basic validation check
             trigger_basic_validation_checks(file_name)
-            
+
             #check ci-check from package header  
             ci_check=package_data['ci_check'].lower()
             if ci_check=="true":
+
                 # Build/test script files
                 trigger_script_validation_checks(file_name)
             else:
-                print("Skipping Build script validation for {} as ci-Check flag is set to False".format(file_name))
+                print("Skipping Build script validation for {} as CI-Check flag is set to False".format(file_name))
             # Keep track of validated files.
             validated_file_list.append(file_name)
         elif file_name.lower().endswith('build_info.json') and status != "removed":
             validate_build_info_file(file_name)
             # Keep track of validated files.
             validated_file_list.append(file_name)
-        
-        
 
-    
-    if len(validated_file_list) == 0 :
+
+    if len(validated_file_list) == 0:
+
         print("No scripts available for validation.")
     else:
         print("Validated below scripts:")
         print(*validated_file_list, sep="\n")
 
-if __name__=="__main__":
+
+
+if __name__ == "__main__":
+
     trigger_build_validation_ci(sys.argv[1])
