@@ -45,7 +45,7 @@ export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
-pip3.12 install pillow --prefer-binary --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
+pip3.12 install pillow==11.2.1 --prefer-binary --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
 
 # Clone or extract the package
 if [[ "$PACKAGE_URL" == *github.com* ]]; then
@@ -83,7 +83,7 @@ else
 fi
 
 # Install the package
-if ! python3.12 -m pip3.12 install ./; then
+if ! python3.12 -m pip install ./; then
     echo "------------------$PACKAGE_NAME:install_fails------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"
@@ -98,12 +98,6 @@ test_status=1  # 0 = success, non-zero = failure
 if ls */test_*.py > /dev/null 2>&1 && [ $test_status -ne 0 ]; then
     echo "Running pytest..."
     (python3.12 -m pytest) && test_status=0 || test_status=$?
-fi
-
-# Run tox if tox.ini is present and previous tests failed
-if [ -f "tox.ini" ] && [ $test_status -ne 0 ]; then
-    echo "Running tox..."
-    (python3.12 -m tox -e py312) && test_status=0 || test_status=$?
 fi
 
 # Final test result output
