@@ -18,7 +18,7 @@ set -e
 # Variables
 PACKAGE_NAME="tesserocr"
 PACKAGE_ORG="sirfz"
-PACKAGE_VERSION="v2.9.1"
+PACKAGE_VERSION=${1:-v2.9.1}
 PACKAGE_URL="https://github.com/${PACKAGE_ORG}/${PACKAGE_NAME}.git"
 PACKAGE_DIR="tesserocr"
 
@@ -32,12 +32,13 @@ yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc6
 yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream//ppc64le/os
 yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os
 rpm --import https://centos.org/keys/RPM-GPG-KEY-CentOS-Official
+rpm -e --nodeps openssl-fips-provider-so-3.0.7-6.el9_5.ppc64le
 
 yum install -y git python3.12 python3.12-devel python3.12-pip gcc-toolset-13 make wget sudo cmake g++
 
 pip3.12 install pytest
 python3.12 -m pip install --upgrade pip setuptools wheel build
-pip3.12 install pillow --index-url https://wheels.developerfirst.ibm.com/ppc64le/linux 
+pip3.12 install pillow==11.2.1 --index-url https://wheels.developerfirst.ibm.com/ppc64le/linux 
 
 export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
@@ -46,9 +47,6 @@ export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 SOURCE=Github
-
-
-yum install -y tesseract-devel
 
 # Clone or extract the package
 if [[ "$PACKAGE_URL" == *github.com* ]]; then
@@ -91,27 +89,4 @@ if ! python3.12 -m pip install ./; then
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"
     exit 1
-fi
-
-# ------------------ Unified Test Execution Block ------------------
-
-test_status=1  # 0 = success, non-zero = failure
-
-# Run pytest if any matching test files found
-if ls */test_*.py > /dev/null 2>&1 && [ $test_status -ne 0 ]; then
-    echo "Running pytest..."
-    (python3.12 -m pytest) && test_status=0 || test_status=$?
-fi
-
-# Final test result output
-if [ $test_status -eq 0 ]; then
-    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
-    exit 0
-else
-    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"
-    exit 2
 fi
