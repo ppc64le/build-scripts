@@ -22,32 +22,32 @@ image_name = None  # changed from hardcoded to None
 
 
 def determine_docker_image(tested_on_raw, use_non_root_user):
-    """
-    Determine docker image based on Tested_on value and non-root build flag,
-    replicating the logic from the bash script.
-    """
+    tested_on_raw = tested_on_raw.strip().upper()
     docker_image = ""
 
-    tested_on_raw = tested_on_raw.strip().upper()
-    # Match UBI 9.x pattern
-    if tested_on_raw.startswith("UBI:9") or tested_on_raw.startswith("UBI9"):
-        # Extract version e.g. 9.6, 9.3 etc.
-        match = re.search(r'9\.\d+', tested_on_raw)
-        ubi_version = match.group(0) if match else "9.3"  # default to 9.3 if missing
+    # Match:
+    # UBI:9.6 | UBI9.6 | UBI 9.6 | UBI:9 | UBI9 | UBI 9
+    match = re.search(r'\bUBI\s*[: ]?\s*(\d+)(?:\.(\d+))?\b', tested_on_raw)
 
-        docker_image = f"registry.access.redhat.com/ubi9/ubi:{ubi_version}"
+    if match:
+        major = match.group(1)
+        minor = match.group(2) or "3"  # default minor if missing
 
+        if major == "9":
+            docker_image = f"registry.access.redhat.com/ubi9/ubi:{major}.{minor}"
+        else:
+            docker_image = "registry.access.redhat.com/ubi8/ubi:8.7"
     else:
-        # fallback to UBI 8.7 if not matched
+        # fallback if format is completely unknown
         docker_image = "registry.access.redhat.com/ubi8/ubi:8.7"
 
-    # If non-root build is set, build custom non-root docker image
+    # Non-root handling (unchanged)
     if use_non_root_user.lower() == "true":
-        # Build custom image based on base docker_image
         build_non_root_custom_docker_image(base_image=docker_image)
         docker_image = "docker_non_root_image"
 
     return docker_image
+
 
 
 def trigger_basic_validation_checks(file_name):
