@@ -37,7 +37,7 @@ rpm -e --nodeps openssl-fips-provider-so-3.0.7-6.el9_5.ppc64le
 yum install -y git python3.12 python3.12-devel python3.12-pip gcc-toolset-13 make wget sudo cmake g++ tesseract-devel
 
 python3.12 -m pip install --upgrade pip setuptools wheel build pytest
-pip3.12 install pillow==11.2.1 --index-url https://wheels.developerfirst.ibm.com/ppc64le/linux 
+pip3.12 install pillow==11.2.1 --index-url https://wheels.developerfirst.ibm.com/ppc64le/linux
 
 export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
@@ -46,6 +46,14 @@ export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 SOURCE=Github
+
+if [ ! -d "tessdata" ]; then
+  git clone "https://github.com/tesseract-ocr/tessdata.git"
+else
+  echo "tessdata already present"
+fi
+
+export TESSDATA_PREFIX=$(pwd)/tessdata
 
 # Clone or extract the package
 if [[ "$PACKAGE_URL" == *github.com* ]]; then
