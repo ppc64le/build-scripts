@@ -26,7 +26,7 @@ OPENSEARCH_VERSION="${PACKAGE_VERSION::-2}"
 OPENSEARCH_PACKAGE="OpenSearch"
 wdir=`pwd`
 
-sudo yum install -y git java-21-openjdk-devel
+yum install -y git java-21-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
 
