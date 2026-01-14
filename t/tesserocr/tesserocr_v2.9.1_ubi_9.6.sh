@@ -34,7 +34,7 @@ yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/p
 rpm --import https://centos.org/keys/RPM-GPG-KEY-CentOS-Official
 rpm -e --nodeps openssl-fips-provider-so-3.0.7-6.el9_5.ppc64le
 
-yum install -y git python3.12 python3.12-devel python3.12-pip gcc-toolset-13 make wget sudo cmake g++
+yum install -y git python3.12 python3.12-devel python3.12-pip gcc-toolset-13 make wget sudo cmake g++ tesseract-devel
 
 python3.12 -m pip install --upgrade pip setuptools wheel build pytest
 pip3.12 install pillow==11.2.1 --index-url https://wheels.developerfirst.ibm.com/ppc64le/linux 
@@ -89,6 +89,7 @@ if ! python3.12 -m pip install ./; then
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"
     exit 1
 fi
+python3.12 setup.py build_ext --inplace
 
 # ------------------ Unified Test Execution Block ------------------
 
