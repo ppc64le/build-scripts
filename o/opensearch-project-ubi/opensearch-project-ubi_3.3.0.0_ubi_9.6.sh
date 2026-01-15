@@ -18,18 +18,49 @@
 #
 # ---------------------------------------------------------------------------
 
+# ---------------------------
+# Configuratio
+# ---------------------------
+
 PACKAGE_NAME=user-behavior-insights
 PACKAGE_URL=https://github.com/opensearch-project/user-behavior-insights
 SCRIPT_PACKAGE_VERSION="3.3.0.0"
 PACKAGE_VERSION="${1:-$SCRIPT_PACKAGE_VERSION}"
 OPENSEARCH_VERSION="${PACKAGE_VERSION::-2}"
 OPENSEARCH_PACKAGE="OpenSearch"
-wdir=`pwd`
+RUNTESTS=1
+wdir="$(pwd)"
+
+# -------------------
+# Parse CLI Arguments
+# -------------------
+for i in "$@"; do
+  case $i in
+    --skip-tests)
+      RUNTESTS=0
+      echo "Skipping tests"
+      shift
+      ;;
+    -*|--*)
+      echo "Unknown option $i"
+      exit 3
+      ;;
+    *)
+      PACKAGE_VERSION=$i
+      echo "Building ${PACKAGE_NAME} ${PACKAGE_VERSION}"
+      ;;
+  esac
+done
+
+# ---------------------------
+# Dependency Installation
+# ---------------------------
 
 sudo yum install -y git java-21-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
 
+sudo chown -R test_user:test_user /home/tester
 
 #--------------------------------
 #Build opensearch-project and publish build tools 
@@ -53,27 +84,47 @@ git checkout $PACKAGE_VERSION
 ./gradlew assemble
 ./gradlew -Prelease=true publishToMavenLocal
 
-
+# ---------------------------
+# Clone and Prepare Repository
+# ---------------------------
 
 cd $wdir
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME && git checkout $PACKAGE_VERSION
 
 
-if ! ./gradlew build ; then
-    echo "------------------$PACKAGE_NAME:Build_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
-    exit 1
-elif ! ./gradlew test; then
-    echo "------------------$PACKAGE_NAME::Test_fails-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Test_fails"
-    exit 2
-else
-        # If both the build and test are successful, print the success message
-        echo "------------------$PACKAGE_NAME:: Build_and_Test_success-------------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Build_and_Test_Success"
+
+# --------
+# Build
+# --------
+ret=0
+./gradlew build || ret=$?
+if [ $ret -ne 0 ]; then
+        set +ex
+	echo "------------------ ${PACKAGE_NAME}: Build Failed ------------------"
+	exit 1
+fi
+
+# ---------------------------
+# Skip Tests?
+# ---------------------------
+if [ "$RUNTESTS" -eq 0 ]; then
+        set +ex
+        echo "------------------ Complete: Build successful! Tests skipped. ------------------"
         exit 0
 fi
+
+
+# -----------------
+# Test
+# -----------------
+ret=0
+./gradlew test  || ret=$?
+if [ $ret -ne 0 ]; then
+	set +ex
+	echo "------------------ ${PACKAGE_NAME}: Integration Test Failed ------------------"
+	exit 2
+fi
+
+set +ex
+echo "Complete: Build and Tests successful!"
