@@ -30,8 +30,8 @@ PACKAGE_VERSION="${1:-$SCRIPT_PACKAGE_VERSION}"
 OPENSEARCH_VERSION="${PACKAGE_VERSION::-2}"
 RUNTESTS=1
 wdir="$(pwd)"
-#SCRIPT=$(readlink -f $0)
-#SCRIPT_DIR=$(dirname $SCRIPT)
+SCRIPT=$(readlink -f $0)
+SCRIPT_DIR=$(dirname $SCRIPT)
 
 
 # -------------------
