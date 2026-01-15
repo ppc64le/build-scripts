@@ -26,8 +26,8 @@ OPENSEARCH_VERSION="${PACKAGE_VERSION::-2}"
 OPENSEARCH_PACKAGE="OpenSearch"
 RUNTESTS=1
 wdir="$(pwd)"
-#SCRIPT=$(readlink -f $0)
-#SCRIPT_DIR=$(dirname $SCRIPT)
+SCRIPT=$(readlink -f $0)
+SCRIPT_DIR=$(dirname $SCRIPT)
 
 # -------------------
 # Parse CLI Arguments
@@ -90,7 +90,7 @@ cd $wdir
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-git apply $SCRIPT_DIR/observability_3.3.0.0.patch
+git apply $SCRIPT_DIR/${PACKAGE_NAME}_${PACKAGE_VERSION}.patch
 
 
 # --------
