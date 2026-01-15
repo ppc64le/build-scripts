@@ -76,6 +76,7 @@ cd "${BUILD_HOME}"
 git clone "${PACKAGE_URL}"
 cd "${PACKAGE_NAME}"
 git checkout "${PACKAGE_VERSION}"
+git apply ${SCRIPT_PATH}/${PACKAGE_ORG}-${PACKAGE_NAME}_${PACKAGE_VERSION}.patch
 
 # --------
 # Build
@@ -87,7 +88,7 @@ if [ $ret -ne 0 ]; then
 	echo "------------------ ${PACKAGE_NAME}: Build Failed ------------------"
 	exit 1
 fi
-export OPENSEARCH_SECURITY_ZIP=${BUILD_HOME}/${PACKAGE_NAME}/build/distributions/opensearch-security-${PACKAGE_VERSION}-SNAPSHOT.zip
+export OPENSEARCH_SECURITY_ZIP=${BUILD_HOME}/${PACKAGE_NAME}/build/distributions/opensearch-security-${PACKAGE_VERSION}.zip
 
 # ---------------------------
 # Skip Tests?
