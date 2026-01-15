@@ -20,7 +20,7 @@
 
 # Variables
 PACKAGE_NAME=openai-harmony
-PACKAGE_VERSION=${1:-0.0.4}
+PACKAGE_VERSION=${1:-v0.0.4}
 PACKAGE_URL=https://github.com/openai/harmony.git
 PACKAGE_DIR=openai-harmony
 
