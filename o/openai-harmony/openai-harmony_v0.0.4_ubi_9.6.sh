@@ -77,6 +77,9 @@ else
         cd "$PACKAGE_DIR" || exit
     fi
 fi
+# Create and activate virtual environment -- Need this to get marturin to work
+python3.12 -m venv .venv
+source .venv/bin/activate
 
 # Compile the Rust Crate and install the Python package in editable mode
 maturin develop --release
