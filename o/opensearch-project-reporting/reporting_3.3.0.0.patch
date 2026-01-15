@@ -1,0 +1,13 @@
+diff --git a/build.gradle b/build.gradle
+index 86c51c4..f64cb8c 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -42,7 +42,7 @@ buildscript {
+ 
+         common_utils_version = System.getProperty("common_utils.version", opensearch_build)
+         job_scheduler_version = System.getProperty("job_scheduler.version", opensearch_build)
+-        kotlin_version = System.getProperty("kotlin.version", "2.2.0")
++        kotlin_version = System.getProperty("kotlin.version", "2.2.20")
+     }
+ 
+     repositories {
