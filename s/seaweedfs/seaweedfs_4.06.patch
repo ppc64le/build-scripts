@@ -1,0 +1,20 @@
+diff --git a/weed/storage/erasure_coding/ec_test.go b/weed/storage/erasure_coding/ec_test.go
+index 0930d1b01..e1f93dd41 100644
+--- a/weed/storage/erasure_coding/ec_test.go
++++ b/weed/storage/erasure_coding/ec_test.go
+@@ -135,6 +135,15 @@ func readEcFile(shardDatSize int64, ecFiles []*os.File, offset types.Offset, siz
+ func readOneInterval(interval Interval, ecFiles []*os.File) (data []byte, err error) {
+ 
+ 	ecFileIndex, ecFileOffset := interval.ToShardIdAndOffset(largeBlockSize, smallBlockSize)
++        // ✅ VALIDATION (required on ppc64le)
++	if interval.Size <= 0 {
++		return nil, fmt.Errorf("invalid interval size %d (interval=%+v)", interval.Size, interval)
++	}
++        // Convert safely at allocation boundary
++	size := int(interval.Size)
++	if size < 0 {
++		return nil, fmt.Errorf("interval size overflow %d (interval=%+v)", interval.Size, interval)
++	}
+ 
+ 	data = make([]byte, interval.Size)
+ 	err = readFromFile(ecFiles[ecFileIndex], data, ecFileOffset)
