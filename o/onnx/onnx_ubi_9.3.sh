@@ -110,7 +110,7 @@ export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
 python${PYTHON_VERSION} -m pip install --upgrade pip setuptools wheel ninja
-python${PYTHON_VERSION} -m pip install packaging tox pytest build mypy stubs
+python${PYTHON_VERSION} -m pip install packaging tox pytest build mypy stubs pytest-runner
 python${PYTHON_VERSION} -m pip install 'cmake==3.31.6'
 
 echo " ------------------------------------------ Abseil-CPP Cloning ------------------------------------------ "
