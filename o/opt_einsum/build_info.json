@@ -1,0 +1,16 @@
+{
+    "maintainer": "robin-ibm",
+    "package_name": "opt_einsum",
+    "github_url": "https://github.com/dgasmith/opt_einsum.git",
+    "version": "v3.3.0",
+    "wheel_build" : true,
+    "default_branch": "main",
+    "build_script": "opt_einsum_ubi_9.3.sh",
+    "package_dir": "o/opt_einsum",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "v3.*.*": {
+      "build_script": "opt_einsum_ubi_9.3.sh"
+    }
+}
