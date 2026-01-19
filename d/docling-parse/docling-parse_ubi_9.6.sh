@@ -28,24 +28,24 @@ PACKAGE_URL="https://github.com/docling-project/docling-parse.git"
 BUILD_HOME="$(pwd)"
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 SOURCE=Github
+BUILD_HOME="$(pwd)"
 
 # Install dependencies
-yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
-        yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream//ppc64le/os
-        yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os
-        rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official-SHA256
-
-rpm -e --nodeps openssl-fips-provider-so-3.0.7-6.el9_5.ppc64le
 echo "Installing required packages..."
-yum install -y git wget gcc gcc-c++  python3.12-devel python3.12-pip zlib-devel libjpeg-devel
+yum install -y git wget gcc gcc-c++  python3.12-devel python3.12-pip zlib zlib-devel libjpeg-devel libjpeg-turbo libjpeg-turbo-devel wget freetype-devel
 python3.12 -m pip install build pytest wheel
 
 export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
-pip3.12 install pillow==11.2.1 --prefer-binary --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
+# Install pillow
+PILLOW_VERSION=11.2.1
+git clone https://github.com/python-pillow/Pillow
+cd Pillow
+git checkout $PILLOW_VERSION
+python3.12 -m pip install .
+cd $BUILD_HOME
 
 # Clone or extract the package
 if [[ "$PACKAGE_URL" == *github.com* ]]; then
