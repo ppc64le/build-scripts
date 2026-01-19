@@ -238,10 +238,10 @@ export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH"
 # Adding this source due to - (Unable to detect linker for compiler `cc -Wl,--version`)
 source /opt/rh/gcc-toolset-13/enable
 python${PYTHON_VERSION} -m pip install cython meson
-python${PYTHON_VERSION} -m pip install numpy==2.0.2
+python${PYTHON_VERSION} -m pip install "numpy<2.0" 
 python${PYTHON_VERSION} -m pip install parameterized
 python${PYTHON_VERSION} -m pip install pytest nbval pythran mypy-protobuf
-python${PYTHON_VERSION} -m pip install scipy==1.15.2
+python${PYTHON_VERSION} -m pip install "scipy<1.14"
 python${PYTHON_VERSION} -m pip install ml-dtypes  # required while running tests
 python${PYTHON_VERSION} -m pip install wheel
 python${PYTHON_VERSION} -m pip install build
