@@ -247,7 +247,7 @@ export PATH="/protobuf/local/libprotobuf/bin/protoc:${PATH}"
 export LD_LIBRARY_PATH="/protobuf/local/libprotobuf/lib64:${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH="/protobuf/third_party/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH="${SCRIPT_DIR}/pytorch/torch/lib/:${LD_LIBRARY_PATH}"
-export LD_LIBRARY_PATH="${SCRIPT_DIR}/protobuf/local/libprotobuf/lib64/:${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH="${SCRIPT_DIR}/protobuf/local/libprotobuf/lib64/:${LD_LIBRARY_PATH}"
 
 python3.12 -m pip install -r requirements.txt
 
