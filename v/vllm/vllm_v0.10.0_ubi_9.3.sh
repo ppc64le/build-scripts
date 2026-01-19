@@ -684,7 +684,7 @@ make install
 export CMAKE_PREFIX_PATH=$(pwd)/install
 cd ..
 sed -i 's/), language_level = "3"]/)]/' setup.py
-python3.12 -m pip install .
+python3.12 -m pip install --no-build-isolation .
 echo "------------------------installed zfp-------------------------"
 
 
