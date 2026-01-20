@@ -22,7 +22,6 @@ yum install -y python3.12 python3.12-devel python3.12-pip git gcc-toolset-13-gcc
 yum install -y openblas-devel ninja-build
 yum install -y zlib zlib-devel libjpeg-turbo libjpeg-turbo-devel
 
- 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
