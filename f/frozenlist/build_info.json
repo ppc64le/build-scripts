@@ -6,11 +6,11 @@
   "wheel_build" : true,
   "package_dir": "f/frozenlist",
   "default_branch": "master",
-  "build_script": "frozenlist_ubi_9.3.sh",
+  "build_script": "frozenlist_ubi_9.6.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
-  "v1.*.*": {
-    "build_script": "frozenlist_ubi_9.3.sh"
+  "*": {
+    "build_script": "frozenlist_ubi_9.6.sh"
   }
 }
