@@ -28,6 +28,10 @@ PACKAGE_DIR=frozenlist
 # Install dependencies and tools.
 yum install -y wget gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran git make python3-devel python3-pip openssl-devel
 
+export PATH=$PATH:/usr/local/bin/
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+
 #clone repository
 git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
