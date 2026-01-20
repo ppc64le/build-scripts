@@ -1,0 +1,16 @@
+{
+  "maintainer": "adarsh.agrawal1@ibm.com",
+  "package_name": "antlr4-python3-runtime",
+  "github_url": "https://github.com/antlr/antlr4.git",
+  "version": "v4.13.2",
+  "wheel_build" : true,
+  "package_dir": "a/antlr4-python3-runtime",
+  "default_branch": "main",
+  "build_script": "antlr4-python3-runtime_ubi_9.6",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*": {
+    "build_script" : "antlr4-python3-runtime_ubi_9.6"
+  }
+}
