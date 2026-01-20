@@ -1,0 +1,16 @@
+{
+  "maintainer": "Varad Ahirwadkar",
+  "package_name": "thinc",
+  "github_url": "https://github.com/explosion/thinc",
+  "version": "v8.3.6",
+  "default_branch": "v8.3.x",
+  "package_dir": "t/thinc",
+  "build_script": "thinc_ubi_9.6.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "wheel_build": true,
+  "*": {
+     "build_script": "thinc_ubi_9.6.sh"
+        }
+}
