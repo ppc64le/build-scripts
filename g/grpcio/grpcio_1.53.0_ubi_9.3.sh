@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 # Install dependencies
-yum install -y python3 python3-devel python3-pip openssl openssl-devel git gcc gcc-c++ cmake
+yum install -y python3 python3-devel python3-pip openssl openssl-devel git gcc-toolset-13 gcc-toolset-13-gcc-c++ cmake
 
 # Clone the grpc package.
 PACKAGE_NAME=grpc
@@ -31,13 +31,14 @@ cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
-python3 -m pip install pytest hypothesis build six
+pip3 install setuptools coverage "cython<3" protobuf==4.25.8 wheel cmake==3.*
 
-# Install requirements
-python3 -m pip install "coverage>=4.0" "cython>=0.29.8,<3.0.0" "protobuf>=4.21.3,<5.0dev" "wheel>=0.29"
+export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
+export GRPC_PYTHON_BUILD_WITH_CYTHON=1
+export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:${PATH}"
 
 # Install the package
-if ! (GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1 python3 -m pip install -e .) ; then
+if ! (pip3 install . --no-build-isolation) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
