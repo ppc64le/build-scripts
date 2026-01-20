@@ -10,7 +10,10 @@
   "use_non_root_user": false,
   "docker_build": false,
   "wheel_build": true,
-  "1.*.*": {
+  "1.4.0": {
+    "build_script": "partd_ubi_8.7.sh"
+  },
+  "*": {
     "build_script": "partd_ubi_9.6.sh"
   }
 }
