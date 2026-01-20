@@ -32,20 +32,12 @@ BUILD_HOME="$(pwd)"
 
 # Install dependencies
 echo "Installing required packages..."
-yum install -y git wget gcc gcc-c++  python3.12-devel python3.12-pip zlib zlib-devel libjpeg-devel libjpeg-turbo libjpeg-turbo-devel wget freetype-devel
+yum install -y git wget gcc gcc-c++ python3.12-devel python3.12-pip zlib zlib-devel libjpeg-devel libjpeg-turbo libjpeg-turbo-devel freetype-devel
 python3.12 -m pip install build pytest wheel
 
 export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
-
-# Install pillow
-PILLOW_VERSION=11.2.1
-git clone https://github.com/python-pillow/Pillow
-cd Pillow
-git checkout $PILLOW_VERSION
-python3.12 -m pip install .
-cd $BUILD_HOME
 
 # Clone or extract the package
 if [[ "$PACKAGE_URL" == *github.com* ]]; then
