@@ -31,8 +31,8 @@ SOURCE=Github
 
 # Install dependencies
 echo "Installing required packages..."
-yum install -y git wget gcc gcc-c++  python3.12-devel python3.12-pip
-python3.12 -m pip install build pytest wheel
+yum install -y git wget gcc gcc-c++ python3 python3-devel python3-pip
+python3 -m pip install build pytest wheel
 
 export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
@@ -74,7 +74,7 @@ else
 fi
 
 # Install the package
-if ! python3.12 -m pip install ./runtime/Python3; then
+if ! python3 -m pip install ./runtime/Python3; then
     echo "------------------$PACKAGE_NAME:install_fails------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"
@@ -88,7 +88,7 @@ test_status=1  # 0 = success, non-zero = failure
 # Run tests if any matching test files found
 if ls ./runtime/Python3/tests/*.py > /dev/null 2>&1 && [ $test_status -ne 0 ]; then
     echo "Running tests..."
-    python3.12 ./runtime/Python3/tests/run.py && test_status=0 || test_status=$?
+    python3 ./runtime/Python3/tests/run.py && test_status=0 || test_status=$?
 fi
 
 # Final test result output
