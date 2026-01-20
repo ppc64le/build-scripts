@@ -25,10 +25,9 @@ PACKAGE_DIR="docling-parse"
 PACKAGE_NAME="docling-parse"
 PACKAGE_VERSION="${1:-v4.7.1}"
 PACKAGE_URL="https://github.com/docling-project/docling-parse.git"
-BUILD_HOME="$(pwd)"
+
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 SOURCE=Github
-BUILD_HOME="$(pwd)"
 
 # Install dependencies
 echo "Installing required packages..."
