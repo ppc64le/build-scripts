@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : antlr4-python3-runtime
-# Version          : v4.13.2
+# Version          : 4.13.2
 # Source repo      : https://github.com/antlr/antlr4.git
 # Tested on        : UBI 9.6
 # Language         : Python
