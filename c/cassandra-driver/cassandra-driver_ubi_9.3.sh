@@ -28,7 +28,7 @@ export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
 #Install libev
-curl -LO http://dist.schmorp.de/libev/Attic/libev-4.33.tar.gz
+curl -LO https://dist.schmorp.de/libev/Attic/libev-4.33.tar.gz
 tar -xzf libev-4.33.tar.gz
 cd libev-4.33
 export CFLAGS="-fPIC"
