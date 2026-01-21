@@ -37,7 +37,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
-
+python3.12 -m pip install "cython<3"
 #Build package
 if ! python3.12 -m pip install -e . ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
