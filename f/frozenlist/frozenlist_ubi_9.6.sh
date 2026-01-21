@@ -37,8 +37,8 @@ git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-#install cython,pytest-cov
-pip3 install cython pytest-cov
+#install cython,pytest
+pip3 install cython pytest
 
 cython frozenlist/_frozenlist.pyx
 
@@ -51,7 +51,7 @@ if ! (pip3 install .) ; then
 fi
 
 #test
-if ! pytest -p no:pytest_cov -o addopts=""; then
+if ! pytest -o addopts=""; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
