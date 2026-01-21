@@ -24,6 +24,7 @@ PACKAGE_DIR=arrow/python
 PACKAGE_VERSION=${1:-apache-arrow-19.0.0}
 PACKAGE_URL=https://github.com/apache/arrow
 version=$(echo "$PACKAGE_VERSION" | sed 's/^apache-arrow-//')
+CURRENT_DIR="${PWD}"
 
 echo "Install dependencies and tools."
 yum install -y python python-pip python-devel wget git make  python-devel xz-devel openssl-devel cmake zlib-devel libjpeg-devel gcc-toolset-13 cmake libevent libtool pkg-config  brotli-devel.ppc64le bzip2-devel lz4-devel 
@@ -790,6 +791,8 @@ if [ "${build_type}" = "cuda" ]; then
 else
     export PYARROW_WITH_CUDA=0
 fi
+
+export LD_LIBRARY_PATH=${CURRENT_DIR}/pyarrow_prefix/lib/:$LD_LIBRARY_PATH
 
 cd python
 
