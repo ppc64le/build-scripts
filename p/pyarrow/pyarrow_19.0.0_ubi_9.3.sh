@@ -757,7 +757,7 @@ popd
 cd $SCRIPT_DIR
 
 echo "Installing prerequisite for arrow..."
-pip install setuptools-scm Cython
+pip install setuptools-scm "cython<3"
 pip install numpy==2.0.2
 
 export PYARROW_BUNDLE_ARROW_CPP=1
