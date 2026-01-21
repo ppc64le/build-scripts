@@ -814,7 +814,7 @@ echo "testing pyarrow...."
 cd ..
 export LD_LIBRARY_PATH=${SNAPPY_PREFIX}/lib:${C_ARES_PREFIX}/lib:${THRIFT_PREFIX}/lib:${UTF8PROC_PREFIX}/lib:${RE2_PREFIX}/lib:${LIBPROTO_INSTALL}/lib64:${GRPC_PREFIX}/lib:${ORC_PREFIX}/lib:${OpenBLASInstallPATH}/lib
 
-pip install -r python/requirements-test.txt
+pip install -r python/requirements-test.txt "pytest<9"
 
 PYARROW_LOCATION=$(python -c "import os; import pyarrow; print(os.path.dirname(pyarrow.__file__))")
 export PARQUET_TEST_DATA="$(pwd)/cpp/submodules/parquet-testing/data"
