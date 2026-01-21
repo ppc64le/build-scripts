@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : pyarrow
-# Version       : 15.0.1
+# Version       : 14.0.1
 # Source repo   : https://github.com/apache/arrow.git
 # Tested on     : UBI:9.3
 # Language      : Python
 # Ci-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
+# Maintainer    : Sakshi Jain <sakshi.jain16@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on the given
 # platform using the mentioned version of the package.
@@ -20,7 +20,7 @@
  
 # Variables
 PACKAGE_NAME=pyarrow
-PACKAGE_VERSION=${1:-apache-arrow-15.0.1}
+PACKAGE_VERSION=${1:-apache-arrow-14.0.1}
 PACKAGE_URL=https://github.com/apache/arrow.git
 PACKAGE_DIR=./arrow/python
 CURRENT_DIR="${PWD}"
@@ -64,7 +64,7 @@ sed -i '/cdef object alloc_c_stream(ArrowArrayStream\*\* c_stream)/s/ noexcept//
 echo "Fixes applied."
  
 pip install -r python/requirements-build.txt
-pip install cython wheel numpy==1.26.4 setuptools-scm
+pip install cython==0.29.36 wheel numpy==1.26.4 setuptools-scm
  
 echo "Preparing for build..."
  
