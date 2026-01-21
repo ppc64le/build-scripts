@@ -35,9 +35,9 @@ rpm --import https://centos.org/keys/RPM-GPG-KEY-CentOS-Official
 rpm -e --nodeps openssl-fips-provider-so-3.0.7-6.el9_5.ppc64le
 
 yum install -y git python3.12 python3.12-devel python3.12-pip gcc-toolset-13 make wget sudo cmake g++ tesseract-devel
+yum install -y zlib zlib-devel libjpeg-devel libjpeg-turbo libjpeg-turbo-devel freetype-devel
 
 python3.12 -m pip install --upgrade pip setuptools wheel build pytest
-pip3.12 install pillow==11.2.1 --index-url https://wheels.developerfirst.ibm.com/ppc64le/linux
 
 export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
