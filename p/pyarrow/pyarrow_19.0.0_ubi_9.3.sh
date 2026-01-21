@@ -28,7 +28,6 @@ CURRENT_DIR="${PWD}"
 
 echo "Install dependencies and tools."
 yum install -y python python-pip python-devel wget git make  python-devel xz-devel openssl-devel cmake zlib-devel libjpeg-devel gcc-toolset-13 cmake libevent libtool pkg-config  brotli-devel.ppc64le bzip2-devel lz4-devel 
-
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 SCRIPT_DIR=$(pwd)
