@@ -25,7 +25,9 @@ PACKAGE_URL=https://github.com/aio-libs/yarl
 PACKAGE_DIR=yarl
 
 # Install dependencies and tools.
-yum install -y git gcc gcc-c++  python-devel make wget openssl-devel bzip2-devel libffi-devel wget xz zlib-devel cmake openblas-devel gcc-gfortran openssl-devel sqlite-devel
+yum install -y git gcc-toolset-13 python3-pip python3 python3-devel make wget openssl-devel bzip2-devel libffi-devel wget xz zlib-devel cmake openblas-devel openssl-devel sqlite-devel
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
 #clone repository
 git clone $PACKAGE_URL
@@ -33,17 +35,17 @@ cd  $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 #install
-if ! (pip3 install .) ; then
+if ! (python3 -m pip install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-pip3 install pytest-cov covdefaults cython  pytest-xdist  pytest-codspeed  hypothesis
+pip3 install pytest-cov covdefaults cython  pytest-xdist  pytest-codspeed  hypothesis "coverage>=7.10.6,<8" pytest-cov
 
 #test
-if ! pytest; then
+if ! pytest -p no:cov; then
     echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"

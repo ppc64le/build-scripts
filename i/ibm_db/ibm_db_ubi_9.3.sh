@@ -22,6 +22,7 @@ PACKAGE_NAME=ibm_db
 PACKAGE_VERSION=${1:-v3.2.3}
 PACKAGE_DIR=python-ibmdb
 PACKAGE_URL=https://github.com/ibmdb/python-ibmdb.git
+CURRENT_DIR="${PWD}"
 
 # Install necessary system packages
 yum install -y git python-devel gcc gcc-c++ libxcrypt gzip tar make wget xz cmake yum-utils openssl-devel openblas-devel bzip2-devel bzip2 zip unzip libffi-devel zlib-devel autoconf automake libtool cargo pkgconf-pkg-config.ppc64le info.ppc64le fontconfig.ppc64le fontconfig-devel.ppc64le sqlite-devel
@@ -33,6 +34,8 @@ git checkout $PACKAGE_VERSION
 
 # Install test dependencies
 pip install pytest config tox
+
+export LD_LIBRARY_PATH=${CURRENT_DIR}/python-ibmdb/clidriver/lib/:$LD_LIBRARY_PATH
 
 # Install the package
 if ! python3 -m pip install .; then

@@ -1,0 +1,19 @@
+{
+  "maintainer": "Pratik.Tonage@ibm.com",
+  "package_name": "valkey",
+  "github_url": "https://github.com/valkey-io/valkey",
+  "version": "9.0.1",
+  "package_dir": "v/valkey",
+  "default_branch": "unstable",
+  "build_script": "valkey_9.0.1_ubi_9.6.sh",
+  "docker_build": true,
+  "validate_build_script": true,
+  "docker_cmd": "docker build -t ${package_name}-ppc64le:$PACKAGE_VERSION ${dir}",
+  "use_non_root_user": false,
+  "9.*.*": {
+    "dir": "9.0.1_ubi_9",
+    "build_script": "valkey_9.0.1_ubi_9.6.sh",
+    "base_docker_image": "registry.access.redhat.com/ubi9/ubi-minimal:9.6",
+    "base_docker_variant": "redhat"
+  }
+}

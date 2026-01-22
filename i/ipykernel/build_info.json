@@ -4,16 +4,16 @@
   "github_url": "https://github.com/ipython/ipykernel",
   "version": "v6.29.4",
   "default_branch": "main",
-  "package_dir": "i/ipykernel/",
+  "package_dir": "i/ipykernel",
   "wheel_build" : true,
-  "build_script": "ipykernel_ubi_9.3.sh",
+  "build_script": "ipykernel_ubi_9.6.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
   "v6.25.0": {
     "build_script": "ipykernel_ubi_8_7.sh"
   },
-  "v*.*.*": {
+  "*": {
     "build_script": "ipykernel_ubi_9.3.sh"
   }
 }

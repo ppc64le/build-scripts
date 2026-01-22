@@ -18,9 +18,12 @@
 #
 # ----------------------------------------------------------------------------
 
-yum install -y python3.12 python3.12-devel python3.12-pip git gcc-c++ cmake wget
+yum install -y python3.12 python3.12-devel python3.12-pip git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ cmake wget
 yum install -y openblas-devel ninja-build
 yum install -y zlib zlib-devel libjpeg-turbo libjpeg-turbo-devel
+
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
 # Clone the matplotlib package.
 PACKAGE_NAME=matplotlib
@@ -34,11 +37,9 @@ git submodule update --init
 
 # Download qhull
 mkdir -p build
-wget 'http://www.qhull.org/download/qhull-2020-src-8.0.2.tgz'
-gunzip qhull-2020-src-8.0.2.tgz
-tar -xvf qhull-2020-src-8.0.2.tar --no-same-owner
-mv qhull-2020.2 build/
-rm -f qhull-2020-src-8.0.2.tar
+wget https://github.com/qhull/qhull/archive/refs/tags/v8.0.2.tar.gz -O qhull-8.0.2.tar.gz
+tar -xzf qhull-8.0.2.tar.gz
+mv qhull-8.0.2 build/qhull-2020.2
 
 # Setup virtual environment for python
 python3.12 -m pip install pytest hypothesis build meson pybind11 meson-python
@@ -60,8 +61,9 @@ fi
 
 # Test the package
 python3.12 -c "import matplotlib; print(matplotlib.__file__)"
-
+python3.12 -m pip install  "pyparsing<3.2"  "patchelf>=0.11.0" "setuptools_scm>=7" 'meson-python<0.17.0,>=0.13.1'
 pytest ./lib/matplotlib/tests/test_units.py
+
 
 if [ $? == 0 ]; then
      echo "------------------$PACKAGE_NAME::Test_Pass---------------------"

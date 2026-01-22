@@ -1,0 +1,16 @@
+{
+  "maintainer": "Manya.Rusiya@ibm.com",
+  "package_name": "opensearch-project-ubi",
+  "github_url": "https://github.com/opensearch-project/user-behavior-insights",
+  "version": "3.3.0.0",
+  "required_versions":{"Releases": ["*"], "Tags": ["3.3.0.0"]},
+  "default_branch": "main", 
+  "package_dir": "o/opensearch-project-ubi",
+  "build_script": "opensearch-project-ubi_3.3.0.0_ubi_9.6.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "true",
+  "docker_build": "false",
+  "3.3.0.0" : {
+      "build_script": "opensearch-project-ubi_3.3.0.0_ubi_9.6.sh"
+    }
+}

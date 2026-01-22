@@ -1,0 +1,17 @@
+{
+   "maintainer": "yussufsh",
+   "package_name": "tree-sitter-python",
+   "github_url": "https://github.com/tree-sitter/tree-sitter-python",
+   "version": "v0.23.2",
+   "default_branch": "master",
+   "build_script": "tree-sitter-python_ubi_9.6.sh",
+   "package_dir": "t/tree-sitter-python",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+
+   "*" : {
+      "build_script": "tree-sitter-python_ubi_9.6.sh"
+   }
+}

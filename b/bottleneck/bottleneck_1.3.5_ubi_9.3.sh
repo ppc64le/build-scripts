@@ -39,6 +39,7 @@ if ! (python3.12 -m pip install .) ; then
     exit 1
 fi
 
+python3.12 -m pip install versioneer oldest-supported-numpy
 python3.12 -m pip install chardet --upgrade
 python3.12 -m pip install requests --upgrade
 python3.12 -m pip install tox
