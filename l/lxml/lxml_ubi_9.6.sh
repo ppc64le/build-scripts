@@ -35,6 +35,7 @@ git checkout $PACKAGE_VERSION
 # Install additional dependencies
 pip install wheel pytest
 pip install -r requirements.txt
+pip install "cython<3.0"
 python3 setup.py build_ext --inplace
 
 #install
