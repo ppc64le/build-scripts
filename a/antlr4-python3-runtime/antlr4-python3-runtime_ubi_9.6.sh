@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : antlr4-python3-runtime
-# Version          : 4.13.2
+# Version          : 4.9.3
 # Source repo      : https://github.com/antlr/antlr4.git
 # Tested on        : UBI 9.6
 # Language         : Python
@@ -23,7 +23,7 @@ set -e
 # Variables
 PACKAGE_DIR="antlr4"
 PACKAGE_NAME="antlr4-python3-runtime"
-PACKAGE_VERSION="${1:-4.13.2}"
+PACKAGE_VERSION="${1:-4.9.3}"
 PACKAGE_URL="https://github.com/antlr/antlr4.git"
 BUILD_HOME="$(pwd)"
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
@@ -32,7 +32,7 @@ SOURCE=Github
 # Install dependencies
 echo "Installing required packages..."
 yum install -y git wget gcc gcc-c++ python3 python3-devel python3-pip
-python3 -m pip install build pytest wheel
+python3 -m pip install --upgrade build pytest wheel setuptools
 
 export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
