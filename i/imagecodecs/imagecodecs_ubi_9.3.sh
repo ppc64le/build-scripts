@@ -46,7 +46,7 @@ fi
 
 # Installing below dependencies from source as those are not able to install from yum
 # Install libtiff-4.5.1 from source
-wget http://download.osgeo.org/libtiff/tiff-4.5.1.tar.gz
+wget https://download.osgeo.org/libtiff/tiff-4.5.1.tar.gz
 tar -xzf tiff-4.5.1.tar.gz
 cd tiff-4.5.1
 ./configure --prefix=/usr/local
@@ -152,7 +152,7 @@ make -j$(nproc) && make install
 cd ../..
 
 #install liblzf from source
-wget http://dist.schmorp.de/liblzf/liblzf-3.6.tar.gz
+wget https://dist.schmorp.de/liblzf/liblzf-3.6.tar.gz
 tar -xf liblzf-3.6.tar.gz && cd liblzf-3.6
 ./configure && make -j$(nproc)
 make install
