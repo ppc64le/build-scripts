@@ -1,0 +1,16 @@
+{
+   "maintainer": "rcarino5",
+   "package_name": "openai-harmony",
+   "github_url": "https://github.com/openai/harmony",
+   "version": "0.0.4",
+   "default_branch": "main",
+   "build_script": "openai-harmony_v0.0.4_ubi_9.6.sh",
+   "wheel_build" : true,
+   "package_dir": "o/openai-harmony",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*": {
+       "build_script": "openai-harmony_v0.0.4_ubi_9.6.sh"
+   }
+}

@@ -37,7 +37,7 @@ ln -s /usr/bin/python3 /usr/bin/python
 
 #Set JAVA_HOME
 yum install -y java-11-openjdk-devel
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.25.0.9-3.el9.ppc64le 
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk 
 export PATH=$JAVA_HOME/bin:$PATH
 
 # Build Bazel dependency

@@ -41,6 +41,7 @@ git submodule update --init --recursive
 #install dependencies
 pip install scipy meson-python pybind11 pythran cython wheel ninja
 pip install --upgrade --progress-bar off pytest
+pip install "hmmlearn>=0.3.2"
 
 if ! python3 -m pip install --upgrade-strategy only-if-needed --no-build-isolation . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"

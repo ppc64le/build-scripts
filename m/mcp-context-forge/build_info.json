@@ -1,0 +1,23 @@
+{
+  "maintainer": "SanketPatil11",
+  "package_name": "mcp-context-forge",
+  "github_url": "https://github.com/IBM/mcp-context-forge",
+  "version": "v0.9.0",
+  "default_branch": "main",
+  "build_script": "mcp-context-forge_v0.9.0_ubi_9.6.sh",
+  "package_dir": "m/mcp-context-forge/",
+  "docker_build": "false",
+  "use_non_root_user": false,
+  "validate_build_script": "true",
+  "v0.9.0": {
+    "dir": "0.9.0_ubi_9",
+    "build_script": "mcp-context-forge_v0.9.0_ubi_9.6.sh"
+  },
+  "v*.*.*": {
+    "dir": "template",
+    "patches": {
+      "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/master/m/mcp-context-forge/mcp-context-forge_v0.9.0.patch"
+    },
+    "build_script": "mcp-context-forge_v0.9.0_ubi_9.6.sh"
+  }
+}

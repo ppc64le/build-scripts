@@ -6,7 +6,7 @@
 # Source repo    : https://github.com/opensearch-project/k-NN.git
 # Tested on      : UBI 9.6
 # Language       : Java and C++
-# Ci-Check   : True
+# Ci-Check       : True
 # Script License : Apache License, Version 2 or later
 # Maintainer	   : Prachi Gaonkar <Prachi.Gaonkar@ibm.com>
 #
@@ -18,20 +18,12 @@
 #
 # ----------------------------------------------------------------------------
 
-# ---------------------------
-# Check for root user
-# ---------------------------
-if ! ((${EUID:-0} || "$(id -u)")); then
-	set +ex
-        echo "FAIL: This script must be run as a non-root user with sudo permissions"
-        exit 3
-fi
-
-# ---------------------------
+# ----------------------------
 # Configuration
-# ---------------------------
+# ----------------------------
 PACKAGE_NAME=k-NN
-PACKAGE_VERSION="3.3.0.0"
+SCRIPT_PACKAGE_VERSION="3.3.0.0"
+PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
 PACKAGE_URL=https://github.com/opensearch-project/${PACKAGE_NAME}.git
 OPENSEARCH_VERSION=${PACKAGE_VERSION::-2}
 OPENSEARCH_PACKAGE=OpenSearch
@@ -61,17 +53,14 @@ for i in "$@"; do
   esac
 done
 
-# ---------------------------
+# ------------------------------
 # Dependency Installation
-# ---------------------------
-sudo yum install -y git wget python3-pip gcc gcc-c++ make cmake gcc-gfortran zlib zlib-devel openblas openblas-devel libomp
-#install temurin java21
-sudo wget https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.2%2B13/OpenJDK21U-jdk_ppc64le_linux_hotspot_21.0.2_13.tar.gz
-sudo tar -C /usr/local -zxf OpenJDK21U-jdk_ppc64le_linux_hotspot_21.0.2_13.tar.gz
-export JAVA_HOME=/usr/local/jdk-21.0.2+13/
-export PATH=$PATH:/usr/local/jdk-21.0.2+13/bin/
-sudo ln -sf /usr/local/jdk-21.0.2+13/bin/java /usr/bin/
-sudo rm -rf OpenJDK21U-jdk_ppc64le_linux_hotspot_21.0.2_13.tar.gz
+# ------------------------------
+sudo chown -R test_user:test_user /home/tester
+sudo yum install -y git wget python3-pip gcc gcc-c++ make cmake gcc-gfortran zlib zlib-devel openblas openblas-devel libomp java-21-openjdk-devel
+export JAVA_HOME=$(ls -d /usr/lib/jvm/java-21-openjdk-* | head -n1)
+export JRE_HOME=${JAVA_HOME}/jre
+export PATH=${JAVA_HOME}/bin:$PATH
 
 sudo ln -sf /usr/bin/python3 /usr/bin/python
 pip install cmake==3.24.0
@@ -101,13 +90,13 @@ cmake .. -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=$BUILD_HOME/local
 make
 make install
 
-# ---------------------------
+# ----------------------------
 # Clone and Prepare Repository
-# ---------------------------
+# ----------------------------
 cd $BUILD_HOME
 git clone ${PACKAGE_URL}
 cd ${PACKAGE_NAME} && git checkout ${PACKAGE_VERSION}
-git apply ${SCRIPT_PATH}/$PACKAGE_NAME-$PACKAGE_VERSION.patch
+git apply ${SCRIPT_PATH}/$PACKAGE_NAME-$SCRIPT_PACKAGE_VERSION.patch
 cd jni
 cmake -DBLAS_INCLUDE_DIR=$BUILD_HOME/local/include \
       -DLAPACK_LIBRARIES=$BUILD_HOME/local/lib64/liblapack.so \
@@ -118,19 +107,29 @@ cmake -DBLAS_INCLUDE_DIR=$BUILD_HOME/local/include \
 # Apply patches to NMSLIB and FAISS
 # ----------------------------------------------
 cd external/nmslib
-git apply ${SCRIPT_PATH}/$PACKAGE_NAME-nmslib-$PACKAGE_VERSION.patch
+git apply ${SCRIPT_PATH}/$PACKAGE_NAME-nmslib-$SCRIPT_PACKAGE_VERSION.patch
 cd ../faiss/faiss
-git apply ${SCRIPT_PATH}/$PACKAGE_NAME-faiss-$PACKAGE_VERSION.patch
+git apply ${SCRIPT_PATH}/$PACKAGE_NAME-faiss-$SCRIPT_PACKAGE_VERSION.patch
 cd $BUILD_HOME/$PACKAGE_NAME/jni
 rm -rf build CMakeFiles CMakeCache.txt
 make
+
+# ----------------------------------------------
+# Build opensearch tarball for integation tests
+# ----------------------------------------------
+cd $BUILD_HOME
+git clone ${OPENSEARCH_URL}
+cd ${OPENSEARCH_PACKAGE} && git checkout ${OPENSEARCH_VERSION}
+./gradlew -p distribution/archives/linux-ppc64le-tar assemble
+./gradlew -Prelease=true publishToMavenLocal
+./gradlew :build-tools:publishToMavenLocal
 
 # --------
 # Build
 # --------
 cd $BUILD_HOME/$PACKAGE_NAME
 ret=0
-./gradlew build -x test -x integTest -Dbuild.lib.commit_patches=false || ret=$?
+./gradlew build -x test -x integTest -Dbuild.lib.commit_patches=false -PcustomDistributionUrl=$wdir/OpenSearch/distribution/archives/linux-ppc64le-tar/build/distributions/opensearch-min-$OPENSEARCH_VERSION-SNAPSHOT-linux-ppc64le.tar.gz   -Dbuild.snapshot=false || ret=$?
 if [ $ret -ne 0 ]; then
         set +ex
 	echo "------------------ ${PACKAGE_NAME}: Build Failed ------------------"
@@ -147,20 +146,13 @@ if [ "$RUNTESTS" -eq 0 ]; then
         exit 0
 fi
 
-# ----------------------------------------------
-# Build opensearch tarball for integation tests
-# ----------------------------------------------
-cd $BUILD_HOME
-git clone ${OPENSEARCH_URL}
-cd ${OPENSEARCH_PACKAGE} && git checkout ${OPENSEARCH_VERSION}
-./gradlew -p distribution/archives/linux-ppc64le-tar assemble
 
 # ----------
 # Unit Test
 # ----------
 cd $BUILD_HOME/$PACKAGE_NAME
 ret=0
-./gradlew test --max-workers=1 || ret=$?
+./gradlew test --max-workers=1 -Dbuild.snapshot=false || ret=$?
 if [ $ret -ne 0 ]; then
         ret=0
 	set +ex
@@ -172,7 +164,7 @@ fi
 # Integration Test
 # ------------------
 ret=0
-./gradlew integTest -PcustomDistributionUrl="$BUILD_HOME/OpenSearch/distribution/archives/linux-ppc64le-tar/build/distributions/opensearch-min-${OPENSEARCH_VERSION}-SNAPSHOT-linux-ppc64le.tar.gz" || ret=$?
+./gradlew integTest -PcustomDistributionUrl="$BUILD_HOME/OpenSearch/distribution/archives/linux-ppc64le-tar/build/distributions/opensearch-min-${OPENSEARCH_VERSION}-SNAPSHOT-linux-ppc64le.tar.gz" -Dbuild.snapshot=false || ret=$?
 if [ $ret -ne 0 ]; then
 	set +ex
 	echo "------------------ ${PACKAGE_NAME}: Integration Test Failed ------------------"
