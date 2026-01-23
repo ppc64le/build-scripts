@@ -1,10 +1,10 @@
 #!/bin/bash -ex
 # -----------------------------------------------------------------------------
 #
-# Package          : search-relevance
+# Package          : query-insights
 # Version          : 3.3.0.0
 # Source repo      : https://github.com/opensearch-project/query-insights
-# Tested on        : UBI:9.6
+# Tested on        : UBI 9.6
 # Language         : Java
 # Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
@@ -82,7 +82,7 @@ git checkout $OPENSEARCH_VERSION
 ./gradlew :build-tools:publishToMavenLocal
 
 # ------------------------------
-# Build Opensearch common-utils
+# Build common-utils
 # ------------------------------
 cd $wdir
 git clone https://github.com/opensearch-project/common-utils.git
@@ -98,7 +98,7 @@ cd $wdir
 git clone https://github.com/opensearch-project/security.git
 cd security
 git checkout "${PACKAGE_VERSION}"
-git apply $SCRIPT_DIR/security_${PACKAGE_VERSION}.patch
+git apply $SCRIPT_DIR/security_${SCRIPT_PACKAGE_VERSION}.patch
 ./gradlew clean assemble
 ./gradlew -Prelease=true publishToMavenLocal
 
@@ -109,7 +109,7 @@ git apply $SCRIPT_DIR/security_${PACKAGE_VERSION}.patch
 cd $wdir
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME && git checkout $PACKAGE_VERSION
-git apply $SCRIPT_DIR/${PACKAGE_NAME}_${PACKAGE_VERSION}.patch
+git apply $SCRIPT_DIR/${PACKAGE_NAME}_${SCRIPT_PACKAGE_VERSION}.patch
 
 
 
@@ -117,7 +117,7 @@ git apply $SCRIPT_DIR/${PACKAGE_NAME}_${PACKAGE_VERSION}.patch
 # Build
 # --------
 ret=0
-./gradlew build   -PcustomDistributionUrl=$wdir/OpenSearch/distribution/archives/linux-ppc64le-tar/build/distributions/opensearch-min-$OPENSEARCH_VERSION-SNAPSHOT-linux-ppc64le.tar.gz       -Dbuild.snapshot=false   -PlocalSecurityPluginZip=file://$wdir/security/build/distributions/opensearch-security-$PACKAGE_VERSION.zip || ret=$?
+./gradlew build -x test -x integTest -PcustomDistributionUrl=$wdir/OpenSearch/distribution/archives/linux-ppc64le-tar/build/distributions/opensearch-min-$OPENSEARCH_VERSION-SNAPSHOT-linux-ppc64le.tar.gz       -Dbuild.snapshot=false   -PlocalSecurityPluginZip=file://$wdir/security/build/distributions/opensearch-security-$PACKAGE_VERSION.zip || ret=$?
 if [ $ret -ne 0 ]; then
         set +ex
 	echo "------------------ ${PACKAGE_NAME}: Build Failed ------------------"
