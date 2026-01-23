@@ -37,6 +37,9 @@ git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+# Fix Python 3.13 compatibility
+sed -i 's/SKIP_METHODS = {/SKIP_METHODS = {\n        "__static_attributes__",\n        "__firstlineno__",/' tests/test_frozenlist.py
+
 #install cython,pytest
 pip3 install cython pytest
 
