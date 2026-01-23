@@ -801,11 +801,9 @@ git submodule update --init
 echo "Downloading and preparing qhull..."
 # Download qhull
 mkdir -p build
-wget 'http://www.qhull.org/download/qhull-2020-src-8.0.2.tgz'
-gunzip qhull-2020-src-8.0.2.tgz
-tar -xvf qhull-2020-src-8.0.2.tar --no-same-owner
-mv qhull-2020.2 build/
-rm -f qhull-2020-src-8.0.2.tar
+wget https://github.com/qhull/qhull/archive/refs/tags/v8.0.2.tar.gz -O qhull-8.0.2.tar.gz
+tar -xzf qhull-8.0.2.tar.gz
+mv qhull-8.0.2 build/qhull-2020.2
 echo "qhull downloaded and prepared."
 python3.12 -m pip install  hypothesis build meson pybind11 meson-python
 python3.12 -m pip install 'numpy<2' fontTools setuptools-scm contourpy kiwisolver python-dateutil cycler pyparsing pillow certifi

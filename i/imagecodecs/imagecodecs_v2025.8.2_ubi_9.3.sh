@@ -145,7 +145,7 @@ make -j$(nproc) && make install
 cd ../..
 
 # liblzf 3.6
-wget http://dist.schmorp.de/liblzf/liblzf-3.6.tar.gz
+wget https://dist.schmorp.de/liblzf/liblzf-3.6.tar.gz
 tar -xf liblzf-3.6.tar.gz
 cd liblzf-3.6
 ./configure && make -j$(nproc) && make install

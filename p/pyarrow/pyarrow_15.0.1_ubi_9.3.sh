@@ -64,7 +64,7 @@ sed -i '/cdef object alloc_c_stream(ArrowArrayStream\*\* c_stream)/s/ noexcept//
 echo "Fixes applied."
  
 pip install -r python/requirements-build.txt
-pip install cython wheel numpy==1.26.4 setuptools-scm
+pip install "Cython<3.1,!=3.0.9" "setuptools>=70.1" wheel numpy==1.26.4 setuptools-scm
  
 echo "Preparing for build..."
  
@@ -104,7 +104,7 @@ export PYARROW_BUNDLE_ARROW_CPP_HEADERS=1
 
 version=$(echo "$PACKAGE_VERSION" | sed 's/^apache-arrow-//')
 export SETUPTOOLS_SCM_PRETEND_VERSION=$version
- 
+export LD_LIBRARY_PATH=${ARROW_HOME}/lib:${LD_LIBRARY_PATH}
 if ! python3 setup.py bdist_wheel --dist-dir="$CURRENT_DIR/" ; then
         echo "------------------$PACKAGE_NAME:wheel_built_fails---------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"
