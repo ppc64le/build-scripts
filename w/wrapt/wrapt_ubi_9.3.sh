@@ -34,7 +34,7 @@ git checkout $PACKAGE_VERSION
 pip3 install setuptools
 
 #install pytest
-pip3 install "pytest<9" tox==3.24.5
+pip3 install pytest==6.2.5 tox==3.24.5
 
 #install
 if ! (python3 setup.py install) ; then
