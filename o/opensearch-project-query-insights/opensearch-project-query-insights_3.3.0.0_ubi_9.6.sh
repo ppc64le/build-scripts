@@ -91,9 +91,9 @@ git checkout "${COMMON_UTILS_VERSION}"
 ./gradlew assemble
 ./gradlew -Prelease=true publishToMavenLocal
 
-------------------
+#------------------
 # build security 
---------------------
+#--------------------
 cd $wdir
 git clone https://github.com/opensearch-project/security.git
 cd security
