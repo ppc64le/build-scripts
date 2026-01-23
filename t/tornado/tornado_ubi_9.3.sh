@@ -26,7 +26,7 @@ PACKAGE_DIR=tornado
 CURRENT_DIR="${PWD}"
 
 # Install dependencies
-yum install python3 python3-devel python3-pip git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran -y
+yum install python3 python3-devel python3-pip git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libcurl-devel openssl-devel -y
 
 source /opt/rh/gcc-toolset-13/enable
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
@@ -37,7 +37,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-pip install build tox wheel
+pip3 install build tox wheel "pycares<5" "twisted<24.7" pycurl
 
 python3 setup.py sdist
 
@@ -47,14 +47,15 @@ tar -zxvf tornado-"$VERSION_NUMBER".tar.gz
 cd tornado-"$VERSION_NUMBER"
 
 #install
-if ! pip install -e . ; then
+if ! pip3 install -e . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-python3 -m build --wheel --no-isolation --outdir="$CURRENT_DIR"
+cd $CURRENT_DIR/tornado
+
 # Run tests
 if !(python3 -m tox -e py39); then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
