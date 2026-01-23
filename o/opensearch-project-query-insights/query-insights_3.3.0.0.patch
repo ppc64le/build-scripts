@@ -1,0 +1,26 @@
+diff --git a/build.gradle b/build.gradle
+index 93bf5d0..87ac443 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -212,6 +212,12 @@ ext {
+     }
+ 
+     // add a check to avoid re-downloading multiple times during single test run
++    // If a local security plugin ZIP is provided via Gradle property, use it instead of downloading
++
++    if (project.hasProperty("localSecurityPluginZip")) {
++       downloadedSecurityPlugin = file(localSecurityPluginZip)
++      println "Using local security plugin zip: ${downloadedSecurityPlugin}"
++   } else {
+     if (!downloadedSecurityPlugin.exists()) {
+       download.run {
+         src getSecurityPluginDownloadLink()
+@@ -220,7 +226,7 @@ ext {
+     } else {
+       println "Security Plugin File Already Exists"
+     }
+-
++   }
+     // Config below including files are copied from security demo configuration
+     ['esnode.pem', 'esnode-key.pem', 'root-ca.pem'].forEach { file ->
+       File local = Paths.get(projectAbsPath, 'bin', file).toFile()
