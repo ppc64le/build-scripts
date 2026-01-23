@@ -98,7 +98,7 @@ cd $wdir
 git clone https://github.com/opensearch-project/security.git
 cd security
 git checkout "${PACKAGE_VERSION}"
-git apply ${SCRIPT_PATH}/security_${PACKAGE_VERSION}.patch
+git apply $SCRIPT_DIR/security_${PACKAGE_VERSION}.patch
 ./gradlew clean assemble
 ./gradlew -Prelease=true publishToMavenLocal
 
