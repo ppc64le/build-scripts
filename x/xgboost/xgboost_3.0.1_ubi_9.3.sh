@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : xgboost
-# Version       : 3.0.1
+# Version       : 3.1.3
 # Source repo   :  https://github.com/dmlc/xgboost
 # Tested on     : UBI:9.3
 # Language      : Python
@@ -21,7 +21,7 @@
 set -e
 # Variables
 PACKAGE_NAME=xgboost
-PACKAGE_VERSION=${1:-v3.0.1}
+PACKAGE_VERSION=${1:-v3.1.3}
 PACKAGE_URL=https://github.com/dmlc/xgboost
 PACKAGE_DIR=xgboost/python-package
 OUTPUT_FOLDER="$(pwd)/output"
@@ -107,7 +107,7 @@ echo " ------------------------------------------ Openblas Successfully Installe
 
 cd ${SCRIPT_DIR}
 
-pip3.12 install numpy==2.0.2 packaging pathspec pluggy scipy==1.15.2 trove-classifiers pytest wheel build hatchling joblib threadpoolctl
+python3.12 -m pip install numpy==2.0.2 packaging pathspec pluggy scipy==1.15.2 trove-classifiers pytest wheel build hatchling joblib threadpoolctl
 
 # Clone the repository
 echo "Cloning the repository..."
