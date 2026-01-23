@@ -179,7 +179,7 @@ export CC=$CURRENT_DIR/clang-17.0.6/bin/clang
 export CXX=$CURRENT_DIR/clang-17.0.6/bin/clang++
 export ASM=$CURRENT_DIR/clang-17.0.6/bin/clang
 #conan install . --build=missing
-conan install . || true && sed -i 's/ autotools.configure()/ autotools.configure(args=["--build=powerpc64le-linux-gnu"])/g' /$CURRENT_DIR/root/.conan/data/yasm/1.3.0/_/_/export/conanfile.py
+conan install . || true && sed -i 's/ autotools.configure()/ autotools.configure(args=["--build=powerpc64le-linux-gnu"])/g' $CURRENT_DIR/root/.conan/data/yasm/1.3.0/_/_/export/conanfile.py
 cd catboost/python-package/
 ret=0
 python3.12 setup.py bdist_wheel --no-widget || ret=$?
