@@ -1,0 +1,12 @@
+{
+    "package_name": "Rshiny-server",
+    "github_url": "https://github.com/rstudio/shiny-server.git",
+    "version": "v1.5.20.1002",
+    "default_branch": "master",
+    "package_dir": "r/shiny-server/",
+    "build_script": "shiny-server_ubi_8.7.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false
+}
+
