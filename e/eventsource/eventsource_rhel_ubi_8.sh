@@ -1,12 +1,13 @@
-# -----------------------------------------------------------------------------
+# !/bin/bash -e
 #
 # Package	: eventsource
-# Version	: 0.1.6
+# Version	: 0.0.1
 # Source repo	: https://github.com/EventSource/eventsource
-# Tested on	: RHEL 8.3
+# Tested on	: UBI 8.5
 # Script License: Apache License, Version 2 or later
 # Maintainer	: BulkPackageSearch Automation <sethp@us.ibm.com>
-#
+# Language	: Node
+# Travis-Check  : True
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
@@ -16,7 +17,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=eventsource
-PACKAGE_VERSION=0.1.6
+PACKAGE_VERSION=v0.0.1
 PACKAGE_URL=https://github.com/EventSource/eventsource
 
 yum -y update && yum install -y yum-utils nodejs nodejs-devel nodejs-packaging npm python38 python38-devel ncurses git gcc gcc-c++ libffi libffi-devel ncurses git jq make cmake
