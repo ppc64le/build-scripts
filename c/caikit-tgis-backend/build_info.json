@@ -1,0 +1,12 @@
+{
+    "package_name": "caikit-tgis-backend",
+    "github_url": "https://github.com/caikit/caikit-tgis-backend",
+    "version": "v0.1.14",
+    "default_branch": "main",
+    "package_dir": "c/caikit-tgis-backend/",
+    "build_script": "caikit-tgis-backend_ubi_8.5.sh",
+    "docker_build": false,
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "maintainer": "Viren Dalgade <Viren.Dalgade@ibm.com>"
+}
