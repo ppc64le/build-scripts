@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kong-setup
+spec:
+  template:
+    spec:
+      containers:
+      - name: kong-setup
+        image: ${KONG_DB_INIT_IMAGE}
+        command: ["kong", "migrations", "bootstrap"]
+        env:
+          - name: KONG_DATABASE
+            value: "postgres"
+          - name: KONG_PG_HOST
+            value: "postgres"
+          - name: KONG_PG_DATABASE
+            value: "kong"
+          - name: KONG_PG_USER
+            value: "kong"
+          - name: KONG_PG_PASSWORD
+            value: "kong"
+          - name: KONG_ADMIN_ACCESS_LOG
+            value: "/dev/stdout"
+          - name: KONG_PROXY_ACCESS_LOG
+            value: "/dev/stdout"
+          - name: KONG_PROXY_ERROR_LOG
+            value: "/dev/stderr"
+          - name: KONG_ADMIN_ERROR_LOG
+            value: "/dev/stderr"
+          - name: KONG_ADMIN_LISTEN
+            value: "0.0.0.0:8001,0.0.0.0:8444 ssl"
+          - name: KONG_NGINX_DAEMON
+            value: "off"
+        volumeMounts:
+          - name: kong
+            mountPath: /usr/local/kong
+      volumes:
+        - name: kong
+          emptyDir: {}
+      restartPolicy: Never
