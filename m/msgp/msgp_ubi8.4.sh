@@ -1,11 +1,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : github.com/tinylib/msgp
-# Version       : v1.1.3
+# Version       : v1.1.3, v1.0.2
 # Source repo   : https://github.com/tinylib/msgp
-# Tested on     : RHEL 8.4
+# Tested on     : RHEL 8.5
+# Language      : GO
+# Travis-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Vikas Gupta <vikas.gupta8@ibm.com>
+# Maintainer    : Vikas Gupta <vikas.gupta8@ibm.com>, Amit Mukati <amit.mukati3@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
