@@ -757,7 +757,8 @@ cd $SCRIPT_DIR
 
 echo "Installing prerequisite for arrow..."
 pip install setuptools-scm "cython<3"
-pip install numpy==2.0.2
+pip install numpy==1.26.4 pandas==2.0.3
+
 
 export PYARROW_BUNDLE_ARROW_CPP=1
 export LD_LIBRARY_PATH=${ARROW_HOME}/lib:${LD_LIBRARY_PATH}
