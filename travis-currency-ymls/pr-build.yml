@@ -4,17 +4,35 @@ dist: focal
 os: linux
 language: shell
 
+git:
+  depth: false
+
 services:
     - docker
 
 before_install:
+    - sudo apt install -y jq; jq --version
     - docker pull registry.access.redhat.com/ubi9/ubi:9.3
 
-script:
-    - sudo apt update -y && sudo apt-get install file -y
-    #- pip3 install --upgrade requests
-    - pip3 install --force-reinstall -v "requests==2.31.0"
-    - pip3 install --upgrade docker
-    - python3 script/validate_builds.py $TRAVIS_PULL_REQUEST > build_log &
-    - SCRIPT_PID=$!;while ps -p $SCRIPT_PID > /dev/null;do echo "$SCRIPT_PID is running"; sleep 300; done; wait $SCRIPT_PID; my_pid_status=$?;
-    - build_size=$(stat -c %s build_log);[ $build_size -lt 1800000 ] && cat build_log || { echo "xxxxxxxxxxxxxxx Build log size too large, so printing last 1.7MB xxxxxxxxxxxxxxx"; tail -c 1700000 build_log; }; travis_terminate $my_pid_status
+
+jobs:
+  include:
+    - stage: pr_builds
+      name: package_build
+      script:
+        - sudo apt update -y && sudo apt-get install file -y
+        - pip3 install --force-reinstall -v "requests==2.31.0"
+        - pip3 install --upgrade docker
+        - python3 script/validate_builds.py $TRAVIS_PULL_REQUEST > build_log &
+        - SCRIPT_PID=$!;while ps -p $SCRIPT_PID > /dev/null;do echo "$SCRIPT_PID is running"; sleep 300; done; wait $SCRIPT_PID; my_pid_status=$?;
+        - build_size=$(stat -c %s build_log);[ $build_size -lt 1800000 ] && cat build_log || { echo "xxxxxxxxxxxxxxx Build log size too large, so printing last 1.7MB xxxxxxxxxxxxxxx"; tail -c 1700000 build_log; }; travis_terminate $my_pid_status
+
+    - name: "Create Wheel for Python 3.12"
+      env: PYTHON_VERSION="3.12"
+      before_script:
+        - git fetch --all
+        - chmod +x script/check_build_scripts.sh; bash ./script/check_build_scripts.sh
+      script:
+        - echo "wheel build python 3.12"
+        - source script/variable.sh
+        - chmod +x ./script/build_wheels.sh; bash ./script/build_wheels.sh;
