@@ -1,0 +1,16 @@
+{
+    "maintainer": "robin-ibm",
+    "package_name": "p",
+    "github_url": "https://github.com/dateutil/dateutil.git",
+    "version": "2.8.2",
+    "wheel_build" : true,
+    "default_branch": "main",
+    "build_script": "python-dateutil_ubi_9.3.sh",
+    "package_dir": "p/python-dateutil",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "*.*.*": {
+      "build_script": "python-dateutil_ubi_9.3.sh"
+    }
+}
