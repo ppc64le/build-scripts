@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : bbolt
-# Version       : v1.3.3
+# Version       : v1.3.3 v1.3.5
 # Source repo   : https://github.com/etcd-io/bbolt
 # Tested on     : RHEL ubi 8.4
 # Script License: Apache License, Version 2 or later
@@ -20,7 +20,7 @@ PACKAGE_NAME=bbolt
 PACKAGE_VERSION=${1:-v1.3.3}
 PACKAGE_URL=https://github.com/etcd-io/bbolt
 
-yum install -y wget make gcc gcc-c++
+yum install -y wget make gcc gcc-c++ git
 
 
 #https://github.com/etcd-io/bbolt/archive/refs/tags/v1.3.3.tar.gz
