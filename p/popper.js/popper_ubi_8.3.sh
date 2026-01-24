@@ -1,10 +1,13 @@
+#!/bin/bash -e
 # ----------------------------------------------------------------------------------------------------------------------
 #
 # Package       : popper.js (popper-core)
-# Version       : master, 2.10.2
+# Version       : master, 2.10.2, 2.9.2
 # Source repo   : https://github.com/chtd/psycopg2cffi.git
 # Tested on     : UBI 8.3 (Docker)
 # Script License: Apache License, Version 2 or later
+# Language       : NPM
+# Travis-Check   : True
 # Maintainer    : Sumit Dubey <Sumit.Dubey2@ibm.com>
 # Instructions	: 1. Run the docker container as: 
 #		  docker run -t -d --privileged --shm-size=1gb registry.access.redhat.com/ubi8/ubi:8.3 /usr/sbin/init
@@ -19,30 +22,25 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------------------------------------------------
-
-#!/bin/bash
-
-set -ex
-
 #Variables
-REPO=https://github.com/popperjs/popper-core.git
-PACKAGE_VERSION=master
+PACKAGE_NAME=popper-core
+PACKAGE_URL=https://github.com/popperjs/popper-core.git
+PACKAGE_VERSION=${1:-2.9.2}
 
-echo "Usage: $0 [-v <PACKAGE_VERSION>]"
 echo "PACKAGE_VERSION is an optional paramater whose default value is master, not all versions are supported."
 
 PACKAGE_VERSION="${1:-$PACKAGE_VERSION}"
 
 #install dependencies
-yum install git sed unzip procps java-1.8.0-openjdk java-1.8.0-openjdk-devel -y
+yum install gcc-c++ make python3 python3-pip git sed unzip procps java-1.8.0-openjdk java-1.8.0-openjdk-devel -y
 dnf module install -y nodejs:14
 curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo
 rpm --import https://dl.yarnpkg.com/rpm/pubkey.gpg
 dnf install -y yarn
 
 #clone the repo
-cd /opt && git clone $REPO
-cd popper-core/
+cd /opt && git clone $PACKAGE_URL
+cd $PACKAGE_NAME/
 if [[ "$PACKAGE_VERSION" = "master" ]]
 then
 	git checkout master
