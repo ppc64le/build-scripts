@@ -6,7 +6,7 @@
 # Tested on      : UBI 9.6
 # Language       : Java
 # Ci-Check       : True
-# Maintainer     : Pratik Tonage <Pratik.Tonage@ibm.com>
+# Maintainer     : Prachi Gaonkar <Prachi.Gaonkar@ibm.com>
 # Script License : Apache License, Version 2.0 or later
 #
 # Disclaimer     : This script has been tested in root mode on the specified
@@ -22,6 +22,7 @@ PACKAGE_ORG="opensearch-project"
 PACKAGE_VERSION="3.3.0.0"
 COMMON_UTILS_VERSION="3.2.0.0"
 PACKAGE_URL="https://github.com/${PACKAGE_ORG}/${PACKAGE_NAME}.git"
+OPENSEARCH_VERSION="${PACKAGE_VERSION::-2}"
 SCRIPT_PATH=$(dirname $(realpath $0))
 RUNTESTS=1
 BUILD_HOME="$(pwd)"
@@ -58,6 +59,17 @@ export JAVA21_HOME=/usr/local/jdk-21.0.9+10/
 export PATH=$PATH:/usr/local/jdk-21.0.9+10/bin/
 ln -sf /usr/local/jdk-21.0.9+10/bin/java /usr/bin/
 rm -rf OpenJDK21U-jdk_ppc64le_linux_hotspot_21.0.9_10.tar.gz
+
+# ------------------------------
+# Build Opensearch
+# ------------------------------
+cd ${BUILD_HOME}
+git clone https://github.com/opensearch-project/OpenSearch.git
+cd OpenSearch
+git checkout $OPENSEARCH_VERSION
+./gradlew -p distribution/archives/linux-ppc64le-tar assemble
+./gradlew -Prelease=true publishToMavenLocal
+./gradlew :build-tools:publishToMavenLocal
 
 # ------------------------------
 # Build Opensearch common-utils
