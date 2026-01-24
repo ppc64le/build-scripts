@@ -29,7 +29,7 @@ PACKAGE_DIR=utf8proc
 WORK_DIR=$(pwd)
 
 # Install dependencies and tools
-yum install -y wget git gcc-toolset-13-gcc cmake python3-devel python3-pip 
+yum install -y wget git gcc-toolset-13-gcc cmake 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
@@ -62,21 +62,6 @@ cmake -G "Unix Makefiles" \
 # Build and install
 cmake --build .
 cmake --build . --target install
-# cd $WORK_DIR
-cd ..
-pip3 install setuptools
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/python-ecosystem/u/utf8proc/pyproject.toml
-sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
-mkdir -p local/$PACKAGE_NAME
-# Copy the installation files to the local directory
-cp -r prefix/* local/$PACKAGE_NAME/
-echo "Installing with pip..."
-if ! pip install . ; then
-    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
-    exit 1
-fi
 
 echo "Build and installation completed successfully."
 echo "There are no test cases available. Skipping the test cases."

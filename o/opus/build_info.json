@@ -4,7 +4,7 @@
   "github_url": "https://github.com/xiph/opus",
   "version": "v1.3.1",
   "required_versions":{"Releases": ["*"], "Tags": ["v1.3.1"]},
-  "wheel_build" : true,
+  "wheel_build" : false,
   "package_dir": "o/opus",
   "default_branch": "main",
   "build_script": "opus_ubi_9.3.sh",
