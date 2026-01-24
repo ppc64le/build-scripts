@@ -24,7 +24,7 @@ PACKAGE_URL=https://github.com/LLNL/zfp
 PACKAGE_DIR=zfp
 
 echo "Installing dependencies...."
-yum install -y wget gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran git make python python-devel python-pip openssl-devel cmake 
+yum install -y wget gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran git make python python-devel python-pip openssl-devel cmake
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
@@ -67,14 +67,14 @@ cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_ZFPY=ON -DBUILD_SHARED_LIBS=OFF \
 
 echo "Building zfp..."
 make -j$(nproc)
-make install 
+make install
 export CMAKE_PREFIX_PATH=$(pwd)/install
 cd ..
 
 sed -i 's/), language_level = "3"]/)]/' setup.py
 
 echo "installing..."
-if ! pip install . ; then
+if !  pip install . --no-build-isolation ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
