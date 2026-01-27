@@ -92,8 +92,8 @@ cd ..
 
 #Build protobuf
 export PROTOC=$SOURCE_DIR/build/protoc
-export LD_LIBRARY_PATH=$WORK_DIR/abseil-cpp/abseilcpp/lib:$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
-export LIBRARY_PATH=$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$WORK_DIR/abseil-cpp/abseilcpp/lib:$(pwd)/build:$LD_LIBRARY_PATH
+export LIBRARY_PATH=$(pwd)/build:$LD_LIBRARY_PATH
 export LDFLAGS="-L$(pwd)/build"
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
