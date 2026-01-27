@@ -75,6 +75,8 @@ eval "$BUILD_CMD"
 python3.12 -m pip install pymssql --no-index -f dist
 python3.12 setup.py bdist_wheel
 
+cp dist/*.whl ${CURRENT_DIR
+
 #install
 if ! ( python3.12 -c "import pymssql; print(pymssql.version_info())" ) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
