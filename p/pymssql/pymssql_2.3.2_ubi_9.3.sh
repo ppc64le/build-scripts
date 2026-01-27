@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : pymssql
-# Version       : v2.3.7
+# Version       : v2.3.2
 # Source repo   : https://github.com/pymssql/pymssql.git
 # Tested on     : UBI:9.3
 # Language      : Python
@@ -20,7 +20,7 @@
 
 #variables
 PACKAGE_NAME=pymssql
-PACKAGE_VERSION=${1:-v2.3.7}
+PACKAGE_VERSION=${1:-v2.3.2}
 PACKAGE_URL=https://github.com/pymssql/pymssql.git
 CURRENT_DIR=`pwd`
 
@@ -28,6 +28,8 @@ CURRENT_DIR=`pwd`
 yum install -y git gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ python3.12 python3.12-pip python3.12-devel openssl-devel krb5-devel
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+
+export SETUPTOOLS_SCM_PRETEND_VERSION="${PACKAGE_VERSION#v}"
 
 # Clone repository
 git clone $PACKAGE_URL
@@ -37,8 +39,9 @@ git checkout $PACKAGE_VERSION
 # Install Python dependencies
 python3.12 -m pip install -r dev/requirements-dev.txt
 python3.12 -m pip install cython
-python3.12 -m pip install setuptools_scm>=5.0
 python3.12 -m pip install wheel>=0.36.2
+
+sed -i 's/"setuptools_scm\[toml\]>=5.0"/"setuptools_scm[toml]>=5.0,<9.0"/' pyproject.toml
 
 # Root Cause:
 # - Python 2 had a separate `long` type, but Python 3 unified it into `int`.
@@ -51,9 +54,12 @@ if [[ "$(printf '%s\n' "2.3.4" "${PACKAGE_VERSION#v}" | sort -V | head -n1)" == 
         sed -i 's/return long(/return int(/' src/pymssql/_mssql.pyx
         sed -i 's/(int, long, bytes)/(int, bytes)/' src/pymssql/_mssql.pyx
         sed -i 's/(int, long, decimal.Decimal)/(int, decimal.Decimal)/' src/pymssql/_mssql.pyx
+		# Fix unclosed string literal in _mssql.pyx
+		sed -i 's/{TDS_ENCRYPTION_LEVEL.keys())}/{TDS_ENCRYPTION_LEVEL.keys()}/' src/pymssql/_mssql.pyx
 fi
 
 BUILD_CMD="python3.12 dev/build.py \
+	--freetds-url=https://www.freetds.org/files/stable \
     --ws-dir=./freetds \
     --dist-dir=./dist \
     --with-openssl=yes \
