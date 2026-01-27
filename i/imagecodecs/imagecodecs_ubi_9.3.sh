@@ -86,6 +86,8 @@ mkdir build && cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
 make -j$(nproc)
 make install
+export LIBAEC_HOME=/usr/local
+export LD_LIBRARY_PATH=$LIBAEC_HOME/lib64:$LD_LIBRARY_PATH
 cd ../..
 
 #install blosc from source
