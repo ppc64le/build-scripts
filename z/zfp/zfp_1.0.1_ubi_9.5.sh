@@ -74,7 +74,7 @@ cd ..
 sed -i 's/), language_level = "3"]/)]/' setup.py
 
 echo "installing..."
-if ! python3 -m pip install . ; then
+if ! python3 -m pip install . --no-build-isolation ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
