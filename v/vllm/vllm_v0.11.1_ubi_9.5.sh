@@ -20,7 +20,7 @@
 # ----------------------------------------------------------------------------
 
 
-set -euo pipefail
+set -eo pipefail
 
 PACKAGE_NAME=vllm
 PACKAGE_VERSION=${1:-v0.11.1}
