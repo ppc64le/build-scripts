@@ -42,7 +42,7 @@ if ! python3.12 -m pip install .; then
 fi
 
 python3.12 -m pip install pytest
-if [ "$(python3.12 --version | grep "3.12")" ]; then
+if python3.12 --version | grep -Eq "3\.(11|12|13)"; then
   python3.12 -m pip install numpy==2.0.2
   python3.12 -m pip install pandas==2.2.3
   python3.12 -m pip install scipy==1.15.2 --prefer-binary

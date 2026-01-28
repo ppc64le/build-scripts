@@ -1,0 +1,16 @@
+{
+  "maintainer": "adarsh.agrawal1@ibm.com",
+  "package_name": "docling-parse",
+  "github_url": "https://github.com/docling-project/docling-parse.git",
+  "version": "v4.7.1",
+  "wheel_build" : true,
+  "package_dir": "d/docling-parse",
+  "default_branch": "main",
+  "build_script": "docling-parse_ubi_9.6.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*":{
+    "build_script":"docling-parse_ubi_9.6.sh"
+  }
+}

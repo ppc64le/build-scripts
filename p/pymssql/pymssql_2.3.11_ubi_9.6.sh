@@ -2,13 +2,13 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : pymssql
-# Version       : v2.3.8
+# Version       : v2.3.11
 # Source repo   : https://github.com/pymssql/pymssql.git
 # Tested on     : UBI:9.6
 # Language      : Python
 # Ci-Check      : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Aastha Sharma <Aastha.Sharma4@ibm.com>
+# Maintainer    : Shivansh Sharma <Shivansh.s1@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -20,7 +20,7 @@
 
 #variables
 PACKAGE_NAME=pymssql
-PACKAGE_VERSION=${1:-v2.3.8}
+PACKAGE_VERSION=${1:-v2.3.11}
 PACKAGE_URL=https://github.com/pymssql/pymssql.git
 PACKAGE_DIR=pymssql
 CURRENT_DIR=`pwd`
@@ -54,7 +54,7 @@ if [[ "$(printf '%s\n' "2.3.4" "${PACKAGE_VERSION#v}" | sort -V | head -n1)" == 
         sed -i 's/(int, long, decimal.Decimal)/(int, decimal.Decimal)/' src/pymssql/_mssql.pyx
 fi
 sed -i "s/{TDS_ENCRYPTION_LEVEL.keys())}/{list(TDS_ENCRYPTION_LEVEL.keys())}/" src/pymssql/_mssql.pyx
-export SETUPTOOLS_SCM_PRETEND_VERSION=2.3.8
+export SETUPTOOLS_SCM_PRETEND_VERSION=${PACKAGE_VERSION#v}
 BUILD_CMD="python3.12 dev/build.py \
     --ws-dir=./freetds \
     --dist-dir=./dist \
@@ -74,6 +74,8 @@ eval "$BUILD_CMD"
 #Build commands are explicitly in the script to apply version-specific fixes and ensure a reproducible, compatible wheel build across different pymssql versions and Python 3.12.
 python3.12 -m pip install pymssql --no-index -f dist
 python3.12 setup.py bdist_wheel
+
+cp dist/*.whl ${CURRENT_DIR}
 
 #install
 if ! ( python3.12 -c "import pymssql; print(pymssql.version_info())" ) ; then

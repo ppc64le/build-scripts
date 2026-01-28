@@ -1,0 +1,16 @@
+{
+  "maintainer": "adarsh-agrawal1",
+  "package_name": "tesserocr",
+  "github_url": "https://github.com/sirfz/tesserocr",
+  "version": "v2.9.1",
+  "wheel_build" : true,
+  "package_dir": "t/tesserocr",
+  "default_branch": "master",
+  "build_script": "tesserocr_ubi_9.6.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*":{
+    "build_script":"tesserocr_ubi_9.6.sh"
+  }
+}
