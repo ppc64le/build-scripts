@@ -11,11 +11,14 @@
    "docker_build": false,
    "validate_build_script": true,
    "use_non_root_user": false,
+   "v0.40.0": {
+       "build_script": "llvmlite_ubi_9.3.sh"
+   },
    "v0.41.1": {
        "build_script": "llvmlite_v0.41.1_ubi_9_3.sh"
    },
    "v0.42.0": {
-   "build_script": "llvmlite_ubi_9.3.sh "
+   "build_script": "llvmlite_ubi_9.3.sh"
    },
    "v0.43.0": {
        "build_script": "llvmlite_v0.43.0_ubi_9_3.sh"
