@@ -21,7 +21,7 @@
 set -e
 # Variables
 PACKAGE_NAME=javabridge
-PACKAGE_VERSION=${1:-1.0.19}
+PACKAGE_VERSION=${1:-master}
 PACKAGE_URL=https://github.com/LeeKamentsky/python-javabridge
 PACKAGE_DIR=python-javabridge
 
