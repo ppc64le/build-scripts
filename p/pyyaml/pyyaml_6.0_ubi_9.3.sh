@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : pyyaml
-# Version       : 6.0
+# Version       : 6.0.3
 # Source repo   : https://github.com/yaml/pyyaml
 # Tested on     : UBI:9.3
 # Language      : Python
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=pyyaml
-PACKAGE_VERSION=${1:-"6.0"}
+PACKAGE_VERSION=${1:-"6.0.3"}
 PACKAGE_URL=https://github.com/yaml/pyyaml.git
 
 yum install -y git python3 python3-devel.ppc64le libyaml-devel gcc gcc-c++
