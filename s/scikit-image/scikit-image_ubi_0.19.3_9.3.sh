@@ -36,7 +36,7 @@ python3  -m pip install -r requirements/build.txt
 python3 -m pip install --upgrade pip
 
 # build the project with pip and install
-if ! python3 -m pip install -e . ; then
+if ! python3 -m pip install . ; then
         echo "------------------$PACKAGE_NAME:build_fails---------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME"
         echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
