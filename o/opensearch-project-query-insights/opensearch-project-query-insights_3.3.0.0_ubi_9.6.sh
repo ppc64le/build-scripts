@@ -58,7 +58,7 @@ for i in "$@"; do
   esac
 done
 
-
+yum install -y sudo
 
 # ---------------------------
 # Dependency Installation
