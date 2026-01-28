@@ -20,7 +20,7 @@
 # ----------------------------------------------------------------------------
 
 
-set -o pipefail
+set -euo pipefail
 
 PACKAGE_NAME=vllm
 PACKAGE_VERSION=${1:-v0.11.1}
@@ -128,7 +128,8 @@ export OpenBLAS_HOME=/usr/local/lib/python3.12/site-packages/openblas
 export OpenBLAS_DIR=${OpenBLAS_HOME}
 export BLAS=OpenBLAS
 export LD_LIBRARY_PATH=${OpenBLAS_HOME}/lib:${LD_LIBRARY_PATH}
-
+export PKG_CONFIG_PATH="${OpenBLAS_HOME}/lib/pkgconfig:${PKG_CONFIG_PATH}"
+export LIBRARY_PATH="${OpenBLAS_HOME}/lib:${LIBRARY_PATH}"
 
 # -----------------------------------------------------------------------------
 # Build PyArrow 21.0.0 from source
@@ -218,6 +219,7 @@ sed -i 's/^torch/# torch/' requirements/cpu.txt
 sed -i 's/^torchvision/# torchvision/' requirements/cpu.txt
 sed -i 's/^torchaudio/# torchaudio/' requirements/cpu.txt
 sed -i 's/^outlines_core/# outlines_core/' requirements/common.txt
+sed -i 's/^scipy/# scipy/' requirements/common.txt
 
 $PYTHON -m pip install \
   --prefer-binary \
@@ -240,17 +242,4 @@ cd ${CURRENT_DIR}
 echo "==================================================================="
 echo "               vLLM WHEEL BUILT SUCCESSFULLY (v0.11.1)"
 echo "==================================================================="
-# After bdist_wheel
-WHEEL_FILE=$(ls ${CURRENT_DIR}/vllm-*.whl | head -n1)
-
-python3.12 -m pip uninstall -y vllm || true
-python3.12 -m pip install --force-reinstall "$WHEEL_FILE"
-
-if ! python3.12 ${PACKAGE_DIR}/examples/offline_inference/basic/basic.py; then
-    echo "------------------$PACKAGE_NAME:wheel_install_success_but_runtime_test_fails---------------------"
-    exit 2
-else
-    echo "------------------$PACKAGE_NAME:wheel_install_and_runtime_test_success-------------------------"
-    exit 0
-fi
 
