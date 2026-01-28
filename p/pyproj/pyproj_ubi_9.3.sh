@@ -69,7 +69,7 @@ fi
 
 # test using import and printing version
 cd ..
-python3.11 -c "import pyproj; pyproj.show_versions()"
+python3.11 -c "import pyproj; print(pyproj.__version__)"
 if [ $? == 0 ]; then
         echo "------------------$PACKAGE_NAME:test_success-------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME "
