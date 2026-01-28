@@ -34,7 +34,7 @@ echo "Upgrading pip..."
 python3 -m pip install -U pip
 
 echo "Installing required Python packages..."
-pip3 install requests ruamel-yaml 'meson-python<0.13.0,>=0.11.0'  'setuptools<60.0' numpy==1.26.4 "scipy<1.13" Cython nbformat pytest testfixtures mock nbconvert
+pip3 install requests ruamel-yaml 'meson-python<0.13.0,>=0.11.0'  'setuptools<60.0' numpy==1.26.4 "scipy<1.13" "Cython>=0.29.32,<3.0.0" nbformat pytest testfixtures mock nbconvert oldest-supported-numpy wheel
 
 # Clone the repository
 echo "Cloning the repository from $PACKAGE_URL..."
@@ -49,7 +49,7 @@ python3 setup.py build_ext --inplace
 
 # Build package
 echo "Attempting to install the package..."
-if !(python3 setup.py install) ; then
+if !(python3 -m pip install . --prefer-binary) ; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
