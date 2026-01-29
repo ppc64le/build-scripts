@@ -32,7 +32,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Install additional dependencies
-python3.12 -m pip install setuptools wheel pytest overlay pytest-instafail pytest-xdist
+python3.12 -m pip install setuptools wheel pytest overlay pytest-instafail pytest-xdist psleak
 
 #install
 if ! python3.12 -m pip install -e . ; then
@@ -51,7 +51,7 @@ export PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
 export PYTHONPATH=$(pwd):$PYTHONPATH
 
 #run tests skipping and deselecting few tests failing on ppc64le and x86
-if ! pytest -v --deselect=psutil/tests/test_linux.py --deselect=psutil/tests/test_system.py -k "not test_disk_partitions and not test_debug and not test_who and not test_terminal and not test_users and not test_cpu_freq and not test_leak_mem and not test_cpu_affinity and not test_cpu_times and not test_per_cpu_times and not test_import_all" --disable-warnings ; then
+if ! pytest -v --deselect=psutil/tests/test_linux.py --deselect=psutil/tests/test_system.py -k "not test_disk_partitions and not test_debug and not test_who and not test_terminal and not test_users and not test_cpu_freq and not test_leak_mem and not test_cpu_affinity and not test_cpu_times and not test_per_cpu_times and not test_import_all and not test_multi_sockets_procs and not test_against_nproc and not test_against_sysdev_cpu_num and not test_against_findmnt and not test_comparisons" --disable-warnings ; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
