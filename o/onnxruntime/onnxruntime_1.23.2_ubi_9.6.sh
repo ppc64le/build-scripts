@@ -35,8 +35,6 @@ export SITE_PACKAGE_PATH=/usr/local/lib/python${PYTHON_VERSION}/site-packages
 yum remove -y python3-chardet
 
 
-"python$PYTHON_VERSION" -m venv --system-site-packages VENV_DIR
-source VENV_DIR/bin/activate
 # Get Python include path
 PYTHON_INCLUDE=$(python3.12 -c "from sysconfig import get_paths; print(get_paths()['include'])")
 export CPLUS_INCLUDE_PATH=$PYTHON_INCLUDE:$CPLUS_INCLUDE_PATH
@@ -189,8 +187,8 @@ export CXXFLAGS="-I/usr/local/lib64/python${PYTHON_VERSION}/site-packages/numpy/
 export CPLUS_INCLUDE_PATH=$PYTHON_INCLUDE:$CPLUS_INCLUDE_PATH
 export C_INCLUDE_PATH=$PYTHON_INCLUDE:$C_INCLUDE_PATH
 
-#Build and test
-#Building and testing both is performed in build.sh
+#Build and Test
+#Building and testing both are performed in build.sh
 if ! (./build.sh \
     --cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" "Protobuf_PROTOC_EXECUTABLE=$PROTO_PREFIX/bin/protoc" "Protobuf_INCLUDE_DIR=$PROTO_PREFIX/include" "onnxruntime_USE_COREML=OFF" "Python3_NumPy_INCLUDE_DIR=$NUMPY_INCLUDE" "CMAKE_POLICY_DEFAULT_CMP0001=NEW" "CMAKE_POLICY_DEFAULT_CMP0002=NEW" "CMAKE_POLICY_VERSION_MINIMUM=3.5" \
     --cmake_generator Ninja \
@@ -202,14 +200,14 @@ if ! (./build.sh \
     --allow_running_as_root \
     --parallel \
     --build_wheel) ; then
-    echo "------------------$PACKAGE_NAME:install_&_test_both_fails---------------------"
+    echo "------------------$PACKAGE_NAME:BUILD OR TEST FAILED----------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Either_Build_OR_Test_Failed"
     exit 2
 else
-    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "------------------$PACKAGE_NAME:BUILD AND TEST SUCCESS-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Build_and_Test_Success"
 fi
 
 cp $CURRENT_DIR/onnxruntime/build/Linux/Release/dist/*.whl "$CURRENT_DIR"
