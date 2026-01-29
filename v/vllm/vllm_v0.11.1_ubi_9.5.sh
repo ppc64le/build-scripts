@@ -234,7 +234,11 @@ CC=${CC} \
 CXX=${CXX} \
 $PYTHON -m pip install xgrammar
 
-VLLM_TARGET_DEVICE=cpu \
+export VLLM_TARGET_DEVICE=cpu
+export MAX_JOBS=$(nproc)
+
+$PYTHON setup.py install
+
 $PYTHON setup.py bdist_wheel --dist-dir="${CURRENT_DIR}"
 
 cd ${CURRENT_DIR}
@@ -242,4 +246,22 @@ cd ${CURRENT_DIR}
 echo "==================================================================="
 echo "               vLLM WHEEL BUILT SUCCESSFULLY (v0.11.1)"
 echo "==================================================================="
+
+
+# 4. Run the "Hello World" example
+#    Note: This attempts to download a small model (facebook/opt-125m) from HuggingFace.
+#    If the build machine is offline, this step will fail.
+echo "Running basic offline inference example..."
+
+if ! $PYTHON ${PACKAGE_DIR}/examples/offline_inference/basic/basic.py; then
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
+    exit 0
+fi
 
