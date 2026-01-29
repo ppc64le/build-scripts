@@ -32,7 +32,7 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 # Install additional dependencies
-python3.12 -m pip install setuptools wheel pytest overlay pytest-instafail pytest-xdist
+python3.12 -m pip install setuptools wheel pytest overlay pytest-instafail pytest-xdist psleak
 
 #install
 if ! python3.12 -m pip install -e . ; then
