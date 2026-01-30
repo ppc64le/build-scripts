@@ -74,6 +74,7 @@ echo "-------------------successfully Installed llvmlite----------------------"
 
 
 echo "---------------------------------Installing openblas from source----------------"
+cd $WORKING_DIR
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
 git checkout v0.3.29
@@ -131,12 +132,12 @@ sed -i "s|libdir=local/openblas/lib|libdir=${OpenBLASInstallPATH}/lib|" ${OpenBL
 sed -i "s|includedir=local/openblas/include|includedir=${OpenBLASInstallPATH}/include|" ${OpenBLASPCFile}
 export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
 export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
-cd ..
 echo "------------openblas installed--------------------"
 
 python3.12 -m pip install numpy==2.0.2 setuptools
 
 #clone repository
+cd $WORKING_DIR
 git clone $PACKAGE_URL
 cd  $PACKAGE_DIR
 git checkout $PACKAGE_VERSION

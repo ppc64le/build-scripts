@@ -1,0 +1,18 @@
+{
+
+    "maintainer": "aastha-sharma2",
+    "package_name": "zstandard",
+    "github_url": "https://github.com/indygreg/python-zstandard",
+    "version": "0.22.0",
+    "default_branch": "main",
+    "package_dir": "z/zstandard",
+    "build_script": "zstandard_ubi_9.6.sh",
+    "validate_build_script": "true",
+    "use_non_root_user": "false",
+    "wheel_build" : true,
+    "docker_build": "false",
+    "*" : {
+       "build_script": "zstandard_ubi_9.6.sh"
+    }
+}
+

@@ -38,7 +38,7 @@ pip install pytest
 echo "installing cython.."
 pip install cython==0.29.36
 echo "installing numpy.."
-pip install numpy==1.23.5
+pip install numpy==1.26.4
 echo "installing scipy.."
 pip install scipy
 echo "installing joblib.."
@@ -48,7 +48,7 @@ pip install threadpoolctl
 echo "installing meson-python and ninja.."
 pip install meson-python ninja
 echo "installing setuptools.."
-pip install setuptools==59.8.0 wheel
+pip install setuptools>=65.0 wheel
 python setup.py build_ext --inplace
 
 echo "installing..."
