@@ -34,10 +34,6 @@ export CC=gcc
 export CXX=g++
 export FC=gfortran
 
-# command -v g++
-gcc --version
-g++ --version
-
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 export SITE_PACKAGE_PATH=/usr/local/lib/python${PYTHON_VERSION}/site-packages
