@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : onnx
-# Version          : v1.13.1
+# Version          : v1.16.0
 # Source repo      : https://github.com/onnx/onnx
 # Tested on        : UBI:9.3
 # Language         : Python
