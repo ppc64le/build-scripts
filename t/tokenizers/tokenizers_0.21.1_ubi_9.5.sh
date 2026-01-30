@@ -18,6 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
+
 PACKAGE_NAME=tokenizers
 PACKAGE_VERSION=${1:-v0.21.1}
 PACKAGE_URL=https://github.com/huggingface/tokenizers
@@ -124,7 +125,7 @@ if ! pip install . ; then
 fi
 
 # Skipped these tests as these tests were parity with intel
-if ! pytest -k "not(test_continuing_prefix_trainer_mistmatch or test_gzip or test_tiktoken or test_datasets)"; then
+if ! pytest -k "not(test_continuing_prefix_trainer_mismatch or test_gzip or test_tiktoken or test_datasets)"; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"

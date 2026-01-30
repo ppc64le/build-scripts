@@ -113,7 +113,7 @@ git checkout $PACKAGE_VERSION
 cd bindings/python/
 
 echo "installing python dependencies..."
-pip install pytest setuptools datasets numpy tiktoken build maturin
+pip install pytest setuptools datasets==2.0.0 numpy tiktoken build maturin
 
 echo "installing..."
 if ! pip install . ; then
