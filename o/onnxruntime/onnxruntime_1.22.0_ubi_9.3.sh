@@ -109,7 +109,7 @@ export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
 cd ..
 
 python3.11 -m pip install --upgrade pip
-python3.11 -m pip install --upgrade cmake pip setuptools wheel ninja packaging tox pytest build mypy stubs
+python3.11 -m pip install cmake pip setuptools wheel ninja packaging tox pytest build mypy stubs
 
 # Set ABSEIL_VERSION and ABSEIL_URL
 ABSEIL_VERSION=20240116.2
