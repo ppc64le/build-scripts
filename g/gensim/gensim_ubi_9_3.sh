@@ -50,7 +50,7 @@ python3 setup.py build_ext --inplace
 
 # Build package
 echo "Attempting to install the package..."
-if !(python3 -m pip install . --prefer-binary) ; then
+if !(python3 setup.py install) ; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Build_Fails"
