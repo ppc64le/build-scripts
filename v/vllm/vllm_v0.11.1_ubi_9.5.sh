@@ -7,7 +7,7 @@
 # Source repo   : https://github.com/vllm-project/vllm
 # Tested on     : UBI:9.5
 # Language      : Python
-# Ci-Check  : 
+# Ci-Check  :     True
 # Script License: Apache License 2.0
 # Maintainer    : Akash Kaothalkar <akash.kaothalkar@ibm.com>
 #
