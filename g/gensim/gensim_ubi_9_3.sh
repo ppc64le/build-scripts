@@ -34,7 +34,8 @@ echo "Upgrading pip..."
 python3 -m pip install -U pip
 
 echo "Installing required Python packages..."
-pip3 install requests ruamel-yaml 'meson-python<0.13.0,>=0.11.0'  'setuptools<60.0' numpy==1.26.4 "scipy<1.13" Cython nbformat pytest testfixtures mock nbconvert
+pip3 install oldest-supported-numpy "numpy>=1.21,<1.24" "scipy>=1.9,<1.12"
+pip3 install requests ruamel-yaml 'meson-python<0.13.0,>=0.11.0' 'setuptools<60.0' "Cython<3.0" nbformat pytest testfixtures mock nbconvert
 
 # Clone the repository
 echo "Cloning the repository from $PACKAGE_URL..."
