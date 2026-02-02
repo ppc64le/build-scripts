@@ -26,7 +26,7 @@ PACKAGE_DIR=onnx
 CURRENT_DIR="${PWD}"
 
 echo "Installing dependencies..."
-yum install -y wget git make libtool  gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel python3 python3-devel cmake gcc-gfortran openblas openblas-devel
+yum install -y wget git make libtool  gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel python python3 python3-devel cmake gcc-gfortran openblas openblas-devel
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
