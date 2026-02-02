@@ -26,6 +26,8 @@ PACKAGE_URL=https://github.com/pytorch/text.git
 PACKAGE_DIR=text
 export BUILD_VERSION=${PACKAGE_VERSION#v}
 
+export CC=/usr/bin/gcc
+export CXX=/usr/bin/g++
 
 # Install necessary system dependencies
 yum install -y git gcc gcc-c++ make cmake wget openssl-devel python-devel python-pip bzip2-devel libffi-devel zlib-devel meson ninja-build gcc-gfortran openblas-devel libjpeg-devel zlib-devel libtiff-devel freetype-devel libomp-devel zip unzip sqlite-devel
