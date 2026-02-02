@@ -24,6 +24,7 @@ PACKAGE_NAME=text
 PACKAGE_VERSION=${1:-v0.15.2}
 PACKAGE_URL=https://github.com/pytorch/text.git
 PACKAGE_DIR=text
+CURRENT_DIR=$(pwd)
 export BUILD_VERSION=${PACKAGE_VERSION#v}
 
 export CC=/usr/bin/gcc
@@ -47,6 +48,9 @@ git submodule update --init --recursive
 echo "------------------------------------------------------------Installing setup.py for pytorch------------------------------------------------------"
 python3 setup.py install
 cd ..
+
+export LD_LIBRARY_PATH=$CURRENT_DIR/pytorch/build/lib/:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$CURRENT_DIR/text/build/lib.linux-ppc64le-cpython-312/torchtext/lib/:$LD_LIBRARY_PATH
 
 pip install torchdata==0.7.1
 pip install numpy pytest regex nltk sacremoses parameterized portalocker expecttest pytest-timeout
