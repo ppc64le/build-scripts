@@ -10,7 +10,7 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
-  "1.4.*": {
+  "v1.4.1": {
     "build_script": "pywt_ubi_9.3.sh"
   },
   "*": {
