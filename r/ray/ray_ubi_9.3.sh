@@ -25,7 +25,6 @@ PACKAGE_DIR=ray/python
 PYSPY_VERSION=v0.3.14
 ARROW_VERSION=16.1.0
 BAZEL_VERSION=6.5.0
-
 CURRENT_DIR=${PWD}
 
 yum install -y git make pkgconfig zip unzip cmake zip tar wget python3 python3-devel python3-pip gcc-toolset-13 java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc zlib-devel libjpeg-devel libxml2-devel libxslt-devel openssl-devel libyaml-devel patch perl libxcrypt-compat procps bzip2
