@@ -169,7 +169,11 @@ FROM registry.access.redhat.com/ubi9/ubi:9.6 AS runtime
 
 WORKDIR /root
 
-RUN dnf install -y openblas-serial && dnf clean all
+RUN set -ex \
+&& dnf -y update \
+&& dnf install -y openblas-serial \
+&& dnf clean all \
+&& rm -rf /var/cache/dnf /var/cache/yum
 
 COPY --from=builder /usr/local/ /usr/local/
 COPY --from=builder /out/ /tmp/wheels/
@@ -180,6 +184,8 @@ RUN set -ex \
 && python3 -V && pip3 -V \
 && python3 -m pip install -U pip \
 && python3 -m pip install /tmp/wheels/*.whl \
+&& python3 -m pip install -U "urllib3>=2.6.3" \
+&& rpm -q gnupg2 >/dev/null 2>&1 && rpm -e --nodeps gnupg2 || true \
 && rm -rf /tmp/wheels
 
 CMD ["python3"]
