@@ -26,7 +26,7 @@ PACKAGE_DIR=onnx
 CURRENT_DIR="${PWD}"
 
 echo "Installing dependencies..."
-yum install -y git make wget libtool gcc-c++ libevent-devel zlib-devel openssl-devel python python3 python3-devel cmake gcc-gfortran openblas openblas-devel
+yum install -y wget git make libtool  gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel python python3 python3-devel cmake gcc-gfortran openblas openblas-devel
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
@@ -34,7 +34,7 @@ export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 cd $CURRENT_DIR
 python${PYTHON_VERSION} -m pip install --upgrade pip setuptools wheel ninja chardet
 python${PYTHON_VERSION} -m pip install packaging tox pytest build mypy stubs pytest-runner
-python${PYTHON_VERSION} -m pip install 'cmake==3.31.6' 
+python${PYTHON_VERSION} -m pip install 'cmake==3.31.6'
 
 echo " ------------------------------------------ Abseil-CPP Cloning ------------------------------------------ "
 
@@ -51,6 +51,10 @@ cd $CURRENT_DIR
 # Setting paths and versions
 export C_COMPILER=$(which gcc)
 export CXX_COMPILER=$(which g++)
+export CFLAGS="-std=gnu11"
+export CXXFLAGS="-std=gnu++17"
+export CMAKE_C_STANDARD=11
+export CMAKE_CXX_STANDARD=17
 echo "C Compiler set to $C_COMPILER"
 echo "CXX Compiler set to $CXX_COMPILER"
 
@@ -124,6 +128,7 @@ export LD_LIBRARY_PATH="$LIBPROTO_INSTALL/lib64:$ABSEIL_PREFIX/lib:$LD_LIBRARY_P
 echo "Updated LD_LIBRARY_PATH : $LD_LIBRARY_PATH"
 cd $CURRENT_DIR
 
+# Clone ONNX repo
 echo "Cloning and installing..."
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
@@ -133,13 +138,15 @@ git submodule update --init --recursive
 echo "installing python dependencies...."
 pip3 install pytest nbval pythran
 echo "installing numpy.."
-pip3 install numpy==1.24.3
+pip3 install  'numpy==1.26.4'
 echo "installing cython.."
 pip3 install cython
 echo "installing scipy.."
 pip3 install scipy
 echo "installing parameterized.."
 pip3 install parameterized
+
+export CMAKE_ARGS="-DCMAKE_CXX_FLAGS=-include\ cstdint ${CMAKE_ARGS:-}"
 
 echo "installing..."
 if ! pip3 install -e . ; then
