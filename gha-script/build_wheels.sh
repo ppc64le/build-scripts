@@ -47,30 +47,29 @@ WHEEL_SCRIPT=gha-script/create_wheel_wrapper.sh
 #   sleep 100
 # done
 # wait $SCRIPT_PID
-python3 gha-script/build_wheels.py "$WHEEL_SCRIPT" "$PYTHON_VERSION" "$docker_image" "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" 2>&1 | tee build_log
-my_pid_status=${PIPESTATUS[0]}
+python3 gha-script/build_wheels.py "$WHEEL_SCRIPT" "$PYTHON_VERSION" "$docker_image" "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" 2>&1 | tee wheel_build_log
+wheel_status=${PIPESTATUS[0]}
 
-build_size=$(stat -c %s build_log)
-
-if [ $my_pid_status != 0 ];
+log_size=$(stat -c %s wheel_build_log)
+if [ $wheel_status != 0 ];
 then
-    echo "Script execution failed for "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "
+    echo "Wheel build failed for "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "
     echo "*************************************************************************************"
-    if [ $build_size -lt 1800000 ];
+    if [ $log_size -lt 1800000 ];
     then
-       cat build_log
+       cat wheel_build_log
     else
-       tail -100 build_log
+       tail -100 wheel_build_log
     fi
     exit 1
 else
     echo "Script execution completed successfully for "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "
     echo "*************************************************************************************"
-    if [ $build_size -lt 1800000 ];
+    if [ $log_size  -lt 1800000 ];
     then
-       cat build_log
+       cat wheel_build_log
     else
-       tail -100 build_log
+       tail -100 wheel_build_log
     fi    
 fi
 exit 0
