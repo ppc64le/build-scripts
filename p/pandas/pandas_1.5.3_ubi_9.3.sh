@@ -43,7 +43,18 @@ pip3 install pytest hypothesis build meson meson-python
 pip3 install cython==0.29.32
 pip3 install --upgrade --force-reinstall setuptools
 pip3 install --upgrade six
-pip3 install numpy==1.23.5
+
+PYVER=$(python3 - <<EOF
+import sys
+print(f"{sys.version_info.major}.{sys.version_info.minor}")
+EOF
+)
+
+if [[ "$PYVER" == "3.12" ]]; then
+    pip3 install numpy==1.26.4
+else
+    pip3 install numpy==1.23.5
+fi
 
 # Attempt to install
 if ! (pip3 install .) ; then

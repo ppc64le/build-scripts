@@ -313,6 +313,10 @@ export LD_LIBRARY_PATH=${SCRIPT_DIR}/pytorch/build/lib/libprotobuf.so.3.13.0.0:$
 export PATH="${SCRIPT_DIR}/protobuf/local/libprotobuf/bin/protoc:${PATH}"
 export LD_LIBRARY_PATH="${SCRIPT_DIR}/OpenBLAS:/protobuf/local/libprotobuf/lib64:${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH="${SCRIPT_DIR}/protobuf/third_party/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
+export LD_LIBRARY_PATH="${SCRIPT_DIR}/audio/build/lib.linux-ppc64le-cpython-312/torchaudio/lib:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="${SCRIPT_DIR}/pytorch/build/lib:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="${SCRIPT_DIR}/protobuf/local/libprotobuf/lib64:$LD_LIBRARY_PATH"
+
 echo "LD_LIBRARY_PATH= $LD_LIBRARY_PATH"
 echo "Installing torchaudio..." 
 if ! (python3.12 -m pip install -v . --no-build-isolation --no-deps);then

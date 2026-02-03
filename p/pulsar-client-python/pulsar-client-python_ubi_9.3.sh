@@ -122,6 +122,7 @@ if ! (cmake --install build); then
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Installation_Failure"
     exit 1
 else
+    export LD_LIBRARY_PATH="$CURRENT_DIR/pulsar-client-python/pulsar-client-cpp/build/lib:${LD_LIBRARY_PATH}"
     echo "------------------ $PACKAGE_NAME: Installation successful ---------------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Installation_Success"
     exit 0
