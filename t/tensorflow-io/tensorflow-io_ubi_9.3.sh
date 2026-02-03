@@ -57,7 +57,7 @@ gcc --version
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
 python3.11 -m pip install --upgrade pip
-python3.11 -m pip install --upgrade setuptools wheel build ninja
+python3.11 -m pip install --upgrade --ignore-installed setuptools wheel build ninja
 
 INSTALL_ROOT="/install-deps"
 mkdir -p $INSTALL_ROOT
@@ -207,7 +207,7 @@ git clone https://github.com/deepmind/tree
 cd tree
 git checkout 0.1.8
 
-python3.11 -m pip install --upgrade pip setuptools wheel
+python3.11 -m pip install --upgrade --ignore-installed pip setuptools wheel
 
 # install scikit-learn dependencies and build dependencies
 python3.11 -m pip install pytest absl-py attr numpy wrapt attrs
