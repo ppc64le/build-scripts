@@ -220,12 +220,46 @@ jobs:
           source package-cache/scanner-env.sh
           
           #python${{ matrix.python-version }} -m pip install --upgrade pip setuptools wheel
-
+          echo "===== Checking files before log compression ====="
+          pwd
+          ls -lh
           chmod +x ./gha-script/build_wheels.sh
           bash ./gha-script/build_wheels.sh
+          echo "===========after execution =================="
           sudo apt update -y
           sudo lsb_release -a 2>/dev/null || echo "lsb_release not available"
           sudo uname -a
+
+
+          echo "===== AFTER BUILD: checking for wheel_build_log ====="
+          WORKSPACE=$(pwd)
+          echo "Workspace = $WORKSPACE"
+          ls -lh
+
+          echo "----- specifically checking for wheel_build_log -----"
+          ls -lh "$WORKSPACE/wheel_build_log" || echo " wheel_build_log NOT found!"
+
+          
+          # ======= HANDLE LOG FILE SAFELY =======
+          LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py${{ matrix.python-version }}_log.gz"
+
+          if [ -f "$WORKSPACE/wheel_build_log" ]; then
+            echo "Found wheel_build_log — compressing it"
+            gzip "$WORKSPACE/wheel_build_log"
+            mv "$WORKSPACE/wheel_build_log.gz" "$WORKSPACE/$LOG_NAME"
+          else
+            echo "wheel_build_log missing — creating fallback log"
+            echo "Wheel build completed for ${PACKAGE_NAME} ${VERSION} on Python ${{ matrix.python-version }}" \
+              > "$WORKSPACE/$LOG_NAME"
+            gzip "$WORKSPACE/$LOG_NAME"
+            LOG_NAME="${LOG_NAME}.gz"
+          fi
+
+          echo "Final log file to upload: $LOG_NAME"
+          chmod +x ./gha-script/upload-scripts/upload_file.sh
+          bash ./gha-script/upload-scripts/upload_file.sh $LOG_NAME
+          ls -lh "$WORKSPACE/$LOG_NAME"
+
           
         continue-on-error: ${{ matrix.allow-failure }}
 
