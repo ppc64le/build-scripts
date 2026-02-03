@@ -35,7 +35,7 @@ yum install -y \
  gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran \
  gcc-toolset-13-binutils-devel libstdc++-devel \
  openssl-devel zlib-devel bzip2 xz-devel sqlite-devel \
- libjpeg-devel rust cargo lld
+ libjpeg-devel rust cargo lld xz
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
@@ -82,7 +82,7 @@ echo "------------------ Clang 17 ------------------"
 CLANG_VERSION=17.0.6
 LLVM_TARBALL="clang+llvm-${CLANG_VERSION}-powerpc64le-linux-rhel-8.8.tar.xz"
 curl -LO https://github.com/llvm/llvm-project/releases/download/llvmorg-${CLANG_VERSION}/${LLVM_TARBALL}
-tar -xf ${LLVM_TARBALL}
+tar -xvf ${LLVM_TARBALL}
 LLVM_DIR="clang+llvm-${CLANG_VERSION}-powerpc64le-linux-rhel-8.8"
 
 export PATH=$CURRENT_DIR/${LLVM_DIR}/bin:$PATH
