@@ -44,6 +44,10 @@ echo "==================================================================="
 # -----------------------------------------------------------------------------
 echo "-------------------- Installing OS dependencies -------------------"
 
+echo ">>> Enabling CRB repository (required for build dependencies on POWER)"
+yum install -y yum-utils
+yum config-manager --set-enabled crb
+
 yum install -y \
   git wget tar gzip xz which procps-ng yum-utils \
   --allowerasing
