@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : pyarrow
-# Version       : apache-arrow-19.0.0
+# Version       : apache-arrow-20.0.0
 # Source repo   : https://github.com/apache/arrow
-# Tested on     : UBI:9.3
+# Tested on     : UBI:9.6
 # Language      : Python, C
 # Ci-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Haritha Nagothu <haritha.nagothu2@ibm.com>
+# Maintainer    : Sai Kiran Nukala <sai.kiran.nukala@ibm.com>
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
@@ -21,7 +21,7 @@ set -e
 
 PACKAGE_NAME=pyarrow
 PACKAGE_DIR=arrow/python
-PACKAGE_VERSION=${1:-apache-arrow-19.0.0}
+PACKAGE_VERSION=${1:-apache-arrow-20.0.0}
 PACKAGE_URL=https://github.com/apache/arrow
 version=$(echo "$PACKAGE_VERSION" | sed 's/^apache-arrow-//')
 CURRENT_DIR="${PWD}"
