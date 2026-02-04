@@ -28,7 +28,6 @@ CURRENT_DIR="${PWD}"
 yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openssl-devel cmake
 
 echo "Dependencies installed."
-
 mkdir dist
 export CXX=g++
 export CC=gcc
