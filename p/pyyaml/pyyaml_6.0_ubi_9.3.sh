@@ -32,7 +32,6 @@ import sys
 print(f"{sys.version_info.major}.{sys.version_info.minor}")
 EOF
 )
-
 if [[ "$PYVER" == "3.13" ]]; then
     pip3 install "cython>=3.0" wheel pytest
 else
@@ -49,33 +48,31 @@ git checkout $PACKAGE_VERSION
 # ----- Apply patch ONLY for Python 3.13 -----
 if [[ "$PYVER" == "3.13" ]]; then
 
-    cat << 'EOF' > patch_yaml_yaml_py313.patch
-    diff --git a/yaml/_yaml.pyx b/yaml/_yaml.pyx
-    index 1b2c3f1..a8d9d42 100644
-    --- a/yaml/_yaml.pyx
-    +++ b/yaml/_yaml.pyx
-    @@ -1,6 +1,13 @@
-     # cython: freethreading_compatible = True
+cat << 'EOF' > patch_yaml_yaml_py313.patch
+diff --git a/yaml/_yaml.pyx b/yaml/_yaml.pyx
+index 1b2c3f1..a8d9d42 100644
+--- a/yaml/_yaml.pyx
++++ b/yaml/_yaml.pyx
+@@ -1,6 +1,13 @@
+ # cython: freethreading_compatible = True
 
-     import yaml
-    +
-    +# === Python 3.13 + Cython 3 compatibility imports ===
-    +cdef extern from "string.h":
-    +    void *memcpy(void *dest, const void *src, size_t n)
-    +
-    +from cpython.bytes cimport PyBytes_AS_STRING, PyBytes_GET_SIZE
-    +# ================================================
+ import yaml
++
++# === Python 3.13 + Cython 3 compatibility imports ===
++cdef extern from "string.h":
++    void *memcpy(void *dest, const void *src, size_t n)
++
++from cpython.bytes cimport PyBytes_AS_STRING, PyBytes_GET_SIZE
++# ================================================
 
-     def get_version_string():
-         cdef const char *value
-    EOF
+ def get_version_string():
+     cdef const char *value
+EOF
 
-    echo "Applying Python 3.13 compatibility patch..."
-    git apply patch_yaml_yaml_py313.patch
+echo "Applying Python 3.13 compatibility patch..."
+git apply patch_yaml_yaml_py313.patch
 
 fi
-
-
 if ! python3 setup.py install ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
