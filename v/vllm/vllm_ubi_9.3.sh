@@ -283,7 +283,8 @@ export CMAKE_PREFIX_PATH="${OpenBLAS_HOME}:${CMAKE_PREFIX_PATH}"
 git clone --recursive ${TORCH_URL}
 cd pytorch
 git checkout ${TORCH_VERSION}
-git submodule update --init --recursive --jobs 1
+git submodule sync
+git submodule update --init --recursive
 
 python3.12 -m pip install -r requirements.txt
 python3.12 setup.py build_ext -j$(nproc)
