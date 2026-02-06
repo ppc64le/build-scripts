@@ -44,7 +44,6 @@ echo "==================================================================="
 # -----------------------------------------------------------------------------
 echo "-------------------- Installing OS dependencies -------------------"
 
-echo ">>> Enabling CRB repository (required for build dependencies on POWER)"
 yum install -y yum-utils
 yum config-manager --set-enabled ubi-9-codeready-builder-rpms
 
@@ -58,11 +57,27 @@ yum install -y \
   python3.12 python3.12-devel python3.12-pip \
   unzip zip wget patch \
   openssl-devel sqlite-devel \
-  llvm-devel flex bison libevent-devel \
-  freetype-devel gmp-devel numactl-devel libjpeg-turbo-devel \
-  cargo libcurl-devel boost-devel \
+  llvm-devel libevent-devel \
+  freetype-devel gmp-devel libjpeg-turbo-devel \
+  cargo libcurl-devel \
   which procps-ng yum-utils \
   --allowerasing
+
+# -----------------------------------------------------------------------------
+# Additional toolchain/runtime dependencies (POWER / UBI specific)
+# -----------------------------------------------------------------------------
+
+# libatomic required for Arrow + POWER
+yum install -y gcc-toolset-13-libatomic-devel
+
+# Autotools required to build numactl from source on UBI
+yum install -y \
+  autoconf \
+  automake \
+  libtool \
+  pkgconfig \
+  make \
+  gcc
 
 $PYTHON --version
 
@@ -72,6 +87,11 @@ $PYTHON --version
 echo "-------------------- Enabling GCC toolset --------------------------"
 
 source /opt/rh/gcc-toolset-13/enable
+
+# Ensure gcc-toolset runtime libraries are visible
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:${LD_LIBRARY_PATH}
+export LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:${LIBRARY_PATH}
+export CMAKE_PREFIX_PATH=/opt/rh/gcc-toolset-13/root/usr:${CMAKE_PREFIX_PATH}
 
 export CC=/opt/rh/gcc-toolset-13/root/usr/bin/gcc
 export CXX=/opt/rh/gcc-toolset-13/root/usr/bin/g++
@@ -213,6 +233,35 @@ USE_FFMPEG=1 USE_JPEG=1 USE_PNG=1 $PYTHON setup.py develop
 cd ${CURRENT_DIR}
 
 # -----------------------------------------------------------------------------
+# Build numactl from source (UBI does not ship numactl-devel)
+# -----------------------------------------------------------------------------
+
+echo "-------------------- Building numactl from source ------------------"
+
+cd ${CURRENT_DIR}
+
+git clone https://github.com/numactl/numactl
+cd numactl
+git checkout v2.0.19
+
+./autogen.sh
+./configure --prefix=/usr/local
+make -j$(nproc)
+make install
+
+# Register numactl libraries
+echo "/usr/local/lib" > /etc/ld.so.conf.d/numactl.conf
+ldconfig
+
+# Ensure headers and libs are visible to subsequent builds
+export CPLUS_INCLUDE_PATH=/usr/local/include:${CPLUS_INCLUDE_PATH}
+export LIBRARY_PATH=/usr/local/lib:${LIBRARY_PATH}
+export LD_LIBRARY_PATH=/usr/local/lib:${LD_LIBRARY_PATH}
+export CMAKE_PREFIX_PATH=/usr/local:${CMAKE_PREFIX_PATH}
+
+cd ${CURRENT_DIR}
+
+# -----------------------------------------------------------------------------
 # Build vLLM
 # -----------------------------------------------------------------------------
 echo "-------------------- Building vLLM ---------------------------------"
@@ -269,4 +318,3 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
-
