@@ -5,7 +5,7 @@
 # Source repo    : https://github.com/ClickHouse/ClickHouse.git
 # Tested on      : UBI 9.6
 # Language       : Python
-# Ci-Check       : false
+# Ci-Check       : true
 # Maintainer     : Sumit Dubey <sumit.dubey2@ibm.com>
 # Script License : Apache License, Version 2.0 or later
 #
