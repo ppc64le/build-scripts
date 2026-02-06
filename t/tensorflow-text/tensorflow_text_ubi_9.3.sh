@@ -183,7 +183,7 @@ cd $PACKAGE_DIR
 python3.11 -m pip install . --no-build-isolation
 cd $CURRENT_DIR/$PACKAGE_NAME
 
-# ======== SAME PDB FIX FOR TF-TEXT =========
+# install
 if ! (bazel build --cxxopt='-std=c++17' --experimental_repo_remote_exec //oss_scripts/pip_package:build_pip_package) ; then
     echo " --------------------------------------------- $PACKAGE_NAME:Install_Fails --------------------------------------------- "
     echo "$PACKAGE_URL $PACKAGE_NAME"
