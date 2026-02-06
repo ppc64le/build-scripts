@@ -33,13 +33,11 @@ CURRENT_DIR="${PWD}"
 
 # Install dependencies and tools
 echo "Installing dependencies..."
-yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openblas-devel cmake gcc-gfortran
+yum install -y git wget python3 python3-devel python3-pip openblas-devel cmake gcc-toolset-12-gcc gcc-toolset-12-gcc-c++ gcc-toolset-12-gcc-gfortran
 
 echo "Installing required Python packages..."
-pip install wheel scipy ninja build pytest
+pip install wheel scipy==1.13.1 ninja build pytest
 
-echo "Installing required numpy"
-pip install "numpy<2.0"
 
 # Check if Rust is installed
 if ! command -v rustc &> /dev/null; then
@@ -49,6 +47,17 @@ curl https://sh.rustup.rs -sSf | sh -s -- -y
 else
     echo "Rust is already installed."
 fi
+
+# Set compiler paths to make use of right compiler
+export CC=/opt/rh/gcc-toolset-12/root/usr/bin/gcc
+export CXX=/opt/rh/gcc-toolset-12/root/usr/bin/g++
+export LD=/opt/rh/gcc-toolset-12/root/usr/bin/ld
+export CXXFLAGS="$CXXFLAGS -Wno-error=nonnull"
+export CXXFLAGS="$CXXFLAGS -O2 -fPIC -Wno-error"
+export CFLAGS="$CFLAGS -O2 -fPIC -Wno-error"
+export NO_WERROR=1
+export BUILD_TEST=0
+source /opt/rh/gcc-toolset-12/enable
 
 # Clone repository
 echo "Cloning PyTorch repository...."
