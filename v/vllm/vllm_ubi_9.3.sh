@@ -18,8 +18,8 @@
 # ----------------------------------------------------------------------------
 
 
-set -eo pipefail
-
+set -e
+# Variables
 PACKAGE_NAME=vllm
 PACKAGE_VERSION=${1:-v0.8.4}
 PACKAGE_URL=https://github.com/vllm-project/vllm.git
