@@ -47,7 +47,7 @@ export NO_WERROR=1
 export BUILD_TEST=0
 
 echo "Installing required Python packages..."
-pip install wheel scipy==1.13.1 ninja build pytest
+pip install wheel "numpy<2.0" scipy==1.13.1 ninja build pytest
 echo "Installing required numpy"
 pip install "numpy<2.0"
  
