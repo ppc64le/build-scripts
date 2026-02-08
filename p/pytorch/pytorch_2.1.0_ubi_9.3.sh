@@ -36,7 +36,7 @@ echo "Installing dependencies..."
 yum install -y git wget python3 python3-devel python3-pip openblas-devel cmake gcc-toolset-12-gcc gcc-toolset-12-gcc-c++ gcc-toolset-12-gcc-gfortran
 
 echo "Installing required Python packages..."
-pip install wheel scipy==1.13.1 ninja build pytest
+pip install wheel "numpy<2.0" scipy==1.13.1 ninja build pytest
 
 
 # Check if Rust is installed
@@ -57,7 +57,6 @@ export CXXFLAGS="$CXXFLAGS -O2 -fPIC -Wno-error"
 export CFLAGS="$CFLAGS -O2 -fPIC -Wno-error"
 export NO_WERROR=1
 export BUILD_TEST=0
-source /opt/rh/gcc-toolset-12/enable
 
 # Clone repository
 echo "Cloning PyTorch repository...."
