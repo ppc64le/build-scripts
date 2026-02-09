@@ -26,7 +26,7 @@ PACKAGE_DIR=onnx
 CURRENT_DIR="${PWD}"
 
 echo "Installing dependencies..."
-yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3.12-devel python3.12 python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
+yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3.12-devel python3 python3-devel python3-pip python3.12 python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
 export PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
