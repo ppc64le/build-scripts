@@ -109,9 +109,9 @@ cd $CURRENT_DIR
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
-python${PYTHON_VERSION} -m pip install --upgrade pip setuptools wheel ninja
-python${PYTHON_VERSION} -m pip install packaging tox pytest build mypy stubs pytest-runner
-python${PYTHON_VERSION} -m pip install 'cmake==3.31.6'
+python3 -m pip install --upgrade pip setuptools wheel ninja
+python3 -m pip install packaging tox pytest build mypy stubs pytest-runner
+python3 -m pip install 'cmake==3.31.6'
 
 echo " ------------------------------------------ Abseil-CPP Cloning ------------------------------------------ "
 
@@ -189,11 +189,11 @@ git apply set_cpp_to_17_v4.25.3.patch
 
 # Build Python package
 cd python
-python${PYTHON_VERSION} setup.py install --cpp_implementation
+python3 setup.py install --cpp_implementation
 
 cd $CURRENT_DIR
 
-python${PYTHON_VERSION} -m pip install pybind11==2.12.0
+python3 -m pip install pybind11==2.12.0
 PYBIND11_PREFIX=$SITE_PACKAGE_PATH/pybind11
 
 export CMAKE_PREFIX_PATH="$ABSEIL_PREFIX;$LIBPROTO_INSTALL;$PYBIND11_PREFIX"
@@ -237,14 +237,26 @@ export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH"
 
 # Adding this source due to - (Unable to detect linker for compiler `cc -Wl,--version`)
 source /opt/rh/gcc-toolset-13/enable
-python${PYTHON_VERSION} -m pip install cython meson
-python${PYTHON_VERSION} -m pip install 'numpy==1.26.4'
-python${PYTHON_VERSION} -m pip install parameterized
-python${PYTHON_VERSION} -m pip install pytest nbval pythran mypy-protobuf
-python${PYTHON_VERSION} -m pip install "scipy<1.14"
-python${PYTHON_VERSION} -m pip install ml-dtypes  # required while running tests
-python${PYTHON_VERSION} -m pip install wheel
-python${PYTHON_VERSION} -m pip install build
+python3 -m pip install cython meson
+
+if python3 - <<'PY'
+import sys
+raise SystemExit(0 if sys.version_info >= (3,13) else 1)
+PY
+then
+  # Python ≥ 3.13
+  pip3 install "numpy>=2.0"
+else
+  # Python < 3.13
+  pip3 install "numpy==1.26.4"
+fi
+
+python3 -m pip install parameterized
+python3 -m pip install pytest nbval pythran mypy-protobuf
+python3 -m pip install "scipy<1.14"
+python3 -m pip install ml-dtypes  # required while running tests
+python3 -m pip install wheel
+python3 -m pip install build
 
 # export CMAKE_ARGS="$CMAKE_ARGS -DPYTHON_EXECUTABLE=$(which python3.12)"
 # Reason: In ONNX v1.18.0, setup.py uses a custom get_python_executable() which may resolve to /usr/bin/python3
@@ -263,7 +275,7 @@ export CMAKE_ARGS="$CMAKE_ARGS \
 
 
 
-if !(python${PYTHON_VERSION} -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"); then
+if !(python3 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"); then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -271,11 +283,11 @@ if !(python${PYTHON_VERSION} -m build --wheel --no-isolation --outdir="$CURRENT_
 fi
 
 echo " ------------------------------------------ Onnx Wheel Creating ------------------------------------------ "
-python${PYTHON_VERSION} setup.py bdist_wheel --dist-dir $CURRENT_DIR
+python3 setup.py bdist_wheel --dist-dir $CURRENT_DIR
 echo " ------------------------------------------ Onnx Wheel Created Successfully ------------------------------------------ "
 
 export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib:$LIBPROTO_INSTALL/lib64:$LD_LIBRARY_PATH"
-python${PYTHON_VERSION} -m pip install "$CURRENT_DIR"/onnx-*.whl
+python3 -m pip install "$CURRENT_DIR"/onnx-*.whl
 # Skipping test due to missing 're2/stringpiece.h' header file. Even after attempting to manually build RE2, the required header file could not be found.
 echo " ------------------------------------------ Onnx Testing ------------------------------------------ "
 if ! pytest --ignore=onnx/test/reference_evaluator_backend_test.py --ignore=onnx/test/test_backend_reference.py --ignore=onnx/test/reference_evaluator_test.py; then
