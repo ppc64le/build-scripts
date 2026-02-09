@@ -36,75 +36,62 @@ export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 SOURCE=Github
 
-# Install rust
-if ! command -v rustc &> /dev/null
-then
-    wget https://static.rust-lang.org/dist/rust-1.88.0-powerpc64le-unknown-linux-gnu.tar.gz
-    tar -xzf rust-1.88.0-powerpc64le-unknown-linux-gnu.tar.gz
-    cd rust-1.88.0-powerpc64le-unknown-linux-gnu
-    sudo ./install.sh
-    export PATH=$HOME/.cargo/bin:$PATH
-    rustc -V
-    cargo -V
-    cd ../
-fi
-
 # Install tree-sitter header
-TREE_SITTER_C_VERSION=v0.24.0
-git clone https://github.com/tree-sitter/tree-sitter-c
-cd tree-sitter-c
-git checkout $TREE_SITTER_C_VERSION
-mkdir -p /usr/include/tree_sitter/
-cp src/tree_sitter/*.h /usr/include/tree_sitter/
-cd $BUILD_HOME
+# TREE_SITTER_C_VERSION=v0.24.0
+# git clone https://github.com/tree-sitter/tree-sitter-c
+# cd tree-sitter-c
+# git checkout $TREE_SITTER_C_VERSION
+# mkdir -p /usr/include/tree_sitter/
+# cp src/tree_sitter/*.h /usr/include/tree_sitter/
+# cd $BUILD_HOME
 
-TREE_SITTER_VERSION=v0.25.0
-git clone https://github.com/tree-sitter/tree-sitter.git
-cd tree-sitter
-make
-git checkout $TREE_SITTER_VERSION
-make install
-cd $BUILD_HOME
+# TREE_SITTER_VERSION=v0.25.0
+# git clone https://github.com/tree-sitter/tree-sitter.git
+# cd tree-sitter
+# make
+# git checkout $TREE_SITTER_VERSION
+# make install
+# cd $BUILD_HOME
 
-# Build and Install tree-sitter-html
-TREE_SITTER_HTML_VERSION=v0.23.2
-git clone https://github.com/tree-sitter/tree-sitter-html.git
-cd tree-sitter-html
-git checkout $TREE_SITTER_HTML_VERSION
-pip3.12 install .
-cd $BUILD_HOME
+# # Build and Install tree-sitter-html
+# TREE_SITTER_HTML_VERSION=v0.23.2
+# git clone https://github.com/tree-sitter/tree-sitter-html.git
+# cd tree-sitter-html
+# git checkout $TREE_SITTER_HTML_VERSION
+# pip3.12 install .
+# cd $BUILD_HOME
 
-# Build and Install tree-sitter-json
-TREE_SITTER_JSON_VERSION=v0.24.8
-git clone https://github.com/tree-sitter/tree-sitter-json.git
-cd tree-sitter-json
-git checkout $TREE_SITTER_JSON_VERSION
-pip3.12 install .
-cd $BUILD_HOME
+# # Build and Install tree-sitter-json
+# TREE_SITTER_JSON_VERSION=v0.24.8
+# git clone https://github.com/tree-sitter/tree-sitter-json.git
+# cd tree-sitter-json
+# git checkout $TREE_SITTER_JSON_VERSION
+# pip3.12 install .
+# cd $BUILD_HOME
 
-# Build and Install tree-sitter-python
-TREE_SITTER_PYTHON_VERSION=v0.23.6
-git clone https://github.com/tree-sitter/tree-sitter-python.git
-cd tree-sitter-python
-git checkout $TREE_SITTER_PYTHON_VERSION
-pip3.12 install .
-cd $BUILD_HOME
+# # Build and Install tree-sitter-python
+# TREE_SITTER_PYTHON_VERSION=v0.23.6
+# git clone https://github.com/tree-sitter/tree-sitter-python.git
+# cd tree-sitter-python
+# git checkout $TREE_SITTER_PYTHON_VERSION
+# pip3.12 install .
+# cd $BUILD_HOME
 
-# Build and Install tree-sitter-javascript
-TREE_SITTER_JAVASCRIPT_VERSION=v0.23.1
-git clone https://github.com/tree-sitter/tree-sitter-javascript.git
-cd tree-sitter-javascript
-git checkout $TREE_SITTER_JAVASCRIPT_VERSION
-pip3.12 install .
-cd $BUILD_HOME
+# # Build and Install tree-sitter-javascript
+# TREE_SITTER_JAVASCRIPT_VERSION=v0.23.1
+# git clone https://github.com/tree-sitter/tree-sitter-javascript.git
+# cd tree-sitter-javascript
+# git checkout $TREE_SITTER_JAVASCRIPT_VERSION
+# pip3.12 install .
+# cd $BUILD_HOME
 
-# Build and Install tree-sitter-rust
-TREE_SITTER_RUST_VERSION=v0.23.2
-git clone https://github.com/tree-sitter/tree-sitter-rust.git
-cd tree-sitter-rust
-git checkout $TREE_SITTER_RUST_VERSION
-pip3.12 install .
-cd $BUILD_HOME
+# # Build and Install tree-sitter-rust
+# TREE_SITTER_RUST_VERSION=v0.23.2
+# git clone https://github.com/tree-sitter/tree-sitter-rust.git
+# cd tree-sitter-rust
+# git checkout $TREE_SITTER_RUST_VERSION
+# pip3.12 install .
+# cd $BUILD_HOME
 
 # Clone or extract the package
 if [[ "$PACKAGE_URL" == *github.com* ]]; then
