@@ -38,7 +38,7 @@ export CC="$GCC_BIN_DIR/gcc"
 export CXX="$GCC_BIN_DIR/g++"
 
 CURRENT_DIR=$(pwd)
-mkdir -p builder/wheels
+mkdir -p /root/builder/wheels
 pip3.12 install ninja setuptools setuptools-scm Cython wheel 
 
 echo "-------Installing cmake---------"
@@ -779,6 +779,10 @@ HDF5_DIR=${HDF5_PREFIX} python3.12 -m pip install .
 cd $CURRENT_DIR
 
 echo "----------bazel installing--------------------"
+
+# Set to avoid issues with yum installation
+echo "tsflags=nocaps" >> /etc/yum.conf
+
 yum install -y  zip java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless unzip
 
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
@@ -966,7 +970,7 @@ mkdir -p repackged_wheel
 # Pack the locally built TensorFlow files into a wheel
 wheel pack local/ -d repackged_wheel
 pip3.12 install $SRC_DIR/repackged_wheel/*.whl
-cp -a $SRC_DIR/repackged_wheel/*.whl $CURRENT_DIR/builder/wheels
+cp -a $SRC_DIR/repackged_wheel/*.whl /root/builder/wheels
 cd $CURRENT_DIR
 
 
@@ -985,7 +989,7 @@ cp setup.py $CURRENT_DIR/build-dir/
 cd $CURRENT_DIR/build-dir
 pip3.12 install .
 python3.12 setup.py bdist_wheel
-cp -a dist/*.whl $CURRENT_DIR/builder/wheels
+cp -a dist/*.whl /root/builder/wheels
 cd $CURRENT_DIR
 
 echo "------------------Tesorflow-dataset installing-----------------------"
