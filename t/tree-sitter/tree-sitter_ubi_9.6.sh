@@ -46,12 +46,12 @@ cp src/tree_sitter/*.h /usr/include/tree_sitter/
 cd $BUILD_HOME
 
 # TREE_SITTER_VERSION=v0.25.0
-# git clone https://github.com/tree-sitter/tree-sitter.git
-# cd tree-sitter
-# make
-# git checkout $TREE_SITTER_VERSION
-# make install
-# cd $BUILD_HOME
+git clone https://github.com/tree-sitter/tree-sitter.git
+cd tree-sitter
+make
+git checkout $TREE_SITTER_VERSION
+make install
+cd $BUILD_HOME
 
 # Build and Install tree-sitter-html
 TREE_SITTER_HTML_VERSION=v0.23.2
@@ -70,20 +70,20 @@ pip3.12 install .
 cd $BUILD_HOME
 
 # Build and Install tree-sitter-python
-# TREE_SITTER_PYTHON_VERSION=v0.23.6
-# git clone https://github.com/tree-sitter/tree-sitter-python.git
-# cd tree-sitter-python
-# git checkout $TREE_SITTER_PYTHON_VERSION
-# pip3.12 install .
-# cd $BUILD_HOME
+TREE_SITTER_PYTHON_VERSION=v0.23.6
+git clone https://github.com/tree-sitter/tree-sitter-python.git
+cd tree-sitter-python
+git checkout $TREE_SITTER_PYTHON_VERSION
+pip3.12 install .
+cd $BUILD_HOME
 
 # Build and Install tree-sitter-javascript
-# TREE_SITTER_JAVASCRIPT_VERSION=v0.23.1
-# git clone https://github.com/tree-sitter/tree-sitter-javascript.git
-# cd tree-sitter-javascript
-# git checkout $TREE_SITTER_JAVASCRIPT_VERSION
-# pip3.12 install .
-# cd $BUILD_HOME
+TREE_SITTER_JAVASCRIPT_VERSION=v0.23.1
+git clone https://github.com/tree-sitter/tree-sitter-javascript.git
+cd tree-sitter-javascript
+git checkout $TREE_SITTER_JAVASCRIPT_VERSION
+pip3.12 install .
+cd $BUILD_HOME
 
 # Build and Install tree-sitter-rust
 TREE_SITTER_RUST_VERSION=v0.23.2
