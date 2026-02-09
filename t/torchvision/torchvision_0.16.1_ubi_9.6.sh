@@ -1,0 +1,316 @@
+#!/bin/bash -e
+#
+# -----------------------------------------------------------------------------
+#
+# Package           : vision
+# Version           : v0.16.1
+# Source repo       : https://github.com/pytorch/vision.git
+# Tested on         : UBI:9.6
+# Language          : Python
+# Ci-Check      : True
+# Script License    : Apache License, Version 2.0
+# Maintainer        : Rushikesh.Sathe1@ibm.com
+#
+# Disclaimer        : This script has been tested in root mode on given
+# ==========          platform using the mentioned version of the package.
+#                     It may not work as expected with newer versions of the
+#                     package and/or distribution. In such case, please
+#                     contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
+
+set -ex
+
+PACKAGE_NAME=vision
+PACKAGE_VERSION=${1:-v0.16.1}
+PACKAGE_URL=https://github.com/pytorch/vision.git
+OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
+MAX_JOBS=${MAX_JOBS:-$(nproc)}
+VERSION=${PACKAGE_VERSION#v}
+PYTHON_VERSION=${2:-3.12}
+
+CURRENT_DIR=$(pwd)
+
+yum install -y git make wget python$PYTHON_VERSION python$PYTHON_VERSION-devel python$PYTHON_VERSION-pip pkgconfig atlas libjpeg-devel openblas-devel
+yum install gcc-toolset-13 -y
+yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build gcc-toolset-13  pkg-config  gmp-devel  freetype-devel
+
+ln -sf /usr/bin/pip$PYTHON_VERSION /usr/bin/pip3 && ln -sf /usr/bin/python$PYTHON_VERSION /usr/bin/python3 && ln -sf /usr/bin/pip$PYTHON_VERSION /usr/bin/pip && ln -sf /usr/bin/python$PYTHON_VERSION /usr/bin/python
+
+export PYTHON_SITE_PACKAGES=$(python - <<'EOF'
+import sysconfig, os
+
+venv = os.environ.get("VIRTUAL_ENV")
+paths = sysconfig.get_paths()
+
+if venv:
+    # Prefer venv path
+    print(paths["platlib"])
+else:
+    # System python
+    print(paths["platlib"])
+EOF
+)
+dnf install -y gcc-toolset-13-libatomic-devel
+
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+
+echo "------------Installing cmake---------------------------"
+
+echo "Installing cmake..."
+pip install cmake
+cd $CURRENT_DIR
+
+echo "---------------------openblas installing---------------------"
+
+#install openblas
+#clone and install openblas from source
+
+git clone https://github.com/OpenMathLib/OpenBLAS
+cd OpenBLAS
+git checkout v0.3.29
+git submodule update --init
+
+# Set build options
+declare -a build_opts
+# Fix ctest not automatically discovering tests
+LDFLAGS=$(echo "${LDFLAGS}" | sed "s/-Wl,--gc-sections//g")
+export CF="${CFLAGS} -Wno-unused-parameter -Wno-old-style-declaration"
+unset CFLAGS
+export USE_OPENMP=1
+build_opts+=(USE_OPENMP=${USE_OPENMP})
+export PREFIX=${PREFIX}
+
+# Handle Fortran flags
+if [ ! -z "$FFLAGS" ]; then
+    export FFLAGS="${FFLAGS/-fopenmp/ }"
+    export FFLAGS="${FFLAGS} -frecursive"
+    export LAPACK_FFLAGS="${FFLAGS}"
+fi
+export PLATFORM=$(uname -m)
+build_opts+=(BINARY="64")
+build_opts+=(DYNAMIC_ARCH=1)
+build_opts+=(TARGET="POWER9")
+BUILD_BFLOAT16=1
+
+# Placeholder for future builds that may include ILP64 variants.
+build_opts+=(INTERFACE64=0)
+build_opts+=(SYMBOLSUFFIX="")
+
+# Build LAPACK
+build_opts+=(NO_LAPACK=0)
+
+# Enable threading and set the number of threads
+build_opts+=(USE_THREAD=1)
+build_opts+=(NUM_THREADS=8)
+
+# Disable CPU/memory affinity handling to avoid problems with NumPy and R
+build_opts+=(NO_AFFINITY=1)
+
+# Build OpenBLAS
+make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
+
+# Install OpenBLAS
+CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
+OpenBLASInstallPATH=$(pwd)/$PREFIX
+OpenBLASConfigFile=$(find . -name OpenBLASConfig.cmake)
+OpenBLASPCFile=$(find . -name openblas.pc)
+export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib":${LD_LIBRARY_PATH}
+export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
+export LD_LIBRARY_PATH=${PREFIX}/lib:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
+pkg-config --modversion openblas
+cd $CURRENT_DIR
+
+
+echo "------------ abseil_cpp cloning-------------------"
+
+ABSEIL_VERSION=20240116.2
+ABSEIL_URL="https://github.com/abseil/abseil-cpp"
+git clone $ABSEIL_URL -b $ABSEIL_VERSION
+echo "------------ libprotobuf installing-------------------"
+export C_COMPILER=$(which gcc)
+export CXX_COMPILER=$(which g++)
+#Build libprotobuf
+git clone https://github.com/protocolbuffers/protobuf
+cd protobuf
+git checkout v4.25.8
+
+LIBPROTO_DIR=$(pwd)
+mkdir -p $LIBPROTO_DIR/local/libprotobuf
+LIBPROTO_INSTALL=$LIBPROTO_DIR/local/libprotobuf
+
+git submodule update --init --recursive
+rm -rf ./third_party/googletest | true
+rm -rf ./third_party/abseil-cpp | true
+
+cp -r $CURRENT_DIR/abseil-cpp ./third_party/
+
+mkdir build
+cd build
+
+cmake -G "Ninja" \
+   ${CMAKE_ARGS} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_CXX_STANDARD=17 \
+    -DCMAKE_C_COMPILER=$C_COMPILER \
+    -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
+    -DCMAKE_INSTALL_PREFIX=$LIBPROTO_INSTALL \
+    -Dprotobuf_BUILD_TESTS=OFF \
+    -Dprotobuf_BUILD_LIBUPB=OFF \
+    -Dprotobuf_BUILD_SHARED_LIBS=ON \
+    -Dprotobuf_ABSL_PROVIDER="module" \
+    -Dprotobuf_JSONCPP_PROVIDER="package" \
+    -Dprotobuf_USE_EXTERNAL_GTEST=OFF \
+    ..
+
+cmake --build . --verbose
+cmake --install .
+cd ..
+
+export PROTOC="$LIBPROTO_INSTALL/bin/protoc"
+export LD_LIBRARY_PATH="/abseil-cpp/abseilcpp/lib:$LIBPROTO_INSTALL/lib64:$LD_LIBRARY_PATH"
+export LIBRARY_PATH="$LIBPROTO_INSTALL/lib64:$LD_LIBRARY_PATH"
+export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
+export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
+
+# echo "----Installing rust------"
+curl https://sh.rustup.rs -sSf | sh -s -- -y
+source "$HOME/.cargo/env"
+
+# echo "------------cloning pytorch----------------"
+cd $CURRENT_DIR
+git clone https://github.com/pytorch/pytorch.git
+cd pytorch
+git checkout v2.7.0
+git submodule sync
+git submodule update --init --recursive
+
+echo "------------applying patch----------------"
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.7.1.patch
+git apply pytorch_v2.7.1.patch
+
+ARCH=`uname -p`
+BUILD_NUM="1"
+export OPENBLAS_INCLUDE="${OPENBLAS_PREFIX}/include"
+export OpenBLAS_HOME="${OPENBLAS_PREFIX}"
+export build_type="cpu"
+export cpu_opt_arch="power9"
+export cpu_opt_tune="power10"
+export CPU_COUNT=$(nproc --all)
+export CXXFLAGS="${CXXFLAGS} -D__STDC_FORMAT_MACROS"
+export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl\,--as-needed//')"
+export LDFLAGS="${LDFLAGS} -Wl,-rpath-link,${LIBPROTO_INSTALL}/lib64"
+export CXXFLAGS="${CXXFLAGS} -fplt"
+export CFLAGS="${CFLAGS} -fplt"
+export BLAS=OpenBLAS
+export USE_FBGEMM=0
+export USE_SYSTEM_NCCL=1
+export USE_MKLDNN=0
+export USE_NNPACK=0
+export USE_QNNPACK=0
+export USE_XNNPACK=0
+export USE_PYTORCH_QNNPACK=0
+export TH_BINARY_BUILD=1
+export USE_LMDB=1
+export USE_LEVELDB=1
+export USE_NINJA=0
+export USE_MPI=0
+export USE_OPENMP=1
+export USE_TBB=0
+export BUILD_CUSTOM_PROTOBUF=OFF
+export BUILD_CAFFE2=1
+export PYTORCH_BUILD_VERSION=2.7.0
+export PYTORCH_BUILD_NUMBER=${BUILD_NUM}
+export USE_CUDA=0
+export USE_CUDNN=0
+export USE_TENSORRT=0
+export Protobuf_INCLUDE_DIR=${LIBPROTO_INSTALL}/include
+export Protobuf_LIBRARIES=${LIBPROTO_INSTALL}/lib64
+export Protobuf_LIBRARY=${LIBPROTO_INSTALL}/lib64/libprotobuf.so
+export Protobuf_LITE_LIBRARY=${LIBPROTO_INSTALL}/lib64/libprotobuf-lite.so
+export Protobuf_PROTOC_EXECUTABLE=${LIBPROTO_INSTALL}/bin/protoc
+export PATH="/protobuf/local/libprotobuf/bin/protoc:${PATH}"
+export LD_LIBRARY_PATH="/protobuf/local/libprotobuf/lib64:${LD_LIBRARY_PATH}"
+export LD_LIBRARY_PATH="/protobuf/third_party/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
+export CXXFLAGS="${CXXFLAGS} -mcpu=${cpu_opt_arch} -mtune=${cpu_opt_tune}"
+export CFLAGS="${CFLAGS} -mcpu=${cpu_opt_arch} -mtune=${cpu_opt_tune}"
+export SETUPTOOLS_SCM_PRETEND_VERSION=2.7.0
+sed -i "s/cmake/cmake==3.*/g" requirements.txt
+
+python3.12 -m pip install -r requirements.txt
+MAX_JOBS=$(nproc) python3.12 setup.py install
+cd $CURRENT_DIR
+
+
+echo "---------------Installing dependencies from Devfirst-----------------"
+pip install  libvpx lame ffmpeg pillow av==13.1.0 --prefer-binary --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux/
+
+
+if python3 --version | grep -Eq "3\.9"; then
+  pip install scipy==1.11.3  --prefer-binary --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux/
+else
+  pip install scipy==1.15.2  --prefer-binary --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux/
+fi
+
+
+
+
+export VENV_SITE="$VENV_DIR/lib/python$PYTHON_VERSION/site-packages"
+export LD_LIBRARY_PATH="$VENV_SITE/openblas/lib:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="$VENV_SITE/libprotobuf/lib64:$LD_LIBRARY_PATH"
+echo "------------------Building torchvision------------------------"
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchvision/0001-Exclude-source-that-has-commercial-license_${PACKAGE_VERSION}.patch
+# Below patch is needed to exclude the models that come under SWAG license (CC-BY-NC-4.0)
+git apply 0001-Exclude-source-that-has-commercial-license_${PACKAGE_VERSION}.patch
+
+sed -i '/elif sha != "Unknown":/,+1d' setup.py
+
+if ! python3 setup.py build; then
+    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
+    exit 1
+fi
+
+cd build
+
+export TORCH_CMAKE_PREFIX="$(python3 -c 'import torch; print(torch.utils.cmake_prefix_path)')"
+
+export CMAKE_PREFIX_PATH="${TORCH_CMAKE_PREFIX}:${LIBPROTO_INSTALL}"
+
+
+cmake ..
+make install
+cp libtorchvision.so $CURRENT_DIR/vision/torchvision/libtorchvision.so
+cp libtorchvision.so $PYTHON_SITE_PACKAGES/torch/share/cmake/Torch
+cp libtorchvision.so /usr/local/lib64
+cd $CURRENT_DIR/vision
+
+export LD_LIBRARY_PATH="${CURRENT_DIR}/pytorch/build/lib/:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="${CURRENT_DIR}/protobuf/local/libprotobuf/lib64/:$LD_LIBRARY_PATH"
+
+python3 setup.py bdist_wheel --dist-dir $CURRENT_DIR
+
+cd $CURRENT_DIR
+export LD_LIBRARY_PATH=$VENV_SITE/torch/lib:$LD_LIBRARY_PATH
+python3 -m pip install ./torchvision*.whl
+
+python3 -m pip install pytest pytest-xdist
+
+if ! pytest $PACKAGE_NAME/test/common_extended_utils.py $PACKAGE_NAME/test/common_utils.py $PACKAGE_NAME/test/smoke_test.py $PACKAGE_NAME/test/test_architecture_ops.py $PACKAGE_NAME/test/test_datasets_video_utils_opt.py ; then
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
+    exit 2
+else
+    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
+    exit 0
+fi
+
