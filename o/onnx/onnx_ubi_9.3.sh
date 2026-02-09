@@ -109,7 +109,7 @@ cd $CURRENT_DIR
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
-python3 -m pip install --upgrade pip setuptools wheel ninja
+python3 -m pip install --upgrade pip setuptools wheel ninja chardet
 python3 -m pip install packaging tox pytest build mypy stubs pytest-runner
 python3 -m pip install 'cmake==3.31.6'
 
