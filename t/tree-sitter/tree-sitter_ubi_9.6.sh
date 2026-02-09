@@ -157,7 +157,7 @@ test_status=1  # 0 = success, non-zero = failure
 # Run tests if test dir is present and previous tests failed
 if [ -d "./tests" ] && [ $test_status -ne 0 ]; then
     echo "Running binding tests..."
-    python3.12 -m pytest && test_status=0 || test_status=$?
+    python3.12 -m unittest discover && test_status=0 || test_status=$?
 fi
 
 # Final test result output
