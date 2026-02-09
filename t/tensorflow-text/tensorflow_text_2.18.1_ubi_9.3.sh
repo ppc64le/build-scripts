@@ -432,7 +432,7 @@ CFLAGS="$(echo ${CFLAGS} | sed 's/ -march=[^ ]*//g' | sed 's/ -mcpu=[^ ]*//g' |s
 # Remove Python headers as we don't build Boost.Python.
 rm -rf "${BOOST_PREFIX}/include/boost/python.hpp"
 rm -rf "${BOOST_PREFIX}/include/boost/python"
-cd $SCRIPT_DIR 
+cd $CURRENT_DIR
 
 
 
