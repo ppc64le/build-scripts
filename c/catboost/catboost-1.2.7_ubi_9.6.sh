@@ -33,12 +33,6 @@ CLANG_VERSION=${CLANG_VERSION:-17.0.6}
 CONAN_VERSION=${CONAN_VERSION:-1.62.0}
 export PATH=/usr/local/bin:/usr/bin:$PATH
 
-#Install Centos repos and dependencies
-yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
-yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream//ppc64le/os
-yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os
-rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official-SHA256
-
 # ----------------------------------------------------------------------------
 # Install dependencies
 # ----------------------------------------------------------------------------
@@ -57,7 +51,6 @@ dnf install -y  \
   autoconf automake libtool \
   gzip \
   diffutils \
-  texinfo \
   gcc-gfortran \
   openblas-devel \
   libjpeg-turbo-devel
@@ -81,7 +74,7 @@ ln -sf "$(which pip3.11)" /usr/bin/pip3
 python3 -V && pip3 -V
 
 
-python3 -m pip install -U pip setuptools wheel testpath pytest
+python3 -m pip install -U "pip<24" "setuptools==68.2.2" "wheel==0.41.3" testpath pytest
 
 # ----------------------------------------------------------------------------
 #Setup clang
