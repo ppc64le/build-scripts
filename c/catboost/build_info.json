@@ -17,5 +17,4 @@
       "dir": "v1.2.7_ubi_9.6",
       "build_script": "catboost-1.2.7_ubi_9.6.sh"
    }
-      
 }
