@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/catboost/catboost.git
 # Tested on     : UBI:9.6 (ppc64le)
 # Language      : Python,c,c++
-# CI-Check      : True
+# Ci-Check      : True
 # Script License: Apache License Version 2.0
 # Maintainer    : Veenious D Geevarghese <Veenious.Geevarghese@ibm.com>
 #
