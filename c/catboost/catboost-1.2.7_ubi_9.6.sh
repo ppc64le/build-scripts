@@ -205,7 +205,6 @@ echo -e "\n[+] Install built wheel\n"
 WHEEL_PATH=$(ls -1 "$PKG_DIR/dist"/catboost-1.2.7-*_ppc64le.whl | head -n 1)
 [ -f "$WHEEL_PATH" ] || { echo -e "\n[!] ERROR: Wheel not found in dist/\n" >&2; exit 1; }
 
-python3 -m pip install -U pip
 python3 -m pip install "$WHEEL_PATH"
 
 # ----------------------------------------------------------------------------
