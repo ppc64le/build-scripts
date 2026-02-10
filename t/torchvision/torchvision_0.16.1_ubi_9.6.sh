@@ -179,6 +179,9 @@ export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 curl https://sh.rustup.rs -sSf | sh -s -- -y
 source "$HOME/.cargo/env"
 
+#installing numpy
+pip install numpy==1.26.4 --prefer-binary --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux/
+
 # echo "------------cloning pytorch----------------"
 cd $CURRENT_DIR
 git clone https://github.com/pytorch/pytorch.git
