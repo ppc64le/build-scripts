@@ -21,11 +21,13 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 
-# Variables
+
 # Variables
 PACKAGE_NAME=tensorflow
 PACKAGE_VERSION=${1:-v2.13.0}
 PACKAGE_URL=https://github.com/tensorflow/tensorflow
+CURRENT_DIR=$(pwd)
+
 
 wdir=`pwd`
 
@@ -121,25 +123,81 @@ if ! (bazel build --jobs=$(nproc) --config=opt //tensorflow/tools/pip_package:bu
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_Fails"
     exit 1
 fi
+
+echo "Locating Bazel output directory..."
+BAZEL_OUT=$(bazel info bazel-bin)
+echo "Bazel output directory: $BAZEL_OUT"
+
+mkdir -p "$CURRENT_DIR/tf_libs"
+
+cp "$BAZEL_OUT/tensorflow/libtensorflow_cc.so.2" \
+   "$CURRENT_DIR/tf_libs/" || {
+   echo "ERROR: libtensorflow_cc.so.2 not found in Bazel output!"
+   exit 1
+}
+
+export LD_LIBRARY_PATH="$CURRENT_DIR/tf_libs:$LD_LIBRARY_PATH"
+echo "Exported LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
  
-# Run tests for the pip_package directory
-if ! (bazel test --config=opt -k --jobs=$(nproc) //tensorflow/tools/pip_package/...); then
-    # Check if the failure is specifically due to "No test targets were found"
-    if bazel test --config=opt -k --jobs=$(nproc) //tensorflow/tools/pip_package/... 2>&1 | grep -q "No test targets were found"; then
-        echo "------------------$PACKAGE_NAME:no_test_targets_found---------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | No_Test_Targets_Found"
-        exit 0  # Graceful exit for no test targets
-    fi
-    # Handle actual test errors
+echo "---------------------------------Building wheel--------------------------------------------"
+
+pip install --upgrade --ignore-installed setuptools wheel build ninja
+bazel-bin/tensorflow/tools/pip_package/build_pip_package $CURRENT_DIR 
+
+echo "Injecting libtensorflow_cc.so.2 into wheel..."
+
+TMP_WHEELDIR=$(mktemp -d)
+
+unzip -q $CURRENT_DIR/tensorflow-*.whl -d "$TMP_WHEELDIR"
+
+mkdir -p "$TMP_WHEELDIR/tensorflow/.libs"
+
+cp "$CURRENT_DIR/tf_libs/libtensorflow_cc.so.2" \
+   "$TMP_WHEELDIR/tensorflow/.libs/"
+
+cd "$TMP_WHEELDIR"
+zip -qr "$CURRENT_DIR/tensorflow-2.13.0-cp39-cp39-linux_ppc64le.whl" .
+cd "$CURRENT_DIR"
+
+rm -rf "$TMP_WHEELDIR"
+
+echo "Library injected into wheel."
+
+TF_WHEEL=$(ls $CURRENT_DIR/tensorflow-*.whl | head -1)
+echo "Generated wheel: $TF_WHEEL"
+
+cd "$CURRENT_DIR/tensorflow"
+
+echo "---------------------------------Running tests----------------------------------------------"
+
+# Create a temporary log file to capture output
+TEST_LOG=$(mktemp)
+
+# Run bazel test with live output and log capture
+bazel test --config=opt -k --jobs=$(nproc) //tensorflow/tools/pip_package/... 2>&1 | tee "$TEST_LOG"
+
+# Capture actual Bazel exit code
+TEST_EXIT_CODE=${PIPESTATUS[0]}
+
+# Read full test output (if needed)
+TEST_OUTPUT=$(cat "$TEST_LOG")
+
+# Analyze test results
+if echo "$TEST_OUTPUT" | grep -q "No test targets were found"; then
+    echo "------------------$PACKAGE_NAME:no_test_targets_found---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | No_Test_Targets_Found"
+    exit 0
+elif [ $TEST_EXIT_CODE -ne 0 ]; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Success_But_Test_Fails"
     exit 2
 else
-    # Tests ran successfully
     echo "------------------$PACKAGE_NAME:install_&_test_both_success------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | Both_Install_and_Test_Success"
     exit 0
 fi
+
+ 
