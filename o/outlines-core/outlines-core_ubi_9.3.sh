@@ -685,14 +685,21 @@ cd arrow
 git checkout apache-arrow-19.0.0
 git submodule update --init --recursive
 
+# Set a local install prefix **inside the Arrow repo**
+export ARROW_PREFIX=$(pwd)/arrow_prefix
+mkdir -p $ARROW_PREFIX
+
 echo "Building Arrow C++ with Parquet, Dataset, Acero support..."
 mkdir -p cpp/build
 cd cpp/build
 
+
 cmake -GNinja \
   -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} \
+  -DCMAKE_INSTALL_PREFIX=${ARROW_PREFIX} \
+  -DBUILD_SHARED_LIBS=ON \
   -DARROW_BUILD_TESTS=OFF \
+  -DARROW_COMPUTE=ON \
   -DARROW_PARQUET=ON \
   -DARROW_DATASET=ON \
   -DARROW_ACERO=ON \
@@ -710,7 +717,9 @@ ninja install
 echo "Building PyArrow..."
 cd ../../python
 
-export ARROW_HOME=${INSTALL_PREFIX}
+export ARROW_HOME=${ARROW_PREFIX}
+export LD_LIBRARY_PATH=${ARROW_PREFIX}/lib:$LD_LIBRARY_PATH
+export CPATH=${ARROW_PREFIX}/include:$CPATH
 export SETUPTOOLS_SCM_PRETEND_VERSION=${VERSION_NUM}
 export PYARROW_BUNDLE_ARROW_CPP=1
 export PYARROW_BUNDLE_ARROW_CPP_HEADERS=1
@@ -725,6 +734,11 @@ export PYARROW_WITH_PLASMA=0
 export PYARROW_WITH_FLIGHT=0
 export PYARROW_WITH_CUDA=0
 
+export CMAKE_PREFIX_PATH=${ARROW_HOME}:${CMAKE_PREFIX_PATH}
+export ArrowCompute_DIR=${ARROW_HOME}/lib/cmake/ArrowCompute
+export Arrow_DIR=${ARROW_HOME}/lib/cmake/Arrow
+
+
 python3.12 setup.py install
 
 echo "-------------------Installed Pyarrow-------------------------"
@@ -734,7 +748,18 @@ cd $CURRENT_DIR
 git clone -b $PACKAGE_VERSION $PACKAGE_URL
 cd $PACKAGE_NAME
 
-python3.12 -m pip install setuptools pytest pydantic pytest-cov transformers sentencepiece datasets
+export LD_LIBRARY_PATH=$OPENBLAS_PREFIX/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH="${RE2_PREFIX}/lib:$LD_LIBRARY_PATH"
+
+python3.12 -m pip install setuptools pytest pydantic pytest-cov pandas
+python3.12 -m pip install sentencepiece --no-build-isolation
+python3.12 -m pip install datasets==2.14.7 --no-build-isolation --no-deps
+python3.12 -m pip install "multiprocess==0.70.15"
+python3.12 -m pip install "xxhash==3.4.1"
+python3.12 -m pip install "dill==0.3.7" "fsspec==2023.10.0" aiohttp pyarrow-hotfix
+python3.12 -m pip install "transformers==4.39.2"
+
+
 
 #install
 if ! (python3.12 -m pip install -e .) ; then
@@ -743,11 +768,10 @@ if ! (python3.12 -m pip install -e .) ; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
-export LD_LIBRARY_PATH=$OPENBLAS_PREFIX/lib:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH="${RE2_PREFIX}/lib:$LD_LIBRARY_PATH"
+
 
 #run tests
-if !(pytest); then
+if !(pytest -W ignore::FutureWarning); then
     echo "------------------$PACKAGE_NAME:build_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"

@@ -28,6 +28,9 @@ PACKAGE_URL=https://github.com/tensorflow/tensorflow
 CURRENT_DIR=$(pwd)
 PACKAGE_DIR=tensorflow
 
+export LLVM_ENABLE_PDB=0
+
+
 echo "------------------------Installing dependencies-------------------"
 yum install -y wget
 yum install -y gcc-toolset-12-gcc.ppc64le gcc-toolset-12-gcc-c++
@@ -38,7 +41,8 @@ yum install -y python3.11-devel python3.11-pip make cmake wget git openssl-devel
 yum install -y gcc-toolset-12 gcc-toolset-12-binutils gcc-toolset-12-binutils-devel
 yum install -y libxcrypt-compat rsync
 python3.11 -m pip install --upgrade pip
-python3.11 -m pip install setuptools==75.3.0 wheel
+
+
 
 yum install -y  autoconf automake libtool curl-devel  atlas-devel patch 
 
@@ -109,6 +113,7 @@ cd $CURRENT_DIR
 git clone https://github.com/h5py/h5py.git
 cd h5py/
 git checkout 3.13.0
+python3.11 -m pip install --ignore-installed --force-reinstall "numpy<2"
 python3.11 -m pip install .  
 
 cd $CURRENT_DIR

@@ -20,36 +20,44 @@
 PACKAGE_NAME=pandas
 PACKAGE_VERSION=${1:-v1.5.3}
 PACKAGE_URL=https://github.com/pandas-dev/pandas.git
+PACKAGE_DIR=pandas
 
 # Install system dependencies including SQLite and LZMA libraries
 yum install -y git gcc gcc-c++ gzip tar make wget xz cmake yum-utils openssl-devel \
     openblas-devel bzip2-devel bzip2 zip unzip libffi-devel zlib-devel autoconf \
     automake libtool cargo pkgconf-pkg-config.ppc64le info.ppc64le fontconfig.ppc64le \
-    fontconfig-devel.ppc64le sqlite-devel python-devel
+    fontconfig-devel.ppc64le sqlite-devel python-devel python3-pip python3 python3-devel
 
 # Clone the pandas repository and checkout the required version
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
- 
+
 # Initialize and update submodules
 git submodule update --init --recursive
 
 # Install dependencies for Pandas and NumPy
 pip3 install --upgrade pip
-pip install pytest hypothesis build meson meson-python
-pip install cython==0.29.32
-pip install --upgrade --force-reinstall setuptools
-pip install --upgrade six
-pip install "oldest-supported-numpy>=2022.8.16"
-pip install "numpy>=1.21.0,<1.22.0"
+pip3 install "oldest-supported-numpy>=2022.8.16"
+pip3 install pytest hypothesis build meson meson-python
+pip3 install cython==0.29.32
+pip3 install --upgrade --force-reinstall setuptools
+pip3 install --upgrade six
 
+PYVER=$(python3 - <<EOF
+import sys
+print(f"{sys.version_info.major}.{sys.version_info.minor}")
+EOF
+)
 
-# Install the pandas package
-pip install .
+if [[ "$PYVER" == "3.12" ]]; then
+    pip3 install numpy==1.26.4
+else
+    pip3 install numpy==1.23.5
+fi
 
-# Attempt to install using setup.py
-if ! (python3 setup.py install) ; then
+# Attempt to install
+if ! (pip3 install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"

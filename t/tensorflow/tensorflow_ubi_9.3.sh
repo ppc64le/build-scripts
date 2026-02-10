@@ -32,9 +32,6 @@ wdir=`pwd`
 #Install the dependencies
 yum install -y wget zip unzip python3-devel autoconf automake libtool gcc-c++ gcc-gfortran git  freetype-devel atlas-devel  python3-pip python3 python3-devel python3-setuptools python3-wheel patch 
 
-#Set Python3 as default
-ln -s /usr/bin/python3 /usr/bin/python
-
 #Set JAVA_HOME
 yum install -y java-11-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk 
@@ -52,8 +49,8 @@ export PATH=/usr/local/bin:$PATH
 
 
 # Install six.
-pip3 install --upgrade absl-py
-pip3 install --upgrade six==1.10.0
+pip install --upgrade absl-py
+pip install --upgrade six==1.10.0
 pip install "numpy<2" "urllib3<1.27" wheel==0.29.0 werkzeug packaging patchelf
 # Remove obsolete version of six, which can sometimes confuse virtualenv.
 rm -rf /usr/lib/python3/dist-packages/six*
@@ -67,9 +64,20 @@ git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+echo "Patching spectrogram.cc for gcc-13 compatibility..."
+sed -i '1i #include <cstdint>' tensorflow/lite/kernels/internal/spectrogram.cc
+echo "Patch applied."
+
+echo "Patching cache.h for GCC-13 compatibility..."
+if ! grep -q "#include <cstdint>" tensorflow/tsl/lib/io/cache.h; then
+  sed -i '1i #include <cstdint>' tensorflow/tsl/lib/io/cache.h
+fi
+echo "Patch applied."
+
+
 export CC_OPT_FLAGS="-mcpu=power8 -mtune=power8"
 export GCC_HOST_COMPILER_PATH=/usr/bin/gcc
-export PYTHON_BIN_PATH=/usr/bin/python
+export PYTHON_BIN_PATH=$(which python)
 export USE_DEFAULT_PYTHON_LIB_PATH=1
 export TF_NEED_GCP=1
 export TF_NEED_HDFS=1
@@ -81,6 +89,10 @@ export TF_NEED_MKL=0
 export TF_NEED_VERBS=0
 export TF_NEED_MPI=0
 export TF_CUDA_CLANG=0
+
+echo "Using Python from virtualenv: $(which python)"
+echo "Python version: $(python --version)"
+
 
 yes n | ./configure
 

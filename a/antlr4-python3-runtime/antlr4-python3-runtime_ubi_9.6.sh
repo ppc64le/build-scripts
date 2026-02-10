@@ -21,7 +21,7 @@
 set -e
 
 # Variables
-PACKAGE_DIR="antlr4"
+PACKAGE_DIR="antlr4/runtime/Python3"
 PACKAGE_NAME="antlr4-python3-runtime"
 PACKAGE_VERSION="${1:-4.9.3}"
 PACKAGE_URL="https://github.com/antlr/antlr4.git"
@@ -85,6 +85,8 @@ fi
 
 test_status=1  # 0 = success, non-zero = failure
 
+# Temporary fix for Python 3.12+ compatibility
+sed -i 's/assertEquals/assertEqual/g' ./runtime/Python3/tests/TestIntervalSet.py
 # Run tests if any matching test files found
 if ls ./runtime/Python3/tests/*.py > /dev/null 2>&1 && [ $test_status -ne 0 ]; then
     echo "Running tests..."

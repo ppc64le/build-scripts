@@ -38,16 +38,13 @@ yum install -y python3.11 python3.11-devel python3.11-pip git make cmake wget op
     libffi-devel zlib-devel  libjpeg-devel zlib-devel freetype-devel procps-ng openblas-devel \
     meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel sqlite 
 
-
 yum install -y libxcrypt libxcrypt-compat rsync
 python3.11 -m pip install --upgrade pip
 python3.11 -m pip install setuptools wheel build "numpy<2"
 
-#Install the dependencies
 echo " --------------------------------------------- Installing dependencies --------------------------------------------- "
 yum install -y  autoconf automake libtool curl-devel atlas-devel 
 
-#Set JAVA_HOME
 echo " --------------------------------------------- Installing java --------------------------------------------- "
 yum install -y java-11-openjdk-devel
 export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-11)(?=.*ppc64le)')
@@ -55,22 +52,13 @@ export PATH=$JAVA_HOME/bin:$PATH
 
 cd $CURRENT_DIR
 
-
-# Installing Swing from source
 echo " --------------------------------------------- Installing Swig --------------------------------------------- "
-
 git clone https://github.com/nightlark/swig-pypi.git
 cd swig-pypi
-
 python3.11 -m pip install .
-
-echo " --------------------------------------------- Swig Installed Successfully --------------------------------------------- "
-
 cd $CURRENT_DIR
 
-#Installing hdf5 from source
 echo " --------------------------------------------- Installing Hdf5 --------------------------------------------- "
-
 git clone https://github.com/HDFGroup/hdf5
 cd hdf5/
 git checkout hdf5-1_12_1
@@ -83,104 +71,62 @@ make -j$(nproc)
 make install
 export LD_LIBRARY_PATH=${HDF5_PREFIX}/lib:$LD_LIBRARY_PATH
 export HDF5_DIR=${HDF5_PREFIX}
-
-echo " --------------------------------------------- Hdf5 Installed Successfully --------------------------------------------- "
-
 cd $CURRENT_DIR
 
 echo " --------------------------------------------- Installing Patchelf --------------------------------------------- "
-
-#installing patchelf from source
 git clone https://github.com/NixOS/patchelf.git
 cd patchelf
-
 ./bootstrap.sh
 ./configure
-
 make
 make install
-
 ln -s /usr/local/bin/patchelf /usr/bin/patchelf
-
-echo " --------------------------------------------- Patchelf Successfully Installed --------------------------------------------- "
-
 cd $CURRENT_DIR
 
-# Build Bazel dependency
 echo " --------------------------------------------- Downloading Bazel --------------------------------------------- "
-
 mkdir -p /bazel
 cd /bazel
 wget https://github.com/bazelbuild/bazel/releases/download/6.1.0/bazel-6.1.0-dist.zip
 unzip bazel-6.1.0-dist.zip
+export BAZEL_DOWNLOAD_USE_GCE_MIRROR=false
 
 echo " --------------------------------------------- Installing bazel --------------------------------------------- "
-
 env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
 cp output/bazel /usr/local/bin
 export PATH=/usr/local/bin:$PATH
 bazel --version
-
-echo " --------------------------------------------- Bazel Successfully Installed --------------------------------------------- "
-
 cd $CURRENT_DIR
 
-# Install six.
-echo " --------------------------------------------- Installing dependencies --------------------------------------------- "
-python3.11 -m pip install --upgrade absl-py
-python3.11 -m pip install --upgrade six==1.16.0
-python3.11 -m pip install "numpy<2" wheel==0.38.4 werkzeug
-python3.11 -m pip install "urllib3<1.27,>=1.21.1" requests
-python3.11 -m pip install "protobuf<=4.25.2"
-python3.11 -m pip install tensorflow-datasets
+echo " --------------------------------------------- Installing python deps --------------------------------------------- "
+python3.11 -m pip install --upgrade absl-py six==1.16.0 "numpy<2" wheel==0.38.4 werkzeug
+python3.11 -m pip install "urllib3<1.27,>=1.21.1" requests "protobuf<=4.25.2" tensorflow-datasets
 
-
-# Install numpy, scipy and scikit-learn required by the builds
 ln -s /usr/include/locale.h /usr/include/xlocale.h
-
 export LD_LIBRARY_PATH=/usr/lib64/:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-12/root/usr/lib64:$LD_LIBRARY_PATH
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=true
 
-cd $CURRENT_DIR
-
-#Build tensorflow-io-gcs-filesystem
 echo " --------------------------------------------- Cloning Tensorflow-io --------------------------------------------- "
-
 git clone https://github.com/tensorflow/io.git
 cd io
 git checkout v0.35.0
-
-echo "------------------------Generating wheel-------------------"
-python3.11 -m pip install --upgrade pip wheel
 python3.11 setup.py -q bdist_wheel --project tensorflow_io_gcs_filesystem
 cd dist
 python3.11 -m pip install tensorflow_io_gcs_filesystem-*-linux_ppc64le.whl
-
-echo " --------------------------------------------- Tensorflow-io Successfully Installed --------------------------------------------- "
-
 cd $CURRENT_DIR
 
-#Build tensorflow
 echo " --------------------------------------------- Cloning Tensorflow --------------------------------------------- "
-
 git clone https://github.com/tensorflow/tensorflow
-cd  tensorflow
+cd tensorflow
 git checkout v2.14.1
 
-echo " --------------------------------------------- Exporting variable --------------------------------------------- "
 cpu_model=$(lscpu | grep "Model name:" | awk -F: '{print $2}' | tr '[:upper:]' '[:lower:]' | cut -d '(' -f1 | cut -d ',' -f1 | xargs)
 export CC_OPT_FLAGS="-mcpu=${cpu_model} -mtune=${cpu_model}"
-echo "CC_OPT_FLAGS set to: ${CC_OPT_FLAGS}"
-
-export CC_OPT_FLAGS="-mcpu=${cpu_model} -mtune=${cpu_model}"
 export TF_PYTHON_VERSION=$(python3.11 --version | awk '{print $2}' | cut -d. -f1,2)
-export HERMETIC_PYTHON_VERSION=$(python3.11 --version | awk '{print $2}' | cut -d. -f1,2)
-export PYTHON_BIN_PATH=$(which python)
+export HERMETIC_PYTHON_VERSION=$TF_PYTHON_VERSION
+export PYTHON_BIN_PATH=$(which python3.11)
 export GCC_HOST_COMPILER_PATH=$(which gcc)
 export CC=$GCC_HOST_COMPILER_PATH
-export PYTHON=/root/tensorflow/tfenv/bin/python
-export SP_DIR=/root/tensorflow/tfenv/lib/python$(python3.11 --version | awk '{print $2}' | cut -d. -f1,2)/site-packages/
 export USE_DEFAULT_PYTHON_LIB_PATH=1
 export TF_NEED_JEMALLOC=1
 export TF_ENABLE_XLA=1
@@ -191,46 +137,32 @@ export TF_NEED_VERBS=0
 export TF_NEED_MPI=0
 export TF_CUDA_CLANG=0
 export TFCI_WHL_NUMPY_VERSION=1
-export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/ -fno-plt//')"
-export CFLAGS="$(echo ${CFLAGS} | sed -e 's/ -fno-plt//')"
 
+# ======== IMPORTANT FIX: Disable LLVM PDB =========
+export BAZEL_LLVM_ENABLE_PDB=0
+# ================================================
 
-# Apply the patch
-echo " --------------------------------------------- Applying patch --------------------------------------------- "
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/tensorflow/tf_2.14.1_fix.patch
 git apply tf_2.14.1_fix.patch
-echo " --------------------------------------------- Applied patch successfully --------------------------------------------- "
 
-# Ensure correct python is set
-export PYTHON_BIN_PATH=$(which python3.11)
-
-# Set NumPy include path for Bazel
 export NUMPY_INCLUDE_DIR=$(python3.11 -c "import numpy; print(numpy.get_include())")
 export CPLUS_INCLUDE_PATH=$NUMPY_INCLUDE_DIR:$CPLUS_INCLUDE_PATH
 export C_INCLUDE_PATH=$NUMPY_INCLUDE_DIR:$C_INCLUDE_PATH
 
 yes n | ./configure
 
-echo " --------------------------------------------- Bazel query --------------------------------------------- "
-bazel query "//tensorflow/tools/pip_package:*"
+echo " --------------------------------------------- Bazel build (TensorFlow) --------------------------------------------- "
 
-echo " --------------------------------------------- Bazel query successful --------------------------------------------- "
-bazel build -s //tensorflow/tools/pip_package:build_pip_package --config=opt
+bazel build -s //tensorflow/tools/pip_package:build_pip_package \
+  --config=opt \
+  --define=llvm_enable_pdb=false
 
-echo " --------------------------------------------- Bazel build successful --------------------------------------------- "
-
-#building the wheel
 bazel-bin/tensorflow/tools/pip_package/build_pip_package $CURRENT_DIR
+TF_WHEEL=$(ls $CURRENT_DIR/tensorflow-2.14.1-*.whl | head -1)
+echo "Installing wheel: $TF_WHEEL"
+python3.11 -m pip install "$TF_WHEEL"
 
-echo " --------------------------------------------- Build Wheel --------------------------------------------- "
-
-cd $CURRENT_DIR
-
-python3.11 -m pip install tensorflow-2.14.1-*-linux_ppc64le.whl
-
-echo " --------------------------------------------- Wheel installed succesfuly --------------------------------------------- "
-
-python3.11 -c "import tensorflow as tf; print(tf.__version__)"
+cd ..
 export TF_HEADER_DIR=$(python3.11 -c "import tensorflow as tf; print(tf.sysconfig.get_include())")
 export TF_SHARED_LIBRARY_DIR=$(python3.11 -c "import tensorflow as tf; print(tf.sysconfig.get_lib())")
 export TF_SHARED_LIBRARY_NAME="libtensorflow_framework.so.2"
@@ -242,14 +174,12 @@ export CXX=/opt/rh/gcc-toolset-12/root/usr/bin/g++
 
 cd $CURRENT_DIR
 
-#Build tensorflow-text
 echo " --------------------------------------------- Cloning Tensorflow-Text --------------------------------------------- "
-
 git clone $PACKAGE_URL
-cd  $PACKAGE_NAME
+cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-
-cd $CURRENT_DIR/$PACKAGE_DIR
+cd $CURRENT_DIR
+cd $PACKAGE_DIR
 python3.11 -m pip install . --no-build-isolation
 cd $CURRENT_DIR/$PACKAGE_NAME
 
@@ -270,4 +200,4 @@ echo "-----------------------Building tf-text wheel ----------------------------
 python3.11 -m pip install --upgrade wheel setuptools build
 ./bazel-bin/oss_scripts/pip_package/build_pip_package $CURRENT_DIR
 
-echo "----------------Tensorflow-text wheel build successfully------------------------------------"                            
+echo "----------------Tensorflow-text wheel build successfully------------------------------------"

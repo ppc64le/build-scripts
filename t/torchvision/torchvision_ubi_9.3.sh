@@ -35,7 +35,7 @@ yum install -y git make wget python$PYTHON_VERSION python$PYTHON_VERSION-devel p
 yum install gcc-toolset-13 -y
 yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build gcc-toolset-13  pkg-config  gmp-devel  freetype-devel
 
-ln /usr/bin/pip$PYTHON_VERSION /usr/bin/pip3 -f && ln /usr/bin/python$PYTHON_VERSION /usr/bin/python3 -f &&  ln /usr/bin/pip$PYTHON_VERSION /usr/bin/pip -f && ln /usr/bin/python$PYTHON_VERSION /usr/bin/python
+ln /usr/bin/pip$PYTHON_VERSION /usr/bin/pip3 -f && ln /usr/bin/python$PYTHON_VERSION /usr/bin/python3 -f &&  ln /usr/bin/pip$PYTHON_VERSION /usr/bin/pip -f && ln /usr/bin/python$PYTHON_VERSION /usr/bin/python -f
 
 dnf install -y gcc-toolset-13-libatomic-devel
 
@@ -580,10 +580,13 @@ cd $CURRENT_DIR
 
 cd vision
 cd build
-export CMAKE_PREFIX_PATH=/usr/local/lib64/python$PYTHON_VERSION/site-packages/torch/share/cmake/Torch:$LIBPROTO_INSTALL
+
+export CMAKE_PREFIX_PATH=$CURRENT_DIR/pytorch/torch/share/cmake/Torch:$LIBPROTO_INSTALL
+
 cmake ..
 make install
-cp libtorchvision.so /usr/local/lib64/python$PYTHON_VERSION/site-packages/torch/share/cmake/Torch
+cp libtorchvision.so $CURRENT_DIR/vision/torchvision/libtorchvision.so
+
 cp libtorchvision.so /usr/local/lib64
 
 cd $CURRENT_DIR

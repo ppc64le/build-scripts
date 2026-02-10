@@ -82,6 +82,7 @@ export CXXFLAGS="-Wno-unused-variable -Wno-unused-parameter"
 pip3 install -r requirements.txt
 MAX_JOBS=$PARALLEL python3 setup.py install
 
+export LD_LIBRARY_PATH=$CURRENT_DIR/pytorch/build/lib/:$LD_LIBRARY_PATH
 cd $CURRENT_DIR/$PACKAGE_NAME
 
 # Build and install xformers

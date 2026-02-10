@@ -34,6 +34,9 @@
   "apache-arrow-18.0.0":{
     "build_script": "pyarrow_15.0.1_ubi_9.3.sh"
   },
+  "apache-arrow-20.0.0": {
+    "build_script": "pyarrow_20.0.0_ubi_9.6.sh"
+  },
   "*": {
     "build_script": "pyarrow_19.0.0_ubi_9.3.sh"
   }
