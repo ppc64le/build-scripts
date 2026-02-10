@@ -37,7 +37,7 @@ yum install -y openssl-devel unzip libzip-devel.ppc64le gzip.ppc64le python3.12-
 #Build hdf5 from source
 git clone https://github.com/HDFGroup/hdf5
 cd hdf5/
-git checkout hdf5_1.14.6
+git checkout hdf5-1_12_2
 
  ./configure --prefix=/usr/local/hdf5 --enable-cxx --enable-fortran  --with-pthread=yes --enable-threadsafe  --enable-build-mode=production --enable-unsupported  --enable-using-memchecker  --enable-clear-file-buffers --with-ssl
 make -j1

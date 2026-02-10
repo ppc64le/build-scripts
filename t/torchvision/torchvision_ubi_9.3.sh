@@ -35,7 +35,7 @@ yum install -y git make wget python$PYTHON_VERSION python$PYTHON_VERSION-devel p
 yum install gcc-toolset-13 -y
 yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build gcc-toolset-13  pkg-config  gmp-devel  freetype-devel
 
-ln /usr/bin/pip$PYTHON_VERSION /usr/bin/pip3 -f && ln /usr/bin/python$PYTHON_VERSION /usr/bin/python3 -f &&  ln /usr/bin/pip$PYTHON_VERSION /usr/bin/pip -f && ln /usr/bin/python$PYTHON_VERSION /usr/bin/python
+ln /usr/bin/pip$PYTHON_VERSION /usr/bin/pip3 -f && ln /usr/bin/python$PYTHON_VERSION /usr/bin/python3 -f &&  ln /usr/bin/pip$PYTHON_VERSION /usr/bin/pip -f && ln /usr/bin/python$PYTHON_VERSION /usr/bin/python -f
 
 dnf install -y gcc-toolset-13-libatomic-devel
 
@@ -192,7 +192,7 @@ git apply set_cpp_to_17_v4.25.3.patch
 
 echo "Installing protobuf...."
 cd python
-python3 -m pip install .
+python3 -m pip install . --no-build-isolation
 cd $CURRENT_DIR
 
 echo "------------ libprotobuf,protobuf installed--------------"
@@ -387,7 +387,7 @@ cd $CURRENT_DIR
 
 echo "---------------------------Installing FFmpeg------------------"
 #Cloning Source Code
-FFMPEG_PACKAGE_VERSION=${1:-n7.1}
+FFMPEG_PACKAGE_VERSION=${3:-n7.1}
 
 git clone https://github.com/FFmpeg/FFmpeg
 cd FFmpeg
@@ -568,7 +568,8 @@ wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t
 git apply ./0001-Exclude-source-that-has-commercial-license_${PACKAGE_VERSION}.patch
 
 sed -i '/elif sha != "Unknown":/,+1d' setup.py
-
+export LD_LIBRARY_PATH="${CURRENT_DIR}/pytorch/build/lib/:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="${CURRENT_DIR}/protobuf/local/libprotobuf/lib64/:$LD_LIBRARY_PATH"
 if ! python3 setup.py bdist_wheel --dist-dir $CURRENT_DIR; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -580,10 +581,13 @@ cd $CURRENT_DIR
 
 cd vision
 cd build
-export CMAKE_PREFIX_PATH=/usr/local/lib64/python$PYTHON_VERSION/site-packages/torch/share/cmake/Torch:$LIBPROTO_INSTALL
+
+export CMAKE_PREFIX_PATH=$CURRENT_DIR/pytorch/torch/share/cmake/Torch:$LIBPROTO_INSTALL
+
 cmake ..
 make install
-cp libtorchvision.so /usr/local/lib64/python$PYTHON_VERSION/site-packages/torch/share/cmake/Torch
+cp libtorchvision.so $CURRENT_DIR/vision/torchvision/libtorchvision.so
+
 cp libtorchvision.so /usr/local/lib64
 
 cd $CURRENT_DIR

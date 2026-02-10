@@ -1,12 +1,20 @@
 {
-   "maintainer": "Pratikt2312",
+   "maintainer": "veenious",
    "package_name": "catboost",
    "github_url": "https://github.com/catboost/catboost.git",
-   "version": "v1.2.5",
+   "version": "v1.2.7",
    "default_branch": "master",
-   "build_script": "catboost-1.2.5_ubi_9.3.sh",
+   "build_script": "catboost-1.2.7_ubi_9.6.sh",
    "package_dir": "c/catboost",
-   "docker_build": false,
+   "docker_build": true,
+   "docker_cmd": "docker build -t ${package_name}:${version} ${dir}",
    "validate_build_script": true,
-   "use_non_root_user": false
+   "use_non_root_user": false,
+   "v1.2.5": {
+      "build_script": "catboost-1.2.5_ubi_9.3.sh"
+   },
+   "v1.2.7": {
+      "dir": "v1.2.7_ubi_9.6",
+      "build_script": "catboost-1.2.7_ubi_9.6.sh"
+   }
 }
