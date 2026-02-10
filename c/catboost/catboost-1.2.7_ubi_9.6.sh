@@ -24,6 +24,7 @@ PACKAGE_URL=https://github.com/catboost/catboost.git
 
 BUILD_HOME=$(pwd)
 WORKDIR=${WORKDIR:-"$BUILD_HOME/catboost_build"}
+WORKDIR="$(readlink -f "$WORKDIR")"
 REPO_DIR=$WORKDIR/catboost
 PKG_DIR=$REPO_DIR/catboost/python-package
 
@@ -205,6 +206,7 @@ echo -e "\n[+] Install built wheel\n"
 WHEEL_PATH=$(ls -1 "$PKG_DIR/dist"/catboost-1.2.7-*_ppc64le.whl | head -n 1)
 [ -f "$WHEEL_PATH" ] || { echo -e "\n[!] ERROR: Wheel not found in dist/\n" >&2; exit 1; }
 
+WHEEL_PATH="$(readlink -f "$WHEEL_PATH")"
 python3 -m pip install "$WHEEL_PATH"
 
 # ----------------------------------------------------------------------------
