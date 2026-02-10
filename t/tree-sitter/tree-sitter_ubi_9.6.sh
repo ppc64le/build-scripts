@@ -29,6 +29,7 @@ BUILD_HOME=$(pwd)
 # Install dependencies
 yum install -y git gcc gcc-c++ python3.12 python3.12-devel.ppc64le gcc-toolset-13 make wget sudo cmake python3.12-pip
 python3.12 -m pip install build pytest wheel
+
 export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
@@ -43,54 +44,6 @@ cd tree-sitter-c
 git checkout $TREE_SITTER_C_VERSION
 mkdir -p /usr/include/tree_sitter/
 cp src/tree_sitter/*.h /usr/include/tree_sitter/
-cd $BUILD_HOME
-
-# TREE_SITTER_VERSION=v0.25.0
-git clone https://github.com/tree-sitter/tree-sitter.git
-cd tree-sitter
-make
-git checkout $TREE_SITTER_VERSION
-make install
-cd $BUILD_HOME
-
-# Build and Install tree-sitter-html
-TREE_SITTER_HTML_VERSION=v0.23.2
-git clone https://github.com/tree-sitter/tree-sitter-html.git
-cd tree-sitter-html
-git checkout $TREE_SITTER_HTML_VERSION
-pip3.12 install .
-cd $BUILD_HOME
-
-# Build and Install tree-sitter-json
-TREE_SITTER_JSON_VERSION=v0.24.8
-git clone https://github.com/tree-sitter/tree-sitter-json.git
-cd tree-sitter-json
-git checkout $TREE_SITTER_JSON_VERSION
-pip3.12 install .
-cd $BUILD_HOME
-
-# Build and Install tree-sitter-python
-TREE_SITTER_PYTHON_VERSION=v0.23.6
-git clone https://github.com/tree-sitter/tree-sitter-python.git
-cd tree-sitter-python
-git checkout $TREE_SITTER_PYTHON_VERSION
-pip3.12 install .
-cd $BUILD_HOME
-
-# Build and Install tree-sitter-javascript
-TREE_SITTER_JAVASCRIPT_VERSION=v0.23.1
-git clone https://github.com/tree-sitter/tree-sitter-javascript.git
-cd tree-sitter-javascript
-git checkout $TREE_SITTER_JAVASCRIPT_VERSION
-pip3.12 install .
-cd $BUILD_HOME
-
-# Build and Install tree-sitter-rust
-TREE_SITTER_RUST_VERSION=v0.23.2
-git clone https://github.com/tree-sitter/tree-sitter-rust.git
-cd tree-sitter-rust
-git checkout $TREE_SITTER_RUST_VERSION
-pip3.12 install .
 cd $BUILD_HOME
 
 # Clone or extract the package
@@ -127,8 +80,55 @@ else
         cd "$PACKAGE_DIR" || exit
     fi
 fi
-git submodule update --init --recursive
 
+cd $BUILD_HOME
+get_pkg_version() {
+  grep $1 ./py-tree-sitter/pyproject.toml | awk -F'>=' '{print $2}' | awk -F'"' '{print $1}'
+}
+
+TREE_SITTER_HTML_VERSION=$(get_pkg_version tree-sitter-html)
+TREE_SITTER_JSON_VERSION=$(get_pkg_version tree-sitter-json)
+TREE_SITTER_PYTHON_VERSION=$(get_pkg_version tree-sitter-python)
+TREE_SITTER_JAVASCRIPT_VERSION=$(get_pkg_version tree-sitter-javascript)
+TREE_SITTER_RUST_VERSION=$(get_pkg_version tree-sitter-rust)
+
+# Build and Install tree-sitter-html
+git clone https://github.com/tree-sitter/tree-sitter-html.git
+cd tree-sitter-html
+git checkout v$TREE_SITTER_HTML_VERSION
+pip3.12 install .
+cd $BUILD_HOME
+
+# Build and Install tree-sitter-json
+git clone https://github.com/tree-sitter/tree-sitter-json.git
+cd tree-sitter-json
+git checkout v$TREE_SITTER_JSON_VERSION
+pip3.12 install .
+cd $BUILD_HOME
+
+# Build and Install tree-sitter-python
+git clone https://github.com/tree-sitter/tree-sitter-python.git
+cd tree-sitter-python
+git checkout v$TREE_SITTER_PYTHON_VERSION
+pip3.12 install .
+cd $BUILD_HOME
+
+# Build and Install tree-sitter-javascript
+git clone https://github.com/tree-sitter/tree-sitter-javascript.git
+cd tree-sitter-javascript
+git checkout v$TREE_SITTER_JAVASCRIPT_VERSION
+pip3.12 install .
+cd $BUILD_HOME
+
+# Build and Install tree-sitter-rust
+git clone https://github.com/tree-sitter/tree-sitter-rust.git
+cd tree-sitter-rust
+git checkout v$TREE_SITTER_RUST_VERSION
+pip3.12 install .
+cd $BUILD_HOME
+
+cd "$PACKAGE_DIR"
+git submodule update --init --recursive
 # Install the package
 if ! python3.12 -m pip install -v -e '.[tests]'; then
     echo "------------------$PACKAGE_NAME:install_fails------------------------"
