@@ -11,6 +11,7 @@ RUN set -ex \
 && PACKAGE_URL=https://github.com/catboost/catboost.git \
 && BUILD_HOME=$(pwd) \
 && WORKDIR="${WORKDIR:-$BUILD_HOME/catboost_build}" \
+&& WORKDIR="$(readlink -f "$WORKDIR")" \
 && REPO_DIR="$WORKDIR/catboost" \
 && PKG_DIR="$REPO_DIR/catboost/python-package" \
 && PYTHON_VERSION="${PYTHON_VERSION:-3.11.5}" \
@@ -18,12 +19,7 @@ RUN set -ex \
 && CLANG_VERSION="${CLANG_VERSION:-17.0.6}" \
 && CONAN_VERSION="${CONAN_VERSION:-1.62.0}" \
 && export PATH=/usr/local/bin:/usr/bin:$PATH \
-\
-&& yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os \
-&& yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream//ppc64le/os \
-&& yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os \
-&& rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official-SHA256 \
-\
+
 && echo -e "\n[+] Install system dependencies (dnf)\n" \
 && dnf install -y  \
   git \
@@ -38,7 +34,6 @@ RUN set -ex \
   autoconf automake libtool \
   gzip \
   diffutils \
-  texinfo \
   gcc-gfortran \
   openblas-devel \
   libjpeg-turbo-devel \
@@ -57,7 +52,7 @@ RUN set -ex \
 && ln -sf "$(which pip3.11)" /usr/bin/pip3 \
 && python3 -V && pip3 -V \
 \
-&& python3 -m pip install -U pip setuptools wheel testpath pytest \
+&& python3 -m pip install -U "pip<24" "setuptools==68.2.2" "wheel==0.41.3" testpath pytest \
 \
 && echo -e "\n[+] Install/Setup clang 17\n" \
 && if command -v clang >/dev/null 2>&1 && clang --version | head -n1 | grep -q "clang version 17"; then \
@@ -144,7 +139,7 @@ RUN set -ex \
 && WHEEL_PATH=$(ls -1 "$PKG_DIR/dist"/catboost-1.2.7-*_ppc64le.whl | head -n 1) \
 && [ -f "$WHEEL_PATH" ] || { echo -e "\n[!] ERROR: Wheel not found in dist/\n" >&2; exit 1; } \
 \
-&& python3 -m pip install -U pip \
+&& WHEEL_PATH="$(readlink -f "$WHEEL_PATH")" \
 && python3 -m pip install "$WHEEL_PATH" \
 \
 && echo -e "\n[+] Run catboost python-package unit tests (ut/medium)\n" \
