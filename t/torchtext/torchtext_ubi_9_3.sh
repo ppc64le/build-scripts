@@ -50,6 +50,7 @@ python3 setup.py install
 cd ..
 
 export LD_LIBRARY_PATH=$CURRENT_DIR/pytorch/build/lib/:$LD_LIBRARY_PATH
+
 PY_VER=$(python3 -c 'import sys; print(f"{sys.version_info.major}{sys.version_info.minor}")')
 export LD_LIBRARY_PATH=$CURRENT_DIR/text/build/lib.linux-ppc64le-cpython-${PY_VER}/torchtext/lib/:$LD_LIBRARY_PATH
 
