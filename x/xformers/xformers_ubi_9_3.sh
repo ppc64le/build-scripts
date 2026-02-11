@@ -43,6 +43,8 @@ cd OpenBLAS
 git checkout v0.3.29
 git submodule update --init
 
+PREFIX=local/openblas
+
 # Set build options
 declare -a build_opts
 # Fix ctest not automatically discovering tests
