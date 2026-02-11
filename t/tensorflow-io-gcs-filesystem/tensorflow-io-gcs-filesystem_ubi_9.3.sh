@@ -57,7 +57,7 @@ gcc --version
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
 python3.11 -m pip install --upgrade pip
-python3.11 -m pip install --upgrade setuptools wheel build ninja
+python3.11 -m pip install --upgrade --ignore-installed setuptools wheel build ninja
 
 INSTALL_ROOT="/install-deps"
 mkdir -p $INSTALL_ROOT
@@ -186,6 +186,22 @@ export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-11)(?=.*p
 export PATH=$JAVA_HOME/bin:$PATH
 
 
+# MINIMAL FIX INSERTED HERE  
+# Prevent LLVM assembler failure on ppc64le
+export CFLAGS="-O1"
+export CXXFLAGS="-O1"
+export BAZEL_CXXOPTS="-O1"
+export LLVM_DISABLE_PDB=1
+export LLVM_ENABLE_ASSERTIONS=0
+export LLVM_OPTIMIZE_SIZE=1
+
+# FIX FOR FLAKY BAZEL DOWNLOADS
+export TF_USE_GIT_CLONE_FOR_BAZEL=1
+export BAZEL_USE_CPP_ONLY_TOOLCHAIN=1
+export TF_MIRROR_URL=""
+
+
+
 # Build Bazel dependency
 echo "------------------------Installing bazel-------------------"
 cd $CURRENT_DIR
@@ -284,18 +300,21 @@ echo "------------------------Bazel query-------------------"
 bazel query "//tensorflow/tools/pip_package:*"
 
 echo "Bazel query successful ---------------------------------------------------------------------------------------------"
-bazel build -s //tensorflow/tools/pip_package:build_pip_package --config=opt --jobs=8
+bazel build -s //tensorflow/tools/pip_package:build_pip_package --config=opt --define=llvm_enable_pdb=false --jobs=8
 
 echo "Bazel build successful ---------------------------------------------------------------------------------------------"
 
 #building the wheel
 bazel-bin/tensorflow/tools/pip_package/build_pip_package $CURRENT_DIR
 
-echo "Build wheel ---------------------------------------------------------------------------------------------"
+echo "Built wheel ---------------------------------------------------------------------------------------------"
 
 cd $CURRENT_DIR
 
+TF_WHEEL=$(ls $CURRENT_DIR/tensorflow-*.whl | head -1)
+echo "Installing wheel: $TF_WHEEL"
 python3.11 -m pip install tensorflow-2.14.1-*-linux_ppc64le.whl
+
 
 echo "Wheel installed succesfuly ---------------------------------------------------------------------------------------------"
 
@@ -308,10 +327,17 @@ export BAZEL_CXXOPTS="-std=c++17"
 export BAZEL_CXXFLAGS="-std=c++17"
 export CC=/opt/rh/gcc-toolset-12/root/usr/bin/gcc
 export CXX=/opt/rh/gcc-toolset-12/root/usr/bin/g++
+export LD_LIBRARY_PATH="$TF_SHARED_LIBRARY_DIR:$LD_LIBRARY_PATH"
+
+echo "------------------------------- TF_SHARED_LIBRARY_DIR : $TF_SHARED_LIBRARY_DIR ---------------------"
+echo "------------------------------- TF_SHARED_LIBRARY_NAME : $TF_SHARED_LIBRARY_NAME ---------------------"
+echo "------------------------------- LD_LIBRARY_PATH : $LD_LIBRARY_PATH ---------------------"
+
+
 
 
 cd $CURRENT_DIR/io
-python3.11 -m pip install grpcio-tools==1.56.2 --no-cache-dir
+python3.11 -m pip install grpcio-tools==1.56.2 --no-cache-dir --no-build-isolation
 python3.11 -m pip install .
 
 export PYTHON_BIN_PATH="$PYTHON"
@@ -373,6 +399,15 @@ echo "tf_io.bazelrc file has been created successfully."
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/tensorflow-io-gcs-filesystem/tf-io-gcs-filesystem.patch
 git apply tf-io-gcs-filesystem.patch
 
+
+export GIT_CURL_HTTP_VERSION=HTTP/1.1
+# Increase Bazel network tolerance (helps with flaky mirrors)
+export BAZEL_FETCH_TIMEOUT=600
+export BAZEL_HTTP_RETRIES=10
+# Fix dead Boost Bintray URL used by Bazel deps
+export BOOST_DOWNLOAD_URL="https://boostorg.jfrog.io/artifactory/main/release/1.72.0/source/boost_1_72_0.tar.gz"
+
+
 echo "---------------------------------Building the package--------------------------------------------"
 
 #Install
@@ -382,6 +417,7 @@ if ! (bazel build --jobs=6  --local_cpu_resources=HOST_CPUS*0.50 --local_ram_res
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
+
 
 
 echo "---------------------------------Building wheels--------------------------------------------"
@@ -406,6 +442,18 @@ TEST_EXIT_CODE=${PIPESTATUS[0]}
 
 # Read full test output (if needed)
 TEST_OUTPUT=$(cat "$TEST_LOG")
+
+# Move TensorFlow core wheel from CURRENT_DIR as wrapper script gives error if it found multiple wheels of same initial name in CURRENT_DIR
+#rm -f "$CURRENT_DIR"/tensorflow-*.whl
+mkdir -p "$CURRENT_DIR/tensorflow" && \
+mv "$CURRENT_DIR"/tensorflow-*.whl "$CURRENT_DIR/tensorflow/" 2>/dev/null || true
+
+
+# move ONLY the main tensorflow_io wheel (not the gcs one) from CURRENT_DIR
+#rm -f "$CURRENT_DIR"/tensorflow_io-[0-9]*.whl
+mkdir -p "$CURRENT_DIR/tensorflow_io" && \
+mv "$CURRENT_DIR"/tensorflow_io-[0-9]*.whl "$CURRENT_DIR/tensorflow_io/" 2>/dev/null || true
+
 
 # Analyze test results
 if echo "$TEST_OUTPUT" | grep -q "No test targets were found"; then
