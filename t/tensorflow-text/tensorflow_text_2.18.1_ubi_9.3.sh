@@ -38,7 +38,8 @@ export CC="$GCC_BIN_DIR/gcc"
 export CXX="$GCC_BIN_DIR/g++"
 
 CURRENT_DIR=$(pwd)
-mkdir -p /root/builder/wheels
+mkdir -p builder/wheels
+WHEEL_PATH=$(pwd)/builder/wheels
 pip3.12 install ninja setuptools setuptools-scm Cython wheel 
 
 echo "-------Installing cmake---------"
@@ -970,7 +971,7 @@ mkdir -p repackged_wheel
 # Pack the locally built TensorFlow files into a wheel
 wheel pack local/ -d repackged_wheel
 pip3.12 install $SRC_DIR/repackged_wheel/*.whl
-cp -a $SRC_DIR/repackged_wheel/*.whl /root/builder/wheels
+cp -a $SRC_DIR/repackged_wheel/*.whl ${WHEEL_PATH}
 cd $CURRENT_DIR
 
 
@@ -989,7 +990,7 @@ cp setup.py $CURRENT_DIR/build-dir/
 cd $CURRENT_DIR/build-dir
 pip3.12 install .
 python3.12 setup.py bdist_wheel
-cp -a dist/*.whl /root/builder/wheels
+cp -a dist/*.whl ${WHEEL_PATH}
 cd $CURRENT_DIR
 
 echo "------------------Tesorflow-dataset installing-----------------------"
@@ -1015,6 +1016,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/tensorflow-text/0001-update-pins-and-fix-build-failures.patch
+sed -i "s|^+--find-links.*|+--find-links ${WHEEL_PATH}|g" 0001-update-pins-and-fix-build-failures.patch
 git apply 0001-update-pins-and-fix-build-failures.patch
 export PATH=/bazel-6.5.0/output/:$PATH
 export BAZEL_LINKLIBS=-l%:libstdc++.a

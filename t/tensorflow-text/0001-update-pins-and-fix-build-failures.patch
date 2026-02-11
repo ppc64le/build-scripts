@@ -27,7 +27,7 @@ index 415a07b..7f72eb9 100644
 --- a/oss_scripts/pip_package/requirements_lock_3_12.txt
 +++ b/oss_scripts/pip_package/requirements_lock_3_12.txt
 @@ -1,12 +1,20 @@
-+--find-links /root/builder/wheels/
++--find-links
 +--trusted-host ausgsa.ibm.com
 +--extra-index-url https://pypi.org/simple
 +#--find-links http://ausgsa.ibm.com/gsa/ausgsa/projects/o/open-ce/conda/Open-CE-trial2.0/11-Mar-2025/p10/wheels/
