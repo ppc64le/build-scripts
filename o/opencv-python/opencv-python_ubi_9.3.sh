@@ -363,7 +363,7 @@ ln -sf $CURRENT_DIR/opencv-python/tests/SampleVideo_1280x720_1mb.mp4 SampleVideo
 # Get the Python version
 PYTHON_VERSION=$(python -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heiads/master/o/opencv-python-headless/opencv_python_headless_4.10.0.84_1.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/opencv-python-headless/opencv_python_headless_4.10.0.84_1.patch
 
 #The patch is only required if python version is greater than 3.12.
 if [[ "$(printf '%s\n' "$PYTHON_VERSION" "3.12" | sort -V | head -n1)" == "3.12" ]]; then
