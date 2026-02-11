@@ -21,7 +21,7 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 
-
+# Variables
 # Variables
 PACKAGE_NAME=tensorflow
 PACKAGE_VERSION=${1:-v2.13.0}
@@ -32,11 +32,11 @@ CURRENT_DIR=$(pwd)
 wdir=`pwd`
 
 #Install the dependencies
-yum install -y wget zip unzip python3-devel autoconf automake libtool gcc-c++ gcc-gfortran git  freetype-devel atlas-devel  python3-pip python3 python3-devel python3-setuptools python3-wheel patch 
+yum install -y wget zip unzip python3-devel autoconf automake libtool gcc-c++ gcc-gfortran git  freetype-devel atlas-devel  python3-pip python3 python3-devel python3-setuptools python3-wheel patch
 
 #Set JAVA_HOME
 yum install -y java-11-openjdk-devel
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk 
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
 # Build Bazel dependency
@@ -105,7 +105,7 @@ build --define=tflite_with_xnnpack=false
 build:linux --copt="-Wno-stringop-overflow"
 EOF
 echo ".bazelrc updated successfully!"
- 
+
 # Update tensorflow/workspace2.bzl file
 echo "Updating tensorflow/workspace2.bzl..."
 sed -i 's|sha256 = "9dc53f851107eaf87b391136d13b815df97ec8f76dadb487b58b2fc45e624d2c"|sha256 = "534fa658bd845fd974b50b10f444d392dfd0d93768c4a51b61263fd37d851c40"|' tensorflow/workspace2.bzl
@@ -138,30 +138,11 @@ cp "$BAZEL_OUT/tensorflow/libtensorflow_cc.so.2" \
 
 export LD_LIBRARY_PATH="$CURRENT_DIR/tf_libs:$LD_LIBRARY_PATH"
 echo "Exported LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
- 
+
 echo "---------------------------------Building wheel--------------------------------------------"
 
 pip install --upgrade --ignore-installed setuptools wheel build ninja
-bazel-bin/tensorflow/tools/pip_package/build_pip_package $CURRENT_DIR 
-
-echo "Injecting libtensorflow_cc.so.2 into wheel..."
-
-TMP_WHEELDIR=$(mktemp -d)
-
-unzip -q $CURRENT_DIR/tensorflow-*.whl -d "$TMP_WHEELDIR"
-
-mkdir -p "$TMP_WHEELDIR/tensorflow/.libs"
-
-cp "$CURRENT_DIR/tf_libs/libtensorflow_cc.so.2" \
-   "$TMP_WHEELDIR/tensorflow/.libs/"
-
-cd "$TMP_WHEELDIR"
-zip -qr "$CURRENT_DIR/tensorflow-2.13.0-cp39-cp39-linux_ppc64le.whl" .
-cd "$CURRENT_DIR"
-
-rm -rf "$TMP_WHEELDIR"
-
-echo "Library injected into wheel."
+bazel-bin/tensorflow/tools/pip_package/build_pip_package $CURRENT_DIR
 
 TF_WHEEL=$(ls $CURRENT_DIR/tensorflow-*.whl | head -1)
 echo "Generated wheel: $TF_WHEEL"
@@ -199,5 +180,3 @@ else
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | Both_Install_and_Test_Success"
     exit 0
 fi
-
- 
