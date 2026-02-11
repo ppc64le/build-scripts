@@ -1,10 +1,10 @@
 #!/bin/bash -ex
 # ----------------------------------------------------------------------------
 # Package        : ClickHouse
-# Version        : v26.1.1.912-stable
+# Version        : v25.8.16.34-lts 
 # Source repo    : https://github.com/ClickHouse/ClickHouse.git
 # Tested on      : UBI 9.6
-# Language       : Python
+# Language       : C++
 # Ci-Check       : false
 # Maintainer     : Sumit Dubey <sumit.dubey2@ibm.com>
 # Script License : Apache License, Version 2.0 or later
@@ -17,7 +17,7 @@
 #Configuration
 PACKAGE_NAME="ClickHouse"
 PACKAGE_ORG="ClickHouse"
-PACKAGE_VERSION="v26.1.1.912-stable"
+PACKAGE_VERSION="v25.8.16.34-lts"
 PACKAGE_URL="https://github.com/${PACKAGE_ORG}/${PACKAGE_NAME}.git"
 BUILD_HOME=$(pwd)
 SCRIPT_PATH=$(dirname $(realpath $0))
