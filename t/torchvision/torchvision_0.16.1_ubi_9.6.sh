@@ -35,7 +35,7 @@ yum install -y git make wget python$PYTHON_VERSION python$PYTHON_VERSION-devel p
 yum install gcc-toolset-13 -y
 yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build gcc-toolset-13  pkg-config  gmp-devel  freetype-devel
 
-ln -sf /usr/bin/pip$PYTHON_VERSION /usr/bin/pip3 && ln -sf /usr/bin/python$PYTHON_VERSION /usr/bin/python3 && ln -sf /usr/bin/pip$PYTHON_VERSION /usr/bin/pip && ln -sf /usr/bin/python$PYTHON_VERSION /usr/bin/python
+
 
 export PYTHON_SITE_PACKAGES=$(python - <<'EOF'
 import sysconfig, os
@@ -59,7 +59,7 @@ export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 echo "------------Installing cmake---------------------------"
 
 echo "Installing cmake..."
-pip install cmake
+python3.12 -m pip install cmake
 cd $CURRENT_DIR
 
 echo "---------------------openblas installing---------------------"
@@ -180,7 +180,7 @@ curl https://sh.rustup.rs -sSf | sh -s -- -y
 source "$HOME/.cargo/env"
 
 #installing numpy
-pip install numpy==1.26.4 --prefer-binary --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux/
+python3.12 -m pip install numpy==1.26.4 --prefer-binary --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux/
 
 # echo "------------cloning pytorch----------------"
 cd $CURRENT_DIR
@@ -248,13 +248,13 @@ cd $CURRENT_DIR
 
 
 echo "---------------Installing dependencies from Devfirst-----------------"
-pip install  libvpx lame ffmpeg pillow av==13.1.0 --prefer-binary --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux/
+python3.12 -m pip install  libvpx lame ffmpeg pillow av==13.1.0 --prefer-binary --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux/
 
 
-if python3 --version | grep -Eq "3\.9"; then
-  pip install scipy==1.11.3  --prefer-binary --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux/
+if python3.12 --version | grep -Eq "3\.9"; then
+  python3.12 -m pip install scipy==1.11.3  --prefer-binary --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux/
 else
-  pip install scipy==1.15.2  --prefer-binary --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux/
+  python3.12 -m pip install scipy==1.15.2  --prefer-binary --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux/
 fi
 
 
@@ -273,7 +273,7 @@ git apply 0001-Exclude-source-that-has-commercial-license_${PACKAGE_VERSION}.pat
 
 sed -i '/elif sha != "Unknown":/,+1d' setup.py
 
-if ! python3 setup.py build; then
+if ! python3.12 setup.py build; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_Fails"
@@ -282,7 +282,7 @@ fi
 
 cd build
 
-export TORCH_CMAKE_PREFIX="$(python3 -c 'import torch; print(torch.utils.cmake_prefix_path)')"
+export TORCH_CMAKE_PREFIX="$(python3.12 -c 'import torch; print(torch.utils.cmake_prefix_path)')"
 
 export CMAKE_PREFIX_PATH="${TORCH_CMAKE_PREFIX}:${LIBPROTO_INSTALL}"
 
@@ -297,13 +297,13 @@ cd $CURRENT_DIR/vision
 export LD_LIBRARY_PATH="${CURRENT_DIR}/pytorch/build/lib/:$LD_LIBRARY_PATH"
 export LD_LIBRARY_PATH="${CURRENT_DIR}/protobuf/local/libprotobuf/lib64/:$LD_LIBRARY_PATH"
 
-python3 setup.py bdist_wheel --dist-dir $CURRENT_DIR
+python3.12 setup.py bdist_wheel --dist-dir $CURRENT_DIR
 
 cd $CURRENT_DIR
 export LD_LIBRARY_PATH=$VENV_SITE/torch/lib:$LD_LIBRARY_PATH
-python3 -m pip install ./torchvision*.whl
+python3.12 -m pip install ./torchvision*.whl
 
-python3 -m pip install pytest pytest-xdist
+python3.12 -m pip install pytest pytest-xdist
 
 if ! pytest $PACKAGE_NAME/test/common_extended_utils.py $PACKAGE_NAME/test/common_utils.py $PACKAGE_NAME/test/smoke_test.py $PACKAGE_NAME/test/test_architecture_ops.py $PACKAGE_NAME/test/test_datasets_video_utils_opt.py ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
