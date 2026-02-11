@@ -83,7 +83,7 @@ fi
 
 cd $BUILD_HOME
 get_pkg_version() {
-  grep $1 ./py-tree-sitter/pyproject.toml | awk -F'>=' '{print $2}' | awk -F'"' '{print $1}'
+  grep $1 ./py-tree-sitter/pyproject.toml | awk -F'>=|==|<=' '{print $2}' | awk -F'"' '{print $1}'
 }
 
 TREE_SITTER_HTML_VERSION=$(get_pkg_version tree-sitter-html)
