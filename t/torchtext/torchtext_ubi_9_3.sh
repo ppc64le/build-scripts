@@ -31,7 +31,7 @@ export CC=/usr/bin/gcc
 export CXX=/usr/bin/g++
 
 # Install necessary system dependencies
-yum install -y git gcc gcc-c++ make cmake wget openssl-devel python-devel python-pip bzip2-devel libffi-devel zlib-devel meson ninja-build gcc-gfortran openblas-devel libjpeg-devel zlib-devel libtiff-devel freetype-devel libomp-devel zip unzip sqlite-devel
+yum install -y git gcc gcc-c++ make cmake wget openssl-devel python3 python3-devel python3-pip bzip2-devel libffi-devel zlib-devel meson ninja-build gcc-gfortran openblas-devel libjpeg-devel zlib-devel libtiff-devel freetype-devel libomp-devel zip unzip sqlite-devel
 
 #install rust
 curl https://sh.rustup.rs -sSf | sh -s -- -y
@@ -50,10 +50,11 @@ python3 setup.py install
 cd ..
 
 export LD_LIBRARY_PATH=$CURRENT_DIR/pytorch/build/lib/:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=$CURRENT_DIR/text/build/lib.linux-ppc64le-cpython-312/torchtext/lib/:$LD_LIBRARY_PATH
+PY_VER=$(python3 -c 'import sys; print(f"{sys.version_info.major}{sys.version_info.minor}")')
+export LD_LIBRARY_PATH=$CURRENT_DIR/text/build/lib.linux-ppc64le-cpython-${PY_VER}/torchtext/lib/:$LD_LIBRARY_PATH
 
-pip install torchdata==0.7.1
-pip install numpy pytest regex nltk sacremoses parameterized portalocker expecttest pytest-timeout
+python3 -m pip install torchdata==0.7.1
+python3 -m pip install numpy pytest regex nltk sacremoses parameterized portalocker expecttest pytest-timeout
 export BLIS_ARCH=generic
 pip install blis spacy
 
