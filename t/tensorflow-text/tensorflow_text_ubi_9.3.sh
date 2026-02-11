@@ -83,12 +83,29 @@ make install
 ln -s /usr/local/bin/patchelf /usr/bin/patchelf
 cd $CURRENT_DIR
 
+
+# Prevent LLVM assembler failure on ppc64le
+export CFLAGS="-O1"
+export CXXFLAGS="-O1"
+export BAZEL_CXXOPTS="-O1"
+export LLVM_DISABLE_PDB=1
+export LLVM_ENABLE_ASSERTIONS=0
+export LLVM_OPTIMIZE_SIZE=1
+
+# FIX FOR FLAKY BAZEL DOWNLOADS
+export TF_USE_GIT_CLONE_FOR_BAZEL=1
+export BAZEL_USE_CPP_ONLY_TOOLCHAIN=1
+export TF_MIRROR_URL=""
+export BAZEL_DOWNLOAD_USE_GCE_MIRROR=false
+export BAZEL_FETCH_TIMEOUT=600
+export BAZEL_FETCH_RETRIES=5
+
+
 echo " --------------------------------------------- Downloading Bazel --------------------------------------------- "
 mkdir -p /bazel
 cd /bazel
 wget https://github.com/bazelbuild/bazel/releases/download/6.1.0/bazel-6.1.0-dist.zip
 unzip bazel-6.1.0-dist.zip
-export BAZEL_DOWNLOAD_USE_GCE_MIRROR=false
 
 echo " --------------------------------------------- Installing bazel --------------------------------------------- "
 env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
@@ -156,6 +173,9 @@ echo " --------------------------------------------- Bazel build (TensorFlow) --
 bazel build -s //tensorflow/tools/pip_package:build_pip_package \
   --config=opt \
   --define=llvm_enable_pdb=false
+  
+echo " --------------------------------------------- Bazel wheel build (TensorFlow) --------------------------------------------- "
+
 
 bazel-bin/tensorflow/tools/pip_package/build_pip_package $CURRENT_DIR
 TF_WHEEL=$(ls $CURRENT_DIR/tensorflow-2.14.1-*.whl | head -1)
@@ -171,6 +191,12 @@ export BAZEL_CXXOPTS="-std=c++17"
 export BAZEL_CXXFLAGS="-std=c++17"
 export CC=/opt/rh/gcc-toolset-12/root/usr/bin/gcc
 export CXX=/opt/rh/gcc-toolset-12/root/usr/bin/g++
+export LD_LIBRARY_PATH="$TF_SHARED_LIBRARY_DIR:$LD_LIBRARY_PATH"
+
+
+echo "------------------------------- TF_SHARED_LIBRARY_DIR : $TF_SHARED_LIBRARY_DIR ---------------------"
+echo "------------------------------- TF_SHARED_LIBRARY_NAME : $TF_SHARED_LIBRARY_NAME ---------------------"
+echo "------------------------------- LD_LIBRARY_PATH : $LD_LIBRARY_PATH ---------------------"
 
 cd $CURRENT_DIR
 
@@ -197,7 +223,16 @@ else
 fi
 
 echo "-----------------------Building tf-text wheel ----------------------------"
-python3.11 -m pip install --upgrade wheel setuptools build
+python3.11 -m pip install --upgrade --ignore-installed setuptools wheel build ninja
+
 ./bazel-bin/oss_scripts/pip_package/build_pip_package $CURRENT_DIR
 
+# Remove TensorFlow core wheel from CURRENT_DIR as wrapper script gives error if it found multiple wheels of same initial name in CURRENT_DIR
+#rm -f "$CURRENT_DIR"/tensorflow-*.whl
+mv "$CURRENT_DIR"/tensorflow-*.whl "$CURRENT_DIR"/tensorflow/
+
 echo "----------------Tensorflow-text wheel build successfully------------------------------------"
+
+
+
+
