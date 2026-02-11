@@ -121,6 +121,23 @@ python3.11 -c "import h5py; print(h5py.__version__)"
 echo "-----------------------------------------------------Installed h5py-----------------------------------------------------"
 
 
+# Prevent LLVM assembler failure on ppc64le
+export CFLAGS="-O1"
+export CXXFLAGS="-O1"
+export BAZEL_CXXOPTS="-O1"
+export LLVM_DISABLE_PDB=1
+export LLVM_ENABLE_ASSERTIONS=0
+export LLVM_OPTIMIZE_SIZE=1
+
+# FIX FOR FLAKY BAZEL DOWNLOADS
+export TF_USE_GIT_CLONE_FOR_BAZEL=1
+export BAZEL_USE_CPP_ONLY_TOOLCHAIN=1
+export TF_MIRROR_URL=""
+export BAZEL_DOWNLOAD_USE_GCE_MIRROR=false
+export BAZEL_FETCH_TIMEOUT=600
+export BAZEL_FETCH_RETRIES=5
+
+
 #installing patchelf from source
 cd $CURRENT_DIR
 yum install -y git autoconf automake libtool make
@@ -214,6 +231,9 @@ export TFCI_WHL_NUMPY_VERSION=1
 export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/ -fno-plt//')"
 export CFLAGS="$(echo ${CFLAGS} | sed -e 's/ -fno-plt//')"
 
+export BAZEL_LLVM_ENABLE_PDB=0
+
+
 # Apply the patch
 echo "------------------------Applying patch-------------------"
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/tensorflow/tf_2.14.1_fix.patch
@@ -225,8 +245,9 @@ yes n | ./configure
 echo "------------------------Bazel query-------------------"
 bazel query "//tensorflow/tools/pip_package:*"
 
+
 #Install
-if ! (bazel build -s //tensorflow/tools/pip_package:build_pip_package --config=opt) ; then  
+if ! (bazel build -s //tensorflow/tools/pip_package:build_pip_package --config=opt --define=llvm_enable_pdb=false) ; then  
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
