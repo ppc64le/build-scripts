@@ -37,6 +37,8 @@ yum install -y git wget python3 python3-devel python3-pip openblas-devel cmake g
 
 echo "Installing required Python packages..."
 pip install wheel "numpy<2.0" scipy==1.13.1 ninja build pytest
+echo "Installing scipy again as numpy version gets changed during scipy build"
+pip install "numpy<2.0"
 
 
 # Check if Rust is installed
