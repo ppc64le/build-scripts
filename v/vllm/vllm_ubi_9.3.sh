@@ -199,7 +199,7 @@ python3.12 -m pip install \
   "sentencepiece @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/161/51fddd15aec51/sentencepiece-0.2.0-cp312-cp312-linux_ppc64le.whl" \
   certifi charset-normalizer filelock fsspec idna \
   Jinja2 MarkupSafe mpmath networkx requests \
-  sympy tqdm typing_extensions urllib3 numpy
+  sympy tqdm  "typing_extensions>=4.8" urllib3 numpy
 
 
 python3.12 -m pip install cmake pyyaml packaging openpyxl setuptools_scm
@@ -238,14 +238,16 @@ cd arrow/cpp
 
 mkdir -p build && cd build
 
+# from your cpp/build directory (clean build recommended)
 cmake -DCMAKE_BUILD_TYPE=Release \
-      -DCMAKE_INSTALL_PREFIX=/usr/local \
-      -DARROW_PYTHON=ON \
-      -DARROW_BUILD_TESTS=OFF \
-      -DARROW_JEMALLOC=ON \
-      -DARROW_BUILD_STATIC=OFF \
-      -DARROW_PARQUET=ON \
-      ..
+  -DCMAKE_INSTALL_PREFIX=/usr/local \
+  -DARROW_PYTHON=ON \
+  -DARROW_BUILD_TESTS=OFF \
+  -DARROW_JEMALLOC=ON \
+  -DARROW_BUILD_STATIC=OFF \
+  -DARROW_PARQUET=ON \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  ..
 
 make -j$(nproc)
 make install
@@ -341,10 +343,19 @@ export MAX_JOBS=$(nproc)
 
 # AVOID eggs: build and install via pip/wheel instead of setup.py install
 export SETUPTOOLS_SCM_PRETEND_VERSION=0.8.4
-python3.12 setup.py install
+
+TORCH_LIB_DIR=$(python3.12 - <<'PY'
+import torch, os
+print(os.path.join(os.path.dirname(torch.__file__), "lib"))
+PY
+)
+
+export LD_LIBRARY_PATH="${TORCH_LIB_DIR}:$LD_LIBRARY_PATH"
+
+# python3.12 setup.py install
 
 python3.12 setup.py bdist_wheel --dist-dir="${CURRENT_DIR}"
-
+python3.12 -m pip install "${CURRENT_DIR}"/vllm-0.8.4+cpu-*.whl
 cd ${CURRENT_DIR}
 
 echo "==================================================================="
