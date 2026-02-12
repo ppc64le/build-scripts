@@ -65,6 +65,7 @@ git submodule update --init --recursive
 echo "Installing package dependencies..."
 pip install -r requirements.txt
 
+export LD_LIBRARY_PATH="${CURRENT_DIR}/pytorch/torch/lib/:${LD_LIBRARY_PATH}"
 
 # Build and install the package
 echo "Starting PyTorch build and installation..."

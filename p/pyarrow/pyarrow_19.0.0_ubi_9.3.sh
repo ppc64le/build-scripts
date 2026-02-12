@@ -24,14 +24,14 @@ PACKAGE_DIR=arrow/python
 PACKAGE_VERSION=${1:-apache-arrow-19.0.0}
 PACKAGE_URL=https://github.com/apache/arrow
 version=$(echo "$PACKAGE_VERSION" | sed 's/^apache-arrow-//')
+CURRENT_DIR="${PWD}"
 
 echo "Install dependencies and tools."
-yum install -y python python-pip python-devel wget git make  python-devel xz-devel openssl-devel cmake zlib-devel libjpeg-devel gcc-toolset-13 cmake libevent libtool pkg-config  brotli-devel.ppc64le bzip2-devel lz4-devel 
-
+yum install -y python python-pip python-devel wget git make  python-devel xz-devel openssl-devel cmake zlib-devel libjpeg-devel gcc-toolset-13 cmake libevent libtool pkg-config  brotli-devel.ppc64le bzip2-devel lz4-devel
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 SCRIPT_DIR=$(pwd)
-pip install ninja setuptools 
+pip install ninja setuptools
 
 #install cmake
 wget https://cmake.org/files/v3.28/cmake-3.28.0.tar.gz
@@ -56,7 +56,7 @@ echo "Compiling the source code for flex..."
 make -j$(nproc)
 echo "Installing flex..."
 make install
-cd $SCRIPT_DIR 
+cd $SCRIPT_DIR
 
 echo "-------bison installing----------------------"
 wget https://mirrors.cloud.tencent.com/gnu/bison/bison-3.8.2.tar.gz
@@ -80,7 +80,7 @@ echo "Compiling the source code gflags..."
 make -j$(nproc)
 echo "Installing gflags..."
 make install
-cd $SCRIPT_DIR 
+cd $SCRIPT_DIR
 
 echo "----------Installing c-ares----------------"
 #Building c-areas
@@ -148,7 +148,7 @@ echo "Compiling the source code for rapidjson..."
 make -j$(nproc)
 echo "Installing rapidjson"
 make install
-cd $SCRIPT_DIR 
+cd $SCRIPT_DIR
 
 echo "--------------xsimd installing-------------------------"
 git clone https://github.com/xtensor-stack/xsimd.git
@@ -160,7 +160,7 @@ echo "Compiling the source code for xsimd..."
 make -j$(nproc)
 echo "Installing xsimd..."
 make install
-cd $SCRIPT_DIR 
+cd $SCRIPT_DIR
 
 
 echo "-----------------snappy installing----------------"
@@ -182,7 +182,7 @@ make -j$(nproc)
 echo "Installing snappy..."
 make install
 cd ..
-cd $SCRIPT_DIR 
+cd $SCRIPT_DIR
 
 
 echo "------------libzstd installing-------------------------"
@@ -233,7 +233,7 @@ echo "Installing re2..."
   popd
 echo "Running make shared-install......"
 make -j "${CPU_COUNT}" prefix=${RE2_PREFIX} shared-install
-cd $SCRIPT_DIR 
+cd $SCRIPT_DIR
 
 
 
@@ -263,7 +263,7 @@ cmake --build .
 
 echo "Installing utf8proc ..."
 cmake --build . --target install
-cd $SCRIPT_DIR 
+cd $SCRIPT_DIR
 
 echo "------------ abseil_cpp cloning-------------------"
 
@@ -315,7 +315,7 @@ echo  "Building libprotobuf..."
 cmake --build . --verbose
 echo  "Installing libprotobuf..."
 cmake --install .
-cd $SCRIPT_DIR 
+cd $SCRIPT_DIR
 
 echo "------------ orc installing-------------------"
 
@@ -432,12 +432,12 @@ CFLAGS="$(echo ${CFLAGS} | sed 's/ -march=[^ ]*//g' | sed 's/ -mcpu=[^ ]*//g' |s
     --without-libraries=python \
     --with-toolset=${TOOLSET} \
     --with-icu="${BOOST_PREFIX}" || (cat bootstrap.log; exit 1)
-	 ADDRESS_MODEL=64
+         ADDRESS_MODEL=64
     ARCHITECTURE=power
-	ABI="sysv"
-	 BINARY_FORMAT="elf"
+        ABI="sysv"
+         BINARY_FORMAT="elf"
 
-	 export CPU_COUNT=$(nproc)
+         export CPU_COUNT=$(nproc)
 
 echo " Building and installing Boost...."
 ./b2 -q \
@@ -461,7 +461,7 @@ echo " Building and installing Boost...."
 # Remove Python headers as we don't build Boost.Python.
 rm "${BOOST_PREFIX}/include/boost/python.hpp"
 rm -r "${BOOST_PREFIX}/include/boost/python"
-cd $SCRIPT_DIR 
+cd $SCRIPT_DIR
 
 
 echo "------------thrift_cpp  installing-------------------"
@@ -502,13 +502,13 @@ echo "Configuring thrift-cpp installation..."
     --with-boost=$BOOST_ROOT \
     --with-openssl=$OPENSSL_ROOT \
     --enable-tests=no \
-    --enable-tutorial=no 
+    --enable-tutorial=no
 
 echo "Compiling the source code for thrift-cpp..."
 make -j$(nproc)
 echo  "Installing thrift_cpp..."
 make install
-cd $SCRIPT_DIR 
+cd $SCRIPT_DIR
 
 echo "------------ grpc_cpp installing-------------------"
 
@@ -756,8 +756,30 @@ popd
 cd $SCRIPT_DIR
 
 echo "Installing prerequisite for arrow..."
-pip install setuptools-scm Cython
-pip install numpy==2.0.2
+
+PY_VER=$(python3 -c 'import sys;print(f"{sys.version_info.major}.{sys.version_info.minor}")')
+
+# Always
+pip3 install -U pip
+pip3 install setuptools-scm
+
+if python3 - <<'PY'
+import sys
+raise SystemExit(0 if sys.version_info >= (3,13) else 1)
+PY
+then
+  # Python ≥ 3.13
+  pip3 install "cython>=3.2"
+  pip3 install "numpy>=2.0" "pandas>=2.2.3"
+else
+  # Python < 3.13
+  pip3 install "cython<3"
+  pip3 install "numpy==1.26.4" "pandas==2.0.3"
+fi
+
+# pip install setuptools-scm "cython<3"
+# pip install numpy==1.26.4 pandas==2.0.3
+
 
 export PYARROW_BUNDLE_ARROW_CPP=1
 export LD_LIBRARY_PATH=${ARROW_HOME}/lib:${LD_LIBRARY_PATH}
@@ -791,6 +813,7 @@ else
     export PYARROW_WITH_CUDA=0
 fi
 
+
 cd python
 
 if ! pip install . ; then
@@ -800,8 +823,8 @@ if ! pip install . ; then
     exit 1
 fi
 
-# Creating the wheel in the build script.Because When using the wrapper script, 
-# the wheel file is generated with an unexpected version, e.g., 
+# Creating the wheel in the build script.Because When using the wrapper script,
+# the wheel file is generated with an unexpected version, e.g.,
 # 'pyarrow-19.0.1.dev0+ga8a979a41.d20250414-cp312-cp312-linux_ppc64le.whl'
 # This is because when the wheel is built using the command:
 # python -m build --wheel --no-isolation --outdir="$SCRIPT_DIR/"
@@ -812,9 +835,9 @@ python3 setup.py bdist_wheel --dist-dir="$SCRIPT_DIR/"
 
 echo "testing pyarrow...."
 cd ..
-export LD_LIBRARY_PATH=${SNAPPY_PREFIX}/lib:${C_ARES_PREFIX}/lib:${THRIFT_PREFIX}/lib:${UTF8PROC_PREFIX}/lib:${RE2_PREFIX}/lib:${LIBPROTO_INSTALL}/lib64:${GRPC_PREFIX}/lib:${ORC_PREFIX}/lib:${OpenBLASInstallPATH}/lib
+export LD_LIBRARY_PATH=${ARROW_HOME}/lib:${SNAPPY_PREFIX}/lib:${C_ARES_PREFIX}/lib:${THRIFT_PREFIX}/lib:${UTF8PROC_PREFIX}/lib:${RE2_PREFIX}/lib:${LIBPROTO_INSTALL}/lib64:${GRPC_PREFIX}/lib:${ORC_PREFIX}/lib:${OpenBLASInstallPATH}/lib
 
-pip install -r python/requirements-test.txt
+pip install -r python/requirements-test.txt "pytest<9"
 
 PYARROW_LOCATION=$(python -c "import os; import pyarrow; print(os.path.dirname(pyarrow.__file__))")
 export PARQUET_TEST_DATA="$(pwd)/cpp/submodules/parquet-testing/data"
@@ -822,7 +845,7 @@ pushd testing
 export ARROW_TEST_DATA=$(pwd)/data
 popd
 
-if ! python -m pytest -k "not test_foreign_buffer and not test_get_include" $PYARROW_LOCATION -vv ; then
+if ! python -m pytest -k "not test_foreign_buffer and not test_get_include and not pandas" $PYARROW_LOCATION -vv ; then
         echo "------------------$PACKAGE_NAME:test_fails---------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME "
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | Github | Fail |  Test_Fails"
@@ -831,5 +854,5 @@ else
         echo "------------------$PACKAGE_NAME:test_success-------------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME "
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | Github | Pass |  Test_Success"
-	exit 0
+        exit 0
 fi

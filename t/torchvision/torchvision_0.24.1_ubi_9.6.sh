@@ -591,6 +591,10 @@ cp libtorchvision.so $CURRENT_DIR/vision/torchvision/libtorchvision.so
 cp libtorchvision.so $PYTHON_SITE_PACKAGES/torch/share/cmake/Torch
 cp libtorchvision.so /usr/local/lib64
 cd $CURRENT_DIR/vision
+
+export LD_LIBRARY_PATH="${CURRENT_DIR}/pytorch/build/lib/:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="${CURRENT_DIR}/protobuf/local/libprotobuf/lib64/:$LD_LIBRARY_PATH"
+
 python3 setup.py bdist_wheel --dist-dir $CURRENT_DIR
 
 cd $CURRENT_DIR
@@ -610,4 +614,3 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
-

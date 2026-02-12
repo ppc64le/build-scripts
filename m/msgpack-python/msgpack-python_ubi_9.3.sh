@@ -24,7 +24,9 @@ PACKAGE_VERSION=${1:-v1.1.1}
 PACKAGE_URL=https://github.com/msgpack/msgpack-python.git
 
 # Install necessary system packages
-yum install -y git python3 python3-devel python3-pip gcc make wget
+yum install -y git python3 python3-devel python3-pip make wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
 # Upgrade pip and install build dependencies
 pip3 install --upgrade pip setuptools wheel

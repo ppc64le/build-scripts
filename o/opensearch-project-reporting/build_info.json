@@ -2,14 +2,17 @@
   "maintainer": "Prachi.Gaonkar@ibm.com",
   "package_name": "opensearch-project-reporting",
   "github_url": "https://github.com/opensearch-project/reporting",
-  "version": "2.19.2.0",
-  "required_versions":{"Releases": ["*"], "Tags": ["2.19.2.0"]},
+  "version": "3.3.0.0",
+  "required_versions":{"Releases": ["*"], "Tags": ["3.3.0.0"]},
   "default_branch": "main",
   "package_dir": "o/opensearch-project-reporting",
-  "build_script": "opensearch-project-reporting_2.19.2.0_ubi_9.3.sh",
+  "build_script": "opensearch-project-reporting_3.3.0.0_ubi_9.6.sh",
   "validate_build_script": true,
   "use_non_root_user": true,
   "docker_build": false,
+  "3.3.0.0": {
+    "build_script": "opensearch-project-reporting_3.3.0.0_ubi_9.6.sh"
+  },
   "2.19.2.0": {
     "build_script": "opensearch-project-reporting_2.19.2.0_ubi_9.3.sh"
   }

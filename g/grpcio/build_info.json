@@ -10,8 +10,11 @@
     "docker_build": false,
     "validate_build_script": true,
     "use_non_root_user": "false",
+    "v1.53.0":{
+      "build_script":"grpcio_1.53.0_ubi_9.3.sh"
+     },
     "v1.54.3":{
-      "build_script":"grpcio_ubi_9.3.sh"
+      "build_script":"grpcio_1.53.0_ubi_9.3.sh"
      },
     "v1.*.*": {
       "build_script": "grpcio_1.76.0_ubi_9.6.sh"

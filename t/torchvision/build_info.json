@@ -13,6 +13,9 @@
   "v0.22.0": {
     "build_script": "torchvision_ubi_9.3.sh"
   },
+  "v0.16.1": {
+    "build_script": "torchvision_0.16.1_ubi_9.6.sh"
+  },
   "v*.*.*": {
     "build_script": "torchvision_0.24.1_ubi_9.6.sh"
   }

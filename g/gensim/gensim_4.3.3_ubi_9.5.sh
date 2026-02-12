@@ -32,7 +32,7 @@ yum install -y git gcc gcc-c++ wget atlas pkg-config openblas-devel atlas-devel 
 # Ensure Python 3.12 is installed
 dnf install -y python3.12 python3.12-pip python3.12-test python3.12-devel
 python3.12 --version
-pip3.12 --version
+python3.12 -m pip --version
 
 echo " ------------------------------------------ Openblas Installing ------------------------------------------ "
 

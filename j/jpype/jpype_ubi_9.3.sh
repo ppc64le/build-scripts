@@ -24,7 +24,7 @@ PACKAGE_DIR=jpype
 PACKAGE_URL=https://github.com/jpype-project/jpype.git
 
 # Install necessary system packages
-yum install -y git python-devel java-11-openjdk java-11-openjdk-devel gcc gcc-c++ gzip tar make wget xz cmake yum-utils openssl-devel openblas-devel bzip2-devel bzip2 zip unzip libffi-devel zlib-devel autoconf automake libtool cargo pkgconf-pkg-config.ppc64le info.ppc64le fontconfig.ppc64le fontconfig-devel.ppc64le sqlite-devel
+yum install -y git python3 python3-pip python3-devel java-11-openjdk java-11-openjdk-devel gcc gcc-c++ gzip tar make wget xz cmake yum-utils openssl-devel openblas-devel bzip2-devel bzip2 zip unzip libffi-devel zlib-devel autoconf automake libtool cargo pkgconf-pkg-config.ppc64le info.ppc64le fontconfig.ppc64le fontconfig-devel.ppc64le sqlite-devel
 
 # Set JAVA_HOME
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
@@ -38,23 +38,48 @@ git checkout $PACKAGE_VERSION
 # Download JDBC Drivers
 wget https://repo1.maven.org/maven2/org/xerial/sqlite-jdbc/3.42.0.0/sqlite-jdbc-3.42.0.0.jar -O sqlite-jdbc.jar
 wget https://repo1.maven.org/maven2/org/hsqldb/hsqldb/2.7.2/hsqldb-2.7.2.jar -O hsqldb.jar
-wget https://repo1.maven.org/maven2/com/h2database/h2/2.2.224/h2-2.2.224.jar -O h2.jar
+wget https://repo1.maven.org/maven2/com/h2database/h2/1.4.200/h2-1.4.200.jar -O h2.jar
 
 # Add drivers to CLASSPATH
 export CLASSPATH=$CLASSPATH:$(pwd)/sqlite-jdbc.jar:$(pwd)/hsqldb.jar:$(pwd)/h2.jar
 
 # Install test dependencies
-pip3 install pytest pytest-cov numpy tox
+python3 -m pip install -U pip setuptools wheel
+python3 -m pip install pytest pytest-cov numpy
 
 # Install the package
-if ! pip3 install .; then
+if python3 -m pip install --no-build-isolation -e .; then
     echo "------------------$PACKAGE_NAME: Installation successful ---------------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Pass | Installation_Success"
-    exit 1
+    exit 0
 fi
 
+python3 -c "import jpype; import _jpype; print('JPype native module loaded OK')"
+
+# Install test requirements
+python3 -m pip install jedi typing_extensions
+
+if [[ "$PACKAGE_VERSION" == "v1.5.0" ]]; then
+    python3 -m pip install "numpy<2"
+else
+    python3 -m pip install numpy
+fi
+
+python3 -c "import jpype"
+python3 -m pip install -r test-requirements.txt
+
+# Compile JPype Java fixtures
+mkdir -p test/classes
+find test -name "*.java" | xargs javac -source 8 -target 8 -d test/classes
+
+# Add fixtures + JDBC jars to classpath
+export CLASSPATH="$(pwd)/test/classes:$(pwd)/h2.jar:$(pwd)/hsqldb.jar:$(pwd)/sqlite-jdbc.jar:$CLASSPATH"
+
+# Force JVM to use it
+export JPYPE_JVM_ARGS="-Djava.class.path=$CLASSPATH"
+
 # Run tests
-if ! tox -e py3; then
+if ! python3 -m pytest -v --junit-xml=build/test/test.xml test/jpypetest --checkjni --fast; then
     echo "------------------$PACKAGE_NAME: Tests failed ------------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Tests_Failure"
     exit 2

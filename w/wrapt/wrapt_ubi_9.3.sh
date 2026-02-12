@@ -22,17 +22,19 @@ PACKAGE_NAME=wrapt
 PACKAGE_VERSION=${1:-1.14.1}
 PACKAGE_URL=https://github.com/GrahamDumpleton/wrapt/
 
-yum install -y python3 python3-devel python3-pip openssl openssl-devel git gcc gcc-c++ cmake
+yum install -y python3 python3-devel python3-pip openssl openssl-devel git gcc-toolset-13 cmake
+export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
 # Clone the repository
 git clone $PACKAGE_URL $PACKAGE_NAME
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-pip install setuptools
+pip3 install setuptools
 
 #install pytest
-pip install pytest tox==3.24.5
+pip3 install pytest==6.2.5 tox==3.24.5
 
 #install
 if ! (python3 setup.py install) ; then

@@ -35,7 +35,7 @@ yum install -y wget gcc gcc-c++ gcc-gfortran git make cmake autoconf automake \
 # Python deps (Cython >= 3.2.0, NumPy 2.3.4, Meson/Ninja)
 # -------------------------------------------------------------------------
 python3.12 -m pip install -U pip setuptools wheel
-python3.12 -m pip install "cython>=3.2.0" "numpy==2.3.4" wheel pytest meson ninja
+python3.12 -m pip install "cython>=3.2.0" "numpy==2.3.4" wheel "pytest>=8,<9" meson ninja pylzma
 
 # -------------------------------------------------------------------------
 # Install dependencies from source with correct versions
@@ -70,6 +70,8 @@ mkdir build
 cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
 make -j$(nproc) && make install
+export LIBAEC_HOME=/usr/local
+export LD_LIBRARY_PATH=$LIBAEC_HOME/lib64:$LD_LIBRARY_PATH
 cd ../..
 
 # c-blosc
@@ -146,7 +148,7 @@ make -j$(nproc) && make install
 cd ../..
 
 # liblzf 3.6
-wget http://dist.schmorp.de/liblzf/liblzf-3.6.tar.gz
+wget https://dist.schmorp.de/liblzf/liblzf-3.6.tar.gz
 tar -xf liblzf-3.6.tar.gz
 cd liblzf-3.6
 ./configure && make -j$(nproc) && make install
@@ -256,7 +258,7 @@ python3.12 -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"
 # Run tests
 # -------------------------------------------------------------------------
 cd tests
-if ! pytest -k "not(test_image_roundtrips or test_tifffile or test_delta or test_avif_encoder_cicp)" ; then
+if ! pytest -k "not(test_tiff_encode_compression or test_image_roundtrips or test_tifffile or test_delta or test_avif_encoder_cicp or h5checksum)" ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"

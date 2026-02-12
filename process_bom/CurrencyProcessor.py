@@ -1,6 +1,8 @@
 import json
 import os
 import datetime
+import gzip
+import re
 
 from process_bom.ca_config import *
 from process_bom.BOMProcessor import BOMProcessor
@@ -31,7 +33,7 @@ class CurrencyProcessor:
         """
         os.mkdir(SBOM_CVE_DIR)
         required_package_details = self._get_package_details(package_name, version)
-        #required_package_details["wheel_status"] = response["wheel_status"]
+        required_package_details["wheel_status"] = self.get_wheel_status(package_name, version)
         required_package_details["Created"] = str(datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None))
 
         result = []
@@ -42,6 +44,38 @@ class CurrencyProcessor:
         except Exception as e:
             print("Exception occurred:", e)
 
+    def get_wheel_status(self, package_name: str, version: str):
+        result = {}
+        cos = COSWrapper(CLOUD_OBJECT_CVE_SBOM_BUCKET)
+
+        python_versions = ["3.9", "3.10", "3.11", "3.12", "3.13"]
+
+        for py_version in python_versions:
+            artifact_name = f"{package_name}/{version}/{package_name}_{version}_wheel_py{py_version}_log.gz"
+            key = f"wheel build {py_version}"
+
+            try:
+                zip_path = cos.download_artifacts_gz(artifact_name)
+
+                with gzip.open(zip_path, "rt", errors="ignore") as f:
+                    content = f.read()
+                    result[key] = self._get_build_status_from_log(content)
+
+            except Exception:
+                result[key] = "failure"
+
+        return result
+    
+    def _get_build_status_from_log(self, content: str) -> str:
+        content = content.lower()
+        success_messages = f"exit 0"
+        failure_messages = f"exit 1", f"exit 127"
+        if success_messages in content:
+            return "success"
+        for failure_message in failure_messages:
+            if failure_message in content:
+                return "failure"
+        return "success"
 
     def _get_package_details(self, package_name: str, version: str):
         """

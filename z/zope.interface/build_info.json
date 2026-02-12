@@ -1,0 +1,13 @@
+{
+   "maintainer": "OpenSource-Edge-for-IBM-Tool-1",
+   "package_name": "zope.interface",
+   "github_url": "https://github.com/zopefoundation/zope.interface",
+   "version": "7.1.1",
+   "default_branch": "master",
+   "build_script": "zope.interface_ubi_9.3.sh",
+   "package_dir": "z/zope.interface",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false
+}

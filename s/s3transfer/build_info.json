@@ -1,0 +1,16 @@
+{
+   "maintainer": "kiranNukal",
+   "package_name": "s3transfer",
+   "github_url": "https://github.com/boto/s3transfer",
+   "version": "0.10.4",
+   "default_branch": "develop",
+   "build_script": "s3transfer_ubi_9.6.sh",
+   "package_dir": "s/s3transfer",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*": {
+     "build_script":"s3transfer_ubi_9.6.sh"
+  }
+}

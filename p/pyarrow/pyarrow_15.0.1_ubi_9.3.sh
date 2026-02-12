@@ -26,7 +26,8 @@ PACKAGE_DIR=./arrow/python
 CURRENT_DIR="${PWD}"
  
 # Install necessary dependencies
-yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openssl-devel cmake
+yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openssl-devel cmake openblas openblas-devel
+
  
 echo "Dependencies installed."
  
@@ -62,16 +63,23 @@ sed -i '/cdef object alloc_c_schema(ArrowSchema\*\* c_schema)/s/ noexcept//' pyt
 sed -i '/cdef object alloc_c_array(ArrowArray\*\* c_array)/s/ noexcept//' python/pyarrow/types.pxi
 sed -i '/cdef object alloc_c_stream(ArrowArrayStream\*\* c_stream)/s/ noexcept//' python/pyarrow/types.pxi
 echo "Fixes applied."
- 
-pip install -r python/requirements-build.txt
-pip install cython wheel numpy==1.26.4 setuptools-scm
- 
-echo "Preparing for build..."
+
+PYTHON_EXEC=$(which python3)
+$PYTHON_EXEC -m pip install -U pip
+$PYTHON_EXEC -m pip install -r python/requirements-build.txt
+$PYTHON_EXEC -m pip install "Cython<3.1,!=3.0.9" "setuptools>=70.1" wheel numpy==1.26.4 setuptools-scm
+
+NUMPY_INCLUDE=$($PYTHON_EXEC - <<EOF
+import numpy; print(numpy.get_include())
+EOF
+)
  
 mkdir cpp/build
 cd cpp/build
  
 cmake -DCMAKE_INSTALL_PREFIX=$ARROW_HOME \
+      -DPython3_EXECUTABLE=$PYTHON_EXEC \
+      -DPython3_NumPy_INCLUDE_DIRS=$NUMPY_INCLUDE \
       -DCMAKE_INSTALL_LIBDIR=lib64 \
       -DCMAKE_BUILD_TYPE=Release \
       -DARROW_BUILD_TESTS=ON \
@@ -104,7 +112,7 @@ export PYARROW_BUNDLE_ARROW_CPP_HEADERS=1
 
 version=$(echo "$PACKAGE_VERSION" | sed 's/^apache-arrow-//')
 export SETUPTOOLS_SCM_PRETEND_VERSION=$version
- 
+export LD_LIBRARY_PATH=${ARROW_HOME}/lib64:${LD_LIBRARY_PATH}
 if ! python3 setup.py bdist_wheel --dist-dir="$CURRENT_DIR/" ; then
         echo "------------------$PACKAGE_NAME:wheel_built_fails---------------------"
         echo "$PACKAGE_VERSION $PACKAGE_NAME"

@@ -71,7 +71,7 @@ wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/z
 git apply zfp_1.0.0.patch
 
 echo "installing..."
-if ! pip install . ; then
+if ! pip install . --no-build-isolation ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"

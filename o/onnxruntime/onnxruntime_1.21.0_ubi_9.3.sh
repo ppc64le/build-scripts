@@ -32,6 +32,14 @@ echo " --------------------------------------------------- Installing dependenci
 yum install -y python3 python3-devel python3-pip git make libtool wget gcc-toolset-13-gcc
 yum install -y gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel
 yum install -y clang cmake xz bzip2-devel libffi-devel patch ninja-build
+source /opt/rh/gcc-toolset-13/enable
+
+export CC=gcc
+export CXX=g++
+export FC=gfortran
+# command -v g++
+gcc --version
+g++ --version
 
 PYTHON_VERSION=$(python3 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
@@ -126,8 +134,6 @@ git clone $ABSEIL_URL -b $ABSEIL_VERSION
 echo " --------------------------------------------------- Abseil-Cpp Cloned --------------------------------------------------- "
 
 # Setting paths and versions
-export C_COMPILER=$(which gcc)
-export CXX_COMPILER=$(which g++)
 
 mkdir -p $(pwd)/local/libprotobuf
 LIBPROTO_INSTALL=$(pwd)/local/libprotobuf
@@ -153,8 +159,8 @@ cmake -G "Ninja" \
    ${CMAKE_ARGS} \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CXX_STANDARD=17 \
-    -DCMAKE_C_COMPILER=$C_COMPILER \
-    -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
+    -DCMAKE_C_COMPILER=$CC \
+    -DCMAKE_CXX_COMPILER=$CXX \
     -DCMAKE_INSTALL_PREFIX=$LIBPROTO_INSTALL \
     -Dprotobuf_BUILD_TESTS=OFF \
     -Dprotobuf_BUILD_LIBUPB=OFF \
@@ -233,12 +239,29 @@ export CMAKE_ARGS="${CMAKE_ARGS} -DProtobuf_PROTOC_EXECUTABLE="$PROTOC" -DProtob
 export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH"
 
 # Adding this source due to - (Unable to detect linker for compiler `cc -Wl,--version`)
-source /opt/rh/gcc-toolset-13/enable
+PY_VER=$(python3 - <<'EOF'
+import sys
+print(f"{sys.version_info.major}.{sys.version_info.minor}")
+EOF
+)
+
+echo "Detected Python: $PY_VER"
+
+if [[ "$PY_VER" == "3.9" || "$PY_VER" == "3.10" ]]; then
+    NUMPY_VER="1.26.4"
+    SCIPY_VER="1.13.1"
+else
+    NUMPY_VER="2.0.2"
+    SCIPY_VER="1.15.2"
+fi
+
+python3 -m pip install --upgrade pip setuptools wheel
+python3 -m pip install numpy==${NUMPY_VER}
+python3 -m pip install scipy==${SCIPY_VER}
+
 python3 -m pip install cython meson
-python3 -m pip install numpy==2.0.2
 python3 -m pip install parameterized
 python3 -m pip install pytest nbval pythran mypy-protobuf
-python3 -m pip install scipy==1.15.2
 
 python3 setup.py install
 

@@ -72,7 +72,8 @@ export GEOS_CONFIG=$HOME_DIR/geos/build/tools/geos-config
 chmod +x $GEOS_CONFIG
 
 # Build the package (This is dependent on numpy)
-python3.11 -m pip install -e .
+python3.11 -m pip install . 
+
 
 if [ $? == 0 ]; then
      echo "------------------$PACKAGE_NAME::Build_Pass---------------------"
