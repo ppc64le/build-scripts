@@ -57,7 +57,7 @@ gcc --version
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
 python3.11 -m pip install --upgrade pip wheel
-python3.11 -m pip install "setuptools==68.2.2"
+python3.11 -m pip install "setuptools<70" --ignore-installed
 python3.11 -m pip install build ninja
 
 INSTALL_ROOT="/install-deps"
@@ -68,7 +68,6 @@ for package in openblas ; do
     export "${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
     echo "Exported ${package^^}_PREFIX=${INSTALL_ROOT}/${package}"
 done
-
 
 #Install the dependencies
 echo "------------------------Installing dependencies-------------------"
@@ -91,7 +90,6 @@ export LD_LIBRARY_PATH=/usr/local/hdf5/include:$LD_LIBRARY_PATH
 export HDF5_DIR=/usr/local/hdf5
 echo "-----------------------------------------------------Installed HDF5 to /usr/local-----------------------------------------------------"
 
-
 #Build and install h5py from source 
 cd $CURRENT_DIR
 git clone https://github.com/h5py/h5py.git
@@ -102,7 +100,6 @@ python3.11 -m pip install .
 cd $CURRENT_DIR
 python3.11 -c "import h5py; print(h5py.__version__)"
 echo "-----------------------------------------------------Installed h5py-----------------------------------------------------"
-
 
 #installing openblas
 cd $CURRENT_DIR
