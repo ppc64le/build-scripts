@@ -56,8 +56,9 @@ gcc --version
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 
-python3.11 -m pip install --upgrade pip
-python3.11 -m pip install --upgrade --ignore-installed setuptools wheel build ninja
+python3.11 -m pip install --upgrade pip wheel
+python3.11 -m pip install "setuptools==68.2.2"
+python3.11 -m pip install build ninja
 
 INSTALL_ROOT="/install-deps"
 mkdir -p $INSTALL_ROOT
@@ -175,8 +176,6 @@ export CPATH=/usr/local/include:$CPATH
 export LIBRARY_PATH=/usr/local/lib:$LIBRARY_PATH
 ls /usr/local/include/tirpc/rpc/types.h
 
-
-
 #Set JAVA_HOME
 echo "------------------------Installing java-------------------"
 yum install -y java-11-openjdk-devel
@@ -257,6 +256,16 @@ git clone https://github.com/tensorflow/tensorflow
 cd  tensorflow
 git checkout v2.14.1
 
+# ----------------------------------------------------------
+# Vendor boringssl locally to avoid mirror corruption
+# ----------------------------------------------------------
+mkdir -p /bazel-dist
+cd /bazel-dist
+wget -nc https://github.com/google/boringssl/archive/b9232f9e27e5668bc0414879dcdedb2a59ea75f2.tar.gz
+cd -
+
+bazel clean --expunge || true
+
 echo "------------------------Exporting variable-------------------"
 cpu_model=$(lscpu | grep "Model name:" | awk -F: '{print $2}' | tr '[:upper:]' '[:lower:]' | cut -d '(' -f1 | cut -d ',' -f1 | xargs)
 export CC_OPT_FLAGS="-mcpu=${cpu_model} -mtune=${cpu_model}"
@@ -297,7 +306,9 @@ echo "------------------------Bazel query-------------------"
 bazel query "//tensorflow/tools/pip_package:*"
 
 echo "Bazel query successful ---------------------------------------------------------------------------------------------"
-bazel build -s //tensorflow/tools/pip_package:build_pip_package --config=opt
+bazel build -s \
+  --distdir=/bazel-dist \
+  //tensorflow/tools/pip_package:build_pip_package --config=opt
 
 echo "Bazel build successful ---------------------------------------------------------------------------------------------"
 
@@ -324,7 +335,8 @@ export CXX=/opt/rh/gcc-toolset-12/root/usr/bin/g++
 
 
 cd $CURRENT_DIR/io
-python3.11 -m pip install grpcio-tools==1.56.2 --no-cache-dir
+
+python3.11 -m pip install grpcio-tools==1.56.2 --no-cache-dir --no-build-isolation
 python3.11 -m pip install .
 
 export PYTHON_BIN_PATH="$PYTHON"
@@ -389,7 +401,7 @@ git apply tf-io-gcs-filesystem.patch
 echo "---------------------------------Building the package--------------------------------------------"
 
 #Install
-if ! (bazel build   --experimental_repo_remote_exec   --cxxopt="-std=c++17"   --cxxopt="-I/usr/local/include/tirpc"   --host_cxxopt="-std=c++17"   --host_cxxopt="-I/usr/local/include/tirpc"   --repo_env=CXX="g++ -std=c++17"   //tensorflow_io/... //tensorflow_io_gcs_filesystem/...) ; then
+if ! (bazel build --experimental_repo_remote_exec --cxxopt="-std=c++17" --cxxopt="-I/usr/local/include/tirpc" --host_cxxopt="-std=c++17"  --host_cxxopt="-I/usr/local/include/tirpc" --repo_env=CXX="g++ -std=c++17" //tensorflow_io/... //tensorflow_io_gcs_filesystem/...) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -398,6 +410,9 @@ fi
 
 echo "-----------------------Building tf-io wheel ----------------------------"
 python3.11 setup.py bdist_wheel --data bazel-bin --dist-dir $CURRENT_DIR
+
+# Cleanup
+rm -rf $CURRENT_DIR/tensorflow-2.14.1-*-linux_ppc64le.whl
 
 # Commenting out the test part as no test targets were found.
 # echo "---------------------------------Running tests----------------------------------------------"
