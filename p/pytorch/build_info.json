@@ -31,7 +31,16 @@
     },
     "build_script":"pytorch_2.0.1_ubi_9.3.sh"
   },
+  "v2.0.0":{
+    "patches": {
+      "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.0.1.patch"
+    },
+    "build_script":"pytorch_2.0.1_ubi_9.3.sh"
+  },
   "v2.1.0":{
+    "build_script":"pytorch_2.1.0_ubi_9.3.sh"
+  },
+  "v2.1.2":{
     "build_script":"pytorch_2.1.0_ubi_9.3.sh"
   }
 }

@@ -14,6 +14,12 @@
 	"0.57.0":{
 		"build_script": "numba_ubi_9.3.sh"
 	},
+        "0.59.0":{
+                "build_script": "numba_0.59.0_ubi_9.6.sh"
+        },
+        "0.61.2":{
+                "build_script": "numba_0.61.2_ubi_9.6.sh"
+        },
 	"0.62.*": {
         "build_script": "numba_0.62.0_ubi_9.3.sh"
     },

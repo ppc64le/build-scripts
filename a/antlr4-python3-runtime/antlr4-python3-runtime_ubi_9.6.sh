@@ -21,7 +21,7 @@
 set -e
 
 # Variables
-PACKAGE_DIR="antlr4"
+PACKAGE_DIR="antlr4/runtime/Python3"
 PACKAGE_NAME="antlr4-python3-runtime"
 PACKAGE_VERSION="${1:-4.9.3}"
 PACKAGE_URL="https://github.com/antlr/antlr4.git"
@@ -39,42 +39,12 @@ export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 
 # Clone or extract the package
-if [[ "$PACKAGE_URL" == *github.com* ]]; then
-    if [ -d "$PACKAGE_DIR" ]; then
-        cd "$PACKAGE_DIR" || exit
-    else
-        if ! git clone "$PACKAGE_URL" "$PACKAGE_DIR"; then
-            echo "------------------$PACKAGE_NAME:clone_fails---------------------------------------"
-            echo "$PACKAGE_URL $PACKAGE_NAME"
-            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Clone_Fails"
-            exit 1
-        fi
-        cd "$PACKAGE_DIR" || exit
-        git checkout "$PACKAGE_VERSION" || exit
-    fi
-else
-    if [ -d "$PACKAGE_DIR" ]; then
-        cd "$PACKAGE_DIR" || exit
-    else
-        if ! curl -L "$PACKAGE_URL" -o "$PACKAGE_DIR.tar.gz"; then
-            echo "------------------$PACKAGE_NAME:download_fails---------------------------------------"
-            echo "$PACKAGE_URL $PACKAGE_NAME"
-            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Download_Fails"
-            exit 1
-        fi
-        mkdir "$PACKAGE_DIR"
-        if ! tar -xzf "$PACKAGE_DIR.tar.gz" -C "$PACKAGE_DIR" --strip-components=1; then
-            echo "------------------$PACKAGE_NAME:untar_fails---------------------------------------"
-            echo "$PACKAGE_URL $PACKAGE_NAME"
-            echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Untar_Fails"
-            exit 1
-        fi
-        cd "$PACKAGE_DIR" || exit
-    fi
-fi
+git clone $PACKAGE_URL
+cd $PACKAGE_DIR
+git checkout $PACKAGE_VERSION
 
 # Install the package
-if ! python3 -m pip install ./runtime/Python3; then
+if ! python3 -m pip install .; then
     echo "------------------$PACKAGE_NAME:install_fails------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"
@@ -85,10 +55,12 @@ fi
 
 test_status=1  # 0 = success, non-zero = failure
 
+# Temporary fix for Python 3.12+ compatibility
+sed -i 's/assertEquals/assertEqual/g' $BUILD_HOME/$PACKAGE_DIR/tests/TestIntervalSet.py
 # Run tests if any matching test files found
-if ls ./runtime/Python3/tests/*.py > /dev/null 2>&1 && [ $test_status -ne 0 ]; then
+if ls "$BUILD_HOME/$PACKAGE_DIR/tests/"*.py > /dev/null 2>&1 && [ $test_status -ne 0 ]; then
     echo "Running tests..."
-    python3 ./runtime/Python3/tests/run.py && test_status=0 || test_status=$?
+    python3 "$BUILD_HOME/$PACKAGE_DIR/tests/run.py" && test_status=0 || test_status=$?
 fi
 
 # Final test result output

@@ -57,7 +57,14 @@ fi
 python3 -c "import jpype; import _jpype; print('JPype native module loaded OK')"
 
 # Install test requirements
-python3 -m pip install numpy jedi typing_extensions
+python3 -m pip install jedi typing_extensions
+
+if [[ "$PACKAGE_VERSION" == "v1.5.0" ]]; then
+    python3 -m pip install "numpy<2"
+else
+    python3 -m pip install numpy
+fi
+
 python3 -c "import jpype"
 python3 -m pip install -r test-requirements.txt
 

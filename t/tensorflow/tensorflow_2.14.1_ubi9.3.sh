@@ -28,6 +28,9 @@ PACKAGE_URL=https://github.com/tensorflow/tensorflow
 CURRENT_DIR=$(pwd)
 PACKAGE_DIR=tensorflow
 
+export LLVM_ENABLE_PDB=0
+
+
 echo "------------------------Installing dependencies-------------------"
 yum install -y wget
 yum install -y gcc-toolset-12-gcc.ppc64le gcc-toolset-12-gcc-c++
@@ -38,7 +41,8 @@ yum install -y python3.11-devel python3.11-pip make cmake wget git openssl-devel
 yum install -y gcc-toolset-12 gcc-toolset-12-binutils gcc-toolset-12-binutils-devel
 yum install -y libxcrypt-compat rsync
 python3.11 -m pip install --upgrade pip
-python3.11 -m pip install setuptools==75.3.0 wheel
+
+
 
 yum install -y  autoconf automake libtool curl-devel  atlas-devel patch 
 
@@ -109,11 +113,29 @@ cd $CURRENT_DIR
 git clone https://github.com/h5py/h5py.git
 cd h5py/
 git checkout 3.13.0
+python3.11 -m pip install --ignore-installed --force-reinstall "numpy<2"
 python3.11 -m pip install .  
 
 cd $CURRENT_DIR
 python3.11 -c "import h5py; print(h5py.__version__)"
 echo "-----------------------------------------------------Installed h5py-----------------------------------------------------"
+
+
+# Prevent LLVM assembler failure on ppc64le
+export CFLAGS="-O1"
+export CXXFLAGS="-O1"
+export BAZEL_CXXOPTS="-O1"
+export LLVM_DISABLE_PDB=1
+export LLVM_ENABLE_ASSERTIONS=0
+export LLVM_OPTIMIZE_SIZE=1
+
+# FIX FOR FLAKY BAZEL DOWNLOADS
+export TF_USE_GIT_CLONE_FOR_BAZEL=1
+export BAZEL_USE_CPP_ONLY_TOOLCHAIN=1
+export TF_MIRROR_URL=""
+export BAZEL_DOWNLOAD_USE_GCE_MIRROR=false
+export BAZEL_FETCH_TIMEOUT=600
+export BAZEL_FETCH_RETRIES=5
 
 
 #installing patchelf from source
@@ -209,6 +231,9 @@ export TFCI_WHL_NUMPY_VERSION=1
 export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/ -fno-plt//')"
 export CFLAGS="$(echo ${CFLAGS} | sed -e 's/ -fno-plt//')"
 
+export BAZEL_LLVM_ENABLE_PDB=0
+
+
 # Apply the patch
 echo "------------------------Applying patch-------------------"
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/tensorflow/tf_2.14.1_fix.patch
@@ -220,8 +245,9 @@ yes n | ./configure
 echo "------------------------Bazel query-------------------"
 bazel query "//tensorflow/tools/pip_package:*"
 
+
 #Install
-if ! (bazel build -s //tensorflow/tools/pip_package:build_pip_package --config=opt) ; then  
+if ! (bazel build -s //tensorflow/tools/pip_package:build_pip_package --config=opt --define=llvm_enable_pdb=false) ; then  
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"

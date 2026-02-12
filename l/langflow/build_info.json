@@ -1,16 +1,16 @@
 {
-  "maintainer": "kiranNukal",
+  "maintainer": "amitkumar282",
   "package_name": "langflow",
   "github_url": "https://github.com/langflow-ai/langflow",
-  "version": "1.6.0",
+  "version": "1.7.3",
   "wheel_build" : true,
   "default_branch": "main",
   "package_dir": "l/langflow",
-  "build_script": "langflow_ubi_9.6.sh",
+  "build_script": "langflow_v1.7.3_ubi9.6.shh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
   "*": {
-     "build_script":"langflow_ubi_9.6.sh"
+     "build_script":"langflow_v1.7.3_ubi9.6.sh"
   }
 }

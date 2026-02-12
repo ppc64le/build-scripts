@@ -33,8 +33,68 @@ yum install -y git gcc-toolset-13 ninja-build rust cargo python-devel python-pip
 
 source /opt/rh/gcc-toolset-13/enable
 
-curl -sL https://ftp2.osuosl.org/pub/ppc64el/openblas/latest/Openblas_0.3.29_ppc64le.tar.gz | tar xvf - -C /usr/local \
-&& export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig/
+echo "---------------------openblas installing---------------------"
+
+#install openblas
+#clone and install openblas from source
+
+git clone https://github.com/OpenMathLib/OpenBLAS
+cd OpenBLAS
+git checkout v0.3.29
+git submodule update --init
+
+PREFIX=local/openblas
+
+# Set build options
+declare -a build_opts
+# Fix ctest not automatically discovering tests
+LDFLAGS=$(echo "${LDFLAGS}" | sed "s/-Wl,--gc-sections//g")
+export CF="${CFLAGS} -Wno-unused-parameter -Wno-old-style-declaration"
+unset CFLAGS
+export USE_OPENMP=1
+build_opts+=(USE_OPENMP=${USE_OPENMP})
+export PREFIX=${PREFIX}
+
+# Handle Fortran flags
+if [ ! -z "$FFLAGS" ]; then
+    export FFLAGS="${FFLAGS/-fopenmp/ }"
+    export FFLAGS="${FFLAGS} -frecursive"
+    export LAPACK_FFLAGS="${FFLAGS}"
+fi
+export PLATFORM=$(uname -m)
+build_opts+=(BINARY="64")
+build_opts+=(DYNAMIC_ARCH=1)
+build_opts+=(TARGET="POWER9")
+BUILD_BFLOAT16=1
+
+# Placeholder for future builds that may include ILP64 variants.
+build_opts+=(INTERFACE64=0)
+build_opts+=(SYMBOLSUFFIX="")
+
+# Build LAPACK
+build_opts+=(NO_LAPACK=0)
+
+# Enable threading and set the number of threads
+build_opts+=(USE_THREAD=1)
+build_opts+=(NUM_THREADS=8)
+
+# Disable CPU/memory affinity handling to avoid problems with NumPy and R
+build_opts+=(NO_AFFINITY=1)
+
+echo "Building OpenBLAS"
+make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
+
+echo "Install OpenBLAS"
+CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
+OpenBLASInstallPATH=$(pwd)/$PREFIX
+OpenBLASConfigFile=$(find . -name OpenBLASConfig.cmake)
+OpenBLASPCFile=$(find . -name openblas.pc)
+export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib":${LD_LIBRARY_PATH}
+export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
+export LD_LIBRARY_PATH=${PREFIX}/lib:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
+pkg-config --modversion openblas
+echo "--------------------openblas installed-------------------------------"
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64:/usr/local/lib:/usr/lib64:/usr/lib
 
@@ -82,6 +142,7 @@ export CXXFLAGS="-Wno-unused-variable -Wno-unused-parameter"
 pip3 install -r requirements.txt
 MAX_JOBS=$PARALLEL python3 setup.py install
 
+export LD_LIBRARY_PATH=$CURRENT_DIR/pytorch/build/lib/:$LD_LIBRARY_PATH
 cd $CURRENT_DIR/$PACKAGE_NAME
 
 # Build and install xformers
