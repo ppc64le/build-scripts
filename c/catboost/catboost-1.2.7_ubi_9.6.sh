@@ -4,7 +4,7 @@
 # Package       : catboost
 # Version       : v1.2.7
 # Source repo   : https://github.com/catboost/catboost.git
-# Tested on     : UBI:9.6 (ppc64le)
+# Tested on     : UBI:9.6 
 # Language      : Python,c,c++
 # Ci-Check      : True
 # Script License: Apache License Version 2.0
