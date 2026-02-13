@@ -1026,6 +1026,8 @@ if ! sh oss_scripts/run_build.sh; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
+cp *.whl ${CURRENT_DIR}
+cd ${CURRENT_DIR}
 # Install pre-requisite wheels and dependencies
 echo "Build and installation completed successfully."
 echo "There are no test cases available. skipping the test cases"
