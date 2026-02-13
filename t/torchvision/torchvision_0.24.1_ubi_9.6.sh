@@ -203,7 +203,7 @@ git apply set_cpp_to_17_v4.25.3.patch
 
 echo "Installing protobuf...."
 cd python
-python3 -m pip install .
+python3 -m pip install . --no-build-isolation
 cd $CURRENT_DIR
 
 echo "------------ libprotobuf,protobuf installed--------------"
