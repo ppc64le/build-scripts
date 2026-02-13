@@ -21,7 +21,7 @@ set -e
 
 # Variables
 PACKAGE_NAME=tree-sitter
-PACKAGE_VERSION=${1:-v0.24.0}
+PACKAGE_VERSION=${1:-v0.25.2}
 PACKAGE_URL=https://github.com/tree-sitter/py-tree-sitter
 PACKAGE_DIR=py-tree-sitter
 BUILD_HOME=$(pwd)
@@ -44,6 +44,13 @@ cd tree-sitter-c
 git checkout $TREE_SITTER_C_VERSION
 mkdir -p /usr/include/tree_sitter/
 cp src/tree_sitter/*.h /usr/include/tree_sitter/
+cd $BUILD_HOME
+
+git clone https://github.com/tree-sitter/tree-sitter.git
+cd tree-sitter
+git checkout $PACKAGE_VERSION
+make
+make install
 cd $BUILD_HOME
 
 # Clone or extract the package
