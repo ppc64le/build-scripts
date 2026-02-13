@@ -159,6 +159,7 @@ cmake -DCMAKE_INSTALL_PREFIX=$ARROW_HOME \
       -DARROW_WITH_ZLIB=ON \
       -DARROW_WITH_ZSTD=ON \
       -DPARQUET_REQUIRE_ENCRYPTION=ON \
+      -DARROW_ORC=OFF \
       ..
 make -j$(nproc)
 make install
@@ -174,6 +175,7 @@ export PYARROW_BUNDLE_ARROW_CPP_HEADERS=1
 #To get proper wheel naming
 version=$(echo "$PACKAGE_VERSION" | sed 's/^apache-arrow-//')
 export SETUPTOOLS_SCM_PRETEND_VERSION=$version
+export LD_LIBRARY_PATH=/usr/local/lib64:$ARROW_HOME/lib:$LD_LIBRARY_PATH
 
 if ! python3 setup.py bdist_wheel --dist-dir="$CURRENT_DIR/" ; then
         echo "------------------$PACKAGE_NAME:wheel_built_fails---------------------"
