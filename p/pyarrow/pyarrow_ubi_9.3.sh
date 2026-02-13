@@ -25,7 +25,8 @@ PACKAGE_URL=https://github.com/apache/arrow.git
 PACKAGE_DIR=./arrow/python
 CURRENT_DIR="${PWD}"
 
-yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openssl-devel cmake
+yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openssl-devel cmake brotli brotli-devel
+
 
 echo "Dependencies installed."
 mkdir dist
