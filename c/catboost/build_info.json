@@ -9,6 +9,7 @@
    "docker_build": true,
    "docker_cmd": "docker build -t ${package_name}:${version} ${dir}",
    "validate_build_script": true,
+   "wheel_build": true,
    "use_non_root_user": false,
    "v1.2.5": {
       "build_script": "catboost-1.2.5_ubi_9.3.sh"
