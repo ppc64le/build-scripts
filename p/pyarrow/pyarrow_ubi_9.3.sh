@@ -28,7 +28,6 @@ CURRENT_DIR="${PWD}"
 yum install -y git wget gcc gcc-c++ python python3-devel python3 python3-pip openssl-devel cmake
 
 echo "Dependencies installed."
-
 mkdir dist
 export CXX=g++
 export CC=gcc
@@ -63,19 +62,23 @@ EOF
 
 LINKFLAGS="${LINKFLAGS} -L${LIBRARY_PATH}"
 
-CXXFLAGS="$(echo ${CXXFLAGS} | sed 's/ -march=[^ ]*//g' | sed 's/ -mcpu=[^ ]*//g' |sed 's/ -mtune=[^ ]*//g')" \
-CFLAGS="$(echo ${CFLAGS} | sed 's/ -march=[^ ]*//g' | sed 's/ -mcpu=[^ ]*//g' |sed 's/ -mtune=[^ ]*//g')" \
-    CXX=${CXX_FOR_BUILD:-${CXX}} CC=${CC_FOR_BUILD:-${CC}} ./bootstrap.sh \
-    --prefix="${BOOST_PREFIX}" \
-    --without-libraries=python \
-    --with-toolset=${TOOLSET} \
-    --with-icu="${BOOST_PREFIX}" || (cat bootstrap.log; exit 1)
-	 ADDRESS_MODEL=64
-    ARCHITECTURE=power
-	ABI="sysv"
-	 BINARY_FORMAT="elf"
+ADDRESS_MODEL=64
+ARCHITECTURE=power
+ABI="sysv"
+BINARY_FORMAT="elf"
 
-	 export CPU_COUNT=$(nproc)
+CXXFLAGS="$(echo ${CXXFLAGS} | sed 's/ -march=[^ ]*//g' | sed 's/ -mcpu=[^ ]*//g' | sed 's/ -mtune=[^ ]*//g')" \
+CFLAGS="$(echo ${CFLAGS} | sed 's/ -march=[^ ]*//g' | sed 's/ -mcpu=[^ ]*//g' | sed 's/ -mtune=[^ ]*//g')" \
+CXX=${CXX_FOR_BUILD:-${CXX}} \
+CC=${CC_FOR_BUILD:-${CC}} \
+./bootstrap.sh \
+  --prefix="${BOOST_PREFIX}" \
+  --without-libraries=python \
+  --with-toolset=${TOOLSET} \
+  --with-icu="${BOOST_PREFIX}" || (cat bootstrap.log; exit 1)
+
+CPU_COUNT=$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo 4)
+export CPU_COUNT
 
 echo " Building and installing Boost...."
 ./b2 -q \
@@ -95,6 +98,7 @@ echo " Building and installing Boost...."
     --layout=system \
     -j"${CPU_COUNT}" \
     install
+
 
 # Remove Python headers as we don't build Boost.Python.
 rm "${BOOST_PREFIX}/include/boost/python.hpp"

@@ -35,12 +35,22 @@ git checkout $PACKAGE_VERSION
 export SETUPTOOLS_SCM_PRETEND_VERSION=${PACKAGE_VERSION#v}
 
 # Install specific versions for compatibility
-pip install pytest
-pip install numpy==1.19.3
-pip install pandas==1.3.0
-pip install scipy==1.7.3 --prefer-binary
 pip install "cython<3.0"
-pip install oldest-supported-numpy "setuptools_scm[toml]<8,>=7.0" wheel
+if python3 --version | grep -Eq "3\.9"; then
+  pip install "setuptools<65" wheel oldest-supported-numpy
+  pip install pytest jinja2
+  pip install numpy==1.19.3
+  pip install pandas==1.4.4 --no-build-isolation --no-deps
+  export SCIPY_USE_PYTHRAN=0
+  pip install scipy==1.8.1
+  pip install "setuptools_scm[toml]<8,>=7.0"
+else
+  pip install pytest
+  pip install numpy==1.19.3
+  pip install pandas==1.3.0
+  pip install scipy==1.7.3 --prefer-binary
+  pip install oldest-supported-numpy "setuptools_scm[toml]<8,>=7.0" wheel
+fi
 
 
 echo "------------------------------------------------------------Installing statsmodels------------------------------------------------------"

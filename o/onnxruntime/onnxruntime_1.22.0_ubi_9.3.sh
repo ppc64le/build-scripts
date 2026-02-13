@@ -1,5 +1,4 @@
 #!/bin/bash -e
-
 # -----------------------------------------------------------------------------
 #
 # Package          : onnxruntime
@@ -28,11 +27,16 @@ CURRENT_DIR=$(pwd)
 
 echo "Installing dependencies..."
 yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3.11 python3.11-devel python3.11-pip cmake xz bzip2-devel libffi-devel patch ninja-build
-PYTHON_VERSION=$(python3.11 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
+PYTHON_VERSION=$(python3.11 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1-2)
+source /opt/rh/gcc-toolset-13/enable
+
+export CC=gcc
+export CXX=g++
+export FC=gfortran
+
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 export SITE_PACKAGE_PATH=/usr/local/lib/python${PYTHON_VERSION}/site-packages
-yum remove -y python3-chardet
 
 ln -sf $(ls -1 /usr/bin/python3.[0-9]* | grep -E '^/usr/bin/python3\.[0-9]+$' | sort -V | tail -n 1) /usr/bin/python3
 
@@ -105,7 +109,7 @@ export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
 cd ..
 
 python3.11 -m pip install --upgrade pip
-python3.11 -m pip install --upgrade cmake pip setuptools wheel ninja packaging tox pytest build mypy stubs
+python3.11 -m pip install cmake pip setuptools wheel ninja packaging tox pytest build mypy stubs
 
 # Set ABSEIL_VERSION and ABSEIL_URL
 ABSEIL_VERSION=20240116.2
@@ -151,10 +155,6 @@ PREFIX=$SITE_PACKAGE_PATH
 ABSEIL_PREFIX=$SOURCE_DIR/local/abseilcpp
 echo "Setting PREFIX to $PREFIX and ABSEIL_PREFIX to $ABSEIL_PREFIX"
 
-# Setting paths and versions
-export C_COMPILER=$(which gcc)
-export CXX_COMPILER=$(which g++)
-
 mkdir -p $(pwd)/local/libprotobuf
 LIBPROTO_INSTALL=$(pwd)/local/libprotobuf
 echo "LIBPROTO_INSTALL set to $LIBPROTO_INSTALL"
@@ -177,8 +177,8 @@ cmake -G "Ninja" \
 ${CMAKE_ARGS} \
 -DCMAKE_BUILD_TYPE=Release \
 -DCMAKE_CXX_STANDARD=17 \
--DCMAKE_C_COMPILER=$C_COMPILER \
--DCMAKE_CXX_COMPILER=$CXX_COMPILER \
+-DCMAKE_C_COMPILER=$CC \
+-DCMAKE_CXX_COMPILER=$CXX \
 -DCMAKE_INSTALL_PREFIX=$LIBPROTO_INSTALL \
 -Dprotobuf_BUILD_TESTS=OFF \
 -Dprotobuf_BUILD_LIBUPB=OFF \
@@ -275,6 +275,7 @@ echo "NumPy include path: $NUMPY_INCLUDE"
 # Manually defines Python::NumPy for CMake versions with broken NumPy detection
 sed -i '193i # Fix for Python::NumPy target not found\nif(NOT TARGET Python::NumPy)\n    find_package(Python3 COMPONENTS NumPy REQUIRED)\n    add_library(Python::NumPy INTERFACE IMPORTED)\n    target_include_directories(Python::NumPy INTERFACE ${Python3_NumPy_INCLUDE_DIR})\n    message(STATUS "Manually defined Python::NumPy with include dir: ${Python3_NumPy_INCLUDE_DIR}")\nendif()\n' $CURRENT_DIR/onnxruntime/cmake/onnxruntime_python.cmake
 export CXXFLAGS="-I/usr/local/lib64/python${PYTHON_VERSION}/site-packages/numpy/_core/include/numpy $CXXFLAGS"
+sed -i 's|5ea4d05e62d7f954a46b3213f9b2535bdd866803|51982be81bbe52572b54180454df11a3ece9a934|' cmake/deps.txt
 
 # Add Python include path to build environment
 export CPLUS_INCLUDE_PATH=$PYTHON_INCLUDE:$CPLUS_INCLUDE_PATH

@@ -26,18 +26,17 @@ set -e
 PACKAGE_NAME=tensorflow
 PACKAGE_VERSION=${1:-v2.13.0}
 PACKAGE_URL=https://github.com/tensorflow/tensorflow
+CURRENT_DIR=$(pwd)
+
 
 wdir=`pwd`
 
 #Install the dependencies
-yum install -y wget zip unzip python3-devel autoconf automake libtool gcc-c++ gcc-gfortran git  freetype-devel atlas-devel  python3-pip python3 python3-devel python3-setuptools python3-wheel patch 
-
-#Set Python3 as default
-ln -s /usr/bin/python3 /usr/bin/python
+yum install -y wget zip unzip python3-devel autoconf automake libtool gcc-c++ gcc-gfortran git  freetype-devel atlas-devel  python3-pip python3 python3-devel python3-setuptools python3-wheel patch
 
 #Set JAVA_HOME
 yum install -y java-11-openjdk-devel
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk 
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$JAVA_HOME/bin:$PATH
 
 # Build Bazel dependency
@@ -52,8 +51,8 @@ export PATH=/usr/local/bin:$PATH
 
 
 # Install six.
-pip3 install --upgrade absl-py
-pip3 install --upgrade six==1.10.0
+pip install --upgrade absl-py
+pip install --upgrade six==1.10.0
 pip install "numpy<2" "urllib3<1.27" wheel==0.29.0 werkzeug packaging patchelf
 # Remove obsolete version of six, which can sometimes confuse virtualenv.
 rm -rf /usr/lib/python3/dist-packages/six*
@@ -67,9 +66,20 @@ git clone $PACKAGE_URL
 cd  $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+echo "Patching spectrogram.cc for gcc-13 compatibility..."
+sed -i '1i #include <cstdint>' tensorflow/lite/kernels/internal/spectrogram.cc
+echo "Patch applied."
+
+echo "Patching cache.h for GCC-13 compatibility..."
+if ! grep -q "#include <cstdint>" tensorflow/tsl/lib/io/cache.h; then
+  sed -i '1i #include <cstdint>' tensorflow/tsl/lib/io/cache.h
+fi
+echo "Patch applied."
+
+
 export CC_OPT_FLAGS="-mcpu=power8 -mtune=power8"
 export GCC_HOST_COMPILER_PATH=/usr/bin/gcc
-export PYTHON_BIN_PATH=/usr/bin/python
+export PYTHON_BIN_PATH=$(which python)
 export USE_DEFAULT_PYTHON_LIB_PATH=1
 export TF_NEED_GCP=1
 export TF_NEED_HDFS=1
@@ -82,6 +92,10 @@ export TF_NEED_VERBS=0
 export TF_NEED_MPI=0
 export TF_CUDA_CLANG=0
 
+echo "Using Python from virtualenv: $(which python)"
+echo "Python version: $(python --version)"
+
+
 yes n | ./configure
 
 #apply patch
@@ -91,7 +105,7 @@ build --define=tflite_with_xnnpack=false
 build:linux --copt="-Wno-stringop-overflow"
 EOF
 echo ".bazelrc updated successfully!"
- 
+
 # Update tensorflow/workspace2.bzl file
 echo "Updating tensorflow/workspace2.bzl..."
 sed -i 's|sha256 = "9dc53f851107eaf87b391136d13b815df97ec8f76dadb487b58b2fc45e624d2c"|sha256 = "534fa658bd845fd974b50b10f444d392dfd0d93768c4a51b61263fd37d851c40"|' tensorflow/workspace2.bzl
@@ -109,23 +123,58 @@ if ! (bazel build --jobs=$(nproc) --config=opt //tensorflow/tools/pip_package:bu
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_Fails"
     exit 1
 fi
- 
-# Run tests for the pip_package directory
-if ! (bazel test --config=opt -k --jobs=$(nproc) //tensorflow/tools/pip_package/...); then
-    # Check if the failure is specifically due to "No test targets were found"
-    if bazel test --config=opt -k --jobs=$(nproc) //tensorflow/tools/pip_package/... 2>&1 | grep -q "No test targets were found"; then
-        echo "------------------$PACKAGE_NAME:no_test_targets_found---------------------"
-        echo "$PACKAGE_URL $PACKAGE_NAME"
-        echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | No_Test_Targets_Found"
-        exit 0  # Graceful exit for no test targets
-    fi
-    # Handle actual test errors
+
+echo "Locating Bazel output directory..."
+BAZEL_OUT=$(bazel info bazel-bin)
+echo "Bazel output directory: $BAZEL_OUT"
+
+mkdir -p "$CURRENT_DIR/tf_libs"
+
+cp "$BAZEL_OUT/tensorflow/libtensorflow_cc.so.2" \
+   "$CURRENT_DIR/tf_libs/" || {
+   echo "ERROR: libtensorflow_cc.so.2 not found in Bazel output!"
+   exit 1
+}
+
+export LD_LIBRARY_PATH="$CURRENT_DIR/tf_libs:$LD_LIBRARY_PATH"
+echo "Exported LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
+
+echo "---------------------------------Building wheel--------------------------------------------"
+
+pip install --upgrade --ignore-installed setuptools wheel build ninja
+bazel-bin/tensorflow/tools/pip_package/build_pip_package $CURRENT_DIR
+
+TF_WHEEL=$(ls $CURRENT_DIR/tensorflow-*.whl | head -1)
+echo "Generated wheel: $TF_WHEEL"
+
+cd "$CURRENT_DIR/tensorflow"
+
+echo "---------------------------------Running tests----------------------------------------------"
+
+# Create a temporary log file to capture output
+TEST_LOG=$(mktemp)
+
+# Run bazel test with live output and log capture
+bazel test --config=opt -k --jobs=$(nproc) //tensorflow/tools/pip_package/... 2>&1 | tee "$TEST_LOG"
+
+# Capture actual Bazel exit code
+TEST_EXIT_CODE=${PIPESTATUS[0]}
+
+# Read full test output (if needed)
+TEST_OUTPUT=$(cat "$TEST_LOG")
+
+# Analyze test results
+if echo "$TEST_OUTPUT" | grep -q "No test targets were found"; then
+    echo "------------------$PACKAGE_NAME:no_test_targets_found---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | No_Test_Targets_Found"
+    exit 0
+elif [ $TEST_EXIT_CODE -ne 0 ]; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_Success_But_Test_Fails"
     exit 2
 else
-    # Tests ran successfully
     echo "------------------$PACKAGE_NAME:install_&_test_both_success------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | Both_Install_and_Test_Success"

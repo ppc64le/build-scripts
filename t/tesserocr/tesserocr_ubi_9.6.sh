@@ -32,7 +32,8 @@ yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc6
 yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream//ppc64le/os
 yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os
 rpm --import https://centos.org/keys/RPM-GPG-KEY-CentOS-Official
-rpm -e --nodeps openssl-fips-provider-so-3.0.7-6.el9_5.ppc64le
+rpm -q openssl-fips-provider-so && rpm -e --nodeps openssl-fips-provider-so || true
+
 
 yum install -y git python3.12 python3.12-devel python3.12-pip gcc-toolset-13 make wget sudo cmake g++ tesseract-devel
 yum install -y zlib zlib-devel libjpeg-devel libjpeg-turbo libjpeg-turbo-devel freetype-devel

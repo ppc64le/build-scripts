@@ -69,6 +69,29 @@ class COSWrapper:
                 os.remove(file)
         
         return zipfilename
+
+    def download_artifacts_gz(self, artifact_name: str):
+        '''
+        Download artifacts from the COS bucket as a zip file.
+        :return: zipfile path to be downloaded/
+        :rtype: string 
+        '''
+        print("Downloading artifacts for", artifact_name)
+        
+        download_url =  f"{CLOUD_OBJECT_STORAGE_URL}/{CLOUD_OBJECT_BUCKET_NAME}/{artifact_name}"
+        response = requests.get(
+            download_url,
+            headers = {
+                "Authorization": f"Bearer {self.get_auth_token()}"
+            }
+        )
+        if response.status_code == 200 :
+            artifact_name = artifact_name.replace("/","_")
+            file_path = f"{artifact_name}"
+            with open(file_path, 'wb') as fh:
+                fh.write(response.content)
+        
+        return file_path
             
      # We need to read and write to/from bulksearch bucket    
     def get_artifacts(
