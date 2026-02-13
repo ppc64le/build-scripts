@@ -36,7 +36,7 @@ echo "Installing dependencies..."
 yum install -y git wget python3 python3-devel python3-pip openblas-devel cmake gcc-toolset-12-gcc gcc-toolset-12-gcc-c++ gcc-toolset-12-gcc-gfortran
 
 echo "Installing required Python packages..."
-pip install wheel "numpy<2.0" scipy==1.13.1 ninja build pytest
+pip install wheel scipy==1.13.1 ninja build pytest
 echo "Installing scipy again as numpy version gets changed during scipy build"
 pip install "numpy<2.0"
 
@@ -51,6 +51,7 @@ else
 fi
 
 # Set compiler paths to make use of right compiler
+source /opt/rh/gcc-toolset-12/enable
 export CC=/opt/rh/gcc-toolset-12/root/usr/bin/gcc
 export CXX=/opt/rh/gcc-toolset-12/root/usr/bin/g++
 export LD=/opt/rh/gcc-toolset-12/root/usr/bin/ld
