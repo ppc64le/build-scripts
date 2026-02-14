@@ -39,6 +39,7 @@ export CXX="$GCC_BIN_DIR/g++"
 
 CURRENT_DIR=$(pwd)
 mkdir -p builder/wheels
+WHEEL_PATH=$(pwd)/builder/wheels
 pip3.12 install ninja setuptools setuptools-scm Cython wheel 
 
 echo "-------Installing cmake---------"
@@ -432,7 +433,7 @@ CFLAGS="$(echo ${CFLAGS} | sed 's/ -march=[^ ]*//g' | sed 's/ -mcpu=[^ ]*//g' |s
 # Remove Python headers as we don't build Boost.Python.
 rm -rf "${BOOST_PREFIX}/include/boost/python.hpp"
 rm -rf "${BOOST_PREFIX}/include/boost/python"
-cd $SCRIPT_DIR 
+cd $CURRENT_DIR
 
 
 
@@ -779,6 +780,10 @@ HDF5_DIR=${HDF5_PREFIX} python3.12 -m pip install .
 cd $CURRENT_DIR
 
 echo "----------bazel installing--------------------"
+
+# Set to avoid issues with yum installation
+echo "tsflags=nocaps" >> /etc/yum.conf
+
 yum install -y  zip java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless unzip
 
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
@@ -966,7 +971,7 @@ mkdir -p repackged_wheel
 # Pack the locally built TensorFlow files into a wheel
 wheel pack local/ -d repackged_wheel
 pip3.12 install $SRC_DIR/repackged_wheel/*.whl
-cp -a $SRC_DIR/repackged_wheel/*.whl $CURRENT_DIR/builder/wheels
+cp -a $SRC_DIR/repackged_wheel/*.whl ${WHEEL_PATH}
 cd $CURRENT_DIR
 
 
@@ -985,7 +990,7 @@ cp setup.py $CURRENT_DIR/build-dir/
 cd $CURRENT_DIR/build-dir
 pip3.12 install .
 python3.12 setup.py bdist_wheel
-cp -a dist/*.whl $CURRENT_DIR/builder/wheels
+cp -a dist/*.whl ${WHEEL_PATH}
 cd $CURRENT_DIR
 
 echo "------------------Tesorflow-dataset installing-----------------------"
@@ -1011,6 +1016,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/tensorflow-text/0001-update-pins-and-fix-build-failures.patch
+sed -i "s|^+--find-links.*|+--find-links ${WHEEL_PATH}|g" 0001-update-pins-and-fix-build-failures.patch
 git apply 0001-update-pins-and-fix-build-failures.patch
 export PATH=/bazel-6.5.0/output/:$PATH
 export BAZEL_LINKLIBS=-l%:libstdc++.a
@@ -1020,6 +1026,8 @@ if ! sh oss_scripts/run_build.sh; then
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
+cp *.whl ${CURRENT_DIR}
+cd ${CURRENT_DIR}
 # Install pre-requisite wheels and dependencies
 echo "Build and installation completed successfully."
 echo "There are no test cases available. skipping the test cases"
