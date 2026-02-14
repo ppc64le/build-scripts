@@ -1,0 +1,17 @@
+{
+    "maintainer": "vikashsingh14",
+    "package_name": "openwebui-pipelines",
+    "github_url": "https://github.com/open-webui/pipelines",
+    "version": "0.0.1",
+    "default_branch": "main",
+    "build_script": "",
+    "package_dir": "o/openwebui-pipelines",
+    "docker_cmd": "docker build -t ${package_name}:${PACKAGE_VERSION} ${dir}",
+    "validate_build_script": false,
+    "wheel_build": false,
+    "*": {
+        "dir": "pipelines-openwebui_python311_main",
+        "base_docker_image":"registry.access.redhat.com/ubi9/python-311:latest",
+        "base_docker_variant": "redhat"
+    }
+}
