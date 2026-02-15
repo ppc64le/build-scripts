@@ -21,13 +21,13 @@ set -e
 
 # Variables
 PACKAGE_NAME=tree-sitter
-PACKAGE_VERSION=${1:-v0.24.0}
+PACKAGE_VERSION=${1:-v0.25.2}
 PACKAGE_URL=https://github.com/tree-sitter/py-tree-sitter
 PACKAGE_DIR=py-tree-sitter
 BUILD_HOME=$(pwd)
 
 # Install dependencies
-yum install -y git gcc gcc-c++ python3.12 python3.12-devel.ppc64le gcc-toolset-13 make wget sudo cmake python3.12-pip
+yum install -y git gcc gcc-c++ python3.12 python3.12-devel gcc-toolset-13 make wget sudo cmake python3.12-pip
 python3.12 -m pip install build pytest wheel
 
 export PATH=$PATH:/usr/local/bin/
@@ -38,7 +38,7 @@ OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 SOURCE=Github
 
 # Install tree-sitter header
-TREE_SITTER_C_VERSION=v0.24.0
+TREE_SITTER_C_VERSION=v0.24.1
 git clone https://github.com/tree-sitter/tree-sitter-c
 cd tree-sitter-c
 git checkout $TREE_SITTER_C_VERSION
