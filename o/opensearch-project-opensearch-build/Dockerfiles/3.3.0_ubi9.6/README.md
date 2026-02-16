@@ -1,9 +1,8 @@
 OpenSearch Docker Image Build Guide (ppc64le)
-###NOTE
+# NOTE
 The tests require a Docker environment to execute.Please install Docker before running the tests.
 
-Docker Installation Steps (UBI 9.3)
-
+# Docker Installation Steps (UBI 9.3)
 Run the following commands:
 
 sudo yum install -y yum-utils
@@ -14,17 +13,17 @@ sudo systemctl start docker
 
 
 Verify Docker installation:
-
 docker --version
 
-Building OpenSearch Docker Image (Version 3.3.0 – ppc64le)
+# Building OpenSearch Docker Image (Version 3.3.0 – ppc64le)
 
 Clone and Checkout the Repository
 git clone https://github.com/opensearch-project/opensearch-build.git
 cd opensearch-build
 git checkout 3.3.0
 
-Copy Required Files
+
+# Copy Required Files
 
 Copy the following files into:
 
@@ -43,12 +42,10 @@ Navigate to:
 
 cd opensearch-build/docker/release
 
-
-Run:
-
+# Run:
 ./build-image-single-arch.sh -v 3.3.0 -p opensearch -a ppc64le -f dockerfiles/Dockerfile
 
-Important: Snapshot Files Requirement
+# Important: Snapshot Files Requirement
 
 If your Dockerfile depends on snapshot plugin builds:
 
@@ -66,8 +63,7 @@ wget https://raw.githubusercontent.com/ppc64le/build-scripts/7ddb950ffe9482a5365
 and run it as:
 ./opensearch-project-query-insights_3.3.0.0_ubi_9.6.sh --skip-tests
 
-Required Modification in build-image-single-arch.sh
-
+# Required Modification in build-image-single-arch.sh
 Add the following block inside:
 
 opensearch-build/docker/release/build-image-single-arch.sh
