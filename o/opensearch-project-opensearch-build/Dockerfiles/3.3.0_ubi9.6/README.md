@@ -92,6 +92,6 @@ cp -v dockerfiles/opensearch-flow-framework-3.3.0.0-SNAPSHOT.zip $DIR/
 cp -v dockerfiles/opensearch-security-3.3.0.0-SNAPSHOT.zip $DIR/
 cp -v dockerfiles/query-insights-3.3.0.0-SNAPSHOT.zip $DIR/
 
-# Optional (if required)
-# cp -v dockerfiles/opensearch-project-k-NN_3.3.0.0_ubi_9.6.sh $DIR/
-# chmod +x $DIR/opensearch-project-k-NN_3.3.0.0_ubi_9.6.sh
+Optional (if required)
+cp -v dockerfiles/opensearch-project-k-NN_3.3.0.0_ubi_9.6.sh $DIR/
+chmod +x $DIR/opensearch-project-k-NN_3.3.0.0_ubi_9.6.sh
