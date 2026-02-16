@@ -26,6 +26,7 @@ PACKAGE_URL=https://github.com/pytorch/text.git
 PACKAGE_DIR=text
 CURRENT_DIR=$(pwd)
 export BUILD_VERSION=${PACKAGE_VERSION#v}
+PYTORCH_VERSION=v2.0.1
 
 export CC=/usr/bin/gcc
 export CXX=/usr/bin/g++
@@ -41,10 +42,14 @@ source "$HOME/.cargo/env"  # Update environment variables to use Rust
 echo "------------------------------------------------------------Cloning pytorch github repo--------------------------------------------------------------"
 git clone --recursive https://github.com/pytorch/pytorch.git
 cd pytorch
-git checkout v2.5.0
+git checkout $PYTORCH_VERSION
 echo "------------------------------------------------------------Installing requirements for pytorch------------------------------------------------------"
 pip install -r requirements.txt
 git submodule update --init --recursive
+
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_${PYTORCH_VERSION}.patch
+git apply pytorch_${PYTORCH_VERSION}.patch
+
 echo "------------------------------------------------------------Installing setup.py for pytorch------------------------------------------------------"
 python3 setup.py install
 cd ..
