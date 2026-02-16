@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # Dockerfile for building an OpenSearch image.
-# It assumes that the working directory contains these files: an OpenSearch tarball (opensearch.tgz), log4j2.properties, opensearch.yml, opensearch-docker-entrypoint.sh, opensearch-onetime-setup.sh.
+# It assumes that the working directory contains these files: an OpenSearch tarball (opensearch.tgz), log4j2.properties, opensearch.yml, opensearch-docker-entrypoint.sh, opensearch-onetime-setup.sh, opensearch-build.patch‎ and the snapshots of the plugins required .
 # Build arguments:
 #   VERSION: Required. Used to label the image.
 #   BUILD_DATE: Required. Used to label the image. Should be in the form 'yyyy-mm-ddThh:mm:ssZ', i.e. a date-time from https://tools.ietf.org/html/rfc3339. The timestamp must be in UTC.
@@ -38,10 +38,10 @@ ARG SEARCH_RELEVANCE_COMMITID="61d9a51c402c659bbecc5757eec015a6df41da7c"
 ARG UBI_COMMITID="df39f8abc5ab82a00690b09c2c216be57b7ad16f"
 ARG NEURAL_SEARCH_COMMITID="81f6c4788974ab8e86de2ce60003fdca2aa8b605"
 ARG QUERY_INSIGHTS_COMMITID="cdf1f9f737433c0390deb189a615cc937a21158c"
-Arg ML_COMMONS_COMMITID="2f717c0f3e81e6ffb514303f92beba9942a59a59"
-Arg SKILLS_COMMITID="7ca2e227e835f100e663803e67d01eb9fc9cc3d7"
-Arg FLOW_FRAMEWORK_COMMITID="32c6a7d9904e8cc6c5e0c88e238324ec731173c4"
-Arg SECURITY_COMMITID="53429a5853085da5258add822f768d248f70e228"
+ARG ML_COMMONS_COMMITID="2f717c0f3e81e6ffb514303f92beba9942a59a59"
+ARG SKILLS_COMMITID="7ca2e227e835f100e663803e67d01eb9fc9cc3d7"
+ARG FLOW_FRAMEWORK_COMMITID="32c6a7d9904e8cc6c5e0c88e238324ec731173c4"
+ARG SECURITY_COMMITID="53429a5853085da5258add822f768d248f70e228"
 
 
 # Install build dependencies
