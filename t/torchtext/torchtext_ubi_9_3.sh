@@ -60,7 +60,7 @@ PY_VER=$(python3 -c 'import sys; print(f"{sys.version_info.major}{sys.version_in
 export LD_LIBRARY_PATH=$CURRENT_DIR/text/build/lib.linux-ppc64le-cpython-${PY_VER}/torchtext/lib/:$LD_LIBRARY_PATH
 
 python3 -m pip install torchdata==0.7.1
-python3 -m pip install numpy pytest regex nltk sacremoses parameterized portalocker expecttest pytest-timeout
+python3 -m pip install "numpy<2.0" pytest regex nltk sacremoses parameterized portalocker expecttest pytest-timeout
 export BLIS_ARCH=generic
 pip install blis spacy
 
