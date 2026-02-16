@@ -27,7 +27,7 @@ CURRENT_DIR=$(pwd)
 
 echo "Installing dependencies..."
 yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3.11 python3.11-devel python3.11-pip cmake xz bzip2-devel libffi-devel patch ninja-build
-PYTHON_VERSION=$(python3.11 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
+PYTHON_VERSION=$(python3.11 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1-2)
 source /opt/rh/gcc-toolset-13/enable
 
 export CC=gcc

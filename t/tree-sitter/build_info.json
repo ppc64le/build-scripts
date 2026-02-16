@@ -1,0 +1,16 @@
+{
+   "maintainer": "adarsh-agrawal1",
+   "package_name": "tree-sitter",
+   "github_url": "https://github.com/tree-sitter/py-tree-sitter",
+   "version": "v0.25.2",
+   "default_branch": "master",
+   "build_script": "tree-sitter_ubi_9.6.sh",
+   "package_dir": "t/tree-sitter",
+   "docker_build": false,
+   "wheel_build": true,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+   "*" : {
+      "build_script": "tree-sitter_ubi_9.6.sh"
+   }
+}
