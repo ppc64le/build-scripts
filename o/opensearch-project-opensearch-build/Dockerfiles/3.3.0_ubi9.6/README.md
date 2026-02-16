@@ -1,5 +1,5 @@
 OpenSearch Docker Image Build Guide (ppc64le)
-NOTE
+###NOTE
 The tests require a Docker environment to execute.Please install Docker before running the tests.
 
 Docker Installation Steps (UBI 9.3)
