@@ -898,6 +898,12 @@ EOF
 SYSTEM_LIBS_PREFIX=$TENSORFLOW_PREFIX
 cat >> $BAZEL_RC_DIR/tensorflow.bazelrc << EOF
 import %workspace%/tensorflow/python_configure.bazelrc
+# ===== Increase rules_python timeout to 1 hour =====
+common --repo_env=RULES_PYTHON_REPOSITORY_TIMEOUT=3600
+common --repo_env=PIP_DEFAULT_TIMEOUT=3600
+common --repo_env=PIP_TIMEOUT=3600
+common --repository_cache=/tmp/bazel_repo_cache
+common --experimental_repository_cache=/tmp/bazel_repo_cache
 build:xla --define with_xla_support=true
 build --config=xla
 ${CPU_ARCH_OPTION}
@@ -906,7 +912,6 @@ ${CPU_TUNE_OPTION}
 ${CPU_TUNE_HOST_OPTION}
 ${VEC_OPTIONS}
 build:opt --define with_default_optimizations=true
-
 build --action_env TF_CONFIGURE_IOS="0"
 build --action_env TF_SYSTEM_LIBS="org_sqlite"
 build --action_env GCC_HOME=$GCC_HOME
