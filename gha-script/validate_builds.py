@@ -270,8 +270,24 @@ def trigger_build_validation_ci(pr_number):
         GITHUB_BUILD_SCRIPT_BASE_REPO,
         pr_number
     )
+
+    print(f"pull_request_file_url:{pull_request_file_url}" )
+    
+    req_response = requests.get(pull_request_file_url)
+    
+    if req_response.status_code != 200:
+        print(f"Error calling GitHub API. Status Code: {req_response.status_code}")
+        print(f"Response: {req_response.text}")
+        sys.exit(1)
+
+    response = req_response.json()
+
+    if not isinstance(response, list):
+        print(f"Unexpected API response format. Expected list, got {type(response)}")
+        print(response)
+        sys.exit(1)
+
     validated_file_list = []
-    response = requests.get(pull_request_file_url).json()
 
     ordered_files = []
     build_info = [file for file in response if 'build_info.json' in file.get('filename')]
