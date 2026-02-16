@@ -219,9 +219,6 @@ git checkout $PYTORCH_VERSION
 git submodule sync
 git submodule update --init --recursive
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_${PYTORCH_VERSION}.patch
-git apply pytorch_${$PYTORCH_VERSION}.patch
-
 ARCH=`uname -p`
 BUILD_NUM="1"
 export OPENBLAS_INCLUDE=$CURRENT_DIR/OpenBLAS/local/openblas/include/
