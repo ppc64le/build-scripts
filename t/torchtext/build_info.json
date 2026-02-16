@@ -17,6 +17,6 @@
     "build_script": "torchtext_v0.16.2_ubi_9_3.sh"
   },
   "*": {
-    "build_script": "torchtext_v0.16.2_ubi_9_3.sh"
+    "build_script": "torchtext_ubi_9_3.sh"
   }
 }
