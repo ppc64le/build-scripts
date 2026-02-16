@@ -31,8 +31,6 @@ TORCHVISION_VERSION=v0.23.0
 TORCH_URL=https://github.com/pytorch/pytorch.git
 TORCHVISION_URL=https://github.com/pytorch/vision.git
 
-export PYTHON=/usr/bin/python3.12
-
 echo "==================================================================="
 echo "        vLLM FULL BUILD START (UBI 9.5 / POWER / v0.11.1)"
 echo "==================================================================="
@@ -76,8 +74,6 @@ yum install -y \
   pkgconfig \
   make \
   gcc openblas-devel
-
-$PYTHON --version
 
 # -----------------------------------------------------------------------------
 # Enable GCC toolset (CRITICAL: must stay enabled for entire script)
