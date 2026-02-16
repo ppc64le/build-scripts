@@ -144,7 +144,7 @@ test_status=1  # 0 = success, non-zero = failure
 # Run tests if test dir is present and skip a neglected failure
 if [ -d "./tests" ] && [ $test_status -ne 0 ]; then
     echo "Running unitest cases..."
-    pytest tests -k "not test_properties" && test_status=0 || test_status=$?
+    pytest tests -k "not (TestLanguage and test_properties)" && test_status=0 || test_status=$?
 fi
 
 # Final test result output
