@@ -96,35 +96,35 @@ TREE_SITTER_RUST_VERSION=$(get_pkg_version tree-sitter-rust)
 git clone https://github.com/tree-sitter/tree-sitter-html.git
 cd tree-sitter-html
 git checkout v$TREE_SITTER_HTML_VERSION
-pip3.12 install .
+python3.12 -m pip install .
 cd $BUILD_HOME
 
 # Build and Install tree-sitter-json
 git clone https://github.com/tree-sitter/tree-sitter-json.git
 cd tree-sitter-json
 git checkout v$TREE_SITTER_JSON_VERSION
-pip3.12 install .
+python3.12 -m pip install .
 cd $BUILD_HOME
 
 # Build and Install tree-sitter-python
 git clone https://github.com/tree-sitter/tree-sitter-python.git
 cd tree-sitter-python
 git checkout v$TREE_SITTER_PYTHON_VERSION
-pip3.12 install .
+python3.12 -m pip install .
 cd $BUILD_HOME
 
 # Build and Install tree-sitter-javascript
 git clone https://github.com/tree-sitter/tree-sitter-javascript.git
 cd tree-sitter-javascript
 git checkout v$TREE_SITTER_JAVASCRIPT_VERSION
-pip3.12 install .
+python3.12 -m pip install .
 cd $BUILD_HOME
 
 # Build and Install tree-sitter-rust
 git clone https://github.com/tree-sitter/tree-sitter-rust.git
 cd tree-sitter-rust
 git checkout v$TREE_SITTER_RUST_VERSION
-pip3.12 install .
+python3.12 -m pip install .
 cd $BUILD_HOME
 
 cd "$PACKAGE_DIR"
