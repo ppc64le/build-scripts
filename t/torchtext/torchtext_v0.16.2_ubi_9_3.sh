@@ -47,9 +47,6 @@ echo "------------------------------------------------------------Installing req
 pip install -r requirements.txt
 git submodule update --init --recursive
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_${PYTORCH_VERSION}.patch
-git apply pytorch_${PYTORCH_VERSION}.patch
-
 echo "------------------------------------------------------------Installing setup.py for pytorch------------------------------------------------------"
 python3 setup.py install
 cd ..
