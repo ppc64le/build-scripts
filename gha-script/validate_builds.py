@@ -3,9 +3,9 @@ import os
 import stat
 import requests
 import sys
-import subprocess
 import docker
 import json
+import datetime
 
 import re
 
@@ -129,6 +129,9 @@ def trigger_basic_validation_checks(file_name):
     else:
         raise ValueError("Build script not found.")
 
+def log_msg(message):
+    """Helper to print with timestamp"""
+    print(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] {message}")
 
 def trigger_script_validation_checks(file_name):
     global image_name
@@ -136,33 +139,71 @@ def trigger_script_validation_checks(file_name):
         # fallback if image_name is still None
         image_name = "registry.access.redhat.com/ubi9/ubi:9.3"
 
-    print(f"Image used for the creating container: {image_name}")
-    # Spawn a container and pass the build script
-    client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+    log_msg(f"Starting validation. Image: {image_name}")
+    
+    try:
+        log_msg("Connecting to Docker socket...")
+        client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+        log_msg("Docker client connected.")
+    except Exception as e:
+        log_msg(f"Failed to connect to Docker: {e}")
+        raise e
+
+    log_msg(f"Setting execution permissions for {file_name}...")
     st = os.stat(file_name)
     current_dir = os.getcwd()
     os.chmod("{}/{}".format(current_dir, file_name), st.st_mode | stat.S_IEXEC)
-    # Let the container run in non detach mode, as we need to delete the container on operation completion
-    container = client.containers.run(
-        image_name,
-        "/home/tester/{}".format(file_name),
-
-        network='host',
-        detach=True,
-        volumes={
-            current_dir: {'bind': '/home/tester/', 'mode': 'rw'}
-        },
-        stderr=True,  # Return logs from STDERR
-
-    )
-    result = container.wait()
+    
+    log_msg(f"Checking if image {image_name} exists locally...")
     try:
-        print(container.logs().decode("utf-8"))
-    except Exception:
-        print(container.logs())
-    container.remove()
+        client.images.get(image_name)
+        log_msg("Image found locally.")
+    except docker.errors.ImageNotFound:
+        log_msg("Image NOT found locally. Pulling now... (This may take a while)")
+        try:
+            client.images.pull(image_name)
+            log_msg("Image pulled successfully.")
+        except Exception as e:
+            log_msg(f"Failed to pull image: {e}")
+            raise e
+
+    log_msg(f"Spawning container to run /home/tester/{file_name}...")
+    try:
+        container = client.containers.run(
+            image_name,
+            "/home/tester/{}".format(file_name),
+            network = 'host',
+            detach = True,
+            volumes = {
+                current_dir : {'bind': '/home/tester/', 'mode': 'rw'}
+            },
+            stderr = True,
+        )
+        log_msg(f"Container started. ID: {container.short_id}")
+    except Exception as e:
+        log_msg(f"Failed to start container: {e}")
+        raise e
+
+    log_msg("Streaming container logs...")
+    print("----- CONTAINER LOGS START -----")
+    try:
+        for line in container.logs(stream=True):
+            print(line.decode("utf-8").strip())
+    except Exception as e:
+        log_msg(f"Error while streaming logs: {e}")
+    print("----- CONTAINER LOGS END -----")
+
+    result = container.wait()
+    log_msg(f"Container finished with status code: {result['StatusCode']}")
+    
+    try:
+        container.remove()
+        log_msg("Container removed.")
+    except Exception as e:
+        log_msg(f"Warning: Failed to remove container: {e}")
+
     if int(result["StatusCode"]) != 0:
-        raise Exception(f"Build script validation failed for {file_name} !")
+        raise Exception(f"Build script validation failed for {file_name} with exit code {result['StatusCode']}!")
     else:
         return True
 
