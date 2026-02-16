@@ -1,74 +1,114 @@
-OpenSearch Docker Image Build Guide (ppc64le)
-# NOTE
-The tests require a Docker environment to execute.Please install Docker before running the tests.
+# OpenSearch Docker Image Build Guide (ppc64le)
 
-# Docker Installation Steps (UBI 9.3)
+---
+
+## NOTE
+
+The tests require a **Docker environment** to execute.  
+Please install Docker before running the tests.
+
+---
+
+## Docker Installation Steps (UBI 9.3)
+
 Run the following commands:
 
+```bash
 sudo yum install -y yum-utils
 sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 sudo yum install -y docker-ce docker-ce-cli containerd.io
 sudo systemctl enable docker
 sudo systemctl start docker
+```
 
+### Verify Docker Installation
 
-Verify Docker installation:
+```bash
 docker --version
+```
 
-# Building OpenSearch Docker Image (Version 3.3.0 – ppc64le)
+---
 
-Clone and Checkout the Repository
+## Building OpenSearch Docker Image (Version 3.3.0 – ppc64le)
+
+### Clone and Checkout the Repository
+
+```bash
 git clone https://github.com/opensearch-project/opensearch-build.git
 cd opensearch-build
 git checkout 3.3.0
+```
 
+---
 
-# Copy Required Files
+## Copy Required Files
 
 Copy the following files into:
 
+```
 opensearch-build/docker/release/dockerfiles/
+```
 
+- `Dockerfile`
+- `opensearch-build.patch`
+- All required snapshot `.zip` files
 
-Dockerfile
+---
 
-opensearch-build.patch
-
-All required snapshot .zip files
-
-Build the Docker Image
+## Build the Docker Image
 
 Navigate to:
 
+```bash
 cd opensearch-build/docker/release
+```
 
-# Run:
+Run:
+
+```bash
 ./build-image-single-arch.sh -v 3.3.0 -p opensearch -a ppc64le -f dockerfiles/Dockerfile
+```
 
-# Important: Snapshot Files Requirement
+---
+
+## Important: Snapshot Files Requirement
 
 If your Dockerfile depends on snapshot plugin builds:
 
-Build the snapshot plugins first.
+1. Build the snapshot plugins first.
+2. Copy the generated `.zip` files into:
 
-Copy the generated .zip files into:
-
+```
 opensearch-build/docker/release/dockerfiles/
+```
 
+Some plugin snapshots are copied from the host into the Docker build context.
 
-Few plugins snapshots are copied from the host into the Docker build context and need to build it as:
-for eg:
+### Example
+
+```bash
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/7ddb950ffe9482a5365ee459bb9756e2f529305d/o/opensearch-project-query-insights/opensearch-project-query-insights_3.3.0.0_ubi_9.6.sh
+```
 
-and run it as:
+Run the script:
+
+```bash
 ./opensearch-project-query-insights_3.3.0.0_ubi_9.6.sh --skip-tests
+```
 
-# Required Modification in build-image-single-arch.sh
+---
+
+## Required Modification in `build-image-single-arch.sh`
+
 Add the following block inside:
 
+```
 opensearch-build/docker/release/build-image-single-arch.sh
+```
 
-Add After Workspace Creation Section
+### Add After Workspace Creation Section
+
+```bash
 # Create temp workdirectory
 DIR=`Temp_Folder_Create`
 Trap_File_Delete_No_Sigchld $DIR
@@ -88,6 +128,9 @@ cp -v dockerfiles/opensearch-flow-framework-3.3.0.0-SNAPSHOT.zip $DIR/
 cp -v dockerfiles/opensearch-security-3.3.0.0-SNAPSHOT.zip $DIR/
 cp -v dockerfiles/query-insights-3.3.0.0-SNAPSHOT.zip $DIR/
 
-Optional (if required)
-cp -v dockerfiles/opensearch-project-k-NN_3.3.0.0_ubi_9.6.sh $DIR/
-chmod +x $DIR/opensearch-project-k-NN_3.3.0.0_ubi_9.6.sh
+# Optional (if required)
+# cp -v dockerfiles/opensearch-project-k-NN_3.3.0.0_ubi_9.6.sh $DIR/
+# chmod +x $DIR/opensearch-project-k-NN_3.3.0.0_ubi_9.6.sh
+```
+
+---
