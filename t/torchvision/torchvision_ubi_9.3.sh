@@ -213,7 +213,7 @@ wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p
 git apply pytorch_${PYTORCH_VERSION}.patch
 
 ARCH=`uname -p`
-BUILD_NUM="1"$
+BUILD_NUM="1"
 export OPENBLAS_INCLUDE=/OpenBLAS/local/openblas/include/
 export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
 export OpenBLAS_HOME="/usr/include/openblas"
