@@ -781,10 +781,8 @@ cd $CURRENT_DIR
 
 echo "----------bazel installing--------------------"
 
-# Set to avoid issues with yum installation
-echo "tsflags=nocaps" >> /etc/yum.conf
-
-yum install -y  zip java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless unzip
+# Set flag to avoid issues with yum installation
+yum install -y  zip java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless unzip --setopt=tsflags=nocaps
 
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
