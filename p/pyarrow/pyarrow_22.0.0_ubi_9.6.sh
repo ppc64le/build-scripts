@@ -21,6 +21,7 @@ set -e
 
 WORKDIR=$(pwd)
 PACKAGE_NAME=pyarrow
+PACKAGE_DIR=arrow/python
 PACKAGE_VERSION=${1:-apache-arrow-22.0.0}
 PACKAGE_URL=https://github.com/apache/arrow
 PYTHON_VERSION=3.11
@@ -120,8 +121,3 @@ then
 fi
 
 echo "PyArrow validation successful"
-
-
-
-
-
