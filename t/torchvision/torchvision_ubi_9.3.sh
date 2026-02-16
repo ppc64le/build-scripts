@@ -28,6 +28,7 @@ OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 MAX_JOBS=${MAX_JOBS:-$(nproc)}
 VERSION=${PACKAGE_VERSION#v}
 PYTHON_VERSION=${2:-3.12}
+PYTORCH_VERSION=${3:-v2.7.0}
 
 CURRENT_DIR=$(pwd)
 
@@ -204,15 +205,15 @@ source "$HOME/.cargo/env"
 echo "--------------------------Installing pytorch------------------------------------------"
 git clone https://github.com/pytorch/pytorch.git
 cd pytorch
-git checkout v2.6.0
+git checkout $PYTORCH_VERSION
 git submodule sync
 git submodule update --init --recursive
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.6.0.patch
-git apply pytorch_v2.6.0.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_${PYTORCH_VERSION}.patch
+git apply pytorch_${PYTORCH_VERSION}.patch
 
 ARCH=`uname -p`
-BUILD_NUM="1"
+BUILD_NUM="1"$
 export OPENBLAS_INCLUDE=/OpenBLAS/local/openblas/include/
 export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
 export OpenBLAS_HOME="/usr/include/openblas"
