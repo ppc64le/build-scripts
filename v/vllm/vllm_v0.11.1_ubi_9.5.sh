@@ -18,8 +18,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
-
 set -eo pipefail
 
 PACKAGE_NAME=vllm
@@ -32,8 +30,6 @@ TORCH_VERSION=v2.8.0
 TORCHVISION_VERSION=v0.23.0
 TORCH_URL=https://github.com/pytorch/pytorch.git
 TORCHVISION_URL=https://github.com/pytorch/vision.git
-
-export PYTHON=/usr/bin/python3.12
 
 echo "==================================================================="
 echo "        vLLM FULL BUILD START (UBI 9.5 / POWER / v0.11.1)"
@@ -77,9 +73,7 @@ yum install -y \
   libtool \
   pkgconfig \
   make \
-  gcc
-
-$PYTHON --version
+  gcc openblas-devel
 
 # -----------------------------------------------------------------------------
 # Enable GCC toolset (CRITICAL: must stay enabled for entire script)
@@ -106,14 +100,14 @@ g++ --version
 # -----------------------------------------------------------------------------
 echo "-------------------- Upgrading Python tooling ---------------------"
 
-$PYTHON -m pip install --upgrade pip setuptools wheel
+python3.12 -m pip install --upgrade pip setuptools wheel
 
 # -----------------------------------------------------------------------------
 # Python binary wheels (POWER / devpi)
 # -----------------------------------------------------------------------------
 echo "-------------------- Installing Python dependencies ----------------"
 
-$PYTHON -m pip install \
+python3.12 -m pip install \
   --trusted-host wheels.developerfirst.ibm.com \
   "abseil-cpp @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/419/275773a4cc480/abseil_cpp-20240116.2-py3-none-any.whl" \
   "av @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/b09/d74303b7aaf7f/av-13.1.0-cp312-cp312-linux_ppc64le.whl" \
@@ -132,14 +126,14 @@ $PYTHON -m pip install \
   Jinja2 MarkupSafe mpmath networkx requests \
   sympy tqdm typing_extensions urllib3 numpy
 
-$PYTHON -m pip install cmake pyyaml packaging openpyxl setuptools_scm
+python3.12 -m pip install cmake pyyaml packaging openpyxl setuptools_scm cython
 
 # -----------------------------------------------------------------------------
 # Pillow (devpi)
 # -----------------------------------------------------------------------------
 echo "-------------------- Installing Pillow -----------------------------"
 
-$PYTHON -m pip install \
+python3.12 -m pip install \
   --trusted-host wheels.developerfirst.ibm.com \
   --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/ \
   pillow==11.2.1
@@ -189,7 +183,7 @@ cd ../../python
 pip install -r requirements-build.txt
 export PYARROW_PARALLEL=$(nproc)
 
-$PYTHON setup.py build_ext \
+python3.12 setup.py build_ext \
   --build-type=release \
   --bundle-arrow-cpp \
   bdist_wheel \
@@ -215,9 +209,12 @@ cd pytorch
 git checkout ${TORCH_VERSION}
 git submodule update --init --recursive --jobs 1
 
-$PYTHON -m pip install -r requirements.txt
-$PYTHON setup.py build_ext -j$(nproc)
-$PYTHON setup.py install
+python3.12 -m pip install -r requirements.txt
+ulimit -n 65536
+python3.12 setup.py build_ext -j$(nproc)
+python3.12 setup.py install
+
+export LD_LIBRARY_PATH=$CURRENT_DIR/pytorch/torch/lib:$LD_LIBRARY_PATH
 
 cd ${CURRENT_DIR}
 
@@ -229,7 +226,7 @@ echo "-------------------- Building TorchVision --------------------------"
 git clone ${TORCHVISION_URL}
 cd vision
 git checkout ${TORCHVISION_VERSION}
-USE_FFMPEG=1 USE_JPEG=1 USE_PNG=1 $PYTHON setup.py develop
+USE_FFMPEG=1 USE_JPEG=1 USE_PNG=1 python3.12 setup.py develop
 cd ${CURRENT_DIR}
 
 # -----------------------------------------------------------------------------
@@ -266,8 +263,9 @@ cd ${CURRENT_DIR}
 # -----------------------------------------------------------------------------
 echo "-------------------- Building vLLM ---------------------------------"
 
-git clone -b ${PACKAGE_VERSION} ${PACKAGE_URL}
+git clone ${PACKAGE_URL}
 cd ${PACKAGE_DIR}
+git checkout ${PACKAGE_VERSION}
 
 sed -i 's/^torch/# torch/' requirements/cpu.txt
 sed -i 's/^torchvision/# torchvision/' requirements/cpu.txt
@@ -275,25 +273,25 @@ sed -i 's/^torchaudio/# torchaudio/' requirements/cpu.txt
 sed -i 's/^outlines_core/# outlines_core/' requirements/common.txt
 sed -i 's/^scipy/# scipy/' requirements/common.txt
 
-$PYTHON -m pip install \
+python3.12 -m pip install \
   --prefer-binary \
   --trusted-host wheels.developerfirst.ibm.com \
   --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/ \
   -r requirements/cpu.txt
 
-$PYTHON -m pip install llguidance
+python3.12 -m pip install llguidance
 
 PIP_NO_BUILD_ISOLATION=1 \
 CC=${CC} \
 CXX=${CXX} \
-$PYTHON -m pip install xgrammar
+python3.12 -m pip install xgrammar
 
 export VLLM_TARGET_DEVICE=cpu
 export MAX_JOBS=$(nproc)
 
-$PYTHON setup.py install
+python3.12 setup.py install
 
-$PYTHON setup.py bdist_wheel --dist-dir="${CURRENT_DIR}"
+python3.12 setup.py bdist_wheel --dist-dir="${CURRENT_DIR}"
 
 cd ${CURRENT_DIR}
 
@@ -307,7 +305,7 @@ echo "==================================================================="
 #    If the build machine is offline, this step will fail.
 echo "Running basic offline inference example..."
 
-if ! $PYTHON ${PACKAGE_DIR}/examples/offline_inference/basic/basic.py; then
+if ! python3.12 ${PACKAGE_DIR}/examples/offline_inference/basic/basic.py; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"
