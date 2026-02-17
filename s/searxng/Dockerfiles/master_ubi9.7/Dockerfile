@@ -1,5 +1,5 @@
 # 1. Builder Stage
-FROM registry.access.redhat.com/ubi9/ubi:9.6 AS builder
+FROM registry.access.redhat.com/ubi9/ubi:9.7 AS builder
 
 ENV SEARXNG_PATH=/usr/local/searxng \
     SEARXNG_USER=searxng \
@@ -57,7 +57,7 @@ RUN find /usr -type d -name "__pycache__" -exec rm -rf {} + || true && \
 
 
 # 2. Runtime Stage (Slim)
-FROM registry.access.redhat.com/ubi9-minimal:9.6 AS runtime
+FROM registry.access.redhat.com/ubi9-minimal:9.7 AS runtime
 ENV SEARXNG_PATH=/usr/local/searxng \
     SEARXNG_USER=searxng \
     LANG=en_US.UTF-8
