@@ -11,3 +11,4 @@ index 21ee9ba..b2f9c03 100644
  classifiers = [
      "Programming Language :: Rust",
      "Programming Language :: Python :: Implementation :: CPython",
+     
