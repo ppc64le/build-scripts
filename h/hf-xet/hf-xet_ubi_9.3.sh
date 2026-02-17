@@ -41,6 +41,17 @@ git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
+# Apply hf_xet_patch.diff only for v1.1.0 & v1.1.1
+if [[ $PACKAGE_VERSION == "v1.1.0" || $PACKAGE_VERSION == "v1.1.1" ]]; then
+  wget https://raw.githubusercontent.com/pooja0805/build-scripts/refs/heads/fix-hf_xet/h/hf-xet/hf_xet_patch.diff
+  git apply hf_xet_patch.diff
+  cp $CURRENT_DIR/xet-core/LICENSE $CURRENT_DIR/xet-core/hf_xet/
+fi
+
+# Workaround for issue https://github.com/huggingface/xet-core/issues/658: creates the missing python/hf_xet package required by maturin.
+mkdir -p $CURRENT_DIR/xet-core/hf_xet/python/hf_xet
+touch $CURRENT_DIR/xet-core/hf_xet/python/hf_xet/__init__.py
+
 #install python dependencies
 python3.12 -m pip install numpy cython build pytest
 

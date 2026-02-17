@@ -1,0 +1,14 @@
+diff --git a/hf_xet/pyproject.toml b/hf_xet/pyproject.toml
+index 21ee9ba..b2f9c03 100644
+--- a/hf_xet/pyproject.toml
++++ b/hf_xet/pyproject.toml
+@@ -5,6 +5,8 @@ build-backend = "maturin"
+ [project]
+ name = "hf-xet"
+ requires-python = ">=3.8"
++license = "Apache-2.0"
++license-file = "LICENSE"
+ classifiers = [
+     "Programming Language :: Rust",
+     "Programming Language :: Python :: Implementation :: CPython",
+     
