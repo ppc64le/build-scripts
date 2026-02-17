@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/duckdb/duckdb-python.git
 # Tested on     : UBI:9.6
 # Language      : Python, C++
-# Travis-Check  : True
+# Ci-Check  : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Puneet Sharma <puneet.sharma21@ibm.com>
 #
