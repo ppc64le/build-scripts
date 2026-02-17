@@ -56,33 +56,30 @@ RUN python3.12 -m venv $VENV_PATH \
 ###############################################
 # Stage 3: Final Minimal Runtime
 ###############################################
+###############################################
+# Stage 3: Final Minimal Runtime
+###############################################
 FROM registry.access.redhat.com/ubi9-minimal:latest AS runtime
 
-RUN microdnf update -y && microdnf install -y python3.12 libatomic openssl && \
+RUN microdnf update -y && \
+    microdnf install -y python3.12 libatomic openssl && \
     microdnf clean all
 
 WORKDIR /app
 
 COPY --from=python-builder /app/venv /app/venv
-ENV PATH="/app/venv/bin:$PATH"
-
-# 1. Copy BOTH engines and rename them clearly
 COPY --from=prisma-builder /app/target/release/query-engine /usr/local/bin/query-engine
 COPY --from=prisma-builder /app/target/release/schema-engine /usr/local/bin/schema-engine
 
-# 2. Make them executable
-RUN chmod +x /usr/local/bin/query-engine /usr/local/bin/schema-engine
+ENV PATH="/app/venv/bin:$PATH" \
+    PRISMA_QUERY_ENGINE_BINARY=/usr/local/bin/query-engine \
+    PRISMA_SCHEMA_ENGINE_BINARY=/usr/local/bin/schema-engine \
+    PRISMA_CLI_QUERY_ENGINE_TYPE=binary \
+    PRISMA_CLIENT_ENGINE_TYPE=binary
 
-# 3. CRITICAL: Set these BEFORE running 'prisma generate'
-# These variables tell the CLI "Don't download anything, use these files."
-ENV PRISMA_QUERY_ENGINE_BINARY=/usr/local/bin/query-engine
-ENV PRISMA_SCHEMA_ENGINE_BINARY=/usr/local/bin/schema-engine
-ENV PRISMA_CLI_QUERY_ENGINE_TYPE=binary
-ENV PRISMA_CLIENT_ENGINE_TYPE=binary
-
-# 4. Generate the client
-RUN curl -L -o schema.prisma https://raw.githubusercontent.com/BerriAI/litellm/refs/tags/v1.81.11-nightly/schema.prisma
-RUN prisma generate --schema=./schema.prisma
+RUN chmod +x /usr/local/bin/query-engine /usr/local/bin/schema-engine && \
+    curl -L -o schema.prisma https://raw.githubusercontent.com/BerriAI/litellm/refs/tags/v1.81.11-nightly/schema.prisma && \
+    prisma generate --schema=./schema.prisma
 
 EXPOSE 4000
 ENTRYPOINT ["litellm"]
