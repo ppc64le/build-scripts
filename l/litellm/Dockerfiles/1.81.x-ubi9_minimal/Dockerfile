@@ -58,30 +58,32 @@ RUN python3.12 -m venv $VENV_PATH \
 ###############################################
 FROM registry.access.redhat.com/ubi9-minimal:latest AS runtime
 
-RUN microdnf update -y && microdnf install -y python3.12 libatomic && \
+RUN microdnf update -y && microdnf install -y python3.12 libatomic openssl && \
     microdnf clean all
 
 WORKDIR /app
 
-# Copy Python virtualenv from builder
 COPY --from=python-builder /app/venv /app/venv
 ENV PATH="/app/venv/bin:$PATH"
 
-# Copy Prisma engines from Rust builder
-RUN mkdir -p /usr/local/lib/prisma
-COPY --from=prisma-builder /app/target/release/*-engine /usr/local/lib/prisma/
-RUN chmod +x /usr/local/lib/prisma/query-engine
+# 1. Copy BOTH engines and rename them clearly
+COPY --from=prisma-builder /app/target/release/query-engine /usr/local/bin/query-engine
+COPY --from=prisma-builder /app/target/release/schema-engine /usr/local/bin/schema-engine
 
-# Set Prisma environment variables
-ENV PRISMA_QUERY_ENGINE_BINARY=/usr/local/lib/prisma/query-engine
+# 2. Make them executable
+RUN chmod +x /usr/local/bin/query-engine /usr/local/bin/schema-engine
+
+# 3. CRITICAL: Set these BEFORE running 'prisma generate'
+# These variables tell the CLI "Don't download anything, use these files."
+ENV PRISMA_QUERY_ENGINE_BINARY=/usr/local/bin/query-engine
+ENV PRISMA_SCHEMA_ENGINE_BINARY=/usr/local/bin/schema-engine
 ENV PRISMA_CLI_QUERY_ENGINE_TYPE=binary
+ENV PRISMA_CLIENT_ENGINE_TYPE=binary
 
-# Get Prisma schema and generate client
+# 4. Generate the client
 RUN curl -L -o schema.prisma https://raw.githubusercontent.com/BerriAI/litellm/refs/tags/v1.81.11-nightly/schema.prisma
-RUN python3.12 -m prisma generate
-ENV PRISMA_SCHEMA_ENGINE_BINARY=/usr/local/lib/prisma/schema-engine
+RUN prisma generate --schema=./schema.prisma
 
-# Expose port and run
 EXPOSE 4000
 ENTRYPOINT ["litellm"]
 CMD ["--host", "0.0.0.0", "--port", "4000"]
