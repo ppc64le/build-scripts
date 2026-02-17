@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       large-runner:
-        description: "New Runner to use for failing build"
+        description: "New runner to use for failing build"
         required: true
         default: "ubuntu-24.04-ppc64le-2xlarge-p10"
         type: choice
@@ -22,8 +22,8 @@ on:
 
 run-name: >
   ${{ github.event_name == 'workflow_dispatch'
-      && format('PR build for {0} on {1}', inputs.pr_number, inputs.large-runner)
-      || format('PR build #{0}', github.event.pull_request.number) }}
+      && format('Retriggered build on {0} for PR {1}', inputs.large-runner, inputs.pr_number)
+      || github.event.pull_request.title }}
 
 jobs:
   validate:
@@ -31,7 +31,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install required packages
         run: |
