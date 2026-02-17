@@ -43,7 +43,7 @@ git checkout $PACKAGE_VERSION
 
 # Apply hf_xet_patch.diff only for v1.1.0 & v1.1.1
 if [[ $PACKAGE_VERSION == "v1.1.0" || $PACKAGE_VERSION == "v1.1.1" ]]; then
-  wget https://raw.githubusercontent.com/pooja0805/build-scripts/refs/heads/fix-hf_xet/h/hf-xet/hf_xet_patch.diff
+  wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/h/hf-xet/hf_xet_patch.diff
   git apply hf_xet_patch.diff
   cp $CURRENT_DIR/xet-core/LICENSE $CURRENT_DIR/xet-core/hf_xet/
 fi
