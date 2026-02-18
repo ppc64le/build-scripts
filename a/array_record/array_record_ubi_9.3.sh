@@ -43,14 +43,14 @@ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$JAVA_HOME/bin:/usr/bin:$PATH
 
 #Installing Bazel
-#mkdir bazel
-#cd bazel
-#wget https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VERSION}/bazel-${BAZEL_VERSION}-dist.zip
-#unzip bazel-${BAZEL_VERSION}-dist.zip
-#env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk --jobs=4" bash ./compile.sh
-#cp output/bazel /usr/local/bin
-#export PATH=/usr/local/bin:$PATH
-#cd $CURRENT_DIR
+mkdir bazel
+cd bazel
+wget https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VERSION}/bazel-${BAZEL_VERSION}-dist.zip
+unzip bazel-${BAZEL_VERSION}-dist.zip
+env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk --jobs=4" bash ./compile.sh
+cp output/bazel /usr/local/bin
+export PATH=/usr/local/bin:$PATH
+cd $CURRENT_DIR
 
 # Install required Python packages
 python3.12 -m pip cache purge
