@@ -17,28 +17,32 @@ RUN microdnf update -y && \
     gcc gcc-c++ make git pkg-config \
     libffi-devel openssl-devel \
     clang clang-libs llvm llvm-devel \
-    cmake findutils && \
+    cmake findutils wget && \
     microdnf clean all && rm -rf /var/cache/* && \
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
     python3.11 -m pip install --no-cache-dir \
     "cmake>=3.24.2,<3.28" cython setuptools-rust "setuptools_scm[toml]>=4" \
-    patchelf semantic_version build
+    patchelf semantic_version build && \
+    mkdir -p /patches && \
+    wget -q -O /patches/libdatadog-crashtracker_25.0.0.patch \
+      https://raw.githubusercontent.com/vikashsingh14/build-scripts/openwebui-pipelines-dockerfile/o/openwebui-pipelines/ubi9-pipelines-v1.0.0/patches/libdatadog-crashtracker_25.0.0.patch && \
+    wget -q -O /patches/ddtrace_4.3.0.patch \
+      https://raw.githubusercontent.com/vikashsingh14/build-scripts/openwebui-pipelines-dockerfile/o/openwebui-pipelines/ubi9-pipelines-v1.0.0/patches/ddtrace_4.3.0.patch
 
 WORKDIR /app
-COPY patches /patches
 
 RUN python3.11 -m pip install --no-cache-dir \
     "cmake>=3.24.2,<3.28" cython setuptools-rust "setuptools_scm[toml]>=4" \
     patchelf semantic_version build && \
     git clone --depth=1 --branch v25.0.0 https://github.com/DataDog/libdatadog.git /tmp/libdatadog && \
     cd /tmp/libdatadog && \
-    git apply /patches/crashtracker_ppc64le.patch && \
+    git apply /patches/libdatadog-crashtracker_25.0.0.patch && \
     cargo update -p libc --precise 0.2.178 && \
     cargo rustc --lib --release --crate-type staticlib -p libdd-crashtracker && \
     cd /tmp && \
     git clone --depth=1 --branch v4.3.0 https://github.com/DataDog/dd-trace-py.git /tmp/ddtrace && \
     cd /tmp/ddtrace && \
-    git apply /patches/ddttrace_4.3.0_ppc64le.patch && \
+    git apply /patches/ddtrace_4.3.0.patch && \
     cp /tmp/libdatadog/target/release/liblibdd_crashtracker.a src/native/ && \
     cd src/native && \
     cargo build --release --features "pyo3/extension-module profiling" && \
@@ -62,17 +66,19 @@ ENV PIP_NO_CACHE_DIR=1 \
     PIP_NO_BUILD_ISOLATION=1
 
 WORKDIR /app
-COPY patches/requirements.patch /patches/requirements.patch
 
 RUN microdnf update -y && \
     microdnf install -y \
     python3.11 python3.11-pip python3.11-devel python3.11-wheel \
     gcc gcc-c++ make git pkg-config \
     libffi-devel openssl-devel \
-    cmake findutils patch && \
+    cmake findutils wget && \
     microdnf clean all && rm -rf /var/cache/* && \
     python3.11 -m venv /opt/venv && \
-    /opt/venv/bin/pip install --no-cache-dir --upgrade pip
+    /opt/venv/bin/pip install --no-cache-dir --upgrade pip && \
+    mkdir -p /patches && \
+    wget -q -O /patches/pipelines_requirements.patch \
+      https://raw.githubusercontent.com/vikashsingh14/build-scripts/openwebui-pipelines-dockerfile/o/openwebui-pipelines/ubi9-pipelines-v1.0.0/patches/pipelines_requirements.patch
 
 COPY --from=ddtrace-native-builder /artifacts/ddtrace/*.whl /tmp/
 COPY --from=ddtrace-native-builder \
@@ -83,7 +89,7 @@ RUN mkdir -p /opt/venv/lib/python3.11/site-packages/ddtrace/internal/native && \
     /opt/venv/bin/pip install /tmp/ddtrace-*.whl && \
     rm -rf /tmp/* && \
     git clone --depth=1 https://github.com/open-webui/pipelines.git . && \
-    patch -p1 < /patches/requirements.patch && \
+    git apply /patches/pipelines_requirements.patch && \
     /opt/venv/bin/pip install \
     --no-cache-dir --prefer-binary --only-binary=all \
     --index-url https://pypi.org/simple \
