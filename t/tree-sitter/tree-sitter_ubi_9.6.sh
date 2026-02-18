@@ -46,6 +46,13 @@ mkdir -p /usr/include/tree_sitter/
 cp src/tree_sitter/*.h /usr/include/tree_sitter/
 cd $BUILD_HOME
 
+git clone https://github.com/tree-sitter/tree-sitter.git
+cd tree-sitter
+git checkout $PACKAGE_VERSION
+make
+make install
+cd $BUILD_HOME
+
 # Clone or extract the package
 if [[ "$PACKAGE_URL" == *github.com* ]]; then
     if [ -d "$PACKAGE_DIR" ]; then
