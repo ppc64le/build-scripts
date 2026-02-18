@@ -32,8 +32,13 @@ PYTHON_VERSION=$(python3.12 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 export SITE_PACKAGE_PATH=/usr/local/lib/python${PYTHON_VERSION}/site-packages
+export CC=/usr/bin/gcc
+export CXX=/usr/bin/g++
 yum remove -y python3-chardet
+gcc --version
 
+echo "**** Checking GCC version..."
+gcc -v || true
 
 # Get Python include path
 PYTHON_INCLUDE=$(python3.12 -c "from sysconfig import get_paths; print(get_paths()['include'])")
