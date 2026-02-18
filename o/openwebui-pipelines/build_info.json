@@ -9,6 +9,8 @@
     "docker_cmd": "docker build -t ${package_name}:${PACKAGE_VERSION} ${dir}",
     "validate_build_script": false,
     "wheel_build": false,
+    "docker_build": true,
+    "use_non_root_user": false,
     "*": {
         "dir": "pipelines-openwebui_python311_main",
         "base_docker_image":"registry.access.redhat.com/ubi9/python-311:latest",

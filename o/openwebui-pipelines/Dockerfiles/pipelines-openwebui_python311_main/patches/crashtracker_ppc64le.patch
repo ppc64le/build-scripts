@@ -1,0 +1,18 @@
+diff --git a/libdd-crashtracker/src/collector/emitters.rs b/libdd-crashtracker/src/collector/emitters.rs
+index f609c9f9..cbbdd56a 100644
+--- a/libdd-crashtracker/src/collector/emitters.rs
++++ b/libdd-crashtracker/src/collector/emitters.rs
+@@ -384,6 +384,13 @@ fn extract_ip(ucontext: *const ucontext_t) -> usize {
+         return (*ucontext).uc_mcontext.gregs[libc::REG_RIP as usize] as usize;
+         #[cfg(all(target_os = "linux", target_arch = "aarch64"))]
+         return (*ucontext).uc_mcontext.pc as usize;
++
++        #[cfg(all(target_os = "linux", any(target_arch = "powerpc64", target_arch = "powerpc64le")))]
++        return unsafe {
++            let regs = (*ucontext).uc_mcontext.regs as *const u64;
++            *regs.add(32)
++        } as usize;
++
+     }
+ }
+
