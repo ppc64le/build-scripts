@@ -139,6 +139,9 @@ cd python
 python setup.py install --cpp_implementation
 echo "-----------------------------------------------------Installed protobuf-----------------------------------------------------"
 
+#Downgrade setuptools to version that has pkg_resources
+pip install "setuptools<70"
+
 python -m pip install --upgrade pip
 python -m pip install numpy==2.0.2 cython pytest
 
