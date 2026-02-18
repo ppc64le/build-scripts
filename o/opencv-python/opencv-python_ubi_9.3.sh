@@ -138,8 +138,7 @@ git apply set_cpp_to_17_v4.25.3.patch
 
 #installing protobuf
 cd python
-#python setup.py install --cpp_implementation
-python -m pip install . --no-build-isolation --config-settings="--build-option=--cpp_implementation"
+python -m pip install . --no-build-isolation 
 echo "-----------------------------------------------------Installed protobuf-----------------------------------------------------"
 
 
