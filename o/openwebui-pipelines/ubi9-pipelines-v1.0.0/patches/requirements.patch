@@ -1,7 +1,5 @@
-diff --git a/requirements.txt b/requirements.txt
-index b3cc96e..202ad0d 100644
---- a/requirements.txt
-+++ b/requirements.txt
+--- ../patches/requirements.orig	2026-02-17 07:16:01.471242478 -0500
++++ requirements.txt	2026-02-17 07:16:01.481242477 -0500
 @@ -1,6 +1,5 @@
  fastapi==0.111.0
  uvicorn[standard]==0.22.0
@@ -9,7 +7,7 @@ index b3cc96e..202ad0d 100644
  python-multipart==0.0.9
  python-socketio
  grpcio
-@@ -17,7 +16,6 @@ httpx
+@@ -17,7 +16,6 @@
  openai
  anthropic
  google-generativeai
@@ -17,7 +15,7 @@ index b3cc96e..202ad0d 100644
  
  # Database
  pymongo
-@@ -31,7 +29,6 @@ psycopg2-binary
+@@ -31,7 +29,6 @@
  
  # Observability
  langfuse
@@ -25,7 +23,7 @@ index b3cc96e..202ad0d 100644
  opik
  
  # ML libraries
-@@ -58,10 +55,7 @@ matplotlib
+@@ -58,10 +55,7 @@
  seaborn
  
  # Web scraping
@@ -35,3 +33,6 @@ index b3cc96e..202ad0d 100644
  
  # Llama Index for RAG
  llama-index
+-llama-index-llms-ollama
+\ No newline at end of file
++llama-index-llms-ollama

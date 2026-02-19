@@ -77,8 +77,8 @@ RUN microdnf update -y && \
     python3.11 -m venv /opt/venv && \
     /opt/venv/bin/pip install --no-cache-dir --upgrade pip && \
     mkdir -p /patches && \
-    wget -q -O /patches/pipelines_requirements.patch \
-      https://raw.githubusercontent.com/vikashsingh14/build-scripts/openwebui-pipelines-dockerfile/o/openwebui-pipelines/ubi9-pipelines-v1.0.0/patches/pipelines_requirements.patch
+    wget -q -O /patches/requirements.patch \
+      https://raw.githubusercontent.com/vikashsingh14/build-scripts/openwebui-pipelines-dockerfile/o/openwebui-pipelines/ubi9-pipelines-v1.0.0/patches/requirements.patch
 
 COPY --from=ddtrace-native-builder /artifacts/ddtrace/*.whl /tmp/
 COPY --from=ddtrace-native-builder \
@@ -89,7 +89,7 @@ RUN mkdir -p /opt/venv/lib/python3.11/site-packages/ddtrace/internal/native && \
     /opt/venv/bin/pip install /tmp/ddtrace-*.whl && \
     rm -rf /tmp/* && \
     git clone --depth=1 https://github.com/open-webui/pipelines.git . && \
-    git apply /patches/pipelines_requirements.patch && \
+    git apply /patches/requirements.patch && \
     /opt/venv/bin/pip install \
     --no-cache-dir --prefer-binary --only-binary=all \
     --index-url https://pypi.org/simple \
