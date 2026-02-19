@@ -25,6 +25,7 @@ PACKAGE_URL="https://github.com/google/array_record"
 PACKAGE_DIR=array_record
 export CURRENT_DIR="${PWD}"
 BAZEL_VERSION=7.4.0
+
 # array-record not tagged to use v0.6.0, used hard commit for v0.6.0
 PACKAGE_COMMIT="7e299eae0db0d7bfc20f7c1e1548bf86cdbfef5e"
 
@@ -98,8 +99,10 @@ archive_override(
 )
 EOF
 
+# Apply array-record-0.6.0
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/a/array_record/array_record_v0.6.0.patch
 git apply array_record_v0.6.0.patch
+
 # Install required Python packages
 python3.12 -m pip install --upgrade pip setuptools absl-py etils[epath]
 export PYTHON_BIN="$VENV_DIR/bin/python"
