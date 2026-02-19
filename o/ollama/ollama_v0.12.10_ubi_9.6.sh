@@ -81,6 +81,7 @@ echo "**** Building Ollama with CMake..."
 cmake -B build
 cmake --build build -j$(nproc)
 
+export LD_LIBRARY_PATH=$(pwd)/build/lib/ollama:$LD_LIBRARY_PATH
 export CGO_LDFLAGS="-L$(pwd)/build/lib/ollama/ -lggml-cpu-power10"
 
 echo "**** Building Ollama binary with Go..."
