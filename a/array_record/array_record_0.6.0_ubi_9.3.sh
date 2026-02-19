@@ -42,6 +42,8 @@ export PATH=$GCC_TOOLSET_PATH/bin:$PATH
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 export PATH=$PATH:$JAVA_HOME/bin
 
+ln -s /usr/bin/python3.12 /bin/python
+
 #Install bazel
 mkdir bazel
 cd bazel
