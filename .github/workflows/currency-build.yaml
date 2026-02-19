@@ -41,7 +41,22 @@ on:
         required: false
         default: 'None'
 
-run-name: Currency Build ${{ inputs.package_name }} && Unique ID ${{ inputs.unique_id }}
+      ## for builds which fail on default runner  
+      large-runner-label:
+        description: "New runner to use for failing build"
+        required: false
+        type: choice
+        options:
+          - ''
+          - ubuntu-24.04-ppc64le-2xlarge-p10
+          - ubuntu-24.04-ppc64le-4xlarge-p10
+
+run-name: >
+  ${{ inputs.large-runner-label != '' &&
+      format('Retriggered Currency Build for package {0} and Unique ID {1} on {2}', inputs.package_name, inputs.unique_id, inputs.large-runner-label) ||
+      format('Currency Build {0} && Unique ID {1}', inputs.package_name, inputs.unique_id)
+  }}
+
 
 jobs:
   build_info:
@@ -109,7 +124,7 @@ jobs:
   build:
     needs: build_info
     if: ${{ inputs.validate_build_script == 'true' }}
-    runs-on: ubuntu-24.04-ppc64le-p10
+    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -174,7 +189,7 @@ jobs:
     needs: build_info
     name: Create Wheel for Python ${{ matrix.python-version }}
     if: ${{ inputs.wheel_build == 'true' }}
-    runs-on: ubuntu-24.04-ppc64le-p10
+    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
     strategy:
       fail-fast: false
       matrix:
@@ -408,7 +423,7 @@ jobs:
   build_docker:
     needs: build_info 
     if: ${{ inputs.build_docker == 'true' }}
-    runs-on: ubuntu-24.04-ppc64le-p10
+    runs-on: ${{ inputs.large-runner-label != '' && inputs.large-runner-label || 'ubuntu-24.04-ppc64le-p10' }}
     steps:
       - uses: actions/checkout@v4
 
