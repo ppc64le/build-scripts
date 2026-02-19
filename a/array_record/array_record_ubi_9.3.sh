@@ -26,7 +26,7 @@ WORK_DIR=$(pwd)
 PACKAGE_DIR=array_record/build-dir
 BAZEL_VERSION=5.4.0
 export CURRENT_DIR=${PWD}
-export PYTHON_VERSION=3.12
+
 echo "Installing dependencies..."
 
 export PYTHON_BIN="$VENV_DIR/bin/python"
