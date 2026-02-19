@@ -29,8 +29,8 @@ export CURRENT_DIR=${PWD}
 
 echo "Installing dependencies..."
 
-export PYTHON_BIN="$VENV_DIR/bin/python"
-export PATH="$VENV_DIR/bin:$PATH"
+#export PYTHON_BIN="$VENV_DIR/bin/python"
+#export PATH="$VENV_DIR/bin:$PATH"
 
 
 yum install -y git make cmake zip tar wget python3.12 python3.12-devel python3.12-pip python3-devel java-11-openjdk java-11-openjdk-devel java-11-openjdk-headless zlib-devel libjpeg-devel openssl openssl-devel freetype-devel pkgconfig rsync
