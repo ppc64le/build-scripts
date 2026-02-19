@@ -12,8 +12,8 @@
     "docker_build": true,
     "use_non_root_user": false,
     "*": {
-        "dir": "pipelines-openwebui_python311_main",
-        "base_docker_image":"registry.access.redhat.com/ubi9/python-311:latest",
+        "dir": "ubi9-pipelines-v1.0.0",
+        "base_docker_image":"registry.access.redhat.com/ubi9/ubi-minimal:latest",
         "base_docker_variant": "redhat"
     }
 }
