@@ -27,6 +27,10 @@ export CURRENT_DIR="${PWD}"
 BAZEL_VERSION=7.4.0
 # array-record not tagged to use v0.6.0, used hard commit for v0.6.0
 PACKAGE_COMMIT="7e299eae0db0d7bfc20f7c1e1548bf86cdbfef5e"
+
+export PYTHON_BIN="$VENV_DIR/bin/python"
+export PATH="$VENV_DIR/bin:$PATH"
+
 echo "Installing dependencies..."
 # Install system dependencies
 yum install -y git make cmake zip tar wget python3.12 python3.12-devel python3.12-pip java-21-openjdk-devel java-21-openjdk java-21-openjdk-headless gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc zlib-devel libjpeg-devel openssl openssl-devel freetype-devel pkgconfig rsync
