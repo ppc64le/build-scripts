@@ -41,7 +41,7 @@ export CXX=/usr/bin/g++
 
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 export PATH=$JAVA_HOME/bin:/usr/bin:$PATH
-
+export ZLIB_ROOT=/usr
 #Installing Bazel
 mkdir bazel
 cd bazel
