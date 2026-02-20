@@ -95,17 +95,16 @@ jobs:
           sudo mv variable.sh package-cache
           sudo mv scanner-env.sh package-cache
           echo "Moved scanner-env.sh and variable.sh into package-cache............"
-          
+
+      - name: Archive package cache
+        run: tar -czf package-cache.tar.gz package-cache/
 
       - name: Upload variable.sh and scanner-env.sh via package-cache
         uses: actions/upload-artifact@v6
         with:
           name: package-cache
-          path: package-cache
-        env:
-            ACTIONS_ARTIFACT_UPLOAD_CONCURRENCY: 10
+          path: package-cache.tar.gz
                 
-
   build:
     needs: build_info
     if: ${{ inputs.validate_build_script == 'true' }}
@@ -117,10 +116,10 @@ jobs:
         uses: actions/download-artifact@v7
         with:
           name: package-cache
-          path: package-cache
+      
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
 
-     
-       
       - name: Build Package
         env:
           GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
@@ -152,8 +151,6 @@ jobs:
           chmod +x ./gha-script/upload-scripts/upload_file.sh
           bash ./gha-script/upload-scripts/upload_file.sh build_log.gz
 
-
-
       - name: Fix permissions on package-cache
         run: |
           USER=$(whoami)
@@ -161,14 +158,15 @@ jobs:
           echo "Fixing ownership and permissions for package-cache"
           sudo chown -R $USER:$USER package-cache
           sudo chmod -R u+rwX,go+rX,go-w package-cache
-         
+          
+      - name: Archive updated package cache
+        run: tar -czf package-cache.tar.gz package-cache/
+
       - name: Upload updated package-cache
         uses: actions/upload-artifact@v6
         with:
           name: updated-package-cache
-          path: package-cache
-        env:
-            ACTIONS_ARTIFACT_UPLOAD_CONCURRENCY: 10
+          path: package-cache.tar.gz
 
   wheel_build:
     needs: build_info
@@ -201,13 +199,14 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt update -y
-          #sudo apt install -y jq file python${{ matrix.python-version }}-dev python${{ matrix.python-version }}-pip
 
       - name: Download package-cache from previous step
         uses: actions/download-artifact@v7
         with:
           name: package-cache
-          path: package-cache
+
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
 
       - name: Run build_wheels.sh
         run: |
@@ -219,7 +218,6 @@ jobs:
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
           
-          #python${{ matrix.python-version }} -m pip install --upgrade pip setuptools wheel
           echo "===== Checking files before log compression ====="
           pwd
           ls -lh
@@ -230,7 +228,6 @@ jobs:
           sudo lsb_release -a 2>/dev/null || echo "lsb_release not available"
           sudo uname -a
 
-
           echo "===== AFTER BUILD: checking for wheel_build_log ====="
           WORKSPACE=$(pwd)
           echo "Workspace = $WORKSPACE"
@@ -238,7 +235,6 @@ jobs:
 
           echo "----- specifically checking for wheel_build_log -----"
           ls -lh "$WORKSPACE/wheel_build_log" || echo " wheel_build_log NOT found!"
-
           
           # ======= HANDLE LOG FILE SAFELY =======
           LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py${{ matrix.python-version }}_log.gz"
@@ -259,10 +255,8 @@ jobs:
           chmod +x ./gha-script/upload-scripts/upload_file.sh
           bash ./gha-script/upload-scripts/upload_file.sh $LOG_NAME
           ls -lh "$WORKSPACE/$LOG_NAME"
-
           
         continue-on-error: ${{ matrix.allow-failure }}
-
 
       - name: Upload wheel artifact using custom script
         run: |
@@ -272,19 +266,19 @@ jobs:
           bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE
         continue-on-error: ${{ matrix.allow-failure }}
 
-
-  
-
   wheel_licenses:
     needs: wheel_build
     runs-on: ubuntu-24.04-ppc64le-p10
     steps:
       - uses: actions/checkout@v4
+
       - name: Download package-cache
         uses: actions/download-artifact@v7
         with:
           name: package-cache
-          path: package-cache
+          
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
             
       - name: Downloading Wheels and Running Scancode Scanner
         env: 
@@ -303,13 +297,11 @@ jobs:
             ls package-cache/wheels
             echo "------------------------------------------------------------------"
          
-
       - name: Collect wheel scan outputs
         run: |
           mkdir -p wheel_scancode
           echo "Looking for *_output.json files in package-cache/wheels/"
           find package-cache/wheels -type f -name "*_output.json" -exec mv {} wheel_scancode/ \;
-
           echo "Contents to be zipped:"
           ls -lh wheel_scancode
 
@@ -323,9 +315,6 @@ jobs:
             chmod +x ./gha-script/upload-scripts/upload_file.sh
             bash ./gha-script/upload-scripts/upload_file.sh wheel_scanner.tar.gz
 
-
-
-      
   source_scanner:
     needs: build
     if: ${{ inputs.validate_build_script == 'true' }}
@@ -337,7 +326,9 @@ jobs:
         uses: actions/download-artifact@v7
         with:
           name: updated-package-cache
-          path: package-cache
+
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
 
       - name: Prepare scanner environment
         run: |
@@ -346,19 +337,12 @@ jobs:
           source package-cache/scanner-env.sh
           echo "---------updated scanner-env.sh cat----------------"
           cat package-cache/scanner-env.sh
-
-          # # Write exports to a file that can be sourced in every scan step
-          # echo "export VALIDATE_BUILD_SCRIPT='${{ inputs.validate_build_script }}'" > scanner-env.sh
-          # echo "export CLONED_PACKAGE='$CLONED_PACKAGE'" >> scanner-env.sh
-
           echo "scanner-env.sh created with:"
           cat package-cache/scanner-env.sh
-
 
       - name: Run Trivy Scan
         if: ${{ inputs.enable_trivy == 'true' }}
         run: |
-
           echo ".................Sourcing variable.sh and scanner-env.sh...................."
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
@@ -416,7 +400,9 @@ jobs:
         uses: actions/download-artifact@v7
         with:
           name: package-cache
-          path: package-cache
+
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
 
       - name: Build Docker Image
         run: |
@@ -438,13 +424,14 @@ jobs:
           chmod +x ./gha-script/upload-scripts/upload_docker_image.sh
           bash ./gha-script/upload-scripts/upload_docker_image.sh
 
+      - name: Archive package cache with image
+        run: tar -czf package-cache.tar.gz package-cache/
+
       - name: Upload package-cache with image.tar
         uses: actions/upload-artifact@v6
         with:
           name: package-cache-with-image
-          path: package-cache
-        env:
-            ACTIONS_ARTIFACT_UPLOAD_CONCURRENCY: 10
+          path: package-cache.tar.gz
 
   image_scanner:
     needs: build_docker
@@ -457,7 +444,9 @@ jobs:
         uses: actions/download-artifact@v7
         with:
           name: package-cache-with-image
-          path: package-cache
+
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
 
       - name: Load Docker Image
         run: |
@@ -521,11 +510,14 @@ jobs:
       steps:
         - name: Checkout code
           uses: actions/checkout@v4
+          
         - name: Download package-cache
           uses: actions/download-artifact@v7
           with:
             name: package-cache
-            path: package-cache
+            
+        - name: Extract package cache
+          run: tar -xzf package-cache.tar.gz
         
         - name: Create and activate venv
           run: |
@@ -560,5 +552,3 @@ jobs:
                 # Export environment variables
                 export PYTHONPATH="/tmp/_actions-runner-working-dir/build-scripts/build-scripts:/tmp/_actions-runner-working-dir/build-scripts/build-scripts/process_bom"
                 python -m process_bom.run_currency_processor
-
-          
