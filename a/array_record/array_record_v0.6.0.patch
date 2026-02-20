@@ -1,0 +1,401 @@
+---
+ MODULE.bazel           |  16 +-
+ highway-high-fix.patch | 321 +++++++++++++++++++++++++++++++++++++++++
+ oss/build_whl.sh       |  11 +-
+ 3 files changed, 342 insertions(+), 6 deletions(-)
+ create mode 100644 highway-high-fix.patch
+
+diff --git a/MODULE.bazel b/MODULE.bazel
+index 5acde35..70b1111 100644
+--- a/MODULE.bazel
++++ b/MODULE.bazel
+@@ -20,7 +20,6 @@ module(
+     version = VERSION,
+     repo_name = "com_google_array_record",
+ )
+-
+ bazel_dep(name = "rules_proto", version = "7.0.2")
+ bazel_dep(name = "rules_python", version = "0.40.0")
+ bazel_dep(name = "platforms", version = "0.0.10")
+@@ -32,6 +31,14 @@ bazel_dep(name = "eigen", version = "3.4.0.bcr.2")
+ bazel_dep(name = "riegeli", version = "0.0.0-20241218-3385e3c")
+ bazel_dep(name = "pybind11_bazel", version = "2.12.0")
+
++git_override(
++    module_name = "riegeli",
++    remote = "https://github.com/google/riegeli.git",
++    commit = "3385e3cbc5c1a1380eb99b7cf0b021c1ae0b2c30",
++    patches = ["//:highway-high-fix.patch"],
++    patch_strip = 1,
++)
++
+ PYTHON_VERSION = "3.10"
+
+ python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+
+diff --git a/highway-high-fix.patch b/highway-high-fix.patch
+new file mode 100644
+index 0000000..016af23
+--- /dev/null
++++ b/highway-high-fix.patch
+@@ -0,0 +1,321 @@
++diff --git a/MODULE.bazel b/MODULE.bazel
++index 82718d69..f7bd00b7 100644
++--- a/MODULE.bazel
+++++ b/MODULE.bazel
++@@ -30,9 +30,314 @@ bazel_dep(
++     name = "bzip2",
++     version = "1.0.8",
++ )
++-bazel_dep(
+++http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+++http_archive(
+++    name = "highwayhash",
+++    sha256 = "8be5e0af6ede048c54c8355e0d7bb87305531021d19b1f6334d5c16edb290c81",
+++    strip_prefix = "highwayhash-5ad3bf8444cfc663b11bf367baaa31f36e7ff7c8",
+++    urls = ["https://github.com/google/highwayhash/archive/5ad3bf8444cfc663b11bf367baaa31f36e7ff7c8.zip"],
+++    build_file_content = """
+++package(
+++    default_visibility = ["//visibility:public"],
+++    features = ["header_modules"],
+++)
+++
+++licenses(["notice"])
+++
+++config_setting(
+++    name = "haswell",
+++    values = {"cpu": "haswell"},
+++)
+++
+++config_setting(
+++    name = "k8",
+++    values = {"cpu": "k8"},
+++)
+++
+++config_setting(
+++    name = "cpu_ppc",
+++    values = {"cpu": "ppc"},
+++)
+++
+++config_setting(
+++    name = "cpu_aarch64",
+++    values = {"cpu": "aarch64"},
+++)
+++
+++config_setting(
+++    name = "cpu_darwin_arm64",
+++    values = {"cpu": "darwin_arm64"},
+++)
+++
+++#-----------------------------------------------------------------------------
+++# Platform-specific
+++
+++cc_library(
+++    name = "compiler_specific",
+++    hdrs = ["highwayhash/compiler_specific.h"],
+++)
+++
+++cc_library(
+++    name = "arch_specific",
+++    srcs = ["highwayhash/arch_specific.cc"],
+++    hdrs = ["highwayhash/arch_specific.h"],
+++    deps = [":compiler_specific"],
+++)
+++
+++cc_library(
+++    name = "endianess",
+++    hdrs = ["highwayhash/endianess.h"],
+++)
+++
+++cc_library(
+++    name = "instruction_sets",
+++    srcs = ["highwayhash/instruction_sets.cc"],
+++    hdrs = ["highwayhash/instruction_sets.h"],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++    ],
+++)
+++
+++cc_library(
+++    name = "iaca",
+++    hdrs = ["highwayhash/iaca.h"],
+++    deps = [":compiler_specific"],
+++)
+++
+++cc_library(
+++    name = "os_specific",
+++    srcs = ["highwayhash/os_specific.cc"],
+++    hdrs = ["highwayhash/os_specific.h"],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++    ],
+++)
+++
+++#-----------------------------------------------------------------------------
+++# Vectors
+++
+++cc_library(
+++    name = "scalar",
+++    textual_hdrs = ["highwayhash/scalar.h"],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++    ],
+++)
+++
+++cc_library(
+++    name = "vector128",
+++    textual_hdrs = ["highwayhash/vector128.h"],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++    ],
+++)
+++
+++cc_library(
+++    name = "vector256",
+++    textual_hdrs = ["highwayhash/vector256.h"],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++    ],
+++)
+++
+++#-----------------------------------------------------------------------------
+++# SipHash
+++
+++cc_library(
+++    name = "sip_hash",
+++    srcs = ["highwayhash/sip_hash.cc"],
+++    hdrs = [
+++        "highwayhash/sip_hash.h",
+++        "highwayhash/state_helpers.h",
+++    ],
+++    visibility = ["//visibility:public"],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++        ":endianess",
+++    ],
+++)
+++
+++#-----------------------------------------------------------------------------
+++# HighwayHash
+++
+++cc_library(
+++    name = "hh_types",
+++    hdrs = ["highwayhash/hh_types.h"],
+++    deps = [":instruction_sets"],
+++)
+++
+++cc_library(
+++    name = "load3",
+++    textual_hdrs = ["highwayhash/load3.h"],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++        ":endianess",
+++    ],
+++)
+++
+++cc_library(
+++    name = "hh_avx2",
+++    srcs = ["highwayhash/hh_avx2.cc"],
+++    hdrs = ["highwayhash/highwayhash_target.h"],
+++    copts = select({
+++        ":k8": ["-mavx2"],
+++        ":haswell": ["-mavx2"],
+++        "//conditions:default": ["-DHH_DISABLE_TARGET_SPECIFIC"],
+++    }),
+++    textual_hdrs = [
+++        "highwayhash/hh_avx2.h",
+++        "highwayhash/highwayhash_target.cc",
+++        "highwayhash/highwayhash.h",
+++        "highwayhash/hh_buffer.h",
+++    ],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++        ":hh_types",
+++        ":iaca",
+++        ":load3",
+++        ":vector128",
+++        ":vector256",
+++    ],
+++)
+++
+++cc_library(
+++    name = "hh_sse41",
+++    srcs = ["highwayhash/hh_sse41.cc"],
+++    hdrs = ["highwayhash/highwayhash_target.h"],
+++    copts = select({
+++        ":k8": ["-msse4.1"],
+++        ":haswell": ["-msse4.1"],
+++        "//conditions:default": ["-DHH_DISABLE_TARGET_SPECIFIC"],
+++    }),
+++    textual_hdrs = [
+++        "highwayhash/hh_sse41.h",
+++        "highwayhash/highwayhash_target.cc",
+++        "highwayhash/highwayhash.h",
+++        "highwayhash/hh_buffer.h",
+++    ],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++        ":hh_types",
+++        ":iaca",
+++        ":load3",
+++        ":vector128",
+++    ],
+++)
+++
+++cc_library(
+++    name = "hh_neon",
+++    srcs = [
+++        "highwayhash/hh_neon.cc",
+++        "highwayhash/vector_neon.h",
+++    ],
+++    hdrs = ["highwayhash/highwayhash_target.h"],
+++    copts = select({
+++        ":cpu_aarch64": [],
+++        ":cpu_darwin_arm64": [],
+++        "//conditions:default": ["-DHH_DISABLE_TARGET_SPECIFIC"],
+++    }),
+++    textual_hdrs = [
+++        "highwayhash/highwayhash_target.cc",
+++        "highwayhash/highwayhash.h",
+++        "highwayhash/hh_buffer.h",
+++        "highwayhash/hh_neon.h",
+++    ],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++        ":hh_types",
+++        ":load3",
+++    ],
+++)
+++
+++cc_library(
+++    name = "hh_vsx",
+++    srcs = ["highwayhash/hh_vsx.cc"],
+++    hdrs = ["highwayhash/highwayhash_target.h"],
+++    textual_hdrs = [
+++        "highwayhash/highwayhash_target.cc",
+++        "highwayhash/highwayhash.h",
+++        "highwayhash/hh_buffer.h",
+++        "highwayhash/hh_vsx.h",
+++    ],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++        ":hh_types",
+++        ":load3",
+++    ],
+++)
+++
+++cc_library(
+++    name = "hh_portable",
+++    srcs = ["highwayhash/hh_portable.cc"],
+++    hdrs = ["highwayhash/highwayhash_target.h"],
+++    textual_hdrs = [
+++        "highwayhash/hh_portable.h",
+++        "highwayhash/highwayhash_target.cc",
+++        "highwayhash/highwayhash.h",
+++        "highwayhash/hh_buffer.h",
+++    ],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++        ":hh_types",
+++        ":iaca",
+++        ":load3",
+++        ":scalar",
+++    ],
+++)
+++
+++# For users of the HighwayHashT template
+++cc_library(
++     name = "highwayhash",
++-    version = "0.0.0-20240305-5ad3bf8",
+++    hdrs = ["highwayhash/highwayhash.h"],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++        ":hh_types",
+++        ":hh_portable",
+++    ] + select({
+++        ":cpu_ppc": [":hh_vsx"],
+++        ":cpu_aarch64": [":hh_neon"],
+++        ":cpu_darwin_arm64": [":hh_neon"],
+++        "//conditions:default": [
+++            ":hh_avx2",
+++            ":hh_sse41",
+++            ":iaca",
+++        ],
+++    }),
+++)
+++
+++# For users of InstructionSets<HighwayHash> runtime dispatch
+++cc_library(
+++    name = "highwayhash_dynamic",
+++    hdrs = ["highwayhash/highwayhash_target.h"],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++        ":hh_portable",
+++        ":hh_types",
+++    ] + select({
+++        ":cpu_ppc": [":hh_vsx"],
+++        ":cpu_aarch64": [":hh_neon"],
+++        ":cpu_darwin_arm64": [":hh_neon"],
+++        "//conditions:default": [
+++            ":hh_avx2",
+++            ":hh_sse41",
+++        ],
+++    }),
+++)
+++"""
++ )
++ bazel_dep(
++     name = "lz4",
+diff --git a/oss/build_whl.sh b/oss/build_whl.sh
+index 5967208..611b4ae 100755
+--- a/oss/build_whl.sh
++++ b/oss/build_whl.sh
+@@ -17,7 +17,7 @@ PYTHON_MAJOR_VERSION=$(${PYTHON_BIN} -c 'import sys; print(sys.version_info.majo
+ PYTHON_MINOR_VERSION=$(${PYTHON_BIN} -c 'import sys; print(sys.version_info.minor)')
+ PYTHON_VERSION="${PYTHON_MAJOR_VERSION}.${PYTHON_MINOR_VERSION}"
+ export PYTHON_VERSION="${PYTHON_VERSION}"
+-
++PYTHON_BIN="${PYTHON_BIN:-$(which python3)}"
+ function write_to_bazelrc() {
+   echo "$1" >> .bazelrc
+ }
+@@ -25,7 +25,8 @@ function write_to_bazelrc() {
+ function main() {
+   # Remove .bazelrc if it already exists
+   [ -e .bazelrc ] && rm .bazelrc
+-
++
++  write_to_bazelrc "build --jobs=16"
+   write_to_bazelrc "build -c opt"
+   write_to_bazelrc "build --cxxopt=-std=c++17"
+   write_to_bazelrc "build --host_cxxopt=-std=c++17"
+@@ -39,10 +40,10 @@ function main() {
+
+   export USE_BAZEL_VERSION="${BAZEL_VERSION}"
+   bazel clean
+-  bazel build ...
+-  bazel test --verbose_failures --test_output=errors ...
++  bazel build ... --action_env PYTHON_BIN_PATH="${PYTHON_BIN}"
++  bazel test --verbose_failures --test_output=errors ... --python_path="${PYTHON_BIN}" --action_env=PYTHON_BIN_PATH="${PYTHON_BIN}" --test_env=PYTHON_BIN="${PYTHON_BIN}"
+
+-  DEST="/tmp/array_record/all_dist"
++  DEST="$CURRENT_DIR/array_record/dist"
+   # Create the directory, then do dirname on a non-existent file inside it to
+   # give us an absolute paths with tilde characters resolved to the destination
+   # directory.
+--
+2.47.3
