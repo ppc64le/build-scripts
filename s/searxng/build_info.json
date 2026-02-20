@@ -7,7 +7,13 @@
   "build_script": "searxng_ubi_9.6.sh",
   "package_dir": "s/searxng",
   "use_non_root_user": "false",
-  "docker_build": false,
-  "wheel_build": true,
-  "validate_build_script": true
+  "docker_build": "true",
+  "docker_cmd": "docker build -t ${package_name}:${PACKAGE_VERSION} ${dir}",
+  "wheel_build": "true",
+  "validate_build_script":"true",
+   "*": {
+        "dir": "master_ubi9.7",
+        "base_docker_image": "registry.access.redhat.com/ubi9/ubi:9.7",
+        "base_docker_variant": "redhat"
+        }
 }
