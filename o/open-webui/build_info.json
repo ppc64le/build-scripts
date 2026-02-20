@@ -1,0 +1,20 @@
+{
+  "maintainer": "Simran-Sirsat",
+  "package_name": "open-webui",
+  "github_url": "https://github.com/open-webui/open-webui",
+  "version": "v0.7.2",
+  "wheel_build": false,
+  "package_dir": "o/open-webui",
+  "default_branch": "main",
+  "build_script": "open-webui_v0.7.2_ubi_9.4.sh",
+  "docker_build": true,
+  "validate_build_script": false,
+  "docker_cmd": "docker build -t ${package_name}-ppc64le:$PACKAGE_VERSION ${dir}",
+  "use_non_root_user": false,
+  "v0.7.2": {
+    "dir": "v0.7.2_ubi_9",
+    "base_docker_image": "python:3.11.14-slim-trixie",
+    "base_docker_variant": "python"
+  }
+}
+
