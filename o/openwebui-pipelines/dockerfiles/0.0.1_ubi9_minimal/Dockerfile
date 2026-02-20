@@ -38,9 +38,9 @@ RUN rpm -e --nodeps openssl-fips-provider openssl-fips-provider-so || true && \
         build && \
     mkdir -p /patches && \
     wget -q -O /patches/libdatadog-crashtracker_25.0.0.patch \
-        https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/openwebui-pipelines/ubi9-pipelines-v1.0.0/patches/libdatadog-crashtracker_25.0.0.patch && \
+        https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/openwebui-pipelines/patches/libdatadog-crashtracker_25.0.0.patch && \
     wget -q -O /patches/ddtrace_4.3.0.patch \
-        https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/openwebui-pipelines/ubi9-pipelines-v1.0.0/patches/ddtrace_4.3.0.patch
+        https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/openwebui-pipelines/patches/ddtrace_4.3.0.patch
 
 WORKDIR /app
 
@@ -103,7 +103,7 @@ RUN rpm -e --nodeps openssl-fips-provider openssl-fips-provider-so || true && \
     /opt/venv/bin/pip install --no-cache-dir --upgrade pip && \
     mkdir -p /patches && \
     wget -q -O /patches/requirements.patch \
-        https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/openwebui-pipelines/ubi9-pipelines-v1.0.0/patches/requirements.patch
+        https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/openwebui-pipelines/patches/requirements.patch
 
 COPY --from=ddtrace-native-builder /artifacts/ddtrace/*.whl /tmp/
 COPY --from=ddtrace-native-builder \
@@ -147,9 +147,10 @@ ENV ENV=prod \
     PATH="/opt/venv/bin:${PATH}" \
     LD_LIBRARY_PATH="/opt/venv/lib:/usr/lib"
 
-RUN rpm -e --nodeps openssl-fips-provider openssl-fips-provider-so || true && \
-    microdnf update -y && \
-    microdnf install -y \
+RUN mkdir -p /etc/yum.repos.d && \
+    rpm -e --nodeps openssl-fips-provider openssl-fips-provider-so || true && \
+    microdnf --disableplugin=subscription-manager update -y && \
+    microdnf --disableplugin=subscription-manager install -y \
         bash \
         gcc \
         gcc-c++ \
@@ -158,10 +159,10 @@ RUN rpm -e --nodeps openssl-fips-provider openssl-fips-provider-so || true && \
         pkg-config \
         libffi \
         openssl \
-        protobuf \
         findutils \
         python3.11 \
         python3.11-pip \
+        python3.11-devel \
         ca-certificates && \
     microdnf clean all && rm -rf /var/cache/*
 
