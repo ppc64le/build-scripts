@@ -10,6 +10,9 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": "false",
+  "v0.16.2": {
+    "build_script":"torchtext_0.16.2_ubi_9.6.sh"
+  },
   "*": {
     "build_script": "torchtext_ubi_9_3.sh"
   }
