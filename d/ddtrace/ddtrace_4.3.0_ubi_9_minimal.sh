@@ -4,7 +4,7 @@
 # Package           : ddtrace
 # Version           : 4.3.0
 # Source repo       : https://github.com/DataDog/dd-trace-py
-# Tested on         : RHEL:9.7
+# Tested on         : UBI:9
 # Language          : Python,Rust
 # Ci-Check          : True
 # Script License    : Apache License, Version 2 or later
@@ -18,6 +18,7 @@
 #
 # ----------------------------------------------------------------------------
 
+# In agent-style scripts, PACKAGE_NAME equals the directory created by git clone.
 PACKAGE_NAME=dd-trace-py
 PACKAGE_URL=https://github.com/DataDog/dd-trace-py.git
 PACKAGE_VERSION=${1:-v4.3.0}
@@ -28,7 +29,7 @@ PYTHON_BIN=${PYTHON_BIN:-python3}
 # libdatadog version to vendor crashtracker from
 LIBDATADOG_VERSION=${LIBDATADOG_VERSION:-v25.0.0}
 
-# Patches (default to upstream master)
+# Patches (default to upstream master; override via env for local testing)
 DDTRACE_PATCH_URL=${DDTRACE_PATCH_URL:-https://raw.githubusercontent.com/ppc64le/build-scripts/master/d/ddtrace/patches/ddtrace_4.3.0.patch}
 LIBDD_PATCH_URL=${LIBDD_PATCH_URL:-https://raw.githubusercontent.com/ppc64le/build-scripts/master/d/ddtrace/patches/libdatadog-crashtracker_25.0.0.patch}
 
@@ -163,7 +164,7 @@ mkdir -p "${REPO_NATIVE_DIR}"
 cp -f "${SRC_SO}" "${REPO_NATIVE_DIR}/_native.${SOABI}.so"
 
 # ----------------------------------------------------------------------------
-# Build Wheel (setup.py bdist_wheel, no build isolation)
+# Build Wheel (Agent-style: setup.py bdist_wheel, no build isolation)
 # ----------------------------------------------------------------------------
 # Guard again just before running setup.py (same interpreter):
 ${PYTHON_BIN} - <<'PY'
@@ -185,7 +186,7 @@ fi
 sha256sum ddtrace-*.whl > SHA256SUMS 2>/dev/null || true
 
 # ----------------------------------------------------------------------------
-# Install wheel (reuse if already installed) and run a minimal smoke test
+# Install wheel (reuse if already correct) and run a minimal smoke test
 # ----------------------------------------------------------------------------
 
 # Expected version for the installed package (strip leading 'v': v4.3.0 -> 4.3.0)
