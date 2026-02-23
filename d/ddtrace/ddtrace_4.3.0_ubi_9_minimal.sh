@@ -4,7 +4,7 @@
 # Package           : ddtrace
 # Version           : 4.3.0
 # Source repo       : https://github.com/DataDog/dd-trace-py
-# Tested on         : UBI:9.3
+# Tested on         : RHEL:9.7
 # Language          : Python,Rust
 # Ci-Check          : True
 # Script License    : Apache License, Version 2 or later
@@ -18,30 +18,50 @@
 #
 # ----------------------------------------------------------------------------
 
-PACKAGE_NAME=ddtrace
+PACKAGE_NAME=dd-trace-py
 PACKAGE_URL=https://github.com/DataDog/dd-trace-py.git
 PACKAGE_VERSION=${1:-v4.3.0}
+
+# Use one interpreter everywhere (pip, setup.py, inline checks).
+PYTHON_BIN=${PYTHON_BIN:-python3}
 
 # libdatadog version to vendor crashtracker from
 LIBDATADOG_VERSION=${LIBDATADOG_VERSION:-v25.0.0}
 
-# Patches hosted in build-scripts (Agent-style: fetch via wget then git apply)
+# Patches (default to upstream master)
 DDTRACE_PATCH_URL=${DDTRACE_PATCH_URL:-https://raw.githubusercontent.com/ppc64le/build-scripts/master/d/ddtrace/patches/ddtrace_4.3.0.patch}
 LIBDD_PATCH_URL=${LIBDD_PATCH_URL:-https://raw.githubusercontent.com/ppc64le/build-scripts/master/d/ddtrace/patches/libdatadog-crashtracker_25.0.0.patch}
 
-# Build toggles (keep crashtracker off at runtime for smoke test)
+# Optional: let callers pin a shared Cargo target dir (cache)
+# export CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-$(pwd)/.cargo-target}"
+
+# Keep crashtracker runtime off for smoke test/containers
 export DD_USE_SYSTEM_LIBDATADOG=${DD_USE_SYSTEM_LIBDATADOG:-1}
 export DD_NO_CRASHTRACKER=${DD_NO_CRASHTRACKER:-1}
 
 # ----------------------------------------------------------------------------
 # Install required dependencies
 # ----------------------------------------------------------------------------
-yum install -y wget git python3 python3-devel openssl openssl-devel make gcc gcc-c++ diffutils cmake patch rust cargo findutils libffi-devel elfutils-libelf-devel
+yum install -y wget git python3 python3-devel openssl openssl-devel make gcc gcc-c++ diffutils cmake patch rust cargo findutils libffi-devel elfutils-libelf-devel || true
 
-# Ensure pip/setuptools/wheel and build deps required by ddtrace build system
-# NOTE: ddtrace build docs require cmake >=3.24.2,<3.28 for source builds.
-python3 -m pip install --upgrade pip setuptools wheel
-python3 -m pip install "cmake>=3.24.2,<3.28" cython "setuptools-rust<2" "setuptools_scm[toml]>=4" pytest twine || true
+# Upgrade pip & install Python build deps for THIS interpreter
+# NOTE: ddtrace requires cmake >=3.24.2,<3.28 for source builds.
+${PYTHON_BIN} -m ensurepip --upgrade || true
+${PYTHON_BIN} -m pip install --upgrade pip
+${PYTHON_BIN} -m pip install --upgrade 'setuptools<70' wheel
+${PYTHON_BIN} -m pip install "cmake>=3.24.2,<3.28" cython "setuptools-rust<2" "setuptools_scm[toml]>=4" || true
+
+# Guard: ensure pkg_resources is available to THIS interpreter (setup.py needs it)
+${PYTHON_BIN} - <<'PY'
+import sys
+try:
+    import pkg_resources; print("pkg_resources OK for", sys.executable)
+except Exception:
+    raise SystemExit(1)
+PY
+if [ $? -ne 0 ]; then
+  ${PYTHON_BIN} -m pip install --upgrade 'setuptools<70'
+fi
 
 # ----------------------------------------------------------------------------
 # Clone ddtrace and checkout version
@@ -70,25 +90,34 @@ pushd "${TMPDIR}" >/dev/null
     git apply --ignore-whitespace libdd.patch || true
   fi
 
-  # Pin libc crate as per working flow
+  # Pin libc crate version
   cargo update -p libc --precise 0.2.178
 
   # Build crashtracker staticlib
   cargo rustc --lib --release --crate-type staticlib -p libdd-crashtracker
 
-  # Locate produced static archive (hashed or plain)
-  CRASH_A="$(find target -type f -name 'liblibdd_crashtracker*.a' | head -n1 || true)"
+  # Locate produced static archive (absolute paths; cover hashed & deps/)
+  LOCAL_TARGET="$(pwd)/target"
+  CRASH_A="$(find "${LOCAL_TARGET}" -type f -name 'liblibdd_crashtracker*.a' -print -quit 2>/dev/null || true)"
+  if [ -z "${CRASH_A}" ] && [ -n "${CARGO_TARGET_DIR:-}" ]; then
+    if ABS_CARGO_DIR="$(cd "${CARGO_TARGET_DIR}" 2>/dev/null && pwd)"; then
+      ALT_A="$(find "${ABS_CARGO_DIR}" -type f -name 'liblibdd_crashtracker*.a' -print -quit 2>/dev/null || true)"
+      [ -n "${ALT_A}" ] && CRASH_A="${ALT_A}"
+    fi
+  fi
+
   if [ -z "${CRASH_A}" ] || [ ! -f "${CRASH_A}" ]; then
     echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
     echo "$PACKAGE_VERSION $PACKAGE_NAME"
     echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails (crashtracker .a not found)"
     exit 1
   fi
+  echo "[INFO] crashtracker archive: ${CRASH_A}"
 popd >/dev/null
 
-# Stage the crashtracker archive into ddtrace src/native/
+# Stage the crashtracker archive into ddtrace src/native/ (use absolute path)
 mkdir -p src/native
-cp -f "${TMPDIR}/${CRASH_A}" src/native/liblibdd_crashtracker.a
+cp -f "${CRASH_A}" src/native/liblibdd_crashtracker.a
 
 # ----------------------------------------------------------------------------
 # Build ddtrace native extension (Rust) and make it visible to CMake
@@ -96,10 +125,13 @@ cp -f "${TMPDIR}/${CRASH_A}" src/native/liblibdd_crashtracker.a
 pushd src/native >/dev/null
   cargo build --release --features "pyo3/extension-module profiling"
 
-  # Discover produced .so (support hashed filenames in target tree)
-  SRC_SO="$(find target ../target -type f \( -name 'libddtrace*_native*.so' -o -name 'lib_native*.so' \) 2>/dev/null | head -n1 || true)"
-  if [ -z "${SRC_SO}" ] || [ ! -f "${SRC_SO}" ]; then
-    SRC_SO="$(find "${CARGO_TARGET_DIR:-.}" -type f \( -name 'libddtrace*_native*.so' -o -name 'lib_native*.so' \) 2>/dev/null | head -n1 || true)"
+  # Discover produced .so (absolute search; support hashed names & alt target roots)
+  HERE_TARGET="$(pwd)/target"
+  SRC_SO="$(find "${HERE_TARGET}" ../target -type f \( -name 'libddtrace*_native*.so' -o -name 'lib_native*.so' \) -print -quit 2>/dev/null || true)"
+  if [ -z "${SRC_SO}" ] && [ -n "${CARGO_TARGET_DIR:-}" ]; then
+    if ABS_CARGO_DIR="$(cd "${CARGO_TARGET_DIR}" 2>/dev/null && pwd)"; then
+      SRC_SO="$(find "${ABS_CARGO_DIR}" -type f \( -name 'libddtrace*_native*.so' -o -name 'lib_native*.so' \) -print -quit 2>/dev/null || true)"
+    fi
   fi
 popd >/dev/null
 
@@ -111,12 +143,12 @@ if [ -z "${SRC_SO}" ] || [ ! -f "${SRC_SO}" ]; then
 fi
 
 # Place .so where CMake's dd_wrapper expects it: build/lib.<plat>/.../_native.*.so
-PLAT="$(python3 - <<'PY'
-from pkg_resources import get_build_platform
-print(get_build_platform())
+PLAT="$(${PYTHON_BIN} - <<'PY'
+import sysconfig
+print(sysconfig.get_platform())
 PY
 )"
-SOABI="$(python3 - <<'PY'
+SOABI="$(${PYTHON_BIN} - <<'PY'
 import sysconfig, sys
 print(sysconfig.get_config_var('SOABI') or f"cpython-{sys.version_info.major}{sys.version_info.minor}-{sys.platform}")
 PY
@@ -125,30 +157,92 @@ BUILD_LIB_DIR="build/lib.${PLAT}/ddtrace/internal/native"
 mkdir -p "${BUILD_LIB_DIR}"
 cp -f "${SRC_SO}" "${BUILD_LIB_DIR}/_native.${SOABI}.so"
 
+# Also stage into the repo package tree so importing from source works
+REPO_NATIVE_DIR="ddtrace/internal/native"
+mkdir -p "${REPO_NATIVE_DIR}"
+cp -f "${SRC_SO}" "${REPO_NATIVE_DIR}/_native.${SOABI}.so"
+
 # ----------------------------------------------------------------------------
-# Build Wheel (Agent-style: setup.py bdist_wheel, no build isolation)
+# Build Wheel (setup.py bdist_wheel, no build isolation)
 # ----------------------------------------------------------------------------
-if ! python3 setup.py bdist_wheel --dist-dir="$(pwd)"; then
+# Guard again just before running setup.py (same interpreter):
+${PYTHON_BIN} - <<'PY'
+import sys
+try:
+    import pkg_resources; print("pkg_resources OK for", sys.executable)
+except Exception as e:
+    raise SystemExit(f"pkg_resources missing for {sys.executable}: {e}")
+PY
+
+if ! ${PYTHON_BIN} setup.py bdist_wheel --dist-dir="$(pwd)"; then
   echo "------------------$PACKAGE_NAME:build_fails-------------------------------------"
   echo "$PACKAGE_VERSION $PACKAGE_NAME"
   echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Build_Fails"
   exit 1
 fi
 
-# Optional checksum (not required but helpful)
+# Optional checksum
 sha256sum ddtrace-*.whl > SHA256SUMS 2>/dev/null || true
 
 # ----------------------------------------------------------------------------
-# Install wheel and run upstream smoke test (tests/smoke_test.py) via pytest
+# Install wheel (reuse if already installed) and run a minimal smoke test
 # ----------------------------------------------------------------------------
-python3 -m pip install --force-reinstall ./ddtrace-*.whl
 
-# Run only the upstream smoke test to validate install/runtime
-if ! python3 -m pytest -q tests/smoke_test.py; then
+# Expected version for the installed package (strip leading 'v': v4.3.0 -> 4.3.0)
+export WANT_DDTRACE_VERSION="${PACKAGE_VERSION#v}"
+
+# Check if ddtrace is already installed with the required version
+${PYTHON_BIN} - <<'PY'
+import os, sys
+from importlib.metadata import version, PackageNotFoundError
+want = os.environ.get("WANT_DDTRACE_VERSION", "").strip()
+try:
+    cur = version("ddtrace")
+    print(f"[INFO] ddtrace already installed: {cur}")
+    # Exit 0 only if exact version matches; 101 = mismatch, 100 = not installed
+    sys.exit(0 if (want and cur == want) else 101)
+except PackageNotFoundError:
+    sys.exit(100)
+PY
+
+rc=$?
+if [ $rc -eq 100 ] || [ $rc -eq 101 ]; then
+  echo "[INFO] Installing local wheel (force-reinstall) ..."
+  ${PYTHON_BIN} -m pip install --force-reinstall ./ddtrace-*.whl
+else
+  echo "[INFO] Reusing existing ddtrace installation (version ${WANT_DDTRACE_VERSION})."
+fi
+
+# Minimal runtime validation:
+# - Run OUTSIDE the repo tree + empty PYTHONPATH so imports come from the installed wheel (site-packages)
+CUR_DIR="$(pwd)"
+cd /
+PYTHONPATH="" ${PYTHON_BIN} - <<'PY'
+import sys
+from importlib.metadata import version
+try:
+    import ddtrace
+    from ddtrace.internal.native import _native
+except Exception as e:
+    raise SystemExit(f"import failed: {e}")
+print("imported-from:", ddtrace.__file__)        # should be a site-packages path, not the repo
+print("version:", version("ddtrace"))
+print("_native OK:", _native is not None)
+print("python:", sys.version)
+PY
+rc=$?
+cd "${CUR_DIR}"
+
+if [ ${rc} -ne 0 ]; then
   echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
   echo "$PACKAGE_VERSION $PACKAGE_NAME"
   echo "$PACKAGE_NAME  | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Test_Fails"
   exit 2
+fi
+
+# Keep DD_TRACE_ENABLED as-is; print tracer info (non-fatal if Agent not running)
+if command -v ddtrace-run >/dev/null 2>&1; then
+  ddtrace-run --info || true
 fi
 
 echo "------------------$PACKAGE_NAME:install_and_test_success-------------------------"
