@@ -6,7 +6,7 @@
   "wheel_build": false,
   "package_dir": "o/open-webui",
   "default_branch": "main",
-  "build_script": "open-webui_v0.7.2_ubi_9.4.sh",
+  "build_script": "",
   "docker_build": true,
   "validate_build_script": false,
   "docker_cmd": "docker build -t ${package_name}-ppc64le:$PACKAGE_VERSION ${dir}",

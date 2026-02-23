@@ -35,7 +35,7 @@ WORKDIR /app
 
 #Node.js Dependencies and Build
 # to store git revision in build
-RUN apt update && apt install git -y
+RUN apt update && apt install git wget -y
 COPY package.json package-lock.json ./
 RUN rm -rf package-lock.json && npm install --force
 
@@ -47,8 +47,8 @@ ARG REPO_URL=https://github.com/open-webui/open-webui.git
 ARG REPO_BRANCH=v0.7.2
 RUN git clone --branch ${REPO_BRANCH} ${REPO_URL} .
 
-# Copy patch file from build context
-COPY open-webui_v0.7.2.patch /app/
+# Get patch file from build context
+RUN wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/open-webui/open-webui_v0.7.2.patch
 
 # Apply patch
 RUN git apply open-webui_v0.7.2.patch
@@ -80,12 +80,6 @@ RUN pip3 install --no-cache-dir uv
 
 #Copy only requirements files
 COPY ./backend/requirements.txt ./requirements.txt
-
-#RUN python -m pip install --no-cache-dir -r requirements.txt
-
-
-#COPY ./backend/requirements.txt ./requirements.txt
-#RUN python -m pip install --no-cache-dir -r requirements.txt
 
 #Dependency install and Model pre-download (if not slim)
 ENV RAG_EMBEDDING_MODEL=$USE_EMBEDDING_MODEL \
