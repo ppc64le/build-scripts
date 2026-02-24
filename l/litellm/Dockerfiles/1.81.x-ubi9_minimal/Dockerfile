@@ -51,11 +51,8 @@ ENV VENV_PATH=/app/venv \
 
 RUN python3.12 -m venv $VENV_PATH \
     && pip install --no-cache-dir --upgrade pip setuptools wheel \
-    && pip install --no-cache-dir prisma "litellm[proxy]==1.81.11"
+    && pip install --no-cache-dir prisma "litellm[proxy]==1.81.11" 
 
-###############################################
-# Stage 3: Final Minimal Runtime
-###############################################
 ###############################################
 # Stage 3: Final Minimal Runtime
 ###############################################
@@ -80,7 +77,7 @@ ENV PATH="/app/venv/bin:$PATH" \
 RUN chmod +x /usr/local/bin/query-engine /usr/local/bin/schema-engine && \
     curl -L -o schema.prisma https://raw.githubusercontent.com/BerriAI/litellm/refs/tags/v1.81.11-nightly/schema.prisma && \
     prisma generate --schema=./schema.prisma
-
+RUN rm -rf /root/.cache/prisma-python
 EXPOSE 4000
 ENTRYPOINT ["litellm"]
 CMD ["--host", "0.0.0.0", "--port", "4000"]
