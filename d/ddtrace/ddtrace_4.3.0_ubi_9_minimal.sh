@@ -30,8 +30,8 @@ PYTHON_BIN=${PYTHON_BIN:-python3}
 LIBDATADOG_VERSION=${LIBDATADOG_VERSION:-v25.0.0}
 
 # Patches (default to upstream master; override via env for local testing)
-DDTRACE_PATCH_URL=${DDTRACE_PATCH_URL:-https://raw.githubusercontent.com/ppc64le/build-scripts/master/d/ddtrace/patches/ddtrace_4.3.0.patch}
-LIBDD_PATCH_URL=${LIBDD_PATCH_URL:-https://raw.githubusercontent.com/ppc64le/build-scripts/master/d/ddtrace/patches/libdatadog-crashtracker_25.0.0.patch}
+DDTRACE_PATCH_URL=${DDTRACE_PATCH_URL:-https://raw.githubusercontent.com/vikashsingh14/build-scripts/feat/ddtrace-4.3.0/d/ddtrace/patches/ddtrace_4.3.0.patch}
+LIBDD_PATCH_URL=${LIBDD_PATCH_URL:-https://raw.githubusercontent.com/vikashsingh14/build-scripts/feat/ddtrace-4.3.0/d/ddtrace/patches/libdatadog-crashtracker_25.0.0.patch}
 
 # Optional: let callers pin a shared Cargo target dir (cache)
 # export CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-$(pwd)/.cargo-target}"
