@@ -14,6 +14,9 @@
   "v25.1.2": {
    "build_script": "pyzmq_v25.1.2_ubi_9.3.sh"
   },
+  "v26.2.1": {
+   "build_script": "pyzmq_v26.2.1_ubi_9.3.sh"
+  },
   "*": {
     "build_script": "pyzmq_v25.1.2_ubi_9.3.sh"
   }
