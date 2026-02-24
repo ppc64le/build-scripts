@@ -38,12 +38,12 @@ index 13f38ac..4f5071c 100755
 -ENV PYTHON_BIN_PATH=${PYBIN}/python${PYVER} \
 -    PATH=${PYBIN}:${PATH}
 +RUN yum install -y wget && \
-+   dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-26.el9.noarch.rpm \
-+        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-26.el9.noarch.rpm \
++   dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-35.el9.noarch.rpm \
++        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-35.el9.noarch.rpm \
 +        https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
 +        dnf config-manager --set-enabled crb &&\
 +        dnf install gperf libarchive-devel numactl-devel readline-devel libusb patch -y && \
-+        dnf remove -y centos-gpg-keys-9.0-26.el9.noarch centos-stream-repos-9.0-26.el9.noarch
++        dnf remove -y centos-gpg-keys-9.0-35.el9.noarch centos-stream-repos-9.0-35.el9.noarch
  
  RUN yum install -y \\
          ca-certificates \\
