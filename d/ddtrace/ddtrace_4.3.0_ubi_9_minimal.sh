@@ -4,7 +4,7 @@
 # Package           : ddtrace
 # Version           : 4.3.0
 # Source repo       : https://github.com/DataDog/dd-trace-py
-# Tested on         : UBI:9
+# Tested on         : UBI:9 (ubi9/ubi-minimal)
 # Language          : Python,Rust
 # Ci-Check          : True
 # Script License    : Apache License, Version 2 or later
@@ -18,7 +18,6 @@
 #
 # ----------------------------------------------------------------------------
 
-# In agent-style scripts, PACKAGE_NAME equals the directory created by git clone.
 PACKAGE_NAME=dd-trace-py
 PACKAGE_URL=https://github.com/DataDog/dd-trace-py.git
 PACKAGE_VERSION=${1:-v4.3.0}
@@ -26,17 +25,20 @@ PACKAGE_VERSION=${1:-v4.3.0}
 # Use one interpreter everywhere (pip, setup.py, inline checks).
 PYTHON_BIN=${PYTHON_BIN:-python3}
 
+# Silence pip root warning
+export PIP_ROOT_USER_ACTION=ignore
+
 # libdatadog version to vendor crashtracker from
 LIBDATADOG_VERSION=${LIBDATADOG_VERSION:-v25.0.0}
 
-# Patches (default to upstream master; override via env for local testing)
+# Patches (default to upstream master)
 DDTRACE_PATCH_URL=${DDTRACE_PATCH_URL:-https://raw.githubusercontent.com/vikashsingh14/build-scripts/feat/ddtrace-4.3.0/d/ddtrace/patches/ddtrace_4.3.0.patch}
 LIBDD_PATCH_URL=${LIBDD_PATCH_URL:-https://raw.githubusercontent.com/vikashsingh14/build-scripts/feat/ddtrace-4.3.0/d/ddtrace/patches/libdatadog-crashtracker_25.0.0.patch}
 
 # Optional: let callers pin a shared Cargo target dir (cache)
 # export CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-$(pwd)/.cargo-target}"
 
-# Keep crashtracker runtime off for smoke test/containers
+# Keep crashtracker runtime off for smoke test
 export DD_USE_SYSTEM_LIBDATADOG=${DD_USE_SYSTEM_LIBDATADOG:-1}
 export DD_NO_CRASHTRACKER=${DD_NO_CRASHTRACKER:-1}
 
@@ -44,6 +46,13 @@ export DD_NO_CRASHTRACKER=${DD_NO_CRASHTRACKER:-1}
 # Install required dependencies
 # ----------------------------------------------------------------------------
 yum install -y wget git python3 python3-devel openssl openssl-devel make gcc gcc-c++ diffutils cmake patch rust cargo findutils libffi-devel elfutils-libelf-devel || true
+
+if ! command -v patchelf >/dev/null 2>&1; then
+  yum install -y autoconf automake libtool make gcc gcc-c++ m4 gettext || true
+  cd /tmp && rm -rf patchelf && git clone https://github.com/NixOS/patchelf.git
+  cd patchelf && ./bootstrap.sh && ./configure && make -j"$(nproc)" && make install
+  command -v patchelf >/dev/null || { echo "[ERROR] patchelf installation failed"; exit 1; }
+fi
 
 # Upgrade pip & install Python build deps for THIS interpreter
 # NOTE: ddtrace requires cmake >=3.24.2,<3.28 for source builds.
@@ -71,10 +80,21 @@ git clone "${PACKAGE_URL}"
 cd "${PACKAGE_NAME}"
 git checkout "${PACKAGE_VERSION}"
 
-# Apply ddtrace patch (if available)
-wget -O ddtrace.patch "${DDTRACE_PATCH_URL}" || true
-if [ -s ddtrace.patch ]; then
-  git apply --ignore-whitespace ddtrace.patch || true
+# Apply ddtrace patch
+echo "[INFO] Fetching ddtrace patch: ${DDTRACE_PATCH_URL}"
+if ! wget -O ddtrace.patch "${DDTRACE_PATCH_URL}"; then
+  echo "[ERROR] Failed to download ddtrace patch: ${DDTRACE_PATCH_URL}"
+  exit 1
+fi
+
+if [ ! -s ddtrace.patch ]; then
+  echo "[ERROR] ddtrace.patch is missing or empty"
+  exit 1
+fi
+
+if ! git apply --ignore-whitespace ddtrace.patch; then
+  echo "[ERROR] Failed to apply ddtrace patch"
+  exit 1
 fi
 
 # ----------------------------------------------------------------------------
@@ -85,10 +105,21 @@ pushd "${TMPDIR}" >/dev/null
   git clone --depth=1 --branch "${LIBDATADOG_VERSION}" https://github.com/DataDog/libdatadog.git
   cd libdatadog
 
-  # Apply libdatadog crashtracker patch (if available)
-  wget -O libdd.patch "${LIBDD_PATCH_URL}" || true
-  if [ -s libdd.patch ]; then
-    git apply --ignore-whitespace libdd.patch || true
+  # Apply libdatadog crashtracker patch
+  echo "[INFO] Fetching libdatadog crashtracker patch: ${LIBDD_PATCH_URL}"
+  if ! wget -O libdd.patch "${LIBDD_PATCH_URL}"; then
+    echo "[ERROR] Failed to download libdatadog crashtracker patch from: ${LIBDD_PATCH_URL}"
+    exit 1
+  fi
+
+  if [ ! -s libdd.patch ]; then
+    echo "[ERROR] libdd.patch is missing or empty!"
+    exit 1
+  fi
+
+  if ! git apply --ignore-whitespace libdd.patch; then
+    echo "[ERROR] Failed to apply libdd.patch"
+    exit 1
   fi
 
   # Pin libc crate version
@@ -164,7 +195,7 @@ mkdir -p "${REPO_NATIVE_DIR}"
 cp -f "${SRC_SO}" "${REPO_NATIVE_DIR}/_native.${SOABI}.so"
 
 # ----------------------------------------------------------------------------
-# Build Wheel (Agent-style: setup.py bdist_wheel, no build isolation)
+# Build Wheel (setup.py bdist_wheel, no build isolation)
 # ----------------------------------------------------------------------------
 # Guard again just before running setup.py (same interpreter):
 ${PYTHON_BIN} - <<'PY'
@@ -188,31 +219,10 @@ sha256sum ddtrace-*.whl > SHA256SUMS 2>/dev/null || true
 # ----------------------------------------------------------------------------
 # Install wheel (reuse if already correct) and run a minimal smoke test
 # ----------------------------------------------------------------------------
-
-# Expected version for the installed package (strip leading 'v': v4.3.0 -> 4.3.0)
-export WANT_DDTRACE_VERSION="${PACKAGE_VERSION#v}"
-
-# Check if ddtrace is already installed with the required version
-${PYTHON_BIN} - <<'PY'
-import os, sys
-from importlib.metadata import version, PackageNotFoundError
-want = os.environ.get("WANT_DDTRACE_VERSION", "").strip()
-try:
-    cur = version("ddtrace")
-    print(f"[INFO] ddtrace already installed: {cur}")
-    # Exit 0 only if exact version matches; 101 = mismatch, 100 = not installed
-    sys.exit(0 if (want and cur == want) else 101)
-except PackageNotFoundError:
-    sys.exit(100)
-PY
-
-rc=$?
-if [ $rc -eq 100 ] || [ $rc -eq 101 ]; then
-  echo "[INFO] Installing local wheel (force-reinstall) ..."
-  ${PYTHON_BIN} -m pip install --force-reinstall ./ddtrace-*.whl
-else
-  echo "[INFO] Reusing existing ddtrace installation (version ${WANT_DDTRACE_VERSION})."
-fi
+echo "[INFO] Installing built wheel (always overwrite existing ddtrace)..."
+${PYTHON_BIN} -m pip uninstall -y ddtrace || true
+${PYTHON_BIN} -m pip cache purge || true
+${PYTHON_BIN} -m pip install --no-cache-dir --force-reinstall ./ddtrace-*.whl
 
 # Minimal runtime validation:
 # - Run OUTSIDE the repo tree + empty PYTHONPATH so imports come from the installed wheel (site-packages)
@@ -226,7 +236,7 @@ try:
     from ddtrace.internal.native import _native
 except Exception as e:
     raise SystemExit(f"import failed: {e}")
-print("imported-from:", ddtrace.__file__)        # should be a site-packages path, not the repo
+print("imported-from:", ddtrace.__file__)
 print("version:", version("ddtrace"))
 print("_native OK:", _native is not None)
 print("python:", sys.version)
@@ -241,8 +251,14 @@ if [ ${rc} -ne 0 ]; then
   exit 2
 fi
 
-# Keep DD_TRACE_ENABLED as-is; print tracer info (non-fatal if Agent not running)
-if command -v ddtrace-run >/dev/null 2>&1; then
+# Optional: tracer diagnostics (off by default; set SHOW_DDTRACE_INFO=1 to enable)
+if [ "${SHOW_DDTRACE_INFO:-0}" = "1" ] && command -v ddtrace-run >/dev/null 2>&1; then
+  # Helpful defaults to avoid tag warnings in the output
+  export DD_SERVICE="${DD_SERVICE:-ddtrace-build}"
+  export DD_ENV="${DD_ENV:-ci}"
+  export DD_VERSION="${DD_VERSION:-${PACKAGE_VERSION#v}}"
+
+  echo "[INFO] Running ddtrace-run --info (non-fatal)..."
   ddtrace-run --info || true
 fi
 
