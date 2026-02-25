@@ -90,7 +90,6 @@ export CFLAGS="-O2 -fPIC -fno-lto"
 #dynamic libc dependency so auditwheel can detect glibc
 export LDFLAGS="-Wl,-Bdynamic -Wl,--no-as-needed -lc"
 
-# 4) Build a wheel without isolation so these flags are honored
 # Install the package
 if ! python3 -m pip install .; then
     echo "------------------$PACKAGE_NAME:install_fails------------------------"
