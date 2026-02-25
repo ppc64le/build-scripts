@@ -92,7 +92,7 @@ export LDFLAGS="-Wl,-Bdynamic -Wl,--no-as-needed -lc"
 
 # 4) Build a wheel without isolation so these flags are honored
 # Install the package
-if ! python3 -m build --no-isolation .; then
+if ! python3 -m pip install .; then
     echo "------------------$PACKAGE_NAME:install_fails------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"
