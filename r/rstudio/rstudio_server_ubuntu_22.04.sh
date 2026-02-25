@@ -4,7 +4,7 @@
 # Package       : rstudio
 # Version       : v2025.09.0+387
 # Source repo   : https://github.com/rstudio/rstudio.git
-# Tested on     : Ubuntu:22.04
+# Tested on     : ubuntu_22.04
 # Language      : Java,C++
 # Ci-Check      : True
 # Script License: Apache License Version 2.0
