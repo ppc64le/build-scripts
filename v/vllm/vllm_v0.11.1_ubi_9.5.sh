@@ -55,7 +55,7 @@ yum install -y \
   openssl-devel sqlite-devel \
   llvm-devel libevent-devel \
   freetype-devel gmp-devel libjpeg-turbo-devel \
-  cargo libcurl-devel \
+  cargo libcurl-devel gcc-toolset-13-libatomic-devel libsndfile openblas-devel \
   which procps-ng yum-utils \
   --allowerasing
 
@@ -82,6 +82,40 @@ echo "-------------------- Enabling GCC toolset --------------------------"
 
 source /opt/rh/gcc-toolset-13/enable
 
+
+# Enforce compiler visibility for TorchInductor
+export GCC_TOOLSET_ROOT=/opt/rh/gcc-toolset-13/root/usr
+
+export CC=${GCC_TOOLSET_ROOT}/bin/gcc
+export CXX=${GCC_TOOLSET_ROOT}/bin/g++
+
+export PATH=${GCC_TOOLSET_ROOT}/bin:${PATH}
+export LD_LIBRARY_PATH=${GCC_TOOLSET_ROOT}/lib64:${LD_LIBRARY_PATH}
+export LIBRARY_PATH=${GCC_TOOLSET_ROOT}/lib64:${LIBRARY_PATH}
+export CMAKE_PREFIX_PATH=${GCC_TOOLSET_ROOT}:${CMAKE_PREFIX_PATH}
+
+export TORCH_INDUCTOR_CPP_COMPILER=${CXX}
+
+# Register toolset runtime with system linker
+echo "${GCC_TOOLSET_ROOT}/lib64" > /etc/ld.so.conf.d/gcc-toolset-13.conf
+ldconfig
+
+# -----------------------------------------------------------------------------
+# Sanity checks
+# -----------------------------------------------------------------------------
+
+echo "Using CC = $(which gcc)"
+echo "Using CXX = $(which g++)"
+
+gcc --version
+g++ --version
+
+echo "Checking libctf resolution..."
+ldd $(which g++) | grep libctf || true
+
+echo "Checking libstdc++ resolution..."
+ldd $(which g++) | grep libstdc++ || true
+
 # Ensure gcc-toolset runtime libraries are visible
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:${LD_LIBRARY_PATH}
 export LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:${LIBRARY_PATH}
@@ -89,11 +123,6 @@ export CMAKE_PREFIX_PATH=/opt/rh/gcc-toolset-13/root/usr:${CMAKE_PREFIX_PATH}
 
 export CC=/opt/rh/gcc-toolset-13/root/usr/bin/gcc
 export CXX=/opt/rh/gcc-toolset-13/root/usr/bin/g++
-
-echo "CC  = $CC"
-echo "CXX = $CXX"
-gcc --version
-g++ --version
 
 # -----------------------------------------------------------------------------
 # Python tooling
@@ -108,20 +137,20 @@ python3.12 -m pip install --upgrade pip setuptools wheel
 echo "-------------------- Installing Python dependencies ----------------"
 
 python3.12 -m pip install \
-  --trusted-host wheels.developerfirst.ibm.com \
-  "abseil-cpp @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/419/275773a4cc480/abseil_cpp-20240116.2-py3-none-any.whl" \
-  "av @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/b09/d74303b7aaf7f/av-13.1.0-cp312-cp312-linux_ppc64le.whl" \
-  "ffmpeg @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/25d/9b7b985a577b9/ffmpeg-7.1-py3-none-any.whl" \
-  "lame @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/923/40f226ef59d45/lame-3.100-py3-none-any.whl" \
-  "libprotobuf @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/e53/57a336598c208/libprotobuf-25.4-py3-none-manylinux2014_ppc64le.whl" \
-  "libvpx @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/328/cfde06a744e3d/libvpx-1.13.1-py3-none-any.whl" \
-  "llvmlite @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/ddd/ebf05d58bd563/llvmlite-0.44.0-cp312-cp312-linux_ppc64le.whl" \
-  "numba @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/609/d7a83e5ac7944/numba-0.62.0.dev0-cp312-cp312-linux_ppc64le.whl" \
-  "openblas @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/523/31f6718639cba/openblas-0.3.29-py3-none-manylinux2014_ppc64le.whl" \
-  "opus @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/bec/40c21ed2fe31b/opus-1.3.1-py3-none-any.whl" \
-  "protobuf @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/5e5/a6c4d93fcc5cd/protobuf-4.25.8-cp312-cp312-linux_ppc64le.whl" \
-  "scipy @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/4e1/4b512f33efb85/scipy-1.16.0-cp312-cp312-linux_ppc64le.whl" \
-  "sentencepiece @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/161/51fddd15aec51/sentencepiece-0.2.0-cp312-cp312-linux_ppc64le.whl" \
+  --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux --prefer-binary \
+  "av==13.1.0" \
+  "ffmpeg==7.1" \
+  "lame==3.100" \
+  "libprotobuf==25.4" \
+  "libvpx==1.13.1" \
+  "llvmlite==0.44.0" \
+  "numba==0.62.0.dev0" \
+  "openblas==0.3.29" \
+  "opus==1.3.1" \
+  "protobuf==4.25.8" \
+  "scipy==1.16.0" \
+  "sentencepiece==0.2.0" \
+  "abseil-cpp==20240116.2" \
   certifi charset-normalizer filelock fsspec idna \
   Jinja2 MarkupSafe mpmath networkx requests \
   sympy tqdm typing_extensions urllib3 numpy
