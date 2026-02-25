@@ -35,6 +35,7 @@ RUN apt-get update -y && apt-get install -y \
   libpam0g-dev libedit-dev uuid-dev \
   r-base r-base-dev \
   pandoc lsof \
+  procps \
  && rm -rf /var/lib/apt/lists/*
 
 # ---- NodeJS ----
