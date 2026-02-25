@@ -83,8 +83,16 @@ else
     fi
 fi
 
+#Keep compile flags simple and PIC
+export CC="gcc"
+export CFLAGS="-O2 -fPIC -fno-lto"
+
+#dynamic libc dependency so auditwheel can detect glibc
+export LDFLAGS="-Wl,-Bdynamic -Wl,--no-as-needed -lc"
+
+# 4) Build a wheel without isolation so these flags are honored
 # Install the package
-if ! python3 -m pip install ./; then
+if ! python3 -m build --no-isolation .; then
     echo "------------------$PACKAGE_NAME:install_fails------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"
@@ -113,6 +121,7 @@ if [ -f "noxfile.py" ] && [ $test_status -ne 0 ]; then
     (python3 -m nox) && test_status=0 || test_status=$?
 fi
 
+export PATH=$HOME/.cargo/bin:$PATH
 # Run tests if test dir is present and previous tests failed
 if [ -d "./test" ] && [ $test_status -ne 0 ]; then
     echo "Running test..."
