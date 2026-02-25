@@ -1,7 +1,7 @@
 #!/bin/bash -e
 # ----------------------------------------------------------------------------
 #
-# Package           : ddtrace
+# Package           : dd-trace-py
 # Version           : 4.3.0
 # Source repo       : https://github.com/DataDog/dd-trace-py
 # Tested on         : UBI:9 (ubi9/ubi-minimal)
@@ -32,8 +32,8 @@ export PIP_ROOT_USER_ACTION=ignore
 LIBDATADOG_VERSION=${LIBDATADOG_VERSION:-v25.0.0}
 
 # Patches (default to upstream master)
-DDTRACE_PATCH_URL=${DDTRACE_PATCH_URL:-https://raw.githubusercontent.com/vikashsingh14/build-scripts/feat/ddtrace-4.3.0/d/ddtrace/patches/ddtrace_4.3.0.patch}
-LIBDD_PATCH_URL=${LIBDD_PATCH_URL:-https://raw.githubusercontent.com/vikashsingh14/build-scripts/feat/ddtrace-4.3.0/d/ddtrace/patches/libdatadog-crashtracker_25.0.0.patch}
+DDTRACE_PATCH_URL="${DDTRACE_PATCH_URL:-${DDTRACE_PATCH:-https://raw.githubusercontent.com/vikashsingh14/build-scripts/feat/ddtrace-4.3.0/d/dd-trace-py/patches/dd-trace-py_4.3.0.patch}}"
+LIBDD_PATCH_URL="${LIBDD_PATCH_URL:-${LIBDATADOG_CRASHTRACKER_PATCH:-https://raw.githubusercontent.com/vikashsingh14/build-scripts/feat/ddtrace-4.3.0/d/dd-trace-py/patches/libdatadog-crashtracker_25.0.0.patch}}"
 
 # Optional: let callers pin a shared Cargo target dir (cache)
 # export CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-$(pwd)/.cargo-target}"
