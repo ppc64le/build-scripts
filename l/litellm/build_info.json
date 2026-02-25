@@ -1,0 +1,19 @@
+{
+    "maintainer": "purvanaik1",
+    "package_name": "litellm",
+    "github_url": "https://github.com/BerriAI/litellm",
+    "version": "v1.81.11-nightly",
+    "default_branch": "main",
+    "build_script": "",
+    "package_dir": "l/litellm",
+    "use_non_root_user": "false",
+    "docker_build": "true",
+    "docker_cmd": "docker build -t ${package_name}:${PACKAGE_VERSION} ${dir}",
+    "validate_build_script": false,
+    "wheel_build": false,
+    "*": {
+        "dir": "1.81.x-ubi9-minimal",
+        "base_docker_image": "registry.access.redhat.com/ubi9-minimal:latest",
+        "base_docker_variant": "redhat"
+    }
+}
