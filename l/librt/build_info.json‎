@@ -1,0 +1,16 @@
+{
+  "maintainer": "puneetsharma21",
+  "package_name": "librt",
+  "github_url": "https://github.com/mypyc/librt",
+  "version": "v0.8.1",
+  "wheel_build" : true,
+  "package_dir": "l/librt",
+  "default_branch": "master",
+  "build_script": "librt_ubi_9.6.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*":{
+    "build_script":"librt_ubi_9.6.sh"
+  }
+}
