@@ -1,5 +1,45 @@
+diff --git a/src/transformers/models/clvp/number_normalizer.py b/src/transformers/models/clvp/number_normalizer.py
+index 7824009727..aad6428437 100644
+--- a/src/transformers/models/clvp/number_normalizer.py
++++ b/src/transformers/models/clvp/number_normalizer.py
+@@ -15,9 +15,15 @@
+ 
+ """English Normalizer class for CLVP."""
+ 
+-import re
++import sys
+ 
+ 
++if sys.version_info >= (3, 11):
++     # Atomic grouping support was only added to the core RE in Python 3.11
++   import re
++else:
++   import regex as re
++
+ class EnglishNormalizer:
+     def __init__(self):
+         # List of (regular expression, replacement) pairs for abbreviations:
+@@ -199,12 +205,12 @@ class EnglishNormalizer:
+         This method is used to normalize numbers within a text such as converting the numbers to words, removing
+         commas, etc.
+         """
+-        text = re.sub(re.compile(r"([0-9][0-9\,]+[0-9])"), self._remove_commas, text)
+-        text = re.sub(re.compile(r"£([0-9\,]*[0-9]+)"), r"\1 pounds", text)
+-        text = re.sub(re.compile(r"\$([0-9\.\,]*[0-9]+)"), self._expand_dollars, text)
+-        text = re.sub(re.compile(r"([0-9]+\.[0-9]+)"), self._expand_decimal_point, text)
+-        text = re.sub(re.compile(r"[0-9]+(st|nd|rd|th)"), self._expand_ordinal, text)
+-        text = re.sub(re.compile(r"[0-9]+"), self._expand_number, text)
++        text = re.sub(r"([0-9][0-9,]+[0-9])", self._remove_commas, text)
++        text = re.sub(r"£([0-9,]*[0-9])", r"\1 pounds", text)
++        text = re.sub(r"\$([0-9.,]*[0-9])", self._expand_dollars, text)
++        text = re.sub(r"([0-9]++\.[0-9]+)", self._expand_decimal_point, text)
++        text = re.sub(r"[0-9]++(st|nd|rd|th)", self._expand_ordinal, text)
++        text = re.sub(r"[0-9]+", self._expand_number, text)
+         return text
+ 
+     def expand_abbreviations(self, text: str) -> str:
 diff --git a/src/transformers/models/marian/tokenization_marian.py b/src/transformers/models/marian/tokenization_marian.py
-index bf9e0a8a2a..361b81d3db 100644
+index bf9e0a8a2a..da98f4b302 100644
 --- a/src/transformers/models/marian/tokenization_marian.py
 +++ b/src/transformers/models/marian/tokenization_marian.py
 @@ -13,7 +13,6 @@
@@ -11,30 +51,28 @@ index bf9e0a8a2a..361b81d3db 100644
  from pathlib import Path
  from shutil import copyfile
 @@ -104,7 +103,6 @@ class MarianTokenizer(PreTrainedTokenizer):
-
+ 
      vocab_files_names = VOCAB_FILES_NAMES
      model_input_names = ["input_ids", "attention_mask"]
 -    language_code_re = re.compile(">>.+<<")  # type: re.Pattern
-
+ 
      def __init__(
          self,
-@@ -186,10 +184,12 @@ class MarianTokenizer(PreTrainedTokenizer):
-
+@@ -186,9 +184,11 @@ class MarianTokenizer(PreTrainedTokenizer):
+ 
      def remove_language_code(self, text: str):
          """Remove language codes like >>fr<< before sentencepiece"""
 -        match = self.language_code_re.match(text)
 -        code: list = [match.group(0)] if match else []
 -        return code, self.language_code_re.sub("", text)
--
-+        code = []
++               code = []
 +        if text.startswith(">>") and (end_loc := text.find("<<")) != -1:
 +            code.append(text[: end_loc + 2])
 +            text = text[end_loc + 2 :]
 +        return code, text
-+
+ 
      def _tokenize(self, text: str) -> List[str]:
          code, text = self.remove_language_code(text)
-         pieces = self.current_spm.encode(text, out_type=str)
 diff --git a/src/transformers/optimization_tf.py b/src/transformers/optimization_tf.py
 index 4da4ecc901..3222c685d9 100644
 --- a/src/transformers/optimization_tf.py
@@ -42,26 +80,22 @@ index 4da4ecc901..3222c685d9 100644
 @@ -14,7 +14,6 @@
  # ==============================================================================
  """Functions and classes related to optimization (weight updates)."""
-
+ 
 -import re
  from typing import Callable, Optional, Union
-
+ 
  import tensorflow as tf
 @@ -296,12 +295,12 @@ class AdamWeightDecay(Adam):
-
+ 
          if self._include_in_weight_decay:
              for r in self._include_in_weight_decay:
 -                if re.search(r, param_name) is not None:
 +                if r in param_name:
                      return True
-
+ 
          if self._exclude_from_weight_decay:
              for r in self._exclude_from_weight_decay:
 -                if re.search(r, param_name) is not None:
 +                if r in param_name:
                      return False
          return True
-
-
-
-
