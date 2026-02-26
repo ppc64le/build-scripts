@@ -118,7 +118,7 @@ RUN rpm -e --nodeps openssl-fips-provider openssl-fips-provider-so || true && \
     /opt/venv/bin/pip install --no-cache-dir --upgrade pip && \
     mkdir -p /patches && \
     wget -q -O /patches/openwebui-pipelines-0.0.1.patch \
-        https://raw.githubusercontent.com/vikashsingh14/build-scripts/feat/openwebui-pipelines/o/openwebui-pipelines/patches/openwebui-pipelines-0.0.1.patch
+        https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/openwebui-pipelines/patches/openwebui-pipelines-0.0.1.patch
 
 COPY --from=ddtrace-native-builder /artifacts/ddtrace/*.whl /tmp/
 COPY --from=ddtrace-native-builder \
