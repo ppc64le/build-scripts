@@ -77,7 +77,7 @@ jobs:
                 ...pr.assignees.map(a => `@${a.login}`)
               ].join(" ");
 
-              if (inactivityDays === 20 && !reminder1Exists) {
+              if (inactivityDays >= 20 && inactivityDays < 40 && !reminder1Exists) {
                 await github.rest.issues.createComment({
                   owner,
                   repo,
@@ -94,7 +94,7 @@ jobs:
                 reminder1Count++;
               }
 
-              else if (inactivityDays === 40 && !reminder2Exists) {
+              else if (inactivityDays >= 40 && !reminder2Exists) {
                 await github.rest.issues.createComment({
                   owner,
                   repo,
