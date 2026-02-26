@@ -70,8 +70,9 @@ cd "Python-${PYTHON_VERSION}"
 make -j"$(nproc)"
 make altinstall
 
-ln -sf "$(which python3.11)" /usr/bin/python3
-ln -sf "$(which pip3.11)" /usr/bin/pip3
+PY_MINOR="${PYTHON_VERSION%.*}"
+ln -sf "/usr/local/bin/python${PY_MINOR}" /usr/bin/python3
+ln -sf "/usr/local/bin/python${PY_MINOR}" /usr/bin/pip3
 python3 -V && pip3 -V
 
 
@@ -184,8 +185,9 @@ cd "$PKG_DIR"
 rm -rf build dist *.egg-info .eggs || true
 
 # Pre-create ragel location expected by python-package build temp dir.
-mkdir -p build/temp.linux-ppc64le-cpython-311/bin
-ln -sf "$RAGEL_BIN" build/temp.linux-ppc64le-cpython-311/bin/ragel
+PYTAG="${PYTHON_VERSION%%.*}${PYTHON_VERSION#*.}"; PYTAG="${PYTAG%%.*}"
+mkdir -p build/temp.linux-ppc64le-cpython-${PYTAG}/bin
+ln -sf "$RAGEL_BIN" build/temp.linux-ppc64le-cpython-${PYTAG}/bin/ragel
 
 
 ret=0
