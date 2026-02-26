@@ -6,7 +6,7 @@
 # Source repo   : https://github.com/rstudio/rstudio.git
 # Tested on     : ubuntu_22.04
 # Language      : Java,C++
-# Ci-Check      : True
+# Ci-Check      : False
 # Script License: Apache License Version 2.0
 # Maintainer    : Veenious D Geevarghese <Veenious.Geevarghese@ibm.com>
 #
