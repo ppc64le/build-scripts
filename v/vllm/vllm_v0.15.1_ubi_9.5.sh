@@ -423,6 +423,8 @@ echo "==================================================================="
 #    If the build machine is offline, this step will fail.
 echo "Running basic offline inference example..."
 
+export VLLM_CPU_KVCACHE_SPACE=4
+
 if ! python3.12 ${PACKAGE_DIR}/examples/offline_inference/basic/basic.py; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
