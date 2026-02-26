@@ -90,20 +90,35 @@ RUN rpm -e --nodeps openssl-fips-provider openssl-fips-provider-so || true && \
         python3.11-devel \
         python3.11-wheel \
         python3-setuptools \
-        gcc gcc-c++ make git pkg-config \
+        gcc \
+        gcc-c++ \
+        make \
+        git \
+        pkg-config \
         libffi-devel \
         openssl-devel \
         ca-certificates \
         cmake \
         findutils \
         wget \
-        curl-minimal && \
-    microdnf clean all && rm -rf /var/cache/* && \
+        curl-minimal \
+        zlib-devel \
+        libjpeg-turbo-devel \
+        libpng-devel \
+        freetype-devel \
+        lcms2-devel \
+        libwebp-devel \
+        libtiff-devel \
+        openjpeg2-devel \
+        libX11-devel \
+        libxcb-devel && \
+    microdnf clean all && \
+    rm -rf /var/cache/* && \
     python3.11 -m venv /opt/venv && \
     /opt/venv/bin/pip install --no-cache-dir --upgrade pip && \
     mkdir -p /patches && \
-    wget -q -O /patches/openwebui-pipelines-requirements-0.0.1.patch \
-        https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/openwebui-pipelines/patches/openwebui-pipelines-requirements-0.0.1.patch
+    wget -q -O /patches/openwebui-pipelines-0.0.1.patch \
+        https://raw.githubusercontent.com/ppc64le/build-scripts/master/o/openwebui-pipelines/patches/openwebui-pipelines-0.0.1.patch
 
 COPY --from=ddtrace-native-builder /artifacts/ddtrace/*.whl /tmp/
 COPY --from=ddtrace-native-builder \
@@ -113,7 +128,7 @@ COPY --from=ddtrace-native-builder \
 RUN /opt/venv/bin/pip install /tmp/ddtrace-*.whl && \
     rm -rf /tmp/* && \
     git clone --depth=1 https://github.com/open-webui/pipelines.git . && \
-    git apply /patches/requirements.patch && \
+    git apply /patches/openwebui-pipelines-0.0.1.patch && \
     /opt/venv/bin/pip install \
         --no-cache-dir \
         --prefer-binary \
@@ -125,7 +140,7 @@ RUN /opt/venv/bin/pip install /tmp/ddtrace-*.whl && \
         -r requirements.txt && \
     rm -rf ~/.cache .git
 
-# Cleanup like Milvus
+# Cleanup
 RUN find /opt/venv -name '__pycache__' -type d -prune -exec rm -rf {} + && \
     find /opt/venv -type f -name '*.a' -delete && \
     find /opt/venv -type d \( -name 'doc' -o -name 'docs' -o -name 'tests' -o -name '*.egg-info' \) \
