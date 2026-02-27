@@ -1,0 +1,98 @@
+FROM registry.access.redhat.com/ubi9/ubi:9.3
+
+#ENV KONG_PATCH=https://raw.githubusercontent.com/ppc64le/build-scripts/master/k/kong/kong-3.9.0.patch
+ENV KONG_PATCH=https://raw.githubusercontent.com/kavita-rane2/build-scripts/kong/k/kong/kong-3.9.0.patch
+#ENV RULES_RUST_PATCH=https://raw.githubusercontent.com/ppc64le/build-scripts/master/k/kong/kong-3.3.0-rules_rust.patch
+ENV RULES_RUST_PATCH=https://raw.githubusercontent.com/kavita-rane2/build-scripts/kong/k/kong/kong-3.9.0-rules_rust-0.42.1.patch
+ENV PACKAGE_NAME=kong
+ENV PACKAGE_VERSION=3.9.0
+ENV PACKAGE_URL=https://github.com/kong/kong/
+ENV PYTHON_VERSION=3.11.0
+ENV wdir=/tmp
+ARG GITHUB_TOKEN
+
+#Install required repos
+#RUN dnf -y install --nogpgcheck https://vault.centos.org/8.5.2111/BaseOS/ppc64le/os/Packages/centos-linux-repos-8-3.el8.noarch.rpm \
+#    https://vault.centos.org/8.5.2111/BaseOS/ppc64le/os/Packages/centos-gpg-keys-8-3.el8.noarch.rpm \
+#    && sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Linux-* \
+#    && sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-* \
+#    && sed -i 's|enabled=0|enabled=1|g' /etc/yum.repos.d/CentOS-Linux-PowerTools.repo
+
+#Build and install Kong
+RUN dnf install -y --allowerasing automake gcc gcc-c++ git libyaml-devel make patch perl perl-IPC-Cmd zip unzip valgrind valgrind-devel zlib-devel wget cmake java-21-openjdk-devel curl file \
+    && export JAVA_HOME=$(compgen -G '/usr/lib/jvm/java-11-openjdk-*') \
+    && export JRE_HOME=${JAVA_HOME}/jre \
+    && export PATH=${JAVA_HOME}/bin:$PATH \
+    && cd $wdir \
+    && wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz \
+    && tar xzf Python-${PYTHON_VERSION}.tgz \
+    && rm -rf Python-${PYTHON_VERSION}.tgz \
+    && cd Python-${PYTHON_VERSION} \
+    && ./configure --enable-shared --with-system-ffi --with-computed-gotos --enable-loadable-sqlite-extensions \
+    && make -j ${nproc} \
+    && make altinstall \
+    && ln -sf $(which python3.11) /usr/bin/python3 \
+    && ln -sf $(which pip3.11) /usr/bin/pip3 \
+    && ln -s /usr/share/pyshared/lsb_release.py /usr/local/lib/python3.11/site-packages/lsb_release.py \
+    && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$wdir/Python-3.11.0/lib \
+    && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib \
+    && python3 -V && pip3 -V \
+    && cd $wdir \
+    && wget $KONG_PATCH \
+    && wget $RULES_RUST_PATCH \
+    && git clone ${PACKAGE_URL} \
+    && cd ${PACKAGE_NAME} && git checkout ${PACKAGE_VERSION} \
+    && BAZEL_VERSION=$(cat .bazelversion) \
+    && cd $wdir \
+    && mkdir bazel \
+    && cd bazel \
+    && wget https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VERSION}/bazel-${BAZEL_VERSION}-dist.zip \
+    && unzip bazel-${BAZEL_VERSION}-dist.zip \
+    && rm -rf bazel-${BAZEL_VERSION}-dist.zip \
+    && export BAZEL_JAVAC_OPTS="-J-Xmx20g" \
+    && env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh -j32 \
+    && export PATH=$PATH:$wdir/bazel/output \
+    && curl https://sh.rustup.rs -sSf | sh -s -- -y && source ~/.cargo/env \
+    && cargo install cross --version 0.2.1 \
+    && cd $wdir \
+    && wget https://go.dev/dl/go1.23.0.linux-ppc64le.tar.gz \
+    && rm -rf /usr/local/go && tar -C /usr/local -xzf go1.23.0.linux-ppc64le.tar.gz \
+    && rm -rf go1.23.0.linux-ppc64le.tar.gz \
+    && export PATH=$PATH:/usr/local/go/bin \
+    && go version \
+    && GOBIN=/usr/local/go/bin go install github.com/cli/cli/v2/cmd/gh@v2.50.0 \
+    && GHCLI_BIN=/usr/local/go/bin/gh \
+    && export GITHUB_TOKEN=$GITHUB_TOKEN \
+    && cd $wdir/${PACKAGE_NAME} \
+    && git apply --ignore-space-change --ignore-whitespace $wdir/kong-${PACKAGE_VERSION}.patch \
+    && make build-release > /dev/null 2>&1 || true \
+    && pushd $(find $HOME/.cache/bazel -name rules_rust) \
+    && git apply --ignore-space-change --ignore-whitespace  $wdir/kong-${PACKAGE_VERSION}-rules_rust-0.42.1.patch \
+    && cd crate_universe \
+    && cargo update -p time \
+    && cross build --release --locked --bin cargo-bazel --target=powerpc64le-unknown-linux-gnu \
+    && export CARGO_BAZEL_GENERATOR_URL=file://$(pwd)/target/powerpc64le-unknown-linux-gnu/release/cargo-bazel \
+    && export CARGO_BAZEL_REPIN=true \
+    && popd \
+    && cd $wdir/${PACKAGE_NAME} \
+    && make package/deb  > /dev/null 2>&1 || true \
+    && find $HOME/.cache/bazel -type d -name gh_linux_ppc64le \
+    && cp -f $GHCLI_BIN $(find $HOME/.cache/bazel -type d -name gh_linux_ppc64le)/bin \
+    && make package/rpm \
+    && cp $(find / -name kong.el8.ppc64le.rpm) $wdir \
+    && export KONG_RPM=$wdir/kong.el8.ppc64le.rpm \
+    && rm -rf /tmp/kong /tmp/bazel \
+    && dnf -y remove automake gcc gcc-c++ git libyaml-devel make patch perl perl-IPC-Cmd zip unzip valgrind valgrind-devel zlib-devel wget cmake java-21-openjdk-devel file \
+    && dnf -y install $KONG_RPM
+
+
+
+
+#Expose port
+EXPOSE 8000
+EXPOSE 8001
+EXPOSE 8443
+EXPOSE 8444
+
+#Entry point
+CMD ["kong", "start"]
