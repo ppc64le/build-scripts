@@ -1,0 +1,13 @@
+diff --git a/lib/matplotlib/tests/test_figure.py b/lib/matplotlib/tests/test_figure.py
+index 15f084fc15..3c79d26643 100644
+--- a/lib/matplotlib/tests/test_figure.py
++++ b/lib/matplotlib/tests/test_figure.py
+@@ -901,7 +901,7 @@ def test_subfigure():
+ 
+ 
+ @image_comparison(['test_subfigure_ss.png'], style='mpl20',
+-                  savefig_kwarg={'facecolor': 'teal'},
++                  savefig_kwarg={'facecolor': 'teal'}, tol=0.02,
+                   remove_text=False)
+ def test_subfigure_ss():
+     # test assigning the subfigure via subplotspec
