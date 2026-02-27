@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : orc
-# Version       : v2.0.3
+# Version       : v1.9.0
 # Source repo   : https://github.com/apache/orc
 # Tested on     : UBI 9.3
 # Language      : c
@@ -112,7 +112,7 @@ mkdir build
 cd build
 
 cmake -G "Ninja" \
-   ${CMAKE_ARGS} \
+    ${CMAKE_ARGS} \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CXX_STANDARD=17 \
     -DCMAKE_C_COMPILER=$CC \
@@ -138,7 +138,7 @@ echo " --------------------------------------------------- libprotobuf installed
 
 export LD_LIBRARY_PATH=$CURRENT_DIR//local/abseilcpp/lib:$LD_LIBRARY_PATH
 export CMAKE_PREFIX_PATH=$CURRENT_DIR//local/abseilcpp:$CMAKE_PREFIX_PATH
-export PROTOBUF_PREFIX=$CURRENT_DIR//local/libprotobuf/:$PROTOBUF_PREFIX
+export PROTOBUF_PREFIX=$CURRENT_DIR/local/libprotobuf/
 
 # clone source repository
 cd $CURRENT_DIR
@@ -151,6 +151,13 @@ sed -i "s/{PACKAGE_VERSION}/$(echo $PACKAGE_VERSION | sed 's/^v//')/g" pyproject
 echo "--------------------------replaced version in pyproject.toml--------------------------"
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/orc/orc.patch
 git apply orc.patch
+
+if [ $PACKAGE_VERSION == v1.9.0 ]; then
+  echo "package version is 1.9.0 so applying patch for test case failuer"
+  #wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/orc/orc-test-case-failed-ppc64le.patch
+  wget https://raw.githubusercontent.com/vaibhav-bhadade/build-scripts/refs/heads/prc/o/orc/orc-test-case-failed-ppc64le.patch
+  git apply orc-test-case-failed-ppc64le.patch
+fi
 
 mkdir prefix
 export PREFIX=$(pwd)/prefix
@@ -183,6 +190,7 @@ cmake ${CMAKE_ARGS} \
     -DCMAKE_CXX_FLAGS="$CXXFLAGS -Wno-unused-parameter" \
     "${_CMAKE_EXTRA_CONFIG[@]}" \
     -GNinja ..
+
 
 # Build package
 if ! (ninja && ninja install) ; then
