@@ -1,0 +1,16 @@
+{
+    "maintainer":"bhagyashrigai",
+    "package_name" : "sdg_hub",
+    "github_url": "https://github.com/Red-Hat-AI-Innovation-Team/sdg_hub.git",
+    "version": "v0.6.1",
+    "wheel_build" : true,
+    "default_branch": "main",
+    "package_dir": "s/sdg_hub",
+    "build_script": "sdg-hub_ubi_9.6.sh",
+    "validate_build_script": true,
+    "use_non_root_user": false,
+    "docker_build": false,
+    "*": {
+     "build_script": "sdg-hub_ubi_9.6.sh"
+    }
+}
