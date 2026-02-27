@@ -1,0 +1,16 @@
+{
+  "maintainer": "kiranNukal",
+  "package_name": "pulsar-client-cpp",
+  "github_url": "https://github.com/apache/pulsar-client-cpp",
+  "version": "v3.7.0",
+  "wheel_build" : true,
+  "default_branch": "main",
+  "package_dir": "p/pulsar-client-cpp",
+  "build_script": "pulsar-client-cpp_ubi_9.6.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+     "build_script":"pulsar-client-cpp_ubi_9.6.sh"
+  }
+}
