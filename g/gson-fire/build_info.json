@@ -1,0 +1,15 @@
+{
+  "maintainer": "mayurbhosure",
+  "package_name": "gson-fire",
+  "github_url": "https://github.com/julman99/gson-fire",
+  "version": "v1.9.0",
+  "default_branch": "master",
+  "build_script": "gson-fire_ubi_9.3.sh",
+  "package_dir": "g/gson-fire",
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "docker_build": false,
+  "v1.9.*": {
+    "build_script": "gson-fire_ubi_9.3.sh"
+  }
+}
