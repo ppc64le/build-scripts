@@ -41,7 +41,7 @@ on:
         required: false
         default: 'None'
 
-run-name: Currency Build ${{ inputs.package_name }} && Unique ID ${{ inputs.unique_id }}
+run-name: Currency Build ${{ inputs.package_name }} ${{ inputs.version }} && Unique ID ${{ inputs.unique_id }}
 
 jobs:
   build_info:
