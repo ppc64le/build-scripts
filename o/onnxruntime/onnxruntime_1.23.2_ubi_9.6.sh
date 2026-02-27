@@ -35,6 +35,10 @@ export SITE_PACKAGE_PATH=/usr/local/lib/python${PYTHON_VERSION}/site-packages
 export CC=/usr/bin/gcc
 export CXX=/usr/bin/g++
 yum remove -y python3-chardet
+
+"python$PYTHON_VERSION" -m venv --system-site-packages VENV_DIR
+source VENV_DIR/bin/activate
+
 gcc --version
 
 echo "**** Checking GCC version..."
