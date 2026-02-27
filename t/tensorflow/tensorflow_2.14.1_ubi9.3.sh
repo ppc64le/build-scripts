@@ -270,11 +270,15 @@ wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t
 git apply tf_2.14.1_fix.patch
 echo "------------Applied patch successfully---------------------"
 
+sed -i "/python_aarch64/ s|! -path '\*python_aarch64\*'|! -path '*python_aarch64*' \\\
+  ! -path '*python_ppc64le*'|" tensorflow/tools/pip_package/build_pip_package.sh
+echo "------------Added ppc64le tag to exclude external paths---------------------"
+
+
 yes n | ./configure
 
 echo "------------------------Bazel query-------------------"
 bazel query "//tensorflow/tools/pip_package:*"
-
 
 #Install
 if ! (bazel build -s --distdir=/bazel-dist //tensorflow/tools/pip_package:build_pip_package --config=opt --define=llvm_enable_pdb=false) ; then  

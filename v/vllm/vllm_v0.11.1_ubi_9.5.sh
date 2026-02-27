@@ -18,8 +18,6 @@
 #             contact "Maintainer" of this script.
 #
 # ----------------------------------------------------------------------------
-
-
 set -eo pipefail
 
 PACKAGE_NAME=vllm
@@ -32,8 +30,6 @@ TORCH_VERSION=v2.8.0
 TORCHVISION_VERSION=v0.23.0
 TORCH_URL=https://github.com/pytorch/pytorch.git
 TORCHVISION_URL=https://github.com/pytorch/vision.git
-
-export PYTHON=/usr/bin/python3.12
 
 echo "==================================================================="
 echo "        vLLM FULL BUILD START (UBI 9.5 / POWER / v0.11.1)"
@@ -59,7 +55,7 @@ yum install -y \
   openssl-devel sqlite-devel \
   llvm-devel libevent-devel \
   freetype-devel gmp-devel libjpeg-turbo-devel \
-  cargo libcurl-devel \
+  cargo libcurl-devel gcc-toolset-13-libatomic-devel libsndfile openblas-devel \
   which procps-ng yum-utils \
   --allowerasing
 
@@ -77,9 +73,7 @@ yum install -y \
   libtool \
   pkgconfig \
   make \
-  gcc
-
-$PYTHON --version
+  gcc openblas-devel
 
 # -----------------------------------------------------------------------------
 # Enable GCC toolset (CRITICAL: must stay enabled for entire script)
@@ -87,6 +81,40 @@ $PYTHON --version
 echo "-------------------- Enabling GCC toolset --------------------------"
 
 source /opt/rh/gcc-toolset-13/enable
+
+
+# Enforce compiler visibility for TorchInductor
+export GCC_TOOLSET_ROOT=/opt/rh/gcc-toolset-13/root/usr
+
+export CC=${GCC_TOOLSET_ROOT}/bin/gcc
+export CXX=${GCC_TOOLSET_ROOT}/bin/g++
+
+export PATH=${GCC_TOOLSET_ROOT}/bin:${PATH}
+export LD_LIBRARY_PATH=${GCC_TOOLSET_ROOT}/lib64:${LD_LIBRARY_PATH}
+export LIBRARY_PATH=${GCC_TOOLSET_ROOT}/lib64:${LIBRARY_PATH}
+export CMAKE_PREFIX_PATH=${GCC_TOOLSET_ROOT}:${CMAKE_PREFIX_PATH}
+
+export TORCH_INDUCTOR_CPP_COMPILER=${CXX}
+
+# Register toolset runtime with system linker
+echo "${GCC_TOOLSET_ROOT}/lib64" > /etc/ld.so.conf.d/gcc-toolset-13.conf
+ldconfig
+
+# -----------------------------------------------------------------------------
+# Sanity checks
+# -----------------------------------------------------------------------------
+
+echo "Using CC = $(which gcc)"
+echo "Using CXX = $(which g++)"
+
+gcc --version
+g++ --version
+
+echo "Checking libctf resolution..."
+ldd $(which g++) | grep libctf || true
+
+echo "Checking libstdc++ resolution..."
+ldd $(which g++) | grep libstdc++ || true
 
 # Ensure gcc-toolset runtime libraries are visible
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:${LD_LIBRARY_PATH}
@@ -96,50 +124,45 @@ export CMAKE_PREFIX_PATH=/opt/rh/gcc-toolset-13/root/usr:${CMAKE_PREFIX_PATH}
 export CC=/opt/rh/gcc-toolset-13/root/usr/bin/gcc
 export CXX=/opt/rh/gcc-toolset-13/root/usr/bin/g++
 
-echo "CC  = $CC"
-echo "CXX = $CXX"
-gcc --version
-g++ --version
-
 # -----------------------------------------------------------------------------
 # Python tooling
 # -----------------------------------------------------------------------------
 echo "-------------------- Upgrading Python tooling ---------------------"
 
-$PYTHON -m pip install --upgrade pip setuptools wheel
+python3.12 -m pip install --upgrade pip setuptools wheel
 
 # -----------------------------------------------------------------------------
 # Python binary wheels (POWER / devpi)
 # -----------------------------------------------------------------------------
 echo "-------------------- Installing Python dependencies ----------------"
 
-$PYTHON -m pip install \
-  --trusted-host wheels.developerfirst.ibm.com \
-  "abseil-cpp @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/419/275773a4cc480/abseil_cpp-20240116.2-py3-none-any.whl" \
-  "av @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/b09/d74303b7aaf7f/av-13.1.0-cp312-cp312-linux_ppc64le.whl" \
-  "ffmpeg @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/25d/9b7b985a577b9/ffmpeg-7.1-py3-none-any.whl" \
-  "lame @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/923/40f226ef59d45/lame-3.100-py3-none-any.whl" \
-  "libprotobuf @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/e53/57a336598c208/libprotobuf-25.4-py3-none-manylinux2014_ppc64le.whl" \
-  "libvpx @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/328/cfde06a744e3d/libvpx-1.13.1-py3-none-any.whl" \
-  "llvmlite @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/ddd/ebf05d58bd563/llvmlite-0.44.0-cp312-cp312-linux_ppc64le.whl" \
-  "numba @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/609/d7a83e5ac7944/numba-0.62.0.dev0-cp312-cp312-linux_ppc64le.whl" \
-  "openblas @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/523/31f6718639cba/openblas-0.3.29-py3-none-manylinux2014_ppc64le.whl" \
-  "opus @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/bec/40c21ed2fe31b/opus-1.3.1-py3-none-any.whl" \
-  "protobuf @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/5e5/a6c4d93fcc5cd/protobuf-4.25.8-cp312-cp312-linux_ppc64le.whl" \
-  "scipy @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/4e1/4b512f33efb85/scipy-1.16.0-cp312-cp312-linux_ppc64le.whl" \
-  "sentencepiece @ https://wheels.developerfirst.ibm.com/ppc64le/linux/+f/161/51fddd15aec51/sentencepiece-0.2.0-cp312-cp312-linux_ppc64le.whl" \
+python3.12 -m pip install \
+  --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux --prefer-binary \
+  "av==13.1.0" \
+  "ffmpeg==7.1" \
+  "lame==3.100" \
+  "libprotobuf==25.4" \
+  "libvpx==1.13.1" \
+  "llvmlite==0.44.0" \
+  "numba==0.62.0.dev0" \
+  "openblas==0.3.29" \
+  "opus==1.3.1" \
+  "protobuf==4.25.8" \
+  "scipy==1.16.0" \
+  "sentencepiece==0.2.0" \
+  "abseil-cpp==20240116.2" \
   certifi charset-normalizer filelock fsspec idna \
   Jinja2 MarkupSafe mpmath networkx requests \
   sympy tqdm typing_extensions urllib3 numpy
 
-$PYTHON -m pip install cmake pyyaml packaging openpyxl setuptools_scm
+python3.12 -m pip install cmake pyyaml packaging openpyxl setuptools_scm cython
 
 # -----------------------------------------------------------------------------
 # Pillow (devpi)
 # -----------------------------------------------------------------------------
 echo "-------------------- Installing Pillow -----------------------------"
 
-$PYTHON -m pip install \
+python3.12 -m pip install \
   --trusted-host wheels.developerfirst.ibm.com \
   --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/ \
   pillow==11.2.1
@@ -189,7 +212,7 @@ cd ../../python
 pip install -r requirements-build.txt
 export PYARROW_PARALLEL=$(nproc)
 
-$PYTHON setup.py build_ext \
+python3.12 setup.py build_ext \
   --build-type=release \
   --bundle-arrow-cpp \
   bdist_wheel \
@@ -215,9 +238,12 @@ cd pytorch
 git checkout ${TORCH_VERSION}
 git submodule update --init --recursive --jobs 1
 
-$PYTHON -m pip install -r requirements.txt
-$PYTHON setup.py build_ext -j$(nproc)
-$PYTHON setup.py install
+python3.12 -m pip install -r requirements.txt
+ulimit -n 65536
+python3.12 setup.py build_ext -j$(nproc)
+python3.12 setup.py install
+
+export LD_LIBRARY_PATH=$CURRENT_DIR/pytorch/torch/lib:$LD_LIBRARY_PATH
 
 cd ${CURRENT_DIR}
 
@@ -229,7 +255,7 @@ echo "-------------------- Building TorchVision --------------------------"
 git clone ${TORCHVISION_URL}
 cd vision
 git checkout ${TORCHVISION_VERSION}
-USE_FFMPEG=1 USE_JPEG=1 USE_PNG=1 $PYTHON setup.py develop
+USE_FFMPEG=1 USE_JPEG=1 USE_PNG=1 python3.12 setup.py develop
 cd ${CURRENT_DIR}
 
 # -----------------------------------------------------------------------------
@@ -266,8 +292,9 @@ cd ${CURRENT_DIR}
 # -----------------------------------------------------------------------------
 echo "-------------------- Building vLLM ---------------------------------"
 
-git clone -b ${PACKAGE_VERSION} ${PACKAGE_URL}
+git clone ${PACKAGE_URL}
 cd ${PACKAGE_DIR}
+git checkout ${PACKAGE_VERSION}
 
 sed -i 's/^torch/# torch/' requirements/cpu.txt
 sed -i 's/^torchvision/# torchvision/' requirements/cpu.txt
@@ -275,25 +302,25 @@ sed -i 's/^torchaudio/# torchaudio/' requirements/cpu.txt
 sed -i 's/^outlines_core/# outlines_core/' requirements/common.txt
 sed -i 's/^scipy/# scipy/' requirements/common.txt
 
-$PYTHON -m pip install \
+python3.12 -m pip install \
   --prefer-binary \
   --trusted-host wheels.developerfirst.ibm.com \
   --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/ \
   -r requirements/cpu.txt
 
-$PYTHON -m pip install llguidance
+python3.12 -m pip install llguidance
 
 PIP_NO_BUILD_ISOLATION=1 \
 CC=${CC} \
 CXX=${CXX} \
-$PYTHON -m pip install xgrammar
+python3.12 -m pip install xgrammar
 
 export VLLM_TARGET_DEVICE=cpu
 export MAX_JOBS=$(nproc)
 
-$PYTHON setup.py install
+python3.12 setup.py install
 
-$PYTHON setup.py bdist_wheel --dist-dir="${CURRENT_DIR}"
+python3.12 setup.py bdist_wheel --dist-dir="${CURRENT_DIR}"
 
 cd ${CURRENT_DIR}
 
@@ -307,7 +334,7 @@ echo "==================================================================="
 #    If the build machine is offline, this step will fail.
 echo "Running basic offline inference example..."
 
-if ! $PYTHON ${PACKAGE_DIR}/examples/offline_inference/basic/basic.py; then
+if ! python3.12 ${PACKAGE_DIR}/examples/offline_inference/basic/basic.py; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails"

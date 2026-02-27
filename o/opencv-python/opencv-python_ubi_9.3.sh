@@ -122,6 +122,8 @@ cmake --build . --verbose
 cmake --install .
 echo "-----------------------------------------------------Installed libprotobuf-----------------------------------------------------"
 cd ..
+#Downgrade setuptools to version that has pkg_resources
+pip install "setuptools==79.0.1"
 
 #setting required paths
 export PROTOC="$LIBPROTOBUF_PREFIX/bin/protoc"
@@ -136,8 +138,9 @@ git apply set_cpp_to_17_v4.25.3.patch
 
 #installing protobuf
 cd python
-python setup.py install --cpp_implementation
+python -m pip install . --no-build-isolation 
 echo "-----------------------------------------------------Installed protobuf-----------------------------------------------------"
+
 
 python -m pip install --upgrade pip
 python -m pip install numpy==2.0.2 cython pytest
@@ -351,8 +354,7 @@ export CMAKE_ARGS="-DCMAKE_BUILD_TYPE=Release
                    -DLAPACK_CBLAS_H=$OPENBLAS_PREFIX/include/cblas.h"
 
 # install dependency
-pip install scikit-build setuptools build wheel
-pip install "setuptools==59.2.0" --upgrade
+pip install scikit-build setuptools==79.0.1 build wheel
 
 export PATH=${LIBPROTOBUF_PREFIX}/bin:$PATH
 export C_INCLUDE_PATH=$(python -c "import numpy; print(numpy.get_include())")
@@ -369,7 +371,7 @@ wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o
 if [[ "$(printf '%s\n' "$PYTHON_VERSION" "3.12" | sort -V | head -n1)" == "3.12" ]]; then
     echo "Python version is 3.12 or newer.Applying the patch"
 	git apply opencv_python_headless_4.10.0.84_1.patch
-	pip install "setuptools<70.0.0" --upgrade
+	pip install "setuptools==79.0.1" --upgrade
 else
     echo "Python version is older than 3.12. No changes required."
 fi
