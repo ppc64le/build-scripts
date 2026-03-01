@@ -1,11 +1,11 @@
 #!/bin/bash -ex
 # --------------------------------------------------------------------------------
 # Package        : ml-commons
-# Version        : 3.3.0.0
+# Version        : 3.5.0.0
 # Source repo    : https://github.com/opensearch-project/ml-commons
 # Tested on      : UBI 9.6
 # Language       : Java
-# Ci-Check       : false
+# Ci-Check       : True
 # Maintainer	 : Prachi Gaonkar <Prachi.Gaonkar@ibm.com>
 # Script License : Apache License, Version 2.0 or later
 #
@@ -29,16 +29,17 @@ fi
 # ---------------------------
 PACKAGE_NAME="ml-commons"
 PACKAGE_ORG="opensearch-project"
-SCRIPT_PACKAGE_VERSION="3.3.0.0"
+SCRIPT_PACKAGE_VERSION="3.5.0.0"
 PACKAGE_VERSION="${1:-$SCRIPT_PACKAGE_VERSION}"
 PACKAGE_URL="https://github.com/${PACKAGE_ORG}/${PACKAGE_NAME}.git"
 OPENSEARCH_VERSION="${PACKAGE_VERSION::-2}"
 OPENSEARCH_PACKAGE="OpenSearch"
 OPENSEARCH_URL=https://github.com/${PACKAGE_ORG}/${OPENSEARCH_PACKAGE}.git
 ONNX_VERSION="v1.17.1"
-PYTORCH_VERSION="1.13.1"
+PYTORCH_VERSION=2.9.1
+PYTHON_VERSION=3.12
+CMAKE_VERSION=3.28.1
 DJL_VERSION="v0.33.0"
-PYTHON_VERSION="3.9"
 BUILD_HOME="$(pwd)"
 SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DJL_HOME="$HOME/.djl.ai"
@@ -56,6 +57,7 @@ export CFLAGS="-I/usr/include"
 export LIBRARY_PATH="/usr/lib64:${LIBRARY_PATH:-}"
 export MAX_JOBS=1
 
+sudo chown -R test_user:test_user /home/tester
 # -------------------
 # Parse CLI Arguments
 # -------------------
@@ -81,35 +83,16 @@ done
 # Dependency Installation
 # ---------------------------
 # Installs both JDK 17 and JDK 21 as required by different components
-sudo yum install -y \
-  java-17-openjdk-devel \
-  java-21-openjdk-devel \
-  wget git sudo unzip make cmake \
-  gcc gcc-c++ gcc-gfortran \
-  perl python3.9-devel python3.9-pip \
-  zlib-devel openssl-devel libffi-devel \
-  openblas-devel
-  
-  
-# ---------------------------
-# Use JDK 17 for ONNX Runtime build
-# ---------------------------
-# NOTE: compgen may return multiple matches if more than one JDK is installed
-export JAVA_HOME=$(compgen -G '/usr/lib/jvm/java-17-openjdk-*')
-export JRE_HOME=${JAVA_HOME}/jre
-export PATH=${JAVA_HOME}/bin:$PATH
+sudo yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/CRB/ppc64le/os
+sudo yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/AppStream//ppc64le/os
+sudo yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/ppc64le/os
+sudo rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official-SHA256
+sudo dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+sudo rpm -e --nodeps openssl-fips-provider-so
+sudo yum install -y git wget unzip make procps-ng perl python3.12-devel python3.12-pip java-21-openjdk-devel java-17-openjdk-devel openblas-devel bzip2-devel zlib-devel protobuf-devel ncurses-devel clang15 llvm15 lld
+export CC=clang-15
+export CXX=clang++-15
 
-# --------------------------------------
-# Build ONNX Runtime with Java bindings
-# --------------------------------------
-cd $BUILD_HOME
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/opensearch-project-ml-commons/onnxruntime_$ONNX_VERSION.patch
-git clone https://github.com/microsoft/onnxruntime.git
-cd onnxruntime
-git checkout $ONNX_VERSION
-git apply $BUILD_HOME/onnxruntime_$ONNX_VERSION.patch
-./build.sh --build_java --compile_no_warning_as_error --parallel --config=Release --build_shared_lib --skip_tests --allow_running_as_root
-sudo cp $BUILD_HOME/onnxruntime/build/Linux/Release/libonnxruntime.so $BUILD_HOME/onnxruntime/build/Linux/Release/libonnxruntime4j_jni.so /usr/lib64/
 
 # --------------------------------------
 #Use jdk21 for ml-commons and djl
@@ -118,69 +101,116 @@ export JAVA_HOME=$(compgen -G '/usr/lib/jvm/java-21-openjdk-*')
 export JRE_HOME=${JAVA_HOME}/jre
 export PATH=${JAVA_HOME}/bin:$PATH
 
-#Build pytorch from source
-cd $BUILD_HOME
-export PATH=/usr/local/bin:/usr/bin:$PATH
-sudo ln -sf $(which python3.9) /usr/bin/python3
-sudo ln -sf $(which pip3.9) /usr/bin/pip3
-pip3 install packaging "numpy<2.0" wheel setuptools
-git clone https://github.com/pytorch/pytorch
-cd pytorch
-git checkout v${PYTORCH_VERSION}
-pip3 install -r requirements.txt
-git submodule sync
-git submodule update --init --recursive
-# Patch required for ppc64le build
-sed -i "196d" third_party/gloo/gloo/common/linux.cc
-sed -i "197i \ \ \ \ struct ethtool_link_settings req;" third_party/gloo/gloo/common/linux.cc
-export PYTORCH_BUILD_VERSION=${PYTORCH_VERSION}
-export PYTORCH_BUILD_NUMBER=1
-python3 setup.py bdist_wheel
-cd dist
-pip3 install ./torch-$PYTORCH_VERSION-cp39-cp39-linux_ppc64le.whl
+CMAKE_PREFIX=/usr/local/cmake
+CMAKE_BIN=${CMAKE_PREFIX}/bin/cmake
 
-# ------------------------------------
-# Rust setup (required by tokenizers)
-# ------------------------------------
+# ---------------------------
+# Build and Install CMake
+# ---------------------------
+# ---------------------------
+# Build and Install cmake
+# ---------------------------
+cd $BUILD_HOME
+if [ -z "$(ls -A $BUILD_HOME/cmake-${CMAKE_VERSION})" ]; then
+        wget -c https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz
+        tar -zxvf cmake-${CMAKE_VERSION}.tar.gz
+        rm -rf cmake-${CMAKE_VERSION}.tar.gz
+        cd cmake-${CMAKE_VERSION}
+        ./bootstrap --prefix=/usr/local/cmake --parallel=2 -- -DBUILD_TESTING:BOOL=OFF -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_USE_OPENSSL:BOOL=OFF
+else
+        cd cmake-${CMAKE_VERSION}
+fi
+sudo make install -j$(nproc)
+export PATH=/usr/local/cmake/bin:$PATH
+cmake --version
+
+
+
+
+export JAVA_HOME=$(compgen -G '/usr/lib/jvm/java-21-openjdk-*')
+export JRE_HOME=${JAVA_HOME}/jre
+export PATH=${JAVA_HOME}/bin:$PATH
+# --------------
+# Install rust
+# --------------
 curl https://sh.rustup.rs -sSf | sh -s -- -y
 source $HOME/.cargo/env
 rustup install 1.87
 rustup default 1.87
 
+
+# ---------------------------
+# Build and Install pytorch
+# ---------------------------
+cd $BUILD_HOME
+PYTORCH_VERSION_CPU="${PYTORCH_VERSION}+cpu"
+export PYTORCH_BUILD_VERSION=${PYTORCH_VERSION_CPU}
+if [ -z "$(ls -A $BUILD_HOME/pytorch)" ]; then
+        git clone https://github.com/pytorch/pytorch
+        cd pytorch
+        git checkout v$PYTORCH_VERSION
+
+        git submodule sync
+        git submodule update --init --recursive
+
+        git apply --check ${SCRIPT_PATH}/pytorch_vec_splat_issue_fix.patch
+
+        git apply ${SCRIPT_PATH}/pytorch_vec_splat_issue_fix.patch
+
+
+        python3.12 -m pip install -r requirements.txt
+        export PYTORCH_BUILD_NUMBER=1
+        export CFLAGS="-mcpu=power9 -mtune=power9"
+        export CXXFLAGS="-mcpu=power9 -mtune=power9"
+        python3.12 setup.py bdist_wheel
+
+
+        #git apply ${SCRIPT_PATH}/pytorch_vec_splat_issue_fix.patch
+        #python3.12 -m pip install -r requirements.txt
+        #git submodule sync
+        #git submodule update --init --recursive
+        #export PYTORCH_BUILD_NUMBER=1
+        #export DEBUG=1
+        #python3.12 setup.py bdist_wheel
+else
+	cd pytorch
+fi
+python3.12 -m pip install $BUILD_HOME/pytorch/dist/torch-${PYTORCH_BUILD_VERSION}*.whl
+
 # ---------------------------
 # Python native dependencies for DJL
 # ---------------------------
-python3.9 -m pip install abseil_cpp==20240116.2 \
+python3.12 -m pip install abseil_cpp==20240116.2 \
   --prefer-binary \
   --extra-index-url https://wheels.developerfirst.ibm.com/ppc64le/linux
 
-python3.9 -m pip install libprotobuf==4.25.3 \
+python3.12 -m pip install libprotobuf==4.25.3 \
   --prefer-binary \
   --extra-index-url=https://wheels.developerfirst.ibm.com/ppc64le/linux
 
-# -------------------------------
-# Build DJL with PyTorch engine
-# -------------------------------
+# ----------------------
+# Build and Install djl
+# ----------------------
 cd $BUILD_HOME
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/opensearch-project-ml-commons/djl_$DJL_VERSION.patch
 git clone https://github.com/deepjavalibrary/djl
 cd djl/
 git checkout $DJL_VERSION
-git apply $BUILD_HOME/djl_$DJL_VERSION_updated.patch
-wget https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-${PYTORCH_VERSION}%2Bcpu.zip
-unzip libtorch-cxx11-abi-shared-with-deps-${PYTORCH_VERSION}+cpu.zip -d $BUILD_HOME/djl/engines/pytorch/pytorch-native 
-rm -rf libtorch-cxx11-abi-shared-with-deps-${PYTORCH_VERSION}+cpu.zip
+git apply ${SCRIPT_PATH}/djl_${DJL_VERSION}_updated.patch
+# Copy Python3.12 torch binaries
 rm -rf $BUILD_HOME/djl/engines/pytorch/pytorch-native/libtorch/include
+rm -rf $BUILD_HOME/djl/engines/pytorch/pytorch-native/libtorch/share
+mkdir -p $BUILD_HOME/djl/engines/pytorch/pytorch-native/libtorch/lib/
+\cp -rf  $HOME/.local/lib/python3.12/site-packages/torch/share $BUILD_HOME/djl/engines/pytorch/pytorch-native/libtorch/
 \cp -rf $HOME/.local/lib/python$PYTHON_VERSION/site-packages/torch/include $BUILD_HOME/djl/engines/pytorch/pytorch-native/libtorch/
-\cp -rf $HOME/.local/lib/python$PYTHON_VERSION/site-packages/torch/lib/* $BUILD_HOME/djl/engines/pytorch/pytorch-native/libtorch/lib/
+\cp -rf $HOME/.local/lib/python$PYTHON_VERSION/site-packages/torch/lib/*.so $BUILD_HOME/djl/engines/pytorch/pytorch-native/libtorch/lib/
 mkdir -p $DJL_HOME/pytorch/$PYTORCH_VERSION-cpu-linux-ppc64le/
-cp $HOME/.local/lib/python$PYTHON_VERSION/site-packages/torch/lib/* $DJL_HOME/pytorch/$PYTORCH_VERSION-cpu-linux-ppc64le/
-cp $HOME/.local/lib/python3.9/site-packages/libprotobuf/lib64/libprotobuf.so.25.3.0 $DJL_HOME/pytorch/$PYTORCH_VERSION-cpu-linux-ppc64le
+cp $HOME/.local/lib/python$PYTHON_VERSION/site-packages/torch/lib/*.so $DJL_HOME/pytorch/$PYTORCH_VERSION-cpu-linux-ppc64le/
+cp $HOME/.local/lib/python3.12/site-packages/libprotobuf/lib64/libprotobuf.so.25.3.0 $DJL_HOME/pytorch/$PYTORCH_VERSION-cpu-linux-ppc64le
 cp /usr/lib64/libopenblas.so.0 $DJL_HOME/pytorch/$PYTORCH_VERSION-cpu-linux-ppc64le
 cp /usr/lib64/libgfortran.so.5 $DJL_HOME/pytorch/$PYTORCH_VERSION-cpu-linux-ppc64le
 cp /usr/lib64/libquadmath.so.0 $DJL_HOME/pytorch/$PYTORCH_VERSION-cpu-linux-ppc64le
-\cp -rf $HOME/.local/lib/python3.9/site-packages/abseilcpp/lib/*   $BUILD_HOME/djl/engines/pytorch/pytorch-native/libtorch/lib/
-\cp -rf $HOME/.local/lib/python3.9/site-packages/abseilcpp/lib/* $HOME/.djl.ai/pytorch/$PYTORCH_VERSION-cpu-linux-ppc64le
+\cp -rf $HOME/.local/lib/python3.12/site-packages/abseilcpp/lib/*.so   $BUILD_HOME/djl/engines/pytorch/pytorch-native/libtorch/lib/
+\cp -rf $HOME/.local/lib/python3.12/site-packages/abseilcpp/lib/*.so $HOME/.djl.ai/pytorch/$PYTORCH_VERSION-cpu-linux-ppc64le
 
 # Create versioned symlinks for abseil libraries
 cd $DJL_HOME/pytorch/$PYTORCH_VERSION-cpu-linux-ppc64le/
@@ -234,7 +264,30 @@ export GRADLE_OPTS="-Dorg.gradle.console=plain"
 ./gradlew build
 ./gradlew -Prelease=true publishToMavenLocal
 
+# ---------------------------
+# NOTE: compgen may return multiple matches if more than one JDK is installed
+export JAVA_HOME=$(compgen -G '/usr/lib/jvm/java-17-openjdk-*')
+export JRE_HOME=${JAVA_HOME}/jre
+export PATH=${JAVA_HOME}/bin:$PATH
 
+# --------------------------------------
+# Build ONNX Runtime with Java bindings
+# --------------------------------------
+cd $BUILD_HOME
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/opensearch-project-ml-commons/onnxruntime_$ONNX_VERSION.patch
+git clone https://github.com/microsoft/onnxruntime.git
+cd onnxruntime
+git checkout $ONNX_VERSION
+git apply $BUILD_HOME/onnxruntime_$ONNX_VERSION.patch
+./build.sh --build_java --compile_no_warning_as_error --parallel --config=Release --build_shared_lib --skip_tests --allow_running_as_root
+sudo cp $BUILD_HOME/onnxruntime/build/Linux/Release/libonnxruntime.so $BUILD_HOME/onnxruntime/build/Linux/Release/libonnxruntime4j_jni.so /usr/lib64/
+
+# --------------------------------------
+#Use jdk21 for ml-commons and djl
+# --------------------------------------
+export JAVA_HOME=$(compgen -G '/usr/lib/jvm/java-21-openjdk-*')
+export JRE_HOME=${JAVA_HOME}/jre
+export PATH=${JAVA_HOME}/bin:$PATH
 # ---------------------------
 # Clone and Prepare Repository
 # ---------------------------
@@ -249,7 +302,7 @@ git apply ${SCRIPT_PATH}/ml-commons_$SCRIPT_PACKAGE_VERSION.patch
 # Build
 # --------
 ret=0
-./gradlew build -x test -x integTest || ret=$?
+./gradlew build -x test -x integTest -Dbuild.snapshot=false|| ret=$?
 if [ $ret -ne 0 ]; then
         set +ex
 	echo "------------------ ${PACKAGE_NAME}: Build Failed ------------------"
