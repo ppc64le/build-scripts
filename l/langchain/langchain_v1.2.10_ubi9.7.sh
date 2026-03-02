@@ -20,7 +20,6 @@ SCRIPT_PACKAGE_VERSION=1.2.10
 PATCH_FILE="${PACKAGE_NAME}_v${SCRIPT_PACKAGE_VERSION}.patch"
 CURRENT_DIR=${PWD}
 
-# Suppress pip root warning
 export PIP_ROOT_USER_ACTION=ignore
 
 echo "================ Installing system dependencies ================"
@@ -36,10 +35,10 @@ yum install -y \
 update-ca-trust
 source /opt/rh/gcc-toolset-13/enable
 
-python3.12 -m pip install --upgrade pip setuptools wheel build uv
+python3.12 -m pip install --upgrade pip setuptools wheel build
 
 echo "================ Installing test dependencies ================"
-python3.12 -m pip install pytest toml
+python3.12 -m pip install pytest syrupy toml
 
 echo "================ Cloning repository ================"
 cd "${CURRENT_DIR}"
@@ -47,6 +46,13 @@ cd "${CURRENT_DIR}"
 
 git clone --depth 1 --branch "${PACKAGE_VERSION}" "${PACKAGE_URL}"
 cd "${PACKAGE_NAME}"
+
+echo "================ Applying patch (if exists) ================"
+if [ -f "${SCRIPT_PATH}/${PATCH_FILE}" ]; then
+    git apply "${SCRIPT_PATH}/${PATCH_FILE}"
+else
+    echo "Patch file not found! Continuing without patch."
+fi
 
 echo "================ Building wheel ================"
 
@@ -64,10 +70,10 @@ echo "Wheel created: ${WHEEL_FILE}"
 echo "================ Installing built wheel ================"
 python3.12 -m pip install "${WHEEL_FILE}"
 
-echo "================ Running unit tests ================"
+echo "================ Running unit tests (integration skipped) ================"
 
 if ! pytest tests \
-        -k "Test_socket_disabled" \
+        -k "not integration and not test_socket_disabled" \
         -v ; then
     echo "------------------${PACKAGE_NAME}:test_fails---------------------"
     exit 2
