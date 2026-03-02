@@ -58,8 +58,15 @@ echo "Wheel created: ${WHEEL_FILE}"
 echo "================ Installing built wheel ================"
 python3.12 -m pip install "${WHEEL_FILE}"
 
-echo "================ Installing official test dependencies ================"
-python3.12 -m pip install pytest syrupy ".[test]"
+echo "================ Installing test dependencies ================"
+python3.12 -m pip install \
+    pytest \
+    syrupy \
+    python-dotenv \
+    blockbuster \
+    pytest-asyncio \
+    pytest-mock \
+    pytest-timeout
 
 echo "================ Running unit tests ================"
 
