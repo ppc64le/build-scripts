@@ -59,6 +59,7 @@ echo "================ Installing built wheel ================"
 python3.12 -m pip install "${WHEEL_FILE}"
 
 echo "================ Installing official test dependencies ================"
+python3.12 -m pip install pytest
 python3.12 -m pip install ".[test]"
 
 echo "================ Running unit tests ================"
