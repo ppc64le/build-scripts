@@ -37,42 +37,33 @@ source /opt/rh/gcc-toolset-13/enable
 
 python3.12 -m pip install --upgrade pip setuptools wheel build
 
-echo "================ Installing test dependencies ================"
-python3.12 -m pip install pytest syrupy toml
-
 echo "================ Cloning repository ================"
 cd "${CURRENT_DIR}"
-[ -d "${PACKAGE_NAME}" ] && rm -rf "${PACKAGE_NAME}"
+rm -rf "${PACKAGE_NAME}"
 
 git clone --depth 1 --branch "${PACKAGE_VERSION}" "${PACKAGE_URL}"
 cd "${PACKAGE_NAME}"
 
-echo "================ Applying patch (if exists) ================"
-if [ -f "${SCRIPT_PATH}/${PATCH_FILE}" ]; then
-    git apply "${SCRIPT_PATH}/${PATCH_FILE}"
-else
-    echo "Patch file not found! Continuing without patch."
-fi
-
 echo "================ Building wheel ================"
-
 cd libs/langchain_v1
 python3.12 -m build --wheel
+WHEEL_FILE=$(ls dist/langchain-*.whl | head -n 1)
 
-if [ ! -d "dist" ]; then
+if [ ! -f "${WHEEL_FILE}" ]; then
     echo "Wheel build failed!"
     exit 1
 fi
-
-WHEEL_FILE=$(ls dist/*.whl | head -n 1)
 echo "Wheel created: ${WHEEL_FILE}"
 
 echo "================ Installing built wheel ================"
 python3.12 -m pip install "${WHEEL_FILE}"
 
-echo "================ Running unit tests (integration skipped) ================"
+echo "================ Installing official test dependencies ================"
+python3.12 -m pip install ".[test]"
 
-if ! pytest tests \
+echo "================ Running unit tests ================"
+
+if ! python3.12 -m pytest tests \
         -k "not integration and not test_socket_disabled" \
         -v ; then
     echo "------------------${PACKAGE_NAME}:test_fails---------------------"
