@@ -205,7 +205,7 @@ export CXX=/opt/rh/gcc-toolset-13/root/bin/g++
 python3.12 -m pip install .
 cd $CURRENT_DIR
 python3.12 -c "import ml_dtypes; print(ml_dtypes.__version__)"
-echo "-----------------------------------------------------Installed ml_dtyapes-----------------------------------------------------"
+echo "-----------------------------------------------------Installed ml_dtypes-----------------------------------------------------"
 
 
 
