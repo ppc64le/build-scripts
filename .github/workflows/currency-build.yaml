@@ -186,7 +186,7 @@ jobs:
           - python-version: "3.12"
             allow-failure: false
           - python-version: "3.13"
-            allow-failure: true
+            allow-failure: false
     env:
       GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
       PYTHON_VERSION: ${{ matrix.python-version }}
