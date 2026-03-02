@@ -6,18 +6,21 @@
 # Source repo      : https://github.com/langchain-ai/langchain
 # Tested on        : UBI:9.7
 # Language         : Python
-# Ci-Check         : True
+# Ci-Check     	   : True
 # Script License   : MIT License
 # Maintainer       : Amit Kumar <amit.kumar282@ibm.com>
 #
-# -----------------------------------------------------------------------------
+# Disclaimer       : This script has been tested in root mode on given
+# ==========         platform using the mentioned version of the package.
+#                    It may not work as expected with newer versions of the
+#                    package and/or distribution. In such case, please
+#                    contact "Maintainer" of this script.
+#
+# ----------------------------------------------------------------------------
 
 PACKAGE_NAME=langchain
 PACKAGE_VERSION=${1:-langchain==1.2.10}
 PACKAGE_URL=https://github.com/langchain-ai/langchain
-SCRIPT_PATH="$(cd "$(dirname "$0")" && pwd)"
-SCRIPT_PACKAGE_VERSION=1.2.10
-PATCH_FILE="${PACKAGE_NAME}_v${SCRIPT_PACKAGE_VERSION}.patch"
 CURRENT_DIR=${PWD}
 
 export PIP_ROOT_USER_ACTION=ignore
@@ -47,12 +50,14 @@ cd "${PACKAGE_NAME}"
 echo "================ Building wheel ================"
 cd libs/langchain_v1
 python3.12 -m build --wheel
+
 WHEEL_FILE=$(ls dist/langchain-*.whl | head -n 1)
 
 if [ ! -f "${WHEEL_FILE}" ]; then
     echo "Wheel build failed!"
     exit 1
 fi
+
 echo "Wheel created: ${WHEEL_FILE}"
 
 echo "================ Installing built wheel ================"
@@ -66,9 +71,23 @@ python3.12 -m pip install \
     blockbuster \
     pytest-asyncio \
     pytest-mock \
-    pytest-timeout
+    pytest-timeout \
+    toml
+
+echo "================ Installing langchain test dependencies ================"
+
+cd "${CURRENT_DIR}/${PACKAGE_NAME}/libs/standard-tests"
+python3.12 -m pip install .
+
+# Verify installation
+python3.12 -c "import langchain_tests" || {
+    echo "langchain_tests installation failed!"
+    exit 1
+}
 
 echo "================ Running unit tests ================"
+
+cd "${CURRENT_DIR}/${PACKAGE_NAME}/libs/langchain_v1"
 
 if ! python3.12 -m pytest tests \
         -k "not integration and not test_socket_disabled" \
