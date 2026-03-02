@@ -87,7 +87,7 @@ echo "**** Building Ollama with CMake..."
 cmake -B build
 cmake --build build -j$(nproc)
 
-export CGO_LDFLAGS="-L$(pwd)/build/lib/ollama/ -lggml-cpu-power10"
+export CGO_LDFLAGS="-L$(pwd)/build/lib/ollama -lggml-cpu-power10 -Wl,-rpath,\$ORIGIN/../lib"
 
 echo "**** Building Ollama binary with Go..."
 ../go/bin/go build --tags ppc64le.power10 -o ollama .
@@ -159,7 +159,7 @@ setup(
     author_email="Pratik.Tonage@ibm.com",
     description="Power10 optimized Ollama binary + shared libs as Python package",
     license="MIT",
-    packages=[PYTHON_PACKAGE_NAME],
+	packages=find_packages(include=["ollama_python_package"]),
     include_package_data=False,
     cmdclass={'build_py': CustomBuild},
     package_data={PYTHON_PACKAGE_NAME: ["bin/*", "lib/*.so"]},
@@ -183,7 +183,7 @@ EOF
 echo "=============== Building wheel =================="
 python -m pip install --upgrade pip setuptools wheel build
 
-if ! python -m build --wheel --no-isolation --outdir="$CURRENT_DIR/"; then
+if ! python setup.py bdist_wheel --plat-name linux_ppc64le --dist-dir "$CURRENT_DIR/"; then
     echo "============ Wheel Creation Failed ================="
     EXIT_CODE=1
 else

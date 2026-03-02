@@ -27,6 +27,7 @@ PACKAGE_URL=https://github.com/langflow-ai/langflow.git
 PACKAGE_DIR=langflow
 CURRENT_DIR=$(realpath "$(pwd)")
 SCRIPT_PATH=$(dirname $(realpath $0))
+PATCH_FILE="${PACKAGE_NAME}_${SCRIPT_PACKAGE_VERSION}.patch"
 
 # -----------------------------------------------------------------------------
 # Install required system packages (YUM)
@@ -1133,7 +1134,9 @@ python3.12 -m pip install hatchling
 # -----------------------------------------------------------------------------
 # Updating faiss-cpu version to match custom build (GitHub tag v1.9.0)
 # Reason: PyPI uses .post suffix, but we built from official source tag v1.9.0
-git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${SCRIPT_PACKAGE_VERSION}.patch
+# git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${SCRIPT_PACKAGE_VERSION}.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/l/langflow/${PATCH_FILE}
+git apply ${PATCH_FILE}
 # sed -i '/faiss-cpu==1.9.0.post1/s/^/#/' pyproject.toml
 if ! python3.12 -m pip install . --no-deps ; then
     echo "------------------$PACKAGE_NAME:Build_Fails-------------------------------------"
