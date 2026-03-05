@@ -54,19 +54,19 @@ dnf install -y \
   libjpeg-turbo-devel
 
 echo "Checking Python availability"
+
 if ! command -v python3 >/dev/null 2>&1; then
-    echo "Python3 not found, installing via yum (CI requirement)"
-
-    yum install -y python3 python3-pip python3-devel
-
-    ln -sf /usr/bin/python3 /usr/bin/python
-    ln -sf /usr/bin/pip3 /usr/bin/pip
+    echo "[+] Python3 not found, installing via yum"
+    yum install -y python3 python3-devel python3-pip
+elif ! command -v pip3 >/dev/null 2>&1; then
+    echo "[+] pip3 not found, installing python3-pip"
+    yum install -y python3-pip
 else
-    echo "[+] Python already available, using existing installation"
+    echo "[+] Python and pip already available"
 fi
 
 python3 -V
-pip3 -V
+python3 -m pip --version
 
 python3 -m pip install -U "pip<24" "setuptools==68.2.2" "wheel==0.41.3" testpath pytest
 
