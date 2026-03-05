@@ -262,7 +262,7 @@ CPU_TUNE_FRAG="-mtune=${cpu_opt_tune}";
 CPU_TUNE_OPTION=${BUILD_COPT}${CPU_TUNE_FRAG}
 CPU_TUNE_HOST_OPTION=${BUILD_HOST_COPT}${CPU_TUNE_FRAG}
 
-USE_MMA=0
+USE_MMA=1
 echo "--------------------------------Bazelrc dir : ${BAZEL_RC_DIR}----------------------------------"
 TENSORFLOW_PREFIX=/install-deps/tensorflow
 
