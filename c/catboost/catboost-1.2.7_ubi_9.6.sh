@@ -38,7 +38,6 @@ echo -e "\n[+] Install system dependencies (dnf)\n"
 
 dnf install -y \
   git \
-  autoconf automake libtool \
   gcc gcc-c++ make \
   cmake ninja-build \
   perl \
@@ -153,14 +152,13 @@ cd "$RAGEL_BUILD"
 
 RAGEL_VER=6.10
 RAGEL_TARBALL="ragel-${RAGEL_VER}.tar.gz"
-#RAGEL_URL="https://www.colm.net/files/ragel/${RAGEL_TARBALL}"
-RAGEL_URL="https://github.com/adrian-thurston/ragel/archive/refs/tags/ragel-${RAGEL_VER}.tar.gz"
+RAGEL_URL="https://www.colm.net/files/ragel/${RAGEL_TARBALL}"
 
-curl -L -o "$RAGEL_TARBALL" "$RAGEL_URL" || { echo -e "\n[!] ERROR: Failed to download ragel tarball\n" >&2; exit 1; }
-
+#curl -L -o "$RAGEL_TARBALL" "$RAGEL_URL" || { echo -e "\n[!] ERROR: Failed to download ragel tarball\n" >&2; exit 1; }
+wget "$RAGEL_URL"
 tar -xzf "$RAGEL_TARBALL"
-cd "$(find . -maxdepth 1 -type d -name 'ragel-*' | head -n 1)"
-./autogen.sh
+cd "ragel-${RAGEL_VER}"
+
 ./configure --prefix="$RAGEL_BUILD/install"
 make -j"$(nproc)"
 make install
