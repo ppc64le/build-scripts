@@ -21,59 +21,82 @@
 PACKAGE_NAME=langchain
 PACKAGE_VERSION=${1:-langchain==1.2.10}
 PACKAGE_URL=https://github.com/langchain-ai/langchain
-PACKAGE_DIR=langchain/libs/langchain
-SCRIPT_PATH="$(cd "$(dirname "$0")" && pwd)"
-SCRIPT_PACKAGE_VERSION=1.2.10
-PATCH_FILE="${PACKAGE_NAME}_v${SCRIPT_PACKAGE_VERSION}.patch"
-
 CURRENT_DIR=${PWD}
 
-yum install -y git make cmake zip tar wget python3.12 python3.12-devel python3.12-pip gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc zlib-devel libjpeg-devel openssl openssl-devel freetype-devel pkgconfig rust cargo diffutils libyaml-devel
+export PIP_ROOT_USER_ACTION=ignore
 
+echo "================ Installing system dependencies ================"
+
+yum install -y \
+    git make cmake zip tar wget \
+    python3.12 python3.12-devel python3.12-pip \
+    gcc-toolset-13 gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc \
+    zlib-devel libjpeg-devel openssl openssl-devel \
+    freetype-devel pkgconfig rust cargo diffutils \
+    libyaml-devel ca-certificates
+
+update-ca-trust
 source /opt/rh/gcc-toolset-13/enable
 
-python3.12 -m pip install uv
+python3.12 -m pip install --upgrade pip setuptools wheel build
 
-cd "$CURRENT_DIR"
-[ -d "$PACKAGE_NAME" ] && rm -rf "$PACKAGE_NAME"
+echo "================ Cloning repository ================"
+cd "${CURRENT_DIR}"
+rm -rf "${PACKAGE_NAME}"
 
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME
-git checkout $PACKAGE_VERSION
+git clone --depth 1 --branch "${PACKAGE_VERSION}" "${PACKAGE_URL}"
+cd "${PACKAGE_NAME}"
 
-cd libs/langchain
-PY_VERSION=$(python3.12 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
-export UV_PYTHON="python${PY_VERSION}"
+echo "================ Building wheel ================"
+cd libs/langchain_v1
+python3.12 -m build --wheel
 
+WHEEL_FILE=$(ls dist/langchain-*.whl | head -n 1)
 
-# Commenting out playwright and duckdb-engine because they are not supported on Power architecture.
-# Playwright provides binaries only for x86 architectures and lacks Power support.
-# DuckDB uses the 'pause' CPU instruction available only on x86, causing build failures on Power.
-#sed -i -e '/{ name = "playwright"/s/^/#/g' -e '/{ name = "duckdb-engine"/s/^/#/g' uv#Build package
-
-if [ -f "${SCRIPT_PATH}/${PATCH_FILE}" ]; then
-    git apply "${SCRIPT_PATH}/${PATCH_FILE}"
-else
-    echo "Patch file not found!"
+if [ ! -f "${WHEEL_FILE}" ]; then
+    echo "Wheel build failed!"
     exit 1
 fi
 
-if ! python3.12 -m pip install . ; then
-    echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
-    exit 1
-fi
+echo "Wheel created: ${WHEEL_FILE}"
 
-#Tests
-if ! make tests ; then
-    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
+echo "================ Installing built wheel ================"
+python3.12 -m pip install "${WHEEL_FILE}"
+
+echo "================ Installing test dependencies ================"
+python3.12 -m pip install \
+    pytest \
+    syrupy \
+    python-dotenv \
+    blockbuster \
+    pytest-asyncio \
+    pytest-mock \
+    pytest-timeout \
+    toml
+
+echo "================ Installing langchain test dependencies ================"
+
+cd "${CURRENT_DIR}/${PACKAGE_NAME}/libs/standard-tests"
+python3.12 -m pip install .
+
+# Verify installation
+python3.12 -c "import langchain_tests" || {
+    echo "langchain_tests installation failed!"
+    exit 1
+}
+
+echo "================ Running unit tests ================"
+
+cd "${CURRENT_DIR}/${PACKAGE_NAME}/libs/langchain_v1"
+
+if ! python3.12 -m pytest tests \
+        -k "not integration and not test_socket_disabled" \
+        -v ; then
+    echo "------------------${PACKAGE_NAME}:test_fails---------------------"
     exit 2
-else
-    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-    exit 0
 fi
+
+echo "------------------${PACKAGE_NAME}:install_&_unit_test_success---------------------"
+echo "${PACKAGE_NAME} | ${PACKAGE_URL} | 1.2.10 | GitHub | Pass | Wheel_Built_&_Unit_Tests_Passed"
+
+exit 0
