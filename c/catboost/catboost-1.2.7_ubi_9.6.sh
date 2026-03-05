@@ -152,12 +152,13 @@ cd "$RAGEL_BUILD"
 
 RAGEL_VER=6.10
 RAGEL_TARBALL="ragel-${RAGEL_VER}.tar.gz"
-RAGEL_URL="https://www.colm.net/files/ragel/${RAGEL_TARBALL}"
+#RAGEL_URL="https://www.colm.net/files/ragel/${RAGEL_TARBALL}"
+RAGEL_URL="https://github.com/adrian-thurston/ragel/archive/refs/tags/ragel-${RAGEL_VER}.tar.gz"
 
 curl -L -o "$RAGEL_TARBALL" "$RAGEL_URL" || { echo -e "\n[!] ERROR: Failed to download ragel tarball\n" >&2; exit 1; }
 
 tar -xzf "$RAGEL_TARBALL"
-cd "ragel-${RAGEL_VER}"
+cd ragel-*
 
 ./configure --prefix="$RAGEL_BUILD/install"
 make -j"$(nproc)"
