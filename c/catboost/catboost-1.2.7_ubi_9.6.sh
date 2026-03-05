@@ -158,7 +158,7 @@ RAGEL_URL="https://github.com/adrian-thurston/ragel/archive/refs/tags/ragel-${RA
 curl -L -o "$RAGEL_TARBALL" "$RAGEL_URL" || { echo -e "\n[!] ERROR: Failed to download ragel tarball\n" >&2; exit 1; }
 
 tar -xzf "$RAGEL_TARBALL"
-cd ragel-*
+cd "$(find . -maxdepth 1 -type d -name 'ragel-*' | head -n 1)"
 
 ./configure --prefix="$RAGEL_BUILD/install"
 make -j"$(nproc)"
