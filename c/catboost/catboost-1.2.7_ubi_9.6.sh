@@ -38,6 +38,7 @@ echo -e "\n[+] Install system dependencies (dnf)\n"
 
 dnf install -y \
   git \
+  autoconf automake libtool \
   gcc gcc-c++ make \
   cmake ninja-build \
   perl \
@@ -159,7 +160,7 @@ curl -L -o "$RAGEL_TARBALL" "$RAGEL_URL" || { echo -e "\n[!] ERROR: Failed to do
 
 tar -xzf "$RAGEL_TARBALL"
 cd "$(find . -maxdepth 1 -type d -name 'ragel-*' | head -n 1)"
-
+./autogen.sh
 ./configure --prefix="$RAGEL_BUILD/install"
 make -j"$(nproc)"
 make install
