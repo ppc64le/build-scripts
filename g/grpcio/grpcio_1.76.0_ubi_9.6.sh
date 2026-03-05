@@ -38,6 +38,8 @@ export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:${PATH}"
 
 pip3 install -r requirements.txt
 
+[[ "$(echo -e "$PACKAGE_VERSION\nv1.62.3" | sort -V | head -n1)" == "$PACKAGE_VERSION" ]] && pip3 install --force-reinstall Cython==0.29.37
+
 # Install the package
 pip3 install . --no-build-isolation
 
