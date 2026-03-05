@@ -58,11 +58,15 @@ echo "Checking Python availability"
 if ! command -v python3 >/dev/null 2>&1; then
     echo "[+] Python3 not found, installing via yum"
     yum install -y python3 python3-devel python3-pip
-elif ! command -v pip3 >/dev/null 2>&1; then
+else
+    echo "[+] Python3 already installed"
+    yum install -y python3-devel
+fi
+
+# Ensure pip exists
+if ! command -v pip3 >/dev/null 2>&1; then
     echo "[+] pip3 not found, installing python3-pip"
     yum install -y python3-pip
-else
-    echo "[+] Python and pip already available"
 fi
 
 python3 -V
