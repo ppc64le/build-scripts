@@ -22,13 +22,17 @@
 set -ex 
 
 PACKAGE_NAME=vision
-PACKAGE_VERSION=${1:-v0.24.1}
+PACKAGE_VERSION=${1:-v0.25.0}
 PACKAGE_URL=https://github.com/pytorch/vision.git
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
 MAX_JOBS=${MAX_JOBS:-$(nproc)}
 VERSION=${PACKAGE_VERSION#v}
 PYTHON_VERSION=${2:-3.12}
-PYTORCH_VERSION=${3:-v2.9.0}
+if [ "$PACKAGE_VERSION" = "0.25.0" ]; then
+    PYTORCH_VERSION=${3:-v2.10.0}
+else
+    PYTORCH_VERSION=${3:-v2.9.0}
+fi
 
 CURRENT_DIR=$(pwd)
 
@@ -602,6 +606,7 @@ cd $CURRENT_DIR
 python3 -m pip install ./torchvision*.whl
 
 python3 -m pip install pytest pytest-xdist
+python3 -c "import torchvision"
 
 if ! pytest $PACKAGE_NAME/test/common_extended_utils.py $PACKAGE_NAME/test/common_utils.py $PACKAGE_NAME/test/smoke_test.py $PACKAGE_NAME/test/test_architecture_ops.py $PACKAGE_NAME/test/test_datasets_video_utils_opt.py ; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
