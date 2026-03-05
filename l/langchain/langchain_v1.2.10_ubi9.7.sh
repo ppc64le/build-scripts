@@ -22,7 +22,7 @@ PACKAGE_NAME=langchain
 PACKAGE_VERSION=${1:-langchain==1.2.10}
 PACKAGE_URL=https://github.com/langchain-ai/langchain
 CURRENT_DIR=${PWD}
-
+PACKAGE_DIR=langchain/libs/langchain_v1
 export PIP_ROOT_USER_ACTION=ignore
 
 echo "================ Installing system dependencies ================"
