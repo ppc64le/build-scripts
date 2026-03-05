@@ -4,7 +4,7 @@
 # Package       : catboost
 # Version       : v1.2.7
 # Source repo   : https://github.com/catboost/catboost.git
-# Tested on     : UBI:9.6 
+# Tested on     : UBI:9.7 
 # Language      : Python,c,c++
 # Ci-Check      : True
 # Script License: Apache License Version 2.0
@@ -27,9 +27,6 @@ WORKDIR=${WORKDIR:-"$BUILD_HOME/catboost_build"}
 WORKDIR="$(readlink -f "$WORKDIR")"
 REPO_DIR=$WORKDIR/catboost
 PKG_DIR=$REPO_DIR/catboost/python-package
-
-PYTHON_VERSION=${PYTHON_VERSION:-3.11.5}
-PYTHON_BIN=${PYTHON_BIN:-$(command -v python${PYTHON_VERSION%.*} || true)}
 CLANG_VERSION=${CLANG_VERSION:-17.0.6}
 CONAN_VERSION=${CONAN_VERSION:-1.62.0}
 export PATH=/usr/local/bin:/usr/bin:$PATH
@@ -39,7 +36,7 @@ export PATH=/usr/local/bin:/usr/bin:$PATH
 # ----------------------------------------------------------------------------
 echo -e "\n[+] Install system dependencies (dnf)\n"
 
-dnf install -y  \
+dnf install -y \
   git \
   gcc gcc-c++ make \
   cmake ninja-build \
@@ -56,25 +53,20 @@ dnf install -y  \
   openblas-devel \
   libjpeg-turbo-devel
 
+echo "Checking Python availability"
+if ! command -v python3 >/dev/null 2>&1; then
+    echo "Python3 not found, installing via yum (CI requirement)"
 
-#Install Python from source
-cd "$BUILD_HOME"
-if [ ! -d "$BUILD_HOME/Python-${PYTHON_VERSION}" ]; then
-    wget "https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz"
-    tar xzf "Python-${PYTHON_VERSION}.tgz"
-    rm -rf "Python-${PYTHON_VERSION}.tgz"
+    yum install -y python3 python3-pip python3-devel
+
+    ln -sf /usr/bin/python3 /usr/bin/python
+    ln -sf /usr/bin/pip3 /usr/bin/pip
+else
+    echo "[+] Python already available, using existing installation"
 fi
 
-cd "Python-${PYTHON_VERSION}"
-./configure --with-system-ffi --with-computed-gotos --enable-loadable-sqlite-extensions
-make -j"$(nproc)"
-make altinstall
-
-PY_MINOR="${PYTHON_VERSION%.*}"
-ln -sf "/usr/local/bin/python${PY_MINOR}" /usr/bin/python3
-ln -sf "/usr/local/bin/python${PY_MINOR}" /usr/bin/pip3
-python3 -V && pip3 -V
-
+python3 -V
+pip3 -V
 
 python3 -m pip install -U "pip<24" "setuptools==68.2.2" "wheel==0.41.3" testpath pytest
 
@@ -115,7 +107,6 @@ echo -e "\n[+] Install Conan ${CONAN_VERSION} (Conan 1.x)\n"
 python3 -m pip uninstall -y conan || true
 python3 -m pip install "conan==${CONAN_VERSION}"
 conan --version
-
 
 # ----------------------------------------------------------------------------
 # Clone CatBoost
@@ -178,17 +169,17 @@ RAGEL_BIN="$RAGEL_BUILD/install/bin/ragel"
 
 export PATH="$(dirname "$RAGEL_BIN"):$PATH"
 
-
 cd "$PKG_DIR"
 
 # Clean python-package artifacts only
 rm -rf build dist *.egg-info .eggs || true
 
+# Detect python version dynamically
+PYTAG=$(python3 -c "import sys; print(f'{sys.version_info.major}{sys.version_info.minor}')")
+
 # Pre-create ragel location expected by python-package build temp dir.
-PYTAG="${PYTHON_VERSION%%.*}${PYTHON_VERSION#*.}"; PYTAG="${PYTAG%%.*}"
 mkdir -p build/temp.linux-ppc64le-cpython-${PYTAG}/bin
 ln -sf "$RAGEL_BIN" build/temp.linux-ppc64le-cpython-${PYTAG}/bin/ragel
-
 
 ret=0
 python3 setup.py bdist_wheel --no-widget || ret=$?
@@ -205,11 +196,15 @@ ls -lh dist
 # ----------------------------------------------------------------------------
 echo -e "\n[+] Install built wheel\n"
 
-WHEEL_PATH=$(ls -1 "$PKG_DIR/dist"/catboost-1.2.7-*_ppc64le.whl | head -n 1)
-[ -f "$WHEEL_PATH" ] || { echo -e "\n[!] ERROR: Wheel not found in dist/\n" >&2; exit 1; }
+WHEEL_PATH=$(ls -1 "$PKG_DIR"/dist/catboost-*_ppc64le.whl | head -n 1)
+[ -f "$WHEEL_PATH" ] || { echo -e "\n[!] ERROR: Wheel not found in dist directory\n" >&2; exit 1; }
 
 WHEEL_PATH="$(readlink -f "$WHEEL_PATH")"
 python3 -m pip install "$WHEEL_PATH"
+
+# Copy wheel for wrapper detection
+echo "[+] Copying wheel to current directory for wrapper detection"
+cp "$WHEEL_PATH" "$BUILD_HOME/"
 
 # ----------------------------------------------------------------------------
 # Run catboost python-package tests
