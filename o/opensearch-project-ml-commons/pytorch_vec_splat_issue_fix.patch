@@ -1,0 +1,171 @@
+diff --git a/aten/src/ATen/cpu/vec/vec256/vsx/vec256_int64_vsx.h b/aten/src/ATen/cpu/vec/vec256/vsx/vec256_int64_vsx.h
+index 8d0bd52c901..e4a062cdb4e 100644
+--- a/aten/src/ATen/cpu/vec/vec256/vsx/vec256_int64_vsx.h
++++ b/aten/src/ATen/cpu/vec/vec256/vsx/vec256_int64_vsx.h
+@@ -3,6 +3,7 @@
+ #include <ATen/cpu/vec/intrinsics.h>
+ #include <ATen/cpu/vec/vec256/vsx/vsx_helpers.h>
+ #include <ATen/cpu/vec/vec_base.h>
++#include <type_traits>
+ namespace at {
+ namespace vec {
+ // See Note [CPU_CAPABILITY namespace]
+@@ -42,7 +43,9 @@ class Vectorized<int64_t> {
+   C10_ALWAYS_INLINE Vectorized(vbool64 v1, vbool64 v2)
+       : _vecb0{v1}, _vecb1{v2} {}
+   C10_ALWAYS_INLINE Vectorized(int64_t scalar)
+-      : _vec0{vec_splats(scalar)}, _vec1{vec_splats(scalar)} {}
++      : _vec0{vec_splats_dispatch<int64_t>::apply(scalar)},
++	_vec1{vec_splats_dispatch<int64_t>::apply(scalar)} {}
++	//: _vec0{vec_splats(scalar)}, _vec1{vec_splats(scalar)} {}
+   C10_ALWAYS_INLINE Vectorized(
+       int64_t scalar1,
+       int64_t scalar2,
+@@ -296,6 +299,29 @@ operator^(const Vectorized<int64_t>& a, const Vectorized<int64_t>& b) {
+       vec_xor(a.vec0(), b.vec0()), vec_xor(a.vec1(), b.vec1())};
+ }
+ 
++#if defined(__powerpc64__)
++/* * We only define the 'long' specialization if it is a distinct type.
++ * On many PPC64LE Linux systems, int64_t is 'long'.
++ * On others (like some RHEL/CentOS versions), it is 'long long'.
++ * We use a macro-based check that is safe for the preprocessor.
++ */
++#include <stdint.h>
++#if defined(__GLIBC__) && defined(__WORDSIZE) && (__WORDSIZE == 64)
++  // In 64-bit GLIBC, int64_t is 'long'. We don't need a specialization.
++  #define INT64_IS_LONG 1
++#else
++  #define INT64_IS_LONG 0
++#endif
++
++#if !INT64_IS_LONG
++template <>
++class Vectorized<long> : public Vectorized<int64_t> {
++public:
++    using Vectorized<int64_t>::Vectorized;
++};
++#endif
++#endif
++
+ } // namespace CPU_CAPABILITY
+ } // namespace vec
+ } // namespace at
+diff --git a/aten/src/ATen/cpu/vec/vec256/vsx/vsx_helpers.h b/aten/src/ATen/cpu/vec/vec256/vsx/vsx_helpers.h
+index 7ca603c0b91..acf8315c165 100644
+--- a/aten/src/ATen/cpu/vec/vec256/vsx/vsx_helpers.h
++++ b/aten/src/ATen/cpu/vec/vec256/vsx/vsx_helpers.h
+@@ -118,11 +118,62 @@ vec_sldw_aux(const vfloat32& vec_in0, const vfloat32& vec_in1) {
+ #endif
+ 
+ #define vec_not(a) vec_nor(a, a)
++
++// 1. General template (Works for GCC and for float/int32/etc.)
++template <typename scalar_t, typename Enable = void>
++struct vec_splats_dispatch {
++    using vvtype = typename at::vec::Vectorized<scalar_t>::vec_internal_type;
++    static C10_ALWAYS_INLINE vvtype apply(scalar_t v) {
++        return vec_splats(v);
++    }
++};
++
++// 2. Clang-specific override for 64-bit types
++#if defined(__clang__) && defined(__powerpc64__)
++template <>
++struct vec_splats_dispatch<int64_t, void> {
++    using vvtype = vint64; // Direct type to avoid circular dependency
++    static C10_ALWAYS_INLINE vvtype apply(int64_t v) {
++        // Your Power10 vec_insert workaround
++        vvtype out = (vvtype){0, 0};
++        out = vec_insert((signed long long)v, out, 0);
++        out = vec_insert((signed long long)v, out, 1);
++        return out;
++    }
++};
++
++// 3. The long redirection
++// Place this INSIDE the defined(__clang__) block. 
++// GCC usually treats int64_t and long as the same for templates, 
++// but Clang 15 often sees them as distinct types requiring separate specializations.
++
++#if defined(__powerpc64__)
++template <typename T>
++struct vec_splats_dispatch<T, 
++    typename std::enable_if<std::is_same<T, long>::value && 
++                           !std::is_same<long, int64_t>::value>::type> 
++    : vec_splats_dispatch<int64_t> {};
++#endif
++
++//template <>
++//struct vec_splats_dispatch<long> : vec_splats_dispatch<int64_t> {};
++
++#endif
++
++/*
+ #if defined(__clang__) && !defined(vec_splats)
+ C10_ALWAYS_INLINE vint64 vec_splats(const int64_t& a) {
+-  return vec_splats(a);
++  // Create a temporary array with the repeated value
++  __at_align__ double tmp[2];  // 2 elements for 128-bit vector
++  // Copy same bits of int64_t into both slots
++  std::memcpy(&tmp[0], &a, sizeof(a));
++  std::memcpy(&tmp[1], &a, sizeof(a));
++  // Load into vector register
++  return (vint64)vec_vsx_ld(0, tmp);
++  //return {{signed long long}a, {signed long long}a}; //vec_splats(a);
+ }
+ #endif
++*/
+ // Vectorized min/max which return a if any operand is nan
+ template <class T>
+ C10_ALWAYS_INLINE T vec_min_nan(const T& a, const T& b) {
+@@ -236,16 +287,47 @@ C10_VSX_VEC_NAN_PROPAG(vec_max_nan2, vfloat64, vbool64, vec_max)
+     return Vectorized<op_type>{ret_0, ret_1};                            \
+   }
+ 
++template <typename T>
++struct canonical_scalar {
++    using type = T;
++};
++
++template <>
++struct canonical_scalar<long> {
++    using type = int64_t;
++};
++
++template <>
++struct canonical_scalar<unsigned long> {
++    using type = uint64_t;
++};
++
++#define DEFINE_MEMBER_OP_AND_ONE(op, op_type, func)                          \
++  Vectorized<typename canonical_scalar<op_type>::type>                      \
++  C10_ALWAYS_INLINE op(                                                      \
++      const Vectorized<typename canonical_scalar<op_type>::type>& other)    \
++      const {                                                                \
++    using scalar_t = typename canonical_scalar<op_type>::type;               \
++    using vvtype   = typename Vectorized<scalar_t>::vec_internal_type;       \
++    const vvtype v_one =                                                      \
++        vec_splats_dispatch<scalar_t>::apply(static_cast<scalar_t>(1));      \
++    vvtype ret0 = (vvtype)func(_vec0, other._vec0);                           \
++    vvtype ret1 = (vvtype)func(_vec1, other._vec1);                           \
++    return Vectorized<scalar_t>{vec_and(ret0, v_one),                         \
++                                vec_and(ret1, v_one)};                      \
++  }
++
++/*
+ #define DEFINE_MEMBER_OP_AND_ONE(op, op_type, func)                          \
+   Vectorized<op_type> C10_ALWAYS_INLINE op(const Vectorized<op_type>& other) \
+       const {                                                                \
+     using vvtype = Vectorized<op_type>::vec_internal_type;                   \
+-    const vvtype v_one = vec_splats(static_cast<op_type>(1.0));              \
++    const vvtype v_one = vec_splats_dispatch<op_type>::apply(static_cast<op_type>(1)); \
+     vvtype ret0 = (vvtype)func(_vec0, other._vec0);                          \
+     vvtype ret1 = (vvtype)func(_vec1, other._vec1);                          \
+     return Vectorized<op_type>{vec_and(ret0, v_one), vec_and(ret1, v_one)};  \
+   }
+-
++*/
+ #define DEFINE_CLAMP_FUNCS(operand_type)                                       \
+   template <>                                                                  \
+   Vectorized<operand_type> C10_ALWAYS_INLINE clamp(                            \
