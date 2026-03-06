@@ -22,14 +22,8 @@ PACKAGE_NAME=librt
 PACKAGE_URL=https://github.com/mypyc/librt
 PACKAGE_VERSION=${1:-v0.8.1}
 PACKAGE_DIR=librt
-PYTHON_VERSION=3.11
 
-dnf -y install \
-    git \
-    python${PYTHON_VERSION} \
-    python${PYTHON_VERSION}-pip \
-    python${PYTHON_VERSION}-devel \
-    gcc-toolset-13
+dnf -y install git python3 python$3-pip python3-devel gcc-toolset-13
 
 # Enable GCC toolset
 source /opt/rh/gcc-toolset-13/enable
@@ -40,13 +34,13 @@ cd ${PACKAGE_NAME}
 git checkout ${PACKAGE_VERSION}
 
 echo "building librt..."
-if ! python${PYTHON_VERSION} -m pip install --no-cache-dir .; then
+if ! python3 -m pip install --no-cache-dir .; then
     echo "------------------$PACKAGE_NAME: build_fail------------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_Fail"
     exit 1
 fi
 
-if ! (python${PYTHON_VERSION} - <<EOF
+if ! (python3 - <<EOF
 import librt
 print("Imported librt successfully")
 print("Module:", librt)
