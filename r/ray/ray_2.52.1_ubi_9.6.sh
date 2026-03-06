@@ -49,52 +49,6 @@ cp output/bazel /usr/local/bin
 export PATH=/usr/local/bin:$PATH
 cd $CURRENT_DIR
 
-# Install py-spy
-git clone https://github.com/benfred/py-spy -b ${PYSPY_VERSION}
-cd py-spy && cargo install py-spy
-pip install --upgrade maturin
-maturin build --release -o dist
-pip install dist/py_spy*_ppc64le.whl
-cd $CURRENT_DIR
-
-# Install utf8proc
-git clone https://github.com/JuliaStrings/utf8proc.git
-cd utf8proc
-make -j$(nproc)
-make install
-ldconfig
-cd $CURRENT_DIR
-
-#Install arrow
-git clone https://github.com/apache/arrow -b apache-arrow-${ARROW_VERSION}
-cd arrow/
-git submodule update --init --recursive
-
-mkdir pyarrow_prefix
-export ARROW_HOME=$(pwd)/pyarrow_prefix
-export LD_LIBRARY_PATH=$ARROW_HOME/lib64:/usr/local/lib:$LD_LIBRARY_PATH
-export CPATH=$ARROW_HOME/include:/usr/local/include:$CPATH
-export PKG_CONFIG_PATH=$ARROW_HOME/lib64/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
-
-cd cpp
-mkdir build
-cd build
-cmake -DCMAKE_BUILD_TYPE=Release \
-      -DCMAKE_INSTALL_PREFIX=$ARROW_HOME \
-      -Dutf8proc_LIB=/usr/local/lib/libutf8proc.so \
-      -Dutf8proc_INCLUDE_DIR=/usr/local/include \
-      -DARROW_PYTHON=ON \
-      -DARROW_BUILD_TESTS=OFF \
-      -DARROW_PARQUET=ON \
-      ..
-make -j$(nproc)
-make install
-cd ../../python/
-pip install Cython==3.0.8 numpy wheel
-CMAKE_PREFIX_PATH=$ARROW_HOME python3 setup.py build_ext --inplace
-CMAKE_PREFIX_PATH=$ARROW_HOME python3 setup.py install
-cd $CURRENT_DIR
-
 export PYTHON_BIN_PATH=$(which python3)
 export PYTHON3_BIN_PATH=$(which python3)
 ln -s $PYTHON_BIN_PATH /usr/bin/python
@@ -118,6 +72,15 @@ git apply ray-boost.patch
 
 sed -i '/^build --compilation_mode=opt$/a\\n\nbuild:linux --action_env PYTHON_BIN_PATH="'"$(which python3)"'"\n' .bazelrc
 
+# Install NodeJS
+dnf install -y nodejs npm
+
+# Build Ray dashboard frontend
+cd python/ray/dashboard/client
+npm ci
+npm run build
+cd $CURRENT_DIR/$PACKAGE_NAME
+
 cd python/
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
 export GRPC_PYTHON_BUILD_SYSTEM_ZLIB=1
@@ -125,7 +88,7 @@ export RAY_INSTALL_CPP=1
 export BAZEL_ARGS="--define=USE_OPENSSL=1 --jobs=10 --define=SKIP_RULES_PERL=1 --strategy=CppCompile=standalone"
 export RAY_INSTALL_JAVA=1
 
-pip install --upgrade setproctitle
+pip install Cython
 #Installing ray-cpp
 pip install . 
 
@@ -141,21 +104,30 @@ else
 fi
 
 
-#We have skipped tests for now as different tests are failing due to environment issues with each build. Looking into it. Locally tests are passing.
+echo "Validating Ray with dashboard build..."
 
-#cd $CURRENT_DIR/ray
-#Test package
-# Run all small and medium tests, skipping the following:
-# - Tests that failed to build or failed to run due to environment issues (timeouts, crashes)
-# - Tests that are too large and do not execute properly in this environment
-# - Skipping cgroup_v2_setup_test because it requires write access to /sys/fs/cgroup, which is restricted in sandboxed or containerized environments.
-#if ! bazel test $(bazel query 'kind(cc_test, ...) except //src/ray/common/cgroup/test:cgroup_v2_setup_test except //src/ray/gcs/gcs_client/test:gcs_client_reconnection_test except //src/ray/common/test:resource_set_test except //src/ray/common/test:resource_instance_set_test except //src/ray/util/tests:filesystem_monitor_test except //src/ray/util/tests:signal_test except //src/ray/raylet/scheduling:cluster_resource_manager_test except //src/ray/raylet/scheduling:scheduling_policy_test except //cpp:cluster_mode_test except //cpp:cluster_mode_xlang_test except //cpp:simple_kv_store except //cpp:metric_example except //src/ray/common/cgroup/test:cgroup_v2_utils_privileged_test except //src/ray/gcs/gcs_client/test:global_state_accessor_test') --test_size_filters=small,medium --cxxopt='-Wno-error=maybe-uninitialized' --define=USE_OPENSSL=1 --jobs=10 --define=SKIP_RULES_PERL=1 --strategy=CppCompile=standalone ; then
-#    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-#    echo "$PACKAGE_URL $PACKAGE_NAME"
-#    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
-#    exit 2
-#else
-#    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-#    echo "$PACKAGE_URL $PACKAGE_NAME"
-#    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
-#    exit 0 
+if ! python <<'EOF'
+import ray
+import os
+
+ray_path = os.path.dirname(ray.__file__)
+dashboard_build = os.path.join(ray_path, "dashboard", "client", "build")
+
+print("Ray version:", ray.__version__)
+print("Ray path:", ray_path)
+print("Dashboard build path:", dashboard_build)
+
+assert os.path.isdir(dashboard_build), "Dashboard build directory is missing!"
+
+index_file = os.path.join(dashboard_build, "index.html")
+assert os.path.isfile(index_file), "Dashboard index.html is missing!"
+
+print("Dashboard build verified successfully")
+EOF
+then
+    echo "------------------ ray-dashboard: validation_failed ------------------"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Validation_Failed"
+    exit 1
+fi
+
+echo "Ray with dashboard validation successful"
