@@ -48,6 +48,7 @@ then
     cd ../
 fi
 
+
 # Clone or extract the package
 if [[ "$PACKAGE_URL" == *github.com* ]]; then
     if [ -d "$PACKAGE_DIR" ]; then
@@ -59,7 +60,7 @@ if [[ "$PACKAGE_URL" == *github.com* ]]; then
             echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Clone_Fails"
             exit 1
         fi
-        cd "$PACKAGE_DIR" || exit
+        cd "$PACKAGE_DIR" && mkdir -p lib include || exit
         git checkout "$PACKAGE_VERSION" || exit
     fi
 else
@@ -83,6 +84,19 @@ else
     fi
 fi
 
+# Build spatialindex shared object file . It is part of x86 wheel due to which it is built as an audit wheel
+cd ..
+wget https://github.com/libspatialindex/libspatialindex/releases/download/2.1.0/spatialindex-src-2.1.0.tar.gz
+tar -xvzf spatialindex-src-2.1.0.tar.gz
+cd spatialindex-src-2.1.0
+mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="../../${PACKAGE_DIR}/${PACKAGE_DIR}" -DCMAKE_INSTALL_LIBDIR=lib
+make -j $(nproc)
+make install
+cd ../../${PACKAGE_DIR}
+
+
+
 # Install the package
 if ! python3 -m pip install ./; then
     echo "------------------$PACKAGE_NAME:install_fails------------------------"
@@ -92,6 +106,11 @@ if ! python3 -m pip install ./; then
 fi
 
 # ------------------ Unified Test Execution Block ------------------
+
+export LD_LIBRARY_PATH=$(pwd)/${PACKAGE_DIR}/lib:$(pwd)/${PACKAGE_DIR}/lib64:$LD_LIBRARY_PATH
+
+# Remove no binary option from tox tests as it forces numpy to install from pypi instead of building from source
+sed -i 's/--only-binary=:all: //; s/{opts} //' tox.ini
 
 test_status=1  # 0 = success, non-zero = failure
 
