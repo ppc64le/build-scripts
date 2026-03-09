@@ -33,7 +33,7 @@ git clone ${PACKAGE_URL}
 cd ${PACKAGE_NAME}
 git checkout ${PACKAGE_VERSION}
 
-echo "building snowflake-connector-python..."
+echo "building snowflake-connector-python...."
 if ! python3 -m pip install --no-cache-dir .; then
     echo "------------------$PACKAGE_NAME: build_fail------------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_Fail"
