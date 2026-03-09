@@ -27,9 +27,7 @@ CURRENT_DIR="${PWD}"
 
 echo "Installing system dependencies..."
 
-yum install -y git gcc gcc-c++ make \
-    python3 python3-devel python3-pip \
-    openblas-devel
+yum install -y git gcc gcc-c++ make python3 python3-devel python3-pip openblas-devel
 
 echo "Upgrading pip tooling..."
 python3 -m pip install --upgrade pip setuptools wheel
