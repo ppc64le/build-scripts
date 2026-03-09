@@ -44,7 +44,6 @@ yum install -y \
     zlib-devel libjpeg-devel openssl openssl-devel freetype-devel \
     pkgconfig diffutils libyaml-devel \
     rust cargo \
-    c-ares-devel \
     gettext \
     sqlite-devel \
     libpq-devel
