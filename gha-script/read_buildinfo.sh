@@ -159,7 +159,7 @@ echo "export BASENAME=$basename" >> $CUR_DIR/variable.sh
 echo "export NON_ROOT_BUILD=$nonRootBuild" >> $CUR_DIR/variable.sh
 echo "export TESTED_ON=$tested_on" >> $CUR_DIR/variable.sh
 
-BUILD_SCRIPT_DATE=$(git log -1 --format=%ci -- "${stripped_build_script}")
+BUILD_SCRIPT_DATE=$(git log -1 --format=%ci -- "$package_dirpath$build_script")
 echo "export BUILD_SCRIPT_DATE=$BUILD_SCRIPT_DATE" >> $CUR_DIR/variable.sh
 
 chmod +x $CUR_DIR/variable.sh
