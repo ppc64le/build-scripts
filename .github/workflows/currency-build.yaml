@@ -45,7 +45,7 @@ run-name: Currency Build ${{ inputs.package_name }} && Unique ID ${{ inputs.uniq
 
 jobs:
   build_info:
-    runs-on: ubuntu-24.04-ppc64le-p10
+    runs-on: ubuntu-24.04-ppc64le
     env:
       PACKAGE_NAME: ${{ inputs.package_name }}
       VERSION: ${{ inputs.version }}
@@ -108,7 +108,7 @@ jobs:
   build:
     needs: build_info
     if: ${{ inputs.validate_build_script == 'true' }}
-    runs-on: ubuntu-24.04-ppc64le-p10
+    runs-on: ubuntu-24.04-ppc64le
     steps:
       - uses: actions/checkout@v6
 
@@ -172,7 +172,7 @@ jobs:
     needs: build_info
     name: Create Wheel for Python ${{ matrix.python-version }}
     if: ${{ inputs.wheel_build == 'true' }}
-    runs-on: ubuntu-24.04-ppc64le-p10
+    runs-on: ubuntu-24.04-ppc64le
     strategy:
       fail-fast: false
       matrix:
@@ -189,6 +189,10 @@ jobs:
             allow-failure: false
     env:
       GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+      COS_API_KEY: ${{ secrets.COS_API_KEY }} 
+      COS_SERVICE_INSTANCE_ID: ${{ secrets.COS_SERVICE_INSTANCE_ID }} 
+      COS_ENDPOINT: ${{ secrets.COS_ENDPOINT }}
+      COS_BUCKET: ${{ secrets.COS_COS_BUCKET }}
       PYTHON_VERSION: ${{ matrix.python-version }}
       PACKAGE_NAME: ${{ inputs.package_name }}
       VERSION: ${{ inputs.version }}
@@ -268,7 +272,7 @@ jobs:
 
   wheel_licenses:
     needs: wheel_build
-    runs-on: ubuntu-24.04-ppc64le-p10
+    runs-on: ubuntu-24.04-ppc64le
     steps:
       - uses: actions/checkout@v6
 
@@ -318,7 +322,7 @@ jobs:
   source_scanner:
     needs: build
     if: ${{ inputs.validate_build_script == 'true' }}
-    runs-on: ubuntu-24.04-ppc64le-p10
+    runs-on: ubuntu-24.04-ppc64le
     steps:
       - uses: actions/checkout@v6
 
@@ -392,7 +396,7 @@ jobs:
   build_docker:
     needs: build_info 
     if: ${{ inputs.build_docker == 'true' }}
-    runs-on: ubuntu-24.04-ppc64le-p10
+    runs-on: ubuntu-24.04-ppc64le
     steps:
       - uses: actions/checkout@v6
 
@@ -436,7 +440,7 @@ jobs:
   image_scanner:
     needs: build_docker
     if: ${{ inputs.build_docker == 'true' }}
-    runs-on: ubuntu-24.04-ppc64le-p10
+    runs-on: ubuntu-24.04-ppc64le
     steps:
       - uses: actions/checkout@v6
 
@@ -506,7 +510,7 @@ jobs:
   final_summary:
       name: Final Summary Stage
       needs: [build, source_scanner]
-      runs-on: ubuntu-24.04-ppc64le-p10
+      runs-on: ubuntu-24.04-ppc64le
       steps:
         - name: Checkout code
           uses: actions/checkout@v6
