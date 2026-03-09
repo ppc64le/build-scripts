@@ -146,7 +146,7 @@ if [ -f "$stripped_build_script" ]; then
   echo "Tested on value: $tested_on"
 
   # Add last git commit date
-  BUILD_SCRIPT_DATE=$(git log -1 --format=%ci -- "$package_dirpath$stripped_build_script")
+  BUILD_SCRIPT_DATE=$(git log -1 --format=%ci -- "$stripped_build_script")
   echo "Build script last commit date: $BUILD_SCRIPT_DATE"
   
 fi
