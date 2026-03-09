@@ -189,10 +189,6 @@ jobs:
             allow-failure: false
     env:
       GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
-      COS_API_KEY: ${{ secrets.COS_API_KEY }} 
-      COS_SERVICE_INSTANCE_ID: ${{ secrets.COS_SERVICE_INSTANCE_ID }} 
-      COS_ENDPOINT: ${{ secrets.COS_ENDPOINT }}
-      COS_BUCKET: ${{ secrets.COS_COS_BUCKET }}
       PYTHON_VERSION: ${{ matrix.python-version }}
       PACKAGE_NAME: ${{ inputs.package_name }}
       VERSION: ${{ inputs.version }}
