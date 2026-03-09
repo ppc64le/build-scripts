@@ -200,6 +200,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Mark Git directory as safe
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
       - name: Install system dependencies
         run: |
           sudo apt update -y
