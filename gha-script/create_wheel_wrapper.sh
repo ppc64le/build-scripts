@@ -123,9 +123,8 @@ generate_sha() {
     local python_version=$2
     local cur_dir=$3
 
-    echo
-    echo "==================== Creating SHA256 for the wheel ===================="
-    echo
+    # Mark repo as safe
+    git config --global --add safe.directory $cur_dir
 
     BUILD_SCRIPT_DATE=$(git log -1 --format=%ci -- "${build_script}")
     PACKAGE_LANGUAGE=${PACKAGE_LANGUAGE:-python}
@@ -232,9 +231,9 @@ if [ "$wheel_count" -ne 1 ]; then
 fi
 
 
-echo
-echo "==================== Running auditwheel repair on: ${wheel_file} ===================="
-echo
+echo 
+echo "==== Running auditwheel repair on: ${wheel_file} ===="
+echo 
 
 
 # install required tools
@@ -351,3 +350,4 @@ cleanup "$VENV_DIR"
 [ -n "$TEMP_BUILD_SCRIPT_PATH" ] && rm "$CURRENT_DIR/$TEMP_BUILD_SCRIPT_PATH"
 
 exit 0
+
