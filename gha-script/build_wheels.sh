@@ -38,6 +38,7 @@ else
 fi
 
 WHEEL_SCRIPT=gha-script/create_wheel_wrapper.sh
+POST_PROCESS_SCRIPT_PATH=gha-script/post_process_wheel.py
 #python3 gha-script/build_wheels.py "$WHEEL_SCRIPT" "$PYTHON_VERSION" "$docker_image" "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" > build_log &
 
 # SCRIPT_PID=$!
@@ -47,7 +48,7 @@ WHEEL_SCRIPT=gha-script/create_wheel_wrapper.sh
 #   sleep 100
 # done
 # wait $SCRIPT_PID
-python3 gha-script/build_wheels.py "$WHEEL_SCRIPT" "$PYTHON_VERSION" "$docker_image" "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" 2>&1 | tee wheel_build_log
+python3 gha-script/build_wheels.py "$WHEEL_SCRIPT" "$PYTHON_VERSION" "$docker_image" "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "$POST_PROCESS_SCRIPT_PATH" 2>&1 | tee wheel_build_log
 wheel_status=${PIPESTATUS[0]}
 
 log_size=$(stat -c %s wheel_build_log)
