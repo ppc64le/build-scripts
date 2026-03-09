@@ -144,6 +144,11 @@ if [ -f "$stripped_build_script" ]; then
 
   done < "$stripped_build_script"
   echo "Tested on value: $tested_on"
+
+  # Add last git commit date
+  BUILD_SCRIPT_DATE=$(git log -1 --format=%ci -- "$package_dirpath$stripped_build_script")
+  echo "Build script last commit date: $BUILD_SCRIPT_DATE"
+  
 fi
 
 # Export variables
@@ -158,6 +163,7 @@ echo "export VARIANT=$variant" >> $CUR_DIR/variable.sh
 echo "export BASENAME=$basename" >> $CUR_DIR/variable.sh
 echo "export NON_ROOT_BUILD=$nonRootBuild" >> $CUR_DIR/variable.sh
 echo "export TESTED_ON=$tested_on" >> $CUR_DIR/variable.sh
+echo "export BUILD_SCRIPT_DATE=$BUILD_SCRIPT_DATE" >> $CUR_DIR/variable.sh
 
 chmod +x $CUR_DIR/variable.sh
 cat $CUR_DIR/variable.sh
