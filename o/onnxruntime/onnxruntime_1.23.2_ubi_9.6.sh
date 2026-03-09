@@ -207,7 +207,6 @@ if ! (./build.sh \
     --build \
     --skip_submodule_sync \
     --allow_running_as_root \
-    --parallel \
     --build_wheel) ; then
     echo "------------------$PACKAGE_NAME:BUILD OR TEST FAILED----------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
