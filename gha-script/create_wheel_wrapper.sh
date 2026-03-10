@@ -129,13 +129,15 @@ generate_sha() {
     BUILD_SCRIPT_DATE=$(git log -1 --format=%ci -- "${build_script}")
     PACKAGE_LANGUAGE=${PACKAGE_LANGUAGE:-python}
 
+    echo 
     # Check required variables
     : "${PACKAGE_NAME:?PACKAGE_NAME is required}"
-    : "${VERSION:?VERSION is required}"
+    : "${PACKAGE_VERSION:?PACKAGE_VERSION is required}"
     : "${python_version:?python_version is required}"
     : "${BUILD_SCRIPT_DATE:?BUILD_SCRIPT_DATE is required}"
+    echo
 
-    string_to_hash="${PACKAGE_NAME}_${VERSION}_${PACKAGE_LANGUAGE}_${python_version}_${BUILD_SCRIPT_DATE}"
+    string_to_hash="${PACKAGE_NAME}_${PACKAGE_VERSION}_${PACKAGE_LANGUAGE}_${python_version}_${BUILD_SCRIPT_DATE}"
     SHA_VALUE=$(echo -n "$string_to_hash" | sha256sum | awk '{print $1}')
 
     echo "$SHA_VALUE" > "$cur_dir/sha256.sha"
@@ -350,4 +352,3 @@ cleanup "$VENV_DIR"
 [ -n "$TEMP_BUILD_SCRIPT_PATH" ] && rm "$CURRENT_DIR/$TEMP_BUILD_SCRIPT_PATH"
 
 exit 0
-
