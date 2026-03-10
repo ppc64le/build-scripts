@@ -55,6 +55,8 @@ jobs:
       ENABLE_TRIVY: ${{ inputs.enable_trivy }}
       ENABLE_SYFT: ${{ inputs.enable_syft }}
       ENABLE_GRYPE: ${{ inputs.enable_grype }}
+      COS_BUCKET: ${{secrets.COS_BUCKET}}
+      COS_ENDPOINT: ${{secrets.COS_ENDPOINT}}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -71,6 +73,8 @@ jobs:
 
       - name: Get Build Info and Save Variables
         run: |
+          echo "==== $COS_BUCKET ======"
+          echo "==== $COS_ENDPOINT ====="
           chmod +x ./gha-script/read_buildinfo.sh
           bash ./gha-script/read_buildinfo.sh
 
