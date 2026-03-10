@@ -6,11 +6,11 @@
   "wheel_build": true,
   "default_branch": "master",
   "package_dir": "l/langgraph",
-  "build_script": "langgraph_v1.0.9_ubi9.7.sh",
+  "build_script": "langgraph_v1.0.9_ubi_9.7.sh",
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
   "1.0.9*": {
-     "build_script":"langgraph_v1.0.9_ubi9.7.sh"
+     "build_script":"langgraph_v1.0.9_ubi_9.7.sh"
   }
 }
