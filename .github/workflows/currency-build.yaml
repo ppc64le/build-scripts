@@ -73,7 +73,7 @@ jobs:
 
       - name: Get Build Info and Save Variables
         run: |
-          echo "==== $COS_BUCKET ======"
+          echo "==== ${COS_BUCKET: -1} ======"
           echo "==== $COS_ENDPOINT ====="
           chmod +x ./gha-script/read_buildinfo.sh
           bash ./gha-script/read_buildinfo.sh
