@@ -122,22 +122,27 @@ generate_sha() {
     local build_script=$1
     local python_version=$2
     local cur_dir=$3
+    local wheel=$4
 
-    # Mark repo as safe
+    # Mark repo as safe (to avoid dubious ownership issue)
     git config --global --add safe.directory $cur_dir
 
     BUILD_SCRIPT_DATE=$(git log -1 --format=%ci -- "${build_script}")
     PACKAGE_LANGUAGE=${PACKAGE_LANGUAGE:-python}
 
-    echo 
     # Check required variables
     : "${PACKAGE_NAME:?PACKAGE_NAME is required}"
     : "${PACKAGE_VERSION:?PACKAGE_VERSION is required}"
-    : "${python_version:?python_version is required}"
     : "${BUILD_SCRIPT_DATE:?BUILD_SCRIPT_DATE is required}"
-    echo
 
-    string_to_hash="${PACKAGE_NAME}_${PACKAGE_VERSION}_${PACKAGE_LANGUAGE}_${python_version}_${BUILD_SCRIPT_DATE}"
+    if [[ "$wheel" == *any.whl ]]; then
+        string_to_hash="${PACKAGE_NAME}_${PACKAGE_VERSION}_${PACKAGE_LANGUAGE}_${BUILD_SCRIPT_DATE}"
+    else
+        : "${python_version:?python_version is required}"
+        string_to_hash="${PACKAGE_NAME}_${PACKAGE_VERSION}_${PACKAGE_LANGUAGE}_${python_version}_${BUILD_SCRIPT_DATE}"
+    fi
+
+
     SHA_VALUE=$(echo -n "$string_to_hash" | sha256sum | awk '{print $1}')
 
     echo "$SHA_VALUE" > "$cur_dir/sha256.sha"
@@ -312,12 +317,13 @@ wheel_final=(*.whl)
 
 
 echo
-echo "==================== Generating sha for: ${wheel_final} ===================="
+echo "============== Generating sha for: ${wheel_final} =============="
 echo
 
 
+
 # generate sha256
-generate_sha "$BUILD_SCRIPT_PATH" "$PYTHON_VERSION" "$CURRENT_DIR"
+generate_sha "$BUILD_SCRIPT_PATH" "$PYTHON_VERSION" "$CURRENT_DIR" "$wheel_final"
 
 
 # install required dependencies for post_process_wheel.py
@@ -326,7 +332,7 @@ SHA256_VALUE=$(cat sha256.sha)
 
 
 echo
-echo "==================== Post Processing wheel ${wheel_final} with SHA: ${SHA256_VALUE} ===================="
+echo "= Post Processing wheel ${wheel_final} with SHA: ${SHA256_VALUE} ="
 echo
 
 
@@ -341,8 +347,11 @@ else
     echo
     exit 1  
 fi
-#python post_process_wheel.py ${wheel_final} 87ad8a03803b8b436deb80b3ec5b7b046ef3ef448d3fe4f101162b6a61ce52b1
 
+
+echo
+echo "============ Final wheel: $(ls -t *.whl 2>/dev/null | head -1) ==========="
+echo
 
 # Clean up virtual environment
 cleanup "$VENV_DIR"
@@ -352,3 +361,4 @@ cleanup "$VENV_DIR"
 [ -n "$TEMP_BUILD_SCRIPT_PATH" ] && rm "$CURRENT_DIR/$TEMP_BUILD_SCRIPT_PATH"
 
 exit 0
+
