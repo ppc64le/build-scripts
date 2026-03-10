@@ -192,6 +192,11 @@ jobs:
       PYTHON_VERSION: ${{ matrix.python-version }}
       PACKAGE_NAME: ${{ inputs.package_name }}
       VERSION: ${{ inputs.version }}
+      COS_API_KEY: ${{ secrets.COS_API_KEY }}
+      COS_BUCKET: ${{secrets.COS_BUCKET}}
+      COS_ENDPOINT: ${{secrets.COS_ENDPOINT}}
+      COS_SERVICE_INSTANCE_ID: ${{secrets.COS_SERVICE_INSTANCE_ID}}
+      
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
