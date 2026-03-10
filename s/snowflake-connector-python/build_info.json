@@ -1,0 +1,16 @@
+{
+  "maintainer": "puneetsharma21",
+  "package_name": "snowflake-connector-python",
+  "github_url": "https://github.com/snowflakedb/snowflake-connector-python",
+  "version": "v4.3.0",
+  "wheel_build" : true,
+  "package_dir": "s/snowflake-connector-python",
+  "default_branch": "master",
+  "build_script": "snowflake-connector-python_ubi_9.6.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*":{
+    "build_script":"snowflake-connector-python_ubi_9.6.sh"
+  }
+}
