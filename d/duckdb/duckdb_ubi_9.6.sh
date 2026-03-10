@@ -73,10 +73,10 @@ assert con.execute("select 42").fetchall() == [(42,)]
 
 # 2 Version check (SQL side)
 version_sql = con.execute("select version()").fetchone()[0]
-assert version_sql.startswith("v1.4.3")
+assert version_sql.startswith("${PACKAGE_VERSION}")
 
 # 3 Python package version check
-assert duckdb.__version__ == "1.4.3"
+assert duckdb.__version__ == "${PACKAGE_VERSION#v}"
 
 print("All DuckDB runtime tests passed.")
 EOF

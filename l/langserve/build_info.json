@@ -1,0 +1,16 @@
+{
+  "maintainer": "amit.kumar282",
+  "package_name": "langserve",
+  "github_url": "https://github.com/langchain-ai/langserve",
+  "version": "0.3.3",
+  "wheel_build": true,
+  "default_branch": "master",
+  "package_dir": "l/langserve",
+  "build_script": "langserve_v0.3.3_ubi9.7.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "0.3.*": {
+     "build_script":"langserve_v0.3.3_ubi9.7.sh"
+  }
+}

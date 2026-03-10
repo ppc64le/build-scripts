@@ -32,11 +32,13 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule update --init --recursive
 
-pip3 install setuptools coverage cython protobuf==4.25.8 wheel cmake==3.*
-
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
 export GRPC_PYTHON_BUILD_WITH_CYTHON=1
 export PATH="/opt/rh/gcc-toolset-13/root/usr/bin:${PATH}"
+
+pip3 install -r requirements.txt
+
+[[ "$(printf "%s\n" "$PACKAGE_VERSION" v1.62.3 | sort -V | head -n1)" == "$PACKAGE_VERSION" ]] && pip3 install --force-reinstall Cython==0.29.37
 
 # Install the package
 pip3 install . --no-build-isolation

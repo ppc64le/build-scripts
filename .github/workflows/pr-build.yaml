@@ -19,6 +19,7 @@ on:
       pr_number:
         description: "PR number of failing build"
         required: true
+        type: string
 
 run-name: >
   ${{ github.event_name == 'workflow_dispatch'
@@ -30,8 +31,15 @@ jobs:
     runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-24.04-ppc64le-p10' || inputs.large-runner }}
 
     steps:
-      - name: Checkout code
+      - name: Checkout code (Pull Request)
+        if: github.event_name == 'pull_request'
         uses: actions/checkout@v6
+
+      - name: Checkout code (Workflow Dispatch)
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/checkout@v6
+        with:
+          ref: refs/pull/${{ inputs.pr_number }}/head
 
       - name: Install required packages
         run: |
