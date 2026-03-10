@@ -168,30 +168,103 @@ jobs:
           name: updated-package-cache
           path: package-cache.tar.gz
 
-  wheel_build:
+  wheel_build_py39:
     needs: build_info
-    name: Create Wheel for Python ${{ matrix.python-version }}
     if: ${{ inputs.wheel_build == 'true' }}
     runs-on: ubuntu-24.04-ppc64le-p10
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - python-version: "3.9"
-            allow-failure: true
-          - python-version: "3.10"
-            allow-failure: false
-          - python-version: "3.11"
-            allow-failure: false
-          - python-version: "3.12"
-            allow-failure: false
-          - python-version: "3.13"
-            allow-failure: false
     env:
       GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
-      PYTHON_VERSION: ${{ matrix.python-version }}
+      PYTHON_VERSION: "3.9"
       PACKAGE_NAME: ${{ inputs.package_name }}
       VERSION: ${{ inputs.version }}
+  
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+  
+      - name: Install system dependencies
+        run: |
+          sudo apt update -y
+  
+      - name: Download package-cache from previous step
+        uses: actions/download-artifact@v7
+        with:
+          name: package-cache
+  
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+  
+      - name: Run build_wheels.sh
+        run: |
+          ls
+          echo "---------------------updated cache-----------------------"
+          ls package-cache
+          chmod +x package-cache/variable.sh
+          chmod +x package-cache/scanner-env.sh
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+        
+          echo "===== Checking files before log compression ====="
+          pwd
+          ls -lh
+          chmod +x ./gha-script/build_wheels.sh
+          bash ./gha-script/build_wheels.sh
+
+          echo "===========after execution =================="
+          sudo apt update -y
+          sudo lsb_release -a 2>/dev/null || echo "lsb_release not available"
+          sudo uname -a
+
+          echo "===== AFTER BUILD: checking for wheel_build_log ====="
+          WORKSPACE=$(pwd)
+          echo "Workspace = $WORKSPACE"
+          ls -lh
+
+          echo "----- specifically checking for wheel_build_log -----"
+          ls -lh "$WORKSPACE/wheel_build_log" || echo "wheel_build_log NOT found!"
+        
+          # ======= HANDLE LOG FILE SAFELY =======
+          LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py39_log.gz"
+
+          if [ -f "$WORKSPACE/wheel_build_log" ]; then
+            echo "Found wheel_build_log — compressing it"
+            gzip "$WORKSPACE/wheel_build_log"
+            mv "$WORKSPACE/wheel_build_log.gz" "$WORKSPACE/$LOG_NAME"
+          else
+            echo "wheel_build_log missing — creating fallback log"
+            echo "Wheel build completed for ${PACKAGE_NAME} ${VERSION} on Python 3.9" \
+              > "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py39_log"
+            gzip "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py39_log"
+            LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py39_log.gz"
+          fi
+
+          echo "Final log file to upload: $LOG_NAME"
+          chmod +x ./gha-script/upload-scripts/upload_file.sh
+          bash ./gha-script/upload-scripts/upload_file.sh $LOG_NAME
+          ls -lh "$WORKSPACE/$LOG_NAME"
+  
+      - name: Upload wheel artifact using custom script
+        run: |
+          if ls *.whl 1> /dev/null 2>&1; then
+            sudo chmod a+r *.whl
+            WHEEL_FILE=$(ls *.whl)
+            chmod +x ./gha-script/upload-scripts/upload_wheel.sh
+            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+          else
+            echo "No wheel file found!"
+            exit 1
+          fi  
+          
+  wheel_build_py310:
+    needs: build_info
+    if: ${{ inputs.wheel_build == 'true' }}
+    runs-on: ubuntu-24.04-ppc64le-p10
+    env:
+      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+      PYTHON_VERSION: "3.10"
+      PACKAGE_NAME: ${{ inputs.package_name }}
+      VERSION: ${{ inputs.version }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -217,57 +290,219 @@ jobs:
           chmod +x package-cache/scanner-env.sh
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
-          
-          echo "===== Checking files before log compression ====="
+        
           pwd
           ls -lh
           chmod +x ./gha-script/build_wheels.sh
           bash ./gha-script/build_wheels.sh
-          echo "===========after execution =================="
-          sudo apt update -y
-          sudo lsb_release -a 2>/dev/null || echo "lsb_release not available"
-          sudo uname -a
 
-          echo "===== AFTER BUILD: checking for wheel_build_log ====="
           WORKSPACE=$(pwd)
-          echo "Workspace = $WORKSPACE"
-          ls -lh
-
-          echo "----- specifically checking for wheel_build_log -----"
-          ls -lh "$WORKSPACE/wheel_build_log" || echo " wheel_build_log NOT found!"
-          
-          # ======= HANDLE LOG FILE SAFELY =======
-          LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py${{ matrix.python-version }}_log.gz"
+          LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py310_log.gz"
 
           if [ -f "$WORKSPACE/wheel_build_log" ]; then
-            echo "Found wheel_build_log — compressing it"
             gzip "$WORKSPACE/wheel_build_log"
             mv "$WORKSPACE/wheel_build_log.gz" "$WORKSPACE/$LOG_NAME"
           else
-            echo "wheel_build_log missing — creating fallback log"
-            echo "Wheel build completed for ${PACKAGE_NAME} ${VERSION} on Python ${{ matrix.python-version }}" \
-              > "$WORKSPACE/$LOG_NAME"
-            gzip "$WORKSPACE/$LOG_NAME"
-            LOG_NAME="${LOG_NAME}.gz"
+            echo "Wheel build completed for ${PACKAGE_NAME} ${VERSION} on Python 3.10" \
+              > "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py310_log"
+            gzip "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py310_log"
+            LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py310_log.gz"
           fi
 
-          echo "Final log file to upload: $LOG_NAME"
           chmod +x ./gha-script/upload-scripts/upload_file.sh
           bash ./gha-script/upload-scripts/upload_file.sh $LOG_NAME
-          ls -lh "$WORKSPACE/$LOG_NAME"
-          
-        continue-on-error: ${{ matrix.allow-failure }}
 
       - name: Upload wheel artifact using custom script
         run: |
-          sudo chmod a+r *.whl
-          WHEEL_FILE=*.whl
-          chmod +x ./gha-script/upload-scripts/upload_wheel.sh
-          bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE
-        continue-on-error: ${{ matrix.allow-failure }}
+          if ls *.whl 1> /dev/null 2>&1; then
+            sudo chmod a+r *.whl
+            WHEEL_FILE=$(ls *.whl)
+            chmod +x ./gha-script/upload-scripts/upload_wheel.sh
+            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+          else
+            echo "No wheel file found!"
+            exit 1
+          fi
+
+  wheel_build_py311:
+    needs: build_info
+    if: ${{ inputs.wheel_build == 'true' }}
+    runs-on: ubuntu-24.04-ppc64le-p10
+    env:
+      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+      PYTHON_VERSION: "3.11"
+      PACKAGE_NAME: ${{ inputs.package_name }}
+      VERSION: ${{ inputs.version }}
+
+    steps:
+      - uses: actions/checkout@v6
+      - run: sudo apt update -y
+      - uses: actions/download-artifact@v7
+        with:
+          name: package-cache
+
+      - run: tar -xzf package-cache.tar.gz
+  
+      - name: Run build_wheels.sh
+        run: |
+          chmod +x package-cache/variable.sh
+          chmod +x package-cache/scanner-env.sh
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+  
+          chmod +x ./gha-script/build_wheels.sh
+          bash ./gha-script/build_wheels.sh
+
+          WORKSPACE=$(pwd)
+          LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py311_log.gz"
+
+          if [ -f "$WORKSPACE/wheel_build_log" ]; then
+            gzip "$WORKSPACE/wheel_build_log"
+            mv "$WORKSPACE/wheel_build_log.gz" "$WORKSPACE/$LOG_NAME"
+          else
+            echo "Wheel build completed for ${PACKAGE_NAME} ${VERSION} on Python 3.11" \
+              > "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py311_log"
+            gzip "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py311_log"
+            LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py311_log.gz"
+          fi
+
+          chmod +x ./gha-script/upload-scripts/upload_file.sh
+          bash ./gha-script/upload-scripts/upload_file.sh $LOG_NAME
+
+      - name: Upload wheel
+        run: |
+          if ls *.whl 1> /dev/null 2>&1; then
+            sudo chmod a+r *.whl
+            WHEEL_FILE=$(ls *.whl)
+            chmod +x ./gha-script/upload-scripts/upload_wheel.sh
+            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+          else
+            echo "No wheel file found!"
+            exit 1
+          fi
+
+  wheel_build_py312:
+    needs: build_info
+    if: ${{ inputs.wheel_build == 'true' }}
+    runs-on: ubuntu-24.04-ppc64le-p10
+    env:
+      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+      PYTHON_VERSION: "3.12"
+      PACKAGE_NAME: ${{ inputs.package_name }}
+      VERSION: ${{ inputs.version }}
+
+    steps:
+      - uses: actions/checkout@v6
+      - run: sudo apt update -y
+ 
+      - uses: actions/download-artifact@v7
+        with:
+          name: package-cache
+
+      - run: tar -xzf package-cache.tar.gz
+  
+      - run: |
+          chmod +x package-cache/variable.sh
+          chmod +x package-cache/scanner-env.sh
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+  
+          chmod +x ./gha-script/build_wheels.sh
+          bash ./gha-script/build_wheels.sh
+  
+          WORKSPACE=$(pwd)
+          LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py312_log.gz"
+  
+          if [ -f "$WORKSPACE/wheel_build_log" ]; then
+            gzip "$WORKSPACE/wheel_build_log"
+            mv "$WORKSPACE/wheel_build_log.gz" "$WORKSPACE/$LOG_NAME"
+          else
+            echo "Wheel build completed for ${PACKAGE_NAME} ${VERSION} on Python 3.12" \
+              > "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py312_log"
+            gzip "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py312_log"
+            LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py312_log.gz"
+          fi
+
+          chmod +x ./gha-script/upload-scripts/upload_file.sh
+          bash ./gha-script/upload-scripts/upload_file.sh $LOG_NAME
+
+      - name: Upload wheel
+        run: |
+          if ls *.whl 1> /dev/null 2>&1; then
+            sudo chmod a+r *.whl
+            WHEEL_FILE=$(ls *.whl)
+            chmod +x ./gha-script/upload-scripts/upload_wheel.sh
+            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+          else
+            echo "No wheel file found!"
+            exit 1
+          fi
+  
+  wheel_build_py313:
+    needs: build_info
+    if: ${{ inputs.wheel_build == 'true' }}
+    runs-on: ubuntu-24.04-ppc64le-p10
+    env:
+      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+      PYTHON_VERSION: "3.13"
+      PACKAGE_NAME: ${{ inputs.package_name }}
+      VERSION: ${{ inputs.version }}
+
+    steps:
+      - uses: actions/checkout@v6
+      - run: sudo apt update -y
+
+      - uses: actions/download-artifact@v7
+        with:
+          name: package-cache
+
+      - run: tar -xzf package-cache.tar.gz
+
+      - run: |
+          chmod +x package-cache/variable.sh
+          chmod +x package-cache/scanner-env.sh
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+
+          chmod +x ./gha-script/build_wheels.sh
+          bash ./gha-script/build_wheels.sh
+
+          WORKSPACE=$(pwd)
+          LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py313_log.gz"
+
+          if [ -f "$WORKSPACE/wheel_build_log" ]; then
+            gzip "$WORKSPACE/wheel_build_log"
+            mv "$WORKSPACE/wheel_build_log.gz" "$WORKSPACE/$LOG_NAME"
+          else
+            echo "Wheel build completed for ${PACKAGE_NAME} ${VERSION} on Python 3.13" \
+              > "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py313_log"
+            gzip "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py313_log"
+            LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py313_log.gz"
+          fi
+
+          chmod +x ./gha-script/upload-scripts/upload_file.sh
+          bash ./gha-script/upload-scripts/upload_file.sh $LOG_NAME
+
+      - name: Upload wheel
+        run: |
+          if ls *.whl 1> /dev/null 2>&1; then
+            sudo chmod a+r *.whl
+            WHEEL_FILE=$(ls *.whl)
+            chmod +x ./gha-script/upload-scripts/upload_wheel.sh
+            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+          else
+            echo "No wheel file found!"
+            exit 1
+          fi
 
   wheel_licenses:
-    needs: wheel_build
+    if: ${{ always() && inputs.wheel_build == 'true' }}
+    needs:
+    - wheel_build_py39
+    - wheel_build_py310
+    - wheel_build_py311
+    - wheel_build_py312
+    - wheel_build_py313
     runs-on: ubuntu-24.04-ppc64le-p10
     steps:
       - uses: actions/checkout@v6
