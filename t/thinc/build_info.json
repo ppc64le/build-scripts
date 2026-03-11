@@ -1,0 +1,16 @@
+{
+  "maintainer": "puneetsharma21",
+  "package_name": "thinc",
+  "github_url": "https://github.com/explosion/thinc",
+  "version": "release-v8.3.6",
+  "wheel_build" : true,
+  "package_dir": "t/thinc",
+  "default_branch": "v8.3.x",
+  "build_script": "thinc_ubi_9.6.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*":{
+    "build_script":"thinc_ubi_9.6.sh"
+  }
+}

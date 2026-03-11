@@ -29,7 +29,7 @@ PACKAGE_DIR=tensorflow
 # install core dependencies
 yum install -y wget python3.12 python3.12-pip python3.12-devel  gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-binutils-devel gcc-toolset-13-gcc-c++ git make cmake binutils 
 
-yum install -y libffi-devel openssl-devel sqlite-devel zip rsync
+yum install -y libffi-devel openssl-devel sqlite-devel zip rsync libxcrypt-compat
 
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
@@ -243,6 +243,9 @@ SRC_DIR=$(pwd)
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/tensorflow/tf_2.16.2_fix.patch
 git apply tf_2.16.2_fix.patch
 
+sed -i "/python_aarch64/ s|! -path '\*python_aarch64\*'|! -path '*python_aarch64*' \\\
+  ! -path '*python_ppc64le*'|" tensorflow/tools/pip_package/build_pip_package.sh
+echo "------------Added ppc64le tag to exclude external paths---------------------"
 
 # Pick up additional variables defined from the conda build environment
 export PYTHON_BIN_PATH=$(which python3.12)
