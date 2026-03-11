@@ -43,7 +43,7 @@ python3 -m pip install --upgrade pip setuptools wheel
 # Install build dependencies
 python3 -m pip install --no-cache-dir cython numpy pytest setuptools
 
-echo "building spacy...."
+echo "building spacy..."
 
 if ! python3 -m pip install --no-cache-dir .; then
     echo "------------------$PACKAGE_NAME: build_fail------------------"
