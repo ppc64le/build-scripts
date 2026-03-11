@@ -31,7 +31,7 @@ PACKAGE_VERSION=${1:-1.0.9}
 PACKAGE_URL=https://github.com/langchain-ai/langgraph
 CURRENT_DIR=${PWD}
 
-PACKAGE_DIR="$CURRENT_DIR/$PACKAGE_NAME/libs/langgraph"
+PACKAGE_DIR="langgraph/libs/langgraph"
 
 # ---------------------------------------------------------------------------
 # 1. Install system dependencies
