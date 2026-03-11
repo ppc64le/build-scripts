@@ -45,7 +45,7 @@ run-name: Currency Build ${{ inputs.package_name }} && Unique ID ${{ inputs.uniq
 
 jobs:
   build_info:
-    runs-on: ubuntu-24.04-ppc64le
+    runs-on: ubuntu-24.04-ppc64le-p10
     env:
       PACKAGE_NAME: ${{ inputs.package_name }}
       VERSION: ${{ inputs.version }}
@@ -108,7 +108,7 @@ jobs:
   build:
     needs: build_info
     if: ${{ inputs.validate_build_script == 'true' }}
-    runs-on: ubuntu-24.04-ppc64le
+    runs-on: ubuntu-24.04-ppc64le-p10
     steps:
       - uses: actions/checkout@v6
 
@@ -171,7 +171,7 @@ jobs:
   wheel_build_py39:
     needs: build_info
     if: ${{ inputs.wheel_build == 'true' }}
-    runs-on: ubuntu-24.04-ppc64le
+    runs-on: ubuntu-24.04-ppc64le-p10
     env:
       GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
       GHA_CURRENCY_SERVICE_ID: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
@@ -262,7 +262,7 @@ jobs:
   wheel_build_py310:
     needs: build_info
     if: ${{ inputs.wheel_build == 'true' }}
-    runs-on: ubuntu-24.04-ppc64le
+    runs-on: ubuntu-24.04-ppc64le-p10
     env:
       GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
       GHA_CURRENCY_SERVICE_ID: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
@@ -335,7 +335,7 @@ jobs:
   wheel_build_py311:
     needs: build_info
     if: ${{ inputs.wheel_build == 'true' }}
-    runs-on: ubuntu-24.04-ppc64le
+    runs-on: ubuntu-24.04-ppc64le-p10
     env:
       GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
       GHA_CURRENCY_SERVICE_ID: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
@@ -426,7 +426,7 @@ jobs:
   wheel_build_py312:
     needs: build_info
     if: ${{ inputs.wheel_build == 'true' }}
-    runs-on: ubuntu-24.04-ppc64le
+    runs-on: ubuntu-24.04-ppc64le-p10
     env:
       GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
       GHA_CURRENCY_SERVICE_ID: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
@@ -517,7 +517,7 @@ jobs:
   wheel_build_py313:
    needs: build_info
    if: ${{ inputs.wheel_build == 'true' }}
-   runs-on: ubuntu-24.04-ppc64le
+   runs-on: ubuntu-24.04-ppc64le-p10
    env:
       GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
       GHA_CURRENCY_SERVICE_ID: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
@@ -613,7 +613,7 @@ jobs:
     - wheel_build_py311
     - wheel_build_py312
     - wheel_build_py313
-    runs-on: ubuntu-24.04-ppc64le
+    runs-on: ubuntu-24.04-ppc64le-p10
     steps:
       - uses: actions/checkout@v6
 
@@ -663,7 +663,7 @@ jobs:
   source_scanner:
     needs: build
     if: ${{ inputs.validate_build_script == 'true' }}
-    runs-on: ubuntu-24.04-ppc64le
+    runs-on: ubuntu-24.04-ppc64le-p10
     steps:
       - uses: actions/checkout@v6
 
@@ -737,7 +737,7 @@ jobs:
   build_docker:
     needs: build_info 
     if: ${{ inputs.build_docker == 'true' }}
-    runs-on: ubuntu-24.04-ppc64le
+    runs-on: ubuntu-24.04-ppc64le-p10
     steps:
       - uses: actions/checkout@v6
 
@@ -781,7 +781,7 @@ jobs:
   image_scanner:
     needs: build_docker
     if: ${{ inputs.build_docker == 'true' }}
-    runs-on: ubuntu-24.04-ppc64le
+    runs-on: ubuntu-24.04-ppc64le-p10
     steps:
       - uses: actions/checkout@v6
 
@@ -851,7 +851,7 @@ jobs:
   final_summary:
       name: Final Summary Stage
       needs: [build, source_scanner]
-      runs-on: ubuntu-24.04-ppc64le
+      runs-on: ubuntu-24.04-ppc64le-p10
       steps:
         - name: Checkout code
           uses: actions/checkout@v6
