@@ -254,7 +254,7 @@ mkdir -p "$WHEELHOUSE"
 
 # run auditwheel
 set +e
-audit_output=$(auditwheel repair "$wheel_file" --wheel-dir "$WHEELHOUSE" 2>&1)
+audit_output=$(auditwheel repair "$wheel_file" --wheel-dir "$WHEELHOUSE"  --exclude libtensorflow_framework.so.2 --exclude libpython3.11.so.1.0 --exclude libpython3.10.so.1.0 --exclude libpython3.12.so.1.0 --exclude libpython3.13.so.1.0 --exclude libc10.so --exclude libtorch.so --exclude libtorch_cpu.so --exclude libtorch_python.so --exclude libshm.so --exclude libtorchaudio.so --exclude libtorchtext.so --exclude libavutil-ffmpeg.so.54 --exclude libavformat-ffmpeg.so.56 --exclude libswscale-ffmpeg.so.3 --exclude libavcodec-ffmpeg.so.56 --exclude libavformat.so.57 --exclude libswscale.so.4 --exclude libavutil.so.55 --exclude libswscale.so.5 --exclude libavformat.so.58 2>&1)
 audit_status=$?
 set -e
 
@@ -361,4 +361,3 @@ cleanup "$VENV_DIR"
 [ -n "$TEMP_BUILD_SCRIPT_PATH" ] && rm "$CURRENT_DIR/$TEMP_BUILD_SCRIPT_PATH"
 
 exit 0
-
