@@ -144,6 +144,10 @@ if [ -f "$stripped_build_script" ]; then
 
   done < "$stripped_build_script"
   echo "Tested on value: $tested_on"
+
+  BUILD_SCRIPT_DATE=$(git log -1 --format=%ci -- "${stripped_build_script}")
+  echo "======== $BUILD_SCRIPT_DATE ============"
+
 fi
 
 # Export variables

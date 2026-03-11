@@ -6,7 +6,7 @@ import subprocess
 import docker
 import json
    
-def trigger_build_wheel(wrapper_file, python_version, image_name, file_name, version):
+def trigger_build_wheel(wrapper_file, python_version, image_name, file_name, version, post_process_file):
     # Docker client setup
     client = docker.DockerClient(base_url='unix://var/run/docker.sock')
     
@@ -28,7 +28,7 @@ def trigger_build_wheel(wrapper_file, python_version, image_name, file_name, ver
         command = [
             "bash",
             "-c",
-            f"cd /home/tester/ && ./{wrapper_file} {python_version} {file_name} {version}"
+            f"cd /home/tester/ && ./{wrapper_file} {python_version} {file_name} {version} {post_process_file}"
         ]
         
         # Run container
@@ -39,7 +39,13 @@ def trigger_build_wheel(wrapper_file, python_version, image_name, file_name, ver
             detach=True,
             volumes={current_dir: {'bind': '/home/tester/', 'mode': 'rw'}},  # Mount current directory with both files
             stderr=True,
-            stdout=True
+            stdout=True,
+            environment={
+               "COS_API_KEY": os.getenv("COS_API_KEY"),
+               "COS_SERVICE_INSTANCE_ID": os.getenv("COS_SERVICE_INSTANCE_ID"),
+               "COS_ENDPOINT": os.getenv("COS_ENDPOINT"),
+               "COS_BUCKET": os.getenv("COS_BUCKET")
+            }
         )
         
         #  STREAM logs in real-time
@@ -69,4 +75,4 @@ def trigger_build_wheel(wrapper_file, python_version, image_name, file_name, ver
 
 if __name__=="__main__":
     print("Inside python program")
-    trigger_build_wheel(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4],sys.argv[5])
+    trigger_build_wheel(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4],sys.argv[5],sys.argv[6])
