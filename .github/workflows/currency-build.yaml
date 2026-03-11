@@ -251,8 +251,9 @@ jobs:
           if ls *.whl 1> /dev/null 2>&1; then
             sudo chmod a+r *.whl
             WHEEL_FILE=$(ls *.whl)
+            SHA256_VALUE=$(cat sha256.sha)
             chmod +x ./gha-script/upload-scripts/upload_wheel.sh
-            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
           else
             echo "No wheel file found!"
             exit 1
@@ -264,7 +265,7 @@ jobs:
     runs-on: ubuntu-24.04-ppc64le
     env:
       GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
-      GHA_CURRENCY_SERVICE_ID_API: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
+      GHA_CURRENCY_SERVICE_ID: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
       PYTHON_VERSION: "3.10"
       PACKAGE_NAME: ${{ inputs.package_name }}
       VERSION: ${{ inputs.version }}
@@ -323,8 +324,9 @@ jobs:
           if ls *.whl 1> /dev/null 2>&1; then
             sudo chmod a+r *.whl
             WHEEL_FILE=$(ls *.whl)
+            SHA256_VALUE=$(cat sha256.sha)
             chmod +x ./gha-script/upload-scripts/upload_wheel.sh
-            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
           else
             echo "No wheel file found!"
             exit 1
@@ -413,8 +415,9 @@ jobs:
           if ls *.whl 1> /dev/null 2>&1; then
             sudo chmod a+r *.whl
             WHEEL_FILE=$(ls *.whl)
+            SHA256_VALUE=$(cat sha256.sha)
             chmod +x ./gha-script/upload-scripts/upload_wheel.sh
-            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
           else
             echo "No wheel file found!"
             exit 1
@@ -503,8 +506,9 @@ jobs:
           if ls *.whl 1> /dev/null 2>&1; then
             sudo chmod a+r *.whl
             WHEEL_FILE=$(ls *.whl)
+            SHA256_VALUE=$(cat sha256.sha)
             chmod +x ./gha-script/upload-scripts/upload_wheel.sh
-            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
           else
             echo "No wheel file found!"
             exit 1
@@ -593,8 +597,9 @@ jobs:
           if ls *.whl 1> /dev/null 2>&1; then
             sudo chmod a+r *.whl
             WHEEL_FILE=$(ls *.whl)
+            SHA256_VALUE=$(cat sha256.sha)
             chmod +x ./gha-script/upload-scripts/upload_wheel.sh
-            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
           else
             echo "No wheel file found!"
             exit 1
