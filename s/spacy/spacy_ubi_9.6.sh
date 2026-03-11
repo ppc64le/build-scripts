@@ -49,12 +49,14 @@ if ! python3 -m pip install --no-cache-dir .; then
     echo "------------------$PACKAGE_NAME: build_fail------------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_Fail"
     exit 1
+else
+    echo "------------------$PACKAGE_NAME:build_success-----------------"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Build_Success"
 fi
 
 cd /
 
 # functional test
-
 if ! (python3 - <<EOF
 import spacy
 from spacy.tokens import Doc
