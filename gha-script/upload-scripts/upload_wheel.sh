@@ -4,6 +4,12 @@
 WHEEL_FILE=$1
 WHEEL_SHA256=$2
 
+# Validate SHA256
+if [ -z "$WHEEL_SHA256" ]; then
+  echo "Error: SHA256 value is required."
+  exit 1
+fi
+
 echo
 echo "Uploading $WHEEL_FILE with SHA256 $WHEEL_SHA256"
 echo 
