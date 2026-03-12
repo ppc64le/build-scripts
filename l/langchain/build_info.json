@@ -10,7 +10,7 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
-   "0.3.*": {
+   "langchain-openai==0.3.*": {
     "build_script": "langchain_ubi_9.6.sh"
   },
   "*": {
