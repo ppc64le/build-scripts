@@ -214,6 +214,7 @@ ARG TEMP_DIR=/tmp/opensearch
 ARG OPENSEARCH_HOME=/usr/share/opensearch
 ARG OPENSEARCH_PATH_CONF=$OPENSEARCH_HOME/config
 ARG SECURITY_PLUGIN_DIR=$OPENSEARCH_HOME/plugins/opensearch-security
+ARG JACKSON_CORE_VERSION=2.18.6
 ARG PERFORMANCE_ANALYZER_PLUGIN_CONFIG_DIR=$OPENSEARCH_PATH_CONF/opensearch-performance-analyzer
 
 # Update packages
@@ -238,8 +239,21 @@ COPY * $TEMP_DIR/
 RUN chmod +x $TEMP_DIR/*.sh
 
 # Extract tarball and configure OpenSearch
+RUN yum install -y wget
 RUN ls -l $TEMP_DIR && \
     tar -xzpf /tmp/opensearch/opensearch-`uname -p`.tgz -C $OPENSEARCH_HOME --strip-components=1 && \
+    # -------------------------------------------------------------------
+    # CVE FIX: Replace vulnerable jackson-core jar shipped with OpenSearch
+    # Default jar: jackson-core-2.18.2.jar (contains HIGH CVE)
+    # We download patched version 2.18.6 from Maven Central
+    # -------------------------------------------------------------------
+    echo "Removing vulnerable jackson-core jar..." && \
+    rm -f /usr/share/opensearch/lib/jackson-core-*.jar && \
+    echo "Downloading patched jackson-core-${JACKSON_CORE_VERSION}.jar..." && \
+    wget -q https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/${JACKSON_CORE_VERSION}/jackson-core-${JACKSON_CORE_VERSION}.jar \
+        -O /usr/share/opensearch/lib/jackson-core-${JACKSON_CORE_VERSION}.jar && \
+    echo "Verifying jackson-core version inside image:" && \
+    ls -l /usr/share/opensearch/lib/jackson-core* && \
     MAJOR_VERSION_ENTRYPOINT=`echo $VERSION | cut -d. -f1` && \
     echo $MAJOR_VERSION_ENTRYPOINT && \
     if ! (ls $TEMP_DIR | grep -E "opensearch-docker-entrypoint-.*.x.sh" | grep $MAJOR_VERSION_ENTRYPOINT); then MAJOR_VERSION_ENTRYPOINT="default"; fi && \
