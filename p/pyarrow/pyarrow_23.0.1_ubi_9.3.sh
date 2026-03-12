@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package       : pyarrow
-# Version       : apache-arrow-19.0.0
+# Version       : apache-arrow-23.0.1
 # Source repo   : https://github.com/apache/arrow
 # Tested on     : UBI:9.3
 # Language      : Python, C
 # Ci-Check  : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Haritha Nagothu <haritha.nagothu2@ibm.com>
+# Maintainer    : Sakshi Jain <sakshi.jain16@ibm.com>
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
@@ -21,7 +21,7 @@ set -e
 
 PACKAGE_NAME=pyarrow
 PACKAGE_DIR=arrow/python
-PACKAGE_VERSION=${1:-apache-arrow-19.0.0}
+PACKAGE_VERSION=${1:-apache-arrow-23.0.1}
 PACKAGE_URL=https://github.com/apache/arrow
 version=$(echo "$PACKAGE_VERSION" | sed 's/^apache-arrow-//')
 CURRENT_DIR="${PWD}"
@@ -31,7 +31,7 @@ yum install -y python python-pip python-devel wget git make  python-devel xz-dev
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 SCRIPT_DIR=$(pwd)
-pip install ninja setuptools
+pip install ninja setuptools>=77
 
 #install cmake
 wget https://cmake.org/files/v3.28/cmake-3.28.0.tar.gz
@@ -773,8 +773,8 @@ then
   pip3 install "numpy>=2.0" "pandas>=2.2.3"
 else
   # Python < 3.13
-  pip3 install "cython<3"
-  pip3 install "numpy==1.26.4" "pandas==2.0.3"
+  pip3 install "cython>=3.1"
+  pip3 install "numpy==1.26.4" "pandas>=2.1"
 fi
 
 # pip install setuptools-scm "cython<3"
@@ -825,7 +825,7 @@ fi
 
 # Creating the wheel in the build script.Because When using the wrapper script,
 # the wheel file is generated with an unexpected version, e.g.,
-# 'pyarrow-19.0.1.dev0+ga8a979a41.d20250414-cp312-cp312-linux_ppc64le.whl'
+# 'pyarrow-23.0.1.dev0+ga8a979a41.d20250414-cp312-cp312-linux_ppc64le.whl'
 # This is because when the wheel is built using the command:
 # python -m build --wheel --no-isolation --outdir="$SCRIPT_DIR/"
 # If we using 'python3 setup.py bdist_wheel --dist-dir="$SCRIPT_DIR/"' produces a wheel with the expected naming format.
