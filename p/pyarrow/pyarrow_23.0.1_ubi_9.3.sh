@@ -27,11 +27,11 @@ version=$(echo "$PACKAGE_VERSION" | sed 's/^apache-arrow-//')
 CURRENT_DIR="${PWD}"
 
 echo "Install dependencies and tools."
-yum install -y python python-pip python-devel wget git make  python-devel xz-devel openssl-devel cmake zlib-devel libjpeg-devel gcc-toolset-13 cmake libevent libtool pkg-config  brotli-devel.ppc64le bzip2-devel lz4-devel
+yum install -y python3.11 python3.11-pip python3.11-devel wget git make  python3.11-devel xz-devel openssl-devel cmake zlib-devel libjpeg-devel gcc-toolset-13 cmake libevent libtool pkg-config  brotli-devel.ppc64le bzip2-devel lz4-devel
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 
 SCRIPT_DIR=$(pwd)
-pip install ninja setuptools>=77
+python3.11 -m pip install ninja setuptools==78.1.0
 
 #install cmake
 wget https://cmake.org/files/v3.28/cmake-3.28.0.tar.gz
@@ -757,11 +757,11 @@ cd $SCRIPT_DIR
 
 echo "Installing prerequisite for arrow..."
 
-PY_VER=$(python3 -c 'import sys;print(f"{sys.version_info.major}.{sys.version_info.minor}")')
+PY_VER=$(python3.11 -c 'import sys;print(f"{sys.version_info.major}.{sys.version_info.minor}")')
 
 # Always
-pip3 install -U pip
-pip3 install setuptools-scm
+python3.11 -m pip install -U pip
+python3.11 -m pip install setuptools-scm
 
 if python3 - <<'PY'
 import sys
@@ -769,12 +769,12 @@ raise SystemExit(0 if sys.version_info >= (3,13) else 1)
 PY
 then
   # Python ≥ 3.13
-  pip3 install "cython>=3.2"
-  pip3 install "numpy>=2.0" "pandas>=2.2.3"
+  python3.11 -m pip install "cython>=3.2"
+  python3.11 -m pip install "numpy>=2.0" "pandas>=2.2.3"
 else
   # Python < 3.13
-  pip3 install "cython>=3.1"
-  pip3 install "numpy==1.26.4" "pandas>=2.1"
+  python3.11 -m pip install "cython>=3.1"
+  python3.11 -m pip install "numpy==1.26.4" "pandas>=2.1"
 fi
 
 # pip install setuptools-scm "cython<3"
@@ -816,7 +816,7 @@ fi
 
 cd python
 
-if ! pip install . ; then
+if ! python3.11 -m pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -825,27 +825,27 @@ fi
 
 # Creating the wheel in the build script.Because When using the wrapper script,
 # the wheel file is generated with an unexpected version, e.g.,
-# 'pyarrow-23.0.1.dev0+ga8a979a41.d20250414-cp312-cp312-linux_ppc64le.whl'
+# 'pyarrow-19.0.1.dev0+ga8a979a41.d20250414-cp312-cp312-linux_ppc64le.whl'
 # This is because when the wheel is built using the command:
 # python -m build --wheel --no-isolation --outdir="$SCRIPT_DIR/"
 # If we using 'python3 setup.py bdist_wheel --dist-dir="$SCRIPT_DIR/"' produces a wheel with the expected naming format.
-pip install wheel
+python3.11 -m pip install wheel
 echo "Creating wheel....."
-python3 setup.py bdist_wheel --dist-dir="$SCRIPT_DIR/"
+python3.11 setup.py bdist_wheel --dist-dir="$SCRIPT_DIR/"
 
 echo "testing pyarrow...."
 cd ..
 export LD_LIBRARY_PATH=${ARROW_HOME}/lib:${SNAPPY_PREFIX}/lib:${C_ARES_PREFIX}/lib:${THRIFT_PREFIX}/lib:${UTF8PROC_PREFIX}/lib:${RE2_PREFIX}/lib:${LIBPROTO_INSTALL}/lib64:${GRPC_PREFIX}/lib:${ORC_PREFIX}/lib:${OpenBLASInstallPATH}/lib
 
-pip install -r python/requirements-test.txt "pytest<9"
+python3.11 -m pip install -r python/requirements-test.txt "pytest<9"
 
-PYARROW_LOCATION=$(python -c "import os; import pyarrow; print(os.path.dirname(pyarrow.__file__))")
+PYARROW_LOCATION=$(python3.11 -c "import os; import pyarrow; print(os.path.dirname(pyarrow.__file__))")
 export PARQUET_TEST_DATA="$(pwd)/cpp/submodules/parquet-testing/data"
 pushd testing
 export ARROW_TEST_DATA=$(pwd)/data
 popd
 
-if ! python -m pytest -k "not test_foreign_buffer and not test_get_include and not pandas" $PYARROW_LOCATION -vv ; then
+if ! python3.11 -m pytest -k "not test_foreign_buffer and not test_get_include and not pandas" $PYARROW_LOCATION -vv ; then
         echo "------------------$PACKAGE_NAME:test_fails---------------------"
         echo "$PACKAGE_URL $PACKAGE_NAME "
         echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | Github | Fail |  Test_Fails"
