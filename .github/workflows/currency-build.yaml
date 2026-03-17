@@ -172,6 +172,7 @@ jobs:
     needs: build_info
     if: ${{ inputs.wheel_build == 'true' }}
     runs-on: ubuntu-24.04-ppc64le-p10
+    continue-on-error: true
     env:
       GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
       GHA_CURRENCY_SERVICE_ID: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
@@ -518,6 +519,7 @@ jobs:
    needs: build_info
    if: ${{ inputs.wheel_build == 'true' }}
    runs-on: ubuntu-24.04-ppc64le-p10
+   continue-on-error: true
    env:
       GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
       GHA_CURRENCY_SERVICE_ID: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}

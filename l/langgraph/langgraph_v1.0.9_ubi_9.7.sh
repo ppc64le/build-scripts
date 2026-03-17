@@ -31,7 +31,7 @@ PACKAGE_VERSION=${1:-1.0.9}
 PACKAGE_URL=https://github.com/langchain-ai/langgraph
 CURRENT_DIR=${PWD}
 
-PACKAGE_DIR="$CURRENT_DIR/$PACKAGE_NAME/libs/langgraph"
+PACKAGE_DIR=langgraph/libs/langgraph
 
 # ---------------------------------------------------------------------------
 # 1. Install system dependencies
@@ -193,7 +193,7 @@ fi
 # 10. Build and install langgraph wheel
 # ---------------------------------------------------------------------------
 
-cd "$PACKAGE_DIR"
+cd "$CURRENT_DIR/$PACKAGE_NAME/libs/langgraph"
 
 if ! python3.12 -m build --wheel; then
     echo "------------------$PACKAGE_NAME:wheel_build_fails---------------------"
@@ -204,6 +204,9 @@ if ! python3.12 -m pip install dist/*.whl --force-reinstall --root-user-action=i
     echo "------------------$PACKAGE_NAME:wheel_install_fails---------------------"
     exit 1
 fi
+
+# Copy wheel to current directory
+cp dist/*.whl "$CURRENT_DIR"
 
 # ---------------------------------------------------------------------------
 # 11. Install SQLite
@@ -242,7 +245,7 @@ python3.12 -m pip install "langgraph-cli[inmem]" --root-user-action=ignore || tr
 # 13. Run unit tests
 # ---------------------------------------------------------------------------
 
-cd "$PACKAGE_DIR"
+cd "$CURRENT_DIR/$PACKAGE_NAME/libs/langgraph"
 
 if ! NO_DOCKER=true python3.12 -m pytest tests/ -v; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
