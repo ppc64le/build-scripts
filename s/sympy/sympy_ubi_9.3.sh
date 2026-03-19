@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/sympy/sympy.git
 dnf update -y
 dnf install -y python3-pip python3-devel gcc git 
 
-pip install pytest
+pip install pytest hypothesis
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
