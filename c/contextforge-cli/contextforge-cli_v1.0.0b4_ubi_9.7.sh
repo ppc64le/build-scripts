@@ -41,8 +41,12 @@ source "$HOME/.cargo/env"
 
 # 3. Setup uv
 echo ">>> Installing uv package manager..."
-curl -LsSf https://astral.sh/uv/install.sh | sh
-export PATH="$HOME/.cargo/bin:$PATH"
+#curl -LsSf https://astral.sh/uv/install.sh | sh
+#export PATH="$HOME/.cargo/bin:$PATH"
+python3.12 -m pip install --upgrade pip
+python3.12 -m pip install uv
+# Ensure uv is in PATH
+export PATH="$HOME/.local/bin:/usr/local/bin:$PATH"
 
 export UV_HTTP_TIMEOUT=300
 export UV_HTTP_RETRIES=5
