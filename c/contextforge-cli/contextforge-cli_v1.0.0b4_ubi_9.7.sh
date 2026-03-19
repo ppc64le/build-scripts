@@ -69,13 +69,18 @@ source .venv/bin/activate
 
 echo ">>> Installing dependencies and cforge..."
 # Note: uv will automatically read pyproject.toml and install all pinned dependecies
-uv pip install -e .[dev] --extra-index-url $IBM_WHEEL_INDEX --index-strategy unsafe-best-match
+if ! uv pip install -e ".[dev]" \
+    --extra-index-url $IBM_WHEEL_INDEX \
+    --index-strategy unsafe-best-match; then
+    echo "ERROR: $PACKAGE_NAME - Dependency installation failed."
+    exit 1
+fi
 
 # 6. Validation
 echo ">>> Validating CLI execution..."
 if ! cforge --help >/dev/null; then
     echo "ERROR: $PACKAGE_NAME - cforge CLI failed to execute."
-    exit 1
+    exit 2
 else
     echo "INFO: cforge CLI executed successfully."
 fi
