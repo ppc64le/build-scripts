@@ -41,7 +41,7 @@ fi
 
 # Run tests
 cd sympy/integrals/tests/
-if ! pytest -p no:warnings --ignore=test_manual.py; -W ignore::DeprecationWarning then
+if ! pytest -p no:warnings --ignore=test_manual.py; -W ignore::DeprecationWarning; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
