@@ -1,0 +1,60 @@
+--- requirements.txt.before	2026-02-24 14:31:51.266960953 -0500
++++ requirements.txt	2026-02-24 14:32:21.906959565 -0500
+@@ -1,7 +1,7 @@
+-fastapi==0.111.0
++fastapi==0.128.3
+ uvicorn[standard]==0.22.0
+-pydantic==2.7.1
+-python-multipart==0.0.9
++pydantic==2.11.5
++python-multipart==0.0.22
+ python-socketio
+ grpcio
+ 
+@@ -10,14 +10,13 @@
+ PyJWT[crypto]
+ 
+ requests==2.32.2
+-aiohttp==3.9.5
++aiohttp==3.13.3
+ httpx
+ 
+ # AI libraries
+ openai
+ anthropic
+ google-generativeai
+-vertexai
+ 
+ # Database
+ pymongo
+@@ -31,7 +30,6 @@
+ 
+ # Observability
+ langfuse
+-ddtrace
+ opik
+ 
+ # ML libraries
+@@ -50,7 +48,7 @@
+ tiktoken
+ 
+ # Image processing
+-Pillow
++Pillow==12.1.1
+ opencv-python
+ 
+ # Visualization
+@@ -58,10 +56,7 @@
+ seaborn
+ 
+ # Web scraping
+-selenium
+-playwright
+-beautifulsoup4
+ 
+ # Llama Index for RAG
+-llama-index
+-llama-index-llms-ollama
+\ No newline at end of file
++llama-index==0.13.0
++llama-index-llms-ollama

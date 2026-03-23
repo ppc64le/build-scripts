@@ -1,0 +1,28 @@
+diff --git a/setup.py b/setup.py
+index bf40f1f988..e5acabeaaf 100644
+--- a/setup.py
++++ b/setup.py
+@@ -268,9 +268,11 @@ def is_64_bit_python():
+ 
+ rust_features = []
+ if CURRENT_OS in ("Linux", "Darwin") and is_64_bit_python():
+-    rust_features.append("crashtracker")
++    rust_features.append("pyo3/extension-module")
+     rust_features.append("profiling")
+ 
++    if platform.machine() not in ("ppc64le", "ppc64"):
++        rust_features.append("crashtracker")
+ 
+ class PatchedDistribution(Distribution):
+     def __init__(self, attrs=None):
+@@ -616,8 +618,8 @@ class CustomBuildExt(build_ext):
+     def run(self):
+         self.build_rust()
+ 
+-        # Build libdd_wrapper before building other extensions that depend on it
+-        if CURRENT_OS in ("Linux", "Darwin") and is_64_bit_python():
++        # Build libdd_wrapper only when profiling is enabled
++        if CURRENT_OS in ("Linux", "Darwin") and is_64_bit_python() and "profiling" in rust_features:
+             self.build_libdd_wrapper()
+ 
+         super().run()

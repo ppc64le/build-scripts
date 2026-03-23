@@ -1,0 +1,16 @@
+{
+  "maintainer": "amit.kumar282",
+  "package_name": "contextforge-cli",
+  "github_url": "https://github.com/contextforge-org/contextforge-cli",
+  "version": "v1.0.0b4",
+  "wheel_build": true,
+  "default_branch": "master",
+  "package_dir": "c/contextforge-cli",
+  "build_script": "contextforge-cli_v1.0.0b4_ubi_9.7.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+     "build_script":"contextforge-cli_v1.0.0b4_ubi_9.7.sh"
+  }
+}
