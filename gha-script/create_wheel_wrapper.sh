@@ -36,7 +36,7 @@ install_python_version() {
         if ! python3.10 --version &>/dev/null; then
             yum install -y sudo zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
             yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
-            wget https://www.python.org/ftp/python/3.10.15/Python-3.10.15.tgz
+            wget https://www.python.org/ftp/python/3.10.20/Python-3.10.20.tgz
             tar xf Python-3.10.15.tgz
             cd Python-3.10.15
             ./configure --prefix=/usr/local --enable-optimizations
@@ -50,7 +50,7 @@ install_python_version() {
         if ! python3.13 --version &>/dev/null; then
             yum install -y sudo zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
             yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
-            wget https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tgz
+            wget https://www.python.org/ftp/python/3.13.10/Python-3.13.10.tgz
             tar xzf Python-3.13.0.tgz
             cd Python-3.13.0
             ./configure --prefix=/usr/local --enable-optimizations
