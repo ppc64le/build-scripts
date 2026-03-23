@@ -28,6 +28,12 @@
     },
     "build_script": "tensorflow_2.16.2_ubi9.6.sh"
   },
+  "v2.15.0": {
+    "patches": {
+      "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/tensorflow/tf_2.15.0_fix.patch"
+    },
+    "build_script": "tensorflow_2.15.0_ubi9.3.sh"
+  },
   "v2.14.1": {
     "patches": {
       "PATCH": "https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/tensorflow/tf_2.14.1_fix.patch"
