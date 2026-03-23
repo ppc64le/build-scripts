@@ -19,11 +19,12 @@
 # ---------------------------------------------------------------------------
 
 PACKAGE_NAME="openresty"
-PACKAGE_VERSION=${1:-1.27.1.2}
+PACKAGE_VERSION=${1:-v1.27.1.2}
+PACKAGE_VERSION=${PACKAGE_VERSION#v}
 PACKAGE_URL="https://github.com/openresty/openresty.git"
 SOURCE_ROOT="$(pwd)"
 
-echo "Building ${PACKAGE_NAME} version ${PACKAGE_VERSION}"
+echo "Building ${PACKAGE_NAME} version v${PACKAGE_VERSION}"
 
 # -------------------------------------------------------
 # Install system dependencies

@@ -18,6 +18,9 @@
     "base_docker_variant": "alpine"
   },
   "*": {
-    "build_script": "openresty_1.27.1.2_ubi9.7.sh"
+    "build_script": "openresty_1.27.1.2_ubi9.7.sh",
+    "dir": "1.27.1.2-alpine",
+    "base_docker_image": "alpine:3.22.3",
+    "base_docker_variant": "alpine"
   }
 }
