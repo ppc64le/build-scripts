@@ -757,11 +757,15 @@ python3.12 -m pip install datasets==2.14.7 --no-build-isolation --no-deps
 python3.12 -m pip install "multiprocess==0.70.15"
 python3.12 -m pip install "xxhash==3.4.1"
 python3.12 -m pip install "dill==0.3.7" "fsspec==2023.10.0" aiohttp pyarrow-hotfix
-python3.12 -m pip install "transformers==4.39.2"
+python3.12 -m pip install "transformers==4.39.2" maturin puccinialin
 IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
 python3.12 -m pip install   --prefer-binary   --trusted-host wheels.developerfirst.ibm.com   --extra-index-url ${IBM_WHEELS} llvmlite==0.45.1 numba==0.62.1
 
-export SETUPTOOLS_SCM_PRETEND_VERSION=$PACKAGE_VERSION
+
+# NOTE: outlines-core is built with maturin (Rust/PyO3).
+# The wheel version comes from Cargo.toml, not setuptools or SCM,
+# so we must update the [package] version here explicitly.
+sed -i "/^\[package\]/,/^\[/{/name = \"outlines-core\"/,/^\[/{s/^version = \".*\"/version = \"${PACKAGE_VERSION}\"/}}" Cargo.toml
 
 #install
 if ! (python3.12 -m pip install -e .) ; then
