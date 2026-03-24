@@ -286,7 +286,7 @@ elif [ "$audit_status" -eq 0 ]; then
 # any other case
 else
     echo
-    echo "ERROR: Auditwheel failed."
+    echo "===> ERROR: Auditwheel failed."
     echo
     exit 1
 fi
