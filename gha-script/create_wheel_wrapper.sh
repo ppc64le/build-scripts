@@ -37,13 +37,13 @@ install_python_version() {
             yum install -y sudo zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
             yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
             wget https://www.python.org/ftp/python/3.10.20/Python-3.10.20.tgz
-            tar xf Python-3.10.15.tgz
-            cd Python-3.10.15
+            tar xf Python-3.10.20.tgz
+            cd Python-3.10.20
             ./configure --prefix=/usr/local --enable-optimizations
             make -j2
             make altinstall
             echo "Completed..."
-            cd .. && rm -rf Python-3.10.15.tgz
+            cd .. && rm -rf Python-3.10.20.tgz
         fi
         ;;
     "3.13")
@@ -51,12 +51,12 @@ install_python_version() {
             yum install -y sudo zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
             yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
             wget https://www.python.org/ftp/python/3.13.10/Python-3.13.10.tgz
-            tar xzf Python-3.13.0.tgz
-            cd Python-3.13.0
+            tar xzf Python-3.13.10.tgz
+            cd Python-3.13.10
             ./configure --prefix=/usr/local --enable-optimizations
             make -j2
             make altinstall
-            cd .. && rm -rf Python-3.13.0.tgz
+            cd .. && rm -rf Python-3.13.10.tgz
         fi
         ;;
     *)
