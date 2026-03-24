@@ -159,7 +159,7 @@ echo "==================== Running package build-script starts =================
 echo
 
 if [ -n "$TEMP_BUILD_SCRIPT_PATH" ]; then
-    python$PYTHON_VERSION -m pip install --upgrade pip wheel build pytest nox tox requests setuptools
+    python$PYTHON_VERSION -m pip install --upgrade pip wheel build pytest nox tox requests setuptools ibm-cos-sdk auditwheel "patchelf>=0.14"
 
     package_dir=$(grep -oP '(?<=^PACKAGE_DIR=).*' "$TEMP_BUILD_SCRIPT_PATH" | tr -d '"')
     package_url=$(grep -oP '(?<=^PACKAGE_URL=).*' "$TEMP_BUILD_SCRIPT_PATH" | tr -d '"')
@@ -214,7 +214,6 @@ cd "$CURRENT_DIR"
 shopt -s nullglob
 wheels=("$CURRENT_DIR"/*.whl)
 wheel_count=${#wheels[@]}
-wheel_file="${wheels[0]}"
 
 # check the wheel count in the current dir
 if [ "$wheel_count" -ne 1 ]; then
@@ -224,12 +223,11 @@ if [ "$wheel_count" -ne 1 ]; then
     exit 1
 fi
 
+wheel_file="${wheels[0]}"
+
 echo 
 echo "==== Running auditwheel repair on: ${wheel_file} ===="
 echo 
-
-# install required tools
-pip install auditwheel "patchelf>=0.14"
 
 # location of repaired wheel
 WHEELHOUSE="$CURRENT_DIR/wheelhouse"
@@ -304,8 +302,6 @@ echo
 # generate sha256
 generate_sha "$BUILD_SCRIPT_PATH" "$PYTHON_VERSION" "$CURRENT_DIR" "$wheel_final"
 
-# install required dependencies for post_process_wheel.py
-pip install ibm-cos-sdk
 SHA256_VALUE=$(cat sha256.sha)
 
 echo
