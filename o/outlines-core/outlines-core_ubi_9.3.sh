@@ -759,7 +759,7 @@ python3.12 -m pip install "xxhash==3.4.1"
 python3.12 -m pip install "dill==0.3.7" "fsspec==2023.10.0" aiohttp pyarrow-hotfix
 python3.12 -m pip install "transformers==4.39.2" maturin puccinialin
 IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
-python3.12 -m pip install   --prefer-binary   --trusted-host wheels.developerfirst.ibm.com   --extra-index-url ${IBM_WHEELS} llvmlite==0.45.1 numba==0.62.1
+python3.12 -m pip install   --prefer-binary   --trusted-host wheels.developerfirst.ibm.com   --extra-index-url ${IBM_WHEELS} llvmlite==0.44.0 numba==0.62.1
 
 
 # NOTE: outlines-core is built with maturin (Rust/PyO3).
