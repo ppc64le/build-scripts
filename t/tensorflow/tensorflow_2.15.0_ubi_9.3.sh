@@ -147,7 +147,7 @@ wget -nc https://github.com/google/boringssl/archive/b9232f9e27e5668bc0414879dcd
 cd $CURRENT_DIR/$PACKAGE_DIR
 
 # Ensure environment vars are set before configure
-export TF_PYTHON_VERSION="3.11"
+export TF_PYTHON_VERSION=$(python3.11 --version | awk '{print $2}' | cut -d. -f1,2)
 export PYTHON_BIN_PATH=$(which python3.11)
 export USE_DEFAULT_PYTHON_LIB_PATH=1
 export TF_NEED_JEMALLOC=1
