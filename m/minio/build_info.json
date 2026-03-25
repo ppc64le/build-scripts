@@ -1,0 +1,23 @@
+{
+  "maintainer": "Simran.Sirsat@ibm.com",
+  "package_name": "minio",
+  "github_url": "https://github.com/minio/minio.git",
+  "version": "RELEASE.2025-10-15T17-29-55Z",
+  "required_versions":{"Releases": ["*"], "Tags": ["*"]},
+  "default_branch": "master",
+  "package_dir": "m/minio",
+  "build_script": "minio-RELEASE.2025-10-15T17-29-55Z_ubi9.7.sh",
+  "validate_build_script": true,
+  "use_non_root_user": true,
+  "docker_build": true,
+  "docker_cmd": "docker build -t ${package_name}-ppc64le:${PACKAGE_VERSION} ${dir}",
+  "RELEASE.2025-10-15T17-29-55Z": {
+    "build_script": "minio-RELEASE.2025-10-15T17-29-55Z_ubi9.7.sh",
+    "dir": "RELEASE.2025-10-15T17-29-55Z",
+    "base_docker_image": "ubi",
+    "base_docker_variant": "9.7"
+  },
+  "*": {
+    "build_script": "minio-RELEASE.2025-10-15T17-29-55Z_ubi9.7.sh"
+  }
+}
