@@ -544,18 +544,6 @@ def process_wheel(wheel_path, suffix):
         logger.error(f"Failed to process wheel → {e}")
         sys.exit(1)
 
-def sha256_file(path):
-    # Compute SHA256 hash of the given file and return as hex string
-    try:
-        h = hashlib.sha256()
-        with open(path, "rb") as f:
-            for chunk in iter(lambda: f.read(8192), b""):
-                h.update(chunk)
-        return h.hexdigest()
-    except Exception as e:
-        logger.error(f"Failed to compute SHA256 for {path} → {e}")
-        return None
-
 def create_cos_client():
     # Create and return an IBM COS client using the provided configuration
     try:
