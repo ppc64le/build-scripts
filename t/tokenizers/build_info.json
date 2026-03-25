@@ -10,6 +10,9 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
+  "v0.22.*": {
+   "build_script": "tokenizers_ubi_9.3.sh"
+  },
   "v0.21.0": {
    "build_script": "tokenizers_ubi_9.3.sh"
   },
