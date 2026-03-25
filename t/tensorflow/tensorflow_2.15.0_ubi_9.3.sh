@@ -20,7 +20,7 @@
 
 #variables
 PACKAGE_NAME=tensorflow
-PACKAGE_VERSION=v2.15.0
+PACKAGE_VERSION=${1:-v2.15.0}
 PACKAGE_URL=https://github.com/tensorflow/tensorflow
 CURRENT_DIR=$(pwd)
 WHEEL_DIR=$CURRENT_DIR/local_wheels
