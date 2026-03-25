@@ -21,7 +21,7 @@ set -e
 
 #Variables
 PACKAGE_NAME=py-filelock
-PACKAGE_VERSION="${1:-3.18.0}"
+PACKAGE_VERSION="${1:-3.25.2}"
 PACKAGE_URL=https://github.com/benediktschmitt/py-filelock
 
 #Install dependencies.
