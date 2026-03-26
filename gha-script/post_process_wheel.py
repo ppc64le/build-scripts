@@ -521,6 +521,11 @@ def process_wheel(wheel_path, suffix):
 
                 # Version suffix processing
                 old_version = read_version_from_metadata(dist_info)
+            
+                if old_version is None:
+                   logger.error("Version not found in METADATA, cannot proceed")
+                   sys.exit(1)
+                   
                 new_version = build_new_version(old_version, suffix)
                 update_metadata_version(dist_info, new_version)
                 dist_info = rename_dist_info_dir(extract_path, old_version, new_version)
@@ -542,7 +547,7 @@ def process_wheel(wheel_path, suffix):
         return new_wheel_path
     except Exception as e:
         logger.error(f"Failed to process wheel → {e}")
-        sys.exit(1)
+        return None
 
 def create_cos_client():
     # Create and return an IBM COS client using the provided configuration
