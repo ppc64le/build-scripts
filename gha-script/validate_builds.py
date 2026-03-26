@@ -11,9 +11,10 @@ import re
 
 
 
-GITHUB_BUILD_SCRIPT_BASE_REPO = "build-scripts"
+#GITHUB_BUILD_SCRIPT_BASE_REPO = "build-scripts"
 #GITHUB_BUILD_SCRIPT_BASE_OWNER = "ppc64le"
-GITHUB_BUILD_SCRIPT_BASE_OWNER = "stutiibm"
+repo = os.environ.get("GITHUB_REPOSITORY")  # 
+owner, repo_name = repo.split("/")
 HOME = os.getcwd()
 
 package_data = {}
@@ -266,11 +267,12 @@ def validate_build_info_file(file_name):
         raise e
 
 def trigger_build_validation_ci(pr_number):
-    pull_request_file_url = "https://api.github.com/repos/{}/{}/pulls/{}/files".format(
-        GITHUB_BUILD_SCRIPT_BASE_OWNER,
-        GITHUB_BUILD_SCRIPT_BASE_REPO,
-        pr_number
-    )
+    pull_request_file_url = f"https://api.github.com/repos/{owner}/{repo_name}/pulls/{pr_number}/files"
+    # pull_request_file_url = "https://api.github.com/repos/{}/{}/pulls/{}/files".format(
+    #     GITHUB_BUILD_SCRIPT_BASE_OWNER,
+    #     GITHUB_BUILD_SCRIPT_BASE_REPO,
+    #     pr_number
+    # )
 
     print(f"pull_request_file_url:{pull_request_file_url}" )
     
