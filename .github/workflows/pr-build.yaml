@@ -37,6 +37,7 @@ jobs:
         with:
              repository: ${{ github.event.pull_request.head.repo.full_name }}
              ref: ${{ github.event.pull_request.head.ref }}
+             fetch-depth: 0
 
       - name: Checkout code (Workflow Dispatch)
         if: github.event_name == 'workflow_dispatch'
@@ -85,11 +86,14 @@ jobs:
             fi
           fi
 
-
+      - name: Fetch base branch
+        run: |
+              git fetch origin ${{ github.base_ref }} --depth=1
 
       - name: Locate and parse build_info.json
         run: |
           BUILD_INFO_FILE=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep 'build_info.json' | head -n 1)
+          
 
           if [ -z "$BUILD_INFO_FILE" ]; then
             echo "build_info.json not found!"
