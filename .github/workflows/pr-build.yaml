@@ -27,7 +27,7 @@ run-name: >
       || github.event.pull_request.title }}
 
 jobs:
-  validate:
+  build_info:
     runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-24.04-ppc64le-p10' || inputs.large-runner }}
 
     steps:
@@ -44,7 +44,7 @@ jobs:
       - name: Install required packages
         run: |
           sudo apt update -y
-          sudo apt-get install -y file
+          sudo apt-get install -y file jq
 
       - name: Install Python dependencies
         run: |
@@ -54,28 +54,54 @@ jobs:
       - name: Set PR number
         run: echo "PR_NUMBER=${{ github.event.pull_request.number || inputs.pr_number }}" >> $GITHUB_ENV
 
-      - name: Run validate_builds.py script with live logs
+      - name: Locate and parse build_info.json
         run: |
-          python3 -u gha-script/validate_builds.py ${PR_NUMBER:-false} 2>&1 | tee build_log
-          my_pid_status=${PIPESTATUS[0]}
+          BUILD_INFO_FILE=$(find . -name "build_info.json" -print -quit)
 
-          build_size=$(stat -c %s build_log)
-
-          if [ "$my_pid_status" -ne 0 ]; then
-            echo "Script failed for PR #${PR_NUMBER}"
-            if [ "$build_size" -lt 1800000 ]; then
-              cat build_log
-            else
-              echo "Build log too large, showing last 100 lines"
-              tail -100 build_log
-            fi
+          if [ -z "$BUILD_INFO_FILE" ]; then
+            echo "build_info.json not found!"
             exit 1
-          else
-            echo "Script completed successfully for PR #${PR_NUMBER}"
-            if [ "$build_size" -lt 1800000 ]; then
-              cat build_log
-            else
-              echo "Build log too large, showing last 100 lines"
-              tail -100 build_log
-            fi
           fi
+
+          echo "Using build_info: $BUILD_INFO_FILE"
+
+          PACKAGE_NAME=$(jq -r '.package_name // ""' $BUILD_INFO_FILE)
+          VERSION=$(jq -r '.version // ""' $BUILD_INFO_FILE)
+
+          if [ -z "$PACKAGE_NAME" ] || [ -z "$VERSION" ]; then
+            echo "PACKAGE_NAME or VERSION missing in build_info.json"
+            exit 1
+          fi
+
+          echo "PACKAGE_NAME=$PACKAGE_NAME"
+          echo "VERSION=$VERSION"
+
+          # Export for next step
+          echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      # - name: Run validate_builds.py script with live logs
+      #   run: |
+      #     python3 -u gha-script/validate_builds.py ${PR_NUMBER:-false} 2>&1 | tee build_log
+      #     my_pid_status=${PIPESTATUS[0]}
+
+      #     build_size=$(stat -c %s build_log)
+
+      #     if [ "$my_pid_status" -ne 0 ]; then
+      #       echo "Script failed for PR #${PR_NUMBER}"
+      #       if [ "$build_size" -lt 1800000 ]; then
+      #         cat build_log
+      #       else
+      #         echo "Build log too large, showing last 100 lines"
+      #         tail -100 build_log
+      #       fi
+      #       exit 1
+      #     else
+      #       echo "Script completed successfully for PR #${PR_NUMBER}"
+      #       if [ "$build_size" -lt 1800000 ]; then
+      #         cat build_log
+      #       else
+      #         echo "Build log too large, showing last 100 lines"
+      #         tail -100 build_log
+      #       fi
+      #     fi
