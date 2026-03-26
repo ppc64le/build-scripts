@@ -19,7 +19,7 @@
 # -----------------------------------------------------------------------------
 
 PACKAGE_NAME=numba
-PACKAGE_VERSION=${1:-0.63.0}
+PACKAGE_VERSION=${1:-0.64.0}
 PACKAGE_URL=https://github.com/numba/numba
 PACKAGE_DIR=numba
 WORKING_DIR=$(pwd)
@@ -41,7 +41,11 @@ LLVM_PROJECT_GIT_URL="https://github.com/llvm/llvm-project.git"
 LLVM_PROJECT_GIT_TAG="llvmorg-20.1.8"
 
 LLVMLITE_PACKAGE_URL="https://github.com/numba/llvmlite"
-LLVMLITE_VERSION="v0.46.0dev0"
+if [[ "$(printf '%s\n' "0.64.0" "$PACKAGE_VERSION" | sort -V | head -n1)" == "0.64.0" ]]; then
+    LLVMLITE_VERSION="v0.46.0"
+else
+    LLVMLITE_VERSION="v0.46.0dev0"
+fi
 
 LLVM_SRC_DIR=$WORKING_DIR/llvm-project
 LLVM_INSTALL_DIR=$WORKING_DIR/llvm-install
@@ -49,7 +53,7 @@ LLVM_INSTALL_DIR=$WORKING_DIR/llvm-install
 git clone -b ${LLVM_PROJECT_GIT_TAG} ${LLVM_PROJECT_GIT_URL}
 git clone -b ${LLVMLITE_VERSION} ${LLVMLITE_PACKAGE_URL}
 
-python3.12 -m pip install ninja
+python3.12 -m pip install ninja wheel
 
 cd $LLVM_SRC_DIR
 git fetch --all --tags
