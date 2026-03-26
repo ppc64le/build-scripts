@@ -116,3 +116,47 @@ jobs:
           # Export for next step
           echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Read build_info.json
+        run: |
+          chmod +x ./gha-script/read_buildinfo.sh
+          bash ./gha-script/read_buildinfo.sh
+
+      - name: Create scanner-env.sh
+        run: |
+          mkdir -p package-cache
+          BUILD_INFO_FILE=$(find . -name "build_info.json" -print -quit)
+
+          echo "Using build_info: $BUILD_INFO_FILE"
+
+          PACKAGE_DIR=$(jq -r '.package_dir // ""' $BUILD_INFO_FILE)
+          WHEEL_BUILD=$(jq -r '.wheel_build // "false"' $BUILD_INFO_FILE)
+          DOCKER_BUILD=$(jq -r '.docker_build // "false"' $BUILD_INFO_FILE)
+          VALIDATE_BUILD=$(jq -r '.validate_build_script // "true"' $BUILD_INFO_FILE)
+
+
+          cat <<EOF > package-cache/scanner-env.sh
+          export PACKAGE_NAME=$PACKAGE_NAME
+          export VERSION=$VERSION
+          export PACKAGE_DIR=$PACKAGE_DIR
+          export WHEEL_BUILD=$WHEEL_BUILD
+          export BUILD_DOCKER=$DOCKER_BUILD
+          export VALIDATE_BUILD_SCRIPT=$VALIDATE_BUILD
+          EOF
+
+          mv variable.sh package-cache/ 
+          echo "-------------- scanner-env.sh created --------------------"
+          cat package-cache/scanner-env.sh
+          echo "-------------- variable.sh --------------------"
+          cat package-cache/variable.sh 
+
+      - name: Archive package cache
+        run: tar -czf package-cache.tar.gz package-cache/
+
+      - name: Upload package cache
+        uses: actions/upload-artifact@v6
+        with:
+           name: package-cache
+           path: package-cache.tar.gz
+
+      
