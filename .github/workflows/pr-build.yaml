@@ -67,23 +67,32 @@ jobs:
 
           build_size=$(stat -c %s build_log)
 
+          #if [ "$my_pid_status" -ne 0 ]; then
+          #  echo "Script failed for PR #${PR_NUMBER}"
+          #  if [ "$build_size" -lt 1800000 ]; then
+          #    cat build_log
+          #  else
+          #    echo "Build log too large, showing last 100 lines"
+          #    tail -100 build_log
+          #  fi
+          #  exit 1
+          #else
+          #  echo "Script completed successfully for PR #${PR_NUMBER}"
+          #  if [ "$build_size" -lt 1800000 ]; then
+          #    cat build_log
+          #  else
+          #    echo "Build log too large, showing last 100 lines"
+          #    tail -100 build_log
+          #  fi
+          #fi
           if [ "$my_pid_status" -ne 0 ]; then
-            echo "Script failed for PR #${PR_NUMBER}"
-            if [ "$build_size" -lt 1800000 ]; then
-              cat build_log
-            else
-              echo "Build log too large, showing last 100 lines"
-              tail -100 build_log
-            fi
-            exit 1
+              echo "Script failed for PR #${PR_NUMBER}"
+              echo "::group::Validation Logs"
+              tail -200 build_log
+              echo "::endgroup::"
+              exit 1
           else
-            echo "Script completed successfully for PR #${PR_NUMBER}"
-            if [ "$build_size" -lt 1800000 ]; then
-              cat build_log
-            else
-              echo "Build log too large, showing last 100 lines"
-              tail -100 build_log
-            fi
+              echo "Script completed successfully for PR #${PR_NUMBER}"
           fi
 
       - name: Fetch base branch
@@ -205,9 +214,10 @@ jobs:
             echo "Build failed!"
 
             if [ "$LOG_SIZE" -lt 1800000 ]; then
-              echo "----- FULL BUILD LOG -----"
-              echo "::group::Build Logs"
-                cat build_log
+                echo "----- FULL BUILD LOG -----"
+                echo "::group::Build Logs"
+                #cat build_log
+                tail -200 build_log
                 echo "::endgroup::"
             else
                 echo "Log too large, showing last 200 lines"
@@ -218,22 +228,23 @@ jobs:
           else
             echo "Build succeeded!"
 
-            if [ "$LOG_SIZE" -lt 1800000 ]; then
-                cat build_log
-            else
-                echo "Log too large, showing last 200 lines"
-                tail -200 build_log
-            fi
-          fi		  
-
+            #if [ "$LOG_SIZE" -lt 1800000 ]; then
+            #    cat build_log
+            #else
+            #    echo "Log too large, showing last 200 lines"
+            #    tail -200 build_log
+            #fi
+          fi
+          
           # Detect cloned package directory
           CLONED_PACKAGE=$(ls -td -- */ | head -n 1)
           if [ -z "$CLONED_PACKAGE" ]; then
-            echo "No cloned package found"
+            echo "❌ No cloned package found"
             exit 1
           fi
 
           echo "Detected cloned package: $CLONED_PACKAGE"
+
           sudo mv "$CLONED_PACKAGE" package-cache
 
           echo "export CLONED_PACKAGE=\"$CLONED_PACKAGE\"" >> package-cache/scanner-env.sh
