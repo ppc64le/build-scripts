@@ -125,7 +125,6 @@ jobs:
       - name: Create scanner-env.sh
         run: |
           mkdir -p package-cache
-          BUILD_INFO_FILE=$(find . -name "build_info.json" -print -quit)
 
           echo "Using build_info: $BUILD_INFO_FILE"
 
