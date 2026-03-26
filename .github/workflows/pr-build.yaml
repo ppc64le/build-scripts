@@ -89,7 +89,7 @@ jobs:
 
       - name: Locate and parse build_info.json
         run: |
-          BUILD_INFO_FILE=$(find . -name "build_info.json" -print -quit)
+          BUILD_INFO_FILE=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep 'build_info.json' | head -n 1)
 
           if [ -z "$BUILD_INFO_FILE" ]; then
             echo "build_info.json not found!"
