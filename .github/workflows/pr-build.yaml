@@ -25,7 +25,7 @@ run-name: >
   ${{ github.event_name == 'workflow_dispatch'
       && format('Retriggered build on {0} for PR {1}', inputs.large-runner, inputs.pr_number)
       || github.event.pull_request.title }}
-      
+
 jobs:
   build_info:
     runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-24.04-ppc64le-p10' || inputs.large-runner }}
@@ -160,102 +160,111 @@ jobs:
            path: package-cache.tar.gz
 
   build:
-      needs: build_info
-      runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-24.04-ppc64le-p10' || inputs.large-runner }}
+    needs: build_info
+    runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-24.04-ppc64le-p10' || inputs.large-runner }}
 
-      steps:
-        - uses: actions/checkout@v6
+    steps:
+      - uses: actions/checkout@v6
 
-        - name: Download package-cache
-          uses: actions/download-artifact@v7
-          with:
-            name: package-cache
+      - name: Download package-cache
+        uses: actions/download-artifact@v7
+        with:
+          name: package-cache
 
-        - name: Extract package cache
-          run: tar -xzf package-cache.tar.gz
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
 
-        - name: Build Package
-          #env:
-          #  GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
-          run: |
-            echo "Sourcing variable.sh and scanner-env.sh..."
-            source package-cache/variable.sh
-            source package-cache/scanner-env.sh
+      - name: Build Package
+        #env:
+        #  GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+        run: |
+          echo "Sourcing variable.sh and scanner-env.sh..."
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
 
-            echo "===== variable.sh ====="
-            cat package-cache/variable.sh
+          echo "===== variable.sh ====="
+          cat package-cache/variable.sh
 
-            echo "===== scanner-env.sh ====="
-            cat package-cache/scanner-env.sh
+          echo "===== scanner-env.sh ====="
+          cat package-cache/scanner-env.sh
 
-            echo "============== CPU INFO =============="
-            lscpu
-            echo "======================================"
+          echo "============== CPU INFO =============="
+          lscpu
+          echo "======================================"
 
-            chmod +x ./gha-script/build_package.sh
-            bash ./gha-script/build_package.sh 2>&1 | tee build_log
-            BUILD_STATUS=${PIPESTATUS[0]}
+          chmod +x ./gha-script/build_package.sh
+          echo "========== START BUILD =========="
+          set -uo pipefail
+          bash ./gha-script/build_package.sh 2>&1 | tee build_log
+          BUILD_STATUS=${PIPESTATUS[0]}
+          echo "========== BUILD FINISHED =========="
 
-            LOG_SIZE=$(stat -c %s build_log)
+          LOG_SIZE=$(stat -c %s build_log)
 
-            if [ "$BUILD_STATUS" -ne 0 ]; then
+          if [ "$BUILD_STATUS" -ne 0 ]; then
             echo "Build failed!"
 
-              if [ "$LOG_SIZE" -lt 1800000 ]; then
-                  cat build_log
-              else
-                  echo "Log too large, showing last 200 lines"
-                  tail -200 build_log
-              fi
-              exit 1
+            if [ "$LOG_SIZE" -lt 1800000 ]; then
+              echo "----- FULL BUILD LOG -----"
+              echo "::group::Build Logs"
+                cat build_log
+                echo "::endgroup::"
             else
-              echo "Build succeeded!"
- 
-              if [ "$LOG_SIZE" -lt 1800000 ]; then
-                  cat build_log
-              else
-                  echo "Log too large, showing last 200 lines"
-                  tail -200 build_log
-              fi
-            fi	  
+                echo "Log too large, showing last 200 lines"
+                tail -200 build_log
+            fi
 
-            # Detect cloned package directory
-            CLONED_PACKAGE=$(ls -td -- */ | head -n 1)
-  
-            echo "Detected cloned package: $CLONED_PACKAGE"
-  
-            sudo mv "$CLONED_PACKAGE" package-cache
-  
-            echo "export CLONED_PACKAGE=\"$CLONED_PACKAGE\"" >> package-cache/scanner-env.sh
-  
-            echo "----- Updated scanner-env.sh -----"
-            cat package-cache/scanner-env.sh
-  
-            cd package-cache
-            sudo chown $USER:$USER -R .
-  
-            chmod +x ../gha-script/pre_process.sh
-            bash ../gha-script/pre_process.sh
-  
-            cd $GITHUB_WORKSPACE
-  
-            #gzip build_log || true
-  
-            #chmod +x ./gha-script/upload-scripts/upload_file.sh
-            #bash ./gha-script/upload-scripts/upload_file.sh build_log.gz
-  
-        - name: Fix permissions on package-cache
-          run: |
-            USER=$(whoami)
-            sudo chown -R $USER:$USER package-cache
-            sudo chmod -R u+rwX,go+rX,go-w package-cache
-  
-        - name: Archive updated package cache
-          run: tar -czf package-cache.tar.gz package-cache/
-  
-        - name: Upload updated package-cache
-          uses: actions/upload-artifact@v6
-          with:
-            name: updated-package-cache
-            path: package-cache.tar.gz
-      
+            exit 1
+          else
+            echo "Build succeeded!"
+
+            if [ "$LOG_SIZE" -lt 1800000 ]; then
+                cat build_log
+            else
+                echo "Log too large, showing last 200 lines"
+                tail -200 build_log
+            fi
+          fi		  
+
+          # Detect cloned package directory
+          CLONED_PACKAGE=$(ls -td -- */ | head -n 1)
+          if [ -z "$CLONED_PACKAGE" ]; then
+            echo "No cloned package found"
+            exit 1
+          fi
+
+          echo "Detected cloned package: $CLONED_PACKAGE"
+          sudo mv "$CLONED_PACKAGE" package-cache
+
+          echo "export CLONED_PACKAGE=\"$CLONED_PACKAGE\"" >> package-cache/scanner-env.sh
+
+          echo "----- Updated scanner-env.sh -----"
+          cat package-cache/scanner-env.sh
+
+          cd package-cache
+          sudo chown $USER:$USER -R .
+
+          chmod +x ../gha-script/pre_process.sh
+          bash ../gha-script/pre_process.sh
+
+          cd $GITHUB_WORKSPACE
+
+          #gzip build_log || true
+
+          #chmod +x ./gha-script/upload-scripts/upload_file.sh
+          #bash ./gha-script/upload-scripts/upload_file.sh build_log.gz
+
+      - name: Fix permissions on package-cache
+        run: |
+          USER=$(whoami)
+          sudo chown -R $USER:$USER package-cache
+          sudo chmod -R u+rwX,go+rX,go-w package-cache
+
+      - name: Archive updated package cache
+        run: tar -czf package-cache.tar.gz package-cache/
+
+      - name: Upload updated package-cache
+        uses: actions/upload-artifact@v6
+        with:
+          name: updated-package-cache
+          path: package-cache.tar.gz
