@@ -54,6 +54,36 @@ jobs:
       - name: Set PR number
         run: echo "PR_NUMBER=${{ github.event.pull_request.number || inputs.pr_number }}" >> $GITHUB_ENV
 
+
+
+      - name: Run validate_builds.py script with live logs
+        run: |
+          python3 -u gha-script/validate_builds.py ${PR_NUMBER:-false} 2>&1 | tee build_log
+          my_pid_status=${PIPESTATUS[0]}
+
+          build_size=$(stat -c %s build_log)
+
+          if [ "$my_pid_status" -ne 0 ]; then
+            echo "Script failed for PR #${PR_NUMBER}"
+            if [ "$build_size" -lt 1800000 ]; then
+              cat build_log
+            else
+              echo "Build log too large, showing last 100 lines"
+              tail -100 build_log
+            fi
+            exit 1
+          else
+            echo "Script completed successfully for PR #${PR_NUMBER}"
+            if [ "$build_size" -lt 1800000 ]; then
+              cat build_log
+            else
+              echo "Build log too large, showing last 100 lines"
+              tail -100 build_log
+            fi
+          fi
+
+
+
       - name: Locate and parse build_info.json
         run: |
           BUILD_INFO_FILE=$(find . -name "build_info.json" -print -quit)
@@ -79,29 +109,3 @@ jobs:
           # Export for next step
           echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-
-      # - name: Run validate_builds.py script with live logs
-      #   run: |
-      #     python3 -u gha-script/validate_builds.py ${PR_NUMBER:-false} 2>&1 | tee build_log
-      #     my_pid_status=${PIPESTATUS[0]}
-
-      #     build_size=$(stat -c %s build_log)
-
-      #     if [ "$my_pid_status" -ne 0 ]; then
-      #       echo "Script failed for PR #${PR_NUMBER}"
-      #       if [ "$build_size" -lt 1800000 ]; then
-      #         cat build_log
-      #       else
-      #         echo "Build log too large, showing last 100 lines"
-      #         tail -100 build_log
-      #       fi
-      #       exit 1
-      #     else
-      #       echo "Script completed successfully for PR #${PR_NUMBER}"
-      #       if [ "$build_size" -lt 1800000 ]; then
-      #         cat build_log
-      #       else
-      #         echo "Build log too large, showing last 100 lines"
-      #         tail -100 build_log
-      #       fi
-      #     fi
