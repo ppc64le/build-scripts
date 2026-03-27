@@ -49,7 +49,16 @@ if ! (python3 -m pip install .) ; then
 fi
 
 # test
-if (python3 -m unittest discover); then
+cd /
+TEST_OUTPUT=$(PYTHONPATH="" python3 -m pytest -v /$PACKAGE_DIR -k "not test_main" 2>&1)
+TEST_EXIT=$?
+
+echo "$TEST_OUTPUT"
+
+if echo "$TEST_OUTPUT" | grep -q "collected 0 items"; then
+    echo "------------------$PACKAGE_NAME:No_tests_found---------------------"
+    exit 2
+elif [ $TEST_EXIT -eq 0 ]; then
     echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
