@@ -21,7 +21,7 @@ set -e
 
 #Variables
 PACKAGE_NAME=py-filelock
-PACKAGE_VERSION="${1:-3.18.0}"
+PACKAGE_VERSION="${1:-3.25.2}"
 PACKAGE_URL=https://github.com/benediktschmitt/py-filelock
 
 #Install dependencies.
@@ -35,7 +35,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 
-pip install pytest pytest-asyncio pytest-tornasync virtualenv pytest-trio pytest-mock
+pip install pytest pytest-asyncio pytest-tornasync virtualenv pytest-trio pytest-mock pytest-timeout
 
 if ! pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
