@@ -26,7 +26,80 @@ run-name: >
       && format('Retriggered build on {0} for PR {1}', inputs.large-runner, inputs.pr_number)
       || github.event.pull_request.title }}
 
+# ===================== ANCHORS =====================
+x-wheel-job: &wheel-job
+  needs: build_info
+  runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-24.04-ppc64le-p10' || inputs.large-runner }}
+
+x-wheel-env: &wheel-env
+  GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+  GHA_CURRENCY_SERVICE_ID: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
+  PACKAGE_NAME: ${{ env.PACKAGE_NAME }}
+  VERSION: ${{ env.VERSION }}
+
+x-wheel-steps: &wheel-steps
+  - name: Checkout code
+    uses: actions/checkout@v6
+    with:
+      fetch-depth: 0
+
+  - name: Install system dependencies
+    run: sudo apt update -y
+
+  - name: Download package-cache
+    uses: actions/download-artifact@v7
+    with:
+      name: package-cache
+
+  - name: Extract package cache
+    run: tar -xzf package-cache.tar.gz
+
+  - name: Run build_wheels.sh
+    run: |
+      ls
+      echo "---------------------updated cache-----------------------"
+      ls package-cache
+
+      chmod +x package-cache/variable.sh
+      chmod +x package-cache/scanner-env.sh
+      source package-cache/variable.sh
+      source package-cache/scanner-env.sh
+
+      chmod +x ./gha-script/build_wheels.sh
+      bash ./gha-script/build_wheels.sh
+
+      WORKSPACE=$(pwd)
+      LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py${PYTHON_VERSION}_log.gz"
+
+      if [ -f "$WORKSPACE/wheel_build_log" ]; then
+        gzip "$WORKSPACE/wheel_build_log"
+        mv "$WORKSPACE/wheel_build_log.gz" "$WORKSPACE/$LOG_NAME"
+      else
+        echo "Wheel build completed for ${PACKAGE_NAME} ${VERSION} on Python ${PYTHON_VERSION}" \
+          > "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py${PYTHON_VERSION}_log"
+        gzip "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py${PYTHON_VERSION}_log"
+        LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py${PYTHON_VERSION}_log.gz"
+      fi
+
+      chmod +x ./gha-script/upload-scripts/upload_file.sh
+      bash ./gha-script/upload-scripts/upload_file.sh $LOG_NAME
+
+  - name: Upload wheel artifact
+    run: |
+      if ls *.whl 1> /dev/null 2>&1; then
+        sudo chmod a+r *.whl
+        WHEEL_FILE=$(ls *.whl)
+        SHA256_VALUE=$(cat sha256.sha)
+        chmod +x ./gha-script/upload-scripts/upload_wheel.sh
+        bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
+      else
+        echo "No wheel file found!"
+        exit 1
+      fi
+
+# ===================== JOBS =====================
 jobs:
+
   build_info:
     runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-24.04-ppc64le-p10' || inputs.large-runner }}
 
@@ -58,74 +131,28 @@ jobs:
       - name: Set PR number
         run: echo "PR_NUMBER=${{ github.event.pull_request.number || inputs.pr_number }}" >> $GITHUB_ENV
 
-
-
-      - name: Run validate_builds.py script with live logs
+      - name: Run validate_builds.py
         run: |
-          python3 -u gha-script/validate_builds.py ${PR_NUMBER:-false} 2>&1 | tee build_log
-          my_pid_status=${PIPESTATUS[0]}
-
-          build_size=$(stat -c %s build_log)
-
-          #if [ "$my_pid_status" -ne 0 ]; then
-          #  echo "Script failed for PR #${PR_NUMBER}"
-          #  if [ "$build_size" -lt 1800000 ]; then
-          #    cat build_log
-          #  else
-          #    echo "Build log too large, showing last 100 lines"
-          #    tail -100 build_log
-          #  fi
-          #  exit 1
-          #else
-          #  echo "Script completed successfully for PR #${PR_NUMBER}"
-          #  if [ "$build_size" -lt 1800000 ]; then
-          #    cat build_log
-          #  else
-          #    echo "Build log too large, showing last 100 lines"
-          #    tail -100 build_log
-          #  fi
-          #fi
-          if [ "$my_pid_status" -ne 0 ]; then
-              echo "Script failed for PR #${PR_NUMBER}"
-              echo "::group::Validation Logs"
-              tail -200 build_log
-              echo "::endgroup::"
-              exit 1
-          else
-              echo "Script completed successfully for PR #${PR_NUMBER}"
-          fi
+          python3 -u gha-script/validate_builds.py ${PR_NUMBER:-false}
 
       - name: Fetch base branch
-        run: |
-              git fetch origin ${{ github.base_ref }} --depth=1
+        run: git fetch origin ${{ github.base_ref }} --depth=1
 
       - name: Locate and parse build_info.json
         run: |
           BUILD_INFO_FILE=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep 'build_info.json' | head -n 1)
-          
 
           if [ -z "$BUILD_INFO_FILE" ]; then
             echo "build_info.json not found!"
             exit 1
           fi
 
-          echo "Using build_info: $BUILD_INFO_FILE"
-
           PACKAGE_NAME=$(jq -r '.package_name // ""' $BUILD_INFO_FILE)
           VERSION=$(jq -r '.version // ""' $BUILD_INFO_FILE)
 
-          if [ -z "$PACKAGE_NAME" ] || [ -z "$VERSION" ]; then
-            echo "PACKAGE_NAME or VERSION missing in build_info.json"
-            exit 1
-          fi
-
-          echo "PACKAGE_NAME=$PACKAGE_NAME"
-          echo "VERSION=$VERSION"
-
-          # Export for next step
-          echo "BUILD_INFO_FILE=$BUILD_INFO_FILE" >> $GITHUB_ENV
           echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "BUILD_INFO_FILE=$BUILD_INFO_FILE" >> $GITHUB_ENV
 
       - name: Read build_info.json
         run: |
@@ -135,29 +162,17 @@ jobs:
       - name: Create scanner-env.sh
         run: |
           mkdir -p package-cache
-
-          echo "Using build_info: $BUILD_INFO_FILE"
-
           PACKAGE_DIR=$(jq -r '.package_dir // ""' $BUILD_INFO_FILE)
           WHEEL_BUILD=$(jq -r '.wheel_build // "false"' $BUILD_INFO_FILE)
-          DOCKER_BUILD=$(jq -r '.docker_build // "false"' $BUILD_INFO_FILE)
-          VALIDATE_BUILD=$(jq -r '.validate_build_script // "true"' $BUILD_INFO_FILE)
-
 
           cat <<EOF > package-cache/scanner-env.sh
           export PACKAGE_NAME=$PACKAGE_NAME
           export VERSION=$VERSION
           export PACKAGE_DIR=$PACKAGE_DIR
           export WHEEL_BUILD=$WHEEL_BUILD
-          export BUILD_DOCKER=$DOCKER_BUILD
-          export VALIDATE_BUILD_SCRIPT=$VALIDATE_BUILD
           EOF
 
-          mv variable.sh package-cache/ 
-          echo "-------------- scanner-env.sh created --------------------"
-          cat package-cache/scanner-env.sh
-          echo "-------------- variable.sh --------------------"
-          cat package-cache/variable.sh 
+          mv variable.sh package-cache/
 
       - name: Archive package cache
         run: tar -czf package-cache.tar.gz package-cache/
@@ -184,99 +199,53 @@ jobs:
         run: tar -xzf package-cache.tar.gz
 
       - name: Build Package
-        #env:
-        #  GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
         run: |
-          echo "Sourcing variable.sh and scanner-env.sh..."
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
 
-          echo "===== variable.sh ====="
-          cat package-cache/variable.sh
-
-          echo "===== scanner-env.sh ====="
-          cat package-cache/scanner-env.sh
-
-          echo "============== CPU INFO =============="
-          lscpu
-          echo "======================================"
-
           chmod +x ./gha-script/build_package.sh
-          echo "========== START BUILD =========="
-          set -uo pipefail
-          #bash ./gha-script/build_package.sh 2>&1 | tee build_log
-          bash ./gha-script/build_package.sh 
-          #BUILD_STATUS=${PIPESTATUS[0]}
-          echo "========== BUILD FINISHED =========="
+          bash ./gha-script/build_package.sh
 
-          #LOG_SIZE=$(stat -c %s build_log)
+# ===================== WHEEL JOBS =====================
 
-          # if [ "$BUILD_STATUS" -ne 0 ]; then
-          #   echo "Build failed!"
+  wheel_build_py39:
+    <<: *wheel-job
+    if: ${{ env.WHEEL_BUILD == 'true' }}
+    continue-on-error: true
+    env:
+      <<: *wheel-env
+      PYTHON_VERSION: "3.9"
+    steps: *wheel-steps
 
-          #   if [ "$LOG_SIZE" -lt 1800000 ]; then
-          #       echo "----- FULL BUILD LOG -----"
-          #       echo "::group::Build Logs"
-          #       #cat build_log
-          #       tail -200 build_log
-          #       echo "::endgroup::"
-          #   else
-          #       echo "Log too large, showing last 200 lines"
-          #       tail -200 build_log
-          #   fi
+  wheel_build_py310:
+    <<: *wheel-job
+    if: ${{ env.WHEEL_BUILD == 'true' }}
+    env:
+      <<: *wheel-env
+      PYTHON_VERSION: "3.10"
+    steps: *wheel-steps
 
-          #   exit 1
-          # else
-          #   echo "Build succeeded!"
+  wheel_build_py311:
+    <<: *wheel-job
+    if: ${{ env.WHEEL_BUILD == 'true' }}
+    env:
+      <<: *wheel-env
+      PYTHON_VERSION: "3.11"
+    steps: *wheel-steps
 
-          #   #if [ "$LOG_SIZE" -lt 1800000 ]; then
-          #   #    cat build_log
-          #   #else
-          #   #    echo "Log too large, showing last 200 lines"
-          #   #    tail -200 build_log
-          #   #fi
-          # fi
-          
-          # Detect cloned package directory
-          CLONED_PACKAGE=$(ls -td -- */ | head -n 1)
-          if [ -z "$CLONED_PACKAGE" ]; then
-            echo "❌ No cloned package found"
-            exit 1
-          fi
+  wheel_build_py312:
+    <<: *wheel-job
+    if: ${{ env.WHEEL_BUILD == 'true' }}
+    env:
+      <<: *wheel-env
+      PYTHON_VERSION: "3.12"
+    steps: *wheel-steps
 
-          echo "Detected cloned package: $CLONED_PACKAGE"
-
-          sudo mv "$CLONED_PACKAGE" package-cache
-
-          echo "export CLONED_PACKAGE=\"$CLONED_PACKAGE\"" >> package-cache/scanner-env.sh
-
-          echo "----- Updated scanner-env.sh -----"
-          cat package-cache/scanner-env.sh
-
-          cd package-cache
-          sudo chown $USER:$USER -R .
-
-          chmod +x ../gha-script/pre_process.sh
-          bash ../gha-script/pre_process.sh
-
-          cd $GITHUB_WORKSPACE
-
-          #gzip build_log || true
-
-          #chmod +x ./gha-script/upload-scripts/upload_file.sh
-          #bash ./gha-script/upload-scripts/upload_file.sh build_log.gz
-
-      - name: Fix permissions on package-cache
-        run: |
-          USER=$(whoami)
-          sudo chown -R $USER:$USER package-cache
-          sudo chmod -R u+rwX,go+rX,go-w package-cache
-
-      - name: Archive updated package cache
-        run: tar -czf package-cache.tar.gz package-cache/
-
-      - name: Upload updated package-cache
-        uses: actions/upload-artifact@v6
-        with:
-          name: updated-package-cache
-          path: package-cache.tar.gz
+  wheel_build_py313:
+    <<: *wheel-job
+    if: ${{ env.WHEEL_BUILD == 'true' }}
+    continue-on-error: true
+    env:
+      <<: *wheel-env
+      PYTHON_VERSION: "3.13"
+    steps: *wheel-steps
