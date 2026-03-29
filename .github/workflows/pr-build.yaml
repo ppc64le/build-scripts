@@ -26,78 +26,6 @@ run-name: >
       && format('Retriggered build on {0} for PR {1}', inputs.large-runner, inputs.pr_number)
       || github.event.pull_request.title }}
 
-# ===================== ANCHORS =====================
-x-wheel-job: &wheel-job
-  needs: build_info
-  runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-24.04-ppc64le-p10' || inputs.large-runner }}
-
-x-wheel-env: &wheel-env
-  GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
-  GHA_CURRENCY_SERVICE_ID: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
-  PACKAGE_NAME: ${{ env.PACKAGE_NAME }}
-  VERSION: ${{ env.VERSION }}
-
-x-wheel-steps: &wheel-steps
-  - name: Checkout code
-    uses: actions/checkout@v6
-    with:
-      fetch-depth: 0
-
-  - name: Install system dependencies
-    run: sudo apt update -y
-
-  - name: Download package-cache
-    uses: actions/download-artifact@v7
-    with:
-      name: package-cache
-
-  - name: Extract package cache
-    run: tar -xzf package-cache.tar.gz
-
-  - name: Run build_wheels.sh
-    run: |
-      ls
-      echo "---------------------updated cache-----------------------"
-      ls package-cache
-
-      chmod +x package-cache/variable.sh
-      chmod +x package-cache/scanner-env.sh
-      source package-cache/variable.sh
-      source package-cache/scanner-env.sh
-
-      chmod +x ./gha-script/build_wheels.sh
-      bash ./gha-script/build_wheels.sh
-
-      WORKSPACE=$(pwd)
-      LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py${PYTHON_VERSION}_log.gz"
-
-      if [ -f "$WORKSPACE/wheel_build_log" ]; then
-        gzip "$WORKSPACE/wheel_build_log"
-        mv "$WORKSPACE/wheel_build_log.gz" "$WORKSPACE/$LOG_NAME"
-      else
-        echo "Wheel build completed for ${PACKAGE_NAME} ${VERSION} on Python ${PYTHON_VERSION}" \
-          > "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py${PYTHON_VERSION}_log"
-        gzip "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py${PYTHON_VERSION}_log"
-        LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py${PYTHON_VERSION}_log.gz"
-      fi
-
-      chmod +x ./gha-script/upload-scripts/upload_file.sh
-      bash ./gha-script/upload-scripts/upload_file.sh $LOG_NAME
-
-  - name: Upload wheel artifact
-    run: |
-      if ls *.whl 1> /dev/null 2>&1; then
-        sudo chmod a+r *.whl
-        WHEEL_FILE=$(ls *.whl)
-        SHA256_VALUE=$(cat sha256.sha)
-        chmod +x ./gha-script/upload-scripts/upload_wheel.sh
-        bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
-      else
-        echo "No wheel file found!"
-        exit 1
-      fi
-
-# ===================== JOBS =====================
 jobs:
 
   build_info:
@@ -131,9 +59,20 @@ jobs:
       - name: Set PR number
         run: echo "PR_NUMBER=${{ github.event.pull_request.number || inputs.pr_number }}" >> $GITHUB_ENV
 
-      - name: Run validate_builds.py
+      - name: Run validate_builds.py script with live logs
         run: |
-          python3 -u gha-script/validate_builds.py ${PR_NUMBER:-false}
+          python3 -u gha-script/validate_builds.py ${PR_NUMBER:-false} 2>&1 | tee build_log
+          my_pid_status=${PIPESTATUS[0]}
+
+          if [ "$my_pid_status" -ne 0 ]; then
+              echo "Script failed for PR #${PR_NUMBER}"
+              echo "::group::Validation Logs"
+              tail -200 build_log
+              echo "::endgroup::"
+              exit 1
+          else
+              echo "Script completed successfully for PR #${PR_NUMBER}"
+          fi
 
       - name: Fetch base branch
         run: git fetch origin ${{ github.base_ref }} --depth=1
@@ -150,9 +89,9 @@ jobs:
           PACKAGE_NAME=$(jq -r '.package_name // ""' $BUILD_INFO_FILE)
           VERSION=$(jq -r '.version // ""' $BUILD_INFO_FILE)
 
+          echo "BUILD_INFO_FILE=$BUILD_INFO_FILE" >> $GITHUB_ENV
           echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "BUILD_INFO_FILE=$BUILD_INFO_FILE" >> $GITHUB_ENV
 
       - name: Read build_info.json
         run: |
@@ -162,6 +101,7 @@ jobs:
       - name: Create scanner-env.sh
         run: |
           mkdir -p package-cache
+
           PACKAGE_DIR=$(jq -r '.package_dir // ""' $BUILD_INFO_FILE)
           WHEEL_BUILD=$(jq -r '.wheel_build // "false"' $BUILD_INFO_FILE)
 
@@ -208,44 +148,96 @@ jobs:
 
 # ===================== WHEEL JOBS =====================
 
+
   wheel_build_py39:
-    <<: *wheel-job
-    if: ${{ env.WHEEL_BUILD == 'true' }}
+    needs: build_info
+    if: ${{ always() }}
+    runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-24.04-ppc64le-p10' || inputs.large-runner }}
     continue-on-error: true
     env:
-      <<: *wheel-env
       PYTHON_VERSION: "3.9"
-    steps: *wheel-steps
 
-  wheel_build_py310:
-    <<: *wheel-job
-    if: ${{ env.WHEEL_BUILD == 'true' }}
-    env:
-      <<: *wheel-env
-      PYTHON_VERSION: "3.10"
-    steps: *wheel-steps
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
-  wheel_build_py311:
-    <<: *wheel-job
-    if: ${{ env.WHEEL_BUILD == 'true' }}
-    env:
-      <<: *wheel-env
-      PYTHON_VERSION: "3.11"
-    steps: *wheel-steps
+      - name: Install system dependencies
+        run: |
+          sudo apt update -y
 
-  wheel_build_py312:
-    <<: *wheel-job
-    if: ${{ env.WHEEL_BUILD == 'true' }}
-    env:
-      <<: *wheel-env
-      PYTHON_VERSION: "3.12"
-    steps: *wheel-steps
+      - name: Download package-cache from previous step
+        uses: actions/download-artifact@v7
+        with:
+          name: package-cache
 
-  wheel_build_py313:
-    <<: *wheel-job
-    if: ${{ env.WHEEL_BUILD == 'true' }}
-    continue-on-error: true
-    env:
-      <<: *wheel-env
-      PYTHON_VERSION: "3.13"
-    steps: *wheel-steps
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+
+      - name: Run build_wheels.sh
+        run: |
+          ls
+          echo "---------------------updated cache-----------------------"
+          ls package-cache
+
+          chmod +x package-cache/variable.sh
+          chmod +x package-cache/scanner-env.sh
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+
+          # CONTROL FLAG HERE
+          if [ "$WHEEL_BUILD" != "true" ]; then
+            echo "Skipping wheel build as WHEEL_BUILD=false"
+            exit 0
+          fi
+
+          chmod +x ./gha-script/build_wheels.sh
+          bash ./gha-script/build_wheels.sh
+
+          echo "===========after execution =================="
+          sudo apt update -y
+          sudo lsb_release -a 2>/dev/null || echo "lsb_release not available"
+          sudo uname -a
+
+      #     echo "===== AFTER BUILD: checking for wheel_build_log ====="
+      #     WORKSPACE=$(pwd)
+      #     echo "Workspace = $WORKSPACE"
+      #     ls -lh
+
+      #     echo "----- specifically checking for wheel_build_log -----"
+      #     ls -lh "$WORKSPACE/wheel_build_log" || echo "wheel_build_log NOT found!"
+
+      #     # ======= HANDLE LOG FILE (NO UPLOAD) =======
+      #     LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py39_log.gz"
+
+      #     if [ -f "$WORKSPACE/wheel_build_log" ]; then
+      #       echo "Found wheel_build_log — compressing it"
+      #       gzip "$WORKSPACE/wheel_build_log"
+      #       mv "$WORKSPACE/wheel_build_log.gz" "$WORKSPACE/$LOG_NAME"
+      #     else
+      #       echo "wheel_build_log missing — creating fallback log"
+      #       echo "Wheel build completed for ${PACKAGE_NAME} ${VERSION} on Python 3.9" \
+      #         > "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py39_log"
+      #       gzip "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py39_log"
+      #       LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py39_log.gz"
+      #     fi
+
+      #     echo "Final log file (NOT uploaded): $LOG_NAME"
+      #     ls -lh "$WORKSPACE/$LOG_NAME"
+
+      # - name: Verify wheel artifact (no upload)
+      #   run: |
+      #     if ls *.whl 1> /dev/null 2>&1; then
+      #       echo "Wheel file generated:"
+      #       ls -lh *.whl
+      #     else
+      #       echo "No wheel file found!"
+      #       exit 1
+      #     fi
+
+
+
+
+
+      
