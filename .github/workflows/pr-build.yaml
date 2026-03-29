@@ -204,37 +204,38 @@ jobs:
           chmod +x ./gha-script/build_package.sh
           echo "========== START BUILD =========="
           set -uo pipefail
-          bash ./gha-script/build_package.sh 2>&1 | tee build_log
-          BUILD_STATUS=${PIPESTATUS[0]}
+          #bash ./gha-script/build_package.sh 2>&1 | tee build_log
+          bash ./gha-script/build_package.sh 
+          #BUILD_STATUS=${PIPESTATUS[0]}
           echo "========== BUILD FINISHED =========="
 
-          LOG_SIZE=$(stat -c %s build_log)
+          #LOG_SIZE=$(stat -c %s build_log)
 
-          if [ "$BUILD_STATUS" -ne 0 ]; then
-            echo "Build failed!"
+          # if [ "$BUILD_STATUS" -ne 0 ]; then
+          #   echo "Build failed!"
 
-            if [ "$LOG_SIZE" -lt 1800000 ]; then
-                echo "----- FULL BUILD LOG -----"
-                echo "::group::Build Logs"
-                #cat build_log
-                tail -200 build_log
-                echo "::endgroup::"
-            else
-                echo "Log too large, showing last 200 lines"
-                tail -200 build_log
-            fi
+          #   if [ "$LOG_SIZE" -lt 1800000 ]; then
+          #       echo "----- FULL BUILD LOG -----"
+          #       echo "::group::Build Logs"
+          #       #cat build_log
+          #       tail -200 build_log
+          #       echo "::endgroup::"
+          #   else
+          #       echo "Log too large, showing last 200 lines"
+          #       tail -200 build_log
+          #   fi
 
-            exit 1
-          else
-            echo "Build succeeded!"
+          #   exit 1
+          # else
+          #   echo "Build succeeded!"
 
-            #if [ "$LOG_SIZE" -lt 1800000 ]; then
-            #    cat build_log
-            #else
-            #    echo "Log too large, showing last 200 lines"
-            #    tail -200 build_log
-            #fi
-          fi
+          #   #if [ "$LOG_SIZE" -lt 1800000 ]; then
+          #   #    cat build_log
+          #   #else
+          #   #    echo "Log too large, showing last 200 lines"
+          #   #    tail -200 build_log
+          #   #fi
+          # fi
           
           # Detect cloned package directory
           CLONED_PACKAGE=$(ls -td -- */ | head -n 1)
