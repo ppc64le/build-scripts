@@ -417,6 +417,68 @@ jobs:
           sudo apt update -y
           sudo lsb_release -a 2>/dev/null || echo "lsb_release not available"
           sudo uname -a
+
+
+
+  build_docker:
+    needs: build
+    if: ${{ always() }}
+    runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-24.04-ppc64le-p10' || inputs.large-runner }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Download package-cache
+        uses: actions/download-artifact@v7
+        with:
+          name: updated-package-cache
+
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+
+      - name: Build Docker Image
+        run: |
+          echo "===== Sourcing environment ====="
+          ls package-cache
+
+          chmod +x package-cache/variable.sh
+          chmod +x package-cache/scanner-env.sh
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+
+          # CONTROL FLAG
+          if [ "$BUILD_DOCKER" != "true" ]; then
+            echo "Skipping Docker build as BUILD_DOCKER=false"
+            exit 0
+          fi
+
+          echo "===== Starting Docker build ====="
+          chmod +x ./gha-script/build_docker.sh
+          bash ./gha-script/build_docker.sh
+
+          echo "===== Docker images after build ====="
+          docker images
+
+          echo "===== Saving Docker image ====="
+          docker save -o package-cache/image.tar "$IMAGE_NAME"
+
+          ls -lh package-cache/image.tar
+
+      # - name: Fix permissions on package-cache
+      #   run: |
+      #     USER=$(whoami)
+      #     sudo chown -R $USER:$USER package-cache
+      #     sudo chmod -R u+rwX,go+rX,go-w package-cache
+
+      # - name: Archive package cache with image
+      #   run: tar -czf package-cache.tar.gz package-cache/
+
+      # - name: Upload package-cache with image.tar
+      #   uses: actions/upload-artifact@v6
+      #   with:
+      #     name: package-cache-with-image
+      #     path: package-cache.tar.gz
   
 
 
