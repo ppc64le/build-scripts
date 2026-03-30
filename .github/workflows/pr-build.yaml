@@ -421,7 +421,7 @@ jobs:
 
 
   build_docker:
-    needs: build
+    needs: build_info
     if: ${{ always() }}
     runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-24.04-ppc64le-p10' || inputs.large-runner }}
 
