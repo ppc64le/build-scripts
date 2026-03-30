@@ -447,9 +447,10 @@ jobs:
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
 
-          # CONTROL FLAG
-          if [ "$BUILD_DOCKER" != "true" ]; then
-            echo "Skipping Docker build as BUILD_DOCKER=false"
+          BUILD_DOCKER=$(echo "$BUILD_DOCKER" | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]')
+
+          if [[ "$BUILD_DOCKER" != "true" ]]; then
+            echo "Skipping Docker build as BUILD_DOCKER=$BUILD_DOCKER"
             exit 0
           fi
 
