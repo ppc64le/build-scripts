@@ -23,7 +23,7 @@
 PACKAGE_NAME=jax
 PACKAGE_VERSION=${1:-jaxlib-v0.4.23}
 PACKAGE_URL=https://github.com/jax-ml/jax
-CURRENT_DIR=$pwd
+CURRENT_DIR=$(pwd)
 
 # Install dependencies
 echo "Installing dependencies -------------------------------------------------------------"
@@ -40,8 +40,11 @@ export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-11)(?=.*p
 export PATH=$JAVA_HOME/bin:$PATH
 export LD_LIBRARY_PATH=/usr/lib64/:$LD_LIBRARY_PATH
 
-# Install Bazel based on .bazelversion
-echo "Installing bazel -------------------------------------------------------------"
+# Clone the repository
+git clone $PACKAGE_URL
+cd $PACKAGE_NAME
+git checkout $PACKAGE_VERSION
+
 BAZEL_VERSION=""
 
 if [ -f ".bazelversion" ]; then
@@ -53,7 +56,7 @@ else
 fi
 
 echo "Installing Bazel version: $BAZEL_VERSION"
-
+cd $CURRENT_DIR
 mkdir bazel
 cd bazel
 wget https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VERSION}/bazel-${BAZEL_VERSION}-dist.zip
@@ -62,18 +65,13 @@ env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
 cp output/bazel /usr/local/bin
 export PATH=/usr/local/bin:$PATH
 bazel --version
-cd $CURRENT_DIR
 
 echo "Installing dependencies via pip3-------------------------------------------------------------"
-pip3 install numpy==1.26.4 scipy wheel pytest
-pip3 install numpy==1.26.4 opt-einsum==3.3.0  ml-dtypes==0.5.0 absl-py 
-
-# Clone the repository
-git clone $PACKAGE_URL
-cd $PACKAGE_NAME
-git checkout $PACKAGE_VERSION
+pip3 install numpy==1.26.4 scipy wheel pytest build
+pip3 install numpy==1.26.4 opt-einsum==3.3.0  ml-dtypes==0.5.0 absl-py
 
 #Add boringssl to build for jaxlib
+cd $CURRENT_DIR/$PACKAGE_NAME
 BORINGSSL_SUPPORT_CONTENT=$(cat << EOF
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive") 
 http_archive( 
