@@ -267,7 +267,7 @@ jobs:
             WHEEL_FILE=$(ls *.whl)
             SHA256_VALUE=$(cat sha256.sha)
             chmod +x ./gha-script/upload-scripts/upload_wheel.sh
-            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
+            #bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
           else
             echo "No wheel file found!"
             exit 1
@@ -340,7 +340,7 @@ jobs:
             WHEEL_FILE=$(ls *.whl)
             SHA256_VALUE=$(cat sha256.sha)
             chmod +x ./gha-script/upload-scripts/upload_wheel.sh
-            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
+            #bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
           else
             echo "No wheel file found!"
             exit 1
@@ -431,7 +431,7 @@ jobs:
             WHEEL_FILE=$(ls *.whl)
             SHA256_VALUE=$(cat sha256.sha)
             chmod +x ./gha-script/upload-scripts/upload_wheel.sh
-            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
+            #bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
           else
             echo "No wheel file found!"
             exit 1
@@ -522,7 +522,7 @@ jobs:
             WHEEL_FILE=$(ls *.whl)
             SHA256_VALUE=$(cat sha256.sha)
             chmod +x ./gha-script/upload-scripts/upload_wheel.sh
-            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
+            #bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
           else
             echo "No wheel file found!"
             exit 1
@@ -614,7 +614,7 @@ jobs:
             WHEEL_FILE=$(ls *.whl)
             SHA256_VALUE=$(cat sha256.sha)
             chmod +x ./gha-script/upload-scripts/upload_wheel.sh
-            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
+            #bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
           else
             echo "No wheel file found!"
             exit 1
@@ -706,7 +706,7 @@ jobs:
             WHEEL_FILE=$(ls *.whl)
             SHA256_VALUE=$(cat sha256.sha)
             chmod +x ./gha-script/upload-scripts/upload_wheel.sh
-            bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
+            #bash ./gha-script/upload-scripts/upload_wheel.sh $WHEEL_FILE $SHA256_VALUE
           else
             echo "No wheel file found!"
             exit 1
