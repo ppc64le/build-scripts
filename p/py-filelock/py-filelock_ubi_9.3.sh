@@ -35,7 +35,7 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 
-pip install pytest pytest-asyncio pytest-tornasync virtualenv pytest-trio pytest-mock pytest-timeout
+python3.11 -m pip install pytest pytest-asyncio pytest-tornasync virtualenv pytest-trio pytest-mock pytest-timeout
 python3.11 -m pip install --upgrade pip setuptools wheel
 python3.11 -m pip install "hatchling==1.27.0" "hatch-vcs>=0.5"
 
