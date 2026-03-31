@@ -36,8 +36,10 @@ cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
 
 pip install pytest pytest-asyncio pytest-tornasync virtualenv pytest-trio pytest-mock pytest-timeout
+python3 -m pip install --upgrade pip setuptools wheel
+python3 -m pip install "hatchling==1.27.0" "hatch-vcs>=0.5"
 
-if ! pip install . ; then
+if ! pip install --no-build-isolation . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
