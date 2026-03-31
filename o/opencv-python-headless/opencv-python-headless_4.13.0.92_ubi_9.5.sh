@@ -143,8 +143,8 @@ export C_INCLUDE_PATH=$(python3.12 -c "import numpy; print(numpy.get_include())"
 export CPLUS_INCLUDE_PATH=$C_INCLUDE_PATH
 ln -sf $CURRENT_DIR/$PACKAGE_DIR/tests/SampleVideo_1280x720_1mb.mp4 SampleVideo_1280x720_1mb.mp4
 
-# Build package
-if ! python3.12 -m pip install . ; then
+# Build package (--no-build-isolation ensures numpy C headers are found)
+if ! python3.12 -m pip install . --no-build-isolation ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"

@@ -8,7 +8,7 @@
 # Language      : Python
 # Ci-Check  : False
 # Script License: Apache License 2.0
-# Maintainer    : Vinod K <Vinod.K1@ibm.com>
+# Maintainer    : Shivansh Sharma  <shivansh.s11@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -21,10 +21,32 @@
 PACKAGE_NAME=scikit-image
 PACKAGE_VERSION=${1:-v0.26.0}
 PACKAGE_URL=https://github.com/scikit-image/scikit-image
+CURRENT_DIR="${PWD}"
 
 yum install -y gcc gcc-c++ make python python-devel libtool sqlite-devel ninja-build cmake git wget xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel libjpeg-turbo-devel gcc-gfortran openblas openblas-devel libgomp
 
 OS_NAME=$(cat /etc/os-release | grep ^PRETTY_NAME | cut -d= -f2)
+
+
+#install rust
+curl https://sh.rustup.rs -sSf | sh -s -- -y
+source "$HOME/.cargo/env"  # Update environment variables to use Rust
+
+
+#installing patchelf from source
+cd $CURRENT_DIR
+yum install -y git autoconf automake libtool make
+git clone https://github.com/NixOS/patchelf.git
+cd patchelf
+./bootstrap.sh
+./configure
+make
+make install
+ln -s /usr/local/bin/patchelf /usr/bin/patchelf
+cd $CURRENT_DIR
+echo "-----------------------------------------------------Installed patchelf-----------------------------------------------------"
+
+
 
 # clone source repository
 git clone $PACKAGE_URL

@@ -214,6 +214,7 @@ ARG TEMP_DIR=/tmp/opensearch
 ARG OPENSEARCH_HOME=/usr/share/opensearch
 ARG OPENSEARCH_PATH_CONF=$OPENSEARCH_HOME/config
 ARG SECURITY_PLUGIN_DIR=$OPENSEARCH_HOME/plugins/opensearch-security
+ARG JACKSON_CORE_VERSION=2.18.6
 ARG PERFORMANCE_ANALYZER_PLUGIN_CONFIG_DIR=$OPENSEARCH_PATH_CONF/opensearch-performance-analyzer
 
 # Update packages
@@ -222,8 +223,9 @@ ARG PERFORMANCE_ANALYZER_PLUGIN_CONFIG_DIR=$OPENSEARCH_PATH_CONF/opensearch-perf
 RUN yum update -y && yum install -y tar gzip shadow-utils which openblas openblas-devel && yum clean all
 
 # Create an opensearch user, group, and directory
+# OpenShift compatibility: Add user to root group (GID 0) for random UID support
 RUN groupadd -g $GID opensearch && \
-    adduser -u $UID -g $GID -d $OPENSEARCH_HOME opensearch && \
+    adduser -u $UID -g $GID -G 0 -d $OPENSEARCH_HOME opensearch && \
     mkdir $TEMP_DIR
 
 # Prepare working directory
@@ -236,15 +238,26 @@ COPY --from=tarball_builder /home/test_user/opensearch-build/scripts/opensearch-
 COPY * $TEMP_DIR/
 RUN chmod +x $TEMP_DIR/*.sh
 
-# Prepare working directory
-# Copy artifacts and configurations to corresponding directories
+# Extract tarball and configure OpenSearch
+RUN yum install -y wget
 RUN ls -l $TEMP_DIR && \
     tar -xzpf /tmp/opensearch/opensearch-`uname -p`.tgz -C $OPENSEARCH_HOME --strip-components=1 && \
+    # -------------------------------------------------------------------
+    # CVE FIX: Replace vulnerable jackson-core jar shipped with OpenSearch
+    # Default jar: jackson-core-2.18.2.jar (contains HIGH CVE)
+    # We download patched version 2.18.6 from Maven Central
+    # -------------------------------------------------------------------
+    echo "Removing vulnerable jackson-core jar..." && \
+    rm -f /usr/share/opensearch/lib/jackson-core-*.jar && \
+    echo "Downloading patched jackson-core-${JACKSON_CORE_VERSION}.jar..." && \
+    wget -q https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/${JACKSON_CORE_VERSION}/jackson-core-${JACKSON_CORE_VERSION}.jar \
+        -O /usr/share/opensearch/lib/jackson-core-${JACKSON_CORE_VERSION}.jar && \
+    echo "Verifying jackson-core version inside image:" && \
+    ls -l /usr/share/opensearch/lib/jackson-core* && \
     MAJOR_VERSION_ENTRYPOINT=`echo $VERSION | cut -d. -f1` && \
     echo $MAJOR_VERSION_ENTRYPOINT && \
     if ! (ls $TEMP_DIR | grep -E "opensearch-docker-entrypoint-.*.x.sh" | grep $MAJOR_VERSION_ENTRYPOINT); then MAJOR_VERSION_ENTRYPOINT="default"; fi && \
-    mkdir -p $OPENSEARCH_HOME/data && chown -Rv $UID:$GID $OPENSEARCH_HOME/data && \
-    if [[ -d $SECURITY_PLUGIN_DIR ]] ; then chmod -v 750 $SECURITY_PLUGIN_DIR/tools/* ; fi && \
+    mkdir -p $OPENSEARCH_HOME/data $OPENSEARCH_HOME/logs && \
     if [[ -d $PERFORMANCE_ANALYZER_PLUGIN_CONFIG_DIR ]] ; then cp -v $TEMP_DIR/performance-analyzer.properties $PERFORMANCE_ANALYZER_PLUGIN_CONFIG_DIR; fi && \
     cp -v $TEMP_DIR/opensearch-docker-entrypoint-$MAJOR_VERSION_ENTRYPOINT.x.sh $OPENSEARCH_HOME/opensearch-docker-entrypoint.sh && \
     cp -v $TEMP_DIR/opensearch-onetime-setup.sh $OPENSEARCH_HOME/ && \
@@ -267,11 +280,13 @@ ARG OPENSEARCH_HOME=/usr/share/opensearch
 RUN yum update -y && yum install -y tar gzip shadow-utils which openblas openblas-devel && yum clean all
 
 # Create an opensearch user, group
+# OpenShift compatibility: Add user to root group (GID 0) for random UID support
 RUN groupadd -g $GID opensearch && \
-    adduser -u $UID -g $GID -d $OPENSEARCH_HOME opensearch
+    adduser -u $UID -g $GID -G 0 -d $OPENSEARCH_HOME opensearch
 
 # Copy from Stage0
-COPY --from=linux_stage_0 --chown=$UID:$GID $OPENSEARCH_HOME $OPENSEARCH_HOME
+# OpenShift compatibility: Set ownership to root group (GID 0)
+COPY --from=linux_stage_0 --chown=$UID:0 $OPENSEARCH_HOME $OPENSEARCH_HOME
 WORKDIR $OPENSEARCH_HOME
 
 # Set $JAVA_HOME
@@ -283,6 +298,14 @@ ENV PATH=$PATH:$JAVA_HOME/bin:$OPENSEARCH_HOME/bin
 
 # Add k-NN lib directory to library loading path variable
 ENV LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$OPENSEARCH_HOME/plugins/opensearch-knn/lib"
+
+# OpenShift restricted-v2 compatibility: Fix ownership and permissions for random UID
+# COPY --chown may not work correctly, so explicitly set ownership and permissions
+RUN chown -R $UID:0 $OPENSEARCH_HOME && \
+    chmod -R g=u $OPENSEARCH_HOME && \
+    find $OPENSEARCH_HOME -type d -exec chmod g+x {} \; && \
+    chmod g+x $OPENSEARCH_HOME/opensearch-docker-entrypoint.sh && \
+    chmod g+x $OPENSEARCH_HOME/opensearch-onetime-setup.sh
 
 # Change user
 USER $UID
