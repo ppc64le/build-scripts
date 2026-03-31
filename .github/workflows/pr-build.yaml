@@ -143,6 +143,11 @@ jobs:
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
 
+          echo "------------------- variable.sh -----------------------------"
+          cat package-cache/variable.sh
+          echo "------------------- scanner-env.sh -----------------------------"
+          cat package-cache/scanner-env.sh
+
           chmod +x ./gha-script/build_package.sh
           bash ./gha-script/build_package.sh
 
