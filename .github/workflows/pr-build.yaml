@@ -105,11 +105,19 @@ jobs:
           PACKAGE_DIR=$(jq -r '.package_dir // ""' $BUILD_INFO_FILE)
           WHEEL_BUILD=$(jq -r '.wheel_build // "false"' $BUILD_INFO_FILE)
 
+          # Robust docker_build extraction
+          if jq -e '.docker_build == true or .docker_build == "true"' "$BUILD_INFO_FILE" > /dev/null; then
+            DOCKER_BUILD="true"
+          else
+            DOCKER_BUILD="false"
+          fi
+
           cat <<EOF > package-cache/scanner-env.sh
           export PACKAGE_NAME=$PACKAGE_NAME
           export VERSION=$VERSION
           export PACKAGE_DIR=$PACKAGE_DIR
           export WHEEL_BUILD=$WHEEL_BUILD
+          export BUILD_DOCKER=$DOCKER_BUILD
           EOF
 
           mv variable.sh package-cache/
