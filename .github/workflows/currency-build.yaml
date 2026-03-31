@@ -688,7 +688,7 @@ jobs:
             mv "$WORKSPACE/wheel_build_log.gz" "$WORKSPACE/$LOG_NAME"
           else
             echo "wheel_build_log missing — creating fallback log"
-            echo "Wheel build completed for ${PACKAGE_NAME} ${VERSION} on Python 3.13" \
+            echo "Wheel build completed for ${PACKAGE_NAME} ${VERSION} on Python 3.14" \
               > "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py314_log"
             gzip "$WORKSPACE/${PACKAGE_NAME}_${VERSION}_wheel_py314_log"
             LOG_NAME="${PACKAGE_NAME}_${VERSION}_wheel_py314_log.gz"
