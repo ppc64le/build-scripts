@@ -79,11 +79,30 @@ jobs:
 
       - name: Locate and parse build_info.json
         run: |
-          BUILD_INFO_FILE=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep 'build_info.json' | head -n 1)
+          # BUILD_INFO_FILE=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep 'build_info.json' | head -n 1)
+
+          # if [ -z "$BUILD_INFO_FILE" ]; then
+          #   echo "build_info.json not found!"
+          #   exit 1
+          # fi
+
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+
+          BUILD_INFO_FILE=$(echo "$CHANGED_FILES" | grep 'build_info.json' | head -n 1)
 
           if [ -z "$BUILD_INFO_FILE" ]; then
-            echo "build_info.json not found!"
-            exit 1
+              echo "No build_info.json modified, trying to detect from changed files..."
+
+              PACKAGE_DIR=$(echo "$CHANGED_FILES" | head -n 1 | cut -d'/' -f1-2)
+
+              BUILD_INFO_FILE="$PACKAGE_DIR/build_info.json"
+
+              if [ ! -f "$BUILD_INFO_FILE" ]; then
+                  echo "Could not locate build_info.json!"
+                  exit 1
+              fi
+
+              echo "Using fallback build_info: $BUILD_INFO_FILE"
           fi
 
           PACKAGE_NAME=$(jq -r '.package_name // ""' $BUILD_INFO_FILE)
