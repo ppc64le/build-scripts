@@ -103,6 +103,10 @@ jobs:
           echo "BUILD_INFO_FILE=$BUILD_INFO_FILE" >> $GITHUB_ENV
           echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "CHANGED_FILES<<EOF" >> $GITHUB_ENV
+          echo "$CHANGED_FILES" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
 
       - name: Read build_info.json
         run: |
@@ -129,6 +133,7 @@ jobs:
           export PACKAGE_DIR=$PACKAGE_DIR
           export WHEEL_BUILD=$WHEEL_BUILD
           export BUILD_DOCKER=$DOCKER_BUILD
+          export CHANGED_FILES="$CHANGED_FILES"
           EOF
 
           mv variable.sh package-cache/
@@ -526,12 +531,6 @@ jobs:
           source package-cache/scanner-env.sh
 
           BUILD_DOCKER=$(echo "$BUILD_DOCKER" | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]')
-
-          # Get changed files
-          git fetch origin ${{ github.base_ref }} --depth=1
-          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
-
-          # Check if any Dockerfile is modified
           DOCKERFILE_CHANGED=$(echo "$CHANGED_FILES" | grep -i 'Dockerfile' || true)
 
           if [[ "$BUILD_DOCKER" != "true" ]]; then
