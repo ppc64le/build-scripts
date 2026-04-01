@@ -38,7 +38,8 @@ yum install -y gcc-toolset-13
 source /opt/rh/gcc-toolset-13/enable
 
 # Ensure pip is up-to-date
-python3.12 -m pip install --upgrade pip setuptools wheel build ninja
+python3.12 -m pip install -U pip
+python3.12 -m pip install "setuptools<70" wheel ninja
 
 # Clone llvm-project
 if [ ! -d "$LLVM_SRC_DIR" ]; then
@@ -69,7 +70,7 @@ git checkout $PACKAGE_VERSION
 export CMAKE_PREFIX_PATH=$LLVM_INSTALL_DIR/lib/cmake/llvm
 export CXXFLAGS="-fPIC"
 
-if ! (python3.12 -m pip install .) ; then
+if ! (python3.12 -m pip install --no-build-isolation .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
