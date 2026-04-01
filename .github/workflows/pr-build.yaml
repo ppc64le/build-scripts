@@ -529,8 +529,20 @@ jobs:
 
           BUILD_DOCKER=$(echo "$BUILD_DOCKER" | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]')
 
+          # Get changed files
+          git fetch origin ${{ github.base_ref }} --depth=1
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+
+          # Check if any Dockerfile is modified
+          DOCKERFILE_CHANGED=$(echo "$CHANGED_FILES" | grep -i 'Dockerfile' || true)
+
           if [[ "$BUILD_DOCKER" != "true" ]]; then
             echo "Skipping Docker build as BUILD_DOCKER=$BUILD_DOCKER"
+            exit 0
+          fi
+
+          if [[ -z "$DOCKERFILE_CHANGED" ]]; then
+            echo "Skipping Docker build as no Dockerfile changes detected in PR"
             exit 0
           fi
 
