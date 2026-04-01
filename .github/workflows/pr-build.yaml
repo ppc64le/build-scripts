@@ -26,6 +26,7 @@ run-name: >
   ${{ github.event_name == 'workflow_dispatch'
       && format('Retriggered build on {0} for PR {1}', inputs.large-runner, inputs.pr_number)
       || github.event.pull_request.title }}
+
 jobs:
 
   build_info:
@@ -50,10 +51,12 @@ jobs:
         run: |
           sudo apt update -y
           sudo apt-get install -y file jq
+
       - name: Install Python dependencies
         run: |
           pip3 install --force-reinstall -v "requests==2.31.0"
           pip3 install --upgrade docker
+
       - name: Set PR number
         run: echo "PR_NUMBER=${{ github.event.pull_request.number || inputs.pr_number }}" >> $GITHUB_ENV
 
@@ -61,6 +64,7 @@ jobs:
         run: |
           python3 -u gha-script/validate_builds.py ${PR_NUMBER:-false} 2>&1 | tee build_log
           my_pid_status=${PIPESTATUS[0]}
+
           if [ "$my_pid_status" -ne 0 ]; then
               echo "Script failed for PR #${PR_NUMBER}"
               echo "::group::Validation Logs"
@@ -70,43 +74,58 @@ jobs:
           else
               echo "Script completed successfully for PR #${PR_NUMBER}"
           fi
+
       - name: Fetch base branch
         run: git fetch origin ${{ github.base_ref }} --depth=1
 
       - name: Locate and parse build_info.json
         run: |
+
           CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+
           BUILD_INFO_FILE=$(echo "$CHANGED_FILES" | grep 'build_info.json' | head -n 1)
+
           if [ -z "$BUILD_INFO_FILE" ]; then
               echo "No build_info.json modified, trying to detect from changed files..."
+
               PACKAGE_DIR=$(echo "$CHANGED_FILES" | head -n 1 | cut -d'/' -f1-2)
+
               BUILD_INFO_FILE="$PACKAGE_DIR/build_info.json"
+
               if [ ! -f "$BUILD_INFO_FILE" ]; then
                   echo "Could not locate build_info.json!"
                   exit 1
               fi
+
               echo "Using fallback build_info: $BUILD_INFO_FILE"
           fi
+
           PACKAGE_NAME=$(jq -r '.package_name // ""' $BUILD_INFO_FILE)
           VERSION=$(jq -r '.version // ""' $BUILD_INFO_FILE)
+
           echo "BUILD_INFO_FILE=$BUILD_INFO_FILE" >> $GITHUB_ENV
           echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+
       - name: Read build_info.json
         run: |
           chmod +x ./gha-script/read_buildinfo.sh
           bash ./gha-script/read_buildinfo.sh
+
       - name: Create scanner-env.sh
         run: |
           mkdir -p package-cache
+
           PACKAGE_DIR=$(jq -r '.package_dir // ""' $BUILD_INFO_FILE)
           WHEEL_BUILD=$(jq -r '.wheel_build // "false"' $BUILD_INFO_FILE)
+
           # Robust docker_build extraction
           if jq -e '.docker_build == true or .docker_build == "true"' "$BUILD_INFO_FILE" > /dev/null; then
             DOCKER_BUILD="true"
           else
             DOCKER_BUILD="false"
           fi
+
           cat <<EOF > package-cache/scanner-env.sh
           export PACKAGE_NAME=$PACKAGE_NAME
           export VERSION=$VERSION
@@ -114,7 +133,9 @@ jobs:
           export WHEEL_BUILD=$WHEEL_BUILD
           export BUILD_DOCKER=$DOCKER_BUILD
           EOF
+
           mv variable.sh package-cache/
+
       - name: Archive package cache
         run: tar -czf package-cache.tar.gz package-cache/
 
@@ -143,12 +164,15 @@ jobs:
         run: |
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
+
           echo "------------------- variable.sh -----------------------------"
           cat package-cache/variable.sh
           echo "------------------- scanner-env.sh -----------------------------"
           cat package-cache/scanner-env.sh
+
           chmod +x ./gha-script/build_package.sh
           bash ./gha-script/build_package.sh
+
 # ===================== WHEEL JOBS =====================
 
 
@@ -171,6 +195,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt update -y
+
       - name: Download package-cache from previous step
         uses: actions/download-artifact@v7
         with:
@@ -184,21 +209,27 @@ jobs:
           ls
           echo "---------------------updated cache-----------------------"
           ls package-cache
+
           chmod +x package-cache/variable.sh
           chmod +x package-cache/scanner-env.sh
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
+
           # CONTROL FLAG HERE
           if [ "$WHEEL_BUILD" != "true" ]; then
             echo "Skipping wheel build as WHEEL_BUILD=false"
             exit 0
           fi
+
           chmod +x ./gha-script/build_wheels.sh
           bash ./gha-script/build_wheels.sh
+
           echo "===========after execution =================="
           sudo apt update -y
           sudo lsb_release -a 2>/dev/null || echo "lsb_release not available"
           sudo uname -a
+
+
   wheel_build_py310:
     needs: build_info
     if: ${{ success() }}
@@ -218,6 +249,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt update -y
+
       - name: Download package-cache from previous step
         uses: actions/download-artifact@v7
         with:
@@ -231,21 +263,27 @@ jobs:
           ls
           echo "---------------------updated cache-----------------------"
           ls package-cache
+
           chmod +x package-cache/variable.sh
           chmod +x package-cache/scanner-env.sh
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
+
           # CONTROL FLAG HERE
           if [ "$WHEEL_BUILD" != "true" ]; then
             echo "Skipping wheel build as WHEEL_BUILD=false"
             exit 0
           fi
+
           chmod +x ./gha-script/build_wheels.sh
           bash ./gha-script/build_wheels.sh
+
           echo "===========after execution =================="
           sudo apt update -y
           sudo lsb_release -a 2>/dev/null || echo "lsb_release not available"
           sudo uname -a
+
+
   wheel_build_py311:
     needs: build_info
     if: ${{ success() }}
@@ -265,6 +303,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt update -y
+
       - name: Download package-cache from previous step
         uses: actions/download-artifact@v7
         with:
@@ -278,21 +317,28 @@ jobs:
           ls
           echo "---------------------updated cache-----------------------"
           ls package-cache
+
           chmod +x package-cache/variable.sh
           chmod +x package-cache/scanner-env.sh
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
+
           # CONTROL FLAG HERE
           if [ "$WHEEL_BUILD" != "true" ]; then
             echo "Skipping wheel build as WHEEL_BUILD=false"
             exit 0
           fi
+
           chmod +x ./gha-script/build_wheels.sh
           bash ./gha-script/build_wheels.sh
+
           echo "===========after execution =================="
           sudo apt update -y
           sudo lsb_release -a 2>/dev/null || echo "lsb_release not available"
           sudo uname -a
+
+
+
   wheel_build_py312:
     needs: build_info
     if: ${{ success() }}
@@ -312,6 +358,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt update -y
+
       - name: Download package-cache from previous step
         uses: actions/download-artifact@v7
         with:
@@ -325,21 +372,26 @@ jobs:
           ls
           echo "---------------------updated cache-----------------------"
           ls package-cache
+
           chmod +x package-cache/variable.sh
           chmod +x package-cache/scanner-env.sh
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
+
           # CONTROL FLAG HERE
           if [ "$WHEEL_BUILD" != "true" ]; then
             echo "Skipping wheel build as WHEEL_BUILD=false"
             exit 0
           fi
+
           chmod +x ./gha-script/build_wheels.sh
           bash ./gha-script/build_wheels.sh
+
           echo "===========after execution =================="
           sudo apt update -y
           sudo lsb_release -a 2>/dev/null || echo "lsb_release not available"
           sudo uname -a
+
   wheel_build_py313:
     needs: build_info
     if: ${{ success() }}
@@ -359,6 +411,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt update -y
+
       - name: Download package-cache from previous step
         uses: actions/download-artifact@v7
         with:
@@ -372,21 +425,81 @@ jobs:
           ls
           echo "---------------------updated cache-----------------------"
           ls package-cache
+
           chmod +x package-cache/variable.sh
           chmod +x package-cache/scanner-env.sh
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
+
           # CONTROL FLAG HERE
           if [ "$WHEEL_BUILD" != "true" ]; then
             echo "Skipping wheel build as WHEEL_BUILD=false"
             exit 0
           fi
+
           chmod +x ./gha-script/build_wheels.sh
           bash ./gha-script/build_wheels.sh
+
           echo "===========after execution =================="
           sudo apt update -y
           sudo lsb_release -a 2>/dev/null || echo "lsb_release not available"
           sudo uname -a
+  
+  wheel_build_py314:
+    needs: build_info
+    if: ${{ success() }}
+    runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-24.04-ppc64le-p10' || inputs.large-runner }}
+    continue-on-error: true
+    env:
+      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+      GHA_CURRENCY_SERVICE_ID: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
+      PYTHON_VERSION: "3.14"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install system dependencies
+        run: |
+          sudo apt update -y
+
+      - name: Download package-cache from previous step
+        uses: actions/download-artifact@v7
+        with:
+          name: package-cache
+
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+
+      - name: Run build_wheels.sh
+        run: |
+          ls
+          echo "---------------------updated cache-----------------------"
+          ls package-cache
+
+          chmod +x package-cache/variable.sh
+          chmod +x package-cache/scanner-env.sh
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+
+          # CONTROL FLAG HERE
+          if [ "$WHEEL_BUILD" != "true" ]; then
+            echo "Skipping wheel build as WHEEL_BUILD=false"
+            exit 0
+          fi
+
+          chmod +x ./gha-script/build_wheels.sh
+          bash ./gha-script/build_wheels.sh
+
+          echo "===========after execution =================="
+          sudo apt update -y
+          sudo lsb_release -a 2>/dev/null || echo "lsb_release not available"
+          sudo uname -a
+
+
+
   build_docker:
     needs: build_info
     if: ${{ success() }}
@@ -408,20 +521,39 @@ jobs:
         run: |
           echo "===== Sourcing environment ====="
           ls package-cache
+
           chmod +x package-cache/variable.sh
           chmod +x package-cache/scanner-env.sh
           source package-cache/variable.sh
           source package-cache/scanner-env.sh
+
           BUILD_DOCKER=$(echo "$BUILD_DOCKER" | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]')
+
           if [[ "$BUILD_DOCKER" != "true" ]]; then
             echo "Skipping Docker build as BUILD_DOCKER=$BUILD_DOCKER"
             exit 0
           fi
+
           echo "===== Starting Docker build ====="
           chmod +x ./gha-script/build_docker.sh
           bash ./gha-script/build_docker.sh
+
           echo "===== Docker images after build ====="
           docker images
+
           echo "===== Saving Docker image ====="
           docker save -o package-cache/image.tar "$IMAGE_NAME"
+
           ls -lh package-cache/image.tar
+
+
+
+
+
+
+
+
+
+
+
+      
