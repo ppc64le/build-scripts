@@ -443,6 +443,60 @@ jobs:
           sudo uname -a
 
 
+  wheel_build_py314:
+    needs: build_info
+    if: ${{ success() }}
+    runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-24.04-ppc64le-p10' || inputs.large-runner }}
+    continue-on-error: true
+    env:
+      GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
+      GHA_CURRENCY_SERVICE_ID: ${{ secrets.GHA_CURRENCY_SERVICE_ID }}
+      PYTHON_VERSION: "3.14"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install system dependencies
+        run: |
+          sudo apt update -y
+
+      - name: Download package-cache from previous step
+        uses: actions/download-artifact@v7
+        with:
+          name: package-cache
+
+      - name: Extract package cache
+        run: tar -xzf package-cache.tar.gz
+
+      - name: Run build_wheels.sh
+        run: |
+          ls
+          echo "---------------------updated cache-----------------------"
+          ls package-cache
+
+          chmod +x package-cache/variable.sh
+          chmod +x package-cache/scanner-env.sh
+          source package-cache/variable.sh
+          source package-cache/scanner-env.sh
+
+          # CONTROL FLAG HERE
+          if [ "$WHEEL_BUILD" != "true" ]; then
+            echo "Skipping wheel build as WHEEL_BUILD=false"
+            exit 0
+          fi
+
+          chmod +x ./gha-script/build_wheels.sh
+          bash ./gha-script/build_wheels.sh
+
+          echo "===========after execution =================="
+          sudo apt update -y
+          sudo lsb_release -a 2>/dev/null || echo "lsb_release not available"
+          sudo uname -a
+
+
 
   build_docker:
     needs: build_info
