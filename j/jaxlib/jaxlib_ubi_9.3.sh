@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : jaxlib
-# Version          : jaxlib-v0.4.7
+# Version          : jaxlib-v0.4.23
 # Source repo      : https://github.com/jax-ml/jax
 # Tested on        : UBI:9.3
 # Language         : Python
 # Ci-Check     : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Stuti Wali <Stuti.Wali@ibm.com>
+# Maintainer       : Shivansh Sharma <Shivansh.s1@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -21,9 +21,9 @@
 
 # Variables
 PACKAGE_NAME=jax
-PACKAGE_VERSION=${1:-jaxlib-v0.4.7}
+PACKAGE_VERSION=${1:-jaxlib-v0.4.23}
 PACKAGE_URL=https://github.com/jax-ml/jax
-CURRENT_DIR=$pwd
+CURRENT_DIR=$(pwd)
 
 # Install dependencies
 echo "Installing dependencies -------------------------------------------------------------"
@@ -39,32 +39,39 @@ yum install -y java-11-openjdk-devel  libtool xz  libevent-devel  clang java-11-
 export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-11)(?=.*ppc64le)')
 export PATH=$JAVA_HOME/bin:$PATH
 export LD_LIBRARY_PATH=/usr/lib64/:$LD_LIBRARY_PATH
- 
-# dnf groupinstall -y "Development Tools"
- 
-#installing bazel from source
-echo "Installing bazel -------------------------------------------------------------"
-mkdir bazel
-cd bazel
-wget https://github.com/bazelbuild/bazel/releases/download/5.1.1/bazel-5.1.1-dist.zip
-unzip bazel-5.1.1-dist.zip
-echo "Installing bazel -------------------------------------------------------------"
-env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
-cp output/bazel /usr/local/bin
-export PATH=/usr/local/bin:$PATH
-bazel --version
-cd ..
- 
-echo "Installing dependencies via pip3-------------------------------------------------------------"
-pip3 install numpy==1.26.4 scipy wheel pytest
-pip3 install numpy==1.26.4 opt-einsum==3.3.0  ml-dtypes==0.5.0 absl-py 
- 
+
 # Clone the repository
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+BAZEL_VERSION=""
+
+if [ -f ".bazelversion" ]; then
+    BAZEL_VERSION=$(cat .bazelversion | tr -d '[:space:]')
+    echo "Found .bazelversion: $BAZEL_VERSION"
+else
+    echo ".bazelversion not found, falling back to default"
+    BAZEL_VERSION="5.1.1"
+fi
+
+echo "Installing Bazel version: $BAZEL_VERSION"
+cd $CURRENT_DIR
+mkdir bazel
+cd bazel
+wget https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VERSION}/bazel-${BAZEL_VERSION}-dist.zip
+unzip bazel-${BAZEL_VERSION}-dist.zip
+env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
+cp output/bazel /usr/local/bin
+export PATH=/usr/local/bin:$PATH
+bazel --version
+
+echo "Installing dependencies via pip3-------------------------------------------------------------"
+pip3 install numpy==1.26.4 scipy wheel pytest build
+pip3 install numpy==1.26.4 opt-einsum==3.3.0  ml-dtypes==0.5.0 absl-py
+
 #Add boringssl to build for jaxlib
+cd $CURRENT_DIR/$PACKAGE_NAME
 BORINGSSL_SUPPORT_CONTENT=$(cat << EOF
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive") 
 http_archive( 
@@ -78,9 +85,9 @@ http_archive(
 EOF
 )
 echo "$BORINGSSL_SUPPORT_CONTENT" > WORKSPACE-TEMP
-cat WORKSPACE >> WORKSPACE-TEMP 
+cat WORKSPACE >> WORKSPACE-TEMP
 rm -rf WORKSPACE && mv WORKSPACE-TEMP WORKSPACE
- 
+
 cd build
 #Install
 echo "Building package-------------------------------------------------------------"
