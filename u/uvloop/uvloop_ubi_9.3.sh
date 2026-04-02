@@ -45,7 +45,7 @@ python3.12 -m pip install "scipy>=1.8.0,<1.16.0" --no-build-isolation
 python3.12 -m pip install joblib threadpoolctl patchelf pytest build hypothesis tox
 
 # ------------------ Install ------------------
-if ! (python3.12 -m pip install .); then
+if ! (python3.12 -m pip install . --no-build-isolation ); then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
