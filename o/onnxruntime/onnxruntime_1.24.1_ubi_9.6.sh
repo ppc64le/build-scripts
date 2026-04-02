@@ -3,13 +3,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : onnxruntime
-# Version          : v1.23.2
+# Version          : v1.24.1
 # Source repo      : https://github.com/microsoft/onnxruntime
 # Tested on        : UBI:9.6
 # Language         : Python
 # Ci-Check         : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : BODAPATI MAHESH <bmahi496@linux.ibm.com>
+# Maintainer       : Sanskar Nema <Sanskar.nema@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -20,7 +20,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=onnxruntime
-PACKAGE_VERSION=${1:-v1.23.2}
+PACKAGE_VERSION=${1:-v1.24.1}
 PACKAGE_URL=https://github.com/microsoft/onnxruntime
 PACKAGE_DIR="onnxruntime"
 WORK_DIR=$(pwd)
@@ -152,6 +152,7 @@ OBJCOPY=$gcc_home/bin/objcopy
 OBJDUMP=$gcc_home/bin/objdump
 RANLIB=$gcc_home/bin/ranlib
 STRIP=$gcc_home/bin/strip
+NUMPY_INCLUDE=$(python3.12 -c "import numpy; print(numpy.get_include())")
 export CMAKE_ARGS=""
 export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$ONNX_PREFIX"
 export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_AR=${AR}"
@@ -164,6 +165,11 @@ export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_STRIP=${STRIP}"
 export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_CXX_STANDARD=17"
 export CMAKE_ARGS="${CMAKE_ARGS} -DProtobuf_PROTOC_EXECUTABLE="$PROTOC" -DProtobuf_LIBRARY="$LIBPROTO_INSTALL/lib64/libprotobuf.so""
 export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH"
+export CMAKE_ARGS="$CMAKE_ARGS \
+-DPython3_EXECUTABLE=$(which python3.12) \
+-DPython3_INCLUDE_DIR=$PYTHON_INCLUDE \
+-DPython3_NumPy_INCLUDE_DIR=$NUMPY_INCLUDE \
+-DPython3_FIND_STRATEGY=LOCATION"
 
 # Adding this source due to - (Unable to detect linker for compiler `cc -Wl,--version`)
 source /opt/rh/gcc-toolset-13/enable
@@ -189,7 +195,7 @@ NUMPY_INCLUDE=$(python3.12 -c "import numpy; print(numpy.get_include())")
 echo "NumPy include path: $NUMPY_INCLUDE"
 
 # Manually defines Python::NumPy for CMake versions with broken NumPy detection
-sed -i '193i # Fix for Python::NumPy target not found\nif(NOT TARGET Python::NumPy)\n    find_package(Python3 COMPONENTS NumPy REQUIRED)\n    add_library(Python::NumPy INTERFACE IMPORTED)\n    target_include_directories(Python::NumPy INTERFACE ${Python3_NumPy_INCLUDE_DIR})\n    message(STATUS "Manually defined Python::NumPy with include dir: ${Python3_NumPy_INCLUDE_DIR}")\nendif()\n' $CURRENT_DIR/onnxruntime/cmake/onnxruntime_python.cmake
+# sed -i '193i # Fix for Python::NumPy target not found\nif(NOT TARGET Python::NumPy)\n    find_package(Python3 COMPONENTS NumPy REQUIRED)\n    add_library(Python::NumPy INTERFACE IMPORTED)\n    target_include_directories(Python::NumPy INTERFACE ${Python3_NumPy_INCLUDE_DIR})\n    message(STATUS "Manually defined Python::NumPy with include dir: ${Python3_NumPy_INCLUDE_DIR}")\nendif()\n' $CURRENT_DIR/onnxruntime/cmake/onnxruntime_python.cmake
 export CXXFLAGS="-I/usr/local/lib64/python${PYTHON_VERSION}/site-packages/numpy/_core/include/numpy $CXXFLAGS"
 
 # Add Python include path to build environment
@@ -199,7 +205,7 @@ export C_INCLUDE_PATH=$PYTHON_INCLUDE:$C_INCLUDE_PATH
 #Build and Test
 #Building and testing both are performed in build.sh
 if ! (./build.sh \
-    --cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" "Protobuf_PROTOC_EXECUTABLE=$PROTO_PREFIX/bin/protoc" "Protobuf_INCLUDE_DIR=$PROTO_PREFIX/include" "onnxruntime_USE_COREML=OFF" "Python3_NumPy_INCLUDE_DIR=$NUMPY_INCLUDE" "CMAKE_POLICY_DEFAULT_CMP0001=NEW" "CMAKE_POLICY_DEFAULT_CMP0002=NEW" "CMAKE_POLICY_VERSION_MINIMUM=3.5" \
+    --cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" "Protobuf_PROTOC_EXECUTABLE=$LIBPROTO_INSTALL/bin/protoc" "Protobuf_INCLUDE_DIR=$LIBPROTO_INSTALL/include" "onnxruntime_USE_COREML=OFF" "Python3_NumPy_INCLUDE_DIR=$NUMPY_INCLUDE" "CMAKE_POLICY_DEFAULT_CMP0001=NEW" "CMAKE_POLICY_DEFAULT_CMP0002=NEW" "CMAKE_POLICY_VERSION_MINIMUM=3.5" \
     --cmake_generator Ninja \
     --build_shared_lib \
     --config Release \
