@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : torchaudio
-# Version          : v2.7.1
+# Version          : v2.8.0
 # Source repo      : https://github.com/pytorch/audio.git
-# Tested on        : UBI:9.3
+# Tested on        : UBI:9.6
 # Language         : Python
-# Ci-Check     : True
+# Ci-Check         : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : Shivansh Sharma <shivansh.s1@ibm.com>
+# Maintainer       : Simran Sirsat <Simran.Sirsat@ibm.com>
 #
 # Disclaimer       : This script has been tested in root mode on given
 # ==========         platform using the mentioned version of the package.
@@ -23,11 +23,13 @@ set -ex
 # Variables
 PACKAGE_NAME=audio
 PACKAGE_URL=https://github.com/pytorch/audio.git
-PACKAGE_VERSION=${1:-v2.7.1}
+PACKAGE_VERSION=${1:-v2.8.0}
 PACKAGE_DIR=./audio
 SCRIPT_DIR=$(pwd)
+SCRIPT=$(readlink -f $0)
+PATCH_DIR=$(dirname $SCRIPT)
 
-yum install -y git make wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas
+yum install -y git make wget python3.11 python3.11-devel python3.11-pip pkgconfig atlas
 yum install gcc-toolset-13 -y
 echo "Installed gcc-toolset"
 yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build pkg-config
@@ -112,16 +114,16 @@ cd $SCRIPT_DIR
 echo "--------------------openblas installed-------------------------------"
 
 #Building scipy
-python3.12 -m pip install beniget==0.4.2.post1  Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 packaging pybind11 pyproject-metadata
+python3.11 -m pip install beniget==0.4.2.post1  Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 packaging pybind11 pyproject-metadata
 echo "Installed required deps from pypi"
-python3.12 -m pip install pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja patchelf>=0.11.0
+python3.11 -m pip install pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja patchelf>=0.11.0
 echo "Installed required deps from pypi"
 git clone https://github.com/scipy/scipy
 cd scipy/
 git checkout v1.15.2
 git submodule update --init
 echo "instaling scipy......."
-python3.12 -m pip install .
+python3.11 -m pip install .
 cd $SCRIPT_DIR
 echo "--------------------scipy installed-------------------------------"
 
@@ -189,7 +191,7 @@ git apply set_cpp_to_17_v4.25.3.patch
 
 echo "Installing protobuf...."
 cd python
-python3.12 -m pip install . --no-build-isolation
+python3.11 -m pip install .
 cd $SCRIPT_DIR
 
 echo "------------ libprotobuf,protobuf installed--------------"
@@ -256,11 +258,11 @@ export CFLAGS="${CFLAGS} -mcpu=${cpu_opt_arch} -mtune=${cpu_opt_tune}"
 
 echo "required env variables got set"
 sed -i "s/cmake/cmake==3.*/g" requirements.txt
-python3.12 -m pip install -r requirements.txt
+python3.11 -m pip install -r requirements.txt
 echo "Installed requirement files from source"
 
 echo "Installing pytorch...."
-if ! (MAX_JOBS=$(nproc) python3.12 setup.py install);then
+if ! (MAX_JOBS=$(nproc) python3.11 setup.py install);then
    echo "------------------pytorch:Install_fails-------------------------------------"
    echo "https://github.com/pytorch/pytorch.git pytorch"
    echo "pytorch  |  https://github.com/pytorch/pytorch.git  | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -273,7 +275,7 @@ cd ..
 export LD_LIBRARY_PATH="/OpenBLAS/:${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH=/lib:$LD_LIBRARY_PATH
 
-if ! (python3.12 -c "import torch;"); then
+if ! (python3.11 -c "import torch;"); then
      echo "--------------------pytorch:Install_success_but_test_fails---------------------"
      echo "https://github.com/pytorch/pytorch.git pytorch"
      echo "pytorch  |  https://github.com/pytorch/pytorch.git  | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but__Import_Fails"
@@ -291,9 +293,9 @@ echo "------------------------Applying patch-------------------"
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchaudio/torchaudio_${PACKAGE_VERSION}.patch
 git apply torchaudio_${PACKAGE_VERSION}.patch
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchaudio/0001-Excluded-source-that-has-commercial-license.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/t/torchaudio/0001-Excluded-source-that-has-commercial-license-new.patch
 # Below patch excludes the source files that has commercial license
-git apply 0001-Excluded-source-that-has-commercial-license.patch
+git apply 0001-Excluded-source-that-has-commercial-license-new.patch
 echo "-----------------------Applied patch successfully---------------------------------------"
 
 SRC_DIR=$(pwd)
@@ -313,16 +315,9 @@ export LD_LIBRARY_PATH=${SCRIPT_DIR}/pytorch/build/lib/libprotobuf.so.3.13.0.0:$
 export PATH="${SCRIPT_DIR}/protobuf/local/libprotobuf/bin/protoc:${PATH}"
 export LD_LIBRARY_PATH="${SCRIPT_DIR}/OpenBLAS:/protobuf/local/libprotobuf/lib64:${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH="${SCRIPT_DIR}/protobuf/third_party/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
-
-PY_VER=$(python3.12 -c 'import sys; print(f"{sys.version_info.major}{sys.version_info.minor}")')
-export LD_LIBRARY_PATH="${SCRIPT_DIR}/audio/build/lib.linux-ppc64le-cpython-${PY_VER}/torchaudio/lib:$LD_LIBRARY_PATH"
-
-export LD_LIBRARY_PATH="${SCRIPT_DIR}/pytorch/build/lib:$LD_LIBRARY_PATH"
-export LD_LIBRARY_PATH="${SCRIPT_DIR}/protobuf/local/libprotobuf/lib64:$LD_LIBRARY_PATH"
-
 echo "LD_LIBRARY_PATH= $LD_LIBRARY_PATH"
 echo "Installing torchaudio..." 
-if ! (python3.12 -m pip install -v . --no-build-isolation --no-deps);then
+if ! (python3.11 -m pip install -v . --no-build-isolation --no-deps);then
    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
    echo "$PACKAGE_URL $PACKAGE_NAME"
    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -331,14 +326,14 @@ fi
 
 #basic import test
 export LD_LIBRARY_PATH="/OpenBLAS/:${LD_LIBRARY_PATH}"
-if ! (python3.12 -m build --wheel --no-isolation --outdir="$SCRIPT_DIR/"); then 
+if ! (python3.11 -m build --wheel --no-isolation --outdir="$SCRIPT_DIR/"); then 
    echo "------------------$PACKAGE_NAME:Failed to build wheel-------------------------------------"
    echo "$PACKAGE_URL $PACKAGE_NAME"
    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
    exit 1
 fi
 
-if ! (python3.12 -c "import torch; import torch._C; import torchaudio"); then
+if ! (python3.11 -c "import torch; import torch._C; import torchaudio"); then
      echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails--------------------"
      echo "$PACKAGE_URL $PACKAGE_NAME"
      echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but__Import_Fails"
