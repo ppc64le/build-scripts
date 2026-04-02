@@ -74,6 +74,7 @@ make -j$(nproc)
 make install
 cd ../../python
 export BUILD_TYPE=release
+export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
 
 echo "Building pyarrow wheel..."
 if ! python${PYTHON_VERSION} setup.py build_ext --build-type=$BUILD_TYPE --bundle-arrow-cpp bdist_wheel ; then
