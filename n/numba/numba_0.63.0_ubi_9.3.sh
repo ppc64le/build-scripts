@@ -48,8 +48,8 @@ LLVM_INSTALL_DIR=$WORKING_DIR/llvm-install
 
 git clone -b ${LLVM_PROJECT_GIT_TAG} ${LLVM_PROJECT_GIT_URL}
 git clone -b ${LLVMLITE_VERSION} ${LLVMLITE_PACKAGE_URL}
-
-python3.12 -m pip install ninja
+python3.12 -m pip install -U pip
+python3.12 -m pip install "setuptools<70" wheel ninja
 
 cd $LLVM_SRC_DIR
 git fetch --all --tags
@@ -68,7 +68,7 @@ cd $WORKING_DIR/llvmlite
 # Build & install llvmlite
 export CMAKE_PREFIX_PATH=$LLVM_INSTALL_DIR/lib/cmake/llvm
 export CXXFLAGS="-fPIC"
-python3.12 -m pip install .
+python3.12 -m pip install --no-build-isolation .
 
 echo "-------------------successfully Installed llvmlite----------------------"
 
@@ -171,4 +171,3 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
-
