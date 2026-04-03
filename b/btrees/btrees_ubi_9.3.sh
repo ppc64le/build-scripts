@@ -34,15 +34,17 @@ export PATH=$GCC_TOOLSET_PATH/bin:$PATH
 pip install -U pip
 pip install -U "setuptools <74" wheel twine
 pip install cffi
-pip install -U persistent tox
+pip install -U persistent tox pytest
 
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+#Build C extensions explicitly
+python3 setup.py build_ext --inplace || { echo "C extension build failed"; exit 1; }
 
 #Build package
-if ! pip install . ; then
+if ! pip install . --no-build-isolation ; then
     echo "------------------$PACKAGE_NAME:install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -50,8 +52,13 @@ if ! pip install . ; then
 fi
 
 pip install .[test]
+
+#Check whether C extensions are loaded
+EXT_MODULE=$(python3 -c "import BTrees.OOBTree as o; print(o.OOBTree.__module__)")
+echo "Loaded BTrees.OOBTree module: $EXT_MODULE"
+
 #Test package
-if ! tox -e py3 ; then
+if ! pytest -q --disable-warnings; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
