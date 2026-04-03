@@ -1,26 +1,25 @@
 diff --git a/Makefile b/Makefile
-index c7ea4b275..ef736d07c 100644
+index c7ea4b275..208a06a9a 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -46,7 +46,7 @@ lint-fix: getdeps ## runs golangci-lint suite of linters with automatic fixes
+@@ -46,9 +46,9 @@ lint-fix: getdeps ## runs golangci-lint suite of linters with automatic fixes
  	@$(GOLANGCI) run --build-tags kqueue --timeout=10m --config ./.golangci.yml --fix
  
  check: test
 -test: verifiers build ## builds minio, runs linters, tests
 +test: build ## builds minio, runs linters, tests
  	@echo "Running unit tests"
- 	@MINIO_API_REQUESTS_MAX=10000 CGO_ENABLED=0 go test -v -tags kqueue,dev ./...
+-	@MINIO_API_REQUESTS_MAX=10000 CGO_ENABLED=0 go test -v -tags kqueue,dev ./...
++	@MINIO_API_REQUESTS_MAX=10000 CGO_ENABLED=0 GOOS=linux go test -v -tags kqueue,dev ./...
  
-diff --git a/cmd/globals.go b/cmd/globals.go
-index 734e6abe2..7d1830962 100644
---- a/cmd/globals.go
-+++ b/cmd/globals.go
-@@ -76,7 +76,7 @@ const (
- 	// http://docs.aws.amazon.com/AmazonS3/latest/dev/example-walkthroughs-managing-access-example4.html
- 	globalMinioDefaultOwnerID      = "02d6176db174dc93cb1b899f7c6078f08654445fe8cf1b6ce98d8855f66bdbf4"
- 	globalMinioDefaultStorageClass = "STANDARD"
--	globalWindowsOSName            = "windows"
-+	globalWindowsOSName            = "ppc64le"
- 	globalMacOSName                = "darwin"
- 	globalMinioModeFS              = "mode-server-fs"
- 	globalMinioModeErasureSD       = "mode-server-xl-single"
+ test-root-disable: install-race
+ 	@echo "Running minio root lockdown tests"
+@@ -178,7 +178,7 @@ build-debugging:
+ 
+ build: checks build-debugging ## builds minio to $(PWD)
+ 	@echo "Building minio binary to './minio'"
+-	@CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) go build -tags kqueue -trimpath --ldflags "$(LDFLAGS)" -o $(PWD)/minio 1>/dev/null
++	@CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) go build -tags kqueue -trimpath --ldflags "$(LDFLAGS)" -buildvcs=false -o $(PWD)/minio 1>/dev/null
+ 
+ hotfix-vars:
+ 	$(eval LDFLAGS := $(shell MINIO_RELEASE="RELEASE" MINIO_HOTFIX="hotfix.$(shell git rev-parse --short HEAD)" go run buildscripts/gen-ldflags.go $(shell git describe --tags --abbrev=0 | \
