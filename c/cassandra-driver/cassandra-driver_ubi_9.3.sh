@@ -53,7 +53,7 @@ export LDFLAGS="-Wl,-Bstatic -lev -Wl,-Bdynamic"
 python3 setup.py build_ext --inplace
 
 #Install
-if ! pip install . ; then
+if ! pip install . --no-build-isolation ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
