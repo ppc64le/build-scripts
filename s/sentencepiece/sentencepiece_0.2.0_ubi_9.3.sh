@@ -45,7 +45,7 @@ SCRIPT_DIR=$(pwd)
 
 #Building abesil-cpp,libprotobuf and protobuf 
 
-pip install --upgrade pip setuptools wheel ninja packaging pytest 
+pip install --upgrade pip "setuptools<80" wheel ninja packaging pytest
 
 # cmake installing from source 
 echo " -------------------------- Cmake Installing -------------------------- " 
@@ -73,7 +73,7 @@ mkdir -p $LIBPROTO_DIR/local/libprotobuf
 LIBPROTO_INSTALL=$LIBPROTO_DIR/local/libprotobuf
 
 git submodule update --init --recursive
-rm -rf ./third_party/googletest | true
+rm -rf ./third_party/googletest || true
 
 mkdir build
 cd build
@@ -111,7 +111,7 @@ wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p
 git apply set_cpp_to_17_v4.25.3.patch
 
 cd python
-pip install .
+pip install . --no-build-isolation
 
 echo " -------------------------- libprotobuf and  protobuf installed -------------------------- "
 
@@ -151,7 +151,7 @@ make -j $(nproc)
 make install
 cd ../python
 
-if ! pip install .; then
+if ! pip install . --no-build-isolation; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
