@@ -30,7 +30,6 @@ yum install -y python-devel python-pip git gcc gcc-c++ make cmake wget openssl-d
 
 echo "Installing dependencies -------------------------------------------------------------"
 yum install -y zlib-devel freetype-devel procps-ng openblas-devel meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel  
-
 echo "Installing dependencies -------------------------------------------------------------"
 yum install -y java-11-openjdk-devel  libtool xz  libevent-devel  clang java-11-openjdk java-11-openjdk-headless zip openblas
 export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-11)(?=.*ppc64le)')
