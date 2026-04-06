@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package         : OpenBLAS
-# Version         : v0.3.29
+# Version         : v0.3.32
 # Source repo     : https://github.com/OpenMathLib/OpenBLAS
 # Tested on       : UBI: 9.3
 # Language        : C
@@ -22,11 +22,12 @@ set -ex
 
 # Variables
 PACKAGE_NAME=OpenBLAS
-PACKAGE_VERSION=${1:-v0.3.29}
+PACKAGE_VERSION=${1:-v0.3.32}
 PACKAGE_URL=https://github.com/OpenMathLib/OpenBLAS
 OPENBLAS_VERSION=${PACKAGE_VERSION}
 CURRENT_DIR=$(pwd)
 PACKAGE_DIR=OpenBLAS
+MAX_JOBS=${MAX_JOBS:-8}
 
 
 echo "------------------------Installing dependencies-------------------"
@@ -53,77 +54,75 @@ wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o
 sed -i "s/{PACKAGE_VERSION}/$(echo $PACKAGE_VERSION | sed 's/^v//')/g" pyproject.toml
 echo "--------------------------replaced version in pyproject.toml--------------------------"
 
-PREFIX=local/openblas
+export USE_OPENMP=1
+export USE_THREAD=1
+export NUM_THREADS=120
+export TARGET=POWER9
+export DYNAMIC_ARCH=1
+export INTERFACE64=0
+export BUILD_BFLOAT16=1
+export NO_AFFINITY=1
 
-# Set build options
-declare -a build_opts
-
-# Fix ctest not automatically discovering tests
-LDFLAGS=$(echo "${LDFLAGS}" | sed "s/-Wl,--gc-sections//g")
-
-# See this workaround: https://github.com/xianyi/OpenBLAS/issues/818#issuecomment-207365134
+# Fix flags
 export CF="${CFLAGS} -Wno-unused-parameter -Wno-old-style-declaration"
 unset CFLAGS
 
-export USE_OPENMP=1
-build_opts+=(USE_OPENMP=${USE_OPENMP})
-export PREFIX=${PREFIX}
+# Remove problematic linker flag if present
+LDFLAGS=$(echo "${LDFLAGS}" | sed "s/-Wl,--gc-sections//g")
 
-# Handle Fortran flags
-if [ ! -z "$FFLAGS" ]; then
-    export FFLAGS="${FFLAGS/-fopenmp/ }"
-    export FFLAGS="${FFLAGS} -frecursive"
-    export LAPACK_FFLAGS="${FFLAGS}"
-fi
+# -----------------------------------------------------------------------------
+# Build
+# -----------------------------------------------------------------------------
+if ! make -j${MAX_JOBS} \
+    TARGET=${TARGET} \
+    BUILD_BFLOAT16=${BUILD_BFLOAT16} \
+    BINARY=64 \
+    USE_OPENMP=${USE_OPENMP} \
+    USE_THREAD=${USE_THREAD} \
+    NUM_THREADS=${NUM_THREADS} \
+    DYNAMIC_ARCH=${DYNAMIC_ARCH} \
+    INTERFACE64=${INTERFACE64} \
+    NO_AFFINITY=${NO_AFFINITY} \
+    CFLAGS="${CF}" ; then
 
-export PLATFORM=$(uname -m)
-build_opts+=(BINARY="64")
-build_opts+=(DYNAMIC_ARCH=1)
-build_opts+=(TARGET="POWER9")
-BUILD_BFLOAT16=1
-
-# Placeholder for future builds that may include ILP64 variants.
-build_opts+=(INTERFACE64=0)
-build_opts+=(SYMBOLSUFFIX="")
-
-# Build LAPACK
-build_opts+=(NO_LAPACK=0)
-
-# Enable threading and set the number of threads
-build_opts+=(USE_THREAD=1)
-build_opts+=(NUM_THREADS=120)
-
-# Disable CPU/memory affinity handling to avoid problems with NumPy and R
-build_opts+=(NO_AFFINITY=1)
-
-# Build OpenBLAS
-if ! (make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
+# -----------------------------------------------------------------------------
 # Install OpenBLAS
-CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
+# -----------------------------------------------------------------------------
+echo "------------------------Installing OpenBLAS-------------------"
 
-#install
-if ! (pip install . --no-build-isolation) ; then
+if ! make install PREFIX=${PREFIX} ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-# Run test cases
+# -----------------------------------------------------------------------------
+# Library path setup
+# -----------------------------------------------------------------------------
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${PREFIX}/lib64:${PREFIX}/lib
+
+# -----------------------------------------------------------------------------
+# Python package install (from original script)
+# -----------------------------------------------------------------------------
+echo "------------------------Installing Python package-------------------"
+
+if ! pip install . --no-build-isolation ; then
+    echo "------------------$PACKAGE_NAME:Python_Install_fails-------------------------------------"
+    exit 1
+fi
+
+# -----------------------------------------------------------------------------
+# Run tests
+# -----------------------------------------------------------------------------
+echo "------------------------Running tests-------------------"
+
 if !(make -C utest all); then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
     exit 2
 else
     echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
