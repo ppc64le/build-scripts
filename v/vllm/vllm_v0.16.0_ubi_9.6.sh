@@ -415,8 +415,8 @@ export MAX_JOBS=$(nproc)
 #We use sed commands during the build to comment out the unsupported instantiation block.This allows the CPU wheel to compile successfully, effectively disabling MLA decode for this configuration.
 #Reference GitHub issue: https://github.com/vllm-project/vllm/issues/35599
 
-sed -i '390,397{s/^/\/\/ /}' /home/vllm/csrc/cpu/mla_decode.cpp
-sed -i '390i\        TORCH_CHECK(false, "mla_decode_kvcache is not supported on ppc64le");' /home/vllm/csrc/cpu/mla_decode.cpp
+sed -i '390,397{s/^/\/\/ /}' $CURRENT_DIR/$PACKAGE_NAME/csrc/cpu/mla_decode.cpp
+sed -i '390i\        TORCH_CHECK(false, "mla_decode_kvcache is not supported on ppc64le");' $CURRENT_DIR/$PACKAGE_NAME/csrc/cpu/mla_decode.cpp
 
 export SETUPTOOLS_SCM_PRETEND_VERSION=${PACKAGE_VERSION#v}
 python3.12 setup.py install
