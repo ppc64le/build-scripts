@@ -18,12 +18,11 @@
 #
 # ---------------------------------------------------------------------------
 
-
 # Variables
 PACKAGE_NAME=jax
 PACKAGE_VERSION=${1:-jaxlib-v0.4.7}
 PACKAGE_URL=https://github.com/jax-ml/jax
-CURRENT_DIR=$pwd
+CURRENT_DIR=$(pwd)
 
 # Install dependencies
 echo "Installing dependencies -------------------------------------------------------------"
@@ -31,11 +30,8 @@ yum install -y python-devel python-pip git gcc gcc-c++ make cmake wget openssl-d
 
 echo "Installing dependencies -------------------------------------------------------------"
 yum install -y zlib-devel freetype-devel procps-ng openblas-devel meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel  
-
 echo "Installing dependencies -------------------------------------------------------------"
 yum install -y java-11-openjdk-devel  libtool xz  libevent-devel  clang java-11-openjdk java-11-openjdk-headless zip openblas
-
-
 export JAVA_HOME=/usr/lib/jvm/$(ls /usr/lib/jvm/ | grep -P '^(?=.*java-11)(?=.*ppc64le)')
 export PATH=$JAVA_HOME/bin:$PATH
 export LD_LIBRARY_PATH=/usr/lib64/:$LD_LIBRARY_PATH
@@ -44,17 +40,18 @@ export LD_LIBRARY_PATH=/usr/lib64/:$LD_LIBRARY_PATH
  
 #installing bazel from source
 echo "Installing bazel -------------------------------------------------------------"
-mkdir bazel
-cd bazel
-wget https://github.com/bazelbuild/bazel/releases/download/5.1.1/bazel-5.1.1-dist.zip
-unzip bazel-5.1.1-dist.zip
-echo "Installing bazel -------------------------------------------------------------"
+# Install Bazel 5.3.2
+export CC=/usr/bin/gcc
+export CXX=/usr/bin/g++
+mkdir -p bazel && cd bazel
+wget https://github.com/bazelbuild/bazel/releases/download/5.3.2/bazel-5.3.2-dist.zip
+unzip bazel-5.3.2-dist.zip
+
 env EXTRA_BAZEL_ARGS="--tool_java_runtime_version=local_jdk" bash ./compile.sh
-cp output/bazel /usr/local/bin
-export PATH=/usr/local/bin:$PATH
+cp output/bazel /usr/local/bin/bazel
 bazel --version
 cd ..
- 
+
 echo "Installing dependencies via pip3-------------------------------------------------------------"
 pip3 install numpy==1.26.4 scipy wheel pytest
 pip3 install numpy==1.26.4 opt-einsum==3.3.0  ml-dtypes==0.5.0 absl-py 
