@@ -44,7 +44,7 @@ cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 #install necessary Python packages
-pip install wheel pytest tox nox mock build gevent eventlet pyopenssl
+pip install wheel pytest tox nox mock build gevent eventlet pyopenssl "setuptools<80" 
 pip install -r test-requirements.txt
 
 export CASS_DRIVER_LIBEV_INCLUDES="/usr/local/include"
