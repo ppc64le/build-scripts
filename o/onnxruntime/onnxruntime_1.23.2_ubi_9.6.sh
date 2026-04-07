@@ -1,5 +1,4 @@
 #!/bin/bash -e
-
 # -----------------------------------------------------------------------------
 #
 # Package          : onnxruntime
@@ -50,7 +49,7 @@ export CPLUS_INCLUDE_PATH=$PYTHON_INCLUDE:$CPLUS_INCLUDE_PATH
 export C_INCLUDE_PATH=$PYTHON_INCLUDE:$C_INCLUDE_PATH
 
 python3.12 -m pip install --upgrade pip
-python3.12 -m pip install --upgrade cmake pip setuptools wheel ninja packaging tox pytest build mypy stubs
+python3.12 -m pip install --upgrade cmake pip "setuptools<80" wheel ninja packaging tox pytest build mypy stubs
 
 cd $CURRENT_DIR
 # Set ABSEIL_VERSION and ABSEIL_URL
