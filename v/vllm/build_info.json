@@ -22,6 +22,9 @@
   "v0.15.1":{
     "build_script": "vllm_v0.15.1_ubi_9.5.sh"
   },
+  "v0.16.0":{
+    "build_script": "vllm_v0.16.0_ubi_9.6.sh"
+  },
   "*": {
     "build_script": "vllm_v0.15.1_ubi_9.5.sh"
   }
