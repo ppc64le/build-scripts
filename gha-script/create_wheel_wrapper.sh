@@ -89,8 +89,11 @@ format_build_script() {
 
         # modify the build script for compatibility
         sed -i 's/\bpython[0-9]\+\.[0-9]\+ -m pip /pip /g' "$TEMP_BUILD_SCRIPT_PATH"
-        sed -i 's/python[0-9]\+\.[0-9]\+/python/g' "$TEMP_BUILD_SCRIPT_PATH"
-        sed -i 's/python3 /python /g' "$TEMP_BUILD_SCRIPT_PATH"
+        #sed -i 's/python[0-9]\+\.[0-9]\+/python/g' "$TEMP_BUILD_SCRIPT_PATH"
+        #sed -i 's/python3 /python /g' "$TEMP_BUILD_SCRIPT_PATH"
+		#Below change introduces a temporary workaround for building Python from source and will be reverted to above to sed commands after a proper solution is in place.
+		sed -i '/^\s*yum remove\|^\s*dnf remove/! s/python[0-9]\+\.[0-9]\+/python/g' "$TEMP_BUILD_SCRIPT_PATH"
+        sed -i '/^\s*yum remove\|^\s*dnf remove/! s/python3 /python /g' "$TEMP_BUILD_SCRIPT_PATH"
         sed -i 's/pip3 /pip /g' "$TEMP_BUILD_SCRIPT_PATH"
         sed -i '/-m venv/d' "$TEMP_BUILD_SCRIPT_PATH"
         sed -i '/bin\/activate/d' "$TEMP_BUILD_SCRIPT_PATH"
