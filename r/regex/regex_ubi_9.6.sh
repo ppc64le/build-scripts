@@ -52,7 +52,7 @@ fi
 # Updating unittest.main() to use exit=False because pytest treats sys.exit() from unittest.main() as a failure (SystemExit),
 # even when tests pass. This prevents pytest from failing during collection/execution.
 sed -i 's/unittest\.main(verbosity=2)/unittest.main(verbosity=2, exit=False)/' regex_3/test_regex.py
-if ! python3.11 -m pytest; then
+if !  pytest; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
