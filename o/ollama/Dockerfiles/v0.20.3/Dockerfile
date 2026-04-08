@@ -63,7 +63,7 @@ RUN wget -q -O ppc_sync1.patch \
     wget -q -O build_fix_ppc.patch \
        https://github.com/ollama/ollama/commit/4115e4f58f8c3fb86cdce2d58aae811c2d26cc52.patch && \
     wget -q -O set_threads_env.patch \
-      https://github.com/ollama/ollama/commit/changes/a86b8152e0f37c0c117ba7acd2a940e3ba5f07d9.patch
+      https://github.com/ollama/ollama/commit/a86b8152e0f37c0c117ba7acd2a940e3ba5f07d9.patch
     
 # Apply patches
 RUN patch -Np1 < ppc_sync1.patch && \
