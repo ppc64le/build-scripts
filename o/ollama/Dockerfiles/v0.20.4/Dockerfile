@@ -4,7 +4,7 @@
 FROM registry.access.redhat.com/ubi9/ubi:9.6 AS build
 
 ARG PACKAGE_NAME=ollama
-ARG PACKAGE_VERSION=v0.20.4
+ARG PACKAGE_VERSION=v0.20.3
 ARG PACKAGE_URL=https://github.com/ollama/ollama
 ENV CMAKE_VERSION=3.30.5
 ENV GO_VERSION=1.26.1
