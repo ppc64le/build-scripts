@@ -365,10 +365,10 @@ ln -sf $CURRENT_DIR/opencv-python/tests/SampleVideo_1280x720_1mb.mp4 SampleVideo
 # Get the Python version
 PYTHON_VERSION=$(python -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/opencv-python-headless/opencv_python_headless_4.10.0.84_1.patch
 
 #The patch is only required if python version is greater than 3.12.
-if [[ "$(printf '%s\n' "$PYTHON_VERSION" "3.12" | sort -V | head -n1)" == "3.12" ]]; then
+if [[ "$(printf '%s\n' "$PYTHON_VERSION" "3.12" | sort -V | head -n1)" == "3.12" && "$PACKAGE_VERSION" == "84" ]]; then
+    wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/opencv-python-headless/opencv_python_headless_4.10.0.84_1.patch
     echo "Python version is 3.12 or newer.Applying the patch"
 	git apply opencv_python_headless_4.10.0.84_1.patch
 	pip install "setuptools==79.0.1" --upgrade
