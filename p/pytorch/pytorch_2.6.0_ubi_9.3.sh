@@ -207,8 +207,15 @@ git submodule sync
 git submodule update --init --recursive
 
 #Apply patch
-PATCH_URL="https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_${PACKAGE_VERSION}.patch"
-PATCH_FILE="pytorch_${PACKAGE_VERSION}.patch"
+ver=${PACKAGE_VERSION#v}
+
+if [[ "$(printf '%s\n' "$ver" "2.9.1" | sort -V | tail -n1)" == "$ver" ]]; then
+    PATCH_URL="https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.9.1.patch"
+    PATCH_FILE="pytorch_v2.9.1.patch"
+else
+    PATCH_URL="https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_${PACKAGE_VERSION}.patch"
+    PATCH_FILE="pytorch_${PACKAGE_VERSION}.patch"
+fi
 wget -q --spider "$PATCH_URL" && wget -q "$PATCH_URL" && git apply "$PATCH_FILE" || echo "Patch missing, skipped"
 
 ARCH=`uname -p`
