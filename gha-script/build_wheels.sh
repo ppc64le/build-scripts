@@ -42,15 +42,6 @@ WHEEL_SCRIPT=gha-script/create_wheel_wrapper.sh
 # path to post_process_wheel script (suffix addition, license addition, metadata addition)
 POST_PROCESS_SCRIPT_PATH=gha-script/post_process_wheel.py
 
-#python3 gha-script/build_wheels.py "$WHEEL_SCRIPT" "$PYTHON_VERSION" "$docker_image" "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" > build_log &
-
-# SCRIPT_PID=$!
-# while ps -p $SCRIPT_PID > /dev/null
-# do 
-#   echo "$SCRIPT_PID is running"
-#   sleep 100
-# done
-# wait $SCRIPT_PID
 python3 gha-script/build_wheels.py "$WHEEL_SCRIPT" "$PYTHON_VERSION" "$docker_image" "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "$POST_PROCESS_SCRIPT_PATH" 2>&1 | tee wheel_build_log
 wheel_status=${PIPESTATUS[0]}
 
@@ -59,21 +50,9 @@ if [ $wheel_status != 0 ];
 then
     echo "Wheel build failed for "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "
     echo "*************************************************************************************"
-    if [ $log_size -lt 1800000 ];
-    then
-       cat wheel_build_log
-    else
-       tail -100 wheel_build_log
-    fi
     exit 1
 else
     echo "Script execution completed successfully for "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "
     echo "*************************************************************************************"
-    if [ $log_size  -lt 1800000 ];
-    then
-       cat wheel_build_log
-    else
-       tail -100 wheel_build_log
-    fi    
 fi
 exit 0
