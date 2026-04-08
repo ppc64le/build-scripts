@@ -59,21 +59,30 @@ if [ $wheel_status != 0 ];
 then
     echo "Wheel build failed for "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "
     echo "*************************************************************************************"
-    if [ $log_size -lt 1800000 ];
-    then
-       cat wheel_build_log
-    else
-       tail -100 wheel_build_log
-    fi
     exit 1
 else
     echo "Script execution completed successfully for "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "
     echo "*************************************************************************************"
-    if [ $log_size  -lt 1800000 ];
-    then
-       cat wheel_build_log
-    else
-       tail -100 wheel_build_log
-    fi    
 fi
+# if [ $wheel_status != 0 ];
+# then
+#     echo "Wheel build failed for "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "
+#     echo "*************************************************************************************"
+#     if [ $log_size -lt 1800000 ];
+#     then
+#        cat wheel_build_log
+#     else
+#        tail -100 wheel_build_log
+#     fi
+#     exit 1
+# else
+#     echo "Script execution completed successfully for "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "
+#     echo "*************************************************************************************"
+#     if [ $log_size  -lt 1800000 ];
+#     then
+#        cat wheel_build_log
+#     else
+#        tail -100 wheel_build_log
+#     fi    
+# fi
 exit 0
