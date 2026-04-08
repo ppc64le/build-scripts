@@ -73,11 +73,21 @@ def log(type:log_type, *phrases):
     
 def get_default_branch(package_url):
     owner, repo = package_url.replace('.git','').split('/')[-2:]
-    response = requests.get(GITHUB_PACKAGE_INFO_API.format(owner, repo)).json()
+    # Get GitHub token from environment variable
+    github_token = os.environ.get('GITHUB_TOKEN')
+    headers = {}
+    if github_token:
+        headers['Authorization'] = f'Bearer {github_token}'
+    response = requests.get(GITHUB_PACKAGE_INFO_API.format(owner, repo), headers=headers).json()
     return response["default_branch"]
 
 def validate_username(user_name):
-    response = requests.get(GITHUB_USER_API.format(user_name))
+    # Get GitHub token from environment variable
+    github_token = os.environ.get('GITHUB_TOKEN')
+    headers = {}
+    if github_token:
+        headers['Authorization'] = f'Bearer {github_token}'
+    response = requests.get(GITHUB_USER_API.format(user_name), headers=headers)
     if response.status_code==200:
         return True
     return False

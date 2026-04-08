@@ -89,7 +89,12 @@ if(os.path.exists(config_file_name)):
 else:
     # If local file not available, read it from github.
     github_url = raw_url_prefix + "/build_info.json"
-    r = requests.get(github_url)
+    # Get GitHub token from environment variable
+    github_token = os.environ.get('GITHUB_TOKEN')
+    headers = {}
+    if github_token:
+        headers['Authorization'] = f'Bearer {github_token}'
+    r = requests.get(github_url, headers=headers)
     if r.status_code == 200:
         config_json = r.json()
 
