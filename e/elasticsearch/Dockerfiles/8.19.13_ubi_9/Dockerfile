@@ -146,9 +146,6 @@ RUN chmod 755 /usr/share/elasticsearch/libs/native/libraries/build/platform/linu
 #    ls -l /usr/share/elasticsearch/lib/platform/linux-ppc64le/ && \
 #    exit 1
 
-#RUN cd lib && \
-#    rm -rf jna-* && \
-#    wget https://repo1.maven.org/maven2/net/java/dev/jna/jna/5.7.0/jna-5.7.0.jar
 
 # The distribution includes a `config` directory, no need to create it
 
