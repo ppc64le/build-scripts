@@ -74,7 +74,7 @@ echo "** Downloading power specific patches **"
 wget -q -O ppc_sync1.patch https://github.com/ollama/ollama/commit/035aee3b98e666b42fbab724aa9aaa176360844f.patch
 wget -q -O ppc_sync2.patch https://github.com/ollama/ollama/commit/b765e03d192fe99e96a8008daeb76a0a843e997d.patch
 wget -q -O ppc_build_fix.patch https://github.com/ollama/ollama/commit/4115e4f58f8c3fb86cdce2d58aae811c2d26cc52.patch
-wget -q -O set_env_threads.patch https://github.com/ollama/ollama/commit/367038fc1b9c172effca2a9b9dfb1ba81879df5a.patch
+wget -q -O set_env_threads_env.patch https://github.com/ollama/ollama/commit/367038fc1b9c172effca2a9b9dfb1ba81879df5a.patch
 
 echo "** Applying power specific patches**"
 patch -p1 < ppc_sync1.patch
