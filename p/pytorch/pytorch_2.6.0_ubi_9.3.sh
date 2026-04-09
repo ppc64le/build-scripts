@@ -209,12 +209,14 @@ git submodule update --init --recursive
 #Apply patch
 ver=${PACKAGE_VERSION#v}
 
+PATCH_URL="https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_${PACKAGE_VERSION}.patch"
+PATCH_FILE="pytorch_${PACKAGE_VERSION}.patch"
+
+# Patch for 2.9.1, 2.10.0 and 2.11.0 versions
+# TODO: Add more versions and/or patch files as needed
 if [[ "$(printf '%s\n' "$ver" "2.9.1" | sort -V | tail -n1)" == "$ver" ]]; then
     PATCH_URL="https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.9.1.patch"
     PATCH_FILE="pytorch_v2.9.1.patch"
-else
-    PATCH_URL="https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_${PACKAGE_VERSION}.patch"
-    PATCH_FILE="pytorch_${PACKAGE_VERSION}.patch"
 fi
 wget -q --spider "$PATCH_URL" && wget -q "$PATCH_URL" && git apply "$PATCH_FILE" || echo "Patch missing, skipped"
 
