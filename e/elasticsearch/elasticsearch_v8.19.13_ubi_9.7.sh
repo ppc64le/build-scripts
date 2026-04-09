@@ -45,7 +45,7 @@ tar -xf OpenJDK19U-jdk_ppc64le_linux_hotspot_19.0.2_7.tar.gz -C /opt
 rm -f OpenJDK19U-jdk_ppc64le_linux_hotspot_19.0.2_7.tar.gz
 
 wget https://github.com/adoptium/temurin20-binaries/releases/download/jdk-20%2B36/OpenJDK20U-jdk_ppc64le_linux_hotspot_20_36.tar.gz
-sudo tar -xf OpenJDK20U-jdk_ppc64le_linux_hotspot_20_36.tar.gz -C /opt
+tar -xf OpenJDK20U-jdk_ppc64le_linux_hotspot_20_36.tar.gz -C /opt
 rm -f OpenJDK20U-jdk_ppc64le_linux_hotspot_20_36.tar.gz
 
 wget https://github.com/adoptium/temurin22-binaries/releases/download/jdk-22.0.2%2B9/OpenJDK22U-jdk_ppc64le_linux_hotspot_22.0.2_9.tar.gz
