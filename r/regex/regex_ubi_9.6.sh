@@ -25,7 +25,7 @@ PACKAGE_URL=https://github.com/mrabarnett/mrab-regex
 PACKAGE_DIR=mrab-regex
 
 # Install dependencies
-yum install -y git python3.11 python3.11-devel.ppc64le gcc-toolset-13 make wget sudo cmake
+yum install -y git python3.11 python3.11-devel.ppc64le python3.11-pip gcc-toolset-13 make wget sudo cmake
 pip3 install pytest tox nox
 
 export PATH=$PATH:/usr/local/bin/
