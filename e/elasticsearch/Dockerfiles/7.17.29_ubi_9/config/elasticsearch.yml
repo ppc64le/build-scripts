@@ -1,0 +1,5 @@
+cluster.name: "docker-cluster"
+network.host: 0.0.0.0
+xpack.ml.enabled: false
+discovery.seed_hosts: []
+bootstrap.system_call_filter: false

@@ -55,6 +55,8 @@ jobs:
         run: echo "PR_NUMBER=${{ github.event.pull_request.number || inputs.pr_number }}" >> $GITHUB_ENV
 
       - name: Run validate_builds.py script with live logs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python3 -u gha-script/validate_builds.py ${PR_NUMBER:-false} 2>&1 | tee build_log
           my_pid_status=${PIPESTATUS[0]}

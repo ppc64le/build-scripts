@@ -12,6 +12,9 @@
   "required_versions":{"Releases": ["release-3.1.9"], "Tags": ["*"]},
   "use_non_root_user": "false",
   "validate_build_script": true,
+  "release-3.1.7": {
+    "build_script": "pyopengl_accelerate_3.1.7_ubi_9.6.sh"
+  },
   "*": {
     "dir": "release-3.1.8_ubi9",
     "build_script": "pyopengl-accelerate_ubi_9.3.sh"

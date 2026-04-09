@@ -51,9 +51,11 @@ cd ..
 # libde265
 git clone https://github.com/strukturag/libde265.git
 cd libde265
-./autogen.sh
-./configure --prefix=/usr/local
-make -j$(nproc) && make install
+mkdir build
+cd build
+cmake ..
+make -j$(nproc)
+make install
 cd ..
 
 # x265
@@ -271,4 +273,3 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
-

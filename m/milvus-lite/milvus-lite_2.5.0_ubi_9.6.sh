@@ -32,6 +32,11 @@ yum install -y git gcc-c++ gcc wget make python3.12 yum-utils \
                libffi-devel scl-utils openblas-devel xz patch \
                python3.12-devel python3.12-pip
 
+yum install -y gcc-toolset-12
+source /opt/rh/gcc-toolset-12/enable
+gcc --version
+echo "GCC Toolset 12 activated for milvus-lite build"
+
 # Ensure python3 refers to the distro’s default (if needed)
 #ln -sf /usr/bin/python3.12 /usr/bin/python3 || true
 #ln -sf /usr/bin/pip3.12    /usr/bin/pip3   || true

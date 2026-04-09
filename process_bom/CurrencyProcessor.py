@@ -48,7 +48,7 @@ class CurrencyProcessor:
         result = {}
         cos = COSWrapper(CLOUD_OBJECT_CVE_SBOM_BUCKET)
 
-        python_versions = ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        python_versions = ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]   
 
         for py_version in python_versions:
             artifact_name = f"{package_name}/{version}/{package_name}_{version}_wheel_py{py_version}_log.gz"

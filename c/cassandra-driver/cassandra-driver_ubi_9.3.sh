@@ -44,7 +44,7 @@ cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 #install necessary Python packages
-pip install wheel pytest tox nox mock build gevent eventlet pyopenssl
+pip install wheel pytest tox nox mock build gevent eventlet pyopenssl "setuptools<80" 
 pip install -r test-requirements.txt
 
 export CASS_DRIVER_LIBEV_INCLUDES="/usr/local/include"
@@ -53,7 +53,7 @@ export LDFLAGS="-Wl,-Bstatic -lev -Wl,-Bdynamic"
 python3 setup.py build_ext --inplace
 
 #Install
-if ! pip install . ; then
+if ! pip install . --no-build-isolation ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"

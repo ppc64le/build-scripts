@@ -59,6 +59,19 @@ install_python_version() {
             cd .. && rm -rf Python-3.13.10.tgz
         fi
         ;;
+    "3.14")
+        if ! python3.14 --version &>/dev/null; then
+            yum install -y sudo zlib-devel wget ncurses git make cmake openssl-devel xz xz-devel
+            yum install -y libffi libffi-devel sqlite sqlite-devel sqlite-libs bzip2-devel
+            wget https://www.python.org/ftp/python/3.14.3/Python-3.14.3.tgz
+            tar xzf Python-3.14.3.tgz
+            cd Python-3.14.3
+            ./configure --prefix=/usr/local --enable-optimizations
+            make -j2
+            make altinstall
+            cd .. && rm -rf Python-3.14.3.tgz
+        fi
+        ;;
     *)
         echo "Unsupported Python version: $version"
         exit 1
@@ -76,8 +89,11 @@ format_build_script() {
 
         # modify the build script for compatibility
         sed -i 's/\bpython[0-9]\+\.[0-9]\+ -m pip /pip /g' "$TEMP_BUILD_SCRIPT_PATH"
-        sed -i 's/python[0-9]\+\.[0-9]\+/python/g' "$TEMP_BUILD_SCRIPT_PATH"
-        sed -i 's/python3 /python /g' "$TEMP_BUILD_SCRIPT_PATH"
+        #sed -i 's/python[0-9]\+\.[0-9]\+/python/g' "$TEMP_BUILD_SCRIPT_PATH"
+        #sed -i 's/python3 /python /g' "$TEMP_BUILD_SCRIPT_PATH"
+		#TODO: Below change introduces a temporary workaround for building Python from source and will be reverted to above to sed commands after a proper solution is in place.
+		sed -i '/^\s*yum remove\|^\s*dnf remove/! s/python[0-9]\+\.[0-9]\+/python/g' "$TEMP_BUILD_SCRIPT_PATH"
+        sed -i '/^\s*yum remove\|^\s*dnf remove/! s/python3 /python /g' "$TEMP_BUILD_SCRIPT_PATH"
         sed -i 's/pip3 /pip /g' "$TEMP_BUILD_SCRIPT_PATH"
         sed -i '/-m venv/d' "$TEMP_BUILD_SCRIPT_PATH"
         sed -i '/bin\/activate/d' "$TEMP_BUILD_SCRIPT_PATH"
@@ -127,13 +143,12 @@ generate_sha() {
     : "${PACKAGE_VERSION:?PACKAGE_VERSION is required}"
     : "${BUILD_SCRIPT_DATE:?BUILD_SCRIPT_DATE is required}"
 
-    if [[ "$wheel" == *any.whl ]]; then
+    if [[ "$wheel" == *any.whl || "$wheel" == *abi3* || "$wheel" == *none* ]]; then
         string_to_hash="${PACKAGE_NAME}_${PACKAGE_VERSION}_${PACKAGE_LANGUAGE}_${BUILD_SCRIPT_DATE}"
     else
         : "${python_version:?python_version is required}"
         string_to_hash="${PACKAGE_NAME}_${PACKAGE_VERSION}_${PACKAGE_LANGUAGE}_${python_version}_${BUILD_SCRIPT_DATE}"
     fi
-
 
     SHA_VALUE=$(echo -n "$string_to_hash" | sha256sum | awk '{print $1}')
 
