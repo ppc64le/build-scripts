@@ -4,7 +4,7 @@
 # Package       : opencv-python
 # Version       : 4.13.0.92
 # Source repo   : https://github.com/opencv/opencv-python.git
-# Tested on     : UBI:9.5
+# Tested on     : UBI:9.6
 # Language      : Python
 # Ci-Check  : True
 # Script License: Apache License 2.0
@@ -59,7 +59,7 @@ python3.12 -m pip install \
 
 IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
 
-python3 -m pip install \
+python3.12 -m pip install \
   --prefer-binary \
   --trusted-host wheels.developerfirst.ibm.com \
   --extra-index-url ${IBM_WHEELS} \
