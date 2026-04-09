@@ -26,22 +26,22 @@ BUILD_DIR=$(pwd)
 SCRIPT_PATH=$(dirname $(realpath $0))
 
 # Install system dependencies (except Java)
-sudo yum install -y git gzip tar wget patch make gcc gcc-c++ libcurl-devel --allowerasing
+yum install -y git gzip tar wget patch make gcc gcc-c++ libcurl-devel --allowerasing
 
 wget https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.8%2B9/OpenJDK21U-jdk_ppc64le_linux_hotspot_21.0.8_9.tar.gz
-sudo tar -xf OpenJDK21U-jdk_ppc64le_linux_hotspot_21.0.8_9.tar.gz -C /opt
+tar -xf OpenJDK21U-jdk_ppc64le_linux_hotspot_21.0.8_9.tar.gz -C /opt
 rm -f OpenJDK21U-jdk_ppc64le_linux_hotspot_21.0.8_9.tar.gz
 
 wget https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.8.1+1/OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.8.1_1.tar.gz
-sudo tar -xf OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.8.1_1.tar.gz -C /opt
+tar -xf OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.8.1_1.tar.gz -C /opt
 rm -f OpenJDK17U-jdk_ppc64le_linux_hotspot_17.0.8.1_1.tar.gz
 
 wget https://github.com/adoptium/temurin18-binaries/releases/download/jdk-18.0.2.1%2B1/OpenJDK18U-jdk_ppc64le_linux_hotspot_18.0.2.1_1.tar.gz
-sudo tar -xf OpenJDK18U-jdk_ppc64le_linux_hotspot_18.0.2.1_1.tar.gz -C /opt
+tar -xf OpenJDK18U-jdk_ppc64le_linux_hotspot_18.0.2.1_1.tar.gz -C /opt
 rm -f OpenJDK18U-jdk_ppc64le_linux_hotspot_18.0.2.1_1.tar.gz
 
 wget https://github.com/adoptium/temurin19-binaries/releases/download/jdk-19.0.2%2B7/OpenJDK19U-jdk_ppc64le_linux_hotspot_19.0.2_7.tar.gz
-sudo tar -xf OpenJDK19U-jdk_ppc64le_linux_hotspot_19.0.2_7.tar.gz -C /opt
+tar -xf OpenJDK19U-jdk_ppc64le_linux_hotspot_19.0.2_7.tar.gz -C /opt
 rm -f OpenJDK19U-jdk_ppc64le_linux_hotspot_19.0.2_7.tar.gz
 
 wget https://github.com/adoptium/temurin20-binaries/releases/download/jdk-20%2B36/OpenJDK20U-jdk_ppc64le_linux_hotspot_20_36.tar.gz
@@ -49,15 +49,15 @@ sudo tar -xf OpenJDK20U-jdk_ppc64le_linux_hotspot_20_36.tar.gz -C /opt
 rm -f OpenJDK20U-jdk_ppc64le_linux_hotspot_20_36.tar.gz
 
 wget https://github.com/adoptium/temurin22-binaries/releases/download/jdk-22.0.2%2B9/OpenJDK22U-jdk_ppc64le_linux_hotspot_22.0.2_9.tar.gz
-sudo tar -xf OpenJDK22U-jdk_ppc64le_linux_hotspot_22.0.2_9.tar.gz -C /opt
+tar -xf OpenJDK22U-jdk_ppc64le_linux_hotspot_22.0.2_9.tar.gz -C /opt
 rm -f OpenJDK22U-jdk_ppc64le_linux_hotspot_22.0.2_9.tar.gz
 
 wget https://github.com/adoptium/temurin23-binaries/releases/download/jdk-23.0.2%2B7/OpenJDK23U-jdk_ppc64le_linux_hotspot_23.0.2_7.tar.gz
-sudo tar -xf OpenJDK23U-jdk_ppc64le_linux_hotspot_23.0.2_7.tar.gz -C /opt
+tar -xf OpenJDK23U-jdk_ppc64le_linux_hotspot_23.0.2_7.tar.gz -C /opt
 rm -f OpenJDK23U-jdk_ppc64le_linux_hotspot_23.0.2_7.tar.gz
 
 wget https://github.com/adoptium/temurin24-binaries/releases/download/jdk-24.0.2%2B12/OpenJDK24U-jdk_ppc64le_linux_hotspot_24.0.2_12.tar.gz
-sudo tar -xf OpenJDK24U-jdk_ppc64le_linux_hotspot_24.0.2_12.tar.gz -C /opt
+tar -xf OpenJDK24U-jdk_ppc64le_linux_hotspot_24.0.2_12.tar.gz -C /opt
 rm -f OpenJDK24U-jdk_ppc64le_linux_hotspot_24.0.2_12.tar.gz
 
 
