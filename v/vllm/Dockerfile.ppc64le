@@ -1,0 +1,145 @@
+# Base UBI image
+ARG BASE_UBI_IMAGE_TAG=9.6-1754584681
+
+###############################################################
+#                       BUILDER  STAGE                        #
+###############################################################
+
+FROM registry.access.redhat.com/ubi9/ubi-minimal:${BASE_UBI_IMAGE_TAG} AS builder-base
+
+ARG VLLM_VERSION="0.18.0"
+ARG PYTHON_VERSION=3.12
+ARG VLLM_TARGET_DEVICE=cpu
+
+USER root
+WORKDIR /root
+ENV HOME=/root
+
+ENV WHEEL_DIR=/wheelsdir
+ENV VIRTUAL_ENV=/opt/vllm
+ENV GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
+ENV CARGO_HOME=/root/.cargo
+ENV RUSTUP_HOME=/root/.rustup
+ENV PATH=/root/.cargo/bin:/root/.rustup/bin:${VIRTUAL_ENV}/bin:$PATH
+
+
+RUN --mount=type=cache,target=/var/cache/dnf \
+    microdnf install -y \
+    python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip \
+    && python${PYTHON_VERSION} -m venv ${VIRTUAL_ENV} \
+    && python -m pip install -U pip uv --no-cache
+
+# Important: Copy only bare minimum required for the script to run
+COPY requirements/ requirements/
+COPY pyproject.toml ./
+
+# The script is expected to install whatever python dependencies are missing
+# as well as whatever system libraries need to be installed from source
+COPY  build_vllm_*.sh ./
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    sh ./build_vllm_$(uname -m).sh
+
+# copy vllm source code to build cache
+COPY . .
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    source /opt/rh/gcc-toolset-14/enable && \
+    pip install -U uv
+
+# build & install vLLM so that all transitive dependencies are build/downloaded into the uv cache
+RUN --mount=type=cache,target=/root/.cache/uv \
+    source /opt/rh/gcc-toolset-14/enable && \
+    uv pip install 'setuptools==77.0.3' && \
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/OpenBLAS/lib/:/usr/local/lib64:/usr/local/lib && \
+    find /root/.cache/uv -name "*.whl" && \
+    SETUPTOOLS_SCM_PRETEND_VERSION="$VLLM_VERSION" uv build \
+      --wheel --out-dir ${WHEEL_DIR} --no-build-isolation && \
+    uv pip install "$(echo ${WHEEL_DIR}/vllm*.whl)[tensorizer]" --refresh
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    source /opt/rh/gcc-toolset-14/enable && \
+    export IBM_DEVPI_URL="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/" && \
+    uv cache prune && \
+    uv pip install $WHEEL_DIR/*.whl --extra-index-url $IBM_DEVPI_URL --index-strategy unsafe-best-match --verbose --force-reinstall --refresh
+
+###############################################################
+#                   FINAL VLLM IMAGE STAGE                    #
+###############################################################
+
+FROM registry.access.redhat.com/ubi9/ubi-minimal:${BASE_UBI_IMAGE_TAG} AS vllm-openai
+
+ARG PYTHON_VERSION=3.12
+ENV VLLM_NO_USAGE_STATS=1
+
+# Set Environment Variables for venv & openblas
+ENV VIRTUAL_ENV=/opt/vllm
+ENV PCP_DIR=/opt/rh/gcc-toolset-14/root
+ENV PATH=${VIRTUAL_ENV}/bin:${PCP_DIR}/usr/bin:/usr/local/bin:$PATH
+ENV PKG_CONFIG_PATH=${PCP_DIR}/usr/lib64/pkgconfig:/usr/local/lib/pkgconfig/
+ENV C_INCLUDE_PATH="/usr/local/include:$C_INCLUDE_PATH"
+ENV LD_LIBRARY_PATH=${PCP_DIR}/usr/lib64:${PCP_DIR}/usr/lib:${VIRTUAL_ENV}/lib64/python${PYTHON_VERSION}/site-packages/torch/lib:/usr/local/lib:$LD_LIBRARY_PATH:/usr/local/lib64:/usr/lib64:/usr/lib
+ENV UV_LINK_MODE=copy
+ARG VLLM_VERSION="0.18.0"
+ENV UV_EXTRA_INDEX_URL=https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/
+ENV UV_INDEX_STRATEGY=unsafe-best-match
+
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=cache,from=builder-base,source=/root/numactl/,target=/numactl/ \
+    --mount=type=cache,from=builder-base,source=/root/lapack/,target=/lapack/ \
+    --mount=type=cache,from=builder-base,source=/root/OpenBLAS,target=/openblas/ \
+    --mount=type=cache,from=builder-base,source=/usr/local/,target=/tmp/usr-local/ \
+    rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
+    microdnf install --nodocs -y \
+    libomp libicu tar findutils openssl llvm15 llvm15-devel \
+    pkgconfig xsimd gcc-toolset-14 libsndfile \
+    libtiff libjpeg openjpeg2 zlib zeromq \
+    freetype lcms2 libwebp tcl tk utf8proc \
+    harfbuzz fribidi libraqm libimagequant libxcb util-linux gperftools-libs \
+    python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip \
+    && source /opt/rh/gcc-toolset-14/enable \
+    && microdnf update -y && microdnf clean all \
+    && python${PYTHON_VERSION} -m venv ${VIRTUAL_ENV} \
+    && python -m pip install -U pip uv --no-cache \
+    && make -C /numactl install \
+    && PREFIX=/usr/local make -C /openblas install \
+    && uv pip install --no-cache cmake \
+    && cd /lapack && rm -rf build && cmake -B build -S . \
+    && cmake --build build -j ${MAX_JOBS} \
+    && cmake --install build && cd .. && rm -rf /lapack/build \
+    && uv pip uninstall cmake
+
+# The `lscpu` command was added as a requirement in part of https://github.com/vllm-project/vllm/pull/21032, so installing it.
+RUN microdnf install --nodocs -y util-linux && \
+    microdnf clean all
+
+# consume previously built wheels
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=cache,from=builder-base,source=/wheelsdir/,target=/wheelsdir/,ro \
+    export PKG_CONFIG_PATH=$(find / -type d -name "pkgconfig" 2>/dev/null | tr '\n' ':') && \
+    # --offline will ensure wheels are picked from uv cache and nothing is pulled from pypi/built from source
+    # vllm wheel should be present in /wheelsdir/ ( at least for ppc64le - and transitive dependencies in uv cache )
+    HOME=/root uv pip install /wheelsdir/*.whl --offline
+
+ENV LD_PRELOAD=/usr/lib64/libtcmalloc.so.4
+
+WORKDIR /home/vllm
+
+# Add labels to document build configuration
+LABEL org.opencontainers.image.title="vLLM CPU"
+LABEL org.opencontainers.image.description="vLLM inference engine for CPU platforms"
+LABEL org.opencontainers.image.vendor="vLLM Project"
+LABEL org.opencontainers.image.source="https://github.com/vllm-project/vllm"
+
+# Build configuration labels
+ARG TARGETARCH
+ARG VLLM_CPU_PPC64LE
+ARG PYTHON_VERSION
+
+LABEL ai.vllm.build.target-arch="${TARGETARCH}"
+LABEL ai.vllm.build.cpu-ppc64le="${VLLM_CPU_PPC64LE:-false}"
+LABEL ai.vllm.build.python-version="${PYTHON_VERSION:-3.12}"
+
+
+ENTRYPOINT ["vllm", "serve"]
