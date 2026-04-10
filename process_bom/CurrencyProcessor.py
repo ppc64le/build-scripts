@@ -68,13 +68,29 @@ class CurrencyProcessor:
     
     def _get_build_status_from_log(self, content: str) -> str:
         content = content.lower()
-        success_messages = f"exit 0"
-        failure_messages = f"exit 1", f"exit 127"
-        if success_messages in content:
-            return "success"
-        for failure_message in failure_messages:
-            if failure_message in content:
+
+        # --- Ordered failure checks (highest priority first) ---
+        failure_messages = [
+            "wheel creation failed for python (without isolation)",
+            "wheel creation failed for python",
+            "error: failed to post process wheels."
+        ]
+
+        for failure in failure_messages:
+            if failure in content:
                 return "failure"
+
+        # --- Success checks ---
+        success_messages = [
+            "success: wheels post process successfully",
+            "final wheel:"
+        ]
+
+        for success in success_messages:
+            if success in content:
+                return "success"
+
+        # --- Default fallback (important decision) ---
         return "success"
 
     def _get_package_details(self, package_name: str, version: str):
