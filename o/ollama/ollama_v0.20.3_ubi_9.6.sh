@@ -118,7 +118,7 @@ from setuptools.command.build_py import build_py
 import os, shutil, stat
 
 PYTHON_PACKAGE_NAME = "ollama_python_package"
-VERSION = "0.13.5"
+VERSION = "0.20.3"
 
 BIN_SRC = os.path.join(os.getcwd(), "ollama")
 LIB_SRC = os.path.join(os.getcwd(), "build", "lib", "ollama")
