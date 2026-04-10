@@ -100,7 +100,7 @@ jobs:
           echo "Creating scanner-env.sh ......."
           echo "export VALIDATE_BUILD_SCRIPT='${{ inputs.validate_build_script }}'" > scanner-env.sh
           echo "export BUILD_DOCKER='${{ inputs.build_docker }}'" >> scanner-env.sh
-          echo "export PACKAGE_NAME='${{ inputs.package_name }}'" >> scanner-env.sh         
+          #echo "export PACKAGE_NAME='${{ inputs.package_name }}'" >> scanner-env.sh         
           echo "===== scanner-env.sh ====="
           cat scanner-env.sh
           echo "=========================="

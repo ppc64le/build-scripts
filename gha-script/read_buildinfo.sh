@@ -146,9 +146,29 @@ if [ -f "$stripped_build_script" ]; then
   echo "Tested on value: $tested_on"
 fi
 
+# ---------------- Resolve final PACKAGE_NAME ----------------
+
+# Default to input package_name (already lowercase)
+FINAL_PACKAGE_NAME=$package_name
+
+# Check if build_info.json has wheel_name
+if [ -f "$config_file" ]; then
+  wheel_name=$(jq -r '.wheel_name // empty' $config_file)
+
+  if [ -n "$wheel_name" ] && [ "$wheel_name" != "null" ]; then
+    FINAL_PACKAGE_NAME=$(echo $wheel_name | tr '[:upper:]' '[:lower:]')
+    echo "wheel_name found in build_info.json: $FINAL_PACKAGE_NAME"
+  else
+    echo "wheel_name not present, using package_name: $FINAL_PACKAGE_NAME"
+  fi
+fi
+
+echo "Final resolved PACKAGE_NAME: $FINAL_PACKAGE_NAME"
+
 # Export variables
 
 echo "export VERSION=$VERSION" > $CUR_DIR/variable.sh
+echo "export PACKAGE_NAME=$FINAL_PACKAGE_NAME" >> $CUR_DIR/variable.sh
 echo "export BUILD_SCRIPT=$build_script" >> $CUR_DIR/variable.sh
 echo "export PKG_DIR_PATH=$package_dirpath" >> $CUR_DIR/variable.sh
 echo "export IMAGE_NAME=$image_name" >> $CUR_DIR/variable.sh
