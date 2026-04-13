@@ -1,0 +1,16 @@
+{
+  "maintainer": "vrushanaik",
+  "package_name": "cysignals",
+  "github_url": "https://github.com/sagemath/cysignals",
+  "version": "1.11.4",
+  "default_branch": "main",
+  "build_script": "cysignals_ubi_9.6.sh",
+  "package_dir": "c/cysignals",
+  "docker_build": false,
+  "wheel_build": true,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+    "build_script": "cysignals_ubi_9.6.sh"
+  }
+}
