@@ -25,8 +25,8 @@ PACKAGE_URL=https://github.com/mrabarnett/mrab-regex
 PACKAGE_DIR=mrab-regex
 
 # Install dependencies
-yum install -y git python3 python3-devel.ppc64le gcc-toolset-13 make wget sudo cmake
-pip3 install pytest tox nox
+yum install -y git python3.11 python3.11-devel.ppc64le python3.11-pip gcc-toolset-13 make wget sudo cmake
+python3.11 -m pip install pytest tox nox
 
 export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
@@ -41,7 +41,7 @@ cd  $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 #install
-if ! (python3 -m pip install .) ; then
+if ! (python3.11 -m pip install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -49,23 +49,17 @@ if ! (python3 -m pip install .) ; then
 fi
 
 # test
-cd /
-TEST_OUTPUT=$(PYTHONPATH="" python3 -m pytest -v /$PACKAGE_DIR -k "not test_main" 2>&1)
-TEST_EXIT=$?
-
-echo "$TEST_OUTPUT"
-
-if echo "$TEST_OUTPUT" | grep -q "collected 0 items"; then
-    echo "------------------$PACKAGE_NAME:No_tests_found---------------------"
-    exit 2
-elif [ $TEST_EXIT -eq 0 ]; then
-    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
-    echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
-    exit 0
-else
+# Updating unittest.main() to use exit=False because pytest treats sys.exit() from unittest.main() as a failure (SystemExit),
+# even when tests pass. This prevents pytest from failing during collection/execution.
+sed -i 's/unittest\.main(verbosity=2)/unittest.main(verbosity=2, exit=False)/' regex_3/test_regex.py
+if ! pytest; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
     exit 2
+else
+    echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
+    exit 0
 fi
