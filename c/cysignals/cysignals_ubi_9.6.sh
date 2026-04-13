@@ -26,18 +26,7 @@ PACKAGE_URL=https://github.com/sagemath/cysignals
 PACKAGE_DIR=cysignals
 
 # Install dependencies
-yum install -y \
-    git \
-    python3 \
-    python3-devel.ppc64le \
-    gcc-toolset-13 \
-    make \
-    wget \
-    sudo \
-    cmake \
-    autoconf \
-    automake \
-    libtool
+yum install -y git python3 python3-devel.ppc64le gcc-toolset-13 make wget sudo cmake autoconf automake libtool
 
 pip3 install pytest tox nox cython
 
