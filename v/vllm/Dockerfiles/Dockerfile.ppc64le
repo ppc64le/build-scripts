@@ -126,6 +126,14 @@ ENV LD_PRELOAD=/usr/lib64/libtcmalloc.so.4
 
 WORKDIR /home/vllm
 
+# setup non-root user for OpenShift
+RUN umask 002 && \
+    useradd --uid 2000 --gid 0 vllm && \
+    mkdir -p /home/vllm && \
+    chmod g+rwx /home/vllm
+
+ENV HOME=/home/vllm
+
 # Add labels to document build configuration
 LABEL org.opencontainers.image.title="vLLM CPU"
 LABEL org.opencontainers.image.description="vLLM inference engine for CPU platforms"
@@ -141,5 +149,6 @@ LABEL ai.vllm.build.target-arch="${TARGETARCH}"
 LABEL ai.vllm.build.cpu-ppc64le="${VLLM_CPU_PPC64LE:-false}"
 LABEL ai.vllm.build.python-version="${PYTHON_VERSION:-3.12}"
 
+USER 2000
 
 ENTRYPOINT ["vllm", "serve"]
