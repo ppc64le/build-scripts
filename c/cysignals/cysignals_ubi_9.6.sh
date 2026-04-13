@@ -6,7 +6,7 @@
 # Version          : 1.12.6
 # Source repo      : https://github.com/sagemath/cysignals
 # Tested on        : UBI:9.6
-# Language         : Python (C extensions)
+# Language         : Python, C
 # Ci-Check         : True
 # Script License   : GNU Lesser General Public License v3.0
 # Maintainer       : Vrusha Naik <Vrusha.Naik@ibm.com>
