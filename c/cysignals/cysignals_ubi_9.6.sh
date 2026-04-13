@@ -86,7 +86,7 @@ if [ $tests_found -eq 1 ] && [ $test_status -ne 0 ]; then
     (python3 -m pytest -v) && test_status=0 || test_status=$?
 fi
 
-# Run tox if available and pytest didn't run/pass
+# Run tox if available and pytest didnt run/pass
 if [ -f "tox.ini" ] && [ $test_status -ne 0 ]; then
     echo "Running tox..."
     (python3 -m tox -e py39) && test_status=0 || test_status=$?
