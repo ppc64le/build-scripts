@@ -75,8 +75,9 @@ export GRPC_PYTHON_BUILD_WITH_CYTHON=1
 export GRPC_PYTHON_LDFLAGS="-L/usr/local/lib64 -lprotobuf -lprotoc -labsl_base -labsl_log_severity -labsl_malloc_internal -labsl_poison -labsl_raw_logging_internal -labsl_scoped_set_env -labsl_spinlock_wait -labsl_strerror -labsl_throw_delegate -labsl_tracing_internal -labsl_raw_hash_set"
 export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
 
-python3 -m pip install cython
-python3 -m pip install -e .
+python3 -m pip install --upgrade pip setuptools wheel
+python3 -m pip install cython 
+python3 -m pip install -e . --no-build-isolation
 python3 setup.py bdist_wheel
 cp dist/grpcio_tools-*.whl $WORK_DIR
 
