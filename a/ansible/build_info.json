@@ -10,6 +10,7 @@
   "wheel_build": true,
   "validate_build_script": true,
   "use_non_root_user": "false",
+  "wheel_name": "ansible-core",
   "v2.18.6": {
     "build_script": "ansible_ubi_9.3.sh"
   },
