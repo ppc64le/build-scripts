@@ -21,7 +21,7 @@ set -ex
 
 # Variables
 PACKAGE_NAME=cysignals
-PACKAGE_VERSION=${1:-1.12.6)
+PACKAGE_VERSION=${1:-1.12.6}
 PACKAGE_URL=https://github.com/sagemath/cysignals
 PACKAGE_DIR=cysignals
 
