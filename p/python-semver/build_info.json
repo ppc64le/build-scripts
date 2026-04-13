@@ -11,6 +11,7 @@
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
   "validate_build_script": true,
   "use_non_root_user": false,
+  "wheel_name": "semver",
   "3.0.1": {
     "dir": "3.0.1_ubi_8",
     "build_script": "python-semver_ubi_8.7.sh"
