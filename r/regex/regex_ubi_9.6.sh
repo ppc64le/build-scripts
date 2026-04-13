@@ -25,8 +25,8 @@ PACKAGE_URL=https://github.com/mrabarnett/mrab-regex
 PACKAGE_DIR=mrab-regex
 
 # Install dependencies
-yum install -y git python3 python3-devel.ppc64le gcc-toolset-13 make wget sudo cmake
-pip3 install pytest tox nox
+yum install -y git python3.11 python3.11-devel.ppc64le python3.11-pip gcc-toolset-13 make wget sudo cmake
+python3.11 -m pip install pytest tox nox
 
 export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
@@ -41,7 +41,7 @@ cd  $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
 #install
-if ! (python3 -m pip install .) ; then
+if ! (python3.11 -m pip install .) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
