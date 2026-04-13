@@ -219,10 +219,19 @@ git checkout $PYTORCH_VERSION
 git submodule sync
 git submodule update --init --recursive
 
-#Apply patch
-# Using patch file v2.9.1 for PACKAGE_VERSION >= v2.9.1 (eg: v2.10.0, v2.11.0)
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.9.1.patch
-git apply pytorch_v2.9.1.patch
+ver=${PYTORCH_VERSION#v}
+
+PATCH_URL="https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_${PYTORCH_VERSION}.patch"
+PATCH_FILE="pytorch_${PYTORCH_VERSION}.patch"
+
+# Using patch file v2.9.1 for PACKAGE_VERSION >= v2.9.1 (eg: v2.10.0, v2.11.0).
+# If a new patch is added eg: v2.9.1 patch is not working with v2.15.1,
+# please add a similar condition below for v2.15.1.
+if [[ "$(printf '%s\n' "$ver" "2.9.1" | sort -V | tail -n1)" == "$ver" ]]; then
+    PATCH_URL="https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.9.1.patch"
+    PATCH_FILE="pytorch_v2.9.1.patch"
+fi
+wget -q --spider "$PATCH_URL" && wget -q "$PATCH_URL" && git apply "$PATCH_FILE"
 
 ARCH=`uname -p`
 BUILD_NUM="1"
