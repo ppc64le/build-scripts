@@ -4,7 +4,7 @@
 # Package       : opencv-python
 # Version       : 4.13.0.92
 # Source repo   : https://github.com/opencv/opencv-python.git
-# Tested on     : UBI:9.6
+# Tested on     : UBI:9.7
 # Language      : Python
 # Ci-Check  : True
 # Script License: Apache License 2.0
@@ -55,14 +55,6 @@ python3.12 -m pip install \
   --trusted-host wheels.developerfirst.ibm.com \
   --extra-index-url ${IBM_WHEELS} \
   openblas==0.3.29 \
-  numpy==2.0.2
-
-IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
-
-python3.12 -m pip install \
-  --prefer-binary \
-  --trusted-host wheels.developerfirst.ibm.com \
-  --extra-index-url ${IBM_WHEELS} \
   numpy==2.0.2
 
 python3.12 -m pip install cython pytest scikit-build build wheel cmake
@@ -176,4 +168,3 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
-
