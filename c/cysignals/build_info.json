@@ -2,7 +2,7 @@
   "maintainer": "vrushanaik",
   "package_name": "cysignals",
   "github_url": "https://github.com/sagemath/cysignals",
-  "version": "1.12.6",
+  "version": "1.11.4",
   "default_branch": "main",
   "build_script": "cysignals_ubi_9.6.sh",
   "package_dir": "c/cysignals",

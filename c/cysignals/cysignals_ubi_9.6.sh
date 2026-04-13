@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : cysignals
-# Version          : 1.12.6
+# Version          : 1.11.4
 # Source repo      : https://github.com/sagemath/cysignals
 # Tested on        : UBI:9.6
 # Language         : Python, C
@@ -21,7 +21,7 @@ set -ex
 
 # Variables
 PACKAGE_NAME=cysignals
-PACKAGE_VERSION=${1:-1.12.6}
+PACKAGE_VERSION=${1:-1.11.4}
 PACKAGE_URL=https://github.com/sagemath/cysignals
 PACKAGE_DIR=cysignals
 
