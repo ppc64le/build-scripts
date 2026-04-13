@@ -11,6 +11,12 @@
   "validate_build_script": true,
   "docker_cmd": "docker build -t ${package_name}-ppc64le:$PACKAGE_VERSION ${dir}",
   "use_non_root_user": false,
+  "v0.20.3": {
+    "dir": "v0.20.3_ubi_9",
+    "build_script": "ollama_v0.20.3_ubi_9.6.sh",
+    "base_docker_image": "registry.access.redhat.com/ubi9/ubi:9.6",
+    "base_docker_variant": "redhat"
+  },
   "v0.13.5, v0.17.6": {
     "dir": "v0.13.5_ubi_9",
     "build_script": "ollama_v0.13.5_ubi_9.6.sh",
