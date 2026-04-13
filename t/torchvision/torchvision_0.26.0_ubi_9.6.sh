@@ -9,7 +9,7 @@
 # Language          : Python
 # Ci-Check      : True
 # Script License    : Apache License, Version 2.0
-# Maintainer        : Lenzie Camilo <Lenzie.Camilo3@ibm.com>
+# Maintainer        : Ira <ira.pandey1@ibm.com>
 #
 # Disclaimer        : This script has been tested in root mode on given
 # ==========          platform using the mentioned version of the package.
@@ -219,6 +219,8 @@ git checkout $PYTORCH_VERSION
 git submodule sync
 git submodule update --init --recursive
 
+#Apply patch
+# Using patch file v2.9.1 for PACKAGE_VERSION >= v2.9.1 (eg: v2.10.0, v2.11.0)
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.9.1.patch
 git apply pytorch_v2.9.1.patch
 
