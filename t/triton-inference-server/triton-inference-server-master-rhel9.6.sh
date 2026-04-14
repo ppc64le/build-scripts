@@ -40,7 +40,7 @@ cp $wdir/pytorch_backend.patch .
 cp $wdir/fil_backend.patch .
 git apply $wdir/rhelppc.patch
 
-if ! ./build.py --enable-logging --endpoint http --backend onnxruntime --backend python --backend pytorch --backend fil --override-backend-cmake-arg=fil:TRITON_FIL_DOCKER_BUILD=OFF  --image base,registry.access.redhat.com/ubi9/ubi:9.6 ; then
+if ! ./build.py --enable-logging --enable_metrics --enable_stats --endpoint http --backend onnxruntime --backend python --backend pytorch --backend fil --override-backend-cmake-arg=fil:TRITON_FIL_DOCKER_BUILD=OFF  --image base,registry.access.redhat.com/ubi9/ubi:9.6 ; then
     echo "------------------$PACKAGE_NAME:Build_fails---------------------"
     exit 2
 else
