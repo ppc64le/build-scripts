@@ -40,7 +40,6 @@ def trigger_script_validation_checks(image_name = "registry.access.redhat.com/ub
     container = client.containers.run(
         image_name,
         "/home/tester/{}".format(file_name),
-        network = 'host',
         detach = True,
         volumes = {
             current_dir : {'bind': '/home/tester/', 'mode': 'rw'}
