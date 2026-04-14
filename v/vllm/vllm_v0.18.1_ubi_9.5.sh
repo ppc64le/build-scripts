@@ -138,6 +138,10 @@ cython
 
 echo "-------------------- Installing Python dependencies ----------------"
 
+# Increase uv network timeout to 10 minutes to prevent CI drops on multi-GB wheels
+export UV_HTTP_TIMEOUT=600
+export UV_NATIVE_TLS=1
+
 echo "grpcio==1.71.0" > /tmp/constraints.txt
 echo "grpcio-tools==1.71.0" >> /tmp/constraints.txt
 echo "scipy==1.16.0" >> /tmp/constraints.txt
