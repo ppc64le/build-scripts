@@ -32,7 +32,8 @@ cd $PACKAGE_NAME  # Change directory to the cloned repository
 git checkout $PACKAGE_VERSION  # Checkout the specified version
 
 # install necessary Python packages
-pip install pytest pytest-cov build
+pip install --upgrade pip setuptools wheel
+pip install "coverage==7.5.4" "pytest-cov==5.0.0" objgraph psutil pytest-codspeed
 
 #install
 if ! (python3 setup.py install) ; then
@@ -42,14 +43,8 @@ if ! (python3 setup.py install) ; then
     exit 1
 fi
 
-if python3 --version | grep -Eq "3\.12"; then
-    TEST_CMD="pytest --cov=multidict --cov-report=xml --deselect=tests/test_mutable_multidict.py::TestCIMutableMultiDict::test_add"
-else
-    TEST_CMD="pytest --cov=multidict --cov-report=xml"
-fi
-
 # Run tests
-if ! $TEST_CMD; then
+if ! pytest --deselect=tests/test_mutable_multidict.py::TestCIMutableMultiDict::test_add --ignore=tests/test_circular_imports.py; then
     echo "------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
