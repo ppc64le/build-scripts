@@ -27,9 +27,7 @@ CURRENT_DIR="${PWD}"
 
 echo "Installing system dependencies..."
 
-dnf install -y git make gcc gcc-c++ unzip gettext \
-    sqlite sqlite-libs sqlite-devel \
-    python3.12 python3.12-pip python3.12-devel
+dnf install -y git make gcc gcc-c++ unzip gettext sqlite sqlite-libs sqlite-devel python3.12 python3.12-pip python3.12-devel
 
 echo "Enable newer GCC if available..."
 if [ -f /opt/rh/gcc-toolset-14/enable ]; then
