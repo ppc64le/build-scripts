@@ -38,7 +38,6 @@ gcc --version
 echo "GCC Toolset 13 activated for milvus-lite build"
 
 echo "Building OpenBLAS from source..."
-
 export MAX_JOBS=$(nproc)
 
 git clone https://github.com/OpenMathLib/OpenBLAS
