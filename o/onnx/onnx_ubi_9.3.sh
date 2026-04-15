@@ -35,20 +35,14 @@ export PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.maj
 export SITE_PACKAGE_PATH=/usr/local/lib/python${PYTHON_VERSION}/site-packages
 
 echo " ------------------------------------------ Openblas Installing ------------------------------------------ "
-OPENBLAS_VERSION=$(curl -s https://api.github.com/repos/OpenMathLib/OpenBLAS/releases/latest | jq -r '.tag_name' | sed 's/v//')
-
-curl -L https://github.com/OpenMathLib/OpenBLAS/releases/download/v${OPENBLAS_VERSION}/OpenBLAS-${OPENBLAS_VERSION}.tar.gz | tar xz
-
-mv OpenBLAS-${OPENBLAS_VERSION}/ OpenBLAS/
-cd OpenBLAS/
+git clone https://github.com/OpenMathLib/OpenBLAS
+cd OpenBLAS
+git checkout v0.3.32
 
 make -j${MAX_JOBS} TARGET=POWER9 BUILD_BFLOAT16=1 BINARY=64 USE_OPENMP=1 USE_THREAD=1 NUM_THREADS=120 DYNAMIC_ARCH=1 INTERFACE64=0
 make install
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64:/usr/local/lib
-
-
-
 echo " ------------------------------------------ Openblas Successfully Installed ------------------------------------------ "
 
 
