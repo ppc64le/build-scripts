@@ -46,6 +46,9 @@ if ! make -j$(nproc) ; then
     exit 2
 fi
 
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/l/lapack/pyproject.toml
+sed -i "s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g" pyproject.toml
+
 echo "Running LAPACK tests..."
 if ! ctest --output-on-failure ; then
     echo "------------------$PACKAGE_NAME:Test_fails---------------------"
