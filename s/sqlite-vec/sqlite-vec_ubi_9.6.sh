@@ -67,13 +67,15 @@ def load(conn):
     conn.load_extension(path)
 EOF
 
+PKG_VER_CLEAN=${PACKAGE_VERSION#v}
+
 # Create setup.py
 cat <<EOF > python/setup.py
 from setuptools import setup, find_packages
 
 setup(
     name="sqlite-vec",
-    version="0.1.9",
+    version="${PKG_VER_CLEAN}",
     packages=find_packages(),
     package_data={"sqlite_vec": ["vec0.so"]},
     include_package_data=True,
