@@ -29,6 +29,7 @@ echo "Installing dependencies..."
 yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3.12 python3.12-devel python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
 yum install -y jq curl --allowerasing
 PYTHON_VERSION=$(python3.12 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
+source /opt/rh/gcc-toolset-13/enable
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LIBRARY_PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
@@ -52,7 +53,7 @@ export C_INCLUDE_PATH=$PYTHON_INCLUDE:$C_INCLUDE_PATH
 
 python3.12 -m pip install --upgrade pip
 python3.12 -m pip install --upgrade cmake pip "setuptools<80" wheel ninja packaging tox pytest build mypy stubs
-source /opt/rh/gcc-toolset-13/enable
+
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
 git checkout v0.3.32
