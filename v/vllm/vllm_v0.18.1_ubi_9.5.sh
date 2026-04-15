@@ -34,10 +34,7 @@ echo "-------------------- Installing OS dependencies -------------------"
 yum install -y yum-utils
 yum config-manager --set-enabled ubi-9-codeready-builder-rpms
 
-yum install -y \
-  git make cmake gcc-toolset-13 \
-  python3.12 python3.12-devel python3.12-pip \
-  unzip zip wget patch \
+yum install -y git make cmake gcc-toolset-13 python3.12 python3.12-devel python3.12-pip unzip zip wget patch \
   openssl-devel sqlite-devel \
   freetype-devel gmp-devel libjpeg-turbo-devel \
   cargo libcurl-devel \
