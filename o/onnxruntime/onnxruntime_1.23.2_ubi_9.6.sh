@@ -52,18 +52,15 @@ export C_INCLUDE_PATH=$PYTHON_INCLUDE:$C_INCLUDE_PATH
 python3.12 -m pip install --upgrade pip
 python3.12 -m pip install --upgrade cmake pip "setuptools<80" wheel ninja packaging tox pytest build mypy stubs
 
-OPENBLAS_VERSION=$(curl -s https://api.github.com/repos/OpenMathLib/OpenBLAS/releases/latest | jq -r '.tag_name' | sed 's/v//')
-
-curl -L https://github.com/OpenMathLib/OpenBLAS/releases/download/v${OPENBLAS_VERSION}/OpenBLAS-${OPENBLAS_VERSION}.tar.gz | tar xz
-
-mv OpenBLAS-${OPENBLAS_VERSION}/ OpenBLAS/
-cd OpenBLAS/
+git clone https://github.com/OpenMathLib/OpenBLAS
+cd OpenBLAS
+git checkout v0.3.32
 
 make -j${MAX_JOBS} TARGET=POWER9 BUILD_BFLOAT16=1 BINARY=64 USE_OPENMP=1 USE_THREAD=1 NUM_THREADS=120 DYNAMIC_ARCH=1 INTERFACE64=0
 make install
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64:/usr/local/lib
-
+ 
 cd $CURRENT_DIR
 # Set ABSEIL_VERSION and ABSEIL_URL
 ABSEIL_VERSION=20240116.2
