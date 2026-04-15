@@ -154,11 +154,16 @@ git clone "$PACKAGE_URL"
 pushd milvus-lite
   git checkout "${SCRIPT_PACKAGE_VERSION}"
   git submodule update --init --recursive
-  echo "Fetching patch via git..."
-  git clone https://github.com/ppc64le/build-scripts.git /tmp/build-scripts
-  cp /tmp/build-scripts/m/milvus-lite/milvus-lite-v2.5.0.patch /tmp/milvus-lite.patch
+  PATCH_PATH="/tmp/milvus-lite-v2.5.0.patch"
+  if wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/m/milvus-lite/milvus-lite-v2.5.0.patch -O ${PATCH_PATH}; then
+    echo "Patch downloaded"
+  else
+    echo "Fallback: cloning repo..."
+    git clone --depth 1 https://github.com/ppc64le/build-scripts.git /tmp/build-scripts
+    cp /tmp/build-scripts/m/milvus-lite/milvus-lite-v2.5.0.patch ${PATCH_PATH}
+  fi
   echo "Applying patch..."
-  patch -d thirdparty/milvus -p1 --forward < /tmp/milvus-lite-v2.5.0.patch
+  patch -d thirdparty/milvus -p1 --forward < ${PATCH_PATH}
   echo "Patch applied successfully...."
   # Build Python wheel and install
   pushd python
