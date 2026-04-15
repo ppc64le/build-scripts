@@ -32,9 +32,6 @@ PYTHON_VERSION=$(python3.12 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2
 source /opt/rh/gcc-toolset-13/enable
 
 export SITE_PACKAGE_PATH=/usr/local/lib/python${PYTHON_VERSION}/site-packages
-export CC=/usr/bin/gcc
-export CXX=/usr/bin/g++
-
 yum remove -y python3-chardet
 
 "python$PYTHON_VERSION" -m venv --system-site-packages VENV_DIR
@@ -71,8 +68,8 @@ git clone $ABSEIL_URL -b $ABSEIL_VERSION
 echo " --------------------------------------------------- Abseil-Cpp Cloned --------------------------------------------------- "
 
 # Setting paths and versions
-export C_COMPILER=$(which gcc)
-export CXX_COMPILER=$(which g++)
+export C_COMPILER=$(command -v gcc)
+export CXX_COMPILER=$(command -v g++)
 
 mkdir -p $(pwd)/local/libprotobuf
 LIBPROTO_INSTALL=$(pwd)/local/libprotobuf
