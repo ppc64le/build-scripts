@@ -218,7 +218,6 @@ echo "==================================================================="
 # -----------------------------------------------------------------------------
 echo "-------------------- Building TorchVision v0.25.1 ------------------"
 
-rm -rf vision
 for i in {1..5}; do
   git clone https://github.com/pytorch/vision.git && break || { echo "git clone failed, retrying in 15 seconds..."; sleep 15; }
 done
