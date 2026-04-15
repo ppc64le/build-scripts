@@ -26,7 +26,7 @@ CURRENT_DIR=$(pwd)
 
 # Install dependencies
 echo "Installing dependencies -------------------------------------------------------------"
-yum install -y python-devel python-pip git gcc gcc-c++ make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel 
+yum install -y python-devel python-pip git gcc-toolset-13 make cmake wget openssl-devel bzip2-devel libffi-devel zlib-devel  libjpeg-devel 
 
 echo "Installing dependencies -------------------------------------------------------------"
 yum install -y zlib-devel freetype-devel procps-ng openblas-devel meson ninja-build gcc-gfortran  libomp-devel zip unzip sqlite-devel  
@@ -52,6 +52,7 @@ cp output/bazel /usr/local/bin/bazel
 bazel --version
 cd ..
 
+source /opt/rh/gcc-toolset-13/enable
 echo "Installing dependencies via pip3-------------------------------------------------------------"
 pip3 install numpy==1.26.4 scipy wheel pytest
 pip3 install numpy==1.26.4 opt-einsum==3.3.0  ml-dtypes==0.5.0 absl-py 
