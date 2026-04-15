@@ -155,7 +155,9 @@ git clone "$PACKAGE_URL"
 pushd milvus-lite
   git checkout "${SCRIPT_PACKAGE_VERSION}"
   git submodule update --init --recursive
-  wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/m/milvus-lite/milvus-lite-v2.5.0.patch -O /tmp/milvus-lite-v2.5.0.patch
+  echo "Fetching patch via git..."
+  git clone https://github.com/ppc64le/build-scripts.git /tmp/build-scripts
+  cp /tmp/build-scripts/m/milvus-lite/milvus-lite-v2.5.0.patch /tmp/milvus-lite.patch
   echo "Applying patch..."
   patch -d thirdparty/milvus -p1 --forward < /tmp/milvus-lite-v2.5.0.patch
   echo "Patch applied successfully...."
