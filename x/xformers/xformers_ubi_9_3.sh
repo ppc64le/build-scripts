@@ -46,8 +46,6 @@ make install
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64:/usr/local/lib
 echo "--------------------openblas installed-------------------------------"
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64:/usr/local/lib:/usr/lib64:/usr/lib
-
 # Clone repository
 cd $CURRENT_DIR
 git clone $PACKAGE_URL
