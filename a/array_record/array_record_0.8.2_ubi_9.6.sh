@@ -2,9 +2,9 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : array_record
-# Version          : 0.8.1
+# Version          : 0.8.2
 # Source repo      : https://github.com/google/array_record
-# Tested on        : UBI:9.3
+# Tested on        : UBI:9.6
 # Language         : Python
 # Travis-Check     : True
 # Script License   : Apache License, Version 2 or later
