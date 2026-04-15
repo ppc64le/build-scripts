@@ -10,6 +10,9 @@
   "validate_build_script": true,
   "use_non_root_user": false,
   "wheel_build": true,
+  "v*.*.*": {
+    "build_script": "torchvision_0.26.0_ubi_9.6.sh"
+  },
   "v0.22.0": {
     "build_script": "torchvision_ubi_9.3.sh"
   },
@@ -22,7 +25,7 @@
   "v0.16.1": {
     "build_script": "torchvision_0.16.1_ubi_9.6.sh"
   },
-  "v*.*.*": {
+  "v0.24.1": {
     "build_script": "torchvision_0.24.1_ubi_9.6.sh"
   }
 }
