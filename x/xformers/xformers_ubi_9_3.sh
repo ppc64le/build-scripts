@@ -34,7 +34,6 @@ yum install -y git gcc-toolset-13 ninja-build rust cargo python-devel python-pip
 source /opt/rh/gcc-toolset-13/enable
 
 echo "---------------------openblas installing---------------------"
-
 #install openblas
 #clone and install openblas from source
 
