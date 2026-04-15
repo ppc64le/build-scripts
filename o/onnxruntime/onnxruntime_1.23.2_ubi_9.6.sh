@@ -27,12 +27,11 @@ CURRENT_DIR=$(pwd)
 
 echo "Installing dependencies..."
 yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3.12 python3.12-devel python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
+yum install -y jq curl --allowerasing
 PYTHON_VERSION=$(python3.12 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
-export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+source /opt/rh/gcc-toolset-13/enable
+
 export SITE_PACKAGE_PATH=/usr/local/lib/python${PYTHON_VERSION}/site-packages
-export CC=/usr/bin/gcc
-export CXX=/usr/bin/g++
 yum remove -y python3-chardet
 
 "python$PYTHON_VERSION" -m venv --system-site-packages VENV_DIR
@@ -51,6 +50,15 @@ export C_INCLUDE_PATH=$PYTHON_INCLUDE:$C_INCLUDE_PATH
 python3.12 -m pip install --upgrade pip
 python3.12 -m pip install --upgrade cmake pip "setuptools<80" wheel ninja packaging tox pytest build mypy stubs
 
+git clone https://github.com/OpenMathLib/OpenBLAS
+cd OpenBLAS
+git checkout v0.3.32
+
+make -j${MAX_JOBS} TARGET=POWER9 BUILD_BFLOAT16=1 BINARY=64 USE_OPENMP=1 USE_THREAD=1 NUM_THREADS=120 DYNAMIC_ARCH=1 INTERFACE64=0
+make install
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64:/usr/local/lib
+ 
 cd $CURRENT_DIR
 # Set ABSEIL_VERSION and ABSEIL_URL
 ABSEIL_VERSION=20240116.2
@@ -60,8 +68,8 @@ git clone $ABSEIL_URL -b $ABSEIL_VERSION
 echo " --------------------------------------------------- Abseil-Cpp Cloned --------------------------------------------------- "
 
 # Setting paths and versions
-export C_COMPILER=$(which gcc)
-export CXX_COMPILER=$(which g++)
+export C_COMPILER=$(command -v gcc)
+export CXX_COMPILER=$(command -v g++)
 
 mkdir -p $(pwd)/local/libprotobuf
 LIBPROTO_INSTALL=$(pwd)/local/libprotobuf
