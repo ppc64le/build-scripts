@@ -1,0 +1,38 @@
+[build-system]
+requires = [
+    "setuptools",
+    "wheel",
+    "auditwheel>=5.0.0",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lapack"
+version = "{PACKAGE_VERSION}"
+description = "Linear Algebra PACKage (LAPACK) built as binary distribution"
+
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Programming Language :: Fortran",
+  "Programming Language :: C",
+  "License :: BSD License",
+]
+
+[project.urls]
+homepage = "https://github.com/Reference-LAPACK/lapack"
+upstream = "https://github.com/Reference-LAPACK/lapack"
+
+[tool.setuptools.packages.find]
+namespaces = true
+where = ["local"]
+
+[tool.setuptools.package-data]
+lapack = [
+    "lib/**/*",
+    "lib64/**/*",
+    "include/**/*"
+]
+
+[tool.distutils.bdist_wheel]
+plat-name = "linux_ppc64le"
+universal = false
