@@ -27,9 +27,11 @@ CURRENT_DIR="${PWD}"
 
 echo "Installing dependencies..."
 yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3.12-devel python3.12 python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
+yum install -y jq curl --allowerasing
+source /opt/rh/gcc-toolset-13/enable
+
 export PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
-export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
-export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+
 export SITE_PACKAGE_PATH=/usr/local/lib/python${PYTHON_VERSION}/site-packages
 
 echo " ------------------------------------------ Openblas Installing ------------------------------------------ "
@@ -73,8 +75,8 @@ echo " ------------------------------------------ Abseil-CPP Cloned ------------
 cd $CURRENT_DIR
 
 # Setting paths and versions
-export C_COMPILER=$(which gcc)
-export CXX_COMPILER=$(which g++)
+export C_COMPILER=$(command -v gcc)
+export CXX_COMPILER=$(command -v g++)
 echo "C Compiler set to $C_COMPILER"
 echo "CXX Compiler set to $CXX_COMPILER"
 
