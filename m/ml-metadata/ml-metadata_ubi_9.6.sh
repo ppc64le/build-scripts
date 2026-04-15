@@ -99,7 +99,19 @@ if ! (python3.11 -m pip install .); then
      echo "$PACKAGE_URL $PACKAGE_NAME"
      echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $PACKAGE_VERSION | GitHub | Fail |  Build_fails"
      exit 2;
-elif ! pytest -vv; then
+fi
+
+if ! python3.11 -m build --wheel --no-isolation --outdir="$wdir/"; then
+        echo "============ Wheel Creation Failed for Python $PYTHON_VERSION (without isolation) ================="
+        echo "Attempting to build with isolation..."
+
+        # Attempt to build the wheel without isolation
+        if ! python3.11 -m build --wheel --outdir="$wdir/"; then
+            echo "============ Wheel Creation Failed for Python $PYTHON_VERSION ================="
+        fi
+fi
+
+if ! pytest -vv; then
      echo "------------------$PACKAGE_NAME:Test_fails-------------------------------------"
      echo "$PACKAGE_URL $PACKAGE_NAME"
      echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
@@ -108,8 +120,5 @@ else
      echo "------------------$PACKAGE_NAME:Build_and_test_both_success-------------------------------------"
      echo "$PACKAGE_URL $PACKAGE_NAME"
      echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $PACKAGE_VERSION | GitHub | Pass |  Both_Build_and_Test_Success"
-     #Build wheel for wrapper's collection step
-     python3.11 -m build --wheel --no-isolation --outdir=$wdir/ || \
-         python3.11 -m build --wheel --outdir=$wdir/
      exit 0;
 fi
