@@ -53,7 +53,7 @@ LLVM_INSTALL_DIR=$WORKING_DIR/llvm-install
 git clone -b ${LLVM_PROJECT_GIT_TAG} ${LLVM_PROJECT_GIT_URL}
 git clone -b ${LLVMLITE_VERSION} ${LLVMLITE_PACKAGE_URL}
 
-python3.12 -m pip install ninja
+python3.12 -m pip install ninja setuptools==77.0.3
 
 cd $LLVM_SRC_DIR
 git fetch --all --tags
@@ -89,7 +89,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64:/usr/local/lib
 cd ..
 echo "------------openblas installed--------------------"
 
-python3.12 -m pip install numpy==2.0.2 setuptools
+python3.12 -m pip install numpy==2.0.2
 
 cd $WORKING_DIR
 
