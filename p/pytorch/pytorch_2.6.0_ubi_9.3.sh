@@ -155,7 +155,6 @@ git checkout $PACKAGE_VERSION
 git submodule sync
 git submodule update --init --recursive
 
-<<<<<<< pytorch-scr
 # Fix for PyTorch 2.10
 sed -i '/lintrunner ;/s/$/ and platform_machine != "ppc64le"/' requirements.txt
 =======
