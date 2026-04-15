@@ -173,7 +173,7 @@ if [[ "$(printf '%s\n' "$ver" "2.9.1" | sort -V | tail -n1)" == "$ver" ]]; then
     PATCH_FILE="pytorch_v2.9.1.patch"
 fi
 wget -q --spider "$PATCH_URL" && wget -q "$PATCH_URL" && git apply "$PATCH_FILE" || echo "Patch missing, skipped"
->>>>>>> master
+
 
 # -------------------- ENV --------------------
 ARCH=`uname -p`
