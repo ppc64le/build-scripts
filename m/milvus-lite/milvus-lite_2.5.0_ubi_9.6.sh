@@ -32,10 +32,41 @@ yum install -y git gcc-c++ gcc wget make python3.12 yum-utils \
                libffi-devel scl-utils openblas-devel xz patch \
                python3.12-devel python3.12-pip
 
-yum install -y gcc-toolset-12
-source /opt/rh/gcc-toolset-12/enable
+yum install -y gcc-toolset-13
+source /opt/rh/gcc-toolset-13/enable
 gcc --version
-echo "GCC Toolset 12 activated for milvus-lite build"
+echo "GCC Toolset 13 activated for milvus-lite build"
+
+echo "Building OpenBLAS from source..."
+
+export MAX_JOBS=$(nproc)
+
+git clone https://github.com/OpenMathLib/OpenBLAS
+cd OpenBLAS
+git checkout v0.3.32
+
+make -j${MAX_JOBS} \
+    TARGET=POWER9 \
+    BUILD_BFLOAT16=1 \
+    BINARY=64 \
+    USE_OPENMP=1 \
+    USE_THREAD=1 \
+    NUM_THREADS=120 \
+    DYNAMIC_ARCH=1 \
+    INTERFACE64=0
+
+make install
+
+# Configure linker paths
+export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64:$LD_LIBRARY_PATH
+export LIBRARY_PATH=/usr/local/lib:/usr/local/lib64:$LIBRARY_PATH
+export CPATH=/usr/local/include:$CPATH
+
+echo "/usr/local/lib" >> /etc/ld.so.conf.d/openblas.conf
+echo "/usr/local/lib64" >> /etc/ld.so.conf.d/openblas.conf
+ldconfig
+
+cd ..
 
 # Ensure python3 refers to the distro’s default (if needed)
 #ln -sf /usr/bin/python3.12 /usr/bin/python3 || true
