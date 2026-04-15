@@ -31,6 +31,7 @@ yum install -y jq curl --allowerasing
 PYTHON_VERSION=$(python3.12 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
+export LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LIBRARY_PATH
 export SITE_PACKAGE_PATH=/usr/local/lib/python${PYTHON_VERSION}/site-packages
 export CC=/usr/bin/gcc
 export CXX=/usr/bin/g++
