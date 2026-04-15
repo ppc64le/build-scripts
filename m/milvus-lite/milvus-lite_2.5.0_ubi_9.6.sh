@@ -80,7 +80,14 @@ python3.12 -m pip install --upgrade pip wheel setuptools conan==1.64.1
 # 2. Build & install Texinfo (required by milvus-lite)
 # -----------------------------------------------------------------------------
 TEX_VER=7.1
-wget "https://ftp.gnu.org/gnu/texinfo/texinfo-${TEX_VER}.tar.xz"
+echo "Downloading texinfo..."
+for url in \
+  https://mirrors.kernel.org/gnu/texinfo/texinfo-${TEX_VER}.tar.xz \
+  https://ftpmirror.gnu.org/texinfo/texinfo-${TEX_VER}.tar.xz \
+  https://ftp.gnu.org/gnu/texinfo/texinfo-${TEX_VER}.tar.xz
+do
+  wget "$url" && break
+done
 tar -xf "texinfo-${TEX_VER}.tar.xz"
 pushd "texinfo-${TEX_VER}"
   ./configure && make -j2 && make install
