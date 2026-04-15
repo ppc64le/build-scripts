@@ -52,48 +52,10 @@ cd ..
 cd $CURRENT_DIR
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
-git checkout v0.3.29
-git submodule update --init
-
-# Set install prefix inside the OpenBLAS directory
-OPENBLAS_PREFIX=$(pwd)/local
-mkdir -p "${OPENBLAS_PREFIX}"
-# Set build options
-declare -a build_opts
-# Fix ctest not automatically discovering tests
-LDFLAGS=$(echo "${LDFLAGS}" | sed "s/-Wl,--gc-sections//g")
-export CF="${CFLAGS} -Wno-unused-parameter -Wno-old-style-declaration"
-unset CFLAGS
-export USE_OPENMP=1
-build_opts+=(USE_OPENMP=${USE_OPENMP})
-# Handle Fortran flags
-if [ ! -z "$FFLAGS" ]; then
-    export FFLAGS="${FFLAGS/-fopenmp/ }"
-    export FFLAGS="${FFLAGS} -frecursive"
-    export LAPACK_FFLAGS="${FFLAGS}"
-fi
-export PLATFORM=$(uname -m)
-build_opts+=(BINARY="64")
-build_opts+=(DYNAMIC_ARCH=1)
-build_opts+=(TARGET="POWER9")
-BUILD_BFLOAT16=1
-# Placeholder for future builds that may include ILP64 variants.
-build_opts+=(INTERFACE64=0)
-build_opts+=(SYMBOLSUFFIX="")
-# Build LAPACK
-build_opts+=(NO_LAPACK=0)
-# Enable threading and set the number of threads
-build_opts+=(USE_THREAD=1)
-build_opts+=(NUM_THREADS=8)
-# Disable CPU/memory affinity handling to avoid problems with NumPy and R
-build_opts+=(NO_AFFINITY=1)
-# Build OpenBLAS
-make ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${OPENBLAS_PREFIX}
-# Install OpenBLAS
-CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${OPENBLAS_PREFIX}" ${build_opts[@]}
-export LD_LIBRARY_PATH=${OPENBLAS_PREFIX}/lib:$LD_LIBRARY_PATH
-export PKG_CONFIG_PATH=${OPENBLAS_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
-pkg-config --modversion openblas
+git checkout v0.3.32
+make -j${MAX_JOBS} TARGET=POWER9 BUILD_BFLOAT16=1 BINARY=64 USE_OPENMP=1 USE_THREAD=1 NUM_THREADS=120 DYNAMIC_ARCH=1 INTERFACE64=0
+make install
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64:/usr/local/lib
 cd $CURRENT_DIR
 
 
@@ -186,7 +148,6 @@ export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl\,--as-needed//')"
 export LDFLAGS="${LDFLAGS} -Wl,-rpath-link,${VIRTUAL_ENV}/lib"
 export CXXFLAGS="${CXXFLAGS} -fplt"
 export CFLAGS="${CFLAGS} -fplt"
-export BLAS=OpenBLAS
 export USE_FBGEMM=0
 export USE_SYSTEM_NCCL=1
 export USE_MKLDNN=0
@@ -218,11 +179,6 @@ export LD_LIBRARY_PATH=/pytorch/build/lib/libprotobuf.so.3.13.0.0:$LD_LIBRARY_PA
 export PATH="/protobuf/local/libprotobuf/bin/protoc:${PATH}"
 export LD_LIBRARY_PATH="/protobuf/local/libprotobuf/lib64:${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH="/protobuf/third_party/abseil-cpp/local/abseilcpp/lib:${LD_LIBRARY_PATH}"
-export LD_LIBRARY_PATH=$OPENBLAS_PREFIX/lib:$LD_LIBRARY_PATH
-export CPATH=$OPENBLAS_PREFIX/include:$CPATH
-export OpenBLAS_INCLUDE_DIR=$OPENBLAS_PREFIX/include
-export OpenBLAS_LIB_DIR=$OPENBLAS_PREFIX/lib
-export OpenBLAS_HOME=$OPENBLAS_PREFIX
 
 
 # Fix CMake version requirement
@@ -748,7 +704,6 @@ cd $CURRENT_DIR
 git clone -b $PACKAGE_VERSION $PACKAGE_URL
 cd $PACKAGE_NAME
 
-export LD_LIBRARY_PATH=$OPENBLAS_PREFIX/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH="${RE2_PREFIX}/lib:$LD_LIBRARY_PATH"
 
 python3.12 -m pip install setuptools pytest pydantic pytest-cov pandas
