@@ -24,7 +24,7 @@ PACKAGE_VERSION=${1:-26.3.1}
 PACKAGE_URL=https://github.com/psf/black.git
 
 # Install dependencies
-yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel zlib-devel python3.12-devel python3.12-pip tox
+yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel zlib-devel python3.12-devel python3.12-pip
 
 # Clone the repository
 git clone $PACKAGE_URL
