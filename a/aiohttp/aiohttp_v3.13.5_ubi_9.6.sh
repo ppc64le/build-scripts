@@ -2,9 +2,9 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : aiohttp
-# Version          : 3.13.5
+# Version          : v3.13.5
 # Source repo      : https://github.com/aio-libs/aiohttp.git
-# Tested on        : UBI:9.6
+# Tested on        : UBI:9.3
 # Language         : Python
 # Ci-Check         : True
 # Script License   : Apache License, Version 2 or later
@@ -29,9 +29,10 @@ PACKAGE_DIR=aiohttp
 # -------------------------------
 # Install system dependencies
 # -------------------------------
+# clang is required for building llhttp (Makefile defaults to clang)
 yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel \
     zlib-devel cmake libjpeg-devel python3-devel python3-pip python3 \
-    python-unversioned-command pkgconfig 
+    python-unversioned-command pkgconfig clang
 
 # -------------------------------
 # Install Node.js (required for llhttp generation during build)
@@ -61,6 +62,34 @@ else
 fi
 
 # -------------------------------
+# Install test requirements for running aiohttp test suite
+# -------------------------------
+python3 -m pip install -r requirements/test.txt
+
+# -------------------------------
+# Build llhttp (vendored dependency used for HTTP parsing)
+# -------------------------------
+AIOHTTP_DIR=$(pwd)
+cd vendor/llhttp
+
+# Install llhttp build dependencies required for TypeScript generator
+npm install llparse semver
+npm install --save-dev @types/node
+
+# Disable unstable test_import_time test (fails intermittently / unsupported on newer Python versions)
+sed -i '/^\.PHONY: all/i\export PYTEST_ADDOPTS := --deselect=tests/test_imports.py::test_import_time' Makefile
+
+# Build and install llhttp generator output
+make
+make install
+
+# -------------------------------
+# Return back to aiohttp directory and generate Cython sources
+# -------------------------------
+cd $AIOHTTP_DIR
+make cythonize
+
+# -------------------------------
 # Remove system-installed requests (if present)
 # -------------------------------
 # Some environments may have requests installed via RPM, which can conflict
@@ -82,16 +111,6 @@ pip3 install \
     freezegun python-on-whales re-assert \
     brotlicffi brotli Cython pytest pytest-mock \
     build proxy proxy.py wheel aiohappyeyeballs
-
-# -------------------------------
-# Skip unstable test_import_time test via Makefile configuration
-# -------------------------------
-sed -i '/^\.PHONY: all/i\export PYTEST_ADDOPTS := --deselect=tests/test_imports.py::test_import_time' Makefile
-
-# -------------------------------
-# Disable building optional C extensions if needed
-# -------------------------------
-export AIOHTTP_NO_EXTENSIONS=1
 
 # -------------------------------
 # Install aiohttp package
@@ -116,10 +135,10 @@ pip3 install pytest-cov pytest-xdist pytest-codspeed
 # -------------------------------
 # -p no:cov disables coverage plugin to avoid coverage tracer failures.
 # -p no:xdist disables parallel test execution.
-# Several tests are deselected due to platform-specific or known failures.
 # NOTE: Below tests are deselected because:
 # - test_check_allowed_method_for_found_resource fails with ExceptionGroup (unraisable exception warnings)
 # - static_*_without_read_permission tests fail in root mode (chmod 000 still allows access, returns 200/404 instead of 403)
+# - tests/test_http_parser.py is deselected due to known parser behavior differences across platforms
 if ! python3 -m pytest \
   -p no:cov \
   -p no:xdist \
