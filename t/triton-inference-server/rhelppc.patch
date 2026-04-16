@@ -42,12 +42,12 @@ index f32c0159..93ef2e2f 100755
  # Install docker docker buildx
 -RUN yum install -y ca-certificates curl gnupg yum-utils \\
 -      && yum-config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo \\
-+RUN yum install -y ca-certificates  gnupg yum-utils \\
++RUN yum update -y && yum install -y ca-certificates  gnupg yum-utils \\
 +      && yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo \\
        && yum install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
  #   && yum install -y docker.io docker-buildx-plugin
  
-+RUN yum install -y wget && \
++RUN yum update -y && yum install -y wget && \
 +   dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-gpg-keys-9.0-35.el9.noarch.rpm \
 +        https://mirror.stream.centos.org/9-stream/BaseOS/`arch`/os/Packages/centos-stream-repos-9.0-35.el9.noarch.rpm \
 +        https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
