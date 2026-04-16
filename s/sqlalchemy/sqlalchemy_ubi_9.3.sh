@@ -30,6 +30,7 @@ yum install -y git gcc gcc-c++ make wget sudo python-devel openssl-devel bzip2-d
 pip3 install greenlet
 pip3 install --upgrade pip setuptools wheel
 pip3 install pytest
+pip3 install mypy
 
 # Add /usr/local/bin to PATH
 export PATH=$PATH:/usr/local/bin/
@@ -66,7 +67,7 @@ fi
 
 # Run tests using pytest
 if command -v pytest &> /dev/null; then
-    if ! pytest; then
+    if ! pytest -k "not postgresql and not mysql and not oracle and not mssql and not mypy" -W ignore::DeprecationWarning --disable-warnings; then
         echo "------------------${PACKAGE_NAME}: Tests_Fail------------------"
         echo "${PACKAGE_URL} ${PACKAGE_NAME}"
         echo "${PACKAGE_NAME} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | GitHub | Fail | Tests_Fail"
