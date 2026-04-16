@@ -26,7 +26,7 @@ OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 echo "Installing required dependencies..."
 
-yum install -y git gcc gcc-c++ gcc-gfortran make cmake
+yum install -y git gcc gcc-c++ gcc-gfortran make cmake wget
 
 echo "Cloning LAPACK source..."
 git clone $PACKAGE_URL
