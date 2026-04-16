@@ -4,7 +4,7 @@
 # Package       : redis-cluster
 # Version       : 8.4.1
 # Source repo   : https://github.com/bitnami/containers
-# Tested on     : UBI:9.x (ppc64le)
+# Tested on     : UBI:9.7
 # Ci-Check      : False
 # Language      : C
 # Script License: Apache License, Version 2 or later
