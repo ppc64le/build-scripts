@@ -28,7 +28,7 @@ echo "------------------------------------------------------------------"
 echo "$WORKING_DIR"
 # Install necessary  dependencies
 
-yum install -y git make wget python3.12 python3.12-devel python3.12-pip gcc-toolset-13
+yum install -y git make wget python python-devel python-pip gcc-toolset-13
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 export LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib/gcc/ppc64le-redhat-linux/13:$LIBRARY_PATH
@@ -53,7 +53,7 @@ LLVM_INSTALL_DIR=$WORKING_DIR/llvm-install
 git clone -b ${LLVM_PROJECT_GIT_TAG} ${LLVM_PROJECT_GIT_URL}
 git clone -b ${LLVMLITE_VERSION} ${LLVMLITE_PACKAGE_URL}
 
-python3.12 -m pip install ninja
+python -m pip install ninja "setuptools<70" wheel
 
 cd $LLVM_SRC_DIR
 git fetch --all --tags
@@ -72,7 +72,7 @@ cd $WORKING_DIR/llvmlite
 # Build & install llvmlite
 export CMAKE_PREFIX_PATH=$LLVM_INSTALL_DIR/lib/cmake/llvm
 export CXXFLAGS="-fPIC"
-python3.12 -m pip install .
+python -m pip install . --no-build-isolation
 
 echo "-------------------successfully Installed llvmlite----------------------"
 
@@ -80,65 +80,16 @@ echo "-------------------successfully Installed llvmlite----------------------"
 echo "---------------------------------Installing openblas from source----------------"
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
-git checkout v0.3.29
-git submodule update --init
+git checkout v0.3.32
 
-PREFIX=local/openblas
+make -j${MAX_JOBS} TARGET=POWER9 BUILD_BFLOAT16=1 BINARY=64 USE_OPENMP=1 USE_THREAD=1 NUM_THREADS=120 DYNAMIC_ARCH=1 INTERFACE64=0
+make install
 
-# Set build options
-declare -a build_opts
-# Fix ctest not automatically discovering tests
-LDFLAGS=$(echo "${LDFLAGS}" | sed "s/-Wl,--gc-sections//g")
-export CF="${CFLAGS} -Wno-unused-parameter -Wno-old-style-declaration"
-unset CFLAGS
-export USE_OPENMP=1
-build_opts+=(USE_OPENMP=${USE_OPENMP})
-export PREFIX=${PREFIX}
-
-# Handle Fortran flags
-if [ ! -z "$FFLAGS" ]; then
-    export FFLAGS="${FFLAGS/-fopenmp/ }"
-    export FFLAGS="${FFLAGS} -frecursive"
-    export LAPACK_FFLAGS="${FFLAGS}"
-fi
-export PLATFORM=$(uname -m)
-build_opts+=(BINARY="64")
-build_opts+=(DYNAMIC_ARCH=1)
-build_opts+=(TARGET="POWER9")
-BUILD_BFLOAT16=1
-
-# Placeholder for future builds that may include ILP64 variants.
-build_opts+=(INTERFACE64=0)
-build_opts+=(SYMBOLSUFFIX="")
-
-# Build LAPACK
-build_opts+=(NO_LAPACK=0)
-
-# Enable threading and set the number of threads
-build_opts+=(USE_THREAD=1)
-build_opts+=(NUM_THREADS=8)
-
-# Disable CPU/memory affinity handling to avoid problems with NumPy and R
-build_opts+=(NO_AFFINITY=1)
-
-# Build OpenBLAS
-make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
-
-# Install OpenBLAS
-CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
-OpenBLASInstallPATH=$(pwd)/$PREFIX
-OpenBLASConfigFile=$(find . -name OpenBLASConfig.cmake)
-OpenBLASPCFile=$(find . -name openblas.pc)
-sed -i "/OpenBLAS_INCLUDE_DIRS/c\SET(OpenBLAS_INCLUDE_DIRS ${OpenBLASInstallPATH}/include)" ${OpenBLASConfigFile}
-sed -i "/OpenBLAS_LIBRARIES/c\SET(OpenBLAS_INCLUDE_DIRS ${OpenBLASInstallPATH}/include)" ${OpenBLASConfigFile}
-sed -i "s|libdir=local/openblas/lib|libdir=${OpenBLASInstallPATH}/lib|" ${OpenBLASPCFile}
-sed -i "s|includedir=local/openblas/include|includedir=${OpenBLASInstallPATH}/include|" ${OpenBLASPCFile}
-export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib"
-export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64:/usr/local/lib
 cd ..
 echo "------------openblas installed--------------------"
 
-python3.12 -m pip install numpy==2.0.2 setuptools
+python -m pip install numpy==2.0.2
 
 cd $WORKING_DIR
 
@@ -153,10 +104,10 @@ git checkout $PACKAGE_VERSION
 export CXXFLAGS=-I/usr/include
 # echo "after CXXFLAGS............$CXXFLAGS........."
 
-PYTHON_VERSION=$(python3.12 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+PYTHON_VERSION=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
 
 #install
-if ! python3.12 -m pip install . ; then
+if ! python -m pip install . ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
@@ -165,7 +116,7 @@ fi
 
 #test
 cd $WORKING_DIR
-if ! python3.12 -c "import numba; import numba.core.annotations; import numba.core.datamodel; import numba.core.rewrites; import numba.core.runtime; import numba.core.typing; import numba.core.unsafe; import numba.experimental.jitclass; import numba.np.ufunc; import numba.pycc; import numba.scripts; import numba.testing; import numba.tests; import numba.tests.npyufunc;"; then
+if ! python -c "import numba; import numba.core.annotations; import numba.core.datamodel; import numba.core.rewrites; import numba.core.runtime; import numba.core.typing; import numba.core.unsafe; import numba.experimental.jitclass; import numba.np.ufunc; import numba.pycc; import numba.scripts; import numba.testing; import numba.tests; import numba.tests.npyufunc;"; then
     echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_success_but_test_Fails"
