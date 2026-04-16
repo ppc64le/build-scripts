@@ -62,6 +62,7 @@ if ! (python3.12 -m pip install -e ".[d,jupyter,colorama,uvloop]" ) ; then
 fi
 
 python3.12 -m pip install \
+    "tox" \
     "pytest>=7" \
     "pytest-xdist>=3.0.2" \
     "pytest-cov>=4.1.0" \
