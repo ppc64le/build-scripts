@@ -4,7 +4,7 @@
 # Package          : aiohttp
 # Version          : v3.13.5
 # Source repo      : https://github.com/aio-libs/aiohttp.git
-# Tested on        : UBI:9.3
+# Tested on        : UBI:9.6
 # Language         : Python
 # Ci-Check         : True
 # Script License   : Apache License, Version 2 or later
