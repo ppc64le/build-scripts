@@ -2,13 +2,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package        : jpype
-# Version        : v1.5.0
+# Version        : v1.7.0
 # Source repo    : https://github.com/jpype-project/jpype.git
 # Tested on      : UBI 9.3
 # Language       : Python
 # Ci-Check   : True
 # Script License : Apache License, Version 2 or later
-# Maintainer     : Vivek Sharma <vivek.sharma20@ibm.com>
+# Maintainer     : Shivansh Sharma <shivansh.sharma20@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on the given
 # ==========  platform using the mentioned version of the package.
@@ -19,7 +19,7 @@
 # -----------------------------------------------------------------------------
 
 PACKAGE_NAME=jpype
-PACKAGE_VERSION=${1:-v1.5.0}
+PACKAGE_VERSION=${1:-v1.7.0}
 PACKAGE_DIR=jpype
 PACKAGE_URL=https://github.com/jpype-project/jpype.git
 
@@ -46,6 +46,12 @@ export CLASSPATH=$CLASSPATH:$(pwd)/sqlite-jdbc.jar:$(pwd)/hsqldb.jar:$(pwd)/h2.j
 # Install test dependencies
 python3 -m pip install -U pip setuptools wheel
 python3 -m pip install pytest pytest-cov numpy
+
+if [[ "$(printf '%s\n' "1.7.0" "${PACKAGE_VERSION#v}" | sort -V | head -n1)" == "1.7.0" ]]; then
+    echo "Version >= 1.7.0"
+    yum install -y ant
+    python3 -m pip install scikit-build-core
+fi
 
 # Install the package
 if python3 -m pip install --no-build-isolation -e .; then
