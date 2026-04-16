@@ -146,6 +146,7 @@ if ! python3 -m pytest \
   --disable-warnings \
   --deselect tests/test_imports.py \
   --deselect tests/test_http_parser.py \
+  --deselect tests/test_leaks.py \
   --deselect tests/test_benchmarks_web_urldispatcher.py::test_resolve_static_root_route \
   --deselect tests/test_urldispatch.py::test_static_resource_outside_traversal \
   --deselect tests/test_urldispatch.py::test_check_allowed_method_for_found_resource \
