@@ -68,7 +68,6 @@ python3.12 -m pip install \
     "pytest-cov>=4.1.0" \
     "coverage>=5.3"
 
-
 export PYTEST_ADDOPTS="-n 2"
 
 if ! tox -p 1 -- -n 2 ; then
