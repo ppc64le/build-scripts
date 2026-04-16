@@ -81,7 +81,7 @@ pip3 install \
     attrs multidict async-timeout yarl frozenlist aiosignal \
     freezegun python-on-whales re-assert \
     brotlicffi brotli Cython pytest pytest-mock \
-    build proxy proxy.py wheel
+    build proxy proxy.py wheel aiohappyeyeballs
 
 # -------------------------------
 # Skip unstable test_import_time test via Makefile configuration
