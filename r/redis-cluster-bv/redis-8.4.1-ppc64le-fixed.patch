@@ -1,0 +1,79 @@
+diff --git a/src/debug.c b/src/debug.c
+index c1f9ea186..d7b6143a2 100644
+--- a/src/debug.c
++++ b/src/debug.c
+@@ -1720,6 +1720,59 @@ void logRegisters(ucontext_t *uc) {
+              (unsigned long) uc->uc_mcontext.fault_address
+                      );
+              logStackContent((void**)uc->uc_mcontext.arm_sp);
++    #elif defined(__powerpc64__) /* Linux ppc64le */
++    serverLog(LL_WARNING,
++        "\n"
++        "NIP :%016lx MSR :%016lx CTR :%016lx\n"
++        "LR  :%016lx XER :%016lx CCR :%016lx\n"
++        "R0  :%016lx R1  :%016lx R2  :%016lx R3  :%016lx\n"
++        "R4  :%016lx R5  :%016lx R6  :%016lx R7  :%016lx\n"
++        "R8  :%016lx R9  :%016lx R10 :%016lx R11 :%016lx\n"
++        "R12 :%016lx R13 :%016lx R14 :%016lx R15 :%016lx\n"
++        "R16 :%016lx R17 :%016lx R18 :%016lx R19 :%016lx\n"
++        "R20 :%016lx R21 :%016lx R22 :%016lx R23 :%016lx\n"
++        "R24 :%016lx R25 :%016lx R26 :%016lx R27 :%016lx\n"
++        "R28 :%016lx R29 :%016lx R30 :%016lx R31 :%016lx\n",
++        (unsigned long) uc->uc_mcontext.gp_regs[32],  /* NIP */
++        (unsigned long) uc->uc_mcontext.gp_regs[33],  /* MSR */
++        (unsigned long) uc->uc_mcontext.gp_regs[35],  /* CTR */
++        (unsigned long) uc->uc_mcontext.gp_regs[36],  /* LR  */
++        (unsigned long) uc->uc_mcontext.gp_regs[37],  /* XER */
++        (unsigned long) uc->uc_mcontext.gp_regs[38],  /* CCR */
++        (unsigned long) uc->uc_mcontext.gp_regs[0],
++        (unsigned long) uc->uc_mcontext.gp_regs[1],
++        (unsigned long) uc->uc_mcontext.gp_regs[2],
++        (unsigned long) uc->uc_mcontext.gp_regs[3],
++        (unsigned long) uc->uc_mcontext.gp_regs[4],
++        (unsigned long) uc->uc_mcontext.gp_regs[5],
++        (unsigned long) uc->uc_mcontext.gp_regs[6],
++        (unsigned long) uc->uc_mcontext.gp_regs[7],
++        (unsigned long) uc->uc_mcontext.gp_regs[8],
++        (unsigned long) uc->uc_mcontext.gp_regs[9],
++        (unsigned long) uc->uc_mcontext.gp_regs[10],
++        (unsigned long) uc->uc_mcontext.gp_regs[11],
++        (unsigned long) uc->uc_mcontext.gp_regs[12],
++        (unsigned long) uc->uc_mcontext.gp_regs[13],
++        (unsigned long) uc->uc_mcontext.gp_regs[14],
++        (unsigned long) uc->uc_mcontext.gp_regs[15],
++        (unsigned long) uc->uc_mcontext.gp_regs[16],
++        (unsigned long) uc->uc_mcontext.gp_regs[17],
++        (unsigned long) uc->uc_mcontext.gp_regs[18],
++        (unsigned long) uc->uc_mcontext.gp_regs[19],
++        (unsigned long) uc->uc_mcontext.gp_regs[20],
++        (unsigned long) uc->uc_mcontext.gp_regs[21],
++        (unsigned long) uc->uc_mcontext.gp_regs[22],
++        (unsigned long) uc->uc_mcontext.gp_regs[23],
++        (unsigned long) uc->uc_mcontext.gp_regs[24],
++        (unsigned long) uc->uc_mcontext.gp_regs[25],
++        (unsigned long) uc->uc_mcontext.gp_regs[26],
++        (unsigned long) uc->uc_mcontext.gp_regs[27],
++        (unsigned long) uc->uc_mcontext.gp_regs[28],
++        (unsigned long) uc->uc_mcontext.gp_regs[29],
++        (unsigned long) uc->uc_mcontext.gp_regs[30],
++        (unsigned long) uc->uc_mcontext.gp_regs[31]
++    );
++    logStackContent((void **)uc->uc_mcontext.gp_regs[1]);  /* R1 = stack pointer */
+     #else
+        NOT_SUPPORTED();
+     #endif
+diff --git a/tests/support/util.tcl b/tests/support/util.tcl
+index 9a27139a7..e6b16139f 100644
+--- a/tests/support/util.tcl
++++ b/tests/support/util.tcl
+@@ -1234,6 +1234,10 @@ proc system_backtrace_supported {} {
+     } elseif {$system_name ne {linux}} {
+         return 0
+     }
++    # ppc64le backtrace() does not reliably capture full stack traces
++    if {[exec uname -m] eq {ppc64le}} {
++        return 0
++    }
+
+     # libmusl does not support backtrace. Also return 0 on
+     # static binaries (ldd exit code 1) where we can't detect libmusl
