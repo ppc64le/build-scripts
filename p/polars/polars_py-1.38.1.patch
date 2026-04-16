@@ -1,3 +1,41 @@
+diff --git a/meta.yaml b/meta.yaml
+new file mode 100644
+index 0000000000..9a83e40bca
+--- /dev/null
++++ b/meta.yaml
+@@ -0,0 +1,32 @@
++package:
++  name: NAME
++  version: "VERSION"
++
++source:
++  path: .
++
++build:
++  number: 0
++  string: "py311_0"
++
++  script: |
++    set -ex
++    ls -l
++
++    WHEEL="WHEELFILE"
++    {{ PYTHON }} -m pip install "$WHEEL" --no-deps --ignore-installed -vv
++
++  # 🔥 critical fixes
++  missing_dso_whitelist:
++    - /lib64/libm.so.6
++    - /lib64/libc.so.6
++    - /lib64/ld64.so.2
++
++requirements:
++  host:
++    - python 3.11
++    - pip
++
++  run:
++    - python >=3.11,<3.12
++    - libgcc
 diff --git a/requirements.txt b/requirements.txt
 new file mode 100644
 index 0000000000..5ba6a8d3c2

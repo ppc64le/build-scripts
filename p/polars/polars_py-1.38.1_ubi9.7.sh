@@ -19,8 +19,8 @@
 # ---------------------------
 PACKAGE_NAME="polars"
 PACKAGE_ORG="pola-rs"
-SCRIPT_PACKAGE_VERSION=py-1.38.1
-PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
+SCRIPT_PKG_VERSION=py-1.38.1
+PACKAGE_VERSION=${SCRIPT_PKG_VERSION}
 PACKAGE_URL="https://github.com/${PACKAGE_ORG}/${PACKAGE_NAME}.git"
 SCRIPT_PATH=$(dirname $(realpath $0))
 RUNTESTS=1
@@ -106,13 +106,10 @@ else
         cd Python-${PYTHON_VERSION}
 fi
 make altinstall -j$(nproc)
-python3.11 -V
-pip3.11 -V
-rm -rf /usr/bin/python3 /usr/bin/python /usr/bin/pip3 /usr/bin/pip
-ln -s /usr/bin/python${PYTHON_VERSION:0:4} /usr/bin/python3
-ln -s /usr/bin/pip${PYTHON_VERSION:0:4} /usr/bin/pip3
-ln -s /usr/bin/python${PYTHON_VERSION:0:4} /usr/bin/python
-ln -s /usr/bin/pip${PYTHON_VERSION:0:4} /usr/bin/pip
+ln -sf /usr/bin/python${PYTHON_VERSION:0:4} /usr/bin/python3
+ln -sf /usr/bin/pip${PYTHON_VERSION:0:4} /usr/bin/pip3
+ln -sf /usr/bin/python${PYTHON_VERSION:0:4} /usr/bin/python
+ln -sf /usr/bin/pip${PYTHON_VERSION:0:4} /usr/bin/pip
 pip install numpy wheel build maturin pytest "setuptools<71"
 
 # ---------------------------
@@ -131,7 +128,7 @@ if [ -z "$(ls -A $BUILD_HOME/${PACKAGE_NAME})" ]; then
 	git clone "${PACKAGE_URL}"
 	cd "${PACKAGE_NAME}"
 	git checkout "${PACKAGE_VERSION}"
-	git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${SCRIPT_PACKAGE_VERSION}.patch
+	git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${SCRIPT_PKG_VERSION}.patch
 else
         cd "${PACKAGE_NAME}"
 fi
@@ -175,6 +172,72 @@ export PYPOLARS_WHEEL=${BUILD_HOME}/${PACKAGE_NAME}/py-polars/dist/polars-${PACK
 test -f ${PYPOLARS_WHEEL}
 cp "$POLARS32_WHEEL" "$POLARS64_WHEEL" "$POLARSCOMPAT_WHEEL" "$PYPOLARS_WHEEL" "$BUILD_HOME/"  # Copy wheel for wrapper detection
 
+
+# --------------
+# Install conda
+# --------------
+wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-ppc64le.sh
+chmod +x Miniforge3-Linux-ppc64le.sh
+./Miniforge3-Linux-ppc64le.sh -b
+export PATH_SAVED=$PATH
+export PATH=$PATH:$HOME/miniforge3/bin/
+conda init bash
+source ~/.bashrc
+rm -rf Miniforge3-Linux-ppc64le.sh
+
+# --------------------------
+# Install conda dependecies
+# --------------------------
+conda install -c conda-forge conda-build conda-smithy -y
+
+# --------------------------
+# Build conda wheels
+# --------------------------
+cd ${BUILD_HOME}/${PACKAGE_NAME}/target/wheels
+cp ${BUILD_HOME}/${PACKAGE_NAME}/meta.yaml .
+sed -i "s#NAME#polars-runtime-32#g" meta.yaml
+sed -i "s#WHEELFILE#$POLARS32_WHEEL#g" meta.yaml
+sed -i "s#VERSION#${PACKAGE_VERSION:3}#g" meta.yaml
+conda build .
+cp -f ${BUILD_HOME}/${PACKAGE_NAME}/meta.yaml .
+sed -i "s#NAME#polars-runtime-64#g" meta.yaml
+sed -i "s#WHEELFILE#$POLARS64_WHEEL#g" meta.yaml
+sed -i "s#VERSION#${PACKAGE_VERSION:3}#g" meta.yaml
+conda build .
+cp -f ${BUILD_HOME}/${PACKAGE_NAME}/meta.yaml .
+sed -i "s#NAME#polars-runtime-compat#g" meta.yaml
+sed -i "s#WHEELFILE#$POLARSCOMPAT_WHEEL#g" meta.yaml
+sed -i "s#VERSION#${PACKAGE_VERSION:3}#g" meta.yaml
+conda build .
+cd ${BUILD_HOME}/${PACKAGE_NAME}/py-polars/dist/
+cp ${BUILD_HOME}/${PACKAGE_NAME}/meta.yaml .
+sed -i "s#NAME#polars#g" meta.yaml
+sed -i "s#WHEELFILE#$PYPOLARS_WHEEL#g" meta.yaml
+sed -i "s#VERSION#${PACKAGE_VERSION:3}#g" meta.yaml
+conda build .
+export POLARS32_CONDAWHEEL=$HOME/miniforge3/conda-bld/linux-ppc64le/polars-runtime-32-${PACKAGE_VERSION:3}-py311_0.conda
+export POLARS64_CONDAWHEEL=$HOME/miniforge3/conda-bld/linux-ppc64le/polars-runtime-64-${PACKAGE_VERSION:3}-py311_0.conda
+export POLARSCOMPAT_CONDAWHEEL=$HOME/miniforge3/conda-bld/linux-ppc64le/polars-runtime-compat-${PACKAGE_VERSION:3}-py311_0.conda
+export PYPOLARS_CONDAWHEEL=$HOME/miniforge3/conda-bld/linux-ppc64le/polars-${PACKAGE_VERSION:3}-py311_0.conda
+test -f ${POLARS32_CONDAWHEEL}
+test -f ${POLARS64_CONDAWHEEL}
+test -f ${POLARSCOMPAT_CONDAWHEEL}
+test -f ${PYPOLARS_CONDAWHEEL}
+
+# ----------------
+# Uninstall conda
+# ----------------
+unset CONDA_PREFIX
+unset CONDA_DEFAULT_ENV
+unset CONDA_EXE
+unset _CE_CONDA
+unset _CE_M
+export PATH=$PATH_SAVED
+ln -sf /usr/bin/python${PYTHON_VERSION:0:4} /usr/bin/python3
+ln -sf /usr/bin/pip${PYTHON_VERSION:0:4} /usr/bin/pip3
+ln -sf /usr/bin/python${PYTHON_VERSION:0:4} /usr/bin/python
+ln -sf /usr/bin/pip${PYTHON_VERSION:0:4} /usr/bin/pip
+
 # ---------------------------
 # Skip Tests?
 # ---------------------------
@@ -185,6 +248,10 @@ if [ "$RUNTESTS" -eq 0 ]; then
 	echo "polars_runtime_32 wheel available at [$POLARS32_WHEEL]"
 	echo "polars_runtime_64 wheel available at [$POLARS64_WHEEL]"
 	echo "polars_runtime_compat wheel available at [$POLARSCOMPAT_WHEEL]"
+        echo "polars conda wheel available at [$PYPOLARS_CONDAWHEEL]"
+        echo "polars_runtime_32 conda wheel available at [$POLARS32_CONDAWHEEL]"
+        echo "polars_runtime_64 conda wheel available at [$POLARS64_CONDAWHEEL]"
+        echo "polars_runtime_compat conda wheel available at [$POLARSCOMPAT_CONDAWHEEL]"
         exit 0
 fi
 
@@ -293,7 +360,8 @@ if [ -z "$(ls -A $BUILD_HOME/arrow)" ]; then
           -DARROW_WITH_SNAPPY=ON \
           -DARROW_WITH_ZSTD=ON \
           -DARROW_WITH_LZ4=ON \
-          -DARROW_WITH_BROTLI=ON
+          -DARROW_WITH_BROTLI=ON \
+          -DARROW_WITH_BOOST=OFF
         make -j$(nproc)
 else
         cd arrow/cpp/build
@@ -351,7 +419,7 @@ if [ -z "$(ls -A $BUILD_HOME/jax)" ]; then
 	git clone https://github.com/google/boringssl.git
 	cd boringssl
 	git checkout c00d7ca810e93780bd0c8ee4eea28f4f2ea4bcdc
-	git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${SCRIPT_PACKAGE_VERSION}_boringssl.patch
+	git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${SCRIPT_PKG_VERSION}_boringssl.patch
 	cd ..
 	build/build.py --noenable_cuda --noenable_mosaic_gpu --nobuild_gpu_plugin --bazel_options=--override_repository=boringssl=${BUILD_HOME}/jax/boringssl
 fi
@@ -392,4 +460,8 @@ echo "polars wheel available at [$PYPOLARS_WHEEL]"
 echo "polars_runtime_32 wheel available at [$POLARS32_WHEEL]"
 echo "polars_runtime_64 wheel available at [$POLARS64_WHEEL]"
 echo "polars_runtime_compat wheel available at [$POLARSCOMPAT_WHEEL]"
+echo "polars conda wheel available at [$PYPOLARS_CONDAWHEEL]"
+echo "polars_runtime_32 conda wheel available at [$POLARS32_CONDAWHEEL]"
+echo "polars_runtime_64 conda wheel available at [$POLARS64_CONDAWHEEL]"
+echo "polars_runtime_compat conda wheel available at [$POLARSCOMPAT_CONDAWHEEL]"
 
