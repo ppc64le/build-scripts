@@ -53,7 +53,7 @@ LLVM_INSTALL_DIR=$WORKING_DIR/llvm-install
 git clone -b ${LLVM_PROJECT_GIT_TAG} ${LLVM_PROJECT_GIT_URL}
 git clone -b ${LLVMLITE_VERSION} ${LLVMLITE_PACKAGE_URL}
 
-python3.12 -m pip install ninja setuptools==77.0.3
+python3.12 -m pip install ninja "setuptools<70" wheel
 
 cd $LLVM_SRC_DIR
 git fetch --all --tags
@@ -72,7 +72,7 @@ cd $WORKING_DIR/llvmlite
 # Build & install llvmlite
 export CMAKE_PREFIX_PATH=$LLVM_INSTALL_DIR/lib/cmake/llvm
 export CXXFLAGS="-fPIC"
-python3.12 -m pip install .
+python3.12 -m pip install . --no-build-isolation
 
 echo "-------------------successfully Installed llvmlite----------------------"
 
