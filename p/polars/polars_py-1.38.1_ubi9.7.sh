@@ -4,8 +4,8 @@
 # Version        : py-1.38.1
 # Source repo    : https://github.com/pola-rs/polars
 # Tested on      : UBI 9.7
-# Language       : Python
-# Travis-Check   : false
+# Language       : Python, Rust
+# Ci-Check       : false
 # Maintainer     : Sumit Dubey <sumit.dubey2@ibm.com>
 # Script License : Apache License, Version 2.0 or later
 #
