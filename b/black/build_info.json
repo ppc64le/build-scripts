@@ -12,7 +12,7 @@
   "use_non_root_user": "false",
   "26.3.1": {
     "build_script": "black_26.3.1_ubi_9.6.sh"
-  }
+  },
   "*": {
     "build_script": "black_ubi_9.3.sh"
   }
