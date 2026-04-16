@@ -4,7 +4,7 @@
 # Package       : numactl
 # Version       : v2.0.19
 # Source repo   : https://github.com/numactl/numactl
-# Tested on     : UBI 9.3
+# Tested on     : UBI:9.3
 # Language      : C
 # Ci-Check  : True
 # Script License: Apache License, Version 2 or later

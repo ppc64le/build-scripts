@@ -6,7 +6,7 @@ import subprocess
 import docker
 import json
    
-def trigger_build_wheel(wrapper_file, python_version, image_name, file_name, version):
+def trigger_build_wheel(wrapper_file, python_version, image_name, file_name, version, post_process_file):
     # Docker client setup
     client = docker.DockerClient(base_url='unix://var/run/docker.sock')
     
@@ -28,18 +28,21 @@ def trigger_build_wheel(wrapper_file, python_version, image_name, file_name, ver
         command = [
             "bash",
             "-c",
-            f"cd /home/tester/ && ./{wrapper_file} {python_version} {file_name} {version}"
+            f"cd /home/tester/ && ./{wrapper_file} {python_version} {file_name} {version} {post_process_file}"
         ]
         
         # Run container
         container = client.containers.run(
             image_name,
             command,
-            network='host',
             detach=True,
             volumes={current_dir: {'bind': '/home/tester/', 'mode': 'rw'}},  # Mount current directory with both files
             stderr=True,
-            stdout=True
+            stdout=True,
+            environment={
+               "GHA_CURRENCY_SERVICE_ID_API_KEY": os.getenv("GHA_CURRENCY_SERVICE_ID_API_KEY"),
+               "GHA_CURRENCY_SERVICE_ID": os.getenv("GHA_CURRENCY_SERVICE_ID"),
+            }
         )
         
         #  STREAM logs in real-time
@@ -69,4 +72,4 @@ def trigger_build_wheel(wrapper_file, python_version, image_name, file_name, ver
 
 if __name__=="__main__":
     print("Inside python program")
-    trigger_build_wheel(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4],sys.argv[5])
+    trigger_build_wheel(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4],sys.argv[5],sys.argv[6])

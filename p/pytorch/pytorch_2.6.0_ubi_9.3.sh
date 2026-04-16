@@ -22,14 +22,13 @@ set -e
 # Variables
 PACKAGE_NAME=pytorch
 PACKAGE_URL=https://github.com/pytorch/pytorch.git
-PACKAGE_VERSION=${1:-v2.6.0}
-PACKAGE_DIR=pytorch
+PACKAGE_VERSION=${1:-v2.10.0}
 SCRIPT_DIR=$(pwd)
 
 yum install -y git make wget python3.12 python3.12-devel python3.12-pip pkgconfig atlas
 yum install gcc-toolset-13 -y
 echo "Installed gcc-toolset"
-yum install -y make libtool  xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel  patch ninja-build gcc-toolset-13 pkg-config pkgconf-pkg-config
+yum install -y make libtool xz zlib-devel openssl-devel bzip2-devel libffi-devel libevent-devel patch ninja-build gcc-toolset-13 pkg-config pkgconf-pkg-config
 dnf install -y gcc-toolset-13-libatomic-devel
 echo "Installed required deps from RH"
 
@@ -44,97 +43,53 @@ wget https://cmake.org/files/v3.31/cmake-3.31.6.tar.gz
 tar -zxvf cmake-3.31.6.tar.gz
 cd cmake-3.31.6
 ./bootstrap
-echo "Building Cmake"
-make
-echo "Installing Cmake"
+make -j$(nproc)
 make install
 cd $SCRIPT_DIR
 
+# -------------------- OpenBLAS --------------------
 echo "---------------------openblas installing---------------------"
-
-#install openblas
-#clone and install openblas from source
 
 git clone https://github.com/OpenMathLib/OpenBLAS
 cd OpenBLAS
-git checkout v0.3.29
-git submodule update --init
+git checkout v0.3.32
 
-# Set build options
-declare -a build_opts
-# Fix ctest not automatically discovering tests
-LDFLAGS=$(echo "${LDFLAGS}" | sed "s/-Wl,--gc-sections//g")
-export CF="${CFLAGS} -Wno-unused-parameter -Wno-old-style-declaration"
-unset CFLAGS
-export USE_OPENMP=1
-build_opts+=(USE_OPENMP=${USE_OPENMP})
-export PREFIX=${PREFIX}
+make -j$(nproc) \
+    TARGET=POWER9 \
+    BUILD_BFLOAT16=1 \
+    BINARY=64 \
+    USE_OPENMP=1 \
+    USE_THREAD=1 \
+    NUM_THREADS=$(nproc) \
+    DYNAMIC_ARCH=1 \
+    INTERFACE64=0
 
-# Handle Fortran flags
-if [ ! -z "$FFLAGS" ]; then
-    export FFLAGS="${FFLAGS/-fopenmp/ }"
-    export FFLAGS="${FFLAGS} -frecursive"
-    export LAPACK_FFLAGS="${FFLAGS}"
-fi
-export PLATFORM=$(uname -m)
-build_opts+=(BINARY="64")
-build_opts+=(DYNAMIC_ARCH=1)
-build_opts+=(TARGET="POWER9")
-BUILD_BFLOAT16=1
+make install PREFIX=/usr/local
 
-# Placeholder for future builds that may include ILP64 variants.
-build_opts+=(INTERFACE64=0)
-build_opts+=(SYMBOLSUFFIX="")
+export OPENBLAS_HOME=/usr/local
+export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64:${LD_LIBRARY_PATH}
+export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:${PKG_CONFIG_PATH}"
 
-# Build LAPACK
-build_opts+=(NO_LAPACK=0)
+OpenBLASInstallPATH=/usr/local
 
-# Enable threading and set the number of threads
-build_opts+=(USE_THREAD=1)
-build_opts+=(NUM_THREADS=8)
-
-# Disable CPU/memory affinity handling to avoid problems with NumPy and R
-build_opts+=(NO_AFFINITY=1)
-
-echo "Building OpenBLAS"
-make -j8 ${build_opts[@]} CFLAGS="${CF}" FFLAGS="${FFLAGS}" prefix=${PREFIX}
-
-echo "Install OpenBLAS"
-CFLAGS="${CF}" FFLAGS="${FFLAGS}" make install PREFIX="${PREFIX}" ${build_opts[@]}
-OpenBLASInstallPATH=$(pwd)/$PREFIX
-OpenBLASConfigFile=$(find . -name OpenBLASConfig.cmake)
-OpenBLASPCFile=$(find . -name openblas.pc)
-export LD_LIBRARY_PATH="$OpenBLASInstallPATH/lib":${LD_LIBRARY_PATH}
-export PKG_CONFIG_PATH="$OpenBLASInstallPATH/lib/pkgconfig:${PKG_CONFIG_PATH}"
-export LD_LIBRARY_PATH=${PREFIX}/lib:$LD_LIBRARY_PATH
-export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH
-pkg-config --modversion openblas
 cd $SCRIPT_DIR
 echo "--------------------openblas installed-------------------------------"
 
-#Building scipy
-python3.12 -m pip install beniget==0.4.2.post1  Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 packaging pybind11 pyproject-metadata
-echo "Installed required deps from pypi"
+# -------------------- SciPy --------------------
+python3.12 -m pip install beniget==0.4.2.post1 Cython==3.0.11 gast==0.6.0 meson==1.6.0 meson-python==0.17.1 numpy==2.0.2 packaging pybind11 pyproject-metadata
 python3.12 -m pip install pythran==0.17.0 setuptools==75.3.0 pooch pytest build wheel hypothesis ninja patchelf>=0.11.0
-echo "Installed required deps from pypi"
+
 git clone https://github.com/scipy/scipy
 cd scipy/
 git checkout v1.15.2
 git submodule update --init
-echo "instaling scipy......."
 python3.12 -m pip install .
 cd $SCRIPT_DIR
-echo "--------------------scipy installed-------------------------------"
 
-#cloning abseil-cpp
- ABSEIL_VERSION=20240116.2
- ABSEIL_URL="https://github.com/abseil/abseil-cpp"
+# -------------------- Abseil --------------------
+git clone https://github.com/abseil/abseil-cpp -b 20240116.2
 
- git clone $ABSEIL_URL -b $ABSEIL_VERSION
-
- echo "------------abseil-cpp cloned--------------"
-
-#building libprotobuf
+# -------------------- Protobuf --------------------
 export C_COMPILER=$(which gcc)
 export CXX_COMPILER=$(which g++)
 
@@ -147,17 +102,13 @@ mkdir -p $LIBPROTO_DIR/local/libprotobuf
 LIBPROTO_INSTALL=$LIBPROTO_DIR/local/libprotobuf
 
 git submodule update --init --recursive
-rm -rf ./third_party/googletest | true
-rm -rf ./third_party/abseil-cpp | true
-
+rm -rf ./third_party/googletest || true
+rm -rf ./third_party/abseil-cpp || true
 cp -r $SCRIPT_DIR/abseil-cpp ./third_party/
 
-mkdir build
-cd build
-
+mkdir build && cd build
 echo "Building libprotobuf"
 cmake -G "Ninja" \
-   ${CMAKE_ARGS} \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CXX_STANDARD=17 \
     -DCMAKE_C_COMPILER=$C_COMPILER \
@@ -170,13 +121,13 @@ cmake -G "Ninja" \
     -Dprotobuf_JSONCPP_PROVIDER="package" \
     -Dprotobuf_USE_EXTERNAL_GTEST=OFF \
     ..
+
 echo "building libprotobuf...."
 cmake --build . --verbose
 echo "Installing libprotobuf...."
 cmake --install .
 
 cd ..
-
 echo "Building protobuf"
 export PROTOC=$LIBPROTO_DIR/build/protoc
 export LD_LIBRARY_PATH=$SCRIPT_DIR/abseil-cpp/abseilcpp/lib:$(pwd)/build/libprotobuf.so:$LD_LIBRARY_PATH
@@ -193,33 +144,54 @@ cd python
 python3.12 -m pip install --no-build-isolation .
 cd $SCRIPT_DIR
 
-echo "------------ libprotobuf,protobuf installed--------------"
-
-echo "----Installing rust------"
+# -------------------- Rust --------------------
 curl https://sh.rustup.rs -sSf | sh -s -- -y
 source "$HOME/.cargo/env"
 
-echo "------------cloning pytorch----------------"
+# -------------------- PyTorch --------------------
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 git submodule sync
 git submodule update --init --recursive
 
+# Fix for PyTorch 2.10
+sed -i '/lintrunner ;/s/$/ and platform_machine != "ppc64le"/' requirements.txt
+=======
 #Apply patch
+ver=${PACKAGE_VERSION#v}
+
 PATCH_URL="https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_${PACKAGE_VERSION}.patch"
 PATCH_FILE="pytorch_${PACKAGE_VERSION}.patch"
+
+# Using patch file v2.9.1 for PACKAGE_VERSION >= v2.9.1 (eg: v2.10.0, v2.11.0).
+# If a new patch is added eg: v2.9.1 patch is not working with v2.15.1,
+# please add a similar condition below for v2.15.1.
+if [[ "$(printf '%s\n' "$ver" "2.9.1" | sort -V | tail -n1)" == "$ver" ]]; then
+    PATCH_URL="https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/pytorch/pytorch_v2.9.1.patch"
+    PATCH_FILE="pytorch_v2.9.1.patch"
+fi
 wget -q --spider "$PATCH_URL" && wget -q "$PATCH_URL" && git apply "$PATCH_FILE" || echo "Patch missing, skipped"
 
+
+# -------------------- ENV --------------------
 ARCH=`uname -p`
 BUILD_NUM="1"
-export OPENBLAS_INCLUDE=/OpenBLAS/local/openblas/include/
-export OpenBLAS_HOME="/usr/include/openblas"
+export OPENBLAS_INCLUDE=${OpenBLASInstallPATH}/include
+export OpenBLAS_HOME=${OpenBLASInstallPATH}
 export build_type="cpu"
 export cpu_opt_arch="power9"
 export cpu_opt_tune="power10"
 export CPU_COUNT=$(nproc --all)
-export CXXFLAGS="${CXXFLAGS} -D__STDC_FORMAT_MACROS"
+export _GLIBCXX_USE_CXX11_ABI=1
+export C_INCLUDE_DIR="${OpenBLASInstallPATH}/include"
+export CPLUS_INCLUDE_DIR="${OpenBLASInstallPATH}/include"
+export LIBRARY_PATH="${OpenBLASInstallPATH}/lib:${LD_LIBRARY_PATH}"
+
+export CPU_COUNT=$(nproc)
+export CXXFLAGS="${CXXFLAGS} -mcpu=power9 -mtune=power10 -fplt"
+export CFLAGS="${CFLAGS} -mcpu=power9 -mtune=power10 -fplt"
+
 export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl\,--as-needed//')"
 export LDFLAGS="${LDFLAGS} -Wl,-rpath-link,${LIBPROTO_INSTALL}/lib64 -Wl,-rpath-link,${OpenBLASInstallPATH}/lib"
 export CXXFLAGS="${CXXFLAGS} -fplt"
@@ -259,27 +231,24 @@ export CFLAGS="${CFLAGS} -mcpu=${cpu_opt_arch} -mtune=${cpu_opt_tune}"
 export LD_LIBRARY_PATH="${SCRIPT_DIR}/pytorch/torch/lib/:${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH="${SCRIPT_DIR}/pytorch/torch/lib64/:${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH="${SCRIPT_DIR}/protobuf/local/libprotobuf/lib64/:${LD_LIBRARY_PATH}"
-
 echo "required env variables got set"
 
 sed -i "s/cmake/cmake==3.*/g" requirements.txt
 python3.12 -m pip install -r requirements.txt
-echo "Installed requirement files from source"
 
-echo "Installing pytorch...."
-if ! (MAX_JOBS=$(nproc) python3.12 setup.py install);then
-    echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
+# -------------------- Build --------------------
+if ! (MAX_JOBS=$(nproc) python3.12 setup.py install); then
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Install_Fails"
     exit 1
 fi
 
-#basic import test
-
+# -------------------- Basic Import Test --------------------
 echo " Basic Import test for torch"
-cd ..
-export LD_LIBRARY_PATH="/OpenBLAS/:${LD_LIBRARY_PATH}"
-export LD_LIBRARY_PATH=/lib:$LD_LIBRARY_PATH
+
+cd $SCRIPT_DIR
+
+export LD_LIBRARY_PATH="${OpenBLASInstallPATH}/lib:${LD_LIBRARY_PATH}"
 
 if ! (python3.12 -c "import torch;"); then
      echo "--------------------$PACKAGE_NAME:Install_success_but_test_fails---------------------"

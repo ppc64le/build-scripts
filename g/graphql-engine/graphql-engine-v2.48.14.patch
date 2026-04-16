@@ -1,0 +1,37 @@
+diff --git a/cabal.project b/cabal.project
+index 9faafb0afb..73f810b270 100644
+--- a/cabal.project
++++ b/cabal.project
+@@ -27,7 +27,7 @@
+ --   curl 'https://drive.usercontent.google.com/download?id=1ZYKOwmwINRNzo9M2PkdpDX7htgQ98oMG&export=download&confirm=t' --output 9.10.1-fork-bindist.tar.xz
+ --   ghcup install ghc -u file:///9.10.1-fork-bindist.tar.xz
+ -- 
+-with-compiler: ghc-9.10.2
++with-compiler: ghc-9.10.3
+ 
+ -- package-level parallelism:
+ jobs: $ncpus
+@@ -159,6 +159,17 @@ allow-newer: hsc2hs:containers
+ 
+ -- https://github.com/mokus0/th-extras/pull/20
+ allow-newer: th-extras:template-haskell
++allow-newer: cryptonite,memory
++
++constraints:
++  text-builder == 0.6.7.2,
++  jose == 0.11,
++  memory == 0.18.0,
++  crypton ==0.33,
++  cryptonite == 0.30,
++  wreq == 0.5.4.3,
++  autodocodec == 0.2.3.0,
++  time-compat == 1.9.7
+ 
+ package *
+   -- NOTE: this gets applied to both local (hasura) packages and dependencies,
+@@ -252,3 +263,5 @@ source-repository-package
+   location: https://github.com/testcontainers/testcontainers-hs
+   tag: fe0d6bbce6ce74d5843a964ac231929ea37025e8
+ 
++package ghc-debug-stub
++  ghc-options: -optcxx-DTABLES_NEXT_TO_CODE=1

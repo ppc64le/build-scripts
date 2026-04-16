@@ -3,13 +3,13 @@
 # -----------------------------------------------------------------------------
 #
 # Package           : imagecodecs
-# Version           : v2025.11.11
+# Version           : v2026.3.6
 # Source repo       : https://github.com/cgohlke/imagecodecs.git
 # Tested on         : UBI:9.3
 # Language          : C,Python
 # Ci-Check      : True
 # Script License    : Apache License, Version 2.0
-# Maintainer        : Lenzie Camilo <Lenzie.Camilo3@ibm.com>
+# Maintainer        : Shivansh Sharma <shivansh.s1@ibm.com>
 #
 # Disclaimer        : This script has been tested in root mode on given
 # ==========          platform using the mentioned version of the package.
@@ -20,7 +20,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=imagecodecs
-PACKAGE_VERSION=${1:-v2025.11.11}
+PACKAGE_VERSION=${1:-v2026.3.6}
 PACKAGE_URL=https://github.com/cgohlke/imagecodecs.git
 CURRENT_DIR="${PWD}"
 
@@ -51,9 +51,11 @@ cd ..
 # libde265
 git clone https://github.com/strukturag/libde265.git
 cd libde265
-./autogen.sh
-./configure --prefix=/usr/local
-make -j$(nproc) && make install
+mkdir build
+cd build
+cmake ..
+make -j$(nproc)
+make install
 cd ..
 
 # x265
@@ -99,7 +101,8 @@ cmake .. && make -j$(nproc) && make install
 cd ../..
 
 # giflib 5.2.2
-wget https://downloads.sourceforge.net/project/giflib/giflib-5.2.2.tar.gz
+#wget https://downloads.sourceforge.net/project/giflib/giflib-5.2.2.tar.gz
+wget -O giflib-5.2.2.tar.gz  https://sourceforge.net/projects/giflib/files/giflib-5.x/giflib-5.2.2.tar.gz/download
 tar -xf giflib-5.2.2.tar.gz && cd giflib-5.2.2
 touch doc/giflib-logo.gif
 make -j$(nproc)
@@ -107,9 +110,10 @@ make install
 cd ..
 
 # jxrlib
-git clone https://github.com/MoonchildProductions/jxrlib.git
+#git clone https://github.com/MoonchildProductions/jxrlib.git
+git clone https://github.com/4creators/jxrlib.git
 cd jxrlib && make && make install
-# Set JXR library root path 
+# Set JXR library root path
 JXR_PATH=$(find /usr/lib -type d -name "jxrlib-*" | head -n1)
 # Include dir
 JXR_INC="$JXR_PATH/include"
@@ -215,7 +219,7 @@ cd ..
 
 # libjpeg-turbo 3.1.2
 git clone https://github.com/libjpeg-turbo/libjpeg-turbo.git
-cd libjpeg-turbo 
+cd libjpeg-turbo
 git checkout 3.1.2
 
 # Build 12-bit version
