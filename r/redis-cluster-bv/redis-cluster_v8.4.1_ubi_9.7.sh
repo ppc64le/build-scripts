@@ -5,7 +5,7 @@
 # Version       : 8.4.1
 # Source repo   : https://github.com/bitnami/containers
 # Tested on     : UBI:9.x (ppc64le)
-# Ci-Check      : True
+# Ci-Check      : False
 # Language      : C
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Amit Kumar <amit.kumar282@ibm.com>
