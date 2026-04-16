@@ -30,9 +30,7 @@ PACKAGE_DIR=aiohttp
 # Install system dependencies
 # -------------------------------
 # clang is required for building llhttp (Makefile defaults to clang)
-yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel \
-    zlib-devel cmake libjpeg-devel python3-devel python3-pip python3 \
-    python-unversioned-command pkgconfig clang
+yum install -y git gcc gcc-c++ make wget openssl-devel bzip2-devel libffi-devel zlib-devel cmake libjpeg-devel python3-devel python3-pip python3 python-unversioned-command pkgconfig clang
 
 # -------------------------------
 # Install Node.js (required for llhttp generation during build)
@@ -106,11 +104,7 @@ fi
 # -------------------------------
 # Note: pytest-cov is intentionally not installed here to avoid coverage tracer
 # issues on certain platforms.
-pip3 install \
-    attrs multidict async-timeout yarl frozenlist aiosignal \
-    freezegun python-on-whales re-assert \
-    brotlicffi brotli Cython pytest pytest-mock \
-    build proxy proxy.py wheel aiohappyeyeballs
+pip3 install attrs multidict async-timeout yarl frozenlist aiosignal freezegun python-on-whales re-assert brotlicffi brotli Cython pytest pytest-mock build proxy proxy.py wheel aiohappyeyeballs
 
 # -------------------------------
 # Install aiohttp package
