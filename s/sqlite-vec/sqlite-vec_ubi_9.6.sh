@@ -91,6 +91,8 @@ if ! python3.12 -m build --wheel ; then
     exit 1
 fi
 
+cp dist/*.whl "$CURRENT_DIR/"
+
 echo "Installing built wheel..."
 
 python3.12 -m pip install dist/*.whl
