@@ -1,0 +1,11 @@
+diff --git a/gradle.properties b/gradle.properties
+new file mode 100644
+index 0000000..4d41702
+--- /dev/null
++++ b/gradle.properties
+@@ -0,0 +1,4 @@
++org.gradle.native=false
++
++#Use plain console output (no rich formatting that requires native platform)
++org.gradle.console=plain
+
