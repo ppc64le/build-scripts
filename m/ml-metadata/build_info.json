@@ -10,6 +10,9 @@
     "validate_build_script": true,
     "use_non_root_user": false,
     "docker_build": false,
+    "v1.17.0" : {
+      "build_script" : "ml_metadata_v1.17_ubi_9.6.sh"
+    },
     "*": {
      "build_script": "ml-metadata_ubi_9.6.sh"
     }
