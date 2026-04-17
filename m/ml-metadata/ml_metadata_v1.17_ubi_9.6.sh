@@ -4,7 +4,7 @@
 # Package       : ml-metadata
 # Version       : v1.17.0
 # Source repo   : https://github.com/google/ml-metadata.git
-# Tested on     : UBI:9.6
+# Tested on     : UBI: 9.6
 # Language      : C++
 # Ci-Check  : True
 # Script License: Apache License, Version 2.0
