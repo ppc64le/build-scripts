@@ -66,6 +66,8 @@ git checkout $PACKAGE_VERSION
 sed -i '/j2objc/d' WORKSPACE
 
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/m/ml-metadata/ml_metadata_ubi9.6.patch
+sed -i 's/ \+\t/\t/g' ml_metadata_ubi9.6.patch
+sed -i 's/[[:space:]]\+$//' ml_metadata_ubi9.6.patch
 git apply ml_metadata_ubi9.6.patch --reject || true
 
 #update zetasql hash and strip_prefix to match actual archive
