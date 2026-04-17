@@ -66,6 +66,8 @@ git checkout $PACKAGE_VERSION
 sed -i '/j2objc/d' WORKSPACE
 
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/m/ml-metadata/ml_metadata_ubi9.6.patch
+sed -i 's/ \+\t/\t/g' ml_metadata_ubi9.6.patch
+sed -i 's/[[:space:]]\+$//' ml_metadata_ubi9.6.patch
 git apply ml_metadata_ubi9.6.patch --reject || true
 
 #update zetasql hash and strip_prefix to match actual archive
@@ -98,7 +100,7 @@ if ! (python3.11 -m pip install .); then
      echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
      echo "$PACKAGE_URL $PACKAGE_NAME"
      echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $PACKAGE_VERSION | GitHub | Fail |  Build_fails"
-     exit 2;
+     return 2 2>/dev/null || exit 2
 fi
 
 if ! python3.11 -m build --wheel --no-isolation --outdir="$wdir/"; then
@@ -115,10 +117,10 @@ if ! pytest -vv; then
      echo "------------------$PACKAGE_NAME:Test_fails-------------------------------------"
      echo "$PACKAGE_URL $PACKAGE_NAME"
      echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
-     exit 1;
+     return 1 2>/dev/null || exit 1
 else
      echo "------------------$PACKAGE_NAME:Build_and_test_both_success-------------------------------------"
      echo "$PACKAGE_URL $PACKAGE_NAME"
      echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $PACKAGE_VERSION | GitHub | Pass |  Both_Build_and_Test_Success"
-     exit 0;
+    return 0 2>/dev/null || exit 0
 fi
