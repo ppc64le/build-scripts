@@ -2,7 +2,7 @@
   "maintainer": "kiranNukal",
   "package_name": "array_record",
   "github_url": "https://github.com/google/array_record",
-  "version": "v0.8.3,
+  "version": "v0.8.3",
   "wheel_build" : true,
   "default_branch": "main",
   "package_dir": "a/array_record",
