@@ -98,7 +98,7 @@ if ! (python3.11 -m pip install .); then
      echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
      echo "$PACKAGE_URL $PACKAGE_NAME"
      echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $PACKAGE_VERSION | GitHub | Fail |  Build_fails"
-     return 0 2>/dev/null || exit 0
+     return 2 2>/dev/null || exit 2
 fi
 
 if ! python3.11 -m build --wheel --no-isolation --outdir="$wdir/"; then
