@@ -51,6 +51,7 @@ pip install \
     "hatchling>=1.27.0" \
     "hatch-vcs>=0.3.0" \
     "hatch-fancy-pypi-readme"
+    
 #install
 
 python3.12 -m build --wheel
