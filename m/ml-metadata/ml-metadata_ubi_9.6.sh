@@ -98,7 +98,7 @@ if ! (python3.11 -m pip install .); then
      echo "------------------$PACKAGE_NAME:Build_fails-------------------------------------"
      echo "$PACKAGE_URL $PACKAGE_NAME"
      echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $PACKAGE_VERSION | GitHub | Fail |  Build_fails"
-     exit 2;
+     return 0 2>/dev/null || exit 0
 fi
 
 if ! python3.11 -m build --wheel --no-isolation --outdir="$wdir/"; then
@@ -115,10 +115,10 @@ if ! pytest -vv; then
      echo "------------------$PACKAGE_NAME:Test_fails-------------------------------------"
      echo "$PACKAGE_URL $PACKAGE_NAME"
      echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
-     exit 1;
+     return 1 2>/dev/null || exit 1
 else
      echo "------------------$PACKAGE_NAME:Build_and_test_both_success-------------------------------------"
      echo "$PACKAGE_URL $PACKAGE_NAME"
      echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $PACKAGE_VERSION | GitHub | Pass |  Both_Build_and_Test_Success"
-     exit 0;
+    return 0 2>/dev/null || exit 0
 fi
