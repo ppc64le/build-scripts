@@ -10,6 +10,7 @@
     "wheel_build": true,
     "validate_build_script": true,
     "use_non_root_user": false,
+    "wheel_name": "tbb",
     "v2021.*.*":{
         "patches":{
             "PATCH":"https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/onetbb/tbb.patch"

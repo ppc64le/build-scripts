@@ -11,6 +11,7 @@
   "wheel_build": true,
   "required_versions":{"Releases": ["release-3.1.9"], "Tags": ["*"]},
   "use_non_root_user": "false",
+  "wheel_name": "pyopengl",
   "validate_build_script": true,
   "release-3.1.7": {
     "build_script": "pyopengl_accelerate_3.1.7_ubi_9.6.sh"

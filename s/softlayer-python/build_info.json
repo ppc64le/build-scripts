@@ -10,6 +10,7 @@
 	"validate_build_script": true,
 	"use_non_root_user": false,
 	"wheel_build": true,
+	"wheel_name": "softlayer",
 	"v6.*.*": {
 	   "build_script": "softlayer-python_ubi_9.3.sh"
 	}

@@ -10,6 +10,7 @@
   "docker_build": false,
   "validate_build_script": true,
   "use_non_root_user": false,
+  "wheel_name": "zfpy",
   "1.0.0": {
    "build_script": "zfp_ubi_9.5.sh",
    "patches": {
