@@ -157,7 +157,7 @@ git submodule update --init --recursive
 
 # Fix for PyTorch 2.10
 sed -i '/lintrunner ;/s/$/ and platform_machine != "ppc64le"/' requirements.txt
-=======
+
 #Apply patch
 ver=${PACKAGE_VERSION#v}
 
