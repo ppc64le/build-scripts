@@ -1,0 +1,557 @@
+From 675493637a56846ead76aee57b20cf2f44a674d1 Mon Sep 17 00:00:00 2001
+From: Rushikesh Sathe <Rushikesh.Sathe1@ibm.com>
+Date: Fri, 17 Apr 2026 08:24:03 +0000
+Subject: [PATCH] array-patch
+
+---
+ Add-hh_vsx-deps-for-highwayhash_dynamic.patch | 331 ++++++++++++++++++
+ MODULE.bazel                                  |  45 +++
+ borringssl_ppc64le.patch                      |  14 +
+ oss/build_whl.sh                              |  23 +-
+ rules_python_ppc.patch                        |  51 +++
+ 5 files changed, 456 insertions(+), 8 deletions(-)
+ create mode 100644 Add-hh_vsx-deps-for-highwayhash_dynamic.patch
+ create mode 100644 borringssl_ppc64le.patch
+ create mode 100644 rules_python_ppc.patch
+
+diff --git a/Add-hh_vsx-deps-for-highwayhash_dynamic.patch b/Add-hh_vsx-deps-for-highwayhash_dynamic.patch
+new file mode 100644
+index 0000000..dca32e1
+--- /dev/null
++++ b/Add-hh_vsx-deps-for-highwayhash_dynamic.patch
+@@ -0,0 +1,331 @@
++diff --git a/MODULE.bazel b/MODULE.bazel
++index 2c1f801c..789a5a2d 100644
++--- a/MODULE.bazel
+++++ b/MODULE.bazel
++@@ -30,10 +30,6 @@ bazel_dep(
++     name = "bzip2",
++     version = "1.0.8",
++ )
++-bazel_dep(
++-    name = "highwayhash",
++-    version = "0.0.0-20240305-5ad3bf8",
++-)
++ bazel_dep(
++     name = "lz4",
++     version = "1.9.4",
++@@ -102,6 +98,315 @@ switched_rules.use_languages(
++ )
++ use_repo(switched_rules, "com_google_googleapis_imports")
++ 
+++http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+++http_archive(
+++    name = "highwayhash",
+++    sha256 = "8be5e0af6ede048c54c8355e0d7bb87305531021d19b1f6334d5c16edb290c81",
+++    strip_prefix = "highwayhash-5ad3bf8444cfc663b11bf367baaa31f36e7ff7c8",
+++    urls = ["https://github.com/google/highwayhash/archive/5ad3bf8444cfc663b11bf367baaa31f36e7ff7c8.zip"],
+++    build_file_content = """
+++package(
+++    default_visibility = ["//visibility:public"],
+++    features = ["header_modules"],
+++)
+++
+++licenses(["notice"])
+++
+++config_setting(
+++    name = "haswell",
+++    values = {"cpu": "haswell"},
+++)
+++
+++config_setting(
+++    name = "k8",
+++    values = {"cpu": "k8"},
+++)
+++
+++config_setting(
+++    name = "cpu_ppc",
+++    values = {"cpu": "ppc"},
+++)
+++
+++config_setting(
+++    name = "cpu_aarch64",
+++    values = {"cpu": "aarch64"},
+++)
+++
+++config_setting(
+++    name = "cpu_darwin_arm64",
+++    values = {"cpu": "darwin_arm64"},
+++)
+++
+++#-----------------------------------------------------------------------------
+++# Platform-specific
+++
+++cc_library(
+++    name = "compiler_specific",
+++    hdrs = ["highwayhash/compiler_specific.h"],
+++)
+++
+++cc_library(
+++    name = "arch_specific",
+++    srcs = ["highwayhash/arch_specific.cc"],
+++    hdrs = ["highwayhash/arch_specific.h"],
+++    deps = [":compiler_specific"],
+++)
+++
+++cc_library(
+++    name = "endianess",
+++    hdrs = ["highwayhash/endianess.h"],
+++)
+++
+++cc_library(
+++    name = "instruction_sets",
+++    srcs = ["highwayhash/instruction_sets.cc"],
+++    hdrs = ["highwayhash/instruction_sets.h"],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++    ],
+++)
+++
+++cc_library(
+++    name = "iaca",
+++    hdrs = ["highwayhash/iaca.h"],
+++    deps = [":compiler_specific"],
+++)
+++
+++cc_library(
+++    name = "os_specific",
+++    srcs = ["highwayhash/os_specific.cc"],
+++    hdrs = ["highwayhash/os_specific.h"],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++    ],
+++)
+++
+++#-----------------------------------------------------------------------------
+++# Vectors
+++
+++cc_library(
+++    name = "scalar",
+++    textual_hdrs = ["highwayhash/scalar.h"],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++    ],
+++)
+++
+++cc_library(
+++    name = "vector128",
+++    textual_hdrs = ["highwayhash/vector128.h"],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++    ],
+++)
+++
+++cc_library(
+++    name = "vector256",
+++    textual_hdrs = ["highwayhash/vector256.h"],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++    ],
+++)
+++
+++#-----------------------------------------------------------------------------
+++# SipHash
+++
+++cc_library(
+++    name = "sip_hash",
+++    srcs = ["highwayhash/sip_hash.cc"],
+++    hdrs = [
+++        "highwayhash/sip_hash.h",
+++        "highwayhash/state_helpers.h",
+++    ],
+++    visibility = ["//visibility:public"],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++        ":endianess",
+++    ],
+++)
+++
+++#-----------------------------------------------------------------------------
+++# HighwayHash
+++
+++cc_library(
+++    name = "hh_types",
+++    hdrs = ["highwayhash/hh_types.h"],
+++    deps = [":instruction_sets"],
+++)
+++
+++cc_library(
+++    name = "load3",
+++    textual_hdrs = ["highwayhash/load3.h"],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++        ":endianess",
+++    ],
+++)
+++
+++cc_library(
+++    name = "hh_avx2",
+++    srcs = ["highwayhash/hh_avx2.cc"],
+++    hdrs = ["highwayhash/highwayhash_target.h"],
+++    copts = select({
+++        ":k8": ["-mavx2"],
+++        ":haswell": ["-mavx2"],
+++        "//conditions:default": ["-DHH_DISABLE_TARGET_SPECIFIC"],
+++    }),
+++    textual_hdrs = [
+++        "highwayhash/hh_avx2.h",
+++        "highwayhash/highwayhash_target.cc",
+++        "highwayhash/highwayhash.h",
+++        "highwayhash/hh_buffer.h",
+++    ],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++        ":hh_types",
+++        ":iaca",
+++        ":load3",
+++        ":vector128",
+++        ":vector256",
+++    ],
+++)
+++
+++cc_library(
+++    name = "hh_sse41",
+++    srcs = ["highwayhash/hh_sse41.cc"],
+++    hdrs = ["highwayhash/highwayhash_target.h"],
+++    copts = select({
+++        ":k8": ["-msse4.1"],
+++        ":haswell": ["-msse4.1"],
+++        "//conditions:default": ["-DHH_DISABLE_TARGET_SPECIFIC"],
+++    }),
+++    textual_hdrs = [
+++        "highwayhash/hh_sse41.h",
+++        "highwayhash/highwayhash_target.cc",
+++        "highwayhash/highwayhash.h",
+++        "highwayhash/hh_buffer.h",
+++    ],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++        ":hh_types",
+++        ":iaca",
+++        ":load3",
+++        ":vector128",
+++    ],
+++)
+++
+++cc_library(
+++    name = "hh_neon",
+++    srcs = [
+++        "highwayhash/hh_neon.cc",
+++        "highwayhash/vector_neon.h",
+++    ],
+++    hdrs = ["highwayhash/highwayhash_target.h"],
+++    copts = select({
+++        ":cpu_aarch64": [],
+++        ":cpu_darwin_arm64": [],
+++        "//conditions:default": ["-DHH_DISABLE_TARGET_SPECIFIC"],
+++    }),
+++    textual_hdrs = [
+++        "highwayhash/highwayhash_target.cc",
+++        "highwayhash/highwayhash.h",
+++        "highwayhash/hh_buffer.h",
+++        "highwayhash/hh_neon.h",
+++    ],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++        ":hh_types",
+++        ":load3",
+++    ],
+++)
+++
+++cc_library(
+++    name = "hh_vsx",
+++    srcs = ["highwayhash/hh_vsx.cc"],
+++    hdrs = ["highwayhash/highwayhash_target.h"],
+++    textual_hdrs = [
+++        "highwayhash/highwayhash_target.cc",
+++        "highwayhash/highwayhash.h",
+++        "highwayhash/hh_buffer.h",
+++        "highwayhash/hh_vsx.h",
+++    ],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++        ":hh_types",
+++        ":load3",
+++    ],
+++)
+++
+++cc_library(
+++    name = "hh_portable",
+++    srcs = ["highwayhash/hh_portable.cc"],
+++    hdrs = ["highwayhash/highwayhash_target.h"],
+++    textual_hdrs = [
+++        "highwayhash/hh_portable.h",
+++        "highwayhash/highwayhash_target.cc",
+++        "highwayhash/highwayhash.h",
+++        "highwayhash/hh_buffer.h",
+++    ],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++        ":hh_types",
+++        ":iaca",
+++        ":load3",
+++        ":scalar",
+++    ],
+++)
+++
+++# For users of the HighwayHashT template
+++cc_library(
+++    name = "highwayhash",
+++    hdrs = ["highwayhash/highwayhash.h"],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++        ":hh_types",
+++        ":hh_portable",
+++    ] + select({
+++        ":cpu_ppc": [":hh_vsx"],
+++        ":cpu_aarch64": [":hh_neon"],
+++        ":cpu_darwin_arm64": [":hh_neon"],
+++        "//conditions:default": [
+++            ":hh_avx2",
+++            ":hh_sse41",
+++            ":iaca",
+++        ],
+++    }),
+++)
+++
+++# For users of InstructionSets<HighwayHash> runtime dispatch
+++cc_library(
+++    name = "highwayhash_dynamic",
+++    hdrs = ["highwayhash/highwayhash_target.h"],
+++    deps = [
+++        ":arch_specific",
+++        ":compiler_specific",
+++        ":hh_portable",
+++        ":hh_types",
+++    ] + select({
+++        ":cpu_ppc": [":hh_vsx"],
+++        ":cpu_aarch64": [":hh_neon"],
+++        ":cpu_darwin_arm64": [":hh_neon"],
+++        "//conditions:default": [
+++            ":hh_avx2",
+++            ":hh_sse41",
+++        ],
+++    }),
+++)
+++""",
+++)
++ # Configure hermetic Python toolchain
++ SUPPORTED_PYTHON_VERSIONS = [
++     "3.8",
+diff --git a/MODULE.bazel b/MODULE.bazel
+index 4af5a79..dc551b3 100644
+--- a/MODULE.bazel
++++ b/MODULE.bazel
+@@ -40,6 +40,51 @@ bazel_dep(name = "eigen", version = "3.4.0.bcr.3")
+ bazel_dep(name = "riegeli", version = "0.0.0-20250717-5b2e77e")
+ bazel_dep(name = "pybind11_bazel", version = "2.12.0")
+ 
++bazel_dep(name = "rules_buf", version = "0.5.2", dev_dependency = True)
++buf = use_extension("@rules_buf//buf:extensions.bzl", "buf")
++buf.toolchains(version = "v1.57.0")
++use_repo(buf, "rules_buf_toolchains")
++
++single_version_override(
++    module_name = "rules_python",
++    version = "1.6.0",
++    patches = ["//:rules_python_ppc.patch"],
++    patch_strip = 1,
++)
++archive_override(
++    module_name = "boringssl",
++    urls = ["https://github.com/google/boringssl/releases/download/0.20241024.0/boringssl-0.20241024.0.tar.gz"],
++    strip_prefix = "boringssl-0.20241024.0/",
++    integrity = "sha256-dHR3G61xqu8ZpYuovGGINHZ7VxPMPEean1AquU74k5E=",
++    patches = ["//:borringssl_ppc64le.patch"],
++    patch_strip = 1,
++)
++git_override(
++    module_name = "riegeli",
++    remote = "https://github.com/google/riegeli.git",
++    commit = "5b2e77ed43b41cd0f50fc30df397e3306be3221a",
++    patches = ["//:Add-hh_vsx-deps-for-highwayhash_dynamic.patch"],
++    patch_strip = 1,
++)
++
++bazel_dep(name = "googleapis", version = "0.0.0", repo_name = "com_google_googleapis")
++archive_override(
++    module_name = "googleapis",
++    integrity = "sha256-6FrMqUyMsAgBxSwG2fdSxQPx2XNg1wsVmfTxTOji900=",
++    patch_strip = 1,
++    patches = ["//:googleapis.modules.patch"],
++    strip_prefix = "googleapis-de157ca34fa487ce248eb9130293d630b501e4ad",
++    urls = [
++        "https://github.com/googleapis/googleapis/archive/de157ca34fa487ce248eb9130293d630b501e4ad.tar.gz",
++    ],
++)
++
++git_override(
++    module_name = "google_cloud_cpp",
++    commit = "e9eb0d1d8295966e7bca38c0ddf6529299db4f2b",
++    remote = "https://github.com/googleapis/google-cloud-cpp.git",
++)
++
+ SUPPORTED_PYTHON_VERSIONS = [
+     "3.11",
+     "3.12",
+diff --git a/borringssl_ppc64le.patch b/borringssl_ppc64le.patch
+new file mode 100644
+index 0000000..50b3ee0
+--- /dev/null
++++ b/borringssl_ppc64le.patch
+@@ -0,0 +1,14 @@
++diff --git a/include/openssl/target.h b/include/openssl/target.h
++index 2760f52ce..d86d5a891 100644
++--- a/include/openssl/target.h
+++++ b/include/openssl/target.h
++@@ -54,6 +54,9 @@
++ #define OPENSSL_32_BIT
++ #elif defined(__myriad2__)
++ #define OPENSSL_32_BIT
+++#elif defined(__powerpc64__) && defined(__LITTLE_ENDIAN__)
+++#define OPENSSL_64_BIT
+++#define OPENSSL_PPC64LE
++ #else
++ // The list above enumerates the platforms that BoringSSL supports. For these
++ // platforms we keep a reasonable bar of not breaking them: automated test
+diff --git a/oss/build_whl.sh b/oss/build_whl.sh
+index 3819881..60f664c 100755
+--- a/oss/build_whl.sh
++++ b/oss/build_whl.sh
+@@ -7,7 +7,8 @@
+ set -e -x
+ 
+ OUTPUT_DIR="${OUTPUT_DIR:-/tmp/array_record}"
+-
++export PYTHON_VERSION="3.12"
++PYTHON_BIN=$(which python3.12)
+ function write_to_bazelrc() {
+   echo "$1" >> .bazelrc
+ }
+@@ -23,11 +24,14 @@ function main() {
+   write_to_bazelrc "test --action_env PYTHON_VERSION=${PYTHON_VERSION}"
+   write_to_bazelrc "test --test_timeout=300"
+ 
++  write_to_bazelrc "build --jobs=32"
++  write_to_bazelrc "test --jobs=16"
+   write_to_bazelrc "build -c opt"
+   write_to_bazelrc "build --cxxopt=-std=c++17"
+   write_to_bazelrc "build --host_cxxopt=-std=c++17"
+   write_to_bazelrc "build --experimental_repo_remote_exec"
+   write_to_bazelrc "common --check_direct_dependencies=error"
++
+   # Reduce noise during build.
+   write_to_bazelrc "build --cxxopt=-Wno-deprecated-declarations --host_cxxopt=-Wno-deprecated-declarations"
+   write_to_bazelrc "build --cxxopt=-Wno-parentheses --host_cxxopt=-Wno-parentheses"
+@@ -40,12 +44,14 @@ function main() {
+     write_to_bazelrc "test --crosstool_top=${CROSSTOOL_TOP}"
+   fi
+ 
++curl -O "https://raw.githubusercontent.com/google/riegeli/5b2e77ed43b41cd0f50fc30df397e3306be3221a/riegeli/bazel/googleapis.modules.patch"
++
+   export USE_BAZEL_VERSION="${BAZEL_VERSION}"
+   bazel clean
+   bazel build ... --action_env MACOSX_DEPLOYMENT_TARGET='11.0' --action_env PYTHON_BIN_PATH="${PYTHON_BIN}"
+   bazel test --verbose_failures --test_output=errors ... --action_env PYTHON_BIN_PATH="${PYTHON_BIN}"
+ 
+-  DEST="/tmp/array_record/all_dist"
++  DEST="$CURRENT_DIR/array_record/dist"
+   # Create the directory, then do dirname on a non-existent file inside it to
+   # give us an absolute paths with tilde characters resolved to the destination
+   # directory.
+@@ -92,15 +98,16 @@ function main() {
+   echo $(date) : "=== Output wheel file is in: ${DEST}"
+ 
+   # Install ArrayRecord from the wheel and run smoke tests.
+-  $PYTHON_BIN -m pip install ${OUTPUT_DIR}/all_dist/array_record*.whl
++  $PYTHON_BIN -m pip install --force-reinstall --no-deps "$DEST"/array_record*.whl
+   $PYTHON_BIN -c 'import array_record'
+   $PYTHON_BIN -c 'from array_record.python import array_record_data_source'
+   # TF does not have a Python 3.14 wheel yet.
+-  if (( "${PYTHON_MINOR_VERSION}" < 14 )); then
+-    $PYTHON_BIN -m pip install jax tensorflow>=2.20.0 grain --only-binary h5py
+-    $PYTHON_BIN oss/test_import_tensorflow.py
+-    $PYTHON_BIN oss/test_import_grain.py
+-  fi
++# skiping tests as tf2.20 is not available
++#  if (( "${PYTHON_MINOR_VERSION}" < 14 )); then
++#    $PYTHON_BIN -m pip install jax tensorflow>=2.20.0 grain --only-binary h5py
++#    $PYTHON_BIN oss/test_import_tensorflow.py
++#    $PYTHON_BIN oss/test_import_grain.py
++#  fi
+ }
+ 
+ main
+diff --git a/rules_python_ppc.patch b/rules_python_ppc.patch
+new file mode 100644
+index 0000000..b7b673e
+--- /dev/null
++++ b/rules_python_ppc.patch
+@@ -0,0 +1,51 @@
++diff --git a/python/private/pypi/extension.bzl b/python/private/pypi/extension.bzl
++index 03af863e..4bcf1693 100644
++--- a/python/private/pypi/extension.bzl
+++++ b/python/private/pypi/extension.bzl
++@@ -169,17 +169,16 @@ def _create_whl_repos(
++             pip_attr.python_version.replace(".", "_"),
++         )
++         if python_name not in available_interpreters:
++-            fail((
++-                "Unable to find interpreter for pip hub '{hub_name}' for " +
++-                "python_version={version}: Make sure a corresponding " +
++-                '`python.toolchain(python_version="{version}")` call exists.' +
++-                "Expected to find {python_name} among registered versions:\n  {labels}"
++-            ).format(
++-                hub_name = hub_name,
++-                version = pip_attr.python_version,
++-                python_name = python_name,
++-                labels = "  \n".join(available_interpreters),
+++            logger.warn(lambda: "Skipping pip hub '{}' for python_version={} - no toolchain registered (unsupported on this platform)".format(
+++                hub_name,
+++                pip_attr.python_version,
++             ))
+++            return struct(
+++                whl_map = {},
+++                exposed_packages = {},
+++                extra_aliases = {},
+++                whl_libraries = {},
+++            )
++         python_interpreter_target = available_interpreters[python_name]
++ 
++     # TODO @aignas 2025-06-29: we should not need the version in the pip_name if
++diff --git a/python/versions.bzl b/python/versions.bzl
++index 30929f82..04e91065 100644
++--- a/python/versions.bzl
+++++ b/python/versions.bzl
++@@ -925,13 +925,13 @@ def _generate_platforms():
++         "ppc64le-unknown-linux-gnu": platform_info(
++             compatible_with = [
++                 "@platforms//os:linux",
++-                "@platforms//cpu:ppc",
+++                "@platforms//cpu:ppc64le",
++             ],
++             target_settings = [
++                 is_libc_glibc,
++             ],
++             os_name = LINUX_NAME,
++-            arch = "ppc",
+++            arch = "ppc64le",
++         ),
++         "riscv64-unknown-linux-gnu": platform_info(
++             compatible_with = [
+-- 
+2.47.3
+
