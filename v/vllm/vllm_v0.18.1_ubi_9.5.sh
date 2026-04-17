@@ -121,7 +121,7 @@ cd ${CURRENT_DIR}
 echo "-------------------- Upgrading Python tooling ---------------------"
 
 python3.12 -m pip install --upgrade pip setuptools uv
-python3.12 -m uv pip install --system --index-strategy unsafe-best-match wheel \
+python3.12 -m uv pip install --system --python $(which python3.12) --index-strategy unsafe-best-match wheel \
 "setuptools==69.5.1" \
 ninja \
 setuptools_scm \
@@ -146,7 +146,7 @@ echo "sentencepiece==0.2.0" >> /tmp/constraints.txt
 
 IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
 
-python3.12 -m uv pip install --system --index-strategy unsafe-best-match -c /tmp/constraints.txt \
+python3.12 -m uv pip install --system --python $(which python3.12) --index-strategy unsafe-best-match -c /tmp/constraints.txt \
   --only-binary numpy,scipy,sentencepiece \
   --trusted-host wheels.developerfirst.ibm.com \
   --extra-index-url ${IBM_WHEELS} \
@@ -190,17 +190,19 @@ if [ -f "$CURRENT_DIR/$PACKAGE_NAME/vllm/v1/worker/cpu_worker.py" ]; then
             else:' -e 's/check_preloaded_libs("libtcmalloc")/    check_preloaded_libs("libtcmalloc")/' -e '/if current_platform.get_cpu_architecture() == CpuArchEnum.X86:/s/^/    /' -e '/check_preloaded_libs("libiomp")/s/^/    /' vllm/v1/worker/cpu_worker.py
 fi
 
-python3.12 -m uv pip install --system --index-strategy unsafe-best-match -c /tmp/constraints.txt \
+python3.12 -m uv pip install --system --python $(which python3.12) --index-strategy unsafe-best-match -c /tmp/constraints.txt \
   --only-binary numpy,scipy,sentencepiece \
   --trusted-host wheels.developerfirst.ibm.com \
   --extra-index-url ${IBM_WHEELS} \
   -r requirements/cpu.txt
 
-python3.12 -m uv pip install --system --index-strategy unsafe-best-match llguidance xgrammar
+python3.12 -m uv pip install --system --python $(which python3.12) --index-strategy unsafe-best-match setuptools_scm
+python3.12 -m uv pip install --system --python $(which python3.12) --index-strategy unsafe-best-match llguidance xgrammar
 
 export VLLM_TARGET_DEVICE=cpu
 export MAX_JOBS=$(nproc)
 
+export SETUPTOOLS_SCM_PRETEND_VERSION=${PACKAGE_VERSION#v}
 python3.12 setup.py install
 python3.12 setup.py bdist_wheel --dist-dir="${CURRENT_DIR}"
 
@@ -213,15 +215,18 @@ echo "==================================================================="
 # -----------------------------------------------------------------------------
 # Build TorchVision
 # -----------------------------------------------------------------------------
-echo "-------------------- Building TorchVision v0.25.1 ------------------"
+echo "-------------------- Building TorchVision v0.25.0 ------------------"
 
 for i in {1..5}; do
   git clone https://github.com/pytorch/vision.git && break || { echo "git clone failed, retrying in 15 seconds..."; sleep 15; }
 done
 cd vision
 git checkout v0.25.0
-python3.12 -m uv pip install --system --index-strategy unsafe-best-match wheel "setuptools==69.5.1"
-USE_FFMPEG=1 USE_JPEG=1 USE_PNG=1 python3.12 setup.py install
+
+python3.12 -m pip install --force-reinstall "setuptools==68.0.0" wheel
+
+# Build and install
+USE_FFMPEG=1 USE_JPEG=1 USE_PNG=1 python3.12 -m pip install --no-build-isolation .
 
 cd ${CURRENT_DIR}
 
