@@ -51,10 +51,10 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
-wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/a/array_record/array_record_v0.8.2.patch
-git apply array_record_v0.8.2.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/a/array_record/array_record_${PACKAGE_VERSION}.patch
+git apply array_record_${PACKAGE_VERSION}.patch
 
-python3 -m pip install setuptools wheel etils typing_extensions importlib_resources
+python3 -m pip install setuptools wheel etils typing_extensions importlib_resources absl-py
 
 #Build package
 if ! python3.12 -m pip install . ; then
