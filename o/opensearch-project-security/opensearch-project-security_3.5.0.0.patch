@@ -1,0 +1,40 @@
+diff --git a/build.gradle b/build.gradle
+index 0e148a8f..5c9eee58 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -16,7 +16,7 @@ import groovy.json.JsonBuilder
+ 
+ buildscript {
+     ext {
+-        opensearch_version = System.getProperty("opensearch.version", "3.5.0-SNAPSHOT")
++        opensearch_version = System.getProperty("opensearch.version", "3.5.0")
+         isSnapshot = "true" == System.getProperty("build.snapshot", "true")
+         buildVersionQualifier = System.getProperty("build.version_qualifier", "")
+ 
+@@ -39,7 +39,7 @@ buildscript {
+             opensearch_build += "-${buildVersionQualifier}"
+         }
+         if (isSnapshot) {
+-            opensearch_build += "-SNAPSHOT"
++            opensearch_build += ""
+         }
+     }
+ 
+@@ -976,6 +976,6 @@ task updateVersion {
+                 include(name: ".github/workflows/plugin_install.yml")
+             }
+         }
+-        ant.replaceregexp(file:'build.gradle', match: '"opensearch.version", "\\d.*"', replace: '"opensearch.version", "' + newVersion.tokenize('-')[0] + '-SNAPSHOT"', flags:'g', byline:true)
++        ant.replaceregexp(file:'build.gradle', match: '"opensearch.version", "\\d.*"', replace: '"opensearch.version", "' + newVersion.tokenize('-')[0] + '"', flags:'g', byline:true)
+     }
+ }
+diff --git a/gradle.properties b/gradle.properties
+new file mode 100644
+index 00000000..4d41702b
+--- /dev/null
++++ b/gradle.properties
+@@ -0,0 +1,4 @@
++org.gradle.native=false
++
++#Use plain console output (no rich formatting that requires native platform)
++org.gradle.console=plain
