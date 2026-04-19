@@ -81,7 +81,7 @@
       "VAULT_VERSION": "$PACKAGE_VERSION",
       "GO_VERSION": "1.22.5"
     }
-  }
+  },
   "v1.19.*": {
     "dir": "1.19.x-ubi9",
     "build_script": "vault_v1.19.5_ubi9.7.sh",
