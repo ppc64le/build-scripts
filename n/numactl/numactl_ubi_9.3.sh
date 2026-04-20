@@ -23,7 +23,7 @@ PACKAGE_VERSION=${1:-v2.0.19}
 PACKAGE_URL=https://github.com/numactl/numactl
 
 # Install dependencies
-yum install -y git autoconf automake libtool
+yum install -y git autoconf automake libtool wget
 
 # Clone the repository
 git clone $PACKAGE_URL $PACKAGE_NAME
