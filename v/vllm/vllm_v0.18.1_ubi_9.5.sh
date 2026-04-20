@@ -63,6 +63,8 @@ export CXX=g++
 gcc --version
 g++ --version
 
+export SETUPTOOLS_SCM_PRETEND_VERSION=${PACKAGE_VERSION#v}
+
 # -----------------------------------------------------------------------------
 # Build numactl from source 
 # -----------------------------------------------------------------------------
