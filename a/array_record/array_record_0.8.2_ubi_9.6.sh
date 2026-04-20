@@ -43,6 +43,9 @@ cp output/bazel /usr/local/bin
 export PATH=/usr/local/bin:$PATH
 cd $CURRENT_DIR
 
+export PYTHON_BIN=$(which python3.12)
+export PYTHON_VERSION=$($PYTHON_BIN -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+
 python3.12 -m pip cache purge
 python3.12 -m pip install setuptools wheel etils typing_extensions importlib_resources
 
