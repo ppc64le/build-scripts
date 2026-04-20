@@ -21,6 +21,7 @@
 PACKAGE_NAME=lapack
 PACKAGE_VERSION=${1:-v3.12.1}
 PACKAGE_URL=https://github.com/Reference-LAPACK/lapack
+PACKAGE_DIR=./lapack
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
@@ -50,6 +51,7 @@ cd ..
 
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/l/lapack/pyproject.toml
 sed -i "s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g" pyproject.toml
+mkdir -p local
 
 echo "Running LAPACK tests..."
 if ! ctest --output-on-failure ; then
