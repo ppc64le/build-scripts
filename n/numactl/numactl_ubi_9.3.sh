@@ -49,6 +49,9 @@ if ! make install; then
 else
     echo "------------------$PACKAGE_NAME: Install success ------------------"
 fi
+cd ..
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/n/numactl/pyproject.toml
+sed -i "s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g" pyproject.toml
 
 # Run the unit test case 
 if ! make -k check VERBOSE=1 TESTS='test/tbitmap'; then
