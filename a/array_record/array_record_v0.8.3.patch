@@ -431,16 +431,6 @@ diff --git a/oss/build_whl.sh b/oss/build_whl.sh
 index 3819881..60f664c 100755
 --- a/oss/build_whl.sh
 +++ b/oss/build_whl.sh
-@@ -7,7 +7,8 @@
- set -e -x
- 
- OUTPUT_DIR="${OUTPUT_DIR:-/tmp/array_record}"
--
-+export PYTHON_VERSION="3.12"
-+PYTHON_BIN=$(which python3.12)
- function write_to_bazelrc() {
-   echo "$1" >> .bazelrc
- }
 @@ -23,11 +24,14 @@ function main() {
    write_to_bazelrc "test --action_env PYTHON_VERSION=${PYTHON_VERSION}"
    write_to_bazelrc "test --test_timeout=300"
