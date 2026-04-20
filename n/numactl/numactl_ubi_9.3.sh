@@ -21,6 +21,7 @@
 PACKAGE_NAME=numactl
 PACKAGE_VERSION=${1:-v2.0.19}
 PACKAGE_URL=https://github.com/numactl/numactl
+PACKAGE_DIR=./numactl
 
 # Install dependencies
 yum install -y git autoconf automake libtool wget
@@ -52,6 +53,8 @@ fi
 
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/n/numactl/pyproject.toml
 sed -i "s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g" pyproject.toml
+
+mkdir -p local
 
 # Run the unit test case 
 if ! make -k check VERBOSE=1 TESTS='test/tbitmap'; then
