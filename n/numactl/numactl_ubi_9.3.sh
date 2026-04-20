@@ -23,7 +23,7 @@ PACKAGE_VERSION=${1:-v2.0.19}
 PACKAGE_URL=https://github.com/numactl/numactl
 
 # Install dependencies
-yum install -y git autoconf automake libtool
+yum install -y git autoconf automake libtool wget
 
 # Clone the repository
 git clone $PACKAGE_URL $PACKAGE_NAME
@@ -49,6 +49,9 @@ if ! make install; then
 else
     echo "------------------$PACKAGE_NAME: Install success ------------------"
 fi
+
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/n/numactl/pyproject.toml
+sed -i "s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g" pyproject.toml
 
 # Run the unit test case 
 if ! make -k check VERBOSE=1 TESTS='test/tbitmap'; then
