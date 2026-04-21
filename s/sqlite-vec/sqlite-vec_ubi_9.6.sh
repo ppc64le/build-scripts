@@ -25,7 +25,7 @@ PACKAGE_VERSION=${1:-v0.1.9}
 PACKAGE_URL=https://github.com/asg017/sqlite-vec.git
 CURRENT_DIR="${PWD}"
 
-# ✅ Get script directory (important fix)
+
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 echo "Installing system dependencies..."
@@ -59,7 +59,6 @@ echo "Creating Python package structure..."
 mkdir -p python/sqlite_vec
 cp dist/vec0.so python/sqlite_vec/
 
-# ✅ FIX: Copy LICENSE from script location
 if [ -f "$SCRIPT_DIR/LICENSE" ]; then
     cp "$SCRIPT_DIR/LICENSE" python/LICENSE
 else
