@@ -103,6 +103,10 @@ RUN set -ex \
 && grep -n 'yasm/1.3.0' "$CONANFILE" || true \
 && grep -n 'ragel/6.10' "$CONANFILE" || true \
 \
+&& echo -e "\n[+] Remove rotten_tomatoes dataset function\n" \
+&& DATASETS_FILE="$REPO_DIR/catboost/python-package/catboost/datasets.py" \
+&& sed -i '/^def rotten_tomatoes():/,/^def /{/^def rotten_tomatoes():/!{/^def /!d}}; /^def rotten_tomatoes():/d' "$DATASETS_FILE" \
+\
 && RAGEL_BUILD="$WORKDIR/_ragel_build" \
 && rm -rf "$RAGEL_BUILD" \
 && mkdir -p "$RAGEL_BUILD" \
