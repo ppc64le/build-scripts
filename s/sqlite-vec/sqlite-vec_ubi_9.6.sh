@@ -56,6 +56,9 @@ echo "Creating Python package structure..."
 mkdir -p python/sqlite_vec
 cp dist/vec0.so python/sqlite_vec/
 
+
+cp LICENSE python/
+
 # Create __init__.py
 cat <<EOF > python/sqlite_vec/__init__.py
 import sqlite3
@@ -69,7 +72,6 @@ EOF
 
 PKG_VER_CLEAN=${PACKAGE_VERSION#v}
 
-# Create setup.py
 cat <<EOF > python/setup.py
 from setuptools import setup, find_packages
 
@@ -79,7 +81,13 @@ setup(
     packages=find_packages(),
     package_data={"sqlite_vec": ["vec0.so"]},
     include_package_data=True,
+    license="MIT",
+    license_files=["LICENSE"],
 )
+EOF
+
+cat <<EOF > python/MANIFEST.in
+include LICENSE
 EOF
 
 cd python
