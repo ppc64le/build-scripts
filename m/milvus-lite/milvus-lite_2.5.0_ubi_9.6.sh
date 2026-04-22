@@ -32,10 +32,9 @@ yum install -y git gcc-c++ gcc wget make python3.12 yum-utils \
                libffi-devel scl-utils openblas-devel xz patch \
                python3.12-devel python3.12-pip
 
-yum install -y gcc-toolset-13
-source /opt/rh/gcc-toolset-13/enable
+yum remove -y gcc-toolset-13 || true
 gcc --version
-echo "GCC Toolset 13 activated for milvus-lite build"
+echo "Using system GCC for milvus-lite build"
 
 echo "Building OpenBLAS from source..."
 export MAX_JOBS=$(nproc)
