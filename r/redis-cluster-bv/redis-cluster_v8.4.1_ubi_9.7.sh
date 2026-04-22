@@ -66,7 +66,7 @@ git checkout $PACKAGE_VERSION
 # Apply architecture-specific patch
 if [ -f "$SCRIPT_PATH/$PATCH_FILE" ]; then
     echo ">>> Applying patch $PATCH_FILE"
-    if ! git apply "$SCRIPT_PATH/$PATCH_FILE"; then
+    if ! patch -p1 < "$SCRIPT_PATH/$PATCH_FILE"; then
         echo ">>> ERROR: Failed to apply patch."
         exit 1
     fi
