@@ -132,26 +132,26 @@ echo ">>> Starting Redis cluster validation..."
 PORTS=(7000 7001 7002 7003 7004 7005)
 
 for PORT in "${PORTS[@]}"; do
-mkdir -p /tmp/redis-$PORT
-redis-server --port $PORT 
---cluster-enabled yes 
---cluster-config-file nodes.conf 
---cluster-node-timeout 5000 
---appendonly yes 
---daemonize yes 
---dir /tmp/redis-$PORT
+    mkdir -p /tmp/redis-$PORT
+    redis-server --port $PORT \
+        --cluster-enabled yes \
+        --cluster-config-file nodes.conf \
+        --cluster-node-timeout 5000 \
+        --appendonly yes \
+        --daemonize yes \
+        --dir /tmp/redis-$PORT
 done
 
 sleep 5
 
-yes yes | redis-cli --cluster create 
-127.0.0.1:7000 
-127.0.0.1:7001 
-127.0.0.1:7002 
-127.0.0.1:7003 
-127.0.0.1:7004 
-127.0.0.1:7005 
---cluster-replicas 1
+yes yes | redis-cli --cluster create \
+    127.0.0.1:7000 \
+    127.0.0.1:7001 \
+    127.0.0.1:7002 \
+    127.0.0.1:7003 \
+    127.0.0.1:7004 \
+    127.0.0.1:7005 \
+    --cluster-replicas 1
 
 # 7. Functional Test
 
@@ -164,7 +164,7 @@ if [[ "$VALUE" != "hello_world" ]]; then
 echo "========================================================================"
 echo " ERROR: Functional test failed"
 echo "========================================================================"
-exit 2
+exit 1
 fi
 
 # Cleanup
