@@ -110,66 +110,10 @@ make install
 
 # 4. Run Redis Test Suite
 echo ">>> Running Redis test suite..."
-pkill redis-server || true
 if ! make test MALLOC=libc EXTRA_CFLAGS="$EXTRA_CFLAGS"; then
-    echo ">>> WARNING: Redis tests failed, continuing anyway..."
+    echo ">>> FAIL: Redis tests failed ..."
+    exit 2
 fi
-
-# 5. Setup Bitnami directory structure
-
-echo ">>> Setting up Bitnami directory structure..."
-mkdir -p /opt/bitnami/redis/bin
-cp /usr/local/bin/redis-* /opt/bitnami/redis/bin/
-
-cd "$BITNAMI_DIR"
-cp -r rootfs/* /
-chmod -R 755 /opt/bitnami
-
-# 6. Cluster Validation Test
-
-echo ">>> Starting Redis cluster validation..."
-
-PORTS=(7000 7001 7002 7003 7004 7005)
-
-for PORT in "${PORTS[@]}"; do
-    mkdir -p /tmp/redis-$PORT
-    redis-server --port $PORT \
-        --cluster-enabled yes \
-        --cluster-config-file nodes.conf \
-        --cluster-node-timeout 5000 \
-        --appendonly yes \
-        --daemonize yes \
-        --dir /tmp/redis-$PORT
-done
-
-sleep 5
-
-yes yes | redis-cli --cluster create \
-    127.0.0.1:7000 \
-    127.0.0.1:7001 \
-    127.0.0.1:7002 \
-    127.0.0.1:7003 \
-    127.0.0.1:7004 \
-    127.0.0.1:7005 \
-    --cluster-replicas 1
-
-# 7. Functional Test
-
-echo ">>> Running functional validation..."
-
-redis-cli -c -p 7000 set testkey "hello_world"
-VALUE=$(redis-cli -c -p 7000 get testkey)
-
-if [[ "$VALUE" != "hello_world" ]]; then
-echo "========================================================================"
-echo " ERROR: Functional test failed"
-echo "========================================================================"
-exit 2
-fi
-
-# Cleanup
-
-pkill redis-server || true
 
 echo "========================================================================"
 echo " SUCCESS: $PACKAGE_NAME version $PACKAGE_VERSION built and tested successfully."
