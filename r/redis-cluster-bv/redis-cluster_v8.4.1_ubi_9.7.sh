@@ -46,7 +46,8 @@ echo ">>> Building Redis from source..."
 cd $SCRIPT_PATH
 REDIS_PACKAGE_NAME=redis
 REDIS_PACKAGE_URL=https://github.com/redis/redis
-PATCH_FILE=redis-8.4.1-ppc64le-fixed.patch
+PATCH_FILE_DEBUG=redis-8.4.1-ppc64le-debug.patch
+PATCH_FILE_UTIL=redis-8.4.1-ppc64le-util.patch
 
 # Clone repository
 if [ -d "$REDIS_PACKAGE_NAME" ]; then
@@ -63,17 +64,32 @@ cd $REDIS_PACKAGE_NAME
 # Checkout specific version
 git checkout $PACKAGE_VERSION
 
-# Apply architecture-specific patch
-if [ -f "$SCRIPT_PATH/$PATCH_FILE" ]; then
-    echo ">>> Applying patch $PATCH_FILE"
-    if ! patch -p1 --fuzz=3 --ignore-whitespace < "$SCRIPT_PATH/$PATCH_FILE"; then
-        echo ">>> ERROR: Failed to apply patch."
+# Apply architecture-specific patches
+echo ">>> Applying ppc64le patches..."
+
+if [ -f "$SCRIPT_PATH/$PATCH_FILE_DEBUG" ]; then
+    echo ">>> Applying debug.c patch: $PATCH_FILE_DEBUG"
+    if ! patch -p1 --fuzz=3 --ignore-whitespace < "$SCRIPT_PATH/$PATCH_FILE_DEBUG"; then
+        echo ">>> ERROR: Failed to apply debug.c patch."
         exit 1
     fi
 else
-    echo ">>> ERROR: Patch file $PATCH_FILE not found in $SCRIPT_PATH."
+    echo ">>> ERROR: Patch file $PATCH_FILE_DEBUG not found in $SCRIPT_PATH."
     exit 1
 fi
+
+if [ -f "$SCRIPT_PATH/$PATCH_FILE_UTIL" ]; then
+    echo ">>> Applying util.tcl patch: $PATCH_FILE_UTIL"
+    if ! patch -p1 --fuzz=3 --ignore-whitespace < "$SCRIPT_PATH/$PATCH_FILE_UTIL"; then
+        echo ">>> ERROR: Failed to apply util.tcl patch."
+        exit 1
+    fi
+else
+    echo ">>> ERROR: Patch file $PATCH_FILE_UTIL not found in $SCRIPT_PATH."
+    exit 1
+fi
+
+echo ">>> All patches applied successfully."
 
 # Detect Power 10 and apply optimization flags
 EXTRA_CFLAGS=""
