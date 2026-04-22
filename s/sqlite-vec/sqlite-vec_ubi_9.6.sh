@@ -25,6 +25,9 @@ PACKAGE_VERSION=${1:-v0.1.9}
 PACKAGE_URL=https://github.com/asg017/sqlite-vec.git
 CURRENT_DIR="${PWD}"
 
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
 echo "Installing system dependencies..."
 
 dnf install -y git make gcc gcc-c++ unzip gettext sqlite sqlite-libs sqlite-devel python3.12 python3.12-pip python3.12-devel
@@ -56,6 +59,13 @@ echo "Creating Python package structure..."
 mkdir -p python/sqlite_vec
 cp dist/vec0.so python/sqlite_vec/
 
+if [ -f "$SCRIPT_DIR/LICENSE" ]; then
+    cp "$SCRIPT_DIR/LICENSE" python/LICENSE
+else
+    echo "ERROR: LICENSE file not found in $SCRIPT_DIR"
+    exit 1
+fi
+
 # Create __init__.py
 cat <<EOF > python/sqlite_vec/__init__.py
 import sqlite3
@@ -79,7 +89,14 @@ setup(
     packages=find_packages(),
     package_data={"sqlite_vec": ["vec0.so"]},
     include_package_data=True,
+    license="MIT",
+    license_files=["LICENSE"],
 )
+EOF
+
+# Add MANIFEST.in (for sdist completeness)
+cat <<EOF > python/MANIFEST.in
+include LICENSE
 EOF
 
 cd python
