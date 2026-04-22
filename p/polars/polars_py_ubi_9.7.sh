@@ -132,4 +132,4 @@ test -f ${PYPOLARS_WHEEL}
 cp "$PYPOLARS_WHEEL" "$BUILD_HOME/"
 
 
-#This script is for temporary purpose don't refer to this wheel refer polars_py-1.38.1_ubi9.7.sh build_script for overall purpose.
+#This script is for temporary purpose don't refer to this script refer polars_py-1.38.1_ubi9.7.sh build_script for overall purpose.
