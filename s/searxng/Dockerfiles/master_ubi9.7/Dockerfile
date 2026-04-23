@@ -44,7 +44,11 @@ RUN cd /tmp && \
 # ------------------------------------------------------------
 # Clone SearXNG
 # ------------------------------------------------------------
-RUN git clone https://github.com/searxng/searxng.git ${SEARXNG_PATH}
+RUN git clone https://github.com/searxng/searxng.git ${SEARXNG_PATH} && \
+    cd ${SEARXNG_PATH} && \
+    git checkout 8e824017dc88cebe5a42ee6ca04315ca9545f717 && \
+    sed -i -E 's/msgspec==0\.(20|21)\.0/msgspec==0.21.1/g' requirements.txt
+
 WORKDIR ${SEARXNG_PATH}
 
 # ------------------------------------------------------------
