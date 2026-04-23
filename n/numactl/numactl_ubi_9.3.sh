@@ -4,7 +4,7 @@
 # Package       : numactl
 # Version       : v2.0.19
 # Source repo   : https://github.com/numactl/numactl
-# Tested on     : UBI 9.3
+# Tested on     : UBI:9.3
 # Language      : C
 # Ci-Check  : True
 # Script License: Apache License, Version 2 or later
@@ -21,9 +21,10 @@
 PACKAGE_NAME=numactl
 PACKAGE_VERSION=${1:-v2.0.19}
 PACKAGE_URL=https://github.com/numactl/numactl
+PACKAGE_DIR=./numactl
 
 # Install dependencies
-yum install -y git autoconf automake libtool
+yum install -y git autoconf automake libtool wget
 
 # Clone the repository
 git clone $PACKAGE_URL $PACKAGE_NAME
@@ -49,6 +50,11 @@ if ! make install; then
 else
     echo "------------------$PACKAGE_NAME: Install success ------------------"
 fi
+
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/n/numactl/pyproject.toml
+sed -i "s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g" pyproject.toml
+
+mkdir -p local
 
 # Run the unit test case 
 if ! make -k check VERBOSE=1 TESTS='test/tbitmap'; then

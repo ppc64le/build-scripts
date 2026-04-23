@@ -35,7 +35,6 @@ def trigger_build_wheel(wrapper_file, python_version, image_name, file_name, ver
         container = client.containers.run(
             image_name,
             command,
-            network='host',
             detach=True,
             volumes={current_dir: {'bind': '/home/tester/', 'mode': 'rw'}},  # Mount current directory with both files
             stderr=True,

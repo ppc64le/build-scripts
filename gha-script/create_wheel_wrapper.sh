@@ -274,7 +274,7 @@ elif echo "$audit_output" | grep -q "This does not look like a platform wheel"; 
     echo "===> Auditwheel skipped for: ${wheel_file}"
     echo
 
-    if [[ "$wheel_file" == *any.whl ]]; then
+    if [[ "$wheel_file" == *none* ]]; then
         echo
         echo "===> Pure Python wheel detected. (No-arch wheel)"
         echo

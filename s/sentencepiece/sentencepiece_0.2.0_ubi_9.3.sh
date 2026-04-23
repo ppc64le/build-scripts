@@ -124,6 +124,27 @@ git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
+echo "-------------------------- Patch license metadata --------------------------"
+cd python
+
+cp -f ../LICENSE . 2>/dev/null || true
+
+if ! grep -q '^license *=.*' pyproject.toml; then
+    echo "Patching pyproject.toml to include license..."
+
+    sed -i '/^\[project\]$/a license = "Apache-2.0"' pyproject.toml
+    sed -i '/^license = "Apache-2.0"$/a license-files = ["LICENSE"]' pyproject.toml
+fi
+
+# Ensure LICENSE included in source dist
+if [ ! -f MANIFEST.in ]; then
+    echo "include LICENSE" > MANIFEST.in
+elif ! grep -q LICENSE MANIFEST.in; then
+    echo "include LICENSE" >> MANIFEST.in
+fi
+
+cd ..
+
 export PATH="$LIBPROTO_INSTALL/bin:${PATH}"
 export LD_LIBRARY_PATH="$LIBPROTO_INSTALL/lib:${LD_LIBRARY_PATH}"
 export CMAKE_PREFIX_PATH="$LIBPROTO_INSTALL"  # ADDED: Let CMake find protobuf/abseil
