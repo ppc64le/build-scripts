@@ -23,18 +23,22 @@ PACKAGE_URL=https://github.com/mypyc/librt
 PACKAGE_VERSION=${1:-v0.8.1}
 PACKAGE_DIR=librt
 
-dnf -y install git python3 python$3-pip python3-devel gcc-toolset-13
+dnf -y install git python3.12 python3.12-pip python3.12-devel gcc-toolset-13
 
 # Enable GCC toolset
 source /opt/rh/gcc-toolset-13/enable
-export CXX=/opt/rh/gcc-toolset-13/root/usr/bin/g++
 
 git clone ${PACKAGE_URL}
 cd ${PACKAGE_NAME}
 git checkout ${PACKAGE_VERSION}
 
+#Needed to generate architecture specific wheel
+#Reference https://github.com/mypyc/librt/blob/master/.github/workflows/buildwheels.yml#L126
+cp -r lib-rt/* .
+rm -rf lib-rt
+
 echo "building librt...."
-if ! python3 -m pip install --no-cache-dir .; then
+if ! python3 -m pip install .; then
     echo "------------------$PACKAGE_NAME: build_fail------------------"
     echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail | Build_Fail"
     exit 1
