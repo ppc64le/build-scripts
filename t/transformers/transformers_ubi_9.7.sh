@@ -129,7 +129,7 @@ git checkout "${PACKAGE_VERSION}"
         cd "${BUILD_HOME}"
         return 1
     fi
-
+# Test failures are in parity with x86, so they are being ignored 
     if ! pytest tests/ \
         --ignore=tests/models/ \
         --ignore=tests/test_tokenization_mistral_common.py \
