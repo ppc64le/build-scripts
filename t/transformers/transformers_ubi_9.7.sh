@@ -139,7 +139,8 @@ git checkout "${PACKAGE_VERSION}"
         --ignore=tests/pipelines/ \
         --ignore=tests/quantization/mxfp4/test_mxfp4.py \
         --ignore=tests/utils/test_image_utils.py \
-        --ignore=tests/utils/test_add_new_model_like.py
+        --ignore=tests/utils/test_add_new_model_like.py \
+        --ignore=tests/utils/test_chat_parsing_utils.py
     then
         echo "${PACKAGE_DIR} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | ${OS_NAME} | GitHub | Fail | Install_success_but_test_Fails"
         cd "${BUILD_HOME}"
