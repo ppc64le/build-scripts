@@ -1,20 +1,20 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
-# Package       : SearXNG
+# Package       : searxng
 # Version       : 576c8ca99cde1a31e442ef61965e77c82349079b
 # Source repo   : https://github.com/searxng/searxng.git
-# Tested on     : UBI:9.5
+# Tested on     : UBI 9.7
 # Language      : Python
-# Ci-Check  : True
+# Ci-Check      : True
 # Script License: Apache License, Version 2 or later
-# Maintainer    : Soham Badjate <soham.badjate@ibm.com>
+# Maintainer    : Prachi Gaonkar <Prachi.Gaonkar@ibm.com>
 #
-# Disclaimer: This script has been tested in root mode on the given
-# platform using the mentioned version of the package.
-# It may not work as expected with newer versions of the
-# package and/or distribution. In such a case, please
-# contact the "Maintainer" of this script.
+# Disclaimer    : This script has been tested in root mode on the given
+#                 platform using the mentioned version of the package.
+#                 It may not work as expected with newer versions of the
+#                 package and/or distribution. In such a case, please
+#                 contact the "Maintainer" of this script.
 #
 # -----------------------------------------------------------------------------
 
@@ -69,6 +69,32 @@ git config --global --add safe.directory /home/tester
 
 git clone $PACKAGE_URL  && cd $PACKAGE_NAME
 git checkout 576c8ca99cde1a31e442ef61965e77c82349079b
+
+# ===========================================================================
+# REMOVE ODbL-LICENSED FILES FOR LICENSE COMPLIANCE
+# ===========================================================================
+# Remove OpenLayers library (flagged by license scanner as ODbL-1.0)
+if [ -f "searx/static/themes/simple/js/ol.min.js" ]; then
+    rm -f searx/static/themes/simple/js/ol.min.js
+    rm -f searx/static/themes/simple/js/ol.min.js.map
+    echo " Removed: searx/static/themes/simple/js/ol.min.js"
+    echo " Removed: searx/static/themes/simple/js/ol.min.js.map"
+    echo "  Impact: Map view feature will be disabled"
+else
+    echo " File not found: searx/static/themes/simple/js/ol.min.js"
+fi
+
+# Replace engine_descriptions.json with empty structure (remove ODbL content)
+if [ -f "searx/data/engine_descriptions.json" ]; then
+    echo "{}" > searx/data/engine_descriptions.json
+    echo "Replaced: engine_descriptions.json with empty structure (removed ODbL-1.0 content)"
+    echo "  Impact: Search engine descriptions will not be displayed"
+else
+    echo " File not found: searx/data/engine_descriptions.json"
+fi
+
+# ============================================================================
+
 if ! (python3 -m pip install --upgrade pip setuptools wheel && python3 -m pip install msgspec uvloop orjson pyyaml requests uwsgi pybind11 httpx && python3 -m pip install -e . --use-pep517 --no-build-isolation) ; then
     echo "------------------$PACKAGE_NAME:Install_fails-------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
@@ -91,5 +117,3 @@ else
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub  | Pass |  Both_Install_and_Test_Success"
     exit 0
 fi
-
-
