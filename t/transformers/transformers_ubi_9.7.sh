@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+set -eo pipefail
 # --------------------------------------------------------------------------------
 # Package        : transformers
 # Version        : v5.1.0
@@ -19,6 +19,7 @@ PACKAGE_VERSION="v5.1.0"
 PACKAGE_URL="https://github.com/huggingface/transformers.git"
 PACKAGE_DIR="transformers"
 TORCHCODEC_VERSION="v0.9.0"
+export PACKAGE_NAME="${PACKAGE_DIR}"
 
 BUILD_HOME="$(pwd)"
 OS_NAME="$(awk -F= '/^ID=/{gsub(/"/,"",$2); print $2; exit}' /etc/os-release || echo unknown)"
