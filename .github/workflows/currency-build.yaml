@@ -1016,7 +1016,21 @@ jobs:
 
   final_summary:
       name: Final Summary Stage
-      needs: [build, source_scanner]
+      needs:
+        - build
+        - source_scanner
+        - wheel_build_py39
+        - wheel_build_py310
+        - wheel_build_py311
+        - wheel_build_py312 
+        - wheel_build_py313
+        - wheel_build_py314
+
+      if: |
+        always() &&
+        needs.build.result == 'success' &&
+        needs.source_scanner.result == 'success'
+
       runs-on: ubuntu-24.04-ppc64le-p10
       steps:
         - name: Checkout code
