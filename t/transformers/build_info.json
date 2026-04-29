@@ -1,0 +1,16 @@
+{
+   "maintainer": "rusiyamanya",
+   "package_name": "transformers",
+   "github_url": "https://github.com/huggingface/transformers",
+   "version": "v5.1.0",
+   "wheel_build" : true,
+   "default_branch": "main",
+   "build_script": "transformers_ubi_9.7.sh",
+   "package_dir": "t/transformers",
+   "docker_build": false,
+   "validate_build_script": true,
+   "use_non_root_user": false,
+  "v5.1.0": {
+    "build_script": "transformers_ubi_9.7.sh"
+  }
+}
