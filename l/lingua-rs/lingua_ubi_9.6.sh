@@ -76,35 +76,14 @@ cd "${PACKAGE_REPO}" || exit 1
 # ------------------------------------------------------------------------------
 # Build wheel
 # ------------------------------------------------------------------------------
-echo "Building wheel using maturin..."
+echo "Building and installing package using pip (maturin as backend)"
 
-maturin build --release --strip -i python3.12
+python3.12 -m pip install . --no-build-isolation
 if [ $? -ne 0 ]; then
-  echo "ERROR: Wheel build failed"
-  exit 1
-fi
-
-# ------------------------------------------------------------------------------
-# Locate wheel
-# ------------------------------------------------------------------------------
-
-WHEEL_FILE="$(ls target/wheels/${PACKAGE_NAME//-/_}-*.whl | head -n 1)"
-
-if [[ ! -f "${WHEEL_FILE}" ]]; then
-  echo "ERROR: Wheel file not found"
-  exit 1
-fi
-
-echo "Built wheel: ${WHEEL_FILE}"
-
-# ------------------------------------------------------------------------------
-# Install wheel
-# ------------------------------------------------------------------------------
-
-pip3.12 install "${WHEEL_FILE}"
-if [ $? -ne 0 ]; then
-  echo "ERROR: Failed to install built wheel"
-  exit 1
+    echo "------------------$PACKAGE_NAME:install_fails------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_Failed"
+    exit 1
 fi
 
 # ------------------------------------------------------------------------------
