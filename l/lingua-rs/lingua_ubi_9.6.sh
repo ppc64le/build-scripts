@@ -20,16 +20,17 @@
 set -e
 
 # Variables
-PKG_NAME="lingua-language-detector"
-PKG_VERSION="2.2.0"
-PKG_ORG="pemistahl"
-PKG_REPO="lingua-rs"
-PKG_URL="https://github.com/${PKG_ORG}/${PKG_REPO}.git"
-SRC_DIR="${PKG_REPO}"
-IBM_SUFFIX="ppc64le1"
+PACKAGE_NAME="lingua-language-detector"
+PACKAGE_VERSION="2.2.0"
+PACKAGE_ORG="pemistahl"
+PACKAGE_REPO="lingua-rs"
+PACKAGE_URL="https://github.com/${PKG_ORG}/${PKG_REPO}.git"
+SOURCE="GitHub"
+
+OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2 | tr -d '"')
 
 echo ""
-echo "Building ${PKG_NAME} ${PKG_VERSION} for ppc64le (UBI 9.6, Python 3.12)"
+echo "Building ${PACKAGE_NAME} ${PACKAGE_VERSION} on ${OS_NAME}"
 echo ""
 
 # ------------------------------------------------------------------------------
@@ -51,53 +52,33 @@ dnf install -y \
     zlib-devel && \
 dnf clean all
 
-# Normalize Python commands
-ln -sf /usr/bin/python3.12 /usr/bin/python3
-ln -sf /usr/bin/pip-3.12 /usr/bin/pip3
-ln -sf /usr/bin/python3.12 /usr/bin/python
-ln -sf /usr/bin/pip-3.12 /usr/bin/pip
-
-python --version
-pip --version
+python3.12 --version
+pip3.12 --version
 
 # ------------------------------------------------------------------------------
 # Python build tooling
 # ------------------------------------------------------------------------------
 
-pip install --upgrade pip setuptools wheel pytest
-pip install maturin==1.13.1
+pip3.12 install --upgrade pip setuptools wheel pytest
+pip3.12 install maturin==1.13.1
 
 # ------------------------------------------------------------------------------
 # Clone source (lingua-rs is Git-only;)
 # ------------------------------------------------------------------------------
 
-git clone "${PKG_URL}"
+git clone "${PACKAGE_URL}"
 if [ $? -ne 0 ]; then 
   echo "ERROR: Failed to clone repository"
   exit 1  
 fi
-cd "${SRC_DIR}" || exit 1
-
-# ------------------------------------------------------------------------------
-# Apply IBM Power suffix
-# ------------------------------------------------------------------------------
-
-sed -i \
-  "s/^version = .*/version = \"${PKG_VERSION}+${IBM_SUFFIX}\"/" \
-  pyproject.toml
-
-if [ $? -ne 0 ]; then 
-  echo "ERROR: Failed to update version in pyproject.toml"
-  exit 1  
-fi
-grep '^version' pyproject.toml
+cd "${PACKAGE_REPO}" || exit 1
 
 # ------------------------------------------------------------------------------
 # Build wheel
 # ------------------------------------------------------------------------------
 echo "Building wheel using maturin..."
 
-maturin build --release --strip
+maturin build --release --strip -i python3.12
 if [ $? -ne 0 ]; then
   echo "ERROR: Wheel build failed"
   exit 1
@@ -107,7 +88,7 @@ fi
 # Locate wheel
 # ------------------------------------------------------------------------------
 
-WHEEL_FILE="$(ls target/wheels/${PKG_NAME//-/_}-*.whl | head -n 1)"
+WHEEL_FILE="$(ls target/wheels/${PACKAGE_NAME//-/_}-*.whl | head -n 1)"
 
 if [[ ! -f "${WHEEL_FILE}" ]]; then
   echo "ERROR: Wheel file not found"
@@ -120,7 +101,7 @@ echo "Built wheel: ${WHEEL_FILE}"
 # Install wheel
 # ------------------------------------------------------------------------------
 
-pip install "${WHEEL_FILE}"
+pip3.12 install "${WHEEL_FILE}"
 if [ $? -ne 0 ]; then
   echo "ERROR: Failed to install built wheel"
   exit 1
@@ -131,12 +112,34 @@ fi
 # ------------------------------------------------------------------------------
 
 echo "Running upstream Python tests with pytest..."
-pytest tests/python
+test_status=1  # 0 = success, non-zero = failure
+
+cd tests
 if [ $? -ne 0 ]; then
-  echo "ERROR: Python test suite failed"
-  exit 1
+    echo "ERROR: tests directory not found"
+    exit 1
 fi
 
-echo ""
-echo "SUCCESS: ${PKG_NAME} ${PKG_VERSION} built and validated"
-echo ""
+# Run pytest if any matching test files found
+if ls */test_*.py > /dev/null 2>&1 && [ $test_status -ne 0 ]; then
+    echo "Running pytest..."
+    (python3.12 -m pytest) && test_status=0 || test_status=$?
+fi
+
+cd -
+
+## ------------------------------------------------------------------------------
+## Final test result output (template block)
+## ------------------------------------------------------------------------------
+
+if [ $test_status -eq 0 ]; then
+    echo "------------------$PACKAGE_NAME:install_and_test_both_success-------------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Pass | Both_Install_and_Test_Success"
+    exit 0
+else
+    echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
+    echo "$PACKAGE_URL $PACKAGE_NAME"
+    echo "$PACKAGE_NAME | $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | $SOURCE | Fail | Install_success_but_test_Fails"
+    exit 2
+fi
