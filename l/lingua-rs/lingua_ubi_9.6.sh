@@ -24,7 +24,7 @@ PACKAGE_NAME="lingua-language-detector"
 PACKAGE_VERSION="2.2.0"
 PACKAGE_ORG="pemistahl"
 PACKAGE_REPO="lingua-rs"
-PACKAGE_URL="https://github.com/${PKG_ORG}/${PKG_REPO}.git"
+PACKAGE_URL="https://github.com/${PACKAGE_ORG}/${PACKAGE_REPO}.git"
 SOURCE="GitHub"
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2 | tr -d '"')
