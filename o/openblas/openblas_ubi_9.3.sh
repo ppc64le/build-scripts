@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package         : OpenBLAS
-# Version         : v0.3.29
+# Version         : v0.3.32
 # Source repo     : https://github.com/OpenMathLib/OpenBLAS
 # Tested on       : UBI: 9.3
 # Language        : C
@@ -37,6 +37,7 @@ yum install -y python python-pip python-devel  gcc-toolset-13 gcc-toolset-13-bin
 
 python -m pip install --upgrade pip wheel
 
+source /opt/rh/gcc-toolset-13/enable
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
 gcc --version
@@ -51,8 +52,6 @@ git submodule update --init
 
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/o/openblas/pyproject.toml
 sed -i "s/{PACKAGE_VERSION}/$(echo $PACKAGE_VERSION | sed 's/^v//')/g" pyproject.toml
-sed -i 's/manylinux2014_ppc64le/linux_ppc64le/g' pyproject.toml
-echo "--------------------------replaced version and platform tag in pyproject.toml--------------------------"
 
 # Create the local directory structure expected by pyproject.toml
 mkdir -p local/openblas
