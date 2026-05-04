@@ -100,6 +100,33 @@ if ! pnpm -r \
 fi
 
 # -------------------------------------------------------
+# Remove ODbL-licensed files BEFORE packaging
+# -------------------------------------------------------
+echo "=========================================="
+echo "Removing ODbL-licensed files..."
+echo "=========================================="
+
+FRONTEND_ASSETS="${BUILD_HOME}/${PACKAGE_NAME}/gradio/templates/frontend/assets"
+
+if [ -d "$FRONTEND_ASSETS" ]; then
+  # Remove PlotlyPlot files (handles any hash in filename)
+  rm -f "$FRONTEND_ASSETS"/PlotlyPlot-*.js "$FRONTEND_ASSETS"/PlotlyPlot-*.js.map
+  
+  # Verify removal
+  if ls "$FRONTEND_ASSETS"/PlotlyPlot*.js* 2>/dev/null; then
+    echo "ERROR: Failed to remove ODbL files!"
+    exit 1
+  fi
+  
+  echo "✓ ODbL files removed successfully"
+else
+  echo "ERROR: Assets directory not found: $FRONTEND_ASSETS"
+  exit 1
+fi
+
+echo "=========================================="
+
+# -------------------------------------------------------
 #  Install the Python package
 # -------------------------------------------------------
 echo "Installing Gradio Python package..."
@@ -108,54 +135,6 @@ if ! pip3.12 install .; then
   echo "------------------ ${PACKAGE_NAME}: Python Install Failed ------------------"
   exit 1
 fi
-
-# -------------------------------------------------------
-# Remove ODbL-licensed files (REQUIRED FOR COMPLIANCE)
-# -------------------------------------------------------
-echo "=========================================="
-echo "Removing ODbL-licensed files..."
-echo "=========================================="
-
-# Find where gradio is installed
-GRADIO_PATH=$(python3.12 -c "import gradio, os; print(os.path.dirname(gradio.__file__))")
-echo "Gradio installed at: $GRADIO_PATH"
-
-ASSETS_DIR="$GRADIO_PATH/templates/frontend/assets"
-
-if [ -d "$ASSETS_DIR" ]; then
-  REMOVED=0
-  
-  # Remove PlotlyPlot-CIlapRFP.js
-  if [ -f "$ASSETS_DIR/PlotlyPlot-CIlapRFP.js" ]; then
-    rm -f "$ASSETS_DIR/PlotlyPlot-CIlapRFP.js"
-    echo "✓ Removed PlotlyPlot-CIlapRFP.js"
-    REMOVED=$((REMOVED + 1))
-  fi
-  
-  # Remove PlotlyPlot-CIlapRFP.js.map
-  if [ -f "$ASSETS_DIR/PlotlyPlot-CIlapRFP.js.map" ]; then
-    rm -f "$ASSETS_DIR/PlotlyPlot-CIlapRFP.js.map"
-    echo "✓ Removed PlotlyPlot-CIlapRFP.js.map"
-    REMOVED=$((REMOVED + 1))
-  fi
-  
-  # Verify removal
-  if [ -f "$ASSETS_DIR/PlotlyPlot-CIlapRFP.js" ] || [ -f "$ASSETS_DIR/PlotlyPlot-CIlapRFP.js.map" ]; then
-    echo "ERROR: Failed to remove ODbL files!"
-    exit 1
-  fi
-  
-  if [ $REMOVED -eq 2 ]; then
-    echo "✓ Successfully removed 2 ODbL-licensed files"
-  else
-    echo "WARNING: Expected to remove 2 files, removed $REMOVED"
-  fi
-else
-  echo "ERROR: Assets directory not found: $ASSETS_DIR"
-  exit 1
-fi
-
-echo "=========================================="
 
 # -------------------------------------------------------
 # Run unit tests
