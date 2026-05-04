@@ -1,0 +1,43 @@
+diff --git a/build.gradle b/build.gradle
+index 78ee358..2cc965b 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -34,7 +34,7 @@ plugins {
+   id 'idea'
+   id 'maven-publish'
+   id 'jacoco'
+-  id 'com.diffplug.spotless' version '6.25.0' apply false
++  //id 'com.diffplug.spotless' version '6.25.0' apply false
+ }
+ 
+ group = 'org.opensearch'
+@@ -45,7 +45,7 @@ apply plugin: 'opensearch.java-rest-test'
+ apply plugin: 'opensearch.rest-resources'
+ apply plugin: 'opensearch.pluginzip'
+ apply plugin: 'opensearch.java-agent'
+-apply plugin: 'com.diffplug.spotless'
++//apply plugin: 'com.diffplug.spotless'
+ 
+ idea {
+     module {
+@@ -211,7 +211,7 @@ testClusters.register("integTest") {
+ 
+ tasks.named("check").configure {
+   dependsOn(integTest)
+-  dependsOn(spotlessCheck)
++  //dependsOn(spotlessCheck)
+ }
+ 
+ integTest {
+diff --git a/gradle.properties b/gradle.properties
+index 3a57b10..25fa501 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -1,3 +1,7 @@
+ luceneVersion = 9.7.0
+ ow2Version = 9.6
+ antlrVersion=4.11.1
++org.gradle.native=false
++
++#Use plain console output (no rich formatting that requires native platform)
++org.gradle.console=plain
