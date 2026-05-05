@@ -695,7 +695,15 @@ export ArrowCompute_DIR=${ARROW_HOME}/lib/cmake/ArrowCompute
 export Arrow_DIR=${ARROW_HOME}/lib/cmake/Arrow
 
 export NUMPY_INCLUDE_DIR=$(python3.12 -c "import numpy; print(numpy.get_include())")
+
+# Export for CMake/PyArrow
+export Python3_NumPy_INCLUDE_DIRS=${NUMPY_INCLUDE_DIR}
 export PYARROW_CMAKE_OPTIONS="-DPython3_NumPy_INCLUDE_DIRS=${NUMPY_INCLUDE_DIR}"
+export CMAKE_ARGS="${CMAKE_ARGS} -DPython3_NumPy_INCLUDE_DIRS=${NUMPY_INCLUDE_DIR}"
+
+# Debug prints
+echo "NUMPY_INCLUDE_DIR=${NUMPY_INCLUDE_DIR}"
+echo "PYARROW_CMAKE_OPTIONS=${PYARROW_CMAKE_OPTIONS}"
 python3.12 setup.py install
 
 echo "-------------------Installed Pyarrow-------------------------"
