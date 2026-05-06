@@ -14,5 +14,5 @@ cd 1.27.1.2-alpine
 ### 2. Build the Docker image
 
 ```bash
-docker build -t openresty-ppc64le:1.27.1.2-alpine .
+docker build -t openresty-ppc64le:1.27.1.2-11-alpine .
 ```

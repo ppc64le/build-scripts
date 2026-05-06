@@ -7,10 +7,10 @@
   "default_branch": "main",
   "package_dir": "g/gradio",
   "build_script": "gradio_gradio@6.9.0_ubi9.7.sh",
-  "wheel_build" : true,
   "validate_build_script": true,
   "use_non_root_user": false,
   "docker_build": false,
+  "wheel_build" : true,
   "gradio@06.9.0": {
     "build_script": "gradio_gradio@6.9.0_ubi9.7.sh" 
   },
