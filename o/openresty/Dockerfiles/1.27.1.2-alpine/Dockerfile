@@ -128,7 +128,6 @@ RUN apk add --no-cache --virtual .build-deps \
         zlib-dev \
         ${RESTY_ADD_PACKAGE_BUILDDEPS} \
     && apk add --no-cache \
-        gd \
         geoip \
         libgcc \
         libxslt \
@@ -199,6 +198,7 @@ RUN apk add --no-cache --virtual .build-deps \
         && find /usr/local/openresty/nginx -type f -perm -u+x -exec strip --strip-unneeded '{}' \; ; \ 
     fi \
     && apk del .build-deps \
+    && apk upgrade --no-cache \
     && mkdir -p /var/run/openresty \
     && ln -sf /dev/stdout /usr/local/openresty/nginx/logs/access.log \
     && ln -sf /dev/stderr /usr/local/openresty/nginx/logs/error.log
