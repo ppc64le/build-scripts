@@ -38,3 +38,150 @@ Please follow the below rules while contributing your build script to this repo.
 9. Make sure to include test step for package so build get validated with available test's in source.
 10. Test the build script on clean UBI container before raising PR. Include test logs as part of PR.
 11. Try to create a branch on your forked repo for each PR.
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## PR Build Workflow Validation
+
+All Pull Requests (PRs) are automatically validated using the CI workflow. Contributors must ensure that their changes pass the following steps:
+
+### 1. Build Script Validation
+- `validate_builds.py` is executed to verify:
+  - Presence of shebang (`#!/bin/bash`, `#!/bin/sh`, etc.)
+  - Mandatory header fields in build script
+  - Naming conventions (package name & filenames must be lowercase)
+  - Correct directory structure
+
+If any of the above checks fail, the CI job will fail.
+
+---
+
+### 2. Change Detection
+- CI detects files modified in the PR.
+- It determines the affected package directory.
+- `build_info.json` is automatically located.
+
+---
+
+### 3. build_info.json Requirements
+Each package must include a valid `build_info.json` file with required fields such as:
+- `package_name`
+- `version`
+- `package_dir`
+- `wheel_build` (true/false)
+- `docker_build` (true/false)
+
+Missing or invalid fields may result in CI failure.
+
+---
+
+### 4. Package Build
+- The package is built using gha-script/build_package.sh
+- The build script must successfully build/install the package
+- Include a test step to validate the build 
+
+---
+
+### 5. Wheel Build (Conditional)
+Wheel build is triggered only if:
+- `wheel_build=true` in `build_info.json`, and
+- A build script (`.sh`) is modified in the PR
+
+Supported Python versions:
+- 3.9, 3.10, 3.11, 3.12, 3.13, 3.14
+
+If conditions are not met, wheel build will be skipped.
+
+---
+
+### 6. Docker Build (Conditional)
+Docker build runs only if:
+- `docker_build=true` in `build_info.json`, and
+- A `Dockerfile` is modified in the PR
+
+The workflow will:
+- Build the Docker image
+- Save the image as an artifact
+
+---
+
+### 7. Artifacts
+The workflow generates:
+- `package-cache` (environment variables and metadata)
+- Build logs (available in case of failures)
+
+---
+
+### 8. Manual Workflow Trigger
+The workflow can also be triggered manually using:
+- PR number
+- Custom runner selection (for large builds)
+
+This is useful for:
+- Retrying failed builds
+- Running builds on higher-capacity runners
+
+---
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## PR Workflow Overview (Simplified)
+
+### Trigger
+- Pull Request
+- Manual workflow dispatch
+
+---
+
+### Pipeline Stages
+
+#### 1. Preparation Stage (`build_info`)
+- Validate build scripts and configuration
+- Identify changed files in PR
+- Locate and parse `build_info.json`
+- Extract flags:
+- `wheel_build`
+- `docker_build`
+
+---
+
+#### 2. Build Stage (Always Runs)
+- Build the package from source
+- Validate build using test steps
+
+---
+
+#### 3. Conditional Execution (Parallel Jobs)
+
+**Wheel Build**
+- Runs only if:
+- `wheel_build = true`
+- Build script (`.sh`) is modified
+- Builds wheels across multiple Python versions
+
+**Docker Build**
+- Runs only if:
+- `docker_build = true`
+- `Dockerfile` is modified
+- Builds Docker image
+
+---
+
+### Execution Logic Summary
+
+| Change Type            | Wheel Build | Docker Build |
+|----------------------|------------|--------------|
+| Build script changed | Yes        | No           |
+| Dockerfile changed   | No         | Yes          |
+| Both changed         | Yes        | Yes          |
+| Only config changes  | No         | No           |
+| Irrelevant changes   | No         | No           |
+
+---
+
+### Pipeline Flow
+
+Preparation → Build → (Wheel Build + Docker Build in Parallel if applicable)
+
