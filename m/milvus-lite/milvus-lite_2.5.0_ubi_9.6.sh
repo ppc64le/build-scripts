@@ -53,7 +53,7 @@ make -j${MAX_JOBS} \
     DYNAMIC_ARCH=1 \
     INTERFACE64=0
 
-make install
+make install PREFIX=/usr/local
 
 # Configure linker paths
 export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64:$LD_LIBRARY_PATH
