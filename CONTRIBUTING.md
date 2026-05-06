@@ -39,93 +39,7 @@ Please follow the below rules while contributing your build script to this repo.
 10. Test the build script on clean UBI container before raising PR. Include test logs as part of PR.
 11. Try to create a branch on your forked repo for each PR.
 
-
-
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-## PR Build Workflow Validation
-
-All Pull Requests (PRs) are automatically validated using the CI workflow. Contributors must ensure that their changes pass the following steps:
-
-### 1. Build Script Validation
-- `validate_builds.py` is executed to verify:
-  - Presence of shebang (`#!/bin/bash`, `#!/bin/sh`, etc.)
-  - Mandatory header fields in build script
-  - Naming conventions (package name & filenames must be lowercase)
-  - Correct directory structure
-
-If any of the above checks fail, the CI job will fail.
-
 ---
-
-### 2. Change Detection
-- CI detects files modified in the PR.
-- It determines the affected package directory.
-- `build_info.json` is automatically located.
-
----
-
-### 3. build_info.json Requirements
-Each package must include a valid `build_info.json` file with required fields such as:
-- `package_name`
-- `version`
-- `package_dir`
-- `wheel_build` (true/false)
-- `docker_build` (true/false)
-
-Missing or invalid fields may result in CI failure.
-
----
-
-### 4. Package Build
-- The package is built using gha-script/build_package.sh
-- The build script must successfully build/install the package
-- Include a test step to validate the build 
-
----
-
-### 5. Wheel Build (Conditional)
-Wheel build is triggered only if:
-- `wheel_build=true` in `build_info.json`, and
-- A build script (`.sh`) is modified in the PR
-
-Supported Python versions:
-- 3.9, 3.10, 3.11, 3.12, 3.13, 3.14
-
-If conditions are not met, wheel build will be skipped.
-
----
-
-### 6. Docker Build (Conditional)
-Docker build runs only if:
-- `docker_build=true` in `build_info.json`, and
-- A `Dockerfile` is modified in the PR
-
-The workflow will:
-- Build the Docker image
-- Save the image as an artifact
-
----
-
-### 7. Artifacts
-The workflow generates:
-- `package-cache` (environment variables and metadata)
-- Build logs (available in case of failures)
-
----
-
-### 8. Manual Workflow Trigger
-The workflow can also be triggered manually using:
-- PR number
-- Custom runner selection (for large builds)
-
-This is useful for:
-- Retrying failed builds
-- Running builds on higher-capacity runners
-
-
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 
 ## PR Workflow Overview (Simplified)
 
@@ -138,18 +52,24 @@ This is useful for:
 ### Pipeline Stages
 
 #### 1. Preparation Stage (`build_info`)
-- Validate build scripts and configuration
-- Identify changed files in PR
+- Validate build scripts using CI checks:
+  - Shebang must be present
+  - Mandatory header fields must exist
+  - Naming conventions must be followed
+  - Directory structure must be correct
+- Identify changed files in the PR
 - Locate and parse `build_info.json`
 - Extract flags:
-- `wheel_build`
-- `docker_build`
+  - `wheel_build`
+  - `docker_build`
 
 ---
 
 #### 2. Build Stage (Always Runs)
-- Build the package from source
-- Validate build using test steps
+- Build the package using `gha-script/build_package.sh`
+- The build must:
+  - Successfully install/build the package
+  - Include test steps for validation
 
 ---
 
@@ -157,15 +77,15 @@ This is useful for:
 
 **Wheel Build**
 - Runs only if:
-- `wheel_build = true`
-- Build script (`.sh`) is modified
-- Builds wheels across multiple Python versions
+  - `wheel_build = true`
+  - Build script (`.sh`) is modified
+- Builds wheels across multiple Python versions (3.9 – 3.14)
 
 **Docker Build**
 - Runs only if:
-- `docker_build = true`
-- `Dockerfile` is modified
-- Builds Docker image
+  - `docker_build = true`
+  - `Dockerfile` is modified
+- Builds Docker image and stores it as artifact
 
 ---
 
@@ -178,6 +98,21 @@ This is useful for:
 | Both changed         | Yes        | Yes          |
 | Only config changes  | No         | No           |
 | Irrelevant changes   | No         | No           |
+
+---
+
+### Artifacts
+- `package-cache` (environment variables and metadata)
+- Build logs (available in case of failures)
+
+---
+
+### Notes
+- CI will fail if validation checks do not pass
+- Ensure `build_info.json` is complete and correct
+- Enable `wheel_build` / `docker_build` only when required
+- Test scripts locally before raising a PR
+
 
 ---
 
