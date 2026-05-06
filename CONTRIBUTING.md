@@ -38,3 +38,85 @@ Please follow the below rules while contributing your build script to this repo.
 9. Make sure to include test step for package so build get validated with available test's in source.
 10. Test the build script on clean UBI container before raising PR. Include test logs as part of PR.
 11. Try to create a branch on your forked repo for each PR.
+
+---
+
+## PR Workflow Overview (Simplified)
+
+### Trigger
+- Pull Request
+- Manual workflow dispatch
+
+---
+
+### Pipeline Stages
+
+#### 1. Preparation Stage (`build_info`)
+- Validate build scripts using CI checks:
+  - Shebang must be present
+  - Mandatory header fields must exist
+  - Naming conventions must be followed
+  - Directory structure must be correct
+- Identify changed files in the PR
+- Locate and parse `build_info.json`
+- Extract flags:
+  - `wheel_build`
+  - `docker_build`
+
+---
+
+#### 2. Build Stage (Always Runs)
+- Build the package using `gha-script/build_package.sh`
+- The build must:
+  - Successfully install/build the package
+  - Include test steps for validation
+
+---
+
+#### 3. Conditional Execution (Parallel Jobs)
+
+**Wheel Build**
+- Runs only if:
+  - `wheel_build = true`
+  - Build script (`.sh`) is modified
+- Builds wheels across multiple Python versions (3.9 – 3.14)
+
+**Docker Build**
+- Runs only if:
+  - `docker_build = true`
+  - `Dockerfile` is modified
+- Builds Docker image and stores it as artifact
+
+---
+
+### Execution Logic Summary
+
+| Change Type            | Wheel Build | Docker Build |
+|----------------------|------------|--------------|
+| Build script changed | Yes        | No           |
+| Dockerfile changed   | No         | Yes          |
+| Both changed         | Yes        | Yes          |
+| Only config changes  | No         | No           |
+| Irrelevant changes   | No         | No           |
+
+---
+
+### Artifacts
+- `package-cache` (environment variables and metadata)
+- Build logs (available in case of failures)
+
+---
+
+### Notes
+- CI will fail if validation checks do not pass
+- Ensure `build_info.json` is complete and correct
+- Enable `wheel_build` / `docker_build` only when required
+- Test scripts locally before raising a PR
+
+
+---
+
+### Pipeline Flow
+
+Preparation → Build → (Wheel Build + Docker Build in Parallel if applicable)
+
