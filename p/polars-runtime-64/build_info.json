@@ -1,0 +1,16 @@
+{
+  "maintainer": "Sumit Dubey",
+  "package_name": "polars-runtime-64",
+  "github_url": "https://github.com/pola-rs/polars",
+  "version": "py-1.38.1",
+  "wheel_build" : true,
+  "default_branch": "main",
+  "package_dir": "p/polars-runtime-64",
+  "build_script": "polars-runtime-64_py-1.38.1_ubi9.7.sh",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "docker_build": false,
+  "*": {
+    "build_script": "polars-runtime-64_py-1.38.1_ubi9.7.sh"
+  }
+}
