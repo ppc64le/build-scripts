@@ -61,7 +61,7 @@ cp -r $SCRIPT_DIR/numactl-prefix/* local/numactl/
 
 
 export LD_LIBRARY_PATH=$SCRIPT_DIR/numactl-prefix/lib:$SCRIPT_DIR/numactl-prefix/lib64:${LD_LIBRARY_PATH}
-
+export PATH=$SCRIPT_DIR/numactl-prefix/bin:${PATH}
 
 # Run the unit test case 
 if ! make -k check VERBOSE=1 TESTS='test/tbitmap'; then
