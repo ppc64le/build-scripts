@@ -1,0 +1,87 @@
+diff --git a/libs/agno/pyproject.toml b/libs/agno/pyproject.toml
+index 12e4e073a..2e4407eb7 100644
+--- a/libs/agno/pyproject.toml
++++ b/libs/agno/pyproject.toml
+@@ -234,14 +234,14 @@ models = [
+ 
+ # All tools
+ tools = [
+-  "agno[apify]",
++  #"agno[apify]", # calling impit which inturn has unstable http3 dependency
+   "agno[arxiv]",
+   # "agno[brave]",  # It clashes with other dependencies
+   "agno[exa]",
+   "agno[seltz]",
+   "agno[cartesia]",
+   "agno[ddg]",
+-  "agno[duckdb]",
++  #"agno[duckdb]", # pip install
+   "agno[newspaper]",
+   "agno[youtube]",
+   "agno[firecrawl]",
+@@ -260,20 +260,20 @@ tools = [
+   "agno[webex]",
+   "agno[mcp]",
+   "agno[browserbase]",
+-  "agno[agentql]",
+-  "agno[opencv]",
++  #"agno[agentql]", # uses playwright
++  #"agno[opencv]", # pip install
+   "agno[parallel]",
+   "agno[salesforce]",
+   "agno[scrapegraph]",
+   "agno[valyu]",
+-  "agno[yfinance]",
++  #"agno[yfinance]", # unsupported arch error
+   "agno[confluence]",
+   "agno[docling]",
+   "agno[notion]",
+   "agno[oxylabs]",
+   "agno[zep]",
+   "agno[mem0]",
+-  "agno[memori]",
++  #"agno[memori]", # faiss-cpu not available for power
+   "agno[google_bigquery]",
+   "agno[psycopg]",
+   "agno[redshift]",
+@@ -297,11 +297,11 @@ storage = [
+ # All vector databases
+ vectordbs = [
+   "agno[pgvector]",
+-  "agno[chromadb]",
+-  "agno[lancedb]",
++  #"agno[chromadb]", # installed using build-script
++  #"agno[lancedb]", # not available for power
+   "agno[qdrant]",
+   "agno[couchbase]",
+-  "agno[cassandra]",
++  #"agno[cassandra]", pip install
+   "agno[mongodb]",
+   "agno[singlestore]",
+   "agno[weaviate]",
+@@ -310,7 +310,7 @@ vectordbs = [
+   "agno[pinecone]",
+   "agno[surrealdb]",
+   "agno[upstash]",
+-  "agno[pylance]",
++  #"agno[pylance]", # not available for power
+   "agno[redis]",
+ ]
+ 
+@@ -350,14 +350,14 @@ tests = [
+     "agno[integration-tests]",
+     "twine",
+     "build",
+-    "grpcio>=1.76.0",
++    #"grpcio>=1.76.0", # installed using build-script
+ ]
+ 
+ # Models integration test dependencies
+ integration-tests = [
+     "exa_py>=2.0.0",
+     "ddgs",
+-    "yfinance",
++    #"yfinance", # not available for power
+     "sqlalchemy",
+     "Pillow",
+     "fastmcp"

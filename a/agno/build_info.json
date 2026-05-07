@@ -1,0 +1,19 @@
+{
+  "maintainer": "Mohammed.Sheikh1@ibm.com",
+  "package_name": "agno",
+  "github_url": "https://github.com/agno-agi/agno",
+  "version": "v2.6.3",
+  "default_branch": "main",
+  "build_script": "agno_2.6.3_ubi_9.7.sh", 
+  "package_dir": "a/agno",
+  "use_non_root_user": "false",
+  "docker_build": "true",
+  "docker_cmd": "docker build -t ${package_name}:${PACKAGE_VERSION} ${dir}",
+  "validate_build_script":"true",
+   "*": {
+        "dir": "2.6.3_ubi9.7",
+        "base_docker_image": "registry.access.redhat.com/ubi9/ubi:9.7",
+        "base_docker_variant": "redhat",
+        "build_script": "agno_2.6.3_ubi_9.7.sh"
+        }
+}
