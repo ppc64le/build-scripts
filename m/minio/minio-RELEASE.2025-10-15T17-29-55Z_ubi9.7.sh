@@ -11,7 +11,7 @@
 # Maintainer	: Simran Sirsat <Simran.Sirsat@ibm.com>
 #
 #
-# Disclaimer: This script has been tested in non-root mode on given
+# Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
@@ -26,7 +26,6 @@ PACKAGE_URL=https://github.com/minio/minio
 BUILD_HOME=`pwd`
 SCRIPT_PATH=$(dirname $(realpath $0))
 
-sudo chown -R test_user:test_user /home/tester
 yum install -y wget git tar make
 
 GO_VERSION=1.24.8
@@ -62,6 +61,24 @@ if ! make install; then
     echo "$PACKAGE_NAME  |  $PACKAGE_VERSION |  $OS_NAME | GitHub | Fail |  Install_Fails"
 	exit 1
 fi
+
+# Test (create non-root user for testing)
+
+useradd -m -s /bin/bash tester || true
+groupadd podman || true
+usermod -aG podman tester || true
+
+# Give ownership of minIO source to tester
+chown -R tester:tester $BUILD_HOME/$PACKAGE_NAME || true
+
+# Switch to tester user and run tests
+su - tester -c "
+set -e
+set -x
+cd $BUILD_HOME/$PACKAGE_NAME
+
+export PATH=$PATH:/usr/local/go/bin
+export GOPATH=/home/tester/go
 
 if ! make test; then
 	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
