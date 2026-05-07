@@ -3,7 +3,7 @@
 # Package        : lingua-language-detector
 # Version        : 2.2.0
 # Source repo    : https://github.com/pemistahl/lingua-rs
-# Tested on      : UBI 9.6
+# Tested on      : UBI:9.6
 # Language       : Rust with Python bindings
 # Ci-Check       : True
 # Maintainer     : Vijay Vinnakota <vijay.vinnakota@ibm.com>
@@ -37,23 +37,7 @@ echo ""
 # Install dependencies (UBI 9.6 + RPM Python 3.12)
 # ------------------------------------------------------------------------------
 
-dnf install -y \
-    python3.12 \
-    python3.12-devel \
-    python3.12-pip \
-    gcc \
-    gcc-c++ \
-    make \
-    git \
-    rust \
-    cargo \
-    openssl-devel \
-    libffi-devel \
-    zlib-devel && \
-dnf clean all
-
-python3.12 --version
-pip3.12 --version
+dnf install -y python3.12 python3.12-devel python3.12-pip gcc gcc-c++ make git rust cargo openssl-devel libffi-devel zlib-devel && dnf clean all
 
 # ------------------------------------------------------------------------------
 # Python build tooling
