@@ -1,14 +1,16 @@
 # -----------------------------------------------------------------------------
 #
-# Package	: MinIO
-# Version	: RELEASE.2025-10-15T17-29-55Z
-# Source repo : https://github.com/minio/minio
-# Tested on	: UBI9.7
-# Language	: GO
+# Package		: MinIO
+# Version		: RELEASE.2025-10-15T17-29-55Z
+# Source repo 	: https://github.com/minio/minio
+# Tested on		: UBI 9.7
+# Language		: GO
+# Ci-Check  	: True
 # Script License: Apache License, Version 2 or later
 # Maintainer	: Simran Sirsat <Simran.Sirsat@ibm.com>
 #
-# Disclaimer: This script has been tested in root mode on given
+#
+# Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
