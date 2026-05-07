@@ -11,7 +11,7 @@
 # Maintainer	: Simran Sirsat <Simran.Sirsat@ibm.com>
 #
 #
-# Disclaimer: This script has been tested in root mode on given
+# Disclaimer: This script has been tested in non-root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
@@ -26,7 +26,7 @@ PACKAGE_URL=https://github.com/minio/minio
 BUILD_HOME=`pwd`
 SCRIPT_PATH=$(dirname $(realpath $0))
 
-chown -R test_user:test_user /home/tester
+sudo chown -R test_user:test_user /home/tester
 yum install -y wget git tar make
 
 GO_VERSION=1.24.8
