@@ -26,7 +26,7 @@ PACKAGE_URL=https://github.com/minio/minio
 BUILD_HOME=`pwd`
 SCRIPT_PATH=$(dirname $(realpath $0))
 
-sudo chown -R test_user:test_user /home/tester
+#sudo chown -R test_user:test_user /home/tester
 yum install -y wget git tar make
 
 GO_VERSION=1.24.8
