@@ -28,6 +28,7 @@ PYTHON_VERSION=3.11.14
 PYTHON_VERSION_WO_DOTS=${PYTHON_VERSION//./}
 BAZEL_VERSION=6.5.0
 
+# Note: Parsing CLI arguments is not required. Its only purpose is to test wheel creation without running the test cases locally. It will not be used by CI, so please do not refer to it while creating the new script.
 # -------------------
 # Parse CLI Arguments
 # -------------------
