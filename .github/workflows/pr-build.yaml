@@ -37,6 +37,7 @@ jobs:
         uses: actions/checkout@v6
         with:
              fetch-depth: 0
+             ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Checkout code (Workflow Dispatch)
         if: github.event_name == 'workflow_dispatch'
@@ -73,9 +74,6 @@ jobs:
           else
               echo "Script completed successfully for PR #${PR_NUMBER}"
           fi
-
-      - name: Fetch base branch
-        run: git fetch origin ${{ github.base_ref }} --depth=1
 
       - name: Locate and parse build_info.json
         run: |
