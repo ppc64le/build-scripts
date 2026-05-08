@@ -24,7 +24,7 @@ PACKAGE_URL=https://github.com/numactl/numactl
 PACKAGE_DIR=./numactl
 
 # Install dependencies
-yum install -y git autoconf automake libtool wget
+yum install -y git python-devel python-pip autoconf automake libtool wget
 
 # Clone the repository
 git clone $PACKAGE_URL $PACKAGE_NAME
