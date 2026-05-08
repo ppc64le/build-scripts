@@ -72,12 +72,13 @@ usermod -aG podman tester || true
 chown -R tester:tester $BUILD_HOME/$PACKAGE_NAME || true
 
 # Switch to tester user and run tests
-su - tester -c "
+su - tester <<EOF
 set -e
 set -x
+
 cd $BUILD_HOME/$PACKAGE_NAME
 
-export PATH=$PATH:/usr/local/go/bin
+export PATH=\$PATH:/usr/local/go/bin
 export GOPATH=/home/tester/go
 
 if ! make test; then
@@ -89,3 +90,4 @@ else
 	echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
 	exit 0
 fi
+EOF
