@@ -72,6 +72,7 @@ usermod -aG podman tester || true
 chown -R tester:tester $BUILD_HOME/$PACKAGE_NAME || true
 
 # Switch to tester user and run tests
+
 su - tester <<EOF
 set -e
 set -x
@@ -82,12 +83,12 @@ export PATH=\$PATH:/usr/local/go/bin
 export GOPATH=/home/tester/go
 
 if ! make test; then
-	echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"
-	echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $OS_NAME | GitHub | Fail |  Install_success_but_test_Fails" 
-	exit 1
+    echo "------------------$PACKAGE_NAME:test_fails---------------------"
+    echo "$PACKAGE_NAME | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_success_but_test_Fails"
+    exit 1
 else
-	echo "------------------$PACKAGE_NAME:install_&_test_both_success-------------------------"
-	echo "$PACKAGE_NAME  |  $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass |  Both_Install_and_Test_Success"
-	exit 0
+    echo "------------------$PACKAGE_NAME:test_success---------------------"
+    echo "$PACKAGE_NAME | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | Both_Install_and_Test_Success"
+    exit 0
 fi
 EOF
