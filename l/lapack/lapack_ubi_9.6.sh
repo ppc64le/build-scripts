@@ -35,9 +35,9 @@ cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 echo "Building LAPACK with tests enabled..."
-mkdir build && cd build
+mkdir cmake_build && cd cmake_build
 
-if ! cmake .. -DBUILD_TESTING=ON -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=$SCRIPT_DIR/lapack-prefix ; then
+if ! cmake .. -DBUILD_TESTING=ON -DBUILD_SHARED_LIBS=ON -DLAPACKE=ON -DCMAKE_INSTALL_PREFIX=$SCRIPT_DIR/lapack-prefix ; then
     echo "------------------$PACKAGE_NAME:Configure_fails---------------------"
     exit 1
 fi
