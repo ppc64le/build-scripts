@@ -33,9 +33,14 @@ cd $PACKAGE_NAME
 # Checkout the specified version
 git checkout $PACKAGE_VERSION
 
+# Create the local directory structure expected by pyproject.toml
+mkdir -p $(pwd)/local/numactl
+PREFIX=$(pwd)/local/numactl
+
 # Prepare the build system
 ./autogen.sh
-./configure
+./configure --prefix=$PREFIX
+
 
 # Compile the package
 if ! make; then
@@ -43,8 +48,9 @@ if ! make; then
     exit 1
 fi
 
+echo "========================================= Installing now =========================================="
 # Install the package
-if ! make install; then
+if ! make install PREFIX=${PREFIX}; then
     echo "------------------$PACKAGE_NAME: Install failed ------------------"
     exit 1
 else
@@ -54,7 +60,21 @@ fi
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/n/numactl/pyproject.toml
 sed -i "s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g" pyproject.toml
 
-mkdir -p local
+# -----------------------------------------------------------------------------
+# Library path setup
+# -----------------------------------------------------------------------------
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${PREFIX}/lib64:${PREFIX}/lib
+
+# -----------------------------------------------------------------------------
+# Python package install (from original script)
+# -----------------------------------------------------------------------------
+echo "------------------------Installing Python package-------------------"
+
+if ! pip install . --no-build-isolation ; then
+    echo "------------------$PACKAGE_NAME:Python_Install_fails-------------------------------------"
+    exit 1
+fi
+
 
 # Run the unit test case 
 if ! make -k check VERBOSE=1 TESTS='test/tbitmap'; then
