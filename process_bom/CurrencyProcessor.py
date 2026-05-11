@@ -67,30 +67,34 @@ class CurrencyProcessor:
         return result
     
     def _get_build_status_from_log(self, content: str) -> str:
-        content = content.lower()
-
-        # --- Ordered failure checks (highest priority first) ---
-        failure_messages = [
-            "wheel creation failed for python (without isolation)",
-            "wheel creation failed for python",
-            "error: failed to post process wheels."
-        ]
-
-        for failure in failure_messages:
-            if failure in content:
-                return "failure"
-
-        # --- Success checks ---
+        lines = content.splitlines()
         success_messages = [
-            "success: wheels post process successfully",
-            "final wheel:"
+            "SUCCESS: Wheels post process successfully."
         ]
+        failure_messages = [
+            "ERROR: Auditwheel failed.",
+            "ERROR: Expected exactly 1 wheel but found",
+            "ERROR: Auditwheel failed to repair wheel:",
+            "ERROR: Skipped wheel is not universal i.e(*any.whl).",
+            "Wheel Creation Failed for Python.",
+            "ERROR: Failed to post process wheels."
+        ]
+        # --- Check success first (exact line match) ---
+        for line in lines:
+            line_clean = line.strip().lower()
+            # Remove ===> prefix if present
+            if line_clean.startswith("===>"):
+                line_clean = line_clean[4:].strip()
+            for success in success_messages:
+                if line_clean == success.lower():
+                    return "success"
 
-        for success in success_messages:
-            if success in content:
-                return "success"
-
-        # --- Default fallback (important decision) ---
+        # --- Check failure next (substring match) ---
+        content_lower = content.lower()
+        for failure in failure_messages:
+            if failure.lower() in content_lower:
+                return "failure"
+        # --- Default fallback ---
         return "success"
 
     def _get_package_details(self, package_name: str, version: str):
