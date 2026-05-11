@@ -26,18 +26,18 @@ PACKAGE_DIR=./lapack
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 
 echo "Installing required dependencies..."
-
 yum install -y git gcc gcc-c++ gcc-gfortran make cmake wget
 
 echo "Cloning LAPACK source..."
+SCRIPT_DIR=$(pwd)
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 
 echo "Building LAPACK with tests enabled..."
-mkdir build && cd build
+mkdir cmake_build && cd cmake_build
 
-if ! cmake .. -DBUILD_TESTING=ON ; then
+if ! cmake .. -DBUILD_TESTING=ON -DBUILD_SHARED_LIBS=ON -DLAPACKE=ON -DCMAKE_INSTALL_PREFIX=$SCRIPT_DIR/lapack-prefix ; then
     echo "------------------$PACKAGE_NAME:Configure_fails---------------------"
     exit 1
 fi
@@ -47,8 +47,13 @@ if ! make -j$(nproc) ; then
     exit 2
 fi
 
+cmake --install .
 cd ..
 
+mkdir -p local/lapack
+cp -r $SCRIPT_DIR/lapack-prefix/* local/lapack/
+
+export LD_LIBRARY_PATH=$SCRIPT_DIR/lapack-prefix/lib:$SCRIPT_DIR/lapack-prefix/lib64:${LD_LIBRARY_PATH}
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/l/lapack/pyproject.toml
 sed -i "s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g" pyproject.toml
 mkdir -p local
