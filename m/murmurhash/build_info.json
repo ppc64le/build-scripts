@@ -2,7 +2,7 @@
    "maintainer": "bhagyashrigais",
    "package_name": "murmurhash",
    "github_url": "https://github.com/explosion/murmurhash.git",
-   "version": "v1.0.15",
+   "version": "release-v1.0.15",
    "default_branch": "master",
    "build_script": "murmurhash_ubi_9.6.sh",
    "package_dir": "m/murmurhash",
