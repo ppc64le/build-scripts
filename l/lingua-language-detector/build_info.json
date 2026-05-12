@@ -2,7 +2,7 @@
   "maintainer": "vijay-vinnakota",
   "package_name": "lingua-language-detector",
   "github_url": "https://github.com/pemistahl/lingua-rs",
-  "version": "2.2.0",
+  "version": "v1.8.0",
   "wheel_build" : true,
   "package_dir": "l/lingua-language-detector",
   "default_branch": "master",
