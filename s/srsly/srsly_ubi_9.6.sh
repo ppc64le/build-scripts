@@ -5,7 +5,7 @@
 # Version          : release-v2.5.3
 # Source repo      : https://github.com/explosion/srsly
 # Tested on        : UBI:9.6
-# Language         : Python, MDX
+# Language         : Python
 # Ci-Check         : True
 # Script License   : Apache License, Version 2 or later
 # Maintainer       : Puneet Sharma <Puneet.Sharma21@ibm.com>
@@ -23,7 +23,7 @@ PACKAGE_URL=https://github.com/explosion/srsly
 PACKAGE_VERSION=${1:-release-v2.5.3}
 PACKAGE_DIR=srsly
 
-dnf -y install git python3 python3-pip python3-devel make gcc-toolset-13 openblas-devel
+dnf -y install git python3 python3-pip python3-devel make gcc-toolset-13
 
 # Enable GCC toolset
 source /opt/rh/gcc-toolset-13/enable
