@@ -28,7 +28,7 @@ yum install -y git gcc-c++ gcc wget make python3.12 yum-utils \
                apr-devel perl openssl-devel automake autoconf libtool cmake \
                cargo libstdc++-static libaio libuuid-devel ncurses-devel \
                libtool m4 autoconf automake ninja-build zlib-devel \
-               libffi-devel scl-utils xz patch \
+               libffi-devel scl-utils openblas-devel xz patch \
                python3.12-devel python3.12-pip
 
 yum remove -y gcc-toolset-13 || true
