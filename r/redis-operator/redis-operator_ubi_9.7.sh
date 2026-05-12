@@ -29,6 +29,7 @@ sudo yum install -y \
     git make wget gcc gcc-c++ tar
 
 # Install GO
+cd /tmp
 export GO_VERSION=${GO_VERSION:-1.23.4}
 export GOROOT=${GOROOT:-"/usr/local/go"}
 export GOPATH=${GOPATH:-$HOME/go}
