@@ -21,10 +21,10 @@ set -e
 
 # Variables
 PACKAGE_NAME="lingua-language-detector"
-PACKAGE_VERSION="2.2.0"
+PACKAGE_VERSION="v1.8.0"
 PACKAGE_ORG="pemistahl"
-PACKAGE_REPO="lingua-rs"
-PACKAGE_URL="https://github.com/${PACKAGE_ORG}/${PACKAGE_REPO}.git"
+PACKAGE_DIR="lingua-rs"
+PACKAGE_URL="https://github.com/${PACKAGE_ORG}/${PACKAGE_DIR}.git"
 SOURCE="GitHub"
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2 | tr -d '"')
@@ -43,19 +43,33 @@ dnf install -y python3.12 python3.12-devel python3.12-pip gcc gcc-c++ make git r
 # Python build tooling
 # ------------------------------------------------------------------------------
 
-pip3.12 install --upgrade pip setuptools wheel pytest
-pip3.12 install maturin==1.13.1
+python3.12 -m pip install --upgrade pip setuptools wheel pytest
+python3.12 -m pip install maturin==1.13.1
 
 # ------------------------------------------------------------------------------
 # Clone source (lingua-rs is Git-only;)
 # ------------------------------------------------------------------------------
 
-git clone "${PACKAGE_URL}"
-if [ $? -ne 0 ]; then 
-  echo "ERROR: Failed to clone repository"
-  exit 1  
+if [[ "${PACKAGE_URL}" == *"github.com"* ]]; then
+  if [ -d "${PACKAGE_DIR}" ]; then
+    cd "${PACKAGE_DIR}" || exit 1
+  else
+    if ! git clone "${PACKAGE_URL}" "${PACKAGE_DIR}"; then
+      echo "------------------${PACKAGE_NAME}:clone_fails---------------------------------------"
+      echo "${PACKAGE_URL} ${PACKAGE_NAME}"
+      echo "${PACKAGE_NAME} | ${PACKAGE_URL} | ${PACKAGE_VERSION} | ${OS_NAME} | ${SOURCE} | Fail | Clone_Fails"
+      exit 1
+    fi
+    # Checkout the requested version 
+    cd "${PACKAGE_DIR}" || exit 1
+    git checkout "${PACKAGE_VERSION}" || exit 1
+    
+  fi
+else
+  echo "ERROR: PACKAGE_URL is not a GitHub URL: ${PACKAGE_URL}"
+  exit 1
 fi
-cd "${PACKAGE_REPO}" || exit 1
+
 
 # ------------------------------------------------------------------------------
 # Build wheel
