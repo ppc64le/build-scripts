@@ -118,7 +118,6 @@ from setuptools.command.build_py import build_py
 import os, shutil, stat
 
 PYTHON_PACKAGE_NAME = "ollama_python_package"
-# This will now correctly expand to the script's PACKAGE_VERSION (minus the 'v')
 VERSION = "${PACKAGE_VERSION#v}"
 
 BIN_SRC = os.path.join(os.getcwd(), "ollama")
