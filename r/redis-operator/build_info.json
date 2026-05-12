@@ -4,7 +4,7 @@
   "github_url": "https://github.com/OT-CONTAINER-KIT/redis-operator",
   "version": "v0.24.0",
   "default_branch": "main",
-  "package_dir": "r/redisearch",
+  "package_dir": "r/redis-operator",
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
   "build_script": "redis-operator_ubi_9.7.sh",
   "validate_build_script": "true",
