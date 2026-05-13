@@ -26,10 +26,18 @@ WORK_DIR=$(pwd)
 CURRENT_DIR=$(pwd)
 
 echo "Installing dependencies..."
-yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3 python3-devel python3-pip cmake xz bzip2-devel libffi-devel patch ninja-build
+yum install -y git make libtool wget gcc-toolset-13-gcc gcc-toolset-13-gcc-c++ gcc-toolset-13-gcc-gfortran libevent-devel zlib-devel openssl-devel clang python3.12 python3.12-devel python3.12-pip cmake xz bzip2-devel libffi-devel patch ninja-build
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
 export LD_LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib64:$LD_LIBRARY_PATH
-PYTHON_VERSION=$(python3 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
+PYTHON_VERSION=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
+if python3 -c 'import sys; sys.exit(0 if sys.version_info < (3,10) else 1)'; then
+    echo "Python version is $PYTHON_VERSION (< 3.10).Required >=3.10"
+fi
+
+PYTHON_VERSION=$(python3.12 --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
+"python$PYTHON_VERSION" -m venv --system-site-packages VENV_DIR
+source VENV_DIR/bin/activate
+
 export SITE_PACKAGE_PATH=/usr/local/lib/python${PYTHON_VERSION}/site-packages
 export CC=/opt/rh/gcc-toolset-13/root/usr/bin/gcc
 export CXX=/opt/rh/gcc-toolset-13/root/usr/bin/g++
@@ -41,14 +49,10 @@ gcc --version
 echo "**** Checking GCC version..."
 gcc -v || true
 
-if python3 -c 'import sys; sys.exit(0 if sys.version_info < (3,10) else 1)'; then
-    echo "Python version is $PYTHON_VERSION (< 3.10). Skipping build."
-    exit 0
-fi
 
 echo "Python version is supported: $PYTHON_VERSION"
 # Get Python include path
-PYTHON_INCLUDE=$(python3 -c "from sysconfig import get_paths; print(get_paths()['include'])")
+PYTHON_INCLUDE=$(python3.12 -c "from sysconfig import get_paths; print(get_paths()['include'])")
 export CPLUS_INCLUDE_PATH=$PYTHON_INCLUDE:$CPLUS_INCLUDE_PATH
 export C_INCLUDE_PATH=$PYTHON_INCLUDE:$C_INCLUDE_PATH
 
@@ -144,12 +148,12 @@ export LIBRARY_PATH="$ABSEIL_PREFIX/lib:$ABSEIL_PREFIX/lib64:$LIBPROTO_INSTALL/l
 
 # Build Python package
 cd python
-python3 setup.py install
+python3.12 setup.py install
 echo " --------------------------------------------------- Protobuf Patch Applied Successfully --------------------------------------------------- "
 
 cd $CURRENT_DIR
 
-python3 -m pip install pybind11==2.12.0
+python3.12 -m pip install pybind11==2.12.0
 PYBIND11_PREFIX=$SITE_PACKAGE_PATH/pybind11
 export CMAKE_PREFIX_PATH="$ABSEIL_PREFIX;$LIBPROTO_INSTALL;$PYBIND11_PREFIX"
 echo "Updated CMAKE_PREFIX_PATH after OpenBLAS: $CMAKE_PREFIX_PATH"
@@ -194,12 +198,12 @@ export CXXFLAGS="-I$ABSEIL_PREFIX/include -I$LIBPROTO_INSTALL/include $CXXFLAGS"
 
 # Adding this source due to - (Unable to detect linker for compiler `cc -Wl,--version`)
 source /opt/rh/gcc-toolset-13/enable
-python3 -m pip install cython meson
-python3 -m pip install numpy
-python3 -m pip install parameterized
-python3 -m pip install pytest nbval pythran
+python3.12 -m pip install cython meson
+python3.12 -m pip install numpy
+python3.12 -m pip install parameterized
+python3.12 -m pip install pytest nbval pythran
 
-python3 setup.py install
+python3.12 setup.py install
 echo "--------------onnx installed------------------"
 cd ..
 
@@ -209,25 +213,23 @@ git clone $PACKAGE_URL
 cd $PACKAGE_DIR
 git checkout $PACKAGE_VERSION
 
-export CXXFLAGS="-Wno-stringop-overflow"
+export CXXFLAGS="-Wno-stringop-overflow -Wno-psabi"
 export CFLAGS="-Wno-stringop-overflow"
-python3 -m pip install packaging wheel
+python3.12 -m pip install packaging wheel
 NUMPY_INCLUDE=$(python -c "import numpy; print(numpy.get_include())")
 echo "NumPy include path: $NUMPY_INCLUDE"
 
-NUMPY_INCLUDE=$(python3 -c "import numpy; print(numpy.get_include())")
+NUMPY_INCLUDE=$(python3.12 -c "import numpy; print(numpy.get_include())")
 export CMAKE_PREFIX_PATH="$ABSEIL_PREFIX:$LIBPROTO_INSTALL:$PYBIND11_PREFIX:$CMAKE_PREFIX_PATH"
 export LD_LIBRARY_PATH="$LIBPROTO_INSTALL/lib64:$ABSEIL_PREFIX/lib:$LD_LIBRARY_PATH"
 export CXXFLAGS="-I${NUMPY_INCLUDE} $CXXFLAGS"
 export Python3_NumPy_INCLUDE_DIR=${NUMPY_INCLUDE}
-
 # Add Python include path to build environment
 export CPLUS_INCLUDE_PATH=$PYTHON_INCLUDE:$CPLUS_INCLUDE_PATH
 export C_INCLUDE_PATH=$PYTHON_INCLUDE:$C_INCLUDE_PATH
 cmake --version
 #Build and Test
 #Building and testing both are performed in build.sh
-NUMPY_INCLUDE=$(python3 -c "import numpy; print(numpy.get_include())")
 if ! (./build.sh \
 --cmake_extra_defines \
 onnxruntime_PREFER_SYSTEM_LIB=ON \
