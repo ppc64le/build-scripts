@@ -11,7 +11,7 @@
   "use_non_root_user": "true",
   "docker_build": "true",
   "v0.24.0": {
-      "dir": "0.24.0_ubi_9.7",
+      "dir": "v0.24.0_ubi9.7",
       "build_script": "redis-operator_ubi_9.7.sh"
     }
 }
