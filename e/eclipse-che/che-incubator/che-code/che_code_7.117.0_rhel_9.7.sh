@@ -5,6 +5,8 @@
 # Version         : 7.117.0
 # Source repo     : https://github.com/che-incubator/che-code
 # Tested on       : rhel_9.7
+# Language        : TypeScript
+# Ci-Check        : True
 # Script License  : Eclipse Public License - v 2.0
 # Maintainer      : Prabhu K <Prabhu.K@ibm.com>
 #
