@@ -33,6 +33,7 @@ SOURCE=Github
 echo "Installing required packages..."
 yum install -y git wget gcc gcc-c++ python3.12-devel python3.12-pip zlib zlib-devel libjpeg-devel libjpeg-turbo libjpeg-turbo-devel freetype-devel
 python3.12 -m pip install build pytest wheel
+python3.12 -m pip install huggingface-hub
 
 export PATH=$PATH:/usr/local/bin/
 export PATH=/opt/rh/gcc-toolset-13/root/usr/bin:$PATH
