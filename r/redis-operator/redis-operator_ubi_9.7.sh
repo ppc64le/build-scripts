@@ -22,6 +22,8 @@ PACKAGE_VERSION=${1:-v0.24.0}
 PACKAGE_URL=https://github.com/OT-CONTAINER-KIT/redis-operator
 PACKAGE_DIR=redis-operator
 
+sudo chown -R test_user:test_user /home/tester
+
 # Install system dependencies
 echo ">>> Installing System Dependencies"
 sudo yum install -y \
@@ -39,8 +41,7 @@ sudo tar -C /usr/local -xvzf go${GO_VERSION}.linux-ppc64le.tar.gz
 rm -rf go${GO_VERSION}.linux-ppc64le.tar.gz
 
 # Clone the repository
-cd /tmp
-rm -rf $PACKAGE_DIR
+cd $HOME
 git clone $PACKAGE_URL
 cd $PACKAGE_DIR && git checkout $PACKAGE_VERSION
 
