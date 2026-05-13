@@ -21,8 +21,9 @@ PACKAGE_NAME=redis-operator
 PACKAGE_VERSION=${1:-v0.24.0}
 PACKAGE_URL=https://github.com/OT-CONTAINER-KIT/redis-operator
 PACKAGE_DIR=redis-operator
+WORKDIR=$(pwd)
 
-sudo chown -R test_user:test_user /home/tester
+sudo chown -R $(whoami):$(whoami) $HOME || true
 
 # Install system dependencies
 echo ">>> Installing System Dependencies"
@@ -30,7 +31,6 @@ sudo yum install -y \
     git make wget gcc gcc-c++ tar
 
 # Install GO
-cd /tmp
 export GO_VERSION=${GO_VERSION:-1.23.4}
 export GOROOT=${GOROOT:-"/usr/local/go"}
 export GOPATH=${GOPATH:-$HOME/go}
@@ -41,7 +41,7 @@ sudo tar -C /usr/local -xvzf go${GO_VERSION}.linux-ppc64le.tar.gz
 rm -rf go${GO_VERSION}.linux-ppc64le.tar.gz
 
 # Clone the repository
-cd $HOME
+cd $WORKDIR
 git clone $PACKAGE_URL
 cd $PACKAGE_DIR && git checkout $PACKAGE_VERSION
 
@@ -66,12 +66,25 @@ else
     echo ">>> Binary not found"
     exit 1
 fi
+
 # Install setup-envtest and configure Kubernetes envtest assets for running tests
+echo ">>> Installing setup-envtest"
 go install sigs.k8s.io/controller-runtime/tools/setup-envtest@latest
-id tester &>/dev/null || sudo useradd -m tester
-export USER=tester
-setup-envtest use 1.29.0 -p path
-export KUBEBUILDER_ASSETS=$(setup-envtest use 1.29.0 -p path)
+
+# Create a user-writable directory for kubebuilder assets
+export KUBEBUILDER_ASSETS_DIR=$HOME/.kubebuilder
+mkdir -p $KUBEBUILDER_ASSETS_DIR
+
+# Configure setup-envtest to use the user-writable directory
+echo ">>> Setting up envtest with Kubernetes 1.29.0"
+export KUBEBUILDER_ASSETS=$(setup-envtest use 1.29.0 -p path --bin-dir $KUBEBUILDER_ASSETS_DIR)
+
+# Verify KUBEBUILDER_ASSETS is set
+if [ -z "$KUBEBUILDER_ASSETS" ]; then
+    echo ">>> Failed to set KUBEBUILDER_ASSETS"
+    exit 1
+fi
+echo ">>> KUBEBUILDER_ASSETS set to: $KUBEBUILDER_ASSETS"
 
 # Unit tests
 echo ">>> Running Unit Tests"
