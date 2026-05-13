@@ -68,7 +68,8 @@ else
 fi
 # Install setup-envtest and configure Kubernetes envtest assets for running tests
 go install sigs.k8s.io/controller-runtime/tools/setup-envtest@latest
-export USER=${USER:-tester}
+id tester &>/dev/null || sudo useradd -m tester
+export USER=tester
 setup-envtest use 1.29.0 -p path
 export KUBEBUILDER_ASSETS=$(setup-envtest use 1.29.0 -p path)
 
