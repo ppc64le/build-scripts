@@ -86,6 +86,10 @@ if [ -z "$KUBEBUILDER_ASSETS" ]; then
 fi
 echo ">>> KUBEBUILDER_ASSETS set to: $KUBEBUILDER_ASSETS"
 
+# Set USER environment variable if not set (required by integration test scripts)
+export USER=${USER:-$(whoami)}
+echo ">>> USER set to: $USER"
+
 # Unit tests
 echo ">>> Running Unit Tests"
 ret=0
