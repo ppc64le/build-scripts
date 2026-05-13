@@ -39,7 +39,8 @@ sudo tar -C /usr/local -xvzf go${GO_VERSION}.linux-ppc64le.tar.gz
 rm -rf go${GO_VERSION}.linux-ppc64le.tar.gz
 
 # Clone the repository
-cd $HOME
+cd /tmp
+rm -rf $PACKAGE_DIR
 git clone $PACKAGE_URL
 cd $PACKAGE_DIR && git checkout $PACKAGE_VERSION
 
