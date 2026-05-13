@@ -23,7 +23,7 @@ set -e
 # Variables
 PACKAGE_DIR="docling-parse"
 PACKAGE_NAME="docling-parse"
-PACKAGE_VERSION="${1:-v4.7.1}"
+PACKAGE_VERSION="${1:-v5.11.0}"
 PACKAGE_URL="https://github.com/docling-project/docling-parse.git"
 
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
