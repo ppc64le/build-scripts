@@ -59,4 +59,4 @@ if ! pytest -v --capture=no -p no:warnings ; then
 else
     echo "------------------$PACKAGE_NAME:Install_&_test_both_success-------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
-    
+fi
