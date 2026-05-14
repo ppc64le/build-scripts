@@ -2,7 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 # Package          : preshed
-# Version          : v3.0.13
+# Version          : release-v3.0.13
 # Source repo      : https://github.com/explosion/preshed.git
 # Tested on        : UBI:9.6
 # Language         : Python
