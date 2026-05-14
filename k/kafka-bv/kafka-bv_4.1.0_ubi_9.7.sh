@@ -7,7 +7,7 @@
 # Tested on     : UBI:9.7
 # Language      : Java, Scala
 # Ci-Check      : True
-# Script License: Apache License Version 2.0
+# Script License: Apache License, Version 2 or later
 # Maintainer    : Veenious D Geevarghese <Veenious.Geevarghese@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
