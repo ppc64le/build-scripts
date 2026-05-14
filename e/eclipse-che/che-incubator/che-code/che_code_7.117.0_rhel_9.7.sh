@@ -50,13 +50,17 @@ export BUILDAH_ISOLATION=chroot
 
 yum install docker -y
 
+yum install wget -y
+
 #Clone repo
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
 git checkout $VERSION
 
 #Move dockerfiles to main folder
-cp $CWD/Dockerfiles/linux-musl.Dockerfile .
+#cp $CWD/Dockerfiles/linux-musl.Dockerfile .
+wget https://raw.githubusercontent.com/prabhuk25/build-scripts/refs/heads/che-code/e/eclipse-che/che-incubator/che-code/Dockerfiles/linux-musl.Dockerfile
+
 cp build/dockerfiles/linux-libc-ubi8.Dockerfile .
 cp build/dockerfiles/linux-libc-ubi9.Dockerfile .
 cp build/dockerfiles/assembly.Dockerfile .
