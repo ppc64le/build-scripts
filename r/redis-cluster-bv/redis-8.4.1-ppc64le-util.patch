@@ -1,0 +1,15 @@
+diff --git a/tests/support/util.tcl b/tests/support/util.tcl
+index 9a27139a7..e6b16139f 100644
+--- a/tests/support/util.tcl
++++ b/tests/support/util.tcl
+@@ -1234,6 +1234,10 @@ proc system_backtrace_supported {} {
+     } elseif {$system_name ne {linux}} {
+         return 0
+     }
++    # ppc64le backtrace() does not reliably capture full stack traces
++    if {[exec uname -m] eq {ppc64le}} {
++        return 0
++    }
+ 
+     # libmusl does not support backtrace. Also return 0 on
+     # static binaries (ldd exit code 1) where we can't detect libmusl
