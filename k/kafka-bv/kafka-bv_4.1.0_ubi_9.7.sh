@@ -2,10 +2,10 @@
 # ----------------------------------------------------------------------------
 #
 # Package       : kafka
-# Version       : 4.1.0
-# Source repo   : https://github.com/apache/kafka.git
+# Version       : v4.1.0
+# Source repo   : https://github.com/apache/kafka
 # Tested on     : UBI:9.7
-# Language      : Java, Scala
+# Language      : Java
 # Ci-Check      : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Veenious D Geevarghese <Veenious.Geevarghese@ibm.com>
@@ -19,7 +19,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=kafka
-PACKAGE_VERSION=${1:-4.1.0}
+PACKAGE_VERSION=${1:-'4.1.0'}
 PACKAGE_URL=https://github.com/apache/kafka.git
 
 BITNAMI_COMMIT=${BITNAMI_COMMIT:-be4c353}
