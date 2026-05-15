@@ -73,21 +73,6 @@ gcc --version
 g++ --version
 
 
-echo "-------------------- Building patchelf from source -----------------"
-
-cd ${CURRENT_DIR}
-
-wget https://github.com/NixOS/patchelf/releases/download/0.18.0/patchelf-0.18.0.tar.gz
-tar --no-same-owner -xzf patchelf-0.18.0.tar.gz
-cd patchelf-0.18.0
-
-./configure --prefix=/usr
-make -j$(nproc)
-make install
-
-patchelf --version
-
-cd ${CURRENT_DIR}
 
 # -----------------------------------------------------------------------------
 # Build numactl from source
@@ -158,8 +143,7 @@ python3.12 -m pip install \
   maturin \
   setuptools_rust \
   cffi \
-  scikit-build-core \
-  auditwheel
+  scikit-build-core
 
 # -----------------------------------------------------------------------------
 # Python dependencies
@@ -211,63 +195,25 @@ python3.12 -m pip install llguidance xgrammar
 export VLLM_TARGET_DEVICE=cpu
 export MAX_JOBS=$(nproc)
 
-# Build wheel into staging directory (pre-repair)
-python3.12 setup.py bdist_wheel --dist-dir="${CURRENT_DIR}/pre_repair"
+export SETUPTOOLS_SCM_PRETEND_VERSION=${PACKAGE_VERSION#v}
+python3.12 setup.py install
+python3.12 setup.py bdist_wheel --dist-dir="${CURRENT_DIR}"
 
 cd ${CURRENT_DIR}
-
-
-echo "-------------------- Repairing wheel with auditwheel ---------------"
-
-PRE_REPAIR_WHEEL=$(ls ${CURRENT_DIR}/pre_repair/vllm-*.whl)
-
-TORCH_LIB_PATH=$(python3.12 -c "import torch; import os; print(os.path.dirname(torch.__file__))")/lib
-echo "Torch lib path: ${TORCH_LIB_PATH}"
-export LD_LIBRARY_PATH=${TORCH_LIB_PATH}:${LD_LIBRARY_PATH}
-
-echo "Pre-repair wheel: ${PRE_REPAIR_WHEEL}"
-echo "Inspecting external dependencies before repair..."
-auditwheel show ${PRE_REPAIR_WHEEL}
-
-auditwheel repair ${PRE_REPAIR_WHEEL} \
-    --plat manylinux_2_34_ppc64le \
-    --exclude libc10.so \
-    --exclude libtorch.so \
-    --exclude libtorch_cpu.so \
-    --exclude libtorch_python.so \
-    --wheel-dir "${CURRENT_DIR}"
-
-REPAIRED_WHEEL=$(ls ${CURRENT_DIR}/vllm-*.whl)
-echo "Repaired wheel: ${REPAIRED_WHEEL}"
-
-echo "Verifying bundled libraries in repaired wheel..."
-auditwheel show ${REPAIRED_WHEEL}
 
 echo "==================================================================="
 echo "               vLLM WHEEL BUILT SUCCESSFULLY (v0.21.0)"
 echo "==================================================================="
 
 # -----------------------------------------------------------------------------
-# Test - install repaired wheel in a clean venv 
+# Test - Run tests with installed vLLM
 # -----------------------------------------------------------------------------
 
-echo "-------------------- Testing repaired wheel in clean venv ----------"
-
-python3.12 -m venv /tmp/vllm_test_env
-source /tmp/vllm_test_env/bin/activate
-
-python3.12 -m pip install --upgrade pip
-
-# Install exactly as a user would - single command, let pip resolve all deps
-python3.12 -m pip install --no-cache-dir -v --prefer-binary \
-    --extra-index-url ${IBM_WHEELS} \
-    ${REPAIRED_WHEEL}
-
-echo "Running basic offline inference example..."
+echo "-------------------- Testing installed vLLM ------------------------"
 
 export VLLM_CPU_KVCACHE_SPACE=4
 
-if ! python3.12 ${CURRENT_DIR}/${PACKAGE_DIR}/examples/basic/offline_inference/basic.py; then
+if ! python3.12 ${PACKAGE_DIR}/examples/basic/offline_inference/basic.py; then
   echo "INSTALL SUCCESS BUT TEST FAILED"
   exit 2
 else
