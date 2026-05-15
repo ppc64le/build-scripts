@@ -1,0 +1,19 @@
+{
+  "maintainer": "Veenious D Geevarghese",
+  "package_name": "kafka-bv",
+  "github_url": "https://github.com/apache/kafka",
+  "version": "4.1.0",
+  "default_branch": "trunk",
+  "build_script": "kafka-bv_4.1.0_ubi_9.7.sh",
+  "package_dir": "k/kafka-bv/",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "4.*.*": {
+    "dir": "v4.1.0_ubi_9.7",
+    "build_script": "kafka-bv_4.1.0_ubi_9.7.sh",
+    "args": {
+      "kafka_version": "$PACKAGE_VERSION"
+    }
+  }
+}
