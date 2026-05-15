@@ -1,23 +1,22 @@
 #!/bin/bash -e
 
-# -----------------------------------------------------------------------------
-#
-# Package       : vllm
-# Version       : v0.21.0
-# Source repo   : https://github.com/vllm-project/vllm
-# Tested on     : UBI:9.5
-# Language      : Python
-# Ci-Check      : True
+# Required format:
+# Package	: vllm
+# Version	: v0.21.0
+# Source repo	: https://github.com/vllm-project/vllm
+# Tested on	: UBI:9.5
+# Language	: Python
+# Ci-Check	: True
 # Script License: Apache License 2.0
-# Maintainer    : Akash Kaothalkar <akash.kaothalkar@ibm.com>
-#
+# Maintainer	: Akash Kaothalkar <akash.kaothalkar@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
 #             It may not work as expected with newer versions of the
 #             package and/or distribution. In such case, please
 #             contact "Maintainer" of this script.
-# -----------------------------------------------------------------------------
+#
+# ----------------------------------------------------------------------------
 
 set -eo pipefail
 
