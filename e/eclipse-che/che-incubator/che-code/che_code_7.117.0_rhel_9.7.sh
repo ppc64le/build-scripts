@@ -36,15 +36,25 @@ yum install git -y
 
 ########## Container-in-Container Compatibility Patch (Only required for CI/containerized environments) #########
 
-# Configure Podman/docker to use vfs storage driver for container-in-container compatibility
-mkdir -p /etc/containers && cat > /etc/containers/storage.conf <<'EOF'
+# Install container tools required for container-in-container CI builds
+yum install -y buildah podman fuse-overlayfs
+
+# Configure containers storage explicitly for CI/container environments
+mkdir -p /etc/containers
+mkdir -p /var/lib/containers/storage
+mkdir -p /var/run/containers/storage
+
+cat > /etc/containers/storage.conf <<'EOF'
 [storage]
 driver = "vfs"
+runroot = "/var/run/containers/storage"
+graphroot = "/var/lib/containers/storage"
 EOF
 
-# Install container build dependencies and force safe chroot isolation for Podman in restricted/container environments
-yum install -y buildah podman fuse-overlayfs
+# Required for restricted/containerized CI environments
 export BUILDAH_ISOLATION=chroot
+export STORAGE_DRIVER=vfs
+export CONTAINERS_STORAGE_CONF=/etc/containers/storage.conf
 
 ######################
 
@@ -71,17 +81,17 @@ sed -i '/@vscode\/vsce-sign/,/\}/s/"hasInstallScript": true/"hasInstallScript": 
 
 #Build linux-musl image
 echo "linux-musl build started"
-docker build -t linux-musl -f linux-musl.Dockerfile
+docker build -t linux-musl -f linux-musl.Dockerfile .
 echo "linux-musl build completed"
 
 #Build linux-libc-ubi8
 echo "linux-libc-ubi8 build started"
-docker build -t linux-libc-ubi8 -f linux-libc-ubi8.Dockerfile
+docker build -t linux-libc-ubi8 -f linux-libc-ubi8.Dockerfile .
 echo "linux-libc-ubi8 build completed"
 
 #Build linux-libc-ubi9
 echo "linux-libc-ubi9 build started"
-docker build -t linux-libc-ubi9 -f linux-libc-ubi9.Dockerfile
+docker build -t linux-libc-ubi9 -f linux-libc-ubi9.Dockerfile .
 echo "linux-libc-ubi9 build completed"
 
 #Patch the images names to use locally build images in assesbly.Dockerfile
@@ -92,11 +102,9 @@ sed -i \
 assembly.Dockerfile
 
 #Build che-code
-echo "che-
-code build started"
-docker build -t che-code -f assembly.Dockerfile
+echo "che-code build started"
+docker build -t che-code -f assembly.Dockerfile .
 echo "che-code build completed"
 
 #If you want to test image, use below command
 #docker run --rm -it -p 3100:3100 -e CODE_HOST=0.0.0.0 che-code:latest
-
