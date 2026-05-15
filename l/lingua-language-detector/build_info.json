@@ -1,0 +1,16 @@
+{
+  "maintainer": "vijay-vinnakota",
+  "package_name": "lingua-language-detector",
+  "github_url": "https://github.com/pemistahl/lingua-rs",
+  "version": "v1.8.0",
+  "wheel_build" : true,
+  "package_dir": "l/lingua-language-detector",
+  "default_branch": "master",
+  "build_script": "lingua_ubi_9.6.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": "false",
+  "*":{
+    "build_script":"lingua_ubi_9.6.sh"
+  }
+}

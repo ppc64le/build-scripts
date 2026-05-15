@@ -3,7 +3,7 @@
   "package_name": "langflow",
   "github_url": "https://github.com/langflow-ai/langflow",
   "version": "1.7.3",
-  "wheel_build" : true,
+  "wheel_build" : false,
   "default_branch": "main",
   "package_dir": "l/langflow",
   "build_script": "langflow_v1.7.3_ubi9.6.shh",
