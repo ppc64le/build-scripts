@@ -136,6 +136,7 @@ echo " --------------------------------------------------- Onnx Installing -----
 git clone https://github.com/onnx/onnx
 cd onnx
 git checkout v1.17.0
+python3.12 -m pip install numpy==2.0.2
 git submodule update --init --recursive
 sed -i 's|https://github.com/abseil/abseil-cpp/archive/refs/tags/20230125.3.tar.gz|https://github.com/abseil/abseil-cpp/archive/refs/tags/20240116.2.tar.gz|g' CMakeLists.txt && \
 sed -i 's|e21faa0de5afbbf8ee96398ef0ef812daf416ad8|bb8a766f3aef8e294a864104b8ff3fc37b393210|g' CMakeLists.txt && \
@@ -174,7 +175,7 @@ export CMAKE_ARGS="$CMAKE_ARGS \
 # Adding this source due to - (Unable to detect linker for compiler `cc -Wl,--version`)
 source /opt/rh/gcc-toolset-13/enable
 python3.12 -m pip install cython meson
-python3.12 -m pip install numpy==2.0.2
+
 python3.12 -m pip install parameterized
 python3.12 -m pip install pytest nbval pythran mypy-protobuf
 
