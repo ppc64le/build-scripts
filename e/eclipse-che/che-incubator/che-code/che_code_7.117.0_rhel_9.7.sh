@@ -22,7 +22,6 @@
 # docker must be installed and running.
 #
 # ----------------------------------------------------------------------------
-
 set -e
 
 PACKAGE_URL=https://github.com/che-incubator/che-code
@@ -33,6 +32,7 @@ export CWD=`pwd`
 
 yum update -y
 yum install git -y
+yum install wget -y
 
 ########## Container-in-Container Compatibility Patch (Only required for CI/containerized environments) #########
 
@@ -58,9 +58,6 @@ export CONTAINERS_STORAGE_CONF=/etc/containers/storage.conf
 
 ######################
 
-yum install docker -y
-
-yum install wget -y
 
 #Clone repo
 git clone $PACKAGE_URL
@@ -77,22 +74,25 @@ cp build/dockerfiles/assembly.Dockerfile .
 
 #Patch package-lock.json to skip @vscode/vsce-sign, since it has no binary for ppc64le and its exit with code 1 on postinstall.
 sed -i '/@vscode\/vsce-sign/,/\}/s/"hasInstallScript": true/"hasInstallScript": false/' \
-       code/build/package-lock.json; \
+       code/build/package-lock.json
 
 #Build linux-musl image
 echo "linux-musl build started"
-docker build -t linux-musl -f linux-musl.Dockerfile .
+buildah bud --isolation=chroot --storage-driver=vfs --format=docker -t linux-musl -f linux-musl.Dockerfile . 
 echo "linux-musl build completed"
 
 #Build linux-libc-ubi8
 echo "linux-libc-ubi8 build started"
-docker build -t linux-libc-ubi8 -f linux-libc-ubi8.Dockerfile .
+buildah bud --isolation=chroot --storage-driver=vfs --format=docker -t linux-libc-ubi8 -f linux-libc-ubi8.Dockerfile .
 echo "linux-libc-ubi8 build completed"
 
 #Build linux-libc-ubi9
 echo "linux-libc-ubi9 build started"
-docker build -t linux-libc-ubi9 -f linux-libc-ubi9.Dockerfile .
+buildah bud --isolation=chroot --storage-driver=vfs --format=docker -t linux-libc-ubi9 -f linux-libc-ubi9.Dockerfile .
 echo "linux-libc-ubi9 build completed"
+
+echo "Available local images:"
+buildah images
 
 #Patch the images names to use locally build images in assesbly.Dockerfile
 sed -i \
@@ -103,8 +103,8 @@ assembly.Dockerfile
 
 #Build che-code
 echo "che-code build started"
-docker build -t che-code -f assembly.Dockerfile .
+buildah bud --isolation=chroot --storage-driver=vfs --format=docker -t che-code -f assembly.Dockerfile .
 echo "che-code build completed"
 
 #If you want to test image, use below command
-#docker run --rm -it -p 3100:3100 -e CODE_HOST=0.0.0.0 che-code:latest
+#podman run --rm -it -p 3100:3100 -e CODE_HOST=0.0.0.0 che-code:latest
