@@ -156,6 +156,12 @@ IBM_WHEELS="https://wheels.developerfirst.ibm.com/ppc64le/linux/+simple/"
 # Pre-install apache-tvm-ffi before other packages that depend on it
 python3.12 -m pip install apache-tvm-ffi
 
+# Pre-install pillow with specific version to avoid build issues
+python3.12 -m pip install \
+  --trusted-host wheels.developerfirst.ibm.com \
+  --extra-index-url ${IBM_WHEELS} \
+  pillow==11.2.1
+
 python3.12 -m pip install \
   --only-binary numpy,scipy,sentencepiece \
   --trusted-host wheels.developerfirst.ibm.com \
