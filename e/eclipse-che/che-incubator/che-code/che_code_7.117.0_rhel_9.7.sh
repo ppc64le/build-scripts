@@ -39,22 +39,22 @@ yum install wget -y
 ## Install container tools required for container-in-container CI builds
 #yum install -y buildah podman fuse-overlayfs
 
-# Configure containers storage explicitly for CI/container environments
-mkdir -p /etc/containers
-mkdir -p /var/lib/containers/storage
-mkdir -p /var/run/containers/storage
+## Configure containers storage explicitly for CI/container environments
+#mkdir -p /etc/containers
+#mkdir -p /var/lib/containers/storage
+#mkdir -p /var/run/containers/storage
 
-cat > /etc/containers/storage.conf <<'EOF'
-[storage]
-driver = "vfs"
-runroot = "/var/run/containers/storage"
-graphroot = "/var/lib/containers/storage"
-EOF
+#cat > /etc/containers/storage.conf <<'EOF'
+#[storage]
+#driver = "vfs"
+#runroot = "/var/run/containers/storage"
+#graphroot = "/var/lib/containers/storage"
+#EOF
 
-# Required for restricted/containerized CI environments
-export BUILDAH_ISOLATION=chroot
-export STORAGE_DRIVER=vfs
-export CONTAINERS_STORAGE_CONF=/etc/containers/storage.conf
+## Required for restricted/containerized CI environments
+#export BUILDAH_ISOLATION=chroot
+#export STORAGE_DRIVER=vfs
+#export CONTAINERS_STORAGE_CONF=/etc/containers/storage.conf
 
 ######################
 
