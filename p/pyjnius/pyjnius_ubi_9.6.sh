@@ -36,7 +36,7 @@ pip3 install --upgrade pip  build setuptools wheel "Cython<3" pytest
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
-git apply /pjnius.patch
+git apply /pyjnius.patch
 
 
 if ! python3 -m pip wheel . --no-build-isolation; then 
