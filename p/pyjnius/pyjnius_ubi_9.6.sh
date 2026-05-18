@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package       : pyjnius
@@ -24,6 +24,7 @@ PACKAGE_URL=https://github.com/kivy/pyjnius.git
 PACKAGE_VERSION=1.6.1
 PYTHON_VERSION=3.12
 export wdir=`pwd`
+SCRIPT_PATH=$(dirname $(realpath $0))
 
 yum install git -y python3.12-devel python${PYTHON_VERSION}-pip cmake python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip java-17-openjdk java-17-openjdk-devel  gcc gcc-c++ make 
 
@@ -36,7 +37,7 @@ pip3 install --upgrade pip  build setuptools wheel "Cython<3" pytest
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
-git apply /pyjnius.patch
+git apply $SCRIPT_PATH/pyjnius.patch
 
 
 if ! python3 -m pip wheel . --no-build-isolation; then 
