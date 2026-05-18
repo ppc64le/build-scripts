@@ -1,14 +1,15 @@
 #!/bin/bash -e
+
 # -----------------------------------------------------------------------------
 #
 # Package          : onnxruntime
-# Version          : v1.23.2
+# Version          : v1.24.1
 # Source repo      : https://github.com/microsoft/onnxruntime
 # Tested on        : UBI:9.6
 # Language         : Python
 # Ci-Check         : True
 # Script License   : Apache License, Version 2 or later
-# Maintainer       : BODAPATI MAHESH <bmahi496@linux.ibm.com>
+# Maintainer       : Sanskar Nema <Sanskar.nema@ibm.com>
 #
 # Disclaimer: This script has been tested in root mode on given
 # ==========  platform using the mentioned version of the package.
@@ -19,7 +20,7 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=onnxruntime
-PACKAGE_VERSION=${1:-v1.23.2}
+PACKAGE_VERSION=${1:-v1.24.1}
 PACKAGE_URL=https://github.com/microsoft/onnxruntime
 PACKAGE_DIR="onnxruntime"
 WORK_DIR=$(pwd)
@@ -49,35 +50,15 @@ export CPLUS_INCLUDE_PATH=$PYTHON_INCLUDE:$CPLUS_INCLUDE_PATH
 export C_INCLUDE_PATH=$PYTHON_INCLUDE:$C_INCLUDE_PATH
 
 python3.12 -m pip install --upgrade pip
-python3.12 -m pip install --upgrade cmake pip "setuptools<80" wheel ninja packaging tox pytest build mypy stubs
+python3.12 -m pip install --upgrade cmake pip setuptools wheel ninja packaging tox pytest build mypy stubs
 
 cd $CURRENT_DIR
-python3.12 -m pip uninstall -y protobuf || true
 # Set ABSEIL_VERSION and ABSEIL_URL
 ABSEIL_VERSION=20240116.2
 ABSEIL_URL="https://github.com/abseil/abseil-cpp"
 git clone $ABSEIL_URL -b $ABSEIL_VERSION
 
 echo " --------------------------------------------------- Abseil-Cpp Cloned --------------------------------------------------- "
-# Build and install abseil
-export ABSEIL_PREFIX=$(pwd)/abseil-cpp/install
-
-cd abseil-cpp
-mkdir build
-cd build
-
-cmake -G Ninja \
--DCMAKE_POSITION_INDEPENDENT_CODE=ON \
--DCMAKE_BUILD_TYPE=Release \
--DCMAKE_INSTALL_PREFIX=$ABSEIL_PREFIX \
-..
-
-cmake --build .
-cmake --install .
-
-cd $CURRENT_DIR
-
-echo " --------------------------------------------------- Abseil Installed --------------------------------------------------- "
 
 # Setting paths and versions
 export C_COMPILER=$(which gcc)
@@ -100,6 +81,7 @@ cd protobuf
 git submodule update --init --recursive
 rm -rf ./third_party/googletest | true
 rm -rf ./third_party/abseil-cpp | true
+cp -r $CURRENT_DIR/abseil-cpp ./third_party/
 mkdir build
 cd build
 cmake -G "Ninja" \
@@ -112,8 +94,7 @@ cmake -G "Ninja" \
     -Dprotobuf_BUILD_TESTS=OFF \
     -Dprotobuf_BUILD_LIBUPB=OFF \
     -Dprotobuf_BUILD_SHARED_LIBS=ON \
-    -Dprotobuf_ABSL_PROVIDER=package \
-    -DABSL_ROOT=$ABSEIL_PREFIX \
+    -Dprotobuf_ABSL_PROVIDER="module" \
     -DCMAKE_PREFIX_PATH=$ABSEIL_PREFIX \
     -Dprotobuf_JSONCPP_PROVIDER="package" \
     -Dprotobuf_USE_EXTERNAL_GTEST=OFF \
@@ -125,22 +106,20 @@ cd ..
 echo " --------------------------------------------------- Libprotobuf Successfully Installed --------------------------------------------------- "
 
 export PROTOC="$LIBPROTO_INSTALL/bin/protoc"
-export LD_LIBRARY_PATH="$ABSEIL_PREFIX/lib:$ABSEIL_PREFIX/lib64:$LIBPROTO_INSTALL/lib64:$LD_LIBRARY_PATH"
-export LIBRARY_PATH="$ABSEIL_PREFIX/lib:$ABSEIL_PREFIX/lib64:$LIBPROTO_INSTALL/lib64:$LIBRARY_PATH"
-export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
-unset PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION
+export LD_LIBRARY_PATH="$ABSEIL_PREFIX/lib:$LIBPROTO_INSTALL/lib64:$LD_LIBRARY_PATH"
+export LIBRARY_PATH="$LIBPROTO_INSTALL/lib64:$LD_LIBRARY_PATH"
+export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
+export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION_VERSION=2
 
 # Apply patch
 echo "Applying patch from https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch"
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/p/protobuf/set_cpp_to_17_v4.25.3.patch
 git apply set_cpp_to_17_v4.25.3.patch
 
-export LD_LIBRARY_PATH="$ABSEIL_PREFIX/lib:$ABSEIL_PREFIX/lib64:$LIBPROTO_INSTALL/lib64:$LD_LIBRARY_PATH"
-export LIBRARY_PATH="$ABSEIL_PREFIX/lib:$ABSEIL_PREFIX/lib64:$LIBPROTO_INSTALL/lib64:$LIBRARY_PATH"
-
 # Build Python package
 cd python
-python3.12 setup.py install
+python3.12 setup.py install --cpp_implementation
+
 echo " --------------------------------------------------- Protobuf Patch Applied Successfully --------------------------------------------------- "
 
 cd $CURRENT_DIR
@@ -157,6 +136,7 @@ echo " --------------------------------------------------- Onnx Installing -----
 git clone https://github.com/onnx/onnx
 cd onnx
 git checkout v1.17.0
+python3.12 -m pip install numpy==2.0.2
 git submodule update --init --recursive
 sed -i 's|https://github.com/abseil/abseil-cpp/archive/refs/tags/20230125.3.tar.gz|https://github.com/abseil/abseil-cpp/archive/refs/tags/20240116.2.tar.gz|g' CMakeLists.txt && \
 sed -i 's|e21faa0de5afbbf8ee96398ef0ef812daf416ad8|bb8a766f3aef8e294a864104b8ff3fc37b393210|g' CMakeLists.txt && \
@@ -173,6 +153,7 @@ OBJCOPY=$gcc_home/bin/objcopy
 OBJDUMP=$gcc_home/bin/objdump
 RANLIB=$gcc_home/bin/ranlib
 STRIP=$gcc_home/bin/strip
+NUMPY_INCLUDE=$(python3.12 -c "import numpy; print(numpy.get_include())")
 export CMAKE_ARGS=""
 export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$ONNX_PREFIX"
 export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_AR=${AR}"
@@ -183,16 +164,20 @@ export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_OBJDUMP=${OBJDUMP}"
 export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_RANLIB=${RANLIB}"
 export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_STRIP=${STRIP}"
 export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_CXX_STANDARD=17"
-export CMAKE_ARGS="${CMAKE_ARGS} -DProtobuf_PROTOC_EXECUTABLE=$PROTOC"
-export CMAKE_ARGS="${CMAKE_ARGS} -DProtobuf_LIBRARY=$LIBPROTO_INSTALL/lib64/libprotobuf.so"
+export CMAKE_ARGS="${CMAKE_ARGS} -DProtobuf_PROTOC_EXECUTABLE="$PROTOC" -DProtobuf_LIBRARY="$LIBPROTO_INSTALL/lib64/libprotobuf.so""
 export CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH"
+export CMAKE_ARGS="$CMAKE_ARGS \
+-DPython3_EXECUTABLE=$(which python3.12) \
+-DPython3_INCLUDE_DIR=$PYTHON_INCLUDE \
+-DPython3_NumPy_INCLUDE_DIR=$NUMPY_INCLUDE \
+-DPython3_FIND_STRATEGY=LOCATION"
 
 # Adding this source due to - (Unable to detect linker for compiler `cc -Wl,--version`)
 source /opt/rh/gcc-toolset-13/enable
 python3.12 -m pip install cython meson
-python3.12 -m pip install numpy
+
 python3.12 -m pip install parameterized
-python3.12 -m pip install pytest nbval pythran
+python3.12 -m pip install pytest nbval pythran mypy-protobuf
 
 python3.12 setup.py install
 echo "--------------onnx installed------------------"
@@ -210,44 +195,25 @@ python3.12 -m pip install packaging wheel
 NUMPY_INCLUDE=$(python3.12 -c "import numpy; print(numpy.get_include())")
 echo "NumPy include path: $NUMPY_INCLUDE"
 
-export Python3_EXECUTABLE=$(which python3.12)
-export Python_EXECUTABLE=$(which python3.12)
-export PYTHON_EXECUTABLE=$(which python3.12)
-NUMPY_INCLUDE=$(python3.12 -c "import numpy; print(numpy.get_include())")
-export CMAKE_PREFIX_PATH="$ABSEIL_PREFIX:$LIBPROTO_INSTALL:$PYBIND11_PREFIX:$CMAKE_PREFIX_PATH"
-export LD_LIBRARY_PATH="$LIBPROTO_INSTALL/lib64:$ABSEIL_PREFIX/lib:$LD_LIBRARY_PATH"
-export CXXFLAGS="-I${NUMPY_INCLUDE} $CXXFLAGS"
-export Python3_NumPy_INCLUDE_DIR=${NUMPY_INCLUDE}
+# Manually defines Python::NumPy for CMake versions with broken NumPy detection
+export CXXFLAGS="-I/usr/local/lib64/python${PYTHON_VERSION}/site-packages/numpy/_core/include/numpy $CXXFLAGS"
 
 # Add Python include path to build environment
 export CPLUS_INCLUDE_PATH=$PYTHON_INCLUDE:$CPLUS_INCLUDE_PATH
 export C_INCLUDE_PATH=$PYTHON_INCLUDE:$C_INCLUDE_PATH
-export PATH=/usr/local/bin:$PATH
-hash -r
-cmake --version
+
 #Build and Test
 #Building and testing both are performed in build.sh
-NUMPY_INCLUDE=$(python3.12 -c "import numpy; print(numpy.get_include())")
 if ! (./build.sh \
---cmake_extra_defines \
-onnxruntime_PREFER_SYSTEM_LIB=ON \
-Protobuf_PROTOC_EXECUTABLE=$PROTOC \
-Protobuf_INCLUDE_DIR=$LIBPROTO_INSTALL/include \
-Python3_NumPy_INCLUDE_DIR=$NUMPY_INCLUDE \
-onnxruntime_USE_COREML=OFF \
-onnxruntime_BUILD_UNIT_TESTS=OFF \
-onnxruntime_RUN_ONNX_TESTS=OFF \
-onnxruntime_GENERATE_TEST_REPORTS=OFF \
---cmake_generator Ninja \
---build_shared_lib \
---config Release \
---update \
---build \
---build_wheel \
---skip_tests \
---skip_submodule_sync \
---parallel \
---allow_running_as_root) ; then
+    --cmake_extra_defines "onnxruntime_PREFER_SYSTEM_LIB=ON" "Protobuf_PROTOC_EXECUTABLE=$LIBPROTO_INSTALL/bin/protoc" "Protobuf_INCLUDE_DIR=$LIBPROTO_INSTALL/include" "onnxruntime_USE_COREML=OFF" "Python3_NumPy_INCLUDE_DIR=$NUMPY_INCLUDE" "CMAKE_POLICY_DEFAULT_CMP0001=NEW" "CMAKE_POLICY_DEFAULT_CMP0002=NEW" "CMAKE_POLICY_VERSION_MINIMUM=3.5" \
+    --cmake_generator Ninja \
+    --build_shared_lib \
+    --config Release \
+    --update \
+    --build \
+    --skip_submodule_sync \
+    --allow_running_as_root \
+    --build_wheel) ; then
     echo "------------------$PACKAGE_NAME:BUILD OR TEST FAILED----------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | GitHub | Fail |  Either_Build_OR_Test_Failed"
