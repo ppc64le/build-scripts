@@ -5,7 +5,7 @@
 # Version       : 1.6.1
 # Source repo   : https://github.com/kivy/pyjnius.git
 # Tested on     : registry.access.redhat.com/ubi9/ubi:9.6
-# Travis-Check  : False
+# Ci-Check      : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Prerna Kumbhar <Prerna.Kumbhar@ibm.com>
 #
