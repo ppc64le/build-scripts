@@ -242,7 +242,7 @@ cd $SCRIPT_DIR
 mkdir -p local/grpccpp
 
 cp -r grpc/grpc-prefix/* local/grpccpp/
-
+export LD_LIBRARY_PATH=$GRPC_PREFIX/lib:$GRPC_PREFIX/lib64:$LIBPROTO_INSTALL/lib:$LIBPROTO_INSTALL/lib64:$RE2_PREFIX/lib:$C_ARES_PREFIX/lib:${LD_LIBRARY_PATH}
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/g/grpc-cpp/pyproject.toml
 sed -i s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g pyproject.toml
 

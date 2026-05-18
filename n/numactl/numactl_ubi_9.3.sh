@@ -33,9 +33,11 @@ cd $PACKAGE_NAME
 # Checkout the specified version
 git checkout $PACKAGE_VERSION
 
+SCRIPT_DIR=$(pwd)
+
 # Prepare the build system
 ./autogen.sh
-./configure
+./configure --prefix=$SCRIPT_DIR/numactl-prefix
 
 # Compile the package
 if ! make; then
@@ -54,7 +56,12 @@ fi
 wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/n/numactl/pyproject.toml
 sed -i "s/{PACKAGE_VERSION}/$PACKAGE_VERSION/g" pyproject.toml
 
-mkdir -p local
+mkdir -p local/numactl
+cp -r $SCRIPT_DIR/numactl-prefix/* local/numactl/
+
+
+export LD_LIBRARY_PATH=$SCRIPT_DIR/numactl-prefix/lib:$SCRIPT_DIR/numactl-prefix/lib64:${LD_LIBRARY_PATH}
+export PATH=$SCRIPT_DIR/numactl-prefix/bin:${PATH}
 
 # Run the unit test case 
 if ! make -k check VERBOSE=1 TESTS='test/tbitmap'; then

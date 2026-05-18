@@ -112,13 +112,13 @@ PKG_NAME="ollama_python_package"
 mkdir -p ${PKG_NAME} ${PKG_NAME}/bin ${PKG_NAME}/lib
 
 # Generate setup.py
-cat <<'EOF' > setup.py
+cat <<EOF > setup.py
 from setuptools import setup, find_packages
 from setuptools.command.build_py import build_py
 import os, shutil, stat
 
 PYTHON_PACKAGE_NAME = "ollama_python_package"
-VERSION = "0.20.3"
+VERSION = "${PACKAGE_VERSION#v}"
 
 BIN_SRC = os.path.join(os.getcwd(), "ollama")
 LIB_SRC = os.path.join(os.getcwd(), "build", "lib", "ollama")
@@ -162,7 +162,7 @@ setup(
     author_email="Shalini.Salomi.Bodapati@ibm.com",
     description="Power10 optimized Ollama binary + shared libs as Python package",
     license="MIT",
-	packages=find_packages(include=["ollama_python_package"]),
+    packages=find_packages(include=["ollama_python_package"]),
     include_package_data=False,
     cmdclass={'build_py': CustomBuild},
     package_data={PYTHON_PACKAGE_NAME: ["bin/*", "lib/*.so"]},
