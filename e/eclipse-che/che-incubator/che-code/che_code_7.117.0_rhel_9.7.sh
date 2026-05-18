@@ -36,8 +36,8 @@ yum install wget -y
 
 ########## Container-in-Container Compatibility Patch (Only required for CI/containerized environments) #########
 
-# Install container tools required for container-in-container CI builds
-yum install -y buildah podman fuse-overlayfs
+## Install container tools required for container-in-container CI builds
+#yum install -y buildah podman fuse-overlayfs
 
 # Configure containers storage explicitly for CI/container environments
 mkdir -p /etc/containers
