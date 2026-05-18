@@ -48,7 +48,7 @@ if ! python3 -m pip wheel . --no-build-isolation; then
 fi
 
 mkdir -p tests/java-classes
-javac -d tests/java-classes $(find tests/java-src -name "*.java")
+javac -encoding UTF-8 -d tests/java-classes $(find tests/java-src -name "*.java")
 export CLASSPATH=$wdir/pyjnius/tests/java-classes
 
 # Install the built wheel
