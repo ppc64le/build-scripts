@@ -5,6 +5,7 @@
 # Version       : 1.6.1
 # Source repo   : https://github.com/kivy/pyjnius.git
 # Tested on     : registry.access.redhat.com/ubi9/ubi:9.6
+# Language      : Python , Java ,Cython
 # Ci-Check      : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Prerna Kumbhar <Prerna.Kumbhar@ibm.com>
