@@ -54,7 +54,7 @@ export CLASSPATH=$wdir/pyjnius/tests/java-classes
 # Install the built wheel
 pip3 install pyjnius-*.whl
 cd $wdir/
-if ! pytest -v pyjnius/tests; then
+if ! pytest -v $wdir/pyjnius/tests; then
      echo "------------------$PACKAGE_NAME:Test_fails-------------------------------------"
      echo "$PACKAGE_URL $PACKAGE_NAME"
      echo "$PACKAGE_NAME  |  $PACKAGE_URL  | $PACKAGE_VERSION | GitHub | Fail |  Build_success_but_test_Fails"
