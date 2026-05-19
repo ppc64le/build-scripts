@@ -80,7 +80,7 @@ echo "** Applying power specific patches**"
 patch -p1 < ppc_sync1.patch
 patch -p1 < ppc_sync2.patch
 patch -p1 < ppc_build_fix.patch
-patch -p1 < set_threads_env.patch
+patch -p1 < ${SCRIPT_PATH}/set_threads_env_${PACKAGE_VERSION}.patch
 
 # -----------------------------------------------------------------------------
 # Build Ollama
