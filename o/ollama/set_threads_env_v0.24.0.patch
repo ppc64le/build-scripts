@@ -1,0 +1,46 @@
+diff --git a/discover/gpu.go b/discover/gpu.go
+index 4a7d552d..789d6c8d 100644
+--- a/discover/gpu.go
++++ b/discover/gpu.go
+@@ -9,6 +9,7 @@ import (
+        "strings"
+        "time"
+
++       "github.com/ollama/ollama/envconfig"
+        "github.com/ollama/ollama/logutil"
+        "github.com/ollama/ollama/ml"
+ )
+@@ -40,6 +41,11 @@ func GetSystemInfo() ml.SystemInfo {
+                threadCount = runtime.NumCPU()
+        }
+
++       if userThreadCount := envconfig.NumThreads(); userThreadCount > 0 {
++               slog.Info("user override thread count", "override", userThreadCount, "default", threadCount)
++               threadCount = int(userThreadCount)
++       }
++
+        return ml.SystemInfo{
+                ThreadCount: threadCount,
+                TotalMemory: memInfo.TotalMemory,
+diff --git a/envconfig/config.go b/envconfig/config.go
+index f4bd4aa6..b10307d1 100644
+--- a/envconfig/config.go
++++ b/envconfig/config.go
+@@ -271,6 +271,8 @@ func Uint(key string, defaultValue uint) func() uint {
+ }
+
+ var (
++       // NumThreads overrides the default inference thread count.
++       NumThreads = Uint("OLLAMA_NUM_THREADS", 0)
+        // NumParallel sets the number of parallel model requests. NumParallel can be configured via the OLLAMA_NUM_PARALLEL environment variable.
+        NumParallel = Uint("OLLAMA_NUM_PARALLEL", 1)
+        // MaxRunners sets the maximum number of loaded models. MaxRunners can be configured via the OLLAMA_MAX_LOADED_MODELS environment variable.
+@@ -324,6 +326,7 @@ func AsMap() map[string]EnvVar {
+                "OLLAMA_MAX_QUEUE":            {"OLLAMA_MAX_QUEUE", MaxQueue(), "Maximum number of queued requests"},
+                "OLLAMA_MODELS":               {"OLLAMA_MODELS", Models(), "The path to the models directory"},
+                "OLLAMA_NO_CLOUD":             {"OLLAMA_NO_CLOUD", NoCloud(), "Disable Ollama cloud features (remote inference and web search)"},
++               "OLLAMA_NUM_THREADS":          {"OLLAMA_NUM_THREADS", NumThreads(), "Override the default cpu inference thread count"},
+                "OLLAMA_NOHISTORY":            {"OLLAMA_NOHISTORY", NoHistory(), "Do not preserve readline history"},
+                "OLLAMA_NOPRUNE":              {"OLLAMA_NOPRUNE", NoPrune(), "Do not prune model blobs on startup"},
+                "OLLAMA_NUM_PARALLEL":         {"OLLAMA_NUM_PARALLEL", NumParallel(), "Maximum number of parallel requests"},
+
