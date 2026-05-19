@@ -53,7 +53,7 @@ export CLASSPATH=$wdir/pyjnius/tests/java-classes
 
 # Install the built wheel
 pip3 install pyjnius-*.whl
-cd $wdir/
+#cd $wdir/
 if ! pytest -v $wdir/pyjnius/tests; then
      echo "------------------$PACKAGE_NAME:Test_fails-------------------------------------"
      echo "$PACKAGE_URL $PACKAGE_NAME"
