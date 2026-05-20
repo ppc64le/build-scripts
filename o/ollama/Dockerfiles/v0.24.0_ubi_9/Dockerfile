@@ -62,14 +62,15 @@ RUN wget -q -O ppc_sync1.patch \
        https://github.com/ollama/ollama/commit/b765e03d192fe99e96a8008daeb76a0a843e997d.patch && \
     wget -q -O build_fix_ppc.patch \
        https://github.com/ollama/ollama/commit/4115e4f58f8c3fb86cdce2d58aae811c2d26cc52.patch && \
-
+    wget -q -O set_threads_env.patch \
+       https://github.com/ollama/ollama/commit/93e98dcc345e34cebd18ac7a83cf08a9b646fd52.patch
     
 # Apply patches
 RUN patch -Np1 < ppc_sync1.patch && \
     patch -Np1 < ppc_sync2.patch && \
     patch -Np1 < ppc_build_fix.patch && \
     patch -Np1 < set_threads_env.patch
-    patch -Np1 < ../set_threads_env_${PACKAGE_VERSION}.patch && \
+    
     
 ###############################################################################
 # Build Ollama (CMake + Go)
