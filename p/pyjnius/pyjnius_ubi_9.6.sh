@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
 # Package       : pyjnius
@@ -25,14 +25,14 @@ PACKAGE_VERSION=1.6.1
 PYTHON_VERSION=3.12
 export wdir=`pwd`
 
-yum install -y git wget python3.12-devel python${PYTHON_VERSION}-pip cmake python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip java-17-openjdk java-17-openjdk-devel  gcc gcc-c++ make 
+yum install -y git wget python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip cmake python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip java-17-openjdk java-17-openjdk-devel  gcc gcc-c++ make 
 
 ln /usr/bin/pip${PYTHON_VERSION} /usr/bin/pip3 -f && ln /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 -f &&  ln /usr/bin/pip${PYTHON_VERSION} /usr/bin/pip -f && ln /usr/bin/python${PYTHON_VERSION} /usr/bin/python -f
 
 pip3 install --upgrade pip  build setuptools wheel "Cython<3" pytest
 
 
-#Clone Scikit-learn repository
+#Clone Pyjnius repository
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME/
 git checkout $PACKAGE_VERSION
