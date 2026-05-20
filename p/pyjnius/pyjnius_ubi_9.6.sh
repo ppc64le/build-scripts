@@ -25,7 +25,7 @@ PACKAGE_VERSION=1.6.1
 PYTHON_VERSION=3.12
 export wdir=`pwd`
 SCRIPT_PATH=$(dirname $(realpath $0))
-
+echo $SCRIPT_PATH
 yum install git -y python3.12-devel python${PYTHON_VERSION}-pip cmake python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip java-17-openjdk java-17-openjdk-devel  gcc gcc-c++ make 
 
 ln /usr/bin/pip${PYTHON_VERSION} /usr/bin/pip3 -f && ln /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 -f &&  ln /usr/bin/pip${PYTHON_VERSION} /usr/bin/pip -f && ln /usr/bin/python${PYTHON_VERSION} /usr/bin/python -f
