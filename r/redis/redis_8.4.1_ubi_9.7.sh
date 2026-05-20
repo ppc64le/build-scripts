@@ -19,7 +19,8 @@
 # ----------------------------------------------------------------------------
 
 PACKAGE_NAME=redis
-PACKAGE_VERSION=${1:-8.4.1}
+SCRIPT_PACKAGE_VERSION=8.4.1
+PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
 PACKAGE_URL=https://github.com/redis/redis.git
 
 BUILD_HOME=$(pwd)
@@ -64,7 +65,7 @@ git checkout "$PACKAGE_VERSION"
 # ----------------------------------------------------------------------------
 # Apply ppc64le patch
 # ----------------------------------------------------------------------------
-PATCH_FILE="redis_${PACKAGE_VERSION}.patch"
+PATCH_FILE="redis_${SCRIPT_PACKAGE_VERSION}.patch"
 if [ -f "$SCRIPT_PATH/$PATCH_FILE" ]; then
     echo "Applying patch $SCRIPT_PATH/$PATCH_FILE"
     if ! git apply "$SCRIPT_PATH/$PATCH_FILE"; then
