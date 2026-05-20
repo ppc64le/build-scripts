@@ -62,13 +62,24 @@ cd build
 mkdir -p contrib/libunwind-cmake/
 cp /usr/lib64/libunwind.so contrib/libunwind-cmake/libunwind.so
 cmake -D CMAKE_BUILD_TYPE=RELWITHDEBINFO -D ENABLE_TESTS=ON -D ENABLE_OPENSSL_DYNAMIC=ON ..
-ninja -j$(nproc)
+ret=0
+ninja -j$(nproc) || ret=$?
+if [ "$ret" -ne 0 ]
+then
+	echo "FAIL: Build failed."
+	exit 1
+fi
 rm -rf programs/libcrypto.so.3 programs/libssl.so.3
 cp /usr/local/lib/libcrypto.so.3 /usr/local/lib/libssl.so.3 programs/
 rm -rf contrib/libunwind-cmake/libunwind.so
 
 #Unit test
-./src/unit_tests_dbms
+./src/unit_tests_dbms || ret=$?
+if [ "$ret" -ne 0 ]
+then
+	echo "FAIL: Test failed."
+	exit 2
+fi
 
 #Conclude
 set +ex
