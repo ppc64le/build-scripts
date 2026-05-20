@@ -68,7 +68,7 @@ RUN wget -q -O ppc_sync1.patch \
 # Apply patches
 RUN patch -Np1 < ppc_sync1.patch && \
     patch -Np1 < ppc_sync2.patch && \
-    patch -Np1 < ppc_build_fix.patch && \
+    patch -Np1 < build_fix_ppc.patch && \
     patch -Np1 < set_threads_env.patch
     
     
