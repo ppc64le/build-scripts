@@ -1,0 +1,16 @@
+diff --git a/tests/test_jvm_options.py b/tests/test_jvm_options.py
+index 7401ab0..a8b787d 100644
+--- a/tests/test_jvm_options.py
++++ b/tests/test_jvm_options.py
+@@ -27,5 +27,10 @@ class TestJVMOptions:
+             bufsize=-1, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+         stdoutdata, _ = process.communicate(json.dumps(options).encode())
+         assert process.wait() == 0
+-        actual_options = json.loads(stdoutdata.decode())
++        output = stdoutdata.decode()
++
++        json_start = output.find('[')
++
++        actual_options = json.loads(output[json_start:])
++
+         assert list(sorted(options)) == list(sorted(actual_options))
