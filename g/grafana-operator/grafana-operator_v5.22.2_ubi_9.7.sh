@@ -290,26 +290,26 @@ fi
 # -----------------------------------------------------------------------------
 # Step 9d. Use Red Hat Grafana Image for ppc64le
 # -----------------------------------------------------------------------------
-echo ">>> Step 9d: Using Red Hat Grafana image for ppc64le..."
-GRAFANA_IMAGE_TAG="registry.redhat.io/rhel9/grafana:latest"
+#echo ">>> Step 9d: Using Red Hat Grafana image for ppc64le..."
+#GRAFANA_IMAGE_TAG="registry.redhat.io/rhel9/grafana:latest"
 # Check if image is already available locally
-if podman inspect "${GRAFANA_IMAGE_TAG}" &>/dev/null; then
-  echo ">>> Grafana image already available locally"
-else
-  echo ">>> Pulling Red Hat Grafana image..."
-  podman pull "${GRAFANA_IMAGE_TAG}" || {
-    echo "ERROR: Failed to pull Grafana image"
-    echo ">>> Please ensure you're logged in: podman login registry.redhat.io"
-    exit 1
-  }
-fi
+#if podman inspect "${GRAFANA_IMAGE_TAG}" &>/dev/null; then
+#  echo ">>> Grafana image already available locally"
+#else
+# echo ">>> Pulling Red Hat Grafana image..."
+#  podman pull "${GRAFANA_IMAGE_TAG}" || {
+#    echo "ERROR: Failed to pull Grafana image"
+#    echo ">>> Please ensure you're logged in: podman login registry.redhat.io"
+#    exit 1
+# }
+#fi
 
 # Verify image
-echo ">>> Verifying Grafana image..."
-GRAFANA_ARCH=$(podman inspect "${GRAFANA_IMAGE_TAG}" --format '{{.Architecture}}' 2>/dev/null || echo "unknown")
-echo ">>> Grafana image architecture: ${GRAFANA_ARCH}"
+#echo ">>> Verifying Grafana image..."
+#GRAFANA_ARCH=$(podman inspect "${GRAFANA_IMAGE_TAG}" --format '{{.Architecture}}' 2>/dev/null || echo "unknown")
+#echo ">>> Grafana image architecture: ${GRAFANA_ARCH}"
 
-echo ">>> Grafana image ready: ${GRAFANA_IMAGE_TAG}"
+#echo ">>> Grafana image ready: ${GRAFANA_IMAGE_TAG}"
 
 # -----------------------------------------------------------------------------
 # Step 10. Unit Test
