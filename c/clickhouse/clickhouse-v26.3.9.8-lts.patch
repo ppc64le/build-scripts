@@ -1,0 +1,43 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index e87d735f99e..839bcc2300d 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -31,6 +31,8 @@ else()
+     set(RECONFIGURE_MESSAGE_LEVEL WARNING)
+ endif()
+ 
++add_compile_options(-Wframe-larger-than=131072)
++
+ include (cmake/arch.cmake)
+ include (cmake/target.cmake)
+ include (cmake/tools.cmake)
+diff --git a/cmake/cpu_features.cmake b/cmake/cpu_features.cmake
+index 1b73c731933..3d298def547 100644
+--- a/cmake/cpu_features.cmake
++++ b/cmake/cpu_features.cmake
+@@ -76,10 +76,10 @@ elseif (ARCH_PPC64LE)
+     # Note that gcc and clang have support for x86 SSE2 intrinsics when building for PowerPC
+     option (POWER9 "Build for Power 9 CPU and above" 0)
+     if(POWER9)
+-        set (COMPILER_FLAGS "${COMPILER_FLAGS} -maltivec -mcpu=power9 -D__SSE2__=1 -DNO_WARN_X86_INTRINSICS")
++        set (COMPILER_FLAGS "${COMPILER_FLAGS} -maltivec -mcpu=power9")
+         list(APPEND RUSTFLAGS_CPU "-C" "target_feature=+power9-altivec")
+     else ()
+-        set (COMPILER_FLAGS "${COMPILER_FLAGS} -maltivec -mcpu=power8 -D__SSE2__=1 -DNO_WARN_X86_INTRINSICS")
++        set (COMPILER_FLAGS "${COMPILER_FLAGS} -maltivec -mcpu=power8")
+         list(APPEND RUSTFLAGS_CPU "-C" "target_feature=+power8-altivec")
+     endif ()
+ 
+diff --git a/contrib/libunwind-cmake/CMakeLists.txt b/contrib/libunwind-cmake/CMakeLists.txt
+index c37c485f0f0..efa702a3fed 100644
+--- a/contrib/libunwind-cmake/CMakeLists.txt
++++ b/contrib/libunwind-cmake/CMakeLists.txt
+@@ -24,7 +24,7 @@ set(LIBUNWIND_SOURCES
+     ${LIBUNWIND_C_SOURCES}
+     ${LIBUNWIND_ASM_SOURCES})
+ 
+-add_library(unwind ${LIBUNWIND_SOURCES})
++add_library(unwind SHARED ${LIBUNWIND_SOURCES})
+ set_target_properties(unwind PROPERTIES FOLDER "contrib/libunwind-cmake")
+ 
+ target_include_directories(unwind SYSTEM BEFORE PUBLIC $<BUILD_INTERFACE:${LIBUNWIND_SOURCE_DIR}/include>)
