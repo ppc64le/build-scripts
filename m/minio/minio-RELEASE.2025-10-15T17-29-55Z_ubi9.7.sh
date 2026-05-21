@@ -23,8 +23,15 @@
 PACKAGE_NAME=minio
 PACKAGE_VERSION=${1:-RELEASE.2025-10-15T17-29-55Z}
 PACKAGE_URL=https://github.com/minio/minio
-BUILD_HOME=`pwd`
+
 SCRIPT_PATH=$(dirname $(realpath $0))
+
+# Safer build location
+BUILD_HOME=/tmp/minio-build
+
+# Clean old build if exists
+rm -rf "$BUILD_HOME"
+mkdir -p "$BUILD_HOME"
 
 yum install -y wget git tar make
 
@@ -73,13 +80,20 @@ chown -R tester:tester $BUILD_HOME/$PACKAGE_NAME || true
 
 # Switch to tester user and run tests
 
-su - tester <<EOF
+# Export variables for tester shell
+export PACKAGE_NAME
+export PACKAGE_VERSION
+export OS_NAME
+export BUILD_HOME
+export GOPATH
+
+su - tester <<'EOF'
 set -e
 set -x
 
 cd $BUILD_HOME/$PACKAGE_NAME
 
-export PATH=\$PATH:/usr/local/go/bin
+export PATH=$PATH:/usr/local/go/bin
 export GOPATH=/home/tester/go
 
 if ! make test; then
