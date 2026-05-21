@@ -21,7 +21,7 @@
 
 PACKAGE_NAME=pyjnius
 PACKAGE_URL=https://github.com/kivy/pyjnius.git
-PACKAGE_VERSION=1.6.1
+PACKAGE_VERSION=${1:-1.6.1}
 PYTHON_VERSION=3.12
 export wdir=`pwd`
 
