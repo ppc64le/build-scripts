@@ -3,7 +3,7 @@
   "package_name": "langserve",
   "github_url": "https://github.com/langchain-ai/langserve",
   "version": "0.3.3",
-  "wheel_build": true,
+  "wheel_build": false,
   "default_branch": "master",
   "package_dir": "l/langserve",
   "build_script": "langserve_v0.3.3_ubi_9.7.sh",
