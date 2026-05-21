@@ -22,7 +22,7 @@
 PACKAGE_NAME=pyjnius
 PACKAGE_URL=https://github.com/kivy/pyjnius.git
 PACKAGE_VERSION=${1:-1.6.1}
-PYTHON_VERSION=3.12
+PYTHON_VERSION=${2:-3.12}
 export wdir=`pwd`
 
 yum install -y git wget python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip cmake python${PYTHON_VERSION}-devel python${PYTHON_VERSION}-pip java-17-openjdk java-17-openjdk-devel  gcc gcc-c++ make 
