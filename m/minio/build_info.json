@@ -16,7 +16,7 @@
   "dir": "m/minio/Dockerfiles/RELEASE.2025-10-15T17-29-55Z_ubi_9",
   "base_docker_image": "ubi",
   "base_docker_variant": "9.7"
-}
+},
   "*": {
     "build_script": "minio-RELEASE.2025-10-15T17-29-55Z_ubi9.7.sh"
   }
