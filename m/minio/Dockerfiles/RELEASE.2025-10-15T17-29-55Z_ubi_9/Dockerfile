@@ -8,9 +8,6 @@ ENV PATH=$PATH:/usr/local/go/bin:/go/bin
 ENV PACKAGE_NAME=minio
 ENV PACKAGE_VERSION=RELEASE.2025-10-15T17-29-55Z
 
-#ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/m/minio/minio-${PACKAGE_VERSION}.patch
-ENV PATCH_FILE=https://raw.githubusercontent.com/Simran-Sirsat/build-scripts/minio/m/minio/minio-${PACKAGE_VERSION}.patch
-
 WORKDIR /build
 
 # Install dependencies
@@ -32,9 +29,8 @@ RUN wget https://golang.org/dl/go$GO_VERSION.linux-ppc64le.tar.gz && \
 # -------------------------
 # Build MinIO
 # -------------------------
-RUN wget https://raw.githubusercontent.com/Simran-Sirsat/build-scripts/minio/m/minio/minio-${PACKAGE_VERSION}.patch -O /build/minio.patch
-#COPY minio-${PACKAGE_VERSION}.patch /build/
-
+# RUN wget https://raw.githubusercontent.com/Simran-Sirsat/build-scripts/minio/m/minio/minio-${PACKAGE_VERSION}.patch -O /build/minio.patch
+RUN wget https://raw.githubusercontent.com/ppc64le/build-scripts/master/m/minio/minio-${PACKAGE_VERSION}.patch -O /build/minio.patch
 RUN git clone https://github.com/minio/minio.git && \
     cd ${PACKAGE_NAME} && \
     git checkout ${PACKAGE_VERSION} && \
