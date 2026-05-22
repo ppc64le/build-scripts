@@ -7,7 +7,9 @@ ENV CGO_ENABLED=0
 ENV PATH=$PATH:/usr/local/go/bin:/go/bin
 ENV PACKAGE_NAME=minio
 ENV PACKAGE_VERSION=RELEASE.2025-10-15T17-29-55Z
-ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/m/minio/minio-${PACKAGE_VERSION}.patch
+
+#ENV PATCH_FILE=https://raw.githubusercontent.com/ppc64le/build-scripts/master/m/minio/minio-${PACKAGE_VERSION}.patch
+ENV PATCH_FILE=https://raw.githubusercontent.com/Simran-Sirsat/build-scripts/minio/m/minio/minio-${PACKAGE_VERSION}.patch
 
 WORKDIR /build
 
@@ -36,7 +38,7 @@ COPY minio-${PACKAGE_VERSION}.patch /build/
 RUN git clone https://github.com/minio/minio.git && \
     cd ${PACKAGE_NAME} && \
     git checkout ${PACKAGE_VERSION} && \
-    git apply /build/minio_changes.patch 
+    git apply /build/minio-${PACKAGE_VERSION}.patch 
 
 RUN cp /build/minio/dockerscripts/docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
 
