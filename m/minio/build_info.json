@@ -10,7 +10,7 @@
   "validate_build_script": true,
   "use_non_root_user": false,
   "docker_build": true,
-  "docker_cmd": "docker build -f ${dir}/Dockerfile -t ${package_name}-ppc64le:${PACKAGE_VERSION} ${dir}",
+  "docker_cmd": "docker build -f ${dir}/Dockerfile -t ${package_name}-ppc64le:${PACKAGE_VERSION} .",
   "RELEASE.2025-10-15T17-29-55Z": {
   "build_script": "minio-RELEASE.2025-10-15T17-29-55Z_ubi9.7.sh",
   "dir": "RELEASE.2025-10-15T17-29-55Z_ubi_9",
