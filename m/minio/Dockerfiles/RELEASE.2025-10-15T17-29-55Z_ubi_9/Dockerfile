@@ -33,7 +33,7 @@ RUN wget https://golang.org/dl/go$GO_VERSION.linux-ppc64le.tar.gz && \
 # Build MinIO
 # -------------------------
 RUN wget PATCH_FILE
-COPY minio-${PACKAGE_VERSION}.patch /build/
+#COPY minio-${PACKAGE_VERSION}.patch /build/
 
 RUN git clone https://github.com/minio/minio.git && \
     cd ${PACKAGE_NAME} && \
