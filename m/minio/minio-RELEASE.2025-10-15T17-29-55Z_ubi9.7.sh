@@ -80,29 +80,28 @@ chown -R tester:tester $BUILD_HOME/$PACKAGE_NAME || true
 
 # Switch to tester user and run tests
 
-# Export variables for tester shell
-export PACKAGE_NAME
-export PACKAGE_VERSION
-export OS_NAME
-export BUILD_HOME
-export GOPATH
+su - tester -c "
+export PACKAGE_NAME='$PACKAGE_NAME'
+export PACKAGE_VERSION='$PACKAGE_VERSION'
+export OS_NAME='$OS_NAME'
+export BUILD_HOME='$BUILD_HOME'
 
-su - tester <<'EOF'
+export PATH='/usr/local/go/bin:\$PATH'
+export GOPATH='/home/tester/go'
+export GO111MODULE='on'
+
 set -e
 set -x
 
-cd $BUILD_HOME/$PACKAGE_NAME
+cd '$BUILD_HOME/$PACKAGE_NAME'
 
-export PATH=$PATH:/usr/local/go/bin
-export GOPATH=/home/tester/go
-
-if ! make test; then
-    echo "------------------$PACKAGE_NAME:test_fails---------------------"
-    echo "$PACKAGE_NAME | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_success_but_test_Fails"
+if ! go test ./...; then
+    echo '------------------$PACKAGE_NAME:test_fails------------------'
+    echo '$PACKAGE_NAME | $PACKAGE_VERSION | $OS_NAME | GitHub | Fail | Install_success_but_test_Fails'
     exit 1
 else
-    echo "------------------$PACKAGE_NAME:test_success---------------------"
-    echo "$PACKAGE_NAME | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | Both_Install_and_Test_Success"
+    echo '------------------$PACKAGE_NAME:test_success------------------'
+    echo '$PACKAGE_NAME | $PACKAGE_VERSION | $OS_NAME | GitHub | Pass | Both_Install_and_Test_Success'
     exit 0
 fi
-EOF
+"
