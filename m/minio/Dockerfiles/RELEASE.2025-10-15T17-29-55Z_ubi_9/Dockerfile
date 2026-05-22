@@ -32,13 +32,13 @@ RUN wget https://golang.org/dl/go$GO_VERSION.linux-ppc64le.tar.gz && \
 # -------------------------
 # Build MinIO
 # -------------------------
-RUN wget PATCH_FILE
+RUN wget https://raw.githubusercontent.com/Simran-Sirsat/build-scripts/minio/m/minio/minio-${PACKAGE_VERSION}.patch -O /build/minio.patch
 #COPY minio-${PACKAGE_VERSION}.patch /build/
 
 RUN git clone https://github.com/minio/minio.git && \
     cd ${PACKAGE_NAME} && \
     git checkout ${PACKAGE_VERSION} && \
-    git apply /build/minio-${PACKAGE_VERSION}.patch 
+    git apply /build/minio.patch 
 
 RUN cp /build/minio/dockerscripts/docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
 
