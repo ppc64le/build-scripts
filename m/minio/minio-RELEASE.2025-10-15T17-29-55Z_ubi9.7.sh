@@ -80,6 +80,12 @@ chown -R tester:tester $BUILD_HOME/$PACKAGE_NAME || true
 
 # Switch to tester user and run tests
 
+# Ensure tester owns Go workspace and cache
+chown -R tester:tester /home/tester/go
+
+# Ensure build dir ownership
+chown -R tester:tester "$BUILD_HOME"
+
 su - tester -c "
 export PACKAGE_NAME='$PACKAGE_NAME'
 export PACKAGE_VERSION='$PACKAGE_VERSION'
