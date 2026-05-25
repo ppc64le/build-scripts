@@ -20,7 +20,8 @@
 
 WORKDIR=$(pwd)
 PACKAGE_NAME=agno
-PACKAGE_VERSION=${1:-v2.6.6}
+SCRIPT_PACKAGE_VERSION=v2.6.3
+PACKAGE_VERSION=${1:-${SCRIPT_PACKAGE_VERSION}}
 PACKAGE_URL=https://github.com/agno-agi/agno
 PACKAGE_DIR=agno/libs/agno
 SCRIPT=$(readlink -f $0)
