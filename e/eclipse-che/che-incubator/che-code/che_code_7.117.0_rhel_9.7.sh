@@ -23,65 +23,133 @@
 #
 # ----------------------------------------------------------------------------
 
-set -euxo pipefail
+set -e
 
 PACKAGE_URL=https://github.com/che-incubator/che-code
 PACKAGE_NAME=che-code
 VERSION=7.117.0
 
-export CWD=$(pwd)
+export CWD=`pwd`
 
-yum install -y git wget docker
+yum update -y
+yum install git wget -y
 
-#Clone repo
+########## Container-in-Container Compatibility Patch ##########
+
+# Install buildah
+yum install -y buildah fuse-overlayfs
+
+# Configure storage
+mkdir -p /etc/containers
+cat > /etc/containers/storage.conf <<'EOF'
+[storage]
+driver = "vfs"
+EOF
+
+# Configure containers runtime to avoid systemd/cgroup issues
+cat > /etc/containers/containers.conf <<'EOF'
+[engine]
+cgroup_manager = "cgroupfs"
+events_logger = "file"
+
+[containers]
+netns = "host"
+userns = "host"
+ipcns = "host"
+utsns = "host"
+cgroupns = "host"
+EOF
+
+# Critical environment variables
+export BUILDAH_ISOLATION=chroot
+export STORAGE_DRIVER=vfs
+export BUILDAH_LAYERS=false
+# Prevent user namespace attempts
+unset XDG_RUNTIME_DIR
+# Additional safety flags
+export BUILDAH_FORMAT=docker
+export TMPDIR=/tmp
+
+# Verify buildah is working
+echo "Testing buildah configuration..."
+buildah --version || { echo "Buildah installation failed"; exit 1; }
+
+######################
+
+# Clone repo
 git clone $PACKAGE_URL
 cd $PACKAGE_NAME
-git fetch --tags
-git checkout tags/$VERSION
+git checkout $VERSION
 
-#Move dockerfiles to main folder
-wget --tries=5 --retry-connrefused https://raw.githubusercontent.com/prabhuk25/build-scripts/che-code/e/eclipse-che/che-incubator/che-code/Dockerfiles/linux-musl.Dockerfile
+# Download Dockerfile
+wget https://raw.githubusercontent.com/prabhuk25/build-scripts/refs/heads/che-code/e/eclipse-che/che-incubator/che-code/Dockerfiles/linux-musl.Dockerfile
 
 cp build/dockerfiles/linux-libc-ubi8.Dockerfile .
 cp build/dockerfiles/linux-libc-ubi9.Dockerfile .
 cp build/dockerfiles/assembly.Dockerfile .
 
-#Patch package-lock.json to skip @vscode/vsce-sign, since it has no binary for ppc64le and its exit with code 1 on postinstall.
+# Patch package-lock.json
+sed -i '/@vscode\/vsce-sign/,/\}/s/"hasInstallScript": true/"hasInstallScript": false/' code/build/package-lock.json
 
-grep -q "@vscode/vsce-sign" code/build/package-lock.json
+# Build function with error handling
+build_image() {
+    local name=$1
+    local dockerfile=$2
 
-sed -i '/@vscode\/vsce-sign/,/\}/s/"hasInstallScript": true/"hasInstallScript": false/' \
-       code/build/package-lock.json
+    echo "$name build started"
 
-#Build linux-musl image
-echo "linux-musl build started"
-docker build -t linux-musl -f linux-musl.Dockerfile .
-echo "linux-musl build completed"
+    # Try with all safety flags
+    if buildah bud \
+        --isolation=chroot \
+        --storage-driver=vfs \
+        --format=docker \
+        --layers=false \
+        --no-cache \
+        --pull=never \
+        -t "$name" \
+        -f "$dockerfile" \
+        . ; then
+        echo "$name build completed successfully"
+        return 0
+    else
+        echo "ERROR: $name build failed"
+        return 1
+    fi
+}
 
-#Build linux-libc-ubi8
-echo "linux-libc-ubi8 build started"
-docker build -t linux-libc-ubi8 -f linux-libc-ubi8.Dockerfile .
-echo "linux-libc-ubi8 build completed"
-
-#Build linux-libc-ubi9
-echo "linux-libc-ubi9 build started"
-docker build -t linux-libc-ubi9 -f linux-libc-ubi9.Dockerfile .
-echo "linux-libc-ubi9 build completed"
+# Build images
+build_image "linux-musl" "linux-musl.Dockerfile"
+build_image "linux-libc-ubi8" "linux-libc-ubi8.Dockerfile"
+build_image "linux-libc-ubi9" "linux-libc-ubi9.Dockerfile"
 
 echo "Available local images:"
-docker images
+buildah images
 
-#Patch the images names to use locally build images in assesbly.Dockerfile
+# Verify all required images exist before building assembly
+echo "Verifying required images..."
+for img in linux-musl linux-libc-ubi8 linux-libc-ubi9; do
+    if buildah images | grep -q "localhost/$img"; then
+        echo "✓ Found localhost/$img"
+    else
+        echo "✗ ERROR: localhost/$img not found!"
+        exit 1
+    fi
+done
+
+# Patch assembly.Dockerfile to use localhost prefix
+echo "Patching assembly.Dockerfile to use local images..."
 sed -i \
--e 's|FROM linux-libc-ubi8|FROM linux-libc-ubi8:latest|' \
--e 's|FROM linux-libc-ubi9|FROM linux-libc-ubi9:latest|' \
--e 's|FROM linux-musl|FROM linux-musl:latest|' \
+-e 's|FROM linux-libc-ubi8|FROM localhost/linux-libc-ubi8|' \
+-e 's|FROM linux-libc-ubi9|FROM localhost/linux-libc-ubi9|' \
+-e 's|FROM linux-musl|FROM localhost/linux-musl|' \
 assembly.Dockerfile
 
-#Build che-code
-echo "che-code build started"
-docker build -t che-code -f assembly.Dockerfile .
-echo "che-code build completed"
+# Verify the patch worked
+echo "Verifying assembly.Dockerfile patches..."
+grep "FROM localhost/" assembly.Dockerfile || { echo "ERROR: Patch failed"; exit 1; }
+
+# Build final image
+build_image "che-code" "assembly.Dockerfile"
 
 #If you want to test image, use below command
 #docker run --rm -it -p 3100:3100 -e CODE_HOST=0.0.0.0 che-code:latest
