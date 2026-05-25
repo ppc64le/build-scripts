@@ -39,11 +39,17 @@ yum install git wget -y
 # Install buildah
 yum install -y buildah fuse-overlayfs
 
-# Configure storage
+# Create necessary directories
+mkdir -p /var/lib/containers/storage
+mkdir -p /run/containers/storage
 mkdir -p /etc/containers
+
+# Configure storage with proper root and runroot paths
 cat > /etc/containers/storage.conf <<'EOF'
 [storage]
 driver = "vfs"
+runroot = "/run/containers/storage"
+graphroot = "/var/lib/containers/storage"
 EOF
 
 # Configure containers runtime to avoid systemd/cgroup issues
@@ -64,8 +70,10 @@ EOF
 export BUILDAH_ISOLATION=chroot
 export STORAGE_DRIVER=vfs
 export BUILDAH_LAYERS=false
+
 # Prevent user namespace attempts
 unset XDG_RUNTIME_DIR
+
 # Additional safety flags
 export BUILDAH_FORMAT=docker
 export TMPDIR=/tmp
@@ -73,6 +81,10 @@ export TMPDIR=/tmp
 # Verify buildah is working
 echo "Testing buildah configuration..."
 buildah --version || { echo "Buildah installation failed"; exit 1; }
+
+# Test buildah with a simple command to ensure runroot is properly configured
+buildah images > /dev/null 2>&1 || { echo "Buildah runroot configuration failed"; exit 1; }
+echo "Buildah configuration verified successfully"
 
 ######################
 
