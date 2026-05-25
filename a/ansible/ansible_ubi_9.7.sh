@@ -1,6 +1,7 @@
 #!/bin/bash -e
 # -----------------------------------------------------------------------------
 #
+# Package           : ansible
 # Version           : v2.20.5
 # Source repo       : https://github.com/ansible/ansible.git
 # Tested on         : UBI:9.7
