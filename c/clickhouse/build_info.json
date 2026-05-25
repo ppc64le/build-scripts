@@ -1,0 +1,18 @@
+{
+  "maintainer": "sumitd2",
+  "package_name": "clickhouse",
+  "github_url": "https://github.com/ClickHouse/ClickHouse.git",
+  "version": "v26.3.9.8-lts",
+  "package_dir": "c/clickhouse",
+  "default_branch": "main",
+  "build_script": "clickhouse-v26.3.9.8-lts_ubi9.7.sh",
+  "docker_build": "false",
+  "wheel_build" : "false",
+  "validate_build_script": "true",
+  "use_non_root_user": "false",
+  "v26.3.9.8-lts": {
+    "dir": "v26.3.9.8-lts_ubi_9",
+    "build_script": "clickhouse-v26.3.9.8-lts_ubi9.7.sh"
+  }
+
+}
