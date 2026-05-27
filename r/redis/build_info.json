@@ -2,11 +2,12 @@
   "maintainer": "IBM-Currency-Helper",
   "package_name": "redis",
   "github_url": "https://github.com/redis/redis",
-  "version": "7.0.5",
+  "version": "8.4.1",
   "default_branch": "unstable",
   "package_dir": "r/redis/",
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-  "build_script": "redis_ubi_8.5.sh",
+  "build_script": "redis_8.4.1_ubi_9.7.sh",
+  "use_non_root_user": false,
   "3.2.9": {
     "dir": "3.2.9_ubuntu_16.04",
     "build_script": "redis_rhel_7.4.sh"
@@ -28,6 +29,9 @@
   "7.0.*": {
     "dir": "6.2.4_ubi_8",
     "build_script": "redis_ubi_8.7.sh"
+  },
+  "8.4.1": {
+    "build_script": "redis_8.4.1_ubi_9.7.sh"
   },
   "5.*.*, 6.*.*, 7.*.*": {
     "dir": "6.2.4_ubi_8"
