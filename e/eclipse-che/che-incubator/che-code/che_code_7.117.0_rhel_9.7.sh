@@ -39,10 +39,14 @@ yum install git wget -y
 # Install buildah
 yum install -y buildah fuse-overlayfs
 
-# Create necessary directories
+# Clean any existing storage to start fresh in CI
+rm -rf /var/lib/containers/storage/* /run/containers/storage/* 2>/dev/null || true
+
+# Create necessary directories with proper permissions
 mkdir -p /var/lib/containers/storage
 mkdir -p /run/containers/storage
 mkdir -p /etc/containers
+chmod 755 /var/lib/containers/storage /run/containers/storage
 
 # Configure storage with proper root and runroot paths
 cat > /etc/containers/storage.conf <<'EOF'
@@ -50,6 +54,12 @@ cat > /etc/containers/storage.conf <<'EOF'
 driver = "vfs"
 runroot = "/run/containers/storage"
 graphroot = "/var/lib/containers/storage"
+
+[storage.options]
+pull_options = {enable_partial_images = "false", use_hard_links = "false", ostree_repos=""}
+
+[storage.options.vfs]
+ignore_chown_errors = "true"
 EOF
 
 # Configure containers runtime to avoid systemd/cgroup issues
