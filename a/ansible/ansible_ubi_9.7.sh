@@ -97,14 +97,14 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 # Extra packages needed by integration tests in minimal UBI/RHEL containers.
-dnf install -y \
+sudo dnf install -y \
     openssh-server openssh-clients \
     glibc-langpack-en langpacks-en \
     file acl attr \
     iptables iptables-nft nftables \
     iproute procps-ng util-linux sudo which hostname
 
-dnf install -y glibc-locale-source || true
+sudo dnf install -y glibc-locale-source || true
 
 localedef -i en_US -f UTF-8 en_US.UTF-8 || true
 
