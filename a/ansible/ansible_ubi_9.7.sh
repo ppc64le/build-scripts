@@ -17,6 +17,8 @@
 #             contact "Maintainer" of this script.
 # ----------------------------------------------------------------------------
 
+# Note: For Integration Tests, containeer needs to start with privileged mode
+
 PACKAGE_NAME=ansible
 PACKAGE_URL=https://github.com/ansible/ansible.git
 PACKAGE_VERSION=${1:-v2.20.5}
@@ -316,7 +318,7 @@ else
     exit 0
 fi
 
-##Dependency images for integration tests
+##Other dependency images for integration tests
 ##quay.io/ansible/cloudstack-test-container        1.7.0
 ##quay.io/pulp/galaxy                              4.7.1
 ##quay.io/ansible/acme-test-container              2.1.0
