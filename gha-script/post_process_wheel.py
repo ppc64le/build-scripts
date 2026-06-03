@@ -158,12 +158,13 @@ def find_project_root(so_path, max_up=10):
 
 
 def find_license_in_directory(directory):
-    # Look for LICENSE files in the given directory
+    # Look for all LICENSE files in the given directory
     try:
+        license_files = []
         for f in os.listdir(directory):
             if LICENSE_PATTERN.match(f):
-                return os.path.join(directory, f)
-        return None
+                license_files.append(os.path.join(directory, f))
+        return license_files if license_files else None
     except Exception as e:
         logger.error(f"Failed to find license in directory {directory} → {e}")
         return None
@@ -269,15 +270,25 @@ def process_so_file(so_path, rpm_licenses, bundled_licenses):
             # Bundled license check
             project_root = find_project_root(match_so)
             if project_root:
-                license_file = find_license_in_directory(project_root)
-                if license_file:
+                license_files = find_license_in_directory(project_root)
+                if license_files:
                     try:
-                        with open(license_file, "r", encoding="utf-8", errors="ignore") as f:
-                            bundled_licenses.setdefault(f.read(), []).append(original_name)
+                        # Read all license files and combine them with separator
+                        combined_license = []
+                        for license_file in license_files:
+                            with open(license_file, "r", encoding="utf-8", errors="ignore") as f:
+                                license_content = f.read()
+                                if license_content:
+                                    combined_license.append(license_content)
+                        
+                        if combined_license:
+                            # Join all licenses with the separator
+                            full_license_text = f"\n\n{LICENSE_SEPARATOR}\n\n".join(combined_license)
+                            bundled_licenses.setdefault(full_license_text, []).append(original_name)
                             license_found = True
-                            break  # stop after successfully read bundled license
+                            break  # stop after successfully read bundled licenses
                     except Exception:
-                        # Failed to read this license file, continue to next match_so
+                        # Failed to read license files, continue to next match_so
                         continue
 
         # Fallback if no license found in any path
