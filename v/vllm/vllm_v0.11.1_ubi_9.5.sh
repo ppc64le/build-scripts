@@ -318,6 +318,7 @@ python3.12 -m pip install xgrammar
 export VLLM_TARGET_DEVICE=cpu
 export MAX_JOBS=$(nproc)
 
+export SETUPTOOLS_SCM_PRETEND_VERSION=${PACKAGE_VERSION#v}
 python3.12 setup.py install
 
 python3.12 setup.py bdist_wheel --dist-dir="${CURRENT_DIR}"
