@@ -80,6 +80,18 @@ python3.12 -m pip install .
 
 python3.12 -c "import tvm_ffi"
 
+TVM_FFI_LIB=$(find / -name "libtvm_ffi.so" 2>/dev/null | head -1)
+
+if [ -z "${TVM_FFI_LIB}" ]; then
+    echo "ERROR: libtvm_ffi.so not found after tvm-ffi installation"
+    exit 1
+fi
+
+export LD_LIBRARY_PATH=$(dirname "${TVM_FFI_LIB}"):${LD_LIBRARY_PATH}
+
+echo "Found libtvm_ffi.so: ${TVM_FFI_LIB}"
+echo "LD_LIBRARY_PATH=${LD_LIBRARY_PATH}"
+
 cd ${CURRENT_DIR}
 
 # -----------------------------------------------------------------------------
