@@ -160,7 +160,7 @@ python3.12 -m pip install apache-tvm-ffi
 python3.12 -m pip install \
   --trusted-host wheels.developerfirst.ibm.com \
   --extra-index-url ${IBM_WHEELS} \
-  pillow==11.2.1
+  pillow==11.2.1 grpcio==1.80.0 httptools==0.7.1
 
 python3.12 -m pip install \
   --only-binary numpy,scipy,sentencepiece \
