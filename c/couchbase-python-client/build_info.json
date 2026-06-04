@@ -6,10 +6,10 @@
   "default_branch": "master",
   "build_script": "couchbase-python-client_4.6.1_ubi9.7.sh", 
   "package_dir": "c/couchbase-python-client",
-  "use_non_root_user": "false",
-  "docker_build": "false",
-  "wheel_build": "true",
-  "validate_build_script":"true",
+  "use_non_root_user": false,
+  "validate_build_script": true,
+  "docker_build": false,
+  "wheel_build": true,
    "v*.*.*": {
       "build_script": "couchbase-python-client_4.6.1_ubi9.7.sh"
   }
