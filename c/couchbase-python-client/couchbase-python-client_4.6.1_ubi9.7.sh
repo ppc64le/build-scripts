@@ -6,6 +6,7 @@
 # Source repo   : https://github.com/couchbase/couchbase-python-client
 # Tested on     : UBI:9.7
 # Language      : Python, C++
+# Ci-Check      : True
 # Script License: Apache License, Version 2 or later
 # Maintainer    : Mohammed Sheikh <Mohammed.Sheikh1@ibm.com>
 #
