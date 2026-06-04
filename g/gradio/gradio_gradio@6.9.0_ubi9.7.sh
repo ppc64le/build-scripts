@@ -56,23 +56,9 @@ nvm use $NODE_VERSION
 npm install -g pnpm
 
 # -------------------------------------------------------
-# Install Pillow (from source)
-# -------------------------------------------------------
-echo "Installing Pillow..."
-
-cd "${BUILD_HOME}"
-git clone https://github.com/python-pillow/Pillow
-cd Pillow
-git checkout 11.1.0
-git submodule update --init
-
-python3.12 -m pip install .
-
-# -------------------------------------------------------
 # Clone Gradio repository
 # -------------------------------------------------------
 echo "Cloning ${PACKAGE_NAME} repository..."
-
 cd "${BUILD_HOME}"
 git clone "${PACKAGE_URL}"
 cd "${PACKAGE_NAME}" && git checkout "${PACKAGE_VERSION}"
@@ -112,6 +98,33 @@ if ! pnpm -r \
   echo "------------------ ${PACKAGE_NAME}: Workspace Build Failed ------------------"
   exit 1
 fi
+
+# -------------------------------------------------------
+# Remove ODbL-licensed files BEFORE packaging
+# -------------------------------------------------------
+echo "=========================================="
+echo "Removing ODbL-licensed files..."
+echo "=========================================="
+
+FRONTEND_ASSETS="${BUILD_HOME}/${PACKAGE_NAME}/gradio/templates/frontend/assets"
+
+if [ -d "$FRONTEND_ASSETS" ]; then
+  # Remove PlotlyPlot files (handles any hash in filename)
+  rm -f "$FRONTEND_ASSETS"/PlotlyPlot-*.js "$FRONTEND_ASSETS"/PlotlyPlot-*.js.map
+  
+  # Verify removal
+  if ls "$FRONTEND_ASSETS"/PlotlyPlot*.js* 2>/dev/null; then
+    echo "ERROR: Failed to remove ODbL files!"
+    exit 1
+  fi
+  
+  echo "✓ ODbL files removed successfully"
+else
+  echo "ERROR: Assets directory not found: $FRONTEND_ASSETS"
+  exit 1
+fi
+
+echo "=========================================="
 
 # -------------------------------------------------------
 #  Install the Python package

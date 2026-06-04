@@ -1,0 +1,16 @@
+{
+  "maintainer": "amit.kumar282",
+  "package_name": "grafana-operator",
+  "github_url": "https://github.com/grafana/grafana-operator.git",
+  "version": "v5.22.2",
+  "wheel_build": false,
+  "default_branch": "master",
+  "package_dir": "g/grafana-operator",
+  "build_script": "grafana-operator_v5.22.2_ubi_9.7.sh",
+  "docker_build": false,
+  "validate_build_script": true,
+  "use_non_root_user": false,
+  "*": {
+     "build_script":"grafana-operator_v5.22.2_ubi_9.7.sh"
+  }
+}

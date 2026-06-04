@@ -1,4 +1,4 @@
- #!/bin/bash -e
+#!/bin/bash -e
 
 sudo apt update -y && sudo apt-get install file -y
 #pip3 install --upgrade requests
@@ -37,15 +37,7 @@ else
     fi  
 fi
 
-# python3 script/validate_builds_currency.py "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "$docker_image" > build_log &
 
-# SCRIPT_PID=$!
-# while ps -p $SCRIPT_PID > /dev/null
-# do 
-#   echo "$SCRIPT_PID is running"
-#   sleep 100
-# done
-# wait $SCRIPT_PID
 python3 gha-script/validate_builds_currency.py "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "$docker_image" 2>&1 | tee build_log
 my_pid_status=${PIPESTATUS[0]}
 
@@ -55,21 +47,9 @@ if [ $my_pid_status != 0 ];
 then
     echo "Script execution failed for "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "
     echo "*************************************************************************************"
-    if [ $build_size -lt 1800000 ];
-    then
-       cat build_log
-    else
-       tail -100 build_log
-    fi
     exit 1
 else
     echo "Script execution completed successfully for "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "
-    echo "*************************************************************************************"
-    if [ $build_size -lt 1800000 ];
-    then
-       cat build_log
-    else
-       tail -100 build_log
-    fi    
+    echo "*************************************************************************************"  
 fi
 exit 0

@@ -26,9 +26,6 @@ install_python_version() {
     echo "==================== Installing Python version: $version ===================="
     echo
     case $version in
-	"3.9")
-        yum install -y python3 python3-devel python3-pip
-        ;;
     "3.11" | "3.12")
         yum install -y python${version} python${version}-devel python${version}-pip
         ;;
