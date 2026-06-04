@@ -47,7 +47,7 @@ yum install -y \
     zlib-devel bzip2-devel xz-devel libjpeg-turbo-devel \
     --allowerasing
 
-    wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/a/agno/agno_v2.6.6.patch
+    wget https://raw.githubusercontent.com/rusiyamanya/build-scripts/refs/heads/agno/a/agno/agno_v2.6.6.patch
 
 if [ $? -ne 0 ]; then
     echo "------------------$PACKAGE_NAME:install_system_dependencies_fails---------------------------------------"
