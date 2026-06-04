@@ -47,7 +47,7 @@ def trigger_build_wheel(wrapper_file, python_version, image_name, file_name, ver
         
         #  STREAM logs in real-time
         for log in container.logs(stream=True, stdout=True, stderr=True, follow=True):
-            print(log.decode("utf-8").rstrip())
+            print(log.decode("utf-8", errors="replace").rstrip())
 
         # Wait until it's done
         result = container.wait()
