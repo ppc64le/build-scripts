@@ -436,6 +436,7 @@ echo "==================================================================="
 echo "Running basic offline inference example..."
 
 export VLLM_CPU_KVCACHE_SPACE=4
+export LD_PRELOAD=$(find /opt/rh/gcc-toolset-13/root/usr/lib64/ -name "libgomp.so*" | head -n 1)
 
 if ! python3.12 ${PACKAGE_DIR}/examples/offline_inference/basic/basic.py; then
     echo "------------------$PACKAGE_NAME:install_success_but_test_fails---------------------"

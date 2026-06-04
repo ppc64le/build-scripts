@@ -1,12 +1,12 @@
 {
-  "maintainer": "sumitd2",
+  "maintainer": "Prachi.Gaonkar@ibm.com",
   "package_name": "envoy",
   "github_url": "https://github.com/envoyproxy/envoy",
-  "version": "v1.25.3",
+  "version": "v1.36.5",
   "package_dir": "e/envoy",
   "default_branch": "main",
   "docker_cmd": "docker build -t ${package_name}:$PACKAGE_VERSION ${dir}",
-  "build_script": "envoy_1.25.3_ubi8.4.sh",
+  "build_script": "envoy_1.36.5_ubi9.7.sh",
   "docker_build": "true",
   "validate_build_script": "true",
   "use_non_root_user": "false",
@@ -33,6 +33,10 @@
   "v1.34.0": {
     "dir": "1.34.0_ubi_9",
     "build_script": "envoy_1.34.0_ubi9.3.sh"
+  },
+   "v1.36.5": {
+    "dir": "1.36.5_ubi_9",
+    "build_script": "envoy_1.36.5_ubi9.7.sh"
   }
 
 }

@@ -1,0 +1,84 @@
+diff --git a/libs/agno/pyproject.toml b/libs/agno/pyproject.toml
+index f3661cad8..1538139a0 100644
+--- a/libs/agno/pyproject.toml
++++ b/libs/agno/pyproject.toml
+@@ -103,7 +103,7 @@ agentql = ["agentql"]
+ apify = ["apify-client"]
+ arxiv = ["arxiv"]
+ brave = ["brave-search"]
+-browserbase = ["browserbase", "playwright"]
++browserbase = ["browserbase"]
+ cartesia = ["cartesia"]
+ confluence = ["atlassian-python-api"]
+ docling = ["docling"]
+@@ -239,14 +239,12 @@ models = [
+ 
+ # All tools
+ tools = [
+-  "agno[apify]",
+   "agno[arxiv]",
+   # "agno[brave]",  # It clashes with other dependencies
+   "agno[exa]",
+   "agno[seltz]",
+   "agno[cartesia]",
+   "agno[ddg]",
+-  "agno[duckdb]",
+   "agno[newspaper]",
+   "agno[youtube]",
+   "agno[firecrawl]",
+@@ -265,20 +263,16 @@ tools = [
+   "agno[webex]",
+   "agno[mcp]",
+   "agno[browserbase]",
+-  "agno[agentql]",
+-  "agno[opencv]",
+   "agno[parallel]",
+   "agno[salesforce]",
+   "agno[scrapegraph]",
+   "agno[valyu]",
+-  "agno[yfinance]",
+   "agno[confluence]",
+   "agno[docling]",
+   "agno[notion]",
+   "agno[oxylabs]",
+   "agno[zep]",
+   "agno[mem0]",
+-  "agno[memori]",
+   "agno[google_bigquery]",
+   "agno[psycopg]",
+   "agno[redshift]",
+@@ -302,11 +296,8 @@ storage = [
+ # All vector databases
+ vectordbs = [
+   "agno[pgvector]",
+-  "agno[chromadb]",
+-  "agno[lancedb]",
+   "agno[qdrant]",
+   "agno[couchbase]",
+-  "agno[cassandra]",
+   "agno[mongodb]",
+   "agno[singlestore]",
+   "agno[weaviate]",
+@@ -315,7 +306,6 @@ vectordbs = [
+   "agno[pinecone]",
+   "agno[surrealdb]",
+   "agno[upstash]",
+-  "agno[pylance]",
+   "agno[redis]",
+ ]
+ 
+@@ -355,14 +345,12 @@ tests = [
+     "agno[integration-tests]",
+     "twine",
+     "build",
+-    "grpcio>=1.76.0",
+ ]
+ 
+ # Models integration test dependencies
+ integration-tests = [
+     "exa_py>=2.0.0",
+     "ddgs",
+-    "yfinance",
+     "sqlalchemy",
+     "Pillow",
+     "fastmcp"

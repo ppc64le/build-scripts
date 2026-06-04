@@ -160,7 +160,7 @@ python3.12 -m pip install apache-tvm-ffi
 python3.12 -m pip install \
   --trusted-host wheels.developerfirst.ibm.com \
   --extra-index-url ${IBM_WHEELS} \
-  pillow==11.2.1
+  pillow==11.2.1 grpcio==1.80.0 httptools==0.7.1
 
 python3.12 -m pip install \
   --only-binary numpy,scipy,sentencepiece \
@@ -218,6 +218,7 @@ echo "==================================================================="
 echo "-------------------- Testing installed vLLM ------------------------"
 
 export VLLM_CPU_KVCACHE_SPACE=4
+export LD_PRELOAD=$(find /opt/rh/gcc-toolset-13/root/usr/lib64/ -name "libgomp.so*" | head -n 1)
 
 if ! python3.12 ${PACKAGE_DIR}/examples/basic/offline_inference/basic.py; then
   echo "INSTALL SUCCESS BUT TEST FAILED"

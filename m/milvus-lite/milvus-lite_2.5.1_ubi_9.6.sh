@@ -29,7 +29,7 @@ yum install -y git gcc-c++ gcc wget make python3.12 yum-utils \
                cargo libstdc++-static libaio libuuid-devel ncurses-devel \
                libtool m4 autoconf automake ninja-build zlib-devel \
                libffi-devel scl-utils openblas-devel xz patch \
-               python3.12-devel python3.12-pip
+               python3.12-devel python3.12-pip sqlite sqlite-devel
 
 yum remove -y gcc-toolset-13 || true
 gcc --version
@@ -142,6 +142,7 @@ pushd /usr/local/cmake
     conan export-pkg . cmake/3.30.5@ -s os=Linux -s arch=$(uname -m) -f
 popd
 echo " exported completed successfully...."
+
 # -----------------------------------------------------------------------------
 # 5. Clone, patch & build Milvus-Lite
 # -----------------------------------------------------------------------------
@@ -157,4 +158,25 @@ pushd milvus-lite
 popd
 
 echo "==========  All builds & installs completed successfully!  =========="
+
+# -----------------------------------------------------------------------------
+# thrift Conan recipe to use HTTPS instead of HTTP
+# -----------------------------------------------------------------------------
+
+THRIFT_VERSION=0.20.0
+
+# Download only recipe metadata
+conan download thrift/${THRIFT_VERSION}@
+
+THRIFT_EXPORT_DIR=$(find /root/.conan/data/thrift/${THRIFT_VERSION} -type f -name conanfile.py | head -1 | xargs dirname)
+
+echo "Thrift export dir: ${THRIFT_EXPORT_DIR}"
+
+# Replace HTTP with HTTPS
+find ${THRIFT_EXPORT_DIR} -type f | xargs sed -i \
+'s|http://archive.apache.org/dist/thrift/|https://archive.apache.org/dist/thrift/|g'
+
+echo "Patched thrift Conan recipe to HTTPS"
+cd $PWDIR
+
 exit 0
