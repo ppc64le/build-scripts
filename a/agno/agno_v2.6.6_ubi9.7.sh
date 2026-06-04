@@ -30,6 +30,8 @@ SCRIPT_PATH=$(dirname $SCRIPT)
 # Utilizing IBM ppc64le wheel index as a fallback for missing PyPI wheels
 IBM_WHEEL_INDEX=https://wheels.developerfirst.ibm.com/ppc64le/linux
 
+wget https://raw.githubusercontent.com/rusiyamanya/build-scripts/refs/heads/agno/a/agno/agno_v2.6.6.patch
+
 OS_NAME=$(grep ^PRETTY_NAME /etc/os-release | cut -d= -f2)
 SOURCE=Github
 
@@ -110,8 +112,8 @@ fi
 
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
-git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${SCRIPT_PACKAGE_VERSION}.patch
-
+#git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${SCRIPT_PACKAGE_VERSION}.patch
+git apply agno_v2.6.6.patch
 
 echo "INFO: Repository checked out and patched successfully."
 
