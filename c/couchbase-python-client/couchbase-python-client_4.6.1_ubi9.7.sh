@@ -90,4 +90,3 @@ fi
 # python3.12 -m pytest -m pycbc_couchbase -p no:asyncio -v -p no:warnings
 
 # failed test cases are in parity with x86
-exit 0
