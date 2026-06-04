@@ -39,14 +39,34 @@ python3.12 -m pip install -r dev_requirements.txt
 PYCBC_SET_CPM_CACHE=ON PYCBC_USE_OPENSSL=ON python3.12 setup.py configure_ext
 
 # Build the SDK and wheel
-PYCBC_USE_OPENSSL=ON python3.12 setup.py build_ext --inplace
+ret=0
+PYCBC_USE_OPENSSL=ON python3.12 setup.py build_ext --inplace || ret=$?
+if [ $ret -eq 0 ]; then
+    echo "---------- $PACKAGE_NAME-$PACKAGE_VERSION SDK Build successful ----------"
+else
+    echo "---------- $PACKAGE_NAME-$PACKAGE_VERSION SDK Build failed ----------"
+    exit 1
+fi
 
-PYCBC_USE_OPENSSL=ON python3.12 -m pip install . --no-binary couchbase --no-build-isolation
+ret=0
+PYCBC_USE_OPENSSL=ON python3.12 -m pip install . --no-binary couchbase --no-build-isolation || ret=$?
+if [ $ret -eq 0 ]; then
+    echo "---------- $PACKAGE_NAME-$PACKAGE_VERSION Wheel Build successful ----------"
+else
+    echo "---------- $PACKAGE_NAME-$PACKAGE_VERSION Wheel Build failed ----------"
+    exit 1
+fi
 
 # Validate the installation
-python3.12 -P -c "import couchbase; print('Version:', couchbase.__version__)"
-
-echo "---------- $PACKAGE_NAME-$PACKAGE_VERSION Installation completed ----------"
+ret=0
+python3.12 -P -c "import couchbase; print('Version:', couchbase.__version__)" || ret=$?
+if [ $ret -eq 0 ]; then
+    echo "---------- $PACKAGE_NAME-$PACKAGE_VERSION Installation completed ----------"
+    exit 0
+else
+    echo "---------- $PACKAGE_NAME-$PACKAGE_VERSION Installation Failed ----------"
+    exit 1
+fi
 
 # skipping test cases as they require a live running cluster 
 # change the configuration inside tests/test_config.ini folder
