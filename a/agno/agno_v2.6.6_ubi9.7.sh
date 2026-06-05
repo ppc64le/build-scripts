@@ -112,7 +112,7 @@ fi
 cd $PACKAGE_NAME
 git checkout $PACKAGE_VERSION
 #git apply ${SCRIPT_PATH}/${PACKAGE_NAME}_${SCRIPT_PACKAGE_VERSION}.patch
-wget https://raw.githubusercontent.com/rusiyamanya/build-scripts/refs/heads/agno/a/agno/agno_v2.6.6.patch
+wget https://raw.githubusercontent.com/ppc64le/build-scripts/refs/heads/master/a/agno/agno_v2.6.6.patch
 git apply agno_v2.6.6.patch
 
 echo "INFO: Repository checked out and patched successfully."
