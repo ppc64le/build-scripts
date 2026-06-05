@@ -9,6 +9,7 @@
   "docker_build": "true",
   "package_dir": "m/mongodb/",
   "docker_cmd": "docker build -t ${package_name}-ppc64le:$PACKAGE_VERSION ${dir}",
+  "wheel_build": "false",
   "validate_build_script": false,
   "r7.*.*": {
     "dir": "mongodb_7.0.x",
