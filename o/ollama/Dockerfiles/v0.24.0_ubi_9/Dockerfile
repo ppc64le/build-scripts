@@ -1,41 +1,31 @@
 ###############################################################################
 # Stage 1: Build Ollama (Power10 optimized)
 ###############################################################################
-FROM registry.access.redhat.com/ubi9/ubi:9.6 AS build
+FROM registry.access.redhat.com/ubi9/ubi:9.7 AS build
 
 ARG PACKAGE_NAME=ollama
 ARG PACKAGE_VERSION=v0.24.0
 ARG PACKAGE_URL=https://github.com/ollama/ollama
-ENV CMAKE_VERSION=3.30.5
-ENV GO_VERSION=1.26.1
-ENV PATH="/usr/local/go/bin:/usr/local/cmake/bin:${PATH}"
+ENV CMAKE_VERSION=3.31.5
+ENV GO_VERSION=1.26.3
+ENV PATH="/usr/local/go/bin:${PATH}"
 
 # Install dependencies
 RUN yum update -y && \
     yum install -y \
-    python3 python3-pip python3-devel \
-    gcc-toolset-13 gcc-toolset-13-binutils gcc-toolset-13-gcc-c++ \
+    python3.12 python3.12-devel \
+    gcc-toolset-15 gcc-toolset-15-binutils gcc-toolset-15-gcc-c++ \
     git make cmake binutils wget patch tar gzip openssl-devel \
     && yum clean all
 
-# Enable GCC toolset 13
-ENV PATH="/opt/rh/gcc-toolset-13/root/usr/bin:${PATH}"
-ENV LD_LIBRARY_PATH="/opt/rh/gcc-toolset-13/root/usr/lib64:${LD_LIBRARY_PATH}"
-ENV CC=/opt/rh/gcc-toolset-13/root/usr/bin/gcc
-ENV CXX=/opt/rh/gcc-toolset-13/root/usr/bin/g++
+# Enable GCC toolset 15
+ENV PATH="/opt/rh/gcc-toolset-15/root/usr/bin:${PATH}"
+ENV LD_LIBRARY_PATH="/opt/rh/gcc-toolset-15/root/usr/lib64:${LD_LIBRARY_PATH}"
+ENV CC=/opt/rh/gcc-toolset-15/root/usr/bin/gcc
+ENV CXX=/opt/rh/gcc-toolset-15/root/usr/bin/g++
 
-# Install CMake
-WORKDIR /tmp
-RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz && \
-    tar -xzf cmake-${CMAKE_VERSION}.tar.gz && \
-    cd cmake-${CMAKE_VERSION} && \
-    ./bootstrap --prefix=/usr/local/cmake --parallel=2 -- \
-        -DBUILD_TESTING:BOOL=OFF \
-        -DCMAKE_BUILD_TYPE:STRING=Release \
-        -DCMAKE_USE_OPENSSL:BOOL=ON && \
-    make -j$(nproc) && \
-    make install && \
-    cmake --version
+# Install CMake (system)
+RUN yum install -y cmake
 
 # Install Go
 RUN wget https://go.dev/dl/go${GO_VERSION}.linux-ppc64le.tar.gz && \
@@ -73,23 +63,35 @@ RUN patch -Np1 < ppc_sync1.patch && \
     
     
 ###############################################################################
-# Build Ollama (CMake + Go)
+# Build Ollama (CMake + Go) - Power10 Optimized
 ###############################################################################
-RUN cmake -B build -DCMAKE_BUILD_TYPE=Release && \
+# Power10 specific compiler flags for maximum optimization
+# Note: Using -fno-finite-math-only to support GGML's non-finite math requirements
+ENV CFLAGS="-mcpu=power10 -mtune=power10 -O3 -fno-finite-math-only -funroll-loops -ftree-vectorize"
+ENV CXXFLAGS="-mcpu=power10 -mtune=power10 -O3 -fno-finite-math-only -funroll-loops -ftree-vectorize"
+
+RUN cmake -B build \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_C_FLAGS="${CFLAGS}" \
+    -DCMAKE_CXX_FLAGS="${CXXFLAGS}" \
+    -DGGML_NATIVE=ON \
+    -DGGML_CPU_POWER10=ON && \
     cmake --build build -j$(nproc)
 
-# Link GGML Power10 libs
+# Link GGML Power10 libs with optimized flags
 ENV CGO_LDFLAGS="-L/src/ollama/build/lib/ollama -lggml-cpu-power10"
+ENV CGO_CFLAGS="-mcpu=power10 -mtune=power10 -O3"
+ENV CGO_CXXFLAGS="-mcpu=power10 -mtune=power10 -O3"
 
-RUN go build --tags ppc64le.power10 -o /src/ollama/ollama .
+RUN go build --tags ppc64le.power10 -ldflags="-s -w" -o /src/ollama/ollama .
 
 ###############################################################################
-# Stage 2: Small runtime image
+# Stage 2: Small runtime image (Power10 optimized)
 ###############################################################################
-FROM registry.access.redhat.com/ubi9/ubi:9.6
+FROM registry.access.redhat.com/ubi9/ubi:9.7
 
 RUN yum update -y && \
-    yum install -y libatomic openblas-devel && \
+    yum install -y libatomic openblas-devel openblas-threads && \
     yum clean all
 
 COPY --from=build /src/ollama/ollama /usr/bin/ollama
