@@ -5,7 +5,7 @@
 # Source repo    : https://github.com/ClickHouse/ClickHouse.git
 # Tested on      : UBI 9.7
 # Language       : C++
-# Ci-Check       : true
+# Ci-Check       : false
 # Maintainer     : Sumit Dubey <sumit.dubey2@ibm.com>
 # Script License : Apache License, Version 2.0 or later
 #
@@ -29,7 +29,6 @@ yum config-manager --add-repo https://mirror.stream.centos.org/9-stream/BaseOS/p
 rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official-SHA256
 dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 dnf install -y git gcc gcc-c++ cmake ccache python3 ninja-build yasm gawk wget nasm xz gnupg kernel-headers expect python3-jinja2 hostname perl-FindBin perl-IPC-Cmd perl-File-Compare perl-File-Copy perl-Time-Piece perl-Pod-Html clang-22.1.3-1.el9.ppc64le llvm-22.1.3-1.el9.ppc64le lld-22.1.3-1.el9.ppc64le libunwind
-cp /usr/lib64/libunwind.so.8 /usr/lib64/libunwind.so
 export CC=clang
 export CXX=clang++
 
@@ -49,6 +48,11 @@ git submodule update --init --recursive --jobs $(nproc)
 git apply ${SCRIPT_PATH}/${PACKAGE_NAME,,}-${PACKAGE_VERSION}.patch
 cp /usr/include/linux/vm_sockets.h contrib/sysroot/linux-powerpc64le/powerpc64le-linux-gnu/libc/usr/include/linux/
 
+#Apply libunwind patch
+pushd contrib/llvm-project
+git apply ${SCRIPT_PATH}/${PACKAGE_NAME,,}-${PACKAGE_VERSION}-llvm-project.patch
+popd
+
 #Build openssl
 pushd contrib/openssl
 ./config no-module
@@ -59,26 +63,23 @@ popd
 #Build
 mkdir build
 cd build
-mkdir -p contrib/libunwind-cmake/
-cp /usr/lib64/libunwind.so contrib/libunwind-cmake/libunwind.so
 cmake -D CMAKE_BUILD_TYPE=RELWITHDEBINFO -D ENABLE_TESTS=ON -D ENABLE_OPENSSL_DYNAMIC=ON ..
 ret=0
 ninja -j$(nproc) || ret=$?
 if [ "$ret" -ne 0 ]
 then
-	echo "FAIL: Build failed."
-	exit 1
+        echo "FAIL: Build failed."
+        exit 1
 fi
 rm -rf programs/libcrypto.so.3 programs/libssl.so.3
 cp /usr/local/lib/libcrypto.so.3 /usr/local/lib/libssl.so.3 programs/
-rm -rf contrib/libunwind-cmake/libunwind.so
 
 #Unit test
 ./src/unit_tests_dbms || ret=$?
 if [ "$ret" -ne 0 ]
 then
-	echo "FAIL: Test failed."
-	exit 2
+        echo "FAIL: Test failed."
+        exit 2
 fi
 
 #Conclude

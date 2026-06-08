@@ -88,6 +88,9 @@ RUN cd /build && \
     echo "            force 'org.eclipse.jetty:jetty-client:12.0.33'" >> init.gradle && \
     echo '        }' >> init.gradle && \
     echo '    }' >> init.gradle && \
+    echo '    configurations.all {' >> init.gradle && \
+    echo '        exclude group: "io.github.x-stream", module: "mxparser"' >> init.gradle && \
+    echo '    }' >> init.gradle && \
     echo '}' >> init.gradle && \
     ./gradlew jar -x test --init-script init.gradle
 
@@ -118,6 +121,7 @@ RUN mkdir -p /root/kafka/bin /root/kafka/libs /root/kafka/config && \
     rm -f mina-core-2.0.16.jar || true && \
     rm -f velocity-engine-core-2.3.jar || true && \
     rm -f commons-beanutils-1.9.4.jar || true && \
+    rm -f mxparser-1.2.2.jar || true && \
     ls -lh /root/kafka/libs/ && \
     echo "Total JARs after cleanup: $(ls -1 /root/kafka/libs/*.jar | wc -l)"
 
