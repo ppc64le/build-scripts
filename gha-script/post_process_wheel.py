@@ -101,12 +101,22 @@ def normalize_so_name(so_name):
     return re.sub(r'-[0-9a-f]{8,}(?=(?:\.so|\.\d))', '', so_name)
 
 def find_all_so_anywhere(so_name):
-    # Search for the .so file anywhere in the filesystem
+    # Search for the .so file anywhere in the filesystem, excluding site-packages
     try:
         result = run_command(["find", ".", "-type", "f", "-name", so_name])
         if len(result.stdout) == 0:
             result = run_command(["find", "/", "-type", "f", "-name", so_name])
-        return result.stdout.strip().splitlines()
+        
+        # Filter out paths containing site-packages to avoid using installed packages
+        all_paths = result.stdout.strip().splitlines()
+        filtered_paths = [p for p in all_paths if "site-packages" not in p]
+        
+        # If filtering removed all paths, log error and exit
+        if not filtered_paths and all_paths:
+            logger.error(f"All paths for {so_name} were in site-packages, no valid build path found")
+            sys.exit(1)
+        
+        return filtered_paths
     except Exception as e:
         logger.error(f"Failed to find .so files → {e}")
         return []
