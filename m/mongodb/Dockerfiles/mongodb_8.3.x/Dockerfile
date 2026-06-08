@@ -93,6 +93,7 @@ RUN set -eux; \
         //:install-mongod \
         //:install-mongos \
         --config=opt \
+        --config=local \
         --//bazel/config:build_enterprise=false \
         --//bazel/config:separate_debug=True \
         --action_env=MONGO_VERSION=${MONGO_VERSION} \
