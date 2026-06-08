@@ -1,6 +1,6 @@
 FROM registry.access.redhat.com/ubi9/ubi:9.7 AS builder
 
-ARG PACKAGE_VERSION=8.3.1
+ARG PACKAGE_VERSION=r8.3.1
 ENV MONGO_VERSION=${PACKAGE_VERSION}
 ENV MONGO_MAJOR=8.3
 ENV PYTHON_VERSION=3.10.20
@@ -78,7 +78,7 @@ RUN set -eux; \
     cd /src; \
     git clone https://github.com/mongodb/mongo; \
     cd mongo; \
-    git checkout r${MONGO_VERSION}; \
+    git checkout ${MONGO_VERSION}; \
     git submodule update --init --recursive; \
     \
     python buildscripts/install_bazel.py; \
