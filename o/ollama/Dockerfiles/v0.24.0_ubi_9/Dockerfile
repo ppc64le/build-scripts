@@ -7,7 +7,7 @@ ARG PACKAGE_NAME=ollama
 ARG PACKAGE_VERSION=v0.24.0
 ARG PACKAGE_URL=https://github.com/ollama/ollama
 ENV CMAKE_VERSION=3.31.5
-ENV GO_VERSION=1.26.3
+ENV GO_VERSION=1.26.4
 ENV PATH="/usr/local/go/bin:${PATH}"
 
 # Install dependencies
@@ -91,7 +91,7 @@ RUN go build --tags ppc64le.power10 -ldflags="-s -w" -o /src/ollama/ollama .
 FROM registry.access.redhat.com/ubi9/ubi:9.7
 
 RUN yum update -y && \
-    yum install -y libatomic openblas-devel openblas-threads && \
+    yum install -y libatomic openblas openblas-threads && \
     yum clean all
 
 COPY --from=build /src/ollama/ollama /usr/bin/ollama
