@@ -53,7 +53,6 @@ yum install -y \
   llvm-devel \
   libgomp \
   numactl \
-  numactl-devel \
   --allowerasing
 
 yum install -y gcc-toolset-13-libatomic-devel
