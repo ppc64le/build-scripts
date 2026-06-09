@@ -71,6 +71,32 @@ export CXX=g++
 gcc --version
 g++ --version
 
+# -----------------------------------------------------------------------------
+# Build numactl from source
+# -----------------------------------------------------------------------------
+
+echo "-------------------- Building numactl from source ------------------"
+
+cd ${CURRENT_DIR}
+
+git clone https://github.com/numactl/numactl
+cd numactl
+git checkout v2.0.19
+
+./autogen.sh
+./configure --prefix=/usr --libdir=/usr/lib64
+make -j$(nproc)
+make install
+
+ldconfig
+
+export CPLUS_INCLUDE_PATH=/usr/local/include:${CPLUS_INCLUDE_PATH}
+export LIBRARY_PATH=/usr/local/lib:${LIBRARY_PATH}
+export LD_LIBRARY_PATH=/usr/local/lib:${LD_LIBRARY_PATH}
+export CMAKE_PREFIX_PATH=/usr/local:${CMAKE_PREFIX_PATH}
+
+cd ${CURRENT_DIR}
+
 # ===============================================================
 # OPENBLAS BUILD (SOURCE)
 # ===============================================================
@@ -79,7 +105,7 @@ echo "-------------------- Building OpenBLAS -----------------------------"
 
 cd ${CURRENT_DIR}
 
-git clone https://github.com/OpenMathLib/OpenBLAS.git
+git clone --branch v0.3.33 --depth 1 https://github.com/OpenMathLib/OpenBLAS.git
 cd OpenBLAS
 
 make TARGET=POWER10 BINARY=64 USE_OPENMP=1 DYNAMIC_ARCH=1 -j$(nproc)
@@ -152,14 +178,23 @@ python3.12 -m pip install \
 
 echo "-------------------- Protobuf build -------------------------------"
 
-wget https://github.com/protocolbuffers/protobuf/releases/download/v3.20.3/protobuf-cpp-3.20.3.tar.gz
+cd ${CURRENT_DIR}
 
-tar --no-same-owner --no-same-permissions -xzf protobuf-cpp-3.20.3.tar.gz
-cd protobuf-3.20.3
+wget https://github.com/protocolbuffers/protobuf/releases/download/v35.0/protobuf-35.0.tar.gz
 
-./configure --prefix=/usr --libdir=/usr/lib64
+tar --no-same-owner --no-same-permissions -xzf protobuf-35.0.tar.gz
+cd protobuf-35.0
+
+mkdir build
+cd build
+
+cmake .. \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr
+
 make -j$(nproc)
 make install
+
 ldconfig
 protoc --version || true
 
