@@ -1,0 +1,836 @@
+ls test/extensions
+BUILD           config                       geoip_providers    io_socket                quic                    stats_sinks        watchdog
+access_loggers  config_subscription          grpc_credentials   key_value                rate_limit_descriptors  string_matcher(2 skipped)
+bootstrap       dynamic_modules(3)              health_check       load_balancing_policies  request_id              tracers
+clusters        extensions_build_system.bzl  health_checkers    matching                 resource_monitors       transport_sockets
+common(1)          filters                      http               network                  retry                   udp_packet_writer
+compression     formatter                    internal_redirect  path                     router                  upstreams
+
+INFO: Found 3 targets and 22 test targets...
+INFO: Elapsed time: 12448.282s, Critical Path: 321.88s
+INFO: 8630 processes: 3710 internal, 4919 linux-sandbox, 1 worker.
+INFO: Build completed, 1 test FAILED, 8630 total actions
+//test/extensions/access_loggers/grpc:tcp_grpc_access_log_integration_test FAILED in 22.8s
+  /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/execroot/envoy/bazel-out/ppc-fastbuild/testlogs/test/extensions/access_loggers/grpc/tcp_grpc_access_log_integration_test/test.log
+
+Executed 22 out of 22 tests: 21 tests pass and 1 fails locally.
+[root@prachi-gaonkar-1 envoy]# bazel test //test/extensions/access_loggers/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+
+In file included from external/com_google_absl/absl/debugging/stacktrace.cc:55:
+external/com_google_absl/absl/debugging/internal/stacktrace_powerpc-inl.inc:226:80: warning: implicit conversion loses integer precision: 'uintptr_t' (aka 'unsigned long') to 'int' [-Wshorten-64-to-32]
+  226 |             sizes[n] = absl::debugging_internal::StripPointerMetadata(next_sp) -
+      |                      ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  227 |                        absl::debugging_internal::StripPointerMetadata(sp);
+  
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+external/com_google_absl/absl/debugging/stacktrace.cc:231:12: note: in instantiation of function template specialization 'UnwindImpl<true, true>' requested here
+  231 |       f = &UnwindImpl<true, true>;
+      |            ^
+3 warnings generated.
+INFO: From Compiling absl/random/internal/randen_hwaes.cc:
+external/com_google_absl/absl/random/internal/randen_hwaes.cc:151:45: warning: Implicit conversion between vector types (''Vector128' (vector of 2 'unsigned long long' values)' and ''__vector unsigned char' (vector of 16 'unsigned char' values)') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [-Wdeprecate-lax-vec-conv-all]
+  151 |   return Vector128(__builtin_crypto_vcipher(state, round_key));
+      |                                             ^
+external/com_google_absl/absl/random/internal/randen_hwaes.cc:151:52: warning: Implicit conversion between vector types (''Vector128' (vector of 2 'unsigned long long' values)' and ''__vector unsigned char' (vector of 16 'unsigned char' values)') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [-Wdeprecate-lax-vec-conv-all]
+  151 |   return Vector128(__builtin_crypto_vcipher(state, round_key));
+      |                                                    ^
+2 warnings generated.
+INFO: Found 1 test target...
+Target //test/extensions/access_loggers/grpc:tcp_grpc_access_log_integration_test up-to-date:
+  bazel-bin/test/extensions/access_loggers/grpc/tcp_grpc_access_log_integration_test
+INFO: Elapsed time: 10283.102s, Critical Path: 240.71s
+INFO: 3968 processes: 2 internal, 3966 linux-sandbox.
+INFO: Build completed successfully, 3968 total actions
+
+Executed 1 out of 1 test: 1 test passes.
+[root@prachi-gaonkar-1 envoy]# bazel test //test/extensions/access_loggers/grpc:tcp_grpc_access_log_integration_test   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+
+==========================================================================================================
+ bazel test //test/extensions/bootstrap/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 24 targets (55 packages loaded, 1788 targets configured).
+INFO: Found 4 targets and 20 test targets...
+INFO: Elapsed time: 1982.970s, Critical Path: 155.22s
+INFO: 695 processes: 192 internal, 503 linux-sandbox.
+INFO: Build completed successfully, 695 total actions
+
+Executed 20 out of 20 tests: 20 tests pass.
+
+==========================================================================================================
+ bazel test //test/extensions/clusters/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 19 targets (43 packages loaded, 534 targets configured).
+INFO: Found 2 targets and 17 test targets...
+INFO: Elapsed time: 1422.920s, Critical Path: 169.53s
+INFO: 364 processes: 192 internal, 172 linux-sandbox.
+INFO: Build completed successfully, 364 total actions
+
+Executed 17 out of 17 tests: 17 tests pass.
+===============================================================================================
+[2026-05-22 09:30:47.118][12][critical][backtrace] [./source/server/backtrace.h:121] #22: std::__invoke_impl<>() [0x135855d3c]
+[2026-05-22 09:30:47.134][12][critical][backtrace] [./source/server/backtrace.h:121] #23: std::__invoke<>() [0x135855cec]
+[2026-05-22 09:30:47.149][12][critical][backtrace] [./source/server/backtrace.h:121] #24: std::invoke<>() [0x135855c98]
+[2026-05-22 09:30:47.165][12][critical][backtrace] [./source/server/backtrace.h:121] #25: absl::lts_20250814::internal_any_invocable::InvokeR<>() [0x135855c48]
+[2026-05-22 09:30:47.180][12][critical][backtrace] [./source/server/backtrace.h:121] #26: absl::lts_20250814::internal_any_invocable::RemoteInvoker<>() [0x135855a54]
+[2026-05-22 09:30:47.196][12][critical][backtrace] [./source/server/backtrace.h:121] #27: absl::lts_20250814::internal_any_invocable::Impl<>::operator()() [0x13565669c]
+[2026-05-22 09:30:47.211][12][critical][backtrace] [./source/server/backtrace.h:121] #28: Envoy::Event::DispatcherImpl::runPostCallbacks() [0x137d9a4ac]
+[2026-05-22 09:30:47.226][12][critical][backtrace] [./source/server/backtrace.h:121] #29: Envoy::Event::DispatcherImpl::run() [0x137d9a068]
+[2026-05-22 09:30:47.242][12][critical][backtrace] [./source/server/backtrace.h:121] #30: Envoy::Extensions::Common::AsyncFiles::AsyncFileManagerWithMockFilesTest::resolveFileActions() [0x13573b280]
+[2026-05-22 09:30:47.257][12][critical][backtrace] [./source/server/backtrace.h:121] #31: Envoy::Extensions::Common::AsyncFiles::AsyncFileManagerWithMockFilesTest_CreateAnonymousFallbackClosesAndReturnsAnErrorIfUnlinkWhileOpenFails_Test::TestBody() [0x1357275a0]
+[2026-05-22 09:30:47.272][12][critical][backtrace] [./source/server/backtrace.h:121] #32: testing::internal::HandleSehExceptionsInMethodIfSupported<>() [0x139687624]
+[2026-05-22 09:30:47.288][12][critical][backtrace] [./source/server/backtrace.h:121] #33: testing::internal::HandleExceptionsInMethodIfSupported<>() [0x139667fe0]
+[2026-05-22 09:30:47.303][12][critical][backtrace] [./source/server/backtrace.h:121] #34: testing::Test::Run() [0x1396416c0]
+[2026-05-22 09:30:47.318][12][critical][backtrace] [./source/server/backtrace.h:121] #35: testing::TestInfo::Run() [0x1396424e0]
+[2026-05-22 09:30:47.333][12][critical][backtrace] [./source/server/backtrace.h:121] #36: testing::TestSuite::Run() [0x139643198]
+[2026-05-22 09:30:47.348][12][critical][backtrace] [./source/server/backtrace.h:121] #37: testing::internal::UnitTestImpl::RunAllTests() [0x139657eb4]
+[2026-05-22 09:30:47.364][12][critical][backtrace] [./source/server/backtrace.h:121] #38: testing::internal::HandleSehExceptionsInMethodIfSupported<>() [0x13968d0a4]
+[2026-05-22 09:30:47.379][12][critical][backtrace] [./source/server/backtrace.h:121] #39: testing::internal::HandleExceptionsInMethodIfSupported<>() [0x13966b740]
+[2026-05-22 09:30:47.394][12][critical][backtrace] [./source/server/backtrace.h:121] #40: testing::UnitTest::Run() [0x139657510]
+[2026-05-22 09:30:47.409][12][critical][backtrace] [./source/server/backtrace.h:121] #41: RUN_ALL_TESTS() [0x137c3cdc8]
+[2026-05-22 09:30:47.425][12][critical][backtrace] [./source/server/backtrace.h:121] #42: Envoy::TestRunner::runTests() [0x137c3ba54]
+[2026-05-22 09:30:47.440][12][critical][backtrace] [./source/server/backtrace.h:121] #43: main [0x137c3848c]
+[2026-05-22 09:30:47.440][12][critical][backtrace] [./source/server/backtrace.h:121] #44: __libc_start_call_main [0x7fff8293cb24]
+[2026-05-22 09:30:47.441][12][critical][backtrace] [./source/server/backtrace.h:121] #45: __libc_start_main@GLIBC_2.17 [0x7fff8293cd08]
+================================================================================
+INFO: Found 11 targets and 46 test targets...
+INFO: Elapsed time: 2028.645s, Critical Path: 224.57s
+INFO: 551 processes: 311 internal, 240 linux-sandbox.
+INFO: Build completed, 1 test FAILED, 551 total actions
+//test/extensions/common/async_files:async_file_manager_thread_pool_test FAILED in 1.9s
+  /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/execroot/envoy/bazel-out/ppc-fastbuild/testlogs/test/extensions/common/async_files/async_file_manager_thread_pool_test/test.log
+
+Executed 46 out of 46 tests: 45 tests pass and 1 fails locally.
+[root@prachi-gaonkar-1 envoy]# vi  /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/execroot/envoy/bazel-out/ppc-fastbuild/testlogs/test/extensions/common/async_files/async_file_manager_thread_pool_test/test.log
+[root@prachi-gaonkar-1 envoy]# vi  /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/execroot/envoy/bazel-out/ppc-fastbuild/testlogs/test/extensions/common/async_files/async_file_manager_thread_pool_test/test.log
+
+
+============================================================================
+ bazel test //test/extensions/compression/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:zstd
+INFO: Analyzed 11 targets (34 packages loaded, 898 targets configured).
+INFO: Found 3 targets and 8 test targets...
+INFO: Elapsed time: 494.838s, Critical Path: 180.09s
+INFO: 196 processes: 90 internal, 106 linux-sandbox.
+INFO: Build completed successfully, 196 total actions
+
+Executed 8 out of 8 tests: 8 tests pass.
+
+=============================================================
+ bazel test //test/extensions/config/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 3 targets (3 packages loaded, 17 targets configured).
+INFO: Found 3 test targets...
+INFO: Elapsed time: 137.188s, Critical Path: 124.52s
+INFO: 36 processes: 20 internal, 16 linux-sandbox.
+INFO: Build completed successfully, 36 total actions
+
+Executed 3 out of 3 tests: 3 tests pass.
+
+============================================================
+ bazel test //test/extensions/config_subscription/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 21 targets (6 packages loaded, 53 targets configured).
+INFO: Found 4 targets and 17 test targets...
+INFO: Elapsed time: 538.834s, Critical Path: 285.15s
+INFO: 148 processes: 95 internal, 53 linux-sandbox.
+INFO: Build completed successfully, 148 total actions
+
+Executed 17 out of 17 tests: 17 tests pass.
+================================================================
+
+ bazel test //test/extensions/formatter/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 8 targets (11 packages loaded, 51 targets configured).
+INFO: Found 2 targets and 6 test targets...
+INFO: Elapsed time: 338.472s, Critical Path: 171.57s
+INFO: 82 processes: 41 internal, 41 linux-sandbox.
+INFO: Build completed successfully, 82 total actions
+
+Executed 6 out of 6 tests: 6 tests pass.
+
+============================================================
+
+ bazel test //test/extensions/geoip_providers/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:maxmind
+INFO: Analyzed 3 targets (8 packages loaded, 207 targets configured).
+INFO: Found 1 target and 2 test targets...
+INFO: Elapsed time: 133.144s, Critical Path: 106.01s
+INFO: 41 processes: 22 internal, 19 linux-sandbox.
+INFO: Build completed successfully, 41 total actions
+
+Executed 2 out of 2 tests: 2 tests pass.
+
+=============================================================
+bazel test //test/extensions/grpc_credentials/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+Starting local Bazel server and connecting to it...
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_google_protobuf/protobuf.bzl:654:10: The py_proto_library macro is deprecated and will be removed in the 30.x release. switch to the rule defined by rules_python or the one in bazel/py_proto_library.bzl.
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:event
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:zlib
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:nghttp2
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:ares
+INFO: Analyzed target //test/extensions/grpc_credentials/file_based_metadata:integration_test (620 packages loaded, 26467 targets configured).
+INFO: Found 1 test target...
+Target //test/extensions/grpc_credentials/file_based_metadata:integration_test up-to-date:
+  bazel-bin/test/extensions/grpc_credentials/file_based_metadata/integration_test
+INFO: Elapsed time: 150.294s, Critical Path: 109.13s
+INFO: 35 processes: 14 internal, 21 linux-sandbox.
+INFO: Build completed successfully, 35 total actions
+
+Executed 1 out of 1 test: 1 test passes.
+
+===============================================
+ bazel test //test/extensions/health_check/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+Starting local Bazel server and connecting to it...
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_google_protobuf/protobuf.bzl:654:10: The py_proto_library macro is deprecated and will be removed in the 30.x release. switch to the rule defined by rules_python or the one in bazel/py_proto_library.bzl.
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:event
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:zlib
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:nghttp2
+INFO: Analyzed target //test/extensions/health_check/event_sinks/file:file_sink_impl_test (511 packages loaded, 22260 targets configured).
+INFO: Found 1 test target...
+Target //test/extensions/health_check/event_sinks/file:file_sink_impl_test up-to-date:
+  bazel-bin/test/extensions/health_check/event_sinks/file/file_sink_impl_test
+INFO: Elapsed time: 104.855s, Critical Path: 86.55s
+INFO: 18 processes: 9 internal, 9 linux-sandbox.
+INFO: Build completed successfully, 18 total actions
+
+Executed 1 out of 1 test: 1 test passes.
+
+===================================================================
+ bazel test //test/extensions/health_checkers/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 6 targets (30 packages loaded, 363 targets configured).
+INFO: Found 1 target and 5 test targets...
+INFO: Elapsed time: 516.988s, Critical Path: 157.03s
+INFO: 144 processes: 80 internal, 64 linux-sandbox.
+INFO: Build completed successfully, 144 total actions
+
+Executed 5 out of 5 tests: 5 tests pass.
+
+==============================================================================
+# bazel test //test/extensions/http/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:zlib
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:ares
+INFO: Analyzed 48 targets (189 packages loaded, 6310 targets configured).
+INFO: From Building external/com_google_protobuf/java/core/libcore.jar (43 source files, 1 source jar):
+external/com_google_protobuf/java/core/src/main/java/com/google/protobuf/RepeatedFieldBuilderV3.java:28: warning: [dep-ann] deprecated item is not annotated with @Deprecated
+public class RepeatedFieldBuilderV3<
+       ^
+INFO: Found 10 targets and 38 test targets...
+INFO: Elapsed time: 2047.354s, Critical Path: 225.87s
+INFO: 677 processes: 314 internal, 353 linux-sandbox, 10 worker.
+INFO: Build completed successfully, 677 total actions
+
+Executed 38 out of 38 tests: 38 tests pass.
+
+===================================================================================================================
+bazel test //test/extensions/internal_redirect/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 2 targets (8 packages loaded, 35 targets configured).
+INFO: Found 2 test targets...
+INFO: Elapsed time: 167.182s, Critical Path: 134.43s
+INFO: 49 processes: 24 internal, 25 linux-sandbox.
+INFO: Build completed successfully, 49 total actions
+
+Executed 2 out of 2 tests: 2 tests pass.
+
+============================================================================
+ bazel test //test/extensions/io_socket/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 3 targets (2 packages loaded, 14 targets configured).
+INFO: Found 3 test targets...
+INFO: Elapsed time: 56.984s, Critical Path: 55.94s
+INFO: 25 processes: 16 internal, 9 linux-sandbox.
+INFO: Build completed successfully, 25 total actions
+
+Executed 3 out of 3 tests: 3 tests pass.
+
+==============================================================================
+bazel test //test/extensions/key_value/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 2 targets (4 packages loaded, 15 targets configured).
+INFO: Found 2 test targets...
+INFO: Elapsed time: 104.894s, Critical Path: 103.73s
+INFO: 21 processes: 13 internal, 8 linux-sandbox.
+INFO: Build completed successfully, 21 total actions
+
+Executed 2 out of 2 tests: 2 tests pass.
+
+========================================================================================
+ bazel test //test/extensions/load_balancing_policies/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 100 targets (25 packages loaded, 374 targets configured).
+INFO: Found 59 targets and 41 test targets...
+INFO: Elapsed time: 1945.883s, Critical Path: 262.80s
+INFO: 656 processes: 324 internal, 316 linux-sandbox, 16 worker.
+INFO: Build completed successfully, 656 total actions
+
+Executed 41 out of 41 tests: 41 tests pass.
+[root@prachi-gaonkar-1 envoy]#
+
+==============================================================
+ bazel test //test/extensions/load_balancing_policies/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 100 targets (25 packages loaded, 374 targets configured).
+INFO: Found 59 targets and 41 test targets...
+INFO: Elapsed time: 1945.883s, Critical Path: 262.80s
+INFO: 656 processes: 324 internal, 316 linux-sandbox, 16 worker.
+INFO: Build completed successfully, 656 total actions
+
+Executed 41 out of 41 tests: 41 tests pass.
+
+=========================================================================
+ bazel test //test/extensions/matching/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 14 targets (51 packages loaded, 820 targets configured).
+INFO: Found 1 target and 13 test targets...
+INFO: Elapsed time: 608.266s, Critical Path: 148.55s
+INFO: 168 processes: 92 internal, 76 linux-sandbox.
+INFO: Build completed successfully, 168 total actions
+
+Executed 13 out of 13 tests: 13 tests pass.
+
+==========================================================================
+ bazel test //test/extensions/network/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 4 targets (10 packages loaded, 35 targets configured).
+INFO: Found 4 test targets...
+INFO: Elapsed time: 123.847s, Critical Path: 117.95s
+INFO: 33 processes: 21 internal, 12 linux-sandbox.
+INFO: Build completed successfully, 33 total actions
+
+Executed 4 out of 4 tests: 4 tests pass.
+
+============================================================
+# bazel test //test/extensions/path/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 9 targets (4 packages loaded, 22 targets configured).
+INFO: Found 2 targets and 7 test targets...
+INFO: Elapsed time: 247.785s, Critical Path: 191.90s
+INFO: 59 processes: 37 internal, 22 linux-sandbox.
+INFO: Build completed successfully, 59 total actions
+
+Executed 7 out of 7 tests: 7 tests pass.
+=====================================================================
+ bazel test //test/extensions/quic/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 7 targets (16 packages loaded, 171 targets configured).
+INFO: Found 1 target and 6 test targets...
+INFO: Elapsed time: 622.545s, Critical Path: 124.39s
+INFO: 181 processes: 89 internal, 92 linux-sandbox.
+INFO: Build completed successfully, 181 total actions
+
+Executed 6 out of 6 tests: 6 tests pass.
+
+============================================================================
+ bazel test //test/extensions/rate_limit_descriptors/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed target //test/extensions/rate_limit_descriptors/expr:config_test (9 packages loaded, 359 targets configured).
+INFO: Found 1 test target...
+Target //test/extensions/rate_limit_descriptors/expr:config_test up-to-date:
+  bazel-bin/test/extensions/rate_limit_descriptors/expr/config_test
+INFO: Elapsed time: 99.830s, Critical Path: 94.21s
+INFO: 19 processes: 10 internal, 9 linux-sandbox.
+INFO: Build completed successfully, 19 total actions
+
+Executed 1 out of 1 test: 1 test passes.
+
+==============================================================
+ bazel test //test/extensions/request_id/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed target //test/extensions/request_id/uuid:config_test (1 packages loaded, 2 targets configured).
+INFO: Found 1 test target...
+Target //test/extensions/request_id/uuid:config_test up-to-date:
+  bazel-bin/test/extensions/request_id/uuid/config_test
+INFO: Elapsed time: 45.712s, Critical Path: 44.88s
+INFO: 9 processes: 6 internal, 3 linux-sandbox.
+INFO: Build completed successfully, 9 total actions
+
+Executed 1 out of 1 test: 1 test passes.
+
+========================================================
+ bazel test //test/extensions/resource_monitors/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 15 targets (16 packages loaded, 96 targets configured).
+INFO: Found 15 test targets...
+INFO: Elapsed time: 389.159s, Critical Path: 154.69s
+INFO: 184 processes: 102 internal, 82 linux-sandbox.
+INFO: Build completed successfully, 184 total actions
+
+Executed 15 out of 15 tests: 15 tests pass.
+
+===============================================================
+ bazel test //test/extensions/retry/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 5 targets (12 packages loaded, 52 targets configured).
+INFO: Found 5 test targets...
+INFO: Elapsed time: 193.073s, Critical Path: 125.43s
+INFO: 72 processes: 38 internal, 34 linux-sandbox.
+INFO: Build completed successfully, 72 total actions
+
+Executed 5 out of 5 tests: 5 tests pass.
+
+=====================================================================
+ bazel test //test/extensions/router/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 5 targets (8 packages loaded, 32 targets configured).
+INFO: Found 5 test targets...
+INFO: Elapsed time: 200.843s, Critical Path: 112.58s
+INFO: 38 processes: 21 internal, 17 linux-sandbox.
+INFO: Build completed successfully, 38 total actions
+
+Executed 3 out of 5 tests: 3 tests pass and 2 were skipped.
+
+=================================================================================
+ bazel test //test/extensions/stats_sinks/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 16 targets (37 packages loaded, 248 targets configured).
+INFO: Found 1 target and 15 test targets...
+INFO: Elapsed time: 887.667s, Critical Path: 193.37s
+INFO: 220 processes: 111 internal, 109 linux-sandbox.
+INFO: Build completed successfully, 220 total actions
+
+Executed 15 out of 15 tests: 15 tests pass.
+
+=================================================================================================================
+ bazel test //test/extensions/string_matcher/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 2 targets (0 packages loaded, 0 targets configured).
+INFO: Found 2 test targets...
+INFO: Elapsed time: 0.460s, Critical Path: 0.05s
+INFO: 1 process: 1 internal.
+INFO: Build completed successfully, 1 total action
+
+Executed 0 out of 2 tests: 2 were skipped.
+
+====================================================================================
+bazel test //test/extensions/tracers/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 51 targets (47 packages loaded, 1496 targets configured).
+INFO: Found 4 targets and 47 test targets...
+INFO: Elapsed time: 3136.024s, Critical Path: 216.86s
+INFO: 944 processes: 608 internal, 336 linux-sandbox.
+INFO: Build completed successfully, 944 total actions
+
+Executed 47 out of 47 tests: 47 tests pass.
+
+====================================================
+ bazel test //test/extensions/udp_packet_writer/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 2 targets (2 packages loaded, 4 targets configured).
+INFO: Found 2 test targets...
+INFO: Elapsed time: 19.879s, Critical Path: 18.91s
+INFO: 17 processes: 11 internal, 6 linux-sandbox.
+INFO: Build completed successfully, 17 total actions
+
+Executed 2 out of 2 tests: 2 tests pass.
+
+=======================================================================================
+ bazel test //test/extensions/watchdog/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=thir
+d_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --overrid
+e_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_
+env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_
+resources=12000   --linkopt=-fuse-ld=lld
+Extracting Bazel installation...
+Starting local Bazel server and connecting to it...
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+DEBUG: Rule 'dynamic_modules_rust_sdk_crate_index' indicated that a canonical reproducible form can be obtained by modifying arguments _action_listener = <un
+known object com.google.devtools.build.lib.packages.Attribute$LabelListLateBoundDefault>, _config_dependencies = [], _configure = False, _environ = ["CARGO_B
+AZEL_GENERATOR_URL", "CARGO_BAZEL_GENERATOR_SHA256", "CARGO_BAZEL_REPIN", "REPIN", "CARGO_BAZEL_REPIN_ONLY", "CARGO_BAZEL_ISOLATED", "CARGO_BAZEL_DEBUG"], _o
+riginal_name = "", generator_sha256s = {"powerpc64le-unknown-linux-gnu": "8b227e4c322aec4578c05b6a0248f40c916c12645b3c576ff3ed7a8760f40896"}
+DEBUG: Repository dynamic_modules_rust_sdk_crate_index instantiated at:
+  /envoy/WORKSPACE:29:25: in <toplevel>
+  /envoy/bazel/dependency_imports.bzl:84:24: in envoy_dependency_imports
+  /envoy/bazel/dependency_imports.bzl:248:22: in crates_repositories
+Repository rule crates_repository defined at:
+  /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_rust/crate_universe/private/crates_repository.bzl:124:36: in <toplevel>
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_google_protobuf/protobuf.bzl:654:10: The py_proto_library macro is deprec
+ated and will be removed in the 30.x release. switch to the rule defined by rules_python or the one in bazel/py_proto_library.bzl.
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is u
+nknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:event
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is u
+nknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:zlib
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is u
+nknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:nghttp2
+INFO: Analyzed 2 targets (440 packages loaded, 20781 targets configured).
+INFO: From Compiling absl/base/internal/unscaledcycleclock.cc:
+external/com_google_absl/absl/base/internal/unscaledcycleclock.cc:65:10: warning: implicit conversion changes signedness: 'uint64_t' (aka 'unsigned long') to 'int64_t' (aka 'long') [-Wsign-conversion]
+   65 |   return __ppc_get_timebase();
+      |   ~~~~~~ ^~~~~~~~~~~~~~~~~~~~
+1 warning generated.
+INFO: From Compiling absl/debugging/stacktrace.cc:
+In file included from external/com_google_absl/absl/debugging/stacktrace.cc:55:
+INFO: Analyzed 2 targets (440 packages loaded, 20781 targets configured).                                                                            [0/1987]
+INFO: From Compiling absl/base/internal/unscaledcycleclock.cc:
+external/com_google_absl/absl/base/internal/unscaledcycleclock.cc:65:10: warning: implicit conversion changes signedness: 'uint64_t' (aka 'unsigned long') to 'int64_t' (aka 'long') [-Wsign-conversion]
+   65 |   return __ppc_get_timebase();
+      |   ~~~~~~ ^~~~~~~~~~~~~~~~~~~~
+1 warning generated.
+INFO: From Compiling absl/debugging/stacktrace.cc:
+In file included from external/com_google_absl/absl/debugging/stacktrace.cc:55:
+external/com_google_absl/absl/debugging/internal/stacktrace_powerpc-inl.inc:226:80: warning: implicit conversion loses integer precision: 'uintptr_t' (aka 'u
+nsigned long') to 'int' [-Wshorten-64-to-32]
+  226 |             sizes[n] = absl::debugging_internal::StripPointerMetadata(next_sp) -
+      |                      ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  227 |                        absl::debugging_internal::StripPointerMetadata(sp);
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+external/com_google_absl/absl/debugging/internal/stacktrace_powerpc-inl.inc:226:80: warning: implicit conversion loses integer precision: 'uintptr_t' (aka 'u
+nsigned long') to 'int' [-Wshorten-64-to-32]
+  226 |             sizes[n] = absl::debugging_internal::StripPointerMetadata(next_sp) -
+      |                      ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  227 |                        absl::debugging_internal::StripPointerMetadata(sp);
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+external/com_google_absl/absl/debugging/stacktrace.cc:229:12: note: in instantiation of function template specialization 'UnwindImpl<true, false>' requested
+here
+  229 |       f = &UnwindImpl<true, false>;
+      |            ^
+In file included from external/com_google_absl/absl/debugging/stacktrace.cc:55:
+external/com_google_absl/absl/debugging/internal/stacktrace_powerpc-inl.inc:226:80: warning: implicit conversion loses integer precision: 'uintptr_t' (aka 'u
+nsigned long') to 'int' [-Wshorten-64-to-32]
+  226 |             sizes[n] = absl::debugging_internal::StripPointerMetadata(next_sp) -
+      |                      ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  227 |                        absl::debugging_internal::StripPointerMetadata(sp);
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+external/com_google_absl/absl/debugging/stacktrace.cc:231:12: note: in instantiation of function template specialization 'UnwindImpl<true, true>' requested h
+ere
+  231 |       f = &UnwindImpl<true, true>;
+      |            ^
+3 warnings generated.
+INFO: Found 2 test targets...
+INFO: Elapsed time: 2732.991s, Critical Path: 151.94s
+INFO: 2523 processes: 929 internal, 1594 linux-sandbox.
+INFO: Build completed successfully, 2523 total actions
+
+Executed 2 out of 2 tests: 2 tests pass.
+
+================================================================================
+ bazel test //test/extensions/upstreams/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base[10/1840]
+rd_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --overri
+de_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action
+_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram
+_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is u
+nknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:zlib
+INFO: Analyzed 13 targets (116 packages loaded, 3392 targets configured).
+INFO: From Compiling absl/base/internal/unscaledcycleclock.cc [for tool]:
+external/com_google_absl/absl/base/internal/unscaledcycleclock.cc:65:10: warning: implicit conversion changes signedness: 'uint64_t' (aka 'unsigned long') to 'int64_t' (aka 'long') [-Wsign-conversion]
+   65 |   return __ppc_get_timebase();
+      |   ~~~~~~ ^~~~~~~~~~~~~~~~~~~~
+1 warning generated.
+INFO: From Compiling absl/debugging/stacktrace.cc [for tool]:
+In file included from external/com_google_absl/absl/debugging/stacktrace.cc:55:
+external/com_google_absl/absl/debugging/internal/stacktrace_powerpc-inl.inc:226:80: warning: implicit conversion loses integer precision: 'uintptr_t' (aka 'unsigned long') to 'int' [-Wshorten-64-to-32]
+  226 |             sizes[n] = absl::debugging_internal::StripPointerMetadata(next_sp) -
+      |                      ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  227 |                        absl::debugging_internal::StripPointerMetadata(sp);
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+external/com_google_absl/absl/debugging/internal/stacktrace_powerpc-inl.inc:226:80: warning: implicit conversion loses integer precision: 'uintptr_t' (aka 'unsigned long') to 'int' [-Wshorten-64-to-32]
+  226 |             sizes[n] = absl::debugging_internal::StripPointerMetadata(next_sp) -
+      |                      ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  227 |                        absl::debugging_internal::StripPointerMetadata(sp);
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+external/com_google_absl/absl/debugging/stacktrace.cc:229:12: note: in instantiation of function template specialization 'UnwindImpl<true, false>' requested here
+  229 |       f = &UnwindImpl<true, false>;
+      |            ^
+In file included from external/com_google_absl/absl/debugging/stacktrace.cc:55:
+external/com_google_absl/absl/debugging/internal/stacktrace_powerpc-inl.inc:226:80: warning: implicit conversion loses integer precision: 'uintptr_t' (aka 'unsigned long') to 'int' [-Wshorten-64-to-32]
+  226 |             sizes[n] = absl::debugging_internal::StripPointerMetadata(next_sp) -
+      |                      ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  227 |                        absl::debugging_internal::StripPointerMetadata(sp);
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+external/com_google_absl/absl/debugging/stacktrace.cc:231:12: note: in instantiation of function template specialization 'UnwindImpl<true, true>' requested h
+ere
+  231 |       f = &UnwindImpl<true, true>;
+      |            ^
+3 warnings generated.
+INFO: From Building external/com_google_protobuf/java/core/libcore.jar (43 source files, 1 source jar):
+external/com_google_protobuf/java/core/src/main/java/com/google/protobuf/RepeatedFieldBuilderV3.java:28: warning: [dep-ann] deprecated item is not annotated
+with @Deprecated
+public class RepeatedFieldBuilderV3<
+       ^
+INFO: Found 7 targets and 6 test targets...
+INFO: Elapsed time: 4468.842s, Critical Path: 112.26s
+INFO: 2235 processes: 1174 internal, 1053 linux-sandbox, 8 worker.
+INFO: Build completed successfully, 2235 total actions
+
+Executed 6 out of 6 tests: 6 tests pass.
+
+====================================================================================================
+ bazel test //test/extensions/transport_sockets/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_github_grpc_grpc/src/compiler/BUILD:87:18: target 'grpc_cpp_plugin' is both a rule and a file; please choose another name for the rule
+WARNING: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_github_grpc_grpc/src/compiler/BUILD:93:18: target 'grpc_csharp_plugin' is both a rule and a file; please choose another name for the rule
+WARNING: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_github_grpc_grpc/src/compiler/BUILD:99:18: target 'grpc_node_plugin' is both a rule and a file; please choose another name for the rule
+WARNING: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_github_grpc_grpc/src/compiler/BUILD:105:18: target 'grpc_objective_c_plugin' is both a rule and a file; please choose another name for the rule
+WARNING: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_github_grpc_grpc/src/compiler/BUILD:111:18: target 'grpc_php_plugin' is both a rule and a file; please choose another name for the rule
+WARNING: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_github_grpc_grpc/src/compiler/BUILD:117:18: target 'grpc_python_plugin' is both a rule and a file; please choose another name for the rule
+WARNING: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_github_grpc_grpc/src/compiler/BUILD:123:18: target 'grpc_ruby_plugin' is both a rule and a file; please choose another name for the rule
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is unknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:ares
+INFO: Analyzed 34 targets (163 packages loaded, 4698 targets configured).
+INFO: From Compiling absl/random/internal/randen_hwaes.cc:
+external/com_google_absl/absl/random/internal/randen_hwaes.cc:151:45: warning: Implicit conversion between vector types (''Vector128' (vector of 2 'unsigned long long' values)' and ''__vector unsigned char' (vector of 16 'unsigned char' values)') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [-Wdeprecate-lax-vec-conv-all]
+  151 |   return Vector128(__builtin_crypto_vcipher(state, round_key));
+      |                                             ^
+external/com_google_absl/absl/random/internal/randen_hwaes.cc:151:52: warning: Implicit conversion between vector types (''Vector128' (vector of 2 'unsigned long long' values)' and ''__vector unsigned char' (vector of 16 'unsigned char' values)') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [-Wdeprecate-lax-vec-conv-all]
+  151 |   return Vector128(__builtin_crypto_vcipher(state, round_key));
+      |                                                    ^
+2 warnings generated.
+INFO: Found 9 targets and 25 test targets...
+INFO: Elapsed time: 5264.938s, Critical Path: 275.75s
+INFO: 3622 processes: 1524 internal, 2097 linux-sandbox, 1 worker.
+INFO: Build completed successfully, 3622 total actions
+
+Executed 25 out of 25 tests: 25 tests pass.
+
+===============================================================================================
+ bazel test //test/extensions/string_matcher/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 2 targets (5 packages loaded, 11 targets configured).
+INFO: Found 2 test targets...
+INFO: Elapsed time: 1.359s, Critical Path: 0.06s
+INFO: 1 process: 1 internal.
+INFO: Build completed successfully, 1 total action
+
+Executed 0 out of 2 tests: 2 were skipped.
+
+========================================================================================
+  bazel test //test/extensions/dynamic_modules/...   --config=clang-gnu   --define=wasm=disabled   --override_reposi[45/1932$
+_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing
+ --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"
+ --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --
+local_ram_resources=12000   --linkopt=-fuse-ld=lld -- -//test/extensions/dynamic_modules:rust_sdk_doc_test -//test/extensions/dynamic_modules/http:filter_tes
+t    -//test/extensions/dynamic_modules/http:integration_test
+Extracting Bazel installation...
+Starting local Bazel server and connecting to it...
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+DEBUG: Rule 'dynamic_modules_rust_sdk_crate_index' indicated that a canonical reproducible form can be obtained by modifying arguments _action_listener = <un
+known object com.google.devtools.build.lib.packages.Attribute$LabelListLateBoundDefault>, _config_dependencies = [], _configure = False, _environ = ["CARGO_B
+AZEL_GENERATOR_URL", "CARGO_BAZEL_GENERATOR_SHA256", "CARGO_BAZEL_REPIN", "REPIN", "CARGO_BAZEL_REPIN_ONLY", "CARGO_BAZEL_ISOLATED", "CARGO_BAZEL_DEBUG"], _o
+riginal_name = "", generator_sha256s = {"powerpc64le-unknown-linux-gnu": "3b705a2a92f98d3959aae576e5bac33acc38f477424fbcf03563954e83699dc1"}
+DEBUG: Repository dynamic_modules_rust_sdk_crate_index instantiated at:
+  /envoy/WORKSPACE:29:25: in <toplevel>
+  /envoy/bazel/dependency_imports.bzl:84:24: in envoy_dependency_imports
+  /envoy/bazel/dependency_imports.bzl:248:22: in crates_repositories
+Repository rule crates_repository defined at:
+  /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_rust/crate_universe/private/crates_repository.bzl:124:36: in <toplevel>
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/com_google_protobuf/protobuf.bzl:654:10: The py_proto_library macro is deprec
+ated and will be removed in the 30.x release. switch to the rule defined by rules_python or the one in bazel/py_proto_library.bzl.
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is u
+nknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:event
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is u
+nknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:zlib
+DEBUG: /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/external/rules_foreign_cc/foreign_cc/private/cmake_script.bzl:125:14: target_arch is u
+nknown, please update foreign_cc/private/framework/platform.bzl and foreign_cc/private/cmake_script.bzl; triggered by //bazel/foreign_cc:nghttp2
+INFO: Analyzed 80 targets (570 packages loaded, 24859 targets configured).
+INFO: From Compiling absl/base/internal/unscaledcycleclock.cc:
+external/com_google_absl/absl/base/internal/unscaledcycleclock.cc:65:10: warning: implicit conversion changes signedness: 'uint64_t' (aka 'unsigned long') to
+ 'int64_t' (aka 'long') [-Wsign-conversion]
+   65 |   return __ppc_get_timebase();
+      |   ~~~~~~ ^~~~~~~~~~~~~~~~~~~~
+1 warning generated.
+INFO: From Compiling absl/debugging/stacktrace.cc:
+In file included from external/com_google_absl/absl/debugging/stacktrace.cc:55:
+external/com_google_absl/absl/debugging/internal/stacktrace_powerpc-inl.inc:226:80: warning: implicit conversion loses integer precision: 'uintptr_t' (aka 'u
+nsigned long') to 'int' [-Wshorten-64-to-32]
+  226 |             sizes[n] = absl::debugging_internal::StripPointerMetadata(next_sp) -
+      |                      ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  227 |                        absl::debugging_internal::StripPointerMetadata(sp);
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+external/com_google_absl/absl/debugging/internal/stacktrace_powerpc-inl.inc:226:80: warning: implicit conversion loses integer precision: 'uintptr_t' (aka 'u
+nsigned long') to 'int' [-Wshorten-64-to-32]
+  226 |             sizes[n] = absl::debugging_internal::StripPointerMetadata(next_sp) -
+      |                      ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  227 |                        absl::debugging_internal::StripPointerMetadata(sp);
+external/com_google_absl/absl/debugging/stacktrace.cc:229:12: note: in instantiation of function template specialization 'UnwindImpl<true, false>' requested
+here
+  229 |       f = &UnwindImpl<true, false>;
+      |            ^
+In file included from external/com_google_absl/absl/debugging/stacktrace.cc:55:
+external/com_google_absl/absl/debugging/internal/stacktrace_powerpc-inl.inc:226:80: warning: implicit conversion loses integer precision: 'uintptr_t' (aka 'u
+nsigned long') to 'int' [-Wshorten-64-to-32]
+  226 |             sizes[n] = absl::debugging_internal::StripPointerMetadata(next_sp) -
+      |                      ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  227 |                        absl::debugging_internal::StripPointerMetadata(sp);
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+external/com_google_absl/absl/debugging/stacktrace.cc:231:12: note: in instantiation of function template specialization 'UnwindImpl<true, true>' requested h
+ere
+  231 |       f = &UnwindImpl<true, true>;
+      |            ^
+3 warnings generated.
+INFO: From Compiling Rust cdylib _http (2 files):
+warning: methods `get_final_read_request_body` and `get_final_read_response_body` are never used
+   --> test/extensions/dynamic_modules/test_data/rust/http.rs:699:6
+    |
+698 | impl BodyCallbacksFilter {
+    | ------------------------ methods in this implementation
+699 |   fn get_final_read_request_body<'a>(&'a self) -> &'a Vec<u8> {
+    |      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+702 |   fn get_final_read_response_body<'a>(&'a self) -> &'a Vec<u8> {
+    |      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` on by default
+
+warning: 1 warning emitted
+
+INFO: Found 62 targets and 18 test targets...
+INFO: Elapsed time: 6327.909s, Critical Path: 260.45s
+INFO: 5614 processes: 3025 internal, 2589 linux-sandbox.
+INFO: Build completed successfully, 5614 total actions
+
+Executed 18 out of 18 tests: 18 tests pass.
+
+========================================================================
+
+filters
+ls test/extensions/filters/
+common  http  listener  network  udp
+
+=========================================================================
+common
+ bazel test //test/extensions/filters/common/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=8   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 43 targets (26 packages loaded, 719 targets configured).
+INFO: From Building external/com_google_protobuf/java/core/libcore.jar (43 source files, 1 source jar):
+external/com_google_protobuf/java/core/src/main/java/com/google/protobuf/RepeatedFieldBuilderV3.java:28: warning: [dep-ann] deprecated item is not annotated with @Deprecated
+public class RepeatedFieldBuilderV3<
+       ^
+INFO: Found 23 targets and 20 test targets...
+INFO: Elapsed time: 291.084s, Critical Path: 118.67s
+INFO: 484 processes: 183 internal, 274 linux-sandbox, 27 worker.
+INFO: Build completed successfully, 484 total actions
+
+Executed 17 out of 20 tests: 17 tests pass and 3 were skipped.
+
+=======================================================================
+bazel test //test/extensions/filters/listener/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=8   --local_ram_resources=12000   --linkopt=-fuse-ld=lld
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 67 targets (7 packages loaded, 131 targets configured).
+INFO: Found 44 targets and 23 test targets...
+INFO: Elapsed time: 283.869s, Critical Path: 169.11s
+INFO: 329 processes: 171 internal, 151 linux-sandbox, 7 worker.
+INFO: Build completed successfully, 329 total actions
+
+Executed 23 out of 23 tests: 23 tests pass.
+
+==================================================================================
+ bazel test //test/extensions/filters/udp/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000
+
+ere
+  231 |       f = &UnwindImpl<true, true>;
+      |            ^
+3 warnings generated.
+INFO: From Building external/com_google_protobuf/java/core/libcore.jar (43 source files, 1 source jar):
+external/com_google_protobuf/java/core/src/main/java/com/google/protobuf/RepeatedFieldBuilderV3.java:28: warning: [dep-ann] deprecated item is not annotated with @Deprecated
+public class RepeatedFieldBuilderV3<
+       ^
+INFO: From Compiling absl/random/internal/randen_hwaes.cc:
+external/com_google_absl/absl/random/internal/randen_hwaes.cc:151:45: warning: Implicit conversion between vector types (''Vector128' (vector of 2 'unsigned long long' values)' and ''__vector unsigned char' (vector of 16 'unsigned char' values)') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [-Wdeprecate-lax-vec-conv-all]
+  151 |   return Vector128(__builtin_crypto_vcipher(state, round_key));
+      |                                             ^
+external/com_google_absl/absl/random/internal/randen_hwaes.cc:151:52: warning: Implicit conversion between vector types (''Vector128' (vector of 2 'unsigned long long' values)' and ''__vector unsigned char' (vector of 16 'unsigned char' values)') is deprecated. In the future, the behavior implied by '-fno-lax-vector-conversions' will be the default. [-Wdeprecate-lax-vec-conv-all]
+  151 |   return Vector128(__builtin_crypto_vcipher(state, round_key));
+      |                                                    ^
+2 warnings generated.
+INFO: From Compiling absl/base/internal/unscaledcycleclock.cc:
+external/com_google_absl/absl/base/internal/unscaledcycleclock.cc:65:10: warning: implicit conversion changes signedness: 'uint64_t' (aka 'unsigned long') to 'int64_t' (aka 'long') [-Wsign-conversion]
+   65 |   return __ppc_get_timebase();
+      |   ~~~~~~ ^~~~~~~~~~~~~~~~~~~~
+1 warning generated.
+INFO: Found 36 targets and 14 test targets...
+INFO: Elapsed time: 10927.371s, Critical Path: 359.68s
+INFO: 7817 processes: 3319 internal, 4487 linux-sandbox, 11 worker.
+INFO: Build completed successfully, 7817 total actions
+
+Executed 14 out of 14 tests: 14 tests pass.
+
+============================================================
+
+network
+
+ bazel test //test/extensions/filters/network/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub 
+ --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps
+ --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000
+
+INFO: Found 68 targets and 114 test targets...
+INFO: Elapsed time: 18651.671s, Critical Path: 365.38s
+INFO: 10821 processes: 4879 internal, 5906 linux-sandbox, 36 worker.
+INFO: Build completed, 3 tests FAILED, 10821 total actions
+//test/extensions/filters/network/thrift_proxy:integration_test          FAILED in 2.2s
+  /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/execroot/envoy/bazel-out/ppc-fastbuild/testlogs/test/extensions/filters/network/thrift_proxy/integration_test/test.log
+//test/extensions/filters/network/thrift_proxy:translation_integration_test FAILED in 2.2s
+  /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/execroot/envoy/bazel-out/ppc-fastbuild/testlogs/test/extensions/filters/network/thrift_proxy/translation_integration_test/test.log
+//test/extensions/filters/network/thrift_proxy:trds_integration_test     FAILED in 2.2s
+  /root/.cache/bazel/_bazel_root/37e3aec351bcd85a6ea8b58e3592ef6e/execroot/envoy/bazel-out/ppc-fastbuild/testlogs/test/extensions/filters/network/thrift_proxy/trds_integration_test/test.log
+
+Executed 114 out of 114 tests: 111 tests pass and 3 fail locally.
+
+======================================================================================
+bazel test //test/extensions/filters/http/...   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --test_env=PYTHONPATH=/usr/local/lib64/python3.12/site-packages   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000 -- -//test/extensions/filters/http/oauth2:oauth_integration_test
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed 397 targets (0 packages loaded, 0 targets configured).
+INFO: Found 157 targets and 240 test targets...
+INFO: Elapsed time: 3.023s, Critical Path: 0.09s
+INFO: 1 process: 1 internal.
+INFO: Build completed successfully, 1 total action
+
+Executed 0 out of 240 tests: 235 tests pass and 5 were skipped.
+
+----------------------------------------------------------------------------
+ bazel test //test/extensions/filters/http/oauth2:oauth_integration_test   --config=clang-gnu   --define=wasm=disabled   --override_repository=base_pip3=third_party/python_stub   --override_repository=dev_pip3=third_party/python_stub   --override_repository=fuzzing_pip3=third_party/python_stub_fuzzing   --override_repository=v8_python_deps=third_party/v8_python_deps   --action_env=PYTHON_BIN_PATH=/usr/bin/python3.12   --action_env=PYTHONPATH="$PYTHONPATH"   --test_env=PYTHONPATH=/usr/local/lib64/python3.12/site-packages   --action_env=BINDGEN_EXTRA_CLANG_ARGS="$BINDGEN_EXTRA_CLANG_ARGS"   --action_env=BAZEL_LINKOPTS=   --test_output=errors   --verbose_failures   --jobs=2   --local_ram_resources=12000
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+WARNING: Option 'local_ram_resources' is deprecated: --local_ram_resources is deprecated, please use --local_resources=memory= instead.
+INFO: Analyzed target //test/extensions/filters/http/oauth2:oauth_integration_test (0 packages loaded, 0 targets configured).
+INFO: Found 1 test target...
+Target //test/extensions/filters/http/oauth2:oauth_integration_test up-to-date:
+  bazel-bin/test/extensions/filters/http/oauth2/oauth_integration_test
+INFO: Elapsed time: 31.928s, Critical Path: 30.21s
+INFO: 2 processes: 1 internal, 1 linux-sandbox.
+INFO: Build completed successfully, 2 total actions
+
+Executed 1 out of 1 test: 1 test passes.
+
+=================================================================================================================
+

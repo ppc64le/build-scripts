@@ -80,8 +80,9 @@ RUN set -ex; \
                 apt-key list
 
 ARG MONGO_MAJOR=7.0
-ARG MONGO_VERSION=7.0.25
-ARG MONGOSH_VERSION=2.5.9
+ARG MONGOSH_VERSION=2.8.3
+ARG PACKAGE_VERSION=r7.0.25
+ENV MONGO_VERSION=${PACKAGE_VERSION}
 
 # We install the necesary tools to compile mongo on ppc64le
 RUN echo "Updating and installing build dependencies..." \
@@ -99,10 +100,10 @@ RUN echo "Updating and installing build dependencies..." \
                 liblzma-dev \
                 cargo \
         && rm -rf /var/lib/apt/lists/* \
-        && mkdir -p /tmp/mongodb-src-r${MONGO_VERSION} \
-        && cd /tmp/mongodb-src-r${MONGO_VERSION} \
+        && mkdir -p /tmp/mongodb-src-${MONGO_VERSION} \
+        && cd /tmp/mongodb-src-${MONGO_VERSION} \
         && git clone https://github.com/mongodb/mongo.git && cd mongo \
-        && git checkout r${MONGO_VERSION} \
+        && git checkout ${MONGO_VERSION} \
         && python3 -m pip install mongo-tooling-metrics \
         && python3 -m pip install --upgrade pip setuptools wheel \
         && python3 -m pip install cryptography==36.0.2 \
