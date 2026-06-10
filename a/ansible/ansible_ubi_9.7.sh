@@ -136,6 +136,9 @@ if [ "$(uname -m)" = "ppc64le" ]; then
 
     sed -i 's|quay.io/ansible/http-test-container:3.5.0|icr.io/ppc64le-oss/http-test-container-ppc64le:3.5.0|g' \
         test/lib/ansible_test/_internal/commands/integration/cloud/httptester.py
+
+    sed -i 's|quay.io/ansible/acme-test-container:2.3.0|icr.io/ppc64le-oss/ansible-acme-test-container-ppc64le:2.3.0|g' \
+        test/lib/ansible_test/_internal/commands/integration/cloud/acme.py
 fi
 
 # UBI/RHEL 9 containers use the host kernel, so matching kernel-modules-extra
