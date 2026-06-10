@@ -2,10 +2,10 @@
   "maintainer": "akash-kaothalkar",
   "package_name": "vllm",
   "github_url": "https://github.com/vllm-project/vllm",
-  "version": "v0.21.0",
+  "version": "v0.22.0",
   "wheel_build": true,
   "default_branch": "main",
-  "build_script": "vllm_v0.18.1_ubi_9.5.sh",
+  "build_script": "vllm_v0.22.0_ubi_9.5.sh",
   "package_dir": "v/vllm",
   "docker_build": false,
   "validate_build_script": true,
@@ -28,10 +28,13 @@
   "v0.18.1": {
     "build_script": "vllm_v0.18.1_ubi_9.5.sh"
   },
-    "v0.21.0": {
+  "v0.21.0": {
     "build_script": "vllm_v0.21.0_ubi_9.5.sh"
   },
+  "v0.22.0": {
+    "build_script": "vllm_v0.22.0_ubi_9.5.sh"
+  },
   "*": {
-    "build_script": "vllm_v0.21.0_ubi_9.5.sh"
+    "build_script": "vllm_v0.22.0_ubi_9.5.sh"
   }
 }
