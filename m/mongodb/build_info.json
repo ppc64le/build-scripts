@@ -10,7 +10,7 @@
   "package_dir": "m/mongodb/",
   "docker_cmd": "docker build -t ${package_name}-ppc64le:$PACKAGE_VERSION ${dir}",
   "wheel_build": "false",
-  "validate_build_script": false,
+  "validate_build_script": "false",
   "r8.*.*": {
     "dir": "mongodb_8.3.x",
     "args": {
